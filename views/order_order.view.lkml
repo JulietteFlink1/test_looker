@@ -239,4 +239,24 @@ dimension_group: delivery {
     value_format: "0.00"
   }
 
+  measure: sum_basket_size_gross {
+    label: "SUM Order Value (Gross)"
+    description: "Sum of value of orders considering total gross order values."
+    hidden:  no
+    type: sum_distinct
+    sql_distinct_key: id;;
+    sql: ${TABLE}.total_gross_amount;;
+    value_format: "0.00"
+  }
+
+  measure: sum_basket_size_net {
+    label: "SUM Order Value (Net)"
+    description: "Sum of value of orders considering total net order values."
+    hidden:  no
+    type: sum_distinct
+    sql_distinct_key: id;;
+    sql: ${TABLE}.total_net_amount;;
+    value_format: "0.00"
+  }
+
 }
