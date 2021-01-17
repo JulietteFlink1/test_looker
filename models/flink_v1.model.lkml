@@ -17,8 +17,8 @@ datagroup: flink_v1_default_datagroup {
 persist_with: flink_v1_default_datagroup
 
 explore: order_order {
-  view_label: "Orders"
-  group_label: "1) Performance"
+  view_label: "Orders (old)"
+  group_label: "1) Performance (old)"
   description: "General Business Performance - Orders, Revenue, etc."
   sql_always_where: status not in ('canceled','draft') and total_gross_amount > 5 and user_email not like ('%pickery%');;
 
