@@ -1,5 +1,5 @@
-view: order_fulfillmentline {
-  sql_table_name: `heroku_backend.order_fulfillmentline`
+view: order_fulfillment {
+  sql_table_name: `pickery-backend.pickery_saleor_db.order_fulfillment`
     ;;
   drill_fields: [id]
 
@@ -61,24 +61,48 @@ view: order_fulfillmentline {
     sql: ${TABLE}._sdc_table_version ;;
   }
 
-  dimension: fulfillment_id {
-    type: number
-    sql: ${TABLE}.fulfillment_id ;;
+  dimension_group: created {
+    type: time
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: ${TABLE}.created ;;
   }
 
-  dimension: order_line_id {
+  dimension: fulfillment_order {
     type: number
-    sql: ${TABLE}.order_line_id ;;
+    sql: ${TABLE}.fulfillment_order ;;
   }
 
-  dimension: quantity {
-    type: number
-    sql: ${TABLE}.quantity ;;
+  dimension: metadata {
+    type: string
+    sql: ${TABLE}.metadata ;;
   }
 
-  dimension: stock_id {
+  dimension: order_id {
     type: number
-    sql: ${TABLE}.stock_id ;;
+    sql: ${TABLE}.order_id ;;
+  }
+
+  dimension: private_metadata {
+    type: string
+    sql: ${TABLE}.private_metadata ;;
+  }
+
+  dimension: status {
+    type: string
+    sql: ${TABLE}.status ;;
+  }
+
+  dimension: tracking_number {
+    type: string
+    sql: ${TABLE}.tracking_number ;;
   }
 
   measure: count {

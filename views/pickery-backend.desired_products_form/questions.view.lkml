@@ -1,12 +1,12 @@
-view: order_orderevent {
-  sql_table_name: `heroku_backend.order_orderevent`
+view: questions {
+  sql_table_name: `pickery-backend.desired_products_form.questions`
     ;;
-  drill_fields: [id]
+  drill_fields: [question_id]
 
-  dimension: id {
+  dimension: question_id {
     primary_key: yes
-    type: number
-    sql: ${TABLE}.id ;;
+    type: string
+    sql: ${TABLE}.question_id ;;
   }
 
   dimension_group: _sdc_batched {
@@ -61,42 +61,23 @@ view: order_orderevent {
     sql: ${TABLE}._sdc_table_version ;;
   }
 
-  dimension_group: date {
-    type: time
-    timeframes: [
-      raw,
-      time,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    sql: ${TABLE}.date ;;
-  }
-
-  dimension: order_id {
-    type: number
-    sql: ${TABLE}.order_id ;;
-  }
-
-  dimension: parameters {
+  dimension: form_id {
     type: string
-    sql: ${TABLE}.parameters ;;
+    sql: ${TABLE}.form_id ;;
   }
 
-  dimension: type {
+  dimension: ref {
     type: string
-    sql: ${TABLE}.type ;;
+    sql: ${TABLE}.ref ;;
   }
 
-  dimension: user_id {
-    type: number
-    sql: ${TABLE}.user_id ;;
+  dimension: title {
+    type: string
+    sql: ${TABLE}.title ;;
   }
 
   measure: count {
     type: count
-    drill_fields: [id]
+    drill_fields: [question_id, answers.count]
   }
 }
