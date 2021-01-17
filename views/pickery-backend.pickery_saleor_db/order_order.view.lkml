@@ -204,4 +204,60 @@ view: order_order {
     type: count
     drill_fields: [id, translated_discount_name, shipping_method_name, discount_name]
   }
+
+  dimension_group: delivery {
+    type: time
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: TIMESTAMP(JSON_EXTRACT_SCALAR(${TABLE}.metadata, '$.deliveryTime')) ;;
+  }
+
+  measure: avg_basket_size_gross {
+    label: "AVG Order Value (Gross)"
+    description: "Average value of orders considering total gross order values."
+    hidden:  no
+    type: average_distinct
+    sql_distinct_key: id;;
+    sql: ${TABLE}.total_gross_amount;;
+    value_format: "0.00"
+  }
+
+  measure: avg_basket_size_net {
+    label: "AVG Order Value (Net)"
+    description: "Average value of orders considering total net order values."
+    hidden:  no
+    type: average_distinct
+    sql_distinct_key: id;;
+    sql: ${TABLE}.total_net_amount;;
+    value_format: "0.00"
+  }
+
+  measure: sum_basket_size_gross {
+    label: "SUM Order Value (Gross)"
+    description: "Sum of value of orders considering total gross order values."
+    hidden:  no
+    type: sum_distinct
+    sql_distinct_key: id;;
+    sql: ${TABLE}.total_gross_amount;;
+    value_format: "0.00"
+  }
+
+  measure: sum_basket_size_net {
+    label: "SUM Order Value (Net)"
+    description: "Sum of value of orders considering total net order values."
+    hidden:  no
+    type: sum_distinct
+    sql_distinct_key: id;;
+    sql: ${TABLE}.total_net_amount;;
+    value_format: "0.00"
+  }
+
+
 }
