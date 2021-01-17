@@ -219,5 +219,24 @@ dimension_group: delivery {
   sql: TIMESTAMP(JSON_EXTRACT_SCALAR(${TABLE}.metadata, '$.deliveryTime')) ;;
   }
 
+  measure: avg_basket_size_gross {
+    label: "AVG Order Value (Gross)"
+    description: "Average value of orders considering total gross order values."
+    hidden:  no
+    type: average_distinct
+    sql_distinct_key: id;;
+    sql: ${TABLE}.total_gross_amount;;
+    value_format: "0.00"
+  }
+
+  measure: avg_basket_size_net {
+    label: "AVG Order Value (Net)"
+    description: "Average value of orders considering total net order values."
+    hidden:  no
+    type: average_distinct
+    sql_distinct_key: id;;
+    sql: ${TABLE}.total_net_amount;;
+    value_format: "0.00"
+  }
 
 }
