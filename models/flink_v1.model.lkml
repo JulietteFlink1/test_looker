@@ -1,4 +1,4 @@
-connection: "pickery_bq"
+connection: "pickery_old_bq"
 
 label: "Flink Data Model v1"
 
