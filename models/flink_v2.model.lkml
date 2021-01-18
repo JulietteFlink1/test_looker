@@ -40,7 +40,10 @@ explore: order_order {
   view_label: "Orders"
   group_label: "1) Performance"
   description: "General Business Performance - Orders, Revenue, etc."
-  sql_always_where: status not in ('canceled','draft') and total_gross_amount > 5 and user_email not like ('%pickery%');;
+  always_filter: {
+    filters: [status : "-canceled", status : "-draft", total_gross_amount : ">5",
+      user_email : "-%pickery%"]
+  }
 
   join: order_fulfillment {
     sql_on: ${order_fulfillment.order_id} = ${order_order.id} ;;
