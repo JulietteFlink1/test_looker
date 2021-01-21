@@ -1,5 +1,6 @@
 view: order_fulfilment_facts {
   derived_table: {
+    datagroup_trigger: flink_default_datagroup
     sql: SELECT
           order_order.id  AS order_order_id,
         order_fulfillment.id  AS order_fulfillment_id,
