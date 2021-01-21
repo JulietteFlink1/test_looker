@@ -268,8 +268,7 @@ view: order_order {
     label: "AVG Delivery Time"
     description: "Average Delivery Time considering from order placement to delivery"
     hidden:  no
-    type: average_distinct
-    sql_distinct_key: id;;
+    type: average
     sql: TIMESTAMP_DIFF(TIMESTAMP(JSON_EXTRACT_SCALAR(${TABLE}.metadata, '$.deliveryTime')),${TABLE}.created, SECOND) / 60;;
     value_format: "0.0"
   }
@@ -278,11 +277,20 @@ view: order_order {
     label: "AVG Delivery Time Filtered"
     description: "Average Delivery Time considering from order placement to delivery"
     hidden:  no
-    type: average_distinct
-    sql_distinct_key: id;;
+    type: average
     sql: ${fulfilment_time};;
     value_format: "0.0"
     filters: [is_fulfilment_less_than_1_minute: "no", is_fulfilment_more_than_30_minute: "no"]
+  }
+
+  measure: avg_delivery_time_filterd_rank_1 {
+    label: "AVG Delivery Time Filtered rank 1"
+    description: "Average Delivery Time considering from order placement to delivery"
+    hidden:  no
+    type: average
+    sql: ${fulfilment_time};;
+    value_format: "0.0"
+    filters: [order_fulfilment_facts.is_first_order: "yes"]
   }
 
 
