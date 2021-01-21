@@ -1,5 +1,5 @@
-view: account_customerevent {
-  sql_table_name: `heroku_backend.account_customerevent`
+view: order_orderevent {
+  sql_table_name: `flink-backend.pickery_saleor_db.order_orderevent`
     ;;
   drill_fields: [id]
 

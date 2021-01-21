@@ -1,5 +1,5 @@
-view: product_producttype {
-  sql_table_name: `heroku_backend.product_producttype`
+view: product_assignedproductattribute {
+  sql_table_name: `flink-backend.pickery_saleor_db.product_assignedproductattribute`
     ;;
   drill_fields: [id]
 
@@ -61,48 +61,18 @@ view: product_producttype {
     sql: ${TABLE}._sdc_table_version ;;
   }
 
-  dimension: has_variants {
-    type: yesno
-    sql: ${TABLE}.has_variants ;;
-  }
-
-  dimension: is_digital {
-    type: yesno
-    sql: ${TABLE}.is_digital ;;
-  }
-
-  dimension: is_shipping_required {
-    type: yesno
-    sql: ${TABLE}.is_shipping_required ;;
-  }
-
-  dimension: metadata {
-    type: string
-    sql: ${TABLE}.metadata ;;
-  }
-
-  dimension: name {
-    type: string
-    sql: ${TABLE}.name ;;
-  }
-
-  dimension: private_metadata {
-    type: string
-    sql: ${TABLE}.private_metadata ;;
-  }
-
-  dimension: slug {
-    type: string
-    sql: ${TABLE}.slug ;;
-  }
-
-  dimension: weight {
+  dimension: assignment_id {
     type: number
-    sql: ${TABLE}.weight ;;
+    sql: ${TABLE}.assignment_id ;;
+  }
+
+  dimension: product_id {
+    type: number
+    sql: ${TABLE}.product_id ;;
   }
 
   measure: count {
     type: count
-    drill_fields: [id, name]
+    drill_fields: [id]
   }
 }

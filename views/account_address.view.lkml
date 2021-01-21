@@ -1,5 +1,5 @@
 view: account_address {
-  sql_table_name: `heroku_backend.account_address`
+  sql_table_name: `flink-backend.pickery_saleor_db.account_address`
     ;;
   drill_fields: [id]
 

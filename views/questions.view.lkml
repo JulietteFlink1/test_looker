@@ -1,5 +1,5 @@
 view: questions {
-  sql_table_name: `pickery-backend.desired_products_form.questions`
+  sql_table_name: `flink-backend.desired_products_form.questions`
     ;;
   drill_fields: [question_id]
 

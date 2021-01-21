@@ -1,5 +1,5 @@
 view: checkout_checkoutline {
-  sql_table_name: `heroku_backend.checkout_checkoutline`
+  sql_table_name: `flink-backend.pickery_saleor_db.checkout_checkoutline`
     ;;
   drill_fields: [id]
 

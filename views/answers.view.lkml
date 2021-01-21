@@ -1,13 +1,6 @@
-view: menu_menu {
-  sql_table_name: `heroku_backend.menu_menu`
+view: answers {
+  sql_table_name: `flink-backend.desired_products_form.answers`
     ;;
-  drill_fields: [id]
-
-  dimension: id {
-    primary_key: yes
-    type: number
-    sql: ${TABLE}.id ;;
-  }
 
   dimension_group: _sdc_batched {
     type: time
@@ -61,18 +54,40 @@ view: menu_menu {
     sql: ${TABLE}._sdc_table_version ;;
   }
 
-  dimension: json_content {
+  dimension: answer {
     type: string
-    sql: ${TABLE}.json_content ;;
+    sql: ${TABLE}.answer ;;
   }
 
-  dimension: name {
+  dimension: data_type {
     type: string
-    sql: ${TABLE}.name ;;
+    sql: ${TABLE}.data_type ;;
+  }
+
+  dimension: landing_id {
+    type: string
+    # hidden: yes
+    sql: ${TABLE}.landing_id ;;
+  }
+
+  dimension: question_id {
+    type: string
+    # hidden: yes
+    sql: ${TABLE}.question_id ;;
+  }
+
+  dimension: ref {
+    type: string
+    sql: ${TABLE}.ref ;;
+  }
+
+  dimension: type {
+    type: string
+    sql: ${TABLE}.type ;;
   }
 
   measure: count {
     type: count
-    drill_fields: [id, name]
+    drill_fields: [landings.landing_id, questions.question_id]
   }
 }

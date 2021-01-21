@@ -1,4 +1,4 @@
-connection: "pickery_backend_bq"
+connection: "flink_bq"
 
 include: "/views/*.view.lkml"                # include all views in the views/ folder in this project
 # include: "/**/*.view.lkml"                 # include all views in this project
@@ -20,7 +20,7 @@ include: "/views/*.view.lkml"                # include all views in the views/ f
 # }
 
 
-label: "Flink Data Model v2"
+label: "Flink Core Data Model"
 
 # include all the views
 include: "/views/**/*.view"
@@ -28,13 +28,13 @@ include: "/views/**/*.view"
 
 week_start_day: monday
 
-datagroup: flink_v2_default_datagroup {
+datagroup: flink_default_datagroup {
   sql_trigger: SELECT MAX(id) FROM order_order;;
   max_cache_age: "2 hour"
 }
 
 
-persist_with: flink_v2_default_datagroup
+persist_with: flink_default_datagroup
 
 explore: order_order {
   view_label: "Orders"
@@ -58,3 +58,24 @@ explore: order_order {
   }
 
 }
+
+explore: answers {
+  view_label: "Desired Products"
+  group_label: "2) Survey Data"
+  description: "Customer Survey on Desired Products"
+
+}
+
+
+# explore: order_extends {
+#   label: "Power User Orders..."
+#   view_label: "Power User Orders..."
+#   group_label: "1) Performance"
+#   extends: [order_order]
+#   view_name: order_order
+#   # join: answers {
+#   #   sql_on: ${answers.landing_id} = ${order_order.id} ;;
+#   #   relationship: one_to_many
+#   #   type: left_outer
+#   # }
+# }

@@ -1,5 +1,5 @@
-view: account_user_groups {
-  sql_table_name: `heroku_backend.account_user_groups`
+view: order_fulfillmentline {
+  sql_table_name: `flink-backend.pickery_saleor_db.order_fulfillmentline`
     ;;
   drill_fields: [id]
 
@@ -61,14 +61,24 @@ view: account_user_groups {
     sql: ${TABLE}._sdc_table_version ;;
   }
 
-  dimension: group_id {
+  dimension: fulfillment_id {
     type: number
-    sql: ${TABLE}.group_id ;;
+    sql: ${TABLE}.fulfillment_id ;;
   }
 
-  dimension: user_id {
+  dimension: order_line_id {
     type: number
-    sql: ${TABLE}.user_id ;;
+    sql: ${TABLE}.order_line_id ;;
+  }
+
+  dimension: quantity {
+    type: number
+    sql: ${TABLE}.quantity ;;
+  }
+
+  dimension: stock_id {
+    type: number
+    sql: ${TABLE}.stock_id ;;
   }
 
   measure: count {

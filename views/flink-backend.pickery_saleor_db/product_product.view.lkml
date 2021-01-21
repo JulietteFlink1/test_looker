@@ -1,5 +1,5 @@
 view: product_product {
-  sql_table_name: `heroku_backend.product_product`
+  sql_table_name: `flink-backend.pickery_saleor_db.product_product`
     ;;
   drill_fields: [id]
 
@@ -61,6 +61,20 @@ view: product_product {
     sql: ${TABLE}._sdc_table_version ;;
   }
 
+  dimension_group: available_for_purchase {
+    type: time
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: ${TABLE}.available_for_purchase ;;
+  }
+
   dimension: category_id {
     type: number
     sql: ${TABLE}.category_id ;;
@@ -74,6 +88,11 @@ view: product_product {
   dimension: currency {
     type: string
     sql: ${TABLE}.currency ;;
+  }
+
+  dimension: default_variant_id {
+    type: number
+    sql: ${TABLE}.default_variant_id ;;
   }
 
   dimension: description {
@@ -106,11 +125,6 @@ view: product_product {
     sql: ${TABLE}.name ;;
   }
 
-  dimension: price_amount {
-    type: number
-    sql: ${TABLE}.price_amount ;;
-  }
-
   dimension: private_metadata {
     type: string
     sql: ${TABLE}.private_metadata ;;
@@ -119,6 +133,20 @@ view: product_product {
   dimension: product_type_id {
     type: number
     sql: ${TABLE}.product_type_id ;;
+  }
+
+  dimension_group: publication {
+    type: time
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: ${TABLE}.publication_date ;;
   }
 
   dimension: seo_description {
@@ -148,6 +176,11 @@ view: product_product {
       year
     ]
     sql: ${TABLE}.updated_at ;;
+  }
+
+  dimension: visible_in_listings {
+    type: yesno
+    sql: ${TABLE}.visible_in_listings ;;
   }
 
   measure: count {

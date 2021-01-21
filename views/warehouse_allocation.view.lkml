@@ -1,5 +1,5 @@
 view: warehouse_allocation {
-  sql_table_name: `heroku_backend.warehouse_allocation`
+  sql_table_name: `flink-backend.pickery_saleor_db.warehouse_allocation`
     ;;
   drill_fields: [id]
 

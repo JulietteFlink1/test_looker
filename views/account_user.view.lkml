@@ -1,5 +1,5 @@
 view: account_user {
-  sql_table_name: `heroku_backend.account_user`
+  sql_table_name: `flink-backend.pickery_saleor_db.account_user`
     ;;
   drill_fields: [id]
 
@@ -113,6 +113,11 @@ view: account_user {
   dimension: is_superuser {
     type: yesno
     sql: ${TABLE}.is_superuser ;;
+  }
+
+  dimension: jwt_token_key {
+    type: string
+    sql: ${TABLE}.jwt_token_key ;;
   }
 
   dimension_group: last_login {

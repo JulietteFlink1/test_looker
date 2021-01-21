@@ -1,6 +1,13 @@
-view: checkout_checkout {
-  sql_table_name: `heroku_backend.checkout_checkout`
+view: order_order {
+  sql_table_name: `flink-backend.pickery_saleor_db.order_order`
     ;;
+  drill_fields: [id]
+
+  dimension: id {
+    primary_key: yes
+    type: number
+    sql: ${TABLE}.id ;;
+  }
 
   dimension_group: _sdc_batched {
     type: time
@@ -59,10 +66,9 @@ view: checkout_checkout {
     sql: ${TABLE}.billing_address_id ;;
   }
 
-  dimension: country {
+  dimension: checkout_token {
     type: string
-    map_layer_name: countries
-    sql: ${TABLE}.country ;;
+    sql: ${TABLE}.checkout_token ;;
   }
 
   dimension_group: created {
@@ -84,6 +90,11 @@ view: checkout_checkout {
     sql: ${TABLE}.currency ;;
   }
 
+  dimension: customer_note {
+    type: string
+    sql: ${TABLE}.customer_note ;;
+  }
+
   dimension: discount_amount {
     type: number
     sql: ${TABLE}.discount_amount ;;
@@ -94,23 +105,14 @@ view: checkout_checkout {
     sql: ${TABLE}.discount_name ;;
   }
 
-  dimension: email {
-    type: string
-    sql: ${TABLE}.email ;;
+  dimension: display_gross_prices {
+    type: yesno
+    sql: ${TABLE}.display_gross_prices ;;
   }
 
-  dimension_group: last_change {
-    type: time
-    timeframes: [
-      raw,
-      time,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    sql: ${TABLE}.last_change ;;
+  dimension: language_code {
+    type: string
+    sql: ${TABLE}.language_code ;;
   }
 
   dimension: metadata {
@@ -118,19 +120,9 @@ view: checkout_checkout {
     sql: ${TABLE}.metadata ;;
   }
 
-  dimension: note {
-    type: string
-    sql: ${TABLE}.note ;;
-  }
-
   dimension: private_metadata {
     type: string
     sql: ${TABLE}.private_metadata ;;
-  }
-
-  dimension: quantity {
-    type: number
-    sql: ${TABLE}.quantity ;;
   }
 
   dimension: shipping_address_id {
@@ -143,9 +135,44 @@ view: checkout_checkout {
     sql: ${TABLE}.shipping_method_id ;;
   }
 
+  dimension: shipping_method_name {
+    type: string
+    sql: ${TABLE}.shipping_method_name ;;
+  }
+
+  dimension: shipping_price_gross_amount {
+    type: number
+    sql: ${TABLE}.shipping_price_gross_amount ;;
+  }
+
+  dimension: shipping_price_net_amount {
+    type: number
+    sql: ${TABLE}.shipping_price_net_amount ;;
+  }
+
+  dimension: status {
+    type: string
+    sql: ${TABLE}.status ;;
+  }
+
   dimension: token {
     type: string
     sql: ${TABLE}.token ;;
+  }
+
+  dimension: total_gross_amount {
+    type: number
+    sql: ${TABLE}.total_gross_amount ;;
+  }
+
+  dimension: total_net_amount {
+    type: number
+    sql: ${TABLE}.total_net_amount ;;
+  }
+
+  dimension: tracking_client_id {
+    type: string
+    sql: ${TABLE}.tracking_client_id ;;
   }
 
   dimension: translated_discount_name {
@@ -153,18 +180,28 @@ view: checkout_checkout {
     sql: ${TABLE}.translated_discount_name ;;
   }
 
+  dimension: user_email {
+    type: string
+    sql: ${TABLE}.user_email ;;
+  }
+
   dimension: user_id {
     type: number
     sql: ${TABLE}.user_id ;;
   }
 
-  dimension: voucher_code {
-    type: string
-    sql: ${TABLE}.voucher_code ;;
+  dimension: voucher_id {
+    type: number
+    sql: ${TABLE}.voucher_id ;;
+  }
+
+  dimension: weight {
+    type: number
+    sql: ${TABLE}.weight ;;
   }
 
   measure: count {
     type: count
-    drill_fields: [translated_discount_name, discount_name]
+    drill_fields: [id, translated_discount_name, shipping_method_name, discount_name]
   }
 }

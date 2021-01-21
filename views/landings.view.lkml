@@ -1,12 +1,12 @@
-view: discount_sale {
-  sql_table_name: `heroku_backend.discount_sale`
+view: landings {
+  sql_table_name: `flink-backend.desired_products_form.landings`
     ;;
-  drill_fields: [id]
+  drill_fields: [landing_id]
 
-  dimension: id {
+  dimension: landing_id {
     primary_key: yes
-    type: number
-    sql: ${TABLE}.id ;;
+    type: string
+    sql: ${TABLE}.landing_id ;;
   }
 
   dimension_group: _sdc_batched {
@@ -61,12 +61,17 @@ view: discount_sale {
     sql: ${TABLE}._sdc_table_version ;;
   }
 
-  dimension: name {
+  dimension: browser {
     type: string
-    sql: ${TABLE}.name ;;
+    sql: ${TABLE}.browser ;;
   }
 
-  dimension_group: start {
+  dimension: hidden {
+    type: string
+    sql: ${TABLE}.hidden ;;
+  }
+
+  dimension_group: landed {
     type: time
     timeframes: [
       raw,
@@ -77,21 +82,50 @@ view: discount_sale {
       quarter,
       year
     ]
-    sql: ${TABLE}.start_date ;;
+    sql: ${TABLE}.landed_at ;;
   }
 
-  dimension: type {
+  dimension: network_id {
     type: string
-    sql: ${TABLE}.type ;;
+    sql: ${TABLE}.network_id ;;
   }
 
-  dimension: value {
-    type: number
-    sql: ${TABLE}.value ;;
+  dimension: platform {
+    type: string
+    sql: ${TABLE}.platform ;;
+  }
+
+  dimension: referer {
+    type: string
+    sql: ${TABLE}.referer ;;
+  }
+
+  dimension_group: submitted {
+    type: time
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: ${TABLE}.submitted_at ;;
+  }
+
+  dimension: token {
+    type: string
+    sql: ${TABLE}.token ;;
+  }
+
+  dimension: user_agent {
+    type: string
+    sql: ${TABLE}.user_agent ;;
   }
 
   measure: count {
     type: count
-    drill_fields: [id, name]
+    drill_fields: [landing_id, answers.count]
   }
 }

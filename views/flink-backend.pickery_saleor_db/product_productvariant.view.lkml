@@ -1,5 +1,5 @@
-view: account_staffnotificationrecipient {
-  sql_table_name: `heroku_backend.account_staffnotificationrecipient`
+view: product_productvariant {
+  sql_table_name: `flink-backend.pickery_saleor_db.product_productvariant`
     ;;
   drill_fields: [id]
 
@@ -61,18 +61,48 @@ view: account_staffnotificationrecipient {
     sql: ${TABLE}._sdc_table_version ;;
   }
 
-  dimension: active {
-    type: yesno
-    sql: ${TABLE}.active ;;
+  dimension: currency {
+    type: string
+    sql: ${TABLE}.currency ;;
   }
 
-  dimension: user_id {
+  dimension: metadata {
+    type: string
+    sql: ${TABLE}.metadata ;;
+  }
+
+  dimension: name {
+    type: string
+    sql: ${TABLE}.name ;;
+  }
+
+  dimension: price_amount {
     type: number
-    sql: ${TABLE}.user_id ;;
+    sql: ${TABLE}.price_amount ;;
+  }
+
+  dimension: private_metadata {
+    type: string
+    sql: ${TABLE}.private_metadata ;;
+  }
+
+  dimension: product_id {
+    type: number
+    sql: ${TABLE}.product_id ;;
+  }
+
+  dimension: sku {
+    type: string
+    sql: ${TABLE}.sku ;;
+  }
+
+  dimension: track_inventory {
+    type: yesno
+    sql: ${TABLE}.track_inventory ;;
   }
 
   measure: count {
     type: count
-    drill_fields: [id]
+    drill_fields: [id, name]
   }
 }

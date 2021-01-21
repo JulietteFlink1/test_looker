@@ -1,5 +1,5 @@
-view: product_assignedproductattribute_values {
-  sql_table_name: `heroku_backend.product_assignedproductattribute_values`
+view: order_fulfillment {
+  sql_table_name: `flink-backend.pickery_saleor_db.order_fulfillment`
     ;;
   drill_fields: [id]
 
@@ -61,14 +61,48 @@ view: product_assignedproductattribute_values {
     sql: ${TABLE}._sdc_table_version ;;
   }
 
-  dimension: assignedproductattribute_id {
-    type: number
-    sql: ${TABLE}.assignedproductattribute_id ;;
+  dimension_group: created {
+    type: time
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: ${TABLE}.created ;;
   }
 
-  dimension: attributevalue_id {
+  dimension: fulfillment_order {
     type: number
-    sql: ${TABLE}.attributevalue_id ;;
+    sql: ${TABLE}.fulfillment_order ;;
+  }
+
+  dimension: metadata {
+    type: string
+    sql: ${TABLE}.metadata ;;
+  }
+
+  dimension: order_id {
+    type: number
+    sql: ${TABLE}.order_id ;;
+  }
+
+  dimension: private_metadata {
+    type: string
+    sql: ${TABLE}.private_metadata ;;
+  }
+
+  dimension: status {
+    type: string
+    sql: ${TABLE}.status ;;
+  }
+
+  dimension: tracking_number {
+    type: string
+    sql: ${TABLE}.tracking_number ;;
   }
 
   measure: count {
