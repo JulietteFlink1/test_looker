@@ -1,6 +1,6 @@
 connection: "flink_bq"
 
-include: "/views/*.view.lkml"                # include all views in the views/ folder in this project
+include: "/**/*.view.lkml"                # include all views in the views/ folder in this project
 # include: "/**/*.view.lkml"                 # include all views in this project
 # include: "my_dashboard.dashboard.lookml"   # include a LookML dashboard called my_dashboard
 
@@ -55,6 +55,13 @@ explore: order_order {
     sql_on: ${order_orderline.order_id} = ${order_order.id} ;;
     relationship: one_to_many
     type: left_outer
+  }
+
+  join: user_order_facts {
+    view_label: "Users"
+    type: left_outer
+    relationship: many_to_one
+    sql_on: ${order_order.user_email} = ${user_order_facts.user_email} ;;
   }
 
 }

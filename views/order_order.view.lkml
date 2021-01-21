@@ -85,6 +85,30 @@ view: order_order {
     sql: ${TABLE}.created ;;
   }
 
+  parameter: date_granularity {
+    type: string
+    allowed_value: { value: "Day" }
+    allowed_value: { value: "Month" }
+    allowed_value: { value: "Quarter" }
+    allowed_value: { value: "Year" }
+  }
+
+  dimension: date {
+    label_from_parameter: date_granularity
+    sql:
+    CASE
+      WHEN {% parameter date_granularity %} = 'Day'
+        THEN ${created_date}
+      WHEN {% parameter date_granularity %} = 'Month'
+        THEN ${created_month}
+      WHEN {% parameter date_granularity %} = 'Quarter'
+        THEN ${created_quarter}
+      WHEN {% parameter date_granularity %} = 'Year'
+        THEN ${created_year}
+      ELSE NULL
+    END ;;
+  }
+
   dimension: currency {
     type: string
     sql: ${TABLE}.currency ;;
@@ -219,6 +243,27 @@ view: order_order {
     sql: TIMESTAMP(JSON_EXTRACT_SCALAR(${TABLE}.metadata, '$.deliveryTime')) ;;
   }
 
+  dimension: fulfilment_time {
+    type: number
+    sql: TIMESTAMP_DIFF(TIMESTAMP(JSON_EXTRACT_SCALAR(${TABLE}.metadata, '$.deliveryTime')),${TABLE}.created, SECOND) / 60 ;;
+  }
+
+  dimension_group: time_diff_between_x {
+    type: duration
+    sql_start: ${created_raw} ;;
+    sql_end: ${order_fulfillment.created_raw} ;;
+  }
+
+  dimension: is_fulfilment_less_than_1_minute {
+    type: yesno
+    sql: ${fulfilment_time} < 1 ;;
+  }
+
+  dimension: is_fulfilment_more_than_30_minute {
+    type: yesno
+    sql: ${fulfilment_time} > 30 ;;
+  }
+
   measure: avg_delivery_time {
     label: "AVG Delivery Time"
     description: "Average Delivery Time considering from order placement to delivery"
@@ -228,6 +273,18 @@ view: order_order {
     sql: TIMESTAMP_DIFF(TIMESTAMP(JSON_EXTRACT_SCALAR(${TABLE}.metadata, '$.deliveryTime')),${TABLE}.created, SECOND) / 60;;
     value_format: "0.0"
   }
+
+  measure: avg_delivery_time_filterd {
+    label: "AVG Delivery Time Filtered"
+    description: "Average Delivery Time considering from order placement to delivery"
+    hidden:  no
+    type: average_distinct
+    sql_distinct_key: id;;
+    sql: ${fulfilment_time};;
+    value_format: "0.0"
+    filters: [is_fulfilment_less_than_1_minute: "no", is_fulfilment_more_than_30_minute: "no"]
+  }
+
 
   measure: avg_basket_size_gross {
     label: "AVG Basket Size (Gross)"
@@ -287,5 +344,27 @@ view: order_order {
     sql_distinct_key: id;;
     sql: ${TABLE}.id;;
     value_format: "0"
+  }
+
+  measure: cnt_unique_orders_new {
+    label: "# Orders New"
+    description: "Count of successful Orders"
+    hidden:  no
+    type: count_distinct
+    # sql_distinct_key: id;;
+    sql: ${id};;
+    value_format: "0"
+    filters: [user_order_facts.is_first_order : "yes"]
+  }
+
+  measure: cnt_unique_orders_existing {
+    label: "# Orders Existing"
+    description: "Count of successful Orders"
+    hidden:  no
+    type: count_distinct
+    # sql_distinct_key: id;;
+    sql: ${id};;
+    value_format: "0"
+    filters: [user_order_facts.is_first_order : "no"]
   }
 }
