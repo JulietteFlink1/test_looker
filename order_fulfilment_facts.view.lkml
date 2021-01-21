@@ -62,7 +62,7 @@ view: order_fulfilment_facts {
   }
 
   dimension: is_first_order {
-    description: "Is this the first session for this user?"
+    description: "Is this the first order_fulfillment for this order?"
     type: yesno
     sql: ${order_rank} = 1 ;;
   }
