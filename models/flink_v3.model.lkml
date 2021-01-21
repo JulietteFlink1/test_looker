@@ -64,6 +64,12 @@ explore: order_order {
     sql_on: ${order_order.user_email} = ${user_order_facts.user_email} ;;
   }
 
+  join: order_fulfilment_facts {
+    type: left_outer
+    relationship: one_to_one
+    sql_on: ${order_fulfilment_facts.order_fulfillment_id} = ${order_fulfillment.id} ;;
+  }
+
 }
 
 explore: answers {
