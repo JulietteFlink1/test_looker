@@ -13,9 +13,9 @@ view: order_fulfilment_facts {
                   CAST(TIMESTAMP_DIFF(order_fulfillment.created , order_order.created , MINUTE) AS INT64) AS minutes_time_diff_between_order_created_and_fulfillment_created,
                   COUNT(order_fulfillment.id) AS order_fulfillment_count,
                   RANK() OVER(partition by order_order.id order by MIN(order_fulfillment.created)) as order_fulfillment_rank
-                  FROM `flink-backend.pickery_saleor_db.order_order`
+                  FROM `flink-backend.saleor_db.order_order`
                      AS order_order
-                LEFT JOIN `flink-backend.pickery_saleor_db.order_fulfillment`
+                LEFT JOIN `flink-backend.saleor_db.order_fulfillment`
                      AS order_fulfillment ON order_fulfillment.order_id = order_order.id
 
                 GROUP BY 1,2,3,4,5
