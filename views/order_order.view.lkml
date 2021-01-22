@@ -351,7 +351,7 @@ view: order_order {
     description: "Average value of orders considering total gross order values."
     hidden:  no
     type: average_distinct
-    sql_distinct_key: id;;
+    sql_distinct_key: ${TABLE}.id ;;
     sql: ${TABLE}.total_gross_amount;;
     value_format: "0.00"
   }
@@ -361,7 +361,7 @@ view: order_order {
     description: "Average value of orders considering total net order values."
     hidden:  no
     type: average_distinct
-    sql_distinct_key: id;;
+    sql_distinct_key: ${TABLE}.id ;;
     sql: ${TABLE}.total_net_amount;;
     value_format: "0.00"
   }
@@ -371,7 +371,7 @@ view: order_order {
     description: "Sum of value of orders considering total gross order values."
     hidden:  no
     type: sum_distinct
-    sql_distinct_key: id;;
+    sql_distinct_key: ${TABLE}.id ;;
     sql: ${TABLE}.total_gross_amount;;
     value_format: "0.00"
   }
@@ -381,7 +381,7 @@ view: order_order {
     description: "Sum of value of orders considering total net order values."
     hidden:  no
     type: sum_distinct
-    sql_distinct_key: id;;
+    sql_distinct_key: ${TABLE}.id ;;
     sql: ${TABLE}.total_net_amount;;
     value_format: "0.00"
   }
@@ -391,7 +391,7 @@ view: order_order {
     description: "Count of Unique Customers identified via their Email"
     hidden:  no
     type: count_distinct
-    sql_distinct_key: id;;
+    sql_distinct_key: ${TABLE}.id ;;
     sql: ${TABLE}.user_email;;
     value_format: "0"
   }
@@ -401,7 +401,7 @@ view: order_order {
     description: "Count of successful Orders"
     hidden:  no
     type: count_distinct
-    sql_distinct_key: id;;
+    sql_distinct_key: ${TABLE}.id ;;
     sql: ${TABLE}.id;;
     value_format: "0"
   }
