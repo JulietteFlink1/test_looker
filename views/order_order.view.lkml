@@ -228,7 +228,8 @@ view: order_order {
     type: count
     drill_fields: [id, translated_discount_name, shipping_method_name, discount_name]
   }
-  dimension_group: delivery {
+
+  dimension_group: delivery_timestamp {
     label: "Delivery Date/Timestamp"
     type: time
     timeframes: [
@@ -243,19 +244,46 @@ view: order_order {
     sql: TIMESTAMP(JSON_EXTRACT_SCALAR(${TABLE}.metadata, '$.deliveryTime')) ;;
   }
 
+  dimension_group: tracking_timestamp {
+    label: "Tracking Date/Timestamp"
+    type: time
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: TIMESTAMP(JSON_EXTRACT_SCALAR(${TABLE}.metadata, '$.trackingTimestamp')) ;;
+  }
+
+  dimension: delivery_time {
+    type: number
+    hidden: yes
+    sql: TIMESTAMP_DIFF(TIMESTAMP(JSON_EXTRACT_SCALAR(${TABLE}.metadata, '$.trackingTimestamp')),TIMESTAMP(JSON_EXTRACT_SCALAR(${TABLE}.metadata, '$.deliveryTime')), SECOND) / 60 ;;
+  }
+
+  dimension: reaction_time {
+    type: number
+    hidden: yes
+    sql: TIMESTAMP_DIFF(${order_fulfillment.created_raw},${TABLE}.created, SECOND) / 60 ;;
+  }
+
   dimension: fulfilment_time {
     type: number
     sql: TIMESTAMP_DIFF(TIMESTAMP(JSON_EXTRACT_SCALAR(${TABLE}.metadata, '$.deliveryTime')),${TABLE}.created, SECOND) / 60 ;;
   }
 
-  dimension: time_diff_between_order_created_and_fulfillment_created {
-    type: number
-    sql: TIMESTAMP_DIFF(${order_fulfillment.created_raw},${TABLE}.created, SECOND) / 60 ;;
-  }
+  # dimension: time_diff_between_order_created_and_fulfillment_created {
+  #   type: number
+  #   sql: TIMESTAMP_DIFF(${order_fulfillment.created_raw},${TABLE}.created, SECOND) / 60 ;;
+  # }
 
-  dimension: time_diff_between_first_and_second_fulfillment {
+  dimension: time_diff_between_two_subsequent_fulfillments {
     type: number
-    sql: TIMESTAMP_DIFF(CASE WHEN order_fulfillment_rank=2 THEN ${order_fulfillment.created_raw} END, CASE WHEN order_fulfillment_rank=1 THEN ${order_fulfillment.created_raw} END, SECOND) / 60 ;;
+    sql: TIMESTAMP_DIFF(TIMESTAMP(leading_order_fulfillment_created_time), ${order_fulfillment.created_raw}, SECOND) / 60 ;;
   }
 
   dimension: is_fulfilment_less_than_1_minute {
@@ -287,12 +315,32 @@ view: order_order {
     filters: [is_fulfilment_less_than_1_minute: "no", is_fulfilment_more_than_30_minute: "no"]
   }
 
+  measure: avg_delivery_time {
+    label: "AVG Delivery Time"
+    description: "Average Delivery Time considering delivery start to delivery completion."
+    hidden:  yes
+    type: average
+    sql: ${delivery_time};;
+    value_format: "0.0"
+   # filters: [is_fulfilment_less_than_1_minute: "no", is_fulfilment_more_than_30_minute: "no"]
+  }
+
   measure: avg_reaction_time {
     label: "AVG Reaction Time"
     description: "Average Reaction Time considering order placement to first fulfillment created"
     hidden:  no
     type: average
-    sql:${time_diff_between_order_created_and_fulfillment_created};;
+    sql:${reaction_time};;
+    value_format: "0.0"
+    filters: [order_fulfilment_facts.is_first_fulfillment: "yes"]
+  }
+
+  measure: avg_picking_time {
+    label: "AVG Picking Time"
+    description: "Average Picking Time considering first fulfillment to second fulfillment created"
+    hidden:  no
+    type: average
+    sql:${time_diff_between_two_subsequent_fulfillments};;
     value_format: "0.0"
     filters: [order_fulfilment_facts.is_first_fulfillment: "yes"]
   }
