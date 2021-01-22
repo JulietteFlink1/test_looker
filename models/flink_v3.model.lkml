@@ -30,7 +30,7 @@ week_start_day: monday
 
 datagroup: flink_default_datagroup {
   sql_trigger: SELECT MAX(id) FROM order_order;;
-  max_cache_age: "2 hour"
+  max_cache_age: "1 minute"
 }
 
 
