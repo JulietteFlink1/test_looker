@@ -1,5 +1,5 @@
 view: order_order {
-  sql_table_name: `flink-backend.pickery_saleor_db.order_order`
+  sql_table_name: `flink-backend.saleor_db.order_order`
     ;;
   drill_fields: [id]
 

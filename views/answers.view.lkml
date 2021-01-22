@@ -1,5 +1,5 @@
 view: answers {
-  sql_table_name: `flink-backend.desired_products_form.answers`
+  sql_table_name: `flink-backend.saleor_db.answers`
     ;;
 
   # dimension_group: _sdc_batched {

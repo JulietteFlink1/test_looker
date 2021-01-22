@@ -1,5 +1,5 @@
-view: product_assignedproductattribute {
-  sql_table_name: `flink-backend.pickery_saleor_db.product_assignedproductattribute`
+view: menu_menu {
+  sql_table_name: `flink-backend.saleor_db.menu_menu`
     ;;
   drill_fields: [id]
 
@@ -61,18 +61,18 @@ view: product_assignedproductattribute {
     sql: ${TABLE}._sdc_table_version ;;
   }
 
-  dimension: assignment_id {
-    type: number
-    sql: ${TABLE}.assignment_id ;;
+  dimension: name {
+    type: string
+    sql: ${TABLE}.name ;;
   }
 
-  dimension: product_id {
-    type: number
-    sql: ${TABLE}.product_id ;;
+  dimension: slug {
+    type: string
+    sql: ${TABLE}.slug ;;
   }
 
   measure: count {
     type: count
-    drill_fields: [id]
+    drill_fields: [id, name]
   }
 }

@@ -1,5 +1,5 @@
 view: order_fulfillmentline {
-  sql_table_name: `flink-backend.pickery_saleor_db.order_fulfillmentline`
+  sql_table_name: `flink-backend.saleor_db.order_fulfillmentline`
     ;;
   drill_fields: [id]
 
