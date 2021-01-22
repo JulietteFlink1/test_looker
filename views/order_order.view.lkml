@@ -248,10 +248,14 @@ view: order_order {
     sql: TIMESTAMP_DIFF(TIMESTAMP(JSON_EXTRACT_SCALAR(${TABLE}.metadata, '$.deliveryTime')),${TABLE}.created, SECOND) / 60 ;;
   }
 
-  dimension_group: time_diff_between_x {
-    type: duration
-    sql_start: ${created_raw} ;;
-    sql_end: ${order_fulfillment.created_raw} ;;
+  dimension: time_diff_between_order_created_and_fulfillment_created {
+    type: number
+    sql: TIMESTAMP_DIFF(${order_fulfillment.created_raw},${TABLE}.created, SECOND) / 60 ;;
+  }
+
+  dimension: time_diff_between_first_and_second_fulfillment {
+    type: number
+    sql: TIMESTAMP_DIFF(CASE WHEN order_fulfillment_rank=2 THEN ${order_fulfillment.created_raw} END, CASE WHEN order_fulfillment_rank=1 THEN ${order_fulfillment.created_raw} END, SECOND) / 60 ;;
   }
 
   dimension: is_fulfilment_less_than_1_minute {
@@ -264,18 +268,18 @@ view: order_order {
     sql: ${fulfilment_time} > 30 ;;
   }
 
-  measure: avg_delivery_time {
-    label: "AVG Delivery Time"
-    description: "Average Delivery Time considering from order placement to delivery"
-    hidden:  no
-    type: average
-    sql: TIMESTAMP_DIFF(TIMESTAMP(JSON_EXTRACT_SCALAR(${TABLE}.metadata, '$.deliveryTime')),${TABLE}.created, SECOND) / 60;;
-    value_format: "0.0"
-  }
+  # measure: avg_delivery_time {
+  #   label: "AVG Delivery Time"
+  #   description: "Average Delivery Time considering from order placement to delivery"
+  #   hidden:  yes
+  #   type: average
+  #   sql: TIMESTAMP_DIFF(TIMESTAMP(JSON_EXTRACT_SCALAR(${TABLE}.metadata, '$.deliveryTime')),${TABLE}.created, SECOND) / 60;;
+  #   value_format: "0.0"
+  # }
 
-  measure: avg_delivery_time_filterd {
-    label: "AVG Delivery Time Filtered"
-    description: "Average Delivery Time considering from order placement to delivery"
+  measure: avg_fulfillment_time {
+    label: "AVG Fulfillment Time"
+    description: "Average Fulfillment Time considering order placement to delivery. Outliers excluded (<1min or >30min)."
     hidden:  no
     type: average
     sql: ${fulfilment_time};;
@@ -283,14 +287,14 @@ view: order_order {
     filters: [is_fulfilment_less_than_1_minute: "no", is_fulfilment_more_than_30_minute: "no"]
   }
 
-  measure: avg_delivery_time_filterd_rank_1 {
-    label: "AVG Delivery Time Filtered rank 1"
-    description: "Average Delivery Time considering from order placement to delivery"
+  measure: avg_reaction_time {
+    label: "AVG Reaction Time"
+    description: "Average Reaction Time considering order placement to first fulfillment created"
     hidden:  no
     type: average
-    sql: ${fulfilment_time};;
+    sql:${time_diff_between_order_created_and_fulfillment_created};;
     value_format: "0.0"
-    filters: [order_fulfilment_facts.is_first_order: "yes"]
+    filters: [order_fulfilment_facts.is_first_fulfillment: "yes"]
   }
 
 
@@ -354,9 +358,9 @@ view: order_order {
     value_format: "0"
   }
 
-  measure: cnt_unique_orders_new {
+  measure: cnt_unique_orders_new_customers {
     label: "# Orders New"
-    description: "Count of successful Orders"
+    description: "Count of successful Orders placed by new customers (Acquisitions)"
     hidden:  no
     type: count_distinct
     # sql_distinct_key: id;;
@@ -365,9 +369,9 @@ view: order_order {
     filters: [user_order_facts.is_first_order : "yes"]
   }
 
-  measure: cnt_unique_orders_existing {
+  measure: cnt_unique_orders_existing_customers {
     label: "# Orders Existing"
-    description: "Count of successful Orders"
+    description: "Count of successful Orders placed by returning customers."
     hidden:  no
     type: count_distinct
     # sql_distinct_key: id;;

@@ -6,9 +6,9 @@ view: order_fulfilment_facts {
         order_fulfillment.id  AS order_fulfillment_id,
         FORMAT_TIMESTAMP('%F %T', order_order.created ) AS order_order_created_time,
         FORMAT_TIMESTAMP('%F %T', order_fulfillment.created ) AS order_fulfillment_created_time,
-        CAST(TIMESTAMP_DIFF(order_fulfillment.created , order_order.created , MINUTE) AS INT64) AS order_order_minutes_time_diff_between_x,
-        COUNT(order_fulfillment.id ) AS order_fulfillment_count,
-        RANK() OVER(partition by order_order.id order by MIN(order_fulfillment.created)) as order_rank
+        CAST(TIMESTAMP_DIFF(order_fulfillment.created , order_order.created , MINUTE) AS INT64) AS minutes_time_diff_between_order_created_and_fulfillment_created,
+        COUNT(order_fulfillment.id) AS order_fulfillment_count,
+        RANK() OVER(partition by order_order.id order by MIN(order_fulfillment.created)) as order_fulfillment_rank
       FROM `flink-backend.pickery_saleor_db.order_order`
            AS order_order
       LEFT JOIN `flink-backend.pickery_saleor_db.order_fulfillment`
@@ -16,7 +16,6 @@ view: order_fulfilment_facts {
 
       GROUP BY 1,2,3,4,5
       ORDER BY 1,4 asc
-      LIMIT 500
        ;;
   }
 
@@ -46,25 +45,28 @@ view: order_fulfilment_facts {
     sql: ${TABLE}.order_fulfillment_created_time ;;
   }
 
-  dimension: order_order_minutes_time_diff_between_x {
-    type: number
-    sql: ${TABLE}.order_order_minutes_time_diff_between_x ;;
-  }
+
 
   dimension: order_fulfillment_count {
     type: number
     sql: ${TABLE}.order_fulfillment_count ;;
   }
 
-  dimension: order_rank {
+  dimension: order_fulfillment_rank {
     type: number
-    sql: ${TABLE}.order_rank ;;
+    sql: ${TABLE}.order_fulfillment_rank ;;
   }
 
-  dimension: is_first_order {
-    description: "Is this the first order_fulfillment for this order?"
+  dimension: is_first_fulfillment {
+    description: "Is this the first fulfillment for this order?"
     type: yesno
-    sql: ${order_rank} = 1 ;;
+    sql: ${order_fulfillment_rank} = 1 ;;
+  }
+
+  dimension: is_second_fulfillment {
+    description: "Is this the second fulfillment for this order?"
+    type: yesno
+    sql: ${order_fulfillment_rank} = 2 ;;
   }
 
   set: detail {
@@ -73,9 +75,8 @@ view: order_fulfilment_facts {
       order_fulfillment_id,
       order_order_created_time,
       order_fulfillment_created_time,
-      order_order_minutes_time_diff_between_x,
       order_fulfillment_count,
-      order_rank
+      order_fulfillment_rank
     ]
   }
 }
