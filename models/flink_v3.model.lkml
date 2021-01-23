@@ -41,8 +41,10 @@ explore: order_order {
   group_label: "1) Performance"
   description: "General Business Performance - Orders, Revenue, etc."
   always_filter: {
-    filters: [status : "-canceled", status : "-draft",
-      user_email : "-%pickery%", user_email : "-%goflink%"]
+    filters:  [
+                status : "-canceled, -draft",
+                user_email : "-%pickery%, -%goflink%"
+              ]
   }
 
   join: order_fulfillment {
