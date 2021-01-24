@@ -239,7 +239,7 @@ view: order_order {
 
   dimension: customer_type {
     type: string
-    sql: CASE WHEN created = ${user_order_facts.first_order_raw} THEN 'New Customer' ELSE 'Existing Customer' END ;;
+    sql: CASE WHEN ${TABLE}.created = ${user_order_facts.first_order_raw} THEN 'New Customer' ELSE 'Existing Customer' END ;;
   }
 
 
@@ -503,7 +503,7 @@ view: order_order {
     # sql_distinct_key: id;;
     sql: ${id};;
     value_format: "0"
-    filters: [user_order_facts.is_first_order : "yes"]
+    filters: [customer_type: "New Customer"]
   }
 
   measure: cnt_unique_orders_existing_customers {
@@ -514,7 +514,7 @@ view: order_order {
     # sql_distinct_key: id;;
     sql: ${id};;
     value_format: "0"
-    filters: [user_order_facts.is_first_order : "no"]
+    filters: [customer_type: "Existing Customer"]
   }
 
   measure: pct_discount_order_share {
