@@ -36,6 +36,20 @@ datagroup: flink_default_datagroup {
 
 persist_with: flink_default_datagroup
 
+
+named_value_format: euro_accounting_2_precision {
+  value_format: "\"€\"#,##0.00"
+}
+
+named_value_format: euro_accounting_1_precision {
+  value_format: "\"€\"#,##0.0"
+}
+
+named_value_format: euro_accounting_0_precision {
+  value_format: "\"€\"#,##0"
+}
+
+
 explore: order_order {
   view_label: "Orders"
   group_label: "1) Performance"
