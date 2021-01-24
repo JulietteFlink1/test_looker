@@ -262,7 +262,7 @@ view: order_order {
   dimension: delivery_time {
     type: number
     hidden: yes
-    sql: TIMESTAMP_DIFF(TIMESTAMP(JSON_EXTRACT_SCALAR(${TABLE}.metadata, '$.trackingTimestamp')),TIMESTAMP(JSON_EXTRACT_SCALAR(${TABLE}.metadata, '$.deliveryTime')), SECOND) / 60 ;;
+    sql: TIMESTAMP_DIFF(TIMESTAMP(JSON_EXTRACT_SCALAR(${TABLE}.metadata, '$.deliveryTime')), TIMESTAMP(JSON_EXTRACT_SCALAR(${TABLE}.metadata, '$.trackingTimestamp')), SECOND) / 60 ;;
   }
 
   dimension: reaction_time {
@@ -318,11 +318,10 @@ view: order_order {
   measure: avg_delivery_time {
     label: "AVG Delivery Time"
     description: "Average Delivery Time considering delivery start to delivery completion."
-    hidden:  yes
+    hidden:  no
     type: average
     sql: ${delivery_time};;
     value_format: "0.0"
-   # filters: [is_fulfilment_less_than_1_minute: "no", is_fulfilment_more_than_30_minute: "no"]
   }
 
   measure: avg_reaction_time {
@@ -407,7 +406,7 @@ view: order_order {
   }
 
   measure: cnt_unique_orders_new_customers {
-    label: "# Orders New"
+    label: "# Orders New Customers"
     description: "Count of successful Orders placed by new customers (Acquisitions)"
     hidden:  no
     type: count_distinct
@@ -418,7 +417,7 @@ view: order_order {
   }
 
   measure: cnt_unique_orders_existing_customers {
-    label: "# Orders Existing"
+    label: "# Orders Existing Customers"
     description: "Count of successful Orders placed by returning customers."
     hidden:  no
     type: count_distinct
