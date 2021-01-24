@@ -237,6 +237,12 @@ view: order_order {
     sql: JSON_EXTRACT_SCALAR(${TABLE}.metadata, '$.warehouse') ;;
   }
 
+  dimension: customer_type {
+    type: string
+    sql: CASE WHEN created = ${user_order_facts.first_order_raw} THEN 'New Customer' ELSE 'Existing Customer' END ;;
+  }
+
+
   dimension_group: delivery_timestamp {
     label: "Delivery Date/Timestamp"
     type: time
