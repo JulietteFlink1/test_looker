@@ -83,6 +83,7 @@ view: order_order {
       year
     ]
     sql: ${TABLE}.created ;;
+    datatype: timestamp
   }
 
   parameter: date_granularity {
@@ -98,13 +99,13 @@ view: order_order {
     sql:
     CASE
       WHEN {% parameter date_granularity %} = 'Day'
-        THEN ${created_date}
+        THEN CAST(${created_date} AS STRING)
       WHEN {% parameter date_granularity %} = 'Month'
-        THEN ${created_month}
+        THEN CAST(${created_month} AS STRING)
       WHEN {% parameter date_granularity %} = 'Quarter'
-        THEN ${created_quarter}
+        THEN CAST(${created_quarter} AS STRING)
       WHEN {% parameter date_granularity %} = 'Year'
-        THEN ${created_year}
+        THEN CAST(${created_year} AS STRING)
       ELSE NULL
     END ;;
   }
