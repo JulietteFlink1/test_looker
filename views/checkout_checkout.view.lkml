@@ -1,13 +1,6 @@
-view: account_user {
-  sql_table_name: `flink-backend.saleor_db.account_user`
+view: checkout_checkout {
+  sql_table_name: `flink-backend.saleor_db.checkout_checkout`
     ;;
-  drill_fields: [id]
-
-  dimension: id {
-    primary_key: yes
-    type: number
-    sql: ${TABLE}.id ;;
-  }
 
   dimension_group: _sdc_batched {
     type: time
@@ -61,12 +54,18 @@ view: account_user {
     sql: ${TABLE}._sdc_table_version ;;
   }
 
-  dimension: avatar {
-    type: string
-    sql: ${TABLE}.avatar ;;
+  dimension: billing_address_id {
+    type: number
+    sql: ${TABLE}.billing_address_id ;;
   }
 
-  dimension_group: date_joined {
+  dimension: country {
+    type: string
+    map_layer_name: countries
+    sql: ${TABLE}.country ;;
+  }
+
+  dimension_group: created {
     type: time
     timeframes: [
       raw,
@@ -77,17 +76,17 @@ view: account_user {
       quarter,
       year
     ]
-    sql: ${TABLE}.date_joined ;;
+    sql: ${TABLE}.created ;;
   }
 
-  dimension: default_billing_address_id {
-    type: number
-    sql: ${TABLE}.default_billing_address_id ;;
+  dimension: currency {
+    type: string
+    sql: ${TABLE}.currency ;;
   }
 
-  dimension: default_shipping_address_id {
+  dimension: discount_amount {
     type: number
-    sql: ${TABLE}.default_shipping_address_id ;;
+    sql: ${TABLE}.discount_amount ;;
   }
 
   dimension: email {
@@ -95,32 +94,7 @@ view: account_user {
     sql: ${TABLE}.email ;;
   }
 
-  dimension: first_name {
-    type: string
-    sql: ${TABLE}.first_name ;;
-  }
-
-  dimension: is_active {
-    type: yesno
-    sql: ${TABLE}.is_active ;;
-  }
-
-  dimension: is_staff {
-    type: yesno
-    sql: ${TABLE}.is_staff ;;
-  }
-
-  dimension: is_superuser {
-    type: yesno
-    sql: ${TABLE}.is_superuser ;;
-  }
-
-  dimension: jwt_token_key {
-    type: string
-    sql: ${TABLE}.jwt_token_key ;;
-  }
-
-  dimension_group: last_login {
+  dimension_group: last_change {
     type: time
     timeframes: [
       raw,
@@ -131,12 +105,7 @@ view: account_user {
       quarter,
       year
     ]
-    sql: ${TABLE}.last_login ;;
-  }
-
-  dimension: last_name {
-    type: string
-    sql: ${TABLE}.last_name ;;
+    sql: ${TABLE}.last_change ;;
   }
 
   dimension: metadata {
@@ -149,18 +118,43 @@ view: account_user {
     sql: ${TABLE}.note ;;
   }
 
-  dimension: password {
-    type: string
-    sql: ${TABLE}.password ;;
-  }
-
   dimension: private_metadata {
     type: string
     sql: ${TABLE}.private_metadata ;;
   }
 
+  dimension: quantity {
+    type: number
+    sql: ${TABLE}.quantity ;;
+  }
+
+  dimension: shipping_address_id {
+    type: number
+    sql: ${TABLE}.shipping_address_id ;;
+  }
+
+  dimension: shipping_method_id {
+    type: number
+    sql: ${TABLE}.shipping_method_id ;;
+  }
+
+  dimension: token {
+    type: string
+    sql: ${TABLE}.token ;;
+  }
+
+  dimension: translated_discount_name {
+    type: string
+    sql: ${TABLE}.translated_discount_name ;;
+  }
+
+  dimension: voucher_code {
+    type: string
+    sql: ${TABLE}.voucher_code ;;
+  }
+
   measure: count {
     type: count
-    drill_fields: [id, last_name, first_name]
+    drill_fields: [translated_discount_name]
   }
 }

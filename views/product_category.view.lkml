@@ -1,5 +1,5 @@
 view: product_category {
-  sql_table_name: `flink-backend.pickery_saleor_db.product_category`
+  sql_table_name: `flink-backend.saleor_db.product_category`
     ;;
   drill_fields: [id]
 

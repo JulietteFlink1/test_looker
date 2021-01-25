@@ -1,5 +1,5 @@
 view: order_order {
-  sql_table_name: `flink-backend.pickery_saleor_db.order_order`
+  sql_table_name: `flink-backend.saleor_db.order_order`
     ;;
   drill_fields: [id]
 
@@ -8,6 +8,8 @@ view: order_order {
     type: number
     sql: ${TABLE}.id ;;
   }
+
+
 
   # dimension_group: _sdc_batched {
   #   type: time
@@ -60,6 +62,7 @@ view: order_order {
   #   type: number
   #   sql: ${TABLE}._sdc_table_version ;;
   # }
+
 
   dimension: billing_address_id {
     type: number
@@ -229,7 +232,19 @@ view: order_order {
     type: count
     drill_fields: [id, translated_discount_name, shipping_method_name, discount_name]
   }
-  dimension_group: delivery {
+
+  dimension: warehouse_name {
+    type: string
+    sql: JSON_EXTRACT_SCALAR(${TABLE}.metadata, '$.warehouse') ;;
+  }
+
+  dimension: customer_type {
+    type: string
+    sql: CASE WHEN ${TABLE}.created = ${user_order_facts.first_order_raw} THEN 'New Customer' ELSE 'Existing Customer' END ;;
+  }
+
+
+  dimension_group: delivery_timestamp {
     label: "Delivery Date/Timestamp"
     type: time
     timeframes: [
@@ -244,15 +259,52 @@ view: order_order {
     sql: TIMESTAMP(JSON_EXTRACT_SCALAR(${TABLE}.metadata, '$.deliveryTime')) ;;
   }
 
+  dimension_group: tracking_timestamp {
+    label: "Tracking Date/Timestamp"
+    type: time
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: TIMESTAMP(JSON_EXTRACT_SCALAR(${TABLE}.metadata, '$.trackingTimestamp')) ;;
+  }
+
+  dimension: delivery_time {
+    type: number
+    hidden: yes
+    sql: TIMESTAMP_DIFF(TIMESTAMP(JSON_EXTRACT_SCALAR(${TABLE}.metadata, '$.deliveryTime')), TIMESTAMP(JSON_EXTRACT_SCALAR(${TABLE}.metadata, '$.trackingTimestamp')), SECOND) / 60 ;;
+  }
+
+  dimension: reaction_time {
+    type: number
+    hidden: yes
+    sql: TIMESTAMP_DIFF(${order_fulfillment.created_raw},${TABLE}.created, SECOND) / 60 ;;
+  }
+
+  dimension: acceptance_time {
+    type: number
+    hidden: yes
+    sql: TIMESTAMP_DIFF(TIMESTAMP(JSON_EXTRACT_SCALAR(${TABLE}.metadata, '$.trackingTimestamp')),${order_fulfillment.created_raw}, SECOND) / 60 ;;
+  }
+
   dimension: fulfilment_time {
     type: number
     sql: TIMESTAMP_DIFF(TIMESTAMP(JSON_EXTRACT_SCALAR(${TABLE}.metadata, '$.deliveryTime')),${TABLE}.created, SECOND) / 60 ;;
   }
 
-  dimension_group: time_diff_between_x {
-    type: duration
-    sql_start: ${created_raw} ;;
-    sql_end: ${order_fulfillment.created_raw} ;;
+  # dimension: time_diff_between_order_created_and_fulfillment_created {
+  #   type: number
+  #   sql: TIMESTAMP_DIFF(${order_fulfillment.created_raw},${TABLE}.created, SECOND) / 60 ;;
+  # }
+
+  dimension: time_diff_between_two_subsequent_fulfillments {
+    type: number
+    sql: TIMESTAMP_DIFF(TIMESTAMP(leading_order_fulfillment_created_time), ${order_fulfillment.created_raw}, SECOND) / 60 ;;
   }
 
   dimension: is_fulfilment_less_than_1_minute {
@@ -265,18 +317,18 @@ view: order_order {
     sql: ${fulfilment_time} > 30 ;;
   }
 
-  measure: avg_delivery_time {
-    label: "AVG Delivery Time"
-    description: "Average Delivery Time considering from order placement to delivery"
-    hidden:  no
-    type: average
-    sql: TIMESTAMP_DIFF(TIMESTAMP(JSON_EXTRACT_SCALAR(${TABLE}.metadata, '$.deliveryTime')),${TABLE}.created, SECOND) / 60;;
-    value_format: "0.0"
-  }
+  # measure: avg_delivery_time {
+  #   label: "AVG Delivery Time"
+  #   description: "Average Delivery Time considering from order placement to delivery"
+  #   hidden:  yes
+  #   type: average
+  #   sql: TIMESTAMP_DIFF(TIMESTAMP(JSON_EXTRACT_SCALAR(${TABLE}.metadata, '$.deliveryTime')),${TABLE}.created, SECOND) / 60;;
+  #   value_format: "0.0"
+  # }
 
-  measure: avg_delivery_time_filterd {
-    label: "AVG Delivery Time Filtered"
-    description: "Average Delivery Time considering from order placement to delivery"
+  measure: avg_fulfillment_time {
+    label: "AVG Fulfillment Time"
+    description: "Average Fulfillment Time considering order placement to delivery. Outliers excluded (<1min or >30min)."
     hidden:  no
     type: average
     sql: ${fulfilment_time};;
@@ -284,55 +336,133 @@ view: order_order {
     filters: [is_fulfilment_less_than_1_minute: "no", is_fulfilment_more_than_30_minute: "no"]
   }
 
-  measure: avg_delivery_time_filterd_rank_1 {
-    label: "AVG Delivery Time Filtered rank 1"
-    description: "Average Delivery Time considering from order placement to delivery"
+  measure: avg_delivery_time {
+    label: "AVG Delivery Time"
+    description: "Average Delivery Time considering delivery start to delivery completion."
     hidden:  no
     type: average
-    sql: ${fulfilment_time};;
+    sql: ${delivery_time};;
     value_format: "0.0"
-    filters: [order_fulfilment_facts.is_first_order: "yes"]
   }
 
+  measure: avg_reaction_time {
+    label: "AVG Reaction Time"
+    description: "Average Reaction Time of the Picker considering order placement to first fulfillment created"
+    hidden:  no
+    type: average
+    sql:${reaction_time};;
+    value_format: "0.0"
+    filters: [order_fulfilment_facts.is_first_fulfillment: "yes"]
+  }
+
+  measure: avg_picking_time {
+    label: "AVG Picking Time"
+    description: "Average Picking Time considering first fulfillment to second fulfillment created"
+    hidden:  no
+    type: average
+    sql:${time_diff_between_two_subsequent_fulfillments};;
+    value_format: "0.0"
+    filters: [order_fulfilment_facts.is_first_fulfillment: "yes"]
+  }
+
+  measure: avg_acceptance_time {
+    label: "AVG Acceptance Time"
+    description: "Average Acceptance Time of the Rider considering second fulfillment created until Tracking Timestamp"
+    hidden:  no
+    type: average
+    sql:${acceptance_time};;
+    value_format: "0.0"
+    filters: [order_fulfilment_facts.is_second_fulfillment: "yes"]
+  }
 
   measure: avg_basket_size_gross {
     label: "AVG Basket Size (Gross)"
-    description: "Average value of orders considering total gross order values."
+    description: "Average value of orders considering total gross order values"
     hidden:  no
     type: average_distinct
-    sql_distinct_key: id;;
+    sql_distinct_key: ${TABLE}.id ;;
     sql: ${TABLE}.total_gross_amount;;
-    value_format: "0.00"
+    value_format_name: euro_accounting_2_precision
   }
 
   measure: avg_basket_size_net {
     label: "AVG Basket Size (Net)"
-    description: "Average value of orders considering total net order values."
+    description: "Average value of orders considering total net order values"
     hidden:  no
     type: average_distinct
-    sql_distinct_key: id;;
+    sql_distinct_key: ${TABLE}.id ;;
     sql: ${TABLE}.total_net_amount;;
-    value_format: "0.00"
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: avg_delivery_fee_gross {
+    label: "AVG Delivery Fee (Gross)"
+    description: "Average value of Delivery Fees (Gross)"
+    hidden:  no
+    type: average_distinct
+    sql_distinct_key: ${TABLE}.id ;;
+    sql: ${TABLE}.shipping_price_gross_amount;;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: avg_delivery_fee_net {
+    label: "AVG Delivery Fee (Net)"
+    description: "Average value of Delivery Fees (Net)"
+    hidden:  no
+    type: average_distinct
+    sql_distinct_key: ${TABLE}.id ;;
+    sql: ${TABLE}.shipping_price_net_amount;;
+    value_format_name: euro_accounting_2_precision
   }
 
   measure: sum_revenue_gross {
     label: "SUM Revenue (Gross)"
-    description: "Sum of value of orders considering total gross order values."
+    description: "Sum of value of orders considering total gross order values"
     hidden:  no
     type: sum_distinct
-    sql_distinct_key: id;;
+    sql_distinct_key: ${TABLE}.id ;;
     sql: ${TABLE}.total_gross_amount;;
-    value_format: "0.00"
+    value_format_name: euro_accounting_2_precision
   }
 
   measure: sum_revenue_net {
     label: "SUM Revenue (Net)"
-    description: "Sum of value of orders considering total net order values."
+    description: "Sum of value of orders considering total net order values"
     hidden:  no
     type: sum_distinct
-    sql_distinct_key: id;;
+    sql_distinct_key: ${TABLE}.id ;;
     sql: ${TABLE}.total_net_amount;;
-    value_format: "0.00"
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_discount_amt {
+    label: "SUM Discount Amount"
+    description: "Sum of Discount amount applied on orders"
+    hidden:  no
+    type: sum_distinct
+    sql_distinct_key: ${TABLE}.id ;;
+    sql: ${TABLE}.discount_amount;;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_delivery_fee_gross {
+    label: "SUM Delivery Fee (Gross)"
+    description: "Sum of Delivery Fees (Gross) paid by Customers"
+    hidden:  no
+    type: sum_distinct
+    sql_distinct_key: ${TABLE}.id ;;
+    sql: ${TABLE}.shipping_price_gross_amount;;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_delivery_fee_net {
+    label: "SUM Delivery Fee (Net)"
+    description: "Sum of Delivery Fees (Net) paid by Customers"
+    hidden:  no
+    type: sum_distinct
+    sql_distinct_key: ${TABLE}.id ;;
+    sql: ${TABLE}.shipping_price_net_amount;;
+    value_format_name: euro_accounting_2_precision
   }
 
   measure: cnt_unique_customers {
@@ -340,40 +470,70 @@ view: order_order {
     description: "Count of Unique Customers identified via their Email"
     hidden:  no
     type: count_distinct
-    sql_distinct_key: id;;
+    sql_distinct_key: ${TABLE}.id ;;
     sql: ${TABLE}.user_email;;
     value_format: "0"
   }
 
-  measure: cnt_unique_orders {
+  measure: cnt_orders {
     label: "# Orders"
     description: "Count of successful Orders"
     hidden:  no
     type: count_distinct
-    sql_distinct_key: id;;
+    sql_distinct_key: ${TABLE}.id ;;
     sql: ${TABLE}.id;;
     value_format: "0"
   }
 
-  measure: cnt_unique_orders_new {
-    label: "# Orders New"
-    description: "Count of successful Orders"
+  measure: cnt_orders_with_discount {
+    label: "# Orders with Discount"
+    description: "Count of successful Orders with some Discount applied"
     hidden:  no
     type: count_distinct
-    # sql_distinct_key: id;;
-    sql: ${id};;
+    sql_distinct_key: ${TABLE}.id ;;
+    sql: ${TABLE}.id;;
+    filters: [discount_amount: ">0"]
     value_format: "0"
-    filters: [user_order_facts.is_first_order : "yes"]
   }
 
-  measure: cnt_unique_orders_existing {
-    label: "# Orders Existing"
-    description: "Count of successful Orders"
+  measure: cnt_unique_orders_new_customers {
+    label: "# Orders New Customers"
+    description: "Count of successful Orders placed by new customers (Acquisitions)"
     hidden:  no
     type: count_distinct
     # sql_distinct_key: id;;
     sql: ${id};;
     value_format: "0"
-    filters: [user_order_facts.is_first_order : "no"]
+    filters: [customer_type: "New Customer"]
   }
+
+  measure: cnt_unique_orders_existing_customers {
+    label: "# Orders Existing Customers"
+    description: "Count of successful Orders placed by returning customers"
+    hidden:  no
+    type: count_distinct
+    # sql_distinct_key: id;;
+    sql: ${id};;
+    value_format: "0"
+    filters: [customer_type: "Existing Customer"]
+  }
+
+  measure: pct_discount_order_share {
+    label: "% Discount Order Share"
+    description: "Share of Orders which had some Discount applied"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_with_discount} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_discount_value_of_gross_total{
+    label: "% Discount Value Share"
+    description: "Dividing Total Discount amounts over Total Revenue excl. Discounts"
+    hidden:  no
+    type: number
+    sql: ${sum_discount_amt} / NULLIF( (${sum_revenue_gross} + ${sum_discount_amt}), 0);;
+    value_format: "0%"
+  }
+
 }

@@ -36,13 +36,29 @@ datagroup: flink_default_datagroup {
 
 persist_with: flink_default_datagroup
 
+
+named_value_format: euro_accounting_2_precision {
+  value_format: "\"€\"#,##0.00"
+}
+
+named_value_format: euro_accounting_1_precision {
+  value_format: "\"€\"#,##0.0"
+}
+
+named_value_format: euro_accounting_0_precision {
+  value_format: "\"€\"#,##0"
+}
+
+
 explore: order_order {
   view_label: "Orders"
   group_label: "1) Performance"
   description: "General Business Performance - Orders, Revenue, etc."
   always_filter: {
-    filters: [status : "-canceled", status : "-draft", total_gross_amount : ">5",
-      user_email : "-%pickery%"]
+    filters:  [
+                status : "-canceled, -draft",
+                user_email : "-%pickery%, -%goflink%"
+              ]
   }
 
   join: order_fulfillment {

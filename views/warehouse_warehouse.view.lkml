@@ -1,11 +1,11 @@
-view: product_productvariant {
-  sql_table_name: `flink-backend.pickery_saleor_db.product_productvariant`
+view: warehouse_warehouse {
+  sql_table_name: `flink-backend.saleor_db.warehouse_warehouse`
     ;;
   drill_fields: [id]
 
   dimension: id {
     primary_key: yes
-    type: number
+    type: string
     sql: ${TABLE}.id ;;
   }
 
@@ -61,14 +61,19 @@ view: product_productvariant {
     sql: ${TABLE}._sdc_table_version ;;
   }
 
-  dimension: currency {
-    type: string
-    sql: ${TABLE}.currency ;;
+  dimension: address_id {
+    type: number
+    sql: ${TABLE}.address_id ;;
   }
 
-  dimension: metadata {
+  dimension: company_name {
     type: string
-    sql: ${TABLE}.metadata ;;
+    sql: ${TABLE}.company_name ;;
+  }
+
+  dimension: email {
+    type: string
+    sql: ${TABLE}.email ;;
   }
 
   dimension: name {
@@ -76,33 +81,13 @@ view: product_productvariant {
     sql: ${TABLE}.name ;;
   }
 
-  dimension: price_amount {
-    type: number
-    sql: ${TABLE}.price_amount ;;
-  }
-
-  dimension: private_metadata {
+  dimension: slug {
     type: string
-    sql: ${TABLE}.private_metadata ;;
-  }
-
-  dimension: product_id {
-    type: number
-    sql: ${TABLE}.product_id ;;
-  }
-
-  dimension: sku {
-    type: string
-    sql: ${TABLE}.sku ;;
-  }
-
-  dimension: track_inventory {
-    type: yesno
-    sql: ${TABLE}.track_inventory ;;
+    sql: ${TABLE}.slug ;;
   }
 
   measure: count {
     type: count
-    drill_fields: [id, name]
+    drill_fields: [id, company_name, name]
   }
 }

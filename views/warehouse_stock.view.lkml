@@ -1,5 +1,5 @@
 view: warehouse_stock {
-  sql_table_name: `flink-backend.pickery_saleor_db.warehouse_stock`
+  sql_table_name: `flink-backend.saleor_db.warehouse_stock`
     ;;
   drill_fields: [id]
 
