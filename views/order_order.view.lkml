@@ -234,7 +234,7 @@ view: order_order {
 
   dimension: warehouse_name {
     type: string
-    sql: JSON_EXTRACT_SCALAR(${TABLE}.metadata, '$.warehouse') ;;
+    sql: JSON_EXTRACT_SCALAR(${metadata}, '$.warehouse') ;;
   }
 
   dimension: customer_type {
@@ -255,7 +255,7 @@ view: order_order {
       quarter,
       year
     ]
-    sql: TIMESTAMP(JSON_EXTRACT_SCALAR(${TABLE}.metadata, '$.deliveryTime')) ;;
+    sql: TIMESTAMP(JSON_EXTRACT_SCALAR(${metadata}, '$.deliveryTime')) ;;
   }
 
   dimension_group: tracking_timestamp {
@@ -270,13 +270,13 @@ view: order_order {
       quarter,
       year
     ]
-    sql: TIMESTAMP(JSON_EXTRACT_SCALAR(${TABLE}.metadata, '$.trackingTimestamp')) ;;
+    sql: TIMESTAMP(JSON_EXTRACT_SCALAR(${metadata}, '$.trackingTimestamp')) ;;
   }
 
   dimension: delivery_time {
     type: number
     hidden: yes
-    sql: TIMESTAMP_DIFF(TIMESTAMP(JSON_EXTRACT_SCALAR(${TABLE}.metadata, '$.deliveryTime')), TIMESTAMP(JSON_EXTRACT_SCALAR(${TABLE}.metadata, '$.trackingTimestamp')), SECOND) / 60 ;;
+    sql: TIMESTAMP_DIFF(TIMESTAMP(JSON_EXTRACT_SCALAR(${metadata}, '$.deliveryTime')), TIMESTAMP(JSON_EXTRACT_SCALAR(${TABLE}.metadata, '$.trackingTimestamp')), SECOND) / 60 ;;
   }
 
   dimension: reaction_time {
@@ -288,12 +288,12 @@ view: order_order {
   dimension: acceptance_time {
     type: number
     hidden: yes
-    sql: TIMESTAMP_DIFF(TIMESTAMP(JSON_EXTRACT_SCALAR(${TABLE}.metadata, '$.trackingTimestamp')),${order_fulfillment.created_raw}, SECOND) / 60 ;;
+    sql: TIMESTAMP_DIFF(TIMESTAMP(JSON_EXTRACT_SCALAR(${metadata}, '$.trackingTimestamp')),${order_fulfillment.created_raw}, SECOND) / 60 ;;
   }
 
   dimension: fulfilment_time {
     type: number
-    sql: TIMESTAMP_DIFF(TIMESTAMP(JSON_EXTRACT_SCALAR(${TABLE}.metadata, '$.deliveryTime')),${TABLE}.created, SECOND) / 60 ;;
+    sql: TIMESTAMP_DIFF(TIMESTAMP(JSON_EXTRACT_SCALAR(${metadata}, '$.deliveryTime')),${TABLE}.created, SECOND) / 60 ;;
   }
 
   # dimension: time_diff_between_order_created_and_fulfillment_created {
@@ -378,9 +378,8 @@ view: order_order {
     label: "AVG Basket Size (Gross)"
     description: "Average value of orders considering total gross order values"
     hidden:  no
-    type: average_distinct
-    sql_distinct_key: ${TABLE}.id ;;
-    sql: ${TABLE}.total_gross_amount;;
+    type: average
+    sql: ${total_gross_amount};;
     value_format_name: euro_accounting_2_precision
   }
 
@@ -388,9 +387,8 @@ view: order_order {
     label: "AVG Basket Size (Net)"
     description: "Average value of orders considering total net order values"
     hidden:  no
-    type: average_distinct
-    sql_distinct_key: ${TABLE}.id ;;
-    sql: ${TABLE}.total_net_amount;;
+    type: average
+    sql: ${total_net_amount};;
     value_format_name: euro_accounting_2_precision
   }
 
@@ -398,9 +396,8 @@ view: order_order {
     label: "AVG Delivery Fee (Gross)"
     description: "Average value of Delivery Fees (Gross)"
     hidden:  no
-    type: average_distinct
-    sql_distinct_key: ${TABLE}.id ;;
-    sql: ${TABLE}.shipping_price_gross_amount;;
+    type: average
+    sql: ${shipping_price_gross_amount};;
     value_format_name: euro_accounting_2_precision
   }
 
@@ -408,9 +405,8 @@ view: order_order {
     label: "AVG Delivery Fee (Net)"
     description: "Average value of Delivery Fees (Net)"
     hidden:  no
-    type: average_distinct
-    sql_distinct_key: ${TABLE}.id ;;
-    sql: ${TABLE}.shipping_price_net_amount;;
+    type: average
+    sql: ${shipping_price_net_amount};;
     value_format_name: euro_accounting_2_precision
   }
 
@@ -418,9 +414,8 @@ view: order_order {
     label: "SUM Revenue (Gross)"
     description: "Sum of value of orders considering total gross order values"
     hidden:  no
-    type: sum_distinct
-    sql_distinct_key: ${TABLE}.id ;;
-    sql: ${TABLE}.total_gross_amount;;
+    type: sum
+    sql: ${total_gross_amount};;
     value_format_name: euro_accounting_2_precision
   }
 
@@ -428,9 +423,8 @@ view: order_order {
     label: "SUM Revenue (Net)"
     description: "Sum of value of orders considering total net order values"
     hidden:  no
-    type: sum_distinct
-    sql_distinct_key: ${TABLE}.id ;;
-    sql: ${TABLE}.total_net_amount;;
+    type: sum
+    sql: ${total_net_amount};;
     value_format_name: euro_accounting_2_precision
   }
 
@@ -438,9 +432,8 @@ view: order_order {
     label: "SUM Discount Amount"
     description: "Sum of Discount amount applied on orders"
     hidden:  no
-    type: sum_distinct
-    sql_distinct_key: ${TABLE}.id ;;
-    sql: ${TABLE}.discount_amount;;
+    type: sum
+    sql: ${discount_amount};;
     value_format_name: euro_accounting_2_precision
   }
 
@@ -448,9 +441,8 @@ view: order_order {
     label: "SUM Delivery Fee (Gross)"
     description: "Sum of Delivery Fees (Gross) paid by Customers"
     hidden:  no
-    type: sum_distinct
-    sql_distinct_key: ${TABLE}.id ;;
-    sql: ${TABLE}.shipping_price_gross_amount;;
+    type: sum
+    sql: ${shipping_price_gross_amount};;
     value_format_name: euro_accounting_2_precision
   }
 
@@ -458,9 +450,8 @@ view: order_order {
     label: "SUM Delivery Fee (Net)"
     description: "Sum of Delivery Fees (Net) paid by Customers"
     hidden:  no
-    type: sum_distinct
-    sql_distinct_key: ${TABLE}.id ;;
-    sql: ${TABLE}.shipping_price_net_amount;;
+    type: sum
+    sql: ${shipping_price_net_amount};;
     value_format_name: euro_accounting_2_precision
   }
 
@@ -469,8 +460,7 @@ view: order_order {
     description: "Count of Unique Customers identified via their Email"
     hidden:  no
     type: count_distinct
-    sql_distinct_key: ${TABLE}.id ;;
-    sql: ${TABLE}.user_email;;
+    sql: ${user_email};;
     value_format: "0"
   }
 
@@ -478,9 +468,7 @@ view: order_order {
     label: "# Orders"
     description: "Count of successful Orders"
     hidden:  no
-    type: count_distinct
-    sql_distinct_key: ${TABLE}.id ;;
-    sql: ${TABLE}.id;;
+    type: count
     value_format: "0"
   }
 
@@ -488,9 +476,7 @@ view: order_order {
     label: "# Orders with Discount"
     description: "Count of successful Orders with some Discount applied"
     hidden:  no
-    type: count_distinct
-    sql_distinct_key: ${TABLE}.id ;;
-    sql: ${TABLE}.id;;
+    type: count
     filters: [discount_amount: ">0"]
     value_format: "0"
   }
@@ -499,9 +485,7 @@ view: order_order {
     label: "# Orders New Customers"
     description: "Count of successful Orders placed by new customers (Acquisitions)"
     hidden:  no
-    type: count_distinct
-    # sql_distinct_key: id;;
-    sql: ${id};;
+    type: count
     value_format: "0"
     filters: [customer_type: "New Customer"]
   }
@@ -510,9 +494,7 @@ view: order_order {
     label: "# Orders Existing Customers"
     description: "Count of successful Orders placed by returning customers"
     hidden:  no
-    type: count_distinct
-    # sql_distinct_key: id;;
-    sql: ${id};;
+    type: count
     value_format: "0"
     filters: [customer_type: "Existing Customer"]
   }
