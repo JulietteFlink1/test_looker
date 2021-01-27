@@ -28,6 +28,7 @@ view: user_order_facts {
 
   dimension_group: first_order {
     type: time
+    # datatype: timestamp
     sql: ${TABLE}.first_order ;;
   }
 

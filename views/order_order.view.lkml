@@ -89,6 +89,12 @@ view: order_order {
     datatype: timestamp
   }
 
+  dimension_group: time_since_sign_up {
+    type: duration
+    sql_start: ${user_order_facts.first_order_raw} ;;
+    sql_end: ${created_raw} ;;
+  }
+
   parameter: date_granularity {
     type: string
     allowed_value: { value: "Day" }
