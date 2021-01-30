@@ -1,5 +1,5 @@
 view: landings {
-  sql_table_name: `flink-backend.desired_products_form.landings`
+  sql_table_name: `flink-backend.typeform_products.landings`
     ;;
   drill_fields: [landing_id]
 
