@@ -289,7 +289,7 @@ view: order_order {
   dimension: reaction_time {
     type: number
     hidden: yes
-    sql: TIMESTAMP_DIFF(${order_fulfillment.created_raw},${TABLE}.created, SECOND) / 60 ;;
+    sql: TIMESTAMP_DIFF(${order_fulfillment.created_raw},${created_raw}, SECOND) / 60 ;;
   }
 
   dimension: acceptance_time {
@@ -300,7 +300,7 @@ view: order_order {
 
   dimension: fulfilment_time {
     type: number
-    sql: TIMESTAMP_DIFF(TIMESTAMP(JSON_EXTRACT_SCALAR(${metadata}, '$.deliveryTime')),${TABLE}.created, SECOND) / 60 ;;
+    sql: TIMESTAMP_DIFF(TIMESTAMP(JSON_EXTRACT_SCALAR(${metadata}, '$.deliveryTime')),${created_raw}, SECOND) / 60 ;;
   }
 
   # dimension: time_diff_between_order_created_and_fulfillment_created {
