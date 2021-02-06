@@ -249,6 +249,26 @@ view: order_order {
     sql: CASE WHEN ${TABLE}.created = ${user_order_facts.first_order_raw} THEN 'New Customer' ELSE 'Existing Customer' END ;;
   }
 
+  dimension: delivery_eta_minutes {
+    label: "Delivery ETA (min)"
+    type: number
+    sql: CAST(JSON_EXTRACT_SCALAR(${metadata}, '$.deliveryETA') AS INT64) ;;
+  }
+
+  dimension_group: delivery_eta_timestamp {
+    label: "Delivery ETA Date/Timestamp"
+    type: time
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: TIMESTAMP_ADD(${created_raw}, INTERVAL CAST((JSON_EXTRACT_SCALAR(${metadata}, '$.deliveryETA')) AS INT64) MINUTE) ;;
+  }
 
   dimension_group: delivery_timestamp {
     label: "Delivery Date/Timestamp"
@@ -278,6 +298,12 @@ view: order_order {
       year
     ]
     sql: TIMESTAMP(JSON_EXTRACT_SCALAR(${metadata}, '$.trackingTimestamp')) ;;
+  }
+
+  dimension: delivery_delay_since_eta {
+    type: duration_minute
+    sql_start: ${delivery_timestamp_raw} ;;
+    sql_end: ${delivery_eta_timestamp_raw} ;;
   }
 
   dimension: delivery_time {
@@ -323,18 +349,63 @@ view: order_order {
     sql: ${fulfilment_time} > 30 ;;
   }
 
-  # measure: avg_delivery_time {
-  #   label: "AVG Delivery Time"
-  #   description: "Average Delivery Time considering from order placement to delivery"
-  #   hidden:  yes
-  #   type: average
-  #   sql: TIMESTAMP_DIFF(TIMESTAMP(JSON_EXTRACT_SCALAR(${TABLE}.metadata, '$.deliveryTime')),${TABLE}.created, SECOND) / 60;;
-  #   value_format: "0.0"
-  # }
+  dimension: is_acceptance_less_than_0_minute {
+    type: yesno
+    sql: ${acceptance_time} < 0 ;;
+  }
+
+  dimension: is_acceptance_more_than_30_minute {
+    type: yesno
+    sql: ${acceptance_time} > 30 ;;
+  }
+
+  dimension: is_reaction_less_than_0_minute {
+    type: yesno
+    sql: ${reaction_time} < 0 ;;
+  }
+
+  dimension: is_reaction_more_than_30_minute {
+    type: yesno
+    sql: ${reaction_time} > 30 ;;
+  }
+
+  dimension: is_delivery_less_than_0_minute {
+    type: yesno
+    sql: ${delivery_time} < 0 ;;
+  }
+
+  dimension: is_delivery_more_than_30_minute {
+    type: yesno
+    sql: ${delivery_time} > 30 ;;
+  }
+
+  dimension: is_picking_less_than_0_minute {
+    type: yesno
+    sql: ${time_diff_between_two_subsequent_fulfillments} < 0 ;;
+  }
+
+  dimension: is_picking_more_than_30_minute {
+    type: yesno
+    sql: ${time_diff_between_two_subsequent_fulfillments} > 30 ;;
+  }
+
+  dimension: is_delivery_eta_available {
+    type: yesno
+    sql: IF(${delivery_eta_minutes} IS NULL, FALSE, TRUE)  ;;
+  }
+
+  measure: avg_promised_eta {
+    label: "AVG Promised ETA"
+    description: "Average Promised Fulfillment Time (ETA)"
+    hidden:  no
+    type: average
+    sql: ${delivery_eta_minutes};;
+    value_format: "0.0"
+  }
 
   measure: avg_fulfillment_time {
     label: "AVG Fulfillment Time"
-    description: "Average Fulfillment Time considering order placement to delivery. Outliers excluded (<1min or >30min)."
+    description: "Average Fulfillment Time considering order placement to delivery. Outliers excluded (<1min or >30min)"
     hidden:  no
     type: average
     sql: ${fulfilment_time};;
@@ -344,55 +415,56 @@ view: order_order {
 
   measure: avg_delivery_time {
     label: "AVG Delivery Time"
-    description: "Average Delivery Time considering delivery start to delivery completion."
+    description: "Average Delivery Time considering delivery start to delivery completion. Outliers excluded (<0min or >30min)"
     hidden:  no
     type: average
     sql: ${delivery_time};;
     value_format: "0.0"
+    filters: [is_delivery_less_than_0_minute: "no", is_delivery_more_than_30_minute: "no"]
   }
 
   measure: avg_reaction_time {
     label: "AVG Reaction Time"
-    description: "Average Reaction Time of the Picker considering order placement to first fulfillment created"
+    description: "Average Reaction Time of the Picker considering order placement to first fulfillment created. Outliers excluded (<0min or >30min)"
     hidden:  no
     type: average
     sql:${reaction_time};;
     value_format: "0.0"
-    filters: [order_fulfilment_facts.is_first_fulfillment: "yes"]
+    filters: [order_fulfilment_facts.is_first_fulfillment: "yes", is_reaction_less_than_0_minute: "no", is_reaction_more_than_30_minute: "no"]
   }
 
   measure: avg_picking_time {
     label: "AVG Picking Time"
-    description: "Average Picking Time considering first fulfillment to second fulfillment created"
+    description: "Average Picking Time considering first fulfillment to second fulfillment created. Outliers excluded (<0min or >30min)"
     hidden:  no
     type: average
     sql:${time_diff_between_two_subsequent_fulfillments};;
     value_format: "0.0"
-    filters: [order_fulfilment_facts.is_first_fulfillment: "yes"]
+    filters: [order_fulfilment_facts.is_first_fulfillment: "yes", is_picking_less_than_0_minute: "no", is_picking_more_than_30_minute: "no"]
   }
 
   measure: avg_acceptance_time {
     label: "AVG Acceptance Time"
-    description: "Average Acceptance Time of the Rider considering second fulfillment created until Tracking Timestamp"
+    description: "Average Acceptance Time of the Rider considering second fulfillment created until Tracking Timestamp. Outliers excluded (<0min or >30min)"
     hidden:  no
     type: average
     sql:${acceptance_time};;
     value_format: "0.0"
-    filters: [order_fulfilment_facts.is_second_fulfillment: "yes"]
+    filters: [order_fulfilment_facts.is_second_fulfillment: "yes", is_acceptance_less_than_0_minute: "no", is_acceptance_more_than_30_minute: "no"]
   }
 
-  measure: avg_basket_size_gross {
-    label: "AVG Basket Size (Gross)"
-    description: "Average value of orders considering total gross order values"
+  measure: avg_order_value_gross {
+    label: "AVG Order Value (Gross)"
+    description: "Average value of orders considering total gross order values. Includes fees (gross), before deducting discounts."
     hidden:  no
     type: average
     sql: ${total_gross_amount};;
     value_format_name: euro_accounting_2_precision
   }
 
-  measure: avg_basket_size_net {
-    label: "AVG Basket Size (Net)"
-    description: "Average value of orders considering total net order values"
+  measure: avg_order_value_net {
+    label: "AVG Order Value (Net)"
+    description: "Average value of orders considering total net order values. Includes fees (net), before deducting discounts."
     hidden:  no
     type: average
     sql: ${total_net_amount};;
@@ -417,21 +489,21 @@ view: order_order {
     value_format_name: euro_accounting_2_precision
   }
 
-  measure: sum_revenue_gross {
-    label: "SUM Revenue (Gross)"
-    description: "Sum of value of orders considering total gross order values"
+  measure: sum_gmv_gross {
+    label: "SUM GMV (gross)"
+    description: "Sum of Gross Merchandise Value of orders incl. fees and before deduction of discounts (incl. VAT)"
     hidden:  no
     type: sum
-    sql: ${total_gross_amount};;
+    sql: ${total_gross_amount} + ${discount_amount};;
     value_format_name: euro_accounting_2_precision
   }
 
-  measure: sum_revenue_net {
-    label: "SUM Revenue (Net)"
-    description: "Sum of value of orders considering total net order values"
+  measure: sum_gmv_net {
+    label: "SUM GMV (net)"
+    description: "Sum of Gross Merchandise Value of orders incl. fees and before deduction of discounts (excl. VAT)"
     hidden:  no
     type: sum
-    sql: ${total_net_amount};;
+    sql: ${total_net_amount} + ${discount_amount};;
     value_format_name: euro_accounting_2_precision
   }
 
@@ -506,6 +578,51 @@ view: order_order {
     filters: [customer_type: "Existing Customer"]
   }
 
+  measure: cnt_orders_with_delivery_eta_available {
+    label: "# Orders with Delivery ETA available"
+    description: "Count of Orders where a promised ETA is available"
+    hidden:  no
+    type: count
+    filters: [is_delivery_eta_available: "yes"]
+    value_format: "0"
+  }
+
+  measure: cnt_orders_delayed_over_5_min {
+    label: "# Orders delivered late >5min"
+    description: "Count of Orders delivered >5min later than promised ETA"
+    hidden:  yes
+    type: count
+    filters: [delivery_delay_since_eta:">=5"]
+    value_format: "0"
+  }
+
+  measure: cnt_orders_delayed_over_10_min {
+    label: "# Orders delivered late >10min"
+    description: "Count of Orders delivered >10min later than promised ETA"
+    hidden:  yes
+    type: count
+    filters: [delivery_delay_since_eta:">=10"]
+    value_format: "0"
+  }
+
+  measure: cnt_orders_delayed_over_15_min {
+    label: "# Orders delivered late >15min"
+    description: "Count of Orders delivered >15min later than promised ETA"
+    hidden:  yes
+    type: count
+    filters: [delivery_delay_since_eta:">=15"]
+    value_format: "0"
+  }
+
+  measure: pct_acquisition_share {
+    label: "% Acquisition Share"
+    description: "Share of New Customer Acquisitions over Total Orders"
+    hidden:  no
+    type: number
+    sql: ${cnt_unique_orders_new_customers} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0%"
+  }
+
   measure: pct_discount_order_share {
     label: "% Discount Order Share"
     description: "Share of Orders which had some Discount applied"
@@ -517,11 +634,37 @@ view: order_order {
 
   measure: pct_discount_value_of_gross_total{
     label: "% Discount Value Share"
-    description: "Dividing Total Discount amounts over Total Revenue excl. Discounts"
+    description: "Dividing Total Discount amounts over GMV"
     hidden:  no
     type: number
-    sql: ${sum_discount_amt} / NULLIF( (${sum_revenue_gross} + ${sum_discount_amt}), 0);;
+    sql: ${sum_discount_amt} / NULLIF(${sum_gmv_gross}, 0);;
     value_format: "0%"
   }
 
+  measure: pct_delivery_late_over_5_min{
+    label: "% Orders delayed >5min"
+    description: "Share of orders delivered >5min later than promised ETA (only orders with valid ETA time considered)"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_delayed_over_5_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_delivery_late_over_10_min{
+    label: "% Orders delayed >10min"
+    description: "Share of orders delivered >10min later than promised ETA (only orders with valid ETA time considered)"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_delayed_over_10_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_delivery_late_over_15_min{
+    label: "% Orders delayed >15min"
+    description: "Share of orders delivered >15min later than promised ETA (only orders with valid ETA time considered)"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_delayed_over_15_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
+    value_format: "0%"
+  }
 }
