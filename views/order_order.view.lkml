@@ -75,6 +75,8 @@ view: order_order {
   }
 
   dimension_group: created {
+    label: "Order"
+    description: "Order Placement Date/Time"
     type: time
     timeframes: [
       raw,
