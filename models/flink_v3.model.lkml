@@ -57,8 +57,8 @@ explore: order_order {
   description: "General Business Performance - Orders, Revenue, etc."
   always_filter: {
     filters:  [
-                status : "-canceled, -draft",
-                user_email : "-%pickery%, -%goflink%"
+                order_order.is_internal_order: "no",
+                order_order.is_successful_order: "yes"
               ]
   }
 
@@ -81,10 +81,10 @@ explore: order_order {
     sql_on: ${order_order.user_email} = ${user_order_facts.user_email} ;;
   }
 
-  join: order_fulfilment_facts {
+  join: order_fulfillment_facts {
     type: left_outer
     relationship: one_to_one
-    sql_on: ${order_fulfilment_facts.order_fulfillment_id} = ${order_fulfillment.id} ;;
+    sql_on: ${order_fulfillment_facts.order_fulfillment_id} = ${order_fulfillment.id} ;;
   }
 
 }

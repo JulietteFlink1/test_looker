@@ -305,29 +305,34 @@ view: order_order {
     sql: TIMESTAMP_DIFF(TIMESTAMP(JSON_EXTRACT_SCALAR(${metadata}, '$.trackingTimestamp')),${order_fulfillment.created_raw}, SECOND) / 60 ;;
   }
 
-  dimension: fulfilment_time {
+  dimension: fulfillment_time {
     type: number
     sql: TIMESTAMP_DIFF(TIMESTAMP(JSON_EXTRACT_SCALAR(${metadata}, '$.deliveryTime')),${created_raw}, SECOND) / 60 ;;
   }
-
-  # dimension: time_diff_between_order_created_and_fulfillment_created {
-  #   type: number
-  #   sql: TIMESTAMP_DIFF(${order_fulfillment.created_raw},${TABLE}.created, SECOND) / 60 ;;
-  # }
 
   dimension: time_diff_between_two_subsequent_fulfillments {
     type: number
     sql: TIMESTAMP_DIFF(TIMESTAMP(leading_order_fulfillment_created_time), ${order_fulfillment.created_raw}, SECOND) / 60 ;;
   }
 
-  dimension: is_fulfilment_less_than_1_minute {
+  dimension: is_internal_order {
     type: yesno
-    sql: ${fulfilment_time} < 1 ;;
+    sql: ${user_email} LIKE '%goflink%' OR ${user_email} LIKE '%pickery%' ;;
   }
 
-  dimension: is_fulfilment_more_than_30_minute {
+  dimension: is_successful_order {
     type: yesno
-    sql: ${fulfilment_time} > 30 ;;
+    sql: ${status} IN('fulfilled', 'partially fulfilled');;
+  }
+
+  dimension: is_fulfillment_less_than_1_minute {
+    type: yesno
+    sql: ${fulfillment_time} < 1 ;;
+  }
+
+  dimension: is_fulfillment_more_than_30_minute {
+    type: yesno
+    sql: ${fulfillment_time} > 30 ;;
   }
 
   dimension: is_acceptance_less_than_0_minute {
@@ -398,9 +403,9 @@ view: order_order {
     description: "Average Fulfillment Time considering order placement to delivery. Outliers excluded (<1min or >30min)"
     hidden:  no
     type: average
-    sql: ${fulfilment_time};;
+    sql: ${fulfillment_time};;
     value_format: "0.0"
-    filters: [is_fulfilment_less_than_1_minute: "no", is_fulfilment_more_than_30_minute: "no"]
+    filters: [is_fulfillment_less_than_1_minute: "no", is_fulfillment_more_than_30_minute: "no"]
   }
 
   measure: avg_delivery_time {
@@ -420,7 +425,7 @@ view: order_order {
     type: average
     sql:${reaction_time};;
     value_format: "0.0"
-    filters: [order_fulfilment_facts.is_first_fulfillment: "yes", is_reaction_less_than_0_minute: "no", is_reaction_more_than_30_minute: "no"]
+    filters: [order_fulfillment_facts.is_first_fulfillment: "yes", is_reaction_less_than_0_minute: "no", is_reaction_more_than_30_minute: "no"]
   }
 
   measure: avg_picking_time {
@@ -430,7 +435,7 @@ view: order_order {
     type: average
     sql:${time_diff_between_two_subsequent_fulfillments};;
     value_format: "0.0"
-    filters: [order_fulfilment_facts.is_first_fulfillment: "yes", is_picking_less_than_0_minute: "no", is_picking_more_than_30_minute: "no"]
+    filters: [order_fulfillment_facts.is_first_fulfillment: "yes", is_picking_less_than_0_minute: "no", is_picking_more_than_30_minute: "no"]
   }
 
   measure: avg_acceptance_time {
@@ -440,7 +445,7 @@ view: order_order {
     type: average
     sql:${acceptance_time};;
     value_format: "0.0"
-    filters: [order_fulfilment_facts.is_second_fulfillment: "yes", is_acceptance_less_than_0_minute: "no", is_acceptance_more_than_30_minute: "no"]
+    filters: [order_fulfillment_facts.is_second_fulfillment: "yes", is_acceptance_less_than_0_minute: "no", is_acceptance_more_than_30_minute: "no"]
   }
 
   measure: avg_order_value_gross {

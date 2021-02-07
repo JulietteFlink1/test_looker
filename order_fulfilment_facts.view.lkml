@@ -1,4 +1,4 @@
-view: order_fulfilment_facts {
+view: order_fulfillment_facts {
   derived_table: {
     datagroup_trigger: flink_default_datagroup
     sql: SELECT
