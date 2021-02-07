@@ -4,6 +4,7 @@ view: order_orderline {
   drill_fields: [id]
 
   dimension: id {
+    label: "Orderline ID"
     primary_key: yes
     type: number
     sql: ${TABLE}.id ;;
@@ -135,4 +136,18 @@ view: order_orderline {
     type: count
     drill_fields: [id, variant_name, product_name, translated_product_name, translated_variant_name]
   }
+
+##########
+## SUMS ##
+##########
+
+  measure: sum_item_quantity {
+    label: "SUM Item Quantity"
+    description: "Quantity of Order Line Items sold"
+    hidden:  no
+    type: sum
+    sql: ${quantity};;
+    value_format: "0"
+  }
+
 }

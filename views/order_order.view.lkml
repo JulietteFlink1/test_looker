@@ -60,6 +60,7 @@ view: order_order {
   parameter: date_granularity {
     type: string
     allowed_value: { value: "Day" }
+    allowed_value: { value: "Week" }
     allowed_value: { value: "Month" }
     allowed_value: { value: "Quarter" }
     allowed_value: { value: "Year" }
@@ -71,6 +72,8 @@ view: order_order {
     CASE
       WHEN {% parameter date_granularity %} = 'Day'
         THEN CAST(${created_date} AS STRING)
+      WHEN {% parameter date_granularity %} = 'Week'
+        THEN CAST(${created_week} AS STRING)
       WHEN {% parameter date_granularity %} = 'Month'
         THEN CAST(${created_month} AS STRING)
       WHEN {% parameter date_granularity %} = 'Quarter'
