@@ -150,4 +150,22 @@ view: order_orderline {
     value_format: "0"
   }
 
+  measure: sum_item_price_gross {
+    label: "SUM Item Prices sold (gross)"
+    description: "Sum of sold Item prices (incl. VAT)"
+    hidden:  no
+    type: sum
+    sql: ${quantity} * ${unit_price_gross_amount};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_item_price_net {
+    label: "SUM Item Prices sold (net)"
+    description: "Sum of sold Item prices (excl. VAT)"
+    hidden:  no
+    type: sum
+    sql: ${quantity} * ${unit_price_net_amount};;
+    value_format_name: euro_accounting_2_precision
+  }
+
 }
