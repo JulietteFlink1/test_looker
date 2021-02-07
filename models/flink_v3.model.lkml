@@ -51,6 +51,7 @@ named_value_format: euro_accounting_0_precision {
 
 
 explore: order_order {
+  label: "Orders"
   view_label: "Orders"
   group_label: "1) Performance"
   description: "General Business Performance - Orders, Revenue, etc."
@@ -89,6 +90,7 @@ explore: order_order {
 }
 
 explore: answers {
+  label: "Desired Products"
   view_label: "Desired Products"
   group_label: "2) Survey Data"
   description: "Customer Survey on Desired Products"

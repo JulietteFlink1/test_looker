@@ -9,61 +9,6 @@ view: order_order {
     sql: ${TABLE}.id ;;
   }
 
-
-
-  # dimension_group: _sdc_batched {
-  #   type: time
-  #   timeframes: [
-  #     raw,
-  #     time,
-  #     date,
-  #     week,
-  #     month,
-  #     quarter,
-  #     year
-  #   ]
-  #   sql: ${TABLE}._sdc_batched_at ;;
-  # }
-
-  # dimension_group: _sdc_extracted {
-  #   type: time
-  #   timeframes: [
-  #     raw,
-  #     time,
-  #     date,
-  #     week,
-  #     month,
-  #     quarter,
-  #     year
-  #   ]
-  #   sql: ${TABLE}._sdc_extracted_at ;;
-  # }
-
-  # dimension_group: _sdc_received {
-  #   type: time
-  #   timeframes: [
-  #     raw,
-  #     time,
-  #     date,
-  #     week,
-  #     month,
-  #     quarter,
-  #     year
-  #   ]
-  #   sql: ${TABLE}._sdc_received_at ;;
-  # }
-
-  # dimension: _sdc_sequence {
-  #   type: number
-  #   sql: ${TABLE}._sdc_sequence ;;
-  # }
-
-  # dimension: _sdc_table_version {
-  #   type: number
-  #   sql: ${TABLE}._sdc_table_version ;;
-  # }
-
-
   dimension: billing_address_id {
     type: number
     sql: ${TABLE}.billing_address_id ;;
@@ -206,6 +151,16 @@ view: order_order {
     sql: ${TABLE}.total_net_amount ;;
   }
 
+  dimension: gmv_gross {
+    type: number
+    sql: ${TABLE}.total_gross_amount + ${discount_amount} ;;
+  }
+
+  dimension: gmv_net {
+    type: number
+    sql: ${TABLE}.total_net_amount  + ${discount_amount};;
+  }
+
   dimension: tracking_client_id {
     type: string
     sql: ${TABLE}.tracking_client_id ;;
@@ -249,6 +204,12 @@ view: order_order {
   dimension: customer_type {
     type: string
     sql: CASE WHEN ${TABLE}.created = ${user_order_facts.first_order_raw} THEN 'New Customer' ELSE 'Existing Customer' END ;;
+  }
+
+  dimension: customer_location {
+    type: location
+    sql_latitude: ROUND( CAST( SPLIT((JSON_EXTRACT_SCALAR(${metadata}, '$.deliveryCoordinates')), ',')[ORDINAL(1)] AS FLOAT64), 7);;
+    sql_longitude: ROUND( CAST( SPLIT((JSON_EXTRACT_SCALAR(${metadata}, '$.deliveryCoordinates')), ',')[ORDINAL(2)] AS FLOAT64), 7) ;;
   }
 
   dimension: delivery_eta_minutes {
@@ -396,6 +357,11 @@ view: order_order {
     sql: IF(${delivery_eta_minutes} IS NULL, FALSE, TRUE)  ;;
   }
 
+  dimension: is_customer_location_available {
+    type: yesno
+    sql: IF(${customer_location::latitude} IS NULL, FALSE, TRUE)  ;;
+  }
+
   measure: avg_promised_eta {
     label: "AVG Promised ETA"
     description: "Average Promised Fulfillment Time (ETA)"
@@ -460,7 +426,7 @@ view: order_order {
     description: "Average value of orders considering total gross order values. Includes fees (gross), before deducting discounts."
     hidden:  no
     type: average
-    sql: ${total_gross_amount};;
+    sql: ${gmv_gross};;
     value_format_name: euro_accounting_2_precision
   }
 
@@ -469,7 +435,25 @@ view: order_order {
     description: "Average value of orders considering total net order values. Includes fees (net), before deducting discounts."
     hidden:  no
     type: average
-    sql: ${total_net_amount};;
+    sql: ${gmv_net};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: avg_product_value_gross {
+    label: "AVG Product Value (Gross)"
+    description: "Average value of product items (incl. VAT). Excludes fees (gross), before deducting discounts."
+    hidden:  no
+    type: average
+    sql: ${gmv_gross} - ${shipping_price_gross_amount};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: avg_product_value_net {
+    label: "AVG Product Value (Net)"
+    description: "Average value of product items (excl. VAT). Excludes fees (net), before deducting discounts."
+    hidden:  no
+    type: average
+    sql: ${gmv_net} - ${shipping_price_net_amount};;
     value_format_name: euro_accounting_2_precision
   }
 
@@ -496,7 +480,7 @@ view: order_order {
     description: "Sum of Gross Merchandise Value of orders incl. fees and before deduction of discounts (incl. VAT)"
     hidden:  no
     type: sum
-    sql: ${total_gross_amount} + ${discount_amount};;
+    sql: ${gmv_gross};;
     value_format_name: euro_accounting_2_precision
   }
 
@@ -505,7 +489,25 @@ view: order_order {
     description: "Sum of Gross Merchandise Value of orders incl. fees and before deduction of discounts (excl. VAT)"
     hidden:  no
     type: sum
-    sql: ${total_net_amount} + ${discount_amount};;
+    sql: ${gmv_net};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_revenue_gross {
+    label: "SUM Revenue (gross)"
+    description: "Sum of Revenue (GMV after subsidies) incl. VAT"
+    hidden:  no
+    type: sum
+    sql: ${total_gross_amount};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_revenue_net {
+    label: "SUM Revenue (net)"
+    description: "Sum of Revenue (GMV after subsidies) excl. VAT"
+    hidden:  no
+    type: sum
+    sql: ${total_net_amount};;
     value_format_name: euro_accounting_2_precision
   }
 
