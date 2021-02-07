@@ -1,9 +1,24 @@
 view: order_order {
   sql_table_name: `flink-backend.saleor_db.order_order`
     ;;
-  drill_fields: [id]
+  drill_fields: [core_dimensions*]
+
+  set: core_dimensions {
+    fields: [
+      id,
+      warehouse_name,
+      created_raw,
+      user_email,
+      customer_type,
+      gmv_gross,
+      discount_amount,
+      delivery_eta_timestamp_raw,
+      delivery_timestamp_raw
+    ]
+  }
 
   dimension: id {
+    label: "Order ID"
     primary_key: yes
     type: number
     sql: ${TABLE}.id ;;
@@ -362,6 +377,10 @@ view: order_order {
     sql: IF(${customer_location::latitude} IS NULL, FALSE, TRUE)  ;;
   }
 
+##############
+## AVERAGES ##
+##############
+
   measure: avg_promised_eta {
     label: "AVG Promised ETA"
     description: "Average Promised Fulfillment Time (ETA)"
@@ -475,6 +494,10 @@ view: order_order {
     value_format_name: euro_accounting_2_precision
   }
 
+##########
+## SUMS ##
+##########
+
   measure: sum_gmv_gross {
     label: "SUM GMV (gross)"
     description: "Sum of Gross Merchandise Value of orders incl. fees and before deduction of discounts (incl. VAT)"
@@ -537,6 +560,10 @@ view: order_order {
     sql: ${shipping_price_net_amount};;
     value_format_name: euro_accounting_2_precision
   }
+
+############
+## COUNTS ##
+############
 
   measure: cnt_unique_customers {
     label: "# Unique Customers"
@@ -617,6 +644,10 @@ view: order_order {
     filters: [delivery_delay_since_eta:">=15"]
     value_format: "0"
   }
+
+################
+## PERCENTAGE ##
+################
 
   measure: pct_acquisition_share {
     label: "% Acquisition Share"
