@@ -43,6 +43,7 @@ view: order_order {
       hour_of_day,
       time,
       date,
+      day_of_week,
       week,
       month,
       quarter,
