@@ -1,7 +1,23 @@
 view: order_orderline {
   sql_table_name: `flink-backend.saleor_db.order_orderline`
     ;;
-  drill_fields: [id]
+  drill_fields: [core_dimensions*]
+
+  set: core_dimensions {
+    fields: [
+      id,
+      product_sku,
+      product_name,
+      unit_price_gross_amount,
+      unit_price_net_amount,
+      quantity,
+      order_order.id,
+      order_order.warehouse_name,
+      order_order.created_raw,
+      order_order.user_email,
+      order_order.customer_type,
+    ]
+  }
 
   dimension: id {
     label: "Orderline ID"
