@@ -5,6 +5,8 @@ view: order_orderline_facts {
           SELECT  order_order.id,
                   order_order.metadata,
                   order_order.created,
+                  order_order.user_email,
+                  order_order.status,
                   order_orderline.product_sku,
                   order_orderline.quantity,
                   order_orderline.unit_price_gross_amount,
@@ -65,6 +67,27 @@ view: order_orderline_facts {
     type: string
     sql: ${TABLE}.product_sku ;;
   }
+
+  dimension: user_email {
+    type: string
+    sql: ${TABLE}.user_email ;;
+  }
+
+  dimension: status {
+    type: string
+    sql: ${TABLE}.status ;;
+  }
+
+  dimension: is_internal_order {
+    type: yesno
+    sql: ${user_email} LIKE '%goflink%' OR ${user_email} LIKE '%pickery%' ;;
+  }
+
+  dimension: is_successful_order {
+    type: yesno
+    sql: ${status} IN('fulfilled', 'partially fulfilled');;
+  }
+
 
   measure: sum_item_quantity {
     label: "SUM Item Quantity sold"

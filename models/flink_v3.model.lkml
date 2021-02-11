@@ -96,7 +96,9 @@ explore: product_product {
   description: "Products, Productvariations, Categories, SKUs, Stock etc."
   always_filter: {
     filters:  [
-      product_product.is_published: "yes"
+      product_product.is_published: "yes",
+      order_orderline_facts.is_internal_order: "no",
+      order_orderline_facts.is_successful_order: "yes"
     ]
   }
 
