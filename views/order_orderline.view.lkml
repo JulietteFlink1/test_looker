@@ -158,7 +158,7 @@ view: order_orderline {
 ##########
 
   measure: sum_item_quantity {
-    label: "SUM Item Quantity"
+    label: "SUM Item Quantity sold"
     description: "Quantity of Order Line Items sold"
     hidden:  no
     type: sum

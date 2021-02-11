@@ -89,6 +89,48 @@ explore: order_order {
 
 }
 
+explore: product_product {
+  label: "Products"
+  view_label: "Products"
+  group_label: "2) Inventory"
+  description: "Products, Productvariations, Categories, SKUs, Stock etc."
+  always_filter: {
+    filters:  [
+      product_product.is_published: "yes"
+    ]
+  }
+
+  join: product_productvariant {
+    sql_on: ${product_productvariant.product_id} = ${product_product.id} ;;
+    relationship: one_to_many
+    type: left_outer
+  }
+
+  join: product_category {
+    sql_on: ${product_category.id} = ${product_product.category_id} ;;
+    relationship: many_to_one
+    type: left_outer
+  }
+
+  join: warehouse_stock {
+    type: left_outer
+    relationship: one_to_many
+    sql_on: ${warehouse_stock.product_variant_id} = ${product_productvariant.id} ;;
+  }
+
+  join: warehouse_warehouse {
+    type: left_outer
+    relationship: one_to_one
+    sql_on: ${warehouse_warehouse.id} = ${warehouse_stock.warehouse_id} ;;
+  }
+
+  join: order_orderline_facts {
+    sql_on: ${order_orderline_facts.product_sku} = ${product_productvariant.sku} AND ${order_orderline_facts.warehouse_name} = ${warehouse_warehouse.slug};;
+    relationship: one_to_many
+    type: left_outer
+  }
+}
+
 explore: answers {
   label: "Desired Products"
   view_label: "Desired Products"
