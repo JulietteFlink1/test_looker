@@ -287,8 +287,8 @@ view: order_order {
 
   dimension: delivery_delay_since_eta {
     type: duration_minute
-    sql_start: ${delivery_timestamp_raw} ;;
-    sql_end: ${delivery_eta_timestamp_raw} ;;
+    sql_start: ${delivery_eta_timestamp_raw};;
+    sql_end: ${delivery_timestamp_raw};;
   }
 
   dimension: delivery_time {
