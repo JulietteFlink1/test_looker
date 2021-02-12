@@ -324,6 +324,10 @@ view: order_order {
     sql: ${user_email} LIKE '%goflink%' OR ${user_email} LIKE '%pickery%' ;;
   }
 
+  dimension: is_voucher_order {
+    type: yesno
+    sql: ${voucher_id} IS NOT NULL ;;
+  }
   dimension: is_successful_order {
     type: yesno
     sql: ${status} IN('fulfilled', 'partially fulfilled');;

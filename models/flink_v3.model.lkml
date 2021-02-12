@@ -87,6 +87,12 @@ explore: order_order {
     sql_on: ${order_fulfillment_facts.order_fulfillment_id} = ${order_fulfillment.id} ;;
   }
 
+  join: discount_voucher {
+    type: left_outer
+    relationship: many_to_one
+    sql_on: ${discount_voucher.id} = ${order_order.voucher_id} ;;
+  }
+
 }
 
 explore: product_product {
