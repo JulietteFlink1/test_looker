@@ -55,6 +55,12 @@ view: order_order {
     datatype: timestamp
   }
 
+  dimension_group: order_date_30_min_bins {
+    label: "Order Date - 30 min bins"
+    sql:SUBSTRING(${created_minute30}, 12, 16);;
+  }
+
+
   dimension_group: time_since_sign_up {
     type: duration
     sql_start: ${user_order_facts.first_order_raw} ;;
