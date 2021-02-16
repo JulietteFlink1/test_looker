@@ -718,4 +718,11 @@ view: order_order {
     sql: ${cnt_orders_delayed_over_15_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
     value_format: "0%"
   }
+
+  measure: percent_of_total_orders {
+    label: "% Of Total Orders"
+    direction: "column"
+    type: percent_of_total
+    sql: ${cnt_orders} ;;
+  }
 }
