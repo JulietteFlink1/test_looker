@@ -40,6 +40,8 @@ view: order_order {
     type: time
     timeframes: [
       raw,
+      minute15,
+      minute30,
       hour_of_day,
       time,
       date,
@@ -243,6 +245,9 @@ view: order_order {
     type: time
     timeframes: [
       raw,
+      minute15,
+      minute30,
+      hour_of_day,
       time,
       date,
       week,
