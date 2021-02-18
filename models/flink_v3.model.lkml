@@ -142,7 +142,7 @@ explore: product_product {
 explore: answers {
   label: "Desired Products"
   view_label: "Desired Products"
-  group_label: "2) Survey Data"
+  group_label: "3) Survey Data"
   description: "Customer Survey on Desired Products"
   join: questions {
     sql_on: ${questions.question_id} = ${answers.question_id} ;;
