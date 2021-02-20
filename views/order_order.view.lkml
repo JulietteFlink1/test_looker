@@ -80,13 +80,15 @@ view: order_order {
   dimension: date {
     label: "Date (Dynamic)"
     label_from_parameter: date_granularity
+    type: string
     sql:
+    type: string
+  type: string
+  sql:
     CASE
+    WHEN {% parameter date_granularity %} = 'Day' THEN ${created_date}
     WHEN {% parameter date_granularity %} = 'Week' THEN ${created_week}
     WHEN {% parameter date_granularity %} = 'Month' THEN ${created_month}
-    WHEN {% parameter date_granularity %} = 'Quarter' THEN ${created_quarter}
-    WHEN {% parameter date_granularity %} = 'Year' THEN CAST(${created_year} AS STRING)
-    ELSE CAST(${created_date} AS STRING)
     END ;;
   }
 
