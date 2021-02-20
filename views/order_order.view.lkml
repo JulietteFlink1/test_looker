@@ -74,23 +74,19 @@ view: order_order {
     allowed_value: { value: "Month" }
     allowed_value: { value: "Quarter" }
     allowed_value: { value: "Year" }
+    default_value: "Day"
   }
 
   dimension: date {
+    label: "Date (Dynamic)"
     label_from_parameter: date_granularity
     sql:
     CASE
-      WHEN {% parameter date_granularity %} = 'Day'
-        THEN CAST(${created_date} AS STRING)
-      WHEN {% parameter date_granularity %} = 'Week'
-        THEN CAST(${created_week} AS STRING)
-      WHEN {% parameter date_granularity %} = 'Month'
-        THEN CAST(${created_month} AS STRING)
-      WHEN {% parameter date_granularity %} = 'Quarter'
-        THEN CAST(${created_quarter} AS STRING)
-      WHEN {% parameter date_granularity %} = 'Year'
-        THEN CAST(${created_year} AS STRING)
-      ELSE NULL
+    WHEN {% parameter date_granularity %} = 'Week' THEN ${created_week}
+    WHEN {% parameter date_granularity %} = 'Month' THEN ${created_month}
+    WHEN {% parameter date_granularity %} = 'Quarter' THEN ${created_quarter}
+    WHEN {% parameter date_granularity %} = 'Year' THEN CAST(${created_year} AS STRING)
+    ELSE CAST(${created_date} AS STRING)
     END ;;
   }
 
