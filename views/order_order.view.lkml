@@ -529,7 +529,7 @@ view: order_order {
     hidden:  no
     type: sum
     sql: ${gmv_gross};;
-    value_format_name: euro_accounting_2_precision
+    value_format_name: euro_accounting_0_precision
   }
 
   measure: sum_gmv_net {
@@ -538,7 +538,7 @@ view: order_order {
     hidden:  no
     type: sum
     sql: ${gmv_net};;
-    value_format_name: euro_accounting_2_precision
+    value_format_name: euro_accounting_0_precision
   }
 
   measure: sum_revenue_gross {
@@ -556,7 +556,7 @@ view: order_order {
     hidden:  no
     type: sum
     sql: ${total_net_amount};;
-    value_format_name: euro_accounting_2_precision
+    value_format_name: euro_accounting_0_precision
   }
 
   measure: sum_discount_amt {
@@ -565,7 +565,7 @@ view: order_order {
     hidden:  no
     type: sum
     sql: ${discount_amount};;
-    value_format_name: euro_accounting_2_precision
+    value_format_name: euro_accounting_0_precision
   }
 
   measure: sum_delivery_fee_gross {
@@ -574,7 +574,7 @@ view: order_order {
     hidden:  no
     type: sum
     sql: ${shipping_price_gross_amount};;
-    value_format_name: euro_accounting_2_precision
+    value_format_name: euro_accounting_0_precision
   }
 
   measure: sum_delivery_fee_net {
@@ -583,7 +583,7 @@ view: order_order {
     hidden:  no
     type: sum
     sql: ${shipping_price_net_amount};;
-    value_format_name: euro_accounting_2_precision
+    value_format_name: euro_accounting_0_precision
   }
 
 ############
