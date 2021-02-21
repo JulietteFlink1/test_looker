@@ -58,7 +58,8 @@ explore: order_order {
   always_filter: {
     filters:  [
                 order_order.is_internal_order: "no",
-                order_order.is_successful_order: "yes"
+                order_order.is_successful_order: "yes",
+                order_order.created_date: "after 2020-01-25"
               ]
   }
 
