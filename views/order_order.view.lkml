@@ -419,12 +419,22 @@ view: order_order {
   }
 
   measure: avg_fulfillment_time {
-    label: "AVG Fulfillment Time"
-    description: "Average Fulfillment Time considering order placement to delivery. Outliers excluded (<1min or >30min)"
+    label: "AVG Fulfillment Time (decimal)"
+    description: "Average Fulfillment Time (decimal minutes) considering order placement to delivery. Outliers excluded (<1min or >30min)"
     hidden:  no
     type: average
     sql: ${fulfillment_time};;
     value_format: "0.0"
+    filters: [is_fulfillment_less_than_1_minute: "no", is_fulfillment_more_than_30_minute: "no"]
+  }
+
+  measure: avg_fulfillment_time_mm_ss {
+    label: "AVG Fulfillment Time"
+    description: "Average Fulfillment Time considering order placement to delivery. Outliers excluded (<1min or >30min)"
+    hidden:  no
+    type: average
+    sql: ${fulfillment_time} * 60 / 86400.0;;
+    value_format: "mm:ss"
     filters: [is_fulfillment_less_than_1_minute: "no", is_fulfillment_more_than_30_minute: "no"]
   }
 
