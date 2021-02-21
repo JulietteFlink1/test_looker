@@ -482,7 +482,7 @@ view: order_order {
     hidden:  no
     type: average
     sql: ${gmv_gross};;
-    value_format_name: euro_accounting_1_precision
+    value_format_name: euro_accounting_2_precision
   }
 
   measure: avg_order_value_net {
@@ -491,7 +491,7 @@ view: order_order {
     hidden:  no
     type: average
     sql: ${gmv_net};;
-    value_format_name: euro_accounting_1_precision
+    value_format_name: euro_accounting_2_precision
   }
 
   measure: avg_product_value_gross {
@@ -500,7 +500,7 @@ view: order_order {
     hidden:  no
     type: average
     sql: ${gmv_gross} - ${shipping_price_gross_amount};;
-    value_format_name: euro_accounting_1_precision
+    value_format_name: euro_accounting_2_precision
   }
 
   measure: avg_product_value_net {
