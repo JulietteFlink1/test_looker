@@ -14,7 +14,6 @@ view: order_orderline {
       order_order.id,
       order_order.warehouse_name,
       order_order.created_raw,
-      order_order.user_email,
       order_order.customer_type,
     ]
   }

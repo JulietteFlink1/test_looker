@@ -8,7 +8,6 @@ view: order_order {
       id,
       warehouse_name,
       created_raw,
-      user_email,
       customer_type,
       gmv_gross,
       discount_amount,
