@@ -72,8 +72,6 @@ view: order_order {
     allowed_value: { value: "Day" }
     allowed_value: { value: "Week" }
     allowed_value: { value: "Month" }
-    allowed_value: { value: "Quarter" }
-    allowed_value: { value: "Year" }
     default_value: "Day"
   }
 
@@ -224,7 +222,7 @@ view: order_order {
 
   dimension: warehouse_name {
     type: string
-    sql:  CASE WHEN JSON_EXTRACT_SCALAR(${metadata}, '$.warehouse') IN('hamburg-oellkersallee', 'hamburg-oelkersallee') THEN 'de_ham_alto'
+    sql:  CASE WHEN JSON_EXTRACT_SCALAR(${metadata}, '$.warehouse') IN ('hamburg-oellkersallee', 'hamburg-oelkersallee') THEN 'de_ham_alto'
               WHEN JSON_EXTRACT_SCALAR(${metadata}, '$.warehouse') = 'münchen-leopoldstraße' THEN 'de_muc_schw'
               ELSE JSON_EXTRACT_SCALAR(${metadata}, '$.warehouse')
           END ;;
@@ -342,7 +340,7 @@ view: order_order {
   }
   dimension: is_successful_order {
     type: yesno
-    sql: ${status} IN('fulfilled', 'partially fulfilled');;
+    sql: ${status} IN ('fulfilled', 'partially fulfilled');;
   }
 
   dimension: is_fulfillment_less_than_1_minute {
