@@ -330,7 +330,7 @@ view: order_order {
 
   dimension: is_internal_order {
     type: yesno
-    sql: ${user_email} LIKE '%goflink%' OR ${user_email} LIKE '%pickery%' ;;
+    sql: ${user_email} LIKE '%goflink%' OR ${user_email} LIKE '%pickery%' OR LOWER(${user_email}) IN ('christoph.a.cordes@gmail.com', 'jfdames@gmail.com', 'oliver.merkel@gmail.com', 'alenaschneck@gmx.de', 'saadsaeed354@gmail.com', 'saadsaeed353@gmail.com', 'fabian.hardenberg@gmail.com', 'benjamin.zagel@gmail.com');;
   }
 
   dimension: is_voucher_order {
@@ -471,7 +471,7 @@ view: order_order {
     hidden:  no
     type: average
     sql: ${gmv_gross};;
-    value_format_name: euro_accounting_2_precision
+    value_format_name: euro_accounting_1_precision
   }
 
   measure: avg_order_value_net {
@@ -480,7 +480,7 @@ view: order_order {
     hidden:  no
     type: average
     sql: ${gmv_net};;
-    value_format_name: euro_accounting_2_precision
+    value_format_name: euro_accounting_1_precision
   }
 
   measure: avg_product_value_gross {
@@ -489,7 +489,7 @@ view: order_order {
     hidden:  no
     type: average
     sql: ${gmv_gross} - ${shipping_price_gross_amount};;
-    value_format_name: euro_accounting_2_precision
+    value_format_name: euro_accounting_1_precision
   }
 
   measure: avg_product_value_net {
