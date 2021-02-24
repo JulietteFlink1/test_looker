@@ -157,6 +157,12 @@ explore: answers {
   }
 }
 
+explore: adjust_raw_imports {
+  label: "Adjust app data"
+  view_label: "Adjust"
+  group_label: "5) Adjust app data"
+  description: "Adjust tracking data from mobile apps"
+}
 
 # explore: order_extends {
 #   label: "Power User Orders..."
