@@ -64,7 +64,7 @@ view: user_order_facts {
     sql: ${TABLE}.number_of_distinct_months_with_orders ;;
   }
 
-  dimension: days_as_customer {
+  dimension: days_betw_first_and_last_order {
     description: "Days between first and latest order"
     type: number
     sql: TIMESTAMP_DIFF(${TABLE}.latest_order, ${TABLE}.first_order, DAY)+1 ;;
@@ -73,7 +73,7 @@ view: user_order_facts {
   dimension: days_as_customer_tiered {
     type: tier
     tiers: [0, 1, 7, 14, 21, 28, 30, 60, 90, 120]
-    sql: ${days_as_customer} ;;
+    sql: ${days_betw_first_and_last_order} ;;
     style: integer
   }
 
