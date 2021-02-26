@@ -1,11 +1,11 @@
 # If necessary, uncomment the line below to include explore_source.
 # include: "flink_v3.model.lkml"
 
-view: weekly_cohorts_stable_base {
+view: monthly_cohorts_stable_base {
   derived_table: {
     explore_source: order_order {
-      column: first_order_week { field: user_order_facts.first_order_week }
-      column: weeks_time_since_sign_up {}
+      column: first_order_month { field: user_order_facts.first_order_month }
+      column: months_time_since_sign_up {}
       column: cnt_unique_customers {}
       filters: {
         field: order_order.is_internal_order
@@ -20,20 +20,19 @@ view: weekly_cohorts_stable_base {
         value: "after 2020/01/25"
       }
       filters: {
-        field: order_order.weeks_time_since_sign_up
+        field: order_order.months_time_since_sign_up
         value: "0"
       }
     }
   }
-
-  dimension: first_order_week {
-    label: "Users First Order Week"
-    type: date_week
+  dimension: first_order_month {
+    label: "Users First Order Month"
+    type: date_month
   }
-  dimension: weeks_time_since_sign_up {
-    label: "Orders Weeks Time Since Sign Up"
+  dimension: months_time_since_sign_up {
+    label: "Orders Months Time Since Sign Up"
     value_format: "0"
-    type: duration_week
+    type: duration_month
   }
   dimension: cnt_unique_customers {
     label: "Cohort Size"

@@ -96,6 +96,7 @@ explore: order_order {
 
   join: first_order_facts {
     view_label: "First Order Facts"
+    type: inner
     from: order_order
     relationship: one_to_one
     sql_on: ${user_order_facts.first_order_id} = ${first_order_facts.id} ;;
@@ -111,8 +112,15 @@ explore: order_order {
   }
 
   join: weekly_cohorts_stable_base {
-    view_label: "First Order Facts"
-    sql_on: ${user_order_facts.first_order_week} = ${weekly_cohorts_stable_base.first_order_week} ;;
+    view_label: "First Order Facts (Weekly Cohorts)"
+    sql_on: ${user_order_facts.first_order_week} = ${weekly_cohorts_stable_base.first_order_week};;
+    relationship: one_to_one
+    type: left_outer
+  }
+
+  join: monthly_cohorts_stable_base {
+    view_label: "First Order Facts (Monthly Cohorts)"
+    sql_on: ${user_order_facts.first_order_month} = ${monthly_cohorts_stable_base.first_order_month} ;;
     relationship: one_to_one
     type: left_outer
   }
