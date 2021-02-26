@@ -95,7 +95,7 @@ explore: order_order {
   }
 
   join: first_order_facts {
-    view_label: "First Order Dimensions"
+    view_label: "First Order Facts"
     from: order_order
     relationship: one_to_one
     sql_on: ${user_order_facts.first_order_id} = ${first_order_facts.id} ;;
@@ -110,6 +110,12 @@ explore: order_order {
     ]
   }
 
+  join: weekly_cohorts_stable_base {
+    view_label: "First Order Facts"
+    sql_on: ${user_order_facts.first_order_week} = ${weekly_cohorts_stable_base.first_order_week} ;;
+    relationship: one_to_one
+    type: left_outer
+  }
 }
 
 explore: product_product {
