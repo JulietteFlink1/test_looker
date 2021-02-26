@@ -6,9 +6,10 @@ view: user_order_facts {
         , COUNT(DISTINCT id) AS lifetime_orders
         , SUM(total_gross_amount) AS lifetime_revenue_gross
         , SUM(total_net_amount) AS lifetime_revenue_net
-        , MIN(created)  AS first_order
-        , MAX(created)  AS latest_order
-        , COUNT(DISTINCT FORMAT_TIMESTAMP('%Y%m', created))  AS number_of_distinct_months_with_orders
+        , MIN(id) AS first_order_id
+        , MIN(created) AS first_order
+        , MAX(created) AS latest_order
+        , COUNT(DISTINCT FORMAT_TIMESTAMP('%Y%m', created)) AS number_of_distinct_months_with_orders
       FROM order_order
       GROUP BY user_email
  ;;
@@ -17,6 +18,12 @@ view: user_order_facts {
   measure: count {
     type: count
     drill_fields: [detail*]
+  }
+
+  dimension: first_order_id {
+    label: "First Order ID"
+    type: number
+    sql: ${TABLE}.first_order_id ;;
   }
 
   dimension: user_email {
@@ -128,6 +135,7 @@ view: user_order_facts {
       lifetime_orders,
       lifetime_revenue_gross,
       lifetime_revenue_net,
+      first_order_id,
       first_order_time,
       latest_order_time,
       number_of_distinct_months_with_orders

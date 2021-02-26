@@ -94,6 +94,22 @@ explore: order_order {
     sql_on: ${discount_voucher.id} = ${order_order.voucher_id} ;;
   }
 
+  join: first_order_facts {
+    view_label: "First Order Dimensions"
+    from: order_order
+    relationship: one_to_one
+    sql_on: ${user_order_facts.first_order_id} = ${first_order_facts.id} ;;
+    #sql_where: ${first_order_facts.is_successful_order} = "yes" AND ${first_order_facts.is_internal_order} = "no";; #not needed to filter join table if base table is already filtered?
+    fields: [
+      first_order_facts.warehouse_name,
+      first_order_facts.is_voucher_order,
+      first_order_facts.avg_delivery_time,
+      first_order_facts.delivery_delay_since_eta,
+      first_order_facts.is_delivery_less_than_0_minute,
+      first_order_facts.is_delivery_more_than_30_minute
+    ]
+  }
+
 }
 
 explore: product_product {
