@@ -33,6 +33,25 @@ view: order_order {
     sql: ${TABLE}.checkout_token ;;
   }
 
+  dimension_group: now {
+    label: "Now"
+    description: "Current Date/Time"
+    type: time
+    timeframes: [
+      raw,
+      hour_of_day,
+      time,
+      date,
+      day_of_week,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: current_timestamp;;
+    datatype: timestamp
+  }
+
   dimension_group: created {
     label: "Order"
     description: "Order Placement Date/Time"
@@ -400,6 +419,15 @@ view: order_order {
   dimension: is_customer_location_available {
     type: yesno
     sql: IF(${customer_location::latitude} IS NULL, FALSE, TRUE)  ;;
+  }
+
+  dimension: is_business_week_completed {
+    type: yesno
+    sql:  CASE WHEN ${now_day_of_week} = 'Sunday'
+              THEN IF (${created_week} <= ${now_week}, TRUE, FALSE)
+              ELSE IF (${created_week} < ${now_week}, TRUE, FALSE)
+          END
+              ;;
   }
 
 ##############
