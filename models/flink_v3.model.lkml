@@ -63,6 +63,9 @@ explore: order_order {
               ]
   }
 
+  #filter Investor user so they can only see completed calendar weeks data and not week to date
+  sql_always_where: CASE WHEN ({{ _user_attributes['id'] }}) = 28 THEN ${order_order.created_week} < ${now_week} ELSE 1=1 END;;
+
   join: order_fulfillment {
     sql_on: ${order_fulfillment.order_id} = ${order_order.id} ;;
     relationship: one_to_many
