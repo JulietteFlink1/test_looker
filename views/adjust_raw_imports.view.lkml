@@ -751,19 +751,11 @@ view: adjust_raw_imports {
     sql: ${TABLE}._outdated_tracker_ ;;
   }
 
-  dimension_group: _partitiondate {
-    type: time
-    timeframes: [
-      raw,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
+  dimension: _partitiondate {
+    type: date
     convert_tz: no
     datatype: date
-    sql: ${TABLE}._PARTITIONDATE ;;
+    sql: DATE(${TABLE}._PARTITIONTIME) ;;
   }
 
   dimension_group: _partitiontime {

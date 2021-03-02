@@ -195,6 +195,11 @@ explore: adjust_raw_imports {
   view_label: "Adjust"
   group_label: "5) Adjust app data"
   description: "Adjust tracking data from mobile apps"
+  always_filter: {
+    filters:  [
+      adjust_raw_imports._partitiondate: "7 days"
+    ]
+  }
 }
 
 # explore: order_extends {
