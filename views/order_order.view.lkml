@@ -258,13 +258,13 @@ view: order_order {
   }
 
   dimension: delivery_eta_minutes {
-    label: "Delivery ETA (min)"
+    label: "Delivery PDT (min)"
     type: number
     sql: CAST(JSON_EXTRACT_SCALAR(${metadata}, '$.deliveryETA') AS INT64) ;;
   }
 
   dimension_group: delivery_eta_timestamp {
-    label: "Delivery ETA Date/Timestamp"
+    label: "Delivery PDT Date/Timestamp"
     type: time
     timeframes: [
       raw,
