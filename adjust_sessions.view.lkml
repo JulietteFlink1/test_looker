@@ -407,7 +407,7 @@ view: adjust_sessions {
 
   dimension: has_view_item_in_session {
     type: yesno
-    sql: ${TABLE}.view_item ;;
+    sql: ${TABLE}.view_item is not null;;
   }
 
   dimension: has_view_subcategory_in_session {
