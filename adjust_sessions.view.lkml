@@ -4,8 +4,7 @@ view: adjust_sessions {
     sql: with adjust_sessions as
     (
     SELECT  _adid_ || '-' || row_number() over(partition by _adid_ order by _created_at_) as session_id,
-    _adid_,pd,
-    _created_at_ as session_start_at,
+    _adid_,pd,_created_at_ as session_start_at,
     lead(_created_at_) over(partition by _adid_ order by _created_at_) as next_session_start_at,
     from  (select _adid_, TIMESTAMP_SECONDS(_created_at_) as _created_at_,_PARTITIONTIME as pd,
         TIMESTAMP_DIFF(TIMESTAMP_SECONDS(_created_at_),LAG(TIMESTAMP_SECONDS(_created_at_))
@@ -22,8 +21,9 @@ view: adjust_sessions {
     FROM `flink-backend.customlytics_adjust.adjust_raw_imports` adjust
     left join adjust_sessions
     on adjust._adid_=adjust_sessions._adid_
-    and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at
-    and (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at OR adjust_sessions.next_session_start_at is null)
+        and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at and
+                (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at
+                OR adjust_sessions.next_session_start_at is null)
     where adjust._activity_kind_='install'
     group by 1, 2
     ),
@@ -34,8 +34,9 @@ view: adjust_sessions {
     FROM `flink-backend.customlytics_adjust.adjust_raw_imports` adjust
     left join adjust_sessions
     on adjust._adid_=adjust_sessions._adid_
-    and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at
-    and (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at OR adjust_sessions.next_session_start_at is null)
+        and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at and
+                    (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at
+                    OR adjust_sessions.next_session_start_at is null)
     where adjust._activity_kind_='event' and adjust._event_name_='AddressSelected'
     group by 1, 2
     ),
@@ -46,8 +47,9 @@ view: adjust_sessions {
     FROM `flink-backend.customlytics_adjust.adjust_raw_imports` adjust
     left join adjust_sessions
     on adjust._adid_=adjust_sessions._adid_
-    and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at
-    and (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at OR adjust_sessions.next_session_start_at is null)
+        and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at and
+                    (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at
+                    OR adjust_sessions.next_session_start_at is null)
     where adjust._activity_kind_='event' and adjust._event_name_='ArticleOpened'
     group by 1, 2
     ),
@@ -58,8 +60,9 @@ view: adjust_sessions {
     FROM `flink-backend.customlytics_adjust.adjust_raw_imports` adjust
     left join adjust_sessions
     on adjust._adid_=adjust_sessions._adid_
-    and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at
-    and (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at OR adjust_sessions.next_session_start_at is null)
+        and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at and
+                    (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at
+                    OR adjust_sessions.next_session_start_at is null)
     where adjust._activity_kind_='event' and adjust._event_name_='AddToCart'
     group by 1, 2
     ),
@@ -70,8 +73,9 @@ view: adjust_sessions {
     FROM `flink-backend.customlytics_adjust.adjust_raw_imports` adjust
     left join adjust_sessions
     on adjust._adid_=adjust_sessions._adid_
-    and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at
-    and (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at OR adjust_sessions.next_session_start_at is null)
+        and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at and
+                    (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at
+                    OR adjust_sessions.next_session_start_at is null)
     where adjust._activity_kind_='event' and adjust._event_name_='AddToFavourites'
     group by 1, 2
     ),
@@ -82,8 +86,9 @@ view: adjust_sessions {
     FROM `flink-backend.customlytics_adjust.adjust_raw_imports` adjust
     left join adjust_sessions
     on adjust._adid_=adjust_sessions._adid_
-    and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at
-    and (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at OR adjust_sessions.next_session_start_at is null)
+        and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at and
+                    (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at
+                    OR adjust_sessions.next_session_start_at is null)
     where adjust._activity_kind_='event' and adjust._event_name_='SearchExecuted'
     group by 1, 2
     ),
@@ -94,8 +99,9 @@ view: adjust_sessions {
     FROM `flink-backend.customlytics_adjust.adjust_raw_imports` adjust
     left join adjust_sessions
     on adjust._adid_=adjust_sessions._adid_
-    and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at
-    and (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at OR adjust_sessions.next_session_start_at is null)
+        and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at and
+                    (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at
+                    OR adjust_sessions.next_session_start_at is null)
     where adjust._activity_kind_='event' and adjust._event_name_='ViewItem'
     group by 1, 2
     ),
@@ -106,8 +112,9 @@ view: adjust_sessions {
     FROM `flink-backend.customlytics_adjust.adjust_raw_imports` adjust
     left join adjust_sessions
     on adjust._adid_=adjust_sessions._adid_
-    and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at
-    and (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at OR adjust_sessions.next_session_start_at is null)
+        and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at and
+                    (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at
+                    OR adjust_sessions.next_session_start_at is null)
     where adjust._activity_kind_='event' and adjust._event_name_='ViewCategory'
     group by 1, 2
     ),
@@ -118,8 +125,9 @@ view: adjust_sessions {
     FROM `flink-backend.customlytics_adjust.adjust_raw_imports` adjust
     left join adjust_sessions
     on adjust._adid_=adjust_sessions._adid_
-    and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at
-    and (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at OR adjust_sessions.next_session_start_at is null)
+        and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at and
+                    (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at
+                    OR adjust_sessions.next_session_start_at is null)
     where adjust._activity_kind_='event' and adjust._event_name_='ViewSubCategory'
     group by 1, 2
     ),
@@ -130,8 +138,9 @@ view: adjust_sessions {
     FROM `flink-backend.customlytics_adjust.adjust_raw_imports` adjust
     left join adjust_sessions
     on adjust._adid_=adjust_sessions._adid_
-    and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at
-    and (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at OR adjust_sessions.next_session_start_at is null)
+        and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at and
+                    (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at
+                    OR adjust_sessions.next_session_start_at is null)
     where adjust._activity_kind_='event' and adjust._event_name_='ViewCart'
     group by 1, 2
     ),
@@ -142,8 +151,9 @@ view: adjust_sessions {
     FROM `flink-backend.customlytics_adjust.adjust_raw_imports` adjust
     left join adjust_sessions
     on adjust._adid_=adjust_sessions._adid_
-    and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at
-    and (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at OR adjust_sessions.next_session_start_at is null)
+        and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at and
+                    (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at
+                    OR adjust_sessions.next_session_start_at is null)
     where adjust._activity_kind_='event' and adjust._event_name_='BeginCheckout'
     group by 1, 2
     ),
@@ -154,8 +164,9 @@ view: adjust_sessions {
     FROM `flink-backend.customlytics_adjust.adjust_raw_imports` adjust
     left join adjust_sessions
     on adjust._adid_=adjust_sessions._adid_
-    and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at
-    and (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at OR adjust_sessions.next_session_start_at is null)
+        and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at and
+                    (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at
+                    OR adjust_sessions.next_session_start_at is null)
     where adjust._activity_kind_='event' and adjust._event_name_='PaymentMethodAdded'
     group by 1, 2
     ),
@@ -166,8 +177,9 @@ view: adjust_sessions {
     FROM `flink-backend.customlytics_adjust.adjust_raw_imports` adjust
     left join adjust_sessions
     on adjust._adid_=adjust_sessions._adid_
-    and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at
-    and (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at OR adjust_sessions.next_session_start_at is null)
+        and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at and
+                    (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at
+                    OR adjust_sessions.next_session_start_at is null)
     where adjust._activity_kind_='event' and adjust._event_name_='FirstPurchase'
     group by 1, 2
     ),
@@ -178,8 +190,9 @@ view: adjust_sessions {
     FROM `flink-backend.customlytics_adjust.adjust_raw_imports` adjust
     left join adjust_sessions
     on adjust._adid_=adjust_sessions._adid_
-    and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at
-    and (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at OR adjust_sessions.next_session_start_at is null)
+        and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at and
+                    (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at
+                    OR adjust_sessions.next_session_start_at is null)
     where adjust._activity_kind_='event' and adjust._event_name_='Purchase'
     group by 1, 2
     )
