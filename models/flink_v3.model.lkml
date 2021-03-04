@@ -178,6 +178,13 @@ explore: product_product {
     relationship: one_to_many
     type: left_outer
   }
+
+  join: hubs {
+    view_label: "Hubs"
+    sql_on: ${warehouse_warehouse.slug} = ${hubs.hub_code_lowercase} ;;
+    relationship: one_to_one
+    type: left_outer
+  }
 }
 
 explore: answers {

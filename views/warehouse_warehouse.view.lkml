@@ -83,7 +83,10 @@ view: warehouse_warehouse {
 
   dimension: slug {
     type: string
-    sql: ${TABLE}.slug ;;
+    sql: CASE WHEN ${TABLE}.slug = 'hamburg-oellkersallee' THEN 'de_ham_alto'
+              WHEN ${TABLE}.slug = 'münchen-leopoldstraße' THEN 'de_muc_schw'
+              ELSE ${TABLE}.slug END
+              ;;
   }
 
   measure: count {
