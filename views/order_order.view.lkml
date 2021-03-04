@@ -435,8 +435,8 @@ view: order_order {
 ##############
 
   measure: avg_promised_eta {
-    label: "AVG Promised ETA"
-    description: "Average Promised Fulfillment Time (ETA)"
+    label: "AVG PDT"
+    description: "Average Promised Fulfillment Time (PDT)"
     hidden:  no
     type: average
     sql: ${delivery_eta_minutes};;
