@@ -258,13 +258,13 @@ view: order_order {
   }
 
   dimension: delivery_eta_minutes {
-    label: "Delivery ETA (min)"
+    label: "Delivery PDT (min)"
     type: number
     sql: CAST(JSON_EXTRACT_SCALAR(${metadata}, '$.deliveryETA') AS INT64) ;;
   }
 
   dimension_group: delivery_eta_timestamp {
-    label: "Delivery ETA Date/Timestamp"
+    label: "Delivery PDT Date/Timestamp"
     type: time
     timeframes: [
       raw,
@@ -435,8 +435,8 @@ view: order_order {
 ##############
 
   measure: avg_promised_eta {
-    label: "AVG Promised ETA"
-    description: "Average Promised Fulfillment Time (ETA)"
+    label: "AVG PDT"
+    description: "Average Promised Fulfillment Time (PDT)"
     hidden:  no
     type: average
     sql: ${delivery_eta_minutes};;
@@ -681,6 +681,15 @@ view: order_order {
     value_format: "0"
   }
 
+  measure: cnt_orders_delayed_under_0_min {
+    label: "# Orders delivered in time"
+    description: "Count of Orders delivered no later than promised ETA"
+    hidden:  yes
+    type: count
+    filters: [delivery_delay_since_eta:"<=0"]
+    value_format: "0"
+  }
+
   measure: cnt_orders_delayed_over_5_min {
     label: "# Orders delivered late >5min"
     description: "Count of Orders delivered >5min later than promised ETA"
@@ -736,6 +745,15 @@ view: order_order {
     hidden:  no
     type: number
     sql: ${sum_discount_amt} / NULLIF(${sum_gmv_gross}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_delivery_in_time{
+    label: "% Orders delivered in time"
+    description: "Share of orders delivered no later than promised ETA (only orders with valid ETA time considered)"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_delayed_under_0_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
     value_format: "0%"
   }
 
