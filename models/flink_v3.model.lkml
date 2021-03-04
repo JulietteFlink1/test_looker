@@ -127,6 +127,13 @@ explore: order_order {
     relationship: one_to_one
     type: left_outer
   }
+
+  join: hubs {
+    view_label: "Hubs"
+    sql_on: ${order_order.warehouse_name} = ${hubs.hub_code_lowercase} ;;
+    relationship: one_to_one
+    type: left_outer
+  }
 }
 
 explore: product_product {
