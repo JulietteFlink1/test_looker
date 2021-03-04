@@ -190,15 +190,28 @@ explore: answers {
   }
 }
 
-explore: adjust_raw_imports {
+explore: adjust_sessions {
   label: "Adjust app data"
-  view_label: "Adjust"
+  view_label: "Adjust sessions"
   group_label: "5) Adjust app data"
-  description: "Adjust tracking data from mobile apps"
+  description: "Adjust events by session from mobile apps data"
   always_filter: {
-    filters:  [
-      adjust_raw_imports._partitiondate: "7 days"
+    filters:
+    [
+      adjust_sessions._partitiondate: "7 days"
     ]
+  }
+  join: adjust_events {
+    sql_on: ${adjust_sessions._adid_} = ${adjust_events._adid_}
+    AND ${adjust_events._created_at__raw} >= ${adjust_sessions.session_start_raw}
+    AND
+      (
+        ${adjust_events._created_at__raw} < ${adjust_sessions.next_session_start_raw}
+        OR ${adjust_sessions.next_session_start_time} is NULL
+      )
+        ;;
+    relationship: one_to_many
+    type: left_outer
   }
 }
 
