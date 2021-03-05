@@ -27,6 +27,7 @@ include: "/views/**/*.view"
 
 
 week_start_day: monday
+case_sensitive: no
 
 datagroup: flink_default_datagroup {
   sql_trigger: SELECT MAX(id) FROM order_order;;
