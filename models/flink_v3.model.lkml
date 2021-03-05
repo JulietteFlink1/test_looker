@@ -98,6 +98,20 @@ explore: order_order {
     sql_on: ${discount_voucher.id} = ${order_order.voucher_id} ;;
   }
 
+  join: shipping_address {
+    from: account_address
+    type: left_outer
+    relationship: one_to_one
+    sql_on: ${order_order.shipping_address_id} = ${shipping_address.id} ;;
+  }
+
+  join: billing_address {
+    from: account_address
+    type: left_outer
+    relationship: one_to_one
+    sql_on: ${order_order.billing_address_id} = ${shipping_address.id} ;;
+  }
+
   join: first_order_facts {
     view_label: "First Order Facts"
     type: inner
