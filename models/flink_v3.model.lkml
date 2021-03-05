@@ -162,6 +162,13 @@ explore: product_product {
     type: left_outer
   }
 
+  join: parent_category {
+    from: product_category
+    sql_on: ${product_category.parent_id} = ${parent_category.id} ;;
+    relationship: one_to_one
+    type: left_outer
+  }
+
   join: warehouse_stock {
     type: left_outer
     relationship: one_to_many
