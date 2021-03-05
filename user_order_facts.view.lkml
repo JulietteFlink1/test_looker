@@ -1,29 +1,204 @@
 view: user_order_facts {
   derived_table: {
     datagroup_trigger: flink_default_datagroup
-    sql: SELECT
-        user_email
-        , COUNT(DISTINCT id) AS lifetime_orders
-        , SUM(total_gross_amount) AS lifetime_revenue_gross
-        , SUM(total_net_amount) AS lifetime_revenue_net
-        , MIN(id) AS first_order_id
-        , MIN(created) AS first_order
-        , MAX(created) AS latest_order
-        , COUNT(DISTINCT FORMAT_TIMESTAMP('%Y%m', created)) AS number_of_distinct_months_with_orders
-      FROM order_order
-      GROUP BY user_email
- ;;
-  }
+    sql:with users as
+    (
+    SELECT
+            user_email
+            , COUNT(DISTINCT id) AS lifetime_orders
+            , SUM(total_gross_amount) AS lifetime_revenue_gross
+            , SUM(total_net_amount) AS lifetime_revenue_net
+            , MIN(id) AS first_order_id
+            , MAX(id) AS latest_order_id
+            , MIN(created) AS first_order
+            , MAX(created) AS latest_order
+            , COUNT(DISTINCT FORMAT_TIMESTAMP('%Y%m', created)) AS number_of_distinct_months_with_orders
+          FROM `flink-backend.saleor_db.order_order` order_order
+          GROUP BY user_email
+    ),
 
-  measure: count {
-    type: count
-    drill_fields: [detail*]
+    agg_products_by_user as
+    (
+    select
+      orders.user_email,
+      orderline.product_name,
+      sum(orderline.quantity) as sum_quantity
+      from `flink-backend.saleor_db.order_order` orders
+      left join `flink-backend.saleor_db.order_orderline` orderline
+      on orders.id = orderline.order_id
+      group by 1, 2
+    ),
+
+    categories_by_user as
+    (
+    select
+      orders.user_email,
+      orderline.product_sku,
+      orderline.product_name,
+      pcategory.name as category_name
+      from `flink-backend.saleor_db.order_order` orders
+      left join `flink-backend.saleor_db.order_orderline` orderline
+      on orders.id = orderline.order_id
+      left join `flink-backend.saleor_db.product_productvariant` pvariant
+      on orderline.product_sku=pvariant.sku
+      left join `flink-backend.saleor_db.product_product` pproduct
+      on pvariant.id=pproduct.id
+      left join `flink-backend.saleor_db.product_category` pcategory
+      on pproduct.category_id=pcategory.id
+    ),
+
+    agg_categories_by_user as
+    (
+      select user_email, category_name, count(*) as cnt_categories
+      from categories_by_user
+      group by 1, 2
+    ),
+
+    ranked_categories as
+    (
+      select user_email,category_name, cnt_categories, ROW_NUMBER() OVER ( PARTITION BY user_email ORDER BY cnt_categories desc) AS rank
+      from agg_categories_by_user
+    ),
+
+    ranked_products as
+    (
+    select user_email, product_name, sum_quantity, ROW_NUMBER() OVER ( PARTITION BY user_email ORDER BY sum_quantity desc) AS rank
+    from agg_products_by_user
+    ),
+
+    top_1_category as
+    (
+      select user_email, category_name
+      from ranked_categories
+      where rank=1
+    ),
+
+    top_2_category as
+    (
+      select user_email, category_name
+      from ranked_categories
+      where rank=2
+    ),
+
+    top_1_products as
+    (
+    select user_email, product_name
+    from ranked_products
+    where rank=1
+    ),
+
+    top_2_products as
+    (
+    select user_email, product_name
+    from ranked_products
+    where rank=2
+    ),
+
+    top_3_products as
+    (
+    select user_email, product_name
+    from ranked_products
+    where rank=3
+    ),
+
+    order_day as
+    (
+    select user_email,
+    extract(DAYOFWEEK from created) as day_of_week,
+    count(*) as day_count
+    from `flink-backend.saleor_db.order_order`
+    group by 1, 2
+    ),
+
+    order_hour as
+    (
+    select user_email,
+    extract(HOUR from created) as hour,
+    count(*) as hour_count
+    from `flink-backend.saleor_db.order_order`
+    group by 1, 2
+    ),
+
+    favourite_day as
+    (
+    select user_email,
+    day_of_week,
+    ROW_NUMBER() OVER ( PARTITION BY user_email ORDER BY day_count desc) AS rank
+    from order_day
+    ),
+
+    favourite_time as
+    (
+    select user_email,
+    hour,
+    ROW_NUMBER() OVER ( PARTITION BY user_email ORDER BY hour_count desc) AS rank
+    from order_hour
+    ),
+
+    latest_order_with_voucher as
+    (
+      select orders.user_email,
+      MAX(orders.created) as latest_order_with_voucher
+      from `flink-backend.saleor_db.order_order` orders
+      where orders.voucher_id is not null
+      group by 1
+    )
+
+
+    select
+    users.user_email,
+    users.lifetime_orders,
+    users.lifetime_revenue_gross,
+    users.lifetime_revenue_net,
+    users.first_order_id,
+    users.latest_order_id,
+    users.first_order,
+    users.latest_order,
+    users.number_of_distinct_months_with_orders,
+    top_1_products.product_name as top_1_product,
+    top_2_products.product_name as top_2_product,
+    top_3_products.product_name as top_3_product,
+    top_1_category.category_name as top_1_category,
+    top_2_category.category_name as top_2_category,
+    case when day_of_week in (7, 1) then 'weekend' else 'week' end as favourite_order_day,
+    case when hour > 0 and hour <= 12 then 'morning'
+      when hour > 12 and hour <= 17 then 'afternoon'
+        when hour > 17 and hour <= 20 then 'evening'
+          when hour > 20 then 'night' end as favourite_order_hour,
+    latest_order_with_voucher.latest_order_with_voucher as last_order_with_voucher
+    from users
+    left join top_1_products
+    on users.user_email=top_1_products.user_email
+    left join top_2_products
+    on users.user_email=top_2_products.user_email
+    left join top_3_products
+    on users.user_email=top_3_products.user_email
+    left join top_1_category
+    on users.user_email=top_1_category.user_email
+    left join top_2_category
+    on users.user_email=top_2_category.user_email
+    left join favourite_day
+    on users.user_email=favourite_day.user_email
+    left join favourite_time
+    on users.user_email=favourite_time.user_email
+    left join latest_order_with_voucher
+    on users.user_email=latest_order_with_voucher.user_email
+    where favourite_day.rank = 1
+    and favourite_time.rank = 1
+    order by 2 desc
+ ;;
   }
 
   dimension: first_order_id {
     label: "First Order ID"
     type: number
     sql: ${TABLE}.first_order_id ;;
+  }
+
+  dimension: latest_order_id {
+    label: "Latest Order ID"
+    type: number
+    sql: ${TABLE}.latest_order_id ;;
   }
 
   dimension: user_email {
@@ -43,16 +218,6 @@ view: user_order_facts {
     type: yesno
     sql: ${first_order_date} IS NOT NULL ;;
   }
-
-  measure: new_customer_orders {
-    type: count
-    filters: [lifetime_orders: "=1"]
-  }
-
-  measure: returning_customer_orders {
-    type: count
-    filters: [lifetime_orders: ">1"]
-    }
 
   dimension_group: latest_order {
     type: time
@@ -97,12 +262,6 @@ view: user_order_facts {
     style: integer
   }
 
-  measure: average_lifetime_orders {
-    type: average
-    value_format_name: decimal_2
-    sql: ${lifetime_orders} ;;
-  }
-
   ##### Lifetime Behavior - Revenue ######
 
   dimension: lifetime_revenue_gross {
@@ -123,11 +282,83 @@ view: user_order_facts {
     style: integer
   }
 
+
+  ##### Lifetime Behaviour - Favourite products & categories ######
+
+  dimension: top_1_product {
+    type: string
+    sql: ${TABLE}.top_1_product ;;
+  }
+
+  dimension: top_2_product {
+    type: string
+    sql: ${TABLE}.top_2_product ;;
+  }
+
+  dimension: top_3_product {
+    type: string
+    sql: ${TABLE}.top_3_product ;;
+  }
+
+  dimension: top_1_category {
+    type: string
+    sql: ${TABLE}.top_1_category ;;
+  }
+
+  dimension: top_2_category {
+    type: string
+    sql: ${TABLE}.top_2_category ;;
+  }
+
+  ###### Lifetime Behaviour - Favourite delivery times ######
+
+  dimension: favourite_order_day {
+    type: string
+    sql: ${TABLE}.favourite_order_day ;;
+  }
+
+  dimension: favourite_order_hour {
+    type: string
+    sql: ${TABLE}.favourite_order_hour ;;
+  }
+
+  ###### Lifetime Behaviour - Last order with voucher
+
+  dimension: last_order_with_voucher {
+    type: date
+    sql: ${TABLE}.last_order_with_voucher ;;
+  }
+
+####### Measures ########
+
+
+  measure: count {
+    type: count
+    drill_fields: [detail*]
+  }
+
+  measure: new_customer_orders {
+    type: count
+    filters: [lifetime_orders: "=1"]
+  }
+
+  measure: returning_customer_orders {
+    type: count
+    filters: [lifetime_orders: ">1"]
+  }
+
+  measure: average_lifetime_orders {
+    type: average
+    value_format_name: decimal_2
+    sql: ${lifetime_orders} ;;
+  }
+
   measure: average_lifetime_revenue {
     type: average
     value_format_name: usd
     sql: ${lifetime_revenue_gross} ;;
   }
+
 
   set: detail {
     fields: [

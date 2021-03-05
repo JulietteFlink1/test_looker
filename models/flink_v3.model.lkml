@@ -114,6 +114,23 @@ explore: order_order {
     ]
   }
 
+  join: latest_order_facts {
+    view_label: "Latest Order Facts"
+    type: inner
+    from: order_order
+    relationship: one_to_one
+    sql_on: ${user_order_facts.latest_order_id} = ${latest_order_facts.id} ;;
+    #sql_where: ${first_order_facts.is_successful_order} = "yes" AND ${first_order_facts.is_internal_order} = "no";; #not needed to filter join table if base table is already filtered?
+    fields: [
+      latest_order_facts.warehouse_name,
+      latest_order_facts.is_voucher_order,
+      latest_order_facts.avg_delivery_time,
+      latest_order_facts.delivery_delay_since_eta,
+      latest_order_facts.is_delivery_less_than_0_minute,
+      latest_order_facts.is_delivery_more_than_30_minute
+    ]
+  }
+
   join: weekly_cohorts_stable_base {
     view_label: "First Order Facts (Weekly Cohorts)"
     sql_on: ${user_order_facts.first_order_week} = ${weekly_cohorts_stable_base.first_order_week};;
