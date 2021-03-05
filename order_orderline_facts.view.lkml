@@ -60,7 +60,10 @@ view: order_orderline_facts {
 
   dimension: warehouse_name {
     type: string
-    sql: JSON_EXTRACT_SCALAR(${metadata}, '$.warehouse') ;;
+    sql:  CASE WHEN JSON_EXTRACT_SCALAR(${metadata}, '$.warehouse') IN ('hamburg-oellkersallee', 'hamburg-oelkersallee') THEN 'de_ham_alto'
+    WHEN JSON_EXTRACT_SCALAR(${metadata}, '$.warehouse') = 'münchen-leopoldstraße' THEN 'de_muc_schw'
+    ELSE JSON_EXTRACT_SCALAR(${metadata}, '$.warehouse')
+    END ;;
   }
 
   dimension: product_sku {

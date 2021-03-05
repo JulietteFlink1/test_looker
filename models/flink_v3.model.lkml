@@ -27,6 +27,7 @@ include: "/views/**/*.view"
 
 
 week_start_day: monday
+case_sensitive: no
 
 datagroup: flink_default_datagroup {
   sql_trigger: SELECT MAX(id) FROM order_order;;
@@ -97,6 +98,20 @@ explore: order_order {
     sql_on: ${discount_voucher.id} = ${order_order.voucher_id} ;;
   }
 
+  join: shipping_address {
+    from: account_address
+    type: left_outer
+    relationship: one_to_one
+    sql_on: ${order_order.shipping_address_id} = ${shipping_address.id} ;;
+  }
+
+  join: billing_address {
+    from: account_address
+    type: left_outer
+    relationship: one_to_one
+    sql_on: ${order_order.billing_address_id} = ${shipping_address.id} ;;
+  }
+
   join: first_order_facts {
     view_label: "First Order Facts"
     type: inner
@@ -144,6 +159,13 @@ explore: order_order {
     relationship: one_to_one
     type: left_outer
   }
+
+  join: hubs {
+    view_label: "Hubs"
+    sql_on: ${order_order.warehouse_name} = ${hubs.hub_code_lowercase} ;;
+    relationship: one_to_one
+    type: left_outer
+  }
 }
 
 explore: product_product {
@@ -171,6 +193,13 @@ explore: product_product {
     type: left_outer
   }
 
+  join: parent_category {
+    from: product_category
+    sql_on: ${product_category.parent_id} = ${parent_category.id} ;;
+    relationship: one_to_one
+    type: left_outer
+  }
+
   join: warehouse_stock {
     type: left_outer
     relationship: one_to_many
@@ -186,6 +215,13 @@ explore: product_product {
   join: order_orderline_facts {
     sql_on: ${order_orderline_facts.product_sku} = ${product_productvariant.sku} AND ${order_orderline_facts.warehouse_name} = ${warehouse_warehouse.slug};;
     relationship: one_to_many
+    type: left_outer
+  }
+
+  join: hubs {
+    view_label: "Hubs"
+    sql_on: ${warehouse_warehouse.slug} = ${hubs.hub_code_lowercase} ;;
+    relationship: one_to_one
     type: left_outer
   }
 }
