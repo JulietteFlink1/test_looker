@@ -193,6 +193,12 @@ explore: product_product {
     type: left_outer
   }
 
+  join: product_producttype {
+    sql_on: ${product_product.product_type_id} = ${product_producttype.id} ;;
+    relationship: one_to_one
+    type: left_outer
+  }
+
   join: parent_category {
     from: product_category
     sql_on: ${product_category.parent_id} = ${parent_category.id} ;;
