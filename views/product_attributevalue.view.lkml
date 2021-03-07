@@ -1,10 +1,9 @@
-view: product_producttype {
-  sql_table_name: `flink-backend.saleor_db.product_producttype`
+view: product_attributevalue {
+  sql_table_name: `flink-backend.saleor_db.product_attributevalue`
     ;;
   drill_fields: [id]
 
   dimension: id {
-    label: "Producttype ID"
     primary_key: yes
     type: number
     sql: ${TABLE}.id ;;
@@ -62,35 +61,14 @@ view: product_producttype {
     sql: ${TABLE}._sdc_table_version ;;
   }
 
-  dimension: has_variants {
-    type: yesno
-    sql: ${TABLE}.has_variants ;;
-  }
-
-  dimension: is_digital {
-    type: yesno
-    sql: ${TABLE}.is_digital ;;
-  }
-
-  dimension: is_shipping_required {
-    type: yesno
-    sql: ${TABLE}.is_shipping_required ;;
-  }
-
-  dimension: metadata {
-    type: string
-    sql: ${TABLE}.metadata ;;
+  dimension: attribute_id {
+    type: number
+    sql: ${TABLE}.attribute_id ;;
   }
 
   dimension: name {
-    label: "Producttype Name"
     type: string
     sql: ${TABLE}.name ;;
-  }
-
-  dimension: private_metadata {
-    type: string
-    sql: ${TABLE}.private_metadata ;;
   }
 
   dimension: slug {
@@ -98,9 +76,14 @@ view: product_producttype {
     sql: ${TABLE}.slug ;;
   }
 
-  dimension: weight {
+  dimension: sort_order {
     type: number
-    sql: ${TABLE}.weight ;;
+    sql: ${TABLE}.sort_order ;;
+  }
+
+  dimension: value {
+    type: string
+    sql: ${TABLE}.value ;;
   }
 
   measure: count {

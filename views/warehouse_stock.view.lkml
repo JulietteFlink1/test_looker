@@ -4,6 +4,7 @@ view: warehouse_stock {
   drill_fields: [id]
 
   dimension: id {
+    label: "Warehouse Stock ID"
     primary_key: yes
     type: number
     sql: ${TABLE}.id ;;
@@ -67,6 +68,7 @@ view: warehouse_stock {
   }
 
   dimension: quantity {
+    label: "Stock quantity"
     type: number
     sql: ${TABLE}.quantity ;;
   }

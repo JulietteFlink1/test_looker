@@ -4,6 +4,7 @@ view: product_product {
   drill_fields: [id]
 
   dimension: id {
+    label: "Product ID"
     primary_key: yes
     type: number
     sql: ${TABLE}.id ;;
@@ -121,6 +122,7 @@ view: product_product {
   }
 
   dimension: name {
+    label: "Product Name"
     type: string
     sql: ${TABLE}.name ;;
   }

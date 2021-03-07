@@ -72,6 +72,7 @@ view: product_productvariant {
   }
 
   dimension: name {
+    label: "Productvariant Name"
     type: string
     sql: ${TABLE}.name ;;
   }
