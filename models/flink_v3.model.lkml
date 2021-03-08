@@ -137,7 +137,7 @@ explore: order_order {
     sql_on: ${first_order_facts.voucher_id} = ${first_order_discount.id} ;;
     fields:
     [
-      first_order_discount.code,
+      first_order_discount.code
     ]
   }
 
