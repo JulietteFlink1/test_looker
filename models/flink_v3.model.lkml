@@ -34,7 +34,6 @@ datagroup: flink_default_datagroup {
   max_cache_age: "2 hour"
 }
 
-
 persist_with: flink_default_datagroup
 
 
