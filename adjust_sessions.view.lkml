@@ -327,6 +327,7 @@ view: adjust_sessions {
     timeframes: [
       raw,
       time,
+      hour,
       date,
       week,
       month,
