@@ -101,8 +101,18 @@ view: order_orderline_facts {
     value_format: "0"
   }
 
+  measure: avg_daily_item_quantity_today {
+    label: "# Total Sales (today)"
+    description: "Average Daily Quantity of Products sold considering only the current day"
+    hidden:  no
+    type: sum
+    sql: ${quantity};;
+    filters: [created_date: "today"]
+    value_format: "0"
+  }
+
   measure: avg_daily_item_quantity_last_1d {
-    label: "AVG Daily Item Quantity sold (1d)"
+    label: "# Total Sales (prev day)"
     description: "Average Daily Quantity of Products sold considering only the previous day"
     hidden:  no
     type: sum
@@ -112,7 +122,7 @@ view: order_orderline_facts {
   }
 
   measure: sum_item_quantity_last_3d {
-    label: "SUM Item Quantity sold in the previous 3 days"
+    label: "# Total Sales (last 3d)"
     description: "Quantity of Order Line Items sold in the previous 3 days"
     hidden:  yes
     type: sum
@@ -122,7 +132,7 @@ view: order_orderline_facts {
   }
 
   measure: avg_daily_item_quantity_last_3d {
-    label: "AVG Daily Item Quantity sold (3d)"
+    label: "# AVG daily sales (last 3d)"
     description: "Average Daily Quantity of Products sold considering the previous 3 days"
     hidden:  no
     type: number
@@ -131,49 +141,49 @@ view: order_orderline_facts {
   }
 
   measure: sum_item_quantity_last_7d {
-    label: "SUM Item Quantity sold in the previous 7 days"
+    label: "# Total Sales (last 7d)"
     description: "Quantity of Order Line Items sold in the previous 7 days"
-    hidden:  yes
+    hidden:  no
     type: sum
-    sql: ${quantity};;
+    sql: ${quantity}::float;;
     filters: [created_date: "7 days ago for 7 days"]
-    value_format: "0"
+    value_format: "0.0"
   }
 
   measure: avg_daily_item_quantity_last_7d {
-    label: "AVG Daily Item Quantity sold (7d)"
+    label: "# AVG daily sales (last 7d)"
     description: "Average Daily Quantity of Products sold considering the previous 7 days"
     hidden:  no
     type: number
     sql: ${sum_item_quantity_last_7d} / 7;;
-    value_format: "0.00"
+    value_format: "0.0"
   }
 
   measure: pct_stock_range_1d {
-    label: "% Stock Range (1d)"
-    description: "1d Average Daily Sales divided by Current Stock"
+    label: "Stock Range [days, based on 1d avg.]"
+    description: "Current stock divided by 1d AVG Daily Sales"
     hidden:  no
     type: number
     sql: ${warehouse_stock.sum_stock_quantity} / NULLIF(${avg_daily_item_quantity_last_1d}, 0);;
-    value_format: "0.0%"
+    value_format: "0.0"
   }
 
   measure: pct_stock_range_3d {
-    label: "% Stock Range (3d)"
-    description: "3d Average Daily Sales divided by Current Stock"
+    label: "Stock Range [days, based on 3d avg.]"
+    description: "Current stock divided by 3d AVG Daily Sales"
     hidden:  no
     type: number
     sql: ${warehouse_stock.sum_stock_quantity} / NULLIF(${avg_daily_item_quantity_last_3d}, 0);;
-    value_format: "0.0%"
+    value_format: "0.0"
   }
 
   measure: pct_stock_range_7d {
-    label: "% Stock Range (7d)"
-    description: "7d Average Daily Sales divided by Current Stock"
+    label: "Stock Range [days, based on 7d avg.]"
+    description: "Current stock divided by 7d AVG Daily Sales"
     hidden:  no
     type: number
     sql: ${warehouse_stock.sum_stock_quantity} / NULLIF(${avg_daily_item_quantity_last_7d}, 0);;
-    value_format: "0.0%"
+    value_format: "0.0"
   }
 
   measure: sum_item_price_gross {

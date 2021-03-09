@@ -1,10 +1,10 @@
-view: warehouse_stock {
-  sql_table_name: `flink-backend.saleor_db.warehouse_stock`
+view: product_producttype {
+  sql_table_name: `flink-backend.saleor_db.product_producttype`
     ;;
   drill_fields: [id]
 
   dimension: id {
-    label: "Warehouse Stock ID"
+    label: "Producttype ID"
     primary_key: yes
     type: number
     sql: ${TABLE}.id ;;
@@ -62,38 +62,49 @@ view: warehouse_stock {
     sql: ${TABLE}._sdc_table_version ;;
   }
 
-  dimension: product_variant_id {
-    type: number
-    sql: ${TABLE}.product_variant_id ;;
+  dimension: has_variants {
+    type: yesno
+    sql: ${TABLE}.has_variants ;;
   }
 
-  dimension: quantity {
-    label: "Stock quantity"
-    type: number
-    sql: ${TABLE}.quantity ;;
+  dimension: is_digital {
+    type: yesno
+    sql: ${TABLE}.is_digital ;;
   }
 
-  dimension: warehouse_id {
+  dimension: is_shipping_required {
+    type: yesno
+    sql: ${TABLE}.is_shipping_required ;;
+  }
+
+  dimension: metadata {
     type: string
-    sql: ${TABLE}.warehouse_id ;;
+    sql: ${TABLE}.metadata ;;
+  }
+
+  dimension: name {
+    label: "Producttype Name"
+    type: string
+    sql: ${TABLE}.name ;;
+  }
+
+  dimension: private_metadata {
+    type: string
+    sql: ${TABLE}.private_metadata ;;
+  }
+
+  dimension: slug {
+    type: string
+    sql: ${TABLE}.slug ;;
+  }
+
+  dimension: weight {
+    type: number
+    sql: ${TABLE}.weight ;;
   }
 
   measure: count {
     type: count
-    drill_fields: [id]
+    drill_fields: [id, name]
   }
-
-##########
-## SUMS ##
-##########
-
-  measure: sum_stock_quantity {
-    label: "SUM Stock Quantity"
-    description: "Quantity of SKU in stock"
-    hidden:  no
-    type: sum
-    sql: ${quantity};;
-    value_format: "0"
-  }
-
 }

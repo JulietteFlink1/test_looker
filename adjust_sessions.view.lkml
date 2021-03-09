@@ -1,6 +1,6 @@
 view: adjust_sessions {
   derived_table: {
-    datagroup_trigger: flink_default_datagroup
+    persist_for: "12 hours"
     sql: with adjust_sessions as
       (
       SELECT  _adid_ || '-' || row_number() over(partition by _adid_ order by _created_at_) as session_id,
@@ -456,6 +456,7 @@ view: adjust_sessions {
     timeframes: [
       raw,
       time,
+      hour_of_day,
       date,
       week,
       month,
