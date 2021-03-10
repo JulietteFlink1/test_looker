@@ -67,7 +67,10 @@ view: adjust_sessions {
           and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at and
                       (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at
                       OR adjust_sessions.next_session_start_at is null)
-      where adjust._activity_kind_='event' and adjust._event_name_='AddressSelected' and adjust._UserAreaAvailable_= TRUE
+      where
+      --adjust._activity_kind_='event' and
+      --adjust._event_name_='AddressSelected' and
+      adjust._UserAreaAvailable_= TRUE
       group by 1, 2
       ),
 
@@ -292,6 +295,7 @@ view: adjust_sessions {
       adjust_sessions._app_version_,
       adjust_sessions._network_name_,
       installs.install_date as install_date,
+      1 as session,
       address_selected.event_count as address_selected,
       address_selected_true.event_count as address_selected_true,
       address_selected_false.event_count as address_selected_false,
@@ -491,6 +495,11 @@ view: adjust_sessions {
     sql: ${TABLE}.install_date is not NULL ;;
   }
 
+  dimension: session {
+    type: number
+    sql: ${TABLE}.session ;;
+  }
+
   #### Flags
 
   dimension: has_add_to_cart_in_session {
@@ -610,42 +619,174 @@ view: adjust_sessions {
   ##### Session events aggregate measures
 
   measure: cnt_installs {
+    label: "Installs count"
     type: count
     filters: [install_date: "NOT NULL"]
   }
 
+  measure: cnt_address_selected {
+    label: "Address selected count"
+    type: count
+    filters: [address_selected: "NOT NULL"]
+  }
+
   measure: cnt_address_selected_true {
+    label: "User area available count"
     type: count
     filters: [address_selected_true: "NOT NULL"]
   }
 
   measure: cnt_view_item {
+    label: "View item count"
     type: count
     filters: [view_item: "NOT NULL"]
   }
 
   measure: cnt_add_to_cart {
+    label: "Add to cart count"
     type: count
     filters: [add_to_cart: "NOT NULL"]
   }
 
   measure: cnt_begin_checkout {
+    label: "Begin checkout count"
     type: count
     filters: [begin_checkout: "NOT NULL"]
   }
 
   measure: cnt_payment_failed {
+    label: "Payment failed count"
     type: count
     filters: [payment_failed: "NOT NULL"]
   }
 
   measure: cnt_first_purchase {
+    label: "First purchase count"
     type: count
     filters: [first_purchase: "NOT NULL"]
   }
 
   measure: cnt_purchase {
+    label: "Purchase count"
     type: count
     filters: [purchase: "NOT NULL"]
+  }
+
+  measure: sum_sessions {
+    label: "Session count"
+    type: sum
+    sql: ${session} ;;
+  }
+
+  ###### Percentage new users ######
+
+  measure: pct_address_selected_new_users {
+    label: "% Install sessions with address selected"
+    description: "Share of install sessions that had address selected"
+    hidden:  no
+    type: number
+    sql: ${cnt_address_selected} / NULLIF(${cnt_installs}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_user_area_available_new_users {
+    label: "% Install sessions with user area available true"
+    description: "Share of install sessions that had user area available true"
+    hidden:  no
+    type: number
+    sql: ${cnt_address_selected_true} / NULLIF(${cnt_installs}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_view_item_new_users {
+    label: "% Install sessions with view item"
+    description: "Share of install sessions that had view item"
+    hidden:  no
+    type: number
+    sql: ${cnt_view_item} / NULLIF(${cnt_installs}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_add_to_cart_new_users {
+    label: "% Install sessions with add to cart"
+    description: "Share of install sessions that had add to cart"
+    hidden:  no
+    type: number
+    sql: ${cnt_add_to_cart} / NULLIF(${cnt_installs}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_begin_checkout_new_users {
+    label: "% Install sessions with begin checkout"
+    description: "Share of install sessions that had begin checkout"
+    hidden:  no
+    type: number
+    sql: ${cnt_begin_checkout} / NULLIF(${cnt_installs}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_first_purchase_new_users {
+    label: "% Install sessions with first purchase"
+    description: "Share of install sessions that had first purchase"
+    hidden:  no
+    type: number
+    sql: ${cnt_first_purchase} / NULLIF(${cnt_installs}, 0);;
+    value_format: "0%"
+  }
+
+###### Percentage returning users ######
+
+  measure: pct_address_selected_returning_users {
+    label: "% Sessions with address selected"
+    description: "Share of Sessions that had address selected"
+    hidden:  no
+    type: number
+    sql: ${cnt_address_selected} / NULLIF(${sum_sessions}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_user_area_available_returning_users {
+    label: "% Sessions with user area avialable true"
+    description: "Share of sessions that had user area available true"
+    hidden:  no
+    type: number
+    sql: ${cnt_address_selected_true} / NULLIF(${sum_sessions}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_view_item_returning_users {
+    label: "% Sessions with view item"
+    description: "Share of sessions that had view item"
+    hidden:  no
+    type: number
+    sql: ${cnt_view_item} / NULLIF(${sum_sessions}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_add_to_cart_returning_users {
+    label: "% Sessions with add to cart"
+    description: "Share of sessions that had add to cart"
+    hidden:  no
+    type: number
+    sql: ${cnt_add_to_cart} / NULLIF(${sum_sessions}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_begin_checkout_returning_users {
+    label: "% Sessions with begin checkout"
+    description: "Share of sessions that had begin checkout"
+    hidden:  no
+    type: number
+    sql: ${cnt_begin_checkout} / NULLIF(${sum_sessions}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_purchase_returning_users {
+    label: "% Sessions with purchase"
+    description: "Share of sessions that had purchase"
+    hidden:  no
+    type: number
+    sql: ${cnt_purchase} / NULLIF(${sum_sessions}, 0);;
+    value_format: "0%"
   }
 }
