@@ -159,6 +159,17 @@ explore: order_order {
     ]
   }
 
+  join: user_order_rank {
+    view_label: "Orders"
+    sql_on: ${order_order.id} = ${user_order_rank.id};;
+    relationship: one_to_one
+    type: left_outer
+    fields:
+    [
+      user_order_rank.user_order_rank
+    ]
+  }
+
   join: weekly_cohorts_stable_base {
     view_label: "First Order Facts (Weekly Cohorts)"
     sql_on: ${user_order_facts.first_order_week} = ${weekly_cohorts_stable_base.first_order_week};;
@@ -179,6 +190,7 @@ explore: order_order {
     relationship: one_to_one
     type: left_outer
   }
+
 }
 
 explore: product_product {
