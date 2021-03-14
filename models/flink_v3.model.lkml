@@ -129,6 +129,20 @@ explore: order_order {
     ]
   }
 
+  join: first_order_hub {
+    from: hubs
+    view_label: "First Order Facts"
+    sql_on: ${first_order_facts.warehouse_name} = ${hubs.hub_code_lowercase} ;;
+    relationship: one_to_one
+    type: left_outer
+    fields:
+    [
+      first_order_hub.country,
+      first_order_hub.city,
+      first_order_hub.hub_name
+    ]
+  }
+
   join: first_order_discount {
     view_label: "First Order Facts"
     type: left_outer
