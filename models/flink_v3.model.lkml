@@ -125,7 +125,8 @@ explore: order_order {
       first_order_facts.avg_delivery_time,
       first_order_facts.delivery_delay_since_eta,
       first_order_facts.is_delivery_less_than_0_minute,
-      first_order_facts.is_delivery_more_than_30_minute
+      first_order_facts.is_delivery_more_than_30_minute,
+      first_order_facts.delivery_delay_since_eta
     ]
   }
 
@@ -169,7 +170,8 @@ explore: order_order {
       latest_order_facts.avg_delivery_time,
       latest_order_facts.delivery_delay_since_eta,
       latest_order_facts.is_delivery_less_than_0_minute,
-      latest_order_facts.is_delivery_more_than_30_minute
+      latest_order_facts.is_delivery_more_than_30_minute,
+      latest_order_facts.delivery_delay_since_eta
     ]
   }
 
