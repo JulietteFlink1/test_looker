@@ -49,7 +49,7 @@ named_value_format: euro_accounting_0_precision {
   value_format: "\"€\"#,##0"
 }
 
-
+####### ORDER EXPLORE #######
 explore: order_order {
   label: "Orders"
   view_label: "Orders"
@@ -223,6 +223,7 @@ explore: order_order {
   }
 }
 
+####### PRODUCTS EXPLORE #######
 explore: product_product {
   label: "Products"
   view_label: "Products"
@@ -287,10 +288,44 @@ explore: product_product {
   }
 }
 
+####### VOUCHER EXPLORE #######
+explore: discount_voucher {
+  label: "Vouchers"
+  view_label: "Vouchers"
+  group_label: "3) Vouchers"
+  description: "All data around Vouchers created in the backend"
+
+  join: order_order {
+    sql_on: ${discount_voucher.id} = ${order_order.voucher_id} ;;
+    relationship: one_to_many
+    type: left_outer
+  }
+
+  join: user_order_facts {
+    view_label: "Users"
+    type: left_outer
+    relationship: many_to_one
+    sql_on: ${order_order.user_email} = ${user_order_facts.user_email} ;;
+  }
+
+  join: order_fulfillment {
+    sql_on: ${order_fulfillment.order_id} = ${order_order.id} ;;
+    relationship: one_to_many
+    type: left_outer
+  }
+
+  join: order_fulfillment_facts {
+    type: left_outer
+    relationship: one_to_one
+    sql_on: ${order_fulfillment_facts.order_fulfillment_id} = ${order_fulfillment.id} ;;
+  }
+}
+
+####### TYPEFORM ANSWERS EXPLORE #######
 explore: answers {
   label: "Desired Products"
   view_label: "Desired Products"
-  group_label: "3) Survey Data"
+  group_label: "4) Survey Data"
   description: "Customer Survey on Desired Products"
   join: questions {
     sql_on: ${questions.question_id} = ${answers.question_id} ;;
@@ -304,10 +339,11 @@ explore: answers {
   }
 }
 
+####### ADJUST EXPLORE #######
 explore: adjust_sessions {
   label: "Adjust app data"
   view_label: "Adjust sessions"
-  group_label: "5) Adjust app data"
+  group_label: "6) Adjust app data"
   description: "Adjust events by session from mobile apps data"
   always_filter: {
     filters:
