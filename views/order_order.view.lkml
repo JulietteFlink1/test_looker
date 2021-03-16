@@ -288,6 +288,13 @@ view: order_order {
     sql: TIMESTAMP_ADD(${created_raw}, INTERVAL CAST((JSON_EXTRACT_SCALAR(${metadata}, '$.deliveryETA')) AS INT64) MINUTE) ;;
   }
 
+  dimension: delivery_delay_tier {
+    type: tier
+    tiers: [-10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+    style: interval
+    sql: ${delivery_delay_since_eta} ;;
+  }
+
   dimension_group: delivery_timestamp {
     label: "Delivery Date/Timestamp"
     type: time
