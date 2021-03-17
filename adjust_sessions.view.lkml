@@ -5,7 +5,6 @@ view: adjust_sessions {
       (
       SELECT  _adid_ || '-' || row_number() over(partition by _adid_ order by _created_at_) as session_id,
       _adid_,
-      pd,
       _city_,
       _os_name_,
       _app_version_,
@@ -17,7 +16,7 @@ view: adjust_sessions {
               _os_name_,
               _app_version_,
               _network_name_,
-              TIMESTAMP_SECONDS(_created_at_) as _created_at_,_PARTITIONTIME as pd,
+              TIMESTAMP_SECONDS(_created_at_) as _created_at_,
           TIMESTAMP_DIFF(TIMESTAMP_SECONDS(_created_at_),LAG(TIMESTAMP_SECONDS(_created_at_))
           OVER(PARTITION BY _adid_ ORDER BY TIMESTAMP_SECONDS(_created_at_)), MINUTE) AS inactivity_time
           FROM `flink-backend.customlytics_adjust.adjust_raw_imports`
@@ -284,12 +283,12 @@ view: adjust_sessions {
       group by 1, 2
       )
 
+
       select
       adjust_sessions._adid_,
       adjust_sessions.session_id,
       adjust_sessions.session_start_at,
       adjust_sessions.next_session_start_at,
-      adjust_sessions.pd,
       adjust_sessions._city_,
       adjust_sessions._os_name_,
       adjust_sessions._app_version_,
@@ -587,27 +586,27 @@ view: adjust_sessions {
     sql: ${view_subcategory} is not null ;;
   }
 
-  dimension: _partitiondate {
-    type: date
-    convert_tz: no
-    datatype: date
-    sql: DATE(${TABLE}.pd) ;;
-  }
+  #dimension: _partitiondate {
+  #  type: date
+  #  convert_tz: no
+  #  datatype: date
+  #  sql: DATE(${TABLE}.pd) ;;
+  #}
 
-  dimension_group: _partitiontime {
-    type: time
-    timeframes: [
-      raw,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    convert_tz: no
-    datatype: date
-    sql: ${TABLE}.pd ;;
-  }
+  #dimension_group: _partitiontime {
+  #  type: time
+  #  timeframes: [
+  #    raw,
+  #    date,
+  #    week,
+  #    month,
+  #    quarter,
+  #    year
+  #  ]
+  #  convert_tz: no
+  #  datatype: date
+  #  sql: ${TABLE}.pd ;;
+  #}
 
   ##### Measures
 
@@ -676,6 +675,12 @@ view: adjust_sessions {
     label: "Session count"
     type: sum
     sql: ${session} ;;
+  }
+
+  measure: sum_purchases {
+    label: "Purchase sum"
+    type: sum
+    sql: ${purchase} ;;
   }
 
   ###### Percentage new users ######

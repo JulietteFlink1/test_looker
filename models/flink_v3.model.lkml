@@ -361,12 +361,12 @@ explore: adjust_sessions {
   view_label: "Adjust sessions"
   group_label: "6) Adjust app data"
   description: "Adjust events by session from mobile apps data"
-  always_filter: {
-    filters:
-    [
-      adjust_sessions._partitiondate: "7 days"
-    ]
-  }
+  #always_filter: {
+  #  filters:
+  #  [
+  #    adjust_sessions._partitiondate: "7 days"
+  #  ]
+  #}
   join: adjust_events {
     sql_on: ${adjust_sessions._adid_} = ${adjust_events._adid_}
     AND ${adjust_events._created_at__raw} >= ${adjust_sessions.session_start_raw}
@@ -380,6 +380,27 @@ explore: adjust_sessions {
     type: left_outer
   }
 }
+
+
+########### AD-HOC EXPLORE ###########
+
+explore: products_mba {
+  label: "Market basket analysis at a product level"
+  view_label: "Product MBA"
+  group_label: "7) Ad-Hoc"
+  description: "Product basket analysis"
+
+}
+
+explore: categories_mba {
+  label: "Market basket analysis at a category level"
+  view_label: "Category MBA"
+  group_label: "7) Ad-Hoc"
+  description: "Product category basket analysis"
+
+}
+
+
 
 # explore: order_extends {
 #   label: "Power User Orders..."
