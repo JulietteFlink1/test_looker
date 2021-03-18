@@ -18,13 +18,13 @@ view: products_mba {
               'product' as type,
               case
               when
-                      (b.total_net_amount + b.discount_amount) < 10 then 'Less than 10'
+                      (b.total_gross_amount + b.discount_amount) < 10 then 'Less than 10'
               when
-                      (b.total_net_amount + b.discount_amount) >= 10 and
-                      (b.total_net_amount + b.discount_amount) < 20 then 'Between 10 and 20'
+                      (b.total_gross_amount + b.discount_amount) >= 10 and
+                      (b.total_gross_amount + b.discount_amount) < 20 then 'Between 10 and 20'
               when
-                      (b.total_net_amount + b.discount_amount) >= 20 and
-                      (b.total_net_amount + b.discount_amount) < 30 then 'Between 20 and 30'
+                      (b.total_gross_amount + b.discount_amount) >= 20 and
+                      (b.total_gross_amount + b.discount_amount) < 30 then 'Between 20 and 30'
               else 'More than 30' end as AOV_cat,
               CASE WHEN JSON_EXTRACT_SCALAR(b.metadata, '$.warehouse') IN ('hamburg-oellkersallee', 'hamburg-oelkersallee') THEN 'de_ham_alto'
                       WHEN JSON_EXTRACT_SCALAR(b.metadata, '$.warehouse') = 'münchen-leopoldstraße' THEN 'de_muc_schw'
@@ -67,13 +67,13 @@ view: products_mba {
                       b.product_name as product_2,
                       case
                               when
-                                      (c.total_net_amount + c.discount_amount) < 10 then 'Less than 10'
+                                      (c.total_gross_amount + c.discount_amount) < 10 then 'Less than 10'
                               when
-                                      (c.total_net_amount + c.discount_amount) >= 10 and
-                                      (c.total_net_amount + c.discount_amount) < 20 then 'Between 10 and 20'
+                                      (c.total_gross_amount + c.discount_amount) >= 10 and
+                                      (c.total_gross_amount + c.discount_amount) < 20 then 'Between 10 and 20'
                               when
-                                      (c.total_net_amount + c.discount_amount) >= 20 and
-                                      (c.total_net_amount + c.discount_amount) < 30 then 'Between 20 and 30'
+                                      (c.total_gross_amount + c.discount_amount) >= 20 and
+                                      (c.total_gross_amount + c.discount_amount) < 30 then 'Between 20 and 30'
                               else 'More than 30' end as AOV_cat,
                       --(c.total_net_amount + c.discount_amount) as AOV,
                       CASE WHEN JSON_EXTRACT_SCALAR(c.metadata, '$.warehouse') IN ('hamburg-oellkersallee', 'hamburg-oelkersallee') THEN 'de_ham_alto'
@@ -120,13 +120,13 @@ view: products_mba {
                       c.product_name as product_3,
                       case
                               when
-                                      (d.total_net_amount + d.discount_amount) < 10 then 'Less than 10'
+                                      (d.total_gross_amount + d.discount_amount) < 10 then 'Less than 10'
                               when
-                                      (d.total_net_amount + d.discount_amount) >= 10 and
-                                      (d.total_net_amount + d.discount_amount) < 20 then 'Between 10 and 20'
+                                      (d.total_gross_amount + d.discount_amount) >= 10 and
+                                      (d.total_gross_amount + d.discount_amount) < 20 then 'Between 10 and 20'
                               when
-                                      (d.total_net_amount + d.discount_amount) >= 20 and
-                                      (d.total_net_amount + d.discount_amount) < 30 then 'Between 20 and 30'
+                                      (d.total_gross_amount + d.discount_amount) >= 20 and
+                                      (d.total_gross_amount + d.discount_amount) < 30 then 'Between 20 and 30'
                               else 'More than 30' end as AOV_cat,
                       --(d.total_net_amount + d.discount_amount) as AOV,
                       CASE WHEN JSON_EXTRACT_SCALAR(d.metadata, '$.warehouse') IN ('hamburg-oellkersallee', 'hamburg-oelkersallee') THEN 'de_ham_alto'
