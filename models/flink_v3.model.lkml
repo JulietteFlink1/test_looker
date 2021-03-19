@@ -59,7 +59,7 @@ explore: order_order {
     filters:  [
                 order_order.is_internal_order: "no",
                 order_order.is_successful_order: "yes",
-                order_order.created_date: "after 2020-01-25"
+                order_order.created_date: "after 2021-01-25"
               ]
   }
 
@@ -241,7 +241,7 @@ explore: order_order {
 
 ####### PRODUCTS EXPLORE #######
 explore: product_product {
-  label: "Products"
+  label: " Products"
   view_label: "Products"
   group_label: "2) Inventory"
   description: "Products, Productvariations, Categories, SKUs, Stock etc."
@@ -299,6 +299,21 @@ explore: product_product {
   join: hubs {
     view_label: "Hubs"
     sql_on: ${warehouse_warehouse.slug} = ${hubs.hub_code_lowercase} ;;
+    relationship: one_to_one
+    type: left_outer
+  }
+}
+
+####### NOOS EXPLORE #######
+explore: hist_daily_stock {
+  label: "NooS Substitute Groups"
+  view_label: "NooS Substitute Groups"
+  group_label: "2) Inventory"
+  description: "Snapshots of Daily Inventory per Substitute group (only NooS)"
+
+  join: hubs {
+    view_label: "Hubs"
+    sql_on: ${hist_daily_stock.slug} = ${hubs.hub_code_lowercase} ;;
     relationship: one_to_one
     type: left_outer
   }
