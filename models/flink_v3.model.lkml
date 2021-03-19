@@ -402,6 +402,38 @@ explore: adjust_sessions {
   }
 }
 
+####### CS ISSUES EXPLORE #######
+explore: cs_issues_post_delivery {
+  label: "CS Contacts"
+  view_label: "CS Contacts"
+  group_label: "7) Customer Service"
+  description: "Customer Service Contacts tracked via GSheet"
+
+  join: order_order {
+    sql_on: ${cs_issues_post_delivery.order_nr__} = ${order_order.id};;
+    relationship: many_to_one
+    type: left_outer
+  }
+
+  join: user_order_facts {
+    view_label: "Users"
+    type: left_outer
+    relationship: many_to_one
+    sql_on: ${order_order.user_email} = ${user_order_facts.user_email} ;;
+  }
+
+  join: order_fulfillment {
+    sql_on: ${order_fulfillment.order_id} = ${order_order.id} ;;
+    relationship: one_to_many
+    type: left_outer
+  }
+
+  join: order_fulfillment_facts {
+    type: left_outer
+    relationship: one_to_one
+    sql_on: ${order_fulfillment_facts.order_fulfillment_id} = ${order_fulfillment.id} ;;
+  }
+}
 
 ########### AD-HOC EXPLORE ###########
 
