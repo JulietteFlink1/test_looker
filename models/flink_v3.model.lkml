@@ -237,6 +237,12 @@ explore: order_order {
     relationship: one_to_one
     type: left_outer
   }
+
+  join: cs_issues_post_delivery {
+    sql_on: ${order_order.id} = ${cs_issues_post_delivery.order_nr__} ;;
+    relationship: one_to_many
+    type: left_outer
+  }
 }
 
 ####### PRODUCTS EXPLORE #######

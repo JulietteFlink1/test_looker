@@ -18,6 +18,13 @@ view: hist_daily_stock {
        ;;
   }
 
+  dimension: compound_primary_key {
+    primary_key: yes
+    hidden: yes
+    type: string
+    sql: CONCAT( ${TABLE}.capture_date, ' ', ${TABLE}.warehouse_id, ' ', ${TABLE}.substitute_group, ' ', ${TABLE}.quantity_per_substitute_group ) ;;
+  }
+
   dimension: capture_date {
     type: date
     datatype: date
@@ -52,8 +59,6 @@ view: hist_daily_stock {
   }
 
 ####### Measures ########
-
-
   measure: count {
     type: count
   }
