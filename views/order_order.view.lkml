@@ -604,6 +604,16 @@ dimension: hub_location  {
     value_format_name: euro_accounting_2_precision
   }
 
+  measure: avg_delivery_distance_km {
+    label: "AVG Delivery Distance (km)"
+    description: "Average distance between hub and customer dropoff (most direct path / straight line)"
+    hidden:  no
+    type: average
+    sql: ${delivery_distance_km};;
+    value_format: "0.00"
+    filters: [is_delivery_distance_over_10km: "no"]
+  }
+
 ##########
 ## SUMS ##
 ##########
