@@ -356,6 +356,13 @@ explore: discount_voucher {
     relationship: one_to_one
     sql_on: ${order_fulfillment_facts.order_fulfillment_id} = ${order_fulfillment.id} ;;
   }
+
+  join: hubs {
+    view_label: "Hubs"
+    sql_on: ${order_order.warehouse_name} = ${hubs.hub_code_lowercase} ;;
+    relationship: one_to_one
+    type: left_outer
+  }
 }
 
 ####### TYPEFORM ANSWERS EXPLORE #######
@@ -432,6 +439,13 @@ explore: cs_issues_post_delivery {
     type: left_outer
     relationship: one_to_one
     sql_on: ${order_fulfillment_facts.order_fulfillment_id} = ${order_fulfillment.id} ;;
+  }
+
+  join: hubs {
+    view_label: "Hubs"
+    sql_on: ${order_order.warehouse_name} = ${hubs.hub_code_lowercase} ;;
+    relationship: one_to_one
+    type: left_outer
   }
 }
 
