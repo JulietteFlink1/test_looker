@@ -85,6 +85,13 @@ explore: order_order {
     sql_on: ${order_order.user_email} = ${user_order_facts.user_email} ;;
   }
 
+  join: hub_order_facts {
+    view_label: "Hubs"
+    type: left_outer
+    relationship: many_to_one
+    sql_on: ${order_order.warehouse_name} = ${hub_order_facts.warehouse_name} ;;
+  }
+
   join: order_fulfillment_facts {
     type: left_outer
     relationship: one_to_one
@@ -345,6 +352,13 @@ explore: discount_voucher {
     sql_on: ${order_order.user_email} = ${user_order_facts.user_email} ;;
   }
 
+  join: hub_order_facts {
+    view_label: "Hubs"
+    type: left_outer
+    relationship: many_to_one
+    sql_on: ${order_order.warehouse_name} = ${hub_order_facts.warehouse_name} ;;
+  }
+
   join: order_fulfillment {
     sql_on: ${order_fulfillment.order_id} = ${order_order.id} ;;
     relationship: one_to_many
@@ -427,6 +441,13 @@ explore: cs_issues_post_delivery {
     type: left_outer
     relationship: many_to_one
     sql_on: ${order_order.user_email} = ${user_order_facts.user_email} ;;
+  }
+
+  join: hub_order_facts {
+    view_label: "Hubs"
+    type: left_outer
+    relationship: many_to_one
+    sql_on: ${order_order.warehouse_name} = ${hub_order_facts.warehouse_name} ;;
   }
 
   join: order_fulfillment {

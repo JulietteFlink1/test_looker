@@ -78,10 +78,15 @@ view: order_order {
     sql:SUBSTRING(${created_minute30}, 12, 16);;
   }
 
-
   dimension_group: time_since_sign_up {
     type: duration
     sql_start: ${user_order_facts.first_order_raw} ;;
+    sql_end: ${created_raw} ;;
+  }
+
+  dimension_group: time_since_hub_launch {
+    type: duration
+    sql_start: ${hub_order_facts.first_order_raw} ;;
     sql_end: ${created_raw} ;;
   }
 
