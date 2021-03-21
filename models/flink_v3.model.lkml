@@ -115,7 +115,7 @@ explore: order_order {
     from: account_address
     type: left_outer
     relationship: one_to_one
-    sql_on: ${order_order.billing_address_id} = ${shipping_address.id} ;;
+    sql_on: ${order_order.billing_address_id} = ${billing_address.id} ;;
   }
 
   join: first_order_facts {
@@ -160,6 +160,18 @@ explore: order_order {
     fields:
     [
       first_order_discount.code
+    ]
+  }
+
+  join: first_order_billing_address {
+    from: account_address
+    type: left_outer
+    relationship: one_to_one
+    sql_on: ${first_order_facts.billing_address_id} = ${first_order_billing_address.id} ;;
+    fields:
+    [
+      first_order_billing_address.first_name,
+      first_order_billing_address.last_name
     ]
   }
 

@@ -89,12 +89,12 @@ view: account_address {
 
   dimension: first_name {
     type: string
-    sql: ${TABLE}.first_name ;;
+    sql: INITCAP(${TABLE}.first_name) ;;
   }
 
   dimension: last_name {
     type: string
-    sql: ${TABLE}.last_name ;;
+    sql: INITCAP(${TABLE}.last_name) ;;
   }
 
   dimension: phone {
