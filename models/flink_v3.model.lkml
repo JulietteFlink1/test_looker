@@ -249,6 +249,13 @@ explore: order_order {
     relationship: one_to_many
     type: left_outer
   }
+
+  join: nps_after_order {
+    view_label: "NPS After Order"
+    sql_on: ${order_order.country_iso} = ${nps_after_order.country_iso} AND ${order_order.id} = ${nps_after_order.order_id} ;;
+    relationship: one_to_many
+    type: left_outer
+  }
 }
 
 ####### PRODUCTS EXPLORE #######
