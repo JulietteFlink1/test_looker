@@ -380,20 +380,12 @@ explore: discount_voucher {
 
 ####### TYPEFORM ANSWERS EXPLORE #######
 explore: answers {
+  from: desired_products_survey
   label: "Desired Products"
   view_label: "Desired Products"
   group_label: "4) Survey Data"
   description: "Customer Survey on Desired Products"
-  join: questions {
-    sql_on: ${questions.question_id} = ${answers.question_id} ;;
-    relationship: many_to_one
-    type: left_outer
-  }
-  join: landings {
-    sql_on: ${landings.landing_id} = ${answers.landing_id} ;;
-    relationship: one_to_one
-    type: left_outer
-  }
+
 }
 
 ####### ADJUST EXPLORE #######
