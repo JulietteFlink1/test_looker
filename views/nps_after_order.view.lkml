@@ -69,9 +69,9 @@ view: nps_after_order {
 
 ##### MEASURES #####
 
-  measure: count {
+  measure: cnt_responses {
     type: count
-    drill_fields: []
+    label: "# NPS Responses"
   }
 
   measure: cnt_detractors {
@@ -94,7 +94,7 @@ view: nps_after_order {
     description: "Share of Detractors over total Responses"
     hidden:  no
     type: number
-    sql: ${cnt_detractors} / NULLIF(${count}, 0);;
+    sql: ${cnt_detractors} / NULLIF(${cnt_responses}, 0);;
     value_format: "0%"
   }
 
@@ -103,7 +103,7 @@ view: nps_after_order {
     description: "Share of Passives over total Responses"
     hidden:  no
     type: number
-    sql: ${cnt_passives} / NULLIF(${count}, 0);;
+    sql: ${cnt_passives} / NULLIF(${cnt_responses}, 0);;
     value_format: "0%"
   }
 
@@ -112,7 +112,7 @@ view: nps_after_order {
     description: "Share of Promoters over total Responses"
     hidden:  no
     type: number
-    sql: ${cnt_promoters} / NULLIF(${count}, 0);;
+    sql: ${cnt_promoters} / NULLIF(${cnt_responses}, 0);;
     value_format: "0%"
   }
 
