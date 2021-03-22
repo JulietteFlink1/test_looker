@@ -3,23 +3,23 @@ view: order_fulfillment_facts {
     datagroup_trigger: flink_default_datagroup
     sql: SELECT
         *,
-        LEAD(order_fulfillment_created_time) OVER(partition by order_order_id order by order_fulfillment_rank) AS leading_order_fulfillment_created_time FROM
+        LEAD(order_fulfillment_created_time) OVER(partition by country_iso, order_order_id order by order_fulfillment_rank) AS leading_order_fulfillment_created_time FROM
         (
           SELECT
+                  order_order.country_iso,
                   order_order.id  AS order_order_id,
                   order_fulfillment.id  AS order_fulfillment_id,
                   FORMAT_TIMESTAMP('%F %T', order_order.created ) AS order_order_created_time,
                   FORMAT_TIMESTAMP('%F %T', order_fulfillment.created ) AS order_fulfillment_created_time,
                   CAST(TIMESTAMP_DIFF(order_fulfillment.created , order_order.created , MINUTE) AS INT64) AS minutes_time_diff_between_order_created_and_fulfillment_created,
                   COUNT(order_fulfillment.id) AS order_fulfillment_count,
-                  RANK() OVER(partition by order_order.id order by MIN(order_fulfillment.created)) as order_fulfillment_rank
-                  FROM `flink-backend.saleor_db.order_order`
-                     AS order_order
-                LEFT JOIN `flink-backend.saleor_db.order_fulfillment`
-                     AS order_fulfillment ON order_fulfillment.order_id = order_order.id
+                  RANK() OVER(partition by order_order.country_iso, order_order.id order by MIN(order_fulfillment.created)) as order_fulfillment_rank
 
-                GROUP BY 1,2,3,4,5
-                ORDER BY 1,4 asc
+                  FROM `flink-backend.saleor_db_global.order_order` AS order_order
+                  LEFT JOIN `flink-backend.saleor_db_global.order_fulfillment` AS order_fulfillment ON order_fulfillment.country_iso = order_order.country_iso AND order_fulfillment.order_id = order_order.id
+
+                GROUP BY 1,2,3,4,5,6
+                ORDER BY 1,2,5
         )
        ;;
   }
@@ -29,15 +29,26 @@ view: order_fulfillment_facts {
     drill_fields: [detail*]
   }
 
+  dimension: country_iso {
+    type: string
+    sql: ${TABLE}.country_iso ;;
+  }
+
   dimension: order_order_id {
     type: number
     sql: ${TABLE}.order_order_id ;;
   }
 
   dimension: order_fulfillment_id {
-    primary_key: yes
+    primary_key: no
     type: number
     sql: ${TABLE}.order_fulfillment_id ;;
+  }
+
+  dimension: unique_id {
+    primary_key: yes
+    type: string
+    sql: concat(${country_iso}, ${order_fulfillment_id}) ;;
   }
 
   dimension: order_order_created_time {

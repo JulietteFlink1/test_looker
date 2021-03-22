@@ -1,10 +1,11 @@
 view: order_order {
-  sql_table_name: `flink-backend.saleor_db.order_order`
+  sql_table_name: `flink-backend.saleor_db_global.order_order`
     ;;
   drill_fields: [core_dimensions*]
 
   set: core_dimensions {
     fields: [
+      country_iso,
       id,
       warehouse_name,
       created_raw,
@@ -16,9 +17,20 @@ view: order_order {
     ]
   }
 
+  dimension: country_iso {
+    type: string
+    sql: ${TABLE}.country_iso ;;
+  }
+
+  dimension: unique_id {
+    primary_key: yes
+    type: string
+    sql: concat(${country_iso}, ${id}) ;;
+  }
+
   dimension: id {
     label: "Order ID"
-    primary_key: yes
+    primary_key: no
     type: number
     sql: ${TABLE}.id ;;
   }
@@ -78,10 +90,15 @@ view: order_order {
     sql:SUBSTRING(${created_minute30}, 12, 16);;
   }
 
-
   dimension_group: time_since_sign_up {
     type: duration
     sql_start: ${user_order_facts.first_order_raw} ;;
+    sql_end: ${created_raw} ;;
+  }
+
+  dimension_group: time_since_hub_launch {
+    type: duration
+    sql_start: ${hub_order_facts.first_order_raw} ;;
     sql_end: ${created_raw} ;;
   }
 
@@ -264,6 +281,33 @@ view: order_order {
     sql_longitude: ROUND( CAST( SPLIT((JSON_EXTRACT_SCALAR(${metadata}, '$.deliveryCoordinates')), ',')[ORDINAL(2)] AS FLOAT64), 7) ;;
   }
 
+dimension: hub_location  {
+  type: location
+  sql_latitude: ${hubs.latitude};;
+  sql_longitude: ${hubs.longitude};;
+}
+
+  dimension: delivery_distance_m {
+    type: distance
+    units: meters
+    start_location_field: order_order.hub_location
+    end_location_field: order_order.customer_location
+  }
+
+  dimension: delivery_distance_km {
+    type: distance
+    units: kilometers
+    start_location_field: order_order.hub_location
+    end_location_field: order_order.customer_location
+  }
+
+  dimension: delivery_distance_tier {
+    type: tier
+    tiers: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 3.0, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9, 4.0]
+    style: interval
+    sql: ${delivery_distance_km} ;;
+  }
+
   dimension: delivery_eta_minutes {
     label: "Delivery PDT (min)"
     type: number
@@ -444,6 +488,12 @@ view: order_order {
               ;;
   }
 
+  dimension: is_delivery_distance_over_10km {
+    type: yesno
+    sql: IF(${delivery_distance_km} > 10, TRUE, FALSE);;
+  }
+
+
 ##############
 ## AVERAGES ##
 ##############
@@ -569,6 +619,16 @@ view: order_order {
     type: average
     sql: ${shipping_price_net_amount};;
     value_format_name: euro_accounting_2_precision
+  }
+
+  measure: avg_delivery_distance_km {
+    label: "AVG Delivery Distance (km)"
+    description: "Average distance between hub and customer dropoff (most direct path / straight line)"
+    hidden:  no
+    type: average
+    sql: ${delivery_distance_km};;
+    value_format: "0.00"
+    filters: [is_delivery_distance_over_10km: "no"]
   }
 
 ##########

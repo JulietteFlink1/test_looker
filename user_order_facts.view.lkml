@@ -1,10 +1,12 @@
 view: user_order_facts {
   derived_table: {
     datagroup_trigger: flink_default_datagroup
-    sql:with users as
+    sql:
+    with users as
     (
     SELECT
-            user_email
+            country_iso
+            , user_email
             , COUNT(DISTINCT id) AS lifetime_orders
             , SUM(total_gross_amount) AS lifetime_revenue_gross
             , SUM(total_net_amount) AS lifetime_revenue_net
@@ -13,139 +15,145 @@ view: user_order_facts {
             , MIN(created) AS first_order
             , MAX(created) AS latest_order
             , COUNT(DISTINCT FORMAT_TIMESTAMP('%Y%m', created)) AS number_of_distinct_months_with_orders
-          FROM `flink-backend.saleor_db.order_order` order_order
-          GROUP BY user_email
+          FROM `flink-backend.saleor_db_global.order_order` order_order
+          GROUP BY country_iso, user_email
     ),
 
     agg_products_by_user as
     (
     select
+      orders.country_iso,
       orders.user_email,
       orderline.product_name,
       sum(orderline.quantity) as sum_quantity
-      from `flink-backend.saleor_db.order_order` orders
-      left join `flink-backend.saleor_db.order_orderline` orderline
-      on orders.id = orderline.order_id
-      group by 1, 2
+      from `flink-backend.saleor_db_global.order_order` orders
+      left join `flink-backend.saleor_db_global.order_orderline` orderline
+      on orders.country_iso = orderline.country_iso and orders.id = orderline.order_id
+      group by 1, 2, 3
     ),
 
     categories_by_user as
     (
     select
+      orders.country_iso,
       orders.user_email,
       orderline.product_sku,
       orderline.product_name,
       pcategory.name as category_name
-      from `flink-backend.saleor_db.order_order` orders
-      left join `flink-backend.saleor_db.order_orderline` orderline
-      on orders.id = orderline.order_id
-      left join `flink-backend.saleor_db.product_productvariant` pvariant
-      on orderline.product_sku=pvariant.sku
-      left join `flink-backend.saleor_db.product_product` pproduct
-      on pvariant.id=pproduct.id
-      left join `flink-backend.saleor_db.product_category` pcategory
-      on pproduct.category_id=pcategory.id
+      from `flink-backend.saleor_db_global.order_order` orders
+      left join `flink-backend.saleor_db_global.order_orderline` orderline
+      on orders.country_iso = orderline.country_iso and orders.id = orderline.order_id
+      left join `flink-backend.saleor_db_global.product_productvariant` pvariant
+      on orderline.country_iso = pvariant.country_iso and orderline.product_sku=pvariant.sku
+      left join `flink-backend.saleor_db_global.product_product` pproduct
+      on pvariant.country_iso = pproduct.country_iso and pvariant.id=pproduct.id
+      left join `flink-backend.saleor_db_global.product_category` pcategory
+      on pproduct.country_iso = pcategory.country_iso and pproduct.category_id=pcategory.id
     ),
 
     agg_categories_by_user as
     (
-      select user_email, category_name, count(*) as cnt_categories
+      select country_iso, user_email, category_name, count(*) as cnt_categories
       from categories_by_user
-      group by 1, 2
+      group by 1, 2, 3
     ),
 
     ranked_categories as
     (
-      select user_email,category_name, cnt_categories, ROW_NUMBER() OVER ( PARTITION BY user_email ORDER BY cnt_categories desc) AS rank
+      select country_iso, user_email, category_name, cnt_categories, ROW_NUMBER() OVER ( PARTITION BY country_iso, user_email ORDER BY cnt_categories desc) AS rank
       from agg_categories_by_user
     ),
 
     ranked_products as
     (
-    select user_email, product_name, sum_quantity, ROW_NUMBER() OVER ( PARTITION BY user_email ORDER BY sum_quantity desc) AS rank
+    select country_iso, user_email, product_name, sum_quantity, ROW_NUMBER() OVER ( PARTITION BY country_iso, user_email ORDER BY sum_quantity desc) AS rank
     from agg_products_by_user
     ),
 
     top_1_category as
     (
-      select user_email, category_name
+      select country_iso, user_email, category_name
       from ranked_categories
       where rank=1
     ),
 
     top_2_category as
     (
-      select user_email, category_name
+      select country_iso, user_email, category_name
       from ranked_categories
       where rank=2
     ),
 
     top_1_products as
     (
-    select user_email, product_name
+    select country_iso, user_email, product_name
     from ranked_products
     where rank=1
     ),
 
     top_2_products as
     (
-    select user_email, product_name
+    select country_iso, user_email, product_name
     from ranked_products
     where rank=2
     ),
 
     top_3_products as
     (
-    select user_email, product_name
+    select country_iso, user_email, product_name
     from ranked_products
     where rank=3
     ),
 
     order_day as
     (
-    select user_email,
+    select country_iso,
+    user_email,
     extract(DAYOFWEEK from created) as day_of_week,
     count(*) as day_count
-    from `flink-backend.saleor_db.order_order`
-    group by 1, 2
+    from `flink-backend.saleor_db_global.order_order`
+    group by 1, 2, 3
     ),
 
     order_hour as
     (
-    select user_email,
+    select country_iso,
+    user_email,
     extract(HOUR from created) as hour,
     count(*) as hour_count
-    from `flink-backend.saleor_db.order_order`
-    group by 1, 2
+    from `flink-backend.saleor_db_global.order_order`
+    group by 1, 2, 3
     ),
 
     favourite_day as
     (
-    select user_email,
+    select country_iso,
+    user_email,
     day_of_week,
-    ROW_NUMBER() OVER ( PARTITION BY user_email ORDER BY day_count desc) AS rank
+    ROW_NUMBER() OVER ( PARTITION BY country_iso, user_email ORDER BY day_count desc) AS rank
     from order_day
     ),
 
     favourite_time as
     (
-    select user_email,
+    select country_iso, user_email,
     hour,
-    ROW_NUMBER() OVER ( PARTITION BY user_email ORDER BY hour_count desc) AS rank
+    ROW_NUMBER() OVER ( PARTITION BY country_iso, user_email ORDER BY hour_count desc) AS rank
     from order_hour
     ),
 
     latest_order_with_voucher as
     (
-      select orders.user_email,
+      select orders.country_iso,
+      orders.user_email,
       MAX(orders.created) as latest_order_with_voucher
-      from `flink-backend.saleor_db.order_order` orders
+      from `flink-backend.saleor_db_global.order_order` orders
       where orders.voucher_id is not null
-      group by 1
+      group by 1, 2
     )
 
-
     select
+    users.country_iso,
     users.user_email,
     users.lifetime_orders,
     users.lifetime_revenue_gross,
@@ -168,21 +176,21 @@ view: user_order_facts {
     latest_order_with_voucher.latest_order_with_voucher as last_order_with_voucher
     from users
     left join top_1_products
-    on users.user_email=top_1_products.user_email
+    on users.country_iso=top_1_products.country_iso and users.user_email=top_1_products.user_email
     left join top_2_products
-    on users.user_email=top_2_products.user_email
+    on users.country_iso=top_2_products.country_iso and users.user_email=top_2_products.user_email
     left join top_3_products
-    on users.user_email=top_3_products.user_email
+    on users.country_iso=top_3_products.country_iso and users.user_email=top_3_products.user_email
     left join top_1_category
-    on users.user_email=top_1_category.user_email
+    on users.country_iso=top_1_category.country_iso and users.user_email=top_1_category.user_email
     left join top_2_category
-    on users.user_email=top_2_category.user_email
+    on users.country_iso=top_2_category.country_iso and users.user_email=top_2_category.user_email
     left join favourite_day
-    on users.user_email=favourite_day.user_email
+    on users.country_iso=favourite_day.country_iso and users.user_email=favourite_day.user_email
     left join favourite_time
-    on users.user_email=favourite_time.user_email
+    on users.country_iso=favourite_time.country_iso and users.user_email=favourite_time.user_email
     left join latest_order_with_voucher
-    on users.user_email=latest_order_with_voucher.user_email
+    on users.country_iso=latest_order_with_voucher.country_iso and users.user_email=latest_order_with_voucher.user_email
     where favourite_day.rank = 1
     and favourite_time.rank = 1
     order by 2 desc
@@ -201,11 +209,22 @@ view: user_order_facts {
     sql: ${TABLE}.latest_order_id ;;
   }
 
+  dimension: country_iso {
+    type: string
+    sql: ${TABLE}.country_iso ;;
+  }
+
   dimension: user_email {
-    primary_key: yes
-    hidden: yes
+    primary_key: no
+    hidden: no
     type: number
     sql: ${TABLE}.user_email ;;
+  }
+
+  dimension: unique_id {
+    primary_key: yes
+    type: string
+    sql: concat(${country_iso}, ${user_email}) ;;
   }
 
   dimension_group: first_order {
