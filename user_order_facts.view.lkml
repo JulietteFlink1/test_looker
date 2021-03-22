@@ -15,6 +15,7 @@ view: user_order_facts {
             , MIN(created) AS first_order
             , MAX(created) AS latest_order
             , COUNT(DISTINCT FORMAT_TIMESTAMP('%Y%m', created)) AS number_of_distinct_months_with_orders
+            , COUNT(DISTINCT FORMAT_TIMESTAMP('%Y%W', created)) AS number_of_distinct_weeks_with_orders
           FROM `flink-backend.saleor_db_global.order_order` order_order
           GROUP BY country_iso, user_email
     ),
@@ -248,6 +249,11 @@ view: user_order_facts {
     sql: ${TABLE}.number_of_distinct_months_with_orders ;;
   }
 
+  dimension: number_of_distinct_weeks_with_orders {
+    type: number
+    sql: ${TABLE}.number_of_distinct_weeks_with_orders ;;
+  }
+
   dimension: days_betw_first_and_last_order {
     description: "Days between first and latest order"
     type: number
@@ -374,7 +380,7 @@ view: user_order_facts {
 
   measure: average_lifetime_revenue {
     type: average
-    value_format_name: usd
+    value_format_name: eur
     sql: ${lifetime_revenue_gross} ;;
   }
 
