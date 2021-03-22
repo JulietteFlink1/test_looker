@@ -7,6 +7,7 @@ view: monthly_cohorts_stable_base {
       column: first_order_month { field: user_order_facts.first_order_month }
       column: months_time_since_sign_up {}
       column: cnt_unique_customers {}
+      column: sum_gmv_gross {}
       column: country_iso {}
       filters: {
         field: order_order.is_internal_order
@@ -45,6 +46,13 @@ view: monthly_cohorts_stable_base {
     label: "Cohort Size"
     description: "Cohort Base as count of unique customers"
     value_format: "0"
+    type: number
+  }
+
+  dimension: sum_gmv_gross {
+    label: "GMV (gross)"
+    description: "Cohort Base as SUM of GMV aton 1st order"
+    value_format: "\"€\"0.0,\" K\""
     type: number
   }
 }
