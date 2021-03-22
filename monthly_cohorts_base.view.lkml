@@ -17,7 +17,7 @@ view: monthly_cohorts_stable_base {
       }
       filters: {
         field: order_order.created_date
-        value: "after 2020/01/25"
+        value: "after 2021/01/25"
       }
       filters: {
         field: order_order.months_time_since_sign_up
