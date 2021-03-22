@@ -164,6 +164,7 @@ view: user_order_facts {
     users.first_order,
     users.latest_order,
     users.number_of_distinct_months_with_orders,
+    users.number_of_distinct_weeks_with_orders,
     top_1_products.product_name as top_1_product,
     top_2_products.product_name as top_2_product,
     top_3_products.product_name as top_3_product,
