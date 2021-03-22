@@ -7,6 +7,7 @@ view: monthly_cohorts_stable_base {
       column: first_order_month { field: user_order_facts.first_order_month }
       column: months_time_since_sign_up {}
       column: cnt_unique_customers {}
+      column: country_iso {}
       filters: {
         field: order_order.is_internal_order
         value: "no"
@@ -25,6 +26,12 @@ view: monthly_cohorts_stable_base {
       }
     }
   }
+
+  dimension: country_iso {
+    type: string
+    sql: ${TABLE}.country_iso ;;
+  }
+
   dimension: first_order_month {
     label: "Users First Order Month"
     type: date_month

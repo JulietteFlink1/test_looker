@@ -1,12 +1,23 @@
 view: discount_voucher {
-  sql_table_name: `flink-backend.saleor_db.discount_voucher`
+  sql_table_name: `flink-backend.saleor_db_global.discount_voucher`
     ;;
   drill_fields: [id]
 
   dimension: id {
-    primary_key: yes
+    primary_key: no
     type: number
     sql: ${TABLE}.id ;;
+  }
+
+  dimension: country_iso {
+    type: string
+    sql: ${TABLE}.country_iso ;;
+  }
+
+  dimension: unique_id {
+    primary_key: yes
+    type: string
+    sql: concat(${country_iso}, ${id}) ;;
   }
 
   dimension: apply_once_per_customer {

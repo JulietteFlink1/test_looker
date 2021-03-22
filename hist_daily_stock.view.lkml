@@ -1,6 +1,6 @@
 view: hist_daily_stock {
   derived_table: {
-    datagroup_trigger: flink_default_datagroup
+    persist_for: "6 hours"
     sql:
     SELECT
       capture_date,

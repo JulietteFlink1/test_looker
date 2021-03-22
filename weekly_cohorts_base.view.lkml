@@ -7,6 +7,7 @@ view: weekly_cohorts_stable_base {
       column: first_order_week { field: user_order_facts.first_order_week }
       column: weeks_time_since_sign_up {}
       column: cnt_unique_customers {}
+      column: country_iso {}
       filters: {
         field: order_order.is_internal_order
         value: "no"
@@ -24,6 +25,11 @@ view: weekly_cohorts_stable_base {
         value: "0"
       }
     }
+  }
+
+  dimension: country_iso {
+    type: string
+    sql: ${TABLE}.country_iso ;;
   }
 
   dimension: first_order_week {
