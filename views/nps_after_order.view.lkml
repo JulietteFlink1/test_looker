@@ -117,12 +117,12 @@ view: nps_after_order {
   }
 
   measure: nps_score{
-    label: "% NPS"
+    label: "NPS"
     description: "NPS Score (After Order)"
     hidden:  no
     type: number
     sql: ${pct_promoters} - ${pct_detractors};;
-    value_format: "0%"
+    value_format: "0"
   }
 
 }
