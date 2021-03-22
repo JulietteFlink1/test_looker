@@ -26,7 +26,7 @@ view: hubs {
 
   dimension: country_iso {
     type: string
-    sql: LEFT(${TABLE}.hub_code, 2) ;;
+    sql: ${TABLE}.country_iso ;;
   }
 
   dimension: hub_code {

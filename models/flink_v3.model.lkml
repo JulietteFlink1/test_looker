@@ -124,7 +124,7 @@ explore: order_order {
   join: first_order_hub {
     from: hubs
     view_label: "First Order Facts"
-    sql_on: ${first_order_facts.country_iso} = ${hubs.country_iso} AND ${first_order_facts.warehouse_name} = ${hubs.hub_code_lowercase} ;;
+    sql_on: ${first_order_facts.country_iso} = ${first_order_hub.country_iso} AND ${first_order_facts.warehouse_name} = ${first_order_hub.hub_code_lowercase} ;;
     relationship: one_to_one
     type: left_outer
     fields:
