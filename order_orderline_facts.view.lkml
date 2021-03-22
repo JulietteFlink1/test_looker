@@ -2,7 +2,9 @@ view: order_orderline_facts {
   derived_table: {
     datagroup_trigger: flink_default_datagroup
     sql:
-          SELECT  order_order.id,
+          SELECT
+                  order_order.country_iso,
+                  order_order.id,
                   order_order.metadata,
                   order_order.created,
                   order_order.user_email,
@@ -12,10 +14,10 @@ view: order_orderline_facts {
                   order_orderline.unit_price_gross_amount,
                   order_orderline.unit_price_net_amount
 
-                  FROM `flink-backend.saleor_db.order_order`
+                  FROM `flink-backend.saleor_db_global.order_order`
                      AS order_order
-                LEFT JOIN `flink-backend.saleor_db.order_orderline`
-                     AS order_orderline ON order_orderline.order_id = order_order.id
+                LEFT JOIN `flink-backend.saleor_db_global.order_orderline`
+                     AS order_orderline ON order_orderline.country_iso = order_order.country_iso AND order_orderline.order_id = order_order.id
        ;;
   }
 
@@ -36,6 +38,11 @@ view: order_orderline_facts {
     ]
     sql: ${TABLE}.created ;;
     datatype: timestamp
+  }
+
+  dimension: country_iso {
+    type: string
+    sql: ${TABLE}.country_iso ;;
   }
 
   dimension: quantity {

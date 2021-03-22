@@ -1,10 +1,11 @@
 view: order_order {
-  sql_table_name: `flink-backend.saleor_db.order_order`
+  sql_table_name: `flink-backend.saleor_db_global.order_order`
     ;;
   drill_fields: [core_dimensions*]
 
   set: core_dimensions {
     fields: [
+      country_iso,
       id,
       warehouse_name,
       created_raw,
@@ -16,9 +17,20 @@ view: order_order {
     ]
   }
 
+  dimension: country_iso {
+    type: string
+    sql: ${TABLE}.country_iso ;;
+  }
+
+  dimension: unique_id {
+    primary_key: yes
+    type: string
+    sql: concat(${country_iso}, ${id}) ;;
+  }
+
   dimension: id {
     label: "Order ID"
-    primary_key: yes
+    primary_key: no
     type: number
     sql: ${TABLE}.id ;;
   }
