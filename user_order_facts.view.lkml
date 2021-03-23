@@ -15,9 +15,20 @@ view: user_order_facts {
             , MIN(created) AS first_order
             , MAX(created) AS latest_order
             , COUNT(DISTINCT FORMAT_TIMESTAMP('%Y%m', created)) AS number_of_distinct_months_with_orders
-            , COUNT(DISTINCT FORMAT_TIMESTAMP('%Y%W', created)) AS number_of_distinct_weeks_with_orders
           FROM `flink-backend.saleor_db_global.order_order` order_order
           GROUP BY country_iso, user_email
+    ),
+
+    orders_per_week_month as
+    (
+
+    select country_iso,
+        user_email,
+        case when
+        DATE_DIFF(CURRENT_DATE(),date(first_order), WEEK) > 0 then lifetime_orders / DATE_DIFF(CURRENT_DATE(),date(first_order), WEEK) else null end as orders_per_week,
+        case when
+        DATE_DIFF(CURRENT_DATE(),date(first_order), MONTH) > 0 then  lifetime_orders / DATE_DIFF(CURRENT_DATE(),date(first_order), MONTH) else null end as orders_per_month
+    from users
     ),
 
     agg_products_by_user as
@@ -164,7 +175,6 @@ view: user_order_facts {
     users.first_order,
     users.latest_order,
     users.number_of_distinct_months_with_orders,
-    users.number_of_distinct_weeks_with_orders,
     top_1_products.product_name as top_1_product,
     top_2_products.product_name as top_2_product,
     top_3_products.product_name as top_3_product,
@@ -175,8 +185,12 @@ view: user_order_facts {
       when hour > 12 and hour <= 17 then 'afternoon'
         when hour > 17 and hour <= 20 then 'evening'
           when hour > 20 then 'night' end as favourite_order_hour,
-    latest_order_with_voucher.latest_order_with_voucher as last_order_with_voucher
+    latest_order_with_voucher.latest_order_with_voucher as last_order_with_voucher,
+    orders_per_week_month.orders_per_week,
+    orders_per_week_month.orders_per_month
     from users
+    left join orders_per_week_month
+    on users.country_iso=orders_per_week_month.country_iso and users.user_email=orders_per_week_month.user_email
     left join top_1_products
     on users.country_iso=top_1_products.country_iso and users.user_email=top_1_products.user_email
     left join top_2_products
@@ -250,11 +264,6 @@ view: user_order_facts {
     sql: ${TABLE}.number_of_distinct_months_with_orders ;;
   }
 
-  dimension: number_of_distinct_weeks_with_orders {
-    type: number
-    sql: ${TABLE}.number_of_distinct_weeks_with_orders ;;
-  }
-
   dimension: days_betw_first_and_last_order {
     description: "Days between first and latest order"
     type: number
@@ -275,6 +284,16 @@ view: user_order_facts {
     sql: ${TABLE}.lifetime_orders ;;
   }
 
+  dimension: orders_per_week {
+    type: number
+    sql: ${TABLE}.orders_per_week ;;
+  }
+
+  dimension: orders_per_month {
+    type: number
+    sql: ${TABLE}.orders_per_month ;;
+  }
+
   dimension: repeat_customer {
     description: "Lifetime Count of Orders > 1"
     type: yesno
@@ -286,6 +305,20 @@ view: user_order_facts {
     tiers: [0, 1, 2, 3, 5, 10]
     sql: ${lifetime_orders} ;;
     style: integer
+  }
+
+  dimension: orders_per_week_tier {
+    type: tier
+    tiers: [1, 2, 3]
+    sql: ${orders_per_week} ;;
+    style: relational
+  }
+
+  dimension: orders_per_month_tier {
+    type: tier
+    tiers: [1, 2, 3]
+    sql: ${orders_per_month} ;;
+    style: relational
   }
 
   ##### Lifetime Behavior - Revenue ######
@@ -381,7 +414,7 @@ view: user_order_facts {
 
   measure: average_lifetime_revenue {
     type: average
-    value_format_name: eur
+    value_format_name: usd
     sql: ${lifetime_revenue_gross} ;;
   }
 
@@ -390,6 +423,8 @@ view: user_order_facts {
     fields: [
       user_email,
       lifetime_orders,
+      orders_per_week,
+      orders_per_month,
       lifetime_revenue_gross,
       lifetime_revenue_net,
       first_order_id,
