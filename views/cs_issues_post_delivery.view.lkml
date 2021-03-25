@@ -33,7 +33,7 @@ view: cs_issues_post_delivery {
   dimension: ticket_date {
     type: date
     datatype: date
-    sql: date(${TABLE}.date) ;;
+    sql: date(${TABLE}.issue_date) ;;
   }
 
   dimension: delivered_product {
