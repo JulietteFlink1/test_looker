@@ -14,7 +14,7 @@ view: voucher_retention {
               from `flink-backend.saleor_db_global.order_order` o
               left join `flink-backend.saleor_db_global.discount_voucher` v
               on o.voucher_id = v.id and o.country_iso=v.country_iso
-              where v.code is not null
+              where v.code is not null and o.status in ('fulfilled', 'partially fulfilled')
           ),
 
           first_order_with_voucher as
@@ -42,7 +42,7 @@ view: voucher_retention {
             from `flink-backend.saleor_db_global.order_order` order_order
             left join first_order_with_voucher
             on order_order.country_iso = first_order_with_voucher.country_iso and order_order.user_email = first_order_with_voucher.user_email
-            where order_order.id != first_order_with_voucher.id and order_order.user_email in (select user_email from first_order_with_voucher)
+            where order_order.id != first_order_with_voucher.id and order_order.user_email in (select user_email from first_order_with_voucher) and order_order.status in ('fulfilled', 'partially fulfilled')
             order by 1, 2,3 asc
           ),
 
