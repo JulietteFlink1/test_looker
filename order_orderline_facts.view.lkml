@@ -152,7 +152,7 @@ view: order_orderline_facts {
     description: "Quantity of Order Line Items sold in the previous 7 days"
     hidden:  no
     type: sum
-    sql: ${quantity}::float;;
+    sql: ${quantity};;
     filters: [created_date: "7 days ago for 7 days"]
     value_format: "0.0"
   }
