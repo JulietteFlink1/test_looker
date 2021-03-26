@@ -484,6 +484,13 @@ explore: categories_mba {
 
 }
 
+explore: voucher_retention {
+  label: "Voucher retention"
+  view_label: "Voucher retention"
+  group_label: "7) Ad-Hoc"
+  description: "Voucher retention analysis - First voucher used by user is considered as the base. Thus, a user can only have a first used voucher."
+}
+
 
 
 # explore: order_extends {
