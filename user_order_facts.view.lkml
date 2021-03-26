@@ -16,6 +16,7 @@ view: user_order_facts {
             , MAX(created) AS latest_order
             , COUNT(DISTINCT FORMAT_TIMESTAMP('%Y%m', created)) AS number_of_distinct_months_with_orders
           FROM `flink-backend.saleor_db_global.order_order` order_order
+          where order_order.status in ('fulfilled', 'partially fulfilled')
           GROUP BY country_iso, user_email
     ),
 
@@ -29,6 +30,34 @@ view: user_order_facts {
         case when
         DATE_DIFF(CURRENT_DATE(),date(first_order), MONTH) > 0 then  lifetime_orders / DATE_DIFF(CURRENT_DATE(),date(first_order), MONTH) else null end as orders_per_month
     from users
+    ),
+
+    reorders_30 as
+    (
+      select users.country_iso,
+    users.user_email,
+    count(distinct(order_order.id)) as _30_day_reorder_number
+    from users
+    left join `flink-backend.saleor_db_global.order_order` order_order
+    on users.country_iso=order_order.country_iso and users.user_email= order_order.user_email
+    where date_diff(date(order_order.created), date(users.first_order) , DAY) <= 30 and
+    users.first_order_id != order_order.id and
+    order_order.status in ('fulfilled', 'partially_fulfilled')
+    group by 1, 2
+    ),
+
+    reorders_28 as
+    (
+      select users.country_iso,
+    users.user_email,
+    count(distinct(order_order.id)) as _28_day_reorder_number
+    from users
+    left join `flink-backend.saleor_db_global.order_order` order_order
+    on users.country_iso=order_order.country_iso and users.user_email= order_order.user_email
+    where date_diff(date(order_order.created), date(users.first_order) , DAY) <= 28 and
+    users.first_order_id != order_order.id and
+    order_order.status in ('fulfilled', 'partially_fulfilled')
+    group by 1, 2
     ),
 
     agg_products_by_user as
@@ -185,12 +214,18 @@ view: user_order_facts {
       when hour > 12 and hour <= 17 then 'afternoon'
         when hour > 17 and hour <= 20 then 'evening'
           when hour > 20 then 'night' end as favourite_order_hour,
+    reorders_28._28_day_reorder_number,
+    reorders_30._30_day_reorder_number,
     latest_order_with_voucher.latest_order_with_voucher as last_order_with_voucher,
     orders_per_week_month.orders_per_week,
     orders_per_week_month.orders_per_month
     from users
     left join orders_per_week_month
     on users.country_iso=orders_per_week_month.country_iso and users.user_email=orders_per_week_month.user_email
+    left join reorders_28
+    on users.country_iso=reorders_28.country_iso and users.user_email=reorders_28.user_email
+    left join reorders_30
+    on users.country_iso=reorders_30.country_iso and users.user_email=reorders_30.user_email
     left join top_1_products
     on users.country_iso=top_1_products.country_iso and users.user_email=top_1_products.user_email
     left join top_2_products
@@ -209,7 +244,7 @@ view: user_order_facts {
     on users.country_iso=latest_order_with_voucher.country_iso and users.user_email=latest_order_with_voucher.user_email
     where favourite_day.rank = 1
     and favourite_time.rank = 1
-    order by 2 desc
+    order by _28_day_reorder_number desc
  ;;
   }
 
@@ -292,6 +327,18 @@ view: user_order_facts {
   dimension: orders_per_month {
     type: number
     sql: ${TABLE}.orders_per_month ;;
+  }
+
+  dimension: reorder_number_28_days {
+    description: "Number of orders within the next 28 days after the first order"
+    type: number
+    sql: ${TABLE}._28_day_reorder_number ;;
+  }
+
+  dimension: reorder_number_30_days {
+    description: "Number of orders within the next 30 days after the first order"
+    type: number
+    sql: ${TABLE}._30_day_reorder_number ;;
   }
 
   dimension: repeat_customer {
