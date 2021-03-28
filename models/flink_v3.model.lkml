@@ -190,14 +190,14 @@ explore: order_order {
   }
 
   join: weekly_cohorts_stable_base {
-    view_label: "First Order Facts (Weekly Cohorts)"
+    view_label: "Cohorts - Weekly"
     sql_on: ${user_order_facts.country_iso} = ${weekly_cohorts_stable_base.country_iso} AND ${user_order_facts.first_order_week} = ${weekly_cohorts_stable_base.first_order_week};;
     relationship: one_to_one
     type: left_outer
   }
 
   join: monthly_cohorts_stable_base {
-    view_label: "First Order Facts (Monthly Cohorts)"
+    view_label: "Cohorts - Monthly"
     sql_on: ${user_order_facts.country_iso} = ${monthly_cohorts_stable_base.country_iso} AND ${user_order_facts.first_order_month} = ${monthly_cohorts_stable_base.first_order_month} ;;
     relationship: one_to_one
     type: left_outer
