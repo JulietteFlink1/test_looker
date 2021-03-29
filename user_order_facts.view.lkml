@@ -307,7 +307,7 @@ view: user_order_facts {
 
   dimension_group: duration_between_first_order_and_now {
     type: duration
-    sql_start: ${first_order_date} ;;
+    sql_start: ${first_order_raw} ;;
     sql_end: CURRENT_TIMESTAMP() ;;
     }
 
