@@ -96,6 +96,12 @@ view: order_order {
     sql_end: ${created_raw} ;;
   }
 
+  dimension: time_since_sign_up_biweekly {
+    type: number
+    sql: floor((${days_time_since_sign_up} / 14)) ;;
+    value_format: "0"
+  }
+
   dimension_group: time_since_hub_launch {
     type: duration
     sql_start: ${hub_order_facts.first_order_raw} ;;
