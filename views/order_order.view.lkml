@@ -724,6 +724,15 @@ dimension: hub_location  {
     value_format: "0"
   }
 
+  measure: cnt_unique_hubs {
+    label: "# Unique Hubs"
+    description: "Count of Unique Hubs which received orders"
+    hidden:  no
+    type: count_distinct
+    sql: ${warehouse_name};;
+    value_format: "0"
+  }
+
   measure: cnt_orders {
     label: "# Orders"
     description: "Count of successful Orders"
