@@ -305,12 +305,11 @@ view: user_order_facts {
     sql: TIMESTAMP_DIFF(${TABLE}.latest_order, ${TABLE}.first_order, DAY)+1 ;;
   }
 
-  dimension: days_as_customer_tiered {
-    type: tier
-    tiers: [0, 1, 7, 14, 21, 28, 30, 60, 90, 120]
-    sql: ${days_betw_first_and_last_order} ;;
-    style: integer
-  }
+  dimension_group: duration_between_first_order_and_now {
+    type: duration
+    sql_start: ${first_order_date} ;;
+    sql_end: CURRENT_TIMESTAMP() ;;
+    }
 
   ##### Lifetime Behavior - Order Counts ######
 
