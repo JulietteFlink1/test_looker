@@ -222,6 +222,13 @@ view: order_order {
     sql: ${TABLE}.total_gross_amount + ${discount_amount} ;;
   }
 
+  dimension: gmv_gross_tier_5 {
+    type: tier
+    tiers: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70]
+    style: relational
+    sql: ${TABLE}.total_gross_amount + ${discount_amount} ;;
+  }
+
   dimension: gmv_net {
     type: number
     sql: ${TABLE}.total_net_amount  + ${discount_amount};;
