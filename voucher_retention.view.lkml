@@ -204,6 +204,11 @@ view: voucher_retention {
     sql: ${TABLE}._30_day_retention ;;
   }
 
+  dimension: country_name {
+    type: string
+    sql: CASE WHEN ${country_iso} = "DE" then "Germany" WHEN ${country_iso} = "NL" then "Netherlands" end ;;
+  }
+
   ######## Measures
 
   measure: cnt_base_7 {
