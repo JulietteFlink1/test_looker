@@ -31,13 +31,13 @@ view: voucher_retention {
 
           lead_orders as
           (
-            select order_order.country_iso,
-            order_order.user_email,
+            select first_order_with_voucher.country_iso,
+            first_order_with_voucher.user_email,
             order_order.created,
             first_order_with_voucher.created as first_order_with_voucher,
             code,
             order_order.id,
-            warehouse,
+            first_order_with_voucher.warehouse,
             DATE_DIFF(DATE(order_order.created), DATE(first_order_with_voucher.created), DAY) as time_difference
             from `flink-backend.saleor_db_global.order_order` order_order
             left join first_order_with_voucher
@@ -46,13 +46,51 @@ view: voucher_retention {
             order by 1, 2,3 asc
           ),
 
-          base as
+          retention as
+          (
+            select distinct country_iso,
+            user_email,
+            warehouse,
+            code,
+            max(case when (time_difference <= 7 and date_diff(CURRENT_DATE(), date(first_order_with_voucher), DAY) >= 7) then 1 else 0 end) as _7_day_retention,
+            max(case when (time_difference <= 14 and time_difference > 7 and date_diff(CURRENT_DATE(), date(first_order_with_voucher), DAY) >= 14) then 1 else 0 end) as _14_day_retention,
+            max(case when (time_difference <= 30 and time_difference > 14 and date_diff(CURRENT_DATE(), date(first_order_with_voucher), DAY) >= 30) then 1 else 0 end) as _30_day_retention
+            from lead_orders
+            group by 1, 2, 3, 4
+          ),
+
+          base_7 as
           (
             select country_iso,
             code,
             warehouse,
-            count(user_email) as count,
+            count(distinct(user_email)) as count,
             from first_order_with_voucher
+            where date_diff(CURRENT_DATE(), date(first_order_with_voucher.created), DAY) >= 7
+            group by 1, 2, 3
+            order by 4 desc
+          ),
+
+          base_14 as
+          (
+            select country_iso,
+            code,
+            warehouse,
+            count(distinct(user_email)) as count,
+            from first_order_with_voucher
+            where date_diff(CURRENT_DATE(), date(first_order_with_voucher.created), DAY) >= 14
+            group by 1, 2, 3
+            order by 4 desc
+          ),
+
+          base_30 as
+          (
+            select country_iso,
+            code,
+            warehouse,
+            count(distinct(user_email)) as count,
+            from first_order_with_voucher
+            where date_diff(CURRENT_DATE(), date(first_order_with_voucher.created), DAY) >= 30
             group by 1, 2, 3
             order by 4 desc
           ),
@@ -62,9 +100,8 @@ view: voucher_retention {
             select country_iso,
             code,
             warehouse,
-            count(distinct(user_email)) as count
-            from lead_orders
-            where time_difference <= 7
+            sum(_7_day_retention) as count
+            from retention
             group by 1, 2, 3
             order by 4 desc
           ),
@@ -74,9 +111,8 @@ view: voucher_retention {
             select country_iso,
             code,
             warehouse,
-            count(distinct(user_email)) as count
-            from lead_orders
-            where time_difference > 7 and time_difference <= 14
+            sum(_14_day_retention) as count
+            from retention
             group by 1, 2, 3
             order by 3 desc
           ),
@@ -86,30 +122,36 @@ view: voucher_retention {
             select country_iso,
             code,
             warehouse,
-            count(distinct(user_email)) as count
-            from lead_orders
-            where time_difference > 14 and time_difference <= 30
+            sum(_30_day_retention) as count
+            from retention
             group by 1, 2, 3
             order by 3 desc
           )
 
-          select base.country_iso,
-          base.code,
-          base.count as base,
+          select base_7.country_iso,
+          base_7.code,
+          base_7.count as base_7,
+          base_14.count as base_14,
+          base_30.count as base_30,
           hubs.hub_name,
           _7_day_retention.count as _7_day_retention,
           _14_day_retention.count as _14_day_retention,
           _30_day_retention.count as _30_day_retention
-          from base
+          from base_7
+          left join base_14
+          on base_7.country_iso = base_14.country_iso and base_7.code=base_14.code and base_7.warehouse=base_14.warehouse
+          left join base_30
+          on base_7.country_iso = base_30.country_iso and base_7.code=base_30.code and base_7.warehouse=base_30.warehouse
           left join `flink-backend.gsheet_store_metadata.hubs` hubs
-          on base.warehouse = lower(hubs.hub_code)
+          on base_7.warehouse = lower(hubs.hub_code)
           left join _7_day_retention
-          on base.country_iso = _7_day_retention.country_iso and base.code = _7_day_retention.code and base.warehouse = _7_day_retention.warehouse
+          on base_7.country_iso = _7_day_retention.country_iso and base_7.code = _7_day_retention.code and base_7.warehouse = _7_day_retention.warehouse
           left join _14_day_retention
-          on base.country_iso = _14_day_retention.country_iso and base.code = _14_day_retention.code and base.warehouse = _14_day_retention.warehouse
+          on base_7.country_iso = _14_day_retention.country_iso and base_7.code = _14_day_retention.code and base_7.warehouse = _14_day_retention.warehouse
           left join _30_day_retention
-          on base.country_iso = _30_day_retention.country_iso and base.code = _30_day_retention.code and base.warehouse = _30_day_retention.warehouse
-       ;;
+          on base_7.country_iso = _30_day_retention.country_iso and base_7.code = _30_day_retention.code and base_7.warehouse = _30_day_retention.warehouse
+          order by base_7 desc
+ ;;
   }
 
   measure: count {
@@ -127,9 +169,19 @@ view: voucher_retention {
     sql: ${TABLE}.code ;;
   }
 
-  dimension: base {
+  dimension: base_7 {
     type: number
-    sql: ${TABLE}.base ;;
+    sql: ${TABLE}.base_7 ;;
+  }
+
+  dimension: base_14 {
+    type: number
+    sql: ${TABLE}.base_14 ;;
+  }
+
+  dimension: base_30 {
+    type: number
+    sql: ${TABLE}.base_30 ;;
   }
 
   dimension: hub_name {
@@ -152,68 +204,45 @@ view: voucher_retention {
     sql: ${TABLE}._30_day_retention ;;
   }
 
-  ########### Measures
+  ######## Measures
 
-  measure: cnt_base {
-    label: "Unique users"
-    description: "Count of unique customers that used a particular code"
+  measure: cnt_base_7 {
     type: sum
-    sql: ${base} ;;
+    sql: ${base_7} ;;
+  }
+
+  measure: cnt_base_14 {
+    type: sum
+    sql: ${base_14} ;;
+  }
+
+  measure: cnt_base_30 {
+    type: sum
+    sql: ${base_14} ;;
   }
 
   measure: cnt_7_day_retention {
-    description: "Count of unique customers that used a particular code and return within 7 days after used it"
     type: sum
     sql: ${_7_day_retention} ;;
   }
 
   measure: cnt_14_day_retention {
-    description: "Count of unique customers that used a particular code and return within 14 days after used it"
     type: sum
     sql: ${_14_day_retention} ;;
   }
 
   measure: cnt_30_day_retention {
-    description: "Count of unique customers that used a particular code and return within 30 days after used it"
     type: sum
     sql: ${_30_day_retention} ;;
   }
-
-  ##### Percentages
-
-  measure: pct_7_day_retention{
-    label: "% Retained users after 7 days"
-    description: "Share of customers that return within 7 days after first used a voucher code"
-    hidden:  no
-    type: number
-    sql: ${cnt_7_day_retention} / ${cnt_base};;
-    value_format: "0%"
-  }
-
-  measure: pct_14_day_retention{
-    label: "% Retained users after 14 days"
-    description: "Share of customers that return within 14 days after first used a voucher code"
-    hidden:  no
-    type: number
-    sql: ${cnt_14_day_retention} / ${cnt_base};;
-    value_format: "0%"
-  }
-
-  measure: pct_30_day_retention{
-    label: "% Retained users after 30 days"
-    description: "Share of customers that return within 30 days after first used a voucher code"
-    hidden:  no
-    type: number
-    sql: ${cnt_30_day_retention} / ${cnt_base};;
-    value_format: "0%"
-  }
-
 
   set: detail {
     fields: [
       country_iso,
       code,
-      base,
+      base_7,
+      base_14,
+      base_30,
       hub_name,
       _7_day_retention,
       _14_day_retention,
