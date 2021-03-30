@@ -223,7 +223,7 @@ view: voucher_retention {
 
   measure: cnt_base_30 {
     type: sum
-    sql: ${base_14} ;;
+    sql: ${base_30} ;;
   }
 
   measure: cnt_7_day_retention {
