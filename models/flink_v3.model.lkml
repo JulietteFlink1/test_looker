@@ -254,6 +254,7 @@ explore: order_order {
     relationship: one_to_many
     type: left_outer
   }
+
 }
 
 ####### PRODUCTS EXPLORE #######
@@ -465,6 +466,17 @@ explore: cs_issues_post_delivery {
     type: left_outer
   }
 }
+
+########### ISSUE-RATES ##############
+
+
+explore: issue_rate {
+  label: "Issue Rate / Post Delivery Issues"
+  view_label: "Issue Rate / Post Delivery Issues"
+  group_label: "7) Customer Service"
+  description: "Daily issue rates per hub using CS Gsheet and total orders per hub"
+}
+
 
 ########### AD-HOC EXPLORE ###########
 
