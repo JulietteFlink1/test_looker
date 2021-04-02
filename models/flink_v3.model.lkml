@@ -320,6 +320,12 @@ explore: product_product {
     relationship: one_to_one
     type: left_outer
   }
+
+  join: product_attribute_facts {
+    sql_on: ${product_product.country_iso} = ${product_attribute_facts.country_iso} AND ${product_product.id} = ${product_attribute_facts.id} ;;
+    relationship: one_to_one
+    type: left_outer
+  }
 }
 
 ####### NOOS EXPLORE #######
