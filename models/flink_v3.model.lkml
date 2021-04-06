@@ -434,7 +434,7 @@ explore: cs_issues_post_delivery {
   description: "Customer Service Contacts tracked via GSheet"
 
   join: order_order {
-    sql_on: ${cs_issues_post_delivery.order_nr__} = ${order_order.id} AND ${order_order.country_iso} ='DE';;
+    sql_on: ${cs_issues_post_delivery.order_nr__} = ${order_order.id} AND ${order_order.country_iso} = SUBSTR(${cs_issues_post_delivery.hub}, 1, 2);;
     relationship: many_to_one
     type: left_outer
   }
