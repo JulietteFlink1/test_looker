@@ -47,6 +47,16 @@ explore: order_order {
               ]
   }
 
+  access_filter: {
+    field: order_order.country_iso
+    user_attribute: country_iso
+  }
+
+  access_filter: {
+    field: hubs.city
+    user_attribute: city
+  }
+
   #filter Investor user so they can only see completed calendar weeks data and not week to date
   sql_always_where: CASE WHEN ({{ _user_attributes['id'] }}) = 28 THEN ${order_order.created_week} < ${now_week} ELSE 1=1 END;;
 
@@ -243,7 +253,7 @@ explore: order_order {
   }
 
   join: cs_issues_post_delivery {
-    sql_on: ${order_order.id} = ${cs_issues_post_delivery.order_nr__} AND ${order_order.country_iso} ='DE' ;;
+    sql_on: ${order_order.id} = ${cs_issues_post_delivery.order_nr__} AND ${order_order.country_iso} = SUBSTR(${cs_issues_post_delivery.hub}, 1, 2) ;;
     relationship: one_to_many
     type: left_outer
   }
@@ -269,6 +279,16 @@ explore: product_product {
       order_orderline_facts.is_internal_order: "no",
       order_orderline_facts.is_successful_order: "yes"
     ]
+  }
+
+  access_filter: {
+    field: product_product.country_iso
+    user_attribute: country_iso
+  }
+
+  access_filter: {
+    field: hubs.city
+    user_attribute: city
   }
 
   join: product_productvariant {
@@ -432,6 +452,16 @@ explore: cs_issues_post_delivery {
   view_label: "CS Contacts"
   group_label: "7) Customer Service"
   description: "Customer Service Contacts tracked via GSheet"
+
+  access_filter: {
+    field: order_order.country_iso
+    user_attribute: country_iso
+  }
+
+  access_filter: {
+    field: hubs.city
+    user_attribute: city
+  }
 
   join: order_order {
     sql_on: ${cs_issues_post_delivery.order_nr__} = ${order_order.id} AND ${order_order.country_iso} = SUBSTR(${cs_issues_post_delivery.hub}, 1, 2);;

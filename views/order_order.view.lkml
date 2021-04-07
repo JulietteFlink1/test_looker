@@ -109,7 +109,7 @@ view: order_order {
   }
 
   parameter: date_granularity {
-    type: string
+    type: unquoted
     allowed_value: { value: "Day" }
     allowed_value: { value: "Week" }
     allowed_value: { value: "Month" }
@@ -119,17 +119,29 @@ view: order_order {
   dimension: date {
     label: "Date (Dynamic)"
     label_from_parameter: date_granularity
+    sql:
+    {% if date_granularity._parameter_value == 'Day' %}
+      ${created_date}
+    {% elsif date_granularity._parameter_value == 'Week' %}
+      ${created_week}
+    {% elsif date_granularity._parameter_value == 'Month' %}
+      ${created_month}
+    {% endif %};;
+  }
+
+  dimension: date_granularity_pass_through {
+    description: "To use the parameter value in a table calculation (e.g WoW, % Growth) we need to materialize it into a dimension "
     type: string
     sql:
-    type: string
-  type: string
-  sql:
-    CASE
-    WHEN {% parameter date_granularity %} = 'Day' THEN ${created_date}
-    WHEN {% parameter date_granularity %} = 'Week' THEN ${created_week}
-    WHEN {% parameter date_granularity %} = 'Month' THEN ${created_month}
-    END ;;
+    {% if date_granularity._parameter_value == 'Day' %}
+      "Day"
+    {% elsif date_granularity._parameter_value == 'Week' %}
+      "Week"
+    {% elsif date_granularity._parameter_value == 'Month' %}
+      "Month"
+    {% endif %};;
   }
+
 
   dimension: currency {
     type: string
