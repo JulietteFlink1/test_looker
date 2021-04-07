@@ -434,11 +434,11 @@ explore: adjust_sessions {
   #}
   join: adjust_events {
     sql_on: ${adjust_sessions._adid_} = ${adjust_events._adid_}
-    AND ${adjust_events._created_at__raw} >= ${adjust_sessions.session_start_raw}
+    AND ${adjust_events.event_time_raw} >= ${adjust_sessions.session_start_at_raw}
     AND
       (
-        ${adjust_events._created_at__raw} < ${adjust_sessions.next_session_start_raw}
-        OR ${adjust_sessions.next_session_start_time} is NULL
+        ${adjust_events.event_time_raw} < ${adjust_sessions.next_session_start_at_raw}
+        OR ${adjust_sessions.next_session_start_at_raw} is NULL
       )
         ;;
     relationship: one_to_many
