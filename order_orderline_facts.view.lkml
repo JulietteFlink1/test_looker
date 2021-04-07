@@ -75,8 +75,14 @@ view: order_orderline_facts {
 
   dimension: product_sku {
     type: string
-    sql: ${TABLE}.product_sku ;;
+    sql: CASE WHEN LENGTH(${TABLE}.product_sku)=7 THEN CONCAT('1', ${TABLE}.product_sku) ELSE ${TABLE}.product_sku END;;
   }
+
+
+  #dimension: product_sku {
+  #  type: string
+  #  sql: ${TABLE}.product_sku ;;
+  #}
 
   dimension: user_email {
     type: string
