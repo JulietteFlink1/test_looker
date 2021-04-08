@@ -444,6 +444,12 @@ explore: adjust_sessions {
     relationship: one_to_many
     type: left_outer
   }
+
+  join: adjust_user_facts {
+    sql_on: ${adjust_sessions._adid_} = ${adjust_user_facts._adid_} ;;
+    relationship: many_to_one
+    type: left_outer
+  }
 }
 
 ####### CS ISSUES EXPLORE #######
