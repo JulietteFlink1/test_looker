@@ -5,9 +5,9 @@ view: products_mba {
       with order_ranks as
       (
               SELECT
-                        order_order.id,
-                        row_number() over (partition by user_email order by order_order.id) as user_order_rank
-                      FROM `flink-backend.saleor_db.order_order` order_order
+                        order_order.id,order_order.country_iso,
+                        row_number() over (partition by country_iso, user_email order by order_order.id) as user_order_rank
+                      FROM `flink-backend.saleor_db_global.order_order` order_order
                       where order_order.status IN ('fulfilled', 'partially fulfilled')
       ),
 
@@ -47,11 +47,11 @@ view: products_mba {
                                                 ELSE JSON_EXTRACT_SCALAR(b.metadata, '$.warehouse') end as warehouse,
                                         user_order_rank,
                                         order_id
-                                        from `flink-backend.saleor_db.order_orderline` a
-                                        left join `flink-backend.saleor_db.order_order` b
-                                        on a.order_id = b.id
+                                        from `flink-backend.saleor_db_global.order_orderline` a
+                                        left join `flink-backend.saleor_db_global.order_order` b
+                                        on a.order_id = b.id and a.country_iso = b.country_iso
                                         left join order_ranks
-                                        on a.order_id=order_ranks.id
+                                        on a.order_id=order_ranks.id and a.country_iso = order_ranks.country_iso
                                         where b.status in ('fulfilled', 'partially fulfilled')
                                         --and b.user_email not LIKE '%goflink%' OR b.user_email not LIKE '%pickery%'
                                         --OR LOWER(b.user_email) not IN
@@ -105,12 +105,12 @@ view: products_mba {
                                                 CASE WHEN JSON_EXTRACT_SCALAR(c.metadata, '$.warehouse') IN ('hamburg-oellkersallee', 'hamburg-oelkersallee') THEN 'de_ham_alto'
                                                 WHEN JSON_EXTRACT_SCALAR(c.metadata, '$.warehouse') = 'münchen-leopoldstraße' THEN 'de_muc_schw'
                                                 ELSE JSON_EXTRACT_SCALAR(c.metadata, '$.warehouse') end as warehouse
-                                                from `flink-backend.saleor_db.order_orderline` a,
-                                                `flink-backend.saleor_db.order_orderline` b
-                                                left join `flink-backend.saleor_db.order_order` c
-                                                on a.order_id = c.id
+                                                from `flink-backend.saleor_db_global.order_orderline` a,
+                                                `flink-backend.saleor_db_global.order_orderline` b
+                                                left join `flink-backend.saleor_db_global.order_order` c
+                                                on a.order_id = c.id and a.country_iso = c.country_iso
                                                 left join order_ranks
-                                                on a.order_id=order_ranks.id
+                                                on a.order_id=order_ranks.id and a.country_iso = order_ranks.country_iso
                                                 where
                                                 a.order_id=b.order_id and
                                                 a.product_sku != b.product_sku and
@@ -168,13 +168,13 @@ view: products_mba {
                                         CASE WHEN JSON_EXTRACT_SCALAR(d.metadata, '$.warehouse') IN ('hamburg-oellkersallee', 'hamburg-oelkersallee') THEN 'de_ham_alto'
                                         WHEN JSON_EXTRACT_SCALAR(d.metadata, '$.warehouse') = 'münchen-leopoldstraße' THEN 'de_muc_schw'
                                         ELSE JSON_EXTRACT_SCALAR(d.metadata, '$.warehouse') end as warehouse
-                                        from `flink-backend.saleor_db.order_orderline` a,
-                                        `flink-backend.saleor_db.order_orderline` b,
-                                        `flink-backend.saleor_db.order_orderline` c
-                                        left join `flink-backend.saleor_db.order_order` d
-                                        on a.order_id = d.id
+                                        from `flink-backend.saleor_db_global.order_orderline` a,
+                                        `flink-backend.saleor_db_global.order_orderline` b,
+                                        `flink-backend.saleor_db_global.order_orderline` c
+                                        left join `flink-backend.saleor_db_global.order_order` d
+                                        on a.order_id = d.id and a.country_iso = d.country_iso
                                         left join order_ranks
-                                        on a.order_id=order_ranks.id
+                                        on a.order_id=order_ranks.id and a.country_iso = order_ranks.country_iso
                                         where
                                         a.order_id = b.order_id and
                                         a.order_id = c.order_id and
