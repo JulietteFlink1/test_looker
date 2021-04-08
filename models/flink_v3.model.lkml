@@ -355,6 +355,16 @@ explore: hist_daily_stock {
   group_label: "2) Inventory"
   description: "Snapshots of Daily Inventory per Substitute group (only NooS)"
 
+  access_filter: {
+    field: hubs.country_iso
+    user_attribute: country_iso
+  }
+
+  access_filter: {
+    field: hubs.city
+    user_attribute: city
+  }
+
   join: hubs {
     view_label: "Hubs"
     sql_on: ${hist_daily_stock.slug} = ${hubs.hub_code_lowercase} ;;
@@ -369,6 +379,16 @@ explore: discount_voucher {
   view_label: "Vouchers"
   group_label: "3) Vouchers"
   description: "All data around Vouchers created in the backend"
+
+  access_filter: {
+    field: hubs.country_iso
+    user_attribute: country_iso
+  }
+
+  access_filter: {
+    field: hubs.city
+    user_attribute: city
+  }
 
   join: order_order {
     sql_on: ${discount_voucher.country_iso} = ${order_order.country_iso} AND ${discount_voucher.id} = ${order_order.voucher_id} ;;
@@ -517,6 +537,16 @@ explore: issue_rate {
   view_label: "Issue Rate / Post Delivery Issues"
   group_label: "7) Customer Service"
   description: "Daily issue rates per hub using CS Gsheet and total orders per hub"
+
+  access_filter: {
+    field: issue_rate.country_iso
+    user_attribute: country_iso
+  }
+
+  access_filter: {
+    field: issue_rate.city
+    user_attribute: city
+  }
 }
 
 
@@ -543,6 +573,16 @@ explore: voucher_retention {
   view_label: "Voucher retention"
   group_label: "7) Ad-Hoc"
   description: "Voucher retention analysis - First voucher used by user is considered as the base. Thus, a user can only have a first used voucher."
+
+  access_filter: {
+    field: voucher_retention.country_iso
+    user_attribute: country_iso
+  }
+
+  access_filter: {
+    field: voucher_retention.city
+    user_attribute: city
+  }
 }
 
 

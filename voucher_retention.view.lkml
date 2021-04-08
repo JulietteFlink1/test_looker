@@ -134,6 +134,7 @@ view: voucher_retention {
           base_14.count as base_14,
           base_30.count as base_30,
           hubs.hub_name,
+          hubs.city,
           _7_day_retention.count as _7_day_retention,
           _14_day_retention.count as _14_day_retention,
           _30_day_retention.count as _30_day_retention
@@ -187,6 +188,11 @@ view: voucher_retention {
   dimension: hub_name {
     type: string
     sql: ${TABLE}.hub_name ;;
+  }
+
+  dimension: city {
+    type: string
+    sql: ${TABLE}.city ;;
   }
 
   dimension: _7_day_retention {
@@ -244,6 +250,7 @@ view: voucher_retention {
   set: detail {
     fields: [
       country_iso,
+      city,
       code,
       base_7,
       base_14,
