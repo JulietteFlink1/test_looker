@@ -58,7 +58,7 @@ view: adjust_sessions {
       (
       SELECT  adjust_sessions._adid_,
       adjust_sessions.session_id,
-      count(adjust._event_name_) as event_count
+      count(distinct adjust._created_at_) as event_count
       FROM `flink-backend.customlytics_adjust.adjust_raw_imports` adjust
       left join adjust_sessions
       on adjust._adid_=adjust_sessions._adid_
@@ -66,8 +66,8 @@ view: adjust_sessions {
                       (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at
                       OR adjust_sessions.next_session_start_at is null)
       where
-      --adjust._activity_kind_='event' and
-      --adjust._event_name_='AddressSelected' and
+      adjust._activity_kind_='event' and
+      adjust._event_name_='AddressSelected' and
       adjust._UserAreaAvailable_= TRUE
       group by 1, 2
       ),
@@ -286,13 +286,13 @@ view: adjust_sessions {
       select
       adjust_sessions._adid_,
       adjust_sessions.session_id,
-      adjust_sessions.session_start_at,
-      adjust_sessions.next_session_start_at,
+      datetime(adjust_sessions.session_start_at, 'Europe/Berlin') as session_start_at,
+      datetime(adjust_sessions.next_session_start_at, 'Europe/Berlin') as next_session_start_at,
       adjust_sessions._city_,
       adjust_sessions._os_name_,
       adjust_sessions._app_version_,
       adjust_sessions._network_name_,
-      installs.install_date as install_date,
+      datetime(installs.install_date, 'Europe/Berlin') as install_date,
       1 as session,
       address_selected.event_count as address_selected,
       address_selected_true.event_count as address_selected_true,
@@ -360,6 +360,7 @@ view: adjust_sessions {
       year
     ]
     sql: ${TABLE}.session_start_at ;;
+    datatype: datetime
   }
 
   dimension_group: next_session_start_at {
@@ -376,6 +377,7 @@ view: adjust_sessions {
       year
     ]
     sql: ${TABLE}.next_session_start_at ;;
+    datatype: datetime
   }
 
   dimension: city {
@@ -412,6 +414,7 @@ view: adjust_sessions {
       year
     ]
     sql: ${TABLE}.install_date ;;
+    datatype: datetime
   }
 
   dimension: session {
@@ -606,7 +609,7 @@ view: adjust_sessions {
     sql: ${view_subcategory} is not null ;;
   }
 
-##### Session events aggregate measures
+##### Unique count of events during a session. If multiple events are triggerred during a session, e.g 3 times view item, the event is only counted once.
 
   measure: cnt_installs {
     label: "Installs count"
@@ -662,6 +665,8 @@ view: adjust_sessions {
     filters: [purchase: "NOT NULL"]
   }
 
+  ###### Sum of events
+
   measure: sum_sessions {
     label: "Session count"
     type: sum
@@ -669,8 +674,50 @@ view: adjust_sessions {
   }
 
 
+  measure: sum_address_selected {
+    label: "Address selected sum of events"
+    type: sum
+    sql: ${address_selected} ;;
+  }
+
+  measure: sum_address_selected_true {
+    label: "User area available sum of events"
+    type: sum
+    sql: ${address_selected_true} ;;
+  }
+
+  measure: sum_view_item {
+    label: "View item sum of events"
+    type: sum
+    sql: ${view_item} ;;
+  }
+
+  measure: sum_add_to_cart {
+    label: "Add to cart sum of events"
+    type: sum
+    sql: ${add_to_cart} ;;
+  }
+
+  measure: sum_begin_checkout {
+    label: "Begin checkout sum of events"
+    type: sum
+    sql: ${begin_checkout} ;;
+  }
+
+  measure: sum_payment_failed {
+    label: "Payment failed sum of events"
+    type: sum
+    sql: ${payment_failed} ;;
+  }
+
+  measure: sum_first_purchase {
+    label: "First purchase sum of events"
+    type: sum
+    sql: ${first_purchase} ;;
+  }
+
   measure: sum_purchases {
-    label: "Purchase sum"
+    label: "Purchase sum of events"
     type: sum
     sql: ${purchase} ;;
   }
