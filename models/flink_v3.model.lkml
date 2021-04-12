@@ -465,8 +465,8 @@ explore: adjust_sessions {
     type: left_outer
   }
 
-  join: adjust_user_facts {
-    sql_on: ${adjust_sessions._adid_} = ${adjust_user_facts._adid_} ;;
+  join: adjust_user_facts_ {
+    sql_on: ${adjust_sessions._adid_} = ${adjust_user_facts_._adid_} ;;
     relationship: many_to_one
     type: left_outer
   }
