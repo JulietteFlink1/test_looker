@@ -11,7 +11,7 @@ view: issue_rate {
           count(distinct if(cs.problem_group = 'Wrong Product', order_nr__, null)) as wrong_product,
           count(distinct if(cs.problem_group = 'Perished Product', order_nr__, null)) as perished_product,
           count(distinct if(cs.problem_group = 'Missing Product', order_nr__, null)) as missing_product,
-          count(distinct(order_nr__)) as orders_with_issues
+          count(distinct if (cs.problem_group is not null, order_nr__, null)) as orders_with_issues
           from `flink-backend.saleor_db_global.order_order` orders
           left join `flink-backend.gsheet_cs_issues.CS_issues_post_delivery` cs
           on substr(cs.hub, 1, 2) = orders.country_iso and cs.order_nr__ = orders.id
@@ -31,7 +31,7 @@ view: issue_rate {
           group by 1, 2
       )
 
-      select distinct issues_orders.date,
+      select orders_per_hub.date,
       hubs.hub_name,
       hubs.country,
       hubs.country_iso,
