@@ -153,6 +153,11 @@ view: cs_issues_post_delivery {
     filters: [problem_group: "Wrong Order"]
   }
 
+  measure: cnt_issues_damaged {
+    label: "# Post Delivery Issues (Damaged)"
+    type: count
+    filters: [problem_group: "Damaged"]
+  }
 
   measure: cnt_unique_orders {
     label: "# Unique Orders"

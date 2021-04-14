@@ -11,6 +11,7 @@ view: issue_rate {
           count(distinct if(cs.problem_group = 'Wrong Product', order_nr__, null)) as wrong_product,
           count(distinct if(cs.problem_group = 'Perished Product', order_nr__, null)) as perished_product,
           count(distinct if(cs.problem_group = 'Missing Product', order_nr__, null)) as missing_product,
+          count(distinct if(cs.problem_group = 'Damaged', order_nr__, null)) as damaged,
           count(distinct if (cs.problem_group is not null, order_nr__, null)) as orders_with_issues
           from `flink-backend.saleor_db_global.order_order` orders
           left join `flink-backend.gsheet_cs_issues.CS_issues_post_delivery` cs
@@ -40,6 +41,7 @@ view: issue_rate {
       wrong_product,
       perished_product,
       missing_product,
+      damaged,
       orders_with_issues,
       orders_per_hub.count_orders
       from issues_orders
@@ -115,6 +117,11 @@ view: issue_rate {
     sql: ${TABLE}.missing_product ;;
   }
 
+  dimension: damaged {
+    type: number
+    sql: ${TABLE}.damaged ;;
+  }
+
   dimension: orders_with_issues {
     type: number
     sql: ${TABLE}.orders_with_issues ;;
@@ -152,6 +159,11 @@ view: issue_rate {
     sql: ${missing_product} ;;
   }
 
+  measure: sum_damaged {
+    type: sum
+    sql: ${damaged} ;;
+  }
+
   measure: sum_orders_with_issues {
     type: sum
     sql: ${orders_with_issues} ;;
@@ -173,6 +185,7 @@ view: issue_rate {
       wrong_product,
       perished_product,
       missing_product,
+      damaged,
       orders_with_issues,
       count_orders
     ]
