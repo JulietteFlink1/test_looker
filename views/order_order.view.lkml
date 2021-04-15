@@ -336,7 +336,7 @@ dimension: hub_location  {
   dimension: delivery_eta_minutes {
     label: "Delivery PDT (min)"
     type: number
-    sql: CAST(JSON_EXTRACT_SCALAR(${metadata}, '$.deliveryETA') AS INT64) ;;
+    sql: CAST(REGEXP_REPLACE(JSON_EXTRACT_SCALAR(${metadata}, '$.deliveryETA'),'[^0-9 ]','') AS INT64) ;;
   }
 
   dimension_group: delivery_eta_timestamp {
@@ -354,7 +354,7 @@ dimension: hub_location  {
       quarter,
       year
     ]
-    sql: TIMESTAMP_ADD(${created_raw}, INTERVAL CAST((JSON_EXTRACT_SCALAR(${metadata}, '$.deliveryETA')) AS INT64) MINUTE) ;;
+    sql: TIMESTAMP_ADD(${created_raw}, INTERVAL CAST(REGEXP_REPLACE(JSON_EXTRACT_SCALAR(${metadata}, '$.deliveryETA'),'[^0-9 ]','') AS INT64) MINUTE) ;;
   }
 
   dimension: delivery_delay_tier {
