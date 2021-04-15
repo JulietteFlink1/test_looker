@@ -389,6 +389,13 @@ explore: discount_voucher {
     user_attribute: city
   }
 
+  join: influencer_vouchers_input {
+    view_label: "Voucher Mapping"
+    sql_on: ${discount_voucher.code} = ${influencer_vouchers_input.voucher_code} ;;
+    relationship: one_to_one
+    type: left_outer
+  }
+
   join: order_order {
     sql_on: ${discount_voucher.country_iso} = ${order_order.country_iso} AND ${discount_voucher.id} = ${order_order.voucher_id} ;;
     relationship: one_to_many
@@ -427,6 +434,7 @@ explore: discount_voucher {
     relationship: one_to_one
     type: left_outer
   }
+
 }
 
 ####### TYPEFORM ANSWERS EXPLORE #######
