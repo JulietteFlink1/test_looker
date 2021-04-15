@@ -108,6 +108,8 @@ view: order_order {
     sql_end: ${created_raw} ;;
   }
 
+  ######## PARAMETERS
+
   parameter: date_granularity {
     type: unquoted
     allowed_value: { value: "Day" }
@@ -115,6 +117,30 @@ view: order_order {
     allowed_value: { value: "Month" }
     default_value: "Day"
   }
+
+  parameter: KPI_parameter {
+    type: unquoted
+    allowed_value: { value: "orders" label: "# Orders"}
+    allowed_value: { value: "unique_customers" label: "# Unique Customers" }
+    allowed_value: { value: "orders_existing_customers" label: "# Orders Existing Customers" }
+    allowed_value: { value: "orders_new_customers" label: "# Orders New Customers"}
+    allowed_value: { value: "share_of_orders_delivered_in_time" label: "% Orders Delivered In Time"}
+    allowed_value: { value: "share_of_orders_delayed_5min" label: "% Orders Delayed >5min"}
+    allowed_value: { value: "share_of_orders_delayed_10min" label: "% Orders Delayed >10min"}
+    allowed_value: { value: "share_of_orders_delayed_15min" label: "% Orders Delayed >15min"}
+    allowed_value: { value: "share_of_total_orders" label: "% Of Total Orders"}
+    allowed_value: { value: "gmv_gross" label: "GMV (Gross)"}
+    allowed_value: { value: "gmv_net" label: "GMV (Net)"}
+    allowed_value: { value: "revenue_gross" label: "Revenue (Gross)"}
+    allowed_value: { value: "revenue_net" label: "Revenue (Net)"}
+    allowed_value: { value: "discount_amount" label: "Discount Amount"}
+    #allowed_value: { value: "AVG_fulfillment_time" label: "AVG Fulfillment Time"}
+    #allowed_value: { value: "AVG_order_value_gross" label: "AVG Order Value (Gross)"}
+    #allowed_value: { value: "AVG_order_value_net" label: "AVG Order Value (Net)"}
+    default_value: "orders"
+  }
+
+  ######## DYNAMIC DIMENSIONS
 
   dimension: date {
     label: "Date (Dynamic)"
@@ -128,6 +154,77 @@ view: order_order {
       ${created_month}
     {% endif %};;
   }
+
+  measure: KPI {
+    label: "KPI (Dynamic)"
+    label_from_parameter: KPI_parameter
+    value_format: "#,##0"
+    type: number
+    sql:
+    {% if KPI_parameter._parameter_value == 'orders' %}
+      ${cnt_orders}
+    {% elsif KPI_parameter._parameter_value == 'unique_customers' %}
+      ${cnt_unique_customers}
+    {% elsif KPI_parameter._parameter_value == 'orders_existing_customers' %}
+      ${cnt_unique_orders_existing_customers}
+    {% elsif KPI_parameter._parameter_value == 'orders_new_customers' %}
+      ${cnt_unique_orders_new_customers}
+    {% elsif KPI_parameter._parameter_value == 'share_of_orders_delivered_in_time' %}
+      ${pct_delivery_in_time}*100
+    {% elsif KPI_parameter._parameter_value == 'share_of_orders_delayed_5min' %}
+      ${pct_delivery_late_over_5_min}*100
+    {% elsif KPI_parameter._parameter_value == 'share_of_orders_delayed_10min' %}
+      ${pct_delivery_late_over_10_min}*100
+    {% elsif KPI_parameter._parameter_value == 'share_of_orders_delayed_15min' %}
+      ${pct_delivery_late_over_15_min}*100
+    {% elsif KPI_parameter._parameter_value == 'share_of_total_orders' %}
+      ${percent_of_total_orders}*100
+    {% elsif KPI_parameter._parameter_value == 'gmv_gross' %}
+      ${sum_gmv_gross}
+    {% elsif KPI_parameter._parameter_value == 'gmv_net' %}
+      ${sum_gmv_net}
+    {% elsif KPI_parameter._parameter_value == 'revenue_gross' %}
+      ${sum_revenue_gross}
+    {% elsif KPI_parameter._parameter_value == 'revenue_net' %}
+      ${sum_revenue_net}
+    {% elsif KPI_parameter._parameter_value == 'discount_amount' %}
+      ${sum_discount_amt}
+    --{% elsif KPI_parameter._parameter_value == 'AVG_fulfillment_time' %}
+    --  ${avg_fulfillment_time}
+    --{% elsif KPI_parameter._parameter_value == 'AVG_order_value_gross' %}
+    --  ${avg_order_value_gross}
+    --{% elsif KPI_parameter._parameter_value == 'AVG_order_value_net' %}
+    --  ${avg_order_value_net}
+    {% endif %};;
+
+    html:
+    {% if KPI_parameter._parameter_value == 'share_of_orders_delivered_in_time' %}
+      {{ rendered_value | round: 2  | append: "%" }}
+    {% elsif KPI_parameter._parameter_value == 'share_of_orders_delayed_5min' %}
+      {{ rendered_value | round: 2  | append: "%" }}
+    {% elsif KPI_parameter._parameter_value == 'share_of_orders_delayed_10min' %}
+      {{ rendered_value | round: 2  | append: "%" }}
+    {% elsif KPI_parameter._parameter_value == 'share_of_orders_delayed_15min' %}
+      {{ rendered_value | round: 2  | append: "%" }}
+    {% elsif KPI_parameter._parameter_value == 'share_of_total_orders' %}
+      {{ rendered_value | round: 2  | append: "%" }}
+    {% elsif KPI_parameter._parameter_value == 'gmv_gross' %}
+      €{{ rendered_value }}
+    {% elsif KPI_parameter._parameter_value == 'gmv_net' %}
+      €{{ rendered_value }}
+    {% elsif KPI_parameter._parameter_value == 'revenue_gross' %}
+      €{{ rendered_value }}
+    {% elsif KPI_parameter._parameter_value == 'revenue_net' %}
+      €{{ rendered_value }}
+    {% elsif KPI_parameter._parameter_value == 'discount_amount' %}
+      €{{ rendered_value }}
+    {% else %}
+      {{ rendered_value }}
+    {% endif %};;
+
+  }
+
+  ######## PASS-THROUGH DIMENSIONS
 
   dimension: date_granularity_pass_through {
     description: "To use the parameter value in a table calculation (e.g WoW, % Growth) we need to materialize it into a dimension "
