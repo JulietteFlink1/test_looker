@@ -592,6 +592,13 @@ explore: voucher_retention {
   }
 }
 
+####### Competitor Analysis #######
+explore: competitor_analysis {
+  label: "Competitor Analysis"
+  view_label: "Competitor Analysis"
+  group_label: "8) Competitor Analysis"
+  description: "Analysis of competitors."
+}
 
 
 # explore: order_extends {
