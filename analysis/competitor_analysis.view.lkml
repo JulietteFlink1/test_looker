@@ -139,8 +139,8 @@ view: competitor_analysis {
   }
 
   dimension: flink_product_id {
-    type: number
-    value_format: "0"
+    type: string
+    # value_format: "0"
     sql: ${TABLE}.flink_product_id ;;
   }
 
