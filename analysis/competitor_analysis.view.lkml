@@ -61,8 +61,7 @@ view: competitor_analysis {
       assortment_master.ean_stueck,
       assortment_master.ean_stueck__nu as flink_ean,
       assortment_master.ean_versand,
-      assortment_master.category as flink_assortment_category,
-      assortment_master.price_____gross_ as price_gross
+      assortment_master.category as flink_assortment_category
       FROM `flink-backend.saleor_db.product_product` product
       LEFT JOIN `flink-backend.saleor_db.product_productvariant` productvariant ON product.id=productvariant.product_id
       LEFT JOIN `flink-backend.saleor_db.product_category` product_category ON product.category_id=product_category.id
@@ -74,7 +73,6 @@ view: competitor_analysis {
       f.category_name as flink_category,
       f.product_id as flink_product_id,
       f.product_name as flink_product_name,
-      f.price_gross as price_gross,
       f.flink_assortment_category as flink_assortment_category,
       f.flink_ean as flink_ean
       from gorillas g
@@ -149,11 +147,6 @@ view: competitor_analysis {
     sql: ${TABLE}.flink_product_name ;;
   }
 
-  dimension: price_gross {
-    type: number
-    sql: ${TABLE}.price_gross ;;
-  }
-
   dimension: flink_assortment_category {
     type: string
     sql: ${TABLE}.flink_assortment_category ;;
@@ -179,7 +172,6 @@ view: competitor_analysis {
       flink_category,
       flink_product_id,
       flink_product_name,
-      price_gross,
       flink_assortment_category,
       flink_ean
     ]
