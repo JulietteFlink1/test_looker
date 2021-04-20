@@ -12,7 +12,6 @@ gorillas.barcodes as gorillas_barcodes,
 gorillas.sku as gorillas_ean,
 row_number() over (partition by hub_code, id order by time_scraped desc) as gorillas_scrape_rank
 from `flink-data-dev.competitive_intelligence.gorillas_items_v1` gorillas
-where gorillas.time_scraped = '2021-04-18 16:35:09.271 UTC'
 ),
 gorillas_barcodes_unnested as (
 SELECT *
@@ -62,7 +61,7 @@ productvariant.sku,
 assortment_master.ean_stueck,
 assortment_master.ean_stueck__nu,
 assortment_master.ean_versand,
-assortment_master.category as assortment_category,
+assortment_master.category as flink_assortment_category,
 assortment_master.price_____gross_ as price_gross
 FROM `flink-backend.saleor_db.product_product` product
 LEFT JOIN `flink-backend.saleor_db.product_productvariant` productvariant ON product.id=productvariant.product_id
@@ -75,8 +74,8 @@ f.price_amount as flink_price,
 f.category_name as flink_category,
 f.product_id as flink_product_id,
 f.product_name as flink_product_name,
-f.assortment_category  as flink_assortment_category,
 f.price_gross as price_gross,
+f.flink_assortment_category as flink_assortment_category
 from gorillas g
 left join flink_assortment f on g.gorillas_ean=CAST(f.ean_stueck__nu AS STRING)
 where g.gorillas_scrape_rank=1
