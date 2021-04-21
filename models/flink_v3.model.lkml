@@ -367,7 +367,7 @@ explore: hist_daily_stock {
   join: hubs {
     view_label: "Hubs"
     sql_on: ${hist_daily_stock.slug} = ${hubs.hub_code_lowercase} ;;
-    relationship: one_to_one
+    relationship: many_to_one
     type: left_outer
   }
 }
