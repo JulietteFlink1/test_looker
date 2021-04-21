@@ -3,6 +3,7 @@ view: hist_daily_stock {
     persist_for: "6 hours"
     sql:
     SELECT
+      country_iso,
       capture_date,
       warehouse_id,
       substitute_group,
@@ -13,7 +14,7 @@ view: hist_daily_stock {
       FROM `flink-backend.saleor_db_hist.warehouse_stock_with_attributes`
       where noos_group = 'TRUE'
 
-      group by 1,2,3,4,5,6
+      group by 1,2,3,4,5,6,7
       order by 1,2,3
        ;;
   }
@@ -22,7 +23,12 @@ view: hist_daily_stock {
     primary_key: yes
     hidden: yes
     type: string
-    sql: CONCAT( ${TABLE}.capture_date, ' ', ${TABLE}.warehouse_id, ' ', ${TABLE}.substitute_group, ' ', ${TABLE}.quantity_per_substitute_group ) ;;
+    sql: CONCAT( ${TABLE}.country_iso, ' ', ${TABLE}.capture_date, ' ', ${TABLE}.warehouse_id, ' ', ${TABLE}.substitute_group, ' ', ${TABLE}.quantity_per_substitute_group ) ;;
+  }
+
+  dimension: country_iso {
+    type: string
+    sql: ${TABLE}.country_iso ;;
   }
 
   dimension: capture_date {
