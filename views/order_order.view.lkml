@@ -209,15 +209,15 @@ view: order_order {
     {% elsif KPI_parameter._parameter_value == 'share_of_total_orders' %}
       {{ rendered_value | round: 2  | append: "%" }}
     {% elsif KPI_parameter._parameter_value == 'gmv_gross' %}
-      €{{ rendered_value }}
+      €{{ value | round }}
     {% elsif KPI_parameter._parameter_value == 'gmv_net' %}
-      €{{ rendered_value }}
+      €{{ value | round }}
     {% elsif KPI_parameter._parameter_value == 'revenue_gross' %}
-      €{{ rendered_value }}
+      €{{ value | round }}
     {% elsif KPI_parameter._parameter_value == 'revenue_net' %}
-      €{{ rendered_value }}
+      €{{ value | round }}
     {% elsif KPI_parameter._parameter_value == 'discount_amount' %}
-      €{{ rendered_value }}
+      €{{ value | round }}
     {% elsif KPI_parameter._parameter_value == 'AVG_fulfillment_time' %}
       {{ rendered_value }}
     {% elsif KPI_parameter._parameter_value == 'AVG_order_value_gross' %}
@@ -225,7 +225,7 @@ view: order_order {
     {% elsif KPI_parameter._parameter_value == 'AVG_order_value_net' %}
       €{{ rendered_value }}
     {% else %}
-      {{ rendered_value }}
+      {{ value }}
     {% endif %};;
 
   }
