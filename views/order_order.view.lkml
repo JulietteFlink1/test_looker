@@ -128,7 +128,7 @@ view: order_order {
     allowed_value: { value: "share_of_orders_delayed_5min" label: "% Orders Delayed >5min"}
     allowed_value: { value: "share_of_orders_delayed_10min" label: "% Orders Delayed >10min"}
     allowed_value: { value: "share_of_orders_delayed_15min" label: "% Orders Delayed >15min"}
-    allowed_value: { value: "share_of_total_orders" label: "% Of Total Orders"}
+    #allowed_value: { value: "share_of_total_orders" label: "% Of Total Orders"}
     allowed_value: { value: "gmv_gross" label: "GMV (Gross)"}
     allowed_value: { value: "gmv_net" label: "GMV (Net)"}
     allowed_value: { value: "revenue_gross" label: "Revenue (Gross)"}
@@ -177,8 +177,8 @@ view: order_order {
       ${pct_delivery_late_over_10_min}*100
     {% elsif KPI_parameter._parameter_value == 'share_of_orders_delayed_15min' %}
       ${pct_delivery_late_over_15_min}*100
-    {% elsif KPI_parameter._parameter_value == 'share_of_total_orders' %}
-      ${percent_of_total_orders}*100
+    --{% elsif KPI_parameter._parameter_value == 'share_of_total_orders' %}
+    --  ${percent_of_total_orders}*100
     {% elsif KPI_parameter._parameter_value == 'gmv_gross' %}
       ${sum_gmv_gross}
     {% elsif KPI_parameter._parameter_value == 'gmv_net' %}
