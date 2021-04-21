@@ -134,9 +134,9 @@ view: order_order {
     allowed_value: { value: "revenue_gross" label: "Revenue (Gross)"}
     allowed_value: { value: "revenue_net" label: "Revenue (Net)"}
     allowed_value: { value: "discount_amount" label: "Discount Amount"}
-    #allowed_value: { value: "AVG_fulfillment_time" label: "AVG Fulfillment Time"}
-    #allowed_value: { value: "AVG_order_value_gross" label: "AVG Order Value (Gross)"}
-    #allowed_value: { value: "AVG_order_value_net" label: "AVG Order Value (Net)"}
+    allowed_value: { value: "AVG_fulfillment_time" label: "AVG Fulfillment Time"}
+    allowed_value: { value: "AVG_order_value_gross" label: "AVG Order Value (Gross)"}
+    allowed_value: { value: "AVG_order_value_net" label: "AVG Order Value (Net)"}
     default_value: "orders"
   }
 
@@ -158,7 +158,7 @@ view: order_order {
   measure: KPI {
     label: "KPI (Dynamic)"
     label_from_parameter: KPI_parameter
-    value_format: "#,##0"
+    value_format: "#,##0.00"
     type: number
     sql:
     {% if KPI_parameter._parameter_value == 'orders' %}
@@ -189,12 +189,12 @@ view: order_order {
       ${sum_revenue_net}
     {% elsif KPI_parameter._parameter_value == 'discount_amount' %}
       ${sum_discount_amt}
-    --{% elsif KPI_parameter._parameter_value == 'AVG_fulfillment_time' %}
-    --  ${avg_fulfillment_time}
-    --{% elsif KPI_parameter._parameter_value == 'AVG_order_value_gross' %}
-    --  ${avg_order_value_gross}
-    --{% elsif KPI_parameter._parameter_value == 'AVG_order_value_net' %}
-    --  ${avg_order_value_net}
+    {% elsif KPI_parameter._parameter_value == 'AVG_fulfillment_time' %}
+      ${avg_fulfillment_time}
+    {% elsif KPI_parameter._parameter_value == 'AVG_order_value_gross' %}
+      ${avg_order_value_gross}
+    {% elsif KPI_parameter._parameter_value == 'AVG_order_value_net' %}
+      ${avg_order_value_net}
     {% endif %};;
 
     html:
@@ -217,6 +217,12 @@ view: order_order {
     {% elsif KPI_parameter._parameter_value == 'revenue_net' %}
       €{{ rendered_value }}
     {% elsif KPI_parameter._parameter_value == 'discount_amount' %}
+      €{{ rendered_value }}
+    {% elsif KPI_parameter._parameter_value == 'AVG_fulfillment_time' %}
+      {{ rendered_value }}
+    {% elsif KPI_parameter._parameter_value == 'AVG_order_value_gross' %}
+      €{{ rendered_value }}
+    {% elsif KPI_parameter._parameter_value == 'AVG_order_value_net' %}
       €{{ rendered_value }}
     {% else %}
       {{ rendered_value }}
