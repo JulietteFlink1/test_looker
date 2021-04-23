@@ -3,7 +3,7 @@ view: adjust_events {
     sql: select adjust.*, adjust._adid_ ||'-'|| adjust._created_at_ as event_id,
         case when _event_name_ = 'SearchExecuted' and lead(_event_name_) over(partition by _adid_ order by TIMESTAMP_SECONDS(_created_at_)) IN('AddToCart', 'ViewItem') then TRUE else FALSE end as has_search_and_consecutive_add_to_cart_or_view_item
         from `flink-backend.customlytics_adjust.adjust_raw_imports` adjust
-        WHERE adjust._activity_kind_ in ('event', 'install')
+        WHERE adjust._activity_kind_ in ('event', 'install') and adjust._environment_!="sandbox"
  ;;
   }
 

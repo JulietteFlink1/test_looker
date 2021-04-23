@@ -19,7 +19,7 @@ view: adjust_sessions {
           TIMESTAMP_DIFF(TIMESTAMP_SECONDS(_created_at_),LAG(TIMESTAMP_SECONDS(_created_at_))
           OVER(PARTITION BY _adid_ ORDER BY TIMESTAMP_SECONDS(_created_at_)), MINUTE) AS inactivity_time
           FROM `flink-backend.customlytics_adjust.adjust_raw_imports`
-          WHERE _activity_kind_ in ('event', 'install')) event
+          WHERE _activity_kind_ in ('event', 'install') and _environment_!="sandbox") event
       WHERE (event.inactivity_time > 30 OR event.inactivity_time is null)
       order by 1, 3
       ),
@@ -35,7 +35,7 @@ view: adjust_sessions {
           and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at and
                   (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at
                   OR adjust_sessions.next_session_start_at is null)
-      where adjust._activity_kind_='install'
+      where adjust._activity_kind_='install' and adjust._environment_!="sandbox"
       group by 1, 2
       ),
 
@@ -50,7 +50,7 @@ view: adjust_sessions {
           and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at and
                       (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at
                       OR adjust_sessions.next_session_start_at is null)
-      where adjust._activity_kind_='event' and adjust._event_name_='AddressSelected'
+      where adjust._activity_kind_='event' and adjust._event_name_='AddressSelected' and adjust._environment_!="sandbox"
       group by 1, 2
       ),
 
@@ -68,7 +68,7 @@ view: adjust_sessions {
       where
       adjust._activity_kind_='event' and
       adjust._event_name_='AddressSelected' and
-      adjust._UserAreaAvailable_= TRUE
+      adjust._UserAreaAvailable_= TRUE and adjust._environment_!="sandbox"
       group by 1, 2
       ),
 
@@ -83,7 +83,7 @@ view: adjust_sessions {
           and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at and
                       (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at
                       OR adjust_sessions.next_session_start_at is null)
-      where adjust._activity_kind_='event' and adjust._event_name_='AddressSelected' and adjust._UserAreaAvailable_= FALSE
+      where adjust._activity_kind_='event' and adjust._event_name_='AddressSelected' and adjust._UserAreaAvailable_= FALSE and adjust._environment_!="sandbox"
       group by 1, 2
       ),
 
@@ -98,7 +98,7 @@ view: adjust_sessions {
           and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at and
                       (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at
                       OR adjust_sessions.next_session_start_at is null)
-      where adjust._activity_kind_='event' and adjust._event_name_='ArticleOpened'
+      where adjust._activity_kind_='event' and adjust._event_name_='ArticleOpened' and adjust._environment_!="sandbox"
       group by 1, 2
       ),
 
@@ -113,7 +113,7 @@ view: adjust_sessions {
           and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at and
                       (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at
                       OR adjust_sessions.next_session_start_at is null)
-      where adjust._activity_kind_='event' and adjust._event_name_='AddToCart'
+      where adjust._activity_kind_='event' and adjust._event_name_='AddToCart' and adjust._environment_!="sandbox"
       group by 1, 2
       ),
 
@@ -128,7 +128,7 @@ view: adjust_sessions {
           and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at and
                       (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at
                       OR adjust_sessions.next_session_start_at is null)
-      where adjust._activity_kind_='event' and adjust._event_name_='AddToFavourites'
+      where adjust._activity_kind_='event' and adjust._event_name_='AddToFavourites' and adjust._environment_!="sandbox"
       group by 1, 2
       ),
 
@@ -143,7 +143,7 @@ view: adjust_sessions {
           and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at and
                       (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at
                       OR adjust_sessions.next_session_start_at is null)
-      where adjust._activity_kind_='event' and adjust._event_name_='SearchExecuted'
+      where adjust._activity_kind_='event' and adjust._event_name_='SearchExecuted' and adjust._environment_!="sandbox"
       group by 1, 2
       ),
 
@@ -158,7 +158,7 @@ view: adjust_sessions {
           and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at and
                       (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at
                       OR adjust_sessions.next_session_start_at is null)
-      where adjust._activity_kind_='event' and adjust._event_name_='ViewItem'
+      where adjust._activity_kind_='event' and adjust._event_name_='ViewItem' and adjust._environment_!="sandbox"
       group by 1, 2
       ),
 
@@ -173,7 +173,7 @@ view: adjust_sessions {
           and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at and
                       (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at
                       OR adjust_sessions.next_session_start_at is null)
-      where adjust._activity_kind_='event' and adjust._event_name_='ViewCategory'
+      where adjust._activity_kind_='event' and adjust._event_name_='ViewCategory' and adjust._environment_!="sandbox"
       group by 1, 2
       ),
 
@@ -188,7 +188,7 @@ view: adjust_sessions {
           and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at and
                       (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at
                       OR adjust_sessions.next_session_start_at is null)
-      where adjust._activity_kind_='event' and adjust._event_name_='ViewSubCategory'
+      where adjust._activity_kind_='event' and adjust._event_name_='ViewSubCategory' and adjust._environment_!="sandbox"
       group by 1, 2
       ),
 
@@ -203,7 +203,7 @@ view: adjust_sessions {
           and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at and
                       (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at
                       OR adjust_sessions.next_session_start_at is null)
-      where adjust._activity_kind_='event' and adjust._event_name_='ViewCart'
+      where adjust._activity_kind_='event' and adjust._event_name_='ViewCart' and adjust._environment_!="sandbox"
       group by 1, 2
       ),
 
@@ -218,7 +218,7 @@ view: adjust_sessions {
           and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at and
                       (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at
                       OR adjust_sessions.next_session_start_at is null)
-      where adjust._activity_kind_='event' and adjust._event_name_ in ('BeginCheckout', 'checkoutStarted')
+      where adjust._activity_kind_='event' and adjust._event_name_ in ('BeginCheckout', 'checkoutStarted') and adjust._environment_!="sandbox"
       group by 1, 2
       ),
 
@@ -233,7 +233,7 @@ view: adjust_sessions {
           and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at and
                       (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at
                       OR adjust_sessions.next_session_start_at is null)
-      where adjust._activity_kind_='event' and adjust._event_name_='PaymentMethodAdded'
+      where adjust._activity_kind_='event' and adjust._event_name_='PaymentMethodAdded' and adjust._environment_!="sandbox"
       group by 1, 2
       ),
 
@@ -248,7 +248,7 @@ view: adjust_sessions {
           and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at and
                       (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at
                       OR adjust_sessions.next_session_start_at is null)
-      where adjust._activity_kind_='event' and adjust._event_name_='PaymentFailed'
+      where adjust._activity_kind_='event' and adjust._event_name_='PaymentFailed' and adjust._environment_!="sandbox"
       group by 1, 2
       ),
 
@@ -263,7 +263,7 @@ view: adjust_sessions {
           and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at and
                       (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at
                       OR adjust_sessions.next_session_start_at is null)
-      where adjust._activity_kind_='event' and adjust._event_name_='FirstPurchase'
+      where adjust._activity_kind_='event' and adjust._event_name_='FirstPurchase' and adjust._environment_!="sandbox"
       group by 1, 2
       ),
 
@@ -278,7 +278,7 @@ view: adjust_sessions {
           and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at and
                       (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at
                       OR adjust_sessions.next_session_start_at is null)
-      where adjust._activity_kind_='event' and adjust._event_name_='Purchase'
+      where adjust._activity_kind_='event' and adjust._event_name_='Purchase' and adjust._environment_!="sandbox"
       group by 1, 2
       )
 

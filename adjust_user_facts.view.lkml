@@ -8,7 +8,7 @@ view: adjust_user_facts_ {
               adjust._os_name_,
               MIN(TIMESTAMP_SECONDS(adjust._created_at_)) as install_time
               FROM `flink-backend.customlytics_adjust.adjust_raw_imports` adjust
-              where adjust._activity_kind_ in ('install')
+              where adjust._activity_kind_ in ('install') and adjust._environment_!="sandbox"
               group by 1, 2, 3, 4
           ),
 
@@ -18,7 +18,7 @@ view: adjust_user_facts_ {
               MIN(TIMESTAMP_SECONDS(adjust._created_at_)) as first_purchase_time
               FROM `flink-backend.customlytics_adjust.adjust_raw_imports` adjust
               WHERE adjust._event_name_ in ('Purchase', 'FirstPurchase') and
-              adjust._activity_kind_ = 'event'
+              adjust._activity_kind_ = 'event' and adjust._environment_!="sandbox"
               group by 1
           )
 
