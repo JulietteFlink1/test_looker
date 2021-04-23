@@ -19,7 +19,7 @@ view: adjust_sessions {
           TIMESTAMP_DIFF(TIMESTAMP_SECONDS(_created_at_),LAG(TIMESTAMP_SECONDS(_created_at_))
           OVER(PARTITION BY _adid_ ORDER BY TIMESTAMP_SECONDS(_created_at_)), MINUTE) AS inactivity_time
           FROM `flink-backend.customlytics_adjust.adjust_raw_imports`
-          WHERE _activity_kind_ in ('event', 'install') and _environment_!="sandbox") event
+          WHERE _activity_kind_ in ('event', 'install') and _environment_!="sandbox" and _created_at_ is not null) event
       WHERE (event.inactivity_time > 30 OR event.inactivity_time is null)
       order by 1, 3
       ),

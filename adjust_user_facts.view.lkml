@@ -43,6 +43,7 @@ view: adjust_user_facts_ {
   dimension: _adid_ {
     type: string
     sql: ${TABLE}._adid_ ;;
+    primary_key: yes
   }
 
   dimension: _city_ {
