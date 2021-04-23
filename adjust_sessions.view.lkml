@@ -218,7 +218,7 @@ view: adjust_sessions {
           and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at and
                       (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at
                       OR adjust_sessions.next_session_start_at is null)
-      where adjust._activity_kind_='event' and adjust._event_name_='BeginCheckout'
+      where adjust._activity_kind_='event' and adjust._event_name_ in ('BeginCheckout', 'checkoutStarted')
       group by 1, 2
       ),
 
@@ -477,7 +477,7 @@ view: adjust_sessions {
     sql: ${TABLE}.view_cart ;;
   }
 
-  dimension: begin_checkout {
+  dimension: checkout_started {
     type: number
     sql: ${TABLE}.begin_checkout ;;
   }
@@ -554,9 +554,9 @@ view: adjust_sessions {
     sql: ${article_opened} is not null ;;
   }
 
-  dimension: has_begin_checkout_in_session {
+  dimension: has_checkout_started_in_session {
     type: yesno
-    sql: ${begin_checkout} is not null ;;
+    sql: ${checkout_started} is not null ;;
   }
 
   dimension: has_first_purchase_in_session {
@@ -641,10 +641,10 @@ view: adjust_sessions {
     filters: [add_to_cart: "NOT NULL"]
   }
 
-  measure: cnt_begin_checkout {
-    label: "Begin checkout count"
+  measure: cnt_checkout_started {
+    label: "Checkout started count"
     type: count
-    filters: [begin_checkout: "NOT NULL"]
+    filters: [checkout_started: "NOT NULL"]
   }
 
   measure: cnt_payment_failed {
@@ -698,10 +698,10 @@ view: adjust_sessions {
     sql: ${add_to_cart} ;;
   }
 
-  measure: sum_begin_checkout {
-    label: "Begin checkout sum of events"
+  measure: sum_checkout_started {
+    label: "Checkout started sum of events"
     type: sum
-    sql: ${begin_checkout} ;;
+    sql: ${checkout_started} ;;
   }
 
   measure: sum_payment_failed {
@@ -761,12 +761,12 @@ view: adjust_sessions {
     value_format: "0%"
   }
 
-  measure: pct_begin_checkout_new_users {
-    label: "% Install sessions with begin checkout"
-    description: "Share of install sessions that had begin checkout"
+  measure: pct_checkout_started_new_users {
+    label: "% Install sessions with checkout started"
+    description: "Share of install sessions that had checkout started"
     hidden:  no
     type: number
-    sql: ${cnt_begin_checkout} / NULLIF(${cnt_installs}, 0);;
+    sql: ${cnt_checkout_started} / NULLIF(${cnt_installs}, 0);;
     value_format: "0%"
   }
 
@@ -817,12 +817,12 @@ view: adjust_sessions {
     value_format: "0%"
   }
 
-  measure: pct_begin_checkout_returning_users {
-    label: "% Sessions with begin checkout"
-    description: "Share of sessions that had begin checkout"
+  measure: pct_checkout_started_returning_users {
+    label: "% Sessions with checkout started"
+    description: "Share of sessions that had checkout started"
     hidden:  no
     type: number
-    sql: ${cnt_begin_checkout} / NULLIF(${sum_sessions}, 0);;
+    sql: ${cnt_checkout_started} / NULLIF(${sum_sessions}, 0);;
     value_format: "0%"
   }
 
@@ -859,7 +859,7 @@ view: adjust_sessions {
       view_category,
       view_subcategory,
       view_cart,
-      begin_checkout,
+      checkout_started,
       payment_method_added,
       payment_failed,
       first_purchase,
