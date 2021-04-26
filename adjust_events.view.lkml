@@ -3,7 +3,7 @@ view: adjust_events {
     sql: select adjust.*, adjust._adid_ ||'-'|| adjust._created_at_ as event_id,
         case when _event_name_ = 'SearchExecuted' and lead(_event_name_) over(partition by _adid_ order by TIMESTAMP_SECONDS(_created_at_)) IN('AddToCart', 'ViewItem') then TRUE else FALSE end as has_search_and_consecutive_add_to_cart_or_view_item
         from `flink-backend.customlytics_adjust.adjust_raw_imports` adjust
-        WHERE adjust._activity_kind_ in ('event', 'install')
+        WHERE adjust._activity_kind_ in ('event', 'install') and adjust._environment_!="sandbox" and adjust._created_at_ is not null
  ;;
   }
 
@@ -608,7 +608,10 @@ view: adjust_events {
 
   dimension: _event_name_ {
     type: string
-    sql: ${TABLE}._event_name_ ;;
+    sql:
+    case when ${TABLE}._event_name_ in ('checkoutStarted', 'BeginCheckout') then 'checkoutStarted'
+    when ${TABLE}._event_name_='AddressSelected' and ${TABLE}._UserAreaAvailable_= TRUE then 'UserAreaAvailable'
+    else ${TABLE}._event_name_ end ;;
   }
 
   dimension: _last_time_spent_ {
@@ -1071,6 +1074,42 @@ view: adjust_events {
     description: "If a search executed event is followed by an add to cart event or view item event this dimension is true otherwise is false"
     type: yesno
     sql: ${TABLE}.has_search_and_consecutive_add_to_cart_or_view_item is not FALSE ;;
+  }
+
+
+  dimension: events_custom_sort {
+    label: "Events (Custom Sort)"
+    case: {
+      when: {
+        sql: ${_event_name_} is null ;;
+        label: "Installs"
+      }
+      when: {
+        sql: ${_event_name_} = 'AddressSelected' ;;
+        label: "Adress Selected"
+      }
+      when: {
+        sql: ${_event_name_} = 'UserAreaAvailable' ;;
+        label: "User Area Available"
+      }
+      when: {
+        sql: ${_event_name_} = 'ViewItem' ;;
+        label: "View Item"
+      }
+      when: {
+        sql: ${_event_name_} = 'AddToCart' ;;
+        label: "Add to Cart"
+      }
+      when: {
+        sql: ${_event_name_} = 'checkoutStarted' ;;
+        label: "Checkout Started"
+      }
+      when: {
+        sql: ${_event_name_} = 'Purchase' ;;
+        label: "Purchase"
+      }
+
+    }
   }
 
 

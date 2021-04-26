@@ -13,7 +13,9 @@ view: products_mba {
 
       top_product as
       (
-              select products_names,
+              select
+                  country_iso,
+                  products_names,
                   type,
                   AOV_cat,
                   warehouse,
@@ -22,16 +24,19 @@ view: products_mba {
                   total_rank_orders,
                   count(distinct order_id) as cnt_orders
                   from (
-                          select products_names,
+                          select
+                                country_iso,
+                                products_names,
                                 type,
                                 AOV_cat,
                                 warehouse,
                                 user_order_rank,
                                 order_id,
-                                count(distinct order_id) over (partition by AOV_cat) as total_cat_orders,
-                                count(distinct order_id) over (partition by user_order_rank) as total_rank_orders
+                                count(distinct order_id) over (partition by country_iso, AOV_cat) as total_cat_orders,
+                                count(distinct order_id) over (partition by country_iso, user_order_rank) as total_rank_orders
                                 from (
                                         select
+                                        a.country_iso,
                                         product_name as products_names,
                                         'product' as type,
                                         case
@@ -59,17 +64,19 @@ view: products_mba {
                                         --'alenaschneck@gmx.de', 'saadsaeed354@gmail.com', 'saadsaeed353@gmail.com',
                                         --'fabian.hardenberg@gmail.com', 'benjamin.zagel@gmail.com')
                                 )
-                                group by 1, 2, 3, 4, 5, 6
-                                order by 4 desc
+                                group by 1, 2, 3, 4, 5, 6, 7
+                                order by 5 desc
                   )
 
-                group by 1, 2, 3, 4, 5, 6, 7
-                order by 4 desc
+                group by 1, 2, 3, 4, 5, 6, 7, 8
+                order by 5 desc
       ),
 
       top_pair_bundles as
       (
-              select products_names,
+              select
+                  country_iso,
+                  products_names,
                   type,
                   AOV_cat,
                   warehouse,
@@ -79,17 +86,19 @@ view: products_mba {
                   count(distinct order_id) as cnt_orders
                   from (
                                 select
+                                        country_iso,
                                         product_1 || '//' || product_2 as products_names,
                                         'pair_bundle' as type,
                                         AOV_cat,
                                         warehouse,
                                         user_order_rank,
                                         order_id,
-                                        count(distinct order_id) over (partition by AOV_cat) as total_cat_orders,
-                                        count(distinct order_id) over (partition by user_order_rank) as total_rank_orders
+                                        count(distinct order_id) over (partition by country_iso, AOV_cat) as total_cat_orders,
+                                        count(distinct order_id) over (partition by country_iso, user_order_rank) as total_rank_orders
                                         from
                                         (
                                                 select
+                                                a.country_iso,
                                                 a.order_id,
                                                 user_order_rank,
                                                 a.product_name as product_1,
@@ -124,15 +133,17 @@ view: products_mba {
 
                                         ) tempo
 
-                                        group by 1, 2, 3, 4, 5, 6
-                                        order by 3 desc
+                                        group by 1, 2, 3, 4, 5, 6, 7
+                                        order by 4 desc
                   )
-                  group by 1, 2, 3, 4, 5, 6, 7
+                  group by 1, 2, 3, 4, 5, 6, 7, 8
       ),
 
       top_triplet_bundles as
       (
-              select products_names,
+              select
+                  country_iso,
+                  products_names,
                   type,
                   AOV_cat,
                   warehouse,
@@ -141,17 +152,20 @@ view: products_mba {
                   total_rank_orders,
                   count(distinct order_id) as cnt_orders
                   from (
-                                select product_1 || '//' || product_2 || '//' || product_3 as products_names,
+                                select
+                                country_iso,
+                                product_1 || '//' || product_2 || '//' || product_3 as products_names,
                                 'triplet_bundle' as type,
                                 AOV_cat,
                                 warehouse,
                                 user_order_rank,
                                 order_id,
-                                count(distinct order_id) over (partition by AOV_cat) as total_cat_orders,
-                                count(distinct order_id) over (partition by user_order_rank) as total_rank_orders
+                                count(distinct order_id) over (partition by country_iso, AOV_cat) as total_cat_orders,
+                                count(distinct order_id) over (partition by country_iso, user_order_rank) as total_rank_orders
                                 from
                                 (
                                         select
+                                        a.country_iso,
                                         a.order_id,
                                         user_order_rank,
                                         a.product_name as product_1,
@@ -192,10 +206,10 @@ view: products_mba {
                                         --'fabian.hardenberg@gmail.com', 'benjamin.zagel@gmail.com')
 
                                 ) tempo
-                                group by 1, 2, 3, 4, 5, 6
+                                group by 1, 2, 3, 4, 5, 6, 7
                   )
-                group by 1, 2, 3, 4, 5, 6, 7
-                order by 3 desc
+                group by 1, 2, 3, 4, 5, 6, 7, 8
+                order by 4 desc
       )
 
         select * from top_product
@@ -205,77 +219,82 @@ view: products_mba {
       select * from top_triplet_bundles
       ;;
 
-  }
+    }
 
-  dimension: product_names {
+  dimension: country_iso {
     type: string
-    sql: ${TABLE}.products_names ;;
+    sql: ${TABLE}.country_iso ;;
   }
 
-  dimension: bundle_size {
-    type: string
-    sql: ${TABLE}.type ;;
+    dimension: product_names {
+      type: string
+      sql: ${TABLE}.products_names ;;
+    }
+
+    dimension: bundle_size {
+      type: string
+      sql: ${TABLE}.type ;;
+    }
+
+    dimension: aov_cat {
+      type: string
+      sql: ${TABLE}.AOV_cat ;;
+    }
+
+    dimension: warehouse {
+      type: string
+      sql: ${TABLE}.warehouse ;;
+    }
+
+    dimension: order_rank {
+      type: number
+      sql: ${TABLE}.user_order_rank ;;
+    }
+
+    dimension: total_cat_orders {
+      type: number
+      sql: ${TABLE}.total_cat_orders ;;
+    }
+
+    dimension: total_rank_orders {
+      type: number
+      sql: ${TABLE}.total_rank_orders ;;
+    }
+
+    dimension: cnt_orders {
+      type: number
+      sql: ${TABLE}.cnt_orders ;;
+    }
+
+    ########## Measures ########
+
+    #measure: avg_aov {
+    #  type: average
+    #  value_format_name: decimal_2
+    #  sql: ${aov} ;;
+    #}
+
+    measure: sum_orders {
+      type: sum
+      value_format_name: decimal_2
+      sql: ${cnt_orders} ;;
+    }
+
+    measure: count {
+      type: count
+      drill_fields: [detail*]
+    }
+
+    set: detail {
+      fields: [
+        product_names,
+        bundle_size,
+        aov_cat,
+        warehouse,
+        total_cat_orders,
+        total_rank_orders,
+        cnt_orders
+      ]
+    }
+
   }
-
-  dimension: aov_cat {
-    type: string
-    sql: ${TABLE}.AOV_cat ;;
-  }
-
-  dimension: warehouse {
-    type: string
-    sql: ${TABLE}.warehouse ;;
-  }
-
-  dimension: order_rank {
-    type: number
-    sql: ${TABLE}.user_order_rank ;;
-  }
-
-  dimension: total_cat_orders {
-    type: number
-    sql: ${TABLE}.total_cat_orders ;;
-  }
-
-  dimension: total_rank_orders {
-    type: number
-    sql: ${TABLE}.total_rank_orders ;;
-  }
-
-  dimension: cnt_orders {
-    type: number
-    sql: ${TABLE}.cnt_orders ;;
-  }
-
-  ########## Measures ########
-
-  #measure: avg_aov {
-  #  type: average
-  #  value_format_name: decimal_2
-  #  sql: ${aov} ;;
-  #}
-
-  measure: sum_orders {
-    type: sum
-    value_format_name: decimal_2
-    sql: ${cnt_orders} ;;
-  }
-
-  measure: count {
-    type: count
-    drill_fields: [detail*]
-  }
-
-  set: detail {
-    fields: [
-      product_names,
-      bundle_size,
-      aov_cat,
-      warehouse,
-      total_cat_orders,
-      total_rank_orders,
-      cnt_orders
-    ]
-  }
-
-}
