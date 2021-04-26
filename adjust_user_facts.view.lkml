@@ -6,7 +6,7 @@ view: adjust_user_facts_ {
               adjust._city_,
               adjust._network_name_,
               adjust._os_name_,
-              MIN(TIMESTAMP_SECONDS(adjust._created_at_)) as install_time
+              MIN(datetime(TIMESTAMP_SECONDS(adjust._created_at_), 'Europe/Berlin')) as install_time
               FROM `flink-backend.customlytics_adjust.adjust_raw_imports` adjust
               where adjust._activity_kind_ in ('install') and adjust._environment_!="sandbox"
               group by 1, 2, 3, 4
@@ -15,7 +15,7 @@ view: adjust_user_facts_ {
           purchase as
           (
               SELECT adjust._adid_,
-              MIN(TIMESTAMP_SECONDS(adjust._created_at_)) as first_purchase_time
+              MIN(datetime(TIMESTAMP_SECONDS(adjust._created_at_), 'Europe/Berlin')) as first_purchase_time
               FROM `flink-backend.customlytics_adjust.adjust_raw_imports` adjust
               WHERE adjust._event_name_ in ('Purchase', 'FirstPurchase') and
               adjust._activity_kind_ = 'event' and adjust._environment_!="sandbox"
@@ -30,10 +30,7 @@ view: adjust_user_facts_ {
               install.install_time,
               purchase.first_purchase_time,
               TIMESTAMP_DIFF(purchase.first_purchase_time, install.install_time, DAY) AS time_to_conversion,
-              case when purchase.first_purchase_time is not null then TRUE else FALSE end as has_converted,
-              count(distinct install._adid_) over (partition by date(install.install_time, 'Europe/Berlin'), install._city_) as cohort_size_city,
-              count(distinct install._adid_) over (partition by date(install.install_time, 'Europe/Berlin'), install._network_name_) as cohort_size_marketing_channel,
-              count(distinct install._adid_) over (partition by date(install.install_time, 'Europe/Berlin'), install._os_name_) as cohort_size_os_name,
+              case when purchase.first_purchase_time is not null then TRUE else FALSE end as has_converted
               from install
               left join purchase
               on install._adid_ = purchase._adid_
@@ -72,7 +69,7 @@ view: adjust_user_facts_ {
       quarter,
       year
     ]
-    sql: ${TABLE}.install_time ;;
+    sql: timestamp(${TABLE}.install_time) ;;
   }
 
   dimension_group: first_purchase_time {
@@ -86,7 +83,7 @@ view: adjust_user_facts_ {
       quarter,
       year
     ]
-    sql: ${TABLE}.first_purchase_time ;;
+    sql: timestamp(${TABLE}.first_purchase_time) ;;
   }
 
   dimension_group: duration_between_install_and_purchase {
@@ -103,21 +100,6 @@ view: adjust_user_facts_ {
   dimension: has_converted {
     type: string
     sql: ${TABLE}.has_converted ;;
-  }
-
-  dimension: cohort_size_city {
-    type: number
-    sql: ${TABLE}.cohort_size_city ;;
-  }
-
-  dimension: cohort_size_marketing_channel {
-    type: number
-    sql: ${TABLE}.cohort_size_marketing_channel ;;
-  }
-
-  dimension: cohort_size_os_name {
-    type: number
-    sql: ${TABLE}.cohort_size_os_name ;;
   }
 
   ######## MEASURES
@@ -149,10 +131,7 @@ view: adjust_user_facts_ {
       install_time_time,
       first_purchase_time_time,
       time_to_conversion,
-      has_converted,
-      cohort_size_city,
-      cohort_size_marketing_channel,
-      cohort_size_os_name
+      has_converted
     ]
   }
 }

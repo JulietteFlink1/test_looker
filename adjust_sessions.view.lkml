@@ -6,14 +6,14 @@ view: adjust_sessions {
       _adid_,
       _city_,
       _os_name_,
-      _app_version_,
+      _app_version_short_,
       _network_name_,
       _created_at_ as session_start_at,
       lead(_created_at_) over(partition by _adid_ order by _created_at_) as next_session_start_at,
       from  (select _adid_,
               _city_,
               _os_name_,
-              _app_version_,
+              _app_version_short_,
               _network_name_,
               TIMESTAMP_SECONDS(_created_at_) as _created_at_,
           TIMESTAMP_DIFF(TIMESTAMP_SECONDS(_created_at_),LAG(TIMESTAMP_SECONDS(_created_at_))
@@ -50,7 +50,7 @@ view: adjust_sessions {
           and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at and
                       (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at
                       OR adjust_sessions.next_session_start_at is null)
-      where adjust._activity_kind_='event' and adjust._event_name_='AddressSelected' and adjust._environment_!="sandbox"
+      where adjust._activity_kind_='event' and (adjust._event_name_='AddressSelected' or adjust._event_name_='locationPinPlaced') and adjust._environment_!="sandbox"
       group by 1, 2
       ),
 
@@ -67,8 +67,9 @@ view: adjust_sessions {
                       OR adjust_sessions.next_session_start_at is null)
       where
       adjust._activity_kind_='event' and
-      adjust._event_name_='AddressSelected' and
-      adjust._UserAreaAvailable_= TRUE and adjust._environment_!="sandbox"
+      ((adjust._event_name_='AddressSelected' and adjust._UserAreaAvailable_= TRUE and adjust._app_version_short_ != '2.0.0')
+      or (adjust._event_name_='locationPinPlaced' and JSON_EXTRACT_SCALAR(_publisher_parameters_, '$.user_area_available') IN ('true') and adjust._app_version_short_ = '2.0.0')) and
+      adjust._environment_!='sandbox'
       group by 1, 2
       ),
 
@@ -83,7 +84,11 @@ view: adjust_sessions {
           and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at and
                       (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at
                       OR adjust_sessions.next_session_start_at is null)
-      where adjust._activity_kind_='event' and adjust._event_name_='AddressSelected' and adjust._UserAreaAvailable_= FALSE and adjust._environment_!="sandbox"
+      where
+      adjust._activity_kind_='event' and
+      ((adjust._event_name_='AddressSelected' and adjust._UserAreaAvailable_= FALSE and adjust._app_version_short_ != '2.0.0')
+      or (adjust._event_name_='locationPinPlaced' and JSON_EXTRACT_SCALAR(_publisher_parameters_, '$.user_area_available') IN ('false') and adjust._app_version_short_ = '2.0.0')) and
+      adjust._environment_!='sandbox'
       group by 1, 2
       ),
 
@@ -290,7 +295,7 @@ view: adjust_sessions {
       datetime(adjust_sessions.next_session_start_at, 'Europe/Berlin') as next_session_start_at,
       adjust_sessions._city_,
       adjust_sessions._os_name_,
-      adjust_sessions._app_version_,
+      adjust_sessions._app_version_short_,
       adjust_sessions._network_name_,
       datetime(installs.install_date, 'Europe/Berlin') as install_date,
       1 as session,
@@ -392,7 +397,7 @@ view: adjust_sessions {
 
   dimension: _app_version_ {
     type: string
-    sql: ${TABLE}._app_version_ ;;
+    sql: ${TABLE}._app_version_short_ ;;
   }
 
   dimension: _network_name_ {

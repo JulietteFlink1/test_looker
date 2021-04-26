@@ -610,7 +610,11 @@ view: adjust_events {
     type: string
     sql:
     case when ${TABLE}._event_name_ in ('checkoutStarted', 'BeginCheckout') then 'checkoutStarted'
-    when ${TABLE}._event_name_='AddressSelected' and ${TABLE}._UserAreaAvailable_= TRUE then 'UserAreaAvailable'
+    when ${TABLE}._event_name_='AddressSelected' and ${TABLE}._UserAreaAvailable_= TRUE and ${TABLE}._app_version_short_ != '2.0.0'
+    or
+    ${TABLE}._event_name_='locationPinPlaced' and JSON_EXTRACT_SCALAR(${_publisher_parameters_}, '$.user_area_available') IN ('true')
+    then 'UserAreaAvailable'
+    case when ${TABLE}._event_name_='AddressSelected' or ${TABLE}._event_name_='locationPinPlaced' then 'AddressSelected'
     else ${TABLE}._event_name_ end ;;
   }
 
