@@ -1,7 +1,22 @@
 view: competitor_analysis {
   derived_table: {
-    sql: with gorillas_skus as (
+    sql: with gorillas_stores as(
+      SELECT DISTINCT
+      stores.countryIso AS country_iso,
+      stores.id,
+      stores.label,
+      split(stores.label, ' ')[offset (0)] as store_name,
+      split(stores.label, ' ')[offset (2)] as store_city,
+      stores.country.name as store_country,
+      stores.lat as store_lat,
+      stores.lon as store_lon
+      FROM `flink-data-dev.competitive_intelligence.gorillas_stores` stores
+    ),
+     gorillas_skus as (
       select
+      gorillas_stores.country_iso,
+      gorillas_stores.store_city,
+      gorillas_stores.store_name,
       gorillas.time_scraped as gorillas_time_scraped,
       gorillas.hub_code as gorillas_hub_code,
       gorillas.id as gorillas_id,
@@ -10,8 +25,10 @@ view: competitor_analysis {
       gorillas.category as gorillas_category,
       gorillas.barcodes as gorillas_barcodes,
       gorillas.sku as gorillas_ean,
-      row_number() over (partition by hub_code, id order by time_scraped desc) as gorillas_scrape_rank
+      row_number() over (partition by hub_code, gorillas.id order by time_scraped desc) as gorillas_scrape_rank
       from `flink-data-dev.competitive_intelligence.gorillas_items_v1` gorillas
+      left join gorillas_stores gorillas_stores ON gorillas.hub_code=gorillas_stores.id
+
       where timestamp(gorillas.time_scraped) > timestamp('2021-04-24T01:00:00.000Z')
       ),
       gorillas_barcodes_unnested as (
@@ -21,6 +38,9 @@ view: competitor_analysis {
       ),
       gorillas_one_barcode_per_row as (
       select
+      gorillas_barcodes_unnested.country_iso,
+      gorillas_barcodes_unnested.store_city,
+      gorillas_barcodes_unnested.store_name,
       gorillas_barcodes_unnested.gorillas_time_scraped as gorillas_time_scraped,
       gorillas_barcodes_unnested.gorillas_hub_code as gorillas_hub_code,
       gorillas_barcodes_unnested.gorillas_id as gorillas_id,
@@ -34,6 +54,9 @@ view: competitor_analysis {
       select * from gorillas_one_barcode_per_row
       union all
       select
+      country_iso,
+      store_city,
+      store_name,
       gorillas_time_scraped,
       gorillas_hub_code,
       gorillas_id,
@@ -47,6 +70,7 @@ view: competitor_analysis {
       ),
       flink_assortment as (
       SELECT
+      product.country_iso,
       product_category.id AS category_id,
       product_category.name AS category_name,
       product.id AS product_id,
@@ -62,22 +86,43 @@ view: competitor_analysis {
       assortment_master.ean_stueck,
       assortment_master.ean_stueck__nu as flink_ean,
       assortment_master.ean_versand,
-      assortment_master.category as flink_assortment_category
-      FROM `flink-backend.saleor_db.product_product` product
-      LEFT JOIN `flink-backend.saleor_db.product_productvariant` productvariant ON product.id=productvariant.product_id
-      LEFT JOIN `flink-backend.saleor_db.product_category` product_category ON product.category_id=product_category.id
+      assortment_master.category as flink_assortment_category,
+      sku_mapping.sku_g
+      FROM `flink-backend.saleor_db_global.product_product` product
+      LEFT JOIN `flink-backend.saleor_db_global.product_productvariant` productvariant ON product.id=productvariant.product_id
+      LEFT JOIN `flink-backend.saleor_db_global.product_category` product_category ON product.category_id=product_category.id
       LEFT JOIN `flink-backend.gsheet_assortment_master.Flink_Sortiment` assortment_master ON productvariant.sku=CAST(assortment_master.sku AS STRING)
-      )
+      LEFT JOIN `flink-backend.sandbox_nima.gsheet_flink_gorillas_sku_mapping_v2` sku_mapping ON productvariant.sku=CAST(sku_mapping.sku_f AS STRING)
+      ),
+      flink_sku_sales as
+      (
+      SELECT
+      order_order.country_iso,
+      order_orderline.product_sku,
+      SUM(order_orderline.quantity) AS quantity_sold_30d
+
+      FROM `flink-backend.saleor_db_global.order_order`
+              AS order_order
+      LEFT JOIN `flink-backend.saleor_db_global.order_orderline`
+              AS order_orderline ON order_orderline.country_iso = order_order.country_iso AND order_orderline.order_id = order_order.id
+      WHERE date(order_order.created) >= DATE_SUB(current_date(), INTERVAL 30 Day)
+      group by 1,2
+)
       select
       g.*,
-      f.price_amount as flink_price,
-      f.category_name as flink_category,
-      f.product_id as flink_product_id,
-      f.product_name as flink_product_name,
-      f.flink_assortment_category as flink_assortment_category,
-      f.flink_ean as flink_ean
+      coalesce(f.price_amount, f_2.price_amount) as flink_price,
+      coalesce(f.category_name, f_2.category_name) as flink_category,
+      coalesce(f.product_id, f_2.product_id) as flink_product_id,
+      coalesce(f.sku, f_2.sku) as flink_sku,
+      coalesce(f.product_name, f_2.product_name) as flink_product_name,
+      coalesce(f.flink_assortment_category, f_2.flink_assortment_category) as flink_assortment_category,
+      coalesce(f.flink_ean, f_2.flink_ean) as flink_ean,
+      CASE WHEN f.price_amount is not null THEN 'ean_matching' WHEN f_2.price_amount is not null THEN 'manual_matching' ELSE 'no_match' END AS match_type,
+      flink_sales.quantity_sold_30d
       from gorillas g
-      left join flink_assortment f on g.gorillas_ean=CAST(f.flink_ean  AS STRING)
+      left join flink_assortment f on g.country_iso=f.country_iso AND g.gorillas_ean=CAST(f.flink_ean AS STRING)
+      left join flink_assortment f_2 on g.country_iso=f_2.country_iso AND g.gorillas_ean=CAST(f_2.sku_g AS STRING)
+      left join flink_sku_sales flink_sales on coalesce(f.country_iso, f_2.country_iso)=flink_sales.country_iso and coalesce(f.sku, f_2.sku)=flink_sales.product_sku
       where g.gorillas_scrape_rank=1
        ;;
   }
@@ -90,6 +135,56 @@ view: competitor_analysis {
   dimension_group: gorillas_time_scraped {
     type: time
     sql: ${TABLE}.gorillas_time_scraped ;;
+  }
+
+  dimension: country_iso {
+    type: string
+    sql: ${TABLE}.country_iso ;;
+  }
+
+  dimension: unique_key {
+    type: string
+    primary_key: yes
+    sql: CONCAT(${TABLE}.gorillas_hub_code, ${TABLE}.gorillas_ean) ;;
+  }
+
+
+  dimension: match_type {
+    type: string
+    sql: ${TABLE}.match_type ;;
+  }
+
+  dimension: store_city {
+    type: string
+    sql: ${TABLE}.store_city ;;
+  }
+
+  dimension: store_name {
+    type: string
+    sql: ${TABLE}.store_name ;;
+  }
+
+
+  dimension: relative_price_diff {
+    type: number
+    value_format: "0.0%"
+    sql: ( ${TABLE}.flink_price - ${TABLE}.gorillas_price ) / NULLIF(${TABLE}.gorillas_price, 0);;
+  }
+
+  dimension: weighted_relative_price_diff {
+    type: number
+    sql: ${relative_price_diff} * ${quantity_sold_30d} ;;
+  }
+
+  dimension: absolute_price_diff {
+    type: number
+    value_format: "0.00€"
+    sql: ( ${TABLE}.flink_price - ${TABLE}.gorillas_price );;
+  }
+
+  dimension: is_relative_price_diff_over_50_pct {
+    type: yesno
+    sql: ${match_type} <> "manual_matching" AND ABS(${relative_price_diff}) > 0.5;;
   }
 
   dimension: gorillas_hub_code {
@@ -143,6 +238,12 @@ view: competitor_analysis {
     sql: ${TABLE}.flink_product_id ;;
   }
 
+  dimension: flink_sku {
+    type: string
+    # value_format: "0"
+    sql: ${TABLE}.flink_sku ;;
+  }
+
   dimension: flink_product_name {
     type: string
     sql: ${TABLE}.flink_product_name ;;
@@ -158,6 +259,42 @@ view: competitor_analysis {
     value_format: "0"
     sql: ${TABLE}.flink_ean ;;
   }
+
+  dimension: quantity_sold_30d {
+    type: number
+    value_format: "0"
+    sql: ${TABLE}.quantity_sold_30d ;;
+  }
+
+  measure: avg_relative_price_diff {
+    type: average
+    value_format: "0.0%"
+    sql: ${relative_price_diff};;
+  }
+
+  measure: sum_quantity_sold_30d {
+    type: sum_distinct
+    value_format: "0"
+    sql_distinct_key: ${flink_sku} ;;
+    sql: ${quantity_sold_30d};;
+
+  }
+
+  measure: weighted_avg_relative_price_diff {
+    type: number
+    value_format: "0.0%"
+    sql: sum(${weighted_relative_price_diff}) / sum(${quantity_sold_30d});;
+  }
+
+  measure: cnt_matched_sku {
+    type: count_distinct
+    sql_distinct_key: ${flink_sku} ;;
+    sql: ${flink_sku} ;;
+
+  }
+
+
+
 
   set: detail {
     fields: [

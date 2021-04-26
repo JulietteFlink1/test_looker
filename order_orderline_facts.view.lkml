@@ -144,6 +144,16 @@ view: order_orderline_facts {
     value_format: "0"
   }
 
+  measure: sum_item_quantity_last_30d {
+    label: "# Total Sales (last 30d)"
+    description: "Quantity of Order Line Items sold in the previous 30 days"
+    hidden:  yes
+    type: sum
+    sql: ${quantity};;
+    filters: [created_date: "30 days ago for 30 days"]
+    value_format: "0"
+  }
+
   measure: avg_daily_item_quantity_last_3d {
     label: "# AVG daily sales (last 3d)"
     description: "Average Daily Quantity of Products sold considering the previous 3 days"
