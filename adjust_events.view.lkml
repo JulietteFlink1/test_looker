@@ -608,7 +608,7 @@ view: adjust_events {
 
   dimension: _event_name_ {
     type: string
-    sql: ${TABLE}._event_name_ ;;
+    sql: case when ${TABLE}._event_name_ in ('checkoutStarted', 'BeginCheckout') then 'checkoutStarted' else ${TABLE}._event_name_ end ;;
   }
 
   dimension: _last_time_spent_ {
