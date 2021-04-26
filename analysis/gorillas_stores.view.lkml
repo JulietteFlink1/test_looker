@@ -7,7 +7,7 @@ view: gorillas_stores {
           split(stores.label, ' ')[offset (2)] as store_city,
           stores.country.name as store_country,
           stores.lat as store_lat, stores.lon as store_lon,
-          stores.time_scraped, row_number() over (partition by stores.id, id order by time_scraped desc) as gorillas_scrape_rank
+          stores.time_scraped, row_number() over (partition by stores.id order by time_scraped desc) as gorillas_scrape_rank
       FROM `flink-data-dev.competitive_intelligence.gorillas_stores` stores)
       Select * from gorillas_stores where gorillas_scrape_rank = 1
        ;;
