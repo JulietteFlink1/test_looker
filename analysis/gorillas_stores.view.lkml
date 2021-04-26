@@ -44,14 +44,10 @@ view: gorillas_stores {
     sql: ${TABLE}.store_country ;;
   }
 
-  dimension: store_lat {
-    type: number
-    sql: ${TABLE}.store_lat ;;
-  }
-
-  dimension: store_lon {
-    type: number
-    sql: ${TABLE}.store_lon ;;
+  dimension: store_location {
+    type: location
+    sql_latitude: ${TABLE}.store_lat ;;
+    sql_longitude: ${TABLE}.store_lon;;
   }
 
   dimension_group: time_scraped {
@@ -71,8 +67,7 @@ view: gorillas_stores {
       store_name,
       store_city,
       store_country,
-      store_lat,
-      store_lon,
+      store_location,
       time_scraped_time,
       gorillas_scrape_rank
     ]
