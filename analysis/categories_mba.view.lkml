@@ -11,7 +11,9 @@ view: categories_mba {
 
           top_product as
                 (
-                        select category_names,
+                        select
+                        country_iso,
+                        category_names,
                         type,
                         AOV_cat,
                         warehouse,
@@ -21,17 +23,20 @@ view: categories_mba {
                         count(distinct order_id) as cnt_orders
                         from (
 
-                                      select category_names,
+                                      select
+                                      country_iso,
+                                      category_names,
                                       type,
                                       AOV_cat,
                                       warehouse,
                                       user_order_rank,
                                       order_id,
-                                      count(distinct order_id) over (partition by AOV_cat) as total_cat_orders,
-                                      count(distinct order_id) over (partition by user_order_rank) as total_rank_orders
+                                      count(distinct order_id) over (partition by country_iso, AOV_cat) as total_cat_orders,
+                                      count(distinct order_id) over (partition by country_iso, user_order_rank) as total_rank_orders
                                       from (
 
                                                       select
+                                                      a.country_iso,
                                                       pcategory_parent.name as category_names,
                                                       'category' as type,
                                                       case
@@ -67,15 +72,17 @@ view: categories_mba {
                                                       --'alenaschneck@gmx.de', 'saadsaeed354@gmail.com', 'saadsaeed353@gmail.com',
                                                       --'fabian.hardenberg@gmail.com', 'benjamin.zagel@gmail.com')
                                       )
-                                      group by 1, 2, 3, 4, 5, 6
+                                      group by 1, 2, 3, 4, 5, 6, 7
                         )
-                        group by 1, 2, 3, 4, 5, 6, 7
+                        group by 1, 2, 3, 4, 5, 6, 7, 8
                 ),
 
                 top_pair_bundles as
                 (
 
-                        select category_names,
+                        select
+                        country_iso,
+                        category_names,
                         type,
                         AOV_cat,
                         warehouse,
@@ -86,17 +93,19 @@ view: categories_mba {
                         from
                         (
                               select
+                                      country_iso,
                                       category_name_1 || '//' || category_name_2 as category_names,
                                       'pair_bundle' as type,
                                       AOV_cat,
                                       warehouse,
                                       user_order_rank,
                                       order_id,
-                                      count(distinct tempo.order_id) over (partition by AOV_cat) as total_cat_orders,
-                                      count(distinct tempo.order_id) over (partition by user_order_rank) as total_rank_orders
+                                      count(distinct tempo.order_id) over (partition by country_iso, AOV_cat) as total_cat_orders,
+                                      count(distinct tempo.order_id) over (partition by country_iso, user_order_rank) as total_rank_orders
                                       from
                                       (
                                               select
+                                              a.country_iso,
                                               a.order_id,
                                               user_order_rank,
                                               pcategory_parent.name as category_name_1,
@@ -147,15 +156,17 @@ view: categories_mba {
                                               --'fabian.hardenberg@gmail.com', 'benjamin.zagel@gmail.com')
 
                                       ) tempo
-                                      group by 1, 2, 3, 4, 5, 6
-                                      order by 3 desc
+                                      group by 1, 2, 3, 4, 5, 6, 7
+                                      order by 4 desc
                         )
-                        group by 1, 2, 3, 4, 5, 6, 7
+                        group by 1, 2, 3, 4, 5, 6, 7, 8
                 ),
 
                 top_triplet_bundles as
                 (
-                        select category_names,
+                        select
+                        country_iso,
+                        category_names,
                         type,
                         AOV_cat,
                         warehouse,
@@ -166,17 +177,19 @@ view: categories_mba {
                         from (
 
                                       select
+                                      country_iso,
                                       category_name_1 || '//' || category_name_2 || '//' || category_name_3  as category_names,
                                       'triplet_bundle' as type,
                                       AOV_cat,
                                       warehouse,
                                       user_order_rank,
                                       order_id,
-                                      count(distinct tempo.order_id) over (partition by AOV_cat) as total_cat_orders,
-                                      count(distinct tempo.order_id) over (partition by user_order_rank) as total_rank_orders
+                                      count(distinct tempo.order_id) over (partition by country_iso, AOV_cat) as total_cat_orders,
+                                      count(distinct tempo.order_id) over (partition by country_iso, user_order_rank) as total_rank_orders
                                       from
                                       (
-                                              select
+                                              SELECT
+                                              a.country_iso,
                                               a.order_id,
                                               user_order_rank,
                                               pcategory.name as category_name_1,
@@ -243,10 +256,10 @@ view: categories_mba {
                                               --'fabian.hardenberg@gmail.com', 'benjamin.zagel@gmail.com')
 
                                       ) tempo
-                                      group by 1, 2, 3, 4, 5, 6
-                                      order by 3 desc
+                                      group by 1, 2, 3, 4, 5, 6, 7
+                                      order by 4 desc
                         )
-                        group by 1, 2, 3, 4, 5, 6, 7
+                        group by 1, 2, 3, 4, 5, 6, 7, 8
                 )
 
 
@@ -255,10 +268,14 @@ view: categories_mba {
               select * from top_pair_bundles
               union all
               select * from top_triplet_bundles
+
       ;;
   }
 
-
+  dimension: country_iso {
+    type: string
+    sql: ${TABLE}.country_iso ;;
+  }
 
   dimension: category_names {
     type: string
