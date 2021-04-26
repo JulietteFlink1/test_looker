@@ -608,7 +608,10 @@ view: adjust_events {
 
   dimension: _event_name_ {
     type: string
-    sql: case when ${TABLE}._event_name_ in ('checkoutStarted', 'BeginCheckout') then 'checkoutStarted' else ${TABLE}._event_name_ end ;;
+    sql:
+    case when ${TABLE}._event_name_ in ('checkoutStarted', 'BeginCheckout') then 'checkoutStarted'
+    when ${TABLE}._event_name_='AddressSelected' and ${TABLE}._UserAreaAvailable_= TRUE then 'UserAreaAvailable'
+    else ${TABLE}._event_name_ end ;;
   }
 
   dimension: _last_time_spent_ {
@@ -1073,6 +1076,7 @@ view: adjust_events {
     sql: ${TABLE}.has_search_and_consecutive_add_to_cart_or_view_item is not FALSE ;;
   }
 
+
   dimension: events_custom_sort {
     label: "Events (Custom Sort)"
     case: {
@@ -1099,6 +1103,10 @@ view: adjust_events {
       when: {
         sql: ${_event_name_} = 'Purchase' ;;
         label: "Purchase"
+      }
+      when: {
+        sql: ${_event_name_} = 'UserAreaAvailable' ;;
+        label: "User Area Available"
       }
     }
   }
