@@ -50,7 +50,7 @@ view: adjust_sessions {
           and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at and
                       (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at
                       OR adjust_sessions.next_session_start_at is null)
-      where adjust._activity_kind_='event' and adjust._event_name_='AddressSelected' and adjust._environment_!="sandbox"
+      where adjust._activity_kind_='event' and adjust._event_name_='AddressSelected' or adjust._event_name_='locationPinPlaced' and adjust._environment_!="sandbox"
       group by 1, 2
       ),
 
@@ -67,8 +67,9 @@ view: adjust_sessions {
                       OR adjust_sessions.next_session_start_at is null)
       where
       adjust._activity_kind_='event' and
-      adjust._event_name_='AddressSelected' and
-      adjust._UserAreaAvailable_= TRUE and adjust._environment_!="sandbox"
+      ((adjust._event_name_='AddressSelected' and adjust._UserAreaAvailable_= TRUE)
+      or (adjust._event_name_='locationPinPlaced' and JSON_EXTRACT_SCALAR(_publisher_parameters_, '$.user_area_available') IN ('true'))) and
+      adjust._environment_!='sandbox'
       group by 1, 2
       ),
 
@@ -83,7 +84,11 @@ view: adjust_sessions {
           and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at and
                       (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at
                       OR adjust_sessions.next_session_start_at is null)
-      where adjust._activity_kind_='event' and adjust._event_name_='AddressSelected' and adjust._UserAreaAvailable_= FALSE and adjust._environment_!="sandbox"
+      where
+      adjust._activity_kind_='event' and
+      ((adjust._event_name_='AddressSelected' and adjust._UserAreaAvailable_= FALSE)
+      or (adjust._event_name_='locationPinPlaced' and JSON_EXTRACT_SCALAR(_publisher_parameters_, '$.user_area_available') IN ('false'))) and
+      adjust._environment_!='sandbox'
       group by 1, 2
       ),
 
