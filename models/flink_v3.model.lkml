@@ -599,6 +599,12 @@ explore: competitor_analysis {
   group_label: "8) Competitor Analysis"
   description: "Analysis of competitors."
 }
+explore: gorillas_stores {
+  label: "Gorillas Stores"
+  view_label: "Gorillas Stores"
+  group_label: "8) Competitor Analysis"
+  description: "Store Locations of Gorillas"
+}
 
 
 # explore: order_extends {

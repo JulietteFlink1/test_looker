@@ -12,6 +12,7 @@ view: competitor_analysis {
       gorillas.sku as gorillas_ean,
       row_number() over (partition by hub_code, id order by time_scraped desc) as gorillas_scrape_rank
       from `flink-data-dev.competitive_intelligence.gorillas_items_v1` gorillas
+      where timestamp(gorillas.time_scraped) > timestamp('2021-04-24T01:00:00.000Z')
       ),
       gorillas_barcodes_unnested as (
       SELECT *
