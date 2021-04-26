@@ -1089,6 +1089,10 @@ view: adjust_events {
         label: "Adress Selected"
       }
       when: {
+        sql: ${_event_name_} = 'UserAreaAvailable' ;;
+        label: "User Area Available"
+      }
+      when: {
         sql: ${_event_name_} = 'ViewItem' ;;
         label: "View Item"
       }
@@ -1104,10 +1108,7 @@ view: adjust_events {
         sql: ${_event_name_} = 'Purchase' ;;
         label: "Purchase"
       }
-      when: {
-        sql: ${_event_name_} = 'UserAreaAvailable' ;;
-        label: "User Area Available"
-      }
+
     }
   }
 
