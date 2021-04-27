@@ -118,6 +118,7 @@ select
     on unique_installs._adid_ = first_checkout_started._adid_
     left join first_purchase
     on unique_installs._adid_ = first_purchase._adid_
+    where first_purchase.first_purchase_time >= unique_installs.install_time or first_purchase.first_purchase_time is null
  ;;
   }
 
