@@ -614,7 +614,6 @@ view: adjust_events {
     or
     ${TABLE}._event_name_='locationPinPlaced' and JSON_EXTRACT_SCALAR(${_publisher_parameters_}, '$.user_area_available') IN ('true')
     then 'UserAreaAvailable'
-    case when ${TABLE}._event_name_='AddressSelected' or ${TABLE}._event_name_='locationPinPlaced' then 'AddressSelected'
     else ${TABLE}._event_name_ end ;;
   }
 
