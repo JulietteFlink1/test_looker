@@ -472,11 +472,13 @@ explore: adjust_sessions {
     type: left_outer
   }
 
-  join: adjust_user_facts_ {
-    sql_on: ${adjust_sessions._adid_} = ${adjust_user_facts_._adid_} ;;
-    relationship: many_to_one
-    type: left_outer
-  }
+}
+
+explore: adjust_user_funnel {
+  label: "Adjust user data"
+  view_label: "Adjust user data"
+  group_label: "6) Adjust app data"
+  description: "Adjust first events by user"
 }
 
 ####### CS ISSUES EXPLORE #######
