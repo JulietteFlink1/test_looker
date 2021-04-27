@@ -1089,7 +1089,7 @@ view: adjust_events {
       }
       when: {
         sql: ${_event_name_} = 'AddressSelected' ;;
-        label: "Adress Selected"
+        label: "Address Selected"
       }
       when: {
         sql: ${_event_name_} = 'UserAreaAvailable' ;;
