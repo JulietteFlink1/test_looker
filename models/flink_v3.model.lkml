@@ -264,6 +264,14 @@ explore: order_order {
     type: left_outer
   }
 
+  join: shyftplan_riders_pickers_hours {
+    view_label: "Hub shifts"
+    sql_on: ${order_order.created_date} = ${shyftplan_riders_pickers_hours.date} and
+    ${hubs.hub_code} = ${shyftplan_riders_pickers_hours.hub_name};;
+    relationship: many_to_one
+    type: left_outer
+  }
+
 }
 
 ####### PRODUCTS EXPLORE #######
