@@ -143,6 +143,18 @@ view: shyftplan_riders_pickers_hours {
     sql: ${TABLE}.adjusted_orders_pickers ;;
   }
 
+  measure: rider_utr {
+    label: "Rider UTR"
+    type: number
+    sql: ${adjusted_orders_riders} / NULLIF(${rider_hours}, 0);;
+  }
+
+  measure: picker_utr {
+    label: "Picker UTR"
+    type: number
+    sql: ${adjusted_orders_pickers} / NULLIF(${picker_hours}, 0);;
+  }
+
   set: detail {
     fields: [
       date,

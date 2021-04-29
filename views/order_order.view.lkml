@@ -137,6 +137,12 @@ view: order_order {
     allowed_value: { value: "AVG_fulfillment_time" label: "AVG Fulfillment Time"}
     allowed_value: { value: "AVG_order_value_gross" label: "AVG Order Value (Gross)"}
     allowed_value: { value: "AVG_order_value_net" label: "AVG Order Value (Net)"}
+    allowed_value: { value: "rider_utr" label: "Rider UTR"}
+    allowed_value: { value: "picker_utr" label: "Picker UTR"}
+    allowed_value: { value: "picker_hours" label: "# Picker Hours"}
+    allowed_value: { value: "rider_hours" label: "# Rider Hours"}
+    allowed_value: { value: "pickers" label: "# Pickers"}
+    allowed_value: { value: "riders" label: "# Riders"}
     default_value: "orders"
   }
 
@@ -195,6 +201,18 @@ view: order_order {
       ${avg_order_value_gross}
     {% elsif KPI_parameter._parameter_value == 'AVG_order_value_net' %}
       ${avg_order_value_net}
+    {% elsif KPI_parameter._parameter_value == 'rider_utr' %}
+      ${shyftplan_riders_pickers_hours.rider_utr}
+    {% elsif KPI_parameter._parameter_value == 'picker_utr' %}
+      ${shyftplan_riders_pickers_hours.picker_utr}
+    {% elsif KPI_parameter._parameter_value == 'picker_hours' %}
+      ${shyftplan_riders_pickers_hours.picker_hours}
+    {% elsif KPI_parameter._parameter_value == 'rider_hours' %}
+      ${shyftplan_riders_pickers_hours.rider_hours}
+    {% elsif KPI_parameter._parameter_value == 'pickers' %}
+      ${shyftplan_riders_pickers_hours.pickers}
+    {% elsif KPI_parameter._parameter_value == 'riders' %}
+      ${shyftplan_riders_pickers_hours.riders}
     {% endif %};;
 
     html:
@@ -224,6 +242,14 @@ view: order_order {
       €{{ rendered_value }}
     {% elsif KPI_parameter._parameter_value == 'AVG_order_value_net' %}
       €{{ rendered_value }}
+    {% elsif KPI_parameter._parameter_value == 'rider_utr' %}
+      {{ rendered_value }}
+    {% elsif KPI_parameter._parameter_value == 'picker_utr' %}
+      {{ rendered_value }}
+    {% elsif KPI_parameter._parameter_value == 'picker_hours' %}
+      {{ value | round }}
+    {% elsif KPI_parameter._parameter_value == 'rider_hours' %}
+      {{ value | round }}
     {% else %}
       {{ value }}
     {% endif %};;
