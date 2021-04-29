@@ -22,6 +22,7 @@ view: user_order_rank {
   }
 
   dimension: user_order_rank {
+    group_label: "* User Dimensions *"
     type: number
     sql: ${TABLE}.user_order_rank ;;
   }

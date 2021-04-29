@@ -157,6 +157,7 @@ explore: order_order {
   }
 
   join: first_order_billing_address {
+    view_label: "First Order Facts"
     from: account_address
     type: left_outer
     relationship: one_to_one
