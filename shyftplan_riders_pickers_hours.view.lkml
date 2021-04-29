@@ -111,6 +111,7 @@ view: shyftplan_riders_pickers_hours {
   measure: rider_hours {
     type: sum
     sql: ${TABLE}.rider_hours ;;
+    value_format_name: decimal_2
   }
 
   measure: riders {
@@ -121,6 +122,7 @@ view: shyftplan_riders_pickers_hours {
   measure: picker_hours {
     type: sum
     sql: ${TABLE}.picker_hours ;;
+    value_format_name: decimal_2
   }
 
   measure: pickers {
