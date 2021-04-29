@@ -147,12 +147,14 @@ view: shyftplan_riders_pickers_hours {
     label: "Rider UTR"
     type: number
     sql: ${adjusted_orders_riders} / NULLIF(${rider_hours}, 0);;
+    value_format_name: decimal_2
   }
 
   measure: picker_utr {
     label: "Picker UTR"
     type: number
     sql: ${adjusted_orders_pickers} / NULLIF(${picker_hours}, 0);;
+    value_format_name: decimal_2
   }
 
   set: detail {
