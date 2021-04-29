@@ -270,7 +270,7 @@ view: order_order {
       {{ value }}
     {% endif %};;
 
-      }
+  }
 
       ######## PASS-THROUGH DIMENSIONS
 
