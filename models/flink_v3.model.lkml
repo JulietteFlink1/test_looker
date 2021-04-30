@@ -157,6 +157,7 @@ explore: order_order {
   }
 
   join: first_order_billing_address {
+    view_label: "First Order Facts"
     from: account_address
     type: left_outer
     relationship: one_to_one
@@ -261,6 +262,14 @@ explore: order_order {
     view_label: "NPS After Order"
     sql_on: ${order_order.country_iso} = ${nps_after_order.country_iso} AND ${order_order.id} = ${nps_after_order.order_id} ;;
     relationship: one_to_many
+    type: left_outer
+  }
+
+  join: shyftplan_riders_pickers_hours {
+    view_label: "Shifts"
+    sql_on: ${order_order.created_date} = ${shyftplan_riders_pickers_hours.date} and
+      ${hubs.hub_code} = ${shyftplan_riders_pickers_hours.hub_name};;
+    relationship: many_to_one
     type: left_outer
   }
 
@@ -435,6 +444,14 @@ explore: discount_voucher {
     type: left_outer
   }
 
+  join: shyftplan_riders_pickers_hours {
+    view_label: "Hub shifts"
+    sql_on: ${order_order.created_date} = ${shyftplan_riders_pickers_hours.date} and
+      ${hubs.hub_code} = ${shyftplan_riders_pickers_hours.hub_name};;
+    relationship: many_to_one
+    type: left_outer
+  }
+
 }
 
 ####### TYPEFORM ANSWERS EXPLORE #######
@@ -534,6 +551,14 @@ explore: cs_issues_post_delivery {
     view_label: "Hubs"
     sql_on: ${order_order.country_iso} = ${hubs.country_iso} AND ${order_order.warehouse_name} = ${hubs.hub_code_lowercase} ;;
     relationship: one_to_one
+    type: left_outer
+  }
+
+  join: shyftplan_riders_pickers_hours {
+    view_label: "Hub shifts"
+    sql_on: ${order_order.created_date} = ${shyftplan_riders_pickers_hours.date} and
+      ${hubs.hub_code} = ${shyftplan_riders_pickers_hours.hub_name};;
+    relationship: many_to_one
     type: left_outer
   }
 }
