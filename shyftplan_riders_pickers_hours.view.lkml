@@ -68,9 +68,11 @@ view: shyftplan_riders_pickers_hours {
     type: string
     sql: concat(${TABLE}.date, ${TABLE}.hub_name) ;;
     primary_key: yes
+    hidden: yes
   }
 
   dimension: date {
+    label: "Shift starts at"
     type: date
     datatype: date
     sql: ${TABLE}.date ;;
@@ -106,57 +108,71 @@ view: shyftplan_riders_pickers_hours {
   measure: count {
     type: count
     drill_fields: [detail*]
+    hidden: yes
   }
 
   measure: rider_hours {
+    label: "Sum of Rider Hours"
     type: sum
     sql: ${TABLE}.rider_hours ;;
-    value_format_name: decimal_2
+    value_format_name: decimal_0
+    group_label: "Working Hours"
   }
 
   measure: riders {
+    label: "# Riders"
     type: sum
     sql: ${TABLE}.riders ;;
+    group_label: "Counts"
   }
 
   measure: picker_hours {
+    label: "Sum of Picker Hours"
     type: sum
     sql: ${TABLE}.picker_hours ;;
-    value_format_name: decimal_2
+    value_format_name: decimal_0
+    group_label: "Working Hours"
   }
 
   measure: pickers {
+    label: "# Pickers"
     type: sum
     sql: ${TABLE}.pickers ;;
+    group_label: "Counts"
   }
 
   measure: shift_orders {
     type: sum
     sql: ${TABLE}.orders ;;
+    hidden: yes
   }
 
   measure: adjusted_orders_riders {
     type: sum
     sql: ${TABLE}.adjusted_orders_riders ;;
+    hidden: yes
   }
 
   measure: adjusted_orders_pickers {
     type: sum
     sql: ${TABLE}.adjusted_orders_pickers ;;
+    hidden: yes
   }
 
   measure: rider_utr {
-    label: "Rider UTR"
+    label: "AVG Rider UTR"
     type: number
     sql: ${adjusted_orders_riders} / NULLIF(${rider_hours}, 0);;
     value_format_name: decimal_2
+    group_label: "UTR"
   }
 
   measure: picker_utr {
-    label: "Picker UTR"
+    label: "AVG Picker UTR"
     type: number
     sql: ${adjusted_orders_pickers} / NULLIF(${picker_hours}, 0);;
     value_format_name: decimal_2
+    group_label: "UTR"
   }
 
   set: detail {

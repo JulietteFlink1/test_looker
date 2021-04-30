@@ -266,7 +266,7 @@ explore: order_order {
   }
 
   join: shyftplan_riders_pickers_hours {
-    view_label: "Hub shifts"
+    view_label: "Shifts"
     sql_on: ${order_order.created_date} = ${shyftplan_riders_pickers_hours.date} and
       ${hubs.hub_code} = ${shyftplan_riders_pickers_hours.hub_name};;
     relationship: many_to_one
