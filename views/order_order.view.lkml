@@ -606,6 +606,7 @@ view: order_order {
       dimension: fulfillment_time {
         group_label: "* Operations / Logistics *"
         type: number
+        value_format_name: decimal_1
         sql: TIMESTAMP_DIFF(TIMESTAMP(JSON_EXTRACT_SCALAR(${metadata}, '$.deliveryTime')),${created_raw}, SECOND) / 60 ;;
       }
 
