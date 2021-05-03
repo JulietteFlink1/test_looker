@@ -657,10 +657,23 @@ explore: gorillas_current_assortment{
   label: "Gorillas Assortment Overview"
   view_label: "Gorillas Assortment Overview"
   group_label: "8) Competitor Analysis"
-  description: "Customer Service Contacts tracked via GSheet"
+  description: "Current Gorillas Assortment"
 
   join: gorillas_stores {
     sql_on: ${gorillas_current_assortment.hub_code} = ${gorillas_stores.id};;
+    relationship: one_to_many
+    type: left_outer
+  }
+}
+
+explore: gorillas_turfs{
+  label: "Gorillas Turfs"
+  view_label: "Gorillas Turfs"
+  group_label: "8) Competitor Analysis"
+  description: "Current Gorillas Assortment"
+
+  join: gorillas_stores {
+    sql_on: ${gorillas_turfs.gorillas_store_ids} = ${gorillas_stores.id};;
     relationship: one_to_many
     type: left_outer
   }
