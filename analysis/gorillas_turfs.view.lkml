@@ -3,6 +3,15 @@ view: gorillas_turfs {
     ;;
   drill_fields: [id]
 
+  filter: filter_scrape_date {
+
+    type: date
+  }
+
+  parameter: par_time_scraped {
+    type: date
+  }
+
   dimension: id {
     primary_key: yes
     type: string
@@ -66,14 +75,10 @@ view: gorillas_turfs__points {
     sql: ${TABLE}.empty ;;
   }
 
-  dimension: lat {
-    type: number
-    sql: ${TABLE}.lat ;;
-  }
-
-  dimension: lon {
-    type: number
-    sql: ${TABLE}.lon ;;
+  dimension: area_point {
+    type: location
+    sql_latitude:${TABLE}.lat ;;
+    sql_longitude:${TABLE}.lon ;;
   }
 }
 

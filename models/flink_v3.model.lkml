@@ -671,7 +671,13 @@ explore: gorillas_turfs {
   view_label: "Gorillas Turfs"
   group_label: "8) Competitor Analysis"
   description: "Current Gorillas Turfs"
-  sql_always_where: ${time_scraped_date} = 1 day ago;;
+  # sql_always_where: ${time_scraped_raw} = '2021-04-25 16:35:41.402 UTC';;
+  always_filter: {
+    filters: {
+      field: time_scraped_date
+      value: "1 day ago"
+    }
+  }
 
   join: gorillas_turfs__points {
     view_label: "Gorillas Turfs: Points"
