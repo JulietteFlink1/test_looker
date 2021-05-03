@@ -22,6 +22,13 @@ view: gorillas_current_assortment {
     drill_fields: [detail*]
   }
 
+  dimension: unique_id {
+    group_label: "* IDs *"
+    primary_key: yes
+    type: string
+    sql: concat(${id}, ${hub_code},${time_scraped_date}) ;;
+  }
+
   dimension_group: time_scraped {
     type: time
     sql: ${TABLE}.time_scraped ;;

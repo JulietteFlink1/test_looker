@@ -20,6 +20,7 @@ view: gorillas_stores {
 
   dimension: id {
     type: string
+    group_label: "* IDs *"
     primary_key: yes
     sql: ${TABLE}.id ;;
   }
