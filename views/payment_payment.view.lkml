@@ -13,6 +13,7 @@ view: payment_payment {
 
   dimension: unique_id {
     group_label: "* IDs *"
+    hidden: yes
     primary_key: yes
     type: number
     sql: concat(${country_iso}, ${id}) ;;
@@ -80,66 +81,77 @@ view: payment_payment {
   }
 
   dimension: billing_address_1 {
+    hidden: yes
     group_label: "* User Dimensions *"
     type: string
     sql: ${TABLE}.billing_address_1 ;;
   }
 
   dimension: billing_address_2 {
+    hidden: yes
     group_label: "* User Dimensions *"
     type: string
     sql: ${TABLE}.billing_address_2 ;;
   }
 
   dimension: billing_city {
+    hidden: yes
     group_label: "* User Dimensions *"
     type: string
     sql: ${TABLE}.billing_city ;;
   }
 
   dimension: billing_city_area {
+    hidden: yes
     group_label: "* User Dimensions *"
     type: string
     sql: ${TABLE}.billing_city_area ;;
   }
 
   dimension: billing_company_name {
+    hidden: yes
     group_label: "* User Dimensions *"
     type: string
     sql: ${TABLE}.billing_company_name ;;
   }
 
   dimension: billing_country_area {
+    hidden: yes
     group_label: "* User Dimensions *"
     type: string
     sql: ${TABLE}.billing_country_area ;;
   }
 
   dimension: billing_country_code {
+    hidden: yes
     group_label: "* User Dimensions *"
     type: string
     sql: ${TABLE}.billing_country_code ;;
   }
 
   dimension: billing_email {
+    hidden: yes
     group_label: "* User Dimensions *"
     type: string
     sql: ${TABLE}.billing_email ;;
   }
 
   dimension: billing_first_name {
+    hidden: yes
     group_label: "* User Dimensions *"
     type: string
     sql: ${TABLE}.billing_first_name ;;
   }
 
   dimension: billing_last_name {
+    hidden: yes
     group_label: "* User Dimensions *"
     type: string
     sql: ${TABLE}.billing_last_name ;;
   }
 
   dimension: billing_postal_code {
+    hidden: yes
     group_label: "* User Dimensions *"
     type: string
     sql: ${TABLE}.billing_postal_code ;;
@@ -195,6 +207,7 @@ view: payment_payment {
 
   dimension_group: created {
     group_label: "* Dates and Timestamps *"
+    label: "Payment Created"
     type: time
     timeframes: [
       raw,
@@ -209,6 +222,7 @@ view: payment_payment {
   }
 
   dimension: currency {
+    hidden: yes
     type: string
     sql: ${TABLE}.currency ;;
   }
@@ -239,6 +253,7 @@ view: payment_payment {
 
   dimension_group: modified {
     group_label: "* Dates and Timestamps *"
+    hidden: yes
     type: time
     timeframes: [
       raw,
@@ -253,6 +268,7 @@ view: payment_payment {
   }
 
   dimension: order_id {
+    hidden: yes
     group_label: "* IDs *"
     type: number
     sql: ${TABLE}.order_id ;;
@@ -294,7 +310,7 @@ view: payment_payment {
 
   measure: sum_of_total {
     group_label: "* Monetary Values *"
-    label: "Sum of Total"
+    label: "Sum of Total Payment"
     type: sum
     sql: ${total} ;;
   }

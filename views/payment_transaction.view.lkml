@@ -12,6 +12,7 @@ view: payment_transaction {
 
   dimension: unique_id {
     group_label: "* IDs *"
+    hidden: yes
     primary_key: yes
     type: number
     sql: concat(${country_iso}, ${id}) ;;
@@ -99,12 +100,14 @@ view: payment_transaction {
   }
 
   dimension: country_iso {
+    hidden: yes
     type: string
     sql: ${TABLE}.country_iso ;;
   }
 
   dimension_group: created {
     group_label: "* Dates and Timestamps *"
+    label: "Transaction Created"
     type: time
     timeframes: [
       raw,
@@ -119,6 +122,7 @@ view: payment_transaction {
   }
 
   dimension: currency {
+    hidden: yes
     type: string
     sql: ${TABLE}.currency ;;
   }
@@ -176,7 +180,7 @@ view: payment_transaction {
 
   measure: sum_amount {
     group_label: "* Monetary Values *"
-    label: "Sum of Amount"
+    label: "Sum Payment Transaction Amount"
     type: sum
     sql: ${amount} ;;
   }
