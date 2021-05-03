@@ -671,7 +671,7 @@ explore: gorillas_turfs {
   view_label: "Gorillas Turfs"
   group_label: "8) Competitor Analysis"
   description: "Current Gorillas Turfs"
-  sql_always_where: date(${time_scraped_date}) = DATE( date_sub(current_timestamp(), INTERVAL 1 DAY)) ;;
+  sql_always_where: ${time_scraped_date} = 1 day ago;;
 
   join: gorillas_turfs__points {
     view_label: "Gorillas Turfs: Points"
