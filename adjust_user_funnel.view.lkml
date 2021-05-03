@@ -274,6 +274,7 @@ select
   }
 
   dimension: time_to_conversion {
+    label: "Days to conversion"
     type: number
     sql: ${TABLE}.time_to_conversion ;;
   }
@@ -290,7 +291,8 @@ select
 
   ######## Custom Dimensions
 
-  dimension_group: duration_between_install_and_purchase {
+  dimension_group: duration_in_days_between_install_and_purchase {
+    label: "Days Between Install And First Purchase"
     type: duration
     sql_start: ${install_time_raw} ;;
     sql_end: ${first_purchase_time_raw} ;;
