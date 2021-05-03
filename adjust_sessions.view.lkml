@@ -227,6 +227,21 @@ view: adjust_sessions {
       group by 1, 2
       ),
 
+      checkout_confirmed as
+      (
+      SELECT  adjust_sessions._adid_,
+      adjust_sessions.session_id,
+      count(adjust._event_name_) as event_count
+      FROM `flink-backend.customlytics_adjust.adjust_raw_imports` adjust
+      left join adjust_sessions
+      on adjust._adid_=adjust_sessions._adid_
+          and TIMESTAMP_SECONDS(adjust._created_at_) >= adjust_sessions.session_start_at and
+                      (TIMESTAMP_SECONDS(adjust._created_at_) < adjust_sessions.next_session_start_at
+                      OR adjust_sessions.next_session_start_at is null)
+      where adjust._activity_kind_='event' and adjust._event_name_ in ('CheckoutAttempted', 'purchaseConfirmed') and adjust._environment_!="sandbox"
+      group by 1, 2
+      ),
+
       payment_method_added as
       (
       SELECT  adjust_sessions._adid_,
@@ -311,6 +326,7 @@ view: adjust_sessions {
       view_subcategory.event_count as view_subcategory,
       view_cart.event_count as view_cart,
       begin_checkout.event_count as begin_checkout,
+      checkout_confirmed.event_count as checkout_confirmed,
       payment_method_added.event_count as payment_method_added,
       payment_failed.event_count as payment_failed,
       first_purchase.event_count as first_purchase,
@@ -330,6 +346,7 @@ view: adjust_sessions {
       left join view_subcategory on adjust_sessions.session_id=view_subcategory.session_id
       left join view_cart on adjust_sessions.session_id=view_cart.session_id
       left join begin_checkout on adjust_sessions.session_id=begin_checkout.session_id
+      left join checkout_confirmed on adjust_sessions.session_id=checkout_confirmed.session_id
       left join payment_method_added on adjust_sessions.session_id=payment_method_added.session_id
       left join payment_failed on adjust_sessions.session_id=payment_failed.session_id
       left join first_purchase on adjust_sessions.session_id=first_purchase.session_id
@@ -485,6 +502,11 @@ view: adjust_sessions {
   dimension: checkout_started {
     type: number
     sql: ${TABLE}.begin_checkout ;;
+  }
+
+  dimension: checkout_confirmed {
+    type: number
+    sql: ${TABLE}.checkout_confirmed ;;
   }
 
   dimension: payment_method_added {
@@ -650,6 +672,12 @@ view: adjust_sessions {
     label: "Checkout started count"
     type: count
     filters: [checkout_started: "NOT NULL"]
+  }
+
+  measure: cnt_checkout_confirmed {
+    label: "Checkout confirmed count"
+    type: count
+    filters: [checkout_confirmed: "NOT NULL"]
   }
 
   measure: cnt_payment_failed {
@@ -828,6 +856,15 @@ view: adjust_sessions {
     hidden:  no
     type: number
     sql: ${cnt_checkout_started} / NULLIF(${sum_sessions}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_checkout_confirmed_returning_users {
+    label: "% Sessions with checkout confirmed"
+    description: "Share of sessions that had checkout confirmed"
+    hidden:  no
+    type: number
+    sql: ${cnt_checkout_confirmed} / NULLIF(${sum_sessions}, 0);;
     value_format: "0%"
   }
 

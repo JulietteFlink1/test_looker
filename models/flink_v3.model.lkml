@@ -653,6 +653,19 @@ explore: gorillas_stores {
   description: "Store Locations of Gorillas"
 }
 
+explore: gorillas_current_assortment{
+  label: "Gorillas Assortment Overview"
+  view_label: "Gorillas Assortment Overview"
+  group_label: "8) Competitor Analysis"
+  description: "Customer Service Contacts tracked via GSheet"
+
+  join: gorillas_stores {
+    sql_on: ${gorillas_current_assortment.hub_code} = ${gorillas_stores.id};;
+    relationship: one_to_many
+    type: left_outer
+  }
+}
+
 
 # explore: order_extends {
 #   label: "Power User Orders..."
