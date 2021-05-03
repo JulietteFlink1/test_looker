@@ -273,6 +273,23 @@ explore: order_order {
     type: left_outer
   }
 
+  join: payment_payment {
+    view_label: "Payments"
+    sql_on: ${order_order.id} = ${payment_payment.order_id} and
+    ${order_order.country_iso} = ${payment_payment.country_iso} and
+    ;;
+    relationship: one_to_many
+    type: inner
+  }
+
+  join: payment_transaction {
+    view_label: "Payments"
+    sql_on: ${payment_payment.id} = ${payment_transaction.payment_id} and
+    ${payment_payment.country_iso} = ${payment_transaction.country_iso} ;;
+    relationship: one_to_many
+    type: inner
+  }
+
 }
 
 ####### PRODUCTS EXPLORE #######
