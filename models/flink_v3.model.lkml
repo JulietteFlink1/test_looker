@@ -275,7 +275,7 @@ explore: order_order {
   }
 
   join: cs_issues_post_delivery {
-    sql_on: ${order_order.country_iso} = SUBSTR(${cs_issues_post_delivery.hub}, 1, 2) and
+    sql_on: ${order_order.country_iso} = ${cs_issues_post_delivery.country_iso} and
             ${order_order.id} = ${cs_issues_post_delivery.order_nr__} ;;
     relationship: one_to_many
     type: left_outer
@@ -572,7 +572,7 @@ explore: cs_issues_post_delivery {
   }
 
   join: order_order {
-    sql_on: ${order_order.country_iso} = SUBSTR(${cs_issues_post_delivery.hub}, 1, 2) AND
+    sql_on: ${order_order.country_iso} = ${cs_issues_post_delivery.country_iso} AND
             ${cs_issues_post_delivery.order_nr__} = ${order_order.id};;
     relationship: many_to_one
     type: left_outer

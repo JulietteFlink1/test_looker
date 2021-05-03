@@ -15,7 +15,7 @@ view: issue_rate {
           count(distinct if (cs.problem_group is not null, order_nr__, null)) as orders_with_issues
           from `flink-backend.saleor_db_global.order_order` orders
           left join `flink-backend.gsheet_cs_issues.CS_issues_post_delivery` cs
-          on substr(cs.hub, 1, 2) = orders.country_iso and cs.order_nr__ = orders.id
+          on cs.country_iso = orders.country_iso and cs.order_nr__ = orders.id
           group by 1, 2
       ),
 

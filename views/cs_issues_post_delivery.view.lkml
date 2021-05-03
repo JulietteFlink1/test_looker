@@ -6,13 +6,18 @@ view: cs_issues_post_delivery {
     primary_key: yes
     hidden: yes
     type: string
-    sql: CONCAT( ${TABLE}.conversation_id, ' ', ${TABLE}.order_nr__, ' ', ${TABLE}.date ) ;;
+    sql: CONCAT( ${TABLE}.country_iso, ' ', ${TABLE}.conversation_id, ' ', ${TABLE}.order_nr__, ' ', ${TABLE}.date ) ;;
   }
 
 
   dimension: comment {
     type: string
     sql: ${TABLE}.comment ;;
+  }
+
+  dimension: country_iso {
+    type: string
+    sql: ${TABLE}.country_iso ;;
   }
 
   dimension: conversation_id {
@@ -31,31 +36,6 @@ view: cs_issues_post_delivery {
   }
 
 
-  dimension: del_amount_1 {
-    type: string
-    sql: ${TABLE}.del_amount_1 ;;
-  }
-
-  dimension: del_amount_2 {
-    type: string
-    sql: ${TABLE}.del_amount_2 ;;
-  }
-
-  dimension: del_amount_3 {
-    type: string
-    sql: ${TABLE}.del_amount_3 ;;
-  }
-
-  dimension: del_sku_1 {
-    type: string
-    sql: ${TABLE}.del_sku_1 ;;
-  }
-
-  dimension: del_sku_2 {
-    type: string
-    sql: ${TABLE}.del_sku_2 ;;
-  }
-
   dimension: delivered_product {
     type: string
     sql: ${TABLE}.delivered_product ;;
@@ -67,36 +47,6 @@ view: cs_issues_post_delivery {
     sql: date(${TABLE}.issue_date) ;;
   }
 
-
-  dimension: ord_amount_1 {
-    type: string
-    sql: ${TABLE}.ord_amount_1 ;;
-  }
-
-  dimension: ord_amount_2 {
-    type: string
-    sql: ${TABLE}.ord_amount_2 ;;
-  }
-
-  dimension: ord_amount_3 {
-    type: string
-    sql: ${TABLE}.ord_amount_3 ;;
-  }
-
-  dimension: ord_sku_1 {
-    type: string
-    sql: ${TABLE}.ord_sku_1 ;;
-  }
-
-  dimension: ord_sku_2 {
-    type: string
-    sql: ${TABLE}.ord_sku_2 ;;
-  }
-
-  dimension: ord_sku_3 {
-    type: string
-    sql: ${TABLE}.ord_sku_3 ;;
-  }
 
   dimension: hub {
     type: string
