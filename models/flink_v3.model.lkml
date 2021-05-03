@@ -666,16 +666,22 @@ explore: gorillas_current_assortment{
   }
 }
 
-explore: gorillas_turfs{
+explore: gorillas_turfs {
   label: "Gorillas Turfs"
   view_label: "Gorillas Turfs"
   group_label: "8) Competitor Analysis"
-  description: "Current Gorillas Assortment"
+  description: "Current Gorillas Turfs"
 
-  join: gorillas_stores {
-    sql_on: ${gorillas_turfs.gorillas_store_ids} = ${gorillas_stores.id};;
+  join: gorillas_turfs__points {
+    view_label: "Gorillas Turfs: Points"
+    sql: LEFT JOIN UNNEST(${gorillas_turfs.points}) as gorillas_turfs__points ;;
     relationship: one_to_many
-    type: left_outer
+  }
+
+  join: gorillas_turfs__gorillas_store_ids {
+    view_label: "Gorillas Turfs: Gorillas Store Ids"
+    sql: LEFT JOIN UNNEST(${gorillas_turfs.gorillas_store_ids}) as gorillas_turfs__gorillas_store_ids ;;
+    relationship: one_to_many
   }
 }
 

@@ -1,39 +1,21 @@
 view: gorillas_turfs {
-  derived_table: {
-    sql: with gorillas_turfs as (
-          SELECT
-          turfs.id,
-          turfs.gorillas_store_ids,
-          turfs.label,
-          turfs.points,
-          turfs.time_scraped,
-          row_number() over (partition by id order by time_scraped desc) as scrape_rank
-          FROM `flink-data-dev.competitive_intelligence.gorillas_turfs` turfs
-          WHERE DATE(time_scraped) = DATE( date_sub(current_timestamp(), INTERVAL 1 DAY))
-      )
-      select * from gorillas_turfs where scrape_rank=1
- ;;
-  }
-
-  measure: count {
-    type: count
-    drill_fields: [detail*]
-  }
+  sql_table_name: `flink-data-dev.competitive_intelligence.gorillas_turfs`
+    ;;
+  drill_fields: [id]
 
   dimension: id {
+    primary_key: yes
     type: string
     sql: ${TABLE}.id ;;
   }
 
-  dimension: unique_id {
-    group_label: "* IDs *"
-    primary_key: yes
+  dimension: color {
     type: string
-    sql: concat(${id},${time_scraped_date}) ;;
+    sql: ${TABLE}.color ;;
   }
 
   dimension: gorillas_store_ids {
-    type: string
+    hidden: yes
     sql: ${TABLE}.gorillas_store_ids ;;
   }
 
@@ -43,28 +25,61 @@ view: gorillas_turfs {
   }
 
   dimension: points {
-    type: string
+    hidden: yes
     sql: ${TABLE}.points ;;
+  }
+
+  dimension: scrape_id {
+    type: string
+    sql: ${TABLE}.scrape_id ;;
   }
 
   dimension_group: time_scraped {
     type: time
+    description: "bq-datetime"
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
     sql: ${TABLE}.time_scraped ;;
   }
 
-  dimension: scrape_rank {
+  dimension: usage_count {
     type: number
-    sql: ${TABLE}.scrape_rank ;;
+    sql: ${TABLE}.usageCount ;;
   }
 
-  set: detail {
-    fields: [
-      id,
-      gorillas_store_ids,
-      label,
-      points,
-      time_scraped_time,
-      scrape_rank
-    ]
+  measure: count {
+    type: count
+    drill_fields: [id]
+  }
+}
+
+view: gorillas_turfs__points {
+  dimension: empty {
+    type: yesno
+    sql: ${TABLE}.empty ;;
+  }
+
+  dimension: lat {
+    type: number
+    sql: ${TABLE}.lat ;;
+  }
+
+  dimension: lon {
+    type: number
+    sql: ${TABLE}.lon ;;
+  }
+}
+
+view: gorillas_turfs__gorillas_store_ids {
+  dimension: gorillas_turfs__gorillas_store_ids {
+    type: string
+    sql: gorillas_turfs__gorillas_store_ids ;;
   }
 }
