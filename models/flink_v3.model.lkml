@@ -683,6 +683,12 @@ explore: gorillas_turfs {
     sql: LEFT JOIN UNNEST(${gorillas_turfs.gorillas_store_ids}) as gorillas_turfs__gorillas_store_ids ;;
     relationship: one_to_many
   }
+
+  join: gorillas_stores {
+    view_label: "Gorillas Turfs: Gorillas Store Ids"
+    sql_on:  ${gorillas_turfs__gorillas_store_ids.gorillas_turfs__gorillas_store_ids} = ${gorillas_stores.id} ;;
+    relationship: one_to_many
+  }
 }
 
 
