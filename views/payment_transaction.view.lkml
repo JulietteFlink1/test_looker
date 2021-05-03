@@ -5,17 +5,20 @@ view: payment_transaction {
 
   dimension: id {
     primary_key: no
+    hidden: yes
     type: number
     sql: ${TABLE}.id ;;
   }
 
   dimension: unique_id {
+    group_label: "* IDs *"
     primary_key: yes
     type: number
     sql: concat(${country_iso}, ${id}) ;;
   }
 
   dimension_group: _sdc_batched {
+    hidden: yes
     type: time
     timeframes: [
       raw,
@@ -31,6 +34,7 @@ view: payment_transaction {
 
   dimension_group: _sdc_extracted {
     type: time
+    hidden: yes
     timeframes: [
       raw,
       time,
@@ -44,6 +48,7 @@ view: payment_transaction {
   }
 
   dimension_group: _sdc_received {
+    hidden: yes
     type: time
     timeframes: [
       raw,
@@ -58,31 +63,37 @@ view: payment_transaction {
   }
 
   dimension: _sdc_sequence {
+    hidden: yes
     type: number
     sql: ${TABLE}._sdc_sequence ;;
   }
 
   dimension: _sdc_table_version {
+    hidden: yes
     type: number
     sql: ${TABLE}._sdc_table_version ;;
   }
 
   dimension: action_required {
+    hidden: yes
     type: yesno
     sql: ${TABLE}.action_required ;;
   }
 
   dimension: action_required_data {
+    hidden: yes
     type: string
     sql: ${TABLE}.action_required_data ;;
   }
 
   dimension: already_processed {
+    group_label: "* Payment Status / Type *"
     type: yesno
     sql: ${TABLE}.already_processed ;;
   }
 
   dimension: amount {
+    group_label: "* Monetary Values *"
     type: number
     sql: ${TABLE}.amount ;;
   }
@@ -93,6 +104,7 @@ view: payment_transaction {
   }
 
   dimension_group: created {
+    group_label: "* Dates and Timestamps *"
     type: time
     timeframes: [
       raw,
@@ -112,16 +124,19 @@ view: payment_transaction {
   }
 
   dimension: error {
+    group_label: "* Payment Status / Type *"
     type: string
     sql: ${TABLE}.error ;;
   }
 
   dimension: gateway_response {
+    hidden: yes
     type: string
     sql: ${TABLE}.gateway_response ;;
   }
 
   dimension: is_success {
+    group_label: "* Payment Status / Type *"
     type: yesno
     sql: ${TABLE}.is_success ;;
   }
@@ -132,16 +147,20 @@ view: payment_transaction {
   }
 
   dimension: payment_id {
+    group_label: "* IDs *"
     type: number
     sql: ${TABLE}.payment_id ;;
   }
 
   dimension: searchable_key {
+    hidden: yes
     type: string
     sql: ${TABLE}.searchable_key ;;
   }
 
   dimension: token {
+    label: "Transaction Token"
+    group_label: "* IDs *"
     type: string
     sql: ${TABLE}.token ;;
   }
@@ -149,11 +168,14 @@ view: payment_transaction {
   ####### Measures
 
   measure: count {
+    label: "# Transactions"
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
     type: count
     drill_fields: [id]
   }
 
   measure: sum_amount {
+    group_label: "* Monetary Values *"
     label: "Sum of Amount"
     type: sum
     sql: ${amount} ;;

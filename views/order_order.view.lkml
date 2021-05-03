@@ -35,6 +35,7 @@ view: order_order {
     primary_key: no
     type: number
     sql: ${TABLE}.id ;;
+    value_format_name: id
   }
 
   dimension: billing_address_id {

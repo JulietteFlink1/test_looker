@@ -6,6 +6,7 @@ view: payment_payment {
   dimension: id {
     group_label: "* IDs *"
     primary_key: no
+    hidden: yes
     type: number
     sql: ${TABLE}.id ;;
   }
@@ -19,6 +20,7 @@ view: payment_payment {
 
   dimension_group: _sdc_batched {
     group_label: "* Dates and Timestamps *"
+    hidden: yes
     type: time
     timeframes: [
       raw,
@@ -34,6 +36,7 @@ view: payment_payment {
 
   dimension_group: _sdc_extracted {
     group_label: "* Dates and Timestamps *"
+    hidden: yes
     type: time
     timeframes: [
       raw,
@@ -49,6 +52,7 @@ view: payment_payment {
 
   dimension_group: _sdc_received {
     group_label: "* Dates and Timestamps *"
+    hidden: yes
     type: time
     timeframes: [
       raw,
@@ -63,106 +67,128 @@ view: payment_payment {
   }
 
   dimension: _sdc_sequence {
+    group_label: "* IDs *"
+    hidden: yes
     type: number
     sql: ${TABLE}._sdc_sequence ;;
   }
 
   dimension: _sdc_table_version {
     type: number
+    hidden: yes
     sql: ${TABLE}._sdc_table_version ;;
   }
 
   dimension: billing_address_1 {
+    group_label: "* User Dimensions *"
     type: string
     sql: ${TABLE}.billing_address_1 ;;
   }
 
   dimension: billing_address_2 {
+    group_label: "* User Dimensions *"
     type: string
     sql: ${TABLE}.billing_address_2 ;;
   }
 
   dimension: billing_city {
+    group_label: "* User Dimensions *"
     type: string
     sql: ${TABLE}.billing_city ;;
   }
 
   dimension: billing_city_area {
+    group_label: "* User Dimensions *"
     type: string
     sql: ${TABLE}.billing_city_area ;;
   }
 
   dimension: billing_company_name {
+    group_label: "* User Dimensions *"
     type: string
     sql: ${TABLE}.billing_company_name ;;
   }
 
   dimension: billing_country_area {
+    group_label: "* User Dimensions *"
     type: string
     sql: ${TABLE}.billing_country_area ;;
   }
 
   dimension: billing_country_code {
+    group_label: "* User Dimensions *"
     type: string
     sql: ${TABLE}.billing_country_code ;;
   }
 
   dimension: billing_email {
+    group_label: "* User Dimensions *"
     type: string
     sql: ${TABLE}.billing_email ;;
   }
 
   dimension: billing_first_name {
+    group_label: "* User Dimensions *"
     type: string
     sql: ${TABLE}.billing_first_name ;;
   }
 
   dimension: billing_last_name {
+    group_label: "* User Dimensions *"
     type: string
     sql: ${TABLE}.billing_last_name ;;
   }
 
   dimension: billing_postal_code {
+    group_label: "* User Dimensions *"
     type: string
     sql: ${TABLE}.billing_postal_code ;;
   }
 
   dimension: captured_amount {
+    group_label: "* Monetary Values *"
     type: number
     sql: ${TABLE}.captured_amount ;;
   }
 
   dimension: cc_brand {
+    hidden: yes
     type: string
     sql: ${TABLE}.cc_brand ;;
   }
 
   dimension: cc_exp_month {
+    hidden: yes
     type: number
     sql: ${TABLE}.cc_exp_month ;;
   }
 
   dimension: cc_exp_year {
+    hidden: yes
     type: number
     sql: ${TABLE}.cc_exp_year ;;
   }
 
   dimension: cc_first_digits {
+    hidden: yes
     type: string
     sql: ${TABLE}.cc_first_digits ;;
   }
 
   dimension: cc_last_digits {
+    hidden: yes
     type: string
     sql: ${TABLE}.cc_last_digits ;;
   }
 
   dimension: charge_status {
+    group_label: "* Payment Status / Type *"
     type: string
     sql: ${TABLE}.charge_status ;;
   }
 
   dimension: country_iso {
+    group_label: "* User Dimensions *"
     type: string
     sql: ${TABLE}.country_iso ;;
   }
@@ -188,21 +214,25 @@ view: payment_payment {
   }
 
   dimension: customer_ip_address {
+    hidden: yes
     type: string
     sql: ${TABLE}.customer_ip_address ;;
   }
 
   dimension: extra_data {
+    hidden: yes
     type: string
     sql: ${TABLE}.extra_data ;;
   }
 
   dimension: gateway {
+    hidden: yes
     type: string
     sql: ${TABLE}.gateway ;;
   }
 
   dimension: is_active {
+    group_label: "* Payment Status / Type *"
     type: yesno
     sql: ${TABLE}.is_active ;;
   }
@@ -223,6 +253,7 @@ view: payment_payment {
   }
 
   dimension: order_id {
+    group_label: "* IDs *"
     type: number
     sql: ${TABLE}.order_id ;;
   }
@@ -233,16 +264,21 @@ view: payment_payment {
   }
 
   dimension: to_confirm {
+    group_label: "* Payment Status / Type *"
     type: yesno
     sql: ${TABLE}.to_confirm ;;
   }
 
   dimension: token {
+    label: "Payment Token"
+    group_label: "* IDs *"
     type: string
     sql: ${TABLE}.token ;;
   }
 
   dimension: total {
+    label: "Payment Total"
+    group_label: "* Monetary Values *"
     type: number
     sql: ${TABLE}.total ;;
   }
@@ -250,13 +286,23 @@ view: payment_payment {
   ####### Measures
 
   measure: count {
+    label: "# Payments"
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
     type: count
     drill_fields: [id, billing_last_name, billing_first_name, billing_company_name]
   }
 
-  measure: sum_payment {
-    label: "Sum of Payments"
+  measure: sum_of_total {
+    group_label: "* Monetary Values *"
+    label: "Sum of Total"
     type: sum
     sql: ${total} ;;
+  }
+
+  measure: sum_of_captured_amount {
+    group_label: "* Monetary Values *"
+    label: "Sum of Captured Amount"
+    type: sum
+    sql: ${captured_amount} ;;
   }
 }

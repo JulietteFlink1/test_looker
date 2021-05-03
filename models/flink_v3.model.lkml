@@ -276,8 +276,7 @@ explore: order_order {
   join: payment_payment {
     view_label: "Payments"
     sql_on: ${order_order.id} = ${payment_payment.order_id} and
-    ${order_order.country_iso} = ${payment_payment.country_iso} and
-    ;;
+    ${order_order.country_iso} = ${payment_payment.country_iso} ;;
     relationship: one_to_many
     type: inner
   }
