@@ -717,6 +717,8 @@ explore: gorillas_current_assortment{
   }
 }
 
+
+
 explore: gorillas_turfs {
   label: "Gorillas Turfs"
   view_label: "Gorillas Turfs"
@@ -748,6 +750,18 @@ explore: gorillas_turfs {
     relationship: one_to_many
   }
 }
+
+explore: hist_avg_items_per_category_comparison{
+  label: "Items per Category Provider Comparison"
+  view_label: "Items per Category Provider Comparison"
+  group_label: "8) Competitor Analysis"
+  description: "Items per Category Provider Comparison"
+
+}
+
+
+
+
 
 
 # explore: order_extends {
