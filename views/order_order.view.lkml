@@ -35,6 +35,7 @@ view: order_order {
     primary_key: no
     type: number
     sql: ${TABLE}.id ;;
+    value_format_name: id
   }
 
   dimension: billing_address_id {
@@ -606,6 +607,7 @@ view: order_order {
       dimension: fulfillment_time {
         group_label: "* Operations / Logistics *"
         type: number
+        value_format_name: decimal_1
         sql: TIMESTAMP_DIFF(TIMESTAMP(JSON_EXTRACT_SCALAR(${metadata}, '$.deliveryTime')),${created_raw}, SECOND) / 60 ;;
       }
 

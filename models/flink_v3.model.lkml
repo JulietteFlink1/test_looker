@@ -60,13 +60,15 @@ explore: order_order {
   sql_always_where: CASE WHEN ({{ _user_attributes['id'] }}) = 28 THEN ${order_order.created_week} < ${now_week} ELSE 1=1 END;;
 
   join: order_fulfillment {
-    sql_on: ${order_fulfillment.country_iso} = ${order_order.country_iso} AND ${order_fulfillment.order_id} = ${order_order.id};;
+    sql_on: ${order_fulfillment.country_iso} = ${order_order.country_iso} AND
+            ${order_fulfillment.order_id} = ${order_order.id};;
     relationship: one_to_many
     type: left_outer
   }
 
   join: order_orderline {
-    sql_on: ${order_orderline.country_iso} = ${order_order.country_iso} AND ${order_orderline.order_id} = ${order_order.id} ;;
+    sql_on: ${order_orderline.country_iso} = ${order_order.country_iso} AND
+            ${order_orderline.order_id} = ${order_order.id} ;;
     relationship: one_to_many
     type: left_outer
   }
@@ -75,40 +77,46 @@ explore: order_order {
     view_label: "Users"
     type: left_outer
     relationship: many_to_one
-    sql_on: ${order_order.country_iso} = ${user_order_facts.country_iso} AND ${order_order.user_email} = ${user_order_facts.user_email} ;;
+    sql_on: ${order_order.country_iso} = ${user_order_facts.country_iso} AND
+            ${order_order.user_email} = ${user_order_facts.user_email} ;;
   }
 
   join: hub_order_facts {
     view_label: "Hubs"
     type: left_outer
     relationship: many_to_one
-    sql_on: ${order_order.country_iso} = ${hub_order_facts.country_iso} AND ${order_order.warehouse_name} = ${hub_order_facts.warehouse_name} ;;
+    sql_on: ${order_order.country_iso} = ${hub_order_facts.country_iso} AND
+            ${order_order.warehouse_name} = ${hub_order_facts.warehouse_name} ;;
   }
 
   join: order_fulfillment_facts {
     type: left_outer
     relationship: one_to_one
-    sql_on: ${order_fulfillment_facts.country_iso} = ${order_fulfillment.country_iso} AND ${order_fulfillment_facts.order_fulfillment_id} = ${order_fulfillment.id} ;;
+    sql_on: ${order_fulfillment_facts.country_iso} = ${order_fulfillment.country_iso} AND
+            ${order_fulfillment_facts.order_fulfillment_id} = ${order_fulfillment.id} ;;
   }
 
   join: discount_voucher {
     type: left_outer
     relationship: many_to_one
-    sql_on: ${discount_voucher.country_iso} = ${order_order.country_iso} AND ${discount_voucher.id} = ${order_order.voucher_id} ;;
+    sql_on: ${discount_voucher.country_iso} = ${order_order.country_iso} AND
+            ${discount_voucher.id} = ${order_order.voucher_id} ;;
   }
 
   join: shipping_address {
     from: account_address
     type: left_outer
     relationship: one_to_one
-    sql_on: ${order_order.country_iso} = ${shipping_address.country_iso} AND ${order_order.shipping_address_id} = ${shipping_address.id} ;;
+    sql_on: ${order_order.country_iso} = ${shipping_address.country_iso} AND
+            ${order_order.shipping_address_id} = ${shipping_address.id} ;;
   }
 
   join: billing_address {
     from: account_address
     type: left_outer
     relationship: one_to_one
-    sql_on: ${order_order.country_iso} = ${billing_address.country_iso} AND ${order_order.billing_address_id} = ${billing_address.id} ;;
+    sql_on: ${order_order.country_iso} = ${billing_address.country_iso} AND
+            ${order_order.billing_address_id} = ${billing_address.id} ;;
   }
 
   join: first_order_facts {
@@ -116,7 +124,8 @@ explore: order_order {
     type: inner
     from: order_order
     relationship: one_to_one
-    sql_on: ${user_order_facts.country_iso} = ${first_order_facts.country_iso} AND ${user_order_facts.first_order_id} = ${first_order_facts.id} ;;
+    sql_on: ${user_order_facts.country_iso} = ${first_order_facts.country_iso} AND
+            ${user_order_facts.first_order_id} = ${first_order_facts.id} ;;
     #sql_where: ${first_order_facts.is_successful_order} = "yes" AND ${first_order_facts.is_internal_order} = "no";; #not needed to filter join table if base table is already filtered?
     fields:
     [
@@ -133,7 +142,8 @@ explore: order_order {
   join: first_order_hub {
     from: hubs
     view_label: "First Order Facts"
-    sql_on: ${first_order_facts.country_iso} = ${first_order_hub.country_iso} AND ${first_order_facts.warehouse_name} = ${first_order_hub.hub_code_lowercase} ;;
+    sql_on: ${first_order_facts.country_iso} = ${first_order_hub.country_iso} AND
+            ${first_order_facts.warehouse_name} = ${first_order_hub.hub_code_lowercase} ;;
     relationship: one_to_one
     type: left_outer
     fields:
@@ -149,7 +159,8 @@ explore: order_order {
     type: left_outer
     from: discount_voucher
     relationship: one_to_one
-    sql_on: ${first_order_facts.country_iso} = ${first_order_discount.country_iso} AND ${first_order_facts.voucher_id} = ${first_order_discount.id} ;;
+    sql_on: ${first_order_facts.country_iso} = ${first_order_discount.country_iso} AND
+            ${first_order_facts.voucher_id} = ${first_order_discount.id} ;;
     fields:
     [
       first_order_discount.code
@@ -161,7 +172,8 @@ explore: order_order {
     from: account_address
     type: left_outer
     relationship: one_to_one
-    sql_on: ${first_order_facts.country_iso} = ${first_order_billing_address.country_iso} AND ${first_order_facts.billing_address_id} = ${first_order_billing_address.id} ;;
+    sql_on: ${first_order_facts.country_iso} = ${first_order_billing_address.country_iso} AND
+            ${first_order_facts.billing_address_id} = ${first_order_billing_address.id} ;;
     fields:
     [
       first_order_billing_address.first_name,
@@ -174,7 +186,8 @@ explore: order_order {
     type: inner
     from: order_order
     relationship: one_to_one
-    sql_on: ${user_order_facts.country_iso} = ${latest_order_facts.country_iso} AND ${user_order_facts.latest_order_id} = ${latest_order_facts.id} ;;
+    sql_on: ${user_order_facts.country_iso} = ${latest_order_facts.country_iso} AND
+            ${user_order_facts.latest_order_id} = ${latest_order_facts.id} ;;
     #sql_where: ${first_order_facts.is_successful_order} = "yes" AND ${first_order_facts.is_internal_order} = "no";; #not needed to filter join table if base table is already filtered?
     fields:
     [
@@ -190,7 +203,8 @@ explore: order_order {
 
   join: user_order_rank {
     view_label: "Orders"
-    sql_on: ${order_order.country_iso} = ${user_order_rank.country_iso} AND ${order_order.id} = ${user_order_rank.id};;
+    sql_on: ${order_order.country_iso} = ${user_order_rank.country_iso} AND
+            ${order_order.id} = ${user_order_rank.id};;
     relationship: one_to_one
     type: left_outer
     fields:
@@ -201,14 +215,16 @@ explore: order_order {
 
   join: weekly_cohorts_stable_base {
     view_label: "Cohorts - Weekly"
-    sql_on: ${user_order_facts.country_iso} = ${weekly_cohorts_stable_base.country_iso} AND ${user_order_facts.first_order_week} = ${weekly_cohorts_stable_base.first_order_week};;
+    sql_on: ${user_order_facts.country_iso} = ${weekly_cohorts_stable_base.country_iso} AND
+            ${user_order_facts.first_order_week} = ${weekly_cohorts_stable_base.first_order_week};;
     relationship: one_to_one
     type: left_outer
   }
 
   join: monthly_cohorts_stable_base {
     view_label: "Cohorts - Monthly"
-    sql_on: ${user_order_facts.country_iso} = ${monthly_cohorts_stable_base.country_iso} AND ${user_order_facts.first_order_month} = ${monthly_cohorts_stable_base.first_order_month} ;;
+    sql_on: ${user_order_facts.country_iso} = ${monthly_cohorts_stable_base.country_iso} AND
+            ${user_order_facts.first_order_month} = ${monthly_cohorts_stable_base.first_order_month} ;;
     relationship: one_to_one
     type: left_outer
   }
@@ -216,51 +232,59 @@ explore: order_order {
 
   join: hubs {
     view_label: "Hubs"
-    sql_on: ${order_order.country_iso} = ${hubs.country_iso} AND ${order_order.warehouse_name} = ${hubs.hub_code_lowercase} ;;
+    sql_on: ${order_order.country_iso} = ${hubs.country_iso} AND
+            ${order_order.warehouse_name} = ${hubs.hub_code_lowercase} ;;
     relationship: one_to_one
     type: left_outer
   }
 
   join: product_productvariant {
-    sql_on: ${order_orderline.country_iso} = ${product_productvariant.country_iso} AND ${order_orderline.product_sku} = ${product_productvariant.sku} ;;
+    sql_on: ${order_orderline.country_iso} = ${product_productvariant.country_iso} AND
+            ${order_orderline.product_sku} = ${product_productvariant.sku} ;;
     relationship: one_to_one
     type: left_outer
   }
 
   join: product_product {
-    sql_on: ${product_productvariant.country_iso} = ${product_product.country_iso} AND ${product_productvariant.product_id} = ${product_product.id} ;;
+    sql_on: ${product_productvariant.country_iso} = ${product_product.country_iso} AND
+            ${product_productvariant.product_id} = ${product_product.id} ;;
     relationship: one_to_one
     type: left_outer
   }
 
   join: product_category {
-    sql_on: ${product_category.country_iso} = ${product_product.country_iso} AND ${product_category.id} = ${product_product.category_id} ;;
+    sql_on: ${product_category.country_iso} = ${product_product.country_iso} AND
+            ${product_category.id} = ${product_product.category_id} ;;
     relationship: one_to_one
     type: left_outer
   }
 
   join: product_producttype {
-    sql_on:${product_product.country_iso} = ${product_producttype.country_iso} AND  ${product_product.product_type_id} = ${product_producttype.id} ;;
+    sql_on:${product_product.country_iso} = ${product_producttype.country_iso} AND
+          ${product_product.product_type_id} = ${product_producttype.id} ;;
     relationship: one_to_one
     type: left_outer
   }
 
   join: parent_category {
     from: product_category
-    sql_on: ${product_category.country_iso} = ${parent_category.country_iso} AND ${product_category.parent_id} = ${parent_category.id} ;;
+    sql_on: ${product_category.country_iso} = ${parent_category.country_iso} AND
+            ${product_category.parent_id} = ${parent_category.id} ;;
     relationship: one_to_one
     type: left_outer
   }
 
   join: cs_issues_post_delivery {
-    sql_on: ${order_order.id} = ${cs_issues_post_delivery.order_nr__} AND ${order_order.country_iso} = SUBSTR(${cs_issues_post_delivery.hub}, 1, 2) ;;
+    sql_on: ${order_order.country_iso} = ${cs_issues_post_delivery.country_iso} and
+            ${order_order.id} = ${cs_issues_post_delivery.order_nr__} ;;
     relationship: one_to_many
     type: left_outer
   }
 
   join: nps_after_order {
     view_label: "NPS After Order"
-    sql_on: ${order_order.country_iso} = ${nps_after_order.country_iso} AND ${order_order.id} = ${nps_after_order.order_id} ;;
+    sql_on: ${order_order.country_iso} = ${nps_after_order.country_iso} AND
+            ${order_order.id} = ${nps_after_order.order_id} ;;
     relationship: one_to_many
     type: left_outer
   }
@@ -268,8 +292,24 @@ explore: order_order {
   join: shyftplan_riders_pickers_hours {
     view_label: "Shifts"
     sql_on: ${order_order.created_date} = ${shyftplan_riders_pickers_hours.date} and
-      ${hubs.hub_code} = ${shyftplan_riders_pickers_hours.hub_name};;
+            ${hubs.hub_code} = ${shyftplan_riders_pickers_hours.hub_name};;
     relationship: many_to_one
+    type: left_outer
+  }
+
+  join: payment_payment {
+    view_label: "Payments"
+    sql_on: ${order_order.country_iso} = ${payment_payment.country_iso} and
+            ${order_order.id} = ${payment_payment.order_id};;
+    relationship: one_to_many
+    type: left_outer
+  }
+
+  join: payment_transaction {
+    view_label: "Payments"
+    sql_on: ${payment_payment.country_iso} = ${payment_transaction.country_iso} and
+            ${payment_payment.id} = ${payment_transaction.payment_id};;
+    relationship: one_to_many
     type: left_outer
   }
 
@@ -300,26 +340,30 @@ explore: product_product {
   }
 
   join: product_productvariant {
-    sql_on: ${product_productvariant.country_iso} = ${product_product.country_iso} AND ${product_productvariant.product_id} = ${product_product.id} ;;
+    sql_on: ${product_productvariant.country_iso} = ${product_product.country_iso} AND
+            ${product_productvariant.product_id} = ${product_product.id} ;;
     relationship: one_to_many
     type: left_outer
   }
 
   join: product_category {
-    sql_on: ${product_category.country_iso} = ${product_product.country_iso} AND ${product_category.id} = ${product_product.category_id} ;;
+    sql_on: ${product_category.country_iso} = ${product_product.country_iso} AND
+            ${product_category.id} = ${product_product.category_id} ;;
     relationship: many_to_one
     type: left_outer
   }
 
   join: product_producttype {
-    sql_on: ${product_product.country_iso} = ${product_producttype.country_iso} AND ${product_product.product_type_id} = ${product_producttype.id} ;;
+    sql_on: ${product_product.country_iso} = ${product_producttype.country_iso} AND
+            ${product_product.product_type_id} = ${product_producttype.id} ;;
     relationship: one_to_one
     type: left_outer
   }
 
   join: parent_category {
     from: product_category
-    sql_on: ${product_category.country_iso} = ${parent_category.country_iso} AND ${product_category.parent_id} = ${parent_category.id} ;;
+    sql_on: ${product_category.country_iso} = ${parent_category.country_iso} AND
+            ${product_category.parent_id} = ${parent_category.id} ;;
     relationship: one_to_one
     type: left_outer
   }
@@ -327,30 +371,36 @@ explore: product_product {
   join: warehouse_stock {
     type: left_outer
     relationship: one_to_many
-    sql_on: ${warehouse_stock.country_iso} = ${product_productvariant.country_iso} AND ${warehouse_stock.product_variant_id} = ${product_productvariant.id} ;;
+    sql_on: ${warehouse_stock.country_iso} = ${product_productvariant.country_iso} AND
+            ${warehouse_stock.product_variant_id} = ${product_productvariant.id} ;;
   }
 
   join: warehouse_warehouse {
     type: left_outer
     relationship: one_to_one
-    sql_on: ${warehouse_warehouse.country_iso} = ${warehouse_stock.country_iso} AND ${warehouse_warehouse.id} = ${warehouse_stock.warehouse_id} ;;
+    sql_on: ${warehouse_warehouse.country_iso} = ${warehouse_stock.country_iso} AND
+            ${warehouse_warehouse.id} = ${warehouse_stock.warehouse_id} ;;
   }
 
   join: order_orderline_facts {
-    sql_on: ${order_orderline_facts.country_iso} = ${product_productvariant.country_iso} AND ${order_orderline_facts.product_sku} = ${product_productvariant.sku} AND ${order_orderline_facts.warehouse_name} = ${warehouse_warehouse.slug};;
+    sql_on: ${order_orderline_facts.country_iso} = ${product_productvariant.country_iso} AND
+            ${order_orderline_facts.product_sku} = ${product_productvariant.sku} AND
+            ${order_orderline_facts.warehouse_name} = ${warehouse_warehouse.slug};;
     relationship: one_to_many
     type: left_outer
   }
 
   join: hubs {
     view_label: "Hubs"
-    sql_on: ${warehouse_warehouse.country_iso} = ${hubs.country_iso} AND ${warehouse_warehouse.slug} = ${hubs.hub_code_lowercase} ;;
+    sql_on: ${warehouse_warehouse.country_iso} = ${hubs.country_iso} AND
+            ${warehouse_warehouse.slug} = ${hubs.hub_code_lowercase} ;;
     relationship: one_to_one
     type: left_outer
   }
 
   join: product_attribute_facts {
-    sql_on: ${product_product.country_iso} = ${product_attribute_facts.country_iso} AND ${product_product.id} = ${product_attribute_facts.id} ;;
+    sql_on: ${product_product.country_iso} = ${product_attribute_facts.country_iso} AND
+            ${product_product.id} = ${product_attribute_facts.id} ;;
     relationship: one_to_one
     type: left_outer
   }
@@ -406,7 +456,8 @@ explore: discount_voucher {
   }
 
   join: order_order {
-    sql_on: ${discount_voucher.country_iso} = ${order_order.country_iso} AND ${discount_voucher.id} = ${order_order.voucher_id} ;;
+    sql_on: ${discount_voucher.country_iso} = ${order_order.country_iso} AND
+            ${discount_voucher.id} = ${order_order.voucher_id} ;;
     relationship: one_to_many
     type: left_outer
   }
@@ -415,39 +466,44 @@ explore: discount_voucher {
     view_label: "Users"
     type: left_outer
     relationship: many_to_one
-    sql_on: ${order_order.country_iso} = ${user_order_facts.country_iso} AND ${order_order.user_email} = ${user_order_facts.user_email} ;;
+    sql_on: ${order_order.country_iso} = ${user_order_facts.country_iso} AND
+            ${order_order.user_email} = ${user_order_facts.user_email} ;;
   }
 
   join: hub_order_facts {
     view_label: "Hubs"
     type: left_outer
     relationship: many_to_one
-    sql_on: ${order_order.country_iso} = ${hub_order_facts.country_iso} AND  ${order_order.warehouse_name} = ${hub_order_facts.warehouse_name} ;;
+    sql_on: ${order_order.country_iso} = ${hub_order_facts.country_iso} AND
+            ${order_order.warehouse_name} = ${hub_order_facts.warehouse_name} ;;
   }
 
   join: order_fulfillment {
     relationship: one_to_many
     type: left_outer
-    sql_on: ${order_fulfillment.country_iso} = ${order_order.country_iso} AND  ${order_fulfillment.order_id} = ${order_order.id} ;;
+    sql_on: ${order_fulfillment.country_iso} = ${order_order.country_iso} AND
+            ${order_fulfillment.order_id} = ${order_order.id} ;;
   }
 
   join: order_fulfillment_facts {
     type: left_outer
     relationship: one_to_one
-    sql_on: ${order_fulfillment_facts.country_iso} = ${order_fulfillment.country_iso} AND  ${order_fulfillment_facts.order_fulfillment_id} = ${order_fulfillment.id} ;;
+    sql_on: ${order_fulfillment_facts.country_iso} = ${order_fulfillment.country_iso} AND
+            ${order_fulfillment_facts.order_fulfillment_id} = ${order_fulfillment.id} ;;
   }
 
   join: hubs {
     view_label: "Hubs"
-    sql_on: ${order_order.country_iso} = ${hubs.country_iso} AND  ${order_order.warehouse_name} = ${hubs.hub_code_lowercase} ;;
+    sql_on: ${order_order.country_iso} = ${hubs.country_iso} AND
+            ${order_order.warehouse_name} = ${hubs.hub_code_lowercase} ;;
     relationship: one_to_one
     type: left_outer
   }
 
   join: shyftplan_riders_pickers_hours {
-    view_label: "Hub shifts"
+    view_label: "Shifts"
     sql_on: ${order_order.created_date} = ${shyftplan_riders_pickers_hours.date} and
-      ${hubs.hub_code} = ${shyftplan_riders_pickers_hours.hub_name};;
+            ${hubs.hub_code} = ${shyftplan_riders_pickers_hours.hub_name};;
     relationship: many_to_one
     type: left_outer
   }
@@ -516,7 +572,8 @@ explore: cs_issues_post_delivery {
   }
 
   join: order_order {
-    sql_on: ${cs_issues_post_delivery.order_nr__} = ${order_order.id} AND ${order_order.country_iso} = SUBSTR(${cs_issues_post_delivery.hub}, 1, 2);;
+    sql_on: ${order_order.country_iso} = ${cs_issues_post_delivery.country_iso} AND
+            ${cs_issues_post_delivery.order_nr__} = ${order_order.id};;
     relationship: many_to_one
     type: left_outer
   }
@@ -525,18 +582,21 @@ explore: cs_issues_post_delivery {
     view_label: "Users"
     type: left_outer
     relationship: many_to_one
-    sql_on: ${order_order.country_iso} = ${user_order_facts.country_iso} AND ${order_order.user_email} = ${user_order_facts.user_email} ;;
+    sql_on: ${order_order.country_iso} = ${user_order_facts.country_iso} AND
+            ${order_order.user_email} = ${user_order_facts.user_email} ;;
   }
 
   join: hub_order_facts {
     view_label: "Hubs"
     type: left_outer
     relationship: many_to_one
-    sql_on: ${order_order.country_iso} = ${hub_order_facts.country_iso} AND ${order_order.warehouse_name} = ${hub_order_facts.warehouse_name} ;;
+    sql_on: ${order_order.country_iso} = ${hub_order_facts.country_iso} AND
+            ${order_order.warehouse_name} = ${hub_order_facts.warehouse_name} ;;
   }
 
   join: order_fulfillment {
-    sql_on: ${order_fulfillment.country_iso} = ${order_order.country_iso} AND ${order_fulfillment.order_id} = ${order_order.id} ;;
+    sql_on: ${order_fulfillment.country_iso} = ${order_order.country_iso} AND
+            ${order_fulfillment.order_id} = ${order_order.id} ;;
     relationship: one_to_many
     type: left_outer
   }
@@ -544,12 +604,14 @@ explore: cs_issues_post_delivery {
   join: order_fulfillment_facts {
     type: left_outer
     relationship: one_to_one
-    sql_on: ${order_fulfillment_facts.country_iso} = ${order_fulfillment.country_iso} AND ${order_fulfillment_facts.order_fulfillment_id} = ${order_fulfillment.id} ;;
+    sql_on: ${order_fulfillment_facts.country_iso} = ${order_fulfillment.country_iso} AND
+            ${order_fulfillment_facts.order_fulfillment_id} = ${order_fulfillment.id} ;;
   }
 
   join: hubs {
     view_label: "Hubs"
-    sql_on: ${order_order.country_iso} = ${hubs.country_iso} AND ${order_order.warehouse_name} = ${hubs.hub_code_lowercase} ;;
+    sql_on: ${order_order.country_iso} = ${hubs.country_iso} AND
+            ${order_order.warehouse_name} = ${hubs.hub_code_lowercase} ;;
     relationship: one_to_one
     type: left_outer
   }
@@ -557,7 +619,7 @@ explore: cs_issues_post_delivery {
   join: shyftplan_riders_pickers_hours {
     view_label: "Hub shifts"
     sql_on: ${order_order.created_date} = ${shyftplan_riders_pickers_hours.date} and
-      ${hubs.hub_code} = ${shyftplan_riders_pickers_hours.hub_name};;
+            ${hubs.hub_code} = ${shyftplan_riders_pickers_hours.hub_name};;
     relationship: many_to_one
     type: left_outer
   }
@@ -634,6 +696,57 @@ explore: gorillas_stores {
   view_label: "Gorillas Stores"
   group_label: "8) Competitor Analysis"
   description: "Store Locations of Gorillas"
+}
+
+explore: gorillas_current_assortment{
+  label: "Gorillas Assortment Overview"
+  view_label: "Gorillas Assortment Overview"
+  group_label: "8) Competitor Analysis"
+  description: "Current Gorillas Assortment"
+
+  join: gorillas_stores {
+    sql_on: ${gorillas_current_assortment.hub_code} = ${gorillas_stores.id};;
+    relationship: one_to_many
+    type: left_outer
+  }
+
+  join: category_matching {
+    sql_on: ${gorillas_current_assortment.category} = ${category_matching.gorillas_category_name};;
+    relationship: one_to_many
+    type: left_outer
+  }
+}
+
+explore: gorillas_turfs {
+  label: "Gorillas Turfs"
+  view_label: "Gorillas Turfs"
+  group_label: "8) Competitor Analysis"
+  description: "Current Gorillas Turfs"
+  # sql_always_where: ${time_scraped_raw} = '2021-04-25 16:35:41.402 UTC';;
+  always_filter: {
+    filters: {
+      field: time_scraped_date
+      value: "1 day ago"
+    }
+  }
+
+  join: gorillas_turfs__points {
+    view_label: "Gorillas Turfs: Points"
+    sql: LEFT JOIN UNNEST(${gorillas_turfs.points}) as gorillas_turfs__points ;;
+    relationship: one_to_many
+  }
+
+  join: gorillas_turfs__gorillas_store_ids {
+    view_label: "Gorillas Turfs: Gorillas Store Ids"
+    sql: LEFT JOIN UNNEST(${gorillas_turfs.gorillas_store_ids}) as gorillas_turfs__gorillas_store_ids ;;
+    relationship: one_to_many
+  }
+
+  join: gorillas_stores {
+    view_label: "Gorillas Turfs: Gorillas Store Ids"
+    sql_on:  ${gorillas_turfs__gorillas_store_ids.gorillas_turfs__gorillas_store_ids} = ${gorillas_stores.id} ;;
+    relationship: one_to_many
+  }
 }
 
 
