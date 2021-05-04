@@ -94,9 +94,21 @@ view: payment_transaction {
   }
 
   dimension: amount {
+    hidden: yes
     group_label: "* Monetary Values *"
     type: number
     sql: ${TABLE}.amount ;;
+  }
+
+  dimension: amount_logic {
+    group_label: "* Monetary Values *"
+    label: "Amount"
+    sql:
+    {% if kind._value == 'refund' %}
+      ${amount} * -1
+    {% else %}
+      ${amount}
+    {% endif %};;
   }
 
   dimension: country_iso {
@@ -182,6 +194,8 @@ view: payment_transaction {
     group_label: "* Monetary Values *"
     label: "Sum Payment Transaction Amount"
     type: sum
-    sql: ${amount} ;;
+    sql: case when ${kind} = 'refund' then ${amount} * -1 else ${amount} end ;;
   }
+
+
 }
