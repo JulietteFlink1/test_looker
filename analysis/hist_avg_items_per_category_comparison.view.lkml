@@ -29,12 +29,12 @@ view: hist_avg_items_per_category_comparison {
     sql: ${TABLE}.date_time_scraped ;;
   }
 
-  dimension: flink_avg_count_of_products {
+  measure: flink_avg_count_of_products {
     type: number
     sql: ${TABLE}.flink_avg_count_of_products ;;
   }
 
-  dimension: gorillas_product_avg_per_hub {
+  measure: gorillas_product_avg_per_hub {
     type: number
     sql: ${TABLE}.gorillas_product_avg_per_hub ;;
   }
