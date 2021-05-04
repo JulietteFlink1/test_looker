@@ -737,6 +737,12 @@ view: adjust_sessions {
     sql: ${checkout_started} ;;
   }
 
+  measure: sum_checkout_confirmed {
+    label: "Checkout confirmed sum of events"
+    type: sum
+    sql: ${checkout_confirmed} ;;
+  }
+
   measure: sum_payment_failed {
     label: "Payment failed sum of events"
     type: sum
