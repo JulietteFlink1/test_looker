@@ -709,6 +709,12 @@ explore: gorillas_current_assortment{
     relationship: one_to_many
     type: left_outer
   }
+
+  join: category_matching {
+    sql_on: ${gorillas_current_assortment.category} = ${category_matching.gorillas_category_name};;
+    relationship: one_to_many
+    type: left_outer
+  }
 }
 
 explore: gorillas_turfs {
