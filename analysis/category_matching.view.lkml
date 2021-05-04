@@ -3,6 +3,7 @@ view: category_matching {
     ;;
 
   dimension: flink_category_id {
+    group_label: "* IDs *"
     type: number
     sql: ${TABLE}.flink_category_id ;;
   }
@@ -18,6 +19,7 @@ view: category_matching {
   }
 
   dimension: gorillas_category_name {
+    primary_key: yes
     type: string
     sql: ${TABLE}.gorillas_category_name ;;
   }
