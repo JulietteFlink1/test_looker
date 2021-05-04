@@ -192,6 +192,7 @@ view: payment_transaction {
 
   measure: sum_amount {
     group_label: "* Monetary Values *"
+    description: "If the transaction kind is refund the amount takes a negative value"
     label: "Sum Payment Transaction Amount"
     type: sum
     sql: case when ${kind} = 'refund' then ${amount} * -1 else ${amount} end ;;
