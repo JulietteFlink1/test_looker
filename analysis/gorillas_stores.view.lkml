@@ -6,6 +6,7 @@ view: gorillas_stores {
           split(stores.label, ' ')[offset (0)] as store_name,
           split(stores.label, ' ')[offset (2)] as store_city,
           stores.country.name as store_country,
+          stores.country.iso as country_iso,
           stores.lat as store_lat, stores.lon as store_lon,
           stores.time_scraped, row_number() over (partition by stores.id order by time_scraped desc) as gorillas_scrape_rank
       FROM `flink-data-dev.competitive_intelligence.gorillas_stores` stores)
@@ -43,6 +44,11 @@ view: gorillas_stores {
   dimension: store_country {
     type: string
     sql: ${TABLE}.store_country ;;
+  }
+
+   dimension: country_iso {
+    type: string
+    sql: ${TABLE}.country_iso ;;
   }
 
   dimension: store_location {
