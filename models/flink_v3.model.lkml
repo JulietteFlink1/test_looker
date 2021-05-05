@@ -751,12 +751,19 @@ explore: gorillas_turfs {
   }
 }
 
-explore: hist_avg_items_per_category_comparison{
-  label: "Items per Category Provider Comparison"
-  view_label: "Items per Category Provider Comparison"
-  group_label: "8) Competitor Analysis"
-  description: "Items per Category Provider Comparison"
+# explore: hist_avg_items_per_category_comparison{
+#   label: "Items per Category Provider Comparison"
+#   view_label: "Items per Category Provider Comparison"
+#   group_label: "8) Competitor Analysis"
+#   description: "Items per Category Provider Comparison"
 
+# }
+
+explore: comparison_current_ids_per_category {
+  label: "Current Items per Category Provider Comparison"
+  view_label: "Current Items per Category Provider Comparison"
+  group_label: "8) Competitor Analysis"
+  description: "Current Items per Category Provider Comparison"
 }
 
 
