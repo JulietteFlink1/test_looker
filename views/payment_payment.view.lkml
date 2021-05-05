@@ -310,6 +310,7 @@ view: payment_payment {
 
   measure: sum_of_total {
     group_label: "* Monetary Values *"
+    hidden: yes
     label: "Sum of Total Payment"
     type: sum
     sql: ${total} ;;
