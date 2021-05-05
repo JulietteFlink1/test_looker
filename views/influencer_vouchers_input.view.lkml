@@ -1,12 +1,7 @@
 view: influencer_vouchers_input {
-  sql_table_name: `flink-backend.sandbox_nima.gsheet_influencer_vouchers_input`
+  sql_table_name: `flink-backend.gsheet_mktg_influencer_vouchers.Voucher_Data_Input`
     ;;
 
-  dimension: unique_id {
-    primary_key: yes
-    type: string
-    sql: concat(${username}, ${voucher_code}) ;;
-  }
 
   dimension: username {
     type: string
@@ -15,6 +10,7 @@ view: influencer_vouchers_input {
 
   dimension: voucher_code {
     type: string
+    primary_key: yes
     sql: ${TABLE}.voucher_code ;;
   }
 
