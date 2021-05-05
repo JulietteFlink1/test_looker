@@ -2,6 +2,16 @@ view: influencer_vouchers_input {
   sql_table_name: `flink-backend.gsheet_mktg_influencer_vouchers.Voucher_Data_Input`
     ;;
 
+  dimension: unique_key {
+    type: string
+    primary_key: yes
+    sql: CONCAT(${TABLE}.country_iso, ${TABLE}.voucher_code) ;;
+  }
+
+  dimension: country_iso {
+    type: string
+    sql: ${TABLE}.country_iso ;;
+  }
 
   dimension: username {
     type: string
@@ -10,7 +20,6 @@ view: influencer_vouchers_input {
 
   dimension: voucher_code {
     type: string
-    primary_key: yes
     sql: ${TABLE}.voucher_code ;;
   }
 
@@ -32,6 +41,7 @@ view: influencer_vouchers_input {
     hidden:  no
     type: count_distinct
     sql: ${order_order.id} ;;
+    sql_distinct_key: ${order_order.id} ;;
     filters: [voucher_type: "Community"]
     value_format: "0"
   }
@@ -42,6 +52,7 @@ view: influencer_vouchers_input {
     hidden:  no
     type: count_distinct
     sql: ${order_order.id} ;;
+    sql_distinct_key: ${order_order.id} ;;
     filters: [voucher_type: "Promo"]
     value_format: "0"
   }

@@ -450,7 +450,8 @@ explore: discount_voucher {
 
   join: influencer_vouchers_input {
     view_label: "Voucher Mapping"
-    sql_on: ${discount_voucher.code} = ${influencer_vouchers_input.voucher_code} ;;
+    sql_on: ${discount_voucher.country_iso} = ${influencer_vouchers_input.country_iso} AND
+            ${discount_voucher.code} = ${influencer_vouchers_input.voucher_code} ;;
     relationship: one_to_one
     type: left_outer
   }
