@@ -108,26 +108,31 @@ view: comparison_current_ids_per_category {
   }
 
   dimension: parent_category_id {
+    label: "category id"
     type: number
     sql: ${TABLE}.parent_category_id ;;
   }
 
   dimension: parent_category_name {
+    label: "category name"
     type: string
     sql: ${TABLE}.parent_category_name ;;
   }
 
   dimension: gorillas_category_name {
+    label: "gorillas category name"
     type: string
     sql: ${TABLE}.gorillas_category_name ;;
   }
 
   dimension: flink_avg_count_of_products {
+    label: "flink avg"
     type: number
     sql: ${TABLE}.flink_avg_count_of_products ;;
   }
 
   dimension: gorillas_product_avg_per_hub {
+    label: "gorillas avg"
     type: number
     sql: ${TABLE}.gorillas_product_avg_per_hub ;;
   }
