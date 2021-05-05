@@ -30,6 +30,7 @@ view: gorillas_current_assortment {
   }
 
   dimension_group: time_scraped {
+    label: "Scrape Date"
     type: time
     sql: ${TABLE}.time_scraped ;;
   }
