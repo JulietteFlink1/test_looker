@@ -3,20 +3,21 @@ view: adjust_user_funnel {
     sql: with install as
           (
               SELECT adjust._adid_,
+              adjust._country_,
               adjust._city_,
               adjust._network_name_,
               adjust._os_name_,
               MIN(datetime(TIMESTAMP_SECONDS(adjust._created_at_), 'Europe/Berlin')) as install_time
               FROM `flink-backend.customlytics_adjust.adjust_raw_imports` adjust
               where adjust._activity_kind_ in ('install') and adjust._environment_!="sandbox"
-              group by 1, 2, 3, 4
+              group by 1, 2, 3, 4, 5
           ),
 
           unique_installs as
           (
               select *
                 from (
-                    select _adid_, _city_, _network_name_, _os_name_, install_time, ROW_NUMBER() OVER (PARTITION BY _adid_, install_time)
+                    select _adid_,_country_, _city_, _network_name_, _os_name_, install_time, ROW_NUMBER() OVER (PARTITION BY _adid_, install_time)
                     row_number
                     from install
                 )
@@ -87,6 +88,7 @@ view: adjust_user_funnel {
 
 select
     unique_installs._adid_,
+    unique_installs._country_,
     unique_installs._city_,
     unique_installs._network_name_,
     unique_installs._os_name_,
@@ -126,6 +128,11 @@ select
     type: string
     sql: ${TABLE}._adid_ ;;
     primary_key: yes
+  }
+
+  dimension: _country_ {
+    type: string
+    sql: ${TABLE}._country_ ;;
   }
 
   dimension: _city_ {
@@ -287,6 +294,34 @@ select
   dimension: cohort_base {
     type: number
     sql: ${TABLE}.cohort_base ;;
+  }
+
+  ####### Parameters
+
+  parameter: date_granularity {
+    group_label: "* Dates and Timestamps *"
+    label: "Date Granularity"
+    type: unquoted
+    allowed_value: { value: "Day" }
+    allowed_value: { value: "Week" }
+    allowed_value: { value: "Month" }
+    default_value: "Day"
+  }
+
+  ####### Dynamic Dimensions
+
+  dimension: install_date {
+    group_label: "* Dates and Timestamps *"
+    label: "Date (Dynamic)"
+    label_from_parameter: date_granularity
+    sql:
+    {% if date_granularity._parameter_value == 'Day' %}
+      ${install_time_date}
+    {% elsif date_granularity._parameter_value == 'Week' %}
+      ${install_time_week}
+    {% elsif date_granularity._parameter_value == 'Month' %}
+      ${install_time_month}
+    {% endif %};;
   }
 
   ######## Custom Dimensions
