@@ -767,6 +767,25 @@ explore: comparison_current_ids_per_category {
   description: "Current Items per Category Provider Comparison"
 }
 
+explore: gorillas_test{
+  label: "Gorillas Test"
+  view_label: "Gorillas Test"
+  group_label: "8) Competitor Analysis"
+  description: "Current Gorillas Assortment"
+  hidden: yes
+
+  join: gorillas_stores {
+    sql_on: ${gorillas_test.hub_code} = ${gorillas_stores.id};;
+    relationship: many_to_one
+    type: left_outer
+  }
+
+  join: gorillas_current_assortment {
+    sql_on: ${gorillas_test.product_id} = ${gorillas_current_assortment.id} and ${gorillas_test.hub_code} = ${gorillas_current_assortment.hub_code} ;;
+    relationship: many_to_one
+  }
+}
+
 
 
 
