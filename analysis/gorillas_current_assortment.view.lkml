@@ -29,6 +29,12 @@ view: gorillas_current_assortment {
     sql: concat(${id}, ${hub_code},${time_scraped_date}) ;;
   }
 
+  dimension: hub_product_id {
+    group_label: "* IDs *"
+    type: string
+    sql: concat(${id}, ${hub_code}) ;;
+  }
+
   dimension_group: time_scraped {
     label: "Scrape Date"
     type: time
@@ -61,6 +67,7 @@ view: gorillas_current_assortment {
   }
 
   dimension: category {
+    label: "gorillas category"
     type: string
     sql: ${TABLE}.category ;;
   }
@@ -69,6 +76,35 @@ view: gorillas_current_assortment {
     type: number
     sql: ${TABLE}.scrape_rank ;;
   }
+
+  measure: avg_price {
+    type: average_distinct
+    sql_distinct_key: ${hub_product_id} ;;
+    sql: ${price} ;;
+    value_format: "0.00€"
+  }
+
+  measure: min_price {
+    type: min
+    sql: ${price} ;;
+    value_format: "0.00€"
+  }
+
+  measure: max_price {
+    type: max
+    sql: ${price} ;;
+    value_format: "0.00€"
+  }
+
+
+  measure: median_price {
+    type: median_distinct
+    sql_distinct_key: ${hub_product_id} ;;
+    sql: ${price} ;;
+    value_format: "0.00€"
+  }
+
+
 
   set: detail {
     fields: [
