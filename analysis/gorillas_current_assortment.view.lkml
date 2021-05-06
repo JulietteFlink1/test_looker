@@ -67,7 +67,7 @@ view: gorillas_current_assortment {
   }
 
   dimension: category {
-    label: "gorillas category"
+    label: "Category (Gorillas)"
     type: string
     sql: ${TABLE}.category ;;
   }
