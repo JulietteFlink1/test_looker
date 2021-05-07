@@ -783,7 +783,7 @@ explore: gorillas_test{
   join: gorillas_current_assortment {
     sql_on: ${gorillas_test.product_id} = ${gorillas_current_assortment.id} and ${gorillas_test.hub_code} = ${gorillas_current_assortment.hub_code};;
     type: left_outer
-    relationship: one_to_one
+    relationship: many_to_one
   }
 }
 
