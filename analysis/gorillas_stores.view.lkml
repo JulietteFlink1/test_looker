@@ -3,8 +3,8 @@ view: gorillas_stores {
     sql: with gorillas_stores as(
       SELECT
           stores.id, stores.label,
-          split(stores.label, ' ')[offset (0)] as store_name,
-          split(stores.label, ' ')[offset (2)] as store_city,
+          if(label like '% I %',SPLIT(label, ' I ')[OFFSET(0)], SPLIT(label, ' | ')[OFFSET(0)]) as store_name,
+          if(label like '% I %',SPLIT(label, ' I ')[OFFSET(1)], SPLIT(label, ' | ')[OFFSET(1)]) as store_city,
           stores.country.name as store_country,
           stores.country.iso as country_iso,
           stores.lat as store_lat, stores.lon as store_lon,

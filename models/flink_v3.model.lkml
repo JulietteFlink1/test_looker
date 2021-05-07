@@ -785,6 +785,12 @@ explore: gorillas_test{
     type: left_outer
     relationship: many_to_one
   }
+
+  join: gorillas_turfs {
+    sql_on: ${gorillas_test.hub_code} = ${gorillas_turfs.gorillas_store_ids} ;;
+    type: left_outer
+    relationship: many_to_one
+  }
 }
 
 

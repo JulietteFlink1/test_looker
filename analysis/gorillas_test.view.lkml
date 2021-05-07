@@ -166,6 +166,12 @@ WHERE (( gorillas_test.count_purchased   > 0) OR ( gorillas_test.count_restocked
     sql: ${count_restocked} ;;
   }
 
+  measure: last_updated {
+    type: time
+    sql: MAX(${TABLE}.time_scraped) ;;
+    convert_tz: no
+  }
+
 
   set: detail {
     fields: [
