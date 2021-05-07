@@ -39,10 +39,17 @@ view: gorillas_test {
           current_quantity,
           previous_quantity,
           count_purchased,
-          count_restocked
+          count_restocked,
+          row_number() over (partition by hub_code, product_id order by time_scraped desc) as scrape_rank
       From inv_movement
       WHERE count_purchased > 0 or count_restocked > 0
        ;;
+  }
+
+  dimension: hub_product_id {
+    group_label: "* IDs *"
+    type: string
+    sql: concat(${product_id}, ${hub_code}) ;;
   }
 
   measure: count {
@@ -70,10 +77,11 @@ view: gorillas_test {
     sql: ${TABLE}.time_scraped ;;
   }
 
-  dimension: current_quantity {
+  dimension: quantity {
     type: number
     sql: ${TABLE}.current_quantity ;;
   }
+
 
   dimension: previous_quantity {
     type: number
@@ -85,10 +93,18 @@ view: gorillas_test {
     sql: ${TABLE}.count_purchased ;;
   }
 
+  dimension: scrape_rank {
+    type: number
+    sql: ${TABLE}.scrape_rank ;;
+  }
+
+
   dimension: count_restocked {
     type: number
     sql: ${TABLE}.count_restocked ;;
   }
+
+
 
   measure: sum_purchased {
     type: sum
@@ -102,13 +118,14 @@ view: gorillas_test {
 
 
 
+
   set: detail {
     fields: [
       hub_code,
       product_id,
       scrape_id,
       time_scraped_time,
-      current_quantity,
+      quantity,
       previous_quantity,
       count_purchased,
       count_restocked,
