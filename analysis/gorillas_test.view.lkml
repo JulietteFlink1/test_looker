@@ -1,6 +1,6 @@
 view: gorillas_test {
   derived_table: {
-    sql: with inv as (
+    sql: WITH gorillas_test AS (with inv as (
           SELECT
               hub_code,
               product_id,
@@ -43,13 +43,46 @@ view: gorillas_test {
           row_number() over (partition by hub_code, product_id order by time_scraped desc) as scrape_rank
       From inv_movement
       WHERE count_purchased > 0 or count_restocked > 0
-       ;;
+       )
+  ,  gorillas_current_assortment AS (with gorillas_items as (
+          SELECT
+          gorillas.time_scraped,
+          gorillas.hub_code,
+          gorillas.sku,
+          gorillas.id,
+          gorillas.price,
+          gorillas.label,
+          gorillas.category,
+          row_number() over (partition by hub_code, id order by time_scraped desc) as scrape_rank
+          FROM `flink-data-dev.competitive_intelligence.gorillas_items` gorillas
+          WHERE DATE(time_scraped) = "2021-05-05"
+      )
+      select * from gorillas_items where scrape_rank=1
+       )
+SELECT
+    gorillas_test.hub_code  AS hub_code,
+    gorillas_test.time_scraped AS time_scraped,
+    gorillas_test.product_id  AS product_id,
+    gorillas_current_assortment.price  AS price,
+    gorillas_test.current_quantity  AS quantity,
+    gorillas_test.scrape_id  AS scrape_id,
+    concat(gorillas_test.product_id, gorillas_test.hub_code)  AS hub_product_id,
+    gorillas_current_assortment.label  AS label,
+    gorillas_test.count_restocked,
+    gorillas_test.count_purchased,
+    gorillas_current_assortment.category  AS category,
+    gorillas_test.count_purchased * gorillas_current_assortment.price as revenue
+FROM gorillas_test
+LEFT JOIN gorillas_current_assortment ON gorillas_test.product_id = gorillas_current_assortment.id and gorillas_test.hub_code = gorillas_current_assortment.hub_code
+WHERE (( gorillas_test.count_purchased   > 0) OR ( gorillas_test.count_restocked   > 0))
+ ;;
   }
 
-  dimension: hub_product_id {
+  dimension: unique_id {
     group_label: "* IDs *"
+    primary_key: yes
     type: string
-    sql: concat(${product_id}, ${hub_code}) ;;
+    sql: concat(${scrape_id}, ${hub_code},${product_id}) ;;
   }
 
   measure: count {
@@ -62,9 +95,24 @@ view: gorillas_test {
     sql: ${TABLE}.hub_code ;;
   }
 
+  dimension_group: time_scraped {
+    type: time
+    sql: ${TABLE}.time_scraped ;;
+  }
+
   dimension: product_id {
     type: string
     sql: ${TABLE}.product_id ;;
+  }
+
+  dimension: price {
+    type: number
+    sql: ${TABLE}.price ;;
+  }
+
+  dimension: quantity {
+    type: number
+    sql: ${TABLE}.quantity ;;
   }
 
   dimension: scrape_id {
@@ -72,20 +120,19 @@ view: gorillas_test {
     sql: ${TABLE}.scrape_id ;;
   }
 
-  dimension_group: time_scraped {
-    type: time
-    sql: ${TABLE}.time_scraped ;;
+  dimension: hub_product_id {
+    type: string
+    sql: ${TABLE}.hub_product_id ;;
   }
 
-  dimension: quantity {
-    type: number
-    sql: ${TABLE}.current_quantity ;;
+  dimension: label {
+    type: string
+    sql: ${TABLE}.label ;;
   }
 
-
-  dimension: previous_quantity {
+  dimension: count_restocked {
     type: number
-    sql: ${TABLE}.previous_quantity ;;
+    sql: ${TABLE}.count_restocked ;;
   }
 
   dimension: count_purchased {
@@ -93,18 +140,21 @@ view: gorillas_test {
     sql: ${TABLE}.count_purchased ;;
   }
 
-  dimension: scrape_rank {
-    type: number
-    sql: ${TABLE}.scrape_rank ;;
+  dimension: category {
+    type: string
+    sql: ${TABLE}.category ;;
   }
 
-
-  dimension: count_restocked {
+  dimension: revenue {
     type: number
-    sql: ${TABLE}.count_restocked ;;
+    sql: ${TABLE}.revenue ;;
   }
 
-
+  measure: sum_revenue {
+    type: sum
+    sql: ${revenue} ;;
+    value_format: "0.00€"
+  }
 
   measure: sum_purchased {
     type: sum
@@ -113,24 +163,27 @@ view: gorillas_test {
 
   measure: sum_restocked {
     type: sum
-    sql: ${count_restocked};;
+    sql: ${count_restocked} ;;
   }
-
-
 
 
   set: detail {
     fields: [
       hub_code,
-      product_id,
-      scrape_id,
       time_scraped_time,
+      product_id,
+      price,
       quantity,
-      previous_quantity,
-      count_purchased,
+      scrape_id,
+      hub_product_id,
+      label,
       count_restocked,
+      count_purchased,
+      category,
+      revenue,
       sum_purchased,
-      sum_restocked
+      sum_revenue,
+      sum_revenue
     ]
   }
 }

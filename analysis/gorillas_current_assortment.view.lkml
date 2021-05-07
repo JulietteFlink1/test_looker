@@ -11,11 +11,13 @@ view: gorillas_current_assortment {
           gorillas.category,
           row_number() over (partition by hub_code, id order by time_scraped desc) as scrape_rank
           FROM `flink-data-dev.competitive_intelligence.gorillas_items` gorillas
-          WHERE DATE(time_scraped) = DATE( date_sub(current_timestamp(), INTERVAL 1 DAY))
+          WHERE DATE(time_scraped) = "2021-05-05"
       )
       select * from gorillas_items where scrape_rank=1
        ;;
   }
+
+  # WHERE DATE(time_scraped) =  Date(DATE_ADD(CURRENT_DATE(), INTERVAL -1 DAY))
 
   measure: count {
     type: count
