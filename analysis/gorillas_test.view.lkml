@@ -158,7 +158,7 @@ WHERE (( gorillas_test.count_purchased   > 0) OR ( gorillas_test.count_restocked
   measure: sum_revenue {
     type: sum
     sql: ${revenue} ;;
-    value_format: "0.00€"
+    value_format: "#,##0.00€"
   }
 
   measure: sum_purchased {
