@@ -773,6 +773,12 @@ explore: gorillas_test{
   group_label: "8) Competitor Analysis"
   description: "Current Gorillas Assortment"
   hidden: yes
+  # always_filter: {
+  #   filters: {
+  #     field: time_scraped_date
+  #     value: "1 day ago"
+  #   }
+  # }
 
   join: gorillas_stores {
     sql_on: ${gorillas_test.hub_code} = ${gorillas_stores.id};;
