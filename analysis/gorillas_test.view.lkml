@@ -3,14 +3,15 @@ view: gorillas_test {
     # date(current_date('Europe/Berlin'))
     sql: WITH gorillas_test AS (with inv as (
           SELECT
-              hub_code,
-              product_id,
-              scrape_id,
-              time_scraped,
-              quantity as current_quantity,
-              LAG(quantity,1) OVER (PARTITION BY hub_code, product_id ORDER BY time_scraped) previous_quantity
-          FROM `flink-data-dev.competitive_intelligence.gorillas_inv_test`
-          where date(time_scraped) = date('2021-05-10')
+              gorillas.hub_code,
+              gorillas.product_id,
+              gorillas.scrape_id,
+              gorillas.time_scraped,
+              gorillas.quantity as current_quantity,
+              LAG(gorillas.quantity,1) OVER (PARTITION BY gorillas.hub_code, gorillas.product_id ORDER BY gorillas.time_scraped) previous_quantity
+          FROM `flink-data-dev.competitive_intelligence.gorillas_inv_test` gorillas
+          where {% condition time_scraped_date %} gorillas.time_scraped {% endcondition %}
+
           order by 1,2,3,4,5 asc
       ),
       inv_movement as (
@@ -56,7 +57,7 @@ view: gorillas_test {
           gorillas.category,
           row_number() over (partition by hub_code, id order by time_scraped desc) as scrape_rank
           FROM `flink-data-dev.competitive_intelligence.gorillas_items` gorillas
-          WHERE DATE(time_scraped) = "2021-05-05"
+          WHERE {% condition time_scraped_date %} gorillas.time_scraped {% endcondition %}
       )
       select * from gorillas_items where scrape_rank=1
        )
@@ -86,10 +87,6 @@ WHERE (( gorillas_test.count_purchased   > 0) OR ( gorillas_test.count_restocked
     sql: concat(${scrape_id}, ${hub_code},${product_id}) ;;
   }
 
-  filter: time_scraped {
-    type: date_time
-  }
-
   measure: count {
     type: count
     drill_fields: [detail*]
@@ -102,6 +99,17 @@ WHERE (( gorillas_test.count_purchased   > 0) OR ( gorillas_test.count_restocked
 
   dimension_group: time_scraped {
     type: time
+    description: "bq-datetime"
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year,
+      hour_of_day
+    ]
     sql: ${TABLE}.time_scraped ;;
   }
 
