@@ -10,7 +10,7 @@ view: gorillas_test {
               quantity as current_quantity,
               LAG(quantity,1) OVER (PARTITION BY hub_code, product_id ORDER BY time_scraped) previous_quantity
           FROM `flink-data-dev.competitive_intelligence.gorillas_inv_test`
-          where date(time_scraped) = date('2021-05-08')
+          where date(time_scraped) = date('2021-05-10')
           order by 1,2,3,4,5 asc
       ),
       inv_movement as (
