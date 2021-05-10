@@ -63,6 +63,7 @@ view: influencer_vouchers_input {
     type: sum
     filters: [voucher_type: "Community"]
     sql: ${order_order.discount_amount};;
+    sql_distinct_key: ${order_order.id} ;;
     value_format_name: euro_accounting_0_precision
   }
 
@@ -72,6 +73,7 @@ view: influencer_vouchers_input {
     type: sum
     filters: [voucher_type: "Promo"]
     sql: ${order_order.discount_amount};;
+    sql_distinct_key: ${order_order.id} ;;
     value_format_name: euro_accounting_0_precision
   }
 
