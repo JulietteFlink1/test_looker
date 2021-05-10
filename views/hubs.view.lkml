@@ -59,6 +59,11 @@ view: hubs {
     sql: ${TABLE}.longitude ;;
   }
 
+  dimension: start_date {
+    type: date
+    sql: ${TABLE}.start_date ;;
+  }
+
   dimension: hub_location {
     type: location
     sql_latitude: ${latitude};;
