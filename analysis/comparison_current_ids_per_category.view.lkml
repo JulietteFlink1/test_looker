@@ -1,8 +1,9 @@
 view: comparison_current_ids_per_category {
+  # WHERE DATE(gorillas.time_scraped) = DATE_Sub(Date(current_date()), INTERVAL 0 DAY)
   derived_table: {
     sql: WITH gorillas_current_assortment AS (
           SELECT distinct
-              date(gorillas.time_scraped) as time_scraped,
+              gorillas.time_scraped as time_scraped,
               stores.countryIso as country_iso,
               gorillas.hub_code,
               stores.label,
@@ -10,7 +11,7 @@ view: comparison_current_ids_per_category {
               COUNT(DISTINCT gorillas.id) AS count_of_id
           FROM `flink-data-dev.competitive_intelligence.gorillas_items` gorillas
           left join `flink-data-dev.competitive_intelligence.gorillas_stores` stores on gorillas.hub_code = stores.id
-          WHERE DATE(gorillas.time_scraped) > DATE_Sub(Date(current_date()), INTERVAL 2 DAY)
+          WHERE {% condition time_scraped_date %} gorillas.time_scraped {% endcondition %}
           group by 1,2,3,4,5
             ),
       gorillas_count_per_country_category_hub as (
@@ -77,7 +78,7 @@ view: comparison_current_ids_per_category {
       group by 1,2,3
       )
       select
-          g.time_scraped,
+          g.time_scraped as time_scraped,
           if(f.country_iso is null, g.country_iso, f.country_iso) as country_iso,
           f.parent_category_id,
           f.parent_category_name,
@@ -88,7 +89,7 @@ view: comparison_current_ids_per_category {
       full outer join
           gorillas_avg_count_category_hub g on f.parent_category_id = g.flink_category_id and f.country_iso = g.country_iso
       group by 1,2,3,4,5
-       ;;
+ ;;
   }
 
   measure: count {
@@ -96,21 +97,27 @@ view: comparison_current_ids_per_category {
     drill_fields: [detail*]
   }
 
-dimension_group: time_scraped {
-  label: "Scraping Date"
-  type: time
-  description: "bq-datetime"
-  timeframes: [
-    raw,
-    time,
-    date,
-    week,
-    month,
-    quarter,
-    year
-  ]
-  sql: ${TABLE}.time_scraped ;;
-}
+  # dimension: time_scraped {
+  #   type: date
+  #   datatype: date
+  #   sql: ${TABLE}.time_scraped ;;
+  # }
+
+  dimension_group: time_scraped {
+    type: time
+    description: "bq-datetime"
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: ${TABLE}.time_scraped ;;
+  }
+
 
   dimension: country_iso {
     type: string
@@ -118,31 +125,26 @@ dimension_group: time_scraped {
   }
 
   dimension: parent_category_id {
-    label: "category id"
     type: number
     sql: ${TABLE}.parent_category_id ;;
   }
 
   dimension: parent_category_name {
-    label: "category name"
     type: string
     sql: ${TABLE}.parent_category_name ;;
   }
 
   dimension: gorillas_category_name {
-    label: "gorillas category name"
     type: string
     sql: ${TABLE}.gorillas_category_name ;;
   }
 
   dimension: flink_avg_count_of_products {
-    label: "flink avg"
     type: number
     sql: ${TABLE}.flink_avg_count_of_products ;;
   }
 
   dimension: gorillas_product_avg_per_hub {
-    label: "gorillas avg"
     type: number
     sql: ${TABLE}.gorillas_product_avg_per_hub ;;
   }
