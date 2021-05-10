@@ -699,24 +699,79 @@ explore: gorillas_stores {
   description: "Store Locations of Gorillas"
 }
 
-explore: gorillas_current_assortment{
+# Un-hide and use this explore, or copy the joins into another explore, to get all the fully nested relationships from this view
+explore: gorillas_items {
   label: "Gorillas Assortment Overview"
   view_label: "Gorillas Assortment Overview"
   group_label: "8) Competitor Analysis"
   description: "Current Gorillas Assortment"
+  always_filter: {
+    filters: [gorillas_items.time_scraped_date: "1 day ago"]
+  }
+
+
+
+  join: gorillas_items__tags {
+    view_label: "Gorillas Items: Tags"
+    sql: LEFT JOIN UNNEST(${gorillas_items.tags}) as gorillas_items__tags ;;
+    relationship: one_to_many
+  }
+
+  join: gorillas_items__barcodes {
+    view_label: "Gorillas Items: Barcodes"
+    sql: LEFT JOIN UNNEST(${gorillas_items.barcodes}) as gorillas_items__barcodes ;;
+    relationship: one_to_many
+  }
+
+  join: gorillas_items__additives {
+    view_label: "Gorillas Items: Additives"
+    sql: LEFT JOIN UNNEST(${gorillas_items.additives}) as gorillas_items__additives ;;
+    relationship: one_to_many
+  }
+
+  join: gorillas_items__allergens {
+    view_label: "Gorillas Items: Allergens"
+    sql: LEFT JOIN UNNEST(${gorillas_items.allergens}) as gorillas_items__allergens ;;
+    relationship: one_to_many
+  }
+
+  join: gorillas_items__recommendation_tags {
+    view_label: "Gorillas Items: Recommendationtags"
+    sql: LEFT JOIN UNNEST(${gorillas_items.recommendation_tags}) as gorillas_items__recommendation_tags ;;
+    relationship: one_to_many
+  }
+
+  join: gorillas_items__customization_items {
+    view_label: "Gorillas Items: Customizationitems"
+    sql: LEFT JOIN UNNEST(${gorillas_items.customization_items}) as gorillas_items__customization_items ;;
+    relationship: one_to_many
+  }
+
+  join: gorillas_items__additional_images {
+    view_label: "Gorillas Items: Additionalimages"
+    sql: LEFT JOIN UNNEST(${gorillas_items.additional_images}) as gorillas_items__additional_images ;;
+    relationship: one_to_many
+  }
+
+  join: gorillas_items__product_collections {
+    view_label: "Gorillas Items: Productcollections"
+    sql: LEFT JOIN UNNEST(${gorillas_items.product_collections}) as gorillas_items__product_collections ;;
+    relationship: one_to_many
+  }
 
   join: gorillas_stores {
-    sql_on: ${gorillas_current_assortment.hub_code} = ${gorillas_stores.id};;
+    sql_on: ${gorillas_items.hub_code} = ${gorillas_stores.id};;
     relationship: one_to_many
     type: left_outer
   }
 
   join: category_matching {
-    sql_on: ${gorillas_current_assortment.category} = ${category_matching.gorillas_category_name};;
+    sql_on: ${gorillas_items.category} = ${category_matching.gorillas_category_name};;
     relationship: one_to_many
     type: left_outer
   }
 }
+
 
 
 
@@ -786,8 +841,8 @@ explore: gorillas_test{
     type: left_outer
   }
 
-  join: gorillas_current_assortment {
-    sql_on: ${gorillas_test.product_id} = ${gorillas_current_assortment.id} and ${gorillas_test.hub_code} = ${gorillas_current_assortment.hub_code};;
+  join: gorillas_items {
+    sql_on: ${gorillas_test.product_id} = ${gorillas_items.id} and ${gorillas_test.hub_code} = ${gorillas_items.hub_code};;
     type: left_outer
     relationship: many_to_one
   }
