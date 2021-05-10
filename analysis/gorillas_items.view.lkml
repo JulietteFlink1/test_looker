@@ -281,6 +281,7 @@ view: gorillas_items {
   }
 
   dimension_group: time_scraped {
+    label: "Scraping Date"
     type: time
     description: "bq-datetime"
     timeframes: [
@@ -329,6 +330,13 @@ view: gorillas_items {
     type: count
     drill_fields: [id, brand_name]
   }
+
+  measure: count_distinct_id{
+    type: count_distinct
+    sql: ${TABLE}.id ;;
+  }
+
+
 }
 
 view: gorillas_items__tags {

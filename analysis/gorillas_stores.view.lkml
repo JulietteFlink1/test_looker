@@ -67,6 +67,11 @@ view: gorillas_stores {
     sql: ${TABLE}.gorillas_scrape_rank ;;
   }
 
+  measure: count_distinct_store_id{
+    type: count_distinct
+    sql: ${TABLE}.id ;;
+  }
+
   set: detail {
     fields: [
       id,

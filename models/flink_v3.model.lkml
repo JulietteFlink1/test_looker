@@ -772,6 +772,31 @@ explore: gorillas_items {
   }
 }
 
+explore: gorillas_current_assortment {
+  label: "Gorillas Assortment Overview"
+  view_label: "Gorillas Assortment Overview"
+  group_label: "8) Competitor Analysis"
+  description: "Current Gorillas Assortment"
+  always_filter: {
+    filters: [gorillas_current_assortment.time_scraped_date: "1 day ago"]
+  }
+  hidden: yes
+
+
+  join: gorillas_stores {
+    sql_on: ${gorillas_current_assortment.hub_code} = ${gorillas_stores.id};;
+    relationship: one_to_many
+    type: left_outer
+  }
+
+  join: category_matching {
+    sql_on: ${gorillas_current_assortment.category} = ${category_matching.gorillas_category_name};;
+    relationship: one_to_many
+    type: left_outer
+  }
+}
+
+
 
 
 
