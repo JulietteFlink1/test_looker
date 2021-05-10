@@ -1,6 +1,6 @@
 view: gorillas_test {
   derived_table: {
-    #  date(current_date('Europe/Berlin'))
+    # date(current_date('Europe/Berlin'))
     sql: WITH gorillas_test AS (with inv as (
           SELECT
               hub_code,
@@ -10,7 +10,7 @@ view: gorillas_test {
               quantity as current_quantity,
               LAG(quantity,1) OVER (PARTITION BY hub_code, product_id ORDER BY time_scraped) previous_quantity
           FROM `flink-data-dev.competitive_intelligence.gorillas_inv_test`
-          where date(time_scraped) = date("2021-05-07")
+          where date(time_scraped) = date('2021-05-10')
           order by 1,2,3,4,5 asc
       ),
       inv_movement as (
@@ -86,6 +86,10 @@ WHERE (( gorillas_test.count_purchased   > 0) OR ( gorillas_test.count_restocked
     sql: concat(${scrape_id}, ${hub_code},${product_id}) ;;
   }
 
+  filter: time_scraped {
+    type: date_time
+  }
+
   measure: count {
     type: count
     drill_fields: [detail*]
@@ -154,7 +158,7 @@ WHERE (( gorillas_test.count_purchased   > 0) OR ( gorillas_test.count_restocked
   measure: sum_revenue {
     type: sum
     sql: ${revenue} ;;
-    value_format: "0.00€"
+    value_format: "#,##0.00€"
   }
 
   measure: sum_purchased {
