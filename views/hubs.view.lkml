@@ -66,7 +66,7 @@ view: hubs {
 
   dimension_group: time_between_hub_launch_and_today {
     type: duration
-    sql_start: ${TABLE}.start_date ;;
+    sql_start: timestamp(${TABLE}.start_date) ;;
     sql_end: current_timestamp ;;
   }
 
