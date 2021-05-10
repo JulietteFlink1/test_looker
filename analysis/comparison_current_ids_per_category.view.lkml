@@ -2,7 +2,7 @@ view: comparison_current_ids_per_category {
   derived_table: {
     sql: WITH gorillas_current_assortment AS (
           SELECT distinct
-              date(gorillas.time_scraped) as date_time_scraped,
+              date(gorillas.time_scraped) as time_scraped,
               stores.countryIso as country_iso,
               gorillas.hub_code,
               stores.label,
@@ -15,7 +15,7 @@ view: comparison_current_ids_per_category {
             ),
       gorillas_count_per_country_category_hub as (
           select
-              g.date_time_scraped,
+              g.time_scraped,
               g.country_iso,
               m.flink_category_id,
               g.gorillas_category_name,
@@ -28,7 +28,7 @@ view: comparison_current_ids_per_category {
               group by 1,2,3,4,5
       ), gorillas_avg_count_category_hub as (
           select
-              date_time_scraped,
+              time_scraped,
               country_iso,
               flink_category_id,
               gorillas_category_name,
@@ -77,7 +77,7 @@ view: comparison_current_ids_per_category {
       group by 1,2,3
       )
       select
-          g.date_time_scraped,
+          g.time_scraped,
           if(f.country_iso is null, g.country_iso, f.country_iso) as country_iso,
           f.parent_category_id,
           f.parent_category_name,
@@ -96,11 +96,21 @@ view: comparison_current_ids_per_category {
     drill_fields: [detail*]
   }
 
-  dimension: date_time_scraped {
-    type: date
-    datatype: date
-    sql: ${TABLE}.date_time_scraped ;;
-  }
+dimension_group: time_scraped {
+  label: "Scraping Date"
+  type: time
+  description: "bq-datetime"
+  timeframes: [
+    raw,
+    time,
+    date,
+    week,
+    month,
+    quarter,
+    year
+  ]
+  sql: ${TABLE}.date_time_scraped ;;
+}
 
   dimension: country_iso {
     type: string
@@ -139,7 +149,7 @@ view: comparison_current_ids_per_category {
 
   set: detail {
     fields: [
-      date_time_scraped,
+      time_scraped_date,
       country_iso,
       parent_category_id,
       parent_category_name,

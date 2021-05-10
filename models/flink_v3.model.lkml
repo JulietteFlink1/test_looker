@@ -701,10 +701,10 @@ explore: gorillas_stores {
 
 # Un-hide and use this explore, or copy the joins into another explore, to get all the fully nested relationships from this view
 explore: gorillas_items {
-  label: "Gorillas Assortment Overview"
-  view_label: "Gorillas Assortment Overview"
+  label: "Gorillas Items Overview"
+  view_label: "Gorillas Items Overview"
   group_label: "8) Competitor Analysis"
-  description: "Current Gorillas Assortment"
+  description: "Current Gorillas Items"
   always_filter: {
     filters: [gorillas_items.time_scraped_date: "1 day ago"]
   }
@@ -840,11 +840,19 @@ explore: gorillas_turfs {
 
 # }
 
+# date_time_scraped
+
 explore: comparison_current_ids_per_category {
   label: "Current Items per Category Provider Comparison"
   view_label: "Current Items per Category Provider Comparison"
   group_label: "8) Competitor Analysis"
   description: "Current Items per Category Provider Comparison"
+  always_filter: {
+    filters: {
+      field: time_scraped_date
+      value: "1 day ago"
+    }
+  }
 }
 
 explore: gorillas_test{
