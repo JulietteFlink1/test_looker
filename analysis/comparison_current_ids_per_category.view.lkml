@@ -109,7 +109,7 @@ dimension_group: time_scraped {
     quarter,
     year
   ]
-  sql: ${TABLE}.date_time_scraped ;;
+  sql: ${TABLE}.time_scraped ;;
 }
 
   dimension: country_iso {
