@@ -113,7 +113,7 @@ view: order_order {
     value_format: "0"
   }
 
-  dimension_group: time_since_hub_launch {
+  dimension_group: time_between_hub_launch_and_order {
     group_label: "* Hub Dimensions *"
     type: duration
     sql_start: ${hub_order_facts.first_order_raw} ;;
