@@ -64,6 +64,12 @@ view: hubs {
     sql: ${TABLE}.start_date ;;
   }
 
+  dimension_group: time_between_hub_launch_and_today {
+    type: duration
+    sql_start: ${TABLE}.start_date ;;
+    sql_end: current_timestamp ;;
+  }
+
   dimension: hub_location {
     type: location
     sql_latitude: ${latitude};;
