@@ -69,7 +69,8 @@ view: adjust_sessions {
       adjust._activity_kind_='event' and
       ((adjust._event_name_ in ('AddressSelected', 'locationPinPlaced') and adjust._UserAreaAvailable_= TRUE and cast(substr(adjust._app_version_short_, 1, 1) as int64) < 2)
       or (adjust._event_name_='locationPinPlaced' and JSON_EXTRACT_SCALAR(_publisher_parameters_, '$.user_area_available') IN ('true') and
-      cast(substr(adjust._app_version_short_, 1, 1) as int64) >= 2)) and
+      cast(substr(adjust._app_version_short_, 1, 1) as int64) >= 2)
+      or adjust._UserAreaAvailable_= TRUE) and
       adjust._environment_!='sandbox'
       group by 1, 2
       ),
