@@ -315,7 +315,7 @@ explore: order_order {
 
   join: gdpr_account_deletion {
     view_label: "Users"
-    sql_on: ${order_order.user_email} = ${gdpr_account_deletion.email};;
+    sql_on: LOWER(${order_order.user_email}) = LOWER(${gdpr_account_deletion.email});;
     relationship: many_to_one
     type: left_outer
   }
