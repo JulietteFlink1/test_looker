@@ -688,6 +688,18 @@ explore: competitor_analysis {
   view_label: "Competitor Analysis"
   group_label: "8) Competitor Analysis"
   description: "Analysis of competitors."
+  always_filter: {
+    filters: {
+      field: time_scraped_date
+      value: "1 day ago"
+    }
+  }
+
+  join: gorillas_stores {
+    sql_on: ${competitor_analysis.gorillas_hub_code} = ${gorillas_stores.id};;
+    relationship: many_to_one
+    type: left_outer
+  }
 
 
 }
@@ -864,6 +876,10 @@ explore: gorillas_test{
   always_filter: {
     filters: {
       field: time_scraped_date
+      value: "today"
+    }
+    filters: {
+      field: assortment_time_scraped_date
       value: "1 day ago"
     }
   }

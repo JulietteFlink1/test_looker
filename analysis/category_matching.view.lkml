@@ -1,5 +1,5 @@
 view: category_matching {
-  sql_table_name: `flink-data-dev.competitive_intelligence.category_matching`
+  sql_table_name: `flink-backend:gsheet_gorillas_category_matching.Matching__input_by_Retail_team_`
     ;;
 
   dimension: flink_category_id {

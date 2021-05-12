@@ -48,7 +48,7 @@ view: gorillas_test {
        )
   ,  gorillas_current_assortment AS (with gorillas_items as (
           SELECT
-          gorillas.time_scraped,
+          gorillas.time_scraped as assortment_time_scraped,
           gorillas.hub_code,
           gorillas.sku,
           gorillas.id,
@@ -57,7 +57,7 @@ view: gorillas_test {
           gorillas.category,
           row_number() over (partition by hub_code, id order by time_scraped desc) as scrape_rank
           FROM `flink-data-dev.competitive_intelligence.gorillas_items` gorillas
-          WHERE {% condition time_scraped_date %} gorillas.time_scraped {% endcondition %}
+          WHERE {% condition assortment_time_scraped_date %} gorillas.time_scraped {% endcondition %}
       )
       select * from gorillas_items where scrape_rank=1
        )
@@ -73,6 +73,7 @@ SELECT
     gorillas_test.count_restocked,
     gorillas_test.count_purchased,
     gorillas_current_assortment.category  AS category,
+    gorillas_current_assortment.assortment_time_scraped as assortment_time_scraped,
     gorillas_test.count_purchased * gorillas_current_assortment.price as revenue
 FROM gorillas_test
 LEFT JOIN gorillas_current_assortment ON gorillas_test.product_id = gorillas_current_assortment.id and gorillas_test.hub_code = gorillas_current_assortment.hub_code
@@ -111,6 +112,22 @@ WHERE (( gorillas_test.count_purchased   > 0) OR ( gorillas_test.count_restocked
       hour_of_day
     ]
     sql: ${TABLE}.time_scraped ;;
+  }
+
+  dimension_group: assortment_time_scraped {
+    type: time
+    description: "bq-datetime"
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year,
+      hour_of_day
+    ]
+    sql: ${TABLE}.assortment_time_scraped ;;
   }
 
   dimension: product_id {

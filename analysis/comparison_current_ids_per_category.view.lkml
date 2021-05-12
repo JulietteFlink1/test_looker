@@ -65,7 +65,6 @@ view: comparison_current_ids_per_category {
           left join `flink-backend.saleor_db.product_category` product_category_parent
                               on product_category.parent_id=product_category_parent.id
           WHERE product_product.is_published
-          and product_category.country_iso = "DE"
           GROUP BY
               1, 2, 3, 4
       )
@@ -118,6 +117,13 @@ view: comparison_current_ids_per_category {
     sql: ${TABLE}.time_scraped ;;
   }
 
+  dimension: unique_id {
+    group_label: "* IDs *"
+    primary_key: yes
+    type: string
+    sql: concat(${country_iso},${time_scraped_time},${parent_category_id}, ${gorillas_category_name}) ;;
+  }
+
 
   dimension: country_iso {
     type: string
@@ -132,6 +138,15 @@ view: comparison_current_ids_per_category {
   dimension: parent_category_name {
     type: string
     sql: ${TABLE}.parent_category_name ;;
+  }
+
+  measure: count_matches {
+    type: count_distinct
+    sql:  NOT(
+  is_null(${comparison_current_ids_per_category.flink_avg_count_of_products}) AND NOT is_null(${comparison_current_ids_per_category.gorillas_product_avg_per_hub}))
+OR NOT (is_null(${comparison_current_ids_per_category.parent_category_id})  AND NOT is_null(${comparison_current_ids_per_category.gorillas_category_name}))
+;;
+  filters: []
   }
 
   dimension: gorillas_category_name {
