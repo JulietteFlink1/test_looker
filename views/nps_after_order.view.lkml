@@ -38,11 +38,13 @@ dimension: token {
 }
 
 dimension: nps_driver {
+  label: "Driver (Primary Reason for NPS)"
   type: string
   sql: ${TABLE}.driver_comment ;;
 }
 
 dimension: nps_comment {
+  label: "Suggestion for improvement"
   type: string
   sql: ${TABLE}.what_can_we_do_to_improve ;;
 }

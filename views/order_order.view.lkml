@@ -578,6 +578,7 @@ view: order_order {
 
       dimension: delivery_delay_since_eta {
         group_label: "* Operations / Logistics *"
+        label: "Delta to PDT (min)"
         type: duration_minute
         sql_start: ${delivery_eta_timestamp_raw};;
         sql_end: ${delivery_timestamp_raw};;
