@@ -76,12 +76,22 @@ view: adjust_user_funnel {
               group by 1
           ),
 
+          purchase as
+          (
+              SELECT adjust._adid_,
+              MIN(datetime(TIMESTAMP_SECONDS(adjust._created_at_), 'Europe/Berlin')) as purchase_time
+              FROM `flink-backend.customlytics_adjust.adjust_raw_imports` adjust
+              WHERE adjust._event_name_ in ('Purchase') and
+              adjust._activity_kind_ = 'event' and adjust._environment_ != "sandbox"
+              group by 1
+          ),
+
           first_purchase as
           (
               SELECT adjust._adid_,
               MIN(datetime(TIMESTAMP_SECONDS(adjust._created_at_), 'Europe/Berlin')) as first_purchase_time
               FROM `flink-backend.customlytics_adjust.adjust_raw_imports` adjust
-              WHERE adjust._event_name_ in ('Purchase', 'FirstPurchase') and
+              WHERE adjust._event_name_ in ('FirstPurchase') and
               adjust._activity_kind_ = 'event' and adjust._environment_ != "sandbox"
               group by 1
           )
@@ -106,6 +116,7 @@ select
     TIMESTAMP_DIFF(first_checkout_started.first_checkout_started_time, unique_installs.install_time, DAY) AS time_to_start_checkout,
     TIMESTAMP_DIFF(first_purchase.first_purchase_time, unique_installs.install_time, DAY) AS time_to_conversion,
     case when first_purchase.first_purchase_time is not null then TRUE else FALSE end as has_converted,
+    case when purchase.purchase_time is not null then TRUE else FALSE end as has_purchased,
     count (distinct unique_installs._adid_) over (partition by date(unique_installs.install_time)) as cohort_base
     from unique_installs
     left join first_address_selected
@@ -118,6 +129,8 @@ select
     on unique_installs._adid_ = first_add_to_cart._adid_
     left join first_checkout_started
     on unique_installs._adid_ = first_checkout_started._adid_
+    left join purchase
+    on unique_installs._adid_ = purchase._adid_
     left join first_purchase
     on unique_installs._adid_ = first_purchase._adid_
     where first_purchase.first_purchase_time >= unique_installs.install_time or first_purchase.first_purchase_time is null
@@ -291,6 +304,12 @@ select
     sql: ${TABLE}.has_converted ;;
   }
 
+  dimension: has_purchased {
+    type: yesno
+    sql: ${TABLE}.has_purchased ;;
+  }
+
+
   dimension: cohort_base {
     type: number
     sql: ${TABLE}.cohort_base ;;
@@ -456,6 +475,12 @@ select
     label: "Conversion count"
     type: count
     filters: [has_converted: "yes"]
+  }
+
+  measure: cnt_purchases {
+    label: "Purchase count"
+    type: count
+    filters: [has_purchased: "yes"]
   }
 
   set: detail {
