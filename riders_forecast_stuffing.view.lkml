@@ -174,7 +174,7 @@ view: riders_forecast_stuffing {
         on shiftblocks_hubs.block_starts_at = rider_hours.block_starts_at and shiftblocks_hubs.block_ends_at = rider_hours.block_ends_at and shiftblocks_hubs.hub_name = rider_hours.hub_name
         left join filled_riders
         on shiftblocks_hubs.block_starts_at = filled_riders.block_starts_at and shiftblocks_hubs.block_ends_at = filled_riders.block_ends_at and shiftblocks_hubs.hub_name = filled_riders.hub_name
-        where prediction is not null
+        --where prediction is not null
         --and shiftblocks_hubs.hub_name = 'de_ber_kreu' and shiftblocks_hubs.date = '2021-05-06'
         order by 4, 2 asc
        ;;
