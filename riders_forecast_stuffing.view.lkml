@@ -359,6 +359,7 @@ view: riders_forecast_stuffing {
     label: "# Filled Rider Hours"
     type: sum
     sql: ${filled_rider_hours} ;;
+    value_format_name: decimal_2
   }
 
   set: detail {
