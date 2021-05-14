@@ -38,7 +38,7 @@ view: riders_forecast_stuffing {
             shiftblocks_hubs.hub_name,
             shiftblocks_hubs.city,
             sum(shifts.workers) as workers
-            from `flink-backend.sandbox_ricardo.shiftblocks_hubs` shiftblocks_hubs
+            from `flink-data-dev.forecasting.shiftblocks_hubs` shiftblocks_hubs
             left join shifts
             on shiftblocks_hubs.hub_name = shifts.hub_name and
                 (
@@ -70,7 +70,7 @@ view: riders_forecast_stuffing {
                    GREATEST(shiftblocks_hubs.block_starts_at,shifts.starts_at),
                    MINUTE
                   ) as FLOAT64) as rider_hours
-            from `flink-backend.sandbox_ricardo.shiftblocks_hubs` shiftblocks_hubs
+            from `flink-data-dev.forecasting.shiftblocks_hubs` shiftblocks_hubs
             left join shifts
             on shiftblocks_hubs.hub_name = shifts.hub_name and
                 (
@@ -126,7 +126,7 @@ view: riders_forecast_stuffing {
             shiftblocks_hubs.hub_name,
             shiftblocks_hubs.city,
             sum(cnt_employees) as filled_riders
-            from `flink-backend.sandbox_ricardo.shiftblocks_hubs` shiftblocks_hubs
+            from `flink-data-dev.forecasting.shiftblocks_hubs` shiftblocks_hubs
             left join evaluations
             on shiftblocks_hubs.hub_name = evaluations.hub_name and
                 (
@@ -161,7 +161,7 @@ view: riders_forecast_stuffing {
         filled_riders.filled_riders,
         cast(rider_hours.rider_hours as FLOAT64) / 60.0 as planned_rider_hours,
         (filled_riders.filled_riders * (cast(rider_hours.rider_hours as FLOAT64) / 60.0)) / stuffed_riders.workers as filled_rider_hours
-        from `flink-backend.sandbox_ricardo.shiftblocks_hubs` shiftblocks_hubs
+        from `flink-data-dev.forecasting.shiftblocks_hubs` shiftblocks_hubs
         left join historical_orders
         on (shiftblocks_hubs.block_starts_at = historical_orders.timekey
             and shiftblocks_hubs.hub_name = historical_orders.warehouse)
