@@ -189,12 +189,18 @@ view: riders_forecast_stuffing {
 
   dimension_group: block_starts_at {
     group_label: " * Dates * "
+    timeframes: [
+      raw
+    ]
     type: time
     sql: ${TABLE}.block_starts_at ;;
   }
 
   dimension_group: block_ends_at {
     group_label: " * Dates * "
+    timeframes: [
+      raw
+    ]
     type: time
     sql: ${TABLE}.block_ends_at ;;
   }
@@ -356,8 +362,8 @@ view: riders_forecast_stuffing {
   set: detail {
     fields: [
       date,
-      block_starts_at_time,
-      block_ends_at_time,
+      block_starts_at_raw,
+      block_ends_at_raw,
       hub_name,
       city,
       orders,
