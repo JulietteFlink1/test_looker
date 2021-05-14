@@ -540,6 +540,18 @@ explore: adjust_sessions {
   #    adjust_sessions._partitiondate: "7 days"
   #  ]
   #}
+
+  access_filter: {
+    field: adjust_sessions.country
+    user_attribute: country_iso
+  }
+
+  access_filter: {
+    field: adjust_sessions.city
+    user_attribute: city
+  }
+
+
   join: adjust_events {
     sql_on: ${adjust_sessions._adid_} = ${adjust_events._adid_}
     AND datetime(${adjust_events.event_time_raw}, 'Europe/Berlin') >= ${adjust_sessions.session_start_at_raw}
@@ -560,6 +572,16 @@ explore: adjust_user_funnel {
   view_label: "Adjust user data"
   group_label: "6) Adjust app data"
   description: "Adjust first events by user"
+
+  access_filter: {
+    field: adjust_user_funnel._country_
+    user_attribute: country_iso
+  }
+
+  access_filter: {
+    field: adjust_user_funnel._city_
+    user_attribute: city
+  }
 }
 
 ####### CS ISSUES EXPLORE #######
@@ -917,6 +939,16 @@ explore: riders_forecast_stuffing {
   view_label: "Orders and Riders Forecasting"
   group_label: "9) Forecasting"
   description: "This explore allows to check the riders and orders forecast for the upcoming 7 days"
+
+  access_filter: {
+    field: hubs.country_iso
+    user_attribute: country_iso
+  }
+
+  access_filter: {
+    field: hubs.city
+    user_attribute: city
+  }
 
   join: hubs {
     sql_on:
