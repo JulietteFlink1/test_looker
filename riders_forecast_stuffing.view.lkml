@@ -291,70 +291,70 @@ view: riders_forecast_stuffing {
 
   measure: sum_orders {
     group_label: " * Orders * "
-    label: "Sum of Number of Orders"
+    label: "# Orders"
     type: sum
     sql: ${orders} ;;
   }
 
   measure: sum_predicted_orders {
     group_label: " * Orders * "
-    label: "Sum of Number of Predicted Orders"
+    label: "# Predicted Orders"
     type: sum
     sql: ${predicted_orders} ;;
   }
 
   measure: sum_predicted_orders_lower_bound {
     group_label: " * Orders * "
-    label: "Sum of Number of Predicted Orders Lower Bound"
+    label: "# Predicted Orders Lower Bound"
     type: sum
     sql: ${lower_bound} ;;
   }
 
   measure: sum_predicted_orders_upper_bound {
     group_label: " * Orders * "
-    label: "Sum of Number of Predicted Orders Upper Bound"
+    label: "# Predicted Orders Upper Bound"
     type: sum
     sql: ${upper_bound} ;;
   }
 
   measure: sum_predicted_riders {
     group_label: " * Riders * "
-    label: "Sum of Number of Predicted Riders"
+    label: "# Predicted Riders"
     type: sum
     sql: ${forecasted_riders} ;;
   }
 
   measure: sum_planned_riders {
     group_label: " * Riders * "
-    label: "Sum of Number of Planned Riders"
+    label: "# Planned Riders"
     type: sum
     sql: ${planned_riders} ;;
   }
 
   measure: sum_filled_riders {
     group_label: " * Riders * "
-    label: "Sum of Number of Filled Riders"
+    label: "# Filled Riders"
     type: sum
     sql: ${filled_riders} ;;
   }
 
   measure: sum_forecasted_rider_hours {
     group_label: " * Rider Hours * "
-    label: "Sum of Number of Predicted Rider Hours"
+    label: "# Predicted Rider Hours"
     type: sum
     sql: ${forecasted_rider_hours} ;;
   }
 
   measure: sum_planned_rider_hours {
     group_label: " * Rider Hours * "
-    label: "Sum of Number of Planned Rider Hours"
+    label: "# Planned Rider Hours"
     type: sum
     sql: ${planned_rider_hours} ;;
   }
 
   measure: sum_filled_rider_hours {
     group_label: " * Rider Hours * "
-    label: "Sum of Number of Filled Rider Hours"
+    label: "# Filled Rider Hours"
     type: sum
     sql: ${filled_rider_hours} ;;
   }
