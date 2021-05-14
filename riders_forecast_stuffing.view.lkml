@@ -187,21 +187,23 @@ view: riders_forecast_stuffing {
     sql: ${TABLE}.date ;;
   }
 
-  dimension_group: block_starts_at {
+  dimension: block_starts_at {
     group_label: " * Dates * "
-    timeframes: [
-      raw
-    ]
-    type: time
+    label: "Block starts at"
+    #timeframes: [
+    #  raw
+    #]
+    type: date_time
     sql: ${TABLE}.block_starts_at ;;
   }
 
-  dimension_group: block_ends_at {
+  dimension: block_ends_at {
     group_label: " * Dates * "
-    timeframes: [
-      raw
-    ]
-    type: time
+    label: "Block ends at"
+    #timeframes: [
+    #  raw
+    #]
+    type: date_time
     sql: ${TABLE}.block_ends_at ;;
   }
 
@@ -213,7 +215,7 @@ view: riders_forecast_stuffing {
   dimension: unique_id {
     type: string
     hidden: yes
-    sql: concat(${block_starts_at_raw}, ${block_ends_at_raw}, ${hub_name}) ;;
+    sql: concat(${block_starts_at}, ${block_ends_at}, ${hub_name}) ;;
     primary_key: yes
   }
 
@@ -298,28 +300,28 @@ view: riders_forecast_stuffing {
 
   measure: sum_predicted_orders {
     group_label: " * Orders * "
-    label: "# Predicted Orders"
+    label: "# Forecasted Orders"
     type: sum
     sql: ${predicted_orders} ;;
   }
 
   measure: sum_predicted_orders_lower_bound {
     group_label: " * Orders * "
-    label: "# Predicted Orders Lower Bound"
+    label: "# Forecasted Orders Lower Bound"
     type: sum
     sql: ${lower_bound} ;;
   }
 
   measure: sum_predicted_orders_upper_bound {
     group_label: " * Orders * "
-    label: "# Predicted Orders Upper Bound"
+    label: "# Forecasted Orders Upper Bound"
     type: sum
     sql: ${upper_bound} ;;
   }
 
   measure: sum_predicted_riders {
     group_label: " * Riders * "
-    label: "# Predicted Riders"
+    label: "# Forecasted Riders"
     type: sum
     sql: ${forecasted_riders} ;;
   }
@@ -340,7 +342,7 @@ view: riders_forecast_stuffing {
 
   measure: sum_forecasted_rider_hours {
     group_label: " * Rider Hours * "
-    label: "# Predicted Rider Hours"
+    label: "# Forecasted Rider Hours"
     type: sum
     sql: ${forecasted_rider_hours} ;;
   }
@@ -362,8 +364,8 @@ view: riders_forecast_stuffing {
   set: detail {
     fields: [
       date,
-      block_starts_at_raw,
-      block_ends_at_raw,
+      block_starts_at,
+      block_ends_at,
       hub_name,
       city,
       orders,
