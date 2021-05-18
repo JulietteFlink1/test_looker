@@ -4,6 +4,7 @@ view: adjust_sessions {
       (
       SELECT  _adid_ || '-' || row_number() over(partition by _adid_ order by _created_at_) as session_id,
       _adid_,
+      _country_,
       _city_,
       _os_name_,
       _app_version_short_,
@@ -11,6 +12,7 @@ view: adjust_sessions {
       _created_at_ as session_start_at,
       lead(_created_at_) over(partition by _adid_ order by _created_at_) as next_session_start_at,
       from  (select _adid_,
+              _country_,
               _city_,
               _os_name_,
               _app_version_short_,
@@ -310,6 +312,7 @@ view: adjust_sessions {
       adjust_sessions.session_id,
       datetime(adjust_sessions.session_start_at, 'Europe/Berlin') as session_start_at,
       datetime(adjust_sessions.next_session_start_at, 'Europe/Berlin') as next_session_start_at,
+      adjust_sessions._country_,
       adjust_sessions._city_,
       adjust_sessions._os_name_,
       adjust_sessions._app_version_short_,
@@ -402,6 +405,11 @@ view: adjust_sessions {
     ]
     sql: ${TABLE}.next_session_start_at ;;
     datatype: datetime
+  }
+
+  dimension: country {
+    type: string
+    sql: ${TABLE}._country_ ;;
   }
 
   dimension: city {
@@ -892,6 +900,7 @@ view: adjust_sessions {
       session_id,
       session_start_at_time,
       next_session_start_at_time,
+      country,
       city,
       os_name,
       _app_version_,
