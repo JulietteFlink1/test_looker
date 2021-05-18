@@ -10,7 +10,7 @@ view: gorillas_test {
               gorillas.quantity as current_quantity,
               LAG(gorillas.quantity,1) OVER (PARTITION BY gorillas.hub_code, gorillas.product_id ORDER BY gorillas.time_scraped) previous_quantity
           FROM `flink-data-dev.competitive_intelligence.gorillas_inv_test` gorillas
-          where {% condition time_scraped_date %} gorillas.time_scraped {% endcondition %}
+         where {% condition time_scraped_date %} gorillas.time_scraped {% endcondition %}
 
           order by 1,2,3,4,5 asc
       ),
@@ -48,16 +48,16 @@ view: gorillas_test {
        )
   ,  gorillas_current_assortment AS (with gorillas_items as (
           SELECT
-          gorillas.time_scraped as assortment_time_scraped,
-          gorillas.hub_code,
-          gorillas.sku,
-          gorillas.id,
-          gorillas.price,
-          gorillas.label,
-          gorillas.category,
+          items.time_scraped as assortment_time_scraped,
+          items.hub_code,
+          items.sku,
+          items.id,
+          items.price,
+          items.label,
+          items.category,
           row_number() over (partition by hub_code, id order by time_scraped desc) as scrape_rank
-          FROM `flink-data-dev.competitive_intelligence.gorillas_items` gorillas
-          WHERE {% condition assortment_time_scraped_date %} gorillas.time_scraped {% endcondition %}
+          FROM `flink-data-dev.competitive_intelligence.gorillas_items` items
+          WHERE {% condition assortment_time_scraped_date %} items.time_scraped {% endcondition %}
       )
       select * from gorillas_items where scrape_rank=1
        )
