@@ -69,7 +69,7 @@ view: riders_forecast_stuffing {
                    LEAST(shiftblocks_hubs.block_ends_at,shifts.ends_at),
                    GREATEST(shiftblocks_hubs.block_starts_at,shifts.starts_at),
                    MINUTE
-                  ) as FLOAT64) as rider_hours
+                  ) as FLOAT64) * shifts.workers as rider_hours
             from `flink-data-dev.forecasting.shiftblocks_hubs` shiftblocks_hubs
             left join shifts
             on shiftblocks_hubs.hub_name = shifts.hub_name and
