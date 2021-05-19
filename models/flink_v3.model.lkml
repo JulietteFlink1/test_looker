@@ -738,13 +738,9 @@ explore: gorillas_stores {
   view_label: "Gorillas Stores"
   group_label: "8) Competitor Analysis"
   description: "Store Locations of Gorillas"
-  # always_filter: {
-  #   filters: {
-  #     field: time_scraped_date
-  #     value: "1 day ago"
-  #   }
-  # }
 }
+
+
 
 # Un-hide and use this explore, or copy the joins into another explore, to get all the fully nested relationships from this view
 explore: gorillas_items {
