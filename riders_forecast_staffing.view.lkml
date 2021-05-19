@@ -69,7 +69,7 @@ view: riders_forecast_stuffing {
                    LEAST(shiftblocks_hubs.block_ends_at,shifts.ends_at),
                    GREATEST(shiftblocks_hubs.block_starts_at,shifts.starts_at),
                    MINUTE
-                  ) as FLOAT64) as rider_hours
+                  ) as FLOAT64) * shifts.workers as rider_hours
             from `flink-data-dev.forecasting.shiftblocks_hubs` shiftblocks_hubs
             left join shifts
             on shiftblocks_hubs.hub_name = shifts.hub_name and
@@ -187,24 +187,40 @@ view: riders_forecast_stuffing {
     sql: ${TABLE}.date ;;
   }
 
-  dimension: block_starts_at {
+  dimension_group: block_starts_at {
     group_label: " * Dates * "
     label: "Block starts at"
-    #timeframes: [
-    #  raw
-    #]
-    type: date_time
+    timeframes: [
+      time
+    ]
+    type: time
     sql: ${TABLE}.block_starts_at ;;
   }
 
-  dimension: block_ends_at {
+  dimension_group: block_ends_at {
     group_label: " * Dates * "
     label: "Block ends at"
-    #timeframes: [
-    #  raw
-    #]
-    type: date_time
+    timeframes: [
+      time
+    ]
+    type: time
     sql: ${TABLE}.block_ends_at ;;
+  }
+
+  dimension: block_starts_pivot {
+    group_label: " * Dates * "
+    label: "Block starts at pivot"
+    type: date_time
+    sql: TIMESTAMP(concat("2021-01-01", " ", extract(hour from ${TABLE}.block_starts_at AT TIME ZONE "Europe/Berlin"),
+    ":",extract(minute from ${TABLE}.block_starts_at), ":","00"), "Europe/Berlin") ;;
+  }
+
+  dimension: block_ends_pivot {
+    group_label: " * Dates * "
+    label: "Block ends at pivot"
+    type: date_time
+    sql: TIMESTAMP(concat("2021-01-01", " ", extract(hour from ${TABLE}.block_ends_at AT TIME ZONE "Europe/Berlin"),
+      ":",extract(minute from ${TABLE}.block_ends_at), ":","00"), "Europe/Berlin") ;;
   }
 
   dimension: hub_name {
@@ -215,7 +231,7 @@ view: riders_forecast_stuffing {
   dimension: unique_id {
     type: string
     hidden: yes
-    sql: concat(${block_starts_at}, ${block_ends_at}, ${hub_name}) ;;
+    sql: concat(${block_starts_at_time}, ${block_ends_at_time}, ${hub_name}) ;;
     primary_key: yes
   }
 
@@ -365,8 +381,8 @@ view: riders_forecast_stuffing {
   set: detail {
     fields: [
       date,
-      block_starts_at,
-      block_ends_at,
+      block_starts_at_time,
+      block_ends_at_time,
       hub_name,
       city,
       orders,
