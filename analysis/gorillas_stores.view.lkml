@@ -9,7 +9,7 @@ view: gorillas_stores {
           stores.todayOrderSequenceNumber,
           stores.lat as store_lat, stores.lon as store_lon,
           stores.time_scraped, row_number() over (partition by stores.id order by time_scraped desc) as gorillas_scrape_rank
-      FROM `flink-data-dev.competitive_intelligence.gorillas_stores` stores)
+      FROM `flink-data-dev.competitive_intelligence.gorillas_stores` stores
       WHERE {% condition time_scraped_date %} stores.time_scraped {% endcondition %})
       Select * from stores where gorillas_scrape_rank=1
        ;;
