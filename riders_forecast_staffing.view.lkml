@@ -1,4 +1,4 @@
-view: riders_forecast_staffing {
+view: riders_forecast_stuffing {
   derived_table: {
     sql: with historical_orders as
         (

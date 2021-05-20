@@ -969,7 +969,7 @@ explore: gorillas_items_hist{
 
 ################ Rider Stuffing
 
-explore: riders_forecast_staffing {
+explore: riders_forecast_stuffing {
   label: "Orders and Riders Forecasting"
   view_label: "Orders and Riders Forecasting"
   group_label: "9) Forecasting"
@@ -987,37 +987,37 @@ explore: riders_forecast_staffing {
 
   join: hubs {
     sql_on:
-    ${riders_forecast_staffing.hub_name} = ${hubs.hub_code_lowercase} ;;
+    ${riders_forecast_stuffing.hub_name} = ${hubs.hub_code_lowercase} ;;
     relationship: many_to_one
     type: left_outer
   }
 
 }
 
-explore: riders_forecast_staffing_v2 {
-  label: "Orders and Riders Forecasting V2"
-  view_label: "Orders and Riders Forecasting V2"
-  group_label: "9) Forecasting"
-  description: "This explore allows to check the riders and orders forecast for the upcoming 7 days"
+#explore: riders_forecast_staffing_v2 {
+#  label: "Orders and Riders Forecasting V2"
+#  view_label: "Orders and Riders Forecasting V2"
+#  group_label: "9) Forecasting"
+#  description: "This explore allows to check the riders and orders forecast for the upcoming 7 days"
 
-  access_filter: {
-    field: hubs.country_iso
-    user_attribute: country_iso
-  }
+#  access_filter: {
+#    field: hubs.country_iso
+#    user_attribute: country_iso
+#  }
 
-  access_filter: {
-    field: hubs.city
-    user_attribute: city
-  }
+#  access_filter: {
+#    field: hubs.city
+#    user_attribute: city
+#  }
 
-  join: hubs {
-    sql_on:
-    ${riders_forecast_staffing_v2.hub_name} = ${hubs.hub_code_lowercase} ;;
-    relationship: many_to_one
-    type: left_outer
-  }
+#  join: hubs {
+#    sql_on:
+#    ${riders_forecast_staffing_v2.hub_name} = ${hubs.hub_code_lowercase} ;;
+#    relationship: many_to_one
+#    type: left_outer
+#  }
 
-}
+#}
 
 
 
