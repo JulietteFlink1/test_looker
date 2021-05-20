@@ -101,7 +101,7 @@ view: marketingbanners_mobile_events {
 
   dimension: event_id {
     type: string
-    sql: ${anonymous_id} || '-' || row_number() over(partition by ${anonymous_id} order by ${timestamp_raw})} ;;
+    sql: ${anonymous_id} || '-' || row_number() over(partition by ${anonymous_id} order by ${timestamp_raw}) ;;
     primary_key: yes
   }
 
