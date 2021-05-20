@@ -106,6 +106,25 @@ view: order_order {
     sql_end: ${created_raw} ;;
   }
 
+##### helping dimensions for hiding incomplete cohorts #####
+  dimension_group: time_between_sign_up_month_and_now {
+    group_label: "* User Dimensions *"
+    hidden: yes
+    type: duration
+    sql_start: DATE_TRUNC(${user_order_facts.first_order_raw}, MONTH) ;;
+    sql_end: ${now_raw} ;;
+  }
+
+  dimension_group: time_between_sign_up_week_and_now {
+    group_label: "* User Dimensions *"
+    hidden: yes
+    type: duration
+    sql_start: DATE_TRUNC(${user_order_facts.first_order_raw}, WEEK) ;;
+    sql_end: ${now_raw} ;;
+  }
+##### helping dimensions for hiding incomplete cohorts #####
+
+
   dimension: time_since_sign_up_biweekly {
     group_label: "* User Dimensions *"
     type: number
