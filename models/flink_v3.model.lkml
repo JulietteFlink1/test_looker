@@ -313,6 +313,13 @@ explore: order_order {
     type: left_outer
   }
 
+  join: gdpr_account_deletion {
+    view_label: "Users"
+    sql_on: LOWER(${order_order.user_email}) = LOWER(${gdpr_account_deletion.email});;
+    relationship: many_to_one
+    type: left_outer
+  }
+
 }
 
 ####### PRODUCTS EXPLORE #######
@@ -450,7 +457,8 @@ explore: discount_voucher {
 
   join: influencer_vouchers_input {
     view_label: "Voucher Mapping"
-    sql_on: ${discount_voucher.code} = ${influencer_vouchers_input.voucher_code} ;;
+    sql_on: ${discount_voucher.country_iso} = ${influencer_vouchers_input.country_iso} AND
+            ${discount_voucher.code} = ${influencer_vouchers_input.voucher_code} ;;
     relationship: one_to_one
     type: left_outer
   }
@@ -532,6 +540,18 @@ explore: adjust_sessions {
   #    adjust_sessions._partitiondate: "7 days"
   #  ]
   #}
+
+  access_filter: {
+    field: adjust_sessions.country
+    user_attribute: country_iso
+  }
+
+  access_filter: {
+    field: adjust_sessions.city
+    user_attribute: city
+  }
+
+
   join: adjust_events {
     sql_on: ${adjust_sessions._adid_} = ${adjust_events._adid_}
     AND datetime(${adjust_events.event_time_raw}, 'Europe/Berlin') >= ${adjust_sessions.session_start_at_raw}
@@ -552,6 +572,16 @@ explore: adjust_user_funnel {
   view_label: "Adjust user data"
   group_label: "6) Adjust app data"
   description: "Adjust first events by user"
+
+  access_filter: {
+    field: adjust_user_funnel._country_
+    user_attribute: country_iso
+  }
+
+  access_filter: {
+    field: adjust_user_funnel._city_
+    user_attribute: city
+  }
 }
 
 ####### USER ACTIVITY TRACKING EXPLORES #######
@@ -695,6 +725,18 @@ explore: competitor_analysis {
   view_label: "Competitor Analysis"
   group_label: "8) Competitor Analysis"
   description: "Analysis of competitors."
+  always_filter: {
+    filters: {
+      field: time_scraped_date
+      value: "1 day ago"
+    }
+  }
+
+  join: gorillas_stores {
+    sql_on: ${competitor_analysis.gorillas_hub_code} = ${gorillas_stores.id};;
+    relationship: many_to_one
+    type: left_outer
+  }
 
 
 }
@@ -706,11 +748,91 @@ explore: gorillas_stores {
   description: "Store Locations of Gorillas"
 }
 
-explore: gorillas_current_assortment{
+
+
+# Un-hide and use this explore, or copy the joins into another explore, to get all the fully nested relationships from this view
+explore: gorillas_items {
+  label: "Gorillas Items Overview"
+  view_label: "Gorillas Items Overview"
+  group_label: "8) Competitor Analysis"
+  description: "Current Gorillas Items"
+  always_filter: {
+    filters: [gorillas_items.time_scraped_date: "1 day ago"]
+  }
+
+
+
+  join: gorillas_items__tags {
+    view_label: "Gorillas Items: Tags"
+    sql: LEFT JOIN UNNEST(${gorillas_items.tags}) as gorillas_items__tags ;;
+    relationship: one_to_many
+  }
+
+  join: gorillas_items__barcodes {
+    view_label: "Gorillas Items: Barcodes"
+    sql: LEFT JOIN UNNEST(${gorillas_items.barcodes}) as gorillas_items__barcodes ;;
+    relationship: one_to_many
+  }
+
+  join: gorillas_items__additives {
+    view_label: "Gorillas Items: Additives"
+    sql: LEFT JOIN UNNEST(${gorillas_items.additives}) as gorillas_items__additives ;;
+    relationship: one_to_many
+  }
+
+  join: gorillas_items__allergens {
+    view_label: "Gorillas Items: Allergens"
+    sql: LEFT JOIN UNNEST(${gorillas_items.allergens}) as gorillas_items__allergens ;;
+    relationship: one_to_many
+  }
+
+  join: gorillas_items__recommendation_tags {
+    view_label: "Gorillas Items: Recommendationtags"
+    sql: LEFT JOIN UNNEST(${gorillas_items.recommendation_tags}) as gorillas_items__recommendation_tags ;;
+    relationship: one_to_many
+  }
+
+  join: gorillas_items__customization_items {
+    view_label: "Gorillas Items: Customizationitems"
+    sql: LEFT JOIN UNNEST(${gorillas_items.customization_items}) as gorillas_items__customization_items ;;
+    relationship: one_to_many
+  }
+
+  join: gorillas_items__additional_images {
+    view_label: "Gorillas Items: Additionalimages"
+    sql: LEFT JOIN UNNEST(${gorillas_items.additional_images}) as gorillas_items__additional_images ;;
+    relationship: one_to_many
+  }
+
+  join: gorillas_items__product_collections {
+    view_label: "Gorillas Items: Productcollections"
+    sql: LEFT JOIN UNNEST(${gorillas_items.product_collections}) as gorillas_items__product_collections ;;
+    relationship: one_to_many
+  }
+
+  join: gorillas_stores {
+    sql_on: ${gorillas_items.hub_code} = ${gorillas_stores.id};;
+    relationship: one_to_many
+    type: left_outer
+  }
+
+  join: category_matching {
+    sql_on: ${gorillas_items.category} = ${category_matching.gorillas_category_name};;
+    relationship: one_to_many
+    type: left_outer
+  }
+}
+
+explore: gorillas_current_assortment {
   label: "Gorillas Assortment Overview"
   view_label: "Gorillas Assortment Overview"
   group_label: "8) Competitor Analysis"
   description: "Current Gorillas Assortment"
+  always_filter: {
+    filters: [gorillas_current_assortment.time_scraped_date: "1 day ago"]
+  }
+  hidden: yes
+
 
   join: gorillas_stores {
     sql_on: ${gorillas_current_assortment.hub_code} = ${gorillas_stores.id};;
@@ -724,6 +846,10 @@ explore: gorillas_current_assortment{
     type: left_outer
   }
 }
+
+
+
+
 
 explore: gorillas_turfs {
   label: "Gorillas Turfs"
@@ -756,6 +882,121 @@ explore: gorillas_turfs {
     relationship: one_to_many
   }
 }
+
+# explore: hist_avg_items_per_category_comparison{
+#   label: "Items per Category Provider Comparison"
+#   view_label: "Items per Category Provider Comparison"
+#   group_label: "8) Competitor Analysis"
+#   description: "Items per Category Provider Comparison"
+
+# }
+
+# date_time_scraped
+
+explore: comparison_current_ids_per_category {
+  label: "Current Items per Category Provider Comparison"
+  view_label: "Current Items per Category Provider Comparison"
+  group_label: "8) Competitor Analysis"
+  description: "Current Items per Category Provider Comparison"
+  always_filter: {
+    filters: {
+      field: time_scraped_date
+      value: "1 day ago"
+    }
+  }
+}
+
+explore: gorillas_test{
+  label: "Gorillas Test"
+  view_label: "Gorillas Test"
+  group_label: "8) Competitor Analysis"
+  description: "Current Gorillas Assortment"
+  hidden: yes
+  always_filter: {
+    filters: {
+      field: time_scraped_date
+      value: "today"
+    }
+    filters: {
+      field: assortment_time_scraped_date
+      value: "1 day ago"
+    }
+  }
+
+  join: gorillas_stores {
+    sql_on: ${gorillas_test.hub_code} = ${gorillas_stores.id};;
+    relationship: many_to_one
+    type: left_outer
+  }
+
+  join: gorillas_items {
+    sql_on: ${gorillas_test.product_id} = ${gorillas_items.id} and ${gorillas_test.hub_code} = ${gorillas_items.hub_code};;
+    type: left_outer
+    relationship: many_to_one
+  }
+
+  # join: gorillas_turfs {
+  #   sql_on: ${gorillas_test.hub_code} = ${gorillas_turfs.gorillas_store_ids} ;;
+  #   type: left_outer
+  #   relationship: many_to_one
+  # }
+}
+
+explore: gorillas_items_hist{
+  label: "Gorillas Items Added/ Removed"
+  view_label: "Gorillas Items Added/ Removed"
+  group_label: "8) Competitor Analysis"
+  description: "Gorillas Items Added/ Removed"
+
+  join: gorillas_stores {
+    sql_on: ${gorillas_items_hist.hub_code} = ${gorillas_stores.id};;
+    relationship: many_to_one
+    type: left_outer
+  }
+
+  join: gorillas_items {
+    sql_on: ${gorillas_items_hist.id} = ${gorillas_items.id} and ${gorillas_items_hist.hub_code} = ${gorillas_items.hub_code};;
+    type: left_outer
+    relationship: many_to_one
+  }
+
+  join: gorillas_turfs {
+    sql_on: ${gorillas_items_hist.hub_code} = ${gorillas_turfs.gorillas_store_ids} ;;
+    type: left_outer
+    relationship: many_to_one
+  }
+}
+
+################ Rider Stuffing
+
+explore: riders_forecast_stuffing {
+  label: "Orders and Riders Forecasting"
+  view_label: "Orders and Riders Forecasting"
+  group_label: "9) Forecasting"
+  description: "This explore allows to check the riders and orders forecast for the upcoming 7 days"
+
+  access_filter: {
+    field: hubs.country_iso
+    user_attribute: country_iso
+  }
+
+  access_filter: {
+    field: hubs.city
+    user_attribute: city
+  }
+
+  join: hubs {
+    sql_on:
+    ${riders_forecast_stuffing.hub_name} = ${hubs.hub_code_lowercase} ;;
+    relationship: many_to_one
+    type: left_outer
+  }
+
+}
+
+
+
+
 
 
 # explore: order_extends {

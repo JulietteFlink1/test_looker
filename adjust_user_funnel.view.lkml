@@ -3,20 +3,21 @@ view: adjust_user_funnel {
     sql: with install as
           (
               SELECT adjust._adid_,
+              adjust._country_,
               adjust._city_,
               adjust._network_name_,
               adjust._os_name_,
               MIN(datetime(TIMESTAMP_SECONDS(adjust._created_at_), 'Europe/Berlin')) as install_time
               FROM `flink-backend.customlytics_adjust.adjust_raw_imports` adjust
               where adjust._activity_kind_ in ('install') and adjust._environment_!="sandbox"
-              group by 1, 2, 3, 4
+              group by 1, 2, 3, 4, 5
           ),
 
           unique_installs as
           (
               select *
                 from (
-                    select _adid_, _city_, _network_name_, _os_name_, install_time, ROW_NUMBER() OVER (PARTITION BY _adid_, install_time)
+                    select _adid_,_country_, _city_, _network_name_, _os_name_, install_time, ROW_NUMBER() OVER (PARTITION BY _adid_, install_time)
                     row_number
                     from install
                 )
@@ -75,18 +76,29 @@ view: adjust_user_funnel {
               group by 1
           ),
 
+          purchase as
+          (
+              SELECT adjust._adid_,
+              MIN(datetime(TIMESTAMP_SECONDS(adjust._created_at_), 'Europe/Berlin')) as purchase_time
+              FROM `flink-backend.customlytics_adjust.adjust_raw_imports` adjust
+              WHERE adjust._event_name_ in ('Purchase') and
+              adjust._activity_kind_ = 'event' and adjust._environment_ != "sandbox"
+              group by 1
+          ),
+
           first_purchase as
           (
               SELECT adjust._adid_,
               MIN(datetime(TIMESTAMP_SECONDS(adjust._created_at_), 'Europe/Berlin')) as first_purchase_time
               FROM `flink-backend.customlytics_adjust.adjust_raw_imports` adjust
-              WHERE adjust._event_name_ in ('Purchase', 'FirstPurchase') and
+              WHERE adjust._event_name_ in ('FirstPurchase') and
               adjust._activity_kind_ = 'event' and adjust._environment_ != "sandbox"
               group by 1
           )
 
 select
     unique_installs._adid_,
+    unique_installs._country_,
     unique_installs._city_,
     unique_installs._network_name_,
     unique_installs._os_name_,
@@ -104,6 +116,7 @@ select
     TIMESTAMP_DIFF(first_checkout_started.first_checkout_started_time, unique_installs.install_time, DAY) AS time_to_start_checkout,
     TIMESTAMP_DIFF(first_purchase.first_purchase_time, unique_installs.install_time, DAY) AS time_to_conversion,
     case when first_purchase.first_purchase_time is not null then TRUE else FALSE end as has_converted,
+    case when purchase.purchase_time is not null then TRUE else FALSE end as has_purchased,
     count (distinct unique_installs._adid_) over (partition by date(unique_installs.install_time)) as cohort_base
     from unique_installs
     left join first_address_selected
@@ -116,6 +129,8 @@ select
     on unique_installs._adid_ = first_add_to_cart._adid_
     left join first_checkout_started
     on unique_installs._adid_ = first_checkout_started._adid_
+    left join purchase
+    on unique_installs._adid_ = purchase._adid_
     left join first_purchase
     on unique_installs._adid_ = first_purchase._adid_
     where first_purchase.first_purchase_time >= unique_installs.install_time or first_purchase.first_purchase_time is null
@@ -126,6 +141,11 @@ select
     type: string
     sql: ${TABLE}._adid_ ;;
     primary_key: yes
+  }
+
+  dimension: _country_ {
+    type: string
+    sql: ${TABLE}._country_ ;;
   }
 
   dimension: _city_ {
@@ -284,9 +304,43 @@ select
     sql: ${TABLE}.has_converted ;;
   }
 
+  dimension: has_purchased {
+    type: yesno
+    sql: ${TABLE}.has_purchased ;;
+  }
+
+
   dimension: cohort_base {
     type: number
     sql: ${TABLE}.cohort_base ;;
+  }
+
+  ####### Parameters
+
+  parameter: date_granularity {
+    group_label: "* Dates and Timestamps *"
+    label: "Date Granularity"
+    type: unquoted
+    allowed_value: { value: "Day" }
+    allowed_value: { value: "Week" }
+    allowed_value: { value: "Month" }
+    default_value: "Day"
+  }
+
+  ####### Dynamic Dimensions
+
+  dimension: install_date {
+    group_label: "* Dates and Timestamps *"
+    label: "Date (Dynamic)"
+    label_from_parameter: date_granularity
+    sql:
+    {% if date_granularity._parameter_value == 'Day' %}
+      ${install_time_date}
+    {% elsif date_granularity._parameter_value == 'Week' %}
+      ${install_time_week}
+    {% elsif date_granularity._parameter_value == 'Month' %}
+      ${install_time_month}
+    {% endif %};;
   }
 
   ######## Custom Dimensions
@@ -421,6 +475,12 @@ select
     label: "Conversion count"
     type: count
     filters: [has_converted: "yes"]
+  }
+
+  measure: cnt_purchases {
+    label: "Purchase count"
+    type: count
+    filters: [has_purchased: "yes"]
   }
 
   set: detail {

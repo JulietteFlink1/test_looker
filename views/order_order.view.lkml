@@ -113,7 +113,7 @@ view: order_order {
     value_format: "0"
   }
 
-  dimension_group: time_since_hub_launch {
+  dimension_group: time_between_hub_launch_and_order {
     group_label: "* Hub Dimensions *"
     type: duration
     sql_start: ${hub_order_facts.first_order_raw} ;;
@@ -578,6 +578,7 @@ view: order_order {
 
       dimension: delivery_delay_since_eta {
         group_label: "* Operations / Logistics *"
+        label: "Delta to PDT (min)"
         type: duration_minute
         sql_start: ${delivery_eta_timestamp_raw};;
         sql_end: ${delivery_timestamp_raw};;

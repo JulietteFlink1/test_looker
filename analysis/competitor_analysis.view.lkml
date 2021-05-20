@@ -5,11 +5,12 @@ view: competitor_analysis {
       stores.countryIso AS country_iso,
       stores.id,
       stores.label,
-      split(stores.label, ' ')[offset (0)] as store_name,
-      split(stores.label, ' ')[offset (2)] as store_city,
+      if(label like '% I %',SPLIT(label, ' I ')[OFFSET(0)], SPLIT(label, ' | ')[OFFSET(0)]) as store_name,
+      if(label like '% I %',SPLIT(label, ' I ')[OFFSET(1)], SPLIT(label, ' | ')[OFFSET(1)]) as store_city,
       stores.country.name as store_country,
       stores.lat as store_lat,
-      stores.lon as store_lon
+      stores.lon as store_lon,
+      row_number() over (partition by stores.id order by stores.time_scraped desc) as gorillas_scrape_rank
       FROM `flink-data-dev.competitive_intelligence.gorillas_stores` stores
     ),
      gorillas_skus as (
@@ -17,7 +18,7 @@ view: competitor_analysis {
       gorillas_stores.country_iso,
       gorillas_stores.store_city,
       gorillas_stores.store_name,
-      gorillas.time_scraped as gorillas_time_scraped,
+      gorillas.time_scraped as time_scraped,
       gorillas.hub_code as gorillas_hub_code,
       gorillas.id as gorillas_id,
       gorillas.price as gorillas_price,
@@ -25,11 +26,10 @@ view: competitor_analysis {
       gorillas.category as gorillas_category,
       gorillas.barcodes as gorillas_barcodes,
       gorillas.sku as gorillas_ean,
-      row_number() over (partition by hub_code, gorillas.id order by time_scraped desc) as gorillas_scrape_rank
-      from `flink-data-dev.competitive_intelligence.gorillas_items_v1` gorillas
+      row_number() over (partition by hub_code, gorillas.id order by gorillas.time_scraped desc) as gorillas_scrape_rank
+      from `flink-data-dev.competitive_intelligence.gorillas_items` gorillas
       left join gorillas_stores gorillas_stores ON gorillas.hub_code=gorillas_stores.id
-
-      where timestamp(gorillas.time_scraped) > timestamp('2021-04-24T01:00:00.000Z')
+      where {% condition time_scraped_date %} gorillas.time_scraped {% endcondition %} and gorillas_stores.gorillas_scrape_rank = 1
       ),
       gorillas_barcodes_unnested as (
       SELECT *
@@ -41,7 +41,7 @@ view: competitor_analysis {
       gorillas_barcodes_unnested.country_iso,
       gorillas_barcodes_unnested.store_city,
       gorillas_barcodes_unnested.store_name,
-      gorillas_barcodes_unnested.gorillas_time_scraped as gorillas_time_scraped,
+      gorillas_barcodes_unnested.time_scraped as time_scraped,
       gorillas_barcodes_unnested.gorillas_hub_code as gorillas_hub_code,
       gorillas_barcodes_unnested.gorillas_id as gorillas_id,
       gorillas_barcodes_unnested.gorillas_price as gorillas_price,
@@ -57,7 +57,7 @@ view: competitor_analysis {
       country_iso,
       store_city,
       store_name,
-      gorillas_time_scraped,
+      time_scraped,
       gorillas_hub_code,
       gorillas_id,
       gorillas_price,
@@ -132,9 +132,20 @@ view: competitor_analysis {
     drill_fields: [detail*]
   }
 
-  dimension_group: gorillas_time_scraped {
+  dimension_group: time_scraped {
+    label: "Scraping Date"
     type: time
-    sql: ${TABLE}.gorillas_time_scraped ;;
+    description: "bq-datetime"
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: ${TABLE}.time_scraped ;;
   }
 
   dimension: country_iso {
@@ -277,7 +288,6 @@ view: competitor_analysis {
     value_format: "0"
     sql_distinct_key: ${flink_sku} ;;
     sql: ${quantity_sold_30d};;
-
   }
 
   measure: weighted_avg_relative_price_diff {
@@ -296,9 +306,10 @@ view: competitor_analysis {
 
 
 
+
   set: detail {
     fields: [
-      gorillas_time_scraped_time,
+      time_scraped_date,
       gorillas_hub_code,
       gorillas_id,
       gorillas_price,
