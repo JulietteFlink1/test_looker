@@ -99,6 +99,11 @@ view: marketingbanners_mobile_events {
     drill_fields: [detail*]
   }
 
+  measure: count_unique_users {
+    type:  count_distinct
+    sql: ${anonymous_id} ;;
+  }
+
   dimension: event_id {
     type: string
     sql: ${anonymous_id} || '-' || row_number() over(partition by ${anonymous_id} order by ${timestamp_raw}) ;;
