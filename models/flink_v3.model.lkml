@@ -554,6 +554,14 @@ explore: adjust_user_funnel {
   description: "Adjust first events by user"
 }
 
+####### USER ACTIVITY TRACKING EXPLORES #######
+explore: events_marketingbanners_mobile {
+  label: "Marketing banner impressions"
+  view_label: "Marketing banner impressions"
+  group_label: "9) In-app tracking data"
+  description: "Marketing banner events"
+}
+
 ####### CS ISSUES EXPLORE #######
 explore: cs_issues_post_delivery {
   label: "CS Contacts"
