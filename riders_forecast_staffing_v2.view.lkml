@@ -1,22 +1,6 @@
-view: riders_forecast_staffing {
+view: riders_forecast_staffing_v2 {
   derived_table: {
-    sql: with historical_orders as
-        (
-            select TIMESTAMP_SECONDS(30*60 * DIV(UNIX_SECONDS(created), 30*60)) timekey,
-            CASE WHEN JSON_EXTRACT_SCALAR(metadata, '$.warehouse') IN ('hamburg-oellkersallee', 'hamburg-oelkersallee') THEN 'de_ham_alto'
-            WHEN JSON_EXTRACT_SCALAR(metadata, '$.warehouse') = 'münchen-leopoldstraße' THEN 'de_muc_schw'
-            ELSE JSON_EXTRACT_SCALAR(metadata, '$.warehouse') end as warehouse,
-            count(id) as orders
-            from `flink-backend.saleor_db_global.order_order`
-            where status in ('fulfilled', 'partially fulfilled') and
-            user_email not LIKE '%goflink%' OR user_email not LIKE '%pickery%'
-            OR LOWER(user_email) not IN ('christoph.a.cordes@gmail.com', 'jfdames@gmail.com', 'oliver.merkel@gmail.com',
-                                                'alenaschneck@gmx.de', 'saadsaeed354@gmail.com', 'saadsaeed353@gmail.com',
-                                                'fabian.hardenberg@gmail.com', 'benjamin.zagel@gmail.com')
-            group by 1, 2
-        ),
-
-        shifts as
+    sql: with shifts as
         (
             select
             shifts.starts_at,
@@ -30,7 +14,7 @@ view: riders_forecast_staffing {
             order by 3, 1 asc
         ),
 
-        stuffed_riders as
+        staffed_riders as
         (
             select shiftblocks_hubs.date,
             shiftblocks_hubs.block_starts_at,
@@ -151,34 +135,28 @@ view: riders_forecast_staffing {
         shiftblocks_hubs.block_ends_at,
         shiftblocks_hubs.hub_name,
         shiftblocks_hubs.city,
-        historical_orders.orders,
         historical_forecasts.prediction as predicted_orders,
         historical_forecasts.lower_bound,
         historical_forecasts.upper_bound,
-        CAST(CEIL(historical_forecasts.upper_bound / (target_orders_per_rider_per_hour/2)) AS INT64) AS forecasted_riders,
-        CAST(CEIL(historical_forecasts.upper_bound / (target_orders_per_rider_per_hour/2)) AS INT64) / 2 as forecasted_rider_hours,
-        stuffed_riders.workers as planned_riders,
+        staffed_riders.workers as planned_riders,
         filled_riders.filled_riders,
         cast(rider_hours.rider_hours as FLOAT64) / 60.0 as planned_rider_hours,
-        (filled_riders.filled_riders * (cast(rider_hours.rider_hours as FLOAT64) / 60.0)) / stuffed_riders.workers as filled_rider_hours
+        (filled_riders.filled_riders * (cast(rider_hours.rider_hours as FLOAT64) / 60.0)) / staffed_riders.workers as filled_rider_hours
         from `flink-data-dev.forecasting.shiftblocks_hubs` shiftblocks_hubs
-        left join historical_orders
-        on (shiftblocks_hubs.block_starts_at = historical_orders.timekey
-            and shiftblocks_hubs.hub_name = historical_orders.warehouse)
         left join `flink-backend.order_forecast.historical_forecasts` historical_forecasts
         on (shiftblocks_hubs.block_starts_at  = historical_forecasts.start_datetime and shiftblocks_hubs.block_ends_at = historical_forecasts.end_datetime)
             and shiftblocks_hubs.hub_name = historical_forecasts.warehouse
-        left join stuffed_riders
-        on shiftblocks_hubs.block_starts_at = stuffed_riders.block_starts_at and shiftblocks_hubs.block_ends_at = stuffed_riders.block_ends_at and shiftblocks_hubs.hub_name = stuffed_riders.hub_name
+        left join staffed_riders
+        on shiftblocks_hubs.block_starts_at = staffed_riders.block_starts_at and shiftblocks_hubs.block_ends_at = staffed_riders.block_ends_at and shiftblocks_hubs.hub_name = staffed_riders.hub_name
         left join rider_hours
         on shiftblocks_hubs.block_starts_at = rider_hours.block_starts_at and shiftblocks_hubs.block_ends_at = rider_hours.block_ends_at and shiftblocks_hubs.hub_name = rider_hours.hub_name
         left join filled_riders
         on shiftblocks_hubs.block_starts_at = filled_riders.block_starts_at and shiftblocks_hubs.block_ends_at = filled_riders.block_ends_at and shiftblocks_hubs.hub_name = filled_riders.hub_name
-        --where prediction is not null
-        --and shiftblocks_hubs.hub_name = 'de_ber_kreu' and shiftblocks_hubs.date = '2021-05-06'
         order by 4, 2 asc
-       ;;
+ ;;
   }
+
+
 
   dimension: date {
     group_label: " * Dates * "
@@ -189,21 +167,19 @@ view: riders_forecast_staffing {
 
   dimension_group: block_starts_at {
     group_label: " * Dates * "
-    label: "Block starts at"
+    type: time
     timeframes: [
       time
     ]
-    type: time
     sql: ${TABLE}.block_starts_at ;;
   }
 
   dimension_group: block_ends_at {
     group_label: " * Dates * "
-    label: "Block ends at"
+    type: time
     timeframes: [
       time
     ]
-    type: time
     sql: ${TABLE}.block_ends_at ;;
   }
 
@@ -212,7 +188,7 @@ view: riders_forecast_staffing {
     label: "Block starts at pivot"
     type: date_time
     sql: TIMESTAMP(concat("2021-01-01", " ", extract(hour from ${TABLE}.block_starts_at AT TIME ZONE "Europe/Berlin"),
-    ":",extract(minute from ${TABLE}.block_starts_at), ":","00"), "Europe/Berlin") ;;
+      ":",extract(minute from ${TABLE}.block_starts_at), ":","00"), "Europe/Berlin") ;;
   }
 
   dimension: block_ends_pivot {
@@ -228,22 +204,10 @@ view: riders_forecast_staffing {
     sql: ${TABLE}.hub_name ;;
   }
 
-  dimension: unique_id {
-    type: string
-    hidden: yes
-    sql: concat(${block_starts_at_time}, ${block_ends_at_time}, ${hub_name}) ;;
-    primary_key: yes
-  }
 
   dimension: city {
     type: string
     sql: ${TABLE}.city ;;
-  }
-
-  dimension: orders {
-    hidden: yes
-    type: number
-    sql: ${TABLE}.orders ;;
   }
 
   dimension: predicted_orders {
@@ -262,18 +226,6 @@ view: riders_forecast_staffing {
     hidden: yes
     type: number
     sql: ${TABLE}.upper_bound ;;
-  }
-
-  dimension: forecasted_riders {
-    hidden: yes
-    type: number
-    sql: ${TABLE}.forecasted_riders ;;
-  }
-
-  dimension: forecasted_rider_hours {
-    hidden: yes
-    type: number
-    sql: ${TABLE}.forecasted_rider_hours ;;
   }
 
   dimension: planned_riders {
@@ -300,83 +252,122 @@ view: riders_forecast_staffing {
     sql: ${TABLE}.filled_rider_hours ;;
   }
 
-  ############### Measures
+  dimension: forecasted_riders {
+    type: number
+    sql: CAST(CEIL(${upper_bound} / ({% parameter rider_UTR %}/2)) AS INT64) ;;
+  }
+
+  dimension: forecasted_rider_hours {
+    type: number
+    sql: CAST(CEIL(${upper_bound} / ({% parameter rider_UTR %}/2)) AS INT64) / 2;;
+  }
+
+  dimension: picker_utr {
+    label: "Picker UTR"
+    type: number
+    sql: {% parameter rider_UTR %} * 5 ;;
+  }
+
+  dimension: forecasted_pickers {
+    type: number
+    sql: CAST(CEIL(${upper_bound} / (${picker_utr}/2)) AS INT64) ;;
+  }
+
+  dimension: forecasted_picker_hours {
+    type: number
+    sql: CAST(CEIL(${upper_bound} / (${picker_utr}/2)) AS INT64) / 2;;
+  }
+
+  ###### Parameters
+
+  parameter: rider_UTR{
+    label: "Rider UTR"
+    type: unquoted
+    allowed_value: { value: "1" }
+    allowed_value: { value: "1.5" }
+    allowed_value: { value: "2" }
+    allowed_value: { value: "2.5" }
+    allowed_value: { value: "3" }
+    allowed_value: { value: "3.5" }
+    allowed_value: { value: "4" }
+    default_value: "2.5"
+  }
+
+  ###### Measures
 
   measure: count {
     type: count
     drill_fields: [detail*]
   }
 
-  measure: sum_orders {
-    group_label: " * Orders * "
-    label: "# Orders"
-    type: sum
-    sql: ${orders} ;;
-  }
-
   measure: sum_predicted_orders {
-    group_label: " * Orders * "
-    label: "# Forecasted Orders"
-    type: sum
+    label: "# Predicted Orders"
     sql: ${predicted_orders} ;;
+    type: sum
   }
 
   measure: sum_predicted_orders_lower_bound {
-    group_label: " * Orders * "
-    label: "# Forecasted Orders Lower Bound"
-    type: sum
+    label: "# Predicted Orders Lower Bound"
     sql: ${lower_bound} ;;
+    type: sum
   }
 
   measure: sum_predicted_orders_upper_bound {
-    group_label: " * Orders * "
-    label: "# Forecasted Orders Upper Bound"
-    type: sum
+    label: "# Predicted Orders Upper Bound"
     sql: ${upper_bound} ;;
+    type: sum
   }
 
-  measure: sum_predicted_riders {
-    group_label: " * Riders * "
+  measure: sum_planned_riders {
+    label: "# Planned Riders"
+    sql: ${planned_riders} ;;
+    type: sum
+  }
+
+  measure: sum_filled_riders {
+    label: "# Filled Riders"
+    sql: ${filled_riders} ;;
+    type: sum
+  }
+
+  measure: sum_planned_rider_hours {
+    label: "# Planned Rider Hours"
+    sql: ${planned_rider_hours} ;;
+    type: sum
+  }
+
+  measure: sum_filled_rider_hours {
+    label: "# Filled Rider Hours"
+    sql: ${filled_rider_hours} ;;
+    type: sum
+  }
+
+  measure: sum_forecasted_riders {
     label: "# Forecasted Riders"
     type: sum
     sql: ${forecasted_riders} ;;
   }
 
-  measure: sum_planned_riders {
-    group_label: " * Riders * "
-    label: "# Planned Riders"
-    type: sum
-    sql: ${planned_riders} ;;
-  }
-
-  measure: sum_filled_riders {
-    group_label: " * Riders * "
-    label: "# Filled Riders"
-    type: sum
-    sql: ${filled_riders} ;;
-  }
-
   measure: sum_forecasted_rider_hours {
-    group_label: " * Rider Hours * "
     label: "# Forecasted Rider Hours"
     type: sum
     sql: ${forecasted_rider_hours} ;;
   }
 
-  measure: sum_planned_rider_hours {
-    group_label: " * Rider Hours * "
-    label: "# Planned Rider Hours"
+  measure: sum_forecasted_pickers {
+    label: "# Forecasted Pickers"
     type: sum
-    sql: ${planned_rider_hours} ;;
+    sql: ${forecasted_pickers} ;;
   }
 
-  measure: sum_filled_rider_hours {
-    group_label: " * Rider Hours * "
-    label: "# Filled Rider Hours"
+  measure: sum_forecasted_picker_hours {
+    label: "# Forecasted Picker Hours"
     type: sum
-    sql: ${filled_rider_hours} ;;
-    value_format_name: decimal_2
+    sql: ${forecasted_picker_hours} ;;
   }
+
+
+
 
   set: detail {
     fields: [
@@ -385,12 +376,9 @@ view: riders_forecast_staffing {
       block_ends_at_time,
       hub_name,
       city,
-      orders,
       predicted_orders,
       lower_bound,
       upper_bound,
-      forecasted_riders,
-      forecasted_rider_hours,
       planned_riders,
       filled_riders,
       planned_rider_hours,
