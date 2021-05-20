@@ -1,4 +1,4 @@
-view: events_marketingbanners_mobile {
+view: marketingbanners_mobile_events {
   derived_table: {
     sql: SELECT
         anonymous_id,

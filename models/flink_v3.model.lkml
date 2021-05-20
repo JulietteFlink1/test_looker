@@ -585,7 +585,7 @@ explore: adjust_user_funnel {
 }
 
 ####### USER ACTIVITY TRACKING EXPLORES #######
-explore: events_marketingbanners_mobile {
+explore: marketingbanners_mobile_events {
   label: "Marketing banner impressions"
   view_label: "Marketing banner impressions"
   group_label: "9) In-app tracking data"
