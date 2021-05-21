@@ -320,14 +320,6 @@ explore: order_order {
     type: left_outer
   }
 
-  join: nps_hub_level {
-    view_label: "NPS on Hub-Level"
-    sql_on: ${hubs.hub_code_lowercase} =  LOWER(${nps_hub_level.hub}) and
-            ${order_order.date}        =  ${nps_hub_level.date};;
-    relationship: many_to_one # decided against one_to_many: on this level, many orders have a hub-level NPS
-    type: left_outer
-  }
-
   join: issue_rate_hub_level {
     view_label: "Order Issues on Hub-Level"
     sql_on: ${hubs.hub_code_lowercase} =  LOWER(${issue_rate_hub_level.hub_code}) and
@@ -673,36 +665,7 @@ explore: cs_issues_post_delivery {
   }
 }
 
-########### ISSUE-RATES ##############
 
-
-explore: issue_rate {
-  label: "Issue Rate / Post Delivery Issues"
-  view_label: "Issue Rate / Post Delivery Issues"
-  group_label: "7) Customer Service"
-  description: "Daily issue rates per hub using CS Gsheet and total orders per hub"
-
-  access_filter: {
-    field: issue_rate.country_iso
-    user_attribute: country_iso
-  }
-
-  access_filter: {
-    field: issue_rate.city
-    user_attribute: city
-  }
-}
-
-########### ISSUE-RATES ##############
-
-
-explore: issue_rate_hub_level {
-  label: "Issue Rate Per Hub Level"
-  view_label: "Issue Rate Per Hub Level"
-  group_label: "7) Customer Service"
-  description: "Daily issue rates per hub using CS Gsheet and total orders per hub"
-
-}
 
 ########### AD-HOC EXPLORE ###########
 

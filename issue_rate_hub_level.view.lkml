@@ -193,9 +193,47 @@ view: issue_rate_hub_level {
     label: "% Issue Rate"
     description: "The number of orders that have issues (the sum of: Wrong Product, Wrong Order, Perished Product, Missing Product and Damaged Product) divided by the total number of orders."
     type: number
-    sql: (1.0 * ${sum_orders_with_issues}) / ${sum_orders_total} ;;
+    sql: (1.0 * ${sum_orders_with_issues}) / NULLIF(${sum_orders_total}, 0) ;;
     value_format_name: percent_1
   }
+
+
+  measure: pct_orders_missing_product {
+    label: "% Missing Product Issue Rate"
+    description: "The number of orders with missing products divided by the total number of orders."
+    type: number
+    sql: (1.0 * ${sum_missing_product}) / NULLIF(${sum_orders_total}, 0) ;;
+    value_format_name: percent_1
+  }
+  measure: pct_orders_wrong_order {
+    label: "% Wrong Order Issue Rate"
+    description: "The number of orders with completely wrong baskets delivered divided by the total number of orders."
+    type: number
+    sql: (1.0 * ${sum_wrong_order}) / NULLIF(${sum_orders_total}, 0) ;;
+    value_format_name: percent_1
+  }
+  measure: pct_orders_perished_product {
+    label: "% Perished Product Issue Rate"
+    description: "The number of orders with perished products divided by the total number of orders."
+    type: number
+    sql: (1.0 * ${sum_perished_product}) / NULLIF(${sum_orders_total}, 0) ;;
+    value_format_name: percent_1
+  }
+  measure: pct_orders_wrong_product {
+    label: "% Wrong Product Issue Rate"
+    description: "The number of orders with wrong products divided by the total number of orders."
+    type: number
+    sql: (1.0 * ${sum_wrong_product}) / NULLIF(${sum_orders_total}, 0) ;;
+    value_format_name: percent_1
+  }
+  measure: pct_orders_damaged_product {
+    label: "% Damaged Product Issue Rate"
+    description: "The number of orders with damaged products divided by the total number of orders."
+    type: number
+    sql: (1.0 * ${sum_damaged}) / NULLIF(${sum_orders_total}, 0) ;;
+    value_format_name: percent_1
+  }
+
 
 
   set: detail {
