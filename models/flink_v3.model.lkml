@@ -274,13 +274,6 @@ explore: order_order {
     type: left_outer
   }
 
-  join: cs_issues_post_delivery {
-    sql_on: ${order_order.country_iso} = ${cs_issues_post_delivery.country_iso} and
-            ${order_order.id} = ${cs_issues_post_delivery.order_nr__} ;;
-    relationship: one_to_many
-    type: left_outer
-  }
-
   join: nps_after_order {
     view_label: "NPS After Order"
     sql_on: ${order_order.country_iso} = ${nps_after_order.country_iso} AND
