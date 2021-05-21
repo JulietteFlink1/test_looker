@@ -29,7 +29,7 @@ view: adjust_user_funnel {
               SELECT adjust._adid_,
               MIN(datetime(TIMESTAMP_SECONDS(adjust._created_at_), 'Europe/Berlin')) as first_address_selected_time
               FROM `flink-backend.customlytics_adjust.adjust_raw_imports` adjust
-              WHERE adjust._event_name_ in ('AddressSelected') and
+              WHERE adjust._event_name_ in ('AddressSelected', 'locationPinPlaced') and
               adjust._activity_kind_ = 'event' and adjust._environment_!="sandbox"
               group by 1
           ),
@@ -39,9 +39,9 @@ view: adjust_user_funnel {
               SELECT adjust._adid_,
               MIN(datetime(TIMESTAMP_SECONDS(adjust._created_at_), 'Europe/Berlin')) as first_address_selected_true_time
               FROM `flink-backend.customlytics_adjust.adjust_raw_imports` adjust
-              WHERE (adjust._event_name_='AddressSelected' and adjust._UserAreaAvailable_= TRUE and adjust._app_version_short_ != '2.0.0')
-                    or (adjust._event_name_='locationPinPlaced' and JSON_EXTRACT_SCALAR(_publisher_parameters_, '$.user_area_available') IN ('true')
-                        and adjust._app_version_short_ = '2.0.0') and
+              WHERE (adjust._event_name_='AddressSelected' and adjust._UserAreaAvailable_= TRUE and cast(substr(adjust._app_version_short_, 1, 1) as int64) < 2)
+                    or (adjust._event_name_ in ('AddressSelected', 'locationPinPlaced') and JSON_EXTRACT_SCALAR(_publisher_parameters_, '$.user_area_available') IN ('true')
+                        and cast(substr(adjust._app_version_short_, 1, 1) as int64) >= 2) and
                     adjust._activity_kind_ = 'event' and adjust._environment_!="sandbox"
               group by 1
           ),

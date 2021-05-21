@@ -1,16 +1,17 @@
 view: gorillas_stores {
   derived_table: {
-    sql: with gorillas_stores as(
-      SELECT
+    sql: with stores as (SELECT
           stores.id, stores.label,
           if(label like '% I %',SPLIT(label, ' I ')[OFFSET(0)], SPLIT(label, ' | ')[OFFSET(0)]) as store_name,
           if(label like '% I %',SPLIT(label, ' I ')[OFFSET(1)], SPLIT(label, ' | ')[OFFSET(1)]) as store_city,
           stores.country.name as store_country,
           stores.country.iso as country_iso,
+          stores.todayOrderSequenceNumber,
           stores.lat as store_lat, stores.lon as store_lon,
           stores.time_scraped, row_number() over (partition by stores.id order by time_scraped desc) as gorillas_scrape_rank
-      FROM `flink-data-dev.competitive_intelligence.gorillas_stores` stores)
-      Select * from gorillas_stores where gorillas_scrape_rank = 1
+      FROM `flink-data-dev.competitive_intelligence.gorillas_stores` stores
+     WHERE date(_PARTITIONTIME) = date((select max(time_scraped) from `flink-data-dev.competitive_intelligence.gorillas_stores`)))
+      Select * from stores where gorillas_scrape_rank=1
        ;;
   }
 
@@ -51,6 +52,11 @@ view: gorillas_stores {
     sql: ${TABLE}.country_iso ;;
   }
 
+  dimension: today_order_sequence_number {
+    type: number
+    sql: ${TABLE}.todayOrderSequenceNumber ;;
+  }
+
   dimension: store_location {
     type: location
     sql_latitude: ${TABLE}.store_lat ;;
@@ -59,8 +65,20 @@ view: gorillas_stores {
 
   dimension_group: time_scraped {
     type: time
+    description: "bq-datetime"
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year,
+      hour_of_day
+    ]
     sql: ${TABLE}.time_scraped ;;
   }
+
 
   dimension: gorillas_scrape_rank {
     type: number
@@ -72,6 +90,11 @@ view: gorillas_stores {
     sql: ${TABLE}.id ;;
   }
 
+  measure: orders {
+    type: number
+    sql:  ;;
+  }
+
   set: detail {
     fields: [
       id,
@@ -80,8 +103,9 @@ view: gorillas_stores {
       store_city,
       store_country,
       store_location,
-      time_scraped_time,
-      gorillas_scrape_rank
+      time_scraped_date,
+      gorillas_scrape_rank,
+      today_order_sequence_number
     ]
   }
 }

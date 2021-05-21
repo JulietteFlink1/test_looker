@@ -587,6 +587,14 @@ explore: adjust_user_funnel {
   }
 }
 
+####### USER ACTIVITY TRACKING EXPLORES #######
+explore: marketingbanners_mobile_events {
+  label: "Marketing banner impressions"
+  view_label: "Marketing banner impressions"
+  group_label: "9) In-app tracking data"
+  description: "Marketing banner events"
+}
+
 ####### CS ISSUES EXPLORE #######
 explore: cs_issues_post_delivery {
   label: "CS Contacts"
@@ -723,6 +731,8 @@ explore: gorillas_stores {
   group_label: "8) Competitor Analysis"
   description: "Store Locations of Gorillas"
 }
+
+
 
 # Un-hide and use this explore, or copy the joins into another explore, to get all the fully nested relationships from this view
 explore: gorillas_items {
@@ -909,8 +919,33 @@ explore: gorillas_test{
     relationship: many_to_one
   }
 
+  # join: gorillas_turfs {
+  #   sql_on: ${gorillas_test.hub_code} = ${gorillas_turfs.gorillas_store_ids} ;;
+  #   type: left_outer
+  #   relationship: many_to_one
+  # }
+}
+
+explore: gorillas_items_hist{
+  label: "Gorillas Items Added/ Removed"
+  view_label: "Gorillas Items Added/ Removed"
+  group_label: "8) Competitor Analysis"
+  description: "Gorillas Items Added/ Removed"
+
+  join: gorillas_stores {
+    sql_on: ${gorillas_items_hist.hub_code} = ${gorillas_stores.id};;
+    relationship: many_to_one
+    type: left_outer
+  }
+
+  join: gorillas_items {
+    sql_on: ${gorillas_items_hist.id} = ${gorillas_items.id} and ${gorillas_items_hist.hub_code} = ${gorillas_items.hub_code};;
+    type: left_outer
+    relationship: many_to_one
+  }
+
   join: gorillas_turfs {
-    sql_on: ${gorillas_test.hub_code} = ${gorillas_turfs.gorillas_store_ids} ;;
+    sql_on: ${gorillas_items_hist.hub_code} = ${gorillas_turfs.gorillas_store_ids} ;;
     type: left_outer
     relationship: many_to_one
   }
@@ -942,6 +977,31 @@ explore: riders_forecast_stuffing {
   }
 
 }
+
+#explore: riders_forecast_staffing_v2 {
+#  label: "Orders and Riders Forecasting V2"
+#  view_label: "Orders and Riders Forecasting V2"
+#  group_label: "9) Forecasting"
+#  description: "This explore allows to check the riders and orders forecast for the upcoming 7 days"
+
+#  access_filter: {
+#    field: hubs.country_iso
+#    user_attribute: country_iso
+#  }
+
+#  access_filter: {
+#    field: hubs.city
+#    user_attribute: city
+#  }
+
+#  join: hubs {
+#    sql_on:
+#    ${riders_forecast_staffing_v2.hub_name} = ${hubs.hub_code_lowercase} ;;
+#    relationship: many_to_one
+#    type: left_outer
+#  }
+
+#}
 
 
 
