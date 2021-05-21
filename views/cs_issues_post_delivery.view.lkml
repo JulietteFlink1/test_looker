@@ -6,7 +6,7 @@ view: cs_issues_post_delivery {
     primary_key: yes
     hidden: yes
     type: string
-    sql: CONCAT( ${TABLE}.country_iso, ' ', ${TABLE}.conversation_id, ' ', ${TABLE}.order_nr__, ' ', ${TABLE}.date ) ;;
+    sql: CONCAT( ${TABLE}.country_iso, ' ', ${TABLE}.conversation_id, ' ', ${TABLE}.order_nr__, ' ', ${TABLE}.issue_date ) ;;
   }
 
 
@@ -32,7 +32,7 @@ view: cs_issues_post_delivery {
 
   dimension: date {
     type: string
-    sql: ${TABLE}.date ;;
+    sql: ${TABLE}.issue_date ;;
   }
 
 
