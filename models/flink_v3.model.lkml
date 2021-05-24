@@ -104,6 +104,7 @@ explore: order_order {
   }
 
   join: shipping_address {
+    view_label: "* Customer Address (Shipping) *"
     from: account_address
     type: left_outer
     relationship: one_to_one
@@ -112,6 +113,7 @@ explore: order_order {
   }
 
   join: billing_address {
+    view_label: "* Customer Address (Billing) *"
     from: account_address
     type: left_outer
     relationship: one_to_one
