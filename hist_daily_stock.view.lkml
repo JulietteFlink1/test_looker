@@ -28,6 +28,7 @@ view: hist_daily_stock {
 
   dimension: country_iso {
     type: string
+    hidden: yes
     sql: ${TABLE}.country_iso ;;
   }
 
@@ -65,9 +66,6 @@ view: hist_daily_stock {
   }
 
 ####### Measures ########
-  measure: count {
-    type: count
-  }
 
   measure: cnt_noos_group_out_of_stock {
     type: count
@@ -90,6 +88,10 @@ view: hist_daily_stock {
     type: number
     sql: ${cnt_noos_group_out_of_stock} / NULLIF(${count}, 0);;
     value_format: "0%"
+  }
+
+  measure: count {
+    type: count
   }
 
 }

@@ -1,7 +1,7 @@
 view: hubs {
   sql_table_name: `flink-backend.gsheet_store_metadata.hubs`
     ;;
-
+  view_label: "* Hubs *"
 
   dimension: address {
     type: string

@@ -24,29 +24,29 @@ view: order_fulfillment_facts {
        ;;
   }
 
-  measure: count {
-    type: count
-    drill_fields: [detail*]
-  }
 
   dimension: country_iso {
     type: string
+    hidden: yes
     sql: ${TABLE}.country_iso ;;
   }
 
   dimension: order_order_id {
     type: number
+    hidden: yes
     sql: ${TABLE}.order_order_id ;;
   }
 
   dimension: order_fulfillment_id {
     primary_key: no
     type: number
+    hidden: yes
     sql: ${TABLE}.order_fulfillment_id ;;
   }
 
   dimension: unique_id {
     primary_key: yes
+    hidden: yes
     type: string
     sql: concat(${country_iso}, ${order_fulfillment_id}) ;;
   }

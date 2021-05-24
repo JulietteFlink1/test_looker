@@ -5,17 +5,20 @@ view: order_fulfillment {
 
   dimension: id {
     primary_key: no
+    hidden: yes
     type: number
     sql: ${TABLE}.id ;;
   }
 
   dimension: country_iso {
     type: string
+    hidden: yes
     sql: ${TABLE}.country_iso ;;
   }
 
   dimension: unique_id {
     primary_key: yes
+    hidden: yes
     type: string
     sql: concat(${country_iso}, ${id}) ;;
   }
@@ -51,6 +54,7 @@ view: order_fulfillment {
 
   dimension: private_metadata {
     type: string
+    hidden: yes
     sql: ${TABLE}.private_metadata ;;
   }
 
@@ -61,10 +65,11 @@ view: order_fulfillment {
 
   dimension: tracking_number {
     type: string
+    hidden: yes
     sql: ${TABLE}.tracking_number ;;
   }
 
-  measure: count {
+  measure: number_of_fulfillments {
     type: count
     drill_fields: [id]
   }

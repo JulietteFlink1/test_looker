@@ -23,8 +23,11 @@ view: product_attribute_facts {
           ;;
   }
 
+  view_label: "* Product / SKU Data *"
+
   dimension: country_iso {
     type: string
+    hidden: yes
     sql: ${TABLE}.country_iso ;;
   }
 
@@ -35,6 +38,7 @@ view: product_attribute_facts {
 
   dimension: unique_id {
     primary_key: yes
+    hidden: yes
     type: string
     sql: concat(${country_iso}, ${id}) ;;
   }

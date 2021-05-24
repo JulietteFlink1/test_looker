@@ -2,9 +2,11 @@ view: discount_voucher {
   sql_table_name: `flink-backend.saleor_db_global.discount_voucher`
     ;;
   drill_fields: [id]
+  view_label: "* Vouchers *"
 
   dimension: id {
     primary_key: no
+    hidden: yes
     type: number
     sql: ${TABLE}.id ;;
   }
@@ -16,6 +18,7 @@ view: discount_voucher {
 
   dimension: unique_id {
     primary_key: yes
+    hidden: yes
     type: string
     sql: concat(${country_iso}, ${id}) ;;
   }
@@ -38,6 +41,7 @@ view: discount_voucher {
 
   dimension: countries {
     type: string
+    hidden: yes
     sql: ${TABLE}.countries ;;
   }
 
@@ -110,8 +114,4 @@ view: discount_voucher {
     sql: ${TABLE}.used ;;
   }
 
-  measure: count {
-    type: count
-    drill_fields: [id]
-  }
 }

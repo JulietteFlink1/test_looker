@@ -2,6 +2,7 @@ view: payment_transaction {
   sql_table_name: `flink-backend.saleor_db_global.payment_transaction`
     ;;
   drill_fields: [id]
+  view_label: "* Payments *"
 
   dimension: id {
     primary_key: no
@@ -16,63 +17,6 @@ view: payment_transaction {
     primary_key: yes
     type: number
     sql: concat(${country_iso}, ${id}) ;;
-  }
-
-  dimension_group: _sdc_batched {
-    hidden: yes
-    type: time
-    timeframes: [
-      raw,
-      time,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    sql: ${TABLE}._sdc_batched_at ;;
-  }
-
-  dimension_group: _sdc_extracted {
-    type: time
-    hidden: yes
-    timeframes: [
-      raw,
-      time,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    sql: ${TABLE}._sdc_extracted_at ;;
-  }
-
-  dimension_group: _sdc_received {
-    hidden: yes
-    type: time
-    timeframes: [
-      raw,
-      time,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    sql: ${TABLE}._sdc_received_at ;;
-  }
-
-  dimension: _sdc_sequence {
-    hidden: yes
-    type: number
-    sql: ${TABLE}._sdc_sequence ;;
-  }
-
-  dimension: _sdc_table_version {
-    hidden: yes
-    type: number
-    sql: ${TABLE}._sdc_table_version ;;
   }
 
   dimension: action_required {
@@ -165,6 +109,7 @@ view: payment_transaction {
   dimension: payment_id {
     group_label: "* IDs *"
     type: number
+    hidden: yes
     sql: ${TABLE}.payment_id ;;
   }
 
@@ -183,7 +128,7 @@ view: payment_transaction {
 
   ####### Measures
 
-  measure: count {
+  measure: number_of_payment_transactions {
     label: "# Transactions"
     group_label: "* Basic Counts (Orders / Customers etc.) *"
     type: count
