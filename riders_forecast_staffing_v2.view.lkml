@@ -651,7 +651,7 @@ shifts as
   measure: KPI_forecasted {
     group_label: "* Dynamic KPI Fields *"
     label: "Forecasted"
-    label_from_parameter: KPI_parameter
+    #label_from_parameter: KPI_parameter
     value_format: "#,##0.00"
     type: number
     sql:
@@ -672,7 +672,7 @@ shifts as
   measure: KPI_planned {
     group_label: "* Dynamic KPI Fields *"
     label: "Planned"
-    label_from_parameter: KPI_parameter
+    #label_from_parameter: KPI_parameter
     value_format: "#,##0.00"
     type: number
     sql:
@@ -693,7 +693,7 @@ shifts as
   measure: KPI_filled {
     group_label: "* Dynamic KPI Fields *"
     label: "Filled"
-    label_from_parameter: KPI_parameter
+    #label_from_parameter: KPI_parameter
     value_format: "#,##0.00"
     type: number
     sql:
