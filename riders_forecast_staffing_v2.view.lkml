@@ -651,20 +651,20 @@ shifts as
   measure: KPI_forecasted {
     group_label: "* Dynamic KPI Fields *"
     label: "Forecasted"
-    #label_from_parameter: KPI_parameter
+    label_from_parameter: KPI_parameter
     value_format: "#,##0.00"
     type: number
     sql:
     {% if KPI_parameter._parameter_value == 'riders' %}
-    ${sum_forecasted_riders}
-    {% else if KPI_parameter._parameter_value == 'rider_hours' %}
-    ${sum_forecasted_rider_hours}
-    {% else if KPI_parameter._parameter_value == 'pickers' %}
-    ${sum_forecasted_pickers}
-    {% else if KPI_parameter._parameter_value == 'picker_hours' %}
-    ${sum_forecasted_picker_hours}
-    {% else if KPI_parameter._parameter_value == 'orders' %}
-    ${sum_predicted_orders}
+      ${sum_forecasted_riders}
+    {% elsif KPI_parameter._parameter_value == 'rider_hours' %}
+      ${sum_forecasted_rider_hours}
+    {% elsif KPI_parameter._parameter_value == 'pickers' %}
+      ${sum_forecasted_pickers}
+    {% elsif KPI_parameter._parameter_value == 'picker_hours' %}
+      ${sum_forecasted_picker_hours}
+    {% elsif KPI_parameter._parameter_value == 'orders' %}
+      ${sum_predicted_orders}
     {% endif %}
     ;;
     }
@@ -672,20 +672,20 @@ shifts as
   measure: KPI_planned {
     group_label: "* Dynamic KPI Fields *"
     label: "Planned"
-    #label_from_parameter: KPI_parameter
+    label_from_parameter: KPI_parameter
     value_format: "#,##0.00"
     type: number
     sql:
     {% if KPI_parameter._parameter_value == 'riders' %}
-    ${sum_planned_riders}
-    {% else if KPI_parameter._parameter_value == 'rider_hours' %}
-    ${sum_planned_rider_hours}
-    {% else if KPI_parameter._parameter_value == 'pickers' %}
-    ${sum_planned_pickers}
-    {% else if KPI_parameter._parameter_value == 'picker_hours' %}
-    ${sum_planned_picker_hours}
-    {% else if KPI_parameter._parameter_value == 'orders' %}
-    ${sum_predicted_orders}
+      ${sum_planned_riders}
+    {% elsif KPI_parameter._parameter_value == 'rider_hours' %}
+      ${sum_planned_rider_hours}
+    {% elsif KPI_parameter._parameter_value == 'pickers' %}
+      ${sum_planned_pickers}
+    {% elsif KPI_parameter._parameter_value == 'picker_hours' %}
+      ${sum_planned_picker_hours}
+    {% elsif KPI_parameter._parameter_value == 'orders' %}
+      ${sum_predicted_orders}
     {% endif %}
     ;;
   }
@@ -693,20 +693,20 @@ shifts as
   measure: KPI_filled {
     group_label: "* Dynamic KPI Fields *"
     label: "Filled"
-    #label_from_parameter: KPI_parameter
+    label_from_parameter: KPI_parameter
     value_format: "#,##0.00"
     type: number
     sql:
     {% if KPI_parameter._parameter_value == 'riders' %}
-    ${sum_filled_riders}
-    {% else if KPI_parameter._parameter_value == 'rider_hours' %}
-    ${sum_filled_rider_hours}
-    {% else if KPI_parameter._parameter_value == 'pickers' %}
-    ${sum_filled_pickers}
-    {% else if KPI_parameter._parameter_value == 'picker_hours' %}
-    ${sum_filled_picker_hours}
-    {% else if KPI_parameter._parameter_value == 'orders' %}
-    ${sum_orders}
+      ${sum_filled_riders}
+    {% elsif KPI_parameter._parameter_value == 'rider_hours' %}
+      ${sum_filled_rider_hours}
+    {% elsif KPI_parameter._parameter_value == 'pickers' %}
+      ${sum_filled_pickers}
+    {% elsif KPI_parameter._parameter_value == 'picker_hours' %}
+      ${sum_filled_picker_hours}
+    {% elsif KPI_parameter._parameter_value == 'orders' %}
+      ${sum_orders}
     {% endif %}
     ;;
   }
