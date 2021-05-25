@@ -2,27 +2,32 @@ view: warehouse_stock {
   sql_table_name: `flink-backend.saleor_db_global.warehouse_stock`
     ;;
   drill_fields: [id]
+  view_label: "* Product / SKU Data *"
 
   dimension: id {
     label: "Warehouse Stock ID"
     primary_key: no
+    hidden: yes
     type: number
     sql: ${TABLE}.id ;;
   }
 
   dimension: country_iso {
     type: string
+    hidden: yes
     sql: ${TABLE}.country_iso ;;
   }
 
   dimension: unique_id {
     primary_key: yes
+    hidden: yes
     type: string
     sql: concat(${country_iso}, ${id}) ;;
   }
 
   dimension: product_variant_id {
     type: number
+    hidden: yes
     sql: ${TABLE}.product_variant_id ;;
   }
 
@@ -37,10 +42,6 @@ view: warehouse_stock {
     sql: ${TABLE}.warehouse_id ;;
   }
 
-  measure: count {
-    type: count
-    drill_fields: [id]
-  }
 
 ##########
 ## SUMS ##

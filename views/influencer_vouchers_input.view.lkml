@@ -5,11 +5,13 @@ view: influencer_vouchers_input {
   dimension: unique_key {
     type: string
     primary_key: yes
+    hidden: yes
     sql: CONCAT(${TABLE}.country_iso, ${TABLE}.voucher_code) ;;
   }
 
   dimension: country_iso {
     type: string
+    hidden: yes
     sql: ${TABLE}.country_iso ;;
   }
 
@@ -28,10 +30,6 @@ view: influencer_vouchers_input {
     sql: ${TABLE}.voucher_type ;;
   }
 
-  measure: count {
-    type: count
-    drill_fields: [username]
-  }
 
 #### MEASURES
 

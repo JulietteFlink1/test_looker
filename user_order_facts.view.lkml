@@ -262,6 +262,7 @@ view: user_order_facts {
 
   dimension: country_iso {
     type: string
+    hidden: yes
     sql: ${TABLE}.country_iso ;;
   }
 
@@ -274,6 +275,7 @@ view: user_order_facts {
 
   dimension: unique_id {
     primary_key: yes
+    hidden: yes
     type: string
     sql: concat(${country_iso}, ${user_email}) ;;
   }

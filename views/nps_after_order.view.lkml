@@ -34,6 +34,7 @@ dimension_group: submitted {
 dimension: token {
   type: string
   primary_key: yes
+  hidden: yes
   sql: ${TABLE}.token ;;
 }
 

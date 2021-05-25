@@ -2,15 +2,18 @@ view: account_address {
   sql_table_name: `flink-backend.saleor_db_global.account_address`
     ;;
   drill_fields: [id]
+  view_label: "* Customer Address *"
 
   dimension: id {
     primary_key: no
+    hidden: yes
     type: number
     sql: ${TABLE}.id ;;
   }
 
   dimension: country_iso {
     type: string
+    hidden: yes
     sql: ${TABLE}.country_iso ;;
   }
 
@@ -27,6 +30,7 @@ view: account_address {
 
   dimension: city_area {
     type: string
+    hidden: yes
     sql: ${TABLE}.city_area ;;
   }
 
@@ -37,12 +41,14 @@ view: account_address {
 
   dimension: country {
     type: string
+    hidden: yes
     map_layer_name: countries
     sql: ${TABLE}.country ;;
   }
 
   dimension: country_area {
     type: string
+    hidden: yes
     sql: ${TABLE}.country_area ;;
   }
 
@@ -76,8 +82,4 @@ view: account_address {
     sql: ${TABLE}.street_address_2 ;;
   }
 
-  measure: count {
-    type: count
-    drill_fields: [id, last_name, company_name, first_name]
-  }
 }
