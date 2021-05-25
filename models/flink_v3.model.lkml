@@ -15,7 +15,7 @@ case_sensitive: no
 
 datagroup: flink_default_datagroup {
   sql_trigger: SELECT MAX(_sdc_extracted_at) FROM warehouse_stock;;
-  max_cache_age: "2 hour"
+  max_cache_age: "24 hour"
 }
 
 persist_with: flink_default_datagroup
