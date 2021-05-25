@@ -652,7 +652,8 @@ shifts as
     group_label: "* Dynamic KPI Fields *"
     label: "Forecasted"
     #label_from_parameter: KPI_parameter
-    value_format: "#,##0.00"
+    #value_format: "#,##0.00"
+    value_format_name: id
     type: number
     sql:
     {% if KPI_parameter._parameter_value == 'riders' %}
@@ -673,7 +674,8 @@ shifts as
     group_label: "* Dynamic KPI Fields *"
     label: "Planned"
     #label_from_parameter: KPI_parameter
-    value_format: "#,##0.00"
+    #value_format: "#,##0.00"
+    value_format_name: id
     type: number
     sql:
     {% if KPI_parameter._parameter_value == 'riders' %}
@@ -694,7 +696,8 @@ shifts as
     group_label: "* Dynamic KPI Fields *"
     label: "Filled"
     #label_from_parameter: KPI_parameter
-    value_format: "#,##0.00"
+    #value_format: "#,##0.00"
+    value_format_name: id
     type: number
     sql:
     {% if KPI_parameter._parameter_value == 'riders' %}
