@@ -114,6 +114,15 @@ view: productsearch_mobile_events {
     drill_fields: [detail*]
   }
 
+  measure: cnt_unique_anonymousid {
+    label: "# Unique Users"
+    description: "Count of Unique Users identified via Anonymous ID from Segment"
+    hidden:  no
+    type: count_distinct
+    sql: ${anonymous_id};;
+    value_format: "0"
+  }
+
   dimension: anonymous_id {
     type: string
     sql: ${TABLE}.anonymous_id ;;
