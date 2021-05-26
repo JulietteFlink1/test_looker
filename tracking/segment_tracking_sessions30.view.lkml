@@ -561,6 +561,12 @@ view: segment_tracking_sessions30 {
     sql: ${add_to_cart} ;;
   }
 
+  measure: sum_view_cart {
+    label: "View cart sum of events"
+    type: sum
+    sql: ${view_cart} ;;
+  }
+
   measure: sum_checkout_started {
     label: "Checkout started sum of events"
     type: sum
