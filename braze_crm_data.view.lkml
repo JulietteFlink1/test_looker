@@ -92,7 +92,7 @@ select
   -- DIMENSIONS
     es.campaign_name                                      as campaign_name
   , es.country                                            as country
-  , date(es.sent_at)                                      as email_sent_at
+  , date(es.sent_at, "Europe/Berlin")                    as email_sent_at
   , date_diff(eo.opened_at_first, es.sent_at, day)       as days_sent_to_open
   , date_diff(ec.clicked_at_first, es.sent_at, day)      as days_sent_to_click
   -- MEASURES
@@ -137,20 +137,24 @@ group by
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   #           Dimensions
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   dimension: campaign_name {
     label: "Campaign Name"
+    description: "The email campaign name defined in Braze"
     type: string
     sql: ${TABLE}.campaign_name ;;
   }
 
   dimension: country {
     label: "Country"
+    description: "The country code parsed from the email campaign name"
     type: string
     sql: ${TABLE}.country ;;
   }
 
   dimension: email_sent_at {
     label: "Date Email Sent"
+    description: "The date, when the email was sent to the customer"
     type: date
     datatype: date
     sql: ${TABLE}.email_sent_at ;;
@@ -176,6 +180,12 @@ group by
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   #           Hidden Fields
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  dimension: primary_key {
+    primary_key: yes
+    hidden: yes
+    sql: CONCAT(${TABLE}.campaign_name, ${TABLE}.country, ${TABLE}.email_sent_at) ;;
+  }
 
   dimension: days_sent_to_open {
     type: number
@@ -275,6 +285,7 @@ group by
   measure: num_all_sent {
     type: sum
     label: "Sends"
+    description: "The number of emails sent to the customer"
     group_label: "Numbers"
     sql: ${num_all_sents} ;;
     value_format_name: decimal_0
@@ -283,6 +294,7 @@ group by
   measure: num_sent {
     type: sum
     label: "Unique Recipients"
+    description: "The number of unique recipients of an email campaign"
     group_label: "Numbers"
     sql: ${num_emails_sent} ;;
     value_format_name: decimal_0
@@ -291,6 +303,7 @@ group by
   measure: num_bounced_unique {
     type: sum
     label: "Bounces"
+    description: "The number of emails, that have been bounced by the customers email provider"
     group_label: "Numbers"
     sql: ${num_unique_emails_bounced};;
     value_format_name: decimal_0
@@ -299,6 +312,7 @@ group by
   measure: num_soft_bounces_unique {
     type: sum
     label: "Soft Bounces"
+    description: "The number of emails, that have been bounced by the customers email provider"
     group_label: "Numbers"
     sql: ${num_unique_emails_soft_bounced} ;;
     value_format_name: decimal_0
@@ -307,6 +321,7 @@ group by
   measure: num_delivered {
     type: sum
     label: "Deliveries"
+    description: "The number of emails, that have been delivered to the customer - aka they have been received"
     group_label: "Numbers"
     sql: ${num_emails_delivered} ;;
     value_format_name: decimal_0
@@ -315,6 +330,7 @@ group by
   measure: num_opened_u {
     type:  sum
     label: "Unique Opens"
+    description: "The number of unique opens of an email - one customer can be counted only once per sent-put"
     group_label: "Numbers"
     sql: ${num_unique_emails_opened} ;;
     value_format_name: decimal_0
@@ -323,6 +339,7 @@ group by
   measure: num_opened {
     type:  sum
     label: "Total Opens"
+    description: "The number of unique opens of an email - one customer can be counted n-times per sent-put"
     group_label: "Numbers"
     sql: ${num_emails_opened} ;;
     value_format_name: decimal_0
@@ -331,6 +348,7 @@ group by
   measure: num_clicked_u {
     type: sum
     label: "Unique Clicks"
+    description: "The number of unique clicks of an email - one customer can be counted only once per sent-put"
     group_label: "Numbers"
     sql: ${num_unique_emails_clicked} ;;
     value_format_name: decimal_0
@@ -339,6 +357,7 @@ group by
   measure: num_clicked {
     type: sum
     label: "Total Clicks"
+    description: "The number of unique clicks of an email - one customer can be counted n-times per sent-put"
     group_label: "Numbers"
     sql: ${num_emails_clicked} ;;
     value_format_name: decimal_0
@@ -347,6 +366,7 @@ group by
   measure: num_unsub {
     type: sum
     label: "Unsubscribes"
+    description: "The number of customers, that have clicked on the unsubscribe-link"
     group_label: "Numbers"
     sql: ${num_unique_unsubscribed} ;;
     value_format_name: decimal_0
@@ -355,6 +375,7 @@ group by
   measure: avg_days_sent_open {
     type: average
     label: "ø Days Sent to Open"
+    description: "The days between the sent-out and the first opening of an email"
     group_label: "Numbers"
     sql:  ${days_sent_to_open};;
     value_format_name: decimal_2
@@ -363,6 +384,7 @@ group by
   measure: avg_days_sent_click {
     type: average
     label: "ø Days Sent to Click"
+    description: "The days between the sent-out and the first click of an email"
     group_label: "Numbers"
     sql: ${days_sent_to_click} ;;
     value_format_name: decimal_2
@@ -374,6 +396,7 @@ group by
   measure: bounces_rate {
     type: number
     label: "Bounce Rate"
+    description: "Percentage: how many emails have been bounced based on all emails sent"
     group_label: "Ratios"
     sql: ${num_bounced_unique} / ${num_sent};;
     value_format_name: percent_2
@@ -382,6 +405,7 @@ group by
   measure: deliveries_rate {
     type: number
     label: "Deliveries Rate"
+    description: "Percentage: how many emails have been delivered based on all emails sent"
     group_label: "Ratios"
     sql: ${num_delivered} / ${num_sent};;
     value_format_name: percent_2
@@ -390,6 +414,7 @@ group by
   measure: total_opens_rate {
     type: number
     label: "Total Opens Rate"
+    description: "Percentage: number of emails opened divided by the number of emails delivered"
     group_label: "Ratios"
     sql: ${num_opened} / ${num_delivered};;
     value_format_name: percent_2
@@ -398,6 +423,7 @@ group by
   measure: unique_opens_rate {
     type: number
     label: "Unique Opens Rate"
+    description: "Percentage: number of unique emails opened divided by the number of emails delivered"
     group_label: "Ratios"
     sql: ${num_opened_u} / ${num_delivered};;
     value_format_name: percent_2
@@ -406,6 +432,7 @@ group by
   measure: total_clicks_rate {
     type: number
     label: "Total Clicks Rate"
+    description: "Percentage: number of emails clicked divided by the number of emails delivered"
     group_label: "Ratios"
     sql: ${num_clicked} / ${num_delivered};;
     value_format_name: percent_2
@@ -414,6 +441,7 @@ group by
   measure: unique_clicks_rate {
     type: number
     label: "Unique Clicks Rate"
+    description: "Percentage: number of unique emails clicked divided by the number of emails delivered"
     group_label: "Ratios"
     sql: ${num_clicked_u} / ${num_delivered};;
     value_format_name: percent_2
@@ -422,6 +450,7 @@ group by
   measure: unsubscribes_rate {
     type: number
     label: "Unsubscribes Rate"
+    description: "Percentage: number of emails clicked on unsubscribe-link divided by the number of emails delivered"
     group_label: "Ratios"
     sql: ${num_unsub} / ${num_delivered};;
     value_format_name: percent_2
