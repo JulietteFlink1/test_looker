@@ -592,6 +592,13 @@ explore: adjust_user_funnel {
 }
 
 ####### USER ACTIVITY TRACKING EXPLORES #######
+explore: segment_tracking_sessions30{
+  label: "Tracking events sessions 30 min."
+  view_label: "Tracking events sessions 30 min."
+  group_label: "9) In-app tracking data"
+  description: "Tracking events sessions 30 min."
+}
+
 explore: marketingbanners_mobile_events {
   label: "Marketing banner impressions"
   view_label: "Marketing banner impressions"
