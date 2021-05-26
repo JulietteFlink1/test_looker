@@ -24,8 +24,8 @@ shifts as
             lower(locations_positions.location_name) as hub_name,
             shifts.workers,
             lower(locations_positions.position_name) as position
-            from `flink-data-dev.shyftplan_v2.shifts` shifts
-            left join `flink-data-dev.shyftplan_v2.locations_positions` locations_positions
+            from `flink-data-staging.shyftplan_v1.shifts` shifts
+            left join `flink-data-staging.shyftplan_v1.locations_positions` locations_positions
             on shifts.locations_position_id = locations_positions.id
             where lower(locations_positions.position_name) like '%rider%' or lower(locations_positions.position_name) like '%picker%'
             order by 3, 1 asc
@@ -188,8 +188,8 @@ shifts as
                 shift.ends_at,
                 lower(location.name) as hub_name,
                 count(distinct employment_id) as cnt_employees
-                from `flink-data-dev.shyftplan_v2.evaluations` evaluations
-                left join `flink-data-dev.shyftplan_v2.locations_positions` locations_positions
+                from `flink-data-staging.shyftplan_v1.evaluations` evaluations
+                left join `flink-data-staging.shyftplan_v1.locations_positions` locations_positions
                 on evaluations.locations_position_id = locations_positions.id
                 where
                 (lower(position.name) like '%rider%')
@@ -204,8 +204,8 @@ shifts as
                 shift.ends_at,
                 lower(location.name) as hub_name,
                 count(distinct employment_id) as cnt_employees
-                from `flink-data-dev.shyftplan_v2.evaluations` evaluations
-                left join `flink-data-dev.shyftplan_v2.locations_positions` locations_positions
+                from `flink-data-staging.shyftplan_v1.evaluations` evaluations
+                left join `flink-data-staging.shyftplan_v1.locations_positions` locations_positions
                 on evaluations.locations_position_id = locations_positions.id
                 where
                 (lower(position.name) like '%picker%')
