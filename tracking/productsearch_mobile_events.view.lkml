@@ -95,12 +95,13 @@ view: productsearch_mobile_events {
           `flink-backend.flink_ios_production.product_search_executed_view` )
       SELECT
         *,
+        LEAD(search_query) OVER(PARTITION BY anonymous_id ORDER BY timestamp ASC) NOT LIKE CONCAT('%', tracking_data.search_query ,'%') AS is_not_subquery,
         CASE
-          WHEN event = 'product_search_executed' AND LEAD(event) OVER(PARTITION BY anonymous_id ORDER BY timestamp) IN('product_added_to_cart', 'product_details_viewed') THEN TRUE
+          WHEN event = 'product_search_executed' AND LEAD(event) OVER(PARTITION BY anonymous_id ORDER BY timestamp ASC) IN('product_added_to_cart', 'product_details_viewed') THEN TRUE
         ELSE
         FALSE
       END
-        AS has_search_and_consecutive_add_to_cart_or_view_item
+        AS has_search_and_consecutive_add_to_cart_or_view_item,
       FROM
         tracking_data
       ORDER BY
@@ -333,6 +334,11 @@ view: productsearch_mobile_events {
     sql: ${TABLE}.uuid_ts ;;
   }
 
+  dimension: is_not_subquery {
+    type: string
+    sql: ${TABLE}.is_not_subquery ;;
+  }
+
   dimension: has_search_and_consecutive_add_to_cart_or_view_item {
     type: string
     sql: ${TABLE}.has_search_and_consecutive_add_to_cart_or_view_item ;;
@@ -382,6 +388,7 @@ view: productsearch_mobile_events {
       sent_at_time,
       timestamp_time,
       uuid_ts_time,
+      is_not_subquery,
       has_search_and_consecutive_add_to_cart_or_view_item
     ]
   }
