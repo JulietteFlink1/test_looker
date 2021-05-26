@@ -599,6 +599,13 @@ explore: marketingbanners_mobile_events {
   description: "Marketing banner events"
 }
 
+explore: productsearch_mobile_events {
+  label: "Product Search Keywords"
+  view_label: "Product Search Keywords"
+  group_label: "9) In-app tracking data"
+  description: "Product Search Keywords from event tracking"
+}
+
 ####### CS ISSUES EXPLORE #######
 explore: cs_issues_post_delivery {
   label: "CS Contacts"
