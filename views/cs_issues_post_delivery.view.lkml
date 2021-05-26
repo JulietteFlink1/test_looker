@@ -1,12 +1,13 @@
 view: cs_issues_post_delivery {
   sql_table_name: `flink-backend.gsheet_cs_issues.CS_issues_post_delivery`
     ;;
+  view_label: "* Customer Service Post-Deivery Issues (GSheet) *"
 
   dimension: compound_primary_key {
     primary_key: yes
     hidden: yes
     type: string
-    sql: CONCAT( ${TABLE}.country_iso, ' ', ${TABLE}.conversation_id, ' ', ${TABLE}.order_nr__, ' ', ${TABLE}.date ) ;;
+    sql: CONCAT( ${TABLE}.country_iso, ' ', ${TABLE}.conversation_id, ' ', ${TABLE}.order_nr__, ' ', ${TABLE}.issue_date ) ;;
   }
 
 
@@ -22,17 +23,19 @@ view: cs_issues_post_delivery {
 
   dimension: conversation_id {
     type: string
+    hidden: yes
     sql: ${TABLE}.conversation_id ;;
   }
 
   dimension: cw {
     type: number
+    hidden: yes
     sql: ${TABLE}.cw ;;
   }
 
   dimension: date {
     type: string
-    sql: ${TABLE}.date ;;
+    sql: ${TABLE}.issue_date ;;
   }
 
 

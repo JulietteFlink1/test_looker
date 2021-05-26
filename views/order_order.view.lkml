@@ -2,6 +2,7 @@ view: order_order {
   sql_table_name: `flink-backend.saleor_db_global.order_order`
     ;;
   drill_fields: [core_dimensions*]
+  view_label: "* Orders *"
 
   set: core_dimensions {
     fields: [
@@ -25,6 +26,7 @@ view: order_order {
   dimension: unique_id {
     group_label: "* IDs *"
     primary_key: yes
+    hidden: yes
     type: string
     sql: concat(${country_iso}, ${id}) ;;
   }
@@ -33,6 +35,7 @@ view: order_order {
     group_label: "* IDs *"
     label: "Order ID"
     primary_key: no
+    hidden: yes
     type: number
     sql: ${TABLE}.id ;;
     value_format_name: id
@@ -105,6 +108,25 @@ view: order_order {
     sql_start: ${user_order_facts.first_order_raw} ;;
     sql_end: ${created_raw} ;;
   }
+
+##### helping dimensions for hiding incomplete cohorts #####
+  dimension_group: time_between_sign_up_month_and_now {
+    group_label: "* User Dimensions *"
+    hidden: yes
+    type: duration
+    sql_start: DATE_TRUNC(${user_order_facts.first_order_raw}, MONTH) ;;
+    sql_end: ${now_raw} ;;
+  }
+
+  dimension_group: time_between_sign_up_week_and_now {
+    group_label: "* User Dimensions *"
+    hidden: yes
+    type: duration
+    sql_start: DATE_TRUNC(${user_order_facts.first_order_raw}, WEEK) ;;
+    sql_end: ${now_raw} ;;
+  }
+##### helping dimensions for hiding incomplete cohorts #####
+
 
   dimension: time_since_sign_up_biweekly {
     group_label: "* User Dimensions *"
@@ -440,12 +462,14 @@ view: order_order {
       dimension: user_id {
         group_label: "* User Dimensions *"
         type: number
+        hidden: yes
         sql: ${TABLE}.user_id ;;
       }
 
       dimension: voucher_id {
         group_label: "* IDs *"
         type: number
+        hidden: yes
         sql: ${TABLE}.voucher_id ;;
       }
 
@@ -898,7 +922,7 @@ view: order_order {
 
       measure: sum_gmv_gross {
         group_label: "* Monetary Values *"
-        label: "SUM GMV (gross)"
+        label: "SUM GMV (Gross)"
         description: "Sum of Gross Merchandise Value of orders incl. fees and before deduction of discounts (incl. VAT)"
         hidden:  no
         type: sum
@@ -908,7 +932,7 @@ view: order_order {
 
       measure: sum_gmv_net {
         group_label: "* Monetary Values *"
-        label: "SUM GMV (net)"
+        label: "SUM GMV (Net)"
         description: "Sum of Gross Merchandise Value of orders incl. fees and before deduction of discounts (excl. VAT)"
         hidden:  no
         type: sum
@@ -928,7 +952,7 @@ view: order_order {
 
       measure: sum_revenue_net {
         group_label: "* Monetary Values *"
-        label: "SUM Revenue (net)"
+        label: "SUM Revenue (Net)"
         description: "Sum of Revenue (GMV after subsidies) excl. VAT"
         hidden:  no
         type: sum

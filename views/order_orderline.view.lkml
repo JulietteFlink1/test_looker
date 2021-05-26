@@ -2,6 +2,7 @@ view: order_orderline {
   sql_table_name: `flink-backend.saleor_db_global.order_orderline`
     ;;
   drill_fields: [core_dimensions*]
+  view_label: "* Order Line Items *"
 
   set: core_dimensions {
     fields: [
@@ -20,33 +21,39 @@ view: order_orderline {
 
   dimension: id {
     primary_key: no
+    hidden: yes
     type: number
     sql: ${TABLE}.id ;;
   }
 
   dimension: country_iso {
     type: string
+    hidden: yes
     sql: ${TABLE}.country_iso ;;
   }
 
   dimension: unique_id {
     primary_key: yes
+    hidden: yes
     type: string
     sql: concat(${country_iso}, ${id}) ;;
   }
 
   dimension: currency {
     type: string
+    hidden: yes
     sql: ${TABLE}.currency ;;
   }
 
   dimension: is_shipping_required {
     type: yesno
+    hidden: yes
     sql: ${TABLE}.is_shipping_required ;;
   }
 
   dimension: order_id {
     type: number
+    hidden: yes
     sql: ${TABLE}.order_id ;;
   }
 
@@ -111,7 +118,7 @@ view: order_orderline {
     sql: ${TABLE}.variant_name ;;
   }
 
-  measure: count {
+  measure: number_of_orderlines {
     type: count
     drill_fields: [id, variant_name, product_name, translated_product_name, translated_variant_name]
   }

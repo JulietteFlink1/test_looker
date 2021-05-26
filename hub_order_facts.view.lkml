@@ -38,6 +38,7 @@ view: hub_order_facts {
 
   dimension: country_iso {
     type: string
+    hidden: yes
     sql: ${TABLE}.country_iso ;;
   }
 
@@ -70,7 +71,4 @@ view: hub_order_facts {
 ####### Measures ########
 
 
-  measure: count {
-    type: count
-  }
 }

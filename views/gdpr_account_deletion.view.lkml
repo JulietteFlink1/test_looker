@@ -2,13 +2,6 @@ view: gdpr_account_deletion {
   sql_table_name: `flink-backend.gsheet_gdpr.Account_Deletion`
     ;;
 
-  dimension: __sdc_row {
-    type: number
-    primary_key: yes
-    hidden: yes
-    sql: ${TABLE}.__sdc_row ;;
-  }
-
   dimension: customer {
     type: string
     hidden: yes
