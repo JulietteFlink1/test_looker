@@ -495,6 +495,77 @@ view: segment_tracking_sessions30 {
     sql: ${TABLE}.location_pin_placed ;;
   }
 
+##### Unique count of events during a session. If multiple events are triggerred during a session, e.g 3 times view item, the event is only counted once.
+
+
+  measure: cnt_address_selected {
+    label: "Address selected count"
+    type: count
+    filters: [address_confirmed: "NOT NULL"]
+  }
+
+  measure: cnt_view_item {
+    label: "View item count"
+    type: count
+    filters: [view_item: "NOT NULL"]
+  }
+
+  measure: cnt_add_to_cart {
+    label: "Add to cart count"
+    type: count
+    filters: [add_to_cart: "NOT NULL"]
+  }
+
+  measure: cnt_checkout_started {
+    label: "Checkout started count"
+    type: count
+    filters: [checkout_started: "NOT NULL"]
+  }
+
+  measure: cnt_purchase {
+    label: "Order placed count"
+    type: count
+    filters: [order_placed: "NOT NULL"]
+  }
+
+  ###### Sum of events
+
+  measure: sum_sessions {
+    label: "Session count"
+    type: sum
+    sql: ${session} ;;
+  }
+
+
+  measure: sum_address_selected {
+    label: "Address selected sum of events"
+    type: sum
+    sql: ${address_confirmed} ;;
+  }
+
+  measure: sum_view_item {
+    label: "View item sum of events"
+    type: sum
+    sql: ${view_item} ;;
+  }
+
+  measure: sum_add_to_cart {
+    label: "Add to cart sum of events"
+    type: sum
+    sql: ${add_to_cart} ;;
+  }
+
+  measure: sum_checkout_started {
+    label: "Checkout started sum of events"
+    type: sum
+    sql: ${checkout_started} ;;
+  }
+  measure: sum_purchases {
+    label: "Order placed sum of events"
+    type: sum
+    sql: ${order_placed} ;;
+  }
+
   set: detail {
     fields: [
       anonymous_id,
