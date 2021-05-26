@@ -962,6 +962,14 @@ explore: gorillas_items_hist{
   }
 }
 
+explore: gorillas_orders {
+  label: "Gorillas Orders"
+  view_label: "Gorillas Orders"
+  group_label: "8) Competitor Analysis"
+  description: "Gorillas Orders per Day"
+  hidden: no
+}
+
 ################ Rider Stuffing
 
 explore: riders_forecast_stuffing {
@@ -1013,6 +1021,8 @@ explore: riders_forecast_staffing_v2 {
   }
 
 }
+
+
 
 
 
