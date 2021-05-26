@@ -599,6 +599,13 @@ explore: marketingbanners_mobile_events {
   description: "Marketing banner events"
 }
 
+explore: productsearch_mobile_events {
+  label: "Product Search Keywords"
+  view_label: "Product Search Keywords"
+  group_label: "9) In-app tracking data"
+  description: "Product Search Keywords from event tracking"
+}
+
 ####### CS ISSUES EXPLORE #######
 explore: cs_issues_post_delivery {
   label: "CS Contacts"
@@ -955,6 +962,14 @@ explore: gorillas_items_hist{
   }
 }
 
+explore: gorillas_orders {
+  label: "Gorillas Orders"
+  view_label: "Gorillas Orders"
+  group_label: "8) Competitor Analysis"
+  description: "Gorillas Orders per Day"
+  hidden: no
+}
+
 ################ Rider Stuffing
 
 explore: riders_forecast_stuffing {
@@ -1006,6 +1021,8 @@ explore: riders_forecast_staffing_v2 {
   }
 
 }
+
+
 
 
 
