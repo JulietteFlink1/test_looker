@@ -9,7 +9,7 @@ view: shyftplan_riders_pickers_hours {
         lower(position.name) as position_name,
         sum(evaluation_duration / 60) as hours,
         count(distinct employment_id) as cnt_employees
-        from `flink-data-dev.shyftplan_v2.evaluations` evaluations
+        from `flink-data-staging.shyftplan_v1.evaluations` evaluations
         where
         date(shift.starts_at, 'Europe/Berlin') < current_date() and
         (lower(position.name) like '%rider%' or lower(position.name) like '%picker%')
