@@ -25,16 +25,6 @@ view: gorillas_orders {
     sql: ${TABLE}.label ;;
   }
 
-  dimension: lat {
-    type: number
-    sql: ${TABLE}.lat ;;
-  }
-
-  dimension: lon {
-    type: number
-    sql: ${TABLE}.lon ;;
-  }
-
   dimension_group: orders {
     type: time
     timeframes: [
@@ -78,6 +68,13 @@ view: gorillas_orders {
     type: number
     sql: ${TABLE}.todayOrderSequenceNumber ;;
   }
+
+  dimension: store_location {
+    type: location
+    sql_latitude: ${TABLE}.lat ;;
+    sql_longitude: ${TABLE}.lon;;
+  }
+
 
   measure: count {
     type: count
