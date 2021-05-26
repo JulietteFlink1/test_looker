@@ -516,6 +516,12 @@ view: segment_tracking_sessions30 {
     filters: [add_to_cart: "NOT NULL"]
   }
 
+  measure: cnt_view_cart {
+    label: "View cart count"
+    type: count
+    filters: [view_cart: "NOT NULL"]
+  }
+
   measure: cnt_checkout_started {
     label: "Checkout started count"
     type: count
