@@ -1020,3 +1020,17 @@ explore: riders_forecast_stuffing {
 #   #   type: left_outer
 #   # }
 # }
+
+explore: braze_crm_data {
+  label: "CRM Email Data (Braze)"
+  view_label: "CRM Email Data"
+  group_label: "9) CRM Data"
+  description: "Information on our CRM activities (using Braze as service provider)"
+  always_filter: {
+    filters:  [
+      braze_crm_data.campaign_name: "",
+      braze_crm_data.country: "",
+      braze_crm_data.email_sent_at: "after 2021-04-01"
+    ]
+  }
+}
