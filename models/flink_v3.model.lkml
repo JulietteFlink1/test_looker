@@ -36,7 +36,7 @@ named_value_format: euro_accounting_0_precision {
 explore: order_order {
   label: "Orders"
   view_label: "* Orders *"
-  group_label: "1) Performance"
+  group_label: "01) Performance"
   description: "General Business Performance - Orders, Revenue, etc."
   always_filter: {
     filters:  [
@@ -332,7 +332,7 @@ explore: order_order {
 explore: product_product {
   label: " Products"
   view_label: "* Product / SKU Data *"
-  group_label: "2) Inventory"
+  group_label: "02) Inventory"
   description: "Products, Productvariations, Categories, SKUs, Stock etc."
   always_filter: {
     filters:  [
@@ -424,7 +424,7 @@ explore: product_product {
 explore: hist_daily_stock {
   label: "NooS Substitute Groups"
   view_label: "NooS Substitute Groups"
-  group_label: "2) Inventory"
+  group_label: "02) Inventory"
   description: "Snapshots of Daily Inventory per Substitute group (only NooS)"
 
   access_filter: {
@@ -449,7 +449,7 @@ explore: hist_daily_stock {
 explore: discount_voucher {
   label: "Vouchers"
   view_label: "Vouchers"
-  group_label: "3) Vouchers"
+  group_label: "03) Vouchers"
   description: "All data around Vouchers created in the backend"
 
   access_filter: {
@@ -530,7 +530,7 @@ explore: answers {
   from: desired_products_survey
   label: "Desired Products"
   view_label: "Desired Products"
-  group_label: "4) Survey Data"
+  group_label: "04) Survey Data"
   description: "Customer Survey on Desired Products"
 
 }
@@ -539,7 +539,7 @@ explore: answers {
 explore: adjust_sessions {
   label: "Adjust app data"
   view_label: "Adjust sessions"
-  group_label: "6) Adjust app data"
+  group_label: "06) Adjust app data"
   description: "Adjust events by session from mobile apps data"
   #always_filter: {
   #  filters:
@@ -577,7 +577,7 @@ explore: adjust_sessions {
 explore: adjust_user_funnel {
   label: "Adjust user data"
   view_label: "Adjust user data"
-  group_label: "6) Adjust app data"
+  group_label: "06) Adjust app data"
   description: "Adjust first events by user"
 
   access_filter: {
@@ -595,14 +595,14 @@ explore: adjust_user_funnel {
 explore: marketingbanners_mobile_events {
   label: "Marketing banner impressions"
   view_label: "Marketing banner impressions"
-  group_label: "9) In-app tracking data"
+  group_label: "10) In-app tracking data"
   description: "Marketing banner events"
 }
 
 explore: productsearch_mobile_events {
   label: "Product Search Keywords"
   view_label: "Product Search Keywords"
-  group_label: "9) In-app tracking data"
+  group_label: "10) In-app tracking data"
   description: "Product Search Keywords from event tracking"
 }
 
@@ -610,7 +610,7 @@ explore: productsearch_mobile_events {
 explore: cs_issues_post_delivery {
   label: "CS Contacts"
   view_label: "CS Contacts"
-  group_label: "7) Customer Service"
+  group_label: "07) Customer Service"
   description: "Customer Service Contacts tracked via GSheet"
 
   access_filter: {
@@ -684,7 +684,7 @@ explore: cs_issues_post_delivery {
 explore: products_mba {
   label: "Market basket analysis at a product level"
   view_label: "Product MBA"
-  group_label: "7) Ad-Hoc"
+  group_label: "12) Ad-Hoc"
   description: "Product basket analysis"
 
 }
@@ -692,7 +692,7 @@ explore: products_mba {
 explore: categories_mba {
   label: "Market basket analysis at a category level"
   view_label: "Category MBA"
-  group_label: "7) Ad-Hoc"
+  group_label: "12) Ad-Hoc"
   description: "Product category basket analysis"
 
 }
@@ -700,7 +700,7 @@ explore: categories_mba {
 explore: voucher_retention {
   label: "Voucher retention"
   view_label: "Voucher retention"
-  group_label: "7) Ad-Hoc"
+  group_label: "12) Ad-Hoc"
   description: "Voucher retention analysis - First voucher used by user is considered as the base. Thus, a user can only have a first used voucher."
 
   access_filter: {
@@ -718,7 +718,7 @@ explore: voucher_retention {
 explore: competitor_analysis {
   label: "Competitor Analysis"
   view_label: "Competitor Analysis"
-  group_label: "8) Competitor Analysis"
+  group_label: "08) Competitor Analysis"
   description: "Analysis of competitors."
   always_filter: {
     filters: {
@@ -739,7 +739,7 @@ explore: competitor_analysis {
 explore: gorillas_stores {
   label: "Gorillas Stores"
   view_label: "Gorillas Stores"
-  group_label: "8) Competitor Analysis"
+  group_label: "08) Competitor Analysis"
   description: "Store Locations of Gorillas"
 }
 
@@ -749,7 +749,7 @@ explore: gorillas_stores {
 explore: gorillas_items {
   label: "Gorillas Items Overview"
   view_label: "Gorillas Items Overview"
-  group_label: "8) Competitor Analysis"
+  group_label: "08) Competitor Analysis"
   description: "Current Gorillas Items"
   always_filter: {
     filters: [gorillas_items.time_scraped_date: "1 day ago"]
@@ -821,7 +821,7 @@ explore: gorillas_items {
 explore: gorillas_current_assortment {
   label: "Gorillas Assortment Overview"
   view_label: "Gorillas Assortment Overview"
-  group_label: "8) Competitor Analysis"
+  group_label: "08) Competitor Analysis"
   description: "Current Gorillas Assortment"
   always_filter: {
     filters: [gorillas_current_assortment.time_scraped_date: "1 day ago"]
@@ -849,7 +849,7 @@ explore: gorillas_current_assortment {
 explore: gorillas_turfs {
   label: "Gorillas Turfs"
   view_label: "Gorillas Turfs"
-  group_label: "8) Competitor Analysis"
+  group_label: "08) Competitor Analysis"
   description: "Current Gorillas Turfs"
   # sql_always_where: ${time_scraped_raw} = '2021-04-25 16:35:41.402 UTC';;
   always_filter: {
@@ -891,7 +891,7 @@ explore: gorillas_turfs {
 explore: comparison_current_ids_per_category {
   label: "Current Items per Category Provider Comparison"
   view_label: "Current Items per Category Provider Comparison"
-  group_label: "8) Competitor Analysis"
+  group_label: "08) Competitor Analysis"
   description: "Current Items per Category Provider Comparison"
   always_filter: {
     filters: {
@@ -904,7 +904,7 @@ explore: comparison_current_ids_per_category {
 explore: gorillas_test{
   label: "Gorillas Test"
   view_label: "Gorillas Test"
-  group_label: "8) Competitor Analysis"
+  group_label: "08) Competitor Analysis"
   description: "Current Gorillas Assortment"
   hidden: yes
   always_filter: {
@@ -940,7 +940,7 @@ explore: gorillas_test{
 explore: gorillas_items_hist{
   label: "Gorillas Items Added/ Removed"
   view_label: "Gorillas Items Added/ Removed"
-  group_label: "8) Competitor Analysis"
+  group_label: "08) Competitor Analysis"
   description: "Gorillas Items Added/ Removed"
 
   join: gorillas_stores {
@@ -965,7 +965,7 @@ explore: gorillas_items_hist{
 explore: gorillas_orders {
   label: "Gorillas Orders"
   view_label: "Gorillas Orders"
-  group_label: "8) Competitor Analysis"
+  group_label: "08) Competitor Analysis"
   description: "Gorillas Orders per Day"
   hidden: no
 }
@@ -975,7 +975,7 @@ explore: gorillas_orders {
 explore: riders_forecast_stuffing {
   label: "Orders and Riders Forecasting"
   view_label: "Orders and Riders Forecasting"
-  group_label: "9) Forecasting"
+  group_label: "09) Forecasting"
   description: "This explore allows to check the riders and orders forecast for the upcoming 7 days"
 
   access_filter: {
@@ -1000,7 +1000,7 @@ explore: riders_forecast_stuffing {
 explore: riders_forecast_staffing_v2 {
   label: "Orders and Riders Forecasting V2"
   view_label: "Orders and Riders Forecasting V2"
-  group_label: "9) Forecasting"
+  group_label: "09) Forecasting"
   description: "This explore allows to check the riders and orders forecast for the upcoming 7 days"
 
   access_filter: {
@@ -1045,7 +1045,7 @@ explore: riders_forecast_staffing_v2 {
 explore: braze_crm_data {
   label: "CRM Email Data (Braze)"
   view_label: "CRM Email Data"
-  group_label: "9) CRM Data"
+  group_label: "11) CRM Data"
   description: "Information on our CRM activities (using Braze as service provider)"
   always_filter: {
     filters:  [

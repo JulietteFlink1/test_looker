@@ -398,7 +398,7 @@ group by
     label: "Bounce Rate"
     description: "Percentage: how many emails have been bounced based on all emails sent"
     group_label: "Ratios"
-    sql: ${num_bounced_unique} / ${num_sent};;
+    sql: ${num_bounced_unique} / NULLIF(${num_sent}, 0);;
     value_format_name: percent_2
   }
 
@@ -407,7 +407,7 @@ group by
     label: "Deliveries Rate"
     description: "Percentage: how many emails have been delivered based on all emails sent"
     group_label: "Ratios"
-    sql: ${num_delivered} / ${num_sent};;
+    sql: ${num_delivered} / NULLIF(${num_sent}, 0);;
     value_format_name: percent_2
   }
 
@@ -416,7 +416,7 @@ group by
     label: "Total Opens Rate"
     description: "Percentage: number of emails opened divided by the number of emails delivered"
     group_label: "Ratios"
-    sql: ${num_opened} / ${num_delivered};;
+    sql: ${num_opened} / NULLIF(${num_delivered}, 0);;
     value_format_name: percent_2
   }
 
@@ -425,7 +425,7 @@ group by
     label: "Unique Opens Rate"
     description: "Percentage: number of unique emails opened divided by the number of emails delivered"
     group_label: "Ratios"
-    sql: ${num_opened_u} / ${num_delivered};;
+    sql: ${num_opened_u} / NULLIF(${num_delivered}, 0);;
     value_format_name: percent_2
   }
 
@@ -434,7 +434,7 @@ group by
     label: "Total Clicks Rate"
     description: "Percentage: number of emails clicked divided by the number of emails delivered"
     group_label: "Ratios"
-    sql: ${num_clicked} / ${num_delivered};;
+    sql: ${num_clicked} / NULLIF(${num_delivered}, 0);;
     value_format_name: percent_2
   }
 
@@ -443,7 +443,7 @@ group by
     label: "Unique Clicks Rate"
     description: "Percentage: number of unique emails clicked divided by the number of emails delivered"
     group_label: "Ratios"
-    sql: ${num_clicked_u} / ${num_delivered};;
+    sql: ${num_clicked_u} / NULLIF(${num_delivered}, 0);;
     value_format_name: percent_2
   }
 
@@ -452,7 +452,7 @@ group by
     label: "Unsubscribes Rate"
     description: "Percentage: number of emails clicked on unsubscribe-link divided by the number of emails delivered"
     group_label: "Ratios"
-    sql: ${num_unsub} / ${num_delivered};;
+    sql: ${num_unsub} / NULLIF(${num_delivered}, 0);;
     value_format_name: percent_2
   }
 
