@@ -8,23 +8,29 @@ view: product_attribute_facts {
           MAX(case when f.slug='leading-product' THEN g.name end) as leading_product,
           MAX(case when f.slug='noos-group' THEN g.name end) as noos_group,
           MAX(case when f.slug='substitute-group' THEN g.name end) as substitute_group,
-          MAX(case when f.slug='substitute-group-internal-ranking' THEN g.name end) as substitute_group_internal_ranking
+          MAX(case when f.slug='substitute-group-internal-ranking' THEN g.name end) as substitute_group_internal_ranking,
+          MAX(case when f.slug='ean' THEN g.name end) as ean
+
 
           FROM `flink-backend.saleor_db_global.product_product` a
-          left join `flink-backend.saleor_db_global.product_productvariant` b ON a.id=b.product_id
-          left join `flink-backend.saleor_db_global.product_assignedproductattribute` c ON a.id=c.product_id
-          left join `flink-backend.saleor_db_global.product_assignedproductattribute_values` d ON c.id=d.assignedproductattribute_id
-          left join `flink-backend.saleor_db_global.product_attributeproduct` e ON c.assignment_id=e.id
-          left join `flink-backend.saleor_db_global.product_attribute` f ON e.attribute_id=f.id
-          left join `flink-backend.saleor_db_global.product_attributevalue` g ON d.attributevalue_id=g.id
+          left join `flink-backend.saleor_db_global.product_productvariant` b ON a.id=b.product_id and a.country_iso=b.country_iso
+          left join `flink-backend.saleor_db_global.product_assignedproductattribute` c ON a.id=c.product_id and a.country_iso=c.country_iso
+          left join `flink-backend.saleor_db_global.product_assignedproductattribute_values` d ON c.id=d.assignedproductattribute_id and c.country_iso=d.country_iso
+          left join `flink-backend.saleor_db_global.product_attributeproduct` e ON c.assignment_id=e.id and e.country_iso=c.country_iso
+          left join `flink-backend.saleor_db_global.product_attribute` f ON e.attribute_id=f.id and f.country_iso=e.country_iso
+          left join `flink-backend.saleor_db_global.product_attributevalue` g ON d.attributevalue_id=g.id and d.country_iso=g.country_iso
 
-          where f.slug IN ('leading-product', 'noos-group', 'substitute-group', 'substitute-group-internal-ranking')
+          where f.slug IN ('leading-product', 'noos-group', 'substitute-group', 'substitute-group-internal-ranking', 'ean')
           group by 1,2,3
+          order by 3
           ;;
   }
 
+  view_label: "* Product / SKU Data *"
+
   dimension: country_iso {
     type: string
+    hidden: yes
     sql: ${TABLE}.country_iso ;;
   }
 
@@ -35,6 +41,7 @@ view: product_attribute_facts {
 
   dimension: unique_id {
     primary_key: yes
+    hidden: yes
     type: string
     sql: concat(${country_iso}, ${id}) ;;
   }
@@ -62,6 +69,11 @@ view: product_attribute_facts {
   dimension: substitute_group_internal_ranking {
     type: string
     sql: ${TABLE}.substitute_group_internal_ranking ;;
+  }
+
+  dimension: ean {
+    type: string
+    sql: ${TABLE}.ean ;;
   }
 
 

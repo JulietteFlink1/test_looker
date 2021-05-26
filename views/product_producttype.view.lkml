@@ -2,10 +2,12 @@ view: product_producttype {
   sql_table_name: `flink-backend.saleor_db_global.product_producttype`
     ;;
   drill_fields: [id]
+  view_label: "* Product / SKU Data *"
 
   dimension: id {
     label: "Producttype ID"
     primary_key: no
+    hidden: yes
     type: number
     sql: ${TABLE}.id ;;
   }
@@ -13,11 +15,13 @@ view: product_producttype {
 
   dimension: country_iso {
     type: string
+    hidden: yes
     sql: ${TABLE}.country_iso ;;
   }
 
   dimension: unique_id {
     primary_key: yes
+    hidden: yes
     type: string
     sql: concat(${country_iso}, ${id}) ;;
   }
@@ -39,6 +43,7 @@ view: product_producttype {
 
   dimension: metadata {
     type: string
+    hidden: yes
     sql: ${TABLE}.metadata ;;
   }
 
@@ -50,21 +55,20 @@ view: product_producttype {
 
   dimension: private_metadata {
     type: string
+    hidden: yes
     sql: ${TABLE}.private_metadata ;;
   }
 
   dimension: slug {
     type: string
+    hidden: yes
     sql: ${TABLE}.slug ;;
   }
 
   dimension: weight {
     type: number
+    hidden: yes
     sql: ${TABLE}.weight ;;
   }
 
-  measure: count {
-    type: count
-    drill_fields: [id, name]
-  }
 }

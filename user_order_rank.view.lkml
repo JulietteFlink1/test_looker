@@ -13,11 +13,13 @@ view: user_order_rank {
 
   dimension: country_iso {
     type: string
+    hidden: yes
     sql: ${TABLE}.country_iso ;;
   }
 
   dimension: id {
     type: number
+    hidden: yes
     sql: ${TABLE}.id ;;
   }
 

@@ -5,17 +5,20 @@ view: menu_menu {
 
   dimension: id {
     primary_key: no
+    hidden: yes
     type: number
     sql: ${TABLE}.id ;;
   }
 
   dimension: country_iso {
     type: string
+    hidden: yes
     sql: ${TABLE}.country_iso ;;
   }
 
   dimension: unique_id {
     primary_key: yes
+    hidden: yes
     type: string
     sql: concat(${country_iso}, ${id}) ;;
   }
@@ -27,11 +30,8 @@ view: menu_menu {
 
   dimension: slug {
     type: string
+    hidden: yes
     sql: ${TABLE}.slug ;;
   }
 
-  measure: count {
-    type: count
-    drill_fields: [id, name]
-  }
 }

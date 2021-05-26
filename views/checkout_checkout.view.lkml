@@ -2,60 +2,9 @@ view: checkout_checkout {
   sql_table_name: `flink-backend.saleor_db.checkout_checkout`
     ;;
 
-  dimension_group: _sdc_batched {
-    type: time
-    timeframes: [
-      raw,
-      time,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    sql: ${TABLE}._sdc_batched_at ;;
-  }
-
-  dimension_group: _sdc_extracted {
-    type: time
-    timeframes: [
-      raw,
-      time,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    sql: ${TABLE}._sdc_extracted_at ;;
-  }
-
-  dimension_group: _sdc_received {
-    type: time
-    timeframes: [
-      raw,
-      time,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    sql: ${TABLE}._sdc_received_at ;;
-  }
-
-  dimension: _sdc_sequence {
-    type: number
-    sql: ${TABLE}._sdc_sequence ;;
-  }
-
-  dimension: _sdc_table_version {
-    type: number
-    sql: ${TABLE}._sdc_table_version ;;
-  }
-
   dimension: billing_address_id {
     type: number
+    hidden: yes
     sql: ${TABLE}.billing_address_id ;;
   }
 
@@ -81,6 +30,7 @@ view: checkout_checkout {
 
   dimension: currency {
     type: string
+    hidden: yes
     sql: ${TABLE}.currency ;;
   }
 
@@ -96,6 +46,7 @@ view: checkout_checkout {
 
   dimension_group: last_change {
     type: time
+    hidden: yes
     timeframes: [
       raw,
       time,
@@ -110,6 +61,7 @@ view: checkout_checkout {
 
   dimension: metadata {
     type: string
+    hidden: yes
     sql: ${TABLE}.metadata ;;
   }
 
@@ -120,6 +72,7 @@ view: checkout_checkout {
 
   dimension: private_metadata {
     type: string
+    hidden: yes
     sql: ${TABLE}.private_metadata ;;
   }
 
@@ -130,11 +83,13 @@ view: checkout_checkout {
 
   dimension: shipping_address_id {
     type: number
+    hidden: yes
     sql: ${TABLE}.shipping_address_id ;;
   }
 
   dimension: shipping_method_id {
     type: number
+    hidden: yes
     sql: ${TABLE}.shipping_method_id ;;
   }
 
@@ -145,6 +100,7 @@ view: checkout_checkout {
 
   dimension: translated_discount_name {
     type: string
+    hidden: yes
     sql: ${TABLE}.translated_discount_name ;;
   }
 
@@ -153,8 +109,4 @@ view: checkout_checkout {
     sql: ${TABLE}.voucher_code ;;
   }
 
-  measure: count {
-    type: count
-    drill_fields: [translated_discount_name]
-  }
 }

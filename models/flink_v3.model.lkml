@@ -15,7 +15,7 @@ case_sensitive: no
 
 datagroup: flink_default_datagroup {
   sql_trigger: SELECT MAX(_sdc_extracted_at) FROM warehouse_stock;;
-  max_cache_age: "2 hour"
+  max_cache_age: "24 hour"
 }
 
 persist_with: flink_default_datagroup
@@ -35,7 +35,7 @@ named_value_format: euro_accounting_0_precision {
 ####### ORDER EXPLORE #######
 explore: order_order {
   label: "Orders"
-  view_label: "Orders"
+  view_label: "* Orders *"
   group_label: "1) Performance"
   description: "General Business Performance - Orders, Revenue, etc."
   always_filter: {
@@ -74,7 +74,7 @@ explore: order_order {
   }
 
   join: user_order_facts {
-    view_label: "Users"
+    view_label: "* Customers *"
     type: left_outer
     relationship: many_to_one
     sql_on: ${order_order.country_iso} = ${user_order_facts.country_iso} AND
@@ -82,7 +82,7 @@ explore: order_order {
   }
 
   join: hub_order_facts {
-    view_label: "Hubs"
+    view_label: "* Hubs *"
     type: left_outer
     relationship: many_to_one
     sql_on: ${order_order.country_iso} = ${hub_order_facts.country_iso} AND
@@ -104,6 +104,7 @@ explore: order_order {
   }
 
   join: shipping_address {
+    view_label: "* Customer Address (Shipping) *"
     from: account_address
     type: left_outer
     relationship: one_to_one
@@ -112,6 +113,7 @@ explore: order_order {
   }
 
   join: billing_address {
+    view_label: "* Customer Address (Billing) *"
     from: account_address
     type: left_outer
     relationship: one_to_one
@@ -120,7 +122,7 @@ explore: order_order {
   }
 
   join: first_order_facts {
-    view_label: "First Order Facts"
+    view_label: "* Cohorts - First Order Facts *"
     type: inner
     from: order_order
     relationship: one_to_one
@@ -141,7 +143,7 @@ explore: order_order {
 
   join: first_order_hub {
     from: hubs
-    view_label: "First Order Facts"
+    view_label: "* Cohorts - First Order Facts *"
     sql_on: ${first_order_facts.country_iso} = ${first_order_hub.country_iso} AND
             ${first_order_facts.warehouse_name} = ${first_order_hub.hub_code_lowercase} ;;
     relationship: one_to_one
@@ -155,7 +157,7 @@ explore: order_order {
   }
 
   join: first_order_discount {
-    view_label: "First Order Facts"
+    view_label: "* Cohorts - First Order Facts *"
     type: left_outer
     from: discount_voucher
     relationship: one_to_one
@@ -168,7 +170,7 @@ explore: order_order {
   }
 
   join: first_order_billing_address {
-    view_label: "First Order Facts"
+    view_label: "* Cohorts - First Order Facts *"
     from: account_address
     type: left_outer
     relationship: one_to_one
@@ -182,7 +184,7 @@ explore: order_order {
   }
 
   join: latest_order_facts {
-    view_label: "Latest Order Facts"
+    view_label: "* Cohorts - Latest Order Facts *"
     type: inner
     from: order_order
     relationship: one_to_one
@@ -202,7 +204,7 @@ explore: order_order {
   }
 
   join: user_order_rank {
-    view_label: "Orders"
+    view_label: "* Customers *"
     sql_on: ${order_order.country_iso} = ${user_order_rank.country_iso} AND
             ${order_order.id} = ${user_order_rank.id};;
     relationship: one_to_one
@@ -231,7 +233,7 @@ explore: order_order {
 
 
   join: hubs {
-    view_label: "Hubs"
+    view_label: "* Hubs *"
     sql_on: ${order_order.country_iso} = ${hubs.country_iso} AND
             ${order_order.warehouse_name} = ${hubs.hub_code_lowercase} ;;
     relationship: one_to_one
@@ -267,6 +269,7 @@ explore: order_order {
   }
 
   join: parent_category {
+    view_label: "* Product / SKU Parent Category Data *"
     from: product_category
     sql_on: ${product_category.country_iso} = ${parent_category.country_iso} AND
             ${product_category.parent_id} = ${parent_category.id} ;;
@@ -275,7 +278,7 @@ explore: order_order {
   }
 
   join: nps_after_order {
-    view_label: "NPS After Order"
+    view_label: "* NPS *"
     sql_on: ${order_order.country_iso} = ${nps_after_order.country_iso} AND
             ${order_order.id} = ${nps_after_order.order_id} ;;
     relationship: one_to_many
@@ -283,7 +286,7 @@ explore: order_order {
   }
 
   join: shyftplan_riders_pickers_hours {
-    view_label: "Shifts"
+    view_label: "* Shifts *"
     sql_on: ${order_order.created_date} = ${shyftplan_riders_pickers_hours.date} and
             ${hubs.hub_code} = ${shyftplan_riders_pickers_hours.hub_name};;
     relationship: many_to_one
@@ -291,7 +294,7 @@ explore: order_order {
   }
 
   join: payment_payment {
-    view_label: "Payments"
+    view_label: "* Payments *"
     sql_on: ${order_order.country_iso} = ${payment_payment.country_iso} and
             ${order_order.id} = ${payment_payment.order_id};;
     relationship: one_to_many
@@ -299,7 +302,7 @@ explore: order_order {
   }
 
   join: payment_transaction {
-    view_label: "Payments"
+    view_label: "* Payments *"
     sql_on: ${payment_payment.country_iso} = ${payment_transaction.country_iso} and
             ${payment_payment.id} = ${payment_transaction.payment_id};;
     relationship: one_to_many
@@ -307,7 +310,7 @@ explore: order_order {
   }
 
   join: gdpr_account_deletion {
-    view_label: "Users"
+    view_label: "* Customers *"
     sql_on: LOWER(${order_order.user_email}) = LOWER(${gdpr_account_deletion.email});;
     relationship: many_to_one
     type: left_outer
@@ -328,7 +331,7 @@ explore: order_order {
 ####### PRODUCTS EXPLORE #######
 explore: product_product {
   label: " Products"
-  view_label: "Products"
+  view_label: "* Product / SKU Data *"
   group_label: "2) Inventory"
   description: "Products, Productvariations, Categories, SKUs, Stock etc."
   always_filter: {
@@ -371,6 +374,7 @@ explore: product_product {
   }
 
   join: parent_category {
+    view_label: "* Product / SKU Parent Category Data *"
     from: product_category
     sql_on: ${product_category.country_iso} = ${parent_category.country_iso} AND
             ${product_category.parent_id} = ${parent_category.id} ;;
@@ -401,7 +405,7 @@ explore: product_product {
   }
 
   join: hubs {
-    view_label: "Hubs"
+    view_label: "* Hubs *"
     sql_on: ${warehouse_warehouse.country_iso} = ${hubs.country_iso} AND
             ${warehouse_warehouse.slug} = ${hubs.hub_code_lowercase} ;;
     relationship: one_to_one
@@ -434,7 +438,7 @@ explore: hist_daily_stock {
   }
 
   join: hubs {
-    view_label: "Hubs"
+    view_label: "* Hubs *"
     sql_on: ${hist_daily_stock.slug} = ${hubs.hub_code_lowercase} ;;
     relationship: many_to_one
     type: left_outer
@@ -474,7 +478,7 @@ explore: discount_voucher {
   }
 
   join: user_order_facts {
-    view_label: "Users"
+    view_label: "* Customers *"
     type: left_outer
     relationship: many_to_one
     sql_on: ${order_order.country_iso} = ${user_order_facts.country_iso} AND
@@ -482,7 +486,7 @@ explore: discount_voucher {
   }
 
   join: hub_order_facts {
-    view_label: "Hubs"
+    view_label: "* Hubs *"
     type: left_outer
     relationship: many_to_one
     sql_on: ${order_order.country_iso} = ${hub_order_facts.country_iso} AND
@@ -504,7 +508,7 @@ explore: discount_voucher {
   }
 
   join: hubs {
-    view_label: "Hubs"
+    view_label: "* Hubs *"
     sql_on: ${order_order.country_iso} = ${hubs.country_iso} AND
             ${order_order.warehouse_name} = ${hubs.hub_code_lowercase} ;;
     relationship: one_to_one
@@ -512,7 +516,7 @@ explore: discount_voucher {
   }
 
   join: shyftplan_riders_pickers_hours {
-    view_label: "Shifts"
+    view_label: "* Shifts *"
     sql_on: ${order_order.created_date} = ${shyftplan_riders_pickers_hours.date} and
             ${hubs.hub_code} = ${shyftplan_riders_pickers_hours.hub_name};;
     relationship: many_to_one
@@ -595,6 +599,13 @@ explore: marketingbanners_mobile_events {
   description: "Marketing banner events"
 }
 
+explore: productsearch_mobile_events {
+  label: "Product Search Keywords"
+  view_label: "Product Search Keywords"
+  group_label: "9) In-app tracking data"
+  description: "Product Search Keywords from event tracking"
+}
+
 ####### CS ISSUES EXPLORE #######
 explore: cs_issues_post_delivery {
   label: "CS Contacts"
@@ -620,7 +631,7 @@ explore: cs_issues_post_delivery {
   }
 
   join: user_order_facts {
-    view_label: "Users"
+    view_label: "* Customers *"
     type: left_outer
     relationship: many_to_one
     sql_on: ${order_order.country_iso} = ${user_order_facts.country_iso} AND
@@ -628,7 +639,7 @@ explore: cs_issues_post_delivery {
   }
 
   join: hub_order_facts {
-    view_label: "Hubs"
+    view_label: "* Hubs *"
     type: left_outer
     relationship: many_to_one
     sql_on: ${order_order.country_iso} = ${hub_order_facts.country_iso} AND
@@ -650,7 +661,7 @@ explore: cs_issues_post_delivery {
   }
 
   join: hubs {
-    view_label: "Hubs"
+    view_label: "* Hubs *"
     sql_on: ${order_order.country_iso} = ${hubs.country_iso} AND
             ${order_order.warehouse_name} = ${hubs.hub_code_lowercase} ;;
     relationship: one_to_one
@@ -658,7 +669,7 @@ explore: cs_issues_post_delivery {
   }
 
   join: shyftplan_riders_pickers_hours {
-    view_label: "Hub shifts"
+    view_label: "* Shifts *"
     sql_on: ${order_order.created_date} = ${shyftplan_riders_pickers_hours.date} and
             ${hubs.hub_code} = ${shyftplan_riders_pickers_hours.hub_name};;
     relationship: many_to_one
@@ -951,6 +962,14 @@ explore: gorillas_items_hist{
   }
 }
 
+explore: gorillas_orders {
+  label: "Gorillas Orders"
+  view_label: "Gorillas Orders"
+  group_label: "8) Competitor Analysis"
+  description: "Gorillas Orders per Day"
+  hidden: no
+}
+
 ################ Rider Stuffing
 
 explore: riders_forecast_stuffing {
@@ -978,30 +997,32 @@ explore: riders_forecast_stuffing {
 
 }
 
-#explore: riders_forecast_staffing_v2 {
-#  label: "Orders and Riders Forecasting V2"
-#  view_label: "Orders and Riders Forecasting V2"
-#  group_label: "9) Forecasting"
-#  description: "This explore allows to check the riders and orders forecast for the upcoming 7 days"
+explore: riders_forecast_staffing_v2 {
+  label: "Orders and Riders Forecasting V2"
+  view_label: "Orders and Riders Forecasting V2"
+  group_label: "9) Forecasting"
+  description: "This explore allows to check the riders and orders forecast for the upcoming 7 days"
 
-#  access_filter: {
-#    field: hubs.country_iso
-#    user_attribute: country_iso
-#  }
+  access_filter: {
+    field: hubs.country_iso
+    user_attribute: country_iso
+  }
 
-#  access_filter: {
-#    field: hubs.city
-#    user_attribute: city
-#  }
+  access_filter: {
+    field: hubs.city
+    user_attribute: city
+  }
 
-#  join: hubs {
-#    sql_on:
-#    ${riders_forecast_staffing_v2.hub_name} = ${hubs.hub_code_lowercase} ;;
-#    relationship: many_to_one
-#    type: left_outer
-#  }
+  join: hubs {
+    sql_on:
+    ${riders_forecast_staffing_v2.hub_name} = ${hubs.hub_code_lowercase} ;;
+    relationship: many_to_one
+    type: left_outer
+  }
 
-#}
+}
+
+
 
 
 

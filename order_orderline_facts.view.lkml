@@ -42,6 +42,7 @@ view: order_orderline_facts {
 
   dimension: country_iso {
     type: string
+    hidden: yes
     sql: ${TABLE}.country_iso ;;
   }
 
@@ -62,11 +63,13 @@ view: order_orderline_facts {
 
   dimension: metadata {
     type: string
+    hidden: yes
     sql: ${TABLE}.metadata ;;
   }
 
   dimension: warehouse_name {
     type: string
+    hidden: yes
     sql:  CASE WHEN JSON_EXTRACT_SCALAR(${metadata}, '$.warehouse') IN ('hamburg-oellkersallee', 'hamburg-oelkersallee') THEN 'de_ham_alto'
     WHEN JSON_EXTRACT_SCALAR(${metadata}, '$.warehouse') = 'münchen-leopoldstraße' THEN 'de_muc_schw'
     ELSE JSON_EXTRACT_SCALAR(${metadata}, '$.warehouse')
