@@ -1,112 +1,113 @@
 view: productsearch_mobile_events {
   derived_table: {
     sql: WITH
-        filtered_tracking_data AS(
-        WITH
-          tracking_data AS (
-          SELECT
-            anonymous_id,
-            context_app_build,
-            context_app_name,
-            context_app_namespace,
-            context_app_version,
-            context_device_ad_tracking_enabled,
-            context_device_id,
-            context_device_manufacturer,
-            context_device_model,
-            context_device_name,
-            context_device_type,
-            context_ip,
-            context_library_name,
-            context_library_version,
-            context_locale,
-            context_network_bluetooth,
-            context_network_carrier,
-            context_network_cellular,
-            context_network_wifi,
-            context_os_name,
-            context_os_version,
-            context_protocols_source_id,
-            context_screen_density,
-            context_screen_height,
-            context_screen_width,
-            context_timezone,
-            context_traits_anonymous_id,
-            context_user_agent,
-            event,
-            event_text,
-            id,
-            loaded_at,
-            original_timestamp,
-            product_ids,
-            received_at,
-            search_query,
-            search_results_available_count,
-            search_results_total_count,
-            search_results_unavailable_count,
-            sent_at,
-            timestamp,
-            uuid_ts
-          FROM
-            `flink-backend.flink_android_production.product_search_executed_view`
-          UNION ALL
-          SELECT
-            anonymous_id,
-            context_app_build,
-            context_app_name,
-            context_app_namespace,
-            context_app_version,
-            CAST(NULL AS BOOL) AS context_device_ad_tracking_enabled,
-            context_device_id,
-            context_device_manufacturer,
-            context_device_model,
-            context_device_name,
-            context_device_type,
-            context_ip,
-            context_library_name,
-            context_library_version,
-            context_locale,
-            NULL AS context_network_bluetooth,
-            context_network_carrier,
-            context_network_cellular,
-            context_network_wifi,
-            context_os_name,
-            context_os_version,
-            context_protocols_source_id,
-            NULL AS context_screen_density,
-            context_screen_height,
-            context_screen_width,
-            context_timezone,
-            NULL AS context_traits_anonymous_id,
-            NULL AS context_user_agent,
-            event,
-            event_text,
-            id,
-            loaded_at,
-            original_timestamp,
-            product_ids,
-            received_at,
-            search_query,
-            search_results_available_count,
-            search_results_total_count,
-            search_results_unavailable_count,
-            sent_at,
-            timestamp,
-            uuid_ts
-          FROM
-            `flink-backend.flink_ios_production.product_search_executed_view` )
+        tracks_data AS (
+        SELECT
+          anonymous_id,
+          context_app_build,
+          context_app_version,
+          context_device_ad_tracking_enabled,
+          context_device_id,
+          context_device_manufacturer,
+          context_device_model,
+          context_device_name,
+          context_device_type,
+          context_ip,
+          context_library_name,
+          context_library_version,
+          context_locale,
+          context_network_bluetooth,
+          context_network_carrier,
+          context_network_cellular,
+          context_network_wifi,
+          context_os_name,
+          context_os_version,
+          context_protocols_source_id,
+          context_timezone,
+          context_traits_anonymous_id,
+          context_user_agent,
+          event,
+          event_text,
+          id,
+          loaded_at,
+          original_timestamp,
+          received_at,
+          sent_at,
+          timestamp,
+          uuid_ts
+        FROM
+          `flink-backend.flink_android_production.tracks_view` android_tracks
+        UNION ALL
+        SELECT
+          anonymous_id,
+          context_app_build,
+          context_app_version,
+          CAST(NULL AS BOOL) AS context_device_ad_tracking_enabled,
+          context_device_id,
+          context_device_manufacturer,
+          context_device_model,
+          context_device_name,
+          context_device_type,
+          context_ip,
+          context_library_name,
+          context_library_version,
+          context_locale,
+          NULL AS context_network_bluetooth,
+          context_network_carrier,
+          context_network_cellular,
+          context_network_wifi,
+          context_os_name,
+          context_os_version,
+          context_protocols_source_id,
+          context_timezone,
+          NULL AS context_traits_anonymous_id,
+          NULL AS context_user_agent,
+          event,
+          event_text,
+          id,
+          loaded_at,
+          original_timestamp,
+          received_at,
+          sent_at,
+          timestamp,
+          uuid_ts
+        FROM
+          `flink-backend.flink_ios_production.tracks_view` ios_tracks),
+
+        product_search_combined_data AS (
+        SELECT tracks_data.*,ios_search.search_query,
+          ios_search.search_results_total_count,
+          ios_search.search_results_available_count,
+          ios_search.search_results_unavailable_count,
+          ios_search.product_ids
+        FROM tracks_data
+        LEFT JOIN `flink-backend.flink_ios_production.product_search_executed_view` ios_search ON tracks_data.id=ios_search.id
+        LEFT JOIN `flink-backend.flink_android_production.product_search_executed_view` android_search ON tracks_data.id=android_search.id
+        ),
+
+        labeled_data AS(
         SELECT
           *,
-          LEAD(search_query) OVER(PARTITION BY anonymous_id ORDER BY timestamp ASC) NOT LIKE CONCAT('%', tracking_data.search_query,'%') AS is_not_subquery,
+          LEAD(product_search_combined_data.search_query) OVER(PARTITION BY product_search_combined_data.anonymous_id ORDER BY product_search_combined_data.timestamp ASC) NOT LIKE CONCAT('%', product_search_combined_data.search_query,'%') AS is_not_subquery,
           CASE
-            WHEN event = 'product_search_executed' AND LEAD(event) OVER(PARTITION BY anonymous_id ORDER BY timestamp ASC) IN('product_added_to_cart', 'product_details_viewed') THEN TRUE
+            WHEN product_search_combined_data.event = 'product_search_executed' AND LEAD(product_search_combined_data.event) OVER(PARTITION BY product_search_combined_data.anonymous_id ORDER BY product_search_combined_data.timestamp ASC) IN('product_added_to_cart', 'product_details_viewed') THEN TRUE
           ELSE
           FALSE
         END
           AS has_search_and_consecutive_add_to_cart_or_view_item,
         FROM
-          tracking_data)
-      SELECT * EXCEPT(is_not_subquery) FROM filtered_tracking_data WHERE is_not_subquery IS TRUE
+          product_search_combined_data),
+
+        filtered_tracking_data AS (
+        SELECT *,
+        LEAD(labeled_data.event) OVER(PARTITION BY labeled_data.anonymous_id ORDER BY labeled_data.timestamp ASC) AS next_event
+        FROM labeled_data
+        )
+      SELECT
+        *
+      FROM
+        filtered_tracking_data
+      WHERE is_not_subquery IS NOT FALSE
       ORDER BY
         filtered_tracking_data.anonymous_id,
         filtered_tracking_data.timestamp ASC
@@ -135,16 +136,6 @@ view: productsearch_mobile_events {
   dimension: context_app_build {
     type: string
     sql: ${TABLE}.context_app_build ;;
-  }
-
-  dimension: context_app_name {
-    type: string
-    sql: ${TABLE}.context_app_name ;;
-  }
-
-  dimension: context_app_namespace {
-    type: string
-    sql: ${TABLE}.context_app_namespace ;;
   }
 
   dimension: context_app_version {
@@ -237,21 +228,6 @@ view: productsearch_mobile_events {
     sql: ${TABLE}.context_protocols_source_id ;;
   }
 
-  dimension: context_screen_density {
-    type: number
-    sql: ${TABLE}.context_screen_density ;;
-  }
-
-  dimension: context_screen_height {
-    type: number
-    sql: ${TABLE}.context_screen_height ;;
-  }
-
-  dimension: context_screen_width {
-    type: number
-    sql: ${TABLE}.context_screen_width ;;
-  }
-
   dimension: context_timezone {
     type: string
     sql: ${TABLE}.context_timezone ;;
@@ -293,34 +269,9 @@ view: productsearch_mobile_events {
     sql: ${TABLE}.original_timestamp ;;
   }
 
-  dimension: product_ids {
-    type: string
-    sql: ${TABLE}.product_ids ;;
-  }
-
   dimension_group: received_at {
     type: time
     sql: ${TABLE}.received_at ;;
-  }
-
-  dimension: search_query {
-    type: string
-    sql: ${TABLE}.search_query ;;
-  }
-
-  dimension: search_results_available_count {
-    type: number
-    sql: ${TABLE}.search_results_available_count ;;
-  }
-
-  dimension: search_results_total_count {
-    type: number
-    sql: ${TABLE}.search_results_total_count ;;
-  }
-
-  dimension: search_results_unavailable_count {
-    type: number
-    sql: ${TABLE}.search_results_unavailable_count ;;
   }
 
   dimension_group: sent_at {
@@ -338,17 +289,50 @@ view: productsearch_mobile_events {
     sql: ${TABLE}.uuid_ts ;;
   }
 
+  dimension: search_query {
+    type: string
+    sql: ${TABLE}.search_query ;;
+  }
+
+  dimension: search_results_total_count {
+    type: number
+    sql: ${TABLE}.search_results_total_count ;;
+  }
+
+  dimension: search_results_available_count {
+    type: number
+    sql: ${TABLE}.search_results_available_count ;;
+  }
+
+  dimension: search_results_unavailable_count {
+    type: number
+    sql: ${TABLE}.search_results_unavailable_count ;;
+  }
+
+  dimension: product_ids {
+    type: string
+    sql: ${TABLE}.product_ids ;;
+  }
+
+  dimension: is_not_subquery {
+    type: string
+    sql: ${TABLE}.is_not_subquery ;;
+  }
+
   dimension: has_search_and_consecutive_add_to_cart_or_view_item {
     type: string
     sql: ${TABLE}.has_search_and_consecutive_add_to_cart_or_view_item ;;
+  }
+
+  dimension: next_event {
+    type: string
+    sql: ${TABLE}.next_event ;;
   }
 
   set: detail {
     fields: [
       anonymous_id,
       context_app_build,
-      context_app_name,
-      context_app_namespace,
       context_app_version,
       context_device_ad_tracking_enabled,
       context_device_id,
@@ -367,9 +351,6 @@ view: productsearch_mobile_events {
       context_os_name,
       context_os_version,
       context_protocols_source_id,
-      context_screen_density,
-      context_screen_height,
-      context_screen_width,
       context_timezone,
       context_traits_anonymous_id,
       context_user_agent,
@@ -378,16 +359,18 @@ view: productsearch_mobile_events {
       id,
       loaded_at_time,
       original_timestamp_time,
-      product_ids,
       received_at_time,
-      search_query,
-      search_results_available_count,
-      search_results_total_count,
-      search_results_unavailable_count,
       sent_at_time,
       timestamp_time,
       uuid_ts_time,
-      has_search_and_consecutive_add_to_cart_or_view_item
+      search_query,
+      search_results_total_count,
+      search_results_available_count,
+      search_results_unavailable_count,
+      product_ids,
+      is_not_subquery,
+      has_search_and_consecutive_add_to_cart_or_view_item,
+      next_event
     ]
   }
 }
