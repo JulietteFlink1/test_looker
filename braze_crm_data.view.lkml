@@ -282,7 +282,7 @@ group by
   #           Measures
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  measure: num_all_sent {
+  measure: total_emails_sent {
     type: sum
     label: "Sends"
     description: "The number of emails sent to the customer"
@@ -291,7 +291,7 @@ group by
     value_format_name: decimal_0
   }
 
-  measure: num_sent {
+  measure: total_recipients {
     type: sum
     label: "Unique Recipients"
     description: "The number of unique recipients of an email campaign"
@@ -300,7 +300,7 @@ group by
     value_format_name: decimal_0
   }
 
-  measure: num_bounced_unique {
+  measure: total_emails_bounced_unique {
     type: sum
     label: "Bounces"
     description: "The number of emails, that have been bounced by the customers email provider"
@@ -309,7 +309,7 @@ group by
     value_format_name: decimal_0
   }
 
-  measure: num_soft_bounces_unique {
+  measure: total_emails_soft_bounced_unique {
     type: sum
     label: "Soft Bounces"
     description: "The number of emails, that have been bounced by the customers email provider"
@@ -318,7 +318,7 @@ group by
     value_format_name: decimal_0
   }
 
-  measure: num_delivered {
+  measure: total_emails_delivered {
     type: sum
     label: "Deliveries"
     description: "The number of emails, that have been delivered to the customer - aka they have been received"
@@ -327,7 +327,7 @@ group by
     value_format_name: decimal_0
   }
 
-  measure: num_opened_u {
+  measure: total_emails_opened_unique {
     type:  sum
     label: "Unique Opens"
     description: "The number of unique opens of an email - one customer can be counted only once per sent-put"
@@ -336,7 +336,7 @@ group by
     value_format_name: decimal_0
   }
 
-  measure: num_opened {
+  measure: total_emails_opened {
     type:  sum
     label: "Total Opens"
     description: "The number of unique opens of an email - one customer can be counted n-times per sent-put"
@@ -345,7 +345,7 @@ group by
     value_format_name: decimal_0
   }
 
-  measure: num_clicked_u {
+  measure: total_emails_clicked_unique {
     type: sum
     label: "Unique Clicks"
     description: "The number of unique clicks of an email - one customer can be counted only once per sent-put"
@@ -354,7 +354,7 @@ group by
     value_format_name: decimal_0
   }
 
-  measure: num_clicked {
+  measure: total_emails_clicked {
     type: sum
     label: "Total Clicks"
     description: "The number of unique clicks of an email - one customer can be counted n-times per sent-put"
@@ -363,7 +363,7 @@ group by
     value_format_name: decimal_0
   }
 
-  measure: num_unsub {
+  measure: total_emails_unsubscribed {
     type: sum
     label: "Unsubscribes"
     description: "The number of customers, that have clicked on the unsubscribe-link"
@@ -393,67 +393,148 @@ group by
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   #           Ratios
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  measure: bounces_rate {
+  measure: bounced_emails_per_total_emails_sent {
     type: number
     label: "Bounce Rate"
     description: "Percentage: how many emails have been bounced based on all emails sent"
     group_label: "Ratios"
-    sql: ${num_bounced_unique} / NULLIF(${num_sent}, 0);;
+    sql: ${total_emails_bounced_unique} / NULLIF(${total_emails_sent}, 0);;
     value_format_name: percent_2
   }
 
-  measure: deliveries_rate {
+  measure: delivered_emails_per_total_emails_sent {
     type: number
     label: "Deliveries Rate"
     description: "Percentage: how many emails have been delivered based on all emails sent"
     group_label: "Ratios"
-    sql: ${num_delivered} / NULLIF(${num_sent}, 0);;
+    sql: ${total_emails_delivered} / NULLIF(${total_emails_sent}, 0);;
     value_format_name: percent_2
   }
 
-  measure: total_opens_rate {
+  measure: total_opened_emails_per_emails_delivered {
     type: number
     label: "Total Opens Rate"
     description: "Percentage: number of emails opened divided by the number of emails delivered"
     group_label: "Ratios"
-    sql: ${num_opened} / NULLIF(${num_delivered}, 0);;
+    sql: ${total_emails_opened} / NULLIF(${total_emails_delivered}, 0);;
     value_format_name: percent_2
   }
 
-  measure: unique_opens_rate {
+  measure: unique_opened_emails_per_emails_delivered {
     type: number
     label: "Unique Opens Rate"
     description: "Percentage: number of unique emails opened divided by the number of emails delivered"
     group_label: "Ratios"
-    sql: ${num_opened_u} / NULLIF(${num_delivered}, 0);;
+    sql: ${total_emails_opened_unique} / NULLIF(${total_emails_delivered}, 0);;
     value_format_name: percent_2
   }
 
-  measure: total_clicks_rate {
+  measure: total_clicked_emails_per_emails_delivered {
     type: number
     label: "Total Clicks Rate"
     description: "Percentage: number of emails clicked divided by the number of emails delivered"
     group_label: "Ratios"
-    sql: ${num_clicked} / NULLIF(${num_delivered}, 0);;
+    sql: ${total_emails_clicked} / NULLIF(${total_emails_delivered}, 0);;
     value_format_name: percent_2
   }
 
-  measure: unique_clicks_rate {
+  measure: unique_clicked_emails_per_emails_delivered {
     type: number
     label: "Unique Clicks Rate"
     description: "Percentage: number of unique emails clicked divided by the number of emails delivered"
     group_label: "Ratios"
-    sql: ${num_clicked_u} / NULLIF(${num_delivered}, 0);;
+    sql: ${total_emails_clicked_unique} / NULLIF(${total_emails_delivered}, 0);;
     value_format_name: percent_2
   }
 
-  measure: unsubscribes_rate {
+  measure: unsubscribed_emails_per_emails_delivered {
     type: number
     label: "Unsubscribes Rate"
     description: "Percentage: number of emails clicked on unsubscribe-link divided by the number of emails delivered"
     group_label: "Ratios"
-    sql: ${num_unsub} / NULLIF(${num_delivered}, 0);;
+    sql: ${total_emails_unsubscribed} / NULLIF(${total_emails_delivered}, 0);;
     value_format_name: percent_2
+  }
+
+
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  #           Parameter
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  parameter: KPI_parameter {
+    label: "* KPI Parameter *"
+    group_label: "* Dynamic KPI Fields *"
+    type: unquoted
+
+    allowed_value: { value: "bounces"                label: "Bounces"}
+    allowed_value: { value: "deliveries"             label: "Deliveries"}
+    allowed_value: { value: "avg_days_sent_to_click" label: "ø Days Sent to Click"}
+    allowed_value: { value: "avg_days_sent_to_open"  label: "ø Days Sent to Open"}
+    allowed_value: { value: "sends"                  label: "Sends"}
+    allowed_value: { value: "soft_bounces"           label: "Soft Bounces"}
+    allowed_value: { value: "total_clicks"           label: "Total Clicks"}
+    allowed_value: { value: "total_opens"            label: "Total Opens"}
+    allowed_value: { value: "unique_clicks"          label: "Unique Clicks"}
+    allowed_value: { value: "unique_opens"           label: "Unique Opens"}
+    allowed_value: { value: "unique_recipients"      label: "Unique Recipients"}
+    allowed_value: { value: "unsubscribes"           label: "Unsubscribes"}
+    allowed_value: { value: "bounce_rate"            label: "Bounce Rate"}
+    allowed_value: { value: "deliveries_rate"        label: "Deliveries Rate"}
+    allowed_value: { value: "total_clicks_rate"      label: "Total Clicks Rate"}
+    allowed_value: { value: "total_opens_rate"       label: "Total Opens Rate"}
+    allowed_value: { value: "unique_clicks_rate"     label: "Unique Clicks Rate"}
+    allowed_value: { value: "unique_opens_rate"      label: "Unique Opens Rate"}
+    allowed_value: { value: "unsubscribes_rate"      label: "# Orders"}
+    default_value: "sends"
+  }
+
+  measure: KPI_crm {
+    label: "CRM KPI (dynamic)"
+    group_label: "* Dynamic KPI Fields *"
+    label_from_parameter: KPI_parameter
+    #value_format: "#,##0.00"
+    # value_format_name: id
+    type: number
+    sql:
+    {% if KPI_parameter._parameter_value == 'bounces' %}
+      ${total_emails_bounced_unique}
+    {% elsif KPI_parameter._parameter_value == 'deliveries' %}
+      ${total_emails_delivered}
+    {% elsif KPI_parameter._parameter_value == 'avg_days_sent_to_click' %}
+      ${avg_days_sent_click}
+    {% elsif KPI_parameter._parameter_value == 'avg_days_sent_to_open' %}
+      ${avg_days_sent_open}
+    {% elsif KPI_parameter._parameter_value == 'sends' %}
+      ${total_emails_sent}
+    {% elsif KPI_parameter._parameter_value == 'soft_bounces' %}
+      ${total_emails_soft_bounced_unique}
+    {% elsif KPI_parameter._parameter_value == 'total_clicks' %}
+      ${total_emails_clicked}
+    {% elsif KPI_parameter._parameter_value == 'total_opens' %}
+      ${total_emails_opened}
+    {% elsif KPI_parameter._parameter_value == 'unique_clicks' %}
+      ${total_emails_clicked_unique}
+    {% elsif KPI_parameter._parameter_value == 'unique_opens' %}
+      ${total_emails_opened_unique}
+    {% elsif KPI_parameter._parameter_value == 'unique_recipients' %}
+      ${total_recipients}
+    {% elsif KPI_parameter._parameter_value == 'unsubscribes' %}
+      ${total_emails_unsubscribed}
+    {% elsif KPI_parameter._parameter_value == 'bounce_rate' %}
+      ${bounced_emails_per_total_emails_sent}
+    {% elsif KPI_parameter._parameter_value == 'deliveries_rate' %}
+      ${delivered_emails_per_total_emails_sent}
+    {% elsif KPI_parameter._parameter_value == 'total_clicks_rate' %}
+      ${total_clicked_emails_per_emails_delivered}
+    {% elsif KPI_parameter._parameter_value == 'total_opens_rate' %}
+      ${total_opened_emails_per_emails_delivered}
+    {% elsif KPI_parameter._parameter_value == 'unique_clicks_rate' %}
+      ${unique_clicked_emails_per_emails_delivered}
+    {% elsif KPI_parameter._parameter_value == 'unique_opens_rate' %}
+      ${unique_opened_emails_per_emails_delivered}
+    {% elsif KPI_parameter._parameter_value == 'unsubscribes_rate' %}
+      ${unsubscribed_emails_per_emails_delivered}
+    {% endif %}
+    ;;
   }
 
 
