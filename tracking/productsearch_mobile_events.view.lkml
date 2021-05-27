@@ -3,86 +3,36 @@ view: productsearch_mobile_events {
     sql: WITH
         tracks_data AS (
         SELECT
-          anonymous_id,
-          context_app_build,
-          context_app_version,
-          context_device_ad_tracking_enabled,
-          context_device_id,
-          context_device_manufacturer,
-          context_device_model,
-          context_device_name,
-          context_device_type,
-          context_ip,
-          context_library_name,
-          context_library_version,
-          context_locale,
-          context_network_bluetooth,
-          context_network_carrier,
-          context_network_cellular,
-          context_network_wifi,
-          context_os_name,
-          context_os_version,
-          context_protocols_source_id,
-          context_timezone,
-          context_traits_anonymous_id,
-          context_user_agent,
-          event,
-          event_text,
-          id,
-          loaded_at,
-          original_timestamp,
-          received_at,
-          sent_at,
-          timestamp,
-          uuid_ts
+          anonymous_id, context_app_build, context_app_version, context_device_ad_tracking_enabled, context_device_id, context_device_manufacturer, context_device_model, context_device_name, context_device_type, context_ip, context_library_name, context_library_version, context_locale, context_network_bluetooth, context_network_carrier, context_network_cellular, context_network_wifi, context_os_name, context_os_version, context_protocols_source_id, context_timezone, context_traits_anonymous_id, context_user_agent, event, event_text, id, loaded_at, original_timestamp, received_at, sent_at, timestamp, uuid_ts
         FROM
-          `flink-backend.flink_android_production.tracks_view` android_tracks
+          `flink-backend.flink_android_production.tracks_view`
         UNION ALL
         SELECT
-          anonymous_id,
-          context_app_build,
-          context_app_version,
-          CAST(NULL AS BOOL) AS context_device_ad_tracking_enabled,
-          context_device_id,
-          context_device_manufacturer,
-          context_device_model,
-          context_device_name,
-          context_device_type,
-          context_ip,
-          context_library_name,
-          context_library_version,
-          context_locale,
-          NULL AS context_network_bluetooth,
-          context_network_carrier,
-          context_network_cellular,
-          context_network_wifi,
-          context_os_name,
-          context_os_version,
-          context_protocols_source_id,
-          context_timezone,
-          NULL AS context_traits_anonymous_id,
-          NULL AS context_user_agent,
-          event,
-          event_text,
-          id,
-          loaded_at,
-          original_timestamp,
-          received_at,
-          sent_at,
-          timestamp,
-          uuid_ts
+          anonymous_id, context_app_build, context_app_version, CAST(NULL AS BOOL) AS context_device_ad_tracking_enabled, context_device_id, context_device_manufacturer, context_device_model, context_device_name, context_device_type, context_ip, context_library_name, context_library_version, context_locale, NULL AS context_network_bluetooth, context_network_carrier, context_network_cellular, context_network_wifi, context_os_name, context_os_version, context_protocols_source_id, context_timezone, NULL AS context_traits_anonymous_id, NULL AS context_user_agent, event, event_text, id, loaded_at, original_timestamp, received_at, sent_at, timestamp, uuid_ts
         FROM
-          `flink-backend.flink_ios_production.tracks_view` ios_tracks),
+          `flink-backend.flink_ios_production.tracks_view`
+        ),
+
+        search_data AS (
+        SELECT
+          id, search_query, search_results_total_count, search_results_available_count, search_results_unavailable_count, product_ids
+        FROM
+          `flink-backend.flink_android_production.product_search_executed_view`
+        UNION ALL
+        SELECT
+          id, search_query, search_results_total_count, search_results_available_count, search_results_unavailable_count, product_ids
+        FROM
+          `flink-backend.flink_ios_production.product_search_executed_view`
+        ),
 
         product_search_combined_data AS (
-        SELECT tracks_data.*,ios_search.search_query,
-          ios_search.search_results_total_count,
-          ios_search.search_results_available_count,
-          ios_search.search_results_unavailable_count,
-          ios_search.product_ids
+        SELECT tracks_data.*,search_data.search_query,
+          search_data.search_results_total_count,
+          search_data.search_results_available_count,
+          search_data.search_results_unavailable_count,
+          search_data.product_ids
         FROM tracks_data
-        LEFT JOIN `flink-backend.flink_ios_production.product_search_executed_view` ios_search ON tracks_data.id=ios_search.id
-        LEFT JOIN `flink-backend.flink_android_production.product_search_executed_view` android_search ON tracks_data.id=android_search.id
+        LEFT JOIN search_data ON tracks_data.id=search_data.id
         ),
 
         labeled_data AS(
