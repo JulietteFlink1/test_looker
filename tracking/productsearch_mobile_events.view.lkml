@@ -78,6 +78,34 @@ view: productsearch_mobile_events {
     value_format: "0"
   }
 
+  measure: cnt_nonzero_total_results {
+    label: "Count of nonzero results"
+    description: "Count of total results where total results > 0"
+    type: sum
+    sql: if(${search_results_total_count}>0,1,0) ;;
+  }
+
+  measure: cnt_zero_total_results {
+    label: "Count of zero results"
+    description: "Count of total results where total results = 0"
+    type: sum
+    sql: if(${search_results_total_count}=0,1,0) ;;
+  }
+
+  measure: cnt_nonzero_available_results {
+    label: "Count of nonzero available results"
+    description: "Count of available product results where available products > 0"
+    type: sum
+    sql: if(${search_results_available_count}>0,1,0) ;;
+  }
+
+  measure: cnt_zero_available_results {
+    label: "Count of zero available results"
+    description: "Count of available product results where available products = 0"
+    type: sum
+    sql: if(${search_results_available_count}=0,1,0) ;;
+  }
+
   dimension: anonymous_id {
     type: string
     sql: ${TABLE}.anonymous_id ;;
