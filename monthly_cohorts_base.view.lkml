@@ -1,7 +1,7 @@
 # If necessary, uncomment the line below to include explore_source.
 # include: "flink_v3.model.lkml"
 
-view: monthly_cohorts_stable_base {
+view: monthly_cohorts_base {
   derived_table: {
     explore_source: order_order {
       column: first_order_month { field: user_order_facts.first_order_month }

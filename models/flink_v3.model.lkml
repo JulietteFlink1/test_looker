@@ -215,18 +215,18 @@ explore: order_order {
     ]
   }
 
-  join: weekly_cohorts_stable_base {
+  join: weekly_cohorts_base {
     view_label: "Cohorts - Weekly"
-    sql_on: ${user_order_facts.country_iso} = ${weekly_cohorts_stable_base.country_iso} AND
-            ${user_order_facts.first_order_week} = ${weekly_cohorts_stable_base.first_order_week};;
+    sql_on: ${user_order_facts.country_iso} = ${weekly_cohorts_base.country_iso} AND
+            ${user_order_facts.first_order_week} = ${weekly_cohorts_base.first_order_week};;
     relationship: one_to_one
     type: left_outer
   }
 
-  join: monthly_cohorts_stable_base {
+  join: monthly_cohorts_base {
     view_label: "Cohorts - Monthly"
-    sql_on: ${user_order_facts.country_iso} = ${monthly_cohorts_stable_base.country_iso} AND
-            ${user_order_facts.first_order_month} = ${monthly_cohorts_stable_base.first_order_month} ;;
+    sql_on: ${user_order_facts.country_iso} = ${monthly_cohorts_base.country_iso} AND
+            ${user_order_facts.first_order_month} = ${monthly_cohorts_base.first_order_month} ;;
     relationship: one_to_one
     type: left_outer
   }
@@ -986,7 +986,7 @@ explore: gorillas_orders {
 ################ Rider Stuffing
 
 
-explore: riders_forecast_staffing_v2 {
+explore: riders_forecast_staffing {
   label: "Orders and Riders Forecasting"
   view_label: "Orders and Riders Forecasting"
   group_label: "09) Forecasting"
@@ -1004,7 +1004,7 @@ explore: riders_forecast_staffing_v2 {
 
   join: hubs {
     sql_on:
-    ${riders_forecast_staffing_v2.hub_name} = ${hubs.hub_code_lowercase} ;;
+    ${riders_forecast_staffing.hub_name} = ${hubs.hub_code_lowercase} ;;
     relationship: many_to_one
     type: left_outer
   }
