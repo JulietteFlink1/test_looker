@@ -106,6 +106,13 @@ view: productsearch_mobile_events {
     sql: if(${search_results_available_count}=0,1,0) ;;
   }
 
+  measure: cnt_nonzero_only_unavailable_results {
+    label: "Count of only unavailable results"
+    description: "Count of searches that resulted in total results > 0, but available results = 0 (only unavailable products)"
+    type: sum
+    sql: if(${search_results_available_count}=0 AND ${search_results_total_count}>0,1,0) ;;
+  }
+
   dimension: anonymous_id {
     type: string
     sql: ${TABLE}.anonymous_id ;;
