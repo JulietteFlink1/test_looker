@@ -605,6 +605,12 @@ explore: marketingbanners_mobile_events {
   group_label: "10) In-app tracking data"
   description: "Marketing banner events"
 }
+explore: marketingbanners_mobile_events_displayed_hours {
+  label: "Marketing banner: display times"
+  view_label: "Marketing banner display times"
+  group_label: "10) In-app tracking data"
+  description: "Information on the time, specific bannners where shown on specific banner_positions and hubs"
+}
 
 explore: productsearch_mobile_events {
   label: "Product Search Keywords"
