@@ -4,7 +4,7 @@ view: marketingbanners_mobile_events_displayed_hours {
       user_hub_data as ( -- get all address_confirmed_view with hub info per user
           select
                   anonymous_id
-                  , 'android' as where_shown
+                  , 'Android' as where_shown
                   , split(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(hub_code)),':')[OFFSET(1)] as hub_id
           from
               `flink-backend.flink_android_production.address_confirmed_view`
@@ -13,7 +13,7 @@ view: marketingbanners_mobile_events_displayed_hours {
 
           select
                   anonymous_id
-                  , 'android' as where_shown
+                  , 'iOS' as where_shown
                   , split(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(hub_code)),':')[OFFSET(1)] as hub_id
           from
               `flink-backend.flink_ios_production.address_confirmed_view`
@@ -33,7 +33,7 @@ view: marketingbanners_mobile_events_displayed_hours {
 
       android_data as ( -- get banner data for android, add hub info
           SELECT
-              'android' as where_shown
+              'Android' as where_shown
             , base.banner_position
             , base.timestamp as time_banner_viewed
             , base.banner_id
@@ -43,7 +43,7 @@ view: marketingbanners_mobile_events_displayed_hours {
           LEFT JOIN
               hub_data                                                            as hub
                     on hub.anonymous_id = base.anonymous_id
-                   and hub.where_shown = 'android'
+                   and hub.where_shown = 'Android'
           group by
               where_shown, banner_position ,time_banner_viewed, banner_id, hub
           order by
@@ -51,7 +51,7 @@ view: marketingbanners_mobile_events_displayed_hours {
       ),
       ios_data as ( -- get banner data for ios - add hub data
           SELECT
-              'ios' as where_shown
+              'iOS' as where_shown
             , banner_position
             , timestamp        as time_banner_viewed
             , banner_id
@@ -61,7 +61,7 @@ view: marketingbanners_mobile_events_displayed_hours {
           LEFT JOIN
             hub_data                                                          as hub
                   on hub.anonymous_id = base.anonymous_id
-                 and hub.where_shown = 'ios'
+                 and hub.where_shown = 'iOS'
           group by
               where_shown, banner_position ,time_banner_viewed, banner_id, hub
           order by
@@ -130,24 +130,33 @@ view: marketingbanners_mobile_events_displayed_hours {
   measure: count {
     type: count
     drill_fields: [detail*]
+    hidden: yes
   }
 
   dimension: where_shown {
+    label: "OS"
+    description: "OS of the mobile device - either Android or iOS"
     type: string
     sql: ${TABLE}.where_shown ;;
   }
 
   dimension: hub {
+    label: "Hub Code"
+    description: "The hub code"
     type: string
     sql: ${TABLE}.hub ;;
   }
 
   dimension: banner_position {
+    label: "Banner Position"
+    description: "The position of a banner within the app - position 1 is shown initially to the user"
     type: number
     sql: ${TABLE}.banner_position ;;
   }
 
   dimension: banner_id {
+    label: "Banner ID"
+    description: "The identifier of a specific banner"
     type: string
     sql: ${TABLE}.banner_id ;;
   }
@@ -155,14 +164,19 @@ view: marketingbanners_mobile_events_displayed_hours {
   dimension: session_id {
     type: number
     sql: ${TABLE}.sessionID ;;
+    hidden: yes
   }
 
   dimension_group: start_date {
+    label: "Airing Start Date"
+    description: "The date, when the banner was initially shown"
     type: time
     sql: ${TABLE}.start_date ;;
   }
 
   dimension_group: end_date {
+    label: "Airing End Date"
+    description: "The date, when the banner was removed"
     type: time
     sql: ${TABLE}.end_date ;;
   }
@@ -170,15 +184,20 @@ view: marketingbanners_mobile_events_displayed_hours {
   dimension: min_displayed {
     type: number
     sql: ${TABLE}.min_displayed ;;
+    hidden: yes
   }
 
   measure: total_minutes_displayed {
+    label: "Total Minutes Displayed"
+    description: "The time-difference in minutes between the start end end date of the airing"
     type: sum
     sql:${min_displayed}  ;;
     value_format_name: decimal_0
   }
 
   measure: max_banner_position {
+    label: "Banner Position"
+    description: "The position of a banner within the app - position 1 is shown initially to the user"
     type: max
     sql: ${banner_position} ;;
     value_format_name: decimal_0
