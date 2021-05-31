@@ -956,7 +956,7 @@ explore: gorillas_inventory{
   view_label: "Gorillas Inventory"
   group_label: "08) Competitor Analysis"
   description: "Current Inventory"
-  hidden: yes
+  hidden: no
   always_filter: {
     filters: {
       field: time_scraped_date
