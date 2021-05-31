@@ -35,7 +35,7 @@ view: order_order {
     group_label: "* IDs *"
     label: "Order ID"
     primary_key: no
-    hidden: yes
+    hidden: no
     type: number
     sql: ${TABLE}.id ;;
     value_format_name: id
