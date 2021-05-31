@@ -15,19 +15,19 @@ view: productsearch_mobile_events {
 
         search_data AS (
         SELECT
-          id, search_query, INITCAP(search_query) AS search_query_initcap, search_results_total_count, search_results_available_count, search_results_unavailable_count, product_ids
+          id, search_query, INITCAP(TRIM(search_query)) AS search_query_clean, search_results_total_count, search_results_available_count, search_results_unavailable_count, product_ids
         FROM
           `flink-backend.flink_android_production.product_search_executed_view`
         UNION ALL
         SELECT
-          id, search_query, INITCAP(search_query) AS search_query_initcap, search_results_total_count, search_results_available_count, search_results_unavailable_count, product_ids
+          id, search_query, INITCAP(TRIM(search_query)) AS search_query_clean, search_results_total_count, search_results_available_count, search_results_unavailable_count, product_ids
         FROM
           `flink-backend.flink_ios_production.product_search_executed_view`
         ),
 
         product_search_combined_data AS (
         SELECT tracks_data.*,search_data.search_query,
-          search_data.search_query_initcap,
+          search_data.search_query_clean,
           search_data.search_results_total_count,
           search_data.search_results_available_count,
           search_data.search_results_unavailable_count,
@@ -280,9 +280,9 @@ view: productsearch_mobile_events {
     sql: ${TABLE}.search_query ;;
   }
 
-  dimension: search_query_initcap {
+  dimension: search_query_clean {
     type: string
-    sql: ${TABLE}.search_query_initcap ;;
+    sql: ${TABLE}.search_query_clean ;;
   }
 
   dimension: search_results_total_count {
@@ -355,7 +355,7 @@ view: productsearch_mobile_events {
       timestamp_time,
       uuid_ts_time,
       search_query,
-      search_query_initcap,
+      search_query_clean,
       search_results_total_count,
       search_results_available_count,
       search_results_unavailable_count,
