@@ -363,6 +363,24 @@ group by
     value_format_name: decimal_0
   }
 
+  measure: total_cta_clicks {
+    type: number
+    label: "Total CTA Clicks"
+    description: "The total clicks, that are not clicks on the unsubscribe-link"
+    group_label: "Numbers"
+    sql:  ${total_emails_clicked} - ${total_emails_unsubscribed};;
+    value_format_name: decimal_0
+  }
+
+  measure: unique_cta_clicks {
+    type: number
+    label: "Unique CTA Clicks"
+    description: "The unique clicks, that are not clicks on the unsubscribe-link"
+    group_label: "Numbers"
+    sql: ${total_emails_clicked_unique} - ${total_emails_unsubscribed}  ;;
+    value_format_name: decimal_0
+  }
+
   measure: total_emails_unsubscribed {
     type: sum
     label: "Unsubscribes"
@@ -438,12 +456,30 @@ group by
     value_format_name: percent_2
   }
 
+  measure: total_cta_clicked_emails_per_emails_delivered {
+    type: number
+    label: "Total CTA Clicks Rate"
+    description: "Percentage: number of emails clicked on CTA (not the unsubscribe-link) divided by the number of emails delivered"
+    group_label: "Ratios"
+    sql: ${total_emails_clicked} / NULLIF(${total_emails_delivered}, 0);;
+    value_format_name: percent_2
+  }
+
   measure: unique_clicked_emails_per_emails_delivered {
     type: number
     label: "Unique Clicks Rate"
     description: "Percentage: number of unique emails clicked divided by the number of emails delivered"
     group_label: "Ratios"
     sql: ${total_emails_clicked_unique} / NULLIF(${total_emails_delivered}, 0);;
+    value_format_name: percent_2
+  }
+
+  measure: unique_cta_clicked_emails_per_emails_delivered {
+    type: number
+    label: "Unique CTA Clicks Rate"
+    description: "Percentage: number of unique emails clicked on CTA (not the unsubscribe-link) divided by the number of emails delivered"
+    group_label: "Ratios"
+    sql: ${unique_cta_clicks} / NULLIF(${total_emails_delivered}, 0);;
     value_format_name: percent_2
   }
 
@@ -464,26 +500,34 @@ group by
     label: "* KPI Parameter *"
     group_label: "* Dynamic KPI Fields *"
     type: unquoted
-
-    allowed_value: { value: "bounces"                label: "Bounces"}
-    allowed_value: { value: "deliveries"             label: "Deliveries"}
-    allowed_value: { value: "avg_days_sent_to_click" label: "ø Days Sent to Click"}
-    allowed_value: { value: "avg_days_sent_to_open"  label: "ø Days Sent to Open"}
+    # initial sends
     allowed_value: { value: "sends"                  label: "Sends"}
-    allowed_value: { value: "soft_bounces"           label: "Soft Bounces"}
-    allowed_value: { value: "total_clicks"           label: "Total Clicks"}
-    allowed_value: { value: "total_opens"            label: "Total Opens"}
-    allowed_value: { value: "unique_clicks"          label: "Unique Clicks"}
-    allowed_value: { value: "unique_opens"           label: "Unique Opens"}
     allowed_value: { value: "unique_recipients"      label: "Unique Recipients"}
-    allowed_value: { value: "unsubscribes"           label: "Unsubscribes"}
+    allowed_value: { value: "bounces"                label: "Bounces"}
     allowed_value: { value: "bounce_rate"            label: "Bounce Rate"}
+    allowed_value: { value: "soft_bounces"           label: "Soft Bounces"}
+    allowed_value: { value: "deliveries"             label: "Deliveries"}
     allowed_value: { value: "deliveries_rate"        label: "Deliveries Rate"}
-    allowed_value: { value: "total_clicks_rate"      label: "Total Clicks Rate"}
+    # opens
+    allowed_value: { value: "total_opens"            label: "Total Opens"}
     allowed_value: { value: "total_opens_rate"       label: "Total Opens Rate"}
-    allowed_value: { value: "unique_clicks_rate"     label: "Unique Clicks Rate"}
+    allowed_value: { value: "unique_opens"           label: "Unique Opens"}
     allowed_value: { value: "unique_opens_rate"      label: "Unique Opens Rate"}
+    allowed_value: { value: "avg_days_sent_to_open"  label: "ø Days Sent to Open"}
+    #clicks
+    allowed_value: { value: "total_clicks"           label: "Total Clicks"}
+    allowed_value: { value: "total_clicks_rate"      label: "Total Clicks Rate"}
+    allowed_value: { value: "total_cta_clicks"       label: "Total CTA Clicks"}
+    allowed_value: { value: "total_cta_clicks_rate"  label: "Total CTA Clicks Rate"}
+    allowed_value: { value: "unique_clicks"          label: "Unique Clicks"}
+    allowed_value: { value: "unique_clicks_rate"     label: "Unique Clicks Rate"}
+    allowed_value: { value: "unique_cta_clicks"      label: "Unique CTA Clicks"}
+    allowed_value: { value: "unique_cta_clicks_rate" label: "Unique CTA Clicks Rate"}
+    allowed_value: { value: "avg_days_sent_to_click" label: "ø Days Sent to Click"}
+    # unsubscribes
+    allowed_value: { value: "unsubscribes"           label: "Unsubscribes"}
     allowed_value: { value: "unsubscribes_rate"      label: "# Orders"}
+    #
     default_value: "sends"
   }
 
@@ -533,9 +577,22 @@ group by
       ${unique_opened_emails_per_emails_delivered}
     {% elsif KPI_parameter._parameter_value == 'unsubscribes_rate' %}
       ${unsubscribed_emails_per_emails_delivered}
+
+    {% elsif KPI_parameter._parameter_value == 'total_cta_clicks' %}
+      ${total_cta_clicks}
+    {% elsif KPI_parameter._parameter_value == 'total_cta_clicks_rate' %}
+      ${total_cta_clicked_emails_per_emails_delivered}
+    {% elsif KPI_parameter._parameter_value == 'unique_cta_clicks' %}
+      ${unique_cta_clicks}
+    {% elsif KPI_parameter._parameter_value == 'unique_cta_clicks_rate' %}
+      ${unique_cta_clicked_emails_per_emails_delivered}
     {% endif %}
     ;;
   }
+
+
+
+
 
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

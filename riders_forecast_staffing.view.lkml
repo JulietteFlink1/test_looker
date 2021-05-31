@@ -337,7 +337,7 @@ shifts as
 
   dimension: block_starts_pivot {
     group_label: " * Dates * "
-    label: "Block starts at pivot"
+    label: "Block"
     type: date_time
     sql: TIMESTAMP(concat("2021-01-01", " ", extract(hour from ${TABLE}.block_starts_at AT TIME ZONE "Europe/Berlin"),
       ":",extract(minute from ${TABLE}.block_starts_at), ":","00"), "Europe/Berlin") ;;
