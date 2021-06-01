@@ -10,12 +10,6 @@ view: product_attribute_fact_ranking_hlp {
       column: sum_item_price_gross     { field: order_orderline.sum_item_price_gross }
       column: sum_item_quantity        { field: order_orderline.sum_item_quantity }
       # filter
-      # column: is_internal_order   {field: order_order.is_internal_order}
-      # column: is_successful_order {field: order_order.is_successful_order}
-      # column: created_date        {field: order_order.created_date}
-      # column: hub_city            {field: hubs.city}
-      # column: hub_country         {field: hubs.country_iso}
-      # column: hub_name            {field: hubs.hub_code_lowercase}
       filters: {
         field: order_order.is_internal_order
         value: "no"
@@ -24,7 +18,6 @@ view: product_attribute_fact_ranking_hlp {
         field: order_order.is_successful_order
         value: "yes"
       }
-
       # filter explore fields based on my defined filter fields
       bind_filters: {
         to_field: hubs.city
@@ -118,18 +111,6 @@ view: product_attribute_fact_ranking_hlp {
     hidden: yes
   }
 
-  # dimension: hub_name {
-  #   type: string
-  #   hidden: yes
-  # }
-  # dimension: hub_city {
-  #   type: string
-  #   hidden: yes
-  # }
-  # dimension: hub_country {
-  #   type: string
-  #   hidden: yes
-  # }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # Measures
