@@ -118,6 +118,27 @@ view: segment_tracking_sessions30 {
         1,
         2 ),
 
+
+      payment_started AS (
+      SELECT
+        tracking_sessions_ios.anonymous_id,
+        tracking_sessions_ios.session_id,
+        COUNT(*) AS event_count
+      FROM
+        `flink-backend.flink_ios_production.tracks_view` tracking_ios
+      LEFT JOIN
+        tracking_sessions_ios
+      ON
+        tracking_ios.anonymous_id = tracking_sessions_ios.anonymous_id
+        AND tracking_ios.timestamp >= tracking_sessions_ios.session_start_at
+        AND (tracking_ios.timestamp < tracking_sessions_ios.next_session_start_at
+          OR tracking_sessions_ios.next_session_start_at IS NULL)
+      WHERE
+        tracking_ios.event='purchase_confirmed'
+      GROUP BY
+        1,
+        2 ),
+
         order_placed_ios AS (
         SELECT
           tracking_sessions_ios.anonymous_id,
@@ -274,6 +295,26 @@ view: segment_tracking_sessions30 {
         1,
         2 ),
 
+      payment_started_android AS (
+      SELECT
+        tracking_sessions_android.anonymous_id,
+        tracking_sessions_android.session_id,
+        COUNT(*) AS event_count
+      FROM
+        `flink-backend.flink_android_production.tracks_view` tracking_android
+      LEFT JOIN
+        tracking_sessions_android
+      ON
+        tracking_android.anonymous_id = tracking_sessions_android.anonymous_id
+        AND tracking_android.timestamp >= tracking_sessions_android.session_start_at
+        AND (tracking_android.timestamp < tracking_sessions_android.next_session_start_at
+          OR tracking_sessions_android.next_session_start_at IS NULL)
+      WHERE
+        tracking_android.event='purchase_confirmed'
+      GROUP BY
+        1,
+        2 ),
+
         order_placed_android AS (
         SELECT
           tracking_sessions_android.anonymous_id,
@@ -328,6 +369,7 @@ view: segment_tracking_sessions30 {
         view_cart_ios.event_count AS view_cart,
         address_confirmed_ios.event_count AS address_confirmed,
         checkout_started_ios.event_count AS checkout_started,
+        payment_started_ios.event_count AS payment_started,
         order_placed_ios.event_count AS order_placed,
         location_pin_placed_ios.event_count AS location_pin_placed
       FROM
@@ -357,6 +399,10 @@ view: segment_tracking_sessions30 {
       ON
         tracking_sessions_ios.session_id=checkout_started_ios.session_id
       LEFT JOIN
+        payment_started_ios
+      ON
+        tracking_sessions_ios.session_id=payment_started_ios.session_id
+      LEFT JOIN
         order_placed_ios
       ON
         tracking_sessions_ios.session_id=order_placed_ios.session_id
@@ -377,6 +423,7 @@ view: segment_tracking_sessions30 {
         view_cart_android.event_count AS view_cart,
         address_confirmed_android.event_count AS address_confirmed,
         checkout_started_android.event_count AS checkout_started,
+        payment_started_android.event_count AS payment_started,
         order_placed_android.event_count AS order_placed,
         location_pin_placed_android.event_count AS location_pin_placed
       FROM
@@ -405,6 +452,10 @@ view: segment_tracking_sessions30 {
         checkout_started_android
       ON
         tracking_sessions_android.session_id=checkout_started_android.session_id
+      LEFT JOIN
+        payment_started_android
+      ON
+        tracking_sessions_android.session_id=payment_started_android.session_id
       LEFT JOIN
         order_placed_android
       ON
@@ -486,6 +537,11 @@ view: segment_tracking_sessions30 {
     sql: ${TABLE}.checkout_started ;;
   }
 
+  dimension: payment_started {
+    type: number
+    sql: ${TABLE}.payment_started ;;
+  }
+
   dimension: order_placed {
     type: number
     sql: ${TABLE}.order_placed ;;
@@ -527,6 +583,12 @@ view: segment_tracking_sessions30 {
     label: "Checkout started count"
     type: count
     filters: [checkout_started: "NOT NULL"]
+  }
+
+  measure: cnt_payment_started {
+    label: "Payment started count"
+    type: count
+    filters: [payment_started: "NOT NULL"]
   }
 
   measure: cnt_purchase {
@@ -573,6 +635,13 @@ view: segment_tracking_sessions30 {
     type: sum
     sql: ${checkout_started} ;;
   }
+
+  measure: sum_payment_started {
+    label: "Payment started sum of events"
+    type: sum
+    sql: ${payment_started} ;;
+  }
+
   measure: sum_purchases {
     label: "Order placed sum of events"
     type: sum
@@ -594,6 +663,7 @@ view: segment_tracking_sessions30 {
       view_cart,
       address_confirmed,
       checkout_started,
+      payment_started,
       order_placed,
       location_pin_placed
     ]
