@@ -41,6 +41,26 @@ view: segment_tracking_sessions30 {
           1,
           2 ),
 
+        location_pin_placed_ios AS (
+        SELECT
+          tracking_sessions_ios.anonymous_id,
+          tracking_sessions_ios.session_id,
+          COUNT(*) AS event_count
+        FROM
+          `flink-backend.flink_ios_production.tracks_view` tracking_ios
+        LEFT JOIN
+          tracking_sessions_ios
+        ON
+          tracking_ios.anonymous_id = tracking_sessions_ios.anonymous_id
+          AND tracking_ios.timestamp >= tracking_sessions_ios.session_start_at
+          AND (tracking_ios.timestamp < tracking_sessions_ios.next_session_start_at
+            OR tracking_sessions_ios.next_session_start_at IS NULL)
+        WHERE
+          tracking_ios.event='location_pin_placed'
+        GROUP BY
+          1,
+          2 ),
+
         home_viewed_ios AS (
         SELECT
           tracking_sessions_ios.anonymous_id,
@@ -100,7 +120,8 @@ view: segment_tracking_sessions30 {
         GROUP BY
           1,
           2 ),
-        address_confirmed_ios AS (
+
+      address_confirmed_ios AS (
       SELECT
         tracking_sessions_ios.anonymous_id,
         tracking_sessions_ios.session_id,
@@ -233,6 +254,26 @@ view: segment_tracking_sessions30 {
             OR tracking_sessions_android.next_session_start_at IS NULL)
         WHERE
           tracking_android.event='product_added_to_cart'
+        GROUP BY
+          1,
+          2 ),
+
+        location_pin_placed_android AS (
+        SELECT
+          tracking_sessions_android.anonymous_id,
+          tracking_sessions_android.session_id,
+          COUNT(*) AS event_count
+        FROM
+          `flink-backend.flink_android_production.tracks_view` tracking_android
+        LEFT JOIN
+          tracking_sessions_android
+        ON
+          tracking_android.anonymous_id = tracking_sessions_android.anonymous_id
+          AND tracking_android.timestamp >= tracking_sessions_android.session_start_at
+          AND (tracking_android.timestamp < tracking_sessions_android.next_session_start_at
+            OR tracking_sessions_android.next_session_start_at IS NULL)
+        WHERE
+          tracking_android.event='location_pin_placed'
         GROUP BY
           1,
           2 ),
@@ -407,6 +448,7 @@ view: segment_tracking_sessions30 {
         tracking_sessions_ios.context_app_version,
         1 AS session,
         add_to_cart_ios.event_count AS add_to_cart,
+        location_pin_placed_ios.event_count AS location_pin_placed,
         home_viewed_ios.event_count AS home_viewed,
         view_item_ios.event_count AS view_item,
         view_cart_ios.event_count AS view_cart,
@@ -421,6 +463,10 @@ view: segment_tracking_sessions30 {
         add_to_cart_ios
       ON
         tracking_sessions_ios.session_id=add_to_cart_ios.session_id
+      LEFT JOIN
+        location_pin_placed_ios
+      ON
+        tracking_sessions_ios.session_id=location_pin_placed_ios.session_id
       LEFT JOIN
         home_viewed_ios
       ON
@@ -466,6 +512,7 @@ view: segment_tracking_sessions30 {
         tracking_sessions_android.context_app_version,
         1 AS session,
         add_to_cart_android.event_count AS add_to_cart,
+        location_pin_placed_android.event_count AS location_pin_placed,
         home_viewed_android.event_count AS home_viewed,
         view_item_android.event_count AS view_item,
         view_cart_android.event_count AS view_cart,
@@ -480,6 +527,10 @@ view: segment_tracking_sessions30 {
         add_to_cart_android
       ON
         tracking_sessions_android.session_id=add_to_cart_android.session_id
+      LEFT JOIN
+        location_pin_placed_android
+      ON
+        tracking_sessions_android.session_id=location_pin_placed_android.session_id
       LEFT JOIN
         home_viewed_android
       ON
@@ -575,6 +626,11 @@ view: segment_tracking_sessions30 {
     sql: ${TABLE}.add_to_cart ;;
   }
 
+  dimension: location_pin_placed {
+    type: number
+    sql: ${TABLE}.location_pin_placed ;;
+  }
+
   dimension: home_viewed {
     type: number
     sql: ${TABLE}.home_viewed ;;
@@ -610,17 +666,18 @@ view: segment_tracking_sessions30 {
     sql: ${TABLE}.order_placed ;;
   }
 
-  dimension: location_pin_placed {
-    type: number
-    sql: ${TABLE}.location_pin_placed ;;
-  }
-
 ##### Unique count of events during a session. If multiple events are triggerred during a session, e.g 3 times view item, the event is only counted once.
 
   measure: cnt_address_selected {
     label: "Address selected count"
     type: count
     filters: [address_confirmed: "NOT NULL"]
+  }
+
+  measure: cnt_location_pin_placed {
+    label: "Location pin placed count"
+    type: count
+    filters: [location_pin_placed: "NOT NULL"]
   }
 
   measure: cnt_home_viewed {
@@ -678,6 +735,12 @@ view: segment_tracking_sessions30 {
     label: "Address selected sum of events"
     type: sum
     sql: ${address_confirmed} ;;
+  }
+
+  measure: sum_location_pin_placed {
+    label: "Location pin placed sum of events"
+    type: sum
+    sql: ${location_pin_placed} ;;
   }
 
   measure: sum_home_viewed {
@@ -765,6 +828,7 @@ view: segment_tracking_sessions30 {
       context_app_version,
       session,
       add_to_cart,
+      location_pin_placed,
       home_viewed,
       view_item,
       view_cart,
