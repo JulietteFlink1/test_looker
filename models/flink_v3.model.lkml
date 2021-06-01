@@ -422,6 +422,16 @@ explore: product_product {
             ${product_product.id} = ${product_attribute_facts.id} ;;
     relationship: one_to_one
     type: left_outer
+    fields: [
+      country_iso,
+      id,
+      sku,
+      leading_product,
+      noos_group,
+      substitute_group,
+      substitute_group_internal_ranking,
+      ean
+    ]
   }
 }
 

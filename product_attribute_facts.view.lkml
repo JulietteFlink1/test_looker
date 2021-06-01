@@ -66,6 +66,12 @@ view: product_attribute_facts {
     sql: ${TABLE}.substitute_group ;;
   }
 
+  dimension: substitue_group_complete {
+    description: "Returns the substitute group if set, else returns the product name"
+    type: string
+    sql: coalesce(${substitute_group}, (${order_orderline.product_name})) ;;
+  }
+
   dimension: substitute_group_internal_ranking {
     type: string
     sql: ${TABLE}.substitute_group_internal_ranking ;;
