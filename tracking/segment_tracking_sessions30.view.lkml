@@ -555,7 +555,6 @@ view: segment_tracking_sessions30 {
 
 ##### Unique count of events during a session. If multiple events are triggerred during a session, e.g 3 times view item, the event is only counted once.
 
-
   measure: cnt_address_selected {
     label: "Address selected count"
     type: count
@@ -648,6 +647,38 @@ view: segment_tracking_sessions30 {
     type: sum
     sql: ${order_placed} ;;
   }
+
+  ## Measures based on other measures
+  measure: overall_conversion_rate {
+    type: number
+    value_format_name: percent_2
+    sql: ${cnt_purchase}/${count} ;;
+  }
+
+  measure: mcvr1 {
+    type: number
+    value_format_name: percent_2
+    sql: ${cnt_address_selected}/${count} ;;
+  }
+
+  measure: mcvr2 {
+    type: number
+    value_format_name: percent_2
+    sql: ${cnt_add_to_cart}/${count} ;;
+  }
+
+  measure: mcvr3 {
+    type: number
+    value_format_name: percent_2
+    sql: ${cnt_checkout_started}/${count} ;;
+  }
+
+  measure: mcvr4 {
+    type: number
+    value_format_name: percent_2
+    sql: ${cnt_payment_started}/${count} ;;
+  }
+
 
   set: detail {
     fields: [
