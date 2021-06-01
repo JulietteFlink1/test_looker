@@ -477,6 +477,7 @@ view: segment_tracking_sessions30 {
 
   dimension: session_id {
     type: string
+    primary_key: yes
     sql: ${TABLE}.session_id ;;
   }
 
