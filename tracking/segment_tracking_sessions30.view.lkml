@@ -118,7 +118,7 @@ view: segment_tracking_sessions30 {
         2 ),
 
 
-      payment_started AS (
+      payment_started_ios AS (
       SELECT
         tracking_sessions_ios.anonymous_id,
         tracking_sessions_ios.session_id,
