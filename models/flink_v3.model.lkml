@@ -964,6 +964,43 @@ explore: gorillas_test{
   # }
 }
 
+
+explore: gorillas_inventory{
+  label: "Gorillas Inventory"
+  view_label: "Gorillas Inventory"
+  group_label: "08) Competitor Analysis"
+  description: "Current Inventory"
+  hidden: no
+  always_filter: {
+    filters: {
+      field: time_scraped_date
+      value: "today"
+    }
+    filters: {
+      field: assortment_time_scraped_date
+      value: "1 day ago"
+    }
+  }
+
+  join: gorillas_stores {
+    sql_on: ${gorillas_inventory.hub_code} = ${gorillas_stores.id};;
+    relationship: many_to_one
+    type: left_outer
+  }
+
+  join: gorillas_items {
+    sql_on: ${gorillas_inventory.product_id} = ${gorillas_items.id} and ${gorillas_inventory.hub_code} = ${gorillas_items.hub_code};;
+    type: left_outer
+    relationship: many_to_one
+  }
+
+  # join: gorillas_turfs {
+  #   sql_on: ${gorillas_test.hub_code} = ${gorillas_turfs.gorillas_store_ids} ;;
+  #   type: left_outer
+  #   relationship: many_to_one
+  # }
+}
+
 explore: gorillas_items_hist{
   label: "Gorillas Items Added/ Removed"
   view_label: "Gorillas Items Added/ Removed"
