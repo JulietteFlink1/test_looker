@@ -201,25 +201,6 @@ view: segment_tracking_sessions30 {
         GROUP BY
           1,
           2 ),
-        location_pin_placed_ios AS (
-      SELECT
-        tracking_sessions_ios.anonymous_id,
-        tracking_sessions_ios.session_id,
-        COUNT(*) AS event_count
-      FROM
-        `flink-backend.flink_ios_production.tracks_view` tracking_ios
-      LEFT JOIN
-        tracking_sessions_ios
-      ON
-        tracking_ios.anonymous_id = tracking_sessions_ios.anonymous_id
-        AND tracking_ios.timestamp >= tracking_sessions_ios.session_start_at
-        AND (tracking_ios.timestamp < tracking_sessions_ios.next_session_start_at
-          OR tracking_sessions_ios.next_session_start_at IS NULL)
-      WHERE
-        tracking_ios.event='location_pin_placed'
-      GROUP BY
-        1,
-        2 ),
 
         tracking_sessions_android AS (
         SELECT
@@ -416,26 +397,8 @@ view: segment_tracking_sessions30 {
           tracking_android.event='order_placed'
         GROUP BY
           1,
-          2 ),
-          location_pin_placed_android AS (
-      SELECT
-        tracking_sessions_android.anonymous_id,
-        tracking_sessions_android.session_id,
-        COUNT(*) AS event_count
-      FROM
-        `flink-backend.flink_android_production.tracks_view` tracking_android
-      LEFT JOIN
-        tracking_sessions_android
-      ON
-        tracking_android.anonymous_id = tracking_sessions_android.anonymous_id
-        AND tracking_android.timestamp >= tracking_sessions_android.session_start_at
-        AND (tracking_android.timestamp < tracking_sessions_android.next_session_start_at
-          OR tracking_sessions_android.next_session_start_at IS NULL)
-      WHERE
-        tracking_android.event='location_pin_placed'
-      GROUP BY
-        1,
-        2 )
+          2 )
+
       SELECT
         tracking_sessions_ios.anonymous_id,
         tracking_sessions_ios.session_id,
