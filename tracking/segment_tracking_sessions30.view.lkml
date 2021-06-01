@@ -418,8 +418,7 @@ view: segment_tracking_sessions30 {
         address_confirmed_ios.event_count AS address_confirmed,
         checkout_started_ios.event_count AS checkout_started,
         payment_started_ios.event_count AS payment_started,
-        order_placed_ios.event_count AS order_placed,
-        location_pin_placed_ios.event_count AS location_pin_placed
+        order_placed_ios.event_count AS order_placed
       FROM
         tracking_sessions_ios
       LEFT JOIN
@@ -442,10 +441,6 @@ view: segment_tracking_sessions30 {
         view_cart_ios
       ON
         tracking_sessions_ios.session_id=view_cart_ios.session_id
-        LEFT JOIN
-        location_pin_placed_ios
-      ON
-        tracking_sessions_ios.session_id=location_pin_placed_ios.session_id
       LEFT JOIN
         address_confirmed_ios
       ON
@@ -482,8 +477,7 @@ view: segment_tracking_sessions30 {
         address_confirmed_android.event_count AS address_confirmed,
         checkout_started_android.event_count AS checkout_started,
         payment_started_android.event_count AS payment_started,
-        order_placed_android.event_count AS order_placed,
-        location_pin_placed_android.event_count AS location_pin_placed
+        order_placed_android.event_count AS order_placed
       FROM
         tracking_sessions_android
       LEFT JOIN
@@ -506,10 +500,6 @@ view: segment_tracking_sessions30 {
         view_cart_android
       ON
         tracking_sessions_android.session_id=view_cart_android.session_id
-        LEFT JOIN
-        location_pin_placed_android
-      ON
-        tracking_sessions_android.session_id=location_pin_placed_android.session_id
       LEFT JOIN
         address_confirmed_android
       ON
@@ -798,8 +788,7 @@ view: segment_tracking_sessions30 {
       address_confirmed,
       checkout_started,
       payment_started,
-      order_placed,
-      location_pin_placed
+      order_placed
     ]
   }
 }
