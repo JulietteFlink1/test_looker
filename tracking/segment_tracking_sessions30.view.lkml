@@ -1,5 +1,6 @@
 view: segment_tracking_sessions30 {
   derived_table: {
+    persist_for: "1 hour"
     sql: WITH
         tracking_sessions_ios AS (
         SELECT
