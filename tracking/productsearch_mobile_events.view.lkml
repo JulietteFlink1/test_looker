@@ -1,5 +1,6 @@
 view: productsearch_mobile_events {
   derived_table: {
+    persist_for: "24 hours"
     sql: WITH
         tracks_data AS (
         SELECT
