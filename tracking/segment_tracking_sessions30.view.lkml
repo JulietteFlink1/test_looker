@@ -668,7 +668,7 @@ view: segment_tracking_sessions30 {
   ###### Sum of events
 
   measure: sum_sessions {
-    label: "Session count"
+    label: "Session sum"
     type: sum
     sql: ${session} ;;
   }
