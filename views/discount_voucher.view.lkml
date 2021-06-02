@@ -104,6 +104,20 @@ view: discount_voucher {
     sql: ${TABLE}.type ;;
   }
 
+  dimension: use_case {
+    label: "Voucher Use Case"
+    type: string
+    sql:  CASE WHEN UPPER(${TABLE}.code) LIKE '%EMP%' THEN 'Employees'
+              WHEN LENGTH(REGEXP_REPLACE(code, r'[\d.]', '')) = 0 THEN 'Employees'
+              WHEN UPPER(${TABLE}.code) LIKE 'AP%' THEN 'Customer Service'
+              WHEN UPPER(${TABLE}.code) LIKE '%SORRY%' THEN 'Customer Service'
+              WHEN ${TABLE}.type = 'shipping' THEN 'Free Delivery'
+              WHEN UPPER(${TABLE}.code) LIKE '%EMP%' THEN 'Employees'
+              ELSE 'Marketing'
+          END
+    ;;
+  }
+
   dimension: usage_limit {
     type: number
     sql: ${TABLE}.usage_limit ;;
