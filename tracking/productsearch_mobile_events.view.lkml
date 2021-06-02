@@ -1,5 +1,6 @@
 view: productsearch_mobile_events {
   derived_table: {
+    persist_for: "24 hours"
     sql: WITH
         tracks_data AS (
         SELECT
@@ -72,7 +73,7 @@ view: productsearch_mobile_events {
 
   measure: cnt_unique_anonymousid {
     label: "# Unique Users"
-    description: "Count of Unique Users identified via Anonymous ID from Segment"
+    description: "Number of Unique Users identified via Anonymous ID from Segment"
     hidden:  no
     type: count_distinct
     sql: ${anonymous_id};;
@@ -81,35 +82,35 @@ view: productsearch_mobile_events {
 
   measure: cnt_nonzero_total_results {
     label: "Count of nonzero results"
-    description: "Count of total results where total results > 0"
+    description: "Number of searches that returned at least one product"
     type: sum
     sql: if(${search_results_total_count}>0,1,0) ;;
   }
 
   measure: cnt_zero_total_results {
     label: "Count of zero results"
-    description: "Count of total results where total results = 0"
+    description: "Number of searches that returned zero products"
     type: sum
     sql: if(${search_results_total_count}=0,1,0) ;;
   }
 
   measure: cnt_nonzero_available_results {
     label: "Count of nonzero available results"
-    description: "Count of available product results where available products > 0"
+    description: "Number of searches that returned at least one available product"
     type: sum
     sql: if(${search_results_available_count}>0,1,0) ;;
   }
 
   measure: cnt_zero_available_results {
     label: "Count of zero available results"
-    description: "Count of available product results where available products = 0"
+    description: "Number of searches that returned no available products"
     type: sum
     sql: if(${search_results_available_count}=0,1,0) ;;
   }
 
   measure: cnt_nonzero_only_unavailable_results {
     label: "Count of only unavailable results"
-    description: "Count of searches that resulted in total results > 0, but available results = 0 (only unavailable products)"
+    description: "Number of searches that returned only unavailable (out of stock) products"
     type: sum
     sql: if(${search_results_available_count}=0 AND ${search_results_total_count}>0,1,0) ;;
   }

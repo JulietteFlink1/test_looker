@@ -254,6 +254,13 @@ explore: order_order {
     type: left_outer
   }
 
+  join: product_attribute_facts {
+    sql_on: ${product_product.country_iso} = ${product_attribute_facts.country_iso} AND
+      ${product_product.id} = ${product_attribute_facts.id} ;;
+    relationship: one_to_one
+    type: left_outer
+  }
+
   join: product_category {
     sql_on: ${product_category.country_iso} = ${product_product.country_iso} AND
             ${product_category.id} = ${product_product.category_id} ;;
@@ -323,8 +330,6 @@ explore: order_order {
     relationship: many_to_one # decided against one_to_many: on this level, many orders have hub-level issue-aggregates
     type: left_outer
   }
-
-
 
 }
 
@@ -417,6 +422,16 @@ explore: product_product {
             ${product_product.id} = ${product_attribute_facts.id} ;;
     relationship: one_to_one
     type: left_outer
+    fields: [
+      country_iso,
+      id,
+      sku,
+      leading_product,
+      noos_group,
+      substitute_group,
+      substitute_group_internal_ranking,
+      ean
+    ]
   }
 }
 
@@ -443,6 +458,15 @@ explore: hist_daily_stock {
     relationship: many_to_one
     type: left_outer
   }
+}
+
+####### Substitute Group Rating #######
+explore: product_attribute_fact_ranking_hlp {
+  label: "Substitute Group: Product Rating"
+  view_label: "Substitute Group: Product Rating"
+  group_label: "02) Inventory"
+
+  # access filter : should be derived from the order_order explore
 }
 
 ####### VOUCHER EXPLORE #######
