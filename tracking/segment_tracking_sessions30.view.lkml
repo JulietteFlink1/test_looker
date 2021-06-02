@@ -748,25 +748,25 @@ view: segment_tracking_sessions30 {
   measure: mcvr1 {
     type: number
     value_format_name: percent_2
-    sql: ${cnt_address_selected}/${count} ;;
+    sql: ${cnt_address_selected}/NULLIF(${count},0) ;;
   }
 
   measure: mcvr2 {
     type: number
     value_format_name: percent_2
-    sql: ${cnt_add_to_cart}/${cnt_home_viewed} ;;
+    sql: ${cnt_add_to_cart}/NULLIF(${cnt_home_viewed}) ;;
   }
 
   measure: mcvr3 {
     type: number
     value_format_name: percent_2
-    sql: ${cnt_checkout_started}/${cnt_add_to_cart} ;;
+    sql: ${cnt_checkout_started}/NULLIF(${cnt_add_to_cart}) ;;
   }
 
   measure: mcvr4 {
     type: number
     value_format_name: percent_2
-    sql: ${cnt_payment_started}/${cnt_checkout_started} ;;
+    sql: ${cnt_payment_started}/NULLIF(${cnt_checkout_started}) ;;
   }
 
 
