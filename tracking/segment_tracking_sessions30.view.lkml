@@ -13,9 +13,9 @@ view: segment_tracking_sessions30 {
             *,
             TIMESTAMP_DIFF(timestamp,LAG(timestamp) OVER(PARTITION BY anonymous_id ORDER BY timestamp), MINUTE) AS inactivity_time
           FROM
-            `flink-backend.flink_ios_production.tracks_view`
-          WHERE
-            NOT (context_app_name = "Flink-Staging" OR context_app_name="Flink-Debug")) event_ios
+            `flink-backend.flink_ios_production.tracks_view`) event_ios
+          --WHERE
+            --NOT (context_app_name = "Flink-Staging" OR context_app_name="Flink-Debug")) event_ios
         WHERE
           (event_ios.inactivity_time > 30
             OR event_ios.inactivity_time IS NULL)
