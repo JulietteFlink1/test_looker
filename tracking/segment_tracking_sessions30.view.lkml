@@ -742,7 +742,7 @@ view: segment_tracking_sessions30 {
   measure: overall_conversion_rate {
     type: number
     value_format_name: percent_2
-    sql: ${cnt_purchase}/${count} ;;
+    sql: ${cnt_purchase}/NULLIF(${count},0) ;;
   }
 
   measure: mcvr1 {
@@ -754,19 +754,19 @@ view: segment_tracking_sessions30 {
   measure: mcvr2 {
     type: number
     value_format_name: percent_2
-    sql: ${cnt_add_to_cart}/NULLIF(${cnt_home_viewed}) ;;
+    sql: ${cnt_add_to_cart}/NULLIF(${cnt_home_viewed},0) ;;
   }
 
   measure: mcvr3 {
     type: number
     value_format_name: percent_2
-    sql: ${cnt_checkout_started}/NULLIF(${cnt_add_to_cart}) ;;
+    sql: ${cnt_checkout_started}/NULLIF(${cnt_add_to_cart},0) ;;
   }
 
   measure: mcvr4 {
     type: number
     value_format_name: percent_2
-    sql: ${cnt_payment_started}/NULLIF(${cnt_checkout_started}) ;;
+    sql: ${cnt_payment_started}/NULLIF(${cnt_checkout_started},0) ;;
   }
 
 
