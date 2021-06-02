@@ -754,19 +754,19 @@ view: segment_tracking_sessions30 {
   measure: mcvr2 {
     type: number
     value_format_name: percent_2
-    sql: ${cnt_add_to_cart}/${count} ;;
+    sql: ${cnt_add_to_cart}/${cnt_home_viewed} ;;
   }
 
   measure: mcvr3 {
     type: number
     value_format_name: percent_2
-    sql: ${cnt_checkout_started}/${count} ;;
+    sql: ${cnt_checkout_started}/${cnt_add_to_cart} ;;
   }
 
   measure: mcvr4 {
     type: number
     value_format_name: percent_2
-    sql: ${cnt_payment_started}/${count} ;;
+    sql: ${cnt_payment_started}/${cnt_checkout_started} ;;
   }
 
 
