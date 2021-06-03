@@ -4,9 +4,14 @@ view: gorillas_orders {
   drill_fields: [id]
 
   dimension: id {
-    primary_key: yes
     type: string
     sql: ${TABLE}.id ;;
+  }
+
+  dimension: unique_id {
+    type: string
+    primary_key: yes
+    sql: CONCAT(${TABLE}.id, ${TABLE}.orders) ;;
   }
 
   dimension: country {
