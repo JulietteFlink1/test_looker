@@ -1,7 +1,6 @@
 view: product_attribute_facts {
   derived_table: {
     sql:
-    --test
           SELECT
           a.country_iso,
           a.id,
