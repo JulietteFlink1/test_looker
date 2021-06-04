@@ -624,54 +624,63 @@ view: segment_tracking_sessions30 {
 
   measure: cnt_address_selected {
     label: "Address selected count"
+    description: "Number of sessions in which at least one Address Confirmed event happened"
     type: count
     filters: [address_confirmed: "NOT NULL"]
   }
 
   measure: cnt_location_pin_placed {
     label: "Location pin placed count"
+    description: "Number of sessions in which at least one Location Pin Placed event happened"
     type: count
     filters: [location_pin_placed: "NOT NULL"]
   }
 
   measure: cnt_home_viewed {
     label: "Home view count"
+    description: "Number of sessions in which at least one Home Viewed event happened"
     type: count
     filters: [home_viewed: "NOT NULL"]
   }
 
   measure: cnt_view_item {
     label: "View item count"
+    description: "Number of sessions in which at least one Product Details Viewed event happened"
     type: count
     filters: [view_item: "NOT NULL"]
   }
 
   measure: cnt_add_to_cart {
     label: "Add to cart count"
+    description: "Number of sessions in which at least one Product Added To Cart event happened"
     type: count
     filters: [add_to_cart: "NOT NULL"]
   }
 
   measure: cnt_view_cart {
     label: "View cart count"
+    description: "Number of sessions in which at least one Cart Viewed event happened"
     type: count
     filters: [view_cart: "NOT NULL"]
   }
 
   measure: cnt_checkout_started {
     label: "Checkout started count"
+    description: "Number of sessions in which at least one Checkout Started event happened"
     type: count
     filters: [checkout_started: "NOT NULL"]
   }
 
   measure: cnt_payment_started {
     label: "Payment started count"
+    description: "Number of sessions in which at least one Payment Started event happened"
     type: count
     filters: [payment_started: "NOT NULL"]
   }
 
   measure: cnt_purchase {
     label: "Order placed count"
+    description: "Number of sessions in which at least one Order Placed event happened"
     type: count
     filters: [order_placed: "NOT NULL"]
   }
