@@ -523,6 +523,7 @@ view: segment_tracking_sessions30 {
 
   measure: count {
     type: count
+    description: "Number of sessions"
     drill_fields: [detail*]
   }
 
@@ -741,31 +742,36 @@ view: segment_tracking_sessions30 {
   ## Measures based on other measures
   measure: overall_conversion_rate {
     type: number
-    value_format_name: percent_2
+    description: "Number of sessions in which an Order Placed event happened, compared to the total number of Session Started"
+    value_format_name: percent_1
     sql: ${cnt_purchase}/NULLIF(${count},0) ;;
   }
 
   measure: mcvr1 {
     type: number
-    value_format_name: percent_2
+    description: "Number of sessions in which an Addres Confirmed event happened, compared to the total number of Session Started"
+    value_format_name: percent_1
     sql: ${cnt_address_selected}/NULLIF(${count},0) ;;
   }
 
   measure: mcvr2 {
     type: number
-    value_format_name: percent_2
+    description: "Number of sessions in which a Product Added To Cart event happened, compared to the number of sessions in which a Home Viewed event happened"
+    value_format_name: percent_1
     sql: ${cnt_add_to_cart}/NULLIF(${cnt_home_viewed},0) ;;
   }
 
   measure: mcvr3 {
     type: number
-    value_format_name: percent_2
+    description: "Number of sessions in which a Checkout Started event happened, compared to the number of sessions in which a Product Added To Cart event happened"
+    value_format_name: percent_1
     sql: ${cnt_checkout_started}/NULLIF(${cnt_add_to_cart},0) ;;
   }
 
   measure: mcvr4 {
     type: number
-    value_format_name: percent_2
+    description: "Number of sessions in which a Payment Started event happened, compared to the number of sessions in which a Checkout Started event happened"
+    value_format_name: percent_1
     sql: ${cnt_payment_started}/NULLIF(${cnt_checkout_started},0) ;;
   }
 
