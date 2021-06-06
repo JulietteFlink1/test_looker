@@ -161,4 +161,21 @@ view: product_product {
     sql: ${TABLE}.visible_in_listings ;;
   }
 
+  measure: cnt_sku {
+    label: "# SKUs (Total)"
+    description: "Count of Total SKUs in Assortment"
+    hidden:  no
+    type: count
+    value_format: "0"
+  }
+
+  measure: cnt_sku_published {
+    label: "# SKUs (Published)"
+    description: "Count of published SKUs in Assortment"
+    hidden:  no
+    type: count
+    value_format: "0"
+    filters: [is_published: "yes"]
+  }
+
 }
