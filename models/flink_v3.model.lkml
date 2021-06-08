@@ -1011,6 +1011,14 @@ explore: gorillas_inventory{
   # }
 }
 
+explore: gorillas_hubs{
+  label: "Gorillas Hubs"
+  view_label: "Gorillas Hubs"
+  group_label: "08) Competitor Analysis"
+  description: "Current Hubs"
+  hidden: no
+}
+
 explore: gorillas_items_hist{
   label: "Gorillas Items Added/ Removed"
   view_label: "Gorillas Items Added/ Removed"
