@@ -286,7 +286,7 @@ shifts as
         (filled_riders.filled_riders * (cast(rider_hours.rider_hours as FLOAT64) / 60.0)) / nullif(staffed_riders.workers,0) as filled_rider_hours,
         cast(picker_hours.picker_hours as FLOAT64) / 60.0 as planned_picker_hours,
         (filled_pickers.filled_pickers * (cast(picker_hours.picker_hours as FLOAT64) / 60.0)) / nullif(staffed_pickers.workers,0) as filled_picker_hours
-        from `flink-data-dev.forecasting.shiftblocks_hubs` shiftblocks_hubs
+        from `flink-backend.rider_staffing.shiftblocks_hubs` shiftblocks_hubs
         left join `flink-backend.order_forecast.historical_forecasts` historical_forecasts
         on (shiftblocks_hubs.block_starts_at  = historical_forecasts.start_datetime and shiftblocks_hubs.block_ends_at = historical_forecasts.end_datetime)
             and shiftblocks_hubs.hub_name = historical_forecasts.warehouse
