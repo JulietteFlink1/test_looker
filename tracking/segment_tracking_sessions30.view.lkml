@@ -607,6 +607,11 @@ view: segment_tracking_sessions30 {
     sql: ${TABLE}.session ;;
   }
 
+  dimension: returning_customer {
+    type: yesno
+    sql: ${TABLE}.has_ordered ;;
+  }
+
   dimension: add_to_cart {
     type: number
     sql: ${TABLE}.add_to_cart ;;
