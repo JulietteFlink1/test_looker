@@ -1,312 +1,366 @@
 view: riders_forecast_staffing {
   derived_table: {
-    sql: with historical_orders as
-        (
-            select TIMESTAMP_SECONDS(30*60 * DIV(UNIX_SECONDS(created), 30*60)) timekey,
-            CASE WHEN JSON_EXTRACT_SCALAR(metadata, '$.warehouse') IN ('hamburg-oellkersallee', 'hamburg-oelkersallee') THEN 'de_ham_alto'
-            WHEN JSON_EXTRACT_SCALAR(metadata, '$.warehouse') = 'münchen-leopoldstraße' THEN 'de_muc_schw'
-            ELSE JSON_EXTRACT_SCALAR(metadata, '$.warehouse') end as warehouse,
-            count(id) as orders
-            from `flink-backend.saleor_db_global.order_order`
-            where status in ('fulfilled', 'partially fulfilled') and
-            user_email not LIKE '%goflink%' OR user_email not LIKE '%pickery%'
-            OR LOWER(user_email) not IN ('christoph.a.cordes@gmail.com', 'jfdames@gmail.com', 'oliver.merkel@gmail.com',
-                                                'alenaschneck@gmx.de', 'saadsaeed354@gmail.com', 'saadsaeed353@gmail.com',
-                                                'fabian.hardenberg@gmail.com', 'benjamin.zagel@gmail.com')
-            group by 1, 2
-        ),
+    sql: with
+          historical_orders   as
+              (
+                  select
+                      timestamp_seconds(30 * 60 * div(unix_seconds(created), 30 * 60)) as timekey
+                    , case
+                          when json_extract_scalar(metadata, '$.warehouse') in
+                               ('hamburg-oellkersallee', 'hamburg-oelkersallee') then 'de_ham_alto'
+                          when json_extract_scalar(metadata, '$.warehouse') = 'münchen-leopoldstraße' then 'de_muc_schw'
+                          else json_extract_scalar(metadata, '$.warehouse') end        as warehouse
+                    , count(id)                                                        as orders
+                  from `flink-backend.saleor_db_global.order_order`
+                  where status in ('fulfilled', 'partially fulfilled') and
+                        user_email not like '%goflink%'
+                     or user_email not like '%pickery%'
+                     or lower(user_email) not in
+                        ('christoph.a.cordes@gmail.com', 'jfdames@gmail.com', 'oliver.merkel@gmail.com',
+                         'alenaschneck@gmx.de', 'saadsaeed354@gmail.com', 'saadsaeed353@gmail.com',
+                         'fabian.hardenberg@gmail.com', 'benjamin.zagel@gmail.com')
+                  group by 1, 2
+              )
+        , shifts              as
+              (
+                  select
+                      shifts.starts_at
+                    , shifts.ends_at
+                    , lower(locations_positions.location_name) as hub_name
+                    , shifts.workers
+                    , lower(locations_positions.position_name) as position
+                  from `flink-data-staging.shyftplan_v1.shifts`                   shifts
+                  left join `flink-data-staging.shyftplan_v1.locations_positions` locations_positions
+                            on shifts.locations_position_id = locations_positions.id
+                  where lower(locations_positions.position_name) like '%rider%'
+                     or lower(locations_positions.position_name) like '%picker%'
+                  order by 3, 1 asc
+              )
+        , staffed_riders      as
+              (
+                  select
+                      shiftblocks_hubs.date
+                    , shiftblocks_hubs.block_starts_at
+                    , shiftblocks_hubs.block_ends_at
+                    , shiftblocks_hubs.hub_name
+                    , shiftblocks_hubs.city
+                    , sum(shifts.workers) as workers
+                  from `flink-data-dev.forecasting.shiftblocks_hubs` shiftblocks_hubs
+                  left join shifts
+                            on shiftblocks_hubs.hub_name = shifts.hub_name and
+                               (
+                                       (
+                                               (shifts.starts_at <= shiftblocks_hubs.block_starts_at)
+                                               or (shifts.starts_at > shiftblocks_hubs.block_starts_at and
+                                                   shifts.starts_at < shiftblocks_hubs.block_ends_at)
+                                           )
+                                       and
+                                       (
+                                               (shifts.ends_at >= shiftblocks_hubs.block_ends_at)
+                                               or (shifts.ends_at < shiftblocks_hubs.block_ends_at and
+                                                   shifts.ends_at > shiftblocks_hubs.block_starts_at)
+                                           )
+                                   )
+                  where shifts.position = 'rider'
+                  group by 1, 2, 3, 4, 5
+                  order by 4, 2 asc
+              )
+        , staffed_pickers     as
+              (
+                  select
+                      shiftblocks_hubs.date
+                    , shiftblocks_hubs.block_starts_at
+                    , shiftblocks_hubs.block_ends_at
+                    , shiftblocks_hubs.hub_name
+                    , shiftblocks_hubs.city
+                    , sum(shifts.workers) as workers
+                  from `flink-data-dev.forecasting.shiftblocks_hubs` shiftblocks_hubs
+                  left join shifts
+                            on shiftblocks_hubs.hub_name = shifts.hub_name and
+                               (
+                                       (
+                                               (shifts.starts_at <= shiftblocks_hubs.block_starts_at)
+                                               or (shifts.starts_at > shiftblocks_hubs.block_starts_at and
+                                                   shifts.starts_at < shiftblocks_hubs.block_ends_at)
+                                           )
+                                       and
+                                       (
+                                               (shifts.ends_at >= shiftblocks_hubs.block_ends_at)
+                                               or (shifts.ends_at < shiftblocks_hubs.block_ends_at and
+                                                   shifts.ends_at > shiftblocks_hubs.block_starts_at)
+                                           )
+                                   )
+                  where shifts.position = 'picker'
+                  group by 1, 2, 3, 4, 5
+                  order by 4, 2 asc
+              )
+        , hours_riders        as
+              (
+                  select
+                      shiftblocks_hubs.date
+                    , shiftblocks_hubs.block_starts_at
+                    , shiftblocks_hubs.block_ends_at
+                    , shiftblocks_hubs.hub_name
+                    , shiftblocks_hubs.city
+                    , cast(date_diff(
+                          least(shiftblocks_hubs.block_ends_at, shifts.ends_at),
+                          greatest(shiftblocks_hubs.block_starts_at, shifts.starts_at),
+                          minute
+                      ) as float64) * shifts.workers as rider_hours
+                  from `flink-data-dev.forecasting.shiftblocks_hubs` shiftblocks_hubs
+                  left join shifts
+                            on shiftblocks_hubs.hub_name = shifts.hub_name and
+                               (
+                                       (
+                                               (shifts.starts_at <= shiftblocks_hubs.block_starts_at)
+                                               or (shifts.starts_at > shiftblocks_hubs.block_starts_at and
+                                                   shifts.starts_at < shiftblocks_hubs.block_ends_at)
+                                           )
+                                       and
+                                       (
+                                               (shifts.ends_at >= shiftblocks_hubs.block_ends_at)
+                                               or (shifts.ends_at < shiftblocks_hubs.block_ends_at and
+                                                   shifts.ends_at > shiftblocks_hubs.block_starts_at)
+                                           )
+                                   )
+                  where shifts.position = 'rider'
+                  order by 4, 2 asc
+              )
+        , hours_pickers       as
+              (
+                  select
+                      shiftblocks_hubs.date
+                    , shiftblocks_hubs.block_starts_at
+                    , shiftblocks_hubs.block_ends_at
+                    , shiftblocks_hubs.hub_name
+                    , shiftblocks_hubs.city
+                    , cast(date_diff(
+                          least(shiftblocks_hubs.block_ends_at, shifts.ends_at),
+                          greatest(shiftblocks_hubs.block_starts_at, shifts.starts_at),
+                          minute
+                      ) as float64) * shifts.workers as picker_hours
+                  from `flink-data-dev.forecasting.shiftblocks_hubs` shiftblocks_hubs
+                  left join shifts
+                            on shiftblocks_hubs.hub_name = shifts.hub_name and
+                               (
+                                       (
+                                               (shifts.starts_at <= shiftblocks_hubs.block_starts_at)
+                                               or (shifts.starts_at > shiftblocks_hubs.block_starts_at and
+                                                   shifts.starts_at < shiftblocks_hubs.block_ends_at)
+                                           )
+                                       and
+                                       (
+                                               (shifts.ends_at >= shiftblocks_hubs.block_ends_at)
+                                               or (shifts.ends_at < shiftblocks_hubs.block_ends_at and
+                                                   shifts.ends_at > shiftblocks_hubs.block_starts_at)
+                                           )
+                                   )
+                  where shifts.position = 'picker'
+                  order by 4, 2 asc
+              )
+        , rider_hours         as
+              (
+                  select
+                      date
+                    , block_starts_at
+                    , block_ends_at
+                    , hub_name
+                    , city
+                    , sum(rider_hours) as rider_hours
+                  from hours_riders
+                  group by 1, 2, 3, 4, 5
+              )
+        , picker_hours        as
+              (
+                  select
+                      date
+                    , block_starts_at
+                    , block_ends_at
+                    , hub_name
+                    , city
+                    , sum(picker_hours) as picker_hours
+                  from hours_pickers
+                  group by 1, 2, 3, 4, 5
+              )
+        , evaluations_riders  as
+              (
+                  select
+                      shift.starts_at
+                    , shift.ends_at
+                    , lower(location.name)              as hub_name
+                    , employment_id in (422284, 422016) as is_external
+                    , state in ('no_show')              as is_no_show
+                    , count(distinct employment_id)     as cnt_employees
+                  from `flink-data-staging.shyftplan_v1.evaluations`              evaluations
+                  left join `flink-data-staging.shyftplan_v1.locations_positions` locations_positions
+                            on evaluations.locations_position_id = locations_positions.id
+                  where (lower(position.name) like '%rider%')
+                  group by 1, 2, 3, 4, 5
+                  order by 1 desc, 2, 3
+              )
+        , evaluations_pickers as
+              (
+                  select
+                      shift.starts_at
+                    , shift.ends_at
+                    , lower(location.name)              as hub_name
+                    , employment_id in (422284, 422016) as is_external
+                    , state in ('no_show')              as is_no_show
+                    , count(distinct employment_id)     as cnt_employees
+                  from `flink-data-staging.shyftplan_v1.evaluations`              evaluations
+                  left join `flink-data-staging.shyftplan_v1.locations_positions` locations_positions
+                            on evaluations.locations_position_id = locations_positions.id
+                  where (lower(position.name) like '%picker%')
+                  group by 1, 2, 3, 4, 5
+                  order by 1 desc, 2, 3
+              )
+        , filled_riders       as
+              (
+                  select
+                      shiftblocks_hubs.date
+                    , shiftblocks_hubs.block_starts_at
+                    , shiftblocks_hubs.block_ends_at
+                    , shiftblocks_hubs.hub_name
+                    , shiftblocks_hubs.city
+                    , sum(cnt_employees)                        as filled_riders
+                    , sum(if(is_external, cnt_employees, null)) as filled_ext_riders
+                    , sum(if(is_no_show, cnt_employees, null))  as filled_no_show_riders
+                  from `flink-data-dev.forecasting.shiftblocks_hubs` shiftblocks_hubs
+                  left join evaluations_riders
+                            on shiftblocks_hubs.hub_name = evaluations_riders.hub_name and
+                               (
+                                       (
+                                               (evaluations_riders.starts_at <= shiftblocks_hubs.block_starts_at)
+                                               or (evaluations_riders.starts_at > shiftblocks_hubs.block_starts_at and
+                                                   evaluations_riders.starts_at < shiftblocks_hubs.block_ends_at)
+                                           )
+                                       and
+                                       (
+                                               (evaluations_riders.ends_at >= shiftblocks_hubs.block_ends_at)
+                                               or (evaluations_riders.ends_at < shiftblocks_hubs.block_ends_at and
+                                                   evaluations_riders.ends_at > shiftblocks_hubs.block_starts_at)
+                                           )
+                                   )
+                  group by 1, 2, 3, 4, 5
+                  order by 4, 2 asc
+              )
+        , filled_pickers      as
+              (
+                  select
+                      shiftblocks_hubs.date
+                    , shiftblocks_hubs.block_starts_at
+                    , shiftblocks_hubs.block_ends_at
+                    , shiftblocks_hubs.hub_name
+                    , shiftblocks_hubs.city
+                    , sum(cnt_employees)                        as filled_pickers
+                    , sum(if(is_external, cnt_employees, null)) as filled_ext_pickers
+                    , sum(if(is_no_show, cnt_employees, null))  as filled_no_show_pickers
+                  from `flink-data-dev.forecasting.shiftblocks_hubs` shiftblocks_hubs
+                  left join evaluations_pickers
+                            on shiftblocks_hubs.hub_name = evaluations_pickers.hub_name and
+                               (
+                                       (
+                                               (evaluations_pickers.starts_at <= shiftblocks_hubs.block_starts_at)
+                                               or (evaluations_pickers.starts_at > shiftblocks_hubs.block_starts_at and
+                                                   evaluations_pickers.starts_at < shiftblocks_hubs.block_ends_at)
+                                           )
+                                       and
+                                       (
+                                               (evaluations_pickers.ends_at >= shiftblocks_hubs.block_ends_at)
+                                               or (evaluations_pickers.ends_at < shiftblocks_hubs.block_ends_at and
+                                                   evaluations_pickers.ends_at > shiftblocks_hubs.block_starts_at)
+                                           )
+                                   )
+                  group by 1, 2, 3, 4, 5
+                  order by 4, 2 asc
+              )
 
-shifts as
-        (
-            select
-            shifts.starts_at,
-            shifts.ends_at,
-            lower(locations_positions.location_name) as hub_name,
-            shifts.workers,
-            lower(locations_positions.position_name) as position
-            from `flink-data-staging.shyftplan_v1.shifts` shifts
-            left join `flink-data-staging.shyftplan_v1.locations_positions` locations_positions
-            on shifts.locations_position_id = locations_positions.id
-            where lower(locations_positions.position_name) like '%rider%' or lower(locations_positions.position_name) like '%picker%'
-            order by 3, 1 asc
-        ),
+      select
+          shiftblocks_hubs.date
+        , shiftblocks_hubs.block_starts_at
+        , shiftblocks_hubs.block_ends_at
+        , shiftblocks_hubs.hub_name
+        , shiftblocks_hubs.city
+        , historical_orders.orders
+        , historical_forecasts.prediction                                                   as predicted_orders
+        , historical_forecasts.lower_bound
+        , historical_forecasts.upper_bound
+        , staffed_riders.workers                                                            as planned_riders
+        , staffed_pickers.workers                                                           as planned_pickers
+        , filled_riders.filled_riders
+        , filled_riders.filled_ext_riders
+        , filled_riders.filled_no_show_riders
+        , filled_pickers.filled_pickers
+        , filled_pickers.filled_ext_pickers
+        , filled_pickers.filled_no_show_pickers
 
-        staffed_riders as
-        (
-            select shiftblocks_hubs.date,
-            shiftblocks_hubs.block_starts_at,
-            shiftblocks_hubs.block_ends_at,
-            shiftblocks_hubs.hub_name,
-            shiftblocks_hubs.city,
-            sum(shifts.workers) as workers
-            from `flink-data-dev.forecasting.shiftblocks_hubs` shiftblocks_hubs
-            left join shifts
-            on shiftblocks_hubs.hub_name = shifts.hub_name and
-                (
-                    (
-                        (shifts.starts_at <= shiftblocks_hubs.block_starts_at)
-                            or (shifts.starts_at > shiftblocks_hubs.block_starts_at and shifts.starts_at < shiftblocks_hubs.block_ends_at)
-                    )
+        , cast(rider_hours.rider_hours as float64) / 60.0                                   as planned_rider_hours
+        , (filled_riders.filled_riders * (cast(rider_hours.rider_hours as float64) / 60.0)) /
+          nullif(staffed_riders.workers, 0)                                                 as filled_rider_hours
+        , (filled_riders.filled_ext_riders * (cast(rider_hours.rider_hours as float64) / 60.0)) /
+          nullif(staffed_riders.workers, 0)                                                 as filled_ext_rider_hours
+        , (filled_riders.filled_no_show_riders * (cast(rider_hours.rider_hours as float64) / 60.0)) /
+          nullif(staffed_riders.workers, 0)                                                 as filled_no_show_rider_hours
+          -- if overstaffed, treat it as planning met
+          -- basically planned minus filled
+       -- , if((cast(rider_hours.rider_hours as float64) / 60.0) -
+         --    (filled_riders.filled_riders * (cast(rider_hours.rider_hours as float64) / 60.0)) /
+           --  nullif(staffed_riders.workers, 0) < 0, 0, (cast(rider_hours.rider_hours as float64) / 60.0) -
+             --                                          (filled_riders.filled_riders *
+               --                                         (cast(rider_hours.rider_hours as float64) / 60.0)) /
+                 --                                      nullif(staffed_riders.workers, 0))   as unfilled_rider_hours
 
-                    and
-                    (
-                        (shifts.ends_at >= shiftblocks_hubs.block_ends_at)
-                            or (shifts.ends_at < shiftblocks_hubs.block_ends_at and shifts.ends_at > shiftblocks_hubs.block_starts_at)
-                    )
 
-                )
-            where shifts.position = 'rider'
-            group by 1, 2, 3, 4, 5
-            order by 4, 2 asc
+        , cast(picker_hours.picker_hours as float64) / 60.0                                 as planned_picker_hours
+        , (filled_pickers.filled_pickers * (cast(picker_hours.picker_hours as float64) / 60.0)) /
+          nullif(staffed_pickers.workers, 0)                                                as filled_picker_hours
+        , (filled_pickers.filled_ext_pickers * (cast(picker_hours.picker_hours as float64) / 60.0)) /
+          nullif(staffed_pickers.workers, 0)                                                as filled_ext_picker_hours
+        , (filled_pickers.filled_no_show_pickers * (cast(picker_hours.picker_hours as float64) / 60.0)) /
+          nullif(staffed_pickers.workers, 0)                                                as filled_no_show_picker_hours
+          -- if overstaffed, treat it as planning met
+          -- basically planned minus filled
+        --, if((cast(picker_hours.picker_hours as float64) / 60.0) -
+        --    (filled_pickers.filled_pickers * (cast(picker_hours.picker_hours as float64) / 60.0)) /
+      --      nullif(staffed_pickers.workers, 0) < 0, 0, (cast(picker_hours.picker_hours as float64) / 60.0) -
+        --                                                (filled_pickers.filled_pickers *
+          --                                              (cast(picker_hours.picker_hours as float64) / 60.0)) /
+            --                                            nullif(staffed_pickers.workers, 0)) as unfilled_picker_hours
 
-        ),
-
-        staffed_pickers as
-        (
-            select shiftblocks_hubs.date,
-            shiftblocks_hubs.block_starts_at,
-            shiftblocks_hubs.block_ends_at,
-            shiftblocks_hubs.hub_name,
-            shiftblocks_hubs.city,
-            sum(shifts.workers) as workers
-            from `flink-data-dev.forecasting.shiftblocks_hubs` shiftblocks_hubs
-            left join shifts
-            on shiftblocks_hubs.hub_name = shifts.hub_name and
-                (
-                    (
-                        (shifts.starts_at <= shiftblocks_hubs.block_starts_at)
-                            or (shifts.starts_at > shiftblocks_hubs.block_starts_at and shifts.starts_at < shiftblocks_hubs.block_ends_at)
-                    )
-
-                    and
-                    (
-                        (shifts.ends_at >= shiftblocks_hubs.block_ends_at)
-                            or (shifts.ends_at < shiftblocks_hubs.block_ends_at and shifts.ends_at > shiftblocks_hubs.block_starts_at)
-                    )
-
-                )
-            where shifts.position = 'picker'
-            group by 1, 2, 3, 4, 5
-            order by 4, 2 asc
-
-        ),
-
-        hours_riders as
-        (
-            select shiftblocks_hubs.date,
-            shiftblocks_hubs.block_starts_at,
-            shiftblocks_hubs.block_ends_at,
-            shiftblocks_hubs.hub_name,
-            shiftblocks_hubs.city,
-            cast(date_diff(
-                   LEAST(shiftblocks_hubs.block_ends_at,shifts.ends_at),
-                   GREATEST(shiftblocks_hubs.block_starts_at,shifts.starts_at),
-                   MINUTE
-                  ) as FLOAT64) * shifts.workers as rider_hours
-            from `flink-data-dev.forecasting.shiftblocks_hubs` shiftblocks_hubs
-            left join shifts
-            on shiftblocks_hubs.hub_name = shifts.hub_name and
-                (
-                    (
-                        (shifts.starts_at <= shiftblocks_hubs.block_starts_at)
-                            or (shifts.starts_at > shiftblocks_hubs.block_starts_at and shifts.starts_at < shiftblocks_hubs.block_ends_at)
-                    )
-
-                    and
-                    (
-                        (shifts.ends_at >= shiftblocks_hubs.block_ends_at)
-                            or (shifts.ends_at < shiftblocks_hubs.block_ends_at and shifts.ends_at > shiftblocks_hubs.block_starts_at)
-                    )
-
-                )
-            where shifts.position = 'rider'
-            order by 4, 2 asc
-        ),
-
-        hours_pickers as
-        (
-            select shiftblocks_hubs.date,
-            shiftblocks_hubs.block_starts_at,
-            shiftblocks_hubs.block_ends_at,
-            shiftblocks_hubs.hub_name,
-            shiftblocks_hubs.city,
-            cast(date_diff(
-                   LEAST(shiftblocks_hubs.block_ends_at,shifts.ends_at),
-                   GREATEST(shiftblocks_hubs.block_starts_at,shifts.starts_at),
-                   MINUTE
-                  ) as FLOAT64) * shifts.workers as picker_hours
-            from `flink-data-dev.forecasting.shiftblocks_hubs` shiftblocks_hubs
-            left join shifts
-            on shiftblocks_hubs.hub_name = shifts.hub_name and
-                (
-                    (
-                        (shifts.starts_at <= shiftblocks_hubs.block_starts_at)
-                            or (shifts.starts_at > shiftblocks_hubs.block_starts_at and shifts.starts_at < shiftblocks_hubs.block_ends_at)
-                    )
-
-                    and
-                    (
-                        (shifts.ends_at >= shiftblocks_hubs.block_ends_at)
-                            or (shifts.ends_at < shiftblocks_hubs.block_ends_at and shifts.ends_at > shiftblocks_hubs.block_starts_at)
-                    )
-
-                )
-            where shifts.position = 'picker'
-            order by 4, 2 asc
-        ),
-
-        rider_hours as
-        (
-            select date,
-            block_starts_at,
-            block_ends_at,
-            hub_name,
-            city,
-            sum(rider_hours) as rider_hours
-            from hours_riders
-            group by 1, 2, 3, 4, 5
-
-        ),
-
-        picker_hours as
-        (
-            select date,
-            block_starts_at,
-            block_ends_at,
-            hub_name,
-            city,
-            sum(picker_hours) as picker_hours
-            from hours_pickers
-            group by 1, 2, 3, 4, 5
-
-        ),
-
-        evaluations_riders as
-            (
-                select
-                shift.starts_at,
-                shift.ends_at,
-                lower(location.name) as hub_name,
-                count(distinct employment_id) as cnt_employees
-                from `flink-data-staging.shyftplan_v1.evaluations` evaluations
-                left join `flink-data-staging.shyftplan_v1.locations_positions` locations_positions
-                on evaluations.locations_position_id = locations_positions.id
-                where
-                (lower(position.name) like '%rider%')
-                group by 1, 2, 3
-                order by 1 desc, 2, 3
-            ),
-
-        evaluations_pickers as
-            (
-                select
-                shift.starts_at,
-                shift.ends_at,
-                lower(location.name) as hub_name,
-                count(distinct employment_id) as cnt_employees
-                from `flink-data-staging.shyftplan_v1.evaluations` evaluations
-                left join `flink-data-staging.shyftplan_v1.locations_positions` locations_positions
-                on evaluations.locations_position_id = locations_positions.id
-                where
-                (lower(position.name) like '%picker%')
-                group by 1, 2, 3
-                order by 1 desc, 2, 3
-            ),
-
-        filled_riders as
-        (
-            select shiftblocks_hubs.date,
-            shiftblocks_hubs.block_starts_at,
-            shiftblocks_hubs.block_ends_at,
-            shiftblocks_hubs.hub_name,
-            shiftblocks_hubs.city,
-            sum(cnt_employees) as filled_riders
-            from `flink-data-dev.forecasting.shiftblocks_hubs` shiftblocks_hubs
-            left join evaluations_riders
-            on shiftblocks_hubs.hub_name = evaluations_riders.hub_name and
-                (
-                    (
-                        (evaluations_riders.starts_at <= shiftblocks_hubs.block_starts_at)
-                            or (evaluations_riders.starts_at > shiftblocks_hubs.block_starts_at and evaluations_riders.starts_at < shiftblocks_hubs.block_ends_at)
-                    )
-
-                    and
-                    (
-                        (evaluations_riders.ends_at >= shiftblocks_hubs.block_ends_at)
-                            or (evaluations_riders.ends_at < shiftblocks_hubs.block_ends_at and evaluations_riders.ends_at > shiftblocks_hubs.block_starts_at)
-                    )
-
-                )
-            group by 1, 2, 3, 4, 5
-            order by 4, 2 asc
-        ),
-
-        filled_pickers as
-        (
-            select shiftblocks_hubs.date,
-            shiftblocks_hubs.block_starts_at,
-            shiftblocks_hubs.block_ends_at,
-            shiftblocks_hubs.hub_name,
-            shiftblocks_hubs.city,
-            sum(cnt_employees) as filled_pickers
-            from `flink-data-dev.forecasting.shiftblocks_hubs` shiftblocks_hubs
-            left join evaluations_pickers
-            on shiftblocks_hubs.hub_name = evaluations_pickers.hub_name and
-                (
-                    (
-                        (evaluations_pickers.starts_at <= shiftblocks_hubs.block_starts_at)
-                            or (evaluations_pickers.starts_at > shiftblocks_hubs.block_starts_at and evaluations_pickers.starts_at < shiftblocks_hubs.block_ends_at)
-                    )
-
-                    and
-                    (
-                        (evaluations_pickers.ends_at >= shiftblocks_hubs.block_ends_at)
-                            or (evaluations_pickers.ends_at < shiftblocks_hubs.block_ends_at and evaluations_pickers.ends_at > shiftblocks_hubs.block_starts_at)
-                    )
-
-                )
-            group by 1, 2, 3, 4, 5
-            order by 4, 2 asc
-        )
-
-        select shiftblocks_hubs.date,
-        shiftblocks_hubs.block_starts_at,
-        shiftblocks_hubs.block_ends_at,
-        shiftblocks_hubs.hub_name,
-        shiftblocks_hubs.city,
-        historical_orders.orders,
-        historical_forecasts.prediction as predicted_orders,
-        historical_forecasts.lower_bound,
-        historical_forecasts.upper_bound,
-        staffed_riders.workers as planned_riders,
-        staffed_pickers.workers as planned_pickers,
-        filled_riders.filled_riders,
-        filled_pickers.filled_pickers,
-        cast(rider_hours.rider_hours as FLOAT64) / 60.0 as planned_rider_hours,
-        (filled_riders.filled_riders * (cast(rider_hours.rider_hours as FLOAT64) / 60.0)) / nullif(staffed_riders.workers,0) as filled_rider_hours,
-        cast(picker_hours.picker_hours as FLOAT64) / 60.0 as planned_picker_hours,
-        (filled_pickers.filled_pickers * (cast(picker_hours.picker_hours as FLOAT64) / 60.0)) / nullif(staffed_pickers.workers,0) as filled_picker_hours
-        from `flink-data-dev.forecasting.shiftblocks_hubs` shiftblocks_hubs
-        left join `flink-backend.order_forecast.historical_forecasts` historical_forecasts
-        on (shiftblocks_hubs.block_starts_at  = historical_forecasts.start_datetime and shiftblocks_hubs.block_ends_at = historical_forecasts.end_datetime)
-            and shiftblocks_hubs.hub_name = historical_forecasts.warehouse
-        left join historical_orders
-        on (shiftblocks_hubs.block_starts_at  = historical_orders.timekey)
-            and shiftblocks_hubs.hub_name = historical_orders.warehouse
-        left join staffed_riders
-        on shiftblocks_hubs.block_starts_at = staffed_riders.block_starts_at and shiftblocks_hubs.block_ends_at = staffed_riders.block_ends_at and shiftblocks_hubs.hub_name = staffed_riders.hub_name
-        left join staffed_pickers
-        on shiftblocks_hubs.block_starts_at = staffed_pickers.block_starts_at and shiftblocks_hubs.block_ends_at = staffed_pickers.block_ends_at and shiftblocks_hubs.hub_name = staffed_pickers.hub_name
-        left join rider_hours
-        on shiftblocks_hubs.block_starts_at = rider_hours.block_starts_at and shiftblocks_hubs.block_ends_at = rider_hours.block_ends_at and shiftblocks_hubs.hub_name = rider_hours.hub_name
-        left join picker_hours
-        on shiftblocks_hubs.block_starts_at = picker_hours.block_starts_at and shiftblocks_hubs.block_ends_at = picker_hours.block_ends_at and shiftblocks_hubs.hub_name = picker_hours.hub_name
-        left join filled_riders
-        on shiftblocks_hubs.block_starts_at = filled_riders.block_starts_at and shiftblocks_hubs.block_ends_at = filled_riders.block_ends_at and shiftblocks_hubs.hub_name = filled_riders.hub_name
-        left join filled_pickers
-        on shiftblocks_hubs.block_starts_at = filled_pickers.block_starts_at and shiftblocks_hubs.block_ends_at = filled_pickers.block_ends_at and shiftblocks_hubs.hub_name = filled_pickers.hub_name
-        order by 4, 2 asc
- ;;
+      from `flink-data-dev.forecasting.shiftblocks_hubs`            shiftblocks_hubs
+      left join `flink-backend.order_forecast.historical_forecasts` historical_forecasts
+                on (shiftblocks_hubs.block_starts_at = historical_forecasts.start_datetime and
+                    shiftblocks_hubs.block_ends_at = historical_forecasts.end_datetime)
+                    and shiftblocks_hubs.hub_name = historical_forecasts.warehouse
+      left join historical_orders
+                on (shiftblocks_hubs.block_starts_at = historical_orders.timekey)
+                    and shiftblocks_hubs.hub_name = historical_orders.warehouse
+      left join staffed_riders
+                on shiftblocks_hubs.block_starts_at = staffed_riders.block_starts_at and
+                   shiftblocks_hubs.block_ends_at = staffed_riders.block_ends_at and
+                   shiftblocks_hubs.hub_name = staffed_riders.hub_name
+      left join staffed_pickers
+                on shiftblocks_hubs.block_starts_at = staffed_pickers.block_starts_at and
+                   shiftblocks_hubs.block_ends_at = staffed_pickers.block_ends_at and
+                   shiftblocks_hubs.hub_name = staffed_pickers.hub_name
+      left join rider_hours
+                on shiftblocks_hubs.block_starts_at = rider_hours.block_starts_at and
+                   shiftblocks_hubs.block_ends_at = rider_hours.block_ends_at and
+                   shiftblocks_hubs.hub_name = rider_hours.hub_name
+      left join picker_hours
+                on shiftblocks_hubs.block_starts_at = picker_hours.block_starts_at and
+                   shiftblocks_hubs.block_ends_at = picker_hours.block_ends_at and
+                   shiftblocks_hubs.hub_name = picker_hours.hub_name
+      left join filled_riders
+                on shiftblocks_hubs.block_starts_at = filled_riders.block_starts_at and
+                   shiftblocks_hubs.block_ends_at = filled_riders.block_ends_at and
+                   shiftblocks_hubs.hub_name = filled_riders.hub_name
+      left join filled_pickers
+                on shiftblocks_hubs.block_starts_at = filled_pickers.block_starts_at and
+                   shiftblocks_hubs.block_ends_at = filled_pickers.block_ends_at and
+                   shiftblocks_hubs.hub_name = filled_pickers.hub_name
+      order by 4, 2 asc
+       ;;
   }
 
 
@@ -611,12 +665,14 @@ shifts as
     type: sum
   }
 
+
   measure: sum_filled_picker_hours {
     group_label: " * Picker Hours * "
     label: "# Filled Picker Hours"
     sql: ${filled_picker_hours} ;;
     type: sum
   }
+
 
   measure: sum_forecasted_riders {
     group_label: " * Riders * "
@@ -668,7 +724,7 @@ shifts as
       ${sum_predicted_orders}
     {% endif %}
     ;;
-    }
+  }
 
   measure: KPI_planned {
     group_label: "* Dynamic KPI Fields *"
@@ -713,6 +769,123 @@ shifts as
     {% endif %}
     ;;
   }
+
+
+
+
+  ####### Measures Hub-Leaderboard
+
+  # measure: sum_filled_ext_riders {
+  #   group_label: "hlp Hub Leaderboard"
+  #   label: "# Filled External Riders"
+  #   sql: ${TABLE}.filled_ext_riders ;;
+  #   hidden: no
+  #   type: sum
+  # }
+  # measure: sum_filled_no_show_riders {
+  #   group_label: "hlp Hub Leaderboard"
+  #   label: "# Filled Riders - No Show"
+  #   sql: ${TABLE}.filled_no_show_riders ;;
+  #   hidden: no
+  #   type: sum
+  # }
+
+  # measure: sum_filled_ext_pickers {
+  #   group_label: "hlp Hub Leaderboard"
+  #   label: "# Filled External Pickers"
+  #   sql: ${TABLE}.filled_ext_pickers ;;
+  #   hidden: no
+  #   type: sum
+  # }
+  # measure: sum_filled_no_show_pickers {
+  #   group_label: "hlp Hub Leaderboard"
+  #   label: "# Filled Pickers - No Show"
+  #   sql: ${TABLE}.filled_no_show_pickers ;;
+  #   hidden: no
+  #   type: sum
+  # }
+
+  measure: sum_filled_ext_rider_hours {
+    view_label: "Hub Leaderboard"
+    group_label: "Hub Leaderboard - Shift Metrics"
+    label: "Hours: Filled Ext. Rider"
+    sql: ${TABLE}.filled_ext_rider_hours ;;
+    hidden: no
+    type: sum
+    value_format_name: decimal_1
+  }
+  measure: sum_filled_no_show_rider_hours {
+    view_label: "Hub Leaderboard"
+    group_label: "Hub Leaderboard - Shift Metrics"
+    label: "Hours: No Show Rider"
+    sql: ${TABLE}.filled_no_show_rider_hours ;;
+    hidden: no
+    type: sum
+    value_format_name: decimal_1
+  }
+
+  measure: sum_filled_ext_picker_hours {
+    view_label: "Hub Leaderboard"
+    group_label: "Hub Leaderboard - Shift Metrics"
+    label: "Hours: Filled Ext. Pickers"
+    sql: ${TABLE}.filled_ext_picker_hours ;;
+    hidden: no
+    type: sum
+    value_format_name: decimal_1
+  }
+  measure: sum_filled_no_show_picker_hours {
+    view_label: "Hub Leaderboard"
+    group_label: "Hub Leaderboard - Shift Metrics"
+    label: "Hours: No Show Pickers"
+    sql: ${TABLE}.filled_no_show_picker_hours ;;
+    hidden: no
+    type: sum
+    value_format_name: decimal_1
+  }
+
+  measure: sum_unfilled_picker_hours {
+    view_label: "Hub Leaderboard"
+    group_label: "Hub Leaderboard - Shift Metrics"
+    label: "Hours: Unfilled Pickers"
+    type: number
+    value_format_name: decimal_1
+    sql: if(
+              (${sum_planned_picker_hours} - ${sum_filled_picker_hours}) < 0
+            , 0
+            , (${sum_planned_picker_hours} - ${sum_filled_picker_hours})
+    );;
+  }
+
+  measure: sum_unfilled_rider_hours {
+    view_label: "Hub Leaderboard"
+    group_label: "Hub Leaderboard - Shift Metrics"
+    label: "Hours: Unfilled Riders"
+    type: number
+    value_format_name: decimal_1
+    sql: if(
+              (${sum_planned_rider_hours} - ${sum_filled_rider_hours}) < 0
+            , 0
+            , (${sum_planned_rider_hours} - ${sum_filled_rider_hours})
+    ) ;;
+  }
+
+  # measure: pct_no_show {
+  #   type: number
+  #   sql: (${sum_filled_no_show_picker_hours} + ${sum_filled_no_show_rider_hours}) / nullif((${sum_filled_picker_hours} + ${sum_filled_rider_hours}), 0) ;;
+  #   value_format_name: percent_1
+  # }
+
+  # measure: pct_open_shifts {
+  #   type: number
+  #   sql: (${sum_unfilled_picker_hours} + ${sum_unfilled_rider_hours}) / nullif((${sum_planned_picker_hours} + ${sum_planned_rider_hours}) ,0) ;;
+  #   value_format_name: percent_1
+  # }
+
+  # measure: pct_ext_shifts {
+  #   type: number
+  #   sql: (${sum_filled_ext_picker_hours} + ${sum_filled_ext_rider_hours}) / nullif((${sum_filled_picker_hours} + ${sum_filled_rider_hours}), 0) ;;
+  #   value_format_name: percent_1
+  # }
 
 
   set: detail {
