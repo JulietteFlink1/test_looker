@@ -27,11 +27,6 @@ view: cs_issues_post_delivery {
     sql: ${TABLE}.conversation_id ;;
   }
 
-  dimension: cw {
-    type: number
-    hidden: yes
-    sql: ${TABLE}.cw ;;
-  }
 
   dimension: date {
     type: string
@@ -71,10 +66,6 @@ view: cs_issues_post_delivery {
     sql: ${TABLE}.problem_group ;;
   }
 
-  dimension: solution {
-    type: string
-    sql: ${TABLE}.solution ;;
-  }
 
   measure: cnt_issues {
     label: "# Post Delivery Issues"

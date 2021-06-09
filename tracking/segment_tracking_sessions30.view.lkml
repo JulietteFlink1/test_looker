@@ -2,25 +2,39 @@ view: segment_tracking_sessions30 {
   derived_table: {
     persist_for: "1 hour"
     sql: WITH
+        base_table_ios AS (
+        SELECT
+            *,
+            TIMESTAMP_DIFF(timestamp,LAG(timestamp) OVER(PARTITION BY anonymous_id ORDER BY timestamp), MINUTE) AS inactivity_time,
+            event="order_placed" AS ordered_tmp,
+            --the following is not entirely elegant as it starts a new block with every order_placed, but the results are correct
+            SUM(CASE WHEN event="order_placed" THEN 1 ELSE 0 END) OVER(PARTITION BY anonymous_id ORDER BY timestamp) AS has_ordered_block_per_id
+          FROM
+            `flink-backend.flink_ios_production.tracks_view`
+          WHERE
+            event NOT LIKE "%api%" AND event NOT LIKE "%adjust%" AND event NOT LIKE "%install_attributed%"
+            --NOT (context_app_name = "Flink-Staging" OR context_app_name="Flink-Debug")
+        ),
+
+        event_ios AS (
+          SELECT *,
+          FIRST_VALUE(ordered_tmp) OVER (PARTITION BY anonymous_id, has_ordered_block_per_id ORDER BY timestamp) as has_ordered
+          FROM base_table_ios
+        ),
+
         tracking_sessions_ios AS (
         SELECT
           anonymous_id || '-' || ROW_NUMBER() OVER(PARTITION BY anonymous_id ORDER BY timestamp) AS session_id,
           *,
           timestamp AS session_start_at,
           LEAD(timestamp) OVER(PARTITION BY anonymous_id ORDER BY timestamp) AS next_session_start_at,
-        FROM (
-          SELECT
-            *,
-            TIMESTAMP_DIFF(timestamp,LAG(timestamp) OVER(PARTITION BY anonymous_id ORDER BY timestamp), MINUTE) AS inactivity_time
-          FROM
-            `flink-backend.flink_ios_production.tracks_view`) event_ios
-          --WHERE
-            --NOT (context_app_name = "Flink-Staging" OR context_app_name="Flink-Debug")) event_ios
+        FROM event_ios
         WHERE
           (event_ios.inactivity_time > 30
             OR event_ios.inactivity_time IS NULL)
         ORDER BY
           1),
+
         add_to_cart_ios AS (
         SELECT
           tracking_sessions_ios.anonymous_id,
@@ -202,23 +216,39 @@ view: segment_tracking_sessions30 {
           1,
           2 ),
 
+      base_table_android AS (
+       SELECT
+            *,
+            TIMESTAMP_DIFF(timestamp,LAG(timestamp) OVER(PARTITION BY anonymous_id ORDER BY timestamp), MINUTE) AS inactivity_time,
+            event="order_placed" AS ordered_tmp,
+            --the following is not entirely elegant as it starts a new block with every order_placed, but the results are correct
+            SUM(CASE WHEN event="order_placed" THEN 1 ELSE 0 END) OVER(PARTITION BY anonymous_id ORDER BY timestamp) AS has_ordered_block_per_id
+          FROM
+            `flink-backend.flink_android_production.tracks_view`
+          WHERE
+            event NOT LIKE "%api%" AND event NOT LIKE "%adjust%" AND event NOT LIKE "%install_attributed%"
+            --NOT (context_app_name = "Flink-Staging" OR context_app_name="Flink-Debug")
+        ),
+
+        event_android AS (
+          SELECT *,
+          FIRST_VALUE(ordered_tmp) OVER (PARTITION BY anonymous_id, has_ordered_block_per_id ORDER BY timestamp) as has_ordered
+          FROM base_table_android
+        ),
+
         tracking_sessions_android AS (
         SELECT
           anonymous_id || '-' || ROW_NUMBER() OVER(PARTITION BY anonymous_id ORDER BY timestamp) AS session_id,
           *,
           timestamp AS session_start_at,
           LEAD(timestamp) OVER(PARTITION BY anonymous_id ORDER BY timestamp) AS next_session_start_at,
-        FROM (
-          SELECT
-            *,
-            TIMESTAMP_DIFF(timestamp,LAG(timestamp) OVER(PARTITION BY anonymous_id ORDER BY timestamp), MINUTE) AS inactivity_time
-          FROM
-            `flink-backend.flink_android_production.tracks_view` ) event_android
+        FROM event_android
         WHERE
           (event_android.inactivity_time > 30
             OR event_android.inactivity_time IS NULL)
         ORDER BY
           1),
+
         add_to_cart_android AS (
         SELECT
           tracking_sessions_android.anonymous_id,
@@ -410,6 +440,7 @@ view: segment_tracking_sessions30 {
         tracking_sessions_ios.context_device_type,
         tracking_sessions_ios.context_app_version,
         1 AS session,
+        tracking_sessions_ios.has_ordered,
         add_to_cart_ios.event_count AS add_to_cart,
         location_pin_placed_ios.event_count AS location_pin_placed,
         home_viewed_ios.event_count AS home_viewed,
@@ -469,6 +500,7 @@ view: segment_tracking_sessions30 {
         tracking_sessions_android.context_device_type,
         tracking_sessions_android.context_app_version,
         1 AS session,
+        tracking_sessions_android.has_ordered,
         add_to_cart_android.event_count AS add_to_cart,
         location_pin_placed_android.event_count AS location_pin_placed,
         home_viewed_android.event_count AS home_viewed,
@@ -573,6 +605,11 @@ view: segment_tracking_sessions30 {
   dimension: session {
     type: number
     sql: ${TABLE}.session ;;
+  }
+
+  dimension: returning_customer {
+    type: yesno
+    sql: ${TABLE}.has_ordered ;;
   }
 
   dimension: add_to_cart {

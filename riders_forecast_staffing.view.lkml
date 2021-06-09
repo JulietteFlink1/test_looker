@@ -303,12 +303,12 @@ view: riders_forecast_staffing {
           nullif(staffed_riders.workers, 0)                                                 as filled_no_show_rider_hours
           -- if overstaffed, treat it as planning met
           -- basically planned minus filled
-       -- , if((cast(rider_hours.rider_hours as float64) / 60.0) -
-         --    (filled_riders.filled_riders * (cast(rider_hours.rider_hours as float64) / 60.0)) /
-           --  nullif(staffed_riders.workers, 0) < 0, 0, (cast(rider_hours.rider_hours as float64) / 60.0) -
-             --                                          (filled_riders.filled_riders *
-               --                                         (cast(rider_hours.rider_hours as float64) / 60.0)) /
-                 --                                      nullif(staffed_riders.workers, 0))   as unfilled_rider_hours
+        , if((cast(rider_hours.rider_hours as float64) / 60.0) -
+             (filled_riders.filled_riders * (cast(rider_hours.rider_hours as float64) / 60.0)) /
+             nullif(staffed_riders.workers, 0) < 0, 0, (cast(rider_hours.rider_hours as float64) / 60.0) -
+                                                       (filled_riders.filled_riders *
+                                                        (cast(rider_hours.rider_hours as float64) / 60.0)) /
+                                                       nullif(staffed_riders.workers, 0))   as unfilled_rider_hours
 
 
         , cast(picker_hours.picker_hours as float64) / 60.0                                 as planned_picker_hours
@@ -320,12 +320,12 @@ view: riders_forecast_staffing {
           nullif(staffed_pickers.workers, 0)                                                as filled_no_show_picker_hours
           -- if overstaffed, treat it as planning met
           -- basically planned minus filled
-        --, if((cast(picker_hours.picker_hours as float64) / 60.0) -
-        --    (filled_pickers.filled_pickers * (cast(picker_hours.picker_hours as float64) / 60.0)) /
-      --      nullif(staffed_pickers.workers, 0) < 0, 0, (cast(picker_hours.picker_hours as float64) / 60.0) -
-        --                                                (filled_pickers.filled_pickers *
-          --                                              (cast(picker_hours.picker_hours as float64) / 60.0)) /
-            --                                            nullif(staffed_pickers.workers, 0)) as unfilled_picker_hours
+        , if((cast(picker_hours.picker_hours as float64) / 60.0) -
+             (filled_pickers.filled_pickers * (cast(picker_hours.picker_hours as float64) / 60.0)) /
+             nullif(staffed_pickers.workers, 0) < 0, 0, (cast(picker_hours.picker_hours as float64) / 60.0) -
+                                                        (filled_pickers.filled_pickers *
+                                                         (cast(picker_hours.picker_hours as float64) / 60.0)) /
+                                                        nullif(staffed_pickers.workers, 0)) as unfilled_picker_hours
 
       from `flink-data-dev.forecasting.shiftblocks_hubs`            shiftblocks_hubs
       left join `flink-backend.order_forecast.historical_forecasts` historical_forecasts
@@ -360,7 +360,7 @@ view: riders_forecast_staffing {
                    shiftblocks_hubs.block_ends_at = filled_pickers.block_ends_at and
                    shiftblocks_hubs.hub_name = filled_pickers.hub_name
       order by 4, 2 asc
-       ;;
+ ;;
   }
 
 
