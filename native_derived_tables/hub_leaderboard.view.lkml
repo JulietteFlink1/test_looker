@@ -316,7 +316,7 @@ view: hub_leaderboard {
 
   measure: score_delivery_late_over_5_min {
     group_label: "Hub Leaderboard - Scores"
-    label: "Score: Delivered late over 5min"
+    label: "Score: Delivered late < 5min"
     sql: if(
             ( -10 * ${pct_delivery_late_over_5_min}*100 +100) < 0
             , 0
