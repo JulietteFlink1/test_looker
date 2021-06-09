@@ -1054,30 +1054,36 @@ view: order_order {
       }
 
       measure: cnt_orders_with_delivery_eta_available {
-        group_label: "* Operations / Logistics *"
+        # group_label: "* Operations / Logistics *"
+        view_label: "* Hubs *"
+        group_label: "Hub Leaderboard - Order Metrics"
         label: "# Orders with Delivery ETA available"
         description: "Count of Orders where a promised ETA is available"
-        hidden:  yes
+        hidden:  no
         type: count
         filters: [is_delivery_eta_available: "yes"]
         value_format: "0"
       }
 
       measure: cnt_orders_delayed_under_0_min {
-        group_label: "* Operations / Logistics *"
+        # group_label: "* Operations / Logistics *"
+        view_label: "* Hubs *"
+        group_label: "Hub Leaderboard - Order Metrics"
         label: "# Orders delivered in time"
         description: "Count of Orders delivered no later than promised ETA"
-        hidden:  yes
+        hidden:  no
         type: count
         filters: [delivery_delay_since_eta:"<=0"]
         value_format: "0"
       }
 
       measure: cnt_orders_delayed_over_5_min {
-        group_label: "* Operations / Logistics *"
+        # group_label: "* Operations / Logistics *"
+        view_label: "* Hubs *"
+        group_label: "Hub Leaderboard - Order Metrics"
         label: "# Orders delivered late >5min"
         description: "Count of Orders delivered >5min later than promised ETA"
-        hidden:  yes
+        hidden:  no
         type: count
         filters: [delivery_delay_since_eta:">=5"]
         value_format: "0"

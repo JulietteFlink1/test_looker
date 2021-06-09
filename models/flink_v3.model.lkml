@@ -240,6 +240,24 @@ explore: order_order {
     type: left_outer
   }
 
+  join: hub_leaderboard_shift_metrics {
+    view_label: "* Hubs *"
+    sql_on: ${order_order.warehouse_name} = ${hub_leaderboard_shift_metrics.hub_code_lowercase} and
+            ${order_order.created_date}   = ${hub_leaderboard_shift_metrics.date};;
+    relationship: many_to_one
+    type: left_outer
+  }
+
+  join: hub_leaderboard {
+    view_label: "* Hubs *"
+    sql_on: ${order_order.warehouse_name} = ${hub_leaderboard.hub_code_lowercase} and
+            ${order_order.created_date}   = ${hub_leaderboard.created_date};;
+    relationship: many_to_one
+    type: left_outer
+  }
+
+
+
   join: product_productvariant {
     sql_on: ${order_orderline.country_iso} = ${product_productvariant.country_iso} AND
             ${order_orderline.product_sku} = ${product_productvariant.sku} ;;

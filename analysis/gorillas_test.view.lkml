@@ -9,7 +9,7 @@ view: gorillas_test {
               gorillas.time_scraped,
               gorillas.quantity as current_quantity,
               LAG(gorillas.quantity,1) OVER (PARTITION BY gorillas.hub_code, gorillas.product_id ORDER BY gorillas.time_scraped) previous_quantity
-          FROM `flink-data-dev.competitive_intelligence.gorillas_inv_test` gorillas
+          FROM `flink-data-dev.competitive_intelligence.gorillas_inventory` gorillas
          where {% condition time_scraped_date %} gorillas.time_scraped {% endcondition %}
 
           order by 1,2,3,4,5 asc
