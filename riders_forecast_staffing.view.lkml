@@ -188,7 +188,7 @@ view: riders_forecast_staffing {
                       shift.starts_at
                     , shift.ends_at
                     , lower(location.name)              as hub_name
-                    , employment_id in (422284, 422016) as is_external
+                    , employment_id in (422284, 422285, 422016) as is_external
                     , state in ('no_show')              as is_no_show
                     , count(distinct employment_id)     as cnt_employees
                   from `flink-data-staging.shyftplan_v1.evaluations`              evaluations
@@ -204,7 +204,7 @@ view: riders_forecast_staffing {
                       shift.starts_at
                     , shift.ends_at
                     , lower(location.name)              as hub_name
-                    , employment_id in (422284, 422016) as is_external
+                    , employment_id in (422284, 422285, 422016) as is_external
                     , state in ('no_show')              as is_no_show
                     , count(distinct employment_id)     as cnt_employees
                   from `flink-data-staging.shyftplan_v1.evaluations`              evaluations
