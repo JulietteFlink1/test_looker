@@ -1141,3 +1141,8 @@ explore: voucher_retention {
     user_attribute: city
   }
 }
+
+explore: sku_analytics {
+  label: "SKU Analytics"
+  group_label: "15) Ad-Hoc"
+}
