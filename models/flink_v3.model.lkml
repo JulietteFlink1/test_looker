@@ -737,6 +737,7 @@ explore: cs_issues_post_delivery {
 
 ####### Competitor Analysis #######
 explore: competitor_analysis {
+  hidden:  yes
   label: "Competitor Analysis"
   view_label: "Competitor Analysis"
   group_label: "08) Competitor Analysis"
@@ -758,6 +759,7 @@ explore: competitor_analysis {
 }
 
 explore: gorillas_stores {
+  hidden:  yes
   label: "Gorillas Stores"
   view_label: "Gorillas Stores"
   group_label: "08) Competitor Analysis"
@@ -769,6 +771,7 @@ explore: gorillas_stores {
 # Un-hide and use this explore, or copy the joins into another explore, to get all the fully nested relationships from this view
 explore: gorillas_items {
   label: "Gorillas Items Overview"
+  hidden: yes
   view_label: "Gorillas Items Overview"
   group_label: "08) Competitor Analysis"
   description: "Current Gorillas Items"
@@ -868,6 +871,7 @@ explore: gorillas_current_assortment {
 
 
 explore: gorillas_turfs {
+  hidden: yes
   label: "Gorillas Turfs"
   view_label: "Gorillas Turfs"
   group_label: "08) Competitor Analysis"
@@ -899,21 +903,12 @@ explore: gorillas_turfs {
   }
 }
 
-# explore: hist_avg_items_per_category_comparison{
-#   label: "Items per Category Provider Comparison"
-#   view_label: "Items per Category Provider Comparison"
-#   group_label: "8) Competitor Analysis"
-#   description: "Items per Category Provider Comparison"
-
-# }
-
-# date_time_scraped
-
 explore: comparison_current_ids_per_category {
   label: "Current Items per Category Provider Comparison"
   view_label: "Current Items per Category Provider Comparison"
   group_label: "08) Competitor Analysis"
   description: "Current Items per Category Provider Comparison"
+  hidden: yes
   always_filter: {
     filters: {
       field: time_scraped_date
@@ -964,7 +959,7 @@ explore: gorillas_inventory{
   view_label: "Gorillas Inventory"
   group_label: "08) Competitor Analysis"
   description: "Current Inventory"
-  hidden: no
+  hidden: yes
   always_filter: {
     filters: {
       field: time_scraped_date
@@ -1000,7 +995,7 @@ explore: gorillas_hubs{
   view_label: "Gorillas Hubs"
   group_label: "08) Competitor Analysis"
   description: "Current Hubs"
-  hidden: no
+  hidden: yes
 }
 
 explore: gorillas_items_hist{
@@ -1008,6 +1003,7 @@ explore: gorillas_items_hist{
   view_label: "Gorillas Items Added/ Removed"
   group_label: "08) Competitor Analysis"
   description: "Gorillas Items Added/ Removed"
+  hidden: yes
 
   join: gorillas_stores {
     sql_on: ${gorillas_items_hist.hub_code} = ${gorillas_stores.id};;
@@ -1033,7 +1029,7 @@ explore: gorillas_orders {
   view_label: "Gorillas Orders"
   group_label: "08) Competitor Analysis"
   description: "Gorillas Orders per Day"
-  hidden: no
+  hidden: yes
 }
 
 
