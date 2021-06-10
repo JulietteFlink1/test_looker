@@ -539,7 +539,7 @@ view: productsearch_mobile_events {
         sql: ${TABLE}.derived_country_iso = "NL" ;;
         label: "Netherlands"
       }
-      else: "Other"
+      else: "Other / Unknown"
     }
   }
 
