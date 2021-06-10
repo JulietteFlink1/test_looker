@@ -1052,7 +1052,7 @@ explore: gorillas_orders {
   hidden: no
 }
 
-################ Rider Stuffing
+################ Rider Staffing
 
 
 explore: riders_forecast_staffing {
@@ -1081,10 +1081,12 @@ explore: riders_forecast_staffing {
 }
 
 
-
-
-
-
+explore: marketing_spend_installs_orders {
+  label: "Marketing Performance"
+  view_label: "Marketing Performance"
+  group_label: "11) Marketing"
+  description: "Marketing Performance: Installs, Orders, CAC, CPI"
+}
 
 
 # explore: order_extends {
@@ -1103,7 +1105,7 @@ explore: riders_forecast_staffing {
 explore: braze_crm_data {
   label: "CRM Email Data (Braze)"
   view_label: "CRM Email Data"
-  group_label: "11) CRM Data"
+  group_label: "11) Marketing"
   description: "Information on our CRM activities (using Braze as service provider)"
   always_filter: {
     filters:  [
