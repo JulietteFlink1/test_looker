@@ -429,7 +429,7 @@ view: productsearch_mobile_events {
   }
 
   dimension: is_not_subquery {
-    type: string
+    type: yesno
     sql: ${TABLE}.is_not_subquery ;;
   }
 
@@ -469,7 +469,7 @@ view: productsearch_mobile_events {
   }
 
   dimension: user_area_available {
-    type: string
+    type: yesno
     sql: ${TABLE}.user_area_available ;;
   }
 
@@ -504,12 +504,12 @@ view: productsearch_mobile_events {
   }
 
   dimension: country_derived_from_city {
-    type: string
+    type: yesno
     sql: ${TABLE}.country_derived_from_city ;;
   }
 
   dimension: country_derived_from_locale {
-    type: string
+    type: yesno
     sql: ${TABLE}.country_derived_from_locale ;;
   }
 
@@ -547,7 +547,7 @@ view: productsearch_mobile_events {
     type: string
     sql:
       CASE
-        WHEN ${TABLE}.derived_country_iso IN ("DE", "FR", "NL") THEN ${TABLE}.derived_city
+        WHEN ${TABLE}.derived_country_iso IN ("DE", "FR", "NL") AND NOT ${TABLE}.country_derived_from_locale THEN ${TABLE}.derived_city
         ELSE "Other/ Unknown"
       END;;
   }
