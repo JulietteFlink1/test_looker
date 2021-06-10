@@ -63,8 +63,9 @@ view: marketing_spend_installs_orders {
           case when REGEXP_CONTAINS(lower(adjust._network_name_), 'facebook') then 'Facebook Ads'
               when REGEXP_CONTAINS(lower(adjust._network_name_), 'google') then 'Google Ads'
               when REGEXP_CONTAINS(lower(adjust._network_name_), 'instagram') then 'Facebook Ads'
-              when REGEXP_CONTAINS(lower(adjust._network_name_), 'organic|crm|flink') then 'Organic'
+              when REGEXP_CONTAINS(lower(adjust._network_name_), 'organic|flink') then 'Organic'
               when REGEXP_CONTAINS(lower(adjust._network_name_), 'apple') then 'Apple Search Ads'
+              when REGEXP_CONTAINS(lower(adjust._network_name_), 'crm') then 'CRM'
               else 'Other' end as channel,
           adjust._os_name_,
           case when adjust._adid_ in (select distinct _adid_ FROM `flink-backend.customlytics_adjust.adjust_raw_imports`
@@ -238,6 +239,20 @@ view: marketing_spend_installs_orders {
     {% endif %};;
   }
 
+  dimension: date_granularity_pass_through {
+    description: "To use the parameter value in a table calculation (e.g WoW, % Growth) we need to materialize it into a dimension "
+    type: string
+    #hidden: yes
+    sql:
+            {% if date_granularity._parameter_value == 'Day' %}
+              "Day"
+            {% elsif date_granularity._parameter_value == 'Week' %}
+              "Week"
+            {% elsif date_granularity._parameter_value == 'Month' %}
+              "Month"
+            {% endif %};;
+  }
+
   #### Parameters ####
 
   parameter: date_granularity {
@@ -248,6 +263,18 @@ view: marketing_spend_installs_orders {
     allowed_value: { value: "Week" }
     allowed_value: { value: "Month" }
     default_value: "Day"
+  }
+
+  parameter: KPI_parameter {
+    label: "* KPI Parameter *"
+    type: unquoted
+    allowed_value: { value: "orders" label: "# First Orders"}
+    allowed_value: { value: "installs" label: "# Installs" }
+    allowed_value: { value: "spend" label: "Sum of Spend" }
+    allowed_value: { value: "discounts" label: "Sum of Discounts" }
+    allowed_value: { value: "cpi" label: "CPI" }
+    allowed_value: { value: "cac" label: "CAC" }
+    default_value: "spend"
   }
 
   #### Measures ####
@@ -288,18 +315,54 @@ view: marketing_spend_installs_orders {
   measure: CPI {
     label: "CPI"
     description: "Cost per Install"
-    type: sum
-    sql: ${spend} / nullif(${installs},0) ;;
+    type: number
+    sql: ${sum_spend} / nullif(${sum_installs},0) ;;
     value_format_name: euro_accounting_2_precision
   }
 
   measure: CAC {
     label: "CAC"
-    description: "Cost of Acquisition: Marketing spend + discounts / new costumers"
-    type: sum
-    sql: ${spend} / nullif(${installs},0) ;;
+    description: "Cost of Acquisition: Marketing spend  / first orders"
+    type: number
+    sql: ${sum_spend} / nullif(${sum_conversions},0) ;;
     value_format_name: euro_accounting_2_precision
   }
+
+  measure: KPI {
+    group_label: "* Dynamic KPI Fields *"
+    label: "KPI - Dynamic"
+    label_from_parameter: KPI_parameter
+    value_format: "#,##0.00"
+    type: number
+    sql:
+    {% if KPI_parameter._parameter_value == 'orders' %}
+      ${sum_conversions}
+    {% elsif KPI_parameter._parameter_value == 'installs' %}
+      ${sum_installs}
+    {% elsif KPI_parameter._parameter_value == 'spend' %}
+      ${sum_spend}
+    {% elsif KPI_parameter._parameter_value == 'discounts' %}
+      ${sum_discounts}
+    {% elsif KPI_parameter._parameter_value == 'cpi' %}
+      ${CPI}
+    {% elsif KPI_parameter._parameter_value == 'cac' %}
+      ${CAC}
+    {% endif %};;
+
+    html:
+        {% if KPI_parameter._parameter_value == 'spend' %}
+          €{{ value | round }}
+        {% elsif KPI_parameter._parameter_value == 'discounts' %}
+          €{{ value | round }}
+        {% elsif KPI_parameter._parameter_value == 'cpi' %}
+          €{{ rendered_value | round: 2 }}
+        {% elsif KPI_parameter._parameter_value == 'cac' %}
+          €{{ rendered_value | round: 2 }}
+        {% else %}
+          {{ value }}
+        {% endif %};;
+
+      }
 
   set: detail {
     fields: [
