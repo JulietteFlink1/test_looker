@@ -743,6 +743,12 @@ explore: gorillas_v1_items {
   view_label: "Gorillas Assortment"
   group_label: "08) Competitor Analysis"
   description: "Analysis of competitors."
+  always_filter: {
+    filters: {
+      field: time_scraped_date
+      value: "1 day ago"
+    }
+  }
   join: items__tags {
     view_label: "Items: Tags"
     sql: LEFT JOIN UNNEST(${gorillas_v1_items.tags}) as items__tags ;;
@@ -807,6 +813,7 @@ explore: gorillas_v1_items {
     relationship: one_to_many
     type: left_outer
   }
+
 }
 
 explore: gorillas_v1_hubs_master{
