@@ -38,7 +38,7 @@ view: nps_hub_team {
 
   dimension: score {
     type: number
-    sql: CAST(${TABLE}.score AS INT64) ;;
+    sql: CAST(${TABLE}.score__nu AS INT64) ;;
   }
 
   dimension: start_date {
