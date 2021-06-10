@@ -45,7 +45,7 @@ view: riders_forecast_staffing {
                     , shiftblocks_hubs.hub_name
                     , shiftblocks_hubs.city
                     , sum(shifts.workers) as workers
-                  from `flink-data-dev.forecasting.shiftblocks_hubs` shiftblocks_hubs
+                  from `flink-backend.rider_staffing.shiftblocks_hubs` shiftblocks_hubs
                   left join shifts
                             on shiftblocks_hubs.hub_name = shifts.hub_name and
                                (
@@ -74,7 +74,7 @@ view: riders_forecast_staffing {
                     , shiftblocks_hubs.hub_name
                     , shiftblocks_hubs.city
                     , sum(shifts.workers) as workers
-                  from `flink-data-dev.forecasting.shiftblocks_hubs` shiftblocks_hubs
+                  from `flink-backend.rider_staffing.shiftblocks_hubs` shiftblocks_hubs
                   left join shifts
                             on shiftblocks_hubs.hub_name = shifts.hub_name and
                                (
@@ -107,7 +107,7 @@ view: riders_forecast_staffing {
                           greatest(shiftblocks_hubs.block_starts_at, shifts.starts_at),
                           minute
                       ) as float64) * shifts.workers as rider_hours
-                  from `flink-data-dev.forecasting.shiftblocks_hubs` shiftblocks_hubs
+                  from `flink-backend.rider_staffing.shiftblocks_hubs` shiftblocks_hubs
                   left join shifts
                             on shiftblocks_hubs.hub_name = shifts.hub_name and
                                (
@@ -139,7 +139,7 @@ view: riders_forecast_staffing {
                           greatest(shiftblocks_hubs.block_starts_at, shifts.starts_at),
                           minute
                       ) as float64) * shifts.workers as picker_hours
-                  from `flink-data-dev.forecasting.shiftblocks_hubs` shiftblocks_hubs
+                  from `flink-backend.rider_staffing.shiftblocks_hubs` shiftblocks_hubs
                   left join shifts
                             on shiftblocks_hubs.hub_name = shifts.hub_name and
                                (
@@ -225,7 +225,7 @@ view: riders_forecast_staffing {
                     , sum(cnt_employees)                        as filled_riders
                     , sum(if(is_external, cnt_employees, null)) as filled_ext_riders
                     , sum(if(is_no_show, cnt_employees, null))  as filled_no_show_riders
-                  from `flink-data-dev.forecasting.shiftblocks_hubs` shiftblocks_hubs
+                  from `flink-backend.rider_staffing.shiftblocks_hubs` shiftblocks_hubs
                   left join evaluations_riders
                             on shiftblocks_hubs.hub_name = evaluations_riders.hub_name and
                                (
@@ -255,7 +255,7 @@ view: riders_forecast_staffing {
                     , sum(cnt_employees)                        as filled_pickers
                     , sum(if(is_external, cnt_employees, null)) as filled_ext_pickers
                     , sum(if(is_no_show, cnt_employees, null))  as filled_no_show_pickers
-                  from `flink-data-dev.forecasting.shiftblocks_hubs` shiftblocks_hubs
+                  from `flink-backend.rider_staffing.shiftblocks_hubs` shiftblocks_hubs
                   left join evaluations_pickers
                             on shiftblocks_hubs.hub_name = evaluations_pickers.hub_name and
                                (
