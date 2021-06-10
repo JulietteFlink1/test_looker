@@ -739,8 +739,8 @@ explore: cs_issues_post_delivery {
 # Un-hide and use this explore, or copy the joins into another explore, to get all the fully nested relationships from this view
 explore: gorillas_v1_items {
   hidden: no
-  label: "Competitor Analysis"
-  view_label: "Competitor Analysis"
+  label: "Gorillas Assortment"
+  view_label: "Gorillas Assortment"
   group_label: "08) Competitor Analysis"
   description: "Analysis of competitors."
   join: items__tags {
@@ -802,6 +802,19 @@ explore: gorillas_v1_items {
     sql: LEFT JOIN UNNEST(${gorillas_v1_items.product_collections}) as items__product_collections ;;
     relationship: one_to_many
   }
+  join: gorillas_v1_hubs_master {
+    sql_on: ${gorillas_v1_items.hub_code} = ${gorillas_v1_hubs_master.id};;
+    relationship: one_to_many
+    type: left_outer
+  }
+}
+
+explore: gorillas_v1_hubs_master{
+  hidden:  no
+  label: "Gorillas Hubs"
+  view_label: "Gorillas Hubs"
+  group_label: "08) Competitor Analysis"
+  description: "Analysis of competitors."
 }
 
 
