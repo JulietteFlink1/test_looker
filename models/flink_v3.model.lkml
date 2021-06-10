@@ -1037,10 +1037,6 @@ explore: gorillas_orders {
 }
 
 
-
-########### RIDER STAFFING EXPLORE ###########
-
-
 explore: riders_forecast_staffing {
   label: "Orders and Riders Forecasting"
   view_label: "Orders and Riders Forecasting"
@@ -1067,12 +1063,33 @@ explore: riders_forecast_staffing {
 }
 
 
+explore: marketing_spend_installs_orders {
+  label: "Marketing Performance"
+  view_label: "Marketing Performance"
+  group_label: "11) Marketing"
+  description: "Marketing Performance: Installs, Orders, CAC, CPI"
+}
+
+
+# explore: order_extends {
+#   label: "Power User Orders..."
+#   view_label: "Power User Orders..."
+#   group_label: "1) Performance"
+#   extends: [order_order]
+#   view_name: order_order
+#   # join: answers {
+#   #   sql_on: ${answers.landing_id} = ${order_order.id} ;;
+#   #   relationship: one_to_many
+#   #   type: left_outer
+#   # }
+# }
 ########### CRM EXPLORE ###########
+
 
 explore: braze_crm_data {
   label: "CRM Email Data (Braze)"
   view_label: "CRM Email Data"
-  group_label: "11) CRM Data"
+  group_label: "11) Marketing"
   description: "Information on our CRM activities (using Braze as service provider)"
   always_filter: {
     filters:  [
