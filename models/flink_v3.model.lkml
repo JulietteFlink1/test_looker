@@ -736,6 +736,72 @@ explore: cs_issues_post_delivery {
 
 
 ####### Competitor Analysis #######
+# Un-hide and use this explore, or copy the joins into another explore, to get all the fully nested relationships from this view
+explore: gorillas_v1_items {
+  hidden: no
+
+  join: items__tags {
+    view_label: "Items: Tags"
+    sql: LEFT JOIN UNNEST(${gorillas_v1_items.tags}) as items__tags ;;
+    relationship: one_to_many
+  }
+
+  join: items__barcodes {
+    view_label: "Items: Barcodes"
+    sql: LEFT JOIN UNNEST(${gorillas_v1_items.barcodes}) as items__barcodes ;;
+    relationship: one_to_many
+  }
+
+  join: items__allergen_ids {
+    view_label: "Items: Allergenids"
+    sql: LEFT JOIN UNNEST(${gorillas_v1_items.allergen_ids}) as items__allergen_ids ;;
+    relationship: one_to_many
+  }
+
+  join: items__additive_ids {
+    view_label: "Items: Additiveids"
+    sql: LEFT JOIN UNNEST(${gorillas_v1_items.additive_ids}) as items__additive_ids ;;
+    relationship: one_to_many
+  }
+
+  join: items__additives {
+    view_label: "Items: Additives"
+    sql: LEFT JOIN UNNEST(${gorillas_v1_items.additives}) as items__additives ;;
+    relationship: one_to_many
+  }
+
+  join: items__allergens {
+    view_label: "Items: Allergens"
+    sql: LEFT JOIN UNNEST(${gorillas_v1_items.allergens}) as items__allergens ;;
+    relationship: one_to_many
+  }
+
+  join: items__recommendation_tags {
+    view_label: "Items: Recommendationtags"
+    sql: LEFT JOIN UNNEST(${gorillas_v1_items.recommendation_tags}) as items__recommendation_tags ;;
+    relationship: one_to_many
+  }
+
+  join: items__customization_items {
+    view_label: "Items: Customizationitems"
+    sql: LEFT JOIN UNNEST(${gorillas_v1_items.customization_items}) as items__customization_items ;;
+    relationship: one_to_many
+  }
+
+  join: items__additional_images {
+    view_label: "Items: Additionalimages"
+    sql: LEFT JOIN UNNEST(${gorillas_v1_items.additional_images}) as items__additional_images ;;
+    relationship: one_to_many
+  }
+
+  join: items__product_collections {
+    view_label: "Items: Productcollections"
+    sql: LEFT JOIN UNNEST(${gorillas_v1_items.product_collections}) as items__product_collections ;;
+    relationship: one_to_many
+  }
+}
+
+
 explore: competitor_analysis {
   hidden:  yes
   label: "Competitor Analysis"
