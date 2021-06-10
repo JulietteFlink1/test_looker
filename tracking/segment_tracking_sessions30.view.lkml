@@ -2,552 +2,367 @@ view: segment_tracking_sessions30 {
   derived_table: {
     persist_for: "1 hour"
     sql: WITH
-        base_table_ios AS (
+        location_joined_table AS (
         SELECT
-            *,
-            TIMESTAMP_DIFF(timestamp,LAG(timestamp) OVER(PARTITION BY anonymous_id ORDER BY timestamp), MINUTE) AS inactivity_time,
-            event="order_placed" AS ordered_tmp,
-            --the following is not entirely elegant as it starts a new block with every order_placed, but the results are correct
-            SUM(CASE WHEN event="order_placed" THEN 1 ELSE 0 END) OVER(PARTITION BY anonymous_id ORDER BY timestamp) AS has_ordered_block_per_id
-          FROM
-            `flink-backend.flink_ios_production.tracks_view`
-          WHERE
-            event NOT LIKE "%api%" AND event NOT LIKE "%adjust%" AND event NOT LIKE "%install_attributed%"
-            --NOT (context_app_name = "Flink-Staging" OR context_app_name="Flink-Debug")
+          tracks.anonymous_id, tracks.context_app_build, tracks.context_app_version, CAST(NULL AS BOOL) AS context_device_ad_tracking_enabled, tracks.context_device_id, tracks.context_device_manufacturer, tracks.context_device_model, tracks.context_device_name, tracks.context_device_type, tracks.context_ip, tracks.context_library_name, tracks.context_library_version, tracks.context_locale, CAST(NULL AS BOOL) AS context_network_bluetooth, tracks.context_network_carrier, tracks.context_network_cellular, tracks.context_network_wifi, tracks.context_os_name, tracks.context_os_version, tracks.context_protocols_source_id, tracks.context_timezone, CAST(NULL AS STRING) AS context_traits_anonymous_id, CAST(NULL AS STRING) AS context_user_agent, tracks.event, tracks.event_text, tracks.id, tracks.loaded_at, tracks.original_timestamp, tracks.received_at, tracks.sent_at, tracks.timestamp, tracks.uuid_ts,
+          TIMESTAMP_DIFF(tracks.timestamp,LAG(tracks.timestamp) OVER(PARTITION BY tracks.anonymous_id ORDER BY tracks.timestamp), MINUTE) AS inactivity_time,
+          tracks.event="order_placed" AS ordered_tmp,
+          --the following is not entirely elegant as it starts a new block with every order_placed, but the results are correct
+          SUM(CASE
+              WHEN tracks.event="order_placed" THEN 1
+            ELSE
+            0
+          END
+        ) OVER(PARTITION BY tracks.anonymous_id ORDER BY tracks.timestamp) AS has_ordered_block_per_id,
+          event.hub_city,
+          event.hub_code AS hub_encoded,
+          event.delivery_lat,
+          event.delivery_lng,
+          event.delivery_postcode,
+          event.user_area_available,
+          SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(event.hub_code)),':')[
+        OFFSET
+          (1)] AS hub_id
+        FROM
+          `flink-backend.flink_ios_production.tracks_view` tracks
+        LEFT JOIN
+          `flink-backend.flink_ios_production.address_confirmed_view` event
+        ON
+          tracks.id=event.id
+          AND tracks.event NOT LIKE "%api%"
+          AND tracks.event NOT LIKE "%adjust%"
+          AND tracks.event NOT LIKE "%install_attributed%"
+          --NOT (context_app_name = "Flink-Staging" OR context_app_name="Flink-Debug")
+
+        UNION ALL
+
+        SELECT
+          tracks.anonymous_id, tracks.context_app_build, tracks.context_app_version, tracks.context_device_ad_tracking_enabled, tracks.context_device_id, tracks.context_device_manufacturer, tracks.context_device_model, tracks.context_device_name, tracks.context_device_type, tracks.context_ip, tracks.context_library_name, tracks.context_library_version, tracks.context_locale, tracks.context_network_bluetooth, tracks.context_network_carrier, tracks.context_network_cellular, tracks.context_network_wifi, tracks.context_os_name, tracks.context_os_version, tracks.context_protocols_source_id, tracks.context_timezone, tracks.context_traits_anonymous_id, tracks.context_user_agent, tracks.event, tracks.event_text, tracks.id, tracks.loaded_at, tracks.original_timestamp, tracks.received_at, tracks.sent_at, tracks.timestamp, tracks.uuid_ts,
+          TIMESTAMP_DIFF(tracks.timestamp,LAG(tracks.timestamp) OVER(PARTITION BY tracks.anonymous_id ORDER BY tracks.timestamp), MINUTE) AS inactivity_time,
+          tracks.event="order_placed" AS ordered_tmp,
+          --the following is not entirely elegant as it starts a new block with every order_placed, but the results are correct
+          SUM(CASE
+              WHEN tracks.event="order_placed" THEN 1
+            ELSE
+            0
+          END
+        ) OVER(PARTITION BY tracks.anonymous_id ORDER BY tracks.timestamp) AS has_ordered_block_per_id,
+          event.hub_city,
+          event.hub_code AS hub_encoded,
+          event.delivery_lat,
+          event.delivery_lng,
+          event.delivery_postcode,
+          event.user_area_available,
+          SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(event.hub_code)),':')[
+        OFFSET
+          (1)] AS hub_id
+        FROM
+          `flink-backend.flink_android_production.tracks_view` tracks
+        LEFT JOIN
+          `flink-backend.flink_android_production.address_confirmed_view` event
+        ON
+          tracks.id=event.id
+          AND tracks.event NOT LIKE "%api%"
+          AND tracks.event NOT LIKE "%adjust%"
+          AND tracks.event NOT LIKE "%install_attributed%"
+          --NOT (context_app_name = "Flink-Staging" OR context_app_name="Flink-Debug")
         ),
 
-        event_ios AS (
-          SELECT *,
-          FIRST_VALUE(ordered_tmp) OVER (PARTITION BY anonymous_id, has_ordered_block_per_id ORDER BY timestamp) as has_ordered
-          FROM base_table_ios
-        ),
-
-        tracking_sessions_ios AS (
+        location_help_table AS (
         SELECT
-          anonymous_id || '-' || ROW_NUMBER() OVER(PARTITION BY anonymous_id ORDER BY timestamp) AS session_id,
-          *,
-          timestamp AS session_start_at,
-          LEAD(timestamp) OVER(PARTITION BY anonymous_id ORDER BY timestamp) AS next_session_start_at,
-        FROM event_ios
-        WHERE
-          (event_ios.inactivity_time > 30
-            OR event_ios.inactivity_time IS NULL)
+          location_joined_table.*,
+          country_iso,
+          -- divide events into blocks, belonging to the last seen "addressConfirmed" event
+          SUM(CASE
+              WHEN hub_city IS NULL THEN 0
+            ELSE
+            1
+          END
+            ) OVER(PARTITION BY anonymous_id ORDER BY timestamp) AS block,
+          -- translate the hub-id into hub-code
+          hub.slug AS hub_code
+        FROM
+          location_joined_table
+        LEFT JOIN
+          `flink-backend.saleor_db_global.warehouse_warehouse` AS hub
+        ON
+          location_joined_table.hub_id = hub.id
         ORDER BY
-          1),
+          anonymous_id,
+          timestamp ),
 
-        add_to_cart_ios AS (
+        country_lookup AS (
         SELECT
-          tracking_sessions_ios.anonymous_id,
-          tracking_sessions_ios.session_id,
-          COUNT(*) AS event_count
+          DISTINCT country_iso,
+          city
         FROM
-          `flink-backend.flink_ios_production.tracks_view` tracking_ios
-        LEFT JOIN
-          tracking_sessions_ios
-        ON
-          tracking_ios.anonymous_id = tracking_sessions_ios.anonymous_id
-          AND tracking_ios.timestamp >= tracking_sessions_ios.session_start_at
-          AND (tracking_ios.timestamp < tracking_sessions_ios.next_session_start_at
-            OR tracking_sessions_ios.next_session_start_at IS NULL)
-        WHERE
-          tracking_ios.event='product_added_to_cart'
-        GROUP BY
-          1,
-          2 ),
+          `flink-backend.gsheet_store_metadata.hubs` ),
 
-        location_pin_placed_ios AS (
-        SELECT
-          tracking_sessions_ios.anonymous_id,
-          tracking_sessions_ios.session_id,
-          COUNT(*) AS event_count
-        FROM
-          `flink-backend.flink_ios_production.tracks_view` tracking_ios
-        LEFT JOIN
-          tracking_sessions_ios
-        ON
-          tracking_ios.anonymous_id = tracking_sessions_ios.anonymous_id
-          AND tracking_ios.timestamp >= tracking_sessions_ios.session_start_at
-          AND (tracking_ios.timestamp < tracking_sessions_ios.next_session_start_at
-            OR tracking_sessions_ios.next_session_start_at IS NULL)
-        WHERE
-          tracking_ios.event='location_pin_placed'
-        GROUP BY
-          1,
-          2 ),
-
-        home_viewed_ios AS (
-        SELECT
-          tracking_sessions_ios.anonymous_id,
-          tracking_sessions_ios.session_id,
-          COUNT(*) AS event_count
-        FROM
-          `flink-backend.flink_ios_production.tracks_view` tracking_ios
-        LEFT JOIN
-          tracking_sessions_ios
-        ON
-          tracking_ios.anonymous_id = tracking_sessions_ios.anonymous_id
-          AND tracking_ios.timestamp >= tracking_sessions_ios.session_start_at
-          AND (tracking_ios.timestamp < tracking_sessions_ios.next_session_start_at
-            OR tracking_sessions_ios.next_session_start_at IS NULL)
-        WHERE
-          tracking_ios.event='home_viewed'
-        GROUP BY
-          1,
-          2 ),
-
-        view_item_ios AS (
-        SELECT
-          tracking_sessions_ios.anonymous_id,
-          tracking_sessions_ios.session_id,
-          COUNT(*) AS event_count
-        FROM
-          `flink-backend.flink_ios_production.tracks_view` tracking_ios
-        LEFT JOIN
-          tracking_sessions_ios
-        ON
-          tracking_ios.anonymous_id = tracking_sessions_ios.anonymous_id
-          AND tracking_ios.timestamp >= tracking_sessions_ios.session_start_at
-          AND (tracking_ios.timestamp < tracking_sessions_ios.next_session_start_at
-            OR tracking_sessions_ios.next_session_start_at IS NULL)
-        WHERE
-          tracking_ios.event='product_details_viewed'
-        GROUP BY
-          1,
-          2 ),
-
-        view_cart_ios AS (
-        SELECT
-          tracking_sessions_ios.anonymous_id,
-          tracking_sessions_ios.session_id,
-          COUNT(*) AS event_count
-        FROM
-          `flink-backend.flink_ios_production.tracks_view` tracking_ios
-        LEFT JOIN
-          tracking_sessions_ios
-        ON
-          tracking_ios.anonymous_id = tracking_sessions_ios.anonymous_id
-          AND tracking_ios.timestamp >= tracking_sessions_ios.session_start_at
-          AND (tracking_ios.timestamp < tracking_sessions_ios.next_session_start_at
-            OR tracking_sessions_ios.next_session_start_at IS NULL)
-        WHERE
-          tracking_ios.event='cart_viewed'
-        GROUP BY
-          1,
-          2 ),
-
-      address_confirmed_ios AS (
-      SELECT
-        tracking_sessions_ios.anonymous_id,
-        tracking_sessions_ios.session_id,
-        COUNT(*) AS event_count
-      FROM
-        `flink-backend.flink_ios_production.tracks_view` tracking_ios
-      LEFT JOIN
-        tracking_sessions_ios
-      ON
-        tracking_ios.anonymous_id = tracking_sessions_ios.anonymous_id
-        AND tracking_ios.timestamp >= tracking_sessions_ios.session_start_at
-        AND (tracking_ios.timestamp < tracking_sessions_ios.next_session_start_at
-          OR tracking_sessions_ios.next_session_start_at IS NULL)
-      WHERE
-        tracking_ios.event='address_confirmed'
-      GROUP BY
-        1,
-        2 ),
-
-      checkout_started_ios AS (
-      SELECT
-        tracking_sessions_ios.anonymous_id,
-        tracking_sessions_ios.session_id,
-        COUNT(*) AS event_count
-      FROM
-        `flink-backend.flink_ios_production.tracks_view` tracking_ios
-      LEFT JOIN
-        tracking_sessions_ios
-      ON
-        tracking_ios.anonymous_id = tracking_sessions_ios.anonymous_id
-        AND tracking_ios.timestamp >= tracking_sessions_ios.session_start_at
-        AND (tracking_ios.timestamp < tracking_sessions_ios.next_session_start_at
-          OR tracking_sessions_ios.next_session_start_at IS NULL)
-      WHERE
-        tracking_ios.event='checkout_started'
-      GROUP BY
-        1,
-        2 ),
-
-
-      payment_started_ios AS (
-      SELECT
-        tracking_sessions_ios.anonymous_id,
-        tracking_sessions_ios.session_id,
-        COUNT(*) AS event_count
-      FROM
-        `flink-backend.flink_ios_production.tracks_view` tracking_ios
-      LEFT JOIN
-        tracking_sessions_ios
-      ON
-        tracking_ios.anonymous_id = tracking_sessions_ios.anonymous_id
-        AND tracking_ios.timestamp >= tracking_sessions_ios.session_start_at
-        AND (tracking_ios.timestamp < tracking_sessions_ios.next_session_start_at
-          OR tracking_sessions_ios.next_session_start_at IS NULL)
-      WHERE
-        tracking_ios.event='purchase_confirmed'
-      GROUP BY
-        1,
-        2 ),
-
-        order_placed_ios AS (
-        SELECT
-          tracking_sessions_ios.anonymous_id,
-          tracking_sessions_ios.session_id,
-          COUNT(*) AS event_count
-        FROM
-          `flink-backend.flink_ios_production.tracks_view` tracking_ios
-        LEFT JOIN
-          tracking_sessions_ios
-        ON
-          tracking_ios.anonymous_id = tracking_sessions_ios.anonymous_id
-          AND tracking_ios.timestamp >= tracking_sessions_ios.session_start_at
-          AND (tracking_ios.timestamp < tracking_sessions_ios.next_session_start_at
-            OR tracking_sessions_ios.next_session_start_at IS NULL)
-        WHERE
-          tracking_ios.event='order_placed'
-        GROUP BY
-          1,
-          2 ),
-
-      base_table_android AS (
+      location_table AS (
        SELECT
-            *,
-            TIMESTAMP_DIFF(timestamp,LAG(timestamp) OVER(PARTITION BY anonymous_id ORDER BY timestamp), MINUTE) AS inactivity_time,
-            event="order_placed" AS ordered_tmp,
-            --the following is not entirely elegant as it starts a new block with every order_placed, but the results are correct
-            SUM(CASE WHEN event="order_placed" THEN 1 ELSE 0 END) OVER(PARTITION BY anonymous_id ORDER BY timestamp) AS has_ordered_block_per_id
-          FROM
-            `flink-backend.flink_android_production.tracks_view`
-          WHERE
-            event NOT LIKE "%api%" AND event NOT LIKE "%adjust%" AND event NOT LIKE "%install_attributed%"
-            --NOT (context_app_name = "Flink-Staging" OR context_app_name="Flink-Debug")
-        ),
+         location_help_table.*, country_lookup.country_iso,
+      #    anonymous_id,
+      #    timestamp,
+      #    id,
+      #    context_locale,
+      #    hub_city,
+      #    hub_encoded,
+      #    country_lookup.country_iso,
+      #    block,
+         CASE
+           WHEN FIRST_VALUE(location_help_table.hub_code) OVER (PARTITION BY location_help_table.anonymous_id, block ORDER BY location_help_table.timestamp) IS NOT NULL THEN FIRST_VALUE(location_help_table.country_iso) OVER (PARTITION BY location_help_table.anonymous_id, block ORDER BY location_help_table.timestamp)
+           WHEN FIRST_VALUE(location_help_table.hub_city) OVER (PARTITION BY location_help_table.anonymous_id, block ORDER BY location_help_table.timestamp) IS NOT NULL THEN FIRST_VALUE(country_lookup.country_iso) OVER (PARTITION BY location_help_table.anonymous_id, block ORDER BY location_help_table.timestamp)
+         ELSE
+         SUBSTRING(location_help_table.context_locale,
+           4,
+           2)
+       END
+         AS derived_country_iso,
+         (FIRST_VALUE(hub_city) OVER (PARTITION BY location_help_table.anonymous_id, block ORDER BY location_help_table.timestamp) IS NOT NULL
+           AND FIRST_VALUE(location_help_table.hub_code) OVER (PARTITION BY location_help_table.anonymous_id, block ORDER BY location_help_table.timestamp) IS NULL) AS country_derived_from_city,
+         (FIRST_VALUE(hub_city) OVER (PARTITION BY location_help_table.anonymous_id, block ORDER BY location_help_table.timestamp) IS NULL
+           AND FIRST_VALUE(location_help_table.hub_code) OVER (PARTITION BY location_help_table.anonymous_id, block ORDER BY location_help_table.timestamp) IS NULL) AS country_derived_from_locale,
+         FIRST_VALUE(location_help_table.hub_city) OVER (PARTITION BY location_help_table.anonymous_id, block ORDER BY location_help_table.timestamp) AS derived_city,
+         FIRST_VALUE(location_help_table.hub_code) OVER (PARTITION BY location_help_table.anonymous_id, block ORDER BY location_help_table.timestamp) AS derived_hub,
+         FIRST_VALUE(ordered_tmp) OVER (PARTITION BY location_help_table.anonymous_id, has_ordered_block_per_id ORDER BY location_help_table.timestamp) AS has_ordered
+       FROM
+         location_help_table
+       LEFT JOIN
+         country_lookup
+       ON
+         country_lookup.city = location_help_table.hub_city
+       ORDER BY
+         anonymous_id,
+         timestamp),
 
-        event_android AS (
-          SELECT *,
-          FIRST_VALUE(ordered_tmp) OVER (PARTITION BY anonymous_id, has_ordered_block_per_id ORDER BY timestamp) as has_ordered
-          FROM base_table_android
-        ),
-
-        tracking_sessions_android AS (
+        tracking_sessions AS (
         SELECT
           anonymous_id || '-' || ROW_NUMBER() OVER(PARTITION BY anonymous_id ORDER BY timestamp) AS session_id,
           *,
           timestamp AS session_start_at,
           LEAD(timestamp) OVER(PARTITION BY anonymous_id ORDER BY timestamp) AS next_session_start_at,
-        FROM event_android
+        FROM
+          location_table
         WHERE
-          (event_android.inactivity_time > 30
-            OR event_android.inactivity_time IS NULL)
+          (location_table.inactivity_time > 30
+            OR location_table.inactivity_time IS NULL)
         ORDER BY
           1),
 
-        add_to_cart_android AS (
-        SELECT
-          tracking_sessions_android.anonymous_id,
-          tracking_sessions_android.session_id,
-          COUNT(*) AS event_count
-        FROM
-          `flink-backend.flink_android_production.tracks_view` tracking_android
-        LEFT JOIN
-          tracking_sessions_android
-        ON
-          tracking_android.anonymous_id = tracking_sessions_android.anonymous_id
-          AND tracking_android.timestamp >= tracking_sessions_android.session_start_at
-          AND (tracking_android.timestamp < tracking_sessions_android.next_session_start_at
-            OR tracking_sessions_android.next_session_start_at IS NULL)
-        WHERE
-          tracking_android.event='product_added_to_cart'
-        GROUP BY
-          1,
-          2 ),
-
-        location_pin_placed_android AS (
-        SELECT
-          tracking_sessions_android.anonymous_id,
-          tracking_sessions_android.session_id,
-          COUNT(*) AS event_count
-        FROM
-          `flink-backend.flink_android_production.tracks_view` tracking_android
-        LEFT JOIN
-          tracking_sessions_android
-        ON
-          tracking_android.anonymous_id = tracking_sessions_android.anonymous_id
-          AND tracking_android.timestamp >= tracking_sessions_android.session_start_at
-          AND (tracking_android.timestamp < tracking_sessions_android.next_session_start_at
-            OR tracking_sessions_android.next_session_start_at IS NULL)
-        WHERE
-          tracking_android.event='location_pin_placed'
-        GROUP BY
-          1,
-          2 ),
-
-        home_viewed_android AS (
-        SELECT
-          tracking_sessions_android.anonymous_id,
-          tracking_sessions_android.session_id,
-          COUNT(*) AS event_count
-        FROM
-          `flink-backend.flink_android_production.tracks_view` tracking_android
-        LEFT JOIN
-          tracking_sessions_android
-        ON
-          tracking_android.anonymous_id = tracking_sessions_android.anonymous_id
-          AND tracking_android.timestamp >= tracking_sessions_android.session_start_at
-          AND (tracking_android.timestamp < tracking_sessions_android.next_session_start_at
-            OR tracking_sessions_android.next_session_start_at IS NULL)
-        WHERE
-          tracking_android.event='home_viewed'
-        GROUP BY
-          1,
-          2 ),
-
-        view_item_android AS (
-        SELECT
-          tracking_sessions_android.anonymous_id,
-          tracking_sessions_android.session_id,
-          COUNT(*) AS event_count
-        FROM
-          `flink-backend.flink_android_production.tracks_view` tracking_android
-        LEFT JOIN
-          tracking_sessions_android
-        ON
-          tracking_android.anonymous_id = tracking_sessions_android.anonymous_id
-          AND tracking_android.timestamp >= tracking_sessions_android.session_start_at
-          AND (tracking_android.timestamp < tracking_sessions_android.next_session_start_at
-            OR tracking_sessions_android.next_session_start_at IS NULL)
-        WHERE
-          tracking_android.event='product_details_viewed'
-        GROUP BY
-          1,
-          2 ),
-
-         view_cart_android AS (
-        SELECT
-          tracking_sessions_android.anonymous_id,
-          tracking_sessions_android.session_id,
-          COUNT(*) AS event_count
-        FROM
-          `flink-backend.flink_android_production.tracks_view` tracking_android
-        LEFT JOIN
-          tracking_sessions_android
-        ON
-          tracking_android.anonymous_id = tracking_sessions_android.anonymous_id
-          AND tracking_android.timestamp >= tracking_sessions_android.session_start_at
-          AND (tracking_android.timestamp < tracking_sessions_android.next_session_start_at
-            OR tracking_sessions_android.next_session_start_at IS NULL)
-        WHERE
-          tracking_android.event='cart_viewed'
-        GROUP BY
-          1,
-          2 ),
-
-          address_confirmed_android AS (
+      add_to_cart AS (
       SELECT
-        tracking_sessions_android.anonymous_id,
-        tracking_sessions_android.session_id,
+        tracking_sessions.anonymous_id,
+        tracking_sessions.session_id,
         COUNT(*) AS event_count
       FROM
-        `flink-backend.flink_android_production.tracks_view` tracking_android
+        location_table
       LEFT JOIN
-        tracking_sessions_android
+        tracking_sessions
       ON
-        tracking_android.anonymous_id = tracking_sessions_android.anonymous_id
-        AND tracking_android.timestamp >= tracking_sessions_android.session_start_at
-        AND (tracking_android.timestamp < tracking_sessions_android.next_session_start_at
-          OR tracking_sessions_android.next_session_start_at IS NULL)
+        location_table.anonymous_id = tracking_sessions.anonymous_id
+        AND location_table.timestamp >= tracking_sessions.session_start_at
+        AND (location_table.timestamp < tracking_sessions.next_session_start_at
+          OR tracking_sessions.next_session_start_at IS NULL)
       WHERE
-        tracking_android.event='address_confirmed'
+        location_table.event='product_added_to_cart'
       GROUP BY
         1,
         2 ),
 
-      checkout_started_android AS (
+      location_pin_placed AS (
       SELECT
-        tracking_sessions_android.anonymous_id,
-        tracking_sessions_android.session_id,
+        tracking_sessions.anonymous_id,
+        tracking_sessions.session_id,
         COUNT(*) AS event_count
       FROM
-        `flink-backend.flink_android_production.tracks_view` tracking_android
+        location_table
       LEFT JOIN
-        tracking_sessions_android
+        tracking_sessions
       ON
-        tracking_android.anonymous_id = tracking_sessions_android.anonymous_id
-        AND tracking_android.timestamp >= tracking_sessions_android.session_start_at
-        AND (tracking_android.timestamp < tracking_sessions_android.next_session_start_at
-          OR tracking_sessions_android.next_session_start_at IS NULL)
+        location_table.anonymous_id = tracking_sessions.anonymous_id
+        AND location_table.timestamp >= tracking_sessions.session_start_at
+        AND (location_table.timestamp < tracking_sessions.next_session_start_at
+          OR tracking_sessions.next_session_start_at IS NULL)
       WHERE
-        tracking_android.event='checkout_started'
+        location_table.event='location_pin_placed'
       GROUP BY
         1,
         2 ),
 
-      payment_started_android AS (
+      home_viewed AS (
       SELECT
-        tracking_sessions_android.anonymous_id,
-        tracking_sessions_android.session_id,
+        tracking_sessions.anonymous_id,
+        tracking_sessions.session_id,
         COUNT(*) AS event_count
       FROM
-        `flink-backend.flink_android_production.tracks_view` tracking_android
+        location_table
       LEFT JOIN
-        tracking_sessions_android
+        tracking_sessions
       ON
-        tracking_android.anonymous_id = tracking_sessions_android.anonymous_id
-        AND tracking_android.timestamp >= tracking_sessions_android.session_start_at
-        AND (tracking_android.timestamp < tracking_sessions_android.next_session_start_at
-          OR tracking_sessions_android.next_session_start_at IS NULL)
+        location_table.anonymous_id = tracking_sessions.anonymous_id
+        AND location_table.timestamp >= tracking_sessions.session_start_at
+        AND (location_table.timestamp < tracking_sessions.next_session_start_at
+          OR tracking_sessions.next_session_start_at IS NULL)
       WHERE
-        tracking_android.event='purchase_confirmed'
+        location_table.event='home_viewed'
       GROUP BY
         1,
         2 ),
-
-        order_placed_android AS (
-        SELECT
-          tracking_sessions_android.anonymous_id,
-          tracking_sessions_android.session_id,
-          COUNT(*) AS event_count
-        FROM
-          `flink-backend.flink_android_production.tracks_view` tracking_android
-        LEFT JOIN
-          tracking_sessions_android
-        ON
-          tracking_android.anonymous_id = tracking_sessions_android.anonymous_id
-          AND tracking_android.timestamp >= tracking_sessions_android.session_start_at
-          AND (tracking_android.timestamp < tracking_sessions_android.next_session_start_at
-            OR tracking_sessions_android.next_session_start_at IS NULL)
-        WHERE
-          tracking_android.event='order_placed'
-        GROUP BY
-          1,
-          2 )
+      view_cart AS (
+      SELECT
+        tracking_sessions.anonymous_id,
+        tracking_sessions.session_id,
+        COUNT(*) AS event_count
+      FROM
+        location_table
+      LEFT JOIN
+        tracking_sessions
+      ON
+        location_table.anonymous_id = tracking_sessions.anonymous_id
+        AND location_table.timestamp >= tracking_sessions.session_start_at
+        AND (location_table.timestamp < tracking_sessions.next_session_start_at
+          OR tracking_sessions.next_session_start_at IS NULL)
+      WHERE
+        location_table.event='cart_viewed'
+      GROUP BY
+        1,
+        2 ),
+      address_confirmed AS (
+      SELECT
+        tracking_sessions.anonymous_id,
+        tracking_sessions.session_id,
+        COUNT(*) AS event_count
+      FROM
+         location_table
+      LEFT JOIN
+        tracking_sessions
+      ON
+        location_table.anonymous_id = tracking_sessions.anonymous_id
+        AND location_table.timestamp >= tracking_sessions.session_start_at
+        AND (location_table.timestamp < tracking_sessions.next_session_start_at
+          OR tracking_sessions.next_session_start_at IS NULL)
+      WHERE
+        location_table.event='address_confirmed'
+      GROUP BY
+        1,
+        2 ),
+      checkout_started AS (
+      SELECT
+        tracking_sessions.anonymous_id,
+        tracking_sessions.session_id,
+        COUNT(*) AS event_count
+      FROM
+        location_table
+      LEFT JOIN
+        tracking_sessions
+      ON
+        location_table.anonymous_id = tracking_sessions.anonymous_id
+        AND location_table.timestamp >= tracking_sessions.session_start_at
+        AND (location_table.timestamp < tracking_sessions.next_session_start_at
+          OR tracking_sessions.next_session_start_at IS NULL)
+      WHERE
+        location_table.event='checkout_started'
+      GROUP BY
+        1,
+        2 ),
+      payment_started AS (
+      SELECT
+        tracking_sessions.anonymous_id,
+        tracking_sessions.session_id,
+        COUNT(*) AS event_count
+      FROM
+        location_table
+      LEFT JOIN
+        tracking_sessions
+      ON
+        location_table.anonymous_id = tracking_sessions.anonymous_id
+        AND location_table.timestamp >= tracking_sessions.session_start_at
+        AND (location_table.timestamp < tracking_sessions.next_session_start_at
+          OR tracking_sessions.next_session_start_at IS NULL)
+      WHERE
+        location_table.event='purchase_confirmed'
+      GROUP BY
+        1,
+        2 ),
+      order_placed AS (
+      SELECT
+        tracking_sessions.anonymous_id,
+        tracking_sessions.session_id,
+        COUNT(*) AS event_count
+      FROM
+        location_table
+      LEFT JOIN
+        tracking_sessions
+      ON
+        location_table.anonymous_id = tracking_sessions.anonymous_id
+        AND location_table.timestamp >= tracking_sessions.session_start_at
+        AND (location_table.timestamp < tracking_sessions.next_session_start_at
+          OR tracking_sessions.next_session_start_at IS NULL)
+      WHERE
+        location_table.event='order_placed'
+      GROUP BY
+        1,
+        2 )
 
       SELECT
-        tracking_sessions_ios.anonymous_id,
-        tracking_sessions_ios.session_id,
-        datetime(tracking_sessions_ios.session_start_at,
+        tracking_sessions.anonymous_id,
+        tracking_sessions.session_id,
+        datetime(tracking_sessions.session_start_at,
           'Europe/Berlin') AS session_start_at,
-        datetime(tracking_sessions_ios.next_session_start_at,
+        datetime(tracking_sessions.next_session_start_at,
           'Europe/Berlin') AS next_session_start_at,
-        tracking_sessions_ios.context_locale,
-        tracking_sessions_ios.context_device_type,
-        tracking_sessions_ios.context_app_version,
+        tracking_sessions.context_locale,
+        tracking_sessions.context_device_type,
+        tracking_sessions.context_app_version,
         1 AS session,
-        tracking_sessions_ios.has_ordered,
-        add_to_cart_ios.event_count AS add_to_cart,
-        location_pin_placed_ios.event_count AS location_pin_placed,
-        home_viewed_ios.event_count AS home_viewed,
-        view_item_ios.event_count AS view_item,
-        view_cart_ios.event_count AS view_cart,
-        address_confirmed_ios.event_count AS address_confirmed,
-        checkout_started_ios.event_count AS checkout_started,
-        payment_started_ios.event_count AS payment_started,
-        order_placed_ios.event_count AS order_placed
+        tracking_sessions.has_ordered,
+        tracking_sessions.derived_country_iso,
+        tracking_sessions.derived_city,
+        tracking_sessions.derived_hub,
+        tracking_sessions.country_derived_from_city,
+        tracking_sessions.country_derived_from_locale,
+        add_to_cart.event_count AS add_to_cart,
+        location_pin_placed.event_count AS location_pin_placed,
+        home_viewed.event_count AS home_viewed,
+        view_cart.event_count AS view_cart,
+        address_confirmed.event_count AS address_confirmed,
+        checkout_started.event_count AS checkout_started,
+        payment_started.event_count AS payment_started,
+        order_placed.event_count AS order_placed
       FROM
-        tracking_sessions_ios
+        tracking_sessions
       LEFT JOIN
-        add_to_cart_ios
+        add_to_cart
       ON
-        tracking_sessions_ios.session_id=add_to_cart_ios.session_id
+        tracking_sessions.session_id=add_to_cart.session_id
       LEFT JOIN
-        location_pin_placed_ios
+        location_pin_placed
       ON
-        tracking_sessions_ios.session_id=location_pin_placed_ios.session_id
+        tracking_sessions.session_id=location_pin_placed.session_id
       LEFT JOIN
-        home_viewed_ios
+        home_viewed
       ON
-        tracking_sessions_ios.session_id=home_viewed_ios.session_id
+        tracking_sessions.session_id=home_viewed.session_id
       LEFT JOIN
-        view_item_ios
+        view_cart
       ON
-        tracking_sessions_ios.session_id=view_item_ios.session_id
+        tracking_sessions.session_id=view_cart.session_id
       LEFT JOIN
-        view_cart_ios
+        address_confirmed
       ON
-        tracking_sessions_ios.session_id=view_cart_ios.session_id
+        tracking_sessions.session_id=address_confirmed.session_id
       LEFT JOIN
-        address_confirmed_ios
+        checkout_started
       ON
-        tracking_sessions_ios.session_id=address_confirmed_ios.session_id
+        tracking_sessions.session_id=checkout_started.session_id
       LEFT JOIN
-        checkout_started_ios
+        payment_started
       ON
-        tracking_sessions_ios.session_id=checkout_started_ios.session_id
+        tracking_sessions.session_id=payment_started.session_id
       LEFT JOIN
-        payment_started_ios
+        order_placed
       ON
-        tracking_sessions_ios.session_id=payment_started_ios.session_id
-      LEFT JOIN
-        order_placed_ios
-      ON
-        tracking_sessions_ios.session_id=order_placed_ios.session_id
-      UNION ALL
-      SELECT
-        tracking_sessions_android.anonymous_id,
-        tracking_sessions_android.session_id,
-        datetime(tracking_sessions_android.session_start_at,
-          'Europe/Berlin') AS session_start_at,
-        datetime(tracking_sessions_android.next_session_start_at,
-          'Europe/Berlin') AS next_session_start_at,
-        tracking_sessions_android.context_locale,
-        tracking_sessions_android.context_device_type,
-        tracking_sessions_android.context_app_version,
-        1 AS session,
-        tracking_sessions_android.has_ordered,
-        add_to_cart_android.event_count AS add_to_cart,
-        location_pin_placed_android.event_count AS location_pin_placed,
-        home_viewed_android.event_count AS home_viewed,
-        view_item_android.event_count AS view_item,
-        view_cart_android.event_count AS view_cart,
-        address_confirmed_android.event_count AS address_confirmed,
-        checkout_started_android.event_count AS checkout_started,
-        payment_started_android.event_count AS payment_started,
-        order_placed_android.event_count AS order_placed
-      FROM
-        tracking_sessions_android
-      LEFT JOIN
-        add_to_cart_android
-      ON
-        tracking_sessions_android.session_id=add_to_cart_android.session_id
-      LEFT JOIN
-        location_pin_placed_android
-      ON
-        tracking_sessions_android.session_id=location_pin_placed_android.session_id
-      LEFT JOIN
-        home_viewed_android
-      ON
-        tracking_sessions_android.session_id=home_viewed_android.session_id
-      LEFT JOIN
-        view_item_android
-      ON
-        tracking_sessions_android.session_id=view_item_android.session_id
-      LEFT JOIN
-        view_cart_android
-      ON
-        tracking_sessions_android.session_id=view_cart_android.session_id
-      LEFT JOIN
-        address_confirmed_android
-      ON
-        tracking_sessions_android.session_id=address_confirmed_android.session_id
-      LEFT JOIN
-        checkout_started_android
-      ON
-        tracking_sessions_android.session_id=checkout_started_android.session_id
-      LEFT JOIN
-        payment_started_android
-      ON
-        tracking_sessions_android.session_id=payment_started_android.session_id
-      LEFT JOIN
-        order_placed_android
-      ON
-        tracking_sessions_android.session_id=order_placed_android.session_id
+        tracking_sessions.session_id=order_placed.session_id
       ORDER BY
         1
        ;;
@@ -555,13 +370,7 @@ view: segment_tracking_sessions30 {
 
   measure: count {
     type: count
-    description: "Number of sessions"
     drill_fields: [detail*]
-  }
-
-  dimension: full_app_version {
-    type: string
-    sql: ${context_device_type} || '-' || ${context_app_version} ;;
   }
 
   dimension: anonymous_id {
@@ -571,7 +380,6 @@ view: segment_tracking_sessions30 {
 
   dimension: session_id {
     type: string
-    primary_key: yes
     sql: ${TABLE}.session_id ;;
   }
 
@@ -607,9 +415,34 @@ view: segment_tracking_sessions30 {
     sql: ${TABLE}.session ;;
   }
 
-  dimension: returning_customer {
-    type: yesno
+  dimension: has_ordered {
+    type: string
     sql: ${TABLE}.has_ordered ;;
+  }
+
+  dimension: derived_country_iso {
+    type: string
+    sql: ${TABLE}.derived_country_iso ;;
+  }
+
+  dimension: derived_city {
+    type: string
+    sql: ${TABLE}.derived_city ;;
+  }
+
+  dimension: derived_hub {
+    type: string
+    sql: ${TABLE}.derived_hub ;;
+  }
+
+  dimension: country_derived_from_city {
+    type: string
+    sql: ${TABLE}.country_derived_from_city ;;
+  }
+
+  dimension: country_derived_from_locale {
+    type: string
+    sql: ${TABLE}.country_derived_from_locale ;;
   }
 
   dimension: add_to_cart {
@@ -625,11 +458,6 @@ view: segment_tracking_sessions30 {
   dimension: home_viewed {
     type: number
     sql: ${TABLE}.home_viewed ;;
-  }
-
-  dimension: view_item {
-    type: number
-    sql: ${TABLE}.view_item ;;
   }
 
   dimension: view_cart {
@@ -657,6 +485,36 @@ view: segment_tracking_sessions30 {
     sql: ${TABLE}.order_placed ;;
   }
 
+### Custom dimensions
+  dimension: full_app_version {
+    type: string
+    sql: ${context_device_type} || '-' || ${context_app_version} ;;
+  }
+
+  dimension: returning_customer {
+    type: yesno
+    sql: ${TABLE}.has_ordered ;;
+  }
+
+  dimension: country {
+    type: string
+    case: {
+      when: {
+        sql: ${TABLE}.derived_country_iso = "DE" ;;
+        label: "Germany"
+      }
+      when: {
+        sql: ${TABLE}.derived_country_iso = "FR" ;;
+        label: "France"
+      }
+      when: {
+        sql: ${TABLE}.derived_country_iso = "NL" ;;
+        label: "Netherlands"
+      }
+      else: "Other / Unknown"
+    }
+  }
+
 ##### Unique count of events during a session. If multiple events are triggerred during a session, e.g 3 times view item, the event is only counted once.
 
   measure: cnt_address_selected {
@@ -678,13 +536,6 @@ view: segment_tracking_sessions30 {
     description: "Number of sessions in which at least one Home Viewed event happened"
     type: count
     filters: [home_viewed: "NOT NULL"]
-  }
-
-  measure: cnt_view_item {
-    label: "View item count"
-    description: "Number of sessions in which at least one Product Details Viewed event happened"
-    type: count
-    filters: [view_item: "NOT NULL"]
   }
 
   measure: cnt_add_to_cart {
@@ -747,12 +598,6 @@ view: segment_tracking_sessions30 {
     label: "Home viewed sum of events"
     type: sum
     sql: ${home_viewed} ;;
-  }
-
-  measure: sum_view_item {
-    label: "View item sum of events"
-    type: sum
-    sql: ${view_item} ;;
   }
 
   measure: sum_add_to_cart {
@@ -821,7 +666,6 @@ view: segment_tracking_sessions30 {
     sql: ${cnt_payment_started}/NULLIF(${cnt_checkout_started},0) ;;
   }
 
-
   set: detail {
     fields: [
       anonymous_id,
@@ -832,10 +676,15 @@ view: segment_tracking_sessions30 {
       context_device_type,
       context_app_version,
       session,
+      has_ordered,
+      derived_country_iso,
+      derived_city,
+      derived_hub,
+      country_derived_from_city,
+      country_derived_from_locale,
       add_to_cart,
       location_pin_placed,
       home_viewed,
-      view_item,
       view_cart,
       address_confirmed,
       checkout_started,
