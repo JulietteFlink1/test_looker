@@ -739,7 +739,10 @@ explore: cs_issues_post_delivery {
 # Un-hide and use this explore, or copy the joins into another explore, to get all the fully nested relationships from this view
 explore: gorillas_v1_items {
   hidden: no
-
+  label: "Competitor Analysis"
+  view_label: "Competitor Analysis"
+  group_label: "08) Competitor Analysis"
+  description: "Analysis of competitors."
   join: items__tags {
     view_label: "Items: Tags"
     sql: LEFT JOIN UNNEST(${gorillas_v1_items.tags}) as items__tags ;;
