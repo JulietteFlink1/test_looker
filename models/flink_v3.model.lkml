@@ -240,6 +240,24 @@ explore: order_order {
     type: left_outer
   }
 
+  join: hub_leaderboard_shift_metrics {
+    view_label: "* Hubs *"
+    sql_on: ${order_order.warehouse_name} = ${hub_leaderboard_shift_metrics.hub_code_lowercase} and
+            ${order_order.created_date}   = ${hub_leaderboard_shift_metrics.date};;
+    relationship: many_to_one
+    type: left_outer
+  }
+
+  join: hub_leaderboard {
+    view_label: "* Hubs *"
+    sql_on: ${order_order.warehouse_name} = ${hub_leaderboard.hub_code_lowercase} and
+            ${order_order.created_date}   = ${hub_leaderboard.created_date};;
+    relationship: many_to_one
+    type: left_outer
+  }
+
+
+
   join: product_productvariant {
     sql_on: ${order_orderline.country_iso} = ${product_productvariant.country_iso} AND
             ${order_orderline.product_sku} = ${product_productvariant.sku} ;;
@@ -716,40 +734,6 @@ explore: cs_issues_post_delivery {
 
 
 
-########### AD-HOC EXPLORE ###########
-
-explore: products_mba {
-  label: "Market basket analysis at a product level"
-  view_label: "Product MBA"
-  group_label: "12) Ad-Hoc"
-  description: "Product basket analysis"
-
-}
-
-explore: categories_mba {
-  label: "Market basket analysis at a category level"
-  view_label: "Category MBA"
-  group_label: "12) Ad-Hoc"
-  description: "Product category basket analysis"
-
-}
-
-explore: voucher_retention {
-  label: "Voucher retention"
-  view_label: "Voucher retention"
-  group_label: "12) Ad-Hoc"
-  description: "Voucher retention analysis - First voucher used by user is considered as the base. Thus, a user can only have a first used voucher."
-
-  access_filter: {
-    field: voucher_retention.country_iso
-    user_attribute: country_iso
-  }
-
-  access_filter: {
-    field: voucher_retention.city
-    user_attribute: city
-  }
-}
 
 ####### Competitor Analysis #######
 explore: competitor_analysis {
@@ -1052,8 +1036,6 @@ explore: gorillas_orders {
   hidden: no
 }
 
-################ Rider Staffing
-
 
 explore: riders_forecast_staffing {
   label: "Orders and Riders Forecasting"
@@ -1101,6 +1083,8 @@ explore: marketing_spend_installs_orders {
 #   #   type: left_outer
 #   # }
 # }
+########### CRM EXPLORE ###########
+
 
 explore: braze_crm_data {
   label: "CRM Email Data (Braze)"
@@ -1113,5 +1097,64 @@ explore: braze_crm_data {
       braze_crm_data.country: "",
       braze_crm_data.email_sent_at: "after 2021-04-01"
     ]
+  }
+}
+
+########### HUB NPS EXPLORE ###########
+
+
+explore: nps_hub_team {
+  label: "NPS (Hub Teams)"
+  view_label: "NPS (Hub Teams)"
+  group_label: "12) NPS (Internal Teams)"
+  description: "NPS surveys towards internal teams"
+
+  access_filter: {
+    field: hubs.country_iso
+    user_attribute: country_iso
+  }
+
+  join: hubs {
+    sql_on:
+    ${nps_hub_team.hub_code} = ${hubs.hub_code} ;;
+    relationship: many_to_one
+    type: left_outer
+  }
+
+}
+
+
+########### AD-HOC EXPLORE ###########
+
+explore: products_mba {
+  label: "Market basket analysis at a product level"
+  view_label: "Product MBA"
+  group_label: "15) Ad-Hoc"
+  description: "Product basket analysis"
+
+}
+
+explore: categories_mba {
+  label: "Market basket analysis at a category level"
+  view_label: "Category MBA"
+  group_label: "15) Ad-Hoc"
+  description: "Product category basket analysis"
+
+}
+
+explore: voucher_retention {
+  label: "Voucher retention"
+  view_label: "Voucher retention"
+  group_label: "15) Ad-Hoc"
+  description: "Voucher retention analysis - First voucher used by user is considered as the base. Thus, a user can only have a first used voucher."
+
+  access_filter: {
+    field: voucher_retention.country_iso
+    user_attribute: country_iso
+  }
+
+  access_filter: {
+    field: voucher_retention.city
+    user_attribute: city
   }
 }
