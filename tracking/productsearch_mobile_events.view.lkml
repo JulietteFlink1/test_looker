@@ -543,6 +543,15 @@ view: productsearch_mobile_events {
     }
   }
 
+  dimension: city {
+    type: string
+    sql:
+      CASE
+        WHEN ${TABLE}.derived_country_iso IN ("DE", "FR", "NL") THEN ${TABLE}.derived_city
+        ELSE "Other/ Unknown"
+      END;;
+  }
+
 ### Custom measures
 
   measure: cnt_unique_anonymousid {
