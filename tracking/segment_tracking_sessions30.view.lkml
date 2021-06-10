@@ -496,6 +496,25 @@ view: segment_tracking_sessions30 {
     sql: ${TABLE}.has_ordered ;;
   }
 
+  dimension: country {
+    type: string
+    case: {
+      when: {
+        sql: ${TABLE}.derived_country_iso = "DE" ;;
+        label: "Germany"
+      }
+      when: {
+        sql: ${TABLE}.derived_country_iso = "FR" ;;
+        label: "France"
+      }
+      when: {
+        sql: ${TABLE}.derived_country_iso = "NL" ;;
+        label: "Netherlands"
+      }
+      else: "Other / Unknown"
+    }
+  }
+
 ##### Unique count of events during a session. If multiple events are triggerred during a session, e.g 3 times view item, the event is only counted once.
 
   measure: cnt_address_selected {
