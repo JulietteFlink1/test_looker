@@ -640,6 +640,8 @@ view: productsearch_mobile_events {
       delivery_postcode,
       user_area_available,
       hub_id,
+      country_clean,
+      city_clean,
       country_iso,
       block,
       hub_code,
