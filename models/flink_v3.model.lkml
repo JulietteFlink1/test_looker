@@ -813,6 +813,12 @@ explore: gorillas_v1_items {
     relationship: one_to_many
     type: left_outer
   }
+  join: gorillas_category_mapping {
+    sql_on: ${items__product_collections.id} = ${gorillas_category_mapping.gorillas_collection_id} and ${items__product_collections.group};;
+    relationship: one_to_many
+    type: left_outer
+  }
+
 
 }
 
