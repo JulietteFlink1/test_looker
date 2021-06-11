@@ -4,9 +4,20 @@
 view: sku_analytics {
   derived_table: {
     explore_source: order_order {
+      column: id {}
       column: warehouse_name {}
-      column: created_week {}
+      column: hub_code_lowercase { field: hubs.hub_code_lowercase }
+      column: city { field: hubs.city }
+      column: country { field: hubs.country }
+
       column: product_sku { field: order_orderline.product_sku }
+      column: product_name { field: product_product.name }
+      column: category { field: parent_category.name }
+      column: sub_category { field: product_category.name }
+
+      column: created_date {}
+      column: created_week {}
+
       column: unit_price_gross_amount { field: order_orderline.unit_price_gross_amount }
       column: unit_price_net_amount { field: order_orderline.unit_price_net_amount }
       column: sum_item_price_net {field: order_orderline.sum_item_price_net}
@@ -14,14 +25,8 @@ view: sku_analytics {
       # column: quantity { field: order_orderline.quantity }
       # column: quantity_fulfilled { field: order_orderline.quantity_fulfilled }
       column: cnt_orders {}
-      column: id {}
-      column: hub_code_lowercase { field: hubs.hub_code_lowercase }
-      column: city { field: hubs.city }
-      column: country { field: hubs.country }
-      column: created_date {}
-      column: product_name { field: order_orderline.product_name }
-      column: category { field: parent_category.name }
-      column: sub_category { field: product_category.name }
+
+
       column: sum_item_price_gross { field: order_orderline.sum_item_price_gross }
       column: sum_item_quantity { field: order_orderline.sum_item_quantity }
       column: shipping_price_gross_amount {}
@@ -117,6 +122,7 @@ view: sku_analytics {
   dimension: product_name {
     label: "Product Name"
   }
+
   dimension: sum_item_price_gross {
     label: "* Order Line Items * SUM Item Prices sold (gross)"
     description: "Sum of sold Item prices (incl. VAT)"
