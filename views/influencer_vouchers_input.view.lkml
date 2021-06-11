@@ -1,5 +1,5 @@
 view: influencer_vouchers_input {
-  sql_table_name: `flink-backend.gsheet_mktg_influencer_vouchers.Voucher_Data_Input`
+  sql_table_name: `flink-backend.gsheet_mktg_influencer_vouchers.voucher_data_input_global`
     ;;
 
   dimension: unique_key {
