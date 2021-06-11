@@ -1,4 +1,4 @@
-view: item_hub_collection_group_allocation {
+view: gorillas_v1_item_hub_collection_group_allocation {
   sql_table_name: `flink-data-dev.gorillas_v1.item_hub_collection_group_allocation`
     ;;
 

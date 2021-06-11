@@ -830,6 +830,33 @@ explore: gorillas_v1_hubs_master{
   description: "Analysis of competitors."
 }
 
+explore: gorillas_v1_item_hub_collection_group_allocation{
+  hidden:  no
+  label: "Gorillas Item Hub Collection Group Allocation"
+  view_label: "Gorillas Item Hub Collection Group Allocation"
+  group_label: "08) Competitor Analysis"
+  description: "Analysis of competitors."
+
+  join: gorillas_v1_hubs_master {
+    sql_on: ${gorillas_v1_item_hub_collection_group_allocation.hub_id}.hub_code} = ${gorillas_v1_hubs_master.id};;
+    relationship: one_to_many
+    type: left_outer
+  }
+
+  join: gorillas_v1_items {
+    sql_on: ${gorillas_v1_item_hub_collection_group_allocation.item_id} = ${gorillas_v1_items.id};;
+    relationship: one_to_many
+    type: left_outer
+  }
+
+  join: gorillas_category_mapping {
+    sql_on: ${gorillas_v1_item_hub_collection_group_allocation.collection_id} = ${gorillas_category_mapping.gorillas_collection_id} and ${gorillas_v1_item_hub_collection_group_allocation.group_id} = ${gorillas_category_mapping.gorillas_group_id};;
+    relationship: one_to_many
+    type: left_outer
+  }
+
+}
+
 
 explore: competitor_analysis {
   hidden:  yes
