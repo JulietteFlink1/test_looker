@@ -292,7 +292,7 @@ view: marketing_spend_installs_orders {
   }
 
   measure: sum_conversions {
-    label: "# Conversions"
+    label: "# New Customers"
     type: sum
     sql: ${conversions} ;;
     value_format: "0"
