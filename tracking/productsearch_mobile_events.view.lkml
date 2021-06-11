@@ -106,9 +106,9 @@ view: productsearch_mobile_events {
 
     country_lookup AS (
     SELECT
-    DISTINCT country_iso,
-    city,
-    hub_code
+    hub_code,
+    country_iso,
+    city
     FROM
     `flink-backend.gsheet_store_metadata.hubs` ),
 
