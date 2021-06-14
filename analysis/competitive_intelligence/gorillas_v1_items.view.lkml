@@ -400,6 +400,12 @@ view: gorillas_v1_items {
     type: count
     drill_fields: [id, brand_name]
   }
+
+  measure: cnt_distinct_items {
+    type: count_distinct
+    sql: ${id} ;;
+  }
+
 }
 
 view: items__tags {
@@ -498,4 +504,6 @@ view: items__product_collections {
     type: string
     sql: ${TABLE}.name ;;
   }
+
+
 }

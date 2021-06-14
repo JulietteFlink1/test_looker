@@ -6,14 +6,14 @@ view: product_category {
 
   dimension: id {
     primary_key: no
-    hidden: yes
+    hidden: no
     type: number
     sql: ${TABLE}.id ;;
   }
 
   dimension: country_iso {
     type: string
-    hidden: yes
+    hidden: no
     sql: ${TABLE}.country_iso ;;
   }
 

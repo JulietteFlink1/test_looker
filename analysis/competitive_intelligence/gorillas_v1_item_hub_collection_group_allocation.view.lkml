@@ -41,4 +41,16 @@ view: gorillas_v1_item_hub_collection_group_allocation {
     type: count
     drill_fields: [collection_name]
   }
+
+  measure: cnt_distinct_items {
+    type: count_distinct
+    sql: ${item_id} ;;
+  }
+
+
+  # measure: avg_shipping {
+  #   type: average_distinct
+  #   sql_distinct_key: ${item_id} ;;
+  #   sql: ${item_id} ;;
+  # }
 }
