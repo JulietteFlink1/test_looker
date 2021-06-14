@@ -100,7 +100,7 @@ view: segment_tracking_sessions30 {
 
       location_table AS (
        SELECT
-         location_help_table.*, country_lookup.country_iso,
+         location_help_table.*, country_lookup.country_iso  as lookup_country_iso,
       #    anonymous_id,
       #    timestamp,
       #    id,
