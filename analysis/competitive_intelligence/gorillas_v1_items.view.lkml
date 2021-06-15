@@ -5,8 +5,14 @@ view: gorillas_v1_items {
     ;;
   drill_fields: [id]
 
-  dimension: id {
+  dimension: unique_id {
+    group_label: "* IDs *"
     primary_key: yes
+    type: string
+    sql: concat(${scrape_id}, ${hub_code},${id},${time_scraped_time}) ;;
+  }
+
+  dimension: id {
     type: string
     sql: ${TABLE}.id ;;
   }
@@ -404,6 +410,33 @@ view: gorillas_v1_items {
   measure: cnt_distinct_items {
     type: count_distinct
     sql: ${id} ;;
+    value_format: "0"
+  }
+
+  measure: min_price {
+    type: min
+    sql: ${price} ;;
+    value_format: "0.00€"
+  }
+
+  measure: max_price {
+    type: max
+    sql: ${price} ;;
+    value_format: "0.00€"
+  }
+
+  measure: median_price {
+    type: median_distinct
+    sql: ${price} ;;
+    sql_distinct_key: ${id};;
+    value_format: "0.00€"
+  }
+
+  measure: avg_price {
+    type: average_distinct
+    sql: ${price} ;;
+    sql_distinct_key: ${id};;
+    value_format: "0.00€"
   }
 
 }

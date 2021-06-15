@@ -3,14 +3,14 @@
 
 view: comparison_skus_per_category {
   derived_table: {
-    persist_for: "24 hours"
     explore_source: gorillas_v1_item_hub_collection_group_allocation {
       column: country_iso {}
-      column: collection_id {}
-      column: collection_name {}
-      column: group_id {}
-      column: group_label {}
-      column: hub_id {}
+      column: parent_category_id { field: gorillas_category_mapping.parent_category_id }
+      column: category_id { field: gorillas_category_mapping.category_id }
+      column: min_price { field: gorillas_v1_items.min_price }
+      column: max_price { field: gorillas_v1_items.max_price }
+      column: median_price { field: gorillas_v1_items.median_price }
+      column: avg_price { field: gorillas_v1_items.avg_price }
       column: cnt_distinct_items { field: gorillas_v1_items.cnt_distinct_items }
       filters: {
         field: gorillas_v1_items.time_scraped_date
@@ -19,32 +19,28 @@ view: comparison_skus_per_category {
     }
   }
   dimension: country_iso {
-    label: "Country Iso"
+    label: "Gorillas Item Hub Collection Group Allocation Country Iso"
   }
-  dimension: collection_id {
-    label: "Collection ID"
+  dimension: parent_category_id {
+    type: number
   }
-  dimension: collection_name {
-    label: "Collection Name"
+  dimension: category_id {
+    type: number
   }
-  dimension: group_id {
-    label: "Group ID"
+  dimension: min_price {
+    type: number
   }
-  dimension: group_label {
-    label: "Group Name"
+  dimension: max_price {
+    type: number
   }
-  dimension: hub_id {
-    label: "Hub ID"
+  dimension: median_price {
+    type: number
+  }
+  dimension: avg_price {
+    value_format: "0.00€"
+    type: number
   }
   dimension: cnt_distinct_items {
     type: number
-  }
-
-
-  measure: avg_gorillas_skus {
-    label: "Avg # of Gorillas Items"
-    type: average
-    sql: ${cnt_distinct_items} ;;
-    value_format: "0"
   }
 }

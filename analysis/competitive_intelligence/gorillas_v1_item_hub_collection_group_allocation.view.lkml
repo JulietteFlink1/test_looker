@@ -2,6 +2,13 @@ view: gorillas_v1_item_hub_collection_group_allocation {
   sql_table_name: `flink-data-dev.gorillas_v1.item_hub_collection_group_allocation`
     ;;
 
+  dimension: unique_id {
+    group_label: "* IDs *"
+    primary_key: yes
+    type: string
+    sql: concat(${country_iso}, ${collection_id},${group_id},  ${hub_id}, ${item_id}) ;;
+  }
+
   dimension: collection_id {
     type: string
     sql: ${TABLE}.collection_id ;;
@@ -46,6 +53,8 @@ view: gorillas_v1_item_hub_collection_group_allocation {
     type: count_distinct
     sql: ${item_id} ;;
   }
+
+
 
 
   # measure: avg_shipping {
