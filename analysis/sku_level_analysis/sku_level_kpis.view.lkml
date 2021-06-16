@@ -214,7 +214,7 @@ view: sku_level_kpis {
     label: "% Per Sub-Category: Daily Revenue equalized"
     description: "The share of Daily Revenue equalized vs. all SKUs within a Sub-Category"
     type: number
-    sql: ${equalized_sum_item_price_net} / ${sum_item_price_net_per_sub_category} ;;
+    sql: ${equalized_sum_item_price_net} / nullif(${sum_item_price_net_per_sub_category},0) ;;
     value_format_name: percent_1
   }
 
