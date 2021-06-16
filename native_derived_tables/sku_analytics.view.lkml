@@ -34,19 +34,14 @@ view: sku_analytics {
       column: status {}
       column: sum_revenue_gross {}
       column: sum_gmv_gross {}
-      derived_column: max_hubs_sku_sold {
-        sql: count(distinct hub_code_lowercase) over (partition by created_date, product_sku) ;;
+
+      derived_column: unique_hubs{
+        sql: count(distinct hub_code) over (partition by created_date, sku) ;;
       }
-      derived_column: total_sum_item_price_net {
-        sql: sum(sum_item_price_net) over (partition by created_date) ;;
+
+      derived_column: sum_item_price_net_per_sub_category {
+        sql: sum(sum_item_price_net) over (partition by created_date, sub_category);;
       }
-      # derived_column: last_price_change {
-      #   sql: if(
-      #         (lag(unit_price_gross_amount) over (partition by product_sku order by created_date)) <> unit_price_gross_amount
-      #         , created_date
-      #         , null
-      #         );;
-      # }
 
       filters: {
         field: order_order.is_internal_order
@@ -236,6 +231,11 @@ view: sku_analytics {
     type: percent_of_total
     sql:  ${daily_revenue_equalized};;
     direction: "column"
+  }
+
+  measure: sum_item_price_net_per_sub_category {
+    sql: ${TABLE}.sum_item_price_net_per_sub_category;;
+    type: average
   }
 
 
