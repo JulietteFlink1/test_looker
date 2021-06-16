@@ -47,6 +47,7 @@ view: voucher_api_failure_success {
           anonymous_id,
           timestamp,
           voucher_application_failed_tb.id,
+          "Fail" as event_type,
           body_voucher_code,
           hub.slug AS hub_code,
         IF
@@ -126,6 +127,7 @@ view: voucher_api_failure_success {
           anonymous_id,
           timestamp,
           voucher_application_succeeded_tb.id,
+          "Success" as event_type,
           body_voucher_code,
           hub.slug AS hub_code,
         IF
@@ -149,6 +151,7 @@ view: voucher_api_failure_success {
           context_device_model,
           context_device_type,
           context_os_version,
+          CAST(NULL AS STRING) AS response,
           status,
           context_network_carrier,
         FROM
@@ -159,40 +162,12 @@ view: voucher_api_failure_success {
           voucher_application_succeeded_tb.hub_id = hub.id
         ORDER BY
           anonymous_id,
-          timestamp DESC),
+          timestamp DESC)
 
-        aggregated_failures AS (
-        SELECT
-          DATE(timestamp) AS date,
-          country_iso,
-          COUNT(DISTINCT anonymous_id) AS unique_ids_with_failures,
-          COUNT(anonymous_id) AS total_failures
-        FROM
-          location_help_table
-        GROUP BY 1,2
-        ORDER BY 1 DESC,2),
-
-      aggregated_successes AS (
-        SELECT
-          DATE(timestamp) AS date,
-          country_iso,
-          COUNT(DISTINCT anonymous_id) AS unique_ids_with_successes,
-          COUNT(anonymous_id) AS total_successes
-        FROM
-          location_help_table2
-        GROUP BY 1,2
-        ORDER BY 1 DESC,2)
-
-      SELECT
-        aggregated_failures.*, aggregated_successes.unique_ids_with_successes, aggregated_successes.total_successes
-      FROM
-        aggregated_failures
-      LEFT JOIN aggregated_successes
-      ON aggregated_failures.date=aggregated_successes.date AND aggregated_failures.country_iso=aggregated_successes.country_iso
-      ORDER BY
-        1 DESC,
-        2
-       ;;
+      SELECT * FROM location_help_table
+      UNION ALL
+      SELECT * FROM location_help_table2
+ ;;
   }
 
   measure: count {
@@ -200,10 +175,69 @@ view: voucher_api_failure_success {
     drill_fields: [detail*]
   }
 
-  dimension: date {
-    type: date
-    datatype: date
-    sql: ${TABLE}.date ;;
+  measure: cnt_success {
+    label: "Count of successful voucher application"
+    description: "Number of vouchers successfully applied"
+    type: sum
+    sql: if(${event_type}="Success",1,0) ;;
+  }
+
+  measure: cnt_fail {
+    label: "Count of failed voucher application"
+    description: "Number of failures to apply voucher"
+    type: sum
+    sql: if(${event_type}="Fail",1,0) ;;
+  }
+
+  measure: cnt_unique_anonymousid_success {
+    label: "# Unique Users Success"
+    description: "Number of Unique Users identified via Anonymous ID from Segment with successful voucher application"
+    hidden:  no
+    type: count_distinct
+    sql: ${anonymous_id};;
+    filters: [event_type: "Success"]
+    value_format: "0"
+  }
+
+  measure: cnt_unique_anonymousid_fail{
+    label: "# Unique Users Fail"
+    description: "Number of Unique Users identified via Anonymous ID from Segment with failed voucher application"
+    hidden:  no
+    type: count_distinct
+    sql: ${anonymous_id};;
+    filters: [event_type: "Fail"]
+    value_format: "0"
+  }
+
+
+  dimension: anonymous_id {
+    type: string
+    sql: ${TABLE}.anonymous_id ;;
+  }
+
+  dimension_group: timestamp {
+    type: time
+    sql: ${TABLE}.timestamp ;;
+  }
+
+  dimension: id {
+    type: string
+    sql: ${TABLE}.id ;;
+  }
+
+  dimension: event_type {
+    type: string
+    sql: ${TABLE}.event_type ;;
+  }
+
+  dimension: body_voucher_code {
+    type: string
+    sql: ${TABLE}.body_voucher_code ;;
+  }
+
+  dimension: hub_code {
+    type: string
+    sql: ${TABLE}.hub_code ;;
   }
 
   dimension: country_iso {
@@ -211,34 +245,59 @@ view: voucher_api_failure_success {
     sql: ${TABLE}.country_iso ;;
   }
 
-  dimension: unique_ids_with_failures {
-    type: number
-    sql: ${TABLE}.unique_ids_with_failures ;;
+  dimension: context_app_version {
+    type: string
+    sql: ${TABLE}.context_app_version ;;
   }
 
-  dimension: total_failures {
-    type: number
-    sql: ${TABLE}.total_failures ;;
+  dimension: context_device_model {
+    type: string
+    sql: ${TABLE}.context_device_model ;;
   }
 
-  dimension: unique_ids_with_successes {
-    type: number
-    sql: ${TABLE}.unique_ids_with_successes ;;
+  dimension: context_device_type {
+    type: string
+    sql: ${TABLE}.context_device_type ;;
   }
 
-  dimension: total_successes {
-    type: number
-    sql: ${TABLE}.total_successes ;;
+  dimension: context_os_version {
+    type: string
+    sql: ${TABLE}.context_os_version ;;
   }
+
+  dimension: response {
+    type: string
+    sql: ${TABLE}.response ;;
+  }
+
+  dimension: status {
+    type: number
+    sql: ${TABLE}.status ;;
+  }
+
+  dimension: context_network_carrier {
+    type: string
+    sql: ${TABLE}.context_network_carrier ;;
+  }
+
+
 
   set: detail {
     fields: [
-      date,
+      anonymous_id,
+      timestamp_time,
+      id,
+      event_type,
+      body_voucher_code,
+      hub_code,
       country_iso,
-      unique_ids_with_failures,
-      total_failures,
-      unique_ids_with_successes,
-      total_successes
+      context_app_version,
+      context_device_model,
+      context_device_type,
+      context_os_version,
+      response,
+      status,
+      context_network_carrier
     ]
   }
 }
