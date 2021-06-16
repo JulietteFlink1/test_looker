@@ -661,6 +661,13 @@ explore: productsearch_mobile_events {
   description: "Product Search Keywords from event tracking"
 }
 
+explore: voucher_api_failure_success {
+  label: "Voucher Application Success"
+  view_label: "Voucher Application Success"
+  group_label: "10) In-app tracking data"
+  description: "Voucher application success from api-based tracking events"
+}
+
 ####### CS ISSUES EXPLORE #######
 explore: cs_issues_post_delivery {
   label: "CS Contacts"
