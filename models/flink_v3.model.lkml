@@ -661,6 +661,13 @@ explore: productsearch_mobile_events {
   description: "Product Search Keywords from event tracking"
 }
 
+explore: voucher_api_failure_success {
+  label: "Voucher Application Success"
+  view_label: "Voucher Application Success"
+  group_label: "10) In-app tracking data"
+  description: "Voucher application success from api-based tracking events"
+}
+
 ####### CS ISSUES EXPLORE #######
 explore: cs_issues_post_delivery {
   label: "CS Contacts"
@@ -736,7 +743,170 @@ explore: cs_issues_post_delivery {
 
 
 ####### Competitor Analysis #######
+# Un-hide and use this explore, or copy the joins into another explore, to get all the fully nested relationships from this view
+explore: gorillas_v1_items {
+  hidden: no
+  label: "Gorillas Assortment"
+  view_label: "Gorillas Assortment"
+  group_label: "08) Competitor Analysis"
+  description: "Analysis of competitors."
+  always_filter: {
+    filters: {
+      field: time_scraped_date
+      value: "1 day ago"
+    }
+  }
+  join: items__tags {
+    view_label: "Items: Tags"
+    sql: LEFT JOIN UNNEST(${gorillas_v1_items.tags}) as items__tags ;;
+    relationship: one_to_many
+  }
+
+  join: items__barcodes {
+    view_label: "Items: Barcodes"
+    sql: LEFT JOIN UNNEST(${gorillas_v1_items.barcodes}) as items__barcodes ;;
+    relationship: one_to_many
+  }
+
+  join: items__allergen_ids {
+    view_label: "Items: Allergenids"
+    sql: LEFT JOIN UNNEST(${gorillas_v1_items.allergen_ids}) as items__allergen_ids ;;
+    relationship: one_to_many
+  }
+
+  join: items__additive_ids {
+    view_label: "Items: Additiveids"
+    sql: LEFT JOIN UNNEST(${gorillas_v1_items.additive_ids}) as items__additive_ids ;;
+    relationship: one_to_many
+  }
+
+  join: items__additives {
+    view_label: "Items: Additives"
+    sql: LEFT JOIN UNNEST(${gorillas_v1_items.additives}) as items__additives ;;
+    relationship: one_to_many
+  }
+
+  join: items__allergens {
+    view_label: "Items: Allergens"
+    sql: LEFT JOIN UNNEST(${gorillas_v1_items.allergens}) as items__allergens ;;
+    relationship: one_to_many
+  }
+
+  join: items__recommendation_tags {
+    view_label: "Items: Recommendationtags"
+    sql: LEFT JOIN UNNEST(${gorillas_v1_items.recommendation_tags}) as items__recommendation_tags ;;
+    relationship: one_to_many
+  }
+
+  join: items__customization_items {
+    view_label: "Items: Customizationitems"
+    sql: LEFT JOIN UNNEST(${gorillas_v1_items.customization_items}) as items__customization_items ;;
+    relationship: one_to_many
+  }
+
+  join: items__additional_images {
+    view_label: "Items: Additionalimages"
+    sql: LEFT JOIN UNNEST(${gorillas_v1_items.additional_images}) as items__additional_images ;;
+    relationship: one_to_many
+  }
+
+  join: items__product_collections {
+    view_label: "Items: Productcollections"
+    sql: LEFT JOIN UNNEST(${gorillas_v1_items.product_collections}) as items__product_collections ;;
+    relationship: one_to_many
+  }
+  join: gorillas_v1_hubs_master {
+    sql_on: ${gorillas_v1_items.hub_code} = ${gorillas_v1_hubs_master.id};;
+    relationship: one_to_many
+    type: left_outer
+  }
+
+
+}
+
+explore: gorillas_v1_hubs_master{
+  hidden:  no
+  label: "Gorillas Hubs"
+  view_label: "Gorillas Hubs"
+  group_label: "08) Competitor Analysis"
+  description: "Analysis of competitors."
+}
+
+explore: gorillas_v1_item_hub_collection_group_allocation{
+  hidden:  no
+  label: "Gorillas Item Hub Collection Group Allocation"
+  view_label: "Gorillas Item Hub Collection Group Allocation"
+  group_label: "08) Competitor Analysis"
+  description: "Analysis of competitors."
+
+  join: gorillas_v1_hubs_master {
+    sql_on: ${gorillas_v1_item_hub_collection_group_allocation.hub_id} = ${gorillas_v1_hubs_master.id};;
+    relationship: one_to_many
+    type: left_outer
+  }
+
+  join: gorillas_v1_items {
+    sql_on: ${gorillas_v1_item_hub_collection_group_allocation.item_id} = ${gorillas_v1_items.id}
+            and ${gorillas_v1_item_hub_collection_group_allocation.hub_id} = ${gorillas_v1_items.hub_code};;
+    relationship: one_to_one
+    type: left_outer
+  }
+}
+
+
+# explore: skus_per_category_comparison{
+#   hidden:  yes
+#   label: "# of SKUs per Category Comparison"
+#   view_label: "# of SKUs per Category Comparison"
+#   group_label: "08) Competitor Analysis"
+#   description: "Analysis of competitors."
+
+#   join: gorillas_v1_item_hub_collection_group_allocation {
+#     sql_on: ${gorillas_v1_item_hub_collection_group_allocation.country_iso} = ${skus_per_category_comparison.country_iso}
+#             and ${gorillas_v1_item_hub_collection_group_allocation.collection_id} = ${gorillas_category_mapping.gorillas_collection_id}
+#             and ${gorillas_v1_item_hub_collection_group_allocation.group_id} = ${gorillas_category_mapping.gorillas_group_id};;
+#     relationship: one_to_many
+#     type: left_outer
+#   }
+
+# }
+
+explore: flink_skus_per_category {
+  hidden:  no
+  label: "Flink SKUs per Category"
+  view_label: "Flink SKUs per Category"
+  group_label: "08) Competitor Analysis"
+  description: "Analysis of competitors."
+
+  join: gorillas_category_mapping {
+    sql_on: ${flink_skus_per_category.country_iso} = ${gorillas_category_mapping.country_iso}
+            and ${flink_skus_per_category.parent_id} = ${gorillas_category_mapping.parent_category_id}
+            and ${flink_skus_per_category.category_id} = ${gorillas_category_mapping.category_id};;
+    relationship: one_to_one
+    type: full_outer
+  }
+
+  join: gorillas_v1_item_hub_collection_group_allocation {
+    sql_on:  ${flink_skus_per_category.country_iso} = ${gorillas_v1_item_hub_collection_group_allocation.country_iso}
+            and ${gorillas_category_mapping.gorillas_collection_id} = ${gorillas_v1_item_hub_collection_group_allocation.collection_id}
+            and ${gorillas_category_mapping.gorillas_group_id} = ${gorillas_v1_item_hub_collection_group_allocation.group_id};;
+    relationship: many_to_one
+    type: left_outer
+  }
+
+  join: gorillas_v1_items {
+    sql_on: ${gorillas_v1_item_hub_collection_group_allocation.item_id} = ${gorillas_v1_items.id}
+      and ${gorillas_v1_item_hub_collection_group_allocation.hub_id} = ${gorillas_v1_items.hub_code};;
+    relationship: many_to_one
+    type: left_outer
+  }
+
+
+}
+
+
 explore: competitor_analysis {
+  hidden:  yes
   label: "Competitor Analysis"
   view_label: "Competitor Analysis"
   group_label: "08) Competitor Analysis"
@@ -758,6 +928,7 @@ explore: competitor_analysis {
 }
 
 explore: gorillas_stores {
+  hidden:  yes
   label: "Gorillas Stores"
   view_label: "Gorillas Stores"
   group_label: "08) Competitor Analysis"
@@ -769,6 +940,7 @@ explore: gorillas_stores {
 # Un-hide and use this explore, or copy the joins into another explore, to get all the fully nested relationships from this view
 explore: gorillas_items {
   label: "Gorillas Items Overview"
+  hidden: yes
   view_label: "Gorillas Items Overview"
   group_label: "08) Competitor Analysis"
   description: "Current Gorillas Items"
@@ -868,6 +1040,7 @@ explore: gorillas_current_assortment {
 
 
 explore: gorillas_turfs {
+  hidden: yes
   label: "Gorillas Turfs"
   view_label: "Gorillas Turfs"
   group_label: "08) Competitor Analysis"
@@ -899,21 +1072,12 @@ explore: gorillas_turfs {
   }
 }
 
-# explore: hist_avg_items_per_category_comparison{
-#   label: "Items per Category Provider Comparison"
-#   view_label: "Items per Category Provider Comparison"
-#   group_label: "8) Competitor Analysis"
-#   description: "Items per Category Provider Comparison"
-
-# }
-
-# date_time_scraped
-
 explore: comparison_current_ids_per_category {
   label: "Current Items per Category Provider Comparison"
   view_label: "Current Items per Category Provider Comparison"
   group_label: "08) Competitor Analysis"
   description: "Current Items per Category Provider Comparison"
+  hidden: yes
   always_filter: {
     filters: {
       field: time_scraped_date
@@ -964,7 +1128,7 @@ explore: gorillas_inventory{
   view_label: "Gorillas Inventory"
   group_label: "08) Competitor Analysis"
   description: "Current Inventory"
-  hidden: no
+  hidden: yes
   always_filter: {
     filters: {
       field: time_scraped_date
@@ -1000,7 +1164,7 @@ explore: gorillas_hubs{
   view_label: "Gorillas Hubs"
   group_label: "08) Competitor Analysis"
   description: "Current Hubs"
-  hidden: no
+  hidden: yes
 }
 
 explore: gorillas_items_hist{
@@ -1008,6 +1172,7 @@ explore: gorillas_items_hist{
   view_label: "Gorillas Items Added/ Removed"
   group_label: "08) Competitor Analysis"
   description: "Gorillas Items Added/ Removed"
+  hidden: yes
 
   join: gorillas_stores {
     sql_on: ${gorillas_items_hist.hub_code} = ${gorillas_stores.id};;
@@ -1033,7 +1198,7 @@ explore: gorillas_orders {
   view_label: "Gorillas Orders"
   group_label: "08) Competitor Analysis"
   description: "Gorillas Orders per Day"
-  hidden: no
+  hidden: yes
 }
 
 
@@ -1157,4 +1322,14 @@ explore: voucher_retention {
     field: voucher_retention.city
     user_attribute: city
   }
+}
+
+explore: sku_analytics {
+  label: "SKU Analytics"
+  group_label: "15) Ad-Hoc"
+}
+
+explore: sku_level_kpis {
+  label: "NEW SKU Level Analytics"
+  group_label: "15) Ad-Hoc"
 }

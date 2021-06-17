@@ -104,10 +104,18 @@ view: productsearch_mobile_events {
     tracks.id=event.id
     ),
 
+    country_lookup AS (
+    SELECT
+    hub_code,
+    country_iso,
+    city
+    FROM
+    `flink-backend.gsheet_store_metadata.hubs` ),
+
     help_table AS (
     SELECT
     joined_table.*,
-    country_iso,
+    country_lookup.country_iso, country_lookup.city, country_lookup.hub_code,
     -- divide events into blocks, belonging to the last seen "addressConfirmed" event
     SUM(CASE
     WHEN hub_city IS NULL THEN 0
@@ -116,49 +124,41 @@ view: productsearch_mobile_events {
     END
     ) OVER(PARTITION BY anonymous_id ORDER BY timestamp) AS block,
     -- translate the hub-id into hub-code
-    hub.slug AS hub_code
+    hub.slug AS hub_code_lower
     FROM
     joined_table
     LEFT JOIN
     `flink-backend.saleor_db_global.warehouse_warehouse` AS hub
     ON
     joined_table.hub_id = hub.id
+    LEFT JOIN
+      country_lookup
+    ON
+      country_lookup.hub_code = UPPER(hub.slug)
     ORDER BY
     anonymous_id,
     timestamp ),
 
-    country_lookup AS (
-    SELECT
-    DISTINCT country_iso,
-    city
-    FROM
-    `flink-backend.gsheet_store_metadata.hubs` ),
-
     tracks_data AS (
     SELECT
     help_table.*,
-    country_lookup.country_iso AS lookup_country_iso,
     CASE
     WHEN FIRST_VALUE(help_table.hub_code) OVER (PARTITION BY help_table.anonymous_id, block ORDER BY help_table.timestamp) IS NOT NULL THEN FIRST_VALUE(help_table.country_iso) OVER (PARTITION BY help_table.anonymous_id, block ORDER BY help_table.timestamp)
-    WHEN FIRST_VALUE(help_table.hub_city) OVER (PARTITION BY help_table.anonymous_id, block ORDER BY help_table.timestamp) IS NOT NULL THEN FIRST_VALUE(country_lookup.country_iso) OVER (PARTITION BY help_table.anonymous_id, block ORDER BY help_table.timestamp)
+    WHEN FIRST_VALUE(help_table.city) OVER (PARTITION BY help_table.anonymous_id, block ORDER BY help_table.timestamp) IS NOT NULL THEN FIRST_VALUE(help_table.country_iso) OVER (PARTITION BY help_table.anonymous_id, block ORDER BY help_table.timestamp)
     ELSE
     SUBSTRING(help_table.context_locale,
     4,
     2)
     END
     AS derived_country_iso,
-    (FIRST_VALUE(hub_city) OVER (PARTITION BY help_table.anonymous_id, block ORDER BY help_table.timestamp) IS NOT NULL
+    (FIRST_VALUE(city) OVER (PARTITION BY help_table.anonymous_id, block ORDER BY help_table.timestamp) IS NOT NULL
     AND FIRST_VALUE(help_table.hub_code) OVER (PARTITION BY help_table.anonymous_id, block ORDER BY help_table.timestamp) IS NULL) AS country_derived_from_city,
-    (FIRST_VALUE(hub_city) OVER (PARTITION BY help_table.anonymous_id, block ORDER BY help_table.timestamp) IS NULL
+    (FIRST_VALUE(city) OVER (PARTITION BY help_table.anonymous_id, block ORDER BY help_table.timestamp) IS NULL
     AND FIRST_VALUE(help_table.hub_code) OVER (PARTITION BY help_table.anonymous_id, block ORDER BY help_table.timestamp) IS NULL) AS country_derived_from_locale,
-    FIRST_VALUE(help_table.hub_city) OVER (PARTITION BY help_table.anonymous_id, block ORDER BY help_table.timestamp) AS derived_city,
+    FIRST_VALUE(help_table.city) OVER (PARTITION BY help_table.anonymous_id, block ORDER BY help_table.timestamp) AS derived_city,
     FIRST_VALUE(help_table.hub_code) OVER (PARTITION BY help_table.anonymous_id, block ORDER BY help_table.timestamp) AS derived_hub,
     FROM
     help_table
-    LEFT JOIN
-    country_lookup
-    ON
-    country_lookup.city = help_table.hub_city
     ORDER BY
     anonymous_id,
     timestamp),
@@ -429,7 +429,7 @@ view: productsearch_mobile_events {
   }
 
   dimension: is_not_subquery {
-    type: string
+    type: yesno
     sql: ${TABLE}.is_not_subquery ;;
   }
 
@@ -441,6 +441,11 @@ view: productsearch_mobile_events {
   dimension: next_event {
     type: string
     sql: ${TABLE}.next_event ;;
+  }
+
+  dimension: city {
+    type: string
+    sql: ${TABLE}.city ;;
   }
 
   dimension: hub_city {
@@ -469,7 +474,7 @@ view: productsearch_mobile_events {
   }
 
   dimension: user_area_available {
-    type: string
+    type: yesno
     sql: ${TABLE}.user_area_available ;;
   }
 
@@ -493,23 +498,18 @@ view: productsearch_mobile_events {
     sql: ${TABLE}.hub_code ;;
   }
 
-  dimension: lookup_country_iso {
-    type: string
-    sql: ${TABLE}.lookup_country_iso ;;
-  }
-
   dimension: derived_country_iso {
     type: string
     sql: ${TABLE}.derived_country_iso ;;
   }
 
   dimension: country_derived_from_city {
-    type: string
+    type: yesno
     sql: ${TABLE}.country_derived_from_city ;;
   }
 
   dimension: country_derived_from_locale {
-    type: string
+    type: yesno
     sql: ${TABLE}.country_derived_from_locale ;;
   }
 
@@ -524,7 +524,7 @@ view: productsearch_mobile_events {
   }
 
   ### custom dimensions
-  dimension: country {
+  dimension: country_clean {
     type: string
     case: {
       when: {
@@ -539,16 +539,16 @@ view: productsearch_mobile_events {
         sql: ${TABLE}.derived_country_iso = "NL" ;;
         label: "Netherlands"
       }
-      else: "Other / Unknown"
+      else: "- Other / Unknown"
     }
   }
 
-  dimension: city {
+  dimension: city_clean {
     type: string
     sql:
       CASE
-        WHEN ${TABLE}.derived_country_iso IN ("DE", "FR", "NL") THEN ${TABLE}.derived_city
-        ELSE "Other/ Unknown"
+        WHEN ${TABLE}.derived_country_iso IN ("DE", "FR", "NL") AND NOT ${TABLE}.country_derived_from_locale THEN ${TABLE}.derived_city
+        ELSE "- Other/ Unknown"
       END;;
   }
 
@@ -632,6 +632,7 @@ view: productsearch_mobile_events {
       sent_at_time,
       timestamp_time,
       uuid_ts_time,
+      city,
       hub_city,
       hub_encoded,
       delivery_lat,
@@ -639,10 +640,11 @@ view: productsearch_mobile_events {
       delivery_postcode,
       user_area_available,
       hub_id,
+      country_clean,
+      city_clean,
       country_iso,
       block,
       hub_code,
-      lookup_country_iso,
       derived_country_iso,
       country_derived_from_city,
       country_derived_from_locale,

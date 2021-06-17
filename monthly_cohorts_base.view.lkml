@@ -40,6 +40,7 @@ view: monthly_cohorts_base {
     hidden: yes
     type: date_month
   }
+
   dimension: months_time_since_sign_up {
     label: "Orders Months Time Since Sign Up"
     value_format: "0"

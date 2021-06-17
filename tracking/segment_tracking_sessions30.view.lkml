@@ -100,7 +100,7 @@ view: segment_tracking_sessions30 {
 
       location_table AS (
        SELECT
-         location_help_table.*, country_lookup.country_iso,
+         location_help_table.*, country_lookup.country_iso  as lookup_country_iso,
       #    anonymous_id,
       #    timestamp,
       #    id,
@@ -513,6 +513,16 @@ view: segment_tracking_sessions30 {
       }
       else: "Other / Unknown"
     }
+  }
+
+  dimension: checkout_payment_ratio_per_session {
+    type: number
+    sql: ${checkout_started}/${payment_started};;
+  }
+
+  dimension: payment_order_ratio_per_session {
+    type: number
+    sql: ${payment_started}/${order_placed};;
   }
 
 ##### Unique count of events during a session. If multiple events are triggerred during a session, e.g 3 times view item, the event is only counted once.

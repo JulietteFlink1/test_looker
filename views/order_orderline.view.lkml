@@ -136,12 +136,21 @@ view: order_orderline {
     value_format: "0"
   }
 
+  measure: sum_item_quantity_fulfilled {
+    label: "SUM Item Quantity fulfilled"
+    description: "Quantity of Order Line Items fulfilled"
+    hidden:  no
+    type: sum
+    sql: ${quantity_fulfilled};;
+    value_format: "0"
+  }
+
   measure: sum_item_price_gross {
     label: "SUM Item Prices sold (gross)"
     description: "Sum of sold Item prices (incl. VAT)"
     hidden:  no
     type: sum
-    sql: ${quantity} * ${unit_price_gross_amount};;
+    sql: ${quantity_fulfilled} * ${unit_price_gross_amount};;
     value_format_name: euro_accounting_2_precision
   }
 
@@ -150,7 +159,25 @@ view: order_orderline {
     description: "Sum of sold Item prices (excl. VAT)"
     hidden:  no
     type: sum
-    sql: ${quantity} * ${unit_price_net_amount};;
+    sql: ${quantity_fulfilled} * ${unit_price_net_amount};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_item_price_fulfilled_gross {
+    label: "SUM Item Prices fulfilled (gross)"
+    description: "Sum of fulfilled Item prices (incl. VAT)"
+    hidden:  no
+    type: sum
+    sql: ${quantity_fulfilled} * ${unit_price_gross_amount};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_item_price_fulfilled_net {
+    label: "SUM Item Prices fulfilled (net)"
+    description: "Sum of fulfilled Item prices (excl. VAT)"
+    hidden:  no
+    type: sum
+    sql: ${quantity_fulfilled} * ${unit_price_net_amount};;
     value_format_name: euro_accounting_2_precision
   }
 
