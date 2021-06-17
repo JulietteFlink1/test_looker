@@ -125,6 +125,8 @@ view: order_order {
     sql_start: DATE_TRUNC(${user_order_facts.first_order_raw}, WEEK) ;;
     sql_end: ${now_raw} ;;
   }
+
+
 ##### helping dimensions for hiding incomplete cohorts #####
 
 

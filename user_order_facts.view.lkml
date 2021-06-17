@@ -436,6 +436,19 @@ view: user_order_facts {
     sql: ${TABLE}.last_order_with_voucher ;;
   }
 
+  dimension: 30_day_retention {
+    hidden: no
+    type: yesno
+    sql: case when ${days_betw_first_and_last_order} >= 30
+      and ${days_duration_between_first_order_and_now} >= 30 then True else False end ;;
+
+  }
+
+  measure: cnt_30_day_retention {
+    type: count
+    filters: [30_day_retention: "yes"]
+  }
+
 ####### Measures ########
 
 
