@@ -1324,12 +1324,8 @@ explore: voucher_retention {
   }
 }
 
-explore: sku_analytics {
-  label: "SKU Analytics"
-  group_label: "15) Ad-Hoc"
-}
-
-explore: sku_level_kpis {
-  label: "NEW SKU Level Analytics"
-  group_label: "15) Ad-Hoc"
-}
+# explore: sku_level_analysis {
+#   label: "SKU Analytics"
+#   group_label: "15) Ad-Hoc"
+#   hidden: yes
+# }
