@@ -515,6 +515,16 @@ view: segment_tracking_sessions30 {
     }
   }
 
+  dimension: checkout_payment_ratio_per_session {
+    type: number
+    sql: ${checkout_started}/${payment_started};;
+  }
+
+  dimension: payment_order_ratio_per_session {
+    type: number
+    sql: ${payment_started}/${order_placed};;
+  }
+
 ##### Unique count of events during a session. If multiple events are triggerred during a session, e.g 3 times view item, the event is only counted once.
 
   measure: cnt_address_selected {
