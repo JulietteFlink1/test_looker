@@ -832,6 +832,22 @@ explore: gorillas_v1_hubs_master{
   description: "Analysis of competitors."
 }
 
+explore: gorillas_v1_orders{
+  hidden:  no
+  label: "Gorillas Orders"
+  view_label: "Gorillas Orders"
+  group_label: "08) Competitor Analysis"
+  description: "Analysis of competitors."
+}
+
+explore: gorillas_v1_inventory{
+  hidden:  no
+  label: "Gorillas Inventory"
+  view_label: "Gorillas Inventory"
+  group_label: "08) Competitor Analysis"
+  description: "Analysis of competitors."
+}
+
 explore: gorillas_v1_item_hub_collection_group_allocation{
   hidden:  no
   label: "Gorillas Item Hub Collection Group Allocation"
