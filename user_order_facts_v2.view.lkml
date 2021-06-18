@@ -1,0 +1,617 @@
+view: user_order_facts_v2 {
+  derived_table: {
+    sql: with unique_users as
+    (
+        select country_iso,
+                user_email,
+                pseudo_unique_id,
+                hub_name
+                from(
+                    select
+                    country_iso,
+                    user_email,
+                    pseudo_unique_id,
+                    id,
+                    created,
+                    hub_name,
+                    row_number() over(partition by country_iso, pseudo_unique_id order by created asc) as rank
+                    from(
+                        select  order_order.country_iso,
+                                user_email,
+                                lower(regexp_replace(concat(address.phone, address.last_name), r'\s', '')) as pseudo_unique_id,
+                                order_order.id,
+                                order_order.created,
+                                CASE WHEN JSON_EXTRACT_SCALAR(metadata, '$.warehouse') IN ('hamburg-oellkersallee', 'hamburg-oelkersallee') THEN 'de_ham_alto'
+                                WHEN JSON_EXTRACT_SCALAR(metadata, '$.warehouse') = 'münchen-leopoldstraße' THEN 'de_muc_schw'
+                                ELSE JSON_EXTRACT_SCALAR(metadata, '$.warehouse') end as hub_name
+                        FROM `flink-backend.saleor_db_global.order_order` order_order
+                        left join `flink-backend.saleor_db_global.account_address` address
+                            on order_order.country_iso = address.country_iso and order_order.shipping_address_id = address.id
+                            where order_order.status in ('fulfilled', 'partially fulfilled')) a
+                    )
+        where rank=1
+        order by 3 asc
+
+    ),
+
+    aggregation as
+    (
+        SELECT order_order.country_iso,
+            lower(regexp_replace(concat(address.phone, address.last_name), r'\s', '')) as pseudo_unique_id,
+             COUNT(DISTINCT order_order.id) AS lifetime_orders
+            , SUM(total_gross_amount) AS lifetime_revenue_gross
+            , SUM(total_net_amount) AS lifetime_revenue_net
+            , MIN(order_order.id) AS first_order_id
+            , MAX(order_order.id) AS latest_order_id
+            , MIN(order_order.created) AS first_order
+            , MAX(order_order.created) AS latest_order
+            , COUNT(DISTINCT FORMAT_TIMESTAMP('%Y%m', order_order.created)) AS number_of_distinct_months_with_orders
+          FROM `flink-backend.saleor_db_global.order_order` order_order
+          left join `flink-backend.saleor_db_global.account_address` address
+             on order_order.country_iso = address.country_iso and order_order.shipping_address_id = address.id
+          where order_order.status in ('fulfilled', 'partially fulfilled')
+          GROUP BY 1, 2
+    ),
+
+    users as
+    (
+        select users.country_iso,
+            users.pseudo_unique_id,
+            users.user_email,
+            users.hub_name,
+            aggregation.lifetime_orders,
+            aggregation.lifetime_revenue_gross,
+            aggregation.lifetime_revenue_net,
+            aggregation.first_order_id,
+            aggregation.latest_order_id,
+            aggregation.first_order,
+            aggregation.latest_order,
+            aggregation.number_of_distinct_months_with_orders
+            from unique_users users
+            left join aggregation
+              on users.country_iso = aggregation.country_iso and users.pseudo_unique_id=aggregation.pseudo_unique_id
+    ),
+
+    orders_per_week_month as
+    (
+
+    select country_iso,
+        user_email,
+        pseudo_unique_id,
+        case when
+        DATE_DIFF(CURRENT_DATE(),date(first_order), WEEK) > 0 then lifetime_orders / DATE_DIFF(CURRENT_DATE(),date(first_order), WEEK) else null end as orders_per_week,
+        case when
+        DATE_DIFF(CURRENT_DATE(),date(first_order), MONTH) > 0 then  lifetime_orders / DATE_DIFF(CURRENT_DATE(),date(first_order), MONTH) else null end as orders_per_month
+    from users
+    ),
+
+    reorders_30 as
+    (
+            select order_order.country_iso,
+            lower(regexp_replace(concat(address.phone, address.last_name), r'\s', '')) as pseudo_unique_id,
+            count(distinct(order_order.id)) as _30_day_reorder_number
+            from `flink-backend.saleor_db_global.order_order` order_order
+            left join `flink-backend.saleor_db_global.account_address` address
+             on order_order.country_iso = address.country_iso and order_order.shipping_address_id = address.id
+            left join users
+                on lower(regexp_replace(concat(address.phone, address.last_name), r'\s', '')) = users.pseudo_unique_id
+                and address.country_iso = users.country_iso
+            where date_diff(date(order_order.created), date(users.first_order) , DAY) <= 30 and
+                    users.first_order_id != order_order.id and
+                    order_order.status in ('fulfilled', 'partially_fulfilled')
+            group by 1, 2
+    ),
+
+    reorders_28 as
+    (
+            select order_order.country_iso,
+            lower(regexp_replace(concat(address.phone, address.last_name), r'\s', '')) as pseudo_unique_id,
+            count(distinct(order_order.id)) as _28_day_reorder_number
+            from `flink-backend.saleor_db_global.order_order` order_order
+            left join `flink-backend.saleor_db_global.account_address` address
+             on order_order.country_iso = address.country_iso and order_order.shipping_address_id = address.id
+            left join users
+                on lower(regexp_replace(concat(address.phone, address.last_name), r'\s', '')) = users.pseudo_unique_id
+                and address.country_iso = users.country_iso
+            where date_diff(date(order_order.created), date(users.first_order) , DAY) <= 28 and
+                    users.first_order_id != order_order.id and
+                    order_order.status in ('fulfilled', 'partially_fulfilled')
+            group by 1, 2
+    ),
+
+    agg_products_by_user as
+    (
+    select
+      orders.country_iso,
+      lower(regexp_replace(concat(address.phone, address.last_name), r'\s', '')) as pseudo_unique_id,
+      orderline.product_name,
+      sum(orderline.quantity) as sum_quantity
+      from `flink-backend.saleor_db_global.order_order` orders
+      left join `flink-backend.saleor_db_global.account_address` address
+             on orders.country_iso = address.country_iso and orders.shipping_address_id = address.id
+      left join `flink-backend.saleor_db_global.order_orderline` orderline
+        on orders.country_iso = orderline.country_iso and orders.id = orderline.order_id
+      where orders.status in ('fulfilled', 'partially_fulfilled')
+      group by 1, 2, 3
+    ),
+
+    categories_by_user as
+    (
+    select
+      orders.country_iso,
+      lower(regexp_replace(concat(address.phone, address.last_name), r'\s', '')) as pseudo_unique_id,
+      orderline.product_sku,
+      orderline.product_name,
+      pcategory.name as category_name
+      from `flink-backend.saleor_db_global.order_order` orders
+      left join `flink-backend.saleor_db_global.account_address` address
+             on orders.country_iso = address.country_iso and orders.shipping_address_id = address.id
+      left join `flink-backend.saleor_db_global.order_orderline` orderline
+        on orders.country_iso = orderline.country_iso and orders.id = orderline.order_id
+      left join `flink-backend.saleor_db_global.product_productvariant` pvariant
+        on orderline.country_iso = pvariant.country_iso and orderline.product_sku=pvariant.sku
+      left join `flink-backend.saleor_db_global.product_product` pproduct
+        on pvariant.country_iso = pproduct.country_iso and pvariant.id=pproduct.id
+      left join `flink-backend.saleor_db_global.product_category` pcategory
+        on pproduct.country_iso = pcategory.country_iso and pproduct.category_id=pcategory.id
+      where orders.status in ('fulfilled', 'partially_fulfilled')
+    ),
+
+    agg_categories_by_user as
+    (
+      select country_iso,
+            pseudo_unique_id,
+            category_name,
+            count(*) as cnt_categories
+      from categories_by_user
+      group by 1, 2, 3
+    ),
+
+    ranked_categories as
+    (
+      select country_iso,
+            pseudo_unique_id,
+            category_name,
+            cnt_categories,
+            ROW_NUMBER() OVER ( PARTITION BY country_iso, pseudo_unique_id ORDER BY cnt_categories desc) AS rank
+      from agg_categories_by_user
+    ),
+
+    ranked_products as
+    (
+    select country_iso,
+        pseudo_unique_id,
+        product_name,
+        sum_quantity,
+        ROW_NUMBER() OVER ( PARTITION BY country_iso, pseudo_unique_id ORDER BY sum_quantity desc) AS rank
+    from agg_products_by_user
+    ),
+
+    top_1_category as
+    (
+      select country_iso,
+        pseudo_unique_id,
+        category_name
+      from ranked_categories
+      where rank=1
+    ),
+
+    top_2_category as
+    (
+      select country_iso,
+        pseudo_unique_id,
+        category_name
+      from ranked_categories
+      where rank=2
+    ),
+
+    top_1_products as
+    (
+    select country_iso,
+        pseudo_unique_id,
+        product_name
+    from ranked_products
+    where rank=1
+    ),
+
+    top_2_products as
+    (
+    select country_iso,
+        pseudo_unique_id,
+        product_name
+    from ranked_products
+    where rank=2
+    ),
+
+    top_3_products as
+    (
+    select country_iso,
+        pseudo_unique_id,
+        product_name
+    from ranked_products
+    where rank=3
+    ),
+
+    order_day as
+    (
+    select orders.country_iso,
+        lower(regexp_replace(concat(address.phone, address.last_name), r'\s', '')) as pseudo_unique_id,
+    extract(DAYOFWEEK from orders.created) as day_of_week,
+    count(*) as day_count
+    from `flink-backend.saleor_db_global.order_order` orders
+    left join `flink-backend.saleor_db_global.account_address` address
+             on orders.country_iso = address.country_iso and orders.shipping_address_id = address.id
+    where orders.status in ('fulfilled', 'partially_fulfilled')
+    group by 1, 2, 3
+    ),
+
+    order_hour as
+    (
+    select orders.country_iso,
+    lower(regexp_replace(concat(address.phone, address.last_name), r'\s', '')) as pseudo_unique_id,
+    extract(HOUR from orders.created) as hour,
+    count(*) as hour_count
+    from `flink-backend.saleor_db_global.order_order` orders
+    left join `flink-backend.saleor_db_global.account_address` address
+             on orders.country_iso = address.country_iso and orders.shipping_address_id = address.id
+    where orders.status in ('fulfilled', 'partially_fulfilled')
+    group by 1, 2, 3
+    ),
+
+    favourite_day as
+    (
+    select country_iso,
+    pseudo_unique_id,
+    day_of_week,
+    ROW_NUMBER() OVER ( PARTITION BY country_iso, pseudo_unique_id ORDER BY day_count desc) AS rank
+    from order_day
+    ),
+
+    favourite_time as
+    (
+    select country_iso,
+        pseudo_unique_id,
+        hour,
+        ROW_NUMBER() OVER ( PARTITION BY country_iso, pseudo_unique_id ORDER BY hour_count desc) AS rank
+    from order_hour
+    ),
+
+    latest_order_with_voucher as
+    (
+      select orders.country_iso,
+      lower(regexp_replace(concat(address.phone, address.last_name), r'\s', '')) as pseudo_unique_id,
+      MAX(orders.created) as latest_order_with_voucher
+      from `flink-backend.saleor_db_global.order_order` orders
+      left join `flink-backend.saleor_db_global.account_address` address
+             on orders.country_iso = address.country_iso and orders.shipping_address_id = address.id
+      where orders.voucher_id is not null and orders.status in ('fulfilled', 'partially_fulfilled')
+      group by 1, 2
+    )
+
+    select
+    users.country_iso,
+    users.user_email,
+    users.hub_name,
+    users.pseudo_unique_id,
+    users.lifetime_orders,
+    users.lifetime_revenue_gross,
+    users.lifetime_revenue_net,
+    users.first_order_id,
+    users.latest_order_id,
+    users.first_order,
+    users.latest_order,
+    users.number_of_distinct_months_with_orders,
+    top_1_products.product_name as top_1_product,
+    top_2_products.product_name as top_2_product,
+    top_3_products.product_name as top_3_product,
+    top_1_category.category_name as top_1_category,
+    top_2_category.category_name as top_2_category,
+    case when day_of_week in (7, 1) then 'weekend' else 'week' end as favourite_order_day,
+    case when hour > 0 and hour <= 12 then 'morning'
+      when hour > 12 and hour <= 17 then 'afternoon'
+        when hour > 17 and hour <= 20 then 'evening'
+          when hour > 20 then 'night' end as favourite_order_hour,
+    reorders_28._28_day_reorder_number,
+    reorders_30._30_day_reorder_number,
+    latest_order_with_voucher.latest_order_with_voucher as last_order_with_voucher,
+    orders_per_week_month.orders_per_week,
+    orders_per_week_month.orders_per_month
+    from users
+    left join orders_per_week_month
+    on users.country_iso=orders_per_week_month.country_iso and users.pseudo_unique_id=orders_per_week_month.pseudo_unique_id
+    left join reorders_28
+    on users.country_iso=reorders_28.country_iso and users.pseudo_unique_id=reorders_28.pseudo_unique_id
+    left join reorders_30
+    on users.country_iso=reorders_30.country_iso and users.pseudo_unique_id=reorders_30.pseudo_unique_id
+    left join top_1_products
+    on users.country_iso=top_1_products.country_iso and users.pseudo_unique_id=top_1_products.pseudo_unique_id
+    left join top_2_products
+    on users.country_iso=top_2_products.country_iso and users.pseudo_unique_id=top_2_products.pseudo_unique_id
+    left join top_3_products
+    on users.country_iso=top_3_products.country_iso and users.pseudo_unique_id=top_3_products.pseudo_unique_id
+    left join top_1_category
+    on users.country_iso=top_1_category.country_iso and users.pseudo_unique_id=top_1_category.pseudo_unique_id
+    left join top_2_category
+    on users.country_iso=top_2_category.country_iso and users.pseudo_unique_id=top_2_category.pseudo_unique_id
+    left join favourite_day
+    on users.country_iso=favourite_day.country_iso and users.pseudo_unique_id=favourite_day.pseudo_unique_id
+    left join favourite_time
+    on users.country_iso=favourite_time.country_iso and users.pseudo_unique_id=favourite_time.pseudo_unique_id
+    left join latest_order_with_voucher
+    on users.country_iso=latest_order_with_voucher.country_iso and users.pseudo_unique_id=latest_order_with_voucher.pseudo_unique_id
+    where favourite_day.rank = 1
+    and favourite_time.rank = 1
+       ;;
+  }
+
+  dimension: first_order_id {
+    label: "First Order ID"
+    type: number
+    sql: ${TABLE}.first_order_id ;;
+  }
+
+  dimension: latest_order_id {
+    label: "Latest Order ID"
+    type: number
+    sql: ${TABLE}.latest_order_id ;;
+  }
+
+  dimension: country_iso {
+    type: string
+    hidden: yes
+    sql: ${TABLE}.country_iso ;;
+  }
+
+  dimension: user_email {
+    primary_key: no
+    hidden: no
+    type: number
+    sql: ${TABLE}.user_email ;;
+  }
+
+  dimension: hub_name {
+    type: string
+    sql: ${TABLE}.hub_name ;;
+  }
+
+  dimension: pseudo_unique_id {
+    primary_key: no
+    hidden: yes
+    type: string
+    sql: ${TABLE}.pseudo_unique_id ;;
+  }
+
+  dimension: unique_id {
+    primary_key: yes
+    hidden: yes
+    type: string
+    sql: concat(${country_iso}, ${user_email}) ;;
+  }
+
+  dimension_group: first_order {
+    type: time
+    # datatype: timestamp
+    sql: ${TABLE}.first_order ;;
+  }
+
+  dimension: is_first_order {
+    type: yesno
+    sql: ${first_order_date} IS NOT NULL ;;
+  }
+
+  dimension_group: latest_order {
+    type: time
+    sql: ${TABLE}.latest_order ;;
+  }
+
+  dimension: number_of_distinct_months_with_orders {
+    type: number
+    sql: ${TABLE}.number_of_distinct_months_with_orders ;;
+  }
+
+  dimension: days_betw_first_and_last_order {
+    description: "Days between first and latest order"
+    type: number
+    sql: TIMESTAMP_DIFF(${TABLE}.latest_order, ${TABLE}.first_order, DAY)+1 ;;
+  }
+
+  dimension_group: duration_between_first_order_and_now {
+    type: duration
+    sql_start: ${first_order_raw} ;;
+    sql_end: CURRENT_TIMESTAMP() ;;
+  }
+
+  ##### Lifetime Behavior - Order Counts ######
+
+  dimension: lifetime_orders {
+    type: number
+    sql: ${TABLE}.lifetime_orders ;;
+  }
+
+  dimension: orders_per_week {
+    type: number
+    sql: ${TABLE}.orders_per_week ;;
+  }
+
+  dimension: orders_per_month {
+    type: number
+    sql: ${TABLE}.orders_per_month ;;
+  }
+
+  dimension: reorder_number_28_days {
+    description: "Number of orders within the next 28 days after the first order"
+    type: number
+    sql: ${TABLE}._28_day_reorder_number ;;
+  }
+
+  dimension: reorder_number_30_days {
+    description: "Number of orders within the next 30 days after the first order"
+    type: number
+    sql: ${TABLE}._30_day_reorder_number ;;
+  }
+
+  dimension: repeat_customer {
+    description: "Lifetime Count of Orders > 1"
+    type: yesno
+    sql: ${lifetime_orders} > 1 ;;
+  }
+
+  dimension: lifetime_orders_tier {
+    type: tier
+    tiers: [0, 1, 2, 3, 5, 10]
+    sql: ${lifetime_orders} ;;
+    style: integer
+  }
+
+  dimension: orders_per_week_tier {
+    type: tier
+    tiers: [1, 2, 3]
+    sql: ${orders_per_week} ;;
+    style: relational
+  }
+
+  dimension: orders_per_month_tier {
+    type: tier
+    tiers: [1, 2, 3]
+    sql: ${orders_per_month} ;;
+    style: relational
+  }
+
+  ##### Lifetime Behavior - Revenue ######
+
+  dimension: lifetime_revenue_gross {
+    type: number
+    sql: ${TABLE}.lifetime_revenue_gross ;;
+  }
+
+  dimension: lifetime_revenue_net {
+    type: number
+    sql: ${TABLE}.lifetime_revenue_net ;;
+  }
+
+
+  dimension: lifetime_revenue_tier {
+    type: tier
+    tiers: [0, 25, 50, 100, 200, 500, 1000]
+    sql: ${lifetime_revenue_gross} ;;
+    style: integer
+  }
+
+
+  ##### Lifetime Behaviour - Favourite products & categories ######
+
+  dimension: top_1_product {
+    type: string
+    sql: ${TABLE}.top_1_product ;;
+  }
+
+  dimension: top_2_product {
+    type: string
+    sql: ${TABLE}.top_2_product ;;
+  }
+
+  dimension: top_3_product {
+    type: string
+    sql: ${TABLE}.top_3_product ;;
+  }
+
+  dimension: top_1_category {
+    type: string
+    sql: ${TABLE}.top_1_category ;;
+  }
+
+  dimension: top_2_category {
+    type: string
+    sql: ${TABLE}.top_2_category ;;
+  }
+
+  ###### Lifetime Behaviour - Favourite delivery times ######
+
+  dimension: favourite_order_day {
+    type: string
+    sql: ${TABLE}.favourite_order_day ;;
+  }
+
+  dimension: favourite_order_hour {
+    type: string
+    sql: ${TABLE}.favourite_order_hour ;;
+  }
+
+  ###### Lifetime Behaviour - Last order with voucher
+
+  dimension: last_order_with_voucher {
+    type: date
+    sql: ${TABLE}.last_order_with_voucher ;;
+  }
+
+  dimension: 30_day_retention {
+    hidden: no
+    type: yesno
+    sql: case when ${days_betw_first_and_last_order} >= 30
+      and ${days_duration_between_first_order_and_now} >= 30 then True else False end ;;
+
+  }
+
+  measure: cnt_30_day_retention {
+    type: count
+    filters: [30_day_retention: "yes"]
+  }
+
+####### Measures ########
+
+
+  measure: count {
+    type: count
+    drill_fields: [detail*]
+  }
+
+  measure: new_customer_orders {
+    type: count
+    filters: [lifetime_orders: "=1"]
+  }
+
+  measure: returning_customer_orders {
+    type: count
+    filters: [lifetime_orders: ">1"]
+  }
+
+  measure: average_lifetime_orders {
+    type: average
+    value_format_name: decimal_2
+    sql: ${lifetime_orders} ;;
+  }
+
+  measure: average_lifetime_revenue {
+    type: average
+    value_format_name: usd
+    sql: ${lifetime_revenue_gross} ;;
+  }
+
+  set: detail {
+    fields: [
+      country_iso,
+      user_email,
+      pseudo_unique_id,
+      lifetime_orders,
+      lifetime_revenue_gross,
+      lifetime_revenue_net,
+      first_order_id,
+      latest_order_id,
+      first_order_time,
+      latest_order_time,
+      number_of_distinct_months_with_orders,
+      top_1_product,
+      top_2_product,
+      top_3_product,
+      top_1_category,
+      top_2_category,
+      favourite_order_day,
+      favourite_order_hour,
+      reorder_number_28_days,
+      reorder_number_30_days,
+      last_order_with_voucher,
+      orders_per_week,
+      orders_per_month
+    ]
+  }
+}
