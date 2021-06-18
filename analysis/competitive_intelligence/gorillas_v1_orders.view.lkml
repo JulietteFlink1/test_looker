@@ -1,17 +1,12 @@
-view: gorillas_v1_hubs_master {
-  sql_table_name: `flink-data-dev.gorillas_v1.hubs_master`;;
-  label: "Gorillas Hubs Master"
+view: gorillas_v1_orders {
+  sql_table_name: `flink-data-dev.gorillas_v1.orders`
+    ;;
   drill_fields: [id]
 
   dimension: id {
     primary_key: yes
     type: string
     sql: ${TABLE}.id ;;
-  }
-
-  dimension: city {
-    type: string
-    sql: ${TABLE}.city ;;
   }
 
   dimension: country {
@@ -22,12 +17,18 @@ view: gorillas_v1_hubs_master {
 
   dimension: country_iso {
     type: string
-    sql: ${TABLE}.country_iso ;;
+    sql: ${TABLE}.countryIso ;;
   }
 
   dimension: label {
     type: string
     sql: ${TABLE}.label ;;
+  }
+
+  dimension: location {
+    type: location
+    sql_latitude: ${lat} ;;
+    sql_longitude: ${lon} ;;
   }
 
   dimension: lat {
@@ -40,17 +41,30 @@ view: gorillas_v1_hubs_master {
     sql: ${TABLE}.lon ;;
   }
 
-  dimension: name {
+  dimension_group: orders {
+    type: time
+    timeframes: [
+      raw,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    convert_tz: no
+    datatype: date
+    sql: ${TABLE}.orders_date ;;
+  }
+
+  dimension: store_city {
     type: string
-    sql: ${TABLE}.name ;;
+    sql: ${TABLE}.store_city ;;
   }
 
-  dimension: location {
-    type: location
-    sql_latitude: ${lat} ;;
-    sql_longitude: ${lon} ;;
+  dimension: store_name {
+    type: string
+    sql: ${TABLE}.store_name ;;
   }
-
 
   dimension_group: time_scraped {
     type: time
@@ -66,13 +80,24 @@ view: gorillas_v1_hubs_master {
     sql: ${TABLE}.time_scraped ;;
   }
 
+
+
   dimension: today_order_sequence_number {
     type: number
     sql: ${TABLE}.todayOrderSequenceNumber ;;
   }
 
+
+
+
+
   measure: count {
     type: count
-    drill_fields: [id, name]
+    drill_fields: [id, store_name]
+  }
+
+  measure: sum_orders {
+    type: sum
+    sql: ${today_order_sequence_number} ;;
   }
 }

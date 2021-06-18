@@ -746,8 +746,8 @@ explore: cs_issues_post_delivery {
 # Un-hide and use this explore, or copy the joins into another explore, to get all the fully nested relationships from this view
 explore: gorillas_v1_items {
   hidden: no
-  label: "Gorillas Assortment"
-  view_label: "Gorillas Assortment"
+  label: "Gorillas Items"
+  view_label: "Gorillas Items"
   group_label: "08) Competitor Analysis"
   description: "Analysis of competitors."
   always_filter: {
@@ -828,6 +828,30 @@ explore: gorillas_v1_hubs_master{
   hidden:  no
   label: "Gorillas Hubs"
   view_label: "Gorillas Hubs"
+  group_label: "08) Competitor Analysis"
+  description: "Analysis of competitors."
+}
+
+explore: gorillas_v1_orders{
+  hidden:  no
+  label: "Gorillas Orders"
+  view_label: "Gorillas Orders"
+  group_label: "08) Competitor Analysis"
+  description: "Analysis of competitors."
+}
+
+explore: gorillas_v1_inventory{
+  hidden:  no
+  label: "Gorillas Inventory"
+  view_label: "Gorillas Inventory"
+  group_label: "08) Competitor Analysis"
+  description: "Analysis of competitors."
+}
+
+explore: gorillas_v1_delivery_areas{
+  hidden:  no
+  label: "Gorillas Delivery Areas"
+  view_label: "Gorillas Delivery Areas"
   group_label: "08) Competitor Analysis"
   description: "Analysis of competitors."
 }
