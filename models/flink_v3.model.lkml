@@ -848,6 +848,14 @@ explore: gorillas_v1_inventory{
   description: "Analysis of competitors."
 }
 
+explore: gorillas_v1_delivery_areas{
+  hidden:  no
+  label: "Gorillas Delivery Areas"
+  view_label: "Gorillas Delivery Areas"
+  group_label: "08) Competitor Analysis"
+  description: "Analysis of competitors."
+}
+
 explore: gorillas_v1_item_hub_collection_group_allocation{
   hidden:  no
   label: "Gorillas Item Hub Collection Group Allocation"

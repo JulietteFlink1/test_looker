@@ -1,4 +1,4 @@
-view: delivery_areas {
+view: gorillas_v1_delivery_areas {
   sql_table_name: `flink-data-dev.gorillas_v1.delivery_areas`
     ;;
 
@@ -33,8 +33,16 @@ view: delivery_areas {
     sql: ${TABLE}.time_scraped ;;
   }
 
+  measure: first_seen {
+    type: date
+    sql: MIN(${time_scraped_raw}) ;;
+    convert_tz: no
+  }
+
   measure: count {
     type: count
     drill_fields: [hub_name]
   }
+
+
 }
