@@ -1,6 +1,6 @@
 view: gorillas_v1_hubs_master {
-  sql_table_name: `flink-data-dev.gorillas_v1.hubs_master`
-    ;;
+  sql_table_name: `flink-data-dev.gorillas_v1.hubs_master`;;
+  label: "Gorillas Hubs Master"
   drill_fields: [id]
 
   dimension: id {
@@ -44,6 +44,13 @@ view: gorillas_v1_hubs_master {
     type: string
     sql: ${TABLE}.name ;;
   }
+
+  dimension: location {
+    type: location
+    sql_latitude: ${lat} ;;
+    sql_longitude: ${lon} ;;
+  }
+
 
   dimension_group: time_scraped {
     type: time
