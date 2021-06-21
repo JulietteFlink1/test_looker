@@ -817,7 +817,7 @@ explore: gorillas_v1_items {
   }
   join: gorillas_v1_hubs_master {
     sql_on: ${gorillas_v1_items.hub_code} = ${gorillas_v1_hubs_master.id};;
-    relationship: one_to_many
+    relationship: many_to_one
     type: left_outer
   }
 
@@ -852,6 +852,12 @@ explore: gorillas_v1_inventory{
       field: time_scraped_date
       value: "1 day ago"
     }
+  }
+
+  join: gorillas_v1_hubs_master {
+    sql_on: ${gorillas_v1_inventory.hub_code} = ${gorillas_v1_hubs_master.id};;
+    relationship: many_to_one
+    type: left_outer
   }
 
   join: gorillas_v1_items {
