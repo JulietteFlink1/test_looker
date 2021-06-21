@@ -245,6 +245,7 @@ view: gorillas_v1_items {
   dimension: price {
     type: number
     sql: ${TABLE}.price ;;
+    value_format: "0.00€"
   }
 
   dimension: price_per_measuring_unit {
