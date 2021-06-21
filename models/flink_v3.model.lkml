@@ -846,6 +846,20 @@ explore: gorillas_v1_inventory{
   view_label: "Gorillas Inventory"
   group_label: "08) Competitor Analysis"
   description: "Analysis of competitors."
+
+  always_filter: {
+    filters: {
+      field: time_scraped_date
+      value: "1 day ago"
+    }
+  }
+
+  join: gorillas_v1_items {
+    sql_on: ${gorillas_v1_inventory.product_id} = ${gorillas_v1_items.id}
+            and ${gorillas_v1_inventory.hub_code} = ${gorillas_v1_items.hub_code};;
+    relationship: many_to_one
+    type: left_outer
+  }
 }
 
 explore: gorillas_v1_delivery_areas{
