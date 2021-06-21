@@ -40,6 +40,8 @@ explore: order_order {
   description: "General Business Performance - Orders, Revenue, etc."
   always_filter: {
     filters:  [
+                hubs.country: "",
+                hubs.hub_name: "",
                 order_order.is_internal_order: "no",
                 order_order.is_successful_order: "yes",
                 order_order.created_date: "after 2021-01-25"
@@ -359,6 +361,8 @@ explore: product_product {
   description: "Products, Productvariations, Categories, SKUs, Stock etc."
   always_filter: {
     filters:  [
+      hubs.country: "",
+      hubs.hub_name: "",
       product_product.is_published: "yes",
       order_orderline_facts.is_internal_order: "no",
       order_orderline_facts.is_successful_order: "yes"
@@ -493,6 +497,13 @@ explore: discount_voucher {
   view_label: "Vouchers"
   group_label: "03) Vouchers"
   description: "All data around Vouchers created in the backend"
+
+  always_filter: {
+    filters:  [
+      hubs.country: "",
+      hubs.hub_name: ""
+    ]
+  }
 
   access_filter: {
     field: hubs.country_iso
@@ -674,6 +685,13 @@ explore: cs_issues_post_delivery {
   view_label: "CS Contacts"
   group_label: "07) Customer Service"
   description: "Customer Service Contacts tracked via GSheet"
+
+  always_filter: {
+    filters:  [
+      hubs.country: "",
+      hubs.hub_name: ""
+    ]
+  }
 
   access_filter: {
     field: order_order.country_iso
