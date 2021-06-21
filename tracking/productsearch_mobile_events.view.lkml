@@ -560,7 +560,7 @@ view: productsearch_mobile_events {
     hidden:  no
     type: count_distinct
     sql: ${anonymous_id};;
-    value_format: "0"
+    value_format_name: decimal_0
   }
 
   measure: cnt_nonzero_total_results {

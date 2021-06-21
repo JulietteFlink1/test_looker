@@ -668,6 +668,13 @@ explore: voucher_api_failure_success {
   description: "Voucher application success from api-based tracking events"
 }
 
+explore: monitoring_metrics {
+  label: "Monitoring Metrics"
+  view_label: "Monitoring Metrics"
+  group_label: "10) In-app tracking data"
+  description: "Monitoring behavioural metrics for tracking events"
+}
+
 ####### CS ISSUES EXPLORE #######
 explore: cs_issues_post_delivery {
   label: "CS Contacts"
