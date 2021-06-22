@@ -126,11 +126,11 @@ view: retail_kpis {
       , sum_item_price_net
     from looker_base
     -- where placeholder LOOKER FILTER
---           WHERE {% condition order_date_filter %} cast(looker_base.order_date as timestamp) {% endcondition %} and
---                 {% condition hub_code_filter %} looker_base.hub_code {% endcondition %} and
---                 {% condition hub_name_filter %} looker_base.hub_name {% endcondition %} and
---                 {% condition city_filter %} looker_base.city {% endcondition %} and
---                 {% condition country_iso_filter %} looker_base.country_iso {% endcondition %}
+           WHERE {% condition order_date_filter %} cast(looker_base.order_date as timestamp) {% endcondition %} and
+                 {% condition hub_code_filter %} looker_base.hub_code {% endcondition %} and
+                 {% condition hub_name_filter %} looker_base.hub_name {% endcondition %} and
+                 {% condition city_filter %} looker_base.city {% endcondition %} and
+                 {% condition country_iso_filter %} looker_base.country_iso {% endcondition %}
 
 )
 
@@ -292,30 +292,80 @@ order by sku, order_date desc
     type: string
   }
 
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~     Parameter         ~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  # TODO: parameter to set the week to compare with
 
 
-
-
-
-
-  measure: sum_item_price_net_subcat {
-    type: max
-    sql: ${TABLE}.sum_item_price_net_subcat ;;
-  }
-
-  measure: average_hubs_subcat {
-    type: max
-    sql: ${TABLE}.average_hubs_subcat;;
-  }
-
-
-
-
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~     Measures         ~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   measure: sum_item_price_net {
     type: sum
-    sql: ${TABLE}.sum_item_price_net ;;
+    value_format_name: eur
+  }
+  measure: sum_item_price_net_current {
+    type: sum
+    value_format_name: eur
+  }
+  measure: sum_item_price_net_previous {
+    type: sum
+    value_format_name: eur
+  }
+  # -----------------------------------------------------------
+  measure: distinct_hub_codes {
+    type: max
+    value_format_name: decimal_1
+    hidden: yes
+  }
+  measure: distinct_hub_codes_current {
+    type: max
+    value_format_name: decimal_1
+    hidden: yes
+  }
+  measure: distinct_hub_codes_previous {
+    type: max
+    value_format_name: decimal_1
+    hidden: yes
+  }
+  # -----------------------------------------------------------
+  measure: equalized_revenue {
+    type: sum
+    value_format_name: eur
+  }
+  measure: equalized_revenue_current {
+    type: sum
+    value_format_name: eur
+  }
+  measure: equalized_revenue_previous {
+    type: sum
+    value_format_name: eur
   }
 
+
+  # ~~~~~~~    Window Calculation    ~~~~~~~
+  measure: equalized_revenue_subcategory_current {
+    type: max
+    value_format_name: eur
+  }
+  measure: equalized_revenue_subcategory_previous {
+    type: max
+    value_format_name: eur
+  }
+  measure: equalized_revenue_total_current {
+    type: max
+    value_format_name: eur
+  }
+  measure: equalized_revenue_total_previous {
+    type: max
+    value_format_name: eur
+  }
+
+
+
+  # ~~~~~~~    Order Metrics    ~~~~~~~
   measure: avg_basket_skus {
     type: average
     sql: ${TABLE}.avg_basket_skus ;;
@@ -331,18 +381,41 @@ order by sku, order_date desc
     sql: ${TABLE}.avg_basket_value ;;
   }
 
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~     Percentages         ~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  measure: pct_eq_revenue_share_subcat_current {
+    type: number
+    value_format_name: percent_1
+    sql:  ${equalized_revenue_current} / nullif(${equalized_revenue_subcategory_current} ,0);;
+  }
+
+  measure: pct_overall_business_growth {
+    type: number
+    value_format_name: percent_1
+    sql: (${equalized_revenue_total_current} - ${equalized_revenue_total_previous}) / nullif(${equalized_revenue_total_previous} ,0) ;;
+  }
+
+  measure: pct_sku_growth {
+    type: number
+    value_format_name: percent_1
+    sql: (${equalized_revenue_current} - ${equalized_revenue_previous}) / nullif(${equalized_revenue_previous} ,0) ;;
+  }
+
+  measure: pct_sku_growth_corrected {
+    type: number
+    value_format_name: percent_1
+    sql: ${pct_sku_growth} - ${pct_overall_business_growth} ;;
+  }
+
   set: detail {
     fields: [
       sku,
       product_name,
       order_date,
+      order_week,
       category_name,
       sub_category_name,
-      sum_item_price_net_subcat,
-      sum_item_price_net,
-      avg_basket_skus,
-      avg_basket_items,
-      avg_basket_value
     ]
   }
 }

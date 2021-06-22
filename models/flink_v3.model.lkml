@@ -1106,8 +1106,8 @@ explore: user_order_facts_v2 {
 
 }
 
-# explore: sku_level_analysis {
-#   label: "SKU Analytics"
-#   group_label: "15) Ad-Hoc"
-#   hidden: yes
-# }
+explore: retail_kpis {
+  label: "SKU Analytics"
+  group_label: "15) Ad-Hoc"
+  hidden: yes
+}
