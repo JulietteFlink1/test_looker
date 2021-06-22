@@ -117,19 +117,34 @@ view: monitoring_metrics {
   }
 
   ### custom measures
-  measure: paymentfailure_count {
+  measure: cnt_checkoutstarted {
+    type: count
+    filters: [event: "checkout_started"]
+  }
+
+  measure: cnt_paymentfailure {
     type: count
     filters: [event: "payment_failed"]
   }
 
-  measure: paymentstarted_count {
+  measure: cnt_paymentstarted {
     type: count
     filters: [event: "purchase_confirmed"]
   }
 
-  measure: paymentcomplete_count {
+  measure: cnt_paymentcomplete {
     type: count
     filters: [event: "payment_method_added"]
+  }
+
+  measure: cnt_orderplaced {
+    type: count
+    filters: [event: "order_placed"]
+  }
+
+  measure: cnt_payment_otheroutcome {
+    type: number
+    sql: ${cnt_paymentstarted}-${cnt_paymentcomplete}-${cnt_paymentfailure} ;;
   }
 
   measure: cnt_unique_anonymousid {
@@ -141,13 +156,52 @@ view: monitoring_metrics {
     value_format_name: decimal_0
   }
 
-  ### measures based on other measures
-  measure: payment_failure2started_ratio {
-    type: number
-    description: "Number of payment failure events compared to payment started events"
-    value_format_name: percent_1
-    sql: ${paymentfailure_count}/NULLIF(${paymentstarted_count},0) ;;
+  measure: cnt_unique_checkoutstarted {
+    type: count_distinct
+    sql: ${anonymous_id};;
+    filters: [event: "checkout_started"]
   }
+
+  measure: cnt_unique_paymentfailure {
+    type: count_distinct
+    sql: ${anonymous_id};;
+    filters: [event: "payment_failed"]
+  }
+
+  measure: cnt_unique_paymentstarted {
+    type: count_distinct
+    sql: ${anonymous_id};;
+    filters: [event: "purchase_confirmed"]
+  }
+
+  measure: cnt_unique_paymentcomplete {
+    type: count_distinct
+    sql: ${anonymous_id};;
+    filters: [event: "payment_method_added"]
+  }
+
+  measure: cnt_unique_orderplaced {
+    type: count_distinct
+    sql: ${anonymous_id};;
+    filters: [event: "order_placed"]
+  }
+
+  measure: cnt_unique_payment_otheroutcome {
+    type: number
+    sql: ${cnt_unique_paymentstarted}-${cnt_unique_paymentcomplete}-${cnt_unique_paymentfailure} ;;
+  }
+
+  measure: latest_app_version {
+    type:  string
+    sql: MAX(${context_app_version});;
+  }
+
+  # measure: payment_failure2started_ratio {
+  #   type: number
+  #   description: "Number of payment failure events compared to payment started events"
+  #   value_format_name: percent_1
+  #   sql: ${paymentfailure_count}/NULLIF(${paymentstarted_count},0) ;;
+  # }
 
   ### custom dimensions
   dimension: payment_status {
