@@ -27,6 +27,12 @@ view: hub_leaderboard {
       column: cnt_promoters                   { field: nps_after_order.cnt_promoters }
       column: sum_orders_total                { field: issue_rate_hub_level.sum_orders_total }
       column: sum_orders_with_issues          { field: issue_rate_hub_level.sum_orders_with_issues }
+      # DATA-508 - new fields
+      column: rider_hours                     { field: shyftplan_riders_pickers_hours.rider_hours }
+      column: picker_hours                    { field: shyftplan_riders_pickers_hours.picker_hours }
+      column: adjusted_orders_riders          { field: shyftplan_riders_pickers_hours.adjusted_orders_riders }
+      column: adjusted_orders_pickers         { field: shyftplan_riders_pickers_hours.adjusted_orders_pickers }
+
       filters: {
         field: order_order.is_internal_order
         value: "no"
@@ -203,6 +209,34 @@ view: hub_leaderboard {
     hidden: yes
   }
 
+  # START --> REQUEST DATA-508
+  measure: rider_hours {
+    label: "Sum of Rider Hours"
+    type: sum
+    sql: ${TABLE}.rider_hours ;;
+    value_format_name: decimal_0
+    hidden: yes
+  }
+  measure: picker_hours {
+    label: "Sum of Picker Hours"
+    type: sum
+    sql: ${TABLE}.picker_hours ;;
+    value_format_name: decimal_0
+    hidden: yes
+  }
+  measure: adjusted_orders_riders {
+    type: sum
+    sql: ${TABLE}.adjusted_orders_riders ;;
+    hidden: yes
+  }
+
+  measure: adjusted_orders_pickers {
+    type: sum
+    sql: ${TABLE}.adjusted_orders_pickers ;;
+    hidden: yes
+  }
+  # END --> REQUEST DATA-508
+
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   #   PERCENTAGES
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -299,6 +333,24 @@ view: hub_leaderboard {
     value_format_name: percent_1
   }
 
+# START --> REQUEST DATA-508
+  measure: rider_utr {
+    label: "AVG Rider UTR"
+    type: number
+    sql: ${adjusted_orders_riders} / NULLIF(${rider_hours}, 0);;
+    value_format_name: decimal_2
+    group_label: "UTR"
+  }
+
+  measure: picker_utr {
+    label: "AVG Picker UTR"
+    type: number
+    sql: ${adjusted_orders_pickers} / NULLIF(${picker_hours}, 0);;
+    value_format_name: decimal_2
+    group_label: "UTR"
+  }
+  # END --> REQUEST DATA-508
+
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   #   SCORING
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -386,16 +438,42 @@ view: hub_leaderboard {
     value_format_name: decimal_0
   }
 
+# START --> REQUEST DATA-508
+  measure: score_rider_utr {
+    group_label: "Hub Leaderboard - Scores"
+    label: "Score: Rider UTR"
+    sql: case when (50 * ${rider_utr} -50) < 0   then 0
+              when (50 * ${rider_utr} -50) > 100 then 100
+              else 50 * ${rider_utr} -50
+          end;;
+    type: number
+    value_format_name: decimal_0
+  }
+
+  measure: score_picker_utr {
+    group_label: "Hub Leaderboard - Scores"
+    label: "Score: Picker UTR"
+    sql: case when (10 * ${picker_utr} -50) < 0   then 0
+              when (10 * ${picker_utr} -50) > 100 then 100
+              else 10 * ${picker_utr} -50
+         end;;
+    type: number
+    value_format_name: decimal_0
+  }
+  # END --> REQUEST DATA-508
+
   measure: score_hub_leaderboard {
     group_label: "Hub Leaderboard - Scores"
     label: "Hub Leaderboard Score"
     sql: 0.20 * ${score_delivery_in_time} +
          0.10 * ${score_delivery_late_over_5_min} +
-         0.15 * ${score_orders_with_issues} +
+         0.22 * ${score_orders_with_issues} +
          0.25 * ${score_nps_score} +
-         0.10 * ${score_ext_shifts} +
-         0.10 * ${score_open_shifts} +
-         0.10 * ${score_no_show}
+         0.01 * ${score_ext_shifts} +
+         0.01 * ${score_open_shifts} +
+         0.01 * ${score_no_show} +
+         0.10 * ${score_picker_utr} +
+         0.10 * ${score_rider_utr}
         ;;
     type: number
     value_format_name: decimal_0
