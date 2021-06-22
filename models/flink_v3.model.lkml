@@ -1021,8 +1021,14 @@ explore: voucher_retention {
   }
 }
 
-# explore: sku_level_analysis {
-#   label: "SKU Analytics"
-#   group_label: "15) Ad-Hoc"
-#   hidden: yes
-# }
+
+
+explore: retail_kpis {
+  # label: "SKU Analytics"
+  group_label: "15) Ad-Hoc"
+  hidden: yes
+
+  always_filter: {
+    filters: [order_date_filter: "6 weeks ago"]
+  }
+}
