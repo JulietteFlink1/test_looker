@@ -949,7 +949,7 @@ explore: riders_forecast_staffing {
 }
 
 
-explore: marketing_spend_installs_orders {
+explore: marketing_performance {
   label: "Marketing Performance"
   view_label: "Marketing Performance"
   group_label: "11) Marketing"
