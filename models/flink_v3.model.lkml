@@ -901,6 +901,21 @@ explore: gorillas_v1_delivery_areas{
   description: "Analysis of competitors."
 }
 
+explore: gorillas_delivery_areas_comparison{
+  hidden:  yes
+  label: "Gorillas Delivery Areas Scraper Maintenance"
+  view_label: "Gorillas Delivery Areas Scraper Maintenance"
+  group_label: "08) Competitor Analysis"
+  description: "Analysis of competitors."
+
+  join: gorillas_v1_hubs_master {
+    sql_on: ${gorillas_delivery_areas_comparison.country} = ${gorillas_v1_hubs_master.country}
+            and ${gorillas_delivery_areas_comparison.city_cleaned} = ${gorillas_v1_hubs_master.city};;
+    relationship: many_to_many
+    type: full_outer
+  }
+}
+
 explore: gorillas_v1_item_hub_collection_group_allocation{
   hidden:  no
   label: "Gorillas Item Hub Collection Group Allocation"
@@ -931,6 +946,97 @@ explore: gorillas_v1_item_hub_collection_group_allocation{
 
 }
 
+explore: product_product_competitive_intelligence {
+   label: "CI Product Product Adaption"
+  view_label: "CI Product Product Adaption"
+  group_label: "08) Competitor Analysis"
+  description: "Analysis of competitors."
+  always_filter: {
+    filters:  [
+      product_product_competitive_intelligence.is_published: "yes",
+    ]
+  }
+
+  access_filter: {
+    field: product_product_competitive_intelligence.country_iso
+    user_attribute: country_iso
+  }
+
+  access_filter: {
+    field: hubs.city
+    user_attribute: city
+  }
+
+  join: product_productvariant {
+    sql_on: ${product_productvariant.country_iso} = ${product_product_competitive_intelligence.country_iso} AND
+      ${product_productvariant.product_id} = ${product_product_competitive_intelligence.id} ;;
+    relationship: one_to_many
+    type: left_outer
+  }
+
+  join: product_category {
+    sql_on: ${product_category.country_iso} = ${product_product_competitive_intelligence.country_iso} AND
+      ${product_category.id} = ${product_product_competitive_intelligence.category_id} ;;
+    relationship: many_to_one
+    type: left_outer
+  }
+
+  join: product_producttype {
+    sql_on: ${product_product_competitive_intelligence.country_iso} = ${product_product_competitive_intelligence.country_iso} AND
+      ${product_product_competitive_intelligence.product_type_id} = ${product_producttype.id} ;;
+    relationship: one_to_one
+    type: left_outer
+  }
+
+  join: parent_category {
+    view_label: "* Product / SKU Parent Category Data *"
+    from: product_category
+    sql_on: ${product_category.country_iso} = ${parent_category.country_iso} AND
+      ${product_category.parent_id} = ${parent_category.id} ;;
+    relationship: one_to_one
+    type: left_outer
+  }
+
+  join: warehouse_stock {
+    type: left_outer
+    relationship: one_to_many
+    sql_on: ${warehouse_stock.country_iso} = ${product_productvariant.country_iso} AND
+      ${warehouse_stock.product_variant_id} = ${product_productvariant.id} ;;
+  }
+
+  join: warehouse_warehouse {
+    type: left_outer
+    relationship: one_to_one
+    sql_on: ${warehouse_warehouse.country_iso} = ${warehouse_stock.country_iso} AND
+      ${warehouse_warehouse.id} = ${warehouse_stock.warehouse_id} ;;
+  }
+
+  join: hubs {
+    view_label: "* Hubs *"
+    sql_on: ${warehouse_warehouse.country_iso} = ${hubs.country_iso} AND
+      ${warehouse_warehouse.slug} = ${hubs.hub_code_lowercase} ;;
+    relationship: one_to_one
+    type: left_outer
+  }
+
+  join: product_attribute_facts {
+    sql_on: ${product_product_competitive_intelligence.country_iso} = ${product_attribute_facts.country_iso} AND
+      ${product_product_competitive_intelligence.id} = ${product_attribute_facts.id} ;;
+    relationship: one_to_one
+    type: left_outer
+    fields: [
+      country_iso,
+      id,
+      sku,
+      leading_product,
+      noos_group,
+      substitute_group,
+      substitute_group_internal_ranking,
+      ean
+    ]
+  }
+}
+
 
 explore: flink_skus_per_category {
   hidden:  no
@@ -943,8 +1049,8 @@ explore: flink_skus_per_category {
     sql_on: ${flink_skus_per_category.country_iso} = ${gorillas_category_mapping.country_iso}
             and ${flink_skus_per_category.parent_id} = ${gorillas_category_mapping.parent_category_id}
             and ${flink_skus_per_category.category_id} = ${gorillas_category_mapping.category_id};;
-    relationship: one_to_one
-    type: full_outer
+    relationship: many_to_one
+    type: left_outer
   }
 
   join: gorillas_v1_item_hub_collection_group_allocation {
@@ -961,7 +1067,6 @@ explore: flink_skus_per_category {
     relationship: many_to_one
     type: left_outer
   }
-
 
 }
 

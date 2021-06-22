@@ -35,7 +35,7 @@ view: gorillas_v1_delivery_areas {
 
   measure: first_seen {
     type: date
-    sql: MIN(${time_scraped_raw}) ;;
+    sql: MIN(${TABLE}.time_scraped) ;;
     convert_tz: no
   }
 
