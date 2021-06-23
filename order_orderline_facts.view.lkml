@@ -23,6 +23,7 @@ view: order_orderline_facts {
 
   dimension_group: created {
     label: "Order"
+    group_label: "* Dates and Timestamps *"
     description: "Order Placement Date/Time"
     type: time
     timeframes: [
@@ -40,6 +41,13 @@ view: order_orderline_facts {
     datatype: timestamp
   }
 
+  dimension: unique_id {
+    hidden: yes
+    primary_key: yes
+    type: string
+    sql: concat(${country_iso}, ${TABLE}.id, ${product_sku}) ;;
+  }
+
   dimension: country_iso {
     type: string
     hidden: yes
@@ -52,11 +60,13 @@ view: order_orderline_facts {
   }
 
   dimension: unit_price_gross_amount {
+    group_label: "* Monetary Values *"
     type: number
     sql: ${TABLE}.unit_price_gross_amount ;;
   }
 
   dimension: unit_price_net_amount {
+    group_label: "* Monetary Values *"
     type: number
     sql: ${TABLE}.unit_price_net_amount ;;
   }
@@ -77,6 +87,7 @@ view: order_orderline_facts {
   }
 
   dimension: product_sku {
+    group_label: "* IDs *"
     type: string
     sql: CASE WHEN LENGTH(${TABLE}.product_sku)=7 THEN CONCAT('1', ${TABLE}.product_sku) ELSE ${TABLE}.product_sku END;;
   }
@@ -88,27 +99,32 @@ view: order_orderline_facts {
   #}
 
   dimension: user_email {
+    group_label: "* User Dimensions *"
     type: string
     sql: ${TABLE}.user_email ;;
   }
 
   dimension: status {
+    group_label: "* Order Dimensions *"
     type: string
     sql: ${TABLE}.status ;;
   }
 
   dimension: is_internal_order {
+    group_label: "* Order Dimensions *"
     type: yesno
     sql: ${user_email} LIKE '%goflink%' OR ${user_email} LIKE '%pickery%' ;;
   }
 
   dimension: is_successful_order {
+    group_label: "* Order Dimensions *"
     type: yesno
     sql: ${status} IN('fulfilled', 'partially fulfilled');;
   }
 
 
   measure: sum_item_quantity {
+    group_label: "* Sold Quantities *"
     label: "SUM Item Quantity sold"
     description: "Quantity of Order Line Items sold"
     hidden:  no
@@ -118,6 +134,7 @@ view: order_orderline_facts {
   }
 
   measure: avg_daily_item_quantity_today {
+    group_label: "* Sold Quantities *"
     label: "# Total Sales (today)"
     description: "Average Daily Quantity of Products sold considering only the current day"
     hidden:  no
@@ -128,6 +145,7 @@ view: order_orderline_facts {
   }
 
   measure: avg_daily_item_quantity_last_1d {
+    group_label: "* Sold Quantities *"
     label: "# Total Sales (prev day)"
     description: "Average Daily Quantity of Products sold considering only the previous day"
     hidden:  no
@@ -138,6 +156,7 @@ view: order_orderline_facts {
   }
 
   measure: sum_item_quantity_last_3d {
+    group_label: "* Sold Quantities *"
     label: "# Total Sales (last 3d)"
     description: "Quantity of Order Line Items sold in the previous 3 days"
     hidden:  yes
@@ -148,6 +167,7 @@ view: order_orderline_facts {
   }
 
   measure: sum_item_quantity_last_30d {
+    group_label: "* Sold Quantities *"
     label: "# Total Sales (last 30d)"
     description: "Quantity of Order Line Items sold in the previous 30 days"
     hidden:  yes
@@ -158,6 +178,7 @@ view: order_orderline_facts {
   }
 
   measure: avg_daily_item_quantity_last_3d {
+    group_label: "* Sold Quantities *"
     label: "# AVG daily sales (last 3d)"
     description: "Average Daily Quantity of Products sold considering the previous 3 days"
     hidden:  no
@@ -167,6 +188,7 @@ view: order_orderline_facts {
   }
 
   measure: sum_item_quantity_last_7d {
+    group_label: "* Sold Quantities *"
     label: "# Total Sales (last 7d)"
     description: "Quantity of Order Line Items sold in the previous 7 days"
     hidden:  no
@@ -177,6 +199,7 @@ view: order_orderline_facts {
   }
 
   measure: avg_daily_item_quantity_last_7d {
+    group_label: "* Sold Quantities *"
     label: "# AVG daily sales (last 7d)"
     description: "Average Daily Quantity of Products sold considering the previous 7 days"
     hidden:  no
@@ -186,6 +209,7 @@ view: order_orderline_facts {
   }
 
   measure: pct_stock_range_1d {
+    group_label: "* Operations / Logistics *"
     label: "Stock Range [days, based on 1d avg.]"
     description: "Current stock divided by 1d AVG Daily Sales"
     hidden:  no
@@ -195,6 +219,7 @@ view: order_orderline_facts {
   }
 
   measure: pct_stock_range_3d {
+    group_label: "* Operations / Logistics *"
     label: "Stock Range [days, based on 3d avg.]"
     description: "Current stock divided by 3d AVG Daily Sales"
     hidden:  no
@@ -204,6 +229,7 @@ view: order_orderline_facts {
   }
 
   measure: pct_stock_range_7d {
+    group_label: "* Operations / Logistics *"
     label: "Stock Range [days, based on 7d avg.]"
     description: "Current stock divided by 7d AVG Daily Sales"
     hidden:  no
@@ -213,6 +239,7 @@ view: order_orderline_facts {
   }
 
   measure: sum_item_price_gross {
+    group_label: "* Monetary Values *"
     label: "SUM Item Prices sold (gross)"
     description: "Sum of sold Item prices (incl. VAT)"
     hidden:  no
@@ -222,6 +249,7 @@ view: order_orderline_facts {
   }
 
   measure: sum_item_price_net {
+    group_label: "* Monetary Values *"
     label: "SUM Item Prices sold (net)"
     description: "Sum of sold Item prices (excl. VAT)"
     hidden:  no

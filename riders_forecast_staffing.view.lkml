@@ -379,6 +379,7 @@ order by shiftblocks_hubs.date, shiftblocks_hubs.hub_name, shiftblocks_hubs.bloc
 
   dimension: dynamic_timeline_base {
     label_from_parameter: timeline_base
+    description: "Changes the field based on on the value of the parameter. Useful to switch the aggregation level of the data"
     sql:
     {% if timeline_base._parameter_value == 'Date' %}
       ${date}
@@ -435,6 +436,7 @@ order by shiftblocks_hubs.date, shiftblocks_hubs.hub_name, shiftblocks_hubs.bloc
   }
 
   dimension: delta {
+    description: "Computes the difference between forecasted and filled depending on the selected KPI"
     type: number
     #label: "D"
     hidden: no
@@ -469,6 +471,7 @@ order by shiftblocks_hubs.date, shiftblocks_hubs.hub_name, shiftblocks_hubs.bloc
 
   parameter: KPI_parameter {
     label: "* KPI Parameter *"
+    group_label: " * Parameters * "
     type: unquoted
     allowed_value: { value: "rider_hours" label: "# Rider Hours"}
     allowed_value: { value: "riders" label: "# Riders"}
@@ -700,6 +703,7 @@ order by shiftblocks_hubs.date, shiftblocks_hubs.hub_name, shiftblocks_hubs.bloc
 
   measure: over_kpi {
     label: "% Over"
+    description: "Proportion of 30 min blocks that are over the forecasted number"
     type: number
     sql: ${count_over} / ${count_blocks} ;;
     value_format_name: percent_2
@@ -707,6 +711,7 @@ order by shiftblocks_hubs.date, shiftblocks_hubs.hub_name, shiftblocks_hubs.bloc
 
   measure: under_kpi {
     label: "% Under"
+    description: "Proportion of 30 min blocks that are under the forecasted number"
     type: number
     sql: ${count_under} / ${count_blocks} ;;
     value_format_name: percent_2
