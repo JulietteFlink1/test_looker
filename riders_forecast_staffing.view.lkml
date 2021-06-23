@@ -276,104 +276,106 @@ order by shiftblocks_hubs.date, shiftblocks_hubs.hub_name, shiftblocks_hubs.bloc
   dimension: predicted_orders {
     hidden: yes
     type: number
-    sql: ${TABLE}.predicted_orders ;;
+    sql: coalesce(${TABLE}.predicted_orders, 0) ;;
   }
 
   dimension: null_filter {
     hidden: no
     type: yesno
-    sql: CASE when ${predicted_orders} is null then True else False end ;;
+    sql: CASE when ${TABLE}.predicted_orders is null then True else False end ;;
   }
 
   dimension: orders {
     hidden: yes
     type: number
-    sql: ${TABLE}.orders ;;
+    sql: coalesce(${TABLE}.orders, 0) ;;
   }
 
   dimension: lower_bound {
     hidden: yes
     type: number
-    sql: ${TABLE}.lower_bound ;;
+    sql: coalesce(${TABLE}.lower_bound, 0) ;;
   }
 
   dimension: upper_bound {
     hidden: yes
     type: number
-    sql: ${TABLE}.upper_bound ;;
+    sql: coalesce(${TABLE}.upper_bound, 0) ;;
   }
 
   dimension: planned_riders {
     hidden: yes
     type: number
-    sql: ${TABLE}.planned_riders ;;
+    sql: coalesce(${TABLE}.planned_riders, 0) ;;
   }
 
   dimension: planned_pickers {
     hidden: yes
     type: number
-    sql: ${TABLE}.planned_pickers ;;
+    sql: coalesce(${TABLE}.planned_pickers, 0) ;;
   }
 
   dimension: filled_riders {
     hidden: yes
     type: number
-    sql: ${TABLE}.filled_riders ;;
+    sql: coalesce(${TABLE}.filled_riders, 0) ;;
   }
 
   dimension: filled_pickers {
     hidden: yes
     type: number
-    sql: ${TABLE}.filled_pickers ;;
+    sql: coalesce(${TABLE}.filled_pickers, 0) ;;
   }
 
   dimension: planned_rider_hours {
     hidden: yes
     type: number
-    sql: ${TABLE}.planned_rider_hours ;;
+    sql: coalesce(${TABLE}.planned_rider_hours, 0) ;;
   }
 
   dimension: planned_picker_hours {
     hidden: yes
     type: number
-    sql: ${TABLE}.planned_picker_hours ;;
+    sql: coalesce(${TABLE}.planned_picker_hours, 0) ;;
   }
 
   dimension: filled_rider_hours {
     hidden: yes
     type: number
-    sql: ${TABLE}.filled_rider_hours ;;
+    sql: coalesce(${TABLE}.filled_rider_hours, 0) ;;
   }
 
   dimension: filled_picker_hours {
     hidden: yes
     type: number
-    sql: ${TABLE}.filled_picker_hours ;;
+    sql: coalesce(${TABLE}.filled_picker_hours, 0) ;;
   }
 
   dimension: forecasted_riders {
     hidden: yes
     type: number
-    sql: CAST(CEIL(${upper_bound} / ({% parameter rider_UTR %}/2)) AS INT64) ;;
+    sql: coalesce(CAST(CEIL(${upper_bound} / ({% parameter rider_UTR %}/2)) AS INT64), 0) ;;
   }
 
   dimension: forecasted_pickers {
     hidden: yes
     type: number
-    sql: CAST(CEIL(${upper_bound} / (${picker_utr}/2)) AS INT64) ;;
+    sql: coalesce(CAST(CEIL(${upper_bound} / (${picker_utr}/2)) AS INT64), 0) ;;
   }
 
   dimension: forecasted_rider_hours {
     hidden: yes
     type: number
-    sql: CAST(CEIL(${upper_bound} / ({% parameter rider_UTR %}/2)) AS INT64) / 2;;
+    sql: coalesce(CAST(CEIL(${upper_bound} / ({% parameter rider_UTR %}/2)) AS INT64) / 2, 0);;
   }
 
   dimension: forecasted_picker_hours {
     hidden: yes
     type: number
-    sql: CAST(CEIL(${upper_bound} / (${picker_utr}/2)) AS INT64) / 2;;
+    sql: coalesce(CAST(CEIL(${upper_bound} / (${picker_utr}/2)) AS INT64) / 2, 0);;
   }
+
+  ####### Dynamic dimensions
 
   dimension: dynamic_timeline_base {
     label_from_parameter: timeline_base
@@ -383,6 +385,60 @@ order by shiftblocks_hubs.date, shiftblocks_hubs.hub_name, shiftblocks_hubs.bloc
     {% elsif timeline_base._parameter_value == 'Hub' %}
       ${hubs.hub_name}
     {% endif %};;
+  }
+
+  dimension: forecasted_dimension {
+    #group_label: "* Dynamic KPI Fields *"
+    #label: "Forecasted"
+    hidden: yes
+    #label_from_parameter: KPI_parameter
+    #value_format: "#,##0.00"
+    value_format_name: id
+    type: number
+    sql:
+    {% if KPI_parameter._parameter_value == 'riders' %}
+      ${forecasted_riders}
+    {% elsif KPI_parameter._parameter_value == 'rider_hours' %}
+      ${forecasted_rider_hours}
+    {% elsif KPI_parameter._parameter_value == 'pickers' %}
+      ${forecasted_pickers}
+    {% elsif KPI_parameter._parameter_value == 'picker_hours' %}
+      ${forecasted_picker_hours}
+    {% elsif KPI_parameter._parameter_value == 'orders' %}
+      ${predicted_orders}
+    {% endif %}
+    ;;
+  }
+
+
+  dimension: filled_dimension {
+    #group_label: "* Dynamic KPI Fields *"
+    #label: "Filled"
+    hidden: yes
+    #label_from_parameter: KPI_parameter
+    #value_format: "#,##0.00"
+    value_format_name: id
+    type: number
+    sql:
+    {% if KPI_parameter._parameter_value == 'riders' %}
+      ${filled_riders}
+    {% elsif KPI_parameter._parameter_value == 'rider_hours' %}
+      ${filled_rider_hours}
+    {% elsif KPI_parameter._parameter_value == 'pickers' %}
+      ${filled_pickers}
+    {% elsif KPI_parameter._parameter_value == 'picker_hours' %}
+      ${filled_picker_hours}
+    {% elsif KPI_parameter._parameter_value == 'orders' %}
+      ${orders}
+    {% endif %}
+    ;;
+  }
+
+  dimension: delta {
+    type: number
+    #label: "D"
+    hidden: no
+    sql: ${forecasted_dimension} - ${filled_dimension} ;;
   }
 
 
@@ -430,6 +486,7 @@ order by shiftblocks_hubs.date, shiftblocks_hubs.hub_name, shiftblocks_hubs.bloc
   }
 
   ###### Measures
+
 
   measure: count {
     type: count
@@ -618,7 +675,42 @@ order by shiftblocks_hubs.date, shiftblocks_hubs.hub_name, shiftblocks_hubs.bloc
     ;;
   }
 
+  measure: count_blocks {
+    label: "Count Blocks"
+    hidden: yes
+    type: count_distinct
+    sql: ${block_starts_pivot} ;;
+  }
 
+  measure: count_over {
+    label: "Count Over Blocks"
+    hidden: yes
+    type: count_distinct
+    sql: ${block_starts_pivot} ;;
+    filters: [delta: "<0"]
+  }
+
+  measure: count_under {
+    label: "Count Under Blocks"
+    hidden: yes
+    type: count_distinct
+    sql: ${block_starts_pivot} ;;
+    filters: [delta: ">0"]
+  }
+
+  measure: over_kpi {
+    label: "% Over"
+    type: number
+    sql: ${count_over} / ${count_blocks} ;;
+    value_format_name: percent_2
+  }
+
+  measure: under_kpi {
+    label: "% Under"
+    type: number
+    sql: ${count_under} / ${count_blocks} ;;
+    value_format_name: percent_2
+  }
 
 
   ####### Measures Hub-Leaderboard
