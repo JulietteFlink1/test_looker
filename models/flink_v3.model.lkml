@@ -10,7 +10,7 @@ label: "Flink Core Data Model"
 include: "/views/**/*.view"
 
 # include retail explores
-include: "/models/retail/**/*.explore.lkml"
+include: "/explores/**/*.explore.lkml"
 
 
 week_start_day: monday
