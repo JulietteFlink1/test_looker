@@ -35,6 +35,7 @@ view: product_attribute_facts {
   }
 
   dimension: id {
+    group_label: "* IDs *"
     type: number
     sql: ${TABLE}.id ;;
   }
@@ -47,37 +48,44 @@ view: product_attribute_facts {
   }
 
   dimension: sku {
+    group_label: "* IDs *"
     type: string
     sql: ${TABLE}.sku ;;
   }
 
   dimension: leading_product {
+    group_label: "* Product Attributes *"
     type: string
     sql: ${TABLE}.leading_product ;;
   }
 
   dimension: noos_group {
+    group_label: "* Product Attributes *"
     type: string
     sql: ${TABLE}.noos_group ;;
   }
 
   dimension: substitute_group {
+    group_label: "* Product Attributes *"
     type: string
     sql: ${TABLE}.substitute_group ;;
   }
 
   dimension: substitue_group_complete {
+    group_label: "* Product Attributes *"
     description: "Returns the substitute group if set, else returns the product name"
     type: string
     sql: coalesce(${substitute_group}, (${order_orderline.product_name})) ;;
   }
 
   dimension: substitute_group_internal_ranking {
+    group_label: "* Product Attributes *"
     type: string
     sql: ${TABLE}.substitute_group_internal_ranking ;;
   }
 
   dimension: ean {
+    group_label: "* IDs *"
     type: string
     sql: ${TABLE}.ean ;;
   }

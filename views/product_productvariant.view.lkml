@@ -37,6 +37,7 @@ view: product_productvariant {
   }
 
   dimension: name {
+    group_label: "* Product Attributes *"
     label: "Productvariant Name"
     type: string
     sql: ${TABLE}.name ;;
@@ -60,6 +61,7 @@ view: product_productvariant {
   }
 
   dimension: sku {
+    group_label: "* IDs *"
     type: string
     sql: ${TABLE}.sku ;;
   }

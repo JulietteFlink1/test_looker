@@ -386,12 +386,28 @@ view: segment_tracking_sessions30 {
   dimension_group: session_start_at {
     type: time
     datatype: datetime
+    timeframes: [
+      date,
+      day_of_week,
+      week,
+      month,
+      quarter,
+      year
+    ]
     sql: ${TABLE}.session_start_at ;;
   }
 
   dimension_group: next_session_start_at {
     type: time
     datatype: datetime
+    timeframes: [
+      date,
+      day_of_week,
+      week,
+      month,
+      quarter,
+      year
+    ]
     sql: ${TABLE}.next_session_start_at ;;
   }
 
@@ -494,6 +510,29 @@ view: segment_tracking_sessions30 {
   dimension: returning_customer {
     type: yesno
     sql: ${TABLE}.has_ordered ;;
+  }
+
+  dimension: session_start_date_granularity {
+    label: "Session Start Date (Dynamic)"
+    label_from_parameter: timeframe_picker
+    type: string # cannot have this as a time type. See this discussion: https://community.looker.com/lookml-5/dynamic-time-granularity-opinions-16675
+    sql:
+    {% if timeframe_picker._parameter_value == 'Day' %}
+      ${session_start_at_date}
+    {% elsif timeframe_picker._parameter_value == 'Week' %}
+      ${session_start_at_week}
+    {% elsif timeframe_picker._parameter_value == 'Month' %}
+      ${session_start_at_month}
+    {% endif %};;
+  }
+
+  parameter: timeframe_picker {
+    label: "Session Start Date Granular"
+    type: unquoted
+    allowed_value: { value: "Day" }
+    allowed_value: { value: "Week" }
+    allowed_value: { value: "Month" }
+    default_value: "Day"
   }
 
   dimension: country {
@@ -680,8 +719,6 @@ view: segment_tracking_sessions30 {
     fields: [
       anonymous_id,
       session_id,
-      session_start_at_time,
-      next_session_start_at_time,
       context_locale,
       context_device_type,
       context_app_version,

@@ -209,22 +209,30 @@ view: marketing_performance {
   }
 
   dimension: cnt_installs {
+    group_label: "* Basic Counts *"
     type: number
+    hidden: yes
     sql: ${TABLE}.cnt_installs ;;
   }
 
   dimension: cnt_customers {
+    group_label: "* Basic Counts *"
     type: number
+    hidden: yes
     sql: ${TABLE}.cnt_customers ;;
   }
 
   dimension: sum_discounts {
+    group_label: "* Monetary Values *"
     type: number
+    hidden: yes
     sql: ${TABLE}.sum_discounts ;;
   }
 
   dimension: sum_spend {
+    group_label: "* Monetary Values *"
     type: number
+    hidden: yes
     sql: ${TABLE}.spend ;;
   }
 
@@ -265,7 +273,7 @@ view: marketing_performance {
   ##### Parameters
 
   parameter: date_granularity {
-    group_label: "* Dates and Timestamps *"
+    group_label: "* Parameters *"
     label: "Date Granularity"
     type: unquoted
     allowed_value: { value: "Day" }
@@ -276,6 +284,7 @@ view: marketing_performance {
 
   parameter: KPI_parameter {
     label: "* KPI Parameter *"
+    group_label: "* Parameters *"
     type: unquoted
     allowed_value: { value: "orders" label: "# New Customers"}
     allowed_value: { value: "installs" label: "# Installs" }
@@ -288,6 +297,7 @@ view: marketing_performance {
 
   parameter: include_discounts_in_spend {
     label: "Include discounts in spend?"
+    group_label: "* Parameters *"
     type: unquoted
     allowed_value: { value: "yes" label: "Yes"}
     allowed_value: { value: "no" label: "No" }
@@ -303,18 +313,21 @@ view: marketing_performance {
 
   measure: installs {
     type: sum
+    group_label: "* Basic Counts *"
     sql: ${cnt_installs} ;;
     value_format_name: decimal_0
   }
 
   measure: customers {
     type: sum
+    group_label: "* Basic Counts *"
     sql: ${cnt_customers} ;;
     value_format_name: decimal_0
   }
 
   measure: discounts {
     type: sum
+    group_label: "* Monetary Values *"
     sql: ${sum_discounts} ;;
     hidden: yes
     value_format_name: euro_accounting_0_precision
@@ -322,6 +335,7 @@ view: marketing_performance {
 
   measure: spend {
     type: sum
+    group_label: "* Monetary Values *"
     sql: ${sum_spend} ;;
     hidden: yes
     value_format_name: euro_accounting_0_precision
@@ -329,6 +343,7 @@ view: marketing_performance {
 
   measure: spend_cond {
     label: "Spend"
+    group_label: "* Monetary Values *"
     type: number
     sql: {% if include_discounts_in_spend._parameter_value == 'no' %}
             ${spend}
@@ -341,6 +356,7 @@ view: marketing_performance {
   measure: CPI {
     label: "CPI"
     description: "Cost per Install"
+    group_label: "* Monetary Values *"
     type: number
     sql: ${spend_cond} / nullif(${installs},0) ;;
     value_format_name: euro_accounting_2_precision
@@ -348,6 +364,7 @@ view: marketing_performance {
 
   measure: CAC {
     label: "CAC"
+    group_label: "* Monetary Values *"
     description: "Cost of Acquisition: Marketing spend  / first orders"
     type: number
     sql: ${spend_cond} / nullif(${customers},0) ;;
