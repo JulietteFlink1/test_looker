@@ -14,7 +14,6 @@ view: daily_historical_stock_levels {
     allowed_value: { value: "Month" }
     default_value: "Day"
   }
-
   dimension: date {
     group_label: "* Parameters & Dynamic Fields *"
     label: "Date (Dynamic)"
@@ -28,6 +27,76 @@ view: daily_historical_stock_levels {
       ${tracking_month}
     {% endif %};;
   }
+
+
+  parameter: show_sku {
+    group_label: "* Parameters & Dynamic Fields *"
+    type: yesno
+    default_value: "yes"
+  }
+  dimension: sku_name_dynamic {
+    type: string
+    sql: if({% parameter show_sku %}, concat(${sku}, ' - ', ${product_product.name}), null) ;;
+  }
+
+
+  parameter: show_country {
+    group_label: "* Parameters & Dynamic Fields *"
+    type: yesno
+    default_value: "yes"
+  }
+  dimension: country_dynamic {
+    group_label: "* Parameters & Dynamic Fields *"
+    type: string
+    sql: if({% parameter show_country %}, ${hubs.country_iso}, null) ;;
+  }
+
+
+  parameter: show_city {
+    group_label: "* Parameters & Dynamic Fields *"
+    type: yesno
+    default_value: "yes"
+  }
+  dimension: city_dynamic {
+    group_label: "* Parameters & Dynamic Fields *"
+    type: string
+    sql: if({% parameter show_city %}, ${hubs.city}, null) ;;
+  }
+
+  parameter: show_category {
+    group_label: "* Parameters & Dynamic Fields *"
+    type: yesno
+    default_value: "yes"
+  }
+  dimension: category_dynamic {
+    group_label: "* Parameters & Dynamic Fields *"
+    type: string
+    sql: if({% parameter show_category %}, ${parent_category.name}, null) ;;
+  }
+
+  parameter: show_sub_category {
+    group_label: "* Parameters & Dynamic Fields *"
+    type: yesno
+    default_value: "yes"
+  }
+  dimension: sub_category_dynamic {
+    group_label: "* Parameters & Dynamic Fields *"
+    type: string
+    sql: if({% parameter show_sub_category %}, ${product_category.name}, null) ;;
+  }
+
+  parameter: show_hub_code {
+    group_label: "* Parameters & Dynamic Fields *"
+    type: yesno
+    default_value: "yes"
+  }
+  dimension: hub_code_dynamic {
+    group_label: "* Parameters & Dynamic Fields *"
+    type: string
+    sql: if({% parameter show_hub_code %}, ${hub_code}, null) ;;
+  }
+
+
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Dimensions     ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
