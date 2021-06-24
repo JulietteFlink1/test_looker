@@ -902,22 +902,14 @@ explore: gorillas_v1_delivery_areas{
   view_label: "Gorillas Delivery Areas"
   group_label: "08) Competitor Analysis"
   description: "Analysis of competitors."
-}
-
-explore: gorillas_delivery_areas_comparison{
-  hidden:  yes
-  label: "Gorillas Delivery Areas Scraper Maintenance"
-  view_label: "Gorillas Delivery Areas Scraper Maintenance"
-  group_label: "08) Competitor Analysis"
-  description: "Analysis of competitors."
 
   join: gorillas_v1_hubs_master {
-    sql_on: ${gorillas_delivery_areas_comparison.country} = ${gorillas_v1_hubs_master.country}
-            and ${gorillas_delivery_areas_comparison.city_cleaned} = ${gorillas_v1_hubs_master.city};;
-    relationship: many_to_many
+    sql_on: ${gorillas_v1_delivery_areas.scraping_hub_name} = ${gorillas_v1_hubs_master.scraping_hub_name};;
+    relationship: one_to_many
     type: full_outer
   }
 }
+
 
 explore: gorillas_v1_item_hub_collection_group_allocation{
   hidden:  no

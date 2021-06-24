@@ -427,14 +427,14 @@ view: gorillas_v1_items {
   }
 
   measure: median_price {
-    type: median_distinct
+    type: median
     sql: ${price} ;;
     sql_distinct_key: ${id};;
     value_format: "0.00€"
   }
 
   measure: avg_price {
-    type: average_distinct
+    type: average
     sql: ${price} ;;
     sql_distinct_key: ${id};;
     value_format: "0.00€"

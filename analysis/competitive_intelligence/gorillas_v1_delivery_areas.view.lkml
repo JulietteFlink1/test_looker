@@ -2,6 +2,15 @@ view: gorillas_v1_delivery_areas {
   sql_table_name: `flink-data-dev.gorillas_v1.delivery_areas`
     ;;
 
+
+
+  dimension: unique_id {
+    group_label: "* IDs *"
+    primary_key: yes
+    type: string
+    sql: concat(${country}, ${city},${hub_name}, ${scraping_hub_name}, ${time_scraped_raw}) ;;
+  }
+
   dimension: city {
     type: string
     sql: ${TABLE}.city ;;
@@ -16,6 +25,11 @@ view: gorillas_v1_delivery_areas {
   dimension: hub_name {
     type: string
     sql: ${TABLE}.hub_name ;;
+  }
+
+  dimension: scraping_hub_name {
+    type: string
+    sql: ${TABLE}.scraping_hub_name ;;
   }
 
   dimension_group: time_scraped {

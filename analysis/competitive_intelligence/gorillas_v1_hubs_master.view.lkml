@@ -14,6 +14,11 @@ view: gorillas_v1_hubs_master {
     sql: ${TABLE}.city ;;
   }
 
+  dimension: scraping_hub_name {
+    type: string
+    sql: ${TABLE}.scraping_hub_name ;;
+  }
+
   dimension: country {
     type: string
     map_layer_name: countries
