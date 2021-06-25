@@ -27,16 +27,19 @@ view: product_producttype {
   }
 
   dimension: has_variants {
+    group_label: "* Product Attributes *"
     type: yesno
     sql: ${TABLE}.has_variants ;;
   }
 
   dimension: is_digital {
+    group_label: "* Product Attributes *"
     type: yesno
     sql: ${TABLE}.is_digital ;;
   }
 
   dimension: is_shipping_required {
+    group_label: "* Product Attributes *"
     type: yesno
     sql: ${TABLE}.is_shipping_required ;;
   }
@@ -48,6 +51,7 @@ view: product_producttype {
   }
 
   dimension: name {
+    group_label: "* Product Attributes *"
     label: "Producttype Name"
     type: string
     sql: ${TABLE}.name ;;

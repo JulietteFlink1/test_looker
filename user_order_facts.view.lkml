@@ -459,23 +459,27 @@ view: user_order_facts {
 
   measure: new_customer_orders {
     type: count
+    description: "Number of orders placed by new customers"
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
     filters: [lifetime_orders: "=1"]
   }
 
   measure: returning_customer_orders {
     type: count
+    description: "Number of orders placed by returning customers"
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
     filters: [lifetime_orders: ">1"]
   }
 
-  measure: average_lifetime_orders {
+  measure: avg_lifetime_orders {
     type: average
     value_format_name: decimal_2
     sql: ${lifetime_orders} ;;
   }
 
-  measure: average_lifetime_revenue {
+  measure: avg_lifetime_revenue {
     type: average
-    value_format_name: usd
+    value_format_name: euro_accounting_2_precision
     sql: ${lifetime_revenue_gross} ;;
   }
 

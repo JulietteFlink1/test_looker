@@ -6,6 +6,7 @@ view: product_product {
 
   dimension: id {
     label: "Product ID"
+    group_label: "* IDs *"
     primary_key: no
     hidden: yes
     type: number
@@ -20,6 +21,7 @@ view: product_product {
 
   dimension: unique_id {
     primary_key: yes
+    group_label: "* IDs *"
     hidden: yes
     type: string
     sql: concat(${country_iso}, ${id}) ;;
@@ -27,6 +29,7 @@ view: product_product {
 
   dimension_group: available_for_purchase {
     type: time
+    group_label: "* Dates and Timestamps *"
     timeframes: [
       raw,
       time,
@@ -41,6 +44,7 @@ view: product_product {
 
   dimension: category_id {
     type: number
+    group_label: "* IDs *"
     hidden: yes
     sql: ${TABLE}.category_id ;;
   }
@@ -65,6 +69,7 @@ view: product_product {
 
   dimension: description {
     type: string
+    group_label: "* Product Attributes *"
     label: "Product Description"
     sql: ${TABLE}.description ;;
   }
@@ -76,6 +81,7 @@ view: product_product {
   }
 
   dimension: is_published {
+    group_label: "* Product Attributes *"
     type: yesno
     sql: ${TABLE}.is_published ;;
   }
@@ -94,6 +100,7 @@ view: product_product {
 
   dimension: name {
     label: "Product Name"
+    group_label: "* Product Attributes *"
     type: string
     sql: ${TABLE}.name ;;
   }
@@ -112,6 +119,7 @@ view: product_product {
 
   dimension_group: publication {
     type: time
+    group_label: "* Dates and Timestamps *"
     timeframes: [
       raw,
       time,
@@ -144,6 +152,7 @@ view: product_product {
 
   dimension_group: updated {
     type: time
+    group_label: "* Dates and Timestamps *"
     timeframes: [
       raw,
       time,
@@ -157,12 +166,14 @@ view: product_product {
   }
 
   dimension: visible_in_listings {
+    group_label: "* Product Attributes *"
     type: yesno
     sql: ${TABLE}.visible_in_listings ;;
   }
 
   measure: cnt_sku {
     label: "# SKUs (Total)"
+    group_label: "* Basic Counts *"
     description: "Count of Total SKUs in Assortment"
     hidden:  no
     type: count
@@ -171,6 +182,7 @@ view: product_product {
 
   measure: cnt_sku_published {
     label: "# SKUs (Published)"
+    group_label: "* Basic Counts *"
     description: "Count of published SKUs in Assortment"
     hidden:  no
     type: count

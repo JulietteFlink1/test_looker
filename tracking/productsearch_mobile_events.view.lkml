@@ -554,13 +554,25 @@ view: productsearch_mobile_events {
 
 ### Custom measures
 
+  measure: successful_searches {
+    type: sum
+    label: "Sum of successful searches"
+    description: "Sum of searches that were followed by productAddedToCart or productDetailsViewed"
+    sql:
+      CASE
+        WHEN ${next_event}="product_added_to_cart" OR ${next_event}="product_details_viewed"
+    THEN 1
+    ELSE 0
+    END;;
+  }
+
   measure: cnt_unique_anonymousid {
     label: "# Unique Users"
     description: "Number of Unique Users identified via Anonymous ID from Segment"
     hidden:  no
     type: count_distinct
     sql: ${anonymous_id};;
-    value_format: "0"
+    value_format_name: decimal_0
   }
 
   measure: cnt_nonzero_total_results {

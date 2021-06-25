@@ -386,12 +386,28 @@ view: segment_tracking_sessions30 {
   dimension_group: session_start_at {
     type: time
     datatype: datetime
+    timeframes: [
+      date,
+      day_of_week,
+      week,
+      month,
+      quarter,
+      year
+    ]
     sql: ${TABLE}.session_start_at ;;
   }
 
   dimension_group: next_session_start_at {
     type: time
     datatype: datetime
+    timeframes: [
+      date,
+      day_of_week,
+      week,
+      month,
+      quarter,
+      year
+    ]
     sql: ${TABLE}.next_session_start_at ;;
   }
 
@@ -494,6 +510,29 @@ view: segment_tracking_sessions30 {
   dimension: returning_customer {
     type: yesno
     sql: ${TABLE}.has_ordered ;;
+  }
+
+  dimension: session_start_date_granularity {
+    label: "Session Start Date (Dynamic)"
+    label_from_parameter: timeframe_picker
+    type: string # cannot have this as a time type. See this discussion: https://community.looker.com/lookml-5/dynamic-time-granularity-opinions-16675
+    sql:
+    {% if timeframe_picker._parameter_value == 'Day' %}
+      ${session_start_at_date}
+    {% elsif timeframe_picker._parameter_value == 'Week' %}
+      ${session_start_at_week}
+    {% elsif timeframe_picker._parameter_value == 'Month' %}
+      ${session_start_at_month}
+    {% endif %};;
+  }
+
+  parameter: timeframe_picker {
+    label: "Session Start Date Granular"
+    type: unquoted
+    allowed_value: { value: "Day" }
+    allowed_value: { value: "Week" }
+    allowed_value: { value: "Month" }
+    default_value: "Day"
   }
 
   dimension: country {
@@ -657,31 +696,36 @@ view: segment_tracking_sessions30 {
 
   measure: mcvr2 {
     type: number
-    description: "Number of sessions in which a Product Added To Cart event happened, compared to the number of sessions in which a Home Viewed event happened"
+    description: "Number of sessions in which there was a Product Added To Cart, compared to the number of sessions in which there was a Home Viewed"
     value_format_name: percent_1
     sql: ${cnt_add_to_cart}/NULLIF(${cnt_home_viewed},0) ;;
   }
 
   measure: mcvr3 {
     type: number
-    description: "Number of sessions in which a Checkout Started event happened, compared to the number of sessions in which a Product Added To Cart event happened"
+    description: "Number of sessions in which there was a Checkout Started event happened, compared to the number of sessions in which there was a Product Added To Cart"
     value_format_name: percent_1
     sql: ${cnt_checkout_started}/NULLIF(${cnt_add_to_cart},0) ;;
   }
 
   measure: mcvr4 {
     type: number
-    description: "Number of sessions in which a Payment Started event happened, compared to the number of sessions in which a Checkout Started event happened"
+    description: "Number of sessions in which there was a Payment Started event happened, compared to the number of sessions in which there was a Checkout Started"
     value_format_name: percent_1
     sql: ${cnt_payment_started}/NULLIF(${cnt_checkout_started},0) ;;
+  }
+
+  measure: payment_success {
+    type: number
+    description: "Number of sessions in which there was an Order Placed, compared to the number of sessions in which there was a Payment Started"
+    value_format_name: percent_1
+    sql: ${cnt_purchase}/NULLIF(${cnt_payment_started},0) ;;
   }
 
   set: detail {
     fields: [
       anonymous_id,
       session_id,
-      session_start_at_time,
-      next_session_start_at_time,
       context_locale,
       context_device_type,
       context_app_version,
