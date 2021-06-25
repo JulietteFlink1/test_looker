@@ -400,12 +400,29 @@ order by sku, order_date desc
     type: number
     value_format_name: percent_1
     sql: (${equalized_revenue_current} - ${equalized_revenue_previous}) / nullif(${equalized_revenue_previous} ,0) ;;
+    html:
+      {% if value > 0.3 %}
+      <p style="color: #2ECC71; background-color: #D5F5E3 ;font-size: 100%; text-align:center">{{ rendered_value }}</p>
+      {% elsif value < -0.3 %}
+      <p style="color: #E74C3C; background-color: #FADBD8 ; font-size:100%; text-align:center">{{ rendered_value }}</p>
+      {% else %}
+      <p style="color: black; font-size:100%; text-align:center">{{ rendered_value }}</p>
+      {% endif %};;
   }
 
   measure: pct_sku_growth_corrected {
     type: number
     value_format_name: percent_1
     sql: ${pct_sku_growth} - ${pct_overall_business_growth} ;;
+
+    html:
+      {% if value > 0.3 %}
+      <p style="color: #2ECC71; background-color: #D5F5E3 ;font-size: 100%; text-align:center">{{ rendered_value }}</p>
+      {% elsif value < -0.3 %}
+      <p style="color: #E74C3C; background-color: #FADBD8 ; font-size:100%; text-align:center">{{ rendered_value }}</p>
+      {% else %}
+      <p style="color: black; font-size:100%; text-align:center">{{ rendered_value }}</p>
+      {% endif %};;
   }
 
   set: detail {
