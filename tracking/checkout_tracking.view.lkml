@@ -4,7 +4,7 @@ view: checkout_tracking {
         tracks_tb AS (
           SELECT tracks.anonymous_id,
           tracks.timestamp,
-          tracks.event,
+          IF(tracks.event="purchase_confirmed", "payment_started", tracks.event) AS event,
           tracks.id,
           tracks.context_app_version,
           tracks.context_device_type,
@@ -75,7 +75,7 @@ view: checkout_tracking {
       SELECT
         anonymous_id,
         timestamp,
-        IF(event="purchase_confirmed", "payment_started", event) AS event,
+        event,
         LEAD(event) OVER(PARTITION BY anonymous_id ORDER BY timestamp ASC) AS next_event,
         hub_city,
         derived_city,
