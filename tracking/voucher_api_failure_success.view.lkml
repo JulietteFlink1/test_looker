@@ -196,7 +196,7 @@ view: voucher_api_failure_success {
     type: count_distinct
     sql: ${anonymous_id};;
     filters: [event_type: "Success"]
-    value_format: "0"
+    value_format_name: decimal_0
   }
 
   measure: cnt_unique_anonymousid_fail{
@@ -206,7 +206,7 @@ view: voucher_api_failure_success {
     type: count_distinct
     sql: ${anonymous_id};;
     filters: [event_type: "Fail"]
-    value_format: "0"
+    value_format_name: decimal_0
   }
 
 
