@@ -1213,9 +1213,3 @@ explore: user_order_facts_v2 {
   }
 
 }
-
-explore: retail_kpis {
-  label: "SKU Analytics"
-  group_label: "15) Ad-Hoc"
-  hidden: yes
-}
