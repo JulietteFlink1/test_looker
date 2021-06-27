@@ -10,6 +10,7 @@ view: checkout_tracking {
           tracks.context_device_type,
           tracks.context_os_version
           FROM `flink-backend.flink_android_production.tracks_view` tracks
+          WHERE tracks.event NOT LIKE "api%" AND tracks.event NOT LIKE "deep_link%"
         ),
         checkout_tb AS(
         SELECT
@@ -74,7 +75,7 @@ view: checkout_tracking {
       SELECT
         anonymous_id,
         timestamp,
-        event,
+        IF(event="purchase_confirmed", "payment_started", event) AS event,
         LEAD(event) OVER(PARTITION BY anonymous_id ORDER BY timestamp ASC) AS next_event,
         hub_city,
         derived_city,
