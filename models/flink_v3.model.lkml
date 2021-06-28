@@ -354,6 +354,14 @@ explore: order_order {
     type: left_outer
   }
 
+  join: order_sku_count {
+    sql_on: ${order_order.country_iso} = ${order_sku_count.country_iso} AND
+      ${order_order.id} = ${order_sku_count.order_id} ;;
+    relationship: one_to_one
+    type: left_outer
+
+  }
+
 }
 
 ####### PRODUCTS EXPLORE #######
@@ -1204,10 +1212,4 @@ explore: user_order_facts_v2 {
     type: left_outer
   }
 
-}
-
-explore: retail_kpis {
-  label: "SKU Analytics"
-  group_label: "15) Ad-Hoc"
-  hidden: yes
 }
