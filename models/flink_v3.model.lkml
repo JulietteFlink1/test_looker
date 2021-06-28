@@ -1198,7 +1198,7 @@ explore: voucher_retention {
   }
 }
 
-explore: user_order_facts_v2 {
+explore: user_order_facts_phone_number {
   label: "User Order Facts - Unique User ID"
   view_label: "User Order Facts - Unique User ID"
   group_label: "15) Ad-Hoc"
@@ -1206,8 +1206,8 @@ explore: user_order_facts_v2 {
 
   join: hubs {
     view_label: "* Hubs *"
-    sql_on: ${user_order_facts_v2.country_iso} = ${hubs.country_iso} AND
-      ${user_order_facts_v2.hub_name} = ${hubs.hub_code_lowercase} ;;
+    sql_on: ${user_order_facts_phone_number.country_iso} = ${hubs.country_iso} AND
+      ${user_order_facts_phone_number.hub_name} = ${hubs.hub_code_lowercase} ;;
     relationship: one_to_one
     type: left_outer
   }

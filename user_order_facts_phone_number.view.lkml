@@ -1,4 +1,4 @@
-view: user_order_facts_v2 {
+view: user_order_facts_phone_number {
   derived_table: {
     sql: with unique_users as
     (
