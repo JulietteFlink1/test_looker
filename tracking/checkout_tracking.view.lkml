@@ -11,6 +11,18 @@ view: checkout_tracking {
           tracks.context_os_version
           FROM `flink-backend.flink_android_production.tracks_view` tracks
           WHERE tracks.event NOT LIKE "api%" AND tracks.event NOT LIKE "deep_link%"
+
+          UNION ALL
+
+          SELECT tracks.anonymous_id,
+          tracks.timestamp,
+          IF(tracks.event="purchase_confirmed", "payment_started", tracks.event) AS event,
+          tracks.id,
+          tracks.context_app_version,
+          tracks.context_device_type,
+          tracks.context_os_version
+          FROM `flink-backend.flink_ios_production.tracks_view` tracks
+          WHERE tracks.event NOT LIKE "api%" AND tracks.event NOT LIKE "deep_link%"
         ),
         checkout_tb AS(
         SELECT
@@ -23,7 +35,22 @@ view: checkout_tracking {
           checkout_started.context_device_type,
           checkout_started.context_os_version
         FROM
-          `flink-backend.flink_android_production.checkout_started_view` checkout_started),
+          `flink-backend.flink_android_production.checkout_started_view` checkout_started
+        UNION ALL
+        SELECT
+          checkout_started.anonymous_id,
+          checkout_started.hub_city,
+          checkout_started.timestamp,
+          checkout_started.event,
+          checkout_started.id,
+          checkout_started.context_app_version,
+          checkout_started.context_device_type,
+          checkout_started.context_os_version
+        FROM
+          `flink-backend.flink_ios_production.checkout_started_view` checkout_started
+
+          ),
+
         joined_tb AS (
             SELECT tracks_tb.*,
             checkout_tb.hub_city,
