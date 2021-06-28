@@ -51,6 +51,7 @@ view: productsearch_mobile_events {
     `flink-backend.flink_android_production.address_confirmed_view` event
     ON
     tracks.id=event.id
+    AND tracks.event NOT LIKE "api%" AND tracks.event NOT LIKE "deep_link%"
 
     UNION ALL
 
@@ -102,6 +103,7 @@ view: productsearch_mobile_events {
     `flink-backend.flink_ios_production.address_confirmed_view` event
     ON
     tracks.id=event.id
+    AND tracks.event NOT LIKE "api%" AND tracks.event NOT LIKE "deep_link%"
     ),
 
     country_lookup AS (
