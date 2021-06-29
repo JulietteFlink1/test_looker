@@ -39,6 +39,7 @@ explore: hub_leaderboard_raw_order_order {
     hubs.country,
     hubs.city,
     hubs.hub_name,
+    hubs.city_manager,
 
 
     hub_leaderboard_shift_metrics.sum_filled_ext_picker_hours,
