@@ -257,6 +257,13 @@ on fa.date=fi.date and fa.campaign_id=fi.campaign_id and fa.ad_id=fi.ad_id
     value_format_name: euro_accounting_2_precision
   }
 
+  measure: CPM {
+    type: number
+    description: "Cost per 1K impressions"
+    sql: ${total_spend} / NULLIF(${total_impressions}/1000, 0) ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
   measure: CTR {
     type: number
     description: "Click Through Rate"
