@@ -264,6 +264,13 @@ on fa.date=fi.date and fa.campaign_id=fi.campaign_id and fa.ad_id=fi.ad_id
     value_format_name: euro_accounting_2_precision
   }
 
+  measure: cost_per_people_reached {
+    type: number
+    description: "Cost per People Reached"
+    sql: ${total_spend} / NULLIF(${total_reach}, 0) ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
   measure: CTR {
     type: number
     description: "Click Through Rate"
