@@ -215,6 +215,11 @@ view: monitoring_metrics {
   # }
 
   ### custom dimensions
+  dimension: full_app_version {
+    type: string
+    sql: ${context_device_type} || '-' || ${context_app_version} ;;
+  }
+
   dimension: payment_status {
     type: string
     case: {
