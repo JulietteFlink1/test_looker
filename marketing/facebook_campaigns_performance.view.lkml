@@ -278,6 +278,13 @@ on fa.date=fi.date and fa.campaign_id=fi.campaign_id and fa.ad_id=fi.ad_id
     value_format_name: decimal_1
   }
 
+  measure: CAC {
+    type: number
+    description: "Customer Acquisition Cost"
+    sql: ${total_spend} / NULLIF(${total_orders}, 0) ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
   measure: AOV {
     type: number
     description: "Average Order Value"
