@@ -306,6 +306,34 @@ on fa.date=fi.date and fa.campaign_id=fi.campaign_id and fa.ad_id=fi.ad_id
     value_format_name: decimal_1
   }
 
+  ###### Parameters
+
+  parameter: date_granularity {
+    group_label: "* Dates and Timestamps *"
+    label: "Date Granularity"
+    type: unquoted
+    allowed_value: { value: "Day" }
+    allowed_value: { value: "Week" }
+    allowed_value: { value: "Month" }
+    default_value: "Day"
+  }
+
+  ###### Dynamic Dimensions
+
+  dimension: date {
+    group_label: "* Dates and Timestamps *"
+    label: "Date (Dynamic)"
+    label_from_parameter: date_granularity
+    sql:
+    {% if date_granularity._parameter_value == 'Day' %}
+      ${event_date}
+    {% elsif date_granularity._parameter_value == 'Week' %}
+      ${event_week}
+    {% elsif date_granularity._parameter_value == 'Month' %}
+      ${event_month}
+    {% endif %};;
+  }
+
   set: detail {
     fields: [
       event_date,
