@@ -7,7 +7,7 @@ view: facebook_campaigns_performance {
     case when REGEXP_CONTAINS(campaigns.name, '_DE_') or REGEXP_CONTAINS(ad_sets.name, '_DE_') or REGEXP_CONTAINS(ads.name, '_DE_') then 'DE'
         when REGEXP_CONTAINS(campaigns.name, '_FR_') or REGEXP_CONTAINS(ad_sets.name, '_FR_') or REGEXP_CONTAINS(ads.name, '_FR_') then 'FR'
         when REGEXP_CONTAINS(campaigns.name, '_NL_') or REGEXP_CONTAINS(ad_sets.name, '_NL_') or REGEXP_CONTAINS(ads.name, '_NL_') then 'NL'
-        else 'NI' end as country,
+        else 'DE' end as country,
     case when campaigns.account_id in ('277023943913538',
                             '429404584773636',
                             '509478863527409',
