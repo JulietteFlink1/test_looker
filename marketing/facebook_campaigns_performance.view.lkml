@@ -24,6 +24,8 @@ view: facebook_campaigns_performance {
     from `flink-backend.facebook_ads.insights_view` insights
     left join `flink-backend.facebook_ads.ads_view` ads
     on insights.ad_id = ads.id
+    left join `flink-backend.facebook_ads.ad_sets_view` ad_sets
+    on ads.adset_id=ad_sets.id
     left join `flink-backend.facebook_ads.campaigns_view` campaigns
     on ads.campaign_id = campaigns.id
     group by 1, 2, 3, 4, 5, 6, 7, 8
