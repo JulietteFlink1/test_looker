@@ -4,9 +4,9 @@ view: facebook_campaigns_performance {
 (
     select date(insights.date_start, 'Europe/Berlin') as date,
     'Facebook Ads' as channel,
-    case when REGEXP_CONTAINS(campaigns.name, '_DE_')  then 'DE'
-        when REGEXP_CONTAINS(campaigns.name, '_FR_')  then 'FR'
-        when REGEXP_CONTAINS(campaigns.name, '_NL_')  then 'NL'
+    case when REGEXP_CONTAINS(campaigns.name, '_DE_') or REGEXP_CONTAINS(ad_sets.name, '_DE_') or REGEXP_CONTAINS(ads.name, '_DE_') then 'DE'
+        when REGEXP_CONTAINS(campaigns.name, '_FR_') or REGEXP_CONTAINS(ad_sets.name, '_FR_') or REGEXP_CONTAINS(ads.name, '_FR_') then 'FR'
+        when REGEXP_CONTAINS(campaigns.name, '_NL_') or REGEXP_CONTAINS(ad_sets.name, '_NL_') or REGEXP_CONTAINS(ads.name, '_NL_') then 'NL'
         else 'DE' end as country,
     case when campaigns.account_id in ('277023943913538',
                             '429404584773636',
@@ -24,6 +24,8 @@ view: facebook_campaigns_performance {
     from `flink-backend.facebook_ads.insights_view` insights
     left join `flink-backend.facebook_ads.ads_view` ads
     on insights.ad_id = ads.id
+    left join `flink-backend.facebook_ads.ad_sets_view` ad_sets
+    on ads.adset_id=ad_sets.id
     left join `flink-backend.facebook_ads.campaigns_view` campaigns
     on ads.campaign_id = campaigns.id
     group by 1, 2, 3, 4, 5, 6, 7, 8
@@ -257,11 +259,32 @@ on fa.date=fi.date and fa.campaign_id=fi.campaign_id and fa.ad_id=fi.ad_id
     value_format_name: euro_accounting_2_precision
   }
 
+  measure: CPM {
+    type: number
+    description: "Cost per 1K impressions"
+    sql: ${total_spend} / NULLIF(${total_impressions}/1000, 0) ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: cost_per_people_reached {
+    type: number
+    description: "Cost per People Reached"
+    sql: ${total_spend} / NULLIF(${total_reach}, 0) ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
   measure: CTR {
     type: number
     description: "Click Through Rate"
     sql: ${total_clicks} / NULLIF(${total_impressions}, 0) ;;
     value_format_name: decimal_1
+  }
+
+  measure: CAC {
+    type: number
+    description: "Customer Acquisition Cost"
+    sql: ${total_spend} / NULLIF(${total_orders}, 0) ;;
+    value_format_name: euro_accounting_2_precision
   }
 
   measure: AOV {
@@ -283,6 +306,34 @@ on fa.date=fi.date and fa.campaign_id=fi.campaign_id and fa.ad_id=fi.ad_id
     description: "The average frequency at which an ad is seen by unique users"
     sql: ${total_impressions} / NULLIF(${total_reach}, 0) ;;
     value_format_name: decimal_1
+  }
+
+  ###### Parameters
+
+  parameter: date_granularity {
+    group_label: "* Dates and Timestamps *"
+    label: "Date Granularity"
+    type: unquoted
+    allowed_value: { value: "Day" }
+    allowed_value: { value: "Week" }
+    allowed_value: { value: "Month" }
+    default_value: "Day"
+  }
+
+  ###### Dynamic Dimensions
+
+  dimension: date {
+    group_label: "* Dates and Timestamps *"
+    label: "Date (Dynamic)"
+    label_from_parameter: date_granularity
+    sql:
+    {% if date_granularity._parameter_value == 'Day' %}
+      ${event_date}
+    {% elsif date_granularity._parameter_value == 'Week' %}
+      ${event_week}
+    {% elsif date_granularity._parameter_value == 'Month' %}
+      ${event_month}
+    {% endif %};;
   }
 
   set: detail {
