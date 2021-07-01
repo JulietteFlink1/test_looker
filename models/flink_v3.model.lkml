@@ -4,10 +4,15 @@ include: "/**/*.view.lkml"                # include all views in the views/ fold
 # include: "/**/*.view.lkml"                 # include all views in this project
 # include: "my_dashboard.dashboard.lookml"   # include a LookML dashboard called my_dashboard
 
+include: "/**/*.dashboard.lookml"
+
 label: "Flink Core Data Model"
 
 # include all the views
 include: "/views/**/*.view"
+
+# include retail explores
+include: "/explores/**/*.explore.lkml"
 
 
 week_start_day: monday
@@ -349,6 +354,14 @@ explore: order_order {
       ${order_order.date}        =  ${issue_rate_hub_level.date};;
     relationship: many_to_one # decided against one_to_many: on this level, many orders have hub-level issue-aggregates
     type: left_outer
+  }
+
+  join: order_sku_count {
+    sql_on: ${order_order.country_iso} = ${order_sku_count.country_iso} AND
+      ${order_order.id} = ${order_sku_count.order_id} ;;
+    relationship: one_to_one
+    type: left_outer
+
   }
 
 }
@@ -1202,7 +1215,7 @@ explore: voucher_retention {
   }
 }
 
-explore: user_order_facts_v2 {
+explore: user_order_facts_phone_number {
   label: "User Order Facts - Unique User ID"
   view_label: "User Order Facts - Unique User ID"
   group_label: "15) Ad-Hoc"
@@ -1210,16 +1223,10 @@ explore: user_order_facts_v2 {
 
   join: hubs {
     view_label: "* Hubs *"
-    sql_on: ${user_order_facts_v2.country_iso} = ${hubs.country_iso} AND
-      ${user_order_facts_v2.hub_name} = ${hubs.hub_code_lowercase} ;;
+    sql_on: ${user_order_facts_phone_number.country_iso} = ${hubs.country_iso} AND
+      ${user_order_facts_phone_number.hub_name} = ${hubs.hub_code_lowercase} ;;
     relationship: one_to_one
     type: left_outer
   }
 
-}
-
-explore: retail_kpis {
-  label: "SKU Analytics"
-  group_label: "15) Ad-Hoc"
-  hidden: yes
 }

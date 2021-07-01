@@ -1,4 +1,4 @@
-view: user_order_facts_v2 {
+view: user_order_facts_phone_number {
   derived_table: {
     sql: with unique_users as
     (
@@ -18,7 +18,7 @@ view: user_order_facts_v2 {
                     from(
                         select  order_order.country_iso,
                                 user_email,
-                                lower(regexp_replace(concat(address.phone, address.last_name), r'\s', '')) as pseudo_unique_id,
+                                address.phone as pseudo_unique_id,
                                 order_order.id,
                                 order_order.created,
                                 CASE WHEN JSON_EXTRACT_SCALAR(metadata, '$.warehouse') IN ('hamburg-oellkersallee', 'hamburg-oelkersallee') THEN 'de_ham_alto'
@@ -37,7 +37,7 @@ view: user_order_facts_v2 {
     aggregation as
     (
         SELECT order_order.country_iso,
-            lower(regexp_replace(concat(address.phone, address.last_name), r'\s', '')) as pseudo_unique_id,
+            address.phone as pseudo_unique_id,
              COUNT(DISTINCT order_order.id) AS lifetime_orders
             , SUM(total_gross_amount) AS lifetime_revenue_gross
             , SUM(total_net_amount) AS lifetime_revenue_net
@@ -88,13 +88,13 @@ view: user_order_facts_v2 {
     reorders_30 as
     (
             select order_order.country_iso,
-            lower(regexp_replace(concat(address.phone, address.last_name), r'\s', '')) as pseudo_unique_id,
+            address.phone as pseudo_unique_id,
             count(distinct(order_order.id)) as _30_day_reorder_number
             from `flink-backend.saleor_db_global.order_order` order_order
             left join `flink-backend.saleor_db_global.account_address` address
              on order_order.country_iso = address.country_iso and order_order.shipping_address_id = address.id
             left join users
-                on lower(regexp_replace(concat(address.phone, address.last_name), r'\s', '')) = users.pseudo_unique_id
+                on address.phone = users.pseudo_unique_id
                 and address.country_iso = users.country_iso
             where date_diff(date(order_order.created), date(users.first_order) , DAY) <= 30 and
                     users.first_order_id != order_order.id and
@@ -102,16 +102,17 @@ view: user_order_facts_v2 {
             group by 1, 2
     ),
 
+
     reorders_28 as
     (
             select order_order.country_iso,
-            lower(regexp_replace(concat(address.phone, address.last_name), r'\s', '')) as pseudo_unique_id,
+            address.phone as pseudo_unique_id,
             count(distinct(order_order.id)) as _28_day_reorder_number
             from `flink-backend.saleor_db_global.order_order` order_order
             left join `flink-backend.saleor_db_global.account_address` address
              on order_order.country_iso = address.country_iso and order_order.shipping_address_id = address.id
             left join users
-                on lower(regexp_replace(concat(address.phone, address.last_name), r'\s', '')) = users.pseudo_unique_id
+                on address.phone = users.pseudo_unique_id
                 and address.country_iso = users.country_iso
             where date_diff(date(order_order.created), date(users.first_order) , DAY) <= 28 and
                     users.first_order_id != order_order.id and
@@ -123,7 +124,7 @@ view: user_order_facts_v2 {
     (
     select
       orders.country_iso,
-      lower(regexp_replace(concat(address.phone, address.last_name), r'\s', '')) as pseudo_unique_id,
+      address.phone as pseudo_unique_id,
       orderline.product_name,
       sum(orderline.quantity) as sum_quantity
       from `flink-backend.saleor_db_global.order_order` orders
@@ -139,7 +140,7 @@ view: user_order_facts_v2 {
     (
     select
       orders.country_iso,
-      lower(regexp_replace(concat(address.phone, address.last_name), r'\s', '')) as pseudo_unique_id,
+      address.phone as pseudo_unique_id,
       orderline.product_sku,
       orderline.product_name,
       pcategory.name as category_name
@@ -235,7 +236,7 @@ view: user_order_facts_v2 {
     order_day as
     (
     select orders.country_iso,
-        lower(regexp_replace(concat(address.phone, address.last_name), r'\s', '')) as pseudo_unique_id,
+        address.phone as pseudo_unique_id,
     extract(DAYOFWEEK from orders.created) as day_of_week,
     count(*) as day_count
     from `flink-backend.saleor_db_global.order_order` orders
@@ -248,7 +249,7 @@ view: user_order_facts_v2 {
     order_hour as
     (
     select orders.country_iso,
-    lower(regexp_replace(concat(address.phone, address.last_name), r'\s', '')) as pseudo_unique_id,
+    address.phone as pseudo_unique_id,
     extract(HOUR from orders.created) as hour,
     count(*) as hour_count
     from `flink-backend.saleor_db_global.order_order` orders
@@ -279,7 +280,7 @@ view: user_order_facts_v2 {
     latest_order_with_voucher as
     (
       select orders.country_iso,
-      lower(regexp_replace(concat(address.phone, address.last_name), r'\s', '')) as pseudo_unique_id,
+      address.phone as pseudo_unique_id,
       MAX(orders.created) as latest_order_with_voucher
       from `flink-backend.saleor_db_global.order_order` orders
       left join `flink-backend.saleor_db_global.account_address` address
@@ -450,6 +451,12 @@ view: user_order_facts_v2 {
     sql: ${TABLE}._30_day_reorder_number ;;
   }
 
+  dimension: has_reordered_within_30_days {
+    description: "Boolean dimension. Takes the value yes if the user has reordered within 30 days after their first order."
+    type: yesno
+    sql: case when ${reorder_number_30_days} > 0 then True else False end ;;
+  }
+
   dimension: repeat_customer {
     description: "Lifetime Count of Orders > 1"
     type: yesno
@@ -544,17 +551,17 @@ view: user_order_facts_v2 {
     sql: ${TABLE}.last_order_with_voucher ;;
   }
 
-  dimension: 30_day_retention {
-    hidden: no
-    type: yesno
-    sql: case when ${days_betw_first_and_last_order} >= 30
-      and ${days_duration_between_first_order_and_now} >= 30 then True else False end ;;
+  #dimension: 30_day_retention {
+  #  hidden: no
+  #  type: yesno
+  #  sql: case when ${days_betw_first_and_last_order} >= 30
+  #    and ${days_duration_between_first_order_and_now} >= 30 then True else False end ;;
 
-  }
+  #}
 
   measure: cnt_30_day_retention {
     type: count
-    filters: [30_day_retention: "yes"]
+    filters: [has_reordered_within_30_days: "yes"]
   }
 
 ####### Measures ########

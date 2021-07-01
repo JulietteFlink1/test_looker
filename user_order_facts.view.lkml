@@ -436,17 +436,15 @@ view: user_order_facts {
     sql: ${TABLE}.last_order_with_voucher ;;
   }
 
-  dimension: 30_day_retention {
-    hidden: no
+  dimension: has_reordered_within_30_days {
+    description: "Boolean dimension. Takes the value yes if the user has reordered within 30 days after their first order."
     type: yesno
-    sql: case when ${days_betw_first_and_last_order} >= 30
-      and ${days_duration_between_first_order_and_now} >= 30 then True else False end ;;
-
+    sql: case when ${reorder_number_30_days} > 0 then True else False end ;;
   }
 
   measure: cnt_30_day_retention {
     type: count
-    filters: [30_day_retention: "yes"]
+    filters: [has_reordered_within_30_days: "yes"]
   }
 
 ####### Measures ########
