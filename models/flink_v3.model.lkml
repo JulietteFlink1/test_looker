@@ -858,7 +858,7 @@ explore: gorillas_v1_hubs_master{
 }
 
 explore: gorillas_v1_orders{
-  hidden:  no
+  hidden:  yes
   label: "Gorillas Orders"
   view_label: "Gorillas Orders"
   group_label: "08) Competitor Analysis"
@@ -866,7 +866,7 @@ explore: gorillas_v1_orders{
 }
 
 explore: gorillas_v1_inventory{
-  hidden:  no
+  hidden:  yes
   label: "Gorillas Inventory"
   view_label: "Gorillas Inventory"
   group_label: "08) Competitor Analysis"
@@ -891,6 +891,21 @@ explore: gorillas_v1_inventory{
     relationship: many_to_one
     type: left_outer
   }
+
+  join: gorillas_item_mapping {
+    sql_on: ${gorillas_v1_inventory.product_id} = ${gorillas_item_mapping.gorillas_id} ;;
+    relationship: many_to_one
+    type: left_outer
+  }
+
+}
+
+explore: gorillas_item_mapping {
+  hidden:  yes
+  label: "Gorillas Item Mapping"
+  view_label: "Gorillas Item Mapping"
+  group_label: "08) Competitor Analysis"
+  description: "Analysis of competitors."
 }
 
 explore: gorillas_v1_delivery_areas{
