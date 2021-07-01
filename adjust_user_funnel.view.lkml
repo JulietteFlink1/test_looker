@@ -321,9 +321,12 @@ select
     group_label: "* Dates and Timestamps *"
     label: "Date Granularity"
     type: unquoted
-    allowed_value: { value: "Day" }
-    allowed_value: { value: "Week" }
-    allowed_value: { value: "Month" }
+    allowed_value: { value: "Day"
+      label: "Acquisition Day"}
+    allowed_value: { value: "Week"
+      label:"Acquisition Week"}
+    allowed_value: { value: "Month"
+      label:"Acquisition Month"}
     default_value: "Day"
   }
 

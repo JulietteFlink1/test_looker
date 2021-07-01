@@ -5,7 +5,7 @@ view: hub_leaderboard {
   derived_table: {
     # datagroup_trigger: flink_default_datagroup
     # persist_for: "24 hours"
-    explore_source: order_order {
+    explore_source: hub_leaderboard_raw_order_order {
       column: sum_filled_ext_picker_hours     { field: hub_leaderboard_shift_metrics.sum_filled_ext_picker_hours }
       column: sum_filled_ext_rider_hours      { field: hub_leaderboard_shift_metrics.sum_filled_ext_rider_hours }
       column: sum_filled_picker_hours         { field: hub_leaderboard_shift_metrics.sum_filled_picker_hours }
@@ -16,11 +16,14 @@ view: hub_leaderboard {
       column: sum_planned_rider_hours         { field: hub_leaderboard_shift_metrics.sum_planned_rider_hours }
       column: sum_unfilled_picker_hours       { field: hub_leaderboard_shift_metrics.sum_unfilled_picker_hours }
       column: sum_unfilled_rider_hours        { field: hub_leaderboard_shift_metrics.sum_unfilled_rider_hours }
+
       column: hub_code_lowercase              { field: hubs.hub_code_lowercase }
-      column: created_date                    { field: order_order.created_date}
-      column: cnt_orders_delayed_under_0_min  { field: order_order.cnt_orders_delayed_under_0_min}
-      column: cnt_orders_delayed_over_5_min   { field: order_order.cnt_orders_delayed_over_5_min}
-      column: cnt_orders_with_delivery_eta_available {field: order_order.cnt_orders_with_delivery_eta_available}
+      column: hub_name                        { field: hubs.hub_name }
+      column: created_date                    { field: hub_leaderboard_raw_order_order.created_date}
+
+      column: cnt_orders_delayed_under_0_min  { field: hub_leaderboard_raw_order_order.cnt_orders_delayed_under_0_min}
+      column: cnt_orders_delayed_over_5_min   { field: hub_leaderboard_raw_order_order.cnt_orders_delayed_over_5_min}
+      column: cnt_orders_with_delivery_eta_available {field: hub_leaderboard_raw_order_order.cnt_orders_with_delivery_eta_available}
       column: cnt_responses                   { field: nps_after_order.cnt_responses }
       column: cnt_detractors                  { field: nps_after_order.cnt_detractors }
       column: cnt_passives                    { field: nps_after_order.cnt_passives }
@@ -34,15 +37,15 @@ view: hub_leaderboard {
       column: adjusted_orders_pickers         { field: shyftplan_riders_pickers_hours.adjusted_orders_pickers }
 
       filters: {
-        field: order_order.is_internal_order
+        field: hub_leaderboard_raw_order_order.is_internal_order
         value: "no"
       }
       filters: {
-        field: order_order.is_successful_order
+        field: hub_leaderboard_raw_order_order.is_successful_order
         value: "yes"
       }
       filters: {
-        field: order_order.created_date
+        field: hub_leaderboard_raw_order_order.created_date
         value: "after 2021/01/25"
       }
     }
@@ -57,13 +60,28 @@ view: hub_leaderboard {
     label: "* Orders * Order Date"
     description: "Order Placement Date/Time"
     type: date
-    hidden: yes
+    hidden: no
   }
   dimension: unique_id {
     primary_key: yes
     hidden: yes
     type: string
     sql: concat( CAST(${created_date} as string), ${hub_code_lowercase})  ;;
+  }
+
+  dimension: hub_name {
+    label: "Hub Name"
+    type: string
+  }
+
+  dimension: is_current_7d {
+    type: yesno
+    sql: ${created_date} >= date_add(current_date(), interval -7 day) and ${created_date} < current_date() ;;
+  }
+
+  dimension: is_previous_7d {
+    type: yesno
+    sql: ${created_date} >= date_add(current_date(), interval -14 day) and ${created_date} < date_add(current_date(), interval -7 day) ;;
   }
 
 
@@ -456,7 +474,7 @@ view: hub_leaderboard {
     sql: case when (10 * ${picker_utr} -50) < 0   then 0
               when (10 * ${picker_utr} -50) > 100 then 100
               else 10 * ${picker_utr} -50
-         end;;
+        end;;
     type: number
     value_format_name: decimal_0
   }
@@ -466,14 +484,14 @@ view: hub_leaderboard {
     group_label: "Hub Leaderboard - Scores"
     label: "Hub Leaderboard Score"
     sql: 0.20 * ${score_delivery_in_time} +
-         0.10 * ${score_delivery_late_over_5_min} +
-         0.22 * ${score_orders_with_issues} +
-         0.25 * ${score_nps_score} +
-         0.01 * ${score_ext_shifts} +
-         0.01 * ${score_open_shifts} +
-         0.01 * ${score_no_show} +
-         0.10 * ${score_picker_utr} +
-         0.10 * ${score_rider_utr}
+        0.10 * ${score_delivery_late_over_5_min} +
+        0.22 * ${score_orders_with_issues} +
+        0.25 * ${score_nps_score} +
+        0.01 * ${score_ext_shifts} +
+        0.01 * ${score_open_shifts} +
+        0.01 * ${score_no_show} +
+        0.10 * ${score_picker_utr} +
+        0.10 * ${score_rider_utr}
         ;;
     type: number
     value_format_name: decimal_0

@@ -127,9 +127,9 @@ view: marketing_performance {
       (
           select 'Facebook Ads' as channel,
           ads.account_id,
-          case when REGEXP_CONTAINS(campaigns.name, 'DE') or REGEXP_CONTAINS(ad_sets.name, 'DE') then 'DE'
-              when REGEXP_CONTAINS(campaigns.name, 'FR') or REGEXP_CONTAINS(ad_sets.name, 'FR') then 'FR'
-              when REGEXP_CONTAINS(campaigns.name, 'NL') or REGEXP_CONTAINS(ad_sets.name, 'NL') then 'NL'
+          case when REGEXP_CONTAINS(campaigns.name, '_DE_') or REGEXP_CONTAINS(ad_sets.name, '_DE_') then 'DE'
+              when REGEXP_CONTAINS(campaigns.name, '_FR_') or REGEXP_CONTAINS(ad_sets.name, '_FR_') then 'FR'
+              when REGEXP_CONTAINS(campaigns.name, '_NL_') or REGEXP_CONTAINS(ad_sets.name, '_NL_') then 'NL'
               else 'DE' end as country,
           date(insights.date_start, 'Europe/Berlin') as date,
           sum(spend) as spend

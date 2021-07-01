@@ -43,7 +43,7 @@ view: voucher_retention {
             left join first_order_with_voucher
             on order_order.country_iso = first_order_with_voucher.country_iso and order_order.user_email = first_order_with_voucher.user_email
             where order_order.id != first_order_with_voucher.id and order_order.user_email in (select user_email from first_order_with_voucher) and order_order.status in ('fulfilled', 'partially fulfilled')
-            order by 1, 2,3 asc
+            order by 1, 2, 3 asc
           ),
 
           retention as

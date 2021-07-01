@@ -117,6 +117,11 @@ view: monitoring_metrics {
   }
 
   ### custom measures
+  measure: cnt_cartviewed {
+    type: count
+    filters: [event: "cart_viewed"]
+  }
+
   measure: cnt_checkoutstarted {
     type: count
     filters: [event: "checkout_started"]
@@ -154,6 +159,12 @@ view: monitoring_metrics {
     type: count_distinct
     sql: ${anonymous_id};;
     value_format_name: decimal_0
+  }
+
+  measure: cnt_unique_cartviewed {
+    type: count_distinct
+    sql: ${anonymous_id};;
+    filters: [event: "cart_viewed"]
   }
 
   measure: cnt_unique_checkoutstarted {
@@ -204,6 +215,11 @@ view: monitoring_metrics {
   # }
 
   ### custom dimensions
+  dimension: full_app_version {
+    type: string
+    sql: ${context_device_type} || '-' || ${context_app_version} ;;
+  }
+
   dimension: payment_status {
     type: string
     case: {

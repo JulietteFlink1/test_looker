@@ -76,6 +76,11 @@ view: hubs {
     sql_longitude: ${longitude};;
   }
 
+  dimension: city_manager {
+    type: string
+    sql: ${TABLE}.city_manager ;;
+  }
+
 
   measure: count {
     type: count
