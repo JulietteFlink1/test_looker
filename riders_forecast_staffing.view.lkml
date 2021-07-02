@@ -611,19 +611,18 @@ order by shiftblocks_hubs.date, shiftblocks_hubs.hub_name, shiftblocks_hubs.bloc
     sql: ${forecasted_picker_hours} ;;
   }
 
-  measure: count_hubs {
-    type: count_distinct
-    sql: ${hub_name} ;;
-  }
-
   measure: squared_error {
     type: sum
     sql: pow(${predicted_orders} - ${orders}, 2) ;;
   }
 
+  measure: count_values {
+    type: count
+  }
+
   measure: root_mean_squared_error {
     type: number
-    sql: sqrt(${squared_error}  / NULLIF(${count_hubs}, 0)) ;;
+    sql: sqrt(${squared_error}  / NULLIF(${count_values}, 0)) ;;
     value_format_name: decimal_1
   }
 
