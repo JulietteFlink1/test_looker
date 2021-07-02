@@ -51,6 +51,16 @@ explore: retail_orders_explore {
         retail_kpis_rev_per_total._measures*,
         daily_historical_stock_levels._measures*
         ]
+        filters: [
+          hubs.city: "",
+          hubs.country: "",
+          hubs.country_iso: "",
+          hubs.hub_code: "",
+          hubs.hub_code_lowercase: "",
+          retail_orders_explore.is_internal_order: "no",
+          retail_orders_explore.is_successful_order: "yes",
+          retail_orders_explore.created_date: "after 2021-05-01",
+        ]
         sorts: [
           retail_orders_explore.created_date: desc,
           parent_category.name: asc,
