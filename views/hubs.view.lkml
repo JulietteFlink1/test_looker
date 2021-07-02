@@ -61,7 +61,7 @@ view: hubs {
 
   dimension: start_date {
     type: date
-    sql: ${TABLE}.start_date ;;
+    sql: CAST(${TABLE}.start_date AS TIMESTAMP);;
   }
 
   dimension_group: time_between_hub_launch_and_today {
