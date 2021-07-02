@@ -153,7 +153,7 @@ view: monitoring_metrics {
   }
 
   measure: cnt_unique_anonymousid {
-    label: "# Unique Users"
+    label: "cnt Unique Users"
     description: "Number of Unique Users as per Segment Aonymous ID"
     hidden:  no
     type: count_distinct
