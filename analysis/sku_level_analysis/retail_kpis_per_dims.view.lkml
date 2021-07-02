@@ -31,7 +31,7 @@ view: retail_kpis_per_dims {
   dimension: primary_key {
     hidden: yes
     primary_key: yes
-    sql: CONCAT(${product_sku}, CAST(${created_date} AS STRING) ) ;;
+    sql: CONCAT(${product_sku}, CAST(${created_date} AS STRING), ${name} ) ;;
   }
 
 

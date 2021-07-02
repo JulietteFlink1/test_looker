@@ -67,18 +67,18 @@ view: retail_kpis_equalized_revenue {
   }
 
 
-  # measure: sum_item_price_net_current {
-  #   type: sum
-  #   sql: ( if(${is_current_cohort}, ${sum_item_price_net}, null) );;
-  #   value_format_name: eur
-  #   hidden: yes
-  # }
-  # measure: sum_item_price_net_previous {
-  #   type: sum
-  #   sql: ( if(${is_previous_cohort}, ${sum_item_price_net}, null) );;
-  #   value_format_name: eur
-  #   hidden: yes
-  # }
+  measure: sum_item_price_net_current {
+    type: sum
+    sql: ( if(${is_current_cohort}, ${sum_item_price_net}, null) );;
+    value_format_name: eur
+    hidden: no
+  }
+  measure: sum_item_price_net_previous {
+    type: sum
+    sql: ( if(${is_previous_cohort}, ${sum_item_price_net}, null) );;
+    value_format_name: eur
+    hidden: no
+  }
 
   measure: equalized_revenue {
     type: sum
@@ -100,7 +100,7 @@ view: retail_kpis_equalized_revenue {
 
   set: _measures {
     fields: [
-      # sum_item_price_net, sum_item_price_net_current, sum_item_price_net_previous,
+      sum_item_price_net_current, sum_item_price_net_previous,
       equalized_revenue, equalized_revenue_current, equalized_revenue_previous
       ]
   }
