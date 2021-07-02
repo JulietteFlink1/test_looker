@@ -15,6 +15,7 @@ view: retail_kpis_rev_per_subcat {
       # column: sum_item_price_net_previous            { field: retail_kpis_equalized_revenue.sum_item_price_net_previous }
 
       bind_all_filters: yes
+      timezone: "Europe/Berlin"
     }
   }
 
