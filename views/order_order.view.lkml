@@ -1192,4 +1192,55 @@ view: order_order {
         type: percent_of_total
         sql: ${cnt_orders} ;;
       }
+
+      set: exclude_dims_as_that_cross_reference {
+        fields: [
+          years_time_since_sign_up,
+          quarters_time_since_sign_up,
+          months_time_since_sign_up,
+          weeks_time_since_sign_up,
+          days_time_since_sign_up,
+          hours_time_since_sign_up,
+          minutes_time_since_sign_up,
+          seconds_time_since_sign_up,
+          years_time_between_sign_up_month_and_now,
+          quarters_time_between_sign_up_month_and_now,
+          months_time_between_sign_up_month_and_now,
+          weeks_time_between_sign_up_month_and_now,
+          days_time_between_sign_up_month_and_now,
+          hours_time_between_sign_up_month_and_now,
+          minutes_time_between_sign_up_month_and_now,
+          years_time_between_sign_up_week_and_now,
+          seconds_time_between_sign_up_month_and_now,
+          quarters_time_between_sign_up_week_and_now,
+          months_time_between_sign_up_week_and_now,
+          weeks_time_between_sign_up_week_and_now,
+          days_time_between_sign_up_week_and_now,
+          hours_time_between_sign_up_week_and_now,
+          minutes_time_between_sign_up_week_and_now,
+          seconds_time_between_sign_up_week_and_now,
+          years_time_between_hub_launch_and_order,
+          quarters_time_between_hub_launch_and_order,
+          months_time_between_hub_launch_and_order,
+          weeks_time_between_hub_launch_and_order,
+          days_time_between_hub_launch_and_order,
+          hours_time_between_hub_launch_and_order,
+          minutes_time_between_hub_launch_and_order,
+          seconds_time_between_hub_launch_and_order,
+          customer_type,
+          KPI,
+          reaction_time,
+          acceptance_time,
+          time_diff_between_two_subsequent_fulfillments,
+          avg_picking_time,
+          avg_acceptance_time,
+          hub_location,
+          cnt_unique_orders_existing_customers,
+          cnt_unique_orders_new_customers,
+          avg_reaction_time,
+          delivery_distance_m,
+          delivery_distance_km
+
+        ]
+      }
     }

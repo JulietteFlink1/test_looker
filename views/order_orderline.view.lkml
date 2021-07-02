@@ -53,7 +53,7 @@ view: order_orderline {
 
   dimension: order_id {
     type: number
-    hidden: yes
+    hidden: no
     sql: ${TABLE}.order_id ;;
   }
 
@@ -179,6 +179,14 @@ view: order_orderline {
     type: sum
     sql: ${quantity_fulfilled} * ${unit_price_net_amount};;
     value_format_name: euro_accounting_2_precision
+  }
+
+
+  measure: ctn_skus {
+    type: count_distinct
+    label: "AVG SKUS"
+    sql: ${product_sku} ;;
+    value_format_name: decimal_1
   }
 
 }
