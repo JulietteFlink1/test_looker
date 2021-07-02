@@ -23,7 +23,6 @@ explore: retail_kpis {
 
 
 
-
 explore: retail_orders_explore {
   from: order_order
   hidden: yes
@@ -58,6 +57,8 @@ explore: retail_orders_explore {
           product_category.name: asc,
           order_orderline.product_sku: asc
         ]
+
+        timezone: "Europe/Berlin"
     }
     materialization: {
       sql_trigger_value: SELECT CURRENT_DATE() ;;
@@ -66,63 +67,103 @@ explore: retail_orders_explore {
   }
 
   fields: [
-    ALL_FIELDS*,
-    -retail_orders_explore.exclude_dims_as_that_cross_reference*
+
+    retail_orders_explore.is_internal_order,
+    retail_orders_explore.is_successful_order,
+    retail_orders_explore.created_date,
 
 
-    # -retail_orders_explore.years_time_since_sign_up,
-    # -retail_orders_explore.quarters_time_since_sign_up,
-    # -retail_orders_explore.months_time_since_sign_up,
-    # -retail_orders_explore.weeks_time_since_sign_up,
-    # -retail_orders_explore.days_time_since_sign_up,
-    # -retail_orders_explore.hours_time_since_sign_up,
-    # -retail_orders_explore.minutes_time_since_sign_up,
-    # -retail_orders_explore.seconds_time_since_sign_up,
-    # -retail_orders_explore.years_time_between_sign_up_month_and_now,
-    # -retail_orders_explore.quarters_time_between_sign_up_month_and_now,
-    # -retail_orders_explore.months_time_between_sign_up_month_and_now,
+    order_orderline.country_iso,
+    order_orderline.order_id,
+    order_orderline.sum_item_price_net,
+    order_orderline.sum_item_quantity,
+    order_orderline.ctn_skus,
+    order_orderline.product_sku,
+    order_orderline.product_name,
 
-    # -retail_orders_explore.weeks_time_between_sign_up_month_and_now,
-    # -retail_orders_explore.days_time_between_sign_up_month_and_now,
-    # -retail_orders_explore.hours_time_between_sign_up_month_and_now,
-    # -retail_orders_explore.minutes_time_between_sign_up_month_and_now,
-    # -retail_orders_explore.years_time_between_sign_up_week_and_now,
+    hubs.city,
+    hubs.country_iso,
+    hubs.country,
+    hubs.hub_code,
+    hubs.hub_code_lowercase,
+    hubs.hub_name,
 
-    # -retail_orders_explore.seconds_time_between_sign_up_month_and_now,
-    # -retail_orders_explore.quarters_time_between_sign_up_week_and_now,
-    # -retail_orders_explore.months_time_between_sign_up_week_and_now,
-    # -retail_orders_explore.weeks_time_between_sign_up_week_and_now,
-    # -retail_orders_explore.days_time_between_sign_up_week_and_now,
-    # -retail_orders_explore.hours_time_between_sign_up_week_and_now,
-    # -retail_orders_explore.minutes_time_between_sign_up_week_and_now,
-    # -retail_orders_explore.seconds_time_between_sign_up_week_and_now,
-    # -retail_orders_explore.years_time_between_hub_launch_and_order,
-    # -retail_orders_explore.quarters_time_between_hub_launch_and_order,
-    # -retail_orders_explore.months_time_between_hub_launch_and_order,
-    # -retail_orders_explore.weeks_time_between_hub_launch_and_order,
+    parent_category.name,
+    product_category.name,
+    product_product.name,
 
-    # -retail_orders_explore.days_time_between_hub_launch_and_order,
-    # -retail_orders_explore.hours_time_between_hub_launch_and_order,
-    # -retail_orders_explore.minutes_time_between_hub_launch_and_order,
-    # -retail_orders_explore.seconds_time_between_hub_launch_and_order,
-    # -retail_orders_explore.customer_type,
-    # -retail_orders_explore.KPI,
-    # -retail_orders_explore.reaction_time,
-    # -retail_orders_explore.acceptance_time,
-    # -retail_orders_explore.time_diff_between_two_subsequent_fulfillments,
+    retail_kpis_hubs_and_rev_on_sku_date_level.export_fields*,
 
-    # -retail_orders_explore.avg_picking_time,
-    # -retail_orders_explore.avg_acceptance_time,
-    # -retail_orders_explore.hub_location,
+    retail_kpis_hubs_and_rev_on_sku_date_level.created_date,
+    retail_kpis_hubs_and_rev_on_sku_date_level.product_sku,
 
-    # -retail_orders_explore.cnt_unique_orders_existing_customers,
-    # -retail_orders_explore.cnt_unique_orders_new_customers,
-    # -retail_orders_explore.avg_reaction_time,
-
-    # -retail_orders_explore.delivery_distance_m,
-    # -retail_orders_explore.delivery_distance_km
+    retail_kpis_equalized_revenue._measures*,
+    retail_kpis_rev_per_subcat._measures*,
+    retail_kpis_rev_per_total._measures*,
+    daily_historical_stock_levels._measures*
+    # retail_kpis_order_metrics._metrics*,
+    # retail_kpis_order_metrics.order_id
 
   ]
+
+  # fields: [
+  #   ALL_FIELDS*,
+  #   -retail_orders_explore.exclude_dims_as_that_cross_reference*
+
+
+  #   # -retail_orders_explore.years_time_since_sign_up,
+  #   # -retail_orders_explore.quarters_time_since_sign_up,
+  #   # -retail_orders_explore.months_time_since_sign_up,
+  #   # -retail_orders_explore.weeks_time_since_sign_up,
+  #   # -retail_orders_explore.days_time_since_sign_up,
+  #   # -retail_orders_explore.hours_time_since_sign_up,
+  #   # -retail_orders_explore.minutes_time_since_sign_up,
+  #   # -retail_orders_explore.seconds_time_since_sign_up,
+  #   # -retail_orders_explore.years_time_between_sign_up_month_and_now,
+  #   # -retail_orders_explore.quarters_time_between_sign_up_month_and_now,
+  #   # -retail_orders_explore.months_time_between_sign_up_month_and_now,
+
+  #   # -retail_orders_explore.weeks_time_between_sign_up_month_and_now,
+  #   # -retail_orders_explore.days_time_between_sign_up_month_and_now,
+  #   # -retail_orders_explore.hours_time_between_sign_up_month_and_now,
+  #   # -retail_orders_explore.minutes_time_between_sign_up_month_and_now,
+  #   # -retail_orders_explore.years_time_between_sign_up_week_and_now,
+
+  #   # -retail_orders_explore.seconds_time_between_sign_up_month_and_now,
+  #   # -retail_orders_explore.quarters_time_between_sign_up_week_and_now,
+  #   # -retail_orders_explore.months_time_between_sign_up_week_and_now,
+  #   # -retail_orders_explore.weeks_time_between_sign_up_week_and_now,
+  #   # -retail_orders_explore.days_time_between_sign_up_week_and_now,
+  #   # -retail_orders_explore.hours_time_between_sign_up_week_and_now,
+  #   # -retail_orders_explore.minutes_time_between_sign_up_week_and_now,
+  #   # -retail_orders_explore.seconds_time_between_sign_up_week_and_now,
+  #   # -retail_orders_explore.years_time_between_hub_launch_and_order,
+  #   # -retail_orders_explore.quarters_time_between_hub_launch_and_order,
+  #   # -retail_orders_explore.months_time_between_hub_launch_and_order,
+  #   # -retail_orders_explore.weeks_time_between_hub_launch_and_order,
+
+  #   # -retail_orders_explore.days_time_between_hub_launch_and_order,
+  #   # -retail_orders_explore.hours_time_between_hub_launch_and_order,
+  #   # -retail_orders_explore.minutes_time_between_hub_launch_and_order,
+  #   # -retail_orders_explore.seconds_time_between_hub_launch_and_order,
+  #   # -retail_orders_explore.customer_type,
+  #   # -retail_orders_explore.KPI,
+  #   # -retail_orders_explore.reaction_time,
+  #   # -retail_orders_explore.acceptance_time,
+  #   # -retail_orders_explore.time_diff_between_two_subsequent_fulfillments,
+
+  #   # -retail_orders_explore.avg_picking_time,
+  #   # -retail_orders_explore.avg_acceptance_time,
+  #   # -retail_orders_explore.hub_location,
+
+  #   # -retail_orders_explore.cnt_unique_orders_existing_customers,
+  #   # -retail_orders_explore.cnt_unique_orders_new_customers,
+  #   # -retail_orders_explore.avg_reaction_time,
+
+  #   # -retail_orders_explore.delivery_distance_m,
+  #   # -retail_orders_explore.delivery_distance_km
+
+  # ]
 
 
   # access_filter: {
@@ -213,6 +254,7 @@ explore: retail_orders_explore {
     sql_on:  ${retail_kpis_hubs_and_rev_on_sku_date_level.product_sku}  = ${retail_kpis_equalized_revenue.product_sku}  and
              ${retail_kpis_hubs_and_rev_on_sku_date_level.created_date} = ${retail_kpis_equalized_revenue.created_date}
     ;;
+
   }
 
   join: retail_kpis_rev_per_subcat {
@@ -221,6 +263,7 @@ explore: retail_orders_explore {
     relationship: many_to_one
     sql_on:   ${retail_kpis_rev_per_subcat.created_date} = ${retail_orders_explore.created_date} and
               ${retail_kpis_rev_per_subcat.sub_category_name} = ${product_category.name};;
+
   }
 
   join: retail_kpis_rev_per_total {
@@ -228,6 +271,7 @@ explore: retail_orders_explore {
     type: left_outer
     relationship: many_to_one
     sql_on:   ${retail_kpis_rev_per_total.created_date} = ${retail_orders_explore.created_date} ;;
+
   }
 
   join: daily_historical_stock_levels {
@@ -238,7 +282,14 @@ explore: retail_orders_explore {
             ${daily_historical_stock_levels.sku}      = ${order_orderline.product_sku} and
             ${daily_historical_stock_levels.tracking_date} = ${retail_orders_explore.created_date}
     ;;
+
   }
+  # join: retail_kpis_order_metrics {
+  #   view_label: "Basket Information"
+  #   type: left_outer
+  #   relationship: many_to_one
+  #   sql: ${order_orderline.order_id} = ${retail_kpis_order_metrics.order_id} ;;
+  # }
 
   # join: retail_kpis_per_dims {
   #   view_label: "TESt"

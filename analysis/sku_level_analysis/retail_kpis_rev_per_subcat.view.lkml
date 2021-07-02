@@ -45,21 +45,21 @@ view: retail_kpis_rev_per_subcat {
   #   value_format_name: eur
   #   type: sum
   # }
-  measure: equalized_revenue_m {
+  measure: equalized_revenue {
     label: "per Subcategory: Equalized Revenue"
     group_label: "Measures per Subcategory"
     value_format_name: eur
     type: sum
     sql: ${TABLE}.equalized_revenue ;;
   }
-  measure: equalized_revenue_current_m {
+  measure: equalized_revenue_current {
     label: "per Subcategory: Equalized Revenue Current"
     group_label: "Measures per Subcategory"
     value_format_name: eur
     type: sum
     sql: ${TABLE}.equalized_revenue_current ;;
   }
-  measure: equalized_revenue_previous_m {
+  measure: equalized_revenue_previous {
     label: "per Subcategory: Equalized Revenue Previous"
     group_label: "Measures per Subcategory"
     value_format_name: eur
@@ -67,21 +67,21 @@ view: retail_kpis_rev_per_subcat {
     sql: ${TABLE}.equalized_revenue_previous ;;
   }
 
-  dimension: equalized_revenue {
+  dimension: equalized_revenue_d {
     label: "per Subcategory: Equalized Revenue"
     group_label: "Measures per Subcategory"
     value_format_name: eur
     type: number
     sql: ${TABLE}.equalized_revenue ;;
   }
-  dimension: equalized_revenue_current {
+  dimension: equalized_revenue_current_d {
     label: "per Subcategory: Equalized Revenue Current"
     group_label: "Measures per Subcategory"
     value_format_name: eur
     type: number
     sql: ${TABLE}.equalized_revenue_current ;;
   }
-  dimension: equalized_revenue_previous {
+  dimension: equalized_revenue_previous_d {
     label: "per Subcategory: Equalized Revenue Previous"
     group_label: "Measures per Subcategory"
     value_format_name: eur
@@ -105,7 +105,7 @@ view: retail_kpis_rev_per_subcat {
   set: _measures {
     fields: [
       # sum_item_price_net, sum_item_price_net_current, sum_item_price_net_previous,
-      equalized_revenue, equalized_revenue_current, equalized_revenue_previous]
+      equalized_revenue, equalized_revenue_current, equalized_revenue_previous, equalized_revenue_current_d, equalized_revenue_d, equalized_revenue_previous_d]
   }
 
 

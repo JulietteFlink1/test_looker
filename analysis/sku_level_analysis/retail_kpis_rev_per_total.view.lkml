@@ -97,7 +97,7 @@ view: retail_kpis_rev_per_total {
   set: _measures {
     fields: [
       # sum_item_price_net, sum_item_price_net_current, sum_item_price_net_previous,
-      equalized_revenue, equalized_revenue_current, equalized_revenue_previous]
+      equalized_revenue, equalized_revenue_current, equalized_revenue_previous, equalized_revenue_current_d, equalized_revenue_d, equalized_revenue_previous_d]
   }
 
 }

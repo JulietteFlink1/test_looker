@@ -45,7 +45,7 @@ view: retail_kpis_hubs_and_rev_on_sku_date_level {
 
   dimension: is_previous_cohort {
     type: yesno
-    sql: ${created_date} >= date_add(current_date(), interval -14 day) and ${created_date} < date_add(current_date(), interval -7 day) ;;
+    sql: ${created_date} >= date_add(current_date(), interval -7*6 day) and ${created_date} < date_add(current_date(), interval -7*5 day) ;;
   }
 
 
