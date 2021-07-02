@@ -260,6 +260,21 @@ view: checkout_sessions {
     filters: [payment_failed: "NOT NULL", order_placed: "NULL"]
   }
 
+  measure: cnt_unique_anonymousid {
+    label: "Cnt Unique Users With Sessions"
+    description: "Number of Unique Users identified via Anonymous ID from Segment that had a session"
+    hidden:  no
+    type: count_distinct
+    sql: ${anonymous_id};;
+    value_format_name: decimal_0
+  }
+
+
+  dimension: full_app_version {
+    type: string
+    sql: ${context_device_type} || '-' || ${context_app_version} ;;
+  }
+
   ### standard measures
 
   measure: count {
