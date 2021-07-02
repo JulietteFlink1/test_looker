@@ -29,9 +29,9 @@ view: retail_kpis_rev_per_total {
     type: date
   }
 
-  dimension: sub_category_name {
-    label: "* Sub Category Data * Category Name"
-  }
+  # dimension: sub_category_name {
+  #   label: "* Sub Category Data * Category Name"
+  # }
 
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
