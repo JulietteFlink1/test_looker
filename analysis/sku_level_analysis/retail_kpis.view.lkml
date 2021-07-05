@@ -223,7 +223,8 @@ view: retail_kpis {
              sum(open_hours_total)    as open_hours_total,
              sum(hours_oos)           as hours_oos,
              sum(sum_count_purchased) as sum_count_purchased,
-             sum(sum_count_restocked) as sum_count_restocked
+             sum(sum_count_restocked) as sum_count_restocked,
+             avg(avg_stock_count)     as avg_stock_count
               from flink-data-dev.sandbox.daily_historical_stock_levels as stocks
               left join flink-backend.gsheet_store_metadata.hubs as hubs
                      on lower(hubs.hub_code) = stocks.hub_code
@@ -447,6 +448,20 @@ view: retail_kpis {
     #
     # --> as this KPI averages also over sundays and non-working-days, this metric should be an appropriate approximation
     sql: ${avg_equalized_revenue_last_14d_per_day} * 7 ;;
+  }
+
+  measure: avg_stock_count {
+    group_label: "Measure - Complete Timeframe (last 90 days)"
+    type: average
+    value_format_name: decimal_1
+    sql: ${TABLE}.avg_stock_count ;;
+  }
+  measure: avg_stock_count_current {
+    group_label: "Measure - Current Period (last 7 complete days)"
+    type: average
+    value_format_name: decimal_1
+    sql: ${TABLE}.avg_stock_count ;;
+    filters: [cohorts: "current"]
   }
 
 
