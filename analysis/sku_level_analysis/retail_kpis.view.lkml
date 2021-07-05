@@ -319,11 +319,13 @@ view: retail_kpis {
   }
 
   dimension: category_name {
+    label: "Parent Category Name"
     type: string
     sql: ${TABLE}.category_name ;;
   }
 
   dimension: sub_category_name {
+    label: "Sub-Category Name"
     type: string
     sql: ${TABLE}.sub_category_name ;;
   }
@@ -360,16 +362,22 @@ view: retail_kpis {
   # ~~~~~~~~~~~~~~~     Measures         ~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   measure: sum_item_price_net {
+    label: "Sum Item Price (Net)"
+    description: "Sum of sold items multiplied by their prices (excl. VAT)"
     group_label: "Measure - Complete Timeframe (last 90 days)"
     type: sum
     value_format_name: eur
   }
   measure: sum_item_price_net_current {
+    label: "Sum Item Price (Net - Current Period)"
+    description: "Sum of sold items multiplied by their prices (excl. VAT)"
     group_label: "Measure - Current Period (last 7 complete days)"
     type: sum
     value_format_name: eur
   }
   measure: sum_item_price_net_previous {
+    label: "Sum Item Price (Net - Previous Period)"
+    description: "Sum of sold items multiplied by their prices (excl. VAT)"
     group_label: "Measure - Previous Period (6 weeks ago for 7 days)"
     type: sum
     value_format_name: eur
@@ -395,48 +403,66 @@ view: retail_kpis {
   }
   # -----------------------------------------------------------
   measure: equalized_revenue {
+    label: "Equalized Revenue"
+    description: "The Sum Item Price Net divided by the number of hubs, the product was sold"
     group_label: "Measure - Complete Timeframe (last 90 days)"
     type: sum
     value_format_name: eur
   }
   measure: equalized_revenue_current {
+    label: "Equalized Revenue (Current Period)"
+    description: "The Sum Item Price Net divided by the number of hubs, the product was sold"
     group_label: "Measure - Current Period (last 7 complete days)"
     type: sum
     value_format_name: eur
   }
   measure: equalized_revenue_previous {
+    label: "Equalized Revenue (Previous Period)"
+    description: "The Sum Item Price Net divided by the number of hubs, the product was sold"
     group_label: "Measure - Previous Period (6 weeks ago for 7 days)"
     type: sum
     value_format_name: eur
   }
   # -----------------------------------------------------------
   measure:  open_hours_total {
+    label: "Total Open Hours of Hub"
+    description: "The hours a hub was open on a specific day (will be smmed up across visible dimensions)"
     group_label: "Measure - Complete Timeframe (last 90 days)"
     type: sum
     value_format_name: decimal_0
   }
   measure:  hours_oos {
+    label: "Hours SKU Out-Of-Stock"
+    description: "The hours per day and hub, that a specific product was out-of-stock (will be smmed up across visible dimensions)"
     group_label: "Measure - Complete Timeframe (last 90 days)"
     type: sum
     value_format_name: decimal_0
   }
   measure:  sum_count_purchased {
+    label: "Items Sold"
+    description: "The (estimaed) number of sold goods based on the hourly comparison of the current and previous hour. If the current stock level is less than in the previous hour, we consider this a sale (might also be a book-out)"
     group_label: "Measure - Complete Timeframe (last 90 days)"
     type: sum
     value_format_name: decimal_1
   }
   measure:  sum_count_restocked {
+    label: "Items Restocked"
+    description: "The (estimated) number of re-stocked goods based on the hourly comparison of the current and previous hour. If the current hour has a higher stock than the previous hour, we assume the differnce to be re-stocked"
     group_label: "Measure - Complete Timeframe (last 90 days)"
     type: sum
     value_format_name: decimal_1
   }
   measure: avg_equalized_revenue_last_14d_per_day {
+    label: "AVG Equalized Revenue per day based on last 14 days"
+    description: "The average daily Equalized Revenues within a 14 day window"
     group_label: "Measure - per DAY granularity"
     type: average
     value_format_name: eur
     sql:  ${TABLE}.avg_equalized_revenue_last_14d;;
   }
   measure:avg_equalized_revenue_last_14d_for_7_days  {
+    label: "AVG Equalized Revenue per 7-day window"
+    description: "The *AVG Equalized Revenue per day based on last 14 days* multiplied by 7"
     group_label: "Measure - Current Period (last 7 complete days)"
     type: number
     value_format_name: eur
@@ -451,12 +477,16 @@ view: retail_kpis {
   }
 
   measure: avg_stock_count {
+    label: "AVG Stock Count"
+    description: "The average stock count of a product (averages over days and visible dimensions)"
     group_label: "Measure - Complete Timeframe (last 90 days)"
     type: average
     value_format_name: decimal_1
     sql: ${TABLE}.avg_stock_count ;;
   }
   measure: avg_stock_count_current {
+    label: "AVG Stock Count (Current Period)"
+    description: "The average stock count of a prodcut in the current period (averages over days and visible dimensions)"
     group_label: "Measure - Current Period (last 7 complete days)"
     type: average
     value_format_name: decimal_1
@@ -466,6 +496,8 @@ view: retail_kpis {
 
 
   measure:  open_hours_total_current {
+    label: "Total Open Hours of Hub (Current Period)"
+    description: "The hours a hub was open on a specific day (will be smmed up across visible dimensions)"
     group_label: "Measure - Current Period (last 7 complete days)"
     type: sum
     value_format_name: decimal_0
@@ -473,6 +505,8 @@ view: retail_kpis {
     filters: [cohorts: "current"]
   }
   measure:  hours_oos_current {
+    label: "Hours SKU Out-Of-Stock (Current Period)"
+    description: "The hours per day and hub, that a specific product was out-of-stock (will be smmed up across visible dimensions)"
     group_label: "Measure - Current Period (last 7 complete days)"
     type: sum
     value_format_name: decimal_0
@@ -480,6 +514,8 @@ view: retail_kpis {
     filters: [cohorts: "current"]
   }
   measure:  sum_count_purchased_current {
+    label: "Items Sold (Current Period)"
+    description: "The (estimaed) number of sold goods based on the hourly comparison of the current and previous hour. If the current stock level is less than in the previous hour, we consider this a sale (might also be a book-out)"
     group_label: "Measure - Current Period (last 7 complete days)"
     type: sum
     value_format_name: decimal_1
@@ -487,6 +523,8 @@ view: retail_kpis {
     filters: [cohorts: "current"]
   }
   measure:  sum_count_restocked_current {
+    label: "Items Restocked (Current Period)"
+    description: "The (estimated) number of re-stocked goods based on the hourly comparison of the current and previous hour. If the current hour has a higher stock than the previous hour, we assume the differnce to be re-stocked"
     group_label: "Measure - Current Period (last 7 complete days)"
     type: sum
     value_format_name: decimal_1
@@ -497,21 +535,29 @@ view: retail_kpis {
 
   # ~~~~~~~    Window Calculation    ~~~~~~~
   measure: equalized_revenue_subcategory_current {
+    label: "Equalized Revenue per Sub-Category"
+    description: "The equalized revenue of of a sub-category in the current period"
     group_label: "Measure - Current Period (last 7 complete days)"
     type: max
     value_format_name: eur
   }
   measure: equalized_revenue_subcategory_previous {
+    label: "Equalized Revenue per Sub-Category"
+    description: "The equalized revenue of of a sub-category in the previous period"
     group_label: "Measure - Previous Period (6 weeks ago for 7 days)"
     type: max
     value_format_name: eur
   }
   measure: equalized_revenue_total_current {
+    label: "Equalized Revenue across Business"
+    description: "The equalized revenue across all categories in the current period"
     group_label: "Measure - Current Period (last 7 complete days)"
     type: max
     value_format_name: eur
   }
   measure: equalized_revenue_total_previous {
+    label: "Equalized Revenue across Business"
+    description: "The equalized revenue across all categories in the previous period"
     group_label: "Measure - Previous Period (6 weeks ago for 7 days)"
     type: max
     value_format_name: eur
@@ -521,6 +567,8 @@ view: retail_kpis {
 
   # ~~~~~~~    Order Metrics    ~~~~~~~
   measure: avg_basket_skus {
+    label: "AVG SKUs per Basket"
+    description: "The average number of unique SKUs in a basket, given the SKU was part of the basket"
     group_label: "Measure - Complete Timeframe (last 90 days)"
     type: average
     sql: ${TABLE}.avg_basket_skus ;;
@@ -528,6 +576,8 @@ view: retail_kpis {
   }
 
   measure: avg_basket_items {
+    label: "AVG Items in Basket"
+    description: "The average basket size (count of basket items), given the SKU was part of the basket"
     group_label: "Measure - Complete Timeframe (last 90 days)"
     type: average
     sql: ${TABLE}.avg_basket_items ;;
@@ -535,6 +585,8 @@ view: retail_kpis {
   }
 
   measure: avg_basket_value {
+    label: "AVG Basket Value"
+    description: "The average basket value, given the SKU was part of the basket"
     group_label: "Measure - Complete Timeframe (last 90 days)"
     type: average
     sql: ${TABLE}.avg_basket_value ;;
@@ -545,6 +597,8 @@ view: retail_kpis {
   # ~~~~~~~~~~~~~~~     Percentages         ~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   measure: pct_eq_revenue_share_subcat_current {
+    label: "% Equalized Revenue Share Sub-Category"
+    description: "The sahre of an SKU compared to its Sub-Category based on the Equalized Revenue."
     group_label: "Measure - Current Period (last 7 complete days)"
     type: number
     value_format_name: percent_1
@@ -552,6 +606,8 @@ view: retail_kpis {
   }
 
   measure: pct_overall_business_growth {
+    label: "% Overall Business Growth"
+    description: "% Overall Business Growth based on equalized revenue"
     group_label: "Measure - Current vs. Previous Period"
     type: number
     value_format_name: percent_1
@@ -559,6 +615,8 @@ view: retail_kpis {
   }
 
   measure: pct_sku_growth {
+    label: "% SKU Growth (Current vs. Previous 7d)"
+    description: "The growth of the equalized revenue of an SKU comparing the Current and Previous Period"
     group_label: "Measure - Current vs. Previous Period"
     type: number
     value_format_name: percent_1
@@ -574,6 +632,8 @@ view: retail_kpis {
   }
 
   measure: pct_sku_growth_corrected {
+    label: "% SKU Growth Corrected by Business Growth"
+    description: "The % SKU Growth (Current vs. Previous 7d) minus the % Overall Business Growth"
     group_label: "Measure - Current vs. Previous Period"
     type: number
     value_format_name: percent_1
@@ -591,6 +651,8 @@ view: retail_kpis {
 
 
   measure: pct_out_of_stock_current {
+    label: "% Out Of Stock"
+    description: "The hours out-of-stock of a product (calculated per day, sku and hub - summed up over the displayed dimensions) compared to the total opening hours of a hub on a specific day."
     group_label: "Measure - Current Period (last 7 complete days)"
     type: number
     value_format_name: percent_1
@@ -608,6 +670,8 @@ view: retail_kpis {
   }
 
   measure: missed_revenue {
+    label: "Missed Revenue (oos)"
+    description: "The revenue, FLink would have realized, if the product would not have been out-of-stock. The base of this calulcation is the average equalized revenue of the last 14 days"
     group_label: "Measure - Current Period (last 7 complete days)"
     type: number
     value_format_name: eur
