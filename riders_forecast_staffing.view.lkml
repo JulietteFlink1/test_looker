@@ -626,6 +626,12 @@ order by shiftblocks_hubs.date, shiftblocks_hubs.hub_name, shiftblocks_hubs.bloc
     value_format_name: decimal_1
   }
 
+  dimension: start_time {
+    group_label: " * Dates * "
+    label: "Start time"
+    type: string
+    sql:cast(extract(time from ${TABLE}.block_starts_at AT TIME ZONE "Europe/Berlin") as string) ;;
+  }
 
   ####### Dynamic Measures
 
