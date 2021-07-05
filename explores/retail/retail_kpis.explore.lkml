@@ -195,6 +195,7 @@ explore: retail_orders_explore {
       ${order_orderline.order_id} = ${retail_orders_explore.id} ;;
     relationship: one_to_many
     type: left_outer
+
   }
 
   join: hubs {

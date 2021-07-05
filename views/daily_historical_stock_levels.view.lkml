@@ -198,6 +198,15 @@ view: daily_historical_stock_levels {
     value_format_name: percent_0
   }
 
+  measure: turnover_rate {
+    label: "Product Turnover Rate"
+    description: "Defined as the quantity sold per SKU divided by the Average Inventory over the observed period of time"
+    value_format_name: decimal_2
+    sql: ${skus_fulfilled_per_hub_and_date.sum_item_quantity} / nullif(${daily_historical_stock_levels.avg_stock_count},0) ;;
+    type: number
+
+  }
+
   set: _measures {
     fields: [avg_stock_count, avg_stock_count_per_substitute_group, hours_oos, open_hours_total, sum_count_purchased, sum_count_restocked, pct_oos]
   }
