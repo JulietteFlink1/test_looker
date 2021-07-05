@@ -10,6 +10,7 @@ view: retail_kpis_hubs_and_rev_on_sku_date_level {
       # column: sum_item_price_net              { field: order_orderline.sum_item_price_net }
 
       bind_all_filters: yes
+      timezone: "Europe/Berlin"
 
     }
 
