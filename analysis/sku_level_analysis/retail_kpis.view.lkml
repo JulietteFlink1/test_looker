@@ -595,7 +595,18 @@ view: retail_kpis {
     type: number
     value_format_name: percent_1
     sql: ${hours_oos_current} / nullif(${open_hours_total_current},0) ;;
+    html:
+    {% if value > 0.1 %}
+    <p style="color: #ffffff; background-color: #B03A2E ;font-size: 100%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value > 0.05 %}
+    <p style="color: #AF601A; background-color: #FAD7A0 ; font-size:100%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value > 0 %}
+    <p style="color: #F1C40F; background-color: #FEF9E7 ; font-size:100%; text-align:center">{{ rendered_value }}</p>
+    {% else %}
+    <p style="color: black; font-size:100%; text-align:center">{{ rendered_value }}</p>
+    {% endif %};;
   }
+
   measure: missed_revenue {
     group_label: "Measure - Current Period (last 7 complete days)"
     type: number
