@@ -152,6 +152,8 @@ view: monitoring_metrics {
     sql: ${cnt_paymentstarted}-${cnt_paymentcomplete}-${cnt_paymentfailure} ;;
   }
 
+
+
   measure: checkoutstarted_per_paymentstarted  {
     type: number
     sql: ${monitoring_metrics.cnt_checkoutstarted}/NULLIF(${monitoring_metrics.cnt_paymentstarted},0) ;;
