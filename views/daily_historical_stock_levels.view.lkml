@@ -196,6 +196,16 @@ view: daily_historical_stock_levels {
     type: number
     sql: ${hours_oos} / nullif( ${open_hours_total},0) ;;
     value_format_name: percent_0
+    # html:
+    # {% if value > 0.1 %}
+    # <p style="color: #ffffff; background-color: #B03A2E ;font-size: 100%; text-align:center">{{ rendered_value }}</p>
+    # {% elsif value > 0.05 %}
+    # <p style="color: #AF601A; background-color: #FAD7A0 ; font-size:100%; text-align:center">{{ rendered_value }}</p>
+    # {% elsif value > 0 %}
+    # <p style="color: #F1C40F; background-color: #FEF9E7 ; font-size:100%; text-align:center">{{ rendered_value }}</p>
+    # {% else %}
+    # <p style="color: black; font-size:100%; text-align:center">{{ rendered_value }}</p>
+    # {% endif %};;
   }
 
   measure: turnover_rate {
