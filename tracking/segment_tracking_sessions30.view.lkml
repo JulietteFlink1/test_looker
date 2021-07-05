@@ -29,7 +29,8 @@ view: segment_tracking_sessions30 {
           `flink-backend.flink_ios_production.address_confirmed_view` event
         ON
           tracks.id=event.id
-          AND tracks.event NOT LIKE "%api%"
+        WHERE
+          tracks.event NOT LIKE "%api%"
           AND tracks.event NOT LIKE "%adjust%"
           AND tracks.event NOT LIKE "%install_attributed%"
           AND tracks.context_app_version NOT LIKE "%APP-RATING%"
@@ -63,7 +64,8 @@ view: segment_tracking_sessions30 {
           `flink-backend.flink_android_production.address_confirmed_view` event
         ON
           tracks.id=event.id
-          AND tracks.event NOT LIKE "%api%"
+        WHERE
+          tracks.event NOT LIKE "%api%"
           AND tracks.event NOT LIKE "%adjust%"
           AND tracks.event NOT LIKE "%install_attributed%"
           AND tracks.context_app_version NOT LIKE "%APP-RATING%"
