@@ -61,8 +61,8 @@ view: retail_kpis {
                       on product_category.country_iso = parent_category.country_iso and
                          product_category.parent_id = parent_category.id
         where
-                (order_order.created) >=
-                (timestamp(format_timestamp('%F %H:%M:%E*S', timestamp('2021-01-25 00:00:00')), 'Europe/Berlin'))
+                (order_order.created) >= date_add(current_timestamp, interval -90 day)
+
           and   ((not (order_order.user_email like '%goflink%' or order_order.user_email like '%pickery%' or
                        lower(order_order.user_email) in
                        ('christoph.a.cordes@gmail.com', 'jfdames@gmail.com', 'oliver.merkel@gmail.com',
@@ -127,11 +127,10 @@ view: retail_kpis {
       , sum_item_price_net
     from looker_base
     -- where placeholder LOOKER FILTER
-           WHERE {% condition order_date_filter %} cast(looker_base.order_date as timestamp) {% endcondition %} and
-                 {% condition hub_code_filter %} looker_base.hub_code {% endcondition %} and
-                 {% condition hub_name_filter %} looker_base.hub_name {% endcondition %} and
-                 {% condition city_filter %} looker_base.city {% endcondition %} and
-                 {% condition country_iso_filter %} looker_base.country_iso {% endcondition %}
+      WHERE {% condition hub_code_filter %}    looker_base.hub_code    {% endcondition %}
+        and {% condition hub_name_filter %}    looker_base.hub_name    {% endcondition %}
+        and {% condition city_filter %}        looker_base.city        {% endcondition %}
+        and {% condition country_iso_filter %} looker_base.country_iso {% endcondition %}
 
 )
 
@@ -179,8 +178,10 @@ view: retail_kpis {
   , aggregations as (
     select
         sku
+      , country_iso
       , product_name
       , order_date
+      , cohorts
       -- , date_trunc(order_date, week)                                        as order_week
       , category_name
       , sub_category_name
@@ -201,12 +202,45 @@ view: retail_kpis {
       , avg(net_order_value)                                                as avg_basket_value
     from looker_base_enriched
     group by
-        1, 2, 3, 4, 5
-)
+        1, 2, 3, 4, 5, 6, 7
+),
+    equlalized_revenue_last_14_days as (
+        select
+            sku
+          , country_iso
+          -- to exclude sundays, non-working days, assuming on this aggregation, there are at least some sales
+          , AVG(case when equalized_revenue > 0 then equalized_revenue end  ) as avg_equalized_revenue_last_14d
+        from aggregations
+        where order_date >= date_add(current_date(), interval -14 day)
+        group by sku, country_iso
+
+    ),
+
+    out_of_stock_data as (
+        select stocks.tracking_date,
+       stocks.sku,
+        hubs.country_iso,
+       sum(open_hours_total)    as open_hours_total,
+       sum(hours_oos)           as hours_oos,
+       sum(sum_count_purchased) as sum_count_purchased,
+       sum(sum_count_restocked) as sum_count_restocked
+        from flink-data-dev.sandbox.daily_historical_stock_levels as stocks
+        left join flink-backend.gsheet_store_metadata.hubs as hubs
+               on lower(hubs.hub_code) = stocks.hub_code
+       where stocks.tracking_date >= date_Add(current_date(), Interval -90 day)
+          and {% condition hub_code_filter %}    hubs.hub_code    {% endcondition %}
+          and {% condition hub_name_filter %}    hubs.hub_name    {% endcondition %}
+          and {% condition city_filter %}        hubs.city        {% endcondition %}
+          and {% condition country_iso_filter %} hubs.country_iso {% endcondition %}
+        group by 1,2,3
+    )
+
 select
-    sku
+    aggregations.sku
+  , aggregations.country_iso
   , product_name
   , order_date
+  , cohorts
   -- , order_week
   , category_name
   , sub_category_name
@@ -222,12 +256,24 @@ select
   , avg_basket_skus
   , avg_basket_items
   , avg_basket_value
+  , open_hours_total
+  , hours_oos
+  , sum_count_purchased
+  , sum_count_restocked
+  , equlalized_revenue_last_14_days.avg_equalized_revenue_last_14d
   -- , sum(equalized_revenue) over (partition by sub_category_name) as equalized_revenue_subcategory
-  , sum(equalized_revenue_current) over (partition by sub_category_name) as equalized_revenue_subcategory_current
-  , sum(equalized_revenue_previous) over (partition by sub_category_name) as equalized_revenue_subcategory_previous
-  , sum(equalized_revenue_current) over () as equalized_revenue_total_current
-  , sum(equalized_revenue_previous) over () as equalized_revenue_total_previous
+  , sum(equalized_revenue_current)  over (partition by aggregations.country_iso, sub_category_name) as equalized_revenue_subcategory_current
+  , sum(equalized_revenue_previous) over (partition by aggregations.country_iso, sub_category_name) as equalized_revenue_subcategory_previous
+  , sum(equalized_revenue_current)  over (partition by aggregations.country_iso)                    as equalized_revenue_total_current
+  , sum(equalized_revenue_previous) over (partition by aggregations.country_iso)                    as equalized_revenue_total_previous
 from aggregations
+left join out_of_stock_data
+       on out_of_stock_data.tracking_date = aggregations.order_date and
+          out_of_stock_data.sku           = aggregations.sku and
+          out_of_stock_data.country_iso   = aggregations.country_iso
+left join equlalized_revenue_last_14_days
+       on equlalized_revenue_last_14_days.sku         = aggregations.sku and
+          equlalized_revenue_last_14_days.country_iso = aggregations.country_iso
 order by sku, order_date desc
        ;;
   }
@@ -245,6 +291,16 @@ order by sku, order_date desc
   dimension: product_name {
     type: string
     sql: ${TABLE}.product_name ;;
+  }
+
+  dimension: country_iso {
+    type: string
+    sql: ${TABLE}.country_iso ;;
+  }
+
+  dimension: cohorts {
+    type: string
+    sql: ${TABLE}.cohorts ;;
   }
 
   dimension_group: order {
@@ -274,9 +330,6 @@ order by sku, order_date desc
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     FILTER         ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  filter: order_date_filter {
-    type: date
-  }
 
   filter: hub_code_filter {
     type: string
@@ -284,6 +337,7 @@ order by sku, order_date desc
 
   filter: hub_name_filter {
     type: string
+
   }
 
   filter: city_filter {
@@ -305,62 +359,138 @@ order by sku, order_date desc
   # ~~~~~~~~~~~~~~~     Measures         ~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   measure: sum_item_price_net {
+    group_label: "Measure - Complete Timeframe (last 90 days)"
     type: sum
     value_format_name: eur
   }
   measure: sum_item_price_net_current {
+    group_label: "Measure - Current Period (last 7 complete days)"
     type: sum
     value_format_name: eur
   }
   measure: sum_item_price_net_previous {
+    group_label: "Measure - Previous Period (6 weeks ago for 7 days)"
     type: sum
     value_format_name: eur
   }
   # -----------------------------------------------------------
   measure: distinct_hub_codes {
+    group_label: "Measure - Complete Timeframe (last 90 days)"
     type: max
     value_format_name: decimal_1
     hidden: yes
   }
   measure: distinct_hub_codes_current {
+    group_label: "Measure - Current Period (last 7 complete days)"
     type: max
     value_format_name: decimal_1
     hidden: yes
   }
   measure: distinct_hub_codes_previous {
+    group_label: "Measure - Previous Period (6 weeks ago for 7 days)"
     type: max
     value_format_name: decimal_1
     hidden: yes
   }
   # -----------------------------------------------------------
   measure: equalized_revenue {
+    group_label: "Measure - Complete Timeframe (last 90 days)"
     type: sum
     value_format_name: eur
   }
   measure: equalized_revenue_current {
+    group_label: "Measure - Current Period (last 7 complete days)"
     type: sum
     value_format_name: eur
   }
   measure: equalized_revenue_previous {
+    group_label: "Measure - Previous Period (6 weeks ago for 7 days)"
     type: sum
     value_format_name: eur
+  }
+  # -----------------------------------------------------------
+  measure:  open_hours_total {
+    group_label: "Measure - Complete Timeframe (last 90 days)"
+    type: sum
+    value_format_name: decimal_0
+  }
+  measure:  hours_oos {
+    group_label: "Measure - Complete Timeframe (last 90 days)"
+    type: sum
+    value_format_name: decimal_0
+  }
+  measure:  sum_count_purchased {
+    group_label: "Measure - Complete Timeframe (last 90 days)"
+    type: sum
+  value_format_name: decimal_1
+  }
+  measure:  sum_count_restocked {
+    group_label: "Measure - Complete Timeframe (last 90 days)"
+    type: sum
+    value_format_name: decimal_1
+  }
+  measure: avg_equalized_revenue_last_14d_per_day {
+    group_label: "Measure - per DAY granularity"
+    type: average
+    value_format_name: eur
+    sql:  ${TABLE}.avg_equalized_revenue_last_14d;;
+  }
+  measure:avg_equalized_revenue_last_14d_for_7_days  {
+    group_label: "Measure - Current Period (last 7 complete days)"
+    type: number
+    value_format_name: eur
+    sql: ${avg_equalized_revenue_last_14d_per_day} * 7 ;;
+  }
+
+
+  measure:  open_hours_total_current {
+    group_label: "Measure - Current Period (last 7 complete days)"
+    type: sum
+    value_format_name: decimal_0
+    sql: ${TABLE}.open_hours_total ;;
+    filters: [cohorts: "current"]
+  }
+  measure:  hours_oos_current {
+    group_label: "Measure - Current Period (last 7 complete days)"
+    type: sum
+    value_format_name: decimal_0
+    sql: ${TABLE}.hours_oos ;;
+    filters: [cohorts: "current"]
+  }
+  measure:  sum_count_purchased_current {
+    group_label: "Measure - Current Period (last 7 complete days)"
+    type: sum
+    value_format_name: decimal_1
+    sql: ${TABLE}.sum_count_purchased ;;
+    filters: [cohorts: "current"]
+  }
+  measure:  sum_count_restocked_current {
+    group_label: "Measure - Current Period (last 7 complete days)"
+    type: sum
+    value_format_name: decimal_1
+    sql: ${TABLE}.sum_count_restocked ;;
+    filters: [cohorts: "current"]
   }
 
 
   # ~~~~~~~    Window Calculation    ~~~~~~~
   measure: equalized_revenue_subcategory_current {
+    group_label: "Measure - Current Period (last 7 complete days)"
     type: max
     value_format_name: eur
   }
   measure: equalized_revenue_subcategory_previous {
+    group_label: "Measure - Previous Period (6 weeks ago for 7 days)"
     type: max
     value_format_name: eur
   }
   measure: equalized_revenue_total_current {
+    group_label: "Measure - Current Period (last 7 complete days)"
     type: max
     value_format_name: eur
   }
   measure: equalized_revenue_total_previous {
+    group_label: "Measure - Previous Period (6 weeks ago for 7 days)"
     type: max
     value_format_name: eur
   }
@@ -369,18 +499,21 @@ order by sku, order_date desc
 
   # ~~~~~~~    Order Metrics    ~~~~~~~
   measure: avg_basket_skus {
+    group_label: "Measure - Complete Timeframe (last 90 days)"
     type: average
     sql: ${TABLE}.avg_basket_skus ;;
     value_format_name: decimal_2
   }
 
   measure: avg_basket_items {
+    group_label: "Measure - Complete Timeframe (last 90 days)"
     type: average
     sql: ${TABLE}.avg_basket_items ;;
     value_format_name: decimal_2
   }
 
   measure: avg_basket_value {
+    group_label: "Measure - Complete Timeframe (last 90 days)"
     type: average
     sql: ${TABLE}.avg_basket_value ;;
     value_format_name: eur
@@ -390,18 +523,21 @@ order by sku, order_date desc
   # ~~~~~~~~~~~~~~~     Percentages         ~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   measure: pct_eq_revenue_share_subcat_current {
+    group_label: "Measure - Current Period (last 7 complete days)"
     type: number
     value_format_name: percent_1
     sql:  ${equalized_revenue_current} / nullif(${equalized_revenue_subcategory_current} ,0);;
   }
 
   measure: pct_overall_business_growth {
+    group_label: "Measure - Current vs. Previous Period"
     type: number
     value_format_name: percent_1
     sql: (${equalized_revenue_total_current} - ${equalized_revenue_total_previous}) / nullif(${equalized_revenue_total_previous} ,0) ;;
   }
 
   measure: pct_sku_growth {
+    group_label: "Measure - Current vs. Previous Period"
     type: number
     value_format_name: percent_1
     sql: (${equalized_revenue_current} - ${equalized_revenue_previous}) / nullif(${equalized_revenue_previous} ,0) ;;
@@ -416,6 +552,7 @@ order by sku, order_date desc
   }
 
   measure: pct_sku_growth_corrected {
+    group_label: "Measure - Current vs. Previous Period"
     type: number
     value_format_name: percent_1
     sql: ${pct_sku_growth} - ${pct_overall_business_growth} ;;
@@ -429,6 +566,21 @@ order by sku, order_date desc
       <p style="color: black; font-size:100%; text-align:center">{{ rendered_value }}</p>
       {% endif %};;
   }
+
+
+  measure: pct_out_of_stock_current {
+    group_label: "Measure - Current Period (last 7 complete days)"
+    type: number
+    value_format_name: percent_1
+    sql: ${hours_oos_current} / nullif(${open_hours_total_current},0) ;;
+  }
+  measure: missed_revenue {
+    group_label: "Measure - Current Period (last 7 complete days)"
+    type: number
+    value_format_name: eur
+    sql: ${pct_out_of_stock_current} * ${avg_equalized_revenue_last_14d_for_7_days} ;;
+  }
+
 
   set: detail {
     fields: [
