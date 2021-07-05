@@ -33,7 +33,7 @@ view: segment_tracking_sessions30 {
           tracks.event NOT LIKE "%api%"
           AND tracks.event NOT LIKE "%adjust%"
           AND tracks.event NOT LIKE "%install_attributed%"
-          AND tracks.context_app_version NOT LIKE "%APP-RATING%"
+          AND NOT (tracks.context_app_version LIKE "%APP-RATING%" OR tracks.context_app_version LIKE "%DEBUG%")
           AND NOT (tracks.context_app_name = "Flink-Staging" OR tracks.context_app_name="Flink-Debug")
 
         UNION ALL
@@ -68,7 +68,7 @@ view: segment_tracking_sessions30 {
           tracks.event NOT LIKE "%api%"
           AND tracks.event NOT LIKE "%adjust%"
           AND tracks.event NOT LIKE "%install_attributed%"
-          AND tracks.context_app_version NOT LIKE "%APP-RATING%"
+          AND NOT (tracks.context_app_version LIKE "%APP-RATING%" OR tracks.context_app_version LIKE "%DEBUG%")
           AND NOT (tracks.context_app_name = "Flink-Staging" OR tracks.context_app_name="Flink-Debug")
         ),
 
