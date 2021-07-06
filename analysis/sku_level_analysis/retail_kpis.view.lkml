@@ -387,19 +387,19 @@ view: retail_kpis {
     group_label: "Measure - Complete Timeframe (last 90 days)"
     type: max
     value_format_name: decimal_1
-    hidden: yes
+    hidden: no
   }
   measure: distinct_hub_codes_current {
     group_label: "Measure - Current Period (last 7 complete days)"
     type: max
     value_format_name: decimal_1
-    hidden: yes
+    hidden: no
   }
   measure: distinct_hub_codes_previous {
     group_label: "Measure - Previous Period (6 weeks ago for 7 days)"
     type: max
     value_format_name: decimal_1
-    hidden: yes
+    hidden: no
   }
   # -----------------------------------------------------------
   measure: equalized_revenue {
