@@ -127,10 +127,10 @@ view: marketing_performance {
       (
           select 'Facebook Ads' as channel,
           ads.account_id,
-          case when REGEXP_CONTAINS(campaigns.name, '_DE_') or REGEXP_CONTAINS(ad_sets.name, '_DE_') then 'DE'
-              when REGEXP_CONTAINS(campaigns.name, '_FR_') or REGEXP_CONTAINS(ad_sets.name, '_FR_') then 'FR'
-              when REGEXP_CONTAINS(campaigns.name, '_NL_') or REGEXP_CONTAINS(ad_sets.name, '_NL_') then 'NL'
-              else 'DE' end as country,
+          case when REGEXP_CONTAINS(campaigns.name, '-DE-') or REGEXP_CONTAINS(ad_sets.name, '-DE-') or REGEXP_CONTAINS(ads.name, '-DE-') then 'DE'
+          when REGEXP_CONTAINS(campaigns.name, '-FR-') or REGEXP_CONTAINS(ad_sets.name, '-FR-') or REGEXP_CONTAINS(ads.name, '-FR-') then 'FR'
+          when REGEXP_CONTAINS(campaigns.name, '-NL-') or REGEXP_CONTAINS(ad_sets.name, '-NL-') or REGEXP_CONTAINS(ads.name, '-NL-') then 'NL'
+          else 'Other' end as country,
           date(insights.date_start, 'Europe/Berlin') as date,
           sum(spend) as spend
           from `flink-backend.facebook_ads.insights_view` insights
@@ -148,7 +148,7 @@ view: marketing_performance {
           select 'Google Ads' as channel,
           adwords_customer_id as account_id,
           case when adwords_customer_id in ('9060460045', '8613454842', '3713562074') then 'NL'
-              when adwords_customer_id in ('2579239713', '8843684684', '8009692215') then 'FR' else 'DE' end as country,
+              when adwords_customer_id in ('2579239713', '8843684684', '8009692215') then 'FR' else 'Other' end as country,
           date(date_start, 'Europe/Berlin') as date,
           sum(cost) / 1000000 as spend
           from `flink-backend.google_ads.campaign_performance_reports_view`
@@ -160,9 +160,19 @@ view: marketing_performance {
           select *
           from
               (
-                  select channel, date, country, sum(spend) as spend from facebook_costs where account_id in (select account_id from unique_accounts) group by 1, 2, 3
+                  select channel, date, country, sum(spend) as spend
+                  from facebook_costs
+                  where account_id in ('277023943913538',
+                            '429404584773636',
+                            '509478863527409',
+                            '330280555434216',
+                            '820710328555880')
+                            group by 1, 2, 3
                   union all
-                  select channel, date, country, sum(spend) as spend from google_ads_costs where account_id in (select account_id from unique_accounts) group by 1, 2, 3
+                  select channel, date, country, sum(spend) as spend
+                  from google_ads_costs
+                  where account_id in (select account_id from unique_accounts)
+                  group by 1, 2, 3
               )
       )
 
