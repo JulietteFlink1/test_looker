@@ -32,8 +32,8 @@ view: riders_forecast_staffing {
             when lower(locations_positions.position_name) like '%rider%'  then 'rider'
             when lower(locations_positions.position_name) like '%picker%' then 'picker'
         end                                      as position
-    from flink-data-dev.shyftplan_v1.shifts                   as shifts
-    left join flink-data-dev.shyftplan_v1.locations_positions as locations_positions
+    from flink-data-staging.shyftplan_v1.shifts                   as shifts
+    left join flink-data-staging.shyftplan_v1.locations_positions as locations_positions
               on shifts.locations_position_id = locations_positions.id
     where lower(locations_positions.position_name) like '%rider%'
        or lower(locations_positions.position_name) like '%picker%'
@@ -109,8 +109,8 @@ view: riders_forecast_staffing {
                     when lower(position.name) like '%picker%' then 'picker'
                 end                                       as position
               , count(distinct evaluations.id)            as cnt_employees
-            from flink-data-dev.shyftplan_v1.evaluations              as evaluations
-            left join flink-data-dev.shyftplan_v1.locations_positions as locations_positions
+            from flink-data-staging.shyftplan_v1.evaluations              as evaluations
+            left join flink-data-staging.shyftplan_v1.locations_positions as locations_positions
                       on evaluations.locations_position_id = locations_positions.id
             where (lower(position.name) like '%rider%' or lower(position.name) like '%picker%')
             group by 1, 2, 3, 4, 5, 6
