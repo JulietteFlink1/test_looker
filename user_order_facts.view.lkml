@@ -313,6 +313,13 @@ view: user_order_facts {
     sql_end: CURRENT_TIMESTAMP() ;;
     }
 
+  dimension_group: duration_between_first_order_month_and_now {
+    type: duration
+    sql_start: DATE_TRUNC(${first_order_raw}, MONTH);;
+    sql_end: CURRENT_TIMESTAMP();;
+    intervals: [month]
+  }
+
   ##### Lifetime Behavior - Order Counts ######
 
   dimension: lifetime_orders {
