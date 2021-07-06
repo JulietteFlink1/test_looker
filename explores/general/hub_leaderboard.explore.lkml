@@ -123,12 +123,6 @@ explore: hub_leaderboard_raw_order_order {
       ${hub_leaderboard_raw_order_order.warehouse_name} = ${hubs.hub_code_lowercase} ;;
     relationship: one_to_one
     type: left_outer
-    # fields: [
-    #   hubs.hub_code_lowercase,
-    #   hubs.hub_name,
-    #   hubs.city,
-    #   hubs.country
-    # ]
   }
 
   join: hub_leaderboard_shift_metrics {
@@ -137,18 +131,6 @@ explore: hub_leaderboard_raw_order_order {
       ${hub_leaderboard_raw_order_order.created_date}   = ${hub_leaderboard_shift_metrics.date};;
     relationship: many_to_one
     type: left_outer
-    # fields: [
-    #   hub_leaderboard_shift_metrics.sum_filled_ext_picker_hours,
-    #   hub_leaderboard_shift_metrics.sum_filled_ext_rider_hours,
-    #   hub_leaderboard_shift_metrics.sum_filled_picker_hours,
-    #   hub_leaderboard_shift_metrics.sum_filled_rider_hours,
-    #   hub_leaderboard_shift_metrics.sum_filled_no_show_picker_hours,
-    #   hub_leaderboard_shift_metrics.sum_filled_no_show_rider_hours,
-    #   hub_leaderboard_shift_metrics.sum_planned_picker_hours,
-    #   hub_leaderboard_shift_metrics.sum_planned_rider_hours,
-    #   hub_leaderboard_shift_metrics.sum_unfilled_picker_hours,
-    #   hub_leaderboard_shift_metrics.sum_unfilled_rider_hours
-    # ]
   }
 
 
@@ -158,13 +140,6 @@ explore: hub_leaderboard_raw_order_order {
       ${hub_leaderboard_raw_order_order.id} = ${nps_after_order.order_id} ;;
     relationship: one_to_many
     type: left_outer
-    # fields: [
-    #   nps_after_order.cnt_responses,
-    #   nps_after_order.cnt_detractors,
-    #   nps_after_order.cnt_passives,
-    #   nps_after_order.cnt_promoters,
-    #   nps_after_order.score
-    # ]
   }
 
   join: shyftplan_riders_pickers_hours {
@@ -173,12 +148,6 @@ explore: hub_leaderboard_raw_order_order {
       ${hubs.hub_code} = ${shyftplan_riders_pickers_hours.hub_name};;
     relationship: many_to_one
     type: left_outer
-    # fields: [
-    #   shyftplan_riders_pickers_hours.rider_hours,
-    #   shyftplan_riders_pickers_hours.picker_hours,
-    #   shyftplan_riders_pickers_hours.adjusted_orders_riders,
-    #   shyftplan_riders_pickers_hours.adjusted_orders_pickers
-    # ]
   }
 
   join: issue_rate_hub_level {
@@ -187,10 +156,6 @@ explore: hub_leaderboard_raw_order_order {
       ${hub_leaderboard_raw_order_order.date}        =  ${issue_rate_hub_level.date};;
     relationship: many_to_one # decided against one_to_many: on this level, many orders have hub-level issue-aggregates
     type: left_outer
-    # fields: [
-    #   issue_rate_hub_level.sum_orders_total,
-    #   issue_rate_hub_level.sum_orders_with_issues
-    # ]
   }
 
   join: hub_leaderboard {
@@ -220,8 +185,3 @@ explore: hub_leaderboard_raw_order_order {
 explore: hub_leaderboard {
   hidden: yes
 }
-
-
-
-
-# hub_code_lowercase
