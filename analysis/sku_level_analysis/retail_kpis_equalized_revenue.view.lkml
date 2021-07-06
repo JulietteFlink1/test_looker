@@ -16,6 +16,7 @@ view: retail_kpis_equalized_revenue {
 
 
       bind_all_filters: yes
+      timezone: "Europe/Berlin"
     }
   }
 

@@ -228,6 +228,7 @@ order by shiftblocks_hubs.date, shiftblocks_hubs.hub_name, shiftblocks_hubs.bloc
     sql: ${TABLE}.block_starts_at ;;
   }
 
+
   dimension_group: block_ends_at {
     group_label: " * Dates * "
     type: time
@@ -608,6 +609,28 @@ order by shiftblocks_hubs.date, shiftblocks_hubs.hub_name, shiftblocks_hubs.bloc
     label: "# Forecasted Picker Hours"
     type: sum
     sql: ${forecasted_picker_hours} ;;
+  }
+
+  measure: squared_error {
+    type: sum
+    sql: pow(${predicted_orders} - ${orders}, 2) ;;
+  }
+
+  measure: count_values {
+    type: count
+  }
+
+  measure: root_mean_squared_error {
+    type: number
+    sql: sqrt(${squared_error}  / NULLIF(${count_values}, 0)) ;;
+    value_format_name: decimal_1
+  }
+
+  dimension: start_time {
+    group_label: " * Dates * "
+    label: "Start time"
+    type: string
+    sql:cast(extract(time from ${TABLE}.block_starts_at AT TIME ZONE "Europe/Berlin") as string) ;;
   }
 
   ####### Dynamic Measures

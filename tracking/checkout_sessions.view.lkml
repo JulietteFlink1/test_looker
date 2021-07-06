@@ -269,6 +269,28 @@ view: checkout_sessions {
     value_format_name: decimal_0
   }
 
+  measure: paymentfailed_per_paymentstarted_perc{
+    type: number
+    sql: ${checkout_sessions.cnt_payment_failed}/NULLIF(${checkout_sessions.cnt_payment_started},0) ;;
+    value_format_name: percent_1
+    drill_fields: [session_start_at_date, paymentfailed_per_paymentstarted_perc]
+    link: {
+      label: "Payment Failures Per Session Times Series"
+      url: "/looks/688"
+    }
+  }
+
+  measure: paymentfailed_noorder_per_paymentstarted_perc{
+    type: number
+    sql: ${checkout_sessions.cnt_payment_failed_no_order}/NULLIF(${checkout_sessions.cnt_payment_started},0) ;;
+    value_format_name: percent_1
+    drill_fields: [session_start_at_date, paymentfailed_noorder_per_paymentstarted_perc]
+    link: {
+      label: "Payment Failures Resulting In No Order Per Session Times Series"
+      url: "/looks/688"
+    }
+  }
+
 
   dimension: full_app_version {
     type: string
