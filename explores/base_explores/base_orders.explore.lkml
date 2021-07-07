@@ -6,7 +6,7 @@ explore: base_orders {
   from: order_order
   extension: required # can not be used un-extended!
   view_name: base_orders # needs to be set in order that the base_explore can be extended and referenced properly
-  hidden: yes
+  # hidden: yes
 
   always_filter: {
     filters:  [
