@@ -6,10 +6,6 @@ explore: base_order_orderline {
   extends: [base_orders]
   # view_name: base_order_orderline
   extension: required
-  fields: [
-    ALL_FIELDS*,
-    -base_orders.exclude_dims_as_that_cross_reference*
-  ]
 
   join: order_orderline {
     sql_on: ${order_orderline.country_iso} = ${base_orders.country_iso} AND

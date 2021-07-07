@@ -3,7 +3,7 @@ include: "/**/*.view"
 include: "/**/*.explore"
 
 explore: base_orders {
-  from: order_order
+  from: order_base
   extension: required # can not be used un-extended!
   view_name: base_orders # needs to be set in order that the base_explore can be extended and referenced properly
   # hidden: yes
@@ -26,11 +26,6 @@ explore: base_orders {
     field: hubs.city
     user_attribute: city
   }
-
-  fields: [
-    ALL_FIELDS*,
-    -base_orders.exclude_dims_as_that_cross_reference*
-  ]
 
   join: hubs {
     view_label: "* Hubs *"
