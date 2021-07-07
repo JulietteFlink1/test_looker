@@ -661,7 +661,7 @@ view: order_order {
       dimension: is_voucher_order {
         group_label: "* Order Status / Type *"
         type: yesno
-        sql: ${voucher_id} IS NOT NULL ;;
+        sql: ${discount_amount} > 0 ;;
       }
       dimension: is_successful_order {
         group_label: "* Order Status / Type *"
