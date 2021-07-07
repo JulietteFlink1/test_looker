@@ -6,7 +6,7 @@ view: events_orders_monitoring {
                  t.id,
                  t.anonymous_id,
                  t.event,
-                 LOWER(t.context_os_name) AS os,
+                 LOWER(t.context_device_type) AS os,
                  t.context_os_version AS os_version,
                  t.context_app_version AS app_version,
                  t.timestamp,
@@ -26,7 +26,7 @@ view: events_orders_monitoring {
                  t.id,
                  t.anonymous_id,
                  t.event,
-                 LOWER(t.context_os_name) AS os,
+                 LOWER(t.context_device_type) AS os,
                  t.context_os_version AS os_version,
                  t.context_app_version AS app_version,
                  t.timestamp,
@@ -50,7 +50,6 @@ view: events_orders_monitoring {
                  event,
                  order_id,
                  COALESCE(sg.id, CAST(apps.order_number AS INT64)) AS order_number,
-                 CASE WHEN hub_city is null THEN 'backend' ELSE 'client' END AS db_source
           FROM apps
           FULL OUTER JOIN `flink-backend.saleor_db_global.order_order` sg ON sg.id = CAST(apps.order_number AS INT64) AND sg.country_iso = apps.country_iso
           WHERE {% condition event_date %} COALESCE(event_date, DATE(sg.created)) {% endcondition %}
@@ -90,6 +89,7 @@ view: events_orders_monitoring {
     sql:  ${order_id} ;;
   }
 
+# DIMENSIONS
 
   dimension_group: event {
     label: "Event"
@@ -153,6 +153,15 @@ view: events_orders_monitoring {
     sql: ${TABLE}.order_number ;;
   }
 
+  dimension: country_yes_no {
+    type: string
+    sql: CASE
+    WHEN ${TABLE}.iso_country IS NULL THEN 'undefined'
+    ELSE 'defined'
+    END ;;
+  }
+
+
   set: detail {
     fields: [
       event_date,
@@ -164,7 +173,8 @@ view: events_orders_monitoring {
       hub_city,
       event_name,
       order_id,
-      order_number
+      order_number,
+      country_yes_no
     ]
   }
 }
