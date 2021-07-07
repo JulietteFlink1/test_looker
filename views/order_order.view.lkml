@@ -1006,6 +1006,28 @@ view: order_order {
         value_format: "0"
       }
 
+      measure: cnt_unique_customers_with_voucher {
+        group_label: "* Basic Counts (Orders / Customers etc.) *"
+        label: "# Unique Customers (with Voucher)"
+        description: "Count of Unique Customers identified via their Email (only considering orders with a voucher)"
+        hidden:  no
+        type: count_distinct
+        sql: ${user_email};;
+        filters: [discount_amount: ">0"]
+        value_format: "0"
+      }
+
+      measure: cnt_unique_customers_without_voucher {
+        group_label: "* Basic Counts (Orders / Customers etc.) *"
+        label: "# Unique Customers (without Voucher)"
+        description: "Count of Unique Customers identified via their Email (not considering orders with a voucher)"
+        hidden:  no
+        type: count_distinct
+        sql: ${user_email};;
+        filters: [discount_amount: "0 OR null"]
+        value_format: "0"
+      }
+
       measure: cnt_unique_hubs {
         group_label: "* Basic Counts (Orders / Customers etc.) *"
         label: "# Unique Hubs"
@@ -1032,6 +1054,16 @@ view: order_order {
         hidden:  no
         type: count
         filters: [discount_amount: ">0"]
+        value_format: "0"
+      }
+
+      measure: cnt_orders_without_discount {
+        group_label: "* Basic Counts (Orders / Customers etc.) *"
+        label: "# Orders without Discount"
+        description: "Count of successful Orders with no Discount applied"
+        hidden:  no
+        type: count
+        filters: [discount_amount: "0 OR null"]
         value_format: "0"
       }
 
