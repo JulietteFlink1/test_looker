@@ -6,7 +6,7 @@ include: "/**/*.explore"
 # the base explores have set the flag extension:required making them not available unextended
 
 explore: test_base_orders {
-  extends: [base_order_orderline]
+  extends: [base_order_hub_level]
   fields: [
     ALL_FIELDS*,
     -base_orders.exclude_dims_as_that_cross_reference*
