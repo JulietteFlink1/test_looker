@@ -21,6 +21,10 @@ explore: retail_kpis {
   hidden: yes
 }
 
+explore: listed_skus_in_hubs {
+  hidden: yes
+}
+
 
 
 explore: retail_orders_explore {
