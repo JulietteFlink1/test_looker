@@ -494,7 +494,7 @@ view: user_order_facts_clean {
     group_label: "* User Dimensions *"
     type: duration
     sql_start: ${first_order_raw} ;;
-    sql_end: ${order_base.created_raw} ;;
+    sql_end: ${base_orders.created_raw} ;;
   }
 
 ##### helping dimensions for hiding incomplete cohorts #####
@@ -503,7 +503,7 @@ view: user_order_facts_clean {
     hidden: yes
     type: duration
     sql_start: DATE_TRUNC(${first_order_raw}, MONTH) ;;
-    sql_end: ${order_base.now_raw} ;;
+    sql_end: ${base_orders.now_raw} ;;
   }
 
   dimension_group: time_between_sign_up_week_and_now {
@@ -511,7 +511,7 @@ view: user_order_facts_clean {
     hidden: yes
     type: duration
     sql_start: DATE_TRUNC(${first_order_raw}, WEEK) ;;
-    sql_end: ${order_base.now_raw} ;;
+    sql_end: ${base_orders.now_raw} ;;
   }
 
 
@@ -529,13 +529,13 @@ view: user_order_facts_clean {
     group_label: "* Hub Dimensions *"
     type: duration
     sql_start: ${hub_order_facts.first_order_raw} ;;
-    sql_end: ${order_base.created_raw} ;;
+    sql_end: ${base_orders.created_raw} ;;
   }
 
   dimension: customer_type {
     group_label: "* User Dimensions *"
     type: string
-    sql: CASE WHEN ${order_base.created_raw} = ${first_order_raw} THEN 'New Customer' ELSE 'Existing Customer' END ;;
+    sql: CASE WHEN ${base_orders.created_raw} = ${first_order_raw} THEN 'New Customer' ELSE 'Existing Customer' END ;;
   }
 
   measure: cnt_unique_orders_new_customers {
@@ -564,7 +564,7 @@ view: user_order_facts_clean {
     description: "Share of New Customer Acquisitions over Total Orders"
     hidden:  no
     type: number
-    sql: ${cnt_unique_orders_new_customers} / NULLIF(${order_base.cnt_orders}, 0);;
+    sql: ${cnt_unique_orders_new_customers} / NULLIF(${base_orders.cnt_orders}, 0);;
     value_format: "0%"
   }
 
