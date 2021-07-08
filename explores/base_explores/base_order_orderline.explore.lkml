@@ -14,48 +14,12 @@ explore: base_order_orderline {
     type: left_outer
   }
 
-  join: product_productvariant {
-    sql_on: ${order_orderline.country_iso} = ${product_productvariant.country_iso} AND
-            ${order_orderline.product_sku} = ${product_productvariant.sku} ;;
-    relationship: one_to_one
+  join: product_facts {
     type: left_outer
-  }
-
-  join: product_product {
-    sql_on: ${product_productvariant.country_iso} = ${product_product.country_iso} AND
-            ${product_productvariant.product_id}  = ${product_product.id} ;;
-    relationship: one_to_one
-    type: left_outer
-  }
-
-  join: product_attribute_facts {
-    sql_on: ${product_product.country_iso} = ${product_attribute_facts.country_iso} AND
-            ${product_product.id}          = ${product_attribute_facts.id} ;;
-    relationship: one_to_one
-    type: left_outer
-  }
-
-  join: product_category {
-    sql_on: ${product_category.country_iso} = ${product_product.country_iso} AND
-            ${product_category.id}          = ${product_product.category_id} ;;
-    relationship: one_to_one
-    type: left_outer
-  }
-
-  join: product_producttype {
-    sql_on:${product_product.country_iso}     = ${product_producttype.country_iso} AND
-           ${product_product.product_type_id} = ${product_producttype.id} ;;
-    relationship: one_to_one
-    type: left_outer
-  }
-
-  join: parent_category {
-    view_label: "* Product / SKU Parent Category Data *"
-    from: product_category
-    sql_on: ${product_category.country_iso} = ${parent_category.country_iso} AND
-            ${product_category.parent_id}   = ${parent_category.id} ;;
-    relationship: one_to_one
-    type: left_outer
+    relationship: many_to_one
+    sql_on: ${order_orderline.country_iso} = ${product_facts.country_iso}
+       and  ${order_orderline.product_sku} = ${product_facts.sku}
+    ;;
   }
 
 
