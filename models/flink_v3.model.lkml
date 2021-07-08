@@ -875,20 +875,20 @@ explore: gorillas_v1_turfs {
   }
 }
 
-# explore: gorillas_v1_orders{
-#   hidden:  yes
-#   label: "Gorillas Orders"
-#   view_label: "Gorillas Orders"
-#   group_label: "08) Competitor Analysis"
-#   description: "Analysis of competitors."
+explore: gorillas_v1_orders{
+  hidden:  yes
+  label: "Gorillas Orders"
+  view_label: "Gorillas Orders"
+  group_label: "08) Competitor Analysis"
+  description: "Analysis of competitors."
 
-#   join: gorillas_v1_orders_wow {
-#     sql_on: ${gorillas_v1_orders.id} = ${gorillas_v1_orders_wow.id} and ${gorillas_v1_orders_wow.orders_date} = DATE_SUB(${gorillas_v1_orders.orders_date}, Interval 7 day);;
-#     relationship: many_to_one
-#     type: left_outer
-#   }
+  # join: gorillas_v1_orders_wow {
+  #   sql_on: ${gorillas_v1_orders.id} = ${gorillas_v1_orders_wow.id} and ${gorillas_v1_orders_wow.orders_date} = DATE_SUB(${gorillas_v1_orders.orders_date}, Interval 7 day);;
+  #   relationship: many_to_one
+  #   type: left_outer
+  # }
 
-# }
+}
 
 # explore: gorillas_v1_orders_wow{
 #   hidden:  yes

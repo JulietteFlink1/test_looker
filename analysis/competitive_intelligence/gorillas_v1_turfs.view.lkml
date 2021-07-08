@@ -31,6 +31,8 @@ view: gorillas_v1_turfs {
     sql: ${TABLE}.label ;;
   }
 
+
+
   dimension: points {
     hidden: yes
     sql: ${TABLE}.points ;;
@@ -70,6 +72,21 @@ view: gorillas_v1_turfs {
     sql: ${TABLE}.time_scraped ;;
   }
 
+  dimension_group: first_datetime {
+    type: time
+    description: "bq-datetime"
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: ${TABLE}.time_scraped ;;
+  }
+
   dimension: usage_count {
     type: number
     sql: ${TABLE}.usageCount ;;
@@ -87,15 +104,23 @@ view: turfs__points {
     sql: ${TABLE}.empty ;;
   }
 
-  dimension: lat {
-    type: number
-    sql: ${TABLE}.lat ;;
+  dimension: location {
+    type: location
+    sql_latitude:  ${TABLE}.lat;;
+    sql_longitude:  ${TABLE}.lon;;
   }
 
-  dimension: lon {
-    type: number
-    sql: ${TABLE}.lon ;;
-  }
+
+
+  # dimension: lat {
+  #   type: number
+  #   sql: ${TABLE}.lat ;;
+  # }
+
+  # dimension: lon {
+  #   type: number
+  #   sql: ${TABLE}.lon ;;
+  # }
 }
 
 view: turfs__gorillas_hub_ids {
