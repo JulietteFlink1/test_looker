@@ -1,9 +1,6 @@
-view: order_placed_view {
+view: payment_method_added {
   derived_table: {
     sql: SELECT
-        tracks.order_token,
-        tracks.order_id,
-        tracks.order_number,
         tracks.anonymous_id,
         tracks.context_app_build,
         tracks.context_app_version,
@@ -36,28 +33,14 @@ view: order_placed_view {
         tracks.sent_at,
         tracks.timestamp,
         tracks.uuid_ts,
-        tracks.delivery_fee,
-        CAST(tracks.delivery_eta AS INTEGER) AS delivery_eta,
         tracks.delivery_postcode,
         tracks.hub_city,
         tracks.hub_code,
-        tracks.hub_slug,
-        tracks.order_number,
-        tracks.order_id,
-        tracks.order_token,
-        tracks.payment_method,
-        tracks.products,
-        tracks.revenue,
-        tracks.voucher_code,
-        tracks.voucher_value,
-        tracks.currency
+        tracks.payment_method
       FROM
-        `flink-backend.flink_ios_production.order_placed_view` tracks
+        `flink-backend.flink_ios_production.payment_method_added_view` tracks
       UNION ALL
       SELECT
-        tracks.order_token,
-        tracks.order_id,
-        tracks.order_number,
         tracks.anonymous_id,
         tracks.context_app_build,
         tracks.context_app_version,
@@ -90,44 +73,18 @@ view: order_placed_view {
         tracks.sent_at,
         tracks.timestamp,
         tracks.uuid_ts,
-        tracks.delivery_fee,
-        tracks.delivery_eta,
         tracks.delivery_postcode,
         tracks.hub_city,
         tracks.hub_code,
-        NULL AS hub_slug,
-        tracks.order_number,
-        tracks.order_id,
-        tracks.order_token,
-        tracks.payment_method,
-        tracks.products,
-        tracks.revenue,
-        tracks.voucher_code,
-        tracks.voucher_value,
-        tracks.currency
+        tracks.payment_method
       FROM
-        `flink-backend.flink_android_production.order_placed_view` tracks
+        `flink-backend.flink_android_production.payment_method_added_view` tracks
  ;;
   }
 
   measure: count {
     type: count
     drill_fields: [detail*]
-  }
-
-  dimension: order_token {
-    type: string
-    sql: ${TABLE}.order_token ;;
-  }
-
-  dimension: order_id {
-    type: string
-    sql: ${TABLE}.order_id ;;
-  }
-
-  dimension: order_number {
-    type: string
-    sql: ${TABLE}.order_number ;;
   }
 
   dimension: anonymous_id {
@@ -290,16 +247,6 @@ view: order_placed_view {
     sql: ${TABLE}.uuid_ts ;;
   }
 
-  dimension: delivery_fee {
-    type: number
-    sql: ${TABLE}.delivery_fee ;;
-  }
-
-  dimension: delivery_eta {
-    type: number
-    sql: ${TABLE}.delivery_eta ;;
-  }
-
   dimension: delivery_postcode {
     type: string
     sql: ${TABLE}.delivery_postcode ;;
@@ -315,61 +262,13 @@ view: order_placed_view {
     sql: ${TABLE}.hub_code ;;
   }
 
-  dimension: hub_slug {
-    type: string
-    sql: ${TABLE}.hub_slug ;;
-  }
-
-  dimension: order_number_1 {
-    type: string
-    sql: ${TABLE}.order_number_1 ;;
-  }
-
-  dimension: order_id_1 {
-    type: string
-    sql: ${TABLE}.order_id_1 ;;
-  }
-
-  dimension: order_token_1 {
-    type: string
-    sql: ${TABLE}.order_token_1 ;;
-  }
-
   dimension: payment_method {
     type: string
     sql: ${TABLE}.payment_method ;;
   }
 
-  dimension: products {
-    type: string
-    sql: ${TABLE}.products ;;
-  }
-
-  dimension: revenue {
-    type: number
-    sql: ${TABLE}.revenue ;;
-  }
-
-  dimension: voucher_code {
-    type: string
-    sql: ${TABLE}.voucher_code ;;
-  }
-
-  dimension: voucher_value {
-    type: number
-    sql: ${TABLE}.voucher_value ;;
-  }
-
-  dimension: currency {
-    type: string
-    sql: ${TABLE}.currency ;;
-  }
-
   set: detail {
     fields: [
-      order_token,
-      order_id,
-      order_number,
       anonymous_id,
       context_app_build,
       context_app_version,
@@ -402,21 +301,10 @@ view: order_placed_view {
       sent_at_time,
       timestamp_time,
       uuid_ts_time,
-      delivery_fee,
-      delivery_eta,
       delivery_postcode,
       hub_city,
       hub_code,
-      hub_slug,
-      order_number_1,
-      order_id_1,
-      order_token_1,
-      payment_method,
-      products,
-      revenue,
-      voucher_code,
-      voucher_value,
-      currency
+      payment_method
     ]
   }
 }
