@@ -164,7 +164,7 @@ view: marketing_performance {
                   from facebook_costs
                   where account_id in ('277023943913538',
                             '429404584773636',
-                            '509478863527409',
+                            --'509478863527409',
                             '330280555434216',
                             '820710328555880')
                             group by 1, 2, 3
