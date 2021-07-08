@@ -5,11 +5,11 @@ include: "/cleaning/order_fulfillment_facts_clean.view.lkml"
 include: "/explores/base_explores/base_orders.explore"
 
 explore: order_fulfillment {
-  group_label: "01) Performance"
-  label: "Order Fulfillment"
+  #group_label: "01) Performance"
+  #label: "Order Fulfillment"
   description: "This is the clean version of order fulfillment data"
   extends: [base_orders]
-  view_label: "Order Fulfillment Clean"
+  #view_label: "Order Fulfillment Clean"
   # The additional things you want to add or change
   # in the new Explore
   join: order_fulfillment_clean {

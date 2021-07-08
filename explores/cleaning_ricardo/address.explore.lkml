@@ -3,7 +3,7 @@ include: "/views/account_address.view.lkml"
 
 explore: address {
   #group_label: "03) Vouchers"
-  label: "Address"
+  #label: "Address"
   description: "This is the clean version of user address"
   extends: [base_orders]
   #view_label: "Discount Vouchers Clean"

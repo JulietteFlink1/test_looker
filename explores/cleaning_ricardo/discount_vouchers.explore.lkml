@@ -3,11 +3,11 @@ include: "/explores/base_explores/base_orders.explore"
 include: "/views/discount_voucher.view.lkml"
 
 explore: discount_vouchers {
-  group_label: "03) Vouchers"
-  label: "Discount Vouchers"
+  #group_label: "03) Vouchers"
+  #label: "Discount Vouchers"
   description: "This is the clean version of discount vouchers"
   extends: [base_orders]
-  view_label: "Discount Vouchers Clean"
+  #view_label: "Discount Vouchers Clean"
   # The additional things you want to add or change
   # in the new Explore
   join: discount_voucher {
