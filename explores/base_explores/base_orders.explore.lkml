@@ -28,6 +28,7 @@ explore: base_orders {
   }
 
   join: hubs {
+    from: hubs_clean
     view_label: "* Hubs *"
     sql_on: ${base_orders.country_iso}    = ${hubs.country_iso} AND
             ${base_orders.warehouse_name} = ${hubs.hub_code_lowercase} ;;
