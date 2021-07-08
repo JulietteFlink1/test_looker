@@ -1,6 +1,6 @@
 view: order_fulfillment_facts_clean {
   derived_table: {
-    #datagroup_trigger: flink_default_datagroup
+    datagroup_trigger: flink_default_datagroup
     sql: SELECT
         *,
         LEAD(order_fulfillment_created_time) OVER(partition by country_iso, order_order_id order by order_fulfillment_rank) AS leading_order_fulfillment_created_time FROM

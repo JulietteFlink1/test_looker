@@ -1,6 +1,6 @@
 view: user_order_facts_clean {
   derived_table: {
-    #datagroup_trigger: flink_default_datagroup
+    datagroup_trigger: flink_default_datagroup
     sql:
     with users as
     (
