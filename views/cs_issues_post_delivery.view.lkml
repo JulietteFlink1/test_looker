@@ -11,11 +11,6 @@ view: cs_issues_post_delivery {
   }
 
 
-  dimension: comment {
-    type: string
-    sql: ${TABLE}.comment ;;
-  }
-
   dimension: country_iso {
     type: string
     sql: ${TABLE}.country_iso ;;

@@ -42,7 +42,7 @@ view: productsearch_mobile_events {
     event.delivery_lng,
     event.delivery_postcode,
     event.user_area_available,
-    SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(event.hub_code)),':')[
+    SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[
       OFFSET
       (1)] AS hub_id
     FROM
@@ -51,7 +51,8 @@ view: productsearch_mobile_events {
     `flink-backend.flink_android_production.address_confirmed_view` event
     ON
     tracks.id=event.id
-    AND tracks.event NOT LIKE "api%" AND tracks.event NOT LIKE "deep_link%"
+    WHERE
+    tracks.event NOT LIKE "api%" AND tracks.event NOT LIKE "deep_link%"
 
     UNION ALL
 
@@ -94,7 +95,7 @@ view: productsearch_mobile_events {
     event.delivery_lng,
     event.delivery_postcode,
     event.user_area_available,
-    SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(event.hub_code)),':')[
+    SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[
       OFFSET
       (1)] AS hub_id
     FROM
@@ -103,7 +104,8 @@ view: productsearch_mobile_events {
     `flink-backend.flink_ios_production.address_confirmed_view` event
     ON
     tracks.id=event.id
-    AND tracks.event NOT LIKE "api%" AND tracks.event NOT LIKE "deep_link%"
+    WHERE
+    tracks.event NOT LIKE "api%" AND tracks.event NOT LIKE "deep_link%"
     ),
 
     country_lookup AS (

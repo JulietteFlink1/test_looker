@@ -64,7 +64,7 @@ explore: order_order {
   }
 
   #filter Investor user so they can only see completed calendar weeks data and not week to date
-  sql_always_where: CASE WHEN ({{ _user_attributes['id'] }}) = 28 THEN ${order_order.created_week} < ${now_week} ELSE 1=1 END;;
+  #sql_always_where: CASE WHEN ({{ _user_attributes['id'] }}) = 28 THEN ${order_order.created_week} < ${now_week} ELSE 1=1 END;;
 
   join: order_fulfillment {
     sql_on: ${order_fulfillment.country_iso} = ${order_order.country_iso} AND
@@ -244,22 +244,6 @@ explore: order_order {
     sql_on: ${order_order.country_iso} = ${hubs.country_iso} AND
       ${order_order.warehouse_name} = ${hubs.hub_code_lowercase} ;;
     relationship: one_to_one
-    type: left_outer
-  }
-
-  join: hub_leaderboard_shift_metrics {
-    view_label: "* Hubs *"
-    sql_on: ${order_order.warehouse_name} = ${hub_leaderboard_shift_metrics.hub_code_lowercase} and
-      ${order_order.created_date}   = ${hub_leaderboard_shift_metrics.date};;
-    relationship: many_to_one
-    type: left_outer
-  }
-
-  join: hub_leaderboard {
-    view_label: "* Hubs *"
-    sql_on: ${order_order.warehouse_name} = ${hub_leaderboard.hub_code_lowercase} and
-      ${order_order.created_date}   = ${hub_leaderboard.created_date};;
-    relationship: many_to_one
     type: left_outer
   }
 

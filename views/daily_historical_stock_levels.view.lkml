@@ -1,5 +1,5 @@
 view: daily_historical_stock_levels {
-  sql_table_name: `flink-data-dev.sandbox_andreas.daily_historical_stock_levels`
+  sql_table_name: `flink-data-dev.sandbox.daily_historical_stock_levels`
     ;;
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -96,6 +96,12 @@ view: daily_historical_stock_levels {
     sql: if({% parameter show_hub_code %}, ${hub_code}, null) ;;
   }
 
+  set: filter_dims {
+    fields: [show_category ,show_city, show_country, show_hub_code, show_sku, show_sub_category,
+             category_dynamic, city_dynamic, country_dynamic, hub_code_dynamic, sku_name_dynamic, sub_category_dynamic
+      ]
+  }
+
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Dimensions     ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -128,6 +134,13 @@ view: daily_historical_stock_levels {
     convert_tz: no
     datatype: date
     sql: ${TABLE}.tracking_date ;;
+  }
+
+  dimension: primary_key {
+    type: string
+    primary_key: yes
+    hidden: yes
+    sql: concat( ${hub_code}, ${sku}, CAST( ${tracking_date} AS STRING ) ) ;;
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -183,6 +196,29 @@ view: daily_historical_stock_levels {
     type: number
     sql: ${hours_oos} / nullif( ${open_hours_total},0) ;;
     value_format_name: percent_0
+    # html:
+    # {% if value > 0.1 %}
+    # <p style="color: #ffffff; background-color: #B03A2E ;font-size: 100%; text-align:center">{{ rendered_value }}</p>
+    # {% elsif value > 0.05 %}
+    # <p style="color: #AF601A; background-color: #FAD7A0 ; font-size:100%; text-align:center">{{ rendered_value }}</p>
+    # {% elsif value > 0 %}
+    # <p style="color: #F1C40F; background-color: #FEF9E7 ; font-size:100%; text-align:center">{{ rendered_value }}</p>
+    # {% else %}
+    # <p style="color: black; font-size:100%; text-align:center">{{ rendered_value }}</p>
+    # {% endif %};;
+  }
+
+  measure: turnover_rate {
+    label: "Product Turnover Rate"
+    description: "Defined as the quantity sold per SKU divided by the Average Inventory over the observed period of time"
+    value_format_name: decimal_2
+    sql: ${skus_fulfilled_per_hub_and_date.sum_item_quantity} / nullif(${daily_historical_stock_levels.avg_stock_count},0) ;;
+    type: number
+
+  }
+
+  set: _measures {
+    fields: [avg_stock_count, avg_stock_count_per_substitute_group, hours_oos, open_hours_total, sum_count_purchased, sum_count_restocked, pct_oos]
   }
 
 

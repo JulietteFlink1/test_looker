@@ -1,4 +1,4 @@
-view: order_order {
+view: order_base {
   sql_table_name: `flink-backend.saleor_db_global.order_order`
     ;;
   drill_fields: [core_dimensions*]
@@ -10,7 +10,6 @@ view: order_order {
       id,
       warehouse_name,
       created_raw,
-      customer_type,
       gmv_gross,
       discount_amount,
       delivery_eta_timestamp_raw,
@@ -102,47 +101,6 @@ view: order_order {
     sql:SUBSTRING(${created_minute30}, 12, 16);;
   }
 
-  dimension_group: time_since_sign_up {
-    group_label: "* User Dimensions *"
-    type: duration
-    sql_start: ${user_order_facts.first_order_raw} ;;
-    sql_end: ${created_raw} ;;
-  }
-
-##### helping dimensions for hiding incomplete cohorts #####
-  dimension_group: time_between_sign_up_month_and_now {
-    group_label: "* User Dimensions *"
-    hidden: yes
-    type: duration
-    sql_start: DATE_TRUNC(${user_order_facts.first_order_raw}, MONTH) ;;
-    sql_end: ${now_raw} ;;
-  }
-
-  dimension_group: time_between_sign_up_week_and_now {
-    group_label: "* User Dimensions *"
-    hidden: yes
-    type: duration
-    sql_start: DATE_TRUNC(${user_order_facts.first_order_raw}, WEEK) ;;
-    sql_end: ${now_raw} ;;
-  }
-
-
-##### helping dimensions for hiding incomplete cohorts #####
-
-
-  dimension: time_since_sign_up_biweekly {
-    group_label: "* User Dimensions *"
-    type: number
-    sql: floor((${days_time_since_sign_up} / 14)) ;;
-    value_format: "0"
-  }
-
-  dimension_group: time_between_hub_launch_and_order {
-    group_label: "* Hub Dimensions *"
-    type: duration
-    sql_start: ${hub_order_facts.first_order_raw} ;;
-    sql_end: ${created_raw} ;;
-  }
 
   ######## PARAMETERS
 
@@ -176,12 +134,6 @@ view: order_order {
     allowed_value: { value: "AVG_fulfillment_time" label: "AVG Fulfillment Time"}
     allowed_value: { value: "AVG_order_value_gross" label: "AVG Order Value (Gross)"}
     allowed_value: { value: "AVG_order_value_net" label: "AVG Order Value (Net)"}
-    allowed_value: { value: "rider_utr" label: "Rider UTR"}
-    allowed_value: { value: "picker_utr" label: "Picker UTR"}
-    allowed_value: { value: "picker_hours" label: "# Picker Hours"}
-    allowed_value: { value: "rider_hours" label: "# Rider Hours"}
-    allowed_value: { value: "pickers" label: "# Pickers"}
-    allowed_value: { value: "riders" label: "# Riders"}
     default_value: "orders"
   }
 
@@ -212,10 +164,6 @@ view: order_order {
       ${cnt_orders}
     {% elsif KPI_parameter._parameter_value == 'unique_customers' %}
       ${cnt_unique_customers}
-    {% elsif KPI_parameter._parameter_value == 'orders_existing_customers' %}
-      ${cnt_unique_orders_existing_customers}
-    {% elsif KPI_parameter._parameter_value == 'orders_new_customers' %}
-      ${cnt_unique_orders_new_customers}
     {% elsif KPI_parameter._parameter_value == 'share_of_orders_delivered_in_time' %}
       ${pct_delivery_in_time}*100
     {% elsif KPI_parameter._parameter_value == 'share_of_orders_delayed_5min' %}
@@ -224,8 +172,6 @@ view: order_order {
       ${pct_delivery_late_over_10_min}*100
     {% elsif KPI_parameter._parameter_value == 'share_of_orders_delayed_15min' %}
       ${pct_delivery_late_over_15_min}*100
-    --{% elsif KPI_parameter._parameter_value == 'share_of_total_orders' %}
-    --  ${percent_of_total_orders}*100
     {% elsif KPI_parameter._parameter_value == 'gmv_gross' %}
       ${sum_gmv_gross}
     {% elsif KPI_parameter._parameter_value == 'gmv_net' %}
@@ -242,60 +188,40 @@ view: order_order {
       ${avg_order_value_gross}
     {% elsif KPI_parameter._parameter_value == 'AVG_order_value_net' %}
       ${avg_order_value_net}
-    {% elsif KPI_parameter._parameter_value == 'rider_utr' %}
-      ${shyftplan_riders_pickers_hours.rider_utr}
-    {% elsif KPI_parameter._parameter_value == 'picker_utr' %}
-      ${shyftplan_riders_pickers_hours.picker_utr}
-    {% elsif KPI_parameter._parameter_value == 'picker_hours' %}
-      ${shyftplan_riders_pickers_hours.picker_hours}
-    {% elsif KPI_parameter._parameter_value == 'rider_hours' %}
-      ${shyftplan_riders_pickers_hours.rider_hours}
-    {% elsif KPI_parameter._parameter_value == 'pickers' %}
-      ${shyftplan_riders_pickers_hours.pickers}
-    {% elsif KPI_parameter._parameter_value == 'riders' %}
-      ${shyftplan_riders_pickers_hours.riders}
     {% endif %};;
 
-    html:
-    {% if KPI_parameter._parameter_value == 'share_of_orders_delivered_in_time' %}
-      {{ rendered_value | round: 2  | append: "%" }}
-    {% elsif KPI_parameter._parameter_value == 'share_of_orders_delayed_5min' %}
-      {{ rendered_value | round: 2  | append: "%" }}
-    {% elsif KPI_parameter._parameter_value == 'share_of_orders_delayed_10min' %}
-      {{ rendered_value | round: 2  | append: "%" }}
-    {% elsif KPI_parameter._parameter_value == 'share_of_orders_delayed_15min' %}
-      {{ rendered_value | round: 2  | append: "%" }}
-    {% elsif KPI_parameter._parameter_value == 'share_of_total_orders' %}
-      {{ rendered_value | round: 2  | append: "%" }}
-    {% elsif KPI_parameter._parameter_value == 'gmv_gross' %}
-      €{{ value | round }}
-    {% elsif KPI_parameter._parameter_value == 'gmv_net' %}
-      €{{ value | round }}
-    {% elsif KPI_parameter._parameter_value == 'revenue_gross' %}
-      €{{ value | round }}
-    {% elsif KPI_parameter._parameter_value == 'revenue_net' %}
-      €{{ value | round }}
-    {% elsif KPI_parameter._parameter_value == 'discount_amount' %}
-      €{{ value | round }}
-    {% elsif KPI_parameter._parameter_value == 'AVG_fulfillment_time' %}
-      {{ rendered_value }}
-    {% elsif KPI_parameter._parameter_value == 'AVG_order_value_gross' %}
-      €{{ rendered_value }}
-    {% elsif KPI_parameter._parameter_value == 'AVG_order_value_net' %}
-      €{{ rendered_value }}
-    {% elsif KPI_parameter._parameter_value == 'rider_utr' %}
-      {{ rendered_value }}
-    {% elsif KPI_parameter._parameter_value == 'picker_utr' %}
-      {{ rendered_value }}
-    {% elsif KPI_parameter._parameter_value == 'picker_hours' %}
-      {{ value | round }}
-    {% elsif KPI_parameter._parameter_value == 'rider_hours' %}
-      {{ value | round }}
-    {% else %}
-      {{ value }}
-    {% endif %};;
+      html:
+          {% if KPI_parameter._parameter_value == 'share_of_orders_delivered_in_time' %}
+            {{ rendered_value | round: 2  | append: "%" }}
+          {% elsif KPI_parameter._parameter_value == 'share_of_orders_delayed_5min' %}
+            {{ rendered_value | round: 2  | append: "%" }}
+          {% elsif KPI_parameter._parameter_value == 'share_of_orders_delayed_10min' %}
+            {{ rendered_value | round: 2  | append: "%" }}
+          {% elsif KPI_parameter._parameter_value == 'share_of_orders_delayed_15min' %}
+            {{ rendered_value | round: 2  | append: "%" }}
+          {% elsif KPI_parameter._parameter_value == 'share_of_total_orders' %}
+            {{ rendered_value | round: 2  | append: "%" }}
+          {% elsif KPI_parameter._parameter_value == 'gmv_gross' %}
+            €{{ value | round }}
+          {% elsif KPI_parameter._parameter_value == 'gmv_net' %}
+            €{{ value | round }}
+          {% elsif KPI_parameter._parameter_value == 'revenue_gross' %}
+            €{{ value | round }}
+          {% elsif KPI_parameter._parameter_value == 'revenue_net' %}
+            €{{ value | round }}
+          {% elsif KPI_parameter._parameter_value == 'discount_amount' %}
+            €{{ value | round }}
+          {% elsif KPI_parameter._parameter_value == 'AVG_fulfillment_time' %}
+            {{ rendered_value }}
+          {% elsif KPI_parameter._parameter_value == 'AVG_order_value_gross' %}
+            €{{ rendered_value }}
+          {% elsif KPI_parameter._parameter_value == 'AVG_order_value_net' %}
+            €{{ rendered_value }}
+          {% else %}
+            {{ value }}
+          {% endif %};;
 
-  }
+      }
 
       ######## PASS-THROUGH DIMENSIONS
 
@@ -490,48 +416,11 @@ view: order_order {
           END ;;
       }
 
-      dimension: customer_type {
-        group_label: "* User Dimensions *"
-        type: string
-        sql: CASE WHEN ${TABLE}.created = ${user_order_facts.first_order_raw} THEN 'New Customer' ELSE 'Existing Customer' END ;;
-      }
-
       dimension: customer_location {
         group_label: "* User Dimensions *"
         type: location
         sql_latitude: ROUND( CAST( SPLIT((JSON_EXTRACT_SCALAR(${metadata}, '$.deliveryCoordinates')), ',')[ORDINAL(1)] AS FLOAT64), 7);;
         sql_longitude: ROUND( CAST( SPLIT((JSON_EXTRACT_SCALAR(${metadata}, '$.deliveryCoordinates')), ',')[ORDINAL(2)] AS FLOAT64), 7) ;;
-      }
-
-      dimension: hub_location  {
-        group_label: "* Hub Dimensions *"
-        type: location
-        sql_latitude: ${hubs.latitude};;
-        sql_longitude: ${hubs.longitude};;
-      }
-
-      dimension: delivery_distance_m {
-        group_label: "* Operations / Logistics *"
-        type: distance
-        units: meters
-        start_location_field: order_order.hub_location
-        end_location_field: order_order.customer_location
-      }
-
-      dimension: delivery_distance_km {
-        group_label: "* Operations / Logistics *"
-        type: distance
-        units: kilometers
-        start_location_field: order_order.hub_location
-        end_location_field: order_order.customer_location
-      }
-
-      dimension: delivery_distance_tier {
-        group_label: "* Operations / Logistics *"
-        type: tier
-        tiers: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 3.0, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9, 4.0]
-        style: interval
-        sql: ${delivery_distance_km} ;;
       }
 
       dimension: delivery_eta_minutes {
@@ -617,20 +506,6 @@ view: order_order {
         sql: TIMESTAMP_DIFF(TIMESTAMP(JSON_EXTRACT_SCALAR(${metadata}, '$.deliveryTime')), TIMESTAMP(JSON_EXTRACT_SCALAR(${TABLE}.metadata, '$.trackingTimestamp')), SECOND) / 60 ;;
       }
 
-      dimension: reaction_time {
-        group_label: "* Operations / Logistics *"
-        type: number
-        hidden: yes
-        sql: TIMESTAMP_DIFF(${order_fulfillment.created_raw},${created_raw}, SECOND) / 60 ;;
-      }
-
-      dimension: acceptance_time {
-        group_label: "* Operations / Logistics *"
-        type: number
-        hidden: yes
-        sql: TIMESTAMP_DIFF(TIMESTAMP(JSON_EXTRACT_SCALAR(${metadata}, '$.trackingTimestamp')),${order_fulfillment.created_raw}, SECOND) / 60 ;;
-      }
-
       dimension: fulfillment_time {
         group_label: "* Operations / Logistics *"
         type: number
@@ -646,12 +521,6 @@ view: order_order {
         sql: ${fulfillment_time} ;;
       }
 
-      dimension: time_diff_between_two_subsequent_fulfillments {
-        group_label: "* Operations / Logistics *"
-        type: number
-        sql: TIMESTAMP_DIFF(TIMESTAMP(leading_order_fulfillment_created_time), ${order_fulfillment.created_raw}, SECOND) / 60 ;;
-      }
-
       dimension: is_internal_order {
         group_label: "* Order Status / Type *"
         type: yesno
@@ -661,7 +530,7 @@ view: order_order {
       dimension: is_voucher_order {
         group_label: "* Order Status / Type *"
         type: yesno
-        sql: ${discount_amount} > 0 ;;
+        sql: ${voucher_id} IS NOT NULL ;;
       }
       dimension: is_successful_order {
         group_label: "* Order Status / Type *"
@@ -683,34 +552,6 @@ view: order_order {
         sql: ${fulfillment_time} > 30 ;;
       }
 
-      dimension: is_acceptance_less_than_0_minute {
-        hidden: yes
-        group_label: "* Operations / Logistics *"
-        type: yesno
-        sql: ${acceptance_time} < 0 ;;
-      }
-
-      dimension: is_acceptance_more_than_30_minute {
-        hidden: yes
-        group_label: "* Operations / Logistics *"
-        type: yesno
-        sql: ${acceptance_time} > 30 ;;
-      }
-
-      dimension: is_reaction_less_than_0_minute {
-        hidden: yes
-        group_label: "* Operations / Logistics *"
-        type: yesno
-        sql: ${reaction_time} < 0 ;;
-      }
-
-      dimension: is_reaction_more_than_30_minute {
-        hidden: yes
-        group_label: "* Operations / Logistics *"
-        type: yesno
-        sql: ${reaction_time} > 30 ;;
-      }
-
       dimension: is_delivery_less_than_0_minute {
         hidden: yes
         group_label: "* Operations / Logistics *"
@@ -723,20 +564,6 @@ view: order_order {
         group_label: "* Operations / Logistics *"
         type: yesno
         sql: ${delivery_time} > 30 ;;
-      }
-
-      dimension: is_picking_less_than_0_minute {
-        hidden: yes
-        group_label: "* Operations / Logistics *"
-        type: yesno
-        sql: ${time_diff_between_two_subsequent_fulfillments} < 0 ;;
-      }
-
-      dimension: is_picking_more_than_30_minute {
-        hidden: yes
-        group_label: "* Operations / Logistics *"
-        type: yesno
-        sql: ${time_diff_between_two_subsequent_fulfillments} > 30 ;;
       }
 
       dimension: is_delivery_eta_available {
@@ -759,12 +586,6 @@ view: order_order {
               ELSE IF (${created_week} < ${now_week}, TRUE, FALSE)
           END
               ;;
-      }
-
-      dimension: is_delivery_distance_over_10km {
-        group_label: "* Operations / Logistics *"
-        type: yesno
-        sql: IF(${delivery_distance_km} > 10, TRUE, FALSE);;
       }
 
 
@@ -812,39 +633,6 @@ view: order_order {
         sql: ${delivery_time};;
         value_format: "0.0"
         filters: [is_delivery_less_than_0_minute: "no", is_delivery_more_than_30_minute: "no"]
-      }
-
-      measure: avg_reaction_time {
-        group_label: "* Operations / Logistics *"
-        label: "AVG Reaction Time"
-        description: "Average Reaction Time of the Picker considering order placement to first fulfillment created. Outliers excluded (<0min or >30min)"
-        hidden:  no
-        type: average
-        sql:${reaction_time};;
-        value_format: "0.0"
-        filters: [order_fulfillment_facts.is_first_fulfillment: "yes", is_reaction_less_than_0_minute: "no", is_reaction_more_than_30_minute: "no"]
-      }
-
-      measure: avg_picking_time {
-        group_label: "* Operations / Logistics *"
-        label: "AVG Picking Time"
-        description: "Average Picking Time considering first fulfillment to second fulfillment created. Outliers excluded (<0min or >30min)"
-        hidden:  no
-        type: average
-        sql:${time_diff_between_two_subsequent_fulfillments};;
-        value_format: "0.0"
-        filters: [order_fulfillment_facts.is_first_fulfillment: "yes", is_picking_less_than_0_minute: "no", is_picking_more_than_30_minute: "no"]
-      }
-
-      measure: avg_acceptance_time {
-        group_label: "* Operations / Logistics *"
-        label: "AVG Acceptance Time"
-        description: "Average Acceptance Time of the Rider considering second fulfillment created until Tracking Timestamp. Outliers excluded (<0min or >30min)"
-        hidden:  no
-        type: average
-        sql:${acceptance_time};;
-        value_format: "0.0"
-        filters: [order_fulfillment_facts.is_second_fulfillment: "yes", is_acceptance_less_than_0_minute: "no", is_acceptance_more_than_30_minute: "no"]
       }
 
       measure: avg_order_value_gross {
@@ -907,16 +695,6 @@ view: order_order {
         value_format_name: euro_accounting_2_precision
       }
 
-      measure: avg_delivery_distance_km {
-        group_label: "* Operations / Logistics *"
-        label: "AVG Delivery Distance (km)"
-        description: "Average distance between hub and customer dropoff (most direct path / straight line)"
-        hidden:  no
-        type: average
-        sql: ${delivery_distance_km};;
-        value_format: "0.00"
-        filters: [is_delivery_distance_over_10km: "no"]
-      }
 
 ##########
 ## SUMS ##
@@ -1006,28 +784,6 @@ view: order_order {
         value_format: "0"
       }
 
-      measure: cnt_unique_customers_with_voucher {
-        group_label: "* Basic Counts (Orders / Customers etc.) *"
-        label: "# Unique Customers (with Voucher)"
-        description: "Count of Unique Customers identified via their Email (only considering orders with a voucher)"
-        hidden:  no
-        type: count_distinct
-        sql: ${user_email};;
-        filters: [discount_amount: ">0"]
-        value_format: "0"
-      }
-
-      measure: cnt_unique_customers_without_voucher {
-        group_label: "* Basic Counts (Orders / Customers etc.) *"
-        label: "# Unique Customers (without Voucher)"
-        description: "Count of Unique Customers identified via their Email (not considering orders with a voucher)"
-        hidden:  no
-        type: count_distinct
-        sql: ${user_email};;
-        filters: [discount_amount: "0 OR null"]
-        value_format: "0"
-      }
-
       measure: cnt_unique_hubs {
         group_label: "* Basic Counts (Orders / Customers etc.) *"
         label: "# Unique Hubs"
@@ -1055,36 +811,6 @@ view: order_order {
         type: count
         filters: [discount_amount: ">0"]
         value_format: "0"
-      }
-
-      measure: cnt_orders_without_discount {
-        group_label: "* Basic Counts (Orders / Customers etc.) *"
-        label: "# Orders without Discount"
-        description: "Count of successful Orders with no Discount applied"
-        hidden:  no
-        type: count
-        filters: [discount_amount: "0 OR null"]
-        value_format: "0"
-      }
-
-      measure: cnt_unique_orders_new_customers {
-        group_label: "* Basic Counts (Orders / Customers etc.) *"
-        label: "# Orders New Customers"
-        description: "Count of successful Orders placed by new customers (Acquisitions)"
-        hidden:  no
-        type: count
-        value_format: "0"
-        filters: [customer_type: "New Customer"]
-      }
-
-      measure: cnt_unique_orders_existing_customers {
-        group_label: "* Basic Counts (Orders / Customers etc.) *"
-        label: "# Orders Existing Customers"
-        description: "Count of successful Orders placed by returning customers"
-        hidden:  no
-        type: count
-        value_format: "0"
-        filters: [customer_type: "Existing Customer"]
       }
 
       measure: cnt_orders_with_delivery_eta_available {
@@ -1147,15 +873,6 @@ view: order_order {
 ## PERCENTAGE ##
 ################
 
-      measure: pct_acquisition_share {
-        group_label: "* Marketing *"
-        label: "% Acquisition Share"
-        description: "Share of New Customer Acquisitions over Total Orders"
-        hidden:  no
-        type: number
-        sql: ${cnt_unique_orders_new_customers} / NULLIF(${cnt_orders}, 0);;
-        value_format: "0%"
-      }
 
       measure: pct_discount_order_share {
         group_label: "* Marketing *"
@@ -1227,51 +944,7 @@ view: order_order {
 
       set: exclude_dims_as_that_cross_reference {
         fields: [
-          years_time_since_sign_up,
-          quarters_time_since_sign_up,
-          months_time_since_sign_up,
-          weeks_time_since_sign_up,
-          days_time_since_sign_up,
-          hours_time_since_sign_up,
-          minutes_time_since_sign_up,
-          seconds_time_since_sign_up,
-          years_time_between_sign_up_month_and_now,
-          quarters_time_between_sign_up_month_and_now,
-          months_time_between_sign_up_month_and_now,
-          weeks_time_between_sign_up_month_and_now,
-          days_time_between_sign_up_month_and_now,
-          hours_time_between_sign_up_month_and_now,
-          minutes_time_between_sign_up_month_and_now,
-          years_time_between_sign_up_week_and_now,
-          seconds_time_between_sign_up_month_and_now,
-          quarters_time_between_sign_up_week_and_now,
-          months_time_between_sign_up_week_and_now,
-          weeks_time_between_sign_up_week_and_now,
-          days_time_between_sign_up_week_and_now,
-          hours_time_between_sign_up_week_and_now,
-          minutes_time_between_sign_up_week_and_now,
-          seconds_time_between_sign_up_week_and_now,
-          years_time_between_hub_launch_and_order,
-          quarters_time_between_hub_launch_and_order,
-          months_time_between_hub_launch_and_order,
-          weeks_time_between_hub_launch_and_order,
-          days_time_between_hub_launch_and_order,
-          hours_time_between_hub_launch_and_order,
-          minutes_time_between_hub_launch_and_order,
-          seconds_time_between_hub_launch_and_order,
-          customer_type,
-          KPI,
-          reaction_time,
-          acceptance_time,
-          time_diff_between_two_subsequent_fulfillments,
-          avg_picking_time,
-          avg_acceptance_time,
-          hub_location,
-          cnt_unique_orders_existing_customers,
-          cnt_unique_orders_new_customers,
-          avg_reaction_time,
-          delivery_distance_m,
-          delivery_distance_km
+          KPI
 
         ]
       }

@@ -1,5 +1,5 @@
 view: hourly_historical_stock_levels {
-  sql_table_name: `flink-data-dev.sandbox_andreas.hourly_historical_stock_levels`
+  sql_table_name: `flink-data-dev.sandbox.hourly_historical_stock_levels`
     ;;
 
 
