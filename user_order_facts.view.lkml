@@ -281,6 +281,7 @@ view: user_order_facts {
   }
 
   dimension_group: first_order {
+    group_label: "* First Order Date *"
     type: time
     # datatype: timestamp
     sql: ${TABLE}.first_order ;;
@@ -302,22 +303,33 @@ view: user_order_facts {
   }
 
   dimension: days_betw_first_and_last_order {
+    group_label: "* First Order Date *"
     description: "Days between first and latest order"
     type: number
     sql: TIMESTAMP_DIFF(${TABLE}.latest_order, ${TABLE}.first_order, DAY)+1 ;;
   }
 
   dimension_group: duration_between_first_order_and_now {
+    group_label: "* First Order Date *"
     type: duration
     sql_start: ${first_order_raw} ;;
     sql_end: CURRENT_TIMESTAMP() ;;
     }
 
   dimension_group: duration_between_first_order_month_and_now {
+    group_label: "* First Order Date *"
     type: duration
     sql_start: DATE_TRUNC(${first_order_raw}, MONTH);;
     sql_end: CURRENT_TIMESTAMP();;
     intervals: [month]
+  }
+
+  dimension_group: duration_between_first_order_week_and_now {
+    group_label: "* First Order Date *"
+    type: duration
+    sql_start: DATE_TRUNC(${first_order_raw}, WEEK);;
+    sql_end: CURRENT_TIMESTAMP();;
+    intervals: [week]
   }
 
   ##### Lifetime Behavior - Order Counts ######
