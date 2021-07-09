@@ -12,7 +12,7 @@ explore: base_order_order {
   group_label: "01) Performance"
   label: "Order test"
   # description: "This is the clean version of orders explore"
-  hidden: no
+  hidden: yes
   extends: [base_orders,
             base_order_address,
             base_order_discount_order_vouchers,
