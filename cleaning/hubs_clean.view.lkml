@@ -88,7 +88,7 @@ view: hubs_clean {
     type: distance
     units: meters
     start_location_field: hub_location
-    end_location_field: order_base.customer_location
+    end_location_field: base_orders.customer_location
   }
 
   dimension: delivery_distance_km {
@@ -96,7 +96,7 @@ view: hubs_clean {
     type: distance
     units: kilometers
     start_location_field: hub_location
-    end_location_field: order_base.customer_location
+    end_location_field: base_orders.customer_location
   }
 
   dimension: delivery_distance_tier {
