@@ -21,7 +21,4 @@ explore: base_order_orderline {
        and  ${order_orderline.product_sku} = ${product_facts.sku}
     ;;
   }
-
-
-
 }

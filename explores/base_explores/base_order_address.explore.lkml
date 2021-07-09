@@ -1,7 +1,7 @@
 include: "/explores/base_explores/base_orders.explore"
 include: "/views/account_address.view.lkml"
 
-explore: address {
+explore: base_order_address {
   #group_label: "03) Vouchers"
   #label: "Address"
   description: "This is the clean version of user address"

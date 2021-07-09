@@ -2,7 +2,7 @@ include: "/explores/base_explores/base_orders.explore"
 include: "/views/payment_payment.view.lkml"
 include: "/views/payment_transaction.view.lkml"
 
-explore: payment {
+explore: base_order_payment {
   #group_label: "01) Performance"
   #label: "Order Fulfillment"
   description: "This is the clean version of payment data"

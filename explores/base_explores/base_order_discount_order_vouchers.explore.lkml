@@ -2,7 +2,7 @@
 include: "/explores/base_explores/base_orders.explore"
 include: "/views/discount_voucher.view.lkml"
 
-explore: discount_vouchers {
+explore: base_order_discount_order_vouchers {
   #group_label: "03) Vouchers"
   #label: "Discount Vouchers"
   description: "This is the clean version of discount vouchers"
