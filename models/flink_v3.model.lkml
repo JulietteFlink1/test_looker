@@ -854,13 +854,51 @@ explore: gorillas_v1_hubs_master{
   description: "Analysis of competitors."
 }
 
+# Un-hide and use this explore, or copy the joins into another explore, to get all the fully nested relationships from this view
+explore: gorillas_v1_turfs {
+  hidden:  no
+  label: "Gorillas Turfs"
+  view_label: "Gorillas Turfs"
+  group_label: "08) Competitor Analysis"
+  description: "Analysis of competitors."
+
+  join: turfs__points {
+    view_label: "Turfs: Points"
+    sql: LEFT JOIN UNNEST(${gorillas_v1_turfs.points}) as turfs__points ;;
+    relationship: one_to_many
+  }
+
+  join: turfs__gorillas_hub_ids {
+    view_label: "Turfs: Gorillas Hub Ids"
+    sql: LEFT JOIN UNNEST(${gorillas_v1_turfs.gorillas_hub_ids}) as turfs__gorillas_hub_ids ;;
+    relationship: one_to_many
+  }
+}
+
 explore: gorillas_v1_orders{
   hidden:  yes
   label: "Gorillas Orders"
   view_label: "Gorillas Orders"
   group_label: "08) Competitor Analysis"
   description: "Analysis of competitors."
+
+  # join: gorillas_v1_orders_wow {
+  #   sql_on: ${gorillas_v1_orders.id} = ${gorillas_v1_orders_wow.id} and ${gorillas_v1_orders_wow.orders_date} = DATE_SUB(${gorillas_v1_orders.orders_date}, Interval 7 day);;
+  #   relationship: many_to_one
+  #   type: left_outer
+  # }
+
 }
+
+# explore: gorillas_v1_orders_wow{
+#   hidden:  yes
+#   label: "Gorillas Orders WOW"
+#   view_label: "Gorillas Orders WOW"
+#   group_label: "08) Competitor Analysis"
+#   description: "Analysis of competitors."
+# }
+
+
 
 explore: gorillas_v1_inventory{
   hidden:  yes

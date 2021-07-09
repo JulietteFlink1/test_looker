@@ -1,4 +1,4 @@
-view: product_attribute_facts {
+view: __remove__product_attribute_facts {
   derived_table: {
     sql:
           SELECT
