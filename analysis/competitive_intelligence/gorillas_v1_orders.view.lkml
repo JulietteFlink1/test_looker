@@ -84,8 +84,10 @@ view: gorillas_v1_orders {
 
   dimension: today_order_sequence_number {
     type: number
+    label: "Orders"
     sql: ${TABLE}.todayOrderSequenceNumber ;;
   }
+
 
 
 
