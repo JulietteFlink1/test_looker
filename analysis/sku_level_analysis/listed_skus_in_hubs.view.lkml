@@ -65,4 +65,10 @@ view: listed_skus_in_hubs {
     sql: ${TABLE}.hub_code ;;
     type: count_distinct
   }
+
+  measure: cnt_skus {
+    label: "# SKUs"
+    sql: ${TABLE}.sku ;;
+    type: count_distinct
+  }
 }
