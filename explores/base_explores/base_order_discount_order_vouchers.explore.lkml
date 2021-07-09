@@ -5,6 +5,7 @@ include: "/views/discount_voucher.view.lkml"
 explore: base_order_discount_order_vouchers {
   #group_label: "03) Vouchers"
   #label: "Discount Vouchers"
+  extension: required
   description: "This is the clean version of discount vouchers"
   extends: [base_orders]
   #view_label: "Discount Vouchers Clean"

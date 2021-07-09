@@ -6,6 +6,7 @@ explore: base_order_payment {
   #group_label: "01) Performance"
   #label: "Order Fulfillment"
   description: "This is the clean version of payment data"
+  extension: required
   extends: [base_orders]
   #view_label: "Order Fulfillment Clean"
   # The additional things you want to add or change

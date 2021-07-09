@@ -5,6 +5,7 @@ include: "/explores/base_explores/base_orders.explore"
 explore: base_order_fulfillment {
   #group_label: "01) Performance"
   #label: "Order Fulfillment"
+  extension: required
   description: "This is the clean version of order fulfillment data"
   extends: [base_orders]
   #view_label: "Order Fulfillment Clean"
