@@ -9,9 +9,11 @@ include: "/explores/base_explores/base_order_hub_level.explore"
 include: "/views/discount_voucher.view.lkml"
 
 explore: base_order_order {
+  label: "Orders"
+  #hidden: yes
+  view_label: "* Orders *"
   group_label: "01) Performance"
-  label: "Order test"
-  # description: "This is the clean version of orders explore"
+  description: "General Business Performance - Orders, Revenue, etc."
   hidden: no
   extends: [base_orders,
             base_order_address,
