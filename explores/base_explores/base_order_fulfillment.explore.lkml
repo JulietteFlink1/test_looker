@@ -1,12 +1,11 @@
-#include: "/cleaning/order_base.view.lkml"
 include: "/cleaning/order_fulfillment_clean.view.lkml"
 include: "/cleaning/order_fulfillment_facts_clean.view.lkml"
-#include: "/explores/cleaning_ricardo/order_base.explore"
 include: "/explores/base_explores/base_orders.explore"
 
-explore: order_fulfillment {
+explore: base_order_fulfillment {
   #group_label: "01) Performance"
   #label: "Order Fulfillment"
+  extension: required
   description: "This is the clean version of order fulfillment data"
   extends: [base_orders]
   #view_label: "Order Fulfillment Clean"

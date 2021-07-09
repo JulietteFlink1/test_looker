@@ -7,4 +7,5 @@ include: "/**/*.explore"
 
 explore: test_base_orders {
   extends: [base_order_orderline]
+  hidden: yes
 }
