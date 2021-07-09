@@ -39,7 +39,13 @@ view: events_orders_monitoring {
           LEFT JOIN `flink-backend.flink_ios_production.order_placed_view` o ON o.id = t.id
           LEFT JOIN `flink-backend.gsheet_store_metadata.hubs` h ON h.city = COALESCE(a.hub_city, o.hub_city)
           WHERE {% condition event_date %} date(_PARTITIONTIME) {% endcondition %}
+        ),
+        saleor AS (
+        SELECT created, tracking_client_id, country_iso, id
+        FROM `flink-backend.saleor_db_global.order_order`
+        WHERE {% condition event_date %} DATE(sg.created)) {% endcondition %}
         )
+
           SELECT COALESCE(event_date, DATE(sg.created)) AS event_date,
                  COALESCE(anonymous_id, sg.tracking_client_id) AS anonymous_id,
                  os,
@@ -51,8 +57,8 @@ view: events_orders_monitoring {
                  order_id,
                  COALESCE(sg.id, CAST(apps.order_number AS INT64)) AS order_number,
           FROM apps
-          FULL OUTER JOIN `flink-backend.saleor_db_global.order_order` sg ON sg.id = CAST(apps.order_number AS INT64) AND sg.country_iso = apps.country_iso
-          WHERE {% condition event_date %} COALESCE(event_date, DATE(sg.created)) {% endcondition %}
+          FULL OUTER JOIN saleor sg ON sg.id = CAST(apps.order_number AS INT64) AND sg.country_iso = apps.country_iso
+         -- WHERE {% condition event_date %} COALESCE(event_date, DATE(sg.created)) {% endcondition %}
           GROUP BY 1,2,3,4,5,6,7,8,9,10
           ORDER BY 1, 2, order_number
        ;;
