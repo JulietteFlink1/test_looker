@@ -351,7 +351,7 @@ view: checkout_sessions {
   }
 
   dimension: has_ordered {
-    type: string
+    type: yesno
     sql: ${TABLE}.has_ordered ;;
   }
 
