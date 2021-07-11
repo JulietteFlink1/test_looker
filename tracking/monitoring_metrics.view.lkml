@@ -225,6 +225,17 @@ view: monitoring_metrics {
     filters: [event: "payment_failed"]
   }
 
+  measure: perc_unique_paymentfailure {
+    type: percent_of_total
+    sql: ${cnt_unique_anonymousid};;
+    value_format: "0.0\%"
+    drill_fields: [timestamp_date, perc_unique_paymentfailure]
+    link: {
+      label: "Payment Failed to Payment Started Percentage Times Series"
+      url: "/looks/721"
+    }
+  }
+
   measure: cnt_unique_paymentstarted {
     type: count_distinct
     sql: ${anonymous_id};;
