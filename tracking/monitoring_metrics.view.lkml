@@ -152,6 +152,16 @@ view: monitoring_metrics {
     sql: ${cnt_paymentstarted}-${cnt_paymentcomplete}-${cnt_paymentfailure} ;;
   }
 
+  measure: cartviewed_per_checkoutstarted  {
+    type: number
+    sql: ${monitoring_metrics.cnt_cartviewed}/NULLIF(${monitoring_metrics.cnt_checkoutstarted},0) ;;
+    value_format_name: decimal_1
+    drill_fields: [timestamp_date, cartviewed_per_checkoutstarted]
+    link: {
+      label: "# Events CartViewed to CheckoutStarted Times Series"
+      url: "/looks/726"
+    }
+  }
 
 
   measure: checkoutstarted_per_paymentstarted  {
@@ -231,7 +241,7 @@ view: monitoring_metrics {
     value_format: "0.0\%"
     drill_fields: [timestamp_date, perc_unique_paymentfailure]
     link: {
-      label: "Payment Failed to Payment Started Percentage Times Series"
+      label: "% Of PaymentStarted To PaymentFailed Times Series"
       url: "/looks/721"
     }
   }
