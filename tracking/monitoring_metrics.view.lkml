@@ -160,7 +160,7 @@ view: monitoring_metrics {
     value_format_name: decimal_1
     drill_fields: [timestamp_date, checkoutstarted_per_paymentstarted]
     link: {
-      label: "Checkout Started to Payment Started Times Series"
+      label: "# Events CheckoutStarted To PaymentStarted Times Series"
       url: "/looks/681"
     }
   }
@@ -171,8 +171,8 @@ view: monitoring_metrics {
     value_format_name: percent_1
     drill_fields: [timestamp_date, unique_checkoutstarted_per_paymentstarted_perc]
     link: {
-      label: "Checkout Started to Payment Started Percentage Times Series"
-      url: "/looks/681"
+      label: "% Unique IDs From CheckoutStarted To PaymentStarted Times Series"
+      url: "/looks/724"
     }
   }
 
@@ -182,7 +182,7 @@ view: monitoring_metrics {
     value_format_name: decimal_1
     drill_fields: [timestamp_date, paymentstarted_per_orderplaced]
     link: {
-      label: "Payment Started to Order Placed Times Series"
+      label: "# Events PaymentStarted to OrderPlaced Times Series"
       url: "/looks/679"
     }
   }
@@ -193,8 +193,8 @@ view: monitoring_metrics {
     value_format_name: percent_1
     drill_fields: [timestamp_date, unique_paymentstarted_per_orderplaced_perc]
     link: {
-      label: "Payment Started to Order Placed Percentage Times Series"
-      url: "/looks/679"
+      label: "% Unique IDs From PaymentStarted to OrderPlaced Times Series"
+      url: "/looks/725"
     }
   }
 
