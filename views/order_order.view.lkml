@@ -493,7 +493,7 @@ view: order_order {
       dimension: customer_type {
         group_label: "* User Dimensions *"
         type: string
-        sql: CASE WHEN ${TABLE}.created = ${user_order_facts.first_order_raw} THEN 'New Customer' ELSE 'Existing Customer' END ;;
+        sql: CASE WHEN ${TABLE}.id = ${user_order_facts.first_order_id} THEN 'New Customer' ELSE 'Existing Customer' END ;;
       }
 
       dimension: customer_location {

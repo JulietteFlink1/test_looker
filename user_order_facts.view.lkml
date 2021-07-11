@@ -474,20 +474,6 @@ view: user_order_facts {
     drill_fields: [detail*]
   }
 
-  measure: new_customer_orders {
-    type: count
-    description: "Number of orders placed by new customers"
-    group_label: "* Basic Counts (Orders / Customers etc.) *"
-    filters: [lifetime_orders: "=1"]
-  }
-
-  measure: returning_customer_orders {
-    type: count
-    description: "Number of orders placed by returning customers"
-    group_label: "* Basic Counts (Orders / Customers etc.) *"
-    filters: [lifetime_orders: ">1"]
-  }
-
   measure: avg_lifetime_orders {
     type: average
     value_format_name: decimal_2
