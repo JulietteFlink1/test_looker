@@ -397,7 +397,7 @@ view: delivery_time_sessions {
   }
 
   dimension: has_ordered {
-    type: string
+    type: yesno
     sql: ${TABLE}.has_ordered ;;
   }
 
@@ -524,6 +524,15 @@ view: delivery_time_sessions {
     }
   }
 ##### Unique count of events during a session. If multiple events are triggerred during a session, e.g 3 times view item, the event is only counted once.
+
+  measure: cnt_unique_anonymousid {
+    label: "# Unique Users"
+    description: "Number of Unique Users identified via Anonymous ID from Segment"
+    hidden:  no
+    type: count_distinct
+    sql: ${anonymous_id};;
+    value_format_name: decimal_0
+  }
 
   measure: cnt_address_selected {
     label: "Address selected count"

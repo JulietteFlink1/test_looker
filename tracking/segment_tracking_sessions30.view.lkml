@@ -436,7 +436,7 @@ view: segment_tracking_sessions30 {
   }
 
   dimension: has_ordered {
-    type: string
+    type: yesno
     sql: ${TABLE}.has_ordered ;;
   }
 

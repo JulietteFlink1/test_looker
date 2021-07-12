@@ -152,6 +152,16 @@ view: monitoring_metrics {
     sql: ${cnt_paymentstarted}-${cnt_paymentcomplete}-${cnt_paymentfailure} ;;
   }
 
+  measure: cartviewed_per_checkoutstarted  {
+    type: number
+    sql: ${monitoring_metrics.cnt_cartviewed}/NULLIF(${monitoring_metrics.cnt_checkoutstarted},0) ;;
+    value_format_name: decimal_1
+    drill_fields: [timestamp_date, cartviewed_per_checkoutstarted]
+    link: {
+      label: "# Events CartViewed to CheckoutStarted Times Series"
+      url: "/looks/726"
+    }
+  }
 
 
   measure: checkoutstarted_per_paymentstarted  {
@@ -160,7 +170,7 @@ view: monitoring_metrics {
     value_format_name: decimal_1
     drill_fields: [timestamp_date, checkoutstarted_per_paymentstarted]
     link: {
-      label: "Checkout Started to Payment Started Times Series"
+      label: "# Events CheckoutStarted To PaymentStarted Times Series"
       url: "/looks/681"
     }
   }
@@ -171,8 +181,8 @@ view: monitoring_metrics {
     value_format_name: percent_1
     drill_fields: [timestamp_date, unique_checkoutstarted_per_paymentstarted_perc]
     link: {
-      label: "Checkout Started to Payment Started Percentage Times Series"
-      url: "/looks/681"
+      label: "% Unique IDs From CheckoutStarted To PaymentStarted Times Series"
+      url: "/looks/724"
     }
   }
 
@@ -182,7 +192,7 @@ view: monitoring_metrics {
     value_format_name: decimal_1
     drill_fields: [timestamp_date, paymentstarted_per_orderplaced]
     link: {
-      label: "Payment Started to Order Placed Times Series"
+      label: "# Events PaymentStarted to OrderPlaced Times Series"
       url: "/looks/679"
     }
   }
@@ -193,8 +203,8 @@ view: monitoring_metrics {
     value_format_name: percent_1
     drill_fields: [timestamp_date, unique_paymentstarted_per_orderplaced_perc]
     link: {
-      label: "Payment Started to Order Placed Percentage Times Series"
-      url: "/looks/679"
+      label: "% Unique IDs From PaymentStarted to OrderPlaced Times Series"
+      url: "/looks/725"
     }
   }
 
@@ -223,6 +233,17 @@ view: monitoring_metrics {
     type: count_distinct
     sql: ${anonymous_id};;
     filters: [event: "payment_failed"]
+  }
+
+  measure: perc_unique_paymentfailure {
+    type: percent_of_total
+    sql: ${cnt_unique_anonymousid};;
+    value_format: "0.0\%"
+    drill_fields: [timestamp_date, perc_unique_paymentfailure]
+    link: {
+      label: "% Of PaymentStarted To PaymentFailed Times Series"
+      url: "/looks/721"
+    }
   }
 
   measure: cnt_unique_paymentstarted {
