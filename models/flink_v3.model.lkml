@@ -1172,9 +1172,8 @@ explore: braze_crm_data {
   always_filter: {
     filters:  [
       braze_crm_data.campaign_name: "",
-      braze_crm_data.country: "",
-      braze_crm_data.email_sent_at: "after 2021-04-01"
-    ]
+      braze_crm_data.country: ""
+      ]
   }
 }
 

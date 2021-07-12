@@ -128,4 +128,13 @@ view: discount_voucher {
     sql: ${TABLE}.used ;;
   }
 
+  measure: cnt_vouchers {
+    label: "# Voucher Codes"
+    group_label: "* Basic Counts *"
+    description: "Count of Total Voucher Codes"
+    hidden:  no
+    type: count
+    value_format: "0"
+  }
+
 }
