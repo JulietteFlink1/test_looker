@@ -43,7 +43,7 @@ view: events_orders_monitoring {
         saleor AS (
         SELECT created, tracking_client_id, country_iso, id
         FROM `flink-backend.saleor_db_global.order_order`
-        WHERE {% condition event_date %} DATE(sg.created)) {% endcondition %}
+        WHERE {% condition event_date %} DATE(created) {% endcondition %}
         )
 
           SELECT COALESCE(event_date, DATE(sg.created)) AS event_date,
