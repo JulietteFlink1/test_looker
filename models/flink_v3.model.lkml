@@ -64,7 +64,7 @@ explore: order_order {
   }
 
   #filter Investor user so they can only see completed calendar weeks data and not week to date
-  sql_always_where: CASE WHEN ({{ _user_attributes['id'] }}) = 28 THEN ${order_order.created_week} < ${now_week} ELSE 1=1 END;;
+  #sql_always_where: CASE WHEN ({{ _user_attributes['id'] }}) = 28 THEN ${order_order.created_week} < ${now_week} ELSE 1=1 END;;
 
   join: order_fulfillment {
     sql_on: ${order_fulfillment.country_iso} = ${order_order.country_iso} AND
@@ -244,22 +244,6 @@ explore: order_order {
     sql_on: ${order_order.country_iso} = ${hubs.country_iso} AND
       ${order_order.warehouse_name} = ${hubs.hub_code_lowercase} ;;
     relationship: one_to_one
-    type: left_outer
-  }
-
-  join: hub_leaderboard_shift_metrics {
-    view_label: "* Hubs *"
-    sql_on: ${order_order.warehouse_name} = ${hub_leaderboard_shift_metrics.hub_code_lowercase} and
-      ${order_order.created_date}   = ${hub_leaderboard_shift_metrics.date};;
-    relationship: many_to_one
-    type: left_outer
-  }
-
-  join: hub_leaderboard {
-    view_label: "* Hubs *"
-    sql_on: ${order_order.warehouse_name} = ${hub_leaderboard.hub_code_lowercase} and
-      ${order_order.created_date}   = ${hub_leaderboard.created_date};;
-    relationship: many_to_one
     type: left_outer
   }
 
@@ -870,13 +854,51 @@ explore: gorillas_v1_hubs_master{
   description: "Analysis of competitors."
 }
 
+# Un-hide and use this explore, or copy the joins into another explore, to get all the fully nested relationships from this view
+explore: gorillas_v1_turfs {
+  hidden:  no
+  label: "Gorillas Turfs"
+  view_label: "Gorillas Turfs"
+  group_label: "08) Competitor Analysis"
+  description: "Analysis of competitors."
+
+  join: turfs__points {
+    view_label: "Turfs: Points"
+    sql: LEFT JOIN UNNEST(${gorillas_v1_turfs.points}) as turfs__points ;;
+    relationship: one_to_many
+  }
+
+  join: turfs__gorillas_hub_ids {
+    view_label: "Turfs: Gorillas Hub Ids"
+    sql: LEFT JOIN UNNEST(${gorillas_v1_turfs.gorillas_hub_ids}) as turfs__gorillas_hub_ids ;;
+    relationship: one_to_many
+  }
+}
+
 explore: gorillas_v1_orders{
   hidden:  yes
   label: "Gorillas Orders"
   view_label: "Gorillas Orders"
   group_label: "08) Competitor Analysis"
   description: "Analysis of competitors."
+
+  # join: gorillas_v1_orders_wow {
+  #   sql_on: ${gorillas_v1_orders.id} = ${gorillas_v1_orders_wow.id} and ${gorillas_v1_orders_wow.orders_date} = DATE_SUB(${gorillas_v1_orders.orders_date}, Interval 7 day);;
+  #   relationship: many_to_one
+  #   type: left_outer
+  # }
+
 }
+
+# explore: gorillas_v1_orders_wow{
+#   hidden:  yes
+#   label: "Gorillas Orders WOW"
+#   view_label: "Gorillas Orders WOW"
+#   group_label: "08) Competitor Analysis"
+#   description: "Analysis of competitors."
+# }
+
+
 
 explore: gorillas_v1_inventory{
   hidden:  yes

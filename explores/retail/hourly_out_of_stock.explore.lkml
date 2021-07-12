@@ -68,6 +68,17 @@ explore: daily_historical_stock_levels {
     type: left_outer
     fields: [parent_category.name, parent_category.description]
   }
+  join: skus_fulfilled_per_hub_and_date {
+    view_label: "Daily Historical Stock Levels"
+    type: left_outer
+    relationship: many_to_one
+    sql_on: ${skus_fulfilled_per_hub_and_date.product_sku}       = ${daily_historical_stock_levels.sku}
+       and  ${skus_fulfilled_per_hub_and_date.created_date}      = ${daily_historical_stock_levels.tracking_date}
+       and ${skus_fulfilled_per_hub_and_date.hub_code_lowercase} = ${daily_historical_stock_levels.hub_code}
+    ;;
+    fields: [skus_fulfilled_per_hub_and_date.sum_item_quantity_fulfilled,
+             skus_fulfilled_per_hub_and_date.sum_item_quantity]
+  }
 }
 
 
@@ -139,4 +150,5 @@ explore: hourly_historical_stock_levels {
     type: left_outer
     fields: [parent_category.name, parent_category.description]
   }
+
 }

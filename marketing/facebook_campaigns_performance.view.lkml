@@ -4,10 +4,10 @@ view: facebook_campaigns_performance {
 (
     select date(insights.date_start, 'Europe/Berlin') as date,
     'Facebook Ads' as channel,
-    case when REGEXP_CONTAINS(campaigns.name, '_DE_') or REGEXP_CONTAINS(ad_sets.name, '_DE_') or REGEXP_CONTAINS(ads.name, '_DE_') then 'DE'
-        when REGEXP_CONTAINS(campaigns.name, '_FR_') or REGEXP_CONTAINS(ad_sets.name, '_FR_') or REGEXP_CONTAINS(ads.name, '_FR_') then 'FR'
-        when REGEXP_CONTAINS(campaigns.name, '_NL_') or REGEXP_CONTAINS(ad_sets.name, '_NL_') or REGEXP_CONTAINS(ads.name, '_NL_') then 'NL'
-        else 'DE' end as country,
+    case when REGEXP_CONTAINS(campaigns.name, '-DE-') or REGEXP_CONTAINS(ad_sets.name, '-DE-') or REGEXP_CONTAINS(ads.name, '-DE-') then 'DE'
+        when REGEXP_CONTAINS(campaigns.name, '-FR-') or REGEXP_CONTAINS(ad_sets.name, '-FR-') or REGEXP_CONTAINS(ads.name, '-FR-') then 'FR'
+        when REGEXP_CONTAINS(campaigns.name, '-NL-') or REGEXP_CONTAINS(ad_sets.name, '-NL-') or REGEXP_CONTAINS(ads.name, '-NL-') then 'NL'
+        else 'UNIDENTIFIED' end as country,
     case when campaigns.account_id in ('277023943913538',
                             '429404584773636',
                             '509478863527409',
@@ -15,6 +15,7 @@ view: facebook_campaigns_performance {
                             '820710328555880') then 'Consumer' else 'Rider' end as app,
     campaigns.id as campaign_id,
     campaigns.name as campaign_name,
+    ad_sets.name as ad_set_name,
     ads.id as ad_id,
     ads.name as ad_name,
     sum(spend) as spend,
@@ -28,7 +29,7 @@ view: facebook_campaigns_performance {
     on ads.adset_id=ad_sets.id
     left join `flink-backend.facebook_ads.campaigns_view` campaigns
     on ads.campaign_id = campaigns.id
-    group by 1, 2, 3, 4, 5, 6, 7, 8
+    group by 1, 2, 3, 4, 5, 6, 7, 8, 9
     order by 1 desc, 2, 3, 4, 5
 ),
 
@@ -94,6 +95,7 @@ facebook_campaigns_installs_events as
         fb.channel,
         fb.country,
         fb.campaign_name,
+        fb.ad_set_name,
         fb.app,
         fb.ad_name,
         fb.spend,
@@ -146,6 +148,11 @@ on fa.date=fi.date and fa.campaign_id=fi.campaign_id and fa.ad_id=fi.ad_id
   dimension: campaign_name {
     type: string
     sql: ${TABLE}.campaign_name ;;
+  }
+
+  dimension: ad_set_name {
+    type: string
+    sql: ${TABLE}.ad_set_name ;;
   }
 
   dimension: app {

@@ -1,4 +1,4 @@
-view: segment_tracking_sessions30 {
+view: delivery_time_sessions {
   derived_table: {
     persist_for: "1 hour"
     sql: WITH
@@ -19,16 +19,22 @@ view: segment_tracking_sessions30 {
           event.delivery_lat,
           event.delivery_lng,
           event.delivery_postcode,
+          event.delivery_eta as home_delivery_eta,
           event.user_area_available,
-          SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[
+          SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(event.hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[
         OFFSET
-          (1)] AS hub_id
+          (1)] AS hub_id,
+          CAST(event2.delivery_eta AS INT64) as order_delivery_eta
         FROM
           `flink-backend.flink_ios_production.tracks_view` tracks
         LEFT JOIN
           `flink-backend.flink_ios_production.address_confirmed_view` event
         ON
           tracks.id=event.id
+        LEFT JOIN
+          `flink-backend.flink_ios_production.order_placed_view` event2
+        ON
+          tracks.id=event2.id
         WHERE
           tracks.event NOT LIKE "%api%"
           AND tracks.event NOT LIKE "%adjust%"
@@ -54,16 +60,22 @@ view: segment_tracking_sessions30 {
           event.delivery_lat,
           event.delivery_lng,
           event.delivery_postcode,
+          event.delivery_eta as home_delivery_eta,
           event.user_area_available,
-          SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[
+          SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(event.hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[
         OFFSET
-          (1)] AS hub_id
+          (1)] AS hub_id,
+          CAST(event2.delivery_eta AS INT64) as order_delivery_eta
         FROM
           `flink-backend.flink_android_production.tracks_view` tracks
         LEFT JOIN
           `flink-backend.flink_android_production.address_confirmed_view` event
         ON
           tracks.id=event.id
+        LEFT JOIN
+          `flink-backend.flink_ios_production.order_placed_view` event2
+        ON
+          tracks.id=event2.id
         WHERE
           tracks.event NOT LIKE "%api%"
           AND tracks.event NOT LIKE "%adjust%"
@@ -105,14 +117,6 @@ view: segment_tracking_sessions30 {
       location_table AS (
        SELECT
          location_help_table.*, country_lookup.country_iso  as lookup_country_iso,
-      #    anonymous_id,
-      #    timestamp,
-      #    id,
-      #    context_locale,
-      #    hub_city,
-      #    hub_encoded,
-      #    country_lookup.country_iso,
-      #    block,
          CASE
            WHEN FIRST_VALUE(location_help_table.hub_code) OVER (PARTITION BY location_help_table.anonymous_id, block ORDER BY location_help_table.timestamp) IS NOT NULL THEN FIRST_VALUE(location_help_table.country_iso) OVER (PARTITION BY location_help_table.anonymous_id, block ORDER BY location_help_table.timestamp)
            WHEN FIRST_VALUE(location_help_table.hub_city) OVER (PARTITION BY location_help_table.anonymous_id, block ORDER BY location_help_table.timestamp) IS NOT NULL THEN FIRST_VALUE(country_lookup.country_iso) OVER (PARTITION BY location_help_table.anonymous_id, block ORDER BY location_help_table.timestamp)
@@ -128,6 +132,7 @@ view: segment_tracking_sessions30 {
            AND FIRST_VALUE(location_help_table.hub_code) OVER (PARTITION BY location_help_table.anonymous_id, block ORDER BY location_help_table.timestamp) IS NULL) AS country_derived_from_locale,
          FIRST_VALUE(location_help_table.hub_city) OVER (PARTITION BY location_help_table.anonymous_id, block ORDER BY location_help_table.timestamp) AS derived_city,
          FIRST_VALUE(location_help_table.hub_code) OVER (PARTITION BY location_help_table.anonymous_id, block ORDER BY location_help_table.timestamp) AS derived_hub,
+         FIRST_VALUE(location_help_table.home_delivery_eta) OVER (PARTITION BY location_help_table.anonymous_id, block ORDER BY location_help_table.timestamp) AS derived_home_eta,
          FIRST_VALUE(ordered_tmp) OVER (PARTITION BY location_help_table.anonymous_id, has_ordered_block_per_id ORDER BY location_help_table.timestamp) AS has_ordered
        FROM
          location_help_table
@@ -152,26 +157,6 @@ view: segment_tracking_sessions30 {
             OR location_table.inactivity_time IS NULL)
         ORDER BY
           1),
-
-      add_to_cart AS (
-      SELECT
-        tracking_sessions.anonymous_id,
-        tracking_sessions.session_id,
-        COUNT(*) AS event_count
-      FROM
-        location_table
-      LEFT JOIN
-        tracking_sessions
-      ON
-        location_table.anonymous_id = tracking_sessions.anonymous_id
-        AND location_table.timestamp >= tracking_sessions.session_start_at
-        AND (location_table.timestamp < tracking_sessions.next_session_start_at
-          OR tracking_sessions.next_session_start_at IS NULL)
-      WHERE
-        location_table.event='product_added_to_cart'
-      GROUP BY
-        1,
-        2 ),
 
       location_pin_placed AS (
       SELECT
@@ -250,7 +235,8 @@ view: segment_tracking_sessions30 {
       GROUP BY
         1,
         2 ),
-      checkout_started AS (
+
+      add_to_cart AS (
       SELECT
         tracking_sessions.anonymous_id,
         tracking_sessions.session_id,
@@ -265,29 +251,11 @@ view: segment_tracking_sessions30 {
         AND (location_table.timestamp < tracking_sessions.next_session_start_at
           OR tracking_sessions.next_session_start_at IS NULL)
       WHERE
-        location_table.event='checkout_started'
+        location_table.event='product_added_to_cart'
       GROUP BY
         1,
         2 ),
-      payment_started AS (
-      SELECT
-        tracking_sessions.anonymous_id,
-        tracking_sessions.session_id,
-        COUNT(*) AS event_count
-      FROM
-        location_table
-      LEFT JOIN
-        tracking_sessions
-      ON
-        location_table.anonymous_id = tracking_sessions.anonymous_id
-        AND location_table.timestamp >= tracking_sessions.session_start_at
-        AND (location_table.timestamp < tracking_sessions.next_session_start_at
-          OR tracking_sessions.next_session_start_at IS NULL)
-      WHERE
-        location_table.event='purchase_confirmed'
-      GROUP BY
-        1,
-        2 ),
+
       order_placed AS (
       SELECT
         tracking_sessions.anonymous_id,
@@ -325,20 +293,17 @@ view: segment_tracking_sessions30 {
         tracking_sessions.derived_hub,
         tracking_sessions.country_derived_from_city,
         tracking_sessions.country_derived_from_locale,
-        add_to_cart.event_count AS add_to_cart,
+        tracking_sessions.derived_home_eta,
+        tracking_sessions.home_delivery_eta,
+        tracking_sessions.order_delivery_eta,
         location_pin_placed.event_count AS location_pin_placed,
         home_viewed.event_count AS home_viewed,
+        add_to_cart.event_count AS add_to_cart,
         view_cart.event_count AS view_cart,
         address_confirmed.event_count AS address_confirmed,
-        checkout_started.event_count AS checkout_started,
-        payment_started.event_count AS payment_started,
         order_placed.event_count AS order_placed
       FROM
         tracking_sessions
-      LEFT JOIN
-        add_to_cart
-      ON
-        tracking_sessions.session_id=add_to_cart.session_id
       LEFT JOIN
         location_pin_placed
       ON
@@ -348,6 +313,10 @@ view: segment_tracking_sessions30 {
       ON
         tracking_sessions.session_id=home_viewed.session_id
       LEFT JOIN
+        add_to_cart
+      ON
+        tracking_sessions.session_id=add_to_cart.session_id
+      LEFT JOIN
         view_cart
       ON
         tracking_sessions.session_id=view_cart.session_id
@@ -355,14 +324,6 @@ view: segment_tracking_sessions30 {
         address_confirmed
       ON
         tracking_sessions.session_id=address_confirmed.session_id
-      LEFT JOIN
-        checkout_started
-      ON
-        tracking_sessions.session_id=checkout_started.session_id
-      LEFT JOIN
-        payment_started
-      ON
-        tracking_sessions.session_id=payment_started.session_id
       LEFT JOIN
         order_placed
       ON
@@ -465,6 +426,21 @@ view: segment_tracking_sessions30 {
     sql: ${TABLE}.country_derived_from_locale ;;
   }
 
+  dimension: derived_home_eta {
+    type: number
+    sql: ${TABLE}.derived_home_eta ;;
+  }
+
+  dimension: home_delivery_eta {
+    type: number
+    sql: ${TABLE}.home_delivery_eta ;;
+  }
+
+  dimension: order_delivery_eta {
+    type: number
+    sql: ${TABLE}.order_delivery_eta ;;
+  }
+
   dimension: add_to_cart {
     type: number
     sql: ${TABLE}.add_to_cart ;;
@@ -488,16 +464,6 @@ view: segment_tracking_sessions30 {
   dimension: address_confirmed {
     type: number
     sql: ${TABLE}.address_confirmed ;;
-  }
-
-  dimension: checkout_started {
-    type: number
-    sql: ${TABLE}.checkout_started ;;
-  }
-
-  dimension: payment_started {
-    type: number
-    sql: ${TABLE}.payment_started ;;
   }
 
   dimension: order_placed {
@@ -557,18 +523,16 @@ view: segment_tracking_sessions30 {
       else: "Other / Unknown"
     }
   }
-
-  dimension: checkout_payment_ratio_per_session {
-    type: number
-    sql: ${checkout_started}/${payment_started};;
-  }
-
-  dimension: payment_order_ratio_per_session {
-    type: number
-    sql: ${payment_started}/${order_placed};;
-  }
-
 ##### Unique count of events during a session. If multiple events are triggerred during a session, e.g 3 times view item, the event is only counted once.
+
+  measure: cnt_unique_anonymousid {
+    label: "# Unique Users"
+    description: "Number of Unique Users identified via Anonymous ID from Segment"
+    hidden:  no
+    type: count_distinct
+    sql: ${anonymous_id};;
+    value_format_name: decimal_0
+  }
 
   measure: cnt_address_selected {
     label: "Address selected count"
@@ -603,20 +567,6 @@ view: segment_tracking_sessions30 {
     description: "Number of sessions in which at least one Cart Viewed event happened"
     type: count
     filters: [view_cart: "NOT NULL"]
-  }
-
-  measure: cnt_checkout_started {
-    label: "Checkout started count"
-    description: "Number of sessions in which at least one Checkout Started event happened"
-    type: count
-    filters: [checkout_started: "NOT NULL"]
-  }
-
-  measure: cnt_payment_started {
-    label: "Payment started count"
-    description: "Number of sessions in which at least one Payment Started event happened"
-    type: count
-    filters: [payment_started: "NOT NULL"]
   }
 
   measure: cnt_purchase {
@@ -665,18 +615,6 @@ view: segment_tracking_sessions30 {
     sql: ${view_cart} ;;
   }
 
-  measure: sum_checkout_started {
-    label: "Checkout started sum of events"
-    type: sum
-    sql: ${checkout_started} ;;
-  }
-
-  measure: sum_payment_started {
-    label: "Payment started sum of events"
-    type: sum
-    sql: ${payment_started} ;;
-  }
-
   measure: sum_purchases {
     label: "Order placed sum of events"
     type: sum
@@ -705,27 +643,6 @@ view: segment_tracking_sessions30 {
     sql: ${cnt_add_to_cart}/NULLIF(${cnt_home_viewed},0) ;;
   }
 
-  measure: mcvr3 {
-    type: number
-    description: "Number of sessions in which there was a Checkout Started event happened, compared to the number of sessions in which there was a Product Added To Cart"
-    value_format_name: percent_1
-    sql: ${cnt_checkout_started}/NULLIF(${cnt_add_to_cart},0) ;;
-  }
-
-  measure: mcvr4 {
-    type: number
-    description: "Number of sessions in which there was a Payment Started event happened, compared to the number of sessions in which there was a Checkout Started"
-    value_format_name: percent_1
-    sql: ${cnt_payment_started}/NULLIF(${cnt_checkout_started},0) ;;
-  }
-
-  measure: payment_success {
-    type: number
-    description: "Number of sessions in which there was an Order Placed, compared to the number of sessions in which there was a Payment Started"
-    value_format_name: percent_1
-    sql: ${cnt_purchase}/NULLIF(${cnt_payment_started},0) ;;
-  }
-
   set: detail {
     fields: [
       anonymous_id,
@@ -745,8 +662,6 @@ view: segment_tracking_sessions30 {
       home_viewed,
       view_cart,
       address_confirmed,
-      checkout_started,
-      payment_started,
       order_placed
     ]
   }
