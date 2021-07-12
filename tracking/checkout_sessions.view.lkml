@@ -28,10 +28,12 @@ view: checkout_sessions {
           `flink-backend.flink_ios_production.address_confirmed_view` event
         ON
           tracks.id=event.id
-          AND tracks.event NOT LIKE "%api%"
+        WHERE
+          tracks.event NOT LIKE "%api%"
           AND tracks.event NOT LIKE "%adjust%"
           AND tracks.event NOT LIKE "%install_attributed%"
-          --NOT (context_app_name = "Flink-Staging" OR context_app_name="Flink-Debug")
+          AND NOT (tracks.context_app_version LIKE "%APP-RATING%" OR tracks.context_app_version LIKE "%DEBUG%")
+          AND NOT (tracks.context_app_name = "Flink-Staging" OR tracks.context_app_name="Flink-Debug")
 
         UNION ALL
 
@@ -61,10 +63,12 @@ view: checkout_sessions {
           `flink-backend.flink_android_production.address_confirmed_view` event
         ON
           tracks.id=event.id
-          AND tracks.event NOT LIKE "%api%"
+        WHERE
+          tracks.event NOT LIKE "%api%"
           AND tracks.event NOT LIKE "%adjust%"
           AND tracks.event NOT LIKE "%install_attributed%"
-          --NOT (context_app_name = "Flink-Staging" OR context_app_name="Flink-Debug")
+          AND NOT (tracks.context_app_version LIKE "%APP-RATING%" OR tracks.context_app_version LIKE "%DEBUG%")
+          AND NOT (tracks.context_app_name = "Flink-Staging" OR tracks.context_app_name="Flink-Debug")
         ),
 
         location_help_table AS (
@@ -275,7 +279,7 @@ view: checkout_sessions {
     value_format_name: percent_1
     drill_fields: [session_start_at_date, paymentfailed_per_paymentstarted_perc]
     link: {
-      label: "Payment Failures Per Session Times Series"
+      label: "% Sessions Payment Failure And Payment Failure Without Order"
       url: "/looks/688"
     }
   }
@@ -286,7 +290,7 @@ view: checkout_sessions {
     value_format_name: percent_1
     drill_fields: [session_start_at_date, paymentfailed_noorder_per_paymentstarted_perc]
     link: {
-      label: "Payment Failures Resulting In No Order Per Session Times Series"
+      label: "% Sessions Payment Failure And Payment Failure Without Order"
       url: "/looks/688"
     }
   }
@@ -347,7 +351,7 @@ view: checkout_sessions {
   }
 
   dimension: has_ordered {
-    type: string
+    type: yesno
     sql: ${TABLE}.has_ordered ;;
   }
 

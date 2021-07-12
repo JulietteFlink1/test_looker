@@ -1,4 +1,4 @@
-view: user_order_facts {
+view: user_order_facts_clean {
   derived_table: {
     datagroup_trigger: flink_default_datagroup
     sql:
@@ -281,7 +281,6 @@ view: user_order_facts {
   }
 
   dimension_group: first_order {
-    group_label: "* First Order Date *"
     type: time
     # datatype: timestamp
     sql: ${TABLE}.first_order ;;
@@ -303,33 +302,22 @@ view: user_order_facts {
   }
 
   dimension: days_betw_first_and_last_order {
-    group_label: "* First Order Date *"
     description: "Days between first and latest order"
     type: number
     sql: TIMESTAMP_DIFF(${TABLE}.latest_order, ${TABLE}.first_order, DAY)+1 ;;
   }
 
   dimension_group: duration_between_first_order_and_now {
-    group_label: "* First Order Date *"
     type: duration
     sql_start: ${first_order_raw} ;;
     sql_end: CURRENT_TIMESTAMP() ;;
-    }
+  }
 
   dimension_group: duration_between_first_order_month_and_now {
-    group_label: "* First Order Date *"
     type: duration
     sql_start: DATE_TRUNC(${first_order_raw}, MONTH);;
     sql_end: CURRENT_TIMESTAMP();;
     intervals: [month]
-  }
-
-  dimension_group: duration_between_first_order_week_and_now {
-    group_label: "* First Order Date *"
-    type: duration
-    sql_start: DATE_TRUNC(${first_order_raw}, WEEK);;
-    sql_end: CURRENT_TIMESTAMP();;
-    intervals: [week]
   }
 
   ##### Lifetime Behavior - Order Counts ######
@@ -474,6 +462,20 @@ view: user_order_facts {
     drill_fields: [detail*]
   }
 
+  measure: new_customer_orders {
+    type: count
+    description: "Number of orders placed by new customers"
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    filters: [lifetime_orders: "=1"]
+  }
+
+  measure: returning_customer_orders {
+    type: count
+    description: "Number of orders placed by returning customers"
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    filters: [lifetime_orders: ">1"]
+  }
+
   measure: avg_lifetime_orders {
     type: average
     value_format_name: decimal_2
@@ -485,6 +487,87 @@ view: user_order_facts {
     value_format_name: euro_accounting_2_precision
     sql: ${lifetime_revenue_gross} ;;
   }
+
+  ################### CROSS-REFERENCED MEASURES
+
+  dimension_group: time_since_sign_up {
+    group_label: "* User Dimensions *"
+    type: duration
+    sql_start: ${first_order_raw} ;;
+    sql_end: ${base_orders.created_raw} ;;
+  }
+
+##### helping dimensions for hiding incomplete cohorts #####
+  dimension_group: time_between_sign_up_month_and_now {
+    group_label: "* User Dimensions *"
+    hidden: yes
+    type: duration
+    sql_start: DATE_TRUNC(${first_order_raw}, MONTH) ;;
+    sql_end: ${base_orders.now_raw} ;;
+  }
+
+  dimension_group: time_between_sign_up_week_and_now {
+    group_label: "* User Dimensions *"
+    hidden: yes
+    type: duration
+    sql_start: DATE_TRUNC(${first_order_raw}, WEEK) ;;
+    sql_end: ${base_orders.now_raw} ;;
+  }
+
+
+##### helping dimensions for hiding incomplete cohorts #####
+
+
+  dimension: time_since_sign_up_biweekly {
+    group_label: "* User Dimensions *"
+    type: number
+    sql: floor((${days_time_since_sign_up} / 14)) ;;
+    value_format: "0"
+  }
+
+  dimension_group: time_between_hub_launch_and_order {
+    group_label: "* Hub Dimensions *"
+    type: duration
+    sql_start: ${hub_order_facts.first_order_raw} ;;
+    sql_end: ${base_orders.created_raw} ;;
+  }
+
+  dimension: customer_type {
+    group_label: "* User Dimensions *"
+    type: string
+    sql: CASE WHEN ${base_orders.created_raw} = ${first_order_raw} THEN 'New Customer' ELSE 'Existing Customer' END ;;
+  }
+
+  measure: cnt_unique_orders_new_customers {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Orders New Customers"
+    description: "Count of successful Orders placed by new customers (Acquisitions)"
+    hidden:  no
+    type: count
+    value_format: "0"
+    filters: [customer_type: "New Customer"]
+  }
+
+  measure: cnt_unique_orders_existing_customers {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Orders Existing Customers"
+    description: "Count of successful Orders placed by returning customers"
+    hidden:  no
+    type: count
+    value_format: "0"
+    filters: [customer_type: "Existing Customer"]
+  }
+
+  measure: pct_acquisition_share {
+    group_label: "* Marketing *"
+    label: "% Acquisition Share"
+    description: "Share of New Customer Acquisitions over Total Orders"
+    hidden:  no
+    type: number
+    sql: ${cnt_unique_orders_new_customers} / NULLIF(${base_orders.cnt_orders}, 0);;
+    value_format: "0%"
+  }
+
 
 
   set: detail {

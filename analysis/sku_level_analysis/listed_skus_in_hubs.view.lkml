@@ -12,6 +12,26 @@ view: listed_skus_in_hubs {
       column: product_name                            { field: product_product.name}
       column: sub_category                            { field: product_category.name }
       column: parent_category                         { field: parent_category.name }
+      filters: {
+        field: hubs.country
+        value: ""
+      }
+      filters: {
+        field: hubs.hub_name
+        value: ""
+      }
+      filters: {
+        field: product_product.is_published
+        value: ""
+      }
+      filters: {
+        field: order_orderline_facts.is_internal_order
+        value: ""
+      }
+      filters: {
+        field: order_orderline_facts.is_successful_order
+        value: ""
+      }
     }
   }
   dimension: sku {
@@ -43,6 +63,12 @@ view: listed_skus_in_hubs {
   measure: cnt_hub_code {
     label: "# Hub Codes"
     sql: ${TABLE}.hub_code ;;
+    type: count_distinct
+  }
+
+  measure: cnt_skus {
+    label: "# SKUs"
+    sql: ${TABLE}.sku ;;
     type: count_distinct
   }
 }
