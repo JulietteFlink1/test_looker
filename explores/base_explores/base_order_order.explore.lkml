@@ -6,7 +6,7 @@ include: "/explores/base_explores/base_order_payment.explore"
 include: "/explores/base_explores/base_order_user_order_facts.explore"
 include: "/explores/base_explores/base_order_orderline.explore"
 include: "/explores/base_explores/base_order_hub_level.explore"
-include: "/views/discount_voucher.view.lkml"
+include: "/views/bigquery_tables/discount_voucher.view.lkml"
 
 explore: base_order_order {
   group_label: "01) Performance"

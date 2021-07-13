@@ -1,6 +1,6 @@
 
 include: "/explores/base_explores/base_orders.explore"
-include: "/views/discount_voucher.view.lkml"
+include: "/views/bigquery_tables/discount_voucher.view.lkml"
 
 explore: base_order_discount_order_vouchers {
   #group_label: "03) Vouchers"
