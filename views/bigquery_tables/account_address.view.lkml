@@ -82,4 +82,11 @@ view: account_address {
     sql: ${TABLE}.street_address_2 ;;
   }
 
+  measure: cnt_unique_address_string {
+    label: "# Unique Address Strings"
+    type: count_distinct
+    sql: CONCAT(street_address_1, postal_code) ;;
+
+  }
+
 }
