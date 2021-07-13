@@ -73,8 +73,6 @@ emails_clicked as (
       , count(*)                            as num_clicks
     from
       `flink-backend.braze.email_link_clicked`
-    where
-      link_url not like '%unsubscribe%'
     group by
       user_id, dispatch_id
 ),
