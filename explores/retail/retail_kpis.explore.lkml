@@ -39,6 +39,27 @@ explore: shelf_planning {
       datagroup_trigger: flink_default_datagroup
     }
   }
+
+  join: hubs_clean {
+    type: left_outer
+    relationship: many_to_one
+    sql_on: ${hubs_clean.hub_code_lowercase} = ${shelf_planning.hub_code} ;;
+    fields: [hubs_clean.city, hubs_clean.country_iso, hubs_clean.hub_name, hubs_clean.hub_code_lowercase]
+  }
+  join: product_facts {
+    type: left_outer
+    relationship: many_to_one
+    sql_on:  ${product_facts.sku}         = ${shelf_planning.sku}
+       and   ${product_facts.country_iso} = ${hubs_clean.country_iso}
+      ;;
+  }
+
+  join: shelf_planning_top_x_per_subcat {
+    type: left_outer
+    relationship: many_to_one
+    sql_on: ${shelf_planning_top_x_per_subcat.sku} = ${shelf_planning.sku} ;;
+    fields: [shelf_planning_top_x_per_subcat.rank_per_subcat, shelf_planning_top_x_per_subcat.sku]
+  }
 }
 
 
