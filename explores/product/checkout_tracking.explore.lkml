@@ -1,4 +1,4 @@
-include: "/tracking/checkout_tracking.view.lkml"
+include: "/views/projects/tracking/checkout_tracking.view.lkml"
 
 explore: checkout_tracking {
   view_name: checkout_tracking

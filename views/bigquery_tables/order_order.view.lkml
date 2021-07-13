@@ -302,7 +302,7 @@ view: order_order {
       dimension: date_granularity_pass_through {
         description: "To use the parameter value in a table calculation (e.g WoW, % Growth) we need to materialize it into a dimension "
         type: string
-        hidden: yes
+        hidden: no # yes
         sql:
             {% if date_granularity._parameter_value == 'Day' %}
               "Day"

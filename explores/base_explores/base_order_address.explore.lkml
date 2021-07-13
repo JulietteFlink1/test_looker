@@ -1,5 +1,5 @@
 include: "/explores/base_explores/base_orders.explore"
-include: "/views/account_address.view.lkml"
+include: "/views/bigquery_tables/account_address.view.lkml"
 
 explore: base_order_address {
   #group_label: "03) Vouchers"

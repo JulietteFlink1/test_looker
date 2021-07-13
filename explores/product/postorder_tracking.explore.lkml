@@ -1,4 +1,4 @@
-include: "/tracking/postorder_tracking.view.lkml"
+include: "/views/projects/tracking/postorder_tracking.view.lkml"
 
 explore: postorder_tracking {
   view_name: postorder_tracking
