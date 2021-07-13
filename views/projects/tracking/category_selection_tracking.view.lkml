@@ -55,9 +55,37 @@ view: category_selection_tracking {
       SELECT *, LAG(joined_table.event) OVER(PARTITION BY joined_table.anonymous_id ORDER BY joined_table.timestamp ASC) AS previous_event
       FROM joined_table )
       SELECT * FROM previousevents_tb
-      WHERE event="category_selected"
        ;;
   }
+
+  measure: count_categoryselection_from_home {
+    label: "count categoryselection from home"
+    description: "Count number of events where categorySelected was preceded by homeViewed"
+    type: count
+    filters: [event: "category_selected", previous_event: "home_viewed"]
+  }
+
+  measure: count_categoryselection_from_grid {
+    label: "count categoryselection from grid"
+    description: "Count number of events where categorySelected was preceded by categoriesGridViewed"
+    type: count
+    filters: [event: "category_selected", previous_event: "categories_grid_viewed"]
+  }
+
+  measure: count_showmore_categories {
+    label: "count show more categories"
+    description: "Count number of times show more was tapped on the home screen to show more categories"
+    type: count
+    filters: [event: "categories_show_more_selected"]
+  }
+
+  measure: count_home_viewed {
+    label: "count home viewed"
+    description: "Count number of times home screen was viewed"
+    type: count
+    filters: [event: "home_viewed"]
+  }
+
 
   measure: count {
     type: count
