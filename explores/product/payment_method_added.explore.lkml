@@ -1,4 +1,4 @@
-include: "/tracking/payment_method_added.view.lkml"
+include: "/views/projects/tracking/payment_method_added.view.lkml"
 
 explore: payment_method_added {
   view_name: payment_method_added

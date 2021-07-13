@@ -1,4 +1,4 @@
-include: "/tracking/order_placed_view.view.lkml"
+include: "/views/projects/tracking/order_placed_view.view.lkml"
 
 explore: order_placed_view {
   view_name: order_placed_view

@@ -1,4 +1,4 @@
-include: "/tracking/delivery_time_sessions.view.lkml"
+include: "/views/projects/tracking/delivery_time_sessions.view.lkml"
 
 explore: delivery_time_sessions {
   view_name: delivery_time_sessions
