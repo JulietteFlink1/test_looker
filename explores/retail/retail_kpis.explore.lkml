@@ -25,10 +25,8 @@ explore: listed_skus_in_hubs {
   hidden: yes
 }
 
-explore: base_order_orderline_extended {
-  extends: [base_order_orderline]
+explore: shelf_planning {
   hidden: yes
-  # used for ad-hoc analysis
 }
 
 
