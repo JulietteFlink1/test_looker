@@ -73,8 +73,6 @@ emails_clicked as (
       , count(*)                            as num_clicks
     from
       `flink-backend.braze.email_link_clicked`
-    where
-      link_url not like '%unsubscribe%'
     group by
       user_id, dispatch_id
 ),
@@ -582,7 +580,7 @@ group by
     label: "Unique Order Rate"
     description: "Percentage: number of unique orders made in the 24h after the last opening of the email divided by the number of unique emails opened"
     group_label: "Ratios"
-    sql: ${unique_orders} / NULLIF(${num_unique_emails_opened}, 0);;
+    sql: ${unique_orders} / NULLIF(${total_emails_opened_unique}, 0);;
     value_format_name: percent_2
   }
 
