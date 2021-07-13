@@ -52,7 +52,12 @@ view: productsearch_mobile_events {
     ON
     tracks.id=event.id
     WHERE
-    tracks.event NOT LIKE "api%" AND tracks.event NOT LIKE "deep_link%"
+      tracks.event NOT LIKE "%api%"
+      AND tracks.event NOT LIKE "%adjust%"
+      AND tracks.event NOT LIKE "%install_attributed%"
+      AND tracks.event NOT LIKE "%deep_link%"
+      AND NOT (tracks.context_app_version LIKE "%APP-RATING%" OR tracks.context_app_version LIKE "%DEBUG%")
+      AND NOT (tracks.context_app_name = "Flink-Staging" OR tracks.context_app_name="Flink-Debug")
 
     UNION ALL
 
@@ -105,7 +110,12 @@ view: productsearch_mobile_events {
     ON
     tracks.id=event.id
     WHERE
-    tracks.event NOT LIKE "api%" AND tracks.event NOT LIKE "deep_link%"
+      tracks.event NOT LIKE "%api%"
+      AND tracks.event NOT LIKE "%adjust%"
+      AND tracks.event NOT LIKE "%install_attributed%"
+      AND tracks.event NOT LIKE "%deep_link%"
+      AND NOT (tracks.context_app_version LIKE "%APP-RATING%" OR tracks.context_app_version LIKE "%DEBUG%")
+      AND NOT (tracks.context_app_name = "Flink-Staging" OR tracks.context_app_name="Flink-Debug")
     ),
 
     country_lookup AS (
