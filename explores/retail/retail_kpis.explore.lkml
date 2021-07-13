@@ -27,6 +27,18 @@ explore: listed_skus_in_hubs {
 
 explore: shelf_planning {
   hidden: yes
+  aggregate_table: rollup__hub_code__product_name__sku {
+    query: {
+      dimensions: [hub_code, product_name, sku]
+      measures: [avg_main_kpis, avg_max_sum_item_quantity, avg_median_sum_item_quantity, avg_num_3d_windows, avg_stock_over_days_3d_windows_total_time, avg_sum_item_quantity, percentile_sum_item_quantity, std_sum_item_quantity]
+      filters: [shelf_planning.date_filter: "5 weeks"]
+      timezone: "Europe/Berlin"
+    }
+
+    materialization: {
+      datagroup_trigger: flink_default_datagroup
+    }
+  }
 }
 
 

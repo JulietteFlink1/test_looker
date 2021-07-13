@@ -22,6 +22,10 @@ explore: base_order_order {
             base_order_orderline,
             base_order_hub_level
             ]
+  fields: [
+     ALL_FIELDS*,
+     -shyftplan_riders_pickers_hours.logistics_performance_indicator
+  ]
 
   join: gdpr_account_deletion {
     view_label: "* Customers *"
