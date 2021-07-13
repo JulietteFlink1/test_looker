@@ -32,7 +32,7 @@ explore: base_orders {
     view_label: "* Hubs *"
     sql_on: ${base_orders.country_iso}    = ${hubs.country_iso} AND
             ${base_orders.warehouse_name} = ${hubs.hub_code_lowercase} ;;
-    relationship: one_to_one
+    relationship: many_to_many
     type: left_outer
     fields: [
       hubs.city,

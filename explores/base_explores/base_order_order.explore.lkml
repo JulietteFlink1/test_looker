@@ -7,6 +7,8 @@ include: "/explores/base_explores/base_order_user_order_facts.explore"
 include: "/explores/base_explores/base_order_orderline.explore"
 include: "/explores/base_explores/base_order_hub_level.explore"
 include: "/views/bigquery_tables/discount_voucher.view.lkml"
+include: "/views/bigquery_tables/order_order.view.lkml"
+include: "/views/bigquery_tables/discount_voucher.view.lkml"
 
 explore: base_order_order {
   group_label: "01) Performance"
@@ -22,9 +24,7 @@ explore: base_order_order {
             base_order_orderline,
             base_order_hub_level
             ]
-  fields: [
-     ALL_FIELDS*,
-     -shyftplan_riders_pickers_hours.logistics_performance_indicator
+  fields: [ALL_FIELDS*
   ]
 
   join: gdpr_account_deletion {
