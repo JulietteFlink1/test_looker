@@ -1,139 +1,180 @@
 view: braze_crm_data {
   derived_table: {
     sql: with
-emails_sent as (
-    select
-        user_id                             as user_id
-      , dispatch_id                         as dispatch_id
-      , campaign_name                       as campaign_name
-      , split(campaign_name,'_')[OFFSET(1)] as country
-      , min(sent_at)                        as sent_at
-      , min(received_at)                    as received_at
-      , count(*)                            as all_sends
-    from
-      `flink-backend.braze.email_sent`
-    group by
-      user_id, dispatch_id, campaign_name, country
-),
+      emails_sent as (
+          select
+              user_id                             as user_id
+            , dispatch_id                         as dispatch_id
+            , campaign_name                       as campaign_name
+            , canvas_name                         as canvas_name
+            , COALESCE(split(campaign_name,'_')[OFFSET(1)],split(canvas_name,'_')[OFFSET(1)]) as country
+            , min(sent_at)                        as sent_at
+            , min(received_at)                    as received_at
+            , count(*)                            as all_sends
+          from
+            `flink-backend.braze.email_sent`
+          group by
+            user_id, dispatch_id, campaign_name, canvas_name, country
+      ),
 
-emails_delivered as (
-    select
-        user_id                             as user_id
-      , dispatch_id                         as dispatch_id
-      , min(timestamp)                      as delivered_at
-    from
-      `flink-backend.braze.email_delivered`
-    group by
-      user_id, dispatch_id
-),
+      emails_delivered as (
+          select
+              user_id                             as user_id
+            , dispatch_id                         as dispatch_id
+            , min(timestamp)                      as delivered_at
+          from
+            `flink-backend.braze.email_delivered`
+          group by
+            user_id, dispatch_id
+      ),
 
-emails_bounced as (
-    select
-        user_id                             as user_id
-      , dispatch_id                         as dispatch_id
-      , min(timestamp)                      as bounced_at
-      , count(*)                            as num_bounced
-    from
-      `flink-backend.braze.email_bounced`
-    group by
-      user_id, dispatch_id
-),
+      emails_bounced as (
+          select
+              user_id                             as user_id
+            , dispatch_id                         as dispatch_id
+            , min(timestamp)                      as bounced_at
+            , count(*)                            as num_bounced
+          from
+            `flink-backend.braze.email_bounced`
+          group by
+            user_id, dispatch_id
+      ),
 
-emails_soft_bounced as (
-    select
-        user_id                             as user_id
-      , dispatch_id                         as dispatch_id
-      , min(timestamp)                      as soft_bounced_at
-      , count(*)                            as num_soft_bounced
-    from
-      `flink-backend.braze.email_soft_bounced`
-    group by
-      user_id, dispatch_id
-),
+      emails_soft_bounced as (
+          select
+              user_id                             as user_id
+            , dispatch_id                         as dispatch_id
+            , min(timestamp)                      as soft_bounced_at
+            , count(*)                            as num_soft_bounced
+          from
+            `flink-backend.braze.email_soft_bounced`
+          group by
+            user_id, dispatch_id
+      ),
 
-emails_opened as (
-    select
-        user_id                             as user_id
-      , dispatch_id                         as dispatch_id
-      , min(timestamp)                      as opened_at_first
-      , min(timestamp)                      as opened_at_last
-      , count(*)                            as num_opening
-    from
-      `flink-backend.braze.email_opened`
-    group by
-      user_id, dispatch_id
-),
+      emails_opened as (
+          select
+              user_id                             as user_id
+            , dispatch_id                         as dispatch_id
+            , min(timestamp)                      as opened_at_first
+            , min(timestamp)                      as opened_at_last
+            , count(*)                            as num_opening
+          from
+            `flink-backend.braze.email_opened`
+          group by
+            user_id, dispatch_id
+      ),
 
-emails_clicked as (
-    select
-        user_id                             as user_id
-      , dispatch_id                         as dispatch_id
-      , min(timestamp)                      as clicked_at_first
-      , min(timestamp)                      as clicked_at_last
-      , count(*)                            as num_clicks
-    from
-      `flink-backend.braze.email_link_clicked`
-    where
-      link_url not like '%unsubscribe%'
-    group by
-      user_id, dispatch_id
-),
+      emails_clicked as (
+          select
+              user_id                             as user_id
+            , dispatch_id                         as dispatch_id
+            , min(timestamp)                      as clicked_at_first
+            , min(timestamp)                      as clicked_at_last
+            , count(*)                            as num_clicks
+          from
+            `flink-backend.braze.email_link_clicked`
+          group by
+            user_id, dispatch_id
+      ),
 
-emails_unsubscribed as (
-    select
-        user_id                             as user_id
-      , dispatch_id                         as dispatch_id
-      , min(timestamp)                      as unsubscribed_at
-    from
-      `flink-backend.braze.unsubscribed`
-    group by
-      user_id, dispatch_id
-)
+      emails_unsubscribed as (
+          select
+              user_id                             as user_id
+            , dispatch_id                         as dispatch_id
+            , min(timestamp)                      as unsubscribed_at
+          from
+            `flink-backend.braze.unsubscribed`
+          group by
+            user_id, dispatch_id
+      ),
 
-select
-  -- DIMENSIONS
-    es.campaign_name                                      as campaign_name
-  , es.country                                            as country
-  , date(es.sent_at, "Europe/Berlin")                    as email_sent_at
-  , date_diff(eo.opened_at_first, es.sent_at, day)       as days_sent_to_open
-  , date_diff(ec.clicked_at_first, es.sent_at, day)      as days_sent_to_click
-  -- MEASURES
-  , count(distinct concat(es.user_id , es.dispatch_id))   as num_emails_sent
-  , sum(es.all_sends)                                     as num_all_sents
-  , count(distinct concat(eb.user_id , eb.dispatch_id))   as num_unique_emails_bounced
-  , sum(eb.num_bounced )                                  as num_emails_bounced
-  , count(distinct concat(esb.user_id , esb.dispatch_id)) as num_unique_emails_soft_bounced
-  , sum(esb.num_soft_bounced )                          as num_emails_soft_bounced
-  , count(distinct concat(ed.user_id , ed.dispatch_id))   as num_emails_delivered
-  , count(distinct concat(eo.user_id , eo.dispatch_id))   as num_unique_emails_opened
-  , sum(eo.num_opening  )                               as num_emails_opened
-  , count(distinct concat(ec.user_id , ec.dispatch_id))   as num_unique_emails_clicked
-  , sum(ec.num_clicks)                                  as num_emails_clicked
-  , count(distinct concat(uns.user_id , uns.dispatch_id)) as num_unique_unsubscribed
+      orders_raw as ( --all valid orders
+          select
+              user_email
+              ,created as order_created_at
+              ,id as order_id
+              ,country_iso
+          from
+            `flink-backend.saleor_db_global.order_order`
+          where
+            status in ('fulfilled', 'partially fulfilled')
+      ),
 
-from
-          emails_sent                     as es
-left join emails_bounced                  as eb
-       on es.user_id     = eb.user_id
-      and es.dispatch_id = eb.dispatch_id
-left join emails_soft_bounced             as esb
-       on es.user_id     = esb.user_id
-      and es.dispatch_id = esb.dispatch_id
-left join emails_delivered                as ed
-       on es.user_id     = ed.user_id
-      and es.dispatch_id = ed.dispatch_id
-left join emails_opened                   as eo
-       on es.user_id     = eo.user_id
-      and es.dispatch_id = eo.dispatch_id
-left join emails_clicked                  as ec
-       on es.user_id     = ec.user_id
-      and es.dispatch_id = ec.dispatch_id
-left join emails_unsubscribed             as uns
-       on es.user_id     = uns.user_id
-      and es.dispatch_id = uns.dispatch_id
+      orders as ( --attribute the order to the last enail opened if the order happened within the next 24h
+          select distinct
+             user_id
+             ,LAST_VALUE(dispatch_id) OVER (partition by order_id order by opened_at_first ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) as dispatch_id
+             ,LAST_VALUE(opened_at_first) OVER (partition by order_id order by opened_at_first  ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) as opened_at
+             ,order_id
+             ,order_created_at
+          from
+            emails_opened
+          join
+            orders_raw
+            on user_email = user_id
+            and timestamp_diff(order_created_at, opened_at_first, hour) BETWEEN 0 and 12
+      ),
 
-group by
-  campaign_name, country, email_sent_at, days_sent_to_open, days_sent_to_click;;
+      orders_aggregated as (--aggregates orders per user
+        select user_id,
+              dispatch_id,
+              COUNT(order_id) AS num_orders
+        from
+          orders
+        group by 1,2
+      )
+
+      select
+        -- DIMENSIONS
+          es.campaign_name                                      as campaign_name
+        , es.canvas_name                                        as canvas_name
+        , es.country                                            as country
+        , date(es.sent_at, "Europe/Berlin")                    as email_sent_at
+        , date_diff(eo.opened_at_first, es.sent_at, day)       as days_sent_to_open
+        , date_diff(ec.clicked_at_first, es.sent_at, day)      as days_sent_to_click
+        -- MEASURES
+        , count(distinct concat(es.user_id , es.dispatch_id))   as num_emails_sent
+        , sum(es.all_sends)                                     as num_all_sents
+        , count(distinct concat(eb.user_id , eb.dispatch_id))   as num_unique_emails_bounced
+        , sum(eb.num_bounced )                                  as num_emails_bounced
+        , count(distinct concat(esb.user_id , esb.dispatch_id)) as num_unique_emails_soft_bounced
+        , sum(esb.num_soft_bounced )                          as num_emails_soft_bounced
+        , count(distinct concat(ed.user_id , ed.dispatch_id))   as num_emails_delivered
+        , count(distinct concat(eo.user_id , eo.dispatch_id))   as num_unique_emails_opened
+        , sum(eo.num_opening  )                               as num_emails_opened
+        , count(distinct concat(ec.user_id , ec.dispatch_id))   as num_unique_emails_clicked
+        , sum(ec.num_clicks)                                  as num_emails_clicked
+        , count(distinct concat(uns.user_id , uns.dispatch_id)) as num_unique_unsubscribed
+        , sum(num_orders)                                        as num_orders
+        , count(distinct concat(oa.user_id , oa.dispatch_id))   as num_unique_orders
+
+      from
+                emails_sent                     as es
+      left join emails_bounced                  as eb
+             on es.user_id     = eb.user_id
+            and es.dispatch_id = eb.dispatch_id
+      left join emails_soft_bounced             as esb
+             on es.user_id     = esb.user_id
+            and es.dispatch_id = esb.dispatch_id
+      left join emails_delivered                as ed
+             on es.user_id     = ed.user_id
+            and es.dispatch_id = ed.dispatch_id
+      left join emails_opened                   as eo
+             on es.user_id     = eo.user_id
+            and es.dispatch_id = eo.dispatch_id
+      left join emails_clicked                  as ec
+             on es.user_id     = ec.user_id
+            and es.dispatch_id = ec.dispatch_id
+      left join emails_unsubscribed             as uns
+             on es.user_id     = uns.user_id
+            and es.dispatch_id = uns.dispatch_id
+      left join orders_aggregated oa
+             on es.user_id     = oa.user_id
+            and es.dispatch_id = oa.dispatch_id
+
+      group by
+        campaign_name, canvas_name, country, email_sent_at, days_sent_to_open, days_sent_to_click;;
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -145,6 +186,13 @@ group by
     description: "The email campaign name defined in Braze"
     type: string
     sql: ${TABLE}.campaign_name ;;
+  }
+
+  dimension: canvas_name {
+    label: "Canvas Name"
+    description: "The email canvas name defined in Braze"
+    type: string
+    sql: ${TABLE}.canvas_name ;;
   }
 
   dimension: country {
@@ -186,7 +234,7 @@ group by
   dimension: primary_key {
     primary_key: yes
     hidden: yes
-    sql: CONCAT(${TABLE}.campaign_name, ${TABLE}.country, ${TABLE}.email_sent_at) ;;
+    sql: CONCAT(${TABLE}.campaign_name,${TABLE}.canvas_name, ${TABLE}.country, ${TABLE}.email_sent_at) ;;
   }
 
   dimension: days_sent_to_open {
@@ -279,6 +327,19 @@ group by
     value_format_name: decimal_0
     hidden: yes
   }
+
+  dimension: num_orders {
+    type: number
+    sql: ${TABLE}.num_orders ;;
+    hidden: yes
+  }
+
+  dimension: num_unique_orders {
+    type: number
+    sql: ${TABLE}.num_unique_orders ;;
+    hidden: yes
+  }
+
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   #           Measures
@@ -410,6 +471,26 @@ group by
     value_format_name: decimal_2
   }
 
+  measure: total_orders {
+    type: sum
+    label: "Total Orders"
+    description: "Number of Orders that happened in the 24h after the last email open"
+    group_label: "Numbers"
+    sql: ${num_orders};;
+    value_format_name: decimal_0
+  }
+
+  measure: unique_orders {
+    type: sum
+    label: "Unique Orders"
+    description: "Number of Orders that happened in the 24h after the last email open"
+    group_label: "Numbers"
+    sql: ${num_unique_orders};;
+    value_format_name: decimal_0
+  }
+
+
+
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   #           Ratios
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -494,6 +575,26 @@ group by
     value_format_name: percent_2
   }
 
+  measure: total_order_rate {
+    type: number
+    label: "Total Order Rate"
+    description: "Percentage: number of orders made in the 24h after the last opening of the email divided by the number of emails opened"
+    group_label: "Ratios"
+    sql: ${total_orders} / NULLIF(${total_emails_opened}, 0);;
+    value_format_name: percent_2
+  }
+
+  measure: unique_order_rate {
+    type: number
+    label: "Unique Order Rate"
+    description: "Percentage: number of unique orders made in the 24h after the last opening of the email divided by the number of unique emails opened"
+    group_label: "Ratios"
+    sql: ${unique_orders} / NULLIF(${total_emails_opened_unique}, 0);;
+    value_format_name: percent_2
+  }
+
+
+
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   #           Parameter
@@ -528,7 +629,12 @@ group by
     allowed_value: { value: "avg_days_sent_to_click" label: "ø Days Sent to Click"}
     # unsubscribes
     allowed_value: { value: "unsubscribes"           label: "Unsubscribes"}
-    allowed_value: { value: "unsubscribes_rate"      label: "# Orders"}
+    allowed_value: { value: "unsubscribes_rate"      label: "Unsubscribe Rate"}
+    allowed_value: { value: "total_orders"           label: "Total Orders"}
+    allowed_value: { value: "total_order_rate"       label: "Total Order Rate"}
+    allowed_value: { value: "unique_order_rate"      label: "Unique Order Rate"}
+    allowed_value: { value: "unique_orders"          label: "Unique Orders"}
+
     #
     default_value: "sends"
   }
@@ -588,6 +694,14 @@ group by
       ${unique_cta_clicks}
     {% elsif KPI_parameter._parameter_value == 'unique_cta_clicks_rate' %}
       ${unique_cta_clicked_emails_per_emails_delivered}
+    {% elsif KPI_parameter._parameter_value == 'total_orders' %}
+      ${total_orders}
+    {% elsif KPI_parameter._parameter_value == 'total_order_rate' %}
+      ${total_order_rate}
+    {% elsif KPI_parameter._parameter_value == 'unique_orders' %}
+      ${unique_orders}
+    {% elsif KPI_parameter._parameter_value == 'unique_order_rate' %}
+      ${unique_order_rate}
     {% endif %}
     ;;
   }
@@ -603,6 +717,7 @@ group by
   set: detail {
     fields: [
       campaign_name,
+      canvas_name,
       country,
       email_sent_at,
       days_sent_to_open,
@@ -616,7 +731,8 @@ group by
       num_unique_emails_opened,
       num_emails_opened,
       num_unique_emails_clicked,
-      num_emails_clicked
+      num_emails_clicked,
+      num_orders
     ]
   }
 }
