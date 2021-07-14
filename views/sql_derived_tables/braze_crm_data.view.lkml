@@ -112,7 +112,7 @@ orders as ( --attribute the order to the last enail opened if the order happened
     join
       orders_raw
       on user_email = user_id
-      and timestamp_diff(order_created_at, opened_at_first, minute) BETWEEN 0 and 1440
+      and timestamp_diff(order_created_at, opened_at_first, hour) BETWEEN 0 and 12
 ),
 
 orders_aggregated as (--aggregates orders per user
