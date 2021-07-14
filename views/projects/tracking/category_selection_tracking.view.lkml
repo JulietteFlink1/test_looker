@@ -58,6 +58,20 @@ view: category_selection_tracking {
        ;;
   }
 
+  measure: count_addtocart_from_home {
+    label: "count addtocart from home"
+    description: "Count number of events where productAddedToCart was preceded by homeViewed"
+    type: count
+    filters: [event: "product_added_to_cart", previous_event: "home_viewed"]
+  }
+
+  measure: count_productsearchviewed_from_home {
+    label: "count productsearchviewed from home"
+    description: "Count number of events where productSearchViewed was preceded by homeViewed"
+    type: count
+    filters: [event: "product_search_viewed", previous_event: "home_viewed"]
+  }
+
   measure: count_categoryselection_from_home {
     label: "count categoryselection from home"
     description: "Count number of events where categorySelected was preceded by homeViewed"
