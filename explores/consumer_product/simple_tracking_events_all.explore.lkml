@@ -1,4 +1,4 @@
-include: "/views/projects/tracking/simple_tracking_events_all.view.lkml"
+include: "/views/projects/consumer_product/simple_tracking_events_all.view.lkml"
 
 explore: simple_tracking_events_all {
   view_name: simple_tracking_events_all
