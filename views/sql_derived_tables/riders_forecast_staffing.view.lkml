@@ -1,214 +1,219 @@
 view: riders_forecast_staffing {
   derived_table: {
     sql: with
-    historical_orders as (
-        select
-            timestamp_seconds(30 * 60 * div(unix_seconds(created), 30 * 60)) as timekey
-          , case
-                when json_extract_scalar(metadata, '$.warehouse') in
-                     ('hamburg-oellkersallee', 'hamburg-oelkersallee')                      then 'de_ham_alto'
-                when json_extract_scalar(metadata, '$.warehouse') = 'münchen-leopoldstraße' then 'de_muc_schw'
-                                                                                            else json_extract_scalar(metadata, '$.warehouse')
-            end                                                              as warehouse
-          , count(id)                                                        as orders
-        from flink-backend.saleor_db_global.order_order
-        where status in ('fulfilled', 'partially fulfilled') and
-              user_email not like '%goflink%'
-           or user_email not like '%pickery%'
-           or lower(user_email) not in
-              ('christoph.a.cordes@gmail.com', 'jfdames@gmail.com', 'oliver.merkel@gmail.com',
-               'alenaschneck@gmx.de', 'saadsaeed354@gmail.com', 'saadsaeed353@gmail.com',
-               'fabian.hardenberg@gmail.com', 'benjamin.zagel@gmail.com')
-        group by 1, 2
-    )
+          historical_orders as (
+              select
+                  timestamp_seconds(30 * 60 * div(unix_seconds(created), 30 * 60)) as timekey
+                , case
+                      when json_extract_scalar(metadata, '$.warehouse') in
+                           ('hamburg-oellkersallee', 'hamburg-oelkersallee')                      then 'de_ham_alto'
+                      when json_extract_scalar(metadata, '$.warehouse') = 'münchen-leopoldstraße' then 'de_muc_schw'
+                                                                                                  else json_extract_scalar(metadata, '$.warehouse')
+                  end                                                              as warehouse
+                , count(id)                                                        as orders
+              from flink-backend.saleor_db_global.order_order
+              where status in ('fulfilled', 'partially fulfilled') and
+                    user_email not like '%goflink%'
+                 or user_email not like '%pickery%'
+                 or lower(user_email) not in
+                    ('christoph.a.cordes@gmail.com', 'jfdames@gmail.com', 'oliver.merkel@gmail.com',
+                     'alenaschneck@gmx.de', 'saadsaeed354@gmail.com', 'saadsaeed353@gmail.com',
+                     'fabian.hardenberg@gmail.com', 'benjamin.zagel@gmail.com')
+              group by 1, 2
+          )
 
-  , shifts            as (
-    select
-        shifts.starts_at
-      , shifts.ends_at
-      , lower(locations_positions.location_name) as hub_name
-      , shifts.workers
-      , case
-            when lower(locations_positions.position_name) like '%rider%'  then 'rider'
-            when lower(locations_positions.position_name) like '%picker%' then 'picker'
-        end                                      as position
-    from flink-data-staging.shyftplan_v1.shifts                   as shifts
-    left join flink-data-staging.shyftplan_v1.locations_positions as locations_positions
-              on shifts.locations_position_id = locations_positions.id
-    where lower(locations_positions.position_name) like '%rider%'
-       or lower(locations_positions.position_name) like '%picker%'
-    order by 3, 1 asc
-)
+        , shifts            as (
+          select
+              shifts.starts_at
+            , shifts.ends_at
+            , lower(locations_positions.location_name) as hub_name
+            , shifts.workers
+            , case
+                  when lower(locations_positions.position_name) like '%rider%'  then 'rider'
+                  when lower(locations_positions.position_name) like '%picker%' then 'picker'
+              end                                      as position
+          from flink-data-staging.shyftplan_v1.shifts                   as shifts
+          left join flink-data-staging.shyftplan_v1.locations_positions as locations_positions
+                    on shifts.locations_position_id = locations_positions.id
+          where lower(locations_positions.position_name) like '%rider%'
+             or lower(locations_positions.position_name) like '%picker%'
+          order by 3, 1 asc
+      )
 
-    -- queried once, and re-used later
-  , shiftblocks_hubs  as (
-    select
-        shiftblocks_hubs.date            as date
-      , shiftblocks_hubs.block_starts_at as block_starts_at
-      , shiftblocks_hubs.block_ends_at   as block_ends_at
-      , shiftblocks_hubs.hub_name        as hub_name
-      , shiftblocks_hubs.city            as city
-    from flink-backend.rider_staffing.shiftblocks_hubs
-)
+          -- queried once, and re-used later
+        , shiftblocks_hubs  as (
+          select
+              shiftblocks_hubs.date            as date
+            , shiftblocks_hubs.block_starts_at as block_starts_at
+            , shiftblocks_hubs.block_ends_at   as block_ends_at
+            , shiftblocks_hubs.hub_name        as hub_name
+            , shiftblocks_hubs.city            as city
+          from flink-backend.rider_staffing.shiftblocks_hubs
+      )
 
-  , shifts_scheduled  as (
-    select
-        shiftblocks_hubs.date
-      , shiftblocks_hubs.block_starts_at
-      , shiftblocks_hubs.block_ends_at
-      , shiftblocks_hubs.hub_name
-      , shiftblocks_hubs.city
-      , nullif(sum(shifts.workers), 0)                         as workers
-      , sum(if(shifts.position = 'rider', shifts.workers, null))  as planned_rider
-      , sum(if(shifts.position = 'picker', shifts.workers, null)) as planned_picker
-      , nullif(sum(cast(date_diff(
-            least(shiftblocks_hubs.block_ends_at, shifts.ends_at),
-            greatest(shiftblocks_hubs.block_starts_at, shifts.starts_at),
-            minute
-        ) as float64) * shifts.workers), 0)                        as worker_hours
-      , sum(if(shifts.position = 'rider', cast(date_diff(
-            least(shiftblocks_hubs.block_ends_at, shifts.ends_at),
-            greatest(shiftblocks_hubs.block_starts_at, shifts.starts_at),
-            minute
-        ) as float64) * shifts.workers, null))                    as planned_rider_hours
-      , sum(if(shifts.position = 'picker', cast(date_diff(
-            least(shiftblocks_hubs.block_ends_at, shifts.ends_at),
-            greatest(shiftblocks_hubs.block_starts_at, shifts.starts_at),
-            minute
-        ) as float64) * shifts.workers, null))                    as planned_picker_hours
-    from shiftblocks_hubs
-    left join shifts
-              on shiftblocks_hubs.hub_name = shifts.hub_name and
-                 (
-                         (
-                                 (shifts.starts_at <= shiftblocks_hubs.block_starts_at)
-                                 or (shifts.starts_at > shiftblocks_hubs.block_starts_at and
-                                     shifts.starts_at < shiftblocks_hubs.block_ends_at)
-                             )
-                         and
-                         (
-                                 (shifts.ends_at >= shiftblocks_hubs.block_ends_at)
-                                 or (shifts.ends_at < shiftblocks_hubs.block_ends_at and
-                                     shifts.ends_at > shiftblocks_hubs.block_starts_at)
-                             )
-                     )
-    group by 1, 2, 3, 4, 5
-    order by 4, 2 asc
-)
+        , shifts_scheduled  as (
+          select
+              shiftblocks_hubs.date
+            , shiftblocks_hubs.block_starts_at
+            , shiftblocks_hubs.block_ends_at
+            , shiftblocks_hubs.hub_name
+            , shiftblocks_hubs.city
+            , nullif(sum(shifts.workers), 0)                         as workers
+            , sum(if(shifts.position = 'rider', shifts.workers, null))  as planned_rider
+            , sum(if(shifts.position = 'picker', shifts.workers, null)) as planned_picker
+            , nullif(sum(cast(date_diff(
+                  least(shiftblocks_hubs.block_ends_at, shifts.ends_at),
+                  greatest(shiftblocks_hubs.block_starts_at, shifts.starts_at),
+                  minute
+              ) as float64) * shifts.workers), 0)                        as worker_hours
+            , sum(if(shifts.position = 'rider', cast(date_diff(
+                  least(shiftblocks_hubs.block_ends_at, shifts.ends_at),
+                  greatest(shiftblocks_hubs.block_starts_at, shifts.starts_at),
+                  minute
+              ) as float64) * shifts.workers, null))                    as planned_rider_hours
+            , sum(if(shifts.position = 'picker', cast(date_diff(
+                  least(shiftblocks_hubs.block_ends_at, shifts.ends_at),
+                  greatest(shiftblocks_hubs.block_starts_at, shifts.starts_at),
+                  minute
+              ) as float64) * shifts.workers, null))                    as planned_picker_hours
+          from shiftblocks_hubs
+          left join shifts
+                    on shiftblocks_hubs.hub_name = shifts.hub_name and
+                       (
+                               (
+                                       (shifts.starts_at <= shiftblocks_hubs.block_starts_at)
+                                       or (shifts.starts_at > shiftblocks_hubs.block_starts_at and
+                                           shifts.starts_at < shiftblocks_hubs.block_ends_at)
+                                   )
+                               and
+                               (
+                                       (shifts.ends_at >= shiftblocks_hubs.block_ends_at)
+                                       or (shifts.ends_at < shiftblocks_hubs.block_ends_at and
+                                           shifts.ends_at > shiftblocks_hubs.block_starts_at)
+                                   )
+                           )
+          group by 1, 2, 3, 4, 5
+          order by 4, 2 asc
+      )
 
-  , evaluations_data  as
-        (
-            select
-                shift.starts_at
-              , shift.ends_at
-              , lower(location.name)                      as hub_name
-              , employment_id in (422284, 422285, 422016) as is_external
-              , state in ('no_show')                      as is_no_show
-              , case
-                    when lower(position.name) like '%rider%'  then 'rider'
-                    when lower(position.name) like '%picker%' then 'picker'
-                end                                       as position
-              , count(distinct evaluations.id)            as cnt_employees
-            from flink-data-staging.shyftplan_v1.evaluations              as evaluations
-            left join flink-data-staging.shyftplan_v1.locations_positions as locations_positions
-                      on evaluations.locations_position_id = locations_positions.id
-            where (lower(position.name) like '%rider%' or lower(position.name) like '%picker%')
-            group by 1, 2, 3, 4, 5, 6
-            order by 1 desc, 2, 3
-        )
+        , evaluations_data  as
+              (
+                  select
+                      shift.starts_at
+                    , shift.ends_at
+                    , lower(location.name)                      as hub_name
+                    , employment_id in (422284, 422285, 422016) as is_external
+                    , state in ('no_show')                      as is_no_show
+                    , case
+                          when lower(position.name) like '%rider%'  then 'rider'
+                          when lower(position.name) like '%picker%' then 'picker'
+                      end                                       as position
+                    , count(distinct evaluations.id)            as cnt_employees
+                    , sum(evaluation_duration / 60) / (timestamp_diff(shift.ends_at, shift.starts_at, hour) * 2) as punched_hours
+                  from flink-data-staging.shyftplan_v1.evaluations              as evaluations
+                  left join flink-data-staging.shyftplan_v1.locations_positions as locations_positions
+                            on evaluations.locations_position_id = locations_positions.id
+                  where (lower(position.name) like '%rider%' or lower(position.name) like '%picker%')
+                  group by 1, 2, 3, 4, 5, 6
+                  order by 1 desc, 2, 3
+              )
 
-  , shifts_assigned   as (
-    select
-        shiftblocks_hubs.date
-      , shiftblocks_hubs.block_starts_at
-      , shiftblocks_hubs.block_ends_at
-      , shiftblocks_hubs.hub_name
-      , shiftblocks_hubs.city
-      , sum(if(position = 'rider', cnt_employees, null))                  as filled_riders
-      , sum(if(position = 'rider' and is_external, cnt_employees, null))  as filled_ext_riders
-      , sum(if(position = 'rider' and is_no_show, cnt_employees, null))   as filled_no_show_riders
-      , sum(if(position = 'picker', cnt_employees, null))                 as filled_pickers
-      , sum(if(position = 'picker' and is_external, cnt_employees, null)) as filled_ext_pickers
-      , sum(if(position = 'picker' and is_no_show, cnt_employees, null))  as filled_no_show_pickers
-    from shiftblocks_hubs
-    left join evaluations_data
-              on shiftblocks_hubs.hub_name = evaluations_data.hub_name and (
-                      (
-                              (evaluations_data.starts_at <= shiftblocks_hubs.block_starts_at)
-                              or (evaluations_data.starts_at > shiftblocks_hubs.block_starts_at and
-                                  evaluations_data.starts_at < shiftblocks_hubs.block_ends_at)
-                          )
-                      and
-                      (
-                              (evaluations_data.ends_at >= shiftblocks_hubs.block_ends_at)
-                              or (evaluations_data.ends_at < shiftblocks_hubs.block_ends_at and
-                                  evaluations_data.ends_at > shiftblocks_hubs.block_starts_at)
-                          )
-                  )
-    group by 1, 2, 3, 4, 5
-    order by 4, 2 asc
-)
+        , shifts_assigned   as (
+          select
+              shiftblocks_hubs.date
+            , shiftblocks_hubs.block_starts_at
+            , shiftblocks_hubs.block_ends_at
+            , shiftblocks_hubs.hub_name
+            , shiftblocks_hubs.city
+            , sum(if(position = 'rider', cnt_employees, null))                  as filled_riders
+            , sum(if(position = 'rider' and is_external, cnt_employees, null))  as filled_ext_riders
+            , sum(if(position = 'rider' and is_no_show, cnt_employees, null))   as filled_no_show_riders
+            , sum(if(position = 'picker', cnt_employees, null))                 as filled_pickers
+            , sum(if(position = 'picker' and is_external, cnt_employees, null)) as filled_ext_pickers
+            , sum(if(position = 'picker' and is_no_show, cnt_employees, null))  as filled_no_show_pickers
+            , sum(if(position = 'rider', punched_hours, null))                   as punched_rider_hours
+            , sum(if(position = 'picker', punched_hours, null))                  as punched_picker_hours
+          from shiftblocks_hubs
+          left join evaluations_data
+                    on shiftblocks_hubs.hub_name = evaluations_data.hub_name and (
+                            (
+                                    (evaluations_data.starts_at <= shiftblocks_hubs.block_starts_at)
+                                    or (evaluations_data.starts_at > shiftblocks_hubs.block_starts_at and
+                                        evaluations_data.starts_at < shiftblocks_hubs.block_ends_at)
+                                )
+                            and
+                            (
+                                    (evaluations_data.ends_at >= shiftblocks_hubs.block_ends_at)
+                                    or (evaluations_data.ends_at < shiftblocks_hubs.block_ends_at and
+                                        evaluations_data.ends_at > shiftblocks_hubs.block_starts_at)
+                                )
+                        )
+          group by 1, 2, 3, 4, 5
+          order by 4, 2 asc
+      )
 
-select
-    shiftblocks_hubs.date
-   --, 'refactored' as source
-  , shiftblocks_hubs.block_starts_at
-  , shiftblocks_hubs.block_ends_at
-  , shiftblocks_hubs.hub_name
-  , shiftblocks_hubs.city
-  , historical_orders.orders
-  , historical_forecasts.prediction                                                   as predicted_orders
-  , historical_forecasts.lower_bound
-  , historical_forecasts.upper_bound
-  , shifts_scheduled.planned_rider                                                    as planned_riders
-  , shifts_scheduled.planned_picker                                                   as planned_pickers
-  , shifts_assigned.filled_riders                                                     as filled_riders
-  , shifts_assigned.filled_ext_riders                                                 as filled_ext_riders
-  , shifts_assigned.filled_no_show_riders                                             as filled_no_show_riders
-  , shifts_assigned.filled_pickers                                                    as filled_pickers
-  , shifts_assigned.filled_ext_pickers                                                as filled_ext_pickers
-  , shifts_assigned.filled_no_show_pickers                                            as filled_no_show_pickers
+      select
+          shiftblocks_hubs.date
+         --, 'refactored' as source
+        , shiftblocks_hubs.block_starts_at
+        , shiftblocks_hubs.block_ends_at
+        , shiftblocks_hubs.hub_name
+        , shiftblocks_hubs.city
+        , historical_orders.orders
+        , historical_forecasts.prediction                                                   as predicted_orders
+        , historical_forecasts.lower_bound
+        , historical_forecasts.upper_bound
+        , shifts_scheduled.planned_rider                                                    as planned_riders
+        , shifts_scheduled.planned_picker                                                   as planned_pickers
+        , shifts_assigned.filled_riders                                                     as filled_riders
+        , shifts_assigned.filled_ext_riders                                                 as filled_ext_riders
+        , shifts_assigned.filled_no_show_riders                                             as filled_no_show_riders
+        , shifts_assigned.filled_pickers                                                    as filled_pickers
+        , shifts_assigned.filled_ext_pickers                                                as filled_ext_pickers
+        , shifts_assigned.filled_no_show_pickers                                            as filled_no_show_pickers
+        , shifts_assigned.punched_rider_hours                                               as punched_rider_hours
+        , shifts_assigned.punched_picker_hours                                              as punched_picker_hours
 
-  , cast(shifts_scheduled.planned_rider_hours as float64) / 60.0                      as planned_rider_hours
+        , cast(shifts_scheduled.planned_rider_hours as float64) / 60.0                      as planned_rider_hours
 
-  , (shifts_assigned.filled_riders * (cast(shifts_scheduled.planned_rider_hours as float64) / 60.0)) /
-    nullif(shifts_scheduled.planned_rider, 0)                                         as filled_rider_hours
+        , (shifts_assigned.filled_riders * (cast(shifts_scheduled.planned_rider_hours as float64) / 60.0)) /
+          nullif(shifts_scheduled.planned_rider, 0)                                         as filled_rider_hours
 
-  , (shifts_assigned.filled_ext_riders * (cast(shifts_scheduled.planned_rider_hours as float64) / 60.0)) /
-    nullif(shifts_scheduled.planned_rider, 0)                                         as filled_ext_rider_hours
+        , (shifts_assigned.filled_ext_riders * (cast(shifts_scheduled.planned_rider_hours as float64) / 60.0)) /
+          nullif(shifts_scheduled.planned_rider, 0)                                         as filled_ext_rider_hours
 
-  , (shifts_assigned.filled_no_show_riders * (cast(shifts_scheduled.planned_rider_hours as float64) / 60.0)) /
-    nullif(shifts_scheduled.planned_rider, 0)                                         as filled_no_show_rider_hours
+        , (shifts_assigned.filled_no_show_riders * (cast(shifts_scheduled.planned_rider_hours as float64) / 60.0)) /
+          nullif(shifts_scheduled.planned_rider, 0)                                         as filled_no_show_rider_hours
 
-  , cast(shifts_scheduled.planned_picker_hours as float64) / 60.0                     as planned_picker_hours
+        , cast(shifts_scheduled.planned_picker_hours as float64) / 60.0                     as planned_picker_hours
 
-  , (shifts_assigned.filled_pickers * (cast(shifts_scheduled.planned_picker_hours as float64) / 60.0)) /
-    nullif(shifts_scheduled.planned_picker, 0)                                                as filled_picker_hours
+        , (shifts_assigned.filled_pickers * (cast(shifts_scheduled.planned_picker_hours as float64) / 60.0)) /
+          nullif(shifts_scheduled.planned_picker, 0)                                                as filled_picker_hours
 
-  , (shifts_assigned.filled_ext_pickers * (cast(shifts_scheduled.planned_picker_hours as float64) / 60.0)) /
-    nullif(shifts_scheduled.planned_picker, 0)                                                as filled_ext_picker_hours
+        , (shifts_assigned.filled_ext_pickers * (cast(shifts_scheduled.planned_picker_hours as float64) / 60.0)) /
+          nullif(shifts_scheduled.planned_picker, 0)                                                as filled_ext_picker_hours
 
-  , (shifts_assigned.filled_no_show_pickers * (cast(shifts_scheduled.planned_picker_hours as float64) / 60.0)) /
-    nullif(shifts_scheduled.planned_picker, 0)                                                as filled_no_show_picker_hours
+        , (shifts_assigned.filled_no_show_pickers * (cast(shifts_scheduled.planned_picker_hours as float64) / 60.0)) /
+          nullif(shifts_scheduled.planned_picker, 0)                                                as filled_no_show_picker_hours
 
-from shiftblocks_hubs
-left join flink-backend.order_forecast.historical_forecasts as historical_forecasts
-          on (shiftblocks_hubs.block_starts_at = historical_forecasts.start_datetime
-              and shiftblocks_hubs.block_ends_at = historical_forecasts.end_datetime)
-              and shiftblocks_hubs.hub_name = historical_forecasts.warehouse
-left join historical_orders
-          on shiftblocks_hubs.block_starts_at = historical_orders.timekey
-              and shiftblocks_hubs.hub_name = historical_orders.warehouse
-left join shifts_scheduled
-          on shiftblocks_hubs.block_starts_at = shifts_scheduled.block_starts_at
-              and shiftblocks_hubs.block_ends_at = shifts_scheduled.block_ends_at
-              and shiftblocks_hubs.hub_name = shifts_scheduled.hub_name
-left join shifts_assigned
-          on shiftblocks_hubs.block_starts_at = shifts_assigned.block_starts_at and
-             shiftblocks_hubs.block_ends_at = shifts_assigned.block_ends_at and
-             shiftblocks_hubs.hub_name = shifts_assigned.hub_name
-order by shiftblocks_hubs.date, shiftblocks_hubs.hub_name, shiftblocks_hubs.block_starts_at, shiftblocks_hubs.block_ends_at asc
- ;;
+      from shiftblocks_hubs
+      left join flink-backend.order_forecast.historical_forecasts as historical_forecasts
+                on (shiftblocks_hubs.block_starts_at = historical_forecasts.start_datetime
+                    and shiftblocks_hubs.block_ends_at = historical_forecasts.end_datetime)
+                    and shiftblocks_hubs.hub_name = historical_forecasts.warehouse
+      left join historical_orders
+                on shiftblocks_hubs.block_starts_at = historical_orders.timekey
+                    and shiftblocks_hubs.hub_name = historical_orders.warehouse
+      left join shifts_scheduled
+                on shiftblocks_hubs.block_starts_at = shifts_scheduled.block_starts_at
+                    and shiftblocks_hubs.block_ends_at = shifts_scheduled.block_ends_at
+                    and shiftblocks_hubs.hub_name = shifts_scheduled.hub_name
+      left join shifts_assigned
+                on shiftblocks_hubs.block_starts_at = shifts_assigned.block_starts_at and
+                   shiftblocks_hubs.block_ends_at = shifts_assigned.block_ends_at and
+                   shiftblocks_hubs.hub_name = shifts_assigned.hub_name
+      order by shiftblocks_hubs.date, shiftblocks_hubs.hub_name, shiftblocks_hubs.block_starts_at, shiftblocks_hubs.block_ends_at asc
+       ;;
   }
 
 
@@ -292,6 +297,14 @@ order by shiftblocks_hubs.date, shiftblocks_hubs.hub_name, shiftblocks_hubs.bloc
     sql: coalesce(${TABLE}.orders, 0) ;;
   }
 
+  dimension: required_rider_hours {
+    group_label: " * Rider Hours * "
+    label: "# Required Rider Hours"
+    hidden: yes
+    sql: coalesce(${orders} / NULLIF(({% parameter rider_UTR %}/2), 0), 0)  ;;
+    type: number
+  }
+
   dimension: lower_bound {
     hidden: yes
     type: number
@@ -346,10 +359,28 @@ order by shiftblocks_hubs.date, shiftblocks_hubs.hub_name, shiftblocks_hubs.bloc
     sql: coalesce(${TABLE}.filled_rider_hours, 0) ;;
   }
 
+  #dimension: filled_no_show_rider_hours {
+  #  hidden: yes
+  #  type: number
+  #  sql: coalesce(${TABLE}.filled_no_show_rider_hours, 0) ;;
+  #}
+
+  dimension: punched_rider_hours {
+    hidden: yes
+    type: number
+    sql: coalesce(${TABLE}.punched_rider_hours, 0) ;;
+  }
+
   dimension: filled_picker_hours {
     hidden: yes
     type: number
     sql: coalesce(${TABLE}.filled_picker_hours, 0) ;;
+  }
+
+  dimension: punched_picker_hours {
+    hidden: yes
+    type: number
+    sql: coalesce(${TABLE}.punched_picker_hours, 0) ;;
   }
 
   dimension: forecasted_riders {
@@ -444,6 +475,13 @@ order by shiftblocks_hubs.date, shiftblocks_hubs.hub_name, shiftblocks_hubs.bloc
     sql: ${forecasted_dimension} - ${filled_dimension} ;;
   }
 
+  dimension: delta_hours_actuals {
+    description: "Computes the difference between actual filled hours and required hours"
+    type: number
+    hidden: no
+    sql: ${filled_rider_hours} - ${required_rider_hours};;
+  }
+
 
   ###### Parameters
 
@@ -508,6 +546,13 @@ order by shiftblocks_hubs.date, shiftblocks_hubs.hub_name, shiftblocks_hubs.bloc
     group_label: " * Orders * "
     label: "# Orders"
     sql: ${orders} ;;
+    type: sum
+  }
+
+  measure: sum_required_rider_hours {
+    group_label: " * Rider Hours * "
+    label: "# Required Rider Hours"
+    sql: ${required_rider_hours} ;;
     type: sum
   }
 
@@ -633,6 +678,20 @@ order by shiftblocks_hubs.date, shiftblocks_hubs.hub_name, shiftblocks_hubs.bloc
     sql:cast(extract(time from ${TABLE}.block_starts_at AT TIME ZONE "Europe/Berlin") as string) ;;
   }
 
+  measure: pct_no_show {
+    label: "% No Show"
+    type: number
+    sql: ${sum_filled_no_show_rider_hours} / NULLIF(${sum_filled_rider_hours}, 0) ;;
+    value_format_name: percent_0
+  }
+
+  #measure: sum_pct_no_show {
+  #  label: "% Agg No Show"
+  #  type: sum
+  #  sql: ${filled_no_show_rider_hours} / NULLIF(${filled_rider_hours}, 0) ;;
+  #  value_format_name: percent_0
+  #}
+
   ####### Dynamic Measures
 
   measure: KPI_forecasted {
@@ -701,6 +760,13 @@ order by shiftblocks_hubs.date, shiftblocks_hubs.hub_name, shiftblocks_hubs.bloc
     ;;
   }
 
+  #measure: delta_filled_required_hours {
+  #  #type: number
+  #  sql: ${delta_hours_actuals} ;;
+  #  label: "Delta Between Filled and Required Rider Hours"
+  #  group_label: " * Rider Hours * "
+  #}
+
   measure: count_blocks {
     label: "Count Blocks"
     hidden: yes
@@ -716,12 +782,28 @@ order by shiftblocks_hubs.date, shiftblocks_hubs.hub_name, shiftblocks_hubs.bloc
     filters: [delta: "<0"]
   }
 
+  measure: count_over_hours {
+    label: "Count Over Blocks"
+    hidden: yes
+    type: count_distinct
+    sql: ${block_starts_pivot} ;;
+    filters: [delta_hours_actuals: ">0"]
+  }
+
   measure: count_under {
     label: "Count Under Blocks"
     hidden: yes
     type: count_distinct
     sql: ${block_starts_pivot} ;;
     filters: [delta: ">0"]
+  }
+
+  measure: count_under_hours {
+    label: "Count Over Blocks"
+    hidden: yes
+    type: count_distinct
+    sql: ${block_starts_pivot} ;;
+    filters: [delta_hours_actuals: "<0"]
   }
 
   measure: over_kpi {
@@ -740,6 +822,48 @@ order by shiftblocks_hubs.date, shiftblocks_hubs.hub_name, shiftblocks_hubs.bloc
     value_format_name: percent_2
   }
 
+  measure: over_kpi_hours {
+    label: "% Over Hours"
+    description: "Proportion of 30 min blocks that are over the required rider hours"
+    type: number
+    sql: ${count_over_hours} / ${count_blocks} ;;
+    value_format_name: percent_2
+  }
+
+  measure: under_kpi_hours {
+    label: "% Under Hours"
+    description: "Proportion of 30 min blocks that are under the required rider hours"
+    type: number
+    sql: ${count_under_hours} / ${count_blocks} ;;
+    value_format_name: percent_2
+  }
+
+  measure: sum_punched_rider_hours {
+    label: "# Punched Rider Hours"
+    group_label: " * Rider Hours * "
+    type: sum
+    sql: ${punched_rider_hours} ;;
+    value_format_name: decimal_1
+  }
+
+  measure: sum_punched_picker_hours {
+    label: "# Punched Picker Hours"
+    group_label: " * Picker Hours * "
+    type: sum
+    sql: ${punched_picker_hours} ;;
+    value_format_name: decimal_1
+  }
+
+  measure: delta_filled_required_hours {
+    description: "Delta Between Filled and Required Rider Hours"
+    label: "Delta Between Filled and Required Rider Hours"
+    group_label: " * Rider Hours * "
+    type: sum
+    hidden: no
+    sql: ${filled_rider_hours} - ${required_rider_hours};;
+    value_format_name: decimal_1
+  }
+
 
   ####### Measures Hub-Leaderboard
   measure: sum_filled_ext_rider_hours {
@@ -751,6 +875,7 @@ order by shiftblocks_hubs.date, shiftblocks_hubs.hub_name, shiftblocks_hubs.bloc
     type: sum
     value_format_name: decimal_1
   }
+
   measure: sum_filled_no_show_rider_hours {
     view_label: "Hub Leaderboard"
     group_label: "Hub Leaderboard - Shift Metrics"
