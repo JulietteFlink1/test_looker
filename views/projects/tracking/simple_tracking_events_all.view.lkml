@@ -1,4 +1,4 @@
-view: category_selection_tracking {
+view: simple_tracking_events_all {
   derived_table: {
     sql: WITH joined_table AS
       (SELECT
@@ -51,10 +51,10 @@ view: category_selection_tracking {
             AND NOT (tracks.context_app_version LIKE "%APP-RATING%" OR tracks.context_app_version LIKE "%DEBUG%")
             AND NOT (tracks.context_app_name = "Flink-Staging" OR tracks.context_app_name="Flink-Debug")
       ),
-      previousevents_tb AS (
-      SELECT *, LAG(joined_table.event) OVER(PARTITION BY joined_table.anonymous_id ORDER BY joined_table.timestamp ASC) AS previous_event
-      FROM joined_table )
-      SELECT * FROM previousevents_tb
+      SELECT *,
+      LAG(joined_table.event) OVER(PARTITION BY joined_table.anonymous_id ORDER BY joined_table.timestamp ASC) AS previous_event,
+      LEAD(joined_table.event) OVER(PARTITION BY joined_table.anonymous_id ORDER BY joined_table.timestamp ASC) AS next_event
+      FROM joined_table
        ;;
   }
 
