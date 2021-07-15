@@ -50,7 +50,7 @@ view: simple_tracking_events_all {
             AND tracks.event NOT LIKE "%install_attributed%"
             AND NOT (tracks.context_app_version LIKE "%APP-RATING%" OR tracks.context_app_version LIKE "%DEBUG%")
             AND NOT (tracks.context_app_name = "Flink-Staging" OR tracks.context_app_name="Flink-Debug")
-      ),
+      )
       SELECT *,
       LAG(joined_table.event) OVER(PARTITION BY joined_table.anonymous_id ORDER BY joined_table.timestamp ASC) AS previous_event,
       LEAD(joined_table.event) OVER(PARTITION BY joined_table.anonymous_id ORDER BY joined_table.timestamp ASC) AS next_event
