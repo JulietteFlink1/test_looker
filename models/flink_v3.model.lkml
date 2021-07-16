@@ -873,6 +873,21 @@ explore: gorillas_v1_turfs {
   }
 }
 
+explore: gorillas_v1_orders {
+  hidden:  yes
+  label: "Gorillas Orders"
+  view_label: "Gorillas Orders"
+  group_label: "08) Competitor Analysis"
+  description: "Analysis of competitors."
+
+  always_filter: {
+    filters: {
+      field: orders_date
+      value: "1 day ago"
+    }
+  }
+}
+
 
 
 

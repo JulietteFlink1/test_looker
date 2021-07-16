@@ -25,12 +25,6 @@ view: gorillas_v1_orders {
     sql: ${TABLE}.label ;;
   }
 
-  dimension: location {
-    type: location
-    sql_latitude: ${lat} ;;
-    sql_longitude: ${lon} ;;
-  }
-
   dimension: lat {
     type: number
     sql: ${TABLE}.lat ;;
@@ -80,26 +74,13 @@ view: gorillas_v1_orders {
     sql: ${TABLE}.time_scraped ;;
   }
 
-
-
   dimension: today_order_sequence_number {
     type: number
-    label: "Orders"
     sql: ${TABLE}.todayOrderSequenceNumber ;;
   }
-
-
-
-
-
 
   measure: count {
     type: count
     drill_fields: [id, store_name]
-  }
-
-  measure: sum_orders {
-    type: sum
-    sql: ${today_order_sequence_number} ;;
   }
 }
