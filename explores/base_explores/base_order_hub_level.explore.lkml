@@ -22,10 +22,10 @@ explore: base_order_hub_level {
     type: left_outer
   }
 
-  join: shyftplan_riders_pickers_hours {
+  join: shyftplan_riders_pickers_hours_clean {
     view_label: "* Shifts *"
-    sql_on: ${base_orders.created_date} = ${shyftplan_riders_pickers_hours.date} and
-            ${hubs.hub_code}            = ${shyftplan_riders_pickers_hours.hub_name};;
+    sql_on: ${base_orders.created_date} = ${shyftplan_riders_pickers_hours_clean.date} and
+            ${hubs.hub_code}            = ${shyftplan_riders_pickers_hours_clean.hub_name};;
     relationship: many_to_one
     type: left_outer
   }

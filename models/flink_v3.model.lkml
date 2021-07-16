@@ -360,9 +360,7 @@ explore: product_product {
     filters:  [
       hubs.country: "",
       hubs.hub_name: "",
-      product_product.is_published: "yes",
-      order_orderline_facts.is_internal_order: "no",
-      order_orderline_facts.is_successful_order: "yes"
+      product_product.is_published: "yes"
     ]
   }
 
@@ -444,7 +442,7 @@ explore: product_product {
     fields: [
       country_iso,
       id,
-      sku,
+      # sku,
       leading_product,
       noos_group,
       substitute_group,
@@ -711,7 +709,7 @@ explore: cs_issues_post_delivery {
     sql_on: ${order_order.country_iso} = ${cs_issues_post_delivery.country_iso} AND
       ${cs_issues_post_delivery.order_nr__} = ${order_order.id};;
     relationship: many_to_one
-    type: left_outer
+    type: full_outer
   }
 
   join: user_order_facts {
@@ -1151,9 +1149,8 @@ explore: braze_crm_data {
   always_filter: {
     filters:  [
       braze_crm_data.campaign_name: "",
-      braze_crm_data.country: "",
-      braze_crm_data.email_sent_at: "after 2021-04-01"
-    ]
+      braze_crm_data.country: ""
+      ]
   }
 }
 
