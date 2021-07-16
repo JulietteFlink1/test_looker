@@ -78,9 +78,4 @@ view: gorillas_v1_orders {
     type: number
     sql: ${TABLE}.todayOrderSequenceNumber ;;
   }
-
-  measure: count {
-    type: count
-    drill_fields: [id, store_name]
-  }
 }

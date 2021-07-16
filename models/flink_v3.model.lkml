@@ -888,6 +888,21 @@ explore: gorillas_v1_orders {
   }
 }
 
+explore: gorillas_orders_wow {
+  hidden:  yes
+  label: "Gorillas Orders WoW"
+  view_label: "Gorillas Orders WoW"
+  group_label: "08) Competitor Analysis"
+  description: "Analysis of competitors."
+
+  always_filter: {
+    filters: {
+      field: orders_date
+      value: "1 day ago"
+    }
+  }
+}
+
 
 
 
