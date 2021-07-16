@@ -356,15 +356,13 @@ explore: product_product {
   view_label: "* Product / SKU Data *"
   group_label: "02) Inventory"
   description: "Products, Productvariations, Categories, SKUs, Stock etc."
-  # always_filter: {
-  #   filters:  [
-  #     hubs.country: "",
-  #     hubs.hub_name: "",
-  #     product_product.is_published: "yes",
-  #     order_orderline_facts.is_internal_order: "no",
-  #     order_orderline_facts.is_successful_order: "yes"
-  #   ]
-  # }
+  always_filter: {
+    filters:  [
+      hubs.country: "",
+      hubs.hub_name: "",
+      product_product.is_published: "yes"
+    ]
+  }
 
   access_filter: {
     field: product_product.country_iso
