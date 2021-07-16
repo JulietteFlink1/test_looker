@@ -31,6 +31,7 @@ view: hubs {
 
   dimension: hub_code {
     type: string
+    primary_key: yes
     sql: ${TABLE}.hub_code ;;
   }
 
