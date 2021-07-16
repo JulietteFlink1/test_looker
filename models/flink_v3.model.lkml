@@ -943,7 +943,7 @@ explore: gorillas_v1_inventory{
 }
 
 explore: gorillas_item_mapping {
-  hidden:  yes
+  hidden:  no
   label: "Gorillas Item Mapping"
   view_label: "Gorillas Item Mapping"
   group_label: "08) Competitor Analysis"
