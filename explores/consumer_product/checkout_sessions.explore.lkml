@@ -1,4 +1,4 @@
-include: "/views/projects/tracking/checkout_sessions.view.lkml"
+include: "/views/projects/consumer_product/checkout_sessions.view.lkml"
 
 explore: checkout_sessions {
   view_name: checkout_sessions

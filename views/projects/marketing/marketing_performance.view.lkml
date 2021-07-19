@@ -148,7 +148,7 @@ view: marketing_performance {
           select 'Google Ads' as channel,
           adwords_customer_id as account_id,
           case when adwords_customer_id in ('9060460045', '8613454842', '3713562074') then 'NL'
-              when adwords_customer_id in ('2579239713', '8843684684', '8009692215') then 'FR' else 'Other' end as country,
+              when adwords_customer_id in ('2579239713', '8843684684', '8009692215') then 'FR' else 'DE' end as country,
           date(date_start, 'Europe/Berlin') as date,
           sum(cost) / 1000000 as spend
           from `flink-backend.google_ads.campaign_performance_reports_view`

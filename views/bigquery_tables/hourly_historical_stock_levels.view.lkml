@@ -25,6 +25,7 @@ view: hourly_historical_stock_levels {
     timeframes: [
       raw,
       time,
+      hour,
       date,
       week,
       month,

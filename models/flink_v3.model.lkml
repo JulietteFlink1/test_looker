@@ -356,15 +356,13 @@ explore: product_product {
   view_label: "* Product / SKU Data *"
   group_label: "02) Inventory"
   description: "Products, Productvariations, Categories, SKUs, Stock etc."
-  # always_filter: {
-  #   filters:  [
-  #     hubs.country: "",
-  #     hubs.hub_name: "",
-  #     product_product.is_published: "yes",
-  #     order_orderline_facts.is_internal_order: "no",
-  #     order_orderline_facts.is_successful_order: "yes"
-  #   ]
-  # }
+  always_filter: {
+    filters:  [
+      hubs.country: "",
+      hubs.hub_name: "",
+      product_product.is_published: "yes"
+    ]
+  }
 
   access_filter: {
     field: product_product.country_iso
@@ -711,7 +709,7 @@ explore: cs_issues_post_delivery {
     sql_on: ${order_order.country_iso} = ${cs_issues_post_delivery.country_iso} AND
       ${cs_issues_post_delivery.order_nr__} = ${order_order.id};;
     relationship: many_to_one
-    type: left_outer
+    type: full_outer
   }
 
   join: user_order_facts {
@@ -875,28 +873,22 @@ explore: gorillas_v1_turfs {
   }
 }
 
-explore: gorillas_v1_orders{
+explore: gorillas_v1_orders {
   hidden:  yes
   label: "Gorillas Orders"
   view_label: "Gorillas Orders"
   group_label: "08) Competitor Analysis"
   description: "Analysis of competitors."
 
-  # join: gorillas_v1_orders_wow {
-  #   sql_on: ${gorillas_v1_orders.id} = ${gorillas_v1_orders_wow.id} and ${gorillas_v1_orders_wow.orders_date} = DATE_SUB(${gorillas_v1_orders.orders_date}, Interval 7 day);;
-  #   relationship: many_to_one
-  #   type: left_outer
-  # }
-
+  always_filter: {
+    filters: {
+      field: orders_date
+      value: "1 day ago"
+    }
+  }
 }
 
-# explore: gorillas_v1_orders_wow{
-#   hidden:  yes
-#   label: "Gorillas Orders WOW"
-#   view_label: "Gorillas Orders WOW"
-#   group_label: "08) Competitor Analysis"
-#   description: "Analysis of competitors."
-# }
+
 
 
 
@@ -936,7 +928,7 @@ explore: gorillas_v1_inventory{
 }
 
 explore: gorillas_item_mapping {
-  hidden:  yes
+  hidden:  no
   label: "Gorillas Item Mapping"
   view_label: "Gorillas Item Mapping"
   group_label: "08) Competitor Analysis"
