@@ -21,6 +21,10 @@ view: listed_skus_in_hubs {
         value: ""
       }
       filters: {
+        field: hubs.live
+        value: "0"
+      }
+      filters: {
         field: product_product.is_published
         value: ""
       }
