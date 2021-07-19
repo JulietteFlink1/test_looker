@@ -335,7 +335,7 @@ explore: order_order {
   join: issue_rate_hub_level {
     view_label: "Order Issues on Hub-Level"
     sql_on: ${hubs.hub_code_lowercase} =  LOWER(${issue_rate_hub_level.hub_code}) and
-      ${order_order.date}        =  ${issue_rate_hub_level.date};;
+      ${order_order.date}        =  ${issue_rate_hub_level.date_dynamic};;
     relationship: many_to_one # decided against one_to_many: on this level, many orders have hub-level issue-aggregates
     type: left_outer
   }
