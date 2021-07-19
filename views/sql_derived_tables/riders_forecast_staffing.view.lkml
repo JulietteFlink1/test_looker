@@ -475,11 +475,18 @@ view: riders_forecast_staffing {
     sql: ${forecasted_dimension} - ${filled_dimension} ;;
   }
 
-  dimension: delta_hours_actuals {
+  dimension: delta_hours_filled_actuals {
     description: "Computes the difference between actual filled hours and required hours"
     type: number
     hidden: no
     sql: ${filled_rider_hours} - ${required_rider_hours};;
+  }
+
+  dimension: delta_hours_punched_actuals {
+    description: "Computes the difference between actual punched hours and required hours"
+    type: number
+    hidden: no
+    sql: ${punched_rider_hours} - ${required_rider_hours};;
   }
 
 
@@ -782,12 +789,20 @@ view: riders_forecast_staffing {
     filters: [delta: "<0"]
   }
 
-  measure: count_over_hours {
+  measure: count_over_hours_filled {
     label: "Count Over Blocks"
     hidden: yes
     type: count_distinct
     sql: ${block_starts_pivot} ;;
-    filters: [delta_hours_actuals: ">0"]
+    filters: [delta_hours_filled_actuals: ">0"]
+  }
+
+  measure: count_over_hours_punched {
+    label: "Count Over Blocks"
+    hidden: yes
+    type: count_distinct
+    sql: ${block_starts_pivot} ;;
+    filters: [delta_hours_punched_actuals: ">0"]
   }
 
   measure: count_under {
@@ -798,12 +813,20 @@ view: riders_forecast_staffing {
     filters: [delta: ">0"]
   }
 
-  measure: count_under_hours {
-    label: "Count Over Blocks"
+  measure: count_under_hours_filled {
+    label: "Count Under Blocks"
     hidden: yes
     type: count_distinct
     sql: ${block_starts_pivot} ;;
-    filters: [delta_hours_actuals: "<0"]
+    filters: [delta_hours_filled_actuals: "<0"]
+  }
+
+  measure: count_under_hours_punched {
+    label: "Count Under Blocks"
+    hidden: yes
+    type: count_distinct
+    sql: ${block_starts_pivot} ;;
+    filters: [delta_hours_punched_actuals: "<0"]
   }
 
   measure: over_kpi {
@@ -822,19 +845,35 @@ view: riders_forecast_staffing {
     value_format_name: percent_2
   }
 
-  measure: over_kpi_hours {
-    label: "% Over Hours"
+  measure: over_kpi_hours_filled {
+    label: "% Over Filled Hours"
     description: "Proportion of 30 min blocks that are over the required rider hours"
     type: number
-    sql: ${count_over_hours} / ${count_blocks} ;;
+    sql: ${count_over_hours_filled} / ${count_blocks} ;;
     value_format_name: percent_2
   }
 
-  measure: under_kpi_hours {
-    label: "% Under Hours"
+  measure: under_kpi_hours_filled {
+    label: "% Under Filled Hours"
     description: "Proportion of 30 min blocks that are under the required rider hours"
     type: number
-    sql: ${count_under_hours} / ${count_blocks} ;;
+    sql: ${count_under_hours_filled} / ${count_blocks} ;;
+    value_format_name: percent_2
+  }
+
+  measure: over_kpi_hours_punched {
+    label: "% Over Punched Hours"
+    description: "Proportion of 30 min blocks that are over the required rider hours"
+    type: number
+    sql: ${count_over_hours_punched} / ${count_blocks} ;;
+    value_format_name: percent_2
+  }
+
+  measure: under_kpi_hours_punched {
+    label: "% Under Punched Hours"
+    description: "Proportion of 30 min blocks that are under the required rider hours"
+    type: number
+    sql: ${count_under_hours_punched} / ${count_blocks} ;;
     value_format_name: percent_2
   }
 
@@ -861,6 +900,16 @@ view: riders_forecast_staffing {
     type: sum
     hidden: no
     sql: ${filled_rider_hours} - ${required_rider_hours};;
+    value_format_name: decimal_1
+  }
+
+  measure: delta_punched_required_hours {
+    description: "Delta Between Punched and Required Rider Hours"
+    label: "Delta Between Punched and Required Rider Hours"
+    group_label: " * Rider Hours * "
+    type: sum
+    hidden: no
+    sql: ${punched_rider_hours} - ${required_rider_hours};;
     value_format_name: decimal_1
   }
 
