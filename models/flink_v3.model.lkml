@@ -841,6 +841,12 @@ explore: gorillas_v1_items {
     type: left_outer
   }
 
+  join: gorillas_category_mapping {
+    sql_on: ${items__product_collections.id} = ${gorillas_category_mapping.gorillas_collection_id};;
+    relationship: one_to_one
+    type: left_outer
+  }
+
 
 }
 
