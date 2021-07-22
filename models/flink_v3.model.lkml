@@ -335,7 +335,7 @@ explore: order_order {
   join: issue_rate_hub_level {
     view_label: "Order Issues on Hub-Level"
     sql_on: ${hubs.hub_code_lowercase} =  LOWER(${issue_rate_hub_level.hub_code}) and
-      ${order_order.date}        =  ${issue_rate_hub_level.date};;
+      ${order_order.date}        =  ${issue_rate_hub_level.date_dynamic};;
     relationship: many_to_one # decided against one_to_many: on this level, many orders have hub-level issue-aggregates
     type: left_outer
   }
@@ -360,9 +360,7 @@ explore: product_product {
     filters:  [
       hubs.country: "",
       hubs.hub_name: "",
-      product_product.is_published: "yes",
-      order_orderline_facts.is_internal_order: "no",
-      order_orderline_facts.is_successful_order: "yes"
+      product_product.is_published: "yes"
     ]
   }
 
@@ -444,7 +442,7 @@ explore: product_product {
     fields: [
       country_iso,
       id,
-      sku,
+      # sku,
       leading_product,
       noos_group,
       substitute_group,
@@ -711,7 +709,7 @@ explore: cs_issues_post_delivery {
     sql_on: ${order_order.country_iso} = ${cs_issues_post_delivery.country_iso} AND
       ${cs_issues_post_delivery.order_nr__} = ${order_order.id};;
     relationship: many_to_one
-    type: left_outer
+    type: full_outer
   }
 
   join: user_order_facts {
@@ -843,6 +841,20 @@ explore: gorillas_v1_items {
     type: left_outer
   }
 
+  join: gorillas_v1_item_hub_collection_group_allocation {
+    sql_on: ${gorillas_v1_item_hub_collection_group_allocation.item_id} = ${gorillas_v1_items.id}
+            AND ${gorillas_v1_item_hub_collection_group_allocation.hub_id} = ${gorillas_v1_items.hub_code};;
+    relationship: many_to_one
+    type: left_outer
+  }
+
+  join: gorillas_category_mapping {
+    sql_on: ${gorillas_category_mapping.gorillas_collection_id} = ${gorillas_v1_item_hub_collection_group_allocation.collection_id}
+            AND ${gorillas_category_mapping.gorillas_group_id} = ${gorillas_v1_item_hub_collection_group_allocation.group_id};;
+    relationship: one_to_one
+    type: left_outer
+  }
+
 
 }
 
@@ -875,28 +887,37 @@ explore: gorillas_v1_turfs {
   }
 }
 
-explore: gorillas_v1_orders{
+explore: gorillas_v1_orders {
   hidden:  yes
   label: "Gorillas Orders"
   view_label: "Gorillas Orders"
   group_label: "08) Competitor Analysis"
   description: "Analysis of competitors."
 
-  # join: gorillas_v1_orders_wow {
-  #   sql_on: ${gorillas_v1_orders.id} = ${gorillas_v1_orders_wow.id} and ${gorillas_v1_orders_wow.orders_date} = DATE_SUB(${gorillas_v1_orders.orders_date}, Interval 7 day);;
-  #   relationship: many_to_one
-  #   type: left_outer
-  # }
-
+  always_filter: {
+    filters: {
+      field: orders_date
+      value: "1 day ago"
+    }
+  }
 }
 
-# explore: gorillas_v1_orders_wow{
-#   hidden:  yes
-#   label: "Gorillas Orders WOW"
-#   view_label: "Gorillas Orders WOW"
-#   group_label: "08) Competitor Analysis"
-#   description: "Analysis of competitors."
-# }
+explore: gorillas_orders_wow {
+  hidden:  no
+  label: "Gorillas Orders WoW"
+  view_label: "Gorillas Orders WoW"
+  group_label: "08) Competitor Analysis"
+  description: "Analysis of competitors."
+
+  always_filter: {
+    filters: {
+      field: orders_date
+      value: "1 day ago"
+    }
+  }
+}
+
+
 
 
 
@@ -936,7 +957,7 @@ explore: gorillas_v1_inventory{
 }
 
 explore: gorillas_item_mapping {
-  hidden:  yes
+  hidden:  no
   label: "Gorillas Item Mapping"
   view_label: "Gorillas Item Mapping"
   group_label: "08) Competitor Analysis"
@@ -944,7 +965,7 @@ explore: gorillas_item_mapping {
 }
 
 explore: gorillas_v1_delivery_areas{
-  hidden:  no
+  hidden:  yes
   label: "Gorillas Delivery Areas"
   view_label: "Gorillas Delivery Areas"
   group_label: "08) Competitor Analysis"
@@ -1172,9 +1193,8 @@ explore: braze_crm_data {
   always_filter: {
     filters:  [
       braze_crm_data.campaign_name: "",
-      braze_crm_data.country: "",
-      braze_crm_data.email_sent_at: "after 2021-04-01"
-    ]
+      braze_crm_data.country: ""
+      ]
   }
 }
 

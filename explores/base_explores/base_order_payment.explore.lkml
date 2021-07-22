@@ -1,6 +1,6 @@
 include: "/explores/base_explores/base_orders.explore"
-include: "/views/payment_payment.view.lkml"
-include: "/views/payment_transaction.view.lkml"
+include: "/views/bigquery_tables/payment_payment.view.lkml"
+include: "/views/bigquery_tables/payment_transaction.view.lkml"
 
 explore: base_order_payment {
   #group_label: "01) Performance"

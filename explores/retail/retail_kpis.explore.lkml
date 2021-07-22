@@ -25,6 +25,45 @@ explore: listed_skus_in_hubs {
   hidden: yes
 }
 
+explore: shelf_planning {
+  hidden: yes
+  aggregate_table: rollup__hub_code__hubs_clean_hub_code_lowercase__hubs_clean_hub_name__shelf_planning_top_x_per_subcat_rank_per_subcat {
+    query: {
+      dimensions: [hub_code, hubs_clean.hub_code_lowercase, hubs_clean.hub_name, shelf_planning_top_x_per_subcat.rank_per_subcat]
+      measures: [avg_main_kpis, avg_max_sum_item_quantity, avg_median_sum_item_quantity, avg_num_3d_windows, avg_stock_over_days_3d_windows_total_time, avg_sum_item_quantity, percentile_sum_item_quantity, std_sum_item_quantity]
+      filters: [
+        shelf_planning.date_filter: "5 weeks",
+        shelf_planning_top_x_per_subcat.rank_per_subcat: "[0, 100]"
+      ]
+      timezone: "Europe/Berlin"
+    }
+
+    materialization: {
+      datagroup_trigger: flink_default_datagroup
+    }
+  }
+
+  join: hubs_clean {
+    type: left_outer
+    relationship: many_to_one
+    sql_on: ${hubs_clean.hub_code_lowercase} = ${shelf_planning.hub_code} ;;
+    fields: [hubs_clean.city, hubs_clean.country_iso, hubs_clean.hub_name, hubs_clean.hub_code_lowercase]
+  }
+  join: product_facts {
+    type: left_outer
+    relationship: many_to_one
+    sql_on:  ${product_facts.sku}         = ${shelf_planning.sku}
+       and   ${product_facts.country_iso} = ${hubs_clean.country_iso}
+      ;;
+  }
+
+  join: shelf_planning_top_x_per_subcat {
+    type: left_outer
+    relationship: many_to_one
+    sql_on: ${shelf_planning_top_x_per_subcat.sku} = ${shelf_planning.sku} ;;
+    fields: [shelf_planning_top_x_per_subcat.rank_per_subcat, shelf_planning_top_x_per_subcat.sku]
+  }
+}
 
 
 explore: retail_orders_explore {
