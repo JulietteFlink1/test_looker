@@ -841,6 +841,20 @@ explore: gorillas_v1_items {
     type: left_outer
   }
 
+  join: gorillas_v1_item_hub_collection_group_allocation {
+    sql_on: ${gorillas_v1_item_hub_collection_group_allocation.item_id} = ${gorillas_v1_items.id}
+            AND ${gorillas_v1_item_hub_collection_group_allocation.hub_id} = ${gorillas_v1_items.hub_code};;
+    relationship: many_to_one
+    type: left_outer
+  }
+
+  join: gorillas_category_mapping {
+    sql_on: ${gorillas_category_mapping.gorillas_collection_id} = ${gorillas_v1_item_hub_collection_group_allocation.collection_id}
+            AND ${gorillas_category_mapping.gorillas_group_id} = ${gorillas_v1_item_hub_collection_group_allocation.group_id};;
+    relationship: one_to_one
+    type: left_outer
+  }
+
 
 }
 
