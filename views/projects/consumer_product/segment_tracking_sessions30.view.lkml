@@ -516,6 +516,11 @@ view: segment_tracking_sessions30 {
     sql: ${TABLE}.has_ordered ;;
   }
 
+  dimension: hub_unknown {
+    type: yesno
+    sql: ${derived_hub} IS NULL ;;
+  }
+
   dimension: session_start_date_granularity {
     label: "Session Start Date (Dynamic)"
     label_from_parameter: timeframe_picker

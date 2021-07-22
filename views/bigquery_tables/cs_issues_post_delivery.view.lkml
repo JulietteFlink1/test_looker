@@ -28,6 +28,10 @@ view: cs_issues_post_delivery {
     sql: ${TABLE}.issue_date ;;
   }
 
+  dimension: comment {
+    type: string
+    sql: ${TABLE}.comment ;;
+  }
 
   dimension: delivered_product {
     type: string

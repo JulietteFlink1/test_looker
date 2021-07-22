@@ -32,8 +32,8 @@ view: riders_forecast_staffing {
                   when lower(locations_positions.position_name) like '%rider%'  then 'rider'
                   when lower(locations_positions.position_name) like '%picker%' then 'picker'
               end                                      as position
-          from flink-data-staging.shyftplan_v1.shifts                   as shifts
-          left join flink-data-staging.shyftplan_v1.locations_positions as locations_positions
+          from flink-data-prod.shyftplan_v1.shifts                   as shifts
+          left join flink-data-prod.shyftplan_v1.locations_positions as locations_positions
                     on shifts.locations_position_id = locations_positions.id
           where lower(locations_positions.position_name) like '%rider%'
              or lower(locations_positions.position_name) like '%picker%'
@@ -109,9 +109,9 @@ view: riders_forecast_staffing {
                           when lower(position.name) like '%picker%' then 'picker'
                       end                                       as position
                     , count(distinct evaluations.id)            as cnt_employees
-                    , sum(evaluation_duration / 60) / (timestamp_diff(shift.ends_at, shift.starts_at, hour) * 2) as punched_hours
-                  from flink-data-staging.shyftplan_v1.evaluations              as evaluations
-                  left join flink-data-staging.shyftplan_v1.locations_positions as locations_positions
+                    , sum(evaluation_duration / 60) / nullif((timestamp_diff(shift.ends_at, shift.starts_at, hour) * 2), 0) as punched_hours
+                  from flink-data-prod.shyftplan_v1.evaluations              as evaluations
+                  left join flink-data-prod.shyftplan_v1.locations_positions as locations_positions
                             on evaluations.locations_position_id = locations_positions.id
                   where (lower(position.name) like '%rider%' or lower(position.name) like '%picker%')
                   group by 1, 2, 3, 4, 5, 6
@@ -475,11 +475,18 @@ view: riders_forecast_staffing {
     sql: ${forecasted_dimension} - ${filled_dimension} ;;
   }
 
-  dimension: delta_hours_actuals {
+  dimension: delta_hours_filled_actuals {
     description: "Computes the difference between actual filled hours and required hours"
     type: number
     hidden: no
     sql: ${filled_rider_hours} - ${required_rider_hours};;
+  }
+
+  dimension: delta_hours_punched_actuals {
+    description: "Computes the difference between actual punched hours and required hours"
+    type: number
+    hidden: no
+    sql: ${punched_rider_hours} - ${required_rider_hours};;
   }
 
 
@@ -782,12 +789,20 @@ view: riders_forecast_staffing {
     filters: [delta: "<0"]
   }
 
-  measure: count_over_hours {
+  measure: count_over_hours_filled {
     label: "Count Over Blocks"
     hidden: yes
     type: count_distinct
     sql: ${block_starts_pivot} ;;
-    filters: [delta_hours_actuals: ">0"]
+    filters: [delta_hours_filled_actuals: ">0"]
+  }
+
+  measure: count_over_hours_punched {
+    label: "Count Over Blocks"
+    hidden: yes
+    type: count_distinct
+    sql: ${block_starts_pivot} ;;
+    filters: [delta_hours_punched_actuals: ">0"]
   }
 
   measure: count_under {
@@ -798,19 +813,27 @@ view: riders_forecast_staffing {
     filters: [delta: ">0"]
   }
 
-  measure: count_under_hours {
-    label: "Count Over Blocks"
+  measure: count_under_hours_filled {
+    label: "Count Under Blocks"
     hidden: yes
     type: count_distinct
     sql: ${block_starts_pivot} ;;
-    filters: [delta_hours_actuals: "<0"]
+    filters: [delta_hours_filled_actuals: "<0"]
+  }
+
+  measure: count_under_hours_punched {
+    label: "Count Under Blocks"
+    hidden: yes
+    type: count_distinct
+    sql: ${block_starts_pivot} ;;
+    filters: [delta_hours_punched_actuals: "<0"]
   }
 
   measure: over_kpi {
     label: "% Over"
     description: "Proportion of 30 min blocks that are over the forecasted number"
     type: number
-    sql: ${count_over} / ${count_blocks} ;;
+    sql: ${count_over} / NULLIF(${count_blocks}, 0) ;;
     value_format_name: percent_2
   }
 
@@ -818,23 +841,39 @@ view: riders_forecast_staffing {
     label: "% Under"
     description: "Proportion of 30 min blocks that are under the forecasted number"
     type: number
-    sql: ${count_under} / ${count_blocks} ;;
+    sql: ${count_under} / NULLIF(${count_blocks}, 0) ;;
     value_format_name: percent_2
   }
 
-  measure: over_kpi_hours {
-    label: "% Over Hours"
+  measure: over_kpi_hours_filled {
+    label: "% Over Filled Hours"
     description: "Proportion of 30 min blocks that are over the required rider hours"
     type: number
-    sql: ${count_over_hours} / ${count_blocks} ;;
+    sql: ${count_over_hours_filled} / NULLIF(${count_blocks}, 0) ;;
     value_format_name: percent_2
   }
 
-  measure: under_kpi_hours {
-    label: "% Under Hours"
+  measure: under_kpi_hours_filled {
+    label: "% Under Filled Hours"
     description: "Proportion of 30 min blocks that are under the required rider hours"
     type: number
-    sql: ${count_under_hours} / ${count_blocks} ;;
+    sql: ${count_under_hours_filled} / NULLIF(${count_blocks}, 0) ;;
+    value_format_name: percent_2
+  }
+
+  measure: over_kpi_hours_punched {
+    label: "% Over Punched Hours"
+    description: "Proportion of 30 min blocks that are over the required rider hours"
+    type: number
+    sql: ${count_over_hours_punched} / NULLIF(${count_blocks}, 0) ;;
+    value_format_name: percent_2
+  }
+
+  measure: under_kpi_hours_punched {
+    label: "% Under Punched Hours"
+    description: "Proportion of 30 min blocks that are under the required rider hours"
+    type: number
+    sql: ${count_under_hours_punched} / NULLIF(${count_blocks}, 0) ;;
     value_format_name: percent_2
   }
 
@@ -861,6 +900,16 @@ view: riders_forecast_staffing {
     type: sum
     hidden: no
     sql: ${filled_rider_hours} - ${required_rider_hours};;
+    value_format_name: decimal_1
+  }
+
+  measure: delta_punched_required_hours {
+    description: "Delta Between Punched and Required Rider Hours"
+    label: "Delta Between Punched and Required Rider Hours"
+    group_label: " * Rider Hours * "
+    type: sum
+    hidden: no
+    sql: ${punched_rider_hours} - ${required_rider_hours};;
     value_format_name: decimal_1
   }
 

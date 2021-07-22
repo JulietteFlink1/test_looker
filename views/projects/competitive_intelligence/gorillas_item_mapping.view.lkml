@@ -3,9 +3,25 @@ view: gorillas_item_mapping {
     ;;
 
 
+  dimension: gorillas_ean {
+    type: number
+    value_format: "0"
+    sql: ${TABLE}.gorillas_ean ;;
+  }
+
+  dimension: flink_name {
+    type: string
+    sql: ${TABLE}.flink_name ;;
+  }
+
+  dimension: gorillas_name {
+    type: string
+    sql: ${TABLE}.gorillas_name ;;
+  }
 
   dimension: flink_sku {
     type: number
+    value_format: "0"
     sql: ${TABLE}.flink_sku ;;
   }
 
@@ -14,9 +30,16 @@ view: gorillas_item_mapping {
     sql: ${TABLE}.gorillas_id ;;
   }
 
-  dimension: gorillas_label {
-    type: string
-    sql: ${TABLE}.gorillas_label ;;
+  dimension: best_match_score {
+    type: number
+    value_format: "0.#########"
+    sql: ${TABLE}.best_match_score ;;
+  }
+
+  dimension: flink_ean {
+    type: number
+    value_format: "0"
+    sql: ${TABLE}.flink_ean ;;
   }
 
   measure: count {

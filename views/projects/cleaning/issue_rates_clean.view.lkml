@@ -1,4 +1,4 @@
-view: issue_rate_hub_level {
+view: issue_rates_clean {
   derived_table: {
     sql: with issues_orders as
       (
@@ -81,9 +81,9 @@ view: issue_rate_hub_level {
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~  DIMENSIONS ~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- dimension: date {
+  dimension: date {
     label: "Order Date"
-   type: date
+    type: date
     datatype: date
     sql: ${TABLE}.date ;;
   }
@@ -113,13 +113,13 @@ view: issue_rate_hub_level {
   dimension: date_dynamic {
     group_label: "* Dates and Timestamps *"
     label: "Date (Dynamic)"
-    label_from_parameter: order_order.date_granularity
+    label_from_parameter: base_orders.date_granularity
     sql:
-    {% if order_order.date_granularity._parameter_value == 'Day' %}
+    {% if base_orders.date_granularity._parameter_value == 'Day' %}
       ${created_date}
-    {% elsif order_order.date_granularity._parameter_value == 'Week' %}
+    {% elsif base_orders.date_granularity._parameter_value == 'Week' %}
       ${created_week}
-    {% elsif order_order.date_granularity._parameter_value == 'Month' %}
+    {% elsif base_orders.date_granularity._parameter_value == 'Month' %}
       ${created_month}
     {% endif %};;
   }

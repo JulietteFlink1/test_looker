@@ -335,7 +335,7 @@ explore: order_order {
   join: issue_rate_hub_level {
     view_label: "Order Issues on Hub-Level"
     sql_on: ${hubs.hub_code_lowercase} =  LOWER(${issue_rate_hub_level.hub_code}) and
-      ${order_order.date}        =  ${issue_rate_hub_level.date};;
+      ${order_order.date}        =  ${issue_rate_hub_level.date_dynamic};;
     relationship: many_to_one # decided against one_to_many: on this level, many orders have hub-level issue-aggregates
     type: left_outer
   }
@@ -838,6 +838,20 @@ explore: gorillas_v1_items {
   join: gorillas_v1_hubs_master {
     sql_on: ${gorillas_v1_items.hub_code} = ${gorillas_v1_hubs_master.id};;
     relationship: many_to_one
+    type: left_outer
+  }
+
+  join: gorillas_v1_item_hub_collection_group_allocation {
+    sql_on: ${gorillas_v1_item_hub_collection_group_allocation.item_id} = ${gorillas_v1_items.id}
+            AND ${gorillas_v1_item_hub_collection_group_allocation.hub_id} = ${gorillas_v1_items.hub_code};;
+    relationship: many_to_one
+    type: left_outer
+  }
+
+  join: gorillas_category_mapping {
+    sql_on: ${gorillas_category_mapping.gorillas_collection_id} = ${gorillas_v1_item_hub_collection_group_allocation.collection_id}
+            AND ${gorillas_category_mapping.gorillas_group_id} = ${gorillas_v1_item_hub_collection_group_allocation.group_id};;
+    relationship: one_to_one
     type: left_outer
   }
 
