@@ -841,6 +841,20 @@ explore: gorillas_v1_items {
     type: left_outer
   }
 
+  join: gorillas_v1_item_hub_collection_group_allocation {
+    sql_on: ${gorillas_v1_item_hub_collection_group_allocation.item_id} = ${gorillas_v1_items.id}
+            AND ${gorillas_v1_item_hub_collection_group_allocation.hub_id} = ${gorillas_v1_items.hub_code};;
+    relationship: many_to_one
+    type: left_outer
+  }
+
+  join: gorillas_category_mapping {
+    sql_on: ${gorillas_category_mapping.gorillas_collection_id} = ${gorillas_v1_item_hub_collection_group_allocation.collection_id}
+            AND ${gorillas_category_mapping.gorillas_group_id} = ${gorillas_v1_item_hub_collection_group_allocation.group_id};;
+    relationship: one_to_one
+    type: left_outer
+  }
+
 
 }
 
@@ -877,6 +891,21 @@ explore: gorillas_v1_orders {
   hidden:  yes
   label: "Gorillas Orders"
   view_label: "Gorillas Orders"
+  group_label: "08) Competitor Analysis"
+  description: "Analysis of competitors."
+
+  always_filter: {
+    filters: {
+      field: orders_date
+      value: "1 day ago"
+    }
+  }
+}
+
+explore: gorillas_orders_wow {
+  hidden:  no
+  label: "Gorillas Orders WoW"
+  view_label: "Gorillas Orders WoW"
   group_label: "08) Competitor Analysis"
   description: "Analysis of competitors."
 
@@ -936,7 +965,7 @@ explore: gorillas_item_mapping {
 }
 
 explore: gorillas_v1_delivery_areas{
-  hidden:  no
+  hidden:  yes
   label: "Gorillas Delivery Areas"
   view_label: "Gorillas Delivery Areas"
   group_label: "08) Competitor Analysis"

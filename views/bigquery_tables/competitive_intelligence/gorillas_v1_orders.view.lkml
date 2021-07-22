@@ -79,8 +79,8 @@ view: gorillas_v1_orders {
     sql: ${TABLE}.todayOrderSequenceNumber ;;
   }
 
-  measure: count {
-    type: count
-    drill_fields: [id, store_name]
+  measure: sum_orders {
+    type: sum
+    sql: ${today_order_sequence_number} ;;
   }
 }
