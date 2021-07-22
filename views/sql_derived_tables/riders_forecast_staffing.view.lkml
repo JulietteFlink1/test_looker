@@ -109,7 +109,7 @@ view: riders_forecast_staffing {
                           when lower(position.name) like '%picker%' then 'picker'
                       end                                       as position
                     , count(distinct evaluations.id)            as cnt_employees
-                    , sum(evaluation_duration / 60) / (timestamp_diff(shift.ends_at, shift.starts_at, hour) * 2) as punched_hours
+                    , sum(evaluation_duration / 60) / nullif((timestamp_diff(shift.ends_at, shift.starts_at, hour) * 2), 0) as punched_hours
                   from flink-data-prod.shyftplan_v1.evaluations              as evaluations
                   left join flink-data-prod.shyftplan_v1.locations_positions as locations_positions
                             on evaluations.locations_position_id = locations_positions.id
@@ -833,7 +833,7 @@ view: riders_forecast_staffing {
     label: "% Over"
     description: "Proportion of 30 min blocks that are over the forecasted number"
     type: number
-    sql: ${count_over} / ${count_blocks} ;;
+    sql: ${count_over} / NULLIF(${count_blocks}, 0) ;;
     value_format_name: percent_2
   }
 
@@ -841,7 +841,7 @@ view: riders_forecast_staffing {
     label: "% Under"
     description: "Proportion of 30 min blocks that are under the forecasted number"
     type: number
-    sql: ${count_under} / ${count_blocks} ;;
+    sql: ${count_under} / NULLIF(${count_blocks}, 0) ;;
     value_format_name: percent_2
   }
 
@@ -849,7 +849,7 @@ view: riders_forecast_staffing {
     label: "% Over Filled Hours"
     description: "Proportion of 30 min blocks that are over the required rider hours"
     type: number
-    sql: ${count_over_hours_filled} / ${count_blocks} ;;
+    sql: ${count_over_hours_filled} / NULLIF(${count_blocks}, 0) ;;
     value_format_name: percent_2
   }
 
@@ -857,7 +857,7 @@ view: riders_forecast_staffing {
     label: "% Under Filled Hours"
     description: "Proportion of 30 min blocks that are under the required rider hours"
     type: number
-    sql: ${count_under_hours_filled} / ${count_blocks} ;;
+    sql: ${count_under_hours_filled} / NULLIF(${count_blocks}, 0) ;;
     value_format_name: percent_2
   }
 
@@ -865,7 +865,7 @@ view: riders_forecast_staffing {
     label: "% Over Punched Hours"
     description: "Proportion of 30 min blocks that are over the required rider hours"
     type: number
-    sql: ${count_over_hours_punched} / ${count_blocks} ;;
+    sql: ${count_over_hours_punched} / NULLIF(${count_blocks}, 0) ;;
     value_format_name: percent_2
   }
 
@@ -873,7 +873,7 @@ view: riders_forecast_staffing {
     label: "% Under Punched Hours"
     description: "Proportion of 30 min blocks that are under the required rider hours"
     type: number
-    sql: ${count_under_hours_punched} / ${count_blocks} ;;
+    sql: ${count_under_hours_punched} / NULLIF(${count_blocks}, 0) ;;
     value_format_name: percent_2
   }
 
