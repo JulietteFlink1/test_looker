@@ -13,11 +13,6 @@ view: app_downloads {
     sql: ${TABLE}.date ;;
   }
 
-  dimension: app_store {
-    type: string
-    sql: ${TABLE}.app_store ;;
-  }
-
   dimension: de_flink_app_downloads {
     type: number
     sql: ${TABLE}.de_flink_app_downloads ;;

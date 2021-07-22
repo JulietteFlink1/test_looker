@@ -13,9 +13,14 @@ view: app_ratings {
     sql: ${TABLE}.date ;;
   }
 
+  dimension: app_store {
+    type: string
+    sql: ${TABLE}.app_store ;;
+  }
+
   dimension: de_flink_app_rating {
     type: number
-    sql: ${TABLE}.de_flink_app_rating ;;
+    sql: ${TABLE}.de_flink_app_rating;;
   }
 
   dimension: de_getir_app_rating {
