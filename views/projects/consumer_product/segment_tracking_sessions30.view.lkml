@@ -310,6 +310,15 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13
     GROUP BY 1,2
 )
 
+, first_order AS (
+    SELECT
+           e.anonymous_id
+         , MIN(e.timestamp) as first_order_timestamp
+    FROM events e
+    WHERE e.event = 'order_placed'
+    GROUP BY 1
+)
+
     SELECT
           sf.anonymous_id
         , sf.context_app_version
@@ -334,6 +343,7 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13
         , cs.event_count as checkout_started
         , pc.event_count as payment_started
         , op.event_count as order_placed
+        , CASE WHEN fo.first_order_timestamp < session_start_at THEN 1 ELSE 0 END as has_ordered
     FROM sessions_final sf
         LEFT JOIN add_to_cart atc
         ON sf.session_id = atc.session_id
@@ -350,7 +360,10 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13
         LEFT JOIN purchase_confirmed pc
         ON sf.session_id = pc.session_id
         LEFT JOIN order_placed op
-        ON sf.session_id = op.session_id   ;;
+        ON sf.session_id = op.session_id
+        LEFT JOIN first_order fo
+        ON sf.anonymous_id = fo.anonymous_id
+     ;;
   }
 
   measure: count {
@@ -486,10 +499,10 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13
   #   sql: ${TABLE}.session ;;
   # }
 
-  # dimension: has_ordered {
-  #   type: yesno
-  #   sql: ${TABLE}.has_ordered ;;
-  # }
+  dimension: has_ordered {
+    type: yesno
+    sql: ${TABLE}.has_ordered ;;
+  }
 
 ### Custom dimensions
   dimension: full_app_version {
@@ -497,10 +510,10 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13
     sql: ${context_device_type} || '-' || ${context_app_version} ;;
   }
 
-  # dimension: returning_customer {
-  #   type: yesno
-  #   sql: ${TABLE}.has_ordered ;;
-  # }
+  dimension: returning_customer {
+    type: yesno
+    sql: ${has_ordered} ;;
+  }
 
   dimension: hub_unknown {
     type: yesno
@@ -725,7 +738,7 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13
       context_device_type,
       context_app_version,
       # session,
-      # has_ordered,
+      has_ordered,
       hub_city,
       hub_code,
       hub_country,
