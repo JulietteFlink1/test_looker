@@ -78,4 +78,9 @@ view: gorillas_v1_orders {
     type: number
     sql: ${TABLE}.todayOrderSequenceNumber ;;
   }
+
+  measure: sum_orders {
+    type: sum
+    sql: ${today_order_sequence_number} ;;
+  }
 }

@@ -889,7 +889,7 @@ explore: gorillas_v1_orders {
 }
 
 explore: gorillas_orders_wow {
-  hidden:  yes
+  hidden:  no
   label: "Gorillas Orders WoW"
   view_label: "Gorillas Orders WoW"
   group_label: "08) Competitor Analysis"
@@ -951,7 +951,7 @@ explore: gorillas_item_mapping {
 }
 
 explore: gorillas_v1_delivery_areas{
-  hidden:  no
+  hidden:  yes
   label: "Gorillas Delivery Areas"
   view_label: "Gorillas Delivery Areas"
   group_label: "08) Competitor Analysis"

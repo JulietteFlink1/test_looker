@@ -35,16 +35,34 @@ view: gorillas_orders_wow {
     sql: ${TABLE}.time_scraped ;;
   }
 
-  dimension: orders_date {
-    type: date
+  dimension_group: orders {
+    type: time
+    timeframes: [
+      raw,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    convert_tz: no
     datatype: date
     sql: ${TABLE}.orders_date ;;
   }
 
-  dimension: orders_date_wow {
-    type: date
+  dimension_group: orders_wow {
+    type: time
+    timeframes: [
+      raw,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    convert_tz: no
     datatype: date
-    sql: ${TABLE}.orders_date_wow ;;
+    sql: ${TABLE}.orders_date ;;
   }
 
   dimension: hub_id {
@@ -77,12 +95,12 @@ view: gorillas_orders_wow {
     sql: ${TABLE}.hub_label ;;
   }
 
-  dimension: orders {
+  dimension: cnt_orders {
     type: number
     sql: ${TABLE}.orders ;;
   }
 
-  dimension: orders_wow {
+  dimension: cnt_orders_wow {
     type: number
     sql: ${TABLE}.orders_wow ;;
   }
@@ -95,18 +113,26 @@ view: gorillas_orders_wow {
 
   dimension: data_for_both_days {
     type: yesno
-    sql: ${orders_wow} is not null and ${orders} is not null  ;;
+    sql: ${cnt_orders_wow} is not null and ${cnt_orders} is not null  ;;
+    # sql: NOT(is_null(${gorillas_orders_wow.orders}) OR is_null(${gorillas_orders_wow.orders_wow})) ;;
+  }
+
+  dimension: cnt_orders_available {
+    type: yesno
+    sql: ${cnt_orders} is not null  ;;
     # sql: NOT(is_null(${gorillas_orders_wow.orders}) OR is_null(${gorillas_orders_wow.orders_wow})) ;;
   }
 
   measure: sum_orders {
     type: sum
-    sql: ${orders} ;;
+    label: "# Orders"
+    sql: ${cnt_orders} ;;
   }
 
   measure: sum_orders_wow {
     type: sum
-    sql: ${orders_wow} ;;
+    label: "# Orders previous Week"
+    sql: ${cnt_orders_wow} ;;
   }
 
 
@@ -115,15 +141,17 @@ view: gorillas_orders_wow {
     fields: [
       time_scraped_time,
       orders_date,
-      orders_date_wow,
+      orders_week,
+      orders_wow_date,
+      orders_wow_week,
       hub_id,
       country_iso,
       country,
       hub_name,
       hub_city,
       hub_label,
-      orders,
-      orders_wow,
+      cnt_orders,
+      cnt_orders_wow,
       hub_location
     ]
   }
