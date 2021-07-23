@@ -13,12 +13,13 @@ view: events_orders_monitoring {
                  COALESCE(a.hub_city, o.hub_city) AS hub_city,
                  h.country_iso,
                  o.order_id,
-                 o.order_number
-          FROM `flink-backend.flink_android_production.tracks` t
+                 o.order_number,
+                 o.payment_method
+          FROM `flink-backend.flink_android_production.tracks_view` t
           LEFT JOIN `flink-backend.flink_android_production.address_confirmed_view` a ON a.id = t.id
           LEFT JOIN `flink-backend.flink_android_production.order_placed_view` o ON o.id = t.id
           LEFT JOIN `flink-backend.gsheet_store_metadata.hubs` h ON h.city = COALESCE(a.hub_city, o.hub_city)
-          WHERE {% condition event_date %} date(_PARTITIONTIME) {% endcondition %}
+          WHERE {% condition event_date %} date(t.timestamp) {% endcondition %}
 
           UNION ALL
 
@@ -33,15 +34,16 @@ view: events_orders_monitoring {
                  COALESCE(a.hub_city, o.hub_city) AS hub_city,
                  h.country_iso,
                  o.order_id,
-                 o.order_number
-          FROM `flink-backend.flink_ios_production.tracks` t
+                 o.order_number,
+                 o.payment_method
+          FROM `flink-backend.flink_ios_production.tracks_view` t
           LEFT JOIN `flink-backend.flink_ios_production.address_confirmed_view` a ON a.id = t.id
           LEFT JOIN `flink-backend.flink_ios_production.order_placed_view` o ON o.id = t.id
           LEFT JOIN `flink-backend.gsheet_store_metadata.hubs` h ON h.city = COALESCE(a.hub_city, o.hub_city)
-          WHERE {% condition event_date %} date(_PARTITIONTIME) {% endcondition %}
+          WHERE {% condition event_date %} date(t.timestamp) {% endcondition %}
         ),
         saleor AS (
-        SELECT created, tracking_client_id, country_iso, id
+        SELECT created, tracking_client_id, country_iso, id, status
         FROM `flink-backend.saleor_db_global.order_order`
         WHERE {% condition event_date %} DATE(created) {% endcondition %}
         )
@@ -56,10 +58,12 @@ view: events_orders_monitoring {
                  event,
                  order_id,
                  COALESCE(sg.id, CAST(apps.order_number AS INT64)) AS order_number,
+                 payment_method,
+                 status
           FROM apps
           FULL OUTER JOIN saleor sg ON sg.id = CAST(apps.order_number AS INT64) AND sg.country_iso = apps.country_iso
          -- WHERE {% condition event_date %} COALESCE(event_date, DATE(sg.created)) {% endcondition %}
-          GROUP BY 1,2,3,4,5,6,7,8,9,10
+          GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12
           ORDER BY 1, 2, order_number
        ;;
   }
@@ -159,12 +163,23 @@ view: events_orders_monitoring {
     sql: ${TABLE}.order_number ;;
   }
 
+  dimension: payment_method {
+    type: string
+    sql: ${TABLE}.payment_method ;;
+  }
+
+  dimension: status {
+    type: number
+    sql: ${TABLE}.status ;;
+  }
+
+
   dimension: country_yes_no {
     type: string
     sql: CASE
-    WHEN ${TABLE}.iso_country IS NULL THEN 'undefined'
-    ELSE 'defined'
-    END ;;
+          WHEN ${TABLE}.iso_country IS NULL THEN 'undefined'
+          ELSE 'defined'
+          END ;;
   }
 
 
@@ -180,6 +195,8 @@ view: events_orders_monitoring {
       event_name,
       order_id,
       order_number,
+      payment_method,
+      status,
       country_yes_no
     ]
   }
