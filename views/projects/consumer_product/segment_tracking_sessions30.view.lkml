@@ -202,8 +202,7 @@ FROM (
         )
 WHERE
     rank_hd = 1  -- filter set = 1 to get 'latest' timestamp
-AND
-    next_session_start_at IS NOT NULL
+
 GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13
 )
 , add_to_cart AS (
@@ -343,7 +342,7 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13
         , cs.event_count as checkout_started
         , pc.event_count as payment_started
         , op.event_count as order_placed
-        , CASE WHEN fo.first_order_timestamp < session_start_at THEN 1 ELSE 0 END as has_ordered
+        , CASE WHEN fo.first_order_timestamp < sf.session_start_at THEN true ELSE false END as has_ordered
     FROM sessions_final sf
         LEFT JOIN add_to_cart atc
         ON sf.session_id = atc.session_id
