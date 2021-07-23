@@ -17,7 +17,7 @@ view: order_fulfillment_facts {
 
                   FROM `flink-backend.saleor_db_global.order_order` AS order_order
                   LEFT JOIN `flink-backend.saleor_db_global.order_fulfillment` AS order_fulfillment ON order_fulfillment.country_iso = order_order.country_iso AND order_fulfillment.order_id = order_order.id
-
+                  WHERE order_fulfillment.id IS NOT NULL
                 GROUP BY 1,2,3,4,5,6
                 ORDER BY 1,2,5
         )

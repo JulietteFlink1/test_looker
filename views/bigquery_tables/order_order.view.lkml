@@ -649,7 +649,7 @@ view: order_order {
       dimension: time_diff_between_two_subsequent_fulfillments {
         group_label: "* Operations / Logistics *"
         type: number
-        sql: TIMESTAMP_DIFF(TIMESTAMP(leading_order_fulfillment_created_time), ${order_fulfillment.created_raw}, SECOND) / 60 ;;
+        sql: TIMESTAMP_DIFF(TIMESTAMP(${order_fulfillment_facts.leading_order_fulfillment_created_time}), ${order_fulfillment.created_raw}, SECOND) / 60 ;;
       }
 
       dimension: is_internal_order {
