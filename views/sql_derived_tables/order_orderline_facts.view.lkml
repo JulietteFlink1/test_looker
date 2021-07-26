@@ -9,6 +9,7 @@ view: order_orderline_facts {
                   order_order.created,
                   order_order.user_email,
                   order_order.status,
+                  order_orderline.id AS orderline_id,
                   order_orderline.product_sku,
                   order_orderline.quantity,
                   order_orderline.unit_price_gross_amount,
@@ -18,6 +19,8 @@ view: order_orderline_facts {
                      AS order_order
                 LEFT JOIN `flink-backend.saleor_db_global.order_orderline`
                      AS order_orderline ON order_orderline.country_iso = order_order.country_iso AND order_orderline.order_id = order_order.id
+              WHERE order_orderline.id IS NOT NULL      --exclude strange draft orders
+
        ;;
   }
 
@@ -45,7 +48,7 @@ view: order_orderline_facts {
     hidden: yes
     primary_key: yes
     type: string
-    sql: concat(${country_iso}, ${TABLE}.id, ${product_sku}) ;;
+    sql: concat(${country_iso}, ${TABLE}.id, ${TABLE}.orderline_id) ;;
   }
 
   dimension: country_iso {

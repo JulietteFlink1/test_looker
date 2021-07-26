@@ -201,13 +201,12 @@ FROM (
                   , delivery_eta
                 FROM hub_data
             ) hd
-            ON ts.anonymous_id = hd.anonymous_id AND hd.timestamp < ts.next_session_start_at
+            ON ts.anonymous_id = hd.anonymous_id
+            AND ( hd.timestamp < ts.next_session_start_at OR ts.next_session_start_at IS NULL)
         )
 WHERE
     rank_hd = 1  -- filter set = 1 to get 'latest' timestamp
-AND
-    next_session_start_at IS NOT NULL
-GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14
+GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14
 )
 , add_to_cart AS (
     SELECT
@@ -217,7 +216,8 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14
     FROM events e
         LEFT JOIN sessions_final sf
         ON e.anonymous_id = sf.anonymous_id
-        AND e.timestamp BETWEEN sf.session_start_at AND sf.next_session_start_at
+        AND e.timestamp >= sf.session_start_at
+        AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
     WHERE e.event = 'product_added_to_cart'
     GROUP BY 1,2
 )
@@ -230,7 +230,8 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14
     FROM events e
         LEFT JOIN sessions_final sf
         ON e.anonymous_id = sf.anonymous_id
-        AND e.timestamp BETWEEN sf.session_start_at AND sf.next_session_start_at
+        AND e.timestamp >= sf.session_start_at
+        AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
     WHERE e.event = 'location_pin_placed'
     GROUP BY 1,2
 )
@@ -243,7 +244,8 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14
     FROM events e
         LEFT JOIN sessions_final sf
         ON e.anonymous_id = sf.anonymous_id
-        AND e.timestamp BETWEEN sf.session_start_at AND sf.next_session_start_at
+        AND e.timestamp >= sf.session_start_at
+        AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
     WHERE e.event = 'cart_viewed'
     GROUP BY 1,2
 )
@@ -256,7 +258,8 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14
     FROM events e
         LEFT JOIN sessions_final sf
         ON e.anonymous_id = sf.anonymous_id
-        AND e.timestamp BETWEEN sf.session_start_at AND sf.next_session_start_at
+        AND e.timestamp >= sf.session_start_at
+        AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
     WHERE e.event = 'home_viewed'
     GROUP BY 1,2
 )
@@ -269,7 +272,8 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14
     FROM events e
         LEFT JOIN sessions_final sf
         ON e.anonymous_id = sf.anonymous_id
-        AND e.timestamp BETWEEN sf.session_start_at AND sf.next_session_start_at
+        AND e.timestamp >= sf.session_start_at
+        AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
     WHERE e.event = 'address_confirmed'
     GROUP BY 1,2
 )
@@ -282,7 +286,8 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14
     FROM events e
         LEFT JOIN sessions_final sf
         ON e.anonymous_id = sf.anonymous_id
-        AND e.timestamp BETWEEN sf.session_start_at AND sf.next_session_start_at
+        AND e.timestamp >= sf.session_start_at
+        AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
     WHERE e.event = 'checkout_started'
     GROUP BY 1,2
 )
@@ -295,7 +300,8 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14
     FROM events e
         LEFT JOIN sessions_final sf
         ON e.anonymous_id = sf.anonymous_id
-        AND e.timestamp BETWEEN sf.session_start_at AND sf.next_session_start_at
+        AND e.timestamp >= sf.session_start_at
+        AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
     WHERE e.event = 'purchase_confirmed'
     GROUP BY 1,2
 )
@@ -308,7 +314,8 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14
     FROM events e
         LEFT JOIN sessions_final sf
         ON e.anonymous_id = sf.anonymous_id
-        AND e.timestamp BETWEEN sf.session_start_at AND sf.next_session_start_at
+        AND e.timestamp >= sf.session_start_at
+        AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
     WHERE e.event = 'order_placed'
     GROUP BY 1,2
 )
@@ -347,7 +354,7 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14
         , cs.event_count as checkout_started
         , pc.event_count as payment_started
         , op.event_count as order_placed
-        , CASE WHEN fo.first_order_timestamp < session_start_at THEN 1 ELSE 0 END as has_ordered
+        , CASE WHEN fo.first_order_timestamp < sf.session_start_at THEN true ELSE false END as has_ordered
     FROM sessions_final sf
         LEFT JOIN add_to_cart atc
         ON sf.session_id = atc.session_id
