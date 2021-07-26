@@ -19,6 +19,8 @@ view: segment_tracking_sessions30 {
           tracks.event NOT LIKE "%api%"
           AND tracks.event NOT LIKE "%adjust%"
           AND tracks.event NOT LIKE "%install_attributed%"
+          AND tracks.event != "app_opened"
+          AND tracks.event != "application_updated"
           AND NOT (tracks.context_app_version LIKE "%APP-RATING%" OR tracks.context_app_version LIKE "%DEBUG%")
           AND NOT (tracks.context_app_name = "Flink-Staging" OR tracks.context_app_name="Flink-Debug")
     UNION ALL
@@ -38,6 +40,8 @@ view: segment_tracking_sessions30 {
           tracks.event NOT LIKE "%api%"
           AND tracks.event NOT LIKE "%adjust%"
           AND tracks.event NOT LIKE "%install_attributed%"
+          AND tracks.event != "app_opened"
+          AND tracks.event != "application_updated"
           AND NOT (tracks.context_app_version LIKE "%APP-RATING%" OR tracks.context_app_version LIKE "%DEBUG%")
           AND NOT (tracks.context_app_name = "Flink-Staging" OR tracks.context_app_name="Flink-Debug")
           )
@@ -236,20 +240,6 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14
     GROUP BY 1,2
 )
 
-, cart_viewed AS (
-    SELECT
-           sf.anonymous_id
-         , sf.session_id
-         , count(e.timestamp) as event_count
-    FROM events e
-        LEFT JOIN sessions_final sf
-        ON e.anonymous_id = sf.anonymous_id
-        AND e.timestamp >= sf.session_start_at
-        AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
-    WHERE e.event = 'cart_viewed'
-    GROUP BY 1,2
-)
-
 , home_viewed AS (
     SELECT
            sf.anonymous_id
@@ -275,6 +265,20 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14
         AND e.timestamp >= sf.session_start_at
         AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
     WHERE e.event = 'address_confirmed'
+    GROUP BY 1,2
+)
+
+, cart_viewed AS (
+    SELECT
+           sf.anonymous_id
+         , sf.session_id
+         , count(e.timestamp) as event_count
+    FROM events e
+        LEFT JOIN sessions_final sf
+        ON e.anonymous_id = sf.anonymous_id
+        AND e.timestamp >= sf.session_start_at
+        AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
+    WHERE e.event = 'cart_viewed'
     GROUP BY 1,2
 )
 
@@ -329,6 +333,19 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14
     GROUP BY 1
 )
 
+--, any_event AS (
+--    SELECT
+--           sf.anonymous_id
+--         , sf.session_id
+--         , count(e.timestamp) as event_count
+--    FROM events e
+--        LEFT JOIN sessions_final sf
+--        ON e.anonymous_id = sf.anonymous_id
+--        AND e.timestamp >= sf.session_start_at
+--        AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
+--    GROUP BY 1,2
+--)
+
     SELECT
           sf.anonymous_id
         , sf.context_app_version
@@ -354,6 +371,7 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14
         , cs.event_count as checkout_started
         , pc.event_count as payment_started
         , op.event_count as order_placed
+        -- , ae.event_count as any_event
         , CASE WHEN fo.first_order_timestamp < sf.session_start_at THEN true ELSE false END as has_ordered
     FROM sessions_final sf
         LEFT JOIN add_to_cart atc
@@ -374,6 +392,8 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14
         ON sf.session_id = op.session_id
         LEFT JOIN first_order fo
         ON sf.anonymous_id = fo.anonymous_id
+        --LEFT JOIN any_event ae
+        --ON sf.session_id = ae.session_id
      ;;
   }
 
@@ -450,6 +470,11 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14
     type: number
     sql: ${TABLE}.delivery_eta ;;
   }
+
+  # dimension: any_event {
+  #   type: number
+  #   sql: ${TABLE}.any_event ;;
+  # }
 
   dimension: add_to_cart {
     type: number
@@ -604,6 +629,13 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14
 
 ##### Unique count of events during a session. If multiple events are triggerred during a session, e.g 3 times view item, the event is only counted once.
 
+  # measure: single_event_sessions {
+  #   label: "Sessions with 1 event count"
+  #   description: "Number of sessions with 1 event"
+  #   type: sum
+  #   sql: CASE WHEN ${any_event}=1 THEN 1 END;;
+  # }
+
   measure: cnt_address_selected {
     label: "Address selected count"
     description: "Number of sessions in which at least one Address Confirmed event happened"
@@ -625,18 +657,18 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14
     filters: [home_viewed: "NOT NULL"]
   }
 
-  measure: cnt_add_to_cart {
-    label: "Add to cart count"
-    description: "Number of sessions in which at least one Product Added To Cart event happened"
-    type: count
-    filters: [add_to_cart: "NOT NULL"]
-  }
-
   measure: cnt_view_cart {
     label: "View cart count"
     description: "Number of sessions in which at least one Cart Viewed event happened"
     type: count
     filters: [view_cart: "NOT NULL"]
+  }
+
+  measure: cnt_add_to_cart {
+    label: "Add to cart count"
+    description: "Number of sessions in which at least one Product Added To Cart event happened"
+    type: count
+    filters: [add_to_cart: "NOT NULL"]
   }
 
   measure: cnt_checkout_started {
@@ -668,6 +700,23 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14
   #   sql: ${session} ;;
   # }
 
+  # measure: median_number_of_events {
+  #   type: median
+  #   label: "Median number of events in a session"
+  #   sql: ${any_event} ;;
+  # }
+
+  # measure: number_of_events_75th_percentile {
+  #   type: percentile
+  #   percentile: 75
+  #   sql: ${any_event};;
+  # }
+
+  # measure: number_of_events_25th_percentile {
+  #   type: percentile
+  #   percentile: 25
+  #   sql: ${any_event};;
+  # }
 
   measure: sum_address_selected {
     label: "Address selected sum of events"
@@ -691,12 +740,6 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14
     label: "Add to cart sum of events"
     type: sum
     sql: ${add_to_cart} ;;
-  }
-
-  measure: sum_view_cart {
-    label: "View cart sum of events"
-    type: sum
-    sql: ${view_cart} ;;
   }
 
   measure: sum_checkout_started {
@@ -773,10 +816,10 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14
       hub_city,
       hub_code,
       hub_country,
+      view_cart,
       add_to_cart,
       location_pin_placed,
       home_viewed,
-      view_cart,
       address_confirmed,
       checkout_started,
       payment_started,
