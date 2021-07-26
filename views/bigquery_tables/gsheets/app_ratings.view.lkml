@@ -13,11 +13,6 @@ view: app_ratings {
     sql: ${TABLE}.date ;;
   }
 
-  dimension: app_store {
-    type: string
-    sql: ${TABLE}.app_store ;;
-  }
-
   dimension: de_flink_app_rating {
     type: number
     sql: ${TABLE}.de_flink_app_rating;;
@@ -68,12 +63,118 @@ view: app_ratings {
     sql: ${TABLE}.nl_zapp_app_rating ;;
   }
 
-  measure: sum_de_flink_app_rating {
+  measure: avg_de_flink_app_rating {
     group_label: "App Ratings (DE)"
     label: "Flink App Store Rating (DE)"
-    type: sum
+    type: average
     sql: ${TABLE}.de_flink_app_rating ;;
+    value_format: "0.00"
   }
+
+  measure: avg_de_gorillas_app_rating {
+    group_label: "App Ratings (DE)"
+    label: "Gorillas App Store Rating (DE)"
+    type: average
+    sql: ${TABLE}.de_gorillas_app_rating ;;
+    value_format: "0.00"
+  }
+
+  measure: avg_de_getir_app_rating {
+    group_label: "App Ratings (DE)"
+    label: "Getir App Store Rating (DE)"
+    type: average
+    sql: ${TABLE}.de_getir_app_rating ;;
+    value_format: "0.00"
+  }
+
+  measure: avg_nl_flink_app_rating {
+    group_label: "App Ratings (NL)"
+    label: "Flink App Store Rating (NL)"
+    type: average
+    sql: ${TABLE}.nl_flink_app_rating ;;
+    value_format: "0.00"
+  }
+
+  measure: avg_nl_gorillas_app_rating {
+    group_label: "App Ratings (NL)"
+    label: "Gorillas App Store Rating (NL)"
+    type: average
+    sql: ${TABLE}.nl_gorillas_app_rating ;;
+    value_format: "0.00"
+  }
+
+  measure: avg_nl_getir_app_rating {
+    group_label: "App Ratings (NL)"
+    label: "Getir App Store Rating (NL)"
+    type: average
+    sql: ${TABLE}.nl_getir_app_rating ;;
+    value_format: "0.00"
+  }
+
+  measure: avg_nl_zapp_app_rating {
+    group_label: "App Ratings (NL)"
+    label: "Zapp App Store Rating (NL)"
+    type: average
+    sql: ${TABLE}.nl_zapp_app_rating ;;
+    value_format: "0.00"
+  }
+
+  measure: avg_fr_flink_app_rating {
+    group_label: "App Ratings (FR)"
+    label: "Flink App Store Rating (FR)"
+    type: average
+    sql: ${TABLE}.fr_flink_app_rating ;;
+    value_format: "0.00"
+  }
+
+  measure: avg_fr_gorillas_app_rating {
+    group_label: "App Ratings (FR)"
+    label: "Gorillas App Store Rating (FR)"
+    type: average
+    sql: ${TABLE}.fr_gorillas_app_rating ;;
+    value_format: "0.00"
+  }
+
+  measure: avg_fr_getir_app_rating {
+    group_label: "App Ratings (FR)"
+    label: "Getir App Store Rating (FR)"
+    type: average
+    sql: ${TABLE}.fr_getir_app_rating ;;
+    value_format: "0.00"
+  }
+
+  measure: avg_fr_zapp_app_rating {
+    group_label: "App Ratings (FR)"
+    label: "Zapp App Store Rating (FR)"
+    type: average
+    sql: ${TABLE}.fr_zapp_app_rating ;;
+    value_format: "0.00"
+  }
+
+  measure: avg_fr_dija_app_rating {
+    group_label: "App Ratings (FR)"
+    label: "Dija App Store Rating (FR)"
+    type: average
+    sql: ${TABLE}.fr_dija_app_rating ;;
+    value_format: "0.00"
+  }
+
+  measure: avg_fr_cajoo_app_rating {
+    group_label: "App Ratings (FR)"
+    label: "Cajoo App Store Rating (FR)"
+    type: average
+    sql: ${TABLE}.fr_cajoo_app_rating ;;
+    value_format: "0.00"
+  }
+
+  measure: avg_fr_frichti_app_rating {
+    group_label: "App Ratings (FR)"
+    label: "Frichti App Store Rating (FR)"
+    type: average
+    sql: ${TABLE}.fr_frichti_app_rating ;;
+    value_format: "0.00"
+  }
+
 
   measure: count {
     type: count

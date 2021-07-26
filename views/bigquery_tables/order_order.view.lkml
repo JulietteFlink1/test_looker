@@ -649,7 +649,7 @@ view: order_order {
       dimension: time_diff_between_two_subsequent_fulfillments {
         group_label: "* Operations / Logistics *"
         type: number
-        sql: TIMESTAMP_DIFF(TIMESTAMP(leading_order_fulfillment_created_time), ${order_fulfillment.created_raw}, SECOND) / 60 ;;
+        sql: TIMESTAMP_DIFF(TIMESTAMP(${order_fulfillment_facts.leading_order_fulfillment_created_time}), ${order_fulfillment.created_raw}, SECOND) / 60 ;;
       }
 
       dimension: is_internal_order {
@@ -830,7 +830,8 @@ view: order_order {
         label: "AVG Picking Time"
         description: "Average Picking Time considering first fulfillment to second fulfillment created. Outliers excluded (<0min or >30min)"
         hidden:  no
-        type: average
+        type: average_distinct
+        sql_distinct_key: CONCAT(${unique_id}, ${order_fulfillment_facts.unique_id}) ;;
         sql:${time_diff_between_two_subsequent_fulfillments};;
         value_format: "0.0"
         filters: [order_fulfillment_facts.is_first_fulfillment: "yes", is_picking_less_than_0_minute: "no", is_picking_more_than_30_minute: "no"]
