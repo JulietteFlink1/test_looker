@@ -46,6 +46,7 @@ view: segment_tracking_sessions30 {
         SELECT
           anonymous_id
         , anonymous_id || '-' || ROW_NUMBER() OVER(PARTITION BY anonymous_id ORDER BY timestamp ASC) AS session_id
+        , ROW_NUMBER() OVER(PARTITION BY anonymous_id ORDER BY timestamp ASC) AS session_number
         , timestamp AS session_start_at
         , LEAD(timestamp) OVER(PARTITION BY anonymous_id ORDER BY timestamp) AS next_session_start_at
         , context_app_version
@@ -160,6 +161,7 @@ SELECT
      , context_device_type
      , context_locale
      , session_id
+     , session_number
      , session_start_at
      , next_session_start_at
      , hub_country
@@ -175,6 +177,7 @@ FROM (
         , ts.context_device_type
         , ts.context_locale
         , ts.session_id
+        , ts.session_number
         , ts.session_start_at
         , ts.next_session_start_at
         , hd.timestamp as hd_timestamp
@@ -204,7 +207,7 @@ WHERE
     rank_hd = 1  -- filter set = 1 to get 'latest' timestamp
 AND
     next_session_start_at IS NOT NULL
-GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13
+GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14
 )
 , add_to_cart AS (
     SELECT
@@ -325,6 +328,7 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13
         , sf.context_device_type
         , sf.context_locale
         , sf.session_id
+        , sf.session_number
         , datetime(sf.session_start_at,
           'Europe/Berlin') AS session_start_at
         , datetime(sf.next_session_start_at,
@@ -371,6 +375,15 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13
     drill_fields: [detail*]
   }
 
+  measure: cnt_unique_anonymousid {
+    label: "# Unique Users"
+    description: "Number of Unique Users identified via Anonymous ID from Segment"
+    hidden:  no
+    type: count_distinct
+    sql: ${anonymous_id};;
+    value_format_name: decimal_0
+  }
+
   dimension: anonymous_id {
     type: string
     sql: ${TABLE}.anonymous_id ;;
@@ -394,6 +407,11 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13
   dimension: session_id {
     type: string
     sql: ${TABLE}.session_id ;;
+  }
+
+  dimension: session_number {
+    type: number
+    sql: ${TABLE}.session_number ;;
   }
 
   dimension: hub_id {
@@ -513,6 +531,11 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13
   dimension: returning_customer {
     type: yesno
     sql: ${has_ordered} ;;
+  }
+
+  dimension: is_first_session {
+    type: yesno
+    sql: ${TABLE}.session_number=1 ;;
   }
 
   dimension: hub_unknown {
@@ -738,6 +761,7 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13
       context_device_type,
       context_app_version,
       # session,
+      session_number,
       has_ordered,
       hub_city,
       hub_code,
