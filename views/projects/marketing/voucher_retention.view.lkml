@@ -11,8 +11,8 @@ view: voucher_retention {
                     ELSE JSON_EXTRACT_SCALAR(metadata, '$.warehouse') end as warehouse,
               v.code,
               ROW_NUMBER() OVER ( PARTITION BY o.country_iso, o.user_email ORDER BY o.created asc) AS rank
-              from `flink-backend.saleor_db_global.order_order` o
-              left join `flink-backend.saleor_db_global.discount_voucher` v
+              from `flink-data-prod.saleor_prod_global.order_order` o
+              left join `flink-data-prod.saleor_prod_global.discount_voucher` v
               on o.voucher_id = v.id and o.country_iso=v.country_iso
               where v.code is not null and o.status in ('fulfilled', 'partially fulfilled')
           ),
@@ -39,7 +39,7 @@ view: voucher_retention {
             order_order.id,
             first_order_with_voucher.warehouse,
             DATE_DIFF(DATE(order_order.created), DATE(first_order_with_voucher.created), DAY) as time_difference
-            from `flink-backend.saleor_db_global.order_order` order_order
+            from `flink-data-prod.saleor_prod_global.order_order` order_order
             left join first_order_with_voucher
             on order_order.country_iso = first_order_with_voucher.country_iso and order_order.user_email = first_order_with_voucher.user_email
             where order_order.id != first_order_with_voucher.id and order_order.user_email in (select user_email from first_order_with_voucher) and order_order.status in ('fulfilled', 'partially fulfilled')

@@ -24,7 +24,7 @@ view: shyftplan_riders_pickers_hours {
               WHEN JSON_EXTRACT_SCALAR(metadata, '$.warehouse') = 'münchen-leopoldstraße' THEN 'de_muc_schw'
               ELSE JSON_EXTRACT_SCALAR(metadata, '$.warehouse') end as warehouse,
               count(distinct orders.id) as orders
-        from `flink-backend.saleor_db_global.order_order` orders
+        from `flink-data-prod.saleor_prod_global.order_order` orders
         where orders.status in ('fulfilled', 'partially fulfilled') and
               orders.user_email NOT LIKE '%goflink%' AND orders.user_email NOT LIKE '%pickery%' AND LOWER(orders.user_email) NOT IN ('christoph.a.cordes@gmail.com', 'jfdames@gmail.com', 'oliver.merkel@gmail.com', 'alenaschneck@gmx.de', 'saadsaeed354@gmail.com', 'saadsaeed353@gmail.com', 'fabian.hardenberg@gmail.com', 'benjamin.zagel@gmail.com')
         group by 1, 2

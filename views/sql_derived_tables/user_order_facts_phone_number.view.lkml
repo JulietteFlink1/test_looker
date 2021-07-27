@@ -24,8 +24,8 @@ view: user_order_facts_phone_number {
                                 CASE WHEN JSON_EXTRACT_SCALAR(metadata, '$.warehouse') IN ('hamburg-oellkersallee', 'hamburg-oelkersallee') THEN 'de_ham_alto'
                                 WHEN JSON_EXTRACT_SCALAR(metadata, '$.warehouse') = 'münchen-leopoldstraße' THEN 'de_muc_schw'
                                 ELSE JSON_EXTRACT_SCALAR(metadata, '$.warehouse') end as hub_name
-                        FROM `flink-backend.saleor_db_global.order_order` order_order
-                        left join `flink-backend.saleor_db_global.account_address` address
+                        FROM `flink-data-prod.saleor_prod_global.order_order` order_order
+                        left join `flink-data-prod.saleor_prod_global.account_address` address
                             on order_order.country_iso = address.country_iso and order_order.shipping_address_id = address.id
                             where order_order.status in ('fulfilled', 'partially fulfilled')) a
                     )
@@ -46,8 +46,8 @@ view: user_order_facts_phone_number {
             , MIN(order_order.created) AS first_order
             , MAX(order_order.created) AS latest_order
             , COUNT(DISTINCT FORMAT_TIMESTAMP('%Y%m', order_order.created)) AS number_of_distinct_months_with_orders
-          FROM `flink-backend.saleor_db_global.order_order` order_order
-          left join `flink-backend.saleor_db_global.account_address` address
+          FROM `flink-data-prod.saleor_prod_global.order_order` order_order
+          left join `flink-data-prod.saleor_prod_global.account_address` address
              on order_order.country_iso = address.country_iso and order_order.shipping_address_id = address.id
           where order_order.status in ('fulfilled', 'partially fulfilled')
           GROUP BY 1, 2
@@ -90,8 +90,8 @@ view: user_order_facts_phone_number {
             select order_order.country_iso,
             address.phone as pseudo_unique_id,
             count(distinct(order_order.id)) as _30_day_reorder_number
-            from `flink-backend.saleor_db_global.order_order` order_order
-            left join `flink-backend.saleor_db_global.account_address` address
+            from `flink-data-prod.saleor_prod_global.order_order` order_order
+            left join `flink-data-prod.saleor_prod_global.account_address` address
              on order_order.country_iso = address.country_iso and order_order.shipping_address_id = address.id
             left join users
                 on address.phone = users.pseudo_unique_id
@@ -108,8 +108,8 @@ view: user_order_facts_phone_number {
             select order_order.country_iso,
             address.phone as pseudo_unique_id,
             count(distinct(order_order.id)) as _28_day_reorder_number
-            from `flink-backend.saleor_db_global.order_order` order_order
-            left join `flink-backend.saleor_db_global.account_address` address
+            from `flink-data-prod.saleor_prod_global.order_order` order_order
+            left join `flink-data-prod.saleor_prod_global.account_address` address
              on order_order.country_iso = address.country_iso and order_order.shipping_address_id = address.id
             left join users
                 on address.phone = users.pseudo_unique_id
@@ -127,10 +127,10 @@ view: user_order_facts_phone_number {
       address.phone as pseudo_unique_id,
       orderline.product_name,
       sum(orderline.quantity) as sum_quantity
-      from `flink-backend.saleor_db_global.order_order` orders
-      left join `flink-backend.saleor_db_global.account_address` address
+      from `flink-data-prod.saleor_prod_global.order_order` orders
+      left join `flink-data-prod.saleor_prod_global.account_address` address
              on orders.country_iso = address.country_iso and orders.shipping_address_id = address.id
-      left join `flink-backend.saleor_db_global.order_orderline` orderline
+      left join `flink-data-prod.saleor_prod_global.order_orderline` orderline
         on orders.country_iso = orderline.country_iso and orders.id = orderline.order_id
       where orders.status in ('fulfilled', 'partially_fulfilled')
       group by 1, 2, 3
@@ -144,16 +144,16 @@ view: user_order_facts_phone_number {
       orderline.product_sku,
       orderline.product_name,
       pcategory.name as category_name
-      from `flink-backend.saleor_db_global.order_order` orders
-      left join `flink-backend.saleor_db_global.account_address` address
+      from `flink-data-prod.saleor_prod_global.order_order` orders
+      left join `flink-data-prod.saleor_prod_global.account_address` address
              on orders.country_iso = address.country_iso and orders.shipping_address_id = address.id
-      left join `flink-backend.saleor_db_global.order_orderline` orderline
+      left join `flink-data-prod.saleor_prod_global.order_orderline` orderline
         on orders.country_iso = orderline.country_iso and orders.id = orderline.order_id
-      left join `flink-backend.saleor_db_global.product_productvariant` pvariant
+      left join `flink-data-prod.saleor_prod_global.product_productvariant` pvariant
         on orderline.country_iso = pvariant.country_iso and orderline.product_sku=pvariant.sku
-      left join `flink-backend.saleor_db_global.product_product` pproduct
+      left join `flink-data-prod.saleor_prod_global.product_product` pproduct
         on pvariant.country_iso = pproduct.country_iso and pvariant.id=pproduct.id
-      left join `flink-backend.saleor_db_global.product_category` pcategory
+      left join `flink-data-prod.saleor_prod_global.product_category` pcategory
         on pproduct.country_iso = pcategory.country_iso and pproduct.category_id=pcategory.id
       where orders.status in ('fulfilled', 'partially_fulfilled')
     ),
@@ -239,8 +239,8 @@ view: user_order_facts_phone_number {
         address.phone as pseudo_unique_id,
     extract(DAYOFWEEK from orders.created) as day_of_week,
     count(*) as day_count
-    from `flink-backend.saleor_db_global.order_order` orders
-    left join `flink-backend.saleor_db_global.account_address` address
+    from `flink-data-prod.saleor_prod_global.order_order` orders
+    left join `flink-data-prod.saleor_prod_global.account_address` address
              on orders.country_iso = address.country_iso and orders.shipping_address_id = address.id
     where orders.status in ('fulfilled', 'partially_fulfilled')
     group by 1, 2, 3
@@ -252,8 +252,8 @@ view: user_order_facts_phone_number {
     address.phone as pseudo_unique_id,
     extract(HOUR from orders.created) as hour,
     count(*) as hour_count
-    from `flink-backend.saleor_db_global.order_order` orders
-    left join `flink-backend.saleor_db_global.account_address` address
+    from `flink-data-prod.saleor_prod_global.order_order` orders
+    left join `flink-data-prod.saleor_prod_global.account_address` address
              on orders.country_iso = address.country_iso and orders.shipping_address_id = address.id
     where orders.status in ('fulfilled', 'partially_fulfilled')
     group by 1, 2, 3
@@ -282,8 +282,8 @@ view: user_order_facts_phone_number {
       select orders.country_iso,
       address.phone as pseudo_unique_id,
       MAX(orders.created) as latest_order_with_voucher
-      from `flink-backend.saleor_db_global.order_order` orders
-      left join `flink-backend.saleor_db_global.account_address` address
+      from `flink-data-prod.saleor_prod_global.order_order` orders
+      left join `flink-data-prod.saleor_prod_global.account_address` address
              on orders.country_iso = address.country_iso and orders.shipping_address_id = address.id
       where orders.voucher_id is not null and orders.status in ('fulfilled', 'partially_fulfilled')
       group by 1, 2

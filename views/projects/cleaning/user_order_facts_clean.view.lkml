@@ -15,7 +15,7 @@ view: user_order_facts_clean {
             , MIN(created) AS first_order
             , MAX(created) AS latest_order
             , COUNT(DISTINCT FORMAT_TIMESTAMP('%Y%m', created)) AS number_of_distinct_months_with_orders
-          FROM `flink-backend.saleor_db_global.order_order` order_order
+          FROM `flink-data-prod.saleor_prod_global.order_order` order_order
           where order_order.status in ('fulfilled', 'partially fulfilled')
           GROUP BY country_iso, user_email
     ),
@@ -38,7 +38,7 @@ view: user_order_facts_clean {
     users.user_email,
     count(distinct(order_order.id)) as _30_day_reorder_number
     from users
-    left join `flink-backend.saleor_db_global.order_order` order_order
+    left join `flink-data-prod.saleor_prod_global.order_order` order_order
     on users.country_iso=order_order.country_iso and users.user_email= order_order.user_email
     where date_diff(date(order_order.created), date(users.first_order) , DAY) <= 30 and
     users.first_order_id != order_order.id and
@@ -52,7 +52,7 @@ view: user_order_facts_clean {
     users.user_email,
     count(distinct(order_order.id)) as _28_day_reorder_number
     from users
-    left join `flink-backend.saleor_db_global.order_order` order_order
+    left join `flink-data-prod.saleor_prod_global.order_order` order_order
     on users.country_iso=order_order.country_iso and users.user_email= order_order.user_email
     where date_diff(date(order_order.created), date(users.first_order) , DAY) <= 28 and
     users.first_order_id != order_order.id and
@@ -67,8 +67,8 @@ view: user_order_facts_clean {
       orders.user_email,
       orderline.product_name,
       sum(orderline.quantity) as sum_quantity
-      from `flink-backend.saleor_db_global.order_order` orders
-      left join `flink-backend.saleor_db_global.order_orderline` orderline
+      from ``flink-data-prod.saleor_prod_global.order_order` orders
+      left join `flink-data-prod.saleor_prod_global.order_orderline` orderline
       on orders.country_iso = orderline.country_iso and orders.id = orderline.order_id
       group by 1, 2, 3
     ),
@@ -81,14 +81,14 @@ view: user_order_facts_clean {
       orderline.product_sku,
       orderline.product_name,
       pcategory.name as category_name
-      from `flink-backend.saleor_db_global.order_order` orders
-      left join `flink-backend.saleor_db_global.order_orderline` orderline
+      from `flink-data-prod.saleor_prod_global.order_order` orders
+      left join `flink-data-prod.saleor_prod_global.order_orderline` orderline
       on orders.country_iso = orderline.country_iso and orders.id = orderline.order_id
-      left join `flink-backend.saleor_db_global.product_productvariant` pvariant
+      left join `flink-data-prod.saleor_prod_global.product_productvariant` pvariant
       on orderline.country_iso = pvariant.country_iso and orderline.product_sku=pvariant.sku
-      left join `flink-backend.saleor_db_global.product_product` pproduct
+      left join `flink-data-prod.saleor_prod_global.product_product` pproduct
       on pvariant.country_iso = pproduct.country_iso and pvariant.id=pproduct.id
-      left join `flink-backend.saleor_db_global.product_category` pcategory
+      left join `flink-data-prod.saleor_prod_global.product_category` pcategory
       on pproduct.country_iso = pcategory.country_iso and pproduct.category_id=pcategory.id
     ),
 
@@ -152,7 +152,7 @@ view: user_order_facts_clean {
     user_email,
     extract(DAYOFWEEK from created) as day_of_week,
     count(*) as day_count
-    from `flink-backend.saleor_db_global.order_order`
+    from `flink-data-prod.saleor_prod_global.order_order`
     group by 1, 2, 3
     ),
 
@@ -162,7 +162,7 @@ view: user_order_facts_clean {
     user_email,
     extract(HOUR from created) as hour,
     count(*) as hour_count
-    from `flink-backend.saleor_db_global.order_order`
+    from `flink-data-prod.saleor_prod_global.order_order`
     group by 1, 2, 3
     ),
 
@@ -188,7 +188,7 @@ view: user_order_facts_clean {
       select orders.country_iso,
       orders.user_email,
       MAX(orders.created) as latest_order_with_voucher
-      from `flink-backend.saleor_db_global.order_order` orders
+      from `flink-data-prod.saleor_prod_global.order_order` orders
       where orders.voucher_id is not null
       group by 1, 2
     )

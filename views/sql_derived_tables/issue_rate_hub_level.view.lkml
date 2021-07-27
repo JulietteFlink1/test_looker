@@ -16,7 +16,7 @@ view: issue_rate_hub_level {
           count(distinct if(cs.problem_group = 'Damaged', order_nr__, null)) as damaged,
           count(distinct if (cs.problem_group is not null, order_nr__, null)) as orders_with_issues
           -- Joins
-          from `flink-backend.saleor_db_global.order_order` orders
+          from `flink-data-prod.saleor_prod_global.order_order` orders
           left join `flink-backend.gsheet_cs_issues.CS_issues_post_delivery` cs
           on cs.country_iso = orders.country_iso and cs.order_nr__ = orders.id
           -- other
@@ -34,7 +34,7 @@ view: issue_rate_hub_level {
           -- Aggregates
           count(distinct id) as count_orders
           -- Joins
-          from `flink-backend.saleor_db_global.order_order`
+          from `flink-data-prod.saleor_prod_global.order_order`
           -- Where
           where status in ('fulfilled', 'partially fulfilled') and
           user_email NOT LIKE '%goflink%' AND user_email NOT LIKE '%pickery%' AND LOWER(user_email) NOT IN ('christoph.a.cordes@gmail.com', 'jfdames@gmail.com', 'oliver.merkel@gmail.com', 'alenaschneck@gmx.de', 'saadsaeed354@gmail.com', 'saadsaeed353@gmail.com', 'fabian.hardenberg@gmail.com', 'benjamin.zagel@gmail.com')
