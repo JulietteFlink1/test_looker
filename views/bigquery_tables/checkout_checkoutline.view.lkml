@@ -1,5 +1,5 @@
 view: checkout_checkoutline {
-  sql_table_name: `flink-backend.saleor_db.checkout_checkoutline`
+  sql_table_name: `flink-data-prod.saleor_prod_global.checkout_checkoutline`
     ;;
   drill_fields: [id]
 

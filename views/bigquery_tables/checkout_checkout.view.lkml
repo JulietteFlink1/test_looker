@@ -1,5 +1,5 @@
 view: checkout_checkout {
-  sql_table_name: `flink-backend.saleor_db.checkout_checkout`
+  sql_table_name: `flink-data-prod.saleor_prod_global.checkout_checkout`
     ;;
 
   dimension: billing_address_id {

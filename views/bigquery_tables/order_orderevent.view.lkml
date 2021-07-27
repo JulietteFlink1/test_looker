@@ -1,5 +1,5 @@
 view: order_orderevent {
-  sql_table_name: `flink-backend.saleor_db_global.order_orderevent`
+  sql_table_name: `flink-data-prod.saleor_prod_global.order_orderevent`
     ;;
   drill_fields: [id]
 

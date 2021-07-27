@@ -1,5 +1,5 @@
 view: warehouse_allocation {
-  sql_table_name: `flink-backend.saleor_db_global.warehouse_allocation`
+  sql_table_name: `flink-data-prod.saleor_prod_global.warehouse_allocation`
     ;;
   drill_fields: [id]
 

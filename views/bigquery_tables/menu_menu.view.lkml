@@ -1,5 +1,5 @@
 view: menu_menu {
-  sql_table_name: `flink-backend.saleor_db_global.menu_menu`
+  sql_table_name: `flink-data-prod.saleor_prod_global.menu_menu`
     ;;
   drill_fields: [id]
 
