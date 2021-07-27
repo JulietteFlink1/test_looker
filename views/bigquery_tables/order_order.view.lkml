@@ -1,5 +1,5 @@
 view: order_order {
-  sql_table_name: `flink-backend.saleor_db_global.order_order`
+  sql_table_name: `flink-data-prod.saleor_prod_global.order_order`
     ;;
   drill_fields: [core_dimensions*]
   view_label: "* Orders *"

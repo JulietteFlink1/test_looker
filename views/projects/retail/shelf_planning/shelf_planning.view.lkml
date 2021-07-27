@@ -23,7 +23,7 @@ view: shelf_planning {
                 , extract(week from date(base_orders.created, 'Europe/Berlin')) as order_week
                 , lower(hubs.hub_code)                                          as hub_code
                 , coalesce(sum(order_orderline.quantity), 0)                    as sum_item_quantity
-              from `flink-backend.saleor_db_global.order_order`
+              from `flink-data-prod.saleor_prod_global.order_order`
                   as base_orders
               left join `flink-backend.gsheet_store_metadata.hubs`
                   as hubs
@@ -36,7 +36,7 @@ view: shelf_planning {
                                 then 'de_muc_schw'
                                 else json_extract_scalar(base_orders.metadata, '$.warehouse')
                             end) = (lower(hubs.hub_code))
-              left join `flink-backend.saleor_db_global.order_orderline`
+              left join `flink-data-prod.saleor_prod_global.order_orderline`
                   as order_orderline
                         on order_orderline.country_iso = base_orders.country_iso and
                            order_orderline.order_id = base_orders.id

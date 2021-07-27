@@ -13,7 +13,7 @@ view: order_sku_count {
                   order_id,
                   SUM(quantity_fulfilled) as sum_quantity_fulfilled,
                   COUNT(DISTINCT product_sku) as no_distinct_skus
-              FROM `flink-backend.saleor_db_global.order_orderline`
+              FROM `flink-data-prod.saleor_prod_global.order_orderline`
               GROUP BY 1,2
           )
        ;;

@@ -1,5 +1,5 @@
 view: product_product {
-  sql_table_name: `flink-backend.saleor_db_global.product_product`
+  sql_table_name: `flink-data-prod.saleor_prod_global.product_product`
     ;;
   drill_fields: [id]
   view_label: "* Product / SKU Data *"

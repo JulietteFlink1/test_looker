@@ -15,8 +15,8 @@ view: order_fulfillment_facts {
                   COUNT(order_fulfillment.id) AS order_fulfillment_count,
                   RANK() OVER(partition by order_order.country_iso, order_order.id order by MIN(order_fulfillment.created)) as order_fulfillment_rank
 
-                  FROM `flink-backend.saleor_db_global.order_order` AS order_order
-                  LEFT JOIN `flink-backend.saleor_db_global.order_fulfillment` AS order_fulfillment ON order_fulfillment.country_iso = order_order.country_iso AND order_fulfillment.order_id = order_order.id
+                  FROM `flink-data-prod.saleor_prod_global.order_order` AS order_order
+                  LEFT JOIN `flink-data-prod.saleor_prod_global.order_fulfillment` AS order_fulfillment ON order_fulfillment.country_iso = order_order.country_iso AND order_fulfillment.order_id = order_order.id
                   WHERE order_fulfillment.id IS NOT NULL
                 GROUP BY 1,2,3,4,5,6
                 ORDER BY 1,2,5
