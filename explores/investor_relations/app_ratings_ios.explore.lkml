@@ -4,7 +4,7 @@ include: "/**/*.explore"
 
 # IMPORTANT - used in Investor Relations reports
 
-explore: app_ratings {
-  from: app_ratings
+explore: app_ratings_ios {
+  from: app_ratings_ios
   hidden: yes
 }

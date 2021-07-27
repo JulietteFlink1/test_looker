@@ -125,18 +125,12 @@ view: app_downloads {
     sql: ${TABLE}.fr_flink_app_downloads ;;
   }
 
-  measure: sum_fr_frichti_app_downloads {
-    group_label: "App Downloads (FR)"
-    label: "Frichti App Downloads (FR)"
-    type: sum
-    sql: ${TABLE}.fr_frichti_app_downloads ;;
-  }
 
   measure: sum_fr_gorillas_app_downloads {
     group_label: "App Downloads (FR)"
     label: "Gorillas App Downloads (FR)"
     type: sum
-    sql: ${TABLE}.de_gorillas_app_downloads ;;
+    sql: ${TABLE}.fr_gorillas_app_downloads ;;
   }
 
   measure: sum_fr_getir_app_downloads {
