@@ -1,6 +1,5 @@
-view: segment_tracking_sessions30 {
+view: location_segment_sessions {
   derived_table: {
-    persist_for: "1 hour"
     sql: WITH
         events AS ( -- ios all events
         SELECT
@@ -212,19 +211,6 @@ WHERE
     rank_hd = 1  -- filter set = 1 to get 'latest' timestamp
 GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14
 )
-, add_to_cart AS (
-    SELECT
-           sf.anonymous_id
-         , sf.session_id
-         , count(e.timestamp) as event_count
-    FROM events e
-        LEFT JOIN sessions_final sf
-        ON e.anonymous_id = sf.anonymous_id
-        AND e.timestamp >= sf.session_start_at
-        AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
-    WHERE e.event = 'product_added_to_cart'
-    GROUP BY 1,2
-)
 
 , location_pin_placed AS (
     SELECT
@@ -268,62 +254,6 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14
     GROUP BY 1,2
 )
 
-, cart_viewed AS (
-    SELECT
-           sf.anonymous_id
-         , sf.session_id
-         , count(e.timestamp) as event_count
-    FROM events e
-        LEFT JOIN sessions_final sf
-        ON e.anonymous_id = sf.anonymous_id
-        AND e.timestamp >= sf.session_start_at
-        AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
-    WHERE e.event = 'cart_viewed'
-    GROUP BY 1,2
-)
-
-, checkout_started AS (
-    SELECT
-           sf.anonymous_id
-         , sf.session_id
-         , count(e.timestamp) as event_count
-    FROM events e
-        LEFT JOIN sessions_final sf
-        ON e.anonymous_id = sf.anonymous_id
-        AND e.timestamp >= sf.session_start_at
-        AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
-    WHERE e.event = 'checkout_started'
-    GROUP BY 1,2
-)
-
-, purchase_confirmed AS (
-    SELECT
-           sf.anonymous_id
-         , sf.session_id
-         , count(e.timestamp) as event_count
-    FROM events e
-        LEFT JOIN sessions_final sf
-        ON e.anonymous_id = sf.anonymous_id
-        AND e.timestamp >= sf.session_start_at
-        AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
-    WHERE e.event = 'purchase_confirmed'
-    GROUP BY 1,2
-)
-
-, order_placed AS (
-    SELECT
-           sf.anonymous_id
-         , sf.session_id
-         , count(e.timestamp) as event_count
-    FROM events e
-        LEFT JOIN sessions_final sf
-        ON e.anonymous_id = sf.anonymous_id
-        AND e.timestamp >= sf.session_start_at
-        AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
-    WHERE e.event = 'order_placed'
-    GROUP BY 1,2
-)
-
 , first_order AS (
     SELECT
            e.anonymous_id
@@ -363,33 +293,18 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14
         , sf.hub_city
         , sf.delivery_postcode
         , sf.delivery_eta
-        , atc.event_count as add_to_cart
         , lpp.event_count as location_pin_placed
         , hv.event_count as home_viewed
-        , cv.event_count as view_cart
         , ac.event_count as address_confirmed
-        , cs.event_count as checkout_started
-        , pc.event_count as payment_started
-        , op.event_count as order_placed
         -- , ae.event_count as any_event
         , CASE WHEN fo.first_order_timestamp < sf.session_start_at THEN true ELSE false END as has_ordered
     FROM sessions_final sf
-        LEFT JOIN add_to_cart atc
-        ON sf.session_id = atc.session_id
         LEFT JOIN location_pin_placed lpp
         ON sf.session_id = lpp.session_id
         LEFT JOIN home_viewed hv
         ON sf.session_id = hv.session_id
-        LEFT JOIN cart_viewed cv
-        ON sf.session_id = cv.session_id
         LEFT JOIN address_confirmed ac
         ON sf.session_id = ac.session_id
-        LEFT JOIN checkout_started cs
-        ON sf.session_id = cs.session_id
-        LEFT JOIN purchase_confirmed pc
-        ON sf.session_id = pc.session_id
-        LEFT JOIN order_placed op
-        ON sf.session_id = op.session_id
         LEFT JOIN first_order fo
         ON sf.anonymous_id = fo.anonymous_id
         --LEFT JOIN any_event ae
@@ -397,18 +312,25 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14
      ;;
   }
 
+  ## I want to additional fields: one is the hub that appOpened detected, one is a flag that says whether appOpened changed the hub assignment since the last other event happened
+
   measure: count {
     type: count
     drill_fields: [detail*]
   }
 
   measure: cnt_unique_anonymousid {
-    label: "# Unique Users"
+    label: "Count Unique Users"
     description: "Number of Unique Users identified via Anonymous ID from Segment"
     hidden:  no
     type: count_distinct
     sql: ${anonymous_id};;
     value_format_name: decimal_0
+  }
+
+  dimension: has_address_confirmed_event {
+    type: yesno
+    sql: ${TABLE}.address_confirmed != NULL ;;
   }
 
   dimension: anonymous_id {
@@ -476,11 +398,6 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14
   #   sql: ${TABLE}.any_event ;;
   # }
 
-  dimension: add_to_cart {
-    type: number
-    sql: ${TABLE}.add_to_cart ;;
-  }
-
   dimension: location_pin_placed {
     type: number
     sql: ${TABLE}.location_pin_placed ;;
@@ -491,29 +408,9 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14
     sql: ${TABLE}.home_viewed ;;
   }
 
-  dimension: view_cart {
-    type: number
-    sql: ${TABLE}.view_cart ;;
-  }
-
   dimension: address_confirmed {
     type: number
     sql: ${TABLE}.address_confirmed ;;
-  }
-
-  dimension: checkout_started {
-    type: number
-    sql: ${TABLE}.checkout_started ;;
-  }
-
-  dimension: payment_started {
-    type: number
-    sql: ${TABLE}.payment_started ;;
-  }
-
-  dimension: order_placed {
-    type: number
-    sql: ${TABLE}.order_placed ;;
   }
 
   dimension_group: session_start_at {
@@ -549,11 +446,6 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14
   #   sql: ${TABLE}.session ;;
   # }
 
-  dimension: has_ordered {
-    type: yesno
-    sql: ${TABLE}.has_ordered ;;
-  }
-
 ### Custom dimensions
   dimension: full_app_version {
     type: string
@@ -562,7 +454,7 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14
 
   dimension: returning_customer {
     type: yesno
-    sql: ${has_ordered} ;;
+    sql: ${TABLE}.has_ordered ;;
   }
 
   dimension: is_first_session {
@@ -573,12 +465,6 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14
   dimension: hub_unknown {
     type: yesno
     sql: ${hub_code} IS NULL ;;
-  }
-
-  dimension: is_setting_address {
-    type: yesno
-    description: "TRUE if user has at least one addressConfirmed event in this session, FALSE otherwise"
-    sql: ${address_confirmed} IS NOT NULL ;;
   }
 
   dimension: session_start_date_granularity {
@@ -623,16 +509,6 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14
     }
   }
 
-  dimension: checkout_payment_ratio_per_session {
-    type: number
-    sql: ${checkout_started}/${payment_started};;
-  }
-
-  dimension: payment_order_ratio_per_session {
-    type: number
-    sql: ${payment_started}/${order_placed};;
-  }
-
 ##### Unique count of events during a session. If multiple events are triggerred during a session, e.g 3 times view item, the event is only counted once.
 
   # measure: single_event_sessions {
@@ -663,41 +539,6 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14
     filters: [home_viewed: "NOT NULL"]
   }
 
-  measure: cnt_view_cart {
-    label: "View cart count"
-    description: "Number of sessions in which at least one Cart Viewed event happened"
-    type: count
-    filters: [view_cart: "NOT NULL"]
-  }
-
-  measure: cnt_add_to_cart {
-    label: "Add to cart count"
-    description: "Number of sessions in which at least one Product Added To Cart event happened"
-    type: count
-    filters: [add_to_cart: "NOT NULL"]
-  }
-
-  measure: cnt_checkout_started {
-    label: "Checkout started count"
-    description: "Number of sessions in which at least one Checkout Started event happened"
-    type: count
-    filters: [checkout_started: "NOT NULL"]
-  }
-
-  measure: cnt_payment_started {
-    label: "Payment started count"
-    description: "Number of sessions in which at least one Payment Started event happened"
-    type: count
-    filters: [payment_started: "NOT NULL"]
-  }
-
-  measure: cnt_purchase {
-    label: "Order placed count"
-    description: "Number of sessions in which at least one Order Placed event happened"
-    type: count
-    filters: [order_placed: "NOT NULL"]
-  }
-
   ###### Sum of events
 
   # measure: sum_sessions {
@@ -710,18 +551,6 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14
   #   type: median
   #   label: "Median number of events in a session"
   #   sql: ${any_event} ;;
-  # }
-
-  # measure: number_of_events_75th_percentile {
-  #   type: percentile
-  #   percentile: 75
-  #   sql: ${any_event};;
-  # }
-
-  # measure: number_of_events_25th_percentile {
-  #   type: percentile
-  #   percentile: 25
-  #   sql: ${any_event};;
   # }
 
   measure: sum_address_selected {
@@ -742,71 +571,13 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14
     sql: ${home_viewed} ;;
   }
 
-  measure: sum_add_to_cart {
-    label: "Add to cart sum of events"
-    type: sum
-    sql: ${add_to_cart} ;;
-  }
-
-  measure: sum_checkout_started {
-    label: "Checkout started sum of events"
-    type: sum
-    sql: ${checkout_started} ;;
-  }
-
-  measure: sum_payment_started {
-    label: "Payment started sum of events"
-    type: sum
-    sql: ${payment_started} ;;
-  }
-
-  measure: sum_purchases {
-    label: "Order placed sum of events"
-    type: sum
-    sql: ${order_placed} ;;
-  }
-
   ## Measures based on other measures
-  measure: overall_conversion_rate {
-    type: number
-    description: "Number of sessions in which an Order Placed event happened, compared to the total number of Session Started"
-    value_format_name: percent_1
-    sql: ${cnt_purchase}/NULLIF(${count},0) ;;
-  }
 
   measure: mcvr1 {
     type: number
     description: "Number of sessions in which an Addres Confirmed event happened, compared to the total number of Session Started"
     value_format_name: percent_1
     sql: ${cnt_address_selected}/NULLIF(${count},0) ;;
-  }
-
-  measure: mcvr2 {
-    type: number
-    description: "Number of sessions in which there was a Product Added To Cart, compared to the number of sessions in which there was a Home Viewed"
-    value_format_name: percent_1
-    sql: ${cnt_add_to_cart}/NULLIF(${cnt_home_viewed},0) ;;
-  }
-
-  measure: mcvr3 {
-    type: number
-    description: "Number of sessions in which there was a Checkout Started event happened, compared to the number of sessions in which there was a Product Added To Cart"
-    value_format_name: percent_1
-    sql: ${cnt_checkout_started}/NULLIF(${cnt_add_to_cart},0) ;;
-  }
-
-  measure: mcvr4 {
-    type: number
-    description: "Number of sessions in which there was a Payment Started event happened, compared to the number of sessions in which there was a Checkout Started"
-    value_format_name: percent_1
-    sql: ${cnt_payment_started}/NULLIF(${cnt_checkout_started},0) ;;
-  }
-
-  measure: payment_success {
-    type: number
-    description: "Number of sessions in which there was an Order Placed, compared to the number of sessions in which there was a Payment Started"
-    value_format_name: percent_1
-    sql: ${cnt_purchase}/NULLIF(${cnt_payment_started},0) ;;
   }
 
   set: detail {
@@ -816,20 +587,13 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14
       context_locale,
       context_device_type,
       context_app_version,
-      # session,
       session_number,
-      has_ordered,
       hub_city,
       hub_code,
       hub_country,
-      view_cart,
-      add_to_cart,
       location_pin_placed,
       home_viewed,
-      address_confirmed,
-      checkout_started,
-      payment_started,
-      order_placed
+      address_confirmed
     ]
   }
 }
