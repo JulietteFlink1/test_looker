@@ -32,6 +32,20 @@ view: appopened_events {
        ;;
   }
 
+  measure: cnt_unique_anonymousid {
+    label: "Count Unique Users"
+    description: "Number of Unique Users identified via Anonymous ID from Segment"
+    hidden:  no
+    type: count_distinct
+    sql: ${anonymous_id};;
+    value_format_name: decimal_0
+  }
+
+  dimension: full_app_version {
+    type: string
+    sql: ${context_device_type} || '-' || ${context_app_version} ;;
+  }
+
   measure: count {
     type: count
     drill_fields: [detail*]
@@ -88,7 +102,7 @@ view: appopened_events {
   }
 
   dimension: has_selected_address {
-    type: string
+    type: yesno
     sql: ${TABLE}.has_selected_address ;;
   }
 
