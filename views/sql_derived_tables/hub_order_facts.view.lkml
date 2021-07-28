@@ -13,7 +13,7 @@ view: hub_order_facts {
                   , MAX(created) AS latest_order
                   , COUNT(DISTINCT FORMAT_TIMESTAMP('%Y%w', created)) AS number_of_distinct_weeks_with_orders
                   , COUNT(DISTINCT FORMAT_TIMESTAMP('%Y%m', created)) AS number_of_distinct_months_with_orders
-                FROM `flink-backend.saleor_db_global.order_order` order_order
+                FROM `flink-data-prod.saleor_prod_global.order_order` order_order
                 WHERE order_order.status IN ('fulfilled', 'partially fulfilled')
                 GROUP BY country_iso, warehouse_name
           )

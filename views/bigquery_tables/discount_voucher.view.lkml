@@ -1,5 +1,5 @@
 view: discount_voucher {
-  sql_table_name: `flink-backend.saleor_db_global.discount_voucher`
+  sql_table_name: `flink-data-prod.saleor_prod_global.discount_voucher`
     ;;
   drill_fields: [id]
   view_label: "* Vouchers *"

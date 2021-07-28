@@ -1,5 +1,5 @@
 view: product_assignedproductattribute_values {
-  sql_table_name: `flink-backend.saleor_db.product_assignedproductattribute_values`
+  sql_table_name: `flink-data-prod.saleor_prod_global.product_assignedproductattribute_values`
     ;;
   drill_fields: [id]
 

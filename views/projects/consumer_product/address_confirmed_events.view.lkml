@@ -52,7 +52,7 @@ view: address_confirmed_events {
               FROM
                 events_tb
               LEFT JOIN
-                `flink-backend.saleor_db_global.warehouse_warehouse` AS hub
+                `flink-data-prod.saleor_prod_global.warehouse_warehouse` AS hub
               ON
                 events_tb.hub_id = hub.id
        ;;

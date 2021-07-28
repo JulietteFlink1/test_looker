@@ -15,9 +15,9 @@ view: order_orderline_facts {
                   order_orderline.unit_price_gross_amount,
                   order_orderline.unit_price_net_amount
 
-                  FROM `flink-backend.saleor_db_global.order_order`
+                  FROM `flink-data-prod.saleor_prod_global.order_order`
                      AS order_order
-                LEFT JOIN `flink-backend.saleor_db_global.order_orderline`
+                LEFT JOIN `flink-data-prod.saleor_prod_global.order_orderline`
                      AS order_orderline ON order_orderline.country_iso = order_order.country_iso AND order_orderline.order_id = order_order.id
               WHERE order_orderline.id IS NOT NULL      --exclude strange draft orders
 

@@ -77,7 +77,7 @@ view: voucher_api_failure_success {
         FROM
           voucher_application_failed_tb
         LEFT JOIN
-          `flink-backend.saleor_db_global.warehouse_warehouse` AS hub
+          `flink-data-prod.saleor_prod_global.warehouse_warehouse` AS hub
         ON
           voucher_application_failed_tb.hub_id = hub.id
         ORDER BY
@@ -157,7 +157,7 @@ view: voucher_api_failure_success {
         FROM
           voucher_application_succeeded_tb
         LEFT JOIN
-          `flink-backend.saleor_db_global.warehouse_warehouse` AS hub
+          `flink-data-prod.saleor_prod_global.warehouse_warehouse` AS hub
         ON
           voucher_application_succeeded_tb.hub_id = hub.id
         ORDER BY

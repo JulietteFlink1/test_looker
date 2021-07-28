@@ -24,9 +24,9 @@ view: retail_kpis {
                 , coalesce(sum(order_orderline.quantity_fulfilled * order_orderline.unit_price_net_amount),
                            0)                                as sum_item_price_net
               from
-                  flink-backend.saleor_db_global.order_order
+                  flink-data-prod.saleor_prod_global.order_order
                                                                      as order_order
-                  left join flink-backend.saleor_db_global.order_orderline
+                  left join flink-data-prod.saleor_prod_global.order_orderline
                                                                      as order_orderline
                             on order_orderline.country_iso = order_order.country_iso and
                                order_orderline.order_id = order_order.id
@@ -40,7 +40,7 @@ view: retail_kpis {
                                     then 'de_muc_schw'
                                     else json_extract_scalar(order_order.metadata, '$.warehouse')
                                 end) = (lower(hubs.hub_code))
-                  left join flink-backend.saleor_db_global.product_productvariant
+                  left join flink-data-prod.saleor_prod_global.product_productvariant
                                                                      as product_productvariant
                             on order_orderline.country_iso = product_productvariant.country_iso and
                                (case
@@ -48,15 +48,15 @@ view: retail_kpis {
                                     then concat('1', order_orderline.product_sku)
                                     else order_orderline.product_sku
                                 end) = product_productvariant.sku
-                  left join flink-backend.saleor_db_global.product_product
+                  left join flink-data-prod.saleor_prod_global.product_product
                                                                      as product_product
                             on product_productvariant.country_iso = product_product.country_iso and
                                product_productvariant.product_id = product_product.id
-                  left join flink-backend.saleor_db_global.product_category
+                  left join flink-data-prod.saleor_prod_global.product_category
                                                                      as product_category
                             on product_category.country_iso = product_product.country_iso and
                                product_category.id = product_product.category_id
-                  left join flink-backend.saleor_db_global.product_category
+                  left join flink-data-prod.saleor_prod_global.product_category
                                                                      as parent_category
                             on product_category.country_iso = parent_category.country_iso and
                                product_category.parent_id = parent_category.id

@@ -8,7 +8,7 @@ view: order_placed_with_order_order_events {
       , metadata
       , IF(ios_order.anonymous_id IS NULL, android_order.anonymous_id, ios_order.anonymous_id) as anonymous_id
       , IF(ios_order.context_device_type IS NULL, android_order.context_device_type, ios_order.context_device_type) as device_type
-  FROM `flink-backend.saleor_db.order_order` backend_order
+  FROM `flink-data-prod.saleor_prod_global.order_order` backend_order
   LEFT JOIN `flink-backend.flink_ios_production.order_placed_view` ios_order
       ON backend_order.token=ios_order.order_token
   LEFT JOIN `flink-backend.flink_android_production.order_placed_view` android_order

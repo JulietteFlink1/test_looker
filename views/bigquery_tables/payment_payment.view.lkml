@@ -1,5 +1,5 @@
 view: payment_payment {
-  sql_table_name: `flink-backend.saleor_db_global.payment_payment`
+  sql_table_name: `flink-data-prod.saleor_prod_global.payment_payment`
     ;;
   drill_fields: [id]
   view_label: "* Payments *"

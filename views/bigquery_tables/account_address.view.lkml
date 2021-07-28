@@ -1,5 +1,5 @@
 view: account_address {
-  sql_table_name: `flink-backend.saleor_db_global.account_address`
+  sql_table_name: `flink-data-prod.saleor_prod_global.account_address`
     ;;
   drill_fields: [id]
   view_label: "* Customer Address *"

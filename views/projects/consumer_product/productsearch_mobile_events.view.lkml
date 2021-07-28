@@ -142,7 +142,7 @@ view: productsearch_mobile_events {
     FROM
     joined_table
     LEFT JOIN
-    `flink-backend.saleor_db_global.warehouse_warehouse` AS hub
+    `flink-data-prod.saleor_prod_global.warehouse_warehouse` AS hub
     ON
     joined_table.hub_id = hub.id
     LEFT JOIN

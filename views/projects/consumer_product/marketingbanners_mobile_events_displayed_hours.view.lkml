@@ -26,7 +26,7 @@ view: marketingbanners_mobile_events_displayed_hours {
             , max(hub.slug)   as hub_code
           from
               user_hub_data                                              as usr_hub
-          left join `flink-backend.saleor_db_global.warehouse_warehouse` as hub
+          left join `flink-data-prod.saleor_prod_global.warehouse_warehouse` as hub
              on usr_hub.hub_id = hub.id
           group by 1,2
       ),

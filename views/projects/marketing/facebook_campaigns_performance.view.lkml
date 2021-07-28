@@ -41,11 +41,11 @@ facebook_app_orders_array as
     sum(orders.total_gross_amount + orders.discount_amount) as gmv_gross,
     count(_adid_) as cnt_unique_orders
     from `flink-backend.customlytics_adjust.adjust_raw_imports` adjust
-    left join `flink-backend.saleor_db_global.warehouse_warehouse` warehouse
+    left join `flink-data-prod.saleor_prod_global.warehouse_warehouse` warehouse
     on split(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(JSON_EXTRACT_SCALAR(adjust._publisher_parameters_, '$.hub_code'))),':')[OFFSET(1)] = warehouse.id
     left join `flink-backend.gsheet_store_metadata.hubs` hubs
     on lower(hubs.hub_code) = warehouse.slug
-    left join `flink-backend.saleor_db_global.order_order` orders
+    left join `flink-data-prod.saleor_prod_global.order_order` orders
     on orders.id = cast(JSON_EXTRACT_SCALAR(_publisher_parameters_, '$.order_number') as int64) and orders.country_iso = hubs.country_iso
     where _activity_kind_ = 'event' and lower(_event_name_) = 'firstpurchase'
     and REGEXP_CONTAINS(lower(_network_name_), 'facebook|instagram')
