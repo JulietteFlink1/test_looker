@@ -2,7 +2,7 @@ view: marketing_performance {
   derived_table: {
     sql: with marketing_vouchers as
       (
-          select distinct vouchers.code from `flink-backend.saleor_db_global.discount_voucher` vouchers
+          select distinct vouchers.code from `flink-data-prod.saleor_prod_global.discount_voucher` vouchers
           where UPPER(vouchers.code) NOT LIKE '%EMP%' and
           LENGTH(REGEXP_REPLACE(vouchers.code, r'[\d.]', '')) != 0 and
           UPPER(vouchers.code) NOT LIKE 'AP%' and
@@ -56,13 +56,13 @@ view: marketing_performance {
                     else 'Other' end as channel,
                   sum(vouchers.discount_value) as sum_discounts
                 from `flink-backend.customlytics_adjust.adjust_raw_imports` adjust
-                left join `flink-backend.saleor_db_global.warehouse_warehouse` warehouse
+                left join `flink-data-prod.saleor_prod_global.warehouse_warehouse` warehouse
                 on split(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(JSON_EXTRACT_SCALAR(adjust._publisher_parameters_, '$.hub_code'))),':')[OFFSET(1)] = warehouse.id
                 left join `flink-backend.gsheet_store_metadata.hubs` hubs
                 on lower(hubs.hub_code) = warehouse.slug
-                left join `flink-backend.saleor_db_global.order_order` orders
+                left join `flink-data-prod.saleor_prod_global.order_order` orders
                 on orders.id = cast(JSON_EXTRACT_SCALAR(_publisher_parameters_, '$.order_number') as int64) and orders.country_iso = hubs.country_iso
-                left join `flink-backend.saleor_db_global.discount_voucher` vouchers
+                left join `flink-data-prod.saleor_prod_global.discount_voucher` vouchers
                 on orders.voucher_id = vouchers.id and orders.country_iso=vouchers.country_iso
                 where _activity_kind_='event' and _event_name_='FirstPurchase' and _environment_!="sandbox" and
                 (vouchers.code in (select code from marketing_vouchers)) and

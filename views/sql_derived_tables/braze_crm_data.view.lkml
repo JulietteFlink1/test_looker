@@ -96,7 +96,7 @@ view: braze_crm_data {
               ,id as order_id
               ,country_iso
           from
-            `flink-backend.saleor_db_global.order_order`
+            `flink-data-prod.saleor_prod_global.order_order`
           where
             status in ('fulfilled', 'partially fulfilled')
       ),
