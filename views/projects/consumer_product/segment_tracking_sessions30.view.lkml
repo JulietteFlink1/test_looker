@@ -78,7 +78,7 @@ view: segment_tracking_sessions30 {
           CAST(event.delivery_eta as INT) as delivery_eta
     FROM `flink-backend.flink_ios_production.address_confirmed_view` event
         LEFT JOIN
-            `flink-backend.saleor_db_global.warehouse_warehouse` AS hub
+            `flink-data-prod.saleor_prod_global.warehouse_warehouse` AS hub
         ON SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(event.hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[ OFFSET(1)] = hub.id
         LEFT JOIN (
             SELECT DISTINCT
@@ -101,7 +101,7 @@ UNION ALL
           event.delivery_eta
     FROM `flink-backend.flink_android_production.address_confirmed_view` event
         LEFT JOIN
-            `flink-backend.saleor_db_global.warehouse_warehouse` AS hub
+            `flink-data-prod.saleor_prod_global.warehouse_warehouse` AS hub
         ON SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(event.hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[ OFFSET(1)] = hub.id
         LEFT JOIN (
             SELECT DISTINCT
@@ -124,7 +124,7 @@ UNION ALL
           CAST(event.delivery_eta as INT) as delivery_eta
     FROM `flink-backend.flink_ios_production.order_placed_view` event
         LEFT JOIN
-            `flink-backend.saleor_db_global.warehouse_warehouse` AS hub
+            `flink-data-prod.saleor_prod_global.warehouse_warehouse` AS hub
         ON SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(event.hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[ OFFSET(1)] = hub.id
         LEFT JOIN (
             SELECT DISTINCT
@@ -147,7 +147,7 @@ UNION ALL
           delivery_eta
     FROM `flink-backend.flink_android_production.order_placed_view` event
         LEFT JOIN
-            `flink-backend.saleor_db_global.warehouse_warehouse` AS hub
+            `flink-data-prod.saleor_prod_global.warehouse_warehouse` AS hub
         ON SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(event.hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[ OFFSET(1)] = hub.id
         LEFT JOIN (
             SELECT DISTINCT

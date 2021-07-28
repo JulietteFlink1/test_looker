@@ -87,7 +87,7 @@ view: checkout_sessions {
         FROM
           location_joined_table
         LEFT JOIN
-          `flink-backend.saleor_db_global.warehouse_warehouse` AS hub
+          `flink-data-prod.saleor_prod_global.warehouse_warehouse` AS hub
         ON
           location_joined_table.hub_id = hub.id
         ORDER BY
