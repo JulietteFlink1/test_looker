@@ -5,7 +5,7 @@ view: categories_mba {
                   SELECT
                             order_order.id, order_order.country_iso,
                             row_number() over (partition by country_iso, user_email order by order_order.id) as user_order_rank
-                          FROM `flink-backend.saleor_db_global.order_order` order_order
+                          FROM `flink-data-prod.saleor_prod_global.order_order` order_order
                           where order_order.status IN ('fulfilled', 'partially fulfilled')
           ),
 
