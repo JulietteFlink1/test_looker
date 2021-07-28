@@ -1,4 +1,4 @@
-include: "/marketing/facebook_campaigns_performance.view.lkml"
+include: "/views/projects/marketing/facebook_campaigns_performance.view.lkml"
 
 explore: facebook_campaigns_performance {
   view_name: facebook_campaigns_performance

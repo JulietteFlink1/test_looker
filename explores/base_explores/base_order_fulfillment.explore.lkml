@@ -1,5 +1,5 @@
-include: "/cleaning/order_fulfillment_clean.view.lkml"
-include: "/cleaning/order_fulfillment_facts_clean.view.lkml"
+include: "/views/projects/cleaning/order_fulfillment_clean.view.lkml"
+include: "/views/projects/cleaning/order_fulfillment_facts_clean.view.lkml"
 include: "/explores/base_explores/base_orders.explore"
 
 explore: base_order_fulfillment {

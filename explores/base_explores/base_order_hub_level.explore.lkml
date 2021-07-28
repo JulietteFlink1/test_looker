@@ -22,17 +22,17 @@ explore: base_order_hub_level {
     type: left_outer
   }
 
-  join: shyftplan_riders_pickers_hours {
+  join: shyftplan_riders_pickers_hours_clean {
     view_label: "* Shifts *"
-    sql_on: ${base_orders.created_date} = ${shyftplan_riders_pickers_hours.date} and
-            ${hubs.hub_code}            = ${shyftplan_riders_pickers_hours.hub_name};;
+    sql_on: ${base_orders.created_date} = ${shyftplan_riders_pickers_hours_clean.date} and
+            ${hubs.hub_code}            = ${shyftplan_riders_pickers_hours_clean.hub_name};;
     relationship: many_to_one
     type: left_outer
   }
-  join: issue_rate_hub_level {
+  join: issue_rates_clean {
     view_label: "Order Issues on Hub-Level"
-    sql_on: ${hubs.hub_code_lowercase} =  LOWER(${issue_rate_hub_level.hub_code}) and
-            ${base_orders.date}        =  ${issue_rate_hub_level.date};;
+    sql_on: ${hubs.hub_code_lowercase} =  LOWER(${issue_rates_clean.hub_code}) and
+            ${base_orders.date}        =  ${issue_rates_clean.date_dynamic};;
     relationship: many_to_one # decided against one_to_many: on this level, many orders have hub-level issue-aggregates
     type: left_outer
   }
