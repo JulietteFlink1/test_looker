@@ -115,6 +115,11 @@ view: order_placed_view {
     drill_fields: [detail*]
   }
 
+  measure: number_of_distinct_orders {
+    type: count_distinct
+    sql: ${TABLE}.order_id ;;
+  }
+
   dimension: order_token {
     type: string
     sql: ${TABLE}.order_token ;;
