@@ -143,5 +143,12 @@ view: payment_transaction {
     sql: case when ${kind} = 'refund' then ${amount} * -1 else ${amount} end ;;
   }
 
+  measure: sum_refund_amount {
+    group_label: "* Monetary Values *"
+    description: "Sum of the total refunded amount"
+    label: "Sum Refund Transaction Amount"
+    type: sum
+    sql: case when ${kind} = 'refund' then ${amount} end ;;
+  }
 
 }
