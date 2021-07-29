@@ -11,7 +11,7 @@ view: riders_forecast_staffing {
                                                                                                   else json_extract_scalar(metadata, '$.warehouse')
                   end                                                              as warehouse
                 , count(id)                                                        as orders
-              from `flink-data-prod.saleor_prod_global.order_order
+              from `flink-data-prod.saleor_prod_global.order_order`
               where status in ('fulfilled', 'partially fulfilled') and
                     user_email not like '%goflink%'
                  or user_email not like '%pickery%'

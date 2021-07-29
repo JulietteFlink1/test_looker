@@ -42,9 +42,6 @@ view: order_placed_view {
         tracks.hub_city,
         tracks.hub_code,
         tracks.hub_slug,
-        tracks.order_number,
-        tracks.order_id,
-        tracks.order_token,
         tracks.payment_method,
         tracks.products,
         tracks.revenue,
@@ -96,9 +93,6 @@ view: order_placed_view {
         tracks.hub_city,
         tracks.hub_code,
         NULL AS hub_slug,
-        tracks.order_number,
-        tracks.order_id,
-        tracks.order_token,
         tracks.payment_method,
         tracks.products,
         tracks.revenue,
@@ -113,6 +107,11 @@ view: order_placed_view {
   measure: count {
     type: count
     drill_fields: [detail*]
+  }
+
+  measure: number_of_distinct_orders {
+    type: count_distinct
+    sql: ${TABLE}.order_id ;;
   }
 
   dimension: order_token {
