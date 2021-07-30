@@ -40,7 +40,7 @@ named_value_format: euro_accounting_0_precision {
 ####### ORDER EXPLORE #######
 explore: order_order {
   label: "Orders"
-  hidden: yes
+  hidden: no
   view_label: "* Orders *"
   group_label: "01) Performance"
   description: "General Business Performance - Orders, Revenue, etc."
