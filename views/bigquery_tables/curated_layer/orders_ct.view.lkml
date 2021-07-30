@@ -229,20 +229,27 @@ view: orders_ct {
     sql: ${TABLE}.hub_name ;;
   }
 
+  dimension: hub_location  {
+    group_label: "* Hub Dimensions *"
+    type: location
+    sql_latitude: ${orders_cl.latitude};;
+    sql_longitude: ${orders_cl.longitude};;
+  }
+
   dimension: delivery_distance_m {
     group_label: "* Operations / Logistics *"
     type: distance
     units: meters
-    start_location_field: hubs_clean.hub_location
-    end_location_field: orders_ct.customer_location
+    start_location_field: hub_location
+    end_location_field: customer_location
   }
 
   dimension: delivery_distance_km {
     group_label: "* Operations / Logistics *"
     type: distance
     units: kilometers
-    start_location_field: hubs_clean.hub_location
-    end_location_field: orders_ct.customer_location
+    start_location_field: hub_location
+    end_location_field: customer_location
   }
 
   dimension: delivery_distance_tier {

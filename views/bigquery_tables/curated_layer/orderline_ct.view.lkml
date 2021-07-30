@@ -78,7 +78,7 @@ view: orderline_ct {
     sql: ${TABLE}.last_modified_at ;;
   }
 
-  dimension: order_uuid {
+  dimension: order_id {
     type: string
     sql: ${TABLE}.order_uuid ;;
   }

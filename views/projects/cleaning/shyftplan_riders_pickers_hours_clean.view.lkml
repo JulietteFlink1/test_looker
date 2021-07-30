@@ -177,7 +177,7 @@ view: shyftplan_riders_pickers_hours_clean {
 
   measure: logistics_performance_indicator {
     type: number
-    sql: (${base_orders.pct_delivery_late_over_5_min}*100*0.7)/(${rider_utr}*0.3) ;;
+    sql: (${orders_cl.pct_delivery_late_over_5_min}*100*0.7)/(${rider_utr}*0.3) ;;
     label: "Logistics Performance Indicator"
     value_format_name: decimal_1
     group_label: "* Operations / Logistics *"
