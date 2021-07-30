@@ -53,12 +53,16 @@ view: orders_ct {
     sql: ${TABLE}.amt_gmv_net ;;
   }
 
+  ############################## needs to be checked #################################
+
   dimension: tracking_client_id {
     group_label: "* IDs *"
     hidden: yes
     type: string
     sql: null ;;
   }
+
+  ############################## needs to be checked #################################
 
   dimension: total_gross_amount {
     type: number
@@ -225,18 +229,11 @@ view: orders_ct {
     sql: ${TABLE}.hub_name ;;
   }
 
-  dimension: hub_location  {
-    group_label: "* Hub Dimensions *"
-    type: location
-    sql_latitude: null;;
-    sql_longitude: null;;
-  }
-
   dimension: delivery_distance_m {
     group_label: "* Operations / Logistics *"
     type: distance
     units: meters
-    start_location_field: orders_ct.hub_location
+    start_location_field: hubs_clean.hub_location
     end_location_field: orders_ct.customer_location
   }
 
@@ -244,7 +241,7 @@ view: orders_ct {
     group_label: "* Operations / Logistics *"
     type: distance
     units: kilometers
-    start_location_field: orders_ct.hub_location
+    start_location_field: hubs_clean.hub_location
     end_location_field: orders_ct.customer_location
   }
 
@@ -336,8 +333,6 @@ view: orders_ct {
     type: yesno
     sql: ${time_diff_between_two_subsequent_fulfillments} > 30 ;;
   }
-
-
 
   dimension: is_internal_order {
     type: yesno
@@ -455,43 +450,49 @@ view: orders_ct {
     sql:SUBSTRING(${created_minute30}, 12, 16);;
   }
 
-  dimension_group: time_since_sign_up {
-    group_label: "* User Dimensions *"
-    type: duration
-    sql_start: ${user_order_facts.first_order_raw} ;;
-    sql_end: ${created_raw} ;;
-  }
+  ##################################################### CROSS REFERENCES - MOVED TO projects.cleaning.user_order_facts_clean & hub_order_facts_clean
 
 ##### helping dimensions for hiding incomplete cohorts #####
-  dimension_group: time_between_sign_up_month_and_now {
-    group_label: "* User Dimensions *"
-    hidden: yes
-    type: duration
-    sql_start: DATE_TRUNC(${user_order_facts.first_order_raw}, MONTH) ;;
-    sql_end: ${now_raw} ;;
-  }
 
-  dimension_group: time_between_sign_up_week_and_now {
-    group_label: "* User Dimensions *"
-    hidden: yes
-    type: duration
-    sql_start: DATE_TRUNC(${user_order_facts.first_order_raw}, WEEK) ;;
-    sql_end: ${now_raw} ;;
-  }
+  #dimension_group: time_since_sign_up {
+  #  group_label: "* User Dimensions *"
+  #  type: duration
+  #  sql_start: ${user_order_facts.first_order_raw} ;;
+  #  sql_end: ${created_raw} ;;
+  #}
 
-  dimension: time_since_sign_up_biweekly {
-    group_label: "* User Dimensions *"
-    type: number
-    sql: floor((${days_time_since_sign_up} / 14)) ;;
-    value_format: "0"
-  }
+  #dimension_group: time_between_sign_up_month_and_now {
+  #  group_label: "* User Dimensions *"
+  #  hidden: yes
+  #  type: duration
+  #  sql_start: DATE_TRUNC(${user_order_facts.first_order_raw}, MONTH) ;;
+  #  sql_end: ${now_raw} ;;
+  #}
 
-  dimension_group: time_between_hub_launch_and_order {
-    group_label: "* Hub Dimensions *"
-    type: duration
-    sql_start: ${hub_order_facts.first_order_raw} ;;
-    sql_end: ${created_raw} ;;
-  }
+  #dimension_group: time_between_sign_up_week_and_now {
+  #  group_label: "* User Dimensions *"
+  #  hidden: yes
+  #  type: duration
+  #  sql_start: DATE_TRUNC(${user_order_facts.first_order_raw}, WEEK) ;;
+  #  sql_end: ${now_raw} ;;
+  #}
+
+  #dimension_group: time_between_hub_launch_and_order {
+  #  group_label: "* Hub Dimensions *"
+  #  type: duration
+  #  sql_start: ${hub_order_facts.first_order_raw} ;;
+  #  sql_end: ${created_raw} ;;
+  #}
+
+  #dimension: time_since_sign_up_biweekly {
+  #  group_label: "* User Dimensions *"
+  #  type: number
+  #  sql: floor((${user_order_facts_clean.days_time_since_sign_up} / 14)) ;;
+  #  value_format: "0"
+  #}
+
+  ##################################################### CROSS REFERENCES - MOVED TO projects.cleaning.user_order_facts_clean & hub_order_facts_clean
+
 
   dimension: order_date {
     type: date
@@ -564,6 +565,7 @@ view: orders_ct {
 
   dimension: unique_id {
     type: string
+    primary_key: yes
     sql: ${TABLE}.order_uuid ;;
   }
 
@@ -628,10 +630,14 @@ view: orders_ct {
     sql: ${TABLE}.timezone ;;
   }
 
+  ####################################################### Needs to be checked ##################################
+
   dimension: token {
     type: string
     sql: null ;;
   }
+
+   ####################################################### Needs to be checked ##################################
 
   dimension: translated_discount_name {
     type: string
@@ -1291,8 +1297,5 @@ view: orders_ct {
     type: percent_of_total
     sql: ${cnt_orders} ;;
   }
-
-
-
 
 }

@@ -1,5 +1,5 @@
 view: hubs_clean {
-  sql_table_name: `flink-backend.gsheet_store_metadata.hubs`
+  sql_table_name: `flink-data-prod.google_sheets.hub_metadata`
     ;;
   view_label: "* Hubs *"
 
@@ -59,6 +59,13 @@ view: hubs_clean {
     sql: ${TABLE}.longitude ;;
   }
 
+  dimension: hub_location  {
+    group_label: "* Hub Dimensions *"
+    type: location
+    sql_latitude: ${latitude};;
+    sql_longitude: ${longitude};;
+  }
+
   dimension: start_date {
     type: date
     sql: CAST(${TABLE}.start_date AS TIMESTAMP);;
@@ -68,12 +75,6 @@ view: hubs_clean {
     type: duration
     sql_start: timestamp(${TABLE}.start_date) ;;
     sql_end: current_timestamp ;;
-  }
-
-  dimension: hub_location {
-    type: location
-    sql_latitude: ${latitude};;
-    sql_longitude: ${longitude};;
   }
 
   dimension: city_manager {
