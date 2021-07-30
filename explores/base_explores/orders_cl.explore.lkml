@@ -31,7 +31,7 @@ explore: orders_cl {
     from: hubs_clean
     view_label: "* Hubs *"
     sql_on: ${orders_cl.country_iso}    = ${hubs.country_iso} AND
-      ${orders_cl.warehouse_name} = ${hubs.hub_code_lowercase} ;;
+      ${orders_cl.hub_code} = ${hubs.hub_code} ;;
     relationship: many_to_many
     type: left_outer
 
