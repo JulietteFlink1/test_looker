@@ -890,6 +890,17 @@ view: orders_ct {
     value_format: "0.0"
   }
 
+  measure: avg_delivery_distance_km {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Delivery Distance (km)"
+    description: "Average distance between hub and customer dropoff (most direct path / straight line)"
+    hidden:  no
+    type: average
+    sql: ${delivery_distance_km};;
+    value_format: "0.00"
+    filters: [is_delivery_distance_over_10km: "no"]
+  }
+
   measure: avg_reaction_time {
     group_label: "* Operations / Logistics *"
     label: "AVG Reaction Time"
@@ -978,17 +989,6 @@ view: orders_ct {
     type: average
     sql: ${shipping_price_net_amount};;
     value_format_name: euro_accounting_2_precision
-  }
-
-  measure: avg_delivery_distance_km {
-    group_label: "* Operations / Logistics *"
-    label: "AVG Delivery Distance (km)"
-    description: "Average distance between hub and customer dropoff (most direct path / straight line)"
-    hidden:  no
-    type: average
-    sql: ${delivery_distance_km};;
-    value_format: "0.00"
-    filters: [is_delivery_distance_over_10km: "no"]
   }
 
   ##########
