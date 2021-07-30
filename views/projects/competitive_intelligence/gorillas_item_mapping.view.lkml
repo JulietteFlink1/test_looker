@@ -1,5 +1,5 @@
 view: gorillas_item_mapping {
-  sql_table_name: `flink-backend.gsheet_comp_intel_gorillas_item_mapping.Item_Mapping`
+  sql_table_name: `flink-data-prod.google_sheets.comp_intel_gorillas_item_mapping`
     ;;
 
 

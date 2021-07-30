@@ -11,6 +11,8 @@ include: "/views/bigquery_tables/order_order.view.lkml"
 include: "/views/bigquery_tables/discount_voucher.view.lkml"
 
 explore: base_order_order {
+  #hidden: yes
+  view_label: "* Orders *"
   group_label: "01) Performance"
   label: "Order test"
   # description: "This is the clean version of orders explore"
