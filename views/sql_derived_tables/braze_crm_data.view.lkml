@@ -108,6 +108,7 @@ view: braze_crm_data {
              ,LAST_VALUE(opened_at_first) OVER (partition by order_id order by opened_at_first  ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) as opened_at
              ,order_id
              ,order_created_at
+
           from
             emails_opened
           join

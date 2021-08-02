@@ -1,5 +1,5 @@
 view: gorillas_category_mapping{
-  sql_table_name: `flink-backend.gsheet_comp_intel_gorillas_category_mapping.Category_Matching`
+  sql_table_name: `flink-data-prod.google_sheets.comp_intel_gorillas_category_mapping`
     ;;
 
   dimension: unique_id {

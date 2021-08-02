@@ -34,13 +34,13 @@ explore: base_orders {
             ${base_orders.warehouse_name} = ${hubs.hub_code_lowercase} ;;
     relationship: many_to_many
     type: left_outer
-    fields: [
-      hubs.city,
-      hubs.country_iso,
-      hubs.country,
-      hubs.hub_code,
-      hubs.hub_code_lowercase,
-      hubs.hub_name
-    ]
+    #fields: [
+    #  hubs.city,
+    #  hubs.country_iso,
+    #  hubs.country,
+    #  hubs.hub_code,
+    #  hubs.hub_code_lowercase,
+    #  hubs.hub_name
+    #]
   }
   }
