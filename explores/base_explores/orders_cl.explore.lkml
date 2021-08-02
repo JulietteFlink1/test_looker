@@ -46,6 +46,22 @@ explore: orders_cl {
     type: left_outer
   }
 
+  join: nps_after_order {
+    view_label: "* NPS *"
+    sql_on: ${orders_cl.country_iso}   = ${nps_after_order.country_iso} AND
+            ${orders_cl.id}            = cast(${nps_after_order.order_id} as string) ;;
+    relationship: one_to_many
+    type: left_outer
+  }
+
+  join: issue_rates_clean {
+    view_label: "Order Issues on Hub-Level"
+    sql_on: ${hubs.hub_code_lowercase} =  LOWER(${issue_rates_clean.hub_code}) and
+            ${orders_cl.date}          =  ${issue_rates_clean.date_dynamic};;
+    relationship: many_to_one # decided against one_to_many: on this level, many orders have hub-level issue-aggregates
+    type: left_outer
+  }
+
     #fields: [
     #  hubs.city,
     #  hubs.country_iso,

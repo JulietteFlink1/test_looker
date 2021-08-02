@@ -113,13 +113,13 @@ view: issue_rates_clean {
   dimension: date_dynamic {
     group_label: "* Dates and Timestamps *"
     label: "Date (Dynamic)"
-    label_from_parameter: base_orders.date_granularity
+    label_from_parameter: orders_cl.date_granularity
     sql:
-    {% if base_orders.date_granularity._parameter_value == 'Day' %}
+    {% if orders_cl.date_granularity._parameter_value == 'Day' %}
       ${created_date}
-    {% elsif base_orders.date_granularity._parameter_value == 'Week' %}
+    {% elsif orders_cl.date_granularity._parameter_value == 'Week' %}
       ${created_week}
-    {% elsif base_orders.date_granularity._parameter_value == 'Month' %}
+    {% elsif orders_cl.date_granularity._parameter_value == 'Month' %}
       ${created_month}
     {% endif %};;
   }
