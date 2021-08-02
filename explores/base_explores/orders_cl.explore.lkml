@@ -37,14 +37,14 @@ explore: orders_cl {
 
   }
 
-    join: shyftplan_riders_pickers_hours {
-      from: shyftplan_riders_pickers_hours_clean
-      view_label: "* Shifts *"
-      sql_on: ${orders_cl.created_date} = ${shyftplan_riders_pickers_hours.date} and
+  join: shyftplan_riders_pickers_hours {
+    from: shyftplan_riders_pickers_hours_clean
+    view_label: "* Shifts *"
+    sql_on: ${orders_cl.created_date} = ${shyftplan_riders_pickers_hours.date} and
         ${hubs.hub_code} = ${shyftplan_riders_pickers_hours.hub_name};;
-      relationship: many_to_one
-      type: left_outer
-    }
+    relationship: many_to_one
+    type: left_outer
+  }
 
     #fields: [
     #  hubs.city,

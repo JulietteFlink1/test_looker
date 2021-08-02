@@ -101,11 +101,14 @@ view: orderline_ct {
   }
 
   dimension: product_category_erp {
+    label: "Category Name"
     type: string
     sql: ${TABLE}.product_category_erp ;;
   }
 
-  dimension: product_name {
+  dimension: name {
+    label: "Product Name"
+    group_label: "* Product Attributes *"
     type: string
     sql: ${TABLE}.product_name ;;
   }
@@ -120,13 +123,14 @@ view: orderline_ct {
     sql: ${TABLE}.product_shelf_no ;;
   }
 
-  dimension: product_slug {
+  dimension: slug {
     type: string
     sql: ${TABLE}.product_slug ;;
   }
 
   dimension: product_subcategory_erp {
     type: string
+    label: "Subcategory Name"
     sql: ${TABLE}.product_subcategory_erp ;;
   }
 
@@ -163,6 +167,7 @@ view: orderline_ct {
   dimension: product_sku {
     type: number
     sql: ${TABLE}.sku ;;
+    value_format_name: id
   }
 
   dimension: tax_rate {
@@ -245,16 +250,122 @@ view: orderline_ct {
     value_format_name: euro_accounting_2_precision
   }
 
-  measure: cnt_skus {
+  measure: ctn_skus {
     type: count_distinct
     label: "AVG SKUS"
     sql: ${product_sku} ;;
     value_format_name: decimal_1
   }
 
+  ###################### orderline facts
+
+  measure: avg_daily_item_quantity_today {
+    group_label: "* Sold Quantities *"
+    label: "# Total Sales (today)"
+    description: "Average Daily Quantity of Products sold considering only the current day"
+    hidden:  no
+    type: sum
+    sql: ${quantity};;
+    filters: [orders_cl.created_date: "today"]
+    value_format: "0"
+  }
+
+  measure: avg_daily_item_quantity_last_1d {
+    group_label: "* Sold Quantities *"
+    label: "# Total Sales (prev day)"
+    description: "Average Daily Quantity of Products sold considering only the previous day"
+    hidden:  no
+    type: sum
+    sql: ${quantity};;
+    filters: [orders_cl.created_date: "1 day ago"]
+    value_format: "0"
+  }
+
+  measure: sum_item_quantity_last_3d {
+    group_label: "* Sold Quantities *"
+    label: "# Total Sales (last 3d)"
+    description: "Quantity of Order Line Items sold in the previous 3 days"
+    hidden:  yes
+    type: sum
+    sql: ${quantity};;
+    filters: [orders_cl.created_date: "3 days ago for 3 days"]
+    value_format: "0"
+  }
+
+  measure: sum_item_quantity_last_30d {
+    group_label: "* Sold Quantities *"
+    label: "# Total Sales (last 30d)"
+    description: "Quantity of Order Line Items sold in the previous 30 days"
+    hidden:  yes
+    type: sum
+    sql: ${quantity};;
+    filters: [orders_cl.created_date: "30 days ago for 30 days"]
+    value_format: "0"
+  }
+
+  measure: avg_daily_item_quantity_last_3d {
+    group_label: "* Sold Quantities *"
+    label: "# AVG daily sales (last 3d)"
+    description: "Average Daily Quantity of Products sold considering the previous 3 days"
+    hidden:  no
+    type: number
+    sql: ${sum_item_quantity_last_3d} / 3;;
+    value_format: "0.00"
+  }
+
+  measure: sum_item_quantity_last_7d {
+    group_label: "* Sold Quantities *"
+    label: "# Total Sales (last 7d)"
+    description: "Quantity of Order Line Items sold in the previous 7 days"
+    hidden:  no
+    type: sum
+    sql: ${quantity};;
+    filters: [orders_cl.created_date: "7 days ago for 7 days"]
+    value_format: "0.0"
+  }
+
+  measure: avg_daily_item_quantity_last_7d {
+    group_label: "* Sold Quantities *"
+    label: "# AVG daily sales (last 7d)"
+    description: "Average Daily Quantity of Products sold considering the previous 7 days"
+    hidden:  no
+    type: number
+    sql: ${sum_item_quantity_last_7d} / 7;;
+    value_format: "0.0"
+  }
+
+  measure: pct_stock_range_1d {
+    group_label: "* Operations / Logistics *"
+    label: "Stock Range [days, based on 1d avg.]"
+    description: "Current stock divided by 1d AVG Daily Sales"
+    hidden:  no
+    type: number
+    sql: null;;
+    value_format: "0.0"
+  }
+
+  measure: pct_stock_range_3d {
+    group_label: "* Operations / Logistics *"
+    label: "Stock Range [days, based on 3d avg.]"
+    description: "Current stock divided by 3d AVG Daily Sales"
+    hidden:  no
+    type: number
+    sql: null;;
+    value_format: "0.0"
+  }
+
+  measure: pct_stock_range_7d {
+    group_label: "* Operations / Logistics *"
+    label: "Stock Range [days, based on 7d avg.]"
+    description: "Current stock divided by 7d AVG Daily Sales"
+    hidden:  no
+    type: number
+    sql: null;;
+    value_format: "0.0"
+  }
 
   measure: number_of_orderlines {
     type: count
-    drill_fields: [id, product_name]
+    drill_fields: [id, name]
   }
 }
