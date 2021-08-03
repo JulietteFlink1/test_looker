@@ -73,7 +73,7 @@ view: hub_order_facts_clean {
       group_label: "* Hub Dimensions *"
       type: duration
       sql_start: ${first_order_raw} ;;
-      sql_end: ${base_orders.created_raw} ;;
+      sql_end: ${orders_cl.created_raw} ;;
     }
 
 
