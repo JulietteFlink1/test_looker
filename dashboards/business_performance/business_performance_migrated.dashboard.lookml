@@ -1,4 +1,4 @@
-- dashboard: business_performance_test
+- dashboard: business_performance_migrated
   title: Daily/Weekly/Monthly Business Performance
   layout: newspaper
   preferred_viewer: dashboards-next
