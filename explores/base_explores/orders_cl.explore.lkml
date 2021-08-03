@@ -1,10 +1,13 @@
-include: "/views/**/*.view"
-include: "/**/*.view"
-include: "/**/*.explore"
+include: "/views/bigquery_tables/curated_layer/orders_ct.view"
+include: "/views/projects/cleaning/hubs_clean.view"
+include: "/views/projects/cleaning/shyftplan_riders_pickers_hours_clean.view"
+include: "/views/bigquery_tables/nps_after_order.view"
+include: "/views/projects/cleaning/issue_rates_clean.view"
+include: "/explores/base_explores/orders_cl.explore"
 
 explore: orders_cl {
   from: orders_ct
-  extension: required # can not be used un-extended!
+  #extension: required # can not be used un-extended!
   view_name: orders_cl # needs to be set in order that the base_explore can be extended and referenced properly
   hidden: yes
 
@@ -41,7 +44,7 @@ explore: orders_cl {
     from: shyftplan_riders_pickers_hours_clean
     view_label: "* Shifts *"
     sql_on: ${orders_cl.created_date} = ${shyftplan_riders_pickers_hours.date} and
-        ${hubs.hub_code} = ${shyftplan_riders_pickers_hours.hub_name};;
+      ${hubs.hub_code} = ${shyftplan_riders_pickers_hours.hub_name};;
     relationship: many_to_one
     type: left_outer
   }
@@ -49,7 +52,7 @@ explore: orders_cl {
   join: nps_after_order {
     view_label: "* NPS *"
     sql_on: ${orders_cl.country_iso}   = ${nps_after_order.country_iso} AND
-            ${orders_cl.id}            = cast(${nps_after_order.order_id} as string) ;;
+      ${orders_cl.id}            = cast(${nps_after_order.order_id} as string) ;;
     relationship: one_to_many
     type: left_outer
   }
@@ -57,18 +60,9 @@ explore: orders_cl {
   join: issue_rates_clean {
     view_label: "Order Issues on Hub-Level"
     sql_on: ${hubs.hub_code_lowercase} =  LOWER(${issue_rates_clean.hub_code}) and
-            ${orders_cl.date}          =  ${issue_rates_clean.date_dynamic};;
+      ${orders_cl.date}          =  ${issue_rates_clean.date_dynamic};;
     relationship: many_to_one # decided against one_to_many: on this level, many orders have hub-level issue-aggregates
     type: left_outer
   }
-
-    #fields: [
-    #  hubs.city,
-    #  hubs.country_iso,
-    #  hubs.country,
-    #  hubs.hub_code,
-    #  hubs.hub_code_lowercase,
-    #  hubs.hub_name
-    #]
 
 }

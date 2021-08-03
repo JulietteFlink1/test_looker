@@ -13,6 +13,8 @@ include: "/views/**/*.view"
 
 # include retail explores
 include: "/explores/**/*.explore.lkml"
+include: "/explores/base_explores/orders_cl.explore.lkml"
+include: "/explores/base_explores/order_orderline_cl.explore.lkml"
 
 
 week_start_day: monday

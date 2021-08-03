@@ -6,6 +6,7 @@ explore: order_orderline_cl {
   extends: [orders_cl]
   label: "Order, Orderline, Operations CL"
   view_label: "* Orders CL *"
+  #view_name: order_orderline_cl
   group_label: "15) Ad-Hoc"
   description: "General Business Performance - Orders, Revenue, etc."
   hidden: no
