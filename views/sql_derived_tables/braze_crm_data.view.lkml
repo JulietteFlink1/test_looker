@@ -9,6 +9,7 @@ view: braze_crm_data {
             , canvas_name                         as canvas_name
             , canvas_step_name                    as canvas_step_name
             , canvas_variation_name               as canvas_variation_name
+            , canvas_variation_id                 as canvas_variation_id
             , COALESCE(split(campaign_name,'_')[OFFSET(1)],split(canvas_name,'_')[OFFSET(1)]) as country
             , min(sent_at)                        as sent_at
             , min(received_at)                    as received_at
@@ -16,8 +17,21 @@ view: braze_crm_data {
           from
             `flink-backend.braze.email_sent`
           group by
-            user_id, dispatch_id, campaign_name, canvas_name, country, canvas_step_name, canvas_variation_name
+            user_id, dispatch_id, campaign_name, canvas_name, country, canvas_step_name, canvas_variation_name, canvas_variation_id
       ),
+
+
+      canvas_entered as (
+          select
+              user_id                             as user_id
+            , canvas_variation_id                 as canvas_variation_id
+            , in_control_group                    as in_control_group
+          from
+            `flink-backend.braze.canvas_entered`
+          group by
+            user_id, canvas_variation_id, in_control_group
+     ),
+
 
       emails_delivered as (
           select
@@ -146,6 +160,7 @@ view: braze_crm_data {
         , es.canvas_name                                        as canvas_name
         , es.canvas_step_name                                   as canvas_step_name
         , es.canvas_variation_name                              as canvas_variation_name
+        , ce.in_control_group                                   as in_control_group
         , es.country                                            as country
         , date(es.sent_at, "Europe/Berlin")                     as email_sent_at
         , date_diff(eo.opened_at_first, es.sent_at, day)        as days_sent_to_open
@@ -172,6 +187,9 @@ view: braze_crm_data {
 
       from
                 emails_sent                     as es
+      left join canvas_entered                  as ce
+             on es.user_id = ce.user_id
+            and es.canvas_variation_id = ce.canvas_variation_id
       left join emails_bounced                  as eb
              on es.user_id     = eb.user_id
             and es.dispatch_id = eb.dispatch_id
@@ -190,13 +208,12 @@ view: braze_crm_data {
       left join emails_unsubscribed             as uns
              on es.user_id     = uns.user_id
             and es.dispatch_id = uns.dispatch_id
-      left join orders_aggregated oa
+      left join orders_aggregated               as oa
              on es.user_id     = oa.user_id
             and es.dispatch_id = oa.dispatch_id
 
       group by
-        campaign_name, canvas_name, country, email_sent_at
-        , days_sent_to_open, days_sent_to_click,canvas_step_name, canvas_variation_name;;
+        campaign_name, canvas_name, country, email_sent_at, days_sent_to_open, days_sent_to_click,canvas_step_name, canvas_variation_name, in_control_group;;
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
