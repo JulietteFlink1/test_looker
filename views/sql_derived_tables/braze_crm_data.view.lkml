@@ -7,8 +7,8 @@ view: braze_crm_data {
             , dispatch_id                         as dispatch_id
             , campaign_name                       as campaign_name
             , canvas_name                         as canvas_name
-            , canvas_step_name
-            , canvas_variation_name
+            , canvas_step_name                    as canvas_step_name
+            , canvas_variation_name               as canvas_variation_name
             , COALESCE(split(campaign_name,'_')[OFFSET(1)],split(canvas_name,'_')[OFFSET(1)]) as country
             , min(sent_at)                        as sent_at
             , min(received_at)                    as received_at
@@ -144,8 +144,8 @@ view: braze_crm_data {
         -- DIMENSIONS
           es.campaign_name                                      as campaign_name
         , es.canvas_name                                        as canvas_name
-        , es.canvas_step_name
-        , es.canvas_variation_name
+        , es.canvas_step_name                                   as canvas_step_name
+        , es.canvas_variation_name                              as canvas_variation_name
         , es.country                                            as country
         , date(es.sent_at, "Europe/Berlin")                     as email_sent_at
         , date_diff(eo.opened_at_first, es.sent_at, day)        as days_sent_to_open
@@ -221,14 +221,14 @@ view: braze_crm_data {
     label: "Canvas Step Name"
     description: "The email canvas step name defined in Braze"
     type: string
-    sql: ${TABLE}.canvas_name ;;
+    sql: ${TABLE}.canvas_step_name ;;
   }
 
   dimension: canvas_variation_name {
     label: "Canvas Variation Step Name"
     description: "The email canvas variation name defined in Braze"
     type: string
-    sql: ${TABLE}.canvas_name ;;
+    sql: ${TABLE}.canvas_variation_name ;;
   }
 
   dimension: country {
