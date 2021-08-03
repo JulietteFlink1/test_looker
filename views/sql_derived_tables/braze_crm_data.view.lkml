@@ -686,7 +686,7 @@ view: braze_crm_data {
     measure: discount_order_share {
       type: number
       label: "Unique Order Rate"
-      description: "Percentage: number of unique orders made in the 24h after the last opening of the email divided by the number of unique emails opened"
+      description: "Percentage: number of orders with voucher discounts divided by the total number of ordres made in the 24h after the last opening of the emaild"
       group_label: "Ratios"
       sql: ${total_orders_with_vouchers} / NULLIF(${total_orders}, 0);;
       value_format_name: percent_2
@@ -695,13 +695,20 @@ view: braze_crm_data {
     measure: discount_value_share {
       type: number
       label: "Unique Order Rate"
-      description: "Percentage: number of unique orders made in the 24h after the last opening of the email divided by the number of unique emails opened"
+      description: "Percentage: total of voucher discounts divided by the total gmv (gross) of ordres made in the 24h after the last opening of the email"
       group_label: "Ratios"
       sql: ${total_discount} / NULLIF(${total_gmv_gross}, 0);;
       value_format_name: percent_2
     }
 
-
+  measure: average_order_value {
+    type: number
+    label: "Average Order Value"
+    description: "Average GMV (gross) based on Total Orders"
+    group_label: "Ratios"
+    sql: ${total_gmv_gross} / NULLIF(${total_orders}, 0);;
+    value_format_name: decimal_2
+  }
 
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -747,6 +754,7 @@ view: braze_crm_data {
     allowed_value: { value: "total_order_rate_with_vouchers"    label: "Total Order Rate with Voucher"}
     allowed_value: { value: "total_discount"           label: "Total Discount Value"}
     allowed_value: { value: "total_gmv_gross"           label: "Total GMV (gross)"}
+    allowed_value: { value: "average_order_value"           label: "Average Order Value"}
     allowed_value: { value: "discount_order_share"           label: "Discount Order Share"}
     allowed_value: { value: "discount_value_share"           label: "Discount Value Share"}
 
@@ -831,6 +839,8 @@ view: braze_crm_data {
       ${total_gmv_gross}
     {% elsif KPI_parameter._parameter_value == 'total_discount' %}
       ${total_discount}
+    {% elsif KPI_parameter._parameter_value == 'average_order_value' %}
+      ${average_order_value}
     {% endif %}
     ;;
   }
