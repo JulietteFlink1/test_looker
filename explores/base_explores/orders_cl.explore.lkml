@@ -43,7 +43,6 @@ explore: orders_cl {
   }
 
   join: hubs_ct {
-    view_label: "* Hubs CT *"
     sql_on: lower(${orders_cl.hub_code}) = ${hubs_ct.hub_code} ;;
     relationship: many_to_one
     type: left_outer
