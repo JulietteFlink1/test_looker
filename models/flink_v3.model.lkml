@@ -351,6 +351,14 @@ explore: order_order {
 
   }
 
+  join: vat {
+    view_label: "* VAT - Germany *"
+    sql_on: ${vat.country_iso} = ${order_order.country_iso} AND
+      ${vat.order_id} = ${order_order.id};;
+    relationship: one_to_one
+    type: left_outer
+  }
+
 }
 
 ####### PRODUCTS EXPLORE #######
