@@ -809,6 +809,8 @@ view: braze_crm_data {
       ${unique_cta_clicks}
     {% elsif KPI_parameter._parameter_value == 'unique_cta_clicks_rate' %}
       ${unique_cta_clicked_emails_per_emails_delivered}
+
+
     {% elsif KPI_parameter._parameter_value == 'total_orders' %}
       ${total_orders}
     {% elsif KPI_parameter._parameter_value == 'total_order_rate' %}
@@ -825,10 +827,13 @@ view: braze_crm_data {
       ${discount_order_share}
     {% elsif KPI_parameter._parameter_value == 'discount_value_share' %}
       ${discount_value_share}
+    {% elsif KPI_parameter._parameter_value == 'total_gmv_gross' %}
+      ${total_gmv_gross}
+    {% elsif KPI_parameter._parameter_value == 'total_discount' %}
+      ${total_discount}
     {% endif %}
     ;;
   }
-
 
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
