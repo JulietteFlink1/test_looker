@@ -484,12 +484,12 @@ view: orders_ct {
   #  sql_end: ${now_raw} ;;
   #}
 
-  #dimension_group: time_between_hub_launch_and_order {
-  #  group_label: "* Hub Dimensions *"
-  #  type: duration
-  #  sql_start: ${hub_order_facts.first_order_raw} ;;
-  #  sql_end: ${created_raw} ;;
-  #}
+  dimension_group: time_between_hub_launch_and_order {
+    group_label: "* Hub Dimensions *"
+    type: duration
+    sql_start: null ;;
+    sql_end: null ;;
+  }
 
   #dimension: time_since_sign_up_biweekly {
   #  group_label: "* User Dimensions *"
