@@ -20,6 +20,12 @@ explore: order_orderline_cl {
     type: left_outer
   }
 
+  join: products_ct {
+    sql_on: ${products_ct.product_sku} = ${orderline_ct.product_sku} ;;
+    relationship: many_to_one
+    type: left_outer
+  }
+
   #join: product_facts {
   #  type: left_outer
   #  relationship: many_to_one
