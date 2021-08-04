@@ -192,7 +192,6 @@ view: braze_crm_data {
       left join canvas_entered                  as ce
              on es.user_id = ce.user_id
             and es.canvas_id = ce.canvas_id
-            and es.canvas_variation_id = ce.canvas_variation_id
       left join emails_bounced                  as eb
              on es.user_id     = eb.user_id
             and es.dispatch_id = eb.dispatch_id
