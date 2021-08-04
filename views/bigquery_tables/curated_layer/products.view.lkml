@@ -1,4 +1,4 @@
-view: products_ct {
+view: products {
   view_label: "* Product Data *"
   sql_table_name: `flink-data-prod.curated.products_ct`
     ;;
