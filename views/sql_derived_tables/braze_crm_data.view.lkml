@@ -206,7 +206,7 @@ view: braze_crm_data {
              on es.user_id = ce.user_id
             and es.canvas_id = ce.canvas_id
       left join campaign_control_group_entered    as cm
-            and es.campaign_id = cm.campaign_id
+             on es.campaign_id = cm.campaign_id
       left join emails_bounced                    as eb
              on es.user_id     = eb.user_id
             and es.dispatch_id = eb.dispatch_id
