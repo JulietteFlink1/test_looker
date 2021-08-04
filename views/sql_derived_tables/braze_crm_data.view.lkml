@@ -7,6 +7,7 @@ view: braze_crm_data {
             , dispatch_id                         as dispatch_id
             , campaign_name                       as campaign_name
             , canvas_name                         as canvas_name
+            , canvas_id                           as canvas_id
             , canvas_step_name                    as canvas_step_name
             , canvas_variation_name               as canvas_variation_name
             , canvas_variation_id                 as canvas_variation_id
@@ -17,19 +18,20 @@ view: braze_crm_data {
           from
             `flink-backend.braze.email_sent`
           group by
-            user_id, dispatch_id, campaign_name, canvas_name, country, canvas_step_name, canvas_variation_name, canvas_variation_id
+            user_id, dispatch_id, campaign_name, canvas_name, canvas_id, canvas_step_name, canvas_variation_name, canvas_variation_id, country
       ),
 
 
       canvas_entered as (
           select
               user_id                             as user_id
+            , canvas_id
             , canvas_variation_id                 as canvas_variation_id
             , in_control_group                    as in_control_group
           from
             `flink-backend.braze.canvas_entered`
           group by
-            user_id, canvas_variation_id, in_control_group
+            user_id, canvas_variation_id,canvas_id, in_control_group
      ),
 
 
@@ -189,6 +191,7 @@ view: braze_crm_data {
                 emails_sent                     as es
       left join canvas_entered                  as ce
              on es.user_id = ce.user_id
+            and es.canvas_id = ce.canvas_id
             and es.canvas_variation_id = ce.canvas_variation_id
       left join emails_bounced                  as eb
              on es.user_id     = eb.user_id
