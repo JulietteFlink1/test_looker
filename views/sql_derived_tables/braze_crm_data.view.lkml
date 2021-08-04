@@ -5,7 +5,6 @@ view: braze_crm_data {
           select
               user_id                             as user_id
             , dispatch_id                         as dispatch_id
-            , campaign_id                         as campaign_id
             , campaign_name                       as campaign_name
             , canvas_name                         as canvas_name
             , canvas_id                           as canvas_id
@@ -19,7 +18,7 @@ view: braze_crm_data {
           from
             `flink-backend.braze.email_sent`
           group by
-            user_id, dispatch_id, campaign_id, campaign_name, canvas_name, canvas_id, canvas_step_name, canvas_variation_name, canvas_variation_id, country
+            user_id, dispatch_id, campaign_name, canvas_name, canvas_id, canvas_step_name, canvas_variation_name, canvas_variation_id, country
       ),
 
 
@@ -35,17 +34,6 @@ view: braze_crm_data {
             user_id, canvas_variation_id,canvas_id, in_control_group
      ),
 
-
-      campaign_control_group_entered as (
-          select
-              campaign_id                         as campaign_id
-            , user_id                             as user_id
-            , true                                as in_control_group
-          from
-            `flink-backend.braze.campaign_control_group_entered`
-          group by
-            campaign_id, user_id, message_variation_id, in_control_group
-     ),
 
       emails_delivered as (
           select
@@ -170,12 +158,11 @@ view: braze_crm_data {
 
       select
         -- DIMENSIONS
-          es.campaign_id                                        as campaign_id
-        , es.campaign_name                                      as campaign_name
+          es.campaign_name                                      as campaign_name
         , es.canvas_name                                        as canvas_name
         , es.canvas_step_name                                   as canvas_step_name
         , es.canvas_variation_name                              as canvas_variation_name
-        , COALESCE(ce.in_control_group, cm.in_control_group, false)    as in_control_group
+        , ce.in_control_group                                   as in_control_group
         , es.country                                            as country
         , date(es.sent_at, "Europe/Berlin")                     as email_sent_at
         , date_diff(eo.opened_at_first, es.sent_at, day)        as days_sent_to_open
@@ -201,48 +188,39 @@ view: braze_crm_data {
         , sum(gmv_gross)                                        as gmv_gross
 
       from
-                emails_sent                       as es
-      left join canvas_entered                    as ce
+                emails_sent                     as es
+      left join canvas_entered                  as ce
              on es.user_id = ce.user_id
             and es.canvas_id = ce.canvas_id
-      left join campaign_control_group_entered    as cm
-             on es.campaign_id = cm.campaign_id
-      left join emails_bounced                    as eb
+      left join emails_bounced                  as eb
              on es.user_id     = eb.user_id
             and es.dispatch_id = eb.dispatch_id
-      left join emails_soft_bounced               as esb
+      left join emails_soft_bounced             as esb
              on es.user_id     = esb.user_id
             and es.dispatch_id = esb.dispatch_id
-      left join emails_delivered                  as ed
+      left join emails_delivered                as ed
              on es.user_id     = ed.user_id
             and es.dispatch_id = ed.dispatch_id
-      left join emails_opened                     as eo
+      left join emails_opened                   as eo
              on es.user_id     = eo.user_id
             and es.dispatch_id = eo.dispatch_id
-      left join emails_clicked                    as ec
+      left join emails_clicked                  as ec
              on es.user_id     = ec.user_id
             and es.dispatch_id = ec.dispatch_id
-      left join emails_unsubscribed               as uns
+      left join emails_unsubscribed             as uns
              on es.user_id     = uns.user_id
             and es.dispatch_id = uns.dispatch_id
-      left join orders_aggregated                 as oa
+      left join orders_aggregated               as oa
              on es.user_id     = oa.user_id
             and es.dispatch_id = oa.dispatch_id
 
       group by
-        campaign_id, campaign_name, canvas_name, country, email_sent_at, days_sent_to_open, days_sent_to_click,canvas_step_name, canvas_variation_name, in_control_group;;
+        campaign_name, canvas_name, country, email_sent_at, days_sent_to_open, days_sent_to_click,canvas_step_name, canvas_variation_name, in_control_group;;
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   #           Dimensions
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  dimension: campaign_id {
-    label: "Campaign ID"
-    description: "The email campaign id defined in Braze"
-    type: string
-    sql: ${TABLE}.campaign_id ;;
-  }
 
   dimension: campaign_name {
     label: "Campaign Name"
@@ -318,7 +296,7 @@ view: braze_crm_data {
   dimension: primary_key {
     primary_key: yes
     hidden: yes
-    sql: CONCAT(${TABLE}.campaign_id, ${TABLE}.campaign_name,${TABLE}.canvas_name,${TABLE}.canvas_step_name, ${TABLE}.canvas_variation_name, ${TABLE}.country, ${TABLE}.email_sent_at) ;;
+    sql: CONCAT(${TABLE}.campaign_name,${TABLE}.canvas_name,${TABLE}.canvas_step_name, ${TABLE}.canvas_variation_name, ${TABLE}.country, ${TABLE}.email_sent_at) ;;
   }
 
   dimension: days_sent_to_open {
@@ -608,14 +586,14 @@ view: braze_crm_data {
     value_format_name: decimal_0
   }
 
-    measure: total_gmv_gross {
-      type: sum
-      label: "Total GMV (gross)"
-      description: "Total GMV (gross) of orders"
-      group_label: "Numbers"
-      sql: ${gmv_gross};;
-      value_format_name: decimal_0
-    }
+  measure: total_gmv_gross {
+    type: sum
+    label: "Total GMV (gross)"
+    description: "Total GMV (gross) of orders"
+    group_label: "Numbers"
+    sql: ${gmv_gross};;
+    value_format_name: decimal_0
+  }
 
 
 
@@ -722,32 +700,32 @@ view: braze_crm_data {
     value_format_name: percent_2
   }
 
-    measure: total_order_rate_with_vouchers {
-      type: number
-      label: "Total Order Rate with Vouchers"
-      description: "Percentage: number of orders made in the 24h after the last opening of the email divided by the number of emails opened"
-      group_label: "Ratios"
-      sql: ${total_orders_with_vouchers} / NULLIF(${total_emails_opened}, 0);;
-      value_format_name: percent_2
-    }
+  measure: total_order_rate_with_vouchers {
+    type: number
+    label: "Total Order Rate with Vouchers"
+    description: "Percentage: number of orders made in the 24h after the last opening of the email divided by the number of emails opened"
+    group_label: "Ratios"
+    sql: ${total_orders_with_vouchers} / NULLIF(${total_emails_opened}, 0);;
+    value_format_name: percent_2
+  }
 
-    measure: discount_order_share {
-      type: number
-      label: "Unique Order Rate"
-      description: "Percentage: number of orders with voucher discounts divided by the total number of ordres made in the 24h after the last opening of the emaild"
-      group_label: "Ratios"
-      sql: ${total_orders_with_vouchers} / NULLIF(${total_orders}, 0);;
-      value_format_name: percent_2
-    }
+  measure: discount_order_share {
+    type: number
+    label: "Unique Order Rate"
+    description: "Percentage: number of orders with voucher discounts divided by the total number of ordres made in the 24h after the last opening of the emaild"
+    group_label: "Ratios"
+    sql: ${total_orders_with_vouchers} / NULLIF(${total_orders}, 0);;
+    value_format_name: percent_2
+  }
 
-    measure: discount_value_share {
-      type: number
-      label: "Unique Order Rate"
-      description: "Percentage: total of voucher discounts divided by the total gmv (gross) of ordres made in the 24h after the last opening of the email"
-      group_label: "Ratios"
-      sql: ${total_discount} / NULLIF(${total_gmv_gross}, 0);;
-      value_format_name: percent_2
-    }
+  measure: discount_value_share {
+    type: number
+    label: "Unique Order Rate"
+    description: "Percentage: total of voucher discounts divided by the total gmv (gross) of ordres made in the 24h after the last opening of the email"
+    group_label: "Ratios"
+    sql: ${total_discount} / NULLIF(${total_gmv_gross}, 0);;
+    value_format_name: percent_2
+  }
 
   measure: average_order_value {
     type: number
@@ -894,12 +872,93 @@ view: braze_crm_data {
   }
 
 
+  parameter: funnel_type_parameter {
+    label: "Funnel KPI Type"
+    group_label: "Funnel KPI Dynamic"
+    type: unquoted
+    # initial sends
+    allowed_value: { value: "unique"                  label: "Unique"}
+    allowed_value: { value: "totals"                  label: "Totals"}
+
+    default_value: "unique"
+  }
+
+  measure: recipients_parameter {
+    label: "Recipients"
+    group_label: "Funnel KPI Dynamic"
+    # label_from_parameter: funnel_type_parameter
+    type: number
+    sql:
+    {% if funnel_type_parameter._parameter_value == 'unique' %}
+      ${total_recipients}
+    {% elsif funnel_type_parameter._parameter_value == 'totals' %}
+      ${total_recipients}
+      {% endif %}
+    ;;
+  }
+
+  measure: deliveries_parameter {
+    label: "Deliveries"
+    group_label: "Funnel KPI Dynamic"
+    # label_from_parameter: funnel_type_parameter
+    type: number
+    sql:
+    {% if funnel_type_parameter._parameter_value == 'unique' %}
+      ${total_emails_delivered}
+    {% elsif funnel_type_parameter._parameter_value == 'totals' %}
+      ${total_emails_delivered}
+      {% endif %}
+    ;;
+  }
+
+  measure: opens_parameter {
+    label: "Opens"
+    group_label: "Funnel KPI Dynamic"
+    # label_from_parameter: funnel_type_parameter
+    type: number
+    sql:
+    {% if funnel_type_parameter._parameter_value == 'unique' %}
+      ${total_emails_opened_unique}
+    {% elsif funnel_type_parameter._parameter_value == 'totals' %}
+      ${total_emails_opened}
+      {% endif %}
+    ;;
+  }
+
+  measure: cta_clicks_parameter {
+    label: "CTA Clicks"
+    group_label: "Funnel KPI Dynamic"
+    # label_from_parameter: funnel_type_parameter
+    type: number
+    sql:
+    {% if funnel_type_parameter._parameter_value == 'unique' %}
+      ${unique_cta_clicks}
+    {% elsif funnel_type_parameter._parameter_value == 'totals' %}
+      ${total_cta_clicks}
+      {% endif %}
+    ;;
+  }
+
+  measure: orders_parameter {
+    label: "Orders"
+    group_label: "Funnel KPI Dynamic"
+    # label_from_parameter: funnel_type_parameter
+    type: number
+    sql:
+    {% if funnel_type_parameter._parameter_value == 'unique' %}
+      ${unique_orders}
+    {% elsif funnel_type_parameter._parameter_value == 'totals' %}
+      ${total_orders}
+      {% endif %}
+    ;;
+  }
+
+
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   #           Detail
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   set: detail {
     fields: [
-      campaign_id,
       campaign_name,
       canvas_name,
       in_control_group,
