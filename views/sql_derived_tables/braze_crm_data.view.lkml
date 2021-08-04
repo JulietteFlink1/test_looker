@@ -239,7 +239,7 @@ view: braze_crm_data {
   dimension: in_control_group {
     label: "Control Group"
     description: "Canvas group name defined in Braze"
-    type: string
+    type: yesno
     sql: ${TABLE}.in_control_group ;;
   }
 
@@ -702,7 +702,7 @@ view: braze_crm_data {
 
     measure: total_order_rate_with_vouchers {
       type: number
-      label: "Total Order Rate"
+      label: "Total Order Rate with Vouchers"
       description: "Percentage: number of orders made in the 24h after the last opening of the email divided by the number of emails opened"
       group_label: "Ratios"
       sql: ${total_orders_with_vouchers} / NULLIF(${total_emails_opened}, 0);;
