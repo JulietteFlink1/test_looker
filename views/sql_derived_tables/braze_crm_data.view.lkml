@@ -237,8 +237,8 @@ view: braze_crm_data {
   }
 
   dimension: in_control_group {
-    label: "Canvas Name"
-    description: "The email canvas name defined in Braze"
+    label: "Control Group"
+    description: "Canvas group name defined in Braze"
     type: string
     sql: ${TABLE}.in_control_group ;;
   }
@@ -296,7 +296,7 @@ view: braze_crm_data {
   dimension: primary_key {
     primary_key: yes
     hidden: yes
-    sql: CONCAT(${TABLE}.campaign_name,${TABLE}.canvas_name, ${TABLE}.country, ${TABLE}.email_sent_at) ;;
+    sql: CONCAT(${TABLE}.campaign_name,${TABLE}.canvas_name,${TABLE}.canvas_step_name, ${TABLE}.canvas_variation_name, ${TABLE}.country, ${TABLE}.email_sent_at) ;;
   }
 
   dimension: days_sent_to_open {
