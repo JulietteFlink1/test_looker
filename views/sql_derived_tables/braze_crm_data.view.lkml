@@ -236,6 +236,13 @@ view: braze_crm_data {
     sql: ${TABLE}.canvas_name ;;
   }
 
+  dimension: in_control_group {
+    label: "Canvas Name"
+    description: "The email canvas name defined in Braze"
+    type: string
+    sql: ${TABLE}.in_control_group ;;
+  }
+
   dimension: canvas_step_name {
     label: "Canvas Step Name"
     description: "The email canvas step name defined in Braze"
@@ -872,6 +879,7 @@ view: braze_crm_data {
     fields: [
       campaign_name,
       canvas_name,
+      in_control_group,
       canvas_step_name,
       canvas_variation_name,
       country,
