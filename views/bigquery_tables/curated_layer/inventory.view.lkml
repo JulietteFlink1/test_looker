@@ -1,4 +1,4 @@
-view: inventory_ct {
+view: inventory {
   view_label: "* Inventory Data *"
   sql_table_name: `flink-data-prod.curated.inventory_ct`
     ;;

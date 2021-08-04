@@ -1,4 +1,4 @@
-view: orders_ct {
+view: orders {
   sql_table_name: `flink-data-prod.curated.orders_ct`
     ;;
 

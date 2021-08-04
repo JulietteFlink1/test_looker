@@ -13,15 +13,15 @@ explore: order_orderline_cl {
   # view_name: base_order_orderline
   #extension: required
 
-  join: orderline_ct {
-    sql_on: ${orderline_ct.country_iso} = ${orders_cl.country_iso} AND
-      ${orderline_ct.order_id}    = ${orders_cl.unique_id} ;;
+  join: orderline {
+    sql_on: ${orderline.country_iso} = ${orders_cl.country_iso} AND
+            ${orderline.order_id}    = ${orders_cl.unique_id} ;;
     relationship: one_to_many
     type: left_outer
   }
 
-  join: products_ct {
-    sql_on: ${products_ct.product_sku} = ${orderline_ct.product_sku} ;;
+  join: products {
+    sql_on: ${products.product_sku} = ${orderline.product_sku} ;;
     relationship: many_to_one
     type: left_outer
   }
