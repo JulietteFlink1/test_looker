@@ -40,8 +40,15 @@ view: products_ct {
   }
 
   dimension: product_sku {
+    label: "SKU"
     type: string
     sql: ${TABLE}.product_sku ;;
+  }
+
+  dimension: product_sku_name {
+    label: "SKU + Name"
+    type: string
+    sql: CONCAT(${TABLE}.product_sku, ' - ', ${TABLE}.product_name) ;;
   }
 
   dimension: subcategory {
