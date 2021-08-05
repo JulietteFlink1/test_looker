@@ -60,22 +60,22 @@ view: braze_crm_data {
 
       emails_sent_all as (  -- includes campaigns and canvases from both variant AND control group
           select
-              COALESCE(es.user_id, ce.user_id, cm.user_id)                       as user_id
-            , COALESCE(es.dispatch_id, ce.dispatch_id, cm.dispatch_id)           as dispatch_id
-            , COALESCE(es.campaign_name, cm.campaign_name)                       as campaign_name
-            , COALESCE(es.campaign_id, cm.campaign_id)                           as campaign_id
-            , COALESCE(es.canvas_name, ce.canvas_name)                           as canvas_name
-            , COALESCE(es.canvas_id, ce.canvas_id)                               as canvas_id
-            , COALESCE(es.canvas_step_name)                                      as canvas_step_name
-            , COALESCE(es.canvas_variation_name, ce.canvas_variation_name)               as canvas_variation_name
-            , COALESCE(es.canvas_variation_id, ce.canvas_variation_id)                 as canvas_variation_id
-            , COALESCE(es.message_variation_id, cm.message_variation_id)             as message_variation_id
+              COALESCE(es.user_id, ce.user_id, cm.user_id)                                     as user_id
+            , COALESCE(es.dispatch_id, ce.dispatch_id, cm.dispatch_id)                         as dispatch_id
+            , COALESCE(es.campaign_name, cm.campaign_name)                                     as campaign_name
+            , COALESCE(es.campaign_id, cm.campaign_id)                                         as campaign_id
+            , COALESCE(es.canvas_name, ce.canvas_name)                                         as canvas_name
+            , COALESCE(es.canvas_id, ce.canvas_id)                                             as canvas_id
+            , COALESCE(es.canvas_step_name)                                                    as canvas_step_name
+            , COALESCE(es.canvas_variation_name, ce.canvas_variation_name)                     as canvas_variation_name
+            , COALESCE(es.canvas_variation_id, ce.canvas_variation_id)                         as canvas_variation_id
+            , COALESCE(es.message_variation_id, cm.message_variation_id)                       as message_variation_id
             , case when (es.canvas_id is not null AND ce.in_control_group_canvas is null) THEN false
-                   when (es.canvas_id is not null AND ce.in_control_group_canvas is true) THEN true
-                   else null end                  as in_control_group_canvas
-            , case when (es.campaign_id is not null AND cm.in_control_group_campaign is true) THEN true
-                   when (es.campaign_id is not null AND cm.in_control_group_campaign is null) THEN false
-                   else null end                  as in_control_group_campaign
+                   when (ce.canvas_id is not null AND ce.in_control_group_canvas is true) THEN true
+                   else null end                                                               as in_control_group_canvas
+            , case when (es.campaign_id is not null AND cm.in_control_group_campaign is null) THEN false
+                   when (cm.campaign_id is not null AND cm.in_control_group_campaign is true) THEN true
+                   else null end                                                               as in_control_group_campaign
             , min(COALESCE(es.sent_at_first, ce.sent_at_first, cm.sent_at_first))              as sent_at_first
             , max(COALESCE(es.sent_at_last, ce.sent_at_last, cm.sent_at_last))                 as sent_at_last
             , count(*)                            as all_sends
