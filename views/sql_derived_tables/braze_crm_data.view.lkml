@@ -227,13 +227,17 @@ view: braze_crm_data {
 
       orders_aggregated as ( --aggregates orders per user
         select
-               COALESCE(oo.user_id,os.user_id)             as user_id
-              ,COALESCE(oo.dispatch_id,os.dispatch_id)     as dispatch_id
+                oo.user_id                                 as user_id_opened
+              , os.user_id                                 as user_id_sent
+              , oo.dispatch_id                             as dispatch_id_opened
+              , os.dispatch_id                             as dispatch_id_sent
+
               ,SUM(oo.has_voucher)                         as num_vouchers_opened
               ,COUNT(oo.order_id_with_voucher)             as num_orders_with_vouchers_opened
               ,COUNT(oo.order_id)                          as num_orders_opened
               ,SUM(oo.discount_amount)                     as discount_amount_opened
               ,SUM(oo.gmv_gross)                           as gmv_gross_opened
+
               ,SUM(os.has_voucher)                         as num_vouchers_sent
               ,COUNT(os.order_id_with_voucher)             as num_orders_with_vouchers_sent
               ,COUNT(os.order_id)                          as num_orders_sent
@@ -244,7 +248,7 @@ view: braze_crm_data {
         full outer join
           orders_sent os
         on oo.user_id = os.user_id and oo.dispatch_id = os.dispatch_id
-        group by 1,2
+        group by 1,2,3,4
       )
 
       select
@@ -282,7 +286,9 @@ view: braze_crm_data {
 
         , sum(num_orders_opened)                                as num_orders_opened
         , sum(num_orders_sent)                                  as num_orders_sent
-        , count(distinct concat(oa.user_id , oa.dispatch_id))   as num_unique_orders
+
+        , count(distinct concat(oa.user_id_opened , oa.dispatch_id_opened))   as num_unique_orders_opened
+        , count(distinct concat(oa.user_id_sent , oa.dispatch_id_sent))       as num_unique_orders_sent
 
         , sum(num_orders_with_vouchers_opened)                  as num_orders_with_vouchers_opened
         , sum(num_orders_with_vouchers_sent)                    as num_orders_with_vouchers_sent
@@ -317,8 +323,8 @@ view: braze_crm_data {
              on es.user_id     = uns.user_id
             and es.dispatch_id = uns.dispatch_id
       left join orders_aggregated               as oa
-             on es.user_id     = oa.user_id
-            and es.dispatch_id = oa.dispatch_id
+             on es.user_id     = oa.user_id_sent
+            and es.dispatch_id = oa.dispatch_id_sent
 
       group by
         campaign_id, campaign_name, canvas_id, canvas_name, country, email_sent_at, days_sent_to_open, days_sent_to_click,canvas_step_name, canvas_variation_name, in_control_group_canvas, in_control_group_campaign;;
@@ -535,9 +541,15 @@ view: braze_crm_data {
     hidden: yes
   }
 
-  dimension: num_unique_orders {
+  dimension: num_unique_orders_opened {
     type: number
-    sql: ${TABLE}.num_unique_orders ;;
+    sql: ${TABLE}.num_unique_orders_opened ;;
+    hidden: yes
+  }
+
+  dimension: num_unique_orders_sent {
+    type: number
+    sql: ${TABLE}.num_unique_orders_sent ;;
     hidden: yes
   }
 
@@ -584,7 +596,7 @@ view: braze_crm_data {
 
   measure: total_recipients {
     type: sum
-    label: "Unique Recipients"
+    label: "Unique Sents"
     description: "The number of unique recipients of an email campaign"
     group_label: "Numbers"
     sql: ${num_emails_sent} ;;
@@ -726,12 +738,21 @@ view: braze_crm_data {
     value_format_name: decimal_0
   }
 
-  measure: unique_orders {
+  measure: unique_orders_opened {
     type: sum
-    label: "Unique Orders"
+    label: "Unique Orders opened"
     description: "Number of Orders that happened in the 24h after the last email open"
     group_label: "Numbers"
-    sql: ${num_unique_orders};;
+    sql: ${num_unique_orders_opened};;
+    value_format_name: decimal_0
+  }
+
+  measure: unique_orders_sent {
+    type: sum
+    label: "Unique Orders sent"
+    description: "Number of Orders that happened in the 24h after the last email open"
+    group_label: "Numbers"
+    sql: ${num_unique_orders_sent};;
     value_format_name: decimal_0
   }
 
@@ -900,7 +921,7 @@ view: braze_crm_data {
     label: "Unique Order Rate (opened)"
     description: "Percentage: number of unique orders made in the 24h after the last opening of the email divided by the number of unique emails opened"
     group_label: "Ratios"
-    sql: ${unique_orders} / NULLIF(${total_emails_opened_unique}, 0);;
+    sql: ${unique_orders_opened} / NULLIF(${total_emails_opened_unique}, 0);;
     value_format_name: percent_2
   }
 
@@ -909,7 +930,7 @@ view: braze_crm_data {
     label: "Unique Order Rate (sent)"
     description: "Percentage: number of unique orders made in the 12h after sending an email divided by the number of unique emails opened"
     group_label: "Ratios"
-    sql: ${unique_orders} / NULLIF(${total_recipients}, 0);;
+    sql: ${unique_orders_sent} / NULLIF(${total_recipients}, 0);;
     value_format_name: percent_2
   }
 
@@ -1030,7 +1051,8 @@ view: braze_crm_data {
     allowed_value: { value: "unique_order_rate_opened"      label: "Unique Order Rate (opened)"}
     allowed_value: { value: "unique_order_rate_sent"      label: "Unique Order Rate (sent)"}
 
-    allowed_value: { value: "unique_orders"          label: "Unique Orders"}
+    allowed_value: { value: "unique_orders_opened"          label: "Unique Orders (opened)"}
+    allowed_value: { value: "unique_orders_sent"          label: "Unique Orders (sent)"}
 
     allowed_value: { value: "total_orders_with_vouchers_opened"        label: "Total Orders with Voucher (opened)"}
     allowed_value: { value: "total_orders_with_vouchers_sent"        label: "Total Orders with Voucher (sent)"}
@@ -1127,8 +1149,10 @@ view: braze_crm_data {
     {% elsif KPI_parameter._parameter_value == 'total_order_rate_sent' %}
       ${total_order_rate_sent}
 
-    {% elsif KPI_parameter._parameter_value == 'unique_orders' %}
-      ${unique_orders}
+    {% elsif KPI_parameter._parameter_value == 'unique_orders_opened' %}
+      ${unique_orders_opened}
+    {% elsif KPI_parameter._parameter_value == 'unique_orders_sent' %}
+      ${unique_orders_sent}
 
     {% elsif KPI_parameter._parameter_value == 'unique_order_rate_opened' %}
       ${unique_order_rate_opened}
@@ -1285,6 +1309,8 @@ view: braze_crm_data {
       num_emails_clicked,
       num_orders_opened,
       num_orders_sent,
+      num_unique_orders_opened,
+      num_unique_orders_sent,
       num_orders_with_vouchers_opened,
       num_orders_with_vouchers_sent,
       discount_amount_opened,
