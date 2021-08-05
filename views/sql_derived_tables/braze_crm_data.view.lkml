@@ -132,13 +132,15 @@ view: braze_crm_data {
           select
               user_id                             as user_id
             , dispatch_id                         as dispatch_id
+            , campaign_id                         as campaign_id
+            , canvas_id                           as canvas_id
             , min(timestamp)                      as opened_at_first
             , max(timestamp)                      as opened_at_last
             , count(*)                            as num_opening
           from
             `flink-backend.braze.email_opened`
           group by
-            user_id, dispatch_id
+            user_id, dispatch_id, campaign_id, canvas_id
       ),
 
       emails_clicked as (
@@ -183,9 +185,11 @@ view: braze_crm_data {
 
       orders_opened as ( --attribute the order to the last email opened if the order happened within the next 12h
           select distinct
-             user_id
-             ,LAST_VALUE(dispatch_id) OVER (partition by order_id order by opened_at_first ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) as dispatch_id
-             ,LAST_VALUE(opened_at_first) OVER (partition by order_id order by opened_at_first  ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) as opened_at
+              user_id
+             ,campaign_id
+             ,canvas_id
+             ,LAST_VALUE(dispatch_id) OVER (partition by order_id, campaign_id, canvas_id order by opened_at_first ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) as dispatch_id
+             ,LAST_VALUE(opened_at_first) OVER (partition by order_id, campaign_id, canvas_id order by opened_at_first  ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) as opened_at
              ,order_id
              ,order_created_at
              ,gmv_gross
@@ -203,8 +207,10 @@ view: braze_crm_data {
       orders_sent as ( --attribute the order to the email sent if the order happened within the next 12h
           select distinct
              user_id
-             ,LAST_VALUE(dispatch_id) OVER (partition by order_id order by sent_at_first ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) as dispatch_id
-             ,LAST_VALUE(sent_at_first) OVER (partition by order_id order by sent_at_first  ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) as sent_at_first
+             ,campaign_id
+             ,canvas_id
+             ,LAST_VALUE(dispatch_id) OVER (partition by order_id, campaign_id, canvas_id order by sent_at_first ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) as dispatch_id
+             ,LAST_VALUE(sent_at_first) OVER (partition by order_id, campaign_id, canvas_id order by sent_at_first  ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) as sent_at_first
              ,order_id
              ,order_created_at
              ,gmv_gross
@@ -219,23 +225,23 @@ view: braze_crm_data {
             and timestamp_diff(order_created_at, sent_at_first, hour) BETWEEN 0 and 12
       ),
 
-      orders_aggregated as (--aggregates orders per user
+      orders_aggregated as ( --aggregates orders per user
         select
-               COALESCE(oo.user_id,os.user_id)          as user_id
-              ,COALESCE(oo.dispatch_id,os.dispatch_id)  as dispatch_id
+               COALESCE(oo.user_id,os.user_id)             as user_id
+              ,COALESCE(oo.dispatch_id,os.dispatch_id)     as dispatch_id
               ,SUM(oo.has_voucher)                         as num_vouchers_opened
               ,COUNT(oo.order_id_with_voucher)             as num_orders_with_vouchers_opened
               ,COUNT(oo.order_id)                          as num_orders_opened
               ,SUM(oo.discount_amount)                     as discount_amount_opened
-              ,SUM(oo.gmv_gross)                  as gmv_gross_opened
-              ,SUM(os.has_voucher)             as num_vouchers_sent
-              ,COUNT(os.order_id_with_voucher) as num_orders_with_vouchers_sent
-              ,COUNT(os.order_id)              as num_orders_sent
-              ,SUM(os.discount_amount)         as discount_amount_sent
-              ,SUM(os.gmv_gross)               as gmv_gross_sent
+              ,SUM(oo.gmv_gross)                           as gmv_gross_opened
+              ,SUM(os.has_voucher)                         as num_vouchers_sent
+              ,COUNT(os.order_id_with_voucher)             as num_orders_with_vouchers_sent
+              ,COUNT(os.order_id)                          as num_orders_sent
+              ,SUM(os.discount_amount)                     as discount_amount_sent
+              ,SUM(os.gmv_gross)                           as gmv_gross_sent
         from
           orders_opened oo
-        left join
+        full outer join
           orders_sent os
         on oo.user_id = os.user_id and oo.dispatch_id = os.dispatch_id
         group by 1,2
@@ -245,6 +251,7 @@ view: braze_crm_data {
         -- DIMENSIONS
           es.campaign_id                                        as campaign_id
         , es.campaign_name                                      as campaign_name
+        , es.canvas_id                                          as canvas_id
         , es.canvas_name                                        as canvas_name
         , es.canvas_step_name                                   as canvas_step_name
         , es.canvas_variation_name                              as canvas_variation_name
@@ -252,8 +259,8 @@ view: braze_crm_data {
         , es.in_control_group_campaign                          as in_control_group_campaign
         , COALESCE(split(es.campaign_name,'_')[OFFSET(1)],split(es.canvas_name,'_')[OFFSET(1)]) as country
         , date(es.sent_at_first, "Europe/Berlin")               as email_sent_at
-        , date_diff(eo.opened_at_first, es.sent_at_first, day)        as days_sent_to_open
-        , date_diff(ec.clicked_at_first, es.sent_at_first, day)       as days_sent_to_click
+        , date_diff(eo.opened_at_first, es.sent_at_first, day)  as days_sent_to_open
+        , date_diff(ec.clicked_at_first, es.sent_at_first, day) as days_sent_to_click
         -- MEASURES
         , count(distinct concat(es.user_id , es.dispatch_id))   as num_emails_sent
         , sum(es.all_sends)                                     as num_all_sents
@@ -314,7 +321,7 @@ view: braze_crm_data {
             and es.dispatch_id = oa.dispatch_id
 
       group by
-        campaign_id, campaign_name, canvas_name, country, email_sent_at, days_sent_to_open, days_sent_to_click,canvas_step_name, canvas_variation_name, in_control_group_canvas, in_control_group_campaign;;
+        campaign_id, campaign_name, canvas_id, canvas_name, country, email_sent_at, days_sent_to_open, days_sent_to_click,canvas_step_name, canvas_variation_name, in_control_group_canvas, in_control_group_campaign;;
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -333,6 +340,13 @@ view: braze_crm_data {
     description: "The email campaign name defined in Braze"
     type: string
     sql: ${TABLE}.campaign_name ;;
+  }
+
+  dimension: canvas_id {
+    label: "Canvas ID"
+    description: "The email canvas ID defined in Braze"
+    type: string
+    sql: ${TABLE}.canvas_name ;;
   }
 
   dimension: canvas_name {
