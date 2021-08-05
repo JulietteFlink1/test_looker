@@ -30,7 +30,7 @@ view: braze_crm_data {
             , campaign_id                         as campaign_id
             , campaign_name                       as campaign_name
             , message_variation_id                as message_variation_id
-            , safe_cast(MD5(CONCAT(user_id, campaign_id, message_variation_id, safe_cast(timestamp as string))) as string)    as dispatch_id
+            , safe_cast(FARM_FINGERPRINT(CONCAT(user_id, campaign_id, message_variation_id, safe_cast(timestamp as string))) as string)    as dispatch_id
             , true                                as in_control_group_campaign
             , min(timestamp)                      as sent_at_first
             , max(timestamp)                      as sent_at_last
@@ -47,7 +47,7 @@ view: braze_crm_data {
             , canvas_name                         as canvas_name
             , canvas_variation_id                 as canvas_variation_id
             , canvas_variation_name               as canvas_variation_name
-            , safe_cast(MD5(CONCAT(user_id, canvas_id, canvas_variation_id, safe_cast(timestamp as string))) as string)     as dispatch_id
+            , safe_cast(FARM_FINGERPRINT(CONCAT(user_id, canvas_id, canvas_variation_id, safe_cast(timestamp as string))) as string)     as dispatch_id
             , true                                as in_control_group_canvas
             , min(timestamp)                      as sent_at_first
             , max(timestamp)                      as sent_at_last
@@ -84,9 +84,11 @@ view: braze_crm_data {
           full outer join canvas_entered          as ce
              on es.user_id = ce.user_id
             and es.canvas_id = ce.canvas_id
+            and es.canvas_variation_id = ce.canvas_variation_id
           full outer join campaign_control_group_entered as cm
-             on cm.campaign_id = es.campaign_id
-            and cm.user_id = es.user_id
+             on cm.user_id = es.user_id
+            and cm.campaign_id = es.campaign_id
+            and cm.message_variation_id = es.message_variation_id
           group by
             user_id, dispatch_id, campaign_id, campaign_name, canvas_name, canvas_id, canvas_step_name, canvas_variation_name, canvas_variation_id, message_variation_id, in_control_group_canvas, in_control_group_campaign
       ),
