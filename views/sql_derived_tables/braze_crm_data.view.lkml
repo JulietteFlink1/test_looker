@@ -6,6 +6,7 @@ view: braze_crm_data {
               user_id                             as user_id
             , dispatch_id                         as dispatch_id
             , campaign_name                       as campaign_name
+            , campaign_id                         as campaign_id
             , canvas_name                         as canvas_name
             , canvas_id                           as canvas_id
             , canvas_step_name                    as canvas_step_name
@@ -18,22 +19,36 @@ view: braze_crm_data {
           from
             `flink-backend.braze.email_sent`
           group by
-            user_id, dispatch_id, campaign_name, canvas_name, canvas_id, canvas_step_name, canvas_variation_name, canvas_variation_id, country
+            user_id, dispatch_id, campaign_id, campaign_name, canvas_name, canvas_id, canvas_step_name, canvas_variation_name, canvas_variation_id, country
       ),
 
+
+      campaign_control_group_entered as (
+          select
+              user_id                             as user_id
+            , campaign_id                         as campaign_id
+            , message_variation_id                as message_variation_id
+            , MD5(CONCAT(user_id, campaign_id, message_variation_id, CAST(timestamp as string)))     as dispatch_id
+            , true                                as in_control_group_campaign
+            , min(timestamp)                      as clicked_at_first
+            , max(timestamp)                      as clicked_at_last
+          from
+            `flink-backend.braze.campaign_control_group_entered`
+          group by
+            user_id, campaign_id, message_variation_id, dispatch_id, in_control_group_campaign
+     ),
 
       canvas_entered as (
           select
               user_id                             as user_id
             , canvas_id
             , canvas_variation_id                 as canvas_variation_id
-            , in_control_group                    as in_control_group
+            , in_control_group                    as in_control_group_canvas
           from
             `flink-backend.braze.canvas_entered`
           group by
-            user_id, canvas_variation_id,canvas_id, in_control_group
+            user_id, canvas_variation_id,canvas_id, in_control_group_canvas
      ),
-
 
       emails_delivered as (
           select
@@ -75,7 +90,7 @@ view: braze_crm_data {
               user_id                             as user_id
             , dispatch_id                         as dispatch_id
             , min(timestamp)                      as opened_at_first
-            , min(timestamp)                      as opened_at_last
+            , max(timestamp)                      as opened_at_last
             , count(*)                            as num_opening
           from
             `flink-backend.braze.email_opened`
@@ -88,7 +103,7 @@ view: braze_crm_data {
               user_id                             as user_id
             , dispatch_id                         as dispatch_id
             , min(timestamp)                      as clicked_at_first
-            , min(timestamp)                      as clicked_at_last
+            , max(timestamp)                      as clicked_at_last
             , count(*)                            as num_clicks
           from
             `flink-backend.braze.email_link_clicked`
@@ -158,11 +173,15 @@ view: braze_crm_data {
 
       select
         -- DIMENSIONS
-          es.campaign_name                                      as campaign_name
+          es.campaign_id                                        as campaign_id
+        , es.campaign_name                                      as campaign_name
         , es.canvas_name                                        as canvas_name
         , es.canvas_step_name                                   as canvas_step_name
         , es.canvas_variation_name                              as canvas_variation_name
-        , ce.in_control_group                                   as in_control_group
+        , ce.in_control_group_canvas                            as in_control_group_canvas
+        , case when (es.campaign_id is not null AND cm.in_control_group_campaign is true) THEN true
+               when (es.campaign_id is not null AND cm.in_control_group_campaign is null) THEN false
+              else null end                                     as in_control_group_campaign
         , es.country                                            as country
         , date(es.sent_at, "Europe/Berlin")                     as email_sent_at
         , date_diff(eo.opened_at_first, es.sent_at, day)        as days_sent_to_open
@@ -192,6 +211,9 @@ view: braze_crm_data {
       left join canvas_entered                  as ce
              on es.user_id = ce.user_id
             and es.canvas_id = ce.canvas_id
+      full outer join campaign_control_group_entered as cm
+             on cm.campaign_id = es.campaign_id
+            and cm.user_id = es.user_id
       left join emails_bounced                  as eb
              on es.user_id     = eb.user_id
             and es.dispatch_id = eb.dispatch_id
@@ -215,12 +237,19 @@ view: braze_crm_data {
             and es.dispatch_id = oa.dispatch_id
 
       group by
-        campaign_name, canvas_name, country, email_sent_at, days_sent_to_open, days_sent_to_click,canvas_step_name, canvas_variation_name, in_control_group;;
+        campaign_id, campaign_name, canvas_name, country, email_sent_at, days_sent_to_open, days_sent_to_click,canvas_step_name, canvas_variation_name, in_control_group_canvas, in_control_group_campaign;;
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   #           Dimensions
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  dimension: campaign_id {
+    label: "Campaign ID"
+    description: "The email campaign ID defined in Braze"
+    type: string
+    sql: ${TABLE}.campaign_id ;;
+  }
 
   dimension: campaign_name {
     label: "Campaign Name"
@@ -236,11 +265,18 @@ view: braze_crm_data {
     sql: ${TABLE}.canvas_name ;;
   }
 
-  dimension: in_control_group {
-    label: "Control Group"
+  dimension: in_control_group_canvas {
+    label: "Control Group for Canvas"
     description: "Canvas group name defined in Braze"
     type: yesno
-    sql: ${TABLE}.in_control_group ;;
+    sql: ${TABLE}.in_control_group_canvas ;;
+  }
+
+  dimension: in_control_group_campaign {
+    label: "Control Group for Campaign"
+    description: "Campaign group name defined in Braze"
+    type: yesno
+    sql: ${TABLE}.in_control_group_campaign ;;
   }
 
   dimension: canvas_step_name {
@@ -961,7 +997,8 @@ view: braze_crm_data {
     fields: [
       campaign_name,
       canvas_name,
-      in_control_group,
+      in_control_group_canvas,
+      in_control_group_campaign,
       canvas_step_name,
       canvas_variation_name,
       country,
