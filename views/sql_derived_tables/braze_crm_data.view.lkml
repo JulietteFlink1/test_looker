@@ -28,7 +28,7 @@ view: braze_crm_data {
               user_id                             as user_id
             , campaign_id                         as campaign_id
             , message_variation_id                as message_variation_id
-            , MD5(CONCAT(user_id, campaign_id, message_variation_id, CAST(timestamp as string)))     as dispatch_id
+            , cast(MD5(CONCAT(user_id, campaign_id, message_variation_id, CAST(timestamp as string))) as string)     as dispatch_id
             , true                                as in_control_group_campaign
             , min(timestamp)                      as clicked_at_first
             , max(timestamp)                      as clicked_at_last
@@ -41,13 +41,17 @@ view: braze_crm_data {
       canvas_entered as (
           select
               user_id                             as user_id
-            , canvas_id
+            , canvas_id                           as canvas_id
             , canvas_variation_id                 as canvas_variation_id
-            , in_control_group                    as in_control_group_canvas
+            , cast(MD5(CONCAT(user_id, canvas_id, canvas_variation_id, CAST(timestamp as string))) as string)     as dispatch_id
+            , true                                as in_control_group_canvas
+            , min(timestamp)                      as clicked_at_first
+            , max(timestamp)                      as clicked_at_last
           from
             `flink-backend.braze.canvas_entered`
+          where in_control_group is true
           group by
-            user_id, canvas_variation_id,canvas_id, in_control_group_canvas
+            user_id, canvas_id, canvas_variation_id, dispatch_id, in_control_group_canvas
      ),
 
       emails_delivered as (
@@ -138,7 +142,7 @@ view: braze_crm_data {
             status in ('fulfilled', 'partially fulfilled')
       ),
 
-      orders as ( --attribute the order to the last enail opened if the order happened within the next 24h
+      orders as ( --attribute the order to the last enail opened if the order happened within the next 12h
           select distinct
              user_id
              ,LAST_VALUE(dispatch_id) OVER (partition by order_id order by opened_at_first ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) as dispatch_id
@@ -169,7 +173,56 @@ view: braze_crm_data {
         from
           orders
         group by 1,2
-      )
+      ),
+
+
+     emails_sent_attr as (
+    select
+        -- DIMENSIONS
+          es.user_id
+        , es.dispatch_id
+        , es.campaign_id                                        as campaign_id
+        , es.campaign_name                                      as campaign_name
+        , es.canvas_name                                        as canvas_name
+        , es.canvas_step_name                                   as canvas_step_name
+        , es.canvas_variation_name                              as canvas_variation_name
+        , case when es.campaign_id is not null then false
+               else null end                                    as in_control_group_campaign
+        , case when es.canvas_id is not null then false
+               else null end                                    as in_control_group_canvas
+        # , case when (es.canvas_id is not null AND ce.in_control_group_canvas is null) THEN false
+        #       else null end                                   as in_control_group_canvas
+        , case when (es.campaign_id is not null AND cm.in_control_group_campaign is null) THEN false
+        #       else null end                                     as in_control_group_campaign
+        # , case when (es.canvas_id is not null AND ce.in_control_group_canvas is true) THEN true
+        #       when (es.canvas_id is not null AND ce.in_control_group_canvas is null) THEN false
+        #       else null end                                     as in_control_group_canvas
+        # , case when (es.campaign_id is not null AND cm.in_control_group_campaign is true) THEN true
+        #       when (es.campaign_id is not null AND cm.in_control_group_campaign is null) THEN false
+        #       else null end                                     as in_control_group_campaign
+        , es.country                                            as country
+        , date(es.sent_at, "Europe/Berlin")                     as email_sent_at
+       from
+                emails_sent                     as es
+      full outer join canvas_entered            as ce
+             on es.user_id = ce.user_id
+            and es.canvas_id = ce.canvas_id
+      full outer join campaign_control_group_entered as cm
+             on cm.campaign_id = es.campaign_id
+            and cm.user_id = es.user_id
+      group by user_id, dispatch_id, campaign_id, campaign_name,canvas_name ,canvas_step_name, canvas_variation_name,in_control_group_canvas
+      ,in_control_group_campaign,country, email_sent_at
+
+
+
+
+
+
+
+
+
+)
+
 
       select
         -- DIMENSIONS
@@ -178,12 +231,10 @@ view: braze_crm_data {
         , es.canvas_name                                        as canvas_name
         , es.canvas_step_name                                   as canvas_step_name
         , es.canvas_variation_name                              as canvas_variation_name
-        , ce.in_control_group_canvas                            as in_control_group_canvas
-        , case when (es.campaign_id is not null AND cm.in_control_group_campaign is true) THEN true
-               when (es.campaign_id is not null AND cm.in_control_group_campaign is null) THEN false
-              else null end                                     as in_control_group_campaign
+        , es.in_control_group_canvas                                    as in_control_group_canvas
+        , es.in_control_group_campaign                          as in_control_group_campaign
         , es.country                                            as country
-        , date(es.sent_at, "Europe/Berlin")                     as email_sent_at
+        , es.email_sent_at                                      as email_sent_at
         , date_diff(eo.opened_at_first, es.sent_at, day)        as days_sent_to_open
         , date_diff(ec.clicked_at_first, es.sent_at, day)       as days_sent_to_click
         -- MEASURES
@@ -207,13 +258,7 @@ view: braze_crm_data {
         , sum(gmv_gross)                                        as gmv_gross
 
       from
-                emails_sent                     as es
-      left join canvas_entered                  as ce
-             on es.user_id = ce.user_id
-            and es.canvas_id = ce.canvas_id
-      full outer join campaign_control_group_entered as cm
-             on cm.campaign_id = es.campaign_id
-            and cm.user_id = es.user_id
+                emails_sent_attr                as es
       left join emails_bounced                  as eb
              on es.user_id     = eb.user_id
             and es.dispatch_id = eb.dispatch_id
@@ -721,16 +766,26 @@ view: braze_crm_data {
   measure: total_order_rate {
     type: number
     label: "Total Order Rate"
-    description: "Percentage: number of orders made in the 24h after the last opening of the email divided by the number of emails opened"
+    description: "Percentage: number of orders made in the 12h after the last opening of the email divided by the number of emails opened"
     group_label: "Ratios"
     sql: ${total_orders} / NULLIF(${total_emails_opened}, 0);;
     value_format_name: percent_2
   }
 
+  # measure: total_order_rate_from_sent {
+  #   type: number
+  #   label: "Total Order Rate (from sent)"
+  #   description: "Percentage: number of orders made in the 12h after the email has been sent divided by the number of emails sent"
+  #   group_label: "Ratios"
+  #   sql: ${total_orders} / NULLIF(${total_emails_opened}, 0);;
+  #   value_format_name: percent_2
+  # }
+
+
   measure: unique_order_rate {
     type: number
     label: "Unique Order Rate"
-    description: "Percentage: number of unique orders made in the 24h after the last opening of the email divided by the number of unique emails opened"
+    description: "Percentage: number of unique orders made in the 12h after the last opening of the email divided by the number of unique emails opened"
     group_label: "Ratios"
     sql: ${unique_orders} / NULLIF(${total_emails_opened_unique}, 0);;
     value_format_name: percent_2
@@ -739,7 +794,7 @@ view: braze_crm_data {
   measure: total_order_rate_with_vouchers {
     type: number
     label: "Total Order Rate with Vouchers"
-    description: "Percentage: number of orders made in the 24h after the last opening of the email divided by the number of emails opened"
+    description: "Percentage: number of orders made in the 12h after the last opening of the email divided by the number of emails opened"
     group_label: "Ratios"
     sql: ${total_orders_with_vouchers} / NULLIF(${total_emails_opened}, 0);;
     value_format_name: percent_2
@@ -748,7 +803,7 @@ view: braze_crm_data {
   measure: discount_order_share {
     type: number
     label: "Unique Order Rate"
-    description: "Percentage: number of orders with voucher discounts divided by the total number of ordres made in the 24h after the last opening of the emaild"
+    description: "Percentage: number of orders with voucher discounts divided by the total number of ordres made in the 12h after the last opening of the emaild"
     group_label: "Ratios"
     sql: ${total_orders_with_vouchers} / NULLIF(${total_orders}, 0);;
     value_format_name: percent_2
@@ -757,7 +812,7 @@ view: braze_crm_data {
   measure: discount_value_share {
     type: number
     label: "Unique Order Rate"
-    description: "Percentage: total of voucher discounts divided by the total gmv (gross) of ordres made in the 24h after the last opening of the email"
+    description: "Percentage: total of voucher discounts divided by the total gmv (gross) of ordres made in the 12h after the last opening of the email"
     group_label: "Ratios"
     sql: ${total_discount} / NULLIF(${total_gmv_gross}, 0);;
     value_format_name: percent_2
