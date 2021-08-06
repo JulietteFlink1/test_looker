@@ -212,7 +212,7 @@ FROM (
         , hd.delivery_eta
         , ld.user_area_available
         , DENSE_RANK() OVER (PARTITION BY ts.anonymous_id, ts.session_id ORDER BY hd.timestamp DESC) as rank_hd -- ranks all data_hub related events // filter set = 1 to get 'latest' timestamp
-        , DENSE_RANK() OVER (PARTITION BY ts.anonymous_id, ts.session_id ORDER BY ld.user_area_available ASC, hd.timestamp DESC) as order_ld --ranks all location_pin_placed events to surface FALSE before true and the last one first
+        , DENSE_RANK() OVER (PARTITION BY ts.anonymous_id, ts.session_id ORDER BY ld.user_area_available ASC) as order_ld --ranks all location_pin_placed events to surface FALSE before TRUE
     FROM tracking_sessions ts
             LEFT JOIN (
                 SELECT
@@ -242,7 +242,7 @@ FROM (
 WHERE
     rank_hd = 1  -- filter set = 1 to get 'latest' timestamp
 AND
-    order_ld = 1 -- filter set = 1 to get latest timestamp and false if there is a false value
+    order_ld = 1 -- filter set = 1 to get false if there is a false value
 GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14, 15
 )
 
@@ -271,6 +271,20 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14, 15
         AND e.timestamp >= sf.session_start_at
         AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
     WHERE e.event = 'home_viewed'
+    GROUP BY 1,2
+)
+
+, address_resolution_failed AS (
+    SELECT
+           sf.anonymous_id
+         , sf.session_id
+         , count(e.timestamp) as event_count
+    FROM events e
+        LEFT JOIN sessions_final sf
+        ON e.anonymous_id = sf.anonymous_id
+        AND e.timestamp >= sf.session_start_at
+        AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
+    WHERE e.event = 'address_resolution_failed'
     GROUP BY 1,2
 )
 
@@ -346,6 +360,7 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14, 15
         , hv.event_count as home_viewed
         , ac.event_count as address_confirmed
         , ws.event_count as waitlist_signup_selected
+        , af.event_count as address_resolution_failed
         -- , ae.event_count as any_event
         , CASE WHEN fo.first_order_timestamp < sf.session_start_at THEN true ELSE false END as has_ordered
     FROM sessions_final sf
@@ -353,6 +368,8 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14, 15
         ON sf.session_id = lpp.session_id
         LEFT JOIN home_viewed hv
         ON sf.session_id = hv.session_id
+        LEFT JOIN address_resolution_failed af
+        ON sf.session_id = af.session_id
         LEFT JOIN address_confirmed ac
         ON sf.session_id = ac.session_id
         LEFT JOIN waitlist_signup_selected ws
@@ -464,6 +481,12 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14, 15
     type: yesno
     sql: ${TABLE}.user_area_available ;;
     description: "FALSE if there is any locationPinPlaced event in the session for which user_area_available was FALSE, TRUE otherwise"
+  }
+
+  dimension: address_resolution_failed {
+    type: yesno
+    sql: ${TABLE}.address_resolution_failed IS NOT NULL ;;
+    description: "TRUE if there is any addressResolutionFailed event, FALSE otherwise"
   }
 
   dimension: home_viewed {
@@ -617,6 +640,14 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14, 15
     filters: [user_area_available: "no"]
   }
 
+ # NOTE: want to update this to also be able to specify whether it's failed within delivery area or not
+  measure: cnt_address_resolution_failed {
+    label: "Address unidentified count"
+    description: "Number of sessions in which there was at least one unidentified address"
+    type: count
+    filters: [address_resolution_failed: "yes"]
+  }
+
   measure: cnt_home_viewed {
     label: "Home view count"
     description: "Number of sessions in which at least one Home Viewed event happened"
@@ -679,6 +710,7 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14, 15
       location_pin_placed,
       user_area_available,
       home_viewed,
+      address_resolution_failed,
       address_confirmed,
       waitlist_signup_selected
     ]
