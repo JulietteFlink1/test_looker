@@ -63,6 +63,14 @@ view: location_pin_placed_events {
     sql: ${context_device_type} || '-' || ${context_app_version} ;;
   }
 
+  measure: cnt_unavailable_area {
+    label: "User Area Available False count"
+    description: "Number of Location Pin Placed where user_area_available is False"
+    type: count
+    filters: [user_area_available: "no"]
+  }
+
+
   measure: count {
     type: count
     drill_fields: [detail*]
@@ -104,7 +112,7 @@ view: location_pin_placed_events {
   }
 
   dimension: user_area_available {
-    type: string
+    type: yesno
     sql: ${TABLE}.user_area_available ;;
   }
 
