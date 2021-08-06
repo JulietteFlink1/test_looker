@@ -1,5 +1,6 @@
 view: location_segment_sessions {
   derived_table: {
+    persist_for: "1 hour"
     sql: WITH
         events AS ( -- ios all events
         SELECT
@@ -62,6 +63,24 @@ view: location_segment_sessions {
             OR events.inactivity_time IS NULL)
         ORDER BY
           1)
+
+, location_pin_placed_data AS (-- ios & android pulling location_pin_placed for user_area_available
+    SELECT
+          event.event,
+          event.anonymous_id,
+          event.timestamp,
+          event.user_area_available
+    FROM `flink-backend.flink_ios_production.location_pin_placed_view` event
+
+    UNION ALL
+
+    SELECT
+          event.event,
+          event.anonymous_id,
+          event.timestamp,
+          event.user_area_available
+    FROM `flink-backend.flink_android_production.location_pin_placed_view` event
+)
 
 , hub_data AS ( -- ios & android pulling address_confirmed and order_placed for hub_data and delivery_eta
     SELECT
@@ -157,7 +176,7 @@ UNION ALL
         ON event.hub_city = country.city
 )
 
-, sessions_final AS ( -- merging sessions with hub_data
+, sessions_final AS ( -- merging sessions with hub_data and location_pin_placed_data
 SELECT
        anonymous_id
      , context_app_version
@@ -173,6 +192,7 @@ SELECT
      , hub_id
      , delivery_postcode
      , delivery_eta
+     , user_area_available
 FROM (
     SELECT
           ts.anonymous_id
@@ -190,7 +210,9 @@ FROM (
         , hd.hub_city
         , hd.delivery_postcode
         , hd.delivery_eta
+        , ld.user_area_available
         , DENSE_RANK() OVER (PARTITION BY ts.anonymous_id, ts.session_id ORDER BY hd.timestamp DESC) as rank_hd -- ranks all data_hub related events // filter set = 1 to get 'latest' timestamp
+        , DENSE_RANK() OVER (PARTITION BY ts.anonymous_id, ts.session_id ORDER BY ld.user_area_available ASC, hd.timestamp DESC) as order_ld --ranks all location_pin_placed events to surface FALSE before true and the last one first
     FROM tracking_sessions ts
             LEFT JOIN (
                 SELECT
@@ -206,10 +228,22 @@ FROM (
             ) hd
             ON ts.anonymous_id = hd.anonymous_id
             AND ( hd.timestamp < ts.next_session_start_at OR ts.next_session_start_at IS NULL)
+
+            LEFT JOIN (
+                SELECT
+                    anonymous_id
+                  , timestamp
+                  , user_area_available
+                FROM location_pin_placed_data
+            ) ld
+            ON ts.anonymous_id = ld.anonymous_id
+            AND ( ld.timestamp < ts.next_session_start_at OR ts.next_session_start_at IS NULL)
         )
 WHERE
     rank_hd = 1  -- filter set = 1 to get 'latest' timestamp
-GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14
+AND
+    order_ld = 1 -- filter set = 1 to get latest timestamp and false if there is a false value
+GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14, 15
 )
 
 , location_pin_placed AS (
@@ -254,6 +288,20 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14
     GROUP BY 1,2
 )
 
+, waitlist_signup_selected AS (
+    SELECT
+           sf.anonymous_id
+         , sf.session_id
+         , count(e.timestamp) as event_count
+    FROM events e
+        LEFT JOIN sessions_final sf
+        ON e.anonymous_id = sf.anonymous_id
+        AND e.timestamp >= sf.session_start_at
+        AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
+    WHERE e.event = 'waitlist_signup_selected'
+    GROUP BY 1,2
+)
+
 , first_order AS (
     SELECT
            e.anonymous_id
@@ -293,9 +341,11 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14
         , sf.hub_city
         , sf.delivery_postcode
         , sf.delivery_eta
+        , sf.user_area_available
         , lpp.event_count as location_pin_placed
         , hv.event_count as home_viewed
         , ac.event_count as address_confirmed
+        , ws.event_count as waitlist_signup_selected
         -- , ae.event_count as any_event
         , CASE WHEN fo.first_order_timestamp < sf.session_start_at THEN true ELSE false END as has_ordered
     FROM sessions_final sf
@@ -305,6 +355,8 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14
         ON sf.session_id = hv.session_id
         LEFT JOIN address_confirmed ac
         ON sf.session_id = ac.session_id
+        LEFT JOIN waitlist_signup_selected ws
+        ON sf.session_id = ws.session_id
         LEFT JOIN first_order fo
         ON sf.anonymous_id = fo.anonymous_id
         --LEFT JOIN any_event ae
@@ -331,6 +383,11 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14
   dimension: has_address_confirmed_event {
     type: yesno
     sql: ${TABLE}.address_confirmed != NULL ;;
+  }
+
+  dimension: has_waitlist_signup_selected {
+    type: yesno
+    sql: ${TABLE}.waitlist_signup_selected IS NOT NULL;;
   }
 
   dimension: anonymous_id {
@@ -403,6 +460,12 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14
     sql: ${TABLE}.location_pin_placed ;;
   }
 
+  dimension: user_area_available {
+    type: yesno
+    sql: ${TABLE}.user_area_available ;;
+    description: "FALSE if there is any locationPinPlaced event in the session for which user_area_available was FALSE, TRUE otherwise"
+  }
+
   dimension: home_viewed {
     type: number
     sql: ${TABLE}.home_viewed ;;
@@ -412,6 +475,13 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14
     type: number
     sql: ${TABLE}.address_confirmed ;;
   }
+
+  dimension: waitlist_signup_selected {
+    type: number
+    sql: ${TABLE}.waitlist_signup_selected;;
+  }
+
+
 
   dimension_group: session_start_at {
     type: time
@@ -532,6 +602,21 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14
     filters: [location_pin_placed: "NOT NULL"]
   }
 
+# for unknown reasons didn't work to count NOT NULL on waitlist_signup_selected, that's why created boolean and counting those
+  measure: cnt_has_waitlist_signup_selected {
+    label: "Has waitlist signup count"
+    description: "Number of sessions in which Waitlist Signup Selected happened"
+    type: count
+    filters: [has_waitlist_signup_selected: "yes"]
+  }
+
+  measure: cnt_unavailable_area {
+    label: "Sessions with unavailable area count"
+    description: "Number of sessions in which at least one Location Pin Placed event landed on an unavailable area"
+    type: count
+    filters: [user_area_available: "no"]
+  }
+
   measure: cnt_home_viewed {
     label: "Home view count"
     description: "Number of sessions in which at least one Home Viewed event happened"
@@ -592,8 +677,10 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14
       hub_code,
       hub_country,
       location_pin_placed,
+      user_area_available,
       home_viewed,
-      address_confirmed
+      address_confirmed,
+      waitlist_signup_selected
     ]
   }
 }
