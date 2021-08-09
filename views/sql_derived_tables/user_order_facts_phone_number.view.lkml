@@ -417,10 +417,28 @@ view: user_order_facts_phone_number {
   }
 
   dimension_group: duration_between_first_order_and_now {
+    group_label: "* First Order Date *"
     type: duration
     sql_start: ${first_order_raw} ;;
     sql_end: CURRENT_TIMESTAMP() ;;
   }
+
+  dimension_group: duration_between_first_order_month_and_now {
+    group_label: "* First Order Date *"
+    type: duration
+    sql_start: DATE_TRUNC(${first_order_raw}, MONTH);;
+    sql_end: CURRENT_TIMESTAMP();;
+    intervals: [month]
+  }
+
+  dimension_group: duration_between_first_order_week_and_now {
+    group_label: "* First Order Date *"
+    type: duration
+    sql_start: DATE_TRUNC(${first_order_raw}, WEEK);;
+    sql_end: CURRENT_TIMESTAMP();;
+    intervals: [week]
+  }
+
 
   ##### Lifetime Behavior - Order Counts ######
 

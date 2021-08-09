@@ -91,6 +91,16 @@ explore: order_order {
       ${order_order.user_email} = ${user_order_facts.user_email} ;;
   }
 
+  #### added temporarily by Nima for one-off Cohorts analysis
+  join: user_order_facts_phone_number {
+    view_label: "* Customers *"
+    type: left_outer
+    relationship: many_to_one
+    sql_on: ${order_order.country_iso} = ${user_order_facts_phone_number.country_iso} AND
+      ${order_order.user_email} = ${user_order_facts_phone_number.user_email} ;;
+  }
+  #### added temporarily by Nima for one-off Cohorts analysis
+
   join: hub_order_facts {
     view_label: "* Hubs *"
     type: left_outer
