@@ -1,5 +1,5 @@
 view: app_downloads {
-  sql_table_name: `flink-backend.gsheet_investor_reporting_input.app_downloads`
+  sql_table_name: `flink-data-prod.google_sheets.investor_report_input_app_downloads`
     ;;
 
   dimension: date {
