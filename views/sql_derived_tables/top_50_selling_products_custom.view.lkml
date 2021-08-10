@@ -50,6 +50,7 @@ view: top_50_selling_products_custom {
   }
 
   dimension: product_name {
+    order_by_field: custom_substitute_group_rk
     type: string
     sql: ${TABLE}.product_name ;;
   }
@@ -60,6 +61,7 @@ view: top_50_selling_products_custom {
   }
 
   dimension: custom_substitute_group {
+    order_by_field: custom_substitute_group_rk
     type: string
     sql: ${TABLE}.custom_substitute_group ;;
   }
