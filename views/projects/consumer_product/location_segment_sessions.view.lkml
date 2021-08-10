@@ -638,7 +638,7 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14, 15
     label: "Sessions with unavailable area count"
     description: "Number of sessions in which at least one Location Pin Placed event landed on an unavailable area"
     type: count
-    filters: [user_area_available: "true"]
+    filters: [user_area_available: "false"]
   }
 
  # NOTE: want to update this to also be able to specify whether it's failed within delivery area or not
