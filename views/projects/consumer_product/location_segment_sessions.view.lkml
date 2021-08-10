@@ -237,6 +237,7 @@ FROM (
                 FROM location_pin_placed_data
             ) ld
             ON ts.anonymous_id = ld.anonymous_id
+            AND ld.timestamp >= ts.session_start_at
             AND ( ld.timestamp < ts.next_session_start_at OR ts.next_session_start_at IS NULL)
         )
 WHERE
@@ -478,9 +479,9 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14, 15
   }
 
   dimension: user_area_available {
-    type: yesno
-    sql: ${TABLE}.user_area_available ;;
-    description: "FALSE if there is any locationPinPlaced event in the session for which user_area_available was FALSE, TRUE otherwise"
+    type: string
+    sql: CAST(${TABLE}.user_area_available AS STRING) ;;
+    description: "FALSE if there is any locationPinPlaced event in the session for which user_area_available was FALSE, TRUE if not and NULL if there was no locationPinPlaced event)"
   }
 
   dimension: address_resolution_failed {
@@ -637,7 +638,7 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14, 15
     label: "Sessions with unavailable area count"
     description: "Number of sessions in which at least one Location Pin Placed event landed on an unavailable area"
     type: count
-    filters: [user_area_available: "no"]
+    filters: [user_area_available: "true"]
   }
 
  # NOTE: want to update this to also be able to specify whether it's failed within delivery area or not
