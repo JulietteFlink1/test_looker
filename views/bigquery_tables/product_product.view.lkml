@@ -130,6 +130,7 @@ view: product_product {
       year
     ]
     sql: ${TABLE}.publication_date ;;
+    datatype: date
   }
 
   dimension: seo_description {
