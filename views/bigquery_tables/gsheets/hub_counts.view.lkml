@@ -1,5 +1,5 @@
 view: hub_counts {
-  sql_table_name: `flink-backend.gsheet_investor_reporting_input.hub_counts`
+  sql_table_name: `flink-data-prod.google_sheets.investor_report_input_hub_counts`
     ;;
 
   dimension: country_iso {
