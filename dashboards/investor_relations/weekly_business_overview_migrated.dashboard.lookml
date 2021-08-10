@@ -27,7 +27,7 @@
     fill_fields: [orders_cl.created_week]
     filters:
       orders_cl.is_internal_order: 'no'
-      orders_cl.is_successful_order: ''
+      orders_cl.is_successful_order: 'yes'
       orders_cl.created_date: after 2021/01/25
       orders_cl.is_business_week_completed: 'Yes'
     sorts: [orders_cl.created_week desc]
@@ -243,7 +243,7 @@
     fill_fields: [orders_cl.created_week]
     filters:
       orders_cl.is_internal_order: 'no'
-      orders_cl.is_successful_order: ''
+      orders_cl.is_successful_order: 'yes'
       orders_cl.created_date: after 2021/01/25
       orders_cl.is_business_week_completed: 'Yes'
     sorts: [orders_cl.created_week desc]
@@ -310,7 +310,7 @@
     fill_fields: [orders_cl.created_week]
     filters:
       orders_cl.is_internal_order: 'no'
-      orders_cl.is_successful_order: ''
+      orders_cl.is_successful_order: 'yes'
       orders_cl.created_date: after 2021/01/25
       orders_cl.is_business_week_completed: 'Yes'
     sorts: [orders_cl.created_week desc]

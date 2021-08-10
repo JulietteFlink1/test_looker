@@ -1,5 +1,5 @@
 view: orders {
-  sql_table_name: `flink-data-prod.curated.orders_ct`
+  sql_table_name: `flink-data-staging.curated.orders`
     ;;
 
   dimension: acceptance_time {

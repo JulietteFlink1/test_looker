@@ -12,7 +12,7 @@
       orders_cl.pct_discount_order_share, orders_cl.pct_acquisition_share, orders_cl.date]
     filters:
       orders_cl.is_internal_order: 'no'
-      #orders_cl.is_successful_order: 'yes'
+      orders_cl.is_successful_order: 'yes'
     sorts: [orders_cl.date]
     limit: 500
     total: true
@@ -111,7 +111,7 @@
       shyftplan_riders_pickers_hours.rider_utr, shyftplan_riders_pickers_hours.picker_utr]
     filters:
       orders_cl.is_internal_order: 'no'
-      orders_cl.is_successful_order: ''
+      orders_cl.is_successful_order: 'yes'
     sorts: [orders_cl.date desc]
     limit: 500
     dynamic_fields: [{_kind_hint: measure, table_calculation: pop, _type_hint: number,
@@ -359,7 +359,7 @@
     fields: [orders_cl.sum_gmv_gross, orders_cl.avg_order_value_gross, orders_cl.date]
     filters:
       orders_cl.is_internal_order: 'no'
-      orders_cl.is_successful_order: ''
+      orders_cl.is_successful_order: 'yes'
     sorts: [orders_cl.date]
     limit: 500
     query_timezone: Europe/Berlin
@@ -427,7 +427,7 @@
       orders_cl.date]
     filters:
       orders_cl.is_internal_order: 'no'
-      orders_cl.is_successful_order: ''
+      orders_cl.is_successful_order: 'yes'
     sorts: [orders_cl.date]
     limit: 500
     query_timezone: Europe/Berlin
@@ -499,7 +499,7 @@
       orders_cl.date]
     filters:
       orders_cl.is_internal_order: 'no'
-      orders_cl.is_successful_order: ''
+      orders_cl.is_successful_order: 'yes'
     sorts: [orders_cl.date]
     limit: 500
     query_timezone: Europe/Berlin
@@ -573,7 +573,7 @@
     fields: [orders_cl.created_date, orders_cl.cnt_orders]
     filters:
       orders_cl.is_internal_order: 'no'
-      orders_cl.is_successful_order: ''
+      orders_cl.is_successful_order: 'yes'
       orders_cl.created_date: 28 days ago for 28 days
     sorts: [orders_cl.created_date desc]
     limit: 500
@@ -673,7 +673,7 @@
     fields: [orders_cl.created_date, orders_cl.sum_gmv_gross]
     filters:
       orders_cl.is_internal_order: 'no'
-      orders_cl.is_successful_order: ''
+      orders_cl.is_successful_order: 'yes'
       orders_cl.created_date: 28 days ago for 28 days
     sorts: [orders_cl.created_date desc]
     limit: 500
@@ -780,7 +780,7 @@
     fields: [orders_cl.avg_fulfillment_time_mm_ss]
     filters:
       orders_cl.is_internal_order: 'no'
-      orders_cl.is_successful_order: ''
+      orders_cl.is_successful_order: 'yes'
       orders_cl.created_date: yesterday
     limit: 500
     query_timezone: Europe/Berlin
@@ -866,7 +866,7 @@
     fields: [orders_cl.created_date, orders_cl.cnt_unique_hubs]
     filters:
       orders_cl.is_internal_order: 'no'
-      orders_cl.is_successful_order: ''
+      orders_cl.is_successful_order: 'yes'
       orders_cl.created_date: 28 days ago for 28 days
       hubs.live: ''
     sorts: [orders_cl.created_date desc]
@@ -945,8 +945,8 @@
     type: marketplace_viz_radial_gauge::radial_gauge-marketplace
     fields: [nps_after_order.nps_score]
     filters:
-      orders_cl.is_internal_order: ''
-      orders_cl.is_successful_order: ''
+      orders_cl.is_internal_order: 'no'
+      orders_cl.is_successful_order: 'yes'
     limit: 500
     column_limit: 50
     total: true
@@ -1085,7 +1085,7 @@
       issue_rates_clean.pct_orders_with_issues]
     filters:
       orders_cl.is_internal_order: 'no'
-      orders_cl.is_successful_order: ''
+      orders_cl.is_successful_order: 'yes'
       issue_rates_clean.date: 28 days ago for 28 days
     sorts: [orders_cl.date]
     limit: 500

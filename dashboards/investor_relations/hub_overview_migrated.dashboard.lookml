@@ -17,7 +17,7 @@
     filters:
       hubs.hub_name: ''
       orders_cl.is_internal_order: 'no'
-      orders_cl.is_successful_order: ''
+      orders_cl.is_successful_order: 'yes'
       orders_cl.created_week: before 0 weeks ago
       orders_cl.warehouse_name: "-EMPTY"
     sorts: [orders_cl.cnt_orders desc]
@@ -219,7 +219,7 @@
     fields: [orders_cl.created_date, orders_cl.cnt_unique_hubs]
     filters:
       orders_cl.is_internal_order: 'no'
-      orders_cl.is_successful_order: ''
+      orders_cl.is_successful_order: 'yes'
       orders_cl.created_date: 14 days ago for 14 days
       hubs.live: ''
       hubs.country: Germany,France,Netherlands
@@ -311,7 +311,7 @@
     fields: [orders_cl.created_date, orders_cl.cnt_unique_hubs]
     filters:
       orders_cl.is_internal_order: 'no'
-      orders_cl.is_successful_order: ''
+      orders_cl.is_successful_order: 'yes'
       orders_cl.created_date: 14 days ago for 14 days
       hubs.live: ''
       hubs.country: Germany
@@ -393,7 +393,7 @@
     fields: [orders_cl.created_date, orders_cl.cnt_unique_hubs]
     filters:
       orders_cl.is_internal_order: 'no'
-      orders_cl.is_successful_order: ''
+      orders_cl.is_successful_order: 'yes'
       orders_cl.created_date: 14 days ago for 14 days
       hubs.live: ''
       hubs.country: France
@@ -475,7 +475,7 @@
     fields: [orders_cl.created_date, orders_cl.cnt_unique_hubs]
     filters:
       orders_cl.is_internal_order: 'no'
-      orders_cl.is_successful_order: ''
+      orders_cl.is_successful_order: 'yes'
       orders_cl.created_date: 14 days ago for 14 days
       hubs.live: ''
       hubs.country: Netherlands
@@ -820,7 +820,7 @@
     filters:
       hubs.hub_name: ''
       orders_cl.is_internal_order: 'no'
-      orders_cl.is_successful_order: ''
+      orders_cl.is_successful_order: 'yes'
       orders_cl.created_week: before 0 weeks ago
       orders_cl.warehouse_name: "-EMPTY"
     sorts: [orders_cl.cnt_orders desc]

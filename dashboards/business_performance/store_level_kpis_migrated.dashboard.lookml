@@ -19,7 +19,7 @@
       issue_rates_clean.pct_orders_with_issues, nps_after_order.nps_score]
     filters:
       orders_cl.is_internal_order: 'no'
-      orders_cl.is_successful_order: ''
+      orders_cl.is_successful_order: 'yes'
       orders_cl.warehouse_name: "-EMPTY"
     sorts: [orders_cl.cnt_orders desc]
     limit: 500
@@ -273,7 +273,7 @@
     pivots: [orders_cl.date]
     filters:
       orders_cl.is_internal_order: 'no'
-      orders_cl.is_successful_order: ''
+      orders_cl.is_successful_order: 'yes'
     sorts: [orders_cl.date desc, orders_cl.KPI desc 0]
     limit: 500
     column_limit: 50
@@ -430,7 +430,7 @@
       issue_rates_clean.pct_orders_wrong_product]
     filters:
       orders_cl.is_internal_order: 'no'
-      orders_cl.is_successful_order: ''
+      orders_cl.is_successful_order: 'yes'
       issue_rates_clean.date: 28 days
     sorts: [issue_rates_clean.pct_orders_with_issues desc]
     limit: 500
