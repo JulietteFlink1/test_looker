@@ -12,6 +12,7 @@ view: top_50_selling_products_custom {
       LEFT JOIN  `flink-data-prod.curated.orders_ct` o ON o.order_uuid = ol.order_uuid
       WHERE TRUE
       AND o.country_iso = "DE"
+      AND DATE(o.order_timestamp) >= CURRENT_DATE - 30
       GROUP BY 1,2,3,4
       ORDER BY 4 desc
       ),
@@ -49,6 +50,7 @@ view: top_50_selling_products_custom {
   }
 
   dimension: product_name {
+    order_by_field: custom_substitute_group_rk
     type: string
     sql: ${TABLE}.product_name ;;
   }
@@ -59,6 +61,7 @@ view: top_50_selling_products_custom {
   }
 
   dimension: custom_substitute_group {
+    order_by_field: custom_substitute_group_rk
     type: string
     sql: ${TABLE}.custom_substitute_group ;;
   }
