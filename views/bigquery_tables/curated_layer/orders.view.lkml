@@ -126,7 +126,7 @@ view: orders {
 
   dimension: delivery_eta_minutes {
     type: number
-    sql: ${TABLE}.delivery_eta_minutes ;;
+    sql: ${TABLE}.delivery_pdt_minutes ;;
   }
 
   dimension_group: now {
@@ -163,7 +163,7 @@ view: orders {
           quarter,
           year
     ]
-    sql: ${TABLE}.delivery_eta_timestamp ;;
+    sql: ${TABLE}.delivery_pdt_timestamp ;;
   }
 
   dimension: delivery_delay_since_eta {
@@ -267,7 +267,7 @@ view: orders {
 
   dimension: is_delivery_eta_available {
     type: yesno
-    sql: ${TABLE}.is_delivery_eta_available ;;
+    sql: ${TABLE}.is_delivery_pdt_available ;;
   }
 
   dimension: is_voucher_order{
