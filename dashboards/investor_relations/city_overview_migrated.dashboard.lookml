@@ -6,21 +6,21 @@
   - title: Total Hubs
     name: Total Hubs
     model: flink_v3
-    explore: order_order
+    explore: orders_cl
     type: single_value
-    fields: [order_order.created_date, order_order.cnt_unique_hubs]
+    fields: [orders_cl.created_date, orders_cl.cnt_unique_hubs]
     filters:
-      order_order.is_internal_order: 'no'
-      order_order.is_successful_order: 'yes'
-      order_order.created_date: 2 weeks ago for 2 weeks
+      orders_cl.is_internal_order: 'no'
+      orders_cl.is_successful_order: 'yes'
+      orders_cl.created_date: 2 weeks ago for 2 weeks
       hubs.live: ''
       hubs.country: Germany,France,Netherlands
       hubs.hub_name: ''
       hubs.city: ''
-    sorts: [order_order.created_date desc]
+    sorts: [orders_cl.created_date desc]
     limit: 500
     column_limit: 50
-    dynamic_fields: [{table_calculation: hubs_live, label: "# Hubs Live", expression: 'max(offset_list(${order_order.cnt_unique_hubs},0,3))',
+    dynamic_fields: [{table_calculation: hubs_live, label: "# Hubs Live", expression: 'max(offset_list(${orders_cl.cnt_unique_hubs},0,3))',
         value_format: !!null '', value_format_name: !!null '', _kind_hint: measure,
         _type_hint: number}, {table_calculation: wow, label: WoW, expression: "(${hubs_live}\
           \ - offset(${hubs_live}, 7)) / offset(${hubs_live}, 7)", value_format: !!null '',
@@ -80,7 +80,7 @@
     header_font_size: 12
     rows_font_size: 12
     defaults_version: 1
-    hidden_fields: [order_order.cnt_unique_hubs]
+    hidden_fields: [orders_cl.cnt_unique_hubs]
     listen: {}
     row: 0
     col: 3
@@ -98,21 +98,21 @@
   - title: DE Hubs
     name: DE Hubs
     model: flink_v3
-    explore: order_order
+    explore: orders_cl
     type: single_value
-    fields: [order_order.created_date, order_order.cnt_unique_hubs]
+    fields: [orders_cl.created_date, orders_cl.cnt_unique_hubs]
     filters:
-      order_order.is_internal_order: 'no'
-      order_order.is_successful_order: 'yes'
-      order_order.created_date: 2 weeks ago for 2 weeks
+      orders_cl.is_internal_order: 'no'
+      orders_cl.is_successful_order: 'yes'
+      orders_cl.created_date: 2 weeks ago for 2 weeks
       hubs.live: ''
       hubs.country: Germany
       hubs.hub_name: ''
       hubs.city: ''
-    sorts: [order_order.created_date desc]
+    sorts: [orders_cl.created_date desc]
     limit: 500
     column_limit: 50
-    dynamic_fields: [{table_calculation: hubs_live, label: "# Hubs Live", expression: 'max(offset_list(${order_order.cnt_unique_hubs},0,3))',
+    dynamic_fields: [{table_calculation: hubs_live, label: "# Hubs Live", expression: 'max(offset_list(${orders_cl.cnt_unique_hubs},0,3))',
         value_format: !!null '', value_format_name: !!null '', _kind_hint: measure,
         _type_hint: number}, {table_calculation: wow, label: WoW, expression: "(${hubs_live}\
           \ - offset(${hubs_live}, 7)) / offset(${hubs_live}, 7)", value_format: !!null '',
@@ -172,7 +172,7 @@
     header_font_size: 12
     rows_font_size: 12
     defaults_version: 1
-    hidden_fields: [order_order.cnt_unique_hubs]
+    hidden_fields: [orders_cl.cnt_unique_hubs]
     listen: {}
     row: 0
     col: 6
@@ -181,21 +181,21 @@
   - title: FR Hubs
     name: FR Hubs
     model: flink_v3
-    explore: order_order
+    explore: orders_cl
     type: single_value
-    fields: [order_order.created_date, order_order.cnt_unique_hubs]
+    fields: [orders_cl.created_date, orders_cl.cnt_unique_hubs]
     filters:
-      order_order.is_internal_order: 'no'
-      order_order.is_successful_order: 'yes'
-      order_order.created_date: 2 weeks ago for 2 weeks
+      orders_cl.is_internal_order: 'no'
+      orders_cl.is_successful_order: 'yes'
+      orders_cl.created_date: 2 weeks ago for 2 weeks
       hubs.live: ''
       hubs.country: France
       hubs.hub_name: ''
       hubs.city: ''
-    sorts: [order_order.created_date desc]
+    sorts: [orders_cl.created_date desc]
     limit: 500
     column_limit: 50
-    dynamic_fields: [{table_calculation: hubs_live, label: "# Hubs Live", expression: 'max(offset_list(${order_order.cnt_unique_hubs},0,3))',
+    dynamic_fields: [{table_calculation: hubs_live, label: "# Hubs Live", expression: 'max(offset_list(${orders_cl.cnt_unique_hubs},0,3))',
         value_format: !!null '', value_format_name: !!null '', _kind_hint: measure,
         _type_hint: number}, {table_calculation: wow, label: WoW, expression: "(${hubs_live}\
           \ - offset(${hubs_live}, 7)) / offset(${hubs_live}, 7)", value_format: !!null '',
@@ -255,7 +255,7 @@
     header_font_size: 12
     rows_font_size: 12
     defaults_version: 1
-    hidden_fields: [order_order.cnt_unique_hubs]
+    hidden_fields: [orders_cl.cnt_unique_hubs]
     listen: {}
     row: 0
     col: 10
@@ -264,21 +264,21 @@
   - title: NL Hubs
     name: NL Hubs
     model: flink_v3
-    explore: order_order
+    explore: orders_cl
     type: single_value
-    fields: [order_order.created_date, order_order.cnt_unique_hubs]
+    fields: [orders_cl.created_date, orders_cl.cnt_unique_hubs]
     filters:
-      order_order.is_internal_order: 'no'
-      order_order.is_successful_order: 'yes'
-      order_order.created_date: 2 weeks ago for 2 weeks
+      orders_cl.is_internal_order: 'no'
+      orders_cl.is_successful_order: 'yes'
+      orders_cl.created_date: 2 weeks ago for 2 weeks
       hubs.live: ''
       hubs.country: Netherlands
       hubs.hub_name: ''
       hubs.city: ''
-    sorts: [order_order.created_date desc]
+    sorts: [orders_cl.created_date desc]
     limit: 500
     column_limit: 50
-    dynamic_fields: [{table_calculation: hubs_live, label: "# Hubs Live", expression: 'max(offset_list(${order_order.cnt_unique_hubs},0,3))',
+    dynamic_fields: [{table_calculation: hubs_live, label: "# Hubs Live", expression: 'max(offset_list(${orders_cl.cnt_unique_hubs},0,3))',
         value_format: !!null '', value_format_name: !!null '', _kind_hint: measure,
         _type_hint: number}, {table_calculation: wow, label: WoW, expression: "(${hubs_live}\
           \ - offset(${hubs_live}, 7)) / offset(${hubs_live}, 7)", value_format: !!null '',
@@ -338,7 +338,7 @@
     header_font_size: 12
     rows_font_size: 12
     defaults_version: 1
-    hidden_fields: [order_order.cnt_unique_hubs]
+    hidden_fields: [orders_cl.cnt_unique_hubs]
     listen: {}
     row: 0
     col: 8
@@ -604,26 +604,26 @@
   - title: City Performance
     name: City Performance
     model: flink_v3
-    explore: order_order
+    explore: orders_cl
     type: looker_grid
-    fields: [order_order.cnt_orders, order_order.cnt_unique_orders_new_customers,
-      order_order.cnt_unique_customers, order_order.sum_gmv_gross, order_order.avg_order_value_gross,
-      order_order.pct_discount_order_share, order_order.avg_fulfillment_time_mm_ss,
-      order_order.pct_discount_value_of_gross_total, order_order.avg_delivery_fee_gross,
-      order_order.pct_delivery_late_over_5_min, order_order.pct_delivery_late_over_10_min,
-      order_order.pct_delivery_in_time, hubs.city, order_order.cnt_unique_hubs, shyftplan_riders_pickers_hours.rider_utr]
+    fields: [orders_cl.cnt_orders, orders_cl.cnt_unique_orders_new_customers,
+      orders_cl.cnt_unique_customers, orders_cl.sum_gmv_gross, orders_cl.avg_order_value_gross,
+      orders_cl.pct_discount_order_share, orders_cl.avg_fulfillment_time_mm_ss,
+      orders_cl.pct_discount_value_of_gross_total, orders_cl.avg_delivery_fee_gross,
+      orders_cl.pct_delivery_late_over_5_min, orders_cl.pct_delivery_late_over_10_min,
+      orders_cl.pct_delivery_in_time, hubs.city, orders_cl.cnt_unique_hubs, shyftplan_riders_pickers_hours.rider_utr]
     filters:
       hubs.hub_name: ''
-      order_order.is_internal_order: 'no'
-      order_order.is_successful_order: 'yes'
-      order_order.created_week: before 0 weeks ago
-      order_order.warehouse_name: "-EMPTY"
-    sorts: [order_order.cnt_orders desc]
+      orders_cl.is_internal_order: 'no'
+      orders_cl.is_successful_order: 'yes'
+      orders_cl.created_week: before 0 weeks ago
+      orders_cl.warehouse_name: "-EMPTY"
+    sorts: [orders_cl.cnt_orders desc]
     limit: 500
     column_limit: 50
     total: true
-    dynamic_fields: [{table_calculation: wow, label: WoW, expression: "( ${order_order.cnt_orders}\
-          \ - offset(${order_order.cnt_orders}, 7) ) / offset(${order_order.cnt_orders},\
+    dynamic_fields: [{table_calculation: wow, label: WoW, expression: "( ${orders_cl.cnt_orders}\
+          \ - offset(${orders_cl.cnt_orders}, 7) ) / offset(${orders_cl.cnt_orders},\
           \ 7)", value_format: '"▲  "+0%; "▼  "-0%; 0', value_format_name: !!null '',
         _kind_hint: measure, _type_hint: number, is_disabled: true}]
     query_timezone: Europe/Berlin
@@ -649,61 +649,61 @@
     pinned_columns:
       "$$$_row_numbers_$$$": left
       hubs.city: left
-      order_order.cnt_orders: left
-      order_order.cnt_unique_hubs: left
-    column_order: ["$$$_row_numbers_$$$", hubs.city, order_order.cnt_orders, order_order.cnt_unique_hubs,
-      order_order.avg_order_value_gross, order_order.avg_fulfillment_time_mm_ss, order_order.pct_delivery_in_time,
-      order_order.pct_delivery_late_over_5_min, order_order.pct_delivery_late_over_10_min,
-      order_order.sum_gmv_gross, order_order.cnt_unique_customers, order_order.cnt_unique_orders_new_customers,
-      order_order.pct_discount_order_share, order_order.pct_discount_value_of_gross_total,
-      shyftplan_riders_pickers_hours.rider_utr, order_order.avg_delivery_fee_gross]
+      orders_cl.cnt_orders: left
+      orders_cl.cnt_unique_hubs: left
+    column_order: ["$$$_row_numbers_$$$", hubs.city, orders_cl.cnt_orders, orders_cl.cnt_unique_hubs,
+      orders_cl.avg_order_value_gross, orders_cl.avg_fulfillment_time_mm_ss, orders_cl.pct_delivery_in_time,
+      orders_cl.pct_delivery_late_over_5_min, orders_cl.pct_delivery_late_over_10_min,
+      orders_cl.sum_gmv_gross, orders_cl.cnt_unique_customers, orders_cl.cnt_unique_orders_new_customers,
+      orders_cl.pct_discount_order_share, orders_cl.pct_discount_value_of_gross_total,
+      shyftplan_riders_pickers_hours.rider_utr, orders_cl.avg_delivery_fee_gross]
     show_totals: true
     show_row_totals: true
     series_labels:
-      order_order.cnt_unique_hubs: "# Hubs"
+      orders_cl.cnt_unique_hubs: "# Hubs"
     series_column_widths:
-      order_order.created_date: 125
-      order_order.cnt_unique_orders: 101
-      order_order.cnt_unique_orders_new_customers: 103
-      order_order.cnt_unique_orders_existing_customers: 147
-      order_order.cnt_unique_customers: 93
-      order_order.avg_basket_size_gross: 211
-      order_order.sum_revenue_gross: 173
-      order_order.avg_reaction_time: 115
-      order_order.avg_picking_time: 106
-      order_order.avg_fulfillment_time: 169
-      order_order.avg_delivery_time: 154
-      order_order.cnt_orders: 126
-      order_order.pct_discount_order_share: 94
-      order_order.sum_discount_amt: 124
-      order_order.pct_discount_value_of_gross_total: 102
-      order_order.avg_delivery_fee_gross: 103
-      order_order.avg_acceptance_time: 175
-      order_order.sum_gmv_gross: 99
-      order_order.avg_order_value_gross: 110
-      order_order.pct_delivery_late_over_5_min: 97
-      order_order.pct_delivery_late_over_10_min: 96
+      orders_cl.created_date: 125
+      orders_cl.cnt_unique_orders: 101
+      orders_cl.cnt_unique_orders_new_customers: 103
+      orders_cl.cnt_unique_orders_existing_customers: 147
+      orders_cl.cnt_unique_customers: 93
+      orders_cl.avg_basket_size_gross: 211
+      orders_cl.sum_revenue_gross: 173
+      orders_cl.avg_reaction_time: 115
+      orders_cl.avg_picking_time: 106
+      orders_cl.avg_fulfillment_time: 169
+      orders_cl.avg_delivery_time: 154
+      orders_cl.cnt_orders: 126
+      orders_cl.pct_discount_order_share: 94
+      orders_cl.sum_discount_amt: 124
+      orders_cl.pct_discount_value_of_gross_total: 102
+      orders_cl.avg_delivery_fee_gross: 103
+      orders_cl.avg_acceptance_time: 175
+      orders_cl.sum_gmv_gross: 99
+      orders_cl.avg_order_value_gross: 110
+      orders_cl.pct_delivery_late_over_5_min: 97
+      orders_cl.pct_delivery_late_over_10_min: 96
       wow: 74
-      order_order.date: 162
-      order_order.avg_fulfillment_time_mm_ss: 129
-      order_order.warehouse_name: 150
-      order_order.pct_delivery_in_time: 102
+      orders_cl.date: 162
+      orders_cl.avg_fulfillment_time_mm_ss: 129
+      orders_cl.warehouse_name: 150
+      orders_cl.pct_delivery_in_time: 102
       hubs.hub_name: 197
       hubs.city: 106
-      order_order.cnt_unique_hubs: 80
+      orders_cl.cnt_unique_hubs: 80
       shyftplan_riders_pickers_hours.rider_utr: 77
     series_cell_visualizations:
-      order_order.cnt_unique_orders:
+      orders_cl.cnt_unique_orders:
         is_active: true
         palette:
           palette_id: 56d0c358-10a0-4fd6-aa0b-b117bef527ab
           collection_id: 7c56cc21-66e4-41c9-81ce-a60e1c3967b2
-      order_order.avg_basket_size_gross:
+      orders_cl.avg_basket_size_gross:
         is_active: true
         palette:
           palette_id: 56d0c358-10a0-4fd6-aa0b-b117bef527ab
           collection_id: 7c56cc21-66e4-41c9-81ce-a60e1c3967b2
-      order_order.avg_fulfillment_time:
+      orders_cl.avg_fulfillment_time:
         is_active: true
         palette:
           palette_id: 84802bdf-40bc-c721-2694-55c5eaeb8519
@@ -712,17 +712,17 @@
           - "#b1e84d"
           - "#ffffff"
           - "#ff393f"
-      order_order.cnt_orders:
+      orders_cl.cnt_orders:
         is_active: true
         palette:
           palette_id: 56d0c358-10a0-4fd6-aa0b-b117bef527ab
           collection_id: 7c56cc21-66e4-41c9-81ce-a60e1c3967b2
-      order_order.avg_order_value_gross:
+      orders_cl.avg_order_value_gross:
         is_active: true
         palette:
           palette_id: 56d0c358-10a0-4fd6-aa0b-b117bef527ab
           collection_id: 7c56cc21-66e4-41c9-81ce-a60e1c3967b2
-      order_order.pct_delivery_late_over_5_min:
+      orders_cl.pct_delivery_late_over_5_min:
         is_active: true
         palette:
           palette_id: cb3356e4-15f7-f4ff-a08f-b6fc17b5c145
@@ -741,7 +741,7 @@
           - "#ffffff"
           - "#67e813"
         value_display: true
-      order_order.pct_delivery_late_over_10_min:
+      orders_cl.pct_delivery_late_over_10_min:
         is_active: true
         palette:
           palette_id: e6c3ca7a-03b3-3cfd-2024-978aa98edb14
@@ -750,7 +750,7 @@
           - "#b1e84d"
           - "#ffffff"
           - "#ff393f"
-      order_order.avg_fulfillment_time_mm_ss:
+      orders_cl.avg_fulfillment_time_mm_ss:
         is_active: true
         palette:
           palette_id: 9c1cb5e8-d69e-f228-a723-6fdb29dde6b0
@@ -759,7 +759,7 @@
           - "#b1e84d"
           - "#ffffff"
           - "#f2180f"
-      order_order.pct_delivery_in_time:
+      orders_cl.pct_delivery_in_time:
         is_active: true
         palette:
           palette_id: f50c3cde-51ec-380e-bd2c-de3375adfd32
@@ -767,7 +767,7 @@
           custom_colors:
           - "#ffffff"
           - "#8be631"
-      order_order.cnt_unique_hubs:
+      orders_cl.cnt_unique_hubs:
         is_active: true
     series_text_format:
       wow:
@@ -811,7 +811,7 @@
     hidden_fields: []
     y_axes: []
     listen:
-      Order Date: order_order.created_date
+      Order Date: orders_cl.created_date
       Country: hubs.country
       City: hubs.city
     row: 6
@@ -821,27 +821,27 @@
   - title: City Growth Evolution (WoW)
     name: City Growth Evolution (WoW)
     model: flink_v3
-    explore: order_order
+    explore: orders_cl
     type: looker_grid
-    fields: [hubs.city, order_order.created_week, order_order.cnt_orders, order_order.sum_gmv_gross]
-    pivots: [order_order.created_week]
-    fill_fields: [order_order.created_week]
+    fields: [hubs.city, orders_cl.created_week, orders_cl.cnt_orders, orders_cl.sum_gmv_gross]
+    pivots: [orders_cl.created_week]
+    fill_fields: [orders_cl.created_week]
     filters:
       hubs.hub_name: ''
-      order_order.is_internal_order: 'no'
-      order_order.is_successful_order: 'yes'
-      order_order.created_date: 5 weeks ago for 5 weeks
-    sorts: [order_order.created_week desc, order_order.cnt_orders desc 0]
+      orders_cl.is_internal_order: 'no'
+      orders_cl.is_successful_order: 'yes'
+      orders_cl.created_date: 5 weeks ago for 5 weeks
+    sorts: [orders_cl.created_week desc, orders_cl.cnt_orders desc 0]
     limit: 500
     column_limit: 50
     total: true
     dynamic_fields: [{_kind_hint: measure, table_calculation: wow_orders, _type_hint: number,
-        category: table_calculation, expression: "( ${order_order.cnt_orders} - pivot_offset(${order_order.cnt_orders},\
-          \ 1) ) / pivot_offset(${order_order.cnt_orders}, 1)", label: "% WoW Orders",
+        category: table_calculation, expression: "( ${orders_cl.cnt_orders} - pivot_offset(${orders_cl.cnt_orders},\
+          \ 1) ) / pivot_offset(${orders_cl.cnt_orders}, 1)", label: "% WoW Orders",
         value_format: '"▲  "+0%; "▼  "-0%; 0', value_format_name: !!null ''}, {_kind_hint: measure,
         table_calculation: wow_gmv, _type_hint: number, category: table_calculation,
-        expression: "( ${order_order.sum_gmv_gross} - pivot_offset(${order_order.sum_gmv_gross},\
-          \ 1) ) / pivot_offset(${order_order.sum_gmv_gross}, 1)", label: "% WoW GMV",
+        expression: "( ${orders_cl.sum_gmv_gross} - pivot_offset(${orders_cl.sum_gmv_gross},\
+          \ 1) ) / pivot_offset(${orders_cl.sum_gmv_gross}, 1)", label: "% WoW GMV",
         value_format: '"▲  "+0%; "▼  "-0%; 0', value_format_name: !!null ''}]
     query_timezone: Europe/Berlin
     show_view_names: false
@@ -908,7 +908,7 @@
     show_silhouette: false
     totals_color: "#808080"
     defaults_version: 1
-    hidden_fields: [order_order.cnt_orders, order_order.sum_gmv_gross]
+    hidden_fields: [orders_cl.cnt_orders, orders_cl.sum_gmv_gross]
     listen:
       Country: hubs.country
       City: hubs.city
@@ -928,7 +928,7 @@
       display: inline
       options: []
     model: flink_v3
-    explore: order_order
+    explore: orders_cl
     listens_to_filters: []
     field: hubs.country
   - name: City
@@ -942,7 +942,7 @@
       display: popover
       options: []
     model: flink_v3
-    explore: order_order
+    explore: orders_cl
     listens_to_filters: []
     field: hubs.city
   - name: Order Date
@@ -956,6 +956,6 @@
       display: inline
       options: []
     model: flink_v3
-    explore: order_order
+    explore: orders_cl
     listens_to_filters: []
-    field: order_order.created_date
+    field: orders_cl.created_date
