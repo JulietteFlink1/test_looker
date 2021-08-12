@@ -4,11 +4,10 @@ include: "/**/*.explore"
 
 explore: order_orderline_cl {
   extends: [orders_cl]
-  label: "Order, Orderline, Operations CL"
-  view_label: "* Orders CL *"
-  #view_name: order_orderline_cl
-  group_label: "15) Ad-Hoc"
-  description: "General Business Performance - Orders, Revenue, etc."
+  label: "Orderline Items"
+  view_label: "* Orderline Items *"
+  group_label: "01) Performance"
+  description: "Orderline Items sold quantities, prices, gmv, etc."
   hidden: no
   # view_name: base_order_orderline
   #extension: required

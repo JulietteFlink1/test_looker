@@ -10,9 +10,12 @@ include: "/explores/base_explores/orders_cl.explore"
 
 explore: orders_cl {
   from: orders
-  #extension: required # can not be used un-extended!
+  label: "Orders"
+  view_label: "* Orders *"
+  group_label: "01) Performance"
+  description: "General Business Performance - Orders, Revenue, etc."
   view_name: orders_cl # needs to be set in order that the base_explore can be extended and referenced properly
-  hidden: yes
+  hidden: no
 
   always_filter: {
     filters:  [
