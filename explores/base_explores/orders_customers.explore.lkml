@@ -24,7 +24,14 @@ explore: orders_customers {
   join: monthly_cohorts {
     sql_on: ${customers_metrics.country_iso} = ${monthly_cohorts.country_iso} AND
     ${customers_metrics.first_order_month} = ${customers_metrics.first_order_month};;
-    relationship: one_to_one
+    relationship: many_to_one
+    type: left_outer
+  }
+
+  join: weekly_cohorts {
+    sql_on: ${customers_metrics.country_iso} = ${weekly_cohorts.country_iso} AND
+    ${customers_metrics.first_order_week} = ${customers_metrics.first_order_week};;
+    relationship: many_to_one
     type: left_outer
   }
 

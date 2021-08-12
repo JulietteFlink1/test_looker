@@ -34,6 +34,11 @@ view: customers_metrics {
     sql: ${TABLE}.country_iso ;;
   }
 
+  dimension: country {
+    type: string
+    sql: ${TABLE}.country ;;
+  }
+
   dimension: user_email {
     type: string
     sql: ${TABLE}.customer_email ;;
@@ -71,6 +76,21 @@ view: customers_metrics {
   dimension: first_order_id {
     type: string
     sql: ${TABLE}.first_order_uuid ;;
+  }
+
+  dimension: first_order_city {
+    type: string
+    sql: ${TABLE}.first_order_city ;;
+  }
+
+  dimension: first_order_hub {
+    type: string
+    sql: ${TABLE}.first_order_hub ;;
+  }
+
+  dimension: is_discount_acqusition {
+    type: yesno
+    sql: ${TABLE}.is_discount_acquisition ;;
   }
 
   dimension_group: last_order_with_voucher {
