@@ -26,6 +26,11 @@ datagroup: flink_default_datagroup {
   max_cache_age: "24 hour"
 }
 
+datagroup: flink_hourly_datagroup {
+  sql_trigger: SELECT MAX(partition_timestamp) FROM `flink-data-prod.curated.inventory`;;
+  max_cache_age: "24 hour"
+}
+
 persist_with: flink_default_datagroup
 
 named_value_format: euro_accounting_2_precision {

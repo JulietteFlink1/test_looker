@@ -23,3 +23,8 @@ explore: inventory_cl{
 
 
 }
+
+explore: hourly_inventory {
+  extends: [inventory_cl]
+  persist_with: flink_hourly_datagroup
+}
