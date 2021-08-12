@@ -88,7 +88,7 @@ view: customers_metrics {
     sql: ${TABLE}.first_order_hub ;;
   }
 
-  dimension: is_discount_acqusition {
+  dimension: is_discount_acquisition {
     type: yesno
     sql: ${TABLE}.is_discount_acquisition ;;
   }
