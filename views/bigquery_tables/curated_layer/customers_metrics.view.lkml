@@ -1,5 +1,5 @@
 view: customers_metrics {
-  sql_table_name: `flink-data-staging.curated.customers_metrics`
+  sql_table_name: `flink-data-prod.curated.customers_metrics`
     ;;
 
   dimension: reorder_number_28_days {

@@ -1,6 +1,6 @@
 view: products {
   view_label: "* Product Data *"
-  sql_table_name: `flink-data-prod.curated.products_ct`
+  sql_table_name: `flink-data-prod.curated.products`
     ;;
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

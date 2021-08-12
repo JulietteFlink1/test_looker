@@ -1,5 +1,5 @@
 view: orderline {
-  sql_table_name: `flink-data-prod.curated.orderline_ct`
+  sql_table_name: `flink-data-prod.curated.order_lineitems`
     ;;
   drill_fields: [id]
 
