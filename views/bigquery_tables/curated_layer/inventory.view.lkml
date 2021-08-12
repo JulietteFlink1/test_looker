@@ -43,8 +43,8 @@ view: inventory {
       quarter,
       year
     ]
-    sql: ${TABLE}.last_modified_at ;;
-    label: "Inventory Status"
+    sql: ${TABLE}.partition_timestamp ;;
+    label: "Inventory Update"
   }
 
   dimension: shelf_number {
@@ -62,8 +62,8 @@ view: inventory {
 
 
   # =========  IDs   =========
-  dimension: unique_key {
-    sql: concat(${TABLE}.inventory_id, CAST(${TABLE}.last_modified_at as string)) ;;
+  dimension: inventory_uuid {
+    sql: ${TABLE}.inventory_uuid ;;
     primary_key: yes
     group_label: "> IDs"
   }
@@ -96,31 +96,25 @@ view: inventory {
     group_label: "> Admin Data"
   }
 
-  dimension: number_of_items_reserved {
-    # currently this field is always empty
-    # is was a repeated field
-    # once knowing, how the actual data looks like, this field needs to be modified (esp. in the dbt-model)
-    type: number
-    sql: ${TABLE}.number_of_items_reserved ;;
-    group_label: "> Admin Data"
-  }
-
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  measure: available_quantity {
+  measure: quantity_available {
     type: average
-    sql: ${TABLE}.available_quantity ;;
-  }
-
-  measure: number_of_reservations {
-    type: average
-    sql: ${TABLE}.number_of_reservations ;;
+    sql: ${TABLE}.quantity_available ;;
+    label: "AVG Quantity Available"
   }
 
   measure: quantity_on_stock {
     type: average
     sql: ${TABLE}.quantity_on_stock ;;
+    label: "AVG Quantity on Stock"
+  }
+
+  measure: quantity_reserved {
+    type: average
+    sql: ${TABLE}.quantity_reserved ;;
+    label: "AVG Quantity Reserved"
   }
 
 
