@@ -570,7 +570,7 @@ view: orders {
     sql: ${TABLE}.order_rider_claimed_timestamp ;;
   }
 
-  dimension: unique_id {
+  dimension: order_uuid {
     type: string
     primary_key: yes
     sql: ${TABLE}.order_uuid ;;
