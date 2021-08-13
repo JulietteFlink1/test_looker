@@ -8,12 +8,16 @@
     model: flink_v3
     explore: orders_cl
     type: looker_column
-    fields: [orders_cl.cnt_unique_orders_existing_customers, orders_cl.cnt_unique_orders_new_customers,
-      orders_cl.pct_discount_order_share, orders_cl.pct_acquisition_share, orders_cl.date]
+    fields: [
+      orders.cnt_unique_orders_existing_customers,
+      orders.cnt_unique_orders_new_customers,
+      orders.pct_discount_order_share,
+      orders.pct_acquisition_share,
+      orders.date]
     filters:
-      orders_cl.is_internal_order: 'no'
-      orders_cl.is_successful_order: 'yes'
-    sorts: [orders_cl.date]
+      orders.is_internal_order: 'no'
+      orders.is_successful_order: 'yes'
+    sorts: [orders.date]
     limit: 500
     total: true
     query_timezone: Europe/Berlin
@@ -44,37 +48,37 @@
     show_totals_labels: false
     show_silhouette: false
     totals_color: "#808080"
-    y_axes: [{label: "# Orders", orientation: left, series: [{axisId: orders_cl.cnt_unique_orders_existing_customers,
-            id: orders_cl.cnt_unique_orders_existing_customers, name: "# Orders\
-              \ Existing Customers"}, {axisId: orders_cl.cnt_unique_orders_new_customers,
-            id: orders_cl.cnt_unique_orders_new_customers, name: "# Orders New Customers"}],
+    y_axes: [{label: "# Orders", orientation: left, series: [{axisId: orders.cnt_unique_orders_existing_customers,
+            id: orders.cnt_unique_orders_existing_customers, name: "# Orders\
+              \ Existing Customers"}, {axisId: orders.cnt_unique_orders_new_customers,
+            id: orders.cnt_unique_orders_new_customers, name: "# Orders New Customers"}],
         showLabels: true, showValues: true, unpinAxis: false, tickDensity: default,
-        type: linear}, {label: '', orientation: right, series: [{axisId: orders_cl.pct_acquisition_share,
-            id: orders_cl.pct_acquisition_share, name: "% Acquisition Share"}, {
-            axisId: orders_cl.pct_discount_order_share, id: orders_cl.pct_discount_order_share,
+        type: linear}, {label: '', orientation: right, series: [{axisId: orders.pct_acquisition_share,
+            id: orders.pct_acquisition_share, name: "% Acquisition Share"}, {
+            axisId: orders.pct_discount_order_share, id: orders.pct_discount_order_share,
             name: "% Discount Order Share"}], showLabels: true, showValues: true,
         unpinAxis: false, tickDensity: default, type: linear}]
     series_types:
-      orders_cl.pct_discount_order_share: line
-      orders_cl.pct_acquisition_share: line
+      orders.pct_discount_order_share: line
+      orders.pct_acquisition_share: line
     series_colors:
-      orders_cl.cnt_orders: "#F9AB00"
-      orders_cl.avg_fulfillment_time: "#1A73E8"
-      orders_cl.sum_revenue_gross: "#F9AB00"
-      orders_cl.avg_basket_size_gross: "#1A73E8"
-      orders_cl.pct_acquisition_share: "#7CB342"
-      orders_cl.pct_discount_order_share: "#EA4335"
+      orders.cnt_orders: "#F9AB00"
+      orders.avg_fulfillment_time: "#1A73E8"
+      orders.sum_revenue_gross: "#F9AB00"
+      orders.avg_basket_size_gross: "#1A73E8"
+      orders.pct_acquisition_share: "#7CB342"
+      orders.pct_discount_order_share: "#EA4335"
     show_null_points: true
     interpolation: linear
     defaults_version: 1
     hidden_fields: []
     listen:
-      Order Day of Week: orders_cl.created_day_of_week
+      Order Day of Week: orders.created_day_of_week
       Country: hubs.country
-      Order Date: orders_cl.created_date
+      Order Date: orders.created_date
       City: hubs.city
       Hub Name: hubs.hub_name
-      Date Granularity: orders_cl.date_granularity
+      Date Granularity: orders.date_granularity
     row: 13
     col: 8
     width: 8
@@ -102,46 +106,46 @@
     model: flink_v3
     explore: orders_cl
     type: looker_grid
-    fields: [orders_cl.date_granularity_pass_through, orders_cl.date, orders_cl.cnt_orders,
-      orders_cl.cnt_unique_orders_new_customers, orders_cl.cnt_unique_customers,
-      orders_cl.sum_gmv_gross, orders_cl.avg_order_value_gross, orders_cl.pct_discount_order_share,
-      orders_cl.avg_fulfillment_time_mm_ss, orders_cl.sum_discount_amt, orders_cl.pct_discount_value_of_gross_total,
-      orders_cl.avg_delivery_fee_gross, orders_cl.pct_delivery_late_over_5_min,
-      orders_cl.pct_delivery_late_over_10_min, orders_cl.pct_delivery_in_time,
+    fields: [orders.date_granularity_pass_through, orders.date, orders.cnt_orders,
+      orders.cnt_unique_orders_new_customers, orders.cnt_unique_customers,
+      orders.sum_gmv_gross, orders.avg_order_value_gross, orders.pct_discount_order_share,
+      orders.avg_fulfillment_time_mm_ss, orders.sum_discount_amt, orders.pct_discount_value_of_gross_total,
+      orders.avg_delivery_fee_gross, orders.pct_delivery_late_over_5_min,
+      orders.pct_delivery_late_over_10_min, orders.pct_delivery_in_time,
       shyftplan_riders_pickers_hours.rider_utr, shyftplan_riders_pickers_hours.picker_utr]
     filters:
-      orders_cl.is_internal_order: 'no'
-      orders_cl.is_successful_order: 'yes'
-    sorts: [orders_cl.date desc]
+      orders.is_internal_order: 'no'
+      orders.is_successful_order: 'yes'
+    sorts: [orders.date desc]
     limit: 500
     dynamic_fields: [{_kind_hint: measure, table_calculation: pop, _type_hint: number,
-        category: table_calculation, expression: "case(when(diff_days(to_date(${orders_cl.date}),offset(to_date(${orders_cl.date}),7))\
-          \ = null,null),\n  \n  when(${orders_cl.date_granularity_pass_through}\
-          \ = \"Day\" \n    AND diff_days(to_date(${orders_cl.date}),offset(to_date(${orders_cl.date}),7))\
-          \ = -7,\n    ( ${orders_cl.cnt_orders} - offset(${orders_cl.cnt_orders},\
-          \ 7) ) / offset(${orders_cl.cnt_orders}, 7)),\n  when(${orders_cl.date_granularity_pass_through}\
-          \ = \"Day\"  AND offset(to_date(${orders_cl.date}),7) = null,null),\n\
-          \  when(${orders_cl.date_granularity_pass_through} = \"Day\" \n    AND\
-          \ diff_days(to_date(${orders_cl.date}),\n      offset(to_date(${orders_cl.date}),7))\
-          \ != -7,( ${orders_cl.cnt_orders} - offset(${orders_cl.cnt_orders},\
-          \ 6) ) / offset(${orders_cl.cnt_orders}, 6)),\n  when(${orders_cl.date_granularity_pass_through}\
-          \ = \"Week\" OR ${orders_cl.date_granularity_pass_through} = \"Month\"\
-          , \n  ( ${orders_cl.cnt_orders} - offset(${orders_cl.cnt_orders}, 1)\
-          \ ) / offset(${orders_cl.cnt_orders}, 1)),null)", label: PoP, value_format: '"▲  "+0%;
+        category: table_calculation, expression: "case(when(diff_days(to_date(${orders.date}),offset(to_date(${orders.date}),7))\
+          \ = null,null),\n  \n  when(${orders.date_granularity_pass_through}\
+          \ = \"Day\" \n    AND diff_days(to_date(${orders.date}),offset(to_date(${orders.date}),7))\
+          \ = -7,\n    ( ${orders.cnt_orders} - offset(${orders.cnt_orders},\
+          \ 7) ) / offset(${orders.cnt_orders}, 7)),\n  when(${orders.date_granularity_pass_through}\
+          \ = \"Day\"  AND offset(to_date(${orders.date}),7) = null,null),\n\
+          \  when(${orders.date_granularity_pass_through} = \"Day\" \n    AND\
+          \ diff_days(to_date(${orders.date}),\n      offset(to_date(${orders.date}),7))\
+          \ != -7,( ${orders.cnt_orders} - offset(${orders.cnt_orders},\
+          \ 6) ) / offset(${orders.cnt_orders}, 6)),\n  when(${orders.date_granularity_pass_through}\
+          \ = \"Week\" OR ${orders.date_granularity_pass_through} = \"Month\"\
+          , \n  ( ${orders.cnt_orders} - offset(${orders.cnt_orders}, 1)\
+          \ ) / offset(${orders.cnt_orders}, 1)),null)", label: PoP, value_format: '"▲  "+0%;
           "▼  "-0%; 0', value_format_name: !!null ''}, {_kind_hint: measure, table_calculation: pop_gmv,
-        _type_hint: number, category: table_calculation, expression: "\n\ncase(when(diff_days(to_date(${orders_cl.date}),offset(to_date(${orders_cl.date}),7))\
-          \ = null,null),\n  \n  when(${orders_cl.date_granularity_pass_through}\
-          \ = \"Day\" \n    AND diff_days(to_date(${orders_cl.date}),offset(to_date(${orders_cl.date}),7))\
-          \ = -7,\n    ( ${orders_cl.sum_gmv_gross} - offset(${orders_cl.sum_gmv_gross},\
-          \ 7) ) / offset(${orders_cl.sum_gmv_gross}, 7)),\n  when(${orders_cl.date_granularity_pass_through}\
-          \ = \"Day\"  AND offset(to_date(${orders_cl.date}),7) = null,null),\n\
-          \  when(${orders_cl.date_granularity_pass_through} = \"Day\" \n    AND\
-          \ diff_days(to_date(${orders_cl.date}),\n      offset(to_date(${orders_cl.date}),7))\
-          \ != -7,( ${orders_cl.sum_gmv_gross} - offset(${orders_cl.sum_gmv_gross},\
-          \ 6) ) / offset(${orders_cl.sum_gmv_gross}, 6)),\n  when(${orders_cl.date_granularity_pass_through}\
-          \ = \"Week\" OR ${orders_cl.date_granularity_pass_through} = \"Month\"\
-          , \n  ( ${orders_cl.sum_gmv_gross} - offset(${orders_cl.sum_gmv_gross},\
-          \ 1) ) / offset(${orders_cl.sum_gmv_gross}, 1)),null)", label: PoP (GMV),
+        _type_hint: number, category: table_calculation, expression: "\n\ncase(when(diff_days(to_date(${orders.date}),offset(to_date(${orders.date}),7))\
+          \ = null,null),\n  \n  when(${orders.date_granularity_pass_through}\
+          \ = \"Day\" \n    AND diff_days(to_date(${orders.date}),offset(to_date(${orders.date}),7))\
+          \ = -7,\n    ( ${orders.sum_gmv_gross} - offset(${orders.sum_gmv_gross},\
+          \ 7) ) / offset(${orders.sum_gmv_gross}, 7)),\n  when(${orders.date_granularity_pass_through}\
+          \ = \"Day\"  AND offset(to_date(${orders.date}),7) = null,null),\n\
+          \  when(${orders.date_granularity_pass_through} = \"Day\" \n    AND\
+          \ diff_days(to_date(${orders.date}),\n      offset(to_date(${orders.date}),7))\
+          \ != -7,( ${orders.sum_gmv_gross} - offset(${orders.sum_gmv_gross},\
+          \ 6) ) / offset(${orders.sum_gmv_gross}, 6)),\n  when(${orders.date_granularity_pass_through}\
+          \ = \"Week\" OR ${orders.date_granularity_pass_through} = \"Month\"\
+          , \n  ( ${orders.sum_gmv_gross} - offset(${orders.sum_gmv_gross},\
+          \ 1) ) / offset(${orders.sum_gmv_gross}, 1)),null)", label: PoP (GMV),
         value_format: '"▲  "+0%; "▼  "-0%; 0', value_format_name: !!null ''}]
     query_timezone: Europe/Berlin
     show_view_names: false
@@ -165,60 +169,60 @@
     show_sql_query_menu_options: false
     pinned_columns:
       "$$$_row_numbers_$$$": left
-      orders_cl.date: left
-      orders_cl.cnt_orders: left
+      orders.date: left
+      orders.cnt_orders: left
       pop: left
-    column_order: ["$$$_row_numbers_$$$", orders_cl.date, orders_cl.cnt_orders,
-      pop, orders_cl.avg_order_value_gross, orders_cl.avg_fulfillment_time_mm_ss,
-      orders_cl.pct_delivery_in_time, orders_cl.pct_delivery_late_over_5_min,
-      orders_cl.pct_delivery_late_over_10_min, shyftplan_riders_pickers_hours.rider_utr,
-      shyftplan_riders_pickers_hours.picker_utr, orders_cl.sum_gmv_gross, pop_gmv,
-      orders_cl.sum_discount_amt, orders_cl.cnt_unique_customers, orders_cl.cnt_unique_orders_new_customers,
-      orders_cl.pct_discount_order_share, orders_cl.pct_discount_value_of_gross_total,
-      orders_cl.avg_delivery_fee_gross]
+    column_order: ["$$$_row_numbers_$$$", orders.date, orders.cnt_orders,
+      pop, orders.avg_order_value_gross, orders.avg_fulfillment_time_mm_ss,
+      orders.pct_delivery_in_time, orders.pct_delivery_late_over_5_min,
+      orders.pct_delivery_late_over_10_min, shyftplan_riders_pickers_hours.rider_utr,
+      shyftplan_riders_pickers_hours.picker_utr, orders.sum_gmv_gross, pop_gmv,
+      orders.sum_discount_amt, orders.cnt_unique_customers, orders.cnt_unique_orders_new_customers,
+      orders.pct_discount_order_share, orders.pct_discount_value_of_gross_total,
+      orders.avg_delivery_fee_gross]
     show_totals: true
     show_row_totals: true
     series_column_widths:
-      orders_cl.created_date: 107
-      orders_cl.cnt_unique_orders: 101
-      orders_cl.cnt_unique_orders_new_customers: 116
-      orders_cl.cnt_unique_orders_existing_customers: 147
-      orders_cl.cnt_unique_customers: 97
-      orders_cl.avg_basket_size_gross: 211
-      orders_cl.sum_revenue_gross: 173
-      orders_cl.avg_reaction_time: 115
-      orders_cl.avg_picking_time: 106
-      orders_cl.avg_fulfillment_time: 169
-      orders_cl.avg_delivery_time: 154
-      orders_cl.cnt_orders: 102
-      orders_cl.pct_discount_order_share: 110
-      orders_cl.sum_discount_amt: 117
-      orders_cl.pct_discount_value_of_gross_total: 106
-      orders_cl.avg_delivery_fee_gross: 121
-      orders_cl.avg_acceptance_time: 175
-      orders_cl.sum_gmv_gross: 92
-      orders_cl.avg_order_value_gross: 131
-      orders_cl.pct_delivery_late_over_5_min: 106
-      orders_cl.pct_delivery_late_over_10_min: 103
+      orders.created_date: 107
+      orders.cnt_unique_orders: 101
+      orders.cnt_unique_orders_new_customers: 116
+      orders.cnt_unique_orders_existing_customers: 147
+      orders.cnt_unique_customers: 97
+      orders.avg_basket_size_gross: 211
+      orders.sum_revenue_gross: 173
+      orders.avg_reaction_time: 115
+      orders.avg_picking_time: 106
+      orders.avg_fulfillment_time: 169
+      orders.avg_delivery_time: 154
+      orders.cnt_orders: 102
+      orders.pct_discount_order_share: 110
+      orders.sum_discount_amt: 117
+      orders.pct_discount_value_of_gross_total: 106
+      orders.avg_delivery_fee_gross: 121
+      orders.avg_acceptance_time: 175
+      orders.sum_gmv_gross: 92
+      orders.avg_order_value_gross: 131
+      orders.pct_delivery_late_over_5_min: 106
+      orders.pct_delivery_late_over_10_min: 103
       wow: 86
-      orders_cl.date: 162
-      orders_cl.avg_fulfillment_time_mm_ss: 142
-      orders_cl.pct_delivery_in_time: 96
+      orders.date: 162
+      orders.avg_fulfillment_time_mm_ss: 142
+      orders.pct_delivery_in_time: 96
       wow_gmv: 77
       shyftplan_riders_pickers_hours.rider_utr: 79
       shyftplan_riders_pickers_hours.picker_utr: 80
     series_cell_visualizations:
-      orders_cl.cnt_unique_orders:
+      orders.cnt_unique_orders:
         is_active: true
         palette:
           palette_id: 56d0c358-10a0-4fd6-aa0b-b117bef527ab
           collection_id: 7c56cc21-66e4-41c9-81ce-a60e1c3967b2
-      orders_cl.avg_basket_size_gross:
+      orders.avg_basket_size_gross:
         is_active: true
         palette:
           palette_id: 56d0c358-10a0-4fd6-aa0b-b117bef527ab
           collection_id: 7c56cc21-66e4-41c9-81ce-a60e1c3967b2
-      orders_cl.avg_fulfillment_time:
+      orders.avg_fulfillment_time:
         is_active: true
         palette:
           palette_id: 84802bdf-40bc-c721-2694-55c5eaeb8519
@@ -227,17 +231,17 @@
           - "#b1e84d"
           - "#ffffff"
           - "#ff393f"
-      orders_cl.cnt_orders:
+      orders.cnt_orders:
         is_active: true
         palette:
           palette_id: 56d0c358-10a0-4fd6-aa0b-b117bef527ab
           collection_id: 7c56cc21-66e4-41c9-81ce-a60e1c3967b2
-      orders_cl.avg_order_value_gross:
+      orders.avg_order_value_gross:
         is_active: true
         palette:
           palette_id: 56d0c358-10a0-4fd6-aa0b-b117bef527ab
           collection_id: 7c56cc21-66e4-41c9-81ce-a60e1c3967b2
-      orders_cl.pct_delivery_late_over_5_min:
+      orders.pct_delivery_late_over_5_min:
         is_active: true
         palette:
           palette_id: cb3356e4-15f7-f4ff-a08f-b6fc17b5c145
@@ -256,7 +260,7 @@
           - "#ffffff"
           - "#67e813"
         value_display: true
-      orders_cl.pct_delivery_late_over_10_min:
+      orders.pct_delivery_late_over_10_min:
         is_active: true
         palette:
           palette_id: e6c3ca7a-03b3-3cfd-2024-978aa98edb14
@@ -265,7 +269,7 @@
           - "#b1e84d"
           - "#ffffff"
           - "#ff393f"
-      orders_cl.avg_fulfillment_time_mm_ss:
+      orders.avg_fulfillment_time_mm_ss:
         is_active: true
         palette:
           palette_id: 9c1cb5e8-d69e-f228-a723-6fdb29dde6b0
@@ -274,7 +278,7 @@
           - "#b1e84d"
           - "#ffffff"
           - "#f2180f"
-      orders_cl.pct_delivery_in_time:
+      orders.pct_delivery_in_time:
         is_active: true
         palette:
           palette_id: 8f7dc6b2-5328-e9ee-721c-335c43e6ecc5
@@ -338,15 +342,15 @@
     interpolation: linear
     defaults_version: 1
     series_types: {}
-    hidden_fields: [orders_cl.date_granularity_pass_through]
+    hidden_fields: [orders.date_granularity_pass_through]
     y_axes: []
     listen:
-      Order Day of Week: orders_cl.created_day_of_week
+      Order Day of Week: orders.created_day_of_week
       Country: hubs.country
-      Order Date: orders_cl.created_date
+      Order Date: orders.created_date
       City: hubs.city
       Hub Name: hubs.hub_name
-      Date Granularity: orders_cl.date_granularity
+      Date Granularity: orders.date_granularity
     row: 6
     col: 0
     width: 24
@@ -356,11 +360,11 @@
     model: flink_v3
     explore: orders_cl
     type: looker_line
-    fields: [orders_cl.sum_gmv_gross, orders_cl.avg_order_value_gross, orders_cl.date]
+    fields: [orders.sum_gmv_gross, orders.avg_order_value_gross, orders.date]
     filters:
-      orders_cl.is_internal_order: 'no'
-      orders_cl.is_successful_order: 'yes'
-    sorts: [orders_cl.date]
+      orders.is_internal_order: 'no'
+      orders.is_successful_order: 'yes'
+    sorts: [orders.date]
     limit: 500
     query_timezone: Europe/Berlin
     x_axis_gridlines: false
@@ -387,19 +391,19 @@
     y_axis_combined: true
     show_null_points: true
     interpolation: linear
-    y_axes: [{label: '', orientation: left, series: [{axisId: orders_cl.avg_order_value_gross,
-            id: orders_cl.avg_order_value_gross, name: AVG Basket Size (Gross)}],
+    y_axes: [{label: '', orientation: left, series: [{axisId: orders.avg_order_value_gross,
+            id: orders.avg_order_value_gross, name: AVG Basket Size (Gross)}],
         showLabels: true, showValues: true, unpinAxis: false, tickDensity: default,
-        type: linear}, {label: '', orientation: right, series: [{axisId: orders_cl.sum_gmv_gross,
-            id: orders_cl.sum_gmv_gross, name: SUM Revenue (Gross)}], showLabels: true,
+        type: linear}, {label: '', orientation: right, series: [{axisId: orders.sum_gmv_gross,
+            id: orders.sum_gmv_gross, name: SUM Revenue (Gross)}], showLabels: true,
         showValues: true, unpinAxis: false, tickDensity: default, type: linear}]
     series_types:
-      orders_cl.sum_gmv_gross: column
+      orders.sum_gmv_gross: column
     series_colors:
-      orders_cl.cnt_orders: "#F9AB00"
-      orders_cl.avg_fulfillment_time: "#1A73E8"
-      orders_cl.avg_order_value_gross: "#1A73E8"
-      orders_cl.sum_gmv_gross: "#F9AB00"
+      orders.cnt_orders: "#F9AB00"
+      orders.avg_fulfillment_time: "#1A73E8"
+      orders.avg_order_value_gross: "#1A73E8"
+      orders.sum_gmv_gross: "#F9AB00"
     ordering: none
     show_null_labels: false
     show_totals_labels: false
@@ -408,12 +412,12 @@
     defaults_version: 1
     hidden_fields: []
     listen:
-      Order Day of Week: orders_cl.created_day_of_week
+      Order Day of Week: orders.created_day_of_week
       Country: hubs.country
-      Order Date: orders_cl.created_date
+      Order Date: orders.created_date
       City: hubs.city
       Hub Name: hubs.hub_name
-      Date Granularity: orders_cl.date_granularity
+      Date Granularity: orders.date_granularity
     row: 13
     col: 0
     width: 8
@@ -423,12 +427,12 @@
     model: flink_v3
     explore: orders_cl
     type: looker_line
-    fields: [orders_cl.cnt_orders, orders_cl.avg_fulfillment_time, orders_cl.avg_promised_eta,
-      orders_cl.date]
+    fields: [orders.cnt_orders, orders.avg_fulfillment_time, orders.avg_promised_eta,
+      orders.date]
     filters:
-      orders_cl.is_internal_order: 'no'
-      orders_cl.is_successful_order: 'yes'
-    sorts: [orders_cl.date]
+      orders.is_internal_order: 'no'
+      orders.is_successful_order: 'yes'
+    sorts: [orders.date]
     limit: 500
     query_timezone: Europe/Berlin
     x_axis_gridlines: false
@@ -455,22 +459,22 @@
     y_axis_combined: true
     show_null_points: true
     interpolation: linear
-    y_axes: [{label: '', orientation: left, series: [{axisId: orders_cl.cnt_orders,
-            id: orders_cl.cnt_orders, name: "# Orders"}], showLabels: true, showValues: true,
+    y_axes: [{label: '', orientation: left, series: [{axisId: orders.cnt_orders,
+            id: orders.cnt_orders, name: "# Orders"}], showLabels: true, showValues: true,
         unpinAxis: false, tickDensity: default, tickDensityCustom: 5, type: linear},
-      {label: !!null '', orientation: right, series: [{axisId: orders_cl.avg_fulfillment_time,
-            id: orders_cl.avg_fulfillment_time, name: AVG Fulfillment Time (decimal)},
-          {axisId: orders_cl.avg_promised_eta, id: orders_cl.avg_promised_eta,
+      {label: !!null '', orientation: right, series: [{axisId: orders.avg_fulfillment_time,
+            id: orders.avg_fulfillment_time, name: AVG Fulfillment Time (decimal)},
+          {axisId: orders.avg_promised_eta, id: orders.avg_promised_eta,
             name: AVG PDT}], showLabels: true, showValues: true, unpinAxis: false,
         tickDensity: default, tickDensityCustom: 5, type: linear}]
     series_types:
-      orders_cl.cnt_orders: column
+      orders.cnt_orders: column
     series_colors:
-      orders_cl.cnt_orders: "#F9AB00"
-      orders_cl.avg_fulfillment_time: "#1A73E8"
-      orders_cl.avg_promised_eta: "#7CB342"
+      orders.cnt_orders: "#F9AB00"
+      orders.avg_fulfillment_time: "#1A73E8"
+      orders.avg_promised_eta: "#7CB342"
     series_labels:
-      orders_cl.avg_fulfillment_time: AVG Fulfillment Time (dec.)
+      orders.avg_fulfillment_time: AVG Fulfillment Time (dec.)
     ordering: none
     show_null_labels: false
     show_totals_labels: false
@@ -479,12 +483,12 @@
     defaults_version: 1
     hidden_fields: []
     listen:
-      Order Day of Week: orders_cl.created_day_of_week
+      Order Day of Week: orders.created_day_of_week
       Country: hubs.country
-      Order Date: orders_cl.created_date
+      Order Date: orders.created_date
       City: hubs.city
       Hub Name: hubs.hub_name
-      Date Granularity: orders_cl.date_granularity
+      Date Granularity: orders.date_granularity
     row: 13
     col: 16
     width: 8
@@ -494,13 +498,13 @@
     model: flink_v3
     explore: orders_cl
     type: looker_column
-    fields: [orders_cl.avg_fulfillment_time, orders_cl.avg_reaction_time, orders_cl.avg_picking_time,
-      orders_cl.avg_acceptance_time, orders_cl.avg_delivery_time, orders_cl.avg_promised_eta,
-      orders_cl.date]
+    fields: [orders.avg_fulfillment_time, orders.avg_reaction_time, orders.avg_picking_time,
+      orders.avg_acceptance_time, orders.avg_delivery_time, orders.avg_promised_eta,
+      orders.date]
     filters:
-      orders_cl.is_internal_order: 'no'
-      orders_cl.is_successful_order: 'yes'
-    sorts: [orders_cl.date]
+      orders.is_internal_order: 'no'
+      orders.is_successful_order: 'yes'
+    sorts: [orders.date]
     limit: 500
     query_timezone: Europe/Berlin
     x_axis_gridlines: false
@@ -530,37 +534,37 @@
     show_totals_labels: false
     show_silhouette: false
     totals_color: "#808080"
-    y_axes: [{label: '', orientation: left, series: [{axisId: orders_cl.avg_reaction_time,
-            id: orders_cl.avg_reaction_time, name: AVG Reaction Time}, {axisId: orders_cl.avg_picking_time,
-            id: orders_cl.avg_picking_time, name: AVG Picking Time}, {axisId: orders_cl.avg_acceptance_time,
-            id: orders_cl.avg_acceptance_time, name: AVG Acceptance Time}, {axisId: orders_cl.avg_delivery_time,
-            id: orders_cl.avg_delivery_time, name: AVG Delivery Time}], showLabels: true,
+    y_axes: [{label: '', orientation: left, series: [{axisId: orders.avg_reaction_time,
+            id: orders.avg_reaction_time, name: AVG Reaction Time}, {axisId: orders.avg_picking_time,
+            id: orders.avg_picking_time, name: AVG Picking Time}, {axisId: orders.avg_acceptance_time,
+            id: orders.avg_acceptance_time, name: AVG Acceptance Time}, {axisId: orders.avg_delivery_time,
+            id: orders.avg_delivery_time, name: AVG Delivery Time}], showLabels: true,
         showValues: true, unpinAxis: false, tickDensity: default, type: linear}, {
-        label: !!null '', orientation: right, series: [{axisId: orders_cl.avg_promised_eta,
-            id: orders_cl.avg_promised_eta, name: AVG PDT}, {axisId: orders_cl.avg_fulfillment_time,
-            id: orders_cl.avg_fulfillment_time, name: AVG Fulfillment Time (dec.)}],
+        label: !!null '', orientation: right, series: [{axisId: orders.avg_promised_eta,
+            id: orders.avg_promised_eta, name: AVG PDT}, {axisId: orders.avg_fulfillment_time,
+            id: orders.avg_fulfillment_time, name: AVG Fulfillment Time (dec.)}],
         showLabels: true, showValues: true, unpinAxis: false, tickDensity: default,
         tickDensityCustom: 5, type: linear}]
     series_types:
-      orders_cl.avg_fulfillment_time: line
-      orders_cl.avg_promised_eta: line
+      orders.avg_fulfillment_time: line
+      orders.avg_promised_eta: line
     series_colors:
-      orders_cl.cnt_orders: "#F9AB00"
-      orders_cl.avg_fulfillment_time: "#1A73E8"
+      orders.cnt_orders: "#F9AB00"
+      orders.avg_fulfillment_time: "#1A73E8"
     series_labels:
-      orders_cl.avg_fulfillment_time: AVG Fulfillment Time (dec.)
+      orders.avg_fulfillment_time: AVG Fulfillment Time (dec.)
     trend_lines: []
     show_null_points: true
     interpolation: linear
     defaults_version: 1
     hidden_fields: []
     listen:
-      Order Day of Week: orders_cl.created_day_of_week
+      Order Day of Week: orders.created_day_of_week
       Country: hubs.country
-      Order Date: orders_cl.created_date
+      Order Date: orders.created_date
       City: hubs.city
       Hub Name: hubs.hub_name
-      Date Granularity: orders_cl.date_granularity
+      Date Granularity: orders.date_granularity
     row: 19
     col: 0
     width: 13
@@ -570,20 +574,20 @@
     model: flink_v3
     explore: orders_cl
     type: single_value
-    fields: [orders_cl.created_date, orders_cl.cnt_orders]
+    fields: [orders.created_date, orders.cnt_orders]
     filters:
-      orders_cl.is_internal_order: 'no'
-      orders_cl.is_successful_order: 'yes'
-      orders_cl.created_date: 28 days ago for 28 days
-    sorts: [orders_cl.created_date desc]
+      orders.is_internal_order: 'no'
+      orders.is_successful_order: 'yes'
+      orders.created_date: 28 days ago for 28 days
+    sorts: [orders.created_date desc]
     limit: 500
     dynamic_fields: [{table_calculation: display_number, label: display_number, expression: 'max(${running_orders})',
         value_format: !!null '', value_format_name: decimal_0, is_disabled: true,
         _kind_hint: dimension, _type_hint: number}, {_kind_hint: measure, table_calculation: wow,
-        _type_hint: number, category: table_calculation, expression: 'if(diff_days(${orders_cl.created_date},offset(${orders_cl.created_date},7))
-          =-7,( ${orders_cl.cnt_orders} - offset(${orders_cl.cnt_orders}, 7) )
-          / offset(${orders_cl.cnt_orders}, 7),( ${orders_cl.cnt_orders} - offset(${orders_cl.cnt_orders},
-          6) ) / offset(${orders_cl.cnt_orders}, 6))', label: WoW, value_format: !!null '',
+        _type_hint: number, category: table_calculation, expression: 'if(diff_days(${orders.created_date},offset(${orders.created_date},7))
+          =-7,( ${orders.cnt_orders} - offset(${orders.cnt_orders}, 7) )
+          / offset(${orders.cnt_orders}, 7),( ${orders.cnt_orders} - offset(${orders.cnt_orders},
+          6) ) / offset(${orders.cnt_orders}, 6))', label: WoW, value_format: !!null '',
         value_format_name: percent_0}]
     query_timezone: Europe/Berlin
     custom_color_enabled: true
@@ -660,7 +664,7 @@
       Country: hubs.country
       City: hubs.city
       Hub Name: hubs.hub_name
-      Date Granularity: orders_cl.date_granularity
+      Date Granularity: orders.date_granularity
     row: 4
     col: 3
     width: 5
@@ -670,27 +674,27 @@
     model: flink_v3
     explore: orders_cl
     type: single_value
-    fields: [orders_cl.created_date, orders_cl.sum_gmv_gross]
+    fields: [orders.created_date, orders.sum_gmv_gross]
     filters:
-      orders_cl.is_internal_order: 'no'
-      orders_cl.is_successful_order: 'yes'
-      orders_cl.created_date: 28 days ago for 28 days
-    sorts: [orders_cl.created_date desc]
+      orders.is_internal_order: 'no'
+      orders.is_successful_order: 'yes'
+      orders.created_date: 28 days ago for 28 days
+    sorts: [orders.created_date desc]
     limit: 500
-    dynamic_fields: [{table_calculation: running_orders, label: Running orders, expression: 'running_total(${orders_cl.cnt_orders})',
+    dynamic_fields: [{table_calculation: running_orders, label: Running orders, expression: 'running_total(${orders.cnt_orders})',
         value_format: !!null '', value_format_name: !!null '', is_disabled: true,
         _kind_hint: dimension, _type_hint: 'null'}, {table_calculation: display_number,
         label: display_number, expression: 'max(${running_orders})', value_format: !!null '',
         value_format_name: decimal_0, is_disabled: true, _kind_hint: dimension, _type_hint: number},
-      {table_calculation: running_gmv, label: running_GMV, expression: 'running_total(${orders_cl.sum_gmv_gross})',
+      {table_calculation: running_gmv, label: running_GMV, expression: 'running_total(${orders.sum_gmv_gross})',
         value_format: !!null '', value_format_name: eur, is_disabled: true, _kind_hint: measure,
         _type_hint: number}, {table_calculation: display_value, label: display value,
         expression: 'max(${running_gmv})', value_format: !!null '', value_format_name: eur,
         is_disabled: true, _kind_hint: measure, _type_hint: number}, {_kind_hint: measure,
-        table_calculation: wow, _type_hint: number, category: table_calculation, expression: 'if(diff_days(${orders_cl.created_date},offset(${orders_cl.created_date},7))
-          =-7,( ${orders_cl.sum_gmv_gross}- offset(${orders_cl.sum_gmv_gross},
-          7) ) / offset(${orders_cl.sum_gmv_gross}, 7),( ${orders_cl.sum_gmv_gross}
-          - offset(${orders_cl.sum_gmv_gross}, 6) ) / offset(${orders_cl.sum_gmv_gross},
+        table_calculation: wow, _type_hint: number, category: table_calculation, expression: 'if(diff_days(${orders.created_date},offset(${orders.created_date},7))
+          =-7,( ${orders.sum_gmv_gross}- offset(${orders.sum_gmv_gross},
+          7) ) / offset(${orders.sum_gmv_gross}, 7),( ${orders.sum_gmv_gross}
+          - offset(${orders.sum_gmv_gross}, 6) ) / offset(${orders.sum_gmv_gross},
           6))', label: WoW, value_format: !!null '', value_format_name: percent_0}]
     query_timezone: Europe/Berlin
     custom_color_enabled: true
@@ -767,7 +771,7 @@
       Country: hubs.country
       City: hubs.city
       Hub Name: hubs.hub_name
-      Date Granularity: orders_cl.date_granularity
+      Date Granularity: orders.date_granularity
     row: 4
     col: 8
     width: 5
@@ -777,11 +781,11 @@
     model: flink_v3
     explore: orders_cl
     type: single_value
-    fields: [orders_cl.avg_fulfillment_time_mm_ss]
+    fields: [orders.avg_fulfillment_time_mm_ss]
     filters:
-      orders_cl.is_internal_order: 'no'
-      orders_cl.is_successful_order: 'yes'
-      orders_cl.created_date: yesterday
+      orders.is_internal_order: 'no'
+      orders.is_successful_order: 'yes'
+      orders.created_date: yesterday
     limit: 500
     query_timezone: Europe/Berlin
     custom_color_enabled: true
@@ -819,8 +823,8 @@
     y_axis_combined: true
     show_null_points: true
     interpolation: linear
-    y_axes: [{label: '', orientation: left, series: [{axisId: orders_cl.avg_fulfillment_time_mm_ss,
-            id: orders_cl.avg_fulfillment_time_mm_ss, name: AVG Fulfillment Time}],
+    y_axes: [{label: '', orientation: left, series: [{axisId: orders.avg_fulfillment_time_mm_ss,
+            id: orders.avg_fulfillment_time_mm_ss, name: AVG Fulfillment Time}],
         showLabels: false, showValues: true, minValue: 0.0055, valueFormat: '', unpinAxis: false,
         tickDensity: default, type: linear}]
     limit_displayed_rows_values:
@@ -853,7 +857,7 @@
       Country: hubs.country
       City: hubs.city
       Hub Name: hubs.hub_name
-      Date Granularity: orders_cl.date_granularity
+      Date Granularity: orders.date_granularity
     row: 4
     col: 13
     width: 5
@@ -863,16 +867,16 @@
     model: flink_v3
     explore: orders_cl
     type: single_value
-    fields: [orders_cl.created_date, orders_cl.cnt_unique_hubs]
+    fields: [orders.created_date, orders.cnt_unique_hubs]
     filters:
-      orders_cl.is_internal_order: 'no'
-      orders_cl.is_successful_order: 'yes'
-      orders_cl.created_date: 28 days ago for 28 days
+      orders.is_internal_order: 'no'
+      orders.is_successful_order: 'yes'
+      orders.created_date: 28 days ago for 28 days
       hubs.live: ''
-    sorts: [orders_cl.created_date desc]
+    sorts: [orders.created_date desc]
     limit: 500
     column_limit: 50
-    dynamic_fields: [{table_calculation: hubs_live, label: "# Hubs Live", expression: 'max(offset_list(${orders_cl.cnt_unique_hubs},0,3))',
+    dynamic_fields: [{table_calculation: hubs_live, label: "# Hubs Live", expression: 'max(offset_list(${orders.cnt_unique_hubs},0,3))',
         value_format: !!null '', value_format_name: !!null '', _kind_hint: measure,
         _type_hint: number}, {table_calculation: wow, label: WoW, expression: "(${hubs_live}\
           \ - offset(${hubs_live}, 7)) / offset(${hubs_live}, 7)", value_format: !!null '',
@@ -928,12 +932,12 @@
     header_font_size: 12
     rows_font_size: 12
     defaults_version: 1
-    hidden_fields: [orders_cl.cnt_unique_hubs]
+    hidden_fields: [orders.cnt_unique_hubs]
     listen:
       Country: hubs.country
       City: hubs.city
       Hub Name: hubs.hub_name
-      Date Granularity: orders_cl.date_granularity
+      Date Granularity: orders.date_granularity
     row: 4
     col: 18
     width: 5
@@ -945,8 +949,8 @@
     type: marketplace_viz_radial_gauge::radial_gauge-marketplace
     fields: [nps_after_order.nps_score]
     filters:
-      orders_cl.is_internal_order: 'no'
-      orders_cl.is_successful_order: 'yes'
+      orders.is_internal_order: 'no'
+      orders.is_successful_order: 'yes'
     limit: 500
     column_limit: 50
     total: true
@@ -1040,12 +1044,12 @@
     totals_color: "#808080"
     defaults_version: 0
     listen:
-      Order Day of Week: orders_cl.created_day_of_week
+      Order Day of Week: orders.created_day_of_week
       Country: hubs.country
-      Order Date: orders_cl.created_date
+      Order Date: orders.created_date
       City: hubs.city
       Hub Name: hubs.hub_name
-      Date Granularity: orders_cl.date_granularity
+      Date Granularity: orders.date_granularity
     row: 19
     col: 13
     width: 11
@@ -1076,7 +1080,7 @@
     model: flink_v3
     explore: orders_cl
     type: looker_column
-    fields: [orders_cl.date, issue_rates_clean.sum_damaged, issue_rates_clean.sum_missing_product,
+    fields: [orders.date, issue_rates_clean.sum_damaged, issue_rates_clean.sum_missing_product,
       issue_rates_clean.sum_orders_with_issues, issue_rates_clean.sum_perished_product,
       issue_rates_clean.sum_orders_total, issue_rates_clean.sum_wrong_order,
       issue_rates_clean.sum_wrong_product, issue_rates_clean.pct_orders_wrong_product,
@@ -1084,10 +1088,10 @@
       issue_rates_clean.pct_orders_wrong_order, issue_rates_clean.pct_orders_damaged_product,
       issue_rates_clean.pct_orders_with_issues]
     filters:
-      orders_cl.is_internal_order: 'no'
-      orders_cl.is_successful_order: 'yes'
+      orders.is_internal_order: 'no'
+      orders.is_successful_order: 'yes'
       issue_rates_clean.date: 28 days ago for 28 days
-    sorts: [orders_cl.date]
+    sorts: [orders.date]
     limit: 500
     query_timezone: Europe/London
     x_axis_gridlines: false
@@ -1141,12 +1145,12 @@
     interpolation: linear
     defaults_version: 1
     listen:
-      Order Day of Week: orders_cl.created_day_of_week
+      Order Day of Week: orders.created_day_of_week
       Country: hubs.country
-      Order Date: orders_cl.created_date
+      Order Date: orders.created_date
       City: hubs.city
       Hub Name: hubs.hub_name
-      Date Granularity: orders_cl.date_granularity
+      Date Granularity: orders.date_granularity
     row: 25
     col: 0
     width: 24
@@ -1207,7 +1211,7 @@
     model: flink_v3
     explore: orders_cl
     listens_to_filters: []
-    field: orders_cl.created_day_of_week
+    field: orders.created_day_of_week
   - name: Order Date
     title: Order Date
     type: field_filter
@@ -1221,7 +1225,7 @@
     model: flink_v3
     explore: orders_cl
     listens_to_filters: []
-    field: orders_cl.created_date
+    field: orders.created_date
   - name: Date Granularity
     title: Date Granularity
     type: field_filter
@@ -1235,4 +1239,4 @@
     model: flink_v3
     explore: orders_cl
     listens_to_filters: []
-    field: orders_cl.date_granularity
+    field: orders.date_granularity

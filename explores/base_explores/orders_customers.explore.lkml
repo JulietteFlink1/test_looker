@@ -16,8 +16,8 @@ explore: orders_customers {
 
   join: customers_metrics {
     view_label: "* Customers *"
-    sql_on: ${customers_metrics.country_iso} = ${orders_cl.country_iso} AND
-      ${customers_metrics.user_email}    = ${orders_cl.user_email} ;;
+    sql_on: ${customers_metrics.country_iso} = ${orders.country_iso} AND
+      ${customers_metrics.user_email}    = ${orders.user_email} ;;
     relationship: many_to_one
     type: left_outer
   }

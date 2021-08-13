@@ -279,7 +279,7 @@ view: customers_metrics {
     group_label: "* User Dimensions *"
     type: duration
     sql_start: ${first_order_raw} ;;
-    sql_end: ${orders_cl.created_raw} ;;
+    sql_end: ${orders.created_raw} ;;
   }
 
   dimension_group: time_between_sign_up_month_and_now {
