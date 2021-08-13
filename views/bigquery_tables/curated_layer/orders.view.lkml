@@ -310,8 +310,8 @@ view: orders {
   dimension: hub_location  {
     group_label: "* Hub Dimensions *"
     type: location
-    sql_latitude: ${orders.latitude};;
-    sql_longitude: ${orders.longitude};;
+    sql_latitude: ${orders_cl.latitude};;
+    sql_longitude: ${orders_cl.longitude};;
   }
 
   dimension: delivery_distance_m {

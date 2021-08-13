@@ -12,10 +12,10 @@
     filters:
       hubs.city: ''
       hubs.country: Germany
-      orders.is_internal_order: ''
-      orders.is_successful_order: ''
-      orders.created_day_of_week: ''
-      orders.created_week: before 0 weeks ago
+      orders_cl.is_internal_order: ''
+      orders_cl.is_successful_order: ''
+      orders_cl.created_day_of_week: ''
+      orders_cl.created_week: before 0 weeks ago
     limit: 500
     column_limit: 50
     total: true
@@ -110,7 +110,7 @@
     defaults_version: 0
     listen:
       Hub Name: hubs.hub_name
-      Order Date: orders.created_date
+      Order Date: orders_cl.created_date
     row: 0
     col: 0
     width: 8
@@ -124,10 +124,10 @@
     filters:
       hubs.city: ''
       hubs.country: Netherlands
-      orders.is_internal_order: 'no'
-      orders.is_successful_order: 'yes'
-      orders.created_day_of_week: ''
-      orders.created_week: before 0 weeks ago
+      orders_cl.is_internal_order: 'no'
+      orders_cl.is_successful_order: 'yes'
+      orders_cl.created_day_of_week: ''
+      orders_cl.created_week: before 0 weeks ago
     limit: 500
     column_limit: 50
     total: true
@@ -222,7 +222,7 @@
     defaults_version: 0
     listen:
       Hub Name: hubs.hub_name
-      Order Date: orders.created_date
+      Order Date: orders_cl.created_date
     row: 0
     col: 8
     width: 8
@@ -236,10 +236,10 @@
     filters:
       hubs.city: ''
       hubs.country: France
-      orders.is_internal_order: 'no'
-      orders.is_successful_order: 'yes'
-      orders.created_day_of_week: ''
-      orders.created_week: before 0 weeks ago
+      orders_cl.is_internal_order: 'no'
+      orders_cl.is_successful_order: 'yes'
+      orders_cl.created_day_of_week: ''
+      orders_cl.created_week: before 0 weeks ago
     limit: 500
     column_limit: 50
     total: true
@@ -334,7 +334,7 @@
     defaults_version: 0
     listen:
       Hub Name: hubs.hub_name
-      Order Date: orders.created_date
+      Order Date: orders_cl.created_date
     row: 0
     col: 16
     width: 8
@@ -345,13 +345,13 @@
     explore: orders_cl
     type: looker_line
     fields: [nps_after_order.pct_passives, nps_after_order.pct_detractors, nps_after_order.pct_promoters,
-      nps_after_order.cnt_responses, nps_after_order.nps_score, orders.created_week]
-    fill_fields: [orders.created_week]
+      nps_after_order.cnt_responses, nps_after_order.nps_score, orders_cl.created_week]
+    fill_fields: [orders_cl.created_week]
     filters:
-      orders.is_internal_order: 'no'
-      orders.is_successful_order: 'yes'
-      orders.created_week: before 0 weeks ago
-    sorts: [orders.created_week desc]
+      orders_cl.is_internal_order: 'no'
+      orders_cl.is_successful_order: 'yes'
+      orders_cl.created_week: before 0 weeks ago
+    sorts: [orders_cl.created_week desc]
     limit: 500
     total: true
     query_timezone: Europe/Berlin
@@ -398,7 +398,7 @@
       nps_after_order.pct_passives]
     listen:
       Hub Name: hubs.hub_name
-      Order Date: orders.created_date
+      Order Date: orders_cl.created_date
       Country: hubs.country
     row: 6
     col: 0
@@ -410,13 +410,13 @@
     explore: orders_cl
     type: looker_column
     fields: [nps_after_order.pct_passives, nps_after_order.pct_detractors, nps_after_order.pct_promoters,
-      nps_after_order.cnt_responses, nps_after_order.nps_score, orders.delivery_delay_since_eta]
+      nps_after_order.cnt_responses, nps_after_order.nps_score, orders_cl.delivery_delay_since_eta]
     filters:
-      orders.delivery_delay_since_eta: "<=7 AND >= -7"
-      orders.is_internal_order: 'no'
-      orders.is_successful_order: 'yes'
-      orders.created_week: before 0 weeks ago
-    sorts: [orders.delivery_delay_since_eta]
+      orders_cl.delivery_delay_since_eta: "<=7 AND >= -7"
+      orders_cl.is_internal_order: 'no'
+      orders_cl.is_successful_order: 'yes'
+      orders_cl.created_week: before 0 weeks ago
+    sorts: [orders_cl.delivery_delay_since_eta]
     limit: 500
     total: true
     query_timezone: Europe/Berlin
@@ -462,7 +462,7 @@
       nps_after_order.pct_passives]
     listen:
       Hub Name: hubs.hub_name
-      Order Date: orders.created_date
+      Order Date: orders_cl.created_date
       Country: hubs.country
     row: 6
     col: 12
@@ -510,4 +510,4 @@
     model: flink_v3
     explore: orders_cl
     listens_to_filters: []
-    field: orders.created_date
+    field: orders_cl.created_date
