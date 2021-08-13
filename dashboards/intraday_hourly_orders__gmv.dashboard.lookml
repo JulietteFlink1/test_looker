@@ -6,7 +6,7 @@
   - name: Hourly orders real-time comparison
     title: Hourly orders real-time comparison
     model: flink_v3
-    explore: orders_cl
+    explore: orders_cl_updated_hourly
     type: looker_line
     fields: [orders_cl.hour, orders_cl.created_date, orders_cl.count]
     pivots: [orders_cl.created_date]
@@ -56,7 +56,7 @@
   - name: Hourly GMV real-time comparison
     title: Hourly GMV real-time comparison
     model: flink_v3
-    explore: orders_cl
+    explore: orders_cl_updated_hourly
     type: looker_line
     fields: [orders_cl.hour, orders_cl.created_date, orders_cl.sum_gmv_gross]
     pivots: [orders_cl.created_date]
@@ -116,7 +116,7 @@
   - name: Hourly GMV real-time comparison - NL
     title: Hourly GMV real-time comparison - NL
     model: flink_v3
-    explore: orders_cl
+    explore: orders_cl_updated_hourly
     type: looker_line
     fields: [orders_cl.hour, orders_cl.created_date, orders_cl.sum_gmv_gross]
     pivots: [orders_cl.created_date]
@@ -193,7 +193,7 @@
   - name: Hourly orders real-time comparison - NL
     title: Hourly orders real-time comparison - NL
     model: flink_v3
-    explore: orders_cl
+    explore: orders_cl_updated_hourly
     type: looker_line
     fields: [orders_cl.hour, orders_cl.created_date, orders_cl.count]
     pivots: [orders_cl.created_date]
@@ -270,7 +270,7 @@
   - name: Hourly real-time comparison (Tabular) - NL
     title: Hourly real-time comparison (Tabular) - NL
     model: flink_v3
-    explore: orders_cl
+    explore: orders_cl_updated_hourly
     type: looker_grid
     fields: [orders_cl.hour, orders_cl.count, orders_cl.created_date, orders_cl.sum_gmv_gross]
     pivots: [orders_cl.created_date]
@@ -371,7 +371,7 @@
   - name: Hourly real-time comparison (Tabular)
     title: Hourly real-time comparison (Tabular)
     model: flink_v3
-    explore: orders_cl
+    explore: orders_cl_updated_hourly
     type: looker_grid
     fields: [orders_cl.hour, orders_cl.created_date, orders_cl.count, orders_cl.sum_gmv_gross]
     pivots: [orders_cl.created_date]
@@ -497,7 +497,7 @@
   - name: Hourly orders real-time comparison - FR
     title: Hourly orders real-time comparison - FR
     model: flink_v3
-    explore: orders_cl
+    explore: orders_cl_updated_hourly
     type: looker_line
     fields: [orders_cl.created_date, orders_cl.hour, orders_cl.count]
     pivots: [orders_cl.created_date]
@@ -548,7 +548,7 @@
   - name: Hourly real-time comparison (Tabular) - FR
     title: Hourly real-time comparison (Tabular) - FR
     model: flink_v3
-    explore: orders_cl
+    explore: orders_cl_updated_hourly
     type: looker_grid
     fields: [orders_cl.created_date, orders_cl.hour, orders_cl.count, orders_cl.sum_gmv_gross]
     pivots: [orders_cl.created_date]
@@ -642,7 +642,7 @@
   - name: Hourly GMV real-time comparison - FR
     title: Hourly GMV real-time comparison - FR
     model: flink_v3
-    explore: orders_cl
+    explore: orders_cl_updated_hourly
     type: looker_line
     fields: [orders_cl.created_date, orders_cl.sum_gmv_gross, orders_cl.hour]
     pivots: [orders_cl.created_date]
@@ -711,7 +711,7 @@
       display: popover
       options: []
     model: flink_v3
-    explore: orders_cl
+    explore: orders_cl_updated_hourly
     listens_to_filters: []
     field: hubs.hub_name
   - name: Warehouse - NL
@@ -725,7 +725,7 @@
       display: popover
       options: []
     model: flink_v3
-    explore: orders_cl
+    explore: orders_cl_updated_hourly
     listens_to_filters: []
     field: hubs.hub_name
   - name: Warehouse - FR
@@ -739,7 +739,7 @@
       display: popover
       options: []
     model: flink_v3
-    explore: orders_cl
+    explore: orders_cl_updated_hourly
     listens_to_filters: []
     field: hubs.hub_name
   - name: Hour
@@ -777,6 +777,6 @@
       - '23'
       - '24'
     model: flink_v3
-    explore: orders_cl
+    explore: orders_cl_updated_hourly
     listens_to_filters: []
     field: orders_cl.hour

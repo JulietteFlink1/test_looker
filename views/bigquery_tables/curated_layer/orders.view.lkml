@@ -205,13 +205,13 @@ view: orders {
       quarter,
       year
     ]
-    sql: ${TABLE}.order_timestamp ;;
+    sql: ${TABLE}.partition_timestamp ;;
     datatype: timestamp
   }
 
   dimension: is_order_hour_before_now_hour {
     type: yesno
-    sql: ${order_hour} <= extract(hour from CURRENT_TIMESTAMP AT TIME ZONE 'Europe/Berlin') ;;
+    sql: ${created_hour_of_day} <= ${now_hour_of_day} ;;
   }
 
   dimension_group: delivery_eta_timestamp {
