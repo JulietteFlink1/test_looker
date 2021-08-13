@@ -173,6 +173,7 @@ view: orders {
     timeframes: [
       raw,
       hour_of_day,
+      hour,
       time,
       date,
       day_of_week,
@@ -183,6 +184,34 @@ view: orders {
     ]
     sql: current_timestamp;;
     datatype: timestamp
+  }
+
+  dimension_group: created {
+    group_label: "* Dates and Timestamps *"
+    label: "Order"
+    description: "Order Placement Date"
+    type: time
+    timeframes: [
+      raw,
+      minute15,
+      minute30,
+      hour_of_day,
+      hour,
+      time,
+      date,
+      day_of_week,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: ${TABLE}.order_timestamp ;;
+    datatype: timestamp
+  }
+
+  dimension: is_order_hour_before_now_hour {
+    type: yesno
+    sql: ${order_hour} <= extract(hour from CURRENT_TIMESTAMP AT TIME ZONE 'Europe/Berlin') ;;
   }
 
   dimension_group: delivery_eta_timestamp {
@@ -465,28 +494,6 @@ view: orders {
     sql: ${TABLE}.number_of_items ;;
   }
 
-  dimension_group: created {
-    group_label: "* Dates and Timestamps *"
-    label: "Order"
-    description: "Order Placement Date"
-    type: time
-    timeframes: [
-      raw,
-      minute15,
-      minute30,
-      hour_of_day,
-      time,
-      date,
-      day_of_week,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    sql: ${TABLE}.order_timestamp ;;
-    datatype: timestamp
-  }
-
   dimension_group: order_date_30_min_bins {
     group_label: "* Dates and Timestamps *"
     label: "Order Date - 30 min bins"
@@ -569,6 +576,11 @@ view: orders {
   dimension: order_hour {
     type: number
     sql: ${TABLE}.order_hour ;;
+  }
+
+  dimension: hour {
+    type: number
+    sql: extract(hour from ${created_raw} AT TIME ZONE 'Europe/Berlin') ;;
   }
 
   dimension: id {
