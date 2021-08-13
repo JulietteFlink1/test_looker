@@ -19,8 +19,6 @@ explore: orders_cl {
 
   always_filter: {
     filters:  [
-      hubs.country: "",
-      hubs.hub_name: "",
       orders_cl.is_internal_order: "no",
       orders_cl.is_successful_order: "yes",
       orders_cl.created_date: "after 2021-01-25"
