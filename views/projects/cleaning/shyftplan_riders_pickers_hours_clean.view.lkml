@@ -19,14 +19,14 @@ view: shyftplan_riders_pickers_hours_clean {
 
     orders_per_hub as
     (
-        select date(created, 'Europe/Berlin') as date,
-        CASE WHEN JSON_EXTRACT_SCALAR(metadata, '$.warehouse') IN ('hamburg-oellkersallee', 'hamburg-oelkersallee') THEN 'de_ham_alto'
-              WHEN JSON_EXTRACT_SCALAR(metadata, '$.warehouse') = 'münchen-leopoldstraße' THEN 'de_muc_schw'
-              ELSE JSON_EXTRACT_SCALAR(metadata, '$.warehouse') end as warehouse,
-              count(distinct orders.id) as orders
-        from `flink-data-prod.saleor_prod_global.order_order` orders
-        where orders.status in ('fulfilled', 'partially fulfilled') and
-              orders.user_email NOT LIKE '%goflink%' AND orders.user_email NOT LIKE '%pickery%' AND LOWER(orders.user_email) NOT IN ('christoph.a.cordes@gmail.com', 'jfdames@gmail.com', 'oliver.merkel@gmail.com', 'alenaschneck@gmx.de', 'saadsaeed354@gmail.com', 'saadsaeed353@gmail.com', 'fabian.hardenberg@gmail.com', 'benjamin.zagel@gmail.com')
+        select date(order_timestamp, 'Europe/Berlin') as date,
+        hub_code as warehouse,
+        count(distinct orders.order_uuid) as orders
+        from `flink-data-prod.curated.orders` orders
+        where is_successful_order is true and
+              orders.customer_email NOT LIKE '%goflink%' AND orders.customer_email
+              NOT LIKE '%pickery%' AND LOWER(orders.customer_email)
+              NOT IN ('christoph.a.cordes@gmail.com', 'jfdames@gmail.com', 'oliver.merkel@gmail.com', 'alenaschneck@gmx.de', 'saadsaeed354@gmail.com', 'saadsaeed353@gmail.com', 'fabian.hardenberg@gmail.com', 'benjamin.zagel@gmail.com')
         group by 1, 2
     ),
 
@@ -60,7 +60,6 @@ view: shyftplan_riders_pickers_hours_clean {
     on all_data.date = picker_hours.date and all_data.hub_name  = picker_hours.hub_name
     left join orders_per_hub
     on lower(all_data.hub_name) = orders_per_hub.warehouse and all_data.date=orders_per_hub.date
-    order by 1 desc, 2
        ;;
   }
 
