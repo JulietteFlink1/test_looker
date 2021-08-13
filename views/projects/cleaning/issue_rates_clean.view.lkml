@@ -2,50 +2,23 @@ view: issue_rates_clean {
   derived_table: {
     sql: with issues_orders as
       (
-          select * from
-                (
-                    select
-                -- Dimensions
-                hub_code,
-                date(orders.order_timestamp, 'Europe/Berlin') as date,
-                -- Aggregates
-                count(distinct if(cs.problem_group = 'Wrong Order', order_nr__, null)) as wrong_order,
-                count(distinct if(cs.problem_group = 'Wrong Product', order_nr__, null)) as wrong_product,
-                count(distinct if(cs.problem_group = 'Perished Product', order_nr__, null)) as perished_product,
-                count(distinct if(cs.problem_group = 'Missing Product', order_nr__, null)) as missing_product,
-                count(distinct if(cs.problem_group = 'Damaged', order_nr__, null)) as damaged,
-                count(distinct if (cs.problem_group is not null, order_nr__, null)) as orders_with_issues
-                -- Joins
-                from `flink-data-prod.curated.orders` orders
-                left join `flink-backend.gsheet_cs_issues.CS_issues_post_delivery` cs
-                on cs.country_iso = orders.country_iso and cast(cs.order_nr__ as string) = orders.order_id
-                -- other
-                where orders.backend_source = 'saleor'
-                group by 1, 2
-                )
-          union all
-            select * from
-                (
-                    select
-                -- Dimensions
-                hub_code,
-                date(orders.order_timestamp, 'Europe/Berlin') as date,
-                -- Aggregates
-                count(distinct if(cs.problem_group = 'Wrong Order', order_nr__, null)) as wrong_order,
-                count(distinct if(cs.problem_group = 'Wrong Product', order_nr__, null)) as wrong_product,
-                count(distinct if(cs.problem_group = 'Perished Product', order_nr__, null)) as perished_product,
-                count(distinct if(cs.problem_group = 'Missing Product', order_nr__, null)) as missing_product,
-                count(distinct if(cs.problem_group = 'Damaged', order_nr__, null)) as damaged,
-                count(distinct if (cs.problem_group is not null, order_nr__, null)) as orders_with_issues
-                -- Joins
-                from `flink-data-prod.curated.orders` orders
-                left join `flink-backend.gsheet_cs_issues.CS_issues_post_delivery` cs
-                on cs.country_iso = orders.country_iso and cast(cs.order_nr__ as string) = orders.order_number
-                -- other
-                where orders.backend_source = 'commercetools'
-                group by 1, 2
-                )
-
+        select
+        -- Dimensions
+        hub_code,
+        date(orders.order_timestamp, 'Europe/Berlin') as date,
+        -- Aggregates
+        count(distinct if(cs.problem_group = 'Wrong Order', order_nr_, null)) as wrong_order,
+        count(distinct if(cs.problem_group = 'Wrong Product', order_nr_, null)) as wrong_product,
+        count(distinct if(cs.problem_group = 'Perished Product', order_nr_, null)) as perished_product,
+        count(distinct if(cs.problem_group = 'Missing Product', order_nr_, null)) as missing_product,
+        count(distinct if(cs.problem_group = 'Damaged', order_nr_, null)) as damaged,
+        count(distinct if (cs.problem_group is not null, order_nr_, null)) as orders_with_issues
+        -- Joins
+        from `flink-data-prod.curated.orders` orders
+        left join `flink-data-prod.curated.cs_post_delivery_issues` cs
+        on cs.country_iso = orders.country_iso and cs.order_nr_ = orders.order_number
+        -- other
+        group by 1, 2
       ),
 
       orders_per_hub as
@@ -85,7 +58,9 @@ view: issue_rates_clean {
       on issues_orders.hub_code = orders_per_hub.hub_code
       and issues_orders.date = orders_per_hub.date
       -- Other
+      where orders_per_hub.date >= '2021-08-10' and orders_per_hub.hub_code in ('fr_par_bagn', 'nl_del_cent', 'fr_par_brul')
       group by 1,2
+      order by 1, 2
  ;;
   }
 
