@@ -71,7 +71,7 @@ explore: orders_cl {
   }
 
   join: issue_rates_clean {
-    view_label: "Order Issues on Hub-Level"
+    view_label: "* Order Issues on Hub-Level *"
     sql_on: ${hubs.hub_code}           =  ${issue_rates_clean.hub_code} and
             ${orders_cl.date}          =  ${issue_rates_clean.date_dynamic};;
     relationship: many_to_one # decided against one_to_many: on this level, many orders have hub-level issue-aggregates
