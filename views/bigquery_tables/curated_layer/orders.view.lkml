@@ -1,34 +1,57 @@
 view: orders {
-  sql_table_name: `flink-data-prod.curated.orders_ct`
+  sql_table_name: `flink-data-prod.curated.orders`
     ;;
+
+  view_label: "* Orders *"
+  drill_fields: [core_dimensions*]
+
+  set: core_dimensions {
+    fields: [
+      country_iso,
+      id,
+      warehouse_name,
+      created_raw,
+      customer_type,
+      gmv_gross,
+      discount_amount,
+      delivery_eta_timestamp_raw,
+      delivery_timestamp_raw
+    ]
+  }
 
   dimension: acceptance_time {
     type: number
+    hidden: yes
     sql: ${TABLE}.acceptance_time_minutes ;;
   }
 
   dimension: shipping_price_gross_amount {
     type: number
+    hidden: yes
     sql: ${TABLE}.amt_delivery_fee_gross ;;
   }
 
   dimension: shipping_price_net_amount {
     type: number
+    hidden: yes
     sql: ${TABLE}.amt_delivery_fee_net ;;
   }
 
   dimension: discount_amount {
     type: number
+    hidden: yes
     sql: ${TABLE}.amt_discount_gross ;;
   }
 
   dimension: amt_discount_net {
     type: number
+    hidden: yes
     sql: ${TABLE}.amt_discount_net ;;
   }
 
   dimension: gmv_gross {
     type: number
+    hidden: yes
     sql: ${TABLE}.amt_gmv_gross ;;
   }
 
@@ -50,6 +73,7 @@ view: orders {
 
   dimension: gmv_net {
     type: number
+    hidden: yes
     sql: ${TABLE}.amt_gmv_net ;;
   }
 
@@ -66,16 +90,20 @@ view: orders {
 
   dimension: total_gross_amount {
     type: number
+    hidden: yes
     sql: ${TABLE}.amt_revenue_gross ;;
   }
 
   dimension: total_net_amount {
     type: number
+    hidden: yes
     sql: ${TABLE}.amt_revenue_net ;;
   }
 
   dimension: anonymous_id {
     type: string
+    group_label: "* IDs *"
+    hidden: no
     sql: ${TABLE}.anonymous_id ;;
   }
 
@@ -85,11 +113,15 @@ view: orders {
   }
 
   dimension: billing_address_id {
+    group_label: "* IDs *"
+    hidden: yes
     type: number
     sql: ${TABLE}.billing_address_id ;;
   }
 
   dimension: cart_id {
+    group_label: "* IDs *"
+    hidden: yes
     type: string
     sql: ${TABLE}.cart_id ;;
   }
@@ -110,6 +142,8 @@ view: orders {
   }
 
   dimension: user_id {
+    group_label: "* IDs *"
+    hidden: no
     type: string
     sql: ${TABLE}.customer_id ;;
   }
@@ -120,13 +154,15 @@ view: orders {
   }
 
   dimension: shipping_address_id {
+    group_label: "* IDs *"
+    hidden: yes
     type: string
     sql: ${TABLE}.delivery_address_id ;;
   }
 
   dimension: delivery_eta_minutes {
     type: number
-    sql: ${TABLE}.delivery_eta_minutes ;;
+    sql: ${TABLE}.delivery_pdt_minutes ;;
   }
 
   dimension_group: now {
@@ -137,6 +173,7 @@ view: orders {
     timeframes: [
       raw,
       hour_of_day,
+      hour,
       time,
       date,
       day_of_week,
@@ -147,6 +184,34 @@ view: orders {
     ]
     sql: current_timestamp;;
     datatype: timestamp
+  }
+
+  dimension_group: created {
+    group_label: "* Dates and Timestamps *"
+    label: "Order"
+    description: "Order Placement Date"
+    type: time
+    timeframes: [
+      raw,
+      minute15,
+      minute30,
+      hour_of_day,
+      hour,
+      time,
+      date,
+      day_of_week,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: ${TABLE}.order_timestamp ;;
+    datatype: timestamp
+  }
+
+  dimension: is_order_hour_before_now_hour {
+    type: yesno
+    sql: ${order_hour} <= extract(hour from CURRENT_TIMESTAMP AT TIME ZONE 'Europe/Berlin') ;;
   }
 
   dimension_group: delivery_eta_timestamp {
@@ -163,7 +228,7 @@ view: orders {
           quarter,
           year
     ]
-    sql: ${TABLE}.delivery_eta_timestamp ;;
+    sql: ${TABLE}.delivery_pdt_timestamp ;;
   }
 
   dimension: delivery_delay_since_eta {
@@ -267,7 +332,7 @@ view: orders {
 
   dimension: is_delivery_eta_available {
     type: yesno
-    sql: ${TABLE}.is_delivery_eta_available ;;
+    sql: ${TABLE}.is_delivery_pdt_available ;;
   }
 
   dimension: is_voucher_order{
@@ -429,28 +494,6 @@ view: orders {
     sql: ${TABLE}.number_of_items ;;
   }
 
-  dimension_group: created {
-    group_label: "* Dates and Timestamps *"
-    label: "Order"
-    description: "Order Placement Date"
-    type: time
-    timeframes: [
-      raw,
-      minute15,
-      minute30,
-      hour_of_day,
-      time,
-      date,
-      day_of_week,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    sql: ${TABLE}.order_timestamp ;;
-    datatype: timestamp
-  }
-
   dimension_group: order_date_30_min_bins {
     group_label: "* Dates and Timestamps *"
     label: "Order Date - 30 min bins"
@@ -535,6 +578,11 @@ view: orders {
     sql: ${TABLE}.order_hour ;;
   }
 
+  dimension: hour {
+    type: number
+    sql: extract(hour from ${created_raw} AT TIME ZONE 'Europe/Berlin') ;;
+  }
+
   dimension: id {
     type: string
     sql: ${TABLE}.order_id ;;
@@ -570,9 +618,11 @@ view: orders {
     sql: ${TABLE}.order_rider_claimed_timestamp ;;
   }
 
-  dimension: unique_id {
+  dimension: order_uuid {
     type: string
+    group_label: "* IDs *"
     primary_key: yes
+    hidden: yes
     sql: ${TABLE}.order_uuid ;;
   }
 

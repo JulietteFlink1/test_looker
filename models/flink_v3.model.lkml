@@ -15,6 +15,7 @@ include: "/views/**/*.view"
 include: "/explores/**/*.explore.lkml"
 include: "/explores/base_explores/orders_cl.explore.lkml"
 include: "/explores/base_explores/order_orderline_cl.explore.lkml"
+include: "/explores/base_explores/orders_customers.explore.lkml"
 
 
 week_start_day: monday
@@ -22,6 +23,11 @@ case_sensitive: no
 
 datagroup: flink_default_datagroup {
   sql_trigger: SELECT MAX(_fivetran_synced) FROM `flink-data-prod.saleor_prod_global.warehouse_stock`;;
+  max_cache_age: "24 hour"
+}
+
+datagroup: flink_hourly_datagroup {
+  sql_trigger: SELECT MAX(partition_timestamp) FROM `flink-data-prod.curated.inventory`;;
   max_cache_age: "24 hour"
 }
 
@@ -42,7 +48,7 @@ named_value_format: euro_accounting_0_precision {
 ####### ORDER EXPLORE #######
 explore: order_order {
   label: "Orders"
-  hidden: no
+  hidden: yes
   view_label: "* Orders *"
   group_label: "01) Performance"
   description: "General Business Performance - Orders, Revenue, etc."

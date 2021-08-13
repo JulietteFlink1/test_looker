@@ -1,6 +1,6 @@
 view: hubs_ct {
   view_label: "* Hub Data *"
-  sql_table_name: `flink-data-prod.curated.hubs_ct`
+  sql_table_name: `flink-data-prod.curated.hubs`
     ;;
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

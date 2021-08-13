@@ -1,6 +1,6 @@
 view: inventory {
   view_label: "* Inventory Data *"
-  sql_table_name: `flink-data-prod.curated.inventory_ct`
+  sql_table_name: `flink-data-prod.curated.inventory`
     ;;
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -43,8 +43,8 @@ view: inventory {
       quarter,
       year
     ]
-    sql: ${TABLE}.last_modified_at ;;
-    label: "Inventory Status"
+    sql: ${TABLE}.partition_timestamp ;;
+    label: "Inventory Update"
   }
 
   dimension: shelf_number {
@@ -57,13 +57,33 @@ view: inventory {
     sql: ${TABLE}.sku ;;
   }
 
+  dimension: quantity {
+    label: "Stock quantity"
+    type: number
+    sql: ${TABLE}.quantity_available ;;
+  }
+
 
   # =========  hidden   =========
+  dimension: flag_out_of_stock {
+    label: "Out of Stock Flag"
+    description: "Takes the value of 1 if the sku is out of stock"
+    hidden: yes
+    type: number
+    sql: case when ${is_oos} then 1 else 0 end ;;
+  }
 
+  dimension: flag_less_than_five_units_in_stock {
+    label: "Less Than Five Units In Stock Flag"
+    description: "Takes the value of 1 if the sku has less than 5 units in stock"
+    hidden: yes
+    type: number
+    sql: case when ${quantity} <= 5 then 1 else 0 end ;;
+  }
 
   # =========  IDs   =========
-  dimension: unique_key {
-    sql: concat(${TABLE}.inventory_id, CAST(${TABLE}.last_modified_at as string)) ;;
+  dimension: inventory_uuid {
+    sql: ${TABLE}.inventory_uuid ;;
     primary_key: yes
     group_label: "> IDs"
   }
@@ -96,31 +116,71 @@ view: inventory {
     group_label: "> Admin Data"
   }
 
-  dimension: number_of_items_reserved {
-    # currently this field is always empty
-    # is was a repeated field
-    # once knowing, how the actual data looks like, this field needs to be modified (esp. in the dbt-model)
-    type: number
-    sql: ${TABLE}.number_of_items_reserved ;;
-    group_label: "> Admin Data"
-  }
-
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  measure: available_quantity {
+  measure: avg_quantity_available {
     type: average
-    sql: ${TABLE}.available_quantity ;;
+    sql: ${TABLE}.quantity_available ;;
+    label: "AVG Quantity Available"
   }
 
-  measure: number_of_reservations {
-    type: average
-    sql: ${TABLE}.number_of_reservations ;;
-  }
-
-  measure: quantity_on_stock {
+  measure: avg_quantity_on_stock {
     type: average
     sql: ${TABLE}.quantity_on_stock ;;
+    label: "AVG Quantity on Stock"
+  }
+
+  measure: avg_quantity_reserved {
+    type: average
+    sql: ${TABLE}.quantity_reserved ;;
+    label: "AVG Quantity Reserved"
+  }
+
+  measure: sum_stock_quantity {
+    type: sum
+    sql: ${TABLE}.quantity_available ;;
+    label: "Sum Current Quantity Available"
+    filters: [is_most_recent_record: "Yes"]
+  }
+
+
+  # ~~~~~~~~  from realtime model:
+  # ~~~~~~~~  https://goflink.cloud.looker.com/projects/flink_realtime/files/views/warehouse_stock_facts.view.lkml
+  measure: pct_out_of_stock {
+    label: "% Stockouts"
+    hidden: no
+    description: "Percentage of stockouts"
+    type: average
+    sql: ${flag_out_of_stock} ;;
+    value_format_name: percent_0
+    html:
+      {% if value > 0.3 %}
+      <p style="color: white; background-color: red;font-size: 100%; text-align:center">{{ rendered_value }}</p>
+      {% elsif value > 0.2 %}
+      <p style="color: white; background-color: #F39C12; font-size:100%; text-align:center">{{ rendered_value }}</p>
+      {% elsif value > 0.1 %}
+      <p style="color: #D4AC0D; background-color: #FCF3CF; font-size:100%; text-align:center">{{ rendered_value }}</p>
+      {% else %}
+      <p style="color: black; font-size:100%; text-align:center">{{ rendered_value }}</p>
+      {% endif %};;
+  }
+
+  measure: pct_with_less_than_five_units_in_stock {
+    label: "% Products With Less Than 5 Units in Stock"
+    hidden: no
+    description: "Percentage of products with less than 5 units in stock"
+    type: number
+    sql: AVG(${flag_less_than_five_units_in_stock}) ;;
+    value_format_name: percent_0
+    html:
+      {% if value > 0.5 %}
+      <p style="color: white; background-color: red;font-size: 100%; text-align:center">{{ rendered_value }}</p>
+      {% elsif value > 0.3 %}
+      <p style="color: white;background-color: orange; font-size:100%; text-align:center">{{ rendered_value }}</p>
+      {% else %}
+      <p style="color: black; font-size:100%; text-align:center">{{ rendered_value }}</p>
+      {% endif %};;
   }
 
 

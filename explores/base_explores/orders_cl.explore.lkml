@@ -10,17 +10,20 @@ include: "/explores/base_explores/orders_cl.explore"
 
 explore: orders_cl {
   from: orders
-  #extension: required # can not be used un-extended!
+  label: "Orders"
+  view_label: "* Orders *"
+  group_label: "01) Performance"
+  description: "General Business Performance - Orders, Revenue, etc."
   view_name: orders_cl # needs to be set in order that the base_explore can be extended and referenced properly
-  hidden: yes
+  hidden: no
 
   always_filter: {
     filters:  [
-      hubs.country: "",
-      hubs.hub_name: "",
       orders_cl.is_internal_order: "no",
       orders_cl.is_successful_order: "yes",
-      orders_cl.created_date: "after 2021-01-25"
+      orders_cl.created_date: "after 2021-01-25",
+      hubs.country: "",
+      hubs.hub_name: ""
     ]
   }
   access_filter: {

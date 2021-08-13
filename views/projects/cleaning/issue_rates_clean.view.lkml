@@ -2,42 +2,39 @@ view: issue_rates_clean {
   derived_table: {
     sql: with issues_orders as
       (
-          select
-          -- Dimensions
-          CASE WHEN JSON_EXTRACT_SCALAR(orders.metadata, '$.warehouse') IN ('hamburg-oellkersallee', 'hamburg-oelkersallee') THEN 'de_ham_alto'
-          WHEN JSON_EXTRACT_SCALAR(orders.metadata, '$.warehouse') = 'münchen-leopoldstraße' THEN 'de_muc_schw'
-          ELSE JSON_EXTRACT_SCALAR(orders.metadata, '$.warehouse') end as hub_code,
-          date(orders.created, 'Europe/Berlin') as date,
-          -- Aggregates
-          count(distinct if(cs.problem_group = 'Wrong Order', order_nr__, null)) as wrong_order,
-          count(distinct if(cs.problem_group = 'Wrong Product', order_nr__, null)) as wrong_product,
-          count(distinct if(cs.problem_group = 'Perished Product', order_nr__, null)) as perished_product,
-          count(distinct if(cs.problem_group = 'Missing Product', order_nr__, null)) as missing_product,
-          count(distinct if(cs.problem_group = 'Damaged', order_nr__, null)) as damaged,
-          count(distinct if (cs.problem_group is not null, order_nr__, null)) as orders_with_issues
-          -- Joins
-          from `flink-data-prod.saleor_prod_global.order_order` orders
-          left join `flink-backend.gsheet_cs_issues.CS_issues_post_delivery` cs
-          on cs.country_iso = orders.country_iso and cs.order_nr__ = orders.id
-          -- other
-          group by 1, 2
+        select
+        -- Dimensions
+        hub_code,
+        date(orders.order_timestamp, 'Europe/Berlin') as date,
+        -- Aggregates
+        count(distinct if(cs.problem_group = 'Wrong Order', order_nr_, null)) as wrong_order,
+        count(distinct if(cs.problem_group = 'Wrong Product', order_nr_, null)) as wrong_product,
+        count(distinct if(cs.problem_group = 'Perished Product', order_nr_, null)) as perished_product,
+        count(distinct if(cs.problem_group = 'Missing Product', order_nr_, null)) as missing_product,
+        count(distinct if(cs.problem_group = 'Damaged', order_nr_, null)) as damaged,
+        count(distinct if (cs.problem_group is not null, order_nr_, null)) as orders_with_issues
+        -- Joins
+        from `flink-data-prod.curated.orders` orders
+        left join `flink-data-prod.curated.cs_post_delivery_issues` cs
+        on cs.country_iso = orders.country_iso and cs.order_nr_ = orders.order_number
+        -- other
+        group by 1, 2
       ),
 
       orders_per_hub as
       (
           select
           -- Dimensions
-          CASE WHEN JSON_EXTRACT_SCALAR(metadata, '$.warehouse') IN ('hamburg-oellkersallee', 'hamburg-oelkersallee') THEN 'de_ham_alto'
-          WHEN JSON_EXTRACT_SCALAR(metadata, '$.warehouse') = 'münchen-leopoldstraße' THEN 'de_muc_schw'
-          ELSE JSON_EXTRACT_SCALAR(metadata, '$.warehouse') end as hub_code,
-          date(created, 'Europe/Berlin') as date,
+          hub_code,
+          date(order_timestamp, 'Europe/Berlin') as date,
           -- Aggregates
-          count(distinct id) as count_orders
+          count(distinct order_uuid) as count_orders
           -- Joins
-          from `flink-data-prod.saleor_prod_global.order_order`
+          from `flink-data-prod.curated.orders`
           -- Where
-          where status in ('fulfilled', 'partially fulfilled') and
-          user_email NOT LIKE '%goflink%' AND user_email NOT LIKE '%pickery%' AND LOWER(user_email) NOT IN ('christoph.a.cordes@gmail.com', 'jfdames@gmail.com', 'oliver.merkel@gmail.com', 'alenaschneck@gmx.de', 'saadsaeed354@gmail.com', 'saadsaeed353@gmail.com', 'fabian.hardenberg@gmail.com', 'benjamin.zagel@gmail.com')
+          where is_successful_order is true and
+          customer_email NOT LIKE '%goflink%' AND customer_email NOT LIKE '%pickery%'
+          AND LOWER(customer_email) NOT IN ('christoph.a.cordes@gmail.com', 'jfdames@gmail.com', 'oliver.merkel@gmail.com', 'alenaschneck@gmx.de', 'saadsaeed354@gmail.com', 'saadsaeed353@gmail.com', 'fabian.hardenberg@gmail.com', 'benjamin.zagel@gmail.com')
           -- Other
           group by 1, 2
       )
@@ -61,7 +58,9 @@ view: issue_rates_clean {
       on issues_orders.hub_code = orders_per_hub.hub_code
       and issues_orders.date = orders_per_hub.date
       -- Other
+      where orders_per_hub.date >= '2021-08-10' and orders_per_hub.hub_code in ('fr_par_bagn', 'nl_del_cent', 'fr_par_brul')
       group by 1,2
+      order by 1, 2
  ;;
   }
 

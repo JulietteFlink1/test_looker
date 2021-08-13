@@ -124,8 +124,8 @@
     filters:
       hubs.city: ''
       hubs.country: Netherlands
-      orders_cl.is_internal_order: ''
-      orders_cl.is_successful_order: ''
+      orders_cl.is_internal_order: 'no'
+      orders_cl.is_successful_order: 'yes'
       orders_cl.created_day_of_week: ''
       orders_cl.created_week: before 0 weeks ago
     limit: 500
@@ -236,8 +236,8 @@
     filters:
       hubs.city: ''
       hubs.country: France
-      orders_cl.is_internal_order: ''
-      orders_cl.is_successful_order: ''
+      orders_cl.is_internal_order: 'no'
+      orders_cl.is_successful_order: 'yes'
       orders_cl.created_day_of_week: ''
       orders_cl.created_week: before 0 weeks ago
     limit: 500
@@ -348,8 +348,8 @@
       nps_after_order.cnt_responses, nps_after_order.nps_score, orders_cl.created_week]
     fill_fields: [orders_cl.created_week]
     filters:
-      orders_cl.is_internal_order: ''
-      orders_cl.is_successful_order: ''
+      orders_cl.is_internal_order: 'no'
+      orders_cl.is_successful_order: 'yes'
       orders_cl.created_week: before 0 weeks ago
     sorts: [orders_cl.created_week desc]
     limit: 500
@@ -413,8 +413,8 @@
       nps_after_order.cnt_responses, nps_after_order.nps_score, orders_cl.delivery_delay_since_eta]
     filters:
       orders_cl.delivery_delay_since_eta: "<=7 AND >= -7"
-      orders_cl.is_internal_order: ''
-      orders_cl.is_successful_order: ''
+      orders_cl.is_internal_order: 'no'
+      orders_cl.is_successful_order: 'yes'
       orders_cl.created_week: before 0 weeks ago
     sorts: [orders_cl.delivery_delay_since_eta]
     limit: 500

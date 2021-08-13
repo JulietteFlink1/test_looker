@@ -7,6 +7,13 @@ explore: inventory_cl{
   from: inventory
   view_name: inventory_cl
   hidden: yes
+  always_filter: {
+    filters:  [
+      hubs.country: "",
+      hubs.hub_name: ""
+    ]
+  }
+
 
   join: hubs {
     from: hubs_ct
@@ -22,4 +29,9 @@ explore: inventory_cl{
   }
 
 
+}
+
+explore: hourly_inventory {
+  extends: [inventory_cl]
+  persist_with: flink_hourly_datagroup
 }
