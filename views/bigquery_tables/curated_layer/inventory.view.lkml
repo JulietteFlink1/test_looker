@@ -137,6 +137,13 @@ view: inventory {
     label: "AVG Quantity Reserved"
   }
 
+  measure: sum_stock_quantity {
+    type: sum
+    sql: ${TABLE}.quantity_available ;;
+    label: "Sum Current Quantity Available"
+    filters: [is_most_recent_record: "True"]
+  }
+
 
   # ~~~~~~~~  from realtime model:
   # ~~~~~~~~  https://goflink.cloud.looker.com/projects/flink_realtime/files/views/warehouse_stock_facts.view.lkml
