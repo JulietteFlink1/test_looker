@@ -10,12 +10,12 @@ explore: current_inventory_updated_hourly {
   hidden: yes
 
   access_filter: {
-    field: hubs_ct.country_iso
+    field: hubs.country_iso
     user_attribute: country_iso
   }
 
   access_filter: {
-    field: hubs_ct.city
+    field: hubs.city
     user_attribute: city
   }
 
@@ -24,8 +24,8 @@ explore: current_inventory_updated_hourly {
       orders.is_internal_order: "no",
       orders.is_successful_order: "yes",
       orders.created_date: "after 2021-01-25",
-      hubs_ct.country: "",
-      hubs_ct.hub_name: ""
+      hubs.country: "",
+      hubs.hub_name: ""
     ]
   }
 
@@ -36,22 +36,25 @@ explore: current_inventory_updated_hourly {
     sql_where: (${inventory.is_most_recent_record} = TRUE) ;;
   }
 
-  join: hubs_ct {
-    sql_on: ${hubs_ct.hub_code} = ${inventory.hub_code} ;;
+  join: hubs {
+    from:  hubs_ct
+    sql_on: ${hubs.hub_code} = ${inventory.hub_code} ;;
     relationship: many_to_one
     type:  left_outer
   }
 
-  join: order_lineitems_using_inventory {
-    sql_on: ${order_lineitems_using_inventory.product_sku} = ${inventory.sku}
-        and ${order_lineitems_using_inventory.hub_code}    = ${inventory.hub_code}
+  join: order_lineitems {
+    from:  order_lineitems_using_inventory
+    sql_on: ${order_lineitems.product_sku} = ${inventory.sku}
+        and ${order_lineitems.hub_code}    = ${inventory.hub_code}
     ;;
     relationship: many_to_many
     type: left_outer
+
   }
 
   join: orders {
-    sql_on: ${orders.order_uuid} = ${order_lineitems_using_inventory.order_uuid}  ;;
+    sql_on: ${orders.order_uuid} = ${order_lineitems.order_uuid}  ;;
     relationship: many_to_one
     type: left_outer
     fields: [orders.is_internal_order, orders.is_successful_order, created_date]

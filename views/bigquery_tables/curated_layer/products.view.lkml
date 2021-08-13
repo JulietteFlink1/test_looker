@@ -19,7 +19,7 @@ view: products {
     sql: ${TABLE}.is_leading_product ;;
   }
 
-  dimension: is_noos {
+  dimension: is_noos_group {
     type: yesno
     sql: ${TABLE}.is_noos ;;
   }

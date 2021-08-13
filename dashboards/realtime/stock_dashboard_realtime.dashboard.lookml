@@ -14,15 +14,15 @@
       products.subcategory,
       products.product_name,
       inventory.sum_stock_quantity,
-      order_lineitems_using_inventory.avg_daily_item_quantity_last_7d,
-      order_lineitems_using_inventory.pct_stock_range_7d,
-      hubs_ct.hub_code,
-      order_lineitems_using_inventory.avg_daily_item_quantity_last_1d,
-      order_lineitems_using_inventory.sum_item_quantity
+      order_lineitems.avg_daily_item_quantity_last_7d,
+      order_lineitems.pct_stock_range_7d,
+      hubs.hub_code,
+      order_lineitems.avg_daily_item_quantity_last_1d,
+      order_lineitems.sum_item_quantity
       ]
     filters:
-      hubs_ct.hub_code: ''
-    sorts: [order_lineitems_using_inventory.pct_stock_range_7d]
+      hubs.hub_code: ''
+    sorts: [order_lineitems.pct_stock_range_7d]
     limit: 5000
     query_timezone: Europe/Berlin
     show_view_names: false
@@ -45,40 +45,40 @@
     show_row_totals: true
     series_labels:
       products.subcategory: Sub-Category
-      order_lineitems_using_inventory.sum_item_quantity: Total Sales YTD
-      hubs_ct.hub_code: Hub
+      order_lineitems.sum_item_quantity: Total Sales YTD
+      hubs.hub_code: Hub
     series_column_widths:
-      hubs_ct.hub_code: 231
+      hubs.hub_code: 231
       products.product_name: 320
-      order_lineitems_using_inventory.pct_stock_range_7d: 129
+      order_lineitems.pct_stock_range_7d: 129
       products.product_sku: 75
       products.category: 139
       products.subcategory: 101
-      hubs_ct.hub_code: 103
+      hubs.hub_code: 103
       inventory.sum_stock_quantity: 90
-      order_lineitems_using_inventory.avg_daily_item_quantity_last_7d: 113
-      order_lineitems_using_inventory.avg_daily_item_quantity_last_1d: 118
-      order_lineitems_using_inventory.sum_item_quantity: 118
+      order_lineitems.avg_daily_item_quantity_last_7d: 113
+      order_lineitems.avg_daily_item_quantity_last_1d: 118
+      order_lineitems.sum_item_quantity: 118
     series_cell_visualizations:
       inventory.sum_stock_quantity:
         is_active: true
         palette:
           palette_id: 4620e8de-df7a-40e0-89d6-7401f6e64d96
           collection_id: 7c56cc21-66e4-41c9-81ce-a60e1c3967b2
-      order_lineitems_using_inventory.avg_daily_item_quantity_today:
+      order_lineitems.avg_daily_item_quantity_today:
         is_active: true
         palette:
           palette_id: 4620e8de-df7a-40e0-89d6-7401f6e64d96
           collection_id: 7c56cc21-66e4-41c9-81ce-a60e1c3967b2
-      order_lineitems_using_inventory.avg_daily_item_quantity_last_7d:
+      order_lineitems.avg_daily_item_quantity_last_7d:
         is_active: true
         palette:
           palette_id: 4620e8de-df7a-40e0-89d6-7401f6e64d96
           collection_id: 7c56cc21-66e4-41c9-81ce-a60e1c3967b2
-      order_lineitems_using_inventory.pct_stock_range_7d:
+      order_lineitems.pct_stock_range_7d:
         is_active: true
     series_value_format:
-      order_lineitems_using_inventory.pct_stock_range_7d:
+      order_lineitems.pct_stock_range_7d:
         name: decimal_1
         format_string: "#,##0.0"
         label: Decimals (1)
@@ -89,13 +89,13 @@
     listen:
       Is Published (Yes / No): products.is_published
       SUM Stock Quantity: inventory.sum_stock_quantity
-      SUM Item Quantity sold: order_lineitems_using_inventory.sum_item_quantity
+      SUM Item Quantity sold: order_lineitems.sum_item_quantity
       'Category ': products.category
       Is Internal Order (Yes / No): orders.is_internal_order
       Is Successful Order (Yes / No): orders.is_successful_order
       SKU: products.product_sku
       SKU Name: products.product_name
-      Warehouse Name: hubs_ct.hub_name
+      Warehouse Name: hubs.hub_name
     row: 0
     col: 0
     width: 24
@@ -128,7 +128,7 @@
     model: flink_v3
     explore: current_inventory_updated_hourly
     listens_to_filters: []
-    field: hubs_ct.hub_name
+    field: hubs.hub_name
   - name: 'Category '
     title: 'Category '
     type: field_filter
@@ -156,7 +156,7 @@
     model: flink_v3
     explore: current_inventory_updated_hourly
     listens_to_filters: []
-    field: order_lineitems_using_inventory.sum_item_quantity
+    field: order_lineitems.sum_item_quantity
   - name: Is Published (Yes / No)
     title: Is Published (Yes / No)
     type: field_filter
