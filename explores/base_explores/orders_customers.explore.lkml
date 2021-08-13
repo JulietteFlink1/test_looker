@@ -15,6 +15,7 @@ explore: orders_customers {
   #extension: required
 
   join: customers_metrics {
+    view_label: "* Customers *"
     sql_on: ${customers_metrics.country_iso} = ${orders_cl.country_iso} AND
       ${customers_metrics.user_email}    = ${orders_cl.user_email} ;;
     relationship: many_to_one
@@ -22,6 +23,7 @@ explore: orders_customers {
   }
 
   join: monthly_cohorts {
+    view_label: "Cohorts - Monthly"
     sql_on: ${customers_metrics.country_iso} = ${monthly_cohorts.country_iso} AND
     ${customers_metrics.first_order_month} = ${customers_metrics.first_order_month};;
     relationship: many_to_one
@@ -29,6 +31,7 @@ explore: orders_customers {
   }
 
   join: weekly_cohorts {
+    view_label: "Cohorts - Weekly"
     sql_on: ${customers_metrics.country_iso} = ${weekly_cohorts.country_iso} AND
     ${customers_metrics.first_order_week} = ${customers_metrics.first_order_week};;
     relationship: many_to_one
