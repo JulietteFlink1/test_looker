@@ -2,42 +2,66 @@ view: issue_rates_clean {
   derived_table: {
     sql: with issues_orders as
       (
-          select
-          -- Dimensions
-          CASE WHEN JSON_EXTRACT_SCALAR(orders.metadata, '$.warehouse') IN ('hamburg-oellkersallee', 'hamburg-oelkersallee') THEN 'de_ham_alto'
-          WHEN JSON_EXTRACT_SCALAR(orders.metadata, '$.warehouse') = 'münchen-leopoldstraße' THEN 'de_muc_schw'
-          ELSE JSON_EXTRACT_SCALAR(orders.metadata, '$.warehouse') end as hub_code,
-          date(orders.created, 'Europe/Berlin') as date,
-          -- Aggregates
-          count(distinct if(cs.problem_group = 'Wrong Order', order_nr__, null)) as wrong_order,
-          count(distinct if(cs.problem_group = 'Wrong Product', order_nr__, null)) as wrong_product,
-          count(distinct if(cs.problem_group = 'Perished Product', order_nr__, null)) as perished_product,
-          count(distinct if(cs.problem_group = 'Missing Product', order_nr__, null)) as missing_product,
-          count(distinct if(cs.problem_group = 'Damaged', order_nr__, null)) as damaged,
-          count(distinct if (cs.problem_group is not null, order_nr__, null)) as orders_with_issues
-          -- Joins
-          from `flink-data-prod.saleor_prod_global.order_order` orders
-          left join `flink-backend.gsheet_cs_issues.CS_issues_post_delivery` cs
-          on cs.country_iso = orders.country_iso and cs.order_nr__ = orders.id
-          -- other
-          group by 1, 2
+          select * from
+                (
+                    select
+                -- Dimensions
+                hub_code,
+                date(orders.order_timestamp, 'Europe/Berlin') as date,
+                -- Aggregates
+                count(distinct if(cs.problem_group = 'Wrong Order', order_nr__, null)) as wrong_order,
+                count(distinct if(cs.problem_group = 'Wrong Product', order_nr__, null)) as wrong_product,
+                count(distinct if(cs.problem_group = 'Perished Product', order_nr__, null)) as perished_product,
+                count(distinct if(cs.problem_group = 'Missing Product', order_nr__, null)) as missing_product,
+                count(distinct if(cs.problem_group = 'Damaged', order_nr__, null)) as damaged,
+                count(distinct if (cs.problem_group is not null, order_nr__, null)) as orders_with_issues
+                -- Joins
+                from `flink-data-prod.curated.orders` orders
+                left join `flink-backend.gsheet_cs_issues.CS_issues_post_delivery` cs
+                on cs.country_iso = orders.country_iso and cast(cs.order_nr__ as string) = orders.order_id
+                -- other
+                where orders.backend_source = 'saleor'
+                group by 1, 2
+                )
+          union all
+            select * from
+                (
+                    select
+                -- Dimensions
+                hub_code,
+                date(orders.order_timestamp, 'Europe/Berlin') as date,
+                -- Aggregates
+                count(distinct if(cs.problem_group = 'Wrong Order', order_nr__, null)) as wrong_order,
+                count(distinct if(cs.problem_group = 'Wrong Product', order_nr__, null)) as wrong_product,
+                count(distinct if(cs.problem_group = 'Perished Product', order_nr__, null)) as perished_product,
+                count(distinct if(cs.problem_group = 'Missing Product', order_nr__, null)) as missing_product,
+                count(distinct if(cs.problem_group = 'Damaged', order_nr__, null)) as damaged,
+                count(distinct if (cs.problem_group is not null, order_nr__, null)) as orders_with_issues
+                -- Joins
+                from `flink-data-prod.curated.orders` orders
+                left join `flink-backend.gsheet_cs_issues.CS_issues_post_delivery` cs
+                on cs.country_iso = orders.country_iso and cast(cs.order_nr__ as string) = orders.order_number
+                -- other
+                where orders.backend_source = 'commercetools'
+                group by 1, 2
+                )
+
       ),
 
       orders_per_hub as
       (
           select
           -- Dimensions
-          CASE WHEN JSON_EXTRACT_SCALAR(metadata, '$.warehouse') IN ('hamburg-oellkersallee', 'hamburg-oelkersallee') THEN 'de_ham_alto'
-          WHEN JSON_EXTRACT_SCALAR(metadata, '$.warehouse') = 'münchen-leopoldstraße' THEN 'de_muc_schw'
-          ELSE JSON_EXTRACT_SCALAR(metadata, '$.warehouse') end as hub_code,
-          date(created, 'Europe/Berlin') as date,
+          hub_code,
+          date(order_timestamp, 'Europe/Berlin') as date,
           -- Aggregates
-          count(distinct id) as count_orders
+          count(distinct order_uuid) as count_orders
           -- Joins
-          from `flink-data-prod.saleor_prod_global.order_order`
+          from `flink-data-prod.curated.orders`
           -- Where
-          where status in ('fulfilled', 'partially fulfilled') and
-          user_email NOT LIKE '%goflink%' AND user_email NOT LIKE '%pickery%' AND LOWER(user_email) NOT IN ('christoph.a.cordes@gmail.com', 'jfdames@gmail.com', 'oliver.merkel@gmail.com', 'alenaschneck@gmx.de', 'saadsaeed354@gmail.com', 'saadsaeed353@gmail.com', 'fabian.hardenberg@gmail.com', 'benjamin.zagel@gmail.com')
+          where is_successful_order is true and
+          customer_email NOT LIKE '%goflink%' AND customer_email NOT LIKE '%pickery%'
+          AND LOWER(customer_email) NOT IN ('christoph.a.cordes@gmail.com', 'jfdames@gmail.com', 'oliver.merkel@gmail.com', 'alenaschneck@gmx.de', 'saadsaeed354@gmail.com', 'saadsaeed353@gmail.com', 'fabian.hardenberg@gmail.com', 'benjamin.zagel@gmail.com')
           -- Other
           group by 1, 2
       )

@@ -2,33 +2,56 @@ view: orders {
   sql_table_name: `flink-data-prod.curated.orders`
     ;;
 
+  view_label: "* Orders *"
+  drill_fields: [core_dimensions*]
+
+  set: core_dimensions {
+    fields: [
+      country_iso,
+      id,
+      warehouse_name,
+      created_raw,
+      customer_type,
+      gmv_gross,
+      discount_amount,
+      delivery_eta_timestamp_raw,
+      delivery_timestamp_raw
+    ]
+  }
+
   dimension: acceptance_time {
     type: number
+    hidden: yes
     sql: ${TABLE}.acceptance_time_minutes ;;
   }
 
   dimension: shipping_price_gross_amount {
     type: number
+    hidden: yes
     sql: ${TABLE}.amt_delivery_fee_gross ;;
   }
 
   dimension: shipping_price_net_amount {
     type: number
+    hidden: yes
     sql: ${TABLE}.amt_delivery_fee_net ;;
   }
 
   dimension: discount_amount {
     type: number
+    hidden: yes
     sql: ${TABLE}.amt_discount_gross ;;
   }
 
   dimension: amt_discount_net {
     type: number
+    hidden: yes
     sql: ${TABLE}.amt_discount_net ;;
   }
 
   dimension: gmv_gross {
     type: number
+    hidden: yes
     sql: ${TABLE}.amt_gmv_gross ;;
   }
 
@@ -50,6 +73,7 @@ view: orders {
 
   dimension: gmv_net {
     type: number
+    hidden: yes
     sql: ${TABLE}.amt_gmv_net ;;
   }
 
@@ -66,16 +90,20 @@ view: orders {
 
   dimension: total_gross_amount {
     type: number
+    hidden: yes
     sql: ${TABLE}.amt_revenue_gross ;;
   }
 
   dimension: total_net_amount {
     type: number
+    hidden: yes
     sql: ${TABLE}.amt_revenue_net ;;
   }
 
   dimension: anonymous_id {
     type: string
+    group_label: "* IDs *"
+    hidden: no
     sql: ${TABLE}.anonymous_id ;;
   }
 
@@ -85,11 +113,15 @@ view: orders {
   }
 
   dimension: billing_address_id {
+    group_label: "* IDs *"
+    hidden: yes
     type: number
     sql: ${TABLE}.billing_address_id ;;
   }
 
   dimension: cart_id {
+    group_label: "* IDs *"
+    hidden: yes
     type: string
     sql: ${TABLE}.cart_id ;;
   }
@@ -110,6 +142,8 @@ view: orders {
   }
 
   dimension: user_id {
+    group_label: "* IDs *"
+    hidden: no
     type: string
     sql: ${TABLE}.customer_id ;;
   }
@@ -120,6 +154,8 @@ view: orders {
   }
 
   dimension: shipping_address_id {
+    group_label: "* IDs *"
+    hidden: yes
     type: string
     sql: ${TABLE}.delivery_address_id ;;
   }
@@ -572,7 +608,9 @@ view: orders {
 
   dimension: order_uuid {
     type: string
+    group_label: "* IDs *"
     primary_key: yes
+    hidden: yes
     sql: ${TABLE}.order_uuid ;;
   }
 
