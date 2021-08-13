@@ -115,6 +115,7 @@ view: orderline {
       minute15,
       minute30,
       hour_of_day,
+      hour,
       time,
       date,
       day_of_week,

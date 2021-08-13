@@ -19,6 +19,16 @@ explore: current_inventory_updated_hourly {
     user_attribute: city
   }
 
+  always_filter: {
+    filters:  [
+      orders.is_internal_order: "no",
+      orders.is_successful_order: "yes",
+      orders.created_date: "after 2021-01-25",
+      hubs_ct.country: "",
+      hubs_ct.hub_name: ""
+    ]
+  }
+
   join: inventory {
     sql_on: ${inventory.sku} = ${products.product_sku} ;;
     relationship: one_to_many
@@ -44,7 +54,7 @@ explore: current_inventory_updated_hourly {
     sql_on: ${orders.order_uuid} = ${order_lineitems_using_inventory.order_uuid}  ;;
     relationship: many_to_one
     type: left_outer
-    fields: [orders.is_internal_order, orders.is_successful_order]
+    fields: [orders.is_internal_order, orders.is_successful_order, created_date]
   }
 
 
