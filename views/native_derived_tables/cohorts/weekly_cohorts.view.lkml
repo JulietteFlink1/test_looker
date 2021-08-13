@@ -5,11 +5,11 @@ view: weekly_cohorts {
   derived_table: {
     explore_source: orders_customers {
       column: first_order_week { field: customers_metrics.first_order_week }
-      column: cnt_unique_customers { field: orders.cnt_unique_customers }
-      column: sum_gmv_gross { field: orders.sum_gmv_gross }
+      column: cnt_unique_customers { field: orders_cl.cnt_unique_customers }
+      column: sum_gmv_gross { field: orders_cl.sum_gmv_gross }
       column: weeks_time_since_sign_up { field: customers_metrics.weeks_time_since_sign_up }
       column: country_iso { field: customers_metrics.country_iso }
-      column: sum_discount_amt { field: orders.sum_discount_amt }
+      column: sum_discount_amt { field: orders_cl.sum_discount_amt }
       filters: {
         field: hubs.country
         value: ""
@@ -19,15 +19,15 @@ view: weekly_cohorts {
         value: ""
       }
       filters: {
-        field: orders.is_internal_order
+        field: orders_cl.is_internal_order
         value: "no"
       }
       filters: {
-        field: orders.is_successful_order
+        field: orders_cl.is_successful_order
         value: "yes"
       }
       filters: {
-        field: orders.created_date
+        field: orders_cl.created_date
         value: "after 2021/01/25"
       }
       filters: {

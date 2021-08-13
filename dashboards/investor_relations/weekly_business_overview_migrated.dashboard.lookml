@@ -17,30 +17,30 @@
     model: flink_v3
     explore: orders_cl
     type: looker_grid
-    fields: [orders.cnt_orders, orders.cnt_unique_orders_new_customers,
-      orders.cnt_unique_customers, orders.sum_gmv_gross, orders.avg_order_value_gross,
-      orders.pct_discount_order_share, orders.pct_discount_value_of_gross_total,
-      orders.avg_delivery_fee_gross, orders.pct_delivery_late_over_5_min,
-      orders.pct_delivery_late_over_10_min, orders.created_week, orders.pct_acquisition_share,
-      orders.avg_fulfillment_time_mm_ss, orders.pct_delivery_in_time, gmv_hubs_4w_age,
+    fields: [orders_cl.cnt_orders, orders_cl.cnt_unique_orders_new_customers,
+      orders_cl.cnt_unique_customers, orders_cl.sum_gmv_gross, orders_cl.avg_order_value_gross,
+      orders_cl.pct_discount_order_share, orders_cl.pct_discount_value_of_gross_total,
+      orders_cl.avg_delivery_fee_gross, orders_cl.pct_delivery_late_over_5_min,
+      orders_cl.pct_delivery_late_over_10_min, orders_cl.created_week, orders_cl.pct_acquisition_share,
+      orders_cl.avg_fulfillment_time_mm_ss, orders_cl.pct_delivery_in_time, gmv_hubs_4w_age,
       shyftplan_riders_pickers_hours.rider_utr]
-    fill_fields: [orders.created_week]
+    fill_fields: [orders_cl.created_week]
     filters:
-      orders.is_internal_order: 'no'
-      orders.is_successful_order: 'yes'
-      orders.created_date: after 2021/01/25
-      orders.is_business_week_completed: 'Yes'
-    sorts: [orders.created_week desc]
+      orders_cl.is_internal_order: 'no'
+      orders_cl.is_successful_order: 'yes'
+      orders_cl.created_date: after 2021/01/25
+      orders_cl.is_business_week_completed: 'Yes'
+    sorts: [orders_cl.created_week desc]
     limit: 500
-    dynamic_fields: [{table_calculation: wow, label: WoW, expression: "( ${orders.cnt_orders}\
-          \ - offset(${orders.cnt_orders}, 1) ) / offset(${orders.cnt_orders},\
+    dynamic_fields: [{table_calculation: wow, label: WoW, expression: "( ${orders_cl.cnt_orders}\
+          \ - offset(${orders_cl.cnt_orders}, 1) ) / offset(${orders_cl.cnt_orders},\
           \ 1)", value_format: '"▲  "+0%; "▼  "-0%; 0', value_format_name: !!null '',
         _kind_hint: measure, _type_hint: number}, {table_calculation: wow_gmv, label: WoW
-          GMV, expression: "( ${orders.sum_gmv_gross} - offset(${orders.sum_gmv_gross},\
-          \ 1) ) / offset(${orders.sum_gmv_gross}, 1)", value_format: '"▲  "+0%;
+          GMV, expression: "( ${orders_cl.sum_gmv_gross} - offset(${orders_cl.sum_gmv_gross},\
+          \ 1) ) / offset(${orders_cl.sum_gmv_gross}, 1)", value_format: '"▲  "+0%;
           "▼  "-0%; 0', value_format_name: !!null '', _kind_hint: measure, _type_hint: number},
-      {based_on: orders.sum_gmv_gross, _kind_hint: measure, measure: gmv_hubs_4w_age,
-        type: sum, _type_hint: number, filters: {orders.weeks_time_between_hub_launch_and_order: ">4"},
+      {based_on: orders_cl.sum_gmv_gross, _kind_hint: measure, measure: gmv_hubs_4w_age,
+        type: sum, _type_hint: number, filters: {orders_cl.weeks_time_between_hub_launch_and_order: ">4"},
         category: measure, expression: !!null '', label: GMV (Hubs >4W age), value_format: !!null '',
         value_format_name: !!null ''}, {_kind_hint: measure, table_calculation: wow_gmv_hubs_4w_age,
         _type_hint: number, category: table_calculation, expression: "( ${gmv_hubs_4w_age}\
@@ -67,60 +67,60 @@
       palette_id: 5d189dfc-4f46-46f3-822b-bfb0b61777b1
     show_sql_query_menu_options: false
     pinned_columns:
-      orders.created_week: left
-      orders.cnt_orders: left
-    column_order: ["$$$_row_numbers_$$$", orders.created_week, orders.cnt_orders,
-      wow, orders.avg_order_value_gross, orders.avg_fulfillment_time_mm_ss,
-      orders.pct_delivery_in_time, orders.pct_delivery_late_over_5_min,
-      orders.pct_delivery_late_over_10_min, orders.sum_gmv_gross, wow_gmv,
-      orders.cnt_unique_customers, orders.cnt_unique_orders_new_customers,
-      orders.pct_discount_order_share, orders.pct_acquisition_share, orders.pct_discount_value_of_gross_total,
-      shyftplan_riders_pickers_hours.rider_utr, orders.avg_delivery_fee_gross]
+      orders_cl.created_week: left
+      orders_cl.cnt_orders: left
+    column_order: ["$$$_row_numbers_$$$", orders_cl.created_week, orders_cl.cnt_orders,
+      wow, orders_cl.avg_order_value_gross, orders_cl.avg_fulfillment_time_mm_ss,
+      orders_cl.pct_delivery_in_time, orders_cl.pct_delivery_late_over_5_min,
+      orders_cl.pct_delivery_late_over_10_min, orders_cl.sum_gmv_gross, wow_gmv,
+      orders_cl.cnt_unique_customers, orders_cl.cnt_unique_orders_new_customers,
+      orders_cl.pct_discount_order_share, orders_cl.pct_acquisition_share, orders_cl.pct_discount_value_of_gross_total,
+      shyftplan_riders_pickers_hours.rider_utr, orders_cl.avg_delivery_fee_gross]
     show_totals: true
     show_row_totals: true
     series_column_widths:
-      orders.created_date: 125
-      orders.cnt_unique_orders: 101
-      orders.cnt_unique_orders_new_customers: 83
-      orders.cnt_unique_orders_existing_customers: 147
-      orders.cnt_unique_customers: 79
-      orders.avg_basket_size_gross: 211
-      orders.sum_revenue_gross: 173
-      orders.avg_reaction_time: 159
-      orders.avg_picking_time: 151
-      orders.avg_fulfillment_time: 97
-      orders.avg_delivery_time: 154
-      orders.cnt_orders: 93
-      orders.pct_discount_order_share: 84
-      orders.sum_discount_amt: 87
-      orders.pct_discount_value_of_gross_total: 75
-      orders.avg_delivery_fee_gross: 76
-      orders.avg_acceptance_time: 175
-      orders.sum_gmv_gross: 77
-      orders.avg_order_value_gross: 116
-      orders.pct_delivery_late_over_5_min: 80
-      orders.pct_delivery_late_over_10_min: 84
+      orders_cl.created_date: 125
+      orders_cl.cnt_unique_orders: 101
+      orders_cl.cnt_unique_orders_new_customers: 83
+      orders_cl.cnt_unique_orders_existing_customers: 147
+      orders_cl.cnt_unique_customers: 79
+      orders_cl.avg_basket_size_gross: 211
+      orders_cl.sum_revenue_gross: 173
+      orders_cl.avg_reaction_time: 159
+      orders_cl.avg_picking_time: 151
+      orders_cl.avg_fulfillment_time: 97
+      orders_cl.avg_delivery_time: 154
+      orders_cl.cnt_orders: 93
+      orders_cl.pct_discount_order_share: 84
+      orders_cl.sum_discount_amt: 87
+      orders_cl.pct_discount_value_of_gross_total: 75
+      orders_cl.avg_delivery_fee_gross: 76
+      orders_cl.avg_acceptance_time: 175
+      orders_cl.sum_gmv_gross: 77
+      orders_cl.avg_order_value_gross: 116
+      orders_cl.pct_delivery_late_over_5_min: 80
+      orders_cl.pct_delivery_late_over_10_min: 84
       wow: 68
-      orders.date: 162
-      orders.created_week: 106
-      orders.pct_acquisition_share: 90
-      orders.avg_fulfillment_time_mm_ss: 97
-      orders.pct_delivery_in_time: 99
+      orders_cl.date: 162
+      orders_cl.created_week: 106
+      orders_cl.pct_acquisition_share: 90
+      orders_cl.avg_fulfillment_time_mm_ss: 97
+      orders_cl.pct_delivery_in_time: 99
       wow_gmv: 75
       wow_gmv_hubs_4w_age: 95
       shyftplan_riders_pickers_hours.rider_utr: 75
     series_cell_visualizations:
-      orders.cnt_unique_orders:
+      orders_cl.cnt_unique_orders:
         is_active: true
         palette:
           palette_id: 56d0c358-10a0-4fd6-aa0b-b117bef527ab
           collection_id: 7c56cc21-66e4-41c9-81ce-a60e1c3967b2
-      orders.avg_basket_size_gross:
+      orders_cl.avg_basket_size_gross:
         is_active: true
         palette:
           palette_id: 56d0c358-10a0-4fd6-aa0b-b117bef527ab
           collection_id: 7c56cc21-66e4-41c9-81ce-a60e1c3967b2
-      orders.avg_fulfillment_time:
+      orders_cl.avg_fulfillment_time:
         is_active: true
         palette:
           palette_id: 84802bdf-40bc-c721-2694-55c5eaeb8519
@@ -129,17 +129,17 @@
           - "#b1e84d"
           - "#ffffff"
           - "#ff393f"
-      orders.cnt_orders:
+      orders_cl.cnt_orders:
         is_active: true
         palette:
           palette_id: 56d0c358-10a0-4fd6-aa0b-b117bef527ab
           collection_id: 7c56cc21-66e4-41c9-81ce-a60e1c3967b2
-      orders.avg_order_value_gross:
+      orders_cl.avg_order_value_gross:
         is_active: true
         palette:
           palette_id: 56d0c358-10a0-4fd6-aa0b-b117bef527ab
           collection_id: 7c56cc21-66e4-41c9-81ce-a60e1c3967b2
-      orders.pct_delivery_late_over_5_min:
+      orders_cl.pct_delivery_late_over_5_min:
         is_active: true
         palette:
           palette_id: cb3356e4-15f7-f4ff-a08f-b6fc17b5c145
@@ -158,7 +158,7 @@
           - "#ffffff"
           - "#67e813"
         value_display: true
-      orders.pct_delivery_late_over_10_min:
+      orders_cl.pct_delivery_late_over_10_min:
         is_active: true
         palette:
           palette_id: e6c3ca7a-03b3-3cfd-2024-978aa98edb14
@@ -167,7 +167,7 @@
           - "#b1e84d"
           - "#ffffff"
           - "#ff393f"
-      orders.avg_fulfillment_time_mm_ss:
+      orders_cl.avg_fulfillment_time_mm_ss:
         is_active: true
         palette:
           palette_id: 66f971b0-042e-327b-aba6-83922b72a309
@@ -176,7 +176,7 @@
           - "#b1e84d"
           - "#ffffff"
           - "#db3520"
-      orders.pct_delivery_in_time:
+      orders_cl.pct_delivery_in_time:
         is_active: true
         palette:
           palette_id: fe57f38c-addd-8fa5-58aa-f616441a0362
@@ -239,14 +239,14 @@
     model: flink_v3
     explore: orders_cl
     type: looker_line
-    fields: [orders.sum_gmv_gross, orders.avg_order_value_gross, orders.created_week]
-    fill_fields: [orders.created_week]
+    fields: [orders_cl.sum_gmv_gross, orders_cl.avg_order_value_gross, orders_cl.created_week]
+    fill_fields: [orders_cl.created_week]
     filters:
-      orders.is_internal_order: 'no'
-      orders.is_successful_order: 'yes'
-      orders.created_date: after 2021/01/25
-      orders.is_business_week_completed: 'Yes'
-    sorts: [orders.created_week desc]
+      orders_cl.is_internal_order: 'no'
+      orders_cl.is_successful_order: 'yes'
+      orders_cl.created_date: after 2021/01/25
+      orders_cl.is_business_week_completed: 'Yes'
+    sorts: [orders_cl.created_week desc]
     limit: 500
     query_timezone: Europe/Berlin
     x_axis_gridlines: false
@@ -273,19 +273,19 @@
     y_axis_combined: true
     show_null_points: true
     interpolation: linear
-    y_axes: [{label: '', orientation: left, series: [{axisId: orders.avg_order_value_gross,
-            id: orders.avg_order_value_gross, name: AVG Order Value (Gross)}],
+    y_axes: [{label: '', orientation: left, series: [{axisId: orders_cl.avg_order_value_gross,
+            id: orders_cl.avg_order_value_gross, name: AVG Order Value (Gross)}],
         showLabels: true, showValues: true, maxValue: 30, unpinAxis: false, tickDensity: default,
-        type: linear}, {label: '', orientation: right, series: [{axisId: orders.sum_gmv_gross,
-            id: orders.sum_gmv_gross, name: SUM GMV (gross)}], showLabels: true,
+        type: linear}, {label: '', orientation: right, series: [{axisId: orders_cl.sum_gmv_gross,
+            id: orders_cl.sum_gmv_gross, name: SUM GMV (gross)}], showLabels: true,
         showValues: true, unpinAxis: false, tickDensity: default, type: linear}]
     series_types:
-      orders.sum_gmv_gross: column
+      orders_cl.sum_gmv_gross: column
     series_colors:
-      orders.cnt_orders: "#F9AB00"
-      orders.avg_fulfillment_time: "#1A73E8"
-      orders.avg_order_value_gross: "#1A73E8"
-      orders.sum_gmv_gross: "#F9AB00"
+      orders_cl.cnt_orders: "#F9AB00"
+      orders_cl.avg_fulfillment_time: "#1A73E8"
+      orders_cl.avg_order_value_gross: "#1A73E8"
+      orders_cl.sum_gmv_gross: "#F9AB00"
     ordering: none
     show_null_labels: false
     show_totals_labels: false
@@ -305,15 +305,15 @@
     model: flink_v3
     explore: orders_cl
     type: looker_column
-    fields: [orders.cnt_unique_orders_existing_customers, orders.cnt_unique_orders_new_customers,
-      orders.pct_acquisition_share, orders.created_week]
-    fill_fields: [orders.created_week]
+    fields: [orders_cl.cnt_unique_orders_existing_customers, orders_cl.cnt_unique_orders_new_customers,
+      orders_cl.pct_acquisition_share, orders_cl.created_week]
+    fill_fields: [orders_cl.created_week]
     filters:
-      orders.is_internal_order: 'no'
-      orders.is_successful_order: 'yes'
-      orders.created_date: after 2021/01/25
-      orders.is_business_week_completed: 'Yes'
-    sorts: [orders.created_week desc]
+      orders_cl.is_internal_order: 'no'
+      orders_cl.is_successful_order: 'yes'
+      orders_cl.created_date: after 2021/01/25
+      orders_cl.is_business_week_completed: 'Yes'
+    sorts: [orders_cl.created_week desc]
     limit: 500
     total: true
     query_timezone: Europe/Berlin
@@ -344,25 +344,25 @@
     show_totals_labels: false
     show_silhouette: false
     totals_color: "#808080"
-    y_axes: [{label: "# Orders", orientation: left, series: [{axisId: orders.cnt_unique_orders_existing_customers,
-            id: orders.cnt_unique_orders_existing_customers, name: "# Orders\
-              \ Existing Customers"}, {axisId: orders.cnt_unique_orders_new_customers,
-            id: orders.cnt_unique_orders_new_customers, name: "# Orders New Customers"}],
+    y_axes: [{label: "# Orders", orientation: left, series: [{axisId: orders_cl.cnt_unique_orders_existing_customers,
+            id: orders_cl.cnt_unique_orders_existing_customers, name: "# Orders\
+              \ Existing Customers"}, {axisId: orders_cl.cnt_unique_orders_new_customers,
+            id: orders_cl.cnt_unique_orders_new_customers, name: "# Orders New Customers"}],
         showLabels: true, showValues: true, maxValue: !!null '', unpinAxis: false,
         tickDensity: default, type: linear}, {label: '', orientation: right, series: [
-          {axisId: orders.pct_acquisition_share, id: orders.pct_acquisition_share,
+          {axisId: orders_cl.pct_acquisition_share, id: orders_cl.pct_acquisition_share,
             name: "% Acquisition Share"}], showLabels: true, showValues: true, unpinAxis: false,
         tickDensity: default, type: linear}]
     series_types:
-      orders.pct_discount_order_share: line
-      orders.pct_acquisition_share: line
+      orders_cl.pct_discount_order_share: line
+      orders_cl.pct_acquisition_share: line
     series_colors:
-      orders.cnt_orders: "#F9AB00"
-      orders.avg_fulfillment_time: "#1A73E8"
-      orders.sum_revenue_gross: "#F9AB00"
-      orders.avg_basket_size_gross: "#1A73E8"
-      orders.pct_acquisition_share: "#7CB342"
-      orders.pct_discount_order_share: "#EA4335"
+      orders_cl.cnt_orders: "#F9AB00"
+      orders_cl.avg_fulfillment_time: "#1A73E8"
+      orders_cl.sum_revenue_gross: "#F9AB00"
+      orders_cl.avg_basket_size_gross: "#1A73E8"
+      orders_cl.pct_acquisition_share: "#7CB342"
+      orders_cl.pct_discount_order_share: "#EA4335"
     show_null_points: true
     interpolation: linear
     defaults_version: 1

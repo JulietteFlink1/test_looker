@@ -14,20 +14,20 @@ explore: orders_cl {
   view_label: "* Orders *"
   group_label: "01) Performance"
   description: "General Business Performance - Orders, Revenue, etc."
-  view_name: orders # needs to be set in order that the base_explore can be extended and referenced properly
+  view_name: orders_cl # needs to be set in order that the base_explore can be extended and referenced properly
   hidden: no
 
   always_filter: {
     filters:  [
-      orders.is_internal_order: "no",
-      orders.is_successful_order: "yes",
-      orders.created_date: "after 2021-01-25",
+      orders_cl.is_internal_order: "no",
+      orders_cl.is_successful_order: "yes",
+      orders_cl.created_date: "after 2021-01-25",
       hubs.country: "",
       hubs.hub_name: ""
     ]
   }
   access_filter: {
-    field: orders.country_iso
+    field: orders_cl.country_iso
     user_attribute: country_iso
   }
 
@@ -48,7 +48,7 @@ explore: orders_cl {
   join: hubs {
     from: hubs_ct
     view_label: "* Hubs *"
-    sql_on: lower(${orders.hub_code}) = ${hubs.hub_code} ;;
+    sql_on: lower(${orders_cl.hub_code}) = ${hubs.hub_code} ;;
     relationship: many_to_one
     type: left_outer
   }
@@ -56,16 +56,16 @@ explore: orders_cl {
   join: shyftplan_riders_pickers_hours {
     from: shyftplan_riders_pickers_hours_clean
     view_label: "* Shifts *"
-    sql_on: ${orders.created_date} = ${shyftplan_riders_pickers_hours.date} and
-            ${hubs.hub_code}       = lower(${shyftplan_riders_pickers_hours.hub_name});;
+    sql_on: ${orders_cl.created_date} = ${shyftplan_riders_pickers_hours.date} and
+            ${hubs.hub_code}          = lower(${shyftplan_riders_pickers_hours.hub_name});;
     relationship: many_to_one
     type: left_outer
   }
 
   join: nps_after_order {
     view_label: "* NPS *"
-    sql_on: ${orders.country_iso}   = ${nps_after_order.country_iso} AND
-            ${orders.id}            = cast(${nps_after_order.order_id} as string) ;;
+    sql_on: ${orders_cl.country_iso}   = ${nps_after_order.country_iso} AND
+            ${orders_cl.id}            = cast(${nps_after_order.order_id} as string) ;;
     relationship: one_to_many
     type: left_outer
   }
@@ -73,7 +73,7 @@ explore: orders_cl {
   join: issue_rates_clean {
     view_label: "* Order Issues on Hub-Level *"
     sql_on: ${hubs.hub_code}           =  ${issue_rates_clean.hub_code} and
-            ${orders.date}             =  ${issue_rates_clean.date_dynamic};;
+            ${orders_cl.date}          =  ${issue_rates_clean.date_dynamic};;
     relationship: many_to_one # decided against one_to_many: on this level, many orders have hub-level issue-aggregates
     type: left_outer
   }

@@ -8,23 +8,23 @@
     model: flink_v3
     explore: orders_cl
     type: looker_grid
-    fields: [orders.cnt_orders, orders.cnt_unique_orders_new_customers,
-      orders.cnt_unique_customers, orders.sum_gmv_gross, orders.avg_order_value_gross,
-      orders.pct_discount_order_share, orders.avg_fulfillment_time_mm_ss,
-      orders.sum_discount_amt, orders.pct_discount_value_of_gross_total,
-      orders.avg_delivery_fee_gross, orders.pct_delivery_late_over_5_min,
-      orders.pct_delivery_late_over_10_min, orders.pct_delivery_in_time,
+    fields: [orders_cl.cnt_orders, orders_cl.cnt_unique_orders_new_customers,
+      orders_cl.cnt_unique_customers, orders_cl.sum_gmv_gross, orders_cl.avg_order_value_gross,
+      orders_cl.pct_discount_order_share, orders_cl.avg_fulfillment_time_mm_ss,
+      orders_cl.sum_discount_amt, orders_cl.pct_discount_value_of_gross_total,
+      orders_cl.avg_delivery_fee_gross, orders_cl.pct_delivery_late_over_5_min,
+      orders_cl.pct_delivery_late_over_10_min, orders_cl.pct_delivery_in_time,
       hubs.hub_name, shyftplan_riders_pickers_hours.rider_utr, shyftplan_riders_pickers_hours.picker_utr,
-      hubs.weeks_time_between_hub_launch_and_today, orders.pct_acquisition_share,
+      hubs.weeks_time_between_hub_launch_and_today, orders_cl.pct_acquisition_share,
       issue_rates_clean.pct_orders_with_issues, nps_after_order.nps_score]
     filters:
-      orders.is_internal_order: 'no'
-      orders.is_successful_order: 'yes'
-      orders.warehouse_name: "-EMPTY"
-    sorts: [orders.cnt_orders desc]
+      orders_cl.is_internal_order: 'no'
+      orders_cl.is_successful_order: 'yes'
+      orders_cl.warehouse_name: "-EMPTY"
+    sorts: [orders_cl.cnt_orders desc]
     limit: 500
-    dynamic_fields: [{table_calculation: wow, label: WoW, expression: "( ${orders.cnt_orders}\
-          \ - offset(${orders.cnt_orders}, 7) ) / offset(${orders.cnt_orders},\
+    dynamic_fields: [{table_calculation: wow, label: WoW, expression: "( ${orders_cl.cnt_orders}\
+          \ - offset(${orders_cl.cnt_orders}, 7) ) / offset(${orders_cl.cnt_orders},\
           \ 7)", value_format: '"▲  "+0%; "▼  "-0%; 0', value_format_name: !!null '',
         _kind_hint: measure, _type_hint: number, is_disabled: true}]
     query_timezone: Europe/Berlin
@@ -51,68 +51,68 @@
       "$$$_row_numbers_$$$": left
       hubs.weeks_time_between_hub_launch_and_today: left
       hubs.hub_name: left
-      orders.cnt_orders: left
+      orders_cl.cnt_orders: left
     column_order: ["$$$_row_numbers_$$$", hubs.hub_name, hubs.weeks_time_between_hub_launch_and_today,
-      orders.cnt_orders, orders.avg_order_value_gross, orders.avg_fulfillment_time_mm_ss,
-      orders.pct_delivery_in_time, orders.pct_delivery_late_over_5_min,
-      orders.pct_delivery_late_over_10_min, shyftplan_riders_pickers_hours.rider_utr,
-      shyftplan_riders_pickers_hours.picker_utr, orders.sum_gmv_gross, nps_after_order.nps_score,
-      issue_rates_clean.pct_orders_with_issues, orders.sum_discount_amt, orders.cnt_unique_customers,
-      orders.cnt_unique_orders_new_customers, orders.pct_acquisition_share,
-      orders.pct_discount_order_share, orders.pct_discount_value_of_gross_total,
-      orders.avg_delivery_fee_gross]
+      orders_cl.cnt_orders, orders_cl.avg_order_value_gross, orders_cl.avg_fulfillment_time_mm_ss,
+      orders_cl.pct_delivery_in_time, orders_cl.pct_delivery_late_over_5_min,
+      orders_cl.pct_delivery_late_over_10_min, shyftplan_riders_pickers_hours.rider_utr,
+      shyftplan_riders_pickers_hours.picker_utr, orders_cl.sum_gmv_gross, nps_after_order.nps_score,
+      issue_rates_clean.pct_orders_with_issues, orders_cl.sum_discount_amt, orders_cl.cnt_unique_customers,
+      orders_cl.cnt_unique_orders_new_customers, orders_cl.pct_acquisition_share,
+      orders_cl.pct_discount_order_share, orders_cl.pct_discount_value_of_gross_total,
+      orders_cl.avg_delivery_fee_gross]
     show_totals: true
     show_row_totals: true
     series_labels:
       hubs.weeks_time_between_hub_launch_and_today: Weeks since launch
     series_column_widths:
-      orders.created_date: 125
-      orders.cnt_unique_orders: 101
-      orders.cnt_unique_orders_new_customers: 125
-      orders.cnt_unique_orders_existing_customers: 147
-      orders.cnt_unique_customers: 138
-      orders.avg_basket_size_gross: 211
-      orders.sum_revenue_gross: 173
-      orders.avg_reaction_time: 115
-      orders.avg_picking_time: 106
-      orders.avg_fulfillment_time: 169
-      orders.avg_delivery_time: 154
-      orders.cnt_orders: 126
-      orders.pct_discount_order_share: 117
-      orders.sum_discount_amt: 124
-      orders.pct_discount_value_of_gross_total: 117
-      orders.avg_delivery_fee_gross: 121
-      orders.avg_acceptance_time: 175
-      orders.sum_gmv_gross: 99
-      orders.avg_order_value_gross: 187
-      orders.pct_delivery_late_over_5_min: 122
-      orders.pct_delivery_late_over_10_min: 114
+      orders_cl.created_date: 125
+      orders_cl.cnt_unique_orders: 101
+      orders_cl.cnt_unique_orders_new_customers: 125
+      orders_cl.cnt_unique_orders_existing_customers: 147
+      orders_cl.cnt_unique_customers: 138
+      orders_cl.avg_basket_size_gross: 211
+      orders_cl.sum_revenue_gross: 173
+      orders_cl.avg_reaction_time: 115
+      orders_cl.avg_picking_time: 106
+      orders_cl.avg_fulfillment_time: 169
+      orders_cl.avg_delivery_time: 154
+      orders_cl.cnt_orders: 126
+      orders_cl.pct_discount_order_share: 117
+      orders_cl.sum_discount_amt: 124
+      orders_cl.pct_discount_value_of_gross_total: 117
+      orders_cl.avg_delivery_fee_gross: 121
+      orders_cl.avg_acceptance_time: 175
+      orders_cl.sum_gmv_gross: 99
+      orders_cl.avg_order_value_gross: 187
+      orders_cl.pct_delivery_late_over_5_min: 122
+      orders_cl.pct_delivery_late_over_10_min: 114
       wow: 74
-      orders.date: 162
-      orders.avg_fulfillment_time_mm_ss: 129
-      orders.warehouse_name: 150
-      orders.pct_delivery_in_time: 102
+      orders_cl.date: 162
+      orders_cl.avg_fulfillment_time_mm_ss: 129
+      orders_cl.warehouse_name: 150
+      orders_cl.pct_delivery_in_time: 102
       hubs.hub_name: 197
       shyftplan_riders_pickers_hours.rider_utr: 84
       shyftplan_riders_pickers_hours.picker_utr: 84
-      orders.weeks_time_since_hub_launch: 106
+      orders_cl.weeks_time_since_hub_launch: 106
       hubs.weeks_time_between_hub_launch_and_today: 105
-      orders.pct_acquisition_share: 112
+      orders_cl.pct_acquisition_share: 112
       nps_hub_level.avg_nps_score: 61
       issue_rates_clean.pct_orders_with_issues: 70
       nps_after_order.nps_score: 71
     series_cell_visualizations:
-      orders.cnt_unique_orders:
+      orders_cl.cnt_unique_orders:
         is_active: true
         palette:
           palette_id: 56d0c358-10a0-4fd6-aa0b-b117bef527ab
           collection_id: 7c56cc21-66e4-41c9-81ce-a60e1c3967b2
-      orders.avg_basket_size_gross:
+      orders_cl.avg_basket_size_gross:
         is_active: true
         palette:
           palette_id: 56d0c358-10a0-4fd6-aa0b-b117bef527ab
           collection_id: 7c56cc21-66e4-41c9-81ce-a60e1c3967b2
-      orders.avg_fulfillment_time:
+      orders_cl.avg_fulfillment_time:
         is_active: true
         palette:
           palette_id: 84802bdf-40bc-c721-2694-55c5eaeb8519
@@ -121,17 +121,17 @@
           - "#b1e84d"
           - "#ffffff"
           - "#ff393f"
-      orders.cnt_orders:
+      orders_cl.cnt_orders:
         is_active: true
         palette:
           palette_id: 56d0c358-10a0-4fd6-aa0b-b117bef527ab
           collection_id: 7c56cc21-66e4-41c9-81ce-a60e1c3967b2
-      orders.avg_order_value_gross:
+      orders_cl.avg_order_value_gross:
         is_active: true
         palette:
           palette_id: 56d0c358-10a0-4fd6-aa0b-b117bef527ab
           collection_id: 7c56cc21-66e4-41c9-81ce-a60e1c3967b2
-      orders.pct_delivery_late_over_5_min:
+      orders_cl.pct_delivery_late_over_5_min:
         is_active: true
         palette:
           palette_id: cb3356e4-15f7-f4ff-a08f-b6fc17b5c145
@@ -150,7 +150,7 @@
           - "#ffffff"
           - "#67e813"
         value_display: true
-      orders.pct_delivery_late_over_10_min:
+      orders_cl.pct_delivery_late_over_10_min:
         is_active: true
         palette:
           palette_id: e6c3ca7a-03b3-3cfd-2024-978aa98edb14
@@ -159,7 +159,7 @@
           - "#b1e84d"
           - "#ffffff"
           - "#ff393f"
-      orders.avg_fulfillment_time_mm_ss:
+      orders_cl.avg_fulfillment_time_mm_ss:
         is_active: true
         palette:
           palette_id: 9c1cb5e8-d69e-f228-a723-6fdb29dde6b0
@@ -168,7 +168,7 @@
           - "#b1e84d"
           - "#ffffff"
           - "#f2180f"
-      orders.pct_delivery_in_time:
+      orders_cl.pct_delivery_in_time:
         is_active: true
         palette:
           palette_id: f50c3cde-51ec-380e-bd2c-de3375adfd32
@@ -258,7 +258,7 @@
       Country: hubs.country
       City: hubs.city
       Hub Name: hubs.hub_name
-      Order Date: orders.created_date
+      Order Date: orders_cl.created_date
     row: 0
     col: 0
     width: 24
@@ -268,19 +268,19 @@
     model: flink_v3
     explore: orders_cl
     type: looker_grid
-    fields: [hubs.hub_name, orders.date, orders.date_granularity_pass_through,
-      orders.KPI, hubs.weeks_time_between_hub_launch_and_today]
-    pivots: [orders.date]
+    fields: [hubs.hub_name, orders_cl.date, orders_cl.date_granularity_pass_through,
+      orders_cl.KPI, hubs.weeks_time_between_hub_launch_and_today]
+    pivots: [orders_cl.date]
     filters:
-      orders.is_internal_order: 'no'
-      orders.is_successful_order: 'yes'
-    sorts: [orders.date desc, orders.KPI desc 0]
+      orders_cl.is_internal_order: 'no'
+      orders_cl.is_successful_order: 'yes'
+    sorts: [orders_cl.date desc, orders_cl.KPI desc 0]
     limit: 500
     column_limit: 50
-    dynamic_fields: [{table_calculation: wow_growth, label: WoW Growth, expression: "if(${orders.date_granularity_pass_through}\
-          \ = \"Day\", ( ${orders.KPI} - pivot_offset(${orders.KPI}, 7)\
-          \ ) / pivot_offset(${orders.KPI}, 7),( ${orders.KPI} - pivot_offset(${orders.KPI},\
-          \ 1) ) / pivot_offset(${orders.KPI}, 1))\n\n", value_format: '"▲  "+0%;
+    dynamic_fields: [{table_calculation: wow_growth, label: WoW Growth, expression: "if(${orders_cl.date_granularity_pass_through}\
+          \ = \"Day\", ( ${orders_cl.KPI} - pivot_offset(${orders_cl.KPI}, 7)\
+          \ ) / pivot_offset(${orders_cl.KPI}, 7),( ${orders_cl.KPI} - pivot_offset(${orders_cl.KPI},\
+          \ 1) ) / pivot_offset(${orders_cl.KPI}, 1))\n\n", value_format: '"▲  "+0%;
           "▼  "-0%; 0', value_format_name: !!null '', is_disabled: false, _kind_hint: measure,
         _type_hint: number}]
     query_timezone: Europe/Berlin
@@ -306,15 +306,15 @@
     series_labels:
       hubs.weeks_time_between_hub_launch_and_today: Weeks since launch
     series_column_widths:
-      orders.cnt_orders: 99
-      orders.created_date: 113
+      orders_cl.cnt_orders: 99
+      orders_cl.created_date: 113
       wow: 83
       hubs.hub_name: 173
       growth: 82
-      orders.weeks_time_since_hub_launch: 139
+      orders_cl.weeks_time_since_hub_launch: 139
       hubs.weeks_time_between_hub_launch_and_today: 107
     series_cell_visualizations:
-      orders.cnt_orders:
+      orders_cl.cnt_orders:
         is_active: true
         palette:
           palette_id: 56d0c358-10a0-4fd6-aa0b-b117bef527ab
@@ -333,43 +333,43 @@
     x_axis_gridlines: false
     y_axis_gridlines: true
     y_axes: [{label: '', orientation: left, series: [{axisId: Berlin - Wilmersdorf
-              - orders.cnt_orders, id: Berlin - Wilmersdorf - orders.cnt_orders,
+              - orders_cl.cnt_orders, id: Berlin - Wilmersdorf - orders_cl.cnt_orders,
             name: 'Berlin - Wilmersdorf - Orders # Orders'}, {axisId: Berlin - Wilmersdorf
               - wow, id: Berlin - Wilmersdorf - wow, name: Berlin - Wilmersdorf -
-              % WoW}, {axisId: Düsseldorf - Friedrichstadt - orders.cnt_orders,
-            id: Düsseldorf - Friedrichstadt - orders.cnt_orders, name: 'Düsseldorf
+              % WoW}, {axisId: Düsseldorf - Friedrichstadt - orders_cl.cnt_orders,
+            id: Düsseldorf - Friedrichstadt - orders_cl.cnt_orders, name: 'Düsseldorf
               - Friedrichstadt - Orders # Orders'}, {axisId: Düsseldorf - Friedrichstadt
               - wow, id: Düsseldorf - Friedrichstadt - wow, name: Düsseldorf - Friedrichstadt
-              - % WoW}, {axisId: Düsseldorf - Pempelfort - orders.cnt_orders,
-            id: Düsseldorf - Pempelfort - orders.cnt_orders, name: 'Düsseldorf
+              - % WoW}, {axisId: Düsseldorf - Pempelfort - orders_cl.cnt_orders,
+            id: Düsseldorf - Pempelfort - orders_cl.cnt_orders, name: 'Düsseldorf
               - Pempelfort - Orders # Orders'}, {axisId: Düsseldorf - Pempelfort -
               wow, id: Düsseldorf - Pempelfort - wow, name: Düsseldorf - Pempelfort
-              - % WoW}, {axisId: Hamburg - Altona - orders.cnt_orders, id: Hamburg
-              - Altona - orders.cnt_orders, name: 'Hamburg - Altona - Orders
+              - % WoW}, {axisId: Hamburg - Altona - orders_cl.cnt_orders, id: Hamburg
+              - Altona - orders_cl.cnt_orders, name: 'Hamburg - Altona - Orders
               # Orders'}, {axisId: Hamburg - Altona - wow, id: Hamburg - Altona -
               wow, name: Hamburg - Altona - % WoW}, {axisId: Hamburg - Rotherbaum
-              - orders.cnt_orders, id: Hamburg - Rotherbaum - orders.cnt_orders,
+              - orders_cl.cnt_orders, id: Hamburg - Rotherbaum - orders_cl.cnt_orders,
             name: 'Hamburg - Rotherbaum - Orders # Orders'}, {axisId: Hamburg - Rotherbaum
               - wow, id: Hamburg - Rotherbaum - wow, name: Hamburg - Rotherbaum -
-              % WoW}, {axisId: Köln - Innenstadt - orders.cnt_orders, id: Köln
-              - Innenstadt - orders.cnt_orders, name: 'Köln - Innenstadt - Orders
+              % WoW}, {axisId: Köln - Innenstadt - orders_cl.cnt_orders, id: Köln
+              - Innenstadt - orders_cl.cnt_orders, name: 'Köln - Innenstadt - Orders
               # Orders'}, {axisId: Köln - Innenstadt - wow, id: Köln - Innenstadt
               - wow, name: Köln - Innenstadt - % WoW}, {axisId: Köln - Lindenthal
-              - orders.cnt_orders, id: Köln - Lindenthal - orders.cnt_orders,
+              - orders_cl.cnt_orders, id: Köln - Lindenthal - orders_cl.cnt_orders,
             name: 'Köln - Lindenthal - Orders # Orders'}, {axisId: Köln - Lindenthal
               - wow, id: Köln - Lindenthal - wow, name: Köln - Lindenthal - % WoW},
-          {axisId: Köln - Nippes - orders.cnt_orders, id: Köln - Nippes - orders.cnt_orders,
+          {axisId: Köln - Nippes - orders_cl.cnt_orders, id: Köln - Nippes - orders_cl.cnt_orders,
             name: 'Köln - Nippes - Orders # Orders'}, {axisId: Köln - Nippes - wow,
             id: Köln - Nippes - wow, name: Köln - Nippes - % WoW}, {axisId: München
-              - Maxvorstadt - orders.cnt_orders, id: München - Maxvorstadt -
-              orders.cnt_orders, name: 'München - Maxvorstadt - Orders # Orders'},
+              - Maxvorstadt - orders_cl.cnt_orders, id: München - Maxvorstadt -
+              orders_cl.cnt_orders, name: 'München - Maxvorstadt - Orders # Orders'},
           {axisId: München - Maxvorstadt - wow, id: München - Maxvorstadt - wow, name: München
-              - Maxvorstadt - % WoW}, {axisId: München - Schwabing Nord - orders.cnt_orders,
-            id: München - Schwabing Nord - orders.cnt_orders, name: 'München
+              - Maxvorstadt - % WoW}, {axisId: München - Schwabing Nord - orders_cl.cnt_orders,
+            id: München - Schwabing Nord - orders_cl.cnt_orders, name: 'München
               - Schwabing Nord - Orders # Orders'}, {axisId: München - Schwabing Nord
               - wow, id: München - Schwabing Nord - wow, name: München - Schwabing
-              Nord - % WoW}, {axisId: Nürnberg - Maxfeld - orders.cnt_orders,
-            id: Nürnberg - Maxfeld - orders.cnt_orders, name: 'Nürnberg - Maxfeld
+              Nord - % WoW}, {axisId: Nürnberg - Maxfeld - orders_cl.cnt_orders,
+            id: Nürnberg - Maxfeld - orders_cl.cnt_orders, name: 'Nürnberg - Maxfeld
               - Orders # Orders'}], showLabels: true, showValues: true, unpinAxis: false,
         tickDensity: default, tickDensityCustom: 5, type: linear}, {label: !!null '',
         orientation: right, series: [{axisId: Nürnberg - Maxfeld - wow, id: Nürnberg
@@ -404,14 +404,14 @@
     ordering: none
     show_null_labels: false
     defaults_version: 1
-    hidden_fields: [orders.date_granularity_pass_through]
+    hidden_fields: [orders_cl.date_granularity_pass_through]
     listen:
-      KPI Parameter: orders.KPI_parameter
-      Date Granularity: orders.date_granularity
+      KPI Parameter: orders_cl.KPI_parameter
+      Date Granularity: orders_cl.date_granularity
       Country: hubs.country
       City: hubs.city
       Hub Name: hubs.hub_name
-      Order Date: orders.created_date
+      Order Date: orders_cl.created_date
     row: 19
     col: 0
     width: 24
@@ -429,8 +429,8 @@
       issue_rates_clean.pct_orders_wrong_order, issue_rates_clean.sum_wrong_product,
       issue_rates_clean.pct_orders_wrong_product]
     filters:
-      orders.is_internal_order: 'no'
-      orders.is_successful_order: 'yes'
+      orders_cl.is_internal_order: 'no'
+      orders_cl.is_successful_order: 'yes'
       issue_rates_clean.date: 28 days
     sorts: [issue_rates_clean.pct_orders_with_issues desc]
     limit: 500
@@ -496,7 +496,7 @@
       Country: hubs.country
       City: hubs.city
       Hub Name: hubs.hub_name
-      Order Date: orders.created_date
+      Order Date: orders_cl.created_date
     row: 40
     col: 0
     width: 24
@@ -557,7 +557,7 @@
     model: flink_v3
     explore: orders_cl
     listens_to_filters: []
-    field: orders.created_date
+    field: orders_cl.created_date
   - name: Date Granularity
     title: Date Granularity
     type: field_filter
@@ -571,7 +571,7 @@
     model: flink_v3
     explore: orders_cl
     listens_to_filters: []
-    field: orders.date_granularity
+    field: orders_cl.date_granularity
   - name: KPI Parameter
     title: KPI Parameter
     type: field_filter
@@ -585,4 +585,4 @@
     model: flink_v3
     explore: orders_cl
     listens_to_filters: []
-    field: orders.KPI_parameter
+    field: orders_cl.KPI_parameter
