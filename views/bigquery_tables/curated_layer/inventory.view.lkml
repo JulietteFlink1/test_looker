@@ -141,7 +141,7 @@ view: inventory {
     type: sum
     sql: ${TABLE}.quantity_available ;;
     label: "Sum Current Quantity Available"
-    filters: [is_most_recent_record: "True"]
+    filters: [is_most_recent_record: "Yes"]
   }
 
 

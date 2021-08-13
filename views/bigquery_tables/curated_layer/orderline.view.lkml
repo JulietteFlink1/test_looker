@@ -212,11 +212,11 @@ view: orderline {
     sql: null ;;
   }
 
-  dimension: unique_id {
+  dimension: order_lineitem_uuid {
     type: string
     primary_key: yes
     hidden: yes
-    sql: ${TABLE}.lineitem_uuid ;;
+    sql: ${TABLE}.order_lineitem_uuid ;;
   }
 
   ##########

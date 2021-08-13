@@ -14,7 +14,7 @@ explore: order_orderline_cl {
 
   join: orderline {
     sql_on: ${orderline.country_iso} = ${orders_cl.country_iso} AND
-            ${orderline.order_id}    = ${orders_cl.unique_id} ;;
+            ${orderline.order_uuid}    = ${orders_cl.order_uuid} ;;
     relationship: one_to_many
     type: left_outer
   }
