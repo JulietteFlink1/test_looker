@@ -267,7 +267,7 @@ view: orders {
   }
 
   dimension: discount_code {
-    group_label: "Order Dimensions"
+    group_label: "* Order Dimensions *"
     type: string
     sql: ${TABLE}.discount_code ;;
   }
@@ -280,7 +280,7 @@ view: orders {
   }
 
   dimension: discount_name {
-    group_label: "Order Dimensions"
+    group_label: "* Order Dimensions *"
     type: string
     sql: ${TABLE}.discount_name ;;
   }
