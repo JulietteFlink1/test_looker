@@ -520,6 +520,7 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14
     type: time
     datatype: datetime
     timeframes: [
+      hour,
       date,
       day_of_week,
       week,
@@ -586,7 +587,9 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14
     label_from_parameter: timeframe_picker
     type: string # cannot have this as a time type. See this discussion: https://community.looker.com/lookml-5/dynamic-time-granularity-opinions-16675
     sql:
-    {% if timeframe_picker._parameter_value == 'Day' %}
+    {% if timeframe_picker._parameter_value == 'Hour' %}
+      ${session_start_at_hour}
+    {% elsif timeframe_picker._parameter_value == 'Day' %}
       ${session_start_at_date}
     {% elsif timeframe_picker._parameter_value == 'Week' %}
       ${session_start_at_week}
@@ -598,6 +601,7 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14
   parameter: timeframe_picker {
     label: "Session Start Date Granular"
     type: unquoted
+    allowed_value: { value: "Hour" }
     allowed_value: { value: "Day" }
     allowed_value: { value: "Week" }
     allowed_value: { value: "Month" }
