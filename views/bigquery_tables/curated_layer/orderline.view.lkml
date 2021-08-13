@@ -95,9 +95,36 @@ view: orderline {
     sql: ${TABLE}.last_modified_at ;;
   }
 
-  dimension: order_id {
+  dimension: order_uuid {
     type: string
     sql: ${TABLE}.order_uuid ;;
+  }
+
+  dimension: hub_code {
+    type: string
+    sql: ${TABLE}.hub_code ;;
+  }
+
+  dimension_group: created {
+    group_label: "* Dates and Timestamps *"
+    label: "Order"
+    description: "Order Placement Date"
+    type: time
+    timeframes: [
+      raw,
+      minute15,
+      minute30,
+      hour_of_day,
+      time,
+      date,
+      day_of_week,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: ${TABLE}.order_timestamp ;;
+    datatype: timestamp
   }
 
   dimension: product_category_erp {
@@ -266,7 +293,7 @@ view: orderline {
     hidden:  no
     type: sum
     sql: ${quantity};;
-    filters: [orders_cl.created_date: "today"]
+    filters: [created_date: "today"]
     value_format: "0"
   }
 
@@ -277,7 +304,7 @@ view: orderline {
     hidden:  no
     type: sum
     sql: ${quantity};;
-    filters: [orders_cl.created_date: "1 day ago"]
+    filters: [created_date: "1 day ago"]
     value_format: "0"
   }
 
@@ -288,7 +315,7 @@ view: orderline {
     hidden:  yes
     type: sum
     sql: ${quantity};;
-    filters: [orders_cl.created_date: "3 days ago for 3 days"]
+    filters: [created_date: "3 days ago for 3 days"]
     value_format: "0"
   }
 
@@ -299,7 +326,7 @@ view: orderline {
     hidden:  yes
     type: sum
     sql: ${quantity};;
-    filters: [orders_cl.created_date: "30 days ago for 30 days"]
+    filters: [created_date: "30 days ago for 30 days"]
     value_format: "0"
   }
 
@@ -320,7 +347,7 @@ view: orderline {
     hidden:  no
     type: sum
     sql: ${quantity};;
-    filters: [orders_cl.created_date: "7 days ago for 7 days"]
+    filters: [created_date: "7 days ago for 7 days"]
     value_format: "0.0"
   }
 
