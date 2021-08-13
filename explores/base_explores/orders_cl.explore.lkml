@@ -14,7 +14,7 @@ explore: orders_cl {
   view_label: "* Orders *"
   group_label: "01) Performance"
   description: "General Business Performance - Orders, Revenue, etc."
-  view_name: orders_cl # needs to be set in order that the base_explore can be extended and referenced properly
+  view_name: orders_cl  # needs to be set in order that the base_explore can be extended and referenced properly
   hidden: no
 
   always_filter: {
