@@ -62,6 +62,12 @@ view: products {
     sql: ${TABLE}.substitute_group ;;
   }
 
+  dimension: substitute_group_filled {
+    type: string
+    sql: coalesce(${substitute_group}, ${product_name}) ;;
+    label: "Substitute Group / Product Name"
+  }
+
   # =========  hidden   =========
   dimension: primary_key {
     sql: ${TABLE}.product_sku ;;
