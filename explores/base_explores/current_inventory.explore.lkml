@@ -6,7 +6,7 @@ explore: current_inventory {
   from: products
   view_name: products
   group_label: "02) Inventory"
-  view_label: "Current Inventory"
+  view_label: "Inventory"
 
   hidden: no
 
