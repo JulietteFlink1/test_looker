@@ -8,13 +8,17 @@ view: order_placed_with_order_order_events {
       , metadata
       , IF(ios_order.anonymous_id IS NULL, android_order.anonymous_id, ios_order.anonymous_id) as anonymous_id
       , IF(ios_order.context_device_type IS NULL, android_order.context_device_type, ios_order.context_device_type) as device_type
+      , COALESCE(ios_order.context_app_version, android_order.context_app_version) AS app_version
+      , COALESCE(ios_order.context_app_name, android_order.context_app_name) AS app_name
   FROM `flink-data-prod.saleor_prod_global.order_order` backend_order
   LEFT JOIN `flink-backend.flink_ios_production.order_placed_view` ios_order
       ON backend_order.token=ios_order.order_token
   LEFT JOIN `flink-backend.flink_android_production.order_placed_view` android_order
       ON backend_order.token=android_order.order_token
-  --WHERE
-  --    DATE(created) > "2021-06-25"
+WHERE (COALESCE(android_order.context_app_version, ios_order.context_app_version) IS NULL
+   OR NOT (LOWER(COALESCE(android_order.context_app_version, ios_order.context_app_version)) LIKE "%app-rating%"
+          OR LOWER(COALESCE(android_order.context_app_version, ios_order.context_app_version)) LIKE "%debug%")
+          )
   ORDER BY created
  ;;
   }
@@ -163,7 +167,17 @@ view: order_placed_with_order_order_events {
     sql: ${TABLE}.device_type ;;
   }
 
+  dimension: app_version {
+  type: string
+  sql: ${TABLE}.app_version ;;
+}
+
+  dimension: app_name {
+  type: string
+  sql: ${TABLE}.app_name ;;
+}
+
   set: detail {
-    fields: [created_time, token, metadata, user_email, status, anonymous_id, device_type]
+    fields: [created_time, token, metadata, user_email, status, anonymous_id, device_type, app_version, app_name]
   }
 }
