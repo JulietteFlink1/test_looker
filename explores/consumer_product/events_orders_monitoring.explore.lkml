@@ -1,4 +1,4 @@
-include: "/tracking/events_orders_monitoring.view.lkml"
+include: "/views/projects/consumer_product/events_orders_monitoring.view.lkml"
 
 explore: events_order_monitoring {
   view_name: events_orders_monitoring
