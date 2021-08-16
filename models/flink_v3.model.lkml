@@ -28,7 +28,7 @@ datagroup: flink_default_datagroup {
 
 datagroup: flink_hourly_datagroup {
   sql_trigger: SELECT MAX(partition_timestamp) FROM `flink-data-prod.curated.inventory`;;
-  max_cache_age: "24 hour"
+  max_cache_age: "1 hour"
 }
 
 persist_with: flink_default_datagroup
