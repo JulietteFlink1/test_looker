@@ -5,9 +5,11 @@ include: "/views/extended_tables/order_lineitems_using_inventory.view"
 explore: current_inventory_updated_hourly {
   from: products
   view_name: products
+  group_label: "02) Inventory"
+  view_label: "Current Inventory - Updated Hourly"
 
   persist_with: flink_hourly_datagroup
-  hidden: yes
+  hidden: no
 
   access_filter: {
     field: hubs.country_iso

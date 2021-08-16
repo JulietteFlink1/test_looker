@@ -383,6 +383,7 @@ explore: product_product {
   view_label: "* Product / SKU Data *"
   group_label: "02) Inventory"
   description: "Products, Productvariations, Categories, SKUs, Stock etc."
+  hidden: yes
   always_filter: {
     filters:  [
       hubs.country: "",
@@ -484,6 +485,7 @@ explore: hist_daily_stock {
   label: "NooS Substitute Groups"
   view_label: "NooS Substitute Groups"
   group_label: "02) Inventory"
+  hidden: yes
   description: "Snapshots of Daily Inventory per Substitute group (only NooS)"
 
   access_filter: {
@@ -509,6 +511,7 @@ explore: product_attribute_fact_ranking_hlp {
   label: "Substitute Group: Product Rating"
   view_label: "Substitute Group: Product Rating"
   group_label: "02) Inventory"
+  hidden: yes
 
   # access filter : should be derived from the order_order explore
 }
