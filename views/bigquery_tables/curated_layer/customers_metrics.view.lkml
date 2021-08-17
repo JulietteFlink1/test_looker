@@ -50,7 +50,7 @@ view: customers_metrics {
   dimension: country {
     group_label: "* User Dimensions *"
     type: string
-    sql: ${TABLE}.country ;;
+    sql: ${TABLE}.first_order_country ;;
   }
 
   dimension: user_email {
@@ -115,6 +115,12 @@ view: customers_metrics {
     group_label: "* User Dimensions *"
     type: yesno
     sql: ${TABLE}.is_discount_acquisition ;;
+  }
+
+  dimension: first_order_discount_code {
+    group_label: "* User Dimensions *"
+    type: string
+    sql: ${TABLE}.first_order_discount_code ;;
   }
 
   dimension_group: last_order_with_voucher {
