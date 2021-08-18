@@ -330,4 +330,5 @@ view: customers_metrics {
     value_format_name: euro_accounting_2_precision
     sql: ${lifetime_revenue_gross} ;;
   }
+
 }

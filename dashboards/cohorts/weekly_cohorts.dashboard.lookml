@@ -3,6 +3,7 @@
   layout: newspaper
   preferred_viewer: dashboards-next
   elements:
+
   - name: Weekly Cohorts (Customer Retention)
     title: Weekly Cohorts (Customer Retention)
     model: flink_v3
@@ -11,9 +12,9 @@
     fields: [
       customers_metrics.first_order_week,
       orders_cl.cnt_unique_customers,
-      weekly_cohorts.weeks_time_since_sign_up
+      customers_metrics.weeks_time_since_sign_up
       ]
-    pivots: [weekly_cohorts.weeks_time_since_sign_up]
+    pivots: [customers_metrics.weeks_time_since_sign_up]
     fill_fields: [customers_metrics.first_order_week]
     filters:
       orders_cl.is_internal_order: 'no'
@@ -23,7 +24,10 @@
       customers_metrics.first_order_hub: ''
       hubs.country: ''
       hubs.hub_name: ''
-    sorts: [customers_metrics.first_order_week, weekly_cohorts.weeks_time_since_sign_up]
+    sorts: [
+      customers_metrics.first_order_week,
+      order_cl.weeks_time_since_sign_up
+      ]
     limit: 500
     column_limit: 50
     total: true
@@ -58,7 +62,7 @@
     show_totals: true
     show_row_totals: true
     series_column_widths:
-      customers_metrics.first_order_week: 196
+      user_order_facts.first_order_week: 196
       pcnt_of_cohort_still_active: 82
       weekly_cohorts_stable_base.cnt_unique_customers: 137
       cohort_size: 90
@@ -111,6 +115,7 @@
     col: 0
     width: 24
     height: 9
+
   - name: Weekly Cohorts (Order Frequency)
     title: Weekly Cohorts (Order Frequency)
     model: flink_v3
@@ -118,11 +123,13 @@
     type: looker_grid
     fields: [
       customers_metrics.first_order_week,
-      weekly_cohorts.weeks_time_since_sign_up,
+      customers_metrics.weeks_time_since_sign_up,
       orders_cl.cnt_unique_customers,
       weekly_cohorts.cnt_unique_customers,
-      orders_cl.cnt_orders]
-    pivots: [weekly_cohorts.weeks_time_since_sign_up]
+      orders_cl.cnt_orders
+      ]
+    pivots: [
+      customers_metrics.weeks_time_since_sign_up]
     filters:
       orders_cl.is_internal_order: 'no'
       orders_cl.is_successful_order: 'yes'
@@ -131,7 +138,8 @@
       customers_metrics.first_order_hub: ''
     sorts: [
       customers_metrics.first_order_week,
-      weekly_cohorts.weeks_time_since_sign_up]
+      customers_metrics.weeks_time_since_sign_up
+      ]
     limit: 500
     column_limit: 50
     total: true
@@ -162,7 +170,7 @@
     series_column_widths:
       customers_metrics.first_order_week: 178
       pcnt_of_cohort_still_active: 193
-      weekly_cohorts_stable_base.cnt_unique_customers: 137
+      customers_metrics.cnt_unique_customers: 137
       cohort_size: 78
       order_frequency: 94
     series_cell_visualizations:
@@ -202,7 +210,11 @@
     interpolation: linear
     defaults_version: 1
     series_types: {}
-    hidden_fields: [orders_cl.cnt_unique_customers, orders_cl.cnt_orders, weekly_cohorts.cnt_unique_customers]
+    hidden_fields: [
+      orders_cl.cnt_unique_customers,
+      orders_cl.cnt_orders,
+      weekly_cohorts.cnt_unique_customers
+      ]
     column_order: [customers_metrics.first_order_week, cohort_size, 0_order_frequency,
       1_order_frequency, 2_order_frequency, 3_order_frequency, 4_order_frequency,
       5_order_frequency, 6_order_frequency, 7_order_frequency, 8_order_frequency,
@@ -219,21 +231,29 @@
     col: 0
     width: 24
     height: 11
+
   - name: Weekly Cohorts (GMV)
     title: Weekly Cohorts (GMV)
     model: flink_v3
     explore: orders_customers
     type: looker_grid
-    fields: [customers_metrics.first_order_week, weekly_cohorts.sum_gmv_gross,
-      orders_cl.cnt_unique_customers, orders_cl.sum_gmv_gross, weekly_cohorts.weeks_time_since_sign_up]
-    pivots: [weekly_cohorts.weeks_time_since_sign_up]
+    fields: [
+      customers_metrics.first_order_week,
+      weekly_cohorts.sum_gmv_gross,
+      orders_cl.cnt_unique_customers,
+      orders_cl.sum_gmv_gross,
+      customers_metrics.weeks_time_since_sign_up
+      ]
+    pivots: [customers_metrics.weeks_time_since_sign_up]
     filters:
       orders_cl.is_internal_order: 'no'
       orders_cl.is_successful_order: 'yes'
       orders_cl.created_date: after 2020/01/25
       customers_metrics.first_order_week: after 2021/01/25
       customers_metrics.first_order_hub: ''
-    sorts: [weekly_cohorts.weeks_time_since_sign_up, customers_metrics.first_order_week
+    sorts: [
+      customers_metrics.weeks_time_since_sign_up,
+      customers_metrics.first_order_week
         0]
     limit: 500
     column_limit: 50
@@ -265,9 +285,9 @@
     series_column_widths:
       customers_metrics.first_order_week: 178
       pcnt_of_cohort_still_active: 193
-      weekly_cohorts_stable_base.cnt_unique_customers: 137
+      weekly_cohorts.cnt_unique_customers: 137
       orders_cl.sum_gmv_gross: 90
-      weekly_cohorts_stable_base.sum_gmv_gross: 146
+      weekly_cohorts.sum_gmv_gross: 146
       weekly_gmv_gross: 88
       gmv_retention: 90
       gmv_gross: 87
@@ -324,6 +344,7 @@
     col: 0
     width: 24
     height: 12
+
   - name: ''
     type: text
     title_text: ''
@@ -334,6 +355,7 @@
     col: 0
     width: 24
     height: 2
+
   - name: " (2)"
     type: text
     title_text: ''
@@ -346,6 +368,7 @@
     col: 0
     width: 24
     height: 2
+
   - name: " (3)"
     type: text
     title_text: ''
@@ -356,15 +379,21 @@
     col: 0
     width: 24
     height: 2
+
   - name: Monthly Cohorts (Revenue / GMV net of discounts)
     title: Monthly Cohorts (Revenue / GMV net of discounts)
     model: flink_v3
     explore: orders_customers
     type: looker_grid
-    fields: [customers_metrics.first_order_week, weekly_cohorts.sum_discount_amt,
-      orders_cl.cnt_unique_customers, orders_cl.sum_discount_amt, orders_cl.sum_revenue_gross,
-      weekly_cohorts.weeks_time_since_sign_up]
-    pivots: [weekly_cohorts.weeks_time_since_sign_up]
+    fields: [
+      customers_metrics.first_order_week,
+      weekly_cohorts.sum_discount_amt,
+      orders_cl.cnt_unique_customers,
+      orders_cl.sum_discount_amt,
+      orders_cl.sum_revenue_gross,
+      customers_metrics.weeks_time_since_sign_up
+      ]
+    pivots: [customers_metrics.weeks_time_since_sign_up]
     filters:
       orders_cl.is_internal_order: 'no'
       orders_cl.is_successful_order: 'yes'
@@ -373,7 +402,7 @@
       customers_metrics.first_order_hub: ''
       hubs.country: ''
       hubs.hub_name: ''
-    sorts: [weekly_cohorts.weeks_time_since_sign_up, customers_metrics.first_order_week
+    sorts: [customers_metrics.weeks_time_since_sign_up, customers_metrics.first_order_week
         0]
     limit: 500
     column_limit: 50
@@ -406,10 +435,10 @@
     series_column_widths:
       customers_metrics.first_order_week: 178
       pcnt_of_cohort_still_active: 193
-      weekly_cohorts_stable_base.cnt_unique_customers: 137
+      weekly_cohorts.cnt_unique_customers: 137
       orders_cl.sum_gmv_gross: 90
-      weekly_cohorts_stable_base.sum_gmv_gross: 146
-      weekly_cohorts_stable_base.sum_discount_amt: 150
+      weekly_cohorts.sum_gmv_gross: 146
+      weekly_cohorts.sum_discount_amt: 150
       discount_retention: 99
       weekly_discount_value: 120
       discount_value: 110
@@ -451,12 +480,8 @@
     interpolation: linear
     defaults_version: 1
     series_types: {}
-    hidden_fields: [
-      orders_cl.cnt_unique_customers,
-      orders_cl.sum_discount_amt,
-      weekly_cohorts.sum_discount_amt,
-      orders_cl.sum_revenue_gross
-      ]
+    hidden_fields: [orders_cl.cnt_unique_customers, orders_cl.sum_discount_amt,
+      weekly_cohorts.sum_discount_amt, orders_cl.sum_revenue_gross]
     y_axes: []
     listen:
       Hub Name: customers_metrics.first_order_hub
@@ -468,6 +493,7 @@
     col: 0
     width: 24
     height: 11
+
   - name: " (4)"
     type: text
     title_text: ''
@@ -478,6 +504,7 @@
     col: 0
     width: 24
     height: 2
+
   - name: " (5)"
     type: text
     title_text: ''
@@ -499,10 +526,10 @@
     fields: [
       customers_metrics.first_order_week,
       orders_cl.cnt_unique_customers,
-      weekly_cohorts.weeks_time_since_sign_up,
+      customers_metrics.weeks_time_since_sign_up,
       orders_cl.cnt_unique_customers_without_voucher
       ]
-    pivots: [weekly_cohorts.weeks_time_since_sign_up]
+    pivots: [customers_metrics.weeks_time_since_sign_up]
     fill_fields: [customers_metrics.first_order_week]
     filters:
       orders_cl.is_internal_order: 'no'
@@ -516,10 +543,7 @@
       customers_metrics.first_order_discount_code: ''
       customers_metrics.first_order_city: ''
       customers_metrics.country: Germany
-    sorts: [
-      customers_metrics.first_order_week,
-      weekly_cohorts.weeks_time_since_sign_up
-      ]
+    sorts: [customers_metrics.first_order_week, weekly_cohorts.weeks_time_since_sign_up]
     limit: 500
     column_limit: 50
     total: true
@@ -557,7 +581,7 @@
     series_column_widths:
       customers_metrics.first_order_week: 196
       pcnt_of_cohort_still_active: 82
-      weekly_cohorts_stable_base.cnt_unique_customers: 137
+      weekly_cohorts.cnt_unique_customers: 137
       cohort_size: 90
       pcnt_of_cohort_still_active_excl_voucher_reorders: 176
     series_cell_visualizations:
@@ -605,6 +629,8 @@
     col: 0
     width: 24
     height: 15
+
+
   filters:
   - name: Country
     title: Country
