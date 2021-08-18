@@ -1,5 +1,5 @@
 - dashboard: noos_dashboard
-  title: NOOS Dashboard
+  title: NOOS Dashboard (Migrated)
   layout: newspaper
   preferred_viewer: dashboards-next
   refresh: 1 hour
