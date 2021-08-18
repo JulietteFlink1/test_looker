@@ -795,7 +795,7 @@ explore: cs_issues_post_delivery {
 ####### Competitor Analysis #######
 # Un-hide and use this explore, or copy the joins into another explore, to get all the fully nested relationships from this view
 explore: gorillas_v1_items {
-  hidden: no
+  hidden: yes
   label: "Gorillas Items"
   view_label: "Gorillas Items"
   group_label: "08) Competitor Analysis"
@@ -889,7 +889,7 @@ explore: gorillas_v1_items {
 }
 
 explore: gorillas_v1_hubs_master{
-  hidden:  no
+  hidden:  yes
   label: "Gorillas Hubs"
   view_label: "Gorillas Hubs"
   group_label: "08) Competitor Analysis"
@@ -898,7 +898,7 @@ explore: gorillas_v1_hubs_master{
 
 # Un-hide and use this explore, or copy the joins into another explore, to get all the fully nested relationships from this view
 explore: gorillas_v1_turfs {
-  hidden:  no
+  hidden:  yes
   label: "Gorillas Turfs"
   view_label: "Gorillas Turfs"
   group_label: "08) Competitor Analysis"
@@ -933,7 +933,7 @@ explore: gorillas_v1_orders {
 }
 
 explore: gorillas_orders_wow {
-  hidden:  no
+  hidden:  yes
   label: "Gorillas Orders WoW"
   view_label: "Gorillas Orders WoW"
   group_label: "08) Competitor Analysis"
@@ -987,7 +987,7 @@ explore: gorillas_v1_inventory{
 }
 
 explore: gorillas_item_mapping {
-  hidden:  no
+  hidden:  yes
   label: "Gorillas Item Mapping"
   view_label: "Gorillas Item Mapping"
   group_label: "08) Competitor Analysis"
@@ -1010,7 +1010,7 @@ explore: gorillas_v1_delivery_areas{
 
 
 explore: gorillas_v1_item_hub_collection_group_allocation{
-  hidden:  no
+  hidden:  yes
   label: "Gorillas Item Hub Collection Group Allocation"
   view_label: "Gorillas Item Hub Collection Group Allocation"
   group_label: "08) Competitor Analysis"
@@ -1132,7 +1132,7 @@ explore: product_product_competitive_intelligence {
 
 
 explore: flink_skus_per_category {
-  hidden:  no
+  hidden:  yes
   label: "Flink SKUs per Category"
   view_label: "Flink SKUs per Category"
   group_label: "08) Competitor Analysis"
