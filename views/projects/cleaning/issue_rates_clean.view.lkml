@@ -58,7 +58,7 @@ view: issue_rates_clean {
       on issues_orders.hub_code = orders_per_hub.hub_code
       and issues_orders.date = orders_per_hub.date
       -- Other
-      where orders_per_hub.date >= '2021-08-10' and orders_per_hub.hub_code in ('fr_par_bagn', 'nl_del_cent', 'fr_par_brul')
+      where orders_per_hub.date >= '2021-08-10' --and orders_per_hub.hub_code in ('fr_par_bagn', 'nl_del_cent', 'fr_par_brul')
       group by 1,2
       order by 1, 2
  ;;
