@@ -6,7 +6,7 @@
   - name: Orders by Customer Type
     title: Orders by Customer Type
     model: flink_v3
-    explore: orders_cl
+    explore: orders_customers
     type: looker_column
     fields: [orders_cl.cnt_unique_orders_existing_customers, orders_cl.cnt_unique_orders_new_customers,
       orders_cl.pct_discount_order_share, orders_cl.pct_acquisition_share, orders_cl.date]
