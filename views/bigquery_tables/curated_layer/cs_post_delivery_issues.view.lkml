@@ -28,19 +28,10 @@ view: cs_post_delivery_issues {
     sql: ${TABLE}.hub ;;
   }
 
-  dimension_group: issue {
-    type: time
-    timeframes: [
-      raw,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    convert_tz: no
+  dimension: ticket_date {
+    type: date
     datatype: date
-    sql: ${TABLE}.issue_date ;;
+    sql: date(${TABLE}.issue_date) ;;
   }
 
   dimension: order_nr_ {
