@@ -1,5 +1,5 @@
 - dashboard: stock_dashboard_realtime
-  title: Stock Dashboard (Hourly Updated)
+  title: Stock Dashboard (Hourly Updated) (Migrated)
   layout: newspaper
   preferred_viewer: dashboards-next
   elements:

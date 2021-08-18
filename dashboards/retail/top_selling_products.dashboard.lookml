@@ -1,5 +1,5 @@
 - dashboard: top_selling_products
-  title: Top Selling Products
+  title: Top Selling Products (Migrated)
   layout: newspaper
   preferred_viewer: dashboards-next
   elements:
