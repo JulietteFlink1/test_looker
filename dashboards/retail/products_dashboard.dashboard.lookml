@@ -1,5 +1,5 @@
 - dashboard: products_dashboard_skus_performance
-  title: Products Dashboard (SKUs, Performance)
+  title: CT migrated Products Dashboard (SKUs, Performance)
   layout: newspaper
   preferred_viewer: dashboards-next
   elements:
