@@ -7,9 +7,14 @@ view: cs_post_delivery_issues {
     sql: ${TABLE}.comment ;;
   }
 
+  dimension: post_delivery_issues_id {
+    type: number
+    primary_key:  yes
+    sql: ${TABLE}.post_delivery_issues_uuid ;;
+  }
+
   dimension: conversation_id {
     type: string
-    primary_key: yes
     sql: ${TABLE}.conversation_id ;;
   }
 
