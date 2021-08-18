@@ -5,6 +5,7 @@ include: "/views/bigquery_tables/nps_after_order.view"
 include: "/views/projects/cleaning/issue_rates_clean.view"
 
 include: "/views/bigquery_tables/curated_layer/hubs_ct.view"
+include: "/views/bigquery_tables/curated_layer/cs_post_delivery_issues.view"
 
 include: "/explores/base_explores/orders_cl.explore"
 
@@ -75,6 +76,14 @@ explore: orders_cl {
     sql_on: ${hubs.hub_code}           =  ${issue_rates_clean.hub_code} and
             ${orders_cl.date}          =  ${issue_rates_clean.date_dynamic};;
     relationship: many_to_one # decided against one_to_many: on this level, many orders have hub-level issue-aggregates
+    type: left_outer
+  }
+
+  join: cs_post_delivery_issues {
+    view_label: "* Post Delivery Issues on Order-Level *"
+    sql_on: ${orders_cl.country_iso} = ${cs_post_delivery_issues.country_iso} AND
+      ${cs_post_delivery_issues.order_nr_} = ${orders_cl.id};;
+    relationship: one_to_many
     type: left_outer
   }
 
