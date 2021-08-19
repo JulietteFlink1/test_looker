@@ -6,8 +6,8 @@ explore: current_inventory {
   from: products
   view_name: products
   group_label: "02) Inventory"
-  view_label: "Inventory"
-  label: "Inventory"
+  view_label: "* Product Information *"
+  label: "Products & Inventory"
 
   hidden: no
 
