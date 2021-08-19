@@ -1,5 +1,5 @@
 view: discounts {
-  sql_table_name: `flink-data-prod.curated.discounts`;;
+  sql_table_name: `flink-data-staging.curated.discounts`;;
 
   dimension: discount_id {
     hidden: yes
@@ -144,6 +144,17 @@ view: discounts {
     ]
     sql: ${TABLE}.valid_until ;;
   }
+
+  dimension: discount_value {
+    type: number
+    sql: ${TABLE}.discount_value ;;
+  }
+
+  dimension: use_case {
+    type: number
+    sql: ${TABLE}.use_case ;;
+  }
+
 
   measure: count {
     type: count
