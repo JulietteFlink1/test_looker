@@ -22,7 +22,7 @@ week_start_day: monday
 case_sensitive: no
 
 datagroup: flink_default_datagroup {
-  sql_trigger: SELECT MAX(_fivetran_synced) FROM `flink-data-prod.saleor_prod_global.warehouse_stock`;;
+  sql_trigger: SELECT MAX(partition_timestamp) FROM `flink-data-prod.curated.inventory` ;;
   max_cache_age: "24 hour"
 }
 
@@ -1271,22 +1271,22 @@ explore: categories_mba {
 
 }
 
-explore: voucher_retention {
-  label: "Voucher retention"
-  view_label: "Voucher retention"
-  group_label: "15) Ad-Hoc"
-  description: "Voucher retention analysis - First voucher used by user is considered as the base. Thus, a user can only have a first used voucher."
+# explore: voucher_retention {
+#   label: "Voucher retention"
+#   view_label: "Voucher retention"
+#   group_label: "15) Ad-Hoc"
+#   description: "Voucher retention analysis - First voucher used by user is considered as the base. Thus, a user can only have a first used voucher."
 
-  access_filter: {
-    field: voucher_retention.country_iso
-    user_attribute: country_iso
-  }
+#   access_filter: {
+#     field: voucher_retention.country_iso
+#     user_attribute: country_iso
+#   }
 
-  access_filter: {
-    field: voucher_retention.city
-    user_attribute: city
-  }
-}
+#   access_filter: {
+#     field: voucher_retention.city
+#     user_attribute: city
+#   }
+# }
 
 explore: user_order_facts_phone_number {
   label: "User Order Facts - Unique User ID"

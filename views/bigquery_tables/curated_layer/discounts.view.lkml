@@ -1,36 +1,37 @@
-# Un-hide and use this explore, or copy the joins into another explore, to get all the fully nested relationships from this view
-explore: discounts {
-  hidden: yes
-
-  join: discounts__discount_group {
-    view_label: "Discounts: Discount Group"
-    sql: LEFT JOIN UNNEST(${discounts.discount_group}) as discounts__discount_group ;;
-    relationship: one_to_many
-  }
-}
-
 view: discounts {
-  sql_table_name: `flink-data-prod.curated.discounts`
-    ;;
-  drill_fields: [discount_id]
+  sql_table_name: `flink-data-prod.curated.discounts`;;
 
   dimension: discount_id {
-    primary_key: yes
+    hidden: yes
     type: string
     sql: ${TABLE}.discount_id ;;
+    group_label: "> IDs"
+
+  }
+
+  dimension: discount_uuid {
+    hidden: yes
+    primary_key: yes
+    type: string
+    sql: ${TABLE}.discount_uuid ;;
+    group_label: "> IDs"
   }
 
   dimension: cart_discount_id {
+    label: "Card Discount ID"
     type: string
     sql: ${TABLE}.cart_discount_id ;;
+    group_label: "> IDs"
   }
 
   dimension: cart_discount_type {
+    label: "Card Discount Type"
     type: string
     sql: ${TABLE}.cart_discount_type ;;
   }
 
   dimension_group: created {
+    label: "Cate Discount Code Creation"
     type: time
     timeframes: [
       raw,
@@ -45,36 +46,37 @@ view: discounts {
   }
 
   dimension: discount_code {
+    label: "Discount Code"
     type: string
     sql: ${TABLE}.discount_code ;;
   }
 
   dimension: discount_description {
+    label: "Discount Code Description"
     type: string
     sql: ${TABLE}.discount_description ;;
   }
 
   dimension: discount_group {
-    hidden: yes
+    label: "Discount Code Group"
+    type: string
     sql: ${TABLE}.discount_group ;;
   }
 
   dimension: discount_name {
+    label: "Discount Code Name"
     type: string
     sql: ${TABLE}.discount_name ;;
   }
 
-  dimension: discount_uuid {
-    type: string
-    sql: ${TABLE}.discount_uuid ;;
-  }
-
   dimension: is_active {
+    label: "Discount Code Is Active"
     type: yesno
     sql: ${TABLE}.is_active ;;
   }
 
   dimension_group: last_modified {
+    label: "Date Discount Code Last Modified At"
     type: time
     timeframes: [
       raw,
@@ -85,15 +87,17 @@ view: discounts {
       quarter,
       year
     ]
-    sql: ${TABLE}.last_modified_at ;;
+    sql: ${TABLE}.partition_timestamp ;;
   }
 
   dimension: max_applications {
+    label: "Max Discount Applications"
     type: number
     sql: ${TABLE}.max_applications ;;
   }
 
   dimension: max_applications_per_customer {
+    label: "Max Discount Applications per Customer"
     type: number
     sql: ${TABLE}.max_applications_per_customer ;;
   }
@@ -110,6 +114,7 @@ view: discounts {
       year
     ]
     sql: ${TABLE}.partition_timestamp ;;
+    hidden: yes
   }
 
   dimension_group: valid_from {
@@ -140,15 +145,19 @@ view: discounts {
     sql: ${TABLE}.valid_until ;;
   }
 
+  dimension: discount_value {
+    type: number
+    sql: ${TABLE}.discount_value ;;
+  }
+
+  dimension: use_case {
+    type: number
+    sql: ${TABLE}.use_case ;;
+  }
+
+
   measure: count {
     type: count
     drill_fields: [discount_id, discount_name]
-  }
-}
-
-view: discounts__discount_group {
-  dimension: discounts__discount_group {
-    type: string
-    sql: discounts__discount_group ;;
   }
 }
