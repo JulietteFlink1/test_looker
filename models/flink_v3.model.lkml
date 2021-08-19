@@ -22,7 +22,7 @@ week_start_day: monday
 case_sensitive: no
 
 datagroup: flink_default_datagroup {
-  sql_trigger: SELECT MAX(_fivetran_synced) FROM `flink-data-prod.saleor_prod_global.warehouse_stock`;;
+  sql_trigger: SELECT MAX(partition_timestamp) FROM `flink-data-prod.curated.inventory` ;;
   max_cache_age: "24 hour"
 }
 
