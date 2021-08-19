@@ -123,18 +123,21 @@ view: inventory {
     type: average
     sql: ${TABLE}.quantity_available ;;
     label: "AVG Quantity Available"
+    value_format_name: decimal_1
   }
 
   measure: avg_quantity_on_stock {
     type: average
     sql: ${TABLE}.quantity_on_stock ;;
     label: "AVG Quantity on Stock"
+    value_format_name: decimal_1
   }
 
   measure: avg_quantity_reserved {
     type: average
     sql: ${TABLE}.quantity_reserved ;;
     label: "AVG Quantity Reserved"
+    value_format_name: decimal_1
   }
 
   measure: sum_stock_quantity {
@@ -142,6 +145,7 @@ view: inventory {
     sql: ${TABLE}.quantity_available ;;
     label: "Sum Current Quantity Available"
     filters: [is_most_recent_record: "Yes"]
+    value_format_name: decimal_1
   }
 
 

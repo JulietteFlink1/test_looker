@@ -32,7 +32,7 @@ view: monthly_cohorts {
       }
       filters: {
         field: customers_metrics.months_time_since_sign_up
-        value: "not 0"
+        value: "0"
       }
     }
   }

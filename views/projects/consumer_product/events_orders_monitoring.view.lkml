@@ -13,7 +13,7 @@ view: events_orders_monitoring {
                  COALESCE(a.hub_city, o.hub_city) AS hub_city,
                  h.country_iso,
                  o.order_id,
-                 o.order_number,
+                 CAST(o.order_number AS STRING) as order_number,
                  o.payment_method
           FROM `flink-backend.flink_android_production.tracks_view` t
           LEFT JOIN `flink-backend.flink_android_production.address_confirmed_view` a ON a.id = t.id
@@ -34,7 +34,7 @@ view: events_orders_monitoring {
                  COALESCE(a.hub_city, o.hub_city) AS hub_city,
                  h.country_iso,
                  o.order_id,
-                 o.order_number,
+                 CAST(o.order_number AS STRING) as order_number,
                  o.payment_method
           FROM `flink-backend.flink_ios_production.tracks_view` t
           LEFT JOIN `flink-backend.flink_ios_production.address_confirmed_view` a ON a.id = t.id
@@ -43,7 +43,7 @@ view: events_orders_monitoring {
           WHERE {% condition event_date %} date(t.timestamp) {% endcondition %}
         ),
         saleor AS (
-        SELECT created, tracking_client_id, country_iso, id, status
+        SELECT created, tracking_client_id, country_iso, CAST(id AS STRING) AS id, status
         FROM `flink-backend.saleor_db_global.order_order`
         WHERE {% condition event_date %} DATE(created) {% endcondition %}
         )
@@ -57,11 +57,11 @@ view: events_orders_monitoring {
                  hub_city,
                  event,
                  order_id,
-                 COALESCE(sg.id, CAST(apps.order_number AS INT64)) AS order_number,
+                 COALESCE(sg.id, apps.order_number) AS order_number,
                  payment_method,
                  status
           FROM apps
-          FULL OUTER JOIN saleor sg ON sg.id = CAST(apps.order_number AS INT64) AND sg.country_iso = apps.country_iso
+          FULL OUTER JOIN saleor sg ON sg.id = apps.order_number AND sg.country_iso = apps.country_iso
          -- WHERE {% condition event_date %} COALESCE(event_date, DATE(sg.created)) {% endcondition %}
           GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12
           ORDER BY 1, 2, order_number

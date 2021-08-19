@@ -8,8 +8,8 @@ view: top_50_selling_products_custom {
                   ELSE product_name
                 END as substitute_group,
               SUM(quantity*amt_unit_price_gross) AS product_gmv
-      FROM `flink-data-prod.curated.orderline_ct` ol
-      LEFT JOIN  `flink-data-prod.curated.orders_ct` o ON o.order_uuid = ol.order_uuid
+      FROM       `flink-data-prod.curated.order_lineitems` ol
+      LEFT JOIN  `flink-data-prod.curated.orders` o ON o.order_uuid = ol.order_uuid
       WHERE TRUE
       AND o.country_iso = "DE"
       AND DATE(o.order_timestamp) >= CURRENT_DATE - 30

@@ -32,7 +32,7 @@ view: weekly_cohorts {
       }
       filters: {
         field: customers_metrics.weeks_time_since_sign_up
-        value: "not 0"
+        value: "0"
       }
     }
   }

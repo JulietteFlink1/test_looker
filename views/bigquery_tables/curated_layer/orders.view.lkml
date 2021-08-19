@@ -137,6 +137,7 @@ view: orders {
   }
 
   dimension: user_email {
+    group_label: "* User Dimensions *"
     type: string
     sql: ${TABLE}.customer_email ;;
   }
@@ -205,16 +206,17 @@ view: orders {
       quarter,
       year
     ]
-    sql: ${TABLE}.order_timestamp ;;
+    sql: ${TABLE}.partition_timestamp ;;
     datatype: timestamp
   }
 
   dimension: is_order_hour_before_now_hour {
     type: yesno
-    sql: ${order_hour} <= extract(hour from CURRENT_TIMESTAMP AT TIME ZONE 'Europe/Berlin') ;;
+    sql: ${created_hour_of_day} <= ${now_hour_of_day} ;;
   }
 
   dimension_group: delivery_eta_timestamp {
+    group_label: "* Dates and Timestamps *"
     type: time
     timeframes: [
           raw,
@@ -240,46 +242,57 @@ view: orders {
   }
 
   dimension: delivery_id {
+    hidden: yes
+    group_label: "* IDs *"
     type: string
     sql: ${TABLE}.delivery_id ;;
   }
 
   dimension: delivery_method {
+    group_label: "* Order Dimensions *"
     type: string
     sql: ${TABLE}.delivery_method ;;
   }
 
   dimension: delivery_provider {
+    group_label: "* Order Dimensions *"
     type: string
     sql: ${TABLE}.delivery_provider ;;
   }
 
   dimension: delivery_time {
+    group_label: "* Operations / Logistics *"
     type: number
     sql: ${TABLE}.delivery_time_minutes ;;
   }
 
   dimension: discount_code {
+    group_label: "* Order Dimensions *"
     type: string
     sql: ${TABLE}.discount_code ;;
   }
 
   dimension: voucher_id {
+    group_label: "* IDs *"
+    hidden: yes
     type: string
     sql: ${TABLE}.discount_id ;;
   }
 
   dimension: discount_name {
+    group_label: "* Order Dimensions *"
     type: string
     sql: ${TABLE}.discount_name ;;
   }
 
   dimension: fulfillment_time {
+    group_label: "* Operations / Logistics *"
     type: number
     sql: ${TABLE}.fulfillment_time_minutes ;;
   }
 
   dimension: fulfillment_time_raw_minutes {
+    group_label: "* Operations / Logistics *"
     type: number
     sql: ${TABLE}.fulfillment_time_raw_minutes ;;
   }
@@ -325,27 +338,41 @@ view: orders {
     sql: ${delivery_distance_km} ;;
   }
 
+  dimension: fulfillment_time_tier {
+    group_label: "* Operations / Logistics *"
+    type: tier
+    tiers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]
+    style: interval
+    sql: ${fulfillment_time} ;;
+  }
+
   dimension: is_delivery_more_than_30_minute {
+    group_label: "* Operations / Logistics *"
     type: yesno
     sql: ${TABLE}.is_delivery_above_30min ;;
   }
 
   dimension: is_delivery_eta_available {
+    group_label: "* Operations / Logistics *"
     type: yesno
     sql: ${TABLE}.is_delivery_pdt_available ;;
   }
 
   dimension: is_voucher_order{
+    group_label: "* Order Dimensions *"
     type: yesno
     sql: ${TABLE}.is_discounted_order ;;
   }
 
   dimension: is_first_order {
+    group_label: "* Order Dimensions *"
     type: yesno
     sql: ${TABLE}.is_first_order ;;
   }
 
   dimension: is_fulfillment_more_than_30_minute {
+    group_label: "* Operations / Logistics *"
+    hidden: yes
     type: yesno
     sql: ${TABLE}.is_fulfillment_above_30min ;;
   }
@@ -407,26 +434,31 @@ view: orders {
   }
 
   dimension: is_internal_order {
+    group_label: "* Order Dimensions *"
     type: yesno
     sql: ${TABLE}.is_internal_order ;;
   }
 
   dimension: is_order_delay_above_10min {
+    group_label: "* Operations / Logistics *"
     type: yesno
     sql: ${TABLE}.is_order_delay_above_10min ;;
   }
 
   dimension: is_order_delay_above_5min {
+    group_label: "* Operations / Logistics *"
     type: yesno
     sql: ${TABLE}.is_order_delay_above_5min ;;
   }
 
   dimension: is_order_on_time {
+    group_label: "* Operations / Logistics *"
     type: yesno
     sql: ${TABLE}.is_order_on_time ;;
   }
 
   dimension: is_successful_order {
+    group_label: "* Order Dimensions *"
     type: yesno
     sql: ${TABLE}.is_successful_order ;;
   }
@@ -448,6 +480,7 @@ view: orders {
   }
 
   dimension_group: last_modified {
+    group_label: "* Dates and Timestamps *"
     type: time
     timeframes: [
       raw,
@@ -462,16 +495,19 @@ view: orders {
   }
 
   dimension: latitude {
+    group_label: "* User Dimensions *"
     type: number
     sql: ${TABLE}.latitude ;;
   }
 
   dimension: longitude {
+    group_label: "* User Dimensions *"
     type: number
     sql: ${TABLE}.longitude ;;
   }
 
   dimension: customer_location {
+    group_label: "* User Dimensions *"
     type: location
     sql_latitude: ${latitude} ;;
     sql_longitude: ${longitude} ;;
@@ -485,11 +521,13 @@ view: orders {
   }
 
   dimension: number_of_distinct_skus {
+    group_label: "* Order Dimensions *"
     type: number
     sql: ${TABLE}.number_of_distinct_skus ;;
   }
 
   dimension: number_of_items {
+    group_label: "* Order Dimensions *"
     type: number
     sql: ${TABLE}.number_of_items ;;
   }
@@ -545,11 +583,13 @@ view: orders {
 
 
   dimension: order_date {
+    group_label: "* Dates and Timestamps *"
     type: date
     sql: ${TABLE}.order_date ;;
   }
 
   dimension_group: delivery_timestamp {
+    group_label: "* Dates and Timestamps *"
     type: time
     timeframes: [
       raw,
@@ -569,51 +609,62 @@ view: orders {
   }
 
   dimension: order_dow {
+    group_label: "* Dates and Timestamps *"
     type: string
     sql: ${TABLE}.order_dow ;;
   }
 
   dimension: order_hour {
+    group_label: "* Dates and Timestamps *"
     type: number
     sql: ${TABLE}.order_hour ;;
   }
 
   dimension: hour {
+    group_label: "* Dates and Timestamps *"
     type: number
     sql: extract(hour from ${created_raw} AT TIME ZONE 'Europe/Berlin') ;;
   }
 
   dimension: id {
+    group_label: "* Dates and Timestamps *"
+    hidden: yes
     type: string
     sql: ${TABLE}.order_id ;;
   }
 
   dimension: order_month {
+    group_label: "* Dates and Timestamps *"
     type: string
     sql: ${TABLE}.order_month ;;
   }
 
   dimension: order_number {
+    group_label: "* IDs *"
     type: string
     sql: ${TABLE}.order_number ;;
   }
 
   dimension: order_on_route_timestamp {
+    group_label: "* Operations / Logistics *"
     type: date_time
     sql: ${TABLE}.order_on_route_timestamp ;;
   }
 
   dimension: order_packed_timestamp {
+    group_label: "* Operations / Logistics *"
     type: date_time
     sql: ${TABLE}.order_packed_timestamp ;;
   }
 
   dimension: order_picker_accepted_timestamp {
+    group_label: "* Operations / Logistics *"
     type: date_time
     sql: ${TABLE}.order_picker_accepted_timestamp ;;
   }
 
   dimension: order_rider_claimed_timestamp {
+    group_label: "* Operations / Logistics *"
     type: date_time
     sql: ${TABLE}.order_rider_claimed_timestamp ;;
   }
@@ -627,37 +678,48 @@ view: orders {
   }
 
   dimension: order_week {
+    group_label: "* Dates and Timestamps *"
     type: date_time
     convert_tz: no
     sql: ${TABLE}.order_week ;;
   }
 
   dimension: order_year {
+    group_label: "* Dates and Timestamps *"
     type: number
     sql: ${TABLE}.order_year ;;
   }
 
   dimension: payment_type {
+    group_label: "* Order Dimensions *"
     type: string
     sql: ${TABLE}.payment_type ;;
   }
 
   dimension: picker_id {
+    hidden: yes
+    group_label: "* IDs *"
     type: string
     sql: ${TABLE}.picker_id ;;
   }
 
   dimension: time_diff_between_two_subsequent_fulfillments {
+    group_label: "* Operations / Logistics *"
+    label: "Picking Time Minutes"
     type: number
     sql: ${TABLE}.picking_time_minutes ;;
   }
 
   dimension: reaction_time {
+    group_label: "* Operations / Logistics *"
+    label: "Reaction Time Minutes"
     type: number
     sql: ${TABLE}.reaction_time_minutes ;;
   }
 
   dimension: rider_id {
+    hidden: yes
+    group_label: "* IDs *"
     type: string
     sql: ${TABLE}.rider_id ;;
   }
@@ -668,21 +730,27 @@ view: orders {
   }
 
   dimension: shipping_method_id {
+    hidden: yes
+    group_label: "* IDs *"
     type: number
     sql: ${TABLE}.shipping_method_id ;;
   }
 
   dimension: shipping_method_name {
+    group_label: "* Order Dimensions *"
     type: string
     sql: ${TABLE}.shipping_method_name ;;
   }
 
   dimension: status {
+    group_label: "* Order Dimensions *"
     type: string
     sql: ${TABLE}.status ;;
   }
 
   dimension: timezone {
+    hidden: yes
+    group_label: "* Dates and Timestamps *"
     type: string
     sql: ${TABLE}.timezone ;;
   }
@@ -690,6 +758,8 @@ view: orders {
   ####################################################### Needs to be checked ##################################
 
   dimension: token {
+    hidden: yes
+    group_label: "* IDs *"
     type: string
     sql: null ;;
   }
@@ -697,11 +767,13 @@ view: orders {
    ####################################################### Needs to be checked ##################################
 
   dimension: translated_discount_name {
+    hidden: yes
     type: string
     sql: ${TABLE}.translated_discount_name ;;
   }
 
   dimension: weight {
+    hidden: yes
     type: number
     sql: ${TABLE}.weight ;;
   }

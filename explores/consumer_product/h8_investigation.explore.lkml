@@ -1,4 +1,4 @@
-include: "/tracking/h8_investigation.view.lkml"
+include: "/views/projects/consumer_product/h8_investigation.view.lkml"
 
 explore: h8_investigation_view {
   view_name: h8_investgation

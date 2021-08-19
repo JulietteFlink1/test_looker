@@ -19,7 +19,7 @@ view: products {
     sql: ${TABLE}.is_leading_product ;;
   }
 
-  dimension: is_noos {
+  dimension: is_noos_group {
     type: yesno
     sql: ${TABLE}.is_noos ;;
   }
@@ -60,6 +60,12 @@ view: products {
   dimension: substitute_group {
     type: string
     sql: ${TABLE}.substitute_group ;;
+  }
+
+  dimension: substitute_group_filled {
+    type: string
+    sql: coalesce(${substitute_group}, ${product_name}) ;;
+    label: "Substitute Group / Product Name"
   }
 
   # =========  hidden   =========

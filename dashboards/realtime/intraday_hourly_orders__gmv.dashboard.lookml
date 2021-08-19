@@ -1,18 +1,18 @@
 - dashboard: intraday_hourly_orders__gmv
-  title: Intraday Hourly Orders / GMV
+  title: Intraday Hourly Orders / GMV (Migrated)
   layout: newspaper
   preferred_viewer: dashboards-next
   elements:
   - name: Hourly orders real-time comparison
     title: Hourly orders real-time comparison
     model: flink_v3
-    explore: orders_cl
+    explore: orders_cl_updated_hourly
     type: looker_line
     fields: [orders_cl.hour, orders_cl.created_date, orders_cl.count]
     pivots: [orders_cl.created_date]
     filters:
       orders_cl.created_date: today, 7 days ago
-      orders_cl.status: fulfilled,partially fulfilled
+      orders_cl.status: fulfilled,partially fulfilled,Complete
       orders_cl.is_successful_order: Yes
       orders_cl.country_iso: DE
     sorts: [orders_cl.created_date desc, orders_cl.hour]
@@ -56,14 +56,14 @@
   - name: Hourly GMV real-time comparison
     title: Hourly GMV real-time comparison
     model: flink_v3
-    explore: orders_cl
+    explore: orders_cl_updated_hourly
     type: looker_line
     fields: [orders_cl.hour, orders_cl.created_date, orders_cl.sum_gmv_gross]
     pivots: [orders_cl.created_date]
     fill_fields: [orders_cl.created_date]
     filters:
       orders_cl.created_date: today, 7 days ago
-      orders_cl.status: fulfilled,partially fulfilled
+      orders_cl.status: fulfilled,partially fulfilled,Complete
       orders_cl.is_successful_order: Yes
       orders_cl.country_iso: DE
     sorts: [orders_cl.created_date desc, orders_cl.hour]
@@ -116,14 +116,14 @@
   - name: Hourly GMV real-time comparison - NL
     title: Hourly GMV real-time comparison - NL
     model: flink_v3
-    explore: orders_cl
+    explore: orders_cl_updated_hourly
     type: looker_line
     fields: [orders_cl.hour, orders_cl.created_date, orders_cl.sum_gmv_gross]
     pivots: [orders_cl.created_date]
     fill_fields: [orders_cl.created_date]
     filters:
       orders_cl.created_date: today, 7 days ago
-      orders_cl.status: fulfilled,partially fulfilled
+      orders_cl.status: fulfilled,partially fulfilled,Complete
       orders_cl.is_successful_order: Yes
       orders_cl.country_iso: NL
     sorts: [orders_cl.created_date desc 0, orders_cl.hour]
@@ -193,14 +193,14 @@
   - name: Hourly orders real-time comparison - NL
     title: Hourly orders real-time comparison - NL
     model: flink_v3
-    explore: orders_cl
+    explore: orders_cl_updated_hourly
     type: looker_line
     fields: [orders_cl.hour, orders_cl.created_date, orders_cl.count]
     pivots: [orders_cl.created_date]
     fill_fields: [orders_cl.created_date]
     filters:
       orders_cl.created_date: today, 7 days ago
-      orders_cl.status: fulfilled,partially fulfilled
+      orders_cl.status: fulfilled,partially fulfilled,Complete
       orders_cl.is_successful_order: Yes
       orders_cl.country_iso: NL
     sorts: [orders_cl.created_date desc 0, orders_cl.hour]
@@ -270,12 +270,12 @@
   - name: Hourly real-time comparison (Tabular) - NL
     title: Hourly real-time comparison (Tabular) - NL
     model: flink_v3
-    explore: orders_cl
+    explore: orders_cl_updated_hourly
     type: looker_grid
     fields: [orders_cl.hour, orders_cl.count, orders_cl.created_date, orders_cl.sum_gmv_gross]
     pivots: [orders_cl.created_date]
     filters:
-      orders_cl.status: partially fulfilled,fulfilled
+      orders_cl.status: partially fulfilled,fulfilled,Complete
       orders_cl.created_date: today, 7 days ago, 14 days ago, 21 days ago
       orders_cl.is_successful_order: Yes
       orders_cl.country_iso: NL
@@ -371,13 +371,13 @@
   - name: Hourly real-time comparison (Tabular)
     title: Hourly real-time comparison (Tabular)
     model: flink_v3
-    explore: orders_cl
+    explore: orders_cl_updated_hourly
     type: looker_grid
     fields: [orders_cl.hour, orders_cl.created_date, orders_cl.count, orders_cl.sum_gmv_gross]
     pivots: [orders_cl.created_date]
     filters:
       orders_cl.created_date: today, 7 days ago, 14 days ago, 21 days ago
-      orders_cl.status: fulfilled,partially fulfilled
+      orders_cl.status: fulfilled,partially fulfilled,Complete
       orders_cl.is_successful_order: Yes
       orders_cl.country_iso: DE
       orders_cl.is_order_hour_before_now_hour: Yes
@@ -497,13 +497,13 @@
   - name: Hourly orders real-time comparison - FR
     title: Hourly orders real-time comparison - FR
     model: flink_v3
-    explore: orders_cl
+    explore: orders_cl_updated_hourly
     type: looker_line
     fields: [orders_cl.created_date, orders_cl.hour, orders_cl.count]
     pivots: [orders_cl.created_date]
     fill_fields: [orders_cl.created_date]
     filters:
-      orders_cl.status: fulfilled
+      orders_cl.status: fulfilled,Complete
       orders_cl.created_date: today, 7 days ago
       orders_cl.is_successful_order: Yes
       orders_cl.country_iso: FR
@@ -548,12 +548,12 @@
   - name: Hourly real-time comparison (Tabular) - FR
     title: Hourly real-time comparison (Tabular) - FR
     model: flink_v3
-    explore: orders_cl
+    explore: orders_cl_updated_hourly
     type: looker_grid
     fields: [orders_cl.created_date, orders_cl.hour, orders_cl.count, orders_cl.sum_gmv_gross]
     pivots: [orders_cl.created_date]
     filters:
-      orders_cl.status: fulfilled
+      orders_cl.status: fulfilled,Complete
       orders_cl.created_date: today, 7 days ago, 14 days ago, 21 days ago
       orders_cl.is_successful_order: Yes
       orders_cl.country_iso: FR
@@ -642,13 +642,13 @@
   - name: Hourly GMV real-time comparison - FR
     title: Hourly GMV real-time comparison - FR
     model: flink_v3
-    explore: orders_cl
+    explore: orders_cl_updated_hourly
     type: looker_line
     fields: [orders_cl.created_date, orders_cl.sum_gmv_gross, orders_cl.hour]
     pivots: [orders_cl.created_date]
     fill_fields: [orders_cl.created_date]
     filters:
-      orders_cl.status: fulfilled
+      orders_cl.status: fulfilled,Complete
       orders_cl.created_date: today, 7 days ago
       orders_cl.is_successful_order: Yes
       orders_cl.country_iso: FR
@@ -711,7 +711,7 @@
       display: popover
       options: []
     model: flink_v3
-    explore: orders_cl
+    explore: orders_cl_updated_hourly
     listens_to_filters: []
     field: hubs.hub_name
   - name: Warehouse - NL
@@ -725,7 +725,7 @@
       display: popover
       options: []
     model: flink_v3
-    explore: orders_cl
+    explore: orders_cl_updated_hourly
     listens_to_filters: []
     field: hubs.hub_name
   - name: Warehouse - FR
@@ -739,7 +739,7 @@
       display: popover
       options: []
     model: flink_v3
-    explore: orders_cl
+    explore: orders_cl_updated_hourly
     listens_to_filters: []
     field: hubs.hub_name
   - name: Hour
@@ -777,6 +777,6 @@
       - '23'
       - '24'
     model: flink_v3
-    explore: orders_cl
+    explore: orders_cl_updated_hourly
     listens_to_filters: []
     field: orders_cl.hour

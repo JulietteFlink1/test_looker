@@ -3,7 +3,7 @@ include: "/**/*.view"
 include: "/**/*.explore"
 
 explore: top_50_selling_products {
-  extends: [inventory_cl]
+  extends: [current_inventory]
   label: "Inventory"
   view_label: "* Inventory Data *"
   #view_name: order_orderline_cl
@@ -15,8 +15,8 @@ explore: top_50_selling_products {
 
   join: top_50_selling_products_custom {
     view_label: "* Top 50 Selling Products *"
-    sql_on: ${inventory_cl.country_iso} = ${top_50_selling_products_custom.country_iso} AND
-      ${inventory_cl.sku}    = ${top_50_selling_products_custom.sku} ;;
+    sql_on: ${inventory.country_iso} = ${top_50_selling_products_custom.country_iso} AND
+      ${inventory.sku}    = ${top_50_selling_products_custom.sku} ;;
     relationship: many_to_one
     type: left_outer
   }
