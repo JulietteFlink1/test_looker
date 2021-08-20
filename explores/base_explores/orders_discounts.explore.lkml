@@ -3,7 +3,10 @@ include: "/**/*.explore"
 
 explore: orders_discounts {
   extends: [orders_cl]
-  hidden: yes
+  hidden: no
+  group_label: "03) Vouchers"
+  label: "Order Vouchers"
+  description: "Order data around Vouchers created in the backend"
 
   join: discounts {
     sql_on: ${orders_cl.voucher_id}   = ${discounts.discount_id}
