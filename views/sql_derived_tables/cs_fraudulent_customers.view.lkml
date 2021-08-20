@@ -65,6 +65,15 @@ view: cs_fraudulent_customers {
     sql: ${orders_cl_user_email} ;;
 
   }
+
+  dimension:  cs_post_delivery_issues_pct_unique_contact_rate_tier {
+    label: "% Orders with Post Delivery Issue (rounded)"
+    type: tier
+    tiers: [0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 1]
+    style: relational
+    sql: ${TABLE}.cs_post_delivery_issues_pct_unique_contact_rate ;;
+    value_format: "##%"
+  }
   set: detail {
     fields: [orders_cl_user_email, orders_cl_cnt_orders, cs_post_delivery_issues_cnt_unique_orders, cs_post_delivery_issues_pct_unique_contact_rate]
   }
