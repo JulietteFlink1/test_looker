@@ -494,8 +494,7 @@
       customers_metrics.first_order_discount_code: ''
       customers_metrics.first_order_city: ''
       customers_metrics.country: Germany
-    sorts: [customers_metrics.weeks_time_since_sign_up, orders_cl.cnt_unique_customers
-        desc 0]
+    sorts: [customers_metrics.weeks_time_since_sign_up, customers_metrics.first_order_week]
     limit: 500
     column_limit: 50
     total: true
