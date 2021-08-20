@@ -23,9 +23,6 @@ explore: current_inventory {
 
   always_filter: {
     filters:  [
-      orders.is_internal_order: "no",
-      orders.is_successful_order: "yes",
-      orders.created_date: "after 2021-01-25",
       hubs.country: "",
       hubs.hub_name: ""
     ]
