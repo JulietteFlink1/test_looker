@@ -66,7 +66,7 @@ explore: orders_cl {
   join: nps_after_order {
     view_label: "* NPS *"
     sql_on: ${orders_cl.country_iso}   = ${nps_after_order.country_iso} AND
-            ${orders_cl.id}            = cast(${nps_after_order.order_id} as string) ;;
+            ${orders_cl.order_number}  = cast(${nps_after_order.order_id} as string) ;;
     relationship: one_to_many
     type: left_outer
   }
