@@ -480,8 +480,9 @@
     type: looker_grid
     fields: [orders_cl.cnt_unique_customers, customers_metrics.weeks_time_since_sign_up,
       orders_cl.cnt_unique_customers_without_voucher, orders_cl.cnt_unique_customers_with_voucher,
-      weekly_cohorts.weeks_time_since_sign_up]
+      customers_metrics.first_order_week]
     pivots: [customers_metrics.weeks_time_since_sign_up]
+    fill_fields: [customers_metrics.first_order_week]
     filters:
       orders_cl.is_internal_order: 'no'
       orders_cl.is_successful_order: 'yes'
@@ -498,11 +499,11 @@
     limit: 500
     column_limit: 50
     total: true
-    dynamic_fields: [{_kind_hint: measure, table_calculation: pcnt_of_cohort_still_active_excl_voucher_reorders,
-        _type_hint: number, category: table_calculation, expression: 'if(${weekly_cohorts.weeks_time_since_sign_up}=0,1,${orders_cl.cnt_unique_customers_without_voucher}/pivot_index(${orders_cl.cnt_unique_customers},1))',
+    dynamic_fields: [{category: table_calculation, expression: 'if(${customers_metrics.weeks_time_since_sign_up}=0,1,${orders_cl.cnt_unique_customers_without_voucher}/pivot_index(${orders_cl.cnt_unique_customers},1))',
         label: Pcnt of Cohort still Active (excl voucher reorders), value_format: !!null '',
-        value_format_name: percent_1}, {table_calculation: cohort_size, label: Cohort
-          Size, expression: 'max(pivot_row(${orders_cl.cnt_unique_customers}))', value_format: !!null '',
+        value_format_name: percent_1, _kind_hint: measure, table_calculation: pcnt_of_cohort_still_active_excl_voucher_reorders,
+        _type_hint: number}, {table_calculation: cohort_size, label: Cohort Size,
+        expression: 'max(pivot_row(${orders_cl.cnt_unique_customers}))', value_format: !!null '',
         value_format_name: !!null '', _kind_hint: supermeasure, _type_hint: number}]
     show_view_names: true
     show_row_numbers: false
