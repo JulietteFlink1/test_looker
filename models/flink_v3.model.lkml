@@ -518,10 +518,11 @@ explore: product_attribute_fact_ranking_hlp {
 
 ####### VOUCHER EXPLORE #######
 explore: discount_voucher {
-  label: "Vouchers"
-  view_label: "Vouchers"
-  group_label: "03) Vouchers"
-  description: "All data around Vouchers created in the backend"
+  #label: "Vouchers"
+  #view_label: "Vouchers"
+  hidden: yes
+  # group_label: "03) Vouchers"
+  #description: "All data around Vouchers created in the backend"
 
   always_filter: {
     filters:  [
