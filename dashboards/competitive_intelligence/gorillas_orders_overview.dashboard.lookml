@@ -1,4 +1,4 @@
-- dashboard: gorillas_orders_dashboard
+- dashboard: gorillas_daily_orders_dashboard
   title: Gorillas Orders Overview (v2)
   layout: newspaper
   preferred_viewer: dashboards-next
@@ -27,17 +27,17 @@
   - name: Gorillas Daily Orders & % WoW
     title: Gorillas Daily Orders & % WoW
     model: flink_v3
-    explore: gorillas_orders
+    explore: gorillas_daily_orders
     type: single_value
-    fields: [gorillas_orders.order_date, gorillas_orders.sum_orders, gorillas_orders.sum_orders_wow]
-    fill_fields: [gorillas_orders.order_date]
+    fields: [gorillas_daily_orders.order_date, gorillas_daily_orders.sum_orders, gorillas_daily_orders.sum_orders_wow]
+    fill_fields: [gorillas_daily_orders.order_date]
     filters:
-      gorillas_orders.data_for_both_days: 'Yes'
-    sorts: [gorillas_orders.order_date desc]
+      gorillas_daily_orders.data_for_both_days: 'Yes'
+    sorts: [gorillas_daily_orders.order_date desc]
     limit: 500
     dynamic_fields: [{_kind_hint: measure, table_calculation: wow, _type_hint: number,
-        category: table_calculation, expression: "(${gorillas_orders.sum_orders}-\
-          \ ${gorillas_orders.sum_orders_wow})/${gorillas_orders.sum_orders_wow}",
+        category: table_calculation, expression: "(${gorillas_daily_orders.sum_orders}-\
+          \ ${gorillas_daily_orders.sum_orders_wow})/${gorillas_daily_orders.sum_orders_wow}",
         label: WoW, value_format: !!null '', value_format_name: percent_0}]
     query_timezone: Europe/Berlin
     custom_color_enabled: true
@@ -65,7 +65,7 @@
     hidden_points_if_no: []
     defaults_version: 1
     series_types: {}
-    hidden_fields: [gorillas_orders.sum_orders_wow]
+    hidden_fields: [gorillas_daily_orders.sum_orders_wow]
     y_axes: []
     note_state: collapsed
     note_display: hover
@@ -74,10 +74,10 @@
 
       '
     listen:
-      Orders Date: gorillas_orders.order_date
-      Country: gorillas_orders.country
-      Hub City: gorillas_orders.city
-      Hub Label: gorillas_orders.hub_label
+      Orders Date: gorillas_daily_orders.order_date
+      Country: gorillas_daily_orders.country
+      Hub City: gorillas_daily_orders.city
+      Hub Label: gorillas_daily_orders.hub_label
     row: 5
     col: 0
     width: 4
@@ -85,18 +85,18 @@
   - name: Gorillas WoW Orders per Week
     title: Gorillas WoW Orders per Week
     model: flink_v3
-    explore: gorillas_orders
+    explore: gorillas_daily_orders
     type: single_value
-    fields: [gorillas_orders.sum_orders, gorillas_orders.sum_orders_wow, gorillas_orders.order_week]
-    fill_fields: [gorillas_orders.order_week]
+    fields: [gorillas_daily_orders.sum_orders, gorillas_daily_orders.sum_orders_wow, gorillas_daily_orders.order_week]
+    fill_fields: [gorillas_daily_orders.order_week]
     filters:
-      gorillas_orders.order_date: 1 weeks ago for 1 weeks
-      gorillas_orders.data_for_both_days: 'Yes'
-    sorts: [gorillas_orders.sum_orders_wow desc]
+      gorillas_daily_orders.order_date: 1 weeks ago for 1 weeks
+      gorillas_daily_orders.data_for_both_days: 'Yes'
+    sorts: [gorillas_daily_orders.sum_orders_wow desc]
     limit: 500
     dynamic_fields: [{_kind_hint: measure, table_calculation: wow, _type_hint: number,
-        category: table_calculation, expression: "(${gorillas_orders.sum_orders}-\
-          \ ${gorillas_orders.sum_orders_wow})/${gorillas_orders.sum_orders_wow}",
+        category: table_calculation, expression: "(${gorillas_daily_orders.sum_orders}-\
+          \ ${gorillas_daily_orders.sum_orders_wow})/${gorillas_daily_orders.sum_orders_wow}",
         label: WoW, value_format: !!null '', value_format_name: percent_0}]
     query_timezone: Europe/Berlin
     custom_color_enabled: true
@@ -135,7 +135,7 @@
     hidden_points_if_no: []
     defaults_version: 1
     series_types: {}
-    hidden_fields: [gorillas_orders.sum_orders_wow, gorillas_orders.sum_orders]
+    hidden_fields: [gorillas_daily_orders.sum_orders_wow, gorillas_daily_orders.sum_orders]
     y_axes: []
     note_state: collapsed
     note_display: hover
@@ -143,9 +143,9 @@
       This metric shows the %-change of the total orders for last full week compared to the previous week.
       Per Hub, only weekdays with order data available in both weeks are included in the calculation.
     listen:
-      Country: gorillas_orders.country
-      Hub City: gorillas_orders.city
-      Hub Label: gorillas_orders.hub_label
+      Country: gorillas_daily_orders.country
+      Hub City: gorillas_daily_orders.city
+      Hub Label: gorillas_daily_orders.hub_label
     row: 5
     col: 4
     width: 4
@@ -153,19 +153,19 @@
   - name: Gorillas Days of Available Data
     title: Gorillas Days of Available Data
     model: flink_v3
-    explore: gorillas_orders
+    explore: gorillas_daily_orders
     type: single_value
-    fields: [gorillas_orders.order_data_available, count_of_order_date]
+    fields: [gorillas_daily_orders.order_data_available, count_of_order_date]
     filters:
-      gorillas_orders.order_date: 2 weeks ago for 2 weeks
-      gorillas_orders.order_data_available: 'Yes'
-    sorts: [gorillas_orders.order_data_available desc]
+      gorillas_daily_orders.order_date: 2 weeks ago for 2 weeks
+      gorillas_daily_orders.order_data_available: 'Yes'
+    sorts: [gorillas_daily_orders.order_data_available desc]
     limit: 500
     dynamic_fields: [{_kind_hint: measure, table_calculation: wow, _type_hint: number,
-        category: table_calculation, expression: "(${gorillas_orders.sum_orders}-\
-          \ ${gorillas_orders.sum_orders_wow})/${gorillas_orders.sum_orders_wow}",
+        category: table_calculation, expression: "(${gorillas_daily_orders.sum_orders}-\
+          \ ${gorillas_daily_orders.sum_orders_wow})/${gorillas_daily_orders.sum_orders_wow}",
         label: WoW, value_format: !!null '', value_format_name: percent_0, is_disabled: true},
-      {measure: count_of_order_date, based_on: gorillas_orders.order_date, expression: '',
+      {measure: count_of_order_date, based_on: gorillas_daily_orders.order_date, expression: '',
         label: Count of Orders Date, type: count_distinct, _kind_hint: measure, _type_hint: number}]
     query_timezone: Europe/Berlin
     custom_color_enabled: true
@@ -203,16 +203,16 @@
     hidden_points_if_no: []
     defaults_version: 1
     series_types: {}
-    hidden_fields: [gorillas_orders.order_data_available]
+    hidden_fields: [gorillas_daily_orders.order_data_available]
     y_axes: []
     note_state: collapsed
     note_display: hover
     note_text: 'Shows the # of days that have scraping data available within the last
       2 full weeks.'
     listen:
-      Country: gorillas_orders.country
-      Hub City: gorillas_orders.city
-      Hub Label: gorillas_orders.hub_label
+      Country: gorillas_daily_orders.country
+      Hub City: gorillas_daily_orders.city
+      Hub Label: gorillas_daily_orders.hub_label
     row: 5
     col: 8
     width: 3
@@ -220,19 +220,19 @@
   - name: Gorillas Orders Scraped Hubs
     title: Gorillas Orders Scraped Hubs
     model: flink_v3
-    explore: gorillas_orders
+    explore: gorillas_daily_orders
     type: single_value
     fields: [count_of_hub_label]
     filters:
-      gorillas_orders.order_data_available: 'Yes'
+      gorillas_daily_orders.order_data_available: 'Yes'
     limit: 500
     dynamic_fields: [{_kind_hint: measure, table_calculation: wow, _type_hint: number,
-        category: table_calculation, expression: "(${gorillas_orders.sum_orders}-\
-          \ ${gorillas_orders.sum_orders_wow})/${gorillas_orders.sum_orders_wow}",
+        category: table_calculation, expression: "(${gorillas_daily_orders.sum_orders}-\
+          \ ${gorillas_daily_orders.sum_orders_wow})/${gorillas_daily_orders.sum_orders_wow}",
         label: WoW, value_format: !!null '', value_format_name: percent_0, is_disabled: true},
-      {measure: count_of_order_date, based_on: gorillas_orders.order_date, expression: '',
+      {measure: count_of_order_date, based_on: gorillas_daily_orders.order_date, expression: '',
         label: Count of Orders Date, type: count_distinct, _kind_hint: measure, _type_hint: number},
-      {measure: count_of_hub_label, based_on: gorillas_orders.hub_label, expression: '',
+      {measure: count_of_hub_label, based_on: gorillas_daily_orders.hub_label, expression: '',
         label: Count of Hub Label, type: count_distinct, _kind_hint: measure, _type_hint: number}]
     query_timezone: Europe/Berlin
     custom_color_enabled: true
@@ -276,10 +276,10 @@
     note_display: hover
     note_text: Shows the number of hubs that are scraped based on the selected filters
     listen:
-      Orders Date: gorillas_orders.order_date
-      Country: gorillas_orders.country
-      Hub City: gorillas_orders.city
-      Hub Label: gorillas_orders.hub_label
+      Orders Date: gorillas_daily_orders.order_date
+      Country: gorillas_daily_orders.country
+      Hub City: gorillas_daily_orders.city
+      Hub Label: gorillas_daily_orders.hub_label
     row: 5
     col: 11
     width: 2
@@ -287,19 +287,19 @@
   - name: Orders per Hub (in selected timeframe)
     title: Orders per Hub (in selected timeframe)
     model: flink_v3
-    explore: gorillas_orders
+    explore: gorillas_daily_orders
     type: looker_grid
-    fields: [gorillas_orders.hub_label, gorillas_orders.sum_orders]
+    fields: [gorillas_daily_orders.hub_label, gorillas_daily_orders.sum_orders]
     filters: {}
-    sorts: [gorillas_orders.sum_orders desc]
+    sorts: [gorillas_daily_orders.sum_orders desc]
     limit: 500
     dynamic_fields: [{_kind_hint: measure, table_calculation: wow, _type_hint: number,
-        category: table_calculation, expression: "(${gorillas_orders.sum_orders}-\
-          \ ${gorillas_orders.sum_orders_wow})/${gorillas_orders.sum_orders_wow}",
+        category: table_calculation, expression: "(${gorillas_daily_orders.sum_orders}-\
+          \ ${gorillas_daily_orders.sum_orders_wow})/${gorillas_daily_orders.sum_orders_wow}",
         label: WoW, value_format: !!null '', value_format_name: percent_0, is_disabled: true},
-      {measure: count_of_order_date, based_on: gorillas_orders.order_date, expression: '',
+      {measure: count_of_order_date, based_on: gorillas_daily_orders.order_date, expression: '',
         label: Count of Orders Date, type: count_distinct, _kind_hint: measure, _type_hint: number},
-      {measure: count_of_hub_label, based_on: gorillas_orders.hub_label, expression: '',
+      {measure: count_of_hub_label, based_on: gorillas_daily_orders.hub_label, expression: '',
         label: Count of Hub Label, type: count_distinct, _kind_hint: measure, _type_hint: number}]
     query_timezone: Europe/Berlin
     show_view_names: false
@@ -343,10 +343,10 @@
     note_display: hover
     note_text: 'This table shows the # of Orders per Hub for the selected timeframe.'
     listen:
-      Orders Date: gorillas_orders.order_date
-      Country: gorillas_orders.country
-      Hub City: gorillas_orders.city
-      Hub Label: gorillas_orders.hub_label
+      Orders Date: gorillas_daily_orders.order_date
+      Country: gorillas_daily_orders.country
+      Hub City: gorillas_daily_orders.city
+      Hub Label: gorillas_daily_orders.hub_label
     row: 8
     col: 0
     width: 13
@@ -354,19 +354,19 @@
   - name: Gorillas Orders Hubs
     title: Gorillas Orders Hubs
     model: flink_v3
-    explore: gorillas_orders
+    explore: gorillas_daily_orders
     type: looker_map
-    fields: [gorillas_orders.hub_label, gorillas_orders.hub_location]
+    fields: [gorillas_daily_orders.hub_label, gorillas_daily_orders.hub_location]
     filters: {}
-    sorts: [gorillas_orders.hub_label]
+    sorts: [gorillas_daily_orders.hub_label]
     limit: 500
     dynamic_fields: [{_kind_hint: measure, table_calculation: wow, _type_hint: number,
-        category: table_calculation, expression: "(${gorillas_orders.sum_orders}-\
-          \ ${gorillas_orders.sum_orders_wow})/${gorillas_orders.sum_orders_wow}",
+        category: table_calculation, expression: "(${gorillas_daily_orders.sum_orders}-\
+          \ ${gorillas_daily_orders.sum_orders_wow})/${gorillas_daily_orders.sum_orders_wow}",
         label: WoW, value_format: !!null '', value_format_name: percent_0, is_disabled: true},
-      {measure: count_of_order_date, based_on: gorillas_orders.order_date, expression: '',
+      {measure: count_of_order_date, based_on: gorillas_daily_orders.order_date, expression: '',
         label: Count of Orders Date, type: count_distinct, _kind_hint: measure, _type_hint: number},
-      {measure: count_of_hub_label, based_on: gorillas_orders.hub_label, expression: '',
+      {measure: count_of_hub_label, based_on: gorillas_daily_orders.hub_label, expression: '',
         label: Count of Hub Label, type: count_distinct, _kind_hint: measure, _type_hint: number}]
     query_timezone: Europe/Berlin
     map_plot_mode: points
@@ -431,10 +431,10 @@
     note_display: hover
     note_text: Hub Locations of the Scraped Gorillas Hubs
     listen:
-      Orders Date: gorillas_orders.order_date
-      Country: gorillas_orders.country
-      Hub City: gorillas_orders.city
-      Hub Label: gorillas_orders.hub_label
+      Orders Date: gorillas_daily_orders.order_date
+      Country: gorillas_daily_orders.country
+      Hub City: gorillas_daily_orders.city
+      Hub Label: gorillas_daily_orders.hub_label
     row: 5
     col: 13
     width: 8
@@ -442,21 +442,21 @@
   - title: Weekly Orders per Hub
     name: Weekly Orders per Hub
     model: flink_v3
-    explore: gorillas_orders
+    explore: gorillas_daily_orders
     type: looker_grid
-    fields: [gorillas_orders.hub_label, gorillas_orders.sum_orders, gorillas_orders.sum_orders_wow]
+    fields: [gorillas_daily_orders.hub_label, gorillas_daily_orders.sum_orders, gorillas_daily_orders.sum_orders_wow]
     filters:
-      gorillas_orders.order_date: 1 weeks ago for 1 weeks
-      gorillas_orders.data_for_both_days: 'Yes'
-    sorts: [gorillas_orders.sum_orders desc]
+      gorillas_daily_orders.order_date: 1 weeks ago for 1 weeks
+      gorillas_daily_orders.data_for_both_days: 'Yes'
+    sorts: [gorillas_daily_orders.sum_orders desc]
     limit: 500
     dynamic_fields: [{_kind_hint: measure, table_calculation: wow, _type_hint: number,
-        category: table_calculation, expression: "(${gorillas_orders.sum_orders}-\
-          \ ${gorillas_orders.sum_orders_wow})/${gorillas_orders.sum_orders_wow}",
+        category: table_calculation, expression: "(${gorillas_daily_orders.sum_orders}-\
+          \ ${gorillas_daily_orders.sum_orders_wow})/${gorillas_daily_orders.sum_orders_wow}",
         label: WoW, value_format: '"▲  "+0%; "▼  "-0%; 0', value_format_name: !!null ''},
-      {measure: count_of_order_date, based_on: gorillas_orders.order_date, expression: '',
+      {measure: count_of_order_date, based_on: gorillas_daily_orders.order_date, expression: '',
         label: Count of Orders Date, type: count_distinct, _kind_hint: measure, _type_hint: number},
-      {measure: count_of_hub_label, based_on: gorillas_orders.hub_label, expression: '',
+      {measure: count_of_hub_label, based_on: gorillas_daily_orders.hub_label, expression: '',
         label: Count of Hub Label, type: count_distinct, _kind_hint: measure, _type_hint: number}]
     query_timezone: Europe/Berlin
     show_view_names: false
@@ -475,17 +475,17 @@
     conditional_formatting_include_totals: false
     conditional_formatting_include_nulls: false
     show_sql_query_menu_options: false
-    column_order: ["$$$_row_numbers_$$$", gorillas_orders.hub_label, gorillas_orders.sum_orders,
-      gorillas_orders.sum_orders_wow, wow]
+    column_order: ["$$$_row_numbers_$$$", gorillas_daily_orders.hub_label, gorillas_daily_orders.sum_orders,
+      gorillas_daily_orders.sum_orders_wow, wow]
     show_totals: true
     show_row_totals: true
     series_labels:
-      gorillas_orders.sum_orders: "# Orders last CW"
-      gorillas_orders.sum_orders_wow: "# Orders 2 CW ago"
+      gorillas_daily_orders.sum_orders: "# Orders last CW"
+      gorillas_daily_orders.sum_orders_wow: "# Orders 2 CW ago"
     series_column_widths:
-      gorillas_orders.sum_orders_wow: 121
+      gorillas_daily_orders.sum_orders_wow: 121
     series_cell_visualizations:
-      gorillas_orders.sum_orders:
+      gorillas_daily_orders.sum_orders:
         is_active: true
     conditional_formatting: [{type: greater than, value: 0, background_color: '',
         font_color: "#72D16D", color_application: {collection_id: product-custom-collection,
@@ -533,9 +533,9 @@
     note_text: This table shows the total weekly orders of the last full week, per
       Hub. It is compared to the previous full week.
     listen:
-      Country: gorillas_orders.country
-      Hub City: gorillas_orders.city
-      Hub Label: gorillas_orders.hub_label
+      Country: gorillas_daily_orders.country
+      Hub City: gorillas_daily_orders.city
+      Hub Label: gorillas_daily_orders.hub_label
     row: 22
     col: 0
     width: 11
@@ -543,22 +543,22 @@
   - name: Total Weekly Orders for Selected Hubs
     title: Total Weekly Orders for Selected Hubs
     model: flink_v3
-    explore: gorillas_orders
+    explore: gorillas_daily_orders
     type: looker_grid
-    fields: [gorillas_orders.order_week, gorillas_orders.sum_orders, gorillas_orders.sum_orders_wow]
-    fill_fields: [gorillas_orders.order_week]
+    fields: [gorillas_daily_orders.order_week, gorillas_daily_orders.sum_orders, gorillas_daily_orders.sum_orders_wow]
+    fill_fields: [gorillas_daily_orders.order_week]
     filters:
-      gorillas_orders.order_date: 12 weeks ago for 12 weeks
-      gorillas_orders.data_for_both_days: 'Yes'
-    sorts: [gorillas_orders.sum_orders_wow desc]
+      gorillas_daily_orders.order_date: 12 weeks ago for 12 weeks
+      gorillas_daily_orders.data_for_both_days: 'Yes'
+    sorts: [gorillas_daily_orders.sum_orders_wow desc]
     limit: 500
     dynamic_fields: [{_kind_hint: measure, table_calculation: wow, _type_hint: number,
-        category: table_calculation, expression: "(${gorillas_orders.sum_orders}-\
-          \ ${gorillas_orders.sum_orders_wow})/${gorillas_orders.sum_orders_wow}",
+        category: table_calculation, expression: "(${gorillas_daily_orders.sum_orders}-\
+          \ ${gorillas_daily_orders.sum_orders_wow})/${gorillas_daily_orders.sum_orders_wow}",
         label: WoW, value_format: '"▲  "+0%; "▼  "-0%; 0', value_format_name: !!null ''},
-      {measure: count_of_order_date, based_on: gorillas_orders.order_date, expression: '',
+      {measure: count_of_order_date, based_on: gorillas_daily_orders.order_date, expression: '',
         label: Count of Orders Date, type: count_distinct, _kind_hint: measure, _type_hint: number},
-      {measure: count_of_hub_label, based_on: gorillas_orders.hub_label, expression: '',
+      {measure: count_of_hub_label, based_on: gorillas_daily_orders.hub_label, expression: '',
         label: Count of Hub Label, type: count_distinct, _kind_hint: measure, _type_hint: number}]
     query_timezone: Europe/Berlin
     show_view_names: false
@@ -577,15 +577,15 @@
     conditional_formatting_include_totals: false
     conditional_formatting_include_nulls: false
     show_sql_query_menu_options: false
-    column_order: ["$$$_row_numbers_$$$", gorillas_orders.order_week, gorillas_orders.sum_orders,
-      gorillas_orders.sum_orders_wow, wow]
+    column_order: ["$$$_row_numbers_$$$", gorillas_daily_orders.order_week, gorillas_daily_orders.sum_orders,
+      gorillas_daily_orders.sum_orders_wow, wow]
     show_totals: true
     show_row_totals: true
     series_column_widths:
-      gorillas_orders.sum_orders_wow: 197
-      gorillas_orders.order_week: 150
+      gorillas_daily_orders.sum_orders_wow: 197
+      gorillas_daily_orders.order_week: 150
     series_cell_visualizations:
-      gorillas_orders.sum_orders:
+      gorillas_daily_orders.sum_orders:
         is_active: true
     conditional_formatting: [{type: greater than, value: 0, background_color: '',
         font_color: "#72D16D", color_application: {collection_id: product-custom-collection,
@@ -655,9 +655,9 @@
     note_text: This table shows the aggregated weekly orders across all hubs, compared
       to the previous week
     listen:
-      Country: gorillas_orders.country
-      Hub City: gorillas_orders.city
-      Hub Label: gorillas_orders.hub_label
+      Country: gorillas_daily_orders.country
+      Hub City: gorillas_daily_orders.city
+      Hub Label: gorillas_daily_orders.hub_label
     row: 16
     col: 11
     width: 10
@@ -665,19 +665,19 @@
   - name: Total Daily Orders per Hub
     title: Total Daily Orders per Hub
     model: flink_v3
-    explore: gorillas_orders
+    explore: gorillas_daily_orders
     type: looker_grid
-    fields: [gorillas_orders.hub_label, gorillas_orders.sum_orders, gorillas_orders.sum_orders_wow]
+    fields: [gorillas_daily_orders.hub_label, gorillas_daily_orders.sum_orders, gorillas_daily_orders.sum_orders_wow]
     filters: {}
-    sorts: [gorillas_orders.sum_orders desc]
+    sorts: [gorillas_daily_orders.sum_orders desc]
     limit: 500
     dynamic_fields: [{_kind_hint: measure, table_calculation: wow, _type_hint: number,
-        category: table_calculation, expression: "(${gorillas_orders.sum_orders}-\
-          \ ${gorillas_orders.sum_orders_wow})/${gorillas_orders.sum_orders_wow}",
+        category: table_calculation, expression: "(${gorillas_daily_orders.sum_orders}-\
+          \ ${gorillas_daily_orders.sum_orders_wow})/${gorillas_daily_orders.sum_orders_wow}",
         label: WoW, value_format: '"▲  "+0%; "▼  "-0%; 0', value_format_name: !!null ''},
-      {measure: count_of_order_date, based_on: gorillas_orders.order_date, expression: '',
+      {measure: count_of_order_date, based_on: gorillas_daily_orders.order_date, expression: '',
         label: Count of Orders Date, type: count_distinct, _kind_hint: measure, _type_hint: number},
-      {measure: count_of_hub_label, based_on: gorillas_orders.hub_label, expression: '',
+      {measure: count_of_hub_label, based_on: gorillas_daily_orders.hub_label, expression: '',
         label: Count of Hub Label, type: count_distinct, _kind_hint: measure, _type_hint: number}]
     query_timezone: Europe/Berlin
     show_view_names: false
@@ -696,14 +696,14 @@
     conditional_formatting_include_totals: false
     conditional_formatting_include_nulls: false
     show_sql_query_menu_options: false
-    column_order: ["$$$_row_numbers_$$$", gorillas_orders.hub_label, gorillas_orders.sum_orders,
-      gorillas_orders.sum_orders_wow, wow]
+    column_order: ["$$$_row_numbers_$$$", gorillas_daily_orders.hub_label, gorillas_daily_orders.sum_orders,
+      gorillas_daily_orders.sum_orders_wow, wow]
     show_totals: true
     show_row_totals: true
     series_column_widths:
-      gorillas_orders.sum_orders_wow: 121
+      gorillas_daily_orders.sum_orders_wow: 121
     series_cell_visualizations:
-      gorillas_orders.sum_orders:
+      gorillas_daily_orders.sum_orders:
         is_active: true
     conditional_formatting: [{type: greater than, value: 0, background_color: '',
         font_color: "#72D16D", color_application: {collection_id: product-custom-collection,
@@ -747,8 +747,8 @@
     hidden_fields: []
     y_axes: []
     listen:
-      Orders Date: gorillas_orders.order_date
-      Hub Label: gorillas_orders.hub_label
+      Orders Date: gorillas_daily_orders.order_date
+      Hub Label: gorillas_daily_orders.hub_label
     row: 16
     col: 0
     width: 11
@@ -765,9 +765,9 @@
       display: inline
       options: []
     model: flink_v3
-    explore: gorillas_orders
+    explore: gorillas_daily_orders
     listens_to_filters: []
-    field: gorillas_orders.order_date
+    field: gorillas_daily_orders.order_date
   - name: Country
     title: Country
     type: field_filter
@@ -782,9 +782,9 @@
       - Germany
       - Netherlands
     model: flink_v3
-    explore: gorillas_orders
+    explore: gorillas_daily_orders
     listens_to_filters: []
-    field: gorillas_orders.country
+    field: gorillas_daily_orders.country
   - name: Hub City
     title: Hub City
     type: field_filter
@@ -796,9 +796,9 @@
       display: popover
       options: []
     model: flink_v3
-    explore: gorillas_orders
+    explore: gorillas_daily_orders
     listens_to_filters: [Country]
-    field: gorillas_orders.city
+    field: gorillas_daily_orders.city
   - name: Hub Label
     title: Hub Label
     type: field_filter
@@ -810,6 +810,6 @@
       display: popover
       options: []
     model: flink_v3
-    explore: gorillas_orders
+    explore: gorillas_daily_orders
     listens_to_filters: [Country, Hub City]
-    field: gorillas_orders.hub_label
+    field: gorillas_daily_orders.hub_label

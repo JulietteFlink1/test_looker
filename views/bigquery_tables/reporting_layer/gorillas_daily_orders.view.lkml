@@ -1,5 +1,5 @@
-view: gorillas_orders {
-  sql_table_name: `flink-data-dev.reporting.gorillas_orders`
+view: gorillas_daily_orders {
+  sql_table_name: `flink-data-dev.reporting.gorillas_daily_orders`
     ;;
 
   dimension: gorillas_orders_uuid {
