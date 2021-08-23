@@ -4,36 +4,39 @@ view: top_50_selling_products_custom {
           SELECT sku,
               product_name,
               o.country_iso,
-              CASE WHEN product_subcategory_erp IN ('Obst', 'Gemüse','Eier') THEN product_substitute_group
-                  ELSE product_name
-                END as substitute_group,
+              CASE WHEN product_subcategory_erp IN ('Obst', 'Gemüse','Eier')
+                   THEN product_substitute_group
+                   ELSE product_name
+              END as substitute_group,
               SUM(quantity*amt_unit_price_gross) AS product_gmv
       FROM       `flink-data-prod.curated.order_lineitems` ol
       LEFT JOIN  `flink-data-prod.curated.orders` o ON o.order_uuid = ol.order_uuid
       WHERE TRUE
-      AND o.country_iso = "DE"
-      AND DATE(o.order_timestamp) >= CURRENT_DATE - 30
+   --   AND o.country_iso = "DE"
+      AND DATE(o.order_timestamp) >= CURRENT_DATE - 14
       GROUP BY 1,2,3,4
       ORDER BY 4 desc
       ),
       substitute_lvl_gmv AS (
-        SELECT substitute_group,
-             SUM(product_gmv) as gmv_substitute_group
-            FROM product_lvl_gmv
-            GROUP BY 1
+        SELECT country_iso,
+               substitute_group,
+               SUM(product_gmv) as gmv_substitute_group
+        FROM product_lvl_gmv
+        GROUP BY 1,2
       ),
       gmv_ranked_substitute AS(
-          SELECT substitute_group,
-                 RANK() OVER (ORDER BY gmv_substitute_group DESC) AS rk
-          FROM substitute_lvl_gmv
+        SELECT substitute_group,
+               country_iso,
+               RANK() OVER (PARTITION BY country_iso ORDER BY gmv_substitute_group DESC) AS rk
+        FROM substitute_lvl_gmv
       )
       SELECT sku,
-            product_name,
-            country_iso,
-            substitute_group AS custom_substitute_group,
-            rk as custom_substitute_group_rk
-      FROM product_lvl_gmv
-      LEFT JOIN gmv_ranked_substitute USING (substitute_group)
+             product_name,
+             p.country_iso,
+             substitute_group AS custom_substitute_group,
+             rk as custom_substitute_group_rk
+      FROM product_lvl_gmv p
+      LEFT JOIN gmv_ranked_substitute USING (substitute_group,country_iso)
       WHERE rk is not null
        ;;
   }
