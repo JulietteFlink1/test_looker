@@ -520,13 +520,19 @@ view: orders {
         THEN 'New Customer' ELSE 'Existing Customer' END ;;
   }
 
-  dimension: number_of_distinct_skus {
+  dimension: no_distinct_skus {
     group_label: "* Order Dimensions *"
     type: number
     sql: ${TABLE}.number_of_distinct_skus ;;
   }
 
   dimension: number_of_items {
+    group_label: "* Order Dimensions *"
+    type: number
+    sql: ${TABLE}.number_of_items ;;
+  }
+
+  dimension: quantity_fulfilled {
     group_label: "* Order Dimensions *"
     type: number
     sql: ${TABLE}.number_of_items ;;
@@ -1192,6 +1198,13 @@ view: orders {
     type: sum
     sql: ${shipping_price_net_amount};;
     value_format_name: euro_accounting_0_precision
+  }
+
+  measure: sum_quantity_fulfilled {
+    label: "Quantity"
+    description: "Fulfilled Quantity"
+    type: sum
+    sql: ${number_of_items} ;;
   }
 
   ############
