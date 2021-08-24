@@ -3,102 +3,38 @@ view: retail_kpis {
     datagroup_trigger: flink_default_datagroup
     sql: with
           looker_base as (
-              select
+                            select
                   hubs.country_iso                           as country_iso
                 , lower(hubs.hub_code)                       as hub_code
                 , hubs.city                                  as city
                 , hubs.hub_name                              as hub_name
-                , product_category.name                      as sub_category_name
-                , parent_category.name                       as category_name
-                , product_product.name                       as product_name
-                , case
-                  when length(order_orderline.product_sku) = 7
-                      then concat('1', order_orderline.product_sku)
-                      else order_orderline.product_sku
-                  end                                        as sku
-                , date(order_order.created, 'Europe/Berlin') as order_date
-                , order_order.id                             as order_id
+                , prod.subcategory                      as sub_category_name
+                , prod.category                       as category_name
+                , prod.product_name                       as product_name
+                , item.sku as sku
+                , date(ord.partition_timestamp, 'Europe/Berlin') as order_date
+                , ord.order_uuid                             as order_id
                   -- AGGREGATES
-                , sum(order_orderline.quantity_fulfilled)    as sku_quantity
-                , sum(order_orderline.unit_price_net_amount) as sku_unit_price
-                , coalesce(sum(order_orderline.quantity_fulfilled * order_orderline.unit_price_net_amount),
+                , sum(item.quantity)    as sku_quantity
+                , sum(item.amt_unit_price_net) as sku_unit_price
+                , coalesce(sum(item.quantity * item.amt_unit_price_net),
                            0)                                as sum_item_price_net
               from
-                  flink-data-prod.saleor_prod_global.order_order
-                                                                     as order_order
-                  left join flink-data-prod.saleor_prod_global.order_orderline
-                                                                     as order_orderline
-                            on order_orderline.country_iso = order_order.country_iso and
-                               order_orderline.order_id = order_order.id
-                  left join flink-backend.gsheet_store_metadata.hubs as hubs
-                            on order_order.country_iso = hubs.country_iso and
-                               (case
-                                when json_extract_scalar(order_order.metadata, '$.warehouse') in
-                                     ('hamburg-oellkersallee', 'hamburg-oelkersallee')
-                                    then 'de_ham_alto'
-                                when json_extract_scalar(order_order.metadata, '$.warehouse') = 'münchen-leopoldstraße'
-                                    then 'de_muc_schw'
-                                    else json_extract_scalar(order_order.metadata, '$.warehouse')
-                                end) = (lower(hubs.hub_code))
-                  left join flink-data-prod.saleor_prod_global.product_productvariant
-                                                                     as product_productvariant
-                            on order_orderline.country_iso = product_productvariant.country_iso and
-                               (case
-                                when length(order_orderline.product_sku) = 7
-                                    then concat('1', order_orderline.product_sku)
-                                    else order_orderline.product_sku
-                                end) = product_productvariant.sku
-                  left join flink-data-prod.saleor_prod_global.product_product
-                                                                     as product_product
-                            on product_productvariant.country_iso = product_product.country_iso and
-                               product_productvariant.product_id = product_product.id
-                  left join flink-data-prod.saleor_prod_global.product_category
-                                                                     as product_category
-                            on product_category.country_iso = product_product.country_iso and
-                               product_category.id = product_product.category_id
-                  left join flink-data-prod.saleor_prod_global.product_category
-                                                                     as parent_category
-                            on product_category.country_iso = parent_category.country_iso and
-                               product_category.parent_id = parent_category.id
-              where
-                      (order_order.created) >= date_add(current_timestamp, interval -90 day)
+                            flink-data-prod.curated.orders          as ord
+                  left join flink-data-prod.curated.order_lineitems as item
+                            on ord.order_uuid = item.order_uuid
 
-                and   ((not (order_order.user_email like '%goflink%' or order_order.user_email like '%pickery%' or
-                             lower(order_order.user_email) in
-                             ('christoph.a.cordes@gmail.com', 'jfdames@gmail.com', 'oliver.merkel@gmail.com',
-                              'alenaschneck@gmx.de',
-                              'saadsaeed354@gmail.com', 'saadsaeed353@gmail.com', 'fabian.hardenberg@gmail.com',
-                              'benjamin.zagel@gmail.com')) or
-                        (order_order.user_email like '%goflink%' or order_order.user_email like '%pickery%' or
-                         lower(order_order.user_email) in
-                         ('christoph.a.cordes@gmail.com', 'jfdames@gmail.com', 'oliver.merkel@gmail.com',
-                          'alenaschneck@gmx.de',
-                          'saadsaeed354@gmail.com', 'saadsaeed353@gmail.com', 'fabian.hardenberg@gmail.com',
-                          'benjamin.zagel@gmail.com')) is null) and
-                       (order_order.status in ('fulfilled', 'partially fulfilled')))
-                and   (((upper((order_order.country_iso)) like upper('%') or ((order_order.country_iso) is null))) and
-                       (((upper((hubs.city)) like upper('%') or ((hubs.city) is null))) and (case
-                                                                                             when (85.0) = 28
-                                                                                                 then
-                                                                                                     (format_timestamp('%F',
-                                                                                                                       timestamp_trunc(order_order.created, week(monday), 'Europe/Berlin'),
-                                                                                                                       'Europe/Berlin')) <
-                                                                                                     (format_timestamp('%F',
-                                                                                                                       timestamp_trunc(current_timestamp, week(monday), 'Europe/Berlin'),
-                                                                                                                       'Europe/Berlin'))
-                                                                                                 else 1 = 1
-                                                                                             end)))
+                  left join flink-data-prod.curated.hubs as hubs
+                            on ord.hub_code = hubs.hub_code
+
+                  left join flink-data-prod.curated.products as prod
+                            on item.sku = prod.product_sku
+
+              where
+                      (ord.partition_timestamp) >= date_add(current_timestamp, interval -90 day)
+
               group by
-                  1
-                , 2
-                , 3
-                , 4
-                , 5
-                , 6
-                , 7
-                , 8
-                , 9
-                , 10
+                  1, 2, 3 , 4, 5, 6, 7, 8, 9, 10
               order by
                   10 desc
           )
