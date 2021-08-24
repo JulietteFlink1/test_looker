@@ -6,7 +6,7 @@ explore: order_backend_and_client{
   label: "Order Client Tracking And Backend Matches"
   view_label: "Order Backend"
   group_label: "10) In-app tracking data"
-  description: "Combines backend orders view and client orderPlaced view"
+  description: "Combines (backend) orders view and client orderPlaced view to show platform and other user information for orders"
 
   join: order_client {
     from: order_placed_events
@@ -25,5 +25,6 @@ explore: order_backend_and_client{
     , order_backend_and_client.delivery_timestamp_date
     , order_backend_and_client.delivery_delay_since_eta
     , order_backend_and_client.hub_code
+    , order_backend_and_client.created_date
     , order_client*]
 }
