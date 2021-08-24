@@ -78,6 +78,8 @@ view: appopened_events {
 
   dimension: id {
     type: string
+    primary_key: yes
+    hidden: yes
     sql: ${TABLE}.id ;;
   }
 

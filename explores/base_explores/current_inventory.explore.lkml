@@ -6,8 +6,8 @@ explore: current_inventory {
   from: products
   view_name: products
   group_label: "02) Inventory"
-  view_label: "Inventory"
-  label: "Inventory"
+  view_label: "* Product Information *"
+  label: "Products & Inventory"
 
   hidden: no
 
@@ -23,9 +23,6 @@ explore: current_inventory {
 
   always_filter: {
     filters:  [
-      orders.is_internal_order: "no",
-      orders.is_successful_order: "yes",
-      orders.created_date: "after 2021-01-25",
       hubs.country: "",
       hubs.hub_name: ""
     ]

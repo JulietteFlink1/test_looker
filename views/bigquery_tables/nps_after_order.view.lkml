@@ -7,7 +7,7 @@ dimension: country_iso {
 }
 
 dimension: order_id {
-  type: number
+  type: string
   sql: ${TABLE}.order_id ;;
 }
 

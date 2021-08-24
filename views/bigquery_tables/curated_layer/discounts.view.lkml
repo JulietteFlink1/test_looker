@@ -145,6 +145,17 @@ view: discounts {
     sql: ${TABLE}.valid_until ;;
   }
 
+  dimension: discount_value {
+    type: number
+    sql: ${TABLE}.discount_value ;;
+  }
+
+  dimension: use_case {
+    type: number
+    sql: ${TABLE}.use_case ;;
+  }
+
+
   measure: count {
     type: count
     drill_fields: [discount_id, discount_name]
