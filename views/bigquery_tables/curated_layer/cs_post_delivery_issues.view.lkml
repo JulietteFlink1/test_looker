@@ -97,7 +97,7 @@ view: cs_post_delivery_issues {
   }
 
   measure: cnt_unique_orders {
-    label: "# Unique Orders"
+    label: "# Unique Orders with Post-Delivery Issue"
     description: "Count of Unique Orders which had a Contact"
     hidden:  no
     type: count_distinct
@@ -111,6 +111,15 @@ view: cs_post_delivery_issues {
     hidden:  no
     type: number
     sql: ${cnt_issues} / NULLIF(${orders_cl.cnt_orders}, 0);;
+    value_format: "0.0%"
+  }
+
+  measure: pct_unique_contact_rate {
+    label: "% Contact Rate Unique Order"
+    description: "# Orders with Post Delivery Issues divided by # Total Orders"
+    hidden:  no
+    type: number
+    sql: ${cnt_unique_orders} / NULLIF(${orders_cl.cnt_orders}, 0);;
     value_format: "0.0%"
   }
 

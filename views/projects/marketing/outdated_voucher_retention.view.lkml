@@ -1,4 +1,4 @@
-view: voucher_retention {
+view: outdated_voucher_retention {
   derived_table: {
     sql: with voucher_codes_orders as
         (
