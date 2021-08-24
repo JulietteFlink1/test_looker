@@ -517,92 +517,92 @@ explore: product_attribute_fact_ranking_hlp {
 }
 
 ####### VOUCHER EXPLORE #######
-explore: discount_voucher {
+#explore: discount_voucher {
   #label: "Vouchers"
   #view_label: "Vouchers"
-  hidden: yes
+#  hidden: yes
   # group_label: "03) Vouchers"
   #description: "All data around Vouchers created in the backend"
 
-  always_filter: {
-    filters:  [
-      hubs.country: "",
-      hubs.hub_name: ""
-    ]
-  }
+#  always_filter: {
+#    filters:  [
+#      hubs.country: "",
+#      hubs.hub_name: ""
+#    ]
+#  }
 
-  access_filter: {
-    field: hubs.country_iso
-    user_attribute: country_iso
-  }
+#  access_filter: {
+#    field: hubs.country_iso
+#    user_attribute: country_iso
+#  }
 
-  access_filter: {
-    field: hubs.city
-    user_attribute: city
-  }
+#  access_filter: {
+#    field: hubs.city
+#    user_attribute: city
+#  }
 
-  join: influencer_vouchers_input {
-    view_label: "Voucher Mapping"
-    sql_on: ${discount_voucher.country_iso} = ${influencer_vouchers_input.country_iso} AND
-      ${discount_voucher.code} = ${influencer_vouchers_input.voucher_code} ;;
-    relationship: one_to_one
-    type: left_outer
-  }
+#  join: influencer_vouchers_input {
+#    view_label: "Voucher Mapping"
+#    sql_on: ${discount_voucher.country_iso} = ${influencer_vouchers_input.country_iso} AND
+#      ${discount_voucher.code} = ${influencer_vouchers_input.voucher_code} ;;
+#    relationship: one_to_one
+#    type: left_outer
+#  }
 
-  join: order_order {
-    sql_on: ${discount_voucher.country_iso} = ${order_order.country_iso} AND
-      ${discount_voucher.id} = ${order_order.voucher_id} ;;
-    relationship: one_to_many
-    type: left_outer
-  }
+#  join: order_order {
+#    sql_on: ${discount_voucher.country_iso} = ${order_order.country_iso} AND
+#      ${discount_voucher.id} = ${order_order.voucher_id} ;;
+#    relationship: one_to_many
+#    type: left_outer
+#  }
 
-  join: user_order_facts {
-    view_label: "* Customers *"
-    type: left_outer
-    relationship: many_to_one
-    sql_on: ${order_order.country_iso} = ${user_order_facts.country_iso} AND
-      ${order_order.user_email} = ${user_order_facts.user_email} ;;
-  }
+#  join: user_order_facts {
+#    view_label: "* Customers *"
+#    type: left_outer
+#    relationship: many_to_one
+#    sql_on: ${order_order.country_iso} = ${user_order_facts.country_iso} AND
+#      ${order_order.user_email} = ${user_order_facts.user_email} ;;
+#  }
 
-  join: hub_order_facts {
-    view_label: "* Hubs *"
-    type: left_outer
-    relationship: many_to_one
-    sql_on: ${order_order.country_iso} = ${hub_order_facts.country_iso} AND
-      ${order_order.warehouse_name} = ${hub_order_facts.warehouse_name} ;;
-  }
+#  join: hub_order_facts {
+#    view_label: "* Hubs *"
+#    type: left_outer
+#    relationship: many_to_one
+#    sql_on: ${order_order.country_iso} = ${hub_order_facts.country_iso} AND
+#      ${order_order.warehouse_name} = ${hub_order_facts.warehouse_name} ;;
+#  }
 
-  join: order_fulfillment {
-    relationship: one_to_many
-    type: left_outer
-    sql_on: ${order_fulfillment.country_iso} = ${order_order.country_iso} AND
-      ${order_fulfillment.order_id} = ${order_order.id} ;;
-  }
+#  join: order_fulfillment {
+#    relationship: one_to_many
+#    type: left_outer
+#    sql_on: ${order_fulfillment.country_iso} = ${order_order.country_iso} AND
+#      ${order_fulfillment.order_id} = ${order_order.id} ;;
+#  }
 
-  join: order_fulfillment_facts {
-    type: left_outer
-    relationship: one_to_one
-    sql_on: ${order_fulfillment_facts.country_iso} = ${order_fulfillment.country_iso} AND
-      ${order_fulfillment_facts.order_fulfillment_id} = ${order_fulfillment.id} ;;
-  }
+#  join: order_fulfillment_facts {
+#    type: left_outer
+#    relationship: one_to_one
+#    sql_on: ${order_fulfillment_facts.country_iso} = ${order_fulfillment.country_iso} AND
+#      ${order_fulfillment_facts.order_fulfillment_id} = ${order_fulfillment.id} ;;
+#  }
 
-  join: hubs {
-    view_label: "* Hubs *"
-    sql_on: ${order_order.country_iso} = ${hubs.country_iso} AND
-      ${order_order.warehouse_name} = ${hubs.hub_code_lowercase} ;;
-    relationship: one_to_one
-    type: left_outer
-  }
+#  join: hubs {
+#    view_label: "* Hubs *"
+#    sql_on: ${order_order.country_iso} = ${hubs.country_iso} AND
+#      ${order_order.warehouse_name} = ${hubs.hub_code_lowercase} ;;
+#    relationship: one_to_one
+#    type: left_outer
+#  }
 
-  join: shyftplan_riders_pickers_hours {
-    view_label: "* Shifts *"
-    sql_on: ${order_order.created_date} = ${shyftplan_riders_pickers_hours.date} and
-      ${hubs.hub_code} = ${shyftplan_riders_pickers_hours.hub_name};;
-    relationship: many_to_one
-    type: left_outer
-  }
+#  join: shyftplan_riders_pickers_hours {
+#    view_label: "* Shifts *"
+#    sql_on: ${order_order.created_date} = ${shyftplan_riders_pickers_hours.date} and
+#      ${hubs.hub_code} = ${shyftplan_riders_pickers_hours.hub_name};;
+#    relationship: many_to_one
+#    type: left_outer
+#  }
 
-}
+#}
 
 ####### TYPEFORM ANSWERS EXPLORE #######
 explore: answers {
