@@ -345,6 +345,8 @@ view: delivery_time_sessions {
 
   dimension: session_id {
     type: string
+    primary_key: yes
+    hidden: yes
     sql: ${TABLE}.session_id ;;
   }
 

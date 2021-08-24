@@ -1,4 +1,5 @@
 view: order_placed_events {
+## all ios and android orders tracked from client side. includes country_iso by using hub_city to lookup country on hubs_metadata gsheet
   derived_table: {
     sql:
     WITH help_tb AS (
