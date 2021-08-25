@@ -714,6 +714,7 @@ explore: monitoring_metrics {
 
 ####### CS ISSUES EXPLORE #######
 explore: cs_issues_post_delivery {
+  hidden: yes
   label: "CS Contacts"
   view_label: "CS Contacts"
   group_label: "07) Customer Service"
@@ -1169,6 +1170,7 @@ explore: flink_skus_per_category {
 
 
 explore: riders_forecast_staffing {
+  hidden: yes
   label: "Orders and Riders Forecasting"
   view_label: "Orders and Riders Forecasting"
   group_label: "09) Forecasting"
@@ -1234,6 +1236,7 @@ explore: braze_crm_data {
 
 
 explore: nps_hub_team {
+  hidden: yes
   label: "NPS (Hub Teams)"
   view_label: "NPS (Hub Teams)"
   group_label: "12) NPS (Internal Teams)"
@@ -1257,6 +1260,7 @@ explore: nps_hub_team {
 ########### AD-HOC EXPLORE ###########
 
 explore: products_mba {
+  hidden: yes
   label: "Market basket analysis at a product level"
   view_label: "Product MBA"
   group_label: "15) Ad-Hoc"
@@ -1265,6 +1269,7 @@ explore: products_mba {
 }
 
 explore: categories_mba {
+  hidden: yes
   label: "Market basket analysis at a category level"
   view_label: "Category MBA"
   group_label: "15) Ad-Hoc"
@@ -1290,6 +1295,7 @@ explore: categories_mba {
 # }
 
 explore: user_order_facts_phone_number {
+  hidden: yes
   label: "User Order Facts - Unique User ID"
   view_label: "User Order Facts - Unique User ID"
   group_label: "15) Ad-Hoc"
