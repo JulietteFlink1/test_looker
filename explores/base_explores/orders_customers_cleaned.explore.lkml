@@ -17,7 +17,7 @@ explore: orders_customers_cleaned {
   join: customers_metrics_cleaned {
     view_label: "* Customers *"
     sql_on: ${customers_metrics_cleaned.country_iso} = ${orders_cl_cleaned.country_iso} AND
-      ${customers_metrics_cleaned.user_email}    = ${orders_cl_cleaned.user_email} ;;
+      ${customers_metrics_cleaned.customer_id_mapped}    = ${orders_cl_cleaned.customer_id_mapped} ;;
     relationship: many_to_one
     type: left_outer
   }

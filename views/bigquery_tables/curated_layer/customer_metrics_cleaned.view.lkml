@@ -47,7 +47,7 @@ view: customers_metrics_cleaned {
   #  sql: concat(${country_iso}, ${user_email}) ;;
   #}
 
-  dimension: unique_id {
+  dimension: customer_id_mapped {
     group_label: "* IDs *"
     hidden: no
     type: string
@@ -61,11 +61,11 @@ view: customers_metrics_cleaned {
     sql: ${TABLE}.first_order_country ;;
   }
 
-  dimension: user_email {
-    group_label: "* User Dimensions *"
-    type: string
-    sql: ${TABLE}.customer_email ;;
-  }
+  # dimension: user_email {
+  #   group_label: "* User Dimensions *"
+  #   type: string
+  #   sql: ${TABLE}.customer_email ;;
+  # }
 
   dimension: customer_id {
     group_label: "* IDs *"
