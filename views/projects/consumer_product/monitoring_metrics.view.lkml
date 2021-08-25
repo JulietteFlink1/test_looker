@@ -163,7 +163,6 @@ view: monitoring_metrics {
     }
   }
 
-
   measure: checkoutstarted_per_paymentstarted  {
     type: number
     sql: ${monitoring_metrics.cnt_checkoutstarted}/NULLIF(${monitoring_metrics.cnt_paymentstarted},0) ;;

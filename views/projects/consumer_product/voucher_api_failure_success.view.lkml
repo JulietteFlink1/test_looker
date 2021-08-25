@@ -222,6 +222,8 @@ view: voucher_api_failure_success {
 
   dimension: id {
     type: string
+    primary_key: yes
+    hidden: yes
     sql: ${TABLE}.id ;;
   }
 
