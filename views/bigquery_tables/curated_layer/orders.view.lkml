@@ -633,8 +633,7 @@ view: orders {
   }
 
   dimension: id {
-    group_label: "* Dates and Timestamps *"
-    hidden: yes
+    hidden: no
     type: string
     sql: ${TABLE}.order_id ;;
   }
@@ -679,7 +678,7 @@ view: orders {
     type: string
     group_label: "* IDs *"
     primary_key: yes
-    hidden: yes
+    hidden: no
     sql: ${TABLE}.order_uuid ;;
   }
 
