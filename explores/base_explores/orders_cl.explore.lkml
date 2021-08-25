@@ -5,9 +5,12 @@ include: "/views/bigquery_tables/nps_after_order.view"
 include: "/views/projects/cleaning/issue_rates_clean.view"
 
 include: "/views/bigquery_tables/curated_layer/hubs_ct.view"
+include: "/views/bigquery_tables/curated_layer/nps_after_order_cl.view"
 include: "/views/bigquery_tables/curated_layer/cs_post_delivery_issues.view"
 
 include: "/explores/base_explores/orders_cl.explore"
+
+explore: nps_after_order_cl { hidden:yes }
 
 explore: orders_cl {
   from: orders
@@ -69,6 +72,15 @@ explore: orders_cl {
             ${orders_cl.order_number}  = cast(${nps_after_order.order_id} as string) ;;
     relationship: one_to_many
     type: left_outer
+  }
+
+  join: nps_after_order_cl {
+    view_label: "* NPS CL*"
+    sql_on: ${orders_cl.country_iso}   = ${nps_after_order_cl.country_iso} AND
+      ${orders_cl.order_number}  =       ${nps_after_order_cl.order_number} ;;
+    relationship: one_to_many
+    type: left_outer
+
   }
 
   join: issue_rates_clean {
