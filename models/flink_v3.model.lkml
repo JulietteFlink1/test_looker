@@ -679,12 +679,14 @@ explore: segment_tracking_sessions30{
 }
 
 explore: marketingbanners_mobile_events {
+  hidden: yes
   label: "Marketing banner impressions"
   view_label: "Marketing banner impressions"
   group_label: "10) In-app tracking data"
   description: "Marketing banner events"
 }
 explore: marketingbanners_mobile_events_displayed_hours {
+  hidden: yes
   label: "Marketing banner: display times"
   view_label: "Marketing banner display times"
   group_label: "10) In-app tracking data"

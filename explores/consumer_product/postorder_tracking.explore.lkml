@@ -1,6 +1,7 @@
 include: "/views/projects/consumer_product/postorder_tracking.view.lkml"
 
 explore: postorder_tracking {
+  hidden: yes
   view_name: postorder_tracking
   label: "Postorder"
   view_label: "Postorder"
