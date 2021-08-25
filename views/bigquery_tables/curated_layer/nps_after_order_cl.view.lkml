@@ -31,12 +31,12 @@ view: nps_after_order_cl {
 
   dimension: nps_driver {
     type: string
-    sql: ${TABLE}.main_score_driver ;;
+    sql: ${TABLE}.nps_driver ;;
   }
 
   dimension: nps_comment {
     type: string
-    sql: ${TABLE}.suggestions_for_improvements ;;
+    sql: ${TABLE}.nps_comment ;;
   }
 
   dimension_group: submitted {
@@ -81,7 +81,7 @@ view: nps_after_order_cl {
       quarter,
       year
     ]
-    sql: ${TABLE}.synched_at ;;
+    sql: ${TABLE}.last_modified_at ;;
     hidden: yes
   }
   dimension_group: partition_timestamp {
@@ -101,15 +101,15 @@ view: nps_after_order_cl {
 
 
   # =========  IDs   =========
-  dimension: order_id {
+  dimension: order_number {
     type: string
-    sql: ${TABLE}.order_id ;;
+    sql: ${TABLE}.order_number ;;
     hidden: no
   }
 
-  dimension: order_uuid {
+  dimension: response_uuid {
     type: string
-    sql: ${TABLE}.order_uuid ;;
+    sql: ${TABLE}.response_uuid ;;
     hidden: no
     primary_key: yes
   }
@@ -119,22 +119,26 @@ view: nps_after_order_cl {
   # ~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   measure: cnt_responses {
+    label: "# NPS Responses"
     type: sum
     sql: ${TABLE}.is_nps_response ;;
   }
 
   measure: cnt_detractors {
+    label: "# Detractors"
     type: sum
     sql: ${TABLE}.is_detractor ;;
   }
 
 
   measure: cnt_passives {
+    label: "# Passives"
     type: sum
     sql: ${TABLE}.is_passive ;;
   }
 
   measure: cnt_promoters {
+    label: "# Promoters"
     type: sum
     sql: ${TABLE}.is_promoter ;;
   }
