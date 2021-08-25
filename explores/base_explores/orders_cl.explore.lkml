@@ -67,17 +67,10 @@ explore: orders_cl {
   }
 
   join: nps_after_order {
-    view_label: "* NPS *"
-    sql_on: ${orders_cl.country_iso}   = ${nps_after_order.country_iso} AND
-            ${orders_cl.order_number}  = cast(${nps_after_order.order_id} as string) ;;
-    relationship: one_to_many
-    type: left_outer
-  }
-
-  join: nps_after_order_cl {
+    from: nps_after_order_cl
     view_label: "* NPS CL*"
-    sql_on: ${orders_cl.country_iso}   = ${nps_after_order_cl.country_iso} AND
-      ${orders_cl.order_number}  =       ${nps_after_order_cl.order_number} ;;
+    sql_on: ${orders_cl.country_iso}   = ${nps_after_order.country_iso} AND
+      ${orders_cl.order_number}  =       ${nps_after_order.order_number} ;;
     relationship: one_to_many
     type: left_outer
 
