@@ -14,9 +14,10 @@ include: "/views/**/*.view"
 # include retail explores
 include: "/explores/**/*.explore.lkml"
 include: "/explores/base_explores/orders_cl.explore.lkml"
+#include: "/explores/base_explores/orders_cl_cleaned.explore.lkml"
 include: "/explores/base_explores/order_orderline_cl.explore.lkml"
 include: "/explores/base_explores/orders_customers.explore.lkml"
-
+#include: "/explores/base_explores/orders_customers_cleaned.explore.lkml"
 
 week_start_day: monday
 case_sensitive: no
