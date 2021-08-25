@@ -64,6 +64,20 @@ view: hub_level_kpis {
     sql: (${TABLE}.partition_timestamp) ;;
   }
 
+  # approximation: usually the NPS survey is send the day after the order
+  dimension_group: nps_survey {
+    type: time
+    timeframes: [
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    datatype: timestamp
+    sql: timestamp_add(${TABLE}.partition_timestamp, Interval 1 day) ;;
+  }
+
   dimension: is_successful_order {
     type: yesno
     sql: ${TABLE}.is_successful_order ;;

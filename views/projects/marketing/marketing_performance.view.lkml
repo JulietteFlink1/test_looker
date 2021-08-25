@@ -2,14 +2,15 @@ view: marketing_performance {
   derived_table: {
     sql: with marketing_vouchers as
       (
-          select distinct vouchers.code from `flink-data-prod.saleor_prod_global.discount_voucher` vouchers
-          where UPPER(vouchers.code) NOT LIKE '%EMP%' and
-          LENGTH(REGEXP_REPLACE(vouchers.code, r'[\d.]', '')) != 0 and
-          UPPER(vouchers.code) NOT LIKE 'AP%' and
-          UPPER(vouchers.code) NOT LIKE '%SORRY%' and
-          vouchers.type != 'shipping' and
-          UPPER(vouchers.code) NOT LIKE '%EMP%' and
-          UPPER(vouchers.code) NOT LIKE '%UXR%'
+          select distinct vouchers.discount_code
+          from `flink-data-prod.curated.discounts` vouchers
+          where UPPER(vouchers.discount_code) NOT LIKE '%EMP%' and
+          LENGTH(REGEXP_REPLACE(vouchers.discount_code, r'[\d.]', '')) != 0 and
+          UPPER(vouchers.discount_code) NOT LIKE 'AP%' and
+          UPPER(vouchers.discount_code) NOT LIKE '%SORRY%' and
+          vouchers.discount_group != 'shipping' and
+          UPPER(vouchers.discount_code) NOT LIKE '%EMP%' and
+          UPPER(vouchers.discount_code) NOT LIKE '%UXR%'
       ),
 
 
@@ -54,20 +55,22 @@ view: marketing_performance {
                     when REGEXP_CONTAINS(lower(adjust._network_name_), 'crm') then 'CRM'
                     when REGEXP_CONTAINS(lower(adjust._network_name_), 'onefootball|nebenan|marktguru|daisycon') then 'Affiliate'
                     else 'Other' end as channel,
-                  sum(vouchers.discount_value) as sum_discounts
+                  sum(orders.amt_discount_gross) as sum_discounts
                 from `flink-backend.customlytics_adjust.adjust_raw_imports` adjust
-                left join `flink-data-prod.saleor_prod_global.warehouse_warehouse` warehouse
-                on split(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(JSON_EXTRACT_SCALAR(adjust._publisher_parameters_, '$.hub_code'))),':')[OFFSET(1)] = warehouse.id
-                left join `flink-backend.gsheet_store_metadata.hubs` hubs
-                on lower(hubs.hub_code) = warehouse.slug
-                left join `flink-data-prod.saleor_prod_global.order_order` orders
-                on orders.id = cast(JSON_EXTRACT_SCALAR(_publisher_parameters_, '$.order_number') as int64) and orders.country_iso = hubs.country_iso
-                left join `flink-data-prod.saleor_prod_global.discount_voucher` vouchers
-                on orders.voucher_id = vouchers.id and orders.country_iso=vouchers.country_iso
+                left join `flink-data-prod.curated.orders` orders
+                on orders.order_number = cast(JSON_EXTRACT_SCALAR(_publisher_parameters_, '$.order_number') as string)
                 where _activity_kind_='event' and _event_name_='FirstPurchase' and _environment_!="sandbox" and
-                (vouchers.code in (select code from marketing_vouchers)) and
+                (orders.discount_code in (select discount_code from (select distinct vouchers.discount_code
+                                                        from `flink-data-prod.curated.discounts` vouchers
+                                                        where UPPER(vouchers.discount_code) NOT LIKE '%EMP%' and
+                                                        LENGTH(REGEXP_REPLACE(vouchers.discount_code, r'[\d.]', '')) != 0 and
+                                                        UPPER(vouchers.discount_code) NOT LIKE 'AP%' and
+                                                        UPPER(vouchers.discount_code) NOT LIKE '%SORRY%' and
+                                                        vouchers.discount_group != 'shipping' and
+                                                        UPPER(vouchers.discount_code) NOT LIKE '%EMP%' and
+                                                        UPPER(vouchers.discount_code) NOT LIKE '%UXR%'))) and
                 {% condition acquisition_date %} date(_PARTITIONTIME) {% endcondition %}
-                --date(_PARTITIONTIME) >= '2021-06-20'
+                --date(_PARTITIONTIME) >= '2021-08-23'
                 group by 1, 2, 3
                 order by 1
        ),
