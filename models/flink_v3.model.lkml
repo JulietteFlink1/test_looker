@@ -1204,18 +1204,7 @@ explore: marketing_performance {
 }
 
 
-# explore: order_extends {
-#   label: "Power User Orders..."
-#   view_label: "Power User Orders..."
-#   group_label: "1) Performance"
-#   extends: [order_order]
-#   view_name: order_order
-#   # join: answers {
-#   #   sql_on: ${answers.landing_id} = ${order_order.id} ;;
-#   #   relationship: one_to_many
-#   #   type: left_outer
-#   # }
-# }
+
 ########### CRM EXPLORE ###########
 
 
@@ -1276,23 +1265,6 @@ explore: categories_mba {
   description: "Product category basket analysis"
 
 }
-
-# explore: voucher_retention {
-#   label: "Voucher retention"
-#   view_label: "Voucher retention"
-#   group_label: "15) Ad-Hoc"
-#   description: "Voucher retention analysis - First voucher used by user is considered as the base. Thus, a user can only have a first used voucher."
-
-#   access_filter: {
-#     field: voucher_retention.country_iso
-#     user_attribute: country_iso
-#   }
-
-#   access_filter: {
-#     field: voucher_retention.city
-#     user_attribute: city
-#   }
-# }
 
 explore: user_order_facts_phone_number {
   hidden: yes
