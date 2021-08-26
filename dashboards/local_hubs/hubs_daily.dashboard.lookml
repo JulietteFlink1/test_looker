@@ -184,22 +184,23 @@
     width: 24
     height: 6
 
+
   - title: Top 10 Hubs by NPS
     name: Top 10 Hubs by NPS
     model: flink_v3
-    explore: hub_level_kpis
+    explore: orders_cl
     type: looker_grid
     fields: [
       hubs.hub_name,
-      hub_level_kpis.nps_score,
-      hub_level_kpis.sum_number_of_nps_responses,
-      hub_level_kpis.order_date
+      nps_after_order.nps_score,
+      nps_after_order.cnt_responses,
+      nps_after_order.submitted_date
       ]
     filters:
-      hub_level_kpis.is_successful_order: 'yes'
-      hub_level_kpis.sum_number_of_nps_responses: ">=2"
-      hub_level_kpis.order_date: after 2021/01/25
-    sorts: [hub_level_kpis.nps_score desc]
+      orders_cl.is_successful_order: 'yes'
+      nps_after_order.cnt_responses: ">=2"
+      orders_cl.created_date: after 2021/01/25
+    sorts: [nps_after_order.nps_score desc]
     limit: 500
     query_timezone: Europe/Berlin
     show_view_names: false
@@ -221,7 +222,7 @@
     show_totals: true
     show_row_totals: true
     series_cell_visualizations:
-      nps_after_order.nps_score:
+      nps_after_order.score:
         is_active: true
         palette:
           palette_id: e8f495e6-3dfb-8872-84b9-86a304fb217b
@@ -265,7 +266,7 @@
     y_axes: []
     listen:
       Hub Name: hubs.hub_name
-      # NPS Submitted Date: hub_level_kpis.order_date
+      NPS Submitted Date: nps_after_order.submitted_date
       Country: hubs.country
     row: 15
     col: 0
@@ -275,14 +276,16 @@
   - title: Bottom 10 Hubs by NPS
     name: Bottom 10 Hubs by NPS
     model: flink_v3
-    explore: order_order
+    explore: orders_cl
     type: looker_grid
-    fields: [hubs.hub_name, nps_after_order.nps_score, nps_after_order.submitted_date,
-      nps_after_order.cnt_responses]
+    fields: [
+      hubs.hub_name,
+      nps_after_order.nps_score,
+      nps_after_order.submitted_date,
+      nps_after_order.cnt_responses
+      ]
     filters:
-      order_order.is_internal_order: 'no'
-      order_order.is_successful_order: 'yes'
-      order_order.created_date: after 2021/01/25
+      orders_cl.is_successful_order: 'yes'
       nps_after_order.cnt_responses: ">=2"
     sorts: [nps_after_order.nps_score]
     limit: 500
@@ -356,17 +359,22 @@
     col: 12
     width: 12
     height: 6
+
   - title: NPS Comments
     name: NPS Comments
     model: flink_v3
-    explore: order_order
+    explore: orders_cl
     type: looker_grid
-    fields: [hubs.hub_name, nps_after_order.submitted_date, nps_after_order.nps_driver,
-      nps_after_order.nps_comment, nps_after_order.score]
+    fields: [
+      hubs.hub_name,
+      nps_after_order.submitted_date,
+      nps_after_order.nps_driver,
+      nps_after_order.nps_comment,
+      nps_after_order.score
+      ]
     filters:
-      order_order.is_internal_order: 'no'
-      order_order.is_successful_order: 'yes'
-      order_order.created_date: after 2021/01/25
+      orders_cl.is_successful_order: 'yes'
+      orders_cl.created_date: after 2021/01/25
       nps_after_order.cnt_responses: ''
     sorts: [nps_after_order.submitted_date desc]
     limit: 500
@@ -447,20 +455,27 @@
     col: 0
     width: 24
     height: 3
+
   - title: Top 10 Hubs by % Issue Rate
     name: Top 10 Hubs by % Issue Rate
     model: flink_v3
-    explore: order_order
+    explore: hub_level_kpis
     type: looker_grid
-    fields: [hubs.hub_name, issue_rate_hub_level.pct_orders_with_issues, issue_rate_hub_level.sum_orders_total,
-      issue_rate_hub_level.pct_orders_perished_product, issue_rate_hub_level.pct_orders_damaged_product,
-      issue_rate_hub_level.pct_orders_missing_product, issue_rate_hub_level.pct_orders_wrong_order,
-      issue_rate_hub_level.pct_orders_wrong_product, order_order.created_date]
+    fields: [
+      hubs.hub_name,
+      hub_level_kpis.pct_orders_with_issues,
+      hub_level_kpis.sum_number_of_orders,
+      hub_level_kpis.pct_orders_perished_product,
+      hub_level_kpis.pct_orders_damaged_product,
+      hub_level_kpis.pct_orders_missing_product,
+      hub_level_kpis.pct_orders_wrong_order,
+      hub_level_kpis.pct_orders_wrong_product,
+      hub_level_kpis.order_date
+      ]
     filters:
       hubs.hub_name: "-NULL"
-      order_order.is_internal_order: 'no'
-      order_order.is_successful_order: 'yes'
-    sorts: [issue_rate_hub_level.pct_orders_with_issues]
+      hub_level_kpis.is_successful_order: 'yes'
+    sorts: [hub_level_kpis.pct_orders_with_issues]
     limit: 500
     query_timezone: Europe/Berlin
     show_view_names: false
@@ -483,15 +498,15 @@
     show_row_totals: true
     series_column_widths:
       hubs.hub_name: 198
-      issue_rate_hub_level.pct_orders_with_issues: 97
-      issue_rate_hub_level.sum_orders_total: 104
-      issue_rate_hub_level.pct_orders_perished_product: 192
-      issue_rate_hub_level.pct_orders_damaged_product: 196
-      issue_rate_hub_level.pct_orders_missing_product: 187
-      issue_rate_hub_level.pct_orders_wrong_order: 167
-      issue_rate_hub_level.pct_orders_wrong_product: 180
+      hub_level_kpis.pct_orders_with_issues: 97
+      hub_level_kpis.sum_number_of_orders: 104
+      hub_level_kpis.pct_orders_perished_product: 192
+      hub_level_kpis.pct_orders_damaged_product: 196
+      hub_level_kpis.pct_orders_missing_product: 187
+      hub_level_kpis.pct_orders_wrong_order: 167
+      hub_level_kpis.pct_orders_wrong_product: 180
     series_cell_visualizations:
-      issue_rate_hub_level.pct_orders_with_issues:
+      hub_level_kpis.pct_orders_with_issues:
         is_active: true
         palette:
           palette_id: b412b2b6-fad6-45e6-f490-ef7428bef44d
@@ -534,12 +549,14 @@
     hidden_fields: []
     y_axes: []
     listen:
-      Order Date: order_order.created_date
+      Order Date: hub_level_kpis.order_date
       Country: hubs.country
     row: 29
     col: 0
     width: 24
     height: 6
+
+
   - title: Bottom 10 Hubs by % Issue Rate
     name: Bottom 10 Hubs by % Issue Rate
     model: flink_v3
@@ -551,7 +568,6 @@
       issue_rate_hub_level.pct_orders_wrong_product, order_order.created_date]
     filters:
       hubs.hub_name: "-NULL"
-      order_order.is_internal_order: 'no'
       order_order.is_successful_order: 'yes'
     sorts: [issue_rate_hub_level.pct_orders_with_issues desc]
     limit: 500
@@ -634,6 +650,7 @@
     col: 0
     width: 24
     height: 6
+
   filters:
   - name: Order Date
     title: Order Date
@@ -646,9 +663,9 @@
       display: inline
       options: []
     model: flink_v3
-    explore: order_order
+    explore: hub_level_kpis
     listens_to_filters: []
-    field: order_order.created_date
+    field: hub_level_kpis.order_date
   - name: NPS Submitted Date
     title: NPS Submitted Date
     type: field_filter
@@ -660,7 +677,7 @@
       display: inline
       options: []
     model: flink_v3
-    explore: order_order
+    explore: orders_cl
     listens_to_filters: []
     field: nps_after_order.submitted_date
   - name: Country
@@ -674,7 +691,7 @@
       display: inline
       options: []
     model: flink_v3
-    explore: order_order
+    explore: hub_level_kpis
     listens_to_filters: []
     field: hubs.country
   - name: Hub Name
@@ -688,6 +705,6 @@
       display: popover
       options: []
     model: flink_v3
-    explore: order_order
+    explore: hub_level_kpis
     listens_to_filters: []
     field: hubs.hub_name

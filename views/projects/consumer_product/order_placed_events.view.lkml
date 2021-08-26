@@ -17,8 +17,8 @@ view: order_placed_events {
       FROM
         `flink-backend.flink_ios_production.order_placed_view` ios_orders
       WHERE
-          NOT (ios_orders.context_app_version LIKE "%APP-RATING%" OR ios_orders.context_app_version LIKE "%DEBUG%")
-      AND NOT (ios_orders.context_app_name = "Flink-Staging" OR ios_orders.context_app_name="Flink-Debug")
+          NOT (LOWER(ios_orders.context_app_version) LIKE "%app-rating%" OR LOWER(ios_orders.context_app_version) LIKE "%debug%")
+      AND NOT (LOWER(ios_orders.context_app_name) = "flink-staging" OR LOWER(ios_orders.context_app_name)="flink-debug")
       AND NOT (ios_orders.order_number IS NULL) -- we have some cases where this happens (13)
       UNION ALL
       SELECT
@@ -35,12 +35,12 @@ view: order_placed_events {
       FROM
         `flink-backend.flink_android_production.order_placed_view` android_orders
       WHERE
-          NOT (android_orders.context_app_version LIKE "%APP-RATING%" OR android_orders.context_app_version LIKE "%DEBUG%")
-      AND NOT (android_orders.context_app_name = "Flink-Staging" OR android_orders.context_app_name="Flink-Debug")
+          NOT (LOWER(android_orders.context_app_version) LIKE "%app-rating%" OR LOWER(android_orders.context_app_version) LIKE "%debug%")
+      AND NOT (LOWER(android_orders.context_app_name) = "flink-staging" OR LOWER(android_orders.context_app_name)="flink-debug")
       AND NOT (android_orders.order_number IS NULL) -- we have some cases where this happens (13)
       )
     SELECT help_tb.*
-      , IF(help_tb.hub_city LIKE '%Ludwigshafen%' OR help_tb.hub_city LIKE '%Mülheim%', "DE", hubs.country_iso) AS country_iso
+      , IF(LOWER(help_tb.hub_city) LIKE '%ludwigshafen%' OR LOWER(help_tb.hub_city) LIKE '%mülheim%', "DE", hubs.country_iso) AS country_iso
     FROM help_tb
     LEFT JOIN `flink-data-prod.google_sheets.hub_metadata` hubs ON hubs.city = help_tb.hub_city
  ;;
