@@ -187,6 +187,16 @@ view: inventory {
       {% endif %};;
   }
 
+  measure: sum_out_of_stock {
+    label: "SUM Stockouts"
+    hidden: no
+    type: sum
+    sql: ${flag_out_of_stock} ;;
+    value_format_name: decimal_0
+  }
+
+
+
 
   measure: count {
     type: count

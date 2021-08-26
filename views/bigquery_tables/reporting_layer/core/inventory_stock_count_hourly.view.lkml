@@ -7,6 +7,25 @@ view: inventory_stock_count_hourly {
     sql: ${TABLE}.country_iso ;;
   }
 
+  dimension: country {
+    type: string
+    case: {
+      when: {
+        sql: UPPER(${TABLE}.country_iso) = "DE" ;;
+        label: "Germany"
+      }
+      when: {
+        sql: UPPER(${TABLE}.country_iso) = "FR" ;;
+        label: "France"
+      }
+      when: {
+        sql: UPPER(${TABLE}.country_iso) = "NL" ;;
+        label: "Netherlands"
+      }
+      else: "Other / Unknown"
+    }
+  }
+
   dimension: unique_id {
     type: string
     primary_key:  yes
@@ -79,9 +98,16 @@ view: inventory_stock_count_hourly {
 
   measure: sum_current_quantity {
     label: "# Quantity On Stock"
-    description: "Sum of Available items on stock"
+    description: "Sum of Available items in stock"
     hidden:  no
     type: sum
     sql: ${TABLE}.current_quantity;;
+  }
+
+  measure: num_distinct_sku {
+    label: "# SKUs"
+    description: "Number of distinct SKUs in stock"
+    type: count_distinct
+    sql:  CASE WHEN ${TABLE}.current_quantity > 0 THEN ${sku} END ;;
   }
 }

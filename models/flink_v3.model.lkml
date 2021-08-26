@@ -14,9 +14,10 @@ include: "/views/**/*.view"
 # include retail explores
 include: "/explores/**/*.explore.lkml"
 include: "/explores/base_explores/orders_cl.explore.lkml"
+#include: "/explores/base_explores/orders_cl_cleaned.explore.lkml"
 include: "/explores/base_explores/order_orderline_cl.explore.lkml"
 include: "/explores/base_explores/orders_customers.explore.lkml"
-
+#include: "/explores/base_explores/orders_customers_cleaned.explore.lkml"
 
 week_start_day: monday
 case_sensitive: no
@@ -49,8 +50,8 @@ named_value_format: euro_accounting_0_precision {
 explore: order_order {
   label: "Orders"
   hidden: yes
-  view_label: "* Orders *"
-  group_label: "01) Performance"
+  #view_label: "* Orders *"
+  #group_label: "01) Performance"
   description: "General Business Performance - Orders, Revenue, etc."
   always_filter: {
     filters:  [

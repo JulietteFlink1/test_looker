@@ -13,6 +13,7 @@ explore: order_orderline_cl {
   #extension: required
 
   join: orderline {
+    view_label: "* Order Lineitems*"
     sql_on: ${orderline.country_iso} = ${orders_cl.country_iso} AND
             ${orderline.order_uuid}    = ${orders_cl.order_uuid} ;;
     relationship: one_to_many

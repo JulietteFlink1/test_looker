@@ -362,34 +362,24 @@ view: orderline {
     value_format: "0.0"
   }
 
-  measure: pct_stock_range_1d {
-    group_label: "* Operations / Logistics *"
-    label: "Stock Range [days, based on 1d avg.]"
-    description: "Current stock divided by 1d AVG Daily Sales"
+  measure: sum_item_price_gross_14d {
+    label: "SUM Item Prices sold (gross) - Last 14 days"
+    description: "Sum of sold Item prices (incl. VAT) - in the Last 14 days"
     hidden:  no
-    type: number
-    sql: null;;
-    value_format: "0.0"
+    type: sum
+    sql: ${quantity} * ${unit_price_gross_amount};;
+    value_format_name: eur
+    filters: [created_date: "14 days ago for 14 days"]
   }
 
-  measure: pct_stock_range_3d {
-    group_label: "* Operations / Logistics *"
-    label: "Stock Range [days, based on 3d avg.]"
-    description: "Current stock divided by 3d AVG Daily Sales"
+  measure: sum_item_price_gross_7d {
+    label: "SUM Item Prices sold (gross) - Last 7 days"
+    description: "Sum of sold Item prices (incl. VAT) - in the Last 14 days"
     hidden:  no
-    type: number
-    sql: null;;
-    value_format: "0.0"
-  }
-
-  measure: pct_stock_range_7d {
-    group_label: "* Operations / Logistics *"
-    label: "Stock Range [days, based on 7d avg.]"
-    description: "Current stock divided by 7d AVG Daily Sales"
-    hidden:  no
-    type: number
-    sql: null;;
-    value_format: "0.0"
+    type: sum
+    sql: ${quantity} * ${unit_price_gross_amount};;
+    value_format_name: eur
+    filters: [created_date: "7 days ago for 7 days"]
   }
 
   measure: number_of_orderlines {
