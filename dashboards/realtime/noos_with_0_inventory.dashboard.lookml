@@ -1,5 +1,5 @@
 - dashboard: noos_with_0_inventory
-  title: NooS with 0 Inventory
+  title: NooS with 0 Inventory (CT migrated)
   layout: newspaper
   preferred_viewer: dashboards-next
   elements:
