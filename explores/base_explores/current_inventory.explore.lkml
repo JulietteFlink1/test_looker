@@ -21,13 +21,6 @@ explore: current_inventory {
     user_attribute: city
   }
 
-  always_filter: {
-    filters:  [
-      hubs.country: "",
-      hubs.hub_name: ""
-    ]
-  }
-
   join: inventory {
     sql_on: ${inventory.sku} = ${products.product_sku} ;;
     relationship: one_to_many
