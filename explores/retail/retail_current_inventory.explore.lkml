@@ -9,7 +9,13 @@ explore: retail_current_inventory {
     type: left_outer
     relationship: many_to_one
     view_label: "* Top-10 per Parent Category *"
+  }
 
+  join: top_100_products_by_gmv {
+    sql_on: ${top_100_products_by_gmv.name} = ${products.product_name};;
+    type: left_outer
+    relationship: many_to_one
+    view_label: "* Top 100 Products by GMV  *"
   }
 
 }

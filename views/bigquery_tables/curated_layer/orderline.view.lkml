@@ -372,6 +372,16 @@ view: orderline {
     filters: [created_date: "14 days ago for 14 days"]
   }
 
+  measure: sum_item_price_gross_7d {
+    label: "SUM Item Prices sold (gross) - Last 7 days"
+    description: "Sum of sold Item prices (incl. VAT) - in the Last 14 days"
+    hidden:  no
+    type: sum
+    sql: ${quantity} * ${unit_price_gross_amount};;
+    value_format_name: eur
+    filters: [created_date: "7 days ago for 7 days"]
+  }
+
   measure: number_of_orderlines {
     type: count
     drill_fields: [id, name]
