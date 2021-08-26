@@ -50,8 +50,8 @@ named_value_format: euro_accounting_0_precision {
 explore: order_order {
   label: "Orders"
   hidden: yes
-  view_label: "* Orders *"
-  group_label: "01) Performance"
+  #view_label: "* Orders *"
+  #group_label: "01) Performance"
   description: "General Business Performance - Orders, Revenue, etc."
   always_filter: {
     filters:  [

@@ -4,8 +4,8 @@ include: "/**/*.explore"
 
 explore: order_orderline_cl {
   extends: [orders_cl]
-  # label: "Orderline Items"
-  # view_label: "* Orderline Items *"
+  label: "Orderline Items"
+  view_label: "* Orderline Items *"
   group_label: "01) Performance"
   description: "Orderline Items sold quantities, prices, gmv, etc."
   hidden: no

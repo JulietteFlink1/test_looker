@@ -19,7 +19,7 @@ explore: orders_cl_cleaned {
   #group_label: "01) Performance"
  # description: "General Business Performance - Orders, Revenue, etc."
   view_name: orders_cl_cleaned  # needs to be set in order that the base_explore can be extended and referenced properly
-  hidden: no
+  hidden: yes
 
   always_filter: {
     filters:  [
