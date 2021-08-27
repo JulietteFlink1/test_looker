@@ -176,6 +176,7 @@ view: simple_tracking_events_all {
   dimension: id {
     type: string
     hidden:  yes
+    primary_key: yes
     sql: ${TABLE}.id ;;
   }
 

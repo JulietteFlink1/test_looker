@@ -3,6 +3,7 @@ include: "/**/*.view"
 explore: gorillas_assortment_t1 {
   from: gorillas_v1_items
   group_label: "17) Pricing"
+  hidden: yes
   always_filter: {
     filters:  [
       gorillas_assortment_t1.time_scraped_date: "after 2021-06-18"
@@ -13,6 +14,7 @@ explore: gorillas_assortment_t1 {
 explore: gorillas_assortment_t2 {
   from: gorillas_v1_items
   group_label: "17) Pricing"
+  hidden: yes
   always_filter: {
     filters:  [
       gorillas_assortment_t1.time_scraped_date: "after 2021-06-18"

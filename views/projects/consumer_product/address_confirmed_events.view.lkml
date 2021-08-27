@@ -95,6 +95,7 @@ view: address_confirmed_events {
 
   dimension: id {
     type: string
+    primary_key: yes
     sql: ${TABLE}.id ;;
   }
 

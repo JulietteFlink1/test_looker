@@ -14,9 +14,10 @@ include: "/views/**/*.view"
 # include retail explores
 include: "/explores/**/*.explore.lkml"
 include: "/explores/base_explores/orders_cl.explore.lkml"
+#include: "/explores/base_explores/orders_cl_cleaned.explore.lkml"
 include: "/explores/base_explores/order_orderline_cl.explore.lkml"
 include: "/explores/base_explores/orders_customers.explore.lkml"
-
+#include: "/explores/base_explores/orders_customers_cleaned.explore.lkml"
 
 week_start_day: monday
 case_sensitive: no
@@ -49,8 +50,8 @@ named_value_format: euro_accounting_0_precision {
 explore: order_order {
   label: "Orders"
   hidden: yes
-  view_label: "* Orders *"
-  group_label: "01) Performance"
+  #view_label: "* Orders *"
+  #group_label: "01) Performance"
   description: "General Business Performance - Orders, Revenue, etc."
   always_filter: {
     filters:  [
@@ -517,92 +518,92 @@ explore: product_attribute_fact_ranking_hlp {
 }
 
 ####### VOUCHER EXPLORE #######
-explore: discount_voucher {
+#explore: discount_voucher {
   #label: "Vouchers"
   #view_label: "Vouchers"
-  hidden: yes
+#  hidden: yes
   # group_label: "03) Vouchers"
   #description: "All data around Vouchers created in the backend"
 
-  always_filter: {
-    filters:  [
-      hubs.country: "",
-      hubs.hub_name: ""
-    ]
-  }
+#  always_filter: {
+#    filters:  [
+#      hubs.country: "",
+#      hubs.hub_name: ""
+#    ]
+#  }
 
-  access_filter: {
-    field: hubs.country_iso
-    user_attribute: country_iso
-  }
+#  access_filter: {
+#    field: hubs.country_iso
+#    user_attribute: country_iso
+#  }
 
-  access_filter: {
-    field: hubs.city
-    user_attribute: city
-  }
+#  access_filter: {
+#    field: hubs.city
+#    user_attribute: city
+#  }
 
-  join: influencer_vouchers_input {
-    view_label: "Voucher Mapping"
-    sql_on: ${discount_voucher.country_iso} = ${influencer_vouchers_input.country_iso} AND
-      ${discount_voucher.code} = ${influencer_vouchers_input.voucher_code} ;;
-    relationship: one_to_one
-    type: left_outer
-  }
+#  join: influencer_vouchers_input {
+#    view_label: "Voucher Mapping"
+#    sql_on: ${discount_voucher.country_iso} = ${influencer_vouchers_input.country_iso} AND
+#      ${discount_voucher.code} = ${influencer_vouchers_input.voucher_code} ;;
+#    relationship: one_to_one
+#    type: left_outer
+#  }
 
-  join: order_order {
-    sql_on: ${discount_voucher.country_iso} = ${order_order.country_iso} AND
-      ${discount_voucher.id} = ${order_order.voucher_id} ;;
-    relationship: one_to_many
-    type: left_outer
-  }
+#  join: order_order {
+#    sql_on: ${discount_voucher.country_iso} = ${order_order.country_iso} AND
+#      ${discount_voucher.id} = ${order_order.voucher_id} ;;
+#    relationship: one_to_many
+#    type: left_outer
+#  }
 
-  join: user_order_facts {
-    view_label: "* Customers *"
-    type: left_outer
-    relationship: many_to_one
-    sql_on: ${order_order.country_iso} = ${user_order_facts.country_iso} AND
-      ${order_order.user_email} = ${user_order_facts.user_email} ;;
-  }
+#  join: user_order_facts {
+#    view_label: "* Customers *"
+#    type: left_outer
+#    relationship: many_to_one
+#    sql_on: ${order_order.country_iso} = ${user_order_facts.country_iso} AND
+#      ${order_order.user_email} = ${user_order_facts.user_email} ;;
+#  }
 
-  join: hub_order_facts {
-    view_label: "* Hubs *"
-    type: left_outer
-    relationship: many_to_one
-    sql_on: ${order_order.country_iso} = ${hub_order_facts.country_iso} AND
-      ${order_order.warehouse_name} = ${hub_order_facts.warehouse_name} ;;
-  }
+#  join: hub_order_facts {
+#    view_label: "* Hubs *"
+#    type: left_outer
+#    relationship: many_to_one
+#    sql_on: ${order_order.country_iso} = ${hub_order_facts.country_iso} AND
+#      ${order_order.warehouse_name} = ${hub_order_facts.warehouse_name} ;;
+#  }
 
-  join: order_fulfillment {
-    relationship: one_to_many
-    type: left_outer
-    sql_on: ${order_fulfillment.country_iso} = ${order_order.country_iso} AND
-      ${order_fulfillment.order_id} = ${order_order.id} ;;
-  }
+#  join: order_fulfillment {
+#    relationship: one_to_many
+#    type: left_outer
+#    sql_on: ${order_fulfillment.country_iso} = ${order_order.country_iso} AND
+#      ${order_fulfillment.order_id} = ${order_order.id} ;;
+#  }
 
-  join: order_fulfillment_facts {
-    type: left_outer
-    relationship: one_to_one
-    sql_on: ${order_fulfillment_facts.country_iso} = ${order_fulfillment.country_iso} AND
-      ${order_fulfillment_facts.order_fulfillment_id} = ${order_fulfillment.id} ;;
-  }
+#  join: order_fulfillment_facts {
+#    type: left_outer
+#    relationship: one_to_one
+#    sql_on: ${order_fulfillment_facts.country_iso} = ${order_fulfillment.country_iso} AND
+#      ${order_fulfillment_facts.order_fulfillment_id} = ${order_fulfillment.id} ;;
+#  }
 
-  join: hubs {
-    view_label: "* Hubs *"
-    sql_on: ${order_order.country_iso} = ${hubs.country_iso} AND
-      ${order_order.warehouse_name} = ${hubs.hub_code_lowercase} ;;
-    relationship: one_to_one
-    type: left_outer
-  }
+#  join: hubs {
+#    view_label: "* Hubs *"
+#    sql_on: ${order_order.country_iso} = ${hubs.country_iso} AND
+#      ${order_order.warehouse_name} = ${hubs.hub_code_lowercase} ;;
+#    relationship: one_to_one
+#    type: left_outer
+#  }
 
-  join: shyftplan_riders_pickers_hours {
-    view_label: "* Shifts *"
-    sql_on: ${order_order.created_date} = ${shyftplan_riders_pickers_hours.date} and
-      ${hubs.hub_code} = ${shyftplan_riders_pickers_hours.hub_name};;
-    relationship: many_to_one
-    type: left_outer
-  }
+#  join: shyftplan_riders_pickers_hours {
+#    view_label: "* Shifts *"
+#    sql_on: ${order_order.created_date} = ${shyftplan_riders_pickers_hours.date} and
+#      ${hubs.hub_code} = ${shyftplan_riders_pickers_hours.hub_name};;
+#    relationship: many_to_one
+#    type: left_outer
+#  }
 
-}
+#}
 
 ####### TYPEFORM ANSWERS EXPLORE #######
 explore: answers {
@@ -679,12 +680,14 @@ explore: segment_tracking_sessions30{
 }
 
 explore: marketingbanners_mobile_events {
+  hidden: yes
   label: "Marketing banner impressions"
   view_label: "Marketing banner impressions"
   group_label: "10) In-app tracking data"
   description: "Marketing banner events"
 }
 explore: marketingbanners_mobile_events_displayed_hours {
+  hidden: yes
   label: "Marketing banner: display times"
   view_label: "Marketing banner display times"
   group_label: "10) In-app tracking data"
@@ -714,6 +717,7 @@ explore: monitoring_metrics {
 
 ####### CS ISSUES EXPLORE #######
 explore: cs_issues_post_delivery {
+  hidden: yes
   label: "CS Contacts"
   view_label: "CS Contacts"
   group_label: "07) Customer Service"
@@ -1169,6 +1173,7 @@ explore: flink_skus_per_category {
 
 
 explore: riders_forecast_staffing {
+  hidden: yes
   label: "Orders and Riders Forecasting"
   view_label: "Orders and Riders Forecasting"
   group_label: "09) Forecasting"
@@ -1202,18 +1207,7 @@ explore: marketing_performance {
 }
 
 
-# explore: order_extends {
-#   label: "Power User Orders..."
-#   view_label: "Power User Orders..."
-#   group_label: "1) Performance"
-#   extends: [order_order]
-#   view_name: order_order
-#   # join: answers {
-#   #   sql_on: ${answers.landing_id} = ${order_order.id} ;;
-#   #   relationship: one_to_many
-#   #   type: left_outer
-#   # }
-# }
+
 ########### CRM EXPLORE ###########
 
 
@@ -1234,6 +1228,7 @@ explore: braze_crm_data {
 
 
 explore: nps_hub_team {
+  hidden: yes
   label: "NPS (Hub Teams)"
   view_label: "NPS (Hub Teams)"
   group_label: "12) NPS (Internal Teams)"
@@ -1257,6 +1252,7 @@ explore: nps_hub_team {
 ########### AD-HOC EXPLORE ###########
 
 explore: products_mba {
+  hidden: yes
   label: "Market basket analysis at a product level"
   view_label: "Product MBA"
   group_label: "15) Ad-Hoc"
@@ -1265,6 +1261,7 @@ explore: products_mba {
 }
 
 explore: categories_mba {
+  hidden: yes
   label: "Market basket analysis at a category level"
   view_label: "Category MBA"
   group_label: "15) Ad-Hoc"
@@ -1272,24 +1269,8 @@ explore: categories_mba {
 
 }
 
-# explore: voucher_retention {
-#   label: "Voucher retention"
-#   view_label: "Voucher retention"
-#   group_label: "15) Ad-Hoc"
-#   description: "Voucher retention analysis - First voucher used by user is considered as the base. Thus, a user can only have a first used voucher."
-
-#   access_filter: {
-#     field: voucher_retention.country_iso
-#     user_attribute: country_iso
-#   }
-
-#   access_filter: {
-#     field: voucher_retention.city
-#     user_attribute: city
-#   }
-# }
-
 explore: user_order_facts_phone_number {
+  hidden: yes
   label: "User Order Facts - Unique User ID"
   view_label: "User Order Facts - Unique User ID"
   group_label: "15) Ad-Hoc"

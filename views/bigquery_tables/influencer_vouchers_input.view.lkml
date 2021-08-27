@@ -38,8 +38,8 @@ view: influencer_vouchers_input {
     description: "Count of Community Voucher Redemptions"
     hidden:  no
     type: count_distinct
-    sql: ${order_order.id} ;;
-    sql_distinct_key: ${order_order.id} ;;
+    sql: ${orders_cl.order_uuid} ;;
+    sql_distinct_key: ${orders_cl.order_uuid} ;;
     filters: [voucher_type: "Community"]
     value_format: "0"
   }
@@ -49,8 +49,8 @@ view: influencer_vouchers_input {
     description: "Count of Promo Voucher Redemptions"
     hidden:  no
     type: count_distinct
-    sql: ${order_order.id} ;;
-    sql_distinct_key: ${order_order.id} ;;
+    sql: ${orders_cl.order_uuid} ;;
+    sql_distinct_key: ${orders_cl.order_uuid} ;;
     filters: [voucher_type: "Promo"]
     value_format: "0"
   }
@@ -60,8 +60,8 @@ view: influencer_vouchers_input {
     description: "Sum of Discount amount Influencer Promo vouchers"
     type: sum
     filters: [voucher_type: "Community"]
-    sql: ${order_order.discount_amount};;
-    sql_distinct_key: ${order_order.id} ;;
+    sql: ${orders_cl.discount_amount};;
+    sql_distinct_key: ${orders_cl.order_uuid} ;;
     value_format_name: euro_accounting_0_precision
   }
 
@@ -70,8 +70,8 @@ view: influencer_vouchers_input {
     description: "Sum of Discount amount Influencer Promo vouchers"
     type: sum
     filters: [voucher_type: "Promo"]
-    sql: ${order_order.discount_amount};;
-    sql_distinct_key: ${order_order.id} ;;
+    sql: ${orders_cl.discount_amount};;
+    sql_distinct_key: ${orders_cl.order_uuid} ;;
     value_format_name: euro_accounting_0_precision
   }
 
