@@ -13,8 +13,7 @@ explore: inventory_stock_count_daily {
   }
 
   join: products {
-    sql_on: ${inventory_stock_count_daily.country_iso} = ${products.country_iso}
-       and  ${inventory_stock_count_daily.sku}         = ${products.product_sku} ;;
+    sql_on: ${inventory_stock_count_daily.sku}         = ${products.product_sku} ;;
     relationship: many_to_one
     type: left_outer
   }

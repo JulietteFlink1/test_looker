@@ -112,14 +112,14 @@ view: inventory_stock_count_daily {
     sql: ${TABLE}.hub_code ;;
   }
 
+  dimension: country_iso {
+    type: string
+    sql: UPPER(LEFT(${hub_code},2)) ;;
+  }
+
   dimension: sku {
     type: string
     sql: ${TABLE}.sku ;;
-  }
-
-  dimension: country_iso {
-    type: string
-    sql: ${TABLE}.country_iso ;;
   }
 
   dimension_group: tracking {
@@ -134,7 +134,7 @@ view: inventory_stock_count_daily {
     ]
     convert_tz: no
     datatype: date
-    sql: ${TABLE}.tracking_date ;;
+    sql: ${TABLE}.partition_timestamp ;;
   }
 
   dimension: primary_key {
