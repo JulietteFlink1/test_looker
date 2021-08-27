@@ -1042,7 +1042,7 @@ explore: gorillas_v1_item_hub_collection_group_allocation{
 
 explore: product_product_competitive_intelligence {
   hidden: yes
-   label: "CI Product Product Adaption"
+  label: "CI Product Product Adaption"
   view_label: "CI Product Product Adaption"
   group_label: "08) Competitor Analysis"
   description: "Analysis of competitors."
