@@ -5,6 +5,7 @@ include: "/**/*.explore"
 explore: order_orderline_cl {
   extends: [orders_cl]
   group_label: "01) Performance"
+  label: "Orders & Lineitems"
   description: "Orderline Items sold quantities, prices, gmv, etc."
   hidden: no
   # view_name: base_order_orderline
