@@ -153,18 +153,23 @@ view: retail_kpis {
           ),
 
           out_of_stock_data as (
-              select stocks.tracking_date,
-             stocks.sku,
-              hubs.country_iso,
-             sum(open_hours_total)    as open_hours_total,
-             sum(hours_oos)           as hours_oos,
-             sum(sum_count_purchased) as sum_count_purchased,
-             sum(sum_count_restocked) as sum_count_restocked,
-             avg(avg_stock_count)     as avg_stock_count
-              from flink-data-dev.sandbox.daily_historical_stock_levels as stocks
-              left join flink-backend.gsheet_store_metadata.hubs as hubs
-                     on lower(hubs.hub_code) = stocks.hub_code
-             where stocks.tracking_date >= date_Add(current_date(), Interval -90 day)
+            select
+                inv.partition_timestamp      as tracking_date
+              , inv.sku                      as sku
+                -- , upper(split(inv.hub_code, "_")[offset(0)]) as country_iso
+              , hubs.country_iso             as country_iso
+              , sum(inv.open_hours_total)    as open_hours_total
+              , sum(inv.hours_oos)           as hours_oos
+              , sum(inv.sum_count_purchased) as sum_count_purchased
+              , sum(inv.sum_count_restocked) as sum_count_restocked
+              , avg(inv.avg_stock_count)     as avg_stock_count
+
+            from flink-data-prod.reporting.inventory_stock_count_daily as inv
+            left join `flink-data-prod`.curated.hubs                   as hubs
+                      on hubs.hub_code = inv.hub_code
+
+            where
+                inv.partition_timestamp >= date_add(current_date(), interval -90 day)
                 and {% condition hub_code_filter %}    hubs.hub_code    {% endcondition %}
                 and {% condition hub_name_filter %}    hubs.hub_name    {% endcondition %}
                 and {% condition city_filter %}        hubs.city        {% endcondition %}
