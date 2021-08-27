@@ -14,16 +14,17 @@ explore: nps_after_order_cl { hidden:yes }
 
 explore: orders_cl {
   from: orders
-  label: "Orders"
-  view_label: "* Orders *"
-  group_label: "01) Performance"
-  description: "General Business Performance - Orders, Revenue, etc."
   view_name: orders_cl  # needs to be set in order that the base_explore can be extended and referenced properly
   hidden: no
 
+  group_label: "01) Performance"
+  label: "Orders"
+  description: "General Business Performance - Orders, Revenue, etc."
+
+  view_label: "* Orders *"
+
   always_filter: {
     filters:  [
-      orders_cl.is_internal_order: "no",
       orders_cl.is_successful_order: "yes",
       orders_cl.created_date: "after 2021-01-25",
       hubs.country: "",
@@ -87,7 +88,7 @@ explore: orders_cl {
   join: cs_post_delivery_issues {
     view_label: "* Post Delivery Issues on Order-Level *"
     sql_on: ${orders_cl.country_iso} = ${cs_post_delivery_issues.country_iso} AND
-      ${cs_post_delivery_issues.order_nr_} = ${orders_cl.id};;
+      ${cs_post_delivery_issues.order_nr_} = ${orders_cl.order_number};;
     relationship: one_to_many
     type: left_outer
   }

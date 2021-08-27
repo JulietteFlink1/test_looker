@@ -2,7 +2,7 @@ view: orders_cleaned {
   sql_table_name: `flink-data-dev.sandbox.curated_orders_cleaned`
     ;;
 
-  view_label: "* Orders *"
+  #view_label: "* Orders *"
   drill_fields: [core_dimensions*]
 
   set: core_dimensions {
