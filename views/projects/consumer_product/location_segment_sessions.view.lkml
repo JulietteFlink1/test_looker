@@ -80,6 +80,7 @@ view: location_segment_sessions {
           event.timestamp,
           event.user_area_available
     FROM `flink-backend.flink_android_production.location_pin_placed_view` event
+    -- WHERE event.location_selection_method = "locateMe" OR event.location_selection_method="addressSearch"
 )
 
 , hub_data AS ( -- ios & android pulling address_confirmed and order_placed for hub_data and delivery_eta
@@ -212,7 +213,7 @@ FROM (
         , hd.delivery_eta
         , ld.user_area_available
         , DENSE_RANK() OVER (PARTITION BY ts.anonymous_id, ts.session_id ORDER BY hd.timestamp DESC) as rank_hd -- ranks all data_hub related events // filter set = 1 to get 'latest' timestamp
-        , DENSE_RANK() OVER (PARTITION BY ts.anonymous_id, ts.session_id ORDER BY ld.user_area_available ASC) as order_ld --ranks all location_pin_placed events to surface FALSE before TRUE
+        , DENSE_RANK() OVER (PARTITION BY ts.anonymous_id, ts.session_id ORDER BY ld.timestamp DESC) as order_ld --ranks all location_pin_placed events to surface FALSE before TRUE
     FROM tracking_sessions ts
             LEFT JOIN (
                 SELECT
@@ -243,8 +244,8 @@ FROM (
 WHERE
     rank_hd = 1  -- filter set = 1 to get 'latest' timestamp
 AND
-    order_ld = 1 -- filter set = 1 to get false if there is a false value
-GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14, 15
+    order_ld = 1 -- filter set = 1 to get last pin value - to get false if there is a false value (set DENSE_RANK ORDER BY ld.user_area_available ASC)
+GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
 )
 
 , location_pin_placed AS (
@@ -375,9 +376,9 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14, 15
         , sf.session_id
         , sf.session_number
         , datetime(sf.session_start_at,
-          'Europe/Berlin') AS session_start_at
+          'UTC') AS session_start_at
         , datetime(sf.next_session_start_at,
-          'Europe/Berlin') AS next_session_start_at
+          'UTC') AS next_session_start_at
         , sf.hub_id
         , sf.hub_code
         , sf.hub_country
@@ -549,8 +550,6 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14, 15
     type: number
     sql: ${TABLE}.waitlist_signup_selected;;
   }
-
-
 
   dimension_group: session_start_at {
     type: time
