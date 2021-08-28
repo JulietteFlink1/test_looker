@@ -1,10 +1,15 @@
 view: braintree_cc {
-  sql_table_name: `flink-backend.sandbox_justine.braintree_jan_july`
+  sql_table_name: `flink-backend.sandbox_justine.braintree_jan_july_orders`
     ;;
 
   dimension: amount_authorized {
     type: number
     sql: ${TABLE}.amount_authorized ;;
+  }
+
+  dimension: order_id {
+    type: number
+    sql: ${TABLE}.order_id ;;
   }
 
   dimension: amount_submitted_for_settlement {
