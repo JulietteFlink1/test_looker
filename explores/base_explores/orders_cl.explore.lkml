@@ -14,16 +14,17 @@ explore: nps_after_order_cl { hidden:yes }
 
 explore: orders_cl {
   from: orders
-  label: "Orders"
-  view_label: "* Orders *"
-  group_label: "01) Performance"
-  description: "General Business Performance - Orders, Revenue, etc."
   view_name: orders_cl  # needs to be set in order that the base_explore can be extended and referenced properly
   hidden: no
 
+  group_label: "01) Performance"
+  label: "Orders"
+  description: "General Business Performance - Orders, Revenue, etc."
+
+  view_label: "* Orders *"
+
   always_filter: {
     filters:  [
-      orders_cl.is_internal_order: "no",
       orders_cl.is_successful_order: "yes",
       orders_cl.created_date: "after 2021-01-25",
       hubs.country: "",

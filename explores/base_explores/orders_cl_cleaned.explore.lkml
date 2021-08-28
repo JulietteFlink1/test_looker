@@ -23,7 +23,6 @@ explore: orders_cl_cleaned {
 
   always_filter: {
     filters:  [
-      orders_cl_cleaned.is_internal_order: "no",
       orders_cl_cleaned.is_successful_order: "yes",
       orders_cl_cleaned.created_date: "after 2021-01-25",
       hubs.country: "",
