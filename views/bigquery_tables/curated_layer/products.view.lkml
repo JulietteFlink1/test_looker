@@ -238,6 +238,20 @@ view: products {
     group_label: "> Special Purpose Data"
   }
 
+  dimension: tax_rate {
+    type: number
+    sql: ${TABLE}.tax_rate ;;
+    hidden: no
+    group_label: "> Special Purpose Data"
+  }
+
+  dimension: tax_name {
+    type: string
+    sql: ${TABLE}.tax_name ;;
+    hidden: no
+    group_label: "> Special Purpose Data"
+  }
+
 
 
   measure: count {

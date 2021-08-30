@@ -1,77 +1,11 @@
 - dashboard: hub_leaderboard
-  title: Hub Leaderboard
+  title: "IN PROGRESS: Hub Leaderboard (CT Migrated)"
   layout: newspaper
   preferred_viewer: dashboards-next
-  refresh: 2147484 seconds
+  refresh: 12 hours
   elements:
-  - title: Top 10 - Hub Score
-    name: Top 10 - Hub Score
-    model: flink_v3
-    explore: hub_leaderboard_raw_order_order
-    type: looker_bar
-    fields: [hub_leaderboard.score_hub_leaderboard, hubs.hub_name]
-    filters:
-      hub_leaderboard_raw_order_order.is_internal_order: 'no'
-      hub_leaderboard_raw_order_order.is_successful_order: 'yes'
-      hubs.hub_code: ''
-      hub_leaderboard_raw_order_order.created_date: after 2021/01/25
-      hub_leaderboard.is_current_7d: 'Yes'
-    sorts: [hub_leaderboard.score_hub_leaderboard desc]
-    limit: 500
-    query_timezone: Europe/Berlin
-    x_axis_gridlines: false
-    y_axis_gridlines: false
-    show_view_names: false
-    show_y_axis_labels: true
-    show_y_axis_ticks: true
-    y_axis_tick_density: default
-    y_axis_tick_density_custom: 5
-    show_x_axis_label: false
-    show_x_axis_ticks: true
-    y_axis_scale_mode: linear
-    x_axis_reversed: false
-    y_axis_reversed: false
-    plot_size_by_field: false
-    trellis: ''
-    stacking: ''
-    limit_displayed_rows: true
-    legend_position: center
-    point_style: circle
-    show_value_labels: true
-    label_density: 25
-    x_axis_scale: auto
-    y_axis_combined: true
-    ordering: none
-    show_null_labels: false
-    show_totals_labels: false
-    show_silhouette: false
-    totals_color: "#808080"
-    y_axes: [{label: '', orientation: bottom, series: [{axisId: hub_leaderboard.score_hub_leaderboard,
-            id: hub_leaderboard.score_hub_leaderboard, name: Hub Leaderboard Score}],
-        showLabels: false, showValues: false, unpinAxis: false, tickDensity: default,
-        tickDensityCustom: 5, type: linear}]
-    limit_displayed_rows_values:
-      show_hide: show
-      first_last: first
-      num_rows: '10'
-    series_types: {}
-    series_colors:
-      hub_leaderboard.score_hub_leaderboard: "#9eeaea"
-    series_point_styles:
-      hub_leaderboard.score_hub_leaderboard: triangle
-    label_color: []
-    column_spacing_ratio:
-    column_group_spacing_ratio: 0.3
-    defaults_version: 1
-    hidden_fields: []
-    listen:
-      Country: hubs.country
-      City: hubs.city
-      Hub Name: hubs.hub_name
-    row: 14
-    col: 0
-    width: 9
-    height: 12
+
+
   - title: Overview KPI Scores
     name: Overview KPI Scores
     model: flink_v3
@@ -181,14 +115,25 @@
     totals_color: "#808080"
     defaults_version: 1
     hidden_fields: []
+    column_order: ["$$$_row_numbers_$$$", hubs.hub_name, hub_leaderboard.score_hub_leaderboard,
+      hub_leaderboard.pct_delivery_in_time, hub_leaderboard.score_delivery_in_time,
+      hub_leaderboard.pct_delivery_late_over_5_min, hub_leaderboard.score_delivery_late_over_5_min,
+      hub_leaderboard.nps_score, hub_leaderboard.score_nps_score, hub_leaderboard.pct_orders_with_issues,
+      hub_leaderboard.score_orders_with_issues, hub_leaderboard.rider_utr, hub_leaderboard.score_rider_utr,
+      hub_leaderboard.picker_utr, hub_leaderboard.score_picker_utr, hub_leaderboard.pct_ext_shifts,
+      hub_leaderboard.score_ext_shifts, hub_leaderboard.pct_no_show, hub_leaderboard.score_no_show,
+      hub_leaderboard.pct_open_shifts, hub_leaderboard.score_open_shifts]
     listen:
       Country: hubs.country
       City: hubs.city
       Hub Name: hubs.hub_name
-    row: 81
+      City Manager: hubs.city_manager
+    row: 68
     col: 0
     width: 24
     height: 26
+
+
   - title: Top 10 - NPS Score
     name: Top 10 - NPS Score
     model: flink_v3
@@ -251,10 +196,13 @@
       Country: hubs.country
       City: hubs.city
       Hub Name: hubs.hub_name
+      City Manager: hubs.city_manager
     row: 20
     col: 16
     width: 7
     height: 6
+
+
   - title: Top 10 - Issue Rate
     name: Top 10 - Issue Rate
     model: flink_v3
@@ -318,10 +266,13 @@
       Country: hubs.country
       City: hubs.city
       Hub Name: hubs.hub_name
+      City Manager: hubs.city_manager
     row: 14
     col: 16
     width: 7
     height: 6
+
+
   - title: Top 10 - Delivered in Time
     name: Top 10 - Delivered in Time
     model: flink_v3
@@ -385,10 +336,13 @@
       Country: hubs.country
       City: hubs.city
       Hub Name: hubs.hub_name
+      City Manager: hubs.city_manager
     row: 14
     col: 9
     width: 7
     height: 6
+
+
   - title: Top 10 - Delivered 5 min late
     name: Top 10 - Delivered 5 min late
     model: flink_v3
@@ -452,14 +406,19 @@
       Country: hubs.country
       City: hubs.city
       Hub Name: hubs.hub_name
+      City Manager: hubs.city_manager
     row: 20
     col: 9
     width: 7
     height: 6
+
+
   - name: Hub Leaderboard Scoring - How it works
     type: text
     title_text: Hub Leaderboard Scoring - How it works
-    body_text: "### Step 1  - Define the KPIs\nThe following KPIs are used to calculate\
+    subtitle_text: ''
+    body_text: "## This dashboard shows the Hub-Leaderboard KPIs of the last complete\
+      \ 7 days\n\n### Step 1  - Define the KPIs\nThe following KPIs are used to calculate\
       \ the hub_score:\n\n| KPI        | | Definition           | \n|:-------------\
       \ |-------------:||:-------------|\n| % Orders delivered in time    |  | How\
       \ many of all delivered orders were <= estimated delivery time | \n| % Orders\
@@ -490,14 +449,18 @@
     col: 0
     width: 24
     height: 12
+
+
   - name: Detailed Views
     type: text
     title_text: Detailed Views
     body_text: ''
-    row: 53
+    row: 40
     col: 0
     width: 24
     height: 2
+
+
   - title: Overview of Hub KPIs
     name: Overview of Hub KPIs
     model: flink_v3
@@ -705,10 +668,13 @@
       Country: hubs.country
       City: hubs.city
       Hub Name: hubs.hub_name
-    row: 55
+      City Manager: hubs.city_manager
+    row: 42
     col: 0
     width: 24
     height: 26
+
+
   - name: Top 10 Hubs
     type: text
     title_text: Top 10 Hubs
@@ -717,75 +683,8 @@
     col: 0
     width: 23
     height: 2
-  - title: Bottom 10 - Hub Score
-    name: Bottom 10 - Hub Score
-    model: flink_v3
-    explore: hub_leaderboard_raw_order_order
-    type: looker_bar
-    fields: [hub_leaderboard.score_hub_leaderboard, hubs.hub_name]
-    filters:
-      hubs.hub_code: ''
-      hub_leaderboard.is_current_7d: 'Yes'
-      hub_leaderboard_raw_order_order.is_internal_order: 'no'
-      hub_leaderboard_raw_order_order.is_successful_order: 'yes'
-      hub_leaderboard_raw_order_order.created_date: after 2021/01/25
-    sorts: [hub_leaderboard.score_hub_leaderboard]
-    limit: 500
-    column_limit: 50
-    query_timezone: Europe/Berlin
-    x_axis_gridlines: false
-    y_axis_gridlines: false
-    show_view_names: false
-    show_y_axis_labels: true
-    show_y_axis_ticks: true
-    y_axis_tick_density: default
-    y_axis_tick_density_custom: 5
-    show_x_axis_label: false
-    show_x_axis_ticks: true
-    y_axis_scale_mode: linear
-    x_axis_reversed: false
-    y_axis_reversed: false
-    plot_size_by_field: false
-    trellis: ''
-    stacking: ''
-    limit_displayed_rows: true
-    legend_position: center
-    point_style: circle
-    show_value_labels: true
-    label_density: 25
-    x_axis_scale: auto
-    y_axis_combined: true
-    ordering: none
-    show_null_labels: false
-    show_totals_labels: false
-    show_silhouette: false
-    totals_color: "#808080"
-    y_axes: [{label: '', orientation: bottom, series: [{axisId: hub_leaderboard.score_hub_leaderboard,
-            id: hub_leaderboard.score_hub_leaderboard, name: Hub Leaderboard Score}],
-        showLabels: false, showValues: false, unpinAxis: false, tickDensity: default,
-        tickDensityCustom: 5, type: linear}]
-    limit_displayed_rows_values:
-      show_hide: show
-      first_last: first
-      num_rows: '10'
-    series_types: {}
-    series_colors:
-      hub_leaderboard.score_hub_leaderboard: "#9eeaea"
-    series_point_styles:
-      hub_leaderboard.score_hub_leaderboard: triangle
-    label_color: []
-    column_spacing_ratio:
-    column_group_spacing_ratio: 0.3
-    defaults_version: 1
-    hidden_fields: []
-    listen:
-      Country: hubs.country
-      City: hubs.city
-      Hub Name: hubs.hub_name
-    row: 34
-    col: 0
-    width: 9
-    height: 12
+
+
   - title: Bottom 10 - Delivered in Time
     name: Bottom 10 - Delivered in Time
     model: flink_v3
@@ -849,10 +748,13 @@
       Country: hubs.country
       City: hubs.city
       Hub Name: hubs.hub_name
-    row: 34
+      City Manager: hubs.city_manager
+    row: 28
     col: 9
     width: 7
     height: 6
+
+
   - title: Bottom 10 - Issue Rate
     name: Bottom 10 - Issue Rate
     model: flink_v3
@@ -916,10 +818,13 @@
       Country: hubs.country
       City: hubs.city
       Hub Name: hubs.hub_name
-    row: 34
+      City Manager: hubs.city_manager
+    row: 28
     col: 16
     width: 7
     height: 6
+
+
   - title: Bottom 10 - Delivered 5 min late
     name: Bottom 10 - Delivered 5 min late
     model: flink_v3
@@ -983,10 +888,13 @@
       Country: hubs.country
       City: hubs.city
       Hub Name: hubs.hub_name
-    row: 40
+      City Manager: hubs.city_manager
+    row: 34
     col: 9
     width: 7
     height: 6
+
+
   - title: Bottom 10 - NPS Score
     name: Bottom 10 - NPS Score
     model: flink_v3
@@ -1049,122 +957,28 @@
       Country: hubs.country
       City: hubs.city
       Hub Name: hubs.hub_name
-    row: 40
+      City Manager: hubs.city_manager
+    row: 34
     col: 16
     width: 7
     height: 6
+
+
   - name: Bottom 10 Hubs
     type: text
     title_text: Bottom 10 Hubs
     body_text: ''
-    row: 32
+    row: 26
     col: 0
     width: 24
     height: 2
-  - title: New Top 10 - Hub Score
-    name: New Top 10 - Hub Score
+
+
+  - title: Bottom 10 - Hub Score
+    name: Bottom 10 - Hub Score
     model: flink_v3
     explore: hub_leaderboard_raw_order_order
-    type: looker_grid
-    fields: [hubs.hub_name, hub_leaderboard_current.score_hub_leaderboard, hub_leaderboard_previous.score_hub_leaderboard]
-    filters:
-      hub_leaderboard_raw_order_order.is_internal_order: 'no'
-      hub_leaderboard_raw_order_order.is_successful_order: 'yes'
-      hub_leaderboard_raw_order_order.created_date: after 2021/01/25
-    sorts: [hub_leaderboard_current.score_hub_leaderboard desc]
-    limit: 500
-    dynamic_fields: [{_kind_hint: measure, table_calculation: wow, _type_hint: number,
-        category: table_calculation, expression: "(${hub_leaderboard_current.score_hub_leaderboard}\
-          \ - ${hub_leaderboard_previous.score_hub_leaderboard})\n/\nif(\n  ${hub_leaderboard_previous.score_hub_leaderboard}\
-          \ = 0,\n  null,\n  ${hub_leaderboard_previous.score_hub_leaderboard}\n \
-          \ \n)", label: "% WoW", value_format: !!null '', value_format_name: percent_0}]
-    query_timezone: Europe/Berlin
-    show_view_names: false
-    show_row_numbers: true
-    transpose: false
-    truncate_text: true
-    hide_totals: false
-    hide_row_totals: false
-    size_to_fit: true
-    table_theme: white
-    limit_displayed_rows: true
-    enable_conditional_formatting: true
-    header_text_alignment: left
-    header_font_size: '12'
-    rows_font_size: '12'
-    conditional_formatting_include_totals: false
-    conditional_formatting_include_nulls: false
-    show_sql_query_menu_options: false
-    column_order: ["$$$_row_numbers_$$$", hubs.hub_name, wow, hub_leaderboard_current.score_hub_leaderboard]
-    show_totals: true
-    show_row_totals: true
-    series_column_widths:
-      wow: 75
-      hubs.hub_name: 233.02999999999997
-    series_cell_visualizations:
-      hub_leaderboard_current.score_hub_leaderboard:
-        is_active: true
-        palette:
-          palette_id: a5fba563-811c-760e-b936-553b776dd69e
-          collection_id: product-custom-collection
-          custom_colors:
-          - "#ffffff"
-          - "#3EB0D5"
-          - "#36b4bf"
-    limit_displayed_rows_values:
-      show_hide: show
-      first_last: first
-      num_rows: '10'
-    conditional_formatting: [{type: along a scale..., value: !!null '', background_color: "#3EB0D5",
-        font_color: !!null '', color_application: {collection_id: product-custom-collection,
-          custom: {id: ae1e6af9-c562-55aa-6c94-ca0fb8521c23, label: Custom, type: continuous,
-            stops: [{color: "#E74C3C", offset: 0}, {color: "#FADBD8", offset: 25},
-              {color: "#ffffff", offset: 50}, {color: "#D5F5E3", offset: 75}, {color: "#2ECC71",
-                offset: 100}]}, options: {steps: 5, constraints: {min: {type: minimum},
-              mid: {type: number, value: 0}, max: {type: maximum}}, mirror: true,
-            reverse: false, stepped: false}}, bold: false, italic: false, strikethrough: false,
-        fields: [wow]}]
-    x_axis_gridlines: false
-    y_axis_gridlines: true
-    show_y_axis_labels: true
-    show_y_axis_ticks: true
-    y_axis_tick_density: default
-    y_axis_tick_density_custom: 5
-    show_x_axis_label: true
-    show_x_axis_ticks: true
-    y_axis_scale_mode: linear
-    x_axis_reversed: false
-    y_axis_reversed: false
-    plot_size_by_field: false
-    trellis: ''
-    stacking: ''
-    legend_position: center
-    point_style: none
-    show_value_labels: false
-    label_density: 25
-    x_axis_scale: auto
-    y_axis_combined: true
-    ordering: none
-    show_null_labels: false
-    show_totals_labels: false
-    show_silhouette: false
-    totals_color: "#808080"
-    defaults_version: 1
-    hidden_fields: [hub_leaderboard_previous.score_hub_leaderboard]
-    series_types: {}
-    listen:
-      Country: hubs.country
-      City: hubs.city
-      Hub Name: hubs.hub_name
-    row: 26
-    col: 0
-    width: 8
-    height: 6
-  - title: New Bottom 10 - Hub Score
-    name: New Bottom 10 - Hub Score
-    model: flink_v3
-    explore: hub_leaderboard_raw_order_order
-    type: looker_grid
+    type: looker_bar
     fields: [hubs.hub_name, hub_leaderboard_current.score_hub_leaderboard, hub_leaderboard_previous.score_hub_leaderboard]
     filters:
       hub_leaderboard_raw_order_order.is_internal_order: 'no'
@@ -1178,25 +992,60 @@
           \ = 0,\n  null,\n  ${hub_leaderboard_previous.score_hub_leaderboard}\n \
           \ \n)", label: "% WoW", value_format: !!null '', value_format_name: percent_0}]
     query_timezone: Europe/Berlin
+    x_axis_gridlines: false
+    y_axis_gridlines: true
     show_view_names: false
-    show_row_numbers: true
-    transpose: false
-    truncate_text: true
-    hide_totals: false
-    hide_row_totals: false
-    size_to_fit: true
-    table_theme: white
+    show_y_axis_labels: true
+    show_y_axis_ticks: true
+    y_axis_tick_density: default
+    y_axis_tick_density_custom: 5
+    show_x_axis_label: true
+    show_x_axis_ticks: true
+    y_axis_scale_mode: linear
+    x_axis_reversed: false
+    y_axis_reversed: false
+    plot_size_by_field: false
+    trellis: ''
+    stacking: normal
     limit_displayed_rows: true
-    enable_conditional_formatting: true
-    header_text_alignment: left
-    header_font_size: '12'
-    rows_font_size: '12'
-    conditional_formatting_include_totals: false
-    conditional_formatting_include_nulls: false
+    legend_position: center
+    point_style: circle_outline
+    show_value_labels: true
+    label_density: 25
+    x_axis_scale: auto
+    y_axis_combined: true
+    ordering: none
+    show_null_labels: false
+    show_totals_labels: false
+    show_silhouette: false
+    totals_color: "#347880"
+    y_axes: [{label: !!null '', orientation: top, series: [{axisId: hub_leaderboard_current.score_hub_leaderboard,
+            id: hub_leaderboard_current.score_hub_leaderboard, name: Hub Leaderboard
+              Score (Current Period)}, {axisId: wow, id: wow, name: "% WoW"}], showLabels: true,
+        showValues: false, unpinAxis: false, tickDensity: default, tickDensityCustom: 5,
+        type: linear}]
+    limit_displayed_rows_values:
+      show_hide: show
+      first_last: first
+      num_rows: '10'
+    font_size: '16'
+    label_value_format: ''
+    series_types:
+      wow: scatter
+    series_colors:
+      wow: "#604fc1"
+      hub_leaderboard_current.score_hub_leaderboard: "#75E2E2"
+    series_labels: {}
+    series_point_styles: {}
+    reference_lines: []
     show_sql_query_menu_options: false
     column_order: ["$$$_row_numbers_$$$", hubs.hub_name, wow, hub_leaderboard_current.score_hub_leaderboard]
     show_totals: true
     show_row_totals: true
+    show_row_numbers: true
+    transpose: false
+    truncate_text: true
+    size_to_fit: true
     series_column_widths:
       wow: 75
       hubs.hub_name: 233.02999999999997
@@ -1210,10 +1059,11 @@
           - "#ffffff"
           - "#3EB0D5"
           - "#36b4bf"
-    limit_displayed_rows_values:
-      show_hide: show
-      first_last: first
-      num_rows: '10'
+    table_theme: white
+    enable_conditional_formatting: true
+    header_text_alignment: left
+    header_font_size: '12'
+    rows_font_size: '12'
     conditional_formatting: [{type: along a scale..., value: !!null '', background_color: "#3EB0D5",
         font_color: !!null '', color_application: {collection_id: product-custom-collection,
           custom: {id: ae1e6af9-c562-55aa-6c94-ca0fb8521c23, label: Custom, type: continuous,
@@ -1223,8 +1073,45 @@
               mid: {type: number, value: 0}, max: {type: maximum}}, mirror: true,
             reverse: false, stepped: false}}, bold: false, italic: false, strikethrough: false,
         fields: [wow]}]
+    conditional_formatting_include_totals: false
+    conditional_formatting_include_nulls: false
+    hide_totals: false
+    hide_row_totals: false
+    defaults_version: 1
+    hidden_fields: [hub_leaderboard_previous.score_hub_leaderboard]
+    listen:
+      Country: hubs.country
+      City: hubs.city
+      Hub Name: hubs.hub_name
+      City Manager: hubs.city_manager
+    row: 28
+    col: 0
+    width: 9
+    height: 12
+
+
+  - title: Top 10 - Hub Score
+    name: Top 10 - Hub Score
+    model: flink_v3
+    explore: hub_leaderboard_raw_order_order
+    type: looker_bar
+    fields: [hubs.hub_name, hub_leaderboard_current.score_hub_leaderboard, hub_leaderboard_previous.score_hub_leaderboard]
+    filters:
+      hub_leaderboard_raw_order_order.is_internal_order: 'no'
+      hub_leaderboard_raw_order_order.is_successful_order: 'yes'
+      hub_leaderboard_raw_order_order.created_date: after 2021/01/25
+    sorts: [hub_leaderboard_current.score_hub_leaderboard desc]
+    limit: 500
+    column_limit: 50
+    dynamic_fields: [{_kind_hint: measure, table_calculation: wow, _type_hint: number,
+        category: table_calculation, expression: "(${hub_leaderboard_current.score_hub_leaderboard}\
+          \ - ${hub_leaderboard_previous.score_hub_leaderboard})\n/\nif(\n  ${hub_leaderboard_previous.score_hub_leaderboard}\
+          \ = 0,\n  null,\n  ${hub_leaderboard_previous.score_hub_leaderboard}\n \
+          \ \n)", label: "% WoW", value_format: !!null '', value_format_name: percent_0}]
+    query_timezone: Europe/Berlin
     x_axis_gridlines: false
     y_axis_gridlines: true
+    show_view_names: false
     show_y_axis_labels: true
     show_y_axis_ticks: true
     y_axis_tick_density: default
@@ -1236,10 +1123,11 @@
     y_axis_reversed: false
     plot_size_by_field: false
     trellis: ''
-    stacking: ''
+    stacking: normal
+    limit_displayed_rows: true
     legend_position: center
-    point_style: none
-    show_value_labels: false
+    point_style: circle_outline
+    show_value_labels: true
     label_density: 25
     x_axis_scale: auto
     y_axis_combined: true
@@ -1247,18 +1135,78 @@
     show_null_labels: false
     show_totals_labels: false
     show_silhouette: false
-    totals_color: "#808080"
+    totals_color: "#347880"
+    y_axes: [{label: !!null '', orientation: top, series: [{axisId: hub_leaderboard_current.score_hub_leaderboard,
+            id: hub_leaderboard_current.score_hub_leaderboard, name: Hub Leaderboard
+              Score (Current Period)}, {axisId: wow, id: wow, name: "% WoW"}], showLabels: true,
+        showValues: false, unpinAxis: false, tickDensity: default, tickDensityCustom: 5,
+        type: linear}]
+    limit_displayed_rows_values:
+      show_hide: show
+      first_last: first
+      num_rows: '10'
+    font_size: '16'
+    label_value_format: ''
+    series_types:
+      wow: scatter
+    series_colors:
+      wow: "#604fc1"
+      hub_leaderboard_current.score_hub_leaderboard: "#75E2E2"
+    series_labels: {}
+    reference_lines: []
+    show_sql_query_menu_options: false
+    column_order: ["$$$_row_numbers_$$$", hubs.hub_name, wow, hub_leaderboard_current.score_hub_leaderboard]
+    show_totals: true
+    show_row_totals: true
+    show_row_numbers: true
+    transpose: false
+    truncate_text: true
+    size_to_fit: true
+    series_column_widths:
+      wow: 75
+      hubs.hub_name: 233.02999999999997
+    series_cell_visualizations:
+      hub_leaderboard_current.score_hub_leaderboard:
+        is_active: true
+        palette:
+          palette_id: a5fba563-811c-760e-b936-553b776dd69e
+          collection_id: product-custom-collection
+          custom_colors:
+          - "#ffffff"
+          - "#3EB0D5"
+          - "#36b4bf"
+    table_theme: white
+    enable_conditional_formatting: true
+    header_text_alignment: left
+    header_font_size: '12'
+    rows_font_size: '12'
+    conditional_formatting: [{type: along a scale..., value: !!null '', background_color: "#3EB0D5",
+        font_color: !!null '', color_application: {collection_id: product-custom-collection,
+          custom: {id: ae1e6af9-c562-55aa-6c94-ca0fb8521c23, label: Custom, type: continuous,
+            stops: [{color: "#E74C3C", offset: 0}, {color: "#FADBD8", offset: 25},
+              {color: "#ffffff", offset: 50}, {color: "#D5F5E3", offset: 75}, {color: "#2ECC71",
+                offset: 100}]}, options: {steps: 5, constraints: {min: {type: minimum},
+              mid: {type: number, value: 0}, max: {type: maximum}}, mirror: true,
+            reverse: false, stepped: false}}, bold: false, italic: false, strikethrough: false,
+        fields: [wow]}]
+    conditional_formatting_include_totals: false
+    conditional_formatting_include_nulls: false
+    hide_totals: false
+    hide_row_totals: false
     defaults_version: 1
     hidden_fields: [hub_leaderboard_previous.score_hub_leaderboard]
-    series_types: {}
     listen:
       Country: hubs.country
       City: hubs.city
       Hub Name: hubs.hub_name
-    row: 46
+      City Manager: hubs.city_manager
+    row: 14
     col: 0
     width: 9
-    height: 7
+    height: 12
+
+
+
   filters:
   - name: Country
     title: Country
@@ -1302,3 +1250,17 @@
     explore: hub_leaderboard_raw_order_order
     listens_to_filters: []
     field: hubs.hub_name
+  - name: City Manager
+    title: City Manager
+    type: field_filter
+    default_value: ''
+    allow_multiple_values: true
+    required: false
+    ui_config:
+      type: tag_list
+      display: popover
+      options: []
+    model: flink_v3
+    explore: hub_leaderboard_raw_order_order
+    listens_to_filters: []
+    field: hubs.city_manager

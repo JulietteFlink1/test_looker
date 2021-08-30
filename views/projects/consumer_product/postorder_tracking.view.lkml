@@ -1,82 +1,58 @@
 view: postorder_tracking {
   derived_table: {
-    sql: SELECT
-        tracks.order_token,
-        tracks.order_id,
-        tracks.order_number,
-        tracks.anonymous_id,
-        tracks.context_app_build,
-        tracks.context_app_version,
-        CAST(NULL AS BOOL) AS context_device_ad_tracking_enabled,
-        tracks.context_device_id,
-        tracks.context_device_manufacturer,
-        tracks.context_device_model,
-        tracks.context_device_name,
-        tracks.context_device_type,
-        tracks.context_ip,
-        tracks.context_library_name,
-        tracks.context_library_version,
-        tracks.context_locale,
-        CAST(NULL AS BOOL) AS context_network_bluetooth,
-        tracks.context_network_carrier,
-        tracks.context_network_cellular,
-        tracks.context_network_wifi,
-        tracks.context_os_name,
-        tracks.context_os_version,
-        tracks.context_protocols_source_id,
-        tracks.context_timezone,
-        CAST(NULL AS STRING) AS context_traits_anonymous_id,
-        CAST(NULL AS STRING) AS context_user_agent,
-        tracks.event,
-        tracks.event_text,
-        tracks.id,
-        tracks.loaded_at,
-        tracks.original_timestamp,
-        tracks.received_at,
-        tracks.sent_at,
+    sql:
+      WITH tracks_tb AS (
+        SELECT tracks.anonymous_id,
         tracks.timestamp,
-        tracks.uuid_ts,
+        IF(tracks.event="purchase_confirmed", "payment_started", tracks.event) AS event,
+        tracks.id,
+        tracks.context_app_version,
+        tracks.context_device_type,
+        tracks.context_os_version
+        FROM `flink-backend.flink_android_production.tracks_view` tracks
+        WHERE tracks.event NOT LIKE "api%" AND tracks.event NOT LIKE "deep_link%"
+
+        UNION ALL
+
+        SELECT tracks.anonymous_id,
+        tracks.timestamp,
+        IF(tracks.event="purchase_confirmed", "payment_started", tracks.event) AS event,
+        tracks.id,
+        tracks.context_app_version,
+        tracks.context_device_type,
+        tracks.context_os_version
+        FROM `flink-backend.flink_ios_production.tracks_view` tracks
+        WHERE tracks.event NOT LIKE "api%" AND tracks.event NOT LIKE "deep_link%"
+      ),
+
+      order_tracking_tb AS (
+      SELECT
+        ios_order.order_token,
+        ios_order.order_id,
+        ios_order.order_number,
+        ios_order.hub_slug
+        ios_order.id,
       FROM
-        `flink-backend.flink_ios_production.order_tracking_viewed_view` tracks
+        `flink-backend.flink_ios_production.order_tracking_viewed_view` ios_order
       UNION ALL
       SELECT
-        tracks.order_token,
-        tracks.order_id,
-        tracks.order_number,
-        tracks.anonymous_id,
-        tracks.context_app_build,
-        tracks.context_app_version,
-        tracks.context_device_ad_tracking_enabled,
-        tracks.context_device_id,
-        tracks.context_device_manufacturer,
-        tracks.context_device_model,
-        tracks.context_device_name,
-        tracks.context_device_type,
-        tracks.context_ip,
-        tracks.context_library_name,
-        tracks.context_library_version,
-        tracks.context_locale,
-        tracks.context_network_bluetooth,
-        tracks.context_network_carrier,
-        tracks.context_network_cellular,
-        tracks.context_network_wifi,
-        tracks.context_os_name,
-        tracks.context_os_version,
-        tracks.context_protocols_source_id,
-        tracks.context_timezone,
-        tracks.context_traits_anonymous_id,
-        tracks.context_user_agent,
-        tracks.event,
-        tracks.event_text,
-        tracks.id,
-        tracks.loaded_at,
-        tracks.original_timestamp,
-        tracks.received_at,
-        tracks.sent_at,
-        tracks.timestamp,
-        tracks.uuid_ts,
+        android_order.order_token,
+        android_order.order_id,
+        android_order.order_number,
+        android_order.hub_slug
+        android_order.id,
       FROM
-        `flink-backend.flink_android_production.order_tracking_viewed_view` tracks
+        `flink-backend.flink_android_production.order_tracking_viewed_view` android_order
+        ),
+
+      joined_tb AS (
+        SELECT tracks_tb.*,
+        order_tracking_tb.*,
+        FROM tracks_tb
+        LEFT JOIN order_tracking_tb
+        ON tracks_tb.id=order_tracking_tb.id
+        ),
+
        ;;
   }
 
