@@ -1,36 +1,23 @@
 - dashboard: missing_shelf_numbers
-  title: "[In Progress] Missing Shelf Numbers (CT migrated)"
+  title: Missing Shelf Numbers (CT Migrated)
   layout: newspaper
   preferred_viewer: dashboards-next
-  refresh: 1 hour
+  refresh: 2147484 seconds
   elements:
-
-  - name: Missing Shelf Numbers
-    title: Missing Shelf Numbers
+  - title: Missing Shelf Numbers
+    name: Missing Shelf Numbers
     model: flink_v3
     explore: current_inventory
     type: looker_grid
-    fields: [
-      products.subcategory,
-      products.product_name,
-      products.meta_description,
-      products.last_modified_time,
-      products.is_published,
-      inventory.created_date,
-      products.amt_product_price_gross,
-      products.product_sku,
-      products.cnt_product_images,
-      products.category,
-      inventory.avg_quantity_available
-      ]
+    fields: [products.subcategory, products.product_name, products.product_shelf_no,
+      products.meta_description, products.last_modified_time, products.is_published,
+      inventory.created_date, products.amt_product_price_gross, products.product_sku,
+      products.category, products.cnt_product_images, inventory.avg_quantity_available]
     filters:
       products.is_published: ''
     sorts: [inventory.avg_quantity_available desc]
     limit: 1000
     column_limit: 50
-    dynamic_fields: [{table_calculation: current_timestamp, label: current timestamp,
-        expression: now(), value_format: !!null '', value_format_name: !!null '',
-        _kind_hint: dimension, _type_hint: date, is_disabled: true}]
     query_timezone: Europe/Berlin
     show_view_names: false
     show_row_numbers: false
@@ -77,9 +64,8 @@
       inventory.created_date: 204
       products.amt_product_price_gross: 120
       products.product_sku: 85
-      products.cnt_product_images: 150
-      current_timestamp: 154
       products.cnt_product_images: 106
+      current_timestamp: 154
       products.category: 139
       inventory.avg_quantity_available: 178
     series_cell_visualizations:
@@ -101,13 +87,11 @@
     listen:
       Total Inventory: inventory.avg_quantity_available
       Category: products.category
-      Metadata: products.meta_description
+      Product Shelf No: products.product_shelf_no
     row: 0
     col: 0
     width: 24
     height: 15
-
-
   filters:
   - name: Total Inventory
     title: Total Inventory
@@ -137,15 +121,17 @@
     explore: current_inventory
     listens_to_filters: []
     field: products.category
-  - name: Metadata
-    title: Metadata
-    type: string_filter
-    default_value: '{},"{\"shelf_number\": \"\"}"'
+  - name: Product Shelf No
+    title: Product Shelf No
+    type: field_filter
+    default_value: 'NULL'
     allow_multiple_values: true
     required: false
     ui_config:
-      type: button_group
-      display: inline
-      options:
-      - "{}"
-      - '{"shelf_number": ""}'
+      type: advanced
+      display: popover
+      options: []
+    model: flink_v3
+    explore: current_inventory
+    listens_to_filters: []
+    field: products.product_shelf_no
