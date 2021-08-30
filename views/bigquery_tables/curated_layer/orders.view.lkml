@@ -592,6 +592,7 @@ view: orders {
     group_label: "* Dates and Timestamps *"
     type: date
     sql: ${TABLE}.order_date ;;
+    hidden: yes
   }
 
   dimension_group: delivery_timestamp {
@@ -618,12 +619,14 @@ view: orders {
     group_label: "* Dates and Timestamps *"
     type: string
     sql: ${TABLE}.order_dow ;;
+    hidden: yes
   }
 
   dimension: order_hour {
     group_label: "* Dates and Timestamps *"
     type: number
     sql: ${TABLE}.order_hour ;;
+    hidden: yes
   }
 
   dimension: hour {
@@ -642,6 +645,7 @@ view: orders {
     group_label: "* Dates and Timestamps *"
     type: string
     sql: ${TABLE}.order_month ;;
+    hidden: yes
   }
 
   dimension: order_number {
@@ -687,12 +691,14 @@ view: orders {
     type: date_time
     convert_tz: no
     sql: ${TABLE}.order_week ;;
+    hidden: yes
   }
 
   dimension: order_year {
     group_label: "* Dates and Timestamps *"
     type: number
     sql: ${TABLE}.order_year ;;
+    hidden: yes
   }
 
   dimension: payment_type {

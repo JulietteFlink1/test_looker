@@ -4,15 +4,15 @@ include: "/**/*.explore"
 
 explore: order_orderline_cl {
   extends: [orders_cl]
-  label: "Orderline Items"
-  view_label: "* Orderline Items *"
   group_label: "01) Performance"
+  label: "Orders & Lineitems"
   description: "Orderline Items sold quantities, prices, gmv, etc."
   hidden: no
   # view_name: base_order_orderline
   #extension: required
 
   join: orderline {
+    view_label: "* Order Lineitems *"
     sql_on: ${orderline.country_iso} = ${orders_cl.country_iso} AND
             ${orderline.order_uuid}    = ${orders_cl.order_uuid} ;;
     relationship: one_to_many

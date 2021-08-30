@@ -155,6 +155,13 @@ view: discounts {
     sql: ${TABLE}.use_case ;;
   }
 
+  measure: used {
+    label: "Discounts Used"
+    sql: ${TABLE}.used ;;
+    type: sum
+    value_format_name: decimal_0
+  }
+
 
   measure: count {
     type: count

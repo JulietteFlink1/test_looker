@@ -74,7 +74,11 @@ view: checkout_sessions {
         location_help_table AS (
         SELECT
           location_joined_table.*,
-          country_iso,
+          IF
+          (derived_city LIKE "Mülheim%"
+            OR derived_city LIKE "%Ludwigshafen%",
+            "DE",
+            country_iso) AS country_iso,
           -- divide events into blocks, belonging to the last seen "addressConfirmed" event
           SUM(CASE
               WHEN hub_city IS NULL THEN 0
