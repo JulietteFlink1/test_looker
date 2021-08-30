@@ -7,7 +7,7 @@
   - name: Missing Shelf Numbers
     title: Missing Shelf Numbers
     model: flink_realtime
-    explore: product_product
+    explore: order_orderline_cl
     type: looker_grid
     fields: [product_category.name, product_product.name, product_product.metadata,
       product_product.updated_time, product_product.is_published, product_product.available_for_purchase_date,
@@ -125,7 +125,7 @@
       display: popover
       options: []
     model: flink_realtime
-    explore: product_product
+    explore: order_orderline
     listens_to_filters: []
     field: warehouse_stock.sum_stock_quantity
   - name: Category

@@ -271,6 +271,14 @@ view: products {
     filters: [is_published: "yes"]
   }
 
+  measure: cnt_product_images {
+    label: "# Product Images"
+    group_label: "* Basic Counts *"
+    type: sum
+    value_format_name: decimal_0
+    sql: ${TABLE}.cnt_product_images ;;
+  }
+
   measure: count {
     type: count
     drill_fields: [product_name]
