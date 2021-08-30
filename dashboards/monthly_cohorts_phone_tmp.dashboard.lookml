@@ -26,28 +26,28 @@
   - title: Monthly Cohorts (Customer Retention)
     name: Monthly Cohorts (Customer Retention)
     model: flink_v3
-    explore: orders_customers_cleaned
+    explore: orders_customers_cleaned_v2
     type: looker_grid
-    fields: [customers_metrics_cleaned.first_order_month, customers_metrics_cleaned.months_duration_between_first_order_month_and_now,
-      orders_cl_cleaned.cnt_unique_customers, customers_metrics_cleaned.months_time_since_sign_up]
-    pivots: [customers_metrics_cleaned.months_time_since_sign_up]
+    fields: [customers_metrics_cleaned_v2.first_order_month, customers_metrics_cleaned_v2.months_duration_between_first_order_month_and_now,
+      orders_cl_cleaned_v2.cnt_unique_customers, customers_metrics_cleaned_v2.months_time_since_sign_up]
+    pivots: [customers_metrics_cleaned_v2.months_time_since_sign_up]
     filters:
       hubs.hub_name: ''
-      orders_cl_cleaned.is_successful_order: 'yes'
-      orders_cl_cleaned.created_date: after 2021/01/25
+      orders_cl_cleaned_v2.is_successful_order: 'yes'
+      orders_cl_cleaned_v2.created_date: after 2021/01/25
       hubs.country: ''
-    sorts: [customers_metrics_cleaned.first_order_month, customers_metrics_cleaned.months_time_since_sign_up]
+    sorts: [customers_metrics_cleaned_v2.first_order_month, customers_metrics_cleaned_v2.months_time_since_sign_up]
     limit: 500
     total: true
-    dynamic_fields: [{category: table_calculation, expression: 'max(pivot_row(${orders_cl_cleaned.cnt_unique_customers}))',
+    dynamic_fields: [{category: table_calculation, expression: 'max(pivot_row(${orders_cl_cleaned_v2.cnt_unique_customers}))',
         label: Cohort Size, value_format: !!null '', value_format_name: !!null '',
         _kind_hint: supermeasure, table_calculation: cohort_size, _type_hint: number},
-      {category: table_calculation, expression: "${orders_cl_cleaned.cnt_unique_customers}/pivot_index(${orders_cl_cleaned.cnt_unique_customers},1)",
+      {category: table_calculation, expression: "${orders_cl_cleaned_v2.cnt_unique_customers}/pivot_index(${orders_cl_cleaned_v2.cnt_unique_customers},1)",
         label: Pcnt of Cohort still Active, value_format: !!null '', value_format_name: percent_1,
         _kind_hint: measure, table_calculation: pcnt_of_cohort_still_active, _type_hint: number}]
     filter_expression: |-
-      is_null(${customers_metrics_cleaned.first_order_month}) = no
-      AND (${customers_metrics_cleaned.months_duration_between_first_order_month_and_now}>${customers_metrics_cleaned.months_time_since_sign_up}+1)
+      is_null(${customers_metrics_cleaned_v2.first_order_month}) = no
+      AND (${customers_metrics_cleaned_v2.months_duration_between_first_order_month_and_now}>${customers_metrics_cleaned_v2.months_time_since_sign_up}+1)
     query_timezone: Europe/Berlin
     show_view_names: false
     show_row_numbers: false
@@ -65,19 +65,19 @@
     conditional_formatting_include_totals: false
     conditional_formatting_include_nulls: false
     show_sql_query_menu_options: false
-    column_order: [customers_metrics_cleaned.first_order_month, cohort_size, 0_pcnt_of_cohort_still_active,
+    column_order: [customers_metrics_cleaned_v2.first_order_month, cohort_size, 0_pcnt_of_cohort_still_active,
       1_pcnt_of_cohort_still_active, 2_pcnt_of_cohort_still_active, 3_pcnt_of_cohort_still_active,
       4_pcnt_of_cohort_still_active, 5_pcnt_of_cohort_still_active]
     show_totals: false
     show_row_totals: true
     series_column_widths:
-      customers_metrics_cleaned.first_order_month: 207
-      orders_cl_cleaned.cnt_unique_customers: 151
+      customers_metrics_cleaned_v2.first_order_month: 207
+      orders_cl_cleaned_v2.cnt_unique_customers: 151
       cohort_size: 96
-      customers_metrics_cleaned.months_time_since_sign_up: 151
+      customers_metrics_cleaned_v2.months_time_since_sign_up: 151
       pcnt_of_cohort_still_active: 133
     series_cell_visualizations:
-      orders_cl_cleaned.cnt_unique_customers:
+      orders_cl_cleaned_v2.cnt_unique_customers:
         is_active: false
     conditional_formatting: [{type: along a scale..., value: !!null '', background_color: "#c76b4e",
         font_color: !!null '', color_application: {collection_id: product-custom-collection,
@@ -86,13 +86,13 @@
           options: {steps: 5}}, bold: false, italic: false, strikethrough: false,
         fields: [pcnt_of_cohort_still_active]}]
     defaults_version: 1
-    hidden_fields: [customers_metrics_cleaned.months_duration_between_first_order_month_and_now,
-      orders_cl_cleaned.cnt_unique_customers]
+    hidden_fields: [customers_metrics_cleaned_v2.months_duration_between_first_order_month_and_now,
+      orders_cl_cleaned_v2.cnt_unique_customers]
     listen:
-      Country: customers_metrics_cleaned.country
-      City: customers_metrics_cleaned.first_order_city
-      Is Voucher Acquisition (Yes / No): customers_metrics_cleaned.is_discount_acquisition
-      Hub Name: orders_cl_cleaned.warehouse_name
+      Country: customers_metrics_cleaned_v2.country
+      City: customers_metrics_cleaned_v2.first_order_city
+      Is Voucher Acquisition (Yes / No): customers_metrics_cleaned_v2.is_discount_acquisition
+      Hub Name: orders_cl_cleaned_v2.warehouse_name
     row: 2
     col: 0
     width: 22
@@ -100,29 +100,29 @@
   - title: Monthly Cohorts (Order Frequency)
     name: Monthly Cohorts (Order Frequency)
     model: flink_v3
-    explore: orders_customers_cleaned
+    explore: orders_customers_cleaned_v2
     type: looker_grid
-    fields: [customers_metrics_cleaned.first_order_month, customers_metrics_cleaned.months_duration_between_first_order_month_and_now,
-      orders_cl_cleaned.cnt_unique_customers, customers_metrics_cleaned.months_time_since_sign_up,
-      orders_cl_cleaned.cnt_orders]
-    pivots: [customers_metrics_cleaned.months_time_since_sign_up]
+    fields: [customers_metrics_cleaned_v2.first_order_month, customers_metrics_cleaned_v2.months_duration_between_first_order_month_and_now,
+      orders_cl_cleaned_v2.cnt_unique_customers, customers_metrics_cleaned_v2.months_time_since_sign_up,
+      orders_cl_cleaned_v2.cnt_orders]
+    pivots: [customers_metrics_cleaned_v2.months_time_since_sign_up]
     filters:
       hubs.hub_name: ''
-      orders_cl_cleaned.is_successful_order: 'yes'
-      orders_cl_cleaned.created_date: after 2021/01/25
+      orders_cl_cleaned_v2.is_successful_order: 'yes'
+      orders_cl_cleaned_v2.created_date: after 2021/01/25
       hubs.country: ''
-    sorts: [customers_metrics_cleaned.first_order_month, customers_metrics_cleaned.months_time_since_sign_up]
+    sorts: [customers_metrics_cleaned_v2.first_order_month, customers_metrics_cleaned_v2.months_time_since_sign_up]
     limit: 500
     total: true
-    dynamic_fields: [{category: table_calculation, expression: 'max(pivot_row(${orders_cl_cleaned.cnt_unique_customers}))',
+    dynamic_fields: [{category: table_calculation, expression: 'max(pivot_row(${orders_cl_cleaned_v2.cnt_unique_customers}))',
         label: Cohort Size, value_format: !!null '', value_format_name: !!null '',
         _kind_hint: supermeasure, table_calculation: cohort_size, _type_hint: number},
-      {category: table_calculation, expression: "${orders_cl_cleaned.cnt_orders}/${orders_cl_cleaned.cnt_unique_customers}",
+      {category: table_calculation, expression: "${orders_cl_cleaned_v2.cnt_orders}/${orders_cl_cleaned_v2.cnt_unique_customers}",
         label: Order Frequency, value_format: !!null '', value_format_name: decimal_2,
         _kind_hint: measure, table_calculation: order_frequency, _type_hint: number}]
     filter_expression: |-
       is_null(${customers_metrics_cleaned.first_order_month}) = no
-      AND (${customers_metrics_cleaned.months_duration_between_first_order_month_and_now}>${customers_metrics_cleaned.months_time_since_sign_up}+1)
+      AND (${customers_metrics_cleaned_v2.months_duration_between_first_order_month_and_now}>${customers_metrics_cleaned_v2.months_time_since_sign_up}+1)
     query_timezone: Europe/Berlin
     show_view_names: false
     show_row_numbers: false
@@ -140,20 +140,20 @@
     conditional_formatting_include_totals: false
     conditional_formatting_include_nulls: false
     show_sql_query_menu_options: false
-    column_order: [customers_metrics_cleaned.first_order_month, cohort_size, 0_pcnt_of_cohort_still_active,
+    column_order: [customers_metrics_cleaned_v2.first_order_month, cohort_size, 0_pcnt_of_cohort_still_active,
       1_pcnt_of_cohort_still_active, 2_pcnt_of_cohort_still_active, 3_pcnt_of_cohort_still_active,
       4_pcnt_of_cohort_still_active, 5_pcnt_of_cohort_still_active]
     show_totals: false
     show_row_totals: true
     series_column_widths:
       customers_metrics_cleaned.first_order_month: 207
-      orders_cl_cleaned.cnt_unique_customers: 151
+      orders_cl_cleaned_v2.cnt_unique_customers: 151
       cohort_size: 96
-      customers_metrics_cleaned.months_time_since_sign_up: 151
+      customers_metrics_cleaned_v2.months_time_since_sign_up: 151
       pcnt_of_cohort_still_active: 133
       order_frequency: 134.67000000000007
     series_cell_visualizations:
-      orders_cl_cleaned.cnt_unique_customers:
+      orders_cl_cleaned_v2.cnt_unique_customers:
         is_active: false
     conditional_formatting: [{type: along a scale..., value: !!null '', background_color: "#c76b4e",
         font_color: !!null '', color_application: {collection_id: product-custom-collection,
@@ -162,13 +162,13 @@
           options: {steps: 5}}, bold: false, italic: false, strikethrough: false,
         fields: [order_frequency]}]
     defaults_version: 1
-    hidden_fields: [customers_metrics_cleaned.months_duration_between_first_order_month_and_now,
-      orders_cl_cleaned.cnt_unique_customers, orders_cl_cleaned.cnt_orders]
+    hidden_fields: [customers_metrics_cleaned_v2.months_duration_between_first_order_month_and_now,
+      orders_cl_cleaned_v2.cnt_unique_customers, orders_cl_cleaned_v2.cnt_orders]
     listen:
-      Country: customers_metrics_cleaned.country
-      City: customers_metrics_cleaned.first_order_city
-      Is Voucher Acquisition (Yes / No): customers_metrics_cleaned.is_discount_acquisition
-      Hub Name: orders_cl_cleaned.warehouse_name
+      Country: customers_metrics_cleaned_v2.country
+      City: customers_metrics_cleaned_v2.first_order_city
+      Is Voucher Acquisition (Yes / No): customers_metrics_cleaned_v2.is_discount_acquisition
+      Hub Name: orders_cl_cleaned_v2.warehouse_name
     row: 12
     col: 0
     width: 22
@@ -176,32 +176,32 @@
   - title: "% GMV / Active Customer Retention"
     name: "% GMV / Active Customer Retention"
     model: flink_v3
-    explore: orders_customers_cleaned
+    explore: orders_customers_cleaned_v2
     type: looker_grid
-    fields: [customers_metrics_cleaned.first_order_month, customers_metrics_cleaned.months_duration_between_first_order_month_and_now,
-      orders_cl_cleaned.cnt_unique_customers, customers_metrics_cleaned.months_time_since_sign_up,
-      orders_cl_cleaned.sum_gmv_gross]
-    pivots: [customers_metrics_cleaned.months_time_since_sign_up]
+    fields: [customers_metrics_cleaned_v2.first_order_month, customers_metrics_cleaned_v2.months_duration_between_first_order_month_and_now,
+      orders_cl_cleaned_v2.cnt_unique_customers, customers_metrics_cleaned_v2.months_time_since_sign_up,
+      orders_cl_cleaned_v2.sum_gmv_gross]
+    pivots: [customers_metrics_cleaned_v2.months_time_since_sign_up]
     filters:
       hubs.hub_name: ''
-      orders_cl_cleaned.is_successful_order: 'yes'
-      orders_cl_cleaned.created_date: after 2021/01/25
+      orders_cl_cleaned_v2.is_successful_order: 'yes'
+      orders_cl_cleaned_v2.created_date: after 2021/01/25
       hubs.country: ''
-    sorts: [customers_metrics_cleaned.first_order_month, customers_metrics_cleaned.months_time_since_sign_up]
+    sorts: [customers_metrics_cleaned_v2.first_order_month, customers_metrics_cleaned_v2.months_time_since_sign_up]
     limit: 500
     total: true
-    dynamic_fields: [{category: table_calculation, expression: 'max(pivot_row(${orders_cl_cleaned.sum_gmv_gross}))',
+    dynamic_fields: [{category: table_calculation, expression: 'max(pivot_row(${orders_cl_cleaned_v2.sum_gmv_gross}))',
         label: GMV (gross), value_format: !!null '', value_format_name: eur_0, _kind_hint: supermeasure,
         table_calculation: gmv_gross, _type_hint: number}, {category: table_calculation,
-        expression: "${orders_cl_cleaned.sum_gmv_gross}/${orders_cl_cleaned.cnt_unique_customers}",
+        expression: "${orders_cl_cleaned_v2.sum_gmv_gross}/${orders_cl_cleaned_v2.cnt_unique_customers}",
         label: GMV / Active Customer, value_format: !!null '', value_format_name: euro_accounting_1_precision,
         _kind_hint: measure, table_calculation: gmv_active_customer, _type_hint: number},
       {category: table_calculation, expression: " ${gmv_active_customer} / pivot_index(${gmv_active_customer},1)",
         label: "% GMV / Active Customer Retention", value_format: !!null '', value_format_name: percent_0,
         _kind_hint: measure, table_calculation: gmv_active_customer_retention, _type_hint: number}]
     filter_expression: |-
-      is_null(${customers_metrics_cleaned.first_order_month}) = no
-      AND (${customers_metrics_cleaned.months_duration_between_first_order_month_and_now}>${customers_metrics_cleaned.months_time_since_sign_up}+1)
+      is_null(${customers_metrics_cleaned_v2.first_order_month}) = no
+      AND (${customers_metrics_cleaned_v2.months_duration_between_first_order_month_and_now}>${customers_metrics_cleaned_v2.months_time_since_sign_up}+1)
     query_timezone: Europe/Berlin
     show_view_names: false
     show_row_numbers: false
@@ -219,21 +219,21 @@
     conditional_formatting_include_totals: false
     conditional_formatting_include_nulls: false
     show_sql_query_menu_options: false
-    column_order: [customers_metrics_cleaned.first_order_month, gmv_gross, 0_gmv_retention,
+    column_order: [customers_metrics_cleaned_v2.first_order_month, gmv_gross, 0_gmv_retention,
       1_gmv_retention, 2_gmv_retention, 3_gmv_retention, 4_gmv_retention, 5_gmv_retention]
     show_totals: false
     show_row_totals: true
     series_column_widths:
-      customers_metrics_cleaned.first_order_month: 207
-      orders_cl_cleaned.cnt_unique_customers: 151
+      customers_metrics_cleaned_v2.first_order_month: 207
+      orders_cl_cleaned_v2.cnt_unique_customers: 151
       cohort_size: 96
-      customers_metrics_cleaned.months_time_since_sign_up: 151
+      customers_metrics_cleaned_v2.months_time_since_sign_up: 151
       pcnt_of_cohort_still_active: 133
       gmv_gross: 140.67000000000007
       gmv_active_customer: 103
       gmv_active_customer_retention: 127.67000000000007
     series_cell_visualizations:
-      orders_cl_cleaned.cnt_unique_customers:
+      orders_cl_cleaned_v2.cnt_unique_customers:
         is_active: false
     conditional_formatting: [{type: along a scale..., value: !!null '', background_color: "#c76b4e",
         font_color: !!null '', color_application: {collection_id: product-custom-collection,
@@ -242,14 +242,14 @@
           options: {steps: 5, reverse: false}}, bold: false, italic: false, strikethrough: false,
         fields: [gmv_active_customer_retention]}]
     defaults_version: 1
-    hidden_fields: [customers_metrics_cleaned.months_duration_between_first_order_month_and_now,
-      orders_cl_cleaned.cnt_unique_customers, orders_cl_cleaned.sum_gmv_gross, gmv_gross,
+    hidden_fields: [customers_metrics_cleaned_v2.months_duration_between_first_order_month_and_now,
+      orders_cl_cleaned_v2.cnt_unique_customers, orders_cl_cleaned_v2.sum_gmv_gross, gmv_gross,
       gmv_active_customer]
     listen:
-      Country: customers_metrics_cleaned.country
-      City: customers_metrics_cleaned.first_order_city
-      Is Voucher Acquisition (Yes / No): customers_metrics_cleaned.is_discount_acquisition
-      Hub Name: orders_cl_cleaned.warehouse_name
+      Country: customers_metrics_cleaned_v2.country
+      City: customers_metrics_cleaned_v2.first_order_city
+      Is Voucher Acquisition (Yes / No): customers_metrics_cleaned_v2.is_discount_acquisition
+      Hub Name: orders_cl_cleaned_v2.warehouse_name
     row: 34
     col: 0
     width: 22
@@ -257,31 +257,31 @@
   - title: GMV / Active Customer
     name: GMV / Active Customer
     model: flink_v3
-    explore: orders_customers_cleaned
+    explore: orders_customers_cleaned_v2
     type: looker_grid
-    fields: [customers_metrics_cleaned.first_order_month, customers_metrics_cleaned.months_duration_between_first_order_month_and_now,
-      orders_cl_cleaned.cnt_unique_customers, orders_cl_cleaned.sum_gmv_gross, customers_metrics_cleaned.months_time_since_sign_up]
-    pivots: [customers_metrics_cleaned.months_time_since_sign_up]
+    fields: [customers_metrics_cleaned_v2.first_order_month, customers_metrics_cleaned_v2.months_duration_between_first_order_month_and_now,
+      orders_cl_cleaned_v2.cnt_unique_customers, orders_cl_cleaned_v2.sum_gmv_gross, customers_metrics_cleaned_v2.months_time_since_sign_up]
+    pivots: [customers_metrics_cleaned_v2.months_time_since_sign_up]
     filters:
       hubs.hub_name: ''
-      orders_cl_cleaned.is_successful_order: 'yes'
-      orders_cl_cleaned.created_date: after 2021/01/25
+      orders_cl_cleaned_v2.is_successful_order: 'yes'
+      orders_cl_cleaned_v2.created_date: after 2021/01/25
       hubs.country: ''
-    sorts: [customers_metrics_cleaned.first_order_month, customers_metrics_cleaned.months_time_since_sign_up]
+    sorts: [customers_metrics_cleaned_v2.first_order_month, customers_metrics_cleaned_v2.months_time_since_sign_up]
     limit: 500
     total: true
-    dynamic_fields: [{category: table_calculation, expression: "${orders_cl_cleaned.sum_gmv_gross}/${orders_cl_cleaned.cnt_unique_customers}",
+    dynamic_fields: [{category: table_calculation, expression: "${orders_cl_cleaned_v2.sum_gmv_gross}/${orders_cl_cleaned_v2.cnt_unique_customers}",
         label: GMV / Active Customer, value_format: !!null '', value_format_name: euro_accounting_1_precision,
         _kind_hint: measure, table_calculation: gmv_active_customer, _type_hint: number},
       {category: table_calculation, expression: " ${gmv_active_customer} / pivot_index(${gmv_active_customer},1)",
         label: "% GMV / Active Customer Retention", value_format: !!null '', value_format_name: percent_0,
         _kind_hint: measure, table_calculation: gmv_active_customer_retention, _type_hint: number},
-      {category: table_calculation, expression: 'max(pivot_row(${orders_cl_cleaned.sum_gmv_gross}))',
+      {category: table_calculation, expression: 'max(pivot_row(${orders_cl_cleaned_v2.sum_gmv_gross}))',
         label: GMV (gross), value_format: !!null '', value_format_name: eur_0, _kind_hint: supermeasure,
         table_calculation: gmv_gross, _type_hint: number}]
     filter_expression: |-
-      is_null(${customers_metrics_cleaned.first_order_month}) = no
-      AND (${customers_metrics_cleaned.months_duration_between_first_order_month_and_now}>${customers_metrics_cleaned.months_time_since_sign_up}+1)
+      is_null(${customers_metrics_cleaned_v2.first_order_month}) = no
+      AND (${customers_metrics_cleaned_v2.months_duration_between_first_order_month_and_now}>${customers_metrics_cleaned_v2.months_time_since_sign_up}+1)
     query_timezone: Europe/Berlin
     show_view_names: false
     show_row_numbers: false
@@ -299,21 +299,21 @@
     conditional_formatting_include_totals: false
     conditional_formatting_include_nulls: false
     show_sql_query_menu_options: false
-    column_order: [customers_metrics_cleaned.first_order_month, gmv_gross, 0_gmv_retention,
+    column_order: [customers_metrics_cleaned_v2.first_order_month, gmv_gross, 0_gmv_retention,
       1_gmv_retention, 2_gmv_retention, 3_gmv_retention, 4_gmv_retention, 5_gmv_retention]
     show_totals: false
     show_row_totals: true
     series_column_widths:
-      customers_metrics_cleaned.first_order_month: 203
-      orders_cl_cleaned.cnt_unique_customers: 151
+      customers_metrics_cleaned_v2.first_order_month: 203
+      orders_cl_cleaned_v2.cnt_unique_customers: 151
       cohort_size: 96
-      customers_metrics_cleaned.months_time_since_sign_up: 151
+      customers_metrics_cleaned_v2.months_time_since_sign_up: 151
       pcnt_of_cohort_still_active: 133
       gmv_gross: 140.67000000000007
       gmv_active_customer: 103
       gmv_active_customer_retention: 155.67000000000007
     series_cell_visualizations:
-      orders_cl_cleaned.cnt_unique_customers:
+      orders_cl_cleaned_v2.cnt_unique_customers:
         is_active: false
     conditional_formatting: [{type: along a scale..., value: !!null '', background_color: "#c76b4e",
         font_color: !!null '', color_application: {collection_id: product-custom-collection,
@@ -322,14 +322,14 @@
           options: {steps: 5}}, bold: false, italic: false, strikethrough: false,
         fields: [gmv_active_customer]}]
     defaults_version: 1
-    hidden_fields: [customers_metrics_cleaned.months_duration_between_first_order_month_and_now,
-      orders_cl_cleaned.cnt_unique_customers, orders_cl_cleaned.sum_gmv_gross, gmv_gross,
+    hidden_fields: [customers_metrics_cleaned_v2.months_duration_between_first_order_month_and_now,
+      orders_cl_cleaned_v2.cnt_unique_customers, orders_cl_cleaned_v2.sum_gmv_gross, gmv_gross,
       gmv_active_customer_retention]
     listen:
-      Country: customers_metrics_cleaned.country
-      City: customers_metrics_cleaned.first_order_city
-      Is Voucher Acquisition (Yes / No): customers_metrics_cleaned.is_discount_acquisition
-      Hub Name: orders_cl_cleaned.warehouse_name
+      Country: customers_metrics_cleaned_v2.country
+      City: customers_metrics_cleaned_v2.first_order_city
+      Is Voucher Acquisition (Yes / No): customers_metrics_cleaned_v2.is_discount_acquisition
+      Hub Name: orders_cl_cleaned_v2.warehouse_name
     row: 22
     col: 0
     width: 22
@@ -366,9 +366,9 @@
       display: inline
       options: []
     model: flink_v3
-    explore: orders_customers_cleaned
+    explore: orders_customers_cleaned_v2
     listens_to_filters: []
-    field: customers_metrics_cleaned.country
+    field: customers_metrics_cleaned_v2.country
   - name: City
     title: City
     type: field_filter
@@ -380,9 +380,9 @@
       display: popover
       options: []
     model: flink_v3
-    explore: orders_customers_cleaned
+    explore: orders_customers_cleaned_v2
     listens_to_filters: []
-    field: customers_metrics_cleaned.first_order_city
+    field: customers_metrics_cleaned_v2.first_order_city
   - name: Is Voucher Acquisition (Yes / No)
     title: Is Voucher Acquisition (Yes / No)
     type: field_filter
@@ -394,9 +394,9 @@
       display: inline
       options: []
     model: flink_v3
-    explore: orders_customers_cleaned
+    explore: orders_customers_cleaned_v2
     listens_to_filters: []
-    field: customers_metrics_cleaned.is_discount_acquisition
+    field: customers_metrics_cleaned_v2.is_discount_acquisition
   - name: Hub Name
     title: Hub Name
     type: field_filter
@@ -408,6 +408,6 @@
       display: popover
       options: []
     model: flink_v3
-    explore: orders_customers_cleaned
+    explore: orders_customers_cleaned_v2
     listens_to_filters: []
-    field: orders_cl_cleaned.warehouse_name
+    field: orders_cl_cleaned_v2.warehouse_name
