@@ -122,6 +122,11 @@ view: checkout_tracking {
     filters: [event: "checkout_started"]
   }
 
+  measure: cnt_hub_updated {
+    type: count
+    filters: [event: "hub_update_message_viewed"]
+  }
+
   measure: cnt_address_change_attempt {
     type: count
     filters: [event: "address_change_at_checkout_message_viewed"]
@@ -144,6 +149,16 @@ view: checkout_tracking {
     type: count_distinct
     sql: ${anonymous_id};;
     filters: [event: "address_change_at_checkout_message_viewed"]
+    value_format_name: decimal_0
+  }
+
+  measure: cnt_unique_anonymousid_hubupdated {
+    label: "# Unique Users Losing Cart Due To Hub Update"
+    description: "Number of Unique Users identified via Anonymous ID from Segment that lost their cart due to updating hub after adding something to the cart"
+    hidden:  no
+    type: count_distinct
+    sql: ${anonymous_id};;
+    filters: [event: "hub_update_message_viewed"]
     value_format_name: decimal_0
   }
 

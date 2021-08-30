@@ -144,7 +144,7 @@
     model: flink_v3
     explore: orders_cl
     type: looker_grid
-    fields: [orders_cl.created_date, nps_after_order.submitted_date, nps_after_order.order_id,
+    fields: [orders_cl.created_date, nps_after_order.submitted_date, nps_after_order.order_number,
       nps_after_order.nps_driver, nps_after_order.nps_comment, hubs.hub_name, nps_after_order.score,
       nps_after_order.cnt_responses, orders_cl.avg_promised_eta, orders_cl.avg_fulfillment_time,
       orders_cl.delivery_delay_since_eta]

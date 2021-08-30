@@ -1,12 +1,15 @@
 view: retail_sku_attributes {
+
+  view_label: "* Customer SKU Definitions *"
   sql_table_name: `flink-data-prod.google_sheets.retail_sku_attributes`
     ;;
 
 
 
   dimension: buying_price {
-    type: string
+    type: number
     sql: ${TABLE}.buying_price ;;
+    hidden: yes
   }
 
   dimension: deposit {

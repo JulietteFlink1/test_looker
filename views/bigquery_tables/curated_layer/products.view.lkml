@@ -238,7 +238,38 @@ view: products {
     group_label: "> Special Purpose Data"
   }
 
+  dimension: tax_rate {
+    type: number
+    sql: ${TABLE}.tax_rate ;;
+    hidden: no
+    group_label: "> Special Purpose Data"
+  }
 
+  dimension: tax_name {
+    type: string
+    sql: ${TABLE}.tax_name ;;
+    hidden: no
+    group_label: "> Special Purpose Data"
+  }
+
+  measure: cnt_sku {
+    label: "# SKUs (Total)"
+    group_label: "* Basic Counts *"
+    description: "Count of Total SKUs in Assortment"
+    hidden:  no
+    type: count
+    value_format: "0"
+  }
+
+  measure: cnt_sku_published {
+    label: "# SKUs (Published)"
+    group_label: "* Basic Counts *"
+    description: "Count of published SKUs in Assortment"
+    hidden:  no
+    type: count
+    value_format: "0"
+    filters: [is_published: "yes"]
+  }
 
   measure: count {
     type: count
