@@ -310,8 +310,8 @@ view: orders {
   dimension: hub_location  {
     group_label: "* Hub Dimensions *"
     type: location
-    sql_latitude: ${orders_cl.latitude};;
-    sql_longitude: ${orders_cl.longitude};;
+    sql_latitude: ${hubs.latitude};;
+    sql_longitude: ${hubs.longitude};;
   }
 
   dimension: delivery_distance_m {
@@ -520,13 +520,19 @@ view: orders {
         THEN 'New Customer' ELSE 'Existing Customer' END ;;
   }
 
-  dimension: number_of_distinct_skus {
+  dimension: no_distinct_skus {
     group_label: "* Order Dimensions *"
     type: number
     sql: ${TABLE}.number_of_distinct_skus ;;
   }
 
   dimension: number_of_items {
+    group_label: "* Order Dimensions *"
+    type: number
+    sql: ${TABLE}.number_of_items ;;
+  }
+
+  dimension: quantity_fulfilled {
     group_label: "* Order Dimensions *"
     type: number
     sql: ${TABLE}.number_of_items ;;
@@ -586,6 +592,7 @@ view: orders {
     group_label: "* Dates and Timestamps *"
     type: date
     sql: ${TABLE}.order_date ;;
+    hidden: yes
   }
 
   dimension_group: delivery_timestamp {
@@ -612,12 +619,14 @@ view: orders {
     group_label: "* Dates and Timestamps *"
     type: string
     sql: ${TABLE}.order_dow ;;
+    hidden: yes
   }
 
   dimension: order_hour {
     group_label: "* Dates and Timestamps *"
     type: number
     sql: ${TABLE}.order_hour ;;
+    hidden: yes
   }
 
   dimension: hour {
@@ -627,8 +636,7 @@ view: orders {
   }
 
   dimension: id {
-    group_label: "* Dates and Timestamps *"
-    hidden: yes
+    hidden: no
     type: string
     sql: ${TABLE}.order_id ;;
   }
@@ -637,6 +645,7 @@ view: orders {
     group_label: "* Dates and Timestamps *"
     type: string
     sql: ${TABLE}.order_month ;;
+    hidden: yes
   }
 
   dimension: order_number {
@@ -673,7 +682,7 @@ view: orders {
     type: string
     group_label: "* IDs *"
     primary_key: yes
-    hidden: yes
+    hidden: no
     sql: ${TABLE}.order_uuid ;;
   }
 
@@ -682,12 +691,14 @@ view: orders {
     type: date_time
     convert_tz: no
     sql: ${TABLE}.order_week ;;
+    hidden: yes
   }
 
   dimension: order_year {
     group_label: "* Dates and Timestamps *"
     type: number
     sql: ${TABLE}.order_year ;;
+    hidden: yes
   }
 
   dimension: payment_type {
@@ -1192,6 +1203,13 @@ view: orders {
     type: sum
     sql: ${shipping_price_net_amount};;
     value_format_name: euro_accounting_0_precision
+  }
+
+  measure: sum_quantity_fulfilled {
+    label: "Quantity"
+    description: "Fulfilled Quantity"
+    type: sum
+    sql: ${number_of_items} ;;
   }
 
   ############

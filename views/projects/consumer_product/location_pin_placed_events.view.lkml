@@ -123,6 +123,7 @@ view: location_pin_placed_events {
 
   dimension: id {
     primary_key: yes
+    hidden: yes
     type: string
     sql: ${TABLE}.id ;;
   }

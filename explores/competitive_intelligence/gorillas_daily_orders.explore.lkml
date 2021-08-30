@@ -1,7 +1,7 @@
-include: "/views/bigquery_tables/reporting_layer/gorillas_orders.view.lkml"
+include: "/views/bigquery_tables/reporting_layer/competitive_intelligence/gorillas_daily_orders.view.lkml"
 
-explore: gorillas_orders {
-  view_name: gorillas_orders
+explore: gorillas_daily_orders {
+  view_name: gorillas_daily_orders
   label: "Gorillas Orders"
   view_label: "Gorillas Orders"
   hidden: yes

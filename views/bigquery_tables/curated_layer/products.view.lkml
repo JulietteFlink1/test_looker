@@ -117,12 +117,6 @@ view: products {
     hidden: yes
   }
 
-  dimension: is_published {
-    type: yesno
-    sql: ${TABLE}.is_published ;;
-    hidden: yes
-  }
-
   dimension: product_erp_brand {
     type: string
     sql: ${TABLE}.product_erp_brand ;;
@@ -234,6 +228,27 @@ view: products {
   dimension: product_shelf_no {
     type: string
     sql: ${TABLE}.product_shelf_no ;;
+    group_label: "> Special Purpose Data"
+  }
+
+  dimension: is_published {
+    type: yesno
+    sql: ${TABLE}.is_published ;;
+    hidden: no
+    group_label: "> Special Purpose Data"
+  }
+
+  dimension: tax_rate {
+    type: number
+    sql: ${TABLE}.tax_rate ;;
+    hidden: no
+    group_label: "> Special Purpose Data"
+  }
+
+  dimension: tax_name {
+    type: string
+    sql: ${TABLE}.tax_name ;;
+    hidden: no
     group_label: "> Special Purpose Data"
   }
 
