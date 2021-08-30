@@ -354,9 +354,9 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14
         , sf.session_id
         , sf.session_number
         , datetime(sf.session_start_at,
-          'Europe/Berlin') AS session_start_at
+          'UTC') AS session_start_at
         , datetime(sf.next_session_start_at,
-          'Europe/Berlin') AS next_session_start_at
+          'UTC') AS next_session_start_at
         , sf.hub_id
         , sf.hub_code
         , sf.hub_country

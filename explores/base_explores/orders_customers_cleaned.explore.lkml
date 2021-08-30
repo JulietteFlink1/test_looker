@@ -10,7 +10,7 @@ explore: orders_customers_cleaned {
   #view_name: orders_customers
   group_label: "15) Ad-Hoc"
   description: "General Business Performance - Orders, Revenue, etc."
-  hidden: no
+  hidden: yes
   # view_name: base_order_orderline
   #extension: required
 

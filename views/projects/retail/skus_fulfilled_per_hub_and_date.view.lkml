@@ -3,32 +3,12 @@
 
 view: skus_fulfilled_per_hub_and_date {
   derived_table: {
-    explore_source: order_order {
-      column: created_date                {}
-      column: hub_code_lowercase          { field: hubs.hub_code_lowercase }
-      column: product_sku                 { field: order_orderline.product_sku }
-      column: sum_item_quantity_fulfilled { field: order_orderline.sum_item_quantity_fulfilled }
-      column: sum_item_quantity           { field: order_orderline.sum_item_quantity }
-      filters: {
-        field: order_order.is_internal_order
-        value: "no"
-      }
-      filters: {
-        field: order_order.is_successful_order
-        value: "yes"
-      }
-      filters: {
-        field: order_order.created_date
-        value: "after 2021/01/25"
-      }
-      filters: {
-        field: hubs.country
-        value: ""
-      }
-      filters: {
-        field: hubs.hub_name
-        value: ""
-      }
+    explore_source: order_orderline_cl {
+      column: created_date                { field: orders_cl.created_date }
+      column: hub_code_lowercase          { field: hubs.hub_code }
+      column: product_sku                 { field: products.product_sku }
+      column: sum_item_quantity_fulfilled { field: orderline.sum_item_quantity_fulfilled }
+      column: sum_item_quantity           { field: orderline.sum_item_quantity }
     }
   }
   dimension: created_date {

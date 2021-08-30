@@ -89,13 +89,11 @@ view: order_placed_events {
   dimension: order_token {
     type: string
     sql: ${TABLE}.order_token ;;
-    hidden: yes
   }
 
   dimension: order_number {
     type: string
     sql: ${TABLE}.order_number ;;
-    hidden: yes
   }
 
   dimension: anonymous_id {

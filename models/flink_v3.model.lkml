@@ -50,8 +50,8 @@ named_value_format: euro_accounting_0_precision {
 explore: order_order {
   label: "Orders"
   hidden: yes
-  view_label: "* Orders *"
-  group_label: "01) Performance"
+  #view_label: "* Orders *"
+  #group_label: "01) Performance"
   description: "General Business Performance - Orders, Revenue, etc."
   always_filter: {
     filters:  [
@@ -1046,7 +1046,7 @@ explore: gorillas_v1_item_hub_collection_group_allocation{
 
 explore: product_product_competitive_intelligence {
   hidden: yes
-   label: "CI Product Product Adaption"
+  label: "CI Product Product Adaption"
   view_label: "CI Product Product Adaption"
   group_label: "08) Competitor Analysis"
   description: "Analysis of competitors."
