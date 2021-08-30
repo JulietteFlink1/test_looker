@@ -338,7 +338,12 @@ view: checkout_sessions {
  ;;
   }
 
-  ### custom measures
+  ### custom measures and dimensions
+  dimension: is_first_session {
+    type: yesno
+    sql: ${TABLE}.session_number=1 ;;
+  }
+
   measure: cnt_hub_update_message {
     label: "# Hub Update Message Viewed sessions"
     description: "# sessions with Hub Update Message Viewed event"
@@ -412,10 +417,28 @@ view: checkout_sessions {
     }
   }
 
-
   dimension: full_app_version {
     type: string
     sql: ${context_device_type} || '-' || ${context_app_version} ;;
+  }
+
+  dimension: country {
+    type: string
+    case: {
+      when: {
+        sql: ${TABLE}.hub_country = "DE" ;;
+        label: "Germany"
+      }
+      when: {
+        sql: ${TABLE}.hub_country = "FR" ;;
+        label: "France"
+      }
+      when: {
+        sql: ${TABLE}.hub_country = "NL" ;;
+        label: "Netherlands"
+      }
+      else: "Other / Unknown"
+    }
   }
 
   ### standard measures
