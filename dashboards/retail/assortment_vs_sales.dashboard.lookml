@@ -1,5 +1,5 @@
 - dashboard: assortment_vs_sales
-  title: "[In Progress] Assortment vs Sales (CT Migrated)"
+  title: "Assortment vs Sales (CT Migrated)"
   layout: newspaper
   preferred_viewer: dashboards-next
   elements:
