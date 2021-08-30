@@ -1,0 +1,81 @@
+view: top_50_selling_products_custom {
+  derived_table: {
+    sql: WITH product_lvl_gmv AS (
+          SELECT sku,
+              product_name,
+              o.country_iso,
+              CASE WHEN product_subcategory_erp IN ('Obst', 'Gemüse','Eier')
+                   THEN product_substitute_group
+                   ELSE product_name
+              END as substitute_group,
+              SUM(quantity*amt_unit_price_gross) AS product_gmv
+      FROM       `flink-data-prod.curated.order_lineitems` ol
+      LEFT JOIN  `flink-data-prod.curated.orders` o ON o.order_uuid = ol.order_uuid
+      WHERE TRUE
+   --   AND o.country_iso = "DE"
+      AND DATE(o.order_timestamp) >= CURRENT_DATE - 14
+      GROUP BY 1,2,3,4
+      ORDER BY 4 desc
+      ),
+      substitute_lvl_gmv AS (
+        SELECT country_iso,
+               substitute_group,
+               SUM(product_gmv) as gmv_substitute_group
+        FROM product_lvl_gmv
+        GROUP BY 1,2
+      ),
+      gmv_ranked_substitute AS(
+        SELECT substitute_group,
+               country_iso,
+               RANK() OVER (PARTITION BY country_iso ORDER BY gmv_substitute_group DESC) AS rk
+        FROM substitute_lvl_gmv
+      )
+      SELECT sku,
+             product_name,
+             p.country_iso,
+             substitute_group AS custom_substitute_group,
+             rk as custom_substitute_group_rk
+      FROM product_lvl_gmv p
+      LEFT JOIN gmv_ranked_substitute USING (substitute_group,country_iso)
+      WHERE rk is not null
+       ;;
+  }
+
+  measure: count {
+    type: count
+    drill_fields: [detail*]
+  }
+
+  dimension: sku {
+    primary_key:  yes
+    type: number
+    sql: ${TABLE}.sku ;;
+  }
+
+  dimension: product_name {
+    order_by_field: custom_substitute_group_rk
+    type: string
+    sql: ${TABLE}.product_name ;;
+  }
+
+  dimension: country_iso {
+    type: string
+    sql: ${TABLE}.country_iso ;;
+  }
+
+  dimension: custom_substitute_group {
+    order_by_field: custom_substitute_group_rk
+    type: string
+    sql: ${TABLE}.custom_substitute_group ;;
+  }
+
+  dimension: custom_substitute_group_rk {
+    type: number
+    sql: ${TABLE}.custom_substitute_group_rk ;;
+  }
+
+  set: detail {
+    fields: [sku, product_name, custom_substitute_group, custom_substitute_group_rk]
+  }
+
+}
