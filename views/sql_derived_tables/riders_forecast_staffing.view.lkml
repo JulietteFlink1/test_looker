@@ -43,7 +43,7 @@ view: riders_forecast_staffing {
       , shiftblocks_hubs.block_ends_at   as block_ends_at
       , shiftblocks_hubs.hub_name        as hub_name
       , shiftblocks_hubs.city            as city
-    from flink-backend.rider_staffing.shiftblocks_hubs
+    from flink-data-prod.rider_staffing.shiftblocks_hubs
 )
 
   , shifts_scheduled as (

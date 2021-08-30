@@ -1,5 +1,5 @@
 - dashboard: assortment_vs_sales
-  title: "[In Progress] Assortment vs Sales (CT Migrated)"
+  title: "Assortment vs Sales (CT Migrated)"
   layout: newspaper
   preferred_viewer: dashboards-next
   elements:
@@ -7,14 +7,13 @@
   - title: Number of SKUs vs GMV
     name: Number of SKUs vs GMV
     model: flink_v3
-    explore: product_product
+    explore: order_orderline_cl
     type: looker_bar
-    fields: [parent_category.name, product_product.cnt_sku_published, order_orderline_facts.sum_item_price_gross]
+    fields: [products.category, products.cnt_sku_published, orderline.sum_item_price_gross]
     filters:
-      product_product.is_published: 'yes'
-      order_orderline_facts.is_internal_order: 'no'
-      order_orderline_facts.is_successful_order: 'yes'
-    sorts: [product_product.cnt_sku_published desc, parent_category.name]
+      products.is_published: 'yes'
+      orders_cl.is_successful_order: 'yes'
+    sorts: [products.cnt_sku_published desc, products.category]
     limit: 500
     query_timezone: Europe/Berlin
     x_axis_gridlines: false
@@ -49,52 +48,53 @@
       palette_id: flink-categorical-0
       options:
         steps: 5
-    y_axes: [{label: '', orientation: top, series: [{axisId: product_product.cnt_sku_published,
-            id: product_product.cnt_sku_published, name: Number of Published SKUs}],
+    y_axes: [{label: '', orientation: top, series: [{axisId: products.cnt_sku_published,
+            id: products.cnt_sku_published, name: Number of Published SKUs}],
         showLabels: true, showValues: true, maxValue: 500, unpinAxis: false, tickDensity: default,
-        type: linear}, {label: '', orientation: bottom, series: [{axisId: order_orderline_facts.sum_item_price_gross,
-            id: order_orderline_facts.sum_item_price_gross, name: GMV}], showLabels: true,
+        type: linear}, {label: '', orientation: bottom, series: [{axisId: orderline.sum_item_price_gross,
+            id: orderline.sum_item_price_gross, name: GMV}], showLabels: true,
         showValues: true, unpinAxis: false, tickDensity: custom, tickDensityCustom: 5,
         type: linear}]
     hide_legend: false
     series_types:
-      product_product.cnt_sku_published: line
+      products.cnt_sku_published: line
       new_calculation: line
     series_colors:
-      order_orderline_facts.sum_item_price_gross: "#e31c79"
+      orderline.sum_item_price_gross: "#e31c79"
       new_calculation: "#f5e175"
-      product_product.cnt_sku_published: "#F0D22B"
+      products.cnt_sku_published: "#F0D22B"
     series_labels:
       new_calculation: Proportion of Published SKUs
-      order_orderline_facts.sum_item_price_gross: GMV
-      product_product.cnt_sku_published: Number of Published SKUs
+      orderline.sum_item_price_gross: GMV
+      products.cnt_sku_published: Number of Published SKUs
     label_color: ["#f5e175", "#ed6ba7"]
     defaults_version: 1
     hidden_fields: []
     listen:
       Hub Name: hubs.hub_name
-      Order Date: order_orderline_facts.created_date
+      Order Date: orders_cl.created_date
       City: hubs.city
       Country: hubs.country
-      Order Day of Week: order_orderline_facts.created_day_of_week
+      Order Day of Week: orders_cl.created_day_of_week
     row: 28
     col: 0
     width: 11
     height: 20
+
+
   - title: Number of SKUs vs Units Sold
     name: Number of SKUs vs Units Sold
     model: flink_v3
-    explore: product_product
+    explore: order_orderline_cl
     type: looker_bar
-    fields: [parent_category.name, product_product.cnt_sku_published, order_orderline_facts.sum_item_quantity]
+    fields: [products.category, products.cnt_sku_published, orderline.sum_item_quantity]
     filters:
-      product_product.is_published: 'yes'
-      order_orderline_facts.is_internal_order: 'no'
-      order_orderline_facts.is_successful_order: 'yes'
-    sorts: [product_product.cnt_sku_published desc, parent_category.name]
+      products.is_published: 'yes'
+      orders_cl.is_successful_order: 'yes'
+    sorts: [products.cnt_sku_published desc, products.category]
     limit: 500
     dynamic_fields: [{_kind_hint: measure, table_calculation: proportion_of_published_skus,
-        _type_hint: number, category: table_calculation, expression: "${product_product.cnt_sku_published}/sum(${product_product.cnt_sku_published})",
+        _type_hint: number, category: table_calculation, expression: "${products.cnt_sku_published}/sum(${products.cnt_sku_published})",
         label: Proportion of Published SKUs, value_format: !!null '', value_format_name: percent_1,
         is_disabled: true}]
     query_timezone: Europe/Berlin
@@ -130,38 +130,38 @@
       palette_id: flink-categorical-0
       options:
         steps: 5
-    y_axes: [{label: '', orientation: top, series: [{axisId: product_product.cnt_sku_published,
-            id: product_product.cnt_sku_published, name: Published SKUs}], showLabels: true,
+    y_axes: [{label: '', orientation: top, series: [{axisId: products.cnt_sku_published,
+            id: products.cnt_sku_published, name: Published SKUs}], showLabels: true,
         showValues: true, maxValue: 500, unpinAxis: false, tickDensity: default, type: linear},
-      {label: '', orientation: bottom, series: [{axisId: order_orderline_facts.sum_item_quantity,
-            id: order_orderline_facts.sum_item_quantity, name: Count SKUs Sold}],
+      {label: '', orientation: bottom, series: [{axisId: orderline.sum_item_quantity,
+            id: orderline.sum_item_quantity, name: Count SKUs Sold}],
         showLabels: true, showValues: true, minValue: 0, unpinAxis: false, tickDensity: custom,
         tickDensityCustom: 4, type: linear}]
     hide_legend: false
     series_types:
-      product_product.cnt_sku_published: line
+      products.cnt_sku_published: line
       new_calculation: line
       proportion_of_published_skus: line
     series_colors:
-      order_orderline_facts.sum_item_price_gross: "#5AA8EA"
+      orderline.sum_item_price_gross: "#5AA8EA"
       new_calculation: "#F0D22B"
-      order_orderline_facts.sum_item_quantity: "#5AA8EA"
+      orderline.sum_item_quantity: "#5AA8EA"
       proportion_of_published_skus: "#f5e175"
-      product_product.cnt_sku_published: "#F0D22B"
+      products.cnt_sku_published: "#F0D22B"
     series_labels:
       new_calculation: Percent of Total SKUs Published
-      order_orderline_facts.sum_item_price_gross: Past 2 Week GMV
-      order_orderline_facts.sum_item_quantity: Number of Units Sold
-      product_product.cnt_sku_published: Number of Published SKUs
+      orderline.sum_item_price_gross: Past 2 Week GMV
+      orderline.sum_item_quantity: Number of Units Sold
+      products.cnt_sku_published: Number of Published SKUs
     label_color: ["#f5e175", "#5AA8EA"]
     defaults_version: 1
     hidden_fields: []
     listen:
       Hub Name: hubs.hub_name
-      Order Date: order_orderline_facts.created_date
+      Order Date: orders_cl.created_date
       City: hubs.city
       Country: hubs.country
-      Order Day of Week: order_orderline_facts.created_day_of_week
+      Order Day of Week: orders_cl.created_day_of_week
     row: 28
     col: 11
     width: 11
@@ -200,25 +200,24 @@
   - title: Proportion of SKUs vs GMV & Units Sold
     name: Proportion of SKUs vs GMV & Units Sold
     model: flink_v3
-    explore: product_product
+    explore: order_orderline_cl
     type: looker_bar
-    fields: [parent_category.name, product_product.cnt_sku_published, order_orderline_facts.sum_item_price_gross,
-      order_orderline_facts.sum_item_quantity]
+    fields: [products.category, products.cnt_sku_published, orderline.sum_item_price_gross,
+      orderline.sum_item_quantity]
     filters:
-      product_product.is_published: 'yes'
-      order_orderline_facts.is_internal_order: 'no'
-      order_orderline_facts.is_successful_order: 'yes'
+      products.is_published: 'yes'
+      orders_cl.is_successful_order: 'yes'
     sorts: [total_sold desc]
     limit: 500
     column_limit: 50
     dynamic_fields: [{_kind_hint: measure, table_calculation: of_published_skus, _type_hint: number,
-        category: table_calculation, expression: "${product_product.cnt_sku_published}/sum(${product_product.cnt_sku_published})",
+        category: table_calculation, expression: "${products.cnt_sku_published}/sum(${products.cnt_sku_published})",
         label: "% of Published SKUs", value_format: !!null '', value_format_name: percent_1},
       {_kind_hint: measure, table_calculation: total_sold, _type_hint: number, category: table_calculation,
-        expression: "${order_orderline_facts.sum_item_price_gross}/sum(${order_orderline_facts.sum_item_price_gross})",
+        expression: "${orderline.sum_item_price_gross}/sum(${orderline.sum_item_price_gross})",
         label: "% Total Sold", value_format: !!null '', value_format_name: percent_1},
       {_kind_hint: measure, table_calculation: of_units_sold, _type_hint: number,
-        category: table_calculation, expression: "${order_orderline_facts.sum_item_quantity}/sum(${order_orderline_facts.sum_item_quantity})",
+        category: table_calculation, expression: "${orderline.sum_item_quantity}/sum(${orderline.sum_item_quantity})",
         label: "% of Units Sold", value_format: !!null '', value_format_name: percent_1}]
     query_timezone: Europe/Berlin
     x_axis_gridlines: false
@@ -265,33 +264,37 @@
         type: linear}]
     hide_legend: false
     series_types:
-      product_product.cnt_sku_published: area
+      products.cnt_sku_published: area
       new_calculation: line
       of_published_skus: line
     series_colors:
-      order_orderline_facts.sum_item_price_gross: "#e31c79"
+      orderline.sum_item_price_gross: "#e31c79"
       new_calculation: "#f5e175"
       of_published_skus: "#F0D22B"
       total_sold: "#e31c79"
       of_units_sold: "#5AA8EA"
     series_labels:
       new_calculation: Proportion of Published SKUs
-      order_orderline_facts.sum_item_price_gross: GMV
+      orderline.sum_item_price_gross: GMV
       total_sold: "% of GMV"
     label_color: ["#f5e175", "#ed6ba7", "#5AA8EA"]
     defaults_version: 1
-    hidden_fields: [product_product.cnt_sku_published, order_orderline_facts.sum_item_price_gross,
-      order_orderline_facts.sum_item_quantity]
+    hidden_fields: [products.cnt_sku_published, orderline.sum_item_price_gross,
+      orderline.sum_item_quantity]
     listen:
       Hub Name: hubs.hub_name
-      Order Date: order_orderline_facts.created_date
+      Order Date: orders_cl.created_date
       City: hubs.city
       Country: hubs.country
-      Order Day of Week: order_orderline_facts.created_day_of_week
+      Order Day of Week: orders_cl.created_day_of_week
     row: 8
     col: 0
     width: 22
     height: 20
+
+
+
+
   filters:
   - name: Order Day of Week
     title: Order Day of Week
@@ -304,9 +307,10 @@
       display: inline
       options: []
     model: flink_v3
-    explore: product_product
+    explore: order_orderline_cl
     listens_to_filters: []
-    field: order_orderline_facts.created_day_of_week
+    field: orders_cl.created_day_of_week
+
   - name: Country
     title: Country
     type: field_filter
@@ -318,9 +322,10 @@
       display: inline
       options: []
     model: flink_v3
-    explore: product_product
+    explore: order_orderline_cl
     listens_to_filters: []
     field: hubs.country
+
   - name: City
     title: City
     type: field_filter
@@ -332,9 +337,10 @@
       display: popover
       options: []
     model: flink_v3
-    explore: product_product
+    explore: order_orderline_cl
     listens_to_filters: []
     field: hubs.city
+
   - name: Hub Name
     title: Hub Name
     type: field_filter
@@ -346,9 +352,10 @@
       display: inline
       options: []
     model: flink_v3
-    explore: product_product
+    explore: order_orderline_cl
     listens_to_filters: []
     field: hubs.hub_name
+
   - name: Order Date
     title: Order Date
     type: field_filter
@@ -360,6 +367,6 @@
       display: popover
       options: []
     model: flink_v3
-    explore: product_product
+    explore: order_orderline_cl
     listens_to_filters: []
-    field: order_orderline_facts.created_date
+    field: orders_cl.created_date
