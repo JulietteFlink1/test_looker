@@ -1,4 +1,5 @@
 view: gorillas_hubs {
+  view_label: "* Gorillas Hub Data *"
   sql_table_name: `flink-data-prod.curated.gorillas_hubs`
     ;;
 

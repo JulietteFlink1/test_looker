@@ -1,6 +1,6 @@
-view: gorillas_products {
+view: gorillas_products_hist {
   view_label: "* Gorillas Product Data *"
-  sql_table_name: `flink-data-prod.curated.gorillas_products` ;;
+  sql_table_name: `flink-data-prod.curated.gorillas_products_hist` ;;
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Dimensions     ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -39,7 +39,6 @@ view: gorillas_products {
     type: string
     sql: ${TABLE}.hub_id ;;
     group_label: "> IDs"
-
   }
 
   dimension: product_id {
@@ -51,28 +50,6 @@ view: gorillas_products {
   dimension: ean {
     type: string
     sql: ${TABLE}.ean ;;
-  }
-
-  dimension: parent_category_id {
-    type: string
-    sql: ${TABLE}.parent_category_id ;;
-    group_label: "> IDs"
-  }
-
-  dimension: parent_category {
-    type: string
-    sql: ${TABLE}.parent_category ;;
-  }
-
-  dimension: subcategory_id {
-    type: string
-    sql: ${TABLE}.subcategory_id ;;
-    group_label: "> IDs"
-  }
-
-  dimension: subcategory {
-    type: string
-    sql: ${TABLE}.subcategory ;;
   }
 
   dimension: product_name {
