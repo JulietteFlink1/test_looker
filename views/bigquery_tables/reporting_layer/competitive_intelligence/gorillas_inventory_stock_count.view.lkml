@@ -44,6 +44,7 @@ view: gorillas_inventory_stock_count {
   }
 
   dimension: gorillas_product_sales_uuid {
+    primary_key: yes
     type: string
     sql: ${TABLE}.gorillas_product_sales_uuid ;;
   }
