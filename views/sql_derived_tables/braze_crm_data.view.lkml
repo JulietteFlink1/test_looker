@@ -169,18 +169,18 @@ view: braze_crm_data {
 
       orders_raw as ( --all valid orders
           select
-              user_email
-              ,created as order_created_at
-              ,id as order_id
+               customer_email as user_email
+              ,order_timestamp as order_created_at
+              ,order_id as order_id
               ,country_iso
-              ,CASE WHEN voucher_id IS NULL THEN 0 ELSE 1 END as has_voucher
-              ,discount_amount
-              ,(total_gross_amount+discount_amount) as gmv_gross
-              ,(total_net_amount+discount_amount) as gmv_net
+              ,CASE WHEN discount_id IS NULL THEN 0 ELSE 1 END as has_voucher
+              ,amt_discount_gross as discount_amount
+              ,amt_gmv_gross as gmv_gross
+              ,amt_gmv_net as gmv_net
           from
-            `flink-data-prod.saleor_prod_global.order_order`
+           `flink-data-prod.curated.orders`
           where
-            status in ('fulfilled', 'partially fulfilled')
+            lower(status) in ('fulfilled', 'partially fulfilled', 'complete', 'confirmed')
       ),
 
       orders_opened as ( --attribute the order to the last email opened if the order happened within the next 12h
