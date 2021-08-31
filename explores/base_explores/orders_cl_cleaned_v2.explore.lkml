@@ -14,10 +14,10 @@ include: "/explores/base_explores/orders_cl_cleaned_v2.explore"
 
 explore: orders_cl_cleaned_v2 {
   from: orders_cleaned_v2
-  label: "Orders"
-  view_label: "* Orders *"
-  group_label: "01) Performance"
-  description: "General Business Performance - Orders, Revenue, etc."
+  #label: "Orders"
+  #view_label: "* Orders *"
+ # group_label: "01) Performance"
+  #description: "General Business Performance - Orders, Revenue, etc."
   view_name: orders_cl_cleaned_v2  # needs to be set in order that the base_explore can be extended and referenced properly
   hidden: no
 
