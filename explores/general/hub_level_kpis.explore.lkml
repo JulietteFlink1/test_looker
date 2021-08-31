@@ -1,5 +1,7 @@
 include: "/views/bigquery_tables/reporting_layer/**/*.view"
 include: "/views/bigquery_tables/curated_layer/**/*.view"
+include: "/views/native_derived_tables/general/hub_leaderboard/hub_leaderboard_shift_metrics.view"
+
 
 explore: hub_level_kpis {
   hidden: yes
@@ -10,4 +12,6 @@ explore: hub_level_kpis {
     type: left_outer
     relationship: many_to_one
   }
+
+
 }

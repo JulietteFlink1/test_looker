@@ -252,7 +252,32 @@ view: products {
     group_label: "> Special Purpose Data"
   }
 
+  measure: cnt_sku {
+    label: "# SKUs (Total)"
+    group_label: "* Basic Counts *"
+    description: "Count of Total SKUs in Assortment"
+    hidden:  no
+    type: count
+    value_format: "0"
+  }
 
+  measure: cnt_sku_published {
+    label: "# SKUs (Published)"
+    group_label: "* Basic Counts *"
+    description: "Count of published SKUs in Assortment"
+    hidden:  no
+    type: count
+    value_format: "0"
+    filters: [is_published: "yes"]
+  }
+
+  measure: cnt_product_images {
+    label: "# Product Images"
+    group_label: "* Basic Counts *"
+    type: sum
+    value_format_name: decimal_0
+    sql: ${TABLE}.cnt_product_images ;;
+  }
 
   measure: count {
     type: count
