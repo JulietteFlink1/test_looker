@@ -1,6 +1,6 @@
 view: hub_level_kpis {
   view_label: "* Hub Level KPIS *"
-  sql_table_name: `flink-data-prod.reporting.hub_level_kpis`
+  sql_table_name: `flink-data-staging.reporting.hub_level_kpis`
     ;;
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -36,7 +36,7 @@ view: hub_level_kpis {
     sql: ${TABLE}.hub_start_date ;;
   }
 
-  dimension_group: order_hidden {
+  dimension_group: order {
     type: time
     timeframes: [
       date,
@@ -48,20 +48,30 @@ view: hub_level_kpis {
     convert_tz: no
     datatype: date
     sql: ${TABLE}.order_date ;;
-    hidden: yes
+    hidden: no
   }
 
-  dimension_group: order {
-    type: time
-    timeframes: [
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    datatype: timestamp
-    sql: (${TABLE}.partition_timestamp) ;;
+  # dimension_group: order {
+  #   type: time
+  #   timeframes: [
+  #     date,
+  #     week,
+  #     month,
+  #     quarter,
+  #     year
+  #   ]
+  #   datatype: timestamp
+  #   sql: (${TABLE}.partition_timestamp) ;;
+  # }
+
+  dimension: is_current_7d {
+    type: yesno
+    sql: ${order_date} >= date_add(current_date(), interval -7 day) and ${order_date} < current_date() ;;
+  }
+
+  dimension: is_previous_7d {
+    type: yesno
+    sql: ${order_date} >= date_add(current_date(), interval -14 day) and ${order_date} < date_add(current_date(), interval -7 day) ;;
   }
 
   # approximation: usually the NPS survey is send the day after the order
@@ -502,4 +512,313 @@ view: hub_level_kpis {
     value_format_name: percent_1
   }
 
+  # =========  UTR Kpis   =========
+  measure: adjusted_orders_riders {
+    group_label: ">> UTR KPIs"
+    type: sum
+    sql: ${TABLE}.number_of_adjusted_orders_riders ;;
+    hidden: yes
+  }
+
+  measure: adjusted_orders_pickers {
+    type: sum
+    sql: ${TABLE}.number_of_adjusted_orders_pickers ;;
+    hidden: yes
+  }
+
+  measure: rider_hours {
+    group_label: ">> UTR KPIs"
+    label: "Sum of Rider Hours"
+    type: sum
+    sql: ${TABLE}.number_of_rider_hours ;;
+    value_format_name: decimal_0
+  }
+
+  measure: picker_hours {
+    group_label: ">> UTR KPIs"
+    label: "Sum of Picker Hours"
+    type: sum
+    sql: ${TABLE}.number_of_picker_hours ;;
+    value_format_name: decimal_0
+  }
+
+  measure: rider_utr {
+    group_label: ">> UTR KPIs"
+    label: "AVG Rider UTR"
+    type: number
+    sql: ${adjusted_orders_riders} / NULLIF(${rider_hours}, 0);;
+    value_format_name: decimal_2
+  }
+
+  measure: picker_utr {
+    group_label: ">> UTR KPIs"
+    label: "AVG Picker UTR"
+    type: number
+    sql: ${adjusted_orders_pickers} / NULLIF(${picker_hours}, 0);;
+    value_format_name: decimal_2
+
+  }
+
+
+  # =========  Shift Metric Kpis   =========
+
+  measure: sum_filled_ext_picker_hours {
+    group_label: ">> Shift Metric KPIs"
+    label: "Hours: Filled Ext. Picker"
+    sql: ${TABLE}.number_of_filled_ext_picker_hours ;;
+    value_format_name: decimal_1
+    type: sum
+  }
+  measure: sum_filled_ext_rider_hours {
+    group_label: ">> Shift Metric KPIs"
+    label: "Hours: Filled Ext. Rider"
+    sql: ${TABLE}.number_of_filled_ext_rider_hours ;;
+    value_format_name: decimal_1
+    type: sum
+  }
+  measure: sum_filled_ext_hours_total {
+    group_label: ">> Shift Metric KPIs"
+    label: "Hours: Filled Ext. Total"
+    value_format_name: decimal_1
+    type: number
+    sql: ${sum_filled_ext_picker_hours} + ${sum_filled_ext_rider_hours} ;;
+  }
+
+  measure: sum_unfilled_rider_hours {
+    group_label: ">> Shift Metric KPIs"
+    label: "Hours: Unfilled Rider"
+    sql: if(
+              (${sum_planned_rider_hours} - ${sum_filled_rider_hours}) < 0
+            , 0
+            , (${sum_planned_rider_hours} - ${sum_filled_rider_hours})
+    ) ;;
+    value_format_name: decimal_1
+    type: number
+  }
+  measure: sum_unfilled_picker_hours {
+    group_label: ">> Shift Metric KPIs"
+    label: "Hours: Unfilled Picker"
+    sql: if(
+                (${sum_planned_picker_hours} - ${sum_filled_picker_hours}) < 0
+              , 0
+              , (${sum_planned_picker_hours} - ${sum_filled_picker_hours})
+    );;
+    value_format_name: decimal_1
+    type: number
+  }
+
+  measure: sum_unfilled_hours_total {
+    group_label: ">> Shift Metric KPIs"
+    label: "Hours: Unfilled Total"
+    type: number
+    value_format_name: decimal_1
+    sql: ${sum_unfilled_picker_hours} + ${sum_unfilled_rider_hours} ;;
+
+  }
+  measure: sum_filled_no_show_picker_hours {
+    group_label: ">> Shift Metric KPIs"
+    label: "Hours: No Show Picker"
+    sql: ${TABLE}.number_of_filled_no_show_picker_hours ;;
+    value_format_name: decimal_1
+    type: sum
+  }
+  measure: sum_filled_no_show_rider_hours {
+    group_label: ">> Shift Metric KPIs"
+    label: "Hours: No Show Rider"
+    sql: ${TABLE}.number_of_filled_no_show_rider_hours ;;
+    value_format_name: decimal_1
+    type: sum
+  }
+  measure: sum_filled_no_show_hours_total {
+    group_label: ">> Shift Metric KPIs"
+    label: "Hours: No Show Total"
+    value_format_name: decimal_1
+    type: number
+    sql: ${sum_filled_no_show_picker_hours} + ${sum_filled_no_show_rider_hours} ;;
+  }
+
+  measure: sum_filled_picker_hours {
+    group_label: ">> Shift Metric KPIs"
+    label: "Hours: Filled Picker"
+    sql: ${TABLE}.number_of_filled_picker_hours ;;
+    value_format_name: decimal_1
+    type: sum
+  }
+  measure: sum_planned_picker_hours {
+    group_label: ">> Shift Metric KPIs"
+    label: "Hours: Planned Picker"
+    sql: ${TABLE}.number_of_planned_picker_hours ;;
+    value_format_name: decimal_1
+    type: sum
+  }
+  measure: sum_filled_rider_hours {
+    group_label: ">> Shift Metric KPIs"
+    label: "Hours: Filled Rider"
+    sql: ${TABLE}.number_of_filled_rider_hours ;;
+    value_format_name: decimal_1
+    type: sum
+  }
+  measure: sum_planned_rider_hours {
+    group_label: ">> Shift Metric KPIs"
+    label: "Hours: Planned Rider"
+    sql: ${TABLE}.number_of_planned_rider_hours ;;
+    value_format_name: decimal_1
+    type: sum
+  }
+
+  measure: pct_no_show {
+    group_label: ">> Shift Metric KPIs"
+    label: "% No Show Shift Hours"
+    description: "The percentage of planned and filled shift hours with employees not showing up"
+    type: number
+    sql: (${sum_filled_no_show_rider_hours} + ${sum_filled_no_show_picker_hours}) / nullif((${sum_filled_picker_hours} + ${sum_filled_rider_hours}), 0) ;;
+    value_format_name: percent_1
+  }
+
+  measure: pct_open_shifts {
+    group_label: ">> Shift Metric KPIs"
+    label: "% Open Shift Hours"
+    description: "The percentage of planned shift hours, that could not be filled with employees"
+    type: number
+    sql: (${sum_unfilled_picker_hours} + ${sum_unfilled_rider_hours}) / nullif((${sum_planned_picker_hours} + ${sum_planned_rider_hours}) ,0) ;;
+    value_format_name: percent_1
+  }
+
+  measure: pct_ext_shifts {
+    group_label: ">> Shift Metric KPIs"
+    label: "% External Shift Hours"
+    description: "The percentage of actual shift hours, that were performed by external employees"
+    type: number
+    sql: (${sum_filled_ext_picker_hours} + ${sum_filled_ext_rider_hours}) / nullif((${sum_filled_picker_hours} + ${sum_filled_rider_hours}), 0) ;;
+    value_format_name: percent_1
+  }
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  #   SCORING
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  measure: score_delivery_in_time {
+    group_label: ">> Hub Scores"
+    label: "Score: Delivered in Time"
+    sql: if(
+            (2 * ${pct_delivery_in_time}*100 -100) < 0
+            , 0
+            , 2 * ${pct_delivery_in_time}*100 -100
+            ) ;;
+    type: number
+    value_format_name: decimal_0
+  }
+
+  measure: score_delivery_late_over_5_min {
+    group_label: ">> Hub Scores"
+    label: "Score: Delivered late < 5min"
+    sql: if(
+            ( -10 * ${pct_delivery_late_over_5_min}*100 +100) < 0
+            , 0
+            , -10 * ${pct_delivery_late_over_5_min}*100 +100
+            );;
+    type: number
+    value_format_name: decimal_0
+  }
+
+  measure: score_nps_score {
+    group_label: ">> Hub Scores"
+    label: "Score: NPS"
+    sql: if(
+            (50/17 * ${nps_score}*100 +(-3300/17)) < 0
+            , 0
+            , 50/17 * ${nps_score}*100 +(-3300/17)
+            );;
+    type: number
+    value_format_name: decimal_0
+  }
+
+  measure: score_orders_with_issues {
+    group_label: ">> Hub Scores"
+    label: "Score: Order Issues"
+    sql: if(
+            (-40 * ${pct_orders_with_issues}*100 +100) < 0
+            , 0
+            , -40 * ${pct_orders_with_issues}*100 +100
+            );;
+    type: number
+    value_format_name: decimal_0
+  }
+
+  measure: score_no_show {
+    group_label: ">> Hub Scores"
+    label: "Score: No Show Shift Hours"
+    sql: if(
+            (-5 * ${pct_no_show}*100 +100) < 0
+            , 0
+            , -5 * ${pct_no_show}*100 +100
+            );;
+    type: number
+    value_format_name: decimal_0
+  }
+
+  measure: score_open_shifts {
+    group_label: ">> Hub Scores"
+    label: "Score: Open Shift Hours"
+    sql: if(
+            (-5 * ${pct_open_shifts}*100 +100) < 0
+            , 0
+            , -5 * ${pct_open_shifts}*100 +100
+            );;
+    type: number
+    value_format_name: decimal_0
+  }
+
+  measure: score_ext_shifts {
+    group_label: ">> Hub Scores"
+    label: "Score: External Shift Hours"
+    sql: if(
+            (-5 * ${pct_ext_shifts}*100 +100) < 0
+            , 0
+            , -5 * ${pct_ext_shifts}*100 +100
+            );;
+    type: number
+    value_format_name: decimal_0
+  }
+
+# START --> REQUEST DATA-508
+  measure: score_rider_utr {
+    group_label: ">> Hub Scores"
+    label: "Score: Rider UTR"
+    sql: case when (50 * ${rider_utr} -50) < 0   then 0
+              when (50 * ${rider_utr} -50) > 100 then 100
+              else 50 * ${rider_utr} -50
+          end;;
+    type: number
+    value_format_name: decimal_0
+  }
+
+  measure: score_picker_utr {
+    group_label: ">> Hub Scores"
+    label: "Score: Picker UTR"
+    sql: case when (10 * ${picker_utr} -50) < 0   then 0
+              when (10 * ${picker_utr} -50) > 100 then 100
+              else 10 * ${picker_utr} -50
+        end;;
+    type: number
+    value_format_name: decimal_0
+  }
+  # END --> REQUEST DATA-508
+
+  measure: score_hub_leaderboard {
+    group_label: ">> Hub Scores"
+    label: "Hub Leaderboard Score"
+    sql: 0.20 * ${score_delivery_in_time} +
+        0.10 * ${score_delivery_late_over_5_min} +
+        0.22 * ${score_orders_with_issues} +
+        0.25 * ${score_nps_score} +
+        0.01 * ${score_ext_shifts} +
+        0.01 * ${score_open_shifts} +
+        0.01 * ${score_no_show} +
+        0.10 * ${score_picker_utr} +
+        0.10 * ${score_rider_utr}
+        ;;
+    type: number
+    value_format_name: decimal_0
+  }
 }
