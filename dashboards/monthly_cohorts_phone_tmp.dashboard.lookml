@@ -1,5 +1,5 @@
 - dashboard: monthly_cohorts_xattr
-  title: "[tmp] Monthly Cohorts based x-attributed email&phone"
+  title: "[tmp_v2] Monthly Cohorts based x-attributed email&phone"
   layout: newspaper
   preferred_viewer: dashboards-next
   elements:
@@ -121,7 +121,7 @@
         label: Order Frequency, value_format: !!null '', value_format_name: decimal_2,
         _kind_hint: measure, table_calculation: order_frequency, _type_hint: number}]
     filter_expression: |-
-      is_null(${customers_metrics_cleaned.first_order_month}) = no
+      is_null(${customers_metrics_cleaned_v2.first_order_month}) = no
       AND (${customers_metrics_cleaned_v2.months_duration_between_first_order_month_and_now}>${customers_metrics_cleaned_v2.months_time_since_sign_up}+1)
     query_timezone: Europe/Berlin
     show_view_names: false
@@ -146,7 +146,7 @@
     show_totals: false
     show_row_totals: true
     series_column_widths:
-      customers_metrics_cleaned.first_order_month: 207
+      customers_metrics_cleaned_v2.first_order_month: 207
       orders_cl_cleaned_v2.cnt_unique_customers: 151
       cohort_size: 96
       customers_metrics_cleaned_v2.months_time_since_sign_up: 151
