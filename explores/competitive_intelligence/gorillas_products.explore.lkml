@@ -1,7 +1,7 @@
 include: "/views/**/*.view"
 
 explore:  gorillas_products {
-  hidden: no
+  hidden: yes
   label: "Gorillas Products"
   view_label: "Gorillas Products"
   group_label: "08) Competitive Intel"
