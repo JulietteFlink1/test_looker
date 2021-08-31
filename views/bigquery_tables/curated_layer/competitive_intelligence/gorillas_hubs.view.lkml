@@ -22,6 +22,7 @@ view: gorillas_hubs {
   dimension: hub_id {
     type: string
     sql: ${TABLE}.hub_id ;;
+    group_label: "> IDs"
   }
 
   dimension: hub_label {

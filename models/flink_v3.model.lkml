@@ -883,12 +883,12 @@ explore: gorillas_v1_items {
     type: left_outer
   }
 
-  join: gorillas_category_mapping {
-    sql_on: ${gorillas_category_mapping.gorillas_collection_id} = ${gorillas_v1_item_hub_collection_group_allocation.collection_id}
-            AND ${gorillas_category_mapping.gorillas_group_id} = ${gorillas_v1_item_hub_collection_group_allocation.group_id};;
-    relationship: one_to_one
-    type: left_outer
-  }
+  # join: gorillas_category_mapping {
+  #   sql_on: ${gorillas_category_mapping.gorillas_collection_id} = ${gorillas_v1_item_hub_collection_group_allocation.collection_id}
+  #           AND ${gorillas_category_mapping.gorillas_group_id} = ${gorillas_v1_item_hub_collection_group_allocation.group_id};;
+  #   relationship: one_to_one
+  #   type: left_outer
+  # }
 
 
 }
@@ -1034,13 +1034,13 @@ explore: gorillas_v1_item_hub_collection_group_allocation{
     type: left_outer
   }
 
-  join: gorillas_category_mapping {
-    sql_on: ${gorillas_v1_hubs_master.country_iso} = ${gorillas_category_mapping.country_iso}
-            and ${gorillas_v1_item_hub_collection_group_allocation.collection_id} = ${gorillas_category_mapping.gorillas_collection_id}
-            and ${gorillas_v1_item_hub_collection_group_allocation.group_id} = ${gorillas_category_mapping.gorillas_group_id};;
-    relationship: one_to_one
-    type: left_outer
-  }
+  # join: gorillas_category_mapping {
+  #   sql_on: ${gorillas_v1_hubs_master.country_iso} = ${gorillas_category_mapping.country_iso}
+  #           and ${gorillas_v1_item_hub_collection_group_allocation.collection_id} = ${gorillas_category_mapping.gorillas_collection_id}
+  #           and ${gorillas_v1_item_hub_collection_group_allocation.group_id} = ${gorillas_category_mapping.gorillas_group_id};;
+  #   relationship: one_to_one
+  #   type: left_outer
+  # }
 
 }
 
@@ -1137,37 +1137,37 @@ explore: product_product_competitive_intelligence {
 }
 
 
-explore: flink_skus_per_category {
-  hidden:  yes
-  label: "Flink SKUs per Category"
-  view_label: "Flink SKUs per Category"
-  group_label: "08) Competitor Analysis"
-  description: "Analysis of competitors."
+# explore: flink_skus_per_category {
+#   hidden:  yes
+#   label: "Flink SKUs per Category"
+#   view_label: "Flink SKUs per Category"
+#   group_label: "08) Competitor Analysis"
+#   description: "Analysis of competitors."
 
-  join: gorillas_category_mapping {
-    sql_on: ${flink_skus_per_category.country_iso} = ${gorillas_category_mapping.country_iso}
-            and ${flink_skus_per_category.parent_id} = ${gorillas_category_mapping.parent_category_id}
-            and ${flink_skus_per_category.category_id} = ${gorillas_category_mapping.category_id};;
-    relationship: many_to_one
-    type: left_outer
-  }
+#   # join: gorillas_category_mapping {
+#   #   sql_on: ${flink_skus_per_category.country_iso} = ${gorillas_category_mapping.country_iso}
+#   #           and ${flink_skus_per_category.parent_id} = ${gorillas_category_mapping.parent_category_id}
+#   #           and ${flink_skus_per_category.category_id} = ${gorillas_category_mapping.category_id};;
+#   #   relationship: many_to_one
+#   #   type: left_outer
+#   # }
 
-  join: gorillas_v1_item_hub_collection_group_allocation {
-    sql_on:  ${flink_skus_per_category.country_iso} = ${gorillas_v1_item_hub_collection_group_allocation.country_iso}
-            and ${gorillas_category_mapping.gorillas_collection_id} = ${gorillas_v1_item_hub_collection_group_allocation.collection_id}
-            and ${gorillas_category_mapping.gorillas_group_id} = ${gorillas_v1_item_hub_collection_group_allocation.group_id};;
-    relationship: many_to_one
-    type: left_outer
-  }
+#   join: gorillas_v1_item_hub_collection_group_allocation {
+#     sql_on:  ${flink_skus_per_category.country_iso} = ${gorillas_v1_item_hub_collection_group_allocation.country_iso}
+#             and ${gorillas_category_mapping.gorillas_collection_id} = ${gorillas_v1_item_hub_collection_group_allocation.collection_id}
+#             and ${gorillas_category_mapping.gorillas_group_id} = ${gorillas_v1_item_hub_collection_group_allocation.group_id};;
+#     relationship: many_to_one
+#     type: left_outer
+#   }
 
-  join: gorillas_v1_items {
-    sql_on: ${gorillas_v1_item_hub_collection_group_allocation.item_id} = ${gorillas_v1_items.id}
-      and ${gorillas_v1_item_hub_collection_group_allocation.hub_id} = ${gorillas_v1_items.hub_code};;
-    relationship: many_to_one
-    type: left_outer
-  }
+#   join: gorillas_v1_items {
+#     sql_on: ${gorillas_v1_item_hub_collection_group_allocation.item_id} = ${gorillas_v1_items.id}
+#       and ${gorillas_v1_item_hub_collection_group_allocation.hub_id} = ${gorillas_v1_items.hub_code};;
+#     relationship: many_to_one
+#     type: left_outer
+#   }
 
-}
+# }
 
 
 

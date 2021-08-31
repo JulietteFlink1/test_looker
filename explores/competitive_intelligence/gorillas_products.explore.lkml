@@ -1,7 +1,7 @@
 include: "/views/**/*.view"
 
-explore:  gorillas_products_hist {
-  hidden: yes
+explore:  gorillas_products {
+  hidden: no
   label: "Gorillas Products"
   view_label: "Gorillas Products"
   group_label: "08) Competitive Intel"
@@ -9,7 +9,7 @@ explore:  gorillas_products_hist {
 
   join: gorillas_categories {
     from: gorillas_categories
-    sql_on: ${gorillas_categories.hub_id} = ${gorillas_products_hist.hub_id} AND ${gorillas_categories.product_id} = ${gorillas_products_hist.product_id};;
+    sql_on: ${gorillas_categories.hub_id} = ${gorillas_products.hub_id} AND ${gorillas_categories.product_id} = ${gorillas_products.product_id};;
     relationship: many_to_one
     type:  left_outer
   }
@@ -20,5 +20,12 @@ explore:  gorillas_products_hist {
     relationship: many_to_one
     type:  left_outer
   }
+
+  # join: gorillas_category_mapping {
+  #   from: gorillas_category_mapping
+  #   sql_on: ${gorillas_categories.subcategory_id} = ${gorillas_category_mapping.gorillas_subcategory_id} ;;
+  #   relationship: many_to_one
+  #   type: left_outer
+  # }
 
 }

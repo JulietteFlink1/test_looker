@@ -44,10 +44,10 @@ explore: gorillas_assortment_t2 {
     type: left_outer
   }
 
-  join: gorillas_category_mapping {
-    sql_on: ${gorillas_category_mapping.gorillas_collection_id} = ${gorillas_v1_item_hub_collection_group_allocation.collection_id}
-      AND ${gorillas_category_mapping.gorillas_group_id} = ${gorillas_v1_item_hub_collection_group_allocation.group_id};;
-    relationship: one_to_one
-    type: left_outer
-  }
+  # join: gorillas_category_mapping {
+  #   sql_on: ${gorillas_category_mapping.gorillas_collection_id} = ${gorillas_v1_item_hub_collection_group_allocation.collection_id}
+  #     AND ${gorillas_category_mapping.gorillas_group_id} = ${gorillas_v1_item_hub_collection_group_allocation.group_id};;
+  #   relationship: one_to_one
+  #   type: left_outer
+  # }
 }

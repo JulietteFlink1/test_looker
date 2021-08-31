@@ -1,6 +1,6 @@
-view: gorillas_products_hist {
-  view_label: "* Gorillas Product Data *"
-  sql_table_name: `flink-data-prod.curated.gorillas_products_hist` ;;
+view: gorillas_products {
+  view_label: "* Gorillas Products Data *"
+  sql_table_name: `flink-data-prod.curated.gorillas_products` ;;
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Dimensions     ~~~~~~~~~~~~~~~~~~~~~~~~~
