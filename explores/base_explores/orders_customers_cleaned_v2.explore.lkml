@@ -20,7 +20,7 @@ explore: orders_customers_cleaned_v2 {
   join: customers_metrics_cleaned_v2 {
     view_label: "* Customers *"
     sql_on: ${customers_metrics_cleaned_v2.country_iso} = ${orders_cl_cleaned_v2.country_iso} AND
-      ${customers_metrics_cleaned_v2.customer_id_mapped}    = ${customers_metrics_cleaned_v2.customer_id_mapped} ;;
+      ${customers_metrics_cleaned_v2.customer_id_mapped}    = ${orders_cl_cleaned_v2.customer_id_mapped} ;;
     relationship: many_to_one
     type: left_outer
   }
