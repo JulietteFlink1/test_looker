@@ -1,4 +1,4 @@
-include: "/views/bigquery_tables/reporting_layer/gorillas_daily_orders.view.lkml"
+include: "/views/bigquery_tables/reporting_layer/competitive_intelligence/gorillas_daily_orders.view.lkml"
 
 explore: gorillas_daily_orders {
   view_name: gorillas_daily_orders

@@ -14,9 +14,10 @@ include: "/views/**/*.view"
 # include retail explores
 include: "/explores/**/*.explore.lkml"
 include: "/explores/base_explores/orders_cl.explore.lkml"
+#include: "/explores/base_explores/orders_cl_cleaned.explore.lkml"
 include: "/explores/base_explores/order_orderline_cl.explore.lkml"
 include: "/explores/base_explores/orders_customers.explore.lkml"
-
+#include: "/explores/base_explores/orders_customers_cleaned.explore.lkml"
 
 week_start_day: monday
 case_sensitive: no
@@ -49,8 +50,8 @@ named_value_format: euro_accounting_0_precision {
 explore: order_order {
   label: "Orders"
   hidden: yes
-  view_label: "* Orders *"
-  group_label: "01) Performance"
+  #view_label: "* Orders *"
+  #group_label: "01) Performance"
   description: "General Business Performance - Orders, Revenue, etc."
   always_filter: {
     filters:  [
@@ -679,12 +680,14 @@ explore: segment_tracking_sessions30{
 }
 
 explore: marketingbanners_mobile_events {
+  hidden: yes
   label: "Marketing banner impressions"
   view_label: "Marketing banner impressions"
   group_label: "10) In-app tracking data"
   description: "Marketing banner events"
 }
 explore: marketingbanners_mobile_events_displayed_hours {
+  hidden: yes
   label: "Marketing banner: display times"
   view_label: "Marketing banner display times"
   group_label: "10) In-app tracking data"
@@ -714,6 +717,7 @@ explore: monitoring_metrics {
 
 ####### CS ISSUES EXPLORE #######
 explore: cs_issues_post_delivery {
+  hidden: yes
   label: "CS Contacts"
   view_label: "CS Contacts"
   group_label: "07) Customer Service"
@@ -879,12 +883,12 @@ explore: gorillas_v1_items {
     type: left_outer
   }
 
-  join: gorillas_category_mapping {
-    sql_on: ${gorillas_category_mapping.gorillas_collection_id} = ${gorillas_v1_item_hub_collection_group_allocation.collection_id}
-            AND ${gorillas_category_mapping.gorillas_group_id} = ${gorillas_v1_item_hub_collection_group_allocation.group_id};;
-    relationship: one_to_one
-    type: left_outer
-  }
+  # join: gorillas_category_mapping {
+  #   sql_on: ${gorillas_category_mapping.gorillas_collection_id} = ${gorillas_v1_item_hub_collection_group_allocation.collection_id}
+  #           AND ${gorillas_category_mapping.gorillas_group_id} = ${gorillas_v1_item_hub_collection_group_allocation.group_id};;
+  #   relationship: one_to_one
+  #   type: left_outer
+  # }
 
 
 }
@@ -1030,19 +1034,19 @@ explore: gorillas_v1_item_hub_collection_group_allocation{
     type: left_outer
   }
 
-  join: gorillas_category_mapping {
-    sql_on: ${gorillas_v1_hubs_master.country_iso} = ${gorillas_category_mapping.country_iso}
-            and ${gorillas_v1_item_hub_collection_group_allocation.collection_id} = ${gorillas_category_mapping.gorillas_collection_id}
-            and ${gorillas_v1_item_hub_collection_group_allocation.group_id} = ${gorillas_category_mapping.gorillas_group_id};;
-    relationship: one_to_one
-    type: left_outer
-  }
+  # join: gorillas_category_mapping {
+  #   sql_on: ${gorillas_v1_hubs_master.country_iso} = ${gorillas_category_mapping.country_iso}
+  #           and ${gorillas_v1_item_hub_collection_group_allocation.collection_id} = ${gorillas_category_mapping.gorillas_collection_id}
+  #           and ${gorillas_v1_item_hub_collection_group_allocation.group_id} = ${gorillas_category_mapping.gorillas_group_id};;
+  #   relationship: one_to_one
+  #   type: left_outer
+  # }
 
 }
 
 explore: product_product_competitive_intelligence {
   hidden: yes
-   label: "CI Product Product Adaption"
+  label: "CI Product Product Adaption"
   view_label: "CI Product Product Adaption"
   group_label: "08) Competitor Analysis"
   description: "Analysis of competitors."
@@ -1133,42 +1137,43 @@ explore: product_product_competitive_intelligence {
 }
 
 
-explore: flink_skus_per_category {
-  hidden:  yes
-  label: "Flink SKUs per Category"
-  view_label: "Flink SKUs per Category"
-  group_label: "08) Competitor Analysis"
-  description: "Analysis of competitors."
+# explore: flink_skus_per_category {
+#   hidden:  yes
+#   label: "Flink SKUs per Category"
+#   view_label: "Flink SKUs per Category"
+#   group_label: "08) Competitor Analysis"
+#   description: "Analysis of competitors."
 
-  join: gorillas_category_mapping {
-    sql_on: ${flink_skus_per_category.country_iso} = ${gorillas_category_mapping.country_iso}
-            and ${flink_skus_per_category.parent_id} = ${gorillas_category_mapping.parent_category_id}
-            and ${flink_skus_per_category.category_id} = ${gorillas_category_mapping.category_id};;
-    relationship: many_to_one
-    type: left_outer
-  }
+#   # join: gorillas_category_mapping {
+#   #   sql_on: ${flink_skus_per_category.country_iso} = ${gorillas_category_mapping.country_iso}
+#   #           and ${flink_skus_per_category.parent_id} = ${gorillas_category_mapping.parent_category_id}
+#   #           and ${flink_skus_per_category.category_id} = ${gorillas_category_mapping.category_id};;
+#   #   relationship: many_to_one
+#   #   type: left_outer
+#   # }
 
-  join: gorillas_v1_item_hub_collection_group_allocation {
-    sql_on:  ${flink_skus_per_category.country_iso} = ${gorillas_v1_item_hub_collection_group_allocation.country_iso}
-            and ${gorillas_category_mapping.gorillas_collection_id} = ${gorillas_v1_item_hub_collection_group_allocation.collection_id}
-            and ${gorillas_category_mapping.gorillas_group_id} = ${gorillas_v1_item_hub_collection_group_allocation.group_id};;
-    relationship: many_to_one
-    type: left_outer
-  }
+#   join: gorillas_v1_item_hub_collection_group_allocation {
+#     sql_on:  ${flink_skus_per_category.country_iso} = ${gorillas_v1_item_hub_collection_group_allocation.country_iso}
+#             and ${gorillas_category_mapping.gorillas_collection_id} = ${gorillas_v1_item_hub_collection_group_allocation.collection_id}
+#             and ${gorillas_category_mapping.gorillas_group_id} = ${gorillas_v1_item_hub_collection_group_allocation.group_id};;
+#     relationship: many_to_one
+#     type: left_outer
+#   }
 
-  join: gorillas_v1_items {
-    sql_on: ${gorillas_v1_item_hub_collection_group_allocation.item_id} = ${gorillas_v1_items.id}
-      and ${gorillas_v1_item_hub_collection_group_allocation.hub_id} = ${gorillas_v1_items.hub_code};;
-    relationship: many_to_one
-    type: left_outer
-  }
+#   join: gorillas_v1_items {
+#     sql_on: ${gorillas_v1_item_hub_collection_group_allocation.item_id} = ${gorillas_v1_items.id}
+#       and ${gorillas_v1_item_hub_collection_group_allocation.hub_id} = ${gorillas_v1_items.hub_code};;
+#     relationship: many_to_one
+#     type: left_outer
+#   }
 
-}
+# }
 
 
 
 
 explore: riders_forecast_staffing {
+  hidden: yes
   label: "Orders and Riders Forecasting"
   view_label: "Orders and Riders Forecasting"
   group_label: "09) Forecasting"
@@ -1202,18 +1207,7 @@ explore: marketing_performance {
 }
 
 
-# explore: order_extends {
-#   label: "Power User Orders..."
-#   view_label: "Power User Orders..."
-#   group_label: "1) Performance"
-#   extends: [order_order]
-#   view_name: order_order
-#   # join: answers {
-#   #   sql_on: ${answers.landing_id} = ${order_order.id} ;;
-#   #   relationship: one_to_many
-#   #   type: left_outer
-#   # }
-# }
+
 ########### CRM EXPLORE ###########
 
 
@@ -1234,6 +1228,7 @@ explore: braze_crm_data {
 
 
 explore: nps_hub_team {
+  hidden: yes
   label: "NPS (Hub Teams)"
   view_label: "NPS (Hub Teams)"
   group_label: "12) NPS (Internal Teams)"
@@ -1257,6 +1252,7 @@ explore: nps_hub_team {
 ########### AD-HOC EXPLORE ###########
 
 explore: products_mba {
+  hidden: yes
   label: "Market basket analysis at a product level"
   view_label: "Product MBA"
   group_label: "15) Ad-Hoc"
@@ -1265,6 +1261,7 @@ explore: products_mba {
 }
 
 explore: categories_mba {
+  hidden: yes
   label: "Market basket analysis at a category level"
   view_label: "Category MBA"
   group_label: "15) Ad-Hoc"
@@ -1272,24 +1269,8 @@ explore: categories_mba {
 
 }
 
-# explore: voucher_retention {
-#   label: "Voucher retention"
-#   view_label: "Voucher retention"
-#   group_label: "15) Ad-Hoc"
-#   description: "Voucher retention analysis - First voucher used by user is considered as the base. Thus, a user can only have a first used voucher."
-
-#   access_filter: {
-#     field: voucher_retention.country_iso
-#     user_attribute: country_iso
-#   }
-
-#   access_filter: {
-#     field: voucher_retention.city
-#     user_attribute: city
-#   }
-# }
-
 explore: user_order_facts_phone_number {
+  hidden: yes
   label: "User Order Facts - Unique User ID"
   view_label: "User Order Facts - Unique User ID"
   group_label: "15) Ad-Hoc"

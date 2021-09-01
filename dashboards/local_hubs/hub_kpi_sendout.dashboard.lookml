@@ -670,7 +670,7 @@
     model: flink_v3
     explore: orders_customers
     type: looker_grid
-    fields: [orders_cl.created_date, nps_after_order.order_id, nps_after_order.submitted_date,
+    fields: [orders_cl.created_date, nps_after_order.order_number, nps_after_order.submitted_date,
       nps_after_order.nps_driver, nps_after_order.nps_comment, hubs.hub_name, empty_filter,
       nps_after_order.nps_score, nps_after_order.score]
     filters:
@@ -704,7 +704,7 @@
     conditional_formatting_include_totals: false
     conditional_formatting_include_nulls: false
     show_sql_query_menu_options: false
-    column_order: [nps_after_order.submitted_date, orders_cl.created_date, nps_after_order.order_id,
+    column_order: [nps_after_order.submitted_date, orders_cl.created_date, nps_after_order.order_number,
       hubs.hub_name, nps_after_order.score, nps_after_order.nps_driver, nps_after_order.nps_comment,
       nps_after_order.nps_score]
     show_totals: true
@@ -714,7 +714,7 @@
       nps_after_order.nps_driver: 443
       nps_after_order.score: 75
       orders_cl.created_date: 87
-      nps_after_order.order_id: 88
+      nps_after_order.order_number: 88
       nps_after_order.nps_comment: 396
       hubs.hub_name: 99
       orders_cl.avg_promised_eta: 77

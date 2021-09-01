@@ -9,7 +9,7 @@ explore: top_50_selling_products {
   #view_name: order_orderline_cl
   group_label: "16) Retail Test"
   description: "Inventory data for top 50 selling products with a custom logic (substitite group for Fruits, Veggies, Eggs and product name for the rest)"
-  hidden: no
+  hidden: yes
   # view_name: base_order_orderline
   #extension: required
 
