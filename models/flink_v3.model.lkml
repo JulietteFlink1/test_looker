@@ -34,6 +34,11 @@ datagroup: flink_hourly_datagroup {
 
 persist_with: flink_default_datagroup
 
+access_grant: can_view_customer_data {
+  user_attribute: access_customer_data
+  allowed_values: [ "Yes" ]
+}
+
 named_value_format: euro_accounting_2_precision {
   value_format: "\"€\"#,##0.00"
 }
