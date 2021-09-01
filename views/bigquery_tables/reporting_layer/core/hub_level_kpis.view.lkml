@@ -832,6 +832,5 @@ view: hub_level_kpis {
         ;;
     type: number
     value_format_name: decimal_0
-    required_access_grants: [can_view_customer_data]
   }
 }
