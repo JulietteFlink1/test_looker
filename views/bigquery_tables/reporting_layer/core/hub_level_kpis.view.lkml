@@ -1,6 +1,6 @@
 view: hub_level_kpis {
   view_label: "* Hub Level KPIS *"
-  sql_table_name: `flink-data-staging.reporting.hub_level_kpis`
+  sql_table_name: `flink-data-prod.reporting.hub_level_kpis`
     ;;
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -34,6 +34,18 @@ view: hub_level_kpis {
     convert_tz: no
     datatype: date
     sql: ${TABLE}.hub_start_date ;;
+  }
+
+  dimension: hub_level_kpis.is_hub_opened_14d {
+    label: "Hub is opened more than 14 days ago"
+    type: yesno
+    sql: ${hub_start_date} <= DATE_SUB(current_date(), Interval 14 day) ;;
+  }
+
+  dimension: hub_level_kpis.is_hub_opened {
+    label: "Hub is opened"
+    type: yesno
+    sql: ${hub_start_date} <= current_date() ;;
   }
 
   dimension_group: order {
