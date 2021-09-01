@@ -36,13 +36,13 @@ view: hub_level_kpis {
     sql: ${TABLE}.hub_start_date ;;
   }
 
-  dimension: hub_level_kpis.is_hub_opened_14d {
+  dimension: is_hub_opened_14d {
     label: "Hub is opened more than 14 days ago"
     type: yesno
     sql: ${hub_start_date} <= DATE_SUB(current_date(), Interval 14 day) ;;
   }
 
-  dimension: hub_level_kpis.is_hub_opened {
+  dimension: is_hub_opened {
     label: "Hub is opened"
     type: yesno
     sql: ${hub_start_date} <= current_date() ;;

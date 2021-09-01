@@ -33,6 +33,12 @@ view: hubs_ct {
     sql: CAST(${TABLE}.start_date AS TIMESTAMP);;
   }
 
+  dimension: is_hub_opened {
+    label: "Hub is opened"
+    type: yesno
+    sql: ${TABLE}.start_date <= current_date() ;;
+  }
+
   dimension_group: time_between_hub_launch_and_today {
     type: duration
     sql_start: timestamp(${TABLE}.start_date) ;;
