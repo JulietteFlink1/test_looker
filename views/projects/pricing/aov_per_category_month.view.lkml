@@ -79,21 +79,26 @@ view: aov_per_category_month{
   measure: item_value_per_order {
     type: number
     description: "Item Value per category divided by total number of orders"
-    sql: round(${sum_item_value}/${sum_orders},2) ;;
+    value_format_name: decimal_2
+    sql: ${sum_item_value}/nullif(${sum_orders},0) ;;
+
   }
 
   measure: items_per_basket {
     type: number
     description: "Items per category in the orders they are present"
-    sql: ${sum_quantity}/ nullif(${sum_orders_category},0) ;;
     value_format_name: decimal_2
+    sql: ${sum_quantity}/ nullif(${sum_orders_category},0) ;;
+
   }
 
   measure: presence_in_basket {
     type: number
-    value_format: "0%"
+    #value_format: "0%"
     description: "Percentage of baskets that have an item of the category"
-    sql: round(${sum_orders_category}/${sum_orders},2) ;;
+    value_format_name: percent_0
+    sql: ${sum_orders_category}/nullif(${sum_orders},0) ;;
+
   }
 
   dimension: order_month {
