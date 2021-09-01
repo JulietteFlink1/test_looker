@@ -16,9 +16,9 @@ include: "/**/*.explore"
 # }
 
 explore: retail_kpis {
-  label: "SKU Analytics"
-  group_label: "15) Ad-Hoc"
-  hidden: yes
+  label: "Retail SKU KPIs"
+  group_label: "05) Retail"
+  hidden: no
 }
 
 explore: listed_skus_in_hubs {
