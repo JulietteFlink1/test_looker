@@ -38,6 +38,12 @@ explore: orders_customers {
     type: left_outer
   }
 
+  join: customer_address {
+    sql_on: ${orders_cl.order_uuid} = ${customer_address.order_uuid};;
+    type: left_outer
+    relationship: one_to_one
+  }
+
   #join: product_facts {
   #  type: left_outer
   #  relationship: many_to_one

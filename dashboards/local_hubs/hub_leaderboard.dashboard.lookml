@@ -1,31 +1,27 @@
-- dashboard: hub_leaderboard
-  title: "IN PROGRESS: Hub Leaderboard (CT Migrated)"
+- dashboard: hub_leaderboard_ct_migrated
+  title: 'Hub Leaderboard (CT Migrated)'
   layout: newspaper
   preferred_viewer: dashboards-next
-  refresh: 12 hours
+  refresh: 2147484 seconds
   elements:
-
-
   - title: Overview KPI Scores
     name: Overview KPI Scores
     model: flink_v3
-    explore: hub_leaderboard_raw_order_order
+    explore: hub_level_kpis
     type: looker_grid
-    fields: [hubs.hub_name, hub_leaderboard.score_hub_leaderboard, hub_leaderboard.pct_delivery_in_time,
-      hub_leaderboard.score_delivery_in_time, hub_leaderboard.pct_delivery_late_over_5_min,
-      hub_leaderboard.score_delivery_late_over_5_min, hub_leaderboard.nps_score, hub_leaderboard.score_nps_score,
-      hub_leaderboard.pct_orders_with_issues, hub_leaderboard.score_orders_with_issues,
-      hub_leaderboard.pct_ext_shifts, hub_leaderboard.score_ext_shifts, hub_leaderboard.pct_no_show,
-      hub_leaderboard.score_no_show, hub_leaderboard.pct_open_shifts, hub_leaderboard.score_open_shifts,
-      hub_leaderboard.rider_utr, hub_leaderboard.score_rider_utr, hub_leaderboard.picker_utr,
-      hub_leaderboard.score_picker_utr]
+    fields: [hubs.hub_name, hub_level_kpis.score_hub_leaderboard, hub_level_kpis.pct_delivery_in_time,
+      hub_level_kpis.score_delivery_in_time, hub_level_kpis.pct_delivery_late_over_5_min,
+      hub_level_kpis.score_delivery_late_over_5_min, hub_level_kpis.nps_score, hub_level_kpis.score_nps_score,
+      hub_level_kpis.pct_orders_with_issues, hub_level_kpis.score_orders_with_issues,
+      hub_level_kpis.pct_ext_shifts, hub_level_kpis.score_ext_shifts, hub_level_kpis.pct_no_show,
+      hub_level_kpis.score_no_show, hub_level_kpis.pct_open_shifts, hub_level_kpis.score_open_shifts,
+      hub_level_kpis.rider_utr, hub_level_kpis.score_rider_utr, hub_level_kpis.picker_utr,
+      hub_level_kpis.score_picker_utr]
     filters:
-      hub_leaderboard_raw_order_order.is_internal_order: 'no'
-      hub_leaderboard_raw_order_order.is_successful_order: 'yes'
-      hubs.hub_code: ''
-      hub_leaderboard_raw_order_order.created_date: after 2021/01/25
-      hub_leaderboard.is_current_7d: 'Yes'
-    sorts: [hub_leaderboard.score_hub_leaderboard desc]
+      hub_level_kpis.is_successful_order: 'yes'
+      hub_level_kpis.order_date: after 2021/01/25
+      hub_level_kpis.is_current_7d: 'Yes'
+    sorts: [hub_level_kpis.score_hub_leaderboard desc]
     limit: 500
     query_timezone: Europe/Berlin
     show_view_names: false
@@ -47,30 +43,30 @@
     show_totals: true
     show_row_totals: true
     series_column_widths:
-      hub_leaderboard.score_hub_leaderboard: 177
+      hub_level_kpis.score_hub_leaderboard: 177
       hubs.hub_name: 209
-      hub_leaderboard.score_delivery_in_time: 88
-      hub_leaderboard.pct_delivery_in_time: 91
-      hub_leaderboard.score_delivery_late_over_5_min: 94
-      hub_leaderboard.pct_delivery_late_over_5_min: 81
-      hub_leaderboard.score_nps_score: 68
-      hub_leaderboard.nps_score: 64
-      hub_leaderboard.score_orders_with_issues: 81
-      hub_leaderboard.pct_orders_with_issues: 71
-      hub_leaderboard.score_ext_shifts: 90
-      hub_leaderboard.pct_ext_shifts: 85
-      hub_leaderboard.score_no_show: 79
-      hub_leaderboard.pct_no_show: 79
-      hub_leaderboard.score_open_shifts: 79
-      hub_leaderboard.pct_open_shifts: 71
-      hub_leaderboard.rider_utr: 72
-      hub_leaderboard.score_rider_utr: 73
-      hub_leaderboard.picker_utr: 75
-      hub_leaderboard.score_picker_utr: 76
+      hub_level_kpis.score_delivery_in_time: 88
+      hub_level_kpis.pct_delivery_in_time: 91
+      hub_level_kpis.score_delivery_late_over_5_min: 94
+      hub_level_kpis.pct_delivery_late_over_5_min: 81
+      hub_level_kpis.score_nps_score: 68
+      hub_level_kpis.nps_score: 64
+      hub_level_kpis.score_orders_with_issues: 81
+      hub_level_kpis.pct_orders_with_issues: 71
+      hub_level_kpis.score_ext_shifts: 90
+      hub_level_kpis.pct_ext_shifts: 85
+      hub_level_kpis.score_no_show: 79
+      hub_level_kpis.pct_no_show: 79
+      hub_level_kpis.score_open_shifts: 79
+      hub_level_kpis.pct_open_shifts: 71
+      hub_level_kpis.rider_utr: 72
+      hub_level_kpis.score_rider_utr: 73
+      hub_level_kpis.picker_utr: 75
+      hub_level_kpis.score_picker_utr: 76
     series_cell_visualizations:
-      hub_leaderboard.score_hub_leaderboard:
+      hub_level_kpis.score_hub_leaderboard:
         is_active: true
-      hub_leaderboard.score_delivery_in_time:
+      hub_level_kpis.score_delivery_in_time:
         is_active: false
         value_display: true
     limit_displayed_rows_values:
@@ -80,8 +76,8 @@
     conditional_formatting: []
     x_axis_gridlines: false
     y_axis_gridlines: false
-    y_axes: [{label: '', orientation: bottom, series: [{axisId: hub_leaderboard.score_hub_leaderboard,
-            id: hub_leaderboard.score_hub_leaderboard, name: Hub Leaderboard Score}],
+    y_axes: [{label: '', orientation: bottom, series: [{axisId: hub_level_kpis.score_hub_leaderboard,
+            id: hub_level_kpis.score_hub_leaderboard, name: Hub Leaderboard Score}],
         showLabels: true, showValues: false, unpinAxis: false, tickDensity: default,
         tickDensityCustom: 5, type: linear}]
     show_y_axis_labels: true
@@ -100,9 +96,9 @@
     series_types: {}
     point_style: circle
     series_colors:
-      hub_leaderboard.score_hub_leaderboard: "#f98662"
+      hub_level_kpis.score_hub_leaderboard: "#f98662"
     series_point_styles:
-      hub_leaderboard.score_hub_leaderboard: triangle
+      hub_level_kpis.score_hub_leaderboard: triangle
     show_value_labels: true
     label_density: 25
     x_axis_scale: auto
@@ -115,38 +111,36 @@
     totals_color: "#808080"
     defaults_version: 1
     hidden_fields: []
-    column_order: ["$$$_row_numbers_$$$", hubs.hub_name, hub_leaderboard.score_hub_leaderboard,
-      hub_leaderboard.pct_delivery_in_time, hub_leaderboard.score_delivery_in_time,
-      hub_leaderboard.pct_delivery_late_over_5_min, hub_leaderboard.score_delivery_late_over_5_min,
-      hub_leaderboard.nps_score, hub_leaderboard.score_nps_score, hub_leaderboard.pct_orders_with_issues,
-      hub_leaderboard.score_orders_with_issues, hub_leaderboard.rider_utr, hub_leaderboard.score_rider_utr,
-      hub_leaderboard.picker_utr, hub_leaderboard.score_picker_utr, hub_leaderboard.pct_ext_shifts,
-      hub_leaderboard.score_ext_shifts, hub_leaderboard.pct_no_show, hub_leaderboard.score_no_show,
-      hub_leaderboard.pct_open_shifts, hub_leaderboard.score_open_shifts]
+    column_order: ["$$$_row_numbers_$$$", hubs.hub_name, hub_level_kpis.score_hub_leaderboard,
+      hub_level_kpis.pct_delivery_in_time, hub_level_kpis.score_delivery_in_time,
+      hub_level_kpis.pct_delivery_late_over_5_min, hub_level_kpis.score_delivery_late_over_5_min,
+      hub_level_kpis.nps_score, hub_level_kpis.score_nps_score, hub_level_kpis.pct_orders_with_issues,
+      hub_level_kpis.score_orders_with_issues, hub_level_kpis.rider_utr, hub_level_kpis.score_rider_utr,
+      hub_level_kpis.picker_utr, hub_level_kpis.score_picker_utr, hub_level_kpis.pct_ext_shifts,
+      hub_level_kpis.score_ext_shifts, hub_level_kpis.pct_no_show, hub_level_kpis.score_no_show,
+      hub_level_kpis.pct_open_shifts, hub_level_kpis.score_open_shifts]
     listen:
       Country: hubs.country
       City: hubs.city
       Hub Name: hubs.hub_name
       City Manager: hubs.city_manager
+      Hub older than 14d: hub_level_kpis.is_hub_opened_14d
+      Hub Code: hubs.hub_code
     row: 68
     col: 0
     width: 24
     height: 26
-
-
   - title: Top 10 - NPS Score
     name: Top 10 - NPS Score
     model: flink_v3
-    explore: hub_leaderboard_raw_order_order
+    explore: hub_level_kpis
     type: looker_bar
-    fields: [hubs.hub_name, hub_leaderboard.nps_score]
+    fields: [hubs.hub_name, hub_level_kpis.nps_score]
     filters:
-      hub_leaderboard_raw_order_order.is_internal_order: 'no'
-      hub_leaderboard_raw_order_order.is_successful_order: 'yes'
-      hubs.hub_code: ''
-      hub_leaderboard_raw_order_order.created_date: after 2021/01/25
-      hub_leaderboard.is_current_7d: 'Yes'
-    sorts: [hub_leaderboard.nps_score desc]
+      hub_level_kpis.is_successful_order: 'yes'
+      hub_level_kpis.order_date: after 2021/01/25
+      hub_level_kpis.is_current_7d: 'Yes'
+    sorts: [hub_level_kpis.nps_score desc]
     limit: 500
     column_limit: 50
     query_timezone: Europe/Berlin
@@ -177,8 +171,8 @@
     show_totals_labels: false
     show_silhouette: false
     totals_color: "#808080"
-    y_axes: [{label: '', orientation: bottom, series: [{axisId: hub_leaderboard.nps_score,
-            id: hub_leaderboard.nps_score, name: "% NPS"}], showLabels: false, showValues: false,
+    y_axes: [{label: '', orientation: bottom, series: [{axisId: hub_level_kpis.nps_score,
+            id: hub_level_kpis.nps_score, name: "% NPS"}], showLabels: false, showValues: false,
         unpinAxis: false, tickDensity: default, tickDensityCustom: 5, type: linear}]
     limit_displayed_rows_values:
       show_hide: show
@@ -186,9 +180,9 @@
       num_rows: '10'
     series_types: {}
     series_colors:
-      hub_leaderboard.nps_score: "#C2DD67"
+      hub_level_kpis.nps_score: "#C2DD67"
     series_point_styles:
-      hub_leaderboard.score_hub_leaderboard: triangle
+      hub_level_kpis.score_hub_leaderboard: triangle
     column_group_spacing_ratio: 0.8
     defaults_version: 1
     hidden_fields: []
@@ -197,25 +191,23 @@
       City: hubs.city
       Hub Name: hubs.hub_name
       City Manager: hubs.city_manager
+      Hub older than 14d: hub_level_kpis.is_hub_opened_14d
+      Hub Code: hubs.hub_code
     row: 20
     col: 16
     width: 7
     height: 6
-
-
   - title: Top 10 - Issue Rate
     name: Top 10 - Issue Rate
     model: flink_v3
-    explore: hub_leaderboard_raw_order_order
+    explore: hub_level_kpis
     type: looker_bar
-    fields: [hubs.hub_name, hub_leaderboard.pct_orders_with_issues]
+    fields: [hubs.hub_name, hub_level_kpis.pct_orders_with_issues]
     filters:
-      hub_leaderboard_raw_order_order.is_internal_order: 'no'
-      hub_leaderboard_raw_order_order.is_successful_order: 'yes'
-      hubs.hub_code: ''
-      hub_leaderboard_raw_order_order.created_date: after 2021/01/25
-      hub_leaderboard.is_current_7d: 'Yes'
-    sorts: [hub_leaderboard.pct_orders_with_issues]
+      hub_level_kpis.is_successful_order: 'yes'
+      hub_level_kpis.order_date: after 2021/01/25
+      hub_level_kpis.is_current_7d: 'Yes'
+    sorts: [hub_level_kpis.pct_orders_with_issues]
     limit: 500
     column_limit: 50
     query_timezone: Europe/Berlin
@@ -246,8 +238,8 @@
     show_totals_labels: false
     show_silhouette: false
     totals_color: "#808080"
-    y_axes: [{label: '', orientation: bottom, series: [{axisId: hub_leaderboard.pct_orders_with_issues,
-            id: hub_leaderboard.pct_orders_with_issues, name: "% Issue Rate"}], showLabels: false,
+    y_axes: [{label: '', orientation: bottom, series: [{axisId: hub_level_kpis.pct_orders_with_issues,
+            id: hub_level_kpis.pct_orders_with_issues, name: "% Issue Rate"}], showLabels: false,
         showValues: false, unpinAxis: false, tickDensity: default, tickDensityCustom: 5,
         type: linear}]
     limit_displayed_rows_values:
@@ -256,9 +248,9 @@
       num_rows: '10'
     series_types: {}
     series_colors:
-      hub_leaderboard.pct_orders_with_issues: "#FBB555"
+      hub_level_kpis.pct_orders_with_issues: "#FBB555"
     series_point_styles:
-      hub_leaderboard.score_hub_leaderboard: triangle
+      hub_level_kpis.score_hub_leaderboard: triangle
     column_group_spacing_ratio: 0.8
     defaults_version: 1
     hidden_fields: []
@@ -267,25 +259,23 @@
       City: hubs.city
       Hub Name: hubs.hub_name
       City Manager: hubs.city_manager
+      Hub older than 14d: hub_level_kpis.is_hub_opened_14d
+      Hub Code: hubs.hub_code
     row: 14
     col: 16
     width: 7
     height: 6
-
-
   - title: Top 10 - Delivered in Time
     name: Top 10 - Delivered in Time
     model: flink_v3
-    explore: hub_leaderboard_raw_order_order
+    explore: hub_level_kpis
     type: looker_bar
-    fields: [hubs.hub_name, hub_leaderboard.pct_delivery_in_time]
+    fields: [hubs.hub_name, hub_level_kpis.pct_delivery_in_time]
     filters:
-      hub_leaderboard_raw_order_order.is_internal_order: 'no'
-      hub_leaderboard_raw_order_order.is_successful_order: 'yes'
-      hubs.hub_code: ''
-      hub_leaderboard_raw_order_order.created_date: after 2021/01/25
-      hub_leaderboard.is_current_7d: 'Yes'
-    sorts: [hub_leaderboard.pct_delivery_in_time desc]
+      hub_level_kpis.is_successful_order: 'yes'
+      hub_level_kpis.order_date: after 2021/01/25
+      hub_level_kpis.is_current_7d: 'Yes'
+    sorts: [hub_level_kpis.pct_delivery_in_time desc]
     limit: 500
     column_limit: 50
     query_timezone: Europe/Berlin
@@ -316,8 +306,8 @@
     show_totals_labels: false
     show_silhouette: false
     totals_color: "#808080"
-    y_axes: [{label: '', orientation: bottom, series: [{axisId: hub_leaderboard.pct_delivery_in_time,
-            id: hub_leaderboard.pct_delivery_in_time, name: "% Orders delivered in\
+    y_axes: [{label: '', orientation: bottom, series: [{axisId: hub_level_kpis.pct_delivery_in_time,
+            id: hub_level_kpis.pct_delivery_in_time, name: "% Orders delivered in\
               \ time"}], showLabels: false, showValues: false, unpinAxis: false, tickDensity: default,
         tickDensityCustom: 5, type: linear}]
     limit_displayed_rows_values:
@@ -326,9 +316,9 @@
       num_rows: '10'
     series_types: {}
     series_colors:
-      hub_leaderboard.pct_delivery_in_time: "#72D16D"
+      hub_level_kpis.pct_delivery_in_time: "#72D16D"
     series_point_styles:
-      hub_leaderboard.score_hub_leaderboard: triangle
+      hub_level_kpis.score_hub_leaderboard: triangle
     column_group_spacing_ratio: 0.8
     defaults_version: 1
     hidden_fields: []
@@ -337,25 +327,23 @@
       City: hubs.city
       Hub Name: hubs.hub_name
       City Manager: hubs.city_manager
+      Hub older than 14d: hub_level_kpis.is_hub_opened_14d
+      Hub Code: hubs.hub_code
     row: 14
     col: 9
     width: 7
     height: 6
-
-
   - title: Top 10 - Delivered 5 min late
     name: Top 10 - Delivered 5 min late
     model: flink_v3
-    explore: hub_leaderboard_raw_order_order
+    explore: hub_level_kpis
     type: looker_bar
-    fields: [hubs.hub_name, hub_leaderboard.pct_delivery_late_over_5_min]
+    fields: [hubs.hub_name, hub_level_kpis.pct_delivery_late_over_5_min]
     filters:
-      hub_leaderboard_raw_order_order.is_internal_order: 'no'
-      hub_leaderboard_raw_order_order.is_successful_order: 'yes'
-      hubs.hub_code: ''
-      hub_leaderboard_raw_order_order.created_date: after 2021/01/25
-      hub_leaderboard.is_current_7d: 'Yes'
-    sorts: [hub_leaderboard.pct_delivery_late_over_5_min]
+      hub_level_kpis.is_successful_order: 'yes'
+      hub_level_kpis.order_date: after 2021/01/25
+      hub_level_kpis.is_current_7d: 'Yes'
+    sorts: [hub_level_kpis.pct_delivery_late_over_5_min]
     limit: 500
     column_limit: 50
     query_timezone: Europe/Berlin
@@ -386,8 +374,8 @@
     show_totals_labels: false
     show_silhouette: false
     totals_color: "#808080"
-    y_axes: [{label: '', orientation: bottom, series: [{axisId: hub_leaderboard.pct_delivery_late_over_5_min,
-            id: hub_leaderboard.pct_delivery_late_over_5_min, name: "% Orders delayed\
+    y_axes: [{label: '', orientation: bottom, series: [{axisId: hub_level_kpis.pct_delivery_late_over_5_min,
+            id: hub_level_kpis.pct_delivery_late_over_5_min, name: "% Orders delayed\
               \ >5min"}], showLabels: false, showValues: false, unpinAxis: false,
         tickDensity: default, tickDensityCustom: 5, type: linear}]
     limit_displayed_rows_values:
@@ -396,9 +384,9 @@
       num_rows: '10'
     series_types: {}
     series_colors:
-      hub_leaderboard.pct_delivery_late_over_5_min: "#604fc1"
+      hub_level_kpis.pct_delivery_late_over_5_min: "#604fc1"
     series_point_styles:
-      hub_leaderboard.score_hub_leaderboard: triangle
+      hub_level_kpis.score_hub_leaderboard: triangle
     column_group_spacing_ratio: 0.8
     defaults_version: 1
     hidden_fields: []
@@ -407,16 +395,15 @@
       City: hubs.city
       Hub Name: hubs.hub_name
       City Manager: hubs.city_manager
+      Hub older than 14d: hub_level_kpis.is_hub_opened_14d
+      Hub Code: hubs.hub_code
     row: 20
     col: 9
     width: 7
     height: 6
-
-
   - name: Hub Leaderboard Scoring - How it works
     type: text
     title_text: Hub Leaderboard Scoring - How it works
-    subtitle_text: ''
     body_text: "## This dashboard shows the Hub-Leaderboard KPIs of the last complete\
       \ 7 days\n\n### Step 1  - Define the KPIs\nThe following KPIs are used to calculate\
       \ the hub_score:\n\n| KPI        | | Definition           | \n|:-------------\
@@ -449,8 +436,6 @@
     col: 0
     width: 24
     height: 12
-
-
   - name: Detailed Views
     type: text
     title_text: Detailed Views
@@ -459,28 +444,24 @@
     col: 0
     width: 24
     height: 2
-
-
   - title: Overview of Hub KPIs
     name: Overview of Hub KPIs
     model: flink_v3
-    explore: hub_leaderboard_raw_order_order
+    explore: hub_level_kpis
     type: looker_grid
-    fields: [hubs.hub_name, hub_leaderboard.score_hub_leaderboard, hub_leaderboard.pct_delivery_in_time,
-      hub_leaderboard_raw_order_order.cnt_orders_delayed_under_0_min, hub_leaderboard.pct_delivery_late_over_5_min,
-      hub_leaderboard_raw_order_order.cnt_orders_delayed_over_5_min, hub_leaderboard.nps_score,
-      nps_after_order.cnt_responses, hub_leaderboard.pct_orders_with_issues, issue_rate_hub_level.sum_orders_with_issues,
-      hub_leaderboard.pct_ext_shifts, hub_leaderboard_shift_metrics.sum_filled_ext_hours_total,
-      hub_leaderboard.pct_no_show, hub_leaderboard_shift_metrics.sum_filled_no_show_hours_total,
-      hub_leaderboard.pct_open_shifts, hub_leaderboard_shift_metrics.sum_unfilled_hours_total,
-      hub_leaderboard.rider_utr, hub_leaderboard.picker_utr]
+    fields: [hubs.hub_name, hub_level_kpis.score_hub_leaderboard, hub_level_kpis.pct_delivery_in_time,
+      hub_level_kpis.sum_number_of_orders_delayed_under_0_min, hub_level_kpis.pct_delivery_late_over_5_min,
+      hub_level_kpis.sum_number_of_orders_delayed_over_5_min, hub_level_kpis.nps_score,
+      hub_level_kpis.sum_number_of_nps_responses, hub_level_kpis.pct_orders_with_issues,
+      hub_level_kpis.number_of_orders_with_issues, hub_level_kpis.pct_ext_shifts,
+      hub_level_kpis.sum_filled_ext_hours_total, hub_level_kpis.pct_no_show, hub_level_kpis.sum_filled_no_show_hours_total,
+      hub_level_kpis.pct_open_shifts, hub_level_kpis.sum_unfilled_hours_total, hub_level_kpis.rider_utr,
+      hub_level_kpis.picker_utr]
     filters:
-      hub_leaderboard_raw_order_order.is_internal_order: 'no'
-      hub_leaderboard_raw_order_order.is_successful_order: 'yes'
-      hubs.hub_code: ''
-      hub_leaderboard_raw_order_order.created_date: after 2021/01/25
-      hub_leaderboard.is_current_7d: 'Yes'
-    sorts: [hub_leaderboard.score_hub_leaderboard desc]
+      hub_level_kpis.is_successful_order: 'yes'
+      hub_level_kpis.order_date: after 2021/01/25
+      hub_level_kpis.is_current_7d: 'Yes'
+    sorts: [hub_level_kpis.score_hub_leaderboard desc]
     limit: 500
     column_limit: 50
     query_timezone: Europe/Berlin
@@ -506,42 +487,42 @@
     show_totals: true
     show_row_totals: true
     series_labels:
-      hub_leaderboard_raw_order_order.cnt_orders_delayed_over_5_min: "#"
-      hub_leaderboard_raw_order_order.cnt_orders_delayed_under_0_min: "#"
-      nps_after_order.cnt_responses: "#"
-      issue_rate_hub_level.sum_orders_with_issues: "#"
-      hub_leaderboard_shift_metrics.sum_unfilled_hours_total: "#"
-      hub_leaderboard_shift_metrics.sum_filled_no_show_hours_total: "#"
-      hub_leaderboard_shift_metrics.sum_filled_ext_hours_total: "#"
+      hub_level_kpis.sum_number_of_orders_delayed_over_5_min: "#"
+      hub_level_kpis.sum_number_of_orders_delayed_under_0_min: "#"
+      hub_level_kpis.sum_number_of_nps_responses: "#"
+      hub_level_kpis.number_of_orders_with_issues: "#"
+      hub_level_kpis.sum_unfilled_hours_total: "#"
+      hub_level_kpis.sum_filled_no_show_hours_total: "#"
+      hub_level_kpis.sum_filled_ext_hours_total: "#"
     series_column_widths:
-      hub_leaderboard.score_hub_leaderboard: 177
+      hub_level_kpis.score_hub_leaderboard: 177
       hubs.hub_name: 209
-      hub_leaderboard.score_delivery_in_time: 88
-      hub_leaderboard.pct_delivery_in_time: 91
-      hub_leaderboard.score_delivery_late_over_5_min: 94
-      hub_leaderboard.pct_delivery_late_over_5_min: 81
-      hub_leaderboard.score_nps_score: 68
-      hub_leaderboard.nps_score: 64
-      hub_leaderboard.score_orders_with_issues: 81
-      hub_leaderboard.pct_orders_with_issues: 71
-      hub_leaderboard.score_ext_shifts: 90
-      hub_leaderboard.pct_ext_shifts: 85
-      hub_leaderboard.score_no_show: 79
-      hub_leaderboard.pct_no_show: 79
-      hub_leaderboard.score_open_shifts: 79
-      hub_leaderboard.pct_open_shifts: 71
-      hub_leaderboard.rider_utr: 69
-      hub_leaderboard.picker_utr: 74
+      hub_level_kpis.score_delivery_in_time: 88
+      hub_level_kpis.pct_delivery_in_time: 91
+      hub_level_kpis.score_delivery_late_over_5_min: 94
+      hub_level_kpis.pct_delivery_late_over_5_min: 81
+      hub_level_kpis.score_nps_score: 68
+      hub_level_kpis.nps_score: 64
+      hub_level_kpis.score_orders_with_issues: 81
+      hub_level_kpis.pct_orders_with_issues: 71
+      hub_level_kpis.score_ext_shifts: 90
+      hub_level_kpis.pct_ext_shifts: 85
+      hub_level_kpis.score_no_show: 79
+      hub_level_kpis.pct_no_show: 79
+      hub_level_kpis.score_open_shifts: 79
+      hub_level_kpis.pct_open_shifts: 71
+      hub_level_kpis.rider_utr: 69
+      hub_level_kpis.picker_utr: 74
     series_cell_visualizations:
-      hub_leaderboard.score_hub_leaderboard:
+      hub_level_kpis.score_hub_leaderboard:
         is_active: true
-      hub_leaderboard.score_delivery_in_time:
+      hub_level_kpis.score_delivery_in_time:
         is_active: false
         value_display: true
-      hub_leaderboard_raw_order_order.cnt_orders_delayed_over_5_min:
+      hub_level_kpis.sum_number_of_orders_delayed_over_5_min:
         is_active: false
         value_display: true
-      hub_leaderboard_raw_order_order.cnt_orders_delayed_under_0_min:
+      hub_level_kpis.sum_number_of_orders_delayed_under_0_min:
         is_active: false
         palette:
           palette_id: bc71f0c1-02f1-6bcf-d454-eed5ad70fef7
@@ -551,31 +532,31 @@
           - "#4FBC89"
         value_display: false
     series_text_format:
-      hub_leaderboard_raw_order_order.cnt_orders_delayed_under_0_min:
+      hub_level_kpis.sum_number_of_orders_delayed_under_0_min:
         align: left
         fg_color: "#929292"
         bg_color: "#e7e7e7"
-      hub_leaderboard_raw_order_order.cnt_orders_delayed_over_5_min:
+      hub_level_kpis.sum_number_of_orders_delayed_over_5_min:
         align: left
         fg_color: "#929292"
         bg_color: "#e7e7e7"
-      nps_after_order.cnt_responses:
+      hub_level_kpis.sum_number_of_nps_responses:
         align: left
         fg_color: "#929292"
         bg_color: "#e7e7e7"
-      issue_rate_hub_level.sum_orders_with_issues:
+      hub_level_kpis.number_of_orders_with_issues:
         align: left
         fg_color: "#929292"
         bg_color: "#e7e7e7"
-      hub_leaderboard_shift_metrics.sum_unfilled_hours_total:
+      hub_level_kpis.sum_unfilled_hours_total:
         fg_color: "#929292"
         bg_color: "#e7e7e7"
         align: left
-      hub_leaderboard_shift_metrics.sum_filled_no_show_hours_total:
+      hub_level_kpis.sum_filled_no_show_hours_total:
         fg_color: "#929292"
         bg_color: "#e7e7e7"
         align: left
-      hub_leaderboard_shift_metrics.sum_filled_ext_hours_total:
+      hub_level_kpis.sum_filled_ext_hours_total:
         fg_color: "#929292"
         bg_color: "#e7e7e7"
         align: left
@@ -590,39 +571,39 @@
               {color: "#82E0AA", offset: 100}]}, options: {steps: 5, constraints: {
               min: {type: number, value: 0.4}, mid: {type: median}, max: {type: number,
                 value: 1}}, mirror: false, reverse: false, stepped: false}}, bold: false,
-        italic: false, strikethrough: false, fields: [hub_leaderboard.nps_score, hub_leaderboard.pct_delivery_in_time]},
+        italic: false, strikethrough: false, fields: [hub_level_kpis.nps_score, hub_level_kpis.pct_delivery_in_time]},
       {type: along a scale..., value: !!null '', background_color: !!null '', font_color: !!null '',
         color_application: {collection_id: legacy, custom: {id: 03b793df-9f87-1427-53c4-ed9fd83b4828,
             label: Custom, type: continuous, stops: [{color: "#82E0AA", offset: 0},
               {color: "#ffffff", offset: 50}, {color: "#F5B7B1", offset: 100}]}, options: {
             steps: 5, constraints: {min: {type: number, value: 0}, max: {type: number,
                 value: 0.1}, mid: {type: middle}}}}, bold: false, italic: false, strikethrough: false,
-        fields: [hub_leaderboard.pct_delivery_late_over_5_min, hub_leaderboard.pct_ext_shifts,
-          hub_leaderboard.pct_no_show, hub_leaderboard.pct_open_shifts]}, {type: along
+        fields: [hub_level_kpis.pct_delivery_late_over_5_min, hub_level_kpis.pct_ext_shifts,
+          hub_level_kpis.pct_no_show, hub_level_kpis.pct_open_shifts]}, {type: along
           a scale..., value: !!null '', background_color: !!null '', font_color: !!null '',
         color_application: {collection_id: legacy, custom: {id: ae15939c-7c1d-0732-4379-eb2273737a98,
             label: Custom, type: continuous, stops: [{color: "#82E0AA", offset: 0},
               {color: "#ffffff", offset: 50}, {color: "#F5B7B1", offset: 100}]}, options: {
             steps: 5, constraints: {max: {type: number, value: 0.03}, min: {type: number,
                 value: 0}}}}, bold: false, italic: false, strikethrough: false, fields: [
-          hub_leaderboard.pct_orders_with_issues]}, {type: along a scale..., value: !!null '',
+          hub_level_kpis.pct_orders_with_issues]}, {type: along a scale..., value: !!null '',
         background_color: !!null '', font_color: !!null '', color_application: {collection_id: legacy,
           custom: {id: d86f9dc3-53ee-b02d-c111-149535c7dd4e, label: Custom, type: continuous,
             stops: [{color: "#F5B7B1", offset: 0}, {color: "#ffffff", offset: 50},
               {color: "#82E0AA", offset: 100}]}, options: {steps: 5, constraints: {
               min: {type: number, value: 1}, max: {type: number, value: 3}}}}, bold: false,
-        italic: false, strikethrough: false, fields: [hub_leaderboard.rider_utr]},
+        italic: false, strikethrough: false, fields: [hub_level_kpis.rider_utr]},
       {type: along a scale..., value: !!null '', background_color: !!null '', font_color: !!null '',
         color_application: {collection_id: legacy, custom: {id: '0349f44b-d243-c994-77a9-654d2c92ab12',
             label: Custom, type: continuous, stops: [{color: "#F5B7B1", offset: 0},
               {color: "#ffffff", offset: 50}, {color: "#82E0AA", offset: 100}]}, options: {
             steps: 5, constraints: {min: {type: number, value: 5}, max: {type: number,
                 value: 15}}}}, bold: false, italic: false, strikethrough: false, fields: [
-          hub_leaderboard.picker_utr]}]
+          hub_level_kpis.picker_utr]}]
     x_axis_gridlines: false
     y_axis_gridlines: false
-    y_axes: [{label: '', orientation: bottom, series: [{axisId: hub_leaderboard.score_hub_leaderboard,
-            id: hub_leaderboard.score_hub_leaderboard, name: Hub Leaderboard Score}],
+    y_axes: [{label: '', orientation: bottom, series: [{axisId: hub_level_kpis.score_hub_leaderboard,
+            id: hub_level_kpis.score_hub_leaderboard, name: Hub Leaderboard Score}],
         showLabels: true, showValues: false, unpinAxis: false, tickDensity: default,
         tickDensityCustom: 5, type: linear}]
     show_y_axis_labels: true
@@ -641,9 +622,9 @@
     series_types: {}
     point_style: circle
     series_colors:
-      hub_leaderboard.score_hub_leaderboard: "#f98662"
+      hub_level_kpis.score_hub_leaderboard: "#f98662"
     series_point_styles:
-      hub_leaderboard.score_hub_leaderboard: triangle
+      hub_level_kpis.score_hub_leaderboard: triangle
     show_value_labels: true
     label_density: 25
     x_axis_scale: auto
@@ -656,25 +637,25 @@
     totals_color: "#808080"
     defaults_version: 1
     hidden_fields: []
-    column_order: ["$$$_row_numbers_$$$", hubs.hub_name, hub_leaderboard.score_hub_leaderboard,
-      hub_leaderboard.pct_delivery_in_time, hub_leaderboard_raw_order_order.cnt_orders_delayed_under_0_min,
-      hub_leaderboard.pct_delivery_late_over_5_min, hub_leaderboard_raw_order_order.cnt_orders_delayed_over_5_min,
-      hub_leaderboard.nps_score, nps_after_order.cnt_responses, hub_leaderboard.pct_orders_with_issues,
-      issue_rate_hub_level.sum_orders_with_issues, hub_leaderboard.rider_utr, hub_leaderboard.picker_utr,
-      hub_leaderboard.pct_ext_shifts, hub_leaderboard_shift_metrics.sum_filled_ext_hours_total,
-      hub_leaderboard.pct_no_show, hub_leaderboard_shift_metrics.sum_filled_no_show_hours_total,
-      hub_leaderboard.pct_open_shifts, hub_leaderboard_shift_metrics.sum_unfilled_hours_total]
+    column_order: ["$$$_row_numbers_$$$", hubs.hub_name, hub_level_kpis.score_hub_leaderboard,
+      hub_level_kpis.pct_delivery_in_time, hub_level_kpis.sum_number_of_orders_delayed_under_0_min,
+      hub_level_kpis.pct_delivery_late_over_5_min, hub_level_kpis.sum_number_of_orders_delayed_over_5_min,
+      hub_level_kpis.nps_score, hub_level_kpis.sum_number_of_nps_responses, hub_level_kpis.pct_orders_with_issues,
+      hub_level_kpis.number_of_orders_with_issues, hub_level_kpis.rider_utr, hub_level_kpis.picker_utr,
+      hub_level_kpis.pct_ext_shifts, hub_level_kpis.sum_filled_ext_hours_total, hub_level_kpis.pct_no_show,
+      hub_level_kpis.sum_filled_no_show_hours_total, hub_level_kpis.pct_open_shifts,
+      hub_level_kpis.sum_unfilled_hours_total]
     listen:
       Country: hubs.country
       City: hubs.city
       Hub Name: hubs.hub_name
       City Manager: hubs.city_manager
+      Hub older than 14d: hub_level_kpis.is_hub_opened_14d
+      Hub Code: hubs.hub_code
     row: 42
     col: 0
     width: 24
     height: 26
-
-
   - name: Top 10 Hubs
     type: text
     title_text: Top 10 Hubs
@@ -683,21 +664,17 @@
     col: 0
     width: 23
     height: 2
-
-
   - title: Bottom 10 - Delivered in Time
     name: Bottom 10 - Delivered in Time
     model: flink_v3
-    explore: hub_leaderboard_raw_order_order
+    explore: hub_level_kpis
     type: looker_bar
-    fields: [hubs.hub_name, hub_leaderboard.pct_delivery_in_time]
+    fields: [hubs.hub_name, hub_level_kpis.pct_delivery_in_time]
     filters:
-      hubs.hub_code: ''
-      hub_leaderboard.is_current_7d: 'Yes'
-      hub_leaderboard_raw_order_order.is_internal_order: 'no'
-      hub_leaderboard_raw_order_order.is_successful_order: 'yes'
-      hub_leaderboard_raw_order_order.created_date: after 2021/01/25
-    sorts: [hub_leaderboard.pct_delivery_in_time]
+      hub_level_kpis.is_current_7d: 'Yes'
+      hub_level_kpis.is_successful_order: 'yes'
+      hub_level_kpis.order_date: after 2021/01/25
+    sorts: [hub_level_kpis.pct_delivery_in_time]
     limit: 500
     column_limit: 50
     query_timezone: Europe/Berlin
@@ -728,8 +705,8 @@
     show_totals_labels: false
     show_silhouette: false
     totals_color: "#808080"
-    y_axes: [{label: '', orientation: bottom, series: [{axisId: hub_leaderboard.pct_delivery_in_time,
-            id: hub_leaderboard.pct_delivery_in_time, name: "% Orders delivered in\
+    y_axes: [{label: '', orientation: bottom, series: [{axisId: hub_level_kpis.pct_delivery_in_time,
+            id: hub_level_kpis.pct_delivery_in_time, name: "% Orders delivered in\
               \ time"}], showLabels: false, showValues: false, unpinAxis: false, tickDensity: default,
         tickDensityCustom: 5, type: linear}]
     limit_displayed_rows_values:
@@ -738,9 +715,9 @@
       num_rows: '10'
     series_types: {}
     series_colors:
-      hub_leaderboard.pct_delivery_in_time: "#72D16D"
+      hub_level_kpis.pct_delivery_in_time: "#72D16D"
     series_point_styles:
-      hub_leaderboard.score_hub_leaderboard: triangle
+      hub_level_kpis.score_hub_leaderboard: triangle
     column_group_spacing_ratio: 0.8
     defaults_version: 1
     hidden_fields: []
@@ -749,25 +726,23 @@
       City: hubs.city
       Hub Name: hubs.hub_name
       City Manager: hubs.city_manager
+      Hub older than 14d: hub_level_kpis.is_hub_opened_14d
+      Hub Code: hubs.hub_code
     row: 28
     col: 9
     width: 7
     height: 6
-
-
   - title: Bottom 10 - Issue Rate
     name: Bottom 10 - Issue Rate
     model: flink_v3
-    explore: hub_leaderboard_raw_order_order
+    explore: hub_level_kpis
     type: looker_bar
-    fields: [hubs.hub_name, hub_leaderboard.pct_orders_with_issues]
+    fields: [hubs.hub_name, hub_level_kpis.pct_orders_with_issues]
     filters:
-      hubs.hub_code: ''
-      hub_leaderboard.is_current_7d: 'Yes'
-      hub_leaderboard_raw_order_order.is_internal_order: 'no'
-      hub_leaderboard_raw_order_order.is_successful_order: 'yes'
-      hub_leaderboard_raw_order_order.created_date: after 2021/01/25
-    sorts: [hub_leaderboard.pct_orders_with_issues desc]
+      hub_level_kpis.is_current_7d: 'Yes'
+      hub_level_kpis.is_successful_order: 'yes'
+      hub_level_kpis.order_date: after 2021/01/25
+    sorts: [hub_level_kpis.pct_orders_with_issues desc]
     limit: 500
     column_limit: 50
     query_timezone: Europe/Berlin
@@ -798,8 +773,8 @@
     show_totals_labels: false
     show_silhouette: false
     totals_color: "#808080"
-    y_axes: [{label: '', orientation: bottom, series: [{axisId: hub_leaderboard.pct_orders_with_issues,
-            id: hub_leaderboard.pct_orders_with_issues, name: "% Issue Rate"}], showLabels: false,
+    y_axes: [{label: '', orientation: bottom, series: [{axisId: hub_level_kpis.pct_orders_with_issues,
+            id: hub_level_kpis.pct_orders_with_issues, name: "% Issue Rate"}], showLabels: false,
         showValues: false, unpinAxis: false, tickDensity: default, tickDensityCustom: 5,
         type: linear}]
     limit_displayed_rows_values:
@@ -808,9 +783,9 @@
       num_rows: '10'
     series_types: {}
     series_colors:
-      hub_leaderboard.pct_orders_with_issues: "#FBB555"
+      hub_level_kpis.pct_orders_with_issues: "#FBB555"
     series_point_styles:
-      hub_leaderboard.score_hub_leaderboard: triangle
+      hub_level_kpis.score_hub_leaderboard: triangle
     column_group_spacing_ratio: 0.8
     defaults_version: 1
     hidden_fields: []
@@ -819,25 +794,23 @@
       City: hubs.city
       Hub Name: hubs.hub_name
       City Manager: hubs.city_manager
+      Hub older than 14d: hub_level_kpis.is_hub_opened_14d
+      Hub Code: hubs.hub_code
     row: 28
     col: 16
     width: 7
     height: 6
-
-
   - title: Bottom 10 - Delivered 5 min late
     name: Bottom 10 - Delivered 5 min late
     model: flink_v3
-    explore: hub_leaderboard_raw_order_order
+    explore: hub_level_kpis
     type: looker_bar
-    fields: [hubs.hub_name, hub_leaderboard.pct_delivery_late_over_5_min]
+    fields: [hubs.hub_name, hub_level_kpis.pct_delivery_late_over_5_min]
     filters:
-      hubs.hub_code: ''
-      hub_leaderboard.is_current_7d: 'Yes'
-      hub_leaderboard_raw_order_order.is_internal_order: 'no'
-      hub_leaderboard_raw_order_order.is_successful_order: 'yes'
-      hub_leaderboard_raw_order_order.created_date: after 2021/01/25
-    sorts: [hub_leaderboard.pct_delivery_late_over_5_min desc]
+      hub_level_kpis.is_current_7d: 'Yes'
+      hub_level_kpis.is_successful_order: 'yes'
+      hub_level_kpis.order_date: after 2021/01/25
+    sorts: [hub_level_kpis.pct_delivery_late_over_5_min desc]
     limit: 500
     column_limit: 50
     query_timezone: Europe/Berlin
@@ -868,8 +841,8 @@
     show_totals_labels: false
     show_silhouette: false
     totals_color: "#808080"
-    y_axes: [{label: '', orientation: bottom, series: [{axisId: hub_leaderboard.pct_delivery_late_over_5_min,
-            id: hub_leaderboard.pct_delivery_late_over_5_min, name: "% Orders delayed\
+    y_axes: [{label: '', orientation: bottom, series: [{axisId: hub_level_kpis.pct_delivery_late_over_5_min,
+            id: hub_level_kpis.pct_delivery_late_over_5_min, name: "% Orders delayed\
               \ >5min"}], showLabels: false, showValues: false, unpinAxis: false,
         tickDensity: default, tickDensityCustom: 5, type: linear}]
     limit_displayed_rows_values:
@@ -878,9 +851,9 @@
       num_rows: '10'
     series_types: {}
     series_colors:
-      hub_leaderboard.pct_delivery_late_over_5_min: "#604fc1"
+      hub_level_kpis.pct_delivery_late_over_5_min: "#604fc1"
     series_point_styles:
-      hub_leaderboard.score_hub_leaderboard: triangle
+      hub_level_kpis.score_hub_leaderboard: triangle
     column_group_spacing_ratio: 0.8
     defaults_version: 1
     hidden_fields: []
@@ -889,25 +862,23 @@
       City: hubs.city
       Hub Name: hubs.hub_name
       City Manager: hubs.city_manager
+      Hub older than 14d: hub_level_kpis.is_hub_opened_14d
+      Hub Code: hubs.hub_code
     row: 34
     col: 9
     width: 7
     height: 6
-
-
   - title: Bottom 10 - NPS Score
     name: Bottom 10 - NPS Score
     model: flink_v3
-    explore: hub_leaderboard_raw_order_order
+    explore: hub_level_kpis
     type: looker_bar
-    fields: [hubs.hub_name, hub_leaderboard.nps_score]
+    fields: [hubs.hub_name, hub_level_kpis.nps_score]
     filters:
-      hubs.hub_code: ''
-      hub_leaderboard.is_current_7d: 'Yes'
-      hub_leaderboard_raw_order_order.is_internal_order: 'no'
-      hub_leaderboard_raw_order_order.is_successful_order: 'yes'
-      hub_leaderboard_raw_order_order.created_date: after 2021/01/25
-    sorts: [hub_leaderboard.nps_score]
+      hub_level_kpis.is_current_7d: 'Yes'
+      hub_level_kpis.is_successful_order: 'yes'
+      hub_level_kpis.order_date: after 2021/01/25
+    sorts: [hub_level_kpis.nps_score]
     limit: 500
     column_limit: 50
     query_timezone: Europe/Berlin
@@ -938,8 +909,8 @@
     show_totals_labels: false
     show_silhouette: false
     totals_color: "#808080"
-    y_axes: [{label: '', orientation: bottom, series: [{axisId: hub_leaderboard.nps_score,
-            id: hub_leaderboard.nps_score, name: "% NPS"}], showLabels: false, showValues: false,
+    y_axes: [{label: '', orientation: bottom, series: [{axisId: hub_level_kpis.nps_score,
+            id: hub_level_kpis.nps_score, name: "% NPS"}], showLabels: false, showValues: false,
         unpinAxis: false, tickDensity: default, tickDensityCustom: 5, type: linear}]
     limit_displayed_rows_values:
       show_hide: show
@@ -947,9 +918,9 @@
       num_rows: '10'
     series_types: {}
     series_colors:
-      hub_leaderboard.nps_score: "#C2DD67"
+      hub_level_kpis.nps_score: "#C2DD67"
     series_point_styles:
-      hub_leaderboard.score_hub_leaderboard: triangle
+      hub_level_kpis.score_hub_leaderboard: triangle
     column_group_spacing_ratio: 0.8
     defaults_version: 1
     hidden_fields: []
@@ -958,12 +929,12 @@
       City: hubs.city
       Hub Name: hubs.hub_name
       City Manager: hubs.city_manager
+      Hub older than 14d: hub_level_kpis.is_hub_opened_14d
+      Hub Code: hubs.hub_code
     row: 34
     col: 16
     width: 7
     height: 6
-
-
   - name: Bottom 10 Hubs
     type: text
     title_text: Bottom 10 Hubs
@@ -972,18 +943,15 @@
     col: 0
     width: 24
     height: 2
-
-
   - title: Bottom 10 - Hub Score
     name: Bottom 10 - Hub Score
     model: flink_v3
-    explore: hub_leaderboard_raw_order_order
+    explore: hub_level_kpis
     type: looker_bar
     fields: [hubs.hub_name, hub_leaderboard_current.score_hub_leaderboard, hub_leaderboard_previous.score_hub_leaderboard]
     filters:
-      hub_leaderboard_raw_order_order.is_internal_order: 'no'
-      hub_leaderboard_raw_order_order.is_successful_order: 'yes'
-      hub_leaderboard_raw_order_order.created_date: after 2021/01/25
+      hub_level_kpis.is_successful_order: 'yes'
+      hub_level_kpis.order_date: after 2021/01/25
     sorts: [hub_leaderboard_current.score_hub_leaderboard]
     limit: 500
     dynamic_fields: [{_kind_hint: measure, table_calculation: wow, _type_hint: number,
@@ -1084,22 +1052,21 @@
       City: hubs.city
       Hub Name: hubs.hub_name
       City Manager: hubs.city_manager
+      Hub older than 14d: hub_level_kpis.is_hub_opened_14d
+      Hub Code: hubs.hub_code
     row: 28
     col: 0
     width: 9
     height: 12
-
-
   - title: Top 10 - Hub Score
     name: Top 10 - Hub Score
     model: flink_v3
-    explore: hub_leaderboard_raw_order_order
+    explore: hub_level_kpis
     type: looker_bar
     fields: [hubs.hub_name, hub_leaderboard_current.score_hub_leaderboard, hub_leaderboard_previous.score_hub_leaderboard]
     filters:
-      hub_leaderboard_raw_order_order.is_internal_order: 'no'
-      hub_leaderboard_raw_order_order.is_successful_order: 'yes'
-      hub_leaderboard_raw_order_order.created_date: after 2021/01/25
+      hub_level_kpis.is_successful_order: 'yes'
+      hub_level_kpis.order_date: after 2021/01/25
     sorts: [hub_leaderboard_current.score_hub_leaderboard desc]
     limit: 500
     column_limit: 50
@@ -1200,13 +1167,12 @@
       City: hubs.city
       Hub Name: hubs.hub_name
       City Manager: hubs.city_manager
+      Hub older than 14d: hub_level_kpis.is_hub_opened_14d
+      Hub Code: hubs.hub_code
     row: 14
     col: 0
     width: 9
     height: 12
-
-
-
   filters:
   - name: Country
     title: Country
@@ -1219,7 +1185,7 @@
       display: inline
       options: []
     model: flink_v3
-    explore: hub_leaderboard_raw_order_order
+    explore: hub_level_kpis
     listens_to_filters: []
     field: hubs.country
   - name: City
@@ -1233,7 +1199,7 @@
       display: popover
       options: []
     model: flink_v3
-    explore: hub_leaderboard_raw_order_order
+    explore: hub_level_kpis
     listens_to_filters: []
     field: hubs.city
   - name: Hub Name
@@ -1247,7 +1213,7 @@
       display: popover
       options: []
     model: flink_v3
-    explore: hub_leaderboard_raw_order_order
+    explore: hub_level_kpis
     listens_to_filters: []
     field: hubs.hub_name
   - name: City Manager
@@ -1261,6 +1227,34 @@
       display: popover
       options: []
     model: flink_v3
-    explore: hub_leaderboard_raw_order_order
+    explore: hub_level_kpis
     listens_to_filters: []
     field: hubs.city_manager
+  - name: Hub older than 14d
+    title: Hub older than 14d
+    type: field_filter
+    default_value: 'Yes'
+    allow_multiple_values: true
+    required: false
+    ui_config:
+      type: button_toggles
+      display: inline
+      options: []
+    model: flink_v3
+    explore: hub_level_kpis
+    listens_to_filters: []
+    field: hub_level_kpis.is_hub_opened_14d
+  - name: Hub Code
+    title: Hub Code
+    type: field_filter
+    default_value: ''
+    allow_multiple_values: true
+    required: false
+    ui_config:
+      type: tag_list
+      display: popover
+      options: []
+    model: flink_v3
+    explore: hub_level_kpis
+    listens_to_filters: []
+    field: hubs.hub_code
