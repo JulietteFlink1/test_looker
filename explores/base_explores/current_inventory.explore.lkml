@@ -11,6 +11,12 @@ explore: current_inventory {
 
   hidden: no
 
+  always_filter: {
+    filters:  [
+      hubs.is_hub_opened: "Yes"
+    ]
+  }
+
   access_filter: {
     field: hubs.country_iso
     user_attribute: country_iso

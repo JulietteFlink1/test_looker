@@ -19,6 +19,12 @@ explore: retail_kpis {
   label: "Retail SKU KPIs"
   group_label: "05) Retail"
   hidden: no
+
+  join: products {
+    sql_on: ${products.product_sku} = ${retail_kpis.sku} ;;
+    type: left_outer
+    relationship: many_to_one
+  }
 }
 
 explore: listed_skus_in_hubs {
