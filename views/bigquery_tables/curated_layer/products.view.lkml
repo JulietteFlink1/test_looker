@@ -254,6 +254,12 @@ view: products {
     group_label: "> Special Purpose Data"
   }
 
+  dimension: image_urls {
+    type: string
+    sql: ${TABLE}.image_urls ;;
+    group_label: "> Special Purpose Data"
+  }
+
   measure: cnt_sku {
     label: "# SKUs (Total)"
     group_label: "* Basic Counts *"
