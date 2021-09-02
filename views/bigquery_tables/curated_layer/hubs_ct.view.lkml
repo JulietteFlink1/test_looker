@@ -35,7 +35,7 @@ view: hubs_ct {
   }
 
   dimension: is_hub_opened {
-    label: "Hub is opened"
+    label: "Hub is Live?"
     type: yesno
     sql: ${TABLE}.start_date <= current_date() ;;
   }
