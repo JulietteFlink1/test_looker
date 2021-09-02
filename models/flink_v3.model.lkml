@@ -39,6 +39,11 @@ access_grant: can_view_customer_data {
   allowed_values: [ "Yes" ]
 }
 
+access_grant: can_view_buying_information {
+  user_attribute: access_buying_information
+  allowed_values: [ "Yes" ]
+}
+
 named_value_format: euro_accounting_2_precision {
   value_format: "\"€\"#,##0.00"
 }
