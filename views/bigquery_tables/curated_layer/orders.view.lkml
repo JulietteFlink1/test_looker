@@ -574,8 +574,8 @@ view: orders {
   dimension_group: time_between_hub_launch_and_order {
     group_label: "* Hub Dimensions *"
     type: duration
-    sql_start: null ;;
-    sql_end: null ;;
+    sql_start: ${hubs.start_date} ;;
+    sql_end: ${created_date} ;;
   }
 
   #dimension: time_since_sign_up_biweekly {
