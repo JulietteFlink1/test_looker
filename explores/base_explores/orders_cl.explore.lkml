@@ -1,4 +1,5 @@
 include: "/views/bigquery_tables/curated_layer/orders.view"
+include: "/views/extended_tables/orders_using_hubs.view"
 include: "/views/projects/cleaning/hubs_clean.view"
 include: "/views/projects/cleaning/shyftplan_riders_pickers_hours_clean.view"
 include: "/views/bigquery_tables/nps_after_order.view"
@@ -13,7 +14,7 @@ include: "/explores/base_explores/orders_cl.explore"
 explore: nps_after_order_cl { hidden:yes }
 
 explore: orders_cl {
-  from: orders
+  from: orders_using_hubs
   view_name: orders_cl  # needs to be set in order that the base_explore can be extended and referenced properly
   hidden: no
 

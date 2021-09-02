@@ -307,36 +307,7 @@ view: orders {
     sql: ${TABLE}.hub_name ;;
   }
 
-  dimension: hub_location  {
-    group_label: "* Hub Dimensions *"
-    type: location
-    sql_latitude: ${hubs.latitude};;
-    sql_longitude: ${hubs.longitude};;
-  }
 
-  dimension: delivery_distance_m {
-    group_label: "* Operations / Logistics *"
-    type: distance
-    units: meters
-    start_location_field: hub_location
-    end_location_field: customer_location
-  }
-
-  dimension: delivery_distance_km {
-    group_label: "* Operations / Logistics *"
-    type: distance
-    units: kilometers
-    start_location_field: hub_location
-    end_location_field: customer_location
-  }
-
-  dimension: delivery_distance_tier {
-    group_label: "* Operations / Logistics *"
-    type: tier
-    tiers: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 3.0, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9, 4.0]
-    style: interval
-    sql: ${delivery_distance_km} ;;
-  }
 
   dimension: fulfillment_time_tier {
     group_label: "* Operations / Logistics *"
@@ -571,12 +542,6 @@ view: orders {
   #  sql_end: ${now_raw} ;;
   #}
 
-  dimension_group: time_between_hub_launch_and_order {
-    group_label: "* Hub Dimensions *"
-    type: duration
-    sql_start: ${hubs.start_date} ;;
-    sql_end: ${created_date} ;;
-  }
 
   #dimension: time_since_sign_up_biweekly {
   #  group_label: "* User Dimensions *"
@@ -591,6 +556,7 @@ view: orders {
   dimension: order_date {
     group_label: "* Dates and Timestamps *"
     type: date
+    datatype: date
     sql: ${TABLE}.order_date ;;
     hidden: yes
   }
@@ -805,11 +771,7 @@ view: orders {
               ;;
   }
 
-  dimension: is_delivery_distance_over_10km {
-    group_label: "* Operations / Logistics *"
-    type: yesno
-    sql: IF(${delivery_distance_km} > 10, TRUE, FALSE);;
-  }
+
 
   ######## PARAMETERS
 
@@ -1030,16 +992,7 @@ view: orders {
     value_format: "0.0"
   }
 
-  measure: avg_delivery_distance_km {
-    group_label: "* Operations / Logistics *"
-    label: "AVG Delivery Distance (km)"
-    description: "Average distance between hub and customer dropoff (most direct path / straight line)"
-    hidden:  no
-    type: average
-    sql: ${delivery_distance_km};;
-    value_format: "0.00"
-    filters: [is_delivery_distance_over_10km: "no"]
-  }
+
 
   measure: avg_reaction_time {
     group_label: "* Operations / Logistics *"
