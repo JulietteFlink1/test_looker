@@ -13,7 +13,7 @@ explore: current_inventory {
 
   always_filter: {
     filters:  [
-      hubs.is_hub_opened: "Yes"
+      hubs.is_hub_opened: ""
     ]
   }
 

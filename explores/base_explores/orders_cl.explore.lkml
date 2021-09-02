@@ -29,7 +29,7 @@ explore: orders_cl {
       orders_cl.created_date: "after 2021-01-25",
       hubs.country: "",
       hubs.hub_name: "",
-      hubs.is_hub_opened: "Yes"
+      hubs.is_hub_opened: ""
     ]
   }
   access_filter: {
