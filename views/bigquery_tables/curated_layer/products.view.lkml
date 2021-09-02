@@ -76,6 +76,7 @@ view: products {
   }
 
   dimension_group: created {
+    label: "SKU Created"
     type: time
     timeframes: [
       raw,
@@ -87,10 +88,11 @@ view: products {
       year
     ]
     sql: ${TABLE}.created_at ;;
-    hidden: yes
+    hidden: no
   }
 
   dimension_group: last_modified {
+    label: "SKU Last Modified"
     type: time
     timeframes: [
       raw,
@@ -102,7 +104,7 @@ view: products {
       year
     ]
     sql: ${TABLE}.last_modified_at ;;
-    hidden: yes
+    hidden: no
   }
 
   dimension: country_iso {
