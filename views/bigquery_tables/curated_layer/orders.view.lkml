@@ -1398,4 +1398,12 @@ view: orders {
     sql: ${cnt_orders} ;;
   }
 
+  measure: avg_orders_per_hub{
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "AVG # Orders per hub"
+    type: number
+    sql: ${cnt_orders}/NULLIF(${cnt_unique_hubs},0) ;;
+  }
+
+
 }
