@@ -105,6 +105,12 @@ view: customers_metrics {
     sql: ${TABLE}.first_order_city ;;
   }
 
+  dimension: first_order_country {
+    group_label: "* User Dimensions *"
+    type: string
+    sql: ${TABLE}.first_order_country ;;
+  }
+
   dimension: first_order_hub {
     group_label: "* User Dimensions *"
     type: string
