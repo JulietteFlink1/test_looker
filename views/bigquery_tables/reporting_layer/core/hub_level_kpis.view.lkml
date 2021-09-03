@@ -37,13 +37,13 @@ view: hub_level_kpis {
   }
 
   dimension: is_hub_opened_14d {
-    label: "Hub is opened more than 14 days ago"
+    label: "Hub is Live more than 14 days?"
     type: yesno
     sql: ${hub_start_date} <= DATE_SUB(current_date(), Interval 14 day) ;;
   }
 
   dimension: is_hub_opened {
-    label: "Hub is opened"
+    label: "Hub is Live?"
     type: yesno
     sql: ${hub_start_date} <= current_date() ;;
   }

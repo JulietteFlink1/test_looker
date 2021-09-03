@@ -25,6 +25,13 @@ explore: retail_kpis {
     type: left_outer
     relationship: many_to_one
   }
+
+  join: retail_sku_attributes {
+    sql_on: ${retail_sku_attributes.sku} = ${retail_kpis.sku} ;;
+    type: left_outer
+    relationship: many_to_one
+  }
+
 }
 
 explore: listed_skus_in_hubs {

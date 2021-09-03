@@ -193,7 +193,7 @@ view: orderline {
   }
 
   dimension: product_sku {
-    type: number
+    type: string
     sql: ${TABLE}.sku ;;
     value_format_name: id
   }
