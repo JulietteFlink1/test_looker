@@ -76,6 +76,7 @@ view: products {
   }
 
   dimension_group: created {
+    label: "SKU Created"
     type: time
     timeframes: [
       raw,
@@ -87,10 +88,11 @@ view: products {
       year
     ]
     sql: ${TABLE}.created_at ;;
-    hidden: yes
+    hidden: no
   }
 
   dimension_group: last_modified {
+    label: "SKU Last Modified"
     type: time
     timeframes: [
       raw,
@@ -102,7 +104,7 @@ view: products {
       year
     ]
     sql: ${TABLE}.last_modified_at ;;
-    hidden: yes
+    hidden: no
   }
 
   dimension: country_iso {
@@ -252,6 +254,12 @@ view: products {
     group_label: "> Special Purpose Data"
   }
 
+  dimension: image_urls {
+    type: string
+    sql: ${TABLE}.image_urls ;;
+    group_label: "> Special Purpose Data"
+  }
+
   measure: cnt_sku {
     label: "# SKUs (Total)"
     group_label: "* Basic Counts *"
@@ -269,6 +277,14 @@ view: products {
     type: count
     value_format: "0"
     filters: [is_published: "yes"]
+  }
+
+  measure: cnt_product_images {
+    label: "# Product Images"
+    group_label: "* Basic Counts *"
+    type: sum
+    value_format_name: decimal_0
+    sql: ${TABLE}.cnt_product_images ;;
   }
 
   measure: count {

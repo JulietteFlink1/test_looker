@@ -1,5 +1,5 @@
-view: orders {
-  sql_table_name: `flink-data-prod.curated.orders`
+view: orders_cleaned_v2 {
+  sql_table_name: `flink-data-dev.sandbox_natalia.curated_orders_cleaned_v2`
     ;;
 
   view_label: "* Orders *"
@@ -149,6 +149,14 @@ view: orders {
     sql: ${TABLE}.customer_id ;;
   }
 
+  dimension: customer_id_mapped {
+    group_label: "* IDs *"
+    hidden: no
+    type: string
+    sql: ${TABLE}.customer_id_mapped ;;
+  }
+
+
   dimension: customer_note {
     type: string
     sql: ${TABLE}.customer_note ;;
@@ -219,16 +227,16 @@ view: orders {
     group_label: "* Dates and Timestamps *"
     type: time
     timeframes: [
-          raw,
-          minute15,
-          minute30,
-          hour_of_day,
-          time,
-          date,
-          week,
-          month,
-          quarter,
-          year
+      raw,
+      minute15,
+      minute30,
+      hour_of_day,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year
     ]
     sql: ${TABLE}.delivery_pdt_timestamp ;;
   }
@@ -307,7 +315,36 @@ view: orders {
     sql: ${TABLE}.hub_name ;;
   }
 
+  dimension: hub_location  {
+    group_label: "* Hub Dimensions *"
+    type: location
+    sql_latitude: ${hubs.latitude};;
+    sql_longitude: ${hubs.longitude};;
+  }
 
+  dimension: delivery_distance_m {
+    group_label: "* Operations / Logistics *"
+    type: distance
+    units: meters
+    start_location_field: hub_location
+    end_location_field: customer_location
+  }
+
+  dimension: delivery_distance_km {
+    group_label: "* Operations / Logistics *"
+    type: distance
+    units: kilometers
+    start_location_field: hub_location
+    end_location_field: customer_location
+  }
+
+  dimension: delivery_distance_tier {
+    group_label: "* Operations / Logistics *"
+    type: tier
+    tiers: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 3.0, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9, 4.0]
+    style: interval
+    sql: ${delivery_distance_km} ;;
+  }
 
   dimension: fulfillment_time_tier {
     group_label: "* Operations / Logistics *"
@@ -488,7 +525,7 @@ view: orders {
     group_label: "* User Dimensions *"
     type: string
     sql: CASE WHEN ${is_first_order} is True
-        THEN 'New Customer' ELSE 'Existing Customer' END ;;
+      THEN 'New Customer' ELSE 'Existing Customer' END ;;
   }
 
   dimension: no_distinct_skus {
@@ -542,6 +579,12 @@ view: orders {
   #  sql_end: ${now_raw} ;;
   #}
 
+  dimension_group: time_between_hub_launch_and_order {
+    group_label: "* Hub Dimensions *"
+    type: duration
+    sql_start: null ;;
+    sql_end: null ;;
+  }
 
   #dimension: time_since_sign_up_biweekly {
   #  group_label: "* User Dimensions *"
@@ -556,9 +599,7 @@ view: orders {
   dimension: order_date {
     group_label: "* Dates and Timestamps *"
     type: date
-    datatype: date
     sql: ${TABLE}.order_date ;;
-    hidden: yes
   }
 
   dimension_group: delivery_timestamp {
@@ -585,14 +626,12 @@ view: orders {
     group_label: "* Dates and Timestamps *"
     type: string
     sql: ${TABLE}.order_dow ;;
-    hidden: yes
   }
 
   dimension: order_hour {
     group_label: "* Dates and Timestamps *"
     type: number
     sql: ${TABLE}.order_hour ;;
-    hidden: yes
   }
 
   dimension: hour {
@@ -611,7 +650,6 @@ view: orders {
     group_label: "* Dates and Timestamps *"
     type: string
     sql: ${TABLE}.order_month ;;
-    hidden: yes
   }
 
   dimension: order_number {
@@ -657,14 +695,12 @@ view: orders {
     type: date_time
     convert_tz: no
     sql: ${TABLE}.order_week ;;
-    hidden: yes
   }
 
   dimension: order_year {
     group_label: "* Dates and Timestamps *"
     type: number
     sql: ${TABLE}.order_year ;;
-    hidden: yes
   }
 
   dimension: payment_type {
@@ -741,7 +777,7 @@ view: orders {
     sql: null ;;
   }
 
-   ####################################################### Needs to be checked ##################################
+  ####################################################### Needs to be checked ##################################
 
   dimension: translated_discount_name {
     hidden: yes
@@ -771,7 +807,11 @@ view: orders {
               ;;
   }
 
-
+  dimension: is_delivery_distance_over_10km {
+    group_label: "* Operations / Logistics *"
+    type: yesno
+    sql: IF(${delivery_distance_km} > 10, TRUE, FALSE);;
+  }
 
   ######## PARAMETERS
 
@@ -943,467 +983,468 @@ view: orders {
       }
 
 
-  ##############
-  ## AVERAGES ##
-  ##############
+      ##############
+      ## AVERAGES ##
+      ##############
 
 
-  measure: count {
-    type: count
-    drill_fields: [translated_discount_name, shipping_method_name, warehouse_name, discount_name]
-  }
+      measure: count {
+        type: count
+        drill_fields: [translated_discount_name, shipping_method_name, warehouse_name, discount_name]
+      }
 
-  measure: avg_promised_eta {
-    group_label: "* Operations / Logistics *"
-    label: "AVG PDT"
-    description: "Average Promised Fulfillment Time (PDT)"
-    hidden:  no
-    type: average
-    sql: ${delivery_eta_minutes};;
-    value_format: "0.0"
-  }
+      measure: avg_promised_eta {
+        group_label: "* Operations / Logistics *"
+        label: "AVG PDT"
+        description: "Average Promised Fulfillment Time (PDT)"
+        hidden:  no
+        type: average
+        sql: ${delivery_eta_minutes};;
+        value_format: "0.0"
+      }
 
-  measure: avg_fulfillment_time {
-    group_label: "* Operations / Logistics *"
-    label: "AVG Fulfillment Time (decimal)"
-    description: "Average Fulfillment Time (decimal minutes) considering order placement to delivery. Outliers excluded (<1min or >30min)"
-    hidden:  no
-    type: average
-    sql: ${fulfillment_time};;
-    value_format: "0.0"
-  }
+      measure: avg_fulfillment_time {
+        group_label: "* Operations / Logistics *"
+        label: "AVG Fulfillment Time (decimal)"
+        description: "Average Fulfillment Time (decimal minutes) considering order placement to delivery. Outliers excluded (<1min or >30min)"
+        hidden:  no
+        type: average
+        sql: ${fulfillment_time};;
+        value_format: "0.0"
+      }
 
-  measure: avg_fulfillment_time_mm_ss {
-    group_label: "* Operations / Logistics *"
-    label: "AVG Fulfillment Time (MM:SS)"
-    description: "Average Fulfillment Time considering order placement to delivery. Outliers excluded (<1min or >30min)"
-    type: average
-    sql: ${fulfillment_time} * 60 / 86400.0;;
-    value_format: "mm:ss"
-  }
+      measure: avg_fulfillment_time_mm_ss {
+        group_label: "* Operations / Logistics *"
+        label: "AVG Fulfillment Time (MM:SS)"
+        description: "Average Fulfillment Time considering order placement to delivery. Outliers excluded (<1min or >30min)"
+        type: average
+        sql: ${fulfillment_time} * 60 / 86400.0;;
+        value_format: "mm:ss"
+      }
 
-  measure: avg_delivery_time {
-    group_label: "* Operations / Logistics *"
-    label: "AVG Delivery Time"
-    description: "Average Delivery Time considering delivery start to delivery completion. Outliers excluded (<0min or >30min)"
-    hidden:  no
-    type: average
-    sql: ${delivery_time};;
-    value_format: "0.0"
-  }
+      measure: avg_delivery_time {
+        group_label: "* Operations / Logistics *"
+        label: "AVG Delivery Time"
+        description: "Average Delivery Time considering delivery start to delivery completion. Outliers excluded (<0min or >30min)"
+        hidden:  no
+        type: average
+        sql: ${delivery_time};;
+        value_format: "0.0"
+      }
 
+      measure: avg_delivery_distance_km {
+        group_label: "* Operations / Logistics *"
+        label: "AVG Delivery Distance (km)"
+        description: "Average distance between hub and customer dropoff (most direct path / straight line)"
+        hidden:  no
+        type: average
+        sql: ${delivery_distance_km};;
+        value_format: "0.00"
+        filters: [is_delivery_distance_over_10km: "no"]
+      }
 
+      measure: avg_reaction_time {
+        group_label: "* Operations / Logistics *"
+        label: "AVG Reaction Time"
+        description: "Average Reaction Time of the Picker considering order placement to first fulfillment created. Outliers excluded (<0min or >30min)"
+        hidden:  no
+        type: average
+        sql:${reaction_time};;
+        value_format: "0.0"
+      }
 
-  measure: avg_reaction_time {
-    group_label: "* Operations / Logistics *"
-    label: "AVG Reaction Time"
-    description: "Average Reaction Time of the Picker considering order placement to first fulfillment created. Outliers excluded (<0min or >30min)"
-    hidden:  no
-    type: average
-    sql:${reaction_time};;
-    value_format: "0.0"
-  }
+      measure: avg_picking_time {
+        group_label: "* Operations / Logistics *"
+        label: "AVG Picking Time"
+        description: "Average Picking Time considering first fulfillment to second fulfillment created. Outliers excluded (<0min or >30min)"
+        hidden:  no
+        type: average
+        sql:${time_diff_between_two_subsequent_fulfillments};;
+        value_format: "0.0"
+      }
 
-  measure: avg_picking_time {
-    group_label: "* Operations / Logistics *"
-    label: "AVG Picking Time"
-    description: "Average Picking Time considering first fulfillment to second fulfillment created. Outliers excluded (<0min or >30min)"
-    hidden:  no
-    type: average
-    sql:${time_diff_between_two_subsequent_fulfillments};;
-    value_format: "0.0"
-  }
+      measure: avg_acceptance_time {
+        group_label: "* Operations / Logistics *"
+        label: "AVG Acceptance Time"
+        description: "Average Acceptance Time of the Rider considering second fulfillment created until Tracking Timestamp. Outliers excluded (<0min or >30min)"
+        hidden:  no
+        type: average
+        sql:${acceptance_time};;
+        value_format: "0.0"
+      }
 
-  measure: avg_acceptance_time {
-    group_label: "* Operations / Logistics *"
-    label: "AVG Acceptance Time"
-    description: "Average Acceptance Time of the Rider considering second fulfillment created until Tracking Timestamp. Outliers excluded (<0min or >30min)"
-    hidden:  no
-    type: average
-    sql:${acceptance_time};;
-    value_format: "0.0"
-  }
+      measure: avg_order_value_gross {
+        group_label: "* Monetary Values *"
+        label: "AVG Order Value (Gross)"
+        description: "Average value of orders considering total gross order values. Includes fees (gross), before deducting discounts."
+        hidden:  no
+        type: average
+        sql: ${gmv_gross};;
+        value_format_name: euro_accounting_2_precision
+      }
 
-  measure: avg_order_value_gross {
-    group_label: "* Monetary Values *"
-    label: "AVG Order Value (Gross)"
-    description: "Average value of orders considering total gross order values. Includes fees (gross), before deducting discounts."
-    hidden:  no
-    type: average
-    sql: ${gmv_gross};;
-    value_format_name: euro_accounting_2_precision
-  }
+      measure: avg_order_value_net {
+        group_label: "* Monetary Values *"
+        label: "AVG Order Value (Net)"
+        description: "Average value of orders considering total net order values. Includes fees (net), before deducting discounts."
+        hidden:  no
+        type: average
+        sql: ${gmv_net};;
+        value_format_name: euro_accounting_2_precision
+      }
 
-  measure: avg_order_value_net {
-    group_label: "* Monetary Values *"
-    label: "AVG Order Value (Net)"
-    description: "Average value of orders considering total net order values. Includes fees (net), before deducting discounts."
-    hidden:  no
-    type: average
-    sql: ${gmv_net};;
-    value_format_name: euro_accounting_2_precision
-  }
+      measure: avg_product_value_gross {
+        group_label: "* Monetary Values *"
+        label: "AVG Product Value (Gross)"
+        description: "Average value of product items (incl. VAT). Excludes fees (gross), before deducting discounts."
+        hidden:  no
+        type: average
+        sql: ${gmv_gross} - ${shipping_price_gross_amount};;
+        value_format_name: euro_accounting_2_precision
+      }
 
-  measure: avg_product_value_gross {
-    group_label: "* Monetary Values *"
-    label: "AVG Product Value (Gross)"
-    description: "Average value of product items (incl. VAT). Excludes fees (gross), before deducting discounts."
-    hidden:  no
-    type: average
-    sql: ${gmv_gross} - ${shipping_price_gross_amount};;
-    value_format_name: euro_accounting_2_precision
-  }
+      measure: avg_product_value_net {
+        group_label: "* Monetary Values *"
+        label: "AVG Product Value (Net)"
+        description: "Average value of product items (excl. VAT). Excludes fees (net), before deducting discounts."
+        hidden:  no
+        type: average
+        sql: ${gmv_net} - ${shipping_price_net_amount};;
+        value_format_name: euro_accounting_2_precision
+      }
 
-  measure: avg_product_value_net {
-    group_label: "* Monetary Values *"
-    label: "AVG Product Value (Net)"
-    description: "Average value of product items (excl. VAT). Excludes fees (net), before deducting discounts."
-    hidden:  no
-    type: average
-    sql: ${gmv_net} - ${shipping_price_net_amount};;
-    value_format_name: euro_accounting_2_precision
-  }
+      measure: avg_delivery_fee_gross {
+        group_label: "* Monetary Values *"
+        label: "AVG Delivery Fee (Gross)"
+        description: "Average value of Delivery Fees (Gross)"
+        hidden:  no
+        type: average
+        sql: ${shipping_price_gross_amount};;
+        value_format_name: euro_accounting_2_precision
+      }
 
-  measure: avg_delivery_fee_gross {
-    group_label: "* Monetary Values *"
-    label: "AVG Delivery Fee (Gross)"
-    description: "Average value of Delivery Fees (Gross)"
-    hidden:  no
-    type: average
-    sql: ${shipping_price_gross_amount};;
-    value_format_name: euro_accounting_2_precision
-  }
+      measure: avg_delivery_fee_net {
+        group_label: "* Monetary Values *"
+        label: "AVG Delivery Fee (Net)"
+        description: "Average value of Delivery Fees (Net)"
+        hidden:  no
+        type: average
+        sql: ${shipping_price_net_amount};;
+        value_format_name: euro_accounting_2_precision
+      }
 
-  measure: avg_delivery_fee_net {
-    group_label: "* Monetary Values *"
-    label: "AVG Delivery Fee (Net)"
-    description: "Average value of Delivery Fees (Net)"
-    hidden:  no
-    type: average
-    sql: ${shipping_price_net_amount};;
-    value_format_name: euro_accounting_2_precision
-  }
+      ##########
+      ## SUMS ##
+      ##########
 
-  ##########
-  ## SUMS ##
-  ##########
+      measure: sum_gmv_gross {
+        group_label: "* Monetary Values *"
+        label: "SUM GMV (Gross)"
+        description: "Sum of Gross Merchandise Value of orders incl. fees and before deduction of discounts (incl. VAT)"
+        hidden:  no
+        type: sum
+        sql: ${gmv_gross};;
+        value_format_name: euro_accounting_0_precision
+      }
 
-  measure: sum_gmv_gross {
-    group_label: "* Monetary Values *"
-    label: "SUM GMV (Gross)"
-    description: "Sum of Gross Merchandise Value of orders incl. fees and before deduction of discounts (incl. VAT)"
-    hidden:  no
-    type: sum
-    sql: ${gmv_gross};;
-    value_format_name: euro_accounting_0_precision
-  }
+      measure: sum_gmv_net {
+        group_label: "* Monetary Values *"
+        label: "SUM GMV (Net)"
+        description: "Sum of Gross Merchandise Value of orders incl. fees and before deduction of discounts (excl. VAT)"
+        hidden:  no
+        type: sum
+        sql: ${gmv_net};;
+        value_format_name: euro_accounting_0_precision
+      }
 
-  measure: sum_gmv_net {
-    group_label: "* Monetary Values *"
-    label: "SUM GMV (Net)"
-    description: "Sum of Gross Merchandise Value of orders incl. fees and before deduction of discounts (excl. VAT)"
-    hidden:  no
-    type: sum
-    sql: ${gmv_net};;
-    value_format_name: euro_accounting_0_precision
-  }
+      measure: sum_revenue_gross {
+        group_label: "* Monetary Values *"
+        label: "SUM Revenue (gross)"
+        description: "Sum of Revenue (GMV after subsidies) incl. VAT"
+        hidden:  no
+        type: sum
+        sql: ${total_gross_amount};;
+        value_format_name: euro_accounting_2_precision
+      }
 
-  measure: sum_revenue_gross {
-    group_label: "* Monetary Values *"
-    label: "SUM Revenue (gross)"
-    description: "Sum of Revenue (GMV after subsidies) incl. VAT"
-    hidden:  no
-    type: sum
-    sql: ${total_gross_amount};;
-    value_format_name: euro_accounting_2_precision
-  }
+      measure: sum_revenue_net {
+        group_label: "* Monetary Values *"
+        label: "SUM Revenue (Net)"
+        description: "Sum of Revenue (GMV after subsidies) excl. VAT"
+        hidden:  no
+        type: sum
+        sql: ${total_net_amount};;
+        value_format_name: euro_accounting_0_precision
+      }
 
-  measure: sum_revenue_net {
-    group_label: "* Monetary Values *"
-    label: "SUM Revenue (Net)"
-    description: "Sum of Revenue (GMV after subsidies) excl. VAT"
-    hidden:  no
-    type: sum
-    sql: ${total_net_amount};;
-    value_format_name: euro_accounting_0_precision
-  }
+      measure: sum_discount_amt {
+        group_label: "* Monetary Values *"
+        label: "SUM Discount Amount"
+        description: "Sum of Discount amount applied on orders"
+        hidden:  no
+        type: sum
+        sql: ${discount_amount};;
+        value_format_name: euro_accounting_0_precision
+      }
 
-  measure: sum_discount_amt {
-    group_label: "* Monetary Values *"
-    label: "SUM Discount Amount"
-    description: "Sum of Discount amount applied on orders"
-    hidden:  no
-    type: sum
-    sql: ${discount_amount};;
-    value_format_name: euro_accounting_0_precision
-  }
+      measure: sum_delivery_fee_gross {
+        group_label: "* Monetary Values *"
+        label: "SUM Delivery Fee (Gross)"
+        description: "Sum of Delivery Fees (Gross) paid by Customers"
+        hidden:  no
+        type: sum
+        sql: ${shipping_price_gross_amount};;
+        value_format_name: euro_accounting_0_precision
+      }
 
-  measure: sum_delivery_fee_gross {
-    group_label: "* Monetary Values *"
-    label: "SUM Delivery Fee (Gross)"
-    description: "Sum of Delivery Fees (Gross) paid by Customers"
-    hidden:  no
-    type: sum
-    sql: ${shipping_price_gross_amount};;
-    value_format_name: euro_accounting_0_precision
-  }
+      measure: sum_delivery_fee_net {
+        group_label: "* Monetary Values *"
+        label: "SUM Delivery Fee (Net)"
+        description: "Sum of Delivery Fees (Net) paid by Customers"
+        hidden:  no
+        type: sum
+        sql: ${shipping_price_net_amount};;
+        value_format_name: euro_accounting_0_precision
+      }
 
-  measure: sum_delivery_fee_net {
-    group_label: "* Monetary Values *"
-    label: "SUM Delivery Fee (Net)"
-    description: "Sum of Delivery Fees (Net) paid by Customers"
-    hidden:  no
-    type: sum
-    sql: ${shipping_price_net_amount};;
-    value_format_name: euro_accounting_0_precision
-  }
+      measure: sum_quantity_fulfilled {
+        label: "Quantity"
+        description: "Fulfilled Quantity"
+        type: sum
+        sql: ${number_of_items} ;;
+      }
 
-  measure: sum_quantity_fulfilled {
-    label: "Quantity"
-    description: "Fulfilled Quantity"
-    type: sum
-    sql: ${number_of_items} ;;
-  }
+      ############
+      ## COUNTS ##
+      ############
 
-  ############
-  ## COUNTS ##
-  ############
+      measure: cnt_unique_customers {
+        group_label: "* Basic Counts (Orders / Customers etc.) *"
+        label: "# Unique Customers"
+        description: "Count of Unique Customers identified via their Email"
+        hidden:  no
+        type: count_distinct
+        sql: ${customer_id_mapped};;
+        value_format: "0"
+      }
 
-  measure: cnt_unique_customers {
-    group_label: "* Basic Counts (Orders / Customers etc.) *"
-    label: "# Unique Customers"
-    description: "Count of Unique Customers identified via their Email"
-    hidden:  no
-    type: count_distinct
-    sql: ${user_email};;
-    value_format: "0"
-  }
+      measure: cnt_unique_customers_with_voucher {
+        group_label: "* Basic Counts (Orders / Customers etc.) *"
+        label: "# Unique Customers (with Voucher)"
+        description: "Count of Unique Customers identified via their Email (only considering orders with a voucher)"
+        hidden:  no
+        type: count_distinct
+        sql: ${customer_id_mapped};;
+        filters: [discount_amount: ">0"]
+        value_format: "0"
+      }
 
-  measure: cnt_unique_customers_with_voucher {
-    group_label: "* Basic Counts (Orders / Customers etc.) *"
-    label: "# Unique Customers (with Voucher)"
-    description: "Count of Unique Customers identified via their Email (only considering orders with a voucher)"
-    hidden:  no
-    type: count_distinct
-    sql: ${user_email};;
-    filters: [discount_amount: ">0"]
-    value_format: "0"
-  }
+      measure: cnt_unique_customers_without_voucher {
+        group_label: "* Basic Counts (Orders / Customers etc.) *"
+        label: "# Unique Customers (without Voucher)"
+        description: "Count of Unique Customers identified via their Email (not considering orders with a voucher)"
+        hidden:  no
+        type: count_distinct
+        sql: ${customer_id_mapped};;
+        filters: [discount_amount: "0 OR null"]
+        value_format: "0"
+      }
 
-  measure: cnt_unique_customers_without_voucher {
-    group_label: "* Basic Counts (Orders / Customers etc.) *"
-    label: "# Unique Customers (without Voucher)"
-    description: "Count of Unique Customers identified via their Email (not considering orders with a voucher)"
-    hidden:  no
-    type: count_distinct
-    sql: ${user_email};;
-    filters: [discount_amount: "0 OR null"]
-    value_format: "0"
-  }
+      measure: cnt_unique_hubs {
+        group_label: "* Basic Counts (Orders / Customers etc.) *"
+        label: "# Unique Hubs"
+        description: "Count of Unique Hubs which received orders"
+        hidden:  no
+        type: count_distinct
+        sql: ${warehouse_name};;
+        value_format: "0"
+      }
 
-  measure: cnt_unique_hubs {
-    group_label: "* Basic Counts (Orders / Customers etc.) *"
-    label: "# Unique Hubs"
-    description: "Count of Unique Hubs which received orders"
-    hidden:  no
-    type: count_distinct
-    sql: ${warehouse_name};;
-    value_format: "0"
-  }
+      measure: cnt_orders {
+        group_label: "* Basic Counts (Orders / Customers etc.) *"
+        label: "# Orders"
+        description: "Count of successful Orders"
+        hidden:  no
+        type: count
+        value_format: "0"
+      }
 
-  measure: cnt_orders {
-    group_label: "* Basic Counts (Orders / Customers etc.) *"
-    label: "# Orders"
-    description: "Count of successful Orders"
-    hidden:  no
-    type: count
-    value_format: "0"
-  }
+      measure: cnt_orders_with_discount {
+        group_label: "* Basic Counts (Orders / Customers etc.) *"
+        label: "# Orders with Discount"
+        description: "Count of successful Orders with some Discount applied"
+        hidden:  no
+        type: count
+        filters: [discount_amount: ">0"]
+        value_format: "0"
+      }
 
-  measure: cnt_orders_with_discount {
-    group_label: "* Basic Counts (Orders / Customers etc.) *"
-    label: "# Orders with Discount"
-    description: "Count of successful Orders with some Discount applied"
-    hidden:  no
-    type: count
-    filters: [discount_amount: ">0"]
-    value_format: "0"
-  }
+      measure: cnt_orders_without_discount {
+        group_label: "* Basic Counts (Orders / Customers etc.) *"
+        label: "# Orders without Discount"
+        description: "Count of successful Orders with no Discount applied"
+        hidden:  no
+        type: count
+        filters: [discount_amount: "0 OR null"]
+        value_format: "0"
+      }
 
-  measure: cnt_orders_without_discount {
-    group_label: "* Basic Counts (Orders / Customers etc.) *"
-    label: "# Orders without Discount"
-    description: "Count of successful Orders with no Discount applied"
-    hidden:  no
-    type: count
-    filters: [discount_amount: "0 OR null"]
-    value_format: "0"
-  }
+      measure: cnt_unique_orders_new_customers {
+        group_label: "* Basic Counts (Orders / Customers etc.) *"
+        label: "# Orders New Customers"
+        description: "Count of successful Orders placed by new customers (Acquisitions)"
+        hidden:  no
+        type: count
+        value_format: "0"
+        filters: [customer_type: "New Customer"]
+      }
 
-  measure: cnt_unique_orders_new_customers {
-    group_label: "* Basic Counts (Orders / Customers etc.) *"
-    label: "# Orders New Customers"
-    description: "Count of successful Orders placed by new customers (Acquisitions)"
-    hidden:  no
-    type: count
-    value_format: "0"
-    filters: [customer_type: "New Customer"]
-  }
+      measure: cnt_unique_orders_existing_customers {
+        group_label: "* Basic Counts (Orders / Customers etc.) *"
+        label: "# Orders Existing Customers"
+        description: "Count of successful Orders placed by returning customers"
+        hidden:  no
+        type: count
+        value_format: "0"
+        filters: [customer_type: "Existing Customer"]
+      }
 
-  measure: cnt_unique_orders_existing_customers {
-    group_label: "* Basic Counts (Orders / Customers etc.) *"
-    label: "# Orders Existing Customers"
-    description: "Count of successful Orders placed by returning customers"
-    hidden:  no
-    type: count
-    value_format: "0"
-    filters: [customer_type: "Existing Customer"]
-  }
+      measure: cnt_orders_with_delivery_eta_available {
+        # group_label: "* Operations / Logistics *"
+        view_label: "* Hubs *"
+        group_label: "Hub Leaderboard - Order Metrics"
+        label: "# Orders with Delivery ETA available"
+        description: "Count of Orders where a promised ETA is available"
+        hidden:  no
+        type: count
+        filters: [is_delivery_eta_available: "yes"]
+        value_format: "0"
+      }
 
-  measure: cnt_orders_with_delivery_eta_available {
-    # group_label: "* Operations / Logistics *"
-    view_label: "* Hubs *"
-    group_label: "Hub Leaderboard - Order Metrics"
-    label: "# Orders with Delivery ETA available"
-    description: "Count of Orders where a promised ETA is available"
-    hidden:  no
-    type: count
-    filters: [is_delivery_eta_available: "yes"]
-    value_format: "0"
-  }
+      measure: cnt_orders_delayed_under_0_min {
+        # group_label: "* Operations / Logistics *"
+        view_label: "* Hubs *"
+        group_label: "Hub Leaderboard - Order Metrics"
+        label: "# Orders delivered in time"
+        description: "Count of Orders delivered no later than promised ETA"
+        hidden:  no
+        type: count
+        filters: [delivery_delay_since_eta:"<=0"]
+        value_format: "0"
+      }
 
-  measure: cnt_orders_delayed_under_0_min {
-    # group_label: "* Operations / Logistics *"
-    view_label: "* Hubs *"
-    group_label: "Hub Leaderboard - Order Metrics"
-    label: "# Orders delivered in time"
-    description: "Count of Orders delivered no later than promised ETA"
-    hidden:  no
-    type: count
-    filters: [delivery_delay_since_eta:"<=0"]
-    value_format: "0"
-  }
+      measure: cnt_orders_delayed_over_5_min {
+        # group_label: "* Operations / Logistics *"
+        view_label: "* Hubs *"
+        group_label: "Hub Leaderboard - Order Metrics"
+        label: "# Orders delivered late >5min"
+        description: "Count of Orders delivered >5min later than promised ETA"
+        hidden:  no
+        type: count
+        filters: [delivery_delay_since_eta:">=5"]
+        value_format: "0"
+      }
 
-  measure: cnt_orders_delayed_over_5_min {
-    # group_label: "* Operations / Logistics *"
-    view_label: "* Hubs *"
-    group_label: "Hub Leaderboard - Order Metrics"
-    label: "# Orders delivered late >5min"
-    description: "Count of Orders delivered >5min later than promised ETA"
-    hidden:  no
-    type: count
-    filters: [delivery_delay_since_eta:">=5"]
-    value_format: "0"
-  }
+      measure: cnt_orders_delayed_over_10_min {
+        group_label: "* Operations / Logistics *"
+        label: "# Orders delivered late >10min"
+        description: "Count of Orders delivered >10min later than promised ETA"
+        hidden:  yes
+        type: count
+        filters: [delivery_delay_since_eta:">=10"]
+        value_format: "0"
+      }
 
-  measure: cnt_orders_delayed_over_10_min {
-    group_label: "* Operations / Logistics *"
-    label: "# Orders delivered late >10min"
-    description: "Count of Orders delivered >10min later than promised ETA"
-    hidden:  yes
-    type: count
-    filters: [delivery_delay_since_eta:">=10"]
-    value_format: "0"
-  }
+      measure: cnt_orders_delayed_over_15_min {
+        group_label: "* Operations / Logistics *"
+        label: "# Orders delivered late >15min"
+        description: "Count of Orders delivered >15min later than promised ETA"
+        hidden:  yes
+        type: count
+        filters: [delivery_delay_since_eta:">=15"]
+        value_format: "0"
+      }
 
-  measure: cnt_orders_delayed_over_15_min {
-    group_label: "* Operations / Logistics *"
-    label: "# Orders delivered late >15min"
-    description: "Count of Orders delivered >15min later than promised ETA"
-    hidden:  yes
-    type: count
-    filters: [delivery_delay_since_eta:">=15"]
-    value_format: "0"
-  }
+      ################
+      ## PERCENTAGE ##
+      ################
 
-  ################
-  ## PERCENTAGE ##
-  ################
+      measure: pct_acquisition_share {
+        group_label: "* Marketing *"
+        label: "% Acquisition Share"
+        description: "Share of New Customer Acquisitions over Total Orders"
+        hidden:  no
+        type: number
+        sql: ${cnt_unique_orders_new_customers} / NULLIF(${cnt_orders}, 0);;
+        value_format: "0%"
+      }
 
-  measure: pct_acquisition_share {
-    group_label: "* Marketing *"
-    label: "% Acquisition Share"
-    description: "Share of New Customer Acquisitions over Total Orders"
-    hidden:  no
-    type: number
-    sql: ${cnt_unique_orders_new_customers} / NULLIF(${cnt_orders}, 0);;
-    value_format: "0%"
-  }
+      measure: pct_discount_order_share {
+        group_label: "* Marketing *"
+        label: "% Discount Order Share"
+        description: "Share of Orders which had some Discount applied"
+        hidden:  no
+        type: number
+        sql: ${cnt_orders_with_discount} / NULLIF(${cnt_orders}, 0);;
+        value_format: "0%"
+      }
 
-  measure: pct_discount_order_share {
-    group_label: "* Marketing *"
-    label: "% Discount Order Share"
-    description: "Share of Orders which had some Discount applied"
-    hidden:  no
-    type: number
-    sql: ${cnt_orders_with_discount} / NULLIF(${cnt_orders}, 0);;
-    value_format: "0%"
-  }
+      measure: pct_discount_value_of_gross_total{
+        group_label: "* Marketing *"
+        label: "% Discount Value Share"
+        description: "Dividing Total Discount amounts over GMV"
+        hidden:  no
+        type: number
+        sql: ${sum_discount_amt} / NULLIF(${sum_gmv_gross}, 0);;
+        value_format: "0%"
+      }
 
-  measure: pct_discount_value_of_gross_total{
-    group_label: "* Marketing *"
-    label: "% Discount Value Share"
-    description: "Dividing Total Discount amounts over GMV"
-    hidden:  no
-    type: number
-    sql: ${sum_discount_amt} / NULLIF(${sum_gmv_gross}, 0);;
-    value_format: "0%"
-  }
+      measure: pct_delivery_in_time{
+        group_label: "* Operations / Logistics *"
+        label: "% Orders delivered in time"
+        description: "Share of orders delivered no later than promised ETA (only orders with valid ETA time considered)"
+        hidden:  no
+        type: number
+        sql: ${cnt_orders_delayed_under_0_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
+        value_format: "0%"
+      }
 
-  measure: pct_delivery_in_time{
-    group_label: "* Operations / Logistics *"
-    label: "% Orders delivered in time"
-    description: "Share of orders delivered no later than promised ETA (only orders with valid ETA time considered)"
-    hidden:  no
-    type: number
-    sql: ${cnt_orders_delayed_under_0_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
-    value_format: "0%"
-  }
+      measure: pct_delivery_late_over_5_min{
+        group_label: "* Operations / Logistics *"
+        label: "% Orders delayed >5min"
+        description: "Share of orders delivered >5min later than promised ETA (only orders with valid ETA time considered)"
+        hidden:  no
+        type: number
+        sql: ${cnt_orders_delayed_over_5_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
+        value_format: "0%"
+      }
 
-  measure: pct_delivery_late_over_5_min{
-    group_label: "* Operations / Logistics *"
-    label: "% Orders delayed >5min"
-    description: "Share of orders delivered >5min later than promised ETA (only orders with valid ETA time considered)"
-    hidden:  no
-    type: number
-    sql: ${cnt_orders_delayed_over_5_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
-    value_format: "0%"
-  }
+      measure: pct_delivery_late_over_10_min{
+        group_label: "* Operations / Logistics *"
+        label: "% Orders delayed >10min"
+        description: "Share of orders delivered >10min later than promised ETA (only orders with valid ETA time considered)"
+        hidden:  no
+        type: number
+        sql: ${cnt_orders_delayed_over_10_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
+        value_format: "0%"
+      }
 
-  measure: pct_delivery_late_over_10_min{
-    group_label: "* Operations / Logistics *"
-    label: "% Orders delayed >10min"
-    description: "Share of orders delivered >10min later than promised ETA (only orders with valid ETA time considered)"
-    hidden:  no
-    type: number
-    sql: ${cnt_orders_delayed_over_10_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
-    value_format: "0%"
-  }
+      measure: pct_delivery_late_over_15_min{
+        group_label: "* Operations / Logistics *"
+        label: "% Orders delayed >15min"
+        description: "Share of orders delivered >15min later than promised ETA (only orders with valid ETA time considered)"
+        hidden:  no
+        type: number
+        sql: ${cnt_orders_delayed_over_15_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
+        value_format: "0%"
+      }
 
-  measure: pct_delivery_late_over_15_min{
-    group_label: "* Operations / Logistics *"
-    label: "% Orders delayed >15min"
-    description: "Share of orders delivered >15min later than promised ETA (only orders with valid ETA time considered)"
-    hidden:  no
-    type: number
-    sql: ${cnt_orders_delayed_over_15_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
-    value_format: "0%"
-  }
+      measure: percent_of_total_orders {
+        group_label: "* Basic Counts (Orders / Customers etc.) *"
+        label: "% Of Total Orders"
+        direction: "column"
+        type: percent_of_total
+        sql: ${cnt_orders} ;;
+      }
 
-  measure: percent_of_total_orders {
-    group_label: "* Basic Counts (Orders / Customers etc.) *"
-    label: "% Of Total Orders"
-    direction: "column"
-    type: percent_of_total
-    sql: ${cnt_orders} ;;
-  }
-
-  measure: avg_orders_per_hub{
-    group_label: "* Basic Counts (Orders / Customers etc.) *"
-    label: "AVG # Orders per hub"
-    type: number
-    sql: ${cnt_orders}/NULLIF(${cnt_unique_hubs},0) ;;
-  }
-
-
-}
+    }

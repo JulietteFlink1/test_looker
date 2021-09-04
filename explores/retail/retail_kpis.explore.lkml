@@ -16,9 +16,22 @@ include: "/**/*.explore"
 # }
 
 explore: retail_kpis {
-  label: "SKU Analytics"
-  group_label: "15) Ad-Hoc"
-  hidden: yes
+  label: "Retail SKU KPIs"
+  group_label: "05) Retail"
+  hidden: no
+
+  join: products {
+    sql_on: ${products.product_sku} = ${retail_kpis.sku} ;;
+    type: left_outer
+    relationship: many_to_one
+  }
+
+  join: retail_sku_attributes {
+    sql_on: ${retail_sku_attributes.sku} = ${retail_kpis.sku} ;;
+    type: left_outer
+    relationship: many_to_one
+  }
+
 }
 
 explore: listed_skus_in_hubs {

@@ -30,7 +30,14 @@ view: hubs_ct {
 
   dimension: start_date {
     type: date
-    sql: CAST(${TABLE}.start_date AS TIMESTAMP);;
+    datatype: date
+    sql: ${TABLE}.start_date;;
+  }
+
+  dimension: is_hub_opened {
+    label: "Hub is Live?"
+    type: yesno
+    sql: ${TABLE}.start_date <= current_date() ;;
   }
 
   dimension_group: time_between_hub_launch_and_today {

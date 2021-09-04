@@ -1,4 +1,5 @@
 view: gorillas_hubs {
+  view_label: "* Gorillas Hub Data *"
   sql_table_name: `flink-data-prod.curated.gorillas_hubs`
     ;;
 
@@ -21,6 +22,7 @@ view: gorillas_hubs {
   dimension: hub_id {
     type: string
     sql: ${TABLE}.hub_id ;;
+    group_label: "> IDs"
   }
 
   dimension: hub_label {
@@ -41,6 +43,12 @@ view: gorillas_hubs {
   dimension: longitude {
     type: number
     sql: ${TABLE}.longitude ;;
+  }
+
+  dimension: location {
+    type: location
+    sql_latitude: ${TABLE}.latitude ;;
+    sql_longitude: ${TABLE}.longitude ;;
   }
 
   dimension_group: partition_timestamp {

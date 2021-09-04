@@ -1,5 +1,5 @@
-view: customers_metrics {
-  sql_table_name: `flink-data-prod.curated.customers_metrics`
+view: customers_metrics_cleaned_v2 {
+  sql_table_name: `flink-data-dev.sandbox_natalia.customer_metrics_cleaned_v2`
     ;;
 
   dimension: reorder_number_28_days {
@@ -40,11 +40,19 @@ view: customers_metrics {
     sql: ${TABLE}.country_iso ;;
   }
 
-  dimension: unique_id {
+  #dimension: unique_id {
+  #  group_label: "* IDs *"
+  #. hidden: yes
+  #  primary_key: no
+  #  sql: concat(${country_iso}, ${user_email}) ;;
+  #}
+
+  dimension: customer_id_mapped {
     group_label: "* IDs *"
-    hidden: yes
+    hidden: no
+    type: string
     primary_key: yes
-    sql: concat(${country_iso}, ${user_email}) ;;
+    sql: ${TABLE}.customer_id_mapped  ;;
   }
 
   dimension: country {
@@ -53,11 +61,11 @@ view: customers_metrics {
     sql: ${TABLE}.first_order_country ;;
   }
 
-  dimension: user_email {
-    group_label: "* User Dimensions *"
-    type: string
-    sql: ${TABLE}.customer_email ;;
-  }
+  # dimension: user_email {
+  #   group_label: "* User Dimensions *"
+  #   type: string
+  #   sql: ${TABLE}.customer_email ;;
+  # }
 
   dimension: customer_id {
     group_label: "* IDs *"
@@ -103,12 +111,6 @@ view: customers_metrics {
     group_label: "* User Dimensions *"
     type: string
     sql: ${TABLE}.first_order_city ;;
-  }
-
-  dimension: first_order_country {
-    group_label: "* User Dimensions *"
-    type: string
-    sql: ${TABLE}.first_order_country ;;
   }
 
   dimension: first_order_hub {
@@ -291,7 +293,7 @@ view: customers_metrics {
     group_label: "* User Dimensions *"
     type: duration
     sql_start: ${first_order_raw} ;;
-    sql_end: ${orders_cl.created_raw} ;;
+    sql_end: ${orders_cl_cleaned_v2.created_raw} ;;
   }
 
   dimension_group: time_between_sign_up_month_and_now {

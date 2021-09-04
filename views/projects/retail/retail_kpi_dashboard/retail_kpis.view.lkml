@@ -225,6 +225,12 @@ view: retail_kpis {
     drill_fields: [detail*]
   }
 
+  dimension: primary_key {
+    hidden: yes
+    primary_key: yes
+    sql: concat(${TABLE}.sku, ifnull(${TABLE}.country_iso, 'nA'), cast(${TABLE}.order_date as string)) ;;
+  }
+
   dimension: sku {
     type: string
     sql: ${TABLE}.sku ;;

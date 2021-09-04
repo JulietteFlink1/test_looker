@@ -1,5 +1,5 @@
 view: gorillas_products {
-  view_label: "* Gorillas Product Data *"
+  view_label: "* Gorillas Products Data *"
   sql_table_name: `flink-data-prod.curated.gorillas_products` ;;
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -39,7 +39,6 @@ view: gorillas_products {
     type: string
     sql: ${TABLE}.hub_id ;;
     group_label: "> IDs"
-
   }
 
   dimension: product_id {
@@ -51,28 +50,6 @@ view: gorillas_products {
   dimension: ean {
     type: string
     sql: ${TABLE}.ean ;;
-  }
-
-  dimension: parent_category_id {
-    type: string
-    sql: ${TABLE}.parent_category_id ;;
-    group_label: "> IDs"
-  }
-
-  dimension: parent_category {
-    type: string
-    sql: ${TABLE}.parent_category ;;
-  }
-
-  dimension: subcategory_id {
-    type: string
-    sql: ${TABLE}.subcategory_id ;;
-    group_label: "> IDs"
-  }
-
-  dimension: subcategory {
-    type: string
-    sql: ${TABLE}.subcategory ;;
   }
 
   dimension: product_name {
@@ -146,6 +123,55 @@ view: gorillas_products {
     type: string
     sql: ${TABLE}.product_synonyms ;;
     group_label: "> Special Purpose Data"
+  }
+
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  measure: avg_product_price {
+    label: "AVG Price"
+    description: "Average gross item price."
+    hidden:  no
+    type: average
+    sql: ${price_gross};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: med_product_price {
+    label: "MED Price"
+    description: "Median gross item price."
+    hidden:  no
+    type: median
+    sql: ${price_gross};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: min_product_price {
+    label: "MIN Price"
+    description: "Minimum gross item price."
+    hidden:  no
+    type: min
+    sql: ${price_gross};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: max_product_price {
+    label: "MAX Price"
+    description: "Maximum gross item price."
+    hidden:  no
+    type: max
+    sql: ${price_gross};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: cnt_distinct_products {
+    label: "# Unique Products"
+    description: "Count of unique products."
+    hidden:  no
+    type: count_distinct
+    sql: ${product_id};;
+    value_format: "0"
   }
 
 }
