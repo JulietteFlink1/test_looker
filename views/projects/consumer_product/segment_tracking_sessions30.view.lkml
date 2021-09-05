@@ -673,7 +673,7 @@ view: segment_tracking_sessions30 {
     type: number
     description: "# sessions in which there was a Product Added To Cart, compared to the number of sessions in which there was a Home Viewed"
     value_format_name: percent_1
-    sql: ${cnt_add_to_cart}/NULLIF(${cnt_home_viewed},0) ;;
+    sql: ${cnt_add_to_cart}/NULLIF(${cnt_has_address},0) ;;
   }
 
   measure: mcvr3 {
