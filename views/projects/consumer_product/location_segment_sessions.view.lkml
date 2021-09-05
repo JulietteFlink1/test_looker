@@ -146,7 +146,7 @@ UNION ALL
             SELECT DISTINCT
                 country_iso,
                 city
-            FROM `flink-data-prod.google_sheets.hub_metadata
+            FROM `flink-data-prod.google_sheets.hub_metadata`
              ) country
         ON event.hub_city = country.city
 UNION ALL
