@@ -73,7 +73,7 @@ view: segment_tracking_sessions30 {
               event.hub_code AS hub_encoded,
               hub.slug as hub_code,
               CAST(event.delivery_eta as INT) as delivery_eta,
-              NULL AS has_selected_address
+              CAST(NULL AS BOOL) AS has_selected_address
         FROM `flink-backend.flink_ios_production.address_confirmed_view` event
             LEFT JOIN
                 `flink-data-prod.saleor_prod_global.warehouse_warehouse` AS hub
@@ -87,7 +87,7 @@ view: segment_tracking_sessions30 {
               event.hub_code AS hub_encoded,
               hub.slug as hub_code,
               event.delivery_eta,
-              NULL AS has_selected_address
+              CAST(NULL AS BOOL) AS has_selected_address
         FROM `flink-backend.flink_android_production.address_confirmed_view` event
             LEFT JOIN
                 `flink-data-prod.saleor_prod_global.warehouse_warehouse` AS hub
@@ -101,7 +101,7 @@ view: segment_tracking_sessions30 {
               event.hub_code AS hub_encoded,
               hub.slug as hub_code,
               CAST(event.delivery_eta as INT) as delivery_eta,
-              NULL AS has_selected_address
+              CAST(NULL AS BOOL) AS has_selected_address
         FROM `flink-backend.flink_ios_production.order_placed_view` event
             LEFT JOIN
                 `flink-data-prod.saleor_prod_global.warehouse_warehouse` AS hub
@@ -115,12 +115,11 @@ view: segment_tracking_sessions30 {
               event.hub_code AS hub_encoded,
               hub.slug as hub_code,
               delivery_eta,
-              NULL AS has_selected_address
+              CAST(NULL AS BOOL) AS has_selected_address
         FROM `flink-backend.flink_android_production.order_placed_view` event
             LEFT JOIN
                 `flink-data-prod.saleor_prod_global.warehouse_warehouse` AS hub
             ON SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(event.hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[ OFFSET(1)] = hub.id
-
     UNION ALL
         SELECT
               event.event,
@@ -152,18 +151,24 @@ view: segment_tracking_sessions30 {
         hd.timestamp,
         hd.hub_city,
         hd.hub_code,
-        country.country_iso as hub_country,
+        COALESCE(hs.country_iso, hc.country_iso) as hub_country,
         hd.delivery_eta,
         LAST_VALUE(hd.has_selected_address IGNORE NULLS) OVER
             (PARTITION BY anonymous_id ORDER BY timestamp RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)  AS has_selected_address
       FROM hub_data_union hd
       LEFT JOIN (
-                SELECT DISTINCT
-                    country_iso,
-                    city
+                SELECT DISTINCT country_iso, city
                 FROM `flink-backend.gsheet_store_metadata.hubs`
-                 ) country
-            ON hd.hub_city = country.city
+                 ) hc
+            ON hd.hub_city = hc.city
+      LEFT JOIN (
+          SELECT DISTINCT country_iso, hub_code
+          FROM `flink-backend.gsheet_store_metadata.hubs`
+         ) hs
+      ON LOWER(hd.hub_code) = LOWER(hs.hub_code)
+
+      WHERE (hs.hub_code NOT IN('erp_spitzbergen', 'fr_hub_test', 'nl_hub_test')
+          OR hs.hub_code is null)
     )
 
     , hub_data AS (
@@ -195,7 +200,10 @@ view: segment_tracking_sessions30 {
          , session_number
          , session_start_at
          , next_session_start_at
-         , hub_country
+         , CASE WHEN hub_city LIKE 'Ludwigshafen%' THEN 'DE'
+            WHEN hub_city LIKE 'Mülheim%' THEN 'DE'
+            WHEN hub_city LIKE 'Mulheim%' THEN 'DE'
+            ELSE hub_country END AS hub_country
          , hub_city
          , hub_code
          , delivery_eta
@@ -251,20 +259,6 @@ view: segment_tracking_sessions30 {
             AND e.timestamp >= sf.session_start_at
             AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
         WHERE e.event = 'product_added_to_cart'
-        GROUP BY 1,2
-    )
-
-    , location_pin_placed AS (
-        SELECT
-               sf.anonymous_id
-             , sf.session_id
-             , count(e.timestamp) as event_count
-        FROM events e
-            LEFT JOIN sessions_final sf
-            ON e.anonymous_id = sf.anonymous_id
-            AND e.timestamp >= sf.session_start_at
-            AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
-        WHERE e.event = 'location_pin_placed'
         GROUP BY 1,2
     )
 
@@ -370,7 +364,6 @@ view: segment_tracking_sessions30 {
         , sf.has_selected_address
         , sf.has_address
         , atc.event_count as add_to_cart
-        , lpp.event_count as location_pin_placed
         , hv.event_count as home_viewed
         , cv.event_count as view_cart
         , ac.event_count as address_confirmed
@@ -381,8 +374,6 @@ view: segment_tracking_sessions30 {
     FROM sessions_final sf
         LEFT JOIN add_to_cart atc
         ON sf.session_id = atc.session_id
-        LEFT JOIN location_pin_placed lpp
-        ON sf.session_id = lpp.session_id
         LEFT JOIN home_viewed hv
         ON sf.session_id = hv.session_id
         LEFT JOIN cart_viewed cv
@@ -546,18 +537,18 @@ view: segment_tracking_sessions30 {
     filters: [address_confirmed: "NOT NULL"]
   }
 
-  measure: cnt_location_pin_placed {
-    label: "Location pin placed count"
-    description: "Number of sessions in which at least one Location Pin Placed event happened"
-    type: count
-    filters: [location_pin_placed: "NOT NULL"]
-  }
-
   measure: cnt_home_viewed {
     label: "Home view count"
     description: "Number of sessions in which at least one Home Viewed event happened"
     type: count
     filters: [home_viewed: "NOT NULL"]
+  }
+
+  measure: cnt_has_address {
+    label: "Has address count"
+    description: "# sessions in which the user had an address (selected in previous session or current)"
+    type: count
+    filters: [has_address: "yes"]
   }
 
   measure: cnt_view_cart {
@@ -627,12 +618,6 @@ view: segment_tracking_sessions30 {
     sql: ${address_confirmed} ;;
   }
 
-  measure: sum_location_pin_placed {
-    label: "Location pin placed sum of events"
-    type: sum
-    sql: ${location_pin_placed} ;;
-  }
-
   measure: sum_home_viewed {
     label: "Home viewed sum of events"
     type: sum
@@ -671,30 +656,36 @@ view: segment_tracking_sessions30 {
     sql: ${cnt_purchase}/NULLIF(${count},0) ;;
   }
 
+  # measure: mcvr1 {
+  #   type: number
+  #   description: "Number of sessions in which an Addres Confirmed event happened, compared to the total number of Session Started"
+  #   value_format_name: percent_1
+  #   sql: ${cnt_address_selected}/NULLIF(${count},0) ;;
+  # }
   measure: mcvr1 {
     type: number
-    description: "Number of sessions in which an Addres Confirmed event happened, compared to the total number of Session Started"
+    description: "# sessions with an address (either selected in previous session or in current session), compared to the total number of Sessions Started"
     value_format_name: percent_1
-    sql: ${cnt_address_selected}/NULLIF(${count},0) ;;
+    sql: ${cnt_has_address}/NULLIF(${count},0);;
   }
 
   measure: mcvr2 {
     type: number
-    description: "Number of sessions in which there was a Product Added To Cart, compared to the number of sessions in which there was a Home Viewed"
+    description: "# sessions in which there was a Product Added To Cart, compared to the number of sessions in which there was a Home Viewed"
     value_format_name: percent_1
     sql: ${cnt_add_to_cart}/NULLIF(${cnt_home_viewed},0) ;;
   }
 
   measure: mcvr3 {
     type: number
-    description: "Number of sessions in which there was a Checkout Started event happened, compared to the number of sessions in which there was a Product Added To Cart"
+    description: "#sessions in which there was a Checkout Started event happened, compared to the number of sessions in which there was a Product Added To Cart"
     value_format_name: percent_1
     sql: ${cnt_checkout_started}/NULLIF(${cnt_add_to_cart},0) ;;
   }
 
   measure: mcvr4 {
     type: number
-    description: "Number of sessions in which there was a Payment Started event happened, compared to the number of sessions in which there was a Checkout Started"
+    description: "# sessions in which there was a Payment Started event happened, compared to the number of sessions in which there was a Checkout Started"
     value_format_name: percent_1
     sql: ${cnt_payment_started}/NULLIF(${cnt_checkout_started},0) ;;
   }
@@ -770,18 +761,13 @@ view: segment_tracking_sessions30 {
   }
 
   dimension: has_address {
-    type: string
+    type: yesno
     sql: ${TABLE}.has_address ;;
   }
 
   dimension: add_to_cart {
     type: number
     sql: ${TABLE}.add_to_cart ;;
-  }
-
-  dimension: location_pin_placed {
-    type: number
-    sql: ${TABLE}.location_pin_placed ;;
   }
 
   dimension: home_viewed {
@@ -831,7 +817,6 @@ view: segment_tracking_sessions30 {
       has_selected_address,
       has_address,
       add_to_cart,
-      location_pin_placed,
       home_viewed,
       view_cart,
       address_confirmed,
