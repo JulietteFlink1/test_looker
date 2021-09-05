@@ -46,305 +46,311 @@ view: segment_tracking_sessions30 {
           AND NOT (tracks.context_app_name = "Flink-Staging" OR tracks.context_app_name="Flink-Debug")
           )
 
- , tracking_sessions AS ( -- defining 30 min sessions
+     , tracking_sessions AS ( -- defining 30 min sessions
+            SELECT
+              anonymous_id
+            , anonymous_id || '-' || ROW_NUMBER() OVER(PARTITION BY anonymous_id ORDER BY timestamp ASC) AS session_id
+            , ROW_NUMBER() OVER(PARTITION BY anonymous_id ORDER BY timestamp ASC) AS session_number
+            , timestamp AS session_start_at
+            , LEAD(timestamp) OVER(PARTITION BY anonymous_id ORDER BY timestamp) AS next_session_start_at
+            , context_app_version
+            , context_device_type
+            , context_locale
+            FROM
+              events
+            WHERE
+              (events.inactivity_time > 30
+                OR events.inactivity_time IS NULL)
+            ORDER BY
+              1)
+
+    , hub_data_union AS ( -- ios & android pulling address_confirmed and order_placed for hub_data and delivery_eta
         SELECT
-          anonymous_id
-        , anonymous_id || '-' || ROW_NUMBER() OVER(PARTITION BY anonymous_id ORDER BY timestamp ASC) AS session_id
-        , ROW_NUMBER() OVER(PARTITION BY anonymous_id ORDER BY timestamp ASC) AS session_number
-        , timestamp AS session_start_at
-        , LEAD(timestamp) OVER(PARTITION BY anonymous_id ORDER BY timestamp) AS next_session_start_at
-        , context_app_version
-        , context_device_type
-        , context_locale
-        FROM
-          events
-        WHERE
-          (events.inactivity_time > 30
-            OR events.inactivity_time IS NULL)
-        ORDER BY
-          1)
+              event.event,
+              event.anonymous_id,
+              event.timestamp,
+              event.hub_city,
+              event.hub_code AS hub_encoded,
+              hub.slug as hub_code,
+              CAST(event.delivery_eta as INT) as delivery_eta,
+              NULL AS has_selected_address
+        FROM `flink-backend.flink_ios_production.address_confirmed_view` event
+            LEFT JOIN
+                `flink-data-prod.saleor_prod_global.warehouse_warehouse` AS hub
+            ON SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(event.hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[ OFFSET(1)] = hub.id
+    UNION ALL
+        SELECT
+              event.event,
+              event.anonymous_id,
+              event.timestamp,
+              event.hub_city,
+              event.hub_code AS hub_encoded,
+              hub.slug as hub_code,
+              event.delivery_eta,
+              NULL AS has_selected_address
+        FROM `flink-backend.flink_android_production.address_confirmed_view` event
+            LEFT JOIN
+                `flink-data-prod.saleor_prod_global.warehouse_warehouse` AS hub
+            ON SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(event.hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[ OFFSET(1)] = hub.id
+    UNION ALL
+        SELECT
+              event.event,
+              event.anonymous_id,
+              event.timestamp,
+              event.hub_city,
+              event.hub_code AS hub_encoded,
+              hub.slug as hub_code,
+              CAST(event.delivery_eta as INT) as delivery_eta,
+              NULL AS has_selected_address
+        FROM `flink-backend.flink_ios_production.order_placed_view` event
+            LEFT JOIN
+                `flink-data-prod.saleor_prod_global.warehouse_warehouse` AS hub
+            ON SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(event.hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[ OFFSET(1)] = hub.id
+    UNION ALL
+        SELECT
+              event.event,
+              event.anonymous_id,
+              event.timestamp,
+              event.hub_city,
+              event.hub_code AS hub_encoded,
+              hub.slug as hub_code,
+              delivery_eta,
+              NULL AS has_selected_address
+        FROM `flink-backend.flink_android_production.order_placed_view` event
+            LEFT JOIN
+                `flink-data-prod.saleor_prod_global.warehouse_warehouse` AS hub
+            ON SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(event.hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[ OFFSET(1)] = hub.id
 
-, hub_data AS ( -- ios & android pulling address_confirmed and order_placed for hub_data and delivery_eta
-    SELECT
-          event.event,
-          event.anonymous_id,
-          event.timestamp,
-          event.hub_city,
-          country.country_iso as hub_country,
-          event.hub_code AS hub_encoded,
-          event.delivery_postcode,
-          hub.slug as hub_code,
-          SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[ OFFSET(1)] AS hub_id,
-          CAST(event.delivery_eta as INT) as delivery_eta
-    FROM `flink-backend.flink_ios_production.address_confirmed_view` event
-        LEFT JOIN
-            `flink-data-prod.saleor_prod_global.warehouse_warehouse` AS hub
-        ON SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(event.hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[ OFFSET(1)] = hub.id
-        LEFT JOIN (
-            SELECT DISTINCT
-                country_iso,
-                city
-            FROM `flink-backend.gsheet_store_metadata.hubs`
-             ) country
-        ON event.hub_city = country.city
-UNION ALL
-    SELECT
-          event.event,
-          event.anonymous_id,
-          event.timestamp,
-          event.hub_city,
-          country.country_iso as hub_country,
-          event.hub_code AS hub_encoded,
-          event.delivery_postcode,
-          hub.slug as hub_code,
-          SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[ OFFSET(1)] AS hub_id,
-          event.delivery_eta
-    FROM `flink-backend.flink_android_production.address_confirmed_view` event
-        LEFT JOIN
-            `flink-data-prod.saleor_prod_global.warehouse_warehouse` AS hub
-        ON SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(event.hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[ OFFSET(1)] = hub.id
-        LEFT JOIN (
-            SELECT DISTINCT
-                country_iso,
-                city
-            FROM `flink-backend.gsheet_store_metadata.hubs`
-             ) country
-        ON event.hub_city = country.city
-UNION ALL
-    SELECT
-          event.event,
-          event.anonymous_id,
-          event.timestamp,
-          event.hub_city,
-          country.country_iso as hub_country,
-          event.hub_code AS hub_encoded,
-          event.delivery_postcode,
-          hub.slug as hub_code,
-          SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[ OFFSET(1)] AS hub_id,
-          CAST(event.delivery_eta as INT) as delivery_eta
-    FROM `flink-backend.flink_ios_production.order_placed_view` event
-        LEFT JOIN
-            `flink-data-prod.saleor_prod_global.warehouse_warehouse` AS hub
-        ON SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(event.hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[ OFFSET(1)] = hub.id
-        LEFT JOIN (
-            SELECT DISTINCT
-                country_iso,
-                city
-            FROM `flink-backend.gsheet_store_metadata.hubs`
-             ) country
-        ON event.hub_city = country.city
-UNION ALL
-    SELECT
-          event.event,
-          event.anonymous_id,
-          event.timestamp,
-          event.hub_city,
-          country.country_iso as hub_country,
-          event.hub_code AS hub_encoded,
-          event.delivery_postcode,
-          hub.slug as hub_code,
-          SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[ OFFSET(1)] AS hub_id,
-          delivery_eta
-    FROM `flink-backend.flink_android_production.order_placed_view` event
-        LEFT JOIN
-            `flink-data-prod.saleor_prod_global.warehouse_warehouse` AS hub
-        ON SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(event.hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[ OFFSET(1)] = hub.id
-        LEFT JOIN (
-            SELECT DISTINCT
-                country_iso,
-                city
-            FROM `flink-backend.gsheet_store_metadata.hubs`
-             ) country
-        ON event.hub_city = country.city
-)
+    UNION ALL
+        SELECT
+              event.event,
+              event.anonymous_id,
+              event.timestamp,
+              event.city AS hub_city,
+              NULL AS hub_encoded,
+              hub_slug as hub_code,
+              NULL AS delivery_eta,
+              event.has_selected_address
+        FROM `flink-backend.flink_android_production.app_opened_view` event
+    UNION ALL
+        SELECT
+              event.event,
+              event.anonymous_id,
+              event.timestamp,
+              event.city AS hub_city,
+              NULL AS hub_encoded,
+              hub_slug as hub_code,
+              NULL AS delivery_eta,
+              event.has_selected_address
+        FROM `flink-backend.flink_ios_production.app_opened_view` event
+    )
 
-, sessions_final AS ( -- merging sessions with hub_data
-SELECT
-       anonymous_id
-     , context_app_version
-     , context_device_type
-     , context_locale
-     , session_id
-     , session_number
-     , session_start_at
-     , next_session_start_at
-     , hub_country
-     , hub_city
-     , hub_code
-     , hub_id
-     , delivery_postcode
-     , delivery_eta
-FROM (
-    SELECT
-          ts.anonymous_id
-        , ts.context_app_version
-        , ts.context_device_type
-        , ts.context_locale
-        , ts.session_id
-        , ts.session_number
-        , ts.session_start_at
-        , ts.next_session_start_at
-        , hd.timestamp as hd_timestamp
-        , hd.hub_id
-        , hd.hub_code
-        , hd.hub_country
-        , hd.hub_city
-        , hd.delivery_postcode
-        , hd.delivery_eta
-        , DENSE_RANK() OVER (PARTITION BY ts.anonymous_id, ts.session_id ORDER BY hd.timestamp DESC) as rank_hd -- ranks all data_hub related events // filter set = 1 to get 'latest' timestamp
-    FROM tracking_sessions ts
-            LEFT JOIN (
-                SELECT
-                    anonymous_id
-                  , timestamp
-                  , hub_id
-                  , hub_code
-                  , hub_city
-                  , hub_country
-                  , delivery_postcode
-                  , delivery_eta
-                FROM hub_data
-            ) hd
-            ON ts.anonymous_id = hd.anonymous_id
-            AND ( hd.timestamp < ts.next_session_start_at OR ts.next_session_start_at IS NULL)
-        )
-WHERE
-    rank_hd = 1  -- filter set = 1 to get 'latest' timestamp
-GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14
-)
-, add_to_cart AS (
-    SELECT
-           sf.anonymous_id
-         , sf.session_id
-         , count(e.timestamp) as event_count
-    FROM events e
-        LEFT JOIN sessions_final sf
-        ON e.anonymous_id = sf.anonymous_id
-        AND e.timestamp >= sf.session_start_at
-        AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
-    WHERE e.event = 'product_added_to_cart'
-    GROUP BY 1,2
-)
+    , has_address_fill AS (
+      SELECT
+        hd.event,
+        hd.anonymous_id,
+        hd.timestamp,
+        hd.hub_city,
+        hd.hub_code,
+        country.country_iso as hub_country,
+        hd.delivery_eta,
+        LAST_VALUE(hd.has_selected_address IGNORE NULLS) OVER
+            (PARTITION BY anonymous_id ORDER BY timestamp RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)  AS has_selected_address
+      FROM hub_data_union hd
+      LEFT JOIN (
+                SELECT DISTINCT
+                    country_iso,
+                    city
+                FROM `flink-backend.gsheet_store_metadata.hubs`
+                 ) country
+            ON hd.hub_city = country.city
+    )
 
-, location_pin_placed AS (
-    SELECT
-           sf.anonymous_id
-         , sf.session_id
-         , count(e.timestamp) as event_count
-    FROM events e
-        LEFT JOIN sessions_final sf
-        ON e.anonymous_id = sf.anonymous_id
-        AND e.timestamp >= sf.session_start_at
-        AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
-    WHERE e.event = 'location_pin_placed'
-    GROUP BY 1,2
-)
+    , hub_data AS (
+    SELECT  ha.event,
+            ha.anonymous_id,
+            ha.timestamp,
+            ha.hub_city,
+            ha.hub_country,
+            ha.hub_code,
+            ha.delivery_eta,
+            ha.has_selected_address,
+            CASE
+                WHEN ha.has_selected_address THEN true
+                WHEN ha.event="address_confirmed" THEN true
+                WHEN ha.event="order_placed" THEN true
+                ELSE false
+            END AS has_address,
+            ROW_NUMBER() OVER(PARTITION BY ha.event, ha.anonymous_id, ha.timestamp ORDER BY ha.timestamp DESC)       AS row_n
+    FROM has_address_fill ha
+    )
 
-, home_viewed AS (
+    , sessions_final AS ( -- merging sessions with hub_data
     SELECT
-           sf.anonymous_id
-         , sf.session_id
-         , count(e.timestamp) as event_count
-    FROM events e
-        LEFT JOIN sessions_final sf
-        ON e.anonymous_id = sf.anonymous_id
-        AND e.timestamp >= sf.session_start_at
-        AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
-    WHERE e.event = 'home_viewed'
-    GROUP BY 1,2
-)
+           anonymous_id
+         , context_app_version
+         , context_device_type
+         , context_locale
+         , session_id
+         , session_number
+         , session_start_at
+         , next_session_start_at
+         , hub_country
+         , hub_city
+         , hub_code
+         , delivery_eta
+         , has_selected_address
+         , has_address
+    FROM (
+        SELECT
+              ts.anonymous_id
+            , ts.context_app_version
+            , ts.context_device_type
+            , ts.context_locale
+            , ts.session_id
+            , ts.session_number
+            , ts.session_start_at
+            , ts.next_session_start_at
+            , hd.timestamp as hd_timestamp
+            , hd.hub_code
+            , hd.hub_country
+            , hd.hub_city
+            , hd.delivery_eta
+            , hd.has_selected_address
+            , hd.has_address
+            , DENSE_RANK() OVER (PARTITION BY ts.anonymous_id, ts.session_id ORDER BY hd.timestamp DESC) as rank_hd -- ranks all data_hub related events // filter set = 1 to get 'latest' timestamp
+        FROM tracking_sessions ts
+                LEFT JOIN (
+                    SELECT
+                        anonymous_id
+                      , timestamp
+                      , hub_code
+                      , hub_city
+                      , hub_country
+                      , delivery_eta
+                      , event
+                      , has_selected_address
+                      , has_address
+                    FROM hub_data
+                ) hd
+                ON ts.anonymous_id = hd.anonymous_id
+                AND ( hd.timestamp < ts.next_session_start_at OR ts.next_session_start_at IS NULL)
+            )
+    WHERE
+        rank_hd = 1  -- filter set = 1 to get 'latest' timestamp
+    GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14
+    )
+    , add_to_cart AS (
+        SELECT
+               sf.anonymous_id
+             , sf.session_id
+             , count(e.timestamp) as event_count
+        FROM events e
+            LEFT JOIN sessions_final sf
+            ON e.anonymous_id = sf.anonymous_id
+            AND e.timestamp >= sf.session_start_at
+            AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
+        WHERE e.event = 'product_added_to_cart'
+        GROUP BY 1,2
+    )
 
-, address_confirmed AS (
-    SELECT
-           sf.anonymous_id
-         , sf.session_id
-         , count(e.timestamp) as event_count
-    FROM events e
-        LEFT JOIN sessions_final sf
-        ON e.anonymous_id = sf.anonymous_id
-        AND e.timestamp >= sf.session_start_at
-        AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
-    WHERE e.event = 'address_confirmed'
-    GROUP BY 1,2
-)
+    , location_pin_placed AS (
+        SELECT
+               sf.anonymous_id
+             , sf.session_id
+             , count(e.timestamp) as event_count
+        FROM events e
+            LEFT JOIN sessions_final sf
+            ON e.anonymous_id = sf.anonymous_id
+            AND e.timestamp >= sf.session_start_at
+            AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
+        WHERE e.event = 'location_pin_placed'
+        GROUP BY 1,2
+    )
 
-, cart_viewed AS (
-    SELECT
-           sf.anonymous_id
-         , sf.session_id
-         , count(e.timestamp) as event_count
-    FROM events e
-        LEFT JOIN sessions_final sf
-        ON e.anonymous_id = sf.anonymous_id
-        AND e.timestamp >= sf.session_start_at
-        AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
-    WHERE e.event = 'cart_viewed'
-    GROUP BY 1,2
-)
+    , home_viewed AS (
+        SELECT
+               sf.anonymous_id
+             , sf.session_id
+             , count(e.timestamp) as event_count
+        FROM events e
+            LEFT JOIN sessions_final sf
+            ON e.anonymous_id = sf.anonymous_id
+            AND e.timestamp >= sf.session_start_at
+            AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
+        WHERE e.event = 'home_viewed'
+        GROUP BY 1,2
+    )
 
-, checkout_started AS (
-    SELECT
-           sf.anonymous_id
-         , sf.session_id
-         , count(e.timestamp) as event_count
-    FROM events e
-        LEFT JOIN sessions_final sf
-        ON e.anonymous_id = sf.anonymous_id
-        AND e.timestamp >= sf.session_start_at
-        AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
-    WHERE e.event = 'checkout_started'
-    GROUP BY 1,2
-)
+    , address_confirmed AS (
+        SELECT
+               sf.anonymous_id
+             , sf.session_id
+             , count(e.timestamp) as event_count
+        FROM events e
+            LEFT JOIN sessions_final sf
+            ON e.anonymous_id = sf.anonymous_id
+            AND e.timestamp >= sf.session_start_at
+            AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
+        WHERE e.event = 'address_confirmed'
+        GROUP BY 1,2
+    )
 
-, purchase_confirmed AS (
-    SELECT
-           sf.anonymous_id
-         , sf.session_id
-         , count(e.timestamp) as event_count
-    FROM events e
-        LEFT JOIN sessions_final sf
-        ON e.anonymous_id = sf.anonymous_id
-        AND e.timestamp >= sf.session_start_at
-        AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
-    WHERE e.event = 'purchase_confirmed'
-    GROUP BY 1,2
-)
+    , cart_viewed AS (
+        SELECT
+               sf.anonymous_id
+             , sf.session_id
+             , count(e.timestamp) as event_count
+        FROM events e
+            LEFT JOIN sessions_final sf
+            ON e.anonymous_id = sf.anonymous_id
+            AND e.timestamp >= sf.session_start_at
+            AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
+        WHERE e.event = 'cart_viewed'
+        GROUP BY 1,2
+    )
 
-, order_placed AS (
-    SELECT
-           sf.anonymous_id
-         , sf.session_id
-         , count(e.timestamp) as event_count
-    FROM events e
-        LEFT JOIN sessions_final sf
-        ON e.anonymous_id = sf.anonymous_id
-        AND e.timestamp >= sf.session_start_at
-        AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
-    WHERE e.event = 'order_placed'
-    GROUP BY 1,2
-)
+    , checkout_started AS (
+        SELECT
+               sf.anonymous_id
+             , sf.session_id
+             , count(e.timestamp) as event_count
+        FROM events e
+            LEFT JOIN sessions_final sf
+            ON e.anonymous_id = sf.anonymous_id
+            AND e.timestamp >= sf.session_start_at
+            AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
+        WHERE e.event = 'checkout_started'
+        GROUP BY 1,2
+    )
 
-, first_order AS (
-    SELECT
-           e.anonymous_id
-         , MIN(e.timestamp) as first_order_timestamp
-    FROM events e
-    WHERE e.event = 'order_placed'
-    GROUP BY 1
-)
+    , purchase_confirmed AS (
+        SELECT
+               sf.anonymous_id
+             , sf.session_id
+             , count(e.timestamp) as event_count
+        FROM events e
+            LEFT JOIN sessions_final sf
+            ON e.anonymous_id = sf.anonymous_id
+            AND e.timestamp >= sf.session_start_at
+            AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
+        WHERE e.event = 'purchase_confirmed'
+        GROUP BY 1,2
+    )
 
---, any_event AS (
---    SELECT
---           sf.anonymous_id
---         , sf.session_id
---         , count(e.timestamp) as event_count
---    FROM events e
---        LEFT JOIN sessions_final sf
---        ON e.anonymous_id = sf.anonymous_id
---        AND e.timestamp >= sf.session_start_at
---        AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
---    GROUP BY 1,2
---)
+    , order_placed AS (
+        SELECT
+               sf.anonymous_id
+             , sf.session_id
+             , count(e.timestamp) as event_count
+        FROM events e
+            LEFT JOIN sessions_final sf
+            ON e.anonymous_id = sf.anonymous_id
+            AND e.timestamp >= sf.session_start_at
+            AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
+        WHERE e.event = 'order_placed'
+        GROUP BY 1,2
+    )
 
     SELECT
           sf.anonymous_id
@@ -357,12 +363,12 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14
           'UTC') AS session_start_at
         , datetime(sf.next_session_start_at,
           'UTC') AS next_session_start_at
-        , sf.hub_id
         , sf.hub_code
         , sf.hub_country
         , sf.hub_city
-        , sf.delivery_postcode
         , sf.delivery_eta
+        , sf.has_selected_address
+        , sf.has_address
         , atc.event_count as add_to_cart
         , lpp.event_count as location_pin_placed
         , hv.event_count as home_viewed
@@ -372,7 +378,6 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14
         , pc.event_count as payment_started
         , op.event_count as order_placed
         -- , ae.event_count as any_event
-        , CASE WHEN fo.first_order_timestamp < sf.session_start_at THEN true ELSE false END as has_ordered
     FROM sessions_final sf
         LEFT JOIN add_to_cart atc
         ON sf.session_id = atc.session_id
@@ -390,17 +395,10 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14
         ON sf.session_id = pc.session_id
         LEFT JOIN order_placed op
         ON sf.session_id = op.session_id
-        LEFT JOIN first_order fo
-        ON sf.anonymous_id = fo.anonymous_id
-        --LEFT JOIN any_event ae
-        --ON sf.session_id = ae.session_id
-     ;;
+ ;;
   }
 
-  measure: count {
-    type: count
-    drill_fields: [detail*]
-  }
+  ######### custom measures and dimensions
 
   measure: cnt_unique_anonymousid {
     label: "# Unique Users"
@@ -409,111 +407,6 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14
     type: count_distinct
     sql: ${anonymous_id};;
     value_format_name: decimal_0
-  }
-
-  dimension: anonymous_id {
-    type: string
-    sql: ${TABLE}.anonymous_id ;;
-  }
-
-  dimension: context_app_version {
-    type: string
-    sql: ${TABLE}.context_app_version ;;
-  }
-
-  dimension: context_device_type {
-    type: string
-    sql: ${TABLE}.context_device_type ;;
-  }
-
-  dimension: context_locale {
-    type: string
-    sql: ${TABLE}.context_locale ;;
-  }
-
-  dimension: session_id {
-    type: string
-    sql: ${TABLE}.session_id ;;
-  }
-
-  dimension: session_number {
-    type: number
-    sql: ${TABLE}.session_number ;;
-  }
-
-  dimension: hub_id {
-    type: string
-    sql: ${TABLE}.hub_id ;;
-  }
-
-  dimension: hub_code {
-    type: string
-    sql: ${TABLE}.hub_code ;;
-  }
-
-  dimension: hub_country {
-    type: string
-    sql: ${TABLE}.hub_country ;;
-  }
-
-  dimension: hub_city {
-    type: string
-    sql: ${TABLE}.hub_city ;;
-  }
-
-  dimension: delivery_postcode {
-    type: string
-    sql: ${TABLE}.delivery_postcode ;;
-  }
-
-  dimension: delivery_eta {
-    type: number
-    sql: ${TABLE}.delivery_eta ;;
-  }
-
-  # dimension: any_event {
-  #   type: number
-  #   sql: ${TABLE}.any_event ;;
-  # }
-
-  dimension: add_to_cart {
-    type: number
-    sql: ${TABLE}.add_to_cart ;;
-  }
-
-  dimension: location_pin_placed {
-    type: number
-    sql: ${TABLE}.location_pin_placed ;;
-  }
-
-  dimension: home_viewed {
-    type: number
-    sql: ${TABLE}.home_viewed ;;
-  }
-
-  dimension: view_cart {
-    type: number
-    sql: ${TABLE}.view_cart ;;
-  }
-
-  dimension: address_confirmed {
-    type: number
-    sql: ${TABLE}.address_confirmed ;;
-  }
-
-  dimension: checkout_started {
-    type: number
-    sql: ${TABLE}.checkout_started ;;
-  }
-
-  dimension: payment_started {
-    type: number
-    sql: ${TABLE}.payment_started ;;
-  }
-
-  dimension: order_placed {
-    type: number
-    sql: ${TABLE}.order_placed ;;
   }
 
   dimension_group: session_start_at {
@@ -545,7 +438,7 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14
     sql: ${TABLE}.next_session_start_at ;;
   }
 
-  # dimension: session {
+# dimension: session {
   #   type: number
   #   sql: ${TABLE}.session ;;
   # }
@@ -813,23 +706,134 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14
     sql: ${cnt_purchase}/NULLIF(${cnt_payment_started},0) ;;
   }
 
+
+  #########
+
+  measure: count {
+    type: count
+    drill_fields: [detail*]
+  }
+
+  dimension: anonymous_id {
+    type: string
+    sql: ${TABLE}.anonymous_id ;;
+  }
+
+  dimension: context_app_version {
+    type: string
+    sql: ${TABLE}.context_app_version ;;
+  }
+
+  dimension: context_device_type {
+    type: string
+    sql: ${TABLE}.context_device_type ;;
+  }
+
+  dimension: context_locale {
+    type: string
+    sql: ${TABLE}.context_locale ;;
+  }
+
+  dimension: session_id {
+    type: string
+    sql: ${TABLE}.session_id ;;
+  }
+
+  dimension: session_number {
+    type: number
+    sql: ${TABLE}.session_number ;;
+  }
+
+  dimension: hub_code {
+    type: string
+    sql: ${TABLE}.hub_code ;;
+  }
+
+  dimension: hub_country {
+    type: string
+    sql: ${TABLE}.hub_country ;;
+  }
+
+  dimension: hub_city {
+    type: string
+    sql: ${TABLE}.hub_city ;;
+  }
+
+  dimension: delivery_eta {
+    type: number
+    sql: ${TABLE}.delivery_eta ;;
+  }
+
+  dimension: has_selected_address {
+    type: string
+    sql: ${TABLE}.has_selected_address ;;
+  }
+
+  dimension: has_address {
+    type: string
+    sql: ${TABLE}.has_address ;;
+  }
+
+  dimension: add_to_cart {
+    type: number
+    sql: ${TABLE}.add_to_cart ;;
+  }
+
+  dimension: location_pin_placed {
+    type: number
+    sql: ${TABLE}.location_pin_placed ;;
+  }
+
+  dimension: home_viewed {
+    type: number
+    sql: ${TABLE}.home_viewed ;;
+  }
+
+  dimension: view_cart {
+    type: number
+    sql: ${TABLE}.view_cart ;;
+  }
+
+  dimension: address_confirmed {
+    type: number
+    sql: ${TABLE}.address_confirmed ;;
+  }
+
+  dimension: checkout_started {
+    type: number
+    sql: ${TABLE}.checkout_started ;;
+  }
+
+  dimension: payment_started {
+    type: number
+    sql: ${TABLE}.payment_started ;;
+  }
+
+  dimension: order_placed {
+    type: number
+    sql: ${TABLE}.order_placed ;;
+  }
+
   set: detail {
     fields: [
       anonymous_id,
-      session_id,
-      context_locale,
-      context_device_type,
       context_app_version,
-      # session,
+      context_device_type,
+      context_locale,
+      session_id,
       session_number,
-      has_ordered,
-      hub_city,
+      session_start_at_date,
+      next_session_start_at_date,
       hub_code,
       hub_country,
-      view_cart,
+      hub_city,
+      delivery_eta,
+      has_selected_address,
+      has_address,
       add_to_cart,
       location_pin_placed,
       home_viewed,
+      view_cart,
       address_confirmed,
       checkout_started,
       payment_started,
