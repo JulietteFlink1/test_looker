@@ -9,7 +9,7 @@ view: checkout_tracking {
           tracks.context_app_version,
           tracks.context_device_type,
           tracks.context_os_version
-          FROM `flink-backend.flink_android_production.tracks_view` tracks
+          FROM `flink-data-prod.flink_android_production.tracks_view` tracks
           WHERE tracks.event NOT LIKE "api%" AND tracks.event NOT LIKE "deep_link%"
 
           UNION ALL
@@ -21,7 +21,7 @@ view: checkout_tracking {
           tracks.context_app_version,
           tracks.context_device_type,
           tracks.context_os_version
-          FROM `flink-backend.flink_ios_production.tracks_view` tracks
+          FROM `flink-data-prod.flink_ios_production.tracks_view` tracks
           WHERE tracks.event NOT LIKE "api%" AND tracks.event NOT LIKE "deep_link%"
         ),
         checkout_tb AS(
@@ -35,7 +35,7 @@ view: checkout_tracking {
           checkout_started.context_device_type,
           checkout_started.context_os_version
         FROM
-          `flink-backend.flink_android_production.checkout_started_view` checkout_started
+          `flink-data-prod.flink_android_production.checkout_started_view` checkout_started
         UNION ALL
         SELECT
           checkout_started.anonymous_id,
@@ -47,7 +47,7 @@ view: checkout_tracking {
           checkout_started.context_device_type,
           checkout_started.context_os_version
         FROM
-          `flink-backend.flink_ios_production.checkout_started_view` checkout_started
+          `flink-data-prod.flink_ios_production.checkout_started_view` checkout_started
 
           ),
 

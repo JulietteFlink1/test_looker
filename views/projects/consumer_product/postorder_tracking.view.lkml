@@ -8,7 +8,7 @@ view: postorder_tracking {
         tracks.context_app_version,
         tracks.context_device_type,
         tracks.context_os_version
-        FROM `flink-backend.flink_android_production.tracks` tracks
+        FROM `flink-data-prod.flink_android_production.tracks` tracks
         WHERE tracks.event NOT LIKE "api%" AND tracks.event NOT LIKE "deep_link%"
         UNION ALL
 
@@ -19,7 +19,7 @@ view: postorder_tracking {
         tracks.context_app_version,
         tracks.context_device_type,
         tracks.context_os_version
-        FROM `flink-backend.flink_ios_production.tracks` tracks
+        FROM `flink-data-prod.flink_ios_production.tracks` tracks
         WHERE tracks.event NOT LIKE "api%" AND tracks.event NOT LIKE "deep_link%"
       ),
 
@@ -35,7 +35,7 @@ view: postorder_tracking {
         ios_order.delivery_eta,
         ios_order.id
       FROM
-        `flink-backend.flink_ios_production.order_tracking_viewed_view` ios_order
+        `flink-data-prod.flink_ios_production.order_tracking_viewed_view` ios_order
       UNION ALL
       SELECT
         android_order.order_id,
@@ -48,7 +48,7 @@ view: postorder_tracking {
         android_order.delivery_eta,
         android_order.id
       FROM
-        `flink-backend.flink_android_production.order_tracking_viewed_view` android_order
+        `flink-data-prod.flink_android_production.order_tracking_viewed_view` android_order
         ),
 
     order_placed_tb AS (
@@ -61,7 +61,7 @@ view: postorder_tracking {
         ios_order.voucher_value,
         ios_order.id
       FROM
-        `flink-backend.flink_ios_production.order_placed_view` ios_order
+        `flink-data-prod.flink_ios_production.order_placed_view` ios_order
       UNION ALL
       SELECT
         android_order.order_id,
@@ -72,7 +72,7 @@ view: postorder_tracking {
         android_order.voucher_value,
         android_order.id
       FROM
-        `flink-backend.flink_android_production.order_placed_view` android_order
+        `flink-data-prod.flink_android_production.order_placed_view` android_order
         ),
 
       -- currently only available on android but will be there for ios soon
@@ -86,7 +86,7 @@ view: postorder_tracking {
         android_csi.delivery_eta,
         android_csi.id
       FROM
-        `flink-backend.flink_android_production.contact_customer_service_selected_view` android_csi
+        `flink-data-prod.flink_android_production.contact_customer_service_selected_view` android_csi
       ),
 
       joined_tb AS (

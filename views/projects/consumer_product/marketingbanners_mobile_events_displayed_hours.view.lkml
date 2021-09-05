@@ -7,7 +7,7 @@ view: marketingbanners_mobile_events_displayed_hours {
                   , 'Android' as where_shown
                   , split(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(hub_code)),':')[OFFSET(1)] as hub_id
           from
-              `flink-backend.flink_android_production.address_confirmed_view`
+              `flink-data-prod.flink_android_production.address_confirmed_view`
 
           union all
 
@@ -16,7 +16,7 @@ view: marketingbanners_mobile_events_displayed_hours {
                   , 'iOS' as where_shown
                   , split(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(hub_code)),':')[OFFSET(1)] as hub_id
           from
-              `flink-backend.flink_ios_production.address_confirmed_view`
+              `flink-data-prod.flink_ios_production.address_confirmed_view`
       ),
 
       hub_data as ( -- translate the hub-id into hub-code
@@ -39,7 +39,7 @@ view: marketingbanners_mobile_events_displayed_hours {
             , base.banner_id
             , ifnull(hub.hub_code,'na') as hub
           FROM
-            `flink-backend.flink_android_production.marketing_banner_viewed_view` as base
+            `flink-data-prod.flink_android_production.marketing_banner_viewed_view` as base
           LEFT JOIN
               hub_data                                                            as hub
                     on hub.anonymous_id = base.anonymous_id
@@ -57,7 +57,7 @@ view: marketingbanners_mobile_events_displayed_hours {
             , banner_id
             , ifnull(hub.hub_code,'na') as hub
           FROM
-            `flink-backend.flink_ios_production.marketing_banner_viewed_view` as base
+            `flink-data-prod.flink_ios_production.marketing_banner_viewed_view` as base
           LEFT JOIN
             hub_data                                                          as hub
                   on hub.anonymous_id = base.anonymous_id

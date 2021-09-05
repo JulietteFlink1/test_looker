@@ -21,7 +21,7 @@ view: voucher_api_failure_success {
           context_network_carrier,
           context_locale
         FROM
-          `flink-backend.flink_ios_production.api_voucher_apply_failed_view`
+          `flink-data-prod.flink_ios_production.api_voucher_apply_failed_view`
         UNION ALL
         SELECT
           anonymous_id,
@@ -40,7 +40,7 @@ view: voucher_api_failure_success {
           context_network_carrier,
           context_locale,
         FROM
-          `flink-backend.flink_android_production.api_voucher_apply_failed_view` ),
+          `flink-data-prod.flink_android_production.api_voucher_apply_failed_view` ),
 
         location_help_table AS (
         SELECT
@@ -102,7 +102,7 @@ view: voucher_api_failure_success {
           context_network_carrier,
           context_locale
         FROM
-          `flink-backend.flink_ios_production.api_voucher_apply_succeeded_view`
+          `flink-data-prod.flink_ios_production.api_voucher_apply_succeeded_view`
         UNION ALL
         SELECT
           anonymous_id,
@@ -120,7 +120,7 @@ view: voucher_api_failure_success {
           context_network_carrier,
           context_locale,
         FROM
-          `flink-backend.flink_android_production.api_voucher_apply_succeeded_view` ),
+          `flink-data-prod.flink_android_production.api_voucher_apply_succeeded_view` ),
 
         location_help_table2 AS (
         SELECT

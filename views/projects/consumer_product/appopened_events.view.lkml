@@ -12,7 +12,7 @@ view: appopened_events {
           , address
           , hub_slug
           , has_selected_address
-      FROM `flink-backend.flink_android_production.app_opened_view`
+      FROM `flink-data-prod.flink_android_production.app_opened_view`
 
       UNION ALL
 
@@ -28,7 +28,7 @@ view: appopened_events {
           , address
           , hub_slug
           , has_selected_address
-      FROM `flink-backend.flink_ios_production.app_opened_view`
+      FROM `flink-data-prod.flink_ios_production.app_opened_view`
        ;;
   }
 
