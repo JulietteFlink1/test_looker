@@ -332,6 +332,15 @@ view: segment_tracking_sessions30 {
         GROUP BY 1,2
     )
 
+    , first_order AS (
+        SELECT
+               e.anonymous_id
+             , MIN(e.timestamp) as first_order_timestamp
+        FROM events e
+        WHERE e.event = 'order_placed'
+        GROUP BY 1
+    )
+
     , order_placed AS (
         SELECT
                sf.anonymous_id
@@ -371,6 +380,7 @@ view: segment_tracking_sessions30 {
         , pc.event_count as payment_started
         , op.event_count as order_placed
         -- , ae.event_count as any_event
+        , CASE WHEN fo.first_order_timestamp < sf.session_start_at THEN true ELSE false END as has_ordered
     FROM sessions_final sf
         LEFT JOIN add_to_cart atc
         ON sf.session_id = atc.session_id
@@ -386,6 +396,8 @@ view: segment_tracking_sessions30 {
         ON sf.session_id = pc.session_id
         LEFT JOIN order_placed op
         ON sf.session_id = op.session_id
+        LEFT JOIN first_order fo
+        ON sf.anonymous_id = fo.anonymous_id
  ;;
   }
 
@@ -822,7 +834,8 @@ view: segment_tracking_sessions30 {
       address_confirmed,
       checkout_started,
       payment_started,
-      order_placed
+      order_placed,
+      has_ordered
     ]
   }
 }
