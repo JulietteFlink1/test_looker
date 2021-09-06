@@ -1,6 +1,7 @@
 include: "/views/**/*.view"
 include: "/**/*.view"
 include: "/views/native_derived_tables/cohorts/monthly_cohorts_cleaned.view"
+include: "/views/native_derived_tables/cohorts/weekly_cohorts_cleaned.view"
 include: "/**/*.explore"
 
 explore: orders_customers_cleaned {
@@ -30,9 +31,9 @@ explore: orders_customers_cleaned {
     type: left_outer
   }
 
-  join: weekly_cohorts {
+  join: weekly_cohorts_cleaned {
     view_label: "Cohorts - Weekly"
-    sql_on: ${customers_metrics_cleaned.country_iso} = ${weekly_cohorts.country_iso} AND
+    sql_on: ${customers_metrics_cleaned.country_iso} = ${weekly_cohorts_cleaned.country_iso} AND
       ${customers_metrics_cleaned.first_order_week} = ${customers_metrics_cleaned.first_order_week};;
     relationship: many_to_one
     type: left_outer

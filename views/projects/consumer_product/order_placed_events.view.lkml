@@ -38,18 +38,33 @@ view: order_placed_events {
           NOT (LOWER(android_orders.context_app_version) LIKE "%app-rating%" OR LOWER(android_orders.context_app_version) LIKE "%debug%")
       AND NOT (LOWER(android_orders.context_app_name) = "flink-staging" OR LOWER(android_orders.context_app_name)="flink-debug")
       AND NOT (android_orders.order_number IS NULL) -- we have some cases where this happens (13)
-      )
+      ),
+
+    lookup_tb AS (
+      SELECT
+        country_iso
+        , city
+      FROM `flink-data-prod.google_sheets.hub_metadata`
+      GROUP BY 1,2
+    ),
+
+    country_tb AS (
     SELECT help_tb.*
       , IF(LOWER(help_tb.hub_city) LIKE '%ludwigshafen%' OR LOWER(help_tb.hub_city) LIKE '%mülheim%', "DE", hubs.country_iso) AS country_iso
     FROM help_tb
-    LEFT JOIN `flink-data-prod.google_sheets.hub_metadata` hubs ON hubs.city = help_tb.hub_city
+    LEFT JOIN lookup_tb hubs ON hubs.city = help_tb.hub_city
+    )
+
+    SELECT *
+      , LEAD(order_number,1) OVER (PARTITION BY anonymous_id ORDER BY timestamp) AS next_order_number
+    FROM country_tb
  ;;
   }
 
 ### Custom measures and dimensions ###
   measure: cnt_distinct_orders {
     type: count_distinct
-    sql: ${TABLE}.order_id ;;
+    sql: ${TABLE}.order_token ;;
   }
 
   dimension: is_ct_order {
@@ -73,6 +88,17 @@ view: order_placed_events {
   hidden: yes
   }
 
+  dimension: has_next_order {
+    type: yesno
+    sql: ${next_order_number} IS NOT NULL ;;
+  }
+
+  measure: cnt_has_next_order {
+    type: count_distinct
+    sql: ${order_number} ;;
+    filters: [has_next_order: "yes"]
+  }
+
 #######################################
 
   measure: count {
@@ -84,7 +110,14 @@ view: order_placed_events {
     type: string
     sql: ${TABLE}.id ;;
     hidden: yes
+    primary_key: yes
   }
+
+  dimension: next_order_number {
+    type: string
+    sql: ${TABLE}.next_order_number ;;
+  }
+
 
   dimension: order_token {
     type: string

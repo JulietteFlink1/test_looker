@@ -37,6 +37,11 @@ view: braintree_cc {
     sql: ${TABLE}.cc_settlement_amount ;;
   }
 
+  dimension: country_iso {
+    type: string
+    sql: ${TABLE}.country_iso ;;
+  }
+
   dimension_group: settlement {
     type: time
     timeframes: [

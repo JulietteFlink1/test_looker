@@ -105,6 +105,12 @@ view: customers_metrics {
     sql: ${TABLE}.first_order_city ;;
   }
 
+  dimension: first_order_country {
+    group_label: "* User Dimensions *"
+    type: string
+    sql: ${TABLE}.first_order_country ;;
+  }
+
   dimension: first_order_hub {
     group_label: "* User Dimensions *"
     type: string
@@ -329,6 +335,12 @@ view: customers_metrics {
     type: average
     value_format_name: euro_accounting_2_precision
     sql: ${lifetime_revenue_gross} ;;
+  }
+
+  dimension: weeks_time_since_sign_up_number {
+    type: number
+    group_label: "* User Dimensions *"
+    sql: ${weeks_time_since_sign_up} ;;
   }
 
 }

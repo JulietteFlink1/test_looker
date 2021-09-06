@@ -1,8 +1,7 @@
 include: "/views/**/*.view"
 include: "/**/*.view"
 include: "/views/native_derived_tables/cohorts/monthly_cohorts_cleaned_v2.view"
-include: "/views/native_derived_tables/cohorts/weekly_cohorts.view"
-# include: "/views/big_query_tables/curated_layer/customer_metrics_cleaned_v2.view"
+include: "/views/native_derived_tables/cohorts/weekly_cohorts_cleaned_v2.view"
 include: "/explores/base_explores/orders_customers_cleaned_v2.explore"
 include: "/**/*.explore"
 
@@ -33,9 +32,9 @@ explore: orders_customers_cleaned_v2 {
     type: left_outer
   }
 
-  join: weekly_cohorts {
+  join: weekly_cohorts_cleaned_v2 {
     view_label: "Cohorts - Weekly"
-    sql_on: ${customers_metrics_cleaned_v2.country_iso} = ${weekly_cohorts.country_iso} AND
+    sql_on: ${customers_metrics_cleaned_v2.country_iso} = ${weekly_cohorts_cleaned_v2.country_iso} AND
       ${customers_metrics_cleaned_v2.first_order_week} = ${customers_metrics_cleaned_v2.first_order_week};;
     relationship: many_to_one
     type: left_outer

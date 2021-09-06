@@ -1,4 +1,5 @@
 include: "/views/bigquery_tables/curated_layer/orders.view"
+include: "/views/extended_tables/orders_using_hubs.view"
 include: "/views/projects/cleaning/hubs_clean.view"
 include: "/views/projects/cleaning/shyftplan_riders_pickers_hours_clean.view"
 include: "/views/bigquery_tables/nps_after_order.view"
@@ -13,7 +14,7 @@ include: "/explores/base_explores/orders_cl.explore"
 explore: nps_after_order_cl { hidden:yes }
 
 explore: orders_cl {
-  from: orders
+  from: orders_using_hubs
   view_name: orders_cl  # needs to be set in order that the base_explore can be extended and referenced properly
   hidden: no
 
@@ -28,8 +29,7 @@ explore: orders_cl {
       orders_cl.is_successful_order: "yes",
       orders_cl.created_date: "after 2021-01-25",
       hubs.country: "",
-      hubs.hub_name: "",
-      hubs.is_hub_opened: "Yes"
+      hubs.hub_name: ""
     ]
   }
   access_filter: {
