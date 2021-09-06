@@ -337,4 +337,10 @@ view: customers_metrics {
     sql: ${lifetime_revenue_gross} ;;
   }
 
+  dimension: weeks_time_since_sign_up_number {
+    type: number
+    group_label: "* User Dimensions *"
+    sql: ${weeks_time_since_sign_up} ;;
+  }
+
 }

@@ -1,5 +1,5 @@
-- dashboard: outdated__do_not_use_hub_cohorts
-  title: "[Outdated - Do not use] Hub Cohorts"
+- dashboard: hub_cohorts_ct_migrated
+  title: "Hub Cohorts (CT Migrated)"
   layout: newspaper
   preferred_viewer: dashboards-next
   elements:
