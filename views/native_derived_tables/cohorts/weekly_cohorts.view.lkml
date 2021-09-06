@@ -51,11 +51,14 @@ view: weekly_cohorts {
     value_format: "\"€\"0.0,\" K\""
     type: number
   }
+
   dimension: weeks_time_since_sign_up {
     value_format: "0"
     type: duration_week
   }
+
   dimension: country_iso {}
+
   dimension: sum_discount_amt {
     label: "* User Metrics * SUM Discount Amount"
     description: "Sum of Discount amount applied on orders"
