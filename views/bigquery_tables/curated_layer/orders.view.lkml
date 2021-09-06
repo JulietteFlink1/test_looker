@@ -1131,6 +1131,16 @@ view: orders {
     value_format_name: euro_accounting_2_precision
   }
 
+  measure: avg_number_items {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "AVG # items"
+    description: "Average number of items per order"
+    hidden:  no
+    type: number
+    sql: ${sum_quantity_fulfilled}/nullif(${cnt_orders},0);;
+    value_format_name: decimal_1
+  }
+
   ##########
   ## SUMS ##
   ##########
