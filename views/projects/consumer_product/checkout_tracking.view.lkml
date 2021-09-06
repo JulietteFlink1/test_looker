@@ -84,7 +84,7 @@ view: checkout_tracking {
           DISTINCT country_iso,
           city
         FROM
-          `flink-backend.gsheet_store_metadata.hubs` ),
+          `flink-data-prod.google_sheets.hub_metadata` ),
         derived_address_with_country_tb AS (
         SELECT
           derived_address_tb.*,

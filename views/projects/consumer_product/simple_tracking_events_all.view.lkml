@@ -16,7 +16,7 @@ view: simple_tracking_events_all {
           tracks.id,
           tracks.timestamp
           FROM
-          `flink-backend.flink_android_production.tracks_view` tracks
+          `flink-data-prod.flink_android_production.tracks_view` tracks
           WHERE
             tracks.event NOT LIKE "%api%"
             AND tracks.event NOT LIKE "%deep_link%"
@@ -42,7 +42,7 @@ view: simple_tracking_events_all {
           tracks.id,
           tracks.timestamp
           FROM
-          `flink-backend.flink_ios_production.tracks_view` tracks
+          `flink-data-prod.flink_ios_production.tracks_view` tracks
           WHERE
             tracks.event NOT LIKE "%api%"
             AND tracks.event NOT LIKE "%deep_link%"

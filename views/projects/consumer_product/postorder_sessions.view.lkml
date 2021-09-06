@@ -13,7 +13,7 @@ view: postorder_sessions {
           , tracks.timestamp
           , TIMESTAMP_DIFF(tracks.timestamp,LAG(tracks.timestamp) OVER(PARTITION BY tracks.anonymous_id ORDER BY tracks.timestamp), MINUTE) AS inactivity_time
         FROM
-          `flink-backend.flink_ios_production.tracks_view` tracks
+          `flink-data-prod.flink_ios_production.tracks_view` tracks
         WHERE
           tracks.event NOT LIKE "%api%"
           AND tracks.event NOT LIKE "%adjust%"
@@ -34,7 +34,7 @@ view: postorder_sessions {
           , tracks.timestamp
           , TIMESTAMP_DIFF(tracks.timestamp,LAG(tracks.timestamp) OVER(PARTITION BY tracks.anonymous_id ORDER BY tracks.timestamp), MINUTE) AS inactivity_time
         FROM
-          `flink-backend.flink_android_production.tracks_view` tracks
+          `flink-data-prod.flink_android_production.tracks_view` tracks
         WHERE
           tracks.event NOT LIKE "%api%"
           AND tracks.event NOT LIKE "%adjust%"
@@ -75,7 +75,7 @@ view: postorder_sessions {
               hub.slug as hub_code,
               SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[ OFFSET(1)] AS hub_id,
               CAST(event.delivery_eta as INT) as delivery_eta
-        FROM `flink-backend.flink_ios_production.address_confirmed_view` event
+        FROM `flink-data-prod.flink_ios_production.address_confirmed_view` event
             LEFT JOIN
                 `flink-data-prod.saleor_prod_global.warehouse_warehouse` AS hub
             ON SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(event.hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[ OFFSET(1)] = hub.id
@@ -83,7 +83,7 @@ view: postorder_sessions {
                 SELECT DISTINCT
                     country_iso,
                     city
-                FROM `flink-backend.gsheet_store_metadata.hubs`
+                FROM `flink-data-prod.google_sheets.hub_metadata`
                  ) country
             ON event.hub_city = country.city
     UNION ALL
@@ -98,7 +98,7 @@ view: postorder_sessions {
               hub.slug as hub_code,
               SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[ OFFSET(1)] AS hub_id,
               event.delivery_eta
-        FROM `flink-backend.flink_android_production.address_confirmed_view` event
+        FROM `flink-data-prod.flink_android_production.address_confirmed_view` event
             LEFT JOIN
                 `flink-data-prod.saleor_prod_global.warehouse_warehouse` AS hub
             ON SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(event.hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[ OFFSET(1)] = hub.id
@@ -106,7 +106,7 @@ view: postorder_sessions {
                 SELECT DISTINCT
                     country_iso,
                     city
-                FROM `flink-backend.gsheet_store_metadata.hubs`
+                FROM `flink-data-prod.google_sheets.hub_metadata`
                  ) country
             ON event.hub_city = country.city
     UNION ALL
@@ -121,7 +121,7 @@ view: postorder_sessions {
               hub.slug as hub_code,
               SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[ OFFSET(1)] AS hub_id,
               CAST(event.delivery_eta as INT) as delivery_eta
-        FROM `flink-backend.flink_ios_production.order_placed_view` event
+        FROM `flink-data-prod.flink_ios_production.order_placed_view` event
             LEFT JOIN
                 `flink-data-prod.saleor_prod_global.warehouse_warehouse` AS hub
             ON SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(event.hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[ OFFSET(1)] = hub.id
@@ -129,7 +129,7 @@ view: postorder_sessions {
                 SELECT DISTINCT
                     country_iso,
                     city
-                FROM `flink-backend.gsheet_store_metadata.hubs`
+                FROM `flink-data-prod.google_sheets.hub_metadata`
                  ) country
             ON event.hub_city = country.city
     UNION ALL
@@ -144,7 +144,7 @@ view: postorder_sessions {
               hub.slug as hub_code,
               SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[ OFFSET(1)] AS hub_id,
               delivery_eta
-        FROM `flink-backend.flink_android_production.order_placed_view` event
+        FROM `flink-data-prod.flink_android_production.order_placed_view` event
             LEFT JOIN
                 `flink-data-prod.saleor_prod_global.warehouse_warehouse` AS hub
             ON SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(event.hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[ OFFSET(1)] = hub.id
@@ -152,7 +152,7 @@ view: postorder_sessions {
                 SELECT DISTINCT
                     country_iso,
                     city
-                FROM `flink-backend.gsheet_store_metadata.hubs`
+                FROM `flink-data-prod.google_sheets.hub_metadata`
                  ) country
             ON event.hub_city = country.city
     )
