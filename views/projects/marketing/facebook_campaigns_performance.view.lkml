@@ -22,12 +22,12 @@ view: facebook_campaigns_performance {
     sum(clicks) as clicks,
     sum(impressions) as impressions,
     sum(reach) as reach
-    from `flink-backend.facebook_ads.insights_view` insights
-    left join `flink-backend.facebook_ads.ads_view` ads
+    from `flink-data-prod.facebook_ads.insights_view` insights
+    left join `flink-data-prod.facebook_ads.ads_view` ads
     on insights.ad_id = ads.id
-    left join `flink-backend.facebook_ads.ad_sets_view` ad_sets
+    left join `flink-data-prod.facebook_ads.ad_sets_view` ad_sets
     on ads.adset_id=ad_sets.id
-    left join `flink-backend.facebook_ads.campaigns_view` campaigns
+    left join `flink-data-prod.facebook_ads.campaigns_view` campaigns
     on ads.campaign_id = campaigns.id
     group by 1, 2, 3, 4, 5, 6, 7, 8, 9
     order by 1 desc, 2, 3, 4, 5

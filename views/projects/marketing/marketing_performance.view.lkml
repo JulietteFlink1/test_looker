@@ -136,12 +136,12 @@ view: marketing_performance {
           else 'Other' end as country,
           date(insights.date_start, 'Europe/Berlin') as date,
           sum(spend) as spend
-          from `flink-backend.facebook_ads.insights_view` insights
-          left join `flink-backend.facebook_ads.ads_view` ads
+          from `flink-data-prod.facebook_ads.insights_view` insights
+          left join `flink-data-prod.facebook_ads.ads_view` ads
           on insights.ad_id = ads.id
-          left join `flink-backend.facebook_ads.ad_sets_view` ad_sets
+          left join `flink-data-prod.facebook_ads.ad_sets_view` ad_sets
           on ads.adset_id = ad_sets.id
-          left join `flink-backend.facebook_ads.campaigns_view` campaigns
+          left join `flink-data-prod.facebook_ads.campaigns_view` campaigns
           on ads.campaign_id = campaigns.id
           group by 1, 2, 3, 4
       ),
@@ -154,7 +154,7 @@ view: marketing_performance {
               when adwords_customer_id in ('2579239713', '8843684684', '8009692215') then 'FR' else 'DE' end as country,
           date(date_start, 'Europe/Berlin') as date,
           sum(cost) / 1000000 as spend
-          from `flink-backend.google_ads.campaign_performance_reports_view`
+          from `flink-data-prod.google_ads.campaign_performance_reports_view`
           group by 1, 2, 3, 4
       ),
 
