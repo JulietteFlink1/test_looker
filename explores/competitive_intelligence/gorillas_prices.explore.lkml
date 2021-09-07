@@ -3,7 +3,7 @@ include: "/views/bigquery_tables/curated_layer/*.view"
 include: "/views/bigquery_tables/reporting_layer/competitive_intelligence/gorillas_inventory_stock_count.view.lkml"
 
 explore:  gorillas_prices {
-  hidden: no
+  hidden: yes
   label: "Gorillas Prices"
   view_label: "Gorillas Prices"
   view_name: gorillas_products
