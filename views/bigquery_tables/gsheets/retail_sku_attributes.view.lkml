@@ -9,7 +9,8 @@ view: retail_sku_attributes {
   dimension: buying_price {
     type: number
     sql: ${TABLE}.buying_price ;;
-    hidden: yes
+    hidden: no
+    required_access_grants: [can_view_buying_information]
   }
 
   dimension: deposit {

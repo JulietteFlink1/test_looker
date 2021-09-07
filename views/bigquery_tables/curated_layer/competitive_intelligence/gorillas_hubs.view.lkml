@@ -45,6 +45,12 @@ view: gorillas_hubs {
     sql: ${TABLE}.longitude ;;
   }
 
+  dimension: location {
+    type: location
+    sql_latitude: ${TABLE}.latitude ;;
+    sql_longitude: ${TABLE}.longitude ;;
+  }
+
   dimension_group: partition_timestamp {
     type: time
     timeframes: [

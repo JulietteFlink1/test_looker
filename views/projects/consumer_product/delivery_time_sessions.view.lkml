@@ -26,13 +26,13 @@ view: delivery_time_sessions {
           (1)] AS hub_id,
           CAST(event2.delivery_eta AS INT64) as order_delivery_eta
         FROM
-          `flink-backend.flink_ios_production.tracks_view` tracks
+          `flink-data-prod.flink_ios_production.tracks_view` tracks
         LEFT JOIN
-          `flink-backend.flink_ios_production.address_confirmed_view` event
+          `flink-data-prod.flink_ios_production.address_confirmed_view` event
         ON
           tracks.id=event.id
         LEFT JOIN
-          `flink-backend.flink_ios_production.order_placed_view` event2
+          `flink-data-prod.flink_ios_production.order_placed_view` event2
         ON
           tracks.id=event2.id
         WHERE
@@ -67,13 +67,13 @@ view: delivery_time_sessions {
           (1)] AS hub_id,
           CAST(event2.delivery_eta AS INT64) as order_delivery_eta
         FROM
-          `flink-backend.flink_android_production.tracks_view` tracks
+          `flink-data-prod.flink_android_production.tracks_view` tracks
         LEFT JOIN
-          `flink-backend.flink_android_production.address_confirmed_view` event
+          `flink-data-prod.flink_android_production.address_confirmed_view` event
         ON
           tracks.id=event.id
         LEFT JOIN
-          `flink-backend.flink_ios_production.order_placed_view` event2
+          `flink-data-prod.flink_ios_production.order_placed_view` event2
         ON
           tracks.id=event2.id
         WHERE
@@ -112,7 +112,7 @@ view: delivery_time_sessions {
           DISTINCT country_iso,
           city
         FROM
-          `flink-backend.gsheet_store_metadata.hubs` ),
+          `flink-data-prod.google_sheets.hub_metadata` ),
 
       location_table AS (
        SELECT

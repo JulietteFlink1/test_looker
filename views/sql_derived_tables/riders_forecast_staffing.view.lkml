@@ -195,7 +195,7 @@ select
     nullif(shifts_scheduled.planned_picker, 0)                    as filled_no_show_picker_hours
 
 from shiftblocks_hubs
-left join flink-backend.order_forecast.historical_forecasts as historical_forecasts
+left join flink-data-prod.order_forecast.historical_forecasts as historical_forecasts
           on (shiftblocks_hubs.block_starts_at = historical_forecasts.start_datetime
               and shiftblocks_hubs.block_ends_at = historical_forecasts.end_datetime)
               and shiftblocks_hubs.hub_name = historical_forecasts.warehouse
