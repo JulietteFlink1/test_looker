@@ -1,5 +1,5 @@
 view: contact_customer_service_selected_view {
-  sql_table_name: `flink-backend.flink_android_production.contact_customer_service_selected_view`
+  sql_table_name: `flink-data-prod.flink_android_production.contact_customer_service_selected_view`
     ;;
   drill_fields: [id]
 

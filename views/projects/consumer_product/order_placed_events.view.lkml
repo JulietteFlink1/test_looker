@@ -15,7 +15,7 @@ view: order_placed_events {
         ios_orders.payment_method,
         ios_orders.timestamp
       FROM
-        `flink-backend.flink_ios_production.order_placed_view` ios_orders
+        `flink-data-prod.flink_ios_production.order_placed_view` ios_orders
       WHERE
           NOT (LOWER(ios_orders.context_app_version) LIKE "%app-rating%" OR LOWER(ios_orders.context_app_version) LIKE "%debug%")
       AND NOT (LOWER(ios_orders.context_app_name) = "flink-staging" OR LOWER(ios_orders.context_app_name)="flink-debug")
@@ -33,7 +33,7 @@ view: order_placed_events {
         android_orders.payment_method,
         android_orders.timestamp
       FROM
-        `flink-backend.flink_android_production.order_placed_view` android_orders
+        `flink-data-prod.flink_android_production.order_placed_view` android_orders
       WHERE
           NOT (LOWER(android_orders.context_app_version) LIKE "%app-rating%" OR LOWER(android_orders.context_app_version) LIKE "%debug%")
       AND NOT (LOWER(android_orders.context_app_name) = "flink-staging" OR LOWER(android_orders.context_app_name)="flink-debug")

@@ -46,9 +46,9 @@ view: productsearch_mobile_events {
       OFFSET
       (1)] AS hub_id
     FROM
-    `flink-backend.flink_android_production.tracks_view` tracks
+    `flink-data-prod.flink_android_production.tracks_view` tracks
     LEFT JOIN
-    `flink-backend.flink_android_production.address_confirmed_view` event
+    `flink-data-prod.flink_android_production.address_confirmed_view` event
     ON
     tracks.id=event.id
     WHERE
@@ -104,9 +104,9 @@ view: productsearch_mobile_events {
       OFFSET
       (1)] AS hub_id
     FROM
-    `flink-backend.flink_ios_production.tracks_view` tracks
+    `flink-data-prod.flink_ios_production.tracks_view` tracks
     LEFT JOIN
-    `flink-backend.flink_ios_production.address_confirmed_view` event
+    `flink-data-prod.flink_ios_production.address_confirmed_view` event
     ON
     tracks.id=event.id
     WHERE
@@ -124,7 +124,7 @@ view: productsearch_mobile_events {
     country_iso,
     city
     FROM
-    `flink-backend.gsheet_store_metadata.hubs` ),
+    `flink-data-prod.google_sheets.hub_metadata` ),
 
     help_table AS (
     SELECT
@@ -187,7 +187,7 @@ view: productsearch_mobile_events {
     search_results_unavailable_count,
     product_ids
     FROM
-    `flink-backend.flink_android_production.product_search_executed_view`
+    `flink-data-prod.flink_android_production.product_search_executed_view`
     UNION ALL
     SELECT
     id,
@@ -198,7 +198,7 @@ view: productsearch_mobile_events {
     search_results_unavailable_count,
     product_ids
     FROM
-    `flink-backend.flink_ios_production.product_search_executed_view` ),
+    `flink-data-prod.flink_ios_production.product_search_executed_view` ),
 
     product_search_combined_data AS (
     SELECT
