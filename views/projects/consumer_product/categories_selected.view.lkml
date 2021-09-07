@@ -1,61 +1,49 @@
 view: categories_selected {
   derived_table: {
-    persist_for: "8 hour"
+    persist_for: "1 hour"
     sql: WITH
         events AS ( -- ios all events
         SELECT
             tracks.anonymous_id
           , tracks.context_app_version
           , tracks.context_device_type
+          , tracks.context_locale
           , tracks.event
           , tracks.event_text
           , tracks.id
           , tracks.timestamp
           , TIMESTAMP_DIFF(tracks.timestamp,LAG(tracks.timestamp) OVER(PARTITION BY tracks.anonymous_id ORDER BY tracks.timestamp), MINUTE) AS inactivity_time
         FROM
-          `flink-data-prod.flink_ios_production.tracks` tracks
-        WHERE DATE(tracks._partitiontime) > "2021-08-01"
-          AND tracks.event NOT LIKE "%api%"
+          `flink-data-prod.flink_ios_production.tracks_view` tracks
+        WHERE
+          tracks.event NOT LIKE "%api%"
           AND tracks.event NOT LIKE "%adjust%"
           AND tracks.event NOT LIKE "%install_attributed%"
           AND tracks.event != "app_opened"
           AND tracks.event != "application_updated"
-          AND tracks.event != "application_opened"
-          AND NOT (LOWER(tracks.context_app_version) LIKE "%app-rating%"
-           OR LOWER(tracks.context_app_version) LIKE "%debug%")
-          AND NOT (LOWER(tracks.context_app_name) = "flink-staging"
-           OR LOWER(tracks.context_app_name) = "flink-debug")
-          AND (LOWER(tracks.context_traits_email) != "qa@goflink.com"
-           OR tracks.context_traits_email is null)
-          AND (tracks.context_traits_hub_slug NOT IN('erp_spitzbergen', 'fr_hub_test', 'nl_hub_test')
-           OR tracks.context_traits_hub_slug is null)
+          AND NOT (tracks.context_app_version LIKE "%APP-RATING%" OR tracks.context_app_version LIKE "%DEBUG%")
+          AND NOT (tracks.context_app_name = "Flink-Staging" OR tracks.context_app_name="Flink-Debug")
     UNION ALL
         SELECT -- android all events
             tracks.anonymous_id
           , tracks.context_app_version
           , tracks.context_device_type
+          , tracks.context_locale
           , tracks.event
           , tracks.event_text
           , tracks.id
           , tracks.timestamp
           , TIMESTAMP_DIFF(tracks.timestamp,LAG(tracks.timestamp) OVER(PARTITION BY tracks.anonymous_id ORDER BY tracks.timestamp), MINUTE) AS inactivity_time
         FROM
-          `flink-data-prod.flink_android_production.tracks` tracks
-        WHERE DATE(tracks._partitiontime) > "2021-08-01"
-          AND tracks.event NOT LIKE "%api%"
+          `flink-data-prod.flink_android_production.tracks_view` tracks
+        WHERE
+          tracks.event NOT LIKE "%api%"
           AND tracks.event NOT LIKE "%adjust%"
           AND tracks.event NOT LIKE "%install_attributed%"
           AND tracks.event != "app_opened"
           AND tracks.event != "application_updated"
-          AND tracks.event != "application_opened"
-          AND NOT (LOWER(tracks.context_app_version) LIKE "%app-rating%"
-           OR LOWER(tracks.context_app_version) LIKE "%debug%")
-          AND NOT (LOWER(tracks.context_app_name) = "flink-staging"
-           OR LOWER(tracks.context_app_name) = "flink-debug")
-          AND (LOWER(tracks.context_traits_email) != "qa@goflink.com"
-           OR tracks.context_traits_email is null)
-          AND (tracks.context_traits_hub_slug NOT IN('erp_spitzbergen', 'fr_hub_test', 'nl_hub_test')
-           OR tracks.context_traits_hub_slug is null)
+          AND NOT (tracks.context_app_version LIKE "%APP-RATING%" OR tracks.context_app_version LIKE "%DEBUG%")
+          AND NOT (tracks.context_app_name = "Flink-Staging" OR tracks.context_app_name="Flink-Debug")
           )
 
      , tracking_sessions AS ( -- defining 30 min sessions
@@ -67,6 +55,7 @@ view: categories_selected {
             , LEAD(timestamp) OVER(PARTITION BY anonymous_id ORDER BY timestamp) AS next_session_start_at
             , context_app_version
             , context_device_type
+            , context_locale
             FROM
               events
             WHERE
@@ -75,13 +64,197 @@ view: categories_selected {
             ORDER BY
               1)
 
+    , hub_data_union AS ( -- ios & android pulling address_confirmed and order_placed for hub_data and delivery_eta
+        SELECT
+              event.event,
+              event.anonymous_id,
+              event.timestamp,
+              event.hub_city,
+              event.hub_code AS hub_encoded,
+              hub.slug as hub_code,
+              CAST(event.delivery_eta as INT) as delivery_eta,
+              CAST(NULL AS BOOL) AS has_selected_address
+        FROM `flink-data-prod.flink_ios_production.address_confirmed_view` event
+            LEFT JOIN
+                `flink-data-prod.saleor_prod_global.warehouse_warehouse` AS hub
+            ON SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(event.hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[ OFFSET(1)] = hub.id
+    UNION ALL
+        SELECT
+              event.event,
+              event.anonymous_id,
+              event.timestamp,
+              event.hub_city,
+              event.hub_code AS hub_encoded,
+              hub.slug as hub_code,
+              event.delivery_eta,
+              CAST(NULL AS BOOL) AS has_selected_address
+        FROM `flink-data-prod.flink_android_production.address_confirmed_view` event
+            LEFT JOIN
+                `flink-data-prod.saleor_prod_global.warehouse_warehouse` AS hub
+            ON SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(event.hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[ OFFSET(1)] = hub.id
+    UNION ALL
+        SELECT
+              event.event,
+              event.anonymous_id,
+              event.timestamp,
+              event.hub_city,
+              event.hub_code AS hub_encoded,
+              hub.slug as hub_code,
+              CAST(event.delivery_eta as INT) as delivery_eta,
+              CAST(NULL AS BOOL) AS has_selected_address
+        FROM `flink-data-prod.flink_ios_production.order_placed_view` event
+            LEFT JOIN
+                `flink-data-prod.saleor_prod_global.warehouse_warehouse` AS hub
+            ON SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(event.hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[ OFFSET(1)] = hub.id
+    UNION ALL
+        SELECT
+              event.event,
+              event.anonymous_id,
+              event.timestamp,
+              event.hub_city,
+              event.hub_code AS hub_encoded,
+              hub.slug as hub_code,
+              delivery_eta,
+              CAST(NULL AS BOOL) AS has_selected_address
+        FROM `flink-data-prod.flink_android_production.order_placed_view` event
+            LEFT JOIN
+                `flink-data-prod.saleor_prod_global.warehouse_warehouse` AS hub
+            ON SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(event.hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[ OFFSET(1)] = hub.id
+    UNION ALL
+        SELECT
+              event.event,
+              event.anonymous_id,
+              event.timestamp,
+              event.city AS hub_city,
+              NULL AS hub_encoded,
+              hub_slug as hub_code,
+              NULL AS delivery_eta,
+              event.has_selected_address
+        FROM `flink-data-prod.flink_android_production.app_opened_view` event
+    UNION ALL
+        SELECT
+              event.event,
+              event.anonymous_id,
+              event.timestamp,
+              event.city AS hub_city,
+              NULL AS hub_encoded,
+              hub_slug as hub_code,
+              NULL AS delivery_eta,
+              event.has_selected_address
+        FROM `flink-data-prod.flink_ios_production.app_opened_view` event
+    )
+
+    , has_address_fill AS (
+      SELECT
+        hd.event,
+        hd.anonymous_id,
+        hd.timestamp,
+        hd.hub_city,
+        hd.hub_code,
+        COALESCE(hs.country_iso, hc.country_iso) as hub_country,
+        hd.delivery_eta,
+        LAST_VALUE(hd.has_selected_address IGNORE NULLS) OVER
+            (PARTITION BY anonymous_id ORDER BY timestamp RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)  AS has_selected_address
+      FROM hub_data_union hd
+      LEFT JOIN (
+                SELECT DISTINCT country_iso, city
+                FROM `flink-data-prod.google_sheets.hub_metadata`
+                 ) hc
+            ON hd.hub_city = hc.city
+      LEFT JOIN (
+          SELECT DISTINCT country_iso, hub_code
+          FROM `flink-data-prod.google_sheets.hub_metadata`
+         ) hs
+      ON LOWER(hd.hub_code) = LOWER(hs.hub_code)
+
+      WHERE (hs.hub_code NOT IN('erp_spitzbergen', 'fr_hub_test', 'nl_hub_test')
+          OR hs.hub_code is null)
+    )
+
+    , hub_data AS (
+    SELECT  ha.event,
+            ha.anonymous_id,
+            ha.timestamp,
+            ha.hub_city,
+            ha.hub_country,
+            ha.hub_code,
+            ha.delivery_eta,
+            ha.has_selected_address,
+            CASE
+                WHEN ha.has_selected_address THEN true
+                WHEN ha.event="address_confirmed" THEN true
+                WHEN ha.event="order_placed" THEN true
+                ELSE false
+            END AS has_address,
+            ROW_NUMBER() OVER(PARTITION BY ha.event, ha.anonymous_id, ha.timestamp ORDER BY ha.timestamp DESC)       AS row_n
+    FROM has_address_fill ha
+    )
+
+    , sessions_final AS ( -- merging sessions with hub_data
+    SELECT
+           anonymous_id
+         , context_app_version
+         , context_device_type
+         , context_locale
+         , session_id
+         , session_number
+         , session_start_at
+         , next_session_start_at
+         , CASE WHEN hub_city LIKE 'Ludwigshafen%' THEN 'DE'
+            WHEN hub_city LIKE 'Mülheim%' THEN 'DE'
+            WHEN hub_city LIKE 'Mulheim%' THEN 'DE'
+            ELSE hub_country END AS hub_country
+         , hub_city
+         , hub_code
+         , delivery_eta
+         , has_selected_address
+         , has_address
+    FROM (
+        SELECT
+              ts.anonymous_id
+            , ts.context_app_version
+            , ts.context_device_type
+            , ts.context_locale
+            , ts.session_id
+            , ts.session_number
+            , ts.session_start_at
+            , ts.next_session_start_at
+            , hd.timestamp as hd_timestamp
+            , hd.hub_code
+            , hd.hub_country
+            , hd.hub_city
+            , hd.delivery_eta
+            , hd.has_selected_address
+            , hd.has_address
+            , DENSE_RANK() OVER (PARTITION BY ts.anonymous_id, ts.session_id ORDER BY hd.timestamp DESC) as rank_hd -- ranks all data_hub related events // filter set = 1 to get 'latest' timestamp
+        FROM tracking_sessions ts
+                LEFT JOIN (
+                    SELECT
+                        anonymous_id
+                      , timestamp
+                      , hub_code
+                      , hub_city
+                      , hub_country
+                      , delivery_eta
+                      , event
+                      , has_selected_address
+                      , has_address
+                    FROM hub_data
+                ) hd
+                ON ts.anonymous_id = hd.anonymous_id
+                AND ( hd.timestamp < ts.next_session_start_at OR ts.next_session_start_at IS NULL)
+            )
+    WHERE
+        rank_hd = 1  -- filter set = 1 to get 'latest' timestamp
+    GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14
+    )
     , add_to_cart AS (
         SELECT
                sf.anonymous_id
              , sf.session_id
              , count(e.timestamp) as event_count
         FROM events e
-            LEFT JOIN tracking_sessions sf
+            LEFT JOIN sessions_final sf
             ON e.anonymous_id = sf.anonymous_id
             AND e.timestamp >= sf.session_start_at
             AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
@@ -95,7 +268,7 @@ view: categories_selected {
              , sf.session_id
              , count(e.timestamp) as event_count
         FROM events e
-            LEFT JOIN tracking_sessions sf
+            LEFT JOIN sessions_final sf
             ON e.anonymous_id = sf.anonymous_id
             AND e.timestamp >= sf.session_start_at
             AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
@@ -103,17 +276,59 @@ view: categories_selected {
         GROUP BY 1,2
     )
 
-    , categories AS (
+    , address_confirmed AS (
         SELECT
                sf.anonymous_id
              , sf.session_id
              , count(e.timestamp) as event_count
         FROM events e
-            LEFT JOIN tracking_sessions sf
+            LEFT JOIN sessions_final sf
+            ON e.anonymous_id = sf.anonymous_id
+            AND e.timestamp >= sf.session_start_at
+            AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
+        WHERE e.event = 'address_confirmed'
+        GROUP BY 1,2
+    )
+
+    , more_categories AS (
+        SELECT
+               sf.anonymous_id
+             , sf.session_id
+             , count(e.timestamp) as event_count
+        FROM events e
+            LEFT JOIN sessions_final sf
             ON e.anonymous_id = sf.anonymous_id
             AND e.timestamp >= sf.session_start_at
             AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
         WHERE e.event = 'categories_show_more_selected'
+        GROUP BY 1,2
+    )
+
+    , category_selected AS (
+        SELECT
+               sf.anonymous_id
+             , sf.session_id
+             , count(e.timestamp) as event_count
+        FROM events e
+            LEFT JOIN sessions_final sf
+            ON e.anonymous_id = sf.anonymous_id
+            AND e.timestamp >= sf.session_start_at
+            AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
+        WHERE e.event = 'category_selected'
+        GROUP BY 1,2
+    )
+
+    , purchase_confirmed AS (
+        SELECT
+               sf.anonymous_id
+             , sf.session_id
+             , count(e.timestamp) as event_count
+        FROM events e
+            LEFT JOIN sessions_final sf
+            ON e.anonymous_id = sf.anonymous_id
+            AND e.timestamp >= sf.session_start_at
+            AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
+        WHERE e.event = 'purchase_confirmed'
         GROUP BY 1,2
     )
 
@@ -132,7 +347,7 @@ view: categories_selected {
              , sf.session_id
              , count(e.timestamp) as event_count
         FROM events e
-            LEFT JOIN tracking_sessions sf
+            LEFT JOIN sessions_final sf
             ON e.anonymous_id = sf.anonymous_id
             AND e.timestamp >= sf.session_start_at
             AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
@@ -144,28 +359,37 @@ view: categories_selected {
           sf.anonymous_id
         , sf.context_app_version
         , sf.context_device_type
+        , sf.context_locale
         , sf.session_id
         , sf.session_number
         , datetime(sf.session_start_at,
           'UTC') AS session_start_at
         , datetime(sf.next_session_start_at,
           'UTC') AS next_session_start_at
+        , sf.hub_code
+        , sf.hub_country
+        , sf.hub_city
+        , sf.delivery_eta
+        , sf.has_selected_address
+        , sf.has_address
         , atc.event_count as add_to_cart
-        , op.event_count as order_placed
-        , ca.event_count as more_categories
         , hv.event_count as home_viewed
+        , cv.event_count as more_categories
+        , ac.event_count as address_confirmed
+        , cs.event_count as category_selected
+        , pc.event_count as payment_started
+        , op.event_count as order_placed
+        -- , ae.event_count as any_event
         , CASE WHEN fo.first_order_timestamp < sf.session_start_at THEN true ELSE false END as has_ordered
-    FROM tracking_sessions sf
-        LEFT JOIN add_to_cart atc
-        ON sf.session_id = atc.session_id
-        LEFT JOIN home_viewed hv
-        ON sf.session_id = hv.session_id
-        LEFT JOIN order_placed op
-        ON sf.session_id = op.session_id
-        LEFT JOIN first_order fo
-        ON sf.anonymous_id = fo.anonymous_id
-        LEFT JOIN categories ca
-        ON sf.anonymous_id = ca.anonymous_id
+    FROM sessions_final sf
+        LEFT JOIN add_to_cart atc ON sf.session_id = atc.session_id
+        LEFT JOIN home_viewed hv ON sf.session_id = hv.session_id
+        LEFT JOIN more_categories cv ON sf.session_id = cv.session_id
+        LEFT JOIN address_confirmed ac ON sf.session_id = ac.session_id
+        LEFT JOIN category_selected cs ON sf.session_id = cs.session_id
+        LEFT JOIN purchase_confirmed pc ON sf.session_id = pc.session_id
+        LEFT JOIN order_placed op ON sf.session_id = op.session_id
+        LEFT JOIN first_order fo ON sf.anonymous_id = fo.anonymous_id
  ;;
   }
 
@@ -195,6 +419,57 @@ view: categories_selected {
     sql: ${TABLE}.session_start_at ;;
   }
 
+  dimension_group: next_session_start_at {
+    type: time
+    datatype: datetime
+    timeframes: [
+      date,
+      day_of_week,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: ${TABLE}.next_session_start_at ;;
+  }
+
+# dimension: session {
+  #   type: number
+  #   sql: ${TABLE}.session ;;
+  # }
+
+  dimension: has_ordered {
+    type: yesno
+    sql: ${TABLE}.has_ordered ;;
+  }
+
+### Custom dimensions
+  dimension: full_app_version {
+    type: string
+    sql: ${context_device_type} || '-' || ${context_app_version} ;;
+  }
+
+  dimension: returning_customer {
+    type: yesno
+    sql: ${has_ordered} ;;
+  }
+
+  dimension: is_first_session {
+    type: yesno
+    sql: ${TABLE}.session_number=1 ;;
+  }
+
+  dimension: hub_unknown {
+    type: yesno
+    sql: ${hub_code} IS NULL ;;
+  }
+
+  dimension: is_setting_address {
+    type: yesno
+    description: "TRUE if user has at least one addressConfirmed event in this session, FALSE otherwise"
+    sql: ${address_confirmed} IS NOT NULL ;;
+  }
+
   dimension: session_start_date_granularity {
     label: "Session Start Date (Dynamic)"
     label_from_parameter: timeframe_picker
@@ -221,38 +496,31 @@ view: categories_selected {
     default_value: "Day"
   }
 
-  # dimension_group: next_session_start_at {
-  #   type: time
-  #   datatype: datetime
-  #   timeframes: [
-  #     date,
-  #     day_of_week,
-  #     week,
-  #     month,
-  #     quarter,
-  #     year
-  #   ]
-  #   sql: ${TABLE}.next_session_start_at ;;
-  # }
-
-
-  dimension: has_ordered {
-    type: yesno
-    sql: ${TABLE}.has_ordered ;;
+  dimension: country {
+    type: string
+    case: {
+      when: {
+        sql: ${TABLE}.hub_country = "DE" ;;
+        label: "Germany"
+      }
+      when: {
+        sql: ${TABLE}.hub_country = "FR" ;;
+        label: "France"
+      }
+      when: {
+        sql: ${TABLE}.hub_country = "NL" ;;
+        label: "Netherlands"
+      }
+      else: "Other / Unknown"
+    }
   }
 
-### Custom dimensions
-  dimension: returning_customer {
-    type: yesno
-    sql: ${has_ordered} ;;
+  measure: cnt_address_selected {
+    label: "Address selected count"
+    description: "Number of sessions in which at least one Address Confirmed event happened"
+    type: count
+    filters: [address_confirmed: "NOT NULL"]
   }
-
-  dimension: is_first_session {
-    type: yesno
-    sql: ${TABLE}.session_number=1 ;;
-  }
-
-##### Unique count of events during a session. If multiple events are triggerred during a session, e.g 3 times view item, the event is only counted once.
 
   measure: cnt_home_viewed {
     label: "Home view count"
@@ -261,9 +529,16 @@ view: categories_selected {
     filters: [home_viewed: "NOT NULL"]
   }
 
+  measure: cnt_has_address {
+    label: "Has address count"
+    description: "# sessions in which the user had an address (selected in previous session or current)"
+    type: count
+    filters: [has_address: "yes"]
+  }
+
   measure: cnt_more_categories {
-    label: "More Categories count"
-    description: "Number of sessions in which at least one More Categories event happened"
+    label: "More categories count"
+    description: "Number of sessions in which at least one Cart Viewed event happened"
     type: count
     filters: [more_categories: "NOT NULL"]
   }
@@ -275,6 +550,20 @@ view: categories_selected {
     filters: [add_to_cart: "NOT NULL"]
   }
 
+  measure: cnt_category_selected {
+    label: "Category selected count"
+    description: "Number of sessions in which at least one Checkout Started event happened"
+    type: count
+    filters: [category_selected: "NOT NULL"]
+  }
+
+  measure: cnt_payment_started {
+    label: "Payment started count"
+    description: "Number of sessions in which at least one Payment Started event happened"
+    type: count
+    filters: [payment_started: "NOT NULL"]
+  }
+
   measure: cnt_purchase {
     label: "Order placed count"
     description: "Number of sessions in which at least one Order Placed event happened"
@@ -282,11 +571,25 @@ view: categories_selected {
     filters: [order_placed: "NOT NULL"]
   }
 
-  ###### Sum of events
+## SUM of events
+
+
+  measure: sum_address_selected {
+    label: "Address selected sum of events"
+    type: sum
+    sql: ${address_confirmed} ;;
+  }
+
   measure: sum_home_viewed {
     label: "Home viewed sum of events"
     type: sum
     sql: ${home_viewed} ;;
+  }
+
+  measure: sum_more_categories{
+    label: "More categories sum of events"
+    type: sum
+    sql: ${more_categories} ;;
   }
 
   measure: sum_add_to_cart {
@@ -295,13 +598,35 @@ view: categories_selected {
     sql: ${add_to_cart} ;;
   }
 
+  measure: sum_category_selected {
+    label: "Category selected sum of events"
+    type: sum
+    sql: ${category_selected} ;;
+  }
+
+  measure: sum_payment_started {
+    label: "Payment started sum of events"
+    type: sum
+    sql: ${payment_started} ;;
+  }
+
   measure: sum_purchases {
     label: "Order placed sum of events"
     type: sum
     sql: ${order_placed} ;;
   }
 
+  ## Measures based on other measures
+  measure: overall_conversion_rate {
+    type: number
+    description: "Number of sessions in which an Order Placed event happened, compared to the total number of Session Started"
+    value_format_name: percent_1
+    sql: ${cnt_purchase}/NULLIF(${count},0) ;;
+  }
+
+
   #########
+
   measure: count {
     type: count
     drill_fields: [detail*]
@@ -322,6 +647,11 @@ view: categories_selected {
     sql: ${TABLE}.context_device_type ;;
   }
 
+  dimension: context_locale {
+    type: string
+    sql: ${TABLE}.context_locale ;;
+  }
+
   dimension: session_id {
     type: string
     sql: ${TABLE}.session_id ;;
@@ -330,6 +660,36 @@ view: categories_selected {
   dimension: session_number {
     type: number
     sql: ${TABLE}.session_number ;;
+  }
+
+  dimension: hub_code {
+    type: string
+    sql: ${TABLE}.hub_code ;;
+  }
+
+  dimension: hub_country {
+    type: string
+    sql: ${TABLE}.hub_country ;;
+  }
+
+  dimension: hub_city {
+    type: string
+    sql: ${TABLE}.hub_city ;;
+  }
+
+  dimension: delivery_eta {
+    type: number
+    sql: ${TABLE}.delivery_eta ;;
+  }
+
+  dimension: has_selected_address {
+    type: string
+    sql: ${TABLE}.has_selected_address ;;
+  }
+
+  dimension: has_address {
+    type: yesno
+    sql: ${TABLE}.has_address ;;
   }
 
   dimension: add_to_cart {
@@ -343,8 +703,23 @@ view: categories_selected {
   }
 
   dimension: more_categories {
-    type:  number
-    sql:  ${TABLE}.more_categories ;;
+    type: number
+    sql: ${TABLE}.more_categories ;;
+  }
+
+  dimension: address_confirmed {
+    type: number
+    sql: ${TABLE}.address_confirmed ;;
+  }
+
+  dimension: category_selected {
+    type: number
+    sql: ${TABLE}.category_selected ;;
+  }
+
+  dimension: payment_started {
+    type: number
+    sql: ${TABLE}.payment_started ;;
   }
 
   dimension: order_placed {
@@ -357,12 +732,23 @@ view: categories_selected {
       anonymous_id,
       context_app_version,
       context_device_type,
+      context_locale,
       session_id,
       session_number,
       session_start_at_date,
+      next_session_start_at_date,
+      hub_code,
+      hub_country,
+      hub_city,
+      delivery_eta,
+      has_selected_address,
+      has_address,
       add_to_cart,
       home_viewed,
       more_categories,
+      address_confirmed,
+      category_selected,
+      payment_started,
       order_placed,
       has_ordered
     ]
