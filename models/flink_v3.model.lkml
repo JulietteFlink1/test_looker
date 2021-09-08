@@ -56,6 +56,7 @@ named_value_format: euro_accounting_0_precision {
   value_format: "\"€\"#,##0"
 }
 
+## remove
 ####### ORDER EXPLORE #######
 explore: order_order {
   label: "Orders"
@@ -388,6 +389,7 @@ explore: order_order {
 
 }
 
+## remove
 ####### PRODUCTS EXPLORE #######
 explore: product_product {
   label: " Products"
@@ -491,6 +493,7 @@ explore: product_product {
   }
 }
 
+## remove
 ####### NOOS EXPLORE #######
 explore: hist_daily_stock {
   label: "NooS Substitute Groups"
@@ -517,6 +520,7 @@ explore: hist_daily_stock {
   }
 }
 
+## remove
 ####### Substitute Group Rating #######
 explore: product_attribute_fact_ranking_hlp {
   label: "Substitute Group: Product Rating"
@@ -615,6 +619,7 @@ explore: product_attribute_fact_ranking_hlp {
 
 #}
 
+# STAY- NEW FILE
 ####### TYPEFORM ANSWERS EXPLORE #######
 explore: answers {
   from: desired_products_survey
@@ -626,6 +631,7 @@ explore: answers {
 }
 
 
+# REMOVE
 ####### CS ISSUES EXPLORE #######
 explore: cs_issues_post_delivery {
   hidden: yes
@@ -716,7 +722,7 @@ explore: cs_issues_post_delivery {
 
 
 
-
+# STAY- HERE (move soon)
 explore: riders_forecast_staffing {
   hidden: yes
   label: "Orders and Riders Forecasting"
@@ -744,6 +750,7 @@ explore: riders_forecast_staffing {
 }
 
 
+# STAY- NEW FILE
 explore: marketing_performance {
   label: "Marketing Performance"
   view_label: "Marketing Performance"
@@ -755,7 +762,7 @@ explore: marketing_performance {
 
 ########### CRM EXPLORE ###########
 
-
+## NEW FILE
 explore: braze_crm_data {
   label: "CRM Email Data (Braze)"
   view_label: "CRM Email Data"
@@ -771,7 +778,7 @@ explore: braze_crm_data {
 
 ########### HUB NPS EXPLORE ###########
 
-
+# NEW FILE
 explore: nps_hub_team {
   hidden: yes
   label: "NPS (Hub Teams)"
