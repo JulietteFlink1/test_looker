@@ -11,7 +11,7 @@ explore:  nl_gorillas_to_flink {
   description: "Gorillas NL assortment & sales matched to Flink's assortment and sales"
 
   join: nl_gorillas_to_flink {
-    from:  de_gorillas_to_flink
+    from:  nl_gorillas_to_flink
     view_label: "* Product Matches *"
     sql_on: ${gorillas_inventory_stock_count.product_id} = ${nl_gorillas_to_flink.gorillas_product_id};;
     relationship: one_to_many
