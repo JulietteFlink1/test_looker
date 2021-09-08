@@ -25,6 +25,7 @@ view: 202109_all_pulse_results {
 
   measure: avg_nps {
     type: average
+    value_format: "0"
     sql:  ${nps} ;;
   }
 
