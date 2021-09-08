@@ -22,7 +22,12 @@ view: 202109_all_pulse_results {
     primary_key:  yes
     sql: ${TABLE}.token ;;
   }
-#
+
+  measure: avg_nps {
+    type: average
+    sql:  ${nps} ;;
+  }
+
   measure: count {
     type: count
     drill_fields: []
