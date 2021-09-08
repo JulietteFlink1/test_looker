@@ -29,6 +29,12 @@ view: 202109_all_pulse_results {
     sql:  ${nps} ;;
   }
 
+  dimension: group {
+    type: string
+    sql: CASE WHEN ${nps}<=6 THEN "Detractors"
+              WHEN ${nps}>=9 THEN "Promoters"
+              ELSE "Passives" END;;
+  }
   measure: count {
     type: count
     drill_fields: []
