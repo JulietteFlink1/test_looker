@@ -1,4 +1,4 @@
-view: categories_selected {
+view: add_to_cart {
   derived_table: {
     persist_for: "1 hour"
     sql: WITH
@@ -11,10 +11,12 @@ view: categories_selected {
           , tracks.event
           , tracks.event_text
           , tracks.id
+          , cart.list_category
           , tracks.timestamp
           , TIMESTAMP_DIFF(tracks.timestamp,LAG(tracks.timestamp) OVER(PARTITION BY tracks.anonymous_id ORDER BY tracks.timestamp), MINUTE) AS inactivity_time
         FROM
           `flink-data-prod.flink_ios_production.tracks_view` tracks
+        LEFT JOIN `flink-data-prod.flink_ios_production.product_added_to_cart_view` cart ON cart.id = tracks.id
         WHERE
           tracks.event NOT LIKE "%api%"
           AND tracks.event NOT LIKE "%adjust%"
@@ -39,17 +41,19 @@ view: categories_selected {
           , tracks.event
           , tracks.event_text
           , tracks.id
+          , cart.list_category
           , tracks.timestamp
           , TIMESTAMP_DIFF(tracks.timestamp,LAG(tracks.timestamp) OVER(PARTITION BY tracks.anonymous_id ORDER BY tracks.timestamp), MINUTE) AS inactivity_time
         FROM
           `flink-data-prod.flink_android_production.tracks_view` tracks
+        LEFT JOIN `flink-data-prod.flink_android_production.product_added_to_cart_view` cart ON cart.id = tracks.id
         WHERE
           tracks.event NOT LIKE "%api%"
           AND tracks.event NOT LIKE "%adjust%"
           AND tracks.event NOT LIKE "%install_attributed%"
           AND tracks.event != "app_opened"
           AND tracks.event != "application_updated"
-           AND tracks.event != "application_opened"
+          AND tracks.event != "application_opened"
           AND NOT (LOWER(tracks.context_app_version) LIKE "%app-rating%"
            OR LOWER(tracks.context_app_version) LIKE "%debug%")
           AND NOT (LOWER(tracks.context_app_name) = "flink-staging"
@@ -266,14 +270,22 @@ view: categories_selected {
         SELECT
                sf.anonymous_id
              , sf.session_id
+             , e.list_category AS list_category_list
              , count(e.timestamp) as event_count
+             , countif(e.list_category = 'category') as list_category
+             , countif(e.list_category = 'favourites') as list_favourites
+             , countif(e.list_category = 'last_bought') as list_last_bought
+             , countif(e.list_category = 'pdp') as list_pdp
+             , countif(e.list_category = 'search') as list_search
+             , countif(e.list_category = 'swimlane') as list_swimlane
+             , countif(e.list_category = 'cart') as list_cart
         FROM events e
             LEFT JOIN sessions_final sf
             ON e.anonymous_id = sf.anonymous_id
             AND e.timestamp >= sf.session_start_at
             AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
         WHERE e.event = 'product_added_to_cart'
-        GROUP BY 1,2
+        GROUP BY 1,2,3
     )
 
     , home_viewed AS (
@@ -287,20 +299,6 @@ view: categories_selected {
             AND e.timestamp >= sf.session_start_at
             AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
         WHERE e.event = 'home_viewed'
-        GROUP BY 1,2
-    )
-
-    , address_confirmed AS (
-        SELECT
-               sf.anonymous_id
-             , sf.session_id
-             , count(e.timestamp) as event_count
-        FROM events e
-            LEFT JOIN sessions_final sf
-            ON e.anonymous_id = sf.anonymous_id
-            AND e.timestamp >= sf.session_start_at
-            AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
-        WHERE e.event = 'address_confirmed'
         GROUP BY 1,2
     )
 
@@ -329,20 +327,6 @@ view: categories_selected {
             AND e.timestamp >= sf.session_start_at
             AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
         WHERE e.event = 'category_selected'
-        GROUP BY 1,2
-    )
-
-    , purchase_confirmed AS (
-        SELECT
-               sf.anonymous_id
-             , sf.session_id
-             , count(e.timestamp) as event_count
-        FROM events e
-            LEFT JOIN sessions_final sf
-            ON e.anonymous_id = sf.anonymous_id
-            AND e.timestamp >= sf.session_start_at
-            AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
-        WHERE e.event = 'purchase_confirmed'
         GROUP BY 1,2
     )
 
@@ -386,22 +370,25 @@ view: categories_selected {
         , sf.delivery_eta
         , sf.has_selected_address
         , sf.has_address
+        , atc.list_category_list as list_category
         , atc.event_count as add_to_cart
+        , atc.list_category as add_to_cart_category
+        , atc.list_favourites as add_to_cart_favourites
+        , atc.list_last_bought as add_to_cart_last_bought
+        , atc.list_pdp as add_to_cart_pdp
+        , atc.list_search as add_to_cart_search
+        , atc.list_swimlane as add_to_cart_swimlane
+        , atc.list_cart as add_to_cart_cart
         , hv.event_count as home_viewed
         , cv.event_count as more_categories
-        , ac.event_count as address_confirmed
         , cs.event_count as category_selected
-        , pc.event_count as payment_started
         , op.event_count as order_placed
-        -- , ae.event_count as any_event
         , CASE WHEN fo.first_order_timestamp < sf.session_start_at THEN true ELSE false END as has_ordered
     FROM sessions_final sf
         LEFT JOIN add_to_cart atc ON sf.session_id = atc.session_id
         LEFT JOIN home_viewed hv ON sf.session_id = hv.session_id
         LEFT JOIN more_categories cv ON sf.session_id = cv.session_id
-        LEFT JOIN address_confirmed ac ON sf.session_id = ac.session_id
         LEFT JOIN category_selected cs ON sf.session_id = cs.session_id
-        LEFT JOIN purchase_confirmed pc ON sf.session_id = pc.session_id
         LEFT JOIN order_placed op ON sf.session_id = op.session_id
         LEFT JOIN first_order fo ON sf.anonymous_id = fo.anonymous_id
  ;;
@@ -447,10 +434,10 @@ view: categories_selected {
     sql: ${TABLE}.next_session_start_at ;;
   }
 
-# dimension: session {
-  #   type: number
-  #   sql: ${TABLE}.session ;;
-  # }
+dimension: list_category {
+    type: string
+    sql: ${TABLE}.list_category ;;
+  }
 
   dimension: has_ordered {
     type: yesno
@@ -476,12 +463,6 @@ view: categories_selected {
   dimension: hub_unknown {
     type: yesno
     sql: ${hub_code} IS NULL ;;
-  }
-
-  dimension: is_setting_address {
-    type: yesno
-    description: "TRUE if user has at least one addressConfirmed event in this session, FALSE otherwise"
-    sql: ${address_confirmed} IS NOT NULL ;;
   }
 
   dimension: session_start_date_granularity {
@@ -529,12 +510,6 @@ view: categories_selected {
     }
   }
 
-  measure: cnt_address_selected {
-    label: "Address selected count"
-    description: "Number of sessions in which at least one Address Confirmed event happened"
-    type: count
-    filters: [address_confirmed: "NOT NULL"]
-  }
 
   measure: cnt_home_viewed {
     label: "Home view count"
@@ -564,18 +539,18 @@ view: categories_selected {
     filters: [add_to_cart: "NOT NULL"]
   }
 
+  measure: cnt_add_to_cart_pdp {
+    label: "Add to cart PDP"
+    description: "Number of sessions in which at least one Product Added To Cart event happened"
+    type: count
+    filters: [list_category: "pdp"]
+  }
+
   measure: cnt_category_selected {
     label: "Category selected count"
     description: "Number of sessions in which at least one Checkout Started event happened"
     type: count
     filters: [category_selected: "NOT NULL"]
-  }
-
-  measure: cnt_payment_started {
-    label: "Payment started count"
-    description: "Number of sessions in which at least one Payment Started event happened"
-    type: count
-    filters: [payment_started: "NOT NULL"]
   }
 
   measure: cnt_purchase {
@@ -586,13 +561,6 @@ view: categories_selected {
   }
 
 ## SUM of events
-
-
-  measure: sum_address_selected {
-    label: "Address selected sum of events"
-    type: sum
-    sql: ${address_confirmed} ;;
-  }
 
   measure: sum_home_viewed {
     label: "Home viewed sum of events"
@@ -616,12 +584,6 @@ view: categories_selected {
     label: "Category selected sum of events"
     type: sum
     sql: ${category_selected} ;;
-  }
-
-  measure: sum_payment_started {
-    label: "Payment started sum of events"
-    type: sum
-    sql: ${payment_started} ;;
   }
 
   measure: sum_purchases {
@@ -721,19 +683,9 @@ view: categories_selected {
     sql: ${TABLE}.more_categories ;;
   }
 
-  dimension: address_confirmed {
-    type: number
-    sql: ${TABLE}.address_confirmed ;;
-  }
-
   dimension: category_selected {
     type: number
     sql: ${TABLE}.category_selected ;;
-  }
-
-  dimension: payment_started {
-    type: number
-    sql: ${TABLE}.payment_started ;;
   }
 
   dimension: order_placed {
@@ -758,11 +710,10 @@ view: categories_selected {
       has_selected_address,
       has_address,
       add_to_cart,
+      list_category,
       home_viewed,
       more_categories,
-      address_confirmed,
       category_selected,
-      payment_started,
       order_placed,
       has_ordered
     ]
