@@ -1,66 +1,18 @@
 view: issue_rates_clean {
   derived_table: {
-    sql: with issues_orders as
-      (
+    sql:
         select
-        -- Dimensions
-        hub_code,
-        date(orders.order_timestamp, 'Europe/Berlin') as date,
-        -- Aggregates
-        count(distinct if(cs.problem_group = 'Wrong Order', order_nr_, null)) as wrong_order,
-        count(distinct if(cs.problem_group = 'Wrong Product', order_nr_, null)) as wrong_product,
-        count(distinct if(cs.problem_group = 'Perished Product', order_nr_, null)) as perished_product,
-        count(distinct if(cs.problem_group = 'Missing Product', order_nr_, null)) as missing_product,
-        count(distinct if(cs.problem_group = 'Damaged', order_nr_, null)) as damaged,
-        count(distinct if (cs.problem_group is not null, order_nr_, null)) as orders_with_issues
-        -- Joins
-        from `flink-data-prod.curated.orders` orders
-        left join `flink-data-prod.curated.cs_post_delivery_issues` cs
-        on cs.country_iso = orders.country_iso and cs.order_nr_ = orders.order_number
-        -- other
-        group by 1, 2
-      ),
-
-      orders_per_hub as
-      (
-          select
-          -- Dimensions
+          order_date as date,
           hub_code,
-          date(order_timestamp, 'Europe/Berlin') as date,
-          -- Aggregates
-          count(distinct order_uuid) as count_orders
-          -- Joins
-          from `flink-data-prod.curated.orders`
-          -- Where
-          where is_successful_order is true and
-          customer_email NOT LIKE '%goflink%' AND customer_email NOT LIKE '%pickery%'
-          AND LOWER(customer_email) NOT IN ('christoph.a.cordes@gmail.com', 'jfdames@gmail.com', 'oliver.merkel@gmail.com', 'alenaschneck@gmx.de', 'saadsaeed354@gmail.com', 'saadsaeed353@gmail.com', 'fabian.hardenberg@gmail.com', 'benjamin.zagel@gmail.com')
-          -- Other
-          group by 1, 2
-      )
-
-      select
-      -- Dimensions
-      orders_per_hub.date as date,
-      orders_per_hub.hub_code as hub_code,
-      -- Aggregates
-      sum(wrong_order) as wrong_order,
-      sum(wrong_product) as wrong_product,
-      sum(perished_product) as perished_product,
-      sum(missing_product) as missing_product,
-      sum(damaged) as damaged,
-
-      sum(orders_with_issues) as  orders_with_issues,
-      sum(count_orders) as orders_total
-      -- Joins
-      from issues_orders
-      left join orders_per_hub
-      on issues_orders.hub_code = orders_per_hub.hub_code
-      and issues_orders.date = orders_per_hub.date
-      -- Other
-      where orders_per_hub.date >= '2021-08-10' --and orders_per_hub.hub_code in ('fr_par_bagn', 'nl_del_cent', 'fr_par_brul')
-      group by 1,2
-      order by 1, 2
+          sum(number_of_orders_wrong_order)               as wrong_order,
+          sum(number_of_order_lineitems_wrong_product)    as wrong_product,
+          sum(number_of_order_lineitems_perished_product) as perished_product,
+          sum(number_of_order_lineitems_missing_product)  as missing_product,
+          sum(number_of_order_lineitems_damaged_product)  as damaged,
+          sum(number_of_orders_with_issues)               as orders_with_issues,
+          sum(number_of_orders)                           as orders_total
+          from `flink-data-prod`.reporting.hub_level_kpis
+          group by 1,2
  ;;
   }
 

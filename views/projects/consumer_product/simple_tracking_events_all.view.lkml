@@ -116,6 +116,12 @@ view: simple_tracking_events_all {
     filters: [event: "home_viewed"]
   }
 
+  measure: count_voucher_attempts {
+    label: "count voucher attempts"
+    description: "Count number of times voucher attempts appeared"
+    type: count
+    filters: [event: "voucher_redemption_attempted"]
+  }
 
   measure: count {
     type: count

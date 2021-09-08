@@ -1659,7 +1659,7 @@
       display: inline
       options: []
     model: flink_v3
-    explore: order_order
+    explore: orders_cl
     listens_to_filters: []
     field: hubs.country
   - name: City
@@ -1673,7 +1673,7 @@
       display: inline
       options: []
     model: flink_v3
-    explore: order_order
+    explore: orders_cl
     listens_to_filters: []
     field: hubs.city
   - name: Hub Name
@@ -1687,6 +1687,6 @@
       display: inline
       options: []
     model: flink_v3
-    explore: order_order
+    explore: orders_cl
     listens_to_filters: []
     field: hubs.hub_name
