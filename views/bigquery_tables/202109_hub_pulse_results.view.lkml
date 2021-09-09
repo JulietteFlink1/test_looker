@@ -100,7 +100,7 @@ view: 202109_hub_pulse_results {
 
   dimension: survey_type {
     type: string
-    sql: 'Hub' ;;
+    sql: 'Hubs' ;;
   }
 
   dimension_group: start_date__utc_ {
