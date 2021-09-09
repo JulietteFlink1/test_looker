@@ -45,22 +45,42 @@ view: 202109_hub_pulse_results {
 
   dimension: i_enjoy_doing_my_job_ {
     type: string
-    sql: ${TABLE}.I_enjoy_doing_my_job_ ;;
+    sql: case when ${TABLE}.I_enjoy_doing_my_job_ like '%I strongly disagree%' then 1
+              when ${TABLE}.I_enjoy_doing_my_job_ like '%I disagree%' then 2
+              when ${TABLE}.I_enjoy_doing_my_job_ like '%I neither%' then 3
+              when ${TABLE}.I_enjoy_doing_my_job_ like '%I agree%' then 4
+              when ${TABLE}.I_enjoy_doing_my_job_ like '%I strongly agree%' then 5
+             END;;
   }
 
   dimension: i_feel_i_have_a_good_work_life_balance_ {
     type: string
-    sql: ${TABLE}.I_feel_I_have_a_good_work_life_balance_ ;;
+    sql: case when ${TABLE}.I_feel_I_have_a_good_work_life_balance_ like '%I strongly disagree%' then 1
+              when ${TABLE}.I_feel_I_have_a_good_work_life_balance_ like '%I disagree%' then 2
+              when ${TABLE}.I_feel_I_have_a_good_work_life_balance_ like '%I neither%' then 3
+              when ${TABLE}.I_feel_I_have_a_good_work_life_balance_ like '%I agree%' then 4
+              when ${TABLE}.I_feel_I_have_a_good_work_life_balance_ like '%I strongly agree%' then 5
+             END;;
   }
 
   dimension: i_understand_how_my_work_contributes_to_the_achievement_of_the_company_s_goal_ {
     type: string
-    sql: ${TABLE}.I_understand_how_my_work_contributes_to_the_achievement_of_the_company_s_goal_ ;;
+    sql: case when ${TABLE}.I_understand_how_my_work_contributes_to_the_achievement_of_the_company_s_goal_ like '%I strongly disagree%' then 1
+              when ${TABLE}.I_understand_how_my_work_contributes_to_the_achievement_of_the_company_s_goal_ like '%I disagree%' then 2
+              when ${TABLE}.I_understand_how_my_work_contributes_to_the_achievement_of_the_company_s_goal_ like '%I neither%' then 3
+              when ${TABLE}.I_understand_how_my_work_contributes_to_the_achievement_of_the_company_s_goal_ like '%I agree%' then 4
+              when ${TABLE}.I_understand_how_my_work_contributes_to_the_achievement_of_the_company_s_goal_ like '%I strongly agree%' then 5
+             END;;
   }
 
   dimension: my_direct_supervisor_s__manage_employees_effectively_ {
     type: string
-    sql: ${TABLE}.My_direct_supervisor_s__manage_employees_effectively_ ;;
+    sql: case when ${TABLE}.My_direct_supervisor_s__manage_employees_effectively_ like '%I strongly disagree%' then 1
+              when ${TABLE}.My_direct_supervisor_s__manage_employees_effectively_ like '%I disagree%' then 2
+              when ${TABLE}.My_direct_supervisor_s__manage_employees_effectively_ like '%I neither%' then 3
+              when ${TABLE}.My_direct_supervisor_s__manage_employees_effectively_ like '%I agree%' then 4
+              when ${TABLE}.My_direct_supervisor_s__manage_employees_effectively_ like '%I strongly agree%' then 5
+             END;;
   }
 
   dimension: network_id {
@@ -99,6 +119,34 @@ view: 202109_hub_pulse_results {
       year
     ]
     sql: ${TABLE}.Submit_Date__UTC_ ;;
+  }
+
+  measure: i_enjoy_doing_my_job_avg  {
+    type: average
+    value_format: "0.0"
+    label: "Work Satisfaction"
+    sql: ${i_enjoy_doing_my_job_} ;;
+  }
+
+  measure: i_feel_i_have_a_good_work_life_balance_avg  {
+    type: average
+    value_format: "0.0"
+    label: "Work Life Balance"
+    sql: ${i_feel_i_have_a_good_work_life_balance_} ;;
+  }
+
+  measure: i_understand_how_my_work_contributes_to_the_achievement_of_the_company_s_goal_avg  {
+    type: average
+    value_format: "0.0"
+    label: "Clarity of Mission"
+    sql: ${i_understand_how_my_work_contributes_to_the_achievement_of_the_company_s_goal_} ;;
+  }
+
+  measure: my_direct_supervisor_s__manage_employees_effectively_avg  {
+    type: average
+    value_format: "0.0"
+    label: "Supervisor"
+    sql: ${my_direct_supervisor_s__manage_employees_effectively_} ;;
   }
 
   measure: count {

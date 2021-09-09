@@ -28,51 +28,86 @@ view: 202109_rider_pulse_results {
   }
 
   dimension: overall__how_satisfied_or_dissatisfied_are_you_with__aspects_related_to_your_payment__ {
-    type: string
-    sql: ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with__aspects_related_to_your_payment__ ;;
+    label: "Payments"
+    type: number
+    sql: case when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with__aspects_related_to_your_payment__ like '%I strongly disagree%' then 1
+              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with__aspects_related_to_your_payment__ like '%I disagree%' then 2
+              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with__aspects_related_to_your_payment__ like '%I neither%' then 3
+              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with__aspects_related_to_your_payment__ like '%I agree%' then 4
+              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with__aspects_related_to_your_payment__ like '%I strongly agree%' then 5
+             END;;
   }
 
   dimension: overall__how_satisfied_or_dissatisfied_are_you_with_the__equipment_provided_by_flink__including_bikes_and_clothing___ {
-    type: string
-    sql: ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_the__equipment_provided_by_Flink__including_bikes_and_clothing___ ;;
+    label: "Equipment"
+    type: number
+    sql: case when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_the__equipment_provided_by_Flink__including_bikes_and_clothing___ like '%I strongly disagree%' then 1
+              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_the__equipment_provided_by_Flink__including_bikes_and_clothing___ like '%I disagree%' then 2
+              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_the__equipment_provided_by_Flink__including_bikes_and_clothing___ like '%I neither%' then 3
+              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_the__equipment_provided_by_Flink__including_bikes_and_clothing___ like '%I agree%' then 4
+              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_the__equipment_provided_by_Flink__including_bikes_and_clothing___ like '%I strongly agree%' then 5
+             END;;
   }
 
   dimension: overall__how_satisfied_or_dissatisfied_are_you_with_the__support_provided_by_flink_rider_care__ {
-    type: string
-    sql: ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_the__support_provided_by_Flink_Rider_Care__ ;;
+    label: "Rider Support"
+    type: number
+    sql: case when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_the__support_provided_by_Flink_Rider_Care__ like '%I strongly disagree%' then 1
+              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_the__support_provided_by_Flink_Rider_Care__ like '%I disagree%' then 2
+              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_the__support_provided_by_Flink_Rider_Care__ like '%I neither%' then 3
+              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_the__support_provided_by_Flink_Rider_Care__ like '%I agree%' then 4
+              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_the__support_provided_by_Flink_Rider_Care__ like '%I strongly agree%' then 5
+             END;;
   }
 
   dimension: overall__how_satisfied_or_dissatisfied_are_you_with_your__flink_hub_infrastructure_and_amenities__ {
-    type: string
-    sql: ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_your__Flink_hub_infrastructure_and_amenities__ ;;
+    label: "Hub Infrastructure"
+    type: number
+    sql: case when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_your__Flink_hub_infrastructure_and_amenities__ like '%I strongly disagree%' then 1
+              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_your__Flink_hub_infrastructure_and_amenities__ like '%I disagree%' then 2
+              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_your__Flink_hub_infrastructure_and_amenities__ like '%I neither%' then 3
+              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_your__Flink_hub_infrastructure_and_amenities__ like '%I agree%' then 4
+              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_your__Flink_hub_infrastructure_and_amenities__ like '%I strongly agree%' then 5
+             END;;
   }
 
   dimension: overall__how_satisfied_or_dissatisfied_are_you_with_your__shift_scheduling__ {
-    type: string
-    sql: ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_your__shift_scheduling__ ;;
+    label: "Shift Scheduling"
+    type: number
+    sql: case when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_your__shift_scheduling__ like '%I strongly disagree%' then 1
+              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_your__shift_scheduling__ like '%I disagree%' then 2
+              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_your__shift_scheduling__ like '%I neither%' then 3
+              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_your__shift_scheduling__ like '%I agree%' then 4
+              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_your__shift_scheduling__ like '%I strongly agree%' then 5
+             END;;
   }
 
   dimension: please_give_us_more_details_and_explain_why_you_are_dissatisfied_with__aspects_related_to_your_payment__ {
+    label: "Payments Comment"
     type: string
     sql: ${TABLE}.Please_give_us_more_details_and_explain_why_you_are_dissatisfied_with__aspects_related_to_your_payment__ ;;
   }
 
   dimension: please_give_us_more_details_and_explain_why_you_are_dissatisfied_with__equipment_provided_by_flink__including_bikes_and_clothing___ {
+    label: "Equipment Comment"
     type: string
     sql: ${TABLE}.Please_give_us_more_details_and_explain_why_you_are_dissatisfied_with__equipment_provided_by_Flink__including_bikes_and_clothing___ ;;
   }
 
   dimension: please_give_us_more_details_and_explain_why_you_are_dissatisfied_with_the__support_provided_by_flink_rider_care__ {
+    label: "Rider Support Comment"
     type: string
     sql: ${TABLE}.Please_give_us_more_details_and_explain_why_you_are_dissatisfied_with_the__support_provided_by_Flink_Rider_Care__ ;;
   }
 
   dimension: please_give_us_more_details_and_explain_why_you_are_dissatisfied_with_your__flink_hub_infrastructure_and_amenities__ {
+    label: "Hub Infrastreucture Comment"
     type: string
     sql: ${TABLE}.Please_give_us_more_details_and_explain_why_you_are_dissatisfied_with_your__Flink_hub_infrastructure_and_amenities__ ;;
   }
 
   dimension: please_give_us_more_details_and_explain_why_you_are_dissatisfied_with_your__shift_scheduling__ {
+    label: "Shift Scheduling Comment"
     type: string
     sql: ${TABLE}.Please_give_us_more_details_and_explain_why_you_are_dissatisfied_with_your__shift_scheduling__ ;;
   }
@@ -111,23 +146,62 @@ view: 202109_rider_pulse_results {
   }
 
   dimension: what_do_you_believe_is_missing_or_disappointing_in_your_experience_with_flink__ {
+    label: "What do you believe is missing or disappointing in your experience with Flink?"
     type: string
     sql: ${TABLE}.What_do_you_believe_is_missing_or_disappointing_in_your_experience_with_Flink__ ;;
   }
 
   dimension: what_do_you_like_best_about_working_at_flink__ {
+    label: "What do you like best about working at Flink?"
     type: string
     sql: ${TABLE}.What_do_you_like_best_about_working_at_Flink__ ;;
   }
 
   dimension: what_hub_are_you_based_in_ {
+    label: "Hub"
     type: string
     sql: ${TABLE}.What_Hub_are_you_based_in_ ;;
   }
 
   dimension: what_type_of_contract_do_you_have_ {
+    label: "Contract Type"
     type: string
     sql: ${TABLE}.What_type_of_contract_do_you_have_ ;;
+  }
+
+  measure: overall__how_satisfied_or_dissatisfied_are_you_with__aspects_related_to_your_payment__avg {
+    label: "Payments"
+    type: average
+    value_format: "0.0"
+    sql: ${overall__how_satisfied_or_dissatisfied_are_you_with__aspects_related_to_your_payment__} ;;
+  }
+
+  measure: overall__how_satisfied_or_dissatisfied_are_you_with_the__equipment_provided_by_flink__including_bikes_and_clothing___avg {
+    label: "Equipment"
+    type: average
+    value_format: "0.0"
+    sql: ${overall__how_satisfied_or_dissatisfied_are_you_with_the__equipment_provided_by_flink__including_bikes_and_clothing___} ;;
+  }
+
+  measure: overall__how_satisfied_or_dissatisfied_are_you_with_the__support_provided_by_flink_rider_care__avg {
+    label: "Rider Support"
+    type: average
+    value_format: "0.0"
+    sql: ${overall__how_satisfied_or_dissatisfied_are_you_with_the__support_provided_by_flink_rider_care__} ;;
+  }
+
+  measure: overall__how_satisfied_or_dissatisfied_are_you_with_your__flink_hub_infrastructure_and_amenities__avg {
+    label: "Hub Infrastructure"
+    type: average
+    value_format: "0.0"
+    sql: ${overall__how_satisfied_or_dissatisfied_are_you_with_your__flink_hub_infrastructure_and_amenities__} ;;
+  }
+
+  measure: overall__how_satisfied_or_dissatisfied_are_you_with_your__shift_scheduling__avg {
+    label: "Shift Scheduling"
+    type: average
+    value_format: "0.0"
+    sql: ${overall__how_satisfied_or_dissatisfied_are_you_with_your__shift_scheduling__} ;;
   }
 
   measure: count {
