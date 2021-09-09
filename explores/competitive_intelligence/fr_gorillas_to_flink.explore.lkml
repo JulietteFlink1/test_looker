@@ -3,7 +3,7 @@ include: "/views/bigquery_tables/curated_layer/*.view"
 include: "/views/bigquery_tables/reporting_layer/competitive_intelligence/gorillas_inventory_stock_count.view.lkml"
 
 explore:  fr_gorillas_to_flink {
-  hidden: no
+  hidden: yes
   view_name: gorillas_inventory_stock_count
   label: "Gorillas FR Sales"
   view_label: "Gorillas FR Product Data"
