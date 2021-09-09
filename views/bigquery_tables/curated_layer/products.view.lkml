@@ -287,6 +287,14 @@ view: products {
     sql: ${TABLE}.cnt_product_images ;;
   }
 
+  measure: sum_amt_product_price_gross{
+    label: "SUM Amt Product Price Gross"
+    group_label: "* Price *"
+    type: sum
+    value_format: "0.00"
+    sql: ${TABLE}.amt_product_price_gross ;;
+  }
+
   measure: count {
     type: count
     drill_fields: [product_name]

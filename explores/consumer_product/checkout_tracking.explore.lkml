@@ -1,7 +1,7 @@
 include: "/views/projects/consumer_product/checkout_tracking.view.lkml"
 
 explore: checkout_tracking {
-  hidden: yes
+  hidden: no
   view_name: checkout_tracking
   label: "Checkout"
   view_label: "Checkout"

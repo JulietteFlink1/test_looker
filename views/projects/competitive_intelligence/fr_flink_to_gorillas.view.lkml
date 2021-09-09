@@ -1,6 +1,6 @@
-view: de_flink_to_gorillas {
-  sql_table_name: `flink-data-prod.comp_intel.de_flink_to_gorillas`
-    ;;
+view: fr_flink_to_gorillas {
+  sql_table_name: `flink-data-prod.comp_intel.fr_flink_to_gorillas`
+  ;;
 
   dimension: id_left {
     type: string

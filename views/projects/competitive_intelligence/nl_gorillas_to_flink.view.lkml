@@ -1,14 +1,14 @@
-view: de_flink_to_gorillas {
-  sql_table_name: `flink-data-prod.comp_intel.de_flink_to_gorillas`
-    ;;
+view: nl_gorillas_to_flink {
+  sql_table_name: `flink-data-prod.comp_intel.nl_gorillas_to_flink`
+  ;;
 
-  dimension: id_left {
+  dimension: gorillas_match_id {
     type: string
     sql: ${TABLE}.__id_left ;;
     group_label: "> IDs"
   }
 
-  dimension: id_right {
+  dimension: flink_match_id {
     type: string
     sql: ${TABLE}.__id_right ;;
     group_label: "> IDs"
