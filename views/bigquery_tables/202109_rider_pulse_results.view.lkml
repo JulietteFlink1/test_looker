@@ -13,6 +13,7 @@ view: 202109_rider_pulse_results {
   }
 
   dimension: how_long_have_you_been_riding_with_us_ {
+    label: "Time as a Rider"
     type: string
     sql: ${TABLE}.How_long_have_you_been_riding_with_us_ ;;
   }
@@ -29,56 +30,56 @@ view: 202109_rider_pulse_results {
 
   dimension: overall__how_satisfied_or_dissatisfied_are_you_with__aspects_related_to_your_payment__ {
     label: "Payments"
-    type: number
-    sql: case when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with__aspects_related_to_your_payment__ like '%I strongly disagree%' then 1
-              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with__aspects_related_to_your_payment__ like '%I disagree%' then 2
-              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with__aspects_related_to_your_payment__ like '%I neither%' then 3
-              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with__aspects_related_to_your_payment__ like '%I agree%' then 4
-              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with__aspects_related_to_your_payment__ like '%I strongly agree%' then 5
+    type: string
+    sql: case when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with__aspects_related_to_your_payment__ like '%Very dissatisfied%' then 1
+              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with__aspects_related_to_your_payment__ like '%Dissatisfied%' then 2
+              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with__aspects_related_to_your_payment__ like '%Neutral%' then 3
+              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with__aspects_related_to_your_payment__ like 'Satisfied%' then 4
+              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with__aspects_related_to_your_payment__ like '%Very satisfied%' then 5
              END;;
   }
 
   dimension: overall__how_satisfied_or_dissatisfied_are_you_with_the__equipment_provided_by_flink__including_bikes_and_clothing___ {
     label: "Equipment"
-    type: number
-    sql: case when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_the__equipment_provided_by_Flink__including_bikes_and_clothing___ like '%I strongly disagree%' then 1
-              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_the__equipment_provided_by_Flink__including_bikes_and_clothing___ like '%I disagree%' then 2
-              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_the__equipment_provided_by_Flink__including_bikes_and_clothing___ like '%I neither%' then 3
-              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_the__equipment_provided_by_Flink__including_bikes_and_clothing___ like '%I agree%' then 4
-              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_the__equipment_provided_by_Flink__including_bikes_and_clothing___ like '%I strongly agree%' then 5
+    type: string
+    sql: case when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_the__equipment_provided_by_Flink__including_bikes_and_clothing___ like '%Very dissatisfied%' then 1
+              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_the__equipment_provided_by_Flink__including_bikes_and_clothing___ like '%Dissatisfied%' then 2
+              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_the__equipment_provided_by_Flink__including_bikes_and_clothing___ like '%Neutral%' then 3
+              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_the__equipment_provided_by_Flink__including_bikes_and_clothing___ like 'Satisfied%' then 4
+              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_the__equipment_provided_by_Flink__including_bikes_and_clothing___ like '%Very satisfied%' then 5
              END;;
   }
 
   dimension: overall__how_satisfied_or_dissatisfied_are_you_with_the__support_provided_by_flink_rider_care__ {
     label: "Rider Support"
-    type: number
-    sql: case when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_the__support_provided_by_Flink_Rider_Care__ like '%I strongly disagree%' then 1
-              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_the__support_provided_by_Flink_Rider_Care__ like '%I disagree%' then 2
-              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_the__support_provided_by_Flink_Rider_Care__ like '%I neither%' then 3
-              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_the__support_provided_by_Flink_Rider_Care__ like '%I agree%' then 4
-              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_the__support_provided_by_Flink_Rider_Care__ like '%I strongly agree%' then 5
+    type: string
+    sql: case when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_the__support_provided_by_Flink_Rider_Care__ like '%Very dissatisfied%' then 1
+              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_the__support_provided_by_Flink_Rider_Care__ like '%Dissatisfied%' then 2
+              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_the__support_provided_by_Flink_Rider_Care__ like '%Neutral%' then 3
+              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_the__support_provided_by_Flink_Rider_Care__ like '%Satisfied%' then 4
+              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_the__support_provided_by_Flink_Rider_Care__ like '%Very satisfied%' then 5
              END;;
   }
 
   dimension: overall__how_satisfied_or_dissatisfied_are_you_with_your__flink_hub_infrastructure_and_amenities__ {
     label: "Hub Infrastructure"
-    type: number
-    sql: case when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_your__Flink_hub_infrastructure_and_amenities__ like '%I strongly disagree%' then 1
-              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_your__Flink_hub_infrastructure_and_amenities__ like '%I disagree%' then 2
-              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_your__Flink_hub_infrastructure_and_amenities__ like '%I neither%' then 3
-              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_your__Flink_hub_infrastructure_and_amenities__ like '%I agree%' then 4
-              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_your__Flink_hub_infrastructure_and_amenities__ like '%I strongly agree%' then 5
+    type: string
+    sql: case when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_your__Flink_hub_infrastructure_and_amenities__ like '%Very dissatisfied%' then 1
+              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_your__Flink_hub_infrastructure_and_amenities__ like '%Dissatisfied%' then 2
+              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_your__Flink_hub_infrastructure_and_amenities__ like '%Neutral%' then 3
+              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_your__Flink_hub_infrastructure_and_amenities__ like '%Satisfied%' then 4
+              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_your__Flink_hub_infrastructure_and_amenities__ like '%Very satisfied%' then 5
              END;;
   }
 
   dimension: overall__how_satisfied_or_dissatisfied_are_you_with_your__shift_scheduling__ {
     label: "Shift Scheduling"
-    type: number
-    sql: case when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_your__shift_scheduling__ like '%I strongly disagree%' then 1
-              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_your__shift_scheduling__ like '%I disagree%' then 2
-              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_your__shift_scheduling__ like '%I neither%' then 3
-              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_your__shift_scheduling__ like '%I agree%' then 4
-              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_your__shift_scheduling__ like '%I strongly agree%' then 5
+    type: string
+    sql: case when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_your__shift_scheduling__ like '%Very dissatisfied%' then 1
+              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_your__shift_scheduling__ like '%Dissatisfied%' then 2
+              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_your__shift_scheduling__ like '%Neutral%' then 3
+              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_your__shift_scheduling__ like '%Satisfied%' then 4
+              when ${TABLE}.Overall__how_satisfied_or_dissatisfied_are_you_with_your__shift_scheduling__ like '%Very satisfied%' then 5
              END;;
   }
 
@@ -101,7 +102,7 @@ view: 202109_rider_pulse_results {
   }
 
   dimension: please_give_us_more_details_and_explain_why_you_are_dissatisfied_with_your__flink_hub_infrastructure_and_amenities__ {
-    label: "Hub Infrastreucture Comment"
+    label: "Hub Infrastructure Comment"
     type: string
     sql: ${TABLE}.Please_give_us_more_details_and_explain_why_you_are_dissatisfied_with_your__Flink_hub_infrastructure_and_amenities__ ;;
   }
