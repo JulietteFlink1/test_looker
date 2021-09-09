@@ -51,7 +51,7 @@ view: simple_tracking_events_all {
             AND NOT (tracks.context_app_version LIKE "%APP-RATING%" OR tracks.context_app_version LIKE "%DEBUG%")
             AND NOT (tracks.context_app_name = "Flink-Staging" OR tracks.context_app_name="Flink-Debug")
       )
-      SELECT *,coalesce(split(context_locale,"-")[safe_offset(1)],'unknown') as country_iso,
+      SELECT *, coalesce(split(context_locale,"-")[safe_offset(1)],'unknown') as country_iso,
       LAG(joined_table.event) OVER(PARTITION BY joined_table.anonymous_id ORDER BY joined_table.timestamp ASC) AS previous_event,
       LEAD(joined_table.event) OVER(PARTITION BY joined_table.anonymous_id ORDER BY joined_table.timestamp ASC) AS next_event
       FROM joined_table
@@ -158,7 +158,7 @@ view: simple_tracking_events_all {
   dimension: country_iso {
     type: string
     description: "Country of device (derived from locale)"
-    sql: ${TABLE}.context_locale ;;
+    sql: ${TABLE}.country_iso ;;
   }
 
 
