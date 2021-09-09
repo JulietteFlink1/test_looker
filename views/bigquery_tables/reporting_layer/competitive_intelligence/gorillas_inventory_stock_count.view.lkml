@@ -166,9 +166,15 @@ view: gorillas_inventory_stock_count {
     sql: ${TABLE}.subcategory_id ;;
   }
 
-  dimension_group: time_scraped {
+  # dimension_group: time_scraped {
+  #   type: time
+  #   sql: ${TABLE}.time_scraped ;;
+  # }
+
+  dimension_group: partition_timestamp {
     type: time
-    sql: ${TABLE}.time_scraped ;;
+    alias: [time_scraped]
+    sql: ${TABLE}.partition_timestamp ;;
   }
 
 
@@ -187,10 +193,48 @@ view: gorillas_inventory_stock_count {
     sql: ${TABLE}.weight ;;
   }
 
+  dimension: out_of_stock {
+    type: yesno
+    sql: ${current_quantity} = 0 ;;
+  }
+
+
+
+  # measure: percent_of_total_gross_margin {
+  #   type: percent_of_total
+  #   sql: ${total_gross_margin} ;;
+  # }
+
   measure: count {
     type: count
     drill_fields: [hub_name, product_name]
   }
+
+  measure: sum_out_of_stock {
+    type: sum
+    sql: CASE WHEN ${out_of_stock} = true THEN 1 ELSE 0 END ;;
+  }
+
+  measure: sum_in_stock {
+    type: sum
+    sql: CASE WHEN ${out_of_stock} = false THEN 1 ELSE 0 END ;;
+  }
+
+
+  measure: percentage_out_of_stock {
+    type: number
+    value_format: "0%"
+    sql: ${sum_out_of_stock} / (${sum_in_stock} + ${sum_out_of_stock});;
+  }
+
+  measure: percentage_in_stock {
+    type: number
+    value_format: "0%"
+    sql: ${sum_in_stock} / (${sum_in_stock} + ${sum_out_of_stock});;
+  }
+
+
+
 
   measure: sum_revenue {
     type: sum
@@ -207,5 +251,7 @@ view: gorillas_inventory_stock_count {
     type: sum
     sql: ${count_purchased} ;;
   }
+
+
 
 }

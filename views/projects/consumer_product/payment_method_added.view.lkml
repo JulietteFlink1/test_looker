@@ -38,7 +38,7 @@ view: payment_method_added {
         tracks.hub_code,
         tracks.payment_method
       FROM
-        `flink-backend.flink_ios_production.payment_method_added_view` tracks
+        `flink-data-prod.flink_ios_production.payment_method_added_view` tracks
       UNION ALL
       SELECT
         tracks.anonymous_id,
@@ -78,7 +78,7 @@ view: payment_method_added {
         tracks.hub_code,
         tracks.payment_method
       FROM
-        `flink-backend.flink_android_production.payment_method_added_view` tracks
+        `flink-data-prod.flink_android_production.payment_method_added_view` tracks
  ;;
   }
 

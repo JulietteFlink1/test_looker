@@ -44,7 +44,7 @@ view: marketingbanners_mobile_events {
         timestamp,
         uuid_ts,
       FROM
-        `flink-backend.flink_android_production.marketing_banner_viewed_view`
+        `flink-data-prod.flink_android_production.marketing_banner_viewed_view`
       UNION ALL
       SELECT
         anonymous_id,
@@ -90,7 +90,7 @@ view: marketingbanners_mobile_events {
         timestamp,
         uuid_ts
       FROM
-        `flink-backend.flink_ios_production.marketing_banner_viewed_view`
+        `flink-data-prod.flink_ios_production.marketing_banner_viewed_view`
        ;;
   }
 

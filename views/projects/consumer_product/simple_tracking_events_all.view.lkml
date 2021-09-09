@@ -16,14 +16,22 @@ view: simple_tracking_events_all {
           tracks.id,
           tracks.timestamp
           FROM
-          `flink-backend.flink_android_production.tracks_view` tracks
-          WHERE
-            tracks.event NOT LIKE "%api%"
-            AND tracks.event NOT LIKE "%deep_link%"
-            AND tracks.event NOT LIKE "%adjust%"
-            AND tracks.event NOT LIKE "%install_attributed%"
-            AND NOT (tracks.context_app_version LIKE "%APP-RATING%" OR tracks.context_app_version LIKE "%DEBUG%")
-            AND NOT (tracks.context_app_name = "Flink-Staging" OR tracks.context_app_name="Flink-Debug")
+          `flink-data-prod.flink_android_production.tracks` tracks
+          WHERE DATE(tracks._partitiontime) > "2021-08-01"
+          AND tracks.event NOT LIKE "%api%"
+          AND tracks.event NOT LIKE "%adjust%"
+          AND tracks.event NOT LIKE "%install_attributed%"
+          AND tracks.event != "app_opened"
+          AND tracks.event != "application_updated"
+          AND tracks.event != "application_opened"
+          AND NOT (LOWER(tracks.context_app_version) LIKE "%app-rating%"
+           OR LOWER(tracks.context_app_version) LIKE "%debug%")
+          AND NOT (LOWER(tracks.context_app_name) = "flink-staging"
+           OR LOWER(tracks.context_app_name) = "flink-debug")
+          AND (LOWER(tracks.context_traits_email) != "qa@goflink.com"
+           OR tracks.context_traits_email is null)
+          AND (tracks.context_traits_hub_slug NOT IN('erp_spitzbergen', 'fr_hub_test', 'nl_hub_test')
+           OR tracks.context_traits_hub_slug is null)
 
           UNION ALL
 
@@ -42,14 +50,22 @@ view: simple_tracking_events_all {
           tracks.id,
           tracks.timestamp
           FROM
-          `flink-backend.flink_ios_production.tracks_view` tracks
-          WHERE
-            tracks.event NOT LIKE "%api%"
-            AND tracks.event NOT LIKE "%deep_link%"
-            AND tracks.event NOT LIKE "%adjust%"
-            AND tracks.event NOT LIKE "%install_attributed%"
-            AND NOT (tracks.context_app_version LIKE "%APP-RATING%" OR tracks.context_app_version LIKE "%DEBUG%")
-            AND NOT (tracks.context_app_name = "Flink-Staging" OR tracks.context_app_name="Flink-Debug")
+          `flink-data-prod.flink_ios_production.tracks` tracks
+          WHERE DATE(tracks._partitiontime) > "2021-08-01"
+          AND tracks.event NOT LIKE "%api%"
+          AND tracks.event NOT LIKE "%adjust%"
+          AND tracks.event NOT LIKE "%install_attributed%"
+          AND tracks.event != "app_opened"
+          AND tracks.event != "application_updated"
+          AND tracks.event != "application_opened"
+          AND NOT (LOWER(tracks.context_app_version) LIKE "%app-rating%"
+           OR LOWER(tracks.context_app_version) LIKE "%debug%")
+          AND NOT (LOWER(tracks.context_app_name) = "flink-staging"
+           OR LOWER(tracks.context_app_name) = "flink-debug")
+          AND (LOWER(tracks.context_traits_email) != "qa@goflink.com"
+           OR tracks.context_traits_email is null)
+          AND (tracks.context_traits_hub_slug NOT IN('erp_spitzbergen', 'fr_hub_test', 'nl_hub_test')
+           OR tracks.context_traits_hub_slug is null)
       )
       SELECT *, coalesce(split(context_locale,"-")[safe_offset(1)],'unknown') as country_iso,
       LAG(joined_table.event) OVER(PARTITION BY joined_table.anonymous_id ORDER BY joined_table.timestamp ASC) AS previous_event,
@@ -100,6 +116,12 @@ view: simple_tracking_events_all {
     filters: [event: "home_viewed"]
   }
 
+  measure: count_voucher_attempts {
+    label: "count voucher attempts"
+    description: "Count number of times voucher attempts appeared"
+    type: count
+    filters: [event: "voucher_redemption_attempted"]
+  }
 
   measure: count {
     type: count

@@ -3,6 +3,7 @@ include: "/views/bigquery_tables/curated_layer/orders.view.lkml"
 
 explore: order_backend_and_client{
   from: orders
+  # view_name: order_backend_and_client
   label: "Order Client Tracking And Backend Matches"
   view_label: "Order Backend"
   group_label: "10) In-app tracking data"

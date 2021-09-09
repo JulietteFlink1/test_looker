@@ -8,6 +8,11 @@ view: order_comments {
     sql: NOT(${customer_note} IS NULL OR ${customer_note}="" OR ${customer_note}=" ");;
   }
 
+  measure: cnt_is_delivered_on_time {
+    type: count
+    filters: [is_order_on_time: "yes"]
+  }
+
   measure: cnt_has_customer_notes {
     type: count
     filters: [has_customer_note: "yes"]
