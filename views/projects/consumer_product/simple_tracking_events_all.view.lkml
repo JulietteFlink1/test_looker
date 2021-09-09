@@ -14,8 +14,7 @@ view: simple_tracking_events_all {
           tracks.event,
           tracks.event_text,
           tracks.id,
-          tracks.timestamp,
-          (split(tracks.context_locale,"-")[safe_offset(1)] as country_iso
+          tracks.timestamp
           FROM
           `flink-data-prod.flink_android_production.tracks` tracks
           WHERE DATE(tracks._partitiontime) > "2021-08-01"
@@ -49,8 +48,7 @@ view: simple_tracking_events_all {
           tracks.event,
           tracks.event_text,
           tracks.id,
-          tracks.timestamp,
-          (split(tracks.context_locale,"-")[safe_offset(1)] as country_iso
+          tracks.timestamp
           FROM
           `flink-data-prod.flink_ios_production.tracks` tracks
           WHERE DATE(tracks._partitiontime) > "2021-08-01"
