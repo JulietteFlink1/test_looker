@@ -5,6 +5,15 @@ include: "/**/*.view.lkml"                # include all views in the views/ fold
 include: "/**/*.dashboard.lookml"
 include: "/**/*.explore.lkml"
 
+# include retail explores
+include: "/explores/**/*.explore.lkml"
+include: "/explores/base_explores/orders_cl.explore.lkml"
+#include: "/explores/base_explores/orders_cl_cleaned.explore.lkml"
+include: "/explores/base_explores/order_orderline_cl.explore.lkml"
+include: "/explores/base_explores/orders_customers.explore.lkml"
+include: "/explores/rider_ops/rider_staffing_report.explore.lkml"
+#include: "/explores/base_explores/orders_customers_cleaned.explore.lkml"
+
 
 week_start_day: monday
 case_sensitive: no
@@ -42,33 +51,3 @@ named_value_format: euro_accounting_2_precision { value_format: "\"€\"#,##0.00
 named_value_format: euro_accounting_1_precision { value_format: "\"€\"#,##0.0" }
 named_value_format: euro_accounting_0_precision { value_format: "\"€\"#,##0" }
 # END ------------------------ custom value formats ----------------------------
-
-
-
-
-# STAY- HERE (move soon)
-explore: riders_forecast_staffing {
-  hidden: yes
-  label: "Orders and Riders Forecasting"
-  view_label: "Orders and Riders Forecasting"
-  group_label: "09) Forecasting"
-  description: "This explore allows to check the riders and orders forecast for the upcoming 7 days"
-
-  access_filter: {
-    field: hubs.country_iso
-    user_attribute: country_iso
-  }
-
-  access_filter: {
-    field: hubs.city
-    user_attribute: city
-  }
-
-  join: hubs {
-    sql_on:
-    ${riders_forecast_staffing.hub_name} = ${hubs.hub_code_lowercase} ;;
-    relationship: many_to_one
-    type: left_outer
-  }
-
-}
