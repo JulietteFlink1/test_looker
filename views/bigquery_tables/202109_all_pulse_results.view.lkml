@@ -31,8 +31,8 @@ view: 202109_all_pulse_results {
 
   dimension: group {
     type: string
-    sql: CASE WHEN ${nps}<=6 THEN "Detractors"
-              WHEN ${nps}>=9 THEN "Promoters"
+    sql: CASE WHEN ${score}<=6 THEN "Detractors"
+              WHEN ${score}>=9 THEN "Promoters"
               ELSE "Passives" END;;
   }
   measure: count {
