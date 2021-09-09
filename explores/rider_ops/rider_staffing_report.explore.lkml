@@ -2,10 +2,10 @@ include: "/views/projects/rider_ops/rider_staffing_report.view"
 include: "/views/bigquery_tables/curated_layer/hubs_ct.view"
 
 explore: rider_staffing_report {
-  hidden: yes
+  hidden: no
   label: "Orders and Riders Staffing Data"
   view_label: "Orders and Riders Staffing Data"
-  group_label: "09) Forecasting"
+  group_label: "09) Rider Ops"
 
   access_filter: {
     field: hubs.country_iso
