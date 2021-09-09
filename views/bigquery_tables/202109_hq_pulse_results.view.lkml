@@ -129,26 +129,31 @@ view: 202109_hq_pulse_results {
 
   measure: i_am_fairly_rewarded__e_g__pay__promotion__training__for_my_contributions_to_flink_avg {
     type: average
+    value_format: "0.0"
     sql: ${i_am_fairly_rewarded__e_g__pay__promotion__training__for_my_contributions_to_flink_};;
   }
 
   measure: i_am_given_opportunities_to_learn_and_develop_my_skills_avg {
     type: average
+    value_format: "0.0"
     sql: ${i_am_given_opportunities_to_learn_and_develop_my_skills_};;
   }
 
   measure: i_feel_comfortable_giving_opinions_and_feedback_to_managers_avg {
     type: average
+    value_format: "0.0"
     sql: ${i_feel_comfortable_giving_opinions_and_feedback_to_managers_};;
   }
 
   measure: i_m_given_enough_freedom_to_decide_how_to_do_my_work_avg {
     type: average
+    value_format: "0.0"
     sql: ${i_m_given_enough_freedom_to_decide_how_to_do_my_work_};;
   }
 
   measure: if_i_do_great_work__i_know_that_it_will_be_recognized_avg{
     type: average
+    value_format: "0.0"
     sql: ${if_i_do_great_work__i_know_that_it_will_be_recognized_};;
   }
 
