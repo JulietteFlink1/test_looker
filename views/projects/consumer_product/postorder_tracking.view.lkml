@@ -8,7 +8,7 @@ view: postorder_tracking {
         tracks.context_app_version,
         tracks.context_device_type,
         tracks.context_os_version
-        FROM `flink-data-prod.flink_android_production.tracks` tracks
+        FROM `flink-data-prod.flink_android_production.tracks_view` tracks
         WHERE tracks.event NOT LIKE "api%" AND tracks.event NOT LIKE "deep_link%"
         UNION ALL
 
@@ -19,7 +19,7 @@ view: postorder_tracking {
         tracks.context_app_version,
         tracks.context_device_type,
         tracks.context_os_version
-        FROM `flink-data-prod.flink_ios_production.tracks` tracks
+        FROM `flink-data-prod.flink_ios_production.tracks_view` tracks
         WHERE tracks.event NOT LIKE "api%" AND tracks.event NOT LIKE "deep_link%"
       ),
 
