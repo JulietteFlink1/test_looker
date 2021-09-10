@@ -77,6 +77,8 @@ view: inventory_stock_count_hourly {
   }
 
   dimension: previous_quantity {
+    label: "# Quantity On Stock - Previous Hour"
+    description: "Sum of Available items in stock"
     type: number
     sql: ${TABLE}.previous_quantity ;;
   }
@@ -89,6 +91,7 @@ view: inventory_stock_count_hourly {
   dimension: stock_inventory_uuid {
     type: string
     sql: ${TABLE}.stock_inventory_uuid ;;
+    hidden: yes
   }
 
   measure: count {
