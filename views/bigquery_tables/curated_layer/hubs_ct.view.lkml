@@ -19,6 +19,8 @@ view: hubs_ct {
   }
 
   dimension: hub_name_anonymized   {
+    label: "Hub ID"
+    description: "Identifier of a Hub"
     type: string
     sql: ${TABLE}.hub_name_anonymized  ;;
   }
