@@ -3,6 +3,7 @@ include: "/**/*.view"
 # ct table: inventory_stock_count_daily, before in saleor called daily_historical_stock_levels
 explore: inventory_stock_count_daily {
   hidden: yes
+  view_label: "* Daily Inventory Stock Level *"
 
   join: hubs {
     from:  hubs_ct
@@ -19,7 +20,7 @@ explore: inventory_stock_count_daily {
   }
 
   join: skus_fulfilled_per_hub_and_date {
-    view_label: "Daily Historical Stock Levels"
+    view_label: "* Daily Inventory Stock Level *"
     type: left_outer
     relationship: many_to_one
     sql_on: ${skus_fulfilled_per_hub_and_date.product_sku}       = ${inventory_stock_count_daily.sku}
