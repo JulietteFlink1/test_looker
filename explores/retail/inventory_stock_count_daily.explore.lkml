@@ -5,6 +5,25 @@ explore: inventory_stock_count_daily {
   hidden: yes
   view_label: "* Daily Inventory Stock Level *"
 
+  always_filter: {
+    filters:  [
+      inventory_stock_count_daily.tracking_date: "last 7 days",
+      hubs.country_iso: "DE",
+      hubs.hub_name: ""
+    ]
+  }
+  access_filter: {
+    field: hubs.country_iso
+    user_attribute: country_iso
+  }
+
+  access_filter: {
+    field: hubs.city
+    user_attribute: city
+  }
+
+
+
   join: hubs {
     from:  hubs_ct
     view_label: "* Hubs *"

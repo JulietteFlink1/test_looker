@@ -36,6 +36,7 @@ view: inventory_stock_count_daily {
     default_value: "yes"
   }
   dimension: sku_name_dynamic {
+    group_label: "* Parameters & Dynamic Fields *"
     type: string
     sql: if({% parameter show_sku %}, concat(${sku}, ' - ', ${products.product_name}), null) ;;
   }
