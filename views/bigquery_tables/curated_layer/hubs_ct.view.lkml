@@ -18,6 +18,11 @@ view: hubs_ct {
     sql: ${TABLE}.hub_name ;;
   }
 
+  dimension: hub_name_anonymized   {
+    type: string
+    sql: ${TABLE}.hub_name_anonymized  ;;
+  }
+
   dimension: languages {
     type: string
     sql: ${TABLE}.languages ;;
