@@ -53,11 +53,27 @@ view: order_placed_events {
       , IF(LOWER(help_tb.hub_city) LIKE '%ludwigshafen%' OR LOWER(help_tb.hub_city) LIKE '%mülheim%', "DE", hubs.country_iso) AS country_iso
     FROM help_tb
     LEFT JOIN lookup_tb hubs ON hubs.city = help_tb.hub_city
-    )
+    ),
 
-    SELECT *
-      , LEAD(order_number,1) OVER (PARTITION BY anonymous_id ORDER BY timestamp) AS next_order_number
+    -- combine first_order_placed for ios and android for the relevant fields
+    first_order_placed_tb AS (
+      SELECT
+        ios_order.order_number
+      FROM
+        `flink-data-prod.flink_ios_production.first_order_placed_view` ios_order
+      UNION ALL
+      SELECT
+        android_order.order_number
+      FROM
+        `flink-data-prod.flink_android_production.first_order_placed_view` android_order
+        )
+
+    SELECT country_tb.*
+      , LEAD(country_tb.order_number,1) OVER (PARTITION BY country_tb.anonymous_id ORDER BY timestamp) AS next_order_number
+      , IF(first_order_placed_tb.order_number IS NULL, FALSE, TRUE) AS is_first_order
     FROM country_tb
+      LEFT JOIN first_order_placed_tb
+      ON first_order_placed_tb.order_number=country_tb.order_number
  ;;
   }
 
@@ -97,6 +113,11 @@ view: order_placed_events {
     type: count_distinct
     sql: ${order_number} ;;
     filters: [has_next_order: "yes"]
+  }
+
+  dimension: returning_customer {
+    type: yesno
+    sql: NOT(${is_first_order}) ;;
   }
 
 #######################################
@@ -175,6 +196,12 @@ view: order_placed_events {
     description: "Country in which order was placed"
     type: string
     sql: ${TABLE}.country_iso ;;
+  }
+
+  dimension: is_first_order {
+    description: "Is first order for this user according to client (note: will count as first order if user deleted all their app data)"
+    type: yesno
+    sql: ${TABLE}.is_first_order ;;
   }
 
   set: detail {

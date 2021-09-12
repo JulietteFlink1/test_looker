@@ -1,6 +1,6 @@
 view: postorder_tracking {
   derived_table: {
-    sql: WITH tracks_tb AS (
+    sql: WITH pretracks_tb AS (
         SELECT tracks.anonymous_id,
         tracks.timestamp,
         IF(tracks.event="purchase_confirmed", "payment_started", tracks.event) AS event,
@@ -23,6 +23,23 @@ view: postorder_tracking {
         WHERE tracks.event NOT LIKE "api%" AND tracks.event NOT LIKE "deep_link%"
       ),
 
+      -- identify which "automatic" events for order_tracking_viewed to exclude
+      -- TODO currently can only do this for android, need this for iOS (also for automatically triggered later ones in ios)
+        exclude_from_tracks AS (
+        SELECT id
+        FROM `flink-data-prod.flink_android_production.order_tracking_viewed_view`
+        WHERE origin_screen="payment"
+      ),
+
+      tracks_tb AS (
+        SELECT pretracks_tb.*
+        FROM pretracks_tb
+        LEFT JOIN exclude_from_tracks
+        ON pretracks_tb.id=exclude_from_tracks.id
+        WHERE exclude_from_tracks.id IS NULL
+      ),
+
+      -- combine order_tracking_viewed for ios and android for the relevant fields
       order_tracking_tb AS (
       SELECT
         ios_order.order_id,
@@ -51,31 +68,58 @@ view: postorder_tracking {
         `flink-data-prod.flink_android_production.order_tracking_viewed_view` android_order
         ),
 
+    -- combine order_placed for ios and android for the relevant fields
+    -- some orders receive events twice, so need to make sure they're unique
     order_placed_tb AS (
+      SELECT *
+      FROM (
+        SELECT
+          ios_order.order_id,
+          ios_order.order_number,
+          SAFE_CAST(ios_order.delivery_eta AS INT64) AS delivery_eta,
+          ios_order.hub_slug,
+          ios_order.revenue,
+          ios_order.voucher_value,
+          ios_order.id,
+          timestamp,
+          ROW_NUMBER() OVER(PARTITION BY order_number ORDER BY timestamp ASC) AS row_id
+        FROM
+          `flink-data-prod.flink_ios_production.order_placed_view` ios_order
+      )
+      WHERE row_id=1
+      UNION ALL
+      SELECT *
+      FROM (
+        SELECT
+          android_order.order_id,
+          android_order.order_number,
+          android_order.delivery_eta,
+          android_order.hub_slug,
+          android_order.revenue,
+          android_order.voucher_value,
+          android_order.id,
+          timestamp,
+          ROW_NUMBER() OVER(PARTITION BY order_number ORDER BY timestamp ASC) AS row_id
+        FROM
+          `flink-data-prod.flink_android_production.order_placed_view` android_order
+      )
+      WHERE row_id=1
+    ),
+
+    -- combine first_order_placed for ios and android for the relevant fields
+    first_order_placed_tb AS (
       SELECT
-        ios_order.order_id,
-        ios_order.order_number,
-        SAFE_CAST(ios_order.delivery_eta AS INT64) AS delivery_eta,
-        ios_order.hub_slug,
-        ios_order.revenue,
-        ios_order.voucher_value,
-        ios_order.id
+        ios_order.order_number
       FROM
-        `flink-data-prod.flink_ios_production.order_placed_view` ios_order
+        `flink-data-prod.flink_ios_production.first_order_placed_view` ios_order
       UNION ALL
       SELECT
-        android_order.order_id,
-        android_order.order_number,
-        android_order.delivery_eta,
-        android_order.hub_slug,
-        android_order.revenue,
-        android_order.voucher_value,
-        android_order.id
+        android_order.order_number
       FROM
-        `flink-data-prod.flink_android_production.order_placed_view` android_order
+        `flink-data-prod.flink_android_production.first_order_placed_view` android_order
         ),
 
-      -- currently only available on android but will be there for ios soon
+      -- TODO currently only available on android but will be there for ios soon (combine here when it's available)
       customer_service_intent_tb AS (
       SELECT
         android_csi.order_id,
@@ -89,15 +133,17 @@ view: postorder_tracking {
         `flink-data-prod.flink_android_production.contact_customer_service_selected_view` android_csi
       ),
 
+      -- with tracks table as a base, join the order_tracking_viewed, order_placed and contact_customer_service_selected tables for their respective information.
+      -- for common fields, always take from order_placed first if available, then contact_customer_service_selected, then order_tracking_viewed, except for delivery_eta (because this will be dynamic soon, need to take it from order_tracking_viewed).
       joined_tb AS (
       SELECT
       tracks_tb.*
-      , COALESCE(ot.order_id, csi.order_id, op.order_id) AS order_id
-      , COALESCE(ot.order_number, csi.order_number, op.order_number) AS order_number
-      , COALESCE(ot.hub_slug, csi.hub_slug, op.hub_slug) AS hub_slug
-      , COALESCE(ot.country_iso, csi.country_iso) AS country_iso
-      , COALESCE(ot.order_status, csi.order_status) AS order_status
-      , COALESCE(ot.delivery_eta, csi.delivery_eta, op.delivery_eta) AS delivery_eta
+      , COALESCE(op.order_id, csi.order_id, ot.order_id) AS order_id
+      , COALESCE(op.order_number, csi.order_number, ot.order_number) AS order_number
+      , COALESCE(op.hub_slug, csi.hub_slug, ot.hub_slug) AS hub_slug
+      , COALESCE(csi.country_iso, ot.country_iso) AS country_iso
+      , COALESCE(csi.order_status, ot.order_status) AS order_status
+      , COALESCE(csi.delivery_eta, ot.delivery_eta, op.delivery_eta) AS delivery_eta
       , ot.delayed_component
       , ot.fulfillment_time
       , op.revenue
@@ -111,6 +157,7 @@ view: postorder_tracking {
       ON tracks_tb.id=op.id
       ),
 
+      -- summarize all the events from one order_number into one row.
       merged_tb AS (
       SELECT order_number
           , MAX(joined_tb.delivery_eta) AS order_delivery_pdt
@@ -130,9 +177,13 @@ view: postorder_tracking {
       GROUP BY 1
       )
 
-      SELECT *
+      -- to know what is the earliest interaction of the user with the order -> isn't this always going to be order_placed?
+      SELECT merged_tb.*
       , COALESCE(timestamp_order_placed, timestamp_first_order_tracking_viewed, timestamp_first_cs_intent) AS first_interaction_timestamp
+      , IF(first_order_placed_tb.order_number IS NULL, FALSE, TRUE) AS is_first_order
       FROM merged_tb
+      LEFT JOIN first_order_placed_tb
+      ON first_order_placed_tb.order_number=merged_tb.order_number
  ;;
   }
 
@@ -215,6 +266,36 @@ view: postorder_tracking {
     sql: ${CCSintent_timesdiff_to_pdt} ;;
   }
 
+  dimension: orderview_time_since_order_duration{
+    type: duration_minute
+    sql_start: ${timestamp_order_placed_raw} ;;
+    sql_end: ${timestamp_first_order_tracking_viewed_raw};;
+  }
+
+  dimension: orderview_timesdiff_to_pdt{
+    type: number
+    sql: ${orderview_time_since_order_duration}-${order_delivery_pdt};;
+  }
+
+  dimension: orderview_time_since_order_tiers {
+    type: tier
+    tiers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 20, 25, 30, 45, 60]
+    style: interval
+    sql: ${orderview_time_since_order_duration} ;;
+  }
+
+  dimension: orderview_timesdiff_to_pdt_tiers {
+    type: tier
+    tiers: [-20,-16,-14,-12,-10,-8,-6,-4,-2, 0, 2, 4,6,8,10,12,14,16,20,24,30,45,60]
+    style: interval
+    sql: ${orderview_timesdiff_to_pdt} ;;
+  }
+
+  dimension: returning_customer {
+    type: yesno
+    sql: NOT(${is_first_order}) ;;
+  }
+
   #################
 
   measure: count {
@@ -242,6 +323,12 @@ view: postorder_tracking {
     sql: ${TABLE}.platform ;;
   }
 
+  dimension: is_first_order {
+    hidden: yes
+    type: yesno
+    sql: ${TABLE}.is_first_order ;;
+  }
+
   dimension_group: timestamp_first_interaction {
     type: time
     sql: ${TABLE}.first_interaction_timestamp ;;
@@ -258,7 +345,7 @@ view: postorder_tracking {
   }
 
   dimension: has_order_tracking_viewed {
-    type: string
+    type: yesno
     sql: ${TABLE}.has_order_tracking_viewed ;;
   }
 
