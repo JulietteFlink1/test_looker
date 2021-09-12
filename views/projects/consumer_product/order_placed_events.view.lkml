@@ -3,41 +3,52 @@ view: order_placed_events {
   derived_table: {
     sql:
     WITH help_tb AS (
-    SELECT
-        ios_orders.id,
-        ios_orders.order_token, -- in curated layer orders.token used for CT orders to make order_uuid (country+token)
-        ios_orders.order_number, -- in curated layer orders.view used for Saleor orders to make order_uuid (country+number)
-        ios_orders.anonymous_id,
-        ios_orders.context_app_version,
-        ios_orders.context_app_name,
-        ios_orders.context_device_type,
-        ios_orders.hub_city,
-        ios_orders.payment_method,
-        ios_orders.timestamp
-      FROM
-        `flink-data-prod.flink_ios_production.order_placed_view` ios_orders
-      WHERE
-          NOT (LOWER(ios_orders.context_app_version) LIKE "%app-rating%" OR LOWER(ios_orders.context_app_version) LIKE "%debug%")
-      AND NOT (LOWER(ios_orders.context_app_name) = "flink-staging" OR LOWER(ios_orders.context_app_name)="flink-debug")
-      AND NOT (ios_orders.order_number IS NULL) -- we have some cases where this happens (13)
-      UNION ALL
+    SELECT *
+    FROM (
       SELECT
-        android_orders.id,
-        android_orders.order_token, -- in curated layer orders.token used for CT orders to make order_uuid (country+token)
-        android_orders.order_number, -- in curated layer orders.view used for Saleor orders to make order_uuid (country+number)
-        android_orders.anonymous_id,
-        android_orders.context_app_version,
-        android_orders.context_app_name,
-        android_orders.context_device_type,
-        android_orders.hub_city,
-        android_orders.payment_method,
-        android_orders.timestamp
-      FROM
-        `flink-data-prod.flink_android_production.order_placed_view` android_orders
-      WHERE
-          NOT (LOWER(android_orders.context_app_version) LIKE "%app-rating%" OR LOWER(android_orders.context_app_version) LIKE "%debug%")
-      AND NOT (LOWER(android_orders.context_app_name) = "flink-staging" OR LOWER(android_orders.context_app_name)="flink-debug")
-      AND NOT (android_orders.order_number IS NULL) -- we have some cases where this happens (13)
+          ios_orders.id,
+          ios_orders.order_token, -- in curated layer orders.token used for CT orders to make order_uuid (country+token)
+          ios_orders.order_number, -- in curated layer orders.view used for Saleor orders to make order_uuid (country+number)
+          ios_orders.anonymous_id,
+          ios_orders.context_app_version,
+          ios_orders.context_app_name,
+          ios_orders.context_device_type,
+          ios_orders.hub_city,
+          ios_orders.payment_method,
+          ios_orders.timestamp,
+          ROW_NUMBER() OVER(PARTITION BY order_number ORDER BY timestamp ASC) AS row_id
+        FROM
+          `flink-data-prod.flink_ios_production.order_placed_view` ios_orders
+        WHERE
+            NOT (LOWER(ios_orders.context_app_version) LIKE "%app-rating%" OR LOWER(ios_orders.context_app_version) LIKE "%debug%")
+        AND NOT (LOWER(ios_orders.context_app_name) = "flink-staging" OR LOWER(ios_orders.context_app_name)="flink-debug")
+        AND NOT (ios_orders.order_number IS NULL) -- we have some cases where this happens (13)
+      )
+      WHERE row_id=1
+      UNION ALL
+
+      SELECT *
+      FROM (
+        SELECT
+          android_orders.id,
+          android_orders.order_token, -- in curated layer orders.token used for CT orders to make order_uuid (country+token)
+          android_orders.order_number, -- in curated layer orders.view used for Saleor orders to make order_uuid (country+number)
+          android_orders.anonymous_id,
+          android_orders.context_app_version,
+          android_orders.context_app_name,
+          android_orders.context_device_type,
+          android_orders.hub_city,
+          android_orders.payment_method,
+          android_orders.timestamp,
+          ROW_NUMBER() OVER(PARTITION BY order_number ORDER BY timestamp ASC) AS row_id
+        FROM
+          `flink-data-prod.flink_android_production.order_placed_view` android_orders
+        WHERE
+            NOT (LOWER(android_orders.context_app_version) LIKE "%app-rating%" OR LOWER(android_orders.context_app_version) LIKE "%debug%")
+        AND NOT (LOWER(android_orders.context_app_name) = "flink-staging" OR LOWER(android_orders.context_app_name)="flink-debug")
+        AND NOT (android_orders.order_number IS NULL) -- we have some cases where this happens (13)
+      )
+      WHERE row_id=1
       ),
 
     lookup_tb AS (

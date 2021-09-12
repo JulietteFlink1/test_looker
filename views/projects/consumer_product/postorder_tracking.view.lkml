@@ -10,6 +10,14 @@ view: postorder_tracking {
         tracks.context_os_version
         FROM `flink-data-prod.flink_android_production.tracks_view` tracks
         WHERE tracks.event NOT LIKE "api%" AND tracks.event NOT LIKE "deep_link%"
+        AND NOT (LOWER(tracks.context_app_version) LIKE "%app-rating%"
+           OR LOWER(tracks.context_app_version) LIKE "%debug%")
+          AND NOT (LOWER(tracks.context_app_name) = "flink-staging"
+           OR LOWER(tracks.context_app_name) = "flink-debug")
+          AND (LOWER(tracks.context_traits_email) != "qa@goflink.com"
+           OR tracks.context_traits_email is null)
+          AND (tracks.context_traits_hub_slug NOT IN('erp_spitzbergen', 'fr_hub_test', 'nl_hub_test')
+           OR tracks.context_traits_hub_slug is null)
         UNION ALL
 
         SELECT tracks.anonymous_id,
@@ -21,6 +29,14 @@ view: postorder_tracking {
         tracks.context_os_version
         FROM `flink-data-prod.flink_ios_production.tracks_view` tracks
         WHERE tracks.event NOT LIKE "api%" AND tracks.event NOT LIKE "deep_link%"
+        AND NOT (LOWER(tracks.context_app_version) LIKE "%app-rating%"
+           OR LOWER(tracks.context_app_version) LIKE "%debug%")
+          AND NOT (LOWER(tracks.context_app_name) = "flink-staging"
+           OR LOWER(tracks.context_app_name) = "flink-debug")
+          AND (LOWER(tracks.context_traits_email) != "qa@goflink.com"
+           OR tracks.context_traits_email is null)
+          AND (tracks.context_traits_hub_slug NOT IN('erp_spitzbergen', 'fr_hub_test', 'nl_hub_test')
+           OR tracks.context_traits_hub_slug is null)
       ),
 
       -- identify which "automatic" events for order_tracking_viewed to exclude

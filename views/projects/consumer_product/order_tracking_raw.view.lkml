@@ -10,8 +10,15 @@ view: order_tracking_raw {
         tracks.context_os_version
         FROM `flink-data-prod.flink_android_production.tracks` tracks
         WHERE tracks.event NOT LIKE "api%" AND tracks.event NOT LIKE "deep_link%"
+        AND NOT (LOWER(tracks.context_app_version) LIKE "%app-rating%"
+           OR LOWER(tracks.context_app_version) LIKE "%debug%")
+          AND NOT (LOWER(tracks.context_app_name) = "flink-staging"
+           OR LOWER(tracks.context_app_name) = "flink-debug")
+          AND (LOWER(tracks.context_traits_email) != "qa@goflink.com"
+           OR tracks.context_traits_email is null)
+          AND (tracks.context_traits_hub_slug NOT IN('erp_spitzbergen', 'fr_hub_test', 'nl_hub_test')
+           OR tracks.context_traits_hub_slug is null)
         AND event IN ("contact_customer_service_selected", "order_tracking_viewed")
-        AND _PARTITIONTIME="2021-09-09"
         UNION ALL
 
         SELECT tracks.anonymous_id,
@@ -23,8 +30,15 @@ view: order_tracking_raw {
         tracks.context_os_version
         FROM `flink-data-prod.flink_ios_production.tracks` tracks
         WHERE tracks.event NOT LIKE "api%" AND tracks.event NOT LIKE "deep_link%"
+        AND NOT (LOWER(tracks.context_app_version) LIKE "%app-rating%"
+           OR LOWER(tracks.context_app_version) LIKE "%debug%")
+          AND NOT (LOWER(tracks.context_app_name) = "flink-staging"
+           OR LOWER(tracks.context_app_name) = "flink-debug")
+          AND (LOWER(tracks.context_traits_email) != "qa@goflink.com"
+           OR tracks.context_traits_email is null)
+          AND (tracks.context_traits_hub_slug NOT IN('erp_spitzbergen', 'fr_hub_test', 'nl_hub_test')
+           OR tracks.context_traits_hub_slug is null)
         AND event IN ("contact_customer_service_selected", "order_tracking_viewed")
-        AND _PARTITIONTIME="2021-09-09"
       ),
 
       -- identify which "automatic" events for order_tracking_viewed to exclude
@@ -137,7 +151,7 @@ view: order_tracking_raw {
         `flink-data-prod.flink_android_production.contact_customer_service_selected_view` android_csi
       ),
 
-    -- with tracks table as a base, join the order_tracking_viewed, order_placed and contact_customer_service_selected tables for their respective information.
+      -- with tracks table as a base, join the order_tracking_viewed, order_placed and contact_customer_service_selected tables for their respective information.
       -- for common fields, always take from order_placed first if available, then contact_customer_service_selected, then order_tracking_viewed, except for delivery_eta (because this will be dynamic soon, need to take it from order_tracking_viewed).
       joined_tb AS (
       SELECT
@@ -145,7 +159,7 @@ view: order_tracking_raw {
       , COALESCE(csi.order_id, ot.order_id) AS order_id
       , COALESCE(csi.order_number, ot.order_number) AS order_number
       , COALESCE(csi.hub_slug, ot.hub_slug) AS hub_slug
-      , COALESCE(csi.country_iso, ot.country_iso) AS country_iso
+      , COALESCE(csi.country_iso, ot.country_iso) AS country_iso_tmp
       , COALESCE(csi.order_status, ot.order_status) AS order_status
       , COALESCE(csi.delivery_eta, ot.delivery_eta) AS delivery_eta
       , ot.delayed_component
@@ -158,15 +172,15 @@ view: order_tracking_raw {
       )
 
       SELECT
-        joined_tb.*
-        ,IF(joined_tb.order_number IN (SELECT first_order_placed_tb.order_number FROM first_order_placed_tb), TRUE, FALSE) AS is_first_order
+        joined_tb.* EXCEPT(country_iso_tmp, id)
+        , IF(joined_tb.order_number IN (SELECT first_order_placed_tb.order_number FROM first_order_placed_tb), TRUE, FALSE) AS is_first_order
+        , IF(country_iso_tmp IS NULL, IF(SAFE_CAST(joined_tb.order_number AS INT64) IS NULL, UPPER(SPLIT(joined_tb.order_number,"-")[safe_offset(0)]), NULL), country_iso_tmp) AS country_iso
         , order_placed_tb.delivery_eta AS order_placed_delivery_eta
         , order_placed_tb.timestamp AS order_placed_timestamp
       FROM joined_tb
       LEFT JOIN order_placed_tb
       -- there would be many row where this would match and in each row it should add the order_placed original info
       ON order_placed_tb.order_number=joined_tb.order_number
-      ORDER BY timestamp DESC
  ;;
   }
 
