@@ -170,6 +170,52 @@ view: order_tracking_raw {
  ;;
   }
 
+  ### Custom measures
+  measure: cnt_order_tracking_viewed {
+    label: "# Order Tracking Viewed"
+    description: "Number of Order Tracking Viewed"
+    type: count
+    filters: [event: "order_tracking_viewed"]
+  }
+
+  measure: cnt_help_intent {
+    label: "# CCS Intent"
+    description: "Number of times there was an intent to contact customer service"
+    type: count
+    filters: [event: "contact_customer_service_selected"]
+  }
+
+  dimension: time_since_order_duration{
+    type: duration_minute
+    sql_start: ${order_placed_timestamp_raw} ;;
+    sql_end: ${timestamp_raw};;
+  }
+
+  dimension: timesdiff_to_pdt{
+    type: number
+    sql: ${time_since_order_duration}-${order_placed_delivery_eta};;
+  }
+
+  dimension: time_since_order_tiers {
+    type: tier
+    tiers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 20, 25, 30, 45, 60]
+    style: interval
+    sql: ${time_since_order_duration} ;;
+  }
+
+  dimension: timesdiff_to_pdt_tiers {
+    type: tier
+    tiers: [-20,-16,-14,-12,-10,-8,-6,-4,-2, 0, 2, 4,6,8,10,12,14,16,20,24,30,45,60]
+    style: interval
+    sql: ${timesdiff_to_pdt} ;;
+  }
+
+  dimension: returning_customer {
+    type: yesno
+    sql: NOT(${is_first_order}) ;;
+  }
+  ###
+
   measure: count {
     type: count
     drill_fields: [detail*]
