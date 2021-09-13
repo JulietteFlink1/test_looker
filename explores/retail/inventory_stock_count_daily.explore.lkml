@@ -3,6 +3,26 @@ include: "/**/*.view"
 # ct table: inventory_stock_count_daily, before in saleor called daily_historical_stock_levels
 explore: inventory_stock_count_daily {
   hidden: yes
+  view_label: "* Daily Inventory Stock Level *"
+
+  always_filter: {
+    filters:  [
+      inventory_stock_count_daily.tracking_date: "last 7 days",
+      hubs.country_iso: "DE",
+      hubs.hub_name: ""
+    ]
+  }
+  access_filter: {
+    field: hubs.country_iso
+    user_attribute: country_iso
+  }
+
+  access_filter: {
+    field: hubs.city
+    user_attribute: city
+  }
+
+
 
   join: hubs {
     from:  hubs_ct
@@ -19,7 +39,7 @@ explore: inventory_stock_count_daily {
   }
 
   join: skus_fulfilled_per_hub_and_date {
-    view_label: "Daily Historical Stock Levels"
+    view_label: "* Daily Inventory Stock Level *"
     type: left_outer
     relationship: many_to_one
     sql_on: ${skus_fulfilled_per_hub_and_date.product_sku}       = ${inventory_stock_count_daily.sku}

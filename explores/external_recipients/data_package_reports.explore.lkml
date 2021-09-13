@@ -7,8 +7,9 @@ explore: data_package_reports {
   label: "Data Package Reports"
   # description: "see https://goflink.atlassian.net/browse/DATA-886"
   fields: [
-    hubs.hub_name,
+    hubs.hub_name_anonymized,
     hubs.hub_code,
+    hubs.hub_name,
     hubs.city,
     hubs.country,
     orders_cl.is_successful_order,

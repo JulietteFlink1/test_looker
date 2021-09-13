@@ -676,6 +676,7 @@ view: segment_tracking_sessions30 {
   # }
   measure: mcvr1 {
     type: number
+    label: "mCVR1"
     description: "# sessions with an address (either selected in previous session or in current session), compared to the total number of Sessions Started"
     value_format_name: percent_1
     sql: ${cnt_has_address}/NULLIF(${count},0);;
@@ -683,6 +684,7 @@ view: segment_tracking_sessions30 {
 
   measure: mcvr2 {
     type: number
+    label: "mCVR2"
     description: "# sessions in which there was a Product Added To Cart, compared to the number of sessions in which there was a Home Viewed"
     value_format_name: percent_1
     sql: ${cnt_add_to_cart}/NULLIF(${cnt_has_address},0) ;;
@@ -690,6 +692,7 @@ view: segment_tracking_sessions30 {
 
   measure: mcvr3 {
     type: number
+    label: "mCVR3"
     description: "#sessions in which there was a Checkout Started event happened, compared to the number of sessions in which there was a Product Added To Cart"
     value_format_name: percent_1
     sql: ${cnt_checkout_started}/NULLIF(${cnt_add_to_cart},0) ;;
@@ -697,6 +700,7 @@ view: segment_tracking_sessions30 {
 
   measure: mcvr4 {
     type: number
+    label: "mCVR4"
     description: "# sessions in which there was a Payment Started event happened, compared to the number of sessions in which there was a Checkout Started"
     value_format_name: percent_1
     sql: ${cnt_payment_started}/NULLIF(${cnt_checkout_started},0) ;;

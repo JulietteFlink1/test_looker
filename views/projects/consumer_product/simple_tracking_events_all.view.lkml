@@ -67,7 +67,16 @@ view: simple_tracking_events_all {
           AND (tracks.context_traits_hub_slug NOT IN('erp_spitzbergen', 'fr_hub_test', 'nl_hub_test')
            OR tracks.context_traits_hub_slug is null)
       )
-      SELECT *, coalesce(split(context_locale,"-")[safe_offset(1)],'unknown') as country_iso,
+      SELECT *,
+       case when split(context_locale,"-")[safe_offset(0)] = 'de' THEN 'Germany'
+            when split(context_locale,"-")[safe_offset(0)] = 'nl' THEN 'Netherlands'
+            when split(context_locale,"-")[safe_offset(0)] = 'fr' THEN 'France'
+            else (
+                    case when split(context_timezone,"/")[safe_offset(1)] = 'Berlin' THEN 'Germany'
+                         when split(context_timezone,"/")[safe_offset(1)] = 'Amsterdam' THEN 'Netherlands'
+                         when split(context_timezone,"/")[safe_offset(1)] = 'Paris' THEN 'France'
+                         else 'unknown' end
+                    ) end as country_iso,
       LAG(joined_table.event) OVER(PARTITION BY joined_table.anonymous_id ORDER BY joined_table.timestamp ASC) AS previous_event,
       LEAD(joined_table.event) OVER(PARTITION BY joined_table.anonymous_id ORDER BY joined_table.timestamp ASC) AS next_event
       FROM joined_table
