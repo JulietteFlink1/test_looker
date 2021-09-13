@@ -18,6 +18,8 @@ view: postorder_tracking {
            OR tracks.context_traits_email is null)
           AND (tracks.context_traits_hub_slug NOT IN('erp_spitzbergen', 'fr_hub_test', 'nl_hub_test')
            OR tracks.context_traits_hub_slug is null)
+        AND event IN ("contact_customer_service_selected", "order_tracking_viewed", "order_placed")
+
         UNION ALL
 
         SELECT tracks.anonymous_id,
@@ -37,6 +39,7 @@ view: postorder_tracking {
            OR tracks.context_traits_email is null)
           AND (tracks.context_traits_hub_slug NOT IN('erp_spitzbergen', 'fr_hub_test', 'nl_hub_test')
            OR tracks.context_traits_hub_slug is null)
+        AND event IN ("contact_customer_service_selected", "order_tracking_viewed", "order_placed")
       ),
 
       -- identify which "automatic" events for order_tracking_viewed to exclude
@@ -157,7 +160,7 @@ view: postorder_tracking {
       , COALESCE(op.order_id, csi.order_id, ot.order_id) AS order_id
       , COALESCE(op.order_number, csi.order_number, ot.order_number) AS order_number
       , COALESCE(op.hub_slug, csi.hub_slug, ot.hub_slug) AS hub_slug
-      , COALESCE(csi.country_iso, ot.country_iso) AS country_iso
+      , COALESCE(csi.country_iso, ot.country_iso) AS country_iso_tmp
       , COALESCE(csi.order_status, ot.order_status) AS order_status
       , COALESCE(csi.delivery_eta, ot.delivery_eta, op.delivery_eta) AS delivery_eta
       , ot.delayed_component
@@ -179,6 +182,7 @@ view: postorder_tracking {
           , MAX(joined_tb.delivery_eta) AS order_delivery_pdt
           , MIN(joined_tb.context_app_version) AS app_version
           , MIN(joined_tb.context_device_type) AS platform
+          , MIN(joined_tb.country_iso_tmp) AS country_iso_tmp
           , MIN(CASE WHEN event="order_placed" THEN timestamp END) AS timestamp_order_placed -- since grouped by order number, there should only be 1
           , MAX(CASE WHEN event="order_placed" THEN TRUE ELSE FALSE END) AS has_order_placed
           , MAX(CASE WHEN event="order_tracking_viewed" THEN TRUE ELSE FALSE END) AS has_order_tracking_viewed
@@ -194,9 +198,10 @@ view: postorder_tracking {
       )
 
       -- to know what is the earliest interaction of the user with the order -> isn't this always going to be order_placed?
-      SELECT merged_tb.*
+      SELECT merged_tb.* EXCEPT(country_iso_tmp)
       , COALESCE(timestamp_order_placed, timestamp_first_order_tracking_viewed, timestamp_first_cs_intent) AS first_interaction_timestamp
       , IF(first_order_placed_tb.order_number IS NULL, FALSE, TRUE) AS is_first_order
+      , IF(country_iso_tmp IS NULL, IF(SAFE_CAST(merged_tb.order_number AS INT64) IS NULL, UPPER(SPLIT(merged_tb.order_number,"-")[safe_offset(0)]), NULL), country_iso_tmp) AS country_iso
       FROM merged_tb
       LEFT JOIN first_order_placed_tb
       ON first_order_placed_tb.order_number=merged_tb.order_number
@@ -324,6 +329,11 @@ view: postorder_tracking {
     sql: ${TABLE}.order_number ;;
   }
 
+  dimension: country_iso {
+    type: string
+    sql: ${TABLE}.country_iso ;;
+  }
+
   dimension: order_delivery_pdt {
     type: string
     sql: ${TABLE}.order_delivery_pdt ;;
@@ -403,6 +413,7 @@ view: postorder_tracking {
   set: detail {
     fields: [
       order_number,
+      country_iso,
       timestamp_first_interaction_time,
       timestamp_order_placed_time,
       has_order_placed,
