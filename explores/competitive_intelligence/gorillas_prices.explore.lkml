@@ -5,7 +5,7 @@ include: "/views/bigquery_tables/reporting_layer/competitive_intelligence/gorill
 explore:  gorillas_prices {
   hidden: yes
   label: "Gorillas Prices"
-  view_label: "Gorillas Prices"
+  view_label: "* Gorillas Product Data *"
   view_name: gorillas_products
   group_label: "08) Competitive Intel"
   description: "Gorillas Pricing Data"
@@ -22,6 +22,14 @@ explore:  gorillas_prices {
     sql_on: ${gorillas_hubs.hub_id} = ${gorillas_categories.hub_id} ;;
     relationship: many_to_one
     type:  left_outer
+  }
+
+  join: gorillas_historical_prices_fact {
+    from: gorillas_historical_prices_fact
+    view_label: "* Gorillas Historical Price Data *"
+    sql_on: ${gorillas_products.product_id} = ${gorillas_historical_prices_fact.product_id} ;;
+    relationship: one_to_many
+    type: left_outer
   }
 
 }

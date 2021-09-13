@@ -64,6 +64,7 @@ view: 202109_hq_pulse_results {
   }
 
   dimension: if_you_could_be_the_ceo_of_flink_for_one_day__what_would_you_change_ {
+    label: "If you could be the CEO of Flink what would you change?"
     type: string
     sql: ${TABLE}.If_you_could_be_the_CEO_of_Flink_for_one_day__what_would_you_change_
         ;;
@@ -118,6 +119,7 @@ view: 202109_hq_pulse_results {
   }
 
   dimension: why_did_you_rate_this_way__ {
+    label: "Why did you rate this way?"
     type: string
     sql: ${TABLE}.Why_did_you_rate_this_way__ ;;
   }
