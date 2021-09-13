@@ -141,11 +141,13 @@ view: rider_staffing_report {
   }
 
   dimension: forecast_riders_needed {
+    hidden: yes
     type: number
     sql: ${TABLE}.forecast_riders_needed ;;
   }
 
   dimension: hub_name {
+    hidden: yes
     type: string
     sql: ${TABLE}.hub_name ;;
   }
@@ -438,21 +440,21 @@ view: rider_staffing_report {
     description: "Computes the difference between forecasted and filled depending on the selected KPI"
     type: number
     #label: "D"
-    hidden: no
+    hidden: yes
     sql: ${forecasted_dimension} - ${filled_dimension} ;;
   }
 
   dimension: delta_hours_filled_actuals {
     description: "Computes the difference between actual filled hours and required hours"
     type: number
-    hidden: no
+    hidden: yes
     sql: ${filled_rider_hours} - ${required_rider_hours};;
   }
 
   dimension: delta_hours_punched_actuals {
     description: "Computes the difference between actual punched hours and required hours"
     type: number
-    hidden: no
+    hidden: yes
     sql: ${punched_rider_hours} - ${required_rider_hours};;
   }
 
@@ -494,6 +496,7 @@ view: rider_staffing_report {
   }
 
   dimension: picker_utr {
+    hidden: yes
     group_label: " * Parameters * "
     label: "Picker UTR"
     type: number
