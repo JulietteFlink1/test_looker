@@ -1,6 +1,9 @@
+include: "/views/bigquery_tables/gsheets/comp_intel_hub_mapping.view"
+
 view: gorillas_daily_orders {
   sql_table_name: `flink-data-prod.reporting.gorillas_daily_orders`
     ;;
+
 
   dimension: gorillas_orders_uuid {
     primary_key: yes
@@ -125,12 +128,12 @@ view: gorillas_daily_orders {
   measure: count {
     type: count
     drill_fields: [hub_name]
+    sql_distinct_key: ${gorillas_orders_uuid};;
   }
 
   measure: sum_orders {
     type: sum
-    sql: ${number_of_orders} ;;
-  }
+    sql: ${number_of_orders} ;; }
 
   measure: sum_orders_wow {
     type: sum
