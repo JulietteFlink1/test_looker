@@ -123,7 +123,7 @@ view: crm_braze_canvas {
 
   dimension: total_emails_soft_bounced {
     type: number
-    sql: ${TABLE}.ntotal_emails_soft_bounced ;;
+    sql: ${TABLE}.total_emails_soft_bounced ;;
     hidden: yes
   }
 
@@ -167,6 +167,11 @@ view: crm_braze_canvas {
     type: count
     drill_fields: [detail*]
     value_format_name: decimal_0
+    hidden: yes
+  }
+  dimension: num_unique_users_orders {
+    type: number
+    sql: ${TABLE}.num_unique_users_orders ;;
     hidden: yes
   }
 
@@ -331,6 +336,15 @@ view: crm_braze_canvas {
     value_format_name: decimal_0
   }
 
+  measure: unique_users_orders {
+    type: sum
+    label: "Unique Users with Orders "
+    description: "Number of Unique Users with at leats 1 Order that happened in the 12h after the last email open"
+    group_label: "Numbers"
+    sql: ${num_unique_users_orders};;
+    value_format_name: decimal_0
+  }
+
   measure: orders_with_vouchers {
     type: sum
     label: "Total Orders with Vouchers"
@@ -443,6 +457,19 @@ view: crm_braze_canvas {
     value_format_name: percent_2
   }
 
+  measure: unique_order_rate {
+    type: number
+    label: "Unique Order Rate"
+    description: "Percentage: number of users who made at least 1 order in the 12h after the last opening of the email divided by the number of emails opened"
+    group_label: "Ratios"
+    sql: {% if ${TABLE}.in_control_group == 'yes' %}
+            ${num_unique_users_orders} / NULLIF(${total_emails_sent}, 0)
+          {% else %}
+             ${num_unique_users_orders} / NULLIF(${total_emails_opened}, 0)
+          {% endif %};;
+    value_format_name: percent_2
+  }
+
   measure: order_rate {
     type: number
     label: "Total Order Rate (from opened)"
@@ -475,7 +502,7 @@ view: crm_braze_canvas {
   }
   measure: order_rate_with_vouchers {
     type: number
-    label: "Total Order Rate with Vouchers (form opened)"
+    label: "Total Order Rate with Vouchers"
     description: "Percentage: number of orders made in the 12h after sending an email divided by the number of emails opened"
     group_label: "Ratios"
     sql: {% if ${TABLE}.in_control_group == 'yes' %}
@@ -507,7 +534,7 @@ measure: order_rate_with_vouchers_variant {
 
   measure: discount_order_share {
     type: number
-    label: "Discount Order Share (opened)"
+    label: "Discount Order Share"
     description: "Percentage: number of orders with voucher discounts divided by the total number of ordres made in the 12h after the last opening of the email"
     group_label: "Ratios"
     sql: ${total_orders_with_vouchers} / NULLIF(${total_orders}, 0);;
@@ -517,7 +544,7 @@ measure: order_rate_with_vouchers_variant {
 
   measure: discount_value_share {
     type: number
-    label: "Discount Value Share (opened) "
+    label: "Discount Value Share "
     description: "Percentage: total of voucher discounts divided by the total gmv (gross) of ordres made in the 12h after the last opening of the email"
     group_label: "Ratios"
     sql: ${total_discount_amount} / NULLIF(${total_gmv_gross}, 0);;
