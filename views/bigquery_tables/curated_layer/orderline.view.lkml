@@ -362,6 +362,27 @@ view: orderline {
     value_format: "0.0"
   }
 
+  measure: sum_item_quantity_last_14d {
+    group_label: "* Sold Quantities *"
+    label: "# Total Sales (last 14d)"
+    description: "Quantity of Order Line Items sold in the previous 14 days"
+    hidden:  no
+    type: sum
+    sql: ${quantity};;
+    filters: [created_date: "14 days ago for 14 days"]
+    value_format: "0.0"
+  }
+
+  measure: avg_daily_item_quantity_last_14d {
+    group_label: "* Sold Quantities *"
+    label: "# AVG daily sales (last 14d)"
+    description: "Average Daily Quantity of Products sold considering the previous 14 days"
+    hidden:  no
+    type: number
+    sql: ${sum_item_quantity_last_14d} / 14;;
+    value_format: "0.0"
+  }
+
   measure: sum_item_price_gross_14d {
     label: "SUM Item Prices sold (gross) - Last 14 days"
     description: "Sum of sold Item prices (incl. VAT) - in the Last 14 days"
