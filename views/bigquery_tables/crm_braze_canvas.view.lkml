@@ -599,15 +599,17 @@ measure: order_rate_with_vouchers_variant {
     allowed_value: { value: "orders"           label: "Total Orders"}
     allowed_value: { value: "order_rate"       label: "Total Order Rate"}
 
-    allowed_value: { value: "order_rate_control"       label: "cTotal Order Rate"}
-    allowed_value: { value: "order_rate_variant"       label: "vTotal Order Rate"}
+    allowed_value: { value: "unique_orders"           label: "Unique Orders"}
+    allowed_value: { value: "unique_order_rate"           label: "Unique Order Rate"}
+
+    # allowed_value: { value: "order_rate_control"       label: "cTotal Order Rate"}
+    # allowed_value: { value: "order_rate_variant"       label: "vTotal Order Rate"}
 
     allowed_value: { value: "orders_with_vouchers"        label: "Total Orders with Voucher"}
-
     allowed_value: { value: "order_rate_with_vouchers"    label: "Total Order Rate with Voucher"}
-    allowed_value: { value: "order_rate_with_vouchers_control"    label: "cTotal Order Rate with Voucher"}
-    allowed_value: { value: "order_rate_with_vouchers_variant"    label: "vTotal Order Rate with Voucher"}
 
+    # allowed_value: { value: "order_rate_with_vouchers_control"    label: "cTotal Order Rate with Voucher"}
+    # allowed_value: { value: "order_rate_with_vouchers_variant"    label: "vTotal Order Rate with Voucher"}
 
     allowed_value: { value: "discount_amount"           label: "Total Discount Value"}
 
@@ -676,20 +678,16 @@ measure: order_rate_with_vouchers_variant {
     {% elsif KPI_parameter._parameter_value == 'unique_cta_clicks_rate' %}
       ${unique_cta_clicked_emails_per_emails_delivered}
 
-
     {% elsif KPI_parameter._parameter_value == 'orders' %}
       ${orders}
+    {% elsif KPI_parameter._parameter_value == 'unique_orders' %}
+      ${unique_users_orders}
 
-    {% elsif KPI_parameter._parameter_value == 'order_rate_control' %}
-      ${order_rate_control}
-    {% elsif KPI_parameter._parameter_value == 'order_rate_variant' %}
-      ${order_rate_variant}
     {% elsif KPI_parameter._parameter_value == 'order_rate' %}
       ${order_rate}
+    {% elsif KPI_parameter._parameter_value == 'unique_order_rate' %}
+      ${unique_order_rate}
 
-    {% elsif KPI_parameter._parameter_value == 'order_rate_with_vouchers_control' %}
-      ${order_rate_with_vouchers_control}
-    {% elsif KPI_parameter._parameter_value == 'order_rate_with_vouchers_variant' %}
       ${order_rate_with_vouchers_variant}
     {% elsif KPI_parameter._parameter_value == 'order_rate_with_vouchers' %}
       ${order_rate_with_vouchers}
@@ -721,6 +719,7 @@ measure: order_rate_with_vouchers_variant {
       unique_emails_clicked,
       emails_clicked,
       orders,
+      unique_users_orders,
       orders_with_vouchers,
       discount_amount,
       gmv_gross
