@@ -336,7 +336,9 @@ view: rider_staffing_report {
           then
             coalesce(CAST(CEIL(${upper_bound} / ({% parameter rider_UTR %}/2)) AS INT64), 0)
           else
-            coalesce(CAST(CEIL(${predicted_orders} / ({% parameter rider_UTR %}/2)) AS INT64), 0);;
+            coalesce(CAST(CEIL(${predicted_orders} / ({% parameter rider_UTR %}/2)) AS INT64), 0)
+            end
+            ;;
   }
 
   dimension: forecasted_pickers {
@@ -346,7 +348,10 @@ view: rider_staffing_report {
           then
             coalesce(CAST(CEIL(${upper_bound} / (${picker_utr}/2)) AS INT64), 0)
           else
-            coalesce(CAST(CEIL(${predicted_orders} / (${picker_utr}/2)) AS INT64), 0);;
+            coalesce(CAST(CEIL(${predicted_orders} / (${picker_utr}/2)) AS INT64), 0)
+          end
+            ;;
+
   }
 
   dimension: forecasted_rider_hours {
@@ -357,6 +362,7 @@ view: rider_staffing_report {
           coalesce(CAST(CEIL(${upper_bound} / ({% parameter rider_UTR %}/2)) AS INT64) / 2, 0)
           else
           coalesce(CAST(CEIL(${predicted_orders} / ({% parameter rider_UTR %}/2)) AS INT64) / 2, 0)
+          end
           ;;
   }
 
@@ -368,6 +374,7 @@ view: rider_staffing_report {
           coalesce(CAST(CEIL(${upper_bound} / (${picker_utr}/2)) AS INT64) / 2, 0)
         else
           coalesce(CAST(CEIL(${predicted_orders} / (${picker_utr}/2)) AS INT64) / 2, 0)
+          end
           ;;
   }
 
