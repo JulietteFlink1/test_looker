@@ -104,7 +104,7 @@ view: marketing_performance {
                   when REGEXP_CONTAINS(lower(adjust._network_name_), 'google') then g_campaigns.adwords_customer_id
                   else null end as account_id
                   from `flink-backend.customlytics_adjust.adjust_raw_imports` adjust
-                  left join `flink-backend.google_ads.campaign_performance_reports_view` g_campaigns
+                  left join `flink-data-prod.google_ads.campaign_performance_reports_view` g_campaigns
                   on adjust._google_ads_campaign_id_= g_campaigns.campaign_id
                   where {% condition acquisition_date %} date(_PARTITIONTIME) {% endcondition %}
        ),
