@@ -37,17 +37,17 @@ view: monitoring_metrics {
         tracks.timestamp,
         tracks.uuid_ts,
       FROM
-        `flink-backend.flink_ios_production.tracks_view` tracks
+        `flink-data-prod.flink_ios_production.tracks_view` tracks
       LEFT JOIN
-        `flink-backend.flink_ios_production.payment_failed_view` paymentfail
+        `flink-data-prod.flink_ios_production.payment_failed_view` paymentfail
       ON
         tracks.id=paymentfail.id
       LEFT JOIN
-        `flink-backend.flink_ios_production.payment_method_added` paymentcomplete
+        `flink-data-prod.flink_ios_production.payment_method_added` paymentcomplete
       ON
         tracks.id=paymentcomplete.id
       LEFT JOIN
-        `flink-backend.flink_ios_production.purchase_confirmed_view` paymentstart
+        `flink-data-prod.flink_ios_production.purchase_confirmed_view` paymentstart
       ON
         tracks.id=paymentstart.id
         AND tracks.event NOT LIKE "%api%"
@@ -92,17 +92,17 @@ view: monitoring_metrics {
       tracks.timestamp,
       tracks.uuid_ts,
       FROM
-        `flink-backend.flink_android_production.tracks_view` tracks
+        `flink-data-prod.flink_android_production.tracks_view` tracks
       LEFT JOIN
-        `flink-backend.flink_android_production.payment_failed_view` paymentfail
+        `flink-data-prod.flink_android_production.payment_failed_view` paymentfail
       ON
         tracks.id=paymentfail.id
       LEFT JOIN
-        `flink-backend.flink_android_production.payment_method_added` paymentcomplete
+        `flink-data-prod.flink_android_production.payment_method_added` paymentcomplete
       ON
         tracks.id=paymentcomplete.id
       LEFT JOIN
-        `flink-backend.flink_android_production.purchase_confirmed_view` paymentstart
+        `flink-data-prod.flink_android_production.purchase_confirmed_view` paymentstart
       ON
         tracks.id=paymentstart.id
         AND tracks.event NOT LIKE "%api%"

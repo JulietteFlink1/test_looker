@@ -79,5 +79,4 @@ view: cs_fraudulent_customers {
   }
 
 
-
 }

@@ -14,7 +14,7 @@ view: checkout_sessions {
           , tracks.timestamp
           , TIMESTAMP_DIFF(tracks.timestamp,LAG(tracks.timestamp) OVER(PARTITION BY tracks.anonymous_id ORDER BY tracks.timestamp), MINUTE) AS inactivity_time
         FROM
-          `flink-backend.flink_ios_production.tracks_view` tracks
+          `flink-data-prod.flink_ios_production.tracks_view` tracks
         WHERE
           tracks.event NOT LIKE "%api%"
           AND tracks.event NOT LIKE "%adjust%"
@@ -35,7 +35,7 @@ view: checkout_sessions {
           , tracks.timestamp
           , TIMESTAMP_DIFF(tracks.timestamp,LAG(tracks.timestamp) OVER(PARTITION BY tracks.anonymous_id ORDER BY tracks.timestamp), MINUTE) AS inactivity_time
         FROM
-          `flink-backend.flink_android_production.tracks_view` tracks
+          `flink-data-prod.flink_android_production.tracks_view` tracks
         WHERE
           tracks.event NOT LIKE "%api%"
           AND tracks.event NOT LIKE "%adjust%"
@@ -76,7 +76,7 @@ view: checkout_sessions {
               hub.slug as hub_code,
               SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[ OFFSET(1)] AS hub_id,
               CAST(event.delivery_eta as INT) as delivery_eta
-        FROM `flink-backend.flink_ios_production.address_confirmed_view` event
+        FROM `flink-data-prod.flink_ios_production.address_confirmed_view` event
             LEFT JOIN
                 `flink-data-prod.saleor_prod_global.warehouse_warehouse` AS hub
             ON SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(event.hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[ OFFSET(1)] = hub.id
@@ -84,7 +84,7 @@ view: checkout_sessions {
                 SELECT DISTINCT
                     country_iso,
                     city
-                FROM `flink-backend.gsheet_store_metadata.hubs`
+                FROM `flink-data-prod.google_sheets.hub_metadata`
                  ) country
             ON event.hub_city = country.city
     UNION ALL
@@ -99,7 +99,7 @@ view: checkout_sessions {
               hub.slug as hub_code,
               SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[ OFFSET(1)] AS hub_id,
               event.delivery_eta
-        FROM `flink-backend.flink_android_production.address_confirmed_view` event
+        FROM `flink-data-prod.flink_android_production.address_confirmed_view` event
             LEFT JOIN
                 `flink-data-prod.saleor_prod_global.warehouse_warehouse` AS hub
             ON SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(event.hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[ OFFSET(1)] = hub.id
@@ -107,7 +107,7 @@ view: checkout_sessions {
                 SELECT DISTINCT
                     country_iso,
                     city
-                FROM `flink-backend.gsheet_store_metadata.hubs`
+                FROM `flink-data-prod.google_sheets.hub_metadata`
                  ) country
             ON event.hub_city = country.city
     UNION ALL
@@ -122,7 +122,7 @@ view: checkout_sessions {
               hub.slug as hub_code,
               SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[ OFFSET(1)] AS hub_id,
               CAST(event.delivery_eta as INT) as delivery_eta
-        FROM `flink-backend.flink_ios_production.order_placed_view` event
+        FROM `flink-data-prod.flink_ios_production.order_placed_view` event
             LEFT JOIN
                 `flink-data-prod.saleor_prod_global.warehouse_warehouse` AS hub
             ON SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(event.hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[ OFFSET(1)] = hub.id
@@ -130,7 +130,7 @@ view: checkout_sessions {
                 SELECT DISTINCT
                     country_iso,
                     city
-                FROM `flink-backend.gsheet_store_metadata.hubs`
+                FROM `flink-data-prod.google_sheets.hub_metadata`
                  ) country
             ON event.hub_city = country.city
     UNION ALL
@@ -145,7 +145,7 @@ view: checkout_sessions {
               hub.slug as hub_code,
               SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[ OFFSET(1)] AS hub_id,
               delivery_eta
-        FROM `flink-backend.flink_android_production.order_placed_view` event
+        FROM `flink-data-prod.flink_android_production.order_placed_view` event
             LEFT JOIN
                 `flink-data-prod.saleor_prod_global.warehouse_warehouse` AS hub
             ON SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(event.hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[ OFFSET(1)] = hub.id
@@ -153,7 +153,7 @@ view: checkout_sessions {
                 SELECT DISTINCT
                     country_iso,
                     city
-                FROM `flink-backend.gsheet_store_metadata.hubs`
+                FROM `flink-data-prod.google_sheets.hub_metadata`
                  ) country
             ON event.hub_city = country.city
     )
@@ -213,88 +213,54 @@ view: checkout_sessions {
     GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14
     ),
 
-    address_change_at_checkout AS (
-    SELECT
+    event_counts AS (
+       SELECT
            sf.anonymous_id
          , sf.session_id
-         , count(e.timestamp) as event_count
-    FROM events e
-        LEFT JOIN sessions_final sf
-        ON e.anonymous_id = sf.anonymous_id
-        AND e.timestamp >= sf.session_start_at
-        AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
-    WHERE e.event = 'address_change_at_checkout_message_viewed'
-    GROUP BY 1,2
+         , SUM(CASE WHEN e.event="address_confirmed" THEN 1 ELSE 0 END) as address_confirmed_event_count
+         , SUM(CASE WHEN e.event="address_change_at_checkout_message_viewed" THEN 1 ELSE 0 END) as late_change_event_count
+         , SUM(CASE WHEN e.event="hub_update_message_viewed" THEN 1 ELSE 0 END) as hub_update_event_count
+         , SUM(CASE WHEN e.event="checkout_started" THEN 1 ELSE 0 END) as checkout_started_event_count
+         , SUM(CASE WHEN e.event="purchase_confirmed" THEN 1 ELSE 0 END) as payment_started_event_count
+         , SUM(CASE WHEN e.event="payment_failed" THEN 1 ELSE 0 END) as payment_failed_event_count
+         , SUM(CASE WHEN e.event="order_placed" THEN 1 ELSE 0 END) as order_placed_event_count
+        FROM events e
+            LEFT JOIN sessions_final sf
+            ON e.anonymous_id = sf.anonymous_id
+            AND e.timestamp >= sf.session_start_at
+            AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
+        GROUP BY 1,2
     ),
 
-    hub_update_message AS (
-    SELECT
+    -- table to check whether checkout follows a hub_update message or hub_update message follows checkout (both are interesting)
+    checkoutstarted_and_hubupdated_sequence AS (
+       SELECT
            sf.anonymous_id
          , sf.session_id
-         , count(e.timestamp) as event_count
-    FROM events e
-        LEFT JOIN sessions_final sf
-        ON e.anonymous_id = sf.anonymous_id
-        AND e.timestamp >= sf.session_start_at
-        AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
-    WHERE e.event = 'hub_update_message_viewed'
-    GROUP BY 1,2
+         , e.event
+         , e.timestamp
+         , MAX(event="checkout_started") OVER
+            (PARTITION BY session_id ORDER BY timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING)  AS preceeded_by_checkout_started
+        , MAX(event="hub_update_message_viewed") OVER
+            (PARTITION BY session_id ORDER BY timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING)  AS preceeded_by_hub_update
+        , MAX(event="order_placed") OVER
+            (PARTITION BY session_id ORDER BY timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING)  AS preceeded_by_order_placed
+        FROM events e
+            LEFT JOIN sessions_final sf
+            ON e.anonymous_id = sf.anonymous_id
+            AND e.timestamp >= sf.session_start_at
+            AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
+        WHERE e.event = 'checkout_started' OR e.event="hub_update_message_viewed" OR e.event="address_confirmed" OR e.event="order_placed"
     ),
 
-    checkout_started AS (
-    SELECT
-           sf.anonymous_id
-         , sf.session_id
-         , count(e.timestamp) as event_count
-    FROM events e
-        LEFT JOIN sessions_final sf
-        ON e.anonymous_id = sf.anonymous_id
-        AND e.timestamp >= sf.session_start_at
-        AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
-    WHERE e.event = 'checkout_started'
-    GROUP BY 1,2
-    ),
-
-    payment_started AS (
-    SELECT
-           sf.anonymous_id
-         , sf.session_id
-         , count(e.timestamp) as event_count
-    FROM events e
-        LEFT JOIN sessions_final sf
-        ON e.anonymous_id = sf.anonymous_id
-        AND e.timestamp >= sf.session_start_at
-        AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
-    WHERE e.event = 'purchase_confirmed'
-    GROUP BY 1,2
-    ),
-
-    payment_failed AS (
-    SELECT
-           sf.anonymous_id
-         , sf.session_id
-         , count(e.timestamp) as event_count
-    FROM events e
-        LEFT JOIN sessions_final sf
-        ON e.anonymous_id = sf.anonymous_id
-        AND e.timestamp >= sf.session_start_at
-        AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
-    WHERE e.event = 'payment_failed'
-    GROUP BY 1,2
-    ),
-
-    order_placed AS (
-    SELECT
-           sf.anonymous_id
-         , sf.session_id
-         , count(e.timestamp) as event_count
-    FROM events e
-        LEFT JOIN sessions_final sf
-        ON e.anonymous_id = sf.anonymous_id
-        AND e.timestamp >= sf.session_start_at
-        AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
-    WHERE e.event = 'order_placed'
-    GROUP BY 1,2
+    -- group the sequences to one session_id for merging with sessions table
+    sequence_combined_tb AS (
+      SELECT session_id
+      , MAX(IF(event="checkout_started" AND preceeded_by_hub_update, TRUE, FALSE)) AS checkout_after_hub_update
+      , MAX(IF(event="hub_update_message_viewed" AND preceeded_by_checkout_started, TRUE, FALSE)) AS hub_update_after_checkout
+      , MAX(IF(event="address_confirmed" AND preceeded_by_checkout_started AND NOT(preceeded_by_order_placed), TRUE, FALSE)) AS address_confirm_after_checkout
+       FROM checkoutstarted_and_hubupdated_sequence
+       GROUP BY 1
     )
 
     SELECT
@@ -314,26 +280,21 @@ view: checkout_sessions {
         , sf.hub_city
         , sf.delivery_postcode
         , sf.delivery_eta
-        , ps.event_count as payment_started
-        , pf.event_count as payment_failed
-        , op.event_count as order_placed
-        , acac.event_count as address_change_at_checkout
-        , hum.event_count as hub_update_message
-        , cs.event_count as checkout_started
+        , ec.payment_started_event_count as payment_started
+        , ec.payment_failed_event_count as payment_failed
+        , ec.order_placed_event_count as order_placed
+        , ec.late_change_event_count as address_change_at_checkout
+        , ec.hub_update_event_count as hub_update_message
+        , ec.checkout_started_event_count as checkout_started
+        , sc.checkout_after_hub_update
+        , sc.hub_update_after_checkout
+        , sc.address_confirm_after_checkout
         --, CASE WHEN fo.first_order_timestamp < sf.session_start_at THEN true ELSE false END as has_ordered
     FROM sessions_final sf
-    LEFT JOIN payment_started ps
-    ON sf.session_id=ps.session_id
-    LEFT JOIN payment_failed pf
-    ON sf.session_id=pf.session_id
-    LEFT JOIN order_placed op
-    ON sf.session_id=op.session_id
-    LEFT JOIN address_change_at_checkout acac
-    ON sf.session_id=acac.session_id
-    LEFT JOIN hub_update_message hum
-    ON sf.session_id=hum.session_id
-    LEFT JOIN checkout_started cs
-    ON sf.session_id=cs.session_id
+    LEFT JOIN event_counts ec
+    ON sf.session_id=ec.session_id
+    LEFT JOIN sequence_combined_tb sc
+    ON sf.session_id=sc.session_id
     ORDER BY 1
  ;;
   }
@@ -344,46 +305,74 @@ view: checkout_sessions {
     sql: ${TABLE}.session_number=1 ;;
   }
 
+  measure: cnt_address_confirm_after_checkout {
+    label: "Cnt Address Confirm After Checkout Started Sessions"
+    description: "Number of sessions in which user confirmed an address after checkout was started without having placed an order inbetween"
+    type: count
+    filters: [address_confirm_after_checkout: "yes"]
+  }
+
+  measure: cnt_hub_update_after_checkout {
+    label: "Cnt Hub Update Message Viewed After Checkout Started Sessions"
+    description: "Number of sessions in which user lost their cart due to location update after checkout was started"
+    type: count
+    filters: [hub_update_after_checkout: "yes"]
+  }
+
+  measure: cnt_checkout_after_hub_update {
+    label: "Cnt Checkout Started After Hub Update Message Viewed Sessions"
+    description: "Number of sessions in which a checkout was started after the user lost their cart due to location update"
+    type: count
+    filters: [hub_update_after_checkout: "yes"]
+  }
+
+  measure: cnt_checkoutstarted_and_cart_lost {
+    label: "Cnt Checkout Started And Hub Update Message Viewed Sessions"
+    description: "Number of sessions in which a checkout was started and the user lost their cart due to location update (one event did not necessarily occur before the other)"
+    type: count
+    filters: [checkout_started: ">0", hub_update_message: ">0"]
+  }
+
   measure: cnt_hub_update_message {
     label: "# Hub Update Message Viewed sessions"
     description: "# sessions with Hub Update Message Viewed event"
     type: count
-    filters: [hub_update_message: "NOT NULL"]
+    filters: [hub_update_message: ">0"]
   }
 
   measure: cnt_address_change_at_checkout {
     label: "# Address Change At Checkout Viewed sessions"
     description: "# sessions with Address Change At Checkout Viewed event"
     type: count
-    filters: [address_change_at_checkout: "NOT NULL"]
+    filters: [address_change_at_checkout: ">0"]
   }
 
   measure: cnt_payment_started {
     label: "Payment started count"
     description: "Number of sessions in which at least one Payment Started event happened"
     type: count
-    filters: [payment_started: "NOT NULL"]
+    filters: [payment_started: ">0"]
   }
 
   measure: cnt_checkout_started {
     label: "Checkout started count"
     description: "Number of sessions in which at least one Checkout Started event happened"
     type: count
-    filters: [checkout_started: "NOT NULL"]
+    filters: [checkout_started: ">0"]
   }
 
   measure: cnt_payment_failed {
     label: "Payment failed count"
     description: "Number of sessions in which at least one Payment Failed event happened"
     type: count
-    filters: [payment_failed: "NOT NULL"]
+    filters: [payment_failed: ">0"]
   }
 
   measure: cnt_payment_failed_no_order {
     label: "Payment failed and no order placed"
     description: "Number of sessions in which at least one Payment Failed event happened and there was no order placed in the session"
     type: count
-    filters: [payment_failed: "NOT NULL", order_placed: "NULL"]
+    filters: [payment_failed: ">0", order_placed: ">0"]
   }
 
   measure: cnt_unique_anonymousid {
@@ -442,6 +431,24 @@ view: checkout_sessions {
   }
 
   ### standard measures
+
+  # warning: this typing will make all null values equal to false. In this dimension that seems appropriate
+  dimension: address_confirm_after_checkout {
+    type: yesno
+    sql: ${TABLE}.address_confirm_after_checkout ;;
+  }
+
+  # warning: this typing will make all null values equal to false. In this dimension that seems appropriate
+  dimension: hub_update_after_checkout {
+    type: yesno
+    sql: ${TABLE}.hub_update_after_checkout ;;
+  }
+
+  # warning: this typing will make all null values equal to false. In this dimension that seems appropriate
+  dimension: checkout_after_hub_update {
+    type: yesno
+    sql: ${TABLE}.checkout_after_hub_update ;;
+  }
 
   measure: count {
     type: count

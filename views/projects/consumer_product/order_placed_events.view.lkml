@@ -3,41 +3,52 @@ view: order_placed_events {
   derived_table: {
     sql:
     WITH help_tb AS (
-    SELECT
-        ios_orders.id,
-        ios_orders.order_token, -- in curated layer orders.token used for CT orders to make order_uuid (country+token)
-        ios_orders.order_number, -- in curated layer orders.view used for Saleor orders to make order_uuid (country+number)
-        ios_orders.anonymous_id,
-        ios_orders.context_app_version,
-        ios_orders.context_app_name,
-        ios_orders.context_device_type,
-        ios_orders.hub_city,
-        ios_orders.payment_method,
-        ios_orders.timestamp
-      FROM
-        `flink-backend.flink_ios_production.order_placed_view` ios_orders
-      WHERE
-          NOT (LOWER(ios_orders.context_app_version) LIKE "%app-rating%" OR LOWER(ios_orders.context_app_version) LIKE "%debug%")
-      AND NOT (LOWER(ios_orders.context_app_name) = "flink-staging" OR LOWER(ios_orders.context_app_name)="flink-debug")
-      AND NOT (ios_orders.order_number IS NULL) -- we have some cases where this happens (13)
-      UNION ALL
+    SELECT *
+    FROM (
       SELECT
-        android_orders.id,
-        android_orders.order_token, -- in curated layer orders.token used for CT orders to make order_uuid (country+token)
-        android_orders.order_number, -- in curated layer orders.view used for Saleor orders to make order_uuid (country+number)
-        android_orders.anonymous_id,
-        android_orders.context_app_version,
-        android_orders.context_app_name,
-        android_orders.context_device_type,
-        android_orders.hub_city,
-        android_orders.payment_method,
-        android_orders.timestamp
-      FROM
-        `flink-backend.flink_android_production.order_placed_view` android_orders
-      WHERE
-          NOT (LOWER(android_orders.context_app_version) LIKE "%app-rating%" OR LOWER(android_orders.context_app_version) LIKE "%debug%")
-      AND NOT (LOWER(android_orders.context_app_name) = "flink-staging" OR LOWER(android_orders.context_app_name)="flink-debug")
-      AND NOT (android_orders.order_number IS NULL) -- we have some cases where this happens (13)
+          ios_orders.id,
+          ios_orders.order_token, -- in curated layer orders.token used for CT orders to make order_uuid (country+token)
+          ios_orders.order_number, -- in curated layer orders.view used for Saleor orders to make order_uuid (country+number)
+          ios_orders.anonymous_id,
+          ios_orders.context_app_version,
+          ios_orders.context_app_name,
+          ios_orders.context_device_type,
+          ios_orders.hub_city,
+          ios_orders.payment_method,
+          ios_orders.timestamp,
+          ROW_NUMBER() OVER(PARTITION BY order_number ORDER BY timestamp ASC) AS row_id
+        FROM
+          `flink-data-prod.flink_ios_production.order_placed_view` ios_orders
+        WHERE
+            NOT (LOWER(ios_orders.context_app_version) LIKE "%app-rating%" OR LOWER(ios_orders.context_app_version) LIKE "%debug%")
+        AND NOT (LOWER(ios_orders.context_app_name) = "flink-staging" OR LOWER(ios_orders.context_app_name)="flink-debug")
+        AND NOT (ios_orders.order_number IS NULL) -- we have some cases where this happens (13)
+      )
+      WHERE row_id=1
+      UNION ALL
+
+      SELECT *
+      FROM (
+        SELECT
+          android_orders.id,
+          android_orders.order_token, -- in curated layer orders.token used for CT orders to make order_uuid (country+token)
+          android_orders.order_number, -- in curated layer orders.view used for Saleor orders to make order_uuid (country+number)
+          android_orders.anonymous_id,
+          android_orders.context_app_version,
+          android_orders.context_app_name,
+          android_orders.context_device_type,
+          android_orders.hub_city,
+          android_orders.payment_method,
+          android_orders.timestamp,
+          ROW_NUMBER() OVER(PARTITION BY order_number ORDER BY timestamp ASC) AS row_id
+        FROM
+          `flink-data-prod.flink_android_production.order_placed_view` android_orders
+        WHERE
+            NOT (LOWER(android_orders.context_app_version) LIKE "%app-rating%" OR LOWER(android_orders.context_app_version) LIKE "%debug%")
+        AND NOT (LOWER(android_orders.context_app_name) = "flink-staging" OR LOWER(android_orders.context_app_name)="flink-debug")
+        AND NOT (android_orders.order_number IS NULL) -- we have some cases where this happens (13)
+      )
+      WHERE row_id=1
       ),
 
     lookup_tb AS (
@@ -53,11 +64,27 @@ view: order_placed_events {
       , IF(LOWER(help_tb.hub_city) LIKE '%ludwigshafen%' OR LOWER(help_tb.hub_city) LIKE '%mülheim%', "DE", hubs.country_iso) AS country_iso
     FROM help_tb
     LEFT JOIN lookup_tb hubs ON hubs.city = help_tb.hub_city
-    )
+    ),
 
-    SELECT *
-      , LEAD(order_number,1) OVER (PARTITION BY anonymous_id ORDER BY timestamp) AS next_order_number
+    -- combine first_order_placed for ios and android for the relevant fields
+    first_order_placed_tb AS (
+      SELECT
+        ios_order.order_number
+      FROM
+        `flink-data-prod.flink_ios_production.first_order_placed_view` ios_order
+      UNION ALL
+      SELECT
+        android_order.order_number
+      FROM
+        `flink-data-prod.flink_android_production.first_order_placed_view` android_order
+        )
+
+    SELECT country_tb.*
+      , LEAD(country_tb.order_number,1) OVER (PARTITION BY country_tb.anonymous_id ORDER BY timestamp) AS next_order_number
+      , IF(first_order_placed_tb.order_number IS NULL, FALSE, TRUE) AS is_first_order
     FROM country_tb
+      LEFT JOIN first_order_placed_tb
+      ON first_order_placed_tb.order_number=country_tb.order_number
  ;;
   }
 
@@ -97,6 +124,11 @@ view: order_placed_events {
     type: count_distinct
     sql: ${order_number} ;;
     filters: [has_next_order: "yes"]
+  }
+
+  dimension: returning_customer {
+    type: yesno
+    sql: NOT(${is_first_order}) ;;
   }
 
 #######################################
@@ -175,6 +207,12 @@ view: order_placed_events {
     description: "Country in which order was placed"
     type: string
     sql: ${TABLE}.country_iso ;;
+  }
+
+  dimension: is_first_order {
+    description: "Is first order for this user according to client (note: will count as first order if user deleted all their app data)"
+    type: yesno
+    sql: ${TABLE}.is_first_order ;;
   }
 
   set: detail {

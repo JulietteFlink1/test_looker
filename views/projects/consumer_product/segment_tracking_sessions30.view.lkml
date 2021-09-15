@@ -14,7 +14,7 @@ view: segment_tracking_sessions30 {
           , tracks.timestamp
           , TIMESTAMP_DIFF(tracks.timestamp,LAG(tracks.timestamp) OVER(PARTITION BY tracks.anonymous_id ORDER BY tracks.timestamp), MINUTE) AS inactivity_time
         FROM
-          `flink-backend.flink_ios_production.tracks_view` tracks
+          `flink-data-prod.flink_ios_production.tracks_view` tracks
         WHERE
           tracks.event NOT LIKE "%api%"
           AND tracks.event NOT LIKE "%adjust%"
@@ -35,7 +35,7 @@ view: segment_tracking_sessions30 {
           , tracks.timestamp
           , TIMESTAMP_DIFF(tracks.timestamp,LAG(tracks.timestamp) OVER(PARTITION BY tracks.anonymous_id ORDER BY tracks.timestamp), MINUTE) AS inactivity_time
         FROM
-          `flink-backend.flink_android_production.tracks_view` tracks
+          `flink-data-prod.flink_android_production.tracks_view` tracks
         WHERE
           tracks.event NOT LIKE "%api%"
           AND tracks.event NOT LIKE "%adjust%"
@@ -74,7 +74,7 @@ view: segment_tracking_sessions30 {
               hub.slug as hub_code,
               CAST(event.delivery_eta as INT) as delivery_eta,
               CAST(NULL AS BOOL) AS has_selected_address
-        FROM `flink-backend.flink_ios_production.address_confirmed_view` event
+        FROM `flink-data-prod.flink_ios_production.address_confirmed_view` event
             LEFT JOIN
                 `flink-data-prod.saleor_prod_global.warehouse_warehouse` AS hub
             ON SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(event.hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[ OFFSET(1)] = hub.id
@@ -88,7 +88,7 @@ view: segment_tracking_sessions30 {
               hub.slug as hub_code,
               event.delivery_eta,
               CAST(NULL AS BOOL) AS has_selected_address
-        FROM `flink-backend.flink_android_production.address_confirmed_view` event
+        FROM `flink-data-prod.flink_android_production.address_confirmed_view` event
             LEFT JOIN
                 `flink-data-prod.saleor_prod_global.warehouse_warehouse` AS hub
             ON SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(event.hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[ OFFSET(1)] = hub.id
@@ -102,7 +102,7 @@ view: segment_tracking_sessions30 {
               hub.slug as hub_code,
               CAST(event.delivery_eta as INT) as delivery_eta,
               CAST(NULL AS BOOL) AS has_selected_address
-        FROM `flink-backend.flink_ios_production.order_placed_view` event
+        FROM `flink-data-prod.flink_ios_production.order_placed_view` event
             LEFT JOIN
                 `flink-data-prod.saleor_prod_global.warehouse_warehouse` AS hub
             ON SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(event.hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[ OFFSET(1)] = hub.id
@@ -116,7 +116,7 @@ view: segment_tracking_sessions30 {
               hub.slug as hub_code,
               delivery_eta,
               CAST(NULL AS BOOL) AS has_selected_address
-        FROM `flink-backend.flink_android_production.order_placed_view` event
+        FROM `flink-data-prod.flink_android_production.order_placed_view` event
             LEFT JOIN
                 `flink-data-prod.saleor_prod_global.warehouse_warehouse` AS hub
             ON SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(event.hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[ OFFSET(1)] = hub.id
@@ -130,7 +130,7 @@ view: segment_tracking_sessions30 {
               hub_slug as hub_code,
               NULL AS delivery_eta,
               event.has_selected_address
-        FROM `flink-backend.flink_android_production.app_opened_view` event
+        FROM `flink-data-prod.flink_android_production.app_opened_view` event
     UNION ALL
         SELECT
               event.event,
@@ -141,7 +141,7 @@ view: segment_tracking_sessions30 {
               hub_slug as hub_code,
               NULL AS delivery_eta,
               event.has_selected_address
-        FROM `flink-backend.flink_ios_production.app_opened_view` event
+        FROM `flink-data-prod.flink_ios_production.app_opened_view` event
     )
 
     , has_address_fill AS (
@@ -158,12 +158,12 @@ view: segment_tracking_sessions30 {
       FROM hub_data_union hd
       LEFT JOIN (
                 SELECT DISTINCT country_iso, city
-                FROM `flink-backend.gsheet_store_metadata.hubs`
+                FROM `flink-data-prod.google_sheets.hub_metadata`
                  ) hc
             ON hd.hub_city = hc.city
       LEFT JOIN (
           SELECT DISTINCT country_iso, hub_code
-          FROM `flink-backend.gsheet_store_metadata.hubs`
+          FROM `flink-data-prod.google_sheets.hub_metadata`
          ) hs
       ON LOWER(hd.hub_code) = LOWER(hs.hub_code)
 
@@ -676,6 +676,7 @@ view: segment_tracking_sessions30 {
   # }
   measure: mcvr1 {
     type: number
+    label: "mCVR1"
     description: "# sessions with an address (either selected in previous session or in current session), compared to the total number of Sessions Started"
     value_format_name: percent_1
     sql: ${cnt_has_address}/NULLIF(${count},0);;
@@ -683,6 +684,7 @@ view: segment_tracking_sessions30 {
 
   measure: mcvr2 {
     type: number
+    label: "mCVR2"
     description: "# sessions in which there was a Product Added To Cart, compared to the number of sessions in which there was a Home Viewed"
     value_format_name: percent_1
     sql: ${cnt_add_to_cart}/NULLIF(${cnt_has_address},0) ;;
@@ -690,6 +692,7 @@ view: segment_tracking_sessions30 {
 
   measure: mcvr3 {
     type: number
+    label: "mCVR3"
     description: "#sessions in which there was a Checkout Started event happened, compared to the number of sessions in which there was a Product Added To Cart"
     value_format_name: percent_1
     sql: ${cnt_checkout_started}/NULLIF(${cnt_add_to_cart},0) ;;
@@ -697,6 +700,7 @@ view: segment_tracking_sessions30 {
 
   measure: mcvr4 {
     type: number
+    label: "mCVR4"
     description: "# sessions in which there was a Payment Started event happened, compared to the number of sessions in which there was a Checkout Started"
     value_format_name: percent_1
     sql: ${cnt_payment_started}/NULLIF(${cnt_checkout_started},0) ;;

@@ -1,172 +1,53 @@
 view: voucher_api_failure_success {
   derived_table: {
-    sql: WITH
-        voucher_application_failed_tb AS (
-        SELECT
-          anonymous_id,
-          timestamp,
-          id,
-          body_voucher_code,
-          context_app_version,
-          context_device_model,
-          context_device_type,
-          context_os_version,
-          headers_hub,
-          headers_locale,
-          response,
-          status,
-          SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(headers_hub)),':')[
-        OFFSET
-          (1)] AS hub_id,
-          context_network_carrier,
-          context_locale
-        FROM
-          `flink-backend.flink_ios_production.api_voucher_apply_failed_view`
+    sql: WITH voucher_tb_union AS (
+        SELECT anonymous_id, id, timestamp, context_device_id, event, NULL AS voucher_code, context_app_version, context_device_type
+        , SUBSTRING(context_locale,4,2) AS country_iso
+        FROM `flink-data-prod.flink_android_production.api_voucher_apply_failed_view`
+        -- WHERE "FR" in (context_locale)
+
         UNION ALL
-        SELECT
-          anonymous_id,
-          timestamp,
-          id,
-          NULL AS body_voucher_code,
-          context_app_version,
-          context_device_model,
-          context_device_type,
-          context_os_version,
-          NULL AS headers_hub,
-          NULL AS headers_locale,
-          NULL AS response,
-          NULL AS status,
-          NULL AS hub_id,
-          context_network_carrier,
-          context_locale,
-        FROM
-          `flink-backend.flink_android_production.api_voucher_apply_failed_view` ),
 
-        location_help_table AS (
-        SELECT
-          anonymous_id,
-          timestamp,
-          voucher_application_failed_tb.id,
-          "Fail" as event_type,
-          body_voucher_code,
-          hub.slug AS hub_code,
-        IF
-          (
-          IF
-            (hub_id IS NULL,
-              SUBSTRING(voucher_application_failed_tb.context_locale,
-                4,
-                2),
-              country_iso) IN ("DE",
-              "FR",
-              "NL"),
-          IF
-            (hub_id IS NULL,
-              SUBSTRING(voucher_application_failed_tb.context_locale,
-                4,
-                2),
-              country_iso),
-            "N/A") AS country_iso,
-          context_app_version,
-          context_device_model,
-          context_device_type,
-          context_os_version,
-          response,
-          status,
-          context_network_carrier,
-        FROM
-          voucher_application_failed_tb
-        LEFT JOIN
-          `flink-data-prod.saleor_prod_global.warehouse_warehouse` AS hub
-        ON
-          voucher_application_failed_tb.hub_id = hub.id
-        ORDER BY
-          anonymous_id,
-          timestamp DESC),
-        voucher_application_succeeded_tb AS (
-        SELECT
-          anonymous_id,
-          timestamp,
-          id,
-          body_voucher_code,
-          context_app_version,
-          context_device_model,
-          context_device_type,
-          context_os_version,
-          headers_hub,
-          headers_locale,
-          status,
-          SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(headers_hub)),':')[
-        OFFSET
-          (1)] AS hub_id,
-          context_network_carrier,
-          context_locale
-        FROM
-          `flink-backend.flink_ios_production.api_voucher_apply_succeeded_view`
+        SELECT anonymous_id, id, timestamp, context_device_id, event, NULL AS voucher_code, context_app_version, context_device_type
+        , SUBSTRING(context_locale,4,2) AS country_iso
+        FROM `flink-data-prod.flink_android_production.api_voucher_apply_succeeded_view`
+        -- WHERE "FR" in (context_locale)
+
         UNION ALL
-        SELECT
-          anonymous_id,
-          timestamp,
-          id,
-          NULL AS body_voucher_code,
-          context_app_version,
-          context_device_model,
-          context_device_type,
-          context_os_version,
-          NULL AS headers_hub,
-          NULL AS headers_locale,
-          NULL AS status,
-          NULL AS hub_id,
-          context_network_carrier,
-          context_locale,
-        FROM
-          `flink-backend.flink_android_production.api_voucher_apply_succeeded_view` ),
 
-        location_help_table2 AS (
-        SELECT
-          anonymous_id,
-          timestamp,
-          voucher_application_succeeded_tb.id,
-          "Success" as event_type,
-          body_voucher_code,
-          hub.slug AS hub_code,
-        IF
-          (
-          IF
-            (hub_id IS NULL,
-              SUBSTRING(voucher_application_succeeded_tb.context_locale,
-                4,
-                2),
-              country_iso) IN ("DE",
-              "FR",
-              "NL"),
-          IF
-            (hub_id IS NULL,
-              SUBSTRING(voucher_application_succeeded_tb.context_locale,
-                4,
-                2),
-              country_iso),
-            "N/A") AS country_iso,
-          context_app_version,
-          context_device_model,
-          context_device_type,
-          context_os_version,
-          CAST(NULL AS STRING) AS response,
-          status,
-          context_network_carrier,
-        FROM
-          voucher_application_succeeded_tb
-        LEFT JOIN
-          `flink-data-prod.saleor_prod_global.warehouse_warehouse` AS hub
-        ON
-          voucher_application_succeeded_tb.hub_id = hub.id
-        ORDER BY
-          anonymous_id,
-          timestamp DESC)
+        SELECT anonymous_id, id, timestamp, context_device_id, event, voucher_code, context_app_version, context_device_type
+        , SUBSTRING(context_locale,4,2) AS country_iso
+        FROM `flink-data-prod.flink_android_production.voucher_redemption_attempted_view`
+        -- WHERE "FR" in (context_locale)
 
-      SELECT * FROM location_help_table
-      UNION ALL
-      SELECT * FROM location_help_table2
+        ORDER BY timestamp
+        ),
+
+        help_tb AS (SELECT
+          anonymous_id
+        , timestamp
+        , id
+        , event
+        , context_device_id
+        , context_app_version
+        , context_device_type
+        , voucher_code AS body_voucher_code
+        , IF(country_iso IN ("DE", "FR", "NL"), country_iso, "N/A") AS country_iso
+        , IF(event="voucher_redemption_attempted", IF(LEAD(event) OVER(PARTITION BY anonymous_id ORDER BY timestamp ASC)="api_voucher_apply_failed", "Fail", "Success"), "N/A") AS next_event
+        FROM voucher_tb_union)
+
+        SELECT
+        anonymous_id
+        , timestamp
+        , id
+        , next_event AS event_type
+        , body_voucher_code
+        , country_iso
+        , context_app_version
+        , context_device_type
+        FROM help_tb
+        WHERE event="voucher_redemption_attempted"
+        ORDER BY timestamp
  ;;
   }
 
@@ -209,6 +90,19 @@ view: voucher_api_failure_success {
     value_format_name: decimal_0
   }
 
+  measure: perc_unique_voucher_fail_to_attempt {
+    type: number
+    description: "% Unique Users with failed voucher application compared to total"
+    sql: ${cnt_unique_anonymousid_fail}/(${cnt_unique_anonymousid_fail}+${cnt_unique_anonymousid_success}) ;;
+    value_format_name: percent_1
+  }
+
+  measure: perc_absolute_voucher_fail_to_attempt {
+    type: number
+    description: "% absolute failed voucher applications compared to total"
+    sql: ${cnt_fail}/(${cnt_fail}+${cnt_success}) ;;
+    value_format_name: percent_1
+  }
 
   dimension: anonymous_id {
     type: string
@@ -262,28 +156,6 @@ view: voucher_api_failure_success {
     sql: ${TABLE}.context_device_type ;;
   }
 
-  dimension: context_os_version {
-    type: string
-    sql: ${TABLE}.context_os_version ;;
-  }
-
-  dimension: response {
-    type: string
-    sql: ${TABLE}.response ;;
-  }
-
-  dimension: status {
-    type: number
-    sql: ${TABLE}.status ;;
-  }
-
-  dimension: context_network_carrier {
-    type: string
-    sql: ${TABLE}.context_network_carrier ;;
-  }
-
-
-
   set: detail {
     fields: [
       anonymous_id,
@@ -295,11 +167,7 @@ view: voucher_api_failure_success {
       country_iso,
       context_app_version,
       context_device_model,
-      context_device_type,
-      context_os_version,
-      response,
-      status,
-      context_network_carrier
+      context_device_type
     ]
   }
 }

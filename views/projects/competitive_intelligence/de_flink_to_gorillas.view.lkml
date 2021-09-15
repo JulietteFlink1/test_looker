@@ -22,25 +22,25 @@ view: de_flink_to_gorillas {
   dimension: flink_product_name {
     type: string
     sql: ${TABLE}.flink_product_name ;;
+    hidden: yes
   }
 
   dimension: flink_product_sku {
     type: string
     sql: ${TABLE}.flink_product_sku ;;
+    hidden: yes
   }
 
   dimension: gorillas_product_id {
     type: string
     sql: ${TABLE}.gorillas_product_id ;;
+    hidden: yes
   }
 
   dimension: gorillas_product_name {
     type: string
     sql: ${TABLE}.gorillas_product_name ;;
+    hidden: yes
   }
 
-  measure: count {
-    type: count
-    drill_fields: [gorillas_product_name, flink_product_name]
-  }
 }

@@ -202,6 +202,7 @@ view: retail_kpis {
         , hours_oos
         , sum_count_purchased
         , sum_count_restocked
+        , avg_stock_count
         , equlalized_revenue_last_14_days.avg_equalized_revenue_last_14d
         -- , sum(equalized_revenue) over (partition by sub_category_name) as equalized_revenue_subcategory
         , sum(equalized_revenue_current)  over (partition by aggregations.country_iso, sub_category_name) as equalized_revenue_subcategory_current

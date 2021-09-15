@@ -15,10 +15,10 @@ view: events_orders_monitoring {
                  o.order_id,
                  CAST(o.order_number AS STRING) as order_number,
                  o.payment_method
-          FROM `flink-backend.flink_android_production.tracks_view` t
-          LEFT JOIN `flink-backend.flink_android_production.address_confirmed_view` a ON a.id = t.id
-          LEFT JOIN `flink-backend.flink_android_production.order_placed_view` o ON o.id = t.id
-          LEFT JOIN `flink-backend.gsheet_store_metadata.hubs` h ON h.city = COALESCE(a.hub_city, o.hub_city)
+          FROM `flink-data-prod.flink_android_production.tracks_view` t
+          LEFT JOIN `flink-data-prod.flink_android_production.address_confirmed_view` a ON a.id = t.id
+          LEFT JOIN `flink-data-prod.flink_android_production.order_placed_view` o ON o.id = t.id
+          LEFT JOIN `flink-data-prod.google_sheets.hub_metadata` h ON h.city = COALESCE(a.hub_city, o.hub_city)
           WHERE {% condition event_date %} date(t.timestamp) {% endcondition %}
 
           UNION ALL
@@ -36,15 +36,15 @@ view: events_orders_monitoring {
                  o.order_id,
                  CAST(o.order_number AS STRING) as order_number,
                  o.payment_method
-          FROM `flink-backend.flink_ios_production.tracks_view` t
-          LEFT JOIN `flink-backend.flink_ios_production.address_confirmed_view` a ON a.id = t.id
-          LEFT JOIN `flink-backend.flink_ios_production.order_placed_view` o ON o.id = t.id
-          LEFT JOIN `flink-backend.gsheet_store_metadata.hubs` h ON h.city = COALESCE(a.hub_city, o.hub_city)
+          FROM `flink-data-prod.flink_ios_production.tracks_view` t
+          LEFT JOIN `flink-data-prod.flink_ios_production.address_confirmed_view` a ON a.id = t.id
+          LEFT JOIN `flink-data-prod.flink_ios_production.order_placed_view` o ON o.id = t.id
+          LEFT JOIN `flink-data-prod.google_sheets.hub_metadata` h ON h.city = COALESCE(a.hub_city, o.hub_city)
           WHERE {% condition event_date %} date(t.timestamp) {% endcondition %}
         ),
         saleor AS (
         SELECT created, tracking_client_id, country_iso, CAST(id AS STRING) AS id, status
-        FROM `flink-backend.saleor_db_global.order_order`
+        FROM `flink-data-prod.saleor_prod_global.order_order`
         WHERE {% condition event_date %} DATE(created) {% endcondition %}
         )
 
