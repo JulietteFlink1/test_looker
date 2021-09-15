@@ -143,6 +143,8 @@ FROM map_data
   }
 
   dimension: num_other_emails_dim {
+    description: "Number of Emails associated with the user, based on the phone number"
+    label: "# Distinct Emails per User"
     type: number
     sql: ${TABLE}.num_other_emails ;;
   }
