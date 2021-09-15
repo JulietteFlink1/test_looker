@@ -70,6 +70,15 @@ view: voucher_api_failure_success {
     sql: if(${event_type}="Fail",1,0) ;;
   }
 
+  measure: cnt_unique_anonymousid {
+    label: "# Unique Users"
+    description: "Number of Unique Users identified via Anonymous ID from Segment attempted voucher application"
+    hidden:  no
+    type: count_distinct
+    sql: ${anonymous_id};;
+    value_format_name: decimal_0
+  }
+
   measure: cnt_unique_anonymousid_success {
     label: "# Unique Users Success"
     description: "Number of Unique Users identified via Anonymous ID from Segment with successful voucher application"
