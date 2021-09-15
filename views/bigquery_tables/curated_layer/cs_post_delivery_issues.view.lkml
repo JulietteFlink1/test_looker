@@ -177,7 +177,7 @@ view: cs_post_delivery_issues {
 
   parameter: problem_group_parameter {
     group_label: "* Parameter *"
-    label: "Problem Group"
+    label: "Post-Delivery Issue"
     type: unquoted
     allowed_value: { value: "wrong_order" label: "Wrong Order"}
     allowed_value: { value: "wrong_product" label: "Wrong Product" }
