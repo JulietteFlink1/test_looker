@@ -88,14 +88,22 @@ SELECT
       , DENSE_RANK() OVER(PARTITION BY customer_email ORDER BY sign_up_timestamp_customer_id ASC) as rank
 FROM customer_map
 GROUP BY 1,2,3,4,5,6,7,8
+),
+map_data AS(
+  SELECT customer_email
+       , customer_id
+       , country_iso
+       , sign_up_timestamp_customer_id
+  FROM customer_map_clean
+  WHERE rank = 1
+  GROUP BY 1,2,3,4
 )
 SELECT customer_email
-     , customer_id
-     , country_iso
-     , sign_up_timestamp_customer_id
-FROM customer_map_clean
-WHERE rank = 1
-GROUP BY 1,2,3,4
+    , customer_id
+    , country_iso
+    , sign_up_timestamp_customer_id
+    , COUNT(DISTINCT customer_email) OVER (PARTITION BY country_iso, customer_id) as num_other_emails
+FROM map_data
  ;;
   }
 
@@ -133,6 +141,18 @@ GROUP BY 1,2,3,4
     type: count_distinct
     sql: ${customer_id} ;;
   }
+
+  dimension: num_other_emails_dim {
+    type: number
+    sql: ${TABLE}.num_other_emails ;;
+  }
+
+  measure: num_other_emails {
+    type: sum
+    sql: ${num_other_emails_dim} ;;
+  }
+
+
 
   set: detail {
     fields: [customer_email, customer_id, country_iso, sign_up_timestamp_customer_id_time]
