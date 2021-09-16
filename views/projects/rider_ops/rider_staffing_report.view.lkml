@@ -1,5 +1,5 @@
 view: rider_staffing_report {
-  sql_table_name: `flink-data-prod.rider_staffing.rider_staffing_report`
+  sql_table_name: `flink-data-prod.reporting.rider_staffing_report`
     ;;
 
   dimension: abs_error {
