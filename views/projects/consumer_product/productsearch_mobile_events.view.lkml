@@ -56,8 +56,14 @@ view: productsearch_mobile_events {
       AND tracks.event NOT LIKE "%adjust%"
       AND tracks.event NOT LIKE "%install_attributed%"
       AND tracks.event NOT LIKE "%deep_link%"
-      AND NOT (tracks.context_app_version LIKE "%APP-RATING%" OR tracks.context_app_version LIKE "%DEBUG%")
-      AND NOT (tracks.context_app_name = "Flink-Staging" OR tracks.context_app_name="Flink-Debug")
+      AND NOT (LOWER(tracks.context_app_version) LIKE "%app-rating%"
+           OR LOWER(tracks.context_app_version) LIKE "%debug%")
+      AND NOT (LOWER(tracks.context_app_name) = "flink-staging"
+           OR LOWER(tracks.context_app_name) = "flink-debug")
+      AND (LOWER(tracks.context_traits_email) != "qa@goflink.com"
+           OR tracks.context_traits_email is null)
+      AND (tracks.context_traits_hub_slug NOT IN('erp_spitzbergen', 'fr_hub_test', 'nl_hub_test')
+           OR tracks.context_traits_hub_slug is null)
 
     UNION ALL
 
@@ -114,8 +120,14 @@ view: productsearch_mobile_events {
       AND tracks.event NOT LIKE "%adjust%"
       AND tracks.event NOT LIKE "%install_attributed%"
       AND tracks.event NOT LIKE "%deep_link%"
-      AND NOT (tracks.context_app_version LIKE "%APP-RATING%" OR tracks.context_app_version LIKE "%DEBUG%")
-      AND NOT (tracks.context_app_name = "Flink-Staging" OR tracks.context_app_name="Flink-Debug")
+      AND NOT (LOWER(tracks.context_app_version) LIKE "%app-rating%"
+           OR LOWER(tracks.context_app_version) LIKE "%debug%")
+      AND NOT (LOWER(tracks.context_app_name) = "flink-staging"
+           OR LOWER(tracks.context_app_name) = "flink-debug")
+      AND (LOWER(tracks.context_traits_email) != "qa@goflink.com"
+           OR tracks.context_traits_email is null)
+      AND (tracks.context_traits_hub_slug NOT IN('erp_spitzbergen', 'fr_hub_test', 'nl_hub_test')
+           OR tracks.context_traits_hub_slug is null)
     ),
 
     country_lookup AS (

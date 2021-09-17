@@ -37,7 +37,7 @@ view: crm_braze_canvas {
   }
 
   dimension: canvas_variation_name {
-    label: "Canvas Variation Step Name"
+    label: "Canvas Variation Name"
     description: "The email canvas variation name defined in Braze"
     type: string
     sql: ${TABLE}.canvas_variation_name ;;
@@ -51,29 +51,30 @@ view: crm_braze_canvas {
   }
 
   dimension: email_sent_at {
+    allow_fill: yes
     label: "Date Email Sent"
     description: "The date, when the email was sent to the customer"
     type: date
     datatype: date
     sql: ${TABLE}.email_sent_at ;;
-    hidden: yes
+    # hidden: yes
   }
 
-  dimension_group: email_sent_at {
-    label: "Date Email Sent"
-    description: "The date, when the email was sent to the customer"
-    type: time
-    timeframes: [
-      date,
-      day_of_week,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    sql: ${email_sent_at} ;;
-    datatype: date
-  }
+  # dimension_group: email_sent_at {
+  #   label: "Date Email Sent"
+  #   description: "The date, when the email was sent to the customer"
+  #   type: time
+  #   datatype: date
+  #   timeframes: [
+  #     date,
+  #     day_of_week,
+  #     week,
+  #     month,
+  #     quarter,
+  #     year
+  #   ]
+  #   sql: ${TABLE}.email_sent_at ;;
+  # }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   #           Hidden Fields
@@ -163,12 +164,13 @@ view: crm_braze_canvas {
     hidden: yes
   }
 
-  measure: count {
-    type: count
-    drill_fields: [detail*]
-    value_format_name: decimal_0
-    hidden: yes
-  }
+  # measure: count {
+  #   type: count
+  #   drill_fields: [detail*]
+  #   value_format_name: decimal_0
+  #   hidden: yes
+  # }
+
   dimension: num_unique_users_orders {
     type: number
     sql: ${TABLE}.num_unique_users_orders ;;
@@ -282,12 +284,22 @@ view: crm_braze_canvas {
     value_format_name: decimal_0
   }
 
+
+  measure: unique_emails_unsubscribed {
+    type: sum
+    label: "Unsubscribes"
+    description: "The number of customers, that have clicked on the unsubscribe-link"
+    group_label: "Numbers"
+    sql: ${num_unique_unsubscribed} ;;
+    value_format_name: decimal_0
+  }
+
   measure: cta_clicks {
     type: number
     label: "Total CTA Clicks"
     description: "The total clicks, that are not clicks on the unsubscribe-link"
     group_label: "Numbers"
-    sql:  ${total_emails_clicked} - ${total_emails_unsubscribed};;
+    sql:  ${emails_clicked} - ${unique_emails_unsubscribed};;
     value_format_name: decimal_0
   }
 
@@ -296,16 +308,7 @@ view: crm_braze_canvas {
     label: "Unique CTA Clicks"
     description: "The unique clicks, that are not clicks on the unsubscribe-link"
     group_label: "Numbers"
-    sql: ${num_unique_emails_clicked} - ${total_emails_unsubscribed}  ;;
-    value_format_name: decimal_0
-  }
-
-  measure: total_emails_unsubscribed {
-    type: sum
-    label: "Unsubscribes"
-    description: "The number of customers, that have clicked on the unsubscribe-link"
-    group_label: "Numbers"
-    sql: ${num_unique_unsubscribed} ;;
+    sql: ${unique_emails_clicked} - ${unique_emails_unsubscribed}  ;;
     value_format_name: decimal_0
   }
 
@@ -316,6 +319,7 @@ view: crm_braze_canvas {
     group_label: "Numbers"
     sql:  ${days_sent_to_open};;
     value_format_name: decimal_2
+    hidden: yes
   }
 
   measure: avg_days_sent_click {
@@ -325,6 +329,7 @@ view: crm_braze_canvas {
     group_label: "Numbers"
     sql: ${days_sent_to_click} ;;
     value_format_name: decimal_2
+    hidden: yes
   }
 
   measure: orders {
@@ -453,7 +458,7 @@ view: crm_braze_canvas {
     label: "Unsubscribes Rate"
     description: "Percentage: number of emails clicked on unsubscribe-link divided by the number of emails delivered"
     group_label: "Ratios"
-    sql: ${total_emails_unsubscribed} / NULLIF(${total_emails_delivered}, 0);;
+    sql: ${num_unique_unsubscribed} / NULLIF(${total_emails_delivered}, 0);;
     value_format_name: percent_2
   }
 
@@ -472,7 +477,7 @@ view: crm_braze_canvas {
 
   measure: order_rate {
     type: number
-    label: "Total Order Rate (from opened)"
+    label: "Total Order Rate"
     description: "Percentage: number of orders made in the 12h after the last opening of the email divided by the number of emails opened"
     group_label: "Ratios"
     sql: {% if ${TABLE}.in_control_group == 'yes' %}
@@ -483,23 +488,6 @@ view: crm_braze_canvas {
     value_format_name: percent_2
   }
 
-  measure: order_rate_variant {
-    type: number
-    label: "Total Order Rate (from opened)"
-    description: "Percentage: number of orders made in the 12h after the last opening of the email divided by the number of emails opened"
-    group_label: "Ratios"
-    sql: ${total_orders} / NULLIF(${total_emails_opened}, 0);;
-    value_format_name: percent_2
-  }
-
-  measure: order_rate_control {
-    type: number
-    label: "Total Order Rate (from sent)"
-    description: "Percentage: number of orders made in the 12h after the last opening of the email divided by the number of emails opened"
-    group_label: "Ratios"
-    sql: ${total_orders} / NULLIF(${total_emails_sent}, 0);;
-    value_format_name: percent_2
-  }
   measure: order_rate_with_vouchers {
     type: number
     label: "Total Order Rate with Vouchers"
@@ -513,24 +501,24 @@ view: crm_braze_canvas {
     value_format_name: percent_2
   }
 
-measure: order_rate_with_vouchers_variant {
-  type: number
-  label: "Total Order Rate with Vouchers (form opened)"
-  description: "Percentage: number of orders made in the 12h after sending an email divided by the number of emails opened"
-  group_label: "Ratios"
-  sql: ${total_orders_with_vouchers} / NULLIF(${total_emails_opened}, 0);;
-  value_format_name: percent_2
-}
+# measure: order_rate_with_vouchers_variant {
+#   type: number
+#   label: "Total Order Rate with Vouchers (form opened)"
+#   description: "Percentage: number of orders made in the 12h after sending an email divided by the number of emails opened"
+#   group_label: "Ratios"
+#   sql: ${total_orders_with_vouchers} / NULLIF(${total_emails_opened}, 0);;
+#   value_format_name: percent_2
+# }
 
 
-  measure: order_rate_with_vouchers_control{
-    type: number
-    label: "Total Order Rate with Vouchers (from sent)"
-    description: "Percentage: number of orders made in the 12h after the last opening of the email divided by the number of emails opened"
-    group_label: "Ratios"
-    sql: ${total_orders_with_vouchers} / NULLIF(${total_emails_sent}, 0);;
-    value_format_name: percent_2
-  }
+#   measure: order_rate_with_vouchers_control{
+#     type: number
+#     label: "Total Order Rate with Vouchers (from sent)"
+#     description: "Percentage: number of orders made in the 12h after the last opening of the email divided by the number of emails opened"
+#     group_label: "Ratios"
+#     sql: ${total_orders_with_vouchers} / NULLIF(${total_emails_sent}, 0);;
+#     value_format_name: percent_2
+#   }
 
   measure: discount_order_share {
     type: number
@@ -570,57 +558,69 @@ measure: order_rate_with_vouchers_variant {
     group_label: "* Dynamic KPI Fields *"
     type: unquoted
     # initial sends
-    allowed_value: { value: "emails_sent"                  label: "Unique Emails Sent"}
-    allowed_value: { value: "emails_bounced"                label: "Bounces"}
-    allowed_value: { value: "bounce_rate"            label: "Bounce Rate"}
-    allowed_value: { value: "emails_soft_bounced"           label: "Soft Bounces"}
-    allowed_value: { value: "emails_delivered"             label: "Deliveries"}
-    allowed_value: { value: "deliveries_rate"        label: "Deliveries Rate"}
+    allowed_value: { value: "emails_sent"                    label: "Unique Emails Sent"}
+    # allowed_value: { value: "emails_bounced"                 label: "Bounces"}
+    # allowed_value: { value: "bounce_rate"                    label: "Bounce Rate"}
+    # allowed_value: { value: "emails_soft_bounced"            label: "Soft Bounces"}
+    # allowed_value: { value: "emails_delivered"               label: "Deliveries"}
+    # allowed_value: { value: "deliveries_rate"                label: "Deliveries Rate"}
     # opens
-    allowed_value: { value: "emails_opened"            label: "Total Opens"}
-    allowed_value: { value: "total_opens_rate"       label: "Total Opens Rate"}
+    allowed_value: { value: "emails_opened"                  label: "Total Opens"}
+    allowed_value: { value: "total_opens_rate"               label: "Total Opens Rate"}
     allowed_value: { value: "unique_emails_opened"           label: "Unique Opens"}
-    allowed_value: { value: "unique_opens_rate"      label: "Unique Opens Rate"}
-    allowed_value: { value: "avg_days_sent_to_open"  label: "ø Days Sent to Open"}
+    allowed_value: { value: "unique_opens_rate"              label: "Unique Opens Rate"}
+    # allowed_value: { value: "avg_days_sent_to_open"          label: "ø Days Sent to Open"}
     #clicks
-    allowed_value: { value: "emails_clicked"           label: "Total Clicks"}
-    allowed_value: { value: "total_clicks_rate"      label: "Total Clicks Rate"}
-    allowed_value: { value: "unique_emails_clicked"          label: "Unique Clicks"}
-    allowed_value: { value: "unique_clicks_rate"     label: "Unique Clicks Rate"}
-    allowed_value: { value: "cta_clicks"       label: "Total CTA Clicks"}
-    allowed_value: { value: "total_cta_clicks_rate"  label: "Total CTA Clicks Rate"}
-    allowed_value: { value: "unique_cta_clicks"      label: "Unique CTA Clicks"}
-    allowed_value: { value: "unique_cta_clicks_rate" label: "Unique CTA Clicks Rate"}
-    allowed_value: { value: "avg_days_sent_to_click" label: "ø Days Sent to Click"}
-    # unsubscribes
-    allowed_value: { value: "total_emails_unsubscribed"           label: "Unsubscribes"}
-    allowed_value: { value: "unsubscribes_rate"      label: "Unsubscribe Rate"}
-    # orders
-    allowed_value: { value: "orders"           label: "Total Orders"}
-    allowed_value: { value: "order_rate"       label: "Total Order Rate"}
+  #   allowed_value: { value: "emails_clicked"           label: "Total Clicks"}
+  #   allowed_value: { value: "total_clicks_rate"      label: "Total Clicks Rate"}
+  #   allowed_value: { value: "unique_emails_clicked"          label: "Unique Clicks"}
+  #   allowed_value: { value: "unique_clicks_rate"     label: "Unique Clicks Rate"}
+  #   allowed_value: { value: "cta_clicks"       label: "Total CTA Clicks"}
+  #   allowed_value: { value: "total_cta_clicks_rate"  label: "Total CTA Clicks Rate"}
+  #   allowed_value: { value: "unique_cta_clicks"      label: "Unique CTA Clicks"}
+  #   allowed_value: { value: "unique_cta_clicks_rate" label: "Unique CTA Clicks Rate"}
+  #   allowed_value: { value: "avg_days_sent_to_click" label: "ø Days Sent to Click"}
+  #   # unsubscribes
+  #   allowed_value: { value: "total_emails_unsubscribed"           label: "Unsubscribes"}
+  #   allowed_value: { value: "unsubscribes_rate"      label: "Unsubscribe Rate"}
+  #   # orders
+  #   allowed_value: { value: "orders"           label: "Total Orders"}
+  #   allowed_value: { value: "order_rate"       label: "Total Order Rate"}
 
-    allowed_value: { value: "unique_orders"           label: "Unique Orders"}
-    allowed_value: { value: "unique_order_rate"           label: "Unique Order Rate"}
+  #   allowed_value: { value: "unique_orders"           label: "Unique Orders"}
+  #   allowed_value: { value: "unique_order_rate"           label: "Unique Order Rate"}
 
-    # allowed_value: { value: "order_rate_control"       label: "cTotal Order Rate"}
-    # allowed_value: { value: "order_rate_variant"       label: "vTotal Order Rate"}
+  #   # allowed_value: { value: "order_rate_control"       label: "cTotal Order Rate"}
+  #   # allowed_value: { value: "order_rate_variant"       label: "vTotal Order Rate"}
 
-    allowed_value: { value: "orders_with_vouchers"        label: "Total Orders with Voucher"}
-    allowed_value: { value: "order_rate_with_vouchers"    label: "Total Order Rate with Voucher"}
+  #   allowed_value: { value: "orders_with_vouchers"        label: "Total Orders with Voucher"}
+  #   allowed_value: { value: "order_rate_with_vouchers"    label: "Total Order Rate with Voucher"}
 
-    # allowed_value: { value: "order_rate_with_vouchers_control"    label: "cTotal Order Rate with Voucher"}
-    # allowed_value: { value: "order_rate_with_vouchers_variant"    label: "vTotal Order Rate with Voucher"}
+  #   # allowed_value: { value: "order_rate_with_vouchers_control"    label: "cTotal Order Rate with Voucher"}
+  #   # allowed_value: { value: "order_rate_with_vouchers_variant"    label: "vTotal Order Rate with Voucher"}
 
-    allowed_value: { value: "discount_amount"           label: "Total Discount Value"}
+  #   allowed_value: { value: "discount_amount"           label: "Total Discount Value"}
 
-    allowed_value: { value: "gmv_gross"           label: "Total GMV (gross)"}
-    allowed_value: { value: "average_order_value"           label: "Average Order Value"}
+  #   allowed_value: { value: "gmv_gross"           label: "Total GMV (gross)"}
+  #   allowed_value: { value: "average_order_value"           label: "Average Order Value"}
 
-    allowed_value: { value: "discount_order_share"           label: "Discount Order Share"}
-    allowed_value: { value: "discount_value_share"           label: "Discount Value Share"}
+  #   allowed_value: { value: "discount_order_share"           label: "Discount Order Share"}
+  #   allowed_value: { value: "discount_value_share"           label: "Discount Value Share"}
 
-    default_value: "order_rate"
+  #   default_value: "order_rate"
   }
+
+  # measure: open_parameter {
+  #   label: "{% if reporting_parameter._parameter_value == \"unique\"%} Unique Emails Opened {% else %} Total Opens {% endif%}"
+  #   group_label: "* Dynamic KPI Fields *"
+  #   type: number
+  #   sql:
+  #       {% if reporting_parameter._parameter_value == 'total' %}
+  #     ${emails_opened}
+  #   {% elsif reporting_parameter._parameter_value == 'unique' %}
+  #     ${unique_emails_opened}
+  #   {% endif %};;
+  # }
 
   measure: KPI_crm {
     label: "CRM KPI (dynamic)"
@@ -630,100 +630,109 @@ measure: order_rate_with_vouchers_variant {
     # value_format_name: id
     type: number
     sql:
-    {% if KPI_parameter._parameter_value == 'emails_bounced' %}
-      ${emails_bounced}
-    {% elsif KPI_parameter._parameter_value == 'emails_delivered' %}
-      ${emails_delivered}
-    {% elsif KPI_parameter._parameter_value == 'avg_days_sent_to_click' %}
-      ${avg_days_sent_click}
-    {% elsif KPI_parameter._parameter_value == 'avg_days_sent_to_open' %}
-      ${avg_days_sent_open}
-    {% elsif KPI_parameter._parameter_value == 'emails_sent' %}
-      ${emails_sent}
-    {% elsif KPI_parameter._parameter_value == 'soft_bounces' %}
-      ${emails_soft_bounced}
-    {% elsif KPI_parameter._parameter_value == 'total_clicks' %}
-      ${emails_clicked}
-    {% elsif KPI_parameter._parameter_value == 'total_opens' %}
-      ${total_emails_opened}
-    {% elsif KPI_parameter._parameter_value == 'unique_clicks' %}
-      ${unique_emails_clicked}
+    {% if KPI_parameter._parameter_value == 'total_opens' %}
+      ${emails_opened}
     {% elsif KPI_parameter._parameter_value == 'unique_opens' %}
       ${unique_emails_opened}
-    {% elsif KPI_parameter._parameter_value == 'unique_recipients' %}
-      ${emails_sent}
-    {% elsif KPI_parameter._parameter_value == 'unsubscribes' %}
-      ${total_emails_unsubscribed}
-    {% elsif KPI_parameter._parameter_value == 'bounce_rate' %}
-      ${bounced_emails_per_total_emails_sent}
-    {% elsif KPI_parameter._parameter_value == 'deliveries_rate' %}
-      ${delivered_emails_per_total_emails_sent}
-    {% elsif KPI_parameter._parameter_value == 'total_clicks_rate' %}
-      ${total_clicked_emails_per_emails_delivered}
     {% elsif KPI_parameter._parameter_value == 'total_opens_rate' %}
       ${total_opened_emails_per_emails_delivered}
-    {% elsif KPI_parameter._parameter_value == 'unique_clicks_rate' %}
-      ${unique_clicked_emails_per_emails_delivered}
     {% elsif KPI_parameter._parameter_value == 'unique_opens_rate' %}
       ${unique_opened_emails_per_emails_delivered}
-    {% elsif KPI_parameter._parameter_value == 'unsubscribes_rate' %}
-      ${unsubscribed_emails_per_emails_delivered}
-
-    {% elsif KPI_parameter._parameter_value == 'total_cta_clicks' %}
-      ${cta_clicks}
-    {% elsif KPI_parameter._parameter_value == 'total_cta_clicks_rate' %}
-      ${total_cta_clicked_emails_per_emails_delivered}
-    {% elsif KPI_parameter._parameter_value == 'unique_cta_clicks' %}
-      ${unique_cta_clicks}
-    {% elsif KPI_parameter._parameter_value == 'unique_cta_clicks_rate' %}
-      ${unique_cta_clicked_emails_per_emails_delivered}
-
-    {% elsif KPI_parameter._parameter_value == 'orders' %}
-      ${orders}
-    {% elsif KPI_parameter._parameter_value == 'unique_orders' %}
-      ${unique_users_orders}
-
-    {% elsif KPI_parameter._parameter_value == 'order_rate' %}
-      ${order_rate}
-    {% elsif KPI_parameter._parameter_value == 'unique_order_rate' %}
-      ${unique_order_rate}
-
-      ${order_rate_with_vouchers_variant}
-    {% elsif KPI_parameter._parameter_value == 'order_rate_with_vouchers' %}
-      ${order_rate_with_vouchers}
-
     {% endif %}
     ;;
+  }
 
+  parameter: reporting_parameter {
+    label: "* Granularity Parameter *"
+    group_label: "* Dynamic KPI Fields *"
+    type: unquoted
+    allowed_value: { value: "total"                  label: "Totals"}
+    allowed_value: { value: "unique"                label: "Unique"}
+    }
+
+  measure: open_parameter {
+    label: "{% if reporting_parameter._parameter_value == \"unique\"%} Unique Emails Opened {% else %} Total Opens {% endif%}"
+    group_label: "* Dynamic KPI Fields *"
+    type: number
+    sql:
+        {% if reporting_parameter._parameter_value == 'total' %}
+      ${emails_opened}
+    {% elsif reporting_parameter._parameter_value == 'unique' %}
+      ${unique_emails_opened}
+    {% endif %};;
+  }
+
+
+  measure: clicks_parameter {
+    label: "{% if reporting_parameter._parameter_value == \"unique\"%} Unique Emails Clicked {% else %} Total Clicks {% endif%}"
+    group_label: "* Dynamic KPI Fields *"
+    type: number
+    sql:
+        {% if reporting_parameter._parameter_value == 'total' %}
+      ${cta_clicks}
+    {% elsif reporting_parameter._parameter_value == 'unique' %}
+      ${unique_cta_clicks}
+    {% endif %};;
+  }
+
+  measure: order_parameter {
+    label: "{% if reporting_parameter._parameter_value == \"unique\"%} Unique Users Ordered {% else %} Total Orders {% endif%}"
+    group_label: "* Dynamic KPI Fields *"
+    type: number
+    sql:
+        {% if reporting_parameter._parameter_value == 'total' %}
+      ${orders}
+    {% elsif reporting_parameter._parameter_value == 'unique' %}
+      ${unique_users_orders}
+    {% endif %};;
+  }
+
+
+  measure: order_rate_parameter {
+    label: "{% if reporting_parameter._parameter_value == \"unique\"%} Unique Order Rate {% else %} Total Order Rate {% endif%}"
+    group_label: "* Dynamic KPI Fields *"
+    value_format_name: percent_2
+    sql:
+        {% if reporting_parameter._parameter_value == 'total' %}
+      ${order_rate}
+    {% elsif reporting_parameter._parameter_value == 'unique' %}
+      ${unique_order_rate}
+    {% endif %};;
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   #           Detail
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  set: detail {
-    fields: [
-      canvas_name,
-      in_control_group,
-      canvas_step_name,
-      canvas_variation_name,
-      country,
-      email_sent_at,
-      days_sent_to_open,
-      days_sent_to_click,
-      emails_sent,
-      emails_bounced,
-      emails_soft_bounced,
-      emails_delivered,
-      unique_emails_opened,
-      emails_opened,
-      unique_emails_clicked,
-      emails_clicked,
-      orders,
-      unique_users_orders,
-      orders_with_vouchers,
-      discount_amount,
-      gmv_gross
-
-    ]
-  }
+  # set: detail {
+  #   fields: [
+  #     canvas_name,
+  #     in_control_group,
+  #     canvas_step_name,
+  #     canvas_variation_name,
+  #     country,
+  #     email_sent_at,
+  #     days_sent_to_open,
+  #     days_sent_to_click,
+  #     emails_sent,
+  #     emails_bounced,
+  #     emails_soft_bounced,
+  #     emails_delivered,
+  #     unique_emails_opened,
+  #     emails_opened,
+  #     unique_emails_clicked,
+  #     emails_clicked,
+  #     cta_clicks,
+  #     unique_cta_clicks,
+  #     orders,
+  #     unique_users_orders,
+  #     orders_with_vouchers,
+  #     discount_amount,
+  #     gmv_gross,
+  #     order_parameter,
+  #     open_parameter,
+  #     order_rate_parameter,
+  #     unique_order_rate,
+  #     order_rate
+  #   ]
+  # }
 }
