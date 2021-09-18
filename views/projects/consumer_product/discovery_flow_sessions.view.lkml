@@ -147,7 +147,7 @@ view: discovery_flow_sessions {
         WHERE u.event NOT IN ("marketing_banner_viewed", "article_opened", "cart_opened", "home_view_updated", "checkout_viewed"
                                 , "order_placed", "payment_method_added", "order_details_viewed"
                                 , "deep_link_opened", "first_order_placed","order_tracking_viewed", "address_tooltip_viewed", "categories_show_more_selected"
-                                , "categories_main_viewed")
+                                , "categories_main_viewed", "address_search_viewed")
               AND LOWER(u.event) NOT LIKE "%scroll%"
               AND LOWER(u.event) NOT LIKE "%voucher%"
               AND LOWER(u.event) NOT LIKE "%failed%"
@@ -273,12 +273,14 @@ view: discovery_flow_sessions {
   }
 
   dimension: first_product_of_session {
-    type: string
+    type: yesno
+    description: "The user hasn't added a product to cart in the current session before the current flow "
     sql: ${TABLE}.first_product_of_session ;;
   }
 
   dimension: successful_flow {
     type: yesno
+    description: "The current flow ends in a product added to cart"
     sql: ${TABLE}.successful_flow ;;
   }
 
