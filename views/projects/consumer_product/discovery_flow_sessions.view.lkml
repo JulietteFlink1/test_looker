@@ -2,122 +2,159 @@ view: discovery_flow_sessions {
   derived_table: {
     persist_for: "1 hour"
     sql: WITH
-          -- join events android and ios as base for calculating sessions
-          events_tb AS (
-          SELECT
-              tracks.anonymous_id
-              , tracks.context_app_version
-              , tracks.context_device_type
-              , tracks.context_locale
-              , tracks.event
-              , tracks.event_text
-              , tracks.id AS event_id
-              , tracks.timestamp
-              , TIMESTAMP_DIFF(tracks.timestamp,LAG(tracks.timestamp) OVER(PARTITION BY tracks.anonymous_id ORDER BY tracks.timestamp), MINUTE) AS inactivity_time
-          FROM
-              `flink-data-prod.flink_ios_production.tracks_view` tracks
-          WHERE
-              tracks.event NOT LIKE "%api%"
-              AND tracks.event NOT LIKE "%adjust%"
-              AND tracks.event NOT LIKE "%install_attributed%"
-              AND tracks.event != "app_opened"
-              AND tracks.event NOT LIKE "%application%"
-              AND NOT (LOWER(tracks.context_app_version) LIKE "%app-rating%" OR LOWER(tracks.context_app_version) LIKE "%debug%")
-              AND NOT (tracks.context_app_name = "Flink-Staging" OR tracks.context_app_name="Flink-Debug")
-          UNION ALL
-          SELECT
-              tracks.anonymous_id
-              , tracks.context_app_version
-              , tracks.context_device_type
-              , tracks.context_locale
-              , tracks.event
-              , tracks.event_text
-              , tracks.id AS event_id
-              , tracks.timestamp
-              , TIMESTAMP_DIFF(tracks.timestamp,LAG(tracks.timestamp) OVER(PARTITION BY tracks.anonymous_id ORDER BY tracks.timestamp), MINUTE) AS inactivity_time
-          FROM
-              `flink-data-prod.flink_android_production.tracks_view` tracks
-          WHERE
-              tracks.event NOT LIKE "%api%"
-              AND tracks.event NOT LIKE "%adjust%"
-              AND tracks.event NOT LIKE "%install_attributed%"
-              AND tracks.event != "app_opened"
-              AND tracks.event NOT LIKE "%application%"
-              AND NOT (LOWER(tracks.context_app_version) LIKE "%app-rating%" OR LOWER(tracks.context_app_version) LIKE "%debug%")
-              AND NOT (tracks.context_app_name = "Flink-Staging" OR tracks.context_app_name="Flink-Debug")
-              )
+        -- join events android and ios as base for calculating sessions
+        pre_events_tb AS (
+        SELECT
+            tracks.anonymous_id
+            , tracks.context_app_version
+            , tracks.context_device_type
+            , tracks.context_locale
+            , tracks.event
+            , tracks.event_text
+            , tracks.id AS event_id
+            , tracks.timestamp
+            , TIMESTAMP_DIFF(tracks.timestamp,LAG(tracks.timestamp) OVER(PARTITION BY tracks.anonymous_id ORDER BY tracks.timestamp), MINUTE) AS inactivity_time
+        FROM
+            `flink-data-prod.flink_ios_production.tracks_view` tracks
+        WHERE
+            tracks.event NOT LIKE "%api%"
+            AND tracks.event NOT LIKE "%adjust%"
+            AND tracks.event NOT LIKE "%install_attributed%"
+            AND tracks.event != "app_opened"
+            AND tracks.event NOT LIKE "%application%"
+            AND NOT (LOWER(tracks.context_app_version) LIKE "%app-rating%" OR LOWER(tracks.context_app_version) LIKE "%debug%")
+            AND NOT (tracks.context_app_name = "Flink-Staging" OR tracks.context_app_name="Flink-Debug")
+        UNION ALL
+        SELECT
+            tracks.anonymous_id
+            , tracks.context_app_version
+            , tracks.context_device_type
+            , tracks.context_locale
+            , tracks.event
+            , tracks.event_text
+            , tracks.id AS event_id
+            , tracks.timestamp
+            , TIMESTAMP_DIFF(tracks.timestamp,LAG(tracks.timestamp) OVER(PARTITION BY tracks.anonymous_id ORDER BY tracks.timestamp), MINUTE) AS inactivity_time
+        FROM
+            `flink-data-prod.flink_android_production.tracks_view` tracks
+        WHERE
+            tracks.event NOT LIKE "%api%"
+            AND tracks.event NOT LIKE "%adjust%"
+            AND tracks.event NOT LIKE "%install_attributed%"
+            AND tracks.event != "app_opened"
+            AND tracks.event NOT LIKE "%application%"
+            AND NOT (LOWER(tracks.context_app_version) LIKE "%app-rating%" OR LOWER(tracks.context_app_version) LIKE "%debug%")
+            AND NOT (tracks.context_app_name = "Flink-Staging" OR tracks.context_app_name="Flink-Debug")
+            )
 
-          -- defining 30 min sessions
-          , tracking_sessions_tb AS (
-          SELECT
-              anonymous_id
-              , anonymous_id || '-' || ROW_NUMBER() OVER(PARTITION BY anonymous_id ORDER BY timestamp ASC) AS session_id
-              , ROW_NUMBER() OVER(PARTITION BY anonymous_id ORDER BY timestamp ASC) AS session_number
-              , timestamp AS session_start_at
-              , LEAD(timestamp) OVER(PARTITION BY anonymous_id ORDER BY timestamp) AS next_session_start_at
-              , context_app_version
-              , context_device_type
-              , context_locale
-          FROM
-              events_tb
-          WHERE
-              (events_tb.inactivity_time > 30
-              OR events_tb.inactivity_time IS NULL)
-          ORDER BY
-              1),
+      , search_data AS (
+    SELECT
+        anonymous_id
+        , id
+        , INITCAP(TRIM(search_query)) AS search_query_clean
+        , LEAD(search_query) OVER(PARTITION BY anonymous_id ORDER BY timestamp ASC) NOT LIKE CONCAT('%', search_query,'%') AS is_not_subquery
+        , timestamp
+    FROM
+        `flink-data-prod.flink_android_production.product_search_executed_view`
+    UNION ALL
+    SELECT
+        anonymous_id
+        , id
+        , INITCAP(TRIM(search_query)) AS search_query_clean
+        , LEAD(search_query) OVER(PARTITION BY anonymous_id ORDER BY timestamp ASC) NOT LIKE CONCAT('%', search_query,'%') AS is_not_subquery
+        , timestamp
+    FROM
+        `flink-data-prod.flink_ios_production.product_search_executed_view` )
 
-          session_event_counts_tb AS (
-          SELECT
-              s.session_id
-              , s.next_session_start_at
-              , s.session_start_at
-              , s.anonymous_id
-              , s.session_number
-              , SUM(CASE WHEN e.event="product_added_to_cart" THEN 1 ELSE 0 END) as product_added_to_cart_count
-              , SUM(CASE WHEN e.event="home_viewed" THEN 1 ELSE 0 END) as home_viewed_count
-          FROM events_tb e
-              LEFT JOIN tracking_sessions_tb  s
-              ON e.anonymous_id = s.anonymous_id
-              AND e.timestamp >= s.session_start_at
-              AND ( e.timestamp < s.next_session_start_at OR s.next_session_start_at IS NULL)
-          GROUP BY 1,2,3,4,5
-          ),
+    , -- exclude repeat searches from tracks
+        exclude_from_tracks AS (
+        SELECT id
+        FROM search_data
+        WHERE NOT(is_not_subquery) OR search_query_clean="" OR search_query_clean IS NULL
+      )
 
-          -- labeling events with session_id and prepare fields we need later
-          session_events_tb AS (
-          SELECT u.event_id,
-            s.session_id,
-             s.session_number,
-             u.anonymous_id,
-             u.timestamp AS event_timestamp,
-             u.event AS event_name,
-             u.context_app_version AS app_version,
-             u.context_device_type AS device_type,
-             u.context_locale AS locale,
-             u.inactivity_time,
-             s.session_start_at,
-             s.next_session_start_at,
-             LAST_VALUE(u.timestamp)
-                   OVER(PARTITION BY s.session_id ORDER BY u.timestamp ASC
-                     ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)          AS session_end,
-              LAG(u.event) OVER(PARTITION BY u.anonymous_id ORDER BY u.timestamp ASC) AS prev_event
-          FROM events_tb u
-          LEFT JOIN session_event_counts_tb s
-              ON (u.timestamp < s.next_session_start_at OR s.next_session_start_at is NULL )
-              AND u.timestamp >= s.session_start_at
-              AND u.anonymous_id = s.anonymous_id
-          -- cart_opened and cart_viewed always trigger together so don't need both. Same for checkout_viewed and checkout_started. marketing_banner_viewed not interesting for flow
-          -- everything after cart_viewed not interesting because not accessible from the path of home to add product to cart.
-          WHERE u.event NOT IN ("marketing_banner_viewed", "article_opened", "cart_opened", "home_view_updated", "checkout_viewed"
-                            , "purchase_confirmed", "order_placed", "checkout_started", "payment_method_added"
-                            , "deep_link_opened", "first_order_placed","order_tracking_viewed", "address_tooltip_viewed")
-          AND LOWER(u.event) NOT LIKE "%scroll%"
-          AND LOWER(u.event) NOT LIKE "%voucher%"
-          AND LOWER(u.event) NOT LIKE "%failed%"
-          AND LOWER(u.event) NOT LIKE "%app_rating%"
-          AND LOWER(u.event) NOT LIKE "%message%"
-          AND s.product_added_to_cart_count!=0
-          ),
+    , events_tb AS (
+        SELECT pre_events_tb.*
+        FROM pre_events_tb
+        LEFT JOIN exclude_from_tracks
+        ON pre_events_tb.event_id=exclude_from_tracks.id
+        WHERE exclude_from_tracks.id IS NULL
+      )
+
+        -- defining 30 min sessions
+        , tracking_sessions_tb AS (
+        SELECT
+            anonymous_id
+            , anonymous_id || '-' || ROW_NUMBER() OVER(PARTITION BY anonymous_id ORDER BY timestamp ASC) AS session_id
+            , ROW_NUMBER() OVER(PARTITION BY anonymous_id ORDER BY timestamp ASC) AS session_number
+            , timestamp AS session_start_at
+            , LEAD(timestamp) OVER(PARTITION BY anonymous_id ORDER BY timestamp) AS next_session_start_at
+            , context_app_version
+            , context_device_type
+            , context_locale
+        FROM
+            events_tb
+        WHERE
+            (events_tb.inactivity_time > 30
+            OR events_tb.inactivity_time IS NULL)
+        ORDER BY
+            1),
+
+        session_event_counts_tb AS (
+        SELECT
+            s.session_id
+            , s.next_session_start_at
+            , s.session_start_at
+            , s.anonymous_id
+            , s.session_number
+            , SUM(CASE WHEN e.event="product_added_to_cart" THEN 1 ELSE 0 END) as product_added_to_cart_count
+            , SUM(CASE WHEN e.event="home_viewed" THEN 1 ELSE 0 END) as home_viewed_count
+        FROM events_tb e
+            LEFT JOIN tracking_sessions_tb  s
+            ON e.anonymous_id = s.anonymous_id
+            AND e.timestamp >= s.session_start_at
+            AND ( e.timestamp < s.next_session_start_at OR s.next_session_start_at IS NULL)
+        GROUP BY 1,2,3,4,5
+        ),
+
+        -- labeling events with session_id and prepare fields we need later
+        session_events_tb AS (
+        SELECT u.event_id,
+         s.session_id,
+           s.session_number,
+           u.anonymous_id,
+           u.timestamp AS event_timestamp,
+           u.event AS event_name,
+           u.context_app_version AS app_version,
+           u.context_device_type AS device_type,
+           u.context_locale AS locale,
+           u.inactivity_time,
+           s.session_start_at,
+           s.next_session_start_at,
+           LAST_VALUE(u.timestamp)
+                 OVER(PARTITION BY s.session_id ORDER BY u.timestamp ASC
+                   ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)          AS session_end,
+            LAG(u.event) OVER(PARTITION BY u.anonymous_id ORDER BY u.timestamp ASC) AS prev_event,
+            --TIME_DIFF(TIME(LAG(u.timestamp) OVER(PARTITION BY u.anonymous_id ORDER BY u.timestamp ASC)), TIME(u.timestamp), MILLISECOND) < 1500 AS quick_succession
+        FROM events_tb u
+        LEFT JOIN session_event_counts_tb s
+            ON (u.timestamp < s.next_session_start_at OR s.next_session_start_at is NULL )
+            AND u.timestamp >= s.session_start_at
+            AND u.anonymous_id = s.anonymous_id
+        -- cart_opened and cart_viewed always trigger together so don't need both. Same for checkout_viewed and checkout_started. marketing_banner_viewed not interesting for flow
+        -- everything after cart_viewed not interesting because not accessible from the path of home to add product to cart.
+        -- categories_main_viewed always follows category_selected, so also not informative (we already know it comes from category)
+        WHERE u.event NOT IN ("marketing_banner_viewed", "article_opened", "cart_opened", "home_view_updated", "checkout_viewed"
+                                , "order_placed", "payment_method_added", "order_details_viewed"
+                                , "deep_link_opened", "first_order_placed","order_tracking_viewed", "address_tooltip_viewed", "categories_show_more_selected"
+                                , "categories_main_viewed")
+              AND LOWER(u.event) NOT LIKE "%scroll%"
+              AND LOWER(u.event) NOT LIKE "%voucher%"
+              AND LOWER(u.event) NOT LIKE "%failed%"
+              AND LOWER(u.event) NOT LIKE "%app_rating%"
+              AND LOWER(u.event) NOT LIKE "%message%"
+        AND s.product_added_to_cart_count!=0
+        ),
 
       session_events_filtered AS (
       SELECT *
@@ -125,8 +162,11 @@ view: discovery_flow_sessions {
       , SUM(CASE WHEN event_name="product_added_to_cart" THEN 1 ELSE 0 END) OVER (PARTITION BY session_id ORDER BY event_timestamp) AS addtocart_count
       , IF(event_name="product_added_to_cart", TRUE, FALSE) AS conversion
       FROM session_events_tb se
-      WHERE event_name != prev_event
-      ),
+      --filter out searches that follow impossible events (at <1.5sec) because of the mistriggers in ios. Only added home_viewed because if excluded it resuces search a lot even on android. Probably segment event order not being 100% reliable
+      WHERE NOT(event_name="product_search_executed" AND NOT(prev_event IN ("product_added_to_cart","product_details_viewed","product_added_to_favourites", "product_search_viewed")))
+      -- filter out product_search_viewed since it is often linked with search_executed
+      AND event_name!="product_search_viewed"
+    ),
 
       session_add_block AS (
       SELECT *
@@ -134,6 +174,8 @@ view: discovery_flow_sessions {
       -- , IF(LEAD(flow_breakpoint) OVER (PARTITION BY session_id ORDER BY event_timestamp), TRUE, FALSE) AS last_step
       , IF(addtocart_count=0, TRUE, FALSE) AS first_product
       FROM session_events_filtered
+      -- filter out repeating events which will make sequences longer and not provide that much more information about the pattern
+      WHERE event_name != prev_event
       ),
 
       session_add_counter AS (
