@@ -47,12 +47,14 @@ view: discovery_flow_sessions {
             AND NOT (tracks.context_app_name = "Flink-Staging" OR tracks.context_app_name="Flink-Debug")
             )
 
-      , search_data AS (
+    , search_data AS (
     SELECT
         anonymous_id
         , id
-        , INITCAP(TRIM(search_query)) AS search_query_clean
-        , LEAD(search_query) OVER(PARTITION BY anonymous_id ORDER BY timestamp ASC) NOT LIKE CONCAT('%', search_query,'%') AS is_not_subquery
+        , LOWER(TRIM(search_query)) AS search_query_clean
+        , LEAD(search_query) OVER(PARTITION BY anonymous_id ORDER BY timestamp ASC) LIKE CONCAT('%', search_query,'%') AS is_subquery
+        , LEAD(search_query) OVER(PARTITION BY anonymous_id ORDER BY timestamp ASC) != search_query AS is_complete
+        , LAG(search_query) OVER(PARTITION BY anonymous_id ORDER BY timestamp ASC) = search_query AS is_repetition
         , timestamp
     FROM
         `flink-data-prod.flink_android_production.product_search_executed_view`
@@ -60,8 +62,10 @@ view: discovery_flow_sessions {
     SELECT
         anonymous_id
         , id
-        , INITCAP(TRIM(search_query)) AS search_query_clean
-        , LEAD(search_query) OVER(PARTITION BY anonymous_id ORDER BY timestamp ASC) NOT LIKE CONCAT('%', search_query,'%') AS is_not_subquery
+        , LOWER(TRIM(search_query)) AS search_query_clean
+        , LEAD(search_query) OVER(PARTITION BY anonymous_id ORDER BY timestamp ASC) LIKE CONCAT('%', search_query,'%') AS is_subquery
+        , LEAD(search_query) OVER(PARTITION BY anonymous_id ORDER BY timestamp ASC) = search_query AS is_complete
+        , LAG(search_query) OVER(PARTITION BY anonymous_id ORDER BY timestamp ASC) = search_query AS is_repetition
         , timestamp
     FROM
         `flink-data-prod.flink_ios_production.product_search_executed_view` )
@@ -70,7 +74,7 @@ view: discovery_flow_sessions {
         exclude_from_tracks AS (
         SELECT id
         FROM search_data
-        WHERE NOT(is_not_subquery) OR search_query_clean="" OR search_query_clean IS NULL
+        WHERE (is_subquery AND NOT(is_complete)) OR is_repetition OR search_query_clean="" OR search_query_clean IS NULL
       )
 
     , events_tb AS (
@@ -147,7 +151,7 @@ view: discovery_flow_sessions {
         WHERE u.event NOT IN ("marketing_banner_viewed", "article_opened", "cart_opened", "home_view_updated", "checkout_viewed"
                                 , "order_placed", "payment_method_added", "order_details_viewed"
                                 , "deep_link_opened", "first_order_placed","order_tracking_viewed", "address_tooltip_viewed", "categories_show_more_selected"
-                                , "categories_main_viewed", "address_search_viewed")
+                                , "categories_main_viewed", "address_search_viewed", "product_search_viewed")
               AND LOWER(u.event) NOT LIKE "%scroll%"
               AND LOWER(u.event) NOT LIKE "%voucher%"
               AND LOWER(u.event) NOT LIKE "%failed%"
@@ -156,16 +160,22 @@ view: discovery_flow_sessions {
         AND s.product_added_to_cart_count!=0
         ),
 
+      -- have to filter recurring events out before determining the flow_breakpoint, because otherwise the flow_breakpoint might get filtered out and different paths will get merged together because the breakpoint is missing
       session_events_filtered AS (
+      SELECT *
+      FROM session_events_tb
+      -- filter out repeating events which will make sequences longer and not provide that much more information about the pattern
+      WHERE event_name != prev_event
+      --filter out searches that follow impossible events (at <1.5sec) because of the mistriggers in ios. Only added home_viewed because if excluded it resuces search a lot even on android. Probably segment event order not being 100% reliable
+      --   WHERE NOT(event_name="product_search_executed" AND NOT(prev_event IN ("product_added_to_cart","product_details_viewed","product_added_to_favourites", "product_search_viewed")))
+      ),
+
+      session_events_breakpoints AS (
       SELECT *
       , IF(event_name = "home_viewed" OR prev_event="product_added_to_cart" OR LAG(event_id) OVER(PARTITION BY session_id ORDER BY event_timestamp ASC) IS NULL, TRUE, FALSE) AS flow_breakpoint
       , SUM(CASE WHEN event_name="product_added_to_cart" THEN 1 ELSE 0 END) OVER (PARTITION BY session_id ORDER BY event_timestamp) AS addtocart_count
       , IF(event_name="product_added_to_cart", TRUE, FALSE) AS conversion
-      FROM session_events_tb se
-      --filter out searches that follow impossible events (at <1.5sec) because of the mistriggers in ios. Only added home_viewed because if excluded it resuces search a lot even on android. Probably segment event order not being 100% reliable
-      WHERE NOT(event_name="product_search_executed" AND NOT(prev_event IN ("product_added_to_cart","product_details_viewed","product_added_to_favourites", "product_search_viewed")))
-      -- filter out product_search_viewed since it is often linked with search_executed
-      AND event_name!="product_search_viewed"
+      FROM session_events_filtered se
     ),
 
       session_add_block AS (
@@ -173,9 +183,7 @@ view: discovery_flow_sessions {
       , session_id || '-' || SUM(CASE WHEN NOT(flow_breakpoint) THEN 0 ELSE 1 END) OVER (PARTITION BY session_id ORDER BY event_timestamp) AS flow_id
       -- , IF(LEAD(flow_breakpoint) OVER (PARTITION BY session_id ORDER BY event_timestamp), TRUE, FALSE) AS last_step
       , IF(addtocart_count=0, TRUE, FALSE) AS first_product
-      FROM session_events_filtered
-      -- filter out repeating events which will make sequences longer and not provide that much more information about the pattern
-      WHERE event_name != prev_event
+      FROM session_events_breakpoints
       ),
 
       session_add_counter AS (
@@ -185,7 +193,25 @@ view: discovery_flow_sessions {
       ),
 
       session_tag_flows AS (
-      SELECT *
+      SELECT * EXCEPT(event_name)
+      , CASE
+            WHEN event_name="home_viewed" THEN "home"
+            WHEN event_name="product_details_viewed" THEN "product_details"
+            WHEN event_name="product_added_to_cart" THEN "product_added"
+            WHEN event_name="category_selected" THEN "category_select"
+            WHEN event_name="categories_grid_viewed" THEN "category_grid_view"
+            WHEN event_name="product_search_executed" THEN "search"
+            WHEN event_name="cart_viewed" THEN "cart"
+            WHEN event_name="checkout_started" THEN "checkout"
+            WHEN event_name="product_added_to_favourites" THEN "fav_added"
+            WHEN event_name="favourites_viewed" THEN "fav_view"
+            WHEN event_name="address_confirmed" THEN "address_conf"
+            WHEN event_name="location_pin_placed" THEN "pin_placed"
+            WHEN event_name="purchase_confirmed" THEN "payment"
+            WHEN event_name="address_skipped" THEN "address_skip"
+            WHEN event_name="selection_browse_selected" THEN "browse"
+            ELSE event_name
+        END AS event_name
       , FIRST_VALUE(conversion) OVER (PARTITION BY flow_id ORDER BY flow_step DESC) AS successful_flow
       , FIRST_VALUE(flow_step) OVER (PARTITION BY flow_id ORDER BY flow_step DESC) AS max_steps_current_flow
       FROM session_add_counter
@@ -206,14 +232,22 @@ view: discovery_flow_sessions {
       , MAX(first_product) AS first_product_of_session
       , MAX(successful_flow) AS successful_flow
       , MAX(max_steps_current_flow) AS max_steps_current_flow
-      , COALESCE(MAX(IF(flow_step = 1, event_name, NULL)), "end_of_flow") AS step1
-      , COALESCE(MAX(IF(flow_step = 2, event_name, NULL)), "end_of_flow") AS step2
-      , COALESCE(MAX(IF(flow_step = 3, event_name, NULL)), "end_of_flow") AS step3
-      , COALESCE(MAX(IF(flow_step = 4, event_name, NULL)), "end_of_flow") AS step4
-      , COALESCE(MAX(IF(flow_step = 5, event_name, NULL)), "end_of_flow") AS step5
-      , COALESCE(MAX(IF(flow_step = 6, event_name, NULL)), "end_of_flow") AS step6
-      , COALESCE(MAX(IF(flow_step = 7, event_name, NULL)), "end_of_flow") AS step7
-      , COALESCE(MAX(IF(flow_step = 8, event_name, NULL)), "end_of_flow") AS step8
+      , MAX(IF(flow_step = 1, event_name, NULL)) AS step1
+      , MAX(IF(flow_step = 2, event_name, NULL)) AS step2
+      , MAX(IF(flow_step = 3, event_name, NULL)) AS step3
+      , MAX(IF(flow_step = 4, event_name, NULL)) AS step4
+      , MAX(IF(flow_step = 5, event_name, NULL)) AS step5
+      , MAX(IF(flow_step = 6, event_name, NULL)) AS step6
+      , MAX(IF(flow_step = 7, event_name, NULL)) AS step7
+      , MAX(IF(flow_step = 8, event_name, NULL)) AS step8
+      -- , COALESCE(MAX(IF(flow_step = 1, event_name, NULL)), "end_of_flow") AS step1
+      -- , COALESCE(MAX(IF(flow_step = 2, event_name, NULL)), "end_of_flow") AS step2
+      -- , COALESCE(MAX(IF(flow_step = 3, event_name, NULL)), "end_of_flow") AS step3
+      -- , COALESCE(MAX(IF(flow_step = 4, event_name, NULL)), "end_of_flow") AS step4
+      -- , COALESCE(MAX(IF(flow_step = 5, event_name, NULL)), "end_of_flow") AS step5
+      -- , COALESCE(MAX(IF(flow_step = 6, event_name, NULL)), "end_of_flow") AS step6
+      -- , COALESCE(MAX(IF(flow_step = 7, event_name, NULL)), "end_of_flow") AS step7
+      -- , COALESCE(MAX(IF(flow_step = 8, event_name, NULL)), "end_of_flow") AS step8
       FROM session_tag_flows
       GROUP BY 1
 
@@ -226,6 +260,12 @@ view: discovery_flow_sessions {
       --     ORDER BY 1
        ;;
   }
+
+
+  ### custom measures and dimensions
+
+
+  ###
 
   measure: count {
     type: count
