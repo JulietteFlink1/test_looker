@@ -8,7 +8,7 @@ view: gorillas_daily_orders {
   dimension: gorillas_orders_uuid {
     primary_key: yes
     type: string
-    sql: ${TABLE}.hub_id ;;
+    sql: ${TABLE}.gorillas_daily_orders_uuid ;;
   }
 
   dimension: city {
