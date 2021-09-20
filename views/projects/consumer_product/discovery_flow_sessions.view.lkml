@@ -53,7 +53,7 @@ view: discovery_flow_sessions {
         , id
         , LOWER(TRIM(search_query)) AS search_query_clean
         , LEAD(search_query) OVER(PARTITION BY anonymous_id ORDER BY timestamp ASC) LIKE CONCAT('%', search_query,'%') AS is_subquery
-        , LEAD(search_query) OVER(PARTITION BY anonymous_id ORDER BY timestamp ASC) != search_query AS is_complete
+        , LEAD(search_query) OVER(PARTITION BY anonymous_id ORDER BY timestamp ASC) = search_query AS is_complete
         , LAG(search_query) OVER(PARTITION BY anonymous_id ORDER BY timestamp ASC) = search_query AS is_repetition
         , timestamp
     FROM
