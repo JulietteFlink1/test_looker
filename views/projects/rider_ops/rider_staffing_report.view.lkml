@@ -708,7 +708,7 @@ view: rider_staffing_report {
 
   measure: mean_absolute_percentage_error {
     type: number
-    sql: abs(${predicted_orders} - ${orders})/max(1, ${orders}) ;;
+    sql: ABS(${predicted_orders} - ${orders})/GREATEST(1, ${orders}) ;;
     value_format_name: decimal_1
   }
 
