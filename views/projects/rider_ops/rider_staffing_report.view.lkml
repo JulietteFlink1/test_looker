@@ -713,7 +713,7 @@ view: rider_staffing_report {
 
   measure: mean_absolute_percentage_error {
     type: number
-    sql: ${absolute_percentage_error}/ NULLIF(${count_values}, 0));;
+    sql: ${absolute_percentage_error}/ NULLIF(${count_values}, 0);;
   }
 
   measure: pct_no_show {
