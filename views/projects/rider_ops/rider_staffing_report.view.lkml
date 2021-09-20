@@ -706,10 +706,14 @@ view: rider_staffing_report {
     value_format_name: decimal_1
   }
 
+  measure: absolute_percentage_error {
+    type: sum
+    sql: ABS(${predicted_orders} - ${orders})/(GREATEST(1, ${orders})) ;;
+  }
+
   measure: mean_absolute_percentage_error {
     type: number
-    sql: ABS(${predicted_orders} - ${orders})/(GREATEST(1, ${orders}) * NULLIF(${count_values}, 0)) ;;
-    value_format_name: decimal_1
+    sql: ${absolute_percentage_error}/ NULLIF(${count_values}, 0));;
   }
 
   measure: pct_no_show {
