@@ -68,6 +68,7 @@ view: gorillas_daily_orders {
       raw,
       date,
       week,
+      week_of_year,
       month,
       quarter,
       year
@@ -83,6 +84,7 @@ view: gorillas_daily_orders {
       raw,
       date,
       week,
+      week_of_year,
       month,
       quarter,
       year
