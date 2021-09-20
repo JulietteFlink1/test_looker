@@ -1,113 +1,61 @@
 view: monitoring_metrics {
   derived_table: {
-    sql: SELECT
-      paymentfail.metadata,
-      paymentfail.payment_method,
+    sql:WITH events AS (
+    SELECT
         tracks.anonymous_id,
-        tracks.context_app_build,
-        tracks.context_app_namespace,
         tracks.context_app_version,
         CAST(NULL AS BOOL) AS context_device_ad_tracking_enabled,
         tracks.context_device_id,
-        tracks.context_device_manufacturer,
-        tracks.context_device_model,
-        tracks.context_device_name,
         tracks.context_device_type,
         tracks.context_ip,
-        tracks.context_library_name,
-        tracks.context_library_version,
         tracks.context_locale,
-        CAST(NULL AS BOOL) AS context_network_bluetooth,
-        tracks.context_network_carrier,
-        tracks.context_network_cellular,
-        tracks.context_network_wifi,
-        tracks.context_os_name,
-        tracks.context_os_version,
         tracks.context_protocols_source_id,
-        tracks.context_timezone,
-        CAST(NULL AS STRING) AS context_traits_anonymous_id,
-        CAST(NULL AS STRING) AS context_user_agent,
         tracks.event,
-        tracks.event_text,
         tracks.id,
-        tracks.loaded_at,
-        tracks.original_timestamp,
-        tracks.received_at,
-        tracks.sent_at,
-        tracks.timestamp,
-        tracks.uuid_ts,
+        tracks.timestamp
       FROM
-        `flink-data-prod.flink_ios_production.tracks_view` tracks
-      LEFT JOIN
-        `flink-data-prod.flink_ios_production.payment_failed_view` paymentfail
-      ON
-        tracks.id=paymentfail.id
-      LEFT JOIN
-        `flink-data-prod.flink_ios_production.payment_method_added` paymentcomplete
-      ON
-        tracks.id=paymentcomplete.id
-      LEFT JOIN
-        `flink-data-prod.flink_ios_production.purchase_confirmed_view` paymentstart
-      ON
-        tracks.id=paymentstart.id
-        AND tracks.event NOT LIKE "%api%"
+        `flink-data-prod.flink_ios_production.tracks` tracks
+      WHERE tracks.event NOT LIKE "%api%"
         AND tracks.event NOT LIKE "%adjust%"
         AND tracks.event NOT LIKE "%install_attributed%"
-        --NOT (context_app_name = "Flink-Staging" OR context_app_name="Flink-Debug")
-      UNION ALL
-      SELECT
-      paymentfail.meta_data,
-      NULL AS payment_method,
-      tracks.anonymous_id,
-      tracks.context_app_build,
-      tracks.context_app_namespace,
-      tracks.context_app_version,
-      tracks.context_device_ad_tracking_enabled,
-      tracks.context_device_id,
-      tracks.context_device_manufacturer,
-      tracks.context_device_model,
-      tracks.context_device_name,
-      tracks.context_device_type,
-      tracks.context_ip,
-      tracks.context_library_name,
-      tracks.context_library_version,
-      tracks.context_locale,
-      tracks.context_network_bluetooth,
-      tracks.context_network_carrier,
-      tracks.context_network_cellular,
-      tracks.context_network_wifi,
-      tracks.context_os_name,
-      tracks.context_os_version,
-      tracks.context_protocols_source_id,
-      tracks.context_timezone,
-      tracks.context_traits_anonymous_id,
-      tracks.context_user_agent,
-      tracks.event,
-      tracks.event_text,
-      tracks.id,
-      tracks.loaded_at,
-      tracks.original_timestamp,
-      tracks.received_at,
-      tracks.sent_at,
-      tracks.timestamp,
-      tracks.uuid_ts,
-      FROM
-        `flink-data-prod.flink_android_production.tracks_view` tracks
-      LEFT JOIN
-        `flink-data-prod.flink_android_production.payment_failed_view` paymentfail
-      ON
-        tracks.id=paymentfail.id
-      LEFT JOIN
-        `flink-data-prod.flink_android_production.payment_method_added` paymentcomplete
-      ON
-        tracks.id=paymentcomplete.id
-      LEFT JOIN
-        `flink-data-prod.flink_android_production.purchase_confirmed_view` paymentstart
-      ON
-        tracks.id=paymentstart.id
-        AND tracks.event NOT LIKE "%api%"
-        AND tracks.event NOT LIKE "%adjust%"
-        AND tracks.event NOT LIKE "%install_attributed%"
+    UNION ALL
+    SELECT
+    tracks.anonymous_id,
+    tracks.context_app_version,
+    tracks.context_device_ad_tracking_enabled,
+    tracks.context_device_id,
+    tracks.context_device_type,
+    tracks.context_ip,
+    tracks.context_locale,
+    tracks.context_protocols_source_id,
+    tracks.event,
+    tracks.id,
+    tracks.timestamp
+    FROM
+      `flink-data-prod.flink_android_production.tracks` tracks
+    WHERE tracks.event NOT LIKE "%api%"
+      AND tracks.event NOT LIKE "%adjust%"
+      AND tracks.event NOT LIKE "%install_attributed%"
+),
+
+paymentfailed_tb AS (
+    SELECT
+      paymentfail.id,
+      paymentfail.metadata AS metadata,
+      paymentfail.payment_method,
+    FROM `flink-data-prod.flink_ios_production.payment_failed_view` paymentfail
+    UNION ALL
+    SELECT
+      paymentfail.id,
+      paymentfail.meta_data AS metadata,
+      paymentfail.payment_method,
+    FROM `flink-data-prod.flink_android_production.payment_failed_view` paymentfail
+)
+
+SELECT *
+FROM events
+LEFT JOIN paymentfailed_tb
+ON paymentfailed_tb.id=events.id
        ;;
   }
 
@@ -321,16 +269,6 @@ view: monitoring_metrics {
     sql: ${TABLE}.anonymous_id ;;
   }
 
-  dimension: context_app_build {
-    type: string
-    sql: ${TABLE}.context_app_build ;;
-  }
-
-  dimension: context_app_namespace {
-    type: string
-    sql: ${TABLE}.context_app_namespace ;;
-  }
-
   dimension: context_app_version {
     type: string
     sql: ${TABLE}.context_app_version ;;
@@ -346,21 +284,6 @@ view: monitoring_metrics {
     sql: ${TABLE}.context_device_id ;;
   }
 
-  dimension: context_device_manufacturer {
-    type: string
-    sql: ${TABLE}.context_device_manufacturer ;;
-  }
-
-  dimension: context_device_model {
-    type: string
-    sql: ${TABLE}.context_device_model ;;
-  }
-
-  dimension: context_device_name {
-    type: string
-    sql: ${TABLE}.context_device_name ;;
-  }
-
   dimension: context_device_type {
     type: string
     sql: ${TABLE}.context_device_type ;;
@@ -371,49 +294,9 @@ view: monitoring_metrics {
     sql: ${TABLE}.context_ip ;;
   }
 
-  dimension: context_library_name {
-    type: string
-    sql: ${TABLE}.context_library_name ;;
-  }
-
-  dimension: context_library_version {
-    type: string
-    sql: ${TABLE}.context_library_version ;;
-  }
-
   dimension: context_locale {
     type: string
     sql: ${TABLE}.context_locale ;;
-  }
-
-  dimension: context_network_bluetooth {
-    type: string
-    sql: ${TABLE}.context_network_bluetooth ;;
-  }
-
-  dimension: context_network_carrier {
-    type: string
-    sql: ${TABLE}.context_network_carrier ;;
-  }
-
-  dimension: context_network_cellular {
-    type: string
-    sql: ${TABLE}.context_network_cellular ;;
-  }
-
-  dimension: context_network_wifi {
-    type: string
-    sql: ${TABLE}.context_network_wifi ;;
-  }
-
-  dimension: context_os_name {
-    type: string
-    sql: ${TABLE}.context_os_name ;;
-  }
-
-  dimension: context_os_version {
-    type: string
-    sql: ${TABLE}.context_os_version ;;
   }
 
   dimension: context_protocols_source_id {
@@ -421,29 +304,9 @@ view: monitoring_metrics {
     sql: ${TABLE}.context_protocols_source_id ;;
   }
 
-  dimension: context_timezone {
-    type: string
-    sql: ${TABLE}.context_timezone ;;
-  }
-
-  dimension: context_traits_anonymous_id {
-    type: string
-    sql: ${TABLE}.context_traits_anonymous_id ;;
-  }
-
-  dimension: context_user_agent {
-    type: string
-    sql: ${TABLE}.context_user_agent ;;
-  }
-
   dimension: event {
     type: string
     sql: ${TABLE}.event ;;
-  }
-
-  dimension: event_text {
-    type: string
-    sql: ${TABLE}.event_text ;;
   }
 
   dimension: id {
@@ -451,34 +314,9 @@ view: monitoring_metrics {
     sql: ${TABLE}.id ;;
   }
 
-  dimension_group: loaded_at {
-    type: time
-    sql: ${TABLE}.loaded_at ;;
-  }
-
-  dimension_group: original_timestamp {
-    type: time
-    sql: ${TABLE}.original_timestamp ;;
-  }
-
-  dimension_group: received_at {
-    type: time
-    sql: ${TABLE}.received_at ;;
-  }
-
-  dimension_group: sent_at {
-    type: time
-    sql: ${TABLE}.sent_at ;;
-  }
-
   dimension_group: timestamp {
     type: time
     sql: ${TABLE}.timestamp ;;
-  }
-
-  dimension_group: uuid_ts {
-    type: time
-    sql: ${TABLE}.uuid_ts ;;
   }
 
   set: detail {
@@ -486,38 +324,16 @@ view: monitoring_metrics {
       metadata,
       payment_method,
       anonymous_id,
-      context_app_build,
-      context_app_namespace,
       context_app_version,
       context_device_ad_tracking_enabled,
       context_device_id,
-      context_device_manufacturer,
-      context_device_model,
-      context_device_name,
       context_device_type,
       context_ip,
-      context_library_name,
-      context_library_version,
       context_locale,
-      context_network_bluetooth,
-      context_network_carrier,
-      context_network_cellular,
-      context_network_wifi,
-      context_os_name,
-      context_os_version,
       context_protocols_source_id,
-      context_timezone,
-      context_traits_anonymous_id,
-      context_user_agent,
       event,
-      event_text,
       id,
-      loaded_at_time,
-      original_timestamp_time,
-      received_at_time,
-      sent_at_time,
-      timestamp_time,
-      uuid_ts_time
+      timestamp_time
     ]
   }
 }

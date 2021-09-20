@@ -1,5 +1,5 @@
 view: rider_staffing_report {
-  sql_table_name: `flink-data-prod.rider_staffing.rider_staffing_report`
+  sql_table_name: `flink-data-prod.reporting.rider_staffing_report`
     ;;
 
   dimension: abs_error {
@@ -332,25 +332,50 @@ view: rider_staffing_report {
   dimension: forecasted_riders {
     hidden: yes
     type: number
-    sql: coalesce(CAST(CEIL(${upper_bound} / ({% parameter rider_UTR %}/2)) AS INT64), 0) ;;
+    sql: case when ${date} < '2021-09-20'
+          then
+            coalesce(CAST(CEIL(${upper_bound} / ({% parameter rider_UTR %}/2)) AS INT64), 0)
+          else
+            coalesce(CAST(CEIL(${predicted_orders} / ({% parameter rider_UTR %}/2)) AS INT64), 0)
+            end
+            ;;
   }
 
   dimension: forecasted_pickers {
     hidden: yes
     type: number
-    sql: coalesce(CAST(CEIL(${upper_bound} / (${picker_utr}/2)) AS INT64), 0) ;;
+    sql: case when ${date} < '2021-09-20'
+          then
+            coalesce(CAST(CEIL(${upper_bound} / (${picker_utr}/2)) AS INT64), 0)
+          else
+            coalesce(CAST(CEIL(${predicted_orders} / (${picker_utr}/2)) AS INT64), 0)
+          end
+            ;;
+
   }
 
   dimension: forecasted_rider_hours {
     hidden: yes
     type: number
-    sql: coalesce(CAST(CEIL(${upper_bound} / ({% parameter rider_UTR %}/2)) AS INT64) / 2, 0);;
+    sql:case when ${date} < '2021-09-20'
+          then
+          coalesce(CAST(CEIL(${upper_bound} / ({% parameter rider_UTR %}/2)) AS INT64) / 2, 0)
+          else
+          coalesce(CAST(CEIL(${predicted_orders} / ({% parameter rider_UTR %}/2)) AS INT64) / 2, 0)
+          end
+          ;;
   }
 
   dimension: forecasted_picker_hours {
     hidden: yes
     type: number
-    sql: coalesce(CAST(CEIL(${upper_bound} / (${picker_utr}/2)) AS INT64) / 2, 0);;
+    sql:case when ${date} < '2021-09-20'
+          then
+          coalesce(CAST(CEIL(${upper_bound} / (${picker_utr}/2)) AS INT64) / 2, 0)
+        else
+          coalesce(CAST(CEIL(${predicted_orders} / (${picker_utr}/2)) AS INT64) / 2, 0)
+          end
+          ;;
   }
 
 ####### Dynamic dimensions

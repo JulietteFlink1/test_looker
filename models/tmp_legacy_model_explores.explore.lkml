@@ -26,6 +26,7 @@ explore: marketing_performance {
 
 
 explore: braze_crm_data {
+  hidden: yes
   label: "CRM Email Data (Braze)"
   view_label: "CRM Email Data"
   group_label: "11) Marketing"

@@ -95,15 +95,6 @@ view: gorillas_inventory_stock_count {
     sql: ${TABLE}.net_weight ;;
   }
 
-  dimension: parent_category {
-    type: string
-    sql: ${TABLE}.parent_category ;;
-  }
-
-  dimension: parent_category_id {
-    type: string
-    sql: ${TABLE}.parent_category_id ;;
-  }
 
   dimension: previous_quantity {
     type: number
@@ -154,16 +145,6 @@ view: gorillas_inventory_stock_count {
   dimension: striked_price {
     type: number
     sql: ${TABLE}.striked_price ;;
-  }
-
-  dimension: subcategory {
-    type: string
-    sql: ${TABLE}.subcategory ;;
-  }
-
-  dimension: subcategory_id {
-    type: string
-    sql: ${TABLE}.subcategory_id ;;
   }
 
   # dimension_group: time_scraped {
