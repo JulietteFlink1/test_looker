@@ -18,6 +18,13 @@ view: hubs_ct {
     sql: ${TABLE}.hub_name ;;
   }
 
+  dimension: hub_name_anonymized   {
+    label: "Hub ID"
+    description: "Identifier of a Hub"
+    type: string
+    sql: ${TABLE}.hub_name_anonymized  ;;
+  }
+
   dimension: languages {
     type: string
     sql: ${TABLE}.languages ;;

@@ -240,6 +240,15 @@ view: postorder_sessions {
     GROUP BY 1,2
     )
 
+    , first_order AS (
+    SELECT
+           e.anonymous_id
+         , MIN(e.timestamp) as first_order_timestamp
+    FROM events e
+    WHERE e.event = 'order_placed'
+    GROUP BY 1
+)
+
     SELECT
           sf.anonymous_id
         , sf.context_app_version
@@ -259,11 +268,14 @@ view: postorder_sessions {
         , sf.delivery_eta
         , ot.event_count as order_tracking_viewed
         , ccs.event_count as contact_customer_service
+        , CASE WHEN fo.first_order_timestamp < sf.session_start_at THEN true ELSE false END as has_ordered
     FROM sessions_final sf
     LEFT JOIN order_tracking_viewed ot
     ON sf.session_id=ot.session_id
     LEFT JOIN contact_customer_service ccs
     ON sf.session_id=ccs.session_id
+    LEFT JOIN first_order fo
+    ON sf.anonymous_id = fo.anonymous_id
     ORDER BY 1
  ;;
   }
@@ -355,6 +367,16 @@ view: postorder_sessions {
     sql: ${TABLE}.contact_customer_service ;;
   }
 
+  dimension: has_ordered {
+    type: yesno
+    sql: ${TABLE}.has_ordered ;;
+  }
+
+  dimension: returning_customer {
+    type: yesno
+    sql: ${has_ordered} ;;
+  }
+
   set: detail {
     fields: [
       anonymous_id,
@@ -372,7 +394,8 @@ view: postorder_sessions {
       delivery_postcode,
       delivery_eta,
       order_tracking_viewed,
-      contact_customer_service
+      contact_customer_service,
+      returning_customer
     ]
   }
 }

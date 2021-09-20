@@ -68,6 +68,15 @@ view: simple_tracking_events_all {
            OR tracks.context_traits_hub_slug is null)
       )
       SELECT *,
+       case when split(context_locale,"-")[safe_offset(0)] = 'de' THEN 'Germany'
+            when split(context_locale,"-")[safe_offset(0)] = 'nl' THEN 'Netherlands'
+            when split(context_locale,"-")[safe_offset(0)] = 'fr' THEN 'France'
+            else (
+                    case when split(context_timezone,"/")[safe_offset(1)] = 'Berlin' THEN 'Germany'
+                         when split(context_timezone,"/")[safe_offset(1)] = 'Amsterdam' THEN 'Netherlands'
+                         when split(context_timezone,"/")[safe_offset(1)] = 'Paris' THEN 'France'
+                         else 'unknown' end
+                    ) end as country_iso,
       LAG(joined_table.event) OVER(PARTITION BY joined_table.anonymous_id ORDER BY joined_table.timestamp ASC) AS previous_event,
       LEAD(joined_table.event) OVER(PARTITION BY joined_table.anonymous_id ORDER BY joined_table.timestamp ASC) AS next_event
       FROM joined_table
@@ -177,6 +186,13 @@ view: simple_tracking_events_all {
     sql: ${TABLE}.context_locale ;;
   }
 
+  dimension: country_iso {
+    type: string
+    description: "Country of device (derived from locale)"
+    sql: ${TABLE}.country_iso ;;
+  }
+
+
   dimension: context_timezone {
     type: string
     description: "Timezone of user (e.g. Europe/Berlin)"
@@ -231,6 +247,7 @@ view: simple_tracking_events_all {
       context_device_type,
       context_locale,
       context_timezone,
+      country_iso,
       event,
       event_text,
       id,
