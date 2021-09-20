@@ -10,6 +10,7 @@ view: gorillas_products {
 
   dimension: gorillas_products_uuid {
     type: string
+    primary_key: yes
     sql: ${TABLE}.gorillas_products_uuid ;;
     group_label: "> IDs"
   }

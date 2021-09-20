@@ -700,6 +700,22 @@ view: rider_staffing_report {
     value_format_name: decimal_1
   }
 
+  measure: bias {
+    type: sum
+    sql: ${predicted_orders} - ${orders} ;;
+    value_format_name: decimal_1
+  }
+
+  measure: absolute_percentage_error {
+    type: sum
+    sql: ABS(${predicted_orders} - ${orders})/(GREATEST(1, ${orders})) ;;
+  }
+
+  measure: mean_absolute_percentage_error {
+    type: number
+    sql: ${absolute_percentage_error}/ NULLIF(${count_values}, 0);;
+    value_format_name: percent_0
+  }
 
   measure: pct_no_show {
     label: "% No Show"
