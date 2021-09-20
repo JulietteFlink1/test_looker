@@ -50,7 +50,7 @@ view: nps_after_order_cl {
       quarter,
       year
     ]
-    sql: ${TABLE}.partition_timestamp ;;
+    sql: ${TABLE}.submitted_at ;;
   }
 
   dimension_group: order {

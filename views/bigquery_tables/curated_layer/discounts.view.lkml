@@ -87,7 +87,7 @@ view: discounts {
       quarter,
       year
     ]
-    sql: ${TABLE}.partition_timestamp ;;
+    sql: ${TABLE}.last_modified_at ;;
   }
 
   dimension: max_applications {
@@ -100,21 +100,6 @@ view: discounts {
     label: "Max Discount Applications per Customer"
     type: number
     sql: ${TABLE}.max_applications_per_customer ;;
-  }
-
-  dimension_group: partition_timestamp {
-    type: time
-    timeframes: [
-      raw,
-      time,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    sql: ${TABLE}.partition_timestamp ;;
-    hidden: yes
   }
 
   dimension_group: valid_from {
