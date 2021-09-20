@@ -701,13 +701,13 @@ view: rider_staffing_report {
   }
 
   measure: bias {
-    type: number
+    type: sum
     sql: ${predicted_orders} - ${orders} ;;
     value_format_name: decimal_1
   }
 
   measure: mean_absolute_percentage_error {
-    type: number
+    type: sum
     sql: ABS(${predicted_orders} - ${orders})/GREATEST(1, ${orders}) ;;
     value_format_name: decimal_1
   }
