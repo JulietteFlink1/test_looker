@@ -1,6 +1,7 @@
 include: "/**/*.view"
 view: orders_using_hubs {
   extends: [orders]
+  view_label: "* Orders *"
 
   dimension: hub_location  {
     group_label: "* Hub Dimensions *"
