@@ -156,7 +156,7 @@ FROM map_data
 
   measure: email_list {
     type: string
-    sql: GROUP_CONCAT(${customer_email}) ;;
+    sql: STRING_AGG(distinct ${customer_email}) ;;
   }
   set: detail {
     fields: [customer_email, customer_id, country_iso, sign_up_timestamp_customer_id_time]
