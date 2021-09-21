@@ -1,7 +1,6 @@
 include: "/views/bigquery_tables/curated_layer/orders_cleaned.view"
 include: "/views/projects/cleaning/hubs_clean.view"
 include: "/views/projects/cleaning/shyftplan_riders_pickers_hours_clean.view"
-include: "/views/bigquery_tables/nps_after_order.view"
 #include: "/views/projects/cleaning/issue_rates_clean.view"
 
 include: "/views/bigquery_tables/curated_layer/hubs_ct.view"
