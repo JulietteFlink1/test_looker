@@ -4,6 +4,7 @@ include: "/views/bigquery_tables/curated_layer/inventory.view"
 
 view: order_lineitems_using_inventory {
   extends: [orderline]
+  view_label: "* Order Lineitems *"
 
   measure: pct_stock_range_1d {
     label: "Stock Range [days, based on 1d avg.]"

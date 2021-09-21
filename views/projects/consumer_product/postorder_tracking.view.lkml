@@ -197,7 +197,7 @@ view: postorder_tracking {
       GROUP BY 1
       )
 
-      -- to know what is the earliest interaction of the user with the order -> isn't this always going to be order_placed?
+      -- add fields for filters
       SELECT merged_tb.* EXCEPT(country_iso_tmp)
       , COALESCE(timestamp_order_placed, timestamp_first_order_tracking_viewed, timestamp_first_cs_intent) AS first_interaction_timestamp
       , IF(first_order_placed_tb.order_number IS NULL, FALSE, TRUE) AS is_first_order
@@ -208,7 +208,12 @@ view: postorder_tracking {
  ;;
   }
 
-#################
+######## Custom dimensions and measures
+
+  dimension: returning_customer {
+    type: yesno
+    sql: NOT(${is_first_order}) ;;
+  }
 
   dimension: is_ct_order {
     ## Can know whether is CT order by checking whether order_number is a number (Saleor: 11111) or a string (CT: de_muc_zue7y)
@@ -262,6 +267,7 @@ view: postorder_tracking {
     sql: ${sum_order_tracking_viewed};;
   }
 
+  # Note: to combine CCS intent and order tracking view into one time-scale, it can't be defined using this table as it's on order level and that only works on event level (see order_tracking_raw view)
   dimension: CCSintent_time_since_order_duration{
     type: duration_minute
     sql_start: ${timestamp_order_placed_raw} ;;
@@ -287,37 +293,7 @@ view: postorder_tracking {
     sql: ${CCSintent_timesdiff_to_pdt} ;;
   }
 
-  dimension: orderview_time_since_order_duration{
-    type: duration_minute
-    sql_start: ${timestamp_order_placed_raw} ;;
-    sql_end: ${timestamp_first_order_tracking_viewed_raw};;
-  }
-
-  dimension: orderview_timesdiff_to_pdt{
-    type: number
-    sql: ${orderview_time_since_order_duration}-${order_delivery_pdt};;
-  }
-
-  dimension: orderview_time_since_order_tiers {
-    type: tier
-    tiers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 20, 25, 30, 45, 60]
-    style: interval
-    sql: ${orderview_time_since_order_duration} ;;
-  }
-
-  dimension: orderview_timesdiff_to_pdt_tiers {
-    type: tier
-    tiers: [-20,-16,-14,-12,-10,-8,-6,-4,-2, 0, 2, 4,6,8,10,12,14,16,20,24,30,45,60]
-    style: interval
-    sql: ${orderview_timesdiff_to_pdt} ;;
-  }
-
-  dimension: returning_customer {
-    type: yesno
-    sql: NOT(${is_first_order}) ;;
-  }
-
-  #################
+  ###################################
 
   measure: count {
     type: count

@@ -184,7 +184,7 @@ view: order_tracking_raw {
  ;;
   }
 
-  ### Custom measures
+  ### Custom dimensions and measures
   measure: cnt_order_tracking_viewed {
     label: "# Order Tracking Viewed"
     description: "Number of Order Tracking Viewed"

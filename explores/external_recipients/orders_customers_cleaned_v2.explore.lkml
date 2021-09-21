@@ -2,7 +2,7 @@ include: "/views/**/*.view"
 include: "/**/*.view"
 include: "/views/native_derived_tables/cohorts/monthly_cohorts_cleaned_v2.view"
 include: "/views/native_derived_tables/cohorts/weekly_cohorts_cleaned_v2.view"
-include: "/explores/base_explores/orders_customers_cleaned_v2.explore"
+# include: "/explores/**/orders_customers_cleaned_v2.explore"
 include: "/**/*.explore"
 
 explore: orders_customers_cleaned_v2 {

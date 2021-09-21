@@ -1,5 +1,5 @@
 view: braintree_cc {
-  sql_table_name: `flink-backend.sandbox_justine.braintree_jan_july_orders`
+  sql_table_name: `flink-data-dev.sandbox_justine.braintree_jan_july_orders`
     ;;
 
   dimension: amount_authorized {
