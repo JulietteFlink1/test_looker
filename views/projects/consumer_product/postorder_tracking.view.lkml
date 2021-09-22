@@ -150,6 +150,17 @@ view: postorder_tracking {
         android_csi.id
       FROM
         `flink-data-prod.flink_android_production.contact_customer_service_selected_view` android_csi
+      UNION ALL
+      SELECT
+        ios_csi.order_id,
+        ios_csi.order_number,
+        ios_csi.hub_slug,
+        ios_csi.country_iso,
+        ios_csi.status AS order_status,
+        ios_csi.delivery_eta,
+        ios_csi.id
+      FROM
+        `flink-data-prod.flink_ios_production.contact_customer_service_selected_view` ios_csi
       ),
 
       -- with tracks table as a base, join the order_tracking_viewed, order_placed and contact_customer_service_selected tables for their respective information.
@@ -209,6 +220,11 @@ view: postorder_tracking {
   }
 
 ######## Custom dimensions and measures
+
+  dimension: full_app_version {
+    type: string
+    sql: ${platform} || '-' || ${app_version} ;;
+  }
 
   dimension: returning_customer {
     type: yesno
