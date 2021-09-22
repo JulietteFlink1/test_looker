@@ -12,6 +12,7 @@ include: "/explores/base_explores/orders_cl.explore.lkml"
 include: "/explores/base_explores/order_orderline_cl.explore.lkml"
 include: "/explores/base_explores/orders_customers.explore.lkml"
 include: "/explores/rider_ops/rider_staffing_report.explore.lkml"
+include: "/explores/rider_ops/hiring_funnel_performance.explore.lkml"
 #include: "/explores/base_explores/orders_customers_cleaned.explore.lkml"
 
 
