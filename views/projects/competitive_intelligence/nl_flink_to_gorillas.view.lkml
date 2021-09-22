@@ -29,6 +29,7 @@ view: nl_flink_to_gorillas {
     type: string
     sql: ${TABLE}.flink_product_sku ;;
     hidden: yes
+    primary_key: yes
   }
 
   dimension: gorillas_product_id {
