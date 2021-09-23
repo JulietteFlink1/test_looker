@@ -81,6 +81,7 @@ view: fountain_rejection_breakdown {
   }
 
   measure: count {
+    hidden: yes
     type: count
     drill_fields: []
   }

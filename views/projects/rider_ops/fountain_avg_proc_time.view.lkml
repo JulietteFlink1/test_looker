@@ -14,6 +14,7 @@ view: fountain_avg_proc_time {
   }
 
   dimension: days_to_stage {
+    hidden: yes
     type: number
     sql: ${TABLE}.days_to_stage ;;
   }
@@ -21,6 +22,12 @@ view: fountain_avg_proc_time {
   dimension: position {
     type: string
     sql: ${TABLE}.position ;;
+  }
+
+  dimension: applicants {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.applicants ;;
   }
 
   dimension_group: start {
@@ -79,6 +86,26 @@ view: fountain_avg_proc_time {
     type: average
     sql: ${days_to_stage} ;;
     value_format_name: decimal_2
+  }
+
+  measure: number_of_applicants {
+    type: sum
+    sql: ${applicants} ;;
+    value_format_name: decimal_0
+  }
+
+  measure: number_of_approved_applicants {
+    type: sum
+    sql: ${applicants} ;;
+    filters: [title: "Approved"]
+    value_format_name: decimal_0
+  }
+
+  measure: CVR {
+    type: number
+    sql: ${number_of_approved_applicants} / NULLIF(${number_of_applicants}, 0) ;;
+    description: "Pct. of Leads that Converted into Approved Applicants"
+    value_format_name: percent_0
   }
 
 

@@ -107,6 +107,7 @@ view: rider_funnel_performance_summary {
   ######## Measures
 
   measure: count {
+    hidden: yes
     type: count
     drill_fields: []
   }
