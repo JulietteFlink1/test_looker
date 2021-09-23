@@ -86,9 +86,7 @@ view: rider_funnel_performance_summary {
     label: "Date (Dynamic)"
     label_from_parameter: date_granularity
     sql:
-    {% if date_granularity._parameter_value == 'Day' %}
-      ${date_date}
-    {% elsif date_granularity._parameter_value == 'Week' %}
+    {% if date_granularity._parameter_value == 'Week' %}
       ${date_week}
     {% elsif date_granularity._parameter_value == 'Month' %}
       ${date_month}
@@ -101,10 +99,9 @@ view: rider_funnel_performance_summary {
     group_label: "* Dates and Timestamps *"
     label: "Date Granularity"
     type: unquoted
-    allowed_value: { value: "Day" }
     allowed_value: { value: "Week" }
     allowed_value: { value: "Month" }
-    default_value: "Day"
+    default_value: "Week"
   }
 
   ######## Measures
