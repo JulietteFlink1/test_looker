@@ -83,6 +83,7 @@ view: fountain_funnel_pipeline {
   }
 
   measure: count {
+    hidden: yes
     type: count
     drill_fields: []
   }

@@ -89,6 +89,7 @@ view: hires_contract_mix {
   }
 
   measure: count {
+    hidden: yes
     type: count
     drill_fields: []
   }
