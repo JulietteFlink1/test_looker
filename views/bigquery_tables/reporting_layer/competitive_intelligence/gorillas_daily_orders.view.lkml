@@ -33,6 +33,7 @@ view: gorillas_daily_orders {
   }
 
   dimension: hub_label {
+    label: "Gorillas Hub Label"
     type: string
     sql: ${TABLE}.hub_label ;;
   }

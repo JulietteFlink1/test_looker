@@ -1,8 +1,6 @@
 include: "/views/bigquery_tables/curated_layer/orders.view"
 include: "/views/extended_tables/orders_using_hubs.view"
-include: "/views/projects/cleaning/hubs_clean.view"
 include: "/views/projects/cleaning/shyftplan_riders_pickers_hours_clean.view"
-include: "/views/bigquery_tables/nps_after_order.view"
 include: "/views/projects/cleaning/issue_rates_clean.view"
 
 include: "/views/bigquery_tables/curated_layer/hubs_ct.view"
@@ -11,7 +9,6 @@ include: "/views/bigquery_tables/curated_layer/cs_post_delivery_issues.view"
 
 include: "/explores/base_explores/orders_cl.explore"
 
-explore: nps_after_order_cl { hidden:yes }
 
 explore: orders_cl {
   from: orders_using_hubs
@@ -42,14 +39,6 @@ explore: orders_cl {
     user_attribute: city
   }
 
-  #join: hubs {
-  #  from: hubs_clean
-  #  view_label: "* Hubs *"
-  #  sql_on: ${orders_cl.country_iso}    = ${hubs.country_iso} AND
-  #    ${orders_cl.hub_code} = ${hubs.hub_code} ;;
-  #  relationship: many_to_many
-  #  type: left_outer
-  #}
 
   join: hubs {
     from: hubs_ct

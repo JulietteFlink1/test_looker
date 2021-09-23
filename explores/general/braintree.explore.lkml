@@ -1,4 +1,4 @@
-include: "/views/bigquery_tables/braintree_cc.view.lkml"
+include: "/views/**/braintree_cc.view.lkml"
 
 explore: braintree_data {
   view_name: braintree_cc

@@ -55,6 +55,7 @@ explore: nps_hub_team {
   }
 
   join: hubs {
+    from: hubs_ct
     sql_on:
     ${nps_hub_team.hub_code} = ${hubs.hub_code} ;;
     relationship: many_to_one
@@ -93,8 +94,9 @@ explore: user_order_facts_phone_number {
 
   join: hubs {
     view_label: "* Hubs *"
+    from: hubs_ct
     sql_on: ${user_order_facts_phone_number.country_iso} = ${hubs.country_iso} AND
-      ${user_order_facts_phone_number.hub_name} = ${hubs.hub_code_lowercase} ;;
+      ${user_order_facts_phone_number.hub_name} = ${hubs.hub_code} ;;
     relationship: one_to_one
     type: left_outer
   }

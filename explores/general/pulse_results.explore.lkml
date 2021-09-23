@@ -1,7 +1,7 @@
-include: "/views/bigquery_tables/202109_all_pulse_results.view.lkml"
-include: "/views/bigquery_tables/202109_hub_pulse_results.view.lkml"
-include: "/views/bigquery_tables/202109_rider_pulse_results.view.lkml"
-include: "/views/bigquery_tables/202109_hq_pulse_results.view.lkml"
+include: "/views/**/202109_all_pulse_results.view.lkml"
+include: "/views/**/202109_hub_pulse_results.view.lkml"
+include: "/views/**/202109_rider_pulse_results.view.lkml"
+include: "/views/**/202109_hq_pulse_results.view.lkml"
 
 explore: pulse_results {
   hidden:yes
