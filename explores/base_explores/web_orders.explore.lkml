@@ -37,13 +37,13 @@ explore: web_orders {
     user_attribute: city
   }
 
-  join: hubs {
-    from: hubs_ct
-    view_label: "* Hubs *"
-    sql_on: lower(${web_orders.hub_code}) = ${hubs.hub_code} ;;
-    relationship: many_to_one
-    type: left_outer
-  }
+  # join: hubs {
+  #   from: hubs_ct
+  #   view_label: "* Hubs *"
+  #   sql_on: lower(${web_orders.hub_code}) = ${hubs.hub_code} ;;
+  #   relationship: many_to_one
+  #   type: left_outer
+  # }
 
   # join: issue_rates_clean {
   #   view_label: "* Order Issues on Hub-Level *"
