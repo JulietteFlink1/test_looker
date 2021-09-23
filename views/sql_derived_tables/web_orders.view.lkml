@@ -5,6 +5,7 @@ view: web_orders {
           , o.country_iso
           , o.hub_code
           , o.hub_name
+          , o.shipping_city
           , o.order_date
           , o.order_timestamp
           , o.discount_code
@@ -34,6 +35,11 @@ view: web_orders {
   dimension: country_iso {
     type: string
     sql: ${TABLE}.country_iso ;;
+  }
+
+  dimension: city {
+    type: string
+    sql: ${TABLE}.shipping_city ;;
   }
 
   dimension: hub_code {
@@ -161,6 +167,18 @@ view: web_orders {
     type: average
     sql: ${amt_gmv_net};;
     value_format_name: euro_accounting_2_precision
+  }
+
+  dimension: gmv_gross {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_gmv_gross ;;
+  }
+
+  dimension: gmv_net {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_gmv_net ;;
   }
 
   measure: sum_quantity_fulfilled {
