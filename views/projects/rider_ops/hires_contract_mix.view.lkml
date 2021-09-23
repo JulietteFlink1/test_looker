@@ -1,10 +1,10 @@
-view: fountain_rejection_breakdown {
-  sql_table_name: `flink-data-staging.curated.fountain_rejection_breakdown`
+view: hires_contract_mix {
+  sql_table_name: `flink-data-staging.curated.hires_contract_mix`
     ;;
 
-  dimension: applicants {
-    type: number
-    sql: ${TABLE}.applicants ;;
+  dimension: channel {
+    type: string
+    sql: ${TABLE}.channel ;;
   }
 
   dimension: city {
@@ -18,17 +18,7 @@ view: fountain_rejection_breakdown {
     sql: ${TABLE}.country ;;
   }
 
-  dimension: position {
-    type: string
-    sql: ${TABLE}.position ;;
-  }
-
-  dimension: rejection_reason {
-    type: string
-    sql: ${TABLE}.rejection_reason ;;
-  }
-
-  dimension_group: start {
+  dimension_group: hire {
     type: time
     timeframes: [
       raw,
@@ -40,13 +30,30 @@ view: fountain_rejection_breakdown {
     ]
     convert_tz: no
     datatype: date
-    sql: ${TABLE}.start_date ;;
+    sql: ${TABLE}.hire_date ;;
+  }
+
+  dimension: hires {
+    type: number
+    sql: ${TABLE}.hires ;;
+  }
+
+  dimension: position {
+    type: string
+    sql: ${TABLE}.position ;;
+  }
+
+  dimension: type_of_contract {
+    type: string
+    sql: ${TABLE}.type_of_contract ;;
   }
 
   dimension: unique_id {
+    type: string
+    sql: concat(${country}, ${city}, ${channel}, ${position}, ${type_of_contract}, ${hire_date}) ;;
     hidden: yes
     primary_key: yes
-    sql: concat(${country}, ${city}, ${position}, ${rejection_reason}, ${start_date}) ;;
+
   }
 
   dimension: date_ {
@@ -55,9 +62,9 @@ view: fountain_rejection_breakdown {
     label_from_parameter: date_granularity
     sql:
     {% if date_granularity._parameter_value == 'Week' %}
-      ${start_week}
+      ${hire_week}
     {% elsif date_granularity._parameter_value == 'Month' %}
-      ${start_month}
+      ${hire_month}
     {% endif %};;
   }
 
@@ -72,11 +79,12 @@ view: fountain_rejection_breakdown {
     default_value: "Week"
   }
 
-  ########## Measures
 
-  measure: number_of_applicants {
+  ########### Measures
+
+  measure: number_of_hires {
     type: sum
-    sql: ${applicants} ;;
+    sql: ${hires} ;;
     value_format_name: decimal_0
   }
 
