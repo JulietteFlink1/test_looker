@@ -1,12 +1,6 @@
-view: fountain_funnel_pipeline {
-  sql_table_name: `flink-data-staging.curated.fountain_funnel_pipeline`
+view: fountain_avg_proc_time {
+  sql_table_name: `flink-data-staging.curated.fountain_avg_proc_time`
     ;;
-
-  dimension: applicants {
-    hidden: yes
-    type: number
-    sql: ${TABLE}.applicants ;;
-  }
 
   dimension: city {
     type: string
@@ -17,6 +11,11 @@ view: fountain_funnel_pipeline {
     type: string
     map_layer_name: countries
     sql: ${TABLE}.country ;;
+  }
+
+  dimension: days_to_stage {
+    type: number
+    sql: ${TABLE}.days_to_stage ;;
   }
 
   dimension: position {
@@ -46,7 +45,7 @@ view: fountain_funnel_pipeline {
 
   dimension: unique_id {
     type: string
-    sql: concat(${country}, ${city}, ${position}, ${start_date}, ${title}) ;;
+    sql: concat(${country}, ${city}, ${position}, ${title}, ${start_date}) ;;
     hidden: yes
     primary_key: yes
   }
@@ -74,15 +73,17 @@ view: fountain_funnel_pipeline {
     default_value: "Week"
   }
 
-  ###### Measures
+  ##### Measures
 
-  measure: number_of_applicants {
-    type: sum
-    sql: ${applicants} ;;
-    value_format_name: decimal_0
+  measure: avg_days_to_stage {
+    type: average
+    sql: ${days_to_stage} ;;
+    value_format_name: decimal_2
   }
 
+
   measure: count {
+    hidden: yes
     type: count
     drill_fields: []
   }
