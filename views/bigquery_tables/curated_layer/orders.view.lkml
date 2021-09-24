@@ -459,17 +459,6 @@ view: orders {
     sql: ${TABLE}.language_code ;;
   }
 
-  dimension: metadata {
-    type: string
-    sql: ${TABLE}.metadata ;;
-  }
-
-  dimension: private_metadata {
-    hidden: yes
-    type: string
-    sql: ${TABLE}.private_metadata ;;
-  }
-
   dimension_group: last_modified {
     group_label: "* Dates and Timestamps *"
     type: time
