@@ -128,6 +128,7 @@ view: orders {
   }
 
   dimension: country_iso {
+    group_label: "* Geographic Dimensions *"
     type: string
     sql: ${TABLE}.country_iso ;;
   }
@@ -216,6 +217,7 @@ view: orders {
   }
 
   dimension: is_order_hour_before_now_hour {
+    group_label: "* Operations / Logistics *"
     type: yesno
     sql: ${created_hour_of_day} <= ${now_hour_of_day} ;;
   }
@@ -303,12 +305,14 @@ view: orders {
   }
 
   dimension: hub_code {
+    group_label: "* Hub Dimensions *"
     type: string
     sql: ${TABLE}.hub_code ;;
   }
 
   dimension: warehouse_name {
     label: "Hub Name"
+    group_label: "* Hub Dimensions *"
     type: string
     sql: ${TABLE}.hub_name ;;
   }
@@ -455,6 +459,7 @@ view: orders {
   }
 
   dimension: language_code {
+    group_label: "* Geographic Dimensions *"
     type: string
     sql: ${TABLE}.language_code ;;
   }
@@ -714,6 +719,7 @@ view: orders {
   }
 
   dimension: shipping_city {
+    group_label: "* Geographic Dimensions *"
     type: string
     sql: ${TABLE}.shipping_city ;;
   }
@@ -843,6 +849,7 @@ view: orders {
   }
 
   dimension: date_granularity_pass_through {
+    group_label: "* Parameters *"
     description: "To use the parameter value in a table calculation (e.g WoW, % Growth) we need to materialize it into a dimension "
     type: string
     hidden: no # yes
@@ -1181,7 +1188,8 @@ view: orders {
   }
 
   measure: sum_quantity_fulfilled {
-    label: "Quantity"
+    label: "Item Quantity Fulfilled"
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
     description: "Fulfilled Quantity"
     type: sum
     sql: ${number_of_items} ;;
