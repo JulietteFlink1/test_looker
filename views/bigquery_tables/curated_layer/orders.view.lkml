@@ -110,6 +110,7 @@ view: orders {
   dimension: backend_source {
     type: string
     sql: ${TABLE}.backend_source ;;
+    hidden: yes
   }
 
   dimension: billing_address_id {
@@ -132,6 +133,7 @@ view: orders {
   }
 
   dimension: currency {
+    group_label: "* Monetary Values *"
     type: string
     sql: ${TABLE}.currency ;;
   }
@@ -150,6 +152,8 @@ view: orders {
   }
 
   dimension: customer_note {
+    group_label: "* User Dimensions *"
+    label: "Add. Customer Information"
     type: string
     sql: ${TABLE}.customer_note ;;
   }
@@ -162,6 +166,7 @@ view: orders {
   }
 
   dimension: delivery_eta_minutes {
+    group_label: "* Operations / Logistics *"
     type: number
     sql: ${TABLE}.delivery_pdt_minutes ;;
   }
@@ -303,6 +308,7 @@ view: orders {
   }
 
   dimension: warehouse_name {
+    label: "Hub Name"
     type: string
     sql: ${TABLE}.hub_name ;;
   }
@@ -616,6 +622,8 @@ view: orders {
   }
 
   dimension: id {
+    group_label: "* IDs *"
+    label: "Order ID"
     hidden: no
     type: string
     sql: ${TABLE}.order_id ;;
@@ -661,6 +669,7 @@ view: orders {
   dimension: order_uuid {
     type: string
     group_label: "* IDs *"
+    label: "Order UUID"
     primary_key: yes
     hidden: no
     sql: ${TABLE}.order_uuid ;;
