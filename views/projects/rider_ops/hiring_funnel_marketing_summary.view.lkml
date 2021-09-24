@@ -1,6 +1,16 @@
-view: fountain_avg_proc_time {
-  sql_table_name: `flink-data-staging.curated.fountain_avg_proc_time`
+view: hiring_funnel_marketing_summary {
+  sql_table_name: `flink-data-staging.curated.hiring_funnel_marketing_summary`
     ;;
+
+  dimension: applicants {
+    type: number
+    sql: ${TABLE}.applicants ;;
+  }
+
+  dimension: channel {
+    type: string
+    sql: ${TABLE}.channel ;;
+  }
 
   dimension: city {
     type: string
@@ -13,21 +23,20 @@ view: fountain_avg_proc_time {
     sql: ${TABLE}.country ;;
   }
 
-  dimension: days_to_stage {
-    hidden: yes
+  dimension: days_to_hire {
     type: number
-    sql: ${TABLE}.days_to_stage ;;
+    sql: ${TABLE}.days_to_hire ;;
+  }
+
+  dimension: days_to_hire_tier {
+    type: tier
+    tiers: [0, 5, 10, 15, 20, 25 ]
+    sql: ${days_to_hire} ;;
   }
 
   dimension: position {
     type: string
     sql: ${TABLE}.position ;;
-  }
-
-  dimension: applicants {
-    hidden: yes
-    type: number
-    sql: ${TABLE}.applicants ;;
   }
 
   dimension_group: start {
@@ -42,19 +51,20 @@ view: fountain_avg_proc_time {
     ]
     convert_tz: no
     datatype: date
-    sql: ${TABLE}.start_date ;;
-  }
-
-  dimension: title {
-    type: string
-    sql: ${TABLE}.title ;;
+    sql: ${TABLE}.date ;;
   }
 
   dimension: unique_id {
     type: string
-    sql: concat(${country}, ${city}, ${position}, ${title}, ${start_date}) ;;
-    hidden: yes
+    sql: concat(${country}, ${city}, ${position}, ${channel}, ${start_date}) ;;
     primary_key: yes
+    hidden: yes
+  }
+
+  dimension: spend {
+    type: number
+    sql: ${TABLE}.spend ;;
+    hidden: yes
   }
 
   dimension: date_ {
@@ -80,13 +90,7 @@ view: fountain_avg_proc_time {
     default_value: "Week"
   }
 
-  ##### Measures
-
-  measure: avg_days_to_stage {
-    type: average
-    sql: ${days_to_stage} ;;
-    value_format_name: decimal_2
-  }
+  ################# Measures
 
   measure: number_of_applicants {
     type: sum
@@ -94,6 +98,25 @@ view: fountain_avg_proc_time {
     value_format_name: decimal_0
   }
 
+  measure: number_of_approved_applicants {
+    type: sum
+    sql: ${applicants} ;;
+    filters: [days_to_hire: "not NULL"]
+    value_format_name: decimal_0
+  }
+
+  measure: total_spend {
+    type: sum_distinct
+    sql_distinct_key: ${unique_id} ;;
+    sql: ${spend};;
+  }
+
+  measure: CVR {
+    type: number
+    sql: ${number_of_approved_applicants} / NULLIF(${number_of_applicants}, 0) ;;
+    description: "Pct. of Leads that Converted into Approved Applicants"
+    value_format_name: percent_0
+  }
 
   measure: count {
     hidden: yes

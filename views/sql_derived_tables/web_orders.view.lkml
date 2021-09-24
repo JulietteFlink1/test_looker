@@ -2,14 +2,15 @@ view: web_orders {
   derived_table: {
     sql: SELECT
           w.order_number
+          , o.order_uuid
           , o.country_iso
           , o.hub_code
           , o.hub_name
-          , o.shipping_city
           , o.order_date
+          , o.shipping_city
           , o.order_timestamp
           , o.discount_code
-          , o.discount_amount
+          , o.amt_discount_gross
           , o.customer_email
           , o.amt_gmv_gross
           , o.amt_gmv_net
@@ -17,6 +18,7 @@ view: web_orders {
           , o.is_discounted_order
           , o.is_first_order
           , o.number_of_items
+          , 'web' as platform
       FROM `flink-data-prod.flink_website_production.order_completed` w
       LEFT JOIN `flink-data-prod.curated.orders` o on o.order_number = w.order_number
        ;;
@@ -24,12 +26,45 @@ view: web_orders {
 
   measure: count {
     type: count
-    drill_fields: [detail*]
+    drill_fields: [core_dimensions*]
+  }
+
+  dimension: order_date {
+    group_label: "* Dates and Timestamps *"
+    type: date
+    datatype: date
+    sql: ${TABLE}.order_date ;;
+    hidden: yes
+  }
+
+  set: core_dimensions {
+    fields: [
+      country_iso,
+      order_uuid,
+      hub_code,
+      order_timestamp,
+      customer_type,
+      gmv_gross
+    ]
   }
 
   dimension: order_number {
     type: string
+    group_label: "* IDs *"
     sql: ${TABLE}.order_number ;;
+  }
+
+  dimension: platform {
+    type: string
+    sql: ${TABLE}.platform ;;
+  }
+
+  dimension: order_uuid {
+    type: string
+    group_label: "* IDs *"
+    primary_key: yes
+    hidden: no
+    sql: ${TABLE}.order_uuid ;;
   }
 
   dimension: country_iso {
@@ -52,14 +87,8 @@ view: web_orders {
     sql: ${TABLE}.hub_name ;;
   }
 
-  dimension: order_date {
-    type: date
-    datatype: date
-    sql: ${TABLE}.order_date ;;
-  }
-
-  dimension_group: order_timestamp {
-    type: time
+  dimension: order_timestamp {
+    type: date_time
     sql: ${TABLE}.order_timestamp ;;
   }
 
@@ -74,58 +103,50 @@ view: web_orders {
     sql: ${TABLE}.customer_email ;;
   }
 
-  dimension: amt_gmv_gross {
-    type: number
-    sql: ${TABLE}.amt_gmv_gross ;;
+  measure: sum_gmv_gross {
+    group_label: "* Monetary Values *"
+    label: "SUM GMV (Gross)"
+    description: "Sum of Gross Merchandise Value of orders incl. fees and before deduction of discounts (incl. VAT)"
+    hidden:  no
+    type: sum
+    sql: ${gmv_gross};;
+    value_format_name: euro_accounting_0_precision
   }
 
-  dimension: amt_gmv_net {
-    type: number
-    sql: ${TABLE}.amt_gmv_net ;;
+  measure: sum_gmv_net {
+    group_label: "* Monetary Values *"
+    label: "SUM GMV (Net)"
+    description: "Sum of Gross Merchandise Value of orders incl. fees and before deduction of discounts (excl. VAT)"
+    hidden:  no
+    type: sum
+    sql: ${gmv_net};;
+    value_format_name: euro_accounting_0_precision
   }
+
 
   dimension: discount_amount {
     type: number
-    sql: ${TABLE}.discount_amount ;;
+    sql: ${TABLE}.amt_discount_gross ;;
   }
 
   dimension: is_successful_order {
-    type: string
+    type: yesno
     sql: ${TABLE}.is_successful_order ;;
   }
 
   dimension: is_discounted_order {
-    type: string
+    type: yesno
     sql: ${TABLE}.is_discounted_order ;;
   }
 
   dimension: is_first_order {
-    type: string
+    type: yesno
     sql: ${TABLE}.is_first_order ;;
   }
 
   dimension: number_of_items {
     type: number
     sql: ${TABLE}.number_of_items ;;
-  }
-
-  set: detail {
-    fields: [
-      order_number,
-      country_iso,
-      hub_code,
-      hub_name,
-      order_date,
-      order_timestamp_time,
-      discount_code,
-      customer_email,
-      amt_gmv_gross,
-      amt_gmv_net,
-      is_successful_order,
-      is_discounted_order,
-      is_first_order,
-      number_of_items
-    ]
   }
 
   dimension_group: Dates {
@@ -137,8 +158,8 @@ view: web_orders {
       raw,
       hour_of_day,
       hour,
-      time,
       date,
+      time,
       day_of_week,
       week,
       month,
@@ -147,26 +168,6 @@ view: web_orders {
     ]
     sql: ${TABLE}.order_timestamp ;;
     datatype: timestamp
-  }
-
-  measure: avg_order_value_gross {
-    group_label: "* Monetary Values *"
-    label: "AVG Order Value (Gross)"
-    description: "Average value of orders considering total gross order values. Includes fees (gross), before deducting discounts."
-    hidden:  no
-    type: average
-    sql: ${amt_gmv_gross};;
-    value_format_name: euro_accounting_2_precision
-  }
-
-  measure: avg_order_value_net {
-    group_label: "* Monetary Values *"
-    label: "AVG Order Value (Net)"
-    description: "Average value of orders considering total net order values. Includes fees (net), before deducting discounts."
-    hidden:  no
-    type: average
-    sql: ${amt_gmv_net};;
-    value_format_name: euro_accounting_2_precision
   }
 
   dimension: gmv_gross {
@@ -180,6 +181,27 @@ view: web_orders {
     hidden: yes
     sql: ${TABLE}.amt_gmv_net ;;
   }
+
+  measure: avg_order_value_gross {
+    group_label: "* Monetary Values *"
+    label: "AVG Order Value (Gross)"
+    description: "Average value of orders considering total gross order values. Includes fees (gross), before deducting discounts."
+    hidden:  no
+    type: average
+    sql: ${gmv_gross};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: avg_order_value_net {
+    group_label: "* Monetary Values *"
+    label: "AVG Order Value (Net)"
+    description: "Average value of orders considering total net order values. Includes fees (net), before deducting discounts."
+    hidden:  no
+    type: average
+    sql: ${gmv_net};;
+    value_format_name: euro_accounting_2_precision
+  }
+
 
   measure: sum_quantity_fulfilled {
     label: "Quantity"
