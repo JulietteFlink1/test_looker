@@ -23,7 +23,7 @@ explore: web_orders {
   always_filter: {
     filters:  [
       orders_cl.is_successful_order: "yes",
-      orders_cl.created_date: "after 2021-09-20",
+      web_orders.order_date: "after 2021-09-20",
       hubs.country: "",
       hubs.hub_name: "",
       web_orders.platform: "web"
