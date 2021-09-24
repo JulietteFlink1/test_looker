@@ -21,24 +21,43 @@ explore: current_inventory {
     user_attribute: city
   }
 
+  always_filter: {
+    filters: [
+      products_hub_assignment.is_sku_assigned_to_hub: "Yes",
+      hubs.is_hub_opened: "Yes"
+    ]
+  }
+
+  join: products_hub_assignment {
+    sql_on: ${products_hub_assignment.sku} = ${products.product_sku} ;;
+    sql_where: ${products_hub_assignment.is_most_recent_record} = TRUE ;;
+    type: left_outer
+    relationship: one_to_many
+  }
+
+  join: hubs {
+    from:  hubs_ct
+    sql_on: ${hubs.hub_code} = ${products_hub_assignment.hub_code} ;;
+    relationship: many_to_one
+    type:  left_outer
+  }
+
+
   join: inventory {
-    sql_on: ${inventory.sku} = ${products.product_sku} ;;
+    sql_on: ${inventory.sku} = ${products_hub_assignment.sku}
+        and ${inventory.hub_code} = ${products_hub_assignment.hub_code}
+    ;;
     relationship: one_to_many
     type: left_outer
     sql_where: (${inventory.is_most_recent_record} = TRUE) ;;
   }
 
-  join: hubs {
-    from:  hubs_ct
-    sql_on: ${hubs.hub_code} = ${inventory.hub_code} ;;
-    relationship: many_to_one
-    type:  left_outer
-  }
+
 
   join: order_lineitems {
     from:  order_lineitems_using_inventory
-    sql_on: ${order_lineitems.product_sku} = ${inventory.sku}
-        and ${order_lineitems.hub_code}    = ${inventory.hub_code}
+    sql_on: ${order_lineitems.product_sku} = ${products_hub_assignment.sku}
+        and ${order_lineitems.hub_code}    = ${products_hub_assignment.hub_code}
     ;;
     relationship: many_to_many
     type: left_outer
