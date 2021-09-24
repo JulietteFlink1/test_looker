@@ -130,12 +130,14 @@ view: products {
     type: number
     sql: ${TABLE}.amt_product_price_gross ;;
     group_label: "> Price Data"
+    label: "Unit Price Gross Amount"
   }
 
   dimension: currency {
     type: string
     sql: ${TABLE}.currency ;;
     group_label: "> Price Data"
+    label: "Currency"
   }
 
   dimension: deposit_cent_amount {
@@ -189,18 +191,21 @@ view: products {
     type: number
     sql: ${TABLE}.max_single_order_quantity ;;
     group_label: "> Special Purpose Data"
+    label: "Max Quantity per Order"
   }
 
   dimension: meta_description {
     type: string
     sql: ${TABLE}.meta_description ;;
     group_label: "> Special Purpose Data"
+    label: "Meta Description"
   }
 
   dimension: description {
     type: string
     sql: ${TABLE}.description ;;
     group_label: "> Special Purpose Data"
+    label: "Description"
   }
 
   dimension: slug_de {
@@ -213,24 +218,28 @@ view: products {
     type: string
     sql: ${TABLE}.synonyms ;;
     group_label: "> Special Purpose Data"
+    label: "Synonyms"
   }
 
   dimension: unit_of_measure {
     type: string
     sql: ${TABLE}.unit_of_measure ;;
     group_label: "> Special Purpose Data"
+    label: "Unit of Measure"
   }
 
   dimension: units_per_handling_unit {
     type: number
     sql: ${TABLE}.units_per_handling_unit ;;
     group_label: "> Special Purpose Data"
+    label: "Units per Handlung Unit"
   }
 
   dimension: product_shelf_no {
     type: string
     sql: ${TABLE}.product_shelf_no ;;
     group_label: "> Special Purpose Data"
+    label: "Shelf Number"
   }
 
   dimension: is_published {
@@ -238,6 +247,7 @@ view: products {
     sql: ${TABLE}.is_published ;;
     hidden: no
     group_label: "> Special Purpose Data"
+    label: "Is Published"
   }
 
   dimension: tax_rate {
@@ -245,6 +255,7 @@ view: products {
     sql: ${TABLE}.tax_rate ;;
     hidden: no
     group_label: "> Special Purpose Data"
+    label: "Tax Rate"
   }
 
   dimension: tax_name {
@@ -252,12 +263,14 @@ view: products {
     sql: ${TABLE}.tax_name ;;
     hidden: no
     group_label: "> Special Purpose Data"
+    label: "Tax Type"
   }
 
   dimension: image_urls {
     type: string
     sql: ${TABLE}.image_urls ;;
     group_label: "> Special Purpose Data"
+    label: "Image URLs"
   }
 
   measure: cnt_sku {
