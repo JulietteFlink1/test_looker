@@ -270,12 +270,12 @@ view: add_to_cart {
         SELECT
                sf.anonymous_id
              , sf.session_id
-             , e.list_category AS list_category_list
+            --, e.list_category AS list_category_list
              , count(e.timestamp) as event_count
              , countif(e.list_category = 'category') as list_category
              , countif(e.list_category = 'favourites') as list_favourites
              , countif(e.list_category = 'last_bought') as list_last_bought
-             , countif(e.list_category = 'pdp') as list_pdp
+             , countif(e.list_category IN ('order_details', 'pdp')) as list_pdp
              , countif(e.list_category = 'search') as list_search
              , countif(e.list_category = 'swimlane') as list_swimlane
              , countif(e.list_category = 'cart') as list_cart
@@ -285,7 +285,7 @@ view: add_to_cart {
             AND e.timestamp >= sf.session_start_at
             AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
         WHERE e.event = 'product_added_to_cart'
-        GROUP BY 1,2,3
+        GROUP BY 1,2
     )
 
     , home_viewed AS (
@@ -360,18 +360,14 @@ view: add_to_cart {
         , sf.context_locale
         , sf.session_id
         , sf.session_number
-        , datetime(sf.session_start_at,
-          'UTC') AS session_start_at
-        , datetime(sf.next_session_start_at,
-          'UTC') AS next_session_start_at
+        , datetime(sf.session_start_at, 'UTC') AS session_start_at
+        , datetime(sf.next_session_start_at, 'UTC') AS next_session_start_at
         , sf.hub_code
         , sf.hub_country
         , sf.hub_city
         , sf.delivery_eta
-        , sf.has_selected_address
+      --  , sf.has_selected_address
         , sf.has_address
-        , atc.list_category_list as list_category
-        , atc.event_count as add_to_cart
         , atc.list_category as add_to_cart_category
         , atc.list_favourites as add_to_cart_favourites
         , atc.list_last_bought as add_to_cart_last_bought
@@ -379,6 +375,7 @@ view: add_to_cart {
         , atc.list_search as add_to_cart_search
         , atc.list_swimlane as add_to_cart_swimlane
         , atc.list_cart as add_to_cart_cart
+        , atc.event_count as add_to_cart
         , hv.event_count as home_viewed
         , cv.event_count as more_categories
         , cs.event_count as category_selected
@@ -418,20 +415,6 @@ view: add_to_cart {
       year
     ]
     sql: ${TABLE}.session_start_at ;;
-  }
-
-  dimension_group: next_session_start_at {
-    type: time
-    datatype: datetime
-    timeframes: [
-      date,
-      day_of_week,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    sql: ${TABLE}.next_session_start_at ;;
   }
 
 dimension: list_category {
@@ -539,11 +522,53 @@ dimension: list_category {
     filters: [add_to_cart: "NOT NULL"]
   }
 
-  measure: cnt_add_to_cart_pdp {
-    label: "Add to cart PDP"
-    description: "Number of sessions in which at least one Product Added To Cart event happened"
+  measure: cnt_cart_category{
+    label: "Cart - Category"
+    description: "Cart - Category"
     type: count
-    filters: [list_category: "pdp"]
+    filters: [add_to_cart_category: ">0"]
+  }
+
+  measure: cnt_cart_favourites{
+    label: "Cart - Favourites"
+    description: "Cart - Favourites"
+    type: count
+    filters: [add_to_cart_favourites: ">0"]
+  }
+
+  measure: cnt_cart_last_bought {
+    label: "Cart - Last Bought"
+    description: "Cart - Last Bought"
+    type: count
+    filters: [add_to_cart_last_bought: ">0"]
+  }
+
+  measure: cnt_cart_pdp {
+    label: "Cart - PDP"
+    description: "Cart - PDP"
+    type: count
+    filters: [add_to_cart_pdp: ">0"]
+  }
+
+  measure: cnt_cart_search{
+    label: "Cart - Search"
+    description: "Cart - Search"
+    type: count
+    filters: [add_to_cart_search: ">0"]
+  }
+
+  measure: cnt_cart_swimlane{
+    label: "Cart - Swimlane"
+    description: "Cart - Swimlane"
+    type: count
+    filters: [add_to_cart_swimlane: ">0"]
+  }
+
+  measure: cnt_cart_cart{
+    label: "Cart - Cart"
+    description: "Cart - Cart"
+    type: count
+    filters: [add_to_cart_cart: ">0"]
   }
 
   measure: cnt_category_selected {
@@ -575,9 +600,51 @@ dimension: list_category {
   }
 
   measure: sum_add_to_cart {
-    label: "Add to cart sum of events"
+    label: "Add to cart - Sum of events"
     type: sum
     sql: ${add_to_cart} ;;
+  }
+
+  measure: sum_add_to_cart_cart {
+    label: "Add to cart - Cart - events"
+    type: sum
+    sql: ${add_to_cart_cart} ;;
+  }
+
+  measure: sum_add_to_cart_category {
+    label: "Add to cart - Category - events"
+    type: sum
+    sql: ${add_to_cart_category} ;;
+  }
+
+  measure: sum_add_to_cart_favourites {
+    label: "Add to cart - Favourites - events"
+    type: sum
+    sql: ${add_to_cart_favourites} ;;
+  }
+
+  measure: sum_add_to_cart_last_bought {
+    label: "Add to cart - Last Bought - events"
+    type: sum
+    sql: ${add_to_cart_last_bought} ;;
+  }
+
+  measure: sum_add_to_cart_pdp {
+    label: "Add to cart - PDP - events"
+    type: sum
+    sql: ${add_to_cart_pdp} ;;
+  }
+
+  measure: sum_add_to_cart_search {
+    label: "Add to cart - Search - events"
+    type: sum
+    sql: ${add_to_cart_search} ;;
+  }
+
+  measure: sum_add_to_cart_swimlane {
+    label: "Add to cart - Swimalne - events"
+    type: sum
+    sql: ${add_to_cart_swimlane} ;;
   }
 
   measure: sum_category_selected {
@@ -593,6 +660,7 @@ dimension: list_category {
   }
 
   ## Measures based on other measures
+
   measure: overall_conversion_rate {
     type: number
     description: "Number of sessions in which an Order Placed event happened, compared to the total number of Session Started"
@@ -600,6 +668,65 @@ dimension: list_category {
     sql: ${cnt_purchase}/NULLIF(${count},0) ;;
   }
 
+  measure: mcvr2 {
+    type: number
+    label: "mCVR2"
+    description: "# sessions in which there was a Product Added To Cart, compared to the number of sessions in which there was a Home Viewed"
+    value_format_name: percent_1
+    sql: ${cnt_add_to_cart}/NULLIF(${cnt_has_address},0) ;;
+  }
+
+  measure: mcvr2_cart{
+    type: number
+    label: "mCVR2 Cart"
+    description: "# sessions in which there was a Product Added To Cart from Cart, compared to the number of sessions in which there was a Home Viewed"
+    value_format_name: percent_1
+    sql: ${cnt_cart_cart}/NULLIF(${cnt_has_address},0) ;;
+  }
+  measure: mcvr2_favourites {
+    type: number
+    label: "mCVR2 Favourites "
+    description: "# sessions in which there was a Product Added To Cart from Favourites, compared to the number of sessions in which there was a Home Viewed"
+    value_format_name: percent_1
+    sql: ${cnt_cart_favourites}/NULLIF(${cnt_has_address},0) ;;
+  }
+  measure: mcvr2_pdp {
+    type: number
+    label: "mCVR2 PDP"
+    description: "# sessions in which there was a Product Added To Cart from PDP, compared to the number of sessions in which there was a Home Viewed"
+    value_format_name: percent_1
+    sql: ${cnt_cart_pdp}/NULLIF(${cnt_has_address},0) ;;
+  }
+  measure: mcvr2_last_bought {
+    type: number
+    label: "mCVR2 Last Bought"
+    description: "# sessions in which there was a Product Added To Cart from Last Bought, compared to the number of sessions in which there was a Home Viewed"
+    value_format_name: percent_1
+    sql: ${cnt_cart_last_bought}/NULLIF(${cnt_has_address},0) ;;
+  }
+  measure: mcvr2_search {
+    type: number
+    label: "mCVR2 Search"
+    description: "# sessions in which there was a Product Added To Cart from Search, compared to the number of sessions in which there was a Home Viewed"
+    value_format_name: percent_1
+    sql: ${cnt_cart_search}/NULLIF(${cnt_has_address},0) ;;
+  }
+
+  measure: mcvr2_swimlane {
+    type: number
+    label: "mCVR2 Swimlane"
+    description: "# sessions in which there was a Product Added To Cart from Swimlane, compared to the number of sessions in which there was a Home Viewed"
+    value_format_name: percent_1
+    sql: ${cnt_cart_swimlane}/NULLIF(${cnt_has_address},0) ;;
+  }
+
+  measure: mcvr2_category {
+    type: number
+    label: "mCVR2 Category"
+    description: "# sessions in which there was a Product Added To Cart from Category, compared to the number of sessions in which there was a Home Viewed"
+    value_format_name: percent_1
+    sql: ${cnt_cart_category}/NULLIF(${cnt_has_address},0) ;;
+  }
 
   #########
 
@@ -658,10 +785,10 @@ dimension: list_category {
     sql: ${TABLE}.delivery_eta ;;
   }
 
-  dimension: has_selected_address {
-    type: string
-    sql: ${TABLE}.has_selected_address ;;
-  }
+  # dimension: has_selected_address {
+  #   type: string
+  #   sql: ${TABLE}.has_selected_address ;;
+  # }
 
   dimension: has_address {
     type: yesno
@@ -693,6 +820,43 @@ dimension: list_category {
     sql: ${TABLE}.order_placed ;;
   }
 
+## list_positions
+  dimension: add_to_cart_category {
+    type: number
+    sql: ${TABLE}.add_to_cart_category;;
+    hidden: yes
+  }
+  dimension: add_to_cart_favourites {
+    type: number
+    sql: ${TABLE}.add_to_cart_favourites ;;
+    hidden: yes
+  }
+  dimension: add_to_cart_last_bought {
+    type: number
+    sql: ${TABLE}.add_to_cart_last_bought ;;
+    hidden: yes
+  }
+  dimension: add_to_cart_pdp {
+    type: number
+    sql: ${TABLE}.add_to_cart_pdp ;;
+    hidden: yes
+  }
+  dimension: add_to_cart_search {
+    type: number
+    sql: ${TABLE}.add_to_cart_search ;;
+    hidden: yes
+  }
+  dimension: add_to_cart_swimlane {
+    type: number
+    sql: ${TABLE}.add_to_cart_swimlane ;;
+    hidden: yes
+  }
+  dimension: add_to_cart_cart {
+    type: number
+    sql: ${TABLE}.add_to_cart_cart ;;
+    hidden: yes
+  }
+
   set: detail {
     fields: [
       anonymous_id,
@@ -702,12 +866,10 @@ dimension: list_category {
       session_id,
       session_number,
       session_start_at_date,
-      next_session_start_at_date,
       hub_code,
       hub_country,
       hub_city,
       delivery_eta,
-      has_selected_address,
       has_address,
       add_to_cart,
       list_category,

@@ -30,7 +30,7 @@ explore: cs_fraudulent_customers_email {
 
   join: map_customer_email_id {
     view_label: "* Customer ID *"
-    sql_on: ${map_customer_email_id.customer_email} = ${orders_cl.user_email};;
+    sql_on: lower(${map_customer_email_id.customer_email}) = lower(${orders_cl.user_email});;
     relationship: many_to_one
     type:  left_outer
   }
