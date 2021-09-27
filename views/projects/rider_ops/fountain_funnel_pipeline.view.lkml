@@ -63,6 +63,52 @@ view: fountain_funnel_pipeline {
     {% endif %};;
   }
 
+  dimension: events_custom_sort {
+    label: "Stages (Custom Sort)"
+    case: {
+      when: {
+        sql: ${title} = 'Data Collection & Video' ;;
+        label: "Data Collection & Video"
+      }
+      when: {
+        sql: ${title} = 'Review Resume and Motiviation' ;;
+        label: "Review Resume and Motiviation"
+      }
+      when: {
+        sql: ${title} = 'Assesment Center' ;;
+        label: "Assesment Center"
+      }
+      when: {
+        sql: ${title} = 'Personal Information' ;;
+        label: "Personal Information"
+      }
+      when: {
+        sql: ${title} = 'Review Fields' ;;
+        label: "Review Fields"
+      }
+      when: {
+        sql: ${title} = 'Waiting for Documents' ;;
+        label: "Waiting for Documents"
+      }
+      when: {
+        sql: ${title} = 'Contract Signature' ;;
+        label: "Contract Signature"
+      }
+      when: {
+        sql: ${title} = 'Creating Accounts' ;;
+        label: "Creating Accounts"
+      }
+      when: {
+        sql: ${title} = 'Approved' ;;
+        label: "Approved"
+      }
+      when: {
+        sql: ${title} = 'First Shift' ;;
+        label: "First Shift"
+      }
+    }
+  }
+
   ###### Parameters
 
   parameter: date_granularity {
