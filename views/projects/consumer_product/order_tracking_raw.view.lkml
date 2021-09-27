@@ -57,28 +57,13 @@ view: order_tracking_raw {
     ),
 
      -- combine order_tracking_viewed for ios and android for the relevant fields
-      order_tracking_tb AS (
-      SELECT
-          anonymous_id,
-          ios_order.context_device_type,
-          ios_order.context_app_version,
-        ios_order.order_id,
-        ios_order.order_number,
-        ios_order.hub_slug,
-        NULL AS country_iso,
-        NULL AS order_status,
-        NULL AS fulfillment_time,
-        NULL AS delayed_component,
-        ios_order.delivery_eta,
-        ios_order.id,
-        ios_order.timestamp
-      FROM
-        `flink-data-prod.flink_ios_production.order_tracking_viewed_view` ios_order
-      UNION ALL
+     -- this is a long section because A) android and ios have different trigger behahaviour and B) android needs apiXXX events to determine whether user stayed on the page
+     android_order_tracking_tb AS (
       SELECT
         anonymous_id,
-        android_order.context_device_type,
-        android_order.context_app_version,
+        event,
+        context_device_type,
+        context_app_version,
         android_order.order_id,
         android_order.order_number,
         android_order.hub_slug,
@@ -88,11 +73,125 @@ view: order_tracking_raw {
         android_order.delayed_component,
         android_order.delivery_eta,
         android_order.id,
-        android_order.timestamp
+        android_order.origin_screen,
+        android_order.timestamp,
       FROM
-        `flink-data-prod.flink_android_production.order_tracking_viewed_view` android_order
-      WHERE android_order.origin_screen!="payment"
-        ),
+        `flink-data-prod.flink_android_production.order_tracking_viewed` android_order
+    --   WHERE android_order.origin_screen!="payment"
+      WHERE _PARTITIONTIME="2021-09-23"
+
+      UNION ALL
+
+      SELECT anonymous_id
+        , event
+        , context_device_type
+        , context_app_version
+        , CAST(NULL AS STRING) AS a
+        , CAST(NULL AS STRING) AS b
+        , CAST(NULL AS STRING) AS c
+        , CAST(NULL AS STRING) AS d
+        , CAST(NULL AS STRING) AS e
+        , CAST(NULL AS INT64) AS f
+        , CAST(NULL AS STRING) AS g
+        , CAST(NULL AS INT64) AS h
+        , CAST(NULL AS STRING) AS i
+        , CAST(NULL AS STRING) AS j
+        , timestamp
+        FROM `flink-data-prod.flink_android_production.api_order_get_succeeded_view`
+        UNION ALL
+        SELECT anonymous_id
+        , event
+        , context_device_type
+        , context_app_version
+        , CAST(NULL AS STRING) AS a
+        , CAST(NULL AS STRING) AS b
+        , CAST(NULL AS STRING) AS c
+        , CAST(NULL AS STRING) AS d
+        , CAST(NULL AS STRING) AS e
+        , CAST(NULL AS INT64) AS f
+        , CAST(NULL AS STRING) AS g
+        , CAST(NULL AS INT64) AS h
+        , CAST(NULL AS STRING) AS i
+        , CAST(NULL AS STRING) AS j
+        , timestamp
+        FROM `flink-data-prod.flink_android_production.api_order_get_failed_view`
+      )
+
+    , android_tracking_help_tb AS (
+        SELECT *
+        , TIMESTAMP_DIFF(timestamp, LAG(timestamp) OVER (PARTITION BY anonymous_id ORDER BY timestamp ASC), SECOND) AS sec_since_prev
+        -- , TIMESTAMP_DIFF(LEAD(timestamp) OVER (PARTITION BY anonymous_id ORDER BY timestamp ASC), timestamp, SECOND) AS sec_until_next
+        -- , LAG(event) OVER (PARTITION BY anonymous_id ORDER BY timestamp ASC) AS prev_event
+        FROM android_order_tracking_tb
+    )
+
+    , android_order_tracking_clean_tb AS (
+        SELECT *
+        , SUM(CASE WHEN sec_since_prev >16 OR event="order_tracking_viewed" THEN 1 ELSE 0 END) OVER (PARTITION BY anonymous_id ORDER BY timestamp ASC) AS view_counter
+        FROM android_tracking_help_tb
+        WHERE NOT(sec_since_prev=0 AND event LIKE "api_order_get%") --sometimes the order get event fires at almost the same time as order_tracking_viewed; that doesn't tell us whether the user stayed on the screen
+    )
+
+    , android_order_tracking_duration_tb AS (
+        SELECT *
+        , LAST_VALUE(timestamp) OVER (PARTITION BY anonymous_id, view_counter ORDER BY timestamp ASC
+                                        RANGE BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING) AS viewed_until
+        FROM android_order_tracking_clean_tb
+    )
+
+    , ios_order_tracking_tb AS (
+      SELECT
+        anonymous_id,
+        event,
+        context_device_type,
+        context_app_version,
+        ios_order.order_id,
+        ios_order.order_number,
+        ios_order.hub_slug,
+        ios_order.country_iso,
+        CAST(NULL AS STRING) AS order_status,
+        NULL AS fulfillment_time,
+        CAST(NULL AS STRING) AS delayed_component,
+        ios_order.delivery_eta,
+        ios_order.id,
+        CAST(NULL AS STRING) AS origin_screen,
+        ios_order.timestamp,
+        TIMESTAMP_DIFF(timestamp, LAG(timestamp) OVER (PARTITION BY anonymous_id ORDER BY timestamp ASC), SECOND) AS sec_since_prev
+      FROM
+        `flink-data-prod.flink_ios_production.order_tracking_viewed` ios_order
+      WHERE _PARTITIONTIME="2021-09-23"
+    )
+
+    , ios_order_tracking_clean_tb AS (
+        SELECT *
+        , SUM(CASE WHEN sec_since_prev <14 OR sec_since_prev >16 THEN 1 ELSE 0 END) OVER (PARTITION BY anonymous_id ORDER BY timestamp ASC) AS view_counter
+        FROM ios_order_tracking_tb
+    )
+
+    , ios_order_tracking_duration_tb AS (
+        SELECT *
+        , LAST_VALUE(timestamp) OVER (PARTITION BY anonymous_id, view_counter ORDER BY timestamp ASC
+                                        RANGE BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING) AS viewed_until
+        , ROW_NUMBER() OVER (PARTITION BY anonymous_id, view_counter ORDER BY timestamp) AS row_per_counter
+        FROM ios_order_tracking_clean_tb
+    )
+
+    , ios_order_tracking_final_tb AS (
+        SELECT * EXCEPT(view_counter)
+        FROM ios_order_tracking_duration_tb
+        WHERE row_per_counter=1
+    )
+
+    , order_tracking_tb AS (
+        SELECT * EXCEPT (view_counter)
+        FROM android_order_tracking_duration_tb
+        -- every tap to see the order tracking page should trigger order_tracking_viewed. Unfortunately it does Not trigger if the app is backgrounded and brought back to the page.
+        -- we can't use api_order_getXXX to estimate that because these events are also triggered prior to orderTrackingViewed. We could also disregard orderTrackingViewed and simply count based on api_order_getXXX events, but I think their timing might be too unpredictable for that.
+        WHERE event="order_tracking_viewed" AND NOT (origin_screen="payment" AND viewed_until=timestamp)
+        UNION ALL
+        SELECT * EXCEPT(row_per_counter) FROM ios_order_tracking_final_tb
+        ORDER BY anonymous_id, timestamp
+    ),
 
     -- combine first_order_placed for ios and android for the relevant fields
     first_order_placed_tb AS (
