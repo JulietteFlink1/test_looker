@@ -1,78 +1,84 @@
 view: order_tracking_raw {
   derived_table: {
-    sql: WITH pretracks_tb AS (
-        SELECT tracks.anonymous_id,
-        tracks.timestamp,
-        IF(tracks.event="purchase_confirmed", "payment_started", tracks.event) AS event,
-        tracks.id,
-        tracks.context_app_version,
-        tracks.context_device_type,
-        tracks.context_os_version
-        FROM `flink-data-prod.flink_android_production.tracks` tracks
-        WHERE tracks.event NOT LIKE "api%" AND tracks.event NOT LIKE "deep_link%"
-        AND NOT (LOWER(tracks.context_app_version) LIKE "%app-rating%"
-           OR LOWER(tracks.context_app_version) LIKE "%debug%")
-          AND NOT (LOWER(tracks.context_app_name) = "flink-staging"
-           OR LOWER(tracks.context_app_name) = "flink-debug")
-          AND (LOWER(tracks.context_traits_email) != "qa@goflink.com"
-           OR tracks.context_traits_email is null)
-          AND (tracks.context_traits_hub_slug NOT IN('erp_spitzbergen', 'fr_hub_test', 'nl_hub_test')
-           OR tracks.context_traits_hub_slug is null)
-        AND event IN ("contact_customer_service_selected", "order_tracking_viewed")
-        UNION ALL
+    persist_for: "1 hour"
+    sql: WITH
+    -- combine order_placed for ios and android for the relevant fields
+    -- some orders receive events twice, so need to make sure they're unique
+    order_placed_tb AS (
+      SELECT *
+      FROM (
+        SELECT
+          anonymous_id,
+          ios_order.order_id,
+          ios_order.context_app_version,
+          ios_order.context_app_name,
+          ios_order.context_traits_email,
+          ios_order.context_traits_hub_slug,
+          SAFE_CAST(ios_order.delivery_eta AS INT64) AS delivery_eta,
+          timestamp,
+          ROW_NUMBER() OVER(PARTITION BY order_number ORDER BY timestamp ASC) AS row_id
+        FROM
+          `flink-data-prod.flink_ios_production.order_placed_view` ios_order
+      )
+      WHERE row_id=1
+      AND NOT (LOWER(context_app_version) LIKE "%app-rating%"
+           OR LOWER(context_app_version) LIKE "%debug%")
+          AND NOT (LOWER(context_app_name) = "flink-staging"
+           OR LOWER(context_app_name) = "flink-debug")
+          AND (LOWER(context_traits_email) != "qa@goflink.com"
+           OR context_traits_email is null)
+          AND (context_traits_hub_slug NOT IN('erp_spitzbergen', 'fr_hub_test', 'nl_hub_test')
+           OR context_traits_hub_slug is null)
+      UNION ALL
+      SELECT *
+      FROM (
+        SELECT
+          anonymous_id,
+          android_order.order_id,
+          android_order.context_app_version,
+          android_order.context_app_name,
+          android_order.context_traits_email,
+          android_order.context_traits_hub_slug,
+          android_order.delivery_eta,
+          timestamp,
+          ROW_NUMBER() OVER(PARTITION BY order_number ORDER BY timestamp ASC) AS row_id
+        FROM
+          `flink-data-prod.flink_android_production.order_placed_view` android_order
+      )
+      WHERE row_id=1
+      AND NOT (LOWER(context_app_version) LIKE "%app-rating%"
+           OR LOWER(context_app_version) LIKE "%debug%")
+          AND NOT (LOWER(context_app_name) = "flink-staging"
+           OR LOWER(context_app_name) = "flink-debug")
+          AND (LOWER(context_traits_email) != "qa@goflink.com"
+           OR context_traits_email is null)
+          AND (context_traits_hub_slug NOT IN('erp_spitzbergen', 'fr_hub_test', 'nl_hub_test')
+           OR context_traits_hub_slug is null)
+    ),
 
-        SELECT tracks.anonymous_id,
-        tracks.timestamp,
-        IF(tracks.event="purchase_confirmed", "payment_started", tracks.event) AS event,
-        tracks.id,
-        tracks.context_app_version,
-        tracks.context_device_type,
-        tracks.context_os_version
-        FROM `flink-data-prod.flink_ios_production.tracks` tracks
-        WHERE tracks.event NOT LIKE "api%" AND tracks.event NOT LIKE "deep_link%"
-        AND NOT (LOWER(tracks.context_app_version) LIKE "%app-rating%"
-           OR LOWER(tracks.context_app_version) LIKE "%debug%")
-          AND NOT (LOWER(tracks.context_app_name) = "flink-staging"
-           OR LOWER(tracks.context_app_name) = "flink-debug")
-          AND (LOWER(tracks.context_traits_email) != "qa@goflink.com"
-           OR tracks.context_traits_email is null)
-          AND (tracks.context_traits_hub_slug NOT IN('erp_spitzbergen', 'fr_hub_test', 'nl_hub_test')
-           OR tracks.context_traits_hub_slug is null)
-        AND event IN ("contact_customer_service_selected", "order_tracking_viewed")
-      ),
-
-      -- identify which "automatic" events for order_tracking_viewed to exclude
-      -- TODO currently can only do this for android, need this for iOS (also for automatically triggered later ones in ios)
-        exclude_from_tracks AS (
-        SELECT id
-        FROM `flink-data-prod.flink_android_production.order_tracking_viewed_view`
-        WHERE origin_screen="payment"
-      ),
-
-      tracks_tb AS (
-        SELECT pretracks_tb.*
-        FROM pretracks_tb
-        LEFT JOIN exclude_from_tracks
-        ON pretracks_tb.id=exclude_from_tracks.id
-        WHERE exclude_from_tracks.id IS NULL
-      ),
-
-      -- combine order_tracking_viewed for ios and android for the relevant fields
+     -- combine order_tracking_viewed for ios and android for the relevant fields
       order_tracking_tb AS (
       SELECT
+          anonymous_id,
+          ios_order.context_device_type,
+          ios_order.context_app_version,
         ios_order.order_id,
         ios_order.order_number,
         ios_order.hub_slug,
-        CAST(NULL AS STRING) AS country_iso,
-        CAST(NULL AS STRING) AS order_status,
-        CAST(NULL AS INT64) AS fulfillment_time,
-        CAST(NULL AS STRING) AS delayed_component,
+        NULL AS country_iso,
+        NULL AS order_status,
+        NULL AS fulfillment_time,
+        NULL AS delayed_component,
         ios_order.delivery_eta,
-        ios_order.id
+        ios_order.id,
+        ios_order.timestamp
       FROM
         `flink-data-prod.flink_ios_production.order_tracking_viewed_view` ios_order
       UNION ALL
       SELECT
+        anonymous_id,
+        android_order.context_device_type,
+        android_order.context_app_version,
         android_order.order_id,
         android_order.order_number,
         android_order.hub_slug,
@@ -82,105 +88,112 @@ view: order_tracking_raw {
         android_order.delayed_component,
         android_order.delivery_eta,
         android_order.id,
-        FROM
-            `flink-data-prod.flink_android_production.order_tracking_viewed_view` android_order
+        android_order.timestamp
+      FROM
+        `flink-data-prod.flink_android_production.order_tracking_viewed_view` android_order
+      WHERE android_order.origin_screen!="payment"
         ),
-
-    -- combine order_placed for ios and android for the relevant fields
-    -- some orders receive events twice, so need to make sure they're unique
-    order_placed_tb AS (
-    SELECT *
-    FROM (
-      SELECT
-        ios_order.order_id,
-        ios_order.order_number,
-        SAFE_CAST(ios_order.delivery_eta AS INT64) AS delivery_eta,
-        ios_order.hub_slug,
-        ios_order.revenue,
-        ios_order.voucher_value,
-        ios_order.id,
-        timestamp,
-        ROW_NUMBER() OVER(PARTITION BY order_number ORDER BY timestamp ASC) AS row_id
-      FROM
-        `flink-data-prod.flink_ios_production.order_placed_view` ios_order
-    )
-    WHERE row_id=1
-      UNION ALL
-    SELECT *
-    FROM (
-      SELECT
-        android_order.order_id,
-        android_order.order_number,
-        android_order.delivery_eta,
-        android_order.hub_slug,
-        android_order.revenue,
-        android_order.voucher_value,
-        android_order.id,
-        timestamp,
-        ROW_NUMBER() OVER(PARTITION BY order_number ORDER BY timestamp ASC) AS row_id
-      FROM
-        `flink-data-prod.flink_android_production.order_placed_view` android_order
-    )
-    WHERE row_id=1
-    ),
 
     -- combine first_order_placed for ios and android for the relevant fields
     first_order_placed_tb AS (
-      SELECT
-        ios_order.order_number
-      FROM
-        `flink-data-prod.flink_ios_production.first_order_placed_view` ios_order
-      UNION ALL
-      SELECT
-        android_order.order_number
-      FROM
-        `flink-data-prod.flink_android_production.first_order_placed_view` android_order
-        ),
+      SELECT *
+       FROM (
+           SELECT
+           ios_order.order_id
+           , ROW_NUMBER() OVER(PARTITION BY order_number ORDER BY timestamp ASC) AS row_id
+           FROM `flink-data-prod.flink_ios_production.first_order_placed_view` ios_order
+        )
+        WHERE row_id=1
 
-      -- TODO currently only available on android but will be there for ios soon (combine here when it's available)
+      UNION ALL
+      SELECT *
+       FROM (
+           SELECT
+            android_order.order_id
+            , ROW_NUMBER() OVER(PARTITION BY order_number ORDER BY timestamp ASC) AS row_id
+            FROM `flink-data-prod.flink_android_production.first_order_placed_view` android_order
+        )
+        WHERE row_id=1
+    ),
+
+      -- combine customer_service_intent for ios and android for relevant fields
       customer_service_intent_tb AS (
       SELECT
+          anonymous_id,
+          android_csi.context_device_type,
+        android_csi.context_app_version,
         android_csi.order_id,
         android_csi.order_number,
         android_csi.hub_slug,
         android_csi.country_iso,
         android_csi.order_status,
         android_csi.delivery_eta,
-        android_csi.id
+        android_csi.id,
+        android_csi.timestamp
       FROM
         `flink-data-prod.flink_android_production.contact_customer_service_selected_view` android_csi
+      UNION ALL
+      SELECT
+          anonymous_id,
+          ios_csi.context_device_type,
+        ios_csi.context_app_version,
+        ios_csi.order_id,
+        ios_csi.order_number,
+        ios_csi.hub_slug,
+        ios_csi.country_iso,
+        ios_csi.status AS order_status,
+        ios_csi.delivery_eta,
+        ios_csi.id,
+        ios_csi.timestamp
+      FROM
+        `flink-data-prod.flink_ios_production.contact_customer_service_selected_view` ios_csi
       ),
 
-      -- with tracks table as a base, join the order_tracking_viewed, order_placed and contact_customer_service_selected tables for their respective information.
-      -- for common fields, always take from order_placed first if available, then contact_customer_service_selected, then order_tracking_viewed, except for delivery_eta (because this will be dynamic soon, need to take it from order_tracking_viewed).
-      joined_tb AS (
+    -- union ot and cs tables
+    joined_tb AS (
       SELECT
-      tracks_tb.*
-      , COALESCE(csi.order_id, ot.order_id) AS order_id
-      , COALESCE(csi.order_number, ot.order_number) AS order_number
-      , COALESCE(csi.hub_slug, ot.hub_slug) AS hub_slug
-      , COALESCE(csi.country_iso, ot.country_iso) AS country_iso_tmp
-      , COALESCE(csi.order_status, ot.order_status) AS order_status
-      , COALESCE(csi.delivery_eta, ot.delivery_eta) AS delivery_eta
-      , ot.delayed_component
-      , ot.fulfillment_time
-      FROM tracks_tb
-      LEFT JOIN order_tracking_tb ot
-      ON tracks_tb.id=ot.id
-      LEFT JOIN customer_service_intent_tb csi
-      ON tracks_tb.id=csi.id
+        anonymous_id
+        , timestamp
+        , "order_tracking_viewed" AS event
+        , context_app_version
+        , context_device_type
+        , order_id
+        , order_number
+        , hub_slug
+        , country_iso AS country_iso_tmp
+        , order_status
+        , delivery_eta
+        , delayed_component
+        , fulfillment_time
+      FROM order_tracking_tb ot
+      UNION ALL
+      SELECT
+        anonymous_id
+        , timestamp
+        , "contact_customer_service_selected" AS event
+        , context_app_version
+        , context_device_type
+        , order_id
+        , order_number
+        , hub_slug
+        , country_iso AS country_iso_tmp
+        , order_status
+        , delivery_eta
+        , NULL AS delayed_component
+        , NULL AS fulfillment_time
+      FROM customer_service_intent_tb csi
       )
 
       SELECT
-        joined_tb.* EXCEPT(country_iso_tmp, id)
-        , IF(joined_tb.order_number IN (SELECT first_order_placed_tb.order_number FROM first_order_placed_tb), TRUE, FALSE) AS is_first_order
+        joined_tb.* EXCEPT(country_iso_tmp)
+        , IF(joined_tb.order_id IN (SELECT first_order_placed_tb.order_id FROM first_order_placed_tb), TRUE, FALSE) AS is_first_order
         , IF(country_iso_tmp IS NULL, IF(SAFE_CAST(joined_tb.order_number AS INT64) IS NULL, UPPER(SPLIT(joined_tb.order_number,"-")[safe_offset(0)]), NULL), country_iso_tmp) AS country_iso
         , order_placed_tb.delivery_eta AS order_placed_delivery_eta
         , order_placed_tb.timestamp AS order_placed_timestamp
       FROM joined_tb
       LEFT JOIN order_placed_tb
       -- there would be many row where this would match and in each row it should add the order_placed original info
-      ON order_placed_tb.order_number=joined_tb.order_number
+      ON order_placed_tb.order_id=joined_tb.order_id
  ;;
   }
 

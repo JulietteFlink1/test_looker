@@ -61,11 +61,17 @@ view: hiring_funnel_marketing_summary {
     hidden: yes
   }
 
-  dimension: spend {
-    type: number
-    sql: ${TABLE}.spend ;;
-    hidden: yes
-  }
+  #dimension: spend {
+  #  type: number
+  #  sql: ${TABLE}.spend ;;
+  #  hidden: yes
+  #}
+
+  #dimension: leads {
+  #  type: number
+  #  sql: ${TABLE}.leads ;;
+  #  hidden: yes
+  #}
 
   dimension: date_ {
     group_label: "* Dates and Timestamps *"
@@ -93,6 +99,7 @@ view: hiring_funnel_marketing_summary {
   ################# Measures
 
   measure: number_of_applicants {
+    hidden: no
     type: sum
     sql: ${applicants} ;;
     value_format_name: decimal_0
@@ -108,12 +115,18 @@ view: hiring_funnel_marketing_summary {
   measure: total_spend {
     type: sum_distinct
     sql_distinct_key: ${unique_id} ;;
-    sql: ${spend};;
+    sql: ${rider_funnel_performance_summary.spend};;
+  }
+
+  measure: number_of_leads {
+    type: sum_distinct
+    sql_distinct_key: ${unique_id} ;;
+    sql: ${rider_funnel_performance_summary.leads} ;;
   }
 
   measure: CVR {
     type: number
-    sql: ${number_of_approved_applicants} / NULLIF(${number_of_applicants}, 0) ;;
+    sql: ${number_of_approved_applicants} / NULLIF(${number_of_leads}, 0) ;;
     description: "Pct. of Leads that Converted into Approved Applicants"
     value_format_name: percent_0
   }

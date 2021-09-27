@@ -16,7 +16,13 @@ view: monitoring_sessions {
         FROM
           `flink-data-prod.flink_ios_production.tracks_view` tracks
         WHERE
-          tracks.event NOT LIKE "%api%"
+        -- for now we need the api_voucher_apply_failed/succeeded events, so can't filter out all api events.
+          tracks.event NOT LIKE "%api_c%"
+          AND tracks.event NOT LIKE "%api_d"
+          AND tracks.event NOT LIKE "%api_g"
+          AND tracks.event NOT LIKE "%api_h"
+          AND tracks.event NOT LIKE "%api_o"
+          AND tracks.event NOT LIKE "%api_p"
           AND tracks.event NOT LIKE "%adjust%"
           AND tracks.event NOT LIKE "%install_attributed%"
           AND tracks.event != "app_opened"
@@ -37,7 +43,13 @@ view: monitoring_sessions {
         FROM
           `flink-data-prod.flink_android_production.tracks_view` tracks
         WHERE
-          tracks.event NOT LIKE "%api%"
+        -- for now we need the api_voucher_apply_failed/succeeded events, so can't filter out all api events.
+          tracks.event NOT LIKE "%api_c%"
+          AND tracks.event NOT LIKE "%api_d"
+          AND tracks.event NOT LIKE "%api_g"
+          AND tracks.event NOT LIKE "%api_h"
+          AND tracks.event NOT LIKE "%api_o"
+          AND tracks.event NOT LIKE "%api_p"
           AND tracks.event NOT LIKE "%adjust%"
           AND tracks.event NOT LIKE "%install_attributed%"
           AND tracks.event != "app_opened"
@@ -281,6 +293,9 @@ event_counts AS (
          , SUM(CASE WHEN e.event="country_not_available_selected" THEN 1 ELSE 0 END) as conas_count
          , SUM(CASE WHEN e.event="purchase_confirmed" THEN 1 ELSE 0 END) as pc_count
          , SUM(CASE WHEN e.event="payment_failed" THEN 1 ELSE 0 END) as pf_count
+         , SUM(CASE WHEN e.event="api_voucher_apply_failed" THEN 1 ELSE 0 END) AS vf_count
+         , SUM(CASE WHEN e.event="api_voucher_apply_succeeded" THEN 1 ELSE 0 END) AS vs_count
+         , SUM(CASE WHEN e.event="voucher_redemption_attempted" THEN 1 ELSE 0 END) AS va_count
         FROM events e
             LEFT JOIN sessions_final sf
             ON e.anonymous_id = sf.anonymous_id
@@ -342,6 +357,9 @@ event_counts AS (
         , ec.conas_count as country_not_available_selected
         , ec.pc_count as payment_started
         , ec.pf_count as payment_failed
+        , ec.vf_count as voucher_failed
+        , ec.vs_count as voucher_succeeded
+        , ec.va_count AS voucher_attempted
         --, CASE WHEN fo.first_order_timestamp < sf.session_start_at THEN true ELSE false END as has_ordered
     FROM sessions_final sf
         LEFT JOIN event_counts  ec
@@ -485,6 +503,27 @@ event_counts AS (
     sql: ${payment_failed} ;;
   }
 
+  measure: cnt_voucher_failed {
+    label: "Cnt Voucher Failed"
+    description: "# Sessions in which Voucher Failed occurred"
+    type: count
+    filters: [voucher_failed: ">0"]
+  }
+
+  measure: cnt_voucher_succeeded {
+    label: "Cnt Voucher Succeeded"
+    description: "# Sessions in which Voucher Succeeded occurred"
+    type: count
+    filters: [voucher_succeeded: ">0"]
+  }
+
+  measure: cnt_voucher_attempted {
+    label: "Cnt Voucher Attempted"
+    description: "# Sessions in which Voucher Attempt occurred"
+    type: count
+    filters: [voucher_attempted: ">0"]
+  }
+
 ###
 
   measure: count {
@@ -608,6 +647,22 @@ event_counts AS (
     type: number
     sql: ${TABLE}.payment_failed ;;
   }
+
+  dimension: voucher_failed {
+    type: number
+    sql: ${TABLE}.voucher_failed ;;
+  }
+
+  dimension: voucher_succeeded {
+    type: number
+    sql: ${TABLE}.voucher_succeeded ;;
+  }
+
+  dimension: voucher_attempted {
+    type: number
+    sql: ${TABLE}.voucher_attempted ;;
+  }
+
 
   set: detail {
     fields: [
