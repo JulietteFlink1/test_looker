@@ -110,6 +110,7 @@ view: orders {
   dimension: backend_source {
     type: string
     sql: ${TABLE}.backend_source ;;
+    hidden: yes
   }
 
   dimension: billing_address_id {
@@ -127,11 +128,13 @@ view: orders {
   }
 
   dimension: country_iso {
+    group_label: "* Geographic Dimensions *"
     type: string
     sql: ${TABLE}.country_iso ;;
   }
 
   dimension: currency {
+    group_label: "* Monetary Values *"
     type: string
     sql: ${TABLE}.currency ;;
   }
@@ -150,6 +153,8 @@ view: orders {
   }
 
   dimension: customer_note {
+    group_label: "* User Dimensions *"
+    label: "Add. Customer Information"
     type: string
     sql: ${TABLE}.customer_note ;;
   }
@@ -162,6 +167,7 @@ view: orders {
   }
 
   dimension: delivery_eta_minutes {
+    group_label: "* Operations / Logistics *"
     type: number
     sql: ${TABLE}.delivery_pdt_minutes ;;
   }
@@ -211,6 +217,7 @@ view: orders {
   }
 
   dimension: is_order_hour_before_now_hour {
+    group_label: "* Operations / Logistics *"
     type: yesno
     sql: ${created_hour_of_day} <= ${now_hour_of_day} ;;
   }
@@ -298,11 +305,14 @@ view: orders {
   }
 
   dimension: hub_code {
+    group_label: "* Hub Dimensions *"
     type: string
     sql: ${TABLE}.hub_code ;;
   }
 
   dimension: warehouse_name {
+    label: "Hub Name"
+    group_label: "* Hub Dimensions *"
     type: string
     sql: ${TABLE}.hub_name ;;
   }
@@ -449,19 +459,9 @@ view: orders {
   }
 
   dimension: language_code {
+    group_label: "* Geographic Dimensions *"
     type: string
     sql: ${TABLE}.language_code ;;
-  }
-
-  dimension: metadata {
-    type: string
-    sql: ${TABLE}.metadata ;;
-  }
-
-  dimension: private_metadata {
-    hidden: yes
-    type: string
-    sql: ${TABLE}.private_metadata ;;
   }
 
   dimension_group: last_modified {
@@ -616,6 +616,8 @@ view: orders {
   }
 
   dimension: id {
+    group_label: "* IDs *"
+    label: "Order ID"
     hidden: no
     type: string
     sql: ${TABLE}.order_id ;;
@@ -661,6 +663,7 @@ view: orders {
   dimension: order_uuid {
     type: string
     group_label: "* IDs *"
+    label: "Order UUID"
     primary_key: yes
     hidden: no
     sql: ${TABLE}.order_uuid ;;
@@ -716,6 +719,7 @@ view: orders {
   }
 
   dimension: shipping_city {
+    group_label: "* Geographic Dimensions *"
     type: string
     sql: ${TABLE}.shipping_city ;;
   }
@@ -845,6 +849,7 @@ view: orders {
   }
 
   dimension: date_granularity_pass_through {
+    group_label: "* Parameters *"
     description: "To use the parameter value in a table calculation (e.g WoW, % Growth) we need to materialize it into a dimension "
     type: string
     hidden: no # yes
@@ -1183,7 +1188,8 @@ view: orders {
   }
 
   measure: sum_quantity_fulfilled {
-    label: "Quantity"
+    label: "Item Quantity Fulfilled"
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
     description: "Fulfilled Quantity"
     type: sum
     sql: ${number_of_items} ;;

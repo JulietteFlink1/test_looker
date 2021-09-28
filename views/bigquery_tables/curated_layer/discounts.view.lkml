@@ -136,7 +136,7 @@ view: discounts {
   }
 
   dimension: use_case {
-    type: number
+    type: string
     sql: ${TABLE}.use_case ;;
   }
 
