@@ -1,16 +1,17 @@
 include: "/views/**/*.view"
 include: "/views/bigquery_tables/curated_layer/*.view"
+include: "/views/bigquery_tables/reporting_layer/competitive_intelligence/*.view"
 include: "/views/bigquery_tables/reporting_layer/competitive_intelligence/gorillas_inventory_stock_count.view.lkml"
 
-explore: flink_products {
+explore: flink_to_gorillas_global {
   from: products
   view_name: products
   group_label: "08) Competitive Intel"
   view_label: "* Flink Product Matches *"
   label: "Flink Assortment Matched"
-  description: "Flink assortment & matched to Gorillas' assortment"
+  description: "Flink assortment matched to Gorillas assortment"
 
-  hidden: yes
+  hidden: no
 
   join: inventory {
     sql_on: ${inventory.sku} = ${products.product_sku} ;;
@@ -26,10 +27,10 @@ explore: flink_products {
     type:  left_outer
   }
 
-  join: de_flink_to_gorillas {
-    from: de_flink_to_gorillas
+  join: flink_to_gorillas_global {
+    from: flink_to_gorillas_global
     view_label: "* Product Match Data *"
-    sql_on: ${de_flink_to_gorillas.flink_product_sku} = ${products.product_sku} ;;
+    sql_on: ${flink_to_gorillas_global.flink_product_sku} = ${products.product_sku} ;;
     relationship: one_to_many
     type: inner
   }
@@ -37,7 +38,7 @@ explore: flink_products {
   join: gorillas_products {
     from:  gorillas_products
     view_label: "* Gorillas Product Data *"
-    sql_on: ${gorillas_products.product_id} = ${de_flink_to_gorillas.gorillas_product_id} AND ${gorillas_products.product_name} = ${de_flink_to_gorillas.gorillas_product_name};;
+    sql_on: ${gorillas_products.product_id} = ${flink_to_gorillas_global.gorillas_product_id} AND ${gorillas_products.product_name} = ${flink_to_gorillas_global.gorillas_product_name};;
     relationship: one_to_one
     type: inner
   }
