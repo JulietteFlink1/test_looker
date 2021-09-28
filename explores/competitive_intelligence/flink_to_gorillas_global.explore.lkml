@@ -11,7 +11,7 @@ explore: flink_to_gorillas_global {
   label: "Flink Assortment Matched"
   description: "Flink assortment matched to Gorillas assortment"
 
-  hidden: no
+  hidden: yes
 
   join: inventory {
     sql_on: ${inventory.sku} = ${products.product_sku} ;;

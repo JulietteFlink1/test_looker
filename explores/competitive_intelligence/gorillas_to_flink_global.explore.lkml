@@ -9,7 +9,7 @@ explore:  gorillas_to_flink_global {
   group_label: "08) Competitive Intel"
   description: "Gorillas assortment & sales matched to Flink's assortment and sales"
 
-  hidden: no
+  hidden: yes
 
   join: gorillas_to_flink_global {
     from:  gorillas_to_flink_global
