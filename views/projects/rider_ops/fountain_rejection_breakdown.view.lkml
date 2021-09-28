@@ -1,5 +1,5 @@
 view: fountain_rejection_breakdown {
-  sql_table_name: `flink-data-staging.curated.fountain_rejection_breakdown`
+  sql_table_name: `flink-data-prod.reporting.fountain_rejection_breakdown`
     ;;
 
   dimension: applicants {

@@ -1,7 +1,50 @@
 view: contact_customer_service_selected_view {
-  sql_table_name: `flink-data-prod.flink_android_production.contact_customer_service_selected_view`
+  derived_table: {
+    persist_for: "1 hour"
+    sql:
+      SELECT
+        anonymous_id
+        , context_app_version
+        , context_device_type
+        , country_iso
+        , delivery_eta
+        , delivery_lat
+        , delivery_lng
+        , delivery_postcode
+        , event
+        , event_text
+        , hub_city
+        , hub_slug
+        , id
+        , order_id
+        , order_number
+        , order_status
+        , timestamp
+      FROM `flink-data-prod.flink_android_production.contact_customer_service_selected_view`
+
+      UNION ALL
+
+      SELECT
+        anonymous_id
+        , context_app_version
+        , context_device_type
+        , country_iso
+        , delivery_eta
+        , delivery_lat
+        , delivery_lng
+        , delivery_postcode
+        , event
+        , event_text
+        , hub_city
+        , hub_slug
+        , id
+        , order_id
+        , order_number
+        , status AS order_status
+        , timestamp
+      FROM `flink-data-prod.flink_ios_production.contact_customer_service_selected_view`
     ;;
-  drill_fields: [id]
+  }
 
   dimension: is_ct_order {
     ## Can know whether is CT order by checking whether order_number is a number (Saleor: 11111) or a string (CT: de_muc_zue7y)
@@ -19,7 +62,7 @@ view: contact_customer_service_selected_view {
     ## The way we can know from the client side whether order_number or order_token should be used, is by checking whether order_number is a number (Saleor: 11111) or a string (CT: de_muc_zue7y)
     type: string
     sql: (
-      IF(${is_ct_order}, ${country_iso}|| '_' ||${order_token}, ${country_iso}|| '_' ||${order_number})
+      IF(${is_ct_order}, ${country_iso}|| '_' ||${order_id}, ${country_iso}|| '_' ||${order_number})
     );;
     hidden: yes
   }
@@ -40,154 +83,14 @@ view: contact_customer_service_selected_view {
     sql: ${TABLE}.anonymous_id ;;
   }
 
-  dimension: context_app_build {
-    type: string
-    sql: ${TABLE}.context_app_build ;;
-  }
-
-  dimension: context_app_name {
-    type: string
-    sql: ${TABLE}.context_app_name ;;
-  }
-
-  dimension: context_app_namespace {
-    type: string
-    sql: ${TABLE}.context_app_namespace ;;
-  }
-
   dimension: context_app_version {
     type: string
     sql: ${TABLE}.context_app_version ;;
   }
 
-  dimension: context_device_ad_tracking_enabled {
-    type: yesno
-    sql: ${TABLE}.context_device_ad_tracking_enabled ;;
-  }
-
-  dimension: context_device_advertising_id {
-    type: string
-    sql: ${TABLE}.context_device_advertising_id ;;
-  }
-
-  dimension: context_device_id {
-    type: string
-    sql: ${TABLE}.context_device_id ;;
-  }
-
-  dimension: context_device_manufacturer {
-    type: string
-    sql: ${TABLE}.context_device_manufacturer ;;
-  }
-
-  dimension: context_device_model {
-    type: string
-    sql: ${TABLE}.context_device_model ;;
-  }
-
-  dimension: context_device_name {
-    type: string
-    sql: ${TABLE}.context_device_name ;;
-  }
-
   dimension: context_device_type {
     type: string
     sql: ${TABLE}.context_device_type ;;
-  }
-
-  dimension: context_ip {
-    type: string
-    sql: ${TABLE}.context_ip ;;
-  }
-
-  dimension: context_library_name {
-    type: string
-    sql: ${TABLE}.context_library_name ;;
-  }
-
-  dimension: context_library_version {
-    type: string
-    sql: ${TABLE}.context_library_version ;;
-  }
-
-  dimension: context_locale {
-    type: string
-    sql: ${TABLE}.context_locale ;;
-  }
-
-  dimension: context_network_bluetooth {
-    type: yesno
-    sql: ${TABLE}.context_network_bluetooth ;;
-  }
-
-  dimension: context_network_carrier {
-    type: string
-    sql: ${TABLE}.context_network_carrier ;;
-  }
-
-  dimension: context_network_cellular {
-    type: yesno
-    sql: ${TABLE}.context_network_cellular ;;
-  }
-
-  dimension: context_network_wifi {
-    type: yesno
-    sql: ${TABLE}.context_network_wifi ;;
-  }
-
-  dimension: context_os_name {
-    type: string
-    sql: ${TABLE}.context_os_name ;;
-  }
-
-  dimension: context_os_version {
-    type: string
-    sql: ${TABLE}.context_os_version ;;
-  }
-
-  dimension: context_protocols_source_id {
-    type: string
-    sql: ${TABLE}.context_protocols_source_id ;;
-  }
-
-  dimension: context_screen_density {
-    type: number
-    sql: ${TABLE}.context_screen_density ;;
-  }
-
-  dimension: context_screen_height {
-    type: number
-    sql: ${TABLE}.context_screen_height ;;
-  }
-
-  dimension: context_screen_width {
-    type: number
-    sql: ${TABLE}.context_screen_width ;;
-  }
-
-  dimension: context_timezone {
-    type: string
-    sql: ${TABLE}.context_timezone ;;
-  }
-
-  dimension: context_traits_anonymous_id {
-    type: string
-    sql: ${TABLE}.context_traits_anonymous_id ;;
-  }
-
-  dimension: context_traits_city_name {
-    type: string
-    sql: ${TABLE}.context_traits_city_name ;;
-  }
-
-  dimension: context_traits_hub_slug {
-    type: string
-    sql: ${TABLE}.context_traits_hub_slug ;;
-  }
-
-  dimension: context_user_agent {
-    type: string
-    sql: ${TABLE}.context_user_agent ;;
   }
 
   dimension: country_iso {
@@ -235,20 +138,6 @@ view: contact_customer_service_selected_view {
     sql: ${TABLE}.hub_slug ;;
   }
 
-  dimension_group: loaded {
-    type: time
-    timeframes: [
-      raw,
-      time,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    sql: ${TABLE}.loaded_at ;;
-  }
-
   dimension: order_id {
     type: string
     sql: ${TABLE}.order_id ;;
@@ -262,53 +151,6 @@ view: contact_customer_service_selected_view {
   dimension: order_status {
     type: string
     sql: ${TABLE}.order_status ;;
-  }
-
-  dimension: order_token {
-    type: string
-    sql: ${TABLE}.order_token ;;
-  }
-
-  dimension_group: original_timestamp {
-    type: time
-    timeframes: [
-      raw,
-      time,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    sql: ${TABLE}.original_timestamp ;;
-  }
-
-  dimension_group: received {
-    type: time
-    timeframes: [
-      raw,
-      time,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    sql: ${TABLE}.received_at ;;
-  }
-
-  dimension_group: sent {
-    type: time
-    timeframes: [
-      raw,
-      time,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    sql: ${TABLE}.sent_at ;;
   }
 
   dimension_group: timestamp {
@@ -325,20 +167,6 @@ view: contact_customer_service_selected_view {
     sql: ${TABLE}.timestamp ;;
   }
 
-  dimension_group: uuid_ts {
-    type: time
-    timeframes: [
-      raw,
-      time,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    sql: ${TABLE}.uuid_ts ;;
-  }
-
   measure: count {
     type: count
     drill_fields: [detail*]
@@ -347,12 +175,7 @@ view: contact_customer_service_selected_view {
   # ----- Sets of fields for drilling ------
   set: detail {
     fields: [
-      id,
-      context_traits_city_name,
-      context_library_name,
-      context_app_name,
-      context_device_name,
-      context_os_name
+      id
     ]
   }
 }

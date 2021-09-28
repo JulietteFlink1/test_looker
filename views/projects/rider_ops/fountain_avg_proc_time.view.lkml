@@ -1,5 +1,5 @@
 view: fountain_avg_proc_time {
-  sql_table_name: `flink-data-staging.curated.fountain_avg_proc_time`
+  sql_table_name: `flink-data-staging.reporting.fountain_avg_proc_time`
     ;;
 
   dimension: city {
@@ -45,14 +45,75 @@ view: fountain_avg_proc_time {
     sql: ${TABLE}.start_date ;;
   }
 
+  dimension_group: hire {
+    type: time
+    timeframes: [
+      raw,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    convert_tz: no
+    datatype: date
+    sql: ${TABLE}.hire_date ;;
+  }
+
   dimension: title {
     type: string
     sql: ${TABLE}.title ;;
   }
 
+  dimension: events_custom_sort {
+    label: "Stages (Custom Sort)"
+    case: {
+      when: {
+        sql: ${title} = 'Data Collection & Video' ;;
+        label: "Data Collection & Video"
+      }
+      when: {
+        sql: ${title} = 'Review Resume and Motiviation' ;;
+        label: "Review Resume and Motiviation"
+      }
+      when: {
+        sql: ${title} = 'Assesment Center' ;;
+        label: "Assesment Center"
+      }
+      when: {
+        sql: ${title} = 'Personal Information' ;;
+        label: "Personal Information"
+      }
+      when: {
+        sql: ${title} = 'Review Fields' ;;
+        label: "Review Fields"
+      }
+      when: {
+        sql: ${title} = 'Waiting for Documents' ;;
+        label: "Waiting for Documents"
+      }
+      when: {
+        sql: ${title} = 'Contract Signature' ;;
+        label: "Contract Signature"
+      }
+      when: {
+        sql: ${title} = 'Creating Accounts' ;;
+        label: "Creating Accounts"
+      }
+      when: {
+        sql: ${title} = 'Approved' ;;
+        label: "Approved"
+      }
+      when: {
+        sql: ${title} = 'First Shift' ;;
+        label: "First Shift"
+      }
+    }
+  }
+
   dimension: unique_id {
     type: string
-    sql: concat(${country}, ${city}, ${position}, ${title}, ${start_date}) ;;
+    sql: concat(${country}, ${city}, ${position}, ${title}, ${start_date}, ${hire_date}) ;;
     hidden: yes
     primary_key: yes
   }
@@ -63,9 +124,9 @@ view: fountain_avg_proc_time {
     label_from_parameter: date_granularity
     sql:
     {% if date_granularity._parameter_value == 'Week' %}
-      ${start_week}
+      ${hire_week}
     {% elsif date_granularity._parameter_value == 'Month' %}
-      ${start_month}
+      ${hire_month}
     {% endif %};;
   }
 

@@ -1,6 +1,6 @@
-include: "/views/projects/rider_ops/rider_funnel_performance_summary.view"
+include: "/views/projects/rider_ops/hiring_funnel_performance_summary.view"
 
-explore: rider_funnel_performance_summary {
+explore: hiring_funnel_performance_summary {
   hidden: no
   label: "Hiring Funnel Performance Summary"
   view_label: "Hiring Funnel Performance Summary"
@@ -8,12 +8,12 @@ explore: rider_funnel_performance_summary {
   group_label: "09) Rider Ops"
 
   access_filter: {
-    field: rider_funnel_performance_summary.country
+    field: hiring_funnel_performance_summary.country
     user_attribute: country_iso
   }
 
   access_filter: {
-    field: rider_funnel_performance_summary.city
+    field: hiring_funnel_performance_summary.city
     user_attribute: city
   }
 
