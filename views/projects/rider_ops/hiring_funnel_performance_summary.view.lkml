@@ -1,5 +1,5 @@
-view: rider_funnel_performance_summary {
-  sql_table_name: `flink-data-prod.reporting.rider_funnel_performance_summary`
+view: hiring_funnel_performance_summary {
+  sql_table_name: `flink-data-prod.reporting.hiring_funnel_performance_summary`
     ;;
 
   dimension: days_to_first_shift {

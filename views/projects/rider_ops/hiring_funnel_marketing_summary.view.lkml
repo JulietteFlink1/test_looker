@@ -115,13 +115,13 @@ view: hiring_funnel_marketing_summary {
   measure: total_spend {
     type: sum_distinct
     sql_distinct_key: ${unique_id} ;;
-    sql: ${rider_funnel_performance_summary.spend};;
+    sql: ${hiring_funnel_performance_summary.spend};;
   }
 
   measure: number_of_leads {
     type: sum_distinct
     sql_distinct_key: ${unique_id} ;;
-    sql: ${rider_funnel_performance_summary.leads} ;;
+    sql: ${hiring_funnel_performance_summary.leads} ;;
   }
 
   measure: CVR {
