@@ -310,7 +310,7 @@ view: rider_staffing_report {
     group_label: " * Rider Hours * "
     label: "# Required Rider Hours"
     hidden: yes
-    sql: coalesce(${orders} / NULLIF(({% parameter rider_UTR %}/2), 0), 0)  ;;
+    sql: coalesce(cast(ceil(${orders} / NULLIF(({% parameter rider_UTR %}/2), 0)) as INT64), 0)  ;;
     type: number
   }
 
