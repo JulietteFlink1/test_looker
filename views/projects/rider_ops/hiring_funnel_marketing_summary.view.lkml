@@ -1,5 +1,5 @@
 view: hiring_funnel_marketing_summary {
-  sql_table_name: `flink-data-staging.curated.hiring_funnel_marketing_summary`
+  sql_table_name: `flink-data-prod.reporting.hiring_funnel_marketing_summary`
     ;;
 
   dimension: applicants {

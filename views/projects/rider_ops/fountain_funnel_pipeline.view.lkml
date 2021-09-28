@@ -1,5 +1,5 @@
 view: fountain_funnel_pipeline {
-  sql_table_name: `flink-data-staging.curated.fountain_funnel_pipeline`
+  sql_table_name: `flink-data-prod.reporting.fountain_funnel_pipeline`
     ;;
 
   dimension: applicants {
