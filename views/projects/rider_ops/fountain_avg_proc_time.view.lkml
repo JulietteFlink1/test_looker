@@ -1,5 +1,5 @@
 view: fountain_avg_proc_time {
-  sql_table_name: `flink-data-staging.reporting.fountain_avg_proc_time`
+  sql_table_name: `flink-data-prod.reporting.fountain_avg_proc_time`
     ;;
 
   dimension: city {
