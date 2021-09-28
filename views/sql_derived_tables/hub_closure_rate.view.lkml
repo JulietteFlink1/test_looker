@@ -42,6 +42,7 @@ cleaned_hours as (
       left join closed_events  as c on o.date = c.closed_date_utc
       and o.warehouse = c.warehouse
       where open_hours is not null
+      and o.date >= "2021-07-01"
 ),
 final as (
         select date
@@ -63,7 +64,7 @@ select date
 , warehouse as hub_code
 , open_hours
 , sum(closure_mins) as total_closure_mins
-, sum(closure_hours) as total_closure_hours
+, ifnull(sum(closure_hours), 0) as total_closure_hours
 from final
 group by 1, 2, 3, 4, 5, 6, 7
        ;;
@@ -159,7 +160,7 @@ group by 1, 2, 3, 4, 5, 6, 7
     label: "Sum Closed Hours"
     hidden:  no
     type: sum
-    sql: COALESCE(${total_closure_hours},0);;
+    sql: ifnull(${total_closure_hours},0);;
     value_format: "0.0"
   }
 
@@ -167,7 +168,7 @@ group by 1, 2, 3, 4, 5, 6, 7
     label: "% Hub Closure Rate"
     hidden:  no
     type: number
-    sql: COALESCE(${sum_closed_hours}/${sum_opened_hours},0);;
+    sql: ${sum_closed_hours}/${sum_opened_hours};;
     value_format: "0.00%"
     }
 
