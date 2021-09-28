@@ -32,10 +32,10 @@ explore:  gorillas_prices {
     type: left_outer
   }
 
-  join: de_gorillas_to_flink {
-    from:  de_gorillas_to_flink
+  join: gorillas_to_flink_global {
+    from:  gorillas_to_flink_global
     view_label: "* Product Matches *"
-    sql_on: ${gorillas_products.product_id} = ${de_gorillas_to_flink.gorillas_product_id};;
+    sql_on: ${gorillas_products.product_id} = ${gorillas_to_flink_global.gorillas_product_id} AND ${gorillas_products.product_name} = ${gorillas_to_flink_global.gorillas_product_name};;
     relationship: many_to_one
     type:  left_outer
   }
@@ -43,7 +43,7 @@ explore:  gorillas_prices {
   join: products {
     from:  products
     view_label: "* Flink Product Data *"
-    sql_on: ${products.product_sku} = ${de_gorillas_to_flink.flink_product_sku};;
+    sql_on: ${products.product_sku} = ${gorillas_to_flink_global.flink_product_sku};;
     relationship: one_to_many
     type: inner
   }
