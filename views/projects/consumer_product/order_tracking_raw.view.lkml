@@ -342,6 +342,7 @@ view: order_tracking_raw {
     type: average
     sql: ${order_tracking_viewed_duration} ;;
     filters: [event: "order_tracking_viewed"]
+    value_format_name: decimal_0
   }
 
   dimension: order_tracking_viewed_duration {
@@ -365,14 +366,14 @@ view: order_tracking_raw {
   dimension: time_since_order_tiers {
     type: tier
     tiers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 20, 25, 30, 45, 60]
-    style: integer
+    style: interval
     sql: ${time_since_order_duration} ;;
   }
 
   dimension: timesdiff_to_pdt_tiers {
     type: tier
     tiers: [-20,-16,-14,-12,-10,-8,-6,-4,-2, 0, 2, 4,6,8,10,12,14,16,20,24,30,45,60]
-    style: integer
+    style: interval
     sql: ${timesdiff_to_pdt} ;;
   }
 
