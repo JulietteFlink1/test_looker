@@ -1,11 +1,22 @@
 view: hub_closure_rate {
   derived_table: {
-    sql: with closed_events as (
+    sql: with dates as (
+            select * from unnest( generate_date_array('2021-07-01', current_date)) as date
+),
+closed_events_raw as (
         select closed_date_utc
         , closed_datetime
         , opened_datetime
         , warehouse
         from `flink-data-prod.order_forecast.forced_hub_closures`
+),
+closed_events as (
+        select d.date as closed_date_utc
+             ,c.closed_datetime
+             ,c.opened_datetime
+             ,c.warehouse
+        from dates d
+        join closed_events_raw c on date >= date(closed_datetime) and date <= date(opened_datetime)
 ),
 open_hours_ as (
           select date(start_datetime) as date
@@ -15,7 +26,6 @@ open_hours_ as (
         , sum(case when is_open = 1 then 0.5 end) as open_hours
         , min(case when is_open = 1 then start_datetime end) as start_hour
         , max(case when is_open = 1 then end_datetime end) as stop_hour
-
       from `flink-data-prod.order_forecast.hub_opening_hours`
       where date(start_datetime) <= current_date
       group by 1, 2, 3, 4
@@ -31,18 +41,18 @@ cleaned_hours as (
         , o.city
         , o.open_hours
         , case when closed_datetime < start_hour then start_hour
-              when closed_datetime > stop_hour then stop_hour
-              else closed_datetime end as cleaned_closed_datetime
+               when closed_datetime > stop_hour then stop_hour
+               else closed_datetime end as cleaned_closed_datetime
         , case when opened_datetime > stop_hour then stop_hour
-              when opened_datetime < start_hour then start_hour
-              when opened_datetime is null then stop_hour
-              else opened_datetime end as cleaned_opened_datetime
+               when opened_datetime < start_hour then start_hour
+               when opened_datetime is null then stop_hour
+               else opened_datetime end as cleaned_opened_datetime
 
       from open_hours_ as o
       left join closed_events  as c on o.date = c.closed_date_utc
       and o.warehouse = c.warehouse
       where open_hours is not null
-      and o.date >= "2021-07-01"
+      and o.date >= "2021-07-01" --no available data before this date
 ),
 final as (
         select date
