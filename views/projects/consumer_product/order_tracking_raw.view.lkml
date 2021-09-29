@@ -264,6 +264,7 @@ view: order_tracking_raw {
         , delivery_eta
         , delayed_component
         , fulfillment_time
+        , viewed_until
       FROM order_tracking_tb ot
       UNION ALL
       SELECT
@@ -280,6 +281,7 @@ view: order_tracking_raw {
         , delivery_eta
         , NULL AS delayed_component
         , NULL AS fulfillment_time
+        , NULL AS viewed_until
       FROM customer_service_intent_tb csi
       )
 
@@ -436,6 +438,11 @@ view: order_tracking_raw {
   dimension_group: order_placed_timestamp {
     type: time
     sql: ${TABLE}.order_placed_timestamp ;;
+  }
+
+  dimension_group: viewed_until {
+    type: time
+    sql: ${TABLE}.viewed_until ;;
   }
 
   set: detail {

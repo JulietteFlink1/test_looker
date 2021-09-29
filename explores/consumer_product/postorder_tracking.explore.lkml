@@ -1,5 +1,4 @@
 include: "/views/projects/consumer_product/postorder_tracking.view.lkml"
-include: "/views/bigquery_tables/curated_layer/orders.view.lkml"
 
 explore: postorder_tracking {
   view_name: postorder_tracking
