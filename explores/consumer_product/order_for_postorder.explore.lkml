@@ -1,5 +1,6 @@
 include: "/explores/consumer_product/order_backend_and_client.explore.lkml"
-include: "/views/projects/consumer_product/contact_customer_service_selected_view.view.lkml"
+# include: "/views/projects/consumer_product/contact_customer_service_selected_view.view.lkml"
+include: "/views/projects/consumer_product/order_tracking_raw.view.lkml"
 include: "/views/projects/consumer_product/order_comments.view.lkml"
 
 explore: order_for_postorder{
@@ -16,11 +17,11 @@ explore: order_for_postorder{
     sql_on: ${order_client.order_uuid} = ${order_for_postorder.order_uuid} ;;
   }
 
-  join: contact_customer_service_selected_view {
-    from: contact_customer_service_selected_view
+  join: order_tracking_raw {
+    from: order_tracking_raw
     type: left_outer
     relationship: one_to_one
-    sql_on: ${contact_customer_service_selected_view.order_uuid} = ${order_for_postorder.order_uuid} ;;
+    sql_on: ${order_tracking_raw.order_uuid} = ${order_for_postorder.order_uuid} ;;
   }
 
 }
