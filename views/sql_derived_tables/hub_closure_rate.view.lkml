@@ -1,46 +1,63 @@
 view: hub_closure_rate {
   derived_table: {
-    sql: with c as (
+    sql: with dates as (
+            select * from unnest( generate_date_array('2021-07-01', current_date)) as date
+),
+closed_events_raw as (
         select closed_date_utc
         , closed_datetime
         , opened_datetime
         , warehouse
         from `flink-data-prod.order_forecast.forced_hub_closures`
-      ),
-
-      o as (select date(start_datetime) as date
-      , warehouse
-      , country_iso
-      , city
-      , sum(case when is_open = 1 then 0.5 end) as open_hours
-      , min(case when is_open = 1 then start_datetime end) as start_hour
-      , max(case when is_open = 1 then end_datetime end) as stop_hour
-
+),
+closed_events as (
+        select d.date as closed_date_utc
+             ,c.closed_datetime
+             ,c.opened_datetime
+             ,c.warehouse
+        from dates d
+        join closed_events_raw c on date >= date(closed_datetime) and date <= date(opened_datetime)
+),
+open_hours_ as (
+          select date(start_datetime) as date
+        , warehouse
+        , country_iso
+        , city
+        , sum(case when is_open = 1 then 0.5 end) as open_hours
+        , min(case when is_open = 1 then start_datetime end) as start_hour
+        , max(case when is_open = 1 then end_datetime end) as stop_hour
       from `flink-data-prod.order_forecast.hub_opening_hours`
-      group by 1, 2, 3, 4)
-      , cleaned_hours as (
+      where date(start_datetime) <= current_date
+      group by 1, 2, 3, 4
+),
+cleaned_hours as (
       select c.closed_datetime
         , c.opened_datetime
-        , c.warehouse
+        , o.warehouse
         , o.date
+        , DATE_TRUNC( o.date, week) as week
+        , DATE_TRUNC( o.date, month) as month
         , o.country_iso
         , o.city
         , o.open_hours
         , case when closed_datetime < start_hour then start_hour
-              when closed_datetime > stop_hour then stop_hour
-              else closed_datetime end as cleaned_closed_datetime
+               when closed_datetime > stop_hour then stop_hour
+               else closed_datetime end as cleaned_closed_datetime
         , case when opened_datetime > stop_hour then stop_hour
-              when opened_datetime < start_hour then start_hour
-              when opened_datetime is null then stop_hour
-              else opened_datetime end as cleaned_opened_datetime
+               when opened_datetime < start_hour then start_hour
+               when opened_datetime is null then stop_hour
+               else opened_datetime end as cleaned_opened_datetime
 
-      from c
-      left join o on o.date = c.closed_date_utc
+      from open_hours_ as o
+      left join closed_events  as c on o.date = c.closed_date_utc
       and o.warehouse = c.warehouse
       where open_hours is not null
-      ),
-      final as (
+      and o.date >= "2021-07-01" --no available data before this date
+),
+final as (
         select date
+          , week
+          , month
           , country_iso
           , city
           , warehouse
@@ -49,15 +66,17 @@ view: hub_closure_rate {
           , round(TIMESTAMP_DIFF(cleaned_opened_datetime, cleaned_closed_datetime, MINUTE)/60, 2) as closure_hours
           from cleaned_hours)
 
-      select date
-        , country_iso
-        , city
-        , warehouse as hub_code
-        , open_hours
-        , sum(closure_mins) as total_closure_mins
-        , sum(closure_hours) as total_closure_hours
-      from final
-      group by 1, 2, 3, 4, 5
+select date
+, week
+, month
+, country_iso
+, city
+, warehouse as hub_code
+, open_hours
+, sum(closure_mins) as total_closure_mins
+, ifnull(sum(closure_hours), 0) as total_closure_hours
+from final
+group by 1, 2, 3, 4, 5, 6, 7
        ;;
   }
 
@@ -66,10 +85,22 @@ view: hub_closure_rate {
     drill_fields: [detail*]
   }
 
-  dimension: date {
+  dimension: day {
     type: date
     datatype: date
     sql: ${TABLE}.date ;;
+  }
+
+  dimension: week {
+    type: date
+    datatype: date
+    sql: ${TABLE}.week ;;
+  }
+
+  dimension: month {
+    type: date
+    datatype: date
+    sql: ${TABLE}.month ;;
   }
 
   dimension: country_iso {
@@ -102,13 +133,30 @@ view: hub_closure_rate {
     sql: ${TABLE}.total_closure_hours ;;
   }
 
-  measure: hub_closure_rate {
-    label: "% Hub Closure Rate"
-    hidden:  no
-    type: average
-    sql: ${total_closure_hours}/${open_hours};;
-    value_format: "0.00%"
-    }
+  parameter: date_granularity {
+    group_label: "* Dates and Timestamps *"
+    label: "Date Granularity"
+    type: unquoted
+    allowed_value: { value: "Day" }
+    allowed_value: { value: "Week" }
+    allowed_value: { value: "Month" }
+    default_value: "Day"
+  }
+
+    dimension: date {
+      group_label: "* Dates and Timestamps *"
+      label: "Date (Dynamic)"
+      label_from_parameter: date_granularity
+      sql:
+      {% if date_granularity._parameter_value == 'Day' %}
+      ${day}
+      {% elsif date_granularity._parameter_value == 'Week' %}
+      ${week}
+      {% elsif date_granularity._parameter_value == 'Month' %}
+      ${month}
+      {% endif %};;
+  }
+
 
   measure: sum_opened_hours {
     label: "Sum Open Hours"
@@ -122,13 +170,23 @@ view: hub_closure_rate {
     label: "Sum Closed Hours"
     hidden:  no
     type: sum
-    sql: ${total_closure_hours};;
+    sql: ifnull(${total_closure_hours},0);;
     value_format: "0.0"
   }
 
+  measure: hub_closure_rate {
+    label: "% Hub Closure Rate"
+    hidden:  no
+    type: number
+    sql: ${sum_closed_hours}/${sum_opened_hours};;
+    value_format: "0.00%"
+    }
+
   set: detail {
     fields: [
-      date,
+      day,
+      week,
+      month,
       country_iso,
       city,
       hub_code,

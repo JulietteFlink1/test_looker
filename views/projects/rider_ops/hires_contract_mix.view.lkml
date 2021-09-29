@@ -1,5 +1,5 @@
 view: hires_contract_mix {
-  sql_table_name: `flink-data-staging.curated.hires_contract_mix`
+  sql_table_name: `flink-data-prod.reporting.hires_contract_mix`
     ;;
 
   dimension: channel {

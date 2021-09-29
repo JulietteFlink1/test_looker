@@ -310,7 +310,7 @@ view: rider_staffing_report {
     group_label: " * Rider Hours * "
     label: "# Required Rider Hours"
     hidden: yes
-    sql: coalesce(${orders} / NULLIF(({% parameter rider_UTR %}/2), 0), 0)  ;;
+    sql: coalesce(cast(ceil((${orders} / NULLIF(({% parameter rider_UTR %}/2), 0)) / 2 ) as INT64), 0)  ;;
     type: number
   }
 
@@ -359,9 +359,9 @@ view: rider_staffing_report {
     type: number
     sql:case when ${date} < '2021-09-20'
           then
-          coalesce(CAST(CEIL(${upper_bound} / ({% parameter rider_UTR %}/2)) AS INT64) / 2, 0)
+          coalesce(CAST(CEIL((${upper_bound} / ({% parameter rider_UTR %}/2)) / 2) AS INT64), 0)
           else
-          coalesce(CAST(CEIL(${predicted_orders} / ({% parameter rider_UTR %}/2)) AS INT64) / 2, 0)
+          coalesce(CAST(CEIL((${predicted_orders} / ({% parameter rider_UTR %}/2)) / 2) AS INT64), 0)
           end
           ;;
   }
@@ -371,9 +371,9 @@ view: rider_staffing_report {
     type: number
     sql:case when ${date} < '2021-09-20'
           then
-          coalesce(CAST(CEIL(${upper_bound} / (${picker_utr}/2)) AS INT64) / 2, 0)
+          coalesce(CAST(CEIL((${upper_bound} / (${picker_utr}/2)) / 2) AS INT64), 0)
         else
-          coalesce(CAST(CEIL(${predicted_orders} / (${picker_utr}/2)) AS INT64) / 2, 0)
+          coalesce(CAST(CEIL((${predicted_orders} / (${picker_utr}/2)) / 2) AS INT64), 0)
           end
           ;;
   }

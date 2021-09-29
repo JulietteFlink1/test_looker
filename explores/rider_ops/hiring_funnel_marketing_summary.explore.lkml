@@ -1,5 +1,5 @@
 include: "/views/projects/rider_ops/hiring_funnel_marketing_summary.view"
-include: "/views/projects/rider_ops/rider_funnel_performance_summary.view"
+include: "/views/projects/rider_ops/hiring_funnel_performance_summary.view"
 
 explore: hiring_funnel_marketing_summary {
   hidden: no
@@ -18,12 +18,12 @@ explore: hiring_funnel_marketing_summary {
     user_attribute: city
   }
 
-  join: rider_funnel_performance_summary {
-    sql_on: ${hiring_funnel_marketing_summary.country} = ${rider_funnel_performance_summary.country}
-            and ${hiring_funnel_marketing_summary.city} = ${rider_funnel_performance_summary.city}
-            and ${hiring_funnel_marketing_summary.channel} = ${rider_funnel_performance_summary.channel}
-            and ${hiring_funnel_marketing_summary.position} = ${rider_funnel_performance_summary.position}
-            and ${hiring_funnel_marketing_summary.start_date} = ${rider_funnel_performance_summary.date_date};;
+  join: hiring_funnel_performance_summary {
+    sql_on: ${hiring_funnel_marketing_summary.country} = ${hiring_funnel_performance_summary.country}
+            and ${hiring_funnel_marketing_summary.city} = ${hiring_funnel_performance_summary.city}
+            and ${hiring_funnel_marketing_summary.channel} = ${hiring_funnel_performance_summary.channel}
+            and ${hiring_funnel_marketing_summary.position} = ${hiring_funnel_performance_summary.position}
+            and ${hiring_funnel_marketing_summary.start_date} = ${hiring_funnel_performance_summary.date_date};;
     type: left_outer
     relationship: many_to_one
   }
