@@ -66,7 +66,7 @@ view: testing__spc {
            oos_data as (
                select sku,
                       avg(avg_stock_count)                   as avg_stock_count,
-                      sum(hours_oos) / sum(open_hours_total) as pct_oos
+                      sum(hours_oos) / NULLIF(sum(open_hours_total),0) as pct_oos
                from inventory_data
                group by 1
            ),
@@ -121,12 +121,12 @@ view: testing__spc {
 
            add_calculated_metrics as (
                select *
-                    , sum_item_price_sold_net / (1 - if(pct_oos = 1, 0.9999999, pct_oos)) / NULLIF(num_ass_hub_codes, 0) *
+                    , sum_item_price_sold_net / NULLIF((1 - if(pct_oos = 1, 0.9999999, pct_oos)),0) / NULLIF(num_ass_hub_codes, 0) *
                       max_num_hub_codes                                                                 as revenue_equalized
                     , (avg_unit_price_gross - buying_price - deposit) / NULLIF(avg_unit_price_gross, 0) as gross_margin
                     , sum_item_quantity_sold / NULLIF(avg_stock_count, 0)                               as inventory_turnover
                     , sum_orders_with_sku /
-                      NULLIF((sum_orders_per_country / (1 - if(pct_oos = 1, 0.9999999, pct_oos)) /
+                      NULLIF((sum_orders_per_country / NULLIF((1 - if(pct_oos = 1, 0.9999999, pct_oos)),0) /
                               NULLIF(num_ass_hub_codes, 0) * max_num_hub_codes), 0)                     as basket_penetration
                from merged_data_table
            ),
