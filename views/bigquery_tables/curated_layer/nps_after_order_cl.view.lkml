@@ -12,6 +12,7 @@ view: nps_after_order_cl {
   dimension: country_iso {
     type: string
     sql: ${TABLE}.country_iso ;;
+    group_label: "> Geographic Data"
   }
 
   dimension: hub_code {
@@ -22,6 +23,7 @@ view: nps_after_order_cl {
   dimension: is_contactable {
     type: yesno
     sql: ${TABLE}.is_contactable ;;
+    group_label: "> Admin Data"
   }
 
   dimension: score {
@@ -39,6 +41,7 @@ view: nps_after_order_cl {
     sql: ${TABLE}.nps_comment ;;
   }
 
+
   dimension_group: submitted {
     type: time
     timeframes: [
@@ -51,6 +54,7 @@ view: nps_after_order_cl {
       year
     ]
     sql: ${TABLE}.submitted_at ;;
+    group_label: "> Dates & Timestamps"
   }
 
   dimension_group: order {
@@ -66,7 +70,9 @@ view: nps_after_order_cl {
     convert_tz: no
     datatype: date
     sql: ${TABLE}.order_date ;;
+    group_label: "> Dates & Timestamps"
   }
+
 
 
   # =========  hidden   =========
@@ -83,7 +89,9 @@ view: nps_after_order_cl {
     ]
     sql: ${TABLE}.last_modified_at ;;
     hidden: yes
+    group_label: "> Dates & Timestamps"
   }
+
   dimension_group: partition_timestamp {
     type: time
     timeframes: [
@@ -97,6 +105,7 @@ view: nps_after_order_cl {
     ]
     sql: ${TABLE}.partition_timestamp ;;
     hidden: yes
+    group_label: "> Dates & Timestamps"
   }
 
 
@@ -105,6 +114,7 @@ view: nps_after_order_cl {
     type: string
     sql: ${TABLE}.order_number ;;
     hidden: no
+    group_label: "> IDs"
   }
 
   dimension: response_uuid {
@@ -112,6 +122,7 @@ view: nps_after_order_cl {
     sql: ${TABLE}.response_uuid ;;
     hidden: no
     primary_key: yes
+    group_label: "> IDs"
   }
 
 
@@ -122,12 +133,14 @@ view: nps_after_order_cl {
     label: "# NPS Responses"
     type: sum
     sql: ${TABLE}.is_nps_response ;;
+    group_label: "> Absolute Metrics"
   }
 
   measure: cnt_detractors {
     label: "# Detractors"
     type: sum
     sql: ${TABLE}.is_detractor ;;
+    group_label: "> Absolute Metrics"
   }
 
 
@@ -135,12 +148,14 @@ view: nps_after_order_cl {
     label: "# Passives"
     type: sum
     sql: ${TABLE}.is_passive ;;
+    group_label: "> Absolute Metrics"
   }
 
   measure: cnt_promoters {
     label: "# Promoters"
     type: sum
     sql: ${TABLE}.is_promoter ;;
+    group_label: "> Absolute Metrics"
   }
 
   measure: pct_detractors{
@@ -150,6 +165,7 @@ view: nps_after_order_cl {
     type: number
     sql: ${cnt_detractors} / NULLIF(${cnt_responses}, 0);;
     value_format: "0%"
+    group_label: "> Percentages"
   }
 
   measure: pct_passives{
@@ -159,6 +175,7 @@ view: nps_after_order_cl {
     type: number
     sql: ${cnt_passives} / NULLIF(${cnt_responses}, 0);;
     value_format: "0%"
+    group_label: "> Percentages"
   }
 
   measure: pct_promoters{
@@ -168,6 +185,7 @@ view: nps_after_order_cl {
     type: number
     sql: ${cnt_promoters} / NULLIF(${cnt_responses}, 0);;
     value_format: "0%"
+    group_label: "> Percentages"
   }
 
   measure: nps_score{
@@ -177,6 +195,7 @@ view: nps_after_order_cl {
     type: number
     sql: ${pct_promoters} - ${pct_detractors};;
     value_format: "0%"
+    group_label: "> Percentages"
   }
 
 
