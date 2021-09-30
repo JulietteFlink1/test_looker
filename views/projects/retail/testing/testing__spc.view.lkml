@@ -14,7 +14,7 @@ view: testing__spc {
                where is_sku_assigned_to_hub
                  -- this gives only assignments without duplicates - aka if the status changed in this timeframe, it is not covered
                  -- those values will be set to TRUE in the next step
-                 and valid_until >= (select end_ts from start_date)
+                 and valid_to >= (select end_ts from start_date)
                  and valid_from <= (select start_ts from start_date)
            ),
 
