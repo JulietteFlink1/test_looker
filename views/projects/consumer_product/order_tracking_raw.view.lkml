@@ -10,6 +10,12 @@ view: order_tracking_raw {
         SELECT
           anonymous_id,
           ios_order.order_id,
+          ios_order.context_device_type,
+          ios_order.order_number,
+          ios_order.hub_slug,
+          CAST(NULL AS STRING) AS country_iso,
+          "STATE_CREATED" AS order_status,
+          ios_order.id,
           ios_order.context_app_version,
           ios_order.context_app_name,
           ios_order.context_traits_email,
@@ -35,6 +41,12 @@ view: order_tracking_raw {
         SELECT
           anonymous_id,
           android_order.order_id,
+          android_order.context_device_type,
+          android_order.order_number,
+          android_order.hub_slug,
+          CAST(NULL AS STRING) AS country_iso,
+          "STATE_CREATED" AS order_status,
+          android_order.id,
           android_order.context_app_version,
           android_order.context_app_name,
           android_order.context_traits_email,
@@ -264,6 +276,7 @@ view: order_tracking_raw {
         , fulfillment_time
         , viewed_until
       FROM order_tracking_tb ot
+
       UNION ALL
       SELECT
         anonymous_id
@@ -281,6 +294,24 @@ view: order_tracking_raw {
         , NULL AS fulfillment_time
         , NULL AS viewed_until
       FROM customer_service_intent_tb csi
+
+      UNION ALL
+      SELECT
+        anonymous_id
+        , timestamp
+        , "order_placed" AS event
+        , context_app_version
+        , context_device_type
+        , order_id
+        , order_number
+        , hub_slug
+        , country_iso AS country_iso_tmp
+        , order_status
+        , delivery_eta
+        , NULL AS delayed_component
+        , NULL AS fulfillment_time
+        , NULL AS viewed_until
+      FROM order_placed_tb op
       )
 
       SELECT
@@ -319,9 +350,17 @@ view: order_tracking_raw {
   }
 
   measure: cnt_unique_order_ccs_intent {
+    label: "# Unique Orders With CCS Intent"
     type: count_distinct
     sql: ${order_id} ;;
     filters: [event: "contact_customer_service_selected"]
+  }
+
+  measure: cnt_order_placed {
+    label: "# Order Placed"
+    type: count_distinct
+    sql: ${order_id} ;;
+    filters: [event: "order_placed"]
   }
 
   measure: cnt_order_tracking_viewed {
@@ -332,10 +371,92 @@ view: order_tracking_raw {
   }
 
   measure: cnt_help_intent {
-    label: "# CCS Intent"
+    label: "# CCS Intent Total"
     description: "Number of times there was an intent to contact customer service"
     type: count
     filters: [event: "contact_customer_service_selected"]
+  }
+
+  measure: cnt_help_intent_step1 {
+    label: "# CCS Intent in Step1"
+    description: "Number of times there was an intent to contact customer service in the ORDER CONFIRMATION stage"
+    type: count_distinct
+    filters: [event: "contact_customer_service_selected", order_status: "STATE_CREATED"]
+    sql: ${order_id} ;;
+  }
+
+  measure: cnt_help_intent_step2 {
+    label: "# CCS Intent in Step2"
+    description: "Number of times there was an intent to contact customer service in the PACKING or PACKED stage "
+    type: count_distinct
+    sql:
+      CASE WHEN ${event} = 'contact_customer_service_selected' AND (${order_status}="STATE_PICKER_ACCEPTED" OR ${order_status}="STATE_PACKED")
+        THEN ${order_id}
+        ELSE NULL
+      END ;;
+  }
+
+  measure: cnt_help_intent_step3 {
+    label: "# CCS Intent in Step3"
+    description: "Number of times there was an intent to contact customer service in the PICKED UP and RIDER ON WAY stage"
+    type: count_distinct
+    sql:
+      CASE WHEN ${event} = 'contact_customer_service_selected' AND (${order_status}="STATE_RIDER_CLAIMED" OR ${order_status}="STATE_ON_ROUTE")
+      THEN ${order_id}
+      ELSE NULL
+    END ;;
+  }
+
+  measure: cnt_help_intent_step4 {
+    label: "# CCS Intent in Step4"
+    description: "Number of times there was an intent to contact customer service"
+    type: count_distinct
+    sql:
+      CASE WHEN ${event} = 'contact_customer_service_selected' AND (${order_status}="STATE_ARRIVED" OR ${order_status}="STATE_DELIVERED")
+      THEN ${order_id}
+      ELSE NULL
+    END ;;
+  }
+
+  measure: pct_orders_ccs_intent {
+    label: "% CCS Intent"
+    description: "The number of orders with CCS intent divided by the total number of orders."
+    type: number
+    sql: (1.0 * ${cnt_unique_order_ccs_intent}) / NULLIF(${cnt_order_placed}, 0) ;;
+    value_format_name: percent_1
+  }
+
+
+  measure: pct_orders_ccs_intent_step1 {
+    label: "% CCS Intent On Order Confirmation"
+    description: "The number of orders with CCS intent on the order confirmation step divided by the total number of orders."
+    type: number
+    sql: (1.0 * ${cnt_help_intent_step1}) / NULLIF(${cnt_order_placed}, 0) ;;
+    value_format_name: percent_1
+  }
+
+  measure: pct_orders_ccs_intent_step2 {
+    label: "% CCS Intent On Order Packing"
+    description: "The number of orders with CCS intent on the order confirmation step divided by the total number of orders."
+    type: number
+    sql: (1.0 * ${cnt_help_intent_step2}) / NULLIF(${cnt_order_placed}, 0) ;;
+    value_format_name: percent_1
+  }
+
+  measure: pct_orders_ccs_intent_step3 {
+    label: "% CCS Intent On Order In Delivery"
+    description: "The number of orders with CCS intent on the order confirmation step divided by the total number of orders."
+    type: number
+    sql: (1.0 * ${cnt_help_intent_step3}) / NULLIF(${cnt_order_placed}, 0) ;;
+    value_format_name: percent_1
+  }
+
+  measure: pct_orders_ccs_intent_step4 {
+    label: "% CCS Intent On Order Delivered"
+    description: "The number of orders with CCS intent on the order confirmation step divided by the total number of orders."
+    type: number
+    sql: (1.0 * ${cnt_help_intent_step4}) / NULLIF(${cnt_order_placed}, 0) ;;
+    value_format_name: percent_1
   }
 
   measure: avg_duration_ordertrackingviewed {
@@ -381,6 +502,7 @@ view: order_tracking_raw {
     type: yesno
     sql: NOT(${is_first_order}) ;;
   }
+
   ###
 
   measure: count {
