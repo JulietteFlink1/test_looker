@@ -1,4 +1,4 @@
-view: order_tracking_raw {
+view: postorder_events {
   derived_table: {
     persist_for: "1 hour"
     sql: WITH
