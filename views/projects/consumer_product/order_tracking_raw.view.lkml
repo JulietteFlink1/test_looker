@@ -78,7 +78,6 @@ view: order_tracking_raw {
       FROM
         `flink-data-prod.flink_android_production.order_tracking_viewed` android_order
     --   WHERE android_order.origin_screen!="payment"
-      WHERE _PARTITIONTIME="2021-09-23"
 
       UNION ALL
 
@@ -159,7 +158,6 @@ view: order_tracking_raw {
         TIMESTAMP_DIFF(timestamp, LAG(timestamp) OVER (PARTITION BY anonymous_id ORDER BY timestamp ASC), SECOND) AS sec_since_prev
       FROM
         `flink-data-prod.flink_ios_production.order_tracking_viewed` ios_order
-      WHERE _PARTITIONTIME="2021-09-23"
     )
 
     , ios_order_tracking_clean_tb AS (
@@ -264,6 +262,7 @@ view: order_tracking_raw {
         , delivery_eta
         , delayed_component
         , fulfillment_time
+        , viewed_until
       FROM order_tracking_tb ot
       UNION ALL
       SELECT
@@ -280,6 +279,7 @@ view: order_tracking_raw {
         , delivery_eta
         , NULL AS delayed_component
         , NULL AS fulfillment_time
+        , NULL AS viewed_until
       FROM customer_service_intent_tb csi
       )
 
@@ -297,6 +297,33 @@ view: order_tracking_raw {
   }
 
   ### Custom dimensions and measures
+  dimension: is_ct_order {
+    ## Can know whether is CT order by checking whether order_number is a number (Saleor: 11111) or a string (CT: de_muc_zue7y)
+    type: yesno
+    sql: (
+          -- if safe_cast fails, returns null meaning order_number was not a number, meaning it was a CT order. Also ruling out NULL because with yesno, null turns into NO (FALSE).
+          IF(SAFE_CAST(${order_number} AS INT64) is NULL,TRUE,FALSE) AND ${order_number} IS NOT NULL
+          );;
+  }
+
+  dimension: order_uuid {
+    ## This uuid is designed to follow the same format as order_uuid inside of orders.view (curated_layer).
+    ## For saleor orders, it looks like this: DE_11111 (order_id is based on order_number)
+    ## For CT orders, it looks like this: DE_c139c9c1-36b5-423b-97b2-79a94d116aea (order_id is based on order_token)
+    ## The way we can know from the client side whether order_number or order_token should be used, is by checking whether order_number is a number (Saleor: 11111) or a string (CT: de_muc_zue7y)
+    type: string
+    sql: (
+      IF(${is_ct_order}, ${country_iso}|| '_' ||${order_id}, ${country_iso}|| '_' ||${order_number})
+    );;
+    hidden: yes
+  }
+
+  measure: cnt_unique_order_ccs_intent {
+    type: count_distinct
+    sql: ${order_id} ;;
+    filters: [event: "contact_customer_service_selected"]
+  }
+
   measure: cnt_order_tracking_viewed {
     label: "# Order Tracking Viewed"
     description: "Number of Order Tracking Viewed"
@@ -309,6 +336,20 @@ view: order_tracking_raw {
     description: "Number of times there was an intent to contact customer service"
     type: count
     filters: [event: "contact_customer_service_selected"]
+  }
+
+  measure: avg_duration_ordertrackingviewed {
+    type: average
+    sql: ${order_tracking_viewed_duration} ;;
+    filters: [event: "order_tracking_viewed"]
+    value_format_name: decimal_0
+  }
+
+  dimension: order_tracking_viewed_duration {
+    type: duration_second
+    sql_start: ${timestamp_raw} ;;
+    sql_end: ${viewed_until_raw} ;;
+    # hidden: yes
   }
 
   dimension: time_since_order_duration{
@@ -436,6 +477,11 @@ view: order_tracking_raw {
   dimension_group: order_placed_timestamp {
     type: time
     sql: ${TABLE}.order_placed_timestamp ;;
+  }
+
+  dimension_group: viewed_until {
+    type: time
+    sql: ${TABLE}.viewed_until ;;
   }
 
   set: detail {
