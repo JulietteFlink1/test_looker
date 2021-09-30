@@ -11,38 +11,47 @@ view: products {
   dimension: category {
     type: string
     label: "Parent Category"
+    group_label: "> Product Attributes"
     sql: ${TABLE}.category ;;
   }
 
   dimension: is_leading_product {
     type: yesno
     sql: ${TABLE}.is_leading_product ;;
+    group_label: "> Product Attributes"
   }
 
   dimension: is_noos_group {
+    label: "Is Never-Out-Of-Stock Group"
     type: yesno
     sql: ${TABLE}.is_noos ;;
+    group_label: "> Product Attributes"
   }
 
   dimension: country_of_origin {
     type: string
     sql: ${TABLE}.country_of_origin ;;
+    group_label: "> Geographic Data"
   }
 
   dimension: product_brand {
+    label: "Brand"
     type: string
     sql: ${TABLE}.product_brand ;;
+    group_label: "> Product Attributes"
   }
 
   dimension: product_name {
     type: string
     sql: ${TABLE}.product_name ;;
+    group_label: "> Product Attributes"
   }
 
   dimension: product_sku {
     label: "SKU"
     type: string
     sql: ${TABLE}.product_sku ;;
+    group_label: "> Product Attributes"
   }
 
   dimension: product_sku_name {
@@ -55,17 +64,20 @@ view: products {
     label: "Sub-Category"
     type: string
     sql: ${TABLE}.subcategory ;;
+    group_label: "> Product Attributes"
   }
 
   dimension: substitute_group {
     type: string
     sql: ${TABLE}.substitute_group ;;
+    group_label: "> Product Attributes"
   }
 
   dimension: substitute_group_filled {
     type: string
     sql: coalesce(${substitute_group}, ${product_name}) ;;
     label: "Substitute Group / Product Name"
+    group_label: "> Product Attributes"
   }
 
   # =========  hidden   =========
@@ -89,6 +101,7 @@ view: products {
     ]
     sql: ${TABLE}.created_at ;;
     hidden: no
+    group_label: "> Dates & Timestamps"
   }
 
   dimension_group: last_modified {
@@ -105,6 +118,7 @@ view: products {
     ]
     sql: ${TABLE}.last_modified_at ;;
     hidden: no
+    group_label: "> Dates & Timestamps"
   }
 
   dimension: country_iso {
