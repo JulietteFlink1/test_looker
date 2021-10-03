@@ -8,6 +8,7 @@
                context_device_type                                                        AS device_type,
                event                                                                      AS event_name,
                search_query,
+               null                                                                       AS list_category,
                search_experiment_variant,
                CASE WHEN search_experiment_variant like '%variant_control%'
                     THEN true ELSE false END                                              AS control_group,
@@ -29,6 +30,7 @@
                context_device_type                                                        AS device_type,
                event                                                                      AS event_name,
                null                                                                       AS search_query,
+               list_category,
                search_experiment_variant,
                CASE WHEN search_experiment_variant like '%variant_control%'
                     THEN true ELSE false END                                              AS control_group,
@@ -50,6 +52,7 @@
                context_device_type                                                        AS device_type,
                event                                                                      AS event_name,
                null                                                                       AS search_query,
+               list_category,
                search_experiment_variant,
                CASE WHEN search_experiment_variant like '%variant_control%'
                     THEN true ELSE false END                                              AS control_group,
@@ -218,6 +221,11 @@
         sql: ${TABLE}.search_query ;;
       }
 
+      dimension: list_position {
+        type: string
+        sql: ${TABLE}.list_category ;;
+      }
+
       dimension: search_experiment_variant {
         type: string
         sql: ${TABLE}.search_experiment_variant ;;
@@ -247,6 +255,7 @@
           event_start_at,
           session_start_at_date,
           event_name,
+          list_position,
           search_experiment_variant,
           control_group,
           experiment_group
