@@ -115,7 +115,12 @@ view: inventory_stock_count_daily {
 
   dimension: country_iso {
     type: string
-    sql: UPPER(LEFT(${hub_code},2)) ;;
+    sql: ${TABLE}.country_iso ;;
+  }
+
+  dimension: city {
+    type: string
+    sql: ${TABLE}.city ;;
   }
 
   dimension: sku {
@@ -135,32 +140,32 @@ view: inventory_stock_count_daily {
     ]
     convert_tz: no
     datatype: date
-    sql: ${TABLE}.partition_timestamp ;;
+    sql: ${TABLE}.inventory_tracking_date ;;
   }
 
   dimension: primary_key {
     type: string
     primary_key: yes
     hidden: yes
-    sql: concat( ${hub_code}, ${sku}, CAST( ${tracking_date} AS STRING ) ) ;;
+    sql: ${TABLE}.daily_stock_uuid ;;
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Measures       ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   measure: avg_stock_count {
-    label: "ø Stock"
+    label: "AVG Quantity"
     type: average
     sql: ${TABLE}.avg_stock_count ;;
     value_format_name: decimal_1
   }
 
-  measure: avg_stock_count_per_substitute_group {
-    label: "ø Stock Substitue Group"
-    type: average
-    sql: ${TABLE}.avg_stock_count_per_substitute_group ;;
-    value_format_name: decimal_1
-  }
+  # measure: avg_stock_count_per_substitute_group {
+  #   label: "ø Stock Substitue Group"
+  #   type: average
+  #   sql: ${TABLE}.avg_stock_count_per_substitute_group ;;
+  #   value_format_name: decimal_1
+  # }
 
 
   measure: hours_oos {
@@ -181,10 +186,16 @@ view: inventory_stock_count_daily {
     label: "# Items Reduced"
     description: "The difference of the previous and current hourly stock level per Product and Hub. This number includes orders, book-outs etc."
     type: sum
-    sql: ${TABLE}.sum_count_purchased ;;
+    sql: ${TABLE}.sum_count_stock_decreased ;;
     value_format_name: decimal_0
     hidden: yes
+  }
 
+  measure: sum_items_sold {
+    label: "# Items Sold"
+    type: sum
+    sql: ${TABLE}.sum_items_ordered ;;
+    value_format_name: decimal_0
   }
 
   measure: sum_count_restocked {
@@ -223,7 +234,7 @@ view: inventory_stock_count_daily {
   }
 
   set: _measures {
-    fields: [avg_stock_count, avg_stock_count_per_substitute_group, hours_oos, open_hours_total, sum_count_purchased, sum_count_restocked, pct_oos]
+    fields: [avg_stock_count, hours_oos, open_hours_total, sum_count_purchased, sum_count_restocked, pct_oos]
   }
 
 
