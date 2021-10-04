@@ -212,7 +212,7 @@ view: orders {
       quarter,
       year
     ]
-    sql: ${TABLE}.partition_timestamp ;;
+    sql: ${TABLE}.order_timestamp ;;
     datatype: timestamp
   }
 
