@@ -83,6 +83,17 @@ view: simple_tracking_events_all {
        ;;
   }
 
+  ### Custom measures and dimensions
+
+  measure: cnt_unique_anonymousid {
+    label: "# Unique Users"
+    description: "Number of Unique Users identified via Anonymous ID from Segment"
+    hidden:  no
+    type: count_distinct
+    sql: ${anonymous_id};;
+    value_format_name: decimal_0
+  }
+
   measure: count_addtocart_from_home {
     label: "count addtocart from home"
     description: "Count number of events where productAddedToCart was preceded by homeViewed"
@@ -131,6 +142,8 @@ view: simple_tracking_events_all {
     type: count
     filters: [event: "voucher_redemption_attempted"]
   }
+
+  ###################
 
   measure: count {
     type: count
