@@ -12,7 +12,13 @@ view: inventory_stock_count_hourly {
     sql: ${TABLE}.country_iso ;;
   }
 
+  dimension: city {
+    type: string
+    sql: ${TABLE}.city ;;
+  }
+
   dimension: is_relevant_update{
+    description: "If set to Yes, filters for only hours that are either out-of-stock or have a change in the quantity compared to the last hour"
     type: yesno
     sql: case when ${current_quantity} = 0 or ${current_quantity} != ${previous_quantity} THEN TRUE ELSE FALSE END ;;
   }
@@ -34,16 +40,16 @@ view: inventory_stock_count_hourly {
     sql: ${TABLE}.hub_code ;;
   }
 
-  dimension: hub_opening_hours_day {
-    type: number
-    sql: ${TABLE}.hub_opening_hours_day ;;
-  }
+  # dimension: hub_opening_hours_day { ==> outdated, not provided anymore
+  #   type: number
+  #   sql: ${TABLE}.hub_opening_hours_day ;;
+  # }
 
   dimension: is_hup_opening_timestamp {
     label: "Is Hub-Opening Time"
     type: yesno
-    sql: CASE WHEN ${TABLE}.is_hup_opening_timestamp = 1 THEN TRUE
-              WHEN ${TABLE}.is_hup_opening_timestamp = 0 THEN FALSE
+    sql: CASE WHEN ${TABLE}.is_hup_open = 1 THEN TRUE
+              WHEN ${TABLE}.is_hup_open = 0 THEN FALSE
          END
     ;;
   }
@@ -58,7 +64,7 @@ view: inventory_stock_count_hourly {
     sql: ${TABLE}.is_noos_product ;;
   }
 
-  dimension_group: partition_timestamp {
+  dimension_group: inventory_tracking_timestamp {
     label: "Stock Level"
     type: time
     datatype: timestamp
@@ -75,7 +81,7 @@ view: inventory_stock_count_hourly {
       quarter,
       year
     ]
-    sql: ${TABLE}.partition_timestamp ;;
+    sql: ${TABLE}.inventory_tracking_timestamp ;;
   }
 
   dimension: sku {
@@ -85,26 +91,6 @@ view: inventory_stock_count_hourly {
 
 
   # =========  hidden   =========
-  dimension: country {
-    type: string
-    case: {
-      when: {
-        sql: UPPER(${TABLE}.country_iso) = "DE" ;;
-        label: "Germany"
-      }
-      when: {
-        sql: UPPER(${TABLE}.country_iso) = "FR" ;;
-        label: "France"
-      }
-      when: {
-        sql: UPPER(${TABLE}.country_iso) = "NL" ;;
-        label: "Netherlands"
-      }
-      else: "Other / Unknown"
-    }
-    hidden: yes
-  }
-
 
   dimension: current_quantity {
     hidden: yes
@@ -144,9 +130,16 @@ view: inventory_stock_count_hourly {
 
 
   measure: avg_previous_quantity {
-    label: "# Quantity On Stock - Previous Hour"
+    label: "AVG Quantity On Stock - Previous Hour"
     description: "Sum of Available items in stock"
     type: average
+    sql: ${TABLE}.previous_quantity ;;
+  }
+
+  measure: sum_previous_quantity {
+    label: "# Quantity On Stock - Previous Hour"
+    description: "Sum of Available items in stock"
+    type: sum
     sql: ${TABLE}.previous_quantity ;;
   }
 
@@ -191,6 +184,20 @@ view: inventory_stock_count_hourly {
     type: average
     sql: ${TABLE}.current_quantity;;
     filters: [stock_level_update_type: "Orders & Book-Outs"]
+  }
+
+  measure: sum_items_ordered {
+    label: "# Items Ordered"
+    description: "How many products have been sold"
+    type: sum
+    sql: ${TABLE}.items_ordered ;;
+  }
+
+  measure: avg_items_ordered {
+    label: "AVG Items Ordered"
+    description: "How many products have been sold on AVG"
+    type: average
+    sql: ${TABLE}.items_ordered ;;
   }
 
 

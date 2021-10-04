@@ -116,6 +116,7 @@ view: hiring_funnel_marketing_summary {
     type: sum_distinct
     sql_distinct_key: ${unique_id} ;;
     sql: ${hiring_funnel_performance_summary.spend};;
+    value_format_name: eur_0
   }
 
   measure: number_of_leads {
