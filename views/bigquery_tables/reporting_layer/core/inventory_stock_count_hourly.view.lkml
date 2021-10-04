@@ -109,12 +109,6 @@ view: inventory_stock_count_hourly {
 
   # =========  IDs   =========
 
-  # dimension: unique_id {
-  #   type: string
-  #   primary_key:  yes
-  #   hidden: yes
-  #   sql: CONCAT(${TABLE}.country_iso,${TABLE}.hub_code,${TABLE}.sku ,CAST(${TABLE}.partition_timestamp AS STRING) ) ;;
-  # }
   dimension: stock_inventory_uuid {
     type: string
     sql: ${TABLE}.stock_inventory_uuid ;;
