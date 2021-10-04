@@ -43,7 +43,8 @@ view: picnic_products {
 
   dimension: price_gross {
     type: number
-    sql: ${TABLE}.price_gross ;;
+    sql: ${TABLE}.price_gross / 100;;
+    value_format: "0.00€"
   }
 
   dimension: price_per_unit_of_measure {

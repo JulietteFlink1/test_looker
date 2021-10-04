@@ -10,6 +10,10 @@ view: picnic_categories {
   dimension: category_name {
     type: string
     sql: ${TABLE}.category_name ;;
+    label: "{% if _view._name == 'category_l0' %} L0 Category Name
+            {% elsif _view._name == 'category_l1' %} L1 Category Name
+            {% elsif _view._name == 'category_l2' %} L2 Category Name
+            {% else %} Category Name {% endif %}"
   }
 
   dimension: level {
