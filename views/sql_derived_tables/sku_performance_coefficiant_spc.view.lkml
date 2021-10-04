@@ -87,6 +87,7 @@ view: sku_performance_coefficiant_spc {
                     , prod.subcategory
                     , prod.substitute_group
                     , prod.product_sku                                                                               as sku
+                    , prod.created_at                                                                                as sku_created_at_timestamp
                     , agg_order_data.country_iso
                     , prod.product_name
                     , cust.is_local_product
@@ -146,225 +147,293 @@ view: sku_performance_coefficiant_spc {
        ;;
   }
 
-  measure: count {
-    type: count
-    drill_fields: [detail*]
-  }
 
-  dimension: category {
-    type: string
-    sql: ${TABLE}.category ;;
-  }
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~     Dimensions     ~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  dimension: subcategory {
-    type: string
-    sql: ${TABLE}.subcategory ;;
-  }
-
-  dimension: substitute_group {
-    type: string
-    sql: ${TABLE}.substitute_group ;;
-  }
-
+  # =========  __main__   =========
   dimension: sku {
     type: string
     sql: ${TABLE}.sku ;;
   }
 
-  dimension: country_iso {
+  dimension: product_sku_name {
+    label: "SKU + Name"
     type: string
-    sql: ${TABLE}.country_iso ;;
+    sql: CONCAT(${TABLE}.sku, ' - ', ${TABLE}.product_name) ;;
+  }
+
+  # =========  hidden   =========
+
+
+  # =========  product attributes   =========
+  dimension: category {
+    label: "Parent Category"
+    type: string
+    sql: ${TABLE}.category ;;
+    group_label: "> Product Dimensions"
+  }
+
+  dimension: subcategory {
+    label: "Sub-Category"
+    type: string
+    sql: ${TABLE}.subcategory ;;
+    group_label: "> Product Dimensions"
+  }
+
+  dimension: substitute_group {
+    type: string
+    sql: ${TABLE}.substitute_group ;;
+    group_label: "> Product Dimensions"
+  }
+
+  dimension_group: sku_created_at_timestamp {
+    label: "SKU Creation"
+    type: time
+    sql: ${TABLE}.sku_created_at_timestamp ;;
+    group_label: "> Product Dimensions"
   }
 
   dimension: product_name {
     type: string
     sql: ${TABLE}.product_name ;;
+    group_label: "> Product Dimensions"
   }
 
   dimension: is_local_product {
     type: string
     sql: ${TABLE}.is_local_product ;;
-  }
-
-  dimension: subtotal_column {
-    type: string
-    sql: ${TABLE}.subtotal_column ;;
-  }
-
-  dimension: buying_price {
-    type: number
-    sql: ${TABLE}.buying_price ;;
-    required_access_grants: [can_view_buying_information]
+    group_label: "> Product Dimensions"
   }
 
   dimension: substitute_group_custom_definition {
     type: string
     sql: ${TABLE}.substitute_group_custom_definition ;;
+    group_label: "> Product Dimensions"
   }
 
   dimension: sku_listing_status {
     type: string
     sql: ${TABLE}.sku_listing_status ;;
+    group_label: "> Product Dimensions"
+  }
+
+
+  # =========  IDs   =========
+
+
+  # =========  Geo   =========
+  dimension: country_iso {
+    type: string
+    sql: ${TABLE}.country_iso ;;
+    group_label: "> Geographic Dimensions"
+  }
+
+
+  # =========  Helper Cols   =========
+  dimension: subtotal_column {
+    type: string
+    sql: ${TABLE}.subtotal_column ;;
+    group_label: "> Helper Dimension"
+  }
+
+  dimension: sum_orders_with_sku {
+    label: "# Orders with selected SKU"
+    type: number
+    sql: ${TABLE}.sum_orders_with_sku ;;
+    group_label: "> Helper Dimension"
+  }
+
+  dimension: sum_orders_per_country {
+    label: "# Total Orders per Country"
+    type: number
+    sql: ${TABLE}.sum_orders_per_country ;;
+    group_label: "> Helper Dimension"
+  }
+  dimension: max_num_hub_codes {
+    label: "# Maximum Hubs per Country and Day"
+    type: number
+    sql: ${TABLE}.max_num_hub_codes ;;
+    group_label: "> Helper Dimension"
+  }
+
+  dimension: num_ass_hub_codes {
+    label: "# Assigned Hubs (of an SKU)"
+    type: number
+    sql: ${TABLE}.num_ass_hub_codes ;;
+    group_label: "> Helper Dimension"
+  }
+
+
+
+  # =========  Payment   =========
+  dimension: buying_price {
+    type: number
+    sql: ${TABLE}.buying_price ;;
+    required_access_grants: [can_view_buying_information]
+    group_label: "> Payment Dimension"
   }
 
   dimension: vat_rate {
     type: number
     sql: ${TABLE}.vat_rate ;;
+    group_label: "> Payment Dimension"
   }
 
   dimension: deposit {
     type: number
     sql: ${TABLE}.deposit ;;
+    group_label: "> Payment Dimension"
   }
 
+
+  # =========  Scores   =========
+  dimension: gross_margin_score {
+    type: number
+    sql: ${TABLE}.gross_margin_score ;;
+    group_label: "> Final Scores"
+  }
+
+  dimension: inventory_turnover_score {
+    type: number
+    sql: ${TABLE}.inventory_turnover_score ;;
+    group_label: "> Final Scores"
+  }
+
+  dimension: avg_basket_value_score {
+    type: number
+    sql: ${TABLE}.avg_basket_value_score ;;
+    group_label: "> Final Scores"
+  }
+
+  dimension: basket_penetration_score {
+    type: number
+    sql: ${TABLE}.basket_penetration_score ;;
+    group_label: "> Final Scores"
+  }
+
+
+  # =========  Numeric Dimensions   =========
   dimension: sum_item_quantity_sold {
     type: number
     sql: ${TABLE}.sum_item_quantity_sold ;;
+    group_label: "> Numeric Dimensions"
   }
 
   dimension: avg_unit_price_gross {
     type: number
     sql: ${TABLE}.avg_unit_price_gross ;;
+    group_label: "> Numeric Dimensions"
   }
 
   dimension: avg_unit_price_net {
     type: number
     sql: ${TABLE}.avg_unit_price_net ;;
+    group_label: "> Numeric Dimensions"
   }
 
   dimension: sum_item_price_sold_net {
     type: number
     sql: ${TABLE}.sum_item_price_sold_net ;;
+    group_label: "> Numeric Dimensions"
   }
 
   dimension: avg_stock_count {
     type: number
     sql: ${TABLE}.avg_stock_count ;;
+    group_label: "> Numeric Dimensions"
   }
 
   dimension: pct_oos {
+    label: "% Out of Stock"
     type: number
     sql: ${TABLE}.pct_oos ;;
-  }
-
-  dimension: max_num_hub_codes {
-    type: number
-    sql: ${TABLE}.max_num_hub_codes ;;
-  }
-
-  dimension: num_ass_hub_codes {
-    type: number
-    sql: ${TABLE}.num_ass_hub_codes ;;
+    group_label: "> Numeric Dimensions"
   }
 
   dimension: avg_skus_in_basket {
+    label: "AVG Unique Products in Basket"
     type: number
     sql: ${TABLE}.avg_skus_in_basket ;;
+    group_label: "> Numeric Dimensions"
   }
 
   dimension: avg_item_quantity_in_basket {
+    label: "AVG Item Quantity in Basket"
     type: number
     sql: ${TABLE}.avg_item_quantity_in_basket ;;
+    group_label: "> Numeric Dimensions"
   }
 
   dimension: avg_order_value_net_in_basket {
     type: number
     sql: ${TABLE}.avg_order_value_net_in_basket ;;
+    group_label: "> Numeric Dimensions"
   }
 
-  dimension: sum_orders_with_sku {
-    type: number
-    sql: ${TABLE}.sum_orders_with_sku ;;
-  }
-
-  dimension: sum_orders_per_country {
-    type: number
-    sql: ${TABLE}.sum_orders_per_country ;;
-  }
 
   dimension: revenue_equalized {
+    label: "Equalized Revenue"
     type: number
     sql: ${TABLE}.revenue_equalized ;;
+    group_label: "> Numeric Dimensions"
   }
 
   dimension: gross_margin {
     type: number
     sql: ${TABLE}.gross_margin ;;
     required_access_grants: [can_view_buying_information]
+    group_label: "> Numeric Dimensions"
   }
 
   dimension: inventory_turnover {
     type: number
     sql: ${TABLE}.inventory_turnover ;;
+    group_label: "> Numeric Dimensions"
   }
 
   dimension: basket_penetration {
     type: number
     sql: ${TABLE}.basket_penetration ;;
+    group_label: "> Numeric Dimensions"
   }
 
   dimension: revenue_equalized_share {
+    label: "Share Equalized Revenue vs Sub-Category"
     type: number
     sql: ${TABLE}.revenue_equalized_share ;;
+    group_label: "> Numeric Dimensions"
   }
 
-  dimension: gross_margin_score {
-    type: number
-    sql: ${TABLE}.gross_margin_score ;;
-  }
 
-  dimension: inventory_turnover_score {
-    type: number
-    sql: ${TABLE}.inventory_turnover_score ;;
-  }
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  dimension: avg_basket_value_score {
-    type: number
-    sql: ${TABLE}.avg_basket_value_score ;;
-  }
 
-  dimension: basket_penetration_score {
-    type: number
-    sql: ${TABLE}.basket_penetration_score ;;
-  }
 
-  set: detail {
-    fields: [
-      category,
-      subcategory,
-      substitute_group,
-      sku,
-      country_iso,
-      product_name,
-      is_local_product,
-      subtotal_column,
-      buying_price,
-      substitute_group_custom_definition,
-      sku_listing_status,
-      vat_rate,
-      deposit,
-      sum_item_quantity_sold,
-      avg_unit_price_gross,
-      avg_unit_price_net,
-      sum_item_price_sold_net,
-      avg_stock_count,
-      pct_oos,
-      max_num_hub_codes,
-      num_ass_hub_codes,
-      avg_skus_in_basket,
-      avg_item_quantity_in_basket,
-      avg_order_value_net_in_basket,
-      sum_orders_with_sku,
-      sum_orders_per_country,
-      revenue_equalized,
-      gross_margin,
-      inventory_turnover,
-      basket_penetration,
-      revenue_equalized_share,
-      gross_margin_score,
-      inventory_turnover_score,
-      avg_basket_value_score,
-      basket_penetration_score
-    ]
-  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
