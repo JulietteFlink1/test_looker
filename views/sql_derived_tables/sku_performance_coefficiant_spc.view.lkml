@@ -1,4 +1,4 @@
-view: testing__spc {
+view: sku_performance_coefficiant_spc {
 
   derived_table: {
     sql: with start_date as (
