@@ -24,7 +24,7 @@ view: testing__spc {
                         left join assignment_data
                                   on assignment_data.sku = inv.sku
                                       and assignment_data.hub_code = inv.hub_code
-               where partition_timestamp between (select start_d from start_date) and (select end_d from start_date)
+               where inventory_tracking_date between (select start_d from start_date) and (select end_d from start_date)
                  and (assignment_data.is_sku_assigned_to_hub = TRUE or assignment_data.is_sku_assigned_to_hub is null)
            ),
 
