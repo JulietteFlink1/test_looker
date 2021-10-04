@@ -16,7 +16,7 @@ explore: top_50_selling_products {
   join: top_50_selling_products_custom {
     view_label: "* Top 50 Selling Products *"
     sql_on: ${inventory.country_iso} = ${top_50_selling_products_custom.country_iso} AND
-      ${inventory.sku}    = ${top_50_selling_products_custom.sku} ;;
+        ${inventory.sku} = ${top_50_selling_products_custom.sku}  ;;
     relationship: many_to_one
     type: left_outer
   }
