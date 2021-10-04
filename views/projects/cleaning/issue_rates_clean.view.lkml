@@ -16,15 +16,11 @@ view: issue_rates_clean {
  ;;
   }
 
-  measure: count {
-    type: count
-    drill_fields: [detail*]
-  }
-
   dimension: primary_key {
     primary_key: yes
     hidden: yes
     sql: CONCAT(${TABLE}.date, ${TABLE}.hub_code) ;;
+    group_label: "> IDs"
   }
 
 
@@ -37,10 +33,11 @@ view: issue_rates_clean {
     type: date
     datatype: date
     sql: ${TABLE}.date ;;
+    group_label: "> Dates & Timestamps"
   }
 
   dimension_group: created {
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates & Timestamps"
     label: "Issue"
     description: "Issue Date/Time"
     type: time
@@ -62,7 +59,7 @@ view: issue_rates_clean {
   }
 
   dimension: date_dynamic {
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates & Timestamps"
     label: "Date (Dynamic)"
     label_from_parameter: orders_cl.date_granularity
     sql:
@@ -128,6 +125,7 @@ view: issue_rates_clean {
     description: "The total number of orders"
     type: sum
     sql: ${orders_total} ;;
+    group_label: "> Absolute Metrics"
   }
 
   measure: sum_orders_with_issues {
@@ -135,42 +133,48 @@ view: issue_rates_clean {
     description: "The sum of orders that have issues (the sum of: Wrong Product, Wrong Order, Perished Product, Missing Product and Damaged Product)"
     type: sum
     sql: ${orders_with_issues} ;;
+    group_label: "> Absolute Metrics"
   }
 
 
   measure: sum_wrong_product {
-    label: "# Wrong Prodcuts"
+    label: "# Wrong Products"
     description: "The number of orders, that have a customer complain with the main reason 'Wrong Product'."
     type: sum
     sql: ${wrong_product} ;;
+    group_label: "> Absolute Metrics"
   }
 
   measure: sum_wrong_order {
-    label: "# Wrong Order"
+    label: "# Wrong Orders"
     description: "The number of orders, that have a customer complain with the main reason 'Wrong Order'."
     type: sum
     sql: ${wrong_order} ;;
+    group_label: "> Absolute Metrics"
   }
 
   measure: sum_perished_product {
-    label: "# Perished Product"
+    label: "# Perished Products"
     description: "The number of orders, that have a customer complain with the main reason 'Perished Product'."
     type: sum
     sql: ${perished_product} ;;
+    group_label: "> Absolute Metrics"
   }
 
   measure: sum_missing_product {
-    label: "# Missing Product"
+    label: "# Missing Products"
     description: "The number of orders, that have a customer complain with the main reason 'Missing Product'."
     type: sum
     sql: ${missing_product} ;;
+    group_label: "> Absolute Metrics"
   }
 
   measure: sum_damaged {
-    label: "# Damaged Product"
+    label: "# Damaged Products"
     description: "The number of orders, that have a customer complain with the main reason 'Damaged Product'."
     type: sum
     sql: ${damaged} ;;
+    group_label: "> Absolute Metrics"
   }
 
 
@@ -180,6 +184,7 @@ view: issue_rates_clean {
     type: number
     sql: (1.0 * ${sum_orders_with_issues}) / NULLIF(${sum_orders_total}, 0) ;;
     value_format_name: percent_1
+    group_label: "> Percentages"
   }
 
 
@@ -189,34 +194,43 @@ view: issue_rates_clean {
     type: number
     sql: (1.0 * ${sum_missing_product}) / NULLIF(${sum_orders_total}, 0) ;;
     value_format_name: percent_1
+    group_label: "> Percentages"
   }
+
   measure: pct_orders_wrong_order {
     label: "% Wrong Order Issue Rate"
     description: "The number of orders with completely wrong baskets delivered divided by the total number of orders."
     type: number
     sql: (1.0 * ${sum_wrong_order}) / NULLIF(${sum_orders_total}, 0) ;;
     value_format_name: percent_1
+    group_label: "> Percentages"
   }
+
   measure: pct_orders_perished_product {
     label: "% Perished Product Issue Rate"
     description: "The number of orders with perished products divided by the total number of orders."
     type: number
     sql: (1.0 * ${sum_perished_product}) / NULLIF(${sum_orders_total}, 0) ;;
     value_format_name: percent_1
+    group_label: "> Percentages"
   }
+
   measure: pct_orders_wrong_product {
     label: "% Wrong Product Issue Rate"
     description: "The number of orders with wrong products divided by the total number of orders."
     type: number
     sql: (1.0 * ${sum_wrong_product}) / NULLIF(${sum_orders_total}, 0) ;;
     value_format_name: percent_1
+    group_label: "> Percentages"
   }
+
   measure: pct_orders_damaged_product {
     label: "% Damaged Product Issue Rate"
     description: "The number of orders with damaged products divided by the total number of orders."
     type: number
     sql: (1.0 * ${sum_damaged}) / NULLIF(${sum_orders_total}, 0) ;;
     value_format_name: percent_1
+    group_label: "> Percentages"
   }
 
 
