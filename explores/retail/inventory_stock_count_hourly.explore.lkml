@@ -7,7 +7,7 @@ explore: inventory_stock_count_hourly {
 
   always_filter: {
     filters:  [
-      inventory_stock_count_hourly.partition_timestamp_date: "last 2 days",
+      inventory_stock_count_hourly.inventory_tracking_timestamp_date: "last 2 days",
       hubs.country_iso: "DE",
       hubs.hub_name: ""
     ]
