@@ -1,5 +1,5 @@
-view: picnic_products_hist {
-  sql_table_name: `flink-data-prod.curated.picnic_products_hist`
+view: picnic_products {
+  sql_table_name: `flink-data-prod.curated.picnic_products`
     ;;
 
   dimension: category_l0 {
