@@ -7,7 +7,7 @@ explore: inventory_stock_count_daily {
 
   always_filter: {
     filters:  [
-      inventory_stock_count_daily.tracking_date: "last 7 days",
+      inventory_stock_count_daily.tracking_date: "7 days",
       hubs.country_iso: "DE",
       hubs.hub_name: ""
     ]
