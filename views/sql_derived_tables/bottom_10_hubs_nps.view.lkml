@@ -25,6 +25,14 @@ view: bottom_10_hubs_nps {
     drill_fields: [detail*]
   }
 
+  dimension: uuid {
+    type: string
+    sql: concat(${TABLE}.hub_code, cast(${TABLE}.submitted_date as string))
+      ;;
+    primary_key: yes
+  }
+
+
   dimension: hub_code {
     type: string
     sql: ${TABLE}.hub_code ;;
