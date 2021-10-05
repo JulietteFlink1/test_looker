@@ -1,7 +1,9 @@
 view: aov_per_subcategory_month{
   derived_table: {
     sql: SELECT
-      c.order_month,
+      c.order_date,
+      c.week,
+      c.month,
       c.country as country_iso,
       c.category,
       c.subcategory,
@@ -13,7 +15,9 @@ view: aov_per_subcategory_month{
       FROM
       (
       SELECT
-      concat(extract(year from cast(a.order_timestamp as date)),"-",extract(month from cast(a.order_timestamp as date))) as order_month,
+      cast(a.order_timestamp as date) as order_date,
+      DATE_TRUNC( cast(a.order_timestamp as date), week) as week,
+      DATE_TRUNC( cast(a.order_timestamp as date), month) as month,
       a.country_iso,
       hub.country,
       b.category,
@@ -29,18 +33,18 @@ view: aov_per_subcategory_month{
       WHERE DATE(a.partition_timestamp) >= "2021-02-01"
 
 
-      group by 1,2,3,4,5
+      group by 1,2,3,4,5,6,7
       )
       as c
 
       left join
       `flink-data-prod.curated.orders` d
-      on c.order_month = d.order_month
+      on c.order_date = d.order_date
       and c.country_iso = d.country_iso
       --and c.hub_name = d.hub_name
       WHERE DATE(d.partition_timestamp) >= "2021-02-01"
       and d.is_successful_order = true
-      group by 1,2,3,4,5,6,7
+      group by 1,2,3,4,5,6,7,8,9
       order by 1,2 desc
        ;;
   }
@@ -67,6 +71,7 @@ view: aov_per_subcategory_month{
 
   }
 
+
   measure: sum_item_value {
     type: sum
     sql: ${TABLE}.sum_item_value ;;
@@ -86,7 +91,7 @@ view: aov_per_subcategory_month{
     type: number
     description: "Item Value per category divided by total number of orders"
     value_format_name: decimal_2
-    sql: ${sum_item_value}/nullif(${avg_orders},0) ;;
+    sql: ${sum_item_value}/nullif(${sum_orders},0) ;;
 
   }
 
@@ -107,9 +112,64 @@ view: aov_per_subcategory_month{
 
 #  }
 
-  dimension: order_month {
-    type: string
-    sql: ${TABLE}.order_month ;;
+  dimension_group: created {
+    group_label: "* Dates and Timestamps *"
+    label: "Order"
+    description: "Order Placement Date"
+    type: time
+    timeframes: [
+      date,
+      day_of_week,
+      week,
+      month,
+      year
+    ]
+    sql: ${TABLE}.order_date ;;
+    datatype: date
+
+  }
+
+  dimension: day {
+    type: date
+    datatype: date
+    sql: ${TABLE}.order_date ;;
+  }
+
+  dimension: month {
+    type: date
+    datatype: date
+    sql: ${TABLE}.month ;;
+  }
+
+
+  dimension: week {
+    type: date
+    datatype: date
+    sql: ${TABLE}.week ;;
+  }
+
+  parameter: date_granularity {
+    group_label: "* Dates and Timestamps *"
+    label: "Date Granularity"
+    type: unquoted
+    allowed_value: { value: "Day" }
+    allowed_value: { value: "Week" }
+    allowed_value: { value: "Month" }
+    default_value: "Day"
+  }
+
+  dimension: order_date {
+    group_label: "* Dates and Timestamps *"
+    label: "Date (Dynamic)"
+    label_from_parameter: date_granularity
+    sql:
+      {% if date_granularity._parameter_value == 'Day' %}
+      ${day}
+      {% elsif date_granularity._parameter_value == 'Week' %}
+      ${week}
+      {% elsif date_granularity._parameter_value == 'Month' %}
+      ${month}
+      {% endif %};;
   }
 
   dimension: country_iso {
@@ -139,7 +199,14 @@ view: aov_per_subcategory_month{
 #  }
 
 
-  set: detail {
-    fields: [order_month, country_iso, category, sum_item_value, orders]
-  }
+set: detail {
+  fields: [day,
+    week,
+    month,
+    country_iso,
+    category,
+    subcategory,
+    sum_item_value,
+    orders]
+}
 }
