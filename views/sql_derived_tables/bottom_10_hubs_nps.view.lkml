@@ -76,8 +76,6 @@ view: bottom_10_hubs_nps {
       hub_code,
       country_iso,
       submitted_date,
-      nps_score,
-      nps_rank,
       is_bottom_10_nps
     ]
   }
