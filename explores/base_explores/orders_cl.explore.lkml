@@ -6,6 +6,7 @@ include: "/views/projects/cleaning/issue_rates_clean.view"
 include: "/views/bigquery_tables/curated_layer/hubs_ct.view"
 include: "/views/bigquery_tables/curated_layer/nps_after_order_cl.view"
 include: "/views/bigquery_tables/curated_layer/cs_post_delivery_issues.view"
+include: "/views/sql_derived_tables/bottom_10_hubs.view"
 
 include: "/explores/base_explores/orders_cl.explore"
 
@@ -82,5 +83,16 @@ explore: orders_cl {
     relationship: one_to_many
     type: left_outer
   }
+
+  join: bottom_10_hubs {
+    from:  botton_10_hubs
+    view_label: "* Bottom 10 Hubs *"
+    sql_on: lower(${orders_cl.hub_code}) = lower(${bottom_10_hubs.hub_code}) AND
+          lower(${orders_cl.country_iso}) = lower(${bottom_10_hubs.country_iso}) AND
+          ${orders_cl.date} = ${bottom_10_hubs.order_date};;
+    relationship: many_to_one
+    type: left_outer
+  }
+
 
 }
