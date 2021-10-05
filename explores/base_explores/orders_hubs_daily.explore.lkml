@@ -1,6 +1,7 @@
 include: "/explores/base_explores/orders_cl.explore"
 include: "/views/sql_derived_tables/bottom_10_hubs.view"
 
+
 explore: orders_hubs_daily {
   extends: [orders_cl]
   description: "Bottom 10 frequency for issue rate and order delivered in time"

@@ -1,4 +1,4 @@
-view: bottom_10_nps {
+view: bottom_10_hubs_nps {
   derived_table: {
     sql: with nps as (
           select hub_code
