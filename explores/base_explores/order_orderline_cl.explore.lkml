@@ -25,11 +25,10 @@ explore: order_orderline_cl {
     type: left_outer
   }
 
-  #join: product_facts {
-  #  type: left_outer
-  #  relationship: many_to_one
-  #  sql_on: ${order_orderline.country_iso} = ${product_facts.country_iso}
-  #     and  ${order_orderline.product_sku} = ${product_facts.sku}
-  #  ;;
-  #}
+  join: customer_address {
+    # can only be seen by people with related permissions
+    sql_on: ${orders_cl.order_uuid} = ${customer_address.order_uuid} ;;
+    type: left_outer
+    relationship: one_to_one
+  }
 }
