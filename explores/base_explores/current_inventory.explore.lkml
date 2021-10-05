@@ -24,7 +24,11 @@ explore: current_inventory {
   always_filter: {
     filters: [
       products_hub_assignment.is_sku_assigned_to_hub: "Yes",
-      hubs.is_hub_opened: "Yes"
+      hubs.is_hub_opened: "Yes",
+
+      inventory.last_modified_date: "14 days",
+      orders.created_date: "30 days",
+      order_lineitems.created_date: "30 days"
     ]
   }
 
