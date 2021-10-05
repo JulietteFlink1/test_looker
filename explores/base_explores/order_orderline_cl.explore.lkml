@@ -11,6 +11,12 @@ explore: order_orderline_cl {
   # view_name: base_order_orderline
   #extension: required
 
+  always_filter: {
+    filters: [
+      orderline.created_date: "30 days"
+    ]
+  }
+
   join: orderline {
     view_label: "* Order Lineitems *"
     sql_on: ${orderline.country_iso} = ${orders_cl.country_iso} AND

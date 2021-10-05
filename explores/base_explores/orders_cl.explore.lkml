@@ -24,7 +24,7 @@ explore: orders_cl {
   always_filter: {
     filters:  [
       orders_cl.is_successful_order: "yes",
-      orders_cl.created_date: "after 2021-01-25",
+      orders_cl.created_date: "30 days",
       hubs.country: "",
       hubs.hub_name: ""
     ]
