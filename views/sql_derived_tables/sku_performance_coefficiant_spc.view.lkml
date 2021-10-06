@@ -273,18 +273,21 @@ view: sku_performance_coefficiant_spc {
     sql: ${TABLE}.buying_price ;;
     required_access_grants: [can_view_buying_information]
     group_label: "> Payment Dimension"
+    value_format_name: eur
   }
 
   dimension: vat_rate {
     type: number
     sql: ${TABLE}.vat_rate ;;
     group_label: "> Payment Dimension"
+    value_format_name: percent_2
   }
 
   dimension: deposit {
     type: number
     sql: ${TABLE}.deposit ;;
     group_label: "> Payment Dimension"
+    value_format_name: eur
   }
 
 
@@ -293,24 +296,28 @@ view: sku_performance_coefficiant_spc {
     type: number
     sql: ${TABLE}.gross_margin_score ;;
     group_label: "> Final Scores"
+    value_format_name: decimal_1
   }
 
   dimension: inventory_turnover_score {
     type: number
     sql: ${TABLE}.inventory_turnover_score ;;
     group_label: "> Final Scores"
+    value_format_name: decimal_1
   }
 
   dimension: avg_basket_value_score {
     type: number
     sql: ${TABLE}.avg_basket_value_score ;;
     group_label: "> Final Scores"
+    value_format_name: decimal_1
   }
 
   dimension: basket_penetration_score {
     type: number
     sql: ${TABLE}.basket_penetration_score ;;
     group_label: "> Final Scores"
+    value_format_name: decimal_1
   }
 
 
@@ -319,30 +326,35 @@ view: sku_performance_coefficiant_spc {
     type: number
     sql: ${TABLE}.sum_item_quantity_sold ;;
     group_label: "> Numeric Dimensions"
+    value_format_name: decimal_1
   }
 
   dimension: avg_unit_price_gross {
     type: number
     sql: ${TABLE}.avg_unit_price_gross ;;
     group_label: "> Numeric Dimensions"
+    value_format_name: eur
   }
 
   dimension: avg_unit_price_net {
     type: number
     sql: ${TABLE}.avg_unit_price_net ;;
     group_label: "> Numeric Dimensions"
+    value_format_name: eur
   }
 
   dimension: sum_item_price_sold_net {
     type: number
     sql: ${TABLE}.sum_item_price_sold_net ;;
     group_label: "> Numeric Dimensions"
+    value_format_name: eur
   }
 
   dimension: avg_stock_count {
     type: number
     sql: ${TABLE}.avg_stock_count ;;
     group_label: "> Numeric Dimensions"
+    value_format_name: decimal_1
   }
 
   dimension: pct_oos {
@@ -350,6 +362,7 @@ view: sku_performance_coefficiant_spc {
     type: number
     sql: ${TABLE}.pct_oos ;;
     group_label: "> Numeric Dimensions"
+    value_format_name: percent_2
   }
 
   dimension: avg_skus_in_basket {
@@ -357,6 +370,7 @@ view: sku_performance_coefficiant_spc {
     type: number
     sql: ${TABLE}.avg_skus_in_basket ;;
     group_label: "> Numeric Dimensions"
+    value_format_name: decimal_1
   }
 
   dimension: avg_item_quantity_in_basket {
@@ -364,12 +378,14 @@ view: sku_performance_coefficiant_spc {
     type: number
     sql: ${TABLE}.avg_item_quantity_in_basket ;;
     group_label: "> Numeric Dimensions"
+    value_format_name: decimal_1
   }
 
   dimension: avg_order_value_net_in_basket {
     type: number
     sql: ${TABLE}.avg_order_value_net_in_basket ;;
     group_label: "> Numeric Dimensions"
+    value_format_name: decimal_1
   }
 
 
@@ -378,6 +394,7 @@ view: sku_performance_coefficiant_spc {
     type: number
     sql: ${TABLE}.revenue_equalized ;;
     group_label: "> Numeric Dimensions"
+    value_format_name: eur
   }
 
   dimension: gross_margin {
@@ -385,18 +402,21 @@ view: sku_performance_coefficiant_spc {
     sql: ${TABLE}.gross_margin ;;
     required_access_grants: [can_view_buying_information]
     group_label: "> Numeric Dimensions"
+    value_format_name: eur
   }
 
   dimension: inventory_turnover {
     type: number
     sql: ${TABLE}.inventory_turnover ;;
     group_label: "> Numeric Dimensions"
+    value_format_name: decimal_3
   }
 
   dimension: basket_penetration {
     type: number
     sql: ${TABLE}.basket_penetration ;;
     group_label: "> Numeric Dimensions"
+    value_format_name: percent_3
   }
 
   dimension: revenue_equalized_share {
@@ -404,6 +424,7 @@ view: sku_performance_coefficiant_spc {
     type: number
     sql: ${TABLE}.revenue_equalized_share ;;
     group_label: "> Numeric Dimensions"
+    value_format_name: percent_3
   }
 
 
