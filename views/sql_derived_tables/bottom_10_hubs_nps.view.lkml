@@ -49,16 +49,6 @@ view: bottom_10_hubs_nps {
     sql: ${TABLE}.submitted_date ;;
   }
 
-  dimension: nps_score {
-    type: number
-    sql: ${TABLE}.nps_score ;;
-  }
-
-  dimension: nps_rank {
-    type: number
-    sql: ${TABLE}.nps_rank ;;
-  }
-
   dimension: is_bottom_10_nps {
     type: number
     sql: ${TABLE}.is_bottom_10_nps ;;
