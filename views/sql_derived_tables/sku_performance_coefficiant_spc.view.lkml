@@ -2,10 +2,10 @@ view: sku_performance_coefficiant_spc {
 
   derived_table: {
     sql: with start_date as (
-          select DATE_SUB(CURRENT_DATE(), interval 7 day)            as start_d
-               , CURRENT_DATE()                                      as end_d
-               , timestamp(DATE_SUB(CURRENT_DATE(), interval 7 day)) as start_ts
-               , CURRENT_TIMESTAMP()                                 as end_ts
+          select DATE_SUB( DATE_TRUNC(CURRENT_DATE(), week(monday) ) , interval 4 week)            as start_d  # last 4 complete weeks
+               , DATE_TRUNC(CURRENT_DATE(), week(sunday) )                                         as end_d    # sunday, as this is last weeks last day in German calendar
+               , timestamp(DATE_SUB( DATE_TRUNC(CURRENT_DATE(), week(monday) ) , interval 4 week)) as start_ts
+               , timestamp(DATE_TRUNC(CURRENT_DATE(), week(sunday) ))                              as end_ts
       ),
 
            assignment_data as (
@@ -135,14 +135,16 @@ view: sku_performance_coefficiant_spc {
            add_sub_category_comparison as (
                select *
                     , revenue_equalized /
-                      NULLIF(SUM(revenue_equalized) over (partition by subcategory), 0)                 as revenue_equalized_share
-                    , RANK() over (partition by subcategory order by gross_margin asc)                  as gross_margin_score
-                    , RANK() over (partition by subcategory order by inventory_turnover asc)            as inventory_turnover_score
-                    , RANK() over (partition by subcategory order by avg_order_value_net_in_basket asc) as avg_basket_value_score
-                    , RANK() over (partition by subcategory order by basket_penetration asc)            as basket_penetration_score
+                      NULLIF(SUM(revenue_equalized) over (partition by country_iso, subcategory), 0)                 as revenue_equalized_share
+                    , RANK() over (partition by country_iso, subcategory order by gross_margin asc)                  as gross_margin_score
+                    , RANK() over (partition by country_iso, subcategory order by inventory_turnover asc)            as inventory_turnover_score
+                    , RANK() over (partition by country_iso, subcategory order by avg_order_value_net_in_basket asc) as avg_basket_value_score
+                    , RANK() over (partition by country_iso, subcategory order by basket_penetration asc)            as basket_penetration_score
                from add_calculated_metrics
            )
-      select *
+      select
+          *
+        , RANK() over (partition by country_iso, subcategory order by revenue_equalized_share,0 asc)                   as revenue_equalized_share_score
       from add_sub_category_comparison
        ;;
   }
@@ -316,6 +318,14 @@ view: sku_performance_coefficiant_spc {
   dimension: basket_penetration_score {
     type: number
     sql: ${TABLE}.basket_penetration_score ;;
+    group_label: "> Final Scores"
+    value_format_name: decimal_1
+  }
+
+  dimension: revenue_equalized_share_score {
+    label: "Equalized Revenue Score"
+    type: number
+    sql: ${TABLE}.revenue_equalized_share_score ;;
     group_label: "> Final Scores"
     value_format_name: decimal_1
   }
