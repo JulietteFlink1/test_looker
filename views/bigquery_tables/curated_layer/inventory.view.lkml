@@ -47,7 +47,7 @@ view: inventory {
       quarter,
       year
     ]
-    sql: ${TABLE}.partition_timestamp ;;
+    sql: ${TABLE}.last_modified_at ;;
     label: "Inventory Update"
     group_label: "> Dates & Timestamps"
   }

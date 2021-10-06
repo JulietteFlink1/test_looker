@@ -92,23 +92,6 @@ view: nps_after_order_cl {
     group_label: "> Dates & Timestamps"
   }
 
-  dimension_group: partition_timestamp {
-    type: time
-    timeframes: [
-      raw,
-      time,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    sql: ${TABLE}.partition_timestamp ;;
-    hidden: yes
-    group_label: "> Dates & Timestamps"
-  }
-
-
   # =========  IDs   =========
   dimension: order_number {
     type: string
