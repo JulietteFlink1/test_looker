@@ -5,6 +5,7 @@ include: "/views/sql_derived_tables/bottom_10_hubs_nps.view"
 
 explore: orders_hubs_daily {
   extends: [orders_cl]
+  label: "Orders - Hubs Daily report"
   description: "Bottom 10 frequency for issue rate and order delivered in time"
   hidden: yes
 
