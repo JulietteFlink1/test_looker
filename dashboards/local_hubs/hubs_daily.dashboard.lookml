@@ -1,18 +1,16 @@
 - dashboard: hubs_daily
-  title: "Hubs Daily (CT migrated)"
+  title: Hubs Daily (new)
   layout: newspaper
   preferred_viewer: dashboards-next
   elements:
-
-
   - title: Top 10 Hubs by Orders Delivered in Time
     name: Top 10 Hubs by Orders Delivered in Time
     model: flink_v3
-    explore: orders_cl
+    explore: orders_hubs_daily
     type: looker_grid
     fields: [hubs.hub_name, orders_cl.pct_delivery_in_time, orders_cl.pct_delivery_late_over_5_min,
-      shyftplan_riders_pickers_hours.rider_utr, orders_cl.percent_of_total_orders,
-      orders_cl.cnt_orders]
+      shyftplan_riders_pickers_hours.rider_utr, shyftplan_riders_pickers_hours.rider_hours,
+      shyftplan_riders_pickers_hours.riders, orders_cl.percent_of_total_orders, orders_cl.cnt_orders]
     filters:
       orders_cl.is_successful_order: 'yes'
       is_hub_name_null: 'No'
@@ -84,28 +82,21 @@
     hidden_fields: []
     y_axes: []
     listen:
-      Hub Name: hubs.hub_name
       Order Date: orders_cl.created_date
       Country: hubs.country
+      Hub Name: hubs.hub_name
     row: 0
     col: 0
     width: 24
     height: 6
-
-
   - title: Bottom 10 Hubs by Orders Delivered in Time
     name: Bottom 10 Hubs by Orders Delivered in Time
     model: flink_v3
-    explore: orders_cl
+    explore: orders_hubs_daily
     type: looker_grid
-    fields: [
-      hubs.hub_name,
-      orders_cl.pct_delivery_in_time,
-      orders_cl.pct_delivery_late_over_5_min,
-      shyftplan_riders_pickers_hours.rider_utr,
-      orders_cl.percent_of_total_orders,
-      orders_cl.cnt_orders
-      ]
+    fields: [hubs.hub_name, orders_cl.pct_delivery_in_time, orders_cl.pct_delivery_late_over_5_min,
+      shyftplan_riders_pickers_hours.rider_utr, shyftplan_riders_pickers_hours.rider_hours,
+      shyftplan_riders_pickers_hours.riders, orders_cl.percent_of_total_orders, orders_cl.cnt_orders]
     filters:
       orders_cl.is_successful_order: 'yes'
     sorts: [orders_cl.pct_delivery_in_time]
@@ -173,19 +164,17 @@
     hidden_fields: []
     y_axes: []
     listen:
-      Hub Name: hubs.hub_name
       Order Date: orders_cl.created_date
       Country: hubs.country
+      Hub Name: hubs.hub_name
     row: 6
     col: 0
     width: 24
     height: 6
-
-
   - title: Top 10 Hubs by NPS
     name: Top 10 Hubs by NPS
     model: flink_v3
-    explore: orders_cl
+    explore: orders_hubs_daily
     type: looker_grid
     fields: [hubs.hub_name, nps_after_order.nps_score, nps_after_order.cnt_responses,
       nps_after_order.submitted_date]
@@ -258,19 +247,17 @@
     hidden_fields: []
     y_axes: []
     listen:
-      Hub Name: hubs.hub_name
       NPS Submitted Date: nps_after_order.submitted_date
       Country: hubs.country
+      Hub Name: hubs.hub_name
     row: 15
     col: 0
     width: 12
     height: 6
-
-
   - title: Bottom 10 Hubs by NPS
     name: Bottom 10 Hubs by NPS
     model: flink_v3
-    explore: orders_cl
+    explore: orders_hubs_daily
     type: looker_grid
     fields: [hubs.hub_name, nps_after_order.nps_score, nps_after_order.submitted_date,
       nps_after_order.cnt_responses]
@@ -343,19 +330,17 @@
     hidden_fields: []
     y_axes: []
     listen:
-      Hub Name: hubs.hub_name
       NPS Submitted Date: nps_after_order.submitted_date
       Country: hubs.country
+      Hub Name: hubs.hub_name
     row: 15
     col: 12
     width: 12
     height: 6
-
-
   - title: NPS Comments
     name: NPS Comments
     model: flink_v3
-    explore: orders_cl
+    explore: orders_hubs_daily
     type: looker_grid
     fields: [hubs.hub_name, nps_after_order.submitted_date, nps_after_order.nps_driver,
       nps_after_order.nps_comment, nps_after_order.score]
@@ -423,19 +408,16 @@
     hidden_fields: []
     y_axes: []
     listen:
-      Hub Name: hubs.hub_name
       NPS Submitted Date: nps_after_order.submitted_date
       Country: hubs.country
+      Hub Name: hubs.hub_name
     row: 21
     col: 0
     width: 24
     height: 8
-
-
   - name: ''
     type: text
     title_text: ''
-    subtitle_text: ''
     body_text: "##### Use **\"NPS Submitted Date\" filter** for NPS views. \n\n#####\
       \ IMPORTANT: other Looker dashboards with NPS scores are based on Order Date,\
       \ therefore you can not compare them.\nNPS survey is usually sent 1 day after\
@@ -444,12 +426,10 @@
     col: 0
     width: 24
     height: 3
-
-
   - title: Top 10 Hubs by % Issue Rate
     name: Top 10 Hubs by % Issue Rate
     model: flink_v3
-    explore: orders_cl
+    explore: orders_hubs_daily
     type: looker_grid
     fields: [hubs.hub_name, issue_rates_clean.pct_orders_with_issues, issue_rates_clean.sum_orders_total,
       issue_rates_clean.pct_orders_perished_product, issue_rates_clean.pct_orders_damaged_product,
@@ -537,12 +517,10 @@
     col: 0
     width: 24
     height: 6
-
-
   - title: Bottom 10 Hubs by % Issue Rate
     name: Bottom 10 Hubs by % Issue Rate
     model: flink_v3
-    explore: orders_cl
+    explore: orders_hubs_daily
     type: looker_grid
     fields: [hubs.hub_name, issue_rates_clean.pct_orders_with_issues, issue_rates_clean.sum_orders_total,
       issue_rates_clean.pct_orders_perished_product, issue_rates_clean.pct_orders_damaged_product,
@@ -631,8 +609,80 @@
     col: 0
     width: 24
     height: 6
-
-
+  - title: Bottom 10 Frequency for Issue Rate and Orders Delivered in Time
+    name: Bottom 10 Frequency for Issue Rate and Orders Delivered in Time
+    model: flink_v3
+    explore: orders_hubs_daily
+    type: looker_grid
+    fields: [bottom_10_hubs.cnt_bottom_10_delivery, bottom_10_hubs.cnt_is_bottom_10_issues,
+      orders_cl.warehouse_name]
+    filters:
+      orders_cl.is_successful_order: 'yes'
+    sorts: [bottom_10_hubs.cnt_bottom_10_delivery desc]
+    limit: 10
+    column_limit: 50
+    show_view_names: false
+    show_row_numbers: true
+    transpose: false
+    truncate_text: true
+    hide_totals: false
+    hide_row_totals: false
+    size_to_fit: true
+    table_theme: white
+    limit_displayed_rows: false
+    enable_conditional_formatting: true
+    header_text_alignment: left
+    header_font_size: '12'
+    rows_font_size: '12'
+    conditional_formatting_include_totals: false
+    conditional_formatting_include_nulls: false
+    show_sql_query_menu_options: false
+    show_totals: true
+    show_row_totals: true
+    series_cell_visualizations:
+      bottom_10_hubs.cnt_bottom_10_delivery:
+        is_active: false
+    conditional_formatting: [{type: along a scale..., value: !!null '', background_color: "#c76b4e",
+        font_color: !!null '', color_application: {collection_id: product-custom-collection,
+          palette_id: product-custom-collection-sequential-0, options: {steps: 5,
+            constraints: {min: {type: number, value: 0}, mid: {type: average}, max: {
+                type: maximum}}, mirror: false, reverse: false, stepped: false}},
+        bold: false, italic: false, strikethrough: false, fields: !!null ''}]
+    x_axis_gridlines: false
+    y_axis_gridlines: true
+    show_y_axis_labels: true
+    show_y_axis_ticks: true
+    y_axis_tick_density: default
+    y_axis_tick_density_custom: 5
+    show_x_axis_label: true
+    show_x_axis_ticks: true
+    y_axis_scale_mode: linear
+    x_axis_reversed: false
+    y_axis_reversed: false
+    plot_size_by_field: false
+    trellis: ''
+    stacking: ''
+    legend_position: center
+    point_style: none
+    show_value_labels: false
+    label_density: 25
+    x_axis_scale: auto
+    y_axis_combined: true
+    ordering: none
+    show_null_labels: false
+    show_totals_labels: false
+    show_silhouette: false
+    totals_color: "#808080"
+    defaults_version: 1
+    series_types: {}
+    listen:
+      Order Date: orders_cl.created_date
+      Country: hubs.country
+      Hub Name: hubs.hub_name
+    row: 41
+    col: 0
+    width: 24
+    height: 6
   filters:
   - name: Order Date
     title: Order Date
@@ -645,10 +695,9 @@
       display: inline
       options: []
     model: flink_v3
-    explore: orders_cl
+    explore: orders_hubs_daily
     listens_to_filters: []
     field: orders_cl.created_date
-
   - name: NPS Submitted Date
     title: NPS Submitted Date
     type: field_filter
@@ -660,10 +709,9 @@
       display: inline
       options: []
     model: flink_v3
-    explore: orders_cl
+    explore: orders_hubs_daily
     listens_to_filters: []
     field: nps_after_order.submitted_date
-
   - name: Country
     title: Country
     type: field_filter
@@ -675,10 +723,9 @@
       display: inline
       options: []
     model: flink_v3
-    explore: orders_cl
+    explore: orders_hubs_daily
     listens_to_filters: []
     field: hubs.country
-
   - name: Hub Name
     title: Hub Name
     type: field_filter
@@ -690,6 +737,6 @@
       display: popover
       options: []
     model: flink_v3
-    explore: orders_cl
+    explore: orders_hubs_daily
     listens_to_filters: []
     field: hubs.hub_name

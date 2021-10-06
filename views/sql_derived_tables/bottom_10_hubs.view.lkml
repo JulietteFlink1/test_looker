@@ -1,4 +1,4 @@
-view: botton_10_hubs {
+view: bottom_10_hubs {
   derived_table: {
     sql: with hubs_kpis as (
     select order_date
