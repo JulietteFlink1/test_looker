@@ -2,10 +2,10 @@ view: sku_performance_coefficiant_spc {
 
   derived_table: {
     sql: with start_date as (
-          select DATE_SUB(CURRENT_DATE(), interval 7 day)            as start_d
-               , CURRENT_DATE()                                      as end_d
-               , timestamp(DATE_SUB(CURRENT_DATE(), interval 7 day)) as start_ts
-               , CURRENT_TIMESTAMP()                                 as end_ts
+          select DATE_SUB( DATE_TRUNC(CURRENT_DATE(), week(monday) ) , interval 4 week)            as start_d  # last 4 complete weeks
+               , DATE_TRUNC(CURRENT_DATE(), week(sunday) )                                         as end_d    # sunday, as this is last weeks last day in German calendar
+               , timestamp(DATE_SUB( DATE_TRUNC(CURRENT_DATE(), week(monday) ) , interval 4 week)) as start_ts
+               , timestamp(DATE_TRUNC(CURRENT_DATE(), week(sunday) ))                              as end_ts
       ),
 
            assignment_data as (
@@ -135,14 +135,16 @@ view: sku_performance_coefficiant_spc {
            add_sub_category_comparison as (
                select *
                     , revenue_equalized /
-                      NULLIF(SUM(revenue_equalized) over (partition by subcategory), 0)                 as revenue_equalized_share
-                    , RANK() over (partition by subcategory order by gross_margin asc)                  as gross_margin_score
-                    , RANK() over (partition by subcategory order by inventory_turnover asc)            as inventory_turnover_score
-                    , RANK() over (partition by subcategory order by avg_order_value_net_in_basket asc) as avg_basket_value_score
-                    , RANK() over (partition by subcategory order by basket_penetration asc)            as basket_penetration_score
+                      NULLIF(SUM(revenue_equalized) over (partition by country_iso, subcategory), 0)                 as revenue_equalized_share
+                    , RANK() over (partition by country_iso, subcategory order by gross_margin asc)                  as gross_margin_score
+                    , RANK() over (partition by country_iso, subcategory order by inventory_turnover asc)            as inventory_turnover_score
+                    , RANK() over (partition by country_iso, subcategory order by avg_order_value_net_in_basket asc) as avg_basket_value_score
+                    , RANK() over (partition by country_iso, subcategory order by basket_penetration asc)            as basket_penetration_score
                from add_calculated_metrics
            )
-      select *
+      select
+          *
+        , RANK() over (partition by country_iso, subcategory order by revenue_equalized_share,0 asc)                   as revenue_equalized_share_score
       from add_sub_category_comparison
        ;;
   }
@@ -273,18 +275,21 @@ view: sku_performance_coefficiant_spc {
     sql: ${TABLE}.buying_price ;;
     required_access_grants: [can_view_buying_information]
     group_label: "> Payment Dimension"
+    value_format_name: eur
   }
 
   dimension: vat_rate {
     type: number
     sql: ${TABLE}.vat_rate ;;
     group_label: "> Payment Dimension"
+    value_format_name: percent_2
   }
 
   dimension: deposit {
     type: number
     sql: ${TABLE}.deposit ;;
     group_label: "> Payment Dimension"
+    value_format_name: eur
   }
 
 
@@ -293,24 +298,36 @@ view: sku_performance_coefficiant_spc {
     type: number
     sql: ${TABLE}.gross_margin_score ;;
     group_label: "> Final Scores"
+    value_format_name: decimal_1
   }
 
   dimension: inventory_turnover_score {
     type: number
     sql: ${TABLE}.inventory_turnover_score ;;
     group_label: "> Final Scores"
+    value_format_name: decimal_1
   }
 
   dimension: avg_basket_value_score {
     type: number
     sql: ${TABLE}.avg_basket_value_score ;;
     group_label: "> Final Scores"
+    value_format_name: decimal_1
   }
 
   dimension: basket_penetration_score {
     type: number
     sql: ${TABLE}.basket_penetration_score ;;
     group_label: "> Final Scores"
+    value_format_name: decimal_1
+  }
+
+  dimension: revenue_equalized_share_score {
+    label: "Equalized Revenue Score"
+    type: number
+    sql: ${TABLE}.revenue_equalized_share_score ;;
+    group_label: "> Final Scores"
+    value_format_name: decimal_1
   }
 
 
@@ -319,30 +336,35 @@ view: sku_performance_coefficiant_spc {
     type: number
     sql: ${TABLE}.sum_item_quantity_sold ;;
     group_label: "> Numeric Dimensions"
+    value_format_name: decimal_1
   }
 
   dimension: avg_unit_price_gross {
     type: number
     sql: ${TABLE}.avg_unit_price_gross ;;
     group_label: "> Numeric Dimensions"
+    value_format_name: eur
   }
 
   dimension: avg_unit_price_net {
     type: number
     sql: ${TABLE}.avg_unit_price_net ;;
     group_label: "> Numeric Dimensions"
+    value_format_name: eur
   }
 
   dimension: sum_item_price_sold_net {
     type: number
     sql: ${TABLE}.sum_item_price_sold_net ;;
     group_label: "> Numeric Dimensions"
+    value_format_name: eur
   }
 
   dimension: avg_stock_count {
     type: number
     sql: ${TABLE}.avg_stock_count ;;
     group_label: "> Numeric Dimensions"
+    value_format_name: decimal_1
   }
 
   dimension: pct_oos {
@@ -350,6 +372,7 @@ view: sku_performance_coefficiant_spc {
     type: number
     sql: ${TABLE}.pct_oos ;;
     group_label: "> Numeric Dimensions"
+    value_format_name: percent_2
   }
 
   dimension: avg_skus_in_basket {
@@ -357,6 +380,7 @@ view: sku_performance_coefficiant_spc {
     type: number
     sql: ${TABLE}.avg_skus_in_basket ;;
     group_label: "> Numeric Dimensions"
+    value_format_name: decimal_1
   }
 
   dimension: avg_item_quantity_in_basket {
@@ -364,12 +388,14 @@ view: sku_performance_coefficiant_spc {
     type: number
     sql: ${TABLE}.avg_item_quantity_in_basket ;;
     group_label: "> Numeric Dimensions"
+    value_format_name: decimal_1
   }
 
   dimension: avg_order_value_net_in_basket {
     type: number
     sql: ${TABLE}.avg_order_value_net_in_basket ;;
     group_label: "> Numeric Dimensions"
+    value_format_name: decimal_1
   }
 
 
@@ -378,6 +404,7 @@ view: sku_performance_coefficiant_spc {
     type: number
     sql: ${TABLE}.revenue_equalized ;;
     group_label: "> Numeric Dimensions"
+    value_format_name: eur
   }
 
   dimension: gross_margin {
@@ -385,18 +412,21 @@ view: sku_performance_coefficiant_spc {
     sql: ${TABLE}.gross_margin ;;
     required_access_grants: [can_view_buying_information]
     group_label: "> Numeric Dimensions"
+    value_format_name: eur
   }
 
   dimension: inventory_turnover {
     type: number
     sql: ${TABLE}.inventory_turnover ;;
     group_label: "> Numeric Dimensions"
+    value_format_name: decimal_3
   }
 
   dimension: basket_penetration {
     type: number
     sql: ${TABLE}.basket_penetration ;;
     group_label: "> Numeric Dimensions"
+    value_format_name: percent_3
   }
 
   dimension: revenue_equalized_share {
@@ -404,6 +434,7 @@ view: sku_performance_coefficiant_spc {
     type: number
     sql: ${TABLE}.revenue_equalized_share ;;
     group_label: "> Numeric Dimensions"
+    value_format_name: percent_3
   }
 
 
