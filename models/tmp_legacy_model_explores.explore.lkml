@@ -5,6 +5,7 @@ include: "/**/*.view.lkml"
 # STAY- NEW FILE
 ####### TYPEFORM ANSWERS EXPLORE #######
 explore: answers {
+  hidden: yes
   from: desired_products_survey
   label: "Desired Products"
   view_label: "Desired Products"
@@ -18,7 +19,7 @@ explore: answers {
 explore: marketing_performance {
   label: "Marketing Performance"
   view_label: "Marketing Performance"
-  group_label: "11) Marketing"
+  group_label: "Marketing"
   description: "Marketing Performance: Installs, Orders, CAC, CPI"
 }
 

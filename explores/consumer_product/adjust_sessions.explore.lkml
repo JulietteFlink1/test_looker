@@ -3,6 +3,7 @@ include: "/views/sql_derived_tables/adjust_events.view.lkml"
 
 
 explore: adjust_sessions {
+  hidden: yes
   label: "Adjust app data"
   view_label: "Adjust sessions"
   group_label: "06) Adjust app data"

@@ -5,6 +5,6 @@ explore: ab_test_experiments {
   view_name:  ab_test_experiments
   label: "A/B test experiments"
   view_label: "A/B test experiments"
-  group_label: "10) In-app tracking data"
+  group_label: "In-app tracking data"
   description: "A/B test experiments - mulitple tests"
 }

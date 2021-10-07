@@ -5,7 +5,7 @@ explore: rider_staffing_report {
   hidden: no
   label: "Orders and Riders Staffing Data"
   view_label: "Orders and Riders Staffing Data"
-  group_label: "09) Rider Ops"
+  group_label: "Rider Ops"
 
   access_filter: {
     field: hubs.country_iso

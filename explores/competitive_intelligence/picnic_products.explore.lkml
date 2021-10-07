@@ -4,7 +4,7 @@ explore:  picnic_products {
   hidden: no
   label: "Picnic Products"
   view_label: "Picnic Products"
-  group_label: "08) Competitive Intel"
+  group_label: "Competitive Intel"
   description: "Competitive Intelligence Data"
 
   join: category_l0 {
