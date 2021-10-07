@@ -19,6 +19,11 @@ view: nps_comments_labeled {
     sql: ${TABLE}.label ;;
   }
 
+  dimension: customer_type {
+    type: string
+    sql: ${TABLE}.customer_type ;;
+  }
+
   dimension: label_transformed {
     label: "Topic"
     type: string
