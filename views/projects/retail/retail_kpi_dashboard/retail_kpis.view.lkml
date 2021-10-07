@@ -12,7 +12,7 @@ view: retail_kpis {
                 , prod.category                       as category_name
                 , prod.product_name                       as product_name
                 , item.sku as sku
-                , date(ord.partition_timestamp, 'Europe/Berlin') as order_date
+                , date(ord.order_timestamp, 'Europe/Berlin') as order_date
                 , ord.order_uuid                             as order_id
                   -- AGGREGATES
                 , sum(item.quantity)    as sku_quantity
@@ -31,7 +31,7 @@ view: retail_kpis {
                             on item.sku = prod.product_sku
 
               where
-                      (ord.partition_timestamp) >= date_add(current_timestamp, interval -90 day)
+                      (ord.order_timestamp) >= date_add(current_timestamp, interval -90 day)
 
               group by
                   1, 2, 3 , 4, 5, 6, 7, 8, 9, 10
@@ -104,8 +104,6 @@ view: retail_kpis {
             , o.number_items        as number_items
             , o.net_order_value     as net_order_value
 
-              --, SUM(lb.sum_item_price_net) over (partition by sub_category_name) as sum_item_price_net_subcat
-              -- , count(distinct lb.hub_code) over (partition by sub_category_name) as average_hubs_subcat
           from
               looker_base_clean    as lb
               left join order_kpis as o
@@ -154,13 +152,13 @@ view: retail_kpis {
 
           out_of_stock_data as (
             select
-                inv.partition_timestamp      as tracking_date
+                inv.inventory_tracking_date      as tracking_date
               , inv.sku                      as sku
                 -- , upper(split(inv.hub_code, "_")[offset(0)]) as country_iso
               , hubs.country_iso             as country_iso
               , sum(inv.open_hours_total)    as open_hours_total
               , sum(inv.hours_oos)           as hours_oos
-              , sum(inv.sum_count_purchased) as sum_count_purchased
+              , sum(inv.sum_items_ordered) as sum_count_purchased
               , sum(inv.sum_count_restocked) as sum_count_restocked
               , avg(inv.avg_stock_count)     as avg_stock_count
 
@@ -169,7 +167,7 @@ view: retail_kpis {
                       on hubs.hub_code = inv.hub_code
 
             where
-                inv.partition_timestamp >= date_add(current_date(), interval -90 day)
+                inv.inventory_tracking_date >= date_add(current_date(), interval -90 day)
                 and {% condition hub_code_filter %}    hubs.hub_code    {% endcondition %}
                 and {% condition hub_name_filter %}    hubs.hub_name    {% endcondition %}
                 and {% condition city_filter %}        hubs.city        {% endcondition %}
@@ -204,7 +202,6 @@ view: retail_kpis {
         , sum_count_restocked
         , avg_stock_count
         , equlalized_revenue_last_14_days.avg_equalized_revenue_last_14d
-        -- , sum(equalized_revenue) over (partition by sub_category_name) as equalized_revenue_subcategory
         , sum(equalized_revenue_current)  over (partition by aggregations.country_iso, sub_category_name) as equalized_revenue_subcategory_current
         , sum(equalized_revenue_previous) over (partition by aggregations.country_iso, sub_category_name) as equalized_revenue_subcategory_previous
         , sum(equalized_revenue_current)  over (partition by aggregations.country_iso)                    as equalized_revenue_total_current
