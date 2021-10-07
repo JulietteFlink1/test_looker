@@ -5,7 +5,7 @@ explore: fountain_avg_proc_time {
   label: "Funnel Avg. Processing Times"
   view_label: "Funnel Avg. Processing Times"
   description: "Funnel Avg. Processing Times"
-  group_label: "09) Rider Ops"
+  group_label: "Rider Ops"
 
   access_filter: {
     field: fountain_avg_proc_time.country

@@ -7,7 +7,7 @@ explore:  fr_gorillas_to_flink {
   view_name: gorillas_inventory_stock_count
   label: "Gorillas FR Sales"
   view_label: "Gorillas FR Product Data"
-  group_label: "08) Competitive Intel"
+  group_label: "Competitive Intel"
   description: "Gorillas FR assortment & sales matched to Flink's assortment and sales"
 
   join: fr_gorillas_to_flink {

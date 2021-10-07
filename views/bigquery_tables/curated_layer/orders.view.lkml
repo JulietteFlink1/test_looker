@@ -1346,6 +1346,16 @@ view: orders {
     value_format: "0"
   }
 
+  measure: cnt_orders_deliverd_over_20_min {
+    group_label: "* Operations / Logistics *"
+    label: "# Orders delivered >20min"
+    description: "Count of Orders delivered >20min"
+    hidden:  yes
+    type: count
+    filters: [fulfillment_time:">20"]
+    value_format: "0"
+  }
+
   ################
   ## PERCENTAGE ##
   ################
@@ -1417,6 +1427,16 @@ view: orders {
     hidden:  no
     type: number
     sql: ${cnt_orders_delayed_over_15_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_fulfillment_over_20_min{
+    group_label: "* Operations / Logistics *"
+    label: "% Orders delivered >20min"
+    description: "Share of orders delivered > 20min"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_deliverd_over_20_min} / NULLIF(${cnt_orders}, 0);;
     value_format: "0%"
   }
 

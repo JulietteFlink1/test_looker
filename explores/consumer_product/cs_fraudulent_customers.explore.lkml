@@ -9,7 +9,7 @@ explore: cs_fraudulent_customers_email {
   label: "CS Fraudulent Customers - Email List"
   view_label: "* Orders *"
   group_label: "07) Customer Service"
-  hidden: no
+  hidden: yes
 
 
   join: cs_post_delivery_issues {

@@ -5,7 +5,7 @@ include: "/explores/base_explores/orders_cl.explore.lkml"
 
 explore: logistics_report {
   extends: [orders_cl]
-  group_label: "09) Rider Ops"
+  group_label: "Rider Ops"
   label: "Logistics Report"
   description: "Orderline Items sold quantities, prices, gmv, etc."
   hidden: no
