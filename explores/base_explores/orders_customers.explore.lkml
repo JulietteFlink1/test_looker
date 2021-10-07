@@ -8,7 +8,7 @@ explore: orders_customers {
   label: "User Metrics"
   view_label: "* User Metrics *"
   #view_name: orders_customers
-  group_label: "15) Ad-Hoc"
+  group_label: "User Metrics"
   description: "General Business Performance - Orders, Revenue, etc."
   hidden: no
   # view_name: base_order_orderline
