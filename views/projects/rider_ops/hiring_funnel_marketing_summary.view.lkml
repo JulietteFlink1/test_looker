@@ -85,6 +85,43 @@ view: hiring_funnel_marketing_summary {
     {% endif %};;
   }
 
+
+  dimension: channel_label{
+    label: "Channel label"
+    case: {
+      when: {
+        sql: ${channel} = '[utm_source]' ;;
+        label: "Organic"
+      }
+      when: {
+        sql: ${channel} = 'Appcast' ;;
+        label: "Job Platform"
+      }
+      when: {
+        sql: ${channel} = 'Facebook' ;;
+        label: "Social Media"
+      }
+      when: {
+        sql: ${channel} = 'Google' ;;
+        label: "Social Media"
+      }
+      when: {
+        sql: ${channel} = 'indeed' ;;
+        label: "Job Platform"
+      }
+      when: {
+        sql: ${channel} = 'internal transfer' ;;
+        label: "Organic"
+      }
+      when: {
+        sql: ${channel} = 'raf' ;;
+        label: "Refer a Friend"
+      }
+      else:"Others"
+    }
+  }
+
+
   ###### Parameters
 
   parameter: date_granularity {
