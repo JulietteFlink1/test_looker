@@ -194,12 +194,13 @@ view: inventory_stock_count_daily {
     hidden: yes
   }
 
-  measure: sum_items_sold {
+  measure: sum_items_sold { # TODO tweak inventory query to filter is_successful and is_internal
     label: "# Items Sold"
     description: "The number of items sold"
     type: sum
     sql: ${TABLE}.sum_items_ordered ;;
     value_format_name: decimal_0
+    hidden: yes
   }
 
   measure: sum_count_restocked {
