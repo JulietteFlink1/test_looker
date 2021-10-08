@@ -1,7 +1,7 @@
 include: "/**/*.view"
 
 explore: basket_composition_sku_date {
-  group_label: "17) Pricing"
+  group_label: "Pricing"
   label: "Basket Composition Date SKU"
   #hidden: yes
 

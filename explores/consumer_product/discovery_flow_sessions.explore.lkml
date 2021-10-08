@@ -4,6 +4,6 @@ explore: discovery_flow_sessions {
   view_name: discovery_flow_sessions
   label: "Discovery Flow Sessions"
   view_label: "Discovery Flow Sessions"
-  group_label: "10) In-app tracking data"
+  group_label: "In-app tracking data"
   description: "Discovery-centered data on add-to-cart-centered flow per session level"
 }
