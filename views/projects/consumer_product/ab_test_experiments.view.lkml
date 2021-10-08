@@ -66,8 +66,75 @@
               WHERE DATE(_PARTITIONTIME) > "2021-09-30" and search_experiment_variant is not null
               )
         WHERE row_id = 1
-           ;;
-      }
+
+
+  UNION ALL
+      SELECT anonymous_id,
+               id,
+               context_app_version                                                        AS app_version,
+               context_device_type                                                        AS device_type,
+               event                                                                      AS event_name,
+               search_query,
+               null                                                                       AS list_category,
+               search_experiment_variant,
+               CASE WHEN search_experiment_variant like '%variant_control%'
+                    THEN true ELSE false END                                              AS control_group,
+               CASE WHEN search_experiment_variant like '%variant_experiment%'
+                    THEN true ELSE false END                                              AS experiment_group,
+               DATE(timestamp)                                                            AS event_start_at,
+               timestamp
+        FROM (
+              SELECT *, ROW_NUMBER() OVER (PARTITION BY id ORDER BY loaded_at DESC)       AS row_id
+              FROM `flink-data-prod.flink_android_production.product_search_executed`
+              WHERE DATE(_PARTITIONTIME) > "2021-09-30" and search_experiment_variant is not null
+              )
+        WHERE row_id = 1
+
+  UNION ALL
+        SELECT anonymous_id,
+               id,
+               context_app_version                                                        AS app_version,
+               context_device_type                                                        AS device_type,
+               event                                                                      AS event_name,
+               null                                                                       AS search_query,
+               list_category,
+               search_experiment_variant,
+               CASE WHEN search_experiment_variant like '%variant_control%'
+                    THEN true ELSE false END                                              AS control_group,
+               CASE WHEN search_experiment_variant like '%variant_experiment%'
+                    THEN true ELSE false END                                              AS experiment_group,
+               DATE(timestamp)                                                            AS event_start_at,
+               timestamp
+        FROM (
+              SELECT *, ROW_NUMBER() OVER (PARTITION BY id ORDER BY loaded_at DESC)       AS row_id
+              FROM `flink-data-prod.flink_android_production.product_added_to_cart`
+              WHERE DATE(_PARTITIONTIME) > "2021-09-30" and search_experiment_variant is not null
+              )
+        WHERE row_id = 1
+
+  UNION ALL
+        SELECT anonymous_id,
+               id,
+               context_app_version                                                        AS app_version,
+               context_device_type                                                        AS device_type,
+               event                                                                      AS event_name,
+               null                                                                       AS search_query,
+               list_category,
+               search_experiment_variant,
+               CASE WHEN search_experiment_variant like '%variant_control%'
+                    THEN true ELSE false END                                              AS control_group,
+               CASE WHEN search_experiment_variant like '%variant_experiment%'
+                    THEN true ELSE false END                                              AS experiment_group,
+               DATE(timestamp)                                                            AS event_start_at,
+               timestamp
+        FROM (
+              SELECT *, ROW_NUMBER() OVER (PARTITION BY id ORDER BY loaded_at DESC)       AS row_id
+              FROM `flink-data-prod.flink_android_production.product_details_viewed`
+              WHERE DATE(_PARTITIONTIME) > "2021-09-30" and search_experiment_variant is not null
+              )
+        WHERE row_id = 1
+    ;;
+    }
 
       ######### custom measures and dimensions
 
