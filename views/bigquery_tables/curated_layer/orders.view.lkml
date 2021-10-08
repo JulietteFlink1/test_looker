@@ -1471,7 +1471,7 @@ view: orders {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
     label: "AVG Daily Orders per hub"
     type: number
-    sql: (${cnt_orders}/NULLIF(${cnt_unique_hubs},0))/${cnt_unique_date};;
+    sql: (${cnt_orders}/NULLIF(${cnt_unique_hubs},0))/ NULLIF(${cnt_unique_date},0);;
   }
 
 
