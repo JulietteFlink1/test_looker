@@ -1356,6 +1356,18 @@ view: orders {
     value_format: "0"
   }
 
+  measure: cnt_unique_date {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Unique Date"
+    description: "Count of Unique Dates"
+    hidden:  no
+    type: count_distinct
+    sql: case when ${country_iso} = 'DE' and ${order_dow} = 'Sunday' then null
+          else ${order_date} end;;
+    value_format: "0"
+  }
+
+
   ################
   ## PERCENTAGE ##
   ################
@@ -1453,6 +1465,13 @@ view: orders {
     label: "AVG # Orders per hub"
     type: number
     sql: ${cnt_orders}/NULLIF(${cnt_unique_hubs},0) ;;
+  }
+
+  measure: avg_daily_orders_per_hub{
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "AVG Daily Orders per hub"
+    type: number
+    sql: (${cnt_orders}/NULLIF(${cnt_unique_hubs},0))/ NULLIF(${cnt_unique_date},0);;
   }
 
 
