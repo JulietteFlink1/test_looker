@@ -179,6 +179,19 @@ view: aov_per_category_month{
     sql: ${TABLE}.country_iso ;;
   }
 
+  dimension: hub_name {
+    label: "hub_name"
+    type: string
+    sql: ${TABLE}.hub_name ;;
+  }
+
+  dimension: city {
+    label: "city"
+    type: string
+    sql: ${TABLE}.city ;;
+  }
+
+
   dimension: category {
     type: string
     sql: ${TABLE}.category ;;
@@ -200,6 +213,8 @@ view: aov_per_category_month{
             week,
             month,
             country_iso,
+            city,
+            hub_name,
             category,
             sum_item_value,
             orders]
