@@ -171,7 +171,7 @@ view: inventory_stock_count_daily {
 
   measure: hours_oos {
     label: "Hours Out-Of-Stock"
-    description: "The number of business hours, a specific SKU was not available in a hub"
+    description: "The number of business hours, a specific SKU was not available in a hub (corrected by: having also no sales in spec. time)"
     type: sum
     sql: ${TABLE}.hours_oos ;;
     value_format_name: decimal_0
