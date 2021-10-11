@@ -1,7 +1,7 @@
     view: ab_test_experiments {
       derived_table: {
         persist_for: "1 hour"
-        sql:
+        sql: WITH base AS (
         SELECT anonymous_id,
                id,
                context_app_version                                                        AS app_version,
@@ -133,6 +133,10 @@
               WHERE DATE(_PARTITIONTIME) > "2021-09-30" and search_experiment_variant is not null
               )
         WHERE row_id = 1
+        )
+
+        SELECT * , lag(event_name) over(partition by anonymous_id order by timestamp asc)          AS prior_event_name
+        FROM base
     ;;
     }
 
@@ -153,15 +157,29 @@
         drill_fields: [detail*]
       }
 
-      ## Measures based on other measures
+      measure: cnt_add_to_cart {
+        label: "# Add-to-cart"
+        type: count
+        filters: [event_name: "product_added_to_cart"]
+      }
 
-      # measure: mcvr2 {
-      #   type: number
-      #   label: "mCVR2"
-      #   description: "# sessions in which there was a Product Added To Cart, compared to the number of sessions in which there was a Home Viewed"
-      #   value_format_name: percent_1
-      #   sql: ${cnt_add_to_cart}/NULLIF(${cnt_has_address},0) ;;
-      # }
+      measure: cnt_pdp_viewed {
+        label: "# PDP events"
+        type: count
+        filters: [event_name: "product_details_viewed"]
+      }
+
+      measure: cnt_search_executed {
+        label: "# Product search executed events"
+        type: count
+        filters: [event_name: "product_search_executed"]
+      }
+
+      measure: cnt_cart_from_pdp {
+        label: "# Add-to-cart events from PDP"
+        type: count
+        filters: [list_position: "search", event_name: "product_added_to_cart", prior_event_name: "product_details_viewed"]
+      }
 
       # measure: mcvr2_cart{
       #   type: number
@@ -170,50 +188,7 @@
       #   value_format_name: percent_1
       #   sql: ${cnt_cart_cart}/NULLIF(${cnt_has_address},0) ;;
       # }
-      # measure: mcvr2_favourites {
-      #   type: number
-      #   label: "mCVR2 Favourites "
-      #   description: "# sessions in which there was a Product Added To Cart from Favourites, compared to the number of sessions in which there was a Home Viewed"
-      #   value_format_name: percent_1
-      #   sql: ${cnt_cart_favourites}/NULLIF(${cnt_has_address},0) ;;
-      # }
-      # measure: mcvr2_pdp {
-      #   type: number
-      #   label: "mCVR2 PDP"
-      #   description: "# sessions in which there was a Product Added To Cart from PDP, compared to the number of sessions in which there was a Home Viewed"
-      #   value_format_name: percent_1
-      #   sql: ${cnt_cart_pdp}/NULLIF(${cnt_has_address},0) ;;
-      # }
-      # measure: mcvr2_last_bought {
-      #   type: number
-      #   label: "mCVR2 Last Bought"
-      #   description: "# sessions in which there was a Product Added To Cart from Last Bought, compared to the number of sessions in which there was a Home Viewed"
-      #   value_format_name: percent_1
-      #   sql: ${cnt_cart_last_bought}/NULLIF(${cnt_has_address},0) ;;
-      # }
-      # measure: mcvr2_search {
-      #   type: number
-      #   label: "mCVR2 Search"
-      #   description: "# sessions in which there was a Product Added To Cart from Search, compared to the number of sessions in which there was a Home Viewed"
-      #   value_format_name: percent_1
-      #   sql: ${cnt_cart_search}/NULLIF(${cnt_has_address},0) ;;
-      # }
 
-      # measure: mcvr2_swimlane {
-      #   type: number
-      #   label: "mCVR2 Swimlane"
-      #   description: "# sessions in which there was a Product Added To Cart from Swimlane, compared to the number of sessions in which there was a Home Viewed"
-      #   value_format_name: percent_1
-      #   sql: ${cnt_cart_swimlane}/NULLIF(${cnt_has_address},0) ;;
-      # }
-
-      # measure: mcvr2_category {
-      #   type: number
-      #   label: "mCVR2 Category"
-      #   description: "# sessions in which there was a Product Added To Cart from Category, compared to the number of sessions in which there was a Home Viewed"
-      #   value_format_name: percent_1
-      #   sql: ${cnt_cart_category}/NULLIF(${cnt_has_address},0) ;;
-      # }
 
       ######### DIMENSIONS
 
@@ -283,6 +258,11 @@
         sql: ${TABLE}.event_name ;;
       }
 
+      dimension: prior_event_name {
+        type: string
+        sql: ${TABLE}.prior_event_name ;;
+      }
+
       dimension: search_query {
         type: string
         sql: ${TABLE}.search_query ;;
@@ -322,6 +302,7 @@
           event_start_at,
           session_start_at_date,
           event_name,
+          prior_event_name,
           list_position,
           search_experiment_variant,
           control_group,
