@@ -7,6 +7,7 @@ view: bottom_10_hubs_nps {
           , (((sum(is_promoter)/nullif(sum(is_nps_response), 0))* 100) - ((sum(is_detractor)/nullif(sum(is_nps_response), 0))* 100)) as nps_score
           from `flink-data-prod.curated.nps_after_order`
           group by 1, 2, 3
+          having sum(is_nps_response) >= 2
       ),
 
       nps_row as (select *

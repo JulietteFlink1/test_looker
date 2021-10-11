@@ -92,9 +92,21 @@ view: stg_out_of_stock_weights {
     hidden: yes
   }
 
-  dimension: normalized_pct_total_importance {
+  dimension: min_max_normalized_pct_total_importance {
     type: number
-    sql: ${TABLE}.normalized_pct_total_importance ;;
+    sql: ${TABLE}.min_max_normalized_pct_total_importance ;;
+    group_label: "> Helper Metrics | Pre-Calculations"
+    hidden: yes
+  }
+  dimension: mean_std_normalized_pct_total_importance {
+    type: number
+    sql: ${TABLE}.mean_std_normalized_pct_total_importance ;;
+    group_label: "> Helper Metrics | Pre-Calculations"
+    hidden: yes
+  }
+  dimension: mean_std_normalized_log_pct_total_importance {
+    type: number
+    sql: ${TABLE}.mean_std_normalized_log_pct_total_importance ;;
     group_label: "> Helper Metrics | Pre-Calculations"
     hidden: yes
   }
@@ -143,6 +155,25 @@ view: stg_out_of_stock_weights {
     label: "AVG Day-Hour Importance Score (Range between 1 - 100)"
     type: average
     sql: ${sku_day_hour_importance_score} ;;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_min_max_normalized_pct_total_importance {
+    label: "AVG Day-Hour Min-Max Norm"
+    type: average
+    sql: ${min_max_normalized_pct_total_importance} ;;
+    value_format_name: decimal_1
+  }
+  measure: avg_mean_std_normalized_pct_total_importance {
+    label: "AVG Day-Hour Mean-Std Norm"
+    type: average
+    sql: ${mean_std_normalized_pct_total_importance} ;;
+    value_format_name: decimal_1
+  }
+  measure: avg_mean_std_normalized_log_pct_total_importance {
+    label: "AVG Day-Hour Mean-Std Log Norm"
+    type: average
+    sql: ${mean_std_normalized_log_pct_total_importance} ;;
     value_format_name: decimal_1
   }
 
