@@ -190,6 +190,7 @@ view: inventory_stock_count_hourly {
     description: "The sum of items sold"
     type: sum
     sql: ${TABLE}.items_ordered ;;
+    hidden: yes
   }
 
   measure: avg_items_ordered {
@@ -197,6 +198,7 @@ view: inventory_stock_count_hourly {
     description: "The average number of items sold"
     type: average
     sql: ${TABLE}.items_ordered ;;
+    hidden: yes
   }
 
 
