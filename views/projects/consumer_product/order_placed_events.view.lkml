@@ -7,7 +7,7 @@ view: order_placed_events {
     FROM (
       SELECT
           ios_orders.id,
-          ios_orders.order_token, -- in curated layer orders.token used for CT orders to make order_uuid (country+token)
+          ios_orders.order_id, -- in curated layer orders.token used for CT orders to make order_uuid (country+token)
           ios_orders.order_number, -- in curated layer orders.view used for Saleor orders to make order_uuid (country+number)
           ios_orders.anonymous_id,
           ios_orders.context_app_version,
@@ -31,7 +31,7 @@ view: order_placed_events {
       FROM (
         SELECT
           android_orders.id,
-          android_orders.order_token, -- in curated layer orders.token used for CT orders to make order_uuid (country+token)
+          android_orders.order_id, -- in curated layer orders.token used for CT orders to make order_uuid (country+token)
           android_orders.order_number, -- in curated layer orders.view used for Saleor orders to make order_uuid (country+number)
           android_orders.anonymous_id,
           android_orders.context_app_version,
@@ -91,7 +91,7 @@ view: order_placed_events {
 ### Custom measures and dimensions ###
   measure: cnt_distinct_orders {
     type: count_distinct
-    sql: ${TABLE}.order_token ;;
+    sql: ${TABLE}.order_id ;;
   }
 
   dimension: is_ct_order {
@@ -106,11 +106,11 @@ view: order_placed_events {
   dimension: order_uuid {
   ## This uuid is designed to follow the same format as order_uuid inside of orders.view (curated_layer).
   ## For saleor orders, it looks like this: DE_11111 (order_id is based on order_number)
-  ## For CT orders, it looks like this: DE_c139c9c1-36b5-423b-97b2-79a94d116aea (order_id is based on order_token)
-  ## The way we can know from the client side whether order_number or order_token should be used, is by checking whether order_number is a number (Saleor: 11111) or a string (CT: de_muc_zue7y)
+  ## For CT orders, it looks like this: DE_c139c9c1-36b5-423b-97b2-79a94d116aea
+  ## The way we can know from the client side whether order_number or order_id should be used, is by checking whether order_number is a number (Saleor: 11111) or a string (CT: de_muc_zue7y)
     type: string
     sql: (
-      IF(${is_ct_order}, ${country_iso}|| '_' ||${order_token}, ${country_iso}|| '_' ||${order_number})
+      IF(${is_ct_order}, ${country_iso}|| '_' ||${order_id}, ${country_iso}|| '_' ||${order_number})
     );;
   hidden: yes
   }
@@ -151,9 +151,9 @@ view: order_placed_events {
   }
 
 
-  dimension: order_token {
+  dimension: order_id {
     type: string
-    sql: ${TABLE}.order_token ;;
+    sql: ${TABLE}.order_id ;;
   }
 
   dimension: order_number {
@@ -218,7 +218,7 @@ view: order_placed_events {
   set: detail {
     fields: [
       id,
-      order_token,
+      order_id,
       order_number,
       anonymous_id,
       context_app_version,

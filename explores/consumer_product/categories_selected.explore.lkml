@@ -5,6 +5,6 @@ explore: categories_selected {
   view_name:  categories_selected
   label: "Show More Categories Events"
   view_label: "Show More Categories Events"
-  group_label: "10) In-app tracking data"
+  group_label: "In-app tracking data"
   description: "Show More Categories Events tracking events raw"
 }

@@ -115,7 +115,12 @@ view: inventory_stock_count_daily {
 
   dimension: country_iso {
     type: string
-    sql: UPPER(LEFT(${hub_code},2)) ;;
+    sql: ${TABLE}.country_iso ;;
+  }
+
+  dimension: city {
+    type: string
+    sql: ${TABLE}.city ;;
   }
 
   dimension: sku {
@@ -135,36 +140,38 @@ view: inventory_stock_count_daily {
     ]
     convert_tz: no
     datatype: date
-    sql: ${TABLE}.partition_timestamp ;;
+    sql: ${TABLE}.inventory_tracking_date ;;
   }
 
   dimension: primary_key {
     type: string
     primary_key: yes
     hidden: yes
-    sql: concat( ${hub_code}, ${sku}, CAST( ${tracking_date} AS STRING ) ) ;;
+    sql: ${TABLE}.daily_stock_uuid ;;
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Measures       ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   measure: avg_stock_count {
-    label: "ø Stock"
+    label: "AVG Quantity"
+    description: "The average stock count of a SKU"
     type: average
     sql: ${TABLE}.avg_stock_count ;;
     value_format_name: decimal_1
   }
 
-  measure: avg_stock_count_per_substitute_group {
-    label: "ø Stock Substitue Group"
-    type: average
-    sql: ${TABLE}.avg_stock_count_per_substitute_group ;;
-    value_format_name: decimal_1
-  }
+  # measure: avg_stock_count_per_substitute_group {
+  #   label: "ø Stock Substitue Group"
+  #   type: average
+  #   sql: ${TABLE}.avg_stock_count_per_substitute_group ;;
+  #   value_format_name: decimal_1
+  # }
 
 
   measure: hours_oos {
     label: "Hours Out-Of-Stock"
+    description: "The number of business hours, a specific SKU was not available in a hub (corrected by: having also no sales in spec. time)"
     type: sum
     sql: ${TABLE}.hours_oos ;;
     value_format_name: decimal_0
@@ -172,6 +179,7 @@ view: inventory_stock_count_daily {
 
   measure: open_hours_total {
     label: "Opening Hours"
+    description: "The number of hours, a hub was open (hours were customers could buy)"
     type: sum
     sql: ${TABLE}.open_hours_total ;;
     value_format_name: decimal_0
@@ -181,14 +189,23 @@ view: inventory_stock_count_daily {
     label: "# Items Reduced"
     description: "The difference of the previous and current hourly stock level per Product and Hub. This number includes orders, book-outs etc."
     type: sum
-    sql: ${TABLE}.sum_count_purchased ;;
+    sql: ${TABLE}.sum_count_stock_decreased ;;
     value_format_name: decimal_0
     hidden: yes
+  }
 
+  measure: sum_items_sold { # TODO tweak inventory query to filter is_successful and is_internal
+    label: "# Items Sold"
+    description: "The number of items sold"
+    type: sum
+    sql: ${TABLE}.sum_items_ordered ;;
+    value_format_name: decimal_0
+    hidden: yes
   }
 
   measure: sum_count_restocked {
     label: "# Items Re-Stocked"
+    description: "The number of items, that have been re-stocked for a given SKU and hub"
     type: sum
     sql: ${TABLE}.sum_count_restocked ;;
     value_format_name: decimal_0
@@ -198,6 +215,7 @@ view: inventory_stock_count_daily {
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   measure: pct_oos {
     label: "% Out Of Stock"
+    description: "This rate gives the sum of all hours, an SKU was out of stock compared to all hours, the hub was open for orders"
     type: number
     sql: ${hours_oos} / nullif( ${open_hours_total},0) ;;
     value_format_name: percent_0
@@ -223,7 +241,7 @@ view: inventory_stock_count_daily {
   }
 
   set: _measures {
-    fields: [avg_stock_count, avg_stock_count_per_substitute_group, hours_oos, open_hours_total, sum_count_purchased, sum_count_restocked, pct_oos]
+    fields: [avg_stock_count, hours_oos, open_hours_total, sum_count_purchased, sum_count_restocked, pct_oos]
   }
 
 

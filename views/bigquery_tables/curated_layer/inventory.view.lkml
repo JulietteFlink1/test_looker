@@ -14,11 +14,14 @@ view: inventory {
   }
 
   dimension: is_most_recent_record {
+    description: "Indicates, that the inventory shown is either the most recent data (Yes) or shows historical inventory information (No)"
     type: yesno
     sql: ${TABLE}.is_most_recent_record ;;
   }
 
   dimension: is_oos {
+    label: "Is Out-Of-Stock"
+    group_label: "> Product Attributes"
     type: yesno
     sql: ${TABLE}.is_oos ;;
   }
@@ -26,6 +29,7 @@ view: inventory {
   dimension: country_iso {
     type: string
     sql: ${TABLE}.country_iso ;;
+    group_label: "> Geographic Data"
   }
 
   dimension_group: last_modified {
@@ -43,13 +47,16 @@ view: inventory {
       quarter,
       year
     ]
-    sql: ${TABLE}.partition_timestamp ;;
+    sql: ${TABLE}.last_modified_at ;;
     label: "Inventory Update"
+    group_label: "> Dates & Timestamps"
+    hidden: yes
   }
 
   dimension: shelf_number {
     type: string
     sql: ${TABLE}.shelf_number ;;
+    group_label: "> Product Attributes"
   }
 
   dimension: sku {
@@ -61,6 +68,7 @@ view: inventory {
     label: "Stock quantity"
     type: number
     sql: ${TABLE}.quantity_available ;;
+    hidden: yes
   }
 
 
@@ -113,7 +121,8 @@ view: inventory {
       year
     ]
     sql: ${TABLE}.created_at ;;
-    group_label: "> Admin Data"
+    group_label: "> Dates & Timestamps"
+    hidden: yes
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -124,6 +133,7 @@ view: inventory {
     sql: ${TABLE}.quantity_available ;;
     label: "AVG Quantity Available"
     value_format_name: decimal_1
+    group_label: "> Absolute Metrics"
   }
 
   measure: avg_quantity_on_stock {
@@ -131,6 +141,7 @@ view: inventory {
     sql: ${TABLE}.quantity_on_stock ;;
     label: "AVG Quantity on Stock"
     value_format_name: decimal_1
+    group_label: "> Absolute Metrics"
   }
 
   measure: avg_quantity_reserved {
@@ -138,6 +149,7 @@ view: inventory {
     sql: ${TABLE}.quantity_reserved ;;
     label: "AVG Quantity Reserved"
     value_format_name: decimal_1
+    group_label: "> Absolute Metrics"
   }
 
   measure: sum_stock_quantity {
@@ -146,6 +158,17 @@ view: inventory {
     label: "Sum Current Quantity Available"
     filters: [is_most_recent_record: "Yes"]
     value_format_name: decimal_1
+    group_label: "> Absolute Metrics"
+  }
+
+
+  measure: sum_out_of_stock {
+    label: "SUM Stockouts"
+    group_label: "> Absolute Metrics"
+    hidden: no
+    type: sum
+    sql: ${flag_out_of_stock} ;;
+    value_format_name: decimal_0
   }
 
 
@@ -153,6 +176,7 @@ view: inventory {
   # ~~~~~~~~  https://goflink.cloud.looker.com/projects/flink_realtime/files/views/warehouse_stock_facts.view.lkml
   measure: pct_out_of_stock {
     label: "% Stockouts"
+    group_label: "> Percentages"
     hidden: no
     description: "Percentage of stockouts"
     type: average
@@ -172,6 +196,7 @@ view: inventory {
 
   measure: pct_with_less_than_five_units_in_stock {
     label: "% Products With Less Than 5 Units in Stock"
+    group_label: "> Percentages"
     hidden: no
     description: "Percentage of products with less than 5 units in stock"
     type: number
@@ -187,20 +212,4 @@ view: inventory {
       {% endif %};;
   }
 
-  measure: sum_out_of_stock {
-    label: "SUM Stockouts"
-    hidden: no
-    type: sum
-    sql: ${flag_out_of_stock} ;;
-    value_format_name: decimal_0
-  }
-
-
-
-
-  measure: count {
-    type: count
-    drill_fields: []
-    hidden: yes
-  }
 }

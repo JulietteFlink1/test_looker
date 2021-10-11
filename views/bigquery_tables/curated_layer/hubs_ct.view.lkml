@@ -18,39 +18,11 @@ view: hubs_ct {
     sql: ${TABLE}.hub_name ;;
   }
 
-  dimension: hub_name_anonymized   {
-    label: "Hub ID"
-    description: "Identifier of a Hub"
-    type: string
-    sql: ${TABLE}.hub_name_anonymized  ;;
-  }
-
-  dimension: languages {
-    type: string
-    sql: ${TABLE}.languages ;;
-  }
-
-  dimension: live {
-    type: number
-    sql: ${TABLE}.live ;;
-  }
-
-  dimension: start_date {
-    type: date
-    datatype: date
-    sql: ${TABLE}.start_date;;
-  }
-
-  dimension: is_hub_opened {
-    label: "Hub is Live?"
-    type: yesno
-    sql: ${TABLE}.start_date <= current_date() ;;
-  }
-
   dimension_group: time_between_hub_launch_and_today {
     type: duration
     sql_start: timestamp(${TABLE}.start_date) ;;
     sql_end: current_timestamp ;;
+    group_label: "> Dates & Timestamps"
   }
 
   # =========  Geographic Data   =========
@@ -157,18 +129,44 @@ view: hubs_ct {
     group_label: "> Admin Data"
   }
 
-  dimension_group: last_modified {
-    type: time
-    timeframes: [
-      raw,
-      time,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
+  dimension: last_modified {
+    label: "Last Modifed"
+    type: date_time
     sql: ${TABLE}.last_modified_at ;;
+    group_label: "> Admin Data"
+  }
+
+  dimension: languages {
+    type: string
+    sql: ${TABLE}.languages ;;
+    group_label: "> Admin Data"
+  }
+
+  dimension: live {
+    type: number
+    sql: ${TABLE}.live ;;
+    group_label: "> Admin Data"
+  }
+
+  dimension: start_date {
+    label: "Hub Start Date"
+    type: date
+    datatype: date
+    sql: ${TABLE}.start_date;;
+    group_label: "> Admin Data"
+  }
+
+  dimension: is_hub_opened {
+    label: "Hub is Live?"
+    type: yesno
+    sql: ${TABLE}.start_date <= current_date() ;;
+    group_label: "> Admin Data"
+  }
+
+  dimension: is_test_hub {
+    label: "Is Test Hub"
+    type: yesno
+    sql: ${TABLE}.is_test_hub ;;
     group_label: "> Admin Data"
   }
 
@@ -190,6 +188,14 @@ view: hubs_ct {
   dimension: supply_channel_id {
     type: string
     sql: ${TABLE}.supply_channel_id ;;
+    group_label: "> IDs"
+  }
+
+  dimension: hub_name_anonymized   {
+    label: "Hub ID"
+    description: "Identifier of a Hub"
+    type: string
+    sql: ${TABLE}.hub_name_anonymized  ;;
     group_label: "> IDs"
   }
 

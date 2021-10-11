@@ -6,6 +6,7 @@ include: "/views/projects/cleaning/issue_rates_clean.view"
 include: "/views/bigquery_tables/curated_layer/hubs_ct.view"
 include: "/views/bigquery_tables/curated_layer/nps_after_order_cl.view"
 include: "/views/bigquery_tables/curated_layer/cs_post_delivery_issues.view"
+include: "/views/sql_derived_tables/bottom_10_hubs.view"
 
 include: "/explores/base_explores/orders_cl.explore"
 
@@ -24,7 +25,7 @@ explore: orders_cl {
   always_filter: {
     filters:  [
       orders_cl.is_successful_order: "yes",
-      orders_cl.created_date: "after 2021-01-25",
+      orders_cl.created_date: "30 days",
       hubs.country: "",
       hubs.hub_name: ""
     ]
@@ -82,5 +83,6 @@ explore: orders_cl {
     relationship: one_to_many
     type: left_outer
   }
+
 
 }

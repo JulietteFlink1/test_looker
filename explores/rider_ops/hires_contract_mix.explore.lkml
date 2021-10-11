@@ -5,7 +5,7 @@ explore: hires_contract_mix {
   label: "Hires Contract Mix"
   view_label: "Hires Contract Mix"
   description: "Hires Contract Mix"
-  group_label: "09) Rider Ops"
+  group_label: "Rider Ops"
 
   access_filter: {
     field: hires_contract_mix.country

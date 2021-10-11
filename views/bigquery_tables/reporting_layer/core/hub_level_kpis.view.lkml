@@ -112,6 +112,39 @@ view: hub_level_kpis {
     sql_end: current_date() ;;
   }
 
+  dimension: date_ {
+    group_label: "* Dates and Timestamps *"
+    label: "Date (Dynamic)"
+    label_from_parameter: date_granularity
+    sql:
+    {% if date_granularity._parameter_value == 'Week' %}
+      ${order_week}
+    {% elsif date_granularity._parameter_value == 'Month' %}
+      ${order_month}
+    {% elsif date_granularity._parameter_value == 'Day' %}
+      ${order_date}
+    {% endif %};;
+  }
+
+
+
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~     Parameters     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+  parameter: date_granularity {
+    group_label: "* Dates and Timestamps *"
+    label: "Date Granularity"
+    type: unquoted
+    allowed_value: { value: "Day" }
+    allowed_value: { value: "Week" }
+    allowed_value: { value: "Month" }
+    default_value: "Week"
+  }
+
+
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~~~

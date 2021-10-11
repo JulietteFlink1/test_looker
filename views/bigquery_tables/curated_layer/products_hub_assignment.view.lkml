@@ -24,40 +24,29 @@ view: products_hub_assignment {
   }
 
   dimension: is_most_recent_record {
+    description: "Indicates, that the hub-sku assigment shown is either the most recent assignment (Yes) or shows historical assignments of skus to hubs (No)"
     type: yesno
     sql: ${TABLE}.is_most_recent_record ;;
   }
 
   dimension: is_sku_assigned_to_hub {
+    description: "Indicates, that a selected sku is assigned to a selected hub (both need to be visible in the visualisation).
+    This flag shows not only the most recent sku-hub assignment, but also historical assignments. Please use either
+
+    * Is Most Recent Record (Yes/No) or
+    * Valid From and Valid To to determine, when the shown assignment is valid
+    "
     type: yesno
     sql: ${TABLE}.is_sku_assigned_to_hub ;;
   }
 
-  dimension_group: valid_from {
-    type: time
-    timeframes: [
-      raw,
-      time,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
+  dimension: valid_from {
+    type: date_time
     sql: ${TABLE}.valid_from ;;
   }
 
-  dimension_group: valid_to {
-    type: time
-    timeframes: [
-      raw,
-      time,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
+  dimension: valid_to {
+    type: date_time
     sql: ${TABLE}.valid_to ;;
   }
 

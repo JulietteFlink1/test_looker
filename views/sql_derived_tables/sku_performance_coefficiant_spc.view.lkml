@@ -1,11 +1,11 @@
-view: testing__spc {
+view: sku_performance_coefficiant_spc {
 
   derived_table: {
     sql: with start_date as (
-          select DATE_SUB(CURRENT_DATE(), interval 7 day)            as start_d
-               , CURRENT_DATE()                                      as end_d
-               , timestamp(DATE_SUB(CURRENT_DATE(), interval 7 day)) as start_ts
-               , CURRENT_TIMESTAMP()                                 as end_ts
+          select DATE_SUB( DATE_TRUNC(CURRENT_DATE(), week(monday) ) , interval 4 week)            as start_d  # last 4 complete weeks
+               , DATE_TRUNC(CURRENT_DATE(), week(sunday) )                                         as end_d    # sunday, as this is last weeks last day in German calendar
+               , timestamp(DATE_SUB( DATE_TRUNC(CURRENT_DATE(), week(monday) ) , interval 4 week)) as start_ts
+               , timestamp(DATE_TRUNC(CURRENT_DATE(), week(sunday) ))                              as end_ts
       ),
 
            assignment_data as (
@@ -14,7 +14,7 @@ view: testing__spc {
                where is_sku_assigned_to_hub
                  -- this gives only assignments without duplicates - aka if the status changed in this timeframe, it is not covered
                  -- those values will be set to TRUE in the next step
-                 and valid_until >= (select end_ts from start_date)
+                 and valid_to >= (select end_ts from start_date)
                  and valid_from <= (select start_ts from start_date)
            ),
 
@@ -24,7 +24,7 @@ view: testing__spc {
                         left join assignment_data
                                   on assignment_data.sku = inv.sku
                                       and assignment_data.hub_code = inv.hub_code
-               where partition_timestamp between (select start_d from start_date) and (select end_d from start_date)
+               where inventory_tracking_date between (select start_d from start_date) and (select end_d from start_date)
                  and (assignment_data.is_sku_assigned_to_hub = TRUE or assignment_data.is_sku_assigned_to_hub is null)
            ),
 
@@ -66,7 +66,7 @@ view: testing__spc {
            oos_data as (
                select sku,
                       avg(avg_stock_count)                   as avg_stock_count,
-                      sum(hours_oos) / sum(open_hours_total) as pct_oos
+                      sum(hours_oos) / NULLIF(sum(open_hours_total),0) as pct_oos
                from inventory_data
                group by 1
            ),
@@ -87,6 +87,7 @@ view: testing__spc {
                     , prod.subcategory
                     , prod.substitute_group
                     , prod.product_sku                                                                               as sku
+                    , prod.created_at                                                                                as sku_created_at_timestamp
                     , agg_order_data.country_iso
                     , prod.product_name
                     , cust.is_local_product
@@ -121,12 +122,12 @@ view: testing__spc {
 
            add_calculated_metrics as (
                select *
-                    , sum_item_price_sold_net / (1 - if(pct_oos = 1, 0.9999999, pct_oos)) / NULLIF(num_ass_hub_codes, 0) *
+                    , sum_item_price_sold_net / NULLIF((1 - if(pct_oos = 1, 0.9999999, pct_oos)),0) / NULLIF(num_ass_hub_codes, 0) *
                       max_num_hub_codes                                                                 as revenue_equalized
                     , (avg_unit_price_gross - buying_price - deposit) / NULLIF(avg_unit_price_gross, 0) as gross_margin
                     , sum_item_quantity_sold / NULLIF(avg_stock_count, 0)                               as inventory_turnover
                     , sum_orders_with_sku /
-                      NULLIF((sum_orders_per_country / (1 - if(pct_oos = 1, 0.9999999, pct_oos)) /
+                      NULLIF((sum_orders_per_country / NULLIF((1 - if(pct_oos = 1, 0.9999999, pct_oos)),0) /
                               NULLIF(num_ass_hub_codes, 0) * max_num_hub_codes), 0)                     as basket_penetration
                from merged_data_table
            ),
@@ -134,237 +135,336 @@ view: testing__spc {
            add_sub_category_comparison as (
                select *
                     , revenue_equalized /
-                      NULLIF(SUM(revenue_equalized) over (partition by subcategory), 0)                 as revenue_equalized_share
-                    , RANK() over (partition by subcategory order by gross_margin asc)                  as gross_margin_score
-                    , RANK() over (partition by subcategory order by inventory_turnover asc)            as inventory_turnover_score
-                    , RANK() over (partition by subcategory order by avg_order_value_net_in_basket asc) as avg_basket_value_score
-                    , RANK() over (partition by subcategory order by basket_penetration asc)            as basket_penetration_score
+                      NULLIF(SUM(revenue_equalized) over (partition by country_iso, subcategory), 0)                 as revenue_equalized_share
+                    , RANK() over (partition by country_iso, subcategory order by gross_margin asc)                  as gross_margin_score
+                    , RANK() over (partition by country_iso, subcategory order by inventory_turnover asc)            as inventory_turnover_score
+                    , RANK() over (partition by country_iso, subcategory order by avg_order_value_net_in_basket asc) as avg_basket_value_score
+                    , RANK() over (partition by country_iso, subcategory order by basket_penetration asc)            as basket_penetration_score
                from add_calculated_metrics
            )
-      select *
+      select
+          *
+        , RANK() over (partition by country_iso, subcategory order by revenue_equalized_share,0 asc)                   as revenue_equalized_share_score
       from add_sub_category_comparison
        ;;
   }
 
-  measure: count {
-    type: count
-    drill_fields: [detail*]
-  }
 
-  dimension: category {
-    type: string
-    sql: ${TABLE}.category ;;
-  }
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~     Dimensions     ~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  dimension: subcategory {
-    type: string
-    sql: ${TABLE}.subcategory ;;
-  }
-
-  dimension: substitute_group {
-    type: string
-    sql: ${TABLE}.substitute_group ;;
-  }
-
+  # =========  __main__   =========
   dimension: sku {
     type: string
     sql: ${TABLE}.sku ;;
   }
 
-  dimension: country_iso {
+  dimension: product_sku_name {
+    label: "SKU + Name"
     type: string
-    sql: ${TABLE}.country_iso ;;
+    sql: CONCAT(${TABLE}.sku, ' - ', ${TABLE}.product_name) ;;
+  }
+
+  # =========  hidden   =========
+
+
+  # =========  product attributes   =========
+  dimension: category {
+    label: "Parent Category"
+    type: string
+    sql: ${TABLE}.category ;;
+    group_label: "> Product Dimensions"
+  }
+
+  dimension: subcategory {
+    label: "Sub-Category"
+    type: string
+    sql: ${TABLE}.subcategory ;;
+    group_label: "> Product Dimensions"
+  }
+
+  dimension: substitute_group {
+    type: string
+    sql: ${TABLE}.substitute_group ;;
+    group_label: "> Product Dimensions"
+  }
+
+  dimension_group: sku_created_at_timestamp {
+    label: "SKU Creation"
+    type: time
+    sql: ${TABLE}.sku_created_at_timestamp ;;
+    group_label: "> Product Dimensions"
   }
 
   dimension: product_name {
     type: string
     sql: ${TABLE}.product_name ;;
+    group_label: "> Product Dimensions"
   }
 
   dimension: is_local_product {
     type: string
     sql: ${TABLE}.is_local_product ;;
-  }
-
-  dimension: subtotal_column {
-    type: string
-    sql: ${TABLE}.subtotal_column ;;
-  }
-
-  dimension: buying_price {
-    type: number
-    sql: ${TABLE}.buying_price ;;
-    required_access_grants: [can_view_buying_information]
+    group_label: "> Product Dimensions"
   }
 
   dimension: substitute_group_custom_definition {
     type: string
     sql: ${TABLE}.substitute_group_custom_definition ;;
+    group_label: "> Product Dimensions"
   }
 
   dimension: sku_listing_status {
     type: string
     sql: ${TABLE}.sku_listing_status ;;
+    group_label: "> Product Dimensions"
+  }
+
+
+  # =========  IDs   =========
+
+
+  # =========  Geo   =========
+  dimension: country_iso {
+    type: string
+    sql: ${TABLE}.country_iso ;;
+    group_label: "> Geographic Dimensions"
+  }
+
+
+  # =========  Helper Cols   =========
+  dimension: subtotal_column {
+    type: string
+    sql: ${TABLE}.subtotal_column ;;
+    group_label: "> Helper Dimension"
+  }
+
+  dimension: sum_orders_with_sku {
+    label: "# Orders with selected SKU"
+    type: number
+    sql: ${TABLE}.sum_orders_with_sku ;;
+    group_label: "> Helper Dimension"
+  }
+
+  dimension: sum_orders_per_country {
+    label: "# Total Orders per Country"
+    type: number
+    sql: ${TABLE}.sum_orders_per_country ;;
+    group_label: "> Helper Dimension"
+  }
+  dimension: max_num_hub_codes {
+    label: "# Maximum Hubs per Country and Day"
+    type: number
+    sql: ${TABLE}.max_num_hub_codes ;;
+    group_label: "> Helper Dimension"
+  }
+
+  dimension: num_ass_hub_codes {
+    label: "# Assigned Hubs (of an SKU)"
+    type: number
+    sql: ${TABLE}.num_ass_hub_codes ;;
+    group_label: "> Helper Dimension"
+  }
+
+
+
+  # =========  Payment   =========
+  dimension: buying_price {
+    type: number
+    sql: ${TABLE}.buying_price ;;
+    required_access_grants: [can_view_buying_information]
+    group_label: "> Payment Dimension"
+    value_format_name: eur
   }
 
   dimension: vat_rate {
     type: number
     sql: ${TABLE}.vat_rate ;;
+    group_label: "> Payment Dimension"
+    value_format_name: percent_2
   }
 
   dimension: deposit {
     type: number
     sql: ${TABLE}.deposit ;;
+    group_label: "> Payment Dimension"
+    value_format_name: eur
   }
 
+
+  # =========  Scores   =========
+  dimension: gross_margin_score {
+    type: number
+    sql: ${TABLE}.gross_margin_score ;;
+    group_label: "> Final Scores"
+    value_format_name: decimal_1
+  }
+
+  dimension: inventory_turnover_score {
+    type: number
+    sql: ${TABLE}.inventory_turnover_score ;;
+    group_label: "> Final Scores"
+    value_format_name: decimal_1
+  }
+
+  dimension: avg_basket_value_score {
+    type: number
+    sql: ${TABLE}.avg_basket_value_score ;;
+    group_label: "> Final Scores"
+    value_format_name: decimal_1
+  }
+
+  dimension: basket_penetration_score {
+    type: number
+    sql: ${TABLE}.basket_penetration_score ;;
+    group_label: "> Final Scores"
+    value_format_name: decimal_1
+  }
+
+  dimension: revenue_equalized_share_score {
+    label: "Equalized Revenue Score"
+    type: number
+    sql: ${TABLE}.revenue_equalized_share_score ;;
+    group_label: "> Final Scores"
+    value_format_name: decimal_1
+  }
+
+
+  # =========  Numeric Dimensions   =========
   dimension: sum_item_quantity_sold {
     type: number
     sql: ${TABLE}.sum_item_quantity_sold ;;
+    group_label: "> Numeric Dimensions"
+    value_format_name: decimal_1
   }
 
   dimension: avg_unit_price_gross {
     type: number
     sql: ${TABLE}.avg_unit_price_gross ;;
+    group_label: "> Numeric Dimensions"
+    value_format_name: eur
   }
 
   dimension: avg_unit_price_net {
     type: number
     sql: ${TABLE}.avg_unit_price_net ;;
+    group_label: "> Numeric Dimensions"
+    value_format_name: eur
   }
 
   dimension: sum_item_price_sold_net {
     type: number
     sql: ${TABLE}.sum_item_price_sold_net ;;
+    group_label: "> Numeric Dimensions"
+    value_format_name: eur
   }
 
   dimension: avg_stock_count {
     type: number
     sql: ${TABLE}.avg_stock_count ;;
+    group_label: "> Numeric Dimensions"
+    value_format_name: decimal_1
   }
 
   dimension: pct_oos {
+    label: "% Out of Stock"
     type: number
     sql: ${TABLE}.pct_oos ;;
-  }
-
-  dimension: max_num_hub_codes {
-    type: number
-    sql: ${TABLE}.max_num_hub_codes ;;
-  }
-
-  dimension: num_ass_hub_codes {
-    type: number
-    sql: ${TABLE}.num_ass_hub_codes ;;
+    group_label: "> Numeric Dimensions"
+    value_format_name: percent_2
   }
 
   dimension: avg_skus_in_basket {
+    label: "AVG Unique Products in Basket"
     type: number
     sql: ${TABLE}.avg_skus_in_basket ;;
+    group_label: "> Numeric Dimensions"
+    value_format_name: decimal_1
   }
 
   dimension: avg_item_quantity_in_basket {
+    label: "AVG Item Quantity in Basket"
     type: number
     sql: ${TABLE}.avg_item_quantity_in_basket ;;
+    group_label: "> Numeric Dimensions"
+    value_format_name: decimal_1
   }
 
   dimension: avg_order_value_net_in_basket {
     type: number
     sql: ${TABLE}.avg_order_value_net_in_basket ;;
+    group_label: "> Numeric Dimensions"
+    value_format_name: decimal_1
   }
 
-  dimension: sum_orders_with_sku {
-    type: number
-    sql: ${TABLE}.sum_orders_with_sku ;;
-  }
-
-  dimension: sum_orders_per_country {
-    type: number
-    sql: ${TABLE}.sum_orders_per_country ;;
-  }
 
   dimension: revenue_equalized {
+    label: "Equalized Revenue"
     type: number
     sql: ${TABLE}.revenue_equalized ;;
+    group_label: "> Numeric Dimensions"
+    value_format_name: eur
   }
 
   dimension: gross_margin {
     type: number
     sql: ${TABLE}.gross_margin ;;
     required_access_grants: [can_view_buying_information]
+    group_label: "> Numeric Dimensions"
+    value_format_name: eur
   }
 
   dimension: inventory_turnover {
     type: number
     sql: ${TABLE}.inventory_turnover ;;
+    group_label: "> Numeric Dimensions"
+    value_format_name: decimal_3
   }
 
   dimension: basket_penetration {
     type: number
     sql: ${TABLE}.basket_penetration ;;
+    group_label: "> Numeric Dimensions"
+    value_format_name: percent_3
   }
 
   dimension: revenue_equalized_share {
+    label: "Share Equalized Revenue vs Sub-Category"
     type: number
     sql: ${TABLE}.revenue_equalized_share ;;
+    group_label: "> Numeric Dimensions"
+    value_format_name: percent_3
   }
 
-  dimension: gross_margin_score {
-    type: number
-    sql: ${TABLE}.gross_margin_score ;;
-  }
 
-  dimension: inventory_turnover_score {
-    type: number
-    sql: ${TABLE}.inventory_turnover_score ;;
-  }
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  dimension: avg_basket_value_score {
-    type: number
-    sql: ${TABLE}.avg_basket_value_score ;;
-  }
 
-  dimension: basket_penetration_score {
-    type: number
-    sql: ${TABLE}.basket_penetration_score ;;
-  }
 
-  set: detail {
-    fields: [
-      category,
-      subcategory,
-      substitute_group,
-      sku,
-      country_iso,
-      product_name,
-      is_local_product,
-      subtotal_column,
-      buying_price,
-      substitute_group_custom_definition,
-      sku_listing_status,
-      vat_rate,
-      deposit,
-      sum_item_quantity_sold,
-      avg_unit_price_gross,
-      avg_unit_price_net,
-      sum_item_price_sold_net,
-      avg_stock_count,
-      pct_oos,
-      max_num_hub_codes,
-      num_ass_hub_codes,
-      avg_skus_in_basket,
-      avg_item_quantity_in_basket,
-      avg_order_value_net_in_basket,
-      sum_orders_with_sku,
-      sum_orders_per_country,
-      revenue_equalized,
-      gross_margin,
-      inventory_turnover,
-      basket_penetration,
-      revenue_equalized_share,
-      gross_margin_score,
-      inventory_turnover_score,
-      avg_basket_value_score,
-      basket_penetration_score
-    ]
-  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
