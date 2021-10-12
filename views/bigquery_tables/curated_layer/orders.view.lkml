@@ -690,6 +690,24 @@ view: orders {
     sql: ${TABLE}.payment_type ;;
   }
 
+  dimension: payment_method {
+    group_label: "* Order Dimensions *"
+    type: string
+    sql: ${TABLE}.payment_method ;;
+  }
+
+  dimension: payment_company {
+    group_label: "* Order Dimensions *"
+    type: string
+    sql: ${TABLE}.payment_company ;;
+  }
+
+  dimension: platform {
+    group_label: "* Order Dimensions *"
+    type: string
+    sql: ${TABLE}.platform ;;
+  }
+
   dimension: picker_id {
     hidden: yes
     group_label: "* IDs *"
