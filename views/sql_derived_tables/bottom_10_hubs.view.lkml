@@ -70,14 +70,14 @@ from ranked r
   }
 
   measure: cnt_bottom_10_delivery {
-    label: "# Bottom 10 Orders Delivered in Time"
+    label: "# Occurrences in Bottom 10 List by Delivery in Time"
     description: "The total number of times at bottom 10 for orders delivered in time"
     type: sum
     sql: ${is_bottom_10_delivery} ;;
       }
 
   measure: cnt_is_bottom_10_issues {
-    label: "# Bottom 10 Issue Rate"
+    label: "# Occurrences in Bottom 10 List by Issue Rate"
     description: "The total number of times at bottom 10 for issue rate"
     type: sum
     sql: ${is_bottom_10_issues} ;;
