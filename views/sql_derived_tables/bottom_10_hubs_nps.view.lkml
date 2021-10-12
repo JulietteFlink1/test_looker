@@ -56,7 +56,7 @@ view: bottom_10_hubs_nps {
   }
 
   measure: cnt_bottom_10_delivery {
-    label: "# Bottom 10 for NPS"
+    label: "# Occurrences in Bottom 10 List by NPS"
     description: "The total number of times at bottom 10 for nps"
     type: sum
     sql: ${is_bottom_10_nps} ;;
