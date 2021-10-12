@@ -187,8 +187,18 @@ view: vat_order {
     sql: ${TABLE}.country_iso ;;
   }
 
-  dimension: order_date {
-    type: date
+  dimension_group: created {
+    group_label: "Order Date"
+    type: time
+    timeframes: [
+      raw,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    convert_tz: no
     datatype: date
     sql: ${TABLE}.order_date ;;
   }
@@ -214,166 +224,199 @@ view: vat_order {
   }
 
   dimension: sum_items_price_net {
+    hidden: yes
     type: number
     sql: ${TABLE}.sum_items_price_net ;;
   }
 
   dimension: sum_items_price_gross {
+    hidden: yes
     type: number
     sql: ${TABLE}.sum_items_price_gross ;;
   }
 
   dimension: sum_items_price_reduced_net {
+    hidden: yes
     type: number
     sql: ${TABLE}.sum_items_price_reduced_net ;;
   }
 
   dimension: sum_items_price_reduced_gross {
+    hidden: yes
     type: number
     sql: ${TABLE}.sum_items_price_reduced_gross ;;
   }
 
   dimension: sum_items_price_standard_net {
+    hidden: yes
     type: number
     sql: ${TABLE}.sum_items_price_standard_net ;;
   }
 
   dimension: sum_items_price_standard_gross {
+    hidden: yes
     type: number
     sql: ${TABLE}.sum_items_price_standard_gross ;;
   }
 
   dimension: vat_items_reduced {
+    hidden: yes
     type: number
     sql: ${TABLE}.vat_items_reduced ;;
   }
 
   dimension: vat_items_standard {
+    hidden: yes
     type: number
     sql: ${TABLE}.vat_items_standard ;;
   }
 
   dimension: vat_items_total {
+    hidden: yes
     type: number
     sql: ${TABLE}.vat_items_total ;;
   }
 
   dimension: delivery_fee_net {
+    hidden: yes
     type: number
     sql: ${TABLE}.delivery_fee_net ;;
   }
 
   dimension: delivery_fee_gross {
+    hidden: yes
     type: number
     sql: ${TABLE}.delivery_fee_gross ;;
   }
 
   dimension: delivery_fee_reduced_net {
+    hidden: yes
     type: number
     sql: ${TABLE}.delivery_fee_reduced_net ;;
   }
 
   dimension: delivery_fee_standard_net {
+    hidden: yes
     type: number
     sql: ${TABLE}.delivery_fee_standard_net ;;
   }
 
   dimension: vat_delivery_fee_reduced {
+    hidden: yes
     type: number
     sql: ${TABLE}.vat_delivery_fee_reduced ;;
   }
 
   dimension: vat_delivery_fee_standard {
+    hidden: yes
     type: number
     sql: ${TABLE}.vat_delivery_fee_standard ;;
   }
 
   dimension: vat_delivery_fee_total {
+    hidden: yes
     type: number
     sql: ${TABLE}.vat_delivery_fee_total ;;
   }
 
   dimension: discount_amount_net {
+    hidden: yes
     type: number
     sql: ${TABLE}.discount_amount_net ;;
   }
 
   dimension: discount_amount_gross {
+    hidden: yes
     type: number
     sql: ${TABLE}.discount_amount_gross ;;
   }
 
   dimension: discount_amount_reduced_net {
+    hidden: yes
     type: number
     sql: ${TABLE}.discount_amount_reduced_net ;;
   }
 
   dimension: vat_discount_amount_reduced {
+    hidden: yes
     type: number
     sql: ${TABLE}.vat_discount_amount_reduced ;;
   }
 
   dimension: discount_amount_standard_net {
+    hidden: yes
     type: number
     sql: ${TABLE}.discount_amount_standard_net ;;
   }
 
   dimension: vat_discount_amount_standard {
+    hidden: yes
     type: number
     sql: ${TABLE}.vat_discount_amount_standard ;;
   }
 
   dimension: vat_discount_amount_total {
+    hidden: yes
     type: number
     sql: ${TABLE}.vat_discount_amount_total ;;
   }
 
   dimension: refund_amount_net {
+    hidden: yes
     type: number
     sql: ${TABLE}.refund_amount_net ;;
   }
 
   dimension: refund_amount_gross {
+    hidden: yes
     type: number
     sql: ${TABLE}.refund_amount_gross ;;
   }
 
   dimension: refund_amount_reduced_net {
+    hidden: yes
     type: number
     sql: ${TABLE}.refund_amount_reduced_net ;;
   }
 
   dimension: refund_amount_standard_net {
+    hidden: yes
     type: number
     sql: ${TABLE}.refund_amount_standard_net ;;
   }
 
   dimension: vat_refund_amount_reduced {
+    hidden: yes
     type: number
     sql: ${TABLE}.vat_refund_amount_reduced ;;
   }
 
   dimension: vat_refund_amount_standard {
+    hidden: yes
     type: number
     sql: ${TABLE}.vat_refund_amount_standard ;;
   }
 
   dimension: vat_refund_amount_total {
+    hidden: yes
     type: number
     sql: ${TABLE}.vat_refund_amount_total ;;
   }
 
   dimension: total_net {
+    hidden: yes
     type: number
     sql: ${TABLE}.total_net ;;
   }
 
   dimension: total_gross {
+    hidden: yes
     type: number
     sql: ${TABLE}.total_gross ;;
   }
 
   dimension: total_vat {
+    hidden: yes
     type: number
     sql: ${TABLE}.total_VAT ;;
   }
@@ -385,54 +428,63 @@ view: vat_order {
   measure: total_sum_items_price_net {
     group_label: "* Items *"
     type: sum
+    value_format: "#,##0.00€"
     sql: ${sum_items_price_net} ;;
   }
 
   measure: total_sum_items_price_gross {
     group_label: "* Items *"
     type: sum
+    value_format: "#,##0.00€"
     sql: ${sum_items_price_gross} ;;
   }
 
   measure: total_sum_items_price_reduced_gross {
     group_label: "* Items *"
     type: sum
+    value_format: "#,##0.00€"
     sql: ${sum_items_price_reduced_gross} ;;
   }
 
   measure: total_sum_items_price_reduced_net {
     group_label: "* Items *"
     type: sum
+    value_format: "#,##0.00€"
     sql: ${sum_items_price_reduced_net} ;;
   }
 
   measure: total_sum_items_price_standard_gross {
     group_label: "* Items *"
     type: sum
+    value_format: "#,##0.00€"
     sql: ${sum_items_price_reduced_gross} ;;
   }
 
   measure: total_sum_items_price_standard_net {
     group_label: "* Items *"
     type: sum
+    value_format: "#,##0.00€"
     sql: ${sum_items_price_reduced_net} ;;
   }
 
   measure: sum_vat_items_reduced {
     group_label: "* Items *"
     type: sum
+    value_format: "#,##0.00€"
     sql: ${vat_items_reduced} ;;
   }
 
   measure: sum_vat_items_standard {
     group_label: "* Items *"
     type: sum
+    value_format: "#,##0.00€"
     sql: ${vat_items_standard} ;;
   }
 
   measure: sum_vat_items_total {
     group_label: "* Items *"
     type: sum
+    value_format: "#,##0.00€"
     sql: ${vat_items_total} ;;
   }
 
@@ -440,48 +492,55 @@ view: vat_order {
   ##################### Delivery Fees ##########################
 
 
-  measure: total_sum_delivery_fee_net {
+  measure: sum_delivery_fee_net {
     group_label: "* Delivery Fee *"
     type: sum
+    value_format: "#,##0.00€"
     sql: ${delivery_fee_net} ;;
   }
 
-  measure: total_sum_delivery_fee_gross {
+  measure: sum_delivery_fee_gross {
     group_label: "* Delivery Fee *"
     type: sum
+    value_format: "#,##0.00€"
     sql: ${delivery_fee_gross} ;;
   }
 
   ## add df_reduced gross and df standard gross
 
-  measure: total_sum_delivery_fee_reduced_net {
+  measure: sum_delivery_fee_reduced_net {
     group_label: "* Delivery Fee *"
     type: sum
+    value_format: "#,##0.00€"
     sql: ${delivery_fee_reduced_net} ;;
   }
 
 
-  measure: total_sum_delivery_fee_standard_net {
+  measure: sum_delivery_fee_standard_net {
     group_label: "* Delivery Fee *"
     type: sum
+    value_format: "#,##0.00€"
     sql: ${delivery_fee_standard_net} ;;
   }
 
   measure: sum_vat_delivery_fee_reduced {
     group_label: "* Delivery Fee *"
     type: sum
+    value_format: "#,##0.00€"
     sql: ${vat_delivery_fee_reduced} ;;
   }
 
   measure: sum_vat_delivery_fee_standard {
     group_label: "* Delivery Fee *"
     type: sum
+    value_format: "#,##0.00€"
     sql: ${vat_delivery_fee_standard} ;;
   }
 
   measure: sum_vat_delivery_fee_total {
     group_label: "* Delivery Fee *"
     type: sum
+    value_format: "#,##0.00€"
     sql: ${vat_delivery_fee_total} ;;
   }
 
@@ -489,48 +548,55 @@ view: vat_order {
     ##################### Discounts  ##########################
 
 
-  measure: total_sum_discount_amount_net {
+  measure: sum_discount_amount_net {
     group_label: "* Discounts *"
     type: sum
+    value_format: "#,##0.00€"
     sql: ${discount_amount_net} ;;
   }
 
-  measure: total_sum_discount_amount_gross {
+  measure: sum_discount_amount_gross {
     group_label: "* Discounts *"
     type: sum
+    value_format: "#,##0.00€"
     sql: ${discount_amount_gross} ;;
   }
 
   ## add df_reduced gross and df standard gross
 
-  measure: total_sum_discount_amount_reduced_net {
+  measure: sum_discount_amount_reduced_net {
     group_label: "* Discounts *"
     type: sum
+    value_format: "#,##0.00€"
     sql: ${discount_amount_reduced_net} ;;
   }
 
 
-  measure: total_sum_discount_amount_standard_net {
+  measure: sum_discount_amount_standard_net {
     group_label: "* Discounts *"
     type: sum
+    value_format: "#,##0.00€"
     sql: ${discount_amount_standard_net} ;;
   }
 
   measure: sum_vat_discount_amount_reduced {
     group_label: "* Discounts *"
     type: sum
+    value_format: "#,##0.00€"
     sql: ${vat_discount_amount_reduced} ;;
   }
 
   measure: sum_vat_discount_amount_standard {
     group_label: "* Discounts *"
     type: sum
+    value_format: "#,##0.00€"
     sql: ${vat_discount_amount_standard} ;;
   }
 
   measure: sum_vat_discount_amount_total {
     group_label: "* Discounts *"
     type: sum
+    value_format: "#,##0.00€"
     sql: ${vat_discount_amount_total} ;;
   }
 
@@ -539,47 +605,54 @@ view: vat_order {
     #####################  Refunds  ##########################
 
 
-  measure: total_sum_refund_amount_net {
+  measure: sum_refund_amount_net {
     group_label: "* Refunds *"
     type: sum
+    value_format: "#,##0.00€"
     sql: ${refund_amount_net} ;;
   }
 
-  measure: total_sum_refund_amount_gross {
+  measure: sum_refund_amount_gross {
     group_label: "* Refunds *"
     type: sum
+    value_format: "#,##0.00€"
     sql: ${refund_amount_gross} ;;
   }
 
   ## add df_reduced gross and df standard gross
 
-  measure: total_sum_refund_amount_reduced_net {
+  measure: sum_refund_amount_reduced_net {
     group_label: "* Refunds *"
     type: sum
+    value_format: "#,##0.00€"
     sql: ${refund_amount_reduced_net} ;;
   }
 
 
-  measure: total_sum_refund_amount_standard_net {
+  measure: sum_refund_amount_standard_net {
     group_label: "* Refunds *"
     type: sum
+    value_format: "#,##0.00€"
     sql: ${refund_amount_standard_net} ;;
   }
 
   measure: sum_vat_refund_amount_reduced {
     group_label: "* Refunds *"
     type: sum
+    value_format: "#,##0.00€"
     sql: ${vat_refund_amount_reduced} ;;
   }
 
   measure: sum_vat_refund_amount_standard {
     group_label: "* Refunds *"
     type: sum
+    value_format: "#,##0.00€"
     sql: ${vat_refund_amount_standard} ;;
   }
 
   measure: sum_vat_refund_amount_total {
     group_label: "* Refunds *"
+    value_format: "#,##0.00€"
     type: sum
     sql: ${vat_refund_amount_total} ;;
   }
@@ -590,18 +663,21 @@ view: vat_order {
   measure: sum_total_gross {
     group_label: "* Total *"
     type: sum
+    value_format: "#,##0.00€"
     sql: ${total_gross} ;;
   }
 
   measure: sum_total_net {
     group_label: "* Total *"
     type: sum
+    value_format: "#,##0.00€"
     sql: ${total_net} ;;
   }
 
   measure: sum_total_vat {
     group_label: "* Total *"
     type: sum
+    value_format: "#,##0.00€"
     sql: ${total_vat} ;;
   }
 
@@ -611,7 +687,6 @@ view: vat_order {
     fields: [
       order_id,
       country_iso,
-      order_date,
       user_email,
       hub_name,
       hub_code,
