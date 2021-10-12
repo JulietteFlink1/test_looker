@@ -9,6 +9,7 @@ view: bottom_10_hubs {
     , (sum(number_of_orders_delayed_under_0_min)/nullif(sum(number_of_orders_with_delivery_eta_available),0)*100) as pct_delivery_in_time
     , sum(number_of_orders_with_issues)/(nullif(sum(number_of_orders),0)*100) as issue_rate
 from `flink-data-prod.reporting.hub_level_kpis`
+where hub_code != "de_ham_alto"
 group by 1, 2, 3
 ),
 
