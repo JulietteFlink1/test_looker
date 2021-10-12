@@ -35,7 +35,7 @@ explore:  gorillas_to_flink_global {
   #   sql_where: (${inventory.is_most_recent_record} = TRUE) ;;
   # }
 
-  # # join: hubs {
+  # join: hubs {
   #   from:  hubs_ct
   #   sql_on: ${hubs.hub_code} = ${inventory.hub_code} ;;
   #   relationship: many_to_one
@@ -47,7 +47,7 @@ explore:  gorillas_to_flink_global {
   #   sql_on: ${order_lineitems.product_sku} = ${inventory.sku}
   #       and ${order_lineitems.hub_code}    = ${inventory.hub_code}
   #   ;;
-  #   relationship: many_to_many
+  #   relationship: many_to_one
   #   type: left_outer
   # }
 

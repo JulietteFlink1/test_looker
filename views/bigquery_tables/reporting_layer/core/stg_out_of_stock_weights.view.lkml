@@ -162,19 +162,19 @@ view: stg_out_of_stock_weights {
     label: "AVG Day-Hour Min-Max Norm"
     type: average
     sql: ${min_max_normalized_pct_total_importance} ;;
-    value_format_name: decimal_1
+    value_format_name: decimal_4
   }
   measure: avg_mean_std_normalized_pct_total_importance {
     label: "AVG Day-Hour Mean-Std Norm"
     type: average
     sql: ${mean_std_normalized_pct_total_importance} ;;
-    value_format_name: decimal_1
+    value_format_name: decimal_4
   }
   measure: avg_mean_std_normalized_log_pct_total_importance {
     label: "AVG Day-Hour Mean-Std Log Norm"
     type: average
     sql: ${mean_std_normalized_log_pct_total_importance} ;;
-    value_format_name: decimal_1
+    value_format_name: decimal_4
   }
 
 }

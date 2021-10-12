@@ -90,29 +90,55 @@ view: hiring_funnel_marketing_summary {
     label: "Channel label"
     case: {
       when: {
-        sql: ${channel} = '[utm_source]' ;;
+        sql: ${channel} = '[utm_source]'
+        or   ${channel} = 'Iinternaltransfer'
+        or   ${channel} = 'InstaBio'
+        or   ${channel} = 'SR_Default Career Page'
+        or   ${channel} = 'internaltransfe'
+        or   ${channel} = 'internaltransfer'
+        or   ${channel} = 'master'
+        or   ${channel} = 'website';;
         label: "Organic"
       }
+
       when: {
-        sql: ${channel} = 'Appcast' ;;
+        sql: ${channel} = 'mailbox'
+          or  ${channel} = 'offline';;
+        label: "Offline"
+      }
+
+      when: {
+        sql: ${channel} = 'Appcast'
+        or  ${channel} = 'ARBEITSAMT'
+        or  ${channel} = 'Arbeitsagentur'
+        or  ${channel} = 'indeed'
+        or  ${channel} = 'Reach'
+        or  ${channel} = 'SR_Flink - Ebay Kleinanzeigen'
+        or  ${channel} = 'SR_Flink - Indeed'
+        or  ${channel} = 'SR_Flink - Joblift'
+        or  ${channel} = 'SR_Glassdoor'
+        or  ${channel} = 'SR_Indeed'
+        or  ${channel} = 'SR_Joblift'
+        or  ${channel} = 'SR_Neuvoo'
+        or  ${channel} = 'appjobs'
+        or  ${channel} = 'eBay'
+        or  ${channel} = 'ebay'
+        or  ${channel} = 'jobino'
+        or  ${channel} = 'joblift'
+        or  ${channel} = 'jobtome'
+        or  ${channel} = 'lieferjobs'
+        or  ${channel} = 'nvb'
+        or  ${channel} = 'recruitics_appcast';;
         label: "Job Platform"
       }
+
       when: {
-        sql: ${channel} = 'Facebook' ;;
+        sql: ${channel} = 'Facebook'
+        or   ${channel} = 'Google'
+        or   ${channel} = 'tiktok';;
         label: "Social Media"
       }
-      when: {
-        sql: ${channel} = 'Google' ;;
-        label: "Social Media"
-      }
-      when: {
-        sql: ${channel} = 'indeed' ;;
-        label: "Job Platform"
-      }
-      when: {
-        sql: ${channel} = 'internal transfer' ;;
-        label: "Organic"
-      }
+
       when: {
         sql: ${channel} = 'raf' ;;
         label: "Refer a Friend"

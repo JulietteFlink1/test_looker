@@ -157,7 +157,7 @@ view: orderline {
   }
 
   dimension: product_name_erp {
-    label: "Product Name"
+    label: "Product Name (ERP)"
     group_label: "> Product Attributes"
     type: string
     sql: ${TABLE}.product_name_erp ;;

@@ -30,7 +30,7 @@ view: aov_per_subcategory_month{
              on a.sku = b.product_sku
         left join `flink-data-prod.curated.hubs` hub
              on a.hub_code = hub.hub_code
-      WHERE DATE(a.partition_timestamp) >= "2021-02-01"
+      WHERE DATE(a.order_timestamp) >= "2021-02-01"
 
 
       group by 1,2,3,4,5,6,7
@@ -42,7 +42,7 @@ view: aov_per_subcategory_month{
       on c.order_date = d.order_date
       and c.country_iso = d.country_iso
       --and c.hub_name = d.hub_name
-      WHERE DATE(d.partition_timestamp) >= "2021-02-01"
+      WHERE DATE(d.order_timestamp) >= "2021-02-01"
       and d.is_successful_order = true
       group by 1,2,3,4,5,6,7,8,9
       order by 1,2 desc
