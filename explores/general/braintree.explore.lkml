@@ -6,4 +6,5 @@ explore: braintree_data {
   view_label: "Braintree"
   group_label: "15) Ad-Hoc"
   description: "Braintree Data Jan-July 2021"
+  hidden:  yes
 }

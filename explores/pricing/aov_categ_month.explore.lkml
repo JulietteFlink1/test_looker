@@ -1,7 +1,7 @@
 include: "/**/*.view"
 
 explore: aov_per_category_month {
-  group_label: "17) Pricing"
+  group_label: "Pricing"
   label: "Category Value per Order - Month"
   hidden: yes
 

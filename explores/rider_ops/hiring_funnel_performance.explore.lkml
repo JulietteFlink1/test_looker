@@ -5,7 +5,7 @@ explore: hiring_funnel_performance_summary {
   label: "Hiring Funnel Performance Summary"
   view_label: "Hiring Funnel Performance Summary"
   description: "Rider/Picker leads, hires, marketing spend, days to hire, etc."
-  group_label: "09) Rider Ops"
+  group_label: "Rider Ops"
 
   access_filter: {
     field: hiring_funnel_performance_summary.country

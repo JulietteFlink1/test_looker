@@ -1,4 +1,4 @@
-view: bottom_10_nps {
+view: bottom_10_hubs_nps {
   derived_table: {
     sql: with nps as (
           select hub_code
@@ -7,6 +7,7 @@ view: bottom_10_nps {
           , (((sum(is_promoter)/nullif(sum(is_nps_response), 0))* 100) - ((sum(is_detractor)/nullif(sum(is_nps_response), 0))* 100)) as nps_score
           from `flink-data-prod.curated.nps_after_order`
           group by 1, 2, 3
+          having sum(is_nps_response) >= 2
       ),
 
       nps_row as (select *
@@ -25,6 +26,14 @@ view: bottom_10_nps {
     drill_fields: [detail*]
   }
 
+  dimension: uuid {
+    type: string
+    sql: concat(${TABLE}.hub_code, cast(${TABLE}.submitted_date as string))
+      ;;
+    primary_key: yes
+  }
+
+
   dimension: hub_code {
     type: string
     sql: ${TABLE}.hub_code ;;
@@ -39,16 +48,6 @@ view: bottom_10_nps {
     type: date
     datatype: date
     sql: ${TABLE}.submitted_date ;;
-  }
-
-  dimension: nps_score {
-    type: number
-    sql: ${TABLE}.nps_score ;;
-  }
-
-  dimension: nps_rank {
-    type: number
-    sql: ${TABLE}.nps_rank ;;
   }
 
   dimension: is_bottom_10_nps {
@@ -68,8 +67,6 @@ view: bottom_10_nps {
       hub_code,
       country_iso,
       submitted_date,
-      nps_score,
-      nps_rank,
       is_bottom_10_nps
     ]
   }

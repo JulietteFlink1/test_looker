@@ -1,5 +1,5 @@
 view: gorillas_to_flink_global {
-  sql_table_name: `flink-data-prod.reporting.gorillas_to_flink_global`
+  sql_table_name: `flink-data-prod.comp_intel.gorillas_to_flink_global`
     ;;
 
   dimension: gorillas_match_id {
@@ -14,9 +14,14 @@ view: gorillas_to_flink_global {
     group_label: "> IDs"
   }
 
+  dimension: match_type {
+    type:  string
+    sql: ${TABLE}.match_type ;;
+  }
+
   dimension: best_match_score {
     type: number
-    sql: ${TABLE}.best_match_score ;;
+    sql: ${TABLE}.match_score ;;
   }
 
   dimension: country_iso {
@@ -31,12 +36,12 @@ view: gorillas_to_flink_global {
 
   dimension: flink_product_sku {
     type: string
-    sql: ${TABLE}.flink_product_sku ;;
+    sql: ${TABLE}.flink_sku ;;
   }
 
   dimension: gorillas_matches_uuid {
     type: string
-    sql: ${TABLE}.gorillas_matches_uuid ;;
+    sql: ${TABLE}.gorillas_match_uuid ;;
     group_label: "> IDs"
   }
 

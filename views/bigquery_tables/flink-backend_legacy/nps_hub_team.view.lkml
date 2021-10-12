@@ -26,7 +26,7 @@ view: nps_hub_team {
 
   dimension: hub_code {
     type: string
-    hidden: yes
+    #hidden: yes
     sql: ${TABLE}.hub ;;
   }
 

@@ -1,7 +1,7 @@
 include: "/**/*.view"
 
 explore: item_quantity_per_order {
-  group_label: "17) Pricing"
+  group_label: "Pricing"
   label: "Item Quantity per Order"
   #hidden: yes
 

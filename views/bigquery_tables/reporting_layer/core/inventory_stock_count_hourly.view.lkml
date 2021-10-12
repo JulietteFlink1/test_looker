@@ -55,11 +55,14 @@ view: inventory_stock_count_hourly {
   }
 
   dimension: is_leading_product {
+    description: "If a product is part of a substitute_group, this boolean (if set to Yes) indicates if the product is shown, when more products of the group are available"
     type: string
     sql: ${TABLE}.is_leading_product ;;
   }
 
   dimension: is_noos_product {
+    label: "Is Never-Out-Of-Stock product"
+    description: "This boolean indicates (if set to Yes), that a product is very imoprtant to Flink and should never be out of stock"
     type: string
     sql: ${TABLE}.is_noos_product ;;
   }
@@ -93,6 +96,8 @@ view: inventory_stock_count_hourly {
   # =========  hidden   =========
 
   dimension: current_quantity {
+    label: "# Current Quantity"
+    description: "The currently available number of items of a product in a specific hub"
     hidden: yes
     type: number
     sql: ${TABLE}.current_quantity ;;
@@ -100,7 +105,7 @@ view: inventory_stock_count_hourly {
 
   dimension: previous_quantity {
     label: "# Quantity On Stock - Previous Hour"
-    description: "Sum of Available items in stock"
+    description: "The available number of items of a product in a specific hub in the previous hour"
     type: number
     hidden: yes
     sql: ${TABLE}.previous_quantity ;;
@@ -140,7 +145,7 @@ view: inventory_stock_count_hourly {
 
   measure: sum_current_quantity {
     label: "# Quantity On Stock"
-    description: "Sum of Available items in stock"
+    description: "The sum of available items in stock"
     hidden:  no
     type: sum
     sql: ${TABLE}.current_quantity;;
@@ -148,7 +153,7 @@ view: inventory_stock_count_hourly {
 
   measure: avg_current_quantity {
     label: "AVG Quantity On Stock"
-    description: "Sum of Available items in stock"
+    description: "The average number of available items in stock for a given SKU in a specific hub"
     hidden:  no
     type: average
     sql: ${TABLE}.current_quantity;;
@@ -156,7 +161,7 @@ view: inventory_stock_count_hourly {
 
   measure: num_distinct_sku {
     label: "# SKUs"
-    description: "Number of distinct SKUs in stock"
+    description: "The number of unique SKUs in stock"
     type: count_distinct
     sql:  CASE WHEN ${TABLE}.current_quantity > 0 THEN ${sku} END ;;
   }
@@ -164,7 +169,7 @@ view: inventory_stock_count_hourly {
 
   measure: avg_quantity_restocked {
     label: "AVG Quantity Re-Stocked"
-    description: "Sum of Available items in stock"
+    description: "The average number of items, that have been re-stocked for a given SKU in a specific hub"
     hidden:  no
     type: average
     sql: ${TABLE}.current_quantity;;
@@ -182,16 +187,18 @@ view: inventory_stock_count_hourly {
 
   measure: sum_items_ordered {
     label: "# Items Ordered"
-    description: "How many products have been sold"
+    description: "The sum of items sold"
     type: sum
     sql: ${TABLE}.items_ordered ;;
+    hidden: yes
   }
 
   measure: avg_items_ordered {
     label: "AVG Items Ordered"
-    description: "How many products have been sold on AVG"
+    description: "The average number of items sold"
     type: average
     sql: ${TABLE}.items_ordered ;;
+    hidden: yes
   }
 
 

@@ -163,6 +163,13 @@ view: hubs_ct {
     group_label: "> Admin Data"
   }
 
+  dimension: is_test_hub {
+    label: "Is Test Hub"
+    type: yesno
+    sql: ${TABLE}.is_test_hub ;;
+    group_label: "> Admin Data"
+  }
+
 
   # =========  ID Data   =========
   dimension: distribution_channel_id {
