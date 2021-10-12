@@ -2,26 +2,6 @@ view: refund_logs {
   sql_table_name: `flink-data-prod.google_sheets.refund_logs`
     ;;
 
-  dimension_group: _fivetran_synced {
-    type: time
-    timeframes: [
-      raw,
-      time,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    sql: ${TABLE}._fivetran_synced ;;
-    hidden: yes
-  }
-
-  dimension: _row {
-    type: number
-    sql: ${TABLE}._row ;;
-  }
-
   dimension: country_code {
     type: string
     sql: ${TABLE}.country_code ;;
@@ -79,14 +59,17 @@ view: refund_logs {
   }
 
   measure: sum_amount {
+    label: "SUM Refund Value (from Picker Refund Logs)"
     type: sum
     sql: ${amount} ;;
     value_format_name: eur
 
   }
 
-  measure: count {
-    type: count
+  measure: cnt_refunds {
+    label: "# Refunds (from Picker Refund Logs)"
+    type: count_distinct
+    sql: ${order_number} ;;
     drill_fields: []
   }
 }
