@@ -126,6 +126,11 @@ view: gorillas_products {
     group_label: "> Special Purpose Data"
   }
 
+  dimension: parent_category_aggregate {
+    type: string
+    sql: ${TABLE}.parent_category_aggregate ;;
+  }
+
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
