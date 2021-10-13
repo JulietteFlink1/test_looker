@@ -24,6 +24,7 @@ view: vat_order {
                     CASE WHEN  p.tax_name = 'Standard tax category' or p.tax_name <> 'Reduced tax category'
                     THEN amt_unit_price_gross * quantity END AS item_price_standard_gross,
                     CASE WHEN  p.tax_name = 'Reduced tax category' THEN amt_unit_price_gross * quantity END AS item_price_reduced_gross,
+
                     o.amt_delivery_fee_gross as delivery_fee_gross,
                     o.amt_discount_gross AS discount_amount
                 FROM `flink-data-prod.curated.order_lineitems` oo
@@ -73,17 +74,18 @@ view: vat_order {
                         sum_items_price_reduced_gross,
                         sum_items_price_reduced_net,
                         delivery_fee_gross / ( 1 + tax_rate_weighted) as delivery_fee_net,
-                        discount_amount / ( 1 + tax_rate_weighted) as discount_amount_net
+                        discount_amount / ( 1 + tax_rate_weighted)    as discount_amount_net
                 FROM weighted_tax_rate
             ),
 
             refund AS (
                 SELECT order_uuid,
                        country_iso,
+                       transaction_payment_type as payment_type,
                        AVG(CASE WHEN transaction_type = 'refund' then transaction_amount end) as refund_amount --changed to avg
-                FROM `flink-data-prod.curated.payment_transactions` pp
+                FROM `flink-data-prod.curated.payment_transactions`
                 where transaction_state = 'success'
-                GROUP BY 1, 2
+                GROUP BY 1, 2, 3
             ),
 
             net_gross AS (
@@ -92,6 +94,7 @@ view: vat_order {
                    d.country_iso,
                    hub_code,
                    d.user_email,
+                   payment_type,
                    tax_rate_weighted,
                    COALESCE(delivery_fee_net,0)                             as delivery_fee_net,
                    COALESCE(discount_amount_net,0)                          as discount_amount_net,
@@ -108,14 +111,15 @@ view: vat_order {
             FROM delivery_fees_discount d
             LEFT JOIN refund r ON r.order_uuid = d.order_uuid and r.country_iso = d.country_iso
       )
-      --,raw_data as (
       SELECT order_id,
             n.country_iso,
             order_date,
             user_email,
             hub_name,
+            cost_center,
             n.hub_code,
             tax_rate_weighted,
+            payment_type
 
             -- Items Data
             sum_items_price_net,
@@ -131,38 +135,49 @@ view: vat_order {
             --Delivery Fees Data
             delivery_fee_net,
             delivery_fee_gross,
-            delivery_fee_net * (sum_items_price_reduced_net/(sum_items_price_reduced_net+sum_items_price_standard_net))            as delivery_fee_reduced_net,
-            delivery_fee_net * (sum_items_price_standard_net/(sum_items_price_reduced_net+sum_items_price_standard_net))           as delivery_fee_standard_net,
+            delivery_fee_net * (sum_items_price_reduced_net/(sum_items_price_reduced_net+sum_items_price_standard_net))                           as delivery_fee_reduced_net,
+            delivery_fee_net * (sum_items_price_standard_net/(sum_items_price_reduced_net+sum_items_price_standard_net))                          as delivery_fee_standard_net,
+            delivery_fee_net * (sum_items_price_standard_net/(sum_items_price_reduced_net+sum_items_price_standard_net)) * (1+tax_rate_standard)  as delivery_fee_standard_gross,
+            delivery_fee_net * (sum_items_price_reduced_net/(sum_items_price_reduced_net+sum_items_price_standard_net)) * (1+tax_rate_reduced)    as delivery_fee_reduced_gross,
             delivery_fee_net * (sum_items_price_reduced_net/(sum_items_price_reduced_net+sum_items_price_standard_net)) * tax_rate_reduced     as vat_delivery_fee_reduced,
-            delivery_fee_net * (sum_items_price_standard_net/(sum_items_price_reduced_net+sum_items_price_standard_net)) * tax_rate_standard    as vat_delivery_fee_standard,
-            delivery_fee_net * (sum_items_price_reduced_net/(sum_items_price_reduced_net+sum_items_price_standard_net)) * tax_rate_reduced + delivery_fee_net * (sum_items_price_standard_net/(sum_items_price_reduced_net+sum_items_price_standard_net)) * tax_rate_standard as vat_delivery_fee_total,
+            delivery_fee_net * (sum_items_price_standard_net/(sum_items_price_reduced_net+sum_items_price_standard_net)) * tax_rate_standard   as vat_delivery_fee_standard,
+            delivery_fee_net * (sum_items_price_reduced_net/(sum_items_price_reduced_net+sum_items_price_standard_net)) * tax_rate_reduced
+            + delivery_fee_net * (sum_items_price_standard_net/(sum_items_price_reduced_net+sum_items_price_standard_net)) * tax_rate_standard as vat_delivery_fee_total,
 
             -- Discount Data
             discount_amount_net,
             discount_amount_gross,
-            discount_amount_net * (sum_items_price_reduced_net/(sum_items_price_reduced_net+sum_items_price_standard_net))         as discount_amount_reduced_net,
-            discount_amount_net * (sum_items_price_reduced_net/(sum_items_price_reduced_net+sum_items_price_standard_net)) *tax_rate_reduced   as vat_discount_amount_reduced,
-            discount_amount_net * (sum_items_price_standard_net/(sum_items_price_reduced_net+sum_items_price_standard_net))        as discount_amount_standard_net,
-            discount_amount_net * (sum_items_price_standard_net/(sum_items_price_reduced_net+sum_items_price_standard_net)) *tax_rate_standard  as  vat_discount_amount_standard,
-            discount_amount_net * (sum_items_price_reduced_net/(sum_items_price_reduced_net+sum_items_price_standard_net))* tax_rate_reduced + discount_amount_net * (sum_items_price_standard_net/(sum_items_price_reduced_net+sum_items_price_standard_net)) * tax_rate_standard as vat_discount_amount_total,
+            discount_amount_net * (sum_items_price_reduced_net/(sum_items_price_reduced_net+sum_items_price_standard_net))                           as discount_amount_reduced_net,
+            discount_amount_net * (sum_items_price_standard_net/(sum_items_price_reduced_net+sum_items_price_standard_net))                          as discount_amount_standard_net,
+            discount_amount_net * (sum_items_price_reduced_net/(sum_items_price_reduced_net+sum_items_price_standard_net)) * (1+tax_rate_reduced)    as discount_amount_reduced_gross,
+            discount_amount_net * (sum_items_price_standard_net/(sum_items_price_reduced_net+sum_items_price_standard_net)) * (1+tax_rate_standard)  as discount_amount_standard_gross,
+            discount_amount_net * (sum_items_price_reduced_net/(sum_items_price_reduced_net+sum_items_price_standard_net)) * tax_rate_reduced        as vat_discount_amount_reduced,
+            discount_amount_net * (sum_items_price_standard_net/(sum_items_price_reduced_net+sum_items_price_standard_net)) * tax_rate_standard      as vat_discount_amount_standard,
+            discount_amount_net * (sum_items_price_reduced_net/(sum_items_price_reduced_net+sum_items_price_standard_net)) * tax_rate_reduced
+            + discount_amount_net * (sum_items_price_standard_net/(sum_items_price_reduced_net+sum_items_price_standard_net)) * tax_rate_standard    as vat_discount_amount_total,
 
             --Refund Data
             refund_amount_net,
             refund_amount_gross,
-            refund_amount_net * (sum_items_price_reduced_net/(sum_items_price_reduced_net+sum_items_price_standard_net)) as refund_amount_reduced_net,
-            refund_amount_net * (sum_items_price_standard_net/(sum_items_price_reduced_net+sum_items_price_standard_net)) as refund_amount_standard_net,
-            refund_amount_net * (sum_items_price_reduced_net/(sum_items_price_reduced_net+sum_items_price_standard_net)) * tax_rate_reduced as vat_refund_amount_reduced,
-            refund_amount_net * (sum_items_price_standard_net/(sum_items_price_reduced_net+sum_items_price_standard_net)) * tax_rate_standard as vat_refund_amount_standard,
-            refund_amount_net * (sum_items_price_reduced_net/(sum_items_price_reduced_net+sum_items_price_standard_net)) * tax_rate_reduced + refund_amount_net * (sum_items_price_standard_net/(sum_items_price_reduced_net+sum_items_price_standard_net)) * tax_rate_standard as vat_refund_amount_total,
+            refund_amount_net * (sum_items_price_reduced_net/(sum_items_price_reduced_net+sum_items_price_standard_net))                            as refund_amount_reduced_net,
+            refund_amount_net * (sum_items_price_standard_net/(sum_items_price_reduced_net+sum_items_price_standard_net))                           as refund_amount_standard_net,
+            refund_amount_net * (sum_items_price_reduced_net/(sum_items_price_reduced_net+sum_items_price_standard_net)) * (1+tax_rate_reduced)     as refund_amount_reduced_gross,
+            refund_amount_net * (sum_items_price_standard_net/(sum_items_price_reduced_net+sum_items_price_standard_net)) * (1+tax_rate_standard)   as refund_amount_standard_gross,
+            refund_amount_net * (sum_items_price_reduced_net/(sum_items_price_reduced_net+sum_items_price_standard_net)) * tax_rate_reduced         as vat_refund_amount_reduced,
+            refund_amount_net * (sum_items_price_standard_net/(sum_items_price_reduced_net+sum_items_price_standard_net)) * tax_rate_standard       as vat_refund_amount_standard,
+            refund_amount_net * (sum_items_price_reduced_net/(sum_items_price_reduced_net+sum_items_price_standard_net)) * tax_rate_reduced
+            + refund_amount_net * (sum_items_price_standard_net/(sum_items_price_reduced_net+sum_items_price_standard_net)) * tax_rate_standard     as vat_refund_amount_total,
 
             --Total VAT data
             delivery_fee_net+sum_items_price_net-refund_amount_net-discount_amount_net as total_net,
             delivery_fee_gross+sum_items_price_gross-refund_amount_gross-discount_amount_gross as total_gross,
             delivery_fee_gross+sum_items_price_gross-refund_amount_gross-discount_amount_gross-delivery_fee_net-sum_items_price_net+refund_amount_net+discount_amount_net  AS total_VAT
       FROM net_gross n
-      LEFT JOIN `flink-data-prod.google_sheets.hub_metadata` g ON lower(g.hub_code) = lower(n.hub_code )
+      LEFT JOIN `flink-data-prod.curated.hubs` g ON lower(g.hub_code) = lower(n.hub_code )
       LEFT JOIN country_tax_rates ct on ct.country_iso = n.country_iso
-       ;;
+
+
+    ;;
   }
 
   measure: count {
@@ -221,6 +236,16 @@ view: vat_order {
   dimension: tax_rate_weighted {
     type: number
     sql: ${TABLE}.tax_rate_weighted ;;
+  }
+
+  dimension: cost_center {
+    type: string
+    sql: ${TABLE}.cost_center ;;
+  }
+
+  dimension: payment_type {
+    type: string
+    sql: ${TABLE}.payment_type ;;
   }
 
   dimension: sum_items_price_net {
@@ -301,6 +326,18 @@ view: vat_order {
     sql: ${TABLE}.delivery_fee_standard_net ;;
   }
 
+  dimension: delivery_fee_reduced_gross {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.delivery_fee_reduced_gross ;;
+  }
+
+  dimension: delivery_fee_standard_gross {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.delivery_fee_standard_gross ;;
+  }
+
   dimension: vat_delivery_fee_reduced {
     hidden: yes
     type: number
@@ -335,6 +372,18 @@ view: vat_order {
     hidden: yes
     type: number
     sql: ${TABLE}.discount_amount_reduced_net ;;
+  }
+
+  dimension: discount_amount_reduced_gross {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.discount_amount_reduced_gross ;;
+  }
+
+  dimension: discount_amount_standard_gross {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.discount_amount_standard_gross ;;
   }
 
   dimension: vat_discount_amount_reduced {
@@ -383,6 +432,18 @@ view: vat_order {
     hidden: yes
     type: number
     sql: ${TABLE}.refund_amount_standard_net ;;
+  }
+
+  dimension: refund_amount_reduced_gross {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.refund_amount_reduced_gross ;;
+  }
+
+  dimension: refund_amount_standard_gross {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.refund_amount_standard_gross ;;
   }
 
   dimension: vat_refund_amount_reduced {
@@ -506,8 +567,6 @@ view: vat_order {
     sql: ${delivery_fee_gross} ;;
   }
 
-  ## add df_reduced gross and df standard gross
-
   measure: sum_delivery_fee_reduced_net {
     group_label: "* Delivery Fee *"
     type: sum
@@ -515,12 +574,25 @@ view: vat_order {
     sql: ${delivery_fee_reduced_net} ;;
   }
 
-
   measure: sum_delivery_fee_standard_net {
     group_label: "* Delivery Fee *"
     type: sum
     value_format: "#,##0.00€"
     sql: ${delivery_fee_standard_net} ;;
+  }
+
+  measure: sum_delivery_fee_reduced_gross {
+    group_label: "* Delivery Fee *"
+    type: sum
+    value_format: "#,##0.00€"
+    sql: ${delivery_fee_reduced_gross} ;;
+  }
+
+  measure: sum_delivery_fee_standard_gross {
+    group_label: "* Delivery Fee *"
+    type: sum
+    value_format: "#,##0.00€"
+    sql: ${delivery_fee_standard_gross} ;;
   }
 
   measure: sum_vat_delivery_fee_reduced {
@@ -562,7 +634,6 @@ view: vat_order {
     sql: ${discount_amount_gross} ;;
   }
 
-  ## add df_reduced gross and df standard gross
 
   measure: sum_discount_amount_reduced_net {
     group_label: "* Discounts *"
@@ -571,12 +642,25 @@ view: vat_order {
     sql: ${discount_amount_reduced_net} ;;
   }
 
-
   measure: sum_discount_amount_standard_net {
     group_label: "* Discounts *"
     type: sum
     value_format: "#,##0.00€"
     sql: ${discount_amount_standard_net} ;;
+  }
+
+  measure: sum_discount_amount_reduced_gross {
+    group_label: "* Discounts *"
+    type: sum
+    value_format: "#,##0.00€"
+    sql: ${discount_amount_reduced_gross} ;;
+  }
+
+  measure: sum_discount_amount_standard_gross {
+    group_label: "* Discounts *"
+    type: sum
+    value_format: "#,##0.00€"
+    sql: ${discount_amount_standard_gross} ;;
   }
 
   measure: sum_vat_discount_amount_reduced {
@@ -619,8 +703,6 @@ view: vat_order {
     sql: ${refund_amount_gross} ;;
   }
 
-  ## add df_reduced gross and df standard gross
-
   measure: sum_refund_amount_reduced_net {
     group_label: "* Refunds *"
     type: sum
@@ -628,12 +710,25 @@ view: vat_order {
     sql: ${refund_amount_reduced_net} ;;
   }
 
-
   measure: sum_refund_amount_standard_net {
     group_label: "* Refunds *"
     type: sum
     value_format: "#,##0.00€"
     sql: ${refund_amount_standard_net} ;;
+  }
+
+  measure: sum_refund_amount_reduced_gross {
+    group_label: "* Refunds *"
+    type: sum
+    value_format: "#,##0.00€"
+    sql: ${refund_amount_reduced_gross} ;;
+  }
+
+  measure: sum_refund_amount_standard_gross {
+    group_label: "* Refunds *"
+    type: sum
+    value_format: "#,##0.00€"
+    sql: ${refund_amount_standard_gross} ;;
   }
 
   measure: sum_vat_refund_amount_reduced {
