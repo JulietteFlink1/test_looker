@@ -7,7 +7,7 @@ view: app_sessions {
 
   set: core_dimensions {
     fields: [
-      country_iso,
+      country,
       city,
       hub_code,
       device_type,
@@ -35,6 +35,7 @@ view: app_sessions {
   dimension: last_order_id {
     type: string
     sql: ${TABLE}.last_order_id ;;
+    hidden: yes
   }
   dimension: last_order_uuid {
     type: string
@@ -97,11 +98,6 @@ view: app_sessions {
   }
 
   ## Hub attributes
-
-  dimension: country_iso {
-    type: string
-    sql: ${TABLE}.country_iso ;;
-  }
   dimension: city {
     type: string
     sql: ${TABLE}.city ;;
@@ -184,10 +180,6 @@ view: app_sessions {
     type: yesno
     sql: ${TABLE}.is_session_with_address ;;
   }
-  dimension: has_address_original {
-    type: yesno
-    sql: ${TABLE}.has_address ;;
-  }
   dimension: is_session_with_address {
     type: yesno
     sql: ${TABLE}.is_session_with_address ;;
@@ -211,7 +203,7 @@ view: app_sessions {
 
 ### Custom dimensions
 
-  dimension: returning_customer {
+  dimension: is_customer {
     type: yesno
     sql: ${has_order} ;;
   }
@@ -359,14 +351,14 @@ view: app_sessions {
   }
 
   measure: cnt_discounts_attempted {
-    label: "Order placed count"
+    label: "Attempted discounts count"
     description: "Number of sessions in which at least one Discount Attempt event happened"
     type: count
     filters: [has_discount_attempted: "yes"]
   }
 
   measure: cnt_discounts_applied{
-    label: "Order placed count"
+    label: "Applied discounts count"
     description: "Number of sessions in which at least one Discount Applied event happened"
     type: count
     filters: [is_discount_successfully_applied: "yes"]
@@ -500,7 +492,6 @@ view: app_sessions {
       app_version,
       timezone,
       country,
-      country_iso,
       city,
       hub_code,
       delivery_pdt_minutes,
