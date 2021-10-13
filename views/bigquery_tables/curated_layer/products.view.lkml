@@ -242,6 +242,20 @@ view: products {
     label: "Unit of Measure"
   }
 
+  dimension: product_unit {
+    type: number
+    sql: ${TABLE}.product_unit ;;
+    group_label: "> Special Purpose Data"
+    label: "Product Unit"
+  }
+
+  dimension: base_unit {
+    type: number
+    sql: ${TABLE}.base_unit ;;
+    group_label: "> Special Purpose Data"
+    label: "Base Unit"
+  }
+
   dimension: units_per_handling_unit {
     type: number
     sql: ${TABLE}.units_per_handling_unit ;;

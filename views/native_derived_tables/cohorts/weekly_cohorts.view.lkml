@@ -10,6 +10,7 @@ view: weekly_cohorts {
       column: weeks_time_since_sign_up { field: customers_metrics.weeks_time_since_sign_up }
       column: country_iso { field: customers_metrics.country_iso }
       column: sum_discount_amt { field: orders_cl.sum_discount_amt }
+      column: platform { field: orders_cl.platform }
       filters: {
         field: hubs.country
         value: ""
@@ -58,6 +59,8 @@ view: weekly_cohorts {
   }
 
   dimension: country_iso {}
+
+  dimension: platform {}
 
   dimension: sum_discount_amt {
     label: "* User Metrics * SUM Discount Amount"

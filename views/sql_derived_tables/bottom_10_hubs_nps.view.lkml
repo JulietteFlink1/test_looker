@@ -7,6 +7,7 @@ view: bottom_10_hubs_nps {
           , (((sum(is_promoter)/nullif(sum(is_nps_response), 0))* 100) - ((sum(is_detractor)/nullif(sum(is_nps_response), 0))* 100)) as nps_score
           from `flink-data-prod.curated.nps_after_order`
           group by 1, 2, 3
+          having sum(is_nps_response) >= 2
       ),
 
       nps_row as (select *
@@ -55,7 +56,7 @@ view: bottom_10_hubs_nps {
   }
 
   measure: cnt_bottom_10_delivery {
-    label: "# Bottom 10 for NPS"
+    label: "# Occurrences in Bottom 10 List by NPS"
     description: "The total number of times at bottom 10 for nps"
     type: sum
     sql: ${is_bottom_10_nps} ;;
