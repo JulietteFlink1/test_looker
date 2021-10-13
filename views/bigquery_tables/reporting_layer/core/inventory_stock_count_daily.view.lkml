@@ -219,16 +219,23 @@ view: inventory_stock_count_daily {
     type: number
     sql: ${hours_oos} / nullif( ${open_hours_total},0) ;;
     value_format_name: percent_0
-    # html:
-    # {% if value > 0.1 %}
-    # <p style="color: #ffffff; background-color: #B03A2E ;font-size: 100%; text-align:center">{{ rendered_value }}</p>
-    # {% elsif value > 0.05 %}
-    # <p style="color: #AF601A; background-color: #FAD7A0 ; font-size:100%; text-align:center">{{ rendered_value }}</p>
-    # {% elsif value > 0 %}
-    # <p style="color: #F1C40F; background-color: #FEF9E7 ; font-size:100%; text-align:center">{{ rendered_value }}</p>
-    # {% else %}
-    # <p style="color: black; font-size:100%; text-align:center">{{ rendered_value }}</p>
-    # {% endif %};;
+    # palette: https://coolors.co/0c0f0a-ff206e-fbff12
+    html:
+    {% if value >= 0.9 %}
+    <p style="color: white; background-color: #FF206E;font-size: 100%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.8 %}
+    <p style="color: white; background-color: #FF5C95; font-size:100%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.6 %}
+    <p style="color: white; background-color: #FF99BD; font-size:100%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.4 %}
+    <p style="color: black; background-color: #FFD6E4; font-size:100%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.2 %}
+    <p style="color: black; background-color: #FEFFC2; font-size:100%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value > 0 %}
+    <p style="color: black; background-color: #FFFFEB; font-size:100%; text-align:center">{{ rendered_value }}</p>
+    {% else %}
+    <p style="color: black; font-size:100%; text-align:center">{{ rendered_value }}</p>
+    {% endif %};;
   }
 
   measure: turnover_rate {
