@@ -196,7 +196,7 @@ view: orders {
   dimension_group: created {
     group_label: "* Dates and Timestamps *"
     label: "Order"
-    description: "Order Placement Date"
+    description: "Order Placement Time/Date"
     type: time
     timeframes: [
       raw,
@@ -215,6 +215,60 @@ view: orders {
     sql: ${TABLE}.order_timestamp ;;
     datatype: timestamp
   }
+
+  dimension: order_time_of_day {
+    group_label: "* Dates and Timestamps *"
+    label: "Order Time of Day"
+    description: "Categorizing orders into different time-based use case buckets depending on the day of week and hour of day. Exact definition in KPI Glossary"
+    case: {
+
+      # Breakfast use case:
+      when: {
+        sql:  ( ${created_day_of_week} IN ('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday') AND ${created_hour_of_day} IN (5,6,7,8,9,10) )
+              OR
+              ( ${created_day_of_week} IN ('Saturday', 'Sunday') AND ${created_hour_of_day} IN (5,6,7,8,9,10,11) )
+              ;;
+        label: "Breakfast"
+      }
+
+      # Lunch use case:
+      when: {
+        sql:  ( ${created_day_of_week} IN ('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday') AND ${created_hour_of_day} IN (11,12,13,14,15) )
+              OR
+              ( ${created_day_of_week} IN ('Saturday', 'Sunday') AND ${created_hour_of_day} IN (12,13,14,15) )
+              ;;
+        label: "Lunch"
+      }
+
+      # Snacks use case:
+      when: {
+        sql:  ( ${created_day_of_week} IN ('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday') AND ${created_hour_of_day} IN (16,17,18) )
+              OR
+              ( ${created_day_of_week} IN ('Saturday', 'Sunday') AND ${created_hour_of_day} IN (16,17,18) )
+              ;;
+        label: "Snacks"
+      }
+
+      # Dinner use case:
+      when: {
+        sql:  ( ${created_day_of_week} IN ('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday') AND ${created_hour_of_day} IN (19,20) )
+              OR
+              ( ${created_day_of_week} IN ('Saturday', 'Sunday') AND ${created_hour_of_day} IN (19,20,21) )
+              ;;
+        label: "Dinner"
+      }
+
+      # Drinks / Late Night use case:
+      when: {
+        sql:  ( ${created_day_of_week} IN ('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday') AND ${created_hour_of_day} IN (21,22,23,0,1,2,3,4) )
+              OR
+              ( ${created_day_of_week} IN ('Saturday', 'Sunday') AND ${created_hour_of_day} IN (22,23,0,1,2,3,4) )
+              ;;
+        label: "Drinks / Late Night"
+      }
+    }
+  }
+
 
   dimension: is_order_hour_before_now_hour {
     group_label: "* Operations / Logistics *"
