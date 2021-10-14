@@ -1,5 +1,5 @@
 view: app_sessions {
-  sql_table_name: `flink-data-prod.curated.sessions_app`
+  sql_table_name: `flink-data-prod.curated.app_sessions`
     ;;
 
   view_label: "* App Sessions *"
@@ -236,6 +236,11 @@ view: app_sessions {
     allowed_value: { value: "Week" }
     allowed_value: { value: "Month" }
     default_value: "Day"
+  }
+
+  dimension: country_iso {
+    type: string
+    sql: ${TABLE}.country_iso ;;
   }
 
   dimension: country {

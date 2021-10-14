@@ -6,4 +6,10 @@ explore: app_session_events {
   view_label: "App Events - Sessions"
   group_label: "In-app tracking data"
   description: "App events per session"
+  always_filter: {
+    filters:  [
+      app_session_events.event_start_at_date: "",
+      app_session_events.event_name: ""
+    ]
+  }
 }
