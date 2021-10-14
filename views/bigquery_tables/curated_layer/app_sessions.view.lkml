@@ -212,12 +212,6 @@ view: app_sessions {
     sql: ${hub_code} IS NULL ;;
   }
 
-  # dimension: is_setting_address {
-  #   type: yesno
-  #   description: "TRUE if user has at least one addressConfirmed event in this session, FALSE otherwise"
-  #   sql: ${address_confirmed} IS NOT NULL ;;
-  # }
-
   dimension: session_start_date_granularity {
     label: "Session Start Date (Dynamic)"
     label_from_parameter: timeframe_picker
@@ -294,33 +288,12 @@ view: app_sessions {
     value_format_name: decimal_0
   }
 
-  # measure: cnt_address_selected {
-  #   label: "Address selected count"
-  #   description: "Number of sessions in which at least one Address Confirmed event happened"
-  #   type: count
-  #   filters: [address_confirmed: "NOT NULL"]
-  # }
-
-  # measure: cnt_home_viewed {
-  #   label: "Home view count"
-  #   description: "Number of sessions in which at least one Home Viewed event happened"
-  #   type: count
-  #   filters: [home_viewed: "NOT NULL"]
-  # }
-
   measure: cnt_has_address {
     label: "Has address count"
     description: "# sessions in which the user had an address (selected in previous session or current)"
     type: count
     filters: [has_address: "yes"]
   }
-
-  # measure: cnt_view_cart {
-  #   label: "View cart count"
-  #   description: "Number of sessions in which at least one Cart Viewed event happened"
-  #   type: count
-  #   filters: [view_cart: "NOT NULL"]
-  # }
 
   measure: cnt_add_to_cart {
     label: "Add to cart count"
@@ -404,12 +377,6 @@ view: app_sessions {
     sql: ${cnt_purchase}/NULLIF(${count},0) ;;
   }
 
-  # measure: mcvr1 {
-  #   type: number
-  #   description: "Number of sessions in which an Addres Confirmed event happened, compared to the total number of Session Started"
-  #   value_format_name: percent_1
-  #   sql: ${cnt_address_selected}/NULLIF(${count},0) ;;
-  # }
   measure: mcvr1 {
     type: number
     label: "mCVR1"
@@ -449,34 +416,6 @@ view: app_sessions {
     sql: ${cnt_purchase}/NULLIF(${cnt_payment_started},0) ;;
   }
 
-
-  #########
-
-  # dimension: add_to_cart {
-  #   type: number
-  #   sql: ${TABLE}.add_to_cart ;;
-  # }
-
-  # dimension: view_cart {
-  #   type: number
-  #   sql: ${TABLE}.view_cart ;;
-  # }
-
-  # dimension: checkout_started {
-  #   type: number
-  #   sql: ${TABLE}.checkout_started ;;
-  # }
-
-  # dimension: payment_started {
-  #   type: number
-  #   sql: ${TABLE}.payment_started ;;
-  # }
-
-  # dimension: order_placed {
-  #   type: number
-  #   sql: ${TABLE}.order_placed ;;
-  # }
-
   set: detail {
     fields: [
       session_uuid,
@@ -515,13 +454,4 @@ view: app_sessions {
       number_of_orders_placed
     ]
   }
-
-#   sql: ${TABLE}.most_recent_purchase_at ;;
-# }
-#
-# measure: total_lifetime_orders {
-#   description: "Use this for counting lifetime orders across many users"
-#   type: sum
-#   sql: ${lifetime_orders} ;;
-# }
 }
