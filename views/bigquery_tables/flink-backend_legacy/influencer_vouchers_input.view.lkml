@@ -1,12 +1,12 @@
 view: influencer_vouchers_input {
-  sql_table_name: `flink-backend.gsheet_mktg_influencer_vouchers.voucher_data_input_global`
+  sql_table_name: `flink-data-prod.curated.influencer_vouchers_input`
     ;;
 
   dimension: unique_key {
     type: string
     primary_key: yes
     hidden: yes
-    sql: CONCAT(${TABLE}.country_iso, ${TABLE}.voucher_code) ;;
+    sql: ${TABLE}.table_uuid ;;
   }
 
   dimension: country_iso {
@@ -28,6 +28,11 @@ view: influencer_vouchers_input {
   dimension: voucher_type {
     type: string
     sql: ${TABLE}.voucher_type ;;
+  }
+
+  dimension: unique_check {
+    type: string
+    sql: ${TABLE}.unique_check ;;
   }
 
 
