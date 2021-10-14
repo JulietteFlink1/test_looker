@@ -154,9 +154,9 @@ view: products {
     label: "Currency"
   }
 
-  dimension: deposit_cent_amount {
+  dimension: deposit_amount {
     type: number
-    sql: ${TABLE}.deposit_centAmount ;;
+    sql: ${TABLE}.deposit_amount ;;
     group_label: "> Price Data"
   }
 
