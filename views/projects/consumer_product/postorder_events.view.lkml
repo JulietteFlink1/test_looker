@@ -349,6 +349,35 @@ view: postorder_events {
     hidden: yes
   }
 
+  dimension: full_app_version {
+    type: string
+    sql: ${context_device_type} || '-' || ${padded_app_version} ;;
+  }
+
+  dimension: main_version_number {
+    type: number
+    sql: REGEXP_EXTRACT(${context_app_version}, r'(\d+)\.') ;;
+    hidden: yes
+  }
+
+  dimension: secondary_version_number {
+    type: number
+    sql: REGEXP_EXTRACT(${context_app_version}, r'\.(\d+)\.') ;;
+    hidden: yes
+  }
+
+  dimension: tertiary_version_number {
+    type: number
+    sql: REGEXP_EXTRACT(${context_app_version}, r'(?:\d+)\.(?:\d+)\.(\d+)') ;;
+    hidden: yes
+  }
+
+  dimension: padded_app_version {
+    type: string
+    sql: CONCAT(${main_version_number},".",FORMAT('%02d',CAST(${secondary_version_number} AS INT64)),".",FORMAT('%02d',CAST(${tertiary_version_number} AS INT64)));;
+  }
+
+
   measure: cnt_unique_order_ccs_intent {
     label: "# Unique Orders With CCS Intent"
     type: count_distinct
@@ -524,7 +553,7 @@ view: postorder_events {
     {% if xaxis_selector._parameter_value == 'date' %}
       ${order_placed_timestamp_date}
     {% elsif xaxis_selector._parameter_value == 'app_version' %}
-      ${context_app_version}
+      ${full_app_version}
     {% else %}
       ${order_placed_timestamp_date}
     {% endif %};;
