@@ -236,7 +236,7 @@ view: products {
 
   dimension: slug_de {
     type: string
-    sql: ${TABLE}.slug_de ;;
+    sql: ${TABLE}.slug ;;
     group_label: "> Special Purpose Data"
   }
 
