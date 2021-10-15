@@ -7,9 +7,7 @@ explore: aov_per_subcategory_month {
 
   always_filter: {
     filters:  [
-      aov_per_subcategory_month.country_iso: "Germany",
       aov_per_subcategory_month.category: "-EMPTY,-%Event%"
-
     ]
   }
 

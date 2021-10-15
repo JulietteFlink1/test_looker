@@ -6,8 +6,8 @@ explore: aov_per_category_month {
   hidden: yes
 
   always_filter: {
-    filters:  [
-      aov_per_category_month.country_iso: "Germany",
+    filters:
+    [
       aov_per_category_month.category: "-EMPTY,-%Event%"
 
     ]
