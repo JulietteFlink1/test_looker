@@ -9,7 +9,7 @@ explore: discovery_categories {
   description: "Categories events on a sessions level"
   always_filter: {
     filters:  [
-    discovery_categories.event_timestamp_date: "2021-10-04",
+    discovery_categories.event_timestamp_date: "last 7 days",
     discovery_categories.event_name: ""
   ]
 }
