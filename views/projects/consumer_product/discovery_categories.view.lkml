@@ -39,6 +39,7 @@ WHERE DATE(e.event_timestamp) >= "2021-10-01"
 SELECT   e.event_uuid
        , e.session_id
        , e.anonymous_id
+       , s.country_iso
        , e.event_name
        , e.event_name_before
        , e.event_name_after
@@ -59,6 +60,7 @@ SELECT   e.event_uuid
        , TIMESTAMP_DIFF(c.last_timestamp_category, c.first_timestamp_category, HOUR) AS time_diff_category_hour
 FROM events e
 LEFT JOIN category c ON c.event_uuid = e.event_uuid
+LEFT JOIN `flink-data-prod.curated.app_sessions` s ON s.session_uuid = e.session_id
   ;;
   }
 
@@ -73,6 +75,10 @@ LEFT JOIN category c ON c.event_uuid = e.event_uuid
     dimension: anonymous_id {
       type: string
       sql: ${TABLE}.anonymous_id ;;
+    }
+    dimension: country_iso {
+      type: string
+      sql: ${TABLE}.country_iso ;;
     }
     dimension: device_type {
       type: string
@@ -218,6 +224,7 @@ LEFT JOIN category c ON c.event_uuid = e.event_uuid
         event_uuid,
         session_id,
         anonymous_id,
+        country_iso,
         event_name,
         event_name_before,
         event_name_after,

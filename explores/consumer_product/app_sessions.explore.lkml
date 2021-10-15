@@ -8,7 +8,7 @@ explore: app_sessions {
   description: "App sessions"
   always_filter: {
     filters:  [
-      app_sessions.session_start_at_date: "",
+      app_sessions.session_start_at_date: "last 7 days",
       app_sessions.country: "",
       app_sessions.device_type: "",
       app_sessions.is_new_user: ""
