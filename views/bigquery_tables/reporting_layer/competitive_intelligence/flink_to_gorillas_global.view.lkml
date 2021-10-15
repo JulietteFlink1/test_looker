@@ -1,5 +1,5 @@
 view: flink_to_gorillas_global {
-  sql_table_name: `flink-data-prod.reporting.flink_to_gorillas_global`
+  sql_table_name: `flink-data-prod.comp_intel.flink_to_gorillas_global`
     ;;
 
   dimension: flink_match_id {
@@ -16,7 +16,7 @@ view: flink_to_gorillas_global {
 
   dimension: best_match_score {
     type: number
-    sql: ${TABLE}.best_match_score ;;
+    sql: ${TABLE}.match_score ;;
   }
 
   dimension: country_iso {
@@ -37,7 +37,7 @@ view: flink_to_gorillas_global {
 
   dimension: flink_product_sku {
     type: string
-    sql: ${TABLE}.flink_product_sku ;;
+    sql: ${TABLE}.flink_sku ;;
     hidden: yes
     primary_key: yes
   }
