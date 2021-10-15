@@ -5,11 +5,7 @@ explore: aov_per_subcategory_month {
   label: "Pricing Test"
   hidden: no
 
-  always_filter: {
-    filters:  [
-      aov_per_subcategory_month.category: "-EMPTY,-%Event%"
-    ]
-  }
+
 
   access_filter: {
     field: country_iso
