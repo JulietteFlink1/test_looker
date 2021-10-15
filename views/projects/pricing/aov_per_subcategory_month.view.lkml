@@ -173,7 +173,7 @@ view: aov_per_subcategory_month{
   }
 
   dimension: country_iso {
-    label: "country"
+    label: "Country Iso"
     type: string
     sql: ${TABLE}.country_iso ;;
   }
