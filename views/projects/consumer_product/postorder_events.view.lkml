@@ -352,6 +352,7 @@ view: postorder_events {
   dimension: full_app_version {
     type: string
     sql: ${context_device_type} || '-' || ${padded_app_version} ;;
+    order_by_field: version_ordering_field
   }
 
   dimension: main_version_number {
@@ -370,6 +371,11 @@ view: postorder_events {
     type: number
     sql: REGEXP_EXTRACT(${context_app_version}, r'(?:\d+)\.(?:\d+)\.(\d+)') ;;
     hidden: yes
+  }
+
+  dimension: version_ordering_field {
+    type: number
+    sql: CONCAT(${main_version_number},${secondary_version_number},${tertiary_version_number}) ;;
   }
 
   dimension: padded_app_version {
