@@ -1,51 +1,38 @@
-view: crm_braze_canvas {
-  sql_table_name:`flink-data-staging.sandbox.crm_braze_canvas`
-      ;;
-  # view_label: "* CRM Braze Canvas *"
+view: crm_braze_campaign {
+  sql_table_name:`flink-data-staging.sandbox.crm_braze_campaign`
+    ;;
+  # view_label: "* CRM Braze Campaign *"
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   #           Dimensions
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-  dimension: canvas_id {
-    label: "Canvas ID"
-    description: "The email canvas ID defined in Braze"
+  dimension: campaign_id {
+    label: "Campaign ID"
+    description: "The email campaign ID defined in Braze"
     type: string
-    sql: ${TABLE}.canvas_id;;
+    sql: ${TABLE}.campaign_id ;;
   }
 
-  dimension: canvas_name {
-    label: "Canvas Name"
-    description: "The email canvas name defined in Braze"
+  dimension: campaign_name {
+    label: "Campaign Name"
+    description: "The email campaign name defined in Braze"
     type: string
-    sql: ${TABLE}.canvas_name ;;
+    sql: ${TABLE}.campaign_name ;;
   }
 
   dimension: in_control_group {
-    label: "Control Group for Canvas"
-    description: "Canvas group name defined in Braze"
+    label: "Control Group for Campaign"
+    description: "Campaign group name defined in Braze"
     type: yesno
     sql: ${TABLE}.in_control_group ;;
   }
 
-  dimension: canvas_step_name {
-    label: "Canvas Step Name"
-    description: "The email canvas step name defined in Braze"
-    type: string
-    sql: ${TABLE}.canvas_step_name ;;
-  }
-
-  dimension: canvas_variation_name {
-    label: "Canvas Variation Name"
-    description: "The email canvas variation name defined in Braze"
-    type: string
-    sql: ${TABLE}.canvas_variation_name ;;
-  }
 
   dimension: country {
     label: "Country"
-    description: "The country code parsed from the email canvas name"
+    description: "The country code parsed from the email campaign name"
     type: string
     sql: ${TABLE}.country ;;
   }
@@ -83,7 +70,7 @@ view: crm_braze_canvas {
   dimension: primary_key {
     primary_key: yes
     hidden: yes
-    sql: CONCAT(${TABLE}.canvas_name,${TABLE}.canvas_step_name, ${TABLE}.canvas_variation_name, ${TABLE}.country, ${TABLE}.email_sent_at) ;;
+    sql: CONCAT(${TABLE}.campaign_name, ${TABLE}.country, ${TABLE}.email_sent_at) ;;
   }
 
   dimension: days_sent_to_open {
@@ -215,7 +202,7 @@ view: crm_braze_canvas {
   measure: emails_sent {
     type: sum
     label: "All Unique Sents"
-    description: "The number of unique recipients of an email canvas"
+    description: "The number of unique recipients of an email campaign"
     group_label: "Numbers"
     sql: ${total_emails_sent} ;;
     value_format_name: decimal_0
@@ -494,10 +481,10 @@ view: crm_braze_canvas {
     description: "Percentage: number of orders made in the 12h after sending an email divided by the number of emails opened"
     group_label: "Ratios"
     sql: {% if ${TABLE}.in_control_group == 'yes' %}
-    ${total_orders_with_vouchers} / NULLIF(${total_emails_sent}, 0)
-    {% else %}
-    ${total_orders_with_vouchers} / NULLIF(${total_emails_opened}, 0)
-    {% endif %};;
+          ${total_orders_with_vouchers} / NULLIF(${total_emails_sent}, 0)
+          {% else %}
+          ${total_orders_with_vouchers} / NULLIF(${total_emails_opened}, 0)
+          {% endif %};;
     value_format_name: percent_2
   }
 
@@ -575,8 +562,6 @@ view: crm_braze_canvas {
     default_value: "opens_rate"
   }
 
-
-
 # unique_emails_unsubscribed
 # unique_users_orders
 # orders_with_vouchers
@@ -595,7 +580,6 @@ view: crm_braze_canvas {
       ${unique_emails_opened}
     {% endif %};;
   }
-
 
   measure: clicks_parameter {
     label: "{% if reporting_parameter._parameter_value == \"unique\"%}
@@ -622,7 +606,6 @@ view: crm_braze_canvas {
     {% endif %};;
   }
 
-
   measure: order_rate_parameter {
     label: "{% if reporting_parameter._parameter_value == \"unique\"%} Unique Order Rate {% else %} Total Order Rate {% endif%}"
     group_label: "* Dynamic KPI Fields *"
@@ -634,7 +617,6 @@ view: crm_braze_canvas {
       ${unique_order_rate}
     {% endif %};;
   }
-
 
   measure: open_rate_parameter {
     label: "{% if reporting_parameter._parameter_value == \"unique\"%} Unique Order Rate {% else %} Total Order Rate {% endif%}"
@@ -700,17 +682,13 @@ view: crm_braze_canvas {
   }
 
 
-
-
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   #           Detail
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # set: detail {
   #   fields: [
-  #     canvas_name,
+  #     campaign_name,
   #     in_control_group,
-  #     canvas_step_name,
-  #     canvas_variation_name,
   #     country,
   #     email_sent_at,
   #     days_sent_to_open,
