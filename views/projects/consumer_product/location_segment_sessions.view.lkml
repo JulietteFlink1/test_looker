@@ -2,7 +2,7 @@ view: location_segment_sessions {
   derived_table: {
     persist_for: "1 hour"
     sql: WITH
-        events AS ( -- ios all events
+        pre_events AS ( -- ios all events
         SELECT
             tracks.anonymous_id
           , tracks.context_app_version
@@ -13,6 +13,7 @@ view: location_segment_sessions {
           , tracks.id
           , tracks.timestamp
           , TIMESTAMP_DIFF(tracks.timestamp,LAG(tracks.timestamp) OVER(PARTITION BY tracks.anonymous_id ORDER BY tracks.timestamp), MINUTE) AS inactivity_time
+          , ROW_NUMBER() OVER (PARTITION BY tracks.id ORDER BY tracks.timestamp) AS row_id
         FROM
           `flink-data-prod.flink_ios_production.tracks_view` tracks
         WHERE
@@ -34,6 +35,7 @@ view: location_segment_sessions {
           , tracks.id
           , tracks.timestamp
           , TIMESTAMP_DIFF(tracks.timestamp,LAG(tracks.timestamp) OVER(PARTITION BY tracks.anonymous_id ORDER BY tracks.timestamp), MINUTE) AS inactivity_time
+          , ROW_NUMBER() OVER (PARTITION BY tracks.id ORDER BY tracks.timestamp) AS row_id
         FROM
           `flink-data-prod.flink_android_production.tracks_view` tracks
         WHERE
@@ -45,6 +47,12 @@ view: location_segment_sessions {
           AND NOT (tracks.context_app_version LIKE "%APP-RATING%" OR tracks.context_app_version LIKE "%DEBUG%")
           AND NOT (tracks.context_app_name = "Flink-Staging" OR tracks.context_app_name="Flink-Debug")
           )
+
+     , events AS (
+        SELECT *
+        FROM pre_events
+        WHERE row_id =1
+      )
 
      , tracking_sessions AS ( -- defining 30 min sessions
             SELECT
@@ -367,6 +375,7 @@ event_counts AS (
         -- , sf.delivery_postcode
         , sf.delivery_eta
         , sf.user_area_available
+        , sf.has_address
         , ec.location_pin_placed_event_count as location_pin_placed
         , ec.address_skipped_event_count as address_skipped
         , ec.address_confirmed_event_count as address_confirmed
