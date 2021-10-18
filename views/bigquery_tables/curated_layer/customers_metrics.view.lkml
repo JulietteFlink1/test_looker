@@ -78,6 +78,12 @@ view: customers_metrics {
     sql: ${TABLE}.favourite_order_hour ;;
   }
 
+  dimension: first_platform {
+    group_label: "* User Dimensions *"
+    type: string
+    sql: ${TABLE}.first_platform ;;
+  }
+
   dimension_group: first_order {
     group_label: "* Dates and Timestamps *"
     type: time
