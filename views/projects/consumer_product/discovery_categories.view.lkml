@@ -28,6 +28,7 @@ WHERE DATE(e.event_timestamp) >= "2021-10-01"
     SELECT  e.event_uuid
           , e.session_id
           , e.event_timestamp
+          , LEAD(e.event_timestamp) OVER (PARTITION BY e.session_id ORDER BY e.event_timestamp ASC)          as event_timestamp_after
           , first_value (e.event_timestamp ) over (partition by session_id order by e.event_timestamp asc
                  ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)                                   as first_timestamp_category
           , last_value (e.event_timestamp ) over (partition by session_id order by e.event_timestamp asc
@@ -52,12 +53,13 @@ SELECT   e.event_uuid
        , c.first_timestamp_category
        , e.last_timestamp
        , c.last_timestamp_category
-       , TIMESTAMP_DIFF(last_timestamp, first_timestamp, SECOND) AS time_diff_seconds
-       , TIMESTAMP_DIFF(last_timestamp, first_timestamp, MINUTE) AS time_diff_minutes
-       , TIMESTAMP_DIFF(last_timestamp, first_timestamp, HOUR) AS time_diff_hour
-       , TIMESTAMP_DIFF(c.last_timestamp_category, c.first_timestamp_category, SECOND) AS time_diff_category_seconds
-       , TIMESTAMP_DIFF(c.last_timestamp_category, c.first_timestamp_category, MINUTE) AS time_diff_category_minutes
-       , TIMESTAMP_DIFF(c.last_timestamp_category, c.first_timestamp_category, HOUR) AS time_diff_category_hour
+       , TIMESTAMP_DIFF(c.event_timestamp_after, e.event_timestamp, SECOND) AS category_timestamp_diff_seconds
+       , TIMESTAMP_DIFF(last_timestamp, first_timestamp, SECOND) AS session_duration_seconds
+       , TIMESTAMP_DIFF(last_timestamp, first_timestamp, MINUTE) AS session_duration_minutes
+       , TIMESTAMP_DIFF(last_timestamp, first_timestamp, HOUR) AS session_duration_hour
+       , TIMESTAMP_DIFF(c.last_timestamp_category, c.first_timestamp_category, SECOND) AS category_session_duration_seconds
+       , TIMESTAMP_DIFF(c.last_timestamp_category, c.first_timestamp_category, MINUTE) AS category_session_duration_minutes
+       , TIMESTAMP_DIFF(c.last_timestamp_category, c.first_timestamp_category, HOUR) AS category_session_duration_hour
 FROM events e
 LEFT JOIN category c ON c.event_uuid = e.event_uuid
 LEFT JOIN `flink-data-prod.curated.app_sessions` s ON s.session_uuid = e.session_id
@@ -109,7 +111,7 @@ LEFT JOIN `flink-data-prod.curated.app_sessions` s ON s.session_uuid = e.session
       sql: ${TABLE}.origin_screen ;;
     }
 
-    dimension_group: first_timestamp {
+    dimension_group: session_start_at {
      type: time
      datatype: timestamp
      timeframes: [
@@ -129,7 +131,7 @@ LEFT JOIN `flink-data-prod.curated.app_sessions` s ON s.session_uuid = e.session
     ]
     sql: ${TABLE}.first_timestamp_category ;;
   }
-    dimension_group: last_timestamp {
+    dimension_group: session_end_at {
       type: time
       datatype: timestamp
       timeframes: [
@@ -164,33 +166,35 @@ LEFT JOIN `flink-data-prod.curated.app_sessions` s ON s.session_uuid = e.session
       sql: ${TABLE}.event_timestamp ;;
     }
 
-   dimension: time_diff_seconds {
-      type: number
-      sql: ${TABLE}.time_diff_seconds ;;
-  }
-  dimension: time_diff_category_seconds {
+  dimension: session_duration_seconds {
     type: number
-    sql: ${TABLE}.time_diff_category_seconds ;;
+    sql: ${TABLE}.session_duration_seconds ;;
+  }
+  dimension: category_session_duration_seconds {
+    type: number
+    sql: ${TABLE}.category_session_duration_seconds ;;
+  }
+  dimension: session_duration_minutes {
+    type: number
+    sql: ${TABLE}.session_duration_minutes ;;
+  }
+  dimension: category_session_duration_minutes {
+    type: number
+    sql: ${TABLE}.category_session_duration_minutes ;;
+  }
+  dimension: session_duration_hour {
+    type: number
+    sql: ${TABLE}.session_duration_hour ;;
+  }
+  dimension: category_session_duration_hour {
+    type: number
+    sql: ${TABLE}.category_session_duration_hour ;;
+  }
+  dimension: category_timestamp_diff_seconds {
+    type: number
+    sql: ${TABLE}.category_timestamp_diff_seconds ;;
   }
 
-  dimension: time_diff_minutes {
-    type: number
-    sql: ${TABLE}.time_diff_minutes ;;
-  }
-
-   dimension: time_diff_category_minutes {
-       type: number
-      sql: ${TABLE}.time_diff_category_minutes ;;
-  }
-
-  dimension: time_diff_hour {
-    type: number
-    sql: ${TABLE}.time_diff_hour ;;
-  }
-  dimension: time_diff_category_hour {
-    type: number
-    sql: ${TABLE}.time_diff_category_hour ;;
-  }
 
   ### MEASURES
 
@@ -232,10 +236,9 @@ LEFT JOIN `flink-data-prod.curated.app_sessions` s ON s.session_uuid = e.session
         origin_screen,
         category_name,
         sub_category_name,
-        first_timestamp_minute,
-        first_timestamp_second,
-        last_timestamp_minute,
-        last_timestamp_second
+        session_start_at_second,
+        session_end_at_second,
+        event_timestamp_hour
       ]
     }
 }

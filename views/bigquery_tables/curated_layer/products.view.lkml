@@ -172,13 +172,13 @@ view: products {
     group_label: "> Price Data"
   }
 
-  dimension: unit_price {
+  dimension: base_unit_price {
     type: number
     sql: ${TABLE}.unit_price ;;
     group_label: "> Price Data"
   }
 
-  dimension: unit_price_display {
+  dimension: base_unit_price_display {
     type: string
     sql: ${TABLE}.unit_price_display ;;
     group_label: "> Price Data"

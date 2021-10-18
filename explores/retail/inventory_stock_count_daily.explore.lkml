@@ -49,4 +49,24 @@ explore: inventory_stock_count_daily {
     fields: [skus_fulfilled_per_hub_and_date.sum_item_quantity_fulfilled,
       skus_fulfilled_per_hub_and_date.sum_item_quantity]
   }
+
+  join: orderline {
+    sql_on: ${inventory_stock_count_daily.sku}           = ${orderline.product_sku}
+        and ${inventory_stock_count_daily.tracking_date} = ${orderline.created_date}
+        and ${inventory_stock_count_daily.hub_code}      = ${orderline.hub_code}
+    ;;
+    type: left_outer
+    relationship: one_to_many
+  }
+
+  join: top_50_skus_per_gmv_inventory_daily_explore {
+    sql_on: ${top_50_skus_per_gmv_inventory_daily_explore.sku}         = ${inventory_stock_count_daily.sku}
+        and ${top_50_skus_per_gmv_inventory_daily_explore.country_iso} = ${inventory_stock_count_daily.country_iso}
+    ;;
+    type: left_outer
+    relationship: many_to_one
+  }
+
+
+
 }
