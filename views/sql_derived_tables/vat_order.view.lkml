@@ -1,7 +1,7 @@
 view: vat_order {
   derived_table: {
     sql:WITH
-      country_tax_rates AS (
+      country_tax_rates as (
           SELECT country_iso,
                  COALESCE(AVG(CASE WHEN tax_name = 'Reduced tax category' THEN tax_rate END),0)  as tax_rate_reduced,
                  COALESCE(AVG(CASE WHEN tax_name = 'Standard tax category' THEN tax_rate END),0) as tax_rate_standard,
@@ -9,7 +9,7 @@ view: vat_order {
           FROM `flink-data-prod.curated.products`
           GROUP BY 1
       ),
-      orderline AS (
+      orderline as (
                 SELECT o.order_id,
                     oo.order_uuid,
                     oo.country_iso,
@@ -17,35 +17,35 @@ view: vat_order {
                     o.customer_email as user_email,
                     o.order_date,
                     p.tax_rate,
-                    amt_unit_price_gross * quantity / (1+p.tax_rate)                           AS item_price_net,
+                    amt_unit_price_gross * quantity / (1+p.tax_rate)                           as item_price_net,
+                    amt_unit_price_gross * quantity                                            as item_price_gross,
                     CASE WHEN p.tax_name = 'Reduced tax category'
-                         THEN amt_unit_price_gross * quantity / (1+p.tax_rate) END             AS item_price_reduced_net,
+                         THEN amt_unit_price_gross * quantity / (1+p.tax_rate) END             as item_price_reduced_net,
                     CASE WHEN p.tax_name = 'Standard tax category'
-                         THEN amt_unit_price_gross * quantity / (1+p.tax_rate) END             AS item_price_standard_net,
+                         THEN amt_unit_price_gross * quantity / (1+p.tax_rate) END             as item_price_standard_net,
                     CASE WHEN p.tax_name = 'Special tax category'
-                         THEN amt_unit_price_gross * quantity / (1+p.tax_rate) END             AS item_price_special_net,
+                         THEN amt_unit_price_gross * quantity / (1+p.tax_rate) END             as item_price_special_net,
                     CASE WHEN p.tax_name = 'Standard tax category'
-                         THEN amt_unit_price_gross * quantity END                              AS item_price_standard_gross,
-                    amt_unit_price_gross * quantity                                            AS item_price_gross,
+                         THEN amt_unit_price_gross * quantity END                              as item_price_standard_gross,
                     CASE WHEN p.tax_name = 'Reduced tax category'
-                         THEN amt_unit_price_gross * quantity END                              AS item_price_reduced_gross,
+                         THEN amt_unit_price_gross * quantity END                              as item_price_reduced_gross,
                     CASE WHEN p.tax_name = 'Special tax category'
-                         THEN amt_unit_price_gross * quantity END                              AS item_price_special_gross,
+                         THEN amt_unit_price_gross * quantity END                              as item_price_special_gross,
                     CASE WHEN p.tax_name = 'Reduced tax category'
-                         THEN oo.amt_discount  end                                             AS discount_amount_reduced_gross,
+                         THEN oo.amt_discount  end                                             as discount_amount_reduced_gross,
                     CASE WHEN p.tax_name = 'Standard tax category'
-                         THEN oo.amt_discount end                                              AS discount_amount_standard_gross,
+                         THEN oo.amt_discount end                                              as discount_amount_standard_gross,
                     CASE WHEN p.tax_name = 'Special tax category'
-                         THEN oo.amt_discount end                                              AS discount_amount_special_gross,
+                         THEN oo.amt_discount end                                              as discount_amount_special_gross,
                     CASE WHEN p.tax_name = 'Standard tax category'
-                         THEN oo.amt_discount / (1+p.tax_rate) END                             AS discount_amount_standard_net,
+                         THEN oo.amt_discount / (1+p.tax_rate) END                             as discount_amount_standard_net,
                     CASE WHEN p.tax_name = 'Reduced tax category'
-                         THEN oo.amt_discount / (1+p.tax_rate) END                             AS discount_amount_reduced_net,
+                         THEN oo.amt_discount / (1+p.tax_rate) END                             as discount_amount_reduced_net,
                     CASE WHEN p.tax_name = 'Special tax category'
-                         THEN oo.amt_discount / (1+p.tax_rate) END                             AS discount_amount_special_net,
-                    oo.amt_discount                                                            AS discount_amount,
-                    oo.amt_discount/(1+p.tax_rate)                                             AS discount_amount_net,
-                    o.amt_delivery_fee_gross                                                   AS delivery_fee_gross,
+                         THEN oo.amt_discount / (1+p.tax_rate) END                             as discount_amount_special_net,
+                    oo.amt_discount                                                            as discount_amount,
+                    oo.amt_discount/(1+p.tax_rate)                                             as discount_amount_net,
+                    o.amt_delivery_fee_gross                                                   as delivery_fee_gross,
                 FROM `flink-data-prod.curated.order_lineitems` oo
                 LEFT JOIN `flink-data-prod.curated.products` p ON p.country_iso = oo.country_iso and p.product_sku = oo.sku
                 LEFT JOIN `flink-data-prod.curated.orders` o on o.country_iso = oo.country_iso and o.order_uuid = oo.order_uuid
@@ -53,11 +53,11 @@ view: vat_order {
                 AND is_successful_order is true
                 AND o.hub_code <> 'de_ber_ufhi'
                 AND p.tax_rate is not null
-                AND date_trunc(date(o.order_timestamp),month) = '2021-09-01'
-                AND date_trunc(date(o.order_timestamp),month) = '2021-09-01'
+                --AND date_trunc(date(o.order_timestamp),month) = '2021-09-01'
+                --AND date_trunc(date(o.order_timestamp),month) = '2021-09-01'
 )
 ,
-            weighted_tax_rate AS (
+            weighted_tax_rate as (
                 SELECT order_id,
                   order_uuid,
                   order_date,
@@ -87,7 +87,7 @@ view: vat_order {
                 GROUP BY 1,2,3,4,5,6,7
             )
             ,
-            delivery_fees_discount AS (
+            delivery_fees_discount as (
                 SELECT  order_id,
                         order_uuid,
                         country_iso,
@@ -116,7 +116,7 @@ view: vat_order {
                 FROM weighted_tax_rate
             ),
 
-            refund AS (
+            refund as (
                 SELECT order_uuid,
                        country_iso,
                        transaction_payment_type as payment_type,
@@ -126,7 +126,7 @@ view: vat_order {
                 GROUP BY 1, 2, 3
             ),
 
-            net_gross AS (
+            net_gross as (
             SELECT d.order_id,
                    order_date,
                    d.country_iso,
