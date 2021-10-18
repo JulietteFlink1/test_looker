@@ -1,6 +1,7 @@
 view: orderline {
   sql_table_name: `flink-data-prod.curated.order_lineitems`
     ;;
+  view_label: "* Order Lineitems *"
   drill_fields: [id]
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -469,7 +470,7 @@ view: orderline {
     sql: ${quantity} * ${unit_price_gross_amount};;
     value_format_name: eur
     filters: [created_date: "14 days ago for 14 days"]
-    group_label: "> Sold Quantities"
+    group_label: "> Monetary Metrics"
   }
 
   measure: sum_item_price_gross_7d {
@@ -480,7 +481,7 @@ view: orderline {
     sql: ${quantity} * ${unit_price_gross_amount};;
     value_format_name: eur
     filters: [created_date: "7 days ago for 7 days"]
-    group_label: "> Sold Quantities"
+    group_label: "> Monetary Metrics"
   }
 
   measure: number_of_orderlines {
