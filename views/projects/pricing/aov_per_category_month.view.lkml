@@ -4,7 +4,8 @@ view: aov_per_category_month{
       c.order_date,
       c.week,
       c.month,
-      c.country as country_iso,
+      --c.country as country_iso,
+      c.country_iso,
       c.category,
       c.sum_item_value,
       c.sum_quantity,
@@ -174,7 +175,7 @@ view: aov_per_category_month{
   }
 
   dimension: country_iso {
-    label: "country"
+    label: "Country Iso"
     type: string
     sql: ${TABLE}.country_iso ;;
   }

@@ -14,10 +14,9 @@ explore:  gorillas_to_flink_global {
   join: gorillas_to_flink_global {
     from:  gorillas_to_flink_global
     view_label: "* Product Matches *"
-    sql_on: ${gorillas_inventory_stock_count.product_id} = ${gorillas_to_flink_global.gorillas_product_id}
-      AND ${gorillas_inventory_stock_count.product_name} = ${gorillas_to_flink_global.gorillas_product_name};;
+    sql_on: ${gorillas_inventory_stock_count.product_id} = ${gorillas_to_flink_global.gorillas_product_id};;
     relationship: one_to_many
-    type:  inner
+    type:  left_outer
   }
 
   join: products {
