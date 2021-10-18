@@ -154,9 +154,9 @@ view: products {
     label: "Currency"
   }
 
-  dimension: deposit_cent_amount {
+  dimension: deposit_amount {
     type: number
-    sql: ${TABLE}.deposit_centAmount ;;
+    sql: ${TABLE}.deposit_amount ;;
     group_label: "> Price Data"
   }
 
@@ -169,6 +169,18 @@ view: products {
   dimension: deposit_type {
     type: string
     sql: ${TABLE}.deposit_type ;;
+    group_label: "> Price Data"
+  }
+
+  dimension: unit_price {
+    type: number
+    sql: ${TABLE}.unit_price ;;
+    group_label: "> Price Data"
+  }
+
+  dimension: unit_price_display {
+    type: string
+    sql: ${TABLE}.unit_price_display ;;
     group_label: "> Price Data"
   }
 
@@ -224,7 +236,7 @@ view: products {
 
   dimension: slug_de {
     type: string
-    sql: ${TABLE}.slug_de ;;
+    sql: ${TABLE}.slug ;;
     group_label: "> Special Purpose Data"
   }
 
