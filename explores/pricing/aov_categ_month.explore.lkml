@@ -5,13 +5,7 @@ explore: aov_per_category_month {
   label: "Category Value per Order - Month"
   hidden: yes
 
-  always_filter: {
-    filters:  [
-      aov_per_category_month.country_iso: "Germany",
-      aov_per_category_month.category: "-EMPTY,-%Event%"
 
-    ]
-  }
 
   access_filter: {
     field: country_iso

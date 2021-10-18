@@ -172,6 +172,18 @@ view: products {
     group_label: "> Price Data"
   }
 
+  dimension: unit_price {
+    type: number
+    sql: ${TABLE}.unit_price ;;
+    group_label: "> Price Data"
+  }
+
+  dimension: unit_price_display {
+    type: string
+    sql: ${TABLE}.unit_price_display ;;
+    group_label: "> Price Data"
+  }
+
 
 
   # =========  IDs   =========
@@ -224,7 +236,7 @@ view: products {
 
   dimension: slug_de {
     type: string
-    sql: ${TABLE}.slug_de ;;
+    sql: ${TABLE}.slug ;;
     group_label: "> Special Purpose Data"
   }
 

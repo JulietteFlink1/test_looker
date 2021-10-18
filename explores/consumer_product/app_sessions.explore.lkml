@@ -6,4 +6,16 @@ explore: app_sessions {
   view_label: "Sessions - App"
   group_label: "In-app tracking data"
   description: "App sessions"
+  always_filter: {
+    filters:  [
+      app_sessions.session_start_at_date: "last 7 days",
+      app_sessions.country: "",
+      app_sessions.device_type: "",
+      app_sessions.is_new_user: ""
+    ]
+  }
+  access_filter: {
+    field: app_sessions.country_iso
+    user_attribute: country_iso
+  }
 }
