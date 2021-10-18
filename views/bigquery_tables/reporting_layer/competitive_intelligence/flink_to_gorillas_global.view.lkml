@@ -14,6 +14,11 @@ view: flink_to_gorillas_global {
     group_label: "> IDs"
   }
 
+  dimension: match_type {
+    type:  string
+    sql: ${TABLE}.match_type ;;
+  }
+
   dimension: best_match_score {
     type: number
     sql: ${TABLE}.match_score ;;
