@@ -151,6 +151,15 @@
         value_format_name: decimal_0
       }
 
+      measure: cnt_unique_eventid {
+        label: "# Unique Events"
+        description: "Number of Unique Users identified via Anonymous ID from Segment"
+        hidden:  no
+        type: count_distinct
+        sql: ${event_id};;
+        value_format_name: decimal_0
+      }
+
       measure: count {
         label: "# Events"
         type: count
