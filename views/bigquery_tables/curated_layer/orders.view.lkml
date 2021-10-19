@@ -363,20 +363,20 @@ view: orders {
     description: "The internally predicted time in minutes for the order to arrive at the customer"
     group_label: "* Operations / Logistics *"
     type: number
-    sql: ${TABLE}.delivery_time_estimate_minutes ;;
+    sql: CASE WHEN ${TABLE}.delivery_time_estimate_minutes > 30 then 30 else  ${TABLE}.delivery_time_estimate_minutes END ;; # as requested by Laurenz
   }
 
   dimension: is_critical_delivery_time_estimate_underestimation {
-    description: "The actual fulfillment took more than 15min longer than the internally predicted delivery time"
+    description: "The actual fulfillment took more than 10min longer than the internally predicted delivery time"
     type:  yesno
-    sql: ${fulfillment_time} > (15 + ${delivery_time_estimate_minutes}) ;;
+    sql: ${fulfillment_time} > (10 + ${delivery_time_estimate_minutes}) ;;
     hidden: yes
   }
 
   dimension: is_critical_delivery_time_estimate_overestimation {
-    description: "The actual fulfillment took more than 15min less than the internally predicted delivery time"
+    description: "The actual fulfillment took more than 10min less than the internally predicted delivery time"
     type:  yesno
-    sql: ${fulfillment_time} < (${delivery_time_estimate_minutes} - 15) ;;
+    sql: ${fulfillment_time} < (${delivery_time_estimate_minutes} - 10) ;;
     hidden: yes
   }
 
