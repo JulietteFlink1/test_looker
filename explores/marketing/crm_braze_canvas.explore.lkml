@@ -5,7 +5,6 @@ include: "/views/bigquery_tables/crm_braze_canvas.view.lkml"
 explore: crm_braze_canvas {
   hidden: yes
   view_name: crm_braze_canvas
-  # hidden:  yes
   label: "CRM Canvas Data (Braze)"
   view_label: "CRM Braze Canvas"
   group_label: "11) Marketing"

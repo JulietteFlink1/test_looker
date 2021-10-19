@@ -1,220 +1,167 @@
 view: retail_kpis {
   derived_table: {
     datagroup_trigger: flink_default_datagroup
-    sql: with
-          looker_base as (
-                            select
-                  hubs.country_iso                           as country_iso
-                , lower(hubs.hub_code)                       as hub_code
-                , hubs.city                                  as city
-                , hubs.hub_name                              as hub_name
-                , prod.subcategory                      as sub_category_name
-                , prod.category                       as category_name
-                , prod.product_name                       as product_name
-                , item.sku as sku
-                , date(ord.order_timestamp, 'Europe/Berlin') as order_date
-                , ord.order_uuid                             as order_id
-                  -- AGGREGATES
-                , sum(item.quantity)    as sku_quantity
-                , sum(item.amt_unit_price_net) as sku_unit_price
-                , coalesce(sum(item.quantity * item.amt_unit_price_net),
-                           0)                                as sum_item_price_net
-              from
-                            flink-data-prod.curated.orders          as ord
-                  left join flink-data-prod.curated.order_lineitems as item
-                            on ord.order_uuid = item.order_uuid
+    sql:
+with
+looker_base as (
+    select
+      hubs.country_iso                           as country_iso
+    , hubs.hub_code                              as hub_code
+    , hubs.city                                  as city
+    , hubs.hub_name                              as hub_name
+    , prod.subcategory                           as sub_category_name
+    , prod.category                              as category_name
+    , prod.product_name                          as product_name
+    , item.sku                                   as sku
+    , date(ord.order_timestamp, 'Europe/Berlin') as order_date
+    , ord.order_uuid                             as order_uuid
+    , ord.amt_gmv_gross                          as gross_order_value
+    , ord.amt_gmv_net                            as net_order_value
+    , ord.number_of_distinct_skus                as number_skus
+    , ord.number_of_items                        as number_items
+      -- AGGREGATES
+    , sum(item.quantity)                         as sku_quantity
+    --, sum(item.amt_unit_price_net)               as sku_unit_price
+    , coalesce(sum(item.quantity * item.amt_unit_price_net),
+               0)                                as sum_item_price_net
+  from
+                flink-data-prod.curated.orders          as ord
+      left join flink-data-prod.curated.order_lineitems as item  on ord.order_uuid = item.order_uuid
+      left join flink-data-prod.curated.hubs            as hubs  on ord.hub_code   = hubs.hub_code
+      left join flink-data-prod.curated.products        as prod  on item.sku       = prod.product_sku
 
-                  left join flink-data-prod.curated.hubs as hubs
-                            on ord.hub_code = hubs.hub_code
+  where
+          (ord.order_timestamp) >= date_add(current_timestamp, interval -90 day)
 
-                  left join flink-data-prod.curated.products as prod
-                            on item.sku = prod.product_sku
+  group by
+      1, 2, 3 , 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14
+),
 
-              where
-                      (ord.order_timestamp) >= date_add(current_timestamp, interval -90 day)
+looker_base_clean as (
+    select
+      *
+    , case
+      when order_date between date_add(current_date(), interval -7 day) and date_add(current_date(), interval -1 day)
+          then 'current'
+      when order_date between date_add(current_date(), interval -7 * 6 day) and date_add(current_date(), interval -(7 * 5 + 1) day)
+          then 'previous'
+          else 'undefined'
+      end as cohorts
 
-              group by
-                  1, 2, 3 , 4, 5, 6, 7, 8, 9, 10
-              order by
-                  10 desc
-          )
+    from looker_base
+  -- where placeholder LOOKER FILTER
+     WHERE {% condition hub_code_filter %}    looker_base.hub_code    {% endcondition %}
+       and {% condition hub_name_filter %}    looker_base.hub_name    {% endcondition %}
+       and {% condition city_filter %}        looker_base.city        {% endcondition %}
+       and {% condition country_iso_filter %} looker_base.country_iso {% endcondition %}
 
-        , looker_base_clean as (
-          select
-              country_iso
-            , hub_code
-            , city
-            , hub_name
-            , sub_category_name
-            , category_name
-            , product_name
-            , sku
-            , order_date
-            , case
-              when order_date between date_add(current_date(), interval -7 day) and date_add(current_date(), interval -1 day)
-                  then 'current'
-              when order_date between date_add(current_date(), interval -7 * 6 day) and date_add(current_date(), interval -(7 * 5 + 1) day)
-                  then 'previous'
-                  else 'undefined'
-              end as cohorts
-            , order_id
-            , sku_quantity
-            , sku_unit_price
-            , sum_item_price_net
-          from looker_base
-          -- where placeholder LOOKER FILTER
-            WHERE {% condition hub_code_filter %}    looker_base.hub_code    {% endcondition %}
-              and {% condition hub_name_filter %}    looker_base.hub_name    {% endcondition %}
-              and {% condition city_filter %}        looker_base.city        {% endcondition %}
-              and {% condition country_iso_filter %} looker_base.country_iso {% endcondition %}
+),
 
-      )
+aggregations as (
+    select
+      sku
+    , country_iso
+    , product_name
+    , order_date
+    , cohorts
+    -- , date_trunc(order_date, week)                                        as order_week
+    , category_name
+    , sub_category_name
+      -- measures
+    , sum(sum_item_price_net)                                             as sum_item_price_net
+    , sum(if(cohorts = 'current', sum_item_price_net, 0))                 as sum_item_price_net_current
+    , sum(if(cohorts = 'previous', sum_item_price_net, 0))                as sum_item_price_net_previous
+    , count(distinct hub_code)                                            as distinct_hub_codes
+    , count(distinct if(cohorts = 'current', hub_code, null))             as distinct_hub_codes_current
+    , count(distinct if(cohorts = 'previous', hub_code, null))            as distinct_hub_codes_previous
+    , sum(sum_item_price_net) / nullif(count(distinct hub_code), 0)       as equalized_revenue
+    , sum(if(cohorts = 'current', sum_item_price_net, 0)) /
+      nullif(count(distinct if(cohorts = 'current', hub_code, null)), 0)  as equalized_revenue_current
+    , sum(if(cohorts = 'previous', sum_item_price_net, 0)) /
+      nullif(count(distinct if(cohorts = 'previous', hub_code, null)), 0) as equalized_revenue_previous
+    , avg(number_skus)                                                    as avg_basket_skus
+    , avg(number_items)                                                   as avg_basket_items
+    , avg(net_order_value)                                                as avg_basket_value
+    from looker_base_clean
+    group by
+      1, 2, 3, 4, 5, 6, 7
+),
 
+equlalized_revenue_last_14_days as (
+    select
+      sku
+    , country_iso
+    -- to exclude sundays, non-working days, assuming on this aggregation, there are at least some sales
+    , AVG(equalized_revenue) as avg_equalized_revenue_last_14d
+    from aggregations
+    where order_date >= date_add(current_date(), interval -14 day)
+    group by sku, country_iso
+),
 
-        , order_kpis as (
-          -- om the order-level, calculates the number of items and basket value
-          select
-              order_id
-            , sum(sku_quantity)       as number_items
-            , count(sku)              as number_skus
-            , sum(sum_item_price_net) as net_order_value
-          from looker_base_clean
-          group by
-              1
-      )
-        , looker_base_enriched as (
-          -- data still on order level
-          -- adds basket information to orders
-          select
-              lb.sku                as sku
-            , lb.order_id           as order_id
-            , lb.product_name       as product_name
-            , lb.order_date         as order_date
-            , lb.cohorts
-            , lb.category_name      as category_name
-            , lb.sub_category_name  as sub_category_name
-            , lb.hub_code           as hub_code
-            , lb.hub_name           as hub_name
-            , lb.city               as city
-            , lb.country_iso        as country_iso
-            , lb.sum_item_price_net as sum_item_price_net
-            , lb.sku_quantity       as sku_quantity
-            , lb.sku_unit_price     as sku_unit_price
-            , o.number_skus         as number_skus
-            , o.number_items        as number_items
-            , o.net_order_value     as net_order_value
+out_of_stock_data as (
+    select
+        inv.inventory_tracking_date      as tracking_date
+      , inv.sku                      as sku
+        -- , upper(split(inv.hub_code, "_")[offset(0)]) as country_iso
+      , hubs.country_iso             as country_iso
+      , sum(inv.open_hours_total)    as open_hours_total
+      , sum(inv.hours_oos)           as hours_oos
+      , sum(inv.sum_items_ordered) as sum_count_purchased
+      , sum(inv.sum_count_restocked) as sum_count_restocked
+      , avg(inv.avg_stock_count)     as avg_stock_count
 
-          from
-              looker_base_clean    as lb
-              left join order_kpis as o
-                        on lb.order_id = o.order_id
-      )
-        , aggregations as (
-          select
-              sku
-            , country_iso
-            , product_name
-            , order_date
-            , cohorts
-            -- , date_trunc(order_date, week)                                        as order_week
-            , category_name
-            , sub_category_name
-              -- measures
-            , sum(sum_item_price_net)                                             as sum_item_price_net
-            , sum(if(cohorts = 'current', sum_item_price_net, 0))                 as sum_item_price_net_current
-            , sum(if(cohorts = 'previous', sum_item_price_net, 0))                as sum_item_price_net_previous
-            , count(distinct hub_code)                                            as distinct_hub_codes
-            , count(distinct if(cohorts = 'current', hub_code, null))             as distinct_hub_codes_current
-            , count(distinct if(cohorts = 'previous', hub_code, null))            as distinct_hub_codes_previous
-            , sum(sum_item_price_net) / nullif(count(distinct hub_code), 0)       as equalized_revenue
-            , sum(if(cohorts = 'current', sum_item_price_net, 0)) /
-              nullif(count(distinct if(cohorts = 'current', hub_code, null)), 0)  as equalized_revenue_current
-            , sum(if(cohorts = 'previous', sum_item_price_net, 0)) /
-              nullif(count(distinct if(cohorts = 'previous', hub_code, null)), 0) as equalized_revenue_previous
-            , avg(number_skus)                                                    as avg_basket_skus
-            , avg(number_items)                                                   as avg_basket_items
-            , avg(net_order_value)                                                as avg_basket_value
-          from looker_base_enriched
-          group by
-              1, 2, 3, 4, 5, 6, 7
-      ),
-          equlalized_revenue_last_14_days as (
-              select
-                  sku
-                , country_iso
-                -- to exclude sundays, non-working days, assuming on this aggregation, there are at least some sales
-                , AVG(equalized_revenue) as avg_equalized_revenue_last_14d
-              from aggregations
-              where order_date >= date_add(current_date(), interval -14 day)
-              group by sku, country_iso
+    from flink-data-prod.reporting.inventory_stock_count_daily as inv
+    left join `flink-data-prod`.curated.hubs                   as hubs
+          on hubs.hub_code = inv.hub_code
 
-          ),
+    where
+    inv.inventory_tracking_date >= date_add(current_date(), interval -90 day)
+     and {% condition hub_code_filter %}    hubs.hub_code    {% endcondition %}
+     and {% condition hub_name_filter %}    hubs.hub_name    {% endcondition %}
+     and {% condition city_filter %}        hubs.city        {% endcondition %}
+     and {% condition country_iso_filter %} hubs.country_iso {% endcondition %}
+  group by 1,2,3
+)
 
-          out_of_stock_data as (
-            select
-                inv.inventory_tracking_date      as tracking_date
-              , inv.sku                      as sku
-                -- , upper(split(inv.hub_code, "_")[offset(0)]) as country_iso
-              , hubs.country_iso             as country_iso
-              , sum(inv.open_hours_total)    as open_hours_total
-              , sum(inv.hours_oos)           as hours_oos
-              , sum(inv.sum_items_ordered) as sum_count_purchased
-              , sum(inv.sum_count_restocked) as sum_count_restocked
-              , avg(inv.avg_stock_count)     as avg_stock_count
-
-            from flink-data-prod.reporting.inventory_stock_count_daily as inv
-            left join `flink-data-prod`.curated.hubs                   as hubs
-                      on hubs.hub_code = inv.hub_code
-
-            where
-                inv.inventory_tracking_date >= date_add(current_date(), interval -90 day)
-                and {% condition hub_code_filter %}    hubs.hub_code    {% endcondition %}
-                and {% condition hub_name_filter %}    hubs.hub_name    {% endcondition %}
-                and {% condition city_filter %}        hubs.city        {% endcondition %}
-                and {% condition country_iso_filter %} hubs.country_iso {% endcondition %}
-              group by 1,2,3
-          )
-
-      select
-          aggregations.sku
-        , aggregations.country_iso
-        , product_name
-        , order_date
-        , cohorts
-        -- , order_week
-        , category_name
-        , sub_category_name
-        , sum_item_price_net
-        , sum_item_price_net_current
-        , sum_item_price_net_previous
-        , distinct_hub_codes
-        , distinct_hub_codes_current
-        , distinct_hub_codes_previous
-        , equalized_revenue
-        , equalized_revenue_current
-        , equalized_revenue_previous
-        , avg_basket_skus
-        , avg_basket_items
-        , avg_basket_value
-        , open_hours_total
-        , hours_oos
-        , sum_count_purchased
-        , sum_count_restocked
-        , avg_stock_count
-        , equlalized_revenue_last_14_days.avg_equalized_revenue_last_14d
-        , sum(equalized_revenue_current)  over (partition by aggregations.country_iso, sub_category_name) as equalized_revenue_subcategory_current
-        , sum(equalized_revenue_previous) over (partition by aggregations.country_iso, sub_category_name) as equalized_revenue_subcategory_previous
-        , sum(equalized_revenue_current)  over (partition by aggregations.country_iso)                    as equalized_revenue_total_current
-        , sum(equalized_revenue_previous) over (partition by aggregations.country_iso)                    as equalized_revenue_total_previous
-      from aggregations
-      left join out_of_stock_data
-             on out_of_stock_data.tracking_date = aggregations.order_date and
-                out_of_stock_data.sku           = aggregations.sku and
-                out_of_stock_data.country_iso   = aggregations.country_iso
-      left join equlalized_revenue_last_14_days
-             on equlalized_revenue_last_14_days.sku         = aggregations.sku and
-                equlalized_revenue_last_14_days.country_iso = aggregations.country_iso
-      order by sku, order_date desc
+select
+      aggregations.sku
+    , aggregations.country_iso
+    , product_name
+    , order_date
+    , cohorts
+    -- , order_week
+    , category_name
+    , sub_category_name
+    , sum_item_price_net
+    , sum_item_price_net_current
+    , sum_item_price_net_previous
+    , distinct_hub_codes
+    , distinct_hub_codes_current
+    , distinct_hub_codes_previous
+    , equalized_revenue
+    , equalized_revenue_current
+    , equalized_revenue_previous
+    , avg_basket_skus
+    , avg_basket_items
+    , avg_basket_value
+    , open_hours_total
+    , hours_oos
+    , sum_count_purchased
+    , sum_count_restocked
+    , avg_stock_count
+    , equlalized_revenue_last_14_days.avg_equalized_revenue_last_14d
+    , sum(equalized_revenue_current)  over (partition by aggregations.country_iso, sub_category_name) as equalized_revenue_subcategory_current
+    , sum(equalized_revenue_previous) over (partition by aggregations.country_iso, sub_category_name) as equalized_revenue_subcategory_previous
+    , sum(equalized_revenue_current)  over (partition by aggregations.country_iso)                    as equalized_revenue_total_current
+    , sum(equalized_revenue_previous) over (partition by aggregations.country_iso)                    as equalized_revenue_total_previous
+from aggregations
+left join out_of_stock_data
+     on out_of_stock_data.tracking_date = aggregations.order_date and
+        out_of_stock_data.sku           = aggregations.sku and
+        out_of_stock_data.country_iso   = aggregations.country_iso
+left join equlalized_revenue_last_14_days
+     on equlalized_revenue_last_14_days.sku         = aggregations.sku and
+        equlalized_revenue_last_14_days.country_iso = aggregations.country_iso
              ;;
   }
 

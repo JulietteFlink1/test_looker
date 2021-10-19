@@ -2,7 +2,7 @@ view: address_tooltip_sessions {
   derived_table: {
     persist_for: "1 hour"
     sql: WITH
-        events AS ( -- ios all events
+        pre_events AS ( -- ios all events
         SELECT
             tracks.anonymous_id
           , tracks.context_app_version
@@ -14,8 +14,9 @@ view: address_tooltip_sessions {
           , tracks.timestamp
           , tooltip.use_case
           , TIMESTAMP_DIFF(tracks.timestamp,LAG(tracks.timestamp) OVER(PARTITION BY tracks.anonymous_id ORDER BY tracks.timestamp), MINUTE) AS inactivity_time
+          , ROW_NUMBER() OVER (PARTITION BY tracks.id ORDER BY tracks.timestamp) AS row_id
         FROM
-          `flink-data-prod.flink_ios_production.tracks_view` tracks
+          `flink-data-prod.flink_ios_production.tracks` tracks
         LEFT JOIN `flink-data-prod.flink_ios_production.address_tooltip_viewed_view` tooltip ON tooltip.id = tracks.id
         WHERE
           tracks.event NOT LIKE "%api%"
@@ -37,8 +38,9 @@ view: address_tooltip_sessions {
           , tracks.timestamp
           , tooltip.use_case
           , TIMESTAMP_DIFF(tracks.timestamp,LAG(tracks.timestamp) OVER(PARTITION BY tracks.anonymous_id ORDER BY tracks.timestamp), MINUTE) AS inactivity_time
+          , ROW_NUMBER() OVER (PARTITION BY tracks.id ORDER BY tracks.timestamp) AS row_id
         FROM
-          `flink-data-prod.flink_android_production.tracks_view` tracks
+          `flink-data-prod.flink_android_production.tracks` tracks
         LEFT JOIN `flink-data-prod.flink_android_production.address_tooltip_viewed_view` tooltip ON tooltip.id = tracks.id
         WHERE
           tracks.event NOT LIKE "%api%"
@@ -50,6 +52,12 @@ view: address_tooltip_sessions {
           AND NOT (tracks.context_app_name = "Flink-Staging" OR tracks.context_app_name="Flink-Debug")
 
           )
+
+      , events AS (
+        SELECT *
+        FROM pre_events
+        WHERE row_id = 1
+      )
 
      , tracking_sessions AS ( -- defining 30 min sessions
             SELECT
@@ -68,6 +76,29 @@ view: address_tooltip_sessions {
                 OR events.inactivity_time IS NULL)
             ORDER BY
               1)
+
+    , appopened_events AS (
+        SELECT
+                  event.event,
+                  event.anonymous_id,
+                  event.timestamp,
+                  event.city AS hub_city,
+                  hub_slug as hub_code,
+                  NULL AS delivery_eta,
+                  event.has_selected_address
+            FROM `flink-data-prod.flink_android_production.app_opened_view` event
+        UNION ALL
+            SELECT
+                  event.event,
+                  event.anonymous_id,
+                  event.timestamp,
+                  event.city AS hub_city,
+                  hub_slug as hub_code,
+                  NULL AS delivery_eta,
+                  event.has_selected_address
+            FROM `flink-data-prod.flink_ios_production.app_opened_view` event
+
+    )
 
     , hub_data_union AS ( -- ios & android pulling address_confirmed and order_placed for hub_data and delivery_eta
         SELECT
@@ -122,25 +153,8 @@ view: address_tooltip_sessions {
                 `flink-data-prod.saleor_prod_global.warehouse_warehouse` AS hub
             ON SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(event.hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[ OFFSET(1)] = hub.id
     UNION ALL
-        SELECT
-              event.event,
-              event.anonymous_id,
-              event.timestamp,
-              event.city AS hub_city,
-              hub_slug as hub_code,
-              NULL AS delivery_eta,
-              event.has_selected_address
-        FROM `flink-data-prod.flink_android_production.app_opened_view` event
-    UNION ALL
-        SELECT
-              event.event,
-              event.anonymous_id,
-              event.timestamp,
-              event.city AS hub_city,
-              hub_slug as hub_code,
-              NULL AS delivery_eta,
-              event.has_selected_address
-        FROM `flink-data-prod.flink_ios_production.app_opened_view` event
+        SELECT *
+        FROM appopened_events
     )
 
     , has_address_fill AS (
@@ -265,6 +279,19 @@ view: address_tooltip_sessions {
         GROUP BY 1,2
     )
 
+  , appopened AS (
+        SELECT
+               sf.anonymous_id
+             , sf.session_id
+             , MIN(e.has_selected_address) as has_previously_selected_address
+        FROM appopened_events e
+            LEFT JOIN sessions_final sf
+            ON e.anonymous_id = sf.anonymous_id
+            AND e.timestamp >= sf.session_start_at
+            AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
+        GROUP BY 1,2
+    )
+
     , first_order AS (
         SELECT
                e.anonymous_id
@@ -351,7 +378,7 @@ view: address_tooltip_sessions {
         , sf.hub_city
         , sf.delivery_eta
         , sf.has_address
-        , sf.has_selected_address
+        , ao.has_previously_selected_address
         , ec.address_tooltip_viewed_count AS address_tooltip_viewed_count
         , ec.address_change_clicked_count AS address_change_clicked_count
         , ec.address_confirmed_count AS address_confirmed_count
@@ -377,6 +404,8 @@ view: address_tooltip_sessions {
         ON sf.session_id = ec.session_id
         LEFT JOIN tooltip tt
         ON sf.session_id = tt.session_id
+        LEFT JOIN appopened ao
+        ON sf.session_id = ao.session_id
         LEFT JOIN sequence_combined_tb sc
         ON sf.session_id=sc.session_id
         LEFT JOIN first_order fo
@@ -449,12 +478,38 @@ view: address_tooltip_sessions {
 
   dimension: has_previously_set_address  {
     type: yesno
-    sql: ${has_selected_address}=true ;;
+    sql: ${has_previously_selected_address}=true AND ${session_number}>1 ;;
   }
 
   dimension: full_app_version {
     type: string
-    sql: ${context_device_type} || '-' || ${context_app_version} ;;
+    sql: ${context_device_type} || '-' || ${main_version_number} || '.' || ${secondary_version_number};;
+    order_by_field: version_ordering_field
+  }
+
+  dimension: main_version_number {
+    type: string
+    sql: REGEXP_EXTRACT(${context_app_version}, r'(\d+)\.') ;;
+    hidden: yes
+  }
+
+  dimension: secondary_version_number {
+    type: string
+    sql: REGEXP_EXTRACT(${context_app_version}, r'\.(\d+)\.') ;;
+    value_format: "*0#"
+    hidden: yes
+  }
+
+  dimension: tertiary_version_number {
+    type: string
+    sql: REGEXP_EXTRACT(${context_app_version}, r'(?:\d+)\.(?:\d+)\.(\d+)') ;;
+    value_format: "*0#"
+    hidden: yes
+  }
+
+  dimension: version_ordering_field {
+    type: number
+    sql: CONCAT(${main_version_number},${secondary_version_number}) ;;
   }
 
   measure: cnt_has_address {
@@ -602,10 +657,10 @@ view: address_tooltip_sessions {
     sql: ${TABLE}.has_address ;;
   }
 
-  dimension: has_selected_address {
+  dimension: has_previously_selected_address {
     type: string
     hidden: yes
-    sql: ${TABLE}.has_selected_address ;;
+    sql: ${TABLE}.has_previously_selected_address ;;
   }
 
   dimension: contact_customer_service_selected_count {

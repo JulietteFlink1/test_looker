@@ -32,15 +32,15 @@ explore: flink_to_gorillas_global {
     view_label: "* Product Match Data *"
     sql_on: ${flink_to_gorillas_global.flink_product_sku} = ${products.product_sku} ;;
     relationship: one_to_many
-    type: inner
+    type: left_outer
   }
 
   join: gorillas_products {
     from:  gorillas_products
     view_label: "* Gorillas Product Data *"
-    sql_on: ${gorillas_products.product_id} = ${flink_to_gorillas_global.gorillas_product_id} AND ${gorillas_products.product_name} = ${flink_to_gorillas_global.gorillas_product_name};;
+    sql_on: ${gorillas_products.product_id} = ${flink_to_gorillas_global.gorillas_product_id};;
     relationship: one_to_one
-    type: inner
+    type: left_outer
   }
 
   join: gorillas_historical_prices_fact {
