@@ -358,6 +358,28 @@ view: orders {
     sql: ${TABLE}.fulfillment_time_raw_minutes ;;
   }
 
+  dimension: delivery_time_estimate_minutes {
+    label: "Delivery Time Estimate (min)"
+    description: "The internally predicted time in minutes for the order to arrive at the customer"
+    group_label: "* Operations / Logistics *"
+    type: number
+    sql: CASE WHEN ${TABLE}.delivery_time_estimate_minutes > 30 then 30 else  ${TABLE}.delivery_time_estimate_minutes END ;; # as requested by Laurenz
+  }
+
+  dimension: is_critical_delivery_time_estimate_underestimation {
+    description: "The actual fulfillment took more than 10min longer than the internally predicted delivery time"
+    type:  yesno
+    sql: ${fulfillment_time} > (10 + ${delivery_time_estimate_minutes}) ;;
+    hidden: yes
+  }
+
+  dimension: is_critical_delivery_time_estimate_overestimation {
+    description: "The actual fulfillment took more than 10min less than the internally predicted delivery time"
+    type:  yesno
+    sql: ${fulfillment_time} < (${delivery_time_estimate_minutes} - 10) ;;
+    hidden: yes
+  }
+
   dimension: hub_code {
     group_label: "* Hub Dimensions *"
     type: string
@@ -1185,6 +1207,15 @@ view: orders {
     value_format_name: decimal_1
   }
 
+  measure: avg_delivery_time_estimate_minutes {
+    label: "AVG Delivery Time Estimate (min)"
+    description: "The average internally predicted time in minutes for the order to arrive at the customer"
+    group_label: "* Operations / Logistics *"
+    type: average
+    sql: ${delivery_time_estimate_minutes} ;;
+    value_format_name: decimal_2
+  }
+
   ##########
   ## SUMS ##
   ##########
@@ -1428,6 +1459,26 @@ view: orders {
     value_format: "0"
   }
 
+  measure: cnt_orders_delivery_time_critical_underestimation {
+    group_label: "* Operations / Logistics *"
+    label:       "# Orders with critical under-estimation delivery time"
+    description: "# Orders with critical under-estimation delivery time"
+    hidden:      yes
+    type:        count
+    filters:     [is_critical_delivery_time_estimate_underestimation: "Yes"]
+    value_format: "0"
+  }
+
+  measure: cnt_orders_delivery_time_critical_overestimation {
+    group_label: "* Operations / Logistics *"
+    label:       "# Orders with critical over-estimation delivery time"
+    description: "# Orders with critical over-estimation delivery time"
+    hidden:      yes
+    type:        count
+    filters:     [is_critical_delivery_time_estimate_overestimation: "Yes"]
+    value_format: "0"
+  }
+
   measure: cnt_unique_date {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
     label: "# Unique Date"
@@ -1545,6 +1596,26 @@ view: orders {
     type: number
     sql: (${cnt_orders}/NULLIF(${cnt_unique_hubs},0))/ NULLIF(${cnt_unique_date},0);;
   }
+
+
+  measure: pct_delivery_time_estimate_critical_over_estimation {
+    group_label: "* Operations / Logistics *"
+    label:       "% Orders with critical over-estimation of delivery time"
+    description: "% Orders with critical over-estimation of delivery time"
+    type:        number
+    sql:         ${cnt_orders_delivery_time_critical_overestimation} / ${cnt_orders} ;;
+    value_format_name:  percent_2
+  }
+
+  measure: pct_delivery_time_estimate_critical_under_estimation {
+    group_label: "* Operations / Logistics *"
+    label:       "% Orders with critical under-estimation of delivery time"
+    description: "% Orders with critical under-estimation of delivery time"
+    type:        number
+    sql:         ${cnt_orders_delivery_time_critical_underestimation} / ${cnt_orders} ;;
+    value_format_name:  percent_2
+  }
+
 
 
 }

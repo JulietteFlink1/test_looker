@@ -5,7 +5,7 @@ include: "/views/bigquery_tables/reporting_layer/competitive_intelligence/gorill
 explore:  gorillas_to_flink_global {
   view_name: gorillas_inventory_stock_count
   label: "Gorillas Assortment Matched"
-  view_label: "Gorillas Product Data"
+  view_label: "Gorillas Stock Data"
   group_label: "08) Competitive Intel"
   description: "Gorillas assortment & sales matched to Flink's assortment and sales"
 
@@ -25,6 +25,14 @@ explore:  gorillas_to_flink_global {
     sql_on: ${products.product_sku} = ${gorillas_to_flink_global.flink_product_sku};;
     relationship: one_to_many
     type: inner
+  }
+
+  join: gorillas_products {
+    from: gorillas_products
+    view_label: "* Gorillas Product Data *"
+    sql_on: ${gorillas_products.product_id} = ${gorillas_inventory_stock_count.product_id} ;;
+    relationship: one_to_many
+    type: left_outer
   }
 
   # join: inventory {
