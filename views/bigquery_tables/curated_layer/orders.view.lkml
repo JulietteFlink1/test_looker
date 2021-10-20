@@ -1490,7 +1490,7 @@ view: orders {
     group_label: "* Operations / Logistics *"
     label:       "# Orders with critical under-estimation delivery time"
     description: "# Orders with critical under-estimation delivery time"
-    hidden:      yes
+    hidden:      no
     type:        count
     filters:     [is_critical_delivery_time_estimate_underestimation: "Yes"]
     value_format: "0"
@@ -1500,7 +1500,7 @@ view: orders {
     group_label: "* Operations / Logistics *"
     label:       "# Orders with critical over-estimation delivery time"
     description: "# Orders with critical over-estimation delivery time"
-    hidden:      yes
+    hidden:      no
     type:        count
     filters:     [is_critical_delivery_time_estimate_overestimation: "Yes"]
     value_format: "0"
