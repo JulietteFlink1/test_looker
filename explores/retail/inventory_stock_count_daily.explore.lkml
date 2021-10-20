@@ -2,8 +2,9 @@ include: "/**/*.view"
 
 # ct table: inventory_stock_count_daily, before in saleor called daily_historical_stock_levels
 explore: inventory_stock_count_daily {
-  hidden: yes
-  view_label: "* Daily Inventory Stock Level *"
+  hidden: no
+  label: "Inventory Metrics (daily granularity)"
+  group_label: "02) Inventory"
 
   always_filter: {
     filters:  [

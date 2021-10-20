@@ -172,6 +172,12 @@ view: orders {
     sql: ${TABLE}.delivery_pdt_minutes ;;
   }
 
+  dimension: delivery_estimate_model {
+    type: string
+    hidden: yes
+    sql: ${TABLE}.delivery_estimate_model ;;
+  }
+
   dimension_group: now {
     group_label: "* Dates and Timestamps *"
     label: "Now"
@@ -273,7 +279,7 @@ view: orders {
   dimension: is_order_hour_before_now_hour {
     group_label: "* Operations / Logistics *"
     type: yesno
-    sql: ${created_hour_of_day} <= ${now_hour_of_day} ;;
+    sql: ${created_hour_of_day} < ${now_hour_of_day} ;;
   }
 
   dimension_group: delivery_eta_timestamp {
@@ -557,14 +563,16 @@ view: orders {
 
   dimension: latitude {
     group_label: "* User Dimensions *"
+    label: "Customer Latitude"
     type: number
-    sql: ${TABLE}.latitude ;;
+    sql: ${TABLE}.customer_latitude ;;
   }
 
   dimension: longitude {
     group_label: "* User Dimensions *"
+    label: "Customer Longitude"
     type: number
-    sql: ${TABLE}.longitude ;;
+    sql: ${TABLE}.customer_longitude ;;
   }
 
   dimension: customer_location {
@@ -653,6 +661,7 @@ view: orders {
 
   dimension_group: delivery_timestamp {
     group_label: "* Dates and Timestamps *"
+    label: "Rider Arrived At Customer Timestamp"
     type: time
     timeframes: [
       raw,
@@ -667,7 +676,7 @@ view: orders {
       quarter,
       year
     ]
-    sql: ${TABLE}.order_delivered_timestamp ;;
+    sql: ${TABLE}.rider_arrived_at_customer_timestamp ;;
     datatype: timestamp
   }
 
@@ -714,26 +723,37 @@ view: orders {
 
   dimension: order_on_route_timestamp {
     group_label: "* Operations / Logistics *"
+    label: "Rider on Route Timestamp"
     type: date_time
-    sql: ${TABLE}.order_on_route_timestamp ;;
+    sql: ${TABLE}.rider_on_route_timestamp ;;
   }
 
   dimension: order_packed_timestamp {
     group_label: "* Operations / Logistics *"
+    label: "Picking Completed Timestamp"
     type: date_time
-    sql: ${TABLE}.order_packed_timestamp ;;
+    sql: ${TABLE}.picking_completed_timestamp ;;
   }
 
   dimension: order_picker_accepted_timestamp {
     group_label: "* Operations / Logistics *"
+    label: "Picking Started Timestamp"
     type: date_time
-    sql: ${TABLE}.order_picker_accepted_timestamp ;;
+    sql: ${TABLE}.picking_started_timestamp ;;
   }
 
   dimension: order_rider_claimed_timestamp {
     group_label: "* Operations / Logistics *"
+    label: "Rider Claimed Timestamp"
     type: date_time
-    sql: ${TABLE}.order_rider_claimed_timestamp ;;
+    sql: ${TABLE}.rider_claimed_timestamp ;;
+  }
+
+  dimension: rider_arrived_at_customer_timestamp {
+    group_label: "* Operations / Logistics *"
+    label: "Rider Arrived At Customer Timestamp"
+    type: date_time
+    sql: ${TABLE}.rider_arrived_at_customer_timestamp ;;
   }
 
   dimension: order_uuid {
@@ -803,6 +823,13 @@ view: orders {
     label: "Reaction Time Minutes"
     type: number
     sql: ${TABLE}.reaction_time_minutes ;;
+  }
+
+  dimension: at_customer_time_minutes {
+    group_label: "* Operations / Logistics *"
+    label: "At Customer Time Minutes"
+    type: number
+    sql: ${TABLE}.at_customer_time_minutes ;;
   }
 
   dimension: rider_id {
@@ -1463,7 +1490,7 @@ view: orders {
     group_label: "* Operations / Logistics *"
     label:       "# Orders with critical under-estimation delivery time"
     description: "# Orders with critical under-estimation delivery time"
-    hidden:      yes
+    hidden:      no
     type:        count
     filters:     [is_critical_delivery_time_estimate_underestimation: "Yes"]
     value_format: "0"
@@ -1473,7 +1500,7 @@ view: orders {
     group_label: "* Operations / Logistics *"
     label:       "# Orders with critical over-estimation delivery time"
     description: "# Orders with critical over-estimation delivery time"
-    hidden:      yes
+    hidden:      no
     type:        count
     filters:     [is_critical_delivery_time_estimate_overestimation: "Yes"]
     value_format: "0"
