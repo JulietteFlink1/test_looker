@@ -3,7 +3,7 @@ include: "/**/*.view"
 # ct table: inventory_stock_count_daily, before in saleor called daily_historical_stock_levels
 explore: inventory_stock_count_hourly {
   hidden: no
-  view_label: "* Inventory Metrics (hourly granularity) *"
+  label: "Inventory Metrics (hourly granularity)"
   group_label: "02) Inventory"
 
   always_filter: {
