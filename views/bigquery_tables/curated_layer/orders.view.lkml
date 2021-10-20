@@ -676,7 +676,7 @@ view: orders {
       quarter,
       year
     ]
-    sql: ${TABLE}.rider_completed_delivery_timestamp ;;
+    sql: ${TABLE}.rider_arrived_at_customer_timestamp ;;
     datatype: timestamp
   }
 
