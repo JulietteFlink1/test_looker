@@ -661,7 +661,7 @@ view: orders {
 
   dimension_group: delivery_timestamp {
     group_label: "* Dates and Timestamps *"
-    label: "Rider Completed Delivery"
+    label: "Rider Arrived At Customer Timestamp"
     type: time
     timeframes: [
       raw,
