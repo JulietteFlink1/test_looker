@@ -279,7 +279,7 @@ view: orders {
   dimension: is_order_hour_before_now_hour {
     group_label: "* Operations / Logistics *"
     type: yesno
-    sql: ${created_hour_of_day} <= ${now_hour_of_day} ;;
+    sql: ${created_hour_of_day} < ${now_hour_of_day} ;;
   }
 
   dimension_group: delivery_eta_timestamp {
