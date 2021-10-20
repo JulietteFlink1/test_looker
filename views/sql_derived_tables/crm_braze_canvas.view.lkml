@@ -44,10 +44,10 @@ view: crm_braze_canvas {
   }
 
   dimension: canvas_name {
-    label: "Canvas Step Name"
-    description: "The email canvas step name defined in Braze"
+    label: "Canvas Name"
+    description: "The email canvas name defined in Braze"
     type: string
-    sql: ${TABLE}.canvas_step_name ;;
+    sql: ${TABLE}.canvas_name ;;
   }
 
   dimension: canvas_variation_name {
