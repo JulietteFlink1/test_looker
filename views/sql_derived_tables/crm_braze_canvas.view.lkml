@@ -83,10 +83,17 @@ view: crm_braze_canvas {
 
   ## hidden dimensions
 
+  dimension: primary_key {
+    primary_key: yes
+    hidden: yes
+    sql: ${TABLE}.canvas_name,${TABLE}.canvas_variation_name,${TABLE}.canvas_step_name, ${TABLE}.country, ${TABLE}.email_sent_at) ;;
+  }
+
   dimension: total_emails_sent {
     hidden: yes
     type: number
     sql: coalesce(${TABLE}.total_emails_sent, 0) ;;
+
   }
 
   dimension: total_emails_bounced {
@@ -354,7 +361,7 @@ view: crm_braze_canvas {
 
   measure: total_opens_rate {
     group_label: "Ratios"
-    label: "Deliveries Rate"
+    label: "Total Opens Rate"
     description: "Percentage: how many emails have been delivered based on all emails delivered"
     type: number
     sql: ${sum_total_emails_opened} / NULLIF(${sum_total_emails_delivered}, 0) ;;
@@ -363,7 +370,7 @@ view: crm_braze_canvas {
 
   measure: unique_opens_rate {
     group_label: "Ratios"
-    label: "Deliveries Rate"
+    label: "Unique Opens Rate"
     description: "Percentage: how many emails have been delivered based on all emails delivered"
     type: number
     sql: ${sum_unique_emails_opened} / NULLIF(${sum_total_emails_delivered}, 0) ;;
@@ -549,7 +556,7 @@ view: crm_braze_canvas {
     group_label: "* Dynamic KPI Fields *"
     label: "{% if reporting_parameter._parameter_value == \"unique\"%} Unique Open Rate {% else %} Total Open Rate {% endif%}"
     type: number
-    # value_format: "0.00%"
+    value_format: "0.0%"
     sql:
     {% if reporting_parameter._parameter_value == 'total' %}
       ${total_opens_rate}
@@ -562,7 +569,7 @@ view: crm_braze_canvas {
     group_label: "* Dynamic KPI Fields *"
     label: "{% if reporting_parameter._parameter_value == \"unique\"%} Unique Click Rate {% else %} Total Click Rate {% endif%}"
     type: number
-    # value_format: "0.00%"
+    value_format: "0.0%"
     sql:
     {% if reporting_parameter._parameter_value == 'total' %}
       ${total_clicks_rate}
@@ -575,7 +582,7 @@ view: crm_braze_canvas {
     group_label: "* Dynamic KPI Fields *"
     label: "{% if reporting_parameter._parameter_value == \"unique\"%} Unique Order Rate {% else %} Total Order Rate {% endif%}"
     type: number
-    # value_format: "0.00%"
+    value_format: "0.0%"
     sql:
     {% if reporting_parameter._parameter_value == 'total' %}
       ${total_order_rate}
@@ -586,8 +593,8 @@ view: crm_braze_canvas {
 
   measure: KPI_absolute_dynamic {
     group_label: "* Dynamic KPI Fields *"
-    label_from_parameter: KPI_rates
-    value_format_name: id
+    label_from_parameter: KPI_absolute
+    value_format_name: decimal_2
     type: number
     sql:
     {% if KPI_absolute._parameter_value == 'emails_sent' %}
@@ -620,7 +627,7 @@ view: crm_braze_canvas {
   measure: KPI_rates_dynamic {
     group_label: "* Dynamic KPI Fields *"
     label_from_parameter: KPI_rates
-    value_format: "0.00%"
+    value_format: "0.0%"
     type: number
     sql:
     {% if KPI_rates._parameter_value == 'deliveries_rate' %}
