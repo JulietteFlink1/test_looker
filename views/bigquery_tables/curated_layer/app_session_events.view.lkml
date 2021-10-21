@@ -17,6 +17,7 @@ view: app_session_events {
   dimension: event_uuid {
     type: string
     sql: ${TABLE}.event_uuid ;;
+    primary_key: yes
     hidden: yes
   }
   dimension: session_id {
