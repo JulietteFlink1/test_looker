@@ -168,6 +168,8 @@ view: orders {
 
   dimension: delivery_eta_minutes {
     group_label: "* Operations / Logistics *"
+    label: "Delivery PDT (min)"
+    description: "Promised Delivery Time as shown to customer"
     type: number
     sql: ${TABLE}.delivery_pdt_minutes ;;
   }
@@ -285,6 +287,7 @@ view: orders {
   dimension_group: delivery_eta_timestamp {
     group_label: "* Dates and Timestamps *"
     label: "Delivery PDT"
+    description: "Promised Delivery time as shown to customer"
     type: time
     timeframes: [
           raw,
@@ -304,6 +307,7 @@ view: orders {
   dimension: delivery_delay_since_eta {
     group_label: "* Operations / Logistics *"
     label: "Delta to PDT (min)"
+    description: "Delay versus promised delivery time (as shown to customer)"
     type: duration_minute
     sql_start: ${delivery_eta_timestamp_raw};;
     sql_end: ${delivery_timestamp_raw};;
@@ -433,6 +437,7 @@ view: orders {
   dimension: is_delivery_eta_available {
     group_label: "* Operations / Logistics *"
     type: yesno
+    hidden: yes
     sql: ${TABLE}.is_delivery_pdt_available ;;
   }
 
@@ -1104,14 +1109,21 @@ view: orders {
   measure: avg_promised_eta {
     group_label: "* Operations / Logistics *"
     label: "AVG PDT"
-    description: "Average Promised Fulfillment Time (PDT)"
+    description: "Average Promised Fulfillment Time (PDT) a shown to customer"
     hidden:  no
     type: average
     sql: ${delivery_eta_minutes};;
-    value_format: "0.0"
+    value_format_name: decimal_1
   }
 
-
+  measure: avg_delivery_time_estimate {
+    label: "AVG Delivery Time Estimate (min)"
+    description: "The average internally predicted time in minutes for the order to arrive at the customer (dynamic model result - not necessarily the PDT shown to the customer as some conversion can be applied in between)"
+    group_label: "* Operations / Logistics *"
+    type: average
+    sql: ${delivery_time_estimate_minutes} ;;
+    value_format_name: decimal_1
+  }
 
   measure: avg_fulfillment_time {
     group_label: "* Operations / Logistics *"
@@ -1120,7 +1132,7 @@ view: orders {
     hidden:  no
     type: average
     sql: ${fulfillment_time};;
-    value_format: "0.0"
+    value_format_name: decimal_1
   }
 
   measure: avg_fulfillment_time_mm_ss {
@@ -1132,37 +1144,16 @@ view: orders {
     value_format: "mm:ss"
   }
 
-  measure: avg_delivery_time {
-    group_label: "* Operations / Logistics *"
-    label: "AVG Delivery Time"
-    description: "Average Delivery Time considering delivery start to delivery completion. Outliers excluded (<0min or >30min)"
-    hidden:  no
-    type: average
-    sql: ${delivery_time};;
-    value_format: "0.0"
-  }
-
 
 
   measure: avg_reaction_time {
     group_label: "* Operations / Logistics *"
     label: "AVG Reaction Time"
-    description: "Average Reaction Time of the Picker considering order placement to first fulfillment created. Outliers excluded (<0min or >30min)"
+    description: "Average Reaction Time of the Picker considering order placement until picking started. Outliers excluded (<0min or >30min)"
     hidden:  no
     type: average
     sql:${reaction_time};;
-    value_format: "0.0"
-  }
-  #
-
-  measure: avg_at_customer_time {
-    group_label: "* Operations / Logistics *"
-    label: "AVG At Customer Time"
-    description: "Average Time the Rider spent at the customer between arrival and order completion confirmation"
-    hidden:  no
-    type: average
-    sql:${at_customer_time_minutes};;
-    value_format: "0.0"
+    value_format_name: decimal_1
   }
 
   measure: avg_picking_time {
@@ -1172,17 +1163,37 @@ view: orders {
     hidden:  no
     type: average
     sql:${time_diff_between_two_subsequent_fulfillments};;
-    value_format: "0.0"
+    value_format_name: decimal_1
   }
 
   measure: avg_acceptance_time {
     group_label: "* Operations / Logistics *"
     label: "AVG Acceptance Time"
-    description: "Average Acceptance Time of the Rider considering second fulfillment created until Tracking Timestamp. Outliers excluded (<0min or >30min)"
+    description: "Average time between picking completion and rider having claimed the order. Only considering cases where rider claimed order AFTER picking was completed"
     hidden:  no
     type: average
     sql:${acceptance_time};;
-    value_format: "0.0"
+    value_format_name: decimal_1
+  }
+
+  measure: avg_delivery_time {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Delivery Time"
+    description: "Average riding to customer time considering delivery start to arrival at customer. Outliers excluded (<0min or >30min)"
+    hidden:  no
+    type: average
+    sql: ${delivery_time};;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_at_customer_time {
+    group_label: "* Operations / Logistics *"
+    label: "AVG At Customer Time"
+    description: "Average Time the Rider spent at the customer between arrival and order completion confirmation"
+    hidden:  no
+    type: average
+    sql:${at_customer_time_minutes};;
+    value_format_name: decimal_1
   }
 
   measure: avg_order_value_gross {
@@ -1255,14 +1266,6 @@ view: orders {
     value_format_name: decimal_1
   }
 
-  measure: avg_delivery_time_estimate {
-    label: "AVG Delivery Time Estimate (min)"
-    description: "The average internally predicted time in minutes for the order to arrive at the customer (dynamic model result - not necessarily the PDT shown to the customer as some conversion can be applied in between)"
-    group_label: "* Operations / Logistics *"
-    type: average
-    sql: ${delivery_time_estimate_minutes} ;;
-    value_format_name: decimal_1
-  }
 
   ##########
   ## SUMS ##
