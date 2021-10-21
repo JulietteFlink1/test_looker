@@ -48,8 +48,8 @@ view: inventory_stock_count_hourly {
   dimension: is_hup_opening_timestamp {
     label: "Is Hub-Opening Time"
     type: yesno
-    sql: CASE WHEN ${TABLE}.is_hup_open = 1 THEN TRUE
-              WHEN ${TABLE}.is_hup_open = 0 THEN FALSE
+    sql: CASE WHEN ${TABLE}.is_hub_open = 1 THEN TRUE
+              WHEN ${TABLE}.is_hub_open = 0 THEN FALSE
          END
     ;;
   }
