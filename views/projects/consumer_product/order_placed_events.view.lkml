@@ -131,6 +131,37 @@ view: order_placed_events {
     sql: NOT(${is_first_order}) ;;
   }
 
+  dimension: full_app_version {
+    type: string
+    sql: ${context_device_type} || '-' || ${context_app_version} ;;
+    order_by_field: version_ordering_field
+  }
+
+  dimension: main_version_number {
+    type: string
+    sql: REGEXP_EXTRACT(${context_app_version}, r'(\d+)\.') ;;
+    hidden: yes
+  }
+
+  dimension: secondary_version_number {
+    type: string
+    sql: REGEXP_EXTRACT(${context_app_version}, r'\.(\d+)\.') ;;
+    value_format: "*0#"
+    hidden: yes
+  }
+
+  dimension: tertiary_version_number {
+    type: string
+    sql: REGEXP_EXTRACT(${context_app_version}, r'(?:\d+)\.(?:\d+)\.(\d+)') ;;
+    value_format: "*0#"
+    hidden: yes
+  }
+
+  dimension: version_ordering_field {
+    type: number
+    sql: CONCAT(${main_version_number},${secondary_version_number},${tertiary_version_number}) ;;
+  }
+
 #######################################
 
   measure: count {

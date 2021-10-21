@@ -1176,7 +1176,7 @@
     type: single_value
     fields: [app_sessions.cnt_payment_started, app_sessions.cnt_purchase]
     filters:
-      app_sessions.returning_customer: ''
+      app_sessions.is_customer: ''
     limit: 500
     column_limit: 50
     dynamic_fields: [{category: table_calculation, expression: "${app_sessions.cnt_purchase}/${app_sessions.cnt_payment_started}",

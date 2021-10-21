@@ -1,27 +1,58 @@
 view: aov_per_category_month{
   derived_table: {
-    sql: SELECT
-      c.order_date,
-      c.week,
-      c.month,
-      c.country as country_iso,
-      c.category,
-      c.sum_item_value,
-      c.sum_quantity,
-      c.orders_category,
-      --c.hub_name,
-      count (d.order_uuid) as orders
-
-      FROM
+    sql:
+with a as
       (
+
       SELECT
       cast(a.order_timestamp as date) as order_date,
       DATE_TRUNC( cast(a.order_timestamp as date), week) as week,
       DATE_TRUNC( cast(a.order_timestamp as date), month) as month,
       a.country_iso,
       hub.country,
-      --hub.hub_name,
-      b.category,
+      hub.hub_name,
+      hub.city,
+      1 as flag,
+     --b.category,
+      --sum (a.amt_total_price_gross) as sum_item_value,
+      --sum (a.quantity) as sum_quantity,
+      --count (distinct a.order_uuid) as orders_category
+      FROM `flink-data-prod.curated.order_lineitems` a
+        --full outer join `flink-data-prod.curated.products` b
+             --on a.sku = b.product_sku
+        left join `flink-data-prod.curated.hubs` hub
+             on a.hub_code = hub.hub_code
+        left join `flink-data-prod.curated.orders` f
+             on a.order_uuid = f.order_uuid
+      WHERE DATE(a.order_timestamp) >= "2021-02-01"
+          and f.is_successful_order = true
+            group by 1,2,3,4,5,6,7,8
+
+),
+
+b as
+    (
+
+    SELECT
+    country_iso,
+    case when category is null then "null" else category end as category,
+    from `flink-data-prod.curated.products` prod
+    group by 1,2
+    order by 2
+
+),
+
+c as
+    (
+   SELECT
+      cast(a.order_timestamp as date) as order_date,
+      DATE_TRUNC( cast(a.order_timestamp as date), week) as week,
+      DATE_TRUNC( cast(a.order_timestamp as date), month) as month,
+      a.country_iso,
+      hub.country,
+      hub.hub_name,
+      hub.city,
+      case when category is null then "null" else category end as category,
       sum (a.amt_total_price_gross) as sum_item_value,
       sum (a.quantity) as sum_quantity,
       count (distinct a.order_uuid) as orders_category
@@ -30,22 +61,58 @@ view: aov_per_category_month{
              on a.sku = b.product_sku
         left join `flink-data-prod.curated.hubs` hub
              on a.hub_code = hub.hub_code
+      left join `flink-data-prod.curated.orders` f
+             on a.order_uuid = f.order_uuid
       WHERE DATE(a.order_timestamp) >= "2021-02-01"
+          and f.is_successful_order = true
+      group by 1,2,3,4,5,6,7,8
+      order by 1,2,3,4,5,6,7,8
 
 
-      group by 1,2,3,4,5,6
-      )
-      as c
+),
 
-      left join
-      `flink-data-prod.curated.orders` d
-      on c.order_date = d.order_date
-      and c.country_iso = d.country_iso
-      --and c.hub_name = d.hub_name
+d as
+    (
+        select
+        order_date,
+        hub_name,
+        count (distinct d.order_uuid) as orders
+
+  FROM `flink-data-prod.curated.orders` d
       WHERE DATE(d.order_timestamp) >= "2021-02-01"
       and d.is_successful_order = true
-      group by 1,2,3,4,5,6,7,8
-      order by 1,2 desc
+      group by 1,2
+
+)
+
+
+    SELECT
+
+      a.order_date,
+      a.week,
+      a.month,
+      a.country_iso,
+      --a.country,
+      a.hub_name,
+      a.city,
+      b.category,
+      /*cast(c.sum_item_value as int) as */sum_item_value,
+      c.sum_quantity,
+      c.orders_category,
+      d.orders
+
+
+      from a
+      left join b
+      on a.country_iso = b.country_iso
+      left join c
+      on a.order_date = c.order_date
+      and a.hub_name = c.hub_name
+      and b.category = c.category
+      inner join d
+      on a.order_date = d.order_date
+      and a.hub_name = d.hub_name
+      order by 1,2,3,4,5,6,7
        ;;
   }
 
@@ -174,7 +241,7 @@ view: aov_per_category_month{
   }
 
   dimension: country_iso {
-    label: "country"
+    label: "Country Iso"
     type: string
     sql: ${TABLE}.country_iso ;;
   }

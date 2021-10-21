@@ -1,5 +1,5 @@
 view: app_sessions {
-  sql_table_name: `flink-data-prod.curated.sessions_app`
+  sql_table_name: `flink-data-prod.curated.app_sessions`
     ;;
 
   view_label: "* App Sessions *"
@@ -7,7 +7,7 @@ view: app_sessions {
 
   set: core_dimensions {
     fields: [
-      country_iso,
+      country,
       city,
       hub_code,
       device_type,
@@ -21,6 +21,7 @@ view: app_sessions {
   dimension: session_uuid {
     type: string
     sql: ${TABLE}.session_uuid ;;
+    primary_key: yes
     hidden: yes
   }
   dimension: user_id  {
@@ -35,6 +36,7 @@ view: app_sessions {
   dimension: last_order_id {
     type: string
     sql: ${TABLE}.last_order_id ;;
+    hidden: yes
   }
   dimension: last_order_uuid {
     type: string
@@ -97,11 +99,6 @@ view: app_sessions {
   }
 
   ## Hub attributes
-
-  dimension: country_iso {
-    type: string
-    sql: ${TABLE}.country_iso ;;
-  }
   dimension: city {
     type: string
     sql: ${TABLE}.city ;;
@@ -184,10 +181,6 @@ view: app_sessions {
     type: yesno
     sql: ${TABLE}.is_session_with_address ;;
   }
-  dimension: has_address_original {
-    type: yesno
-    sql: ${TABLE}.has_address ;;
-  }
   dimension: is_session_with_address {
     type: yesno
     sql: ${TABLE}.is_session_with_address ;;
@@ -211,7 +204,7 @@ view: app_sessions {
 
 ### Custom dimensions
 
-  dimension: returning_customer {
+  dimension: is_customer {
     type: yesno
     sql: ${has_order} ;;
   }
@@ -219,12 +212,6 @@ view: app_sessions {
     type: yesno
     sql: ${hub_code} IS NULL ;;
   }
-
-  # dimension: is_setting_address {
-  #   type: yesno
-  #   description: "TRUE if user has at least one addressConfirmed event in this session, FALSE otherwise"
-  #   sql: ${address_confirmed} IS NOT NULL ;;
-  # }
 
   dimension: session_start_date_granularity {
     label: "Session Start Date (Dynamic)"
@@ -250,6 +237,11 @@ view: app_sessions {
     allowed_value: { value: "Week" }
     allowed_value: { value: "Month" }
     default_value: "Day"
+  }
+
+  dimension: country_iso {
+    type: string
+    sql: ${TABLE}.country_iso ;;
   }
 
   dimension: country {
@@ -302,19 +294,14 @@ view: app_sessions {
     value_format_name: decimal_0
   }
 
-  # measure: cnt_address_selected {
-  #   label: "Address selected count"
-  #   description: "Number of sessions in which at least one Address Confirmed event happened"
-  #   type: count
-  #   filters: [address_confirmed: "NOT NULL"]
-  # }
-
-  # measure: cnt_home_viewed {
-  #   label: "Home view count"
-  #   description: "Number of sessions in which at least one Home Viewed event happened"
-  #   type: count
-  #   filters: [home_viewed: "NOT NULL"]
-  # }
+  measure: cnt_unique_sessions {
+    label: "# Unique Sessions"
+    description: "Number of Unique Sessions based on sessions_uuid"
+    hidden:  no
+    type: count_distinct
+    sql: ${session_uuid};;
+    value_format_name: decimal_0
+  }
 
   measure: cnt_has_address {
     label: "Has address count"
@@ -322,13 +309,6 @@ view: app_sessions {
     type: count
     filters: [has_address: "yes"]
   }
-
-  # measure: cnt_view_cart {
-  #   label: "View cart count"
-  #   description: "Number of sessions in which at least one Cart Viewed event happened"
-  #   type: count
-  #   filters: [view_cart: "NOT NULL"]
-  # }
 
   measure: cnt_add_to_cart {
     label: "Add to cart count"
@@ -359,14 +339,14 @@ view: app_sessions {
   }
 
   measure: cnt_discounts_attempted {
-    label: "Order placed count"
+    label: "Attempted discounts count"
     description: "Number of sessions in which at least one Discount Attempt event happened"
     type: count
     filters: [has_discount_attempted: "yes"]
   }
 
   measure: cnt_discounts_applied{
-    label: "Order placed count"
+    label: "Applied discounts count"
     description: "Number of sessions in which at least one Discount Applied event happened"
     type: count
     filters: [is_discount_successfully_applied: "yes"]
@@ -412,12 +392,6 @@ view: app_sessions {
     sql: ${cnt_purchase}/NULLIF(${count},0) ;;
   }
 
-  # measure: mcvr1 {
-  #   type: number
-  #   description: "Number of sessions in which an Addres Confirmed event happened, compared to the total number of Session Started"
-  #   value_format_name: percent_1
-  #   sql: ${cnt_address_selected}/NULLIF(${count},0) ;;
-  # }
   measure: mcvr1 {
     type: number
     label: "mCVR1"
@@ -457,34 +431,6 @@ view: app_sessions {
     sql: ${cnt_purchase}/NULLIF(${cnt_payment_started},0) ;;
   }
 
-
-  #########
-
-  # dimension: add_to_cart {
-  #   type: number
-  #   sql: ${TABLE}.add_to_cart ;;
-  # }
-
-  # dimension: view_cart {
-  #   type: number
-  #   sql: ${TABLE}.view_cart ;;
-  # }
-
-  # dimension: checkout_started {
-  #   type: number
-  #   sql: ${TABLE}.checkout_started ;;
-  # }
-
-  # dimension: payment_started {
-  #   type: number
-  #   sql: ${TABLE}.payment_started ;;
-  # }
-
-  # dimension: order_placed {
-  #   type: number
-  #   sql: ${TABLE}.order_placed ;;
-  # }
-
   set: detail {
     fields: [
       session_uuid,
@@ -500,7 +446,6 @@ view: app_sessions {
       app_version,
       timezone,
       country,
-      country_iso,
       city,
       hub_code,
       delivery_pdt_minutes,
@@ -524,13 +469,4 @@ view: app_sessions {
       number_of_orders_placed
     ]
   }
-
-#   sql: ${TABLE}.most_recent_purchase_at ;;
-# }
-#
-# measure: total_lifetime_orders {
-#   description: "Use this for counting lifetime orders across many users"
-#   type: sum
-#   sql: ${lifetime_orders} ;;
-# }
 }

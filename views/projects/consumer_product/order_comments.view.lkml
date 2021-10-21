@@ -8,6 +8,43 @@ view: order_comments {
     sql: NOT(${customer_note} IS NULL OR ${customer_note}="" OR ${customer_note}=" ");;
   }
 
+  dimension: is_early_delivery {
+    type: yesno
+    sql: TIME_DIFF(TIME(${delivery_eta_timestamp_raw}), TIME(${delivery_timestamp_raw}), MINUTE) > 0 ;;
+  }
+
+  dimension: is_late_delivery {
+    type: yesno
+    sql: TIME_DIFF(TIME(${delivery_eta_timestamp_raw}), TIME(${delivery_timestamp_raw}), MINUTE) < 0 ;;
+  }
+
+  dimension: is_on_time_delivery {
+    type: yesno
+    sql: TIME_DIFF(TIME(${delivery_eta_timestamp_raw}), TIME(${delivery_timestamp_raw}), MINUTE) = 0 ;;
+  }
+
+  dimension: delivery_timeliness {
+    type: string
+    case: {
+      when: {
+        sql: TIME_DIFF(TIME(${delivery_eta_timestamp_raw}), TIME(${delivery_timestamp_raw}), MINUTE) > 0
+             AND (${status}="Complete" OR ${status}="fulfilled" OR ${status}="partially fulfilled");;
+        label: "Early"
+      }
+      when: {
+        sql: TIME_DIFF(TIME(${delivery_eta_timestamp_raw}), TIME(${delivery_timestamp_raw}), MINUTE) = 0
+             AND (${status}="Complete" OR ${status}="fulfilled" OR ${status}="partially fulfilled");;
+        label: "On Time"
+      }
+      when: {
+        sql: TIME_DIFF(TIME(${delivery_eta_timestamp_raw}), TIME(${delivery_timestamp_raw}), MINUTE) < 0
+             AND (${status}="Complete" OR ${status}="fulfilled" OR ${status}="partially fulfilled");;
+        label: "Late"
+      }
+      else: "Undelivered"
+    }
+  }
+
   measure: cnt_is_delivered_on_time {
     type: count
     filters: [is_order_on_time: "yes"]
