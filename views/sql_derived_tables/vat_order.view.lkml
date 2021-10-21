@@ -116,14 +116,26 @@ view: vat_order {
                 FROM weighted_tax_rate
             ),
 
-            refund as (
+            refunds_raw as (
                 SELECT order_uuid,
-                       country_iso,
-                       transaction_payment_type as payment_type,
-                       AVG(CASE WHEN transaction_type = 'refund' then transaction_amount end) as refund_amount --changed to avg
+                        country_iso,
+                        transaction_type,
+                        transaction_payment_type,
+                        transaction_amount,
+                        row_number() over (partition by order_uuid,country_iso,transaction_type order by transaction_timestamp) as rn
                 FROM `flink-data-prod.curated.payment_transactions`
                 where transaction_state = 'success'
-                GROUP BY 1, 2, 3
+                and order_uuid is not null
+
+            ),
+            refund as (
+            select order_uuid,
+                  country_iso,
+                  STRING_AGG(case when transaction_type = 'authorization' then transaction_payment_type end) as payment_type,
+                  AVG(case when transaction_type = 'refund' then transaction_amount end) as refund_amount
+                  from refunds_raw
+                  where rn = 1
+                  group by 1,2
             ),
 
             net_gross as (

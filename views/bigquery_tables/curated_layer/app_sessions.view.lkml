@@ -21,6 +21,7 @@ view: app_sessions {
   dimension: session_uuid {
     type: string
     sql: ${TABLE}.session_uuid ;;
+    primary_key: yes
     hidden: yes
   }
   dimension: user_id  {
@@ -290,6 +291,15 @@ view: app_sessions {
     hidden:  no
     type: count_distinct
     sql: ${anonymous_id};;
+    value_format_name: decimal_0
+  }
+
+  measure: cnt_unique_sessions {
+    label: "# Unique Sessions"
+    description: "Number of Unique Sessions based on sessions_uuid"
+    hidden:  no
+    type: count_distinct
+    sql: ${session_uuid};;
     value_format_name: decimal_0
   }
 
