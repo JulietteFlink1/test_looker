@@ -284,6 +284,7 @@ view: orders {
 
   dimension_group: delivery_eta_timestamp {
     group_label: "* Dates and Timestamps *"
+    label: "Delivery PDT"
     type: time
     timeframes: [
           raw,
@@ -756,6 +757,13 @@ view: orders {
     sql: ${TABLE}.rider_arrived_at_customer_timestamp ;;
   }
 
+  dimension: rider_completed_delivery_timestamp {
+    group_label: "* Operations / Logistics *"
+    label: "Rider Completed Delivery Timestamp"
+    type: date_time
+    sql: ${TABLE}.rider_completed_delivery_timestamp ;;
+  }
+
   dimension: order_uuid {
     type: string
     group_label: "* IDs *"
@@ -1103,6 +1111,8 @@ view: orders {
     value_format: "0.0"
   }
 
+
+
   measure: avg_fulfillment_time {
     group_label: "* Operations / Logistics *"
     label: "AVG Fulfillment Time (decimal)"
@@ -1141,6 +1151,17 @@ view: orders {
     hidden:  no
     type: average
     sql:${reaction_time};;
+    value_format: "0.0"
+  }
+  #
+
+  measure: avg_at_customer_time {
+    group_label: "* Operations / Logistics *"
+    label: "AVG At Customer Time"
+    description: "Average Time the Rider spent at the customer between arrival and order completion confirmation"
+    hidden:  no
+    type: average
+    sql:${at_customer_time_minutes};;
     value_format: "0.0"
   }
 
@@ -1234,13 +1255,13 @@ view: orders {
     value_format_name: decimal_1
   }
 
-  measure: avg_delivery_time_estimate_minutes {
+  measure: avg_delivery_time_estimate {
     label: "AVG Delivery Time Estimate (min)"
-    description: "The average internally predicted time in minutes for the order to arrive at the customer"
+    description: "The average internally predicted time in minutes for the order to arrive at the customer (dynamic model result - not necessarily the PDT shown to the customer as some conversion can be applied in between)"
     group_label: "* Operations / Logistics *"
     type: average
     sql: ${delivery_time_estimate_minutes} ;;
-    value_format_name: decimal_2
+    value_format_name: decimal_1
   }
 
   ##########
