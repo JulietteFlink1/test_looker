@@ -106,8 +106,10 @@ view: inventory_stock_count_daily {
   }
 
   parameter: select_oos_calculation {
+    hidden: no
     label: "Select Out-Of-Stock Calculation Type"
     group_label: "* Parameters & Dynamic Fields *"
+    description: "Chose, if you want to calculate the oos-rate for every SKU or treat SKUs in the replenishment group just as one product"
     type: unquoted
     allowed_value: {
       label: "SKU-Level"
