@@ -380,14 +380,14 @@ view: orders {
   dimension: is_critical_delivery_time_estimate_underestimation {
     description: "The actual fulfillment took more than 10min longer than the internally predicted delivery time"
     type:  yesno
-    sql: ${fulfillment_time} > (10 + ${delivery_time_estimate_minutes}) ;;
+    sql: ${fulfillment_time_raw_minutes} > (10 + ${delivery_time_estimate_minutes}) ;;
     hidden: yes
   }
 
   dimension: is_critical_delivery_time_estimate_overestimation {
     description: "The actual fulfillment took more than 10min less than the internally predicted delivery time"
     type:  yesno
-    sql: ${fulfillment_time} < (${delivery_time_estimate_minutes} - 10) ;;
+    sql: ${fulfillment_time_raw_minutes} < (${delivery_time_estimate_minutes} - 10) ;;
     hidden: yes
   }
 
