@@ -313,6 +313,14 @@ view: orders {
     sql_end: ${delivery_timestamp_raw};;
   }
 
+  dimension: delivery_delay_since_time_estimate {
+    group_label: "* Operations / Logistics *"
+    label: "Delta to Time Estimate (min)"
+    description: "Delay versus delivery time estimate (internal model estimate, not necessarily the PDT which was down to customer)"
+    type: number
+    sql:  ${fulfillment_time_raw_minutes} - ${delivery_time_estimate_minutes};;
+  }
+
   dimension: delivery_id {
     hidden: yes
     group_label: "* IDs *"
@@ -1448,8 +1456,8 @@ view: orders {
     # group_label: "* Operations / Logistics *"
     view_label: "* Hubs *"
     group_label: "Hub Leaderboard - Order Metrics"
-    label: "# Orders with Delivery ETA available"
-    description: "Count of Orders where a promised ETA is available"
+    label: "# Orders with Delivery PDT available"
+    description: "Count of Orders where a PDT is available"
     hidden:  no
     type: count
     filters: [is_delivery_eta_available: "yes"]
@@ -1461,19 +1469,21 @@ view: orders {
     view_label: "* Hubs *"
     group_label: "Hub Leaderboard - Order Metrics"
     label: "# Orders delivered in time"
-    description: "Count of Orders delivered no later than promised ETA"
+    description: "Count of Orders delivered no later than PDT"
     hidden:  no
     type: count
     filters: [delivery_delay_since_eta:"<=0"]
     value_format: "0"
   }
 
+
+
   measure: cnt_orders_delayed_over_5_min {
     # group_label: "* Operations / Logistics *"
     view_label: "* Hubs *"
     group_label: "Hub Leaderboard - Order Metrics"
     label: "# Orders delivered late >5min"
-    description: "Count of Orders delivered >5min later than promised ETA"
+    description: "Count of Orders delivered >5min later than PDT"
     hidden:  no
     type: count
     filters: [delivery_delay_since_eta:">=5"]
@@ -1483,7 +1493,7 @@ view: orders {
   measure: cnt_orders_delayed_over_10_min {
     group_label: "* Operations / Logistics *"
     label: "# Orders delivered late >10min"
-    description: "Count of Orders delivered >10min later than promised ETA"
+    description: "Count of Orders delivered >10min later than PDT"
     hidden:  yes
     type: count
     filters: [delivery_delay_since_eta:">=10"]
@@ -1493,20 +1503,69 @@ view: orders {
   measure: cnt_orders_delayed_over_15_min {
     group_label: "* Operations / Logistics *"
     label: "# Orders delivered late >15min"
-    description: "Count of Orders delivered >15min later than promised ETA"
+    description: "Count of Orders delivered >15min later than PDT"
     hidden:  yes
     type: count
     filters: [delivery_delay_since_eta:">=15"]
     value_format: "0"
   }
 
+#######TEMP: adding new fields to compare how PDT versus Time Estimate will perform
+  measure: cnt_orders_delayed_under_0_min_time_estimate {
+    # group_label: "* Operations / Logistics *"
+    view_label: "* Hubs *"
+    group_label: "Hub Leaderboard - Order Metrics"
+    label: "# Orders delivered in time (time estimate)"
+    description: "Count of Orders delivered no later than internal time estimate"
+    hidden:  yes
+    type: count
+    filters: [delivery_delay_since_time_estimate:"<=0"]
+    value_format: "0"
+  }
+
+  measure: cnt_orders_delayed_over_5_min_time_estimate {
+    # group_label: "* Operations / Logistics *"
+    view_label: "* Hubs *"
+    group_label: "Hub Leaderboard - Order Metrics"
+    label: "# Orders delivered in time (time estimate)"
+    description: "Count of Orders delivered >5min later than internal time estimate"
+    hidden:  yes
+    type: count
+    filters: [delivery_delay_since_time_estimate:">=5"]
+    value_format: "0"
+  }
+
+  measure: cnt_orders_delayed_over_10_min_time_estimate {
+    # group_label: "* Operations / Logistics *"
+    view_label: "* Hubs *"
+    group_label: "Hub Leaderboard - Order Metrics"
+    label: "# Orders delivered in time (time estimate)"
+    description: "Count of Orders delivered >10min later than internal time estimate"
+    hidden:  yes
+    type: count
+    filters: [delivery_delay_since_time_estimate:">=10"]
+    value_format: "0"
+  }
+#######TEMP: adding new fields to compare how PDT versus Time Estimate will perform
+
+
   measure: cnt_orders_deliverd_over_20_min {
     group_label: "* Operations / Logistics *"
     label: "# Orders delivered >20min"
-    description: "Count of Orders delivered >20min"
+    description: "Count of Orders delivered >20min fulfillment time"
     hidden:  yes
     type: count
-    filters: [fulfillment_time:">20"]
+    filters: [fulfillment_time:">=20"]
+    value_format: "0"
+  }
+
+  measure: cnt_orders_deliverd_over_30_min {
+    group_label: "* Operations / Logistics *"
+    label: "# Orders delivered >30min"
+    description: "Count of Orders delivered >30min fulfillment time"
+    hidden:  yes
+    type: count
+    filters: [fulfillment_time:">=30"]
     value_format: "0"
   }
 
@@ -1579,7 +1638,7 @@ view: orders {
   measure: pct_delivery_in_time{
     group_label: "* Operations / Logistics *"
     label: "% Orders delivered in time"
-    description: "Share of orders delivered no later than promised ETA (only orders with valid ETA time considered)"
+    description: "Share of orders delivered no later than PDT"
     hidden:  no
     type: number
     sql: ${cnt_orders_delayed_under_0_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
@@ -1589,7 +1648,7 @@ view: orders {
   measure: pct_delivery_late_over_5_min{
     group_label: "* Operations / Logistics *"
     label: "% Orders delayed >5min"
-    description: "Share of orders delivered >5min later than promised ETA (only orders with valid ETA time considered)"
+    description: "Share of orders delivered >5min later than PDT"
     hidden:  no
     type: number
     sql: ${cnt_orders_delayed_over_5_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
@@ -1599,7 +1658,7 @@ view: orders {
   measure: pct_delivery_late_over_10_min{
     group_label: "* Operations / Logistics *"
     label: "% Orders delayed >10min"
-    description: "Share of orders delivered >10min later than promised ETA (only orders with valid ETA time considered)"
+    description: "Share of orders delivered >10min later than PDT"
     hidden:  no
     type: number
     sql: ${cnt_orders_delayed_over_10_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
@@ -1609,12 +1668,47 @@ view: orders {
   measure: pct_delivery_late_over_15_min{
     group_label: "* Operations / Logistics *"
     label: "% Orders delayed >15min"
-    description: "Share of orders delivered >15min later than promised ETA (only orders with valid ETA time considered)"
+    description: "Share of orders delivered >15min later than PDT"
     hidden:  no
     type: number
     sql: ${cnt_orders_delayed_over_15_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
     value_format: "0%"
   }
+
+#######TEMP: adding new fields to compare how PDT versus Time Estimate will perform
+
+  measure: pct_delivery_in_time_time_estimate{
+    group_label: "* Operations / Logistics *"
+    label: "% Orders delivered in time (internal estimate)"
+    description: "Share of orders delivered no later than internal estimate"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_delayed_under_0_min_time_estimate} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_delivery_late_over_5_min_time_estimate{
+    group_label: "* Operations / Logistics *"
+    label: "% Orders delayed >5min (internal estimate)"
+    description: "Share of orders delivered >5min later than internal estimate"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_delayed_over_5_min_time_estimate} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_delivery_late_over_10_min_time_estimate{
+    group_label: "* Operations / Logistics *"
+    label: "% Orders delayed >10min (internal estimate)"
+    description: "Share of orders delivered >10min later than internal estimate"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_delayed_over_10_min_time_estimate} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
+    value_format: "0%"
+  }
+
+#######TEMP: adding new fields to compare how PDT versus Time Estimate will perform
+
 
   measure: pct_fulfillment_over_20_min{
     group_label: "* Operations / Logistics *"
@@ -1623,6 +1717,16 @@ view: orders {
     hidden:  no
     type: number
     sql: ${cnt_orders_deliverd_over_20_min} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_fulfillment_over_30_min{
+    group_label: "* Operations / Logistics *"
+    label: "% Orders delivered >30min"
+    description: "Share of orders delivered > 30min"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_deliverd_over_30_min} / NULLIF(${cnt_orders}, 0);;
     value_format: "0%"
   }
 
