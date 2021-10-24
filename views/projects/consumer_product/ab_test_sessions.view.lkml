@@ -280,6 +280,8 @@ view: ab_test_sessions {
         SELECT
                sf.anonymous_id
              , sf.session_id
+             , sf.backend_search_enabled
+             , sf.search_experiment_variant
              , count(e.timestamp) as event_count
         FROM events e
             LEFT JOIN sessions_final sf
@@ -287,21 +289,39 @@ view: ab_test_sessions {
             AND e.timestamp >= sf.session_start_at
             AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
         WHERE e.event = 'product_added_to_cart'
-        GROUP BY 1,2
+        GROUP BY 1,2,3,4
     )
 
-    , home_viewed AS (
+    , product_search_executed AS (
         SELECT
                sf.anonymous_id
              , sf.session_id
+             , sf.backend_search_enabled
+             , sf.search_experiment_variant
              , count(e.timestamp) as event_count
         FROM events e
             LEFT JOIN sessions_final sf
             ON e.anonymous_id = sf.anonymous_id
             AND e.timestamp >= sf.session_start_at
             AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
-        WHERE e.event = 'home_viewed'
-        GROUP BY 1,2
+        WHERE e.event = 'product_search_executed'
+        GROUP BY 1,2,3,4
+    )
+
+    , product_details_viewed AS (
+        SELECT
+               sf.anonymous_id
+             , sf.session_id
+             , sf.backend_search_enabled
+             , sf.search_experiment_variant
+             , count(e.timestamp) as event_count
+        FROM events e
+            LEFT JOIN sessions_final sf
+            ON e.anonymous_id = sf.anonymous_id
+            AND e.timestamp >= sf.session_start_at
+            AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
+        WHERE e.event = 'product_details_viewed'
+        GROUP BY 1,2,3,4
     )
 
     , address_confirmed AS (
@@ -315,20 +335,6 @@ view: ab_test_sessions {
             AND e.timestamp >= sf.session_start_at
             AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
         WHERE e.event = 'address_confirmed'
-        GROUP BY 1,2
-    )
-
-    , cart_viewed AS (
-        SELECT
-               sf.anonymous_id
-             , sf.session_id
-             , count(e.timestamp) as event_count
-        FROM events e
-            LEFT JOIN sessions_final sf
-            ON e.anonymous_id = sf.anonymous_id
-            AND e.timestamp >= sf.session_start_at
-            AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
-        WHERE e.event = 'cart_viewed'
         GROUP BY 1,2
     )
 
@@ -356,7 +362,7 @@ view: ab_test_sessions {
             ON e.anonymous_id = sf.anonymous_id
             AND e.timestamp >= sf.session_start_at
             AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
-        WHERE e.event = 'purchase_confirmed'
+        WHERE e.event IN ('purchase_confirmed', 'payment_started')
         GROUP BY 1,2
     )
 
@@ -403,8 +409,8 @@ view: ab_test_sessions {
         , sf.has_selected_address
         , sf.has_address
         , atc.event_count as add_to_cart
-        , hv.event_count as home_viewed
-        , cv.event_count as view_cart
+        , hv.event_count as product_search_executed
+        , cv.event_count as product_details_viewed
         , ac.event_count as address_confirmed
         , cs.event_count as checkout_started
         , pc.event_count as payment_started
@@ -414,9 +420,9 @@ view: ab_test_sessions {
     FROM sessions_final sf
         LEFT JOIN add_to_cart atc
         ON sf.session_id = atc.session_id
-        LEFT JOIN home_viewed hv
+        LEFT JOIN product_search_executed hv
         ON sf.session_id = hv.session_id
-        LEFT JOIN cart_viewed cv
+        LEFT JOIN product_details_viewed cv
         ON sf.session_id = cv.session_id
         LEFT JOIN address_confirmed ac
         ON sf.session_id = ac.session_id
@@ -579,11 +585,11 @@ view: ab_test_sessions {
     filters: [address_confirmed: "NOT NULL"]
   }
 
-  measure: cnt_home_viewed {
-    label: "Home view count"
+  measure: cnt_search_executed {
+    label: "Search count"
     description: "Number of sessions in which at least one Home Viewed event happened"
     type: count
-    filters: [home_viewed: "NOT NULL"]
+    filters: [product_search_executed: "NOT NULL"]
   }
 
   measure: cnt_has_address {
@@ -593,11 +599,11 @@ view: ab_test_sessions {
     filters: [has_address: "yes"]
   }
 
-  measure: cnt_view_cart {
-    label: "View cart count"
+  measure: cnt_product_details_viewed {
+    label: "PDP count"
     description: "Number of sessions in which at least one Cart Viewed event happened"
     type: count
-    filters: [view_cart: "NOT NULL"]
+    filters: [product_details_viewed: "NOT NULL"]
   }
 
   measure: cnt_add_to_cart {
@@ -630,40 +636,22 @@ view: ab_test_sessions {
 
   ###### Sum of events
 
-  # measure: sum_sessions {
-  #   label: "Session sum"
-  #   type: sum
-  #   sql: ${session} ;;
-  # }
-
-  # measure: median_number_of_events {
-  #   type: median
-  #   label: "Median number of events in a session"
-  #   sql: ${any_event} ;;
-  # }
-
-  # measure: number_of_events_75th_percentile {
-  #   type: percentile
-  #   percentile: 75
-  #   sql: ${any_event};;
-  # }
-
-  # measure: number_of_events_25th_percentile {
-  #   type: percentile
-  #   percentile: 25
-  #   sql: ${any_event};;
-  # }
-
   measure: sum_address_selected {
     label: "Address selected sum of events"
     type: sum
     sql: ${address_confirmed} ;;
   }
 
-  measure: sum_home_viewed {
-    label: "Home viewed sum of events"
+  measure: sum_product_search_executed {
+    label: "Search Executed sum of events"
     type: sum
-    sql: ${home_viewed} ;;
+    sql: ${product_search_executed} ;;
+  }
+
+  measure: sum_product_details_viewed {
+    label: "PDP viewed sum of events"
+    type: sum
+    sql: ${product_details_viewed} ;;
   }
 
   measure: sum_add_to_cart {
@@ -824,36 +812,43 @@ view: ab_test_sessions {
   dimension: add_to_cart {
     type: number
     sql: ${TABLE}.add_to_cart ;;
+    hidden: yes
   }
 
-  dimension: home_viewed {
+  dimension: product_search_executed {
     type: number
-    sql: ${TABLE}.home_viewed ;;
+    sql: ${TABLE}.product_search_executed ;;
+    hidden: yes
   }
 
-  dimension: view_cart {
+  dimension: product_details_viewed {
     type: number
-    sql: ${TABLE}.view_cart ;;
+    sql: ${TABLE}.product_details_viewed ;;
+    hidden: yes
   }
 
   dimension: address_confirmed {
     type: number
     sql: ${TABLE}.address_confirmed ;;
+    hidden: yes
   }
 
   dimension: checkout_started {
     type: number
     sql: ${TABLE}.checkout_started ;;
+    hidden: yes
   }
 
   dimension: payment_started {
     type: number
     sql: ${TABLE}.payment_started ;;
+    hidden: yes
   }
 
   dimension: order_placed {
     type: number
     sql: ${TABLE}.order_placed ;;
+    hidden: yes
   }
 
   set: detail {
@@ -875,8 +870,8 @@ view: ab_test_sessions {
       has_selected_address,
       has_address,
       add_to_cart,
-      home_viewed,
-      view_cart,
+      product_search_executed,
+      product_details_viewed,
       address_confirmed,
       checkout_started,
       payment_started,
