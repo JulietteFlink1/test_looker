@@ -676,7 +676,7 @@ view: orders {
       quarter,
       year
     ]
-    sql: ${TABLE}.rider_arrived_at_customer_timestamp ;;
+    sql: coalesce(${TABLE}.rider_arrived_at_customer_timestamp, ${TABLE}.rider_completed_delivery_timestamp) ;;
     datatype: timestamp
   }
 
