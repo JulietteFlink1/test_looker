@@ -1776,7 +1776,7 @@ view: orders {
     label: "# Orders with Delivery Time Estimate"
     hidden:  yes
     type: count
-    filters: [delivery_time_estimate_minutes: ">0"]
+    filters: [delivery_time_estimate_minutes: ">0", fulfillment_time: ">0"]
     value_format: "0"
   }
 
