@@ -1,5 +1,5 @@
 view: apriori_subcategory_3 {
-  sql_table_name: `flink-data-dev.sandbox_justine.apriori_subcategory_3`
+  sql_table_name: `flink-data-dev.sandbox_justine.apriori_all`
     ;;
 
   dimension: category_a {
@@ -17,6 +17,16 @@ view: apriori_subcategory_3 {
     sql: ${TABLE}.category_C ;;
   }
 
+  dimension: occurrences {
+    type: number
+    sql: ${TABLE}.occurrences ;;
+  }
+
+  dimension: size {
+    type: number
+    sql: ${TABLE}.size ;;
+  }
+
   dimension: confidence {
     type: number
     sql: ${TABLE}.confidence ;;
@@ -28,6 +38,7 @@ view: apriori_subcategory_3 {
   }
 
   dimension: int64_field_0 {
+    hidden: yes
     type: number
     sql: ${TABLE}.int64_field_0 ;;
   }
