@@ -9,7 +9,13 @@ explore: inventory_cvr {
   group_label: "16) Retail Test"
   view_label: "* # SKUs & CVR *"
   label: "# SKUs & CVR"
-  hidden: no
+  hidden: yes
+
+  always_filter: {
+    filters: [
+      inventory_stock_count_hourly.inventory_tracking_timestamp_date: "5 days"
+    ]
+  }
 
 
   join: cvr {

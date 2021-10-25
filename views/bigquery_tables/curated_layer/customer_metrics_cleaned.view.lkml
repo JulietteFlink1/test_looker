@@ -178,7 +178,8 @@ view: customers_metrics_cleaned {
   dimension_group: duration_between_first_order_month_and_now {
     group_label: "* First Order Date *"
     type: duration
-    sql_start: DATE_TRUNC(${first_order_raw}, MONTH);;
+     # hotfix: adding 2 hours because otherwise orders on 1st Aug just after midnight are giving wrong duration (timezone issue in combination with date_diff)
+    sql_start: DATE_TRUNC(TIMESTAMP_ADD(${first_order_raw}, INTERVAL 2 HOUR), MONTH);;
     sql_end: CURRENT_TIMESTAMP();;
     intervals: [month]
   }
@@ -186,7 +187,8 @@ view: customers_metrics_cleaned {
   dimension_group: duration_between_first_order_week_and_now {
     group_label: "* First Order Date *"
     type: duration
-    sql_start: DATE_TRUNC(${first_order_raw}, WEEK);;
+    # hotfix: adding 2 hours because otherwise orders on 1st Aug just after midnight are giving wrong duration (timezone issue in combination with date_diff)
+    sql_start: DATE_TRUNC(TIMESTAMP_ADD(${first_order_raw}, INTERVAL 2 HOUR), WEEK);;
     sql_end: CURRENT_TIMESTAMP();;
     intervals: [week]
   }

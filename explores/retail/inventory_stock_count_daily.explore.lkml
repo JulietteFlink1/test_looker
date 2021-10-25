@@ -2,12 +2,13 @@ include: "/**/*.view"
 
 # ct table: inventory_stock_count_daily, before in saleor called daily_historical_stock_levels
 explore: inventory_stock_count_daily {
-  hidden: yes
-  view_label: "* Daily Inventory Stock Level *"
+  hidden: no
+  label: "Inventory Metrics (daily granularity)"
+  group_label: "02) Inventory"
 
   always_filter: {
     filters:  [
-      inventory_stock_count_daily.tracking_date: "last 7 days",
+      inventory_stock_count_daily.tracking_date: "7 days",
       hubs.country_iso: "DE",
       hubs.hub_name: ""
     ]
@@ -49,4 +50,24 @@ explore: inventory_stock_count_daily {
     fields: [skus_fulfilled_per_hub_and_date.sum_item_quantity_fulfilled,
       skus_fulfilled_per_hub_and_date.sum_item_quantity]
   }
+
+  join: orderline {
+    sql_on: ${inventory_stock_count_daily.sku}           = ${orderline.product_sku}
+        and ${inventory_stock_count_daily.tracking_date} = ${orderline.created_date}
+        and ${inventory_stock_count_daily.hub_code}      = ${orderline.hub_code}
+    ;;
+    type: left_outer
+    relationship: one_to_many
+  }
+
+  join: top_50_skus_per_gmv_inventory_daily_explore {
+    sql_on: ${top_50_skus_per_gmv_inventory_daily_explore.sku}         = ${inventory_stock_count_daily.sku}
+        and ${top_50_skus_per_gmv_inventory_daily_explore.country_iso} = ${inventory_stock_count_daily.country_iso}
+    ;;
+    type: left_outer
+    relationship: many_to_one
+  }
+
+
+
 }

@@ -5,7 +5,7 @@ explore: fountain_funnel_pipeline {
   label: "Active Hiring Funnel"
   view_label: "Active Hiring Funnel"
   description: "Rider/Picker Funnel Latest Snapshot"
-  group_label: "09) Rider Ops"
+  group_label: "Rider Ops"
 
   access_filter: {
     field: fountain_funnel_pipeline.country

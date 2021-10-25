@@ -80,6 +80,13 @@ view: products {
     group_label: "> Product Attributes"
   }
 
+  dimension: replenishment_substitute_group {
+    label: "Replenishment Substitute Groups"
+    description: "The substitue groups used by the Supply Chain team as defined in ERP"
+    type: string
+    sql: ${TABLE}.replenishment_substitute_group ;;
+  }
+
   # =========  hidden   =========
   dimension: primary_key {
     sql: ${TABLE}.product_sku ;;
@@ -154,9 +161,9 @@ view: products {
     label: "Currency"
   }
 
-  dimension: deposit_cent_amount {
+  dimension: deposit_amount {
     type: number
-    sql: ${TABLE}.deposit_centAmount ;;
+    sql: ${TABLE}.deposit_amount ;;
     group_label: "> Price Data"
   }
 
@@ -169,6 +176,18 @@ view: products {
   dimension: deposit_type {
     type: string
     sql: ${TABLE}.deposit_type ;;
+    group_label: "> Price Data"
+  }
+
+  dimension: base_unit_price {
+    type: number
+    sql: ${TABLE}.unit_price ;;
+    group_label: "> Price Data"
+  }
+
+  dimension: base_unit_price_display {
+    type: string
+    sql: ${TABLE}.unit_price_display ;;
     group_label: "> Price Data"
   }
 
@@ -224,7 +243,7 @@ view: products {
 
   dimension: slug_de {
     type: string
-    sql: ${TABLE}.slug_de ;;
+    sql: ${TABLE}.slug ;;
     group_label: "> Special Purpose Data"
   }
 
@@ -240,6 +259,20 @@ view: products {
     sql: ${TABLE}.unit_of_measure ;;
     group_label: "> Special Purpose Data"
     label: "Unit of Measure"
+  }
+
+  dimension: product_unit {
+    type: number
+    sql: ${TABLE}.product_unit ;;
+    group_label: "> Special Purpose Data"
+    label: "Product Unit"
+  }
+
+  dimension: base_unit {
+    type: number
+    sql: ${TABLE}.base_unit ;;
+    group_label: "> Special Purpose Data"
+    label: "Base Unit"
   }
 
   dimension: units_per_handling_unit {

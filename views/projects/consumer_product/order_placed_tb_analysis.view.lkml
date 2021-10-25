@@ -59,6 +59,13 @@ view: order_placed_tb_analysis {
     type: string
     sql: ${platform} || '-' || ${context_app_version} ;;
   }
+
+  dimension: estimated_event_size_bytes_tier {
+    type: tier
+    style: integer
+    tiers: [0,500,1000,1500,2000,2500,3000,3500,4000,4500,5000,5500,6000,6500,7000,7500,8000,8500,9000,9500,10000]
+    sql: ${estimated_event_size_bytes} ;;
+  }
 #############
   dimension: tb_name {
     type: string
@@ -89,13 +96,6 @@ view: order_placed_tb_analysis {
   dimension: estimated_event_size_bytes {
     type: number
     sql: ${TABLE}.estimated_event_size_bytes ;;
-  }
-
-  dimension: estimated_event_size_bytes_tier {
-    type: tier
-    style: integer
-    tiers: [0,500,1000,1500,2000,2500,3000,3500,4000,4500,5000,5500,6000,6500,7000,7500,8000,8500,9000,9500,10000]
-    sql: ${estimated_event_size_bytes} ;;
   }
 
   set: detail {

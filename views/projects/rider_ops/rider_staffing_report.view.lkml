@@ -490,11 +490,17 @@ view: rider_staffing_report {
     label: "Rider UTR"
     type: unquoted
     allowed_value: { value: "1" }
+    allowed_value: { value: "1.25" }
     allowed_value: { value: "1.5" }
+    allowed_value: { value: "1.75" }
     allowed_value: { value: "2" }
+    allowed_value: { value: "2.25" }
     allowed_value: { value: "2.5" }
+    allowed_value: { value: "2.75" }
     allowed_value: { value: "3" }
+    allowed_value: { value: "3.25" }
     allowed_value: { value: "3.5" }
+    allowed_value: { value: "3.75" }
     allowed_value: { value: "4" }
     default_value: "2.5"
   }

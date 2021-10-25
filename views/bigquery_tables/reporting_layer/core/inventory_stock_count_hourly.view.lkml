@@ -35,6 +35,49 @@ view: inventory_stock_count_hourly {
     ;;
   }
 
+  parameter: select_oos_calculation {
+    hidden: no
+    label: "Select Out-Of-Stock Calculation Type"
+    group_label: "* Parameters & Dynamic Fields *"
+    description: "Chose, if you want to calculate the oos-rate for every SKU or treat SKUs in the replenishment group just as one product"
+    type: unquoted
+    allowed_value: {
+      label: "SKU-Level"
+      value: "sku"
+    }
+    allowed_value: {
+      label: "SKU-Level (Adjusted for Replenishment Groups)"
+      value: "repl_group"
+    }
+
+    default_value: "sku"
+  }
+
+  measure: hours_oos {
+    label: "Hours Out-Of-Stock"
+    description: "The number of business hours, a specific SKU was not available in a hub (corrected by: having also no sales in spec. time)"
+    type: sum
+    sql:
+        case when {% condition select_oos_calculation %} 'sku' {% endcondition %}        THEN ${TABLE}.is_oos
+             when {% condition select_oos_calculation %} 'repl_group' {% endcondition %} THEN ${TABLE}.is_oos_repl_group_adjusted
+        else null end
+        ;;
+    value_format_name: decimal_0
+  }
+
+  measure: open_hours_total {
+    label: "Opening Hours"
+    description: "The number of hours, a hub was open (hours were customers could buy)"
+    type: sum
+    sql:
+       case when {% condition select_oos_calculation %} 'sku' {% endcondition %}        THEN ${TABLE}.is_hub_open
+            when {% condition select_oos_calculation %} 'repl_group' {% endcondition %} THEN ${TABLE}.is_hub_open_repl_group_adjusted
+       else null end
+      ;;
+    value_format_name: decimal_0
+  }
+
+
   dimension: hub_code {
     type: string
     sql: ${TABLE}.hub_code ;;
@@ -48,18 +91,30 @@ view: inventory_stock_count_hourly {
   dimension: is_hup_opening_timestamp {
     label: "Is Hub-Opening Time"
     type: yesno
-    sql: CASE WHEN ${TABLE}.is_hup_open = 1 THEN TRUE
-              WHEN ${TABLE}.is_hup_open = 0 THEN FALSE
+    sql: CASE WHEN ${TABLE}.is_hub_open = 1 THEN TRUE
+              WHEN ${TABLE}.is_hub_open = 0 THEN FALSE
+         END
+    ;;
+  }
+
+  dimension: is_oos {
+    label: "Is Out-Of-Stock"
+    type: yesno
+    sql: CASE WHEN ${TABLE}.is_oos = 1 THEN TRUE
+              WHEN ${TABLE}.is_oos = 0 THEN FALSE
          END
     ;;
   }
 
   dimension: is_leading_product {
+    description: "If a product is part of a substitute_group, this boolean (if set to Yes) indicates if the product is shown, when more products of the group are available"
     type: string
     sql: ${TABLE}.is_leading_product ;;
   }
 
   dimension: is_noos_product {
+    label: "Is Never-Out-Of-Stock product"
+    description: "This boolean indicates (if set to Yes), that a product is very imoprtant to Flink and should never be out of stock"
     type: string
     sql: ${TABLE}.is_noos_product ;;
   }
@@ -93,6 +148,8 @@ view: inventory_stock_count_hourly {
   # =========  hidden   =========
 
   dimension: current_quantity {
+    label: "# Current Quantity"
+    description: "The currently available number of items of a product in a specific hub"
     hidden: yes
     type: number
     sql: ${TABLE}.current_quantity ;;
@@ -100,7 +157,7 @@ view: inventory_stock_count_hourly {
 
   dimension: previous_quantity {
     label: "# Quantity On Stock - Previous Hour"
-    description: "Sum of Available items in stock"
+    description: "The available number of items of a product in a specific hub in the previous hour"
     type: number
     hidden: yes
     sql: ${TABLE}.previous_quantity ;;
@@ -109,12 +166,6 @@ view: inventory_stock_count_hourly {
 
   # =========  IDs   =========
 
-  # dimension: unique_id {
-  #   type: string
-  #   primary_key:  yes
-  #   hidden: yes
-  #   sql: CONCAT(${TABLE}.country_iso,${TABLE}.hub_code,${TABLE}.sku ,CAST(${TABLE}.partition_timestamp AS STRING) ) ;;
-  # }
   dimension: stock_inventory_uuid {
     type: string
     sql: ${TABLE}.stock_inventory_uuid ;;
@@ -146,7 +197,7 @@ view: inventory_stock_count_hourly {
 
   measure: sum_current_quantity {
     label: "# Quantity On Stock"
-    description: "Sum of Available items in stock"
+    description: "The sum of available items in stock"
     hidden:  no
     type: sum
     sql: ${TABLE}.current_quantity;;
@@ -154,7 +205,7 @@ view: inventory_stock_count_hourly {
 
   measure: avg_current_quantity {
     label: "AVG Quantity On Stock"
-    description: "Sum of Available items in stock"
+    description: "The average number of available items in stock for a given SKU in a specific hub"
     hidden:  no
     type: average
     sql: ${TABLE}.current_quantity;;
@@ -162,7 +213,7 @@ view: inventory_stock_count_hourly {
 
   measure: num_distinct_sku {
     label: "# SKUs"
-    description: "Number of distinct SKUs in stock"
+    description: "The number of unique SKUs in stock"
     type: count_distinct
     sql:  CASE WHEN ${TABLE}.current_quantity > 0 THEN ${sku} END ;;
   }
@@ -170,7 +221,7 @@ view: inventory_stock_count_hourly {
 
   measure: avg_quantity_restocked {
     label: "AVG Quantity Re-Stocked"
-    description: "Sum of Available items in stock"
+    description: "The average number of items, that have been re-stocked for a given SKU in a specific hub"
     hidden:  no
     type: average
     sql: ${TABLE}.current_quantity;;
@@ -186,18 +237,54 @@ view: inventory_stock_count_hourly {
     filters: [stock_level_update_type: "Orders & Book-Outs"]
   }
 
-  measure: sum_items_ordered {
-    label: "# Items Ordered"
-    description: "How many products have been sold"
-    type: sum
-    sql: ${TABLE}.items_ordered ;;
+  measure: pct_oos {
+    label: "% Out Of Stock"
+    description: "This rate gives the sum of all hours, an SKU was out of stock compared to all hours, the hub was open for orders"
+    type: number
+    sql: ${hours_oos} / nullif( ${open_hours_total},0) ;;
+    value_format_name: percent_0
+    # palette: https://coolors.co/0c0f0a-ff206e-fbff12
+    html:
+    {% if value >= 0.9 %}
+      <p style="color: white; background-color: #FF206E;font-size: 100%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.8 %}
+      <p style="color: white; background-color: #FF5C95; font-size:100%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.6 %}
+      <p style="color: white; background-color: #FF99BD; font-size:100%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.4 %}
+      <p style="color: black; background-color: #FFD6E4; font-size:100%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.2 %}
+      <p style="color: black; background-color: #FEFFC2; font-size:100%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value > 0 %}
+      <p style="color: black; background-color: #FFFFEB; font-size:100%; text-align:center">{{ rendered_value }}</p>
+    {% else %}
+      <p style="color: black; font-size:100%; text-align:center">{{ rendered_value }}</p>
+    {% endif %};;
   }
 
-  measure: avg_items_ordered {
-    label: "AVG Items Ordered"
-    description: "How many products have been sold on AVG"
-    type: average
-    sql: ${TABLE}.items_ordered ;;
+  measure: pct_in_stock {
+    label: "% In Stock"
+    description: "This rate gives the sum of all hours, an SKU was in stock compared to all hours, the hub was open for orders"
+    type: number
+    sql: 1 - ${pct_oos} ;;
+    value_format_name: percent_0
+    # palette: https://coolors.co/0c0f0a-ff206e-fbff12
+    html:
+    {% if value <= 0.1 %}
+    <p style="color: white; background-color: #FF206E;font-size: 100%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value <= 0.2 %}
+    <p style="color: white; background-color: #FF5C95; font-size:100%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value <= 0.4 %}
+    <p style="color: white; background-color: #FF99BD; font-size:100%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value <= 0.6 %}
+      <p style="color: black; background-color: #FFD6E4; font-size:100%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value <= 0.8 %}
+      <p style="color: black; background-color: #FEFFC2; font-size:100%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value <= 1 %}
+      <p style="color: black; background-color: #FFFFEB; font-size:100%; text-align:center">{{ rendered_value }}</p>
+    {% else %}
+      <p style="color: black; font-size:100%; text-align:center">{{ rendered_value }}</p>
+    {% endif %};;
   }
 
 

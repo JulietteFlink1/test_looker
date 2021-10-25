@@ -168,8 +168,16 @@ view: orders {
 
   dimension: delivery_eta_minutes {
     group_label: "* Operations / Logistics *"
+    label: "Delivery PDT (min)"
+    description: "Promised Delivery Time as shown to customer"
     type: number
     sql: ${TABLE}.delivery_pdt_minutes ;;
+  }
+
+  dimension: delivery_estimate_model {
+    type: string
+    hidden: yes
+    sql: ${TABLE}.delivery_estimate_model ;;
   }
 
   dimension_group: now {
@@ -196,7 +204,7 @@ view: orders {
   dimension_group: created {
     group_label: "* Dates and Timestamps *"
     label: "Order"
-    description: "Order Placement Date"
+    description: "Order Placement Time/Date"
     type: time
     timeframes: [
       raw,
@@ -212,18 +220,74 @@ view: orders {
       quarter,
       year
     ]
-    sql: ${TABLE}.partition_timestamp ;;
+    sql: ${TABLE}.order_timestamp ;;
     datatype: timestamp
   }
+
+  dimension: order_time_of_day {
+    group_label: "* Dates and Timestamps *"
+    label: "Order Time of Day"
+    description: "Categorizing orders into different time-based use case buckets depending on the day of week and hour of day. Exact definition in KPI Glossary"
+    case: {
+
+      # Breakfast use case:
+      when: {
+        sql:  ( ${created_day_of_week} IN ('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday') AND ${created_hour_of_day} IN (5,6,7,8,9,10) )
+              OR
+              ( ${created_day_of_week} IN ('Saturday', 'Sunday') AND ${created_hour_of_day} IN (5,6,7,8,9,10,11) )
+              ;;
+        label: "Breakfast"
+      }
+
+      # Lunch use case:
+      when: {
+        sql:  ( ${created_day_of_week} IN ('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday') AND ${created_hour_of_day} IN (11,12,13,14,15) )
+              OR
+              ( ${created_day_of_week} IN ('Saturday', 'Sunday') AND ${created_hour_of_day} IN (12,13,14,15) )
+              ;;
+        label: "Lunch"
+      }
+
+      # Snacks use case:
+      when: {
+        sql:  ( ${created_day_of_week} IN ('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday') AND ${created_hour_of_day} IN (16,17,18) )
+              OR
+              ( ${created_day_of_week} IN ('Saturday', 'Sunday') AND ${created_hour_of_day} IN (16,17,18) )
+              ;;
+        label: "Snacks"
+      }
+
+      # Dinner use case:
+      when: {
+        sql:  ( ${created_day_of_week} IN ('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday') AND ${created_hour_of_day} IN (19,20) )
+              OR
+              ( ${created_day_of_week} IN ('Saturday', 'Sunday') AND ${created_hour_of_day} IN (19,20,21) )
+              ;;
+        label: "Dinner"
+      }
+
+      # Drinks / Late Night use case:
+      when: {
+        sql:  ( ${created_day_of_week} IN ('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday') AND ${created_hour_of_day} IN (21,22,23,0,1,2,3,4) )
+              OR
+              ( ${created_day_of_week} IN ('Saturday', 'Sunday') AND ${created_hour_of_day} IN (22,23,0,1,2,3,4) )
+              ;;
+        label: "Drinks / Late Night"
+      }
+    }
+  }
+
 
   dimension: is_order_hour_before_now_hour {
     group_label: "* Operations / Logistics *"
     type: yesno
-    sql: ${created_hour_of_day} <= ${now_hour_of_day} ;;
+    sql: ${created_hour_of_day} < ${now_hour_of_day} ;;
   }
 
   dimension_group: delivery_eta_timestamp {
     group_label: "* Dates and Timestamps *"
+    label: "Delivery PDT"
+    description: "Promised Delivery time as shown to customer"
     type: time
     timeframes: [
           raw,
@@ -243,9 +307,18 @@ view: orders {
   dimension: delivery_delay_since_eta {
     group_label: "* Operations / Logistics *"
     label: "Delta to PDT (min)"
+    description: "Delay versus promised delivery time (as shown to customer)"
     type: duration_minute
     sql_start: ${delivery_eta_timestamp_raw};;
     sql_end: ${delivery_timestamp_raw};;
+  }
+
+  dimension: delivery_delay_since_time_estimate {
+    group_label: "* Operations / Logistics *"
+    label: "Delta to Time Estimate (min)"
+    description: "Delay versus delivery time estimate (internal model estimate, not necessarily the PDT which was down to customer)"
+    type: number
+    sql:  ${fulfillment_time_raw_minutes} - ${delivery_time_estimate_minutes};;
   }
 
   dimension: delivery_id {
@@ -304,6 +377,28 @@ view: orders {
     sql: ${TABLE}.fulfillment_time_raw_minutes ;;
   }
 
+  dimension: delivery_time_estimate_minutes {
+    label: "Delivery Time Estimate (min)"
+    description: "The internally predicted time in minutes for the order to arrive at the customer"
+    group_label: "* Operations / Logistics *"
+    type: number
+    sql: ${TABLE}.delivery_time_estimate_minutes;; # as requested by Laurenz
+  }
+
+  dimension: is_critical_delivery_time_estimate_underestimation {
+    description: "The actual fulfillment took more than 10min longer than the internally predicted delivery time"
+    type:  yesno
+    sql: ${fulfillment_time_raw_minutes} > (10 + ${delivery_time_estimate_minutes}) ;;
+    hidden: yes
+  }
+
+  dimension: is_critical_delivery_time_estimate_overestimation {
+    description: "The actual fulfillment took more than 10min less than the internally predicted delivery time"
+    type:  yesno
+    sql: ${fulfillment_time_raw_minutes} < (${delivery_time_estimate_minutes} - 10) ;;
+    hidden: yes
+  }
+
   dimension: hub_code {
     group_label: "* Hub Dimensions *"
     type: string
@@ -350,6 +445,7 @@ view: orders {
   dimension: is_delivery_eta_available {
     group_label: "* Operations / Logistics *"
     type: yesno
+    hidden: yes
     sql: ${TABLE}.is_delivery_pdt_available ;;
   }
 
@@ -481,14 +577,16 @@ view: orders {
 
   dimension: latitude {
     group_label: "* User Dimensions *"
+    label: "Customer Latitude"
     type: number
-    sql: ${TABLE}.latitude ;;
+    sql: ${TABLE}.customer_latitude ;;
   }
 
   dimension: longitude {
     group_label: "* User Dimensions *"
+    label: "Customer Longitude"
     type: number
-    sql: ${TABLE}.longitude ;;
+    sql: ${TABLE}.customer_longitude ;;
   }
 
   dimension: customer_location {
@@ -577,6 +675,7 @@ view: orders {
 
   dimension_group: delivery_timestamp {
     group_label: "* Dates and Timestamps *"
+    label: "Rider Arrived At Customer Timestamp"
     type: time
     timeframes: [
       raw,
@@ -591,7 +690,7 @@ view: orders {
       quarter,
       year
     ]
-    sql: ${TABLE}.order_delivered_timestamp ;;
+    sql: coalesce(${TABLE}.rider_arrived_at_customer_timestamp, ${TABLE}.rider_completed_delivery_timestamp) ;;
     datatype: timestamp
   }
 
@@ -638,26 +737,44 @@ view: orders {
 
   dimension: order_on_route_timestamp {
     group_label: "* Operations / Logistics *"
+    label: "Rider on Route Timestamp"
     type: date_time
-    sql: ${TABLE}.order_on_route_timestamp ;;
+    sql: ${TABLE}.rider_on_route_timestamp ;;
   }
 
   dimension: order_packed_timestamp {
     group_label: "* Operations / Logistics *"
+    label: "Picking Completed Timestamp"
     type: date_time
-    sql: ${TABLE}.order_packed_timestamp ;;
+    sql: ${TABLE}.picking_completed_timestamp ;;
   }
 
   dimension: order_picker_accepted_timestamp {
     group_label: "* Operations / Logistics *"
+    label: "Picking Started Timestamp"
     type: date_time
-    sql: ${TABLE}.order_picker_accepted_timestamp ;;
+    sql: ${TABLE}.picking_started_timestamp ;;
   }
 
   dimension: order_rider_claimed_timestamp {
     group_label: "* Operations / Logistics *"
+    label: "Rider Claimed Timestamp"
     type: date_time
-    sql: ${TABLE}.order_rider_claimed_timestamp ;;
+    sql: ${TABLE}.rider_claimed_timestamp ;;
+  }
+
+  dimension: rider_arrived_at_customer_timestamp {
+    group_label: "* Operations / Logistics *"
+    label: "Rider Arrived At Customer Timestamp"
+    type: date_time
+    sql: ${TABLE}.rider_arrived_at_customer_timestamp ;;
+  }
+
+  dimension: rider_completed_delivery_timestamp {
+    group_label: "* Operations / Logistics *"
+    label: "Rider Completed Delivery Timestamp"
+    type: date_time
+    sql: ${TABLE}.rider_completed_delivery_timestamp ;;
   }
 
   dimension: order_uuid {
@@ -690,6 +807,24 @@ view: orders {
     sql: ${TABLE}.payment_type ;;
   }
 
+  dimension: payment_method {
+    group_label: "* Order Dimensions *"
+    type: string
+    sql: ${TABLE}.payment_method ;;
+  }
+
+  dimension: payment_company {
+    group_label: "* Order Dimensions *"
+    type: string
+    sql: ${TABLE}.payment_company ;;
+  }
+
+  dimension: platform {
+    group_label: "* Order Dimensions *"
+    type: string
+    sql: ${TABLE}.platform ;;
+  }
+
   dimension: picker_id {
     hidden: yes
     group_label: "* IDs *"
@@ -709,6 +844,13 @@ view: orders {
     label: "Reaction Time Minutes"
     type: number
     sql: ${TABLE}.reaction_time_minutes ;;
+  }
+
+  dimension: at_customer_time_minutes {
+    group_label: "* Operations / Logistics *"
+    label: "At Customer Time Minutes"
+    type: number
+    sql: ${TABLE}.at_customer_time_minutes ;;
   }
 
   dimension: rider_id {
@@ -975,11 +1117,20 @@ view: orders {
   measure: avg_promised_eta {
     group_label: "* Operations / Logistics *"
     label: "AVG PDT"
-    description: "Average Promised Fulfillment Time (PDT)"
+    description: "Average Promised Fulfillment Time (PDT) a shown to customer"
     hidden:  no
     type: average
     sql: ${delivery_eta_minutes};;
-    value_format: "0.0"
+    value_format_name: decimal_1
+  }
+
+  measure: avg_delivery_time_estimate {
+    label: "AVG Delivery Time Estimate (min)"
+    description: "The average internally predicted time in minutes for the order to arrive at the customer (dynamic model result - not necessarily the PDT shown to the customer as some conversion can be applied in between)"
+    group_label: "* Operations / Logistics *"
+    type: average
+    sql: ${delivery_time_estimate_minutes} ;;
+    value_format_name: decimal_1
   }
 
   measure: avg_fulfillment_time {
@@ -989,7 +1140,7 @@ view: orders {
     hidden:  no
     type: average
     sql: ${fulfillment_time};;
-    value_format: "0.0"
+    value_format_name: decimal_1
   }
 
   measure: avg_fulfillment_time_mm_ss {
@@ -1001,26 +1152,16 @@ view: orders {
     value_format: "mm:ss"
   }
 
-  measure: avg_delivery_time {
-    group_label: "* Operations / Logistics *"
-    label: "AVG Delivery Time"
-    description: "Average Delivery Time considering delivery start to delivery completion. Outliers excluded (<0min or >30min)"
-    hidden:  no
-    type: average
-    sql: ${delivery_time};;
-    value_format: "0.0"
-  }
-
 
 
   measure: avg_reaction_time {
     group_label: "* Operations / Logistics *"
     label: "AVG Reaction Time"
-    description: "Average Reaction Time of the Picker considering order placement to first fulfillment created. Outliers excluded (<0min or >30min)"
+    description: "Average Reaction Time of the Picker considering order placement until picking started. Outliers excluded (<0min or >30min)"
     hidden:  no
     type: average
     sql:${reaction_time};;
-    value_format: "0.0"
+    value_format_name: decimal_1
   }
 
   measure: avg_picking_time {
@@ -1030,17 +1171,37 @@ view: orders {
     hidden:  no
     type: average
     sql:${time_diff_between_two_subsequent_fulfillments};;
-    value_format: "0.0"
+    value_format_name: decimal_1
   }
 
   measure: avg_acceptance_time {
     group_label: "* Operations / Logistics *"
     label: "AVG Acceptance Time"
-    description: "Average Acceptance Time of the Rider considering second fulfillment created until Tracking Timestamp. Outliers excluded (<0min or >30min)"
+    description: "Average time between picking completion and rider having claimed the order. Only considering cases where rider claimed order AFTER picking was completed"
     hidden:  no
     type: average
     sql:${acceptance_time};;
-    value_format: "0.0"
+    value_format_name: decimal_1
+  }
+
+  measure: avg_delivery_time {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Delivery Time"
+    description: "Average riding to customer time considering delivery start to arrival at customer. Outliers excluded (<0min or >30min)"
+    hidden:  no
+    type: average
+    sql: ${delivery_time};;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_at_customer_time {
+    group_label: "* Operations / Logistics *"
+    label: "AVG At Customer Time"
+    description: "Average Time the Rider spent at the customer between arrival and order completion confirmation"
+    hidden:  no
+    type: average
+    sql:${at_customer_time_minutes};;
+    value_format_name: decimal_1
   }
 
   measure: avg_order_value_gross {
@@ -1112,6 +1273,7 @@ view: orders {
     sql: ${sum_quantity_fulfilled}/nullif(${cnt_orders},0);;
     value_format_name: decimal_1
   }
+
 
   ##########
   ## SUMS ##
@@ -1294,8 +1456,8 @@ view: orders {
     # group_label: "* Operations / Logistics *"
     view_label: "* Hubs *"
     group_label: "Hub Leaderboard - Order Metrics"
-    label: "# Orders with Delivery ETA available"
-    description: "Count of Orders where a promised ETA is available"
+    label: "# Orders with Delivery PDT available"
+    description: "Count of Orders where a PDT is available"
     hidden:  no
     type: count
     filters: [is_delivery_eta_available: "yes"]
@@ -1307,19 +1469,21 @@ view: orders {
     view_label: "* Hubs *"
     group_label: "Hub Leaderboard - Order Metrics"
     label: "# Orders delivered in time"
-    description: "Count of Orders delivered no later than promised ETA"
+    description: "Count of Orders delivered no later than PDT"
     hidden:  no
     type: count
     filters: [delivery_delay_since_eta:"<=0"]
     value_format: "0"
   }
 
+
+
   measure: cnt_orders_delayed_over_5_min {
     # group_label: "* Operations / Logistics *"
     view_label: "* Hubs *"
     group_label: "Hub Leaderboard - Order Metrics"
     label: "# Orders delivered late >5min"
-    description: "Count of Orders delivered >5min later than promised ETA"
+    description: "Count of Orders delivered >5min later than PDT"
     hidden:  no
     type: count
     filters: [delivery_delay_since_eta:">=5"]
@@ -1329,7 +1493,7 @@ view: orders {
   measure: cnt_orders_delayed_over_10_min {
     group_label: "* Operations / Logistics *"
     label: "# Orders delivered late >10min"
-    description: "Count of Orders delivered >10min later than promised ETA"
+    description: "Count of Orders delivered >10min later than PDT"
     hidden:  yes
     type: count
     filters: [delivery_delay_since_eta:">=10"]
@@ -1339,12 +1503,103 @@ view: orders {
   measure: cnt_orders_delayed_over_15_min {
     group_label: "* Operations / Logistics *"
     label: "# Orders delivered late >15min"
-    description: "Count of Orders delivered >15min later than promised ETA"
+    description: "Count of Orders delivered >15min later than PDT"
     hidden:  yes
     type: count
     filters: [delivery_delay_since_eta:">=15"]
     value_format: "0"
   }
+
+#######TEMP: adding new fields to compare how PDT versus Time Estimate will perform
+  measure: cnt_orders_delayed_under_0_min_time_estimate {
+    # group_label: "* Operations / Logistics *"
+    view_label: "* Hubs *"
+    group_label: "Hub Leaderboard - Order Metrics"
+    label: "# Orders delivered in time (time estimate)"
+    description: "Count of Orders delivered no later than internal time estimate"
+    hidden:  yes
+    type: count
+    filters: [delivery_delay_since_time_estimate:"<=0"]
+    value_format: "0"
+  }
+
+  measure: cnt_orders_delayed_over_5_min_time_estimate {
+    # group_label: "* Operations / Logistics *"
+    view_label: "* Hubs *"
+    group_label: "Hub Leaderboard - Order Metrics"
+    label: "# Orders delivered in time (time estimate)"
+    description: "Count of Orders delivered >5min later than internal time estimate"
+    hidden:  yes
+    type: count
+    filters: [delivery_delay_since_time_estimate:">=5"]
+    value_format: "0"
+  }
+
+  measure: cnt_orders_delayed_over_10_min_time_estimate {
+    # group_label: "* Operations / Logistics *"
+    view_label: "* Hubs *"
+    group_label: "Hub Leaderboard - Order Metrics"
+    label: "# Orders delivered in time (time estimate)"
+    description: "Count of Orders delivered >10min later than internal time estimate"
+    hidden:  yes
+    type: count
+    filters: [delivery_delay_since_time_estimate:">=10"]
+    value_format: "0"
+  }
+#######TEMP: adding new fields to compare how PDT versus Time Estimate will perform
+
+
+  measure: cnt_orders_deliverd_over_20_min {
+    group_label: "* Operations / Logistics *"
+    label: "# Orders delivered >20min"
+    description: "Count of Orders delivered >20min fulfillment time"
+    hidden:  yes
+    type: count
+    filters: [fulfillment_time:">=20"]
+    value_format: "0"
+  }
+
+  measure: cnt_orders_deliverd_over_30_min {
+    group_label: "* Operations / Logistics *"
+    label: "# Orders delivered >30min"
+    description: "Count of Orders delivered >30min fulfillment time"
+    hidden:  yes
+    type: count
+    filters: [fulfillment_time:">=30"]
+    value_format: "0"
+  }
+
+  measure: cnt_orders_delivery_time_critical_underestimation {
+    group_label: "* Operations / Logistics *"
+    label:       "# Orders with critical under-estimation delivery time"
+    description: "# Orders with critical under-estimation delivery time"
+    hidden:      yes
+    type:        count
+    filters:     [is_critical_delivery_time_estimate_underestimation: "Yes"]
+    value_format: "0"
+  }
+
+  measure: cnt_orders_delivery_time_critical_overestimation {
+    group_label: "* Operations / Logistics *"
+    label:       "# Orders with critical over-estimation delivery time"
+    description: "# Orders with critical over-estimation delivery time"
+    hidden:      yes
+    type:        count
+    filters:     [is_critical_delivery_time_estimate_overestimation: "Yes"]
+    value_format: "0"
+  }
+
+  measure: cnt_unique_date {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Unique Date"
+    description: "Count of Unique Dates"
+    hidden:  no
+    type: count_distinct
+    sql: case when ${country_iso} = 'DE' and ${order_dow} = 'Sunday' then null
+          else ${order_date} end;;
+    value_format: "0"
+  }
+
 
   ################
   ## PERCENTAGE ##
@@ -1383,7 +1638,7 @@ view: orders {
   measure: pct_delivery_in_time{
     group_label: "* Operations / Logistics *"
     label: "% Orders delivered in time"
-    description: "Share of orders delivered no later than promised ETA (only orders with valid ETA time considered)"
+    description: "Share of orders delivered no later than PDT"
     hidden:  no
     type: number
     sql: ${cnt_orders_delayed_under_0_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
@@ -1393,7 +1648,7 @@ view: orders {
   measure: pct_delivery_late_over_5_min{
     group_label: "* Operations / Logistics *"
     label: "% Orders delayed >5min"
-    description: "Share of orders delivered >5min later than promised ETA (only orders with valid ETA time considered)"
+    description: "Share of orders delivered >5min later than PDT"
     hidden:  no
     type: number
     sql: ${cnt_orders_delayed_over_5_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
@@ -1403,7 +1658,7 @@ view: orders {
   measure: pct_delivery_late_over_10_min{
     group_label: "* Operations / Logistics *"
     label: "% Orders delayed >10min"
-    description: "Share of orders delivered >10min later than promised ETA (only orders with valid ETA time considered)"
+    description: "Share of orders delivered >10min later than PDT"
     hidden:  no
     type: number
     sql: ${cnt_orders_delayed_over_10_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
@@ -1413,10 +1668,65 @@ view: orders {
   measure: pct_delivery_late_over_15_min{
     group_label: "* Operations / Logistics *"
     label: "% Orders delayed >15min"
-    description: "Share of orders delivered >15min later than promised ETA (only orders with valid ETA time considered)"
+    description: "Share of orders delivered >15min later than PDT"
     hidden:  no
     type: number
     sql: ${cnt_orders_delayed_over_15_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
+    value_format: "0%"
+  }
+
+#######TEMP: adding new fields to compare how PDT versus Time Estimate will perform
+
+  measure: pct_delivery_in_time_time_estimate{
+    group_label: "* Operations / Logistics *"
+    label: "% Orders delivered in time (internal estimate)"
+    description: "Share of orders delivered no later than internal estimate"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_delayed_under_0_min_time_estimate} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_delivery_late_over_5_min_time_estimate{
+    group_label: "* Operations / Logistics *"
+    label: "% Orders delayed >5min (internal estimate)"
+    description: "Share of orders delivered >5min later than internal estimate"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_delayed_over_5_min_time_estimate} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_delivery_late_over_10_min_time_estimate{
+    group_label: "* Operations / Logistics *"
+    label: "% Orders delayed >10min (internal estimate)"
+    description: "Share of orders delivered >10min later than internal estimate"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_delayed_over_10_min_time_estimate} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
+    value_format: "0%"
+  }
+
+#######TEMP: adding new fields to compare how PDT versus Time Estimate will perform
+
+
+  measure: pct_fulfillment_over_20_min{
+    group_label: "* Operations / Logistics *"
+    label: "% Orders delivered >20min"
+    description: "Share of orders delivered > 20min"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_deliverd_over_20_min} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_fulfillment_over_30_min{
+    group_label: "* Operations / Logistics *"
+    label: "% Orders delivered >30min"
+    description: "Share of orders delivered > 30min"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_deliverd_over_30_min} / NULLIF(${cnt_orders}, 0);;
     value_format: "0%"
   }
 
@@ -1434,6 +1744,51 @@ view: orders {
     type: number
     sql: ${cnt_orders}/NULLIF(${cnt_unique_hubs},0) ;;
   }
+
+  measure: avg_daily_orders_per_hub{
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "AVG Daily Orders per hub"
+    type: number
+    sql: (${cnt_orders}/NULLIF(${cnt_unique_hubs},0))/ NULLIF(${cnt_unique_date},0);;
+  }
+
+
+  measure: pct_delivery_time_estimate_critical_over_estimation {
+    group_label: "* Operations / Logistics *"
+    label:       "% Orders with critical over-estimation of delivery time"
+    description: "% Orders with critical over-estimation of delivery time"
+    type:        number
+    sql:         ${cnt_orders_delivery_time_critical_overestimation} / ${cnt_orders} ;;
+    value_format_name:  percent_2
+  }
+
+  measure: pct_delivery_time_estimate_critical_under_estimation {
+    group_label: "* Operations / Logistics *"
+    label:       "% Orders with critical under-estimation of delivery time"
+    description: "% Orders with critical under-estimation of delivery time"
+    type:        number
+    sql:         ${cnt_orders_delivery_time_critical_underestimation} / ${cnt_orders} ;;
+    value_format_name:  percent_2
+  }
+
+  measure: cnt_orders_with_delivery_time_estimate {
+    group_label: "* Operations / Logistics *"
+    label: "# Orders with Delivery Time Estimate"
+    hidden:  yes
+    type: count
+    filters: [delivery_time_estimate_minutes: ">0", fulfillment_time: ">0"]
+    value_format: "0"
+  }
+
+  measure: rmse_delivery_time_estimate {
+    label: "Delivery Time Estimate (RMSE)"
+    description: "The root-mean-squared-error when comparing actuall fulfillment times and predicted delivery estimate times"
+    group_label: "* Operations / Logistics *"
+    type: number
+    sql: sqrt(sum(power((${TABLE}.fulfillment_time_minutes - ${TABLE}.delivery_time_estimate_minutes), 2)) / nullif(${cnt_orders_with_delivery_time_estimate}, 0) )  ;;
+    value_format_name: decimal_2
+  }
+
 
 
 }

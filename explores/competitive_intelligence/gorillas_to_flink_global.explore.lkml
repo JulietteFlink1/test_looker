@@ -5,7 +5,7 @@ include: "/views/bigquery_tables/reporting_layer/competitive_intelligence/gorill
 explore:  gorillas_to_flink_global {
   view_name: gorillas_inventory_stock_count
   label: "Gorillas Assortment Matched"
-  view_label: "Gorillas Product Data"
+  view_label: "Gorillas Stock Data"
   group_label: "08) Competitive Intel"
   description: "Gorillas assortment & sales matched to Flink's assortment and sales"
 
@@ -14,10 +14,9 @@ explore:  gorillas_to_flink_global {
   join: gorillas_to_flink_global {
     from:  gorillas_to_flink_global
     view_label: "* Product Matches *"
-    sql_on: ${gorillas_inventory_stock_count.product_id} = ${gorillas_to_flink_global.gorillas_product_id}
-      AND ${gorillas_inventory_stock_count.product_name} = ${gorillas_to_flink_global.gorillas_product_name};;
+    sql_on: ${gorillas_inventory_stock_count.product_id} = ${gorillas_to_flink_global.gorillas_product_id};;
     relationship: one_to_many
-    type:  inner
+    type:  left_outer
   }
 
   join: products {
@@ -28,6 +27,14 @@ explore:  gorillas_to_flink_global {
     type: inner
   }
 
+  join: gorillas_products {
+    from: gorillas_products
+    view_label: "* Gorillas Product Data *"
+    sql_on: ${gorillas_products.product_id} = ${gorillas_inventory_stock_count.product_id} ;;
+    relationship: one_to_many
+    type: left_outer
+  }
+
   # join: inventory {
   #   sql_on: ${inventory.sku} = ${products.product_sku} ;;
   #   relationship: one_to_many
@@ -35,7 +42,7 @@ explore:  gorillas_to_flink_global {
   #   sql_where: (${inventory.is_most_recent_record} = TRUE) ;;
   # }
 
-  # # join: hubs {
+  # join: hubs {
   #   from:  hubs_ct
   #   sql_on: ${hubs.hub_code} = ${inventory.hub_code} ;;
   #   relationship: many_to_one
@@ -47,7 +54,7 @@ explore:  gorillas_to_flink_global {
   #   sql_on: ${order_lineitems.product_sku} = ${inventory.sku}
   #       and ${order_lineitems.hub_code}    = ${inventory.hub_code}
   #   ;;
-  #   relationship: many_to_many
+  #   relationship: many_to_one
   #   type: left_outer
   # }
 

@@ -1,5 +1,5 @@
 view: nps_comments_labeled {
-  sql_table_name: `flink-data-dev.reporting.nps_comments_labeled`
+  sql_table_name: `flink-data-prod.reporting.nps_comments_labeled`
     ;;
 
   dimension: country_iso {
@@ -17,6 +17,11 @@ view: nps_comments_labeled {
     hidden: yes
     type: string
     sql: ${TABLE}.label ;;
+  }
+
+  dimension: customer_type {
+    type: string
+    sql: ${TABLE}.customer_type ;;
   }
 
   dimension: label_transformed {

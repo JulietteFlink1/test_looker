@@ -9,7 +9,7 @@ explore: cs_fraudulent_customers_email {
   label: "CS Fraudulent Customers - Email List"
   view_label: "* Orders *"
   group_label: "07) Customer Service"
-  hidden: no
+  hidden: yes
 
 
   join: cs_post_delivery_issues {
@@ -34,4 +34,13 @@ explore: cs_fraudulent_customers_email {
     relationship: many_to_one
     type:  left_outer
   }
+
+  join: cs_fraudulent_customers {
+    view_label: "* Fraudulent Customers Bins *"
+    sql_on: lower(${cs_fraudulent_customers.orders_cl_user_email}) = lower(${orders_cl.user_email})
+ ;;
+    relationship: many_to_one
+    type:  left_outer
+  }
+
   }
