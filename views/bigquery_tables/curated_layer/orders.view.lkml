@@ -382,7 +382,7 @@ view: orders {
     description: "The internally predicted time in minutes for the order to arrive at the customer"
     group_label: "* Operations / Logistics *"
     type: number
-    sql: CASE WHEN ${TABLE}.delivery_time_estimate_minutes > 30 then 30 else  ${TABLE}.delivery_time_estimate_minutes END ;; # as requested by Laurenz
+    sql: ${TABLE}.delivery_time_estimate_minutes;; # as requested by Laurenz
   }
 
   dimension: is_critical_delivery_time_estimate_underestimation {
@@ -1573,7 +1573,7 @@ view: orders {
     group_label: "* Operations / Logistics *"
     label:       "# Orders with critical under-estimation delivery time"
     description: "# Orders with critical under-estimation delivery time"
-    hidden:      no
+    hidden:      yes
     type:        count
     filters:     [is_critical_delivery_time_estimate_underestimation: "Yes"]
     value_format: "0"
@@ -1583,7 +1583,7 @@ view: orders {
     group_label: "* Operations / Logistics *"
     label:       "# Orders with critical over-estimation delivery time"
     description: "# Orders with critical over-estimation delivery time"
-    hidden:      no
+    hidden:      yes
     type:        count
     filters:     [is_critical_delivery_time_estimate_overestimation: "Yes"]
     value_format: "0"
@@ -1769,6 +1769,24 @@ view: orders {
     type:        number
     sql:         ${cnt_orders_delivery_time_critical_underestimation} / ${cnt_orders} ;;
     value_format_name:  percent_2
+  }
+
+  measure: cnt_orders_with_delivery_time_estimate {
+    group_label: "* Operations / Logistics *"
+    label: "# Orders with Delivery Time Estimate"
+    hidden:  yes
+    type: count
+    filters: [delivery_time_estimate_minutes: ">0"]
+    value_format: "0"
+  }
+
+  measure: rmse_delivery_time_estimate {
+    label: "Delivery Time Estimate (RMSE)"
+    description: "The root-mean-squared-error when comparing actuall fulfillment times and predicted delivery estimate times"
+    group_label: "* Operations / Logistics *"
+    type: number
+    sql: sqrt(sum(power((${TABLE}.fulfillment_time_minutes - ${TABLE}.delivery_time_estimate_minutes), 2)) / nullif(${cnt_orders_with_delivery_time_estimate}, 0) )  ;;
+    value_format_name: decimal_2
   }
 
 
