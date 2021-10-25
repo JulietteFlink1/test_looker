@@ -385,23 +385,6 @@ view: orders {
     sql: ${TABLE}.delivery_time_estimate_minutes;; # as requested by Laurenz
   }
 
-  measure: cnt_orders_with_delivery_time_estimate {
-    group_label: "* Operations / Logistics *"
-    label: "# Orders with Delivery Time Estimate"
-    hidden:  yes
-    type: count
-    filters: [delivery_time_estimate_minutes: ">0"]
-    value_format: "0"
-  }
-
-  measure: rmse_delivery_time_estimate {
-    label: "Delivery Time Estimate (RSME)"
-    description: "The root-mean-squared-error when comparing actuall fulfillment times and predicted delivery estimate times"
-    group_label: "* Operations / Logistics *"
-    type: number
-    sql: sqrt(sum(power((${TABLE}.fulfillment_time_minutes - ${TABLE}.delivery_time_estimate_minutes), 2)) / nullif(${cnt_orders_with_delivery_time_estimate}, 0) )  ;;
-  }
-
   dimension: is_critical_delivery_time_estimate_underestimation {
     description: "The actual fulfillment took more than 10min longer than the internally predicted delivery time"
     type:  yesno
@@ -1786,6 +1769,24 @@ view: orders {
     type:        number
     sql:         ${cnt_orders_delivery_time_critical_underestimation} / ${cnt_orders} ;;
     value_format_name:  percent_2
+  }
+
+  measure: cnt_orders_with_delivery_time_estimate {
+    group_label: "* Operations / Logistics *"
+    label: "# Orders with Delivery Time Estimate"
+    hidden:  yes
+    type: count
+    filters: [delivery_time_estimate_minutes: ">0"]
+    value_format: "0"
+  }
+
+  measure: rmse_delivery_time_estimate {
+    label: "Delivery Time Estimate (RMSE)"
+    description: "The root-mean-squared-error when comparing actuall fulfillment times and predicted delivery estimate times"
+    group_label: "* Operations / Logistics *"
+    type: number
+    sql: sqrt(sum(power((${TABLE}.fulfillment_time_minutes - ${TABLE}.delivery_time_estimate_minutes), 2)) / nullif(${cnt_orders_with_delivery_time_estimate}, 0) )  ;;
+    value_format_name: decimal_2
   }
 
 
