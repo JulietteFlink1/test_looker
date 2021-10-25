@@ -80,6 +80,13 @@ view: products {
     group_label: "> Product Attributes"
   }
 
+  dimension: replenishment_substitute_group {
+    label: "Replenishment Substitute Groups"
+    description: "The substitue groups used by the Supply Chain team as defined in ERP"
+    type: string
+    sql: ${TABLE}.replenishment_substitute_group ;;
+  }
+
   # =========  hidden   =========
   dimension: primary_key {
     sql: ${TABLE}.product_sku ;;
