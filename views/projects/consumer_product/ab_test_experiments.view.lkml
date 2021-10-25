@@ -9,17 +9,25 @@
                event                                                                      AS event_name,
                search_query,
                null                                                                       AS list_category,
-               search_experiment_variant,
+               COALESCE(search_experiment_variant, context_traits_search_experiment_variant) AS search_experiment_variant,
+               context_traits_backend_search_enabled                                      AS backend_search_enabled,
                CASE WHEN search_experiment_variant like '%variant_control%'
-                    THEN true ELSE false END                                              AS control_group,
+                          THEN true
+                    WHEN context_traits_search_experiment_variant like '%variant_control%'
+                          THEN true
+                    ELSE false END                                                        AS control_group,
                CASE WHEN search_experiment_variant like '%variant_experiment%'
-                    THEN true ELSE false END                                              AS experiment_group,
+                          THEN true
+                    WHEN context_traits_search_experiment_variant like '%variant_experiment%'
+                          THEN true
+                    ELSE false END                                                        AS experiment_group,
                DATE(timestamp)                                                            AS event_start_at,
                timestamp
         FROM (
               SELECT *, ROW_NUMBER() OVER (PARTITION BY id ORDER BY loaded_at DESC)       AS row_id
               FROM `flink-data-prod.flink_ios_production.product_search_executed`
-              WHERE DATE(_PARTITIONTIME) > "2021-09-30" and search_experiment_variant is not null
+              WHERE DATE(_PARTITIONTIME) > "2021-09-30"
+              AND (search_experiment_variant is not null OR context_traits_search_experiment_variant is not null)
               )
         WHERE row_id = 1
 
@@ -31,17 +39,25 @@
                event                                                                      AS event_name,
                null                                                                       AS search_query,
                list_category,
-               search_experiment_variant,
+               COALESCE(search_experiment_variant, context_traits_search_experiment_variant) AS search_experiment_variant,
+               context_traits_backend_search_enabled                                      AS backend_search_enabled,
                CASE WHEN search_experiment_variant like '%variant_control%'
-                    THEN true ELSE false END                                              AS control_group,
+                          THEN true
+                    WHEN context_traits_search_experiment_variant like '%variant_control%'
+                          THEN true
+                    ELSE false END                                                        AS control_group,
                CASE WHEN search_experiment_variant like '%variant_experiment%'
-                    THEN true ELSE false END                                              AS experiment_group,
+                          THEN true
+                    WHEN context_traits_search_experiment_variant like '%variant_experiment%'
+                          THEN true
+                    ELSE false END                                                        AS experiment_group,
                DATE(timestamp)                                                            AS event_start_at,
                timestamp
         FROM (
               SELECT *, ROW_NUMBER() OVER (PARTITION BY id ORDER BY loaded_at DESC)       AS row_id
               FROM `flink-data-prod.flink_ios_production.product_added_to_cart`
-              WHERE DATE(_PARTITIONTIME) > "2021-09-30" and search_experiment_variant is not null
+              WHERE DATE(_PARTITIONTIME) > "2021-09-30"
+              AND (search_experiment_variant is not null OR context_traits_search_experiment_variant is not null)
               )
         WHERE row_id = 1
 
@@ -53,17 +69,25 @@
                event                                                                      AS event_name,
                null                                                                       AS search_query,
                list_category,
-               search_experiment_variant,
+               COALESCE(context_traits_search_experiment_variant, search_experiment_variant) AS search_experiment_variant,
+               context_traits_backend_search_enabled                                      AS backend_search_enabled,
                CASE WHEN search_experiment_variant like '%variant_control%'
-                    THEN true ELSE false END                                              AS control_group,
+                          THEN true
+                    WHEN context_traits_search_experiment_variant like '%variant_control%'
+                          THEN true
+                    ELSE false END                                                        AS control_group,
                CASE WHEN search_experiment_variant like '%variant_experiment%'
-                    THEN true ELSE false END                                              AS experiment_group,
+                          THEN true
+                    WHEN context_traits_search_experiment_variant like '%variant_experiment%'
+                          THEN true
+                    ELSE false END                                                        AS experiment_group,
                DATE(timestamp)                                                            AS event_start_at,
                timestamp
         FROM (
               SELECT *, ROW_NUMBER() OVER (PARTITION BY id ORDER BY loaded_at DESC)       AS row_id
               FROM `flink-data-prod.flink_ios_production.product_details_viewed`
-              WHERE DATE(_PARTITIONTIME) > "2021-09-30" and search_experiment_variant is not null
+              WHERE DATE(_PARTITIONTIME) > "2021-09-30"
+              AND (search_experiment_variant is not null OR context_traits_search_experiment_variant is not null)
               )
         WHERE row_id = 1
 
@@ -77,6 +101,7 @@
                search_query,
                null                                                                       AS list_category,
                search_experiment_variant,
+               null                                                                       AS backend_search_enabled,
                CASE WHEN search_experiment_variant like '%variant_control%'
                     THEN true ELSE false END                                              AS control_group,
                CASE WHEN search_experiment_variant like '%variant_experiment%'
@@ -99,6 +124,7 @@
                null                                                                       AS search_query,
                list_category,
                search_experiment_variant,
+               null                                                                       AS backend_search_enabled,
                CASE WHEN search_experiment_variant like '%variant_control%'
                     THEN true ELSE false END                                              AS control_group,
                CASE WHEN search_experiment_variant like '%variant_experiment%'
@@ -121,6 +147,7 @@
                null                                                                       AS search_query,
                list_category,
                search_experiment_variant,
+               null                                                                       AS backend_search_enabled,
                CASE WHEN search_experiment_variant like '%variant_control%'
                     THEN true ELSE false END                                              AS control_group,
                CASE WHEN search_experiment_variant like '%variant_experiment%'
@@ -137,6 +164,7 @@
 
         SELECT * , lag(event_name) over(partition by anonymous_id order by timestamp asc)          AS prior_event_name
         FROM base
+        WHERE search_experiment_variant != 'Test'
     ;;
     }
 
@@ -203,7 +231,7 @@
 
       dimension_group: session_start_at {
         type: time
-        datatype: datetime
+        datatype: timestamp
         timeframes: [
           hour,
           date,
@@ -297,6 +325,11 @@
         sql: ${TABLE}.experiment_group ;;
       }
 
+      dimension: backend_search_enabled {
+        type: yesno
+        sql: ${TABLE}.backend_search_enabled ;;
+      }
+
       dimension: event_start_at {
         type: date
         sql: ${TABLE}.event_start_at ;;
@@ -314,6 +347,7 @@
           prior_event_name,
           list_position,
           search_experiment_variant,
+          backend_search_enabled,
           control_group,
           experiment_group
         ]
