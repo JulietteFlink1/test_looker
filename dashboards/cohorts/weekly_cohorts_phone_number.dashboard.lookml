@@ -1,4 +1,4 @@
-- dashboard: weekly_cohorts_phone_number
+- dashboard: _weekly_cohorts_new_phonebased_logic
   title: " Weekly Cohorts [new phone-based logic]"
   layout: newspaper
   preferred_viewer: dashboards-next
@@ -6,6 +6,7 @@
   - name: ''
     type: text
     title_text: ''
+    subtitle_text: ''
     body_text: Here we consider Weekly acquisitions and the percentage of those new
       customers who reordered in following 7 day time spans. It is binary per each
       customer, it does not matter how often they reordered in the time period (KPI
@@ -28,14 +29,16 @@
     model: flink_v3
     explore: orders_customers_cleaned
     type: looker_grid
-    fields: [customers_metrics_cleaned.first_order_week, customers_metrics_cleaned.weeks_duration_between_first_order_week_and_now,
-      orders_cl_cleaned.cnt_unique_customers, customers_metrics_cleaned.weeks_time_since_sign_up]
+    fields: [customers_metrics_cleaned.first_order_week, orders_cl_cleaned.cnt_unique_customers,
+      customers_metrics_cleaned.weeks_time_since_sign_up]
     pivots: [customers_metrics_cleaned.weeks_time_since_sign_up]
+    fill_fields: [customers_metrics_cleaned.first_order_week]
     filters:
+      customers_metrics_cleaned.first_order_week: after 2021/01/25
+      hubs.country: ''
       hubs.hub_name: ''
       orders_cl_cleaned.is_successful_order: 'yes'
       orders_cl_cleaned.created_date: after 2021/01/25
-      hubs.country: ''
     sorts: [customers_metrics_cleaned.first_order_week, customers_metrics_cleaned.weeks_time_since_sign_up]
     limit: 500
     total: true
@@ -86,8 +89,7 @@
           options: {steps: 5}}, bold: false, italic: false, strikethrough: false,
         fields: [pcnt_of_cohort_still_active]}]
     defaults_version: 1
-    hidden_fields: [customers_metrics_cleaned.weeks_duration_between_first_order_week_and_now,
-      orders_cl_cleaned.cnt_unique_customers]
+    hidden_fields: [orders_cl_cleaned.cnt_unique_customers]
     listen:
       City: customers_metrics_cleaned.first_order_city
       Is Voucher Acquisition (Yes / No): customers_metrics_cleaned.is_discount_acquisition
@@ -102,15 +104,16 @@
     model: flink_v3
     explore: orders_customers_cleaned
     type: looker_grid
-    fields: [customers_metrics_cleaned.first_order_week, customers_metrics_cleaned.weeks_duration_between_first_order_week_and_now,
-      orders_cl_cleaned.cnt_unique_customers, customers_metrics_cleaned.weeks_time_since_sign_up,
-      orders_cl_cleaned.cnt_orders]
+    fields: [customers_metrics_cleaned.first_order_week, orders_cl_cleaned.cnt_unique_customers,
+      customers_metrics_cleaned.weeks_time_since_sign_up, orders_cl_cleaned.cnt_orders]
     pivots: [customers_metrics_cleaned.weeks_time_since_sign_up]
+    fill_fields: [customers_metrics_cleaned.first_order_week]
     filters:
+      customers_metrics_cleaned.first_order_week: after 2021/01/25
+      hubs.country: ''
       hubs.hub_name: ''
       orders_cl_cleaned.is_successful_order: 'yes'
       orders_cl_cleaned.created_date: after 2021/01/25
-      hubs.country: ''
     sorts: [customers_metrics_cleaned.first_order_week, customers_metrics_cleaned.weeks_time_since_sign_up]
     limit: 500
     total: true
@@ -162,8 +165,7 @@
           options: {steps: 5}}, bold: false, italic: false, strikethrough: false,
         fields: [order_frequency]}]
     defaults_version: 1
-    hidden_fields: [customers_metrics_cleaned.weeks_duration_between_first_order_week_and_now,
-      orders_cl_cleaned.cnt_unique_customers, orders_cl_cleaned.cnt_orders]
+    hidden_fields: [orders_cl_cleaned.cnt_unique_customers, orders_cl_cleaned.cnt_orders]
     listen:
       City: customers_metrics_cleaned.first_order_city
       Is Voucher Acquisition (Yes / No): customers_metrics_cleaned.is_discount_acquisition
@@ -178,17 +180,18 @@
     model: flink_v3
     explore: orders_customers_cleaned
     type: looker_grid
-    fields: [customers_metrics_cleaned.first_order_week, customers_metrics_cleaned.weeks_duration_between_first_order_week_and_now,
-      orders_cl_cleaned.cnt_unique_customers, customers_metrics_cleaned.weeks_time_since_sign_up,
-      orders_cl_cleaned.sum_gmv_gross]
+    fields: [customers_metrics_cleaned.first_order_week, orders_cl_cleaned.cnt_unique_customers,
+      customers_metrics_cleaned.weeks_time_since_sign_up, orders_cl_cleaned.sum_gmv_gross]
     pivots: [customers_metrics_cleaned.weeks_time_since_sign_up]
+    fill_fields: [customers_metrics_cleaned.first_order_week]
     filters:
+      customers_metrics_cleaned.country: ''
+      customers_metrics_cleaned.first_order_week: after 2021/01/25
+      hubs.country: ''
       hubs.hub_name: ''
       orders_cl_cleaned.is_successful_order: 'yes'
       orders_cl_cleaned.created_date: after 2021/01/25
-      hubs.country: ''
-      customers_metrics_cleaned.country: Germany
-    sorts: [customers_metrics_cleaned.first_order_week, customers_metrics_cleaned.weeks_time_since_sign_up]
+    sorts: [customers_metrics_cleaned.first_order_week 0]
     limit: 500
     total: true
     dynamic_fields: [{category: table_calculation, expression: 'max(pivot_row(${orders_cl_cleaned.sum_gmv_gross}))',
@@ -243,9 +246,8 @@
           options: {steps: 5, reverse: false}}, bold: false, italic: false, strikethrough: false,
         fields: [gmv_active_customer_retention]}]
     defaults_version: 1
-    hidden_fields: [customers_metrics_cleaned.weeks_duration_between_first_order_week_and_now,
-      orders_cl_cleaned.cnt_unique_customers, orders_cl_cleaned.sum_gmv_gross, gmv_gross,
-      gmv_active_customer]
+    hidden_fields: [orders_cl_cleaned.cnt_unique_customers, orders_cl_cleaned.sum_gmv_gross,
+      gmv_gross, gmv_active_customer]
     listen:
       City: customers_metrics_cleaned.first_order_city
       Is Voucher Acquisition (Yes / No): customers_metrics_cleaned.is_discount_acquisition
@@ -260,15 +262,17 @@
     model: flink_v3
     explore: orders_customers_cleaned
     type: looker_grid
-    fields: [customers_metrics_cleaned.first_order_week, customers_metrics_cleaned.weeks_duration_between_first_order_week_and_now,
-      orders_cl_cleaned.cnt_unique_customers, orders_cl_cleaned.sum_gmv_gross, customers_metrics_cleaned.weeks_time_since_sign_up]
+    fields: [customers_metrics_cleaned.first_order_week, orders_cl_cleaned.cnt_unique_customers,
+      orders_cl_cleaned.sum_gmv_gross, customers_metrics_cleaned.weeks_time_since_sign_up]
     pivots: [customers_metrics_cleaned.weeks_time_since_sign_up]
+    fill_fields: [customers_metrics_cleaned.first_order_week]
     filters:
+      customers_metrics_cleaned.country: ''
+      customers_metrics_cleaned.first_order_week: after 2021/01/25
+      hubs.country: ''
       hubs.hub_name: ''
       orders_cl_cleaned.is_successful_order: 'yes'
       orders_cl_cleaned.created_date: after 2021/01/25
-      hubs.country: ''
-      customers_metrics_cleaned.country: Germany
     sorts: [customers_metrics_cleaned.first_order_week, customers_metrics_cleaned.weeks_time_since_sign_up]
     limit: 500
     total: true
@@ -324,9 +328,8 @@
           options: {steps: 5}}, bold: false, italic: false, strikethrough: false,
         fields: [gmv_active_customer]}]
     defaults_version: 1
-    hidden_fields: [customers_metrics_cleaned.weeks_duration_between_first_order_week_and_now,
-      orders_cl_cleaned.cnt_unique_customers, orders_cl_cleaned.sum_gmv_gross, gmv_gross,
-      gmv_active_customer_retention]
+    hidden_fields: [orders_cl_cleaned.cnt_unique_customers, orders_cl_cleaned.sum_gmv_gross,
+      gmv_gross, gmv_active_customer_retention]
     listen:
       City: customers_metrics_cleaned.first_order_city
       Is Voucher Acquisition (Yes / No): customers_metrics_cleaned.is_discount_acquisition
@@ -341,7 +344,7 @@
     title_text: ''
     subtitle_text: ''
     body_text: Here we divide the GMV / Active Customer in each return period over
-      the GMV / Active Customer of the initial period (M0)
+      the GMV / Active Customer of the initial period (W0)
     row: 32
     col: 0
     width: 22
@@ -349,7 +352,6 @@
   - name: " (4)"
     type: text
     title_text: ''
-    subtitle_text: ''
     body_text: Here we report the GMV generated per each active customer in the respective
       period
     row: 20
