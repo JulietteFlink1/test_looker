@@ -68,6 +68,8 @@ view: gorillas_daily_orders {
     timeframes: [
       raw,
       date,
+      day_of_week,
+      day_of_week_index,
       week,
       week_of_year,
       month,
@@ -84,6 +86,8 @@ view: gorillas_daily_orders {
     timeframes: [
       raw,
       date,
+      day_of_week,
+      day_of_week_index,
       week,
       week_of_year,
       month,
@@ -101,6 +105,8 @@ view: gorillas_daily_orders {
       raw,
       time,
       date,
+      day_of_week,
+      day_of_week_index,
       week,
       month,
       quarter,
