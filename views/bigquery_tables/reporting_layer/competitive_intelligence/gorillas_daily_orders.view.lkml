@@ -68,6 +68,8 @@ view: gorillas_daily_orders {
     timeframes: [
       raw,
       date,
+      day_of_week,
+      day_of_week_index,
       week,
       week_of_year,
       month,
@@ -84,6 +86,8 @@ view: gorillas_daily_orders {
     timeframes: [
       raw,
       date,
+      day_of_week,
+      day_of_week_index,
       week,
       week_of_year,
       month,
@@ -101,6 +105,8 @@ view: gorillas_daily_orders {
       raw,
       time,
       date,
+      day_of_week,
+      day_of_week_index,
       week,
       month,
       quarter,
@@ -135,11 +141,13 @@ view: gorillas_daily_orders {
   }
 
   measure: sum_orders {
+    view_label: "Sum Gorillas Orders"
     type: sum
     sql: ${number_of_orders} ;; }
 
   measure: sum_orders_wow {
     type: sum
+    view_label: "Sum Gorillas Orders WoW"
     sql: ${number_of_orders_wow} ;;
   }
 
