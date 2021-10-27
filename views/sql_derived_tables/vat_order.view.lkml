@@ -628,6 +628,18 @@ view: vat_order {
     sql: ${TABLE}.total_gross ;;
   }
 
+  dimension: total_gross_bins {
+    hidden: no
+    type: string
+    sql: case when ${total_gross} < 10 THEN '<10'
+          when ${total_gross}  >= 10 and ${total_gross}  < 12 THEN '10-12'
+          when ${total_gross}  >= 12 and ${total_gross}  < 14 THEN '12-14'
+          when ${total_gross}  >= 14 and ${total_gross}  < 20 THEN '14-20'
+          when ${total_gross}  >= 20 and ${total_gross}  < 30 THEN '20-30'
+          when ${total_gross}  >= 30 THEN '>30' end;;
+  }
+
+
   dimension: total_vat {
     hidden: yes
     type: number
