@@ -9,8 +9,8 @@ looker_base as (
     , hubs.hub_code                              as hub_code
     , hubs.city                                  as city
     , hubs.hub_name                              as hub_name
-    , prod.subcategory                           as sub_category_name
-    , prod.category                              as category_name
+    , prod.random_ct_subcategory                 as sub_category_name
+    , prod.random_ct_category                    as category_name
     , prod.product_name                          as product_name
     , item.sku                                   as sku
     , date(ord.order_timestamp, 'Europe/Berlin') as order_date
@@ -106,7 +106,7 @@ out_of_stock_data as (
       , hubs.country_iso             as country_iso
       , sum(inv.open_hours_total)    as open_hours_total
       , sum(inv.hours_oos)           as hours_oos
-      , sum(inv.sum_items_ordered) as sum_count_purchased
+      --, sum(inv.sum_items_ordered) as sum_count_purchased
       , sum(inv.sum_count_restocked) as sum_count_restocked
       , avg(inv.avg_stock_count)     as avg_stock_count
 
@@ -146,7 +146,7 @@ select
     , avg_basket_value
     , open_hours_total
     , hours_oos
-    , sum_count_purchased
+    -- , sum_count_purchased
     , sum_count_restocked
     , avg_stock_count
     , equlalized_revenue_last_14_days.avg_equalized_revenue_last_14d
@@ -336,6 +336,7 @@ left join equlalized_revenue_last_14_days
     group_label: "Measure - Complete Timeframe (last 90 days)"
     type: sum
     value_format_name: decimal_1
+    sql: NULL ;;
   }
   measure:  sum_count_restocked {
     label: "Items Restocked"
@@ -411,7 +412,7 @@ left join equlalized_revenue_last_14_days
     group_label: "Measure - Current Period (last 7 complete days)"
     type: sum
     value_format_name: decimal_1
-    sql: ${TABLE}.sum_count_purchased ;;
+    sql: NULL ;;
     filters: [cohorts: "current"]
   }
   measure:  sum_count_restocked_current {

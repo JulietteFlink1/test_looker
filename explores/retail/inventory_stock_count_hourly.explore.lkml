@@ -2,8 +2,14 @@ include: "/**/*.view"
 
 # ct table: inventory_stock_count_daily, before in saleor called daily_historical_stock_levels
 explore: inventory_stock_count_hourly {
-  hidden: yes
-  view_label: "* Hourly Inventory Stock Level *"
+  hidden: no
+  label: "Inventory Metrics (hourly granularity)"
+  description: "This explores provdes information on inventory stock levels per hub and hour (historically) for the past 7 days. If you need data further in the past, use the (daily level)
+                Inventory Metrics (daily granularity) !
+  "
+  group_label: "02) Inventory"
+  # restrict this explore to the last complete week only (too big to be queried entirely)
+  sql_always_where: ${inventory_tracking_timestamp_date} >= date_sub(current_date(), interval 7 day) ;;
 
   always_filter: {
     filters:  [
