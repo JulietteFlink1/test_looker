@@ -147,7 +147,7 @@ view: orderline {
     label: "Category Name"
     group_label: "> Product Attributes"
     type: string
-    sql: ${TABLE}.product_category_erp ;;
+    sql: ${products.category} ;;
   }
 
   dimension: name {
@@ -182,7 +182,7 @@ view: orderline {
     type: string
     label: "Subcategory Name"
     group_label: "> Product Attributes"
-    sql: ${TABLE}.product_subcategory_erp ;;
+    sql: ${products.subcategory} ;;
   }
 
   dimension: product_substitute_group {
