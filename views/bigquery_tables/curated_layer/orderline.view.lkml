@@ -147,7 +147,21 @@ view: orderline {
     label: "Category Name"
     group_label: "> Product Attributes"
     type: string
-    sql: ${TABLE}.product_category_erp ;;
+    sql: ${products.category} ;;
+  }
+
+  dimension: true_erp_product_category {
+    label: "Category Name (ERP)"
+    group_label: "> Product Attributes"
+    type: string
+    sql: ${TABLE}.product_category_erp} ;;
+  }
+
+  dimension: true_erp_product_subcategory {
+    label: "Subcategory Name (ERP)"
+    group_label: "> Product Attributes"
+    type: string
+    sql: ${TABLE}.product_subcategory_erp} ;;
   }
 
   dimension: name {
@@ -182,7 +196,7 @@ view: orderline {
     type: string
     label: "Subcategory Name"
     group_label: "> Product Attributes"
-    sql: ${TABLE}.product_subcategory_erp ;;
+    sql: ${products.subcategory} ;;
   }
 
   dimension: product_substitute_group {

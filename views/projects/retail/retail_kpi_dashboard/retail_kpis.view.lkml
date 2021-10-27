@@ -9,8 +9,8 @@ looker_base as (
     , hubs.hub_code                              as hub_code
     , hubs.city                                  as city
     , hubs.hub_name                              as hub_name
-    , prod.subcategory                           as sub_category_name
-    , prod.category                              as category_name
+    , prod.random_ct_subcategory                 as sub_category_name
+    , prod.random_ct_category                    as category_name
     , prod.product_name                          as product_name
     , item.sku                                   as sku
     , date(ord.order_timestamp, 'Europe/Berlin') as order_date
