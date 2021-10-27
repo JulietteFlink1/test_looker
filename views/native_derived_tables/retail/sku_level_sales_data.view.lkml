@@ -19,9 +19,10 @@
           field: hubs.country
           value: ""
         }
+        # The following Flink hubs are the closest equivalents to the Gorillas hubs that are being scraped for orders and sales data
         filters: {
           field: hubs.hub_name
-          value: ""
+          value: "DE - Berlin - Friedrichshain,DE - München - Maxvorstadt,DE - Köln - Innenstadt,DE - Hamburg - Winterhude,FR - Paris - Rue de Reaumur,FR - Paris - Boulevard Brune,NL - Groningen - Center,NL - Amsterdam - Oud-West"
         }
         filters: {
           field: orderline.created_date
@@ -41,7 +42,7 @@
     dimension: sum_item_price_gross {
       label: "* Order Lineitems * SUM Item Prices sold (gross)"
       description: "Sum of sold Item prices (incl. VAT)"
-      value_format: "'€'#,##0.00"
+      value_format: "0.00"
       type: number
     }
 }
