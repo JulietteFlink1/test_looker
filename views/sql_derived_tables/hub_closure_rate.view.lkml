@@ -64,19 +64,44 @@ final as (
           , open_hours
           , TIMESTAMP_DIFF(cleaned_opened_datetime, cleaned_closed_datetime, MINUTE) as closure_mins
           , round(TIMESTAMP_DIFF(cleaned_opened_datetime, cleaned_closed_datetime, MINUTE)/60, 2) as closure_hours
-          from cleaned_hours)
+          from cleaned_hours
+),
 
-select date
+
+missed_orders as (
+        select date
+         , warehouse
+         , sum(missed_orders) as total_missed_orders
+        from `flink-data-prod.order_forecast.historical_missed_orders`
+        group by 1, 2
+),
+
+l_gmv as (
+    select order_date
+    , hub_code
+    , avg(amt_gmv_gross) as aov
+from `flink-data-prod.curated.orders` o
+group by 1, 2
+)
+
+select f.date
 , week
 , month
 , country_iso
 , city
-, warehouse as hub_code
+, f.warehouse as hub_code
 , open_hours
+, mo.total_missed_orders
+, gmv.aov
 , sum(closure_mins) as total_closure_mins
 , ifnull(sum(closure_hours), 0) as total_closure_hours
-from final
-group by 1, 2, 3, 4, 5, 6, 7
+from final f
+left join l_gmv gmv on f.date = gmv.order_date
+and f.warehouse = gmv.hub_code
+left join missed_orders mo
+on f.date = mo.date
+and f.warehouse = mo.warehouse
+group by 1, 2, 3, 4, 5, 6, 7, 8, 9
        ;;
   }
 
@@ -122,6 +147,17 @@ group by 1, 2, 3, 4, 5, 6, 7
     type: number
     sql: ${TABLE}.open_hours ;;
   }
+
+  dimension: total_missed_orders {
+    type: number
+    sql: ${TABLE}.total_missed_orders ;;
+  }
+
+  dimension: aov {
+    type: number
+    sql: ${TABLE}.aov ;;
+  }
+
 
   dimension: total_closure_mins {
     type: number
@@ -174,6 +210,22 @@ group by 1, 2, 3, 4, 5, 6, 7
     value_format: "0.0"
   }
 
+  measure: sum_missed_orders {
+    label: "Sum Missed Orders"
+    hidden:  no
+    type: sum
+    sql: ifnull(${total_missed_orders},0);;
+    value_format: "0"
+  }
+
+  measure: lost_gmv {
+    label: "Lost GMV"
+    hidden:  no
+    type: sum
+    sql: ifnull(${total_missed_orders}*${aov},0);;
+    value_format_name: eur_0
+  }
+
   measure: hub_closure_rate {
     label: "% Hub Closure Rate"
     hidden:  no
@@ -191,6 +243,7 @@ group by 1, 2, 3, 4, 5, 6, 7
       city,
       hub_code,
       open_hours,
+      total_missed_orders,
       total_closure_mins,
       total_closure_hours
     ]

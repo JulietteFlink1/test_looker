@@ -2,7 +2,7 @@ include: "/views/bigquery_tables/curated_layer/app_session_events.view.lkml"
 
 
 explore: app_session_events {
-  label: "App Events per Session"
+  label: "App Session Events"
   view_label: "App Events - Sessions"
   group_label: "In-app tracking data"
   description: "App events per session"

@@ -93,6 +93,18 @@ view: gorillas_products {
     group_label: "> Pricing Data"
   }
 
+  dimension: base_unit_price_display {
+    type: string
+    sql: ${TABLE}.base_unit_price_display ;;
+    group_label: "> Pricing Data"
+  }
+
+  dimension: deposit_amount {
+    type: number
+    sql: ${TABLE}.deposit_amount ;;
+    group_label: "> Pricing Data"
+  }
+
   dimension: product_quantity {
     type: number
     sql: ${TABLE}.product_quantity ;;

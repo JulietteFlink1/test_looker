@@ -12,6 +12,13 @@ view: products {
     type: string
     label: "Parent Category"
     group_label: "> Product Attributes"
+    sql: ${TABLE}.random_ct_category ;;
+  }
+
+  dimension: erp_category {
+    type: string
+    label: "Parent Category (ERP)"
+    group_label: "> Product Attributes"
     sql: ${TABLE}.category ;;
   }
 
@@ -63,9 +70,30 @@ view: products {
   dimension: subcategory {
     label: "Sub-Category"
     type: string
+    sql: ${TABLE}.random_ct_subcategory ;;
+    group_label: "> Product Attributes"
+  }
+
+  dimension: erp_subcategory {
+    label: "Sub-Category (ERP)"
+    type: string
     sql: ${TABLE}.subcategory ;;
     group_label: "> Product Attributes"
   }
+
+  #dimension: ct_subcategory {
+  #  label: "CT Sub-Category"
+  #  type: string
+  #  sql:  ;;
+  #  group_label: "> Product Attributes"
+  #}
+
+  #dimension: ct_category {
+  #  label: "CT Category"
+  #  type: string
+  #  sql: ${TABLE}.random_ct_category ;;
+  #  group_label: "> Product Attributes"
+  #}
 
   dimension: substitute_group {
     type: string
@@ -78,6 +106,13 @@ view: products {
     sql: coalesce(${substitute_group}, ${product_name}) ;;
     label: "Substitute Group / Product Name"
     group_label: "> Product Attributes"
+  }
+
+  dimension: replenishment_substitute_group {
+    label: "Replenishment Substitute Groups"
+    description: "The substitue groups used by the Supply Chain team as defined in ERP"
+    type: string
+    sql: ${TABLE}.replenishment_substitute_group ;;
   }
 
   # =========  hidden   =========

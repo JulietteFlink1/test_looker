@@ -51,7 +51,6 @@ view: vat_order {
                 LEFT JOIN `flink-data-prod.curated.orders` o on o.country_iso = oo.country_iso and o.order_uuid = oo.order_uuid
                 WHERE TRUE
                 AND is_successful_order is true
-                AND o.hub_code <> 'de_ber_ufhi'
                 AND p.tax_rate is not null
                 --AND date_trunc(date(o.order_timestamp),month) = '2021-09-01'
                 --AND date_trunc(date(o.order_timestamp),month) = '2021-09-01'

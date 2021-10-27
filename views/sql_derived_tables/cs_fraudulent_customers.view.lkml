@@ -20,7 +20,7 @@ view: cs_fraudulent_customers {
       LEFT JOIN `flink-data-prod.curated.cs_post_delivery_issues`
            AS cs_post_delivery_issues ON orders_cl.country_iso = cs_post_delivery_issues.country_iso AND
             cs_post_delivery_issues.order_nr_ = orders_cl.order_id
-              WHERE (orders_cl.partition_timestamp ) >= (TIMESTAMP('2021-01-25 00:00:00', 'Europe/Berlin')) AND (NOT (orders_cl.is_internal_order ) OR (orders_cl.is_internal_order ) IS NULL) AND (orders_cl.is_successful_order ) AND ((UPPER(( orders_cl.country_iso  )) LIKE UPPER('%') OR (( orders_cl.country_iso  ) IS NULL))) AND ((UPPER(( hubs.city  )) LIKE UPPER('%') OR (( hubs.city  ) IS NULL)))
+              WHERE (orders_cl.order_timestamp ) >= (TIMESTAMP('2021-01-25 00:00:00', 'Europe/Berlin')) AND (NOT (orders_cl.is_internal_order ) OR (orders_cl.is_internal_order ) IS NULL) AND (orders_cl.is_successful_order ) AND ((UPPER(( orders_cl.country_iso  )) LIKE UPPER('%') OR (( orders_cl.country_iso  ) IS NULL))) AND ((UPPER(( hubs.city  )) LIKE UPPER('%') OR (( hubs.city  ) IS NULL)))
               GROUP BY
                   1
               HAVING (( orders_cl_cnt_orders_1 ) > 2)) AS t3

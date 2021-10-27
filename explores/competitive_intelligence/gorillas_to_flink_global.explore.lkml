@@ -35,6 +35,14 @@ explore:  gorillas_to_flink_global {
     type: left_outer
   }
 
+  ### Native Derived Table for Flink's 14-Day Sales Metrics on a SKU level
+  join: sku_level_sales_data {
+    sql_on: ${products.product_sku} = ${sku_level_sales_data.product_sku} ;;
+    relationship: one_to_many
+    type: left_outer
+  }
+
+  ### The following joins connect Flink sales and orderline data, but querying it is slow so it has been commented out
   # join: inventory {
   #   sql_on: ${inventory.sku} = ${products.product_sku} ;;
   #   relationship: one_to_many

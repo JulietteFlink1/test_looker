@@ -18,6 +18,15 @@ explore: gorillas_daily_orders {
     type: inner
   }
 
+  join: comp_intel_city_matching {
+    from: comp_intel_city_matching
+    view_label: "* City Mapping *"
+    sql_on: ${gorillas_daily_orders.city} = ${comp_intel_city_matching.gorillas_city_name};;
+    relationship: one_to_one
+    type: inner
+  }
+
+
   join: orders{
     from:  orders
     view_label: "* Flink Orders *"
