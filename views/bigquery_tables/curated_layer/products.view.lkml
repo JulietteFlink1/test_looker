@@ -15,6 +15,13 @@ view: products {
     sql: ${TABLE}.random_ct_category ;;
   }
 
+  dimension: erp_category {
+    type: string
+    label: "Parent Category (ERP)"
+    group_label: "> Product Attributes"
+    sql: ${TABLE}.category ;;
+  }
+
   dimension: is_leading_product {
     type: yesno
     sql: ${TABLE}.is_leading_product ;;
@@ -64,6 +71,13 @@ view: products {
     label: "Sub-Category"
     type: string
     sql: ${TABLE}.random_ct_subcategory ;;
+    group_label: "> Product Attributes"
+  }
+
+  dimension: erp_subcategory {
+    label: "Sub-Category (ERP)"
+    type: string
+    sql: ${TABLE}.subcategory ;;
     group_label: "> Product Attributes"
   }
 

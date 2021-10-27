@@ -150,6 +150,20 @@ view: orderline {
     sql: ${products.category} ;;
   }
 
+  dimension: true_erp_product_category {
+    label: "Category Name (ERP)"
+    group_label: "> Product Attributes"
+    type: string
+    sql: ${TABLE}.product_category_erp} ;;
+  }
+
+  dimension: true_erp_product_subcategory {
+    label: "Subcategory Name (ERP)"
+    group_label: "> Product Attributes"
+    type: string
+    sql: ${TABLE}.product_subcategory_erp} ;;
+  }
+
   dimension: name {
     label: "Product Name"
     group_label: "> Product Attributes"
