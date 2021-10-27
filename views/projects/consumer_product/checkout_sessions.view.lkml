@@ -221,7 +221,7 @@ view: checkout_sessions {
          , SUM(CASE WHEN e.event="address_change_at_checkout_message_viewed" THEN 1 ELSE 0 END) as late_change_event_count
          , SUM(CASE WHEN e.event="hub_update_message_viewed" THEN 1 ELSE 0 END) as hub_update_event_count
          , SUM(CASE WHEN e.event="checkout_started" THEN 1 ELSE 0 END) as checkout_started_event_count
-         , SUM(CASE WHEN e.event="purchase_confirmed" THEN 1 ELSE 0 END) as payment_started_event_count
+         , SUM(CASE WHEN e.event IN ("purchase_confirmed","payment_started") THEN 1 ELSE 0 END) as payment_started_event_count
          , SUM(CASE WHEN e.event="payment_failed" THEN 1 ELSE 0 END) as payment_failed_event_count
          , SUM(CASE WHEN e.event="order_placed" THEN 1 ELSE 0 END) as order_placed_event_count
         FROM events e
