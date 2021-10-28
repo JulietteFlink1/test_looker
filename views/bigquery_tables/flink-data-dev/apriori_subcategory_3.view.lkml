@@ -37,10 +37,19 @@ view: apriori_subcategory_3 {
     sql: ${TABLE}.granularity ;;
   }
 
-  dimension: avg_orders_per_month {
+  dimension: avg_orders_per_month_num {
     type: number
     sql: ${TABLE}.avg_orders_per_month ;;
   }
+
+  dimension: avg_orders_per_month {
+    type: string
+    sql: CASE WHEN ${avg_orders_per_month_num} <= 5 then cast(${avg_orders_per_month_num} as string)
+              WHEN  ${avg_orders_per_month_num} = 6 THEN '>5'
+              WHEN  ${avg_orders_per_month_num} is null then 'All' END ;;
+  }
+
+
 
   dimension: int64_field_0 {
     hidden: yes
