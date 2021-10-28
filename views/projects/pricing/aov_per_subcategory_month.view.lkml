@@ -34,8 +34,8 @@ b as
 
     SELECT
     country_iso,
-    category,
-    subcategory,
+    random_ct_category as category,
+    random_ct_subcategory as subcategory,
     from `flink-data-prod.curated.products` prod
     group by 1,2,3
     order by 3
@@ -51,8 +51,8 @@ c as
       hub.country,
       hub.hub_name,
       hub.city,
-      category,
-      b.subcategory,
+      random_ct_category as category,
+      b.random_ct_subcategory as subcategory,
       sum (a.amt_total_price_gross) as sum_item_value,
       sum (a.quantity) as sum_quantity,
       count (distinct a.order_uuid) as orders_subcategory
