@@ -291,7 +291,7 @@ event_counts AS (
          , SUM(CASE WHEN e.event="city_not_available_selected" THEN 1 ELSE 0 END) as cnas_count
          , SUM(CASE WHEN e.event="countries_viewed" THEN 1 ELSE 0 END) as cov_count
          , SUM(CASE WHEN e.event="country_not_available_selected" THEN 1 ELSE 0 END) as conas_count
-         , SUM(CASE WHEN e.event="purchase_confirmed" THEN 1 ELSE 0 END) as pc_count
+         , SUM(CASE WHEN e.event IN ("purchase_confirmed","payment_started") THEN 1 ELSE 0 END) as pc_count
          , SUM(CASE WHEN e.event="payment_failed" THEN 1 ELSE 0 END) as pf_count
          , SUM(CASE WHEN e.event="api_voucher_apply_failed" THEN 1 ELSE 0 END) AS vf_count
          , SUM(CASE WHEN e.event="api_voucher_apply_succeeded" THEN 1 ELSE 0 END) AS vs_count
@@ -331,6 +331,7 @@ event_counts AS (
     WHERE e.is_inside_delivery_area=false
     GROUP BY 1,2
 )
+
     SELECT
           sf.anonymous_id
         , sf.context_app_version

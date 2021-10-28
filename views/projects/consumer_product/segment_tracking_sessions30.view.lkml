@@ -328,7 +328,7 @@ view: segment_tracking_sessions30 {
             ON e.anonymous_id = sf.anonymous_id
             AND e.timestamp >= sf.session_start_at
             AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
-        WHERE e.event = 'purchase_confirmed'
+        WHERE e.event in ('purchase_confirmed', 'payment_started')
         GROUP BY 1,2
     )
 

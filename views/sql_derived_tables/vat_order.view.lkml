@@ -273,7 +273,7 @@ view: vat_order {
     sql: ${TABLE}.country_iso ;;
   }
 
-  dimension_group: created {
+  dimension_group: order {
     group_label: "Order Date"
     type: time
     timeframes: [
@@ -627,6 +627,29 @@ view: vat_order {
     type: number
     sql: ${TABLE}.total_gross ;;
   }
+
+  dimension: total_gross_bins {
+    hidden: no
+    type: string
+    sql: case when ${total_gross} < 10 THEN '<10'
+          when ${total_gross}  >= 10 and ${total_gross}  < 12 THEN '10-12'
+          when ${total_gross}  >= 12 and ${total_gross}  < 14 THEN '12-14'
+          when ${total_gross}  >= 14 and ${total_gross}  < 20 THEN '14-20'
+          when ${total_gross}  >= 20 and ${total_gross}  < 30 THEN '20-30'
+          when ${total_gross}  >= 30 THEN '>30' end;;
+  }
+
+  dimension: total_item_delivery_fee_bins {
+    hidden: no
+    type: string
+    sql: case when ${items_price_gross} + ${delivery_fee_gross} < 10 THEN '<10'
+          when ${items_price_gross} + ${delivery_fee_gross}  >= 10 and ${items_price_gross} + ${delivery_fee_gross}   < 12 THEN '10-12'
+          when ${items_price_gross} + ${delivery_fee_gross}   >= 12 and ${items_price_gross} + ${delivery_fee_gross}  < 14 THEN '12-14'
+          when ${items_price_gross} + ${delivery_fee_gross}  >= 14 and ${items_price_gross} + ${delivery_fee_gross}  < 20 THEN '14-20'
+          when ${items_price_gross} + ${delivery_fee_gross}  >= 20 and ${items_price_gross} + ${delivery_fee_gross} < 30 THEN '20-30'
+          when ${items_price_gross} + ${delivery_fee_gross} >= 30 THEN '>30' end;;
+  }
+
 
   dimension: total_vat {
     hidden: yes
@@ -994,6 +1017,7 @@ view: vat_order {
   measure: sum_total_gross {
     group_label: "* Total *"
     type: sum
+    description: "Items Gross + DF Gross - Discounts Gross - Refunds Gross"
     value_format: "#,##0.00€"
     sql: ${total_gross} ;;
   }
@@ -1001,6 +1025,7 @@ view: vat_order {
   measure: sum_total_net {
     group_label: "* Total *"
     type: sum
+    description: "Items Net + DF Net - Discounts Net - Refunds Net"
     value_format: "#,##0.00€"
     sql: ${total_net} ;;
   }
@@ -1008,6 +1033,7 @@ view: vat_order {
   measure: sum_total_vat {
     group_label: "* Total *"
     type: sum
+    description: "Total Gross - Total Net"
     value_format: "#,##0.00€"
     sql: ${total_vat} ;;
   }
