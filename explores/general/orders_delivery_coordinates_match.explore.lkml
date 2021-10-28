@@ -1,4 +1,4 @@
-include: "/views/projects/consumer_product/orders_delivery_coordinates_match.view.lkml"
+include: "/views/sql_derived_tables/orders_delivery_coordinates_match.view.lkml"
 
 explore: orders_delivery_coordinates_match {
   hidden: no

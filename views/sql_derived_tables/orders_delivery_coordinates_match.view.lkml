@@ -15,7 +15,7 @@ view: orders_delivery_coordinates_match {
           context_device_type AS platform_type,
           ROW_NUMBER() OVER(PARTITION BY order_number ORDER BY timestamp) as row_number
           FROM `flink-data-prod.flink_android_production.order_tracking_viewed`
-          WHERE _PARTITIONTIME > "2021-10-10"
+          WHERE _PARTITIONTIME > "2021-08-01"
 
           UNION ALL
 
@@ -33,7 +33,7 @@ view: orders_delivery_coordinates_match {
           context_device_type AS platform_type,
           ROW_NUMBER() OVER(PARTITION BY order_number ORDER BY timestamp) as row_number
           FROM `flink-data-prod.flink_ios_production.order_tracking_viewed`
-          WHERE _PARTITIONTIME > "2021-10-10"
+          WHERE _PARTITIONTIME > "2021-08-01"
       ),
 
       frontend_tracking AS (
@@ -50,9 +50,11 @@ view: orders_delivery_coordinates_match {
           o.order_timestamp,
           o.hub_code,
           o.delivery_id,
+          o.customer_longitude,
+          o.customer_latitude,
           ST_GEOGPOINT(o.customer_longitude, o.customer_latitude) AS backend_customer_location,
           from `flink-data-prod.curated.orders` o
-          where date(o.order_timestamp) BETWEEN '2021-10-10' AND '2021-10-25'
+          where date(o.order_timestamp) > '2021-08-01'
       )
 
       SELECT
@@ -73,6 +75,30 @@ view: orders_delivery_coordinates_match {
       ON bo.order_number=ft.order_number
        ;;
   }
+
+  ##### custom dimensions and measures
+
+  dimension: location_diff_tiers {
+    type: tier
+    tiers: [0, 20, 50, 100, 500, 1000, 5000]
+    style: integer
+    sql: ${client_backend_location_distance} ;;
+  }
+
+  measure: cnt_distance_greater_than_20 {
+    description: "count number of orders where the discrepancy between backend and client location is larger than 20m"
+    type: count
+    filters: [client_backend_location_distance: ">20"]
+  }
+
+  measure: perc_distance_greater_than_20 {
+    description: "% of orders where the discrepancy between backend and client location is larger than 20m"
+    type: number
+    sql: ${cnt_distance_greater_than_20}/${count} ;;
+    value_format_name: percent_2
+  }
+
+  #####
 
   measure: count {
     type: count
@@ -131,12 +157,26 @@ view: orders_delivery_coordinates_match {
 
   dimension: delivery_lat {
     type: number
+    label: "Delivery Lat (Client)"
     sql: ${TABLE}.delivery_lat ;;
   }
 
   dimension: delivery_lng {
     type: number
+    label: "Delivery Lng (Client)"
     sql: ${TABLE}.delivery_lng ;;
+  }
+
+  dimension: customer_latitude {
+    type: number
+    label: "Delivery Lat (Backend)"
+    sql: ${TABLE}.customer_latitude ;;
+  }
+
+  dimension: customer_longitude {
+    type: number
+    label: "Delivery Lng (Backend)"
+    sql: ${TABLE}.customer_longitude ;;
   }
 
   dimension: hub_city {
