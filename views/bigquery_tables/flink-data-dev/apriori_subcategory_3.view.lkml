@@ -37,6 +37,11 @@ view: apriori_subcategory_3 {
     sql: ${TABLE}.granularity ;;
   }
 
+  dimension: avg_orders_per_month {
+    type: number
+    sql: ${TABLE}.avg_orders_per_month ;;
+  }
+
   dimension: int64_field_0 {
     hidden: yes
     type: number
