@@ -107,10 +107,6 @@ view: city_level_employees_capacity {
     sql: ${TABLE}.total_worked_ext_employees_hours ;;
   }
 
-  dimension: week_group {
-    type: number
-    sql: ${TABLE}.week_group ;;
-  }
 
   dimension: week_number_report {
     type: number
@@ -162,16 +158,17 @@ view: city_level_employees_capacity {
   measure: sum_worked_active_employees_hours {
     type: sum
     sql:${total_worked_active_employees_hours};;
-    value_format_name: decimal_0
+    value_format_name: decimal_1
   }
   measure: sum_worked_ext_employees_hours {
     type: sum
     sql:${total_worked_ext_employees_hours};;
     value_format_name: decimal_0
   }
-  dimension: total_of_active_employees {
-    type: number
-    sql: ${number_of_active_employees} ;;
+  measure: total_of_active_employees {
+    type:sum
+    sql: ${number_of_active_employees};;
+    value_format_name: decimal_0
   }
 
 
