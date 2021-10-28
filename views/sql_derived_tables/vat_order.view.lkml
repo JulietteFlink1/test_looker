@@ -639,6 +639,17 @@ view: vat_order {
           when ${total_gross}  >= 30 THEN '>30' end;;
   }
 
+  dimension: total_item_delivery_fee_bins {
+    hidden: no
+    type: string
+    sql: case when ${items_price_gross} + ${delivery_fee_gross} < 10 THEN '<10'
+          when ${items_price_gross} + ${delivery_fee_gross}  >= 10 and ${items_price_gross} + ${delivery_fee_gross}   < 12 THEN '10-12'
+          when ${items_price_gross} + ${delivery_fee_gross}   >= 12 and ${items_price_gross} + ${delivery_fee_gross}  < 14 THEN '12-14'
+          when ${items_price_gross} + ${delivery_fee_gross}  >= 14 and ${items_price_gross} + ${delivery_fee_gross}  < 20 THEN '14-20'
+          when ${items_price_gross} + ${delivery_fee_gross}  >= 20 and ${items_price_gross} + ${delivery_fee_gross} < 30 THEN '20-30'
+          when ${items_price_gross} + ${delivery_fee_gross} >= 30 THEN '>30' end;;
+  }
+
 
   dimension: total_vat {
     hidden: yes
