@@ -273,7 +273,7 @@ view: vat_order {
     sql: ${TABLE}.country_iso ;;
   }
 
-  dimension_group: created {
+  dimension_group: order {
     group_label: "Order Date"
     type: time
     timeframes: [
