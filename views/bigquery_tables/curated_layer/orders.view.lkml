@@ -346,6 +346,15 @@ view: orders {
     sql: ${TABLE}.delivery_time_minutes ;;
   }
 
+  dimension: return_to_hub_time_minutes {
+    label: "Return To Hub Time (min)"
+    description: "The time for a rider to cycle from the order destination back to the hub"
+    group_label: "* Operations / Logistics *"
+    type: number
+    sql: ${TABLE}.return_to_hub_time_minutes ;;
+  }
+
+
   dimension: discount_code {
     group_label: "* Order Dimensions *"
     type: string
@@ -775,6 +784,14 @@ view: orders {
     label: "Rider Completed Delivery Timestamp"
     type: date_time
     sql: ${TABLE}.rider_completed_delivery_timestamp ;;
+  }
+
+  dimension: rider_returned_to_hub_timestamp {
+    group_label: "* Operations / Logistics *"
+    label: "Rider Returned to Hub Timestamp"
+    description: "The time, when a rider arrives back at the hub after delivering an order"
+    type: date_time
+    sql: ${TABLE}.rider_returned_to_hub_timestamp ;;
   }
 
   dimension: order_uuid {
