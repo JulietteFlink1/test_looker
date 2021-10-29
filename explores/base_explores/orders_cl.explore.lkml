@@ -12,6 +12,8 @@ include: "/views/bigquery_tables/reporting_layer/core/hub_level_kpis.view"
 
 include: "/explores/base_explores/orders_cl.explore"
 
+include: "/**/global_filters_and_parameters.view.lkml"
+
 
 explore: orders_cl {
   from: orders_using_hubs
@@ -24,10 +26,12 @@ explore: orders_cl {
 
   view_label: "* Orders *"
 
+  sql_always_where: {% condition global_filters_and_parameters.datasource_filter %} ${orders_cl.created_date} {% endcondition %} ;;
+
   always_filter: {
     filters:  [
       orders_cl.is_successful_order: "yes",
-      orders_cl.created_date: "30 days",
+      global_filters_and_parameters.datasource_filter: "last 60 days",
       hubs.country: "",
       hubs.hub_name: ""
     ]
@@ -42,6 +46,11 @@ explore: orders_cl {
     user_attribute: city
   }
 
+  join: global_filters_and_parameters {
+    sql_on: ${global_filters_and_parameters.generic_join_dim} = TRUE ;;
+    type: left_outer
+    relationship: many_to_one
+  }
 
   join: hub_level_kpis {
     from: hub_level_kpis
