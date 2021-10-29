@@ -115,6 +115,27 @@ view: products {
     sql: ${TABLE}.replenishment_substitute_group ;;
   }
 
+  dimension: sku_hub_count {
+    label: "Number of Distinct Assigned Hubs"
+    type: number
+    sql: ${TABLE}.sku_hub_count ;;
+    group_label: "> Product Attributes"
+  }
+
+  dimension: sku_city_count {
+    label: "Number of Distinct Assigned Cities"
+    type: number
+    sql: ${TABLE}.sku_city_count ;;
+    group_label: "> Product Attributes"
+  }
+
+  dimension: sku_country_count {
+    label: "Number of Distinct Assigned Countries"
+    type: number
+    sql: ${TABLE}.sku_country_count ;;
+    group_label: "> Product Attributes"
+  }
+
   # =========  hidden   =========
   dimension: primary_key {
     sql: ${TABLE}.product_sku ;;

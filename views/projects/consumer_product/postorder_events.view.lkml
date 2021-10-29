@@ -299,7 +299,7 @@ view: postorder_events {
 
   dimension: full_app_version {
     type: string
-    sql: ${context_device_type} || '-' || ${padded_app_version} ;;
+    sql: ${context_device_type} || '-' || ${basic_padded_app_version} ;;
     order_by_field: version_ordering_field
   }
 
@@ -335,6 +335,11 @@ view: postorder_events {
   dimension: basic_version_field {
     type: number
     sql: CAST(CONCAT(${main_version_number},${secondary_version_number}) AS INT64) ;;
+  }
+
+  dimension: basic_padded_app_version {
+    type: string
+    sql: CONCAT(${main_version_number},".",FORMAT('%02d',CAST(${secondary_version_number} AS INT64)));;
   }
 
   dimension: padded_app_version {

@@ -1,5 +1,5 @@
 view: app_sessions {
-  sql_table_name: `flink-data-prod.curated.app_sessions`
+  sql_table_name: `flink-data-prod.curated.app_sessions_full_load`
     ;;
 
   view_label: "* App Sessions *"
@@ -75,11 +75,11 @@ view: app_sessions {
     datatype: timestamp
     timeframes: [
       hour,
+      hour_of_day,
       date,
       day_of_week,
       week,
       month,
-      quarter,
       year
     ]
     sql: ${TABLE}.session_start_at ;;
@@ -88,11 +88,12 @@ view: app_sessions {
     type: time
     datatype: datetime
     timeframes: [
+      hour,
+      hour_of_day,
       date,
       day_of_week,
       week,
       month,
-      quarter,
       year
     ]
     sql: ${TABLE}.session_end_at ;;
@@ -108,7 +109,7 @@ view: app_sessions {
     sql: ${TABLE}.hub_code ;;
   }
   dimension: delivery_pdt_minutes {
-    type: duration_minute
+    type: number
     sql: ${TABLE}.delivery_pdt_minutes ;;
   }
   dimension: delivery_lat {
