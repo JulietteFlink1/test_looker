@@ -85,6 +85,12 @@ view: orders_delivery_coordinates_match {
     sql: ${client_backend_location_distance} ;;
   }
 
+  dimension: client_backend_location_distance_int {
+    type: number
+    label: "Client - Backend Discrepancy (Meters)"
+    sql: ROUND(${TABLE}.client_backend_location_distance,0) ;;
+  }
+
   measure: cnt_distance_greater_than_20 {
     description: "count number of orders where the discrepancy between backend and client location is larger than 20m"
     type: count
@@ -132,6 +138,7 @@ view: orders_delivery_coordinates_match {
 
   dimension: backend_customer_location {
     type: string
+    hidden: yes
     sql: ${TABLE}.backend_customer_location ;;
   }
 
@@ -196,11 +203,13 @@ view: orders_delivery_coordinates_match {
 
   dimension: client_customer_location {
     type: string
+    hidden: yes
     sql: ${TABLE}.client_customer_location ;;
   }
 
   dimension: client_backend_location_distance {
     type: number
+    hidden: yes
     sql: ${TABLE}.client_backend_location_distance ;;
   }
 
