@@ -108,7 +108,7 @@ view: app_sessions {
     sql: ${TABLE}.hub_code ;;
   }
   dimension: delivery_pdt_minutes {
-    type: duration_minute
+    type: number
     sql: ${TABLE}.delivery_pdt_minutes ;;
   }
   dimension: delivery_lat {
