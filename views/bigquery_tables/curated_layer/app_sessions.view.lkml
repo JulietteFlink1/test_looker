@@ -75,11 +75,11 @@ view: app_sessions {
     datatype: timestamp
     timeframes: [
       hour,
+      hour_of_day,
       date,
       day_of_week,
       week,
       month,
-      quarter,
       year
     ]
     sql: ${TABLE}.session_start_at ;;
@@ -88,11 +88,12 @@ view: app_sessions {
     type: time
     datatype: datetime
     timeframes: [
+      hour,
+      hour_of_day,
       date,
       day_of_week,
       week,
       month,
-      quarter,
       year
     ]
     sql: ${TABLE}.session_end_at ;;
