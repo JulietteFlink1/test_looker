@@ -39,6 +39,7 @@ view: apriori_subcategory_3 {
 
   dimension: avg_orders_per_month_num {
     type: number
+    hidden: yes
     sql: ${TABLE}.avg_orders_per_month ;;
   }
 
@@ -63,6 +64,11 @@ view: apriori_subcategory_3 {
   dimension: support {
     type: number
     sql: ${TABLE}.support ;;
+  }
+
+  dimension: country_iso {
+    type: number
+    sql: ${TABLE}.country_iso ;;
   }
 
   measure: count {
