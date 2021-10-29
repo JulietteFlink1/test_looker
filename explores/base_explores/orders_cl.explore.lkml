@@ -54,7 +54,7 @@ explore: orders_cl {
 
   join: hub_level_kpis {
     from: hub_level_kpis
-    view_label: "* hub Level KPIs *"
+    view_label: "* Hub Level KPIs *"
     sql_on: lower(${orders_cl.hub_code}) = ${hub_level_kpis.hub_code} and
             ${orders_cl.created_date} = ${hub_level_kpis.order_date}  ;;
     relationship: one_to_many
@@ -81,7 +81,7 @@ explore: orders_cl {
 
   join: nps_after_order {
     from: nps_after_order_cl
-    view_label: "* NPS CL*"
+    view_label: "* NPS *"
     sql_on: ${orders_cl.country_iso}   = ${nps_after_order.country_iso} AND
       ${orders_cl.order_number}  =       ${nps_after_order.order_number} ;;
     relationship: one_to_many

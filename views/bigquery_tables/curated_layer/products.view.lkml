@@ -12,6 +12,13 @@ view: products {
     type: string
     label: "Parent Category"
     group_label: "> Product Attributes"
+    sql: ${TABLE}.random_ct_category ;;
+  }
+
+  dimension: erp_category {
+    type: string
+    label: "Parent Category (ERP)"
+    group_label: "> Product Attributes"
     sql: ${TABLE}.category ;;
   }
 
@@ -63,9 +70,30 @@ view: products {
   dimension: subcategory {
     label: "Sub-Category"
     type: string
+    sql: ${TABLE}.random_ct_subcategory ;;
+    group_label: "> Product Attributes"
+  }
+
+  dimension: erp_subcategory {
+    label: "Sub-Category (ERP)"
+    type: string
     sql: ${TABLE}.subcategory ;;
     group_label: "> Product Attributes"
   }
+
+  #dimension: ct_subcategory {
+  #  label: "CT Sub-Category"
+  #  type: string
+  #  sql:  ;;
+  #  group_label: "> Product Attributes"
+  #}
+
+  #dimension: ct_category {
+  #  label: "CT Category"
+  #  type: string
+  #  sql: ${TABLE}.random_ct_category ;;
+  #  group_label: "> Product Attributes"
+  #}
 
   dimension: substitute_group {
     type: string

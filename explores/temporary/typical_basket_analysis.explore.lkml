@@ -4,5 +4,9 @@ explore: typical_basket_analysis {
   hidden: no
   view_name:  apriori_subcategory_3
   label: "Subcategory Analysis"
-
+  always_filter: {
+    filters:  [
+      granularity: "subcategory",
+    ]
+  }
 }
