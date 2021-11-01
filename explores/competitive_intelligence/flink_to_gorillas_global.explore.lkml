@@ -30,7 +30,7 @@ explore: flink_to_gorillas_global {
   join: flink_to_gorillas_global {
     from: flink_to_gorillas_global
     view_label: "* Product Match Data *"
-    sql_on: ${flink_to_gorillas_global.flink_product_sku} = ${products.product_sku} ;;
+    sql_on: ${flink_to_gorillas_global.flink_product_sku} = ${products.product_sku};;
     relationship: one_to_many
     type: left_outer
   }
@@ -41,6 +41,22 @@ explore: flink_to_gorillas_global {
     sql_on: ${gorillas_products.product_id} = ${flink_to_gorillas_global.gorillas_product_id};;
     relationship: one_to_one
     type: left_outer
+  }
+
+  join: gorillas_categories {
+    from: gorillas_categories
+    view_label: "* Gorillas Category Data *"
+    sql_on: ${gorillas_categories.hub_id} = ${gorillas_products.hub_id} AND ${gorillas_categories.product_id} = ${gorillas_products.product_id};;
+    relationship: many_to_one
+    type:  left_outer
+  }
+
+  join: gorillas_hubs {
+    from:  gorillas_hubs
+    view_label: "* Gorillas Hub Data *"
+    sql_on: ${gorillas_hubs.hub_id} = ${gorillas_categories.hub_id} ;;
+    relationship: many_to_one
+    type:  left_outer
   }
 
   join: gorillas_historical_prices_fact {
