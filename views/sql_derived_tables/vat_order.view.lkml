@@ -273,7 +273,7 @@ view: vat_order {
     sql: ${TABLE}.country_iso ;;
   }
 
-  dimension_group: created {
+  dimension_group: order {
     group_label: "Order Date"
     type: time
     timeframes: [
@@ -1017,6 +1017,7 @@ view: vat_order {
   measure: sum_total_gross {
     group_label: "* Total *"
     type: sum
+    description: "Items Gross + DF Gross - Discounts Gross - Refunds Gross"
     value_format: "#,##0.00€"
     sql: ${total_gross} ;;
   }
@@ -1024,6 +1025,7 @@ view: vat_order {
   measure: sum_total_net {
     group_label: "* Total *"
     type: sum
+    description: "Items Net + DF Net - Discounts Net - Refunds Net"
     value_format: "#,##0.00€"
     sql: ${total_net} ;;
   }
@@ -1031,6 +1033,7 @@ view: vat_order {
   measure: sum_total_vat {
     group_label: "* Total *"
     type: sum
+    description: "Total Gross - Total Net"
     value_format: "#,##0.00€"
     sql: ${total_vat} ;;
   }

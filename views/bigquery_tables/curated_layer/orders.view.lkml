@@ -346,6 +346,15 @@ view: orders {
     sql: ${TABLE}.delivery_time_minutes ;;
   }
 
+  dimension: return_to_hub_time_minutes {
+    label: "Return To Hub Time (min)"
+    description: "The time for a rider to cycle from the customer back to the hub"
+    group_label: "* Operations / Logistics *"
+    type: number
+    sql: ${TABLE}.return_to_hub_time_minutes ;;
+  }
+
+
   dimension: discount_code {
     group_label: "* Order Dimensions *"
     type: string
@@ -777,6 +786,14 @@ view: orders {
     sql: ${TABLE}.rider_completed_delivery_timestamp ;;
   }
 
+  dimension: rider_returned_to_hub_timestamp {
+    group_label: "* Operations / Logistics *"
+    label: "Rider Returned to Hub Timestamp"
+    description: "The time, when a rider arrives back at the hub after delivering an order"
+    type: date_time
+    sql: ${TABLE}.rider_returned_to_hub_timestamp ;;
+  }
+
   dimension: order_uuid {
     type: string
     group_label: "* IDs *"
@@ -1187,12 +1204,24 @@ view: orders {
   measure: avg_delivery_time {
     group_label: "* Operations / Logistics *"
     label: "AVG Delivery Time"
-    description: "Average riding to customer time considering delivery start to arrival at customer. Outliers excluded (<0min or >30min)"
+    description: "Average riding to customer time considering delivery start to arrival at customer. Outliers excluded (<1min or >30min)"
     hidden:  no
     type: average
     sql: ${delivery_time};;
     value_format_name: decimal_1
   }
+
+
+  measure: avg_return_to_hub_time {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Return to Hub time"
+    description: "Average riding time from customer location back to the hub (<1min or >30min)"
+    hidden:  no
+    type: average
+    sql: ${return_to_hub_time_minutes};;
+    value_format_name: decimal_1
+  }
+
 
   measure: avg_at_customer_time {
     group_label: "* Operations / Logistics *"
