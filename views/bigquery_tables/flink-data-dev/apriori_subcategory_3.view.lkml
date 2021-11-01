@@ -66,6 +66,7 @@ view: apriori_subcategory_3 {
   dimension: support {
     type: number
     sql: ${TABLE}.support ;;
+    value_format: "0.00%"
   }
 
   dimension: country_iso {
