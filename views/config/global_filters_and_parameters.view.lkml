@@ -1,4 +1,4 @@
-view: global_filters_and_parameters {
+ view: global_filters_and_parameters {
   derived_table: {
     sql: select TRUE as generic_join_dim;;
   }
@@ -22,21 +22,11 @@ view: global_filters_and_parameters {
     description: "Limits the data for the big tables, that are used in this explore."
   }
 
-  dimension: current_date {
-    type: date
-    datatype: date
-
-  }
-
-
-
-
-
 
   filter: generic_current_period_filter {
     type: date
     datatype: date
-    hidden: no
+    hidden: yes
     default_value: "last 7 days"
     label: "Generic Current Period Filter"
     # view_label: "Database Date Filter 📅"
@@ -48,7 +38,7 @@ view: global_filters_and_parameters {
   filter: generic_previous_period_filter {
     type: date
     datatype: date
-    hidden: no
+    hidden: yes
     default_value: "14 days ago for 7 days"
     label: "Generic Previous Period Filter"
     # view_label: "Database Date Filter 📅"
@@ -61,24 +51,28 @@ view: global_filters_and_parameters {
     type: date
     datatype: date
     sql: {% date_start generic_current_period_filter %};;
+    hidden: yes
   }
 
   dimension: current_period_end {
     type: date
     datatype: date
     sql: {% date_end generic_current_period_filter %};;
+    hidden: yes
   }
 
   dimension: previous_period_start {
     type: date
     datatype: date
     sql: {% date_start generic_previous_period_filter %};;
+    hidden: yes
   }
 
   dimension: previous_period_end {
     type: date
     datatype: date
     sql: {% date_end generic_previous_period_filter %};;
+    hidden: yes
   }
 
 
