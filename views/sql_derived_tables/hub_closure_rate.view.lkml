@@ -231,7 +231,7 @@ group by 1, 2, 3, 4, 5, 6, 7, 8, 9
     hidden:  no
     type: number
     sql: ${sum_closed_hours}/${sum_opened_hours};;
-    value_format: "0.00%"
+    value_format: "0.0%"
     }
 
   set: detail {
