@@ -1,6 +1,6 @@
 view: products {
   view_label: "* Product Data *"
-  sql_table_name: `flink-data-prod.curated.products`
+  sql_table_name: `flink-data-staging.curated.products`
     ;;
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -136,6 +136,179 @@ view: products {
     group_label: "> Product Attributes"
   }
 
+  dimension: ingredients {
+    type: string
+    sql: ${TABLE}.ingredients ;;
+    group_label: "> Product Attributes"
+  }
+
+  dimension: producer {
+    type: string
+    sql: ${TABLE}.producer ;;
+    group_label: "> Product Attributes"
+  }
+
+  dimension: nutrition {
+    type: string
+    sql: ${TABLE}.nutrition ;;
+    group_label: "> Product Attributes"
+  }
+
+  dimension: preparation_and_storage {
+    type: string
+    sql: ${TABLE}.preparation_and_storage ;;
+    group_label: "> Product Attributes"
+  }
+
+  dimension: allergens {
+    type: string
+    sql: ${TABLE}.allergens ;;
+    group_label: "> Product Attributes"
+  }
+
+  ####### Product Compliance Report Fields ########
+
+  dimension: is_ingredients_missing {
+    type: yesno
+    sql: case when ${ingredients} is null then True else False end ;;
+    group_label: "> Product Compliance"
+    html:
+    {% if value == 'Yes' %}
+    <p style="color: red; font-size: 100%">{{ rendered_value }}</p>
+    {% elsif value == 'No' %}
+    <p style="color: green; font-size:80%">{{ rendered_value }}</p>
+    {% endif %};;
+  }
+
+  dimension: is_producer_missing {
+    type: yesno
+    sql: case when ${producer} is null then True else False end ;;
+    group_label: "> Product Compliance"
+    html:
+    {% if value == 'Yes' %}
+    <p style="color: red; font-size: 100%">{{ rendered_value }}</p>
+    {% elsif value == 'No' %}
+    <p style="color: green; font-size:80%">{{ rendered_value }}</p>
+    {% endif %};;
+  }
+
+  dimension: is_nutrition_missing {
+    type: yesno
+    sql: case when ${nutrition} is null then True else False end ;;
+    group_label: "> Product Compliance"
+    html:
+    {% if value == 'Yes' %}
+    <p style="color: red; font-size: 100%">{{ rendered_value }}</p>
+    {% elsif value == 'No' %}
+    <p style="color: green; font-size:80%">{{ rendered_value }}</p>
+    {% endif %};;
+  }
+
+  dimension: is_preparation_and_storage_missing {
+    type: yesno
+    sql: case when ${preparation_and_storage} is null then True else False end ;;
+    group_label: "> Product Compliance"
+    html:
+    {% if value == 'Yes' %}
+    <p style="color: red; font-size: 100%">{{ rendered_value }}</p>
+    {% elsif value == 'No' %}
+    <p style="color: green; font-size:80%">{{ rendered_value }}</p>
+    {% endif %};;
+  }
+
+  dimension: is_country_of_origin_missing {
+    type: yesno
+    sql: case when ${country_of_origin} is null then True else False end ;;
+    group_label: "> Product Compliance"
+    html:
+    {% if value == 'Yes' %}
+    <p style="color: red; font-size: 100%">{{ rendered_value }}</p>
+    {% elsif value == 'No' %}
+    <p style="color: green; font-size:80%">{{ rendered_value }}</p>
+    {% endif %};;
+  }
+
+  dimension: is_unit_of_measure_missing {
+    type: yesno
+    sql: case when ${unit_of_measure} is null then True else False end ;;
+    group_label: "> Product Compliance"
+    html:
+    {% if value == 'Yes' %}
+    <p style="color: red; font-size: 100%">{{ rendered_value }}</p>
+    {% elsif value == 'No' %}
+    <p style="color: green; font-size:80%">{{ rendered_value }}</p>
+    {% endif %};;
+  }
+
+  dimension: is_product_unit_missing {
+    type: yesno
+    sql: case when ${product_unit} is null then True else False end ;;
+    group_label: "> Product Compliance"
+    html:
+    {% if value == 'Yes' %}
+    <p style="color: red; font-size: 100%">{{ rendered_value }}</p>
+    {% elsif value == 'No' %}
+    <p style="color: green; font-size:80%">{{ rendered_value }}</p>
+    {% endif %};;
+  }
+
+  dimension: is_base_unit_missing {
+    type: yesno
+    sql: case when ${base_unit} is null then True else False end ;;
+    group_label: "> Product Compliance"
+    html:
+    {% if value == 'Yes' %}
+    <p style="color: red; font-size: 100%">{{ rendered_value }}</p>
+    {% elsif value == 'No' %}
+    <p style="color: green; font-size:80%">{{ rendered_value }}</p>
+    {% endif %};;
+  }
+
+  dimension: is_allergens_missing {
+    type: yesno
+    sql: case when ${allergens} is null then True else False end ;;
+    group_label: "> Product Compliance"
+    html:
+    {% if value == 'Yes' %}
+    <p style="color: red; font-size: 100%">{{ rendered_value }}</p>
+    {% elsif value == 'No' %}
+    <p style="color: green; font-size:80%">{{ rendered_value }}</p>
+    {% endif %};;
+  }
+
+  dimension: is_attribute_missing {
+    type: yesno
+    sql: case when ${is_base_unit_missing} = True
+              or ${is_country_of_origin_missing} = True
+              or ${is_ingredients_missing} = True
+              or ${is_nutrition_missing} = True
+              or ${is_preparation_and_storage_missing} = True
+              or ${is_producer_missing} = True
+              or ${is_product_unit_missing} = True
+              or ${is_unit_of_measure_missing} = True
+              or ${is_allergens_missing} = True
+          then
+            True
+          else
+            False
+        end;;
+    group_label: "> Product Compliance"
+  }
+
+  dimension: missing_attributes_count {
+    type: number
+    sql: cast(${is_base_unit_missing} as int64) +
+         cast(${is_country_of_origin_missing} as int64) +
+         cast(${is_ingredients_missing} as int64) +
+         cast(${is_nutrition_missing} as int64) +
+         cast(${is_preparation_and_storage_missing} as int64) +
+         cast(${is_producer_missing} as int64) +
+         cast(${is_product_unit_missing} as int64) +
+         cast(${is_unit_of_measure_missing} as int64) +
+         cast(${is_allergens_missing} as int64);;
+    group_label: "> Product Compliance"
+  }
+
   # =========  hidden   =========
   dimension: primary_key {
     sql: ${TABLE}.product_sku ;;
@@ -194,6 +367,7 @@ view: products {
     sql: ${TABLE}.product_erp_brand ;;
     hidden: yes
   }
+
 
   # =========  Price Data   =========
   dimension: amt_product_price_gross {
@@ -256,7 +430,7 @@ view: products {
   }
 
   dimension: product_id {
-    type: number
+    type: string
     sql: ${TABLE}.product_id ;;
     group_label: "> IDs"
   }
