@@ -70,7 +70,7 @@ view: apriori_subcategory_3 {
 
   dimension: country_iso {
     type: string
-    sql: ${TABLE}.country_iso ;;
+    sql: ${TABLE}.country_iso  ;;
   }
 
   measure: count {
