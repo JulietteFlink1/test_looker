@@ -174,14 +174,16 @@ view: city_level_employees_capacity {
 
   measure: avg_hours_per_employee {
     label: "AVG. Hours Worked Hours per Rider"
+    description: "Total Worked Hours / # Active Employees"
     type: number
     sql: ${sum_worked_active_employees_hours} / nullif(${total_of_active_employees},0) ;;
-    value_format_name: decimal_0
+    value_format_name: decimal_2
   }
 
 
   measure: pct_Utilized_fleet_share {
     label: "% Utilized Hours Share"
+    description: "Total Worked Hours / Total contracted Hours of Active employees"
     type: number
     sql: ${sum_worked_active_employees_hours} / NULLIF(${sum_weekly_active_contracted_hours}, 0);;
     value_format: "0%"
@@ -189,6 +191,7 @@ view: city_level_employees_capacity {
 
   measure: pct_active_fleet_share {
     label: "% Active fleet Share"
+    description: "Total Worked Hours / Total contracted Hours"
     type: number
     sql: ${sum_worked_active_employees_hours} / NULLIF(${sum_contracted_hours}, 0);;
     value_format: "0%"
