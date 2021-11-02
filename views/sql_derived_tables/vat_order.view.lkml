@@ -16,6 +16,7 @@ view: vat_order {
                     oo.hub_code,
                     o.customer_email as user_email,
                     o.order_date,
+                    d.is_free_delivery_discount,
                     p.tax_rate,
                     amt_unit_price_gross * quantity / (1+p.tax_rate)                           as item_price_net,
                     amt_unit_price_gross * quantity                                            as item_price_gross,
@@ -45,10 +46,11 @@ view: vat_order {
                          THEN oo.amt_discount / (1+p.tax_rate) END                             as discount_amount_special_net,
                     oo.amt_discount                                                            as discount_amount,
                     oo.amt_discount/(1+p.tax_rate)                                             as discount_amount_net,
-                    o.amt_delivery_fee_gross                                                   as delivery_fee_gross,
+                    CASE WHEN d.is_free_delivery_discount is true then 0 else o.amt_delivery_fee_gross   end           as delivery_fee_gross,
                 FROM `flink-data-prod.curated.order_lineitems` oo
                 LEFT JOIN `flink-data-prod.curated.products` p ON p.country_iso = oo.country_iso and p.product_sku = oo.sku
-                LEFT JOIN `flink-data-prod.curated.orders` o on o.country_iso = oo.country_iso and o.order_uuid = oo.order_uuid
+                LEFT JOIN `flink-data-prod.curated.orders` o ON o.country_iso = oo.country_iso and o.order_uuid = oo.order_uuid
+                LEFT JOIN `flink-data-prod.curated.discounts` d ON d.discount_code = o.discount_code and d.discount_id = o.discount_id
                 WHERE TRUE
                 AND is_successful_order is true
                 AND p.tax_rate is not null
@@ -64,6 +66,7 @@ view: vat_order {
                   hub_code,
                   user_email,
                   delivery_fee_gross,
+                  is_free_delivery_discount,
                   SUM(tax_rate * item_price_net)/SUM(item_price_net) as tax_rate_weighted,
                   SUM(item_price_net)                               as items_price_net,
                   SUM(item_price_gross)                             as items_price_gross,
@@ -83,7 +86,7 @@ view: vat_order {
                   SUM(discount_amount_net)                          as discount_amount_net
 
                 FROM orderline
-                GROUP BY 1,2,3,4,5,6,7
+                GROUP BY 1,2,3,4,5,6,7,8
             )
             ,
             delivery_fees_discount as (
@@ -94,6 +97,7 @@ view: vat_order {
                         hub_code,
                         user_email,
                         tax_rate_weighted ,
+                        is_free_delivery_discount,
                         items_price_net,
                         items_price_gross,
                         delivery_fee_gross,
@@ -145,6 +149,7 @@ view: vat_order {
                    d.user_email,
                    payment_type,
                    tax_rate_weighted,
+                   is_free_delivery_discount,
                    COALESCE(delivery_fee_gross,0)                           as delivery_fee_gross,
                    COALESCE(delivery_fee_net,0)                             as delivery_fee_net,
                    COALESCE(discount_amount_net,0)                          as discount_amount_net,
@@ -178,7 +183,7 @@ view: vat_order {
             n.hub_code,
             tax_rate_weighted,
             payment_type,
-
+            is_free_delivery_discount,
             -- Items Data
             items_price_net,
             items_price_gross,
@@ -292,6 +297,11 @@ view: vat_order {
   dimension: user_email {
     type: string
     sql: ${TABLE}.user_email ;;
+  }
+
+  dimension: is_free_delivery_discount {
+    type: yesno
+    sql: ${TABLE}.is_free_delivery_discount ;;
   }
 
   dimension: hub_name {
