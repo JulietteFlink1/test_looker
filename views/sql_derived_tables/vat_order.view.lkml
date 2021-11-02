@@ -945,7 +945,7 @@ view: vat_order {
     sql: ${vat_discount_amount_total} ;;
   }
 
-  measure: sum_discount_free_delivery_gross {
+  measure: sum_discount_amount_free_delivery_gross {
     group_label: "* Discounts *"
     value_format: "#,##0.00€"
     type: sum
