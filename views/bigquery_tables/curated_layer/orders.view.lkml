@@ -1772,7 +1772,8 @@ view: orders {
     label: "AVG # Orders per hub"
     type: number
     sql: ${cnt_orders}/NULLIF(${cnt_unique_hubs},0) ;;
-    html:  {{rendered_value | round:2}}  || # {{ cnt_unique_hubs._rendered_value }} unique hubs ;;
+    value_format: "0.00"
+    html:  {{rendered_value}}  || # {{ cnt_unique_hubs._rendered_value }} unique hubs ;;
   }
 
   measure: avg_daily_orders_per_hub{
