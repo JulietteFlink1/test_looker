@@ -174,7 +174,7 @@ view: products {
     group_label: "> Product Compliance"
     html:
     {% if value == 'Yes' %}
-    <p style="color: red; font-size: 100%">{{ rendered_value }}</p>
+    <p style="color: red; font-size: 100%; font-weight: bold">{{ rendered_value }}</p>
     {% elsif value == 'No' %}
     <p style="color: green; font-size:80%">{{ rendered_value }}</p>
     {% endif %};;
@@ -186,7 +186,7 @@ view: products {
     group_label: "> Product Compliance"
     html:
     {% if value == 'Yes' %}
-    <p style="color: red; font-size: 100%">{{ rendered_value }}</p>
+    <p style="color: red; font-size: 100%; font-weight: bold">{{ rendered_value }}</p>
     {% elsif value == 'No' %}
     <p style="color: green; font-size:80%">{{ rendered_value }}</p>
     {% endif %};;
@@ -198,7 +198,7 @@ view: products {
     group_label: "> Product Compliance"
     html:
     {% if value == 'Yes' %}
-    <p style="color: red; font-size: 100%">{{ rendered_value }}</p>
+    <p style="color: red; font-size: 100%; font-weight: bold">{{ rendered_value }}</p>
     {% elsif value == 'No' %}
     <p style="color: green; font-size:80%">{{ rendered_value }}</p>
     {% endif %};;
@@ -210,7 +210,7 @@ view: products {
     group_label: "> Product Compliance"
     html:
     {% if value == 'Yes' %}
-    <p style="color: red; font-size: 100%">{{ rendered_value }}</p>
+    <p style="color: red; font-size: 100%; font-weight: bold">{{ rendered_value }}</p>
     {% elsif value == 'No' %}
     <p style="color: green; font-size:80%">{{ rendered_value }}</p>
     {% endif %};;
@@ -222,7 +222,7 @@ view: products {
     group_label: "> Product Compliance"
     html:
     {% if value == 'Yes' %}
-    <p style="color: red; font-size: 100%">{{ rendered_value }}</p>
+    <p style="color: red; font-size: 100%; font-weight: bold">{{ rendered_value }}</p>
     {% elsif value == 'No' %}
     <p style="color: green; font-size:80%">{{ rendered_value }}</p>
     {% endif %};;
@@ -234,7 +234,7 @@ view: products {
     group_label: "> Product Compliance"
     html:
     {% if value == 'Yes' %}
-    <p style="color: red; font-size: 100%">{{ rendered_value }}</p>
+    <p style="color: red; font-size: 100%; font-weight: bold">{{ rendered_value }}</p>
     {% elsif value == 'No' %}
     <p style="color: green; font-size:80%">{{ rendered_value }}</p>
     {% endif %};;
@@ -246,7 +246,7 @@ view: products {
     group_label: "> Product Compliance"
     html:
     {% if value == 'Yes' %}
-    <p style="color: red; font-size: 100%">{{ rendered_value }}</p>
+    <p style="color: red; font-size: 100%; font-weight: bold">{{ rendered_value }}</p>
     {% elsif value == 'No' %}
     <p style="color: green; font-size:80%">{{ rendered_value }}</p>
     {% endif %};;
@@ -258,7 +258,7 @@ view: products {
     group_label: "> Product Compliance"
     html:
     {% if value == 'Yes' %}
-    <p style="color: red; font-size: 100%">{{ rendered_value }}</p>
+    <p style="color: red; font-size: 100%; font-weight: bold">{{ rendered_value }}</p>
     {% elsif value == 'No' %}
     <p style="color: green; font-size:80%">{{ rendered_value }}</p>
     {% endif %};;
@@ -270,7 +270,7 @@ view: products {
     group_label: "> Product Compliance"
     html:
     {% if value == 'Yes' %}
-    <p style="color: red; font-size: 100%">{{ rendered_value }}</p>
+    <p style="color: red; font-size: 100%; font-weight: bold">{{ rendered_value }}</p>
     {% elsif value == 'No' %}
     <p style="color: green; font-size:80%">{{ rendered_value }}</p>
     {% endif %};;
