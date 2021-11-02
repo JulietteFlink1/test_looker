@@ -75,6 +75,12 @@ view: discounts {
     sql: ${TABLE}.is_active ;;
   }
 
+  dimension: is_free_delivery_discount {
+    label: "Free Delivery Discount"
+    type: yesno
+    sql: ${TABLE}.is_free_delivery_discount ;;
+  }
+
   dimension_group: last_modified {
     label: "Date Discount Code Last Modified At"
     type: time
