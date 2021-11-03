@@ -77,10 +77,6 @@ view: city_level_employees_capacity {
     sql: ${TABLE}.timezone ;;
   }
 
-  dimension: total_contracted_hours {
-    type: number
-    sql: ${TABLE}.total_contracted_hours ;;
-  }
 
   dimension: total_no_show_employees_hours {
     type: number
@@ -94,7 +90,7 @@ view: city_level_employees_capacity {
 
   dimension: total_weekly_active_contracted_hours {
     type: number
-    sql: ${TABLE}.total_weekly_active_contracted_hours ;;
+    sql: ${TABLE}.total_weekly_contracted_hours ;;
   }
 
   dimension: total_worked_active_employees_hours {
@@ -134,11 +130,7 @@ view: city_level_employees_capacity {
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-  measure: sum_contracted_hours {
-    type: sum
-    sql:${total_contracted_hours};;
-    value_format_name: decimal_0
-  }
+
 
   measure: sum_no_show_employees_hours {
     type: sum
@@ -152,7 +144,7 @@ view: city_level_employees_capacity {
   }
   measure: sum_weekly_active_contracted_hours {
     type: sum
-    sql:${total_weekly_active_contracted_hours};;
+    sql:${total_weekly_active_contracted_hours}*${number_of_weeks};;
     value_format_name: decimal_0
   }
   measure: sum_worked_active_employees_hours {
@@ -186,14 +178,6 @@ view: city_level_employees_capacity {
     description: "Total Worked Hours / Total contracted Hours of Active employees"
     type: number
     sql: ${sum_worked_active_employees_hours} / NULLIF(${sum_weekly_active_contracted_hours}, 0);;
-    value_format: "0%"
-  }
-
-  measure: pct_active_fleet_share {
-    label: "% Active fleet Share"
-    description: "Total Worked Hours / Total contracted Hours"
-    type: number
-    sql: ${sum_worked_active_employees_hours} / NULLIF(${sum_contracted_hours}, 0);;
     value_format: "0%"
   }
 
