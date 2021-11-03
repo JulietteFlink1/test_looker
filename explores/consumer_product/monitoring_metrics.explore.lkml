@@ -1,8 +1,8 @@
 include: "/views/projects/consumer_product/monitoring_metrics.view.lkml"
 
 explore: monitoring_metrics {
-  label: "Monitoring Metrics"
-  view_label: "Monitoring Metrics"
-  group_label: "In-app tracking data"
+  label: "Monitoring Events"
+  view_label: "Monitoring Events"
+  group_label: "Consumer Product"
   description: "Monitoring behavioural metrics for tracking events"
 }

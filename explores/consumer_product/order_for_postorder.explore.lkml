@@ -8,7 +8,7 @@ explore: order_for_postorder{
   from: order_comments
   label: "Postorder With Backend Orders"
   view_label: "Postorder With Backend Orders"
-  group_label: "In-app tracking data"
+  group_label: "Consumer Product"
   description: "Combines (backend) orders view and postorder events"
 
   join: order_client {

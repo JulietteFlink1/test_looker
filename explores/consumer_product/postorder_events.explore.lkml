@@ -4,6 +4,6 @@ explore: postorder_events {
   view_name: postorder_events
   label: "Postorder Events"
   view_label: "Postorder Events"
-  group_label: "In-app tracking data"
+  group_label: "Consumer Product"
   description: "Postorder events"
 }
