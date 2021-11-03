@@ -4,6 +4,6 @@ explore: location_sessions {
   view_name: location_segment_sessions
   label: "Location Segment-based Sessions"
   view_label: "Location Segment-based Sessions"
-  group_label: "In-app tracking data"
+  group_label: "Consumer Product"
   description: "Location-centered tracking events in sessions format"
 }
