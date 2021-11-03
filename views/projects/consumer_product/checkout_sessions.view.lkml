@@ -375,6 +375,13 @@ view: checkout_sessions {
     filters: [payment_failed: ">0", order_placed: ">0"]
   }
 
+  measure: cnt_order_placed {
+    label: "Order Placed"
+    description: "Number of sessions in which there was at least one Order Placed"
+    type: count
+    filters: [order_placed: ">0"]
+  }
+
   measure: cnt_unique_anonymousid {
     label: "Cnt Unique Users With Sessions"
     description: "Number of Unique Users identified via Anonymous ID from Segment that had a session"
@@ -382,6 +389,18 @@ view: checkout_sessions {
     type: count_distinct
     sql: ${anonymous_id};;
     value_format_name: decimal_0
+  }
+
+
+  measure: orderplaced_per_paymentstarted_perc{
+    type: number
+    sql: ${checkout_sessions.cnt_order_placed}/NULLIF(${checkout_sessions.cnt_payment_started},0) ;;
+    value_format_name: percent_1
+    drill_fields: [session_start_at_date, orderplaced_per_paymentstarted_perc]
+    link: {
+      label: "% Sessions with Order Placed out of Payment Started"
+      url: "/looks/688"
+    }
   }
 
   measure: paymentfailed_per_paymentstarted_perc{
@@ -425,6 +444,10 @@ view: checkout_sessions {
       when: {
         sql: ${TABLE}.hub_country = "NL" ;;
         label: "Netherlands"
+      }
+      when: {
+        sql: ${TABLE}.hub_country = "AT" ;;
+        label: "Austria"
       }
       else: "Other / Unknown"
     }

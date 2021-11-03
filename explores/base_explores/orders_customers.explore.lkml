@@ -5,10 +5,10 @@ include: "/**/*.explore"
 
 explore: orders_customers {
   extends: [orders_cl]
-  label: "User Metrics"
-  view_label: "* User Metrics *"
+  label: "Customer Metrics"
+  view_label: "* Customer Metrics *"
   #view_name: orders_customers
-  group_label: "User Metrics"
+  group_label: "Customer Metrics"
   description: "General Business Performance - Orders, Revenue, etc."
   hidden: no
   # view_name: base_order_orderline

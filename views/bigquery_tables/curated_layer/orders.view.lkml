@@ -1552,6 +1552,18 @@ view: orders {
     value_format: "0"
   }
 
+  measure: cnt_orders_delayed_under_30_sec_time_estimate {
+    # group_label: "* Operations / Logistics *"
+    view_label: "* Hubs *"
+    group_label: "Hub Leaderboard - Order Metrics"
+    label: "# Orders delivered within 30 sec of internal time estimate"
+    description: "Count of Orders delivered no later than 30 sec after internal time estimate"
+    hidden:  yes
+    type: count
+    filters: [delivery_delay_since_time_estimate:"<=0.5"]
+    value_format: "0"
+  }
+
   measure: cnt_orders_delayed_over_5_min_time_estimate {
     # group_label: "* Operations / Logistics *"
     view_label: "* Hubs *"
@@ -1716,6 +1728,16 @@ view: orders {
     value_format: "0%"
   }
 
+  measure: pct_delivery_in_time_30_sec_time_estimate{
+    group_label: "* Operations / Logistics *"
+    label: "% Orders delivered within 30 sec of internal time estimate"
+    description: "Share of orders delivered no later than 30 sec after internal estimate"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_delayed_under_30_sec_time_estimate} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
+    value_format: "0%"
+  }
+
   measure: pct_delivery_late_over_5_min_time_estimate{
     group_label: "* Operations / Logistics *"
     label: "% Orders delayed >5min (internal estimate)"
@@ -1772,6 +1794,8 @@ view: orders {
     label: "AVG # Orders per hub"
     type: number
     sql: ${cnt_orders}/NULLIF(${cnt_unique_hubs},0) ;;
+    value_format: "0.00"
+    html:  {{rendered_value}}  || # {{ cnt_unique_hubs._rendered_value }} unique hubs ;;
   }
 
   measure: avg_daily_orders_per_hub{
