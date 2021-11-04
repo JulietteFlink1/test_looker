@@ -1141,6 +1141,15 @@ view: orders {
     value_format_name: decimal_1
   }
 
+  measure: avg_pdt_mm_ss {
+    group_label: "* Operations / Logistics *"
+    label: "AVG PDT (MM:SS)"
+    description: "Average Promised Fulfillment Time (PDT) a shown to customer"
+    type: average
+    sql: ${delivery_eta_minutes} * 60 / 86400.0;;
+    value_format: "mm:ss"
+  }
+
   measure: avg_delivery_time_estimate {
     label: "AVG Delivery Time Estimate (min)"
     description: "The average internally predicted time in minutes for the order to arrive at the customer (dynamic model result - not necessarily the PDT shown to the customer as some conversion can be applied in between)"
@@ -1168,7 +1177,6 @@ view: orders {
     sql: ${fulfillment_time} * 60 / 86400.0;;
     value_format: "mm:ss"
   }
-
 
 
   measure: avg_reaction_time {
