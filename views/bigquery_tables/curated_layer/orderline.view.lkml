@@ -378,6 +378,14 @@ view: orderline {
     group_label: "> Absolute Metrics"
   }
 
+  measure: sum_revenue_gross {
+    label: "SUM of Gross Revenue"
+    sql: ${amt_revenue_gross} ;;
+    type: sum
+    value_format_name: euro_accounting_2_precision
+    group_label: "> Monetary Metrics"
+  }
+
   ###################### orderline facts
 
   measure: avg_daily_item_quantity_today {
