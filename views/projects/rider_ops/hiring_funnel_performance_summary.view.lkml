@@ -57,11 +57,24 @@ view: hiring_funnel_performance_summary {
     sql: ${TABLE}.hires ;;
   }
 
-  dimension: hires_with_first_shift {
+  dimension: hires_with_first_shift_completed {
     hidden: yes
     type: number
-    sql: ${TABLE}.hires_with_first_shift ;;
+    sql: ${TABLE}.hires_with_first_shift_completed ;;
   }
+
+  dimension: hires_with_first_shift_scheduled {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.hires_with_first_shift_scheduled ;;
+  }
+
+  dimension: hires_with_account_created {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.hires_with_account_created ;;
+  }
+
 
   dimension: leads {
     hidden: yes
@@ -188,7 +201,19 @@ view: hiring_funnel_performance_summary {
 
   measure: number_of_hires_with_first_shift {
     type: sum
-    sql: ${hires_with_first_shift} ;;
+    sql: ${hires_with_first_shift_completed} ;;
+    value_format_name: decimal_0
+  }
+
+  measure: number_of_hires_with_first_shift_scheduled {
+    type: sum
+    sql: ${hires_with_first_shift_scheduled} ;;
+    value_format_name: decimal_0
+  }
+
+  measure: number_of_hires_with_account_created {
+    type: sum
+    sql: ${hires_with_account_created} ;;
     value_format_name: decimal_0
   }
 
