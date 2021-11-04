@@ -1598,9 +1598,9 @@ view: orders {
 #######TEMP: adding new fields to compare how PDT versus Time Estimate will perform
 
 
-  measure: cnt_orders_deliverd_over_20_min {
+  measure: cnt_orders_fulfilled_over_20_min {
     group_label: "* Operations / Logistics *"
-    label: "# Orders delivered >20min"
+    label: "# Orders fulfilled >20min"
     description: "Count of Orders delivered >20min fulfillment time"
     hidden:  yes
     type: count
@@ -1608,9 +1608,9 @@ view: orders {
     value_format: "0"
   }
 
-  measure: cnt_orders_deliverd_over_30_min {
+  measure: cnt_orders_fulfilled_over_30_min {
     group_label: "* Operations / Logistics *"
-    label: "# Orders delivered >30min"
+    label: "# Orders fulfilled >30min"
     description: "Count of Orders delivered >30min fulfillment time"
     hidden:  yes
     type: count
@@ -1771,21 +1771,21 @@ view: orders {
 
   measure: pct_fulfillment_over_20_min{
     group_label: "* Operations / Logistics *"
-    label: "% Orders delivered >20min"
+    label: "% Orders fulfilled >20min"
     description: "Share of orders delivered > 20min"
     hidden:  no
     type: number
-    sql: ${cnt_orders_deliverd_over_20_min} / NULLIF(${cnt_orders}, 0);;
+    sql: ${cnt_orders_fulfilled_over_20_min} / NULLIF(${cnt_orders}, 0);;
     value_format: "0%"
   }
 
   measure: pct_fulfillment_over_30_min{
     group_label: "* Operations / Logistics *"
-    label: "% Orders delivered >30min"
+    label: "% Orders fulfilled >30min"
     description: "Share of orders delivered > 30min"
     hidden:  no
     type: number
-    sql: ${cnt_orders_deliverd_over_30_min} / NULLIF(${cnt_orders}, 0);;
+    sql: ${cnt_orders_fulfilled_over_30_min} / NULLIF(${cnt_orders}, 0);;
     value_format: "0%"
   }
 
