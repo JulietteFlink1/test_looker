@@ -5,6 +5,6 @@ explore: address_confirmed_events {
   view_name: address_confirmed_events
   label: "Address Confirmed Events"
   view_label: "Address Confirmed Events"
-  group_label: "In-app tracking data"
+  group_label: "Consumer Product"
   description: "Address Confirmed tracking events raw"
 }
