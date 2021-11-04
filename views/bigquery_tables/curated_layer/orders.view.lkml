@@ -348,7 +348,7 @@ view: orders {
 
   dimension: return_to_hub_time_minutes {
     label: "Return To Hub Time (min)"
-    description: "The time for a rider to cycle from the order destination back to the hub"
+    description: "The time for a rider to cycle from the customer back to the hub"
     group_label: "* Operations / Logistics *"
     type: number
     sql: ${TABLE}.return_to_hub_time_minutes ;;
@@ -1141,6 +1141,15 @@ view: orders {
     value_format_name: decimal_1
   }
 
+  measure: avg_pdt_mm_ss {
+    group_label: "* Operations / Logistics *"
+    label: "AVG PDT (MM:SS)"
+    description: "Average Promised Fulfillment Time (PDT) a shown to customer"
+    type: average
+    sql: ${delivery_eta_minutes} * 60 / 86400.0;;
+    value_format: "mm:ss"
+  }
+
   measure: avg_delivery_time_estimate {
     label: "AVG Delivery Time Estimate (min)"
     description: "The average internally predicted time in minutes for the order to arrive at the customer (dynamic model result - not necessarily the PDT shown to the customer as some conversion can be applied in between)"
@@ -1168,7 +1177,6 @@ view: orders {
     sql: ${fulfillment_time} * 60 / 86400.0;;
     value_format: "mm:ss"
   }
-
 
 
   measure: avg_reaction_time {
@@ -1204,12 +1212,24 @@ view: orders {
   measure: avg_delivery_time {
     group_label: "* Operations / Logistics *"
     label: "AVG Delivery Time"
-    description: "Average riding to customer time considering delivery start to arrival at customer. Outliers excluded (<0min or >30min)"
+    description: "Average riding to customer time considering delivery start to arrival at customer. Outliers excluded (<1min or >30min)"
     hidden:  no
     type: average
     sql: ${delivery_time};;
     value_format_name: decimal_1
   }
+
+
+  measure: avg_return_to_hub_time {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Return to Hub time"
+    description: "Average riding time from customer location back to the hub (<1min or >30min)"
+    hidden:  no
+    type: average
+    sql: ${return_to_hub_time_minutes};;
+    value_format_name: decimal_1
+  }
+
 
   measure: avg_at_customer_time {
     group_label: "* Operations / Logistics *"
@@ -1540,6 +1560,18 @@ view: orders {
     value_format: "0"
   }
 
+  measure: cnt_orders_delayed_under_30_sec_time_estimate {
+    # group_label: "* Operations / Logistics *"
+    view_label: "* Hubs *"
+    group_label: "Hub Leaderboard - Order Metrics"
+    label: "# Orders delivered within 30 sec of internal time estimate"
+    description: "Count of Orders delivered no later than 30 sec after internal time estimate"
+    hidden:  yes
+    type: count
+    filters: [delivery_delay_since_time_estimate:"<=0.5"]
+    value_format: "0"
+  }
+
   measure: cnt_orders_delayed_over_5_min_time_estimate {
     # group_label: "* Operations / Logistics *"
     view_label: "* Hubs *"
@@ -1566,9 +1598,9 @@ view: orders {
 #######TEMP: adding new fields to compare how PDT versus Time Estimate will perform
 
 
-  measure: cnt_orders_deliverd_over_20_min {
+  measure: cnt_orders_fulfilled_over_20_min {
     group_label: "* Operations / Logistics *"
-    label: "# Orders delivered >20min"
+    label: "# Orders fulfilled >20min"
     description: "Count of Orders delivered >20min fulfillment time"
     hidden:  yes
     type: count
@@ -1576,9 +1608,9 @@ view: orders {
     value_format: "0"
   }
 
-  measure: cnt_orders_deliverd_over_30_min {
+  measure: cnt_orders_fulfilled_over_30_min {
     group_label: "* Operations / Logistics *"
-    label: "# Orders delivered >30min"
+    label: "# Orders fulfilled >30min"
     description: "Count of Orders delivered >30min fulfillment time"
     hidden:  yes
     type: count
@@ -1704,6 +1736,16 @@ view: orders {
     value_format: "0%"
   }
 
+  measure: pct_delivery_in_time_30_sec_time_estimate{
+    group_label: "* Operations / Logistics *"
+    label: "% Orders delivered within 30 sec of internal time estimate"
+    description: "Share of orders delivered no later than 30 sec after internal estimate"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_delayed_under_30_sec_time_estimate} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
+    value_format: "0%"
+  }
+
   measure: pct_delivery_late_over_5_min_time_estimate{
     group_label: "* Operations / Logistics *"
     label: "% Orders delayed >5min (internal estimate)"
@@ -1729,21 +1771,21 @@ view: orders {
 
   measure: pct_fulfillment_over_20_min{
     group_label: "* Operations / Logistics *"
-    label: "% Orders delivered >20min"
+    label: "% Orders fulfilled >20min"
     description: "Share of orders delivered > 20min"
     hidden:  no
     type: number
-    sql: ${cnt_orders_deliverd_over_20_min} / NULLIF(${cnt_orders}, 0);;
+    sql: ${cnt_orders_fulfilled_over_20_min} / NULLIF(${cnt_orders}, 0);;
     value_format: "0%"
   }
 
   measure: pct_fulfillment_over_30_min{
     group_label: "* Operations / Logistics *"
-    label: "% Orders delivered >30min"
+    label: "% Orders fulfilled >30min"
     description: "Share of orders delivered > 30min"
     hidden:  no
     type: number
-    sql: ${cnt_orders_deliverd_over_30_min} / NULLIF(${cnt_orders}, 0);;
+    sql: ${cnt_orders_fulfilled_over_30_min} / NULLIF(${cnt_orders}, 0);;
     value_format: "0%"
   }
 
@@ -1760,6 +1802,8 @@ view: orders {
     label: "AVG # Orders per hub"
     type: number
     sql: ${cnt_orders}/NULLIF(${cnt_unique_hubs},0) ;;
+    value_format: "0.00"
+    html:  {{rendered_value}}  || # {{ cnt_unique_hubs._rendered_value }} unique hubs ;;
   }
 
   measure: avg_daily_orders_per_hub{

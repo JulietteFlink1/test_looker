@@ -11,16 +11,16 @@
       customers who reordered in following 7 day time spans. It is binary per each
       customer, it does not matter how often they reordered in the time period (KPI
       is agnostic to order frequency)
-    row: 0
+    row: 2
     col: 0
-    width: 22
+    width: 17
     height: 2
   - name: " (2)"
     type: text
     title_text: ''
     body_text: Here we only (!) look at customers that reordered and we check how
       often they reordered on average per time span
-    row: 10
+    row: 12
     col: 0
     width: 24
     height: 2
@@ -74,11 +74,11 @@
     show_totals: false
     show_row_totals: true
     series_column_widths:
-      customers_metrics_cleaned.first_order_week: 207
-      orders_cl_cleaned.cnt_unique_customers: 151
-      cohort_size: 96
-      customers_metrics_cleaned.weeks_time_since_sign_up: 151
-      pcnt_of_cohort_still_active: 133
+      customers_metrics_cleaned.first_order_week: 150
+      orders_cl_cleaned.cnt_unique_customers: 100
+      cohort_size: 100
+      customers_metrics_cleaned.weeks_time_since_sign_up: 75
+      pcnt_of_cohort_still_active: 75
     series_cell_visualizations:
       orders_cl_cleaned.cnt_unique_customers:
         is_active: false
@@ -90,12 +90,211 @@
         fields: [pcnt_of_cohort_still_active]}]
     defaults_version: 1
     hidden_fields: [orders_cl_cleaned.cnt_unique_customers]
+    query_fields:
+      measures:
+      - align: right
+        can_filter: true
+        category: measure
+        default_filter_value:
+        description: Count of Unique Customers identified via their Email
+        enumerations:
+        field_group_label: "* Basic Counts (Orders / Customers etc.) *"
+        fill_style:
+        fiscal_month_offset: 0
+        has_allowed_values: false
+        hidden: false
+        is_filter: false
+        is_numeric: true
+        label: "* User Metrics * # Unique Customers"
+        label_from_parameter:
+        label_short: "# Unique Customers"
+        map_layer:
+        name: orders_cl_cleaned.cnt_unique_customers
+        strict_value_format: false
+        requires_refresh_on_sort: false
+        sortable: true
+        suggestions:
+        tags: []
+        type: count_distinct
+        user_attribute_filter_types:
+        - number
+        - advanced_filter_number
+        value_format: '0'
+        view: orders_cl_cleaned
+        view_label: "* User Metrics *"
+        dynamic: false
+        week_start_day: monday
+        dimension_group:
+        error:
+        field_group_variant: "# Unique Customers"
+        measure: true
+        parameter: false
+        primary_key: false
+        project_name: flink_v1
+        scope: orders_cl_cleaned
+        suggest_dimension: orders_cl_cleaned.cnt_unique_customers
+        suggest_explore: orders_customers_cleaned
+        suggestable: false
+        is_fiscal: false
+        is_timeframe: false
+        can_time_filter: false
+        time_interval:
+        lookml_link: "/projects/flink_v1/files/views%2Fbigquery_tables%2Fcurated_layer%2Forders_cleaned.view.lkml?line=1221"
+        permanent:
+        source_file: views/bigquery_tables/curated_layer/orders_cleaned.view.lkml
+        source_file_path: flink_v1/views/bigquery_tables/curated_layer/orders_cleaned.view.lkml
+        sql:
+        sql_case:
+        filters:
+      dimensions:
+      - align: left
+        can_filter: true
+        category: dimension
+        default_filter_value:
+        description:
+        enumerations:
+        field_group_label: "* Dates and Timestamps *"
+        fill_style: range
+        fiscal_month_offset: 0
+        has_allowed_values: false
+        hidden: false
+        is_filter: false
+        is_numeric: false
+        label: "* Customers * First Order Week"
+        label_from_parameter:
+        label_short: First Order Week
+        map_layer:
+        name: customers_metrics_cleaned.first_order_week
+        strict_value_format: false
+        requires_refresh_on_sort: false
+        sortable: true
+        suggestions:
+        tags: []
+        type: date_week
+        user_attribute_filter_types:
+        - datetime
+        - advanced_filter_datetime
+        value_format:
+        view: customers_metrics_cleaned
+        view_label: "* Customers *"
+        dynamic: false
+        week_start_day: monday
+        dimension_group: customers_metrics_cleaned.first_order
+        error:
+        field_group_variant: First Order Week
+        measure: false
+        parameter: false
+        primary_key: false
+        project_name: flink_v1
+        scope: customers_metrics_cleaned
+        suggest_dimension: customers_metrics_cleaned.first_order_week
+        suggest_explore: orders_customers_cleaned
+        suggestable: false
+        is_fiscal: false
+        is_timeframe: true
+        can_time_filter: false
+        time_interval:
+          name: week
+          count: 1
+        lookml_link: "/projects/flink_v1/files/views%2Fbigquery_tables%2Fcurated_layer%2Fcustomer_metrics_cleaned.view.lkml?line=89"
+        permanent:
+        source_file: views/bigquery_tables/curated_layer/customer_metrics_cleaned.view.lkml
+        source_file_path: flink_v1/views/bigquery_tables/curated_layer/customer_metrics_cleaned.view.lkml
+        sql: "${TABLE}.first_order_timestamp "
+        sql_case:
+        filters:
+        sorted:
+          desc: false
+          sort_index: 0
+      table_calculations:
+      - label: Cohort Size
+        name: cohort_size
+        expression: max(pivot_row(${orders_cl_cleaned.cnt_unique_customers}))
+        can_pivot: false
+        sortable: true
+        type: number
+        align: right
+        measure: true
+        is_table_calculation: true
+        dynamic: true
+        value_format:
+        is_numeric: true
+      - label: Pcnt of Cohort still Active
+        name: pcnt_of_cohort_still_active
+        expression: "${orders_cl_cleaned.cnt_unique_customers}/pivot_index(${orders_cl_cleaned.cnt_unique_customers},1)"
+        can_pivot: true
+        sortable: true
+        type: number
+        align: right
+        measure: true
+        is_table_calculation: true
+        dynamic: true
+        value_format: "#,##0.0%"
+        is_numeric: true
+      pivots:
+      - align: right
+        can_filter: true
+        category: dimension
+        default_filter_value:
+        description:
+        enumerations:
+        field_group_label: "* User Dimensions *"
+        fill_style:
+        fiscal_month_offset: 0
+        has_allowed_values: false
+        hidden: false
+        is_filter: false
+        is_numeric: true
+        label: "* Customers * Weeks Time Since Sign Up"
+        label_from_parameter:
+        label_short: Weeks Time Since Sign Up
+        map_layer:
+        name: customers_metrics_cleaned.weeks_time_since_sign_up
+        strict_value_format: false
+        requires_refresh_on_sort: false
+        sortable: true
+        suggestions:
+        tags: []
+        type: duration_week
+        user_attribute_filter_types:
+        - number
+        - advanced_filter_number
+        value_format: '0'
+        view: customers_metrics_cleaned
+        view_label: "* Customers *"
+        dynamic: false
+        week_start_day: monday
+        dimension_group: customers_metrics_cleaned.time_since_sign_up
+        error:
+        field_group_variant: Weeks Time Since Sign Up
+        measure: false
+        parameter: false
+        primary_key: false
+        project_name: flink_v1
+        scope: customers_metrics_cleaned
+        suggest_dimension: customers_metrics_cleaned.weeks_time_since_sign_up
+        suggest_explore: orders_customers_cleaned
+        suggestable: false
+        is_fiscal: false
+        is_timeframe: false
+        can_time_filter: false
+        time_interval:
+        lookml_link: "/projects/flink_v1/files/views%2Fbigquery_tables%2Fcurated_layer%2Fcustomer_metrics_cleaned.view.lkml?line=294"
+        permanent:
+        source_file: views/bigquery_tables/curated_layer/customer_metrics_cleaned.view.lkml
+        source_file_path: flink_v1/views/bigquery_tables/curated_layer/customer_metrics_cleaned.view.lkml
+        sql: "Start:\n${first_order_raw} \n\nEnd:\n${orders_cl_cleaned.created_raw} "
+        sql_case:
+        filters:
+        sorted:
+          desc: false
+          sort_index: 1
     listen:
       City: customers_metrics_cleaned.first_order_city
       Is Voucher Acquisition (Yes / No): customers_metrics_cleaned.is_discount_acquisition
       Hub Name: orders_cl_cleaned.warehouse_name
-      Country Iso: customers_metrics_cleaned.country_iso
-    row: 2
+      Country: customers_metrics_cleaned.country_iso
+    row: 4
     col: 0
     width: 22
     height: 8
@@ -149,12 +348,12 @@
     show_totals: false
     show_row_totals: true
     series_column_widths:
-      customers_metrics_cleaned.first_order_week: 207
-      orders_cl_cleaned.cnt_unique_customers: 151
-      cohort_size: 96
-      customers_metrics_cleaned.weeks_time_since_sign_up: 151
-      pcnt_of_cohort_still_active: 133
-      order_frequency: 134.67000000000007
+      customers_metrics_cleaned.first_order_week: 150
+      orders_cl_cleaned.cnt_unique_customers: 100
+      cohort_size: 100
+      customers_metrics_cleaned.weeks_time_since_sign_up: 75
+      pcnt_of_cohort_still_active: 75
+      order_frequency: 75
     series_cell_visualizations:
       orders_cl_cleaned.cnt_unique_customers:
         is_active: false
@@ -170,8 +369,8 @@
       City: customers_metrics_cleaned.first_order_city
       Is Voucher Acquisition (Yes / No): customers_metrics_cleaned.is_discount_acquisition
       Hub Name: orders_cl_cleaned.warehouse_name
-      Country Iso: customers_metrics_cleaned.country_iso
-    row: 12
+      Country: customers_metrics_cleaned.country_iso
+    row: 14
     col: 0
     width: 22
     height: 8
@@ -228,14 +427,14 @@
     show_totals: false
     show_row_totals: true
     series_column_widths:
-      customers_metrics_cleaned.first_order_week: 207
-      orders_cl_cleaned.cnt_unique_customers: 151
-      cohort_size: 96
-      customers_metrics_cleaned.weeks_time_since_sign_up: 151
-      pcnt_of_cohort_still_active: 133
-      gmv_gross: 140.67000000000007
-      gmv_active_customer: 103
-      gmv_active_customer_retention: 127.67000000000007
+      customers_metrics_cleaned.first_order_week: 150
+      orders_cl_cleaned.cnt_unique_customers: 100
+      cohort_size: 100
+      customers_metrics_cleaned.weeks_time_since_sign_up: 75
+      pcnt_of_cohort_still_active: 75
+      gmv_gross: 75
+      gmv_active_customer: 75
+      gmv_active_customer_retention: 75
     series_cell_visualizations:
       orders_cl_cleaned.cnt_unique_customers:
         is_active: false
@@ -252,11 +451,11 @@
       City: customers_metrics_cleaned.first_order_city
       Is Voucher Acquisition (Yes / No): customers_metrics_cleaned.is_discount_acquisition
       Hub Name: orders_cl_cleaned.warehouse_name
-      Country Iso: customers_metrics_cleaned.country_iso
-    row: 34
+      Country: customers_metrics_cleaned.country_iso
+    row: 36
     col: 0
     width: 22
-    height: 9
+    height: 8
   - title: GMV / Active Customer
     name: GMV / Active Customer
     model: flink_v3
@@ -310,14 +509,14 @@
     show_totals: false
     show_row_totals: true
     series_column_widths:
-      customers_metrics_cleaned.first_order_week: 203
-      orders_cl_cleaned.cnt_unique_customers: 151
-      cohort_size: 96
-      customers_metrics_cleaned.weeks_time_since_sign_up: 151
-      pcnt_of_cohort_still_active: 133
-      gmv_gross: 140.67000000000007
-      gmv_active_customer: 103
-      gmv_active_customer_retention: 155.67000000000007
+      customers_metrics_cleaned.first_order_week: 150
+      orders_cl_cleaned.cnt_unique_customers: 100
+      cohort_size: 100
+      customers_metrics_cleaned.weeks_time_since_sign_up: 75
+      pcnt_of_cohort_still_active: 75
+      gmv_gross: 75
+      gmv_active_customer: 75
+      gmv_active_customer_retention: 75
     series_cell_visualizations:
       orders_cl_cleaned.cnt_unique_customers:
         is_active: false
@@ -334,8 +533,8 @@
       City: customers_metrics_cleaned.first_order_city
       Is Voucher Acquisition (Yes / No): customers_metrics_cleaned.is_discount_acquisition
       Hub Name: orders_cl_cleaned.warehouse_name
-      Country Iso: customers_metrics_cleaned.country_iso
-    row: 22
+      Country: customers_metrics_cleaned.country_iso
+    row: 24
     col: 0
     width: 22
     height: 10
@@ -345,7 +544,7 @@
     subtitle_text: ''
     body_text: Here we divide the GMV / Active Customer in each return period over
       the GMV / Active Customer of the initial period (W0)
-    row: 32
+    row: 34
     col: 0
     width: 22
     height: 2
@@ -354,17 +553,29 @@
     title_text: ''
     body_text: Here we report the GMV generated per each active customer in the respective
       period
-    row: 20
+    row: 22
     col: 0
     width: 22
     height: 2
+  - name: " (5)"
+    type: text
+    title_text: ''
+    subtitle_text: ''
+    body_text: "Phone attribution maps different email_address based on common phone_number\
+      \ and country_iso. \nFind details on the new phone-based attribution logic \n\
+      <a href=\"https://goflink.atlassian.net/wiki/spaces/DATA/pages/275775522/GROWTH+Customer+Attribution+Impact+Analysis#Modelling\"\
+      > here</a>."
+    row: 0
+    col: 0
+    width: 16
+    height: 2
   filters:
-  - name: Country Iso
-    title: Country Iso
+  - name: Country
+    title: Country
     type: field_filter
-    default_value: DE
+    default_value: ''
     allow_multiple_values: true
-    required: true
+    required: false
     ui_config:
       type: button_group
       display: inline

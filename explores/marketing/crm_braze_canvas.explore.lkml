@@ -3,7 +3,7 @@ include: "/views/sql_derived_tables/crm_braze_canvas.view.lkml"
 # include: "/**/*.view"
 
 explore: crm_braze_canvas {
-  hidden: no
+  hidden: yes
   view_name: crm_braze_canvas
   label: "CRM Canvas Data (Braze)"
   view_label: "CRM Braze Canvas"
