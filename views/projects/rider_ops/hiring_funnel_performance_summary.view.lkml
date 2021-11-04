@@ -199,7 +199,7 @@ view: hiring_funnel_performance_summary {
     value_format_name: decimal_0
   }
 
-  measure: number_of_hires_with_first_shift {
+  measure: number_of_hires_with_first_shift_completed {
     type: sum
     sql: ${hires_with_first_shift_completed} ;;
     value_format_name: decimal_0
@@ -233,6 +233,31 @@ view: hiring_funnel_performance_summary {
     type: sum
     sql: ${spend} ;;
     value_format_name: eur_0
+  }
+
+
+  measure: pct_hires_with_first_shift_completed {
+    label:       "% Hires with first shift completed"
+    description: "% Hires with first shift completed"
+    type:        number
+    sql:         ${number_of_hires_with_first_shift_completed} / ${number_of_hires} ;;
+    value_format_name:  percent_2
+  }
+
+  measure: pct_hires_with_first_shift_scheduled{
+    label:       "% Hires with first shift scheduled"
+    description: "% Hires with first shift scheduled"
+    type:        number
+    sql:         ${number_of_hires_with_first_shift_scheduled} / ${number_of_hires} ;;
+    value_format_name:  percent_2
+  }
+
+  measure: pct_hires_with_account_created {
+    label:       "% Hires with account created"
+    description: "% Hires with account created"
+    type:        number
+    sql:         ${number_of_hires_with_account_created} / ${number_of_hires} ;;
+    value_format_name:  percent_2
   }
 
 }
