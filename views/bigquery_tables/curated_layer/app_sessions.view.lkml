@@ -366,7 +366,7 @@ view: app_sessions {
     hidden: yes
     type: number
     sql: ${cnt_has_address} ;;
-    html: {{ rendered_value }} ({{ perc_of_total_has_address._rendered_value }} % of total) ;;  ## here we use || to concatenate the values
+    html: {{ rendered_value }} ({{ perc_of_total_has_address._rendered_value }} % of total) ;;
   }
 
   measure: perc_of_total_patc {
@@ -380,7 +380,7 @@ view: app_sessions {
     hidden: yes
     type: number
     sql: ${cnt_add_to_cart} ;;
-    html: {{ rendered_value }} ({{ perc_of_total_patc._rendered_value }} % of total) ;;  ## here we use || to concatenate the values
+    html: {{ rendered_value }} ({{ perc_of_total_patc._rendered_value }} % of total) ;;
   }
 
   measure: perc_of_total_checkout {
@@ -394,7 +394,7 @@ view: app_sessions {
     hidden: yes
     type: number
     sql: ${cnt_checkout_started} ;;
-    html: {{ rendered_value }} ({{ perc_of_total_checkout._rendered_value }} % of total) ;;  ## here we use || to concatenate the values
+    html: {{ rendered_value }} ({{ perc_of_total_checkout._rendered_value }} % of total) ;;
   }
 
   measure: perc_of_total_payment {
@@ -408,7 +408,7 @@ view: app_sessions {
     hidden: yes
     type: number
     sql: ${cnt_payment_started} ;;
-    html: {{ rendered_value }} ({{ perc_of_total_payment._rendered_value }} % of total) ;;  ## here we use || to concatenate the values
+    html: {{ rendered_value }} ({{ perc_of_total_payment._rendered_value }} % of total) ;;
   }
 
   measure: perc_of_total_order {
@@ -422,7 +422,7 @@ view: app_sessions {
     hidden: yes
     type: number
     sql: ${cnt_purchase} ;;
-    html: {{ rendered_value }} ({{ perc_of_total_order._rendered_value }} % of total) ;;  ## here we use || to concatenate the values
+    html: {{ rendered_value }} ({{ perc_of_total_order._rendered_value }} % of total) ;;
   }
 
   ###### Sum of events
