@@ -2,8 +2,8 @@ include: "/views/projects/consumer_product/location_segment_sessions.view.lkml"
 
 explore: location_sessions {
   view_name: location_segment_sessions
-  label: "Location Segment-based Sessions"
-  view_label: "Location Segment-based Sessions"
+  label: "Address Sessions"
+  view_label: "Address Sessions"
   group_label: "Consumer Product"
-  description: "Location-centered tracking events in sessions format"
+  description: "Address-centered tracking events in sessions format"
 }
