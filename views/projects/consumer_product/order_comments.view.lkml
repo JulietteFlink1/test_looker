@@ -23,6 +23,51 @@ view: order_comments {
     sql: TIME_DIFF(TIME(${delivery_eta_timestamp_raw}), TIME(${delivery_timestamp_raw}), MINUTE) = 0 ;;
   }
 
+  dimension: picker_acceptance_time {
+    type: duration_second
+    sql_start: TIMESTAMP(${created_time});; # convert to UTC
+    sql_end: TIMESTAMP(${order_picker_accepted_timestamp});; # convert from string to timestamp in UTC
+  }
+
+  dimension: packing_time {
+    type: duration_second
+    sql_start: TIMESTAMP(${order_picker_accepted_timestamp});; # convert from string to timestamp in UTC
+    sql_end: TIMESTAMP(${order_packed_timestamp});; # convert from string to timestamp in UTC
+  }
+
+  dimension: rider_acceptance_time {
+    type: duration_second
+    sql_start: TIMESTAMP(${order_packed_timestamp});; # convert from string to timestamp in UTC
+    sql_end: TIMESTAMP(${order_rider_claimed_timestamp});; # convert from string to timestamp in UTC
+  }
+
+  dimension: onroute_time {
+    type: duration_second
+    sql_start: TIMESTAMP(${order_rider_claimed_timestamp});;
+    sql_end: TIMESTAMP(${delivery_timestamp_time});;
+  }
+
+  measure: avg_picker_acceptance_time {
+    type: average
+    sql: ${picker_acceptance_time} ;;
+    value_format_name: decimal_1
+  }
+  measure: avg_packing_time {
+    type: average
+    sql: ${packing_time} ;;
+    value_format_name: decimal_1
+  }
+  measure: avg_rider_acceptance_time {
+    type: average
+    sql: ${rider_acceptance_time} ;;
+    value_format_name: decimal_1
+  }
+  measure: avg_onroute_time {
+    type: average
+    sql: ${onroute_time} ;;
+    value_format_name: decimal_1
+  }
+
   dimension: delivery_timeliness {
     type: string
     case: {

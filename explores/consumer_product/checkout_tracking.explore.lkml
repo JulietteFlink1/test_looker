@@ -1,10 +1,10 @@
 include: "/views/projects/consumer_product/checkout_tracking.view.lkml"
 
 explore: checkout_tracking {
-  hidden: no
+  hidden: yes
   view_name: checkout_tracking
   label: "Checkout"
   view_label: "Checkout"
-  group_label: "In-app tracking data"
+  group_label: "Consumer Product"
   description: "Checkout tracking events"
 }

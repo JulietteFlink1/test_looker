@@ -4,6 +4,6 @@ explore: marketingbanners_mobile_events {
   hidden: yes
   label: "Marketing banner impressions"
   view_label: "Marketing banner impressions"
-  group_label: "In-app tracking data"
+  group_label: "Consumer Product"
   description: "Marketing banner events"
 }

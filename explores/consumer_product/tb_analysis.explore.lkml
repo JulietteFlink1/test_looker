@@ -2,10 +2,10 @@
 include: "/views/projects/consumer_product/tracking_events_analysis.view.lkml"
 
 explore: tb_analysis {
-  hidden: no
+  hidden: yes
   view_name:  tracking_events_analysis
   label: "TB Analysis"
   view_label: "TB Analysis"
-  group_label: "In-app tracking data"
+  group_label: "Consumer Product"
   description: "TB Analysis Of Event Sizes"
 }

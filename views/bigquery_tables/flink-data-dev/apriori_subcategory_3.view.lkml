@@ -37,6 +37,21 @@ view: apriori_subcategory_3 {
     sql: ${TABLE}.granularity ;;
   }
 
+  dimension: avg_orders_per_month_num {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.avg_orders_per_month ;;
+  }
+
+  dimension: avg_orders_per_month {
+    type: string
+    order_by_field: avg_orders_per_month_num
+    sql: CASE WHEN ${avg_orders_per_month_num} = 1 then   concat('[',cast(${avg_orders_per_month_num}-1 as string),'-',cast(${avg_orders_per_month_num} as string),']')
+              WHEN ${avg_orders_per_month_num} <= 10 and ${avg_orders_per_month_num}>= 1  then concat(']',cast(${avg_orders_per_month_num}-1 as string),'-',cast(${avg_orders_per_month_num} as string),']')
+              WHEN ${avg_orders_per_month_num} = 11 THEN ']10,+inf['
+              WHEN ${avg_orders_per_month_num} is null then 'All' END ;;
+  }
+
   dimension: int64_field_0 {
     hidden: yes
     type: number
@@ -51,6 +66,12 @@ view: apriori_subcategory_3 {
   dimension: support {
     type: number
     sql: ${TABLE}.support ;;
+    value_format: "0.00%"
+  }
+
+  dimension: country_iso {
+    type: string
+    sql: ${TABLE}.country_iso  ;;
   }
 
   measure: count {

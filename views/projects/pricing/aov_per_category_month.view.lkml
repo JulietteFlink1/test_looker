@@ -35,7 +35,7 @@ b as
 
     SELECT
     country_iso,
-    case when category is null then "null" else category end as category,
+    case when random_ct_category is null then "null" else random_ct_category end as category,
     from `flink-data-prod.curated.products` prod
     group by 1,2
     order by 2
@@ -52,7 +52,7 @@ c as
       hub.country,
       hub.hub_name,
       hub.city,
-      case when category is null then "null" else category end as category,
+      case when random_ct_category is null then "null" else random_ct_category end as category,
       sum (a.amt_total_price_gross) as sum_item_value,
       sum (a.quantity) as sum_quantity,
       count (distinct a.order_uuid) as orders_category
