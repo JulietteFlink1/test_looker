@@ -197,7 +197,7 @@ view: hub_level_kpis {
     label: "AVG # SKUs per Order"
     type: number
     sql: ${sum_number_of_distinct_skus} / nullif(${sum_number_of_orders},0) ;;
-   value_format_name: decimal_1
+    value_format_name: decimal_1
   }
 
   measure: avg_items_per_order {

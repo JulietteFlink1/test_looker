@@ -353,6 +353,78 @@ view: app_sessions {
     filters: [is_discount_successfully_applied: "yes"]
   }
 
+  ### these measures reformat cnt so it shows % in the label as well -> for the conversion funnel visualization
+
+  measure: perc_of_total_has_address {
+    hidden: yes
+    type: number
+    sql: ${cnt_has_address}/${count} ;;
+    value_format_name: percent_1
+  }
+
+  measure: total_has_address {
+    hidden: yes
+    type: number
+    sql: ${cnt_has_address} ;;
+    html: {{ rendered_value }} ({{ perc_of_total_has_address._rendered_value }} % of total) ;;
+  }
+
+  measure: perc_of_total_patc {
+    hidden: yes
+    type: number
+    sql: ${cnt_add_to_cart}/${count} ;;
+    value_format_name: percent_1
+  }
+
+  measure: total_has_patc {
+    hidden: yes
+    type: number
+    sql: ${cnt_add_to_cart} ;;
+    html: {{ rendered_value }} ({{ perc_of_total_patc._rendered_value }} % of total) ;;
+  }
+
+  measure: perc_of_total_checkout {
+    hidden: yes
+    type: number
+    sql: ${cnt_checkout_started}/${count} ;;
+    value_format_name: percent_1
+  }
+
+  measure: total_has_checkout {
+    hidden: yes
+    type: number
+    sql: ${cnt_checkout_started} ;;
+    html: {{ rendered_value }} ({{ perc_of_total_checkout._rendered_value }} % of total) ;;
+  }
+
+  measure: perc_of_total_payment {
+    hidden: yes
+    type: number
+    sql: ${cnt_payment_started}/${count} ;;
+    value_format_name: percent_1
+  }
+
+  measure: total_has_payment {
+    hidden: yes
+    type: number
+    sql: ${cnt_payment_started} ;;
+    html: {{ rendered_value }} ({{ perc_of_total_payment._rendered_value }} % of total) ;;
+  }
+
+  measure: perc_of_total_order {
+    hidden: yes
+    type: number
+    sql: ${cnt_purchase}/${count} ;;
+    value_format_name: percent_1
+  }
+
+  measure: total_has_order {
+    hidden: yes
+    type: number
+    sql: ${cnt_purchase} ;;
+    html: {{ rendered_value }} ({{ perc_of_total_order._rendered_value }} % of total) ;;
+  }
+
   ###### Sum of events
 
   measure: sum_address_selected {
