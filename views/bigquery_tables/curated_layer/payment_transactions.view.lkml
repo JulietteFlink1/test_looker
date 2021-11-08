@@ -100,6 +100,7 @@ view: payment_transactions {
   measure: sum_transaction_amount {
     type: sum
     sql: ${transaction_amount} ;;
+    value_format: "0.00€"
   }
 
   measure: count {

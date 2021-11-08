@@ -157,7 +157,7 @@ view: city_level_employees_capacity {
     sql:${total_worked_ext_employees_hours};;
     value_format_name: decimal_0
   }
-  measure: total_of_active_employees {
+  measure: total_active_employees {
     type:sum
     sql: ${number_of_active_employees};;
     value_format_name: decimal_0
@@ -168,7 +168,7 @@ view: city_level_employees_capacity {
     label: "AVG. Hours Worked Hours per Rider"
     description: "Total Worked Hours / # Active Employees"
     type: number
-    sql: ${sum_worked_active_employees_hours} / nullif(${total_of_active_employees},0) ;;
+    sql: ${sum_worked_active_employees_hours} / nullif(${total_active_employees},0) ;;
     value_format_name: decimal_2
   }
 
