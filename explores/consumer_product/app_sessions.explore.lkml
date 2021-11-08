@@ -4,7 +4,7 @@ include: "/views/bigquery_tables/curated_layer/app_sessions.view.lkml"
 explore: app_sessions {
   label: "Sessions"
   view_label: "Sessions - App"
-  group_label: "In-app tracking data"
+  group_label: "Consumer Product"
   description: "App sessions"
   always_filter: {
     filters:  [

@@ -641,6 +641,10 @@ event_counts AS (
         sql: ${TABLE}.hub_country = "NL" ;;
         label: "Netherlands"
       }
+      when: {
+        sql: ${TABLE}.hub_country = "AT" ;;
+        label: "Austria"
+      }
       else: "Other / Unknown"
     }
   }

@@ -221,7 +221,7 @@ view: checkout_sessions {
          , SUM(CASE WHEN e.event="address_change_at_checkout_message_viewed" THEN 1 ELSE 0 END) as late_change_event_count
          , SUM(CASE WHEN e.event="hub_update_message_viewed" THEN 1 ELSE 0 END) as hub_update_event_count
          , SUM(CASE WHEN e.event="checkout_started" THEN 1 ELSE 0 END) as checkout_started_event_count
-         , SUM(CASE WHEN e.event="purchase_confirmed" THEN 1 ELSE 0 END) as payment_started_event_count
+         , SUM(CASE WHEN e.event IN ("purchase_confirmed","payment_started") THEN 1 ELSE 0 END) as payment_started_event_count
          , SUM(CASE WHEN e.event="payment_failed" THEN 1 ELSE 0 END) as payment_failed_event_count
          , SUM(CASE WHEN e.event="order_placed" THEN 1 ELSE 0 END) as order_placed_event_count
         FROM events e
@@ -375,6 +375,13 @@ view: checkout_sessions {
     filters: [payment_failed: ">0", order_placed: ">0"]
   }
 
+  measure: cnt_order_placed {
+    label: "Order Placed"
+    description: "Number of sessions in which there was at least one Order Placed"
+    type: count
+    filters: [order_placed: ">0"]
+  }
+
   measure: cnt_unique_anonymousid {
     label: "Cnt Unique Users With Sessions"
     description: "Number of Unique Users identified via Anonymous ID from Segment that had a session"
@@ -382,6 +389,18 @@ view: checkout_sessions {
     type: count_distinct
     sql: ${anonymous_id};;
     value_format_name: decimal_0
+  }
+
+
+  measure: orderplaced_per_paymentstarted_perc{
+    type: number
+    sql: ${checkout_sessions.cnt_order_placed}/NULLIF(${checkout_sessions.cnt_payment_started},0) ;;
+    value_format_name: percent_1
+    drill_fields: [session_start_at_date, orderplaced_per_paymentstarted_perc]
+    link: {
+      label: "% Sessions with Order Placed out of Payment Started"
+      url: "/looks/688"
+    }
   }
 
   measure: paymentfailed_per_paymentstarted_perc{
@@ -425,6 +444,10 @@ view: checkout_sessions {
       when: {
         sql: ${TABLE}.hub_country = "NL" ;;
         label: "Netherlands"
+      }
+      when: {
+        sql: ${TABLE}.hub_country = "AT" ;;
+        label: "Austria"
       }
       else: "Other / Unknown"
     }

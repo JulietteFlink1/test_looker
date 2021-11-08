@@ -135,6 +135,18 @@ view: customers_metrics {
     sql: ${TABLE}.first_order_discount_code ;;
   }
 
+  dimension: first_order_cart_discount_id {
+    group_label: "* User Dimensions *"
+    type: string
+    sql: ${TABLE}.first_order_cart_discount_id ;;
+  }
+
+  dimension: first_order_discount_name {
+    group_label: "* User Dimensions *"
+    type: string
+    sql: ${TABLE}.first_order_discount_name ;;
+  }
+
   dimension_group: last_order_with_voucher {
     group_label: "* Dates and Timestamps *"
     type: time

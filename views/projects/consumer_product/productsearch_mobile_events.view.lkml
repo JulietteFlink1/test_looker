@@ -566,7 +566,11 @@ view: productsearch_mobile_events {
         sql: ${TABLE}.derived_country_iso = "NL" ;;
         label: "Netherlands"
       }
-      else: "- Other / Unknown"
+      when: {
+        sql: ${TABLE}.derived_country_iso = "AT" ;;
+        label: "Austria"
+      }
+      else: "Other / Unknown"
     }
   }
 

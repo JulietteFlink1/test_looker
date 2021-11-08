@@ -16,6 +16,7 @@ view: vat_order {
                     oo.hub_code,
                     o.customer_email as user_email,
                     o.order_date,
+                    d.is_free_delivery_discount,
                     p.tax_rate,
                     amt_unit_price_gross * quantity / (1+p.tax_rate)                           as item_price_net,
                     amt_unit_price_gross * quantity                                            as item_price_gross,
@@ -46,9 +47,11 @@ view: vat_order {
                     oo.amt_discount                                                            as discount_amount,
                     oo.amt_discount/(1+p.tax_rate)                                             as discount_amount_net,
                     o.amt_delivery_fee_gross                                                   as delivery_fee_gross,
+                    CASE WHEN d.is_free_delivery_discount is true then o.amt_discount_gross  else 0 end  as discount_free_delivery_gross
                 FROM `flink-data-prod.curated.order_lineitems` oo
                 LEFT JOIN `flink-data-prod.curated.products` p ON p.country_iso = oo.country_iso and p.product_sku = oo.sku
-                LEFT JOIN `flink-data-prod.curated.orders` o on o.country_iso = oo.country_iso and o.order_uuid = oo.order_uuid
+                LEFT JOIN `flink-data-prod.curated.orders` o ON o.country_iso = oo.country_iso and o.order_uuid = oo.order_uuid
+                LEFT JOIN `flink-data-prod.curated.discounts` d ON d.discount_code = o.discount_code and d.discount_id = o.discount_id
                 WHERE TRUE
                 AND is_successful_order is true
                 AND p.tax_rate is not null
@@ -64,6 +67,8 @@ view: vat_order {
                   hub_code,
                   user_email,
                   delivery_fee_gross,
+                  is_free_delivery_discount,
+                  discount_free_delivery_gross,
                   SUM(tax_rate * item_price_net)/SUM(item_price_net) as tax_rate_weighted,
                   SUM(item_price_net)                               as items_price_net,
                   SUM(item_price_gross)                             as items_price_gross,
@@ -83,7 +88,7 @@ view: vat_order {
                   SUM(discount_amount_net)                          as discount_amount_net
 
                 FROM orderline
-                GROUP BY 1,2,3,4,5,6,7
+                GROUP BY 1,2,3,4,5,6,7,8,9
             )
             ,
             delivery_fees_discount as (
@@ -94,10 +99,12 @@ view: vat_order {
                         hub_code,
                         user_email,
                         tax_rate_weighted ,
+                        is_free_delivery_discount,
+                        discount_free_delivery_gross,
                         items_price_net,
                         items_price_gross,
                         delivery_fee_gross,
-                        delivery_fee_gross / ( 1 + tax_rate_weighted) as delivery_fee_net,
+                        CASE WHEN is_free_delivery_discount is true then 0 else delivery_fee_gross / ( 1 + tax_rate_weighted) end as delivery_fee_net,
                         items_price_standard_net,
                         items_price_standard_gross,
                         items_price_reduced_gross,
@@ -145,6 +152,8 @@ view: vat_order {
                    d.user_email,
                    payment_type,
                    tax_rate_weighted,
+                   is_free_delivery_discount,
+                   discount_free_delivery_gross,
                    COALESCE(delivery_fee_gross,0)                           as delivery_fee_gross,
                    COALESCE(delivery_fee_net,0)                             as delivery_fee_net,
                    COALESCE(discount_amount_net,0)                          as discount_amount_net,
@@ -178,7 +187,8 @@ view: vat_order {
             n.hub_code,
             tax_rate_weighted,
             payment_type,
-
+            is_free_delivery_discount,
+            discount_free_delivery_gross,
             -- Items Data
             items_price_net,
             items_price_gross,
@@ -273,7 +283,7 @@ view: vat_order {
     sql: ${TABLE}.country_iso ;;
   }
 
-  dimension_group: created {
+  dimension_group: order {
     group_label: "Order Date"
     type: time
     timeframes: [
@@ -293,6 +303,19 @@ view: vat_order {
     type: string
     sql: ${TABLE}.user_email ;;
   }
+
+  dimension: is_free_delivery_discount {
+    type: yesno
+    sql: ${TABLE}.is_free_delivery_discount ;;
+  }
+
+  dimension: discount_free_delivery_gross {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.discount_free_delivery_gross ;;
+  }
+
+
 
   dimension: hub_name {
     type: string
@@ -628,6 +651,29 @@ view: vat_order {
     sql: ${TABLE}.total_gross ;;
   }
 
+  dimension: total_gross_bins {
+    hidden: no
+    type: string
+    sql: case when ${total_gross} < 10 THEN '<10'
+          when ${total_gross}  >= 10 and ${total_gross}  < 12 THEN '10-12'
+          when ${total_gross}  >= 12 and ${total_gross}  < 14 THEN '12-14'
+          when ${total_gross}  >= 14 and ${total_gross}  < 20 THEN '14-20'
+          when ${total_gross}  >= 20 and ${total_gross}  < 30 THEN '20-30'
+          when ${total_gross}  >= 30 THEN '>30' end;;
+  }
+
+  dimension: total_item_delivery_fee_bins {
+    hidden: no
+    type: string
+    sql: case when ${items_price_gross} + ${delivery_fee_gross} < 10 THEN '<10'
+          when ${items_price_gross} + ${delivery_fee_gross}  >= 10 and ${items_price_gross} + ${delivery_fee_gross}   < 12 THEN '10-12'
+          when ${items_price_gross} + ${delivery_fee_gross}   >= 12 and ${items_price_gross} + ${delivery_fee_gross}  < 14 THEN '12-14'
+          when ${items_price_gross} + ${delivery_fee_gross}  >= 14 and ${items_price_gross} + ${delivery_fee_gross}  < 20 THEN '14-20'
+          when ${items_price_gross} + ${delivery_fee_gross}  >= 20 and ${items_price_gross} + ${delivery_fee_gross} < 30 THEN '20-30'
+          when ${items_price_gross} + ${delivery_fee_gross} >= 30 THEN '>30' end;;
+  }
+
+
   dimension: total_vat {
     hidden: yes
     type: number
@@ -899,6 +945,13 @@ view: vat_order {
     sql: ${vat_discount_amount_total} ;;
   }
 
+  measure: sum_discount_amount_free_delivery_gross {
+    group_label: "* Discounts *"
+    value_format: "#,##0.00€"
+    type: sum
+    sql: ${discount_free_delivery_gross} ;;
+  }
+
 
 
     #####################  Refunds  ##########################
@@ -994,6 +1047,7 @@ view: vat_order {
   measure: sum_total_gross {
     group_label: "* Total *"
     type: sum
+    description: "Items Gross + DF Gross - Discounts Gross - Refunds Gross"
     value_format: "#,##0.00€"
     sql: ${total_gross} ;;
   }
@@ -1001,6 +1055,7 @@ view: vat_order {
   measure: sum_total_net {
     group_label: "* Total *"
     type: sum
+    description: "Items Net + DF Net - Discounts Net - Refunds Net"
     value_format: "#,##0.00€"
     sql: ${total_net} ;;
   }
@@ -1008,6 +1063,7 @@ view: vat_order {
   measure: sum_total_vat {
     group_label: "* Total *"
     type: sum
+    description: "Total Gross - Total Net"
     value_format: "#,##0.00€"
     sql: ${total_vat} ;;
   }

@@ -9,7 +9,7 @@
     explore: hiring_funnel_performance_summary
     type: looker_grid
     fields: [hiring_funnel_performance_summary.date_, hiring_funnel_performance_summary.date_date,
-      hiring_funnel_performance_summary.number_of_hires, hiring_funnel_performance_summary.number_of_hires_with_first_shift,
+      hiring_funnel_performance_summary.number_of_hires, hiring_funnel_performance_summary.number_of_hires_with_first_shift_completed,
       hiring_funnel_performance_summary.avg_days_to_hire, hiring_funnel_performance_summary.avg_days_to_first_shift,
       hiring_funnel_performance_summary.number_of_leads, hiring_funnel_performance_summary.total_spend]
     filters: {}
@@ -48,7 +48,7 @@
     series_labels:
       hiring_funnel_performance_summary.date_date: Date
       hiring_funnel_performance_summary.number_of_hires: Hires
-      hiring_funnel_performance_summary.number_of_hires_with_first_shift: Hired & Completed
+      hiring_funnel_performance_summary.number_of_hires_with_first_shift_completed: Hired & Completed
         1st Shift
       hiring_funnel_performance_summary.avg_days_to_hire: Avg. Time to Hire (days)
       hiring_funnel_performance_summary.avg_days_to_first_shift: Avg. Time to 1st Shift
@@ -569,7 +569,7 @@
     type: looker_grid
     fields: [hiring_funnel_performance_summary.city, hiring_funnel_performance_summary.date_,
       hiring_funnel_performance_summary.date_date, hiring_funnel_performance_summary.number_of_hires,
-      hiring_funnel_performance_summary.number_of_hires_with_first_shift, hiring_funnel_performance_summary.avg_days_to_hire,
+      hiring_funnel_performance_summary.number_of_hires_with_first_shift_completed, hiring_funnel_performance_summary.avg_days_to_hire,
       hiring_funnel_performance_summary.avg_days_to_first_shift, hiring_funnel_performance_summary.number_of_leads,
       hiring_funnel_performance_summary.total_spend]
     filters: {}
@@ -609,7 +609,7 @@
     series_labels:
       hiring_funnel_performance_summary.date_date: Date
       hiring_funnel_performance_summary.number_of_hires: Hires
-      hiring_funnel_performance_summary.number_of_hires_with_first_shift: Hired & Completed
+      hiring_funnel_performance_summary.number_of_hires_with_first_shift_completed: Hired & Completed
         1st Shift
       hiring_funnel_performance_summary.avg_days_to_hire: Avg. Time to Hire (days)
       hiring_funnel_performance_summary.avg_days_to_first_shift: Avg. Time to 1st Shift
@@ -617,7 +617,7 @@
       hiring_funnel_performance_summary.number_of_leads: Leads
       hiring_funnel_performance_summary.total_spend: Costs
     series_column_widths:
-      hiring_funnel_performance_summary.number_of_hires_with_first_shift: 143
+      hiring_funnel_performance_summary.number_of_hires_with_first_shift_completed: 143
       hiring_funnel_performance_summary.avg_days_to_hire: 113
     series_cell_visualizations:
       hiring_funnel_performance_summary.number_of_hires:
