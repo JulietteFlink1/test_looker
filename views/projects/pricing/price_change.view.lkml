@@ -285,8 +285,10 @@ UNION ALL
 select
 e.*
 from e
-)
+),
 
+h as
+(
 select
 g.*,
 --f.avg_unit_price_gross as avg_unit_price_gross_subcateg,
@@ -301,11 +303,37 @@ and f.order_date = g.order_date
 and f.category = g.category
 and f.subcategory = g.subcategory
 and f.hub_name = g.hub_name
+),
 
---where substitute_group  = "Rothaus Tannenzäpfle Pils 0,33l"
---and f.hub_name ="DE - Berlin - Mitte 2"
---order by order_date
+i as
+(
+SELECT
+a.inventory_tracking_date,
+c.hub_name,
+COALESCE(b.substitute_group, b.product_name) as substitute_group,
+min(hours_oos) as hours_oos,
+max(open_hours_total) as open_hours_total
+FROM `flink-data-prod.reporting.inventory_stock_count_daily` a
+LEFT JOIN `flink-data-prod.curated.products` b
+on a.sku = b.product_sku
+left join `flink-data-prod.curated.hubs` c
+on a.hub_code = c.hub_code
+ WHERE inventory_tracking_date >= "2021-09-01"
+-- and product_sku = "11011445"
+ group by 1,2,3
 
+)
+select
+h.*,
+i.hours_oos,
+i.open_hours_total
+
+from h
+left join i
+on h.hub_name = i.hub_name
+and h.substitute_group = i.substitute_group
+and h.order_date = i.inventory_tracking_date
+where order_date>="2021-09-01"
 
       ;;
 }
@@ -349,6 +377,17 @@ and f.hub_name = g.hub_name
     sql: ${TABLE}.avg_unit_price_gross ;;
   }
 
+  measure: hours_oos {
+    label: "Hours ooo"
+    type: sum
+    sql: ${TABLE}.hours_oos ;;
+  }
+
+  measure: open_hours_total {
+    label: "Open Hours"
+    type: sum
+    sql: ${TABLE}.open_hours_total ;;
+  }
 #    measure: sum_item_value_1W_back {
 #    type: sum
 #    sql: ${TABLE}.sum_item_value_1W_back ;;
