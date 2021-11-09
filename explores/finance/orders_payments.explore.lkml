@@ -3,7 +3,7 @@ include: "/**/*.view"
 include: "/**/*.explore"
 
 explore: orders_payments {
-  extends: [orders_cl]
+  extends: [order_orderline_cl]
   label: "Orders Payments"
   view_label: "* Orders *"
   #view_name: orders_customers
@@ -17,7 +17,7 @@ explore: orders_payments {
     view_label: "* Payment Transactions *"
     sql_on: ${payment_transactions.country_iso} = ${orders_cl.country_iso} AND
       ${payment_transactions.order_uuid}    = ${orders_cl.order_uuid} ;;
-    relationship: one_to_many
+    relationship: many_to_many
     type: left_outer
   }
   }
