@@ -6,4 +6,5 @@ explore: postorder_events {
   view_label: "Postorder Events"
   group_label: "Consumer Product"
   description: "Postorder events"
+  hidden: yes
 }

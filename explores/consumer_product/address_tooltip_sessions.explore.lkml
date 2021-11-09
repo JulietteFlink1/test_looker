@@ -6,4 +6,5 @@ explore: address_tooltip_sessions {
   view_label: "address_tooltip_sessions"
   group_label: "Consumer Product"
   description: "Address Tooltip sessions"
+  hidden: yes
 }

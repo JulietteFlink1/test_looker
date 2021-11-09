@@ -6,4 +6,5 @@ explore: delivery_time_sessions {
   view_label: "Delivery Time Sessions"
   group_label: "Consumer Product"
   description: "Delivery time (home and address confirmed) tracking events in sessions format"
+  hidden: yes
 }
