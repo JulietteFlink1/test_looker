@@ -330,10 +330,10 @@ and f.hub_name = g.hub_name
     sql: ${TABLE}.sum_quantity ;;
   }
 
-  measure: sum_quantity_subcategory {
-    label: "Quantity Sold - Subcategory"
+  measure: sum_quantity_subcateg {
+    label: "Quantity Sold - Subcateg"
     type: sum
-    sql: ${TABLE}.sum_quantity_subcategory ;;
+    sql: ${TABLE}.sum_quantity_subcateg ;;
   }
 
   measure: orders {
