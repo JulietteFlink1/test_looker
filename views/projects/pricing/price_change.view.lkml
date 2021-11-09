@@ -166,10 +166,86 @@ e as
       group by 1,2,3,4,5,6,7,8,9--,10,11
       order by 1
 
-)
+),
+
+f as
+(
+select
+      period,
+      order_date,
+      category,
+      subcategory,
+      hub_name,
+      sum(avg_unit_price_gross) as avg_unit_price_gross,
+      sum(sum_item_value) as sum_item_value,
+      sum(sum_quantity) as sum_quantity
+from a
+
+group by 1,2,3,4,5
+
+UNION ALL
+
+select
+      period,
+      order_date,
+      category,
+      subcategory,
+      hub_name,
+      sum(avg_unit_price_gross) as avg_unit_price_gross,
+      sum(sum_item_value) as sum_item_value,
+      sum(sum_quantity) as sum_quantity
+from b
+
+group by 1,2,3,4,5
+
+UNION ALL
+
+select
+      period,
+      order_date,
+      category,
+      subcategory,
+      hub_name,
+      sum(avg_unit_price_gross) as avg_unit_price_gross,
+      sum(sum_item_value) as sum_item_value,
+      sum(sum_quantity) as sum_quantity
+from c
+
+group by 1,2,3,4,5
+UNION ALL
+
+select
+      period,
+      order_date,
+      category,
+      subcategory,
+      hub_name,
+      sum(avg_unit_price_gross) as avg_unit_price_gross,
+      sum(sum_item_value) as sum_item_value,
+      sum(sum_quantity) as sum_quantity
+from d
+
+group by 1,2,3,4,5
+
+UNION ALL
+
+select
+      period,
+      order_date,
+      category,
+      subcategory,
+      hub_name,
+      sum(avg_unit_price_gross) as avg_unit_price_gross,
+      sum(sum_item_value) as sum_item_value,
+      sum(sum_quantity) as sum_quantity
+from e
+
+group by 1,2,3,4,5
+),
 
 
-
+g as
+(
 select
 a.*
 from a
@@ -209,9 +285,27 @@ UNION ALL
 select
 e.*
 from e
+)
 
---where product_sku = "11011445"
---and hub_name ="DE - Berlin - Mitte 2"
+select
+g.*,
+--f.avg_unit_price_gross as avg_unit_price_gross_subcateg,
+f.sum_item_value as sum_item_value_subcateg,
+f.sum_quantity as sum_quantity_subcateg
+
+
+from g
+left join f
+on f.period = g.period
+and f.order_date = g.order_date
+and f.category = g.category
+and f.subcategory = g.subcategory
+and f.hub_name = g.hub_name
+
+--where substitute_group  = "Rothaus Tannenzäpfle Pils 0,33l"
+--and f.hub_name ="DE - Berlin - Mitte 2"
+--order by order_date
+
 
       ;;
 }
@@ -223,10 +317,23 @@ from e
     sql: ${TABLE}.sum_item_value ;;
   }
 
+  measure: sum_item_value_subcateg {
+    label: "Item Value - Subcategory"
+    type: sum
+    value_format_name: euro_accounting_1_precision
+    sql: ${TABLE}.sum_item_value_subcateg ;;
+  }
+
   measure: sum_quantity {
     label: "Quantity Sold"
     type: sum
     sql: ${TABLE}.sum_quantity ;;
+  }
+
+  measure: sum_quantity_subcategory {
+    label: "Quantity Sold - Subcategory"
+    type: sum
+    sql: ${TABLE}.sum_quantity_subcategory ;;
   }
 
   measure: orders {
