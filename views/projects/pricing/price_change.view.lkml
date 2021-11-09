@@ -219,6 +219,7 @@ from e
   measure: sum_item_value {
     label: "Item Value"
     type: sum
+    value_format_name: euro_accounting_1_precision
     sql: ${TABLE}.sum_item_value ;;
   }
 
@@ -237,7 +238,7 @@ from e
   measure: avg_price {
     label: "Unit Price Gross"
     type: average
-    value_format_name: decimal_2
+    value_format_name: euro_accounting_2_precision
     sql: ${TABLE}.avg_unit_price_gross ;;
   }
 
