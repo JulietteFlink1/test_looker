@@ -154,14 +154,14 @@ view: orderline {
     label: "Category Name (ERP)"
     group_label: "> Product Attributes"
     type: string
-    sql: ${TABLE}.product_category_erp} ;;
+    sql: ${TABLE}.product_category_erp ;;
   }
 
   dimension: true_erp_product_subcategory {
     label: "Subcategory Name (ERP)"
     group_label: "> Product Attributes"
     type: string
-    sql: ${TABLE}.product_subcategory_erp} ;;
+    sql: ${TABLE}.product_subcategory_erp ;;
   }
 
   dimension: name {
