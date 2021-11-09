@@ -309,7 +309,7 @@ i as
 (
 SELECT
 a.inventory_tracking_date,
-c.hub_name,
+--c.hub_name,
 COALESCE(b.substitute_group, b.product_name) as substitute_group,
 min(hours_oos) as hours_oos,
 max(open_hours_total) as open_hours_total
@@ -320,7 +320,7 @@ left join `flink-data-prod.curated.hubs` c
 on a.hub_code = c.hub_code
  WHERE inventory_tracking_date >= "2021-09-01"
 -- and product_sku = "11011445"
- group by 1,2,3
+ group by 1,2--,3
 
 )
 select
@@ -330,8 +330,8 @@ i.open_hours_total
 
 from h
 left join i
-on h.hub_name = i.hub_name
-and h.substitute_group = i.substitute_group
+--on h.hub_name = i.hub_name
+on h.substitute_group = i.substitute_group
 and h.order_date = i.inventory_tracking_date
 where order_date>="2021-09-01"
 
