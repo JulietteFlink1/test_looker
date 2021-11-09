@@ -165,10 +165,8 @@ WHERE is_current_hub_area IS TRUE
   dimension: covered_by_hub_area {
     type: string
     sql: CASE
-          WHEN ${client_covered_by_hub_area} OR ${backend_covered_by_hub_area} THEN "Covered (Client & Backend)"
-          WHEN ${client_covered_by_hub_area} THEN "Covered (Client only)"
-          WHEN ${backend_covered_by_hub_area} THEN "Covered (Backend only)"
-          WHEN (${client_ever_covered} OR ${backend_ever_covered}) AND (NOT ${client_covered_by_hub_area} AND NOT ${backend_covered_by_hub_area}) THEN "Covered Only By Non-Current Hub Area"
+          WHEN ${client_covered_by_hub_area} OR ${backend_covered_by_hub_area} THEN "Covered"
+          WHEN (${client_ever_covered} OR ${backend_ever_covered}) AND (NOT ${client_covered_by_hub_area} AND NOT ${backend_covered_by_hub_area}) THEN "Covered By Non-Current Hub Area"
           ELSE "Not Covered"
         END;;
   }
