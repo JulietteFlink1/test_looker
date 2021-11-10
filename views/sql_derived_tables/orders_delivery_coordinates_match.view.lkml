@@ -15,7 +15,6 @@ view: orders_delivery_coordinates_match {
           context_device_type AS platform_type,
           ROW_NUMBER() OVER(PARTITION BY order_number ORDER BY timestamp) as row_number
           FROM `flink-data-prod.flink_android_production.order_tracking_viewed`
-          WHERE _PARTITIONTIME > "2021-08-01"
 
           UNION ALL
 
@@ -33,7 +32,6 @@ view: orders_delivery_coordinates_match {
           context_device_type AS platform_type,
           ROW_NUMBER() OVER(PARTITION BY order_number ORDER BY timestamp) as row_number
           FROM `flink-data-prod.flink_ios_production.order_tracking_viewed`
-          WHERE _PARTITIONTIME > "2021-08-01"
       ),
 
       frontend_tracking AS (
@@ -54,9 +52,18 @@ view: orders_delivery_coordinates_match {
           o.customer_latitude,
           ST_GEOGPOINT(o.customer_longitude, o.customer_latitude) AS backend_customer_location,
           from `flink-data-prod.curated.orders` o
-          where date(o.order_timestamp) > '2021-08-01'
-      )
+          where date(o.order_timestamp) >= '2021-10-18'
+      ),
 
+      -- keep track whether / when the delivery area became obsolete. Assumes that delivery_area is_live_coordinates is true from update_timestamp onwards and stops being true upon the next update
+      delivery_areas AS (
+          SELECT *,
+          LEAD(update_timestamp) OVER (PARTITION BY hub_code ORDER BY update_timestamp ASC) AS next_update
+          FROM `flink-data-prod.curated.hub_delivery_areas`
+          WHERE hub_delivery_area IS NOT NULL
+      ),
+
+joined_tb AS (
       SELECT
       bo.*,
       ft.order_id,
@@ -72,14 +79,29 @@ view: orders_delivery_coordinates_match {
       ST_DISTANCE(backend_customer_location , client_customer_location ) AS client_backend_location_distance,
       hda.hub_delivery_area,
       hda.hub_delivery_area_geojson,
+      ST_Y(hda.hub_point) AS hub_latitude,
+      ST_X(hda.hub_point) AS hub_longitude,
       hda.update_timestamp,
-      is_live_coordinates
+      ST_COVERS(ST_GEOGFROMGEOJSON(hub_delivery_area_geojson),ST_GEOGPOINT(customer_longitude, customer_latitude)) AS backend_covered_by_hub_area,
+      ST_COVERS(ST_GEOGFROMGEOJSON(hub_delivery_area_geojson),ST_GEOGPOINT(ft.delivery_lng , ft.delivery_lat)) AS client_covered_by_hub_area,
+      bo.order_timestamp >= hda.update_timestamp AND (bo.order_timestamp < hda.next_update OR hda.next_update IS NULL) AS is_current_hub_area
       FROM backend_orders bo
       LEFT JOIN frontend_tracking ft
       ON bo.order_number=ft.order_number
       -- note that hub_slug is the hub from frontend and hub_code is the hub from backend. Frontend misses around ~4% of orders so for those hub_slug would not be populated
-      LEFT JOIN `flink-data-prod.curated.hub_delivery_areas` hda
-      ON bo.hub_code=hda.hub_code AND hda.is_live_coordinates=true
+      LEFT JOIN delivery_areas hda
+      ON bo.hub_code=hda.hub_code
+),
+
+tag_tb AS (
+SELECT *,
+MAX(backend_covered_by_hub_area) OVER (PARTITION BY order_number) AS backend_ever_covered,
+MAX(client_covered_by_hub_area) OVER (PARTITION BY order_number) AS client_ever_covered
+FROM joined_tb
+)
+
+SELECT * FROM tag_tb
+WHERE is_current_hub_area IS TRUE
        ;;
   }
 
@@ -102,55 +124,67 @@ view: orders_delivery_coordinates_match {
     hidden: yes
     type: yesno
     label: "Covered By Hub Area (Backend)"
-    sql: ST_COVERS(ST_GEOGFROMGEOJSON(${hub_delivery_area_geojson}),ST_GEOGPOINT(${customer_longitude}, ${customer_latitude})) ;;
+    sql: ${TABLE}.backend_covered_by_hub_area;;
   }
 
   dimension: client_covered_by_hub_area {
     hidden: yes
     type: yesno
     label: "Covered By Hub Area (Client)"
-    sql: ST_COVERS(ST_GEOGFROMGEOJSON(${hub_delivery_area_geojson}),ST_GEOGPOINT(${delivery_lng}, ${delivery_lat})) ;;
+    sql: ${TABLE}.client_covered_by_hub_area;;
   }
 
-  dimension: backend_inside_hub_area {
+  dimension: backend_ever_covered {
     hidden: yes
     type: yesno
-    label: "Covered By Hub Area (Backend)"
-    sql: ST_CONTAINS(ST_GEOGFROMGEOJSON(${hub_delivery_area_geojson}),ST_GEOGPOINT(${customer_longitude}, ${customer_latitude})) ;;
+    label: "Covered In Non-current Hub Version Only (Backend)"
+    sql: ${TABLE}.backend_ever_covered;;
   }
 
-  dimension: client_inside_hub_area {
+  dimension: client_ever_covered {
     hidden: yes
     type: yesno
-    label: "Covered By Hub Area (Client)"
-    sql: ST_CONTAINS(ST_GEOGFROMGEOJSON(${hub_delivery_area_geojson}),ST_GEOGPOINT(${delivery_lng}, ${delivery_lat})) ;;
+    label: "Covered In Non-current Hub Version Only (Client)"
+    sql: ${TABLE}.client_ever_covered;;
   }
 
+  # dimension: backend_inside_hub_area {
+  #   hidden: yes
+  #   type: yesno
+  #   label: "Covered By Hub Area (Backend)"
+  #   sql: ST_CONTAINS(ST_GEOGFROMGEOJSON(${hub_delivery_area_geojson}),ST_GEOGPOINT(${customer_longitude}, ${customer_latitude})) ;;
+  # }
+
+  # dimension: client_inside_hub_area {
+  #   hidden: yes
+  #   type: yesno
+  #   label: "Covered By Hub Area (Client)"
+  #   sql: ST_CONTAINS(ST_GEOGFROMGEOJSON(${hub_delivery_area_geojson}),ST_GEOGPOINT(${delivery_lng}, ${delivery_lat})) ;;
+  # }
 
   dimension: covered_by_hub_area {
     type: string
     sql: CASE
-          WHEN ${client_covered_by_hub_area} AND ${backend_covered_by_hub_area} THEN "Covered (Client & Backend)"
-          WHEN ${client_covered_by_hub_area} THEN "Covered (Client only)"
-          WHEN ${backend_covered_by_hub_area} THEN "Covered (Backend only)"
-          ELSE "Not Covered"
+          WHEN (${client_covered_by_hub_area} OR ${backend_covered_by_hub_area}) THEN "Within Assigned Hub Area"
+          WHEN (${client_ever_covered} OR ${backend_ever_covered}) THEN "Within Non-Current Assigned Hub Area"
+          ELSE "Not Within Assigned Hub Area"
         END;;
   }
 
-  dimension: inside_hub_area {
-    type: string
-    sql: CASE
-          WHEN ${client_inside_hub_area} AND ${backend_inside_hub_area} THEN "Inside (Client & Backend)"
-          WHEN ${client_inside_hub_area} THEN "Inside (Client only)"
-          WHEN ${backend_inside_hub_area} THEN "Inside (Backend only)"
-          ELSE "Not Inside"
-        END;;
-  }
+  # dimension: inside_hub_area {
+  #   type: string
+  #   sql: CASE
+  #         WHEN ${client_inside_hub_area} AND ${backend_inside_hub_area} THEN "Inside (Client & Backend)"
+  #         WHEN ${client_inside_hub_area} THEN "Inside (Client only)"
+  #         WHEN ${backend_inside_hub_area} THEN "Inside (Backend only)"
+  #         ELSE "Not Inside"
+  #       END;;
+  # }
 
   measure: cnt_not_covered_by_hub_area {
     description: "count number of orders where the discrepancy between backend and client location is larger than 20m"
     type: count
-    filters: [covered_by_hub_area: "Not Covered"]
+    filters: [covered_by_hub_area: "Not Within Assigned Hub Area"]
   }
 
   measure: perc_not_covered_by_hub_area {
@@ -203,6 +237,33 @@ view: orders_delivery_coordinates_match {
     group_label: "> Backend Data"
   }
 
+  dimension: hub_latitude {
+    type: number
+    sql: ${TABLE}.hub_latitude ;;
+    group_label: "> Hub Area"
+  }
+
+  dimension: hub_longitude {
+    type: number
+    sql: ${TABLE}.hub_longitude ;;
+    group_label: "> Hub Area"
+  }
+
+  dimension: hub_location {
+    type: location
+    sql_latitude: ${hub_latitude} ;;
+    sql_longitude: ${hub_longitude} ;;
+    group_label: "> Hub Area"
+  }
+
+  dimension: hub_to_customer_distance {
+    type: distance
+    start_location_field: backend_customer_location
+    end_location_field: hub_location
+    label: "Customer To Hub Distance In Meters (Backend)"
+    units: kilometers
+  }
+
   dimension: delivery_id {
     type: string
     sql: ${TABLE}.delivery_id ;;
@@ -210,9 +271,9 @@ view: orders_delivery_coordinates_match {
   }
 
   dimension: backend_customer_location {
-    type: string
-    hidden: yes
-    sql: ${TABLE}.backend_customer_location ;;
+    type: location
+    sql_latitude: ${customer_latitude} ;;
+    sql_longitude: ${customer_longitude} ;;
     group_label: "> Backend Data"
   }
 
@@ -287,15 +348,14 @@ view: orders_delivery_coordinates_match {
   }
 
   dimension: client_customer_location {
-    type: string
-    hidden: yes
-    sql: ${TABLE}.client_customer_location ;;
+    type: location
+    sql_latitude: ${delivery_lat} ;;
+    sql_longitude: ${delivery_lng} ;;
     group_label: "> Client Data"
   }
 
   dimension: client_backend_location_distance {
     type: number
-    hidden: yes
     sql: ${TABLE}.client_backend_location_distance ;;
     group_label: "> Backend Data"
   }
@@ -309,13 +369,6 @@ view: orders_delivery_coordinates_match {
   dimension: hub_delivery_area_geojson {
     type: string
     sql: ${TABLE}.hub_delivery_area_geojson ;;
-    group_label: "> Hub Area"
-  }
-
-  dimension: is_live_coordinates {
-    hidden: yes
-    type: yesno
-    sql: ${TABLE}.is_live_coordinates ;;
     group_label: "> Hub Area"
   }
 
@@ -354,8 +407,7 @@ view: orders_delivery_coordinates_match {
       client_customer_location,
       client_backend_location_distance,
       hub_delivery_area,
-      hub_delivery_area_geojson,
-      is_live_coordinates
+      hub_delivery_area_geojson
     ]
   }
 }
