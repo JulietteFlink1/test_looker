@@ -57,11 +57,24 @@ view: hiring_funnel_performance_summary {
     sql: ${TABLE}.hires ;;
   }
 
-  dimension: hires_with_first_shift {
+  dimension: hires_with_first_shift_completed {
     hidden: yes
     type: number
-    sql: ${TABLE}.hires_with_first_shift ;;
+    sql: ${TABLE}.hires_with_first_shift_completed ;;
   }
+
+  dimension: hires_with_first_shift_scheduled {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.hires_with_first_shift_scheduled ;;
+  }
+
+  dimension: hires_with_account_created {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.hires_with_account_created ;;
+  }
+
 
   dimension: leads {
     hidden: yes
@@ -186,9 +199,21 @@ view: hiring_funnel_performance_summary {
     value_format_name: decimal_0
   }
 
-  measure: number_of_hires_with_first_shift {
+  measure: number_of_hires_with_first_shift_completed {
     type: sum
-    sql: ${hires_with_first_shift} ;;
+    sql: ${hires_with_first_shift_completed} ;;
+    value_format_name: decimal_0
+  }
+
+  measure: number_of_hires_with_first_shift_scheduled {
+    type: sum
+    sql: ${hires_with_first_shift_scheduled} ;;
+    value_format_name: decimal_0
+  }
+
+  measure: number_of_hires_with_account_created {
+    type: sum
+    sql: ${hires_with_account_created} ;;
     value_format_name: decimal_0
   }
 
@@ -208,6 +233,35 @@ view: hiring_funnel_performance_summary {
     type: sum
     sql: ${spend} ;;
     value_format_name: eur_0
+  }
+
+
+  measure: pct_hires_with_first_shift_completed {
+    label:       "% Hires with first shift completed"
+    description: "% Hires with first shift completed"
+    type:        number
+    sql:case when NULLIF(${number_of_hires}, 0) > 0 then ${number_of_hires_with_first_shift_completed} / ${number_of_hires}
+             else null end;;
+    value_format_name:  percent_2
+  }
+
+  measure: pct_hires_with_first_shift_scheduled{
+    label:       "% Hires with first shift scheduled"
+    description: "% Hires with first shift scheduled"
+    type:        number
+    sql:case when NULLIF(${number_of_hires}, 0) > 0 then ${number_of_hires_with_first_shift_scheduled} / ${number_of_hires}
+             else null end
+            ;;
+    value_format_name:  percent_2
+  }
+
+  measure: pct_hires_with_account_created {
+    label:       "% Hires with account created"
+    description: "% Hires with account created"
+    type:        number
+    sql:case when NULLIF(${number_of_hires}, 0) > 0 then ${number_of_hires_with_account_created} / ${number_of_hires}
+             else null end;;
+    value_format_name:  percent_2
   }
 
 }

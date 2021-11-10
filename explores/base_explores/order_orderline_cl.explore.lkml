@@ -11,16 +11,13 @@ explore: order_orderline_cl {
   # view_name: base_order_orderline
   #extension: required
 
-  always_filter: {
-    filters: [
-      orderline.created_date: "30 days"
-    ]
-  }
-
   join: orderline {
     view_label: "* Order Lineitems *"
     sql_on: ${orderline.country_iso} = ${orders_cl.country_iso} AND
-            ${orderline.order_uuid}    = ${orders_cl.order_uuid} ;;
+            ${orderline.order_uuid}    = ${orders_cl.order_uuid} AND
+            {% condition global_filters_and_parameters.datasource_filter %} ${orderline.created_date} {% endcondition %}
+
+            ;;
     relationship: one_to_many
     type: left_outer
   }

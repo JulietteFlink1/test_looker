@@ -137,6 +137,17 @@ view: order_placed_events {
     order_by_field: version_ordering_field
   }
 
+  dimension: main_app_version {
+    type: string
+    sql: ${context_device_type} || '-' || ${main_version_number} || '.' || ${secondary_version_number} ;;
+    order_by_field: basic_version_field
+  }
+
+  dimension: basic_version_field {
+    type: number
+    sql: CAST(CONCAT(${main_version_number},${secondary_version_number}) AS INT64) ;;
+  }
+
   dimension: main_version_number {
     type: string
     sql: REGEXP_EXTRACT(${context_app_version}, r'(\d+)\.') ;;

@@ -24,7 +24,7 @@ view: postorder_events {
                 timestamp,
                 ROW_NUMBER() OVER(PARTITION BY order_number ORDER BY timestamp ASC) AS row_id
               FROM
-                `flink-data-prod.flink_ios_production.order_placed_view` ios_order
+                `flink-data-prod.flink_ios_production.order_placed` ios_order
             )
             WHERE row_id=1
             AND NOT (LOWER(context_app_version) LIKE "%app-rating%"
@@ -55,7 +55,7 @@ view: postorder_events {
                 timestamp,
                 ROW_NUMBER() OVER(PARTITION BY order_number ORDER BY timestamp ASC) AS row_id
               FROM
-                `flink-data-prod.flink_android_production.order_placed_view` android_order
+                `flink-data-prod.flink_android_production.order_placed` android_order
             )
             WHERE row_id=1
             AND NOT (LOWER(context_app_version) LIKE "%app-rating%"
@@ -69,7 +69,6 @@ view: postorder_events {
           ),
 
            -- combine order_tracking_viewed for ios and android for the relevant fields
-           -- this is a long section because A) android and ios have different trigger behahaviour and B) android needs apiXXX events to determine whether user stayed on the page
            android_order_tracking_tb AS (
             SELECT
               anonymous_id,
@@ -87,68 +86,12 @@ view: postorder_events {
               android_order.id,
               android_order.origin_screen,
               android_order.timestamp,
+              CAST(NULL AS timestamp) AS viewed_until,
+              CAST(NULL AS INT64) AS duration
             FROM
-              `flink-data-prod.flink_android_production.order_tracking_viewed` android_order
+              `flink-data-prod.flink_android_production.order_tracking_viewed_view` android_order
           --   WHERE android_order.origin_screen!="payment"
-
-            UNION ALL
-
-            SELECT anonymous_id
-              , event
-              , context_device_type
-              , context_app_version
-              , CAST(NULL AS STRING) AS a
-              , CAST(NULL AS STRING) AS b
-              , CAST(NULL AS STRING) AS c
-              , CAST(NULL AS STRING) AS d
-              , CAST(NULL AS STRING) AS e
-              , CAST(NULL AS INT64) AS f
-              , CAST(NULL AS STRING) AS g
-              , CAST(NULL AS INT64) AS h
-              , CAST(NULL AS STRING) AS i
-              , CAST(NULL AS STRING) AS j
-              , timestamp
-              FROM `flink-data-prod.flink_android_production.api_order_get_succeeded_view`
-              UNION ALL
-              SELECT anonymous_id
-              , event
-              , context_device_type
-              , context_app_version
-              , CAST(NULL AS STRING) AS a
-              , CAST(NULL AS STRING) AS b
-              , CAST(NULL AS STRING) AS c
-              , CAST(NULL AS STRING) AS d
-              , CAST(NULL AS STRING) AS e
-              , CAST(NULL AS INT64) AS f
-              , CAST(NULL AS STRING) AS g
-              , CAST(NULL AS INT64) AS h
-              , CAST(NULL AS STRING) AS i
-              , CAST(NULL AS STRING) AS j
-              , timestamp
-              FROM `flink-data-prod.flink_android_production.api_order_get_failed_view`
             )
-
-          , android_tracking_help_tb AS (
-              SELECT *
-              , TIMESTAMP_DIFF(timestamp, LAG(timestamp) OVER (PARTITION BY anonymous_id ORDER BY timestamp ASC), SECOND) AS sec_since_prev
-              -- , TIMESTAMP_DIFF(LEAD(timestamp) OVER (PARTITION BY anonymous_id ORDER BY timestamp ASC), timestamp, SECOND) AS sec_until_next
-              -- , LAG(event) OVER (PARTITION BY anonymous_id ORDER BY timestamp ASC) AS prev_event
-              FROM android_order_tracking_tb
-          )
-
-          , android_order_tracking_clean_tb AS (
-              SELECT *
-              , SUM(CASE WHEN sec_since_prev >16 OR event="order_tracking_viewed" THEN 1 ELSE 0 END) OVER (PARTITION BY anonymous_id ORDER BY timestamp ASC) AS view_counter
-              FROM android_tracking_help_tb
-              WHERE NOT(sec_since_prev=0 AND event LIKE "api_order_get%") --sometimes the order get event fires at almost the same time as order_tracking_viewed; that doesn't tell us whether the user stayed on the screen
-          )
-
-          , android_order_tracking_duration_tb AS (
-              SELECT *
-              , LAST_VALUE(timestamp) OVER (PARTITION BY anonymous_id, view_counter ORDER BY timestamp ASC
-                                              RANGE BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING) AS viewed_until
-              FROM android_order_tracking_clean_tb
-          )
 
           , ios_order_tracking_tb AS (
             SELECT
@@ -160,21 +103,21 @@ view: postorder_events {
               ios_order.order_number,
               ios_order.hub_slug,
               ios_order.country_iso,
-              CAST(NULL AS STRING) AS order_status,
-              NULL AS fulfillment_time,
+              status AS order_status,
+              fulfillment_time,
               CAST(NULL AS STRING) AS delayed_component,
               ios_order.delivery_eta,
               ios_order.id,
-              CAST(NULL AS STRING) AS origin_screen,
+              origin_screen,
               ios_order.timestamp,
               TIMESTAMP_DIFF(timestamp, LAG(timestamp) OVER (PARTITION BY anonymous_id ORDER BY timestamp ASC), SECOND) AS sec_since_prev
             FROM
-              `flink-data-prod.flink_ios_production.order_tracking_viewed` ios_order
+              `flink-data-prod.flink_ios_production.order_tracking_viewed_view` ios_order
           )
 
           , ios_order_tracking_clean_tb AS (
               SELECT *
-              , SUM(CASE WHEN sec_since_prev <14 OR sec_since_prev >16 THEN 1 ELSE 0 END) OVER (PARTITION BY anonymous_id ORDER BY timestamp ASC) AS view_counter
+              , SUM(CASE WHEN (origin_screen!="orderTrackingScreen" OR (origin_screen="orderTrackingScreen" AND sec_since_prev >25) OR ((origin_screen IS NULL AND sec_since_prev >25))) THEN 1 ELSE 0 END) OVER (PARTITION BY anonymous_id ORDER BY timestamp ASC) AS view_counter
               FROM ios_order_tracking_tb
           )
 
@@ -187,20 +130,22 @@ view: postorder_events {
           )
 
           , ios_order_tracking_final_tb AS (
-              SELECT * EXCEPT(view_counter)
+              SELECT * EXCEPT(view_counter, row_per_counter, sec_since_prev)
+              , TIMESTAMP_DIFF(viewed_until, timestamp, SECOND) AS duration
               FROM ios_order_tracking_duration_tb
               WHERE row_per_counter=1
           )
 
           , order_tracking_tb AS (
-              SELECT * EXCEPT (view_counter)
-              FROM android_order_tracking_duration_tb
+              SELECT *
+              FROM android_order_tracking_tb
               -- every tap to see the order tracking page should trigger order_tracking_viewed. Unfortunately it does Not trigger if the app is backgrounded and brought back to the page.
               -- we can't use api_order_getXXX to estimate that because these events are also triggered prior to orderTrackingViewed. We could also disregard orderTrackingViewed and simply count based on api_order_getXXX events, but I think their timing might be too unpredictable for that.
-              WHERE event="order_tracking_viewed" AND NOT (origin_screen="payment" AND viewed_until=timestamp)
               UNION ALL
-              SELECT * EXCEPT(row_per_counter) FROM ios_order_tracking_final_tb
-              ORDER BY anonymous_id, timestamp
+              SELECT *
+              FROM ios_order_tracking_final_tb
+              -- filter out tracking viewed events where the origin is from payment and users don't trigger another orderTrackingViewed by staying on the page
+              WHERE NOT(origin_screen="payment" AND duration < 10)
           ),
 
           -- combine first_order_placed for ios and android for the relevant fields
@@ -275,6 +220,7 @@ view: postorder_events {
               , delayed_component
               , fulfillment_time
               , viewed_until
+              , id
             FROM order_tracking_tb ot
 
             UNION ALL
@@ -293,6 +239,7 @@ view: postorder_events {
               , NULL AS delayed_component
               , NULL AS fulfillment_time
               , NULL AS viewed_until
+              , id
             FROM customer_service_intent_tb csi
 
             UNION ALL
@@ -311,6 +258,7 @@ view: postorder_events {
               , NULL AS delayed_component
               , NULL AS fulfillment_time
               , NULL AS viewed_until
+              , id
             FROM order_placed_tb op
             )
 
@@ -355,6 +303,12 @@ view: postorder_events {
     order_by_field: version_ordering_field
   }
 
+  dimension: main_app_version {
+    type: string
+    sql: ${context_device_type} || '-' || ${main_version_number} || '.' || ${secondary_version_number} ;;
+    order_by_field: basic_version_field
+  }
+
   dimension: main_version_number {
     type: number
     sql: REGEXP_EXTRACT(${context_app_version}, r'(\d+)\.') ;;
@@ -376,6 +330,11 @@ view: postorder_events {
   dimension: version_ordering_field {
     type: number
     sql: CONCAT(${main_version_number},${secondary_version_number},${tertiary_version_number}) ;;
+  }
+
+  dimension: basic_version_field {
+    type: number
+    sql: CAST(CONCAT(${main_version_number},${secondary_version_number}) AS INT64) ;;
   }
 
   dimension: basic_padded_app_version {
@@ -503,7 +462,38 @@ view: postorder_events {
     type: average
     sql: ${order_tracking_viewed_duration} ;;
     filters: [event: "order_tracking_viewed"]
-    value_format_name: decimal_0
+  }
+
+  measure: perc25_duration_ordertrackingviewed {
+    type: percentile
+    percentile: 25
+    sql: ${order_tracking_viewed_duration} ;;
+    filters: [event: "order_tracking_viewed"]
+  }
+
+  measure: median_duration_ordertrackingviewed {
+    type: median
+    sql: ${order_tracking_viewed_duration} ;;
+    filters: [event: "order_tracking_viewed"]
+  }
+
+  measure: perc75_duration_ordertrackingviewed {
+    type: percentile
+    percentile: 75
+    sql: ${order_tracking_viewed_duration} ;;
+    filters: [event: "order_tracking_viewed"]
+  }
+
+  measure: max_duration_ordertrackingviewed {
+    type: max
+    sql: ${order_tracking_viewed_duration} ;;
+    filters: [event: "order_tracking_viewed"]
+  }
+
+  measure: min_duration_ordertrackingviewed {
+    type: min
+    sql: ${order_tracking_viewed_duration} ;;
+    filters: [event: "order_tracking_viewed"]
   }
 
   dimension: order_tracking_viewed_duration {
@@ -576,6 +566,13 @@ view: postorder_events {
     drill_fields: [detail*]
   }
 
+  dimension: id {
+    primary_key: yes
+    hidden: yes
+    type: string
+    sql: ${TABLE}.id ;;
+  }
+
   dimension: anonymous_id {
     type: string
     sql: ${TABLE}.anonymous_id ;;
@@ -589,12 +586,6 @@ view: postorder_events {
   dimension: event {
     type: string
     sql: ${TABLE}.event ;;
-  }
-
-  dimension: id {
-    hidden: yes
-    type: string
-    sql: ${TABLE}.id ;;
   }
 
   dimension: context_app_version {

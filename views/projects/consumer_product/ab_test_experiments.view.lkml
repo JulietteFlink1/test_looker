@@ -27,7 +27,6 @@
               SELECT *, ROW_NUMBER() OVER (PARTITION BY id ORDER BY loaded_at DESC)       AS row_id
               FROM `flink-data-prod.flink_ios_production.product_search_executed`
               WHERE DATE(_PARTITIONTIME) > "2021-09-30"
-              AND (search_experiment_variant is not null OR context_traits_search_experiment_variant is not null)
               )
         WHERE row_id = 1
 
@@ -57,7 +56,6 @@
               SELECT *, ROW_NUMBER() OVER (PARTITION BY id ORDER BY loaded_at DESC)       AS row_id
               FROM `flink-data-prod.flink_ios_production.product_added_to_cart`
               WHERE DATE(_PARTITIONTIME) > "2021-09-30"
-              AND (search_experiment_variant is not null OR context_traits_search_experiment_variant is not null)
               )
         WHERE row_id = 1
 
@@ -87,7 +85,6 @@
               SELECT *, ROW_NUMBER() OVER (PARTITION BY id ORDER BY loaded_at DESC)       AS row_id
               FROM `flink-data-prod.flink_ios_production.product_details_viewed`
               WHERE DATE(_PARTITIONTIME) > "2021-09-30"
-              AND (search_experiment_variant is not null OR context_traits_search_experiment_variant is not null)
               )
         WHERE row_id = 1
 
@@ -111,7 +108,7 @@
         FROM (
               SELECT *, ROW_NUMBER() OVER (PARTITION BY id ORDER BY loaded_at DESC)       AS row_id
               FROM `flink-data-prod.flink_android_production.product_search_executed`
-              WHERE DATE(_PARTITIONTIME) > "2021-09-30" and search_experiment_variant is not null
+              WHERE DATE(_PARTITIONTIME) > "2021-09-30"
               )
         WHERE row_id = 1
 
@@ -134,7 +131,7 @@
         FROM (
               SELECT *, ROW_NUMBER() OVER (PARTITION BY id ORDER BY loaded_at DESC)       AS row_id
               FROM `flink-data-prod.flink_android_production.product_added_to_cart`
-              WHERE DATE(_PARTITIONTIME) > "2021-09-30" and search_experiment_variant is not null
+              WHERE DATE(_PARTITIONTIME) > "2021-09-30"
               )
         WHERE row_id = 1
 
@@ -157,14 +154,13 @@
         FROM (
               SELECT *, ROW_NUMBER() OVER (PARTITION BY id ORDER BY loaded_at DESC)       AS row_id
               FROM `flink-data-prod.flink_android_production.product_details_viewed`
-              WHERE DATE(_PARTITIONTIME) > "2021-09-30" and search_experiment_variant is not null
+              WHERE DATE(_PARTITIONTIME) > "2021-09-30"
               )
         WHERE row_id = 1
         )
 
         SELECT * , lag(event_name) over(partition by anonymous_id order by timestamp asc)          AS prior_event_name
         FROM base
-        WHERE search_experiment_variant != 'Test'
     ;;
     }
 
