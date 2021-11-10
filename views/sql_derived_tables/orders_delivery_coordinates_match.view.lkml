@@ -165,9 +165,9 @@ WHERE is_current_hub_area IS TRUE
   dimension: covered_by_hub_area {
     type: string
     sql: CASE
-          WHEN ${client_covered_by_hub_area} OR ${backend_covered_by_hub_area} THEN "Covered"
-          WHEN (${client_ever_covered} OR ${backend_ever_covered}) AND (NOT ${client_covered_by_hub_area} AND NOT ${backend_covered_by_hub_area}) THEN "Covered By Non-Current Hub Area"
-          ELSE "Not Covered"
+          WHEN ${client_covered_by_hub_area} OR ${backend_covered_by_hub_area} THEN "Within Assigned Hub Area"
+          WHEN (${client_ever_covered} OR ${backend_ever_covered}) AND (NOT ${client_covered_by_hub_area} AND NOT ${backend_covered_by_hub_area}) THEN "Within Non-Current Assigned Hub Area"
+          ELSE "Not Within Assigned Hub Area"
         END;;
   }
 
@@ -184,7 +184,7 @@ WHERE is_current_hub_area IS TRUE
   measure: cnt_not_covered_by_hub_area {
     description: "count number of orders where the discrepancy between backend and client location is larger than 20m"
     type: count
-    filters: [covered_by_hub_area: "Not Covered"]
+    filters: [covered_by_hub_area: "Not Within Assigned Hub Area"]
   }
 
   measure: perc_not_covered_by_hub_area {
