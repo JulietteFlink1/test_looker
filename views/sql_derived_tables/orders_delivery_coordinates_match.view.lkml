@@ -165,8 +165,8 @@ WHERE is_current_hub_area IS TRUE
   dimension: covered_by_hub_area {
     type: string
     sql: CASE
-          WHEN ${client_covered_by_hub_area} OR ${backend_covered_by_hub_area} THEN "Within Assigned Hub Area"
-          WHEN (${client_ever_covered} OR ${backend_ever_covered}) AND (NOT ${client_covered_by_hub_area} AND NOT ${backend_covered_by_hub_area}) THEN "Within Non-Current Assigned Hub Area"
+          WHEN (${client_covered_by_hub_area} OR ${backend_covered_by_hub_area}) THEN "Within Assigned Hub Area"
+          WHEN (${client_ever_covered} OR ${backend_ever_covered}) THEN "Within Non-Current Assigned Hub Area"
           ELSE "Not Within Assigned Hub Area"
         END;;
   }
