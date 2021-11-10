@@ -242,7 +242,7 @@ view: hiring_funnel_performance_summary {
     type:        number
     sql:case when NULLIF(${number_of_hires}, 0) > 0 then ${number_of_hires_with_first_shift_completed} / ${number_of_hires}
              else null end;;
-    value_format_name:  percent_2
+    value_format_name:  percent_1
   }
 
   measure: pct_hires_with_first_shift_scheduled{
@@ -252,7 +252,7 @@ view: hiring_funnel_performance_summary {
     sql:case when NULLIF(${number_of_hires}, 0) > 0 then ${number_of_hires_with_first_shift_scheduled} / ${number_of_hires}
              else null end
             ;;
-    value_format_name:  percent_2
+    value_format_name:  percent_1
   }
 
   measure: pct_hires_with_account_created {
@@ -261,7 +261,7 @@ view: hiring_funnel_performance_summary {
     type:        number
     sql:case when NULLIF(${number_of_hires}, 0) > 0 then ${number_of_hires_with_account_created} / ${number_of_hires}
              else null end;;
-    value_format_name:  percent_2
+    value_format_name:  percent_1
   }
 
 }
