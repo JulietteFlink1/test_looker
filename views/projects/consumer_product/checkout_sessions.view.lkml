@@ -213,10 +213,14 @@ view: checkout_sessions {
     GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14
     ),
 
+
     event_counts AS (
        SELECT
            sf.anonymous_id
          , sf.session_id
+        ,  COALESCE(op.voucher_code, vaf.voucher_code,vas.voucher_code) as voucher_code
+        ,  vaf.error_message
+         , SUM(CASE WHEN ch.id IS NOT NULL THEN 1 ELSE 0 END) as checkout_stared_count
          , SUM(CASE WHEN e.event="address_confirmed" THEN 1 ELSE 0 END) as address_confirmed_event_count
          , SUM(CASE WHEN e.event="address_change_at_checkout_message_viewed" THEN 1 ELSE 0 END) as late_change_event_count
          , SUM(CASE WHEN e.event="hub_update_message_viewed" THEN 1 ELSE 0 END) as hub_update_event_count
@@ -224,13 +228,61 @@ view: checkout_sessions {
          , SUM(CASE WHEN e.event IN ("purchase_confirmed","payment_started") THEN 1 ELSE 0 END) as payment_started_event_count
          , SUM(CASE WHEN e.event="payment_failed" THEN 1 ELSE 0 END) as payment_failed_event_count
          , SUM(CASE WHEN e.event="order_placed" THEN 1 ELSE 0 END) as order_placed_event_count
+         , SUM(CASE WHEN op.voucher_code IS NOT NULL THEN 1 else 0 end) as order_placed_with_voucher_count
+         , SUM(CASE WHEN vaf.id IS NOT NULL THEN 1 ELSE 0 END) as voucher_applied_failed_count
+         , SUM(CASE WHEN vas.id IS NOT NULL THEN 1 ELSE 0 END) as voucher_applied_succeeded_count
+         , SUM(CASE WHEN vra.id IS NOT NULL THEN 1 ELSE 0 END) as voucher_redemption_attempted_count
+         , SUM(op.revenue) as revenue
+         , SUM(COALESCE(op.voucher_value,vas.voucher_value)) as voucher_value
         FROM events e
             LEFT JOIN sessions_final sf
             ON e.anonymous_id = sf.anonymous_id
             AND e.timestamp >= sf.session_start_at
             AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
-        GROUP BY 1,2
+            LEFT JOIN (
+                SELECT
+                      id
+                    , sub_total as revenue
+                FROM `flink-data-prod.flink_ios_production.checkout_started` csi
+            ) ch
+                ON e.id = ch.id
+            LEFT JOIN (
+                SELECT
+                      id
+                    , voucher_code
+                    , voucher_value
+                    , revenue
+                    , order_number
+                FROM `flink-data-prod.flink_ios_production.order_placed`
+            ) op
+                ON e.id = op.id
+            LEFT JOIN (
+                SELECT
+                      id
+                    , voucher_code
+                    , error_message
+                FROM `flink-data-prod.flink_ios_production.voucher_applied_failed`
+            ) vaf
+                ON vaf.id = e.id
+           LEFT JOIN (
+                SELECT
+                      id
+                    , voucher_code
+                    , voucher_value
+                FROM `flink-data-prod.flink_ios_production.voucher_applied_succeeded`
+            ) vas
+            ON vas.id = e.id
+            LEFT JOIN (
+                SELECT
+                      id
+                    , voucher_code
+                FROM `flink-data-prod.flink_ios_production.voucher_redemption_attempted`
+            ) vra
+            ON vra.id = e.id
+        GROUP BY 1,2,3,4
     ),
+
+
 
     -- table to check whether checkout follows a hub_update message or hub_update message follows checkout (both are interesting)
     checkoutstarted_and_hubupdated_sequence AS (
@@ -280,15 +332,23 @@ view: checkout_sessions {
         , sf.hub_city
         , sf.delivery_postcode
         , sf.delivery_eta
-        , ec.payment_started_event_count as payment_started
-        , ec.payment_failed_event_count as payment_failed
-        , ec.order_placed_event_count as order_placed
-        , ec.late_change_event_count as address_change_at_checkout
-        , ec.hub_update_event_count as hub_update_message
         , ec.checkout_started_event_count as checkout_started
+        , ec.voucher_redemption_attempted_count as voucher_redemption_attempted
+        , ec.voucher_applied_failed_count as voucher_applied_failed
+        , ec.error_message
+        , ec.voucher_applied_succeeded_count as voucher_applied_succeeded
+        , ec.voucher_code
+        , ec.voucher_value
+        , ec.order_placed_event_count as order_placed
+        , ec.order_placed_with_voucher_count  as order_placed_with_voucher
+        , ec.revenue
+        , ec.hub_update_event_count as hub_update_message
+        , ec.late_change_event_count as address_change_at_checkout
         , sc.checkout_after_hub_update
         , sc.hub_update_after_checkout
         , sc.address_confirm_after_checkout
+        , ec.payment_started_event_count as payment_started
+        , ec.payment_failed_event_count as payment_failed
         --, CASE WHEN fo.first_order_timestamp < sf.session_start_at THEN true ELSE false END as has_ordered
     FROM sessions_final sf
     LEFT JOIN event_counts ec
@@ -361,6 +421,35 @@ view: checkout_sessions {
     filters: [checkout_started: ">0"]
   }
 
+  measure: cnt_voucher_attempt {
+    label: "Checkout started and attempt voucher count"
+    description: "Number of sessions in which at least one Checkout Started event happened and attemoted to apply a voucher at least once"
+    type: count
+    filters: [voucher_redemption_attempted: ">0"]
+  }
+
+  measure: cnt_voucher_attempt_voucher_success {
+    label: "Voucher attempts and Success count"
+    description: "Number of sessions in which at least one Voucher Attempt happened in checkout session and was successfull"
+    type: count
+    filters: [voucher_applied_succeeded: ">0"]
+  }
+
+  measure: cnt_voucher_attempt_voucher_failure {
+    label: "Voucher attempts and Failure count"
+    description: "Number of sessions in which at least one Voucher Attempt happened in checkout session and failed"
+    type: count
+    filters: [voucher_applied_failed: ">0"]
+  }
+
+
+  measure: cnt_voucher_failed_no_order {
+    label: "Voucher Failure and No order count"
+    description: "Number of sessions in which at least one Voucher Attempt happened in checkout session, failed, and thre was no order generated"
+    type: count
+    filters: [voucher_applied_failed: ">0", order_placed: ">0"]
+  }
+
   measure: cnt_payment_failed {
     label: "Payment failed count"
     description: "Number of sessions in which at least one Payment Failed event happened"
@@ -388,6 +477,15 @@ view: checkout_sessions {
     hidden:  no
     type: count_distinct
     sql: ${anonymous_id};;
+    value_format_name: decimal_0
+  }
+
+  measure: cnt_unique_sessionid {
+    label: "Cnt Unique Sessions"
+    description: "Number of Unique sessions"
+    hidden:  no
+    type: count_distinct
+    sql: ${session_id};;
     value_format_name: decimal_0
   }
 
@@ -424,6 +522,7 @@ view: checkout_sessions {
       url: "/looks/688"
     }
   }
+
 
   dimension: full_app_version {
     type: string
@@ -580,6 +679,38 @@ view: checkout_sessions {
     sql: ${TABLE}.hub_update_message ;;
   }
 
+  dimension: voucher_value {
+    type: number
+    sql: ${TABLE}.voucher_value ;;
+  }
+
+  dimension: voucher_code {
+    type: string
+    sql: ${TABLE}.voucher_code ;;
+  }
+
+  dimension: error_message {
+    type: string
+    sql: ${TABLE}.error_message ;;
+  }
+
+  dimension: voucher_applied_failed {
+    type: number
+    sql: ${TABLE}.voucher_applied_failed ;;
+  }
+
+  dimension: voucher_applied_succeeded {
+    type: number
+    sql: ${TABLE}.voucher_applied_succeeded ;;
+  }
+
+  dimension: voucher_redemption_attempted {
+    type: number
+    sql: ${TABLE}.voucher_redemption_attempted ;;
+  }
+
+
+
   set: detail {
     fields: [
       anonymous_id,
@@ -601,7 +732,15 @@ view: checkout_sessions {
       order_placed,
       address_change_at_checkout,
       hub_update_message,
-      checkout_started
+      checkout_started,
+      voucher_value,
+      voucher_code,
+      error_message,
+      voucher_applied_failed,
+      voucher_applied_succeeded,
+      voucher_redemption_attempted
+
+
     ]
   }
 }
