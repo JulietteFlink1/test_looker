@@ -181,6 +181,7 @@ group by 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
   }
 
   dimension: closure_reason_clean {
+    label: "Closure Reason"
     type: string
     sql: ${TABLE}.closure_reason_clean ;;
   }
@@ -188,6 +189,7 @@ group by 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
   dimension: closure_reason {
     type: string
     sql: ${TABLE}.closure_reason ;;
+    hidden:  yes
   }
 
   parameter: date_granularity {
