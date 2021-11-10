@@ -241,7 +241,7 @@ view: hiring_funnel_performance_summary {
     description: "% Hires with first shift completed"
     type:        number
     sql:case when NULLIF(${number_of_hires}, 0) > 0 then ${number_of_hires_with_first_shift_completed} / ${number_of_hires}
-             else null end;;
+      else null end;;
     value_format_name:  percent_1
   }
 
@@ -260,7 +260,7 @@ view: hiring_funnel_performance_summary {
     description: "% Hires with account created"
     type:        number
     sql:case when NULLIF(${number_of_hires}, 0) > 0 then ${number_of_hires_with_account_created} / ${number_of_hires}
-             else null end;;
+      else null end;;
     value_format_name:  percent_1
   }
 
