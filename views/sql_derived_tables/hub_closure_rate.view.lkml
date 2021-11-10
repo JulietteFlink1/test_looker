@@ -8,6 +8,8 @@ closed_events_raw as (
         , closed_datetime
         , opened_datetime
         , warehouse
+        , closure_reason_clean
+        , closure_reason
         from `flink-data-prod.order_forecast.forced_hub_closures`
 ),
 closed_events as (
@@ -15,6 +17,8 @@ closed_events as (
              ,c.closed_datetime
              ,c.opened_datetime
              ,c.warehouse
+             ,c.closure_reason_clean
+             ,c.closure_reason
         from dates d
         join closed_events_raw c on date >= date(closed_datetime) and date <= date(opened_datetime)
 ),
@@ -33,6 +37,8 @@ open_hours_ as (
 cleaned_hours as (
       select c.closed_datetime
         , c.opened_datetime
+        , c.closure_reason_clean
+        , c.closure_reason
         , o.warehouse
         , o.date
         , DATE_TRUNC( o.date, week) as week
@@ -53,6 +59,7 @@ cleaned_hours as (
       and o.warehouse = c.warehouse
       where open_hours is not null
       and o.date >= "2021-07-01" --no available data before this date
+      and o.warehouse != "de_ham_alto"
 ),
 final as (
         select date
@@ -64,6 +71,8 @@ final as (
           , open_hours
           , TIMESTAMP_DIFF(cleaned_opened_datetime, cleaned_closed_datetime, MINUTE) as closure_mins
           , round(TIMESTAMP_DIFF(cleaned_opened_datetime, cleaned_closed_datetime, MINUTE)/60, 2) as closure_hours
+          , closure_reason_clean
+          , closure_reason
           from cleaned_hours
 ),
 
@@ -93,6 +102,8 @@ select f.date
 , open_hours
 , mo.total_missed_orders
 , gmv.aov
+, closure_reason_clean
+, closure_reason
 , sum(closure_mins) as total_closure_mins
 , ifnull(sum(closure_hours), 0) as total_closure_hours
 from final f
@@ -101,7 +112,7 @@ and f.warehouse = gmv.hub_code
 left join missed_orders mo
 on f.date = mo.date
 and f.warehouse = mo.warehouse
-group by 1, 2, 3, 4, 5, 6, 7, 8, 9
+group by 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
        ;;
   }
 
@@ -167,6 +178,18 @@ group by 1, 2, 3, 4, 5, 6, 7, 8, 9
   dimension: total_closure_hours {
     type: number
     sql: ${TABLE}.total_closure_hours ;;
+  }
+
+  dimension: closure_reason_clean {
+    label: "Closure Reason"
+    type: string
+    sql: ${TABLE}.closure_reason_clean ;;
+  }
+
+  dimension: closure_reason {
+    type: string
+    sql: ${TABLE}.closure_reason ;;
+    hidden:  yes
   }
 
   parameter: date_granularity {
@@ -245,7 +268,9 @@ group by 1, 2, 3, 4, 5, 6, 7, 8, 9
       open_hours,
       total_missed_orders,
       total_closure_mins,
-      total_closure_hours
+      total_closure_hours,
+      closure_reason_clean,
+      closure_reason
     ]
   }
 }
