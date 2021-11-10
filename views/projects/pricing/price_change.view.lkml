@@ -325,7 +325,7 @@ on a.sku = b.product_sku
 left join `flink-data-prod.curated.hubs` c
 on a.hub_code = c.hub_code
  WHERE inventory_tracking_date >= "2021-09-01"
- and product_sku = "11011445"
+--and product_sku = "11011445"
  group by 1,2,3
 )
 as a
