@@ -490,17 +490,35 @@ view: rider_staffing_report {
     label: "Rider UTR"
     type: unquoted
     allowed_value: { value: "1" }
-    allowed_value: { value: "1.25" }
+    allowed_value: { value: "1.1" }
+    allowed_value: { value: "1.2" }
+    allowed_value: { value: "1.3" }
+    allowed_value: { value: "1.4" }
     allowed_value: { value: "1.5" }
-    allowed_value: { value: "1.75" }
-    allowed_value: { value: "2" }
-    allowed_value: { value: "2.25" }
+    allowed_value: { value: "1.6" }
+    allowed_value: { value: "1.7" }
+    allowed_value: { value: "1.8" }
+    allowed_value: { value: "1.9" }
+    allowed_value: { value: "2.0" }
+    allowed_value: { value: "2.1" }
+    allowed_value: { value: "2.2" }
+    allowed_value: { value: "2.3" }
+    allowed_value: { value: "2.4" }
     allowed_value: { value: "2.5" }
-    allowed_value: { value: "2.75" }
+    allowed_value: { value: "2.6" }
+    allowed_value: { value: "2.7" }
+    allowed_value: { value: "2.8" }
+    allowed_value: { value: "2.9" }
     allowed_value: { value: "3" }
-    allowed_value: { value: "3.25" }
+    allowed_value: { value: "3.1" }
+    allowed_value: { value: "3.2" }
+    allowed_value: { value: "3.3" }
+    allowed_value: { value: "3.4" }
     allowed_value: { value: "3.5" }
-    allowed_value: { value: "3.75" }
+    allowed_value: { value: "3.6" }
+    allowed_value: { value: "3.7" }
+    allowed_value: { value: "3.8" }
+    allowed_value: { value: "3.9" }
     allowed_value: { value: "4" }
     default_value: "2.5"
   }
