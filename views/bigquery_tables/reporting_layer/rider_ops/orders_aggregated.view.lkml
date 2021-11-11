@@ -2,6 +2,14 @@ view: orders_aggregated {
   sql_table_name: `flink-data-prod.reporting.orders_aggregated`
     ;;
 
+  dimension: unique_id {
+    type: string
+    hidden: yes
+    primary_key: yes
+    sql: concat(${TABLE}.city,${TABLE}.start_period,${TABLE}.end_period) ;;
+
+  }
+
   dimension: city {
     type: string
     sql: ${TABLE}.city ;;
@@ -48,8 +56,9 @@ view: orders_aggregated {
   }
 
   measure: total_orders {
-    type: sum
-    sql:${orders};;
+    label: "# orders"
+    type:sum
+    sql: ${orders};;
     value_format_name: decimal_0
   }
 
