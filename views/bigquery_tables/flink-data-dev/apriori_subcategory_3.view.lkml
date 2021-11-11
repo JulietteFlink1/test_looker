@@ -1,5 +1,5 @@
 view: apriori_subcategory_3 {
-  sql_table_name: `flink-data-dev.sandbox_justine.apriori_all`
+  sql_table_name: `flink-data-dev.reporting.typical_basket_analysis`
     ;;
 
   dimension: category_a {
