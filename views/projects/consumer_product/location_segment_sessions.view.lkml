@@ -214,7 +214,7 @@ view: location_segment_sessions {
          ) hs
       ON LOWER(hd.hub_code) = LOWER(hs.hub_code)
 
-      WHERE (hs.hub_code NOT IN('erp_spitzbergen', 'fr_hub_test', 'nl_hub_test')
+      WHERE (hs.hub_code NOT IN('erp_spitzbergen', 'fr_hub_test', 'nl_hub_test', 'at_hub_test')
           OR hs.hub_code is null)
     )
 
