@@ -10,8 +10,8 @@ SELECT
       "Chosen Time Frame" as period,
       prod.category,
       prod.subcategory,
-      --prod.product_name,
-      --prod.product_sku,
+      prod.product_name,
+      prod.product_sku,
       COALESCE(prod.substitute_group, prod.product_name) as substitute_group,
       a.country_iso,
       hub.country,
@@ -31,7 +31,7 @@ SELECT
       WHERE DATE(a.order_timestamp) >= "2021-08-01"
       and ord.is_successful_order = true
       --and DATE(a.order_timestamp) < current_date()
-      group by 1,2,3,4,5,6,7,8,9--,10,11
+      group by 1,2,3,4,5,6,7,8,9,10,11
       order by 1
 ),
 
@@ -40,11 +40,11 @@ b as
 
      SELECT
       cast(date_add(a.order_timestamp,interval +7 day) as date) as order_date,
-      "W -1" as period,
+      "Week -1" as period,
       prod.category,
       prod.subcategory,
-      --prod.product_name,
-      --prod.product_sku,
+      prod.product_name,
+      prod.product_sku,
       COALESCE(prod.substitute_group, prod.product_name) as substitute_group,
       a.country_iso,
       hub.country,
@@ -64,7 +64,7 @@ b as
       WHERE DATE(a.order_timestamp) >= "2021-08-01"
       and ord.is_successful_order = true
       --and DATE(a.order_timestamp) < current_date()
-      group by 1,2,3,4,5,6,7,8,9--,10,11
+      group by 1,2,3,4,5,6,7,8,9,10,11
       order by 1
 
 ),
@@ -73,11 +73,11 @@ c as
 (
      SELECT
       cast(date_add(a.order_timestamp,interval +14 day) as date) as order_date,
-      "W -2" as period,
+      "Week -2" as period,
       prod.category,
       prod.subcategory,
-      --prod.product_name,
-      --prod.product_sku,
+      prod.product_name,
+      prod.product_sku,
       COALESCE(prod.substitute_group, prod.product_name) as substitute_group,
       a.country_iso,
       hub.country,
@@ -97,7 +97,7 @@ c as
       WHERE DATE(a.order_timestamp) >= "2021-08-01"
       and ord.is_successful_order = true
       --and DATE(a.order_timestamp) < current_date()
-      group by 1,2,3,4,5,6,7,8,9--,10,11
+      group by 1,2,3,4,5,6,7,8,9,10,11
       order by 1
 
 ),
@@ -106,11 +106,11 @@ d as
 (
      SELECT
       cast(date_add(a.order_timestamp,interval +21 day) as date) as order_date,
-      "W -3" as period,
+      "Week -3" as period,
       prod.category,
       prod.subcategory,
-      --prod.product_name,
-      --prod.product_sku,
+      prod.product_name,
+      prod.product_sku,
       COALESCE(prod.substitute_group, prod.product_name) as substitute_group,
       a.country_iso,
       hub.country,
@@ -130,7 +130,7 @@ d as
       WHERE DATE(a.order_timestamp) >= "2021-08-01"
       and ord.is_successful_order = true
       --and DATE(a.order_timestamp) < current_date()
-      group by 1,2,3,4,5,6,7,8,9--,10,11
+      group by 1,2,3,4,5,6,7,8,9,10,11
       order by 1
 
 ),
@@ -139,11 +139,11 @@ e as
 (
      SELECT
       cast(date_add(a.order_timestamp,interval +28 day) as date) as order_date,
-      "W -4" as period,
+      "Week -4" as period,
       prod.category,
       prod.subcategory,
-      --prod.product_name,
-      --prod.product_sku,
+      prod.product_name,
+      prod.product_sku,
       COALESCE(prod.substitute_group, prod.product_name) as substitute_group,
       a.country_iso,
       hub.country,
@@ -163,7 +163,7 @@ e as
       WHERE DATE(a.order_timestamp) >= "2021-08-01"
       and ord.is_successful_order = true
       --and DATE(a.order_timestamp) < current_date()
-      group by 1,2,3,4,5,6,7,8,9--,10,11
+      group by 1,2,3,4,5,6,7,8,9,10,11
       order by 1
 
 ),
@@ -285,8 +285,10 @@ UNION ALL
 select
 e.*
 from e
-)
+),
 
+h as
+(
 select
 g.*,
 --f.avg_unit_price_gross as avg_unit_price_gross_subcateg,
@@ -301,11 +303,46 @@ and f.order_date = g.order_date
 and f.category = g.category
 and f.subcategory = g.subcategory
 and f.hub_name = g.hub_name
+),
 
---where substitute_group  = "Rothaus Tannenzäpfle Pils 0,33l"
---and f.hub_name ="DE - Berlin - Mitte 2"
---order by order_date
+i as
+(
+select
+inventory_tracking_date,
+substitute_group,
+sum(hours_oos) as hours_oos,
+sum(open_hours_total) as open_hours_total
+from (
+SELECT
+a.inventory_tracking_date,
+c.hub_name,
+COALESCE(b.substitute_group, b.product_name) as substitute_group,
+min(hours_oos) as hours_oos,
+max(open_hours_total) as open_hours_total
+FROM `flink-data-prod.reporting.inventory_stock_count_daily` a
+LEFT JOIN `flink-data-prod.curated.products` b
+on a.sku = b.product_sku
+left join `flink-data-prod.curated.hubs` c
+on a.hub_code = c.hub_code
+ WHERE inventory_tracking_date >= "2021-09-01"
+--and product_sku = "11011445"
+ group by 1,2,3
+)
+as a
+group by 1,2
 
+)
+select
+h.*,
+i.hours_oos,
+i.open_hours_total
+
+from h
+left join i
+--on h.hub_name = i.hub_name
+on h.substitute_group = i.substitute_group
+and h.order_date = i.inventory_tracking_date
+where order_date>="2021-09-01"
 
       ;;
 }
@@ -330,10 +367,10 @@ and f.hub_name = g.hub_name
     sql: ${TABLE}.sum_quantity ;;
   }
 
-  measure: sum_quantity_subcategory {
-    label: "Quantity Sold - Subcategory"
+  measure: sum_quantity_subcateg {
+    label: "Quantity Sold - Subcateg"
     type: sum
-    sql: ${TABLE}.sum_quantity_subcategory ;;
+    sql: ${TABLE}.sum_quantity_subcateg ;;
   }
 
   measure: orders {
@@ -349,6 +386,17 @@ and f.hub_name = g.hub_name
     sql: ${TABLE}.avg_unit_price_gross ;;
   }
 
+  measure: hours_oos {
+    label: "Hours ooo"
+    type: sum
+    sql: ${TABLE}.hours_oos ;;
+  }
+
+  measure: open_hours_total {
+    label: "Open Hours"
+    type: sum
+    sql: ${TABLE}.open_hours_total ;;
+  }
 #    measure: sum_item_value_1W_back {
 #    type: sum
 #    sql: ${TABLE}.sum_item_value_1W_back ;;
@@ -420,6 +468,7 @@ and f.hub_name = g.hub_name
     sql: ${TABLE}.substitute_group ;;
   }
 
+
   dimension: product_name {
     label: "Product Name"
     type: string
@@ -461,7 +510,6 @@ and f.hub_name = g.hub_name
   set: detail {
     fields: [week,
       day,
-  #    day_of_week,
       period,
       category,
       subcategory,
