@@ -135,6 +135,20 @@ view: customers_metrics {
     sql: ${TABLE}.first_order_discount_code ;;
   }
 
+  dimension: first_fulfillment_time_minutes {
+    group_label: "* User Dimensions *"
+    type: number
+    sql: round(${TABLE}.first_fulfillment_time_minutes) ;;
+    value_format_name: decimal_0
+  }
+
+  dimension: first_delivery_pdt_minutes {
+    group_label: "* User Dimensions *"
+    type: number
+    sql: ${TABLE}.first_delivery_pdt_minutes ;;
+    value_format_name: decimal_0
+  }
+
   dimension: first_order_cart_discount_id {
     group_label: "* User Dimensions *"
     type: string
