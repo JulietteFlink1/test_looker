@@ -131,7 +131,8 @@ view: inventory {
   measure: avg_quantity_available {
     type: average
     sql: ${TABLE}.quantity_available ;;
-    label: "AVG Quantity Available"
+    label: "Inventory Quantity Available"
+    description: "The current available stock level in a hub (quantity on stock reduced by reserved items) (as of now - this is not historical data)"
     value_format_name: decimal_1
     group_label: "> Absolute Metrics"
   }
@@ -139,7 +140,8 @@ view: inventory {
   measure: avg_quantity_on_stock {
     type: average
     sql: ${TABLE}.quantity_on_stock ;;
-    label: "AVG Quantity on Stock"
+    label: "Inventory Quantity on Stock"
+    description: "The current stock level in a hub incl. reserved items (as of now - this is not historical data)"
     value_format_name: decimal_1
     group_label: "> Absolute Metrics"
   }
@@ -147,7 +149,8 @@ view: inventory {
   measure: avg_quantity_reserved {
     type: average
     sql: ${TABLE}.quantity_reserved ;;
-    label: "AVG Quantity Reserved"
+    label: "Inventory Quantity Reserved"
+    description: "The number of reserved items (as of now - this is not historical data)"
     value_format_name: decimal_1
     group_label: "> Absolute Metrics"
   }
@@ -156,6 +159,7 @@ view: inventory {
     type: sum
     sql: ${TABLE}.quantity_available ;;
     label: "Sum Current Quantity Available"
+    description: "The sum of Inventory Quantity Available"
     filters: [is_most_recent_record: "Yes"]
     value_format_name: decimal_1
     group_label: "> Absolute Metrics"
@@ -164,6 +168,7 @@ view: inventory {
 
   measure: sum_out_of_stock {
     label: "SUM Stockouts"
+    description: "The sum of skus, that are out-of-stock"
     group_label: "> Absolute Metrics"
     hidden: no
     type: sum
@@ -175,10 +180,10 @@ view: inventory {
   # ~~~~~~~~  from realtime model:
   # ~~~~~~~~  https://goflink.cloud.looker.com/projects/flink_realtime/files/views/warehouse_stock_facts.view.lkml
   measure: pct_out_of_stock {
-    label: "% Stockouts"
+    label: "% Out Of Stock"
+    description: "Only as of now: This rate gives the sum of all hours, an SKU was out of stock compared to all hours, the hub was open for orders. This rate does NOT provide historical oos data"
     group_label: "> Percentages"
     hidden: no
-    description: "Percentage of stockouts"
     type: average
     sql: ${flag_out_of_stock} ;;
     value_format_name: percent_0

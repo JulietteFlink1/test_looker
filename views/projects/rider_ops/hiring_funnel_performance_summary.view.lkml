@@ -264,4 +264,28 @@ view: hiring_funnel_performance_summary {
     value_format_name:  percent_1
   }
 
+
+
+  measure: total_hires_with_first_shift_completed {
+    hidden: no
+    type: number
+    sql: ${number_of_hires_with_first_shift_completed} ;;
+    html: {{ rendered_value }} ({{ pct_hires_with_first_shift_completed._rendered_value }} % of total) ;;
+  }
+
+
+  measure: total_hires_with_first_shift_scheduled {
+    hidden: no
+    type: number
+    sql: ${number_of_hires_with_first_shift_scheduled} ;;
+    html: {{ rendered_value }} ({{ pct_hires_with_first_shift_scheduled._rendered_value }} % of total) ;;
+  }
+
+  measure: total_hires_with_account_created {
+    hidden: no
+    type: number
+    sql: ${number_of_hires_with_account_created} ;;
+    html: {{ rendered_value }} ({{ pct_hires_with_account_created._rendered_value }} % of total) ;;
+  }
+
 }
