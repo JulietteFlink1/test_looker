@@ -1,4 +1,4 @@
-view: apriori_subcategory_3 {
+view: typical_basket_analysis {
   sql_table_name: `flink-data-dev.reporting.typical_basket_analysis`
     ;;
 
