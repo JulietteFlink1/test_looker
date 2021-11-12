@@ -232,6 +232,7 @@ view: checkout_sessions {
          , SUM(CASE WHEN e.event="account_registration_succeeded" THEN 1 ELSE 0 END) as account_registration_succeeded_count
          , SUM(CASE WHEN e.event="account_registration_error_viewed" THEN 1 ELSE 0 END) as account_registration_error_viewed_count
          , SUM(CASE WHEN e.event="account_login_clicked" THEN 1 ELSE 0 END) as account_login_clicked_count
+         , SUM(CASE WHEN e.event="account_login_viewed" THEN 1 ELSE 0 END) as account_login_viewed_count
          , SUM(CASE WHEN e.event="account_login_succeeded" THEN 1 ELSE 0 END) as account_login_succeeded_count
          , SUM(CASE WHEN e.event="account_login_error_viewed" THEN 1 ELSE 0 END) as account_login_error_viewed_count
          , SUM(CASE WHEN ch.id IS NOT NULL THEN 1 ELSE 0 END) as checkout_stared_count
@@ -369,6 +370,7 @@ view: checkout_sessions {
         , ec.account_registration_succeeded_count as account_registration_succeeded
         , ec.account_registration_error_viewed_count as account_registration_error_viewed
         , ec.account_login_clicked_count as account_login_clicked
+        , ec.account_login_viewed_count as account_login_viewed
         , ec.account_login_succeeded_count as account_login_succeeded
         , ec.account_login_error_viewed_count as account_login_error_viewed
         , ec.checkout_started_event_count as checkout_started
@@ -414,7 +416,7 @@ view: checkout_sessions {
 
   dimension: is_exposed_registration {
     type: yesno
-    sql: ${TABLE}.account_registration_succeeded>0 ;;
+    sql: ${TABLE}.account_registration_viewed>0 ;;
   }
 
   measure: cnt_address_confirm_after_checkout {
@@ -563,6 +565,13 @@ view: checkout_sessions {
     description: "Number of sessions in which there was at least one Successfull Login"
     type: count
     filters: [account_login_succeeded: ">0"]
+  }
+
+  measure: cnt_account_login_viewed {
+    label: "Login Viewed"
+    description: "Number of sessions in which there was at least one Login Screen View"
+    type: count
+    filters: [account_login_viewed: ">0"]
   }
 
   measure: cnt_account_login_error {
@@ -874,6 +883,11 @@ view: checkout_sessions {
     sql: ${TABLE}.account_login_clicked ;;
   }
 
+  dimension: account_login_viewed {
+    type: number
+    sql: ${TABLE}.account_login_viewed ;;
+  }
+
   dimension: account_login_succeeded {
     type: number
     sql: ${TABLE}.account_login_succeeded ;;
@@ -920,6 +934,7 @@ view: checkout_sessions {
       account_registration_error_viewed,
       account_login_clicked,
       account_login_succeeded,
+      account_login_viewed,
       account_login_error_viewed,
       is_logged_in_session,
       is_first_session,
