@@ -124,6 +124,11 @@ view: city_level_employees_capacity {
     sql: ${TABLE}.year ;;
   }
 
+  dimension: numbre_of_hires {
+    type: number
+    sql: ${TABLE}.hires ;;
+  }
+
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -160,6 +165,12 @@ view: city_level_employees_capacity {
   measure: total_active_employees {
     type:sum
     sql: ${number_of_active_employees};;
+    value_format_name: decimal_0
+  }
+
+  measure: total_hires {
+    type:sum
+    sql: ${numbre_of_hires};;
     value_format_name: decimal_0
   }
 

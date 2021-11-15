@@ -1,8 +1,8 @@
-include: "/views/bigquery_tables/flink-data-dev/apriori_subcategory_3.view.lkml"
+include: "/views/bigquery_tables/flink-data-dev/typical_basket_analysis.view.lkml"
 
 explore: typical_basket_analysis {
   hidden: no
-  view_name:  apriori_subcategory_3
+  view_name:  typical_basket_analysis
   label: "Subcategory Analysis"
   always_filter: {
     filters:  [

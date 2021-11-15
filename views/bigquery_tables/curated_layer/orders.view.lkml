@@ -1394,6 +1394,15 @@ view: orders {
     sql: ${number_of_items} ;;
   }
 
+  measure: sum_rider_non_idle_time {
+    label: "Sum Rider Non-idle Hours"
+    group_label: "* Operations / Logistics *"
+    description: "Rider Time spent from claiming an order until returning to the hub "
+    type: sum
+    sql: timestamp_diff(timestamp(${rider_returned_to_hub_timestamp}), timestamp(${order_rider_claimed_timestamp}), minute)/60 ;;
+  }
+
+
   ############
   ## COUNTS ##
   ############
@@ -1764,6 +1773,15 @@ view: orders {
     type: number
     sql: ${cnt_orders_delayed_over_10_min_time_estimate} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
     value_format: "0%"
+  }
+
+  measure: pct_idle {
+    label: "% Rider Idle Time"
+    group_label: "* Operations / Logistics *"
+    description: "Rider Time spent from claiming an order until returning to the hub "
+    type: number
+    sql: 1 - ${sum_rider_non_idle_time}/NULLIF(${shyftplan_riders_pickers_hours.rider_hours},0);;
+    value_format_name:  percent_1
   }
 
 #######TEMP: adding new fields to compare how PDT versus Time Estimate will perform
