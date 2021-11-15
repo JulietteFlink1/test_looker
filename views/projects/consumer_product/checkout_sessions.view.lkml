@@ -259,8 +259,11 @@ view: checkout_sessions {
             LEFT JOIN (
                 SELECT
                       id
-                    , sub_total as revenue
                 FROM `flink-data-prod.flink_ios_production.checkout_started` csi
+                UNION ALL
+                SELECT
+                      id
+                FROM `flink-data-prod.flink_android_production.checkout_started` csi
             ) ch
                 ON e.id = ch.id
             LEFT JOIN (
@@ -271,9 +274,23 @@ view: checkout_sessions {
                     , revenue
                     , order_number
                 FROM `flink-data-prod.flink_ios_production.order_placed`
+                UNION ALL
+                SELECT
+                      id
+                    , voucher_code
+                    , voucher_value
+                    , revenue
+                    , order_number
+                FROM `flink-data-prod.flink_android_production.order_placed`
             ) op
                 ON e.id = op.id
             LEFT JOIN (
+                SELECT
+                      id
+                    , voucher_code
+                    , error_message
+                FROM `flink-data-prod.flink_ios_production.voucher_applied_failed`
+                UNION ALL
                 SELECT
                       id
                     , voucher_code
@@ -287,6 +304,12 @@ view: checkout_sessions {
                     , voucher_code
                     , voucher_value
                 FROM `flink-data-prod.flink_ios_production.voucher_applied_succeeded`
+                UNION ALL
+                SELECT
+                      id
+                    , voucher_code
+                    , voucher_value
+                FROM `flink-data-prod.flink_android_production.voucher_applied_succeeded`
             ) vas
             ON vas.id = e.id
             LEFT JOIN (
@@ -294,6 +317,11 @@ view: checkout_sessions {
                       id
                     , voucher_code
                 FROM `flink-data-prod.flink_ios_production.voucher_redemption_attempted`
+                UNION ALL
+                SELECT
+                      id
+                    , voucher_code
+                FROM `flink-data-prod.flink_android_production.voucher_redemption_attempted`
             ) vra
             ON vra.id = e.id
             LEFT JOIN (
@@ -301,6 +329,11 @@ view: checkout_sessions {
                       id
                     , error
                 FROM `flink-data-prod.flink_ios_production.account_login_error_viewed`
+                UNION ALL
+                SELECT
+                      id
+                    , error
+                FROM `flink-data-prod.flink_android_production.account_login_error_viewed`
             ) alev
             ON alev.id = e.id
             LEFT JOIN (
@@ -308,6 +341,12 @@ view: checkout_sessions {
                       id
                     , error
                 FROM `flink-data-prod.flink_ios_production.account_registration_error_viewed`
+                UNION ALL
+                SELECT
+                      id
+                    , error
+                FROM `flink-data-prod.flink_android_production.account_registration_error_viewed`
+
             ) arev
             ON arev.id = e.id
         GROUP BY 1,2,3,4,5,6,7
@@ -558,6 +597,13 @@ view: checkout_sessions {
     description: "Number of sessions in which there was at least one Registration Error"
     type: count
     filters: [account_registration_error_viewed: ">0"]
+  }
+
+  measure: cnt_account_login_clicked {
+    label: "Login Attempt"
+    description: "Number of sessions in which there was at least one Login Click (attempt)"
+    type: count
+    filters: [account_login_clicked: ">0"]
   }
 
   measure: cnt_account_login_succeeded {
