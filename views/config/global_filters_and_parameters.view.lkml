@@ -27,7 +27,7 @@
     type: date
     datatype: date
     hidden: yes
-    default_value: "last 7 days"
+    default_value: "7 days ago for 7 days"
     label: "Generic Current Period Filter"
     # view_label: "Database Date Filter 📅"
     group_label: ">> Period-over-Period Filter"
