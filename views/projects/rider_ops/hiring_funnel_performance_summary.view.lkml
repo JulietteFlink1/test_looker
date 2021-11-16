@@ -45,6 +45,23 @@ view: hiring_funnel_performance_summary {
     sql: ${TABLE}.date ;;
   }
 
+
+  dimension_group: updated_at {
+    type: time
+    timeframes: [
+      time,
+      raw,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    convert_tz: yes
+    datatype: datetime
+    sql: ${TABLE}.updated_at ;;
+  }
+
   dimension: unique_id {
     hidden: yes
     sql: concat(${country}, ${city}, ${channel}, ${position}, ${date_raw}) ;;
@@ -200,6 +217,12 @@ view: hiring_funnel_performance_summary {
   }
 
   measure: number_of_hires_with_first_shift_completed {
+    type: sum
+    sql: ${hires_with_first_shift_completed} ;;
+    value_format_name: decimal_0
+  }
+
+  measure: number_of_hires_with_first_shift {
     type: sum
     sql: ${hires_with_first_shift_completed} ;;
     value_format_name: decimal_0
