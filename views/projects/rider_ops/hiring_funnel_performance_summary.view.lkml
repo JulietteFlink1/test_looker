@@ -45,6 +45,29 @@ view: hiring_funnel_performance_summary {
     sql: ${TABLE}.date ;;
   }
 
+
+  dimension_group: updated_at {
+    type: time
+    timeframes: [
+      time,
+      raw,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    convert_tz: yes
+    datatype: datetime
+    sql: ${TABLE}.updated_at ;;
+  }
+
+  dimension: week_number {
+    hidden: no
+    type: number
+    sql: extract(week from date_TRUNC(${TABLE}.date, WEEK(MONDAY))) ;;
+  }
+
   dimension: unique_id {
     hidden: yes
     sql: concat(${country}, ${city}, ${channel}, ${position}, ${date_raw}) ;;
@@ -57,11 +80,24 @@ view: hiring_funnel_performance_summary {
     sql: ${TABLE}.hires ;;
   }
 
-  dimension: hires_with_first_shift {
+  dimension: hires_with_first_shift_completed {
     hidden: yes
     type: number
-    sql: ${TABLE}.hires_with_first_shift ;;
+    sql: ${TABLE}.hires_with_first_shift_completed ;;
   }
+
+  dimension: hires_with_first_shift_scheduled {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.hires_with_first_shift_scheduled ;;
+  }
+
+  dimension: hires_with_account_created {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.hires_with_account_created ;;
+  }
+
 
   dimension: leads {
     hidden: yes
@@ -186,9 +222,27 @@ view: hiring_funnel_performance_summary {
     value_format_name: decimal_0
   }
 
+  measure: number_of_hires_with_first_shift_completed {
+    type: sum
+    sql: ${hires_with_first_shift_completed} ;;
+    value_format_name: decimal_0
+  }
+
   measure: number_of_hires_with_first_shift {
     type: sum
-    sql: ${hires_with_first_shift} ;;
+    sql: ${hires_with_first_shift_completed} ;;
+    value_format_name: decimal_0
+  }
+
+  measure: number_of_hires_with_first_shift_scheduled {
+    type: sum
+    sql: ${hires_with_first_shift_scheduled} ;;
+    value_format_name: decimal_0
+  }
+
+  measure: number_of_hires_with_account_created {
+    type: sum
+    sql: ${hires_with_account_created} ;;
     value_format_name: decimal_0
   }
 
@@ -208,6 +262,59 @@ view: hiring_funnel_performance_summary {
     type: sum
     sql: ${spend} ;;
     value_format_name: eur_0
+  }
+
+
+  measure: pct_hires_with_first_shift_completed {
+    label:       "% Hires with first shift completed"
+    description: "% Hires with first shift completed"
+    type:        number
+    sql:case when NULLIF(${number_of_hires}, 0) > 0 then ${number_of_hires_with_first_shift_completed} / ${number_of_hires}
+      else null end;;
+    value_format_name:  percent_1
+  }
+
+  measure: pct_hires_with_first_shift_scheduled{
+    label:       "% Hires with first shift scheduled"
+    description: "% Hires with first shift scheduled"
+    type:        number
+    sql:case when NULLIF(${number_of_hires}, 0) > 0 then ${number_of_hires_with_first_shift_scheduled} / ${number_of_hires}
+             else null end
+            ;;
+    value_format_name:  percent_1
+  }
+
+  measure: pct_hires_with_account_created {
+    label:       "% Hires with account created"
+    description: "% Hires with account created"
+    type:        number
+    sql:case when NULLIF(${number_of_hires}, 0) > 0 then ${number_of_hires_with_account_created} / ${number_of_hires}
+      else null end;;
+    value_format_name:  percent_1
+  }
+
+
+
+  measure: total_hires_with_first_shift_completed {
+    hidden: no
+    type: number
+    sql: ${number_of_hires_with_first_shift_completed} ;;
+    html: {{ rendered_value }} ({{ pct_hires_with_first_shift_completed._rendered_value }} % of total) ;;
+  }
+
+
+  measure: total_hires_with_first_shift_scheduled {
+    hidden: no
+    type: number
+    sql: ${number_of_hires_with_first_shift_scheduled} ;;
+    html: {{ rendered_value }} ({{ pct_hires_with_first_shift_scheduled._rendered_value }} % of total) ;;
+  }
+
+  measure: total_hires_with_account_created {
+    hidden: no
+    type: number
+    sql: ${number_of_hires_with_account_created} ;;
+    html: {{ rendered_value }} ({{ pct_hires_with_account_created._rendered_value }} % of total) ;;
   }
 
 }

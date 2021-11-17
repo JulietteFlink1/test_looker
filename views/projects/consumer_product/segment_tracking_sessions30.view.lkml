@@ -5,6 +5,7 @@ view: segment_tracking_sessions30 {
         events AS ( -- ios all events
         SELECT
             tracks.anonymous_id
+          , tracks.user_id
           , tracks.context_app_version
           , tracks.context_device_type
           , tracks.context_locale
@@ -26,6 +27,7 @@ view: segment_tracking_sessions30 {
     UNION ALL
         SELECT -- android all events
             tracks.anonymous_id
+          , tracks.user_id
           , tracks.context_app_version
           , tracks.context_device_type
           , tracks.context_locale
@@ -56,6 +58,7 @@ view: segment_tracking_sessions30 {
             , context_app_version
             , context_device_type
             , context_locale
+            , case when user_id is not null then 1 else 0 end as flag_session_logged_in
             FROM
               events
             WHERE
@@ -209,6 +212,7 @@ view: segment_tracking_sessions30 {
          , delivery_eta
          , has_selected_address
          , has_address
+         , flag_session_logged_in
     FROM (
         SELECT
               ts.anonymous_id
@@ -218,6 +222,7 @@ view: segment_tracking_sessions30 {
             , ts.session_id
             , ts.session_number
             , ts.session_start_at
+            , ts.flag_session_logged_in
             , ts.next_session_start_at
             , hd.timestamp as hd_timestamp
             , hd.hub_code
@@ -246,7 +251,7 @@ view: segment_tracking_sessions30 {
             )
     WHERE
         rank_hd = 1  -- filter set = 1 to get 'latest' timestamp
-    GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14
+    GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13, 14,15
     )
     , add_to_cart AS (
         SELECT
@@ -341,7 +346,7 @@ view: segment_tracking_sessions30 {
         GROUP BY 1
     )
 
-    , order_placed AS (
+            , order_placed AS (
         SELECT
                sf.anonymous_id
              , sf.session_id
@@ -354,6 +359,7 @@ view: segment_tracking_sessions30 {
         WHERE e.event = 'order_placed'
         GROUP BY 1,2
     )
+
 
     SELECT
           sf.anonymous_id
@@ -372,6 +378,7 @@ view: segment_tracking_sessions30 {
         , sf.delivery_eta
         , sf.has_selected_address
         , sf.has_address
+        , CASE WHEN sf.flag_session_logged_in = 1 THEN true ELSE false END as flag_session_logged_in
         , atc.event_count as add_to_cart
         , hv.event_count as home_viewed
         , cv.event_count as view_cart
@@ -398,6 +405,8 @@ view: segment_tracking_sessions30 {
         ON sf.session_id = op.session_id
         LEFT JOIN first_order fo
         ON sf.anonymous_id = fo.anonymous_id
+
+
  ;;
   }
 
@@ -449,6 +458,11 @@ view: segment_tracking_sessions30 {
   dimension: has_ordered {
     type: yesno
     sql: ${TABLE}.has_ordered ;;
+  }
+
+  dimension: is_logged_in {
+    type: yesno
+    sql: ${TABLE}.flag_session_logged_in ;;
   }
 
 ### Custom dimensions
@@ -518,6 +532,10 @@ view: segment_tracking_sessions30 {
       when: {
         sql: ${TABLE}.hub_country = "NL" ;;
         label: "Netherlands"
+      }
+      when: {
+        sql: ${TABLE}.hub_country = "AT" ;;
+        label: "Austria"
       }
       else: "Other / Unknown"
     }

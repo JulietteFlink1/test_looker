@@ -65,14 +65,14 @@ view: hubs_ct {
 
   dimension: latitude {
     type: number
-    sql: ${TABLE}.latitude ;;
+    sql: safe_cast(${TABLE}.latitude as float64) ;;
     hidden: yes
     group_label: "> Geographic Data"
   }
 
   dimension: longitude {
     type: number
-    sql: ${TABLE}.longitude ;;
+    sql: safe_cast(${TABLE}.longitude as float64) ;;
     hidden: yes
     group_label: "> Geographic Data"
   }

@@ -2,32 +2,32 @@ view: crm_braze_canvas {
   derived_table: {
     sql:
       SELECT
-          email_sent_at
-        , country
+          email_sent_at_date            as email_sent_at
+        , country_iso                   as country
         , canvas_name
-        , canvas_variation_name
+        , canvas_group_name             as canvas_variation_name
         , canvas_step_name
-        , in_control_group
-        , sum(total_emails_sent) as total_emails_sent
-        , sum(total_emails_bounced) as total_emails_bounced
-        , sum(total_emails_delivered) as total_emails_delivered
-        , sum(num_unique_emails_opened) as num_unique_emails_opened
-        , sum(total_emails_opened) as total_emails_opened
-        , sum(num_unique_emails_clicked) as num_unique_emails_clicked
-        , sum(total_emails_clicked) as total_emails_clicked
-        , sum(num_unique_unsubscribed) as num_unique_unsubscribed
-        , sum(num_unique_users_orders) as num_unique_users_orders
-        , sum(total_orders) as total_orders
-        , sum(total_orders_with_vouchers) as total_orders_with_vouchers
-        , sum(total_vouchers_sent) as total_vouchers_sent
-        , sum(total_discount_amount) as total_discount_amount
-        , sum(total_gmv_gross) as total_gmv_gross
-        ,   CASE WHEN in_control_group = false THEN SUM(num_unique_emails_opened)
-                 WHEN in_control_group = true THEN SUM(total_emails_sent)
+        , is_control_group              as in_control_group
+        , sum(number_of_emails_sent)    as total_emails_sent
+        , sum(number_of_emails_bounced) as total_emails_bounced
+        , sum(number_of_emails_delivered) as total_emails_delivered
+        , sum(number_of_unique_emails_opened) as num_unique_emails_opened
+        , sum(number_of_emails_opened) as total_emails_opened
+        , sum(number_of_unique_emails_clicked) as num_unique_emails_clicked
+        , sum(number_of_emails_clicked) as total_emails_clicked
+        , sum(number_of_unique_unsubscribed) as num_unique_unsubscribed
+        , sum(number_of_unique_users_orders) as num_unique_users_orders
+        , sum(number_of_orders) as total_orders
+        , sum(number_of_orders_with_vouchers) as total_orders_with_vouchers
+        , sum(number_of_vouchers_sent) as total_vouchers_sent
+        , sum(amt_discount_gross) as total_discount_amount
+        , sum(amt_gmv_gross) as total_gmv_gross
+        ,   CASE WHEN is_control_group = false THEN SUM(number_of_unique_emails_opened)
+                 WHEN is_control_group = true THEN SUM(number_of_emails_sent)
                  END as unique_users_denominator
-        , CASE WHEN in_control_group = false THEN sum(total_orders)/nullif(sum(num_unique_emails_opened),0)
-               WHEN in_control_group = true THEN sum(total_orders)/nullif(sum(total_emails_sent),0) END as order_rate
- FROM `flink-data-staging.sandbox.crm_braze_canvas`
+        , CASE WHEN is_control_group = false THEN sum(number_of_orders)/nullif(sum(number_of_unique_emails_opened),0)
+               WHEN is_control_group = true THEN sum(number_of_orders)/nullif(sum(number_of_emails_sent),0) END as order_rate
+ FROM `flink-data-staging.sandbox.braze_canvas`
  GROUP BY 1,2,3,4,5,6
 ;;
 }

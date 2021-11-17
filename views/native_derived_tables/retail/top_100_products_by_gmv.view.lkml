@@ -5,6 +5,8 @@ view: top_100_products_by_gmv {
       column:         sum_item_price_gross_7d { field: order_lineitems.sum_item_price_gross_7d }
       column:         name                    { field: products.product_name }
       derived_column: rank                    { sql: rank() over (order by sum_item_price_gross_7d desc) ;; }
+
+      bind_all_filters: yes
     }
   }
 

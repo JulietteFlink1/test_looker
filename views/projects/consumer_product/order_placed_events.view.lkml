@@ -137,6 +137,17 @@ view: order_placed_events {
     order_by_field: version_ordering_field
   }
 
+  dimension: main_app_version {
+    type: string
+    sql: ${context_device_type} || '-' || ${main_version_number} || '.' || ${secondary_version_number} ;;
+    order_by_field: basic_version_field
+  }
+
+  dimension: basic_version_field {
+    type: number
+    sql: CAST(CONCAT(${main_version_number},${secondary_version_number}) AS INT64) ;;
+  }
+
   dimension: main_version_number {
     type: string
     sql: REGEXP_EXTRACT(${context_app_version}, r'(\d+)\.') ;;
@@ -222,11 +233,100 @@ view: order_placed_events {
     sql: ${TABLE}.hub_city ;;
   }
 
+  # dimension: payment_method {
+  #   description: "Payment method used to place the order"
+  #   type: string
+  #   sql: ${TABLE}.payment_method ;;
+  # }
+
   dimension: payment_method {
     description: "Payment method used to place the order"
     type: string
-    sql: ${TABLE}.payment_method ;;
+    case: {
+      when: {
+        sql: ${TABLE}.payment_method = "Kreditkarte" ;;
+        label: "CreditCard"
+      }
+      when: {
+        sql: ${TABLE}.payment_method = "Carte bancaire" ;;
+        label: "CreditCard"
+      }
+      when: {
+        sql: ${TABLE}.payment_method = "Credit Card" ;;
+        label: "CreditCard"
+      }
+      when: {
+        sql: ${TABLE}.payment_method = "CreditCard" ;;
+        label: "CreditCard"
+      }
+      when: {
+        sql: ${TABLE}.payment_method = "MAESTRO" ;;
+        label: "CreditCard"
+      }
+      when: {
+        sql: ${TABLE}.payment_method = "Maestro" ;;
+        label: "CreditCard"
+      }
+      when: {
+        sql: ${TABLE}.payment_method = "VISA" ;;
+        label: "CreditCard"
+      }
+      when: {
+        sql: ${TABLE}.payment_method = "MASTERCARD" ;;
+        label: "CreditCard"
+      }
+      when: {
+        sql: ${TABLE}.payment_method = "MasterCard" ;;
+        label: "CreditCard"
+      }
+      when: {
+        sql: ${TABLE}.payment_method = "American Express" ;;
+        label: "CreditCard"
+      }
+      when: {
+        sql: ${TABLE}.payment_method = "AMERICAN_EXPRESS" ;;
+        label: "CreditCard"
+      }
+      when: {
+        sql: ${TABLE}.payment_method = "Visa" ;;
+        label: "CreditCard"
+      }
+      when: {
+        sql: ${TABLE}.payment_method = "CARTEBANCAIRE" ;;
+        label: "CreditCard"
+      }
+      when: {
+        sql: ${TABLE}.payment_method = "Apple Pay" ;;
+        label: "ApplePay"
+      }
+      when: {
+        sql: ${TABLE}.payment_method = "ApplePay" ;;
+        label: "ApplePay"
+      }
+      when: {
+        sql: ${TABLE}.payment_method = "ideal" ;;
+        label: "iDEAL"
+      }
+      when: {
+        sql: ${TABLE}.payment_method = "iDEAL" ;;
+        label: "iDEAL"
+      }
+      when: {
+        sql: ${TABLE}.payment_method = "Sofort" ;;
+        label: "Sofort"
+      }
+      when: {
+        sql: ${TABLE}.payment_method = "paypal" ;;
+        label: "PayPal"
+      }
+      when: {
+        sql: ${TABLE}.payment_method = "PayPal" ;;
+        label: "PayPal"
+      }
+      else: "Other / Unknown"
+    }
   }
+
 
   dimension_group: timestamp {
     description: "Time at which order was placed"

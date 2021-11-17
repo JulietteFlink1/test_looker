@@ -29,7 +29,7 @@ view: item_quantity_per_order {
              on a.sku = b.product_sku
         left join `flink-data-prod.curated.hubs` hub
              on a.hub_code = hub.hub_code
-      WHERE DATE(a.partition_timestamp) >= "2021-02-01"
+      WHERE DATE(a.order_timestamp) >= "2021-02-01"
 
 
 

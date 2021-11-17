@@ -4,6 +4,7 @@ explore: address_tooltip_sessions {
   view_name: address_tooltip_sessions
   label: "address_tooltip_sessions"
   view_label: "address_tooltip_sessions"
-  group_label: "In-app tracking data"
+  group_label: "Consumer Product"
   description: "Address Tooltip sessions"
+  hidden: yes
 }

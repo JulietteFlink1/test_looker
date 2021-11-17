@@ -5,6 +5,6 @@ explore: appopened_events {
   view_name: appopened_events
   label: "App Opened Location Events"
   view_label: "appOpened events"
-  group_label: "In-app tracking data"
+  group_label: "Consumer Product"
   description: "App Opened Location Events"
 }
