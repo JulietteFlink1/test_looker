@@ -1,11 +1,11 @@
 view: price_change {
   derived_table: {
     sql:
-    with a as
+     with w as
 (
+
 SELECT
 
-      --extract(week from a.order_timestamp) as week,
       cast(a.order_timestamp as date) as order_date,
       "Chosen Time Frame" as period,
       prod.random_ct_category as category,
@@ -14,9 +14,6 @@ SELECT
       prod.product_sku,
       COALESCE(prod.substitute_group, prod.product_name) as substitute_group,
       a.country_iso,
-      hub.country,
-      --ub.hub_name,
-      --hub.city,
       avg(a.amt_unit_price_gross) as avg_unit_price_gross,
       cast(sum(a.amt_total_price_gross) as decimal) as sum_item_value,
       sum (a.quantity) as sum_quantity,
@@ -24,18 +21,16 @@ SELECT
       FROM `flink-data-prod.curated.order_lineitems` a
         left join `flink-data-prod.curated.products` prod
              on a.sku = prod.product_sku
-        left join `flink-data-prod.curated.hubs` hub
-             on a.hub_code = hub.hub_code
         left join `flink-data-prod.curated.orders` ord
              on a.order_uuid = ord.order_uuid
-      WHERE DATE(a.order_timestamp) >= "2021-08-01"
-      and ord.is_successful_order = true
-      --and DATE(a.order_timestamp) < current_date()
-      group by 1,2,3,4,5,6,7,8,9--,10,11
-      order by 1
+             and ord.is_successful_order = true
+      WHERE DATE(a.order_timestamp) >= date_sub(current_date(), interval 60 day)
+      and DATE(ord.order_timestamp) >= date_sub(current_date(), interval 60 day)
+      group by 1,2,3,4,5,6,7,8
+
 ),
 
-b as
+w_minus_1 as
 (
 
      SELECT
@@ -47,9 +42,6 @@ b as
       prod.product_sku,
       COALESCE(prod.substitute_group, prod.product_name) as substitute_group,
       a.country_iso,
-      hub.country,
-      --hub.hub_name,
-      --hub.city,
       avg(a.amt_unit_price_gross) as avg_unit_price_gross,
       cast(sum(a.amt_total_price_gross) as decimal) as sum_item_value,
       sum (a.quantity) as sum_quantity,
@@ -57,19 +49,16 @@ b as
       FROM `flink-data-prod.curated.order_lineitems` a
         left join `flink-data-prod.curated.products` prod
              on a.sku = prod.product_sku
-        left join `flink-data-prod.curated.hubs` hub
-             on a.hub_code = hub.hub_code
         left join `flink-data-prod.curated.orders` ord
              on a.order_uuid = ord.order_uuid
-      WHERE DATE(a.order_timestamp) >= "2021-08-01"
-      and ord.is_successful_order = true
-      --and DATE(a.order_timestamp) < current_date()
-      group by 1,2,3,4,5,6,7,8,9--,10,11
-      order by 1
+             and ord.is_successful_order = true
+      WHERE DATE(a.order_timestamp) >= date_sub(current_date(), interval 67 day)
+      and DATE(ord.order_timestamp) >= date_sub(current_date(), interval 67 day)
+      group by 1,2,3,4,5,6,7,8
 
 ),
 
-c as
+w_minus_2 as
 (
      SELECT
       cast(date_add(a.order_timestamp,interval +14 day) as date) as order_date,
@@ -80,9 +69,6 @@ c as
       prod.product_sku,
       COALESCE(prod.substitute_group, prod.product_name) as substitute_group,
       a.country_iso,
-      hub.country,
-      --hub.hub_name,
-      --hub.city,
       avg(a.amt_unit_price_gross) as avg_unit_price_gross,
       cast(sum(a.amt_total_price_gross) as decimal) as sum_item_value,
       sum (a.quantity) as sum_quantity,
@@ -90,19 +76,16 @@ c as
       FROM `flink-data-prod.curated.order_lineitems` a
         left join `flink-data-prod.curated.products` prod
              on a.sku = prod.product_sku
-        left join `flink-data-prod.curated.hubs` hub
-             on a.hub_code = hub.hub_code
         left join `flink-data-prod.curated.orders` ord
              on a.order_uuid = ord.order_uuid
-      WHERE DATE(a.order_timestamp) >= "2021-08-01"
-      and ord.is_successful_order = true
-      --and DATE(a.order_timestamp) < current_date()
-      group by 1,2,3,4,5,6,7,8,9--,10,11
-      order by 1
+             and ord.is_successful_order = true
+      WHERE DATE(a.order_timestamp) >= date_sub(current_date(), interval 74 day)
+      and DATE(ord.order_timestamp) >= date_sub(current_date(), interval 74 day)
+      group by 1,2,3,4,5,6,7,8
 
 ),
 
-d as
+w_minus_3 as
 (
      SELECT
       cast(date_add(a.order_timestamp,interval +21 day) as date) as order_date,
@@ -113,9 +96,6 @@ d as
       prod.product_sku,
       COALESCE(prod.substitute_group, prod.product_name) as substitute_group,
       a.country_iso,
-      hub.country,
-      --hub.hub_name,
-      --hub.city,
       avg(a.amt_unit_price_gross) as avg_unit_price_gross,
       cast(sum(a.amt_total_price_gross) as decimal) as sum_item_value,
       sum (a.quantity) as sum_quantity,
@@ -123,19 +103,16 @@ d as
       FROM `flink-data-prod.curated.order_lineitems` a
         left join `flink-data-prod.curated.products` prod
              on a.sku = prod.product_sku
-        left join `flink-data-prod.curated.hubs` hub
-             on a.hub_code = hub.hub_code
         left join `flink-data-prod.curated.orders` ord
              on a.order_uuid = ord.order_uuid
-      WHERE DATE(a.order_timestamp) >= "2021-08-01"
-      and ord.is_successful_order = true
-      --and DATE(a.order_timestamp) < current_date()
-      group by 1,2,3,4,5,6,7,8,9--,10,11
-      order by 1
+             and ord.is_successful_order = true
+      WHERE DATE(a.order_timestamp) >= date_sub(current_date(), interval 81 day)
+      and DATE(ord.order_timestamp) >= date_sub(current_date(), interval 81 day)
+      group by 1,2,3,4,5,6,7,8
 
 ),
 
-e as
+w_minus_4 as
 (
      SELECT
       cast(date_add(a.order_timestamp,interval +28 day) as date) as order_date,
@@ -146,9 +123,6 @@ e as
       prod.product_sku,
       COALESCE(prod.substitute_group, prod.product_name) as substitute_group,
       a.country_iso,
-      hub.country,
-      --hub.hub_name,
-      --hub.city,
       avg(a.amt_unit_price_gross) as avg_unit_price_gross,
       cast(sum(a.amt_total_price_gross) as decimal) as sum_item_value,
       sum (a.quantity) as sum_quantity,
@@ -156,24 +130,48 @@ e as
       FROM `flink-data-prod.curated.order_lineitems` a
         left join `flink-data-prod.curated.products` prod
              on a.sku = prod.product_sku
-        left join `flink-data-prod.curated.hubs` hub
-             on a.hub_code = hub.hub_code
         left join `flink-data-prod.curated.orders` ord
              on a.order_uuid = ord.order_uuid
-      WHERE DATE(a.order_timestamp) >= "2021-08-01"
-      and ord.is_successful_order = true
-      --and DATE(a.order_timestamp) < current_date()
-      group by 1,2,3,4,5,6,7,8,9--,10,11
-      order by 1
+             and ord.is_successful_order = true
+      WHERE DATE(a.order_timestamp) >= date_sub(current_date(), interval 88 day)
+      and DATE(ord.order_timestamp) >= date_sub(current_date(), interval 88 day)
+      group by 1,2,3,4,5,6,7,8
 
 ),
 
+sku_lvl as
+(
+select
+w.*
+from w
+
+UNION ALL
+
+select
+w_minus_1.*
+from w_minus_1
+
+UNION ALL
+
+select
+w_minus_2.*
+from w_minus_2
+
+UNION ALL
+
+select
+w_minus_3.*
+from w_minus_3
+
+UNION ALL
+
+select
+w_minus_4.*
+from w_minus_4
+),
 
 
-
-
-
-f as
+subcateg_lvl as
 (
 select
       period,
@@ -181,84 +179,16 @@ select
       category,
       subcategory,
       country_iso,
-      --hub_name,
       avg(avg_unit_price_gross) as avg_unit_price_gross,
       sum(sum_item_value) as sum_item_value,
       sum(sum_quantity) as sum_quantity
-from a
-
-group by 1,2,3,4,5
-
-UNION ALL
-
-select
-      period,
-      order_date,
-      category,
-      subcategory,
-      country_iso,
-      --hub_name,
-      avg(avg_unit_price_gross) as avg_unit_price_gross,
-      sum(sum_item_value) as sum_item_value,
-      sum(sum_quantity) as sum_quantity
-from b
-
-group by 1,2,3,4,5
-
-UNION ALL
-
-select
-      period,
-      order_date,
-      category,
-      subcategory,
-      country_iso,
-      --hub_name,
-      avg(avg_unit_price_gross) as avg_unit_price_gross,
-      sum(sum_item_value) as sum_item_value,
-      sum(sum_quantity) as sum_quantity
-from c
-
-group by 1,2,3,4,5
-UNION ALL
-
-select
-      period,
-      order_date,
-      category,
-      subcategory,
-      country_iso,
-      --hub_name,
-      avg(avg_unit_price_gross) as avg_unit_price_gross,
-      sum(sum_item_value) as sum_item_value,
-      sum(sum_quantity) as sum_quantity
-from d
-
-group by 1,2,3,4,5
-
-UNION ALL
-
-select
-      period,
-      order_date,
-      category,
-      subcategory,
-      country_iso,
-      --hub_name,
-      avg(avg_unit_price_gross) as avg_unit_price_gross,
-      sum(sum_item_value) as sum_item_value,
-      sum(sum_quantity) as sum_quantity
-from e
+from sku_lvl
 
 group by 1,2,3,4,5
 ),
 
 
-
-
-
-
-j as
+flink_lvl as
 (
 select
       period,
@@ -267,146 +197,14 @@ select
       avg(avg_unit_price_gross) as avg_unit_price_gross,
       sum(sum_item_value) as sum_item_value,
       sum(sum_quantity) as sum_quantity
-from a
-
-group by 1,2,3
-
-UNION ALL
-
-select
-      period,
-      order_date,
-            country_iso,
-      avg(avg_unit_price_gross) as avg_unit_price_gross,
-      sum(sum_item_value) as sum_item_value,
-      sum(sum_quantity) as sum_quantity
-from b
-
-group by 1,2,3
-
-UNION ALL
-
-select
-      period,
-      order_date,
-            country_iso,
-      avg(avg_unit_price_gross) as avg_unit_price_gross,
-      sum(sum_item_value) as sum_item_value,
-      sum(sum_quantity) as sum_quantity
-from c
-
-group by 1,2,3
-UNION ALL
-
-select
-      period,
-      order_date,
-            country_iso,
-      avg(avg_unit_price_gross) as avg_unit_price_gross,
-      sum(sum_item_value) as sum_item_value,
-      sum(sum_quantity) as sum_quantity
-from d
-
-group by 1,2,3
-
-UNION ALL
-
-select
-      period,
-      order_date,
-            country_iso,
-      avg(avg_unit_price_gross) as avg_unit_price_gross,
-      sum(sum_item_value) as sum_item_value,
-      sum(sum_quantity) as sum_quantity
-from e
+from sku_lvl
 
 group by 1,2,3
 ),
 
 
 
-
-
-
-
-
-
-
-
-
-
-g as
-(
-select
-a.*
-from a
-
---where product_sku = "11011445"
---and hub_name ="DE - Berlin - Mitte 2"
-
-UNION ALL
-
-select
-b.*
-from b
-
---where product_sku = "11011445"
---and hub_name ="DE - Berlin - Mitte 2"
-
-UNION ALL
-
-select
-c.*
-from c
-
---where product_sku = "11011445"
---and hub_name ="DE - Berlin - Mitte 2"
-
-UNION ALL
-
-select
-d.*
-from d
-
---where product_sku = "11011445"
---and hub_name ="DE - Berlin - Mitte 2"
-
-UNION ALL
-
-select
-e.*
-from e
-),
-
-
-
-/*
-h as
-(
-select
-g.*,
---f.avg_unit_price_gross as avg_unit_price_gross_subcateg,
-f.sum_item_value as sum_item_value_subcateg,
-f.sum_quantity as sum_quantity_subcateg,
-j.sum_item_value as sum_item_value_company,
-j.sum_quantity as sum_quantity_company
-
-
-from g
-left join f
-on f.period = g.period
-and f.order_date = g.order_date
-and f.category = g.category
-and f.subcategory = g.subcategory
-and f.hub_name = g.hub_name
-
-left join j
-on j.period = g.period
-and j.order_date = g.order_date
-),
-*/
-
-i as
+oos as
 (
 select
 inventory_tracking_date,
@@ -426,35 +224,16 @@ LEFT JOIN `flink-data-prod.curated.products` b
 on a.sku = b.product_sku
 left join `flink-data-prod.curated.hubs` c
 on a.hub_code = c.hub_code
- WHERE inventory_tracking_date >= "2021-09-01"
---and product_sku = "11011445"
+ WHERE inventory_tracking_date >= date_sub(current_date(), interval 88 day)
  group by 1,2,3,4
 )
 as a
 group by 1,2
 
 ),
-/*
-pre_fn as
-(
-select
-h.*,
-i.hours_oos,
-i.open_hours_total
-
-from h
-left join i
---on h.hub_name = i.hub_name
-on h.substitute_group = i.substitute_group
-and h.order_date = i.inventory_tracking_date
-where order_date>="2021-09-01"
---and product_sku = "11013836"
-order by 1
-),
-*/
 
 
-aa as
+day_country as
       (
 
       SELECT
@@ -462,28 +241,14 @@ aa as
       DATE_TRUNC( cast(a.order_timestamp as date), week) as week,
       DATE_TRUNC( cast(a.order_timestamp as date), month) as month,
       a.country_iso,
-      hub.country,
-      --hub.hub_name,
-      --hub.city,
       1 as flag,
-     --b.category,
-      --sum (a.amt_total_price_gross) as sum_item_value,
-      --sum (a.quantity) as sum_quantity,
-      --count (distinct a.order_uuid) as orders_category
       FROM `flink-data-prod.curated.order_lineitems` a
-        --full outer join `flink-data-prod.curated.products` b
-             --on a.sku = b.product_sku
-        left join `flink-data-prod.curated.hubs` hub
-             on a.hub_code = hub.hub_code
-        left join `flink-data-prod.curated.orders` f
-             on a.order_uuid = f.order_uuid
-      WHERE DATE(a.order_timestamp) >= "2021-02-01"
-          and f.is_successful_order = true
-            group by 1,2,3,4,5,6--,7,8
+      WHERE DATE(a.order_timestamp) >=  date_sub(current_date(), interval 60 day)
+            group by 1,2,3,4,5
 
 ),
 
-bb as
+sku_country as
     (
 
     SELECT
@@ -499,208 +264,174 @@ bb as
 ),
 
 
-p1 as
+day_sku_country_oos as
 (
  SELECT
 
-    aa.order_date,
-    aa.week,
-    aa.month,
+    day_country.order_date,
+    day_country.week,
+    day_country.month,
    "Chosen Time Frame" as period,
-    aa.country_iso,
-      --a.country,
-      --a.hub_name,
-      --a.city,
-    bb.random_ct_category,
-    bb.random_ct_subcategory,
-    bb.product_name,
-    bb.product_sku,
-    bb.substitute_group,
-    i.hours_oos,
-    i.open_hours_total
+    day_country.country_iso,
+    sku_country.random_ct_category as category,
+    sku_country.random_ct_subcategory as subcategory,
+    sku_country.product_name,
+    sku_country.product_sku,
+    sku_country.substitute_group,
+    oos.hours_oos,
+    oos.open_hours_total
 
-      from aa
+      from day_country
 
-      left join bb
-      on aa.country_iso = bb.country_iso
+      left join sku_country
+      on day_country.country_iso = sku_country.country_iso
 
-      left join i
-      on aa.order_date = i.inventory_tracking_date
-      and bb.product_sku = i.product_sku
+      left join oos
+      on day_country.order_date = oos.inventory_tracking_date
+      and sku_country.product_sku = oos.product_sku
 
 
 union all
 
  SELECT
 
-    aa.order_date,
-    aa.week,
-    aa.month,
+    day_country.order_date,
+    day_country.week,
+    day_country.month,
     "Week -1" as period,
-    aa.country_iso,
-      --a.country,
-      --a.hub_name,
-      --a.city,
-    bb.random_ct_category,
-    bb.random_ct_subcategory,
-    bb.product_name,
-    bb.product_sku,
-    bb.substitute_group,
-    i.hours_oos,
-    i.open_hours_total
+    day_country.country_iso,
+    sku_country.random_ct_category as category,
+    sku_country.random_ct_subcategory as subcategory,
+    sku_country.product_name,
+    sku_country.product_sku,
+    sku_country.substitute_group,
+    oos.hours_oos,
+    oos.open_hours_total
 
-      from aa
+      from day_country
 
-      left join bb
-      on aa.country_iso = bb.country_iso
+      left join sku_country
+      on day_country.country_iso = sku_country.country_iso
 
-    left join i
-      on aa.order_date = date_add(i.inventory_tracking_date,interval +7 day)
-      and bb.product_sku = i.product_sku
+    left join oos
+      on day_country.order_date = date_add(oos.inventory_tracking_date,interval +7 day)
+      and sku_country.product_sku = oos.product_sku
 
 union all
 
  SELECT
 
-    aa.order_date,
-    aa.week,
-    aa.month,
+    day_country.order_date,
+    day_country.week,
+    day_country.month,
    "Week -2" as period,
-    aa.country_iso,
-      --a.country,
-      --a.hub_name,
-      --a.city,
-    bb.random_ct_category,
-    bb.random_ct_subcategory,
-    bb.product_name,
-    bb.product_sku,
-    bb.substitute_group,
-    i.hours_oos,
-    i.open_hours_total
+    day_country.country_iso,
+    sku_country.random_ct_category as category,
+    sku_country.random_ct_subcategory as subcategory,
+    sku_country.product_name,
+    sku_country.product_sku,
+    sku_country.substitute_group,
+    oos.hours_oos,
+    oos.open_hours_total
 
-      from aa
+      from day_country
 
-      left join bb
-      on aa.country_iso = bb.country_iso
+      left join sku_country
+      on day_country.country_iso = sku_country.country_iso
 
-    left join i
-      on aa.order_date = date_add(i.inventory_tracking_date,interval +14 day)
-      and bb.product_sku = i.product_sku
+    left join oos
+      on day_country.order_date = date_add(oos.inventory_tracking_date,interval +14 day)
+      and sku_country.product_sku = oos.product_sku
 
 union all
 
  SELECT
 
-    aa.order_date,
-    aa.week,
-    aa.month,
+    day_country.order_date,
+    day_country.week,
+    day_country.month,
    "Week -3" as period,
-    aa.country_iso,
-      --a.country,
-      --a.hub_name,
-      --a.city,
-    bb.random_ct_category,
-    bb.random_ct_subcategory,
-    bb.product_name,
-    bb.product_sku,
-    bb.substitute_group,
-    i.hours_oos,
-    i.open_hours_total
+    day_country.country_iso,
+    sku_country.random_ct_category as category,
+    sku_country.random_ct_subcategory as subcategory,
+    sku_country.product_name,
+    sku_country.product_sku,
+    sku_country.substitute_group,
+    oos.hours_oos,
+    oos.open_hours_total
 
-      from aa
+      from day_country
 
-      left join bb
-      on aa.country_iso = bb.country_iso
+      left join sku_country
+      on day_country.country_iso = sku_country.country_iso
 
-    left join i
-      on aa.order_date = date_add(i.inventory_tracking_date,interval +21 day)
-      and bb.product_sku = i.product_sku
+    left join oos
+      on day_country.order_date = date_add(oos.inventory_tracking_date,interval +21 day)
+      and sku_country.product_sku = oos.product_sku
 
 union all
 
  SELECT
 
-    aa.order_date,
-    aa.week,
-    aa.month,
+    day_country.order_date,
+    day_country.week,
+    day_country.month,
    "Week -4" as period,
-    aa.country_iso,
-      --a.country,
-      --a.hub_name,
-      --a.city,
-    bb.random_ct_category,
-    bb.random_ct_subcategory,
-    bb.product_name,
-    bb.product_sku,
-    bb.substitute_group,
-    i.hours_oos,
-    i.open_hours_total
+    day_country.country_iso,
+    sku_country.random_ct_category as category,
+    sku_country.random_ct_subcategory as subcategory,
+    sku_country.product_name,
+    sku_country.product_sku,
+    sku_country.substitute_group,
+    oos.hours_oos,
+    oos.open_hours_total
 
-      from aa
+      from day_country
 
-      left join bb
-      on aa.country_iso = bb.country_iso
+      left join sku_country
+      on day_country.country_iso = sku_country.country_iso
 
-          left join i
-      on aa.order_date = date_add(i.inventory_tracking_date,interval +28 day)
-      and bb.product_sku = i.product_sku
+          left join oos
+      on day_country.order_date = date_add(oos.inventory_tracking_date,interval +28 day)
+      and sku_country.product_sku = oos.product_sku
 
 )
 
 
---select * from g where product_sku = "11013836"
---and order_date = "2021-10-14"
-
 
 select
-p1.*,
-g.avg_unit_price_gross,
-g.sum_item_value,
-g.sum_quantity,
-g.orders,
+day_sku_country_oos.*,
+sku_lvl.avg_unit_price_gross,
+sku_lvl.sum_item_value,
+sku_lvl.sum_quantity,
+sku_lvl.orders,
 
-f.sum_item_value as sum_item_value_subcateg,
-f.sum_quantity as sum_quantity_subcateg,
-f.avg_unit_price_gross as avg_unit_price_gross_subcateg,
+subcateg_lvl.sum_item_value as sum_item_value_subcateg,
+subcateg_lvl.sum_quantity as sum_quantity_subcateg,
+subcateg_lvl.avg_unit_price_gross as avg_unit_price_gross_subcateg,
 
-j.sum_item_value as sum_item_value_company,
-j.sum_quantity as sum_quantity_company,
-j.avg_unit_price_gross as avg_unit_price_gross_company
-
---i.hours_oos,
---i.open_hours_total
-
-      from p1
-      left join g
-      on p1.product_sku = g.product_sku
-      and p1.country_iso = g.country_iso
-      and p1.order_date = g.order_date
-      and p1.period = g.period
-
-      left join f
-      on p1.period = f.period
-      and p1.order_date = f.order_date
-      and p1.random_ct_subcategory = f.subcategory
-      and p1.country_iso = f.country_iso
-
-      left join j
-      on p1.period = j.period
-      and p1.order_date = j.order_date
-      and p1.country_iso = j.country_iso
-
-   --   left join i
-  -- --   on p1.period = j.period
-   --   on p1.order_date = i.inventory_tracking_date
-   --   and p1.product_sku = i.product_sku
-   --   and p1.period ="Chosen Time Frame"
+flink_lvl.sum_item_value as sum_item_value_company,
+flink_lvl.sum_quantity as sum_quantity_company,
+flink_lvl.avg_unit_price_gross as avg_unit_price_gross_company
 
 
-      where p1.order_date>="2021-09-01"
+      from day_sku_country_oos
+      left join sku_lvl
+      on day_sku_country_oos.product_sku = sku_lvl.product_sku
+      and day_sku_country_oos.country_iso = sku_lvl.country_iso
+      and day_sku_country_oos.order_date = sku_lvl.order_date
+      and day_sku_country_oos.period = sku_lvl.period
 
-      --where p1.order_date="2021-10-14"
-      --and p1.product_sku = "11011445"
-      order by 1
+      left join subcateg_lvl
+      on day_sku_country_oos.period = subcateg_lvl.period
+      and day_sku_country_oos.order_date = subcateg_lvl.order_date
+      and day_sku_country_oos.subcategory = subcateg_lvl.subcategory
+      and day_sku_country_oos.country_iso = subcateg_lvl.country_iso
 
+      left join flink_lvl
+      on day_sku_country_oos.period = flink_lvl.period
+      and day_sku_country_oos.order_date = flink_lvl.order_date
+      and day_sku_country_oos.country_iso = flink_lvl.country_iso
 
       ;;
 }
