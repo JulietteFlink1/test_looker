@@ -714,7 +714,7 @@ view: orders {
     group_label: "* Dates and Timestamps *"
     type: number
     sql: ${TABLE}.order_hour ;;
-    hidden: yes
+    hidden: no
   }
 
   dimension: hour {
@@ -792,6 +792,24 @@ view: orders {
     description: "The time, when a rider arrives back at the hub after delivering an order"
     type: date_time
     sql: ${TABLE}.rider_returned_to_hub_timestamp ;;
+  }
+
+
+  dimension: rider_on_duty_time {
+    group_label: "* Operations / Logistics *"
+    label: "Rider time spent from claiming an order until returning back to Hub in Minute"
+    description: "The time, when a rider arrives back at the hub after delivering an order"
+    type: number
+    sql: timestamp_diff(timestamp(${rider_returned_to_hub_timestamp}), timestamp(${order_rider_claimed_timestamp}), minute) ;;
+  }
+
+
+  measure: sum_rider_on_duty_time {
+    label: "Rider on Duty Time in minutes"
+    group_label: "* Operations / Logistics *"
+    description: "Rider Time spent from claiming an order until returning to the hub "
+    type: sum
+    sql:  ${rider_on_duty_time} ;;
   }
 
   dimension: order_uuid {
@@ -1394,14 +1412,13 @@ view: orders {
     sql: ${number_of_items} ;;
   }
 
-  measure: sum_rider_non_idle_time {
-    label: "Sum Rider Non-idle Hours"
+  measure: sum_rider_hours {
+    label: "Sum Worked Rider Hours"
     group_label: "* Operations / Logistics *"
-    description: "Rider Time spent from claiming an order until returning to the hub "
-    type: sum
-    sql: timestamp_diff(timestamp(${rider_returned_to_hub_timestamp}), timestamp(${order_rider_claimed_timestamp}), minute)/60 ;;
+    description: "Sum of completed Rider shift Hours"
+    type: number
+    sql: NULLIF(${shyftplan_riders_pickers_hours.rider_hours},0);;
   }
-
 
   ############
   ## COUNTS ##
@@ -1780,9 +1797,14 @@ view: orders {
     group_label: "* Operations / Logistics *"
     description: "Rider Time spent from claiming an order until returning to the hub "
     type: number
-    sql: 1 - ${sum_rider_non_idle_time}/NULLIF(${shyftplan_riders_pickers_hours.rider_hours},0);;
+    sql: 1 - (${sum_rider_on_duty_time}/60)/NULLIF(${shyftplan_riders_pickers_hours.rider_hours},0);;
     value_format_name:  percent_1
   }
+
+
+
+
+
 
 #######TEMP: adding new fields to compare how PDT versus Time Estimate will perform
 

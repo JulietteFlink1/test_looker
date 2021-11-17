@@ -7,6 +7,7 @@ include: "/views/bigquery_tables/curated_layer/hubs_ct.view"
 include: "/views/bigquery_tables/curated_layer/nps_after_order_cl.view"
 include: "/views/bigquery_tables/curated_layer/cs_post_delivery_issues.view"
 include: "/views/sql_derived_tables/bottom_10_hubs.view"
+include: "/views/native_derived_tables/general/idle_time.view"
 
 include: "/views/bigquery_tables/reporting_layer/core/hub_level_kpis.view"
 
@@ -102,6 +103,16 @@ explore: orders_cl {
     sql_on: ${orders_cl.country_iso} = ${cs_post_delivery_issues.country_iso} AND
       ${cs_post_delivery_issues.order_nr_} = ${orders_cl.order_number};;
     relationship: one_to_many
+    type: left_outer
+  }
+
+  join: idle_time {
+    view_label: "* Idle Time *"
+    sql_on: ${orders_cl.order_date}          = ${idle_time.order_date}
+      and ${orders_cl.hour} = ${idle_time.order_hour}
+      and lower(${orders_cl.hub_code}) = lower(${idle_time.hub_code})
+      and ${orders_cl.id} = ${idle_time.id};;
+    relationship: one_to_one
     type: left_outer
   }
 
