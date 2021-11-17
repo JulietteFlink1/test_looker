@@ -38,7 +38,8 @@ explore: flink_to_gorillas_global {
   join: gorillas_products {
     from:  gorillas_products
     view_label: "* Gorillas Product Data *"
-    sql_on: ${gorillas_products.product_id} = ${flink_to_gorillas_global.gorillas_product_id};;
+    sql_on: ${gorillas_products.product_id} = ${flink_to_gorillas_global.gorillas_product_id}
+    AND ${flink_to_gorillas_global.gorillas_product_name} = ${gorillas_products.product_name};;
     relationship: one_to_one
     type: left_outer
   }

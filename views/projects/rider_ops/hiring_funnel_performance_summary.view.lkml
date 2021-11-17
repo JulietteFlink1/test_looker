@@ -62,6 +62,12 @@ view: hiring_funnel_performance_summary {
     sql: ${TABLE}.updated_at ;;
   }
 
+  dimension: week_number {
+    hidden: no
+    type: number
+    sql: extract(week from date_TRUNC(${TABLE}.date, WEEK(MONDAY))) ;;
+  }
+
   dimension: unique_id {
     hidden: yes
     sql: concat(${country}, ${city}, ${channel}, ${position}, ${date_raw}) ;;
