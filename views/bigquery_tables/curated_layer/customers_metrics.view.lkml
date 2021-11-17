@@ -149,10 +149,10 @@ view: customers_metrics {
     value_format_name: decimal_0
   }
 
-  dimension: first_order_cart_discount_id {
+  dimension: first_order_cart_discount_name {
     group_label: "* User Dimensions *"
     type: string
-    sql: ${TABLE}.first_order_cart_discount_id ;;
+    sql: ${TABLE}.first_order_cart_discount_name ;;
   }
 
   dimension: first_order_discount_name {

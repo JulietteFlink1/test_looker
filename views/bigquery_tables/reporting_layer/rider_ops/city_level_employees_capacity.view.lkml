@@ -129,6 +129,20 @@ view: city_level_employees_capacity {
     sql: ${TABLE}.hires ;;
   }
 
+  dimension: numbre_of_hires_with_account_created {
+    type: number
+    sql: ${TABLE}.hires_with_account_created ;;
+  }
+
+  dimension: numbre_of_hires_with_first_shift_scheduled {
+    type: number
+    sql: ${TABLE}.hires_with_first_shift_scheduled ;;
+  }
+
+  dimension: numbre_of_hires_with_first_shift_completed {
+    type: number
+    sql: ${TABLE}.hires_with_first_shift_completed ;;
+  }
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -172,6 +186,53 @@ view: city_level_employees_capacity {
     type:sum
     sql: ${numbre_of_hires};;
     value_format_name: decimal_0
+  }
+
+  measure: total_hires_with_account_created {
+    type:sum
+    sql: ${numbre_of_hires_with_account_created};;
+    value_format_name: decimal_0
+  }
+
+  measure: total_hires_with_first_shift_scheduled {
+    type:sum
+    sql: ${numbre_of_hires_with_first_shift_scheduled};;
+    value_format_name: decimal_0
+  }
+
+  measure: total_hires_with_first_shift_completed {
+    type:sum
+    sql: ${numbre_of_hires_with_first_shift_completed};;
+    value_format_name: decimal_0
+  }
+
+
+  measure: pct_hires_with_first_shift_completed {
+    label:       "% Hires with first shift completed"
+    description: "% Hires with first shift completed"
+    type:        number
+    sql:case when NULLIF(${total_hires}, 0) > 0 then ${total_hires_with_first_shift_completed} / ${total_hires}
+      else null end;;
+    value_format_name:  percent_1
+  }
+
+  measure: pct_hires_with_first_shift_scheduled{
+    label:       "% Hires with first shift scheduled"
+    description: "% Hires with first shift scheduled"
+    type:        number
+    sql:case when NULLIF(${total_hires}, 0) > 0 then ${total_hires_with_first_shift_scheduled} / ${total_hires}
+             else null end
+            ;;
+    value_format_name:  percent_1
+  }
+
+  measure: pct_hires_with_account_created {
+    label:       "% Hires with account created"
+    description: "% Hires with account created"
+    type:        number
+    sql:case when NULLIF(${total_hires}, 0) > 0 then ${total_hires_with_account_created} / ${total_hires}
+      else null end;;
+    value_format_name:  percent_1
   }
 
 

@@ -353,7 +353,8 @@ view: products {
   dimension: country_iso {
     type: string
     sql: ${TABLE}.country_iso ;;
-    hidden: yes
+    hidden: no
+    group_label: "> Product Attributes"
   }
 
   dimension: units_per_hu {

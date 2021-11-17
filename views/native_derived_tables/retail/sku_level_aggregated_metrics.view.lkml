@@ -13,6 +13,7 @@ view: sku_level_aggregated_metrics {
       bind_all_filters: yes
     }
   }
+
   dimension: sku {
     label: "SKU"
     primary_key: yes
