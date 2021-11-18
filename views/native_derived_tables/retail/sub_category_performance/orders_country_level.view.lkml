@@ -61,11 +61,31 @@ view: orders_country_level {
     label: "PoP (Week) Orders Growth - Country"
     type: number
     value_format_name: percent_2
+    hidden: yes
   }
 
   dimension: pop_revenue {
     label: "PoP (Week) Revenue Growth - Country"
     type: number
     value_format_name: percent_2
+    hidden: yes
   }
+
+  ############### Measures
+
+  measure: pop_orders_max {
+    type: average
+    sql: ${pop_orders} ;;
+    label: "PoP (Week) Orders Growth - Country"
+    value_format_name: percent_2
+  }
+
+  measure: pop_revenue_max {
+    type: average
+    sql: ${pop_revenue} ;;
+    label: "PoP (Week) Revenue Growth - Country"
+    value_format_name: percent_2
+  }
+
+
 }

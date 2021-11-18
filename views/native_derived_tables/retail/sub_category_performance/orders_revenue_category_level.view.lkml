@@ -53,6 +53,16 @@ view: orders_revenue_category_level {
     label: "PoP (Week) Revenue Growth - Category"
     type: number
     value_format_name: percent_2
+    hidden: yes
+  }
+
+  ######### Measures
+
+  measure: pop_revenue_max {
+    type: average
+    sql: ${pop_revenue} ;;
+    label: "PoP (Week) Revenue Growth - Category"
+    value_format_name: percent_2
   }
 
 }

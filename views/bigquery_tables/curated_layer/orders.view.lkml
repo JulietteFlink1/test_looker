@@ -386,12 +386,44 @@ view: orders {
     sql: ${TABLE}.fulfillment_time_raw_minutes ;;
   }
 
+  dimension: estimated_picking_time_minutes {
+    label: "Picking Time Estimate (min)"
+    description: "The internally predicted time in minutes for the picking"
+    group_label: "* Operations / Logistics *"
+    type: number
+    sql: ${TABLE}.estimated_picking_time_minutes;;
+  }
+
+  dimension: estimated_riding_time_minutes {
+    label: "Picking Time Estimate (min)"
+    description: "The internally predicted time in minutes for the riding"
+    group_label: "* Operations / Logistics *"
+    type: number
+    sql: ${TABLE}.estimated_riding_time_minutes;;
+  }
+
   dimension: delivery_time_estimate_minutes {
     label: "Delivery Time Estimate (min)"
     description: "The internally predicted time in minutes for the order to arrive at the customer"
     group_label: "* Operations / Logistics *"
     type: number
-    sql: ${TABLE}.delivery_time_estimate_minutes;; # as requested by Laurenz
+    sql: ${TABLE}.estimated_delivery_time_minutes;;
+  }
+
+  dimension: estimated_queuing_time_for_picker_minutes {
+    label: "Picker Queuing Time Estimate (min)"
+    description: "The internally predicted time in minutes for the picker queuing"
+    group_label: "* Operations / Logistics *"
+    type: number
+    sql: ${TABLE}.estimated_queuing_time_for_picker_minutes;;
+  }
+
+  dimension: estimated_queuing_time_for_rider_minutes {
+    label: "Rider Queuing Time Estimate (min)"
+    description: "The internally predicted time in minutes for the rider queuing"
+    group_label: "* Operations / Logistics *"
+    type: number
+    sql: ${TABLE}.estimated_queuing_time_for_rider_minutes;;
   }
 
   dimension: is_critical_delivery_time_estimate_underestimation {
@@ -1219,6 +1251,37 @@ view: orders {
     value_format_name: decimal_1
   }
 
+  measure: avg_estimated_picking_time_minutes {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Estimated Picking Time"
+    type: average
+    sql: ${estimated_picking_time_minutes};;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_estimated_riding_time_minutes {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Estimated Riding Time"
+    type: average
+    sql: ${estimated_riding_time_minutes};;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_estimated_queuing_time_for_picker_minutes {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Estimated Queuing Time for Pickers"
+    type: average
+    sql: ${estimated_queuing_time_for_picker_minutes};;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_estimated_queuing_time_for_rider_minutes {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Estimated Queuing Time for Riders"
+    type: average
+    sql: ${estimated_queuing_time_for_rider_minutes};;
+    value_format_name: decimal_1
+  }
 
   measure: avg_return_to_hub_time {
     group_label: "* Operations / Logistics *"
