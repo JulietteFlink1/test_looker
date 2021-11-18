@@ -395,7 +395,7 @@ view: orders {
   }
 
   dimension: estimated_riding_time_minutes {
-    label: "Picking Time Estimate (min)"
+    label: "Riding Time Estimate (min)"
     description: "The internally predicted time in minutes for the riding"
     group_label: "* Operations / Logistics *"
     type: number
