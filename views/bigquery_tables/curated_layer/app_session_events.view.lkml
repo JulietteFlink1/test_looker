@@ -1,5 +1,5 @@
 view: app_session_events {
-  sql_table_name: `flink-data-prod.curated.app_session_events`
+  sql_table_name: `flink-data-prod.curated.app_session_events_full_load`
     ;;
 
   view_label: "* App Events per Session *"
