@@ -31,12 +31,12 @@ view: orders_country_level {
   }
 
   dimension: country_iso {
-    hidden: yes
-    label: "* Orders * Country Iso"
+    hidden: no
+    label: "* PoP * Country Iso"
   }
 
   dimension: date {
-    hidden: yes
+    hidden: no
     label: "Week"
     type: date_week
   }
