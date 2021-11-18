@@ -1954,7 +1954,7 @@ view: orders {
     description: "The root-mean-squared-error when comparing actuall fulfillment times and predicted delivery estimate times"
     group_label: "* Operations / Logistics *"
     type: number
-    sql: sqrt(sum(power((${TABLE}.fulfillment_time_minutes - ${TABLE}.delivery_time_estimate_minutes), 2)) / nullif(${cnt_orders_with_delivery_time_estimate}, 0) )  ;;
+    sql: sqrt(sum(power((${fulfillment_time}- ${delivery_time_estimate_minutes}), 2)) / nullif(${cnt_orders_with_delivery_time_estimate}, 0) )  ;;
     value_format_name: decimal_2
   }
 
