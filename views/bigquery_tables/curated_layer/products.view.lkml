@@ -309,6 +309,33 @@ view: products {
     group_label: "> Product Compliance"
   }
 
+  # =========  PARAMETER   =========
+
+  parameter: product_granularity_parameter {
+    group_label: "* Granularity *"
+    label: "Product Granularity Parameter"
+    type: unquoted
+    allowed_value: { value: "Subcategory" }
+    allowed_value: { value: "Category" }
+    allowed_value: { value: "Substitute Group" }
+    default_value: "Category"
+  }
+
+  dimension: product_granularity {
+    group_label: "> Product Attributes"
+    label: "Product Granularity (Dynamic)"
+    label_from_parameter: product_granularity_parameter
+    sql:
+    {% if product_granularity_parameter._parameter_value == 'Subcategory' %}
+      ${subcategory}
+    {% elsif product_granularity_parameter._parameter_value == 'Category' %}
+      ${category}
+    {% elsif product_granularity_parameter._parameter_value == 'Substitute Group' %}
+      ${substitute_group}
+    {% endif %};;
+  }
+
+
   # =========  hidden   =========
   dimension: primary_key {
     sql: ${TABLE}.product_sku ;;
