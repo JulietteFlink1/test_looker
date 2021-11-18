@@ -8,7 +8,7 @@ view: orders_country_level_monthly {
       column: country_iso { field: orderline.country_iso }
       column: date { field: orderline.created_month }
       column: cnt_orders { field: orders_cl.cnt_orders }
-      column: revenue_gross { field: orderline.sum_revenue_gross}
+      column: revenue_gross { field: orderline.sum_item_price_gross}
       derived_column: unique_id {
         sql: concat(country_iso, date) ;;
       }

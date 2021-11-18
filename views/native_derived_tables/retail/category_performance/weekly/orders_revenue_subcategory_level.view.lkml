@@ -6,7 +6,7 @@ view: orders_revenue_subcategory_level {
     explore_source: order_orderline_cl {
       column: country_iso { field: orderline.country_iso }
       column: date { field: orderline.created_week }
-      column: revenue_gross { field: orderline.sum_revenue_gross}
+      column: revenue_gross { field: orderline.sum_item_price_gross}
       column: subcategory { field: orderline.product_subcategory_erp}
       derived_column: unique_id {
         sql: concat(country_iso, date, ifnull(subcategory, '')) ;;
