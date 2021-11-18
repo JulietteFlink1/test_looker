@@ -998,6 +998,11 @@ view: orders {
               ;;
   }
 
+  dimension: customer_order_rank {
+    group_label: "* Order Dimensions *"
+    type: number
+    sql: ${TABLE}.customer_order_rank ;;
+  }
 
 
   ######## PARAMETERS
