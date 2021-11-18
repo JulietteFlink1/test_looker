@@ -1,5 +1,5 @@
-include: "/views/native_derived_tables/retail/sub_category_performance/orders_country_level.view"
-include: "/views/native_derived_tables/retail/sub_category_performance/orders_revenue_subcategory_level.view"
+include: "/views/native_derived_tables/retail/category_performance/weekly/orders_country_level.view"
+include: "/views/native_derived_tables/retail/category_performance/weekly/orders_revenue_subcategory_level.view"
 
 explore: orders_revenue_subcategory_level {
   hidden: no

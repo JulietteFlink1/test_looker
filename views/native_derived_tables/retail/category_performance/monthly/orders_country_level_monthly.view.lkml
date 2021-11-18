@@ -1,23 +1,16 @@
 # If necessary, uncomment the line below to include explore_source.
 #include: "order_orderline_cl.explore.lkml"
+#include: "/views/bigquery_tables/curated_layer/orderline.view"
 
-view: orders_country_level {
+view: orders_country_level_monthly {
   derived_table: {
     explore_source: order_orderline_cl {
       column: country_iso { field: orderline.country_iso }
-      column: date { field: orderline.created_week }
+      column: date { field: orderline.created_month }
       column: cnt_orders { field: orders_cl.cnt_orders }
       column: revenue_gross { field: orderline.sum_revenue_gross}
       derived_column: unique_id {
         sql: concat(country_iso, date) ;;
-      }
-      derived_column: lead_cnt_orders {
-        sql: LEAD(cnt_orders)
-            OVER (PARTITION BY country_iso ORDER BY date DESC) ;;
-      }
-      derived_column: lead_revenue_gross {
-        sql: LEAD(revenue_gross)
-          OVER (PARTITION BY country_iso ORDER BY date DESC) ;;
       }
       derived_column: pop_orders {
         sql:  (cnt_orders - LEAD(cnt_orders) OVER (PARTITION BY country_iso ORDER BY date DESC))
@@ -39,18 +32,18 @@ view: orders_country_level {
   }
 
   dimension: country_iso {
-    hidden: no
-    label: "* Orders * Country Iso"
+    hidden: yes
+    label: "* PoP * Country Iso"
   }
 
   dimension: date {
-    hidden: no
-    label: "Week"
-    type: date_week
+    hidden: yes
+    label: "Month"
+    type: date_month
   }
 
   dimension: cnt_orders {
-    hidden: no
+    hidden: yes
     label: "* Orders * # Orders"
     description: "Count of successful Orders"
     value_format: "0"
@@ -58,32 +51,44 @@ view: orders_country_level {
   }
 
   dimension: revenue_gross {
-    hidden: no
+    hidden: yes
     label: "Gross Revenue"
     description: "Sum of Gross Revenue"
     value_format_name: eur_0
     type: number
   }
 
-  dimension: lead_cnt_orders {
-    hidden: no
-    type: number
-  }
-
-  dimension: lead_revenue_gross {
-    hidden: no
-    type: number
-  }
-
   dimension: pop_orders {
-    label: "PoP Orders"
+    label: "PoP (Month) Orders Growth - Country"
     type: number
     value_format_name: percent_2
+    hidden: yes
   }
 
   dimension: pop_revenue {
-    label: "PoP Revenue"
+    label: "PoP (Month) Revenue Growth - Country"
     type: number
     value_format_name: percent_2
+    hidden: yes
   }
+
+  ############### Measures
+
+  measure: pop_orders_max {
+    type: average
+    sql: ${pop_orders} ;;
+    label: "PoP Orders - Country"
+    group_label: "Monthly"
+    value_format_name: percent_2
+  }
+
+  measure: pop_revenue_max {
+    type: average
+    sql: ${pop_revenue} ;;
+    label: "PoP Revenue - Country"
+    group_label: "Monthly"
+    value_format_name: percent_2
+  }
+
+
 }
