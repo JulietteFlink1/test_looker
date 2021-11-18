@@ -1,11 +1,12 @@
 # If necessary, uncomment the line below to include explore_source.
 #include: "order_orderline_cl.explore.lkml"
+#include: "/views/bigquery_tables/curated_layer/orderline.view"
 
-view: orders_country_level {
+view: orders_country_level_monthly {
   derived_table: {
-    explore_source: order_orderline_cl_retail_customized {
+    explore_source: order_orderline_cl {
       column: country_iso { field: orderline.country_iso }
-      column: date { field: orderline.created_week }
+      column: date { field: orderline.created_month }
       column: cnt_orders { field: orders_cl.cnt_orders }
       column: revenue_gross { field: orderline.sum_revenue_gross}
       derived_column: unique_id {
@@ -31,14 +32,14 @@ view: orders_country_level {
   }
 
   dimension: country_iso {
-    hidden: no
+    hidden: yes
     label: "* PoP * Country Iso"
   }
 
   dimension: date {
-    hidden: no
-    label: "Week"
-    type: date_week
+    hidden: yes
+    label: "Month"
+    type: date_month
   }
 
   dimension: cnt_orders {
@@ -58,14 +59,14 @@ view: orders_country_level {
   }
 
   dimension: pop_orders {
-    label: "PoP (Week) Orders Growth - Country"
+    label: "PoP (Month) Orders Growth - Country"
     type: number
     value_format_name: percent_2
     hidden: yes
   }
 
   dimension: pop_revenue {
-    label: "PoP (Week) Revenue Growth - Country"
+    label: "PoP (Month) Revenue Growth - Country"
     type: number
     value_format_name: percent_2
     hidden: yes
@@ -76,14 +77,16 @@ view: orders_country_level {
   measure: pop_orders_max {
     type: average
     sql: ${pop_orders} ;;
-    label: "PoP (Week) Orders Growth - Country"
+    label: "PoP Orders - Country"
+    group_label: "Monthly"
     value_format_name: percent_2
   }
 
   measure: pop_revenue_max {
     type: average
     sql: ${pop_revenue} ;;
-    label: "PoP (Week) Revenue Growth - Country"
+    label: "PoP Revenue - Country"
+    group_label: "Monthly"
     value_format_name: percent_2
   }
 
