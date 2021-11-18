@@ -317,7 +317,7 @@ view: products {
     type: unquoted
     allowed_value: { value: "Subcategory" }
     allowed_value: { value: "Category" }
-    allowed_value: { value: "Substitute Group" }
+    allowed_value: { value: "Substitute" }
     default_value: "Category"
   }
 
@@ -330,8 +330,8 @@ view: products {
       ${subcategory}
     {% elsif product_granularity_parameter._parameter_value == 'Category' %}
       ${category}
-    {% elsif product_granularity_parameter._parameter_value == 'Substitute Group' %}
-      ${substitute_group}
+    {% elsif product_granularity_parameter._parameter_value == 'Substitute' %}
+      coalesce(${substitute_group},${product_name})
     {% endif %};;
   }
 
