@@ -103,6 +103,14 @@ view: payment_transactions {
     value_format: "0.00€"
   }
 
+  dimension: diff_transaction_amount {
+    description: "Transaction Amount - Order Gross Revenue"
+    label: "Payment Difference (Adyen vs CT)"
+    type: number
+    sql: ${orders_cl.total_gross_amount} - ${transaction_amount} ;;
+    value_format: "0.00€"
+  }
+
   measure: count {
     type: count
     drill_fields: []
