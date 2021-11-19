@@ -549,9 +549,15 @@ view: checkout_sessions {
     filters: [voucher_applied_failed: ">0"]
   }
 
-
   measure: cnt_voucher_failed_no_order {
     label: "Voucher Failure and No order count"
+    description: "Number of sessions in which at least one Voucher Attempt happened in checkout session, failed, and thre was no order generated"
+    type: count
+    filters: [voucher_applied_failed: ">0", order_placed: "=0"]
+  }
+
+  measure: cnt_voucher_failed_yes_order {
+    label: "Voucher Failure but placed Order count"
     description: "Number of sessions in which at least one Voucher Attempt happened in checkout session, failed, and thre was no order generated"
     type: count
     filters: [voucher_applied_failed: ">0", order_placed: ">0"]
@@ -568,7 +574,7 @@ view: checkout_sessions {
     label: "Payment failed and no order placed"
     description: "Number of sessions in which at least one Payment Failed event happened and there was no order placed in the session"
     type: count
-    filters: [payment_failed: ">0", order_placed: ">0"]
+    filters: [payment_failed: ">0", order_placed: "=0"]
   }
 
   measure: cnt_order_placed {

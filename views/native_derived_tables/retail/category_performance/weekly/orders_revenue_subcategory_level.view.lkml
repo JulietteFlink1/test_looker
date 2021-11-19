@@ -3,10 +3,10 @@ include: "/explores/base_explores/order_orderline_cl.explore.lkml"
 
 view: orders_revenue_subcategory_level {
   derived_table: {
-    explore_source: order_orderline_cl_retail_customized {
+    explore_source: order_orderline_cl {
       column: country_iso { field: orderline.country_iso }
       column: date { field: orderline.created_week }
-      column: revenue_gross { field: orderline.sum_revenue_gross}
+      column: revenue_gross { field: orderline.sum_item_price_gross}
       column: subcategory { field: orderline.product_subcategory_erp}
       derived_column: unique_id {
         sql: concat(country_iso, date, ifnull(subcategory, '')) ;;
@@ -27,7 +27,7 @@ view: orders_revenue_subcategory_level {
 
   dimension: country_iso {
     hidden: yes
-    label: "* Orders * Country Iso"
+    label: "* PoP * Country Iso"
   }
 
   dimension: date {
@@ -52,6 +52,17 @@ view: orders_revenue_subcategory_level {
   dimension: pop_revenue {
     label: "PoP (Week) Revenue Growth - Subcategory"
     type: number
+    value_format_name: percent_2
+    hidden: yes
+  }
+
+  ########### Measures
+
+  measure: pop_revenue_max {
+    type: average
+    sql: ${pop_revenue} ;;
+    label: "PoP Revenue - Subcategory"
+    group_label: "Weekly"
     value_format_name: percent_2
   }
 

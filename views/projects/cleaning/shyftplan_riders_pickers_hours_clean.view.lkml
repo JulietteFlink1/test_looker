@@ -8,7 +8,7 @@ view: shyftplan_riders_pickers_hours_clean {
         location.name as hub_name,
         lower(position.name) as position_name,
         sum(evaluation_duration / 60) as hours,
-        count(distinct employment_id) as cnt_employees
+        count(distinct case when state != 'no_show' then employment_id end) as cnt_employees
         from `flink-data-prod.shyftplan_v1.evaluations` evaluations
         where
         date(shift.starts_at, 'Europe/Berlin') < current_date() and

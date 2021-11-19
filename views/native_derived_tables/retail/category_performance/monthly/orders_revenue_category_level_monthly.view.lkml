@@ -1,12 +1,12 @@
 # If necessary, uncomment the line below to include explore_source.
 include: "/explores/base_explores/order_orderline_cl.explore.lkml"
 
-view: orders_revenue_category_level {
+view: orders_revenue_category_level_monthly {
   derived_table: {
-    explore_source: order_orderline_cl_retail_customized {
+    explore_source: order_orderline_cl {
       column: country_iso { field: orderline.country_iso }
-      column: date { field: orderline.created_week }
-      column: revenue_gross { field: orderline.sum_revenue_gross}
+      column: date { field: orderline.created_month }
+      column: revenue_gross { field: orderline.sum_item_price_gross}
       column: category { field: orderline.product_category_erp}
       derived_column: unique_id {
         sql: concat(country_iso, date, ifnull(category, '')) ;;
@@ -27,13 +27,13 @@ view: orders_revenue_category_level {
 
   dimension: country_iso {
     hidden: yes
-    label: "* Orders * Country Iso"
+    label: "* PoP * Country Iso"
   }
 
   dimension: date {
     hidden: yes
-    label: "Week"
-    type: date_week
+    label: "Month"
+    type: date_month
   }
 
   dimension: revenue_gross {
@@ -50,8 +50,19 @@ view: orders_revenue_category_level {
   }
 
   dimension: pop_revenue {
-    label: "PoP (Week) Revenue Growth - Category"
+    label: "PoP (Month) Revenue Growth - Category"
     type: number
+    value_format_name: percent_2
+    hidden: yes
+  }
+
+  ######### Measures
+
+  measure: pop_revenue_max {
+    type: average
+    sql: ${pop_revenue} ;;
+    label: "PoP Revenue - Category"
+    group_label: "Monthly"
     value_format_name: percent_2
   }
 
