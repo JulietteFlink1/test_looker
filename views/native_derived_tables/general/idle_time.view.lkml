@@ -8,6 +8,7 @@ view: idle_time{
       column: hub_code { field: hubs.hub_code }
       column: order_date { field: orders_cl.order_date }
       column: order_hour { field: orders_cl.order_hour }
+      column: rider_id {field: orders_cl.rider_id}
       column: id { field: orders_cl.id }
       column: rider_returned_to_hub_timestamp { field: orders_cl.rider_returned_to_hub_timestamp }
       column: order_rider_claimed_timestamp { field: orders_cl.order_rider_claimed_timestamp }
@@ -17,7 +18,7 @@ view: idle_time{
       }
       derived_column: on_duty_time {
         sql:timestamp_diff(rider_returned_to_hub_timestamp, order_rider_claimed_timestamp, minute)
-        ;;
+          ;;
       }
       derived_column: hourly_avg_on_duty_time {
         sql:avg(timestamp_diff(rider_returned_to_hub_timestamp, order_rider_claimed_timestamp, minute)) over (partition by hub_code,order_date,order_hour)
@@ -49,6 +50,15 @@ view: idle_time{
     primary_key: yes
     label: "* Orders * Order ID"
   }
+
+  dimension: rider_id {
+    label: "* Orders * Rider ID"
+    type: string
+  }
+
+
+
+
   dimension: rider_returned_to_hub_timestamp {
     label: "* Orders * Rider Returned to Hub Timestamp"
     description: "The time, when a rider arrives back at the hub after delivering an order"
@@ -98,5 +108,12 @@ view: idle_time{
     value_format_name: decimal_2
   }
 
+
+  measure: cnt_rider {
+    label: "# rider"
+    group_label: ">> Operational KPIs"
+    sql:count (distinct ${rider_id});;
+    value_format_name: decimal_2
+  }
 
 }

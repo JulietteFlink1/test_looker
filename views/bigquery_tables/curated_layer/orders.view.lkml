@@ -921,7 +921,7 @@ view: orders {
   }
 
   dimension: rider_id {
-    hidden: yes
+    hidden: no
     group_label: "* IDs *"
     type: string
     sql: ${TABLE}.rider_id ;;
