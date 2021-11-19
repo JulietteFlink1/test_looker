@@ -111,9 +111,10 @@ view: idle_time{
 
   measure: cnt_rider {
     label: "# rider"
+    type: number
     group_label: ">> Operational KPIs"
     sql:count (distinct ${rider_id});;
-    value_format_name: decimal_2
+    value_format_name: decimal_0
   }
 
 }
