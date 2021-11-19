@@ -1,5 +1,5 @@
 view: crm_braze_data {
-    sql_table_name: `flink-backend.sandbox_natalia.crm_braze_data`
+    sql_table_name: `flink-data-dev.sandbox_natalia.crm_braze_data`
       ;;
     view_label: "* CRM Braze Data *"
 
