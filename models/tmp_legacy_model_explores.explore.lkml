@@ -26,20 +26,6 @@ explore: marketing_performance {
 ########### CRM EXPLORE ###########
 
 
-explore: braze_crm_data {
-  hidden: yes
-  label: "CRM Email Data (Braze)"
-  view_label: "CRM Email Data"
-  group_label: "11) Marketing"
-  description: "Information on our CRM activities (using Braze as service provider)"
-  always_filter: {
-    filters:  [
-      braze_crm_data.campaign_name: "",
-      braze_crm_data.country: ""
-    ]
-  }
-}
-
 ########### HUB NPS EXPLORE ###########
 
 
