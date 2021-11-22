@@ -145,11 +145,18 @@ view: orders {
     sql: ${TABLE}.customer_email ;;
   }
 
-  dimension: user_id {
+  dimension: customer_id {
     group_label: "* IDs *"
     hidden: no
     type: string
     sql: ${TABLE}.customer_id ;;
+  }
+
+  dimension: external_id {
+    group_label: "* IDs *"
+    hidden: no
+    type: string
+    sql: ${TABLE}.external_id ;;
   }
 
   dimension: customer_note {
