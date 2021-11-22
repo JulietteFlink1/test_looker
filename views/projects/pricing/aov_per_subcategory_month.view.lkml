@@ -5,9 +5,9 @@ view: aov_per_subcategory_month{
 
       SELECT
       cast(a.order_timestamp as date) as order_date,
-      case when extract (hour from a.order_timestamp)<12 then "Before 12PM"
-        when  extract (hour from a.order_timestamp)<17 then "12PM to 17PM"
-        else "After 17PM" end as hour,
+      case when extract (hour from a.order_timestamp)<12 then "1.Before 12PM"
+        when  extract (hour from a.order_timestamp)<17 then "2.12PM to 17PM"
+        else "3.After 17PM" end as hour,
       DATE_TRUNC( cast(a.order_timestamp as date), week) as week,
       DATE_TRUNC( cast(a.order_timestamp as date), month) as month,
       a.country_iso,
@@ -48,9 +48,9 @@ c as
     (
    SELECT
       cast(a.order_timestamp as date) as order_date,
-      case when extract (hour from a.order_timestamp)<12 then "Before 12PM"
-        when  extract (hour from a.order_timestamp)<17 then "12PM to 17PM"
-        else "After 17PM" end as hour,
+      case when extract (hour from a.order_timestamp)<12 then "1.Before 12PM"
+        when  extract (hour from a.order_timestamp)<17 then "2.12PM to 17PM"
+        else "3.After 17PM" end as hour,
       DATE_TRUNC( cast(a.order_timestamp as date), week) as week,
       DATE_TRUNC( cast(a.order_timestamp as date), month) as month,
       a.country_iso,
@@ -79,9 +79,9 @@ d as
     (
         select
         order_date,
-        case when extract (hour from d.order_timestamp)<12 then "Before 12PM"
-        when  extract (hour from d.order_timestamp)<17 then "12PM to 17PM"
-        else "After 17PM" end as hour,
+      case when extract (hour from d.order_timestamp)<12 then "1.Before 12PM"
+        when  extract (hour from d.order_timestamp)<17 then "2.12PM to 17PM"
+        else "3.After 17PM" end as hour,
         hub_name,
         count (distinct d.order_uuid) as orders
 
