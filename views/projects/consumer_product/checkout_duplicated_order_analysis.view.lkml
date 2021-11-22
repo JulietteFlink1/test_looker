@@ -4,6 +4,7 @@ view: checkout_duplicated_order_analysis {
     SELECT  anonymous_id
     , order_date
     , order_week
+    , platform
     , order_timestamp
     , amt_gmv_gross
     , order_number
@@ -14,17 +15,19 @@ view: checkout_duplicated_order_analysis {
     , is_first_order
     , is_successful_order
     , customer_email
-    , DENSE_RANK() OVER (PARTITION BY customer_email, order_date, amt_gmv_gross, number_of_items order by order_timestamp) as rank_day_orders_gmv -- based on gmv
+    , DENSE_RANK() OVER (PARTITION BY customer_email, platform, order_date, amt_gmv_gross, number_of_items order by order_timestamp) as rank_day_orders_gmv -- based on gmv
      , null as diff_between_subsequent_orders
     FROM `flink-data-prod.curated.orders`
-    WHERE DATE(order_timestamp) BETWEEN "2021-06-01" AND "2021-11-17"
+    WHERE DATE(order_timestamp) >= "2021-06-01"
     AND is_successful_order = true
     )
 
     , calcs AS (
-    SELECT customer_email
+    SELECT
+          customer_email
         , order_date
         , order_week
+        , platform
         , case when number_of_duplications > 1 then true else false end as has_duplicated_order
         , number_of_duplications
         , first_order
@@ -34,24 +37,26 @@ view: checkout_duplicated_order_analysis {
             customer_email
             , order_date
             , order_week
-            , LAST_VALUE(rank_day_orders_gmv) OVER (partition by customer_email, order_date, amt_gmv_gross, number_of_items order by order_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) as number_of_duplications
-            , FIRST_VALUE(is_first_order) OVER (partition by customer_email, order_date, amt_gmv_gross, number_of_items order by order_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) as first_order
-            , FIRST_VALUE(order_timestamp) OVER (partition by customer_email, order_date, amt_gmv_gross, number_of_items order by order_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) as first_timestamp
-            , LAST_VALUE(order_timestamp) OVER (partition by customer_email, order_date, amt_gmv_gross, number_of_items order by order_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) as last_timestamp
+            , platform
+            , LAST_VALUE(rank_day_orders_gmv) OVER (partition by customer_email, platform, order_date, amt_gmv_gross, number_of_items order by order_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) as number_of_duplications
+            , FIRST_VALUE(is_first_order) OVER (partition by customer_email, platform, order_date, amt_gmv_gross, number_of_items order by order_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) as first_order
+            , FIRST_VALUE(order_timestamp) OVER (partition by customer_email, platform, order_date, amt_gmv_gross, number_of_items order by order_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) as first_timestamp
+            , LAST_VALUE(order_timestamp) OVER (partition by customer_email, platform, order_date, amt_gmv_gross, number_of_items order by order_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) as last_timestamp
     FROM base
     ))
 
     SELECT
           cast(order_date as string) as order_date
         , order_week
+        , platform
         , number_of_duplications
         , has_duplicated_order
         , first_order
         , count(distinct customer_email) as customer_email_count
         , avg(min_diff_order_created) as avg_min_diff_order_created
     FROM calcs
-    GROUP BY 1,2,3,4,5
-     ORDER BY 1,2,3,4,5
+    GROUP BY 1,2,3,4,5,6
+     ORDER BY 1,2,3,4,5,6
   ;;
 
   }
@@ -79,6 +84,11 @@ view: checkout_duplicated_order_analysis {
     ]
     sql: CAST(${TABLE}.order_date AS DATE) ;;
     datatype: date
+  }
+
+  dimension: platform {
+    type: string
+    sql: ${TABLE}.platform ;;
   }
 
     dimension: number_of_duplications {
