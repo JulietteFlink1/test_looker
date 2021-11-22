@@ -1,6 +1,16 @@
 include: "/views/**/*.view"
 view: +orderline {
 
+  set: orders_core_fields {
+    fields: [
+      pct_pre_order_fulfillment_rate,
+      pct_pre_order_issue_rate_per_total_items_picked,
+      pct_pre_order_issue_rate_per_total_orders,
+      pct_post_order_issue_rate_per_total_orders,
+      delivery_issue_groups,
+    ]
+  }
+
   dimension: return_reason {
     type: string
     label: "Return Reason"

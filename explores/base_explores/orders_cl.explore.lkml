@@ -8,6 +8,7 @@ include: "/views/bigquery_tables/curated_layer/nps_after_order_cl.view"
 include: "/views/bigquery_tables/curated_layer/cs_post_delivery_issues.view"
 include: "/views/sql_derived_tables/bottom_10_hubs.view"
 include: "/views/native_derived_tables/general/idle_time.view"
+include: "/views/**/orderline.view"
 
 include: "/views/bigquery_tables/reporting_layer/core/hub_level_kpis.view"
 
@@ -114,6 +115,20 @@ explore: orders_cl {
       and ${orders_cl.id} = ${idle_time.id};;
     relationship: one_to_one
     type: left_outer
+  }
+
+  # add issue rate core metrics: https://goflink.atlassian.net/browse/DATA-1452
+  join: orderline_issue_rate_core_kpis {
+    from: orderline
+    view_label: "* Orders *"
+    sql_on: ${orderline_issue_rate_core_kpis.country_iso} = ${orders_cl.country_iso} AND
+            ${orderline_issue_rate_core_kpis.order_uuid}    = ${orders_cl.order_uuid} AND
+            {% condition global_filters_and_parameters.datasource_filter %} ${orderline_issue_rate_core_kpis.created_date} {% endcondition %}
+
+            ;;
+    relationship: one_to_many
+    type: left_outer
+    fields: [orderline_issue_rate_core_kpis.orders_core_fields*]
   }
 
 
