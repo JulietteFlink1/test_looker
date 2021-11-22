@@ -145,11 +145,18 @@ view: orders {
     sql: ${TABLE}.customer_email ;;
   }
 
-  dimension: user_id {
+  dimension: customer_id {
     group_label: "* IDs *"
     hidden: no
     type: string
     sql: ${TABLE}.customer_id ;;
+  }
+
+  dimension: external_id {
+    group_label: "* IDs *"
+    hidden: no
+    type: string
+    sql: ${TABLE}.external_id ;;
   }
 
   dimension: customer_note {
@@ -309,6 +316,16 @@ view: orders {
     label: "Delta to PDT (min)"
     description: "Delay versus promised delivery time (as shown to customer)"
     type: duration_minute
+    sql_start: ${delivery_eta_timestamp_raw};;
+    sql_end: ${delivery_timestamp_raw};;
+  }
+
+  dimension: delivery_delay_since_eta_seconds {
+    group_label: "* Operations / Logistics *"
+    label: "Delta to PDT (sec)"
+    description: "Delay versus promised delivery time (as shown to customer)"
+    hidden: yes
+    type: duration_second
     sql_start: ${delivery_eta_timestamp_raw};;
     sql_end: ${delivery_timestamp_raw};;
   }
@@ -1397,6 +1414,17 @@ view: orders {
     value_format_name: decimal_1
   }
 
+  measure: avg_ratio_customer_to_hub {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Ratio between riding to customer and getting back to hub (%)"
+    description: "AVG [(Return to Hub Time / Delivery Time) - 1]"
+    hidden: no
+    type: average
+    sql: (${return_to_hub_time_minutes} / NULLIF(${delivery_time}, 0)) -1 ;;
+    value_format: "0%"
+
+  }
+
 
   ##########
   ## SUMS ##
@@ -1599,7 +1627,7 @@ view: orders {
     # group_label: "* Operations / Logistics *"
     view_label: "* Hubs *"
     group_label: "Hub Leaderboard - Order Metrics"
-    label: "# Orders delivered in time"
+    label: "# Orders delivered on time"
     description: "Count of Orders delivered no later than PDT"
     hidden:  no
     type: count
@@ -1607,6 +1635,17 @@ view: orders {
     value_format: "0"
   }
 
+  measure: cnt_orders_delayed_under_30_sec {
+    # group_label: "* Operations / Logistics *"
+    view_label: "* Hubs *"
+    group_label: "Hub Leaderboard - Order Metrics"
+    label: "# Orders delivered on time (30 seconds tolerance)"
+    description: "Count of Orders delivered no later than PDT + 30 sec"
+    hidden:  no
+    type: count
+    filters: [delivery_delay_since_eta_seconds:"<=30"]
+    value_format: "0"
+  }
 
 
   measure: cnt_orders_delayed_over_5_min {
@@ -1640,6 +1679,7 @@ view: orders {
     filters: [delivery_delay_since_eta:">=15"]
     value_format: "0"
   }
+
 
 #######TEMP: adding new fields to compare how PDT versus Time Estimate will perform
   measure: cnt_orders_delayed_under_0_min_time_estimate {
@@ -1689,8 +1729,16 @@ view: orders {
     filters: [delivery_delay_since_time_estimate:">=10"]
     value_format: "0"
   }
-#######TEMP: adding new fields to compare how PDT versus Time Estimate will perform
 
+  measure: cnt_orders_fulfilled_over_12_min {
+    group_label: "* Operations / Logistics *"
+    label: "# Orders delivered >12min"
+    description: "Count of Orders delivered in >12min"
+    hidden:  yes
+    type: count
+    filters: [fulfillment_time:">12"]
+    value_format: "0"
+  }
 
   measure: cnt_orders_fulfilled_over_20_min {
     group_label: "* Operations / Logistics *"
@@ -1698,7 +1746,7 @@ view: orders {
     description: "Count of Orders delivered >20min fulfillment time"
     hidden:  yes
     type: count
-    filters: [fulfillment_time:">=20"]
+    filters: [fulfillment_time:">20"]
     value_format: "0"
   }
 
@@ -1709,6 +1757,16 @@ view: orders {
     hidden:  yes
     type: count
     filters: [fulfillment_time:">=30"]
+    value_format: "0"
+  }
+
+  measure: cnt_orders_fulfilled_over_60_min {
+    group_label: "* Operations / Logistics *"
+    label: "# Orders delivered >60min"
+    description: "Count of Orders delivered in >60min"
+    hidden:  yes
+    type: count
+    filters: [fulfillment_time:">60"]
     value_format: "0"
   }
 
@@ -1818,6 +1876,37 @@ view: orders {
     value_format: "0%"
   }
 
+  measure: pct_fulfillment_over_12_min{
+    group_label: "* Operations / Logistics *"
+    label: "% Orders fulfilled >12min"
+    description: "Share of orders delivered >12min"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_fulfilled_over_12_min} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_fulfillment_over_20_min{
+    group_label: "* Operations / Logistics *"
+    label: "% Orders fulfilled >20min"
+    description: "Share of orders delivered >20min"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_fulfilled_over_20_min} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_fulfillment_over_60_min{
+    group_label: "* Operations / Logistics *"
+    label: "% Orders fulfilled >60min"
+    description: "Share of orders delivered >60min"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_fulfilled_over_60_min} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0%"
+  }
+
+
 #######TEMP: adding new fields to compare how PDT versus Time Estimate will perform
 
   measure: pct_delivery_in_time_time_estimate{
@@ -1829,6 +1918,8 @@ view: orders {
     sql: ${cnt_orders_delayed_under_0_min_time_estimate} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
     value_format: "0%"
   }
+
+  ###### The below measure should not be removed
 
   measure: pct_delivery_in_time_30_sec_time_estimate{
     group_label: "* Operations / Logistics *"
@@ -1870,22 +1961,19 @@ view: orders {
   }
 
 
-
-
-
-
 #######TEMP: adding new fields to compare how PDT versus Time Estimate will perform
 
+#### ADDED PERMANENTLY --- SEE LINE 1873
 
-  measure: pct_fulfillment_over_20_min{
-    group_label: "* Operations / Logistics *"
-    label: "% Orders fulfilled >20min"
-    description: "Share of orders delivered > 20min"
-    hidden:  no
-    type: number
-    sql: ${cnt_orders_fulfilled_over_20_min} / NULLIF(${cnt_orders}, 0);;
-    value_format: "0%"
-  }
+  #measure: pct_fulfillment_over_20_min{
+  #  group_label: "* Operations / Logistics *"
+  #  label: "% Orders fulfilled >20min"
+  #  description: "Share of orders delivered > 20min"
+  #  hidden:  no
+  #  type: number
+  #  sql: ${cnt_orders_fulfilled_over_20_min} / NULLIF(${cnt_orders}, 0);;
+  #  value_format: "0%"
+  #}
 
   measure: pct_fulfillment_over_30_min{
     group_label: "* Operations / Logistics *"
