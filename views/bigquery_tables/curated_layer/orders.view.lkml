@@ -1416,11 +1416,11 @@ view: orders {
 
   measure: avg_ratio_customer_to_hub {
     group_label: "* Operations / Logistics *"
-    label: "AVG Ratio between riding to customer and getting back to hub (%)"
+    label: "% Return to Hub vs. Delivery Time"
     description: "AVG [(Return to Hub Time / Delivery Time) - 1]"
     hidden: no
     type: average
-    sql: (${return_to_hub_time_minutes} / NULLIF(${delivery_time}, 0)) -1 ;;
+    sql: (${return_to_hub_time_minutes} / NULLIF(${delivery_time}, 0)) - 1 ;;
     value_format: "0%"
 
   }
