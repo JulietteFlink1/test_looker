@@ -1,5 +1,5 @@
 view: gorillas_promise_time {
-  sql_table_name: `flink-data-dev.gorillas_v2.promise_time`
+  sql_table_name: `flink-data-prod.gorillas_v2.promise_time`
     ;;
 
   dimension: hub_id {
