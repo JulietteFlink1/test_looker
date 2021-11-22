@@ -1919,6 +1919,8 @@ view: orders {
     value_format: "0%"
   }
 
+  ###### The below measure should not be removed
+
   measure: pct_delivery_in_time_30_sec_time_estimate{
     group_label: "* Operations / Logistics *"
     label: "% Orders delivered within 30 sec of internal time estimate"
@@ -1957,10 +1959,6 @@ view: orders {
     sql: 1 - (${sum_rider_on_duty_time}/60)/NULLIF(${shyftplan_riders_pickers_hours.rider_hours},0);;
     value_format_name:  percent_1
   }
-
-
-
-
 
 
 #######TEMP: adding new fields to compare how PDT versus Time Estimate will perform
