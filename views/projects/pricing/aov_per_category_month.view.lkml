@@ -6,13 +6,15 @@ with a as
 
       SELECT
       cast(a.order_timestamp as date) as order_date,
+      case when extract (hour from a.order_timestamp)<12 then "1.Before 12PM"
+        when  extract (hour from a.order_timestamp)<17 then "2.12PM to 17PM"
+        else "3.After 17PM" end as hour,
       DATE_TRUNC( cast(a.order_timestamp as date), week) as week,
       DATE_TRUNC( cast(a.order_timestamp as date), month) as month,
       a.country_iso,
       hub.country,
       hub.hub_name,
-      hub.city,
-      1 as flag,
+      hub.city
      --b.category,
       --sum (a.amt_total_price_gross) as sum_item_value,
       --sum (a.quantity) as sum_quantity,
@@ -46,6 +48,9 @@ c as
     (
    SELECT
       cast(a.order_timestamp as date) as order_date,
+      case when extract (hour from a.order_timestamp)<12 then "1.Before 12PM"
+        when  extract (hour from a.order_timestamp)<17 then "2.12PM to 17PM"
+        else "3.After 17PM" end as hour,
       DATE_TRUNC( cast(a.order_timestamp as date), week) as week,
       DATE_TRUNC( cast(a.order_timestamp as date), month) as month,
       a.country_iso,
@@ -65,8 +70,8 @@ c as
              on a.order_uuid = f.order_uuid
       WHERE DATE(a.order_timestamp) >= "2021-02-01"
           and f.is_successful_order = true
-      group by 1,2,3,4,5,6,7,8
-      order by 1,2,3,4,5,6,7,8
+      group by 1,2,3,4,5,6,7,8,9
+      order by 1,2,3,4,5,6,7,8,9
 
 
 ),
@@ -75,13 +80,16 @@ d as
     (
         select
         order_date,
+      case when extract (hour from d.order_timestamp)<12 then "1.Before 12PM"
+        when  extract (hour from d.order_timestamp)<17 then "2.12PM to 17PM"
+        else "3.After 17PM" end as hour,
         hub_name,
         count (distinct d.order_uuid) as orders
 
   FROM `flink-data-prod.curated.orders` d
       WHERE DATE(d.order_timestamp) >= "2021-02-01"
       and d.is_successful_order = true
-      group by 1,2
+      group by 1,2,3
 
 )
 
@@ -89,6 +97,7 @@ d as
     SELECT
 
       a.order_date,
+      a.hour,
       a.week,
       a.month,
       a.country_iso,
@@ -107,11 +116,14 @@ d as
       on a.country_iso = b.country_iso
       left join c
       on a.order_date = c.order_date
+      and a.hour = c.hour
       and a.hub_name = c.hub_name
       and b.category = c.category
       inner join d
       on a.order_date = d.order_date
+      and a.hour = d.hour
       and a.hub_name = d.hub_name
+
       order by 1,2,3,4,5,6,7
        ;;
   }
@@ -216,6 +228,11 @@ d as
     sql: ${TABLE}.week ;;
   }
 
+  dimension: Hour {
+    type: string
+    sql: ${TABLE}.hour ;;
+  }
+
   parameter: date_granularity {
     group_label: "* Dates and Timestamps *"
     label: "Date Granularity"
@@ -263,6 +280,7 @@ d as
     type: string
     sql: ${TABLE}.category ;;
   }
+
 
   dimension: orders {
     type: number
