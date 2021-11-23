@@ -10,7 +10,8 @@ view: transaction_payment_fraud {
           o.platform,
           o.amt_revenue_gross,
           p.transaction_amount,
-          p.transaction_payment_type
+          p.transaction_payment_type,
+          CASE WHEN p.transaction_amount < o.amt_revenue_gross THEN TRUE END as is_transaction_amount_above_revenue
       FROM `flink-data-prod.curated.orders` o
       LEFT JOIN `flink-data-prod.curated.payment_transactions` p on o.order_uuid = p.order_uuid
       where p.transaction_amount < o.amt_revenue_gross
@@ -91,6 +92,11 @@ view: transaction_payment_fraud {
   #   sql: ${amt_revenue_gross};;
   #   value_format_name: decimal_1
   # }
+
+  dimension: is_transaction_amount_above_revenue {
+    type: yesno
+    sql: ${TABLE}.is_transaction_amount_above_revenue ;;
+  }
 
   set: detail {
     fields: [
