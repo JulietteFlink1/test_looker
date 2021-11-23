@@ -12,7 +12,7 @@ view: transaction_payment_fraud {
           p.transaction_amount,
           p.transaction_payment_type,
           CASE WHEN p.transaction_amount < o.amt_revenue_gross THEN "Transaction Amount < Revenue Gross"
-               WHEN p.transaction_amount > o.amt_revenue_gross THEN "Transaction Amount > Revenue Gross""
+               WHEN p.transaction_amount > o.amt_revenue_gross THEN "Transaction Amount > Revenue Gross"
           END as payment_discrepancy
       FROM `flink-data-prod.curated.orders` o
       LEFT JOIN `flink-data-prod.curated.payment_transactions` p on o.order_uuid = p.order_uuid
