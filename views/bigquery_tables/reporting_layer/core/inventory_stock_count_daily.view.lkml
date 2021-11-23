@@ -120,7 +120,7 @@ view: inventory_stock_count_daily {
       value: "repl_group"
     }
 
-    default_value: "sku"
+    default_value: "repl_group"
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

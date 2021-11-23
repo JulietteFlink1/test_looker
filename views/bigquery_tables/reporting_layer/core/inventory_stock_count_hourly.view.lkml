@@ -50,7 +50,7 @@ view: inventory_stock_count_hourly {
       value: "repl_group"
     }
 
-    default_value: "sku"
+    default_value: "repl_group"
   }
 
   measure: hours_oos {
