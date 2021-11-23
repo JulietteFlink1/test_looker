@@ -1,5 +1,5 @@
 view: typical_basket_analysis {
-  sql_table_name: `flink-data-dev.reporting.typical_basket_analysis`
+  sql_table_name: `flink-data-prod.reporting.typical_basket_analysis`
     ;;
 
   dimension: category_a {
