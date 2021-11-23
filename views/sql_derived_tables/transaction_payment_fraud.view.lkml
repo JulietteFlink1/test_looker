@@ -11,7 +11,9 @@ view: transaction_payment_fraud {
           o.amt_revenue_gross,
           p.transaction_amount,
           p.transaction_payment_type,
-          CASE WHEN p.transaction_amount < o.amt_revenue_gross THEN TRUE END as is_transaction_amount_above_revenue
+          CASE WHEN p.transaction_amount < o.amt_revenue_gross THEN "Transaction Amount < Revenue Gross"
+               WHEN p.transaction_amount > o.amt_revenue_gross THEN "Transaction Amount > Revenue Gross""
+          END as payment_discrepancy
       FROM `flink-data-prod.curated.orders` o
       LEFT JOIN `flink-data-prod.curated.payment_transactions` p on o.order_uuid = p.order_uuid
       where true
@@ -94,9 +96,9 @@ view: transaction_payment_fraud {
   #   value_format_name: decimal_1
   # }
 
-  dimension: is_transaction_amount_above_revenue {
-    type: yesno
-    sql: ${TABLE}.is_transaction_amount_above_revenue ;;
+  dimension: payment_discrepancy {
+    type: string
+    sql: ${TABLE}.payment_discrepancy ;;
   }
 
   set: detail {
