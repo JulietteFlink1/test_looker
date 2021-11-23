@@ -14,7 +14,8 @@ view: transaction_payment_fraud {
           CASE WHEN p.transaction_amount < o.amt_revenue_gross THEN TRUE END as is_transaction_amount_above_revenue
       FROM `flink-data-prod.curated.orders` o
       LEFT JOIN `flink-data-prod.curated.payment_transactions` p on o.order_uuid = p.order_uuid
-      where p.transaction_amount < o.amt_revenue_gross
+      where true
+      --and p.transaction_amount < o.amt_revenue_gross
       and transaction_state = 'success'
       --and o.is_successful_order is true
       and order_date >= current_date - 90
