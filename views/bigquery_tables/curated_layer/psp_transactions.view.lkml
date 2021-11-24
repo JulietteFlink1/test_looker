@@ -9,7 +9,7 @@ view: psp_transactions {
 
   dimension: psp_transaction_uuid {
     type: string
-    sql: concat(order_uuid,record_type,cast(booking_timestamp as string),merchant_account,payment_id) ;;
+    sql:${TABLE}.psp_reference_uuid ;;
     primary_key: yes
   }
 
