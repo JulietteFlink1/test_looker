@@ -587,7 +587,7 @@ view: hub_level_kpis {
     label: "# Orders with Issues (Post-Delivery)"
     type: sum
     value_format_name: decimal_0
-    sql: ${TABLE}.number_of_orders_cancelled_product       +
+    sql: -- ${TABLE}.number_of_orders_cancelled_product       +
          ${TABLE}.number_of_orders_damaged_product         +
          ${TABLE}.number_of_orders_missing_product         +
          ${TABLE}.number_of_orders_perished_product        +
