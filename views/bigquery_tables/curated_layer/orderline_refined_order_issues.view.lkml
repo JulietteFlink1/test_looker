@@ -188,7 +188,7 @@ view: +orderline {
   }
 
   measure: pct_pre_order_issue_rate_per_total_orders {
-    label: "% Pre-Order Issue Rate (per Total Orders)"
+    label: "% Partial fulfillment Rate (preoder)"
     group_label: "> Delivery Issues"
     description: "The percentage of orders, that had pre-delivery issues"
     type: number
@@ -197,7 +197,7 @@ view: +orderline {
   }
 
   measure: pct_post_order_issue_rate_per_total_orders {
-    label: "% Post-Order Issue Rate (per Total Orders)"
+    label: "% Issue Rate (post order)"
     group_label: "> Delivery Issues"
     description: "The percentage of orders, that had post-delivery issues"
     type: number
@@ -206,7 +206,7 @@ view: +orderline {
   }
 
   measure: pct_pre_order_issue_rate_per_total_items_picked {
-    label: "% Pre-Order Issue Rate (per Total Picks)"
+    label: "% Item unfulfilled (preorder)"
     group_label: "> Delivery Issues"
     description: "The percentage of unique SKUs per order, that had pre-delivery issues"
     type: number
