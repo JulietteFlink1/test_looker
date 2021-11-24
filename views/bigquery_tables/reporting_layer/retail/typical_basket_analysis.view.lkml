@@ -73,13 +73,13 @@ view: typical_basket_analysis {
   dimension: support {
     type: number
     sql: ${TABLE}.support ;;
-    value_format: "0.00%"
+    value_format: "0.0%"
   }
 
   measure: measure_support {
     type: sum
     sql: ${support} ;;
-    value_format: "0.00%"
+    value_format: "0.0%"
   }
 
   dimension: country_iso {
