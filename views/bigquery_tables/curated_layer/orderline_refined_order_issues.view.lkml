@@ -139,7 +139,7 @@ view: +orderline {
     label: "# Delivery Issues (Post- + Pre-Delivery)"
     group_label: "> Delivery Issues"
     type: number
-    sql: ${cnt_cancelled_products} +
+    sql: -- ${cnt_cancelled_products} +
          ${cnt_damaged_products} +
          ${cnt_missing_products} +
          ${cnt_perished_products} +
@@ -163,7 +163,7 @@ view: +orderline {
     description: "Order-Issues, that are detected post-delivery"
     group_label: "> Delivery Issues"
     type: number
-    sql:  ${cnt_cancelled_products} +
+    sql:  -- ${cnt_cancelled_products} +
           ${cnt_damaged_products} +
           ${cnt_missing_products} +
           ${cnt_perished_products} +
