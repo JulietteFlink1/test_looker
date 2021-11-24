@@ -188,7 +188,7 @@ view: +orderline {
   }
 
   measure: pct_pre_order_issue_rate_per_total_orders {
-    label: "% Pre-Order Issue Rate (per Total Orders)"
+    label: "% Partial fulfillment Rate (preoder)"
     group_label: "> Delivery Issues"
     description: "The percentage of orders, that had pre-delivery issues"
     type: number
