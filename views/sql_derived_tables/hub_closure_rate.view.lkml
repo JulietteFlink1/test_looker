@@ -112,7 +112,6 @@ and f.warehouse = gmv.hub_code
 left join missed_orders mo
 on f.date = mo.date
 and f.warehouse = mo.warehouse
-where closure_reason_clean is not null
 group by 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
        ;;
   }
