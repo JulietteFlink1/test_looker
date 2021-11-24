@@ -653,7 +653,7 @@ view: hub_level_kpis {
     label: "% Missing Products"
     description: "The number of orders with missing products divided by the total number of orders."
     type: number
-    sql: (1.0 * ${number_of_order_lineitems_missing_product}) / NULLIF(${sum_number_of_orders}, 0) ;;
+    sql: (1.0 * ${number_of_orders_missing_product}) / NULLIF(${sum_number_of_orders}, 0) ;;
     value_format_name: percent_1
   }
   measure: pct_orders_wrong_order {
