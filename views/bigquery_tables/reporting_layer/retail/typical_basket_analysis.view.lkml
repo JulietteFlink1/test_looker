@@ -7,6 +7,13 @@ view: typical_basket_analysis {
     sql: ${TABLE}.category_A ;;
   }
 
+  dimension: category_a_ordered {
+    type: string
+    sql: ${TABLE}.category_A ;;
+    order_by_field: support
+    hidden:yes
+  }
+
   dimension: category_b {
     type: string
     sql: ${TABLE}.category_B ;;
@@ -48,7 +55,7 @@ view: typical_basket_analysis {
     order_by_field: avg_orders_per_month_num
     sql: CASE WHEN ${avg_orders_per_month_num} = 1 then   concat('[',cast(${avg_orders_per_month_num}-1 as string),'-',cast(${avg_orders_per_month_num} as string),']')
               WHEN ${avg_orders_per_month_num} <= 10 and ${avg_orders_per_month_num}>= 1  then concat(']',cast(${avg_orders_per_month_num}-1 as string),'-',cast(${avg_orders_per_month_num} as string),']')
-              WHEN ${avg_orders_per_month_num} = 11 THEN ']10,+inf['
+              WHEN ${avg_orders_per_month_num} = 11 THEN ']10,10+['
               WHEN ${avg_orders_per_month_num} is null then 'All' END ;;
   }
 
@@ -66,6 +73,12 @@ view: typical_basket_analysis {
   dimension: support {
     type: number
     sql: ${TABLE}.support ;;
+    value_format: "0.00%"
+  }
+
+  measure: measure_support {
+    type: sum
+    sql: ${support} ;;
     value_format: "0.00%"
   }
 
