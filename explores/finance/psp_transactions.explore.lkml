@@ -11,8 +11,8 @@ join: orders {
   view_label: "* Orders *"
   from: orders
   sql_on: psp_transactions.order_uuid = orders.order_uuid ;;
-  type: full_outer
-  relationship: one_to_many
+  type: left_outer
+  relationship: many_to_one
   }
 
   join: hubs {
