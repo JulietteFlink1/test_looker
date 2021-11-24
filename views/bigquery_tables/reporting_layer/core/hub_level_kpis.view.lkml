@@ -628,6 +628,15 @@ view: hub_level_kpis {
     value_format_name: percent_1
   }
 
+  measure: pct_pre_order_fulfillment_rate {
+    label: "% Pre-Order Fulfillment Rate"
+    group_label: ">> Issue Rate KPIs"
+    description: "The percentage of orders, that had no pre-delivery issues"
+    type: number
+    sql: 1 - ${pct_orders_with_issues_pre_delivery} ;;
+    value_format_name: percent_2
+  }
+
   measure: pct_items_with_issues_pre_delivery {
     group_label: ">> Issue Rate KPIs"
     label: "% Item unfulfilled (preorder)"
