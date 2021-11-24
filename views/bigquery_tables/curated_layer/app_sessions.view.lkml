@@ -11,8 +11,7 @@ view: app_sessions {
       city,
       hub_code,
       device_type,
-      is_new_user,
-      has_order
+      is_new_user
     ]
   }
 
@@ -22,6 +21,7 @@ view: app_sessions {
   dimension: session_uuid {
     group_label: "IDs"
     type: string
+    description: "Session ID defined in DWH as a primary key of this model"
     sql: ${TABLE}.session_uuid ;;
     primary_key: yes
     hidden: yes
@@ -29,23 +29,28 @@ view: app_sessions {
   dimension: user_id  {
     group_label: "IDs"
     type: string
+    description: "User ID populated upon registration"
     sql: ${TABLE}.user_id  ;;
     hidden: yes
   }
   dimension: anonymous_id {
     group_label: "IDs"
     type: string
+    description: "Anonymou ID populated by Segment as a user identifier"
     sql: ${TABLE}.anonymous_id ;;
   }
   dimension: last_order_id {
     group_label: "IDs"
     type: string
+    description: "Last order ID which happened during a session (in case of multiple orders we take the latest order_id only"
     sql: ${TABLE}.last_order_id ;;
     hidden: yes
   }
   dimension: last_order_uuid {
     group_label: "IDs"
+    label: "Last Order UUID"
     type: string
+    description: "Last Order UUID as a concatenation of country_iso and order_id"
     sql: ${TABLE}.last_order_uuid ;;
   }
 
@@ -54,27 +59,32 @@ view: app_sessions {
   dimension: platform {
     group_label: "Device Dimensions"
     type: string
+    description: "Platform where session appeared >> app"
     sql: ${TABLE}.platform ;;
     hidden: yes
   }
   dimension: device_type {
     group_label: "Device Dimensions"
     type: string
+    description: "Device type is either iOS or Android"
     sql: ${TABLE}.device_type ;;
   }
   dimension: app_version {
     group_label: "Device Dimensions"
     type: string
+    description: "App realease version"
     sql: ${TABLE}.app_version ;;
   }
   dimension: full_app_version {
     group_label: "Device Dimensions"
     type: string
+    description: "Concatenation of device_type and app_version"
     sql: ${device_type} || '-' || ${app_version} ;;
   }
   dimension: timezone {
     group_label: "Device Dimensions"
     type: string
+    description: "Timezone in which session occured"
     sql: ${TABLE}.timezone ;;
     hidden: yes
   }
@@ -82,9 +92,10 @@ view: app_sessions {
   ## GENERIC: Dates / Timestamp
 
   dimension_group: session_start_at {
-    group_label: "Generic Dimensions"
+    group_label: "Date Dimensions"
     label: "Session Start "
     type: time
+    description: "Start of the session with varioud granulairty available"
     datatype: timestamp
     timeframes: [
       hour,
@@ -98,8 +109,9 @@ view: app_sessions {
     sql: ${TABLE}.session_start_at ;;
   }
   dimension_group: session_end_at {
-    group_label: "Generic Dimensions"
+    group_label: "Date Dimensions"
     type: time
+    description: "End of the session with varioud granulairty available"
     datatype: datetime
     timeframes: [
       hour,
@@ -115,6 +127,7 @@ view: app_sessions {
   }
   dimension: is_customer {
     group_label: "Generic Dimensions"
+    description: "A customer is a user who made at least one purchase in their lifetime history with Flink"
     type: yesno
     sql: ${has_order} ;;
   }
@@ -125,11 +138,13 @@ view: app_sessions {
   }
   dimension: hub_unknown {
     group_label: "Generic Dimensions"
+    description: "Unknown hub"
     type: yesno
     sql: ${hub_code} IS NULL ;;
   }
   dimension: is_new_user {
     group_label: "Generic Dimensions"
+    description: "New user generates the first session, any subsequent session would belong to an existing user"
     type: yesno
     sql: ${TABLE}.is_new_user ;;
   }
@@ -147,16 +162,19 @@ view: app_sessions {
   }
   dimension: delivery_pdt_minutes {
     group_label: "Geo Dimensions"
+    label: "Delivery PDT Minutes"
     type: number
     sql: ${TABLE}.delivery_pdt_minutes ;;
   }
   dimension: delivery_lat {
     group_label: "Geo Dimensions"
+    label: "Delivery Latitude"
     type: number
     sql: ${TABLE}.delivery_lat ;;
   }
   dimension: delivery_lng {
     group_label: "Geo Dimensions"
+    description: "Delivery Longitude"
     type: number
     sql: ${TABLE}.delivery_lng ;;
   }
@@ -190,68 +208,85 @@ view: app_sessions {
     }
   }
 
-  ## Discount / Order attributes
+  ## Checkout attributes
 
   dimension: has_order {
-    group_label: "Order Dimensions"
     type: yesno
     sql: ${TABLE}.has_order ;;
+    hidden: yes
   }
   dimension: has_order_failed_error {
-    group_label: "Order Dimensions"
+    group_label: "Checkout Dimensions"
+    label: "Is Session with Failed Error"
+    description: "Sessions with order_failed error event"
     type: yesno
     sql: ${TABLE}.has_order_failed_error ;;
   }
   dimension: has_payment_failed_error {
-    group_label: "Order Dimensions"
+    group_label: "Checkout Dimensions"
+    label: "Is Session with Payment Failed Error"
+    description: "Sessions with payment_failed error event"
     type: yesno
     sql: ${TABLE}.has_payment_failed_error ;;
   }
   dimension: has_discount_attempted {
-    group_label: "Order Dimensions"
+    group_label: "Checkout Dimensions"
+    label: "Is Session with Attempted Discount"
+    description: "Sessions with voucher_attempted event"
     type: yesno
     sql: ${TABLE}.has_discount_attempted ;;
   }
   dimension: has_discount_successfully_applied {
-    group_label: "Order Dimensions"
+    group_label: "Checkout Dimensions"
+    label: "Is Session with Successfully Applied Discount"
+    description: "Sessions with voucher_succeed event"
     type: yesno
     sql: ${TABLE}.is_discount_successfully_applied ;;
   }
   dimension: order_discount_code {
-    group_label: "Order Dimensions"
+    group_label: "Checkout Dimensions"
+    label: "Order Discount Code"
+    description: "Voucher / Discount Code"
     type: string
     sql: ${TABLE}.order_discount_code ;;
   }
 
   ## Session attributes
   dimension: is_session_with_address {
-    group_label: "Conversion Dimensions"
+    group_label: "Generic Dimensions"
+    label: "Is Session with Confirmed Address"
+    description: "Session with confirmed address"
     type: yesno
     sql: ${TABLE}.is_session_with_address ;;
   }
   dimension: is_session_with_add_to_cart {
-    group_label: "Conversion Dimensions"
+    group_label: "Generic Dimensions"
+    description: "Session with product add to cart"
     type: yesno
     sql: ${TABLE}.is_session_with_add_to_cart ;;
   }
   dimension: is_session_with_checkout_started {
-    group_label: "Conversion Dimensions"
+    group_label: "Generic Dimensions"
+    description: "Session with started checkout"
     type: yesno
     sql: ${TABLE}.is_session_with_checkout_started ;;
   }
   dimension: is_session_with_payment_started {
-    group_label: "Conversion Dimensions"
+    group_label: "Generic Dimensions"
+    description: "Session with started payment"
     type: yesno
     sql: ${TABLE}.is_session_with_payment_started ;;
   }
   dimension: is_session_with_order_placed {
-    group_label: "Conversion Dimensions"
+    group_label: "Generic Dimensions"
+    description: "Session with placed order"
     type: yesno
     sql: ${TABLE}.is_session_with_order_placed ;;
   }
 
 ### Custom dimensions
   dimension: session_start_date_granularity {
+    group_label: "Date Dimensions"
     label: "Session Start Date (Dynamic)"
     label_from_parameter: timeframe_picker
     type: string # cannot have this as a time type. See this discussion: https://community.looker.com/lookml-5/dynamic-time-granularity-opinions-16675
@@ -269,7 +304,8 @@ view: app_sessions {
   }
 
   parameter: timeframe_picker {
-    label: "Session Start Date Granular"
+    group_label: "Date Dimensions"
+    label: "Session Start Date Granularity"
     type: unquoted
     allowed_value: { value: "Hour" }
     allowed_value: { value: "Day" }
@@ -314,6 +350,8 @@ view: app_sessions {
   ################ Measures ################
 
   measure: count {
+    group_label: "Basic Counts (Orders / Customers etc.)"
+    label: "Count All"
     type: count
     drill_fields: [detail*]
   }
@@ -321,7 +359,7 @@ view: app_sessions {
   measure: cnt_unique_anonymousid {
     label: "# Unique Users"
     group_label: "Basic Counts (Orders / Customers etc.)"
-    description: "Number of Unique Users identified via Anonymous ID from Segment"
+    description: "Number of unique users identified via anonymous ID from Segment"
     hidden:  no
     type: count_distinct
     sql: ${anonymous_id};;
@@ -331,7 +369,7 @@ view: app_sessions {
   measure: cnt_unique_sessions {
     label: "# Unique Sessions"
     group_label: "Basic Counts (Orders / Customers etc.)"
-    description: "Number of Unique Sessions based on sessions_uuid"
+    description: "Number of unique sessions based on sessions_uuid"
     hidden:  no
     type: count_distinct
     sql: ${session_uuid};;
@@ -341,56 +379,56 @@ view: app_sessions {
 
 #### Sessions with events ###
   measure: cnt_has_address {
-    group_label: "Sessions Count With"
-    label: "Confirmed address
+    group_label: "Sessions with Event Flags"
+    label: "# Session with Confirmed Address"
     description: "# sessions in which the user had an address (selected in previous session or current)"
     type: count
     filters: [is_session_with_address: "yes"]
   }
 
   measure: cnt_add_to_cart {
-    group_label: "Sessions Count With"
-    label: "Add to cart"
+    group_label: "Sessions with Event Flags"
+    label: "# Session with Add to Cart"
     description: "Number of sessions in which at least one Product Added To Cart event happened"
     type: count
     filters: [is_session_with_add_to_cart: "yes"]
   }
 
   measure: cnt_checkout_started {
-    group_label: "Sessions Count With"
-    label: "Checkout started"
+    group_label: "Sessions with Event Flags"
+    label: "# Session with Checkout Started"
     description: "Number of sessions in which at least one Checkout Started event happened"
     type: count
     filters: [is_session_with_checkout_started: "yes"]
   }
 
   measure: cnt_payment_started {
-    group_label: "Sessions Count With"
-    label: "Payment started"
+    group_label: "Sessions with Event Flags"
+    label: "# Session with Payment Started"
     description: "Number of sessions in which at least one Payment Started event happened"
     type: count
     filters: [is_session_with_payment_started: "yes"]
   }
 
   measure: cnt_purchase {
-    group_label: "Sessions Count With"
-    label: "Order placed"
+    group_label: "Sessions with Event Flags"
+    label: "# Session with Order Placed"
     description: "Number of sessions in which at least one Order Placed event happened"
     type: count
     filters: [is_session_with_order_placed: "yes"]
   }
 
   measure: cnt_discounts_attempted {
-    group_label: "Sessions Count With"
-    label: "Attempted discounts"
+    group_label: "Sessions with Event Flags"
+    label: "# Session with Attempted Discounts"
     description: "Number of sessions in which at least one Discount Attempt event happened"
     type: count
     filters: [has_discount_attempted: "yes"]
   }
 
   measure: cnt_discounts_applied{
-    group_label: "Sessions Count With"
-    label: "Applied discounts"
+    group_label: "Sessions with Event Flags"
+    label: "# Session with Applied Discounts"
     description: "Number of sessions in which at least one Discount Applied event happened"
     type: count
     filters: [has_discount_successfully_applied: "yes"]
@@ -467,43 +505,6 @@ view: app_sessions {
     sql: ${cnt_purchase} ;;
     html: {{ rendered_value }} ({{ perc_of_total_order._rendered_value }} % of total) ;;
   }
-
-  ###### Sum of events
-
-  # measure: sum_address_selected {
-  #   group_label: "Sessions With Event Count For"
-  #   label: "Address confirmed"
-  #   type: sum
-  #   sql: ${is_session_with_address} ;;
-  # }
-
-  # measure: sum_add_to_cart {
-  #   group_label: "Sessions With Event Count For"
-  #   label: "Add to cart"
-  #   type: sum
-  #   sql: ${is_session_with_add_to_cart} ;;
-  # }
-
-  # measure: sum_checkout_started {
-  #   group_label: "Sessions With Event Count For"
-  #   label: "Checkout started"
-  #   type: sum
-  #   sql: ${is_session_with_checkout_started} ;;
-  # }
-
-  # measure: sum_payment_started {
-  #   group_label: "Sessions With Event Count For"
-  #   label: "Payment started"
-  #   type: sum
-  #   sql: ${is_session_with_payment_started} ;;
-  # }
-
-  # measure: sum_purchases {
-  #   group_label: "Sessions With Event Count For"
-  #   label: "Order placed"
-  #   type: sum
-  #   sql: ${is_session_with_order_placed} ;;
-  # }
 
   ## Measures based on other measures
   measure: overall_conversion_rate {
@@ -582,7 +583,7 @@ view: app_sessions {
   }
   measure: sum_amt_discount_gross {
     group_label: "Monetary Values"
-    label: "SUM AMT Discount (Gross)"
+    label: "SUM Discount Amount (Gross)"
     description: "Sum of Discounts in orders incl. fees and before deduction of discounts (incl. VAT)"
     type: sum
     hidden: no
@@ -600,7 +601,7 @@ view: app_sessions {
   }
   measure: sum_order_placed {
     group_label: "Basic Counts (Orders / Customers etc.)"
-    label: "SUM of Orders Placed"
+    label: "# Orders Placed"
     type: sum
     hidden: no
     sql: ${number_of_orders_placed} ;;
@@ -608,7 +609,7 @@ view: app_sessions {
   }
   measure: sum_items_in_cart{
     group_label: "Basic Counts (Orders / Customers etc.)"
-    label: "SUM of Items in Cart"
+    label: "# Items in Cart"
     type: sum
     hidden: no
     sql: ${number_of_items_in_cart} ;;
@@ -632,7 +633,7 @@ view: app_sessions {
   }
   measure: sum_session_duration_minutes{
     group_label: "Basic Counts (Orders / Customers etc.)"
-    label: "SUM Session Duration (Minutes)"
+    label: "Session Duration (Minutes)"
     type: sum
     hidden: no
     sql: ${session_duration_minutes} ;;
