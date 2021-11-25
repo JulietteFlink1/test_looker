@@ -1,7 +1,7 @@
 include: "/views/bigquery_tables/curated_layer/orders.view"
 include: "/views/extended_tables/orders_using_hubs.view"
 include: "/views/projects/cleaning/shyftplan_riders_pickers_hours_clean.view"
-include: "/views/projects/cleaning/issue_rates_clean.view"
+# include: "/views/projects/cleaning/issue_rates_clean.view"
 
 include: "/views/bigquery_tables/curated_layer/hubs_ct.view"
 include: "/views/bigquery_tables/curated_layer/nps_after_order_cl.view"
@@ -58,8 +58,11 @@ explore: orders_cl {
     from: hub_level_kpis
     view_label: "* Hub Level KPIs *"
     sql_on: lower(${orders_cl.hub_code}) = ${hub_level_kpis.hub_code} and
-            ${orders_cl.created_date} = ${hub_level_kpis.order_date}  ;;
-    relationship: one_to_many
+            ${orders_cl.created_date} = ${hub_level_kpis.order_date}  and
+            ${orders_cl.is_successful_order} = ${hub_level_kpis.is_successful_order}
+
+            ;;
+    relationship: many_to_one
     type: left_outer
   }
 
@@ -91,16 +94,16 @@ explore: orders_cl {
 
   }
 
-  join: issue_rates_clean {
-    view_label: "* Order Issues on Hub-Level *"
-    sql_on: ${hubs.hub_code}           =  ${issue_rates_clean.hub_code} and
-            ${orders_cl.date}          =  ${issue_rates_clean.date_dynamic};;
-    relationship: many_to_one # decided against one_to_many: on this level, many orders have hub-level issue-aggregates
-    type: left_outer
-  }
+  # join: issue_rates_clean {
+  #   view_label: "* DO NOT USE: Order Issues on Hub-Level *"
+  #   sql_on: ${hubs.hub_code}           =  ${issue_rates_clean.hub_code} and
+  #           ${orders_cl.date}          =  ${issue_rates_clean.date_dynamic};;
+  #   relationship: many_to_one # decided against one_to_many: on this level, many orders have hub-level issue-aggregates
+  #   type: left_outer
+  # }
 
   join: cs_post_delivery_issues {
-    view_label: "* Post Delivery Issues on Order-Level *"
+    view_label: "* DO NOT USE: Post Delivery Issues on Order-Level *"
     sql_on: ${orders_cl.country_iso} = ${cs_post_delivery_issues.country_iso} AND
       ${cs_post_delivery_issues.order_nr_} = ${orders_cl.order_number};;
     relationship: one_to_many
