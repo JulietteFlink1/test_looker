@@ -39,7 +39,7 @@ view: discounts {
 
   dimension: minimum_order_value {
     label: " Minimum Order Value"
-    type: string
+    type: number
     sql: ${TABLE}.minimum_order_value ;;
   }
 
