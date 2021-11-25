@@ -359,6 +359,7 @@ view: app_sessions {
     description: "Count of all sessions"
     type: count
     drill_fields: [detail*]
+    hidden: yes
   }
 
   measure: cnt_unique_anonymousid {
@@ -385,7 +386,7 @@ view: app_sessions {
 #### Sessions with events ###
   measure: cnt_has_address {
     group_label: "Sessions with Event Flags"
-    label: "# Session with Confirmed Address"
+    label: "# Sessions with Confirmed Address"
     description: "# sessions in which the user had an address (selected in previous session or current)"
     type: count
     filters: [is_session_with_address: "yes"]
@@ -393,7 +394,7 @@ view: app_sessions {
 
   measure: cnt_add_to_cart {
     group_label: "Sessions with Event Flags"
-    label: "# Session with Add to Cart"
+    label: "# Sessions with Add to Cart"
     description: "Number of sessions in which at least one Product Added To Cart event happened"
     type: count
     filters: [is_session_with_add_to_cart: "yes"]
@@ -401,7 +402,7 @@ view: app_sessions {
 
   measure: cnt_checkout_started {
     group_label: "Sessions with Event Flags"
-    label: "# Session with Checkout Started"
+    label: "# Sessions with Checkout Started"
     description: "Number of sessions in which at least one Checkout Started event happened"
     type: count
     filters: [is_session_with_checkout_started: "yes"]
@@ -409,7 +410,7 @@ view: app_sessions {
 
   measure: cnt_payment_started {
     group_label: "Sessions with Event Flags"
-    label: "# Session with Payment Started"
+    label: "# Sessions with Payment Started"
     description: "Number of sessions in which at least one Payment Started event happened"
     type: count
     filters: [is_session_with_payment_started: "yes"]
@@ -417,7 +418,7 @@ view: app_sessions {
 
   measure: cnt_purchase {
     group_label: "Sessions with Event Flags"
-    label: "# Session with Order Placed"
+    label: "# Sessions with Order Placed"
     description: "Number of sessions in which at least one Order Placed event happened"
     type: count
     filters: [is_session_with_order_placed: "yes"]
@@ -425,7 +426,7 @@ view: app_sessions {
 
   measure: cnt_discounts_attempted {
     group_label: "Sessions with Event Flags"
-    label: "# Session with Attempted Discounts"
+    label: "# Sessions with Attempted Discounts"
     description: "Number of sessions in which at least one Discount Attempt event happened"
     type: count
     filters: [has_discount_attempted: "yes"]
@@ -433,7 +434,7 @@ view: app_sessions {
 
   measure: cnt_discounts_applied{
     group_label: "Sessions with Event Flags"
-    label: "# Session with Applied Discounts"
+    label: "# Sessions with Applied Discounts"
     description: "Number of sessions in which at least one Discount Applied event happened"
     type: count
     filters: [has_discount_successfully_applied: "yes"]
