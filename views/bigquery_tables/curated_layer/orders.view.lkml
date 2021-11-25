@@ -1842,7 +1842,7 @@ view: orders {
     description: "Share of orders delivered no later than PDT"
     hidden:  no
     type: number
-    sql: ${cnt_orders_delayed_under_30_sec_time_estimate} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
+    sql: ${cnt_orders_delayed_under_30_sec} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
     value_format: "0%"
   }
 
