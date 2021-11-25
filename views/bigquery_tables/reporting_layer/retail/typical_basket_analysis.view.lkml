@@ -54,8 +54,8 @@ view: typical_basket_analysis {
     type: string
     order_by_field: avg_orders_per_month_num
     sql: CASE WHEN ${avg_orders_per_month_num} = 1 then   concat('[',cast(${avg_orders_per_month_num}-1 as string),'-',cast(${avg_orders_per_month_num} as string),']')
-              WHEN ${avg_orders_per_month_num} <= 10 and ${avg_orders_per_month_num}>= 1  then concat(']',cast(${avg_orders_per_month_num}-1 as string),'-',cast(${avg_orders_per_month_num} as string),']')
-              WHEN ${avg_orders_per_month_num} = 11 THEN ']10,10+['
+              WHEN ${avg_orders_per_month_num} <= 10 and ${avg_orders_per_month_num}>= 1  then concat('(',cast(${avg_orders_per_month_num}-1 as string),'-',cast(${avg_orders_per_month_num} as string),']')
+              WHEN ${avg_orders_per_month_num} = 11 THEN '(10,10+['
               WHEN ${avg_orders_per_month_num} is null then 'All' END ;;
   }
 
