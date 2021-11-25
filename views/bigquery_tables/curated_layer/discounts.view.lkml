@@ -27,7 +27,20 @@ view: discounts {
   dimension: cart_discount_type {
     label: "Card Discount Type"
     type: string
+    hidden:  yes
     sql: ${TABLE}.cart_discount_type ;;
+  }
+
+  dimension: discount_value_type {
+    label: "Discount Value Type"
+    type: string
+    sql: ${TABLE}.discount_value_type ;;
+  }
+
+  dimension: minimum_order_value {
+    label: " Minimum Order Value"
+    type: string
+    sql: ${TABLE}.minimum_order_value ;;
   }
 
   dimension_group: created {
