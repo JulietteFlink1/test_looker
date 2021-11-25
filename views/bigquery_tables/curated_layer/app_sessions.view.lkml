@@ -133,6 +133,7 @@ view: app_sessions {
   }
   dimension: hub_code {
     group_label: "Generic Dimensions"
+    description: "Hub code"
     type: string
     sql: ${TABLE}.hub_code ;;
   }
@@ -163,18 +164,21 @@ view: app_sessions {
   dimension: delivery_pdt_minutes {
     group_label: "Geo Dimensions"
     label: "Delivery PDT Minutes"
+    description: "Delivery predicted time delivery"
     type: number
     sql: ${TABLE}.delivery_pdt_minutes ;;
   }
   dimension: delivery_lat {
     group_label: "Geo Dimensions"
     label: "Delivery Latitude"
+    description: "Delivery latitude"
     type: number
     sql: ${TABLE}.delivery_lat ;;
   }
   dimension: delivery_lng {
     group_label: "Geo Dimensions"
-    description: "Delivery Longitude"
+    label: "Delivery Longitude"
+    description: "Delivery longitude"
     type: number
     sql: ${TABLE}.delivery_lng ;;
   }
@@ -352,6 +356,7 @@ view: app_sessions {
   measure: count {
     group_label: "Basic Counts (Orders / Customers etc.)"
     label: "Count All"
+    description: "Count of all sessions"
     type: count
     drill_fields: [detail*]
   }
