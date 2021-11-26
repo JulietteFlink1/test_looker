@@ -71,63 +71,29 @@ view: hires_contract_mix {
 
   dimension: channel_label{
     label: "Contract Type label"
-    case: {
-      when: {
-        sql: REGEXP_CONTAINS(lower (${type_of_contract}),'mini')
-        ;;
-        label: "Minijob"
-      }
+    type: string
+    sql: case
+              -- DE/AT Contract Type
+              when REGEXP_CONTAINS(lower (${type_of_contract}),'mini') then 'Minijob'
+              when REGEXP_CONTAINS(lower (${type_of_contract}),'student') then 'Working Student'
+              when REGEXP_CONTAINS(lower (${type_of_contract}),'full') OR REGEXP_CONTAINS(lower (${type_of_contract}),'voll') then 'Full-Time'
+              when REGEXP_CONTAINS(lower (${type_of_contract}),'part') OR REGEXP_CONTAINS(lower (${type_of_contract}),'teil') then 'Part-Time'
 
-      when: {
-        sql: REGEXP_CONTAINS(lower (${type_of_contract}),'student')
-          ;;
-        label: "Working Student"
-      }
 
-      when: {
-        sql: REGEXP_CONTAINS(lower (${type_of_contract}),'full') OR REGEXP_CONTAINS(lower (${type_of_contract}),'voll')
-          ;;
-        label: "Full-Time"
-      }
+              -- NL Contract Type
+              when REGEXP_CONTAINS(lower (${type_of_contract}),'0-hours') then '0-Hours'
+              when REGEXP_CONTAINS(lower (${type_of_contract}),'min/max') then 'Min/Max'
 
-      when: {
-        sql: REGEXP_CONTAINS(lower (${type_of_contract}),'part') OR REGEXP_CONTAINS(lower (${type_of_contract}),'teil')
-          ;;
-        label: "Part-Time"
-      }
 
-      when: {
-        sql: REGEXP_CONTAINS(lower (${type_of_contract}),'min/max')
-          ;;
-        label: "Min/Max"
-      }
+              -- FR Contract Type
+              when REGEXP_CONTAINS(lower (${type_of_contract}),'15') then '15 Hours'
+              when REGEXP_CONTAINS(lower (${type_of_contract}),'20') then '20 Hours'
+              when REGEXP_CONTAINS(lower (${type_of_contract}),'35') then '35 Hours'
 
-      when: {
-        sql: REGEXP_CONTAINS(lower (${type_of_contract}),'0-hours')
-          ;;
-        label: "0-hours"
-      }
 
-      when: {
-        sql: REGEXP_CONTAINS(lower (${type_of_contract}),'15')
-          ;;
-        label: "15 Hours"
-      }
 
-      when: {
-        sql: REGEXP_CONTAINS(lower (${type_of_contract}),'20')
-          ;;
-        label: "20 Hours"
-      }
+              else 'Others' end;;
 
-      when: {
-        sql: REGEXP_CONTAINS(lower (${type_of_contract}),'35')
-          ;;
-        label: "35 Hours"
-      }
-
-      else:"Others"
-    }
     }
 
   ######## Parameters
