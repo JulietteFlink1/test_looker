@@ -44,8 +44,8 @@ view: +orders {
   # ~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   measure: avg_delivery_time_from_prev_customer_minutes {
-    label: "AVG Delvery Time since prev customer (min)"
-    description: "Indicates, how long it took for our rider to arrive from one to a following customer of a stacked order"
+    label: "AVG Delivery time to second customer (min)"
+    description: "Indicates, how long it took for the rider to arrive from one to the following customer in a stacked order"
     group_label: "* Stacked Orders *"
     sql: ${TABLE}.delivery_time_from_prev_customer_minutes ;;
     type: average
@@ -62,11 +62,41 @@ view: +orders {
   }
 
   measure: avg_delivery_time_2nd_order_in_stack {
-    label: "AVG Delivery Time to 2nd customer"
-    description: "The time it took a ride to deliver to the 2nd customer in a stacked order"
+    label: "AVG Delivery Time: Hub to 2nd Customer (min)"
+    description: "The time it took a rider to deliver from the hub to the 2nd customer in a stacked order"
     group_label: "* Stacked Orders *"
     sql: ${TABLE}.delivery_time_minutes ;;
     filters: [stacking_sequence: "2"]
+    type: average
+    value_format_name: decimal_1
+  }
+
+  measure: avg_fulfillment_time_2nd_order_in_stack {
+    label: "AVG Fulfillment time 2nd Customer (min)"
+    description: "The time it took to deliver the order to the 2nd customer from order-creation until delivery in a stacked order"
+    group_label: "* Stacked Orders *"
+    sql: ${TABLE}.fulfillment_time_minutes ;;
+    filters: [stacking_sequence: "2"]
+    type: average
+    value_format_name: decimal_1
+  }
+
+  measure: avg_fulfillment_time_1st_order_in_stack {
+    label: "AVG Fulfillment time 1st Customer (min)"
+    description: "The time it took to deliver the order to the 1st customer from order-creation until delivery in a stacked order"
+    group_label: "* Stacked Orders *"
+    sql: ${TABLE}.fulfillment_time_minutes ;;
+    filters: [stacking_sequence: "1"]
+    type: average
+    value_format_name: decimal_1
+  }
+
+  measure: avg_delivery_time_1st_order_in_stack {
+    label: "AVG Delivery time to 1st Customer (min)"
+    description: "The time it took a rider to deliver from the hub to the 1st customer in a stacked order"
+    group_label: "* Stacked Orders *"
+    sql: ${TABLE}.fulfillment_time_minutes ;;
+    filters: [stacking_sequence: "1"]
     type: average
     value_format_name: decimal_1
   }
