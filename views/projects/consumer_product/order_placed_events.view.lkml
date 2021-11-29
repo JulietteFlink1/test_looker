@@ -15,6 +15,7 @@ view: order_placed_events {
           ios_orders.context_device_type,
           ios_orders.hub_city,
           ios_orders.payment_method,
+          ios_orders.revenue as revenue,
           ios_orders.timestamp,
           ROW_NUMBER() OVER(PARTITION BY order_number ORDER BY timestamp ASC) AS row_id
         FROM
@@ -39,6 +40,7 @@ view: order_placed_events {
           android_orders.context_device_type,
           android_orders.hub_city,
           android_orders.payment_method,
+          coalesce(android_orders.revenue, android_orders.order_revenue) as revenue,
           android_orders.timestamp,
           ROW_NUMBER() OVER(PARTITION BY order_number ORDER BY timestamp ASC) AS row_id
         FROM
@@ -192,6 +194,15 @@ view: order_placed_events {
     sql: ${TABLE}.next_order_number ;;
   }
 
+  dimension: revenue {
+    type: number
+    sql: ${TABLE}.revenue ;;
+  }
+
+  measure: sum_revenue {
+    type: sum
+    sql: ${revenue} ;;
+  }
 
   dimension: order_id {
     type: string
@@ -312,7 +323,7 @@ view: order_placed_events {
         label: "iDEAL"
       }
       when: {
-        sql: ${TABLE}.payment_method = "Sofort" ;;
+        sql: ${TABLE}.payment_method = "Sofort." ;;
         label: "Sofort"
       }
       when: {
@@ -345,6 +356,7 @@ view: order_placed_events {
     type: yesno
     sql: ${TABLE}.is_first_order ;;
   }
+
 
   set: detail {
     fields: [
