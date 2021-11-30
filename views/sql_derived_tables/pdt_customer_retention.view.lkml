@@ -3,11 +3,13 @@ view: pdt_customer_retention {
     sql: with pdt_order as (
     select customer_email
         , country_iso
+        , order_timestamp
         , date(order_timestamp) as  order_date
-        , LEAD(date(order_timestamp),1) OVER (partition by customer_email order by order_timestamp) as next_order_date
+        , LEAD(date(order_timestamp),1) OVER (partition by customer_email, country_iso order by order_timestamp) as next_order_date
         , delivery_pdt_minutes
+        , fulfillment_time_minutes
     from `flink-data-prod.curated.orders`
-    where delivery_pdt_minutes is not null
+    where delivery_pdt_minutes is not null and is_successful_order is true
 )
      select p.customer_email
         , p.country_iso
@@ -15,16 +17,22 @@ view: pdt_customer_retention {
         , p.order_date
         , p.next_order_date
         , p.delivery_pdt_minutes
+        , p.fulfillment_time_minutes
      from `flink-data-prod.curated.customers_metrics` c
      left join pdt_order p on c.customer_email = p.customer_email and c.country_iso = p.country_iso
-     where date(c.first_order_timestamp) = p.order_date
-     group by 1, 2, 3, 4, 5, 6
+     where c.first_order_timestamp = p.order_timestamp
     ;;
   }
 
   measure: count {
     type: count
     drill_fields: [detail*]
+  }
+
+  dimension: primary_key {
+    primary_key: yes
+    hidden: yes
+    sql: CONCAT(${TABLE}.customer_email, '_', ${TABLE}.country_iso) ;;
   }
 
   dimension: customer_email {
@@ -52,6 +60,11 @@ view: pdt_customer_retention {
   dimension: delivery_pdt_minutes {
     type: number
     sql: ${TABLE}.delivery_pdt_minutes ;;
+  }
+
+  dimension: fulfillment_time_minutes {
+    type: number
+    sql: ${TABLE}.fulfillment_time_minutes ;;
   }
 
   dimension: has_reordered_within_7_days {
@@ -103,6 +116,7 @@ view: pdt_customer_retention {
       first_order_date,
       next_order_date,
       delivery_pdt_minutes,
+      fulfillment_time_minutes,
       has_reordered_within_7_days
       ]
   }
