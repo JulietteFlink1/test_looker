@@ -733,7 +733,7 @@ view: hub_level_kpis {
     label: "Sum of Rider Hours"
     type: sum
     sql: ${TABLE}.number_of_rider_hours ;;
-    value_format_name: decimal_0
+    value_format_name: decimal_2
   }
 
   measure: picker_hours {
@@ -748,7 +748,7 @@ view: hub_level_kpis {
     group_label: ">> UTR KPIs"
     label: "AVG Rider UTR"
     type: number
-    sql: ${adjusted_orders_riders} / NULLIF(${rider_hours}, 0);;
+    sql: ${sum_number_of_orders} / NULLIF(${rider_hours}, 0);;
     value_format_name: decimal_2
   }
 
@@ -756,7 +756,7 @@ view: hub_level_kpis {
     group_label: ">> UTR KPIs"
     label: "AVG Picker UTR"
     type: number
-    sql: ${adjusted_orders_pickers} / NULLIF(${picker_hours}, 0);;
+    sql: ${sum_number_of_orders} / NULLIF(${picker_hours}, 0);;
     value_format_name: decimal_2
 
   }
