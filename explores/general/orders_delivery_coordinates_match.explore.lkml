@@ -1,7 +1,7 @@
 include: "/views/sql_derived_tables/orders_delivery_coordinates_match.view.lkml"
 
 explore: orders_delivery_coordinates_match {
-  hidden: no
+  hidden: yes
   view_name:  orders_delivery_coordinates_match
   label: "Orders Delivery Coordinates Monitoring"
   view_label: "Orders Delivery Coordinates Monitoring"
