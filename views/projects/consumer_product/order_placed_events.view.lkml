@@ -16,6 +16,8 @@ view: order_placed_events {
           ios_orders.hub_city,
           ios_orders.payment_method,
           ios_orders.revenue as revenue,
+          ios_orders.flag_rider_tip as flag_rider_tip,
+          ios_orders.rider_tip_value as rider_tip_value,
           ios_orders.timestamp,
           ROW_NUMBER() OVER(PARTITION BY order_number ORDER BY timestamp ASC) AS row_id
         FROM
@@ -41,6 +43,8 @@ view: order_placed_events {
           android_orders.hub_city,
           android_orders.payment_method,
           coalesce(android_orders.revenue, android_orders.order_revenue) as revenue,
+          android_orders.flag_rider_tip as flag_rider_tip,
+          android_orders.rider_tip_value as rider_tip_value,
           android_orders.timestamp,
           ROW_NUMBER() OVER(PARTITION BY order_number ORDER BY timestamp ASC) AS row_id
         FROM
@@ -96,25 +100,32 @@ view: order_placed_events {
     sql: ${TABLE}.order_id ;;
   }
 
+  measure: cnt_distinct_orders_with_tip {
+    type: count_distinct
+    sql: case when ${flag_rider_tip} = true
+          then ${TABLE}.order_id
+          else null end ;;
+  }
+
   dimension: is_ct_order {
-  ## Can know whether is CT order by checking whether order_number is a number (Saleor: 11111) or a string (CT: de_muc_zue7y)
+    ## Can know whether is CT order by checking whether order_number is a number (Saleor: 11111) or a string (CT: de_muc_zue7y)
     type: yesno
     sql: (
-    -- if safe_cast fails, returns null meaning order_number was not a number, meaning it was a CT order. Also ruling out NULL because with yesno, null turns into NO (FALSE).
-    IF(SAFE_CAST(${order_number} AS INT64) is NULL,TRUE,FALSE) AND ${order_number} IS NOT NULL
-    );;
+          -- if safe_cast fails, returns null meaning order_number was not a number, meaning it was a CT order. Also ruling out NULL because with yesno, null turns into NO (FALSE).
+          IF(SAFE_CAST(${order_number} AS INT64) is NULL,TRUE,FALSE) AND ${order_number} IS NOT NULL
+          );;
   }
 
   dimension: order_uuid {
-  ## This uuid is designed to follow the same format as order_uuid inside of orders.view (curated_layer).
-  ## For saleor orders, it looks like this: DE_11111 (order_id is based on order_number)
-  ## For CT orders, it looks like this: DE_c139c9c1-36b5-423b-97b2-79a94d116aea
-  ## The way we can know from the client side whether order_number or order_id should be used, is by checking whether order_number is a number (Saleor: 11111) or a string (CT: de_muc_zue7y)
+    ## This uuid is designed to follow the same format as order_uuid inside of orders.view (curated_layer).
+    ## For saleor orders, it looks like this: DE_11111 (order_id is based on order_number)
+    ## For CT orders, it looks like this: DE_c139c9c1-36b5-423b-97b2-79a94d116aea
+    ## The way we can know from the client side whether order_number or order_id should be used, is by checking whether order_number is a number (Saleor: 11111) or a string (CT: de_muc_zue7y)
     type: string
     sql: (
       IF(${is_ct_order}, ${country_iso}|| '_' ||${order_id}, ${country_iso}|| '_' ||${order_number})
     );;
-  hidden: yes
+    hidden: yes
   }
 
   dimension: has_next_order {
@@ -132,6 +143,18 @@ view: order_placed_events {
     type: yesno
     sql: NOT(${is_first_order}) ;;
   }
+
+  dimension: flag_rider_tip {
+    type: yesno
+    sql: ${TABLE}.flag_rider_tip ;;
+  }
+
+  dimension: rider_tip_value {
+    type: number
+    sql: ${TABLE}.rider_tip_value ;;
+  }
+
+
 
   dimension: full_app_version {
     type: string

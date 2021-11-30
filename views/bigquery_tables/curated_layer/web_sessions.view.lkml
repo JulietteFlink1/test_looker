@@ -1,5 +1,5 @@
 view: web_sessions {
-  sql_table_name: `flink-data-dev.sandbox.web_sessions`
+  sql_table_name: `flink-data-prod.curated.web_sessions_full_load`
     ;;
 
   view_label: "* Web Sessions *"
