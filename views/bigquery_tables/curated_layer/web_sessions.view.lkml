@@ -159,6 +159,11 @@ view: web_sessions {
 
   ## Session attributes
 
+  dimension: is_shop_session {
+    type: yesno
+    sql: ${TABLE}.is_shop_session ;;
+  }
+
   dimension: session_duration_minutes {
     type: duration_minute
     sql: ${TABLE}.session_duration_minutes ;;
@@ -262,6 +267,7 @@ view: web_sessions {
   measure: count {
     type: count
     drill_fields: [detail*]
+    filters: [is_shop_session: "yes"] ## used to filter for sessions only on the /shop page --> to be removed
   }
 
   measure: cnt_unique_anonymousid {
