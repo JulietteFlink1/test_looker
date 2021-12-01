@@ -1477,7 +1477,7 @@ view: orders {
     hidden:  no
     type: sum
     sql: ${discount_amount};;
-    value_format_name: euro_accounting_0_precision
+    value_format_name: euro_accounting_2_precision
   }
 
   measure: sum_delivery_fee_gross {
