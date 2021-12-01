@@ -669,7 +669,7 @@ view: location_segment_sessions {
 
   measure: cnt_unique_anonymousid {
     label: "Count Users"
-    description: "Number of unique users based on anonymous ID from Segment"
+    description: "# unique users based on Anonymous ID from Segment"
     type: count_distinct
     sql: ${anonymous_id};;
     value_format_name: decimal_0
