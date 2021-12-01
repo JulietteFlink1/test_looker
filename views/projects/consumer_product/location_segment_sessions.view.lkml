@@ -2,75 +2,30 @@ view: location_segment_sessions {
   derived_table: {
     persist_for: "1 hour"
     sql: WITH
-        pre_events AS ( -- ios all events
+    events AS (
+      SELECT
+        anonymous_id,
+        event_name AS event,
+        event_timestamp AS timestamp
+      FROM `flink-data-prod.curated.app_session_events_full_load`
+    )
+
+  , tracking_sessions AS ( -- defining 30 min sessions
         SELECT
-            tracks.anonymous_id
-          , tracks.context_app_version
-          , tracks.context_device_type
-          , tracks.context_locale
-          , tracks.event
-          , tracks.event_text
-          , tracks.id
-          , tracks.timestamp
-          , TIMESTAMP_DIFF(tracks.timestamp,LAG(tracks.timestamp) OVER(PARTITION BY tracks.anonymous_id ORDER BY tracks.timestamp), MINUTE) AS inactivity_time
-          , ROW_NUMBER() OVER (PARTITION BY tracks.id ORDER BY tracks.timestamp) AS row_id
-        FROM
-          `flink-data-prod.flink_ios_production.tracks_view` tracks
-        WHERE
-          tracks.event NOT LIKE "%api%"
-          AND tracks.event NOT LIKE "%adjust%"
-          AND tracks.event NOT LIKE "%install_attributed%"
-          AND tracks.event != "app_opened"
-          AND tracks.event != "application_updated"
-          AND NOT (tracks.context_app_version LIKE "%APP-RATING%" OR tracks.context_app_version LIKE "%DEBUG%")
-          AND NOT (tracks.context_app_name = "Flink-Staging" OR tracks.context_app_name="Flink-Debug")
-    UNION ALL
-        SELECT -- android all events
-            tracks.anonymous_id
-          , tracks.context_app_version
-          , tracks.context_device_type
-          , tracks.context_locale
-          , tracks.event
-          , tracks.event_text
-          , tracks.id
-          , tracks.timestamp
-          , TIMESTAMP_DIFF(tracks.timestamp,LAG(tracks.timestamp) OVER(PARTITION BY tracks.anonymous_id ORDER BY tracks.timestamp), MINUTE) AS inactivity_time
-          , ROW_NUMBER() OVER (PARTITION BY tracks.id ORDER BY tracks.timestamp) AS row_id
-        FROM
-          `flink-data-prod.flink_android_production.tracks_view` tracks
-        WHERE
-          tracks.event NOT LIKE "%api%"
-          AND tracks.event NOT LIKE "%adjust%"
-          AND tracks.event NOT LIKE "%install_attributed%"
-          AND tracks.event != "app_opened"
-          AND tracks.event != "application_updated"
-          AND NOT (tracks.context_app_version LIKE "%APP-RATING%" OR tracks.context_app_version LIKE "%DEBUG%")
-          AND NOT (tracks.context_app_name = "Flink-Staging" OR tracks.context_app_name="Flink-Debug")
-          )
-
-     , events AS (
-        SELECT *
-        FROM pre_events
-        WHERE row_id =1
-      )
-
-     , tracking_sessions AS ( -- defining 30 min sessions
-            SELECT
-              anonymous_id
-            , anonymous_id || '-' || ROW_NUMBER() OVER(PARTITION BY anonymous_id ORDER BY timestamp ASC) AS session_id
-            , ROW_NUMBER() OVER(PARTITION BY anonymous_id ORDER BY timestamp ASC) AS session_number
-            , timestamp AS session_start_at
-            , LEAD(timestamp) OVER(PARTITION BY anonymous_id ORDER BY timestamp) AS next_session_start_at
-            , context_app_version
-            , context_device_type
-            , context_locale
-            FROM
-              events
-            WHERE
-              (events.inactivity_time > 30
-                OR events.inactivity_time IS NULL)
-            ORDER BY
-              1)
+          anonymous_id,
+          session_uuid AS session_id,
+          is_new_user,
+          session_start_at,
+          session_end_at,
+          app_version AS context_app_version,
+          device_type AS context_device_type,
+          country_iso AS hub_country,
+          city AS hub_city,
+          hub_code,
+          delivery_pdt_minutes AS delivery_eta,
+          is_session_with_address AS has_address
+        FROM `flink-data-prod.curated.app_sessions_full_load`
+    )
 
   , location_pin_placed_data AS (-- ios & android pulling location_pin_placed for user_area_available
       SELECT
@@ -111,142 +66,15 @@ view: location_segment_sessions {
       -- WHERE event.location_selection_method = "locateMe" OR event.location_selection_method="addressSearch"
   )
 
-    , hub_data_union AS ( -- ios & android pulling address_confirmed and order_placed for hub_data and delivery_eta
-        SELECT
-              event.event,
-              event.anonymous_id,
-              event.timestamp,
-              event.hub_city,
-              event.hub_code AS hub_encoded,
-              hub.slug as hub_code,
-              CAST(event.delivery_eta as INT) as delivery_eta,
-              CAST(NULL AS BOOL) AS has_selected_address
-        FROM `flink-data-prod.flink_ios_production.address_confirmed_view` event
-            LEFT JOIN
-                `flink-data-prod.saleor_prod_global.warehouse_warehouse` AS hub
-            ON SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(event.hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[ OFFSET(1)] = hub.id
-    UNION ALL
-        SELECT
-              event.event,
-              event.anonymous_id,
-              event.timestamp,
-              event.hub_city,
-              event.hub_code AS hub_encoded,
-              hub.slug as hub_code,
-              event.delivery_eta,
-              CAST(NULL AS BOOL) AS has_selected_address
-        FROM `flink-data-prod.flink_android_production.address_confirmed_view` event
-            LEFT JOIN
-                `flink-data-prod.saleor_prod_global.warehouse_warehouse` AS hub
-            ON SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(event.hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[ OFFSET(1)] = hub.id
-    UNION ALL
-        SELECT
-              event.event,
-              event.anonymous_id,
-              event.timestamp,
-              event.hub_city,
-              event.hub_code AS hub_encoded,
-              hub.slug as hub_code,
-              CAST(event.delivery_eta as INT) as delivery_eta,
-              CAST(NULL AS BOOL) AS has_selected_address
-        FROM `flink-data-prod.flink_ios_production.order_placed_view` event
-            LEFT JOIN
-                `flink-data-prod.saleor_prod_global.warehouse_warehouse` AS hub
-            ON SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(event.hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[ OFFSET(1)] = hub.id
-    UNION ALL
-        SELECT
-              event.event,
-              event.anonymous_id,
-              event.timestamp,
-              event.hub_city,
-              event.hub_code AS hub_encoded,
-              hub.slug as hub_code,
-              delivery_eta,
-              CAST(NULL AS BOOL) AS has_selected_address
-        FROM `flink-data-prod.flink_android_production.order_placed_view` event
-            LEFT JOIN
-                `flink-data-prod.saleor_prod_global.warehouse_warehouse` AS hub
-            ON SPLIT(SAFE_CONVERT_BYTES_TO_STRING(FROM_BASE64(regexp_extract(event.hub_code, "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)?$"))),':')[ OFFSET(1)] = hub.id
-    UNION ALL
-        SELECT
-              event.event,
-              event.anonymous_id,
-              event.timestamp,
-              event.city AS hub_city,
-              NULL AS hub_encoded,
-              hub_slug as hub_code,
-              NULL AS delivery_eta,
-              event.has_selected_address
-        FROM `flink-data-prod.flink_android_production.app_opened_view` event
-    UNION ALL
-        SELECT
-              event.event,
-              event.anonymous_id,
-              event.timestamp,
-              event.city AS hub_city,
-              NULL AS hub_encoded,
-              hub_slug as hub_code,
-              NULL AS delivery_eta,
-              event.has_selected_address
-        FROM `flink-data-prod.flink_ios_production.app_opened_view` event
-    )
-
-    , has_address_fill AS (
-      SELECT
-        hd.event,
-        hd.anonymous_id,
-        hd.timestamp,
-        hd.hub_city,
-        hd.hub_code,
-        COALESCE(hs.country_iso, hc.country_iso) as hub_country,
-        hd.delivery_eta,
-        LAST_VALUE(hd.has_selected_address IGNORE NULLS) OVER
-            (PARTITION BY anonymous_id ORDER BY timestamp RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)  AS has_selected_address
-      FROM hub_data_union hd
-      LEFT JOIN (
-                SELECT DISTINCT country_iso, city
-                FROM `flink-data-prod.google_sheets.hub_metadata`
-                 ) hc
-            ON hd.hub_city = hc.city
-      LEFT JOIN (
-          SELECT DISTINCT country_iso, hub_code
-          FROM `flink-data-prod.google_sheets.hub_metadata`
-         ) hs
-      ON LOWER(hd.hub_code) = LOWER(hs.hub_code)
-
-      WHERE (hs.hub_code NOT IN('erp_spitzbergen', 'fr_hub_test', 'nl_hub_test', 'at_hub_test')
-          OR hs.hub_code is null)
-    )
-
-    , hub_data AS (
-    SELECT  ha.event,
-            ha.anonymous_id,
-            ha.timestamp,
-            ha.hub_city,
-            ha.hub_country,
-            ha.hub_code,
-            ha.delivery_eta,
-            ha.has_selected_address,
-            CASE
-                WHEN ha.has_selected_address THEN true
-                WHEN ha.event="address_confirmed" THEN true
-                WHEN ha.event="order_placed" THEN true
-                ELSE false
-            END AS has_address,
-            ROW_NUMBER() OVER(PARTITION BY ha.event, ha.anonymous_id, ha.timestamp ORDER BY ha.timestamp DESC)       AS row_n
-    FROM has_address_fill ha
-    )
-
-    , sessions_final AS ( -- merging sessions with hub_data
+    , sessions_final AS ( -- merging sessions with location pin data
     SELECT
            anonymous_id
          , context_app_version
          , context_device_type
-         , context_locale
          , session_id
-         , session_number
+         , is_new_user
          , session_start_at
-         , next_session_start_at
+         , session_end_at
          , CASE WHEN hub_city LIKE 'Ludwigshafen%' THEN 'DE'
             WHEN hub_city LIKE 'Mülheim%' THEN 'DE'
             WHEN hub_city LIKE 'Mulheim%' THEN 'DE'
@@ -258,40 +86,21 @@ view: location_segment_sessions {
          , user_area_available
     FROM (
         SELECT
-              ts.anonymous_id
-            , ts.context_app_version
-            , ts.context_device_type
-            , ts.context_locale
-            , ts.session_id
-            , ts.session_number
-            , ts.session_start_at
-            , ts.next_session_start_at
-            , hd.timestamp as hd_timestamp
-        , hd.hub_code
-        , hd.hub_country
-        , hd.hub_city
-        -- , hd.delivery_postcode
-        , hd.delivery_eta
-        , hd.has_address
+            ts.anonymous_id
+          , ts.context_app_version
+          , ts.context_device_type
+          , ts.session_id
+          , ts.is_new_user
+          , ts.session_start_at
+          , ts.session_end_at
+          , ts.hub_code
+          , ts.hub_country
+          , ts.hub_city
+          , ts.delivery_eta
+          , ts.has_address
         , ld.user_area_available
-        , DENSE_RANK() OVER (PARTITION BY ts.anonymous_id, ts.session_id ORDER BY hd.timestamp DESC) as rank_hd -- ranks all data_hub related events // filter set = 1 to get 'latest' timestamp
         , DENSE_RANK() OVER (PARTITION BY ts.anonymous_id, ts.session_id ORDER BY ld.timestamp DESC) as order_ld --ranks all location_pin_placed events to surface FALSE before TRUE
     FROM tracking_sessions ts
-            LEFT JOIN (
-                SELECT
-                    anonymous_id
-                  , timestamp
-                  , hub_code
-                  , hub_city
-                  , hub_country
-                  -- , delivery_postcode
-                  , delivery_eta
-                  , has_address
-                FROM hub_data
-            ) hd
-            ON ts.anonymous_id = hd.anonymous_id
-            AND ( hd.timestamp < ts.next_session_start_at OR ts.next_session_start_at IS NULL)
-
             LEFT JOIN (
                 SELECT
                     anonymous_id
@@ -301,14 +110,10 @@ view: location_segment_sessions {
             ) ld
             ON ts.anonymous_id = ld.anonymous_id
             AND ld.timestamp >= ts.session_start_at
-            AND ( ld.timestamp < ts.next_session_start_at OR ts.next_session_start_at IS NULL)
+            AND ( ld.timestamp <= ts.session_end_at OR ts.session_end_at IS NULL)
         )
-
-      WHERE
-      rank_hd = 1  -- filter set = 1 to get 'latest' timestamp
-  AND
-      order_ld = 1 -- filter set = 1 to get last pin value - to get false if there is a false value (set DENSE_RANK ORDER BY ld.user_area_available ASC)
-  GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14
+      WHERE order_ld = 1 -- filter set = 1 to get last pin value - to get false if there is a false value (set DENSE_RANK ORDER BY ld.user_area_available ASC)
+  GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13
   ),
 
 event_counts AS (
@@ -326,7 +131,7 @@ event_counts AS (
             LEFT JOIN sessions_final sf
             ON e.anonymous_id = sf.anonymous_id
             AND e.timestamp >= sf.session_start_at
-            AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
+            AND ( e.timestamp <= sf.session_end_at OR session_end_at IS NULL)
         GROUP BY 1,2
     )
 
@@ -339,7 +144,7 @@ event_counts AS (
         LEFT JOIN sessions_final sf
         ON e.anonymous_id = sf.anonymous_id
         AND e.timestamp >= sf.session_start_at
-        AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
+        AND ( e.timestamp <= sf.session_end_at OR session_end_at IS NULL)
     WHERE e.is_inside_delivery_area=true
     GROUP BY 1,2
 )
@@ -353,7 +158,7 @@ event_counts AS (
         LEFT JOIN sessions_final sf
         ON e.anonymous_id = sf.anonymous_id
         AND e.timestamp >= sf.session_start_at
-        AND ( e.timestamp < sf.next_session_start_at OR next_session_start_at IS NULL)
+        AND ( e.timestamp <= sf.session_end_at OR session_end_at IS NULL)
     WHERE e.is_inside_delivery_area=false
     GROUP BY 1,2
 )
@@ -361,13 +166,12 @@ event_counts AS (
           sf.anonymous_id
         , sf.context_app_version
         , sf.context_device_type
-        , sf.context_locale
         , sf.session_id
-        , sf.session_number
+        , sf.is_new_user
         , datetime(sf.session_start_at,
           'UTC') AS session_start_at
-        , datetime(sf.next_session_start_at,
-          'UTC') AS next_session_start_at
+        , datetime(sf.session_end_at,
+          'UTC') AS session_end_at
         -- , sf.hub_id
         , sf.hub_code
         , sf.hub_country
@@ -439,20 +243,15 @@ event_counts AS (
     sql: ${TABLE}.context_device_type ;;
   }
 
-  dimension: context_locale {
-    type: string
-    sql: ${TABLE}.context_locale ;;
-  }
-
   dimension: session_id {
     type: string
     primary_key: yes
     sql: ${TABLE}.session_id ;;
   }
 
-  dimension: session_number {
-    type: number
-    sql: ${TABLE}.session_number ;;
+  dimension: is_new_user {
+    type: string
+    sql: ${TABLE}.is_new_user ;;
   }
 
   # dimension: hub_id {
@@ -568,7 +367,7 @@ event_counts AS (
     sql: ${TABLE}.session_start_at ;;
   }
 
-  dimension_group: next_session_start_at {
+  dimension_group: session_end_at {
     type: time
     datatype: datetime
     timeframes: [
@@ -579,7 +378,7 @@ event_counts AS (
       quarter,
       year
     ]
-    sql: ${TABLE}.next_session_start_at ;;
+    sql: ${TABLE}.session_end_at ;;
   }
 
 ### Custom dimensions
@@ -595,7 +394,7 @@ event_counts AS (
 
   dimension: is_first_session {
     type: yesno
-    sql: ${TABLE}.session_number=1 ;;
+    sql: ${TABLE}.is_new_user ;;
   }
 
   dimension: hub_unknown {
@@ -801,11 +600,10 @@ event_counts AS (
       anonymous_id,
       context_app_version,
       context_device_type,
-      context_locale,
       session_id,
-      session_number,
+      is_new_user,
       session_start_at_date,
-      next_session_start_at_date,
+      session_end_at_date,
       hub_code,
       hub_country,
       hub_city,
