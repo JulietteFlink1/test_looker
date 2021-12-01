@@ -278,6 +278,7 @@ event_counts AS (
 
   dimension: hub_country {
     group_label: "Location Dimensions"
+    hidden: yes
     type: string
     sql: ${TABLE}.hub_country ;;
   }
@@ -289,6 +290,7 @@ event_counts AS (
   }
 
   dimension: country {
+    group_label: "Location Dimensions"
     type: string
     case: {
       when: {
@@ -503,22 +505,37 @@ event_counts AS (
     sql: ${TABLE}.map_viewed ;;
   }
 
-
+  ######## Session Attributes########
 
   dimension: has_address {
+    group_label: "Session Dimensions"
     type: yesno
     sql: ${TABLE}.has_address ;;
   }
 
   dimension: has_ordered {
+    group_label: "Session Dimensions"
     type: number
     sql: ${TABLE}.has_ordered ;;
   }
 
   dimension: is_new_user {
+    group_label: "Session Dimensions"
     type: string
     hidden: yes
     sql: ${TABLE}.is_new_user ;;
+  }
+
+  dimension: is_first_session {
+    group_label: "Session Dimensions"
+    type: yesno
+    sql: ${TABLE}.is_new_user ;;
+  }
+
+  dimension: hub_unknown {
+    group_label: "Session Dimensions"
+    type: yesno
+    sql: ${hub_code} IS NULL ;;
   }
 
   dimension: delivery_eta {
@@ -582,24 +599,6 @@ event_counts AS (
       year
     ]
     sql: ${TABLE}.session_end_at ;;
-  }
-
-### Custom dimensions
-
-
-  # dimension: returning_customer {
-  #   type: yesno
-  #   sql: ${TABLE}.has_ordered ;;
-  # }
-
-  dimension: is_first_session {
-    type: yesno
-    sql: ${TABLE}.is_new_user ;;
-  }
-
-  dimension: hub_unknown {
-    type: yesno
-    sql: ${hub_code} IS NULL ;;
   }
 
   dimension: session_start_date_granularity {
