@@ -105,6 +105,7 @@ view: orderline {
     label: "Discount Amount (Gross)"
     group_label: "> Monetary Dimensions"
     type: number
+    value_format_name: euro_accounting_0_precision
     sql: ${TABLE}.amt_discount ;;
   }
 
@@ -112,6 +113,7 @@ view: orderline {
     label: "Discount Amount (Net)"
     group_label: "> Monetary Dimensions"
     type: number
+    value_format_name: euro_accounting_0_precision
     sql: ${TABLE}.amt_discount/(1+${tax_rate}) ;;
   }
 
@@ -407,6 +409,7 @@ view: orderline {
     group_label: "> Monetary Metrics"
     label: "SUM Discount Amount (Gross)"
     type: sum
+    value_format_name: euro_accounting_2_precision
     sql: ${amt_discount_gross} ;;
   }
 
@@ -414,6 +417,7 @@ view: orderline {
     label: "SUM Discount Amount (Net)"
     group_label: "> Monetary Metrics"
     type: sum
+    value_format_name: euro_accounting_2_precision
     sql: ${amt_discount_net} ;;
   }
 
@@ -444,7 +448,7 @@ view: orderline {
   }
 
   measure: sum_refund_gross {
-    label: "SUM Refund (Net)"
+    label: "SUM Refund (Gross)"
     sql: ${refund_amount_gross} ;;
     type: sum
     value_format_name: euro_accounting_2_precision
