@@ -444,7 +444,7 @@ view: orderline {
   }
 
   measure: sum_refund_gross {
-    label: "SUM of Gross Refund"
+    label: "SUM Refund (Net)"
     sql: ${refund_amount_gross} ;;
     type: sum
     value_format_name: euro_accounting_2_precision
@@ -452,7 +452,7 @@ view: orderline {
   }
 
   measure: sum_refund_net {
-    label: "SUM of Net Refund"
+    label: "SUM Refund (Net)"
     sql: ${refund_amount_net} ;;
     type: sum
     value_format_name: euro_accounting_2_precision
