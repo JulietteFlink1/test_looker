@@ -101,11 +101,18 @@ view: orderline {
   }
 
   # =========  Monetary Dims   =========
-  dimension: amt_discount {
-    label: "Discount Amount"
+  dimension: amt_discount_gross {
+    label: "Discount Amount (Gross)"
     group_label: "> Monetary Dimensions"
     type: number
     sql: ${TABLE}.amt_discount ;;
+  }
+
+  dimension: amt_discount_net {
+    label: "Discount Amount (Net)"
+    group_label: "> Monetary Dimensions"
+    type: number
+    sql: ${TABLE}.amt_discount/(1+${tax_rate}) ;;
   }
 
   dimension: amt_revenue_gross {
@@ -394,6 +401,20 @@ view: orderline {
     sql: ${amt_total_price_gross};;
     value_format_name: euro_accounting_2_precision
     group_label: "> Monetary Metrics"
+  }
+
+  measure: sum_discount_amt_gross {
+    group_label: "> Monetary Metrics"
+    label: "SUM Discount Amount (Gross)"
+    type: sum
+    sql: ${amt_discount_gross} ;;
+  }
+
+  measure: sum_discount_amt_net {
+    label: "SUM Discount Amount (Net)"
+    group_label: "> Monetary Metrics"
+    type: sum
+    sql: ${amt_discount_net} ;;
   }
 
   measure: sum_item_price_fulfilled_net {
