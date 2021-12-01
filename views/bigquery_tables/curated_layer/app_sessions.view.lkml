@@ -186,7 +186,7 @@ view: app_sessions {
     group_label: "Geo Dimensions"
     type: string
     sql: ${TABLE}.country_iso ;;
-    hidden: yes
+    hidden: no
   }
   dimension: country {
     group_label: "Geo Dimensions"
