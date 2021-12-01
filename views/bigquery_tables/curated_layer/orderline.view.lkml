@@ -101,11 +101,20 @@ view: orderline {
   }
 
   # =========  Monetary Dims   =========
-  dimension: amt_discount {
-    label: "Discount Amount"
+  dimension: amt_discount_gross {
+    label: "Discount Amount (Gross)"
     group_label: "> Monetary Dimensions"
     type: number
+    value_format_name: euro_accounting_0_precision
     sql: ${TABLE}.amt_discount ;;
+  }
+
+  dimension: amt_discount_net {
+    label: "Discount Amount (Net)"
+    group_label: "> Monetary Dimensions"
+    type: number
+    value_format_name: euro_accounting_0_precision
+    sql: ${TABLE}.amt_discount/(1+${tax_rate}) ;;
   }
 
   dimension: amt_revenue_gross {
@@ -396,6 +405,22 @@ view: orderline {
     group_label: "> Monetary Metrics"
   }
 
+  measure: sum_discount_amt_gross {
+    group_label: "> Monetary Metrics"
+    label: "SUM Discount Amount (Gross)"
+    type: sum
+    value_format_name: euro_accounting_2_precision
+    sql: ${amt_discount_gross} ;;
+  }
+
+  measure: sum_discount_amt_net {
+    label: "SUM Discount Amount (Net)"
+    group_label: "> Monetary Metrics"
+    type: sum
+    value_format_name: euro_accounting_2_precision
+    sql: ${amt_discount_net} ;;
+  }
+
   measure: sum_item_price_fulfilled_net {
     label: "SUM Item Prices fulfilled (net)"
     description: "Sum of fulfilled Item prices (excl. VAT)"
@@ -423,7 +448,7 @@ view: orderline {
   }
 
   measure: sum_refund_gross {
-    label: "SUM of Gross Refund"
+    label: "SUM Refund (Gross)"
     sql: ${refund_amount_gross} ;;
     type: sum
     value_format_name: euro_accounting_2_precision
@@ -431,7 +456,7 @@ view: orderline {
   }
 
   measure: sum_refund_net {
-    label: "SUM of Net Refund"
+    label: "SUM Refund (Net)"
     sql: ${refund_amount_net} ;;
     type: sum
     value_format_name: euro_accounting_2_precision

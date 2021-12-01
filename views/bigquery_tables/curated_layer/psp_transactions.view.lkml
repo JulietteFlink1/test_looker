@@ -1,5 +1,5 @@
 view: psp_transactions {
-  sql_table_name: `flink-data-dev.curated.psp_transactions`
+  sql_table_name: `flink-data-prod.curated.psp_transactions`
     ;;
 
   dimension: authorised_pc {
@@ -147,57 +147,55 @@ view: psp_transactions {
   measure: sum_main_amount {
     type: sum
     sql: ${main_amount} ;;
-    value_format: "0.00€"
+    value_format_name: euro_accounting_2_precision
   }
 
   measure: sum_authorised_pc {
     type: sum
     sql: ${authorised_pc} ;;
-    value_format: "0.00€"
-  }
+    value_format_name: euro_accounting_2_precision  }
 
   measure: sum_scheme_fees_sc {
     type: sum
     sql: ${scheme_fees_sc} ;;
-    value_format: "0.00€"
+    value_format_name: euro_accounting_2_precision
   }
 
   measure: sum_processing_fee_fc {
     type: sum
     sql: ${processing_fee_fc} ;;
-    value_format: "0.00€"
+    value_format_name: euro_accounting_2_precision
   }
 
   measure: sum_received_pc {
     type: sum
     sql: ${received_pc} ;;
-    value_format: "0.00€"
+    value_format_name: euro_accounting_2_precision
   }
 
   measure: sum_interchange_sc {
     type: sum
     sql: ${interchange_sc} ;;
-    value_format: "0.00€"
-    hidden: no
+    value_format_name: euro_accounting_2_precision    hidden: no
   }
 
   measure: sum_commission_sc {
     type: sum
     sql: ${commission_sc} ;;
-    value_format: "0.00€"
-  }
+    value_format_name: euro_accounting_2_precision
+    }
 
   measure: sum_payable_sc {
     type: sum
     sql: ${payable_sc} ;;
-    value_format: "0.00€"
-  }
+    value_format_name: euro_accounting_2_precision
+    }
 
   measure: sum_captured_pc {
     type: sum
     sql: ${captured_pc} ;;
-    value_format: "0.00€"
-  }
+    value_format_name: euro_accounting_2_precision
+    }
 
 
   measure: count {
