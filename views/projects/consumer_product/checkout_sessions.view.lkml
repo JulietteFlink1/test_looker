@@ -773,6 +773,7 @@ view: checkout_sessions {
   measure: orderplaced_per_paymentstarted_perc{
     group_label: "Percentage Measures"
     label: "% Order Placed From Payment Started"
+    description: "Number of sessions in which there was an Order Placed, compared to the number of sessions in which there was a Payment Started"
     type: number
     sql: ${checkout_sessions.cnt_order_placed}/NULLIF(${checkout_sessions.cnt_payment_started},0) ;;
     value_format_name: percent_1
@@ -786,6 +787,7 @@ view: checkout_sessions {
   measure: paymentfailed_per_paymentstarted_perc{
     group_label: "Percentage Measures"
     label: "% Payment Failed From Payment Started"
+    description: "Number of sessions in which there was a Payment Failed, compared to the number of sessions in which there was a Payment Started"
     type: number
     sql: ${checkout_sessions.cnt_payment_failed}/NULLIF(${checkout_sessions.cnt_payment_started},0) ;;
     value_format_name: percent_1
@@ -799,6 +801,7 @@ view: checkout_sessions {
   measure: paymentfailed_noorder_per_paymentstarted_perc{
     group_label: "Percentage Measures"
     label: "% Payment Failed And No Order From Payment Started"
+    description: "Number of sessions in which there was a Payment Failed and no Order Placed, compared to the number of sessions in which there was a Payment Started"
     type: number
     sql: ${checkout_sessions.cnt_payment_failed_no_order}/NULLIF(${checkout_sessions.cnt_payment_started},0) ;;
     value_format_name: percent_1
@@ -828,7 +831,7 @@ view: checkout_sessions {
   }
 
   measure: payment_success {
-    # todo: this is a duplicate from the one at the top of this list. remove one of them and adapt Looks where it's used accordingly
+    # note: this is a duplicate from the one at the top of this list
     group_label: "Percentage Measures"
     label: "% Payment Succeeded From Payment Started"
     type: number
