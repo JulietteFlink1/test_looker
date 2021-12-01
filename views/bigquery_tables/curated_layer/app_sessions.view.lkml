@@ -345,7 +345,7 @@ view: app_sessions {
     hidden: yes
   }
   dimension: session_duration_minutes {
-    type: duration_minute
+    type: number
     sql: ${TABLE}.session_duration_minutes ;;
     hidden: yes
   }
