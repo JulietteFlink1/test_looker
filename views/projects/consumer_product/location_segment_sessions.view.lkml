@@ -253,7 +253,7 @@ view: location_segment_sessions {
   ########## Location attributes #########
   dimension: hub_code {
     group_label: "Location Dimensions"
-    description: "Hub code associated with the last address the user selected in the session"
+    description: "Hub code associated with the last address the user selected"
     type: string
     sql: ${TABLE}.hub_code ;;
   }
@@ -268,14 +268,14 @@ view: location_segment_sessions {
   dimension: hub_city {
     group_label: "Location Dimensions"
     label: "City"
-    description: "City associated with the last address the user selected in the session"
+    description: "City associated with the last address the user selected"
     type: string
     sql: ${TABLE}.hub_city ;;
   }
 
   dimension: country {
     group_label: "Location Dimensions"
-    description: "Country ISO associated with the last address the user selected in the session"
+    description: "Country ISO associated with the last address the user selected"
     type: string
     case: {
       when: {
