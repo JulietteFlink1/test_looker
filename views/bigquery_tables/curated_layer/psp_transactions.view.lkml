@@ -9,7 +9,7 @@ view: psp_transactions {
 
   dimension: psp_transaction_uuid {
     type: string
-    sql:${TABLE}.psp_reference_uuid ;;
+    sql:${TABLE}.psp_transaction_uuid ;;
     primary_key: yes
   }
 
