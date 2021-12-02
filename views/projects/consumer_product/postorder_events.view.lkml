@@ -297,16 +297,49 @@ view: postorder_events {
     hidden: yes
   }
 
+
+  ########## Device attributes #########
+
   dimension: full_app_version {
+    group_label: "Device Dimensions"
+    label: "Full App Version Detailed"
     type: string
     sql: ${context_device_type} || '-' || ${basic_padded_app_version} ;;
     order_by_field: version_ordering_field
   }
 
   dimension: main_app_version {
+    group_label: "Device Dimensions"
+    label: "Full App Version Main"
     type: string
     sql: ${context_device_type} || '-' || ${main_version_number} || '.' || ${secondary_version_number} ;;
     order_by_field: basic_version_field
+  }
+
+  dimension: basic_padded_app_version {
+    group_label: "Device Dimensions"
+    label: "App Version Main"
+    type: string
+    sql: CONCAT(${main_version_number},".",FORMAT('%02d',CAST(${secondary_version_number} AS INT64)));;
+  }
+
+  dimension: padded_app_version {
+    group_label: "Device Dimensions"
+    label: "App Version Detailed"
+    type: string
+    sql: CONCAT(${main_version_number},".",FORMAT('%02d',CAST(${secondary_version_number} AS INT64)),".",FORMAT('%02d',CAST(${tertiary_version_number} AS INT64)));;
+  }
+
+  dimension: context_device_type {
+    group_label: "Device Dimensions"
+    type: string
+    sql: ${TABLE}.context_device_type ;;
+  }
+
+  dimension: context_app_version {
+    hidden: yes
+    type: string
+    sql: ${TABLE}.context_app_version ;;
   }
 
   dimension: main_version_number {
@@ -328,25 +361,16 @@ view: postorder_events {
   }
 
   dimension: version_ordering_field {
+    hidden: yes
     type: number
     sql: CONCAT(${main_version_number},${secondary_version_number},${tertiary_version_number}) ;;
   }
 
   dimension: basic_version_field {
+    hidden: yes
     type: number
     sql: CAST(CONCAT(${main_version_number},${secondary_version_number}) AS INT64) ;;
   }
-
-  dimension: basic_padded_app_version {
-    type: string
-    sql: CONCAT(${main_version_number},".",FORMAT('%02d',CAST(${secondary_version_number} AS INT64)));;
-  }
-
-  dimension: padded_app_version {
-    type: string
-    sql: CONCAT(${main_version_number},".",FORMAT('%02d',CAST(${secondary_version_number} AS INT64)),".",FORMAT('%02d',CAST(${tertiary_version_number} AS INT64)));;
-  }
-
 
   measure: cnt_unique_order_ccs_intent {
     label: "# Unique Orders With CCS Intent"
@@ -587,22 +611,6 @@ view: postorder_events {
     type: string
     sql: ${TABLE}.event ;;
   }
-
-  dimension: context_app_version {
-    type: string
-    sql: ${TABLE}.context_app_version ;;
-  }
-
-  dimension: context_device_type {
-    type: string
-    sql: ${TABLE}.context_device_type ;;
-  }
-
-  dimension: context_os_version {
-    type: string
-    sql: ${TABLE}.context_os_version ;;
-  }
-
   dimension: order_id {
     type: string
     sql: ${TABLE}.order_id ;;
@@ -684,7 +692,6 @@ view: postorder_events {
       id,
       context_app_version,
       context_device_type,
-      context_os_version,
       order_id,
       order_number,
       hub_slug,
