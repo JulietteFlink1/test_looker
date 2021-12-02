@@ -8,12 +8,13 @@ view: recurring_sku_purchases {
       with
       orders as (
           -- data is unique per orders
-          select distinct
+          select
 
                 orders.order_uuid
               , orders.customer_email
               , orders.order_timestamp
               , orders.amt_gmv_gross
+              , string_agg(distinct order_lineitems.sku, ' , ' order by order_lineitems.sku) as filtered_skus_in_order
 
           from       `flink-data-prod`.curated.orders
           inner join `flink-data-prod`.curated.order_lineitems on orders.order_uuid = order_lineitems.order_uuid
@@ -24,6 +25,9 @@ view: recurring_sku_purchases {
               and {% condition filter_order_date %} date(orders.order_timestamp) {% endcondition %}
               and {% condition filter_order_date %} date(order_lineitems.order_timestamp) {% endcondition %}
               and {% condition select_skus_for_recurring_sku_tracking %} order_lineitems.sku {% endcondition %}
+
+          group by
+              1,2,3,4
 
       ),
 
@@ -40,6 +44,8 @@ view: recurring_sku_purchases {
                       , 0
                       , TIMESTAMP_DIFF(order_timestamp, lag(order_timestamp) over win_user, day)
                       ) as days_since_last_order_with_skus
+
+                  , lag(filtered_skus_in_order) over win_user as prev_filtered_skus_in_order
 
               from orders
 
@@ -93,6 +99,16 @@ view: recurring_sku_purchases {
   dimension: days_since_last_order_with_skus {
     type: number
     sql: ${TABLE}.days_since_last_order_with_skus ;;
+  }
+
+  dimension: filtered_skus_in_order {
+    type: string
+    sql: ${TABLE}.filtered_skus_in_order ;;
+  }
+
+  dimension: prev_filtered_skus_in_order {
+    type: string
+    sql: ${TABLE}.prev_filtered_skus_in_order ;;
   }
 
   measure: count {
