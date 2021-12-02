@@ -110,15 +110,6 @@ explore: orders_cl {
     type: left_outer
   }
 
-  join: idle_time {
-    view_label: "* Idle Time *"
-    sql_on: ${orders_cl.order_date}          = ${idle_time.order_date}
-      and ${orders_cl.hour} = ${idle_time.order_hour}
-      and lower(${orders_cl.hub_code}) = lower(${idle_time.hub_code})
-      and ${orders_cl.id} = ${idle_time.id};;
-    relationship: one_to_one
-    type: left_outer
-  }
 
   # add issue rate core metrics: https://goflink.atlassian.net/browse/DATA-1452
   join: orderline_issue_rate_core_kpis {
