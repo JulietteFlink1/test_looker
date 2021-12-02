@@ -2,6 +2,7 @@ include: "/views/bigquery_tables/curated_layer/orders.view.lkml"
 
 view: order_comments {
   extends: [orders]
+  fields_hidden_by_default: yes
 
   dimension: has_customer_note {
     type: yesno
@@ -115,6 +116,11 @@ view: order_comments {
   measure: cnt_unique_order_locations {
     type: count_distinct
     sql: ${customer_location::latitude} || '-' || ${customer_location::longitude};;
+  }
+
+  ## these dimensions have to be hidden manually
+  dimension: date_granularity_pass_through {
+    hidden: yes
   }
 
   ## these dimensions are automatically generated from orders dimensions and will trigger errors if not defined

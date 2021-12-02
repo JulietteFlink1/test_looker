@@ -7,10 +7,10 @@ include: "/views/bigquery_tables/curated_layer/nps_after_order_cl.view"
 
 explore: order_for_postorder{
   from: order_comments
-  label: "Postorder With Backend Orders"
-  view_label: "Postorder With Backend Orders"
+  label: "Postorder Events"
+  view_label: "Postorder Events"
   group_label: "Consumer Product"
-  description: "Combines (backend) orders view and postorder events"
+  description: "Post-order related events, order dimensions, comments and nps"
 
   join: order_client {
     from: order_placed_events
