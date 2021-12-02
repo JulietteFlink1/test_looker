@@ -343,329 +343,347 @@ view: checkout_sessions {
   ##### Unique count of events during a session. If multiple events are triggerred during a session, e.g 3 times checkout started, this is counted as 1 session containing checkout started
 
   measure: cnt_address_confirm_after_checkout {
-    group_label: "Count Sessions"
-    label: "Cnt Address Confirm After Checkout Started Sessions"
+    group_label: "# Sessions"
+    label: "# Sessions With Address Confirm After Checkout Started"
     description: "# sessions in which user confirmed an address after checkout was started without having placed an order inbetween"
     type: count
     filters: [address_confirm_after_checkout: "yes"]
   }
 
   measure: cnt_hub_update_after_checkout {
-    group_label: "Count Sessions"
-    label: "Cnt Hub Update Message Viewed After Checkout Started Sessions"
+    group_label: "# Sessions"
+    label: "# Sessions With Hub Update Message Viewed After Checkout Started"
     description: "# sessions in which user lost their cart due to location update after checkout was started"
     type: count
     filters: [hub_update_after_checkout: "yes"]
   }
 
   measure: cnt_checkout_after_hub_update {
-    group_label: "Count Sessions"
-    label: "Cnt Checkout Started After Hub Update Message Viewed Sessions"
+    group_label: "# Sessions"
+    label: "# Sessions With Checkout Started After Hub Update Message Viewed"
     description: "# sessions in which a checkout was started after the user lost their cart due to location update"
     type: count
     filters: [hub_update_after_checkout: "yes"]
   }
 
   measure: cnt_checkoutstarted_and_cart_lost {
-    group_label: "Count Sessions"
-    label: "Cnt Checkout Started And Hub Update Message Viewed Sessions"
+    group_label: "# Sessions"
+    label: "# Sessions With Checkout Started And Hub Update Message Viewed"
     description: "# sessions in which a checkout was started and the user lost their cart due to location update (one event did not necessarily occur before the other)"
     type: count
     filters: [checkout_started: ">0", hub_update_message: ">0"]
   }
 
   measure: cnt_hub_update_message {
-    group_label: "Count Sessions"
-    label: "Cnt Hub Update Message Viewed Sessions"
+    group_label: "# Sessions"
+    label: "# Sessions With Hub Update Message Viewed"
     description: "# sessions with Hub Update Message Viewed event"
     type: count
     filters: [hub_update_message: ">0"]
   }
 
   measure: cnt_address_change_at_checkout {
-    group_label: "Count Sessions"
-    label: "Cnt Address Change At Checkout Viewed Sessions"
+    group_label: "# Sessions"
+    label: "# Sessions With Address Change At Checkout Viewed"
     description: "# sessions with Address Change At Checkout Viewed event"
     type: count
     filters: [address_change_at_checkout: ">0"]
   }
 
   measure: cnt_add_to_cart {
-    group_label: "Count Sessions"
-    label: "Cnt Add To Cart Sessions"
+    group_label: "# Sessions"
+    label: "# Sessions With Add To Cart"
     description: "# sessions in which at least one Product Added To Cart event happened"
     type: count
     filters: [product_added_to_cart: ">0"]
   }
 
   measure: cnt_cart_viewed {
-    group_label: "Count Sessions"
-    label: "Cnt Cart Viewed Sessions"
+    group_label: "# Sessions"
+    label: "# Sessions With Cart Viewed"
     description: "# sessions in which at least one Cart Viewed event happened"
     type: count
     filters: [cart_viewed: ">0"]
   }
 
   measure: cnt_payment_started {
-    group_label: "Count Sessions"
-    label: "Cnt Payment Started Sessions"
+    group_label: "# Sessions"
+    label: "# Sessions With Payment Started"
     description: "# sessions in which at least one Payment Started event happened"
     type: count
     filters: [payment_started: ">0"]
   }
 
   measure: cnt_checkout_started {
-    group_label: "Count Sessions"
-    label: "Cnt Checkout Started Sessions"
+    group_label: "# Sessions"
+    label: "# Sessions With Checkout Started"
     description: "# sessions in which at least one Checkout Started event happened"
     type: count
     filters: [checkout_started: ">0"]
   }
 
   measure: cnt_voucher_attempt {
-    group_label: "Count Sessions"
-    label: "Cnt Checkout Started and Voucher Attempted Sessions"
+    group_label: "# Sessions"
+    label: "# Sessions With Checkout Started and Voucher Attempted"
     description: "# sessions in which at least one Checkout Started event happened and attempted to apply a voucher at least once"
     type: count
     filters: [voucher_redemption_attempted: ">0"]
   }
 
   measure: cnt_voucher_attempt_voucher_success {
-    group_label: "Count Sessions"
-    label: "Cnt Voucher Attempted and Succeeded Sessions"
+    group_label: "# Sessions"
+    label: "# Sessions With Voucher Attempted and Succeeded"
     description: "# sessions in which at least one Voucher Attempt happened in checkout session and was successfull"
     type: count
     filters: [voucher_applied_succeeded: ">0"]
   }
 
   measure: cnt_voucher_attempt_voucher_failure {
-    group_label: "Count Sessions"
-    label: "Cnt Voucher Attempted and Failed Sessionst"
+    group_label: "# Sessions"
+    label: "# Sessions With Voucher Attempted and Failedt"
     description: "# sessions in which at least one Voucher Attempt happened in checkout session and failed"
     type: count
     filters: [voucher_applied_failed: ">0"]
   }
 
   measure: cnt_voucher_failed_no_order {
-    group_label: "Count Sessions"
-    label: "Cnt Voucher Failure and No order Sessions"
+    group_label: "# Sessions"
+    label: "# Sessions With Voucher Failure and No order"
     description: "# sessions in which at least one Voucher Attempt happened in checkout session, failed, and thre was no order generated"
     type: count
     filters: [voucher_applied_failed: ">0", order_placed: "=0"]
   }
 
   measure: cnt_voucher_failed_yes_order {
-    group_label: "Count Sessions"
-    label: "Cnt Voucher Failure but Placed Order Sessions"
+    group_label: "# Sessions"
+    label: "# Sessions With Voucher Failure but Placed Order"
     description: "# sessions in which at least one Voucher Attempt happened in checkout session, failed, but there was still at least one order placed during the session"
     type: count
     filters: [voucher_applied_failed: ">0", order_placed: ">0"]
   }
 
   measure: cnt_payment_failed {
-    group_label: "Count Sessions"
-    label: "Cnt Payment Failed Sessions"
+    group_label: "# Sessions"
+    label: "# Sessions With Payment Failed"
     description: "# sessions in which at least one Payment Failed event happened"
     type: count
     filters: [payment_failed: ">0"]
   }
 
   measure: cnt_payment_failed_no_order {
-    group_label: "Count Sessions"
-    label: "Cnt Payment failed and no Order Placed Sessions"
+    group_label: "# Sessions"
+    label: "# Sessions With Payment failed and no Order Placed"
     description: "# sessions in which at least one Payment Failed event happened and there was no order placed in the session"
     type: count
     filters: [payment_failed: ">0", order_placed: "=0"]
   }
 
   measure: cnt_order_placed {
-    group_label: "Count Sessions"
-    label: "Cnt Order Placed Sessions"
+    group_label: "# Sessions"
+    label: "# Sessions With Order Placed"
     description: "# sessions in which there was at least one Order Placed"
     type: count
     filters: [order_placed: ">0"]
   }
 
   measure: cnt_account_registration_viewed {
-    group_label: "Count Sessions"
-    label: "Cnt Registration Viewed Sessions"
+    group_label: "# Sessions"
+    label: "# Sessions With Registration Viewed"
     description: "# sessions in which there was at least one Registration Screen was viewed"
     type: count
     filters: [account_registration_viewed: ">0"]
   }
 
   measure: cnt_account_registration_succeeded {
-    group_label: "Count Sessions"
-    label: "Cnt Registration Succeeded Sessions"
+    group_label: "# Sessions"
+    label: "# Sessions With Registration Succeeded"
     description: "# sessions in which there was at least one Successfull Registration"
     type: count
     filters: [account_registration_succeeded: ">0"]
   }
 
   measure: cnt_account_registration_error {
-    group_label: "Count Sessions"
-    label: "Cnt Registration Error Sessions"
+    group_label: "# Sessions"
+    label: "# Sessions With Registration Error"
     description: "# sessions in which there was at least one Registration Error"
     type: count
     filters: [account_registration_error_viewed: ">0"]
   }
 
   measure: cnt_account_login_clicked {
-    group_label: "Count Sessions"
-    label: "Cnt Login Attempt Sessions"
+    group_label: "# Sessions"
+    label: "# Sessions With Login Attempt"
     description: "# sessions in which there was at least one Login Click (attempt)"
     type: count
     filters: [account_login_clicked: ">0"]
   }
 
   measure: cnt_account_login_succeeded {
-    group_label: "Count Sessions"
-    label: "Cnt Login Succeeded Sessions"
+    group_label: "# Sessions"
+    label: "# Sessions With Login Succeeded"
     description: "# sessions in which there was at least one Successfull Login"
     type: count
     filters: [account_login_succeeded: ">0"]
   }
 
   measure: cnt_account_login_viewed {
-    group_label: "Count Sessions"
-    label: "Cnt Login Viewed Sessions"
+    group_label: "# Sessions"
+    label: "# Sessions With Login Viewed"
     description: "# sessions in which there was at least one Login Screen View"
     type: count
     filters: [account_login_viewed: ">0"]
   }
 
   measure: cnt_account_login_error {
-    group_label: "Count Sessions"
-    label: "Cnt Login Error Sessions"
+    group_label: "# Sessions"
+    label: "# Sessions With Login Error"
     description: "# sessions in which there was at least one Login Error"
     type: count
     filters: [account_login_error_viewed: ">0"]
   }
 
 
-  ######## Event Counts Within Session ########
+  ######## Count Events Within Session ########
 
   dimension: product_added_to_cart {
-    group_label: "Event Counts"
+    group_label: "Count Events"
+    label: "# Product Added To Cart Events"
     description: "# Add To Cart events within a single session. For example, if the event occured twice in one session, number for that session id would be 2"
     type: number
     sql: ${TABLE}.product_added_to_cart ;;
   }
 
   dimension: cart_viewed {
-    group_label: "Event Counts"
+    group_label: "Count Events"
+    label: "# Cart Viewed Events"
     description: "# Cart Viewed events within a single session. For example, if the event occured twice in one session, number for that session id would be 2"
     type: number
     sql: ${TABLE}.cart_viewed ;;
   }
 
   dimension: checkout_started {
-    group_label: "Event Counts"
+    group_label: "Count Events"
+    label: "# Checkout Started Events"
     description: "# Checkout Started events within a single session. For example, if the event occured twice in one session, number for that session id would be 2"
     type: number
     sql: ${TABLE}.checkout_started ;;
   }
 
   dimension: payment_started {
-    group_label: "Event Counts"
+    group_label: "Count Events"
+    label: "# Payment Started Events"
     description: "# Payment Started events within a single session. For example, if the event occured twice in one session, number for that session id would be 2"
     type: number
     sql: ${TABLE}.payment_started ;;
   }
 
   dimension: payment_failed {
-    group_label: "Event Counts"
+    group_label: "Count Events"
+    label: "# Payment Failed Events"
     description: "# Payment Failed events within a single session. For example, if the event occured twice in one session, number for that session id would be 2"
     type: number
     sql: ${TABLE}.payment_failed ;;
   }
 
   dimension: order_placed {
-    group_label: "Event Counts"
+    group_label: "Count Events"
+    label: "# Order Placed Events"
     description: "# Order Placed events within a single session. For example, if the event occured twice in one session, number for that session id would be 2"
     type: number
     sql: ${TABLE}.order_placed ;;
   }
 
   dimension: address_change_at_checkout {
-    group_label: "Event Counts"
+    group_label: "Count Events"
+    label: "# Address Change At Checkout Events"
     description: "# Address Change At Checkout events within a single session. For example, if the event occured twice in one session, number for that session id would be 2"
     type: number
     sql: ${TABLE}.address_change_at_checkout ;;
   }
 
   dimension: hub_update_message {
-    group_label: "Event Counts"
+    group_label: "Count Events"
+    label: "# Hub Update Message Viewed Events"
     description: "# Hub Update Message Viewed events within a single session. For example, if the event occured twice in one session, number for that session id would be 2"
     type: number
     sql: ${TABLE}.hub_update_message ;;
   }
 
   dimension: account_registration_viewed {
-    group_label: "Event Counts"
+    group_label: "Count Events"
+    label: "# Account Registration Viewed Events"
     description: "# Account Registration Viewed events within a single session. For example, if the event occured twice in one session, number for that session id would be 2"
     type: number
     sql: ${TABLE}.account_registration_viewed ;;
   }
 
   dimension: account_registration_succeeded {
-    group_label: "Event Counts"
+    group_label: "Count Events"
+    label: "# Account Registration Succeeded Events"
     description: "# Account Registration Succeeded events within a single session. For example, if the event occured twice in one session, number for that session id would be 2"
     type: number
     sql: ${TABLE}.account_registration_succeeded ;;
   }
 
   dimension: account_registration_error_viewed {
-    group_label: "Event Counts"
+    group_label: "Count Events"
+    label: "# Account Registration Error Events"
     description: "# Account Registration Error Viewed events within a single session. For example, if the event occured twice in one session, number for that session id would be 2"
     type: number
     sql: ${TABLE}.account_registration_error_viewed ;;
   }
 
   dimension: account_login_clicked {
-    group_label: "Event Counts"
+    group_label: "Count Events"
+    label: "# Account Login Clicked Events"
     description: "# Account Login Clicked events within a single session. For example, if the event occured twice in one session, number for that session id would be 2"
     type: number
     sql: ${TABLE}.account_login_clicked ;;
   }
 
   dimension: account_login_viewed {
-    group_label: "Event Counts"
+    group_label: "Count Events"
+    label: "# Account Login Viewed Events"
     description: "# Account Login Viewed events within a single session. For example, if the event occured twice in one session, number for that session id would be 2"
     type: number
     sql: ${TABLE}.account_login_viewed ;;
   }
 
   dimension: account_login_succeeded {
-    group_label: "Event Counts"
+    group_label: "Count Events"
+    label: "# Account Login Succeeded Events"
     description: "# Account Login Succeeded events within a single session. For example, if the event occured twice in one session, number for that session id would be 2"
     type: number
     sql: ${TABLE}.account_login_succeeded ;;
   }
 
   dimension: account_login_error_viewed {
-    group_label: "Event Counts"
+    group_label: "Count Events"
+    label: "# Account Login Error Events"
     description: "# Account Login Error Viewed events within a single session. For example, if the event occured twice in one session, number for that session id would be 2"
     type: number
     sql: ${TABLE}.account_login_error_viewed ;;
   }
 
   dimension: voucher_applied_failed {
-    group_label: "Event Counts"
+    group_label: "Count Events"
+    label: "# Voucher Applied Failed Events"
     description: "# Voucher Redemption Failed events within a single session. For example, if the event occured twice in one session, number for that session id would be 2"
     type: number
     sql: ${TABLE}.voucher_applied_failed ;;
   }
 
   dimension: voucher_applied_succeeded {
-    group_label: "Event Counts"
+    group_label: "Count Events"
+    label: "# Voucher Applied Succeeded Events"
     description: "# Voucher Redemption Succeeded events within a single session. For example, if the event occured twice in one session, number for that session id would be 2"
     type: number
     sql: ${TABLE}.voucher_applied_succeeded ;;
   }
 
   dimension: voucher_redemption_attempted {
-    group_label: "Event Counts"
+    group_label: "Count Events"
+    label: "# Voucher Redemption Attempted Events"
     description: "# Voucher Redemption Attempted events within a single session. For example, if the event occured twice in one session, number for that session id would be 2"
     type: number
     sql: ${TABLE}.voucher_redemption_attempted ;;
@@ -690,6 +708,7 @@ view: checkout_sessions {
 
   dimension: delivery_pdt {
     group_label: "Session Dimensions"
+    label: "Delivery PDT"
     description: "The delivery PDT in minutes associated with the selected address"
     type: number
     sql: ${TABLE}.delivery_pdt ;;
@@ -697,6 +716,7 @@ view: checkout_sessions {
 
   dimension: is_exposed_registration {
     group_label: "Session Dimensions"
+    label: "Is Exposed To Registration Screen"
     description: "Whether the user saw the registation screen during the session"
     type: yesno
     sql: ${TABLE}.account_registration_viewed>0 ;;
@@ -768,11 +788,11 @@ view: checkout_sessions {
   }
 
 
-  ######## Percentage Measures ########
+  ######## Percentages ########
 
   measure: orderplaced_per_paymentstarted_perc{
-    group_label: "Percentage Measures"
-    label: "% Order Placed From Payment Started"
+    group_label: "Percentages"
+    label: "% Sessions Order Placed From Payment Started"
     description: "Number of sessions in which there was an Order Placed, compared to the number of sessions in which there was a Payment Started"
     type: number
     sql: ${checkout_sessions.cnt_order_placed}/NULLIF(${checkout_sessions.cnt_payment_started},0) ;;
@@ -785,8 +805,8 @@ view: checkout_sessions {
   }
 
   measure: paymentfailed_per_paymentstarted_perc{
-    group_label: "Percentage Measures"
-    label: "% Payment Failed From Payment Started"
+    group_label: "Percentages"
+    label: "% Sessions Payment Failed From Payment Started"
     description: "Number of sessions in which there was a Payment Failed, compared to the number of sessions in which there was a Payment Started"
     type: number
     sql: ${checkout_sessions.cnt_payment_failed}/NULLIF(${checkout_sessions.cnt_payment_started},0) ;;
@@ -799,8 +819,8 @@ view: checkout_sessions {
   }
 
   measure: paymentfailed_noorder_per_paymentstarted_perc{
-    group_label: "Percentage Measures"
-    label: "% Payment Failed And No Order From Payment Started"
+    group_label: "Percentages"
+    label: "% Sessions Payment Failed And No Order From Payment Started"
     description: "Number of sessions in which there was a Payment Failed and no Order Placed, compared to the number of sessions in which there was a Payment Started"
     type: number
     sql: ${checkout_sessions.cnt_payment_failed_no_order}/NULLIF(${checkout_sessions.cnt_payment_started},0) ;;
@@ -813,7 +833,7 @@ view: checkout_sessions {
   }
 
   measure: mcvr3 {
-    group_label: "Percentage Measures"
+    group_label: "Percentages"
     type: number
     label: "mCVR3"
     description: "#sessions in which there was a Checkout Started event happened, compared to the number of sessions in which there was a Product Added To Cart"
@@ -822,7 +842,7 @@ view: checkout_sessions {
   }
 
   measure: mcvr4 {
-    group_label: "Percentage Measures"
+    group_label: "Percentages"
     type: number
     label: "mCVR4"
     description: "# sessions in which there was a Payment Started event happened, compared to the number of sessions in which there was a Checkout Started"
@@ -832,7 +852,7 @@ view: checkout_sessions {
 
   measure: payment_success {
     # note: this is a duplicate from the one at the top of this list
-    group_label: "Percentage Measures"
+    group_label: "Percentages"
     label: "% Payment Succeeded From Payment Started"
     type: number
     hidden: yes
@@ -875,12 +895,13 @@ view: checkout_sessions {
   }
 
   measure: count {
+    description: "Counts the number of occurrences of the selected dimension(s)"
     type: count
     drill_fields: [detail*]
   }
 
   measure: cnt_unique_anonymousid {
-    label: "Count Users"
+    label: "# Users"
     description: "# unique users based on Anonymous ID from Segment"
     type: count_distinct
     sql: ${anonymous_id};;
