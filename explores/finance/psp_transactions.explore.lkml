@@ -32,4 +32,18 @@ join: orders {
     type: left_outer
   }
 
+  join: orderline {
+    view_label: "* Order Lineitems *"
+    sql_on: ${orderline.country_iso} = ${orders.country_iso} AND
+            ${orderline.order_uuid}    = ${orders.order_uuid} ;;
+    relationship: one_to_many
+    type: left_outer
+  }
+
+  join: products {
+    sql_on: ${products.product_sku} = ${orderline.product_sku} ;;
+    relationship: many_to_one
+    type: left_outer
+  }
+
 }
