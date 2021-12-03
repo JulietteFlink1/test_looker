@@ -196,6 +196,7 @@ view: productsearch_mobile_events {
           *
           FROM filtered_tracking_data
           WHERE is_not_subquery IS NOT FALSE
+          AND search_query_clean IS NOT NULL
           ;;
   }
 
@@ -245,11 +246,12 @@ view: productsearch_mobile_events {
   }
 
   ########## Location attributes #########
-  dimension: hub_code {
+  dimension: derived_hub {
     group_label: "Location Dimensions"
-    description: "Hub code associated with the last address the user selected"
+    label: "Hub code"
+    description: "Hub associated with the last address the user selected"
     type: string
-    sql: ${TABLE}.hub_code ;;
+    sql: ${TABLE}.derived_hub ;;
   }
 
   dimension: delivery_lat {
@@ -290,12 +292,11 @@ view: productsearch_mobile_events {
     sql: ${TABLE}.derived_city ;;
   }
 
-  dimension: derived_hub {
-    group_label: "Location Dimensions"
-    label: "Hub code"
-    description: "Hub associated with the last address the user selected"
+  dimension: hub_code {
+    hidden: yes
+    description: "Hub code associated with the last address the user selected"
     type: string
-    sql: ${TABLE}.derived_hub ;;
+    sql: ${TABLE}.hub_code ;;
   }
 
   dimension: country_clean {
@@ -440,7 +441,7 @@ view: productsearch_mobile_events {
 
   measure: cnt_unique_anonymousid {
     group_label: "Search Measures"
-    label: "Count Users"
+    label: "# Users"
     description: "# Unique Users as identified via Anonymous ID from Segment"
     type: count_distinct
     sql: ${anonymous_id};;
@@ -449,7 +450,7 @@ view: productsearch_mobile_events {
 
   measure: cnt_nonzero_total_results {
     group_label: "Search Measures"
-    label: "Cnt Searches With Nonzero Results"
+    label: "# Searches With Nonzero Results"
     description: "# searches that returned at least one product"
     type: sum
     sql: if(${search_results_total_count}>0,1,0) ;;
@@ -457,7 +458,7 @@ view: productsearch_mobile_events {
 
   measure: cnt_zero_total_results {
     group_label: "Search Measures"
-    label: "Cnt Searches With Zero Results"
+    label: "# Searches With Zero Results"
     description: "# searches that returned zero products"
     type: sum
     sql: if(${search_results_total_count}=0,1,0) ;;
@@ -465,7 +466,7 @@ view: productsearch_mobile_events {
 
   measure: cnt_nonzero_available_results {
     group_label: "Search Measures"
-    label: "Cnt Searches With Nonzero In-Stock Results"
+    label: "# Searches With Nonzero In-Stock Results"
     description: "# searches that returned at least one available product"
     type: sum
     sql: if(${search_results_available_count}>0,1,0) ;;
@@ -473,7 +474,7 @@ view: productsearch_mobile_events {
 
   measure: cnt_zero_available_results {
     group_label: "Search Measures"
-    label: "Cnt Searches With Zero In-Stock Results"
+    label: "# Searches With Zero In-Stock Results"
     description: "# searches that returned no available products"
     type: sum
     sql: if(${search_results_available_count}=0,1,0) ;;
@@ -481,7 +482,7 @@ view: productsearch_mobile_events {
 
   measure: cnt_nonzero_only_unavailable_results {
     group_label: "Search Measures"
-    label: "Cnt Searches With Only OOS Results"
+    label: "# Searches With Only OOS Results"
     description: "# searches that returned products, but all products were unavailable (OOS)"
     type: sum
     sql: if(${search_results_available_count}=0 AND ${search_results_total_count}>0,1,0) ;;
