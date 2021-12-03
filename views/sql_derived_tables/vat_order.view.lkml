@@ -54,7 +54,7 @@ view: vat_order {
                 LEFT JOIN `flink-data-prod.curated.discounts` d ON d.discount_code = o.discount_code and d.discount_id = o.discount_id
                 WHERE TRUE
                 AND is_successful_order is true
-                AND p.tax_rate is not null
+               -- AND p.tax_rate is not null
                 --AND date_trunc(date(o.order_timestamp),month) = '2021-09-01'
                 --AND date_trunc(date(o.order_timestamp),month) = '2021-09-01'
 )
