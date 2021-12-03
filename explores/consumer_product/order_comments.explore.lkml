@@ -6,5 +6,4 @@ explore: order_comments{
   view_label: "Order Delivery Notes"
   group_label: "Consumer Product"
   description: "Extends backend orders to count delivery notes"
-
 }

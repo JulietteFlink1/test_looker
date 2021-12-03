@@ -417,6 +417,7 @@ view: productsearch_mobile_events {
   }
 
   measure: count {
+    description: "Counts the number of occurrences of the selected dimension(s)"
     type: count
     drill_fields: [detail*]
   }
