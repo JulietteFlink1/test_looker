@@ -197,6 +197,13 @@ view: psp_transactions {
     value_format_name: euro_accounting_2_precision
     }
 
+  dimension: diff_adyen_ct {
+    type: number
+    sql:  ${orders.total_gross_amount} - ${main_amount}  ;;
+    value_format_name: euro_accounting_2_precision
+    description: "CT Orders Revenue Gross - Adyen Main Amount"
+  }
+
 
   measure: count {
     type: count
