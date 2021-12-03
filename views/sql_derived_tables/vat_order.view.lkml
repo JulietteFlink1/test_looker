@@ -17,16 +17,16 @@ view: vat_order {
                     o.customer_email as user_email,
                     o.order_date,
                     d.is_free_delivery_discount,
-                    p.tax_rate,
-                    amt_unit_price_gross * quantity / (1+p.tax_rate)                           as item_price_net,
-                    amt_unit_price_gross * quantity                                            as item_price_gross,
+                    CASE WHEN p.tax_rate is NULL then 0.19 else p.tax_rate END as tax_rate ,
+                    amt_unit_price_gross * quantity / (1+CASE WHEN p.tax_rate is NULL then 0.19 else p.tax_rate END)                           as item_price_net,
+                    amt_unit_price_gross * quantity                                                                                            as item_price_gross,
                     CASE WHEN p.tax_name = 'Reduced tax category'
-                         THEN amt_unit_price_gross * quantity / (1+p.tax_rate) END             as item_price_reduced_net,
-                    CASE WHEN p.tax_name = 'Standard tax category'
-                         THEN amt_unit_price_gross * quantity / (1+p.tax_rate) END             as item_price_standard_net,
+                         THEN amt_unit_price_gross * quantity / (1+CASE WHEN p.tax_rate is NULL then 0.19 else p.tax_rate END) END             as item_price_reduced_net,
+                    CASE WHEN p.tax_name = 'Standard tax category' or  p.tax_name is null
+                         THEN amt_unit_price_gross * quantity / (1+CASE WHEN p.tax_rate is NULL then 0.19 else p.tax_rate END) END             as item_price_standard_net,
                     CASE WHEN p.tax_name = 'Special tax category'
-                         THEN amt_unit_price_gross * quantity / (1+p.tax_rate) END             as item_price_special_net,
-                    CASE WHEN p.tax_name = 'Standard tax category'
+                         THEN amt_unit_price_gross * quantity / (1+CASE WHEN p.tax_rate is NULL then 0.19 else p.tax_rate END) END             as item_price_special_net,
+                    CASE WHEN p.tax_name = 'Standard tax category' or  p.tax_name is null
                          THEN amt_unit_price_gross * quantity END                              as item_price_standard_gross,
                     CASE WHEN p.tax_name = 'Reduced tax category'
                          THEN amt_unit_price_gross * quantity END                              as item_price_reduced_gross,
@@ -34,12 +34,12 @@ view: vat_order {
                          THEN amt_unit_price_gross * quantity END                              as item_price_special_gross,
                     CASE WHEN p.tax_name = 'Reduced tax category'
                          THEN oo.amt_discount  end                                             as discount_amount_reduced_gross,
-                    CASE WHEN p.tax_name = 'Standard tax category'
+                    CASE WHEN p.tax_name = 'Standard tax category' or p.tax_name is null
                          THEN oo.amt_discount end                                              as discount_amount_standard_gross,
                     CASE WHEN p.tax_name = 'Special tax category'
                          THEN oo.amt_discount end                                              as discount_amount_special_gross,
-                    CASE WHEN p.tax_name = 'Standard tax category'
-                         THEN oo.amt_discount / (1+p.tax_rate) END                             as discount_amount_standard_net,
+                    CASE WHEN p.tax_name = 'Standard tax category' or p.tax_name is null
+                         THEN oo.amt_discount / (1+CASE WHEN p.tax_rate is NULL then 0.19 else p.tax_rate END) END                             as discount_amount_standard_net,
                     CASE WHEN p.tax_name = 'Reduced tax category'
                          THEN oo.amt_discount / (1+p.tax_rate) END                             as discount_amount_reduced_net,
                     CASE WHEN p.tax_name = 'Special tax category'
