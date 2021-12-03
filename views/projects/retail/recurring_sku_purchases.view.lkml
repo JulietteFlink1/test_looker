@@ -15,6 +15,8 @@ view: recurring_sku_purchases {
               , orders.order_timestamp
               , orders.amt_gmv_gross
               , string_agg(distinct order_lineitems.sku, ' , ' order by order_lineitems.sku) as filtered_skus_in_order
+              , string_agg(distinct order_lineitems.product_name, ' , ' order by order_lineitems.product_name) as filtered_product_name_in_order
+
 
           from       `flink-data-prod`.curated.orders
           inner join `flink-data-prod`.curated.order_lineitems on orders.order_uuid = order_lineitems.order_uuid
@@ -47,6 +49,9 @@ view: recurring_sku_purchases {
 
                   , lag(filtered_skus_in_order) over win_user as prev_filtered_skus_in_order
 
+                  , lag(filtered_product_name_in_order) over win_user as prev_filtered_product_name_in_order
+
+
               from orders
 
               window
@@ -60,12 +65,14 @@ view: recurring_sku_purchases {
   }
 
   filter: filter_order_date {
+    label: "Filter: Order Date"
     type: date
     datatype: date
     default_value: "last 4 weeks"
   }
 
   filter: select_skus_for_recurring_sku_tracking {
+    label: "Filter: SKUs in Order"
     type: string
     default_value: "11014089"
   }
@@ -79,44 +86,72 @@ view: recurring_sku_purchases {
   dimension: customer_email {
     type: string
     sql: ${TABLE}.customer_email ;;
+    hidden: yes
   }
 
   dimension_group: order_timestamp {
+    label: "Order"
     type: time
     sql: ${TABLE}.order_timestamp ;;
   }
 
   dimension: amt_gmv_gross {
+    label: "GMV (gross)"
     type: number
     sql: ${TABLE}.amt_gmv_gross ;;
   }
 
+  measure: sum_amt_gmv_gross {
+    label: "Sum GMV (gross)"
+    type: sum
+    sql: ${TABLE}.amt_gmv_gross ;;
+  }
+
   dimension: order_sequence_with_defined_skus {
+    label: "Order Sequence"
+    description: "Defines, if the filtered SKUs have been bought in the first or following orders"
     type: number
     sql: ${TABLE}.order_sequence_with_defined_skus ;;
   }
 
   dimension: days_since_last_order_with_skus {
+    label: "Days since last Order"
     type: number
     sql: ${TABLE}.days_since_last_order_with_skus ;;
   }
 
   dimension: filtered_skus_in_order {
+    label: "Filtered SKUs"
     type: string
     sql: ${TABLE}.filtered_skus_in_order ;;
   }
 
   dimension: prev_filtered_skus_in_order {
+    label: "Filtered SKUs from prev. order"
     type: string
     sql: ${TABLE}.prev_filtered_skus_in_order ;;
+  }
+
+  dimension: filtered_product_name_in_order {
+    label: "Product Name of filtered SKUs"
+    type: string
+    sql: ${TABLE}.filtered_product_name_in_order ;;
+  }
+
+  dimension: prev_filtered_product_name_in_order {
+    label: "Product Name of filtered SKUs from prev. order"
+    type: string
+    sql: ${TABLE}.prev_filtered_product_name_in_order ;;
   }
 
   measure: count {
     type: count
     drill_fields: [detail*]
+    hidden: yes
   }
 
   measure: cnt_orders {
+    label: "# Orders"
     type: count_distinct
     sql: ${order_uuid} ;;
   }
