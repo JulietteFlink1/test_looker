@@ -205,6 +205,7 @@ view: location_segment_sessions {
   ## I want to additional fields: one is the hub that appOpened detected, one is a flag that says whether appOpened changed the hub assignment since the last other event happened
 
   measure: count {
+    description: "Counts the number of occurrences of the selected dimension(s)"
     type: count
     drill_fields: [detail*]
   }
@@ -253,7 +254,7 @@ view: location_segment_sessions {
   ########## Location attributes #########
   dimension: hub_code {
     group_label: "Location Dimensions"
-    description: "Hub code associated with the last address the user selected in the session"
+    description: "Hub code associated with the last address the user selected"
     type: string
     sql: ${TABLE}.hub_code ;;
   }
@@ -268,14 +269,14 @@ view: location_segment_sessions {
   dimension: hub_city {
     group_label: "Location Dimensions"
     label: "City"
-    description: "City associated with the last address the user selected in the session"
+    description: "City associated with the last address the user selected"
     type: string
     sql: ${TABLE}.hub_city ;;
   }
 
   dimension: country {
     group_label: "Location Dimensions"
-    description: "Country ISO associated with the last address the user selected in the session"
+    description: "Country ISO associated with the last address the user selected"
     type: string
     case: {
       when: {
@@ -298,28 +299,28 @@ view: location_segment_sessions {
     }
   }
 
-  ######## Count Sessions ########
+  ######## # Sessions ########
   ##### Unique count of events during a session. If multiple events are triggerred during a session, e.g 3 times view item, the event is only counted once.
 
   measure: cnt_has_address {
-    group_label: "Count Sessions"
-    label: "Cnt Sessions With Address"
+    group_label: "# Sessions"
+    label: "# Sessions With Address"
     description: "# sessions in which the user had an address (selected in previous session or current)"
     type: count
     filters: [has_address: "yes"]
   }
 
   measure: cnt_address_selected {
-    group_label: "Count Sessions"
-    label: "Cnt Address Confirmed Sessions"
+    group_label: "# Sessions"
+    label: "# Sessions With Address Confirmed"
     description: "# sessions in which at least one Address Confirmed event happened"
     type: count
     filters: [address_confirmed: ">0"]
   }
 
   measure: cnt_location_pin_placed {
-    group_label: "Count Sessions"
-    label: "Cnt Location Pin Placed Sessions"
+    group_label: "# Sessions"
+    label: "# Sessions With Location Pin Placed"
     description: "# sessions in which at least one Location Pin Placed event happened"
     type: count
     filters: [location_pin_placed: ">0"]
@@ -327,88 +328,88 @@ view: location_segment_sessions {
 
 # for unknown reasons didn't work to count NOT NULL on waitlist_signup_selected, that's why created boolean and counting those
   measure: cnt_has_waitlist_signup_selected {
-    group_label: "Count Sessions"
-    label: "Cnt Waitlist Intent Sessions"
+    group_label: "# Sessions"
+    label: "# Sessions With Waitlist Intent"
     description: "# sessions in which Waitlist Signup Selected happened"
     type: count
     filters: [has_waitlist_signup_selected: "yes"]
   }
 
   measure: cnt_available_area {
-    group_label: "Count Sessions"
-    label: "Cnt Inside Delivery Area Sessions"
+    group_label: "# Sessions"
+    label: "# Sessions With Inside Delivery Area"
     description: "# sessions in which at least one Location Pin Placed event was in an available area"
     type: count
     filters: [user_area_available: "true"]
   }
 
   measure: cnt_unavailable_area {
-    group_label: "Count Sessions"
-    label: "Cnt Outside Delivery Area Sessions"
+    group_label: "# Sessions"
+    label: "# Sessions With Outside Delivery Area"
     description: "# sessions in which at least one Location Pin Placed event was in an unavailable area"
     type: count
     filters: [user_area_available: "false"]
   }
 
   measure: cnt_address_skipped_in_available_area {
-    group_label: "Count Sessions"
-    label: "Cnt Address Skipped, Inside Delivery Area Sessions"
+    group_label: "# Sessions"
+    label: "# Sessions With Address Skipped, Inside Delivery Area"
     description: "# sessions in which address selection was skipped at least once and the user was in an available area and did not select any address"
     type: count
     filters: [user_area_available: "true", address_skipped: ">0", address_confirmed: "0"]
   }
 
   measure: cnt_address_confirmed_area_available {
-    group_label: "Count Sessions"
-    label: "Cnt Address Confirmed, Inside Delivery Area Sessions"
+    group_label: "# Sessions"
+    label: "# Sessions With Address Confirmed, Inside Delivery Area"
     description: "# sessions in which at least one address was selected and the user was in an available area"
     type: count
     filters: [user_area_available: "true", address_confirmed: ">0", address_skipped: "0"]
   }
 
   measure: cnt_confirmed_and_skipped_area_available {
-    group_label: "Count Sessions"
-    label: "Cnt Address Confirmed AND Address Skipped, Inside Delivery Area Sessions"
+    group_label: "# Sessions"
+    label: "# Sessions With Address Confirmed AND Address Skipped, Inside Delivery Area"
     description: "# sessions in which user was in an available area and both selected and skipped address at least once"
     type: count
     filters: [user_area_available: "true", address_confirmed: ">0", address_skipped: ">0"]
   }
 
   measure: cnt_noaction_area_available {
-    group_label: "Count Sessions"
-    label: "Cnt Address Confirmed OR Address Skipped, Inside Delivery Area Sessions"
+    group_label: "# Sessions"
+    label: "# Sessions With Address Confirmed OR Address Skipped, Inside Delivery Area"
     description: "# sessions in which the user was in an available area but did not perform any address selection or skipping action"
     type: count
     filters: [user_area_available: "true", address_confirmed: "0", address_skipped: "0"]
   }
 
   measure: cnt_waitlist_area_unavailable {
-    group_label: "Count Sessions"
-    label: " Cnt Waitlist Intent, Outside Delivery Area Sessions"
+    group_label: "# Sessions"
+    label: " # Sessions With Waitlist Intent, Outside Delivery Area"
     description: "# sessions in which the user was in an unavailable area and selected join waitlist"
     type: count
     filters: [user_area_available: "false", waitlist_signup_selected: ">0", selection_browse: "0"]
   }
 
   measure: cnt_browse_area_unavailable {
-    group_label: "Count Sessions"
-    label: "Cnt Product Browsing, Outside Delivery Area Sessions"
+    group_label: "# Sessions"
+    label: "# Sessions With Product Browsing, Outside Delivery Area"
     description: "# sessions in which the user was in an unavailable area and selected browse products"
     type: count
     filters: [user_area_available: "false", selection_browse: ">0", waitlist_signup_selected: "0"]
   }
 
   measure: cnt_waitlist_and_browse_area_unavailable {
-    group_label: "Count Sessions"
-    label: "Cnt Waitlist Intent OR Product Browsing, Outside Delivery Area Sessions"
+    group_label: "# Sessions"
+    label: "# Sessions With Waitlist Intent OR Product Browsing, Outside Delivery Area"
     description: "# sessions in which the user was in an unavailable area and selected join waitlist and selected browse products"
     type: count
     filters: [user_area_available: "false", selection_browse: ">0", waitlist_signup_selected: ">0"]
   }
 
   measure: cnt_noaction_area_unavailable {
-    group_label: "Count Sessions"
-    label: "Cnt No Waitlist Intent or Product Browsing, Outside Delivery Area Sessions"
+    group_label: "# Sessions"
+    label: "# Sessions With No Waitlist Intent or Product Browsing, Outside Delivery Area"
     description: "# sessions in which the user was in an unavailable area and did not have a waitlist joining intent or browsing selection action"
     type: count
     filters: [user_area_available: "false", waitlist_signup_selected: "0", selection_browse: "0"]
@@ -416,91 +417,97 @@ view: location_segment_sessions {
 
   # NOTE: want to update this to also be able to specify whether it's failed within delivery area or not
   measure: cnt_address_resolution_failed_inside_area {
-    group_label: "Count Sessions"
-    label: "Cnt Address Unidentified, Inside Delivery Area Sessions"
+    group_label: "# Sessions"
+    label: "# Sessions With Address Unidentified, Inside Delivery Area"
     description: "# sessions in which there was at least one unidentified address inside delivery area"
     type: count
     filters: [address_resolution_failed_inside_area: ">0"]
   }
 
   measure: cnt_address_resolution_failed_outside_area {
-    group_label: "Count Sessions"
-    label: "Cnt Address Unidentified, Outside Delivery Area Sessions"
+    group_label: "# Sessions"
+    label: "# Sessions With Address Unidentified, Outside Delivery Area"
     description: "# sessions in which there was at least one unidentified address outside delivery area"
     type: count
     filters: [address_resolution_failed_outside_area: ">0"]
   }
 
   measure: cnt_address_skipped {
-    group_label: "Count Sessions"
-    label: "Cnt Address Skipped Sessions"
+    group_label: "# Sessions"
+    label: "# Sessions With Address Skipped"
     description: "# sessions in which at least one Address Skipped event happened"
     type: count
     filters: [address_skipped: ">0"]
   }
 
   measure: cnt_map_viewed {
-    group_label: "Count Sessions"
-    label: "Cnt Map Viewed Sessions"
-    description: "# sessions with Map Viewed"
+    group_label: "# Sessions"
+    label: "# Sessions With Map Viewed"
+    description: "# sessions in which at least one Map Viewed event happened"
     type: count
     filters: [map_viewed: ">0"]
   }
 
-  ######## Event Counts Within Session ########
+  ######## Count Events Within Session ########
   dimension: address_skipped {
-    group_label: "Event Counts"
+    group_label: "Count Events"
+    label: "# Address Skipped Events"
     description: "Number of Address Skipped events within a single session. For example, the event might've occured twice for a certain session_id"
     type: number
     sql: ${TABLE}.address_skipped ;;
   }
 
   dimension: address_confirmed {
-    group_label: "Event Counts"
-    label: "Address Confirmed"
+    group_label: "Count Events"
+    label: "# Address Confirmed Events"
     description: "Number of Address Confirmed events within a single session. For example, the event might've occured twice for a certain session_id"
     type: number
     sql: ${TABLE}.address_confirmed ;;
   }
 
   dimension: waitlist_signup_selected {
-    group_label: "Event Counts"
+    group_label: "Count Events"
+    label: "# Waitlist Signup Selected Events"
     description: "Number of Waitlist Signup Selected events within a single session. For example, the event might've occured twice for a certain session_id"
     type: number
     sql: ${TABLE}.waitlist_signup_selected;;
   }
 
   dimension: selection_browse {
-    group_label: "Event Counts"
-    label: "Product Browse"
+    group_label: "Count Events"
+    label: "# Browse Selection Events"
     description: "Number of Product Browse events within a single session. For example, the event might've occured twice for a certain session_id"
     type: number
     sql: ${TABLE}.selection_browse;;
   }
 
   dimension: location_pin_placed {
-    group_label: "Event Counts"
+    group_label: "Count Events"
+    label: "# Location Pin Placed Events"
     description: "Number of Location Pin Placed events within a single session. For example, the event might've occured twice for a certain session_id"
     type: number
     sql: ${TABLE}.location_pin_placed ;;
   }
 
   dimension: map_viewed {
-    group_label: "Event Counts"
+    group_label: "Count Events"
+    label: "# Map Viewed Events"
     description: "Number of Map viewed events within a single session. For example, the event might've occured twice for a certain session_id"
     type: number
     sql: ${TABLE}.map_viewed ;;
   }
 
   dimension: address_resolution_failed_inside_area {
-    group_label: "Event Counts"
+    group_label: "Count Events"
+    label: "# Address Resolution Failed Events Inside Delivery Area"
     type: number
     sql: ${TABLE}.address_resolution_failed_inside_area ;;
     description: "Number of addressResolutionFailed events inside delivery area if there are any, NULL otherwise"
   }
 
   dimension: address_resolution_failed_outside_area {
-    group_label: "Event Counts"
+    group_label: "Count Events"
+    label: "# Address Resolution Failed Events Outside Delivery Area"
     type: number
     sql: ${TABLE}.address_resolution_failed_outside_area ;;
     description: "Number of addressResolutionFailed events outside delivery area if there are any, NULL otherwise"
@@ -524,6 +531,7 @@ view: location_segment_sessions {
 
   dimension: hub_unknown {
     group_label: "Session Dimensions"
+    label: "Has Unknown Hub"
     description: "Whether the session had no hub_code"
     type: yesno
     sql: ${hub_code} IS NULL ;;
@@ -545,6 +553,7 @@ view: location_segment_sessions {
 
   dimension: delivery_pdt {
     group_label: "Session Dimensions"
+    label: "Delivery PDT"
     description: "The delivery PDT in minutes associated with the selected address"
     type: number
     sql: ${TABLE}.delivery_pdt ;;
@@ -552,6 +561,7 @@ view: location_segment_sessions {
 
   dimension: user_area_available {
     group_label: "Session Dimensions"
+    label: "Is Inside Delivery Area"
     description: "FALSE if the last locationPinPlaced event in the session had user_area_available=FALSE, TRUE if the last pin had user_area_available=TRUE, and NULL if there was no locationPinPlaced event"
     type: string
     sql: CAST(${TABLE}.user_area_available AS STRING) ;;
@@ -661,6 +671,7 @@ view: location_segment_sessions {
   }
 
   measure: mcvr1 {
+    label: "mCVR1"
     type: number
     description: "Number of sessions in which an Addres Confirmed event happened, compared to the total number of Session Started"
     value_format_name: percent_1
@@ -668,8 +679,8 @@ view: location_segment_sessions {
   }
 
   measure: cnt_unique_anonymousid {
-    label: "Count Users"
-    description: "Number of unique users based on anonymous ID from Segment"
+    label: "# Users"
+    description: "# unique users based on Anonymous ID from Segment"
     type: count_distinct
     sql: ${anonymous_id};;
     value_format_name: decimal_0

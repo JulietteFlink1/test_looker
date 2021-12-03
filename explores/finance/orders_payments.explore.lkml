@@ -9,7 +9,7 @@ explore: orders_payments {
   #view_name: orders_customers
   group_label: "Finance"
   description: "Payment and Transactions Data on Order Level"
-  hidden: no
+  hidden: yes
   # view_name: base_order_orderline
   #extension: required
 
