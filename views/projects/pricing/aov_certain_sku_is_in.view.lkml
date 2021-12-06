@@ -30,11 +30,11 @@ on a.sku = b.product_sku
 left join `flink-data-prod.curated.orders` c
 on a.order_uuid = c.order_uuid
 
---WHERE DATE(a.order_timestamp) >= date_sub(current_date(), interval 30 day)
---and DATE(c.order_timestamp) >= date_sub(current_date(), interval 30 day)
+WHERE DATE(a.order_timestamp) >= date_sub(current_date(), interval 60 day)
+and DATE(c.order_timestamp) >= date_sub(current_date(), interval 60 day)
 --WHERE DATE(a.order_timestamp) = "2021-11-25"
 --and DATE(c.order_timestamp) = "2021-11-25"
-where c.is_successful_order is true
+and c.is_successful_order is true
 --and c.country_iso = "NL"
 
 --and a.order_uuid in ("DE_4147bf58-1b4c-4356-b24c-ffd712c3ca8a", "DE_6ed6f58a-9135-4be1-9670-d8f4db5c447b")
@@ -105,11 +105,11 @@ left join `flink-data-prod.curated.orders` c
 on a.order_uuid = c.order_uuid
 
 
---WHERE DATE(a.order_timestamp) >= date_sub(current_date(), interval 30 day)
---and DATE(c.order_timestamp) >= date_sub(current_date(), interval 30 day)
+WHERE DATE(a.order_timestamp) >= date_sub(current_date(), interval 60 day)
+and DATE(c.order_timestamp) >= date_sub(current_date(), interval 60 day)
 --WHERE DATE(a.order_timestamp) >= "2021-11-25"
 --and DATE(c.order_timestamp) >= "2021-11-25"
-where c.is_successful_order is true
+and c.is_successful_order is true
 --and a.order_uuid in ("DE_4147bf58-1b4c-4356-b24c-ffd712c3ca8a", "DE_6ed6f58a-9135-4be1-9670-d8f4db5c447b")
 ),
 
