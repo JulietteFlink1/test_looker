@@ -6,35 +6,35 @@ view: order_comments {
 
   ######### Order Attributes ########
   dimension: has_customer_note {
-    group_label: "Order Dimensions"
+    group_label: "* Order Dimensions *"
     hidden: no
     type: yesno
     sql: NOT(${customer_note} IS NULL OR ${customer_note}="" OR ${customer_note}=" ");;
   }
 
   dimension: is_early_delivery {
-    group_label: "Delivery Dimensions"
+    group_label: "* Delivery Dimensions *"
     hidden: no
     type: yesno
     sql: TIME_DIFF(TIME(${delivery_eta_timestamp_raw}), TIME(${delivery_timestamp_raw}), MINUTE) > 0 ;;
   }
 
   dimension: is_late_delivery {
-    group_label: "Delivery Dimensions"
+    group_label: "* Delivery Dimensions *"
     hidden: no
     type: yesno
     sql: TIME_DIFF(TIME(${delivery_eta_timestamp_raw}), TIME(${delivery_timestamp_raw}), MINUTE) < 0 ;;
   }
 
   dimension: is_on_time_delivery {
-    group_label: "Delivery Dimensions"
+    group_label: "* Delivery Dimensions *"
     hidden: no
     type: yesno
     sql: TIME_DIFF(TIME(${delivery_eta_timestamp_raw}), TIME(${delivery_timestamp_raw}), MINUTE) = 0 ;;
   }
 
   dimension: picker_acceptance_time {
-    group_label: "Times & Durations"
+    group_label: "* Times & Durations *"
     hidden: no
     type: duration_second
     sql_start: TIMESTAMP(${created_time});; # convert to UTC
@@ -42,7 +42,7 @@ view: order_comments {
   }
 
   dimension: packing_time {
-    group_label: "Times & Durations"
+    group_label: "* Times & Durations *"
     hidden: no
     type: duration_second
     sql_start: TIMESTAMP(${order_picker_accepted_timestamp});; # convert from string to timestamp in UTC
@@ -50,7 +50,7 @@ view: order_comments {
   }
 
   dimension: rider_acceptance_time {
-    group_label: "Times & Durations"
+    group_label: "* Times & Durations *"
     hidden: no
     type: duration_second
     sql_start: TIMESTAMP(${order_packed_timestamp});; # convert from string to timestamp in UTC
@@ -58,7 +58,7 @@ view: order_comments {
   }
 
   dimension: onroute_time {
-    group_label: "Times & Durations"
+    group_label: "* Times & Durations *"
     hidden: no
     type: duration_second
     sql_start: TIMESTAMP(${order_rider_claimed_timestamp});;
@@ -66,14 +66,14 @@ view: order_comments {
   }
 
   measure: avg_picker_acceptance_time {
-    group_label: "Times & Durations"
+    group_label: "* Times & Durations *"
     hidden: no
     type: average
     sql: ${picker_acceptance_time} ;;
     value_format_name: decimal_1
   }
   measure: avg_packing_time {
-    group_label: "Times & Durations"
+    group_label: "* Times & Durations *"
     hidden: no
     type: average
     sql: ${packing_time} ;;
@@ -81,14 +81,14 @@ view: order_comments {
   }
 
   measure: avg_rider_acceptance_time {
-    group_label: "Times & Durations"
+    group_label: "* Times & Durations *"
     hidden: no
     type: average
     sql: ${rider_acceptance_time} ;;
     value_format_name: decimal_1
   }
   measure: avg_onroute_time {
-    group_label: "Times & Durations"
+    group_label: "* Times & Durations *"
     hidden: no
     type: average
     sql: ${onroute_time} ;;
@@ -96,22 +96,22 @@ view: order_comments {
   }
 
   dimension: delivery_timeliness {
-    group_label: "Delivery Dimensions"
+    group_label: "* Delivery Dimensions *"
     type: string
     case: {
       when: {
         sql: TIME_DIFF(TIME(${delivery_eta_timestamp_raw}), TIME(${delivery_timestamp_raw}), MINUTE) > 0
-             AND (${status}="Complete" OR ${status}="fulfilled" OR ${status}="partially fulfilled");;
+          AND (${status}="Complete" OR ${status}="fulfilled" OR ${status}="partially fulfilled");;
         label: "Early"
       }
       when: {
         sql: TIME_DIFF(TIME(${delivery_eta_timestamp_raw}), TIME(${delivery_timestamp_raw}), MINUTE) = 0
-             AND (${status}="Complete" OR ${status}="fulfilled" OR ${status}="partially fulfilled");;
+          AND (${status}="Complete" OR ${status}="fulfilled" OR ${status}="partially fulfilled");;
         label: "On Time"
       }
       when: {
         sql: TIME_DIFF(TIME(${delivery_eta_timestamp_raw}), TIME(${delivery_timestamp_raw}), MINUTE) < 0
-             AND (${status}="Complete" OR ${status}="fulfilled" OR ${status}="partially fulfilled");;
+          AND (${status}="Complete" OR ${status}="fulfilled" OR ${status}="partially fulfilled");;
         label: "Late"
       }
       else: "Undelivered"
@@ -158,8 +158,6 @@ view: order_comments {
     hidden:yes
   }
 
-  dimension: orders.anonymous_id{}
-
   ## these dimensions are automatically generated from orders dimensions and will trigger errors if not defined
   dimension: hubs.latitude {
     hidden: yes
@@ -190,6 +188,12 @@ view: order_comments {
   }
 
   dimension: shyftplan_riders_pickers_hours.riders {
+    hidden: yes
+  }
+
+  ## these dimensions are imported automatically from Orders but not interesting for us of should have a different format
+  dimension: anonymous_id {
+    group_label: "* IDs *"
     hidden: yes
   }
 }
