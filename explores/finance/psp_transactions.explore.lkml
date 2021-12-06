@@ -47,6 +47,7 @@ join: orders {
   }
 
   join: customer_address {
+    view_label: "* Customer Address *"
     sql_on: ${orders.order_uuid} = ${customer_address.order_uuid} ;;
     relationship: one_to_one
     type: left_outer
