@@ -76,6 +76,17 @@ explore: inventory_stock_count_daily {
     relationship: many_to_one
   }
 
+  join: erp_product_hub_vendor_assignment {
+    sql_on:
+        ${erp_product_hub_vendor_assignment.country_iso}    = ${inventory_stock_count_daily.country_iso}
+    and ${erp_product_hub_vendor_assignment.sku}            = ${inventory_stock_count_daily.sku}
+    and ${erp_product_hub_vendor_assignment.hub_code}       = ${inventory_stock_count_daily.hub_code}
+    and ${erp_product_hub_vendor_assignment.ingestion_date} = ${inventory_stock_count_daily.tracking_date}
+    ;;
+    type: left_outer
+    relationship: one_to_many
+  }
+
 
 
 }
