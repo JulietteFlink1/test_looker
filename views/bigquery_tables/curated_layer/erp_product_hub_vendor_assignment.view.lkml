@@ -1,4 +1,5 @@
 view: erp_product_hub_vendor_assignment {
+  view_label: "* ERP/Lexbizz data *"
   sql_table_name: `flink-data-prod.curated.erp_product_hub_vendor_assignment`
     ;;
 
@@ -10,48 +11,22 @@ view: erp_product_hub_vendor_assignment {
   # =========  __main__   =========
 
   dimension: erp_vendor_name {
+    label: "Vendor Name"
+    description: "The vendor of the SKU"
     type: string
     sql: ${TABLE}.erp_vendor_name ;;
   }
 
-  dimension: erp_hub_name {
-    type: string
-    sql: ${TABLE}.erp_hub_name ;;
-  }
-
-  dimension: erp_item_status {
-    type: string
-    sql: ${TABLE}.erp_item_status ;;
-  }
-
-  dimension: erp_vendor_status {
-    type: string
-    sql: ${TABLE}.erp_vendor_status ;;
-  }
-
   dimension: erp_item_replenishment_substitute_group {
+    label: "Replinshment Group (ERP)"
+    description: "Defines groups of items, that are considerred equal in terms of replenishment"
     type: string
     sql: ${TABLE}.erp_item_replenishment_substitute_group ;;
   }
 
-  dimension: is_hub_active {
-    type: yesno
-    sql: ${TABLE}.is_hub_active ;;
-  }
-
-  dimension: is_warehouse_active {
-    type: yesno
-    sql: ${TABLE}.is_warehouse_active ;;
-  }
-
-  dimension: item_at_warehouse_status {
-    type: string
-    sql: ${TABLE}.item_at_warehouse_status ;;
-  }
-
-
   dimension_group: ingestion {
     label: "Assignment"
+    description: "The date in time (the historical status), a specifc vendor is/was assigned to deliver a specified SKU to a hub"
     type: time
     timeframes: [
       date,
@@ -65,6 +40,40 @@ view: erp_product_hub_vendor_assignment {
     sql: ${TABLE}.ingestion_date ;;
   }
 
+
+
+  # =========  status   =========
+  dimension: is_warehouse_active {
+    label: "Is Warehouse Active"
+    description: "Shows ERP status of a vendors warehouse"
+    group_label: ">> ERP status"
+    type: yesno
+    sql: ${TABLE}.is_warehouse_active ;;
+  }
+
+  dimension: item_at_warehouse_status {
+    label: "Warehouse Status (ERP)"
+    description: "The status of a specific SKU at a warehouse of a vendor."
+    group_label: ">> ERP status"
+    type: string
+    sql: ${TABLE}.item_at_warehouse_status ;;
+  }
+
+  dimension: erp_item_status {
+    label: "Item Status (ERP)"
+    description: "The status of a product in ERP"
+    group_label: ">> ERP status"
+    type: string
+    sql: ${TABLE}.erp_item_status ;;
+  }
+
+  dimension: erp_vendor_status {
+    label: "Vendor Status (ERP)"
+    description: "The status of the vendor in ERP"
+    group_label: ">> ERP status"
+    type: string
+    sql: ${TABLE}.erp_vendor_status ;;
+  }
 
 
 
@@ -87,6 +96,21 @@ view: erp_product_hub_vendor_assignment {
     # only for joining
     type: string
     sql: ${TABLE}.hub_code ;;
+    hidden: yes
+  }
+
+  dimension: is_hub_active {
+    label: "Is Hub Active"
+    type: yesno
+    sql: ${TABLE}.is_hub_active ;;
+    hidden: yes
+  }
+
+  dimension: erp_hub_name {
+    label: "Hub Name (ERP)"
+    description: "The hub name as shown in ERP"
+    type: string
+    sql: ${TABLE}.erp_hub_name ;;
     hidden: yes
   }
 
@@ -113,6 +137,8 @@ view: erp_product_hub_vendor_assignment {
   }
 
   dimension: erp_warehouse_id {
+    label: "Warehouse ID"
+    description: "The ID of a warehouse, associated to a vendor. One warehouse can supply to 1-n Flink hubs"
     type: string
     sql: ${TABLE}.erp_warehouse_id ;;
     hidden: no
