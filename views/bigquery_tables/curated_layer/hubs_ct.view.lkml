@@ -65,14 +65,14 @@ view: hubs_ct {
 
   dimension: latitude {
     type: number
-    sql: safe_cast(${TABLE}.latitude as float64) ;;
+    sql: round( safe_cast(${TABLE}.latitude as float64) , 10 ) ;;
     hidden: yes
     group_label: "> Geographic Data"
   }
 
   dimension: longitude {
     type: number
-    sql: safe_cast(${TABLE}.longitude as float64) ;;
+    sql: round( safe_cast(${TABLE}.longitude as float64) , 10 ) ;;
     hidden: yes
     group_label: "> Geographic Data"
   }
@@ -153,6 +153,15 @@ view: hubs_ct {
     type: date
     datatype: date
     sql: ${TABLE}.start_date;;
+    group_label: "> Admin Data"
+  }
+
+  dimension: termination_date {
+    label: "Hub Termination Date"
+    description: "The date, a hub was closed"
+    type: date
+    datatype: date
+    sql: ${TABLE}.termination_date ;;
     group_label: "> Admin Data"
   }
 

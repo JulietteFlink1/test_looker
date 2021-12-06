@@ -35,4 +35,14 @@ explore: order_orderline_cl {
     type: left_outer
     relationship: one_to_one
   }
+
+  join: erp_product_hub_vendor_assignment {
+    sql_on:  ${erp_product_hub_vendor_assignment.country_iso}    = ${orderline.country_iso}
+         and ${erp_product_hub_vendor_assignment.sku}            = ${orderline.product_sku}
+         and ${erp_product_hub_vendor_assignment.hub_code}       = ${orderline.hub_code}
+         and ${erp_product_hub_vendor_assignment.ingestion_date} = ${orderline.created_date}
+    ;;
+    type: left_outer
+    relationship: one_to_many
+  }
 }

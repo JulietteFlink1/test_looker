@@ -68,6 +68,34 @@ view: hires_contract_mix {
     {% endif %};;
   }
 
+
+  dimension: channel_label{
+    label: "Contract Type label"
+    type: string
+    sql: case
+              -- DE/AT Contract Type
+              when REGEXP_CONTAINS(lower (${type_of_contract}),'mini') then 'Minijob'
+              when REGEXP_CONTAINS(lower (${type_of_contract}),'student') then 'Working Student'
+              when REGEXP_CONTAINS(lower (${type_of_contract}),'full') OR REGEXP_CONTAINS(lower (${type_of_contract}),'voll') then 'Full-Time'
+              when REGEXP_CONTAINS(lower (${type_of_contract}),'part') OR REGEXP_CONTAINS(lower (${type_of_contract}),'teil') then 'Part-Time'
+
+
+              -- NL Contract Type
+              when REGEXP_CONTAINS(lower (${type_of_contract}),'0-hours') then '0-Hours'
+              when REGEXP_CONTAINS(lower (${type_of_contract}),'min/max') then 'Min/Max'
+
+
+              -- FR Contract Type
+              when REGEXP_CONTAINS(lower (${type_of_contract}),'15') then '15 Hours'
+              when REGEXP_CONTAINS(lower (${type_of_contract}),'20') then '20 Hours'
+              when REGEXP_CONTAINS(lower (${type_of_contract}),'35') then '35 Hours'
+
+
+
+              else 'Others' end;;
+
+    }
+
   ######## Parameters
 
   parameter: date_granularity {

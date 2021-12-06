@@ -35,24 +35,24 @@ view: idle_time{
 
 
   dimension: hub_code {
-    label: "* Hubs * Hub Code"
+    label: "Hub Code"
   }
   dimension: order_date {
-    label: "* Orders * Order Date"
+    label: "Order Date"
     description: "Order Placement Time/Date"
     type: date
   }
   dimension: order_hour {
-    label: "* Orders * Order Hour"
+    label: "Order Hour"
     type: number
   }
   dimension: id {
     primary_key: yes
-    label: "* Orders * Order ID"
+    label: "Order ID"
   }
 
   dimension: rider_id {
-    label: "* Orders * Rider ID"
+    label: "Rider ID"
     type: string
   }
 
@@ -60,36 +60,37 @@ view: idle_time{
 
 
   dimension: rider_returned_to_hub_timestamp {
-    label: "* Orders * Rider Returned to Hub Timestamp"
+    label: "Rider Returned to Hub Timestamp"
     description: "The time, when a rider arrives back at the hub after delivering an order"
     type: date_time
   }
   dimension: order_rider_claimed_timestamp {
-    label: "* Orders * Rider Claimed Timestamp"
+    label: "Rider Claimed Timestamp"
     type: date_time
   }
 
   dimension: on_duty_time {
     hidden: yes
-    label: "* Orders * on_duty_time"
+    label: "on_duty_time"
     type: number
   }
 
   dimension: hourly_avg_on_duty_time {
-    label: "* Orders * hourly_avg_on_duty_time"
+    label: "hourly_avg_on_duty_time"
     hidden: yes
     type: number
   }
 
   dimension: daily_avg_on_duty_time {
-    label: "* Orders * daily_avg_on_duty_time"
+    label: "Avg Daily on Duty Time"
     hidden: yes
     type: number
   }
 
 
   dimension: clean_on_duty_time {
-    label: "* Orders * clean_on_duty_time"
+    label: "Rider on Duty time (min)"
+    description: "Time when a rider claim the order until returning to the hub"
     type: number
     sql: case when (on_duty_time < 4 or on_duty_time is null or on_duty_time > 50)
          then
@@ -110,7 +111,7 @@ view: idle_time{
 
 
   measure: cnt_rider {
-    label: "# rider"
+    label: "# Riders Delivering Orders"
     type: number
     group_label: ">> Operational KPIs"
     sql:count (distinct ${rider_id});;

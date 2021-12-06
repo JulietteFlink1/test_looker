@@ -1,4 +1,4 @@
-include: "/views/bigquery_tables/flink-data-dev/typical_basket_analysis.view.lkml"
+include: "/views/bigquery_tables/reporting_layer/retail/typical_basket_analysis.view.lkml"
 
 explore: typical_basket_analysis {
   hidden: no
