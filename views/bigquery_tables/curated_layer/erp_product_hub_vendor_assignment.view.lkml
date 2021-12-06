@@ -52,7 +52,7 @@ view: erp_product_hub_vendor_assignment {
   }
 
   dimension: item_at_warehouse_status {
-    label: "Warehouse Status (ERP)"
+    label: "Item @ Warehouse Status (ERP)"
     description: "The status of a specific SKU at a warehouse of a vendor."
     group_label: ">> ERP status"
     type: string
