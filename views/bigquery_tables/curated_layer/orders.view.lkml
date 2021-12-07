@@ -2153,6 +2153,7 @@ measure: delta_return_delivery_time {
   group_label: "* Operations / Logistics *"
   label: "Delta between Return Time and Delivery Time"
   type: number
+  value_format: "0.0"
   sql: ${avg_delivery_time} - ${avg_return_to_hub_time} ;;
 }
 
