@@ -10,7 +10,7 @@ view: hq_pulse_results {
 
   dimension: are_you_a_people_manager_ {
     type: number
-    sql: ${TABLE}.Are_you_a_People_Manager_ ;;
+    sql: ${TABLE}.are_you_a_people_manager_ ;;
   }
 
 
