@@ -1,5 +1,5 @@
-view: 202112_202109_hub_pulse_results {
-  sql_table_name: sql_table_name: `flink-data-dev.enps.202121_hub_pulse_results`
+view: hub_pulse_results {
+  sql_table_name: `flink-data-dev.enps.hub_pulse_results`
   ;;
 
   dimension: token {

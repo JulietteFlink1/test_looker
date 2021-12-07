@@ -1,4 +1,4 @@
-view: 202112_202109_hq_pulse_results {
+view: hq_pulse_results {
   sql_table_name: `flink-data-dev.enps.hq_pulse_results`
       ;;
 
@@ -158,5 +158,3 @@ view: 202112_202109_hq_pulse_results {
     drill_fields: []
   }
 }
-
-
