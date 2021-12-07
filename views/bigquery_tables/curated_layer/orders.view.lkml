@@ -849,7 +849,7 @@ view: orders {
     label: "Rider time spent from claiming an order until returning back to Hub in Minute"
     description: "The time, when a rider arrives back at the hub after delivering an order"
     type: number
-    sql: timestamp_diff(timestamp(${rider_returned_to_hub_timestamp}), timestamp(${order_rider_claimed_timestamp}), minute) ;;
+    sql: timestamp_diff(timestamp(${rider_completed_delivery_timestamp}), timestamp(${order_on_route_timestamp}), minute)*2 ;;
   }
 
 
