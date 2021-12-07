@@ -849,17 +849,11 @@ view: orders {
     label: "Rider time spent from claiming an order until returning back to Hub in Minute"
     description: "The time, when a rider arrives back at the hub after delivering an order"
     type: number
-    sql: timestamp_diff(timestamp(${rider_returned_to_hub_timestamp}), timestamp(${order_rider_claimed_timestamp}), minute) ;;
+    sql: timestamp_diff(timestamp(${rider_completed_delivery_timestamp}), timestamp(${order_on_route_timestamp}), minute)*2 ;;
   }
 
 
-  measure: sum_rider_on_duty_time {
-    label: "Rider on Duty Time in minutes"
-    group_label: "* Operations / Logistics *"
-    description: "Rider Time spent from claiming an order until returning to the hub "
-    type: sum
-    sql:  ${rider_on_duty_time} ;;
-  }
+
 
   dimension: order_uuid {
     type: string
@@ -1477,7 +1471,7 @@ view: orders {
     hidden:  no
     type: sum
     sql: ${discount_amount};;
-    value_format_name: euro_accounting_0_precision
+    value_format_name: euro_accounting_2_precision
   }
 
   measure: sum_delivery_fee_gross {
@@ -1514,6 +1508,16 @@ view: orders {
     description: "Sum of completed Rider shift Hours"
     type: number
     sql: NULLIF(${shyftplan_riders_pickers_hours.rider_hours},0);;
+  }
+
+
+  measure: rider_on_duty_time_minute {
+    label: "Sum Rider On Duty Time (min)"
+    group_label: "* Operations / Logistics *"
+    description: "Rider Time spent from claiming an order until returning to the hub "
+    type: sum
+    sql:${rider_on_duty_time};;
+    value_format_name: decimal_2
   }
 
   ############
@@ -1631,7 +1635,7 @@ view: orders {
     description: "Count of Orders delivered no later than PDT"
     hidden:  no
     type: count
-    filters: [delivery_delay_since_eta:"<=0"]
+    filters: [delivery_delay_since_eta:"<=0.5"]
     value_format: "0"
   }
 
@@ -1802,6 +1806,15 @@ view: orders {
   }
 
 
+  measure: cnt_rider {
+    label: "# Riders Delivering Orders"
+    type: number
+    group_label: "* Operations / Logistics *"
+    sql:count (distinct ${rider_id});;
+    value_format_name: decimal_0
+  }
+
+
   ################
   ## PERCENTAGE ##
   ################
@@ -1842,7 +1855,7 @@ view: orders {
     description: "Share of orders delivered no later than PDT"
     hidden:  no
     type: number
-    sql: ${cnt_orders_delayed_under_30_sec} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
+    sql: ${cnt_orders_delayed_under_0_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
     value_format: "0%"
   }
 
@@ -1954,9 +1967,9 @@ view: orders {
   measure: pct_idle {
     label: "% Rider Idle Time"
     group_label: "* Operations / Logistics *"
-    description: "Rider Time spent from claiming an order until returning to the hub "
+    description: "% Rider Time spent from claiming an order until returning to the hub "
     type: number
-    sql: 1 - (${sum_rider_on_duty_time}/60)/NULLIF(${shyftplan_riders_pickers_hours.rider_hours},0);;
+    sql: 1 - (${rider_on_duty_time_minute}/60)/NULLIF(${shyftplan_riders_pickers_hours.rider_hours},0);;
     value_format_name:  percent_1
   }
 

@@ -7,7 +7,10 @@ explore: inventory_stock_count_daily {
   label: "Inventory Metrics (daily granularity)"
   group_label: "02) Inventory"
 
-  sql_always_where: {% condition global_filters_and_parameters.datasource_filter %} ${inventory_stock_count_daily.tracking_date} {% endcondition %} ;;
+  sql_always_where: {% condition global_filters_and_parameters.datasource_filter %} ${inventory_stock_count_daily.tracking_date} {% endcondition %}
+
+  and ${inventory_stock_count_daily.tracking_date} <= (case when ${hubs.termination_date} is null then date_add(current_date(), interval 3 year) else ${hubs.termination_date} end)
+  ;;
 
   always_filter: {
     filters:  [
@@ -74,6 +77,17 @@ explore: inventory_stock_count_daily {
     ;;
     type: left_outer
     relationship: many_to_one
+  }
+
+  join: erp_product_hub_vendor_assignment {
+    sql_on:
+        ${erp_product_hub_vendor_assignment.country_iso}    = ${inventory_stock_count_daily.country_iso}
+    and ${erp_product_hub_vendor_assignment.sku}            = ${inventory_stock_count_daily.sku}
+    and ${erp_product_hub_vendor_assignment.hub_code}       = ${inventory_stock_count_daily.hub_code}
+    and ${erp_product_hub_vendor_assignment.ingestion_date} = ${inventory_stock_count_daily.tracking_date}
+    ;;
+    type: left_outer
+    relationship: one_to_many
   }
 
 

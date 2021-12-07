@@ -185,13 +185,16 @@ view: inventory_stock_count_hourly {
     description: "Sum of Available items in stock"
     type: average
     sql: ${TABLE}.previous_quantity ;;
+    value_format_name: decimal_1
   }
+
 
   measure: sum_previous_quantity {
     label: "# Quantity On Stock - Previous Hour"
     description: "Sum of Available items in stock"
     type: sum
     sql: ${TABLE}.previous_quantity ;;
+    value_format_name: decimal_1
   }
 
 
@@ -201,6 +204,7 @@ view: inventory_stock_count_hourly {
     hidden:  no
     type: sum
     sql: ${TABLE}.current_quantity;;
+    value_format_name: decimal_1
   }
 
   measure: avg_current_quantity {
@@ -209,6 +213,7 @@ view: inventory_stock_count_hourly {
     hidden:  no
     type: average
     sql: ${TABLE}.current_quantity;;
+    value_format_name: decimal_1
   }
 
   measure: num_distinct_sku {
@@ -216,6 +221,7 @@ view: inventory_stock_count_hourly {
     description: "The number of unique SKUs in stock"
     type: count_distinct
     sql:  CASE WHEN ${TABLE}.current_quantity > 0 THEN ${sku} END ;;
+    value_format_name: decimal_1
   }
 
 
@@ -226,6 +232,7 @@ view: inventory_stock_count_hourly {
     type: average
     sql: ${TABLE}.current_quantity;;
     filters: [stock_level_update_type: "Re-Stocking"]
+    value_format_name: decimal_1
   }
 
   measure: avg_quantity_sold_booked_out {
@@ -235,6 +242,7 @@ view: inventory_stock_count_hourly {
     type: average
     sql: ${TABLE}.current_quantity;;
     filters: [stock_level_update_type: "Orders & Book-Outs"]
+    value_format_name: decimal_1
   }
 
   measure: pct_oos {
