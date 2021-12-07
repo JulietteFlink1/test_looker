@@ -14,10 +14,10 @@ explore: pulse_results {
   group_label: "18) People Ops"
   description: "Pulse Check Survey Results - 2021/09"
 
-  join: old_hq_pulse_results {
+  join: hq_pulse_results {
     from: 202109_hq_pulse_results
-    sql_on: ${pulse_results.token} = ${old_hq_pulse_results.token}
-      AND ${pulse_results.survey_type} = ${old_hq_pulse_results.survey_type} ;;
+    sql_on: ${pulse_results.token} = ${hq_pulse_results.token}
+      AND ${pulse_results.survey_type} = ${hq_pulse_results.survey_type} ;;
     relationship: one_to_one
     type: left_outer
 
@@ -31,25 +31,25 @@ explore: pulse_results {
     type: left_outer
   }
 
-  join: old_hub_pulse_results {
-    from: 202109_hub_pulse_results
-    sql_on: ${pulse_results.token} = ${old_hub_pulse_results.token}
-      AND ${pulse_results.survey_type} = ${old_hub_pulse_results.survey_type} ;;
-    relationship: one_to_one
-    type: left_outer
-  }
   join: hub_pulse_results {
-    from: hub_pulse_results
+    from: 202109_hub_pulse_results
     sql_on: ${pulse_results.token} = ${hub_pulse_results.token}
       AND ${pulse_results.survey_type} = ${hub_pulse_results.survey_type} ;;
     relationship: one_to_one
     type: left_outer
   }
+  join: new_hub_pulse_results {
+    from: hub_pulse_results
+    sql_on: ${pulse_results.token} = ${new_hub_pulse_results.token}
+      AND ${pulse_results.survey_type} = ${new_hub_pulse_results.survey_type} ;;
+    relationship: one_to_one
+    type: left_outer
+  }
 
-  join: hq_pulse_results {
+  join: new_hq_pulse_results {
     from: hq_pulse_results
-    sql_on: ${pulse_results.token} = ${hq_pulse_results.token}
-      AND ${pulse_results.survey_type} = ${hq_pulse_results.survey_type} ;;
+    sql_on: ${pulse_results.token} = ${new_hq_pulse_results.token}
+      AND ${pulse_results.survey_type} = ${new_hq_pulse_results.survey_type} ;;
     relationship: one_to_one
     type: left_outer
   }

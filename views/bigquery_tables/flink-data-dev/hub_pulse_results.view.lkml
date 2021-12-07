@@ -99,14 +99,8 @@ view: hub_pulse_results {
     sql: 'Hubs' ;;
   }
 
-  dimension_group: survey_month {
-    type: time
-    timeframes: [
-      date,
-      week,
-      month,
-      year
-    ]
+  dimension: survey_month {
+    type: string
     sql: ${TABLE}.survey_month ;;
   }
 

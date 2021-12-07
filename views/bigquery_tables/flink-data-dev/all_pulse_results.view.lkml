@@ -23,6 +23,11 @@ view: all_pulse_results {
     sql: ${TABLE}.token ;;
   }
 
+  dimension: survey_month {
+    type: string
+    sql: ${TABLE}.survey_month ;;
+  }
+
   measure: avg_nps {
     type: average
     value_format: "0"
