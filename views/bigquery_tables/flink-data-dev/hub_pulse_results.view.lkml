@@ -5,7 +5,7 @@ view: hub_pulse_results {
   dimension: token {
     type: string
     primary_key: yes
-    sql: ${TABLE}._ ;;
+    sql: ${TABLE}.token ;;
   }
 
   dimension: _If_you_could_change_three_things_about_the_day_to_day_hub_operations__what_would_it_be___ {
