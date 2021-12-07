@@ -1635,7 +1635,7 @@ view: orders {
     description: "Count of Orders delivered no later than PDT"
     hidden:  no
     type: count
-    filters: [delivery_delay_since_eta:"<=0"]
+    filters: [delivery_delay_since_eta:"<=0.5"]
     value_format: "0"
   }
 
@@ -1855,7 +1855,7 @@ view: orders {
     description: "Share of orders delivered no later than PDT"
     hidden:  no
     type: number
-    sql: ${cnt_orders_delayed_under_30_sec} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
+    sql: ${cnt_orders_delayed_under_0_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
     value_format: "0%"
   }
 
