@@ -86,14 +86,8 @@ view: hq_pulse_results {
     sql: ${TABLE}.submit_date__utc_ ;;
   }
 
-  dimension_group: survey_month {
-    type: time
-    timeframes: [
-      date,
-      week,
-      month,
-      year
-    ]
+  dimension: survey_month {
+    type: string
     sql: ${TABLE}.survey_month ;;
   }
 
