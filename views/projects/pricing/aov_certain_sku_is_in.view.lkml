@@ -21,8 +21,9 @@ c.hub_name,
 c.hub_code,
 a.order_uuid,
 --b.random_ct_category,
-coalesce (b.substitute_group, b.product_name) as subs_group_or_sku
---b.product_name
+coalesce (b.substitute_group, b.product_name) as subs_group_or_sku,
+b.product_name,
+b.product_sku
 
 FROM `flink-data-prod.curated.order_lineitems` a
 left join `flink-data-prod.curated.products` b
@@ -38,7 +39,7 @@ and c.is_successful_order is true
 --and c.country_iso = "NL"
 
 --and a.order_uuid in ("DE_4147bf58-1b4c-4356-b24c-ffd712c3ca8a", "DE_6ed6f58a-9135-4be1-9670-d8f4db5c447b")
-group by 1,2,3,4,5,6
+group by 1,2,3,4,5,6,7,8
 --cast(a.order_timestamp as date)= "2021-11-26"
 --and sku= "11014044"
 
@@ -65,9 +66,11 @@ order_date,
 hub_name,
 hub_code,
 subs_group_or_sku,
+product_name,
+product_sku,
 count(distinct order_uuid) as orders_sku_date,
 from or_sku
-group by 1,2,3,4,5
+group by 1,2,3,4,5,6,7
 ),
 
 numb_or_categ as
@@ -123,6 +126,8 @@ a.order_date,
 a.hub_name,
 a.hub_code,
 a.subs_group_or_sku,
+a.product_name,
+a.product_sku,
 --a.product_name,
 a.random_ct_category,
 sum(b.quantity) as quantity,
@@ -135,7 +140,7 @@ and a.random_ct_category = b.random_ct_category
 
 --where subs_group_or_sku  = "Smirnoff Ice Vodka Mixed Drink 70 cl"
 --and a.hub_code = "nl_gro_cent"
-group by 1,2,3,4,5,6
+group by 1,2,3,4,5,6,7,8
 
 )
 
@@ -151,6 +156,8 @@ a.hub_code,
  DATE_TRUNC( cast(a.order_date as date), week) as week,
  DATE_TRUNC( cast(a.order_date as date), month) as month,
 a.subs_group_or_sku,
+a.product_name,
+a.product_sku,
 --a.product_name,
 a.random_ct_category as category,
 b.orders_sku_date as sum_orders,
@@ -171,8 +178,9 @@ and a.random_ct_category = c.random_ct_category
 and a.country_iso = c.country_iso
 and a.hub_code = c.hub_code
 and a.hub_name = c.hub_name
-group by 1,2,3,4,5,6,7,8,9,10
+group by 1,2,3,4,5,6,7,8,9,10,11,12
 order by 3
+
 
  ;;
   }
@@ -311,9 +319,19 @@ dimension: category {
 }
 
 
-  dimension: subs_group_or_sku{
+  dimension: substitute_group_filled{
     type: string
     sql: ${TABLE}.subs_group_or_sku ;;
+  }
+
+  dimension: product_name{
+    type: string
+    sql: ${TABLE}.product_name ;;
+  }
+
+  dimension: product_sku{
+    type: string
+    sql: ${TABLE}.product_sku ;;
   }
 
   dimension: hub_code {
@@ -345,7 +363,9 @@ set: detail {
     month,
     country_iso,
     category,
-    subs_group_or_sku,
+    substitute_group_filled,
+    product_name,
+    product_sku,
     hub_code,
     hub_name,
     sum_item_value,
