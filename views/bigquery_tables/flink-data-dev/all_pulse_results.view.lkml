@@ -1,5 +1,5 @@
 view: all_pulse_results {
-  sql_table_name: sql_table_name: `flink-data-dev.enps.all_pulse_results`
+  sql_table_name:`flink-data-dev.enps.all_pulse_results`
   ;;
 
   dimension: nps {
