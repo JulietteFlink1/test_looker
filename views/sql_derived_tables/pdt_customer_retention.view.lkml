@@ -80,11 +80,11 @@ view: pdt_customer_retention {
     sql: case when date_diff(next_order_date, first_order_date, day) <= 7 then True else False end;;
   }
 
+
   dimension: cnt_7_day_retention {
     type: number
-    sql: ${has_reordered_within_7_days};;
+    sql: case when ${has_reordered_within_7_days} then 1 else 0 end;;
   }
-
   ################## Measures ####################
 
 
