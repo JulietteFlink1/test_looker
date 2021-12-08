@@ -257,7 +257,7 @@ view: vat_order {
     hidden: no
     primary_key: yes
     type: string
-    sql: concat(${order_id},'_',${country_iso}) ;;
+    sql: concat(${country_iso},'_',${order_id}) ;;
   }
 
   dimension: order_id {
