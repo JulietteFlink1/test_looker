@@ -84,5 +84,16 @@ explore: current_inventory {
     fields: [orders.is_internal_order, orders.is_successful_order, created_date]
   }
 
+  # join: erp_product_hub_vendor_assignment {
+  #   sql_on:  ${erp_product_hub_vendor_assignment.country_iso}    = ${products_hub_assignment.country_iso}
+  #       and ${erp_product_hub_vendor_assignment.sku}            = ${products_hub_assignment.sku}
+  #       and ${erp_product_hub_vendor_assignment.hub_code}       = ${products_hub_assignment.hub_code}
+  #       -- get the status from the last data pull
+  #       and ${erp_product_hub_vendor_assignment.ingestion_date} = date_sub(current_date(), interval 1 day)
+  #   ;;
+  #   type: left_outer
+  #   relationship: one_to_many
+  # }
+
 
 }
