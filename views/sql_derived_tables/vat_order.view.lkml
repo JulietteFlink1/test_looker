@@ -253,11 +253,11 @@ view: vat_order {
     drill_fields: [detail*]
   }
 
-  dimension: uuid {
-    hidden: yes
+  dimension: order_uuid {
+    hidden: no
     primary_key: yes
     type: string
-    sql: concat(${order_id},${country_iso}) ;;
+    sql: concat(${country_iso},'_',${order_id}) ;;
   }
 
   dimension: order_id {

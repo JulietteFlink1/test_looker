@@ -156,6 +156,15 @@ view: hubs_ct {
     group_label: "> Admin Data"
   }
 
+  dimension: termination_date {
+    label: "Hub Termination Date"
+    description: "The date, a hub was closed"
+    type: date
+    datatype: date
+    sql: ${TABLE}.termination_date ;;
+    group_label: "> Admin Data"
+  }
+
   dimension: is_hub_opened {
     label: "Hub is Live?"
     type: yesno

@@ -1,7 +1,7 @@
 include: "/views/projects/rider_ops/fountain_avg_proc_time.view"
 
 explore: fountain_avg_proc_time {
-  hidden: no
+  hidden: yes
   label: "Funnel Avg. Processing Times"
   view_label: "Funnel Avg. Processing Times"
   description: "Funnel Avg. Processing Times"

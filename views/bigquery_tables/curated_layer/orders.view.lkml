@@ -849,7 +849,7 @@ view: orders {
     label: "Rider time spent from claiming an order until returning back to Hub in Minute"
     description: "The time, when a rider arrives back at the hub after delivering an order"
     type: number
-    sql: timestamp_diff(timestamp(${rider_returned_to_hub_timestamp}), timestamp(${order_rider_claimed_timestamp}), minute) ;;
+    sql: timestamp_diff(timestamp(${rider_completed_delivery_timestamp}), timestamp(${order_on_route_timestamp}), minute)*2 ;;
   }
 
 
@@ -1635,7 +1635,7 @@ view: orders {
     description: "Count of Orders delivered no later than PDT"
     hidden:  no
     type: count
-    filters: [delivery_delay_since_eta:"<=0"]
+    filters: [delivery_delay_since_eta:"<=0.5"]
     value_format: "0"
   }
 
@@ -1651,6 +1651,56 @@ view: orders {
     value_format: "0"
   }
 
+  ############### Delays compared to delivery time internal estimate ###########
+
+  measure: cnt_orders_delayed_over_12_min_internal_estimate {
+    # group_label: "* Operations / Logistics *"
+    view_label: "* Hubs *"
+    group_label: "Hub Leaderboard - Order Metrics"
+    label: "# Orders delivered late >12min (internal estimate)"
+    description: "Count of Orders delivered >12min later than delivery time estimate"
+    hidden:  no
+    type: count
+    filters: [delivery_delay_since_time_estimate:">=12"]
+    value_format: "0"
+  }
+
+  measure: cnt_orders_delayed_over_20_min_internal_estimate {
+    # group_label: "* Operations / Logistics *"
+    view_label: "* Hubs *"
+    group_label: "Hub Leaderboard - Order Metrics"
+    label: "# Orders delivered late >20min (internal estimate)"
+    description: "Count of Orders delivered >20min later than delivery time estimate"
+    hidden:  no
+    type: count
+    filters: [delivery_delay_since_time_estimate:">=20"]
+    value_format: "0"
+  }
+
+
+  measure: cnt_orders_delayed_over_30_min_internal_estimate {
+    # group_label: "* Operations / Logistics *"
+    view_label: "* Hubs *"
+    group_label: "Hub Leaderboard - Order Metrics"
+    label: "# Orders delivered late >30min (internal estimate)"
+    description: "Count of Orders delivered >30min later than delivery time estimate"
+    hidden:  no
+    type: count
+    filters: [delivery_delay_since_time_estimate:">=30"]
+    value_format: "0"
+  }
+
+  measure: cnt_orders_delayed_over_60_min_internal_estimate {
+    # group_label: "* Operations / Logistics *"
+    view_label: "* Hubs *"
+    group_label: "Hub Leaderboard - Order Metrics"
+    label: "# Orders delivered late >20min (internal estimate)"
+    description: "Count of Orders delivered >60min later than delivery time estimate"
+    hidden:  no
+    type: count
+    filters: [delivery_delay_since_time_estimate:">=60"]
+    value_format: "0"
+  }
 
   measure: cnt_orders_delayed_over_5_min {
     # group_label: "* Operations / Logistics *"
@@ -1855,7 +1905,7 @@ view: orders {
     description: "Share of orders delivered no later than PDT"
     hidden:  no
     type: number
-    sql: ${cnt_orders_delayed_under_30_sec} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
+    sql: ${cnt_orders_delayed_under_0_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
     value_format: "0%"
   }
 
@@ -1918,7 +1968,47 @@ view: orders {
     sql: ${cnt_orders_fulfilled_over_60_min} / NULLIF(${cnt_orders}, 0);;
     value_format: "0%"
   }
+###########  Delays with regards to Delivery Time Internal Estimate
 
+  measure: pct_delayed_over_12_min_internal_estimate {
+    group_label: "* Operations / Logistics *"
+    label: "% Orders delayed >12min (Internal Estimate)"
+    description: "Share of orders delayed >12min than Delivery Time Internal Estimate"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_delayed_over_12_min_internal_estimate} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_delayed_over_20_min_internal_estimate {
+    group_label: "* Operations / Logistics *"
+    label: "% Orders delayed >20min (Internal Estimate)"
+    description: "Share of orders delayed >20min than Delivery Time Internal Estimate"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_delayed_over_20_min_internal_estimate} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_delayed_over_30_min_internal_estimate {
+    group_label: "* Operations / Logistics *"
+    label: "% Orders delayed >30min (Internal Estimate)"
+    description: "Share of orders delayed >30min than Delivery Time Internal Estimate"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_delayed_over_30_min_internal_estimate} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_delayed_over_60_min_internal_estimate {
+    group_label: "* Operations / Logistics *"
+    label: "% Orders delayed >60min (Internal Estimate)"
+    description: "Share of orders delayed >60min than Delivery Time Internal Estimate"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_delayed_over_60_min_internal_estimate} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0%"
+  }
 
 #######TEMP: adding new fields to compare how PDT versus Time Estimate will perform
 
@@ -2059,6 +2149,13 @@ view: orders {
     value_format_name: decimal_2
   }
 
+measure: delta_return_delivery_time {
+  group_label: "* Operations / Logistics *"
+  label: "Delta between Return Time and Delivery Time"
+  type: number
+  value_format: "0.0"
+  sql: ${avg_delivery_time} - ${avg_return_to_hub_time} ;;
+}
 
 
 }

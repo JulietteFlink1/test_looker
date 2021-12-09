@@ -2,7 +2,7 @@ include: "/views/projects/rider_ops/hiring_funnel_marketing_summary.view"
 include: "/views/projects/rider_ops/hiring_funnel_performance_summary.view"
 
 explore: hiring_funnel_marketing_summary {
-  hidden: no
+  hidden: yes
   label: "Hiring Funnel Marketing Summary"
   view_label: "Hiring Funnel Marketing Summary"
   description: "Rider/Picker leads, hires, marketing spend, days to hire, etc."

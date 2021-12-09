@@ -44,6 +44,7 @@ explore: orders_customers {
     relationship: one_to_one
   }
 
+
   #join: product_facts {
   #  type: left_outer
   #  relationship: many_to_one
