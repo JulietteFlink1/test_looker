@@ -241,7 +241,7 @@ view: vat_order {
             --Total VAT data
             delivery_fee_net + items_price_net - refund_amount_net - discount_amount_net - discount_free_delivery_net                                                                                 as total_net,
             delivery_fee_gross+items_price_gross-refund_amount_gross-discount_amount_gross - discount_free_delivery_gross                                                                        as total_gross,
-            delivery_fee_gross+items_price_gross-refund_amount_gross-discount_amount_gross-delivery_fee_net-items_price_net+refund_amount_net+discount_amount_net - discount_free_delivery_net + discount_free_delivery_gross  as total_VAT
+            delivery_fee_gross+items_price_gross-refund_amount_gross-discount_amount_gross-delivery_fee_net-items_price_net+refund_amount_net+discount_amount_net                                as total_VAT
       FROM net_gross n
       LEFT JOIN `flink-data-prod.curated.hubs` g ON lower(g.hub_code) = lower(n.hub_code )
       LEFT JOIN country_tax_rates ct on ct.country_iso = n.country_iso
