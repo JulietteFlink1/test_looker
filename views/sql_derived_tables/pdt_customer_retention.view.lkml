@@ -70,7 +70,8 @@ view: pdt_customer_retention {
   dimension: delta_fulfillment_pdt {
     description: "Computes the difference between fulfillment time minutes and delivery pdt minutes "
     type: number
-    sql: ${fulfillment_time_minutes} - ${delivery_pdt_minutes} ;;
+    sql: round(${fulfillment_time_minutes} - ${delivery_pdt_minutes}, 0);;
+    value_format: "0"
   }
 
   dimension: has_reordered_within_7_days {
