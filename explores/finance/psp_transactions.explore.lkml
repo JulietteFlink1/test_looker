@@ -77,4 +77,11 @@ join: orders {
     type: left_outer
   }
 
+  join: vat_order {
+    view_label: "* VAT on Order Level *"
+    sql_on: ${orders.order_uuid} = ${vat_order.order_uuid} ;;
+    relationship: one_to_one
+    type: left_outer
+  }
+
 }

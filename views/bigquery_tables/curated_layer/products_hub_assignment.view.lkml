@@ -60,21 +60,6 @@ view: products_hub_assignment {
     primary_key: yes
   }
 
-  dimension_group: created {
-    type: time
-    timeframes: [
-      raw,
-      time,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    sql: ${TABLE}.created_at ;;
-    hidden: yes
-  }
-
   dimension: current_status_change_count {
     type: number
     sql: ${TABLE}.current_status_change_count ;;
