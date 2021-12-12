@@ -9,7 +9,7 @@ explore: events_order_monitoring {
   description: "Events and Orders monitoring per user"
   always_filter:  {
     filters: [
-      events_orders_monitoring.iso_country: "",
+      events_orders_monitoring.country_iso: "",
       events_orders_monitoring.event_date: "14 days"
       ]
   }
