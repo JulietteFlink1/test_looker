@@ -1,5 +1,5 @@
 view: product_performance {
-  sql_table_name: `flink-data-dev.sandbox_patricia.product_performance`
+  sql_table_name: `flink-data-prod.curated.product_performance`
       ;;
 
   view_label: "* Product Performance *"
@@ -17,14 +17,14 @@ view: product_performance {
 ########### DIMENSIONS ###########
     ## IDs
 
-    # dimension: product_event_uuid {
-    #   group_label: "IDs"
-    #   type: string
-    #   description: "Unique identifier per row"
-    #   sql: ${TABLE}.product_event_uuid ;;
-    #   primary_key: yes
-    #   hidden: yes
-    # }
+    dimension: product_event_uuid {
+      group_label: "IDs"
+      type: string
+      description: "Unique identifier per row"
+      sql: ${TABLE}.product_event_uuid ;;
+      primary_key: yes
+      hidden: yes
+    }
     dimension: product_sku {
       group_label: "IDs"
       label: "Product SKU"
