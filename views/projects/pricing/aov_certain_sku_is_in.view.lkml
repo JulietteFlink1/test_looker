@@ -168,7 +168,7 @@ sum(amt_total_price_gross) as sum_item_value,
 from or_sku_categ a
 left join numb_or b
 on  a.order_date = b.order_date
-and a.subs_group_or_sku = b.subs_group_or_sku
+and a.product_sku = b.product_sku
 and a.country_iso = b.country_iso
 and a.hub_code = b.hub_code
 and a.hub_name = b.hub_name
