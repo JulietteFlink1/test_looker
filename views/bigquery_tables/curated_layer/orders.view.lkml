@@ -462,7 +462,7 @@ view: orders {
   }
 
   dimension: pre_riding_time {
-    label: "Time Between Order Created and Order on Route (min)"
+    label: "Pre Riding Time (min)"
     description: "Picker Queuing Time + Picking Time + Rider Queuing Time"
     group_label: "* Operations / Logistics *"
     type: number
