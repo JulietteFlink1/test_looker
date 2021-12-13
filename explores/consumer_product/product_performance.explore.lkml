@@ -6,6 +6,6 @@ explore: product_performance {
   view_label: "Product Performance"
   group_label: "Consumer Product"
   description: "Product Performance"
-  hidden: no
+  hidden: yes
 }
 }
