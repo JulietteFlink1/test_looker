@@ -435,6 +435,24 @@ view: orders {
     sql: ${TABLE}.estimated_queuing_time_for_picker_minutes;;
   }
 
+  dimension: queuing_time_for_picker_minutes {
+    label: "Picker Queuing Time (min)"
+    description: "The actual time in minutes for the picker queuing"
+    group_label: "* Operations / Logistics *"
+    type: number
+    value_format: "0.0"
+    sql: TIMESTAMP_DIFF(safe_cast(${order_picker_accepted_timestamp} as timestamp) , safe_cast(${created_time} as timestamp),second)/60;;
+  }
+
+  dimension: queuing_time_for_rider_minutes {
+    label: "Rider Queuing Time (min)"
+    description: "The actual time in minutes for the rider queuing"
+    group_label: "* Operations / Logistics *"
+    type: number
+    value_format: "0.0"
+    sql: TIMESTAMP_DIFF( safe_cast(${order_on_route_timestamp} as timestamp),safe_cast(${order_packed_timestamp} as timestamp),second)/60;;
+  }
+
   dimension: estimated_queuing_time_for_rider_minutes {
     label: "Rider Queuing Time Estimate (min)"
     description: "The internally predicted time in minutes for the rider queuing"
@@ -1293,6 +1311,7 @@ view: orders {
     value_format_name: decimal_1
   }
 
+
   measure: avg_estimated_riding_time_minutes {
     group_label: "* Operations / Logistics *"
     label: "AVG Estimated Riding Time"
@@ -1306,6 +1325,22 @@ view: orders {
     label: "AVG Estimated Queuing Time for Pickers"
     type: average
     sql: ${estimated_queuing_time_for_picker_minutes};;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_queuing_time_for_pickers_minutes {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Queuing Time for Pickers"
+    type: average
+    sql: ${queuing_time_for_picker_minutes} ;;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_queuing_time_for_riders_minutes {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Queuing Time for Riders"
+    type: average
+    sql: ${queuing_time_for_rider_minutes} ;;
     value_format_name: decimal_1
   }
 
