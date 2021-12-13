@@ -125,6 +125,7 @@ view: micro_forecasts_vs_actuals {
 
   measure: ok_orders {
     label: "Ok_orders"
+    hidden: yes
     type: sum
     sql: ${TABLE}.ok_orders;;
     value_format_name: decimal_0
@@ -133,6 +134,7 @@ view: micro_forecasts_vs_actuals {
 
   measure: prediction {
     label: "prediction"
+    hidden: yes
     type: sum
     sql: ${TABLE}.prediction;;
     value_format_name: decimal_0
@@ -140,6 +142,7 @@ view: micro_forecasts_vs_actuals {
 
   measure: prediction_lower_bound {
     label: "prediction_lower_bound"
+    hidden: yes
     type: sum
     sql: ${TABLE}.prediction_lower_bound;;
     value_format_name: decimal_0
@@ -148,6 +151,7 @@ view: micro_forecasts_vs_actuals {
 
   measure: prediction_upper_bound {
     label: "prediction_upper_bound"
+    hidden: yes
     type: sum
     sql: ${TABLE}.prediction_upper_bound;;
     value_format_name: decimal_0
@@ -155,6 +159,7 @@ view: micro_forecasts_vs_actuals {
 
   measure: public_holiday_left_shoulder_width {
     label: "public_holiday_left_shoulder_width"
+    hidden: yes
     type: sum
     sql: ${TABLE}.public_holiday_left_shoulder_width;;
     value_format_name: decimal_0
@@ -162,6 +167,7 @@ view: micro_forecasts_vs_actuals {
 
   measure: public_holiday_right_shoulder_width {
     label: "public_holiday_right_shoulder_width"
+    hidden: yes
     type: sum
     sql: ${TABLE}.public_holiday_right_shoulder_width;;
     value_format_name: decimal_0
@@ -170,6 +176,7 @@ view: micro_forecasts_vs_actuals {
 
   measure: closure_missed_orders {
     label: "closure_missed_orders"
+    hidden: yes
     type: sum
     sql: ${TABLE}.closure_missed_orders;;
     value_format_name: decimal_0
@@ -178,9 +185,45 @@ view: micro_forecasts_vs_actuals {
 
   measure: total_orders {
     label: "total_orders"
+    hidden: yes
     type: sum
     sql: ${TABLE}.total_orders;;
     value_format_name: decimal_0
   }
+
+
+  measure: number_of_orders {
+    label: "actual orders"
+    type: sum
+    sql: (case when ${TABLE}.model_name = 'exponential_smoothing' then ${TABLE}.total_orders end);;
+    value_format_name: decimal_0
+  }
+
+
+  measure: forecasted_orders_expo {
+    label: "exponential smoothing"
+    type: sum
+    sql: (case when ${TABLE}.model_name = 'exponential_smoothing' then ${TABLE}.prediction end);;
+    value_format_name: decimal_0
+  }
+
+
+  measure: forecasted_orders_naive {
+    label: "seasonal naive period 7"
+    type: sum
+    sql: (case when ${TABLE}.model_name = 'seasonal_naive_period_7' then ${TABLE}.prediction end);;
+    value_format_name: decimal_0
+  }
+
+
+  measure: forecasted_orders_prophet {
+    label: "prophet prophet shoulder days"
+    type: sum
+    sql: (case when ${TABLE}.model_name = 'prophet_shoulder_days' then ${TABLE}.prediction end);;
+    value_format_name: decimal_0
+  }
+
+
+
 
 }
