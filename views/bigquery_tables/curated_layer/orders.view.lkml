@@ -1352,6 +1352,14 @@ view: orders {
     value_format_name: decimal_1
   }
 
+  measure: avg_pre_riding_time {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Pre Riding Time"
+    type: average
+    sql: ${pre_riding_time} ;;
+    value_format_name: decimal_1
+  }
+
   measure: avg_estimated_queuing_time_for_rider_minutes {
     group_label: "* Operations / Logistics *"
     label: "AVG Estimated Queuing Time for Riders"
