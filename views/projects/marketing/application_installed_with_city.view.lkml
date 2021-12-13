@@ -63,7 +63,10 @@ view: application_installed_with_city {
   }
 
   measure: cnt_missing_installations {
+    hidden: yes
     type: count
+    label: "# Missing Installations"
+    description: "Based on the user activity we see, # users for whom we don't have the installation event and therefore do not know installation date"
     filters: [installation_timestamp_date: "NULL"]
     drill_fields: [detail*]
   }
@@ -71,6 +74,18 @@ view: application_installed_with_city {
   dimension: anonymous_id {
     type: string
     sql: ${TABLE}.anonymous_id ;;
+  }
+
+  dimension: has_installation_date {
+    type: yesno
+    description: "Whether we have the installation event for a user that triggered a session. Can be used to estimate % users for whom we do not know the installation date"
+    sql: ${installation_timestamp_date} IS NOT NULL ;;
+  }
+
+  dimension: has_city {
+    type: yesno
+    description: "Whether city information is available for the user"
+    sql: ${derived_city} IS NOT NULL ;;
   }
 
   dimension_group: session_start_at {
