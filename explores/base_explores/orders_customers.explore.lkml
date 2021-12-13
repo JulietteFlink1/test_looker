@@ -44,6 +44,13 @@ explore: orders_customers {
     relationship: one_to_one
   }
 
+  join: pdt_customer_retention {
+    view_label: " Customer Retention vs PDT "
+    sql_on: ${customers_metrics.country_iso} = ${pdt_customer_retention.country_iso} AND
+      ${customers_metrics.user_email}    = ${pdt_customer_retention.customer_email} ;;
+    relationship: many_to_one
+    type: left_outer
+  }
   #join: product_facts {
   #  type: left_outer
   #  relationship: many_to_one

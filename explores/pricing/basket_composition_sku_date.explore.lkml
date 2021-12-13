@@ -3,7 +3,7 @@ include: "/**/*.view"
 explore: basket_composition_sku_date {
   group_label: "Pricing"
   label: "Basket Composition Date SKU"
-  #hidden: yes
+  hidden: yes
 
   always_filter: {
     filters:

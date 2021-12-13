@@ -67,6 +67,13 @@ view: pdt_customer_retention {
     sql: ${TABLE}.fulfillment_time_minutes ;;
   }
 
+  dimension: delta_fulfillment_pdt {
+    description: "Computes the difference between fulfillment time minutes and delivery pdt minutes "
+    type: number
+    sql: round(${fulfillment_time_minutes} - ${delivery_pdt_minutes}, 0);;
+    value_format: "0"
+  }
+
   dimension: has_reordered_within_7_days {
     group_label: "* User Dimensions *"
     description: "Boolean dimension. Takes the value yes if the user has reordered within 7 days after their first order."
@@ -75,14 +82,13 @@ view: pdt_customer_retention {
   }
 
 
-
+  dimension: cnt_7_day_retention {
+    type: number
+    sql: case when ${has_reordered_within_7_days} then 1 else 0 end;;
+  }
   ################## Measures ####################
 
-  measure: cnt_7_day_retention {
-    group_label: "* Basic Counts (Orders / Customers etc.) *"
-    type: count
-    filters: [has_reordered_within_7_days: "yes"]
-  }
+
 
   measure: sum_7_day_retention {
     label: "Sum Return Customers"
@@ -102,7 +108,7 @@ view: pdt_customer_retention {
     label: "Retention Rate"
     hidden:  no
     type: number
-    sql: ${cnt_7_day_retention}/${cnt_number_of_customers};;
+    sql: ${sum_7_day_retention}/nullif(${cnt_number_of_customers},0);;
     value_format: "0.0%"
   }
 
@@ -117,7 +123,9 @@ view: pdt_customer_retention {
       next_order_date,
       delivery_pdt_minutes,
       fulfillment_time_minutes,
-      has_reordered_within_7_days
+      delta_fulfillment_pdt,
+      has_reordered_within_7_days,
+      cnt_7_day_retention
       ]
   }
 
