@@ -461,6 +461,14 @@ view: orders {
     sql: ${TABLE}.estimated_queuing_time_for_rider_minutes;;
   }
 
+  dimension: pre_riding_time {
+    label: "Time Between Order Created and Order on Route (min)"
+    description: "Picker Queuing Time + Picking Time + Rider Queuing Time"
+    group_label: "* Operations / Logistics *"
+    type: number
+    sql: ${queuing_time_for_picker_minutes}+${queuing_time_for_rider_minutes} + ${time_diff_between_two_subsequent_fulfillments};;
+  }
+
   dimension: is_critical_delivery_time_estimate_underestimation {
     description: "The actual fulfillment took more than 10min longer than the internally predicted delivery time"
     type:  yesno
