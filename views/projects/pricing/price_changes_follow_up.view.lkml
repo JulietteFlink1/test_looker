@@ -294,21 +294,21 @@ from pre_final a
   }
 
   measure: sum_item_value_after_7days {
-    label: "Item Value - 7 next days"
+    label: "Item Value - 7 Days after"
     type: sum
     value_format_name: euro_accounting_1_precision
     sql: ${TABLE}.sum_item_value_after_7days ;;
   }
 
     measure: sum_item_value_before_7days {
-      label: "Item Value - 7 previous days"
+      label: "Item Value - 7 previous Days"
       type: sum
       value_format_name: euro_accounting_1_precision
       sql: ${TABLE}.sum_item_value_before_7days ;;
     }
 
   measure: sum_quantity_after_7days {
-    label: "Quantity Sold - 7 next Days"
+    label: "Quantity Sold - 7 Days after"
     type: sum
     sql: ${TABLE}.sum_quantity_after_7days ;;
   }
@@ -320,7 +320,7 @@ from pre_final a
   }
 
   measure: orders_after_7days {
-    label: "Orders - 7 next Days"
+    label: "Orders - 7 Days after"
     type: sum
     sql: ${TABLE}.orders_after_7days ;;
   }
@@ -344,7 +344,7 @@ from pre_final a
   # }
 
   measure: hours_oos_after_7_days {
-    label: "Hours Oos- 7 next Days"
+    label: "Hours Oos- 7 Days after"
     hidden: yes
     type: sum
     sql: ${TABLE}.hours_oos_after_7_days ;;
@@ -358,7 +358,7 @@ from pre_final a
   }
 
   measure: open_hours_total_after_7days {
-    label: "Open Hours- 7 next Days"
+    label: "Open Hours- 7 Days after"
     hidden: yes
     type: sum
     sql: ${TABLE}.open_hours_total_after_7days ;;
@@ -372,7 +372,7 @@ from pre_final a
   }
 
   measure: days_of_revenue {
-    label: "Open Hours- 7 previous Days"
+    label: "Days Rev. after"
     type: sum
     hidden: yes
     sql: ${TABLE}.days_of_revenue ;;
@@ -405,7 +405,7 @@ from pre_final a
 
   measure: distinct_SKU {
     type: count_distinct
-    description: "Item Value per category divided by total number of orders"
+    description: "Count Distinct SKU"
     value_format_name: decimal_0
     sql: ${sku} ;;
 
@@ -421,7 +421,7 @@ from pre_final a
 
   measure: Oos_rate_after {
     type: number
-    label: "% Out of Stock Next 7 days"
+    label: "% Out of Stock 7 days after"
     value_format_name: percent_1
     sql: ${hours_oos_before_7_days} /nullif(${open_hours_total_before_7days},0)
     ;;
@@ -482,7 +482,7 @@ from pre_final a
 
   dimension: price_changes_next_7_days {
     type: number
-    label: "Times price changed- 7 next Days"
+    label: "Times price changed- 7 Days after"
     sql: ${TABLE}.price_changes_next_7_days ;;
   }
 
