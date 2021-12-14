@@ -117,8 +117,8 @@ view: competitive_intelligence_order_comparison {
     sql: ${TABLE}.region_iso ;;
   }
 
-  measure: count {
-    type: count
-    drill_fields: [hub_name, city_name]
+  measure: sum_number_of_orders{
+    type: sum
+    sql: ${number_of_orders} ;;
   }
 }
