@@ -2,7 +2,7 @@ include: "/views/bigquery_tables/curated_layer/*.view"
 include: "/**/*.explore"
 
 explore: orders_discounts {
-  extends: [orders_cl]
+  extends: [order_orderline_cl]
   hidden: no
   group_label: "03) Vouchers"
   label: "Order Vouchers"

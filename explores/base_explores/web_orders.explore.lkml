@@ -1,7 +1,7 @@
 include: "/views/bigquery_tables/curated_layer/orders.view"
 include: "/views/extended_tables/orders_using_hubs.view"
 include: "/views/projects/cleaning/shyftplan_riders_pickers_hours_clean.view"
-include: "/views/projects/cleaning/issue_rates_clean.view"
+# include: "/views/projects/cleaning/issue_rates_clean.view"
 
 include: "/views/bigquery_tables/curated_layer/hubs_ct.view"
 include: "/views/bigquery_tables/curated_layer/nps_after_order_cl.view"
@@ -75,13 +75,13 @@ explore: web_orders {
 
   }
 
-  join: issue_rates_clean {
-    view_label: "* Order Issues on Hub-Level *"
-    sql_on: ${hubs.hub_code}           =  ${issue_rates_clean.hub_code} and
-      ${orders_cl.date}          =  ${issue_rates_clean.date_dynamic};;
-    relationship: many_to_one # decided against one_to_many: on this level, many orders have hub-level issue-aggregates
-    type: left_outer
-  }
+  # join: issue_rates_clean {
+  #   view_label: "* Order Issues on Hub-Level *"
+  #   sql_on: ${hubs.hub_code}           =  ${issue_rates_clean.hub_code} and
+  #     ${orders_cl.date}          =  ${issue_rates_clean.date_dynamic};;
+  #   relationship: many_to_one # decided against one_to_many: on this level, many orders have hub-level issue-aggregates
+  #   type: left_outer
+  # }
 
   join: cs_post_delivery_issues {
     view_label: "* Post Delivery Issues on Order-Level *"
