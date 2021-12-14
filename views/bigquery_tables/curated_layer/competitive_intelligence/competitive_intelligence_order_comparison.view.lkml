@@ -93,6 +93,7 @@ view: competitive_intelligence_order_comparison {
       raw,
       date,
       week,
+      week_of_year,
       month,
       quarter,
       year
