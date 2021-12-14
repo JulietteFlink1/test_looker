@@ -421,7 +421,7 @@ from pre_final a
 
   measure: Oos_rate_after {
     type: number
-    label: "% Out of Stock Next 7 days"
+    label: "% Out of Stock 7 days after"
     value_format_name: percent_1
     sql: ${hours_oos_before_7_days} /nullif(${open_hours_total_before_7days},0)
     ;;
