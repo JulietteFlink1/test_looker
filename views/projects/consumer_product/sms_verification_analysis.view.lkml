@@ -28,10 +28,8 @@ view: sms_verification_analysis {
         , case when t7.event_name is not null then true else false end as is_session_sms_verification_send_code_clicked
         , case when t8.event_name is not null then true else false end as is_session_sms_verification_resend_code_clicked
 
-        , case when t11.event_name is not null then true else false end as is_session_sms_verification_send_code_clicked
         , case when t12.event_name is not null then true else false end as is_session_sms_verification_added
         , case when t13.event_name is not null then true else false end as is_session_sms_verification_clicked
-        , case when t14.event_name is not null then true else false end as is_session_sms_verification_resend_code_clicked
         , case when t15.event_name is not null then true else false end as is_session_sms_verification_confirmed
     FROM `flink-data-prod.curated.app_sessions_full_load` s
         LEFT JOIN (
@@ -105,16 +103,16 @@ view: sms_verification_analysis {
                 AND date(event_timestamp) >= "2021-12-01"
         ) t6
         ON s.session_uuid = t6.session_id
-        LEFT JOIN (
-            SELECT
-                  event_name
-                , session_id
-                , anonymous_id
-            FROM `flink-data-prod.curated.app_session_events_full_load`
-                WHERE event_name = 'sms_verification_send_code_clicked'
-                AND date(event_timestamp) >= "2021-12-01"
-        ) t7
-        ON s.session_uuid = t7.session_id
+    LEFT JOIN (
+        SELECT
+              event_name
+            , session_id
+            , anonymous_id
+        FROM `flink-data-prod.curated.app_session_events_full_load`
+            WHERE event_name = 'sms_verification_send_code_clicked'
+            AND date(event_timestamp) >= "2021-12-05"
+    ) t7
+    ON s.session_uuid = t7.session_id
         LEFT JOIN (
             SELECT
                   event_name
@@ -151,16 +149,6 @@ view: sms_verification_analysis {
             , session_id
             , anonymous_id
         FROM `flink-data-prod.curated.app_session_events_full_load`
-            WHERE event_name = 'sms_verification_send_code_clicked'
-            AND date(event_timestamp) >= "2021-12-05"
-    ) t11
-    ON s.session_uuid = t11.session_id
-    LEFT JOIN (
-        SELECT
-              event_name
-            , session_id
-            , anonymous_id
-        FROM `flink-data-prod.curated.app_session_events_full_load`
             WHERE event_name = 'sms_verification_added'
             AND date(event_timestamp) >= "2021-12-05"
     ) t12
@@ -175,16 +163,6 @@ view: sms_verification_analysis {
             AND date(event_timestamp) >= "2021-12-05"
     ) t13
     ON s.session_uuid = t13.session_id
-    LEFT JOIN (
-        SELECT
-              event_name
-            , session_id
-            , anonymous_id
-        FROM `flink-data-prod.curated.app_session_events_full_load`
-            WHERE event_name = 'sms_verification_resend_code_clicked'
-            AND date(event_timestamp) >= "2021-12-05"
-    ) t14
-    ON s.session_uuid = t14.session_id
     LEFT JOIN (
         SELECT
               event_name
@@ -457,6 +435,33 @@ view: sms_verification_analysis {
     filters: [is_session_with_registration_success: "yes"]
   }
 
+  measure: unique_sessions_send_code {
+    description: "# Unique Sessions send code "
+    type: count_distinct
+    sql: ${session_id} ;;
+    filters: [is_session_sms_verification_send_code_clicked: "yes"]
+  }
+
+  measure: unique_sessions_resend_code {
+    description: "# Unique Sessions resend code"
+    type: count_distinct
+    sql: ${session_id} ;;
+    filters: [is_session_sms_verification_resend_code_clicked: "yes"]
+  }
+
+  measure: unique_sessions_phone_added {
+    description: "# Unique Sessions phone added"
+    type: count_distinct
+    sql: ${session_id} ;;
+    filters: [is_session_sms_verification_phone_added: "yes"]
+  }
+
+  measure: unique_sessions_code_added {
+    description: "# Unique Sessions verification code added"
+    type: count_distinct
+    sql: ${session_id} ;;
+    filters: [is_session_sms_verification_added: "yes"]
+  }
 
 
   # is session_start_at > than timestamp_registration then already_registerede else non_registered
