@@ -28,8 +28,10 @@ view: sms_verification_analysis {
         , case when t7.event_name is not null then true else false end as is_session_sms_verification_send_code_clicked
         , case when t8.event_name is not null then true else false end as is_session_sms_verification_resend_code_clicked
 
+        , case when t11.event_name is not null then true else false end as is_session_sms_verification_viewed
         , case when t12.event_name is not null then true else false end as is_session_sms_verification_added
         , case when t13.event_name is not null then true else false end as is_session_sms_verification_clicked
+        , case when t14.event_name is not null then true else false end as is_session_sms_verification_error_viewed
         , case when t15.event_name is not null then true else false end as is_session_sms_verification_confirmed
     FROM `flink-data-prod.curated.app_sessions_full_load` s
         LEFT JOIN (
@@ -143,6 +145,16 @@ view: sms_verification_analysis {
                 AND date(event_timestamp) >= "2021-12-01"
         ) t10
         ON s.session_uuid = t10.session_id
+        LEFT JOIN (
+            SELECT
+                  event_name
+                , session_id
+                , anonymous_id
+            FROM `flink-data-prod.curated.app_session_events_full_load`
+                WHERE event_name = 'sms_verification_viewed'
+                AND date(event_timestamp) >= "2021-12-01"
+        ) t11
+        ON s.session_uuid = t11.session_id
     LEFT JOIN (
         SELECT
               event_name
@@ -163,6 +175,16 @@ view: sms_verification_analysis {
             AND date(event_timestamp) >= "2021-12-05"
     ) t13
     ON s.session_uuid = t13.session_id
+    LEFT JOIN (
+        SELECT
+              event_name
+            , session_id
+            , anonymous_id
+        FROM `flink-data-prod.curated.app_session_events_full_load`
+            WHERE event_name = 'sms_verification_error_viewed'
+            AND date(event_timestamp) >= "2021-12-05"
+    ) t14
+    ON s.session_uuid = t14.session_id
     LEFT JOIN (
         SELECT
               event_name
@@ -338,8 +360,23 @@ view: sms_verification_analysis {
     sql: ${TABLE}.is_session_sms_verification_confirmed ;;
   }
 
+  dimension: is_session_sms_verification_request_closed {
+    description: "Is SMS Verification Resend Code"
+    type: yesno
+    sql: ${TABLE}.is_session_sms_verification_request_closed ;;
+  }
 
+  dimension: is_session_sms_verification_viewed {
+    description: "Is SMS Verification viewedd"
+    type: yesno
+    sql: ${TABLE}.is_session_sms_verification_viewed ;;
+  }
 
+  dimension: is_session_sms_verification_error_viewed {
+    description: "Is SMS Verification error viewed"
+    type: yesno
+    sql: ${TABLE}.is_session_sms_verification_error_viewed ;;
+  }
 
   ## Measures
 
@@ -463,6 +500,33 @@ view: sms_verification_analysis {
     filters: [is_session_sms_verification_added: "yes"]
   }
 
+  measure: unique_sessions_verification_closed{
+    description: "# Unique Sessions verification closed"
+    type: count_distinct
+    sql: ${session_id} ;;
+    filters: [is_session_sms_verification_request_closed: "yes"]
+  }
+
+  measure: unique_sessions_verification_viewed{
+    description: "# Unique Sessions verification viewed"
+    type: count_distinct
+    sql: ${session_id} ;;
+    filters: [is_session_sms_verification_viewed: "yes"]
+  }
+
+  measure: unique_sessions_verification_confirmed{
+    description: "# Unique Sessions verification confirmed"
+    type: count_distinct
+    sql: ${session_id} ;;
+    filters: [is_session_sms_verification_confirmed: "yes"]
+  }
+
+  measure: unique_sessions_error_viewed{
+    description: "# Unique Sessions verification confirmed"
+    type: count_distinct
+    sql: ${session_id} ;;
+    filters: [is_session_sms_verification_error_viewed: "yes"]
+  }
 
   # is session_start_at > than timestamp_registration then already_registerede else non_registered
 
