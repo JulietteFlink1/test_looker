@@ -250,7 +250,7 @@ view: product_performance {
       type: number
       group_label: "Monetary Dimensions"
       label: "First Cart Value (Gross)"
-      description: "Gross value of the cart upon the first visit during the same session"
+      description: "Gross value of the cart / basket upon the first visit during the same session"
       sql: ${TABLE}.first_cart_value ;;
       hidden: no
     }
@@ -258,7 +258,7 @@ view: product_performance {
       type: number
       group_label: "Monetary Dimensions"
       label: "Last Cart Value (Gross)"
-      description: "Gross value of the cart upon the last visit during the same session"
+      description: "Gross value of the cart / basket upon the last visit during the same session"
       sql: ${TABLE}.last_cart_value ;;
       hidden: no
     }
@@ -345,7 +345,7 @@ view: product_performance {
   }
   measure: product_details_viewed_quantity {
     group_label: "Basic Counts (Orders / Customers etc.)"
-    label: "# Products Viewed"
+    label: "# Products Viewed (on PDP)"
     description: "Quantity of products viewed (when PDP happened)"
     type: sum
     hidden: no
@@ -432,7 +432,7 @@ view: product_performance {
   measure: product_pdp_to_cart_conversion{
     group_label: "Conversions"
     label: "PDP to Cart Conversion"
-    description: "Product added to cart / product viewed"
+    description: "Product added to cart / product viewed (PDP)"
     type: number
     value_format_name: percent_2
     sql: ${product_added_to_cart_quantity}/NULLIF(${product_details_viewed_quantity},0);;
