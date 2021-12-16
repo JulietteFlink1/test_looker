@@ -65,6 +65,7 @@ view: pdt_customer_retention {
   dimension: fulfillment_time_minutes {
     type: number
     sql: ${TABLE}.fulfillment_time_minutes ;;
+    value_format: "0"
   }
 
   dimension: delta_fulfillment_pdt {
