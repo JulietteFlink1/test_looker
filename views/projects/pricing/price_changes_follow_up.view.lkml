@@ -250,6 +250,8 @@ pre_final as
 (
     select
     a.order_date as valid_from,
+    DATE_TRUNC(a.order_date, week) as week,
+    DATE_TRUNC(a.order_date, month) as month,
     case when b.valid_until is null then date_add(current_date(),interval -1 day) else b.valid_until end as valid_until,
     c.country_iso,
     a.sku,
@@ -345,28 +347,28 @@ from pre_final a
 
   measure: hours_oos_after_7_days {
     label: "Hours Oos- 7 Days after"
-    hidden: yes
+   # hidden: yes
     type: sum
     sql: ${TABLE}.hours_oos_after_7_days ;;
   }
 
   measure: hours_oos_before_7_days {
     label: "Hours Oos- 7 previous Days"
-    hidden: yes
+   # hidden: yes
     type: sum
     sql: ${TABLE}.hours_oos_before_7_days ;;
   }
 
   measure: open_hours_total_after_7days {
     label: "Open Hours- 7 Days after"
-    hidden: yes
+   # hidden: yes
     type: sum
     sql: ${TABLE}.open_hours_total_after_7days ;;
   }
 
   measure: open_hours_total_before_7days {
     label: "Open Hours- 7 previous Days"
-    hidden: yes
+   # hidden: yes
     type: sum
     sql: ${TABLE}.open_hours_total_before_7days ;;
   }
@@ -374,7 +376,7 @@ from pre_final a
   measure: days_of_revenue {
     label: "Days Rev. after"
     type: sum
-    hidden: yes
+   # hidden: yes
     sql: ${TABLE}.days_of_revenue ;;
   }
 
@@ -440,12 +442,12 @@ from pre_final a
 
 
 
-  dimension: valid_from {
-    type: date
-    # label: "Price Change Date"
-    datatype: date
-    sql: ${TABLE}.valid_from ;;
-  }
+  # dimension: valid_from {
+  #   type: date
+  #   # label: "Price Change Date"
+  #   datatype: date
+  #   sql: ${TABLE}.valid_from ;;
+  # }
 
   dimension: valid_until {
     type: date
@@ -496,6 +498,72 @@ from pre_final a
 
 
 
+  dimension_group: created {
+    group_label: "* Dates and Timestamps *"
+    label: "Order"
+    description: "Order Placement Date"
+    type: time
+    timeframes: [
+      date,
+      day_of_week,
+      week,
+      month,
+      year
+    ]
+    sql: ${TABLE}.valid_from ;;
+    datatype: date
+  }
+
+
+
+  dimension: day {
+    type: date
+    datatype: date
+    sql: ${TABLE}.valid_from ;;
+  }
+
+
+  dimension: month {
+    type: date
+    datatype: date
+    sql: ${TABLE}.month ;;
+  }
+
+
+  dimension: week {
+    type: date
+    datatype: date
+    sql: ${TABLE}.week ;;
+  }
+
+
+  parameter: date_granularity {
+    group_label: "* Dates and Timestamps *"
+    label: "Date Granularity"
+    type: unquoted
+    allowed_value: { value: "Day" }
+    allowed_value: { value: "Week" }
+    allowed_value: { value: "Month" }
+    default_value: "Day"
+  }
+
+  dimension: valid_from {
+    group_label: "* Dates and Timestamps *"
+    label: "Date (Dynamic)"
+    label_from_parameter: date_granularity
+    sql:
+      {% if date_granularity._parameter_value == 'Day' %}
+      ${day}
+      {% elsif date_granularity._parameter_value == 'Week' %}
+      ${week}
+      {% elsif date_granularity._parameter_value == 'Month' %}
+      ${month}
+      {% endif %};;
+  }
+
+
+
+
 
   dimension: previous_price {
     type: number
@@ -522,7 +590,9 @@ from pre_final a
 
 
   set: detail {
-    fields: [valid_from,
+    fields: [day,
+      week,
+      month,
       valid_until,
       category,
       subcategory,

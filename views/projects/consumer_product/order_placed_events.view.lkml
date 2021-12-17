@@ -256,6 +256,7 @@ view: order_placed_events {
     sql: ${revenue} ;;
   }
 
+
   dimension: payment_method {
     group_label: "* Order Dimensions *"
     description: "Payment method used to place the order"
@@ -393,6 +394,12 @@ view: order_placed_events {
     sql: case when ${flag_rider_tip} = true
           then ${TABLE}.order_id
           else null end ;;
+  }
+
+  measure: sum_tip_value {
+    description: "Sum over tip value in successful orders"
+    type: sum
+    sql: ${rider_tip_value} ;;
   }
 
   measure: cnt_has_next_order {
