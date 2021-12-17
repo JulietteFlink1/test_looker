@@ -15,7 +15,7 @@ view: ean_labels {
   dimension: ean {
     type: string
     primary_key: yes
-    sql: ${TABLE}.ean ;;
+    sql:cast( ${TABLE}.ean as string);;
   }
 
   dimension: european {
@@ -74,8 +74,8 @@ view: ean_labels {
   }
 
   dimension: sku {
-    type: number
-    sql: ${TABLE}.sku ;;
+    type: string
+    sql:cast( ${TABLE}.sku as string) ;;
   }
 
   dimension: sustainable_farming {
