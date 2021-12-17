@@ -147,6 +147,19 @@ view: ean_labels {
     value_format: "0%"
   }
 
+  measure: num_skus {
+    type: count_distinct
+    label: "# Unique SKUs"
+    sql: ${sku} ;;
+    value_format: "0"
+  }
+
+  measure: avg_sustainable_farming {
+    type: average
+    sql: ${sustainable_farming};;
+    value_format: "0%"
+  }
+
 
   measure: count {
     type: count
