@@ -160,6 +160,12 @@ view: ean_labels {
     value_format: "0%"
   }
 
+  measure: avg_european {
+    type: average
+    sql: ${european};;
+    value_format: "0%"
+  }
+
 
   measure: count {
     type: count
