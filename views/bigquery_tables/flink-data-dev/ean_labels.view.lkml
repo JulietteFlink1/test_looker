@@ -126,21 +126,25 @@ view: ean_labels {
   measure: avg_rainforest_alliance {
     type: average
     sql: ${rainforest_alliance} ;;
+    value_format: "0%"
   }
 
   measure: avg_made_in_germany {
     type: average
     sql: ${made_in_germany} ;;
+    value_format: "0%"
   }
 
   measure: avg_bio {
     type: average
     sql: ${bio} ;;
+    value_format: "0%"
   }
 
   measure: avg_vegan {
     type: average
     sql: ${vegan} ;;
+    value_format: "0%"
   }
 
 
