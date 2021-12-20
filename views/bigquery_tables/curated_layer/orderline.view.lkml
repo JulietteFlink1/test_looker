@@ -166,12 +166,14 @@ view: orderline {
 
   dimension: refund_amount_net {
     type: number
+    hidden: yes
     sql: ${TABLE}.refund_amount_net;;
     group_label: "> Monetary Dimensions"
   }
 
   dimension: refund_amount_gross {
     type: number
+    hidden: yes
     sql: ${TABLE}.refund_amount_gross;;
     group_label: "> Monetary Dimensions"
   }
@@ -285,6 +287,18 @@ view: orderline {
   dimension: translated_variant_name {
     type: string
     sql: null ;;
+    hidden: yes
+  }
+
+  dimension: amt_unit_deposit {
+    type: string
+    sql: ${TABLE}.amt_unit_deposit;;
+    hidden: yes
+  }
+
+  dimension: amt_total_deposit {
+    type: string
+    sql: ${TABLE}.amt_total_deposit;;
     hidden: yes
   }
 
@@ -451,6 +465,7 @@ view: orderline {
     label: "SUM Refund (Gross)"
     sql: ${refund_amount_gross} ;;
     type: sum
+    hidden: yes
     value_format_name: euro_accounting_2_precision
     group_label: "> Monetary Metrics"
   }
@@ -459,9 +474,20 @@ view: orderline {
     label: "SUM Refund (Net)"
     sql: ${refund_amount_net} ;;
     type: sum
+    hidden: yes
     value_format_name: euro_accounting_2_precision
     group_label: "> Monetary Metrics"
   }
+
+  measure: sum_total_deposit {
+    label: "SUM Total Deposit"
+    sql: ${amt_total_deposit} ;;
+    type: sum
+    value_format_name: euro_accounting_2_precision
+    group_label: "> Monetary Metrics"
+  }
+
+
 
   ###################### orderline facts
 
