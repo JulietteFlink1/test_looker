@@ -77,6 +77,12 @@ view: orders {
     sql: ${TABLE}.amt_gmv_net ;;
   }
 
+  dimension: rider_tip {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_rider_tip ;;
+  }
+
   ############################## needs to be checked #################################
 
   dimension: tracking_client_id {
@@ -1470,6 +1476,15 @@ view: orders {
 
   }
 
+  measure: avg_rider_tip {
+    group_label: "* Monetary Values *"
+    label: "AVG Rider Tip"
+    hidden:  no
+    type: average
+    sql: ${rider_tip};;
+    value_format_name: euro_accounting_2_precision
+  }
+
 
   ##########
   ## SUMS ##
@@ -1570,6 +1585,16 @@ view: orders {
     sql:${rider_on_duty_time};;
     value_format_name: decimal_2
   }
+
+  measure: sum_rider_tip {
+    group_label: "* Monetary Values *"
+    label: "SUM Rider Tip"
+    hidden:  no
+    type: sum
+    sql: ${rider_tip};;
+    value_format_name: euro_accounting_2_precision
+  }
+
 
   ############
   ## COUNTS ##
@@ -1687,6 +1712,15 @@ view: orders {
     hidden:  yes
     type: count
     filters: [delivery_delay_since_eta:"<=0.5"]
+    value_format: "0"
+  }
+
+  measure: cnt_orders_with_rider_tip {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Orders with Rider Tip"
+    hidden:  no
+    type: count
+    filters: [rider_tip: ">0"]
     value_format: "0"
   }
 
