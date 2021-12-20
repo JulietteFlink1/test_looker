@@ -693,7 +693,7 @@ view: postorder_events {
   }
 
   parameter: xaxis_selector {
-    label: "Date or Version Dynamic Selector"
+    label: "Order Date or Version Dynamic Selector"
     description: "Controls which dimension X-axis uses"
     type: unquoted
     allowed_value: {
@@ -708,7 +708,7 @@ view: postorder_events {
   }
 
   dimension: plotby {
-    label: "Date or Version (Dynamic)"
+    label: "Order Date or Version (Dynamic)"
     label_from_parameter: xaxis_selector
     description: "Date OR Full App Version Dynamic Dimension - select using Date or Version Dynamic Selector"
     type: string

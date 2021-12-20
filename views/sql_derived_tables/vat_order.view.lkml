@@ -125,8 +125,8 @@ view: vat_order {
             refund as (
             select order_uuid,
                   country_iso,
-                  STRING_AGG(case when record_type in ('Refunded','RefundedExternally','Chargeback') then payment_method end) as payment_type,
-                  SUM(case when record_type in ('Refunded','RefundedExternally','Chargeback') then captured_pc end) as refund_amount
+                  STRING_AGG(case when record_type in ('Refunded','RefundedExternally') then payment_method end) as payment_type,
+                  SUM(case when record_type in ('Refunded','RefundedExternally') then captured_pc end) as refund_amount
                   from `flink-data-prod.curated.psp_transactions`
                   group by 1,2
             ),

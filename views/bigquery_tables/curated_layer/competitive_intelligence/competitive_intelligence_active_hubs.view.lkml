@@ -77,6 +77,12 @@ view: competitive_intelligence_active_hubs {
     sql: ${TABLE}.longitude ;;
   }
 
+  dimension: location {
+    type: location
+    sql_latitude: ${latitude} ;;
+    sql_longitude: ${longitude} ;;
+  }
+
   dimension: provider {
     type: string
     sql: ${TABLE}.provider ;;

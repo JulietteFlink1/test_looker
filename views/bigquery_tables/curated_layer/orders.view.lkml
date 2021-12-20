@@ -1682,25 +1682,14 @@ view: orders {
     # group_label: "* Operations / Logistics *"
     view_label: "* Hubs *"
     group_label: "Hub Leaderboard - Order Metrics"
-    label: "# Orders delivered on time"
+    label: "# Orders delivered on time (30 sec tolerance)"
     description: "Count of Orders delivered no later than PDT"
-    hidden:  no
+    hidden:  yes
     type: count
     filters: [delivery_delay_since_eta:"<=0.5"]
     value_format: "0"
   }
 
-  measure: cnt_orders_delayed_under_30_sec {
-    # group_label: "* Operations / Logistics *"
-    view_label: "* Hubs *"
-    group_label: "Hub Leaderboard - Order Metrics"
-    label: "# Orders delivered on time (30 seconds tolerance)"
-    description: "Count of Orders delivered no later than PDT + 30 sec"
-    hidden:  no
-    type: count
-    filters: [delivery_delay_since_eta_seconds:"<=30"]
-    value_format: "0"
-  }
 
   ############### Delays compared to delivery time internal estimate ###########
 
@@ -1710,7 +1699,7 @@ view: orders {
     group_label: "Hub Leaderboard - Order Metrics"
     label: "# Orders delivered late >12min (internal estimate)"
     description: "Count of Orders delivered >12min later than delivery time estimate"
-    hidden:  no
+    hidden:  yes
     type: count
     filters: [delivery_delay_since_time_estimate:">=12"]
     value_format: "0"
@@ -1722,7 +1711,7 @@ view: orders {
     group_label: "Hub Leaderboard - Order Metrics"
     label: "# Orders delivered late >20min (internal estimate)"
     description: "Count of Orders delivered >20min later than delivery time estimate"
-    hidden:  no
+    hidden:  yes
     type: count
     filters: [delivery_delay_since_time_estimate:">=20"]
     value_format: "0"
@@ -1735,7 +1724,7 @@ view: orders {
     group_label: "Hub Leaderboard - Order Metrics"
     label: "# Orders delivered late >30min (internal estimate)"
     description: "Count of Orders delivered >30min later than delivery time estimate"
-    hidden:  no
+    hidden:  yes
     type: count
     filters: [delivery_delay_since_time_estimate:">=30"]
     value_format: "0"
@@ -1747,7 +1736,7 @@ view: orders {
     group_label: "Hub Leaderboard - Order Metrics"
     label: "# Orders delivered late >20min (internal estimate)"
     description: "Count of Orders delivered >60min later than delivery time estimate"
-    hidden:  no
+    hidden:  yes
     type: count
     filters: [delivery_delay_since_time_estimate:">=60"]
     value_format: "0"
@@ -1759,7 +1748,7 @@ view: orders {
     group_label: "Hub Leaderboard - Order Metrics"
     label: "# Orders delivered late >5min"
     description: "Count of Orders delivered >5min later than PDT"
-    hidden:  no
+    hidden:  yes
     type: count
     filters: [delivery_delay_since_eta:">=5"]
     value_format: "0"
@@ -1796,18 +1785,6 @@ view: orders {
     hidden:  yes
     type: count
     filters: [delivery_delay_since_time_estimate:"<=0"]
-    value_format: "0"
-  }
-
-  measure: cnt_orders_delayed_under_30_sec_time_estimate {
-    # group_label: "* Operations / Logistics *"
-    view_label: "* Hubs *"
-    group_label: "Hub Leaderboard - Order Metrics"
-    label: "# Orders delivered within 30 sec of internal time estimate"
-    description: "Count of Orders delivered no later than 30 sec after internal time estimate"
-    hidden:  yes
-    type: count
-    filters: [delivery_delay_since_time_estimate:"<=0.5"]
     value_format: "0"
   }
 
@@ -1952,8 +1929,8 @@ view: orders {
 
   measure: pct_delivery_in_time{
     group_label: "* Operations / Logistics *"
-    label: "% Orders delivered in time"
-    description: "Share of orders delivered no later than PDT"
+    label: "% Orders delivered in time (PDT)"
+    description: "Share of orders delivered no later than PDT (30 sec tolerance)"
     hidden:  no
     type: number
     sql: ${cnt_orders_delayed_under_0_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
@@ -2074,16 +2051,6 @@ view: orders {
   }
 
   ###### The below measure should not be removed
-
-  measure: pct_delivery_in_time_30_sec_time_estimate{
-    group_label: "* Operations / Logistics *"
-    label: "% Orders delivered within 30 sec of internal time estimate"
-    description: "Share of orders delivered no later than 30 sec after internal estimate"
-    hidden:  no
-    type: number
-    sql: ${cnt_orders_delayed_under_30_sec_time_estimate} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
-    value_format: "0%"
-  }
 
   measure: pct_delivery_late_over_5_min_time_estimate{
     group_label: "* Operations / Logistics *"

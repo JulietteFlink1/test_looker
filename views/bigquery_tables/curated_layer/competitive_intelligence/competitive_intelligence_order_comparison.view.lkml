@@ -1,5 +1,5 @@
 view: competitive_intelligence_order_comparison {
-  sql_table_name: `flink-data-dev.reporting.competitive_intelligence_order_comparison`
+  sql_table_name: `flink-data-prod.reporting.competitive_intelligence_order_comparison`
     ;;
 
   dimension: active_hubs_uuid {
