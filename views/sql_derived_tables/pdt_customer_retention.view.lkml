@@ -20,7 +20,7 @@ view: pdt_customer_retention {
         , ROUND(p.fulfillment_time_minutes,0) as fulfillment_time_minutes
      from `flink-data-prod.curated.customers_metrics` c
      left join pdt_order p on c.customer_email = p.customer_email and c.country_iso = p.country_iso
-     where c.first_order_timestamp = p.order_timestamp
+     where c.first_order_timestamp = p.order_timestamp -- considers only new customers in the cohort
     ;;
   }
 
@@ -102,7 +102,7 @@ view: pdt_customer_retention {
   measure: cnt_number_of_customers {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
     type: count_distinct
-    sql: ${customer_email} ;;
+    sql: ${primary_key} ;;
   }
 
   measure: retention_rate {
