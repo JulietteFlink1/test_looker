@@ -252,6 +252,49 @@ view: app_sessions_with_checkout_viewed {
   #   sql: ${TABLE}.order_discount_code ;;
   # }
 
+  ## Growth Related events attributes
+
+  dimension: is_session_with_account_registration_viewed {
+    group_label: "Generic Dimensions"
+    label: "Is Session with Account Registration Viewed"
+    description: "Session with Account Registration Viewed"
+    type: yesno
+    sql: ${TABLE}.is_session_with_account_registration_viewed ;;
+  }
+
+  dimension: is_session_with_account_registration_succeeded {
+    group_label: "Generic Dimensions"
+    label: "Is Session with Account Registration Succeeded"
+    description: "Session with Account Registration Succeeded"
+    type: yesno
+    sql: ${TABLE}.is_session_with_account_registration_succeeded ;;
+  }
+
+  dimension: is_session_with_account_login_succeeded   {
+    group_label: "Generic Dimensions"
+    label: "Is Session with Account Login Succeeded"
+    description: "Session with Account Login Succeeded"
+    type: yesno
+    sql: ${TABLE}.is_session_with_account_login_succeeded ;;
+  }
+
+  dimension: is_session_with_sms_verification_request_viewed   {
+    group_label: "Generic Dimensions"
+    label: "Is Session with SMS Verification Viewed"
+    description: "Session with SMS Verification Viewed"
+    type: yesno
+    sql: ${TABLE}.is_session_with_sms_verification_request_viewed ;;
+  }
+
+  dimension: is_session_with_sms_verification_confirmed  {
+    group_label: "Generic Dimensions"
+    label: "Is Session with SMS Verification Confirmed"
+    description: "Session with SMS Verification Confirmed"
+    type: yesno
+    sql: ${TABLE}.is_session_with_sms_verification_confirmed ;;
+  }
+
+
   ## Session attributes
   dimension: is_session_with_address {
     group_label: "Generic Dimensions"
@@ -464,6 +507,44 @@ view: app_sessions_with_checkout_viewed {
     filters: [is_session_with_order_placed: "yes"]
   }
 
+  ## Measures growth events related
+
+  measure: cnt_acc_reg_view {
+    group_label: "Sessions with Event Flags"
+    label: "# Sessions with Account Registration Viewed"
+    type: count
+    filters: [is_session_with_account_registration_viewed: "yes"]
+  }
+
+  measure: cnt_acc_reg_succ {
+    group_label: "Sessions with Event Flags"
+    label: "# Sessions with Account Registration Success"
+    type: count
+    filters: [is_session_with_account_registration_succeeded: "yes"]
+  }
+
+  measure: cnt_acc_log_succ {
+    group_label: "Sessions with Event Flags"
+    label: "# Sessions with Account Login Success"
+    type: count
+    filters: [is_session_with_account_login_succeeded: "yes"]
+  }
+
+  measure: cnt_sms_ver_view {
+    group_label: "Sessions with Event Flags"
+    label: "# Sessions with SMS Verification Viewed"
+    type: count
+    filters: [is_session_with_sms_verification_request_viewed: "yes"]
+  }
+
+  measure: cnt_sms_ver_succ {
+    group_label: "Sessions with Event Flags"
+    label: "# Sessions with SMS Verification Success"
+    type: count
+    filters: [is_session_with_sms_verification_confirmed: "yes"]
+  }
+
+
   # measure: cnt_discounts_attempted {
   #   group_label: "Sessions with Event Flags"
   #   label: "# Sessions with Attempted Discounts"
@@ -624,6 +705,16 @@ view: app_sessions_with_checkout_viewed {
     description: "Number of sessions in which there was an Order Placed, compared to the number of sessions in which there was a Payment Started"
     value_format_name: percent_1
     sql: ${cnt_purchase}/NULLIF(${cnt_payment_started},0) ;;
+  }
+
+
+  measure: sms_verification_success_rate {
+    group_label: "Growth Events"
+    label: "SMS Verification Success Rate"
+    type: number
+    description: "Number of sessions in which there was an SMS Verification Success, compared to the number of sessions in which there was a SMS Verification Viewed"
+    value_format_name: percent_1
+    sql: ${cnt_sms_ver_succ}/NULLIF(${cnt_sms_ver_view},0) ;;
   }
 
   ### Monterary metrics ###
