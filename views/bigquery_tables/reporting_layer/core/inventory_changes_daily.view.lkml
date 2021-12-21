@@ -113,7 +113,7 @@ view: inventory_changes_daily {
     label: "€ Outbound (Waste)"
     group_label: "* Inventory Changes Daily *"
     type: number
-    sql: ((${sum_outbound_waste})  * ${sku_hub_day_level_orders.unit_price_gross_amount});;
+    sql: ((${sum_outbound_waste})  * ${products.avg_amt_product_price_gross});;
     value_format_name: eur
   }
 
