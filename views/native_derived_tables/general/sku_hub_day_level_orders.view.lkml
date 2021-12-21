@@ -90,7 +90,7 @@ view: sku_hub_day_level_orders {
     group_label: "* Product Data *"
     link: {
       label: "Check Waste per Hub Split"
-      url: "https://goflink.cloud.looker.com/explore/flink_v3/inbound_outbound_kpi_report?qid=7q9NWJIOAID2cPuAoWOGPK&origin_space=325&toggle=fil,vis&f[sku_hub_day_level_orders.product_sku_name]={{ value | url_encode }}&f[inventory_changes_daily.inventory_change_date]={{ _filters['inventory_changes_daily.inventory_change_date'] | url_encode }}"
+      url: "https://goflink.cloud.looker.com/explore/flink_v3/inbound_outbound_kpi_report?qid=MU9F0GjuddR3WYLLVCS6Zk&origin_space=325&toggle=fil,vis&f[products.product_sku_name]={{ value | url_encode }}&f[inventory_changes_daily.inventory_change_date]={{ _filters['inventory_changes_daily.inventory_change_date'] | url_encode }}"
     }
     sql: ${products.product_sku_name} ;;
   }

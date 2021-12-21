@@ -157,7 +157,7 @@ view: inventory_changes_daily {
     description: "The sum of inventory changes related to inventory corrections"
     group_label: "* Inventory Changes Daily *"
     type: sum
-    sql: abs(${quantity_change}) ;;
+    sql: case when abs(${quantity_change}) <= 100 then  abs(${quantity_change}) end;; # remove outlier
     filters: [change_reason: "inventory-correction"]
     value_format_name: decimal_0
   }
@@ -203,7 +203,7 @@ view: inventory_changes_daily {
     description: "The sum of inventory changes related to inventory corrections that increased the inventory"
     group_label: "* Inventory Changes Daily *"
     type: sum
-    sql: case when ${quantity_change} > 0 then ${quantity_change} end ;;
+    sql: case when ${quantity_change} between 0 and 100 then ${quantity_change} end ;;
     filters: [change_reason: "inventory-correction"]
     value_format_name: decimal_0
   }
@@ -213,7 +213,7 @@ view: inventory_changes_daily {
     description: "The sum of inventory changes related to inventory corrections that reduced the inventory"
     group_label: "* Inventory Changes Daily *"
     type: sum
-    sql: case when ${quantity_change} < 0 then abs(${quantity_change}) end ;;
+    sql: case when ${quantity_change} between -100 and 0 then abs(${quantity_change}) end ;;
     filters: [change_reason: "inventory-correction"]
     value_format_name: decimal_0
   }
@@ -223,7 +223,7 @@ view: inventory_changes_daily {
     description: "The sum of inventory changes related to inventory corrections that increased the inventory multiplied by the price of the item"
     group_label: "* Inventory Changes Daily *"
     type: sum
-    sql: case when ${quantity_change} > 0 then ${quantity_change} * ${price_gross} end ;;
+    sql: case when ${quantity_change} between 0 and 100 then ${quantity_change} * ${price_gross} end ;;
     filters: [change_reason: "inventory-correction"]
     value_format_name: eur
   }
@@ -233,7 +233,7 @@ view: inventory_changes_daily {
     description: "The sum of inventory changes related to inventory corrections that reduced the inventory multiplied by the price of the item"
     group_label: "* Inventory Changes Daily *"
     type: sum
-    sql: case when ${quantity_change} < 0 then abs(${quantity_change} * ${price_gross}) end ;;
+    sql: case when ${quantity_change} between -100 and 0 then abs(${quantity_change} * ${price_gross}) end ;;
     filters: [change_reason: "inventory-correction"]
     value_format_name: eur
   }
