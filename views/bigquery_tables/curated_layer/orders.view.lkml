@@ -77,6 +77,12 @@ view: orders {
     sql: ${TABLE}.amt_gmv_net ;;
   }
 
+  dimension: rider_tip {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_rider_tip ;;
+  }
+
   ############################## needs to be checked #################################
 
   dimension: tracking_client_id {
@@ -1470,6 +1476,16 @@ view: orders {
 
   }
 
+  measure: avg_rider_tip {
+    group_label: "* Monetary Values *"
+    description: "AVG Rider Tip Amount considering Orders where a tip was applied"
+    label: "AVG Rider Tip"
+    hidden:  no
+    type: average
+    sql: ${rider_tip};;
+    value_format_name: euro_accounting_2_precision
+  }
+
 
   ##########
   ## SUMS ##
@@ -1570,6 +1586,16 @@ view: orders {
     sql:${rider_on_duty_time};;
     value_format_name: decimal_2
   }
+
+  measure: sum_rider_tip {
+    group_label: "* Monetary Values *"
+    label: "SUM Rider Tip"
+    hidden:  no
+    type: sum
+    sql: ${rider_tip};;
+    value_format_name: euro_accounting_2_precision
+  }
+
 
   ############
   ## COUNTS ##
@@ -1687,6 +1713,15 @@ view: orders {
     hidden:  yes
     type: count
     filters: [delivery_delay_since_eta:"<=0.5"]
+    value_format: "0"
+  }
+
+  measure: cnt_orders_with_rider_tip {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Orders with Rider Tip"
+    hidden:  no
+    type: count
+    filters: [rider_tip: ">0"]
     value_format: "0"
   }
 
@@ -1924,6 +1959,26 @@ view: orders {
     hidden:  no
     type: number
     sql: ${sum_discount_amt} / NULLIF(${sum_gmv_gross}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_tip_order_share {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "% Tip Order Share"
+    description: "Share of Orders which had some Rider Tip applied"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_with_rider_tip} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_tip_value_of_gross_total{
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "% Tip Value Share"
+    description: "Dividing Total Rider Tip amounts over GMV"
+    hidden:  no
+    type: number
+    sql: ${sum_rider_tip} / NULLIF(${sum_gmv_gross}, 0);;
     value_format: "0%"
   }
 
