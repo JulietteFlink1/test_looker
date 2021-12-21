@@ -11,6 +11,18 @@ explore: inbound_outbound_kpi_report {
   view_name: inventory_changes_daily
   view_label: "* Inventory Changes Daily *"
 
+  join: products {
+    type: left_outer
+    relationship: many_to_one
+    sql_on: ${inventory_changes_daily.sku} = ${products.product_sku} ;;
+  }
+
+  join: hubs_ct {
+    type: left_outer
+    relationship: many_to_one
+    sql_on:  ${hubs_ct.hub_code} = ${inventory_changes_daily.hub_code};;
+  }
+
   join: sku_hub_day_level_orders {
     type: left_outer
     relationship: many_to_one
@@ -23,9 +35,5 @@ explore: inbound_outbound_kpi_report {
     ;;
   }
 
-  join: products {
-    type: left_outer
-    relationship: many_to_one
-    sql_on: ${inventory_changes_daily.sku} = ${products.product_sku} ;;
-  }
+
 }
