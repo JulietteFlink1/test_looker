@@ -267,7 +267,6 @@ view: web_sessions {
   measure: count {
     type: count
     drill_fields: [detail*]
-    filters: [is_shop_session: "yes"] ## used to filter for sessions only on the /shop page --> to be removed
   }
 
   measure: cnt_unique_anonymousid {
@@ -279,8 +278,29 @@ view: web_sessions {
     value_format_name: decimal_0
   }
 
+  measure: cnt_unique_sessions_with_shop {
+    label: "# Unique Sessions with shop entry"
+    description: "Number of Unique Sessions based on sessions_uuid"
+    hidden:  no
+    type: count_distinct
+    sql: ${session_uuid};;
+    value_format_name: decimal_0
+    filters: [is_shop_session: "yes"] ## used to filter for sessions only on the /shop page
+  }
+
+  measure: cnt_unique_sessions_no_shop {
+    label: "# Unique Sessions with No shop entry"
+    description: "Number of Unique Sessions based on sessions_uuid"
+    hidden:  no
+    type: count_distinct
+    sql: ${session_uuid};;
+    value_format_name: decimal_0
+    filters: [is_shop_session: "no"] ## used to filter for sessions only on the /shop page
+  }
+
+
   measure: cnt_unique_sessions {
-    label: "# Unique Sessions"
+    label: "# Unique Sessions (all)"
     description: "Number of Unique Sessions based on sessions_uuid"
     hidden:  no
     type: count_distinct
@@ -342,7 +362,7 @@ view: web_sessions {
   measure: perc_of_total_has_address {
     hidden: yes
     type: number
-    sql: ${cnt_has_address}/${count} ;;
+    sql: ${cnt_has_address}/${cnt_unique_sessions_with_shop} ;;
     value_format_name: percent_1
   }
 
@@ -356,7 +376,7 @@ view: web_sessions {
   measure: perc_of_total_patc {
     hidden: yes
     type: number
-    sql: ${cnt_add_to_cart}/${count} ;;
+    sql: ${cnt_add_to_cart}/${cnt_unique_sessions_with_shop} ;;
     value_format_name: percent_1
   }
 
@@ -370,7 +390,7 @@ view: web_sessions {
   measure: perc_of_total_checkout {
     hidden: yes
     type: number
-    sql: ${cnt_checkout_started}/${count} ;;
+    sql: ${cnt_checkout_started}/${cnt_unique_sessions_with_shop} ;;
     value_format_name: percent_1
   }
 
@@ -384,7 +404,7 @@ view: web_sessions {
   measure: perc_of_total_payment {
     hidden: yes
     type: number
-    sql: ${cnt_payment_started}/${count} ;;
+    sql: ${cnt_payment_started}/${cnt_unique_sessions_with_shop} ;;
     value_format_name: percent_1
   }
 
@@ -398,7 +418,7 @@ view: web_sessions {
   measure: perc_of_total_order {
     hidden: yes
     type: number
-    sql: ${cnt_purchase}/${count} ;;
+    sql: ${cnt_purchase}/${cnt_unique_sessions_with_shop} ;;
     value_format_name: percent_1
   }
 
@@ -446,7 +466,15 @@ view: web_sessions {
     type: number
     description: "Number of sessions in which an Order Placed event happened, compared to the total number of Session Started"
     value_format_name: percent_1
-    sql: ${cnt_purchase}/NULLIF(${count},0) ;;
+    sql: ${cnt_purchase}/NULLIF(${cnt_unique_sessions_with_shop},0) ;;
+  }
+
+  measure: mcvr0 {
+    type: number
+    label: "mCVR0"
+    description: "# sessions with an shop entry, compared to the total number of Sessions Started"
+    value_format_name: percent_1
+    sql: ${cnt_unique_sessions_with_shop}/NULLIF(${cnt_unique_sessions},0);;
   }
 
   measure: mcvr1 {
@@ -454,7 +482,7 @@ view: web_sessions {
     label: "mCVR1"
     description: "# sessions with an address (either selected in previous session or in current session), compared to the total number of Sessions Started"
     value_format_name: percent_1
-    sql: ${cnt_has_address}/NULLIF(${count},0);;
+    sql: ${cnt_has_address}/NULLIF(${cnt_unique_sessions_with_shop},0);;
   }
 
   measure: mcvr2 {
