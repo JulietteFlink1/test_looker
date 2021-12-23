@@ -21,20 +21,23 @@ from total_travel_dist
     type: string
     hidden: no
     sql: ${TABLE}.country ;;
+    html:🚀 {{ rendered_value }} 🚀 ;;
   }
 
   measure: times_taveled_to_moon {
     type: sum
     label: "# Times Traveled to The Moon and Back"
     value_format: "0.0"
-    sql: ${TABLE}.times_taveled_to_moon/2 ;;
+    sql: ${TABLE}.times_taveled_to_moon/2;;
+    html: {{ rendered_value }} 🚲🚀🌑 ;;
   }
 
   measure: times_taveled_to_mars {
     type: sum
     label: "# Times Traveled to Mars and Back"
     value_format: "0.0"
-    sql: ${TABLE}.times_taveled_to_mars/2 ;;
+    sql: ${TABLE}.times_taveled_to_mars/2;;
+    html: {{ rendered_value }} 🚲🚀🌖 ;;
   }
 
 
