@@ -137,6 +137,7 @@ view: orders {
     group_label: "* Geographic Dimensions *"
     type: string
     sql: ${TABLE}.country_iso ;;
+    label: "Country"
   }
 
   dimension: currency {
