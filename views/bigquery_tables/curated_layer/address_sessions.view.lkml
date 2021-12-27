@@ -1,29 +1,6 @@
 view: address_sessions {
   sql_table_name: `flink-data-dev.sandbox.address_sessions`
     ;;
-  dimension: app_version {
-    hidden: yes
-    type: string
-    sql: ${TABLE}.app_version ;;
-  }
-
-  dimension: city {
-    hidden: yes
-    type: string
-    sql: ${TABLE}.city ;;
-  }
-
-  dimension: country_iso {
-    hidden: yes
-    type: string
-    sql: ${TABLE}.country_iso ;;
-  }
-
-  dimension: device_type {
-    hidden: yes
-    type: string
-    sql: ${TABLE}.device_type ;;
-  }
 
   dimension: has_order {
     type: yesno
@@ -51,18 +28,12 @@ view: address_sessions {
     sql: ${TABLE}.anonymous_id ;;
   }
 
-  dimension: session_uuid {
-    hidden: yes
-    type: string
-    sql: ${TABLE}.session_uuid ;;
-  }
-
   dimension: session_id {
     group_label: "IDs"
     description: "Session ID based on user and session definition, primary key of this model"
     type: string
     primary_key: yes
-    sql: ${session_uuid} ;;
+    sql: ${TABLE}.session_uuid ;;
   }
 
   dimension: timezone {
@@ -78,27 +49,27 @@ view: address_sessions {
   }
 
   ########## Device attributes #########
-  dimension: context_app_version {
+  dimension: app_version {
     group_label: "Device Dimensions"
     label: "App version"
     description: "App version used in the session"
     type: string
-    sql: ${app_version} ;;
+    sql: ${TABLE}.app_version ;;
   }
 
-  dimension: context_device_type {
+  dimension: device_type {
     group_label: "Device Dimensions"
     label: "Device Type"
     description: "iOS or Android"
     type: string
-    sql: ${device_type} ;;
+    sql: ${TABLE}.device_type ;;
   }
 
   dimension: full_app_version {
     group_label: "Device Dimensions"
     description: "Device type and app version combined in one dimension"
     type: string
-    sql: ${context_device_type} || '-' || ${context_app_version} ;;
+    sql: ${device_type} || '-' || ${app_version} ;;
   }
 
   ########## Location attributes #########
@@ -114,7 +85,13 @@ view: address_sessions {
     label: "City"
     description: "City associated with the last address the user selected"
     type: string
-    sql: ${city} ;;
+    sql: ${TABLE}.city ;;
+  }
+
+  dimension: country_iso {
+    hidden: yes
+    type: string
+    sql: ${TABLE}.country_iso ;;
   }
 
   dimension: country {
@@ -145,12 +122,12 @@ view: address_sessions {
   ######## # Sessions ########
   ##### Unique count of events during a session. If multiple events are triggerred during a session, e.g 3 times view item, the event is only counted once.
 
-  measure: cnt_has_address {
+  measure: cnt_session_with_address {
     group_label: "# Sessions"
     label: "# Sessions With Address"
     description: "# sessions in which the user had an address (selected in previous session or current)"
     type: count
-    filters: [has_address: "yes"]
+    filters: [is_session_with_address: "yes"]
   }
 
   measure: cnt_address_selected {
@@ -374,16 +351,10 @@ view: address_sessions {
   ######## Session Attributes ########
 
   dimension: is_session_with_address {
-    hidden: yes
-    type: yesno
-    sql: ${TABLE}.is_session_with_address ;;
-  }
-
-  dimension: has_address {
     group_label: "Session Dimensions"
     description: "Whether the session had a deliverable Address Confirmed (either saved from a previous session or selected in the current one)"
     type: yesno
-    sql: ${is_session_with_address} ;;
+    sql: ${TABLE}.is_session_with_address ;;
   }
 
   dimension: is_new_user {
@@ -594,8 +565,8 @@ view: address_sessions {
       cnte_address_confirmed,
       has_waitlist_signup_selected,
       anonymous_id,
-      context_app_version,
-      context_device_type,
+      app_version,
+      device_type,
       session_id,
       is_new_user,
       session_start_at_date,
@@ -604,7 +575,7 @@ view: address_sessions {
       country_iso,
       hub_city,
       delivery_pdt,
-      has_address
+      is_session_with_address
     ]
   }
 }
