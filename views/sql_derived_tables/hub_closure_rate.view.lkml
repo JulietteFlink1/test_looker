@@ -516,7 +516,7 @@ group by 1, 2, 3, 4, 5, 6, 7, 8, 9
   }
 
   measure: all_closure_rate {
-    label: "% Closure Rate"
+    label: "% All Closure Rate"
     hidden:  no
     type: number
     sql: ${sum_closed_hours}/${sum_opened_hours};;
