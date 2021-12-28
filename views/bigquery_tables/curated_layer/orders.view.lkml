@@ -1598,6 +1598,16 @@ view: orders {
   }
 
 
+  measure: sum_avg_acceptance_reaction_time {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Reaction + Acceptance Time"
+    description: "Sum of the average of acceptance time and the average of reaction time"
+    hidden:  no
+    type: number
+    sql:${avg_acceptance_time} + ${avg_reaction_time};;
+    value_format_name: decimal_1
+  }
+
   ############
   ## COUNTS ##
   ############
