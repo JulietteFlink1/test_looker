@@ -578,6 +578,13 @@ view: customer_metrics_cleaned_dev {
     sql: ${lifetime_orders} ;;
   }
 
+  dimension_group: time_since_sign_up {
+    group_label: "* User Dimensions *"
+    type: duration
+    sql_start: ${first_order_raw} ;;
+    sql_end: ${orders_cleaned_dev.created_raw} ;;
+  }
+
   measure: avg_lifetime_revenue {
     type: average
     value_format_name: euro_accounting_2_precision
