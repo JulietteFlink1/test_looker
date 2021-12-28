@@ -70,8 +70,9 @@ final as (
           , warehouse
           , open_hours
           , round(TIMESTAMP_DIFF(cleaned_opened_datetime, cleaned_closed_datetime, MINUTE)/60, 2) as closure_hours
-          , closure_reason_clean
-          , closure_reason
+          , case when closure_reason_clean = "External factor" then "External_factor"
+                when closure_reason_clean = "Property issue" then "Property_issue"
+                else closure_reason_clean end as closure_reason_clean
           from cleaned_hours
 ),
 
@@ -104,22 +105,22 @@ select f.date
 , coalesce(sum(case when closure_reason_clean = 'Understaffing' then mo.total_missed_orders end),0) as missed_orders_understaffing
 , coalesce(sum(case when closure_reason_clean = 'Weather' then mo.total_missed_orders end),0) as missed_orders_weather
 , coalesce(sum(case when closure_reason_clean = 'Remodelling' then mo.total_missed_orders end),0) as missed_orders_remodelling
-, coalesce(sum(case when closure_reason_clean = 'External factor' then mo.total_missed_orders end),0) as missed_orders_external_factor
-, coalesce(sum(case when closure_reason_clean = 'Property issue' then mo.total_missed_orders end),0) as missed_orders_property_issue
+, coalesce(sum(case when closure_reason_clean = 'External_factor' then mo.total_missed_orders end),0) as missed_orders_external_factor
+, coalesce(sum(case when closure_reason_clean = 'Property_issue' then mo.total_missed_orders end),0) as missed_orders_property_issue
 , coalesce(sum(case when closure_reason_clean = 'Other' then mo.total_missed_orders end),0) as missed_orders_other
 , coalesce(sum(case when closure_reason_clean = 'Equipment' then mo.total_missed_orders end),0) as missed_orders_equipment
 , coalesce(sum(case when closure_reason_clean = 'Understaffing' then a.aov end),0) as lost_gmv_understaffing
 , coalesce(sum(case when closure_reason_clean = 'Weather' then a.aov end),0) as lost_gmv_weather
 , coalesce(sum(case when closure_reason_clean = 'Remodelling' then a.aov end),0) as lost_gmv_remodelling
-, coalesce(sum(case when closure_reason_clean = 'External factor' then a.aov end),0) as lost_gmv_external_factor
-, coalesce(sum(case when closure_reason_clean = 'Property issue' then a.aov end),0) as lost_gmv_property_issue
+, coalesce(sum(case when closure_reason_clean = 'External_factor' then a.aov end),0) as lost_gmv_external_factor
+, coalesce(sum(case when closure_reason_clean = 'Property_issue' then a.aov end),0) as lost_gmv_property_issue
 , coalesce(sum(case when closure_reason_clean = 'Other' then a.aov end),0) as lost_gmv_other
 , coalesce(sum(case when closure_reason_clean = 'Equipment' then a.aov end),0) as lost_gmv_equipment
 , coalesce(sum(case when closure_reason_clean = 'Understaffing' then closure_hours end),0) as total_closure_hours_understaffing
 , coalesce(sum(case when closure_reason_clean = 'Weather' then closure_hours end),0) as total_closure_hours_weather
 , coalesce(sum(case when closure_reason_clean = 'Remodelling' then closure_hours end),0) as total_closure_hours_remodelling
-, coalesce(sum(case when closure_reason_clean = 'External factor' then closure_hours end),0) as total_closure_hours_external_factor
-, coalesce(sum(case when closure_reason_clean = 'Property issue' then closure_hours end),0) as total_closure_hours_property_issue
+, coalesce(sum(case when closure_reason_clean = 'External_factor' then closure_hours end),0) as total_closure_hours_external_factor
+, coalesce(sum(case when closure_reason_clean = 'Property_issue' then closure_hours end),0) as total_closure_hours_property_issue
 , coalesce(sum(case when closure_reason_clean = 'Other' then closure_hours end),0) as total_closure_hours_other
 , coalesce(sum(case when closure_reason_clean = 'Equipment' then closure_hours end),0) as total_closure_hours_equipment
 , ifnull(sum(closure_hours), 0) as total_closure_hours
@@ -373,8 +374,10 @@ group by 1, 2, 3, 4, 5, 6, 7, 8, 9
     allowed_value: { value: "Understaffing" }
     allowed_value: { value: "Weather" }
     allowed_value: { value: "Remodelling" }
-    allowed_value: { value: "External factor" }
-    allowed_value: { value: "Property issue" }
+    allowed_value: { label: "External factor"
+                     value: "External_factor" }
+    allowed_value: { label: "Property issue"
+                     value: "Property_issue" }
     allowed_value: { value: "Other" }
     allowed_value: { value: "Equipment" }
     allowed_value: { value: "All" }
@@ -392,9 +395,9 @@ group by 1, 2, 3, 4, 5, 6, 7, 8, 9
       ${sum_missed_orders_weather}
       {% elsif closure_reason_parameter._parameter_value == 'Remodelling' %}
       ${sum_missed_orders_remodelling}
-      {% elsif closure_reason_parameter._parameter_value == 'External factor' %}
+      {% elsif closure_reason_parameter._parameter_value == 'External_factor' %}
       ${sum_missed_orders_external_factor}
-      {% elsif closure_reason_parameter._parameter_value == 'Property issue' %}
+      {% elsif closure_reason_parameter._parameter_value == 'Property_issue' %}
       ${sum_missed_orders_property_issue}
       {% elsif closure_reason_parameter._parameter_value == 'Other' %}
       ${sum_missed_orders_other}
@@ -417,9 +420,9 @@ group by 1, 2, 3, 4, 5, 6, 7, 8, 9
       ${sum_lost_gmv_weather}
       {% elsif closure_reason_parameter._parameter_value == 'Remodelling' %}
       ${sum_lost_gmv_remodelling}
-      {% elsif closure_reason_parameter._parameter_value == 'External factor' %}
+      {% elsif closure_reason_parameter._parameter_value == 'External_factor' %}
       ${sum_lost_gmv_external_factor}
-      {% elsif closure_reason_parameter._parameter_value == 'Property issue' %}
+      {% elsif closure_reason_parameter._parameter_value == 'Property_issue' %}
       ${sum_lost_gmv_property_issue}
       {% elsif closure_reason_parameter._parameter_value == 'Other' %}
       ${sum_lost_gmv_other}
@@ -442,9 +445,9 @@ group by 1, 2, 3, 4, 5, 6, 7, 8, 9
       ${sum_closure_hours_weather}/${sum_opened_hours}
       {% elsif closure_reason_parameter._parameter_value == 'Remodelling' %}
       ${sum_closure_hours_remodelling}/${sum_opened_hours}
-      {% elsif closure_reason_parameter._parameter_value == 'External factor' %}
+      {% elsif closure_reason_parameter._parameter_value == 'External_factor' %}
       ${sum_closure_hours_external_factor}/${sum_opened_hours}
-      {% elsif closure_reason_parameter._parameter_value == 'Property issue' %}
+      {% elsif closure_reason_parameter._parameter_value == 'Property_issue' %}
       ${sum_closure_hours_property_issue}/${sum_opened_hours}
       {% elsif closure_reason_parameter._parameter_value == 'Other' %}
       ${sum_closure_hours_other}/${sum_opened_hours}
