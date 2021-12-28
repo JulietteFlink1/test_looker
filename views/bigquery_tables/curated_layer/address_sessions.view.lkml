@@ -1,5 +1,5 @@
 view: address_sessions {
-  sql_table_name: `flink-data-dev.sandbox.address_sessions`
+  sql_table_name: `flink-data-dev.curated.address_sessions`
     ;;
 
   dimension: has_order {
@@ -159,7 +159,7 @@ view: address_sessions {
     label: "# Sessions With Waitlist Intent"
     description: "# sessions in which Waitlist Signup Selected happened"
     type: count
-    filters: [has_waitlist_signup_selected: "yes"]
+    filters: [cnte_waitlist_signup_selected: ">0"]
   }
 
   measure: cnt_available_area {
@@ -167,7 +167,7 @@ view: address_sessions {
     label: "# Sessions At Deliverable Location"
     description: "# sessions in which the last Location Pin Placed event was at a location we can deliver to (=inside delivery zone and resolvable address)"
     type: count
-    filters: [last_is_location_deliverable: "true"]
+    filters: [last_is_location_deliverable: "true", cnte_location_pin_placed: ">0"]
   }
 
   measure: cnt_unavailable_area {
@@ -175,7 +175,7 @@ view: address_sessions {
     label: "# Sessions Outside Deliverable Locations"
     description: "# sessions in which the last Location Pin Placed event was at a location we cannot deliver to (=outside delivery zone or no resolvable address)"
     type: count
-    filters: [last_is_location_deliverable: "false"]
+    filters: [last_is_location_deliverable: "false", cnte_location_pin_placed: ">0"]
   }
 
   measure: cnt_address_skipped_in_available_area {
@@ -204,10 +204,10 @@ view: address_sessions {
 
   measure: cnt_noaction_area_available {
     group_label: "# Sessions"
-    label: "# Sessions With Address Confirmed OR Address Skipped, Inside Delivery Area"
+    label: "# Sessions Without Address Confirmed or Address Skipped but Location Pin Placed, Inside Delivery Area"
     description: "# sessions in which the user was in an available area but did not perform any address selection or skipping action"
     type: count
-    filters: [last_is_location_deliverable: "true", cnte_address_confirmed: "0", cnte_address_skipped: "0"]
+    filters: [last_is_location_deliverable: "true", cnte_address_confirmed: "0", cnte_address_skipped: "0", cnte_location_pin_placed: ">0"]
   }
 
   measure: cnt_waitlist_area_unavailable {
@@ -228,7 +228,7 @@ view: address_sessions {
 
   measure: cnt_waitlist_and_browse_area_unavailable {
     group_label: "# Sessions"
-    label: "# Sessions With Waitlist Intent OR Product Browsing, Outside Delivery Area"
+    label: "# Sessions With Waitlist Intent AND Product Browsing, Outside Delivery Area"
     description: "# sessions in which the user was in an unavailable area and selected join waitlist and selected browse products"
     type: count
     filters: [last_is_location_deliverable: "false", cnte_selection_browse_selected: ">0", cnte_waitlist_signup_selected: ">0"]
@@ -236,10 +236,10 @@ view: address_sessions {
 
   measure: cnt_noaction_area_unavailable {
     group_label: "# Sessions"
-    label: "# Sessions With No Waitlist Intent or Product Browsing, Outside Delivery Area"
+    label: "# Sessions Without Waitlist Intent or Product Browsing but Location Pin Placed, Outside Delivery Area"
     description: "# sessions in which the user was in an unavailable area and did not have a waitlist joining intent or browsing selection action"
     type: count
-    filters: [last_is_location_deliverable: "false", cnte_waitlist_signup_selected: "0", cnte_selection_browse_selected: "0"]
+    filters: [last_is_location_deliverable: "false", cnte_waitlist_signup_selected: "0", cnte_selection_browse_selected: "0", cnte_location_pin_placed: ">0"]
   }
 
   # NOTE: want to update this to also be able to specify whether it's failed within delivery area or not
@@ -449,7 +449,6 @@ view: address_sessions {
     group_label: "Date Dimensions"
     hidden: yes
     type: time
-    datatype: datetime
     timeframes: [
       raw,
       time,
@@ -468,7 +467,6 @@ view: address_sessions {
     group_label: "Date Dimensions"
     hidden: yes
     type: time
-    datatype: datetime
     timeframes: [
       raw,
       time,
