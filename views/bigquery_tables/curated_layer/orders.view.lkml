@@ -1600,7 +1600,7 @@ view: orders {
 
   measure: sum_avg_acceptance_reaction_time {
     group_label: "* Operations / Logistics *"
-    label: "SUM of Acceptance and Reaction Time"
+    label: "SUM of AVG Acceptance and AVG Reaction Time"
     description: "Sum of the average of acceptance time and the average of reaction time"
     hidden:  no
     type: number
