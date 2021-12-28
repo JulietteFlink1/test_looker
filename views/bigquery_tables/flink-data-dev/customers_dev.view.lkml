@@ -1,4 +1,4 @@
-view: customers {
+view: customers_dev {
   sql_table_name: `flink-data-dev.curated.customers`
     ;;
   drill_fields: [customer_id]
