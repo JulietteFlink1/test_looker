@@ -11,7 +11,8 @@ explore: orders_cleaned_dev {
 
   join: customer_metrics_cleaned_dev {
     from: customer_metrics_cleaned_dev
-    sql_on: ${orders_cleaned_dev.customer_id_mapped} =  ${customer_metrics_cleaned_dev.customer_id_mapped};;
+    sql_on: ${customer_metrics_cleaned_dev.country_iso} = ${orders_cleaned_dev.country_iso} AND
+    ${orders_cleaned_dev.customer_id_mapped} =  ${customer_metrics_cleaned_dev.customer_id_mapped};;
     type: left_outer
     relationship: many_to_one
   }
