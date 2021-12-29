@@ -18,6 +18,7 @@
       crm_customer_feed.first_order_week: after 2021/01/25
       hubs.country: ''
       hubs.hub_name: ''
+      global_filters_and_parameters.datasource_filter: ''
     sorts: [crm_customer_feed.first_order_week, order_cl.weeks_time_since_sign_up]
     limit: 500
     column_limit: 50
@@ -122,6 +123,7 @@
       crm_customer_feed.first_order_week: after 2021/01/25
       hubs.country: ''
       hubs.hub_name: ''
+      global_filters_and_parameters.datasource_filter: ''
     sorts: [crm_customer_feed.first_order_week, crm_customer_feed.weeks_time_since_sign_up]
     limit: 500
     column_limit: 50
@@ -226,6 +228,7 @@
       crm_customer_feed.first_order_week: after 2021/01/25
       hubs.country: ''
       hubs.hub_name: ''
+      global_filters_and_parameters.datasource_filter: ''
     sorts: [crm_customer_feed.weeks_time_since_sign_up, crm_customer_feed.first_order_week
         0]
     limit: 500
@@ -362,6 +365,7 @@
       crm_customer_feed.first_order_week: after 2021/01/25
       hubs.country: ''
       hubs.hub_name: ''
+      global_filters_and_parameters.datasource_filter: ''
     sorts: [crm_customer_feed.weeks_time_since_sign_up, crm_customer_feed.first_order_week
         0]
     limit: 500
@@ -494,6 +498,7 @@
       crm_customer_feed.first_order_discount_code: ''
       crm_customer_feed.first_order_city: ''
       crm_customer_feed.first_order_country_iso: ''
+      global_filters_and_parameters.datasource_filter: ''
     sorts: [crm_customer_feed.weeks_time_since_sign_up, crm_customer_feed.first_order_week]
     limit: 500
     column_limit: 50
