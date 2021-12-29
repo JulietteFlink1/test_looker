@@ -1,5 +1,5 @@
-- dashboard: weekly_cohorts_ct_migrated_dev
-  title: TEST Weekly Cohorts (CT Migrated)
+- dashboard: weekly_cohorts_old_emailbased_logic_dev
+  title: TEST Weekly Cohorts [old email-based logic]
   layout: newspaper
   preferred_viewer: dashboards-next
   elements:
@@ -19,7 +19,7 @@
       hubs.country: ''
       hubs.hub_name: ''
       global_filters_and_parameters.datasource_filter: ''
-    sorts: [crm_customer_feed.first_order_week, order_cl.weeks_time_since_sign_up]
+    sorts: [crm_customer_feed.first_order_week, crm_customer_feed.weeks_time_since_sign_up]
     limit: 500
     column_limit: 50
     total: true
@@ -98,11 +98,14 @@
     hidden_fields: [orders_cl.cnt_unique_customers]
     y_axes: []
     listen:
-      Hub Name: crm_customer_feed.first_order_hub
-      Voucher Code: crm_customer_feed.first_order_discount_code
-      City: crm_customer_feed.first_order_city
       Country: crm_customer_feed.first_order_country_iso
+      City: crm_customer_feed.first_order_city
       Is Voucher Order (Yes / No): crm_customer_feed.is_discount_acquisition
+      First Platform: crm_customer_feed.first_platform
+      First Voucher Code: crm_customer_feed.first_order_discount_code
+      First Hub Name: crm_customer_feed.first_order_hub
+      First Cart Discount Name: crm_customer_feed.first_order_cart_discount_name
+      First Voucher Name: crm_customer_feed.first_order_discount_name
     row: 2
     col: 0
     width: 24
@@ -119,7 +122,6 @@
     filters:
       orders_cl.is_internal_order: 'no'
       orders_cl.is_successful_order: 'yes'
-      orders_cl.created_date: after 2020/01/25
       crm_customer_feed.first_order_week: after 2021/01/25
       hubs.country: ''
       hubs.hub_name: ''
@@ -203,11 +205,14 @@
       13_order_frequency]
     y_axes: []
     listen:
-      Hub Name: crm_customer_feed.first_order_hub
-      Voucher Code: crm_customer_feed.first_order_discount_code
-      City: crm_customer_feed.first_order_city
       Country: crm_customer_feed.first_order_country_iso
+      City: crm_customer_feed.first_order_city
       Is Voucher Order (Yes / No): crm_customer_feed.is_discount_acquisition
+      First Platform: crm_customer_feed.first_platform
+      First Voucher Code: crm_customer_feed.first_order_discount_code
+      First Hub Name: crm_customer_feed.first_order_hub
+      First Cart Discount Name: crm_customer_feed.first_order_cart_discount_name
+      First Voucher Name: crm_customer_feed.first_order_discount_name
     row: 13
     col: 0
     width: 24
@@ -224,7 +229,6 @@
     filters:
       orders_cl.is_internal_order: 'no'
       orders_cl.is_successful_order: 'yes'
-      orders_cl.created_date: after 2020/01/25
       crm_customer_feed.first_order_week: after 2021/01/25
       hubs.country: ''
       hubs.hub_name: ''
@@ -311,11 +315,14 @@
       11_gmv_retention, 12_gmv_retention, 13_gmv_retention]
     y_axes: []
     listen:
-      Hub Name: crm_customer_feed.first_order_hub
-      Voucher Code: crm_customer_feed.first_order_discount_code
-      City: crm_customer_feed.first_order_city
       Country: crm_customer_feed.first_order_country_iso
+      City: crm_customer_feed.first_order_city
       Is Voucher Order (Yes / No): crm_customer_feed.is_discount_acquisition
+      First Platform: crm_customer_feed.first_platform
+      First Voucher Code: crm_customer_feed.first_order_discount_code
+      First Hub Name: crm_customer_feed.first_order_hub
+      First Cart Discount Name: crm_customer_feed.first_order_cart_discount_name
+      First Voucher Name: crm_customer_feed.first_order_discount_name
     row: 26
     col: 0
     width: 24
@@ -361,7 +368,6 @@
     filters:
       orders_cl.is_internal_order: 'no'
       orders_cl.is_successful_order: 'yes'
-      orders_cl.created_date: after 2020/01/25
       crm_customer_feed.first_order_week: after 2021/01/25
       hubs.country: ''
       hubs.hub_name: ''
@@ -447,11 +453,14 @@
     hidden_fields: [orders_cl.cnt_unique_customers, orders_cl.sum_discount_amt, orders_cl.sum_revenue_gross]
     y_axes: []
     listen:
-      Hub Name: crm_customer_feed.first_order_hub
-      Voucher Code: crm_customer_feed.first_order_discount_code
-      City: crm_customer_feed.first_order_city
       Country: crm_customer_feed.first_order_country_iso
+      City: crm_customer_feed.first_order_city
       Is Voucher Order (Yes / No): crm_customer_feed.is_discount_acquisition
+      First Platform: crm_customer_feed.first_platform
+      First Voucher Code: crm_customer_feed.first_order_discount_code
+      First Hub Name: crm_customer_feed.first_order_hub
+      First Cart Discount Name: crm_customer_feed.first_order_cart_discount_name
+      First Voucher Name: crm_customer_feed.first_order_discount_name
     row: 40
     col: 0
     width: 24
@@ -490,13 +499,9 @@
     filters:
       orders_cl.is_internal_order: 'no'
       orders_cl.is_successful_order: 'yes'
-      orders_cl.created_date: after 2020/01/25
       crm_customer_feed.first_order_week: after 2021/01/25
-      crm_customer_feed.first_order_hub: ''
       hubs.country: ''
       hubs.hub_name: ''
-      crm_customer_feed.first_order_discount_code: ''
-      crm_customer_feed.first_order_city: ''
       crm_customer_feed.first_order_country_iso: ''
       global_filters_and_parameters.datasource_filter: ''
     sorts: [crm_customer_feed.weeks_time_since_sign_up, crm_customer_feed.first_order_week]
@@ -580,7 +585,14 @@
       orders_cl.cnt_unique_customers_with_voucher]
     y_axes: []
     listen:
+      Country: crm_customer_feed.first_order_country_iso
+      City: crm_customer_feed.first_order_city
       Is Voucher Order (Yes / No): crm_customer_feed.is_discount_acquisition
+      First Platform: crm_customer_feed.first_platform
+      First Voucher Code: crm_customer_feed.first_order_discount_code
+      First Hub Name: crm_customer_feed.first_order_hub
+      First Cart Discount Name: crm_customer_feed.first_order_cart_discount_name
+      First Voucher Name: crm_customer_feed.first_order_discount_name
     row: 53
     col: 0
     width: 24
@@ -589,7 +601,7 @@
   - name: Country
     title: Country
     type: field_filter
-    default_value: DE
+    default_value: DE,AT,FR,NL
     allow_multiple_values: true
     required: true
     ui_config:
@@ -614,8 +626,8 @@
     explore: orders_customers_dev
     listens_to_filters: []
     field: crm_customer_feed.first_order_city
-  - name: Hub Name
-    title: Hub Name
+  - name: First Hub Name
+    title: First Hub Name
     type: field_filter
     default_value: ''
     allow_multiple_values: true
@@ -635,15 +647,15 @@
     allow_multiple_values: true
     required: false
     ui_config:
-      type: radio_buttons
+      type: button_toggles
       display: inline
       options: []
     model: flink_v3
     explore: orders_customers_dev
     listens_to_filters: []
     field: crm_customer_feed.is_discount_acquisition
-  - name: Voucher Code
-    title: Voucher Code
+  - name: First Voucher Code
+    title: First Voucher Code
     type: field_filter
     default_value: ''
     allow_multiple_values: true
@@ -656,3 +668,45 @@
     explore: orders_customers_dev
     listens_to_filters: []
     field: crm_customer_feed.first_order_discount_code
+  - name: First Platform
+    title: First Platform
+    type: field_filter
+    default_value: ''
+    allow_multiple_values: true
+    required: false
+    ui_config:
+      type: dropdown_menu
+      display: inline
+      options: []
+    model: flink_v3
+    explore: orders_customers_dev
+    listens_to_filters: []
+    field: crm_customer_feed.first_platform
+  - name: First Voucher Name
+    title: First Voucher Name
+    type: field_filter
+    default_value: ''
+    allow_multiple_values: true
+    required: false
+    ui_config:
+      type: tag_list
+      display: popover
+      options: []
+    model: flink_v3
+    explore: orders_customers_dev
+    listens_to_filters: []
+    field: crm_customer_feed.first_order_discount_name
+  - name: First Cart Discount Name
+    title: First Cart Discount Name
+    type: field_filter
+    default_value: ''
+    allow_multiple_values: true
+    required: false
+    ui_config:
+      type: tag_list
+      display: popover
+      options: []
+    model: flink_v3
+    explore: orders_customers_dev
+    listens_to_filters: []
+    field: crm_customer_feed.first_order_cart_discount_name
