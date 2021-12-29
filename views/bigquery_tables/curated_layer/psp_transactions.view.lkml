@@ -238,6 +238,27 @@ view: psp_transactions {
     description: "CT Orders Revenue Gross - Adyen Main Amount"
   }
 
+  measure: cnt_chargebacks_transactions {
+    label: "# Chargebacks"
+    type: count_distinct
+    sql: ${psp_transaction_uuid} ;;
+    filters: [record_type: "Chargeback"]
+  }
+
+  measure: cnt_authorised_transactions {
+    label: "# Authorised"
+    type: count_distinct
+    sql: ${psp_transaction_uuid} ;;
+    filters: [record_type: "Authorised"]
+  }
+
+  measure: cnt_settled_transactions {
+    label: "# Settled"
+    type: count_distinct
+    sql: ${psp_transaction_uuid} ;;
+    filters: [record_type: "Settled"]
+  }
+
 
   measure: count {
     type: count
