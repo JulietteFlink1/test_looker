@@ -107,6 +107,14 @@ view: psp_transactions {
     sql: ${TABLE}.payment_method ;;
   }
 
+  dimension: payment_method_grouped {
+    type: string
+    sql:case when ${payment_method} like 'mc%' then 'mc'
+             when ${payment_method} like 'visa%' then 'visa'
+        else ${payment_method}
+        end ;;
+  }
+
   dimension: processing_fee_fc {
     type: number
     sql: ${TABLE}.processing_fee_fc ;;
