@@ -37,7 +37,7 @@ dimension: lifetime_revenue_tier {
 dimension: country_iso {
   group_label: "* User Dimensions *"
   type: string
-  sql: ${TABLE}.country_iso ;;
+  sql: ${TABLE}.first_order_country_iso ;;
 }
 
 dimension: unique_id {
@@ -50,7 +50,7 @@ dimension: unique_id {
 dimension: country {
   group_label: "* User Dimensions *"
   type: string
-  sql: ${TABLE}.first_order_country ;;
+  sql: ${TABLE}.first_order_country_iso ;;
 }
 
 dimension: user_email {
@@ -111,10 +111,10 @@ dimension: first_order_city {
   sql: ${TABLE}.first_order_city ;;
 }
 
-dimension: first_order_country {
+dimension: first_order_country_iso {
   group_label: "* User Dimensions *"
   type: string
-  sql: ${TABLE}.first_order_country ;;
+  sql: ${TABLE}.first_order_country_iso ;;
 }
 
 dimension: first_order_hub {

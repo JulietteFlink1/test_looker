@@ -100,7 +100,7 @@
       Hub Name: crm_customer_feed.first_order_hub
       Voucher Code: crm_customer_feed.first_order_discount_code
       City: crm_customer_feed.first_order_city
-      Country: crm_customer_feed.country
+      Country: crm_customer_feed.first_order_country_iso
       Is Voucher Order (Yes / No): crm_customer_feed.is_discount_acquisition
     row: 2
     col: 0
@@ -204,7 +204,7 @@
       Hub Name: crm_customer_feed.first_order_hub
       Voucher Code: crm_customer_feed.first_order_discount_code
       City: crm_customer_feed.first_order_city
-      Country: crm_customer_feed.country
+      Country: crm_customer_feed.first_order_country_iso
       Is Voucher Order (Yes / No): crm_customer_feed.is_discount_acquisition
     row: 13
     col: 0
@@ -311,7 +311,7 @@
       Hub Name: crm_customer_feed.first_order_hub
       Voucher Code: crm_customer_feed.first_order_discount_code
       City: crm_customer_feed.first_order_city
-      Country: crm_customer_feed.country
+      Country: crm_customer_feed.first_order_country_iso
       Is Voucher Order (Yes / No): crm_customer_feed.is_discount_acquisition
     row: 26
     col: 0
@@ -446,7 +446,7 @@
       Hub Name: crm_customer_feed.first_order_hub
       Voucher Code: crm_customer_feed.first_order_discount_code
       City: crm_customer_feed.first_order_city
-      Country: crm_customer_feed.country
+      Country: crm_customer_feed.first_order_country_iso
       Is Voucher Order (Yes / No): crm_customer_feed.is_discount_acquisition
     row: 40
     col: 0
@@ -493,7 +493,7 @@
       hubs.hub_name: ''
       crm_customer_feed.first_order_discount_code: ''
       crm_customer_feed.first_order_city: ''
-      crm_customer_feed.country: Germany
+      crm_customer_feed.first_order_country_iso: ''
     sorts: [crm_customer_feed.weeks_time_since_sign_up, crm_customer_feed.first_order_week]
     limit: 500
     column_limit: 50
@@ -584,7 +584,7 @@
   - name: Country
     title: Country
     type: field_filter
-    default_value: Germany
+    default_value: DE
     allow_multiple_values: true
     required: true
     ui_config:
@@ -594,7 +594,7 @@
     model: flink_v3
     explore: orders_customers_dev
     listens_to_filters: []
-    field: crm_customer_feed.country
+    field: crm_customer_feed.first_order_country_iso
   - name: City
     title: City
     type: field_filter

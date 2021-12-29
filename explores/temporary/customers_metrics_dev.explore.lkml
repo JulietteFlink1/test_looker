@@ -16,7 +16,7 @@ explore: orders_customers_dev {
 
   join: crm_customer_feed {
     view_label: "* Customers *"
-    sql_on: ${crm_customer_feed.country_iso} = ${orders_cl.country_iso} AND
+    sql_on: ${crm_customer_feed.first_order_country_iso} = ${orders_cl.country_iso} AND
       ${crm_customer_feed.user_email}    = ${orders_cl.user_email} ;;
     relationship: many_to_one
     type: left_outer
@@ -24,7 +24,7 @@ explore: orders_customers_dev {
 
   join: monthly_cohorts {
     view_label: "Cohorts - Monthly"
-    sql_on: ${crm_customer_feed.country_iso} = ${monthly_cohorts.country_iso} AND
+    sql_on: ${crm_customer_feed.first_order_country_iso} = ${monthly_cohorts.country_iso} AND
       ${monthly_cohorts.first_order_month} = ${crm_customer_feed.first_order_month};;
     relationship: many_to_one
     type: left_outer
@@ -32,7 +32,7 @@ explore: orders_customers_dev {
 
   join: weekly_cohorts {
     view_label: "Cohorts - Weekly"
-    sql_on: ${crm_customer_feed.country_iso} = ${weekly_cohorts.country_iso} AND
+    sql_on: ${crm_customer_feed.first_order_country_iso} = ${weekly_cohorts.country_iso} AND
       ${weekly_cohorts.first_order_week} = ${crm_customer_feed.first_order_week};;
     relationship: many_to_one
     type: left_outer
@@ -46,7 +46,7 @@ explore: orders_customers_dev {
 
   join: pdt_customer_retention {
     view_label: " Customer Retention vs PDT "
-    sql_on: ${crm_customer_feed.country_iso} = ${pdt_customer_retention.country_iso} AND
+    sql_on: ${crm_customer_feed.first_order_country_iso} = ${pdt_customer_retention.country_iso} AND
       ${crm_customer_feed.user_email}    = ${pdt_customer_retention.customer_email} ;;
     relationship: many_to_one
     type: left_outer
