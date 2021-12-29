@@ -163,6 +163,27 @@ view: psp_transactions {
     value_format_name: euro_accounting_2_precision
   }
 
+  measure: sum_main_amount_chargebacks {
+    type: sum
+    sql: ${main_amount} ;;
+    value_format_name: euro_accounting_2_precision
+    filters: [record_type: "Chargeback"]
+  }
+
+  measure: sum_main_amount_settled {
+    type: sum
+    sql: ${main_amount} ;;
+    value_format_name: euro_accounting_2_precision
+    filters: [record_type: "Settled"]
+  }
+
+  measure: sum_main_amount_authorised {
+    type: sum
+    sql: ${main_amount} ;;
+    value_format_name: euro_accounting_2_precision
+    filters: [record_type: "Authorised"]
+  }
+
   measure: sum_authorised_pc {
     type: sum
     sql: ${authorised_pc} ;;
