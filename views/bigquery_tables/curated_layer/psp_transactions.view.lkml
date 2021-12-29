@@ -13,6 +13,11 @@ view: psp_transactions {
     primary_key: yes
   }
 
+  dimension: country_iso {
+    type: string
+    sql:${TABLE}.country_iso ;;
+  }
+
   dimension_group: booking {
     type: time
     timeframes: [
