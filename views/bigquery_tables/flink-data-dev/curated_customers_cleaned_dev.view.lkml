@@ -4,7 +4,7 @@ view: curated_customers_cleaned_dev {
       curated_customers as (
       SELECT
                   lower(customer_email) as customer_email
-                , first_order_country as country_iso
+                , first_order_country_iso as country_iso
                 , first_order_phone_number as phone_number
                 , account_created_at_timestamp as sign_up_timestamp
                 , 'commercetools' as backed_source
