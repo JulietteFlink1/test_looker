@@ -49,9 +49,9 @@ view: customers_dev {
     sql: ${TABLE}.first_order_city ;;
   }
 
-  dimension: first_order_country {
+  dimension: first_order_country_iso {
     type: string
-    sql: ${TABLE}.first_order_country ;;
+    sql: ${TABLE}.first_order_country_iso ;;
   }
 
   dimension: first_order_discount_code {
