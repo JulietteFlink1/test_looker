@@ -21,7 +21,9 @@ explore: psp_transactions {
     filters: [
       orders.is_successful_order: "",
       psp_transactions.merchant_account: "",
-      global_filters_and_parameters.datasource_filter: "last 60 days"
+      global_filters_and_parameters.datasource_filter: "",
+      psp_transactions.booking_date: "",
+      psp_transactions.record_type: ""
     ]
   }
 
@@ -82,6 +84,13 @@ join: orders {
     view_label: "* VAT on Order Level *"
     sql_on: ${orders.order_uuid} = ${vat_order.order_uuid} ;;
     relationship: one_to_one
+    type: left_outer
+  }
+
+  join: psp_reference_authorised_date {
+    view_label: "* PSP Reference Authorised Date *"
+    sql_on: ${psp_transactions.psp_reference} = ${psp_reference_authorised_date.psp_reference} ;;
+    relationship: many_to_one
     type: left_outer
   }
 
