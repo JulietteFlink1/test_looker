@@ -92,6 +92,7 @@ join: orders {
     sql_on: ${psp_transactions.psp_reference} = ${psp_reference_authorised_date.psp_reference} ;;
     relationship: many_to_one
     type: left_outer
+    fields: [psp_reference_authorised_date.psp_reference_authorised_booking_date,psp_reference_authorised_date.psp_reference_authorised_booking_month]
   }
 
 }
