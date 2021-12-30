@@ -49,7 +49,7 @@ join: orders {
 
   join: shyftplan_riders_pickers_hours {
     from: shyftplan_riders_pickers_hours_clean
-    view_label: "* Shifts *"
+    view_label: ""
     sql_on: ${orders.created_date} = ${shyftplan_riders_pickers_hours.date} and
       ${hubs.hub_code}          = lower(${shyftplan_riders_pickers_hours.hub_name});;
     relationship: many_to_one
@@ -65,6 +65,7 @@ join: orders {
   }
 
   join: products {
+    view_label: ""
     sql_on: ${products.product_sku} = ${orderline.product_sku} ;;
     relationship: many_to_one
     type: left_outer
