@@ -55,12 +55,14 @@ view: hubs_ct {
     map_layer_name: countries
     sql: ${TABLE}.country ;;
     group_label: "> Geographic Data"
+    label: "Country"
   }
 
   dimension: country_iso {
     type: string
     sql: ${TABLE}.country_iso ;;
     group_label: "> Geographic Data"
+    label: "Country"
   }
 
   dimension: latitude {
@@ -158,7 +160,7 @@ view: hubs_ct {
 
   dimension: termination_date {
     label: "Hub Termination Date"
-    description: "The date, a hub was closed"
+    description: "The date where a hub was closed"
     type: date
     datatype: date
     sql: ${TABLE}.termination_date ;;

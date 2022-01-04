@@ -558,11 +558,11 @@ view: app_sessions {
     sql: ${cnt_payment_started}/NULLIF(${cnt_checkout_started},0) ;;
   }
 
-  measure: payment_success {
+  measure: mcvr5 {
     group_label: "Conversions"
-    label: "Paymenr Success Rate"
+    label: "mCVR5"
     type: number
-    description: "Number of sessions in which there was an Order Placed, compared to the number of sessions in which there was a Payment Started"
+    description: "# sessions in which there was an Order Placed, compared to the number of sessions in which there was a Payment Started"
     value_format_name: percent_1
     sql: ${cnt_purchase}/NULLIF(${cnt_payment_started},0) ;;
   }
