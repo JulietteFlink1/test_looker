@@ -1,24 +1,20 @@
-view: customers_metrics {
-  sql_table_name: `flink-data-prod.crm.crm_customer_feed`
-    ;;
-
-  dimension: customer_uuid {
-    group_label: "* User Dimensions *"
-    type: string
-    primary_key: yes
-    sql: ${TABLE}.customer_uuid ;;
+view: customer_metrics_cleaned_dev {
+  derived_table: {
+    sql: select * from flink-data-dev.curated.customer_cohorts_base ;;
   }
+
+
 
   dimension: reorder_number_28_days {
     group_label: "* User Dimensions *"
     type: number
-    sql: ${TABLE}.number_of_orders_28days_after_first_order ;;
+    sql: ${TABLE}._28_day_reorder_number ;;
   }
 
   dimension: reorder_number_30_days {
     group_label: "* User Dimensions *"
     type: number
-    sql: ${TABLE}.number_of_orders_30days_after_first_order ;;
+    sql: ${TABLE}._30_day_reorder_number ;;
   }
 
   dimension: lifetime_revenue_gross {
@@ -47,17 +43,32 @@ view: customers_metrics {
     sql: ${TABLE}.country_iso ;;
   }
 
+  #dimension: unique_id {
+  #  group_label: "* IDs *"
+  #. hidden: yes
+  #  primary_key: no
+  #  sql: concat(${country_iso}, ${user_email}) ;;
+  #}
+
+  dimension: customer_id_mapped {
+    group_label: "* IDs *"
+    hidden: no
+    type: string
+    primary_key: yes
+    sql: ${TABLE}.customer_cohorts_base_uuid  ;;
+  }
+
   dimension: country {
     group_label: "* User Dimensions *"
     type: string
-    sql: ${TABLE}.first_order_country_iso ;;
+    sql: ${TABLE}.first_order_country ;;
   }
 
-  dimension: user_email {
-    group_label: "* User Dimensions *"
-    type: string
-    sql: ${TABLE}.customer_email ;;
-  }
+  # dimension: user_email {
+  #   group_label: "* User Dimensions *"
+  #   type: string
+  #   sql: ${TABLE}.customer_email ;;
+  # }
 
   dimension: customer_id {
     group_label: "* IDs *"
@@ -78,12 +89,6 @@ view: customers_metrics {
     sql: ${TABLE}.favourite_order_hour ;;
   }
 
-  dimension: first_platform {
-    group_label: "* User Dimensions *"
-    type: string
-    sql: ${TABLE}.first_platform ;;
-  }
-
   dimension_group: first_order {
     group_label: "* Dates and Timestamps *"
     type: time
@@ -99,22 +104,16 @@ view: customers_metrics {
     sql: ${TABLE}.first_order_timestamp ;;
   }
 
-  dimension: first_order_number {
+  dimension: first_order_id {
     group_label: "* IDs *"
     type: string
-    sql: ${TABLE}.first_order_number ;;
+    sql: ${TABLE}.first_order_uuid ;;
   }
 
   dimension: first_order_city {
     group_label: "* User Dimensions *"
     type: string
     sql: ${TABLE}.first_order_city ;;
-  }
-
-  dimension: first_order_country {
-    group_label: "* User Dimensions *"
-    type: string
-    sql: ${TABLE}.first_order_country_iso ;;
   }
 
   dimension: first_order_hub {
@@ -135,38 +134,6 @@ view: customers_metrics {
     sql: ${TABLE}.first_order_discount_code ;;
   }
 
-  dimension: first_fulfillment_time_minutes {
-    group_label: "* User Dimensions *"
-    type: number
-    sql: round(${TABLE}.first_fulfillment_time_minutes) ;;
-    value_format_name: decimal_0
-  }
-
-  dimension: first_delivery_pdt_minutes {
-    group_label: "* User Dimensions *"
-    type: number
-    sql: ${TABLE}.first_delivery_pdt_minutes ;;
-    value_format_name: decimal_0
-  }
-
-  dimension: first_order_cart_discount_name {
-    group_label: "* User Dimensions *"
-    type: string
-    sql: ${TABLE}.first_order_cart_discount_name ;;
-  }
-
-  dimension: last_order_delta_to_pdt {
-    group_label: "* User Dimensions *"
-    type: date_time
-    sql: ${TABLE}.last_order_delta_to_pdt ;;
-  }
-
-  dimension: first_order_discount_name {
-    group_label: "* User Dimensions *"
-    type: string
-    sql: ${TABLE}.first_order_discount_name ;;
-  }
-
   dimension_group: last_order_with_voucher {
     group_label: "* Dates and Timestamps *"
     type: time
@@ -179,12 +146,10 @@ view: customers_metrics {
       quarter,
       year
     ]
-    sql: ${TABLE}.last_order_with_voucher_timestamp ;;
+    sql: ${TABLE}.last_order_with_voucher ;;
   }
 
-
-
-  dimension_group: last_order {
+  dimension_group: latest_order {
     group_label: "* Dates and Timestamps *"
     type: time
     timeframes: [
@@ -196,14 +161,14 @@ view: customers_metrics {
       quarter,
       year
     ]
-    sql: ${TABLE}.last_order_timestamp ;;
+    sql: ${TABLE}.latest_order_timestamp ;;
   }
 
   dimension: days_betw_first_and_last_order {
     group_label: "* First Order Date *"
-    description: "Days between first and last order"
+    description: "Days between first and latest order"
     type: number
-    sql: TIMESTAMP_DIFF(${last_order_raw}, ${first_order_raw}, DAY)+1 ;;
+    sql: TIMESTAMP_DIFF(${latest_order_raw}, ${first_order_raw}, DAY)+1 ;;
   }
 
   dimension_group: duration_between_first_order_and_now {
@@ -216,7 +181,8 @@ view: customers_metrics {
   dimension_group: duration_between_first_order_month_and_now {
     group_label: "* First Order Date *"
     type: duration
-    sql_start: DATE_TRUNC(${first_order_raw}, MONTH);;
+    # hotfix: adding 2 hours because otherwise orders on 1st Aug just after midnight are giving wrong duration (timezone issue in combination with date_diff)
+    sql_start: DATE_TRUNC(TIMESTAMP_ADD(${first_order_raw}, INTERVAL 2 HOUR), MONTH);;
     sql_end: CURRENT_TIMESTAMP();;
     intervals: [month]
   }
@@ -230,16 +196,16 @@ view: customers_metrics {
     intervals: [week]
   }
 
-  dimension: last_order_number {
+  dimension: latest_order_id {
     group_label: "* IDs *"
     type: string
-    sql: ${TABLE}.last_order_number ;;
+    sql: ${TABLE}.latest_order_uuid ;;
   }
 
   dimension: lifetime_orders {
     group_label: "* User Dimensions *"
     type: number
-    sql: ${TABLE}.number_of_lifetime_orders ;;
+    sql: ${TABLE}.lifetime_orders ;;
   }
 
   dimension: number_of_distinct_months_with_orders {
@@ -297,14 +263,6 @@ view: customers_metrics {
     sql: case when ${reorder_number_30_days} > 0 then True else False end ;;
   }
 
-  dimension: is_suppressed {
-    group_label: "* User Dimensions *"
-    description: "Boolean dimension. Takes the value yes if the user has opted out."
-    type: yesno
-    sql:  ${TABLE}.is_suppressed  ;;
-  }
-
-
   dimension: repeat_customer {
     group_label: "* User Dimensions *"
     description: "Lifetime Count of Orders > 1"
@@ -336,31 +294,23 @@ view: customers_metrics {
     style: relational
   }
 
-  dimension_group: time_since_sign_up {
-    group_label: "* User Dimensions *"
-    type: duration
-    sql_start: ${first_order_raw} ;;
-    sql_end: ${orders_cl.created_raw} ;;
-  }
+
 
   dimension_group: time_between_sign_up_month_and_now {
-    group_label: "* First Order Date *"
+    group_label: "* User Dimensions *"
+    hidden: yes
     type: duration
-    # hotfix: adding 2 hours because otherwise orders on 1st Aug just after midnight are giving wrong duration (timezone issue in combination with date_diff)
-    sql_start: DATE_TRUNC(TIMESTAMP_ADD(${first_order_raw}, INTERVAL 2 HOUR), MONTH);;
-    sql_end: CURRENT_TIMESTAMP();;
-    intervals: [month]
+    sql_start: DATE_TRUNC(${first_order_raw}, MONTH) ;;
+    sql_end: CURRENT_TIMESTAMP() ;;
   }
 
   dimension_group: time_between_sign_up_week_and_now {
-    group_label: "* First Order Date *"
+    group_label: "* User Dimensions *"
+    hidden: yes
     type: duration
-    # hotfix: adding 2 hours because otherwise orders on 1st Aug just after midnight are giving wrong duration (timezone issue in combination with date_diff)
-    sql_start: DATE_TRUNC(TIMESTAMP_ADD(${first_order_raw}, INTERVAL 2 HOUR), WEEK);;
+    sql_start: DATE_TRUNC(${first_order_raw}, WEEK) ;;
     sql_end: CURRENT_TIMESTAMP();;
-    intervals: [week]
   }
-
 
 
   ################## Measures
@@ -383,16 +333,18 @@ view: customers_metrics {
     sql: ${lifetime_orders} ;;
   }
 
+  dimension_group: time_since_sign_up {
+    group_label: "* User Dimensions *"
+    type: duration
+    sql_start: ${first_order_raw} ;;
+    sql_end: ${orders_cleaned_dev.created_raw} ;;
+
+  }
+
   measure: avg_lifetime_revenue {
     type: average
     value_format_name: euro_accounting_2_precision
     sql: ${lifetime_revenue_gross} ;;
-  }
-
-  dimension: weeks_time_since_sign_up_number {
-    type: number
-    group_label: "* User Dimensions *"
-    sql: ${weeks_time_since_sign_up} ;;
   }
 
 }

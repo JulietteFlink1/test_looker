@@ -18,17 +18,17 @@ view: erp_buying_prices {
   # =========  __main__   =========
   dimension: net_income {
     label: "Net Income"
-    description: "The incoming cash defined as net item-price + deposit amount"
+    description: "The incoming cash defined as net item-price"
     type: number
-    sql:  ${orderline.unit_price_net_amount} + ifnull(${products.deposit_amount}, 0);;
+    sql:  ${orderline.unit_price_net_amount};;
     value_format_name: eur
   }
 
   dimension: margin_absolute {
     label: "Margin (absolute)"
-    description: "The absolute margin defined as Net Income substracted by the Buying Price and Deposits"
+    description: "The absolute margin defined as Net Income substracted by the Buying Price"
     type: number
-    sql: ${net_income} - ifnull(${products.deposit_amount}, 0) - ${vendor_price} ;;
+    sql: ${net_income} - ${vendor_price} ;;
     value_format_name: eur
   }
 
@@ -163,7 +163,7 @@ view: erp_buying_prices {
 
   measure: sum_total_net_income {
     label: "€ Total Net Income"
-    description: "The sum of all (unit_prices + deposits) multiplied by the quantity of products sold"
+    description: "The sum of all unit_prices multiplied by the quantity of products sold"
     type: sum
     sql: (${orderline.quantity} * ${net_income}) ;;
     value_format_name: eur
@@ -171,7 +171,7 @@ view: erp_buying_prices {
 
   measure: sum_total_margin_abs {
     label: "€ Total Margin"
-    description: "The sum of all margins defined as Net Income minus Deposit minus Buying Price"
+    description: "The sum of all margins defined as Net Income minus Buying Price"
     type: sum
     sql: (${orderline.quantity} * ${margin_absolute}) ;;
     value_format_name: eur
@@ -181,7 +181,6 @@ view: erp_buying_prices {
     label: "% Total Margin"
     description: "The € Total Margin divided by the € Total Net Income"
     type: number
-    #sql: sum(${orderline.quantity} * (${net_income} - ifnull(${products.deposit_amount}, 0) - ${vendor_price})  ) / nullif( ${sum_total_net_income} ,0);;
     sql: ${sum_total_margin_abs} / nullif( ${sum_total_net_income} ,0);;
     value_format_name: percent_1
   }

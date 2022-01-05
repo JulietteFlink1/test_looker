@@ -11,7 +11,7 @@ explore: order_for_postorder{
   view_label: "Postorder Events"
   group_label: "Consumer Product"
   description: "Post-order related events, order dimensions, comments and nps"
-  fields: [ALL_FIELDS*, -order_for_postorder.cnt_orders_delayed_under_0_min, -order_for_postorder.cnt_orders_delayed_under_30_sec
+  fields: [ALL_FIELDS*, -order_for_postorder.cnt_orders_delayed_under_0_min
     , -order_for_postorder.cnt_orders_delayed_over_5_min, -order_for_postorder.cnt_orders_with_delivery_eta_available]
 
   join: order_client {

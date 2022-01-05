@@ -270,7 +270,6 @@ view: add_to_cart {
         SELECT
                sf.anonymous_id
              , sf.session_id
-            --, e.list_category AS list_category_list
              , count(e.timestamp) as event_count
              , countif(e.list_category = 'category') as list_category
              , countif(e.list_category = 'favourites') as list_favourites
@@ -278,7 +277,7 @@ view: add_to_cart {
              , countif(e.list_category IN ('order_details', 'pdp')) as list_pdp
              , countif(e.list_category = 'search') as list_search
              , countif(e.list_category = 'swimlane') as list_swimlane
-             , countif(e.list_category = 'cart') as list_cart
+             , countif(e.list_category IN ('cart', 'checkout')) as list_cart
         FROM events e
             LEFT JOIN sessions_final sf
             ON e.anonymous_id = sf.anonymous_id

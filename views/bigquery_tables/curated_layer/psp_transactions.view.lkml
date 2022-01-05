@@ -13,6 +13,11 @@ view: psp_transactions {
     primary_key: yes
   }
 
+  dimension: country_iso {
+    type: string
+    sql:${TABLE}.country_iso ;;
+  }
+
   dimension_group: booking {
     type: time
     timeframes: [
@@ -107,6 +112,14 @@ view: psp_transactions {
     sql: ${TABLE}.payment_method ;;
   }
 
+  dimension: payment_method_grouped {
+    type: string
+    sql:case when ${payment_method} like 'mc%' then 'mc'
+             when ${payment_method} like 'visa%' then 'visa'
+        else ${payment_method}
+        end ;;
+  }
+
   dimension: processing_fee_fc {
     type: number
     sql: ${TABLE}.processing_fee_fc ;;
@@ -148,6 +161,27 @@ view: psp_transactions {
     type: sum
     sql: ${main_amount} ;;
     value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_main_amount_chargebacks {
+    type: sum
+    sql: ${main_amount} ;;
+    value_format_name: euro_accounting_2_precision
+    filters: [record_type: "Chargeback"]
+  }
+
+  measure: sum_main_amount_settled {
+    type: sum
+    sql: ${main_amount} ;;
+    value_format_name: euro_accounting_2_precision
+    filters: [record_type: "Settled"]
+  }
+
+  measure: sum_main_amount_authorised {
+    type: sum
+    sql: ${main_amount} ;;
+    value_format_name: euro_accounting_2_precision
+    filters: [record_type: "Authorised"]
   }
 
   measure: sum_authorised_pc {
@@ -202,6 +236,27 @@ view: psp_transactions {
     sql:  ${orders.total_gross_amount} - ${main_amount}  ;;
     value_format_name: euro_accounting_2_precision
     description: "CT Orders Revenue Gross - Adyen Main Amount"
+  }
+
+  measure: cnt_chargebacks_transactions {
+    label: "# Chargebacks"
+    type: count_distinct
+    sql: ${psp_transaction_uuid} ;;
+    filters: [record_type: "Chargeback"]
+  }
+
+  measure: cnt_authorised_transactions {
+    label: "# Authorised"
+    type: count_distinct
+    sql: ${psp_transaction_uuid} ;;
+    filters: [record_type: "Authorised"]
+  }
+
+  measure: cnt_settled_transactions {
+    label: "# Settled"
+    type: count_distinct
+    sql: ${psp_transaction_uuid} ;;
+    filters: [record_type: "Settled"]
   }
 
 
