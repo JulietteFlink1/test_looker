@@ -7,8 +7,11 @@ outbounded_products_raw as(
         , date(inventory_change_timestamp)                                as inventory_date
         , inventory_changes.hub_code
         , inventory_changes.country_iso
+        , concat(product_sku, " - ", product_name)                        as product_sku_name
         , category
-        , count(sku) as cnt_sku
+        , amt_product_price_gross
+        , quantity_change
+        , sum(abs(quantity_change)) as total_product
 
     from `flink-data-prod.curated.inventory_changes` inventory_changes
     left join `flink-data-prod.curated.products` products                 on products.product_sku = inventory_changes.sku
@@ -17,14 +20,14 @@ outbounded_products_raw as(
                     change_reason in ('product-damaged', 'product-expired', 'too-good-to-go')       and
                     change_type             = "outbound"
 
-    group by 1, 2, 3, 4, 5
+    group by 1, 2, 3, 4, 5, 6, 7, 8
 ),
 
 outbounded_products_ranked as (
     select
         *
         , row_number() OVER (PARTITION BY inventory_date, hub_code
-                                ORDER BY cnt_sku desc)                  as category_rank
+                                ORDER BY total_product desc)                  as category_rank
 
     from outbounded_products_raw
 ),
@@ -35,22 +38,25 @@ positive_corrected_products_raw as(
     , date(inventory_change_timestamp) as inventory_date
     , inventory_changes.hub_code
     , inventory_changes.country_iso
+    , concat(product_sku, " - ", product_name)                              as product_sku_name
     , category
-    , count(sku) as cnt_sku
+    , amt_product_price_gross
+    , quantity_change
+    , sum(abs(quantity_change)) as total_product
 
     from `flink-data-prod.curated.inventory_changes` inventory_changes
     left join `flink-data-prod.curated.products` products                 on products.product_sku = inventory_changes.sku
 
     where quantity_change > 0 and
             change_type     = "correction"
-    group by 1, 2, 3, 4, 5
+    group by 1, 2, 3, 4, 5, 6, 7, 8
 ),
 
  positive_corrected_products_ranked as (
                 select
                     *
                     , row_number() OVER (PARTITION BY inventory_date, hub_code
-                                        ORDER BY cnt_sku desc)                          as category_rank
+                                        ORDER BY total_product desc)                          as category_rank
 
                 from positive_corrected_products_raw
 ),
@@ -60,25 +66,28 @@ positive_corrected_products_raw as(
             ,  date(inventory_change_timestamp)                  as inventory_date
             , inventory_changes.hub_code
             , inventory_changes.country_iso
+            , concat(product_sku, " - ", product_name)          as product_sku_name
             , category
-            , count(sku) as cnt_sku
+            , amt_product_price_gross
+            , quantity_change
+            , sum(abs(quantity_change)) as total_product
 
     from `flink-data-prod.curated.inventory_changes` inventory_changes
     left join `flink-data-prod.curated.products` products               on products.product_sku = inventory_changes.sku
 
     where
             quantity_change < 0 and
-            change_reason   in    ('product-damaged', 'product-expired', 'too-good-to-go') and
+            --change_reason   in    ('product-damaged', 'product-expired', 'too-good-to-go') and
             change_type     = "correction"
 
-    group by 1, 2, 3, 4, 5
+    group by 1, 2, 3, 4, 5, 6, 7, 8
 ),
 
 negative_corrected_products_ranked as (
     select
         *
         , row_number() OVER (PARTITION BY inventory_date, hub_code
-                                ORDER BY cnt_sku desc)                  as category_rank
+                                ORDER BY total_product desc)                  as category_rank
     from outbounded_products_raw
 ),
 
@@ -145,6 +154,11 @@ from final
     sql: ${TABLE}.country_iso ;;
   }
 
+  dimension: product_sku_name {
+    type: string
+    sql: ${TABLE}.product_sku_name ;;
+  }
+
   dimension: category {
     type: string
     sql: ${TABLE}.category ;;
@@ -155,9 +169,20 @@ from final
     sql: ${TABLE}.category_rank ;;
   }
 
-  dimension: cnt_sku {
+  dimension: quantity_change {
     type: number
-    sql: ${TABLE}.cnt_sku ;;
+    sql: ${TABLE}.quantity_change ;;
+    value_format_name: decimal_0
+  }
+
+  dimension: total_product {
+    type: number
+    sql: ${TABLE}.total_product ;;
+  }
+
+  dimension: price_gross {
+    type: number
+    sql: ${TABLE}.amt_product_price_gross ;;
   }
 
   dimension: is_top_5_category {
@@ -176,22 +201,41 @@ from final
     sql: ${TABLE}.change_type ;;
   }
 
-
-  measure: sum_sku {
-    label: "# SKU"
-    description: "The total number of skus involved"
+  measure: sum_products {
+    label: "# Products"
+    description: "The total number of products involved"
     type: sum
-    sql: ${cnt_sku} ;;
+    sql: abs(${quantity_change}) ;;
   }
+
+  measure: avg_amt_product_price_gross{
+    label: "AVG Amt Product Price Gross"
+    group_label: "* Price Stats *"
+    type: average
+    value_format: "€0.00"
+    sql: ${TABLE}.amt_product_price_gross ;;
+  }
+
+
+  measure: sum_outbound_waste_eur {
+    label: "€ Outbound"
+    description: "The quantity '# Outbound (Waste)' multiplied by the latest product price (gross)"
+    type: sum
+    sql: abs(${quantity_change}) * ${price_gross};;
+    value_format_name: eur
+  }
+
+
 
   set: detail {
     fields: [
       inventory_date,
       hub_code,
       country_iso,
+      product_sku_name,
       category,
       category_rank,
-      cnt_sku,
+      total_product,
       is_top_5_category,
       change_type
     ]
