@@ -83,11 +83,13 @@ view: voucher_success_failure_performance {
   measure: failure_rate {
     type: number
     sql: (${number_of_failures}/${number_of_events})*100 ;;
+    value_format: "0.0\%"
   }
 
   measure: success_rate {
     type: number
     sql: (${number_of_successes}/${number_of_events})*100 ;;
+    value_format: "0.0\%"
   }
   set: detail {
     fields: [
