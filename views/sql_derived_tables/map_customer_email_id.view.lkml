@@ -38,8 +38,8 @@ view: map_customer_email_id {
 SELECT
             lower(customer_email) as customer_email
           , country_iso
-          , phone_number
-          , sign_up_timestamp
+          , first_order_phone_number as phone_number
+          , account_created_at_timestamp as sign_up_timestamp
           , 'commercetools' as backed_source
  FROM `flink-data-prod.curated.customers`
 )

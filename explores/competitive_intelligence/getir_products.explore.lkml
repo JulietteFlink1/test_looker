@@ -33,4 +33,13 @@ explore:  getir_products {
       relationship: one_to_many
       type: left_outer
   }
+
+  join: competitive_intelligence_active_hubs {
+    from:  competitive_intelligence_active_hubs
+    view_label: "* Active Hubs *"
+    sql_on: ${getir_hubs.hub_id} = ${competitive_intelligence_active_hubs.hub_id} ;;
+    relationship: one_to_many
+    type: left_outer
+  }
+
 }

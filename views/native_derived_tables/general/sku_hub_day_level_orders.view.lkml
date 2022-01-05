@@ -64,10 +64,12 @@ view: sku_hub_day_level_orders {
   dimension: hub_code {
     label: "Hub Code"
     # group_label: "* Hubs *"
+    hidden: yes
   }
   dimension: hub_name {
     label: "Hub Name"
     # group_label: "* Hubs *"
+    hidden: yes
   }
   dimension: created_date {
     label: "Order Date"
@@ -79,11 +81,13 @@ view: sku_hub_day_level_orders {
 
   dimension: country_iso {
     type: string
+    hidden: yes
   }
   dimension: product_sku {
     type: string
     label: "SKU"
     # group_label: "* Order Lineitems *"
+    hidden: yes
   }
   dimension: product_sku_name {
     label: "SKU + Name"
@@ -97,25 +101,29 @@ view: sku_hub_day_level_orders {
   dimension: category {
     label: "Parent Category"
     group_label: "* Product Data *"
+    sql: ${products.category}  ;;
   }
   dimension: product_name {
     label: "Product Name"
     group_label: "* Product Data *"
+    sql: ${products.product_name}  ;;
   }
   dimension: subcategory {
     label: "Sub-Category"
     group_label: "* Product Data *"
+    sql: ${products.subcategory}  ;;
   }
   dimension: substitute_group {
     label: "Substitute Group"
     group_label: "* Product Data *"
+    sql: ${products.substitute_group}  ;;
   }
 
   dimension: exclude_fresh_categories {
     label: "Is Fresh Category"
     group_label: "* Product Data *"
     type: yesno
-    sql: case when ${category} in (
+    sql: case when ${products.category} in (
       'Frisch & Fertig',
       'Obst & Gemüse',
       'Frisches Fleisch & Fisch',

@@ -64,29 +64,47 @@ view: inventory_changes_daily {
 
   }
 
+  dimension: is_inbound {
+    type: yesno
+    sql: case when ${change_type} in ('inbound', 'inbound-bulk') then true else false end ;;
+    hidden: yes
+  }
+
 
   # =========  hidden   =========
   dimension: country_iso {
     type: string
     sql: ${TABLE}.country_iso ;;
-    hidden: yes
+    hidden: no
   }
 
   dimension: hub_code {
     type: string
     sql: ${TABLE}.hub_code ;;
-    hidden: yes
+    hidden: no
   }
 
   dimension: sku {
     type: string
     sql: ${TABLE}.sku ;;
-    hidden: yes
+    hidden: no
   }
 
   dimension: price_gross {
     type: number
     sql: ${products.amt_product_price_gross} ;;
+    hidden: yes
+  }
+
+  dimension: inventory_correction_increased {
+    sql: ${TABLE}.inventory_correction_increased ;;
+    type: number
+    hidden: yes
+  }
+
+  dimension: inventory_correction_reduced {
+    sql: ${TABLE}.inventory_correction_reduced ;;
+    type: number
     hidden: yes
   }
 
@@ -157,7 +175,7 @@ view: inventory_changes_daily {
     description: "The sum of inventory changes related to inventory corrections"
     group_label: "* Inventory Changes Daily *"
     type: sum
-    sql: case when abs(${quantity_change}) <= 100 then  abs(${quantity_change}) end;; # remove outlier
+    sql: case when abs(${quantity_change}) <= 100 then  abs(${quantity_change}) end;; # remove outlier - requested by @Fabian Hardenberg
     filters: [change_reason: "inventory-correction"]
     value_format_name: decimal_0
   }
@@ -168,7 +186,7 @@ view: inventory_changes_daily {
     group_label: "* Inventory Changes Daily *"
     type: sum
     sql: abs(${quantity_change}) ;;
-    filters: [change_type: "inbound"]
+    filters: [is_inbound: "Yes"]
     value_format_name: decimal_0
   }
 
@@ -203,8 +221,7 @@ view: inventory_changes_daily {
     description: "The sum of inventory changes related to inventory corrections that increased the inventory"
     group_label: "* Inventory Changes Daily *"
     type: sum
-    sql: case when ${quantity_change} between 0 and 100 then ${quantity_change} end ;;
-    filters: [change_reason: "inventory-correction"]
+    sql: case when ${inventory_correction_increased} between 0 and 100 then ${inventory_correction_increased} end ;;
     value_format_name: decimal_0
   }
 
@@ -213,8 +230,7 @@ view: inventory_changes_daily {
     description: "The sum of inventory changes related to inventory corrections that reduced the inventory"
     group_label: "* Inventory Changes Daily *"
     type: sum
-    sql: case when ${quantity_change} between -100 and 0 then abs(${quantity_change}) end ;;
-    filters: [change_reason: "inventory-correction"]
+    sql: case when ${inventory_correction_reduced} between -100 and 0 then abs(${inventory_correction_reduced}) end ;;
     value_format_name: decimal_0
   }
 
@@ -223,8 +239,7 @@ view: inventory_changes_daily {
     description: "The sum of inventory changes related to inventory corrections that increased the inventory multiplied by the price of the item"
     group_label: "* Inventory Changes Daily *"
     type: sum
-    sql: case when ${quantity_change} between 0 and 100 then ${quantity_change} * ${price_gross} end ;;
-    filters: [change_reason: "inventory-correction"]
+    sql: case when ${inventory_correction_increased} between 0 and 100 then ${inventory_correction_increased} * ${price_gross} end ;;
     value_format_name: eur
   }
 
@@ -233,8 +248,7 @@ view: inventory_changes_daily {
     description: "The sum of inventory changes related to inventory corrections that reduced the inventory multiplied by the price of the item"
     group_label: "* Inventory Changes Daily *"
     type: sum
-    sql: case when ${quantity_change} between -100 and 0 then abs(${quantity_change} * ${price_gross}) end ;;
-    filters: [change_reason: "inventory-correction"]
+    sql: case when ${inventory_correction_reduced} between -100 and 0 then abs(${inventory_correction_reduced} * ${price_gross}) end ;;
     value_format_name: eur
   }
 
