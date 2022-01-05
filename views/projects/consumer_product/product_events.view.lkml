@@ -333,6 +333,7 @@ view: product_events {
     label: "# All Products"
     group_label: "Basic Counts (Orders / Customers etc.)"
     description: "Total number of all products."
+    type: count
     hidden:  no
     drill_fields: [detail*]
     value_format_name: decimal_0
