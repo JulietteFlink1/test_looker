@@ -1,5 +1,5 @@
 view: address_sessions {
-  sql_table_name: `flink-data-dev.curated.address_sessions`
+  sql_table_name: `flink-data-prod.curated.address_sessions`
     ;;
 
   dimension: has_order {
