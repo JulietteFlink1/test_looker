@@ -34,6 +34,7 @@ view: albert_hejn_products_hist {
   dimension: price_gross {
     type: number
     sql: ${TABLE}.price_gross ;;
+    value_format_name: euro_accounting_2_precision
   }
 
   dimension: product_id {
