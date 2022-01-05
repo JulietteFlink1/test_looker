@@ -75,19 +75,19 @@ view: inventory_changes_daily {
   dimension: country_iso {
     type: string
     sql: ${TABLE}.country_iso ;;
-    hidden: yes
+    hidden: no
   }
 
   dimension: hub_code {
     type: string
     sql: ${TABLE}.hub_code ;;
-    hidden: yes
+    hidden: no
   }
 
   dimension: sku {
     type: string
     sql: ${TABLE}.sku ;;
-    hidden: yes
+    hidden: no
   }
 
   dimension: price_gross {
