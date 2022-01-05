@@ -12,6 +12,15 @@ view: products {
     type: string
     label: "Parent Category"
     group_label: "> Product Attributes"
+    description: "This is CT reporting category"
+    sql: ${TABLE}.category ;;
+  }
+
+  dimension: random_ct_category {
+    type: string
+    hidden:yes
+    label: "Parent Category"
+    group_label: "> Product Attributes"
     sql: ${TABLE}.random_ct_category ;;
   }
 
@@ -19,7 +28,7 @@ view: products {
     type: string
     label: "Parent Category (ERP)"
     group_label: "> Product Attributes"
-    sql: ${TABLE}.category ;;
+    sql: ${TABLE}.erp_category ;;
   }
 
   dimension: is_leading_product {
@@ -67,17 +76,26 @@ view: products {
     sql: CONCAT(${TABLE}.product_sku, ' - ', ${TABLE}.product_name) ;;
   }
 
-  dimension: subcategory {
+  dimension: random_ct_subcategory {
+    hidden: yes
     label: "Sub-Category"
     type: string
     sql: ${TABLE}.random_ct_subcategory ;;
     group_label: "> Product Attributes"
   }
 
+  dimension: subcategory {
+    label: "Sub-Category"
+    description: "This is CT reporting subcategory"
+    type: string
+    sql: ${TABLE}.subcategory ;;
+    group_label: "> Product Attributes"
+  }
+
   dimension: erp_subcategory {
     label: "Sub-Category (ERP)"
     type: string
-    sql: ${TABLE}.subcategory ;;
+    sql: ${TABLE}.erp_subcategory ;;
     group_label: "> Product Attributes"
   }
 
