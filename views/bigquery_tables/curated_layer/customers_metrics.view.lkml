@@ -1,17 +1,24 @@
 view: customers_metrics {
-  sql_table_name: `flink-data-prod.curated.customers_metrics`
+  sql_table_name: `flink-data-prod.curated.crm_customer_feed`
     ;;
+
+  dimension: customer_uuid {
+    group_label: "* User Dimensions *"
+    type: string
+    primary_key: yes
+    sql: ${TABLE}.customer_uuid ;;
+  }
 
   dimension: reorder_number_28_days {
     group_label: "* User Dimensions *"
     type: number
-    sql: ${TABLE}._28_day_reorder_number ;;
+    sql: ${TABLE}.number_of_orders_28days_after_first_order ;;
   }
 
   dimension: reorder_number_30_days {
     group_label: "* User Dimensions *"
     type: number
-    sql: ${TABLE}._30_day_reorder_number ;;
+    sql: ${TABLE}.number_of_orders_30days_after_first_order ;;
   }
 
   dimension: lifetime_revenue_gross {
@@ -40,17 +47,10 @@ view: customers_metrics {
     sql: ${TABLE}.country_iso ;;
   }
 
-  dimension: unique_id {
-    group_label: "* IDs *"
-    hidden: yes
-    primary_key: yes
-    sql: concat(${country_iso}, ${user_email}) ;;
-  }
-
   dimension: country {
     group_label: "* User Dimensions *"
     type: string
-    sql: ${TABLE}.first_order_country ;;
+    sql: ${TABLE}.first_order_country_iso ;;
   }
 
   dimension: user_email {
@@ -99,10 +99,10 @@ view: customers_metrics {
     sql: ${TABLE}.first_order_timestamp ;;
   }
 
-  dimension: first_order_id {
+  dimension: first_order_number {
     group_label: "* IDs *"
     type: string
-    sql: ${TABLE}.first_order_uuid ;;
+    sql: ${TABLE}.first_order_number ;;
   }
 
   dimension: first_order_city {
@@ -114,7 +114,7 @@ view: customers_metrics {
   dimension: first_order_country {
     group_label: "* User Dimensions *"
     type: string
-    sql: ${TABLE}.first_order_country ;;
+    sql: ${TABLE}.first_order_country_iso ;;
   }
 
   dimension: first_order_hub {
@@ -155,6 +155,12 @@ view: customers_metrics {
     sql: ${TABLE}.first_order_cart_discount_name ;;
   }
 
+  dimension: last_order_delta_to_pdt {
+    group_label: "* User Dimensions *"
+    type: date_time
+    sql: ${TABLE}.last_order_delta_to_pdt ;;
+  }
+
   dimension: first_order_discount_name {
     group_label: "* User Dimensions *"
     type: string
@@ -173,10 +179,12 @@ view: customers_metrics {
       quarter,
       year
     ]
-    sql: ${TABLE}.last_order_with_voucher ;;
+    sql: ${TABLE}.last_order_with_voucher_timestamp ;;
   }
 
-  dimension_group: latest_order {
+
+
+  dimension_group: last_order {
     group_label: "* Dates and Timestamps *"
     type: time
     timeframes: [
@@ -188,14 +196,14 @@ view: customers_metrics {
       quarter,
       year
     ]
-    sql: ${TABLE}.latest_order_timestamp ;;
+    sql: ${TABLE}.last_order_timestamp ;;
   }
 
   dimension: days_betw_first_and_last_order {
     group_label: "* First Order Date *"
-    description: "Days between first and latest order"
+    description: "Days between first and last order"
     type: number
-    sql: TIMESTAMP_DIFF(${latest_order_raw}, ${first_order_raw}, DAY)+1 ;;
+    sql: TIMESTAMP_DIFF(${last_order_raw}, ${first_order_raw}, DAY)+1 ;;
   }
 
   dimension_group: duration_between_first_order_and_now {
@@ -222,16 +230,16 @@ view: customers_metrics {
     intervals: [week]
   }
 
-  dimension: latest_order_id {
+  dimension: last_order_number {
     group_label: "* IDs *"
     type: string
-    sql: ${TABLE}.latest_order_uuid ;;
+    sql: ${TABLE}.last_order_number ;;
   }
 
   dimension: lifetime_orders {
     group_label: "* User Dimensions *"
     type: number
-    sql: ${TABLE}.lifetime_orders ;;
+    sql: ${TABLE}.number_of_lifetime_orders ;;
   }
 
   dimension: number_of_distinct_months_with_orders {
@@ -288,6 +296,14 @@ view: customers_metrics {
     type: yesno
     sql: case when ${reorder_number_30_days} > 0 then True else False end ;;
   }
+
+  dimension: is_suppressed {
+    group_label: "* User Dimensions *"
+    description: "Boolean dimension. Takes the value yes if the user has opted out."
+    type: yesno
+    sql:  ${TABLE}.is_suppressed  ;;
+  }
+
 
   dimension: repeat_customer {
     group_label: "* User Dimensions *"
