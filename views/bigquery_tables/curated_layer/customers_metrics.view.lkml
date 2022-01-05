@@ -1,5 +1,5 @@
 view: customers_metrics {
-  sql_table_name: `flink-data-prod.curated.crm_customer_feed`
+  sql_table_name: `flink-data-prod.crm.crm_customer_feed`
     ;;
 
   dimension: customer_uuid {
