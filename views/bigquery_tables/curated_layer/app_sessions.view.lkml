@@ -275,6 +275,18 @@ view: app_sessions {
     type: yesno
     sql: ${TABLE}.is_session_with_checkout_started ;;
   }
+  # dimension: is_session_with_checkout_viewed {
+  #   group_label: "Generic Dimensions"
+  #   description: "Session with started viewed"
+  #   type: yesno
+  #   sql: ${TABLE}.is_session_with_checkout_viewed ;;
+  # }
+  # dimension: is_session_with_cart_viewed {
+  #   group_label: "Generic Dimensions"
+  #   description: "Session with cart viewed"
+  #   type: yesno
+  #   sql: ${TABLE}.is_session_with_cart_viewed ;;
+  # }
   dimension: is_session_with_payment_started {
     group_label: "Generic Dimensions"
     description: "Session with started payment"
@@ -407,6 +419,13 @@ view: app_sessions {
     type: count
     filters: [is_session_with_checkout_started: "yes"]
   }
+  # measure: cnt_checkout_viewed {
+  #   group_label: "Sessions with Event Flags"
+  #   label: "# Sessions with Checkout Viewed"
+  #   description: "Number of sessions in which at least one Checkout Viewed event happened"
+  #   type: count
+  #   filters: [is_session_with_checkout_viewed: "yes"]
+  # }
 
   measure: cnt_payment_started {
     group_label: "Sessions with Event Flags"
@@ -685,6 +704,8 @@ view: app_sessions {
       is_session_with_address,
       is_session_with_add_to_cart,
       is_session_with_checkout_started,
+      # is_session_with_checkout_viewed,
+      # is_session_with_cart_viewed,
       is_session_with_payment_started,
       is_session_with_order_placed,
       number_of_discounts_attempted,
