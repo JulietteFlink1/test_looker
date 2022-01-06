@@ -9,10 +9,19 @@ view: voucher_success_failure_performance {
     sql: ${TABLE}.voucher_success_failure_event_uuid ;;
   }
 
-  dimension: event_date {
-    type: date
-    hidden: no
-    sql:  ${TABLE}.event_date;;
+  dimension_group: event_date {
+    type: time
+    timeframes: [
+      raw,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    convert_tz: no
+    datatype: date
+    sql: ${TABLE}.event_date ;;
   }
 
   dimension: voucher_code {
@@ -93,7 +102,7 @@ view: voucher_success_failure_performance {
   }
   set: detail {
     fields: [
-      event_date,
+
       voucher_code,
       device_type,
       country_iso,
