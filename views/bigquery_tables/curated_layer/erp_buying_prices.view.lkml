@@ -79,7 +79,7 @@ view: erp_buying_prices {
     label: "Buying Price"
     type: number
     sql: ${TABLE}.vendor_price ;;
-    value_format_name: eur
+    value_format_name: decimal_4
   }
 
 
@@ -158,7 +158,7 @@ view: erp_buying_prices {
     description: "The average buying price"
     type: average
     sql: ${TABLE}.vendor_price ;;
-    value_format_name: eur
+    value_format_name: decimal_4
   }
 
   measure: sum_total_net_income {
