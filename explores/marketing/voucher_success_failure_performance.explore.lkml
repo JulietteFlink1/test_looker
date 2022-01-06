@@ -5,6 +5,6 @@ explore: voucher_success_failure_performance {
   view_name: voucher_success_failure_performance
   label: "Voucher Succes Failure Performance"
   view_label: "Voucher Succes Failure Performance"
-  group_label: "11) Marketing"
-  description: "Testing"
+  group_label: "Marketing"
+  description: "tbd"
 }
