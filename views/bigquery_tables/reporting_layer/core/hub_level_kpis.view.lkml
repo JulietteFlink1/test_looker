@@ -408,6 +408,7 @@ view: hub_level_kpis {
     value_format: "0%"
   }
 
+  # -------------------------------------------------------------------------------------------------------------------------------------------
   # =========  Order Issue Kpis   =========
   measure: number_of_order_lineitems_damaged_product {
     group_label: ">> Issue Rate KPIs"
@@ -458,6 +459,40 @@ view: hub_level_kpis {
     sql: ${TABLE}.number_of_order_lineitems_wrong_product ;;
   }
 
+  measure: number_of_order_lineitems_swapped_product {
+    group_label: ">> Issue Rate KPIs"
+    label: "# Order Lineitems Swapped Product"
+    type: sum
+    value_format_name: decimal_0
+    sql: ${TABLE}.number_of_order_lineitems_swapped_product ;;
+  }
+
+  measure: number_of_order_lineitems_cancelled_product {
+    group_label: ">> Issue Rate KPIs"
+    label: "# Order Lineitems Cancelled Product"
+    type: sum
+    value_format_name: decimal_0
+    sql: ${TABLE}.number_of_order_lineitems_cancelled_product ;;
+  }
+
+  measure: number_of_order_lineitems_product_not_on_shelf {
+    group_label: ">> Issue Rate KPIs"
+    label: "# Order Lineitems Not On Shelf (Pre-Order Issues)"
+    type: sum
+    value_format_name: decimal_0
+    sql: ${TABLE}.number_of_order_lineitems_product_not_on_shelf ;;
+  }
+
+  measure: number_of_order_lineitems_undefined_issue_product {
+    group_label: ">> Issue Rate KPIs"
+    label: "# Order Lineitems Undefined Group of Product Issue"
+    type: sum
+    value_format_name: decimal_0
+    sql: ${TABLE}.number_of_order_lineitems_undefined_issue_product ;;
+  }
+
+
+  # -------------------------------------------------------------------------------------------------------------------------------------------
   measure: number_of_orders_damaged_product {
     group_label: ">> Issue Rate KPIs"
     label: "# Orders Damaged Product"
@@ -506,22 +541,119 @@ view: hub_level_kpis {
     sql: ${TABLE}.number_of_orders_wrong_product ;;
   }
 
+  measure: number_of_orders_swapped_product {
+    group_label: ">> Issue Rate KPIs"
+    label: "# Orders Swapped Product"
+    type: sum
+    value_format_name: decimal_0
+    sql: ${TABLE}.number_of_orders_swapped_product ;;
+  }
+
+  measure: number_of_orders_cancelled_product {
+    group_label: ">> Issue Rate KPIs"
+    label: "# Orders Cancelled Product"
+    type: sum
+    value_format_name: decimal_0
+    sql: ${TABLE}.number_of_orders_cancelled_product ;;
+  }
+
+  measure: number_of_orders_product_not_on_shelf {
+    group_label: ">> Issue Rate KPIs"
+    label: "# Orders Product Not On Shelf"
+    type: sum
+    value_format_name: decimal_0
+    sql: ${TABLE}.number_of_orders_product_not_on_shelf ;;
+  }
+
+  measure: number_of_orders_undefined_issue_product {
+    group_label: ">> Issue Rate KPIs"
+    label: "# Orders Undefined Group of Product Issue"
+    type: sum
+    value_format_name: decimal_0
+    sql: ${TABLE}.number_of_orders_undefined_issue_product ;;
+  }
+  # -------------------------------------------------------------------------------------------------------------------------------------------
+
+  measure: number_of_pre_order_issues {
+    group_label: ">> Issue Rate KPIs"
+    label: "# Orders with Issues (Pre-Delivery)"
+    type: sum
+    value_format_name: decimal_0
+    sql: ${TABLE}.number_of_orders_product_not_on_shelf ;;
+  }
+
+  measure: number_of_post_order_issues {
+    group_label: ">> Issue Rate KPIs"
+    label: "# Orders with Issues (Post-Delivery)"
+    type: sum
+    value_format_name: decimal_0
+    sql: -- ${TABLE}.number_of_orders_cancelled_product       +
+         ${TABLE}.number_of_orders_damaged_product         +
+         ${TABLE}.number_of_orders_missing_product         +
+         ${TABLE}.number_of_orders_perished_product        +
+         ${TABLE}.number_of_orders_swapped_product         +
+         ${TABLE}.number_of_orders_undefined_issue_product +
+         ${TABLE}.number_of_orders_wrong_order             +
+         ${TABLE}.number_of_orders_wrong_product
+
+    ;;
+  }
+
+
+  measure: cnt_distinct_skus {
+    label: "Unique Picks (Pre-Delivery)"
+    description: "The number of unique SKUs, that had to be picked"
+    group_label: ">> Issue Rate KPIs"
+    type: sum
+    hidden: yes
+    sql: ${TABLE}.cnt_distinct_skus ;;
+  }
+
 
   measure: pct_orders_with_issues {
     group_label: ">> Issue Rate KPIs"
-    label: "% Issue Rate"
+    label: "% Issue Rate (post order)"
     description: "The number of orders that have issues (the sum of: Wrong Product, Wrong Order, Perished Product, Missing Product and Damaged Product) divided by the total number of orders."
     type: number
-    sql: (1.0 * ${number_of_order_lineitems_with_issues}) / NULLIF(${sum_number_of_orders}, 0) ;;
+    sql: (1.0 * ${number_of_post_order_issues}) / NULLIF(${sum_number_of_orders}, 0) ;;
     value_format_name: percent_1
   }
+
+  measure: pct_orders_with_issues_pre_delivery {
+    group_label: ">> Issue Rate KPIs"
+    label: "% Partial fulfillment Rate (preoder)"
+    description: "The number of orders that have issues before order delivery (e.g. no product in shelf, out-of-stock)"
+    type: number
+    sql: (1.0 * ${number_of_pre_order_issues}) / NULLIF(${sum_number_of_orders}, 0) ;;
+    value_format_name: percent_1
+  }
+
+  measure: pct_pre_order_fulfillment_rate {
+    label: "% Pre-Order Fulfillment Rate"
+    group_label: ">> Issue Rate KPIs"
+    description: "The percentage of orders, that had no pre-delivery issues"
+    type: number
+    sql: 1 - ${pct_orders_with_issues_pre_delivery} ;;
+    value_format_name: percent_2
+  }
+
+  measure: pct_items_with_issues_pre_delivery {
+    group_label: ">> Issue Rate KPIs"
+    label: "% Item unfulfilled (preorder)"
+    description: "The number of orders that have issues before order delivery (e.g. no product in shelf, out-of-stock)"
+    type: number
+    sql: (1.0 * ${number_of_pre_order_issues}) / NULLIF(${cnt_distinct_skus}, 0) ;;
+    value_format_name: percent_1
+  }
+
+
 
   measure: pct_orders_missing_product {
     group_label: ">> Issue Rate KPIs"
     label: "% Missing Products"
     description: "The number of orders with missing products divided by the total number of orders."
     type: number
-    sql: (1.0 * ${number_of_order_lineitems_missing_product}) / NULLIF(${sum_number_of_orders}, 0) ;;
+    sql: (1.0 * ${number_of_orders_missing_product}) / NULLIF(${sum_number_of_orders}, 0) ;;
     value_format_name: percent_1
   }
   measure: pct_orders_wrong_order {
@@ -529,7 +661,7 @@ view: hub_level_kpis {
     label: "% Wrong Orders"
     description: "The number of orders with completely wrong baskets delivered divided by the total number of orders."
     type: number
-    sql: (1.0 * ${number_of_order_lineitems_wrong_order}) / NULLIF(${sum_number_of_orders}, 0) ;;
+    sql: (1.0 * ${number_of_orders_wrong_order}) / NULLIF(${sum_number_of_orders}, 0) ;;
     value_format_name: percent_1
   }
   measure: pct_orders_perished_product {
@@ -537,7 +669,7 @@ view: hub_level_kpis {
     label: "% Perished Products"
     description: "The number of orders with perished products divided by the total number of orders."
     type: number
-    sql: (1.0 * ${number_of_order_lineitems_perished_product}) / NULLIF(${sum_number_of_orders}, 0) ;;
+    sql: (1.0 * ${number_of_orders_perished_product}) / NULLIF(${sum_number_of_orders}, 0) ;;
     value_format_name: percent_1
   }
   measure: pct_orders_wrong_product {
@@ -545,7 +677,7 @@ view: hub_level_kpis {
     label: "% Wrong Products "
     description: "The number of orders with wrong products divided by the total number of orders."
     type: number
-    sql: (1.0 * ${number_of_order_lineitems_wrong_product}) / NULLIF(${sum_number_of_orders}, 0) ;;
+    sql: (1.0 * ${number_of_orders_wrong_product}) / NULLIF(${sum_number_of_orders}, 0) ;;
     value_format_name: percent_1
   }
   measure: pct_orders_damaged_product {
@@ -553,7 +685,32 @@ view: hub_level_kpis {
     label: "% Damaged Products"
     description: "The number of orders with damaged products divided by the total number of orders."
     type: number
-    sql: (1.0 * ${number_of_order_lineitems_damaged_product}) / NULLIF(${sum_number_of_orders}, 0) ;;
+    sql: (1.0 * ${number_of_orders_damaged_product}) / NULLIF(${sum_number_of_orders}, 0) ;;
+    value_format_name: percent_1
+  }
+
+  measure: pct_orders_swapped_product {
+    group_label: ">> Issue Rate KPIs"
+    label: "% Swapped Products"
+    description: "The number of orders with swapped products divided by the total number of orders."
+    type: number
+    sql: (1.0 * ${number_of_orders_swapped_product}) / NULLIF(${sum_number_of_orders}, 0) ;;
+    value_format_name: percent_1
+  }
+  measure: pct_orders_cancelled_product {
+    group_label: ">> Issue Rate KPIs"
+    label: "% Cancelled Products"
+    description: "The number of orders with damaged products divided by the total number of orders."
+    type: number
+    sql: (1.0 * ${number_of_orders_cancelled_product}) / NULLIF(${sum_number_of_orders}, 0) ;;
+    value_format_name: percent_1
+  }
+  measure: pct_orders_undefined_issue_product {
+    group_label: ">> Issue Rate KPIs"
+    label: "% Undefined Group of Product Issue"
+    description: "The number of orders with damaged products divided by the total number of orders."
+    type: number
+    sql: (1.0 * ${number_of_orders_undefined_issue_product}) / NULLIF(${sum_number_of_orders}, 0) ;;
     value_format_name: percent_1
   }
 
@@ -576,7 +733,7 @@ view: hub_level_kpis {
     label: "Sum of Rider Hours"
     type: sum
     sql: ${TABLE}.number_of_rider_hours ;;
-    value_format_name: decimal_0
+    value_format_name: decimal_2
   }
 
   measure: picker_hours {
@@ -591,7 +748,7 @@ view: hub_level_kpis {
     group_label: ">> UTR KPIs"
     label: "AVG Rider UTR"
     type: number
-    sql: ${adjusted_orders_riders} / NULLIF(${rider_hours}, 0);;
+    sql: ${sum_number_of_orders} / NULLIF(${rider_hours}, 0);;
     value_format_name: decimal_2
   }
 
@@ -599,7 +756,7 @@ view: hub_level_kpis {
     group_label: ">> UTR KPIs"
     label: "AVG Picker UTR"
     type: number
-    sql: ${adjusted_orders_pickers} / NULLIF(${picker_hours}, 0);;
+    sql: ${sum_number_of_orders} / NULLIF(${picker_hours}, 0);;
     value_format_name: decimal_2
 
   }

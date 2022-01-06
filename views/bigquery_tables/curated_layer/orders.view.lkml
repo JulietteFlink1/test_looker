@@ -77,6 +77,12 @@ view: orders {
     sql: ${TABLE}.amt_gmv_net ;;
   }
 
+  dimension: rider_tip {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_rider_tip ;;
+  }
+
   ############################## needs to be checked #################################
 
   dimension: tracking_client_id {
@@ -131,6 +137,7 @@ view: orders {
     group_label: "* Geographic Dimensions *"
     type: string
     sql: ${TABLE}.country_iso ;;
+    label: "Country"
   }
 
   dimension: currency {
@@ -145,11 +152,18 @@ view: orders {
     sql: ${TABLE}.customer_email ;;
   }
 
-  dimension: user_id {
+  dimension: customer_id {
     group_label: "* IDs *"
     hidden: no
     type: string
     sql: ${TABLE}.customer_id ;;
+  }
+
+  dimension: external_id {
+    group_label: "* IDs *"
+    hidden: no
+    type: string
+    sql: ${TABLE}.external_id ;;
   }
 
   dimension: customer_note {
@@ -313,6 +327,16 @@ view: orders {
     sql_end: ${delivery_timestamp_raw};;
   }
 
+  dimension: delivery_delay_since_eta_seconds {
+    group_label: "* Operations / Logistics *"
+    label: "Delta to PDT (sec)"
+    description: "Delay versus promised delivery time (as shown to customer)"
+    hidden: yes
+    type: duration_second
+    sql_start: ${delivery_eta_timestamp_raw};;
+    sql_end: ${delivery_timestamp_raw};;
+  }
+
   dimension: delivery_delay_since_time_estimate {
     group_label: "* Operations / Logistics *"
     label: "Delta to Time Estimate (min)"
@@ -418,12 +442,38 @@ view: orders {
     sql: ${TABLE}.estimated_queuing_time_for_picker_minutes;;
   }
 
+  dimension: queuing_time_for_picker_minutes {
+    label: "Picker Queuing Time (min)"
+    description: "The actual time in minutes for the picker queuing"
+    group_label: "* Operations / Logistics *"
+    type: number
+    value_format: "0.0"
+    sql: TIMESTAMP_DIFF(safe_cast(${order_picker_accepted_timestamp} as timestamp) , safe_cast(${created_time} as timestamp),second)/60;;
+  }
+
+  dimension: queuing_time_for_rider_minutes {
+    label: "Rider Queuing Time (min)"
+    description: "The actual time in minutes for the rider queuing"
+    group_label: "* Operations / Logistics *"
+    type: number
+    value_format: "0.0"
+    sql: TIMESTAMP_DIFF( safe_cast(${order_on_route_timestamp} as timestamp),safe_cast(${order_packed_timestamp} as timestamp),second)/60;;
+  }
+
   dimension: estimated_queuing_time_for_rider_minutes {
     label: "Rider Queuing Time Estimate (min)"
     description: "The internally predicted time in minutes for the rider queuing"
     group_label: "* Operations / Logistics *"
     type: number
     sql: ${TABLE}.estimated_queuing_time_for_rider_minutes;;
+  }
+
+  dimension: pre_riding_time {
+    label: "Pre Riding Time (min)"
+    description: "Picker Queuing Time + Picking Time + Rider Queuing Time"
+    group_label: "* Operations / Logistics *"
+    type: number
+    sql: ${queuing_time_for_picker_minutes}+${queuing_time_for_rider_minutes} + ${time_diff_between_two_subsequent_fulfillments};;
   }
 
   dimension: is_critical_delivery_time_estimate_underestimation {
@@ -832,17 +882,11 @@ view: orders {
     label: "Rider time spent from claiming an order until returning back to Hub in Minute"
     description: "The time, when a rider arrives back at the hub after delivering an order"
     type: number
-    sql: timestamp_diff(timestamp(${rider_returned_to_hub_timestamp}), timestamp(${order_rider_claimed_timestamp}), minute) ;;
+    sql: timestamp_diff(timestamp(${rider_completed_delivery_timestamp}), timestamp(${order_on_route_timestamp}), minute)*2 ;;
   }
 
 
-  measure: sum_rider_on_duty_time {
-    label: "Rider on Duty Time in minutes"
-    group_label: "* Operations / Logistics *"
-    description: "Rider Time spent from claiming an order until returning to the hub "
-    type: sum
-    sql:  ${rider_on_duty_time} ;;
-  }
+
 
   dimension: order_uuid {
     type: string
@@ -921,7 +965,7 @@ view: orders {
   }
 
   dimension: rider_id {
-    hidden: yes
+    hidden: no
     group_label: "* IDs *"
     type: string
     sql: ${TABLE}.rider_id ;;
@@ -1282,6 +1326,7 @@ view: orders {
     value_format_name: decimal_1
   }
 
+
   measure: avg_estimated_riding_time_minutes {
     group_label: "* Operations / Logistics *"
     label: "AVG Estimated Riding Time"
@@ -1295,6 +1340,30 @@ view: orders {
     label: "AVG Estimated Queuing Time for Pickers"
     type: average
     sql: ${estimated_queuing_time_for_picker_minutes};;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_queuing_time_for_pickers_minutes {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Queuing Time for Pickers"
+    type: average
+    sql: ${queuing_time_for_picker_minutes} ;;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_queuing_time_for_riders_minutes {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Queuing Time for Riders"
+    type: average
+    sql: ${queuing_time_for_rider_minutes} ;;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_pre_riding_time {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Pre Riding Time"
+    type: average
+    sql: ${pre_riding_time} ;;
     value_format_name: decimal_1
   }
 
@@ -1397,6 +1466,27 @@ view: orders {
     value_format_name: decimal_1
   }
 
+  measure: avg_ratio_customer_to_hub {
+    group_label: "* Operations / Logistics *"
+    label: "% Return to Hub vs. Delivery Time"
+    description: "AVG [(Return to Hub Time / Delivery Time) - 1]"
+    hidden: no
+    type: average
+    sql: (${return_to_hub_time_minutes} / NULLIF(${delivery_time}, 0)) - 1 ;;
+    value_format: "0%"
+
+  }
+
+  measure: avg_rider_tip {
+    group_label: "* Monetary Values *"
+    description: "AVG Rider Tip Amount considering Orders where a tip was applied"
+    label: "AVG Rider Tip"
+    hidden:  no
+    type: average
+    sql: ${rider_tip};;
+    value_format_name: euro_accounting_2_precision
+  }
+
 
   ##########
   ## SUMS ##
@@ -1449,7 +1539,7 @@ view: orders {
     hidden:  no
     type: sum
     sql: ${discount_amount};;
-    value_format_name: euro_accounting_0_precision
+    value_format_name: euro_accounting_2_precision
   }
 
   measure: sum_delivery_fee_gross {
@@ -1486,6 +1576,36 @@ view: orders {
     description: "Sum of completed Rider shift Hours"
     type: number
     sql: NULLIF(${shyftplan_riders_pickers_hours.rider_hours},0);;
+  }
+
+
+  measure: rider_on_duty_time_minute {
+    label: "Sum Rider On Duty Time (min)"
+    group_label: "* Operations / Logistics *"
+    description: "Rider Time spent from claiming an order until returning to the hub "
+    type: sum
+    sql:${rider_on_duty_time};;
+    value_format_name: decimal_2
+  }
+
+  measure: sum_rider_tip {
+    group_label: "* Monetary Values *"
+    label: "SUM Rider Tip"
+    hidden:  no
+    type: sum
+    sql: ${rider_tip};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+
+  measure: sum_avg_acceptance_reaction_time {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Reaction + Acceptance Time"
+    description: "Sum of the average of acceptance time and the average of reaction time"
+    hidden:  no
+    type: number
+    sql:${avg_acceptance_time} + ${avg_reaction_time};;
+    value_format_name: decimal_1
   }
 
   ############
@@ -1599,15 +1719,74 @@ view: orders {
     # group_label: "* Operations / Logistics *"
     view_label: "* Hubs *"
     group_label: "Hub Leaderboard - Order Metrics"
-    label: "# Orders delivered in time"
+    label: "# Orders delivered on time (30 sec tolerance)"
     description: "Count of Orders delivered no later than PDT"
+    hidden:  yes
+    type: count
+    filters: [delivery_delay_since_eta:"<=0.5"]
+    value_format: "0"
+  }
+
+  measure: cnt_orders_with_rider_tip {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Orders with Rider Tip"
     hidden:  no
     type: count
-    filters: [delivery_delay_since_eta:"<=0"]
+    filters: [rider_tip: ">0"]
     value_format: "0"
   }
 
 
+  ############### Delays compared to delivery time internal estimate ###########
+
+  measure: cnt_orders_delayed_over_12_min_internal_estimate {
+    # group_label: "* Operations / Logistics *"
+    view_label: "* Hubs *"
+    group_label: "Hub Leaderboard - Order Metrics"
+    label: "# Orders delivered late >12min (internal estimate)"
+    description: "Count of Orders delivered >12min later than delivery time estimate"
+    hidden:  yes
+    type: count
+    filters: [delivery_delay_since_time_estimate:">=12"]
+    value_format: "0"
+  }
+
+  measure: cnt_orders_delayed_over_20_min_internal_estimate {
+    # group_label: "* Operations / Logistics *"
+    view_label: "* Hubs *"
+    group_label: "Hub Leaderboard - Order Metrics"
+    label: "# Orders delivered late >20min (internal estimate)"
+    description: "Count of Orders delivered >20min later than delivery time estimate"
+    hidden:  yes
+    type: count
+    filters: [delivery_delay_since_time_estimate:">=20"]
+    value_format: "0"
+  }
+
+
+  measure: cnt_orders_delayed_over_30_min_internal_estimate {
+    # group_label: "* Operations / Logistics *"
+    view_label: "* Hubs *"
+    group_label: "Hub Leaderboard - Order Metrics"
+    label: "# Orders delivered late >30min (internal estimate)"
+    description: "Count of Orders delivered >30min later than delivery time estimate"
+    hidden:  yes
+    type: count
+    filters: [delivery_delay_since_time_estimate:">=30"]
+    value_format: "0"
+  }
+
+  measure: cnt_orders_delayed_over_60_min_internal_estimate {
+    # group_label: "* Operations / Logistics *"
+    view_label: "* Hubs *"
+    group_label: "Hub Leaderboard - Order Metrics"
+    label: "# Orders delivered late >20min (internal estimate)"
+    description: "Count of Orders delivered >60min later than delivery time estimate"
+    hidden:  yes
+    type: count
+    filters: [delivery_delay_since_time_estimate:">=60"]
+    value_format: "0"
+  }
 
   measure: cnt_orders_delayed_over_5_min {
     # group_label: "* Operations / Logistics *"
@@ -1615,7 +1794,7 @@ view: orders {
     group_label: "Hub Leaderboard - Order Metrics"
     label: "# Orders delivered late >5min"
     description: "Count of Orders delivered >5min later than PDT"
-    hidden:  no
+    hidden:  yes
     type: count
     filters: [delivery_delay_since_eta:">=5"]
     value_format: "0"
@@ -1641,6 +1820,7 @@ view: orders {
     value_format: "0"
   }
 
+
 #######TEMP: adding new fields to compare how PDT versus Time Estimate will perform
   measure: cnt_orders_delayed_under_0_min_time_estimate {
     # group_label: "* Operations / Logistics *"
@@ -1651,18 +1831,6 @@ view: orders {
     hidden:  yes
     type: count
     filters: [delivery_delay_since_time_estimate:"<=0"]
-    value_format: "0"
-  }
-
-  measure: cnt_orders_delayed_under_30_sec_time_estimate {
-    # group_label: "* Operations / Logistics *"
-    view_label: "* Hubs *"
-    group_label: "Hub Leaderboard - Order Metrics"
-    label: "# Orders delivered within 30 sec of internal time estimate"
-    description: "Count of Orders delivered no later than 30 sec after internal time estimate"
-    hidden:  yes
-    type: count
-    filters: [delivery_delay_since_time_estimate:"<=0.5"]
     value_format: "0"
   }
 
@@ -1689,8 +1857,16 @@ view: orders {
     filters: [delivery_delay_since_time_estimate:">=10"]
     value_format: "0"
   }
-#######TEMP: adding new fields to compare how PDT versus Time Estimate will perform
 
+  measure: cnt_orders_fulfilled_over_12_min {
+    group_label: "* Operations / Logistics *"
+    label: "# Orders delivered >12min"
+    description: "Count of Orders delivered in >12min"
+    hidden:  yes
+    type: count
+    filters: [fulfillment_time:">12"]
+    value_format: "0"
+  }
 
   measure: cnt_orders_fulfilled_over_20_min {
     group_label: "* Operations / Logistics *"
@@ -1698,7 +1874,7 @@ view: orders {
     description: "Count of Orders delivered >20min fulfillment time"
     hidden:  yes
     type: count
-    filters: [fulfillment_time:">=20"]
+    filters: [fulfillment_time:">20"]
     value_format: "0"
   }
 
@@ -1709,6 +1885,16 @@ view: orders {
     hidden:  yes
     type: count
     filters: [fulfillment_time:">=30"]
+    value_format: "0"
+  }
+
+  measure: cnt_orders_fulfilled_over_60_min {
+    group_label: "* Operations / Logistics *"
+    label: "# Orders delivered >60min"
+    description: "Count of Orders delivered in >60min"
+    hidden:  yes
+    type: count
+    filters: [fulfillment_time:">60"]
     value_format: "0"
   }
 
@@ -1741,6 +1927,15 @@ view: orders {
     sql: case when ${country_iso} = 'DE' and ${order_dow} = 'Sunday' then null
           else ${order_date} end;;
     value_format: "0"
+  }
+
+
+  measure: cnt_rider {
+    label: "# Riders Delivering Orders"
+    type: number
+    group_label: "* Operations / Logistics *"
+    sql:count (distinct ${rider_id});;
+    value_format_name: decimal_0
   }
 
 
@@ -1778,10 +1973,30 @@ view: orders {
     value_format: "0%"
   }
 
+  measure: pct_tip_order_share {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "% Tip Order Share"
+    description: "Share of Orders which had some Rider Tip applied"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_with_rider_tip} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_tip_value_of_gross_total{
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "% Tip Value Share"
+    description: "Dividing Total Rider Tip amounts over GMV"
+    hidden:  no
+    type: number
+    sql: ${sum_rider_tip} / NULLIF(${sum_gmv_gross}, 0);;
+    value_format: "0%"
+  }
+
   measure: pct_delivery_in_time{
     group_label: "* Operations / Logistics *"
-    label: "% Orders delivered in time"
-    description: "Share of orders delivered no later than PDT"
+    label: "% Orders delivered in time (PDT)"
+    description: "Share of orders delivered no later than PDT (30 sec tolerance)"
     hidden:  no
     type: number
     sql: ${cnt_orders_delayed_under_0_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
@@ -1818,6 +2033,77 @@ view: orders {
     value_format: "0%"
   }
 
+  measure: pct_fulfillment_over_12_min{
+    group_label: "* Operations / Logistics *"
+    label: "% Orders fulfilled >12min"
+    description: "Share of orders delivered >12min"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_fulfilled_over_12_min} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_fulfillment_over_20_min{
+    group_label: "* Operations / Logistics *"
+    label: "% Orders fulfilled >20min"
+    description: "Share of orders delivered >20min"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_fulfilled_over_20_min} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_fulfillment_over_60_min{
+    group_label: "* Operations / Logistics *"
+    label: "% Orders fulfilled >60min"
+    description: "Share of orders delivered >60min"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_fulfilled_over_60_min} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0%"
+  }
+###########  Delays with regards to Delivery Time Internal Estimate
+
+  measure: pct_delayed_over_12_min_internal_estimate {
+    group_label: "* Operations / Logistics *"
+    label: "% Orders delayed >12min (Internal Estimate)"
+    description: "Share of orders delayed >12min than Delivery Time Internal Estimate"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_delayed_over_12_min_internal_estimate} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_delayed_over_20_min_internal_estimate {
+    group_label: "* Operations / Logistics *"
+    label: "% Orders delayed >20min (Internal Estimate)"
+    description: "Share of orders delayed >20min than Delivery Time Internal Estimate"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_delayed_over_20_min_internal_estimate} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_delayed_over_30_min_internal_estimate {
+    group_label: "* Operations / Logistics *"
+    label: "% Orders delayed >30min (Internal Estimate)"
+    description: "Share of orders delayed >30min than Delivery Time Internal Estimate"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_delayed_over_30_min_internal_estimate} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_delayed_over_60_min_internal_estimate {
+    group_label: "* Operations / Logistics *"
+    label: "% Orders delayed >60min (Internal Estimate)"
+    description: "Share of orders delayed >60min than Delivery Time Internal Estimate"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_delayed_over_60_min_internal_estimate} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0%"
+  }
+
 #######TEMP: adding new fields to compare how PDT versus Time Estimate will perform
 
   measure: pct_delivery_in_time_time_estimate{
@@ -1830,15 +2116,7 @@ view: orders {
     value_format: "0%"
   }
 
-  measure: pct_delivery_in_time_30_sec_time_estimate{
-    group_label: "* Operations / Logistics *"
-    label: "% Orders delivered within 30 sec of internal time estimate"
-    description: "Share of orders delivered no later than 30 sec after internal estimate"
-    hidden:  no
-    type: number
-    sql: ${cnt_orders_delayed_under_30_sec_time_estimate} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
-    value_format: "0%"
-  }
+  ###### The below measure should not be removed
 
   measure: pct_delivery_late_over_5_min_time_estimate{
     group_label: "* Operations / Logistics *"
@@ -1863,29 +2141,26 @@ view: orders {
   measure: pct_idle {
     label: "% Rider Idle Time"
     group_label: "* Operations / Logistics *"
-    description: "Rider Time spent from claiming an order until returning to the hub "
+    description: "% Rider Time spent from claiming an order until returning to the hub "
     type: number
-    sql: 1 - (${sum_rider_on_duty_time}/60)/NULLIF(${shyftplan_riders_pickers_hours.rider_hours},0);;
+    sql: 1 - (${rider_on_duty_time_minute}/60)/NULLIF(${shyftplan_riders_pickers_hours.rider_hours},0);;
     value_format_name:  percent_1
   }
 
 
-
-
-
-
 #######TEMP: adding new fields to compare how PDT versus Time Estimate will perform
 
+#### ADDED PERMANENTLY --- SEE LINE 1873
 
-  measure: pct_fulfillment_over_20_min{
-    group_label: "* Operations / Logistics *"
-    label: "% Orders fulfilled >20min"
-    description: "Share of orders delivered > 20min"
-    hidden:  no
-    type: number
-    sql: ${cnt_orders_fulfilled_over_20_min} / NULLIF(${cnt_orders}, 0);;
-    value_format: "0%"
-  }
+  #measure: pct_fulfillment_over_20_min{
+  #  group_label: "* Operations / Logistics *"
+  #  label: "% Orders fulfilled >20min"
+  #  description: "Share of orders delivered > 20min"
+  #  hidden:  no
+  #  type: number
+  #  sql: ${cnt_orders_fulfilled_over_20_min} / NULLIF(${cnt_orders}, 0);;
+  #  value_format: "0%"
+  #}
 
   measure: pct_fulfillment_over_30_min{
     group_label: "* Operations / Logistics *"
@@ -1958,6 +2233,13 @@ view: orders {
     value_format_name: decimal_2
   }
 
+measure: delta_return_delivery_time {
+  group_label: "* Operations / Logistics *"
+  label: "Delta between Return Time and Delivery Time"
+  type: number
+  value_format: "0.0"
+  sql: ${avg_delivery_time} - ${avg_return_to_hub_time} ;;
+}
 
 
 }

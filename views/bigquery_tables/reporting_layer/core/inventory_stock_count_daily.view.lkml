@@ -99,9 +99,38 @@ view: inventory_stock_count_daily {
     sql: if({% parameter show_hub_code %}, ${hub_code}, null) ;;
   }
 
+
+  dimension: show_dynamic_dims_dense {
+    label: "Dimensions Dynamic (merged)"
+    group_label: "* Parameters & Dynamic Fields *"
+    type: string
+    sql: concat(
+            ifnull(${country_dynamic}      , '' ) , "  " ,
+            ifnull(${city_dynamic}         , '' ) , "  " ,
+            ifnull(${hub_code_dynamic}     , '' ) , "  " ,
+            ifnull(${category_dynamic}     , '' ) , "  " ,
+            ifnull(${sub_category_dynamic} , '' ) , "  " ,
+            ifnull(${sku_name_dynamic}     , '' )
+            )
+    ;;
+  }
+
+
   set: filter_dims {
-    fields: [show_category ,show_city, show_country, show_hub_code, show_sku, show_sub_category,
-      category_dynamic, city_dynamic, country_dynamic, hub_code_dynamic, sku_name_dynamic, sub_category_dynamic
+    fields: [
+      show_country,
+      show_city,
+      show_hub_code,
+      show_category,
+      show_sub_category,
+      show_sku,
+
+      country_dynamic,
+      city_dynamic,
+      hub_code_dynamic,
+      category_dynamic,
+      sub_category_dynamic,
+      sku_name_dynamic,
     ]
   }
 
@@ -120,7 +149,7 @@ view: inventory_stock_count_daily {
       value: "repl_group"
     }
 
-    default_value: "sku"
+    default_value: "repl_group"
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -237,7 +266,7 @@ view: inventory_stock_count_daily {
     description: "This rate gives the sum of all hours, an SKU was out of stock compared to all hours, the hub was open for orders"
     type: number
     sql: ${hours_oos} / nullif( ${open_hours_total},0) ;;
-    value_format_name: percent_0
+    value_format_name: percent_1
     # palette: https://coolors.co/0c0f0a-ff206e-fbff12
     html:
     {% if value >= 0.9 %}
@@ -262,7 +291,7 @@ view: inventory_stock_count_daily {
     description: "This rate gives the sum of all hours, an SKU was in stock compared to all hours, the hub was open for orders"
     type: number
     sql: 1 - ${pct_oos} ;;
-    value_format_name: percent_0
+    value_format_name: percent_1
     # palette: https://coolors.co/0c0f0a-ff206e-fbff12
     html:
     {% if value <= 0.1 %}

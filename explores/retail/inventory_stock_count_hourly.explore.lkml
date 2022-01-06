@@ -9,7 +9,12 @@ explore: inventory_stock_count_hourly {
   "
   group_label: "02) Inventory"
   # restrict this explore to the last complete week only (too big to be queried entirely)
-  sql_always_where: ${inventory_tracking_timestamp_date} >= date_sub(current_date(), interval 7 day) ;;
+  sql_always_where:
+
+        ${inventory_tracking_timestamp_date} >= date_sub(current_date(), interval 7 day)
+
+  and ${inventory_stock_count_hourly.inventory_tracking_timestamp_date} <= (case when ${hubs.termination_date} is null then date_add(current_date(), interval 3 year) else ${hubs.termination_date} end)
+  ;;
 
   always_filter: {
     filters:  [
@@ -40,5 +45,16 @@ explore: inventory_stock_count_hourly {
     sql_on: ${inventory_stock_count_hourly.sku}         = ${products.product_sku} ;;
     relationship: many_to_one
     type: left_outer
+  }
+
+  join: erp_product_hub_vendor_assignment {
+    sql_on:
+        ${erp_product_hub_vendor_assignment.country_iso}    = ${inventory_stock_count_hourly.country_iso}
+    and ${erp_product_hub_vendor_assignment.sku}            = ${inventory_stock_count_hourly.sku}
+    and ${erp_product_hub_vendor_assignment.hub_code}       = ${inventory_stock_count_hourly.hub_code}
+    and ${erp_product_hub_vendor_assignment.ingestion_date} = ${inventory_stock_count_hourly.inventory_tracking_timestamp_date}
+    ;;
+    type: left_outer
+    relationship: one_to_many
   }
 }

@@ -27,7 +27,7 @@ view: crm_braze_canvas {
                  END as unique_users_denominator
         , CASE WHEN is_control_group = false THEN sum(number_of_orders)/nullif(sum(number_of_unique_emails_opened),0)
                WHEN is_control_group = true THEN sum(number_of_orders)/nullif(sum(number_of_emails_sent),0) END as order_rate
- FROM `flink-data-staging.sandbox.braze_canvas`
+ FROM `flink-data-prod.curated.braze_canvas`
  GROUP BY 1,2,3,4,5,6
 ;;
 }

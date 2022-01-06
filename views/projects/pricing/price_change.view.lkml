@@ -1,15 +1,15 @@
 view: price_change {
   derived_table: {
     sql:
-     with w as
+          with w as
 (
 
 SELECT
 
       cast(a.order_timestamp as date) as order_date,
       "Chosen Time Frame" as period,
-      prod.random_ct_category as category,
-      prod.random_ct_subcategory as subcategory,
+      prod.category as category,
+      prod.subcategory as subcategory,
       prod.product_name,
       prod.product_sku,
       COALESCE(prod.substitute_group, prod.product_name) as substitute_group,
@@ -36,8 +36,8 @@ w_minus_1 as
      SELECT
       cast(date_add(a.order_timestamp,interval +7 day) as date) as order_date,
       "Week -1" as period,
-      prod.random_ct_category as category,
-      prod.random_ct_subcategory as subcategory,
+      prod.category as category,
+      prod.subcategory as subcategory,
       prod.product_name,
       prod.product_sku,
       COALESCE(prod.substitute_group, prod.product_name) as substitute_group,
@@ -63,8 +63,8 @@ w_minus_2 as
      SELECT
       cast(date_add(a.order_timestamp,interval +14 day) as date) as order_date,
       "Week -2" as period,
-      prod.random_ct_category as category,
-      prod.random_ct_subcategory as subcategory,
+      prod.category as category,
+      prod.subcategory as subcategory,
       prod.product_name,
       prod.product_sku,
       COALESCE(prod.substitute_group, prod.product_name) as substitute_group,
@@ -90,8 +90,8 @@ w_minus_3 as
      SELECT
       cast(date_add(a.order_timestamp,interval +21 day) as date) as order_date,
       "Week -3" as period,
-      prod.random_ct_category as category,
-      prod.random_ct_subcategory as subcategory,
+      prod.category as category,
+      prod.subcategory as subcategory,
       prod.product_name,
       prod.product_sku,
       COALESCE(prod.substitute_group, prod.product_name) as substitute_group,
@@ -117,8 +117,8 @@ w_minus_4 as
      SELECT
       cast(date_add(a.order_timestamp,interval +28 day) as date) as order_date,
       "Week -4" as period,
-      prod.random_ct_category as category,
-      prod.random_ct_subcategory as subcategory,
+      prod.category as category,
+      prod.subcategory as subcategory,
       prod.product_name,
       prod.product_sku,
       COALESCE(prod.substitute_group, prod.product_name) as substitute_group,
@@ -215,7 +215,7 @@ from (
 SELECT
 a.inventory_tracking_date,
 c.hub_name,
-COALESCE(b.substitute_group, b.product_name) as substitute_group,
+--COALESCE(b.substitute_group, b.product_name) as substitute_group,
 product_sku,
 min(hours_oos) as hours_oos,
 max(open_hours_total) as open_hours_total
@@ -225,13 +225,43 @@ on a.sku = b.product_sku
 left join `flink-data-prod.curated.hubs` c
 on a.hub_code = c.hub_code
  WHERE inventory_tracking_date >= date_sub(current_date(), interval 88 day)
- group by 1,2,3,4
+ group by 1,2,3
 )
 as a
 group by 1,2
 
 ),
 
+
+oos_sub_gr as
+(
+    SELECT
+    date(inventory_tracking_timestamp) as inventory_tracking_date,
+    product_sku,
+    sum(hours_oos) as hours_oos_subsgr,
+    sum(open_hours_total) as open_hours_total_subsgr
+        from (
+            SELECT
+                a.inventory_tracking_timestamp,
+                c.hub_name,
+                case when b.substitute_group is not null then b.substitute_group else b.product_sku end  as substitute_group,
+                --product_sku,
+                min(is_oos) as hours_oos,
+                max(is_hub_open) as open_hours_total
+        FROM `flink-data-prod.reporting.inventory_stock_count_hourly` a
+        LEFT JOIN `flink-data-prod.curated.products` b
+            on a.sku = b.product_sku
+        LEFT JOIN `flink-data-prod.curated.hubs` c
+            on a.hub_code = c.hub_code
+         WHERE date(a.inventory_tracking_timestamp) >= date_sub(current_date(), interval 88 day)
+
+        group by 1,2,3
+            )
+    as a
+    left join `flink-data-prod.curated.products` b
+        on a.substitute_group  =  case when b.substitute_group is not null then b.substitute_group else b.product_sku end
+    group by 1,2
+),
 
 day_country as
       (
@@ -253,8 +283,8 @@ sku_country as
 
     SELECT
     country_iso,
-    prod.random_ct_category,
-    prod.random_ct_subcategory,
+    prod.category,
+    prod.subcategory,
     prod.product_name,
     prod.product_sku,
     COALESCE(prod.substitute_group, prod.product_name) as substitute_group,
@@ -273,13 +303,15 @@ day_sku_country_oos as
     day_country.month,
    "Chosen Time Frame" as period,
     day_country.country_iso,
-    sku_country.random_ct_category as category,
-    sku_country.random_ct_subcategory as subcategory,
+    sku_country.category as category,
+    sku_country.subcategory as subcategory,
     sku_country.product_name,
     sku_country.product_sku,
     sku_country.substitute_group,
     oos.hours_oos,
-    oos.open_hours_total
+    oos.open_hours_total,
+    oos_sub_gr.hours_oos_subsgr,
+    oos_sub_gr.open_hours_total_subsgr
 
       from day_country
 
@@ -290,6 +322,9 @@ day_sku_country_oos as
       on day_country.order_date = oos.inventory_tracking_date
       and sku_country.product_sku = oos.product_sku
 
+      left join oos_sub_gr
+      on day_country.order_date = oos_sub_gr.inventory_tracking_date
+      and sku_country.product_sku = oos_sub_gr.product_sku
 
 union all
 
@@ -300,22 +335,29 @@ union all
     day_country.month,
     "Week -1" as period,
     day_country.country_iso,
-    sku_country.random_ct_category as category,
-    sku_country.random_ct_subcategory as subcategory,
+    sku_country.category as category,
+    sku_country.subcategory as subcategory,
     sku_country.product_name,
     sku_country.product_sku,
     sku_country.substitute_group,
     oos.hours_oos,
-    oos.open_hours_total
+    oos.open_hours_total,
+    oos_sub_gr.hours_oos_subsgr,
+    oos_sub_gr.open_hours_total_subsgr
 
       from day_country
 
-      left join sku_country
+    left join sku_country
       on day_country.country_iso = sku_country.country_iso
 
     left join oos
       on day_country.order_date = date_add(oos.inventory_tracking_date,interval +7 day)
       and sku_country.product_sku = oos.product_sku
+
+    left join oos_sub_gr
+      on day_country.order_date = date_add(oos_sub_gr.inventory_tracking_date,interval +7 day)
+      and sku_country.product_sku = oos_sub_gr.product_sku
+
 
 union all
 
@@ -326,22 +368,28 @@ union all
     day_country.month,
    "Week -2" as period,
     day_country.country_iso,
-    sku_country.random_ct_category as category,
-    sku_country.random_ct_subcategory as subcategory,
+    sku_country.category as category,
+    sku_country.subcategory as subcategory,
     sku_country.product_name,
     sku_country.product_sku,
     sku_country.substitute_group,
     oos.hours_oos,
-    oos.open_hours_total
+    oos.open_hours_total,
+    oos_sub_gr.hours_oos_subsgr,
+    oos_sub_gr.open_hours_total_subsgr
 
       from day_country
 
-      left join sku_country
+    left join sku_country
       on day_country.country_iso = sku_country.country_iso
 
     left join oos
       on day_country.order_date = date_add(oos.inventory_tracking_date,interval +14 day)
       and sku_country.product_sku = oos.product_sku
+
+    left join oos_sub_gr
+      on day_country.order_date = date_add(oos_sub_gr.inventory_tracking_date,interval +14 day)
+      and sku_country.product_sku = oos_sub_gr.product_sku
 
 union all
 
@@ -352,22 +400,28 @@ union all
     day_country.month,
    "Week -3" as period,
     day_country.country_iso,
-    sku_country.random_ct_category as category,
-    sku_country.random_ct_subcategory as subcategory,
+    sku_country.category as category,
+    sku_country.subcategory as subcategory,
     sku_country.product_name,
     sku_country.product_sku,
     sku_country.substitute_group,
     oos.hours_oos,
-    oos.open_hours_total
+    oos.open_hours_total,
+    oos_sub_gr.hours_oos_subsgr,
+    oos_sub_gr.open_hours_total_subsgr
 
       from day_country
 
-      left join sku_country
+    left join sku_country
       on day_country.country_iso = sku_country.country_iso
 
     left join oos
       on day_country.order_date = date_add(oos.inventory_tracking_date,interval +21 day)
       and sku_country.product_sku = oos.product_sku
+
+    left join oos_sub_gr
+      on day_country.order_date = date_add(oos_sub_gr.inventory_tracking_date,interval +21 day)
+      and sku_country.product_sku = oos_sub_gr.product_sku
 
 union all
 
@@ -378,22 +432,28 @@ union all
     day_country.month,
    "Week -4" as period,
     day_country.country_iso,
-    sku_country.random_ct_category as category,
-    sku_country.random_ct_subcategory as subcategory,
+    sku_country.category as category,
+    sku_country.subcategory as subcategory,
     sku_country.product_name,
     sku_country.product_sku,
     sku_country.substitute_group,
     oos.hours_oos,
-    oos.open_hours_total
+    oos.open_hours_total,
+    oos_sub_gr.hours_oos_subsgr,
+    oos_sub_gr.open_hours_total_subsgr
 
       from day_country
 
-      left join sku_country
+    left join sku_country
       on day_country.country_iso = sku_country.country_iso
 
-          left join oos
+    left join oos
       on day_country.order_date = date_add(oos.inventory_tracking_date,interval +28 day)
       and sku_country.product_sku = oos.product_sku
+
+    left join oos_sub_gr
+      on day_country.order_date = date_add(oos_sub_gr.inventory_tracking_date,interval +28 day)
+      and sku_country.product_sku = oos_sub_gr.product_sku
 
 )
 
@@ -432,7 +492,6 @@ flink_lvl.avg_unit_price_gross as avg_unit_price_gross_company
       on day_sku_country_oos.period = flink_lvl.period
       and day_sku_country_oos.order_date = flink_lvl.order_date
       and day_sku_country_oos.country_iso = flink_lvl.country_iso
-
       ;;
 }
 
@@ -512,6 +571,18 @@ flink_lvl.avg_unit_price_gross as avg_unit_price_gross_company
     label: "Open Hours"
     type: sum
     sql: ${TABLE}.open_hours_total ;;
+  }
+
+  measure: hours_oos_subsgr {
+    label: "Hours ooo Subsgr"
+    type: sum
+    sql: ${TABLE}.hours_oos_subsgr ;;
+  }
+
+  measure: open_hours_total_subsgr {
+    label: "Open Hours Subsgr"
+    type: sum
+    sql: ${TABLE}.open_hours_total_subsgr ;;
   }
 #    measure: sum_item_value_1W_back {
 #    type: sum

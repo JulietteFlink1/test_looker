@@ -1,7 +1,7 @@
 include: "/views/projects/rider_ops/fountain_funnel_pipeline.view"
 
 explore: fountain_funnel_pipeline {
-  hidden: no
+  hidden: yes
   label: "Active Hiring Funnel"
   view_label: "Active Hiring Funnel"
   description: "Rider/Picker Funnel Latest Snapshot"

@@ -15,6 +15,9 @@ view: order_placed_events {
           ios_orders.context_device_type,
           ios_orders.hub_city,
           ios_orders.payment_method,
+          ios_orders.revenue as revenue,
+          ios_orders.flag_rider_tip as flag_rider_tip,
+          ios_orders.rider_tip_value as rider_tip_value,
           ios_orders.timestamp,
           ROW_NUMBER() OVER(PARTITION BY order_number ORDER BY timestamp ASC) AS row_id
         FROM
@@ -39,6 +42,9 @@ view: order_placed_events {
           android_orders.context_device_type,
           android_orders.hub_city,
           android_orders.payment_method,
+          coalesce(android_orders.revenue, android_orders.order_revenue) as revenue,
+          android_orders.flag_rider_tip as flag_rider_tip,
+          android_orders.rider_tip_value as rider_tip_value,
           android_orders.timestamp,
           ROW_NUMBER() OVER(PARTITION BY order_number ORDER BY timestamp ASC) AS row_id
         FROM
@@ -88,62 +94,92 @@ view: order_placed_events {
  ;;
   }
 
-### Custom measures and dimensions ###
-  measure: cnt_distinct_orders {
-    type: count_distinct
-    sql: ${TABLE}.order_id ;;
-  }
-
   dimension: is_ct_order {
-  ## Can know whether is CT order by checking whether order_number is a number (Saleor: 11111) or a string (CT: de_muc_zue7y)
+    ## Can know whether is CT order by checking whether order_number is a number (Saleor: 11111) or a string (CT: de_muc_zue7y)
+    hidden: yes
     type: yesno
     sql: (
-    -- if safe_cast fails, returns null meaning order_number was not a number, meaning it was a CT order. Also ruling out NULL because with yesno, null turns into NO (FALSE).
-    IF(SAFE_CAST(${order_number} AS INT64) is NULL,TRUE,FALSE) AND ${order_number} IS NOT NULL
-    );;
+          -- if safe_cast fails, returns null meaning order_number was not a number, meaning it was a CT order. Also ruling out NULL because with yesno, null turns into NO (FALSE).
+          IF(SAFE_CAST(${order_number} AS INT64) is NULL,TRUE,FALSE) AND ${order_number} IS NOT NULL
+          );;
   }
 
   dimension: order_uuid {
-  ## This uuid is designed to follow the same format as order_uuid inside of orders.view (curated_layer).
-  ## For saleor orders, it looks like this: DE_11111 (order_id is based on order_number)
-  ## For CT orders, it looks like this: DE_c139c9c1-36b5-423b-97b2-79a94d116aea
-  ## The way we can know from the client side whether order_number or order_id should be used, is by checking whether order_number is a number (Saleor: 11111) or a string (CT: de_muc_zue7y)
+    ## This uuid is designed to follow the same format as order_uuid inside of orders.view (curated_layer).
+    ## For saleor orders, it looks like this: DE_11111 (order_id is based on order_number)
+    ## For CT orders, it looks like this: DE_c139c9c1-36b5-423b-97b2-79a94d116aea
+    ## The way we can know from the client side whether order_number or order_id should be used, is by checking whether order_number is a number (Saleor: 11111) or a string (CT: de_muc_zue7y)
     type: string
     sql: (
       IF(${is_ct_order}, ${country_iso}|| '_' ||${order_id}, ${country_iso}|| '_' ||${order_number})
     );;
-  hidden: yes
+    hidden: yes
   }
 
-  dimension: has_next_order {
+  dimension: is_first_order {
+    description: "Is first order for this user according to client (note: will count as first order if user deleted all their app data)"
+    hidden: yes
     type: yesno
-    sql: ${next_order_number} IS NOT NULL ;;
-  }
-
-  measure: cnt_has_next_order {
-    type: count_distinct
-    sql: ${order_number} ;;
-    filters: [has_next_order: "yes"]
+    sql: ${TABLE}.is_first_order ;;
   }
 
   dimension: returning_customer {
+    group_label: "* Order Dimensions *"
+    description: "Whether the order was placed by a user that has placed a previous order (client-based tracking)"
     type: yesno
     sql: NOT(${is_first_order}) ;;
   }
 
+  dimension: has_next_order {
+    group_label: "* Order Dimensions *"
+    description: "Whether the customer has placed an order after the current order"
+    type: yesno
+    sql: ${next_order_number} IS NOT NULL ;;
+  }
+
+  dimension: flag_rider_tip {
+    group_label: "* Order Dimensions *"
+    label: "Rider Tip Flag"
+    type: yesno
+    sql: ${TABLE}.flag_rider_tip ;;
+  }
+
+  dimension: rider_tip_value {
+    group_label: "* Order Dimensions *"
+    label: "Rider Tip Value"
+    type: number
+    sql: ${TABLE}.rider_tip_value ;;
+  }
+
   dimension: full_app_version {
+    group_label: "* Device Dimensions *"
+    label: "Full App Version Detailed"
+    description: "Combined device type and detailed app version"
     type: string
     sql: ${context_device_type} || '-' || ${context_app_version} ;;
     order_by_field: version_ordering_field
   }
 
   dimension: main_app_version {
+    group_label: "* Device Dimensions *"
+    label: "Full App Version Main"
+    description: "Combined device type and main app version"
     type: string
     sql: ${context_device_type} || '-' || ${main_version_number} || '.' || ${secondary_version_number} ;;
     order_by_field: basic_version_field
   }
 
+  dimension: context_device_type {
+    group_label: "* Device Dimensions *"
+    label: "Device Type"
+    description: "Android or iOS"
+    type: string
+    sql: ${TABLE}.context_device_type ;;
+  }
+
   dimension: basic_version_field {
+    group_label: "* Device Dimensions *"
+    hidden: yes
     type: number
     sql: CAST(CONCAT(${main_version_number},${secondary_version_number}) AS INT64) ;;
   }
@@ -169,15 +205,9 @@ view: order_placed_events {
   }
 
   dimension: version_ordering_field {
+    hidden: yes
     type: number
     sql: CONCAT(${main_version_number},${secondary_version_number},${tertiary_version_number}) ;;
-  }
-
-#######################################
-
-  measure: count {
-    type: count
-    drill_fields: [detail*]
   }
 
   dimension: id {
@@ -187,59 +217,48 @@ view: order_placed_events {
     primary_key: yes
   }
 
-  dimension: next_order_number {
-    type: string
-    sql: ${TABLE}.next_order_number ;;
-  }
-
-
   dimension: order_id {
+    group_label: "* IDs *"
     type: string
     sql: ${TABLE}.order_id ;;
   }
 
   dimension: order_number {
+    group_label: "* IDs *"
     type: string
     sql: ${TABLE}.order_number ;;
   }
 
+  dimension: next_order_number {
+    group_label: "* IDs *"
+    description: "Order Number for the order after the current order from the same user, NULL if user has no following order (yet)."
+    type: string
+    sql: ${TABLE}.next_order_number ;;
+  }
+
   dimension: anonymous_id {
+    group_label: "* IDs *"
     description: "User ID generated by Segment for users that are not logged in"
     type: string
     sql: ${TABLE}.anonymous_id ;;
   }
 
-  dimension: context_app_version {
-    description: "Version of the app"
-    type: string
-    sql: ${TABLE}.context_app_version ;;
+  dimension: revenue {
+    group_label: "* Order Dimensions *"
+    description: "Revenue from order"
+    type: number
+    sql: ${TABLE}.revenue ;;
   }
 
-  dimension: context_app_name {
-    type: string
-    sql: ${TABLE}.context_app_name ;;
-    hidden: yes
+  measure: sum_revenue {
+    description: "Sum over revenues"
+    type: sum
+    sql: ${revenue} ;;
   }
 
-  dimension: context_device_type {
-    description: "Type of device, i.e. ios or android"
-    type: string
-    sql: ${TABLE}.context_device_type ;;
-  }
-
-  dimension: hub_city {
-    description: "City in which order was placed"
-    type: string
-    sql: ${TABLE}.hub_city ;;
-  }
-
-  # dimension: payment_method {
-  #   description: "Payment method used to place the order"
-  #   type: string
-  #   sql: ${TABLE}.payment_method ;;
-  # }
 
   dimension: payment_method {
+    group_label: "* Order Dimensions *"
     description: "Payment method used to place the order"
     type: string
     case: {
@@ -312,7 +331,7 @@ view: order_placed_events {
         label: "iDEAL"
       }
       when: {
-        sql: ${TABLE}.payment_method = "Sofort" ;;
+        sql: ${TABLE}.payment_method = "Sofort." ;;
         label: "Sofort"
       }
       when: {
@@ -327,23 +346,74 @@ view: order_placed_events {
     }
   }
 
+  dimension: context_app_version {
+    hidden: yes
+    type: string
+    sql: ${TABLE}.context_app_version ;;
+  }
 
-  dimension_group: timestamp {
-    description: "Time at which order was placed"
-    type: time
-    sql: ${TABLE}.timestamp ;;
+  dimension: context_app_name {
+    type: string
+    sql: ${TABLE}.context_app_name ;;
+    hidden: yes
+  }
+
+  dimension: hub_city {
+    group_label: "* Location Dimensions *"
+    label: "City"
+    description: "City in which order was placed"
+    type: string
+    sql: ${TABLE}.hub_city ;;
   }
 
   dimension: country_iso {
+    group_label: "* Location Dimensions *"
+    label: "Country ISO"
     description: "Country in which order was placed"
     type: string
     sql: ${TABLE}.country_iso ;;
   }
 
-  dimension: is_first_order {
-    description: "Is first order for this user according to client (note: will count as first order if user deleted all their app data)"
-    type: yesno
-    sql: ${TABLE}.is_first_order ;;
+  dimension_group: timestamp {
+    group_label: "* Times & Dates *"
+    label: "Order Timestamp"
+    description: "Time at which order was placed"
+    type: time
+    sql: ${TABLE}.timestamp ;;
+  }
+
+  measure: cnt_distinct_orders {
+    label: "# Distinct Orders"
+    type: count_distinct
+    sql: ${TABLE}.order_id ;;
+  }
+
+  measure: cnt_distinct_orders_with_tip {
+    label: "# Distinct Orders With Tip"
+    type: count_distinct
+    sql: case when ${flag_rider_tip} = true
+          then ${TABLE}.order_id
+          else null end ;;
+  }
+
+  measure: sum_tip_value {
+    description: "Sum over tip value in successful orders"
+    type: sum
+    sql: ${rider_tip_value} ;;
+  }
+
+  measure: cnt_has_next_order {
+    label: "# Has Next Order"
+    description: "# orders that have a next order"
+    type: count_distinct
+    sql: ${order_number} ;;
+    filters: [has_next_order: "yes"]
+  }
+
+  measure: count {
+    description: "Counts the number of occurrences of the selected dimension(s)"
+    type: count
+    drill_fields: [detail*]
   }
 
   set: detail {

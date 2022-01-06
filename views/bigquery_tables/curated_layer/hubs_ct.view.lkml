@@ -55,24 +55,26 @@ view: hubs_ct {
     map_layer_name: countries
     sql: ${TABLE}.country ;;
     group_label: "> Geographic Data"
+    label: "Country"
   }
 
   dimension: country_iso {
     type: string
     sql: ${TABLE}.country_iso ;;
     group_label: "> Geographic Data"
+    label: "Country Iso"
   }
 
   dimension: latitude {
     type: number
-    sql: safe_cast(${TABLE}.latitude as float64) ;;
+    sql: round( safe_cast(${TABLE}.latitude as float64) , 10 ) ;;
     hidden: yes
     group_label: "> Geographic Data"
   }
 
   dimension: longitude {
     type: number
-    sql: safe_cast(${TABLE}.longitude as float64) ;;
+    sql: round( safe_cast(${TABLE}.longitude as float64) , 10 ) ;;
     hidden: yes
     group_label: "> Geographic Data"
   }
@@ -153,6 +155,15 @@ view: hubs_ct {
     type: date
     datatype: date
     sql: ${TABLE}.start_date;;
+    group_label: "> Admin Data"
+  }
+
+  dimension: termination_date {
+    label: "Hub Termination Date"
+    description: "The date where a hub was closed"
+    type: date
+    datatype: date
+    sql: ${TABLE}.termination_date ;;
     group_label: "> Admin Data"
   }
 

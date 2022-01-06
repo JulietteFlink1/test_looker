@@ -241,7 +241,7 @@ view: city_level_employees_capacity {
     description: "Total Worked Hours / # Active Employees"
     type: number
     sql: ${sum_worked_active_employees_hours} / nullif(${total_active_employees},0) ;;
-    value_format_name: decimal_2
+    value_format_name: decimal_1
   }
 
 

@@ -7,13 +7,16 @@ include: "/views/bigquery_tables/curated_layer/nps_after_order_cl.view"
 
 explore: order_for_postorder{
   from: order_comments
-  label: "Postorder With Backend Orders"
-  view_label: "Postorder With Backend Orders"
+  label: "Postorder Events"
+  view_label: "Postorder Events"
   group_label: "Consumer Product"
-  description: "Combines (backend) orders view and postorder events"
+  description: "Post-order related events, order dimensions, comments and nps"
+  fields: [ALL_FIELDS*, -order_for_postorder.cnt_orders_delayed_under_0_min
+    , -order_for_postorder.cnt_orders_delayed_over_5_min, -order_for_postorder.cnt_orders_with_delivery_eta_available]
 
   join: order_client {
     from: order_placed_events
+    view_label: "Client Orders"
     type: left_outer
     relationship: one_to_one
     sql_on: ${order_client.order_uuid} = ${order_for_postorder.order_uuid} ;;
@@ -28,7 +31,7 @@ explore: order_for_postorder{
 
   join: nps_after_order {
     from: nps_after_order_cl
-    view_label: "* NPS CL*"
+    view_label: "NPS"
     sql_on: ${order_for_postorder.country_iso}   = ${nps_after_order.country_iso} AND
       ${order_for_postorder.order_number}  =       ${nps_after_order.order_number} ;;
     relationship: one_to_many

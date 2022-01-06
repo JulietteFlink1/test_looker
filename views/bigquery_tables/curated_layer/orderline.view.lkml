@@ -34,6 +34,20 @@ view: orderline {
     group_label: "> Monetary Dimensions"
   }
 
+  dimension: quantity_returned {
+    label: "Quantity Returned"
+    type: number
+    sql: ${TABLE}.quantity_returned ;;
+    group_label: "> Monetary Dimensions"
+  }
+
+  dimension: return_reason {
+    label: "Return Reason"
+    type: number
+    sql: ${TABLE}.return_reason ;;
+    group_label: "> Monetary Dimensions"
+  }
+
   dimension: product_sku {
     type: string
     sql: ${TABLE}.sku ;;
@@ -87,11 +101,20 @@ view: orderline {
   }
 
   # =========  Monetary Dims   =========
-  dimension: amt_discount {
-    label: "Discount Amount"
+  dimension: amt_discount_gross {
+    label: "Discount Amount (Gross)"
     group_label: "> Monetary Dimensions"
     type: number
+    value_format_name: euro_accounting_0_precision
     sql: ${TABLE}.amt_discount ;;
+  }
+
+  dimension: amt_discount_net {
+    label: "Discount Amount (Net)"
+    group_label: "> Monetary Dimensions"
+    type: number
+    value_format_name: euro_accounting_0_precision
+    sql: ${TABLE}.amt_discount/(1+${tax_rate}) ;;
   }
 
   dimension: amt_revenue_gross {
@@ -138,6 +161,20 @@ view: orderline {
   dimension: tax_rate {
     type: number
     sql: ${TABLE}.tax_rate ;;
+    group_label: "> Monetary Dimensions"
+  }
+
+  dimension: refund_amount_net {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.refund_amount_net;;
+    group_label: "> Monetary Dimensions"
+  }
+
+  dimension: refund_amount_gross {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.refund_amount_gross;;
     group_label: "> Monetary Dimensions"
   }
 
@@ -253,6 +290,18 @@ view: orderline {
     hidden: yes
   }
 
+  dimension: amt_unit_deposit {
+    type: string
+    sql: ${TABLE}.amt_unit_deposit;;
+    hidden: yes
+  }
+
+  dimension: amt_total_deposit {
+    type: string
+    sql: ${TABLE}.amt_total_deposit;;
+    hidden: yes
+  }
+
 
   # =========  Admin Dims   =========
   dimension: backend_source {
@@ -330,6 +379,16 @@ view: orderline {
     group_label: "> Absolute Metrics"
   }
 
+  measure: sum_item_quantity_returned {
+    label: "SUM Item Quantity returned"
+    description: "Quantity of Order Line Items returned"
+    hidden:  no
+    type: sum
+    sql: ${quantity_returned};;
+    value_format: "0"
+    group_label: "> Absolute Metrics"
+  }
+
   measure: sum_item_price_gross {
     label: "SUM Item Prices sold (gross)"
     description: "Sum of sold Item prices (incl. VAT)"
@@ -360,6 +419,22 @@ view: orderline {
     group_label: "> Monetary Metrics"
   }
 
+  measure: sum_discount_amt_gross {
+    group_label: "> Monetary Metrics"
+    label: "SUM Discount Amount (Gross)"
+    type: sum
+    value_format_name: euro_accounting_2_precision
+    sql: ${amt_discount_gross} ;;
+  }
+
+  measure: sum_discount_amt_net {
+    label: "SUM Discount Amount (Net)"
+    group_label: "> Monetary Metrics"
+    type: sum
+    value_format_name: euro_accounting_2_precision
+    sql: ${amt_discount_net} ;;
+  }
+
   measure: sum_item_price_fulfilled_net {
     label: "SUM Item Prices fulfilled (net)"
     description: "Sum of fulfilled Item prices (excl. VAT)"
@@ -385,6 +460,34 @@ view: orderline {
     value_format_name: euro_accounting_2_precision
     group_label: "> Monetary Metrics"
   }
+
+  measure: sum_refund_gross {
+    label: "SUM Refund (Gross)"
+    sql: ${refund_amount_gross} ;;
+    type: sum
+    hidden: yes
+    value_format_name: euro_accounting_2_precision
+    group_label: "> Monetary Metrics"
+  }
+
+  measure: sum_refund_net {
+    label: "SUM Refund (Net)"
+    sql: ${refund_amount_net} ;;
+    type: sum
+    hidden: yes
+    value_format_name: euro_accounting_2_precision
+    group_label: "> Monetary Metrics"
+  }
+
+  measure: sum_total_deposit {
+    label: "SUM Total Deposit"
+    sql: ${amt_total_deposit} ;;
+    type: sum
+    value_format_name: euro_accounting_2_precision
+    group_label: "> Monetary Metrics"
+  }
+
+
 
   ###################### orderline facts
 
