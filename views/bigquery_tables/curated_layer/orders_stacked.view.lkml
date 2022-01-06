@@ -44,7 +44,7 @@ view: +orders {
   # ~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   measure: avg_delivery_time_from_prev_customer_minutes {
-    label: "AVG Delivery time to 2nd customer (min)"
+    label: "AVG Delivery time to next customer (min)"
     description: "Indicates, how long it took for the rider to arrive from one to the following customer in a stacked order"
     group_label: "* Stacked Orders *"
     sql: ${TABLE}.delivery_time_from_prev_customer_minutes ;;
