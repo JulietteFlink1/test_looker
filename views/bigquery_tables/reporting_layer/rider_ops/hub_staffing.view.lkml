@@ -191,6 +191,14 @@ view: hub_staffing {
   }
 
 
+  measure: avg_employees_utr{
+    label:"# Average UTR"
+    type: number
+    description: "Average Employees UTR"
+    sql:${sum_orders} / ${sum_worked_employees} ;;
+    value_format_name: decimal_1
+  }
+
   measure: count {
     type: count
     drill_fields: [position_name]
