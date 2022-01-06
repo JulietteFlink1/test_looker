@@ -17,7 +17,7 @@ explore: order_lineitems_margins {
   join: erp_buying_prices {
     type: left_outer
     # n orders have the same price
-    relationship: many_to_one
+    relationship: many_to_many
     sql_on:
         ${erp_buying_prices.hub_code}         =  ${orderline.hub_code}                                and
         ${erp_buying_prices.sku}              =  ${orderline.product_sku}                             and
