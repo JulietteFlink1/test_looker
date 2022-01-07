@@ -198,6 +198,12 @@ view: inventory_stock_count_daily {
     sql: ${TABLE}.daily_stock_uuid ;;
   }
 
+  dimension: stock_count {
+    sql: ${TABLE}.avg_stock_count ;;
+    type: number
+    hidden: yes
+  }
+
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Measures       ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -315,8 +321,8 @@ view: inventory_stock_count_daily {
     label: "Product Turnover Rate"
     description: "Defined as the quantity sold per SKU divided by the Average Inventory over the observed period of time"
     value_format_name: decimal_2
-    sql: ${skus_fulfilled_per_hub_and_date.sum_item_quantity} / nullif(${avg_stock_count},0) ;;
-    type: number
+    sql: ${skus_fulfilled_per_hub_and_date.item_quantity} / nullif(${stock_count},0) ;;
+    type: average
 
   }
 
