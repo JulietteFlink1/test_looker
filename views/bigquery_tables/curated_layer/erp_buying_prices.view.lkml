@@ -167,6 +167,7 @@ view: erp_buying_prices {
     type: sum
     sql: (${orderline.quantity} * ${net_income}) ;;
     value_format_name: eur
+    sql_distinct_key: concat(${table_uuid}, ${orderline.order_lineitem_uuid}) ;;
   }
 
   measure: sum_total_margin_abs {
@@ -175,6 +176,7 @@ view: erp_buying_prices {
     type: sum
     sql: (${orderline.quantity} * ${margin_absolute}) ;;
     value_format_name: eur
+    sql_distinct_key: concat(${table_uuid}, ${orderline.order_lineitem_uuid}) ;;
   }
 
   measure: pct_total_margin_relative {
