@@ -116,6 +116,20 @@ view: inventory_changes {
     hidden: yes
   }
 
+  dimension:is_outbound_waste {
+    label: "Is Outbound (Waste)"
+    description: "Boolean - indicates, if a inventory chqnge is based on waste - determined by the reasons 'product-damaged'm 'product-expired' or 'too-good-to-go'"
+    type: yesno
+    sql: case when ${change_reason} in ('product-damaged', 'product-expired', 'too-good-to-go') then true else false end ;;
+
+  }
+
+  dimension: price_gross {
+    type: number
+    sql: ${products.amt_product_price_gross} ;;
+    hidden: yes
+  }
+
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -127,6 +141,16 @@ view: inventory_changes {
     sql: ${quantity_change} ;;
     type: average
     value_format_name: decimal_1
+  }
+
+  measure: sum_outbound_waste_eur {
+    label: "€ Outbound (Waste)"
+    description: "The quantity '# Outbound (Waste)' multiplied by the latest product price (gross)"
+    group_label: "* Inventory Changes Daily *"
+    type: sum
+    sql: abs(${quantity_change}) * ${price_gross};;
+    filters: [is_outbound_waste: "Yes"]
+    value_format_name: eur
   }
 
 }
