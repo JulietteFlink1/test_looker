@@ -1,5 +1,5 @@
 view: voucher_success_failure_performance {
-  sql_table_name: `flink-data-prod.reporting.voucher_success_failure_performance`
+  sql_table_name: `flink-data-prod.curated.voucher_success_failure_performance`
     ;;
 
   dimension: voucher_success_failure_event_uuid {
