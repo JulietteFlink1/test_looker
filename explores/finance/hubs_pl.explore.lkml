@@ -86,7 +86,9 @@ explore: hubs_pl {
     fields: [vat_order.sum_discount_amount_gross,
              vat_order.sum_discount_amount_net,
              vat_order.sum_refund_amount_gross,
-             vat_order.sum_refund_amount_net]
+             vat_order.sum_refund_amount_net,
+             vat_order.sum_total_vat,
+             vat_order.sum_items_price_gross]
   }
 
   join: global_filters_and_parameters {
@@ -103,6 +105,17 @@ explore: hubs_pl {
     fields: [psp_transactions.sum_processing_fee_fc,
              psp_transactions.sum_scheme_fees_sc,
              psp_transactions.sum_interchange_sc
+            ]
+  }
+
+  join: inventory_changes {
+    view_label: "* Waste *"
+    sql_on: ${inventory_changes.hub_code} = ${orders.hub_code}
+    and ${inventory_changes.inventory_change_timestamp_date} = ${orders.order_date} ;;
+    type: left_outer
+    relationship: many_to_one
+    fields: [inventory_changes.sum_outbound_waste_eur, inventory_changes.is_outbound_waste
+
             ]
   }
 
