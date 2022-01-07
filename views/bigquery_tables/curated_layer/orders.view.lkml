@@ -2141,7 +2141,7 @@ view: orders {
   measure: pct_idle {
     label: "% Rider Idle Time"
     group_label: "* Operations / Logistics *"
-    description: "% Rider Time spent from claiming an order until returning to the hub "
+    description: "% Rider Time spent not working on an order (not Occupied ) "
     type: number
     sql: 1 - (${rider_on_duty_time_minute}/60)/NULLIF(${shyftplan_riders_pickers_hours.rider_hours},0);;
     value_format_name:  percent_1
