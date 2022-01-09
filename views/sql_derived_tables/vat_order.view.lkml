@@ -16,6 +16,7 @@ view: vat_order {
                     oo.hub_code,
                     o.customer_email as user_email,
                     o.order_date,
+                    o.amt_rider_tip,
                     d.is_free_delivery_discount,
                     CASE WHEN p.tax_rate is NULL then 0.19 else p.tax_rate END as tax_rate ,
                     amt_unit_price_gross * quantity / (1+CASE WHEN p.tax_rate is NULL then 0.19 else p.tax_rate END)                           as item_price_net,
@@ -64,6 +65,7 @@ view: vat_order {
                   order_uuid,
                   order_date,
                   country_iso,
+                  amt_rider_tip,
                   hub_code,
                   user_email,
                   delivery_fee_gross,
@@ -88,13 +90,14 @@ view: vat_order {
                   SUM(discount_amount_net)                          as discount_amount_net
 
                 FROM orderline
-                GROUP BY 1,2,3,4,5,6,7,8,9
+                GROUP BY 1,2,3,4,5,6,7,8,9,10
             )
             ,
             delivery_fees_discount as (
                 SELECT  order_id,
                         order_uuid,
                         country_iso,
+                        amt_rider_tip,
                         order_date,
                         hub_code,
                         user_email,
@@ -136,6 +139,7 @@ view: vat_order {
                    order_date,
                    d.country_iso,
                    hub_code,
+                   amt_rider_tip,
                    d.user_email,
                    payment_type,
                    tax_rate_weighted,
@@ -173,6 +177,7 @@ view: vat_order {
             cost_center,
             n.hub_code,
             tax_rate_weighted,
+            amt_rider_tip,
             payment_type,
             is_free_delivery_discount,
             discount_free_delivery_gross,
@@ -328,6 +333,13 @@ view: vat_order {
     type: string
     sql: ${TABLE}.payment_type ;;
   }
+
+  dimension: amt_rider_tip {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_rider_tip ;;
+  }
+
 ######## ITEMS ############
   dimension: items_price_net {
     hidden: yes
@@ -1053,6 +1065,15 @@ view: vat_order {
     description: "Total Gross - Total Net"
     value_format: "#,##0.00€"
     sql: ${total_vat} ;;
+  }
+
+  ################# Rider Tip
+
+  measure: sum_rider_tip {
+    group_label: "* Rider Tips *"
+    value_format: "#,##0.00€"
+    type: sum
+    sql: ${amt_rider_tip} ;;
   }
 
 

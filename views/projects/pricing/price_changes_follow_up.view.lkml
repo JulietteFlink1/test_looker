@@ -14,7 +14,7 @@ oos as
             SELECT
                 a.inventory_tracking_date,
                 c.hub_name,
-                case when b.random_ct_category ="Obst & Gemüse" then b.substitute_group else b.product_sku end  as substitute_group,
+                case when b.category ="Obst & Gemüse" then b.substitute_group else b.product_sku end  as substitute_group,
                 --product_sku,
                 min(hours_oos) as hours_oos,
                 max(open_hours_total) as open_hours_total
@@ -28,7 +28,7 @@ oos as
             )
     as a
     left join `flink-data-prod.curated.products` b
-        on a.substitute_group  = case when b.random_ct_category ="Obst & Gemüse" then b.substitute_group else b.product_sku end
+        on a.substitute_group  = case when b.category ="Obst & Gemüse" then b.substitute_group else b.product_sku end
     group by 1,2
 
 ),
@@ -256,8 +256,8 @@ pre_final as
     c.country_iso,
     a.sku,
     c.product_name,
-    c.random_ct_category as category,
-    c.random_ct_subcategory as subcategory,
+    c.category as category,
+    c.subcategory as subcategory,
     a.price_today as current_price,
     a.price_yest as previous_price,
     a.price_change_percentage,

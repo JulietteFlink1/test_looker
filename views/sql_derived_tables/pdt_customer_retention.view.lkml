@@ -18,7 +18,7 @@ view: pdt_customer_retention {
         , p.next_order_date
         , p.delivery_pdt_minutes
         , ROUND(p.fulfillment_time_minutes,0) as fulfillment_time_minutes
-     from `flink-data-prod.curated.customers_metrics` c
+     from `flink-data-prod.crm.crm_customer_feed` c
      left join pdt_order p on c.customer_email = p.customer_email and c.country_iso = p.country_iso
      where c.first_order_timestamp = p.order_timestamp -- considers only new customers in the cohort
     ;;

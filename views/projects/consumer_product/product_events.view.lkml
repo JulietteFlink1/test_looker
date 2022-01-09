@@ -1,8 +1,24 @@
-view: discovery_events {
-  sql_table_name: `flink-data-prod.curated.discovery_events`
-    ;;
+view: product_events {
+  derived_table: {
+    persist_for: "5 hour"
+    sql:
+    with
+      product_events as (
+      select *
+             , lead(event_name) over (partition by session_id, product_sku order by event_timestamp asc)               as next_event_product
+             , lead(event_name) over (partition by session_id order by event_timestamp asc)                            as next_event_session
+             , lead(event_timestamp) over (partition by session_id, product_sku order by event_timestamp asc)          as next_event_timestamp_product
+             , lead(event_timestamp) over (partition by session_id order by event_timestamp asc)                       as next_event_timestamp_session
+      from `flink-data-prod.curated.product_events`
+      where 1=1
+        and {% condition filter_event_date %} date(event_timestamp) {% endcondition %}
+      )
 
-  view_label: "* App Sessions *"
+      select *
+      from product_events
+      ;;
+  }
+
   drill_fields: [core_dimensions*]
 
   set: core_dimensions {
@@ -15,15 +31,20 @@ view: discovery_events {
     ]
   }
 
+  filter: filter_event_date {
+    label: "Filter: Event Date"
+    type: date
+    datatype: date
+    default_value: "last 14 days"
+  }
+
 ########### DIMENSIONS ###########
   ## IDs
-
-
-  dimension: event_uuid {
+  dimension: product_event_uuid {
     group_label: "IDs"
     type: string
     description: "Event ID defined in DWH as a primary key of this model"
-    sql: ${TABLE}.event_uuid ;;
+    sql: ${TABLE}.product_event_uuid ;;
     primary_key: yes
     hidden: yes
   }
@@ -31,7 +52,7 @@ view: discovery_events {
     group_label: "IDs"
     type: string
     description: "Session ID defined in DWH across all models"
-    sql: ${TABLE}.session_uuid ;;
+    sql: ${TABLE}.session_id ;;
   }
   dimension: user_id  {
     group_label: "IDs"
@@ -60,9 +81,14 @@ view: discovery_events {
     sql: ${TABLE}.subcategory_id ;;
     hidden: yes
   }
+  dimension: product_sku {
+    group_label: "IDs"
+    description: "SKU of a product"
+    type: string
+    sql: ${TABLE}.product_sku ;;
+  }
 
   ## Device attributes
-
   dimension: platform {
     group_label: "Device Dimensions"
     type: string
@@ -91,7 +117,6 @@ view: discovery_events {
   }
 
   ## GENERIC: Dates / Timestamp
-
   dimension_group: event_start_at {
     group_label: "Date Dimensions"
     label: "Event Start "
@@ -99,6 +124,7 @@ view: discovery_events {
     description: "Start of the session with varioud granulairty available"
     datatype: timestamp
     timeframes: [
+      second,
       hour,
       hour_of_day,
       date,
@@ -109,23 +135,25 @@ view: discovery_events {
     ]
     sql: ${TABLE}.event_timestamp ;;
   }
-  # dimension_group: session_end_at {
-  #   group_label: "Date Dimensions"
-  #   type: time
-  #   description: "End of the session with varioud granulairty available"
-  #   datatype: datetime
-  #   timeframes: [
-  #     hour,
-  #     hour_of_day,
-  #     date,
-  #     day_of_week,
-  #     week,
-  #     month,
-  #     year
-  #   ]
-  #   sql: ${TABLE}.session_end_at ;;
-  #   hidden: yes
-  # }
+
+  dimension_group: events_duration_at {
+    group_label: "Duration Dimensions"
+    label: "Between 2 events"
+    type: duration
+    intervals: [second, minute]
+    sql_start: ${TABLE}.event_timestamp;;
+    sql_end: ${TABLE}.next_event_timestamp_session ;;
+    description: "Duration between two events which fired"
+  }
+  dimension_group: events_product_duration_at {
+    group_label: "Duration Dimensions"
+    label: "Between 2 events | SKU"
+    type: duration
+    intervals: [second, minute]
+    sql_start: ${TABLE}.event_timestamp;;
+    sql_end: ${TABLE}.next_event_timestamp_product ;;
+    description: "Duration between two events which fired partitioned by SKU"
+  }
 
   ## Geo Dimenstions ##
   dimension: country_iso {
@@ -173,33 +201,65 @@ view: discovery_events {
   ## Event Dimenstions ##
   dimension: event_name {
     group_label: "Event Dimensions"
-    description: "Name of an event fired."
+    description: "Name of an event fired"
     type: string
     sql: ${TABLE}.event_name ;;
   }
+  dimension: next_event_name_product {
+    group_label: "Event Dimensions"
+    label: "Next Event Name - Product Partition"
+    description: "Event name which followed the proceeding event partitioned by a product >> this ensure product level attribution."
+    type: string
+    sql: ${TABLE}.next_event_product;;
+  }
+  dimension: next_event_name_session {
+    group_label: "Event Dimensions"
+    label: "Next Event Name"
+    description: "Event name which followed the proceeding event"
+    type: string
+    sql: ${TABLE}.next_event_session;;
+  }
   dimension: origin_screen {
     group_label: "Event Dimensions"
-    description: "Name of the screen where event originated."
+    description: "Name of the screen where event originated"
     type: string
     sql: ${TABLE}.origin_screen ;;
   }
   dimension: category_name {
     group_label: "Event Dimensions"
-    description: "Name of a category."
+    description: "Name of a category"
     type: string
     sql: ${TABLE}.category_name ;;
   }
   dimension: subcategory_name {
     group_label: "Event Dimensions"
-    description: "Name of an event fired."
+    description: "Name of an event fired"
     type: string
     sql: ${TABLE}.subcategory_name ;;
   }
-  dimension: search_query {
+  dimension: product_name {
     group_label: "Event Dimensions"
-    description: "Query typed into a search bar"
+    description: "Name of the product"
     type: string
-    sql: ${TABLE}.search_query ;;
+    sql: ${TABLE}.product_name ;;
+  }
+  dimension: product_placement {
+    group_label: "Event Dimensions"
+    description: "Where product was placed, currently one of: home, swimlane, favourites, category, pdp, cart, search"
+    type: string
+    sql: ${TABLE}.product_placement ;;
+  }
+  dimension: pdp_origin {
+    group_label: "Event Dimensions"
+    description: "Placement where from PDP originated, currently one of: home, swimlane, favourites, category, pdp, cart, search"
+    type: string
+    sql: ${TABLE}.pdp_origin ;;
+  }
+  dimension: cart_value {
+    group_label: "Event Dimensions"
+    description: "Value of the cart"
+    type: string
+    sql: ${TABLE}.cart_value ;;
   }
 
 ### Custom dimensions
@@ -230,20 +290,18 @@ view: discovery_events {
     allowed_value: { value: "Week" }
     allowed_value: { value: "Month" }
     default_value: "Day"
+    hidden:  yes
   }
 
-
   ################ Measures ################
-
   measure: count {
     group_label: "Basic Counts (Orders / Customers etc.)"
     label: "Count All Events"
     description: "Count of all events"
     type: count
     drill_fields: [detail*]
-    hidden: yes
+    hidden: no
   }
-
   measure: cnt_unique_anonymousid {
     label: "# Unique Users"
     group_label: "Basic Counts (Orders / Customers etc.)"
@@ -253,7 +311,6 @@ view: discovery_events {
     sql: ${anonymous_id};;
     value_format_name: decimal_0
   }
-
   measure: cnt_unique_sessions {
     label: "# Unique Sessions"
     group_label: "Basic Counts (Orders / Customers etc.)"
@@ -263,30 +320,67 @@ view: discovery_events {
     sql: ${session_id};;
     value_format_name: decimal_0
   }
+  measure: cnt_unique_products {
+    label: "# Unique Products"
+    group_label: "Basic Counts (Orders / Customers etc.)"
+    description: "Number of unique products."
+    hidden:  no
+    type: count_distinct
+    sql: ${product_sku};;
+    value_format_name: decimal_0
+  }
+  measure: cnt_all_products {
+    label: "# All Products"
+    group_label: "Basic Counts (Orders / Customers etc.)"
+    description: "Total number of all products."
+    type: count
+    hidden:  no
+    drill_fields: [detail*]
+    value_format_name: decimal_0
+  }
 
-
-#### Sessions with events ###
-  # measure: cnt_has_address {
-  #   group_label: "Sessions with Event Flags"
-  #   label: "# Sessions with Confirmed Address"
-  #   description: "# sessions in which the user had an address (selected in previous session or current)"
-  #   type: count
-  #   filters: [is_session_with_address: "yes"]
+  ### AVERAGES ###
+  # measure: avg_pdp_products {
+  #   label: "AVG #Products"
+  #   group_label: "Averages"
+  #   description: "Average amount of distinct products which were PDPed during a session."
+  #   hidden: no
+  #   type: average
+  #   sql: ${cnt_all_products};;
+  #   value_format_name: decimal_1
   # }
-
-
-  ## Measures based on other measures
-
-  # measure: mcvr2 {
-  #   group_label: "Conversions"
-  #   label: "mCVR2"
-  #   type: number
-  #   description: "# sessions in which there was a Product Added To Cart, compared to the number of sessions in which there was a Home Viewed"
-  #   value_format_name: percent_1
-  #   sql: ${cnt_add_to_cart}/NULLIF(${cnt_has_address},0) ;;
-  # }
-
-
+  measure: events_duration_seconds {
+    label: "AVG #seconds between 2 events"
+    group_label: "Averages"
+    description: "Average amount of seconds it take for a user to generate 2 events during a session"
+    type: average
+    sql:  ${seconds_events_duration_at} ;;
+    value_format_name: decimal_2
+  }
+  measure: events_duration_minutes {
+    label: "AVG #minutes between 2 events"
+    group_label: "Averages"
+    description: "Average amount of minutes it take for a user to generate 2 events during a session"
+    type: average
+    sql:  ${minutes_events_duration_at} ;;
+    value_format_name: decimal_2
+  }
+  measure: product_events_duration_seconds {
+    label: "AVG #seconds between 2 events | SKU"
+    group_label: "Averages"
+    description: "Average amount of seconds it take for a user to generate 2 events attributed to the same SKU during a session"
+    type: average
+    sql:  ${seconds_events_product_duration_at} ;;
+    value_format_name: decimal_2
+  }
+  measure: product_events_duration_minutes {
+    label: "AVG #minutes between 2 events | SKU"
+    group_label: "Averages"
+    description: "Average amount of minutes it take for a user to generate 2 events attributed to the same SKU during a session"
+    type: average
+    sql:  ${minutes_events_product_duration_at} ;;
+    value_format_name: decimal_2
+  }
 
   set: detail {
     fields: [
@@ -295,6 +389,7 @@ view: discovery_events {
       anonymous_id,
       category_id,
       subcategory_id,
+      product_placement,
       event_start_at_date,
       platform,
       device_type,
@@ -307,7 +402,6 @@ view: discovery_events {
       origin_screen,
       category_name,
       subcategory_name,
-      search_query,
       country,
       country_iso
     ]
