@@ -1,7 +1,7 @@
 include: "/views/sql_derived_tables/tmp_rider_distances2.view.lkml"
 
 explore: rider_distances2 {
-  hidden: no
+  hidden: yes
   view_name:  tmp_rider_distances2
   label: "Rider distances2"
   view_label: "Rider distances2"
