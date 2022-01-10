@@ -16,14 +16,11 @@ explore: pulse_results {
 
 
   access_filter: {
-    field: new_hq_pulse_results.country_iso
+    field: pulse_results.country_iso
     user_attribute: country_iso
   }
 
-  access_filter: {
-    field: new_hub_pulse_results.country_iso
-    user_attribute: country_iso
-  }
+
 
   join: hq_pulse_results {
     from: 202109_hq_pulse_results
