@@ -110,11 +110,13 @@ explore: hubs_pl {
 
   join: inventory_changes {
     view_label: "* Waste *"
-    sql_on: ${inventory_changes.hub_code} = ${orders.hub_code}
-    and ${inventory_changes.inventory_change_timestamp_date} = ${orders.order_date} ;;
+    sql_on: ${inventory_changes.hub_code} = ${hub_pl_data.hub_code}
+    and cast(${inventory_changes.inventory_change_timestamp_month} as string) = ${hub_pl_data.month_string} ;;
     type: left_outer
-    relationship: many_to_one
-    fields: [inventory_changes.sum_outbound_waste_eur, inventory_changes.is_outbound_waste
+    relationship: many_to_many
+    fields: [inventory_changes.sum_outbound_waste_eur,
+             inventory_changes.is_outbound_waste,
+
 
             ]
   }
