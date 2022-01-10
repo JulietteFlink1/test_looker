@@ -20,7 +20,7 @@ view: erp_buying_prices {
     label: "Net Income"
     description: "The incoming cash defined as net item-price"
     type: number
-    sql:  ${orderline.unit_price_net_amount};;
+    sql:  ${orderline.unit_price_gross_amount} / nullif((1 + ${orderline.tax_rate}) ,0);;
     value_format_name: eur
   }
 
