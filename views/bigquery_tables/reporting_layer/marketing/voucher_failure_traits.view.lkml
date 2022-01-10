@@ -1,6 +1,6 @@
 view: voucher_failure_traits {
 
-  sql_table_name: `flink-data-dev.reporting.voucher_failure_session_traits`
+  sql_table_name: `flink-data-prod.reporting.voucher_failure_session_traits`
     ;;
 
   dimension: voucher_failure_session_traits_uuid {
