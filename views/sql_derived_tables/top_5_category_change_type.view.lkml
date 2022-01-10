@@ -3,19 +3,18 @@ view: top_5_category_change_type {
     sql: with
 outbounded_products_raw as(
     select
-          inventory_changes_daily.table_uuid
-        , inventory_changes_daily.inventory_change_date
+         inventory_changes_daily.inventory_change_date
         , inventory_changes_daily.hub_code
         , inventory_changes_daily.country_iso
-        , inventory_changes_daily.sku
         , products.category
-        , abs(inventory_changes_daily.quantity_change) as quantity_change
+        , sum(abs(inventory_changes_daily.quantity_change)) as quantity_change
 
     from `flink-data-prod.reporting.inventory_changes_daily` inventory_changes_daily
     left join `flink-data-prod.curated.products` products                 on products.product_sku = inventory_changes_daily.sku
 
     where
                     change_reason in ('product-damaged', 'product-expired', 'too-good-to-go')
+    group by 1, 2, 3, 4
 ),
 
 outbounded_products_ranked as (
@@ -29,13 +28,11 @@ outbounded_products_ranked as (
 
 positive_corrected_products_raw as(
     select
-          inventory_changes_daily.table_uuid
-        , inventory_changes_daily.inventory_change_date
+          inventory_changes_daily.inventory_change_date
         , inventory_changes_daily.hub_code
         , inventory_changes_daily.country_iso
-        , inventory_changes_daily.sku
         , products.category
-        , abs(inventory_changes_daily.quantity_change) as quantity_change
+        , sum(abs(inventory_changes_daily.quantity_change)) as quantity_change
 
     from `flink-data-prod.reporting.inventory_changes_daily` inventory_changes_daily
     left join `flink-data-prod.curated.products` products                 on products.product_sku = inventory_changes_daily.sku
@@ -43,6 +40,7 @@ positive_corrected_products_raw as(
     where
                 inventory_correction_increased between 0 and 100 and
                 change_reason     = "inventory-correction"
+    group by 1, 2, 3, 4
 ),
 
  positive_corrected_products_ranked as (
@@ -55,13 +53,11 @@ positive_corrected_products_raw as(
 ),
  negative_corrected_products_raw as(
     select
-          inventory_changes_daily.table_uuid
-        , inventory_changes_daily.inventory_change_date
+          inventory_changes_daily.inventory_change_date
         , inventory_changes_daily.hub_code
         , inventory_changes_daily.country_iso
-        , inventory_changes_daily.sku
         , products.category
-        , abs(inventory_changes_daily.quantity_change) as quantity_change
+        , sum(abs(inventory_changes_daily.quantity_change)) as quantity_change
 
     from `flink-data-prod.reporting.inventory_changes_daily` inventory_changes_daily
     left join `flink-data-prod.curated.products` products                 on products.product_sku = inventory_changes_daily.sku
@@ -69,6 +65,7 @@ positive_corrected_products_raw as(
     where
                 inventory_correction_reduced between -100 and 0 and
                 change_reason     = "inventory-correction"
+    group by 1, 2, 3, 4
 
 ),
 
@@ -122,7 +119,7 @@ from final
 
   dimension: primary_key {
     type: string
-    sql: ${TABLE}.table_uuid
+    sql: concat(${TABLE}.inventory_change_date, ${TABLE}.hub_code, ${TABLE}.category)
       ;;
     primary_key: yes
     hidden: yes
@@ -160,12 +157,6 @@ from final
     value_format_name: decimal_0
   }
 
-  dimension: is_top_5_category {
-    description: "Boolean dimension. Takes the value yes if the category is in top 5."
-    type: yesno
-    sql: case when category_rank <= 5 then True else False end;;
-  }
-
 
   dimension: change_type {
     type: string
@@ -187,7 +178,6 @@ from final
       country_iso,
       category,
       category_rank,
-      is_top_5_category,
       change_type
     ]
   }
