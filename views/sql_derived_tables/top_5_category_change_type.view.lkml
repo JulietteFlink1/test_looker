@@ -167,7 +167,7 @@ from final
     label: "# Products"
     description: "The total number of products involved"
     type: sum
-    sql: case when abs(${quantity_change}) <= 100 then  abs(${quantity_change}) end ;;
+    sql: abs(${quantity_change});;
   }
 
 
