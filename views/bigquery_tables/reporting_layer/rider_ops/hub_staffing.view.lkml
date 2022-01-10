@@ -191,7 +191,7 @@ view: hub_staffing {
   measure: pct_no_show_employees{
     label:"% No_Show Hours"
     type: number
-    description: "Number of No_Show Employees"
+    description: "Number of No Show Employees"
     sql:(${sum_planned_hours} - ${sum_worked_hours})/${sum_planned_hours} ;;
     value_format_name: percent_1
   }
