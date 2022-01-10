@@ -101,6 +101,18 @@ view: hub_staffing {
     sql: ${TABLE}.number_of_worked_employees ;;
   }
 
+  dimension: number_of_planned_minutes {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_planned_minutes ;;
+  }
+
+  dimension: number_of_worked_minutes {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_worked_minutes ;;
+  }
+
   dimension: position_name {
     type: string
     hidden: no
@@ -191,8 +203,25 @@ view: hub_staffing {
   }
 
 
+  measure: sum_planned_hours{
+    type: sum
+    label:"Sum Planned Hours"
+    description: "Number of Planned/Scheduled Employees"
+    sql:${number_of_planned_minutes}/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: sum_worked_hours{
+    type: sum
+    label:"Sum Worked Hours"
+    description: "Number of Planned/Scheduled Employees"
+    sql:${number_of_worked_minutes}/60;;
+    value_format_name: decimal_1
+  }
+
+
   measure: avg_employees_utr{
-    label:"# Average UTR"
+    label:"AVG UTR"
     type: number
     description: "Average Employees UTR"
     sql:${sum_orders} / ${sum_worked_employees} ;;

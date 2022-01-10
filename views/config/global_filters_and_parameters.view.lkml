@@ -26,7 +26,7 @@
   filter: generic_current_period_filter {
     type: date
     datatype: date
-    hidden: yes
+    hidden: no
     default_value: "7 days ago for 7 days"
     label: "Generic Current Period Filter"
     # view_label: "Database Date Filter 📅"
@@ -38,7 +38,7 @@
   filter: generic_previous_period_filter {
     type: date
     datatype: date
-    hidden: yes
+    hidden: no
     default_value: "14 days ago for 7 days"
     label: "Generic Previous Period Filter"
     # view_label: "Database Date Filter 📅"
@@ -51,28 +51,28 @@
     type: date
     datatype: date
     sql: {% date_start generic_current_period_filter %};;
-    hidden: yes
+    hidden: no
   }
 
   dimension: current_period_end {
     type: date
     datatype: date
     sql: {% date_end generic_current_period_filter %};;
-    hidden: yes
+    hidden: no
   }
 
   dimension: previous_period_start {
     type: date
     datatype: date
     sql: {% date_start generic_previous_period_filter %};;
-    hidden: yes
+    hidden: no
   }
 
   dimension: previous_period_end {
     type: date
     datatype: date
     sql: {% date_end generic_previous_period_filter %};;
-    hidden: yes
+    hidden: no
   }
 
 

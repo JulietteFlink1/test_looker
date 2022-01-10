@@ -1,8 +1,8 @@
-view: albert_hejn_products {
+view: albert_heijn_products {
   sql_table_name: `flink-data-prod.curated.albert_hejn_products`
     ;;
 
-  dimension: albert_hejn_products_hist_uuid {
+  dimension: albert_heijn_products_hist_uuid {
     type: string
     sql: ${TABLE}.albert_hejn_products_hist_uuid ;;
   }

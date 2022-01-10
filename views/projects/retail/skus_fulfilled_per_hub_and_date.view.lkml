@@ -28,16 +28,35 @@ view: skus_fulfilled_per_hub_and_date {
     sql: concat(CAST(${created_date} AS STRING), ${hub_code_lowercase}, ${product_sku}) ;;
   }
 
+  dimension: item_quantity_fulfilled {
+    label: "# Item Quantity fulfilled"
+    description: "Quantity of Order Line Items fulfilled"
+    value_format: "0"
+    type: number
+    sql: ${TABLE}.sum_item_quantity_fulfilled ;;
+  }
+  dimension: item_quantity {
+    label: "# Item Quantity sold"
+    description: "Quantity of Order Line Items sold"
+    value_format: "0"
+    type: number
+    sql: ${TABLE}.sum_item_quantity ;;
+  }
+
   measure: sum_item_quantity_fulfilled {
-    label: "SUM Item Quantity fulfilled"
+    label: "Sum Item Quantity fulfilled"
     description: "Quantity of Order Line Items fulfilled"
     value_format: "0"
     type: sum
+    sql: ${item_quantity_fulfilled} ;;
+
   }
-  measure: sum_item_quantity {
-    label: "SUM Item Quantity sold"
+
+  measure:  sum_item_quantity {
+    label: "# Item Quantity sold"
     description: "Quantity of Order Line Items sold"
     value_format: "0"
     type: sum
+    sql: ${item_quantity} ;;
   }
 }
