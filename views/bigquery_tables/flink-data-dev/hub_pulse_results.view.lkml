@@ -139,6 +139,12 @@ view: hub_pulse_results {
     sql: ${clarity_of_mission} ;;
   }
 
+  dimension: country_iso {
+    label: "country_iso"
+    type: string
+    sql: left(${TABLE}.hub,2) ;;
+  }
+
   measure: supervisoravg  {
     type: average
     value_format: "0.0"
