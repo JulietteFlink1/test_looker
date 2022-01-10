@@ -45,6 +45,7 @@ from total_travel_dist
     type: sum
     label: "# Total Distance traveled by our riders (km)"
     sql: ${TABLE}.total_distance_km;;
+    value_format: "#,##0 km"
   }
 
 }
