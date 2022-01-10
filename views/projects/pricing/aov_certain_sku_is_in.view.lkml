@@ -5,7 +5,7 @@ with aux_sku_categ as
 (
     SELECT
     a.country_iso,
-    a.random_ct_category
+    a.category
     from `flink-data-prod.curated.products` a
     group by 1,2
 ),
@@ -49,7 +49,7 @@ aux_sku_categ_2 as
 (
     SELECT
     a.*,
-    b.random_ct_category
+    b.category
     from or_sku a
     left join aux_sku_categ b
     on a.country_iso = b.country_iso
@@ -80,7 +80,7 @@ country_iso,
 order_date,
 hub_name,
 hub_code,
-random_ct_category,
+category,
 count(distinct order_uuid) as orders_categ_date,
 from aux_sku_categ_2
 group by 1,2,3,4,5
@@ -97,7 +97,7 @@ cast(a.order_timestamp as date) as order_date,
 a.order_uuid,
 c.hub_name,
 c.hub_code,
-b.random_ct_category,
+b.category,
 a.quantity,
 a.amt_total_price_gross
 
@@ -129,14 +129,14 @@ a.subs_group_or_sku,
 a.product_name,
 a.product_sku,
 --a.product_name,
-a.random_ct_category,
+a.category,
 sum(b.quantity) as quantity,
 sum(b.amt_total_price_gross) as amt_total_price_gross
 
 from aux_sku_categ_2 a
 left join or_categ b
 on a.order_uuid = b.order_uuid
-and a.random_ct_category = b.random_ct_category
+and a.category = b.category
 
 --where subs_group_or_sku  = "Smirnoff Ice Vodka Mixed Drink 70 cl"
 --and a.hub_code = "nl_gro_cent"
@@ -159,7 +159,7 @@ a.subs_group_or_sku,
 a.product_name,
 a.product_sku,
 --a.product_name,
-a.random_ct_category as category,
+a.category as category,
 b.orders_sku_date as sum_orders,
 c.orders_categ_date as sum_orders_category,
 sum(quantity) as sum_quantity,
@@ -174,7 +174,7 @@ and a.hub_code = b.hub_code
 and a.hub_name = b.hub_name
 left join numb_or_categ c
 on  a.order_date = c.order_date
-and a.random_ct_category = c.random_ct_category
+and a.category = c.category
 and a.country_iso = c.country_iso
 and a.hub_code = c.hub_code
 and a.hub_name = c.hub_name
