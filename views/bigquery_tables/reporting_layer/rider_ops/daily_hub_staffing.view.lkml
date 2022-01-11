@@ -4,6 +4,7 @@ view: daily_hub_staffing {
 
   dimension: daily_staffing_uuid {
     type: string
+    primary_key: yes
     hidden: yes
     sql: ${TABLE}.daily_staffing_uuid ;;
   }
@@ -75,6 +76,7 @@ view: daily_hub_staffing {
 
   measure: sum_worked_hours{
     type: sum
+    hidden: no
     label:"# Worked Hours"
     description: "Number of Planned/Scheduled Hours"
     sql:${number_of_worked_minutes}/60;;
@@ -84,6 +86,7 @@ view: daily_hub_staffing {
 
   measure: avg_employees_utr{
     label:"UTR"
+    hidden: no
     type: number
     description: "Average Employees UTR"
     sql:${sum_orders} / ${sum_worked_hours} ;;

@@ -136,6 +136,7 @@ view: hub_staffing {
 
   dimension: staffing_uuid {
     type: string
+    primary_key: yes
     hidden: yes
     sql: ${TABLE}.staffing_uuid ;;
   }
