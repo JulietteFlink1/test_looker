@@ -590,6 +590,17 @@ view: products {
     label: "Image URLs"
   }
 
+  dimension: rewe_url {
+    sql: concat("https://shop.rewe.de/productList?search=", split(${TABLE}.ean, ",")[safe_offset(0)]) ;;
+    link: {
+      label: "Rewe URL"
+      url: "{{ value }}"
+      icon_url: "https://www.rewe.de/"
+    }
+    group_label: "> Special Purpose Data"
+    label: "Rewe URL"
+  }
+
   measure: cnt_sku {
     label: "# SKUs (Total)"
     group_label: "* Basic Counts *"
