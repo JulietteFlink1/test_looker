@@ -8,6 +8,14 @@ explore: hub_staffing {
   hidden: no
 
 
+  always_filter: {
+    filters:  [
+      hub_staffing.shift_date: "last 14 days",
+      hubs.country: "",
+      hubs.hub_name: ""
+    ]
+  }
+
   join: hubs {
     from: hubs_ct
     sql_on:
