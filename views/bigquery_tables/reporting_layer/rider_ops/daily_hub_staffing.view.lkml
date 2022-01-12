@@ -89,7 +89,7 @@ view: daily_hub_staffing {
     hidden: no
     type: number
     description: "Average Employees UTR"
-    sql:${sum_orders} / ${sum_worked_hours} ;;
+    sql:${sum_orders} / nullif(${sum_worked_hours},0) ;;
     value_format_name: decimal_2
   }
 
