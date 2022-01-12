@@ -29,7 +29,8 @@ explore:  getir_products {
     from: getir_to_flink_global
     view_label: "* Getir-Flink Product Matches *"
     sql_on: ${getir_to_flink_global.getir_product_id} = ${getir_products.product_id}
-      and ${getir_to_flink_global.getir_product_name} = ${getir_products.product_name};;
+      -- and ${getir_to_flink_global.getir_product_name} = ${getir_products.product_name}
+      ;;
       relationship: one_to_many
       type: left_outer
   }
