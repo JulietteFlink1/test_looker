@@ -595,7 +595,7 @@ view: products {
     link: {
       label: "Rewe URL"
       url: "{{ value }}"
-      icon_url: "https://www.rewe.de/"
+      icon_url: "https://upload.wikimedia.org/wikipedia/commons/4/4c/Logo_REWE.svg"
     }
     group_label: "> Special Purpose Data"
     label: "Rewe URL"

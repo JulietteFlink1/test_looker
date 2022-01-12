@@ -22,6 +22,11 @@ view: getir_products {
     sql: ${TABLE}.parent_category_id ;;
   }
 
+  dimension: unit_of_measure {
+    type: string
+    sql: ${TABLE}.unit_of_measure ;;
+  }
+
   dimension_group: partition_timestamp {
     type: time
     timeframes: [
