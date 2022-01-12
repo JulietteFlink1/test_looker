@@ -1,5 +1,5 @@
 view: crm_braze_data {
-  sql_table_name: `flink-data-dev.sandbox.crm_braze_campaign_old`
+  sql_table_name: `flink-data-dev.sandbox.crm_braze_data_old`
     ;;
   view_label: "* CRM Braze Data *"
 
