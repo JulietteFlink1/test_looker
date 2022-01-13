@@ -114,7 +114,7 @@ explore: orders_cl {
   # }
 
   join: cs_post_delivery_issues {
-    view_label: "* DO NOT USE: Post Delivery Issues on Order-Level *"
+    view_label: ""
     sql_on: ${orders_cl.country_iso} = ${cs_post_delivery_issues.country_iso} AND
       ${cs_post_delivery_issues.order_nr_} = ${orders_cl.order_number};;
     relationship: one_to_many
