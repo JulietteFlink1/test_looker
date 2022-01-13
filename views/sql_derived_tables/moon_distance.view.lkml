@@ -12,7 +12,8 @@ group by 1
 )
 select  country,
         total_dist/384400 as times_taveled_to_moon,
-        total_dist/5460000 as times_taveled_to_mars
+        total_dist/5460000 as times_taveled_to_mars,
+        total_dist        as total_distance_km
 from total_travel_dist
        ;;
   }
@@ -40,5 +41,11 @@ from total_travel_dist
     html: {{ rendered_value }} 🚲🚀🌖 ;;
   }
 
+  measure: total_distance_km {
+    type: sum
+    label: "# Total Distance traveled by our riders (km)"
+    sql: ${TABLE}.total_distance_km;;
+    value_format: "#,##0 km"
+  }
 
 }

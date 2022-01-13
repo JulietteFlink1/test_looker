@@ -28,6 +28,11 @@ view: all_pulse_results {
     sql: ${TABLE}.survey_month ;;
   }
 
+  dimension: country_iso {
+    type: string
+    sql: ${TABLE}.country_iso ;;
+  }
+
   measure: avg_nps {
     type: average
     value_format: "0"

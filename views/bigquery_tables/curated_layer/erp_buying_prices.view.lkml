@@ -20,7 +20,7 @@ view: erp_buying_prices {
     label: "Net Income"
     description: "The incoming cash defined as net item-price"
     type: number
-    sql:  ${orderline.unit_price_net_amount};;
+    sql:  ${orderline.unit_price_gross_amount} / nullif((1 + ${orderline.tax_rate}) ,0);;
     value_format_name: eur
   }
 
@@ -79,7 +79,7 @@ view: erp_buying_prices {
     label: "Buying Price"
     type: number
     sql: ${TABLE}.vendor_price ;;
-    value_format_name: eur
+    value_format_name: decimal_4
   }
 
 
@@ -158,7 +158,7 @@ view: erp_buying_prices {
     description: "The average buying price"
     type: average
     sql: ${TABLE}.vendor_price ;;
-    value_format_name: eur
+    value_format_name: decimal_4
   }
 
   measure: sum_total_net_income {
@@ -167,6 +167,7 @@ view: erp_buying_prices {
     type: sum
     sql: (${orderline.quantity} * ${net_income}) ;;
     value_format_name: eur
+    sql_distinct_key: concat(${table_uuid}, ${orderline.order_lineitem_uuid}) ;;
   }
 
   measure: sum_total_margin_abs {
@@ -175,6 +176,7 @@ view: erp_buying_prices {
     type: sum
     sql: (${orderline.quantity} * ${margin_absolute}) ;;
     value_format_name: eur
+    sql_distinct_key: concat(${table_uuid}, ${orderline.order_lineitem_uuid}) ;;
   }
 
   measure: pct_total_margin_relative {
