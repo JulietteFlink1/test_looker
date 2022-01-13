@@ -22,11 +22,6 @@ view: hub_pl_monthly {
     sql: ${TABLE}.amt_discount_gross ;;
   }
 
-  dimension: amt_transaction_fees {
-    type: number
-    sql: ${TABLE}.amt_transaction_fees ;;
-  }
-
   dimension: amt_ebikes {
     type: number
     sql: ${TABLE}.amt_ebikes ;;
@@ -87,6 +82,16 @@ view: hub_pl_monthly {
     sql: ${TABLE}.amt_packaging ;;
   }
 
+  dimension: amt_refund_gross {
+    type: string
+    sql: ${TABLE}.amt_refund_gross ;;
+  }
+
+  dimension: amt_refund_net {
+    type: number
+    sql: ${TABLE}.amt_refund_net ;;
+  }
+
   dimension: amt_rent {
     type: number
     sql: ${TABLE}.amt_rent ;;
@@ -122,6 +127,16 @@ view: hub_pl_monthly {
     sql: ${TABLE}.amt_total_deposit ;;
   }
 
+  dimension: amt_transaction_fees {
+    type: string
+    sql: ${TABLE}.amt_transaction_fees ;;
+  }
+
+  dimension: amt_vat {
+    type: number
+    sql: ${TABLE}.amt_vat ;;
+  }
+
   dimension: amt_waste_gross {
     type: number
     sql: ${TABLE}.amt_waste_gross ;;
@@ -137,8 +152,10 @@ view: hub_pl_monthly {
     sql: ${TABLE}.hub_code ;;
   }
 
+
   dimension: hub_pl_monthly_uuid {
     type: string
+    primary_key: yes
     sql: ${TABLE}.hub_pl_monthly_uuid ;;
   }
 
@@ -288,11 +305,48 @@ view: hub_pl_monthly {
     value_format_name: euro_accounting_2_precision
   }
 
-  measure: sum_amt_dre {
+  measure: sum_amt_refund_gross {
     type: sum
+    group_label: "* Loss *"
+    sql: ${amt_refund_gross};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_refund_net {
+    type: sum
+    group_label: "* Loss *"
+    sql: ${amt_refund_net};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_vat {
+    type: sum
+    group_label: "* Loss *"
+    sql: ${amt_vat};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_revenue_net {
+    type: sum
+    group_label: "* Loss *"
+    sql: ${amt_revenue_net};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_revenue_gross {
+    type: sum
+    group_label: "* Loss *"
+    sql: ${amt_revenue_gross};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_transaction_fees {
+    type: sum
+    group_label: "* Loss *"
     sql: ${amt_transaction_fees};;
     value_format_name: euro_accounting_2_precision
   }
+
 
   measure: count {
     type: count
