@@ -699,6 +699,7 @@ view: vat_order {
     group_label: "* Discounts *"
     value_format: "#,##0.00€"
     type: sum
+    hidden: yes
     sql: ${discount_free_delivery_gross} ;;
   }
 
