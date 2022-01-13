@@ -144,6 +144,7 @@ from final
   dimension: category {
     type: string
     sql: ${TABLE}.category ;;
+    order_by_field: category_rank
   }
 
   dimension: category_rank {

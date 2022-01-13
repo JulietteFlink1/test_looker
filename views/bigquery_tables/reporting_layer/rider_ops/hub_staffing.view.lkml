@@ -136,6 +136,7 @@ view: hub_staffing {
 
   dimension: staffing_uuid {
     type: string
+    primary_key: yes
     hidden: yes
     sql: ${TABLE}.staffing_uuid ;;
   }
@@ -146,7 +147,7 @@ view: hub_staffing {
 
   measure: sum_forecast_riders_needed{
     type: sum
-    label:"Sum Forecasted Hours"
+    label:"# Forecasted Hours"
     description: "Number of Needed Employees Based on Forecasted Order Demand"
     sql:${number_of_forecast_riders_needed};;
     value_format_name: decimal_1
@@ -155,7 +156,7 @@ view: hub_staffing {
 
   measure: sum_orders{
     type: sum
-    label:"Sum Actual Orders"
+    label:"# Orders"
     sql:${number_of_orders};;
     value_format_name: decimal_0
   }
@@ -172,7 +173,7 @@ view: hub_staffing {
 
   measure: sum_predicted_orders{
     type: sum
-    label:"Sum Forecasted Orders"
+    label:"# Forecasted Orders"
     description: "Number of Forecasted Orders"
     sql:${number_of_predicted_orders};;
     value_format_name: decimal_0
@@ -181,7 +182,7 @@ view: hub_staffing {
 
   measure: sum_worked_employees{
     type: sum
-    label:"Sum Worked Employees"
+    label:"# Worked Employees"
     description: "Number of Worked Employees"
     sql:${number_of_worked_employees};;
     value_format_name: decimal_1
@@ -189,9 +190,9 @@ view: hub_staffing {
 
 
   measure: pct_no_show_employees{
-    label:"% No_Show Hours"
+    label:"% No Show Hours"
     type: number
-    description: "Number of No_Show Employees"
+    description: "Number of No Show Employees"
     sql:(${sum_planned_hours} - ${sum_worked_hours})/${sum_planned_hours} ;;
     value_format_name: percent_1
   }
@@ -199,7 +200,7 @@ view: hub_staffing {
 
   measure: sum_planned_hours{
     type: sum
-    label:"Sum Planned Hours"
+    label:"# Planned Hours"
     description: "Number of Planned/Scheduled Hours"
     sql:${number_of_planned_minutes}/60;;
     value_format_name: decimal_1
@@ -207,7 +208,7 @@ view: hub_staffing {
 
   measure: sum_worked_hours{
     type: sum
-    label:"Sum Worked Hours"
+    label:"# Worked Hours"
     description: "Number of Planned/Scheduled Hours"
     sql:${number_of_worked_minutes}/60;;
     value_format_name: decimal_1
@@ -215,25 +216,20 @@ view: hub_staffing {
 
 
   measure: avg_employees_utr{
-    label:"AVG UTR"
+    label:"UTR"
     type: number
     description: "Average Employees UTR"
-    sql:${sum_orders} / ${sum_worked_hours} ;;
+    sql:${sum_orders}/ NULLIF(${sum_worked_hours}, 0) ;;
     value_format_name: decimal_2
   }
 
 
   measure: sum_employees_needed {
     type: number
-    label:"Sum Actual Needed Hours"
+    label:"# Actual Needed Hours"
     description: "Number of needed Employees based on actual order demand"
-    sql:ceiling(${hub_staffing.sum_orders} / (2.5 / 2));;
+    sql:ceiling(${sum_orders} / (2.5 / 2));;
     value_format_name: decimal_0
   }
 
-
-  measure: count {
-    type: count
-    drill_fields: [position_name]
-  }
 }

@@ -1,7 +1,7 @@
 view: crm_braze_data {
-    sql_table_name: `flink-data-dev.sandbox_natalia.crm_braze_data`
-      ;;
-    view_label: "* CRM Braze Data *"
+  sql_table_name: `flink-data-dev.sandbox.crm_braze_data_old`
+    ;;
+  view_label: "* CRM Braze Data *"
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   #           Dimensions

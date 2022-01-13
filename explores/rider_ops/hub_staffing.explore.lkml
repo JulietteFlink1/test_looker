@@ -3,10 +3,19 @@ include: "/views/bigquery_tables/curated_layer/hubs_ct.view"
 
 explore: hub_staffing {
   group_label: "Rider Ops"
+  view_label: "* Hub Staffing *"
   label: "Hub Staffing"
   description: "Hub Staffing KPIs such as # worked hours,# planned hours, # no_show etc ."
   hidden: no
 
+
+  always_filter: {
+    filters:  [
+      hub_staffing.shift_date: "last 14 days",
+      hubs.country: "",
+      hubs.hub_name: ""
+    ]
+  }
 
   join: hubs {
     from: hubs_ct

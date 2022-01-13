@@ -1970,7 +1970,7 @@ view: orders {
         hidden:  no
         type: number
         sql: ${sum_discount_amt} / NULLIF(${sum_gmv_gross}, 0);;
-        value_format: "0%"
+        value_format_name: percent_1
       }
 
       measure: pct_tip_order_share {
