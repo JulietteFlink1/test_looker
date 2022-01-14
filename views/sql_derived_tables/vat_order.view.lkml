@@ -82,7 +82,13 @@ view: vat_order {
 
   dimension: payment_type {
     type: string
+    hidden: yes
     sql: ${TABLE}.payment_type ;;
+  }
+
+  dimension: payment_method {
+    type: string
+    sql: ${TABLE}.payment_method ;;
   }
 
   dimension: amt_rider_tip {
