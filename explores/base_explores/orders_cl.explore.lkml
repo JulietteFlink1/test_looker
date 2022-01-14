@@ -81,7 +81,7 @@ explore: orders_cl {
     view_label: "* Shifts *"
     sql_on: ${orders_cl.created_date} = ${shyftplan_riders_pickers_hours.date} and
       ${hubs.hub_code}          = lower(${shyftplan_riders_pickers_hours.hub_name});;
-    relationship: many_to_one
+    relationship: many_to_many
     type: left_outer
   }
 
