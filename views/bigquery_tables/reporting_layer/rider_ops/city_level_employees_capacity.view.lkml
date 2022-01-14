@@ -147,6 +147,7 @@ view: city_level_employees_capacity {
 
   dimension: year_cw {
     type: string
+    label: "Year_CW"
     sql: concat (${start_period_year},'_',${week_number_report}) ;;
   }
 
