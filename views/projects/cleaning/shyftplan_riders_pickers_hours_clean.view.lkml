@@ -1,85 +1,94 @@
 view: shyftplan_riders_pickers_hours_clean {
-  derived_table: {
-    sql:
-    with all_data as
-    (
-        select
-        date(shift.starts_at, 'Europe/Berlin') as date,
-        location.name as hub_name,
-        lower(position.name) as position_name,
-        sum(evaluation_duration / 60) as hours,
-        count(distinct case when state != 'no_show' then employment_id end) as cnt_employees
-        from `flink-data-prod.shyftplan_v1.evaluations` evaluations
-        where
-        date(shift.starts_at, 'Europe/Berlin') < current_date() and
-        (lower(position.name) like '%rider%' or lower(position.name) like '%picker%')
-        group by 1, 2, 3
-        order by 1 desc, 2, 3
-    ),
-
-    orders_per_hub as
-    (
-        select date(order_timestamp, 'Europe/Berlin') as date,
-        hub_code as warehouse,
-        count(distinct orders.order_uuid) as orders
-        from `flink-data-prod.curated.orders` orders
-        where is_successful_order is true and
-              orders.customer_email NOT LIKE '%goflink%' AND orders.customer_email
-              NOT LIKE '%pickery%' AND LOWER(orders.customer_email)
-              NOT IN ('christoph.a.cordes@gmail.com', 'jfdames@gmail.com', 'oliver.merkel@gmail.com', 'alenaschneck@gmx.de', 'saadsaeed354@gmail.com', 'saadsaeed353@gmail.com', 'fabian.hardenberg@gmail.com', 'benjamin.zagel@gmail.com')
-        group by 1, 2
-    ),
-
-    rider_hours as
-    (
-        select date, hub_name, hours as rider_hours, cnt_employees as riders
-        from all_data
-        where position_name = 'rider'
-    ),
-
-    picker_hours as
-    (
-        select date, hub_name, hours as picker_hours, cnt_employees as pickers
-        from all_data
-        where position_name = 'picker'
-    )
-
-    select distinct all_data.date,
-    all_data.hub_name,
-    orders_per_hub.orders,
-    case when rider_hours.rider_hours > 0 then orders_per_hub.orders else 0 end as adjusted_orders_riders,
-    case when picker_hours.picker_hours > 0 then orders_per_hub.orders else 0 end as adjusted_orders_pickers,
-    rider_hours.rider_hours,
-    rider_hours.riders,
-    picker_hours.picker_hours,
-    picker_hours.pickers
-    from all_data
-    left join rider_hours
-    on all_data.date = rider_hours.date and all_data.hub_name  = rider_hours.hub_name
-    left join picker_hours
-    on all_data.date = picker_hours.date and all_data.hub_name  = picker_hours.hub_name
-    left join orders_per_hub
-    on lower(all_data.hub_name) = orders_per_hub.warehouse and all_data.date=orders_per_hub.date
-       ;;
-  }
+  sql_table_name: `flink-data-prod.reporting.daily_hub_staffing`
+    ;;
 
   dimension: id {
     type: string
-    sql: concat(${TABLE}.date, ${TABLE}.hub_name) ;;
     primary_key: yes
     hidden: yes
+    sql: ${TABLE}.daily_staffing_uuid ;;
   }
+
+
+  dimension: number_of_orders {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.number_of_orders ;;
+  }
+
+  dimension: number_of_planned_minutes {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_planned_minutes ;;
+  }
+
+  dimension: number_of_worked_minutes {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_worked_minutes ;;
+  }
+
+  dimension: numbre_of_no_show_minutes {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.numbre_of_no_show_minutes ;;
+  }
+
+  dimension: number_of_planned_employees {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_planned_employees ;;
+  }
+
+  dimension: number_of_worked_employees {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_worked_employees ;;
+  }
+
+  dimension: position_name {
+    type: string
+    hidden: yes
+    sql: ${TABLE}.position_name ;;
+  }
+
+  dimension_group: shift {
+    type: time
+    timeframes: [
+      raw,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    convert_tz: no
+    hidden: yes
+    datatype: date
+    sql: ${TABLE}.shift_date ;;
+  }
+
+
+  measure: sum_orders{
+    type: sum
+    label:"# Orders"
+    description: "Number of Orders from hubs that have worked hours"
+    sql:${number_of_orders};;
+    filters:[position_name: "rider"]
+    value_format_name: decimal_0
+  }
+
 
   dimension: date {
     label: "Shift starts at"
     type: date
     datatype: date
-    sql: ${TABLE}.date ;;
+    sql: ${TABLE}.shift_date ;;
   }
 
   dimension: hub_name {
     type: string
-    sql: ${TABLE}.hub_name ;;
+    sql: ${TABLE}.hub_code ;;
   }
 
   #dimension: rider_hours {
@@ -113,54 +122,61 @@ view: shyftplan_riders_pickers_hours_clean {
   measure: rider_hours {
     label: "Sum of Rider Hours"
     type: sum
-    sql: ${TABLE}.rider_hours ;;
-    value_format_name: decimal_0
+    sql:${number_of_worked_minutes}/60;;
+    filters: [position_name: "rider"]
+    value_format_name: decimal_1
     group_label: "Working Hours"
   }
 
   measure: riders {
     label: "# Riders"
     type: sum
-    sql: ${TABLE}.riders ;;
+    sql:${number_of_worked_employees};;
+    filters: [position_name: "rider"]
     group_label: "Counts"
   }
 
   measure: picker_hours {
     label: "Sum of Picker Hours"
     type: sum
-    sql: ${TABLE}.picker_hours ;;
-    value_format_name: decimal_0
+    sql:${number_of_worked_minutes}/60;;
+    filters: [position_name: "picker"]
+    value_format_name: decimal_1
     group_label: "Working Hours"
   }
 
   measure: pickers {
     label: "# Pickers"
     type: sum
-    sql: ${TABLE}.pickers ;;
+    sql:${number_of_worked_employees};;
+    filters: [position_name: "picker"]
     group_label: "Counts"
   }
 
   measure: shift_orders {
     type: sum
-    sql: ${TABLE}.orders ;;
+    sql: ${number_of_orders} ;;
     hidden: yes
   }
 
   measure: adjusted_orders_riders {
     type: sum
-    sql: ${TABLE}.adjusted_orders_riders ;;
+    sql:${number_of_orders};;
+    filters:[position_name: "rider"]
     hidden: yes
   }
 
   measure: adjusted_orders_pickers {
     type: sum
-    sql: ${TABLE}.adjusted_orders_pickers ;;
+    sql:${number_of_orders};;
+    filters:[position_name: "picker"]
     hidden: yes
   }
 
   measure: rider_utr {
     label: "AVG Rider UTR"
     type: number
+    description: "# Orders from opened hub / # Worked Rider Hours"
     sql: ${adjusted_orders_riders} / NULLIF(${rider_hours}, 0);;
     value_format_name: decimal_2
     group_label: "UTR"
@@ -169,7 +185,8 @@ view: shyftplan_riders_pickers_hours_clean {
   measure: picker_utr {
     label: "AVG Picker UTR"
     type: number
-    sql: ${adjusted_orders_pickers} / NULLIF(${picker_hours}, 0);;
+    description: "# Orders from opened hub / # Worked Picker Hours"
+    sql: ${adjusted_orders_riders} / NULLIF(${picker_hours}, 0);;
     value_format_name: decimal_2
     group_label: "UTR"
   }
