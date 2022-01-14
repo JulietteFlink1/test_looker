@@ -218,6 +218,27 @@ view: hub_pl_monthly {
     sql: ${TABLE}.hub_pl_monthly_uuid ;;
   }
 
+  dimension: amt_hub_staff_compensation {
+    hidden: yes
+    sql: ${amt_hubmanager_salaries} +
+       ${amt_external_operations_salaries} +
+       ${amt_internal_operations_salaries} +
+       ${amt_citymanager_salaries} +
+       ${amt_shiftlead_salaries}
+       ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  dimension: amt_rider_wages {
+    hidden: yes
+    sql:
+       ${amt_external_rider_salalries} +
+       ${amt_external_operations_salaries}
+
+       ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
   dimension_group: order_month {
     type: time
     timeframes: [
@@ -235,13 +256,7 @@ view: hub_pl_monthly {
 
 ########### Measures
 
-  measure: sum_amt_citymanager_salaries {
-    type: sum
-    group_label: "* Loss *"
-    label: "City Managers Salaries"
-    sql: ${amt_citymanager_salaries};;
-    value_format_name: euro_accounting_2_precision
-  }
+
 
   measure: sum_amt_delivery_fee_gross {
     type: sum
@@ -275,9 +290,12 @@ view: hub_pl_monthly {
     value_format_name: euro_accounting_2_precision
   }
 
+
+######### Hub Staff Compensation
+
   measure: sum_amt_hubmanager_salaries {
     type: sum
-    group_label: "* Loss *"
+    group_label: "* Hub Staff Compensation *"
     label: "Hub Managers Salaries"
     sql: ${amt_hubmanager_salaries};;
     value_format_name: euro_accounting_2_precision
@@ -285,15 +303,31 @@ view: hub_pl_monthly {
 
   measure: sum_amt_internal_operations_salaries {
     type: sum
-    group_label: "* Loss *"
+    group_label: "* Hub Staff Compensation *"
     label: "Internal Operations Salaries"
     sql: ${amt_internal_operations_salaries};;
     value_format_name: euro_accounting_2_precision
   }
 
+  measure: sum_amt_citymanager_salaries {
+    type: sum
+    group_label: "* Hub Staff Compensation *"
+    label: "City Managers Salaries"
+    sql: ${amt_citymanager_salaries};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_shiftlead_salaries {
+    type: sum
+    group_label: "* Hub Staff Compensation *"
+    label: "City Managers Salaries"
+    sql: ${amt_shiftlead_salaries};;
+    value_format_name: euro_accounting_2_precision
+  }
+
   measure: sum_amt_external_operations_salaries {
     type: sum
-    group_label: "* Loss *"
+    group_label: "* Hub Staff Compensation *"
     label: "External Operations Salaries"
     sql: ${amt_external_operations_salaries};;
     value_format_name: euro_accounting_2_precision
@@ -301,7 +335,7 @@ view: hub_pl_monthly {
 
   measure: sum_amt_external_rider_salalries {
     type: sum
-    group_label: "* Loss *"
+    group_label: "* Rider Wages *"
     label: "External Rider Salaries"
     sql: ${amt_external_rider_salalries};;
     value_format_name: euro_accounting_2_precision
@@ -309,9 +343,32 @@ view: hub_pl_monthly {
 
   measure: sum_amt_internal_rider_salaries {
     type: sum
-    group_label: "* Loss *"
+    group_label: "* Rider Wages *"
     label: "Internal Riders Salaries"
     sql: ${amt_internal_rider_salaries};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_hub_staff_compensation {
+    type: sum
+    group_label: "* Hub Staff Compensation *"
+    label: "Total Hub Staff Compensation"
+    sql: ${amt_hubmanager_salaries} +
+       ${amt_external_operations_salaries} +
+       ${amt_internal_operations_salaries} +
+       ${amt_citymanager_salaries} +
+       ${amt_shiftlead_salaries}
+       ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_rider_wages {
+    type: sum
+    group_label: "* Rider Wages *"
+    label: "Total Rider Wages"
+    sql: ${amt_external_rider_salalries} +
+       ${amt_external_operations_salaries}
+       ;;
     value_format_name: euro_accounting_2_precision
   }
 
@@ -463,6 +520,8 @@ view: hub_pl_monthly {
     value_format_name: euro_accounting_2_precision
   }
 
+
+
   ############## Relative measures
 
   measure: share_gmv_groceries_gross_over_gmv_gross {
@@ -494,6 +553,22 @@ view: hub_pl_monthly {
     group_label: "* Relative Loss *"
     label: "% VAT / Revenue Net"
     sql: ${amt_vat}/${amt_total_net};;
+    value_format_name: percent_1
+  }
+
+  measure: share_hub_staff_compensation_over_total_net {
+    type: average
+    group_label: "* Hub Staff Compensation *"
+    label: "% Total Hub Staff Compensation / Revenue Net"
+    sql: ${amt_hub_staff_compensation}/${amt_total_net};;
+    value_format_name: percent_1
+  }
+
+  measure: share_rider_wages_over_total_net {
+    type: average
+    group_label: "* Rider Wages *"
+    label: "% Rider Wages / Revenue Net"
+    sql: ${amt_rider_wages}/${amt_total_net};;
     value_format_name: percent_1
   }
 
