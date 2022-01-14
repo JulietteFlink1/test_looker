@@ -352,7 +352,6 @@ view: hub_pl_monthly {
   measure: sum_amt_other_logistics_costs {
     type: sum
     group_label: "* Loss *"
-    label: "Sum Amt External Rider Salaries"
     sql: ${amt_other_logistics_costs};;
     value_format_name: euro_accounting_2_precision
   }
@@ -439,6 +438,40 @@ view: hub_pl_monthly {
     group_label: "* Profit *"
     sql: ${amt_gmv_after_refunds_gross};;
     value_format_name: euro_accounting_2_precision
+  }
+
+  ############## Relative measures
+
+  measure: share_gmv_groceries_gross_over_gmv_gross {
+    type: average
+    group_label: "* Relative Profit *"
+    label: "% GMV Groceries Gross / GMV Gross"
+    sql: ${amt_gmv_groceries_gross}/${amt_gmv_gross};;
+    value_format_name: percent_1
+  }
+
+  measure: share_gmv_delivery_fees_gross_over_gmv_gross {
+  type: average
+  group_label: "* Relative Profit *"
+  label: "% GMV Delivery Fees Gross / GMV Gross"
+  sql: ${amt_delivery_fee_gross}/${amt_gmv_gross};;
+  value_format_name: percent_1
+}
+
+  measure: share_gmv_refunds_gross_over_gmv_gross {
+    type: average
+    group_label: "* Relative Loss *"
+    label: "% GMV Refunds Gross / GMV Gross"
+    sql: ${amt_refund_gross}/${amt_gmv_gross};;
+    value_format_name: percent_1
+  }
+
+  measure: share_vat_over_total_net {
+    type: average
+    group_label: "* Relative Loss *"
+    label: "% VAT / Revenue Net"
+    sql: ${amt_vat}/${amt_total_net};;
+    value_format_name: percent_1
   }
 
 
