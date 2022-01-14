@@ -68,6 +68,12 @@ view: hub_pl_monthly {
     sql: ${TABLE}.amt_gmv_groceries_net ;;
   }
 
+  dimension: amt_gmv_after_refunds_gross {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_gmv_after_refunds_gross ;;
+  }
+
   dimension: amt_hubmanager_salaries {
     type: number
     hidden: yes
@@ -425,6 +431,13 @@ view: hub_pl_monthly {
     type: sum
     group_label: "* Profit *"
     sql: ${amt_gmv_groceries_net};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_gmv_after_refunds_gross {
+    type: sum
+    group_label: "* Profit *"
+    sql: ${amt_gmv_after_refunds_gross};;
     value_format_name: euro_accounting_2_precision
   }
 
