@@ -144,6 +144,12 @@ view: city_level_employees_capacity {
     sql: ${TABLE}.hires_with_first_shift_completed ;;
   }
 
+
+  dimension: year_cw {
+    type: string
+    sql: concat (${start_period_year},'_',${week_number_report}) ;;
+  }
+
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
