@@ -4,141 +4,199 @@ view: hub_pl_monthly {
 
   dimension: amt_citymanager_salaries {
     type: number
+    hidden: yes
     sql: ${TABLE}.amt_citymanager_salaries ;;
   }
 
   dimension: amt_delivery_fee_gross {
     type: number
+    hidden: yes
     sql: ${TABLE}.amt_delivery_fee_gross ;;
   }
 
   dimension: amt_delivery_fee_net {
     type: number
+    hidden: yes
     sql: ${TABLE}.amt_delivery_fee_net ;;
   }
 
   dimension: amt_discount_gross {
     type: number
+    hidden: yes
     sql: ${TABLE}.amt_discount_gross ;;
   }
 
   dimension: amt_ebikes {
     type: number
+    hidden: yes
     sql: ${TABLE}.amt_ebikes ;;
   }
 
   dimension: amt_external_operations_salaries {
     type: number
+    hidden: yes
     sql: ${TABLE}.amt_external_operations_salaries ;;
   }
 
   dimension: amt_external_rider_salalries {
     type: number
+    hidden: yes
     sql: ${TABLE}.amt_external_rider_salalries ;;
   }
 
   dimension: amt_gmv_gross {
     type: number
+    hidden: yes
     sql: ${TABLE}.amt_gmv_gross ;;
   }
 
   dimension: amt_gmv_net {
     type: number
+    hidden: yes
     sql: ${TABLE}.amt_gmv_net ;;
+  }
+
+  dimension: amt_gmv_groceries_gross {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_gmv_groceries_gross ;;
+  }
+
+  dimension: amt_gmv_groceries_net {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_gmv_groceries_net ;;
+  }
+
+  dimension: amt_gmv_after_refunds_gross {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_gmv_after_refunds_gross ;;
   }
 
   dimension: amt_hubmanager_salaries {
     type: number
+    hidden: yes
     sql: ${TABLE}.amt_hubmanager_salaries ;;
   }
 
   dimension: amt_internal_operations_salaries {
     type: number
+    hidden: yes
     sql: ${TABLE}.amt_internal_operations_salaries ;;
   }
 
   dimension: amt_internal_rider_salaries {
     type: number
+    hidden: yes
     sql: ${TABLE}.amt_internal_rider_salaries ;;
   }
 
   dimension: amt_logistics_costs {
     type: number
+    hidden: yes
     sql: ${TABLE}.amt_logistics_costs ;;
   }
 
   dimension: amt_other_hub_recurring {
     type: number
+    hidden: yes
     sql: ${TABLE}.amt_other_hub_recurring ;;
   }
 
   dimension: amt_other_logistics_costs {
     type: number
+    hidden: yes
     sql: ${TABLE}.amt_other_logistics_costs ;;
   }
 
   dimension: amt_packaging {
     type: number
+    hidden: yes
     sql: ${TABLE}.amt_packaging ;;
   }
 
   dimension: amt_refund_gross {
     type: string
+    hidden: yes
     sql: ${TABLE}.amt_refund_gross ;;
   }
 
   dimension: amt_refund_net {
     type: number
+    hidden: yes
     sql: ${TABLE}.amt_refund_net ;;
   }
 
   dimension: amt_rent {
     type: number
+    hidden: yes
     sql: ${TABLE}.amt_rent ;;
   }
 
   dimension: amt_revenue_gross {
     type: number
+    hidden: yes
     sql: ${TABLE}.amt_revenue_gross ;;
   }
 
   dimension: amt_revenue_net {
     type: number
+    hidden: yes
     sql: ${TABLE}.amt_revenue_net ;;
   }
 
   dimension: amt_rider_equipment {
     type: number
+    hidden: yes
     sql: ${TABLE}.amt_rider_equipment ;;
   }
 
   dimension: amt_shiftlead_salaries {
     type: number
+    hidden: yes
     sql: ${TABLE}.amt_shiftlead_salaries ;;
   }
 
   dimension: amt_supplier_funding {
     type: number
+    hidden: yes
     sql: ${TABLE}.amt_supplier_funding ;;
   }
 
   dimension: amt_total_deposit {
     type: number
+    hidden: yes
     sql: ${TABLE}.amt_total_deposit ;;
+  }
+
+  dimension: amt_total_net {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_total_net ;;
+  }
+
+  dimension: amt_total_gross {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_total_gross ;;
   }
 
   dimension: amt_transaction_fees {
     type: string
+    hidden: yes
     sql: ${TABLE}.amt_transaction_fees ;;
   }
 
   dimension: amt_vat {
     type: number
+    hidden: yes
     sql: ${TABLE}.amt_vat ;;
   }
 
   dimension: amt_waste_gross {
     type: number
+    hidden: yes
     sql: ${TABLE}.amt_waste_gross ;;
   }
 
@@ -155,6 +213,7 @@ view: hub_pl_monthly {
 
   dimension: hub_pl_monthly_uuid {
     type: string
+    hidden: yes
     primary_key: yes
     sql: ${TABLE}.hub_pl_monthly_uuid ;;
   }
@@ -328,14 +387,14 @@ view: hub_pl_monthly {
 
   measure: sum_amt_revenue_net {
     type: sum
-    group_label: "* Loss *"
+    group_label: "* Profit *"
     sql: ${amt_revenue_net};;
     value_format_name: euro_accounting_2_precision
   }
 
   measure: sum_amt_revenue_gross {
     type: sum
-    group_label: "* Loss *"
+    group_label: "* Profit *"
     sql: ${amt_revenue_gross};;
     value_format_name: euro_accounting_2_precision
   }
@@ -344,6 +403,41 @@ view: hub_pl_monthly {
     type: sum
     group_label: "* Loss *"
     sql: ${amt_transaction_fees};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_total_net {
+    type: sum
+    group_label: "* Profit *"
+    sql: ${amt_total_net};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_total_gross {
+    type: sum
+    group_label: "* Profit *"
+    sql: ${amt_total_gross};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_gmv_groceries_gross {
+    type: sum
+    group_label: "* Profit *"
+    sql: ${amt_gmv_groceries_gross};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_gmv_groceries_net {
+    type: sum
+    group_label: "* Profit *"
+    sql: ${amt_gmv_groceries_net};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_gmv_after_refunds_gross {
+    type: sum
+    group_label: "* Profit *"
+    sql: ${amt_gmv_after_refunds_gross};;
     value_format_name: euro_accounting_2_precision
   }
 
