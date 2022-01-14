@@ -1,5 +1,5 @@
 view: getir_hubs {
-  sql_table_name: `flink-data-dev.curated.getir_hubs`
+  sql_table_name: `flink-data-prod.curated.getir_hubs`
     ;;
 
   dimension: hub_id {
