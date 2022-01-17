@@ -75,19 +75,19 @@ view: inventory_changes_daily {
   dimension: country_iso {
     type: string
     sql: ${TABLE}.country_iso ;;
-    hidden: yes
+    hidden: no
   }
 
   dimension: hub_code {
     type: string
     sql: ${TABLE}.hub_code ;;
-    hidden: yes
+    hidden: no
   }
 
   dimension: sku {
     type: string
     sql: ${TABLE}.sku ;;
-    hidden: yes
+    hidden: no
   }
 
   dimension: price_gross {
@@ -178,6 +178,7 @@ view: inventory_changes_daily {
     sql: case when abs(${quantity_change}) <= 100 then  abs(${quantity_change}) end;; # remove outlier - requested by @Fabian Hardenberg
     filters: [change_reason: "inventory-correction"]
     value_format_name: decimal_0
+    hidden: yes
   }
 
   measure: sum_inbound_inventory {

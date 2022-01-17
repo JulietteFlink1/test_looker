@@ -62,7 +62,7 @@ view: hubs_ct {
     type: string
     sql: ${TABLE}.country_iso ;;
     group_label: "> Geographic Data"
-    label: "Country"
+    label: "Country Iso"
   }
 
   dimension: latitude {

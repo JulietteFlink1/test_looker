@@ -30,17 +30,19 @@ view: +orderline {
           when ${return_reason} like '%missing%'            then 'missing product'
           when ${return_reason} like '%wrong%'              then 'wrong product'
           when ${return_reason} like '%perished%'
+            or ${return_reason} like '%perrished%'
             or ${return_reason} = 'goods_spoiled'           then 'perished product'
           when ${return_reason} like '%swapped%'            then 'swapped product'
           when ${return_reason} like '%damage%'             then 'damaged product'
           when ${return_reason} like '%cancel%'             then 'cancelled product'
-          when ${return_reason} like '%goods_not_on_shelf%'
+          when ${return_reason} like '%not_on_shelf%'
             or ${return_reason} like '%out of stock%'
             or ${return_reason} like '%out_of_stock%'
             or ${return_reason} like '%not in stock%'
                                                             then 'goods not on shelf'
           -- no other match
-          when ${return_reason} like '%miss%'               then 'missing product'
+          when ${return_reason} like '%miss%'
+            or ${return_reason} = 'not received'            then 'missing product'
 
           when ${return_reason} is not null                 then 'undefined group'
       end

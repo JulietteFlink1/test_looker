@@ -1,5 +1,5 @@
 view: discovery_events {
-  sql_table_name: `flink-data-dev.curated.discovery_events`
+  sql_table_name: `flink-data-prod.curated.discovery_events`
     ;;
 
   view_label: "* App Sessions *"

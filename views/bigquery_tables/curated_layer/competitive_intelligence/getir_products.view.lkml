@@ -1,5 +1,5 @@
 view: getir_products {
-  sql_table_name: `flink-data-dev.curated.getir_products`
+  sql_table_name: `flink-data-prod.curated.getir_products`
     ;;
 
   dimension: getir_products_hist_uuid {
@@ -20,6 +20,11 @@ view: getir_products {
   dimension: parent_category_id {
     type: string
     sql: ${TABLE}.parent_category_id ;;
+  }
+
+  dimension: unit_of_measure {
+    type: string
+    sql: ${TABLE}.unit_of_measure ;;
   }
 
   dimension_group: partition_timestamp {

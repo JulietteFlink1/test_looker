@@ -699,7 +699,7 @@ view: rider_staffing_report {
     group_label: " * Rider Hours * "
     label: "# Forecasted Rider Hours"
     type: sum
-    sql: ${forecasted_rider_hours} ;;
+    sql: ${forecast_riders_needed}/2 ;;
   }
 
   measure: sum_forecasted_picker_hours {
