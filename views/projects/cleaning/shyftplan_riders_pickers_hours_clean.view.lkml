@@ -72,6 +72,7 @@ view: shyftplan_riders_pickers_hours_clean {
   measure: sum_orders{
     type: sum
     label:"# Orders"
+    hidden: yes
     description: "Number of Orders from hubs that have worked hours"
     sql:${number_of_orders};;
     filters:[position_name: "rider"]

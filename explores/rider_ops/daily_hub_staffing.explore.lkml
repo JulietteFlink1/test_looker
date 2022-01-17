@@ -3,7 +3,7 @@ include: "/views/bigquery_tables/curated_layer/hubs_ct.view"
 
 explore: daily_hub_staffing {
   group_label: "Rider Ops"
-  view_label: "* Hub Staffing *"
+  view_label: "*Daily Hub Staffing *"
   label: "Hub Staffing"
   description: "Hub Staffing KPIs such as # worked hours,# planned hours, # no_show etc ."
   hidden: no
