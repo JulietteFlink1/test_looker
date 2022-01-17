@@ -1,5 +1,5 @@
 view: crm_braze_data {
-  sql_table_name: `flink-data-dev.sandbox.crm_braze_data_old`
+  sql_table_name: `flink-data-dev.curated.braze_campaign`
     ;;
   view_label: "* CRM Braze Data *"
 
@@ -35,39 +35,20 @@ view: crm_braze_data {
     sql: ${TABLE}.canvas_name ;;
   }
 
-  dimension: in_control_group_canvas {
-    label: "Control Group for Canvas"
-    description: "Canvas group name defined in Braze"
-    type: yesno
-    sql: ${TABLE}.in_control_group_canvas ;;
-  }
 
   dimension: in_control_group_campaign {
     label: "Control Group for Campaign"
     description: "Campaign group name defined in Braze"
     type: yesno
-    sql: ${TABLE}.in_control_group_campaign ;;
+    sql: ${TABLE}.is_control_group ;;
   }
 
-  dimension: canvas_step_name {
-    label: "Canvas Step Name"
-    description: "The email canvas step name defined in Braze"
-    type: string
-    sql: ${TABLE}.canvas_step_name ;;
-  }
-
-  dimension: canvas_variation_name {
-    label: "Canvas Variation Step Name"
-    description: "The email canvas variation name defined in Braze"
-    type: string
-    sql: ${TABLE}.canvas_variation_name ;;
-  }
 
   dimension: country {
     label: "Country"
     description: "The country code parsed from the email campaign name"
     type: string
-    sql: ${TABLE}.country ;;
+    sql: ${TABLE}.country_iso ;;
   }
 
   dimension: email_sent_at {
@@ -75,7 +56,7 @@ view: crm_braze_data {
     description: "The date, when the email was sent to the customer"
     type: date
     datatype: date
-    sql: ${TABLE}.email_sent_at ;;
+    sql: ${TABLE}.email_sent_at_date ;;
     hidden: yes
   }
 
@@ -102,7 +83,7 @@ view: crm_braze_data {
   dimension: primary_key {
     primary_key: yes
     hidden: yes
-    sql: CONCAT(${TABLE}.campaign_name,${TABLE}.canvas_name,${TABLE}.canvas_step_name, ${TABLE}.canvas_variation_name, ${TABLE}.country, ${TABLE}.email_sent_at) ;;
+    sql: ${TABLE}.braze_campaign_uuid ;;
   }
 
   dimension: days_sent_to_open {
@@ -119,79 +100,79 @@ view: crm_braze_data {
 
   dimension: num_emails_sent {
     type: number
-    sql: ${TABLE}.num_emails_sent ;;
+    sql: ${TABLE}.number_of_emails_sent ;;
     hidden: yes
   }
 
   dimension: num_all_sents {
     type: number
-    sql: ${TABLE}.num_all_sents ;;
+    sql: ${TABLE}.number_of_emails_sent ;;
     hidden: yes
   }
 
   dimension: num_emails_sent_count_all {
     type: number
-    sql: ${TABLE}.num_emails_sent_count_all ;;
+    sql: ${TABLE}.number_of_emails_sent_count_all ;;
     hidden: yes
   }
 
   dimension: num_unique_emails_bounced {
     type: number
-    sql: ${TABLE}.num_unique_emails_bounced ;;
+    sql: ${TABLE}.number_of_unique_emails_bounced ;;
     hidden: yes
   }
 
   dimension: num_emails_bounced {
     type: number
-    sql: ${TABLE}.num_emails_bounced ;;
+    sql: ${TABLE}.number_of_emails_bounced ;;
     hidden: yes
   }
 
   dimension: num_unique_emails_soft_bounced {
     type: number
-    sql: ${TABLE}.num_unique_emails_soft_bounced ;;
+    sql: ${TABLE}.number_of_unique_emails_soft_bounced ;;
     hidden: yes
   }
 
   dimension: num_emails_soft_bounced {
     type: number
-    sql: ${TABLE}.num_emails_soft_bounced ;;
+    sql: ${TABLE}.number_of_emails_soft_bounced ;;
     hidden: yes
   }
 
   dimension: num_emails_delivered {
     type: number
-    sql: ${TABLE}.num_emails_delivered ;;
+    sql: ${TABLE}.number_of_emails_delivered ;;
     hidden: yes
   }
 
   dimension: num_unique_emails_opened {
     type: number
-    sql: ${TABLE}.num_unique_emails_opened ;;
+    sql: ${TABLE}.number_of_unique_emails_opened ;;
     hidden: yes
   }
 
   dimension: num_emails_opened {
     type: number
-    sql: ${TABLE}.num_emails_opened ;;
+    sql: ${TABLE}.number_of_emails_opened ;;
     hidden: yes
   }
 
   dimension: num_unique_emails_clicked {
     type: number
-    sql: ${TABLE}.num_unique_emails_clicked ;;
+    sql: ${TABLE}.number_of_unique_emails_clicked ;;
     hidden: yes
   }
 
   dimension: num_emails_clicked {
     type: number
-    sql: ${TABLE}.num_emails_clicked ;;
+    sql: ${TABLE}.number_of_emails_clicked ;;
     hidden: yes
   }
 
   dimension: num_unique_unsubscribed {
     type: number
-    sql: ${TABLE}.num_unique_unsubscribed ;;
+    sql: ${TABLE}.number_of_unique_unsubscribed ;;
     hidden: yes
   }
 
@@ -204,61 +185,61 @@ view: crm_braze_data {
 
   dimension: num_orders_opened {
     type: number
-    sql: ${TABLE}.num_orders_opened ;;
+    sql: ${TABLE}.number_of_orders_opened ;;
     hidden: yes
   }
 
   dimension: num_orders_sent {
     type: number
-    sql: ${TABLE}.num_orders_sent ;;
+    sql: ${TABLE}.number_of_orders_sent ;;
     hidden: yes
   }
 
   dimension: num_unique_orders_opened {
     type: number
-    sql: ${TABLE}.num_unique_orders_opened ;;
+    sql: ${TABLE}.number_of_unique_orders_opened ;;
     hidden: yes
   }
 
   dimension: num_unique_orders_sent {
     type: number
-    sql: ${TABLE}.num_unique_orders_sent ;;
+    sql: ${TABLE}.number_of_unique_orders_sent ;;
     hidden: yes
   }
 
   dimension: num_orders_with_vouchers_opened {
     type: number
-    sql: ${TABLE}.num_orders_with_vouchers_opened ;;
+    sql: ${TABLE}.number_of_orders_with_vouchers_opened ;;
     hidden: yes
   }
 
   dimension: num_orders_with_vouchers_sent {
     type: number
-    sql: ${TABLE}.num_orders_with_vouchers_sent ;;
+    sql: ${TABLE}.number_of_orders_with_vouchers_sent ;;
     hidden: yes
   }
 
   dimension: discount_amount_opened {
     type: number
-    sql: ${TABLE}.discount_amount_opened ;;
+    sql: ${TABLE}.amt_discount_gross_opened ;;
     hidden: yes
   }
 
   dimension: discount_amount_sent {
     type: number
-    sql: ${TABLE}.discount_amount_sent ;;
+    sql: ${TABLE}.amt_discount_gross_sent ;;
     hidden: yes
   }
 
   dimension: gmv_gross_opened {
     type: number
-    sql: ${TABLE}.gmv_gross_opened ;;
+    sql: ${TABLE}.amt_gmv_gross_opened ;;
     hidden: yes
   }
 
   dimension: gmv_gross_sent {
     type: number
-    sql: ${TABLE}.gmv_gross_sent ;;
+    sql: ${TABLE}.amt_gmv_gross_sent ;;
     hidden: yes
   }
 
@@ -872,10 +853,7 @@ view: crm_braze_data {
     fields: [
       campaign_name,
       canvas_name,
-      in_control_group_canvas,
       in_control_group_campaign,
-      canvas_step_name,
-      canvas_variation_name,
       country,
       email_sent_at,
       days_sent_to_open,
