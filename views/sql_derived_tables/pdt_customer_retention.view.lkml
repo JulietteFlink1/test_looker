@@ -11,7 +11,9 @@ view: pdt_customer_retention {
         , is_first_order
         , customer_order_rank
     from `flink-data-prod.curated.orders`
-    where delivery_pdt_minutes is not null and is_successful_order is true
+    where delivery_pdt_minutes is not null
+    and is_successful_order is true
+    and order_date <= current_date - 7
 )
      select *
      from  pdt_order
