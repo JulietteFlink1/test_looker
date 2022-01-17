@@ -104,4 +104,21 @@ explore: flink_to_gorillas_global {
     type:  left_outer
   }
 
+  join: nl_flink_to_albert_heijn {
+    from: nl_flink_to_albert_heijn
+    view_label: "* Flink-Albert Heijn Match Data *"
+    sql_on: ${nl_flink_to_albert_heijn.flink_product_sku} = ${products.product_sku} ;;
+    relationship: one_to_many
+    type: left_outer
+  }
+
+  join: albert_heijn_products {
+    from: albert_heijn_products
+    view_label: "* Albert Heijn Products *"
+    sql_on: ${albert_heijn_products.product_id} = ${nl_flink_to_albert_heijn.albert_heijn_product_id}
+            and ${albert_heijn_products.product_name} = ${nl_flink_to_albert_heijn.albert_heijn_product_name};;
+    relationship: one_to_one
+    type: left_outer
+  }
+
 }

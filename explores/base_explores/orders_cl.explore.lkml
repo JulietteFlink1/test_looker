@@ -80,20 +80,20 @@ explore: orders_cl {
     from: shyftplan_riders_pickers_hours_clean
     view_label: "* Shifts *"
     sql_on: ${orders_cl.created_date} = ${shyftplan_riders_pickers_hours.date} and
-            ${hubs.hub_code}          = lower(${shyftplan_riders_pickers_hours.hub_name});;
-    relationship: many_to_one
+      ${hubs.hub_code}          = lower(${shyftplan_riders_pickers_hours.hub_name});;
+    relationship: many_to_many
     type: left_outer
   }
 
 
-  join: daily_hub_staffing {
-    from: daily_hub_staffing
-    view_label: "* Hub Staffing *"
-    sql_on: ${orders_cl.created_date} = ${daily_hub_staffing.shift_date} and
-            ${hubs.hub_code}          = lower(${daily_hub_staffing.hub_code});;
-    relationship: many_to_one
-    type: left_outer
-  }
+  # join: daily_hub_staffing {
+  #   from: daily_hub_staffing
+  #   view_label: "* Hub Staffing *"
+  #   sql_on: ${orders_cl.created_date} = ${daily_hub_staffing.shift_date} and
+  #     ${hubs.hub_code}          = lower(${daily_hub_staffing.hub_code});;
+  #   relationship: many_to_one
+  #   type: left_outer
+  # }
 
   join: nps_after_order {
     from: nps_after_order_cl
@@ -114,7 +114,7 @@ explore: orders_cl {
   # }
 
   join: cs_post_delivery_issues {
-    view_label: "* DO NOT USE: Post Delivery Issues on Order-Level *"
+    view_label: ""
     sql_on: ${orders_cl.country_iso} = ${cs_post_delivery_issues.country_iso} AND
       ${cs_post_delivery_issues.order_nr_} = ${orders_cl.order_number};;
     relationship: one_to_many

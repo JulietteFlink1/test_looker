@@ -1,5 +1,5 @@
 view: getir_categories {
-  sql_table_name: `flink-data-dev.curated.getir_categories`
+  sql_table_name: `flink-data-prod.curated.getir_categories`
     ;;
 
   dimension: getir_categories_uuid {

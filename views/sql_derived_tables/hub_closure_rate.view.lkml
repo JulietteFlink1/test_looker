@@ -80,8 +80,8 @@ final as (
 missed_orders as (
         select date
          , warehouse
-         , sum(missed_orders) as total_missed_orders
-        from `flink-data-prod.order_forecast.historical_missed_orders`
+         , sum(missed_orders_forced_closure) as total_missed_orders
+        from `flink-data-prod.missed_orders.historical_missed_orders`
         group by 1, 2
 ),
 

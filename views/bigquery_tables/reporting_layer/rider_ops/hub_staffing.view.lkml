@@ -219,7 +219,7 @@ view: hub_staffing {
     label:"UTR"
     type: number
     description: "Average Employees UTR"
-    sql:${sum_orders} / ${sum_worked_hours} ;;
+    sql:${sum_orders}/ NULLIF(${sum_worked_hours}, 0) ;;
     value_format_name: decimal_2
   }
 
