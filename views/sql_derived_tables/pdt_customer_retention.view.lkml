@@ -108,6 +108,13 @@ view: pdt_customer_retention {
     sql: ${fulfillment_time_minutes} ;;
   }
 
+  dimension: fulfillment_time_minutes_tier_10 {
+    type: tier
+    style: relational
+    tiers: [0,10,20,30,45,60]
+    sql: ${fulfillment_time_minutes} ;;
+  }
+
   dimension: delta_fulfillment_pdt_tier {
     type: tier
     style: relational
