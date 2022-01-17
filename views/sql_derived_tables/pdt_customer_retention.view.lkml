@@ -4,23 +4,17 @@ view: pdt_customer_retention {
     select customer_email
         , country_iso
         , order_timestamp
-        , date(order_timestamp) as  order_date
+        , date(order_timestamp) as  first_order_date
         , LEAD(date(order_timestamp),1) OVER (partition by customer_email, country_iso order by order_timestamp) as next_order_date
         , delivery_pdt_minutes
-        , fulfillment_time_minutes
+        , round(fulfillment_time_minutes,0) as fulfillment_time_minutes
+        , is_first_order
+        , customer_order_rank
     from `flink-data-prod.curated.orders`
     where delivery_pdt_minutes is not null and is_successful_order is true
 )
-     select p.customer_email
-        , p.country_iso
-        , date(first_order_timestamp) as first_order_date
-        , p.order_date
-        , p.next_order_date
-        , p.delivery_pdt_minutes
-        , ROUND(p.fulfillment_time_minutes,0) as fulfillment_time_minutes
-     from `flink-data-prod.crm.crm_customer_feed` c
-     left join pdt_order p on c.customer_email = p.customer_email and c.country_iso = p.country_iso
-     where c.first_order_timestamp = p.order_timestamp -- considers only new customers in the cohort
+     select *
+     from  pdt_order
     ;;
   }
 
@@ -32,7 +26,7 @@ view: pdt_customer_retention {
   dimension: primary_key {
     primary_key: yes
     hidden: yes
-    sql: CONCAT(${TABLE}.customer_email, '_', ${TABLE}.country_iso) ;;
+    sql: CONCAT(${TABLE}.customer_email, '_', ${TABLE}.country_iso, ${TABLE}.customer_order_rank) ;;
   }
 
   dimension: customer_email {
@@ -55,6 +49,11 @@ view: pdt_customer_retention {
     type: date
     datatype: date
     sql: ${TABLE}.next_order_date ;;
+  }
+
+  dimension: order_rank {
+    type: number
+    sql: ${TABLE}.customer_order_rank ;;
   }
 
   dimension: delivery_pdt_minutes {
@@ -120,7 +119,6 @@ view: pdt_customer_retention {
     fields: [
       customer_email,
       country_iso,
-      first_order_date,
       next_order_date,
       delivery_pdt_minutes,
       fulfillment_time_minutes,

@@ -218,6 +218,38 @@ view: hub_pl_monthly {
     sql: ${TABLE}.hub_pl_monthly_uuid ;;
   }
 
+  dimension: amt_hub_staff_compensation {
+    hidden: yes
+    sql: ${amt_hubmanager_salaries} +
+       ${amt_external_operations_salaries} +
+       ${amt_internal_operations_salaries} +
+       ${amt_citymanager_salaries} +
+       ${amt_shiftlead_salaries}
+       ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  dimension: amt_rider_wages {
+    hidden: yes
+    sql:
+       ${amt_external_rider_salalries} +
+       ${amt_external_operations_salaries}
+
+       ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  dimension: amt_operational_hub_cost {
+    hidden: yes
+    sql:
+       ${amt_rent} +
+       ${amt_ebikes} +
+       ${amt_packaging} +
+       ${amt_other_hub_recurring} +
+       ${amt_rider_equipment}      ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
   dimension_group: order_month {
     type: time
     timeframes: [
@@ -235,22 +267,19 @@ view: hub_pl_monthly {
 
 ########### Measures
 
-  measure: sum_amt_citymanager_salaries {
-    type: sum
-    group_label: "* Loss *"
-    sql: ${amt_citymanager_salaries};;
-    value_format_name: euro_accounting_2_precision
-  }
+
 
   measure: sum_amt_delivery_fee_gross {
     type: sum
     group_label: "* Profit *"
+    label: "Delivery Fees Gross"
     sql: ${amt_delivery_fee_gross};;
     value_format_name: euro_accounting_2_precision
   }
 
   measure: sum_amt_gmv_gross {
     type: sum
+    label: "GMV Gross"
     group_label: "* Profit *"
     sql: ${amt_gmv_gross};;
     value_format_name: euro_accounting_2_precision
@@ -258,6 +287,7 @@ view: hub_pl_monthly {
 
   measure: sum_amt_delivery_fee_net {
     type: sum
+    label: "Delivery Fees Net"
     group_label: "* Loss *"
     sql: ${amt_delivery_fee_net};;
     value_format_name: euro_accounting_2_precision
@@ -265,50 +295,107 @@ view: hub_pl_monthly {
 
   measure: sum_amt_ebikes {
     type: sum
+    label: "E-Bikes"
     group_label: "* Loss *"
     sql: ${amt_ebikes};;
     value_format_name: euro_accounting_2_precision
   }
 
+
+######### Hub Staff Compensation
+
   measure: sum_amt_hubmanager_salaries {
     type: sum
-    group_label: "* Loss *"
+    group_label: "* Hub Staff Compensation *"
+    label: "Hub Managers Salaries"
     sql: ${amt_hubmanager_salaries};;
     value_format_name: euro_accounting_2_precision
   }
 
   measure: sum_amt_internal_operations_salaries {
     type: sum
-    group_label: "* Loss *"
+    group_label: "* Hub Staff Compensation *"
+    label: "Internal Operation Salaries"
     sql: ${amt_internal_operations_salaries};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_citymanager_salaries {
+    type: sum
+    group_label: "* Hub Staff Compensation *"
+    label: "City Manager Salaries"
+    sql: ${amt_citymanager_salaries};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_shiftlead_salaries {
+    type: sum
+    group_label: "* Hub Staff Compensation *"
+    label: "Shiftlead Salaries"
+    sql: ${amt_shiftlead_salaries};;
     value_format_name: euro_accounting_2_precision
   }
 
   measure: sum_amt_external_operations_salaries {
     type: sum
-    group_label: "* Loss *"
+    group_label: "* Hub Staff Compensation *"
+    label: "External Operation Salaries"
     sql: ${amt_external_operations_salaries};;
     value_format_name: euro_accounting_2_precision
   }
 
   measure: sum_amt_external_rider_salalries {
     type: sum
-    group_label: "* Loss *"
-    label: "Sum Amt External Rider Salaries"
+    group_label: "* Rider Wages *"
+    label: "External Rider Salaries"
     sql: ${amt_external_rider_salalries};;
     value_format_name: euro_accounting_2_precision
   }
 
   measure: sum_amt_internal_rider_salaries {
     type: sum
-    group_label: "* Loss *"
+    group_label: "* Rider Wages *"
+    label: "Internal Rider Salaries"
     sql: ${amt_internal_rider_salaries};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_hub_staff_compensation {
+    type: sum
+    group_label: "* Hub Staff Compensation *"
+    label: "Total Hub Staff Compensation"
+    sql: ${amt_hubmanager_salaries} +
+       ${amt_external_operations_salaries} +
+       ${amt_internal_operations_salaries} +
+       ${amt_citymanager_salaries} +
+       ${amt_shiftlead_salaries}
+       ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_rider_wages {
+    type: sum
+    group_label: "* Rider Wages *"
+    label: "Total Rider Wages"
+    sql: ${amt_external_rider_salalries} +
+       ${amt_external_operations_salaries}
+       ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_operational_hub_cost {
+    type: sum
+    group_label: "* Rider Wages *"
+    label: "Total Rider Wages"
+    sql: ${amt_operational_hub_cost}
+      ;;
     value_format_name: euro_accounting_2_precision
   }
 
   measure: sum_amt_waste_gross {
     type: sum
     group_label: "* Loss *"
+    label: "Waste Gross"
     sql: ${amt_waste_gross};;
     value_format_name: euro_accounting_2_precision
   }
@@ -316,13 +403,14 @@ view: hub_pl_monthly {
   measure: sum_amt_rent {
     type: sum
     group_label: "* Loss *"
-    label: "Sum Amt External Rider Salaries"
+    label: "Rent"
     sql: ${amt_rent};;
     value_format_name: euro_accounting_2_precision
   }
 
   measure: sum_amt_total_deposit {
     type: sum
+    label: "Deposit"
     group_label: "* Loss *"
     sql: ${amt_total_deposit};;
     value_format_name: euro_accounting_2_precision
@@ -330,6 +418,7 @@ view: hub_pl_monthly {
 
   measure: sum_amt_discount_gross {
     type: sum
+    label: "Discounts Gross"
     group_label: "* Loss *"
     sql: ${amt_discount_gross};;
     value_format_name: euro_accounting_2_precision
@@ -337,6 +426,7 @@ view: hub_pl_monthly {
 
   measure: sum_amt_supplier_funding {
     type: sum
+    label: "Supplier Fundings"
     group_label: "* Loss *"
     sql: ${amt_supplier_funding};;
     value_format_name: euro_accounting_2_precision
@@ -344,6 +434,7 @@ view: hub_pl_monthly {
 
   measure: sum_amt_logistics_costs {
     type: sum
+    label: "Logictic Costs"
     group_label: "* Loss *"
     sql: ${amt_logistics_costs};;
     value_format_name: euro_accounting_2_precision
@@ -351,8 +442,8 @@ view: hub_pl_monthly {
 
   measure: sum_amt_other_logistics_costs {
     type: sum
+    label: "Other Logictic Costs"
     group_label: "* Loss *"
-    label: "Sum Amt External Rider Salaries"
     sql: ${amt_other_logistics_costs};;
     value_format_name: euro_accounting_2_precision
   }
@@ -360,6 +451,7 @@ view: hub_pl_monthly {
   measure: sum_amt_other_hub_recurring {
     type: sum
     group_label: "* Loss *"
+    label: "Other Hub Recurring"
     sql: ${amt_other_hub_recurring};;
     value_format_name: euro_accounting_2_precision
   }
@@ -367,6 +459,7 @@ view: hub_pl_monthly {
   measure: sum_amt_refund_gross {
     type: sum
     group_label: "* Loss *"
+    label: "Refunds Gross"
     sql: ${amt_refund_gross};;
     value_format_name: euro_accounting_2_precision
   }
@@ -374,6 +467,7 @@ view: hub_pl_monthly {
   measure: sum_amt_refund_net {
     type: sum
     group_label: "* Loss *"
+    label: "Refunds Net"
     sql: ${amt_refund_net};;
     value_format_name: euro_accounting_2_precision
   }
@@ -381,6 +475,7 @@ view: hub_pl_monthly {
   measure: sum_amt_vat {
     type: sum
     group_label: "* Loss *"
+    label: "VAT"
     sql: ${amt_vat};;
     value_format_name: euro_accounting_2_precision
   }
@@ -401,6 +496,7 @@ view: hub_pl_monthly {
 
   measure: sum_amt_transaction_fees {
     type: sum
+    label: "Transaction Fees"
     group_label: "* Loss *"
     sql: ${amt_transaction_fees};;
     value_format_name: euro_accounting_2_precision
@@ -408,6 +504,7 @@ view: hub_pl_monthly {
 
   measure: sum_amt_total_net {
     type: sum
+    label: "Revenue Net"
     group_label: "* Profit *"
     sql: ${amt_total_net};;
     value_format_name: euro_accounting_2_precision
@@ -423,12 +520,14 @@ view: hub_pl_monthly {
   measure: sum_amt_gmv_groceries_gross {
     type: sum
     group_label: "* Profit *"
+    label: "GMV Groceries Gross"
     sql: ${amt_gmv_groceries_gross};;
     value_format_name: euro_accounting_2_precision
   }
 
   measure: sum_amt_gmv_groceries_net {
     type: sum
+    label: "GMV Groceries Net"
     group_label: "* Profit *"
     sql: ${amt_gmv_groceries_net};;
     value_format_name: euro_accounting_2_precision
@@ -436,9 +535,62 @@ view: hub_pl_monthly {
 
   measure: sum_amt_gmv_after_refunds_gross {
     type: sum
+    label: "GMV after Refunds Gross"
     group_label: "* Profit *"
     sql: ${amt_gmv_after_refunds_gross};;
     value_format_name: euro_accounting_2_precision
+  }
+
+
+
+  ############## Relative measures
+
+  measure: share_gmv_groceries_gross_over_gmv_gross {
+    type: average
+    group_label: "* Relative Profit *"
+    label: "% GMV Groceries Gross / GMV Gross"
+    sql: ${amt_gmv_groceries_gross}/${amt_gmv_gross};;
+    value_format_name: percent_1
+  }
+
+  measure: share_gmv_delivery_fees_gross_over_gmv_gross {
+    type: average
+    group_label: "* Relative Profit *"
+    label: "% GMV Delivery Fees Gross / GMV Gross"
+    sql: ${amt_delivery_fee_gross}/${amt_gmv_gross};;
+    value_format_name: percent_1
+  }
+
+  measure: share_gmv_refunds_gross_over_gmv_gross {
+    type: average
+    group_label: "* Relative Loss *"
+    label: "% GMV Refunds Gross / GMV Gross"
+    sql: ${amt_refund_gross}/${amt_gmv_gross};;
+    value_format_name: percent_1
+  }
+
+  measure: share_vat_over_total_net {
+    type: average
+    group_label: "* Relative Loss *"
+    label: "% VAT / Revenue Net"
+    sql: ${amt_vat}/${amt_total_net};;
+    value_format_name: percent_1
+  }
+
+  measure: share_hub_staff_compensation_over_total_net {
+    type: average
+    group_label: "* Hub Staff Compensation *"
+    label: "% Total Hub Staff Compensation / Revenue Net"
+    sql: ${amt_hub_staff_compensation}/${amt_total_net};;
+    value_format_name: percent_1
+  }
+
+  measure: share_rider_wages_over_total_net {
+    type: average
+    group_label: "* Rider Wages *"
+    label: "% Rider Wages / Revenue Net"
+    sql: ${amt_rider_wages}/${amt_total_net};;
+    value_format_name: percent_1
   }
 
 
