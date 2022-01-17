@@ -9,12 +9,12 @@ view: pdt_customer_retention {
         , delivery_pdt_minutes
         , round(fulfillment_time_minutes,0) as fulfillment_time_minutes
         , is_first_order
+        , customer_order_rank
     from `flink-data-prod.curated.orders`
     where delivery_pdt_minutes is not null and is_successful_order is true
 )
      select *
      from  pdt_order
-     where is_first_order is true
     ;;
   }
 
@@ -26,7 +26,7 @@ view: pdt_customer_retention {
   dimension: primary_key {
     primary_key: yes
     hidden: yes
-    sql: CONCAT(${TABLE}.customer_email, '_', ${TABLE}.country_iso) ;;
+    sql: CONCAT(${TABLE}.customer_email, '_', ${TABLE}.country_iso, ${TABLE}.customer_order_rank) ;;
   }
 
   dimension: customer_email {
@@ -49,6 +49,11 @@ view: pdt_customer_retention {
     type: date
     datatype: date
     sql: ${TABLE}.next_order_date ;;
+  }
+
+  dimension: order_rank {
+    type: number
+    sql: ${TABLE}.customer_order_rank ;;
   }
 
   dimension: delivery_pdt_minutes {
