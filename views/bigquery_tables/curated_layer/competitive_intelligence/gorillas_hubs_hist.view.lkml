@@ -70,16 +70,19 @@ view: gorillas_hubs_hist {
 
   dimension: minimum_basket_free_delivery {
     type: number
+    value_format: "0.00€"
     sql: ${TABLE}.minimum_basket_free_delivery ;;
   }
 
   dimension: minimum_order_fee {
     type: number
+    value_format: "0.00€"
     sql: ${TABLE}.minimum_order_fee ;;
   }
 
   dimension: minimum_order_value {
     type: number
+    value_format: "0.00€"
     sql: ${TABLE}.minimum_order_value ;;
   }
 
