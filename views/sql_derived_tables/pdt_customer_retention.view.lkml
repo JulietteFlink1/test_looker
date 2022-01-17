@@ -86,6 +86,27 @@ view: pdt_customer_retention {
     type: number
     sql: case when ${has_reordered_within_7_days} then 1 else 0 end;;
   }
+
+  dimension: fulfillment_time_minutes_tier {
+    type: tier
+    style: relational
+    tiers: [0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,45,60]
+    sql: ${fulfillment_time_minutes} ;;
+  }
+
+  dimension: delta_fulfillment_pdt_tier {
+    type: tier
+    style: relational
+    tiers: [-100,-20,-18,-16,-14,-12,-10,-8,-6,-4,-2,0,2,4,6,8,10,12,14,16,18,20,100]
+    sql: ${delta_fulfillment_pdt} ;;
+  }
+
+  dimension: order_rank_tier {
+    type: tier
+    style: relational
+    tiers: [1,2,3,4,5,6,7,8,9,10]
+    sql: ${order_rank} ;;
+  }
   ################## Measures ####################
 
 
