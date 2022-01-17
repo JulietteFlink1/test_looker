@@ -7,7 +7,7 @@ view: pdt_customer_retention {
         , date(order_timestamp) as  first_order_date
         , LEAD(date(order_timestamp),1) OVER (partition by customer_email, country_iso order by order_timestamp) as next_order_date
         , delivery_pdt_minutes
-        , fulfillment_time_minutes
+        , round(fulfillment_time_minutes,0) as fulfillment_time_minutes
         , is_first_order
     from `flink-data-prod.curated.orders`
     where delivery_pdt_minutes is not null and is_successful_order is true
