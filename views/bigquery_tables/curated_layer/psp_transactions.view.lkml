@@ -252,6 +252,14 @@ view: psp_transactions {
     filters: [record_type: "Authorised"]
   }
 
+  measure: cnt_refund_transactions {
+    label: "# Refunded"
+    description: "# Transaction with Record Type = Refunded or RefundedExternally"
+    type: count_distinct
+    sql: ${psp_transaction_uuid} ;;
+    filters: [record_type: "Refunded,RefundedExternally"]
+  }
+
   measure: cnt_settled_transactions {
     label: "# Settled"
     type: count_distinct
