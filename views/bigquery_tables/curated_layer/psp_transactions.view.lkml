@@ -272,4 +272,25 @@ view: psp_transactions {
     type: count
     drill_fields: [user_name]
   }
+
+  dimension: captured_refunded_pc {
+    label: "Refunded Transactions Amount"
+    sql: case when record_type in ("Refunded","RefundedExternally") then ${captured_pc} end ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
+
+  dimension: authorised_authorised_pc {
+    label:  "Authorised Transactions Amount"
+    sql: case when record_type in ("Authorised") then ${authorised_pc} end ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
+
+
+ measure: diff_authorised_refunded {
+ type: sum
+  sql: ${authorised_authorised_pc} - ${captured_refunded_pc}  ;;
+}
+
 }

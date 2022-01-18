@@ -1,6 +1,6 @@
 view: vat_order {
   derived_table: {
-    sql:select * from `flink-data-dev.reporting.vat_order`
+    sql:select * from `flink-data-prod.reporting.vat_order`
     ;;
   }
 
@@ -52,10 +52,7 @@ view: vat_order {
     sql: ${TABLE}.is_free_delivery_discount ;;
   }
 
-  dimension: is_successful_order {
-    type: yesno
-    sql: ${TABLE}.is_successful_order ;;
-  }
+
 
   dimension: discount_free_delivery_gross {
     type: number
