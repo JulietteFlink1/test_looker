@@ -1,5 +1,5 @@
 view: products_hub_assignment_v2 {
-  sql_table_name: `flink-data-prod.curated.products_hub_assignment_v2`
+  sql_table_name: `flink-data-dev.curated.products_hub_assignment_v2`
     ;;
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -117,19 +117,23 @@ view: products_hub_assignment_v2 {
     sql: ${TABLE}.replenishment_substitute_group ;;
   }
 
-
-  # =========  hidden   =========
   dimension: ct_is_published_globally {
+    label: "Is Published (CT)"
     type: yesno
     sql: ${TABLE}.ct_is_published_globally ;;
-    hidden: yes
+    hidden: no
   }
 
   dimension: ct_is_published_per_hub {
+    label: "Is SKU assigned to Hub (CT)"
     type: yesno
     sql: ${TABLE}.ct_is_published_per_hub ;;
-    hidden: yes
+    hidden: no
   }
+
+
+  # =========  hidden   =========
+
 
 
   # =========  IDs   =========
@@ -145,6 +149,12 @@ view: products_hub_assignment_v2 {
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  measure: cnt_unique_skus {
+    label: "# unique SKUs"
+    type: count_distinct
+    sql: ${sku} ;;
+  }
 
 
 }
