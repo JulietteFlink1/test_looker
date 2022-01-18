@@ -52,6 +52,11 @@ view: vat_order {
     sql: ${TABLE}.is_free_delivery_discount ;;
   }
 
+  dimension: is_successful_order {
+    type: yesno
+    sql: ${TABLE}.is_successful_order ;;
+  }
+
   dimension: discount_free_delivery_gross {
     type: number
     hidden: yes
