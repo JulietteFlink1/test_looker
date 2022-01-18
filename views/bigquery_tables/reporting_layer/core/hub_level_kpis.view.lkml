@@ -747,7 +747,7 @@ view: hub_level_kpis {
   measure: rider_utr {
     group_label: ">> UTR KPIs"
     label: "AVG Rider UTR"
-    hidden: yes
+    hidden: no
     type: number
     sql: ${sum_number_of_orders} / NULLIF(${rider_hours}, 0);;
     value_format_name: decimal_2
@@ -757,7 +757,7 @@ view: hub_level_kpis {
     group_label: ">> UTR KPIs"
     label: "AVG Picker UTR"
     type: number
-    hidden: yes
+    hidden: no
     sql: ${sum_number_of_orders} / NULLIF(${picker_hours}, 0);;
     value_format_name: decimal_2
 
