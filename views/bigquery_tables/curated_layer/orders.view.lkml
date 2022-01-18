@@ -431,7 +431,7 @@ view: orders {
     description: "The internally predicted time in minutes for the order to arrive at the customer"
     group_label: "* Operations / Logistics *"
     type: number
-    sql: ${TABLE}.estimated_delivery_time_minutes;;
+    sql: ${TABLE}.targeted_delivery_time_minutes;;
   }
 
   dimension: estimated_queuing_time_for_picker_minutes {
