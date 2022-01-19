@@ -23,9 +23,7 @@ view: inventory_daily {
       raw,
       date,
       week,
-      month,
-      quarter,
-      year
+      month
     ]
     convert_tz: yes
     datatype: date
