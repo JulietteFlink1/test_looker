@@ -4,6 +4,7 @@ view: psp_transactions {
 
   dimension: authorised_pc {
     type: number
+    hidden: yes
     sql: ${TABLE}.authorised_pc ;;
   }
 
@@ -54,11 +55,13 @@ view: psp_transactions {
 
   dimension: commission_sc {
     type: number
+    hidden: yes
     sql: ${TABLE}.commission_sc ;;
   }
 
   dimension: interchange_sc {
     type: number
+    hidden: yes
     sql: ${TABLE}.interchange_sc ;;
   }
 
@@ -74,6 +77,7 @@ view: psp_transactions {
 
   dimension: markup_sc {
     type: number
+    hidden: yes
     sql: ${TABLE}.markup_sc ;;
   }
 
@@ -94,6 +98,7 @@ view: psp_transactions {
 
   dimension: payable_sc {
     type: number
+    hidden: yes
     sql: ${TABLE}.payable_sc ;;
   }
 
@@ -122,6 +127,7 @@ view: psp_transactions {
 
   dimension: processing_fee_fc {
     type: number
+    hidden: yes
     sql: ${TABLE}.processing_fee_fc ;;
   }
 
@@ -132,6 +138,7 @@ view: psp_transactions {
 
   dimension: received_pc {
     type: number
+    hidden: yes
     sql: ${TABLE}.received_pc ;;
   }
 
@@ -142,6 +149,7 @@ view: psp_transactions {
 
   dimension: scheme_fees_sc {
     type: number
+    hidden: yes
     sql: ${TABLE}.scheme_fees_sc ;;
   }
 
