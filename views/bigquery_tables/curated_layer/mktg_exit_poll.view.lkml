@@ -39,6 +39,7 @@ view: mktg_exit_poll {
   dimension: poll_uuid {
     type: string
     primary_key: yes
+    hidden: yes
     sql: ${TABLE}.poll_uuid ;;
   }
 
