@@ -305,6 +305,8 @@ view: hub_pl_monthly {
 
 ######### Hub Staff Compensation
 
+
+
   measure: sum_amt_hubmanager_salaries {
     type: sum
     group_label: "* Hub Staff Compensation *"
@@ -345,6 +347,22 @@ view: hub_pl_monthly {
     value_format_name: euro_accounting_2_precision
   }
 
+  measure: share_hub_staff_compensation_over_total_net {
+    type: average
+    group_label: "* Hub Staff Compensation *"
+    label: "% Total Hub Staff Compensation / Revenue Net"
+    sql: ${amt_hub_staff_compensation}/${amt_total_net};;
+    value_format_name: percent_1
+  }
+
+
+
+
+
+################ Rider Wages
+
+
+
   measure: sum_amt_external_rider_salalries {
     type: sum
     group_label: "* Rider Wages *"
@@ -371,9 +389,23 @@ view: hub_pl_monthly {
     value_format_name: euro_accounting_2_precision
   }
 
+  measure: share_rider_wages_over_total_net {
+    type: average
+    group_label: "* Rider Wages *"
+    label: "% Rider Wages / Revenue Net"
+    sql: ${amt_rider_wages}/${amt_total_net};;
+    value_format_name: percent_1
+  }
+
+
+
+
+
 
 
   ################# Waste
+
+
 
 
   measure: sum_amt_waste_gross {
@@ -417,13 +449,6 @@ view: hub_pl_monthly {
     value_format_name: euro_accounting_2_precision
   }
 
-  measure: sum_amt_supplier_funding {
-    type: sum
-    group_label: "*.Revenue Supplier Funding *"
-    label: "Supplier Fundings"
-    sql: ${amt_supplier_funding};;
-    value_format_name: euro_accounting_2_precision
-  }
 
 
 
@@ -459,6 +484,13 @@ view: hub_pl_monthly {
     value_format_name: euro_accounting_2_precision
   }
 
+  measure: share_total_logistics_costs_over_total_net {
+    type: average
+    group_label: "* Logistics *"
+    label: "% Total Logistics Costs / Revenue Net"
+    sql: ${amt_total_logistics_cost}/${amt_total_net};;
+    value_format_name: percent_1
+  }
 
 
 
@@ -521,7 +553,10 @@ view: hub_pl_monthly {
 
 
 
+
   ################# GMV : Groceries/Discounts/Delivery Fees
+
+
 
 
   measure: sum_amt_refund_gross {
@@ -540,14 +575,14 @@ view: hub_pl_monthly {
     value_format_name: euro_accounting_2_precision
   }
 
+
   measure: sum_amt_vat {
     type: sum
-    group_label: "* VAT *"
+    group_label: "* GMV *"
     label: "VAT"
     sql: ${amt_vat};;
     value_format_name: euro_accounting_2_precision
   }
-
 
   measure: sum_amt_gmv_groceries_gross {
     type: sum
@@ -580,69 +615,6 @@ view: hub_pl_monthly {
     value_format_name: euro_accounting_2_precision
   }
 
-  ############### Revenue
-
-
-
-  measure: sum_amt_revenue_net {
-    type: sum
-    group_label: "* Revenue *"
-    sql: ${amt_revenue_net};;
-    value_format_name: euro_accounting_2_precision
-  }
-
-  measure: sum_amt_revenue_gross {
-    type: sum
-    group_label: "* Revenue *"
-    sql: ${amt_revenue_gross};;
-    value_format_name: euro_accounting_2_precision
-  }
-
-  measure: sum_amt_total_net {
-    type: sum
-    label: "Revenue Net"
-    group_label: "* Revenue *"
-    sql: ${amt_total_net};;
-    value_format_name: euro_accounting_2_precision
-  }
-
-
-
-  ################ Transaction Fees and Refunds
-
-
-
-
-
-  measure: sum_amt_transaction_fees {
-    type: sum
-    label: "Transaction Fees"
-    group_label: "* Transaction Fees *"
-    sql: ${amt_transaction_fees};;
-    value_format_name: euro_accounting_2_precision
-  }
-
-  measure: share_transaction_fees_over_total_net {
-    type: average
-    group_label: "* Transaction Fees *"
-    label: "% Transaction Fees / Revenue Net"
-    sql: ${amt_waste_gross}/${amt_total_net};;
-    value_format_name: percent_1
-  }
-
-
-
-
-
-
-  ############## Relative measures
-
-
-
-
-
-
-
   measure: share_gmv_groceries_gross_over_gmv_gross {
     type: average
     group_label: "* GMV *"
@@ -669,42 +641,84 @@ view: hub_pl_monthly {
 
   measure: share_vat_over_total_net {
     type: average
-    group_label: "* VAT *"
+    group_label: "* GMV *"
     label: "% VAT / Revenue Net"
     sql: ${amt_vat}/${amt_total_net};;
     value_format_name: percent_1
   }
 
-  measure: share_hub_staff_compensation_over_total_net {
-    type: average
-    group_label: "* Hub Staff Compensation *"
-    label: "% Total Hub Staff Compensation / Revenue Net"
-    sql: ${amt_hub_staff_compensation}/${amt_total_net};;
-    value_format_name: percent_1
+
+
+
+
+  ############### Revenue
+
+
+
+
+
+  measure: sum_amt_revenue_net {
+    type: sum
+    group_label: "* Revenue *"
+    sql: ${amt_revenue_net};;
+    value_format_name: euro_accounting_2_precision
   }
 
-  measure: share_rider_wages_over_total_net {
-    type: average
-    group_label: "* Rider Wages *"
-    label: "% Rider Wages / Revenue Net"
-    sql: ${amt_rider_wages}/${amt_total_net};;
-    value_format_name: percent_1
+  measure: sum_amt_revenue_gross {
+    type: sum
+    group_label: "* Revenue *"
+    sql: ${amt_revenue_gross};;
+    value_format_name: euro_accounting_2_precision
   }
 
-  measure: share_total_logistics_costs_over_total_net {
-    type: average
-    group_label: "* Logistics *"
-    label: "% Total Logistics Costs / Revenue Net"
-    sql: ${amt_rider_wages}/${amt_total_net};;
-    value_format_name: percent_1
+  measure: sum_amt_total_net {
+    type: sum
+    label: "Revenue Net"
+    group_label: "* Revenue *"
+    sql: ${amt_total_net};;
+    value_format_name: euro_accounting_2_precision
   }
 
 
   measure: share_suppliers_funding_over_total_net {
     type: average
-    group_label: "* Revenue Supplier Funding *"
+    group_label: "* Revenue *"
     label: "% Supplier Funding / Revenue Net"
     sql: ${amt_supplier_funding}/${amt_total_net};;
+    value_format_name: percent_1
+  }
+
+  measure: sum_amt_supplier_funding {
+    type: sum
+    group_label: "*.Revenue *"
+    label: "Supplier Fundings"
+    sql: ${amt_supplier_funding};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+
+
+
+
+  ################ Transaction Fees
+
+
+
+
+
+  measure: sum_amt_transaction_fees {
+    type: sum
+    label: "Transaction Fees"
+    group_label: "* Transaction Fees *"
+    sql: ${amt_transaction_fees};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: share_transaction_fees_over_total_net {
+    type: average
+    group_label: "* Transaction Fees *"
+    label: "% Transaction Fees / Revenue Net"
+    sql: ${amt_waste_gross}/${amt_total_net};;
     value_format_name: percent_1
   }
 
