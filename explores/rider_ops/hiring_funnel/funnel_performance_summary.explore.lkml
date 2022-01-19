@@ -1,7 +1,7 @@
 include: "/views/bigquery_tables/reporting_layer/rider_ops/hiring_funnel/*.view"
 
 explore: funnel_performance_summary {
-  hidden: no
+  hidden: yes
   label: "Hiring Funnel Performance Summary"
   view_label: "Hiring Funnel Performance Summary"
   description: "Rider/Picker leads, hires, marketing spend, days to hire, etc."
