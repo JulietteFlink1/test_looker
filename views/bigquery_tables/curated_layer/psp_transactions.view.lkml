@@ -262,6 +262,20 @@ view: psp_transactions {
     filters: [record_type: "Chargeback"]
   }
 
+  measure: cnt_cancelled_transactions {
+    label: "# Cancelled"
+    type: count_distinct
+    sql: ${psp_transaction_uuid} ;;
+    filters: [record_type: "Cancelled"]
+  }
+
+  measure: cnt_refused_transactions {
+    label: "# Refused"
+    type: count_distinct
+    sql: ${psp_transaction_uuid} ;;
+    filters: [record_type: "Refused"]
+  }
+
   measure: cnt_authorised_transactions {
     label: "# Authorised"
     type: count_distinct
