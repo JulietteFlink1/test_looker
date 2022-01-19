@@ -4,6 +4,7 @@ view: psp_transactions {
 
   dimension: authorised_pc {
     type: number
+    hidden: yes
     sql: ${TABLE}.authorised_pc ;;
   }
 
@@ -49,21 +50,25 @@ view: psp_transactions {
 
   dimension: captured_pc {
     type: number
+    hidden:  yes
     sql: ${TABLE}.captured_pc ;;
   }
 
   dimension: commission_sc {
     type: number
+    hidden: yes
     sql: ${TABLE}.commission_sc ;;
   }
 
   dimension: interchange_sc {
     type: number
+    hidden: yes
     sql: ${TABLE}.interchange_sc ;;
   }
 
   dimension: main_amount {
     type: number
+    hidden: yes
     sql: ${TABLE}.main_amount ;;
   }
 
@@ -74,6 +79,7 @@ view: psp_transactions {
 
   dimension: markup_sc {
     type: number
+    hidden: yes
     sql: ${TABLE}.markup_sc ;;
   }
 
@@ -94,6 +100,7 @@ view: psp_transactions {
 
   dimension: payable_sc {
     type: number
+    hidden: yes
     sql: ${TABLE}.payable_sc ;;
   }
 
@@ -116,12 +123,14 @@ view: psp_transactions {
     type: string
     sql:case when ${payment_method} like 'mc%' then 'mc'
              when ${payment_method} like 'visa%' then 'visa'
+             when ${payment_method} like 'ideal%' then 'ideal'
         else ${payment_method}
         end ;;
   }
 
   dimension: processing_fee_fc {
     type: number
+    hidden: yes
     sql: ${TABLE}.processing_fee_fc ;;
   }
 
@@ -132,6 +141,7 @@ view: psp_transactions {
 
   dimension: received_pc {
     type: number
+    hidden: yes
     sql: ${TABLE}.received_pc ;;
   }
 
@@ -142,6 +152,7 @@ view: psp_transactions {
 
   dimension: scheme_fees_sc {
     type: number
+    hidden: yes
     sql: ${TABLE}.scheme_fees_sc ;;
   }
 
@@ -195,6 +206,12 @@ view: psp_transactions {
     value_format_name: euro_accounting_2_precision
   }
 
+  measure: sum_markup_sc {
+    type: sum
+    sql: ${markup_sc} ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
   measure: sum_processing_fee_fc {
     type: sum
     sql: ${processing_fee_fc} ;;
@@ -245,11 +262,33 @@ view: psp_transactions {
     filters: [record_type: "Chargeback"]
   }
 
+  measure: cnt_cancelled_transactions {
+    label: "# Cancelled"
+    type: count_distinct
+    sql: ${psp_transaction_uuid} ;;
+    filters: [record_type: "Cancelled"]
+  }
+
+  measure: cnt_refused_transactions {
+    label: "# Refused"
+    type: count_distinct
+    sql: ${psp_transaction_uuid} ;;
+    filters: [record_type: "Refused"]
+  }
+
   measure: cnt_authorised_transactions {
     label: "# Authorised"
     type: count_distinct
     sql: ${psp_transaction_uuid} ;;
     filters: [record_type: "Authorised"]
+  }
+
+  measure: cnt_refund_transactions {
+    label: "# Refunded"
+    description: "# Transaction with Record Type = Refunded or RefundedExternally"
+    type: count_distinct
+    sql: ${psp_transaction_uuid} ;;
+    filters: [record_type: "Refunded,RefundedExternally"]
   }
 
   measure: cnt_settled_transactions {
@@ -259,9 +298,87 @@ view: psp_transactions {
     filters: [record_type: "Settled"]
   }
 
+  measure: sum_empty_order_uuid_authorised {
+    label: "Sum Empty Orders"
+    type: sum
+    sql: CASE WHEN ${order_uuid} IS NULL THEN 1 ELSE 0 END;;
+    filters: [record_type: "Authorised"]
+  }
+
+  measure: sum_empty_order_uuid_refunded {
+    label: "Sum Empty Orders Refunded"
+    type: sum
+    sql: CASE WHEN ${order_uuid} IS NULL THEN 1 ELSE 0 END;;
+    filters: [record_type: "Refunded, RefundedExternally"]
+  }
+
+  measure: sum_empty_order_uuid_chargeback {
+    label: "Sum Empty Orders Chargeback"
+    type: sum
+    sql: CASE WHEN ${order_uuid} IS NULL THEN 1 ELSE 0 END;;
+    filters: [record_type: "Chargeback"]
+  }
+
+  measure: percentage_trx_without_orders_authorised {
+    label: "% Missing Orders Authorised"
+    type: number
+    sql: ${sum_empty_order_uuid_authorised}/${cnt_authorised_transactions};;
+    value_format_name: percent_3
+  }
+
+  measure: percentage_trx_without_orders_refunded {
+    label: "% Missing Orders Refunded"
+    type: number
+    sql: ${sum_empty_order_uuid_refunded}/${cnt_refund_transactions};;
+    value_format_name: percent_3
+  }
+
+  measure: percentage_trx_without_orders_chargeback {
+    label: "% Missing Orders Chargeback"
+    type: number
+    sql: ${sum_empty_order_uuid_chargeback}/${cnt_chargebacks_transactions};;
+    value_format_name: percent_2
+  }
+
+  measure: percentage_transactions_refunded {
+    label: "% Orders Refunded"
+    type: number
+    sql: ${cnt_refund_transactions}/${cnt_authorised_transactions};;
+    value_format_name: percent_2
+  }
+
+  measure: percentage_transactions_chargeback {
+    label: "% Orders Chargeback"
+    type: number
+    sql: ${cnt_chargebacks_transactions}/${cnt_authorised_transactions};;
+    value_format_name: percent_2
+  }
 
   measure: count {
     type: count
     drill_fields: [user_name]
   }
+
+  dimension: captured_refunded_pc {
+    label: "Refunded Transactions Amount"
+    hidden: yes
+    sql: case when record_type in ("Refunded","RefundedExternally") then ${captured_pc} end ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
+
+  dimension: authorised_authorised_pc {
+    label:  "Authorised Transactions Amount"
+    hidden: yes
+    sql: case when record_type in ("Authorised") then ${authorised_pc} end ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
+
+
+ measure: diff_authorised_refunded {
+ type: sum
+  sql: ${authorised_authorised_pc} - ${captured_refunded_pc}  ;;
+}
+
 }

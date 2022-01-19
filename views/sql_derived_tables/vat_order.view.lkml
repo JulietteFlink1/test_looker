@@ -52,6 +52,8 @@ view: vat_order {
     sql: ${TABLE}.is_free_delivery_discount ;;
   }
 
+
+
   dimension: discount_free_delivery_gross {
     type: number
     hidden: yes

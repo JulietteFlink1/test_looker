@@ -118,7 +118,7 @@ view: pdt_customer_retention {
   dimension: delta_fulfillment_pdt_tier {
     type: tier
     style: relational
-    tiers: [-100,-20,-18,-16,-14,-12,-10,-8,-6,-4,-2,0,2,4,6,8,10,12,14,16,18,20,100]
+    tiers: [-100,-50,-45,-40,-35,-30,-25,-20,-15,-10,-5,0,5,10,15,20,25,30,35,40,45,50,55,60,75,90,100]
     sql: ${delta_fulfillment_pdt} ;;
   }
 
