@@ -2,6 +2,14 @@ view: inventory_daily {
   sql_table_name: `flink-data-prod.reporting.inventory_daily`
     ;;
 
+  # defines all fields, that only work together with other views being joined
+  # .. coupled together in a set, so that they can easily be excluded
+  set: cross_referenced_metrics {
+    fields: [
+      number_of_total_skus_per_day_and_hub,
+      pct_products_booked_in_same_day
+    ]
+  }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Dimensions     ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -15,9 +23,7 @@ view: inventory_daily {
       raw,
       date,
       week,
-      month,
-      quarter,
-      year
+      month
     ]
     convert_tz: yes
     datatype: date
@@ -374,6 +380,46 @@ view: inventory_daily {
   }
 
   # ~~~~~~~~~~~~~    END: Inventory Change  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+  #   >>>>   https://goflink.atlassian.net/browse/DATA-1419
+  measure: number_of_inbounded_skus_per_day_and_hub  {
+
+    hidden: yes
+
+    type: count_distinct
+    sql: concat(${sku}, ${report_date}, ${hub_code}) ;;
+    filters: [number_of_total_inbound: ">0"]
+
+    value_format_name: decimal_0
+
+  }
+
+  measure: number_of_total_skus_per_day_and_hub  {
+
+    hidden: yes
+
+    type: count_distinct
+    sql: concat(${products_hub_assignment_v2.sku}, ${products_hub_assignment_v2.report_date}, ${products_hub_assignment_v2.hub_code}) ;;
+
+    value_format_name: decimal_0
+
+  }
+
+  measure: pct_products_booked_in_same_day {
+
+    label: "% of products booked in same day"
+    description: "Defined as No of products booked in / No of total products per day and hub"
+    group_label: "Inventory Management"
+
+    type: number
+    sql: ${number_of_inbounded_skus_per_day_and_hub} / nullif( ${number_of_total_skus_per_day_and_hub} ,0) ;;
+
+    value_format_name: percent_1
+  }
+
+  #   https://goflink.atlassian.net/browse/DATA-1419  <<<<
 
 
 
