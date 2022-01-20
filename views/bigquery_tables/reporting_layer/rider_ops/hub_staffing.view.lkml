@@ -148,7 +148,7 @@ view: hub_staffing {
   measure: sum_forecast_riders_needed{
     type: sum
     label:"# Forecasted Hours"
-    description: "Number of Needed Employees Based on Forecasted Order Demand"
+    description: "Number of Needed Employee Hours Based on Forecasted Order Demand"
     sql:${number_of_forecast_riders_needed};;
     value_format_name: decimal_1
   }
@@ -233,12 +233,44 @@ view: hub_staffing {
   }
 
 
-  measure: sum_employees_needed {
+  measure: sum_hours_needed {
     type: number
     label:"# Actual Needed Hours"
     description: "Number of needed Employees based on actual order demand"
     sql:ceiling(${sum_orders} / (2.5 / 2));;
-    value_format_name: decimal_0
+    value_format_name: decimal_1
   }
 
+
+  measure: expected_utr {
+    type: number
+    label:"# Projected Rider UTR"
+    description: "Forecasted Orders / Scheduled Rider Hours"
+    sql:${sum_predicted_orders} / ${sum_planned_hours}*2;;
+    value_format_name: decimal_1
+  }
+
+  measure: pct_over_stafing {
+    type: number
+    label:"% Over Staffing "
+    description: "When Forecasted Hours > Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
+    sql:case when ${sum_forecast_riders_needed} > ${sum_planned_hours}
+                  then (${sum_forecast_riders_needed} - ${sum_planned_hours} )  / ${sum_forecast_riders_needed}
+             else
+                  0
+        end          ;;
+    value_format_name: percent_0
+  }
+
+  measure: pct_under_stafing {
+    type: number
+    label:"% Under Staffing "
+    description: "When Forecasted Hours < Scheduled Hours: (Scheduled Hours - Forecasted Hours) / Forecasted Hours"
+    sql:case when ${sum_forecast_riders_needed} < ${sum_planned_hours}
+                  then (${sum_planned_hours} - ${sum_forecast_riders_needed})  / ${sum_forecast_riders_needed}
+             else
+                  0
+        end          ;;
+    value_format_name: percent_0
+  }
 }
