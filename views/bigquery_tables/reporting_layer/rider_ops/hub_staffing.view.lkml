@@ -192,7 +192,7 @@ view: hub_staffing {
   measure: pct_no_show_employees{
     label:"% No Show Hours"
     type: number
-    description: "Number of No Show Employees"
+    description: "# No Show Hours"
     sql:(${sum_planned_hours} - ${sum_worked_hours})/${sum_planned_hours} ;;
     value_format_name: percent_1
   }
@@ -221,6 +221,15 @@ view: hub_staffing {
     description: "Average Employees UTR"
     sql:${sum_orders}/ NULLIF(${sum_worked_hours}, 0) ;;
     value_format_name: decimal_2
+  }
+
+
+  measure: sum_no_show_hours{
+    label:"# No Show Hours"
+    type: number
+    description: "Sum of No Show Hours"
+    sql:(${sum_planned_hours} - ${sum_worked_hours});;
+    value_format_name: percent_1
   }
 
 
