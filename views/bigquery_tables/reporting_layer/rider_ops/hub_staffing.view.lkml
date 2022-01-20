@@ -273,4 +273,14 @@ view: hub_staffing {
         end          ;;
     value_format_name: percent_0
   }
+
+  measure: forecast_deviation {
+    type: number
+    label:"% Forecast Deviation "
+    description: "absolute (Forecasted Orders / Actual Orders)"
+    sql:abs(${sum_predicted_orders}/${sum_orders});;
+    value_format_name: percent_0
+  }
+
+
 }
