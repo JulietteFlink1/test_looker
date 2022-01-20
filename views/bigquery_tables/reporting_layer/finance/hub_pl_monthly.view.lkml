@@ -26,6 +26,42 @@ view: hub_pl_monthly {
     sql: ${TABLE}.amt_discount_gross ;;
   }
 
+  dimension: amt_discount_net {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_discount_net ;;
+  }
+
+  dimension: amt_discount_net_marketing_acquisition {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_discount_net_marketing_acquisition ;;
+  }
+
+  dimension: amt_discount_net_marketing_brand {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_discount_net_marketing_brand ;;
+  }
+
+  dimension: amt_discount_net_marketing_retention {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_discount_net_marketing_retention ;;
+  }
+
+  dimension: amt_discount_net_customer_service {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_discount_net_customer_service ;;
+  }
+
+  dimension: amt_discount_net_unknown_use_case {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_discount_net_unknown_use_case ;;
+  }
+
   dimension: amt_ebikes {
     type: number
     hidden: yes
@@ -176,6 +212,7 @@ view: hub_pl_monthly {
     sql: ${TABLE}.amt_total_net ;;
   }
 
+
   dimension: amt_total_gross {
     type: number
     hidden: yes
@@ -276,29 +313,7 @@ view: hub_pl_monthly {
 
 
 
-  measure: sum_amt_delivery_fee_gross {
-    type: sum
-    group_label: "* GMV *"
-    label: "Delivery Fees Gross"
-    sql: ${amt_delivery_fee_gross};;
-    value_format_name: euro_accounting_2_precision
-  }
 
-  measure: sum_amt_gmv_gross {
-    type: sum
-    label: "GMV Gross"
-    group_label: "* GMV *"
-    sql: ${amt_gmv_gross};;
-    value_format_name: euro_accounting_2_precision
-  }
-
-  measure: sum_amt_delivery_fee_net {
-    type: sum
-    label: "Delivery Fees Net"
-    group_label: "* GMV *"
-    sql: ${amt_delivery_fee_net};;
-    value_format_name: euro_accounting_2_precision
-  }
 
 
 
@@ -433,6 +448,11 @@ view: hub_pl_monthly {
     value_format_name: euro_accounting_2_precision
   }
 
+
+  ################# Discounts
+
+
+
   measure: sum_amt_discount_gross {
     type: sum
     label: "Discounts Gross"
@@ -441,13 +461,54 @@ view: hub_pl_monthly {
     value_format_name: euro_accounting_2_precision
   }
 
-  measure: sum_amt_packaging {
+  measure: sum_amt_discount_net {
     type: sum
-    label: "Discounts Gross"
-    group_label: "* GMV *"
-    sql: ${amt_discount_gross};;
+    label: "Discounts Net"
+    group_label: "* Discounts *"
+    sql: ${amt_discount_net};;
     value_format_name: euro_accounting_2_precision
   }
+
+  measure: sum_amt_discount_net_customer_service {
+    type: sum
+    label: "Discounts Customer Service Net"
+    group_label: "* Discounts *"
+    sql: ${amt_discount_net_customer_service};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_discount_net_marketing_acquisition {
+    type: sum
+    label: "Discounts Marketing Acquisition Net"
+    group_label: "* Discounts *"
+    sql: ${amt_discount_net_marketing_acquisition};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_discount_net_marketing_retention {
+    type: sum
+    label: "Discounts Marketing Retention Net"
+    group_label: "* Discounts *"
+    sql: ${amt_discount_net_marketing_retention};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_discount_net_marketing_brand{
+    type: sum
+    label: "Discounts Marketing Brand Net"
+    group_label: "* Discounts *"
+    sql: ${amt_discount_net_marketing_brand};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_aamt_discount_net_unknown_use_case{
+    type: sum
+    label: "Discounts Unknown Use Case Net"
+    group_label: "* Discounts *"
+    sql: ${amt_discount_net_unknown_use_case};;
+    value_format_name: euro_accounting_2_precision
+  }
+
 
 
 
@@ -500,6 +561,14 @@ view: hub_pl_monthly {
 
 
 
+  measure: sum_amt_total_operational_hub_costs {
+    type: sum
+    label: "Total Operational Hub Costs"
+    group_label: "* Operational Hub Costs *"
+    sql: ${amt_operational_hub_cost};;
+    value_format_name: euro_accounting_2_precision
+  }
+
 
 
   measure: sum_amt_other_hub_recurring {
@@ -513,7 +582,7 @@ view: hub_pl_monthly {
   measure: sum_amt_rider_equipment {
     type: sum
     group_label: "* Operational Hub Costs *"
-    label: "Other Hub Recurring"
+    label: "Rider Equipment"
     sql: ${amt_rider_equipment};;
     value_format_name: euro_accounting_2_precision
   }
@@ -550,6 +619,15 @@ view: hub_pl_monthly {
     sql: ${amt_rent};;
     value_format_name: euro_accounting_2_precision
   }
+
+  measure: sum_amt_packaging {
+    type: sum
+    label: "Discounts Gross"
+    group_label: "* GMV *"
+    sql: ${amt_packaging};;
+    value_format_name: euro_accounting_2_precision
+  }
+
 
 
 
@@ -648,6 +726,30 @@ view: hub_pl_monthly {
   }
 
 
+  measure: sum_amt_delivery_fee_gross {
+    type: sum
+    group_label: "* GMV *"
+    label: "Delivery Fees Gross"
+    sql: ${amt_delivery_fee_gross};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_gmv_gross {
+    type: sum
+    label: "GMV Gross"
+    group_label: "* GMV *"
+    sql: ${amt_gmv_gross};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_delivery_fee_net {
+    type: sum
+    label: "Delivery Fees Net"
+    group_label: "* GMV *"
+    sql: ${amt_delivery_fee_net};;
+    value_format_name: euro_accounting_2_precision
+  }
+
 
 
 
@@ -674,6 +776,7 @@ view: hub_pl_monthly {
   measure: sum_amt_total_net {
     type: sum
     label: "Revenue Net"
+    description: "Revenue Net = Items Price Net + Delivery Fee Net - Discount Amount Net - Refund Amount Net"
     group_label: "* Revenue *"
     sql: ${amt_total_net};;
     value_format_name: euro_accounting_2_precision
@@ -710,6 +813,7 @@ view: hub_pl_monthly {
     type: sum
     label: "Transaction Fees"
     group_label: "* Transaction Fees *"
+    description: "Sum of Processing Fees, Scheme Fee and Interchange Fee"
     sql: ${amt_transaction_fees};;
     value_format_name: euro_accounting_2_precision
   }
