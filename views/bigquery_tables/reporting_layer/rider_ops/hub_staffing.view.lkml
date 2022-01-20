@@ -229,7 +229,7 @@ view: hub_staffing {
     type: number
     description: "Sum of No Show Hours"
     sql:(${sum_planned_hours} - ${sum_worked_hours});;
-    value_format_name: percent_1
+    value_format_name: decimal_1
   }
 
 
