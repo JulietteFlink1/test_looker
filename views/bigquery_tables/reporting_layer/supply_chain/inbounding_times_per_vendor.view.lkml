@@ -120,7 +120,7 @@ view: inbounding_times_per_vendor {
 
   measure: avg_inbounding_time_hours  {
 
-    label: "AVG Inbounding Time (Hours)"
+    label: "AVG Inbounding Time per Supplier (Hours)"
     description: "The average time it took to inbound the SKUs of a vendor"
 
     sql: ${inbounding_time_hours} ;;
@@ -131,7 +131,7 @@ view: inbounding_times_per_vendor {
 
   measure: avg_number_of_unique_skus_inbounded {
 
-    label: "AVG Inbounded SKUs"
+    label: "AVG Inbounded SKUs per Supplier"
     description: "The average number of SKUs, that are inbounded per vendor"
 
     sql: ${number_of_unique_skus_inbounded} ;;
