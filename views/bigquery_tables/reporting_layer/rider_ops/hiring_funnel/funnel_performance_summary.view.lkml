@@ -97,6 +97,26 @@ view: funnel_performance_summary {
     sql: ${TABLE}.position ;;
   }
 
+  dimension: week_number {
+    hidden: no
+    type: number
+    sql: extract(week from date_TRUNC(${TABLE}.date, WEEK(MONDAY))) ;;
+  }
+
+
+  dimension: year_number {
+    hidden: no
+    type: number
+    sql: ${report_year};;
+  }
+
+
+  dimension: year_cw {
+    type: string
+    label: "Year_CW"
+    sql: concat (${year_number},'_',${week_number}) ;;
+  }
+
   dimension_group: updated {
     type: time
     group_label: "* Dates & Timestamps *"
@@ -114,7 +134,7 @@ view: funnel_performance_summary {
 
   dimension: channel_label{
     label: "Channel label"
-    group_item_label: "* Funnel Dimensions *"
+    group_label: "* Funnel Dimensions *"
     case: {
       when: {
         sql: ${channel} = '[utm_source]'
@@ -300,9 +320,10 @@ view: funnel_performance_summary {
     value_format_name:  percent_1
   }
 
-  measure: count {
-    hidden: yes
-    type: count
-    drill_fields: []
+  measure: CVR {
+    type: number
+    sql: ${cnt_hires} / NULLIF(${cnt_leads}, 0) ;;
+    description: "Pct. of Leads that Converted into Approved Applicants"
+    value_format_name: percent_0
   }
 }

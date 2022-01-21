@@ -305,22 +305,29 @@ view: psp_transactions {
     filters: [record_type: "Settled"]
   }
 
+  measure: sum_empty_order_uuid_settled {
+    label: "Total Empty Orders Settled"
+    type: sum
+    sql: CASE WHEN ${order_uuid} IS NULL THEN 1 ELSE 0 END;;
+    filters: [record_type: "Settled"]
+  }
+
   measure: sum_empty_order_uuid_authorised {
-    label: "Sum Empty Orders"
+    label: "Total Empty Orders Authorised"
     type: sum
     sql: CASE WHEN ${order_uuid} IS NULL THEN 1 ELSE 0 END;;
     filters: [record_type: "Authorised"]
   }
 
   measure: sum_empty_order_uuid_refunded {
-    label: "Sum Empty Orders Refunded"
+    label: "Total Empty Orders Refunded"
     type: sum
     sql: CASE WHEN ${order_uuid} IS NULL THEN 1 ELSE 0 END;;
     filters: [record_type: "Refunded, RefundedExternally"]
   }
 
   measure: sum_empty_order_uuid_chargeback {
-    label: "Sum Empty Orders Chargeback"
+    label: "Total Empty Orders Chargeback"
     type: sum
     sql: CASE WHEN ${order_uuid} IS NULL THEN 1 ELSE 0 END;;
     filters: [record_type: "Chargeback"]
@@ -330,6 +337,13 @@ view: psp_transactions {
     label: "% Missing Orders Authorised"
     type: number
     sql: ${sum_empty_order_uuid_authorised}/${cnt_authorised_transactions};;
+    value_format_name: percent_3
+  }
+
+  measure: percentage_trx_without_orders_settled {
+    label: "% Missing Orders Settled"
+    type: number
+    sql: ${sum_empty_order_uuid_settled}/${cnt_settled_transactions};;
     value_format_name: percent_3
   }
 
@@ -347,17 +361,31 @@ view: psp_transactions {
     value_format_name: percent_2
   }
 
-  measure: percentage_transactions_refunded {
-    label: "% Orders Refunded"
+  measure: percentage_transactions_refunded_auth {
+    label: "% Orders Refunded (Authorised)"
     type: number
     sql: ${cnt_refund_transactions}/${cnt_authorised_transactions};;
     value_format_name: percent_2
   }
 
-  measure: percentage_transactions_chargeback {
-    label: "% Orders Chargeback"
+  measure: percentage_transactions_refunded_set {
+    label: "% Orders Refunded (Settled)"
+    type: number
+    sql: ${cnt_refund_transactions}/${cnt_settled_transactions};;
+    value_format_name: percent_2
+  }
+
+  measure: percentage_transactions_chargeback_auth {
+    label: "% Orders Chargeback (Authorised)"
     type: number
     sql: ${cnt_chargebacks_transactions}/${cnt_authorised_transactions};;
+    value_format_name: percent_2
+  }
+
+  measure: percentage_transactions_chargeback_set {
+    label: "% Orders Chargeback (Settled)"
+    type: number
+    sql: ${cnt_chargebacks_transactions}/${cnt_settled_transactions};;
     value_format_name: percent_2
   }
 
