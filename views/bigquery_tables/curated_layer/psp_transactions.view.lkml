@@ -181,6 +181,13 @@ view: psp_transactions {
     filters: [record_type: "Chargeback"]
   }
 
+  measure: sum_main_amount_refunded {
+    type: sum
+    sql: ${main_amount} ;;
+    value_format_name: euro_accounting_2_precision
+    filters: [record_type: "Refunded, RefundedExternally"]
+  }
+
   measure: sum_main_amount_settled {
     type: sum
     sql: ${main_amount} ;;
@@ -330,7 +337,7 @@ view: psp_transactions {
     label: "% Missing Orders Refunded"
     type: number
     sql: ${sum_empty_order_uuid_refunded}/${cnt_refund_transactions};;
-    value_format_name: percent_3
+    value_format_name: percent_2
   }
 
   measure: percentage_trx_without_orders_chargeback {
