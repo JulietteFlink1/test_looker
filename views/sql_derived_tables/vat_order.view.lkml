@@ -160,6 +160,12 @@ view: vat_order {
     sql: ${TABLE}.vat_items_standard ;;
   }
 
+  dimension: amt_total_deposit {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_total_deposit ;;
+  }
+
   dimension: vat_items_special{
     hidden: yes
     type: number
@@ -834,6 +840,18 @@ view: vat_order {
     value_format: "#,##0.00€"
     type: sum
     sql: ${amt_rider_tip} ;;
+  }
+
+
+################# Rider Tip
+
+  measure: sum_amt_total_deposit {
+    group_label: "* Deposit *"
+    label: "Gross Deposit"
+    description: "Tax and Discount don't apply to deposit"
+    value_format: "#,##0.00€"
+    type: sum
+    sql: ${amt_total_deposit} ;;
   }
 
 
