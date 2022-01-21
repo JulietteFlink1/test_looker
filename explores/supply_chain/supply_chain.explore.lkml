@@ -18,7 +18,9 @@ explore: supply_chain {
   }
 
   join: inventory_daily {
+
     view_label: "02 Inventory Daily"
+
     type: left_outer
     relationship: one_to_one
     sql_on:
@@ -27,6 +29,20 @@ explore: supply_chain {
         ${inventory_daily.report_date} = ${products_hub_assignment_v2.report_date}
     ;;
   }
+
+  join: inbounding_times_per_vendor {
+
+    view_label: "03 Inbounding Times"
+
+    type: left_outer
+    relationship: one_to_one
+    sql_on:
+        ${inbounding_times_per_vendor.erp_vendor_id} = ${products_hub_assignment_v2.erp_vendor_id} and
+        ${inbounding_times_per_vendor.hub_code}      = ${products_hub_assignment_v2.hub_code}      and
+        ${inbounding_times_per_vendor.report_date}   = ${products_hub_assignment_v2.report_date}
+    ;;
+  }
+
 
 
 }
