@@ -401,7 +401,7 @@ view: inventory_daily {
     hidden: yes
 
     type: count_distinct
-    sql: concat(${products_hub_assignment_v2.sku}, ${products_hub_assignment_v2.report_date}, ${products_hub_assignment_v2.hub_code}) ;;
+    sql: concat(${products_hub_assignment.sku}, ${products_hub_assignment.report_date}, ${products_hub_assignment.hub_code}) ;;
 
     value_format_name: decimal_0
 
