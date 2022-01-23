@@ -1,7 +1,7 @@
 include: "/views/bigquery_tables/reporting_layer/rider_ops/hiring_funnel/*.view"
 
 explore: avg_proc_time {
-  hidden: no
+  hidden: yes
   label: "Funnel Metrics"
   view_label: "Funnel Metrics"
   description: "Average time in days to stage by applied date. Active funnel."

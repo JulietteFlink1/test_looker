@@ -96,6 +96,15 @@ view: hq_pulse_results {
     sql: ${TABLE}.what_country_are_you_based_in__ ;;
   }
 
+  dimension: country_iso {
+    type: string
+    sql: case when ${what_country_are_you_based_in__} = 'Germany' then 'DE'
+              when ${what_country_are_you_based_in__} = 'France' then 'FR'
+              when ${what_country_are_you_based_in__} = 'Austria' then 'AT'
+              when ${what_country_are_you_based_in__} = 'Netherlands' then 'NL'
+          end;;
+  }
+
   dimension: what_department_do_you_work_in_ {
     type: string
     sql: ${TABLE}.what_department_do_you_work_in_ ;;

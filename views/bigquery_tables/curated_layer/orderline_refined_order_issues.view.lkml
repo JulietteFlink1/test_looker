@@ -30,17 +30,28 @@ view: +orderline {
           when ${return_reason} like '%missing%'            then 'missing product'
           when ${return_reason} like '%wrong%'              then 'wrong product'
           when ${return_reason} like '%perished%'
+            or ${return_reason} like '%perrished%'
+            or ${return_reason} = 'purished'
             or ${return_reason} = 'goods_spoiled'           then 'perished product'
           when ${return_reason} like '%swapped%'            then 'swapped product'
           when ${return_reason} like '%damage%'             then 'damaged product'
           when ${return_reason} like '%cancel%'             then 'cancelled product'
-          when ${return_reason} like '%goods_not_on_shelf%'
+          when ${return_reason} like '%not_on_shelf%'
             or ${return_reason} like '%out of stock%'
             or ${return_reason} like '%out_of_stock%'
             or ${return_reason} like '%not in stock%'
+            or ${return_reason} = 'goods_not_shelf'
+            or ${return_reason} = 'goods_not_on _shelf'
                                                             then 'goods not on shelf'
           -- no other match
-          when ${return_reason} like '%miss%'               then 'missing product'
+          when ${return_reason} like '%miss%'
+            or ${return_reason} = 'misisng'
+            or ${return_reason} = 'mıssıng'
+            or ${return_reason} = 'not received'            then 'missing product'
+
+          when ${return_reason} like '%description%'        then 'item-description'
+
+          when ${return_reason} like '%quality%'        then 'item-quality'
 
           when ${return_reason} is not null                 then 'undefined group'
       end
@@ -125,6 +136,25 @@ view: +orderline {
     filters: [delivery_issue_groups: "goods not on shelf"]
   }
 
+  measure: cnt_products_item_description_issues {
+    label: "# Products Issue Item Description (Post Delivery Issues)"
+    description: "The number of orders, that had issues related to item descriptions"
+    group_label: "> Delivery Issues"
+    type: count_distinct
+    sql: ${order_uuid} ;;
+    filters: [delivery_issue_groups: "item-description"]
+  }
+
+  measure: cnt_products_bad_quality_issues {
+    label: "# Products Issue Item Quality (Post Delivery Issues)"
+    description: "The number of orders, that had issues related to item quality"
+    group_label: "> Delivery Issues"
+    type: count_distinct
+    sql: ${order_uuid} ;;
+    filters: [delivery_issue_groups: "item-quality"]
+  }
+
+
   measure: cnt_undefined_issues {
     label: "# Unknown Issues (Post Delivery Issues)"
     description: "The number of orders, that had issues with unknown issue groups (see Return Reason to check the specific issue reasons)"
@@ -145,6 +175,8 @@ view: +orderline {
          ${cnt_perished_products} +
          ${cnt_swapped_products} +
          ${cnt_wrong_products} +
+         ${cnt_products_item_description_issues} +
+         ${cnt_products_bad_quality_issues} +
          ${cnt_undefined_issues} +
          ${cnt_products_not_on_shelf}
         ;;
@@ -168,6 +200,8 @@ view: +orderline {
           ${cnt_missing_products} +
           ${cnt_perished_products} +
           ${cnt_swapped_products} +
+          ${cnt_products_item_description_issues} +
+          ${cnt_products_bad_quality_issues} +
           ${cnt_wrong_products} +
           ${cnt_undefined_issues}
         ;;
@@ -271,6 +305,22 @@ view: +orderline {
     group_label: "> Delivery Issues"
     type: number
     sql: ${cnt_swapped_products} / nullif( ${cnt_total_orders} ,0 ) ;;
+    value_format_name: percent_2
+  }
+
+  measure: pct_products_item_description_issues {
+    label: "% Item Description Issue Rate"
+    group_label: "> Delivery Issues"
+    type: number
+    sql: ${cnt_products_item_description_issues} / nullif( ${cnt_total_orders} ,0 ) ;;
+    value_format_name: percent_2
+  }
+
+  measure: pct_products_bad_quality_issues {
+    label: "% Item Quality Issue Rate"
+    group_label: "> Delivery Issues"
+    type: number
+    sql: ${cnt_products_bad_quality_issues} / nullif( ${cnt_total_orders} ,0 ) ;;
     value_format_name: percent_2
   }
 

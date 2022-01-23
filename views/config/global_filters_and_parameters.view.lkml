@@ -44,7 +44,7 @@
     # view_label: "Database Date Filter 📅"
     group_label: ">> Period-over-Period Filter"
     description: "This filter is independent of any database field. You can use it in table calcualtions, to limit a metric to the fitlered timeframe"
-    convert_tz: no
+    convert_tz: yes
   }
 
   dimension: current_period_start {

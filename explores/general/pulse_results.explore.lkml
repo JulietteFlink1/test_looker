@@ -14,6 +14,14 @@ explore: pulse_results {
   group_label: "18) People Ops"
   description: "Pulse Check Survey Results - 2021/09"
 
+
+  access_filter: {
+    field: pulse_results.country_iso
+    user_attribute: country_iso
+  }
+
+
+
   join: hq_pulse_results {
     from: 202109_hq_pulse_results
     sql_on: ${pulse_results.token} = ${hq_pulse_results.token}

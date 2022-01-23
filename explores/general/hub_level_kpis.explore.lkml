@@ -30,7 +30,7 @@ explore: hub_level_kpis {
   }
 
   join: top_5_category_change_type {
-    view_label: "* Hub Level KPIS *"
+    view_label: "* Inventory Changes Daily *"
     sql_on: ${hub_level_kpis.hub_code} = ${top_5_category_change_type.hub_code} ;;
     relationship: many_to_many
     type: left_outer

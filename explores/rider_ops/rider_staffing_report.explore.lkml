@@ -2,7 +2,7 @@ include: "/views/projects/rider_ops/rider_staffing_report.view"
 include: "/views/bigquery_tables/curated_layer/hubs_ct.view"
 
 explore: rider_staffing_report {
-  hidden: no
+  hidden: yes
   label: "Orders and Riders Staffing Data"
   view_label: "Orders and Riders Staffing Data"
   group_label: "Rider Ops"

@@ -1,250 +1,6 @@
 view: vat_order {
   derived_table: {
-    sql:WITH
-      country_tax_rates as (
-          SELECT country_iso,
-                 COALESCE(AVG(CASE WHEN tax_name = 'Reduced tax category' THEN tax_rate END),0)  as tax_rate_reduced,
-                 COALESCE(AVG(CASE WHEN tax_name = 'Standard tax category' THEN tax_rate END),0) as tax_rate_standard,
-                 COALESCE(AVG(CASE WHEN tax_name = 'Special tax category' THEN tax_rate END) ,0) as tax_rate_special
-          FROM `flink-data-prod.curated.products`
-          GROUP BY 1
-      ),
-      orderline as (
-                SELECT o.order_id,
-                    oo.order_uuid,
-                    oo.country_iso,
-                    oo.hub_code,
-                    o.customer_email as user_email,
-                    o.order_date,
-                    d.is_free_delivery_discount,
-                    CASE WHEN p.tax_rate is NULL then 0.19 else p.tax_rate END as tax_rate ,
-                    amt_unit_price_gross * quantity / (1+CASE WHEN p.tax_rate is NULL then 0.19 else p.tax_rate END)                           as item_price_net,
-                    amt_unit_price_gross * quantity                                                                                            as item_price_gross,
-                    CASE WHEN p.tax_name = 'Reduced tax category'
-                         THEN amt_unit_price_gross * quantity / (1+CASE WHEN p.tax_rate is NULL then 0.19 else p.tax_rate END) END             as item_price_reduced_net,
-                    CASE WHEN p.tax_name = 'Standard tax category' or  p.tax_name is null
-                         THEN amt_unit_price_gross * quantity / (1+CASE WHEN p.tax_rate is NULL then 0.19 else p.tax_rate END) END             as item_price_standard_net,
-                    CASE WHEN p.tax_name = 'Special tax category'
-                         THEN amt_unit_price_gross * quantity / (1+CASE WHEN p.tax_rate is NULL then 0.19 else p.tax_rate END) END             as item_price_special_net,
-                    CASE WHEN p.tax_name = 'Standard tax category' or  p.tax_name is null
-                         THEN amt_unit_price_gross * quantity END                              as item_price_standard_gross,
-                    CASE WHEN p.tax_name = 'Reduced tax category'
-                         THEN amt_unit_price_gross * quantity END                              as item_price_reduced_gross,
-                    CASE WHEN p.tax_name = 'Special tax category'
-                         THEN amt_unit_price_gross * quantity END                              as item_price_special_gross,
-                    CASE WHEN p.tax_name = 'Reduced tax category'
-                         THEN oo.amt_discount  end                                             as discount_amount_reduced_gross,
-                    CASE WHEN p.tax_name = 'Standard tax category' or p.tax_name is null
-                         THEN oo.amt_discount end                                              as discount_amount_standard_gross,
-                    CASE WHEN p.tax_name = 'Special tax category'
-                         THEN oo.amt_discount end                                              as discount_amount_special_gross,
-                    CASE WHEN p.tax_name = 'Standard tax category' or p.tax_name is null
-                         THEN oo.amt_discount / (1+CASE WHEN p.tax_rate is NULL then 0.19 else p.tax_rate END) END                             as discount_amount_standard_net,
-                    CASE WHEN p.tax_name = 'Reduced tax category'
-                         THEN oo.amt_discount / (1+p.tax_rate) END                             as discount_amount_reduced_net,
-                    CASE WHEN p.tax_name = 'Special tax category'
-                         THEN oo.amt_discount / (1+p.tax_rate) END                             as discount_amount_special_net,
-                    oo.amt_discount                                                            as discount_amount,
-                    oo.amt_discount/(1+p.tax_rate)                                             as discount_amount_net,
-                    o.amt_delivery_fee_gross                                                   as delivery_fee_gross,
-                    CASE WHEN d.is_free_delivery_discount is true then o.amt_discount_gross  else 0 end  as discount_free_delivery_gross
-                FROM `flink-data-prod.curated.order_lineitems` oo
-                LEFT JOIN `flink-data-prod.curated.products` p ON p.country_iso = oo.country_iso and p.product_sku = oo.sku
-                LEFT JOIN `flink-data-prod.curated.orders` o ON o.country_iso = oo.country_iso and o.order_uuid = oo.order_uuid
-                LEFT JOIN `flink-data-prod.curated.discounts` d ON d.discount_code = o.discount_code and d.discount_id = o.discount_id
-                WHERE TRUE
-                AND is_successful_order is true
-               -- AND p.tax_rate is not null
-                --AND date_trunc(date(o.order_timestamp),month) = '2021-09-01'
-                --AND date_trunc(date(o.order_timestamp),month) = '2021-09-01'
-)
-,
-            weighted_tax_rate as (
-                SELECT order_id,
-                  order_uuid,
-                  order_date,
-                  country_iso,
-                  hub_code,
-                  user_email,
-                  delivery_fee_gross,
-                  is_free_delivery_discount,
-                  discount_free_delivery_gross,
-                  SUM(tax_rate * item_price_net)/SUM(item_price_net) as tax_rate_weighted,
-                  SUM(item_price_net)                               as items_price_net,
-                  SUM(item_price_gross)                             as items_price_gross,
-                  SUM(item_price_standard_net)                      as items_price_standard_net,
-                  SUM(item_price_standard_gross)                    as items_price_standard_gross,
-                  SUM(item_price_special_gross)                     as items_price_special_gross,
-                  SUM(item_price_reduced_gross)                     as items_price_reduced_gross,
-                  SUM(item_price_reduced_net)                       as items_price_reduced_net,
-                  SUM(item_price_special_net)                       as items_price_special_net,
-                  SUM(discount_amount_reduced_gross)                as discount_amount_reduced_gross,
-                  SUM(discount_amount_reduced_net)                  as discount_amount_reduced_net,
-                  SUM(discount_amount_special_net)                  as discount_amount_special_net,
-                  SUM(discount_amount_special_gross)                as discount_amount_special_gross,
-                  SUM(discount_amount_standard_gross)               as discount_amount_standard_gross,
-                  SUM(discount_amount_standard_net)                 as discount_amount_standard_net,
-                  SUM(discount_amount)                              as discount_amount_gross,
-                  SUM(discount_amount_net)                          as discount_amount_net
-
-                FROM orderline
-                GROUP BY 1,2,3,4,5,6,7,8,9
-            )
-            ,
-            delivery_fees_discount as (
-                SELECT  order_id,
-                        order_uuid,
-                        country_iso,
-                        order_date,
-                        hub_code,
-                        user_email,
-                        tax_rate_weighted ,
-                        is_free_delivery_discount,
-                        discount_free_delivery_gross,
-                        items_price_net,
-                        items_price_gross,
-                        delivery_fee_gross,
-                        CASE WHEN is_free_delivery_discount is true then 0 else delivery_fee_gross / ( 1 + tax_rate_weighted) end as delivery_fee_net,
-                        items_price_standard_net,
-                        items_price_standard_gross,
-                        items_price_reduced_gross,
-                        items_price_reduced_net,
-                        items_price_special_gross,
-                        items_price_special_net,
-                        discount_amount_gross,
-                        discount_amount_net,
-                        discount_amount_reduced_net,
-                        discount_amount_standard_net,
-                        discount_amount_special_net,
-                        discount_amount_reduced_gross,
-                        discount_amount_standard_gross,
-                        discount_amount_special_gross
-                FROM weighted_tax_rate
-            ),
-
-            refund as (
-            select order_uuid,
-                  country_iso,
-                  STRING_AGG(case when record_type in ('Refunded','RefundedExternally') then payment_method end) as payment_type,
-                  SUM(case when record_type in ('Refunded','RefundedExternally') then captured_pc end) as refund_amount
-                  from `flink-data-prod.curated.psp_transactions`
-                  group by 1,2
-            ),
-
-            net_gross as (
-            SELECT d.order_id,
-                   order_date,
-                   d.country_iso,
-                   hub_code,
-                   d.user_email,
-                   payment_type,
-                   tax_rate_weighted,
-                   is_free_delivery_discount,
-                   discount_free_delivery_gross,
-                   COALESCE(delivery_fee_gross,0)                           as delivery_fee_gross,
-                   COALESCE(delivery_fee_net,0)                             as delivery_fee_net,
-                   COALESCE(discount_amount_net,0)                          as discount_amount_net,
-                   COALESCE(discount_amount_gross,0)                        as discount_amount_gross,
-                   COALESCE(discount_amount_reduced_net,0)                  as discount_amount_reduced_net,
-                   COALESCE(discount_amount_reduced_gross,0)                as discount_amount_reduced_gross,
-                   COALESCE(discount_amount_standard_net,0)                 as discount_amount_standard_net,
-                   COALESCE(discount_amount_standard_gross,0)               as discount_amount_standard_gross,
-                   COALESCE(discount_amount_special_net,0)                  as discount_amount_special_net,
-                   COALESCE(discount_amount_special_gross,0)                as discount_amount_special_gross,
-                   COALESCE(items_price_net,0)                              as items_price_net,
-                   COALESCE(items_price_gross,0)                            as items_price_gross,
-                   COALESCE(items_price_standard_gross,0)                   as items_price_standard_gross,
-                   COALESCE(items_price_standard_net,0)                     as items_price_standard_net,
-                   COALESCE(items_price_reduced_gross,0)                    as items_price_reduced_gross,
-                   COALESCE(items_price_reduced_net,0)                      as items_price_reduced_net,
-                   COALESCE(items_price_special_gross,0)                    as items_price_special_gross,
-                   COALESCE(items_price_special_net,0)                      as items_price_special_net,
-                   COALESCE(refund_amount / ( 1 + tax_rate_weighted),0)     as refund_amount_net,
-                   COALESCE(refund_amount, 0)                               as refund_amount_gross,
-            FROM delivery_fees_discount d
-            LEFT JOIN refund r ON r.order_uuid = d.order_uuid and r.country_iso = d.country_iso
-      )
---,final as (
-      SELECT order_id,
-            n.country_iso,
-            order_date,
-            user_email,
-            hub_name,
-            cost_center,
-            n.hub_code,
-            tax_rate_weighted,
-            payment_type,
-            is_free_delivery_discount,
-            discount_free_delivery_gross,
-            -- Items Data
-            items_price_net,
-            items_price_gross,
-            items_price_reduced_net,
-            items_price_reduced_gross,
-            items_price_standard_net,
-            items_price_standard_gross,
-            items_price_special_net,
-            items_price_special_gross,
-            items_price_reduced_gross - items_price_reduced_net                                                             as vat_items_reduced,
-            items_price_standard_gross - items_price_standard_net                                                           as vat_items_standard,
-            items_price_special_gross - items_price_special_net                                                             as vat_items_special,
-            items_price_reduced_gross+items_price_standard_gross+items_price_special_gross
-            -items_price_reduced_net-items_price_standard_net - items_price_special_net                                     as vat_items_total,
-
-            --Delivery Fees Data
-            delivery_fee_net,
-            delivery_fee_gross,
-            delivery_fee_net * (items_price_reduced_net/(items_price_reduced_net+items_price_standard_net+items_price_special_net))                           as delivery_fee_reduced_net,
-            delivery_fee_net * (items_price_standard_net/(items_price_reduced_net+items_price_standard_net+items_price_special_net))                          as delivery_fee_standard_net,
-            delivery_fee_net * (items_price_special_net/(items_price_reduced_net+items_price_standard_net+items_price_special_net))                           as delivery_fee_special_net,
-            delivery_fee_net * (items_price_standard_net/(items_price_reduced_net+items_price_standard_net+items_price_special_net)) * (1+tax_rate_standard)  as delivery_fee_standard_gross,
-            delivery_fee_net * (items_price_reduced_net/(items_price_reduced_net+items_price_standard_net+items_price_special_net)) * (1+tax_rate_reduced)    as delivery_fee_reduced_gross,
-            delivery_fee_net * (items_price_special_net/(items_price_reduced_net+items_price_standard_net+items_price_special_net)) * (1+tax_rate_special)    as delivery_fee_special_gross,
-            delivery_fee_net * (items_price_reduced_net/(items_price_reduced_net+items_price_standard_net+items_price_special_net)) * tax_rate_reduced        as vat_delivery_fee_reduced,
-            delivery_fee_net * (items_price_standard_net/(items_price_reduced_net+items_price_standard_net+items_price_special_net)) * tax_rate_standard      as vat_delivery_fee_standard,
-            delivery_fee_net * (items_price_special_net/(items_price_reduced_net+items_price_standard_net+items_price_special_net)) * tax_rate_special        as vat_delivery_fee_special,
-            delivery_fee_net * (items_price_reduced_net/(items_price_reduced_net+items_price_standard_net+items_price_special_net)) * tax_rate_reduced
-            + delivery_fee_net * (items_price_standard_net/(items_price_reduced_net+items_price_standard_net+items_price_special_net)) * tax_rate_standard
-            + delivery_fee_net * (items_price_special_net/(items_price_reduced_net+items_price_standard_net+items_price_special_net)) * tax_rate_special      as vat_delivery_fee_total,
-
-            -- Discount Data
-            discount_amount_net,
-            discount_amount_gross,
-            discount_amount_reduced_net,
-            discount_amount_standard_net,
-            discount_amount_special_net,
-            discount_amount_reduced_gross,
-            discount_amount_standard_gross,
-            discount_amount_special_gross,
-            discount_amount_reduced_gross  - discount_amount_reduced_net                                                                 as vat_discount_amount_reduced,
-            discount_amount_standard_gross - discount_amount_standard_net                                                                as vat_discount_amount_standard,
-            discount_amount_special_gross  - discount_amount_special_net                                                                 as vat_discount_amount_special,
-            discount_amount_reduced_gross + discount_amount_standard_gross + discount_amount_special_gross
-            - discount_amount_reduced_net - discount_amount_standard_net - discount_amount_special_net                                   as vat_discount_amount_total,
-
-            --Refund Data
-            refund_amount_net,
-            refund_amount_gross,
-            refund_amount_net * (items_price_reduced_net/(items_price_reduced_net+items_price_standard_net+items_price_special_net))                            as refund_amount_reduced_net,
-            refund_amount_net * (items_price_standard_net/(items_price_reduced_net+items_price_standard_net+items_price_special_net))                           as refund_amount_standard_net,
-            refund_amount_net * (items_price_special_net/(items_price_reduced_net+items_price_standard_net+items_price_special_net))                            as refund_amount_special_net,
-            refund_amount_net * (items_price_reduced_net/(items_price_reduced_net+items_price_standard_net+items_price_special_net)) * (1+tax_rate_reduced)     as refund_amount_reduced_gross,
-            refund_amount_net * (items_price_standard_net/(items_price_reduced_net+items_price_standard_net+items_price_special_net)) * (1+tax_rate_standard)   as refund_amount_standard_gross,
-            refund_amount_net * (items_price_special_net/(items_price_reduced_net+items_price_standard_net+items_price_special_net)) * (1+tax_rate_special)     as refund_amount_special_gross,
-            refund_amount_net * (items_price_reduced_net/(items_price_reduced_net+items_price_standard_net+items_price_special_net)) * tax_rate_reduced         as vat_refund_amount_reduced,
-            refund_amount_net * (items_price_standard_net/(items_price_reduced_net+items_price_standard_net+items_price_special_net)) * tax_rate_standard       as vat_refund_amount_standard,
-            refund_amount_net * (items_price_special_net/(items_price_reduced_net+items_price_standard_net+items_price_special_net)) * tax_rate_special         as vat_refund_amount_special,
-            refund_amount_net * (items_price_reduced_net/(items_price_reduced_net+items_price_standard_net+items_price_special_net)) * tax_rate_reduced
-            + refund_amount_net * (items_price_standard_net/(items_price_reduced_net+items_price_standard_net+items_price_special_net)) * tax_rate_standard
-            + refund_amount_net * (items_price_special_net/(items_price_reduced_net+items_price_standard_net+items_price_special_net)) * tax_rate_special       as vat_refund_amount_total,
-
-            --Total VAT data
-            delivery_fee_net + items_price_net - refund_amount_net - discount_amount_net                                                                                  as total_net,
-            delivery_fee_gross+items_price_gross-refund_amount_gross-discount_amount_gross - discount_free_delivery_gross                                                                        as total_gross,
-            delivery_fee_gross+items_price_gross-refund_amount_gross-discount_amount_gross-delivery_fee_net-items_price_net+refund_amount_net+discount_amount_net                                as total_VAT
-      FROM net_gross n
-      LEFT JOIN `flink-data-prod.curated.hubs` g ON lower(g.hub_code) = lower(n.hub_code )
-      LEFT JOIN country_tax_rates ct on ct.country_iso = n.country_iso
+    sql:select * from `flink-data-prod.reporting.vat_order`
     ;;
   }
 
@@ -296,6 +52,8 @@ view: vat_order {
     sql: ${TABLE}.is_free_delivery_discount ;;
   }
 
+
+
   dimension: discount_free_delivery_gross {
     type: number
     hidden: yes
@@ -326,8 +84,21 @@ view: vat_order {
 
   dimension: payment_type {
     type: string
+    hidden: yes
     sql: ${TABLE}.payment_type ;;
   }
+
+  dimension: payment_method {
+    type: string
+    sql: ${TABLE}.payment_method ;;
+  }
+
+  dimension: amt_rider_tip {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_rider_tip ;;
+  }
+
 ######## ITEMS ############
   dimension: items_price_net {
     hidden: yes
@@ -387,6 +158,12 @@ view: vat_order {
     hidden: yes
     type: number
     sql: ${TABLE}.vat_items_standard ;;
+  }
+
+  dimension: amt_total_deposit {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_total_deposit ;;
   }
 
   dimension: vat_items_special{
@@ -936,6 +713,7 @@ view: vat_order {
     group_label: "* Discounts *"
     value_format: "#,##0.00€"
     type: sum
+    hidden: yes
     sql: ${discount_free_delivery_gross} ;;
   }
 
@@ -1053,6 +831,27 @@ view: vat_order {
     description: "Total Gross - Total Net"
     value_format: "#,##0.00€"
     sql: ${total_vat} ;;
+  }
+
+  ################# Rider Tip
+
+  measure: sum_rider_tip {
+    group_label: "* Rider Tips *"
+    value_format: "#,##0.00€"
+    type: sum
+    sql: ${amt_rider_tip} ;;
+  }
+
+
+################# Rider Tip
+
+  measure: sum_amt_total_deposit {
+    group_label: "* Deposit *"
+    label: "Gross Deposit"
+    description: "Tax and Discount don't apply to deposit"
+    value_format: "#,##0.00€"
+    type: sum
+    sql: ${amt_total_deposit} ;;
   }
 
 
