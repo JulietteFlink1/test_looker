@@ -14,6 +14,7 @@ view: aov_per_subcategory_month{
       hub.country,
       hub.hub_name,
       hub.city,
+      f.is_discounted_order,
       1 as flag,
      --b.category,
       --sum (a.amt_total_price_gross) as sum_item_value,
@@ -28,7 +29,7 @@ view: aov_per_subcategory_month{
              on a.order_uuid = f.order_uuid
       WHERE DATE(a.order_timestamp) >= "2021-02-01"
           and f.is_successful_order = true
-            group by 1,2,3,4,5,6,7,8,9
+            group by 1,2,3,4,5,6,7,8,9,10
 
 ),
 
@@ -57,6 +58,7 @@ c as
       hub.country,
       hub.hub_name,
       hub.city,
+      f.is_discounted_order,
       category as category,
       b.subcategory as subcategory,
       sum (a.amt_total_price_gross) as sum_item_value,
@@ -71,7 +73,7 @@ c as
              on a.order_uuid = f.order_uuid
       WHERE DATE(a.order_timestamp) >= "2021-02-01"
           and f.is_successful_order = true
-      group by 1,2,3,4,5,6,7,8,9,10
+      group by 1,2,3,4,5,6,7,8,9,10,11
       order by 9
      ),
 
@@ -83,13 +85,14 @@ d as
         when  extract (hour from d.order_timestamp)<17 then "2.12PM to 17PM"
         else "3.After 17PM" end as hour,
         hub_name,
+        is_discounted_order,
         count (distinct d.order_uuid) as orders
 
   FROM `flink-data-prod.curated.orders` d
       WHERE DATE(d.order_timestamp) >= "2021-02-01"
       and d.is_successful_order = true
 
-      group by 1,2,3
+      group by 1,2,3,4
 
 )
 
@@ -103,6 +106,7 @@ d as
       a.country_iso,
       --a.country,
       a.hub_name,
+       case when a.is_discounted_order is true then "Yes" else "No" end as is_discounted_order,
       a.city,
       b.category,
       b.subcategory,
@@ -121,11 +125,12 @@ d as
       and a.hub_name = c.hub_name
       and b.category = c.category
       and b.subcategory = c.subcategory
+      and a.is_discounted_order = c.is_discounted_order
       inner join d
       on a.order_date = d.order_date
       and a.hour = d.hour
       and a.hub_name = d.hub_name
-      order by 1,2,3,4,5,6,7,8
+      and a.is_discounted_order = d.is_discounted_order
        ;;
   }
 
@@ -273,6 +278,12 @@ d as
     label: "city"
     type: string
     sql: ${TABLE}.city ;;
+  }
+
+  dimension: is_discounted_order {
+    label: "is_discounted_order"
+    type: string
+    sql: ${TABLE}.is_discounted_order ;;
   }
 
   dimension: category {
