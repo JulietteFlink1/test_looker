@@ -113,7 +113,7 @@ explore: supply_chain {
       join: sku_hub_day_level_orders {
         type: left_outer
         relationship: many_to_one
-        view_label: "04 Inventory Changes Daily *"
+        view_label: "04 Inventory Changes Daily"
 
         sql_on:
             ${sku_hub_day_level_orders.product_sku}   =  ${inventory_changes_daily.sku} and
