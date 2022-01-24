@@ -362,6 +362,14 @@ view: hub_pl_monthly {
     value_format_name: euro_accounting_2_precision
   }
 
+  measure: sum_amt_hub_staff_compensation {
+    type: sum
+    group_label: "* Hub Staff Compensation *"
+    label: "Total Hub Staff Compensation"
+    sql: ${amt_hub_staff_compensation};;
+    value_format_name: euro_accounting_2_precision
+  }
+
   measure: share_hub_staff_compensation_over_total_net {
     type: average
     group_label: "* Hub Staff Compensation *"
