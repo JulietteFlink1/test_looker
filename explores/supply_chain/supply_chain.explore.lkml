@@ -98,7 +98,7 @@ explore: supply_chain {
 
   join: inventory_changes_daily {
 
-    view_label: "04 Inventory Changes Daily *"
+    view_label: "04 Inventory Changes Daily"
 
     type: left_outer
     relationship: one_to_many
