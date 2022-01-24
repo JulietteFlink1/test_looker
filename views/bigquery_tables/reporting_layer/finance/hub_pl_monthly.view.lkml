@@ -398,8 +398,8 @@ view: hub_pl_monthly {
     type: sum
     group_label: "* Rider Wages *"
     label: "Total Rider Wages"
-    sql: ${amt_external_rider_salalries} +
-       ${amt_external_operations_salaries}
+    sql: coalesce(${amt_external_rider_salalries},0) +
+       coalesce(${amt_external_operations_salaries},0)
        ;;
     value_format_name: euro_accounting_2_precision
   }
