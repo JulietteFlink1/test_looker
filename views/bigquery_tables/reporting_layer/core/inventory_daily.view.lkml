@@ -379,6 +379,19 @@ view: inventory_daily {
     value_format_name: decimal_0
   }
 
+  measure: turnover_rate {
+
+    label:       "Product Turnover Rate"
+    description: "Defined as the quantity sold per SKU divided by the Average Inventory over the observed period of time"
+    group_label: "Inventory Change"
+
+    type: average
+    sql: abs(${number_of_outbound_orders}) / nullif(${quantity_from},0) ;;
+
+    value_format_name: decimal_2
+
+  }
+
   # ~~~~~~~~~~~~~    END: Inventory Change  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
