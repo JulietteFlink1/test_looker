@@ -43,18 +43,26 @@ view: products_hub_assignment_v2 {
   dimension: country_iso {
     type: string
     sql: ${TABLE}.country_iso ;;
-
-  }
-
-  dimension: report_date {
-    type: date
-    datatype: date
-    sql: ${TABLE}.report_date ;;
+    hidden: yes
   }
 
   dimension: sku {
     type: string
     sql: ${TABLE}.sku ;;
+    hidden: yes
+  }
+
+  dimension: hub_code {
+    type: string
+    sql: ${TABLE}.hub_code ;;
+    hidden: yes
+  }
+
+
+  dimension: report_date {
+    type: date
+    datatype: date
+    sql: ${TABLE}.report_date ;;
   }
 
   dimension: sku_dynamic {
@@ -63,7 +71,7 @@ view: products_hub_assignment_v2 {
     description: "In most cases, this field shows the regular SKU of a product.
                   When a product is part of a substitute group or part of a replenishment substitute group, this field will return the parent/leading SKU of this group,
                   when the parameter 'Select Metric Aggregation Level' is defined accordingly"
-    group_label: "* Parameters & Dynamic Fields *"
+    # group_label: "* Parameters & Dynamic Fields *"
 
     type: string
     sql:
@@ -82,31 +90,43 @@ view: products_hub_assignment_v2 {
     ;;
   }
 
-  dimension: hub_code {
-    type: string
-    sql: ${TABLE}.hub_code ;;
-  }
 
   dimension: is_most_recent_record {
+
+    label:       "Is most recent record"
+    description: "Filters for the latest SKU-to-Hub-Assignment definition (the assignment definitions as of today)"
+    group_label: "SKU to Hub Assignment"
+
     type: yesno
     sql: ${TABLE}.is_most_recent_record ;;
   }
 
-
   dimension: ct_final_decision_is_sku_assigned_to_hub {
-    label: "Is SKU Assigned (CT)"
+
+    label: "SKU Assignment (CT)"
+    description: "Filters for the SKU-to-Hub-Assignment defined in CommerceTools (the customer-facing definition) for any given historical Report Date"
+    group_label: "SKU to Hub Assignment"
+
     type: yesno
     sql: ${TABLE}.ct_final_decision_is_sku_assigned_to_hub ;;
   }
 
   dimension: erp_final_decision_is_sku_assigned_to_hub {
-    label: "Is SKU Assigned (ERP)"
+
+    label: "SKU Assignment (ERP)"
+    description: "Filters for the SKU-to-Hub-Assignment defined in ERP/Lexbizz (the replenishment definition) for any given historical Report Date"
+    group_label: "SKU to Hub Assignment"
+
     type: yesno
     sql: ${TABLE}.erp_final_decision_is_sku_assigned_to_hub ;;
   }
 
   dimension: is_sku_assigned_to_hub {
-    label: "Is SKU Assigned (Official Definition)"
+
+    label: "SKU Assignment (Official)"
+    description: "Filters for the Flink-official SKU-to-Hub-Assignment definition (which is basically 'SKU Assignment (ERP)', as the Supply Chain team is owning the related KPIs)"
+    group_label: "SKU to Hub Assignment"
+
     type: yesno
     sql: ${TABLE}.is_sku_assigned_to_hub ;;
   }
