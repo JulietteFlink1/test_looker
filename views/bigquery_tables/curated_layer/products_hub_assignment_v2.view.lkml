@@ -3,6 +3,39 @@ view: products_hub_assignment_v2 {
     ;;
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~     Parameter      ~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  parameter: select_calculation_granularity {
+    # this paramter does:
+    #  1. replace the SKU with a leading SKU name
+    #  2. reduces the data in inventory tables to report only leading SKU level per group
+
+    # this parameter is defined at the products_hub_assignment level, as this view is the base of the Supply Chain explore
+
+    label:       "Select Metric Aggregation Level"
+    group_label: "* Parameters & Dynamic Fields *"
+    description: "Chose, on what level you want to calculate metrics such as esp. the oos-rate"
+
+    type: unquoted
+
+    allowed_value: {
+      label: "per SKU"
+      value: "sku"
+    }
+
+    allowed_value: {
+      label: "per SKU - Aggregated per Replenishment Groups"
+      value: "replenishment"
+    }
+
+    allowed_value: {
+      label: "per SKU - Aggregated per Substitute Groups"
+      value: "customer"
+    }
+
+    default_value: "replenishment"
+  }
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Dimensions     ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -22,6 +55,31 @@ view: products_hub_assignment_v2 {
   dimension: sku {
     type: string
     sql: ${TABLE}.sku ;;
+  }
+
+  dimension: sku_dynamic {
+
+    label:       "SKU (Dynamically aggregated)"
+    description: "In most cases, this field shows the regular SKU of a product.
+                  When a product is part of a substitute group or part of a replenishment substitute group, this field will return the parent/leading SKU of this group,
+                  when the parameter 'Select Metric Aggregation Level' is defined accordingly"
+    group_label: "* Parameters & Dynamic Fields *"
+
+    type: string
+    sql:
+        case
+            when {% condition select_calculation_granularity %} 'sku'           {% endcondition %}
+            then ${sku}
+
+            when {% condition select_calculation_granularity %} 'replenishment' {% endcondition %}
+            then coalesce( ${leading_sku_replenishment_substitute_group} , ${sku} )
+
+            when {% condition select_calculation_granularity %} 'customer'      {% endcondition %}
+            then coalesce( ${leading_sku_ct_substitute_group} , ${sku} )
+
+            else null
+        end
+    ;;
   }
 
   dimension: hub_code {
@@ -171,6 +229,16 @@ view: products_hub_assignment_v2 {
     sql: ${TABLE}.substitute_group ;;
   }
 
+  dimension: leading_sku_ct_substitute_group {
+
+    label: "Substitute Group - Leading SKU"
+    description: "The (artificially generated) parent SKU of a SKU that is part of a CommerceTools substitute group - these SKUs usually end with -SG"
+    group_label: "CT Fields"
+
+    type: string
+    sql: ${TABLE}.leading_sku_ct_substitute_group ;;
+  }
+
 
   # =========  hidden   =========
   dimension: filter_one_sku_per_replenishment_substitute_group {
@@ -213,7 +281,7 @@ view: products_hub_assignment_v2 {
   measure: cnt_unique_skus {
     label: "# unique SKUs"
     type: count_distinct
-    sql: ${sku} ;;
+    sql: ${sku_dynamic} ;;
   }
 
 

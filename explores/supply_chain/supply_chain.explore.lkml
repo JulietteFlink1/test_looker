@@ -9,14 +9,33 @@ explore: supply_chain {
   view_name: products_hub_assignment
   view_label: "01 Products Hub Assignment"
 
-  sql_always_where: {% condition global_filters_and_parameters.datasource_filter %} ${products_hub_assignment.report_date} {% endcondition %} ;;
+  sql_always_where:
+      -- filter the time for all big tables of this explore
+      {% condition global_filters_and_parameters.datasource_filter %} ${products_hub_assignment.report_date} {% endcondition %}
+
+      -- filter for showing only 1 SKU per (Replenishment) Substitute Group
+      and
+      case
+            when {% condition products_hub_assignment.select_calculation_granularity %} 'sku'           {% endcondition %}
+            then true
+
+            when {% condition products_hub_assignment.select_calculation_granularity %} 'replenishment' {% endcondition %}
+            then ${products_hub_assignment.filter_one_sku_per_replenishment_substitute_group} is true
+
+            when {% condition products_hub_assignment.select_calculation_granularity %} 'customer'      {% endcondition %}
+            then ${products_hub_assignment.filter_one_sku_per_substitute_group} is true
+
+            else null
+        end
+      ;;
 
   hidden: yes
 
   always_filter: {
     filters: [
       products_hub_assignment.erp_final_decision_is_sku_assigned_to_hub: "Yes",
-      global_filters_and_parameters.datasource_filter: "last 30 days"
+      global_filters_and_parameters.datasource_filter: "last 30 days",
+      products_hub_assignment.select_calculation_granularity: "sku"
     ]
   }
 
