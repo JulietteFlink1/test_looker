@@ -43,9 +43,24 @@ explore: supply_chain {
     ;;
   }
 
+  join: inventory_hourly {
+
+    view_label: "03 Inventory Hourly (last 5 days)"
+
+    type: left_outer
+    relationship: one_to_many
+    sql_on:
+        ${inventory_hourly.hub_code}              = ${products_hub_assignment.hub_code}     and
+        ${inventory_hourly.sku}                   = ${products_hub_assignment.sku}          and
+        ${inventory_hourly.report_timestamp_date} = ${products_hub_assignment.report_date}  and
+        ${inventory_hourly.report_timestamp_date} >= current_date() - 5                     and -- today minus 5 days
+        {% condition global_filters_and_parameters.datasource_filter %} ${inventory_hourly.report_timestamp_date} {% endcondition %}
+    ;;
+  }
+
   join: products {
 
-    view_label: "03 Products"
+    view_label: "* Products *"
 
     type: left_outer
     relationship: many_to_one
@@ -55,7 +70,7 @@ explore: supply_chain {
 
   join: hubs_ct {
 
-    view_label: "04 Hubs"
+    view_label: "* Hubs *"
 
     type: left_outer
     relationship: many_to_one
@@ -64,7 +79,7 @@ explore: supply_chain {
 
   join: inbounding_times_per_vendor {
 
-    view_label: "05 Inbounding Times"
+    view_label: "04 Inbounding Times"
 
     type: left_outer
     relationship: one_to_one
