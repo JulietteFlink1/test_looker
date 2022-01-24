@@ -96,9 +96,35 @@ explore: supply_chain {
     sql_on: ${hubs_ct.hub_code} = ${products_hub_assignment.hub_code} ;;
   }
 
+  join: inventory_changes_daily {
+
+    view_label: "04 Inventory Changes Daily *"
+
+    type: left_outer
+    relationship: one_to_many
+    sql_on:
+        ${inventory_changes_daily.sku}                   = ${products_hub_assignment.sku}         and
+        ${inventory_changes_daily.hub_code}              = ${products_hub_assignment.hub_code}    and
+        ${inventory_changes_daily.inventory_change_date} = ${products_hub_assignment.report_date} and
+        {% condition global_filters_and_parameters.datasource_filter %} ${inventory_changes_daily.inventory_change_date} {% endcondition %}
+    ;;
+  }
+      # depends 100% on inventory_changes_daily
+      join: sku_hub_day_level_orders {
+        type: left_outer
+        relationship: many_to_one
+        view_label: "04 Inventory Changes Daily *"
+
+        sql_on:
+            ${sku_hub_day_level_orders.product_sku}   =  ${inventory_changes_daily.sku} and
+            ${sku_hub_day_level_orders.hub_code}      =  ${inventory_changes_daily.hub_code} and
+            ${sku_hub_day_level_orders.created_date}  =  ${inventory_changes_daily.inventory_change_date}
+        ;;
+      }
+
   join: inbounding_times_per_vendor {
 
-    view_label: "04 Inbounding Times"
+    view_label: "05 Inbounding Times"
 
     type: left_outer
     relationship: one_to_one
