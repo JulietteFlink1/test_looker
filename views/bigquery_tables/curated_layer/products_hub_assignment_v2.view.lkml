@@ -10,6 +10,7 @@ view: products_hub_assignment_v2 {
   dimension: country_iso {
     type: string
     sql: ${TABLE}.country_iso ;;
+
   }
 
   dimension: report_date {
@@ -47,10 +48,12 @@ view: products_hub_assignment_v2 {
   }
 
   dimension: is_sku_assigned_to_hub {
-    label: "Is SKU Assigned (Final)"
+    label: "Is SKU Assigned (Official Definition)"
     type: yesno
     sql: ${TABLE}.is_sku_assigned_to_hub ;;
   }
+
+
 
   # =========  ERP Data   =========
 
@@ -92,48 +95,105 @@ view: products_hub_assignment_v2 {
   }
 
   dimension: erp_vendor_name {
+
+    label: "Supplier Name"
+    description: "The name of the supplier of a SKU as defined in ERP/lexbizz"
     group_label: "ERP Fields"
+
     type: string
     sql: ${TABLE}.erp_vendor_name ;;
   }
 
   dimension: erp_vendor_status {
+
+    label: "Supplier Status"
+    description: "A flag indicating, whether a vendor is still considered active aka delivering SKUs"
     group_label: "ERP Fields"
+
     type: string
     sql: ${TABLE}.erp_vendor_status ;;
   }
 
   dimension: leading_sku_replenishment_substitute_group {
-    group_label: "ERP Fields"
+
     label: "Replenishment Group - Leading SKU"
+    description: "The parent SKU of a SKU that is part of a replenishment substitute group - these SKUs usually start with 99x"
+    group_label: "ERP Fields"
+
     type: string
     sql: ${TABLE}.leading_sku_replenishment_substitute_group ;;
   }
 
   dimension: replenishment_substitute_group {
-    group_label: "ERP Fields"
+
     label: "Replenishment Group"
+    description: "The replenishment substitute group defined by the Supply Chain team to tag substitute products for replenishment."
+    group_label: "ERP Fields"
+
     type: string
     sql: ${TABLE}.replenishment_substitute_group ;;
   }
 
+
+
+
+
+
+
+  # =========  CT Data   =========
   dimension: ct_is_published_globally {
+
     label: "Is Published (CT)"
+    description: "The global status of a SKU in CommerceTools, that defines if a SKU is published or not"
+    group_label: "CT Fields"
+
     type: yesno
     sql: ${TABLE}.ct_is_published_globally ;;
-    hidden: no
   }
 
   dimension: ct_is_published_per_hub {
+
     label: "Is SKU assigned to Hub (CT)"
+    description: "The assignment status of a SKU per hub according to CommerceTools"
+    group_label: "CT Fields"
+
     type: yesno
     sql: ${TABLE}.ct_is_published_per_hub ;;
-    hidden: no
+  }
+
+  dimension: substitute_group {
+
+    label: "Substitute Group (CT)"
+    description: "The substitute group according to CommerceTools defining substitute products from the customer perspective"
+    group_label: "CT Fields"
+
+    type: string
+    sql: ${TABLE}.substitute_group ;;
   }
 
 
   # =========  hidden   =========
+  dimension: filter_one_sku_per_replenishment_substitute_group {
 
+    label: "Filter: Only leading SKU per Replenishment Substitute Group"
+    description: "If set to true, this boolean reduces replenshment substitute groups to only show 1 SKU per group"
+    group_label: "ERP Fields"
+
+    type: yesno
+    sql: ${TABLE}.filter_one_sku_per_replenishment_substitute_group  ;;
+    hidden: yes
+  }
+
+  dimension: filter_one_sku_per_substitute_group {
+
+    label: "Filter: Only leading SKU per CT Substitute Group"
+    description: "If set to true, this boolean reduces CT substitute groups to only show 1 SKU per group"
+    group_label: "CT Fields"
+
+    type: yesno
+    sql: ${TABLE}.filter_one_sku_per_substitute_group  ;;
+    hidden: yes
+  }
 
 
   # =========  IDs   =========
