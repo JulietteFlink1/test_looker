@@ -257,11 +257,11 @@ view: hub_pl_monthly {
 
   dimension: amt_hub_staff_compensation {
     hidden: yes
-    sql: ${amt_hubmanager_salaries} +
-       ${amt_external_operations_salaries} +
-       ${amt_internal_operations_salaries} +
-       ${amt_citymanager_salaries} +
-       ${amt_shiftlead_salaries}
+    sql: coalesce(${amt_hubmanager_salaries},0) +
+       coalesce(${amt_external_operations_salaries},0) +
+       coalesce(${amt_internal_operations_salaries},0) +
+       coalesce(${amt_citymanager_salaries},0) +
+       coalesce(${amt_shiftlead_salaries},0)
        ;;
     value_format_name: euro_accounting_2_precision
   }
@@ -269,8 +269,8 @@ view: hub_pl_monthly {
   dimension: amt_rider_wages {
     hidden: yes
     sql:
-       ${amt_external_rider_salalries} +
-       ${amt_external_operations_salaries}
+       coalesce(${amt_external_rider_salalries},0) +
+       coalesce(${amt_external_operations_salaries},0)
 
        ;;
     value_format_name: euro_accounting_2_precision
@@ -279,18 +279,18 @@ view: hub_pl_monthly {
   dimension: amt_operational_hub_cost {
     hidden: yes
     sql:
-       ${amt_rent} +
-       ${amt_ebikes} +
-       ${amt_packaging} +
-       ${amt_other_hub_recurring} +
-       ${amt_rider_equipment}      ;;
+       coalesce(${amt_rent},0) +
+       coalesce(${amt_ebikes},0) +
+       coalesce(${amt_packaging},0) +
+       coalesce(${amt_other_hub_recurring},0) +
+       coalesce(${amt_rider_equipment},0)      ;;
     value_format_name: euro_accounting_2_precision
   }
 
   dimension: amt_total_logistics_cost {
     hidden: yes
     sql:
-       ${amt_logistics_costs} + ${amt_other_logistics_costs}     ;;
+       coalesce(${amt_logistics_costs},0) + coalesce(${amt_other_logistics_costs} ,0)    ;;
     value_format_name: euro_accounting_2_precision
   }
 
@@ -362,6 +362,14 @@ view: hub_pl_monthly {
     value_format_name: euro_accounting_2_precision
   }
 
+  measure: sum_amt_hub_staff_compensation {
+    type: sum
+    group_label: "* Hub Staff Compensation *"
+    label: "Total Hub Staff Compensation"
+    sql: ${amt_hub_staff_compensation};;
+    value_format_name: euro_accounting_2_precision
+  }
+
   measure: share_hub_staff_compensation_over_total_net {
     type: average
     group_label: "* Hub Staff Compensation *"
@@ -398,8 +406,8 @@ view: hub_pl_monthly {
     type: sum
     group_label: "* Rider Wages *"
     label: "Total Rider Wages"
-    sql: ${amt_external_rider_salalries} +
-       ${amt_external_operations_salaries}
+    sql: coalesce(${amt_external_rider_salalries},0) +
+       coalesce(${amt_external_operations_salaries},0)
        ;;
     value_format_name: euro_accounting_2_precision
   }
@@ -595,14 +603,6 @@ view: hub_pl_monthly {
     value_format_name: percent_1
   }
 
-  measure: sum_amt_operational_hub_cost {
-    type: sum
-    group_label: "* Operational Hub Costs *"
-    label: "Total Operational Hub Costs"
-    sql: ${amt_operational_hub_cost}
-      ;;
-    value_format_name: euro_accounting_2_precision
-  }
 
   measure: sum_amt_ebikes {
     type: sum
@@ -622,8 +622,8 @@ view: hub_pl_monthly {
 
   measure: sum_amt_packaging {
     type: sum
-    label: "Discounts Gross"
-    group_label: "* GMV *"
+    label: "Packaging"
+    group_label: "* Operational Hub Costs *"
     sql: ${amt_packaging};;
     value_format_name: euro_accounting_2_precision
   }
@@ -793,7 +793,7 @@ view: hub_pl_monthly {
 
   measure: sum_amt_supplier_funding {
     type: sum
-    group_label: "*.Revenue *"
+    group_label: "* Revenue *"
     label: "Supplier Fundings"
     sql: ${amt_supplier_funding};;
     value_format_name: euro_accounting_2_precision
