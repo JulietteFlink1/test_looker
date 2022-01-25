@@ -304,7 +304,7 @@ view: hub_pl_monthly {
     hidden: yes
     sql:
        coalesce(${amt_external_rider_salalries},0) +
-       coalesce(${amt_external_operations_salaries},0) +
+       coalesce(${amt_internal_rider_salaries},0) +
       coalesce(${amt_external_riderzenjob_salalries},0) +
       coalesce(${amt_external_riderother_salalries},0)
 
