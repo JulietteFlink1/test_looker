@@ -554,6 +554,16 @@ view: hub_pl_monthly {
     value_format_name: euro_accounting_2_precision
   }
 
+
+  measure: share_total_discounts_net_over_total_net {
+    type: average
+    group_label: "* Discounts *"
+    label: "% Total Discounts Net / Revenue Net"
+    sql: ${amt_discount_net}/${amt_total_net};;
+    value_format_name: percent_1
+  }
+
+
   measure: sum_amt_discount_net_customer_service {
     type: sum
     label: "Discounts Customer Service Net"
