@@ -231,6 +231,37 @@ view: hub_pl_monthly {
     sql: ${TABLE}.amt_vat ;;
   }
 
+  dimension: amt_internal_picker_wages {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_internal_picker_wages ;;
+  }
+
+  dimension: amt_external_pickerzenjob_salaries {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_external_pickerzenjob_salaries ;;
+  }
+
+
+  dimension: amt_external_riderzenjob_salalries {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_external_riderzenjob_salalries ;;
+  }
+
+  dimension: amt_external_riderother_salalries {
+    type: string
+    hidden: yes
+    sql: ${TABLE}.amt_external_riderother_salalries ;;
+  }
+
+  dimension: amt_external_operationsStuditemps_salaries {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_vat ;;
+  }
+
   dimension: amt_waste_gross {
     type: number
     hidden: yes
@@ -261,7 +292,10 @@ view: hub_pl_monthly {
        coalesce(${amt_external_operations_salaries},0) +
        coalesce(${amt_internal_operations_salaries},0) +
        coalesce(${amt_citymanager_salaries},0) +
-       coalesce(${amt_shiftlead_salaries},0)
+       coalesce(${amt_shiftlead_salaries},0) +
+       coalesce(${amt_internal_picker_wages},0) +
+       coalesce(${amt_external_pickerzenjob_salaries},0) +
+       coalesce(${amt_external_operationsStuditemps_salaries},0)
        ;;
     value_format_name: euro_accounting_2_precision
   }
@@ -270,7 +304,9 @@ view: hub_pl_monthly {
     hidden: yes
     sql:
        coalesce(${amt_external_rider_salalries},0) +
-       coalesce(${amt_external_operations_salaries},0)
+       coalesce(${amt_external_operations_salaries},0) +
+      coalesce(${amt_external_riderzenjob_salalries},0) +
+      coalesce(${amt_external_riderother_salalries},0)
 
        ;;
     value_format_name: euro_accounting_2_precision
@@ -338,6 +374,14 @@ view: hub_pl_monthly {
     value_format_name: euro_accounting_2_precision
   }
 
+  measure: sum_amt_internal_picker_wages {
+    type: sum
+    group_label: "* Hub Staff Compensation *"
+    label: "Internal Picker Salaries"
+    sql: ${amt_internal_picker_wages};;
+    value_format_name: euro_accounting_2_precision
+  }
+
   measure: sum_amt_citymanager_salaries {
     type: sum
     group_label: "* Hub Staff Compensation *"
@@ -353,6 +397,24 @@ view: hub_pl_monthly {
     sql: ${amt_shiftlead_salaries};;
     value_format_name: euro_accounting_2_precision
   }
+
+
+  measure: sum_amt_external_pickerzenjob_salaries {
+    type: sum
+    group_label: "* Hub Staff Compensation *"
+    label: "Zenjob Picker Salaries"
+    sql: ${amt_external_pickerzenjob_salaries};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_external_operationsStuditemps_salaries {
+    type: sum
+    group_label: "* Hub Staff Compensation *"
+    label: "Other (Zenjob/Studitemps)"
+    sql: ${amt_external_operationsStuditemps_salaries};;
+    value_format_name: euro_accounting_2_precision
+  }
+
 
   measure: sum_amt_external_operations_salaries {
     type: sum
@@ -406,9 +468,24 @@ view: hub_pl_monthly {
     type: sum
     group_label: "* Rider Wages *"
     label: "Total Rider Wages"
-    sql: coalesce(${amt_external_rider_salalries},0) +
-       coalesce(${amt_external_operations_salaries},0)
+    sql: ${amt_rider_wages}
        ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_external_riderzenjob_salalries {
+    type: sum
+    group_label: "* Rider Wages *"
+    label: "Zenjob Rider Salaries"
+    sql: ${amt_external_riderzenjob_salalries};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_external_riderother_salalries {
+    type: sum
+    group_label: "* Rider Wages *"
+    label: "Other Rider Salaries"
+    sql: ${amt_external_riderother_salalries}rider};;
     value_format_name: euro_accounting_2_precision
   }
 
