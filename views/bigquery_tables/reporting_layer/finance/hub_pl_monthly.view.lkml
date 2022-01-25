@@ -871,6 +871,7 @@ view: hub_pl_monthly {
   measure: sum_amt_supplier_funding {
     type: sum
     group_label: "* Revenue *"
+    description: "Supplier Fundings Revenue is Revenue coming from the suppliers for product advertisment"
     label: "Supplier Fundings"
     sql: ${amt_supplier_funding};;
     value_format_name: euro_accounting_2_precision
