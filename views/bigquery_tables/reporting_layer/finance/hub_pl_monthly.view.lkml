@@ -1,5 +1,5 @@
 view: hub_pl_monthly {
-  sql_table_name: `flink-data-dev.reporting.hub_pl_monthly`
+  sql_table_name: `flink-data-prod.reporting.hub_pl_monthly`
     ;;
 
   dimension: amt_citymanager_salaries {
@@ -485,7 +485,7 @@ view: hub_pl_monthly {
     type: sum
     group_label: "* Rider Wages *"
     label: "Other Rider Salaries"
-    sql: ${amt_external_riderother_salalries}rider};;
+    sql: ${amt_external_riderother_salalries};;
     value_format_name: euro_accounting_2_precision
   }
 
