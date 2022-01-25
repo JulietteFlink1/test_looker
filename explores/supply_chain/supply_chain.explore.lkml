@@ -45,7 +45,7 @@ explore: supply_chain {
 
     sql_on: ${global_filters_and_parameters.generic_join_dim} = TRUE ;;
     type: left_outer
-    relationship: many_to_one
+    relationship: one_to_one
   }
 
   join: inventory_daily {

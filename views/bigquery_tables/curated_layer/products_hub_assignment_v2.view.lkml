@@ -1,5 +1,5 @@
 view: products_hub_assignment_v2 {
-  sql_table_name: `flink-data-dev.curated.products_hub_assignment_v2`
+  sql_table_name: `flink-data-prod.curated.products_hub_assignment_v2`
     ;;
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -43,7 +43,7 @@ view: products_hub_assignment_v2 {
   dimension: country_iso {
     type: string
     sql: ${TABLE}.country_iso ;;
-    hidden: yes
+    hidden: no
   }
 
   dimension: sku {
