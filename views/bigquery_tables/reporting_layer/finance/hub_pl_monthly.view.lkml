@@ -259,7 +259,7 @@ view: hub_pl_monthly {
   dimension: amt_external_operationsStuditemps_salaries {
     type: number
     hidden: yes
-    sql: ${TABLE}.amt_vat ;;
+    sql: ${TABLE}.amt_external_operationsStuditemps_salaries ;;
   }
 
   dimension: amt_waste_gross {
