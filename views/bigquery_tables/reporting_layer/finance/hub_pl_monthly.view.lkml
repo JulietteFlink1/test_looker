@@ -259,7 +259,7 @@ view: hub_pl_monthly {
   dimension: amt_external_operationsStuditemps_salaries {
     type: number
     hidden: yes
-    sql: ${TABLE}.amt_vat ;;
+    sql: ${TABLE}.amt_external_operationsStuditemps_salaries ;;
   }
 
   dimension: amt_waste_gross {
@@ -554,6 +554,16 @@ view: hub_pl_monthly {
     value_format_name: euro_accounting_2_precision
   }
 
+
+  measure: share_total_discounts_net_over_total_net {
+    type: average
+    group_label: "* Discounts *"
+    label: "% Total Discounts Net / Revenue Net"
+    sql: ${amt_discount_net}/${amt_total_net};;
+    value_format_name: percent_1
+  }
+
+
   measure: sum_amt_discount_net_customer_service {
     type: sum
     label: "Discounts Customer Service Net"
@@ -607,7 +617,7 @@ view: hub_pl_monthly {
 
   measure: sum_amt_logistics_costs {
     type: sum
-    label: "Logictic Costs"
+    label: "Logistics Costs"
     group_label: "* Logistics *"
     sql: ${amt_logistics_costs};;
     value_format_name: euro_accounting_2_precision
@@ -616,7 +626,7 @@ view: hub_pl_monthly {
 
   measure: sum_amt_other_logistics_costs {
     type: sum
-    label: "Other Logictic Costs"
+    label: "Other Logistics Costs"
     group_label: "* Logistics *"
     sql: ${amt_other_logistics_costs};;
     value_format_name: euro_accounting_2_precision
@@ -624,7 +634,7 @@ view: hub_pl_monthly {
 
   measure: sum_amt_total_logistics_costs {
     type: sum
-    label: "Total Logictic Costs"
+    label: "Total Logistics Costs"
     group_label: "* Logistics *"
     sql: ${amt_total_logistics_cost};;
     value_format_name: euro_accounting_2_precision

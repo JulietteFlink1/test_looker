@@ -166,6 +166,12 @@ view: vat_order {
     sql: ${TABLE}.amt_total_deposit ;;
   }
 
+  dimension: quantity_deposit {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.quantity_deposit ;;
+  }
+
   dimension: vat_items_special{
     hidden: yes
     type: number
@@ -557,6 +563,7 @@ view: vat_order {
     sql: ${delivery_fee_reduced_net} ;;
   }
 
+
   measure: sum_delivery_fee_standard_net {
     group_label: "* Delivery Fee *"
     type: sum
@@ -853,6 +860,15 @@ view: vat_order {
     type: sum
     sql: ${amt_total_deposit} ;;
   }
+
+  measure: sum_quantity_deposit {
+    group_label: "* Deposit *"
+    label: "Quantity Deposit"
+    description: "Quantity of Items for which the customer paid a deposit"
+    type: sum
+    sql: ${quantity_deposit} ;;
+  }
+
 
 
 
