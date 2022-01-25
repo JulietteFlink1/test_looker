@@ -21,7 +21,7 @@ view: inventory_daily {
     allowed_value: { value: "Day" }
     allowed_value: { value: "Week" }
     allowed_value: { value: "Month" }
-    default_value: "Day"
+    default_value: "Week"
   }
   dimension: report_date_dynamic {
     group_label: "* Parameters & Dynamic Fields *"
