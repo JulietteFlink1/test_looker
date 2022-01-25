@@ -12,6 +12,32 @@ view: inventory_daily {
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~     Parameter & Dynamic Fields     ~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  parameter: date_granularity {
+    group_label: "* Parameters & Dynamic Fields *"
+    label: "Select Date Granularity"
+    type: unquoted
+    allowed_value: { value: "Day" }
+    allowed_value: { value: "Week" }
+    allowed_value: { value: "Month" }
+    default_value: "Day"
+  }
+  dimension: report_date_dynamic {
+    group_label: "* Parameters & Dynamic Fields *"
+    label: "Inventory Report Date (Dynamic)"
+    label_from_parameter: date_granularity
+    sql:
+    {% if date_granularity._parameter_value == 'Day' %}
+      ${report_date}
+    {% elsif date_granularity._parameter_value == 'Week' %}
+      ${report_week}
+    {% elsif date_granularity._parameter_value == 'Month' %}
+      ${report_month}
+    {% endif %};;
+  }
+
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Dimensions     ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -433,6 +459,12 @@ view: inventory_daily {
   }
 
   #   https://goflink.atlassian.net/browse/DATA-1419  <<<<
+
+
+  measure: count {
+
+    type: count
+  }
 
 
 
