@@ -50,7 +50,7 @@ UNION ALL
     'actual_orders' as model_name,
     f.observed_orders_total as prediction,
     f.observed_orders_total,
-    False as live_model,
+    True as live_model,
     f.missed_orders_forced_closure
     FROM `flink-data-prod.order_forecast.micro_forecasts_vs_actuals` f
     INNER JOIN latest_forecast l ON l.job_date = f.job_date AND l.country_iso = f.country_iso AND l.hub_code = f.hub_code AND l.start_timestamp = f.start_timestamp AND l.end_timestamp = f.end_timestamp AND f.model_name = l.model_name

@@ -4,7 +4,7 @@ include: "/views/bigquery_tables/curated_layer/hubs_ct.view"
 explore: order_forecasting_models {
   hidden: no
   label: "Order Forecasting Models"
-  view_label: "Order Forecasting Models"
+  view_label: "* Order Forecasting Models *"
   group_label: "Rider Ops"
 
 
