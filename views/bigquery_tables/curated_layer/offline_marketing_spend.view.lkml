@@ -13,6 +13,11 @@ view: offline_marketing_spend {
     sql: ${TABLE}.channel ;;
   }
 
+  dimension: use_case {
+    type: string
+    sql: ${TABLE}.use_case ;;
+  }
+
   dimension: country_iso {
     type: string
     sql: ${TABLE}.country_iso ;;
@@ -60,6 +65,7 @@ view: offline_marketing_spend {
 
   measure: count {
     type: count
+    hidden: yes
     drill_fields: []
   }
 
