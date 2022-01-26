@@ -32,6 +32,12 @@ view: hub_staffing {
     sql: ${TABLE}.block_starts_at_timestamp ;;
   }
 
+  dimension: block_start_time {
+    type: string
+    hidden: yes
+    sql: split(${block_starts_at_timestamp_time}," ")[offset(1)];;
+  }
+
   dimension: city {
     type: string
     sql: ${TABLE}.city ;;
