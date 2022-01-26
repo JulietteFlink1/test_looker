@@ -36,18 +36,19 @@ oos as
 price_today_aux as
 (
     SELECT
+
     cast(a.order_timestamp as date) AS order_date,
     a.sku,
     a.amt_unit_price_gross as price_today,
-    cast(COALESCE(SUM(a.amt_total_price_gross), 0) as decimal)  AS sum_item_price_gross,
-    COALESCE(SUM(a.quantity), 0) AS sum_item_quantity,
-    count(distinct a.order_uuid) as dist_ord
+    max (a.order_timestamp) as max_order_timestamp
 
     FROM `flink-data-prod.curated.order_lineitems`  AS a
         LEFT JOIN `flink-data-prod.curated.orders`  AS ord
             ON ord.order_uuid = a.order_uuid
 
 where ord.is_successful_order is true
+      -- and sku = "11013686"
+      -- and cast(a.order_timestamp as date) >="2021-12-01"
 group by 1,2,3
 order by 1,2,4 desc
 ),
@@ -55,24 +56,31 @@ order by 1,2,4 desc
 /*for the cases in which the product had two prices in the same day, I keep the one tnat had more revenue*/
 price_today_aux2 as
 (
-    select
-    row_number() over (partition by concat(order_date,sku) order by sum_item_price_gross desc) as rn,
-    price_today_aux.*
-        from price_today_aux
+select
+row_number() over (partition by concat(order_date,sku) order by max_order_timestamp desc) as rn,
+a.*,
+from price_today_aux a
+order by 2
 ),
 
 price_today as
 (
 select
-price_today_aux2.order_date,
-price_today_aux2.sku,
-price_today_aux2.price_today,
-price_today_aux2.sum_item_price_gross,
-price_today_aux2.sum_item_quantity,
-price_today_aux2.dist_ord
-  from price_today_aux2
-    where rn=1
-    and price_today <> 0
+a.order_date,
+a.sku,
+a.price_today,
+ cast(COALESCE(SUM(b.amt_total_price_gross), 0) as decimal)  AS sum_item_price_gross,
+ COALESCE(SUM(b.quantity), 0) AS sum_item_quantity,
+ count(distinct b.order_uuid) as dist_ord
+from price_today_aux2 a
+left join `flink-data-prod.curated_incremental.order_lineitems` b
+on a.sku = b.sku
+and a.order_date = cast(b.order_timestamp as date)
+where rn=1
+ and price_today <> 0
+group by 1,2,3
+order by 1
+
 ),
 
 price_yesterday_aux as
@@ -83,8 +91,10 @@ SELECT
     else cast(date_add(a.order_timestamp,interval +1 day) as date) end as order_date_min_1,
     a.sku,
     a.amt_unit_price_gross as price_yest,
-    cast(COALESCE(SUM(a.amt_total_price_gross), 0) as decimal)  AS sum_item_price_gross,
-    COALESCE(SUM(a.quantity ), 0) AS sum_item_quantity,
+    max (case when  (FORMAT_TIMESTAMP('%A', a.order_timestamp))="Saturday" and a.country_iso ="DE" then date_add(a.order_timestamp,interval +2 day)
+    else date_add(a.order_timestamp,interval +1 day) end) as max_order_timestamp,
+    -- cast(COALESCE(SUM(a.amt_total_price_gross), 0) as decimal)  AS sum_item_price_gross,
+    -- COALESCE(SUM(a.quantity ), 0) AS sum_item_quantity,
     --cast(COALESCE(SUM(a.amt_total_price_gross), 0) as decimal) / COALESCE(SUM(a.quantity ), 0) as price_yest
 
 FROM `flink-data-prod.curated.order_lineitems`  AS a
@@ -96,21 +106,24 @@ FROM `flink-data-prod.curated.order_lineitems`  AS a
 
 price_yesterday_aux2 as
 (
-    select
-    row_number() over (partition by concat(order_date,sku) order by sum_item_price_gross desc) as rn,
-    price_yesterday_aux.*
-        from price_yesterday_aux
+select
+row_number() over (partition by concat(order_date_min_1,sku) order by max_order_timestamp desc) as rn,
+a.*,
+from price_yesterday_aux a
+order by 2
 ),
 
 price_yesterday as
 (
 select
-price_yesterday_aux2.order_date_min_1,
-price_yesterday_aux2.sku,
-price_yesterday_aux2.price_yest
-   from price_yesterday_aux2
-    where rn=1
-    and price_yest <> 0
+a.order_date_min_1,
+a.sku,
+a.price_yest
+from price_yesterday_aux2 a
+where rn=1
+ and price_yest <> 0
+group by 1,2,3
+order by 1
 ),
 
 day_sku_pr_change as
