@@ -1,60 +1,60 @@
-view: inventory_daily {
-  sql_table_name: `flink-data-prod.reporting.inventory_daily`
+view: inventory_hourly {
+  sql_table_name: `flink-data-prod.curated.inventory_hourly`
     ;;
 
-  # defines all fields, that only work together with other views being joined
-  # .. coupled together in a set, so that they can easily be excluded
-  set: cross_referenced_metrics {
-    fields: [
-      number_of_total_skus_per_day_and_hub,
-      pct_products_booked_in_same_day
-    ]
-  }
-
-  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  # ~~~~~~~     Parameter & Dynamic Fields     ~~~~~~~~~~~~~~~~~
-  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  parameter: date_granularity {
-    group_label: "* Parameters & Dynamic Fields *"
-    label: "Select Date Granularity"
-    type: unquoted
-    allowed_value: { value: "Day" }
-    allowed_value: { value: "Week" }
-    allowed_value: { value: "Month" }
-    default_value: "Week"
-  }
-  dimension: report_date_dynamic {
-    group_label: "* Parameters & Dynamic Fields *"
-    label: "Inventory Report Date (Dynamic)"
-    label_from_parameter: date_granularity
-    sql:
-    {% if date_granularity._parameter_value == 'Day' %}
-      ${report_date}
-    {% elsif date_granularity._parameter_value == 'Week' %}
-      ${report_week}
-    {% elsif date_granularity._parameter_value == 'Month' %}
-      ${report_month}
-    {% endif %};;
-  }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Dimensions     ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   # =========  __main__   =========
-  dimension_group: report {
+  dimension_group: report_timestamp {
+
     label: "Inventory Report"
     type: time
     timeframes: [
       raw,
+      time,
       date,
       week,
-      month
+      month,
+      quarter,
+      year
     ]
-    convert_tz: yes
-    datatype: date
-    sql: ${TABLE}.report_date ;;
+    sql: ${TABLE}.report_timestamp ;;
   }
+
+  dimension: is_hub_open {
+
+    label: "Is Hub Open"
+    description: "A boolean to filter for only open hub hours"
+    group_label: "OOS-Dimensions"
+
+    type: yesno
+    sql: ${TABLE}.is_hub_open ;;
+  }
+
+  dimension: share_of_hours_oos {
+
+    label: "Number of Hours OOS"
+    description: "An indicator, to show, whether a SKU was out-of-stock at a given hour, with oos (1) partially oos (0.5) or in stock (0)"
+    group_label: "OOS-Dimensions"
+
+    type: number
+    sql: ${TABLE}.share_of_hours_oos ;;
+  }
+
+  dimension: share_of_hours_open {
+
+    label: "Number of Hours Open"
+    description: "An indicator, to show, whether a hour was open (1) partially open (0.5) or closed (0)"
+    group_label: "OOS-Dimensions"
+
+    type: number
+    sql: ${TABLE}.share_of_hours_open ;;
+  }
+
+
 
 
   # =========  hidden   =========
@@ -71,14 +71,13 @@ view: inventory_daily {
   }
 
 
+  # =========  IDs   =========
   dimension: sku {
     type: string
     sql: ${TABLE}.sku ;;
     hidden: yes
   }
 
-
-  # =========  IDs   =========
   dimension: table_uuid {
     type: string
     sql: ${TABLE}.table_uuid ;;
@@ -86,97 +85,10 @@ view: inventory_daily {
     primary_key: yes
   }
 
-  # =========  Measures - Dims per Day/Hub/SKU   =========
-  dimension: number_of_correction_product_damaged {
-    group_label: "Inventory Change"
-    type: number
-    sql: ${TABLE}.number_of_correction_product_damaged ;;
-  }
-
-  dimension: number_of_correction_product_expired {
-    group_label: "Inventory Change"
-    type: number
-    sql: ${TABLE}.number_of_correction_product_expired ;;
-  }
-
-  dimension: number_of_correction_stock_taking_increased {
-    group_label: "Inventory Change"
-    type: number
-    sql: ${TABLE}.number_of_correction_stock_taking_increased ;;
-  }
-
-  dimension: number_of_correction_stock_taking_reduced {
-    group_label: "Inventory Change"
-    type: number
-    sql: ${TABLE}.number_of_correction_stock_taking_reduced ;;
-  }
-
-  dimension: number_of_hours_oos {
-    group_label: "OOS-Dimensions"
-    type: number
-    sql: ${TABLE}.number_of_hours_oos ;;
-  }
-
-  dimension: number_of_hours_open {
-    group_label: "OOS-Dimensions"
-    type: number
-    sql: ${TABLE}.number_of_hours_open ;;
-  }
-
-  dimension: number_of_outbound_orders {
-    group_label: "Inventory Change"
-    type: number
-    sql: ${TABLE}.number_of_outbound_orders ;;
-  }
-
-  dimension: number_of_outbound_others {
-    group_label: "Inventory Change"
-    type: number
-    sql: ${TABLE}.number_of_outbound_others ;;
-  }
-
-  dimension: number_of_total_correction {
-    group_label: "Inventory Change"
-    type: number
-    sql: ${TABLE}.number_of_total_correction ;;
-  }
-
-  dimension: number_of_total_inbound {
-    group_label: "Inventory Change"
-    type: number
-    sql: ${TABLE}.number_of_total_inbound ;;
-  }
-
-  dimension: number_of_total_outbound {
-    group_label: "Inventory Change"
-    type: number
-    sql: ${TABLE}.number_of_total_outbound ;;
-  }
-
-  dimension: number_of_unspecified {
-    group_label: "Inventory Change"
-    type: number
-    sql: ${TABLE}.number_of_unspecified ;;
-  }
-
-  dimension: quantity_from {
-    group_label: "Inventory Change"
-    type: number
-    sql: ${TABLE}.quantity_from ;;
-  }
-
-  dimension: quantity_to {
-    group_label: "Inventory Change"
-    type: number
-    sql: ${TABLE}.quantity_to ;;
-  }
-
-
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 
   # ~~~~~~~~~~~~~  START: Out-Of-Stock Metrics  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   measure: sum_of_hours_open {
@@ -186,7 +98,7 @@ view: inventory_daily {
     group_label: "OOS-Measures"
 
     type: sum
-    sql: ${number_of_hours_open} ;;
+    sql: ${share_of_hours_open} ;;
 
     value_format_name: decimal_1
   }
@@ -198,7 +110,7 @@ view: inventory_daily {
     group_label: "OOS-Measures"
 
     type: sum
-    sql: ${number_of_hours_oos} ;;
+    sql: ${share_of_hours_oos} ;;
 
     value_format_name: decimal_1
 
@@ -264,11 +176,7 @@ view: inventory_daily {
 
 
 
-
-
-
-
-  # ~~~~~~~~~~~~~  START: Inventory Change  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~  START: Inventory Change  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   measure: avg_inventory {
 
     label: "AVG Inventory Level"
@@ -276,7 +184,32 @@ view: inventory_daily {
     group_label: "Inventory Change"
 
     type: average
-    sql: ( (${quantity_from} + ${quantity_to}) / 2  ) ;;
+    sql: ( (${TABLE}.quantity_from + ${TABLE}.quantity_to) / 2  ) ;;
+
+    value_format_name: decimal_1
+  }
+
+
+  measure: avg_quantity_from {
+
+    label: "AVG Quantity From"
+    description: "The average inventory quantity at the start of every hour"
+    group_label: "Inventory Change"
+
+    type: average
+    sql: ${TABLE}.quantity_from ;;
+
+    value_format_name: decimal_1
+  }
+
+  measure: avg_quantity_to {
+
+    label: "AVG Quantity To"
+    description: "The average inventory quantity at the end of every hour"
+    group_label: "Inventory Change"
+
+    type: average
+    sql: ${TABLE}.quantity_to ;;
 
     value_format_name: decimal_1
   }
@@ -288,7 +221,7 @@ view: inventory_daily {
     group_label: "Inventory Change"
 
     type: sum
-    sql: ${number_of_total_correction} ;;
+    sql: ${TABLE}.number_of_total_correction ;;
 
     value_format_name: decimal_0
   }
@@ -300,7 +233,7 @@ view: inventory_daily {
     group_label: "Inventory Change"
 
     type: sum
-    sql: ${number_of_total_inbound} ;;
+    sql: ${TABLE}.number_of_total_inbound ;;
 
     value_format_name: decimal_0
   }
@@ -312,7 +245,7 @@ view: inventory_daily {
     group_label: "Inventory Change"
 
     type: sum
-    sql: ${number_of_total_outbound} ;;
+    sql: ${TABLE}.number_of_total_outbound ;;
 
     value_format_name: decimal_0
   }
@@ -325,7 +258,7 @@ view: inventory_daily {
     group_label: "Inventory Change"
 
     type: sum
-    sql: ${number_of_correction_product_damaged} ;;
+    sql: ${TABLE}.number_of_correction_product_damaged ;;
 
     value_format_name: decimal_0
   }
@@ -337,7 +270,7 @@ view: inventory_daily {
     group_label: "Inventory Change"
 
     type: sum
-    sql: ${number_of_correction_product_expired} ;;
+    sql: ${TABLE}.number_of_correction_product_expired ;;
 
     value_format_name: decimal_0
   }
@@ -349,7 +282,7 @@ view: inventory_daily {
     group_label: "Inventory Change"
 
     type: sum
-    sql: ${number_of_correction_stock_taking_increased} ;;
+    sql: ${TABLE}.number_of_correction_stock_taking_increased ;;
 
     value_format_name: decimal_0
   }
@@ -361,7 +294,7 @@ view: inventory_daily {
     group_label: "Inventory Change"
 
     type: sum
-    sql: ${number_of_correction_stock_taking_reduced} ;;
+    sql: ${TABLE}.number_of_correction_stock_taking_reduced ;;
 
     value_format_name: decimal_0
   }
@@ -373,7 +306,7 @@ view: inventory_daily {
     group_label: "Inventory Change"
 
     type: sum
-    sql: ${number_of_outbound_orders} ;;
+    sql: ${TABLE}.number_of_outbound_orders ;;
 
     value_format_name: decimal_0
   }
@@ -386,7 +319,7 @@ view: inventory_daily {
     group_label: "Inventory Change"
 
     type: sum
-    sql: ${number_of_outbound_others} ;;
+    sql: ${TABLE}.number_of_outbound_others ;;
 
     value_format_name: decimal_0
   }
@@ -400,74 +333,12 @@ view: inventory_daily {
     group_label: "Inventory Change"
 
     type: sum
-    sql: ${number_of_unspecified} ;;
+    sql: ${TABLE}.number_of_unspecified ;;
 
     value_format_name: decimal_0
-  }
-
-  measure: turnover_rate {
-
-    label:       "Product Turnover Rate"
-    description: "Defined as the quantity sold per SKU divided by the Average Inventory over the observed period of time"
-    group_label: "Inventory Change"
-
-    type: average
-    sql: abs(${number_of_outbound_orders}) / nullif(${quantity_from},0) ;;
-
-    value_format_name: decimal_2
-
   }
 
   # ~~~~~~~~~~~~~    END: Inventory Change  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-
-  #   >>>>   https://goflink.atlassian.net/browse/DATA-1419
-  measure: number_of_inbounded_skus_per_day_and_hub  {
-
-    hidden: yes
-
-    type: count_distinct
-    sql: concat(${sku}, ${report_date}, ${hub_code}) ;;
-    filters: [number_of_total_inbound: ">0"]
-
-    value_format_name: decimal_0
-
-  }
-
-  measure: number_of_total_skus_per_day_and_hub  {
-
-    hidden: yes
-
-    type: count_distinct
-    sql: concat(${products_hub_assignment.sku}, ${products_hub_assignment.report_date}, ${products_hub_assignment.hub_code}) ;;
-
-    value_format_name: decimal_0
-
-  }
-
-  measure: pct_products_booked_in_same_day {
-
-    label: "% of products booked in same day"
-    description: "Defined as No of products booked in / No of total products per day and hub"
-    group_label: "Inventory Management"
-
-    type: number
-    sql: ${number_of_inbounded_skus_per_day_and_hub} / nullif( ${number_of_total_skus_per_day_and_hub} ,0) ;;
-
-    value_format_name: percent_1
-  }
-
-  #   https://goflink.atlassian.net/browse/DATA-1419  <<<<
-
-
-  measure: count {
-
-    type: count
-  }
-
-
-
 
 
 

@@ -9,14 +9,33 @@ explore: supply_chain {
   view_name: products_hub_assignment
   view_label: "01 Products Hub Assignment"
 
-  sql_always_where: {% condition global_filters_and_parameters.datasource_filter %} ${products_hub_assignment.report_date} {% endcondition %} ;;
+  sql_always_where:
+      -- filter the time for all big tables of this explore
+      {% condition global_filters_and_parameters.datasource_filter %} ${products_hub_assignment.report_date} {% endcondition %}
+
+      -- filter for showing only 1 SKU per (Replenishment) Substitute Group
+      and
+      case
+            when {% condition products_hub_assignment.select_calculation_granularity %} 'sku'           {% endcondition %}
+            then true
+
+            when {% condition products_hub_assignment.select_calculation_granularity %} 'replenishment' {% endcondition %}
+            then ${products_hub_assignment.filter_one_sku_per_replenishment_substitute_group} is true
+
+            when {% condition products_hub_assignment.select_calculation_granularity %} 'customer'      {% endcondition %}
+            then ${products_hub_assignment.filter_one_sku_per_substitute_group} is true
+
+            else null
+        end
+      ;;
 
   hidden: yes
 
   always_filter: {
     filters: [
-      products_hub_assignment.erp_final_decision_is_sku_assigned_to_hub: "Yes",
-      global_filters_and_parameters.datasource_filter: "last 30 days"
+      products_hub_assignment.is_sku_assigned_to_hub: "Yes",
+      global_filters_and_parameters.datasource_filter: "last 30 days",
+      products_hub_assignment.select_calculation_granularity: "sku"
     ]
   }
 
@@ -26,7 +45,7 @@ explore: supply_chain {
 
     sql_on: ${global_filters_and_parameters.generic_join_dim} = TRUE ;;
     type: left_outer
-    relationship: many_to_one
+    relationship: one_to_one
   }
 
   join: inventory_daily {
@@ -43,9 +62,24 @@ explore: supply_chain {
     ;;
   }
 
+  join: inventory_hourly {
+
+    view_label: "03 Inventory Hourly (last 5 days)"
+
+    type: left_outer
+    relationship: one_to_many
+    sql_on:
+        ${inventory_hourly.hub_code}              = ${products_hub_assignment.hub_code}     and
+        ${inventory_hourly.sku}                   = ${products_hub_assignment.sku}          and
+        ${inventory_hourly.report_timestamp_date} = ${products_hub_assignment.report_date}  and
+        ${inventory_hourly.report_timestamp_date} >= current_date() - 5                     and -- today minus 5 days
+        {% condition global_filters_and_parameters.datasource_filter %} ${inventory_hourly.report_timestamp_date} {% endcondition %}
+    ;;
+  }
+
   join: products {
 
-    view_label: "03 Products"
+    view_label: "* Products *"
 
     type: left_outer
     relationship: many_to_one
@@ -55,12 +89,38 @@ explore: supply_chain {
 
   join: hubs_ct {
 
-    view_label: "04 Hubs"
+    view_label: "* Hubs *"
 
     type: left_outer
     relationship: many_to_one
     sql_on: ${hubs_ct.hub_code} = ${products_hub_assignment.hub_code} ;;
   }
+
+  join: inventory_changes_daily {
+
+    view_label: "04 Inventory Changes Daily"
+
+    type: left_outer
+    relationship: one_to_many
+    sql_on:
+        ${inventory_changes_daily.sku}                   = ${products_hub_assignment.sku}         and
+        ${inventory_changes_daily.hub_code}              = ${products_hub_assignment.hub_code}    and
+        ${inventory_changes_daily.inventory_change_date} = ${products_hub_assignment.report_date} and
+        {% condition global_filters_and_parameters.datasource_filter %} ${inventory_changes_daily.inventory_change_date} {% endcondition %}
+    ;;
+  }
+      # depends 100% on inventory_changes_daily
+      join: sku_hub_day_level_orders {
+        type: left_outer
+        relationship: many_to_one
+        view_label: "04 Inventory Changes Daily"
+
+        sql_on:
+            ${sku_hub_day_level_orders.product_sku}   =  ${inventory_changes_daily.sku} and
+            ${sku_hub_day_level_orders.hub_code}      =  ${inventory_changes_daily.hub_code} and
+            ${sku_hub_day_level_orders.created_date}  =  ${inventory_changes_daily.inventory_change_date}
+        ;;
+      }
 
   join: inbounding_times_per_vendor {
 
