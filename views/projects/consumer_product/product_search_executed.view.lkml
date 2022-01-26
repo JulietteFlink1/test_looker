@@ -9,7 +9,7 @@ view: product_search_executed {
     , search_results_available_count
     , search_results_unavailable_count
   from `flink-data-prod.flink_android_production.product_search_executed`
-  where date(_PARTITIONTIME) >= "2022-01-10"
+  where date(_PARTITIONTIME) >= "2022-01-13"
 
   union all
 
@@ -21,7 +21,7 @@ view: product_search_executed {
     , search_results_available_count
     , search_results_unavailable_count
   from `flink-data-prod.flink_ios_production.product_search_executed`
-  where date(_PARTITIONTIME) >= "2022-01-10"
+  where date(_PARTITIONTIME) >= "2022-01-13"
 )
 
 , search_sessions as (
@@ -48,8 +48,8 @@ view: product_search_executed {
     FROM `flink-data-prod.curated.app_session_events_full_load` e
     LEFT JOIN search_events ca ON ca.id = e.event_uuid
     left join `flink-data-prod.curated.app_sessions_full_load` s on s.session_uuid = e.session_id
-    WHERE DATE(e.event_timestamp) >= "2022-01-10"
-    and date(s.session_start_at) >= "2022-01-10"
+    WHERE DATE(e.event_timestamp) >= "2022-01-13"
+    and date(s.session_start_at) >= "2022-01-13"
     )
 
   , labeled_data AS(

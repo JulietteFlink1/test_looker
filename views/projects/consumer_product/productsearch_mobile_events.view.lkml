@@ -26,23 +26,23 @@ view: productsearch_mobile_events {
           tracks.id=event.id
           WHERE
             tracks.event NOT LIKE "%api%"
-            AND event NOT LIKE "%adjust%"
-            AND event NOT LIKE "%install_attributed%"
-            AND event != "application_opened"
-            AND event != "app_opened"
-            AND event != "application_updated"
-            AND NOT (LOWER(context_app_version) LIKE "%app-rating%"
-            OR LOWER(context_app_version) LIKE "%debug%"
-            OR LOWER(context_app_version) LIKE "%prerelease%"
-            OR LOWER(context_app_version) LIKE "%intercom%")
-            AND NOT (LOWER(context_app_name) = "flink-staging"
-            OR LOWER(context_app_name) = "flink-debug")
-            AND (LOWER(context_traits_email) != "qa@goflink.com"
-            OR context_traits_email is null)
-            AND (context_traits_hub_slug NOT IN('erp_spitzbergen', 'de_hub_test', 'fr_hub_test', 'nl_hub_test', 'at_hub_test', 'be_hub_test'
+            AND tracks.event NOT LIKE "%adjust%"
+            AND tracks.event NOT LIKE "%install_attributed%"
+            AND tracks.event != "application_opened"
+            AND tracks.event != "app_opened"
+            AND tracks.event != "application_updated"
+            AND NOT (LOWER(tracks.context_app_version) LIKE "%app-rating%"
+            OR LOWER(tracks.context_app_version) LIKE "%debug%"
+            OR LOWER(tracks.context_app_version) LIKE "%prerelease%"
+            OR LOWER(tracks.context_app_version) LIKE "%intercom%")
+            AND NOT (LOWER(tracks.context_app_name) = "flink-staging"
+            OR LOWER(tracks.context_app_name) = "flink-debug")
+            AND (LOWER(tracks.context_traits_email) != "qa@goflink.com"
+            OR tracks.context_traits_email is null)
+            AND (tracks.context_traits_hub_slug NOT IN('erp_spitzbergen', 'de_hub_test', 'fr_hub_test', 'nl_hub_test', 'at_hub_test', 'be_hub_test'
                                                            , 'de_qaa_test', 'fr_qaa_test', 'nl_qaa_test', 'at_qaa_test' , 'be_qaa_test'
                                         )
-           OR context_traits_hub_slug is null)
+           OR tracks.context_traits_hub_slug is null)
 
           UNION ALL
 
@@ -69,23 +69,23 @@ view: productsearch_mobile_events {
           tracks.id=event.id
           WHERE
             tracks.event NOT LIKE "%api%"
-            AND event NOT LIKE "%adjust%"
-            AND event NOT LIKE "%install_attributed%"
-            AND event != "application_opened"
-            AND event != "app_opened"
-            AND event != "application_updated"
-            AND NOT (LOWER(context_app_version) LIKE "%app-rating%"
-            OR LOWER(context_app_version) LIKE "%debug%"
-            OR LOWER(context_app_version) LIKE "%prerelease%"
-            OR LOWER(context_app_version) LIKE "%intercom%")
-            AND NOT (LOWER(context_app_name) = "flink-staging"
-            OR LOWER(context_app_name) = "flink-debug")
-            AND (LOWER(context_traits_email) != "qa@goflink.com"
-            OR context_traits_email is null)
-            AND (context_traits_hub_slug NOT IN('erp_spitzbergen', 'de_hub_test', 'fr_hub_test', 'nl_hub_test', 'at_hub_test', 'be_hub_test'
+            AND tracks.event NOT LIKE "%adjust%"
+            AND tracks.event NOT LIKE "%install_attributed%"
+            AND tracks.event != "application_opened"
+            AND tracks.event != "app_opened"
+            AND tracks.event != "application_updated"
+            AND NOT (LOWER(tracks.context_app_version) LIKE "%app-rating%"
+            OR LOWER(tracks.context_app_version) LIKE "%debug%"
+            OR LOWER(tracks.context_app_version) LIKE "%prerelease%"
+            OR LOWER(tracks.context_app_version) LIKE "%intercom%")
+            AND NOT (LOWER(tracks.context_app_name) = "flink-staging"
+            OR LOWER(tracks.context_app_name) = "flink-debug")
+            AND (LOWER(tracks.context_traits_email) != "qa@goflink.com"
+            OR tracks.context_traits_email is null)
+            AND (tracks.context_traits_hub_slug NOT IN('erp_spitzbergen', 'de_hub_test', 'fr_hub_test', 'nl_hub_test', 'at_hub_test', 'be_hub_test'
                                                            , 'de_qaa_test', 'fr_qaa_test', 'nl_qaa_test', 'at_qaa_test' , 'be_qaa_test'
                                         )
-           OR context_traits_hub_slug is null)
+           OR tracks.context_traits_hub_slug is null)
           ),
 
           country_lookup AS (
