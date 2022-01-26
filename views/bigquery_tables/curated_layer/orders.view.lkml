@@ -345,6 +345,14 @@ view: orders {
     sql:  ${fulfillment_time_raw_minutes} - ${delivery_time_estimate_minutes};;
   }
 
+  dimension: delivery_delay_since_time_targeted {
+    group_label: "* Operations / Logistics *"
+    label: "Delta to Time Targeted (min)"
+    description: "Delay versus delivery time targeted (internal model estimate, not necessarily the PDT which was down to customer)"
+    type: number
+    sql:  ${fulfillment_time_raw_minutes} - ${delivery_time_targeted_minutes};;
+  }
+
   dimension: delivery_id {
     hidden: yes
     group_label: "* IDs *"
@@ -432,6 +440,14 @@ view: orders {
     group_label: "* Operations / Logistics *"
     type: number
     sql: ${TABLE}.estimated_delivery_time_minutes;;
+  }
+
+  dimension: delivery_time_targeted_minutes {
+    label: "Delivery Time Targeted (min)"
+    description: "The internally targeted time in minutes for the order to arrive at the customer"
+    group_label: "* Operations / Logistics *"
+    type: number
+    sql: ${TABLE}.targeted_delivery_time_minutes;;
   }
 
   dimension: estimated_queuing_time_for_picker_minutes {
@@ -538,6 +554,13 @@ view: orders {
     type: yesno
     hidden: yes
     sql: ${TABLE}.is_delivery_pdt_available ;;
+  }
+
+  dimension: is_targeted_eta_available {
+    group_label: "* Operations / Logistics *"
+    type: yesno
+    hidden: yes
+    sql: case when ${delivery_time_targeted_minutes} is not null then true else false end;;
   }
 
   dimension: is_voucher_order{
@@ -1715,6 +1738,18 @@ view: orders {
         value_format: "0"
       }
 
+    measure: cnt_orders_with_targeted_eta_available {
+      # group_label: "* Operations / Logistics *"
+      view_label: "* Hubs *"
+      group_label: "Hub Leaderboard - Order Metrics"
+      label: "# Orders with Targeted Delivery Time is available"
+      description: "Count of Orders where a Targeted Delivery Time  is available"
+      hidden:  no
+      type: count
+      filters: [is_targeted_eta_available: "yes"]
+      value_format: "0"
+    }
+
       measure: cnt_orders_delayed_under_0_min {
         # group_label: "* Operations / Logistics *"
         view_label: "* Hubs *"
@@ -1833,6 +1868,18 @@ view: orders {
         filters: [delivery_delay_since_time_estimate:"<=0"]
         value_format: "0"
       }
+
+    measure: cnt_orders_delayed_under_0_min_time_targeted {
+      # group_label: "* Operations / Logistics *"
+      view_label: "* Hubs *"
+      group_label: "Hub Leaderboard - Order Metrics"
+      label: "# Orders delivered in time (time estimate)"
+      description: "Count of Orders delivered no later than internal time estimate"
+      hidden:  yes
+      type: count
+      filters: [delivery_delay_since_time_targeted:"<=0"]
+      value_format: "0"
+    }
 
       measure: cnt_orders_delayed_over_5_min_time_estimate {
         # group_label: "* Operations / Logistics *"
@@ -2108,11 +2155,11 @@ view: orders {
 
       measure: pct_delivery_in_time_time_estimate{
         group_label: "* Operations / Logistics *"
-        label: "% Orders delivered in time (internal estimate)"
-        description: "Share of orders delivered no later than internal estimate"
+        label: "% Orders delivered in time (targeted estimate)"
+        description: "Share of orders delivered no later than targeted estimate"
         hidden:  no
         type: number
-        sql: ${cnt_orders_delayed_under_0_min_time_estimate} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
+        sql: ${cnt_orders_delayed_under_0_min_time_targeted} / NULLIF(${cnt_orders_with_targeted_eta_available}, 0);;
         value_format: "0%"
       }
 
@@ -2223,6 +2270,15 @@ view: orders {
         filters: [delivery_time_estimate_minutes: ">0", fulfillment_time: ">0"]
         value_format: "0"
       }
+
+  measure: cnt_orders_with_delivery_time_targeted {
+    group_label: "* Operations / Logistics *"
+    label: "# Orders with Delivery Time Estimate"
+    hidden:  yes
+    type: count
+    filters: [delivery_time_targeted_minutes: ">0", fulfillment_time: ">0"]
+    value_format: "0"
+  }
 
       measure: rmse_delivery_time_estimate {
         label: "Delivery Time Estimate (RMSE)"

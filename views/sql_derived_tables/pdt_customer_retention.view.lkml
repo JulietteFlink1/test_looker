@@ -9,6 +9,8 @@ view: pdt_customer_retention {
         , delivery_pdt_minutes
         , round(fulfillment_time_minutes,0) as fulfillment_time_minutes
         , is_first_order
+        , count(order_uuid) over(partition by customer_email, country_iso order by order_timestamp rows between 1 following and unbounded following) * 7/DATE_DIFF(current_date - 6, DATE(order_timestamp),day) as weekly_order_frequency_after
+        , count(order_uuid) over(partition by customer_email, country_iso order by order_timestamp rows between 1 following and unbounded following) * 30/DATE_DIFF(current_date - 6, DATE(order_timestamp),day) as monthly_order_frequency_after
         , customer_order_rank
     from `flink-data-prod.curated.orders`
     where delivery_pdt_minutes is not null
@@ -63,6 +65,16 @@ view: pdt_customer_retention {
     sql: ${TABLE}.delivery_pdt_minutes ;;
   }
 
+  dimension: weekly_order_frequency_after {
+    type: number
+    sql: ${TABLE}.weekly_order_frequency_after ;;
+  }
+
+  dimension: monthly_order_frequency_after {
+    type: number
+    sql: ${TABLE}.monthly_order_frequency_after ;;
+  }
+
   dimension: fulfillment_time_minutes {
     type: number
     sql: ${TABLE}.fulfillment_time_minutes ;;
@@ -96,10 +108,17 @@ view: pdt_customer_retention {
     sql: ${fulfillment_time_minutes} ;;
   }
 
+  dimension: fulfillment_time_minutes_tier_10 {
+    type: tier
+    style: relational
+    tiers: [0,10,20,30,45,60]
+    sql: ${fulfillment_time_minutes} ;;
+  }
+
   dimension: delta_fulfillment_pdt_tier {
     type: tier
     style: relational
-    tiers: [-100,-20,-18,-16,-14,-12,-10,-8,-6,-4,-2,0,2,4,6,8,10,12,14,16,18,20,100]
+    tiers: [-100,-50,-45,-40,-35,-30,-25,-20,-15,-10,-5,0,5,10,15,20,25,30,35,40,45,50,55,60,75,90,100]
     sql: ${delta_fulfillment_pdt} ;;
   }
 
@@ -133,6 +152,18 @@ view: pdt_customer_retention {
     type: number
     sql: ${sum_7_day_retention}/nullif(${cnt_number_of_customers},0);;
     value_format: "0.0%"
+  }
+
+  measure: avg_weekly_order_frequency_after {
+    type: average
+    value_format: "0.00"
+    sql: ${TABLE}.weekly_order_frequency_after ;;
+  }
+
+  measure: avg_monthly_order_frequency_after {
+    type: average
+    value_format: "0.00"
+    sql: ${TABLE}.monthly_order_frequency_after ;;
   }
 
 

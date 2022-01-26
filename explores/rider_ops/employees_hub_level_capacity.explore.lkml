@@ -2,7 +2,7 @@ include: "/views/bigquery_tables/reporting_layer/rider_ops/employees_hub_level_c
 include: "/explores/base_explores/orders_cl.explore"
 
 explore: employees_hub_level_capacity {
-  hidden: no
+  hidden: yes
   label: "Employees Hub Level Capacity"
   view_label: "Employees Hub Level Capacity"
   description: "Hub employees operational KPIs, worked hours, planned hours, no_show hours, etc."
