@@ -1,10 +1,12 @@
 view: web_lp_performance {
   derived_table: {
-    sql:   WITH lp_sessions AS (
+    sql:
+WITH lp_sessions AS (
   SELECT
         session_date
       , session_uuid
       , page_path
+      ,
       -- , anonymous_id
       -- , hit_uuid
       -- , timestamp
@@ -33,6 +35,7 @@ view: web_lp_performance {
       click_sessions.session_date
     , click_sessions.session_uuid
     -- , click_sessions.page_path
+    , web_sessions.device_category
     , web_sessions.session_duration_minutes
     , web_sessions.is_shop_session
     , web_sessions.is_session_with_added_to_cart
@@ -47,6 +50,7 @@ view: web_lp_performance {
   group by session_date
                     , session_uuid
                     -- , page_path
+                    , device_category
                     , session_duration_minutes
                     , is_shop_session
                     , is_session_with_added_to_cart
@@ -66,6 +70,11 @@ view: web_lp_performance {
     ]
     sql: CAST(${TABLE}.session_date AS DATE) ;;
     datatype: date
+  }
+
+  dimension: device_category {
+    type: string
+    sql: ${TABLE}.device_category ;;
   }
 
   dimension: is_shop_session {
