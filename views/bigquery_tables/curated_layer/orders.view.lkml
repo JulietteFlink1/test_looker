@@ -1044,7 +1044,7 @@ view: orders {
   }
 
   dimension: weight {
-    hidden: yes
+    hidden: no
     type: number
     sql: ${TABLE}.weight ;;
   }

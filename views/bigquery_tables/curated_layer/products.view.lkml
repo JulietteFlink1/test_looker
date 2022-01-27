@@ -184,6 +184,12 @@ view: products {
     group_label: "> Product Attributes"
   }
 
+  dimension: weight {
+    hidden: no
+    type: number
+    sql: ${TABLE}.weight ;;
+  }
+
   ####### Product Compliance Report Fields ########
 
   dimension: is_ingredients_missing {
