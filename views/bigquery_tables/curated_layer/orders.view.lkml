@@ -1044,6 +1044,7 @@ view: orders {
   }
 
   dimension: weight {
+    group_label: "* Order Dimensions *"
     hidden: no
     type: number
     sql: ${TABLE}.weight ;;

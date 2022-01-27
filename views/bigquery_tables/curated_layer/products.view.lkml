@@ -185,6 +185,7 @@ view: products {
   }
 
   dimension: weight {
+    group_label: "> Product Attributes"
     hidden: no
     type: number
     sql: ${TABLE}.weight ;;
