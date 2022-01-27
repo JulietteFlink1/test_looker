@@ -28,15 +28,21 @@ view: productsearch_mobile_events {
             tracks.event NOT LIKE "%api%"
             AND tracks.event NOT LIKE "%adjust%"
             AND tracks.event NOT LIKE "%install_attributed%"
-            AND tracks.event NOT LIKE "%deep_link%"
+            AND tracks.event != "application_opened"
+            AND tracks.event != "app_opened"
+            AND tracks.event != "application_updated"
             AND NOT (LOWER(tracks.context_app_version) LIKE "%app-rating%"
-                 OR LOWER(tracks.context_app_version) LIKE "%debug%")
+            OR LOWER(tracks.context_app_version) LIKE "%debug%"
+            OR LOWER(tracks.context_app_version) LIKE "%prerelease%"
+            OR LOWER(tracks.context_app_version) LIKE "%intercom%")
             AND NOT (LOWER(tracks.context_app_name) = "flink-staging"
-                 OR LOWER(tracks.context_app_name) = "flink-debug")
+            OR LOWER(tracks.context_app_name) = "flink-debug")
             AND (LOWER(tracks.context_traits_email) != "qa@goflink.com"
-                 OR tracks.context_traits_email is null)
-            AND (tracks.context_traits_hub_slug NOT IN('erp_spitzbergen', 'fr_hub_test', 'nl_hub_test')
-                 OR tracks.context_traits_hub_slug is null)
+            OR tracks.context_traits_email is null)
+            AND (tracks.context_traits_hub_slug NOT IN('erp_spitzbergen', 'de_hub_test', 'fr_hub_test', 'nl_hub_test', 'at_hub_test', 'be_hub_test'
+                                                           , 'de_qaa_test', 'fr_qaa_test', 'nl_qaa_test', 'at_qaa_test' , 'be_qaa_test'
+                                        )
+           OR tracks.context_traits_hub_slug is null)
 
           UNION ALL
 
@@ -65,15 +71,21 @@ view: productsearch_mobile_events {
             tracks.event NOT LIKE "%api%"
             AND tracks.event NOT LIKE "%adjust%"
             AND tracks.event NOT LIKE "%install_attributed%"
-            AND tracks.event NOT LIKE "%deep_link%"
+            AND tracks.event != "application_opened"
+            AND tracks.event != "app_opened"
+            AND tracks.event != "application_updated"
             AND NOT (LOWER(tracks.context_app_version) LIKE "%app-rating%"
-                 OR LOWER(tracks.context_app_version) LIKE "%debug%")
+            OR LOWER(tracks.context_app_version) LIKE "%debug%"
+            OR LOWER(tracks.context_app_version) LIKE "%prerelease%"
+            OR LOWER(tracks.context_app_version) LIKE "%intercom%")
             AND NOT (LOWER(tracks.context_app_name) = "flink-staging"
-                 OR LOWER(tracks.context_app_name) = "flink-debug")
+            OR LOWER(tracks.context_app_name) = "flink-debug")
             AND (LOWER(tracks.context_traits_email) != "qa@goflink.com"
-                 OR tracks.context_traits_email is null)
-            AND (tracks.context_traits_hub_slug NOT IN('erp_spitzbergen', 'fr_hub_test', 'nl_hub_test')
-                 OR tracks.context_traits_hub_slug is null)
+            OR tracks.context_traits_email is null)
+            AND (tracks.context_traits_hub_slug NOT IN('erp_spitzbergen', 'de_hub_test', 'fr_hub_test', 'nl_hub_test', 'at_hub_test', 'be_hub_test'
+                                                           , 'de_qaa_test', 'fr_qaa_test', 'nl_qaa_test', 'at_qaa_test' , 'be_qaa_test'
+                                        )
+           OR tracks.context_traits_hub_slug is null)
           ),
 
           country_lookup AS (
@@ -139,6 +151,9 @@ view: productsearch_mobile_events {
           SELECT
           id,
           search_query,
+          case when search_query_id is not null
+                 then safe_convert_bytes_to_string(from_base64(search_query_id))
+                 else null end                                                             as search_query_id_decoded,
           INITCAP(TRIM(search_query)) AS search_query_clean,
           search_results_total_count,
           search_results_available_count,
@@ -150,6 +165,9 @@ view: productsearch_mobile_events {
           SELECT
           id,
           search_query,
+          case when search_query_id is not null
+                 then safe_convert_bytes_to_string(from_base64(search_query_id))
+                 else null end                                                             as search_query_id_decoded,
           INITCAP(TRIM(search_query)) AS search_query_clean,
           search_results_total_count,
           search_results_available_count,
@@ -161,6 +179,7 @@ view: productsearch_mobile_events {
           product_search_combined_data AS (
           SELECT
           tracks_data.*,
+          left(search_data.search_query_id_decoded, instr(search_data.search_query_id_decoded, ":") -1)         as search_engine,
           search_data.search_query,
           search_data.search_query_clean,
           search_data.search_results_total_count,
@@ -332,7 +351,7 @@ view: productsearch_mobile_events {
     type: string
     sql:
       CASE
-        WHEN ${derived_country_iso} IN ("DE", "FR", "NL") AND NOT ${country_derived_from_locale} THEN ${derived_city}
+        WHEN ${derived_country_iso} IN ("DE", "FR", "NL", "AT") AND NOT ${country_derived_from_locale} THEN ${derived_city}
         ELSE "- Other/ Unknown"
       END;;
   }
@@ -343,6 +362,13 @@ view: productsearch_mobile_events {
     hidden: yes
     type: string
     sql: ${TABLE}.search_query ;;
+  }
+
+  dimension: search_engine {
+    group_label: "Search Dimensions"
+    hidden: no
+    type: string
+    sql: ${TABLE}.search_engine ;;
   }
 
   dimension: search_query_clean {

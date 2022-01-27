@@ -1602,12 +1602,12 @@ view: orders {
       }
 
 
-      measure: rider_on_duty_time_minute {
-        label: "Sum Rider On Duty Time (min)"
+      measure: order_handling_time_minute {
+        label: "Sum Order Handling Time (min)"
         group_label: "* Operations / Logistics *"
         description: "Rider Time spent from claiming an order until returning to the hub "
         type: sum
-        sql:${rider_on_duty_time};;
+        sql:2 * TIMESTAMP_DIFF(safe_cast(${rider_completed_delivery_timestamp} as timestamp), safe_cast(${order_rider_claimed_timestamp} as timestamp), minute);;
         value_format_name: decimal_2
       }
 
@@ -2190,7 +2190,7 @@ view: orders {
         group_label: "* Operations / Logistics *"
         description: "% Rider Time spent not working on an order (not Occupied ) "
         type: number
-        sql: 1 - (${rider_on_duty_time_minute}/60)/NULLIF(${shyftplan_riders_pickers_hours.rider_hours},0);;
+        sql: 1 - ((${order_handling_time_minute}/60)/NULLIF(${shyftplan_riders_pickers_hours.rider_hours},0));;
         value_format_name:  percent_1
       }
 
