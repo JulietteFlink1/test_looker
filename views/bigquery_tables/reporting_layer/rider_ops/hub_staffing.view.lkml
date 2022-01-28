@@ -119,6 +119,12 @@ view: hub_staffing {
     sql: ${TABLE}.number_of_worked_minutes ;;
   }
 
+  dimension: number_of_no_show_minutes {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_no_show_minutes ;;
+  }
+
   dimension: position_name {
     type: string
     hidden: no
@@ -234,7 +240,7 @@ view: hub_staffing {
     label:"# No Show Hours"
     type: number
     description: "Sum of No Show Hours"
-    sql:(${sum_planned_hours} - ${sum_worked_hours});;
+    sql:${number_of_no_show_minutes}/60;;
     value_format_name: decimal_1
   }
 
