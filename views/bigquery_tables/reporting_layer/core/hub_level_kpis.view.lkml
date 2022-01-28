@@ -754,7 +754,7 @@ view: hub_level_kpis {
     label: "Sum of Rider Hours"
     type: sum
     sql: ${TABLE}.number_of_rider_hours ;;
-    value_format_name: decimal_2
+    value_format_name: decimal_1
   }
 
   measure: picker_hours {
@@ -762,7 +762,7 @@ view: hub_level_kpis {
     label: "Sum of Picker Hours"
     type: sum
     sql: ${TABLE}.number_of_picker_hours ;;
-    value_format_name: decimal_0
+    value_format_name: decimal_1
   }
 
   measure: rider_utr {
