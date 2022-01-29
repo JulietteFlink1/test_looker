@@ -238,7 +238,7 @@ view: hub_staffing {
 
   measure: sum_no_show_hours{
     label:"# No Show Hours"
-    type: number
+    type: sum
     description: "Sum of No Show Hours"
     sql:${number_of_no_show_minutes}/60;;
     value_format_name: decimal_1
