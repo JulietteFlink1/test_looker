@@ -32,6 +32,12 @@ view: hub_staffing {
     sql: ${TABLE}.block_starts_at_timestamp ;;
   }
 
+  dimension: block_start_time {
+    type: string
+    hidden: yes
+    sql: split(${block_starts_at_timestamp_time}," ")[offset(1)];;
+  }
+
   dimension: city {
     type: string
     sql: ${TABLE}.city ;;
@@ -111,6 +117,12 @@ view: hub_staffing {
     type: number
     hidden: yes
     sql: ${TABLE}.number_of_worked_minutes ;;
+  }
+
+  dimension: number_of_no_show_minutes {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_no_show_minutes ;;
   }
 
   dimension: position_name {
@@ -226,9 +238,9 @@ view: hub_staffing {
 
   measure: sum_no_show_hours{
     label:"# No Show Hours"
-    type: number
+    type: sum
     description: "Sum of No Show Hours"
-    sql:(${sum_planned_hours} - ${sum_worked_hours});;
+    sql:${number_of_no_show_minutes}/60;;
     value_format_name: decimal_1
   }
 

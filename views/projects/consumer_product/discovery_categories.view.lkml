@@ -9,7 +9,7 @@ view: discovery_categories {
           , e.device_type
           , e.event_timestamp
           , COALESCE(ca.category_name, ci.category_name)                                                     as category_name
-          , ca.sub_category_name                                                                             as sub_category_name
+          , COALESCE(ca.sub_category_name, ci.sub_category_name)                                             as sub_category_name
           , ca.origin_screen                                                                                 as origin_screen
           , LAG(e.event_name) OVER (PARTITION BY e.session_id ORDER BY e.event_timestamp ASC)                as event_name_before
           , LEAD(e.event_name) OVER (PARTITION BY e.session_id ORDER BY e.event_timestamp ASC)               as event_name_after
