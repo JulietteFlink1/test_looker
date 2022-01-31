@@ -1,4 +1,4 @@
-view: rider_nps {
+view: rider_nps_de {
   sql_table_name: `flink-data-prod.google_sheets.rider_nps_de`
   ;;
 
