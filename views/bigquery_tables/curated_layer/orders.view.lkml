@@ -21,7 +21,7 @@ view: orders {
 
   dimension: acceptance_time {
     type: number
-    hidden: yes
+    hidden: no
     sql: ${TABLE}.acceptance_time_minutes ;;
   }
 
