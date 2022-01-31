@@ -1682,7 +1682,8 @@ view: orders {
         label: "# Orders"
         description: "Count of successful Orders"
         hidden:  no
-        type: count
+        type: count_distinct
+        sql: ${id} ;;
         value_format: "0"
       }
 
