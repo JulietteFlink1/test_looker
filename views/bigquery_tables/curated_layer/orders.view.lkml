@@ -465,6 +465,7 @@ view: orders {
     type: number
     value_format: "0.0"
     sql: TIMESTAMP_DIFF(safe_cast(${order_picker_accepted_timestamp} as timestamp) , safe_cast(${created_time} as timestamp),second)/60;;
+    hidden: yes
   }
 
   dimension: queuing_time_for_rider_minutes {
@@ -474,6 +475,7 @@ view: orders {
     type: number
     value_format: "0.0"
     sql: TIMESTAMP_DIFF( safe_cast(${order_on_route_timestamp} as timestamp),safe_cast(${order_packed_timestamp} as timestamp),second)/60;;
+    hidden: yes
   }
 
   dimension: estimated_queuing_time_for_rider_minutes {
@@ -1373,6 +1375,7 @@ view: orders {
         type: average
         sql: ${queuing_time_for_picker_minutes} ;;
         value_format_name: decimal_1
+        hidden: yes
       }
 
       measure: avg_queuing_time_for_riders_minutes {
@@ -1381,6 +1384,7 @@ view: orders {
         type: average
         sql: ${queuing_time_for_rider_minutes} ;;
         value_format_name: decimal_1
+        hidden: yes
       }
 
       measure: avg_pre_riding_time {
