@@ -21,7 +21,7 @@ view: orders {
 
   dimension: acceptance_time {
     type: number
-    hidden: yes
+    hidden: no
     sql: ${TABLE}.acceptance_time_minutes ;;
   }
 
@@ -465,6 +465,7 @@ view: orders {
     type: number
     value_format: "0.0"
     sql: TIMESTAMP_DIFF(safe_cast(${order_picker_accepted_timestamp} as timestamp) , safe_cast(${created_time} as timestamp),second)/60;;
+    hidden: yes
   }
 
   dimension: queuing_time_for_rider_minutes {
@@ -474,6 +475,7 @@ view: orders {
     type: number
     value_format: "0.0"
     sql: TIMESTAMP_DIFF( safe_cast(${order_on_route_timestamp} as timestamp),safe_cast(${order_packed_timestamp} as timestamp),second)/60;;
+    hidden: yes
   }
 
   dimension: estimated_queuing_time_for_rider_minutes {
@@ -486,10 +488,10 @@ view: orders {
 
   dimension: pre_riding_time {
     label: "Pre Riding Time (min)"
-    description: "Picker Queuing Time + Picking Time + Rider Queuing Time"
+    description: "Reaction Time + Picking Time + Acceptance Time"
     group_label: "* Operations / Logistics *"
     type: number
-    sql: ${queuing_time_for_picker_minutes}+${queuing_time_for_rider_minutes} + ${time_diff_between_two_subsequent_fulfillments};;
+    sql: ${reaction_time} + ${acceptance_time} + ${time_diff_between_two_subsequent_fulfillments};;
   }
 
   dimension: is_critical_delivery_time_estimate_underestimation {
@@ -1044,7 +1046,8 @@ view: orders {
   }
 
   dimension: weight {
-    hidden: yes
+    group_label: "* Order Dimensions *"
+    hidden: no
     type: number
     sql: ${TABLE}.weight ;;
   }
@@ -1372,6 +1375,7 @@ view: orders {
         type: average
         sql: ${queuing_time_for_picker_minutes} ;;
         value_format_name: decimal_1
+        hidden: yes
       }
 
       measure: avg_queuing_time_for_riders_minutes {
@@ -1380,6 +1384,7 @@ view: orders {
         type: average
         sql: ${queuing_time_for_rider_minutes} ;;
         value_format_name: decimal_1
+        hidden: yes
       }
 
       measure: avg_pre_riding_time {

@@ -51,7 +51,7 @@ view: inventory_daily {
       week,
       month
     ]
-    convert_tz: yes
+    convert_tz: no
     datatype: date
     sql: ${TABLE}.report_date ;;
   }

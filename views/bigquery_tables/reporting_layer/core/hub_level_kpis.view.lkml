@@ -176,6 +176,24 @@ view: hub_level_kpis {
     value_format_name: decimal_0
   }
 
+  measure: sum_number_of_adjusted_picker_orders {
+    group_label: ">> Order KPIs"
+    label: "# Orders"
+    hidden: yes
+    type: sum
+    sql: ${TABLE}.number_of_adjusted_picker_orders ;;
+    value_format_name: decimal_0
+  }
+
+  measure: sum_number_of_adjusted_rider_orders {
+    group_label: ">> Order KPIs"
+    label: "# Orders"
+    type: sum
+    hidden: yes
+    sql: ${TABLE}.number_of_adjusted_rider_orders ;;
+    value_format_name: decimal_0
+  }
+
   measure: percent_of_total_orders_col {
     group_label: ">> Order KPIs"
     label: "% Of Total Orders (Column)"
@@ -718,9 +736,12 @@ view: hub_level_kpis {
   measure: adjusted_orders_riders {
     group_label: ">> UTR KPIs"
     type: sum
+    description: "exclude orders when total daily worked hour = 0"
     sql: ${TABLE}.number_of_adjusted_orders_riders ;;
     hidden: yes
   }
+
+
 
   measure: adjusted_orders_pickers {
     type: sum
@@ -733,7 +754,7 @@ view: hub_level_kpis {
     label: "Sum of Rider Hours"
     type: sum
     sql: ${TABLE}.number_of_rider_hours ;;
-    value_format_name: decimal_2
+    value_format_name: decimal_1
   }
 
   measure: picker_hours {
@@ -741,7 +762,7 @@ view: hub_level_kpis {
     label: "Sum of Picker Hours"
     type: sum
     sql: ${TABLE}.number_of_picker_hours ;;
-    value_format_name: decimal_0
+    value_format_name: decimal_1
   }
 
   measure: rider_utr {
@@ -749,7 +770,7 @@ view: hub_level_kpis {
     label: "AVG Rider UTR"
     hidden: no
     type: number
-    sql: ${sum_number_of_orders} / NULLIF(${rider_hours}, 0);;
+    sql: ${sum_number_of_adjusted_rider_orders} / NULLIF(${rider_hours}, 0);;
     value_format_name: decimal_2
   }
 
@@ -758,7 +779,7 @@ view: hub_level_kpis {
     label: "AVG Picker UTR"
     type: number
     hidden: no
-    sql: ${sum_number_of_orders} / NULLIF(${picker_hours}, 0);;
+    sql: ${sum_number_of_adjusted_rider_orders} / NULLIF(${picker_hours}, 0);;
     value_format_name: decimal_2
 
   }
