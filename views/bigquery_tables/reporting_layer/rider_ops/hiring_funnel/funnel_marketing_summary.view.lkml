@@ -172,9 +172,4 @@ view: funnel_marketing_summary {
     value_format_name: decimal_0
   }
 
-  measure: count {
-    hidden: yes
-    type: count
-    drill_fields: []
-  }
 }

@@ -78,8 +78,18 @@ view: daily_hub_staffing {
     type: sum
     hidden: no
     label:"# Worked Hours"
-    description: "Number of Planned/Scheduled Hours"
+    description: "Number of Worked Hours"
     sql:${number_of_worked_minutes}/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: sum_worked_rider_hours{
+    type: sum
+    hidden: no
+    label:"# Worked Rider Hours"
+    description: "Number of Worked Hours"
+    sql:${number_of_worked_minutes}/60;;
+    filters: [position_name: "rider"]
     value_format_name: decimal_1
   }
 

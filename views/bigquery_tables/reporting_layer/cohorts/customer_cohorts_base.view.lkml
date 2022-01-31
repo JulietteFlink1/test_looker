@@ -3,18 +3,6 @@ view: customer_cohorts_base {
     ;;
 
 
-  dimension: reorder_number_28_days {
-    group_label: "* User Dimensions *"
-    type: number
-    sql: ${TABLE}._28_day_reorder_number ;;
-  }
-
-  dimension: reorder_number_30_days {
-    group_label: "* User Dimensions *"
-    type: number
-    sql: ${TABLE}._30_day_reorder_number ;;
-  }
-
   dimension: lifetime_revenue_gross {
     group_label: "* Monetary Values *"
     type: number
@@ -59,7 +47,7 @@ view: customer_cohorts_base {
   dimension: country {
     group_label: "* User Dimensions *"
     type: string
-    sql: ${TABLE}.first_order_country ;;
+    sql: ${TABLE}.first_order_country_iso ;;
   }
 
   # dimension: user_email {
@@ -114,10 +102,10 @@ view: customer_cohorts_base {
     sql: ${TABLE}.first_order_city ;;
   }
 
-  dimension: first_order_hub {
+  dimension: first_order_hub_code {
     group_label: "* User Dimensions *"
     type: string
-    sql: ${TABLE}.first_order_hub ;;
+    sql: ${TABLE}.first_order_hub_code ;;
   }
 
   dimension: is_discount_acquisition {
@@ -147,7 +135,7 @@ view: customer_cohorts_base {
     sql: ${TABLE}.last_order_with_voucher ;;
   }
 
-  dimension_group: latest_order {
+  dimension_group: last_order {
     group_label: "* Dates and Timestamps *"
     type: time
     timeframes: [
@@ -159,14 +147,14 @@ view: customer_cohorts_base {
       quarter,
       year
     ]
-    sql: ${TABLE}.latest_order_timestamp ;;
+    sql: ${TABLE}.last_order_timestamp ;;
   }
 
   dimension: days_betw_first_and_last_order {
     group_label: "* First Order Date *"
-    description: "Days between first and latest order"
+    description: "Days between first and last order"
     type: number
-    sql: TIMESTAMP_DIFF(${latest_order_raw}, ${first_order_raw}, DAY)+1 ;;
+    sql: TIMESTAMP_DIFF(${last_order_raw}, ${first_order_raw}, DAY)+1 ;;
   }
 
   dimension_group: duration_between_first_order_and_now {
@@ -194,10 +182,10 @@ view: customer_cohorts_base {
     intervals: [week]
   }
 
-  dimension: latest_order_id {
+  dimension: last_order_id {
     group_label: "* IDs *"
     type: string
-    sql: ${TABLE}.latest_order_uuid ;;
+    sql: ${TABLE}.last_order_uuid ;;
   }
 
   dimension: lifetime_orders {
@@ -254,12 +242,6 @@ view: customer_cohorts_base {
     sql: ${TABLE}.top_3_product ;;
   }
 
-  dimension: has_reordered_within_30_days {
-    group_label: "* User Dimensions *"
-    description: "Boolean dimension. Takes the value yes if the user has reordered within 30 days after their first order."
-    type: yesno
-    sql: case when ${reorder_number_30_days} > 0 then True else False end ;;
-  }
 
   dimension: repeat_customer {
     group_label: "* User Dimensions *"
@@ -313,11 +295,6 @@ view: customer_cohorts_base {
 
   ################## Measures
 
-  measure: cnt_30_day_retention {
-    group_label: "* Basic Counts (Orders / Customers etc.) *"
-    type: count
-    filters: [has_reordered_within_30_days: "yes"]
-  }
 
   measure: cnt_number_of_customers {
     group_label: "* Basic Counts (Orders / Customers etc.) *"

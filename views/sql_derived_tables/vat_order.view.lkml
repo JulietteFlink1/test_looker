@@ -1,6 +1,6 @@
 view: vat_order {
   derived_table: {
-    sql:select * from `flink-data-dev.reporting.vat_order`
+    sql:select * from `flink-data-prod.reporting.vat_order`
     ;;
   }
 
@@ -52,6 +52,8 @@ view: vat_order {
     sql: ${TABLE}.is_free_delivery_discount ;;
   }
 
+
+
   dimension: discount_free_delivery_gross {
     type: number
     hidden: yes
@@ -82,7 +84,13 @@ view: vat_order {
 
   dimension: payment_type {
     type: string
+    hidden: yes
     sql: ${TABLE}.payment_type ;;
+  }
+
+  dimension: payment_method {
+    type: string
+    sql: ${TABLE}.payment_method ;;
   }
 
   dimension: amt_rider_tip {
@@ -150,6 +158,18 @@ view: vat_order {
     hidden: yes
     type: number
     sql: ${TABLE}.vat_items_standard ;;
+  }
+
+  dimension: amt_total_deposit {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_total_deposit ;;
+  }
+
+  dimension: quantity_deposit {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.quantity_deposit ;;
   }
 
   dimension: vat_items_special{
@@ -543,6 +563,7 @@ view: vat_order {
     sql: ${delivery_fee_reduced_net} ;;
   }
 
+
   measure: sum_delivery_fee_standard_net {
     group_label: "* Delivery Fee *"
     type: sum
@@ -699,6 +720,7 @@ view: vat_order {
     group_label: "* Discounts *"
     value_format: "#,##0.00€"
     type: sum
+    hidden: yes
     sql: ${discount_free_delivery_gross} ;;
   }
 
@@ -826,6 +848,27 @@ view: vat_order {
     type: sum
     sql: ${amt_rider_tip} ;;
   }
+
+
+################# Rider Tip
+
+  measure: sum_amt_total_deposit {
+    group_label: "* Deposit *"
+    label: "Gross Deposit"
+    description: "Tax and Discount don't apply to deposit"
+    value_format: "#,##0.00€"
+    type: sum
+    sql: ${amt_total_deposit} ;;
+  }
+
+  measure: sum_quantity_deposit {
+    group_label: "* Deposit *"
+    label: "Quantity Deposit"
+    description: "Quantity of Items for which the customer paid a deposit"
+    type: sum
+    sql: ${quantity_deposit} ;;
+  }
+
 
 
 

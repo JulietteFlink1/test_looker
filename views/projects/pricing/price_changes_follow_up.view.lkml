@@ -1,7 +1,7 @@
 view: price_changes_follow_up {
   derived_table: {
     sql:
-     with
+with
 
 oos as
 (
@@ -36,18 +36,19 @@ oos as
 price_today_aux as
 (
     SELECT
+
     cast(a.order_timestamp as date) AS order_date,
     a.sku,
     a.amt_unit_price_gross as price_today,
-    cast(COALESCE(SUM(a.amt_total_price_gross), 0) as decimal)  AS sum_item_price_gross,
-    COALESCE(SUM(a.quantity), 0) AS sum_item_quantity,
-    count(distinct a.order_uuid) as dist_ord
+    max (a.order_timestamp) as max_order_timestamp
 
     FROM `flink-data-prod.curated.order_lineitems`  AS a
         LEFT JOIN `flink-data-prod.curated.orders`  AS ord
             ON ord.order_uuid = a.order_uuid
 
 where ord.is_successful_order is true
+      -- and sku = "11013686"
+       and cast(a.order_timestamp as time) <="22:30:00"
 group by 1,2,3
 order by 1,2,4 desc
 ),
@@ -55,24 +56,31 @@ order by 1,2,4 desc
 /*for the cases in which the product had two prices in the same day, I keep the one tnat had more revenue*/
 price_today_aux2 as
 (
-    select
-    row_number() over (partition by concat(order_date,sku) order by sum_item_price_gross desc) as rn,
-    price_today_aux.*
-        from price_today_aux
+select
+row_number() over (partition by concat(order_date,sku) order by max_order_timestamp desc) as rn,
+a.*,
+from price_today_aux a
+order by 2
 ),
 
 price_today as
 (
 select
-price_today_aux2.order_date,
-price_today_aux2.sku,
-price_today_aux2.price_today,
-price_today_aux2.sum_item_price_gross,
-price_today_aux2.sum_item_quantity,
-price_today_aux2.dist_ord
-  from price_today_aux2
-    where rn=1
-    and price_today <> 0
+a.order_date,
+a.sku,
+a.price_today,
+ cast(COALESCE(SUM(b.amt_total_price_gross), 0) as decimal)  AS sum_item_price_gross,
+ COALESCE(SUM(b.quantity), 0) AS sum_item_quantity,
+ count(distinct b.order_uuid) as dist_ord
+from price_today_aux2 a
+left join `flink-data-prod.curated_incremental.order_lineitems` b
+on a.sku = b.sku
+and a.order_date = cast(b.order_timestamp as date)
+where rn=1
+ and price_today <> 0
+group by 1,2,3
+order by 1
+
 ),
 
 price_yesterday_aux as
@@ -83,34 +91,40 @@ SELECT
     else cast(date_add(a.order_timestamp,interval +1 day) as date) end as order_date_min_1,
     a.sku,
     a.amt_unit_price_gross as price_yest,
-    cast(COALESCE(SUM(a.amt_total_price_gross), 0) as decimal)  AS sum_item_price_gross,
-    COALESCE(SUM(a.quantity ), 0) AS sum_item_quantity,
+    max (case when  (FORMAT_TIMESTAMP('%A', a.order_timestamp))="Saturday" and a.country_iso ="DE" then date_add(a.order_timestamp,interval +2 day)
+    else date_add(a.order_timestamp,interval +1 day) end) as max_order_timestamp,
+    -- cast(COALESCE(SUM(a.amt_total_price_gross), 0) as decimal)  AS sum_item_price_gross,
+    -- COALESCE(SUM(a.quantity ), 0) AS sum_item_quantity,
     --cast(COALESCE(SUM(a.amt_total_price_gross), 0) as decimal) / COALESCE(SUM(a.quantity ), 0) as price_yest
 
 FROM `flink-data-prod.curated.order_lineitems`  AS a
     LEFT JOIN `flink-data-prod.curated.orders`  AS ord
             ON ord.order_uuid = a.order_uuid
     where ord.is_successful_order is true
+    and cast(a.order_timestamp as time) <="22:30:00"
     group by 1,2,3,4
 ),
 
 price_yesterday_aux2 as
 (
-    select
-    row_number() over (partition by concat(order_date,sku) order by sum_item_price_gross desc) as rn,
-    price_yesterday_aux.*
-        from price_yesterday_aux
+select
+row_number() over (partition by concat(order_date_min_1,sku) order by max_order_timestamp desc) as rn,
+a.*,
+from price_yesterday_aux a
+order by 2
 ),
 
 price_yesterday as
 (
 select
-price_yesterday_aux2.order_date_min_1,
-price_yesterday_aux2.sku,
-price_yesterday_aux2.price_yest
-   from price_yesterday_aux2
-    where rn=1
-    and price_yest <> 0
+a.order_date_min_1,
+a.sku,
+a.price_yest
+from price_yesterday_aux2 a
+where rn=1
+ and price_yest <> 0
+group by 1,2,3
+order by 1
 ),
 
 day_sku_pr_change as
@@ -126,7 +140,28 @@ case when (a.price_today - b.price_yest) = 0 then 0 else 1 end as did_change
             and a.sku = b.sku
             --where ((a.price_today - b.price_yest) / b.price_yest) > 0.02
             --or ((a.price_today - b.price_yest) / b.price_yest) < -0.02
-        where ((a.price_today - b.price_yest) / b.price_yest) <> 0.0
+        where
+        ((a.price_today - b.price_yest) / b.price_yest) <> 0.0
+        or(
+            a.sku in ("11015139","11015140","11011578","11011584","11013367","11012501","11011582","11011581","11012220","11013366","11011583","11013368","11013369","11011580","11011579","11011215",
+        "11011216","11011219","11011221","11011211","11011218","11011214","11011217","11011213","11011212","11011751","11011752","11011755","11011750","11011758","11011757","11011754",
+        "11011760","11011747","11011746","11011759","11011748","11011756","11011749","11011761","11011671","11011674","11011678","11011672","11011673","11011676","11011670","11011666",
+        "11011675","11011668","11011667","11011669","11011679","11011677","11013747","11014023","11013746","11013754","11013748","11014024","11013752","11013753","11013745","11013749",
+        "11014025","11013750","11013751","11013755","11012145","11012153","11012144","11013306","11012147","11012154","11012143","11012152","11012146","11012141","11014092","11012148",
+        "11012149","11014093","11012140","11012151","11012155","11012156","11015734","11015954","11015955","11015956","11015957","11011323","11011321","11011331","11011320","11011322",
+        "11011324","11011319","11011318","11015960","11011327","11015963","11015964","11015959","11015962","11015961","11012026","11011330","11015965","11011328","11015971","11015966",
+        "11015967","11015958","11015970","11015972","11015969","11015968","11011326") and a.order_date between "2022-01-25" and "2022-02-07"
+        )
+        or(
+        a.sku in ("13132330","13132331","13057086","13132663","13132667","13048001","13061027","13053025","13053026","13053030","13053051","13053053","13132095","13132096","13132097","13131297",
+        "13131602","13133148","13132100","13132101","13132102","13132011","13132049","13132013","13132103","13132104","13132105","13132106","13133149","13132110","13132111","13132658",
+        "13132657","13040011","13040002","13051020","13132661","13132664","13058060","13057147","13132659","13133152","13117023","13117021","13117022","13057093","13057063","13057060",
+        "13057034","13049002","13132117","13132118","13132119","13055053","13055050","13131245","13131244","13131243","13132323","13045009","13049014","13131154","13048033","13048016",
+        "13040015","13040014","13132008","13131627","13132327","13131603","13131604","13131734","13131733","13131731","13131729","13050015","13131620","13131621","13053014","13057008",
+        "13131745","13131744","13056003","13056007","13056002","13132660","13132939","13132941","13058014","13058033","13058020","13058030","13058041","13058034","13058016","13058053",
+        "13058011","13132671","13132325","13132124","13132568","13132566","13132565","13132411","13131293","13131318","13131275","13131276","13131274","13131277","13131278","13131732",
+        "13131730","13057016","13057017","13057020","13057136","13057134","13057135","13057011") and a.order_date between "2022-01-20" and "2022-02-02"
+        )
 order by 1
 ),
 
@@ -261,7 +296,9 @@ pre_final as
     a.price_today as current_price,
     a.price_yest as previous_price,
     a.price_change_percentage,
-    case when a.price_change_percentage>0 then "Increase" else "Decrease" end as price_change,
+    case when a.price_change_percentage>0 then "Increase"
+         when a.price_change_percentage=0 then "No change (Monitor Price Test)"
+         else "Decrease" end as price_change,
     a.sum_item_value_after as sum_item_value_after_7days,
     a.sum_item_value_before as sum_item_value_before_7days,
     a.sum_quantity_after as sum_quantity_after_7days,
@@ -274,22 +311,46 @@ pre_final as
     a.open_hours_total_after as open_hours_total_after_7days,
     a.hours_oos_before as hours_oos_before_7_days,
     a.open_hours_total_before as open_hours_total_before_7days ,
-    case when date_diff(date_add(current_date(),interval 0 day), a.order_date, day)>7 then 7 else date_diff(date_add(current_date(),interval 0 day), a.order_date, day) end as days_of_revenue
+    case when date_diff(date_add(current_date(),interval 0 day), a.order_date, day)>7 then 7
+    when date_diff(date_add(current_date(),interval 0 day), a.order_date, day)=0 then 1
+    else date_diff(date_add(current_date(),interval 0 day), a.order_date, day) end as days_of_revenue
         from oos_before a
             left join valid_until b
                 on a.sku = b.sku
                 and a.rn = b.rn_yest
             left join  `flink-data-prod.curated.products` c
                 on a.sku = c.product_sku
-    where a.order_date < current_date()
+    --where a.order_date < current_date()
 )
 
 select
 a.*,
-a.price_change_percentage*a.sum_item_value_after_7days/days_of_revenue as perc_price_change_weight_rev_nominator,
-a.sum_item_value_after_7days/days_of_revenue as perc_price_change_weight_rev_denominator,
-1 as count_row
+a.price_change_percentage*a.sum_item_value_after_7days/nullif(days_of_revenue,0) as perc_price_change_weight_rev_nominator,
+a.sum_item_value_after_7days/nullif(days_of_revenue,0) as perc_price_change_weight_rev_denominator,
+1 as count_row,
+
+case when (a.sku in ("11015139","11015140","11011578","11011584","11013367","11012501","11011582","11011581","11012220","11013366","11011583","11013368","11013369","11011580","11011579","11011215",
+        "11011216","11011219","11011221","11011211","11011218","11011214","11011217","11011213","11011212","11011751","11011752","11011755","11011750","11011758","11011757","11011754",
+        "11011760","11011747","11011746","11011759","11011748","11011756","11011749","11011761","11011671","11011674","11011678","11011672","11011673","11011676","11011670","11011666",
+        "11011675","11011668","11011667","11011669","11011679","11011677","11013747","11014023","11013746","11013754","11013748","11014024","11013752","11013753","11013745","11013749",
+        "11014025","11013750","11013751","11013755","11012145","11012153","11012144","11013306","11012147","11012154","11012143","11012152","11012146","11012141","11014092","11012148",
+        "11012149","11014093","11012140","11012151","11012155","11012156","11015734","11015954","11015955","11015956","11015957","11011323","11011321","11011331","11011320","11011322",
+        "11011324","11011319","11011318","11015960","11011327","11015963","11015964","11015959","11015962","11015961","11012026","11011330","11015965","11011328","11015971","11015966",
+        "11015967","11015958","11015970","11015972","11015969","11015968","11011326") and a.valid_from between "2022-01-25" and "2022-02-07")
+        then "DE_Bakery_2022_25Jan_07Fev"
+
+     when (a.sku in ("13132330","13132331","13057086","13132663","13132667","13048001","13061027","13053025","13053026","13053030","13053051","13053053","13132095","13132096","13132097","13131297",
+        "13131602","13133148","13132100","13132101","13132102","13132011","13132049","13132013","13132103","13132104","13132105","13132106","13133149","13132110","13132111","13132658",
+        "13132657","13040011","13040002","13051020","13132661","13132664","13058060","13057147","13132659","13133152","13117023","13117021","13117022","13057093","13057063","13057060",
+        "13057034","13049002","13132117","13132118","13132119","13055053","13055050","13131245","13131244","13131243","13132323","13045009","13049014","13131154","13048033","13048016",
+        "13040015","13040014","13132008","13131627","13132327","13131603","13131604","13131734","13131733","13131731","13131729","13050015","13131620","13131621","13053014","13057008",
+        "13131745","13131744","13056003","13056007","13056002","13132660","13132939","13132941","13058014","13058033","13058020","13058030","13058041","13058034","13058016","13058053",
+        "13058011","13132671","13132325","13132124","13132568","13132566","13132565","13132411","13131293","13131318","13131275","13131276","13131274","13131277","13131278","13131732",
+        "13131730","13057016","13057017","13057020","13057136","13057134","13057135","13057011") and a.valid_from between "2022-01-20" and "2022-02-02")
+        then "NL_Beverages_2022_20Jan_02Fev"
+        else " No Price Test" end as price_test
 from pre_final a
+
 
 
       ;;
@@ -481,6 +542,10 @@ from pre_final a
   }
 
 
+  dimension: price_test {
+    type: string
+    sql: ${TABLE}.price_test ;;
+  }
 
   dimension: price_changes_next_7_days {
     type: number
