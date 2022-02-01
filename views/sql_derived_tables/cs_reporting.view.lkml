@@ -7,6 +7,7 @@ view: cs_reporting__tag_names {
 
 view: cs_reporting {
   derived_table: {
+    persist_for: "24 hours"
     sql:
     SELECT
         c.*,
@@ -50,6 +51,18 @@ view: cs_reporting {
     sql: ${conversation_uuid} ;;
   }
 
+  dimension: main_contact_reason {
+    label: "Contact Reason L1"
+    type: string
+    sql: TRIM(REGEXP_EXTRACT(${contact_reason}, r'(.+?) -')) ;;
+  }
+
+  dimension: secondary_contact_reason {
+    label: "Contact Reason L2"
+    type: string
+    sql: TRIM(REGEXP_EXTRACT(contact_reason, r'[a-zA-Z]* - (.*)'));;
+  }
+
   measure: count {
     type: count
     drill_fields: [detail*]
@@ -81,6 +94,7 @@ view: cs_reporting {
   }
 
   dimension: contact_reason_l3 {
+    label: "Contact Reason L3"
     type: string
     sql: ${TABLE}.contact_reason_l3 ;;
   }
@@ -135,9 +149,9 @@ view: cs_reporting {
     sql: ${TABLE}.median_time_to_reply ;;
   }
 
-  dimension: country {
+  dimension: country_iso {
     type: string
-    sql: ${TABLE}.Country ;;
+    sql: ${TABLE}.country_iso ;;
   }
 
   dimension: tag_names {
@@ -210,9 +224,9 @@ view: cs_reporting {
     sql: ${TABLE}.hub_code ;;
   }
 
-  dimension: country_code {
+  dimension: contact_country_iso {
     type: string
-    sql: ${TABLE}.country_code ;;
+    sql: ${TABLE}.contact_country_iso ;;
   }
 
   dimension: first_order {
@@ -278,7 +292,7 @@ view: cs_reporting {
       first_contact_reply_timestamp_time,
       last_contact_reply_timestamp_time,
       median_time_to_reply,
-      country,
+      country_iso,
       tag_names,
       rating_remark,
       rating,
@@ -293,7 +307,7 @@ view: cs_reporting {
       contact_created_timestamp_time,
       contact_email,
       hub_code,
-      country_code,
+      contact_country_iso,
       first_order,
       total_orders,
       voucher_code,

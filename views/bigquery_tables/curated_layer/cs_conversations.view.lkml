@@ -15,7 +15,7 @@ view: cs_conversations {
 
   dimension: main_contact_reason {
     type: string
-    sql: REGEXP_EXTRACT(${contact_reason}, r'(.+?) -') ;;
+    sql: TRIM(REGEXP_EXTRACT(${contact_reason}, r'(.+?) -')) ;;
   }
 
   dimension_group: contact_created_timestamp {
@@ -126,15 +126,15 @@ view: cs_conversations {
     sql: ${TABLE}.count_conversation_parts ;;
   }
 
-  dimension: country {
+  dimension: country_iso {
     type: string
     map_layer_name: countries
-    sql: ${TABLE}.Country ;;
+    sql: ${TABLE}.country_iso ;;
   }
 
-  dimension: country_code {
+  dimension: contact_country_iso {
     type: string
-    sql: ${TABLE}.country_code ;;
+    sql: ${TABLE}.contact_country_iso ;;
   }
 
   dimension: deflected_by_bot {
