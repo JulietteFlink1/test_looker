@@ -1,6 +1,12 @@
 view: cs_conversations {
-  sql_table_name: `flink-data-dev.sandbox.cs_conversations`
+  sql_table_name: `flink-data-dev.sandbox_zhou.cs_conversations`
     ;;
+
+  measure: cnt_conversations {
+    label: "# Unique Conversations"
+    type: count_distinct
+    sql: ${conversation_uuid} ;;
+  }
 
   dimension: app_version {
     type: string
