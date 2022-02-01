@@ -13,7 +13,7 @@ view: cs_reporting {
         c.*,
         conversation_created_timestamp AS creation_timestamp,
         NULL AS order_timestamp
-    FROM flink-data-dev.sandbox_zhou.cs_conversations c
+    FROM flink-data-dev.sandbox.cs_conversations c
 
     UNION ALL
 
@@ -21,10 +21,11 @@ view: cs_reporting {
       NULL, NULL, NULL, NULL, NULL,
       NULL, NULL, NULL, NULL, NULL,
       NULL, NULL, NULL, NULL, NULL,
+      NULL, country_iso,
+      NULL, NULL, NULL,
       NULL, NULL, NULL, NULL, NULL,
       NULL, NULL, NULL, NULL, NULL,
-      NULL, NULL, NULL, NULL, NULL,
-      NULL, NULL,
+      NULL,
       LOWER(order_number) as order_number,
       NULL, NULL, NULL,NULL, NULL,
       NULL,
