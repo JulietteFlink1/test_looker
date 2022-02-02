@@ -178,6 +178,11 @@ view: all_rider_nps {
     sql: ${TABLE}.country_iso;;
   }
 
+  dimension: city {
+    type: string
+    sql: ${TABLE}.city;;
+  }
+
   dimension: work_duties_deliveries_other_tasks_ {
     type: number
     sql: ${TABLE}.work_duties_deliveries_other_tasks_;;
