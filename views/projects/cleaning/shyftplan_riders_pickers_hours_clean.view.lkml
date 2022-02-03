@@ -22,10 +22,22 @@ view: shyftplan_riders_pickers_hours_clean {
     sql: ${TABLE}.number_of_planned_minutes ;;
   }
 
+  dimension: number_of_planned_minutes_external {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_planned_minutes_external ;;
+  }
+
   dimension: number_of_worked_minutes {
     type: number
     hidden: yes
     sql: ${TABLE}.number_of_worked_minutes ;;
+  }
+
+  dimension: number_of_worked_minutes_external {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_worked_minutes_external ;;
   }
 
   dimension: numbre_of_no_show_minutes {
@@ -34,16 +46,34 @@ view: shyftplan_riders_pickers_hours_clean {
     sql: ${TABLE}.numbre_of_no_show_minutes ;;
   }
 
+  dimension: numbre_of_no_show_minutes_external {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.numbre_of_no_show_minutes_external ;;
+  }
+
   dimension: number_of_planned_employees {
     type: number
     hidden: yes
     sql: ${TABLE}.number_of_planned_employees ;;
   }
 
+  dimension: number_of_planned_employees_external {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_planned_employees_external ;;
+  }
+
   dimension: number_of_worked_employees {
     type: number
     hidden: yes
     sql: ${TABLE}.number_of_worked_employees ;;
+  }
+
+  dimension: number_of_worked_employees_external {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_worked_employees_external ;;
   }
 
   dimension: position_name {
@@ -137,6 +167,14 @@ view: shyftplan_riders_pickers_hours_clean {
     group_label: "Counts"
   }
 
+  measure: riders_external {
+    label: "# Ext Riders"
+    type: sum
+    sql:${number_of_worked_employees_external};;
+    filters: [position_name: "rider"]
+    group_label: "Counts"
+  }
+
   measure: picker_hours {
     label: "Sum of Picker Hours"
     type: sum
@@ -146,10 +184,36 @@ view: shyftplan_riders_pickers_hours_clean {
     group_label: "Working Hours"
   }
 
+  measure: picker_hours_external {
+    label: "Sum of Picker Ext Hours"
+    type: sum
+    sql:${number_of_worked_minutes_external}/60;;
+    filters: [position_name: "picker"]
+    value_format_name: decimal_1
+    group_label: "Working Hours"
+  }
+
+  measure: rider_hours_external {
+    label: "Sum of Rider Ext Hours"
+    type: sum
+    sql:${number_of_worked_minutes_external}/60;;
+    filters: [position_name: "rider"]
+    value_format_name: decimal_1
+    group_label: "Working Hours"
+  }
+
   measure: pickers {
     label: "# Pickers"
     type: sum
     sql:${number_of_worked_employees};;
+    filters: [position_name: "picker"]
+    group_label: "Counts"
+  }
+
+  measure: pickers_external {
+    label: "# Ext Pickers"
+    type: sum
+    sql:${number_of_worked_employees_external};;
     filters: [position_name: "picker"]
     group_label: "Counts"
   }
