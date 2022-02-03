@@ -1,5 +1,5 @@
 view: mktg_exit_poll {
-  sql_table_name: `flink-data-dev.curated.exit_poll`
+  sql_table_name: `flink-data-prod.curated.exit_poll`
     ;;
 
   dimension: country_iso {
