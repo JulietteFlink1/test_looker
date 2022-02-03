@@ -1,13 +1,32 @@
+# Owner:
+# Andreas Stüber
+#
+# Main Stakeholder:
+# - Supply Chain team
+# - Retail / Commercial team
+# - Hub-Ops team
+#
+# Questions that can be answered
+# - All questions around replenishment performance
+# - Questions around inventory movements
+
 include: "/views/**/*.view"
+
+include: "/**/products_hub_assignment_v2.view"
 
 
 explore: supply_chain {
-  label: "Supply Chain Explore"
-  description: "Covers ERP and Inventory data"
 
-  from: products_hub_assignment_v2
-  view_name: products_hub_assignment
+  label:       "Supply Chain Explore"
+  description: "This explore covers inventory data based on CommerceTools
+                and Stock Changelogs provided by Hub-Tech. It is enrichted with reporting tables to measure the
+                vendor performance"
+  group_label: "07) Supply Chain"
+
+  from  :     products_hub_assignment_v2
+  view_name:  products_hub_assignment
   view_label: "01 Products Hub Assignment"
+
 
   sql_always_where:
       -- filter the time for all big tables of this explore

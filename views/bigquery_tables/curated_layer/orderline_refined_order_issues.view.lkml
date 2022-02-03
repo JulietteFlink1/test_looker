@@ -98,6 +98,7 @@ view: +orderline {
                               'goods_damaged',
                               'goods_spoiled'
                                 )
+            and ${return_reason} not like '%cancel%'
           then "post-delivery issues"
       end
     ;;
