@@ -52,6 +52,22 @@ view: cs_reporting {
     sql: ${conversation_uuid} ;;
   }
 
+  measure: cnt_deflected_by_bot {
+    label: "# unique conversations deflected by bot"
+    description: "cnt conversations deflected by bot"
+    type: count_distinct
+    sql: ${conversation_uuid} ;;
+    filters: [deflected_by_bot: "yes"]
+  }
+
+  measure: perc_deflected_by_bot {
+    label: "% conversations deflected by bot"
+    description: "percentage of conversations that were deflected by bot"
+    type: number
+    sql: SAFE_DIVIDE(${cnt_deflected_by_bot},${cnt_conversations}) ;;
+    value_format_name: percent_1
+  }
+
   dimension: main_contact_reason {
     label: "Contact Reason L1"
     type: string
