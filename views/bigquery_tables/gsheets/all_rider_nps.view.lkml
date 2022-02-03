@@ -8,6 +8,11 @@ view: all_rider_nps {
     sql: ${TABLE}.token;;
   }
 
+  dimension: npssource {
+    type: string
+    sql: ${TABLE}.npssource;;
+  }
+
   dimension: score {
     type: number
     sql: ${TABLE}.based_on_your_experience_of_riding_with_flink_so_far_how_likely_are_you_to_recommend_joining_us_to_a_friend_or_a_family_member_;;
