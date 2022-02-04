@@ -35,11 +35,11 @@ view: inventory_changes {
     type: time
     timeframes: [
       time,
-      date,
-      week,
-      month,
-      quarter,
-      year
+      hour,
+      hour2,
+      hour4,
+      hour_of_day,
+      date
     ]
     sql: ${TABLE}.inventory_change_timestamp ;;
   }
@@ -140,6 +140,15 @@ view: inventory_changes {
 
     sql: ${quantity_change} ;;
     type: average
+    value_format_name: decimal_1
+  }
+
+  measure: sum_quantity_change {
+    label: "SUM Inventory Change"
+    description: "Shows the sum of how much the inventory changed"
+
+    sql: ${quantity_change} ;;
+    type: sum
     value_format_name: decimal_1
   }
 
