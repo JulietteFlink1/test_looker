@@ -118,7 +118,7 @@ view: inventory_changes {
 
   dimension:is_outbound_waste {
     label: "Is Outbound (Waste)"
-    description: "Boolean - indicates, if a inventory chqnge is based on waste - determined by the reasons 'product-damaged'm 'product-expired' or 'too-good-to-go'"
+    description: "Boolean - indicates, if a inventory change is based on waste - determined by the reasons 'product-damaged', 'product-expired' or 'too-good-to-go'"
     type: yesno
     sql: case when ${change_reason} in ('product-damaged', 'product-expired', 'too-good-to-go') then true else false end ;;
 
