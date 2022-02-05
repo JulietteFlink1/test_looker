@@ -52,6 +52,62 @@ view: cs_reporting {
     sql: ${conversation_uuid} ;;
   }
 
+  measure: cnt_live_order_conversations {
+    # have to include it as a separate measure here because orders are not linked to a contact reason, so if we filter by contact reason we cannot get a % compared to orders (because # orders will always be 0)
+    label: "# conversations - live order"
+    type: count_distinct
+    sql: ${conversation_uuid} ;;
+    filters: [main_contact_reason: "Live Order"]
+  }
+
+  measure: cnt_cancellation_conversations {
+    # have to include it as a separate measure here because orders are not linked to a contact reason, so if we filter by contact reason we cannot get a % compared to orders (because # orders will always be 0)
+    label: "# conversations - cancellation"
+    type: count_distinct
+    sql: ${conversation_uuid} ;;
+    filters: [secondary_contact_reason: "Cancellation"]
+  }
+
+  # measure: perc_cancellation_cr{
+  #   label: "% cancellation contact rate"
+  #   description: "percentage of conversations with cancellation contact reasion, compared to number of orders"
+  #   type: number
+  #   sql: SAFE_DIVIDE(${cnt_cancellation_conversations},${cnt_conversations}) ;;
+  #   value_format_name: percent_1
+  # }
+
+  measure: cnt_invoice_request_conversations {
+    # have to include it as a separate measure here because orders are not linked to a contact reason, so if we filter by contact reason we cannot get a % compared to orders (because # orders will always be 0)
+    label: "# conversations - invoice request"
+    type: count_distinct
+    sql: ${conversation_uuid} ;;
+    filters: [contact_reason_l3: "invoice request"]
+  }
+
+  measure: perc_invoice_request_cr{
+    label: "% invoice request contact rate"
+    description: "percentage of conversations with invoice request L3 compared to number of orders"
+    type: number
+    sql: SAFE_DIVIDE(${cnt_invoice_request_conversations},${cnt_conversations}) ;;
+    value_format_name: percent_1
+  }
+
+  measure: cnt_deflected_by_bot {
+    label: "# unique conversations deflected by bot"
+    description: "cnt conversations deflected by bot"
+    type: count_distinct
+    sql: ${conversation_uuid} ;;
+    filters: [deflected_by_bot: "yes"]
+  }
+
+  measure: perc_deflected_by_bot {
+    label: "% conversations deflected by bot"
+    description: "percentage of conversations that were deflected by bot"
+    type: number
+    sql: SAFE_DIVIDE(${cnt_deflected_by_bot},${cnt_conversations}) ;;
+    value_format_name: percent_1
+  }
+
   dimension: main_contact_reason {
     label: "Contact Reason L1"
     type: string

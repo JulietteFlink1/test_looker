@@ -95,6 +95,46 @@ view: getir_products {
     sql: ${TABLE}.time_scraped ;;
   }
 
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  measure: avg_product_price {
+    label: "AVG Price"
+    description: "Average gross item price."
+    hidden:  no
+    type: average
+    sql: ${price_gross};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: med_product_price {
+    label: "MED Price"
+    description: "Median gross item price."
+    hidden:  no
+    type: median
+    sql: ${price_gross};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: min_product_price {
+    label: "MIN Price"
+    description: "Minimum gross item price."
+    hidden:  no
+    type: min
+    sql: ${price_gross};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: max_product_price {
+    label: "MAX Price"
+    description: "Maximum gross item price."
+    hidden:  no
+    type: max
+    sql: ${price_gross};;
+    value_format_name: euro_accounting_2_precision
+  }
+
   measure: count {
     type: count
     drill_fields: [product_name]
