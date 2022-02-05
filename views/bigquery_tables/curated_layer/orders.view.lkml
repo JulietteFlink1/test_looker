@@ -1688,7 +1688,7 @@ view: orders {
         description: "Count of successful Orders"
         hidden:  no
         type: count_distinct
-        sql: ${id} ;;
+        sql: ${order_uuid} ;;
         value_format: "0"
       }
 
