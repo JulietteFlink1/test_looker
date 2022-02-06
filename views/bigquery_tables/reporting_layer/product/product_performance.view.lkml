@@ -114,7 +114,13 @@ view: product_performance {
       description: "Date of an event"
       datatype: date
       type: time
-      timeframes: [ date ]
+      timeframes: [
+        date,
+        day_of_week,
+        week,
+        month,
+        year
+        ]
       sql: ${TABLE}.event_date ;;
     }
 
