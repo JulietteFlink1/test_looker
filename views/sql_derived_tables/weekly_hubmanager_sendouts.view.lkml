@@ -426,7 +426,7 @@ view: weekly_hubmanager_sendouts {
 
   dimension: bucket {
     type: string
-    sql: ${TABLE}.bucket ;;
+    sql: concat(${TABLE}.bucket, ' AVG Daily Orders') ;;
   }
 
   dimension: uuid {
