@@ -222,7 +222,7 @@ view: hub_pl_monthly {
   dimension: amt_transaction_fees {
     type: string
     hidden: yes
-    sql: ${TABLE}.amt_transaction_fees ;;
+    sql: ${TABLE}.amt_adyen_paypal_transaction_fees ;;
   }
 
   dimension: amt_vat {
@@ -901,7 +901,7 @@ view: hub_pl_monthly {
     type: sum
     label: "Transaction Fees"
     group_label: "* Transaction Fees *"
-    description: "Sum of Processing Fees, Scheme Fee and Interchange Fee"
+    description: "Sum of Transactions Fees from Adyen and Paypal. Include Transactions Fees for all kind of transactions (payment, refunds etc.)"
     sql: ${amt_transaction_fees};;
     value_format_name: euro_accounting_2_precision
   }
@@ -910,7 +910,7 @@ view: hub_pl_monthly {
     type: average
     group_label: "* Transaction Fees *"
     label: "% Transaction Fees / Revenue Net"
-    sql: ${amt_waste_gross}/${amt_total_net};;
+    sql: ${amt_transaction_fees}/${amt_total_net};;
     value_format_name: percent_1
   }
 

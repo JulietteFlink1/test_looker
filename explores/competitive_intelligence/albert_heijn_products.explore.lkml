@@ -12,7 +12,7 @@ explore:  albert_heijn_products {
     from: nl_albert_heijn_to_flink
     view_label: "* Albert Heijn-Flink Match Data *"
     sql_on: ${albert_heijn_products.product_id} = ${nl_albert_heijn_to_flink.albert_heijn_product_id} ;;
-    relationship: one_to_many
+    relationship: one_to_one
     type:  left_outer
   }
 

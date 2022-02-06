@@ -1413,6 +1413,15 @@ view: orders {
         value_format_name: decimal_1
       }
 
+      measure: avg_targeted_delivery_time {
+        group_label: "* Operations / Logistics *"
+        label: "AVG Targeted Delivery Time (min)"
+        description: "Average internal targeted delivery time for hub ops."
+        hidden:  no
+        type: average
+        sql: ${delivery_time_targeted_minutes};;
+        value_format_name: decimal_1
+      }
 
       measure: avg_at_customer_time {
         group_label: "* Operations / Logistics *"
@@ -1687,7 +1696,8 @@ view: orders {
         label: "# Orders"
         description: "Count of successful Orders"
         hidden:  no
-        type: count
+        type: count_distinct
+        sql: ${order_uuid} ;;
         value_format: "0"
       }
 

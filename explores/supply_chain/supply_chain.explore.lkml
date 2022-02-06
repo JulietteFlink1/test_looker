@@ -1,13 +1,32 @@
+# Owner:
+# Andreas Stüber
+#
+# Main Stakeholder:
+# - Supply Chain team
+# - Retail / Commercial team
+# - Hub-Ops team
+#
+# Questions that can be answered
+# - All questions around replenishment performance
+# - Questions around inventory movements
+
 include: "/views/**/*.view"
+
+include: "/**/products_hub_assignment_v2.view"
 
 
 explore: supply_chain {
-  label: "Supply Chain Explore"
-  description: "Covers ERP and Inventory data"
 
-  from: products_hub_assignment_v2
-  view_name: products_hub_assignment
+  label:       "Supply Chain Explore"
+  description: "This explore covers inventory data based on CommerceTools
+                and Stock Changelogs provided by Hub-Tech. It is enrichted with reporting tables to measure the
+                vendor performance"
+  group_label: "07) Supply Chain"
+
+  from  :     products_hub_assignment_v2
+  view_name:  products_hub_assignment
   view_label: "01 Products Hub Assignment"
+
 
   sql_always_where:
       -- filter the time for all big tables of this explore
@@ -72,7 +91,7 @@ explore: supply_chain {
         ${inventory_hourly.hub_code}              = ${products_hub_assignment.hub_code}     and
         ${inventory_hourly.sku}                   = ${products_hub_assignment.sku}          and
         ${inventory_hourly.report_timestamp_date} = ${products_hub_assignment.report_date}  and
-        ${inventory_hourly.report_timestamp_date} >= current_date() - 5                     and -- today minus 5 days
+        ${inventory_hourly.report_timestamp_date} >= current_date() - 8                     and -- today minus 5 days
         {% condition global_filters_and_parameters.datasource_filter %} ${inventory_hourly.report_timestamp_date} {% endcondition %}
     ;;
   }
@@ -122,9 +141,24 @@ explore: supply_chain {
         ;;
       }
 
+
+  join: inventory_changes {
+
+    view_label: "05 Inventory Change-Logs"
+
+    type:         left_outer
+    relationship: one_to_many
+    sql_on:
+        ${inventory_changes.sku}                             = ${products_hub_assignment.sku}         and
+        ${inventory_changes.hub_code}                        = ${products_hub_assignment.hub_code}    and
+        ${inventory_changes.inventory_change_timestamp_date} = ${products_hub_assignment.report_date} and
+        {% condition global_filters_and_parameters.datasource_filter %} ${inventory_changes.inventory_change_timestamp_date} {% endcondition %}
+    ;;
+  }
+
   join: inbounding_times_per_vendor {
 
-    view_label: "05 Inbounding Times"
+    view_label: "06 Inbounding Times"
 
     type: left_outer
     relationship: one_to_one
