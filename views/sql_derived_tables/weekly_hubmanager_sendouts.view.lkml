@@ -726,7 +726,7 @@ view: weekly_hubmanager_sendouts {
 
 
   measure: avg_share_pre_order_swiped {
-    label: "% Orders Pre Order Swiped"
+    label: "% Pre-Delivery Issues (Swipe)"
     description: "Share of Orders with pre delivery swipe issue"
     type: average
     value_format: "0.0%"
@@ -753,7 +753,7 @@ view: weekly_hubmanager_sendouts {
    }
 
   measure: avg_share_post_order_issues {
-    label: "% Orders Post Order Issues"
+    label: "% Post-Delivery Issues"
     description: "Share of Orders with post delivery issues"
     type: average
     value_format: "0.0%"
