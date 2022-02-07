@@ -62,6 +62,7 @@ view: weekly_hubmanager_sendouts {
                     date_trunc(date(order_timestamp),week(monday)) as week,
                     country_iso,
                     count(distinct order_uuid) as number_of_orders,
+                    avg(fulfillment_time_minutes) as fulfillment_time_minutes,
                     count(case when abs(delivery_pdt_minutes - fulfillment_time_minutes)<=2 then order_uuid end)/count(distinct order_uuid)  as share_of_orders_with_delta_pdt_less_than_2,
                     count(case when fulfillment_time_minutes > 20 then order_uuid end) /count(distinct order_uuid) as share_of_orders_delivered_more_than_20,
 
@@ -196,6 +197,7 @@ view: weekly_hubmanager_sendouts {
                     number_total_hubs_in_bucket,
                     number_total_hubs_in_country,
                     ((number_of_orders - lag(number_of_orders,1) over (partition by hub_code order by week asc))/lag(number_of_orders,1) over (partition by hub_code order by week asc))*100 as number_of_orders,
+                    ((fulfillment_time_minutes - lag(fulfillment_time_minutes,1) over (partition by hub_code order by week asc))/lag(fulfillment_time_minutes,1) over (partition by hub_code order by week asc))*100  as fulfillment_time_minutes,
                     (share_of_orders_with_delta_pdt_less_than_2 - lag(share_of_orders_with_delta_pdt_less_than_2,1) over (partition by hub_code order by week asc))*100 as share_of_orders_with_delta_pdt_less_than_2,
                     (share_of_orders_delivered_more_than_20 - lag(share_of_orders_delivered_more_than_20,1) over (partition by hub_code order by week asc))*100 as share_of_orders_delivered_more_than_20,
                     (share_pre_order_swiped - lag(share_pre_order_swiped,1) over (partition by hub_code order by week asc))*100 as share_pre_order_swiped,
@@ -228,6 +230,7 @@ view: weekly_hubmanager_sendouts {
                     number_total_hubs_in_bucket,
                     number_total_hubs_in_country,
                     rank() over (partition by base.country_iso, week order by number_of_orders desc) as number_of_orders,
+                    rank() over (partition by base.country_iso, week order by fulfillment_time_minutes desc) as fulfillment_time_minutes,
                     rank() over (partition by base.country_iso, week order by share_of_orders_with_delta_pdt_less_than_2 desc) as share_of_orders_with_delta_pdt_less_than_2,
                     rank() over (partition by base.country_iso, week order by share_of_orders_delivered_more_than_20 asc) as share_of_orders_delivered_more_than_20,
                     rank() over (partition by base.country_iso, week order by share_pre_order_swiped asc) as share_pre_order_swiped,
@@ -255,6 +258,7 @@ view: weekly_hubmanager_sendouts {
                     number_total_hubs_in_bucket,
                     number_total_hubs_in_country,
                     rank() over (partition by base.country_iso, week, bucket order by number_of_orders desc) as number_of_orders,
+                    rank() over (partition by base.country_iso, week, bucket order by fulfillment_time_minutes desc) as fulfillment_time_minutes,
                     rank() over (partition by base.country_iso, week, bucket order by share_of_orders_with_delta_pdt_less_than_2 desc) as share_of_orders_with_delta_pdt_less_than_2,
                     rank() over (partition by base.country_iso, week, bucket order by share_of_orders_delivered_more_than_20 asc) as share_of_orders_delivered_more_than_20,
                     rank() over (partition by base.country_iso, week, bucket order by share_pre_order_swiped asc) as share_pre_order_swiped,
@@ -280,6 +284,7 @@ view: weekly_hubmanager_sendouts {
                     country_iso,
                     bucket,
                     number_of_orders,
+                    fulfillment_time_minutes,
                     share_of_orders_with_delta_pdt_less_than_2,
                     share_of_orders_delivered_more_than_20,
                     share_pre_order_swiped as share_pre_order_swiped,
@@ -307,6 +312,7 @@ view: weekly_hubmanager_sendouts {
                     country_iso,
                     bucket,
                     number_of_orders,
+                    fulfillment_time_minutes,
                     share_of_orders_with_delta_pdt_less_than_2,
                     share_of_orders_delivered_more_than_20,
                     share_pre_order_swiped as share_pre_order_swiped,
@@ -330,6 +336,7 @@ view: weekly_hubmanager_sendouts {
                     country_iso,
                     bucket,
                     round(number_of_orders,1) as number_of_orders,
+                    round(fulfillment_time_minutes,1) as fulfillment_time_minutes,
                     round(share_of_orders_with_delta_pdt_less_than_2,1) as share_of_orders_with_delta_pdt_less_than_2 ,
                     round(share_of_orders_delivered_more_than_20,1) as share_of_orders_delivered_more_than_20 ,
                     round(share_pre_order_swiped,1)   as share_pre_order_swiped,
@@ -355,6 +362,7 @@ view: weekly_hubmanager_sendouts {
                     country_iso,
                     bucket,
                     number_of_orders,
+                    round(fulfillment_time_minutes,0) as fulfillment_time_minutes,
                     round(share_of_orders_with_delta_pdt_less_than_2,0) as share_of_orders_with_delta_pdt_less_than_2 ,
                     round(share_of_orders_delivered_more_than_20,0) as share_of_orders_delivered_more_than_20 ,
                     round(share_pre_order_swiped,0) as share_pre_order_swiped,
@@ -380,6 +388,7 @@ view: weekly_hubmanager_sendouts {
                     country_iso,
                     bucket,
                     number_of_orders,
+                    fulfillment_time_minutes,
                     share_of_orders_with_delta_pdt_less_than_2,
                     share_of_orders_delivered_more_than_20,
                     share_pre_order_swiped,
@@ -437,56 +446,73 @@ view: weekly_hubmanager_sendouts {
 
   dimension: number_of_orders {
     type: number
+    hidden: yes
     sql: ${TABLE}.number_of_orders ;;
   }
 
   dimension: share_of_orders_with_delta_pdt_less_than_2 {
     type: number
+    hidden: yes
     sql: ${TABLE}.share_of_orders_with_delta_pdt_less_than_2 ;;
   }
 
   dimension: share_of_orders_delivered_more_than_20 {
     type: number
+    hidden: yes
     sql: ${TABLE}.share_of_orders_delivered_more_than_20 ;;
   }
 
   dimension: share_pre_order_swiped {
     type: number
+    hidden: yes
     sql: ${TABLE}.share_pre_order_swiped ;;
+  }
+
+  dimension: fulfillment_time_minutes {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.fulfillment_time_minutes ;;
   }
 
   dimension: share_post_order_issues {
     type: number
+    hidden: yes
     sql: ${TABLE}.share_post_order_issues ;;
   }
 
   dimension: share_of_outbound_skus {
+    hidden: yes
     type: number
     sql: ${TABLE}.share_of_outbound_skus ;;
   }
 
   dimension: share_negative_corrected {
     type: number
+    hidden: yes
     sql: ${TABLE}.share_negative_corrected ;;
   }
 
   dimension: share_positive_corrected {
     type: number
+    hidden: yes
     sql: ${TABLE}.share_positive_corrected ;;
   }
 
   dimension: share_of_no_show {
     type: number
+    hidden: yes
     sql: ${TABLE}.share_of_no_show ;;
   }
 
   dimension: rider_utr {
     type: number
+    hidden: yes
     sql: ${TABLE}.rider_utr ;;
   }
 
   dimension: picker_utr {
     type: number
+    hidden: yes
     sql: ${TABLE}.picker_utr ;;
   }
 
@@ -593,9 +619,37 @@ view: weekly_hubmanager_sendouts {
     sql: ${share_of_orders_with_delta_pdt_less_than_2} ;;
     value_format: "0.0%"
     html: {% if dimension._value == 'WoW' and value > 0 %}
-    <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center"><img src="http://findicons.com/files/icons/573/must_have/48/check.png" height=20 width=20>+{{ value }} pp</p>
-    {% elsif dimension._value == 'WoW' and value < 0 %}
-     <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center"><img src="http://findicons.com/files/icons/719/crystal_clear_actions/64/cancel.png" height=20 width=20>{{ value }} pp</p>
+          <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center"><img src="http://findicons.com/files/icons/573/must_have/48/check.png" height=20 width=20>+{{ value }} pp</p>
+          {% elsif dimension._value == 'WoW' and value < 0 %}
+           <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center"><img src="http://findicons.com/files/icons/719/crystal_clear_actions/64/cancel.png" height=20 width=20>{{ value }} pp</p>
+          {% elsif dimension._value == 'Ranking in Bucket' and  first_tier_bucket._value >= value %}
+          <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+          {% elsif dimension._value == 'Ranking in Bucket' and  second_tier_bucket._value >= value %}
+          <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+           {% elsif dimension._value == 'Ranking in Bucket' %}
+          <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+           {% elsif dimension._value == 'Ranking in Country' and  first_tier_country._value >= value %}
+          <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+          {% elsif dimension._value == 'Ranking in Country' and  second_tier_country._value >= value %}
+          <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+           {% elsif dimension._value == 'Ranking in Country'  %}
+          <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+          {% else %}
+          {{rendered_value}}
+          {% endif %}  ;;
+  }
+
+
+
+  measure: avg_fulfillment_time_mimutes {
+    label: "AVG Fulfillment Time"
+    type: average
+    sql: ${fulfillment_time_minutes} ;;
+    value_format: "0.0"
+    html: {% if dimension._value == 'WoW' and value < 0 %}
+    <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center"><img src="http://findicons.com/files/icons/573/must_have/48/check.png" height=20 width=20>{{ value }}% </p>
+    {% elsif dimension._value == 'WoW' and value > 0 %}
+     <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center"><img src="http://findicons.com/files/icons/719/crystal_clear_actions/64/cancel.png" height=20 width=20>+{{ value }}%</p>
     {% elsif dimension._value == 'Ranking in Bucket' and  first_tier_bucket._value >= value %}
     <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
     {% elsif dimension._value == 'Ranking in Bucket' and  second_tier_bucket._value >= value %}
@@ -693,6 +747,33 @@ view: weekly_hubmanager_sendouts {
     {% else %}
     {{ rendered_value }}
     {% endif %} ;;
+  }
+
+  measure: avg_share_no_show {
+    label: "% No Show Rate"
+    description: "Rider No Show Rate"
+    type: average
+    value_format: "0.0%"
+    sql: ${share_of_no_show} ;;
+    html:  {% if dimension._value == 'WoW' and value < 0 %}
+          <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center"><img src="http://findicons.com/files/icons/573/must_have/48/check.png" height=20 width=20>{{ value }} pp</p>
+          {% elsif dimension._value == 'WoW' and value > 0 %}
+           <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center"><img src="http://findicons.com/files/icons/719/crystal_clear_actions/64/cancel.png" height=20 width=20>+{{ value }} pp</p>
+          {% elsif dimension._value == 'Ranking in Bucket' and  first_tier_bucket._value >= value %}
+          <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+          {% elsif dimension._value == 'Ranking in Bucket' and  second_tier_bucket._value >= value %}
+          <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+           {% elsif dimension._value == 'Ranking in Bucket' %}
+          <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+           {% elsif dimension._value == 'Ranking in Country' and  first_tier_country._value >= value %}
+          <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+          {% elsif dimension._value == 'Ranking in Country' and  second_tier_country._value >= value %}
+          <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+           {% elsif dimension._value == 'Ranking in Country'  %}
+          <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+          {% else %}
+          {{ rendered_value }}
+          {% endif %} ;;
   }
 
   measure: avg_rider_utr {
