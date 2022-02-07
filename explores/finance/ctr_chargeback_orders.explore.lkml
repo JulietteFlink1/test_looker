@@ -9,9 +9,4 @@ explore: ctr_chargeback_orders {
   group_label: "Finance"
   description: "Provides Monthly Aggregations for CTR Reporting "
 
-
-  required_access_grants: [can_view_buying_information]
-
-
-
 }
