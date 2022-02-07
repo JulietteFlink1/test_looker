@@ -107,9 +107,9 @@ view: weekly_hubmanager_sendouts {
              select
                   hub_code,
                   date_trunc(inventory_change_date,week(monday)) as week,
-                  count(distinct case when change_reason in ('product-damaged', 'product-expired', 'too-good-to-go') and quantity_change<>0 then sku end) as number_of_outbound_skus ,
-                  count(distinct case when change_reason  = 'inventory-correction' and quantity_change < 0 then sku end) as number_of_negative_corrected_skus,
-                  count(distinct case when change_reason  = 'inventory-correction' and quantity_change > 0 then sku end) as number_of_positive_corrected_skus
+                  sum( case when change_reason in ('product-damaged', 'product-expired', 'too-good-to-go') and quantity_change<>0 then abs(quantity_change) end) as number_of_outbound_skus ,
+                  sum( case when change_reason  = 'inventory-correction' and quantity_change < 0 then abs(quantity_change) end) as number_of_negative_corrected_skus,
+                  sum( case when change_reason  = 'inventory-correction' and quantity_change > 0 then quantity_change end) as number_of_positive_corrected_skus
 
              from `flink-data-prod.reporting.inventory_changes_daily` AS inventory_changes_daily
 
