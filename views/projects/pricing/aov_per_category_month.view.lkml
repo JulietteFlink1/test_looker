@@ -9,7 +9,7 @@ view: aov_per_category_month{
           case when extract (hour from a.order_timestamp)<12 then "1.Before 12PM"
             when  extract (hour from a.order_timestamp)<17 then "2.12PM to 17PM"
             else "3.After 17PM" end as hour,
-          DATE_TRUNC( cast(a.order_timestamp as date), week) as week,
+          DATE_TRUNC( cast(a.order_timestamp as date), week(monday)) as week,
           DATE_TRUNC( cast(a.order_timestamp as date), month) as month,
           a.country_iso,
           hub.country,
@@ -52,7 +52,7 @@ view: aov_per_category_month{
           case when extract (hour from a.order_timestamp)<12 then "1.Before 12PM"
             when  extract (hour from a.order_timestamp)<17 then "2.12PM to 17PM"
             else "3.After 17PM" end as hour,
-          DATE_TRUNC( cast(a.order_timestamp as date), week) as week,
+          DATE_TRUNC( cast(a.order_timestamp as date), week(monday)) as week,
           DATE_TRUNC( cast(a.order_timestamp as date), month) as month,
           a.country_iso,
           hub.country,
