@@ -749,6 +749,33 @@ view: weekly_hubmanager_sendouts {
     {% endif %} ;;
   }
 
+  measure: avg_share_no_show {
+    label: "% No Show Rate"
+    description: "Rider No Show Rate"
+    type: average
+    value_format: "0.0%"
+    sql: ${share_of_no_show} ;;
+    html:  {% if dimension._value == 'WoW' and value < 0 %}
+          <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center"><img src="http://findicons.com/files/icons/573/must_have/48/check.png" height=20 width=20>{{ value }} pp</p>
+          {% elsif dimension._value == 'WoW' and value > 0 %}
+           <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center"><img src="http://findicons.com/files/icons/719/crystal_clear_actions/64/cancel.png" height=20 width=20>+{{ value }} pp</p>
+          {% elsif dimension._value == 'Ranking in Bucket' and  first_tier_bucket._value >= value %}
+          <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+          {% elsif dimension._value == 'Ranking in Bucket' and  second_tier_bucket._value >= value %}
+          <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+           {% elsif dimension._value == 'Ranking in Bucket' %}
+          <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+           {% elsif dimension._value == 'Ranking in Country' and  first_tier_country._value >= value %}
+          <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+          {% elsif dimension._value == 'Ranking in Country' and  second_tier_country._value >= value %}
+          <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+           {% elsif dimension._value == 'Ranking in Country'  %}
+          <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+          {% else %}
+          {{ rendered_value }}
+          {% endif %} ;;
+  }
+
   measure: avg_rider_utr {
     label: "Rider UTR"
     type: average

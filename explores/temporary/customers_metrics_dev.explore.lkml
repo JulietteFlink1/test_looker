@@ -10,7 +10,7 @@ explore: orders_customers_dev {
   #view_name: orders_customers
   group_label: "Customer Metrics"
   description: "General Business Performance - Orders, Revenue, etc."
-  hidden: no
+  hidden: yes
   # view_name: base_order_orderline
   #extension: required
 
@@ -47,8 +47,8 @@ explore: orders_customers_dev {
   join: pdt_customer_retention {
     view_label: " Customer Retention vs PDT "
     sql_on: ${crm_customer_feed.first_order_country_iso} = ${pdt_customer_retention.country_iso} AND
-      ${crm_customer_feed.user_email}    = ${pdt_customer_retention.customer_email} ;;
-    relationship: many_to_one
+      ${crm_customer_feed.user_email}    = ${pdt_customer_retention.customer_email};;
+    relationship: many_to_many
     type: left_outer
   }
   #join: product_facts {
