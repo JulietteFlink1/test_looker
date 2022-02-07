@@ -48,7 +48,7 @@ view: weekly_hubmanager_sendouts {
                        bucket,
                        week,
                        count(distinct hub_code) over(partition by country_iso, bucket) as number_total_hubs_in_bucket,
-                       count(distinct hub_code) over (partition by country_iso) as number_total_hubs_in_country
+                       count(distinct hub_code) over (partition by country_iso)        as number_total_hubs_in_country
 
                 from buckets
 
@@ -88,6 +88,7 @@ view: weekly_hubmanager_sendouts {
                                        and return_reason not like '%goods_damaged%'
                                        and return_reason is not null
                                        then ol.order_uuid end)/count(distinct order_uuid) as share_post_order_issues,
+                    sum(quantity) as number_of_skus_sold
 
 
              from `flink-data-prod.curated.order_lineitems` ol
@@ -102,18 +103,30 @@ view: weekly_hubmanager_sendouts {
       ),
 
 
-      inventory_tool as (
+      inventory_tool_base as (
              select
                   hub_code,
                   date_trunc(inventory_change_date,week(monday)) as week,
-                  count(distinct case when change_reason in ('product-damaged', 'product-expired', 'too-good-to-go') and quantity_change<>0 then sku end)/count(distinct sku) as share_of_outbound_skus ,
-                  count(distinct case when change_reason  = 'inventory-correction' and quantity_change < 0 then sku end)/count(distinct sku) as share_negative_corrected,
-                  count(distinct case when change_reason  = 'inventory-correction' and quantity_change > 0 then sku end) /count(distinct sku) as share_positive_corrected
+                  count(distinct case when change_reason in ('product-damaged', 'product-expired', 'too-good-to-go') and quantity_change<>0 then sku end) as number_of_outbound_skus ,
+                  count(distinct case when change_reason  = 'inventory-correction' and quantity_change < 0 then sku end) as number_of_negative_corrected_skus,
+                  count(distinct case when change_reason  = 'inventory-correction' and quantity_change > 0 then sku end) as number_of_positive_corrected_skus
 
              from `flink-data-prod.reporting.inventory_changes_daily` AS inventory_changes_daily
 
              where date_trunc(inventory_change_date,week(monday)) between date_sub(date_trunc(current_date(), week(MONDAY)),interval 2 week) and date_sub(date_trunc(current_date(), week(MONDAY)),interval 1 week)
              group by 1,2
+
+      ),
+
+      inventory_tool as (
+
+              select hub_code,
+                     week,
+                     number_of_outbound_skus/number_of_skus_sold           as share_of_outbound_skus,
+                     number_of_negative_corrected_skus/number_of_skus_sold as share_negative_corrected_skus,
+
+              from inventory_tool_base
+              left join orderline using (hub_code,week)
 
       ),
 
@@ -206,8 +219,7 @@ view: weekly_hubmanager_sendouts {
                     (share_pre_order_swiped - lag(share_pre_order_swiped,1) over (partition by hub_code order by week asc))*100 as share_pre_order_swiped,
                     (share_post_order_issues - lag(share_post_order_issues,1) over (partition by hub_code order by week asc))*100 as share_post_order_issues,
                     (share_of_outbound_skus - lag(share_of_outbound_skus,1) over (partition by hub_code order by week asc))*100 as share_of_outbound_skus,
-                    (share_negative_corrected - lag(share_negative_corrected,1) over (partition by hub_code order by week asc))*100 as share_negative_corrected,
-                    (share_positive_corrected - lag(share_positive_corrected,1) over (partition by hub_code order by week asc))*100 as share_positive_corrected,
+                    (share_negative_corrected_skus - lag(share_negative_corrected_skus,1) over (partition by hub_code order by week asc))*100 as share_negative_corrected_skus,
                     (share_of_no_show - lag(share_of_no_show,1) over (partition by hub_code order by week asc))*100 as share_of_no_show,
                     (delta_punched_vs_forecasted - lag(delta_punched_vs_forecasted,1) over (partition by hub_code order by week asc))*100 as delta_punched_vs_forecasted,
                     round(rider_utr,2) - round(lag(rider_utr,1) over (partition by hub_code order by week asc),2) as rider_utr,
@@ -240,11 +252,10 @@ view: weekly_hubmanager_sendouts {
                     rank() over (partition by base.country_iso, week order by share_pre_order_swiped asc) as share_pre_order_swiped,
                     rank() over (partition by base.country_iso, week order by share_post_order_issues asc) as share_post_order_issues,
                     rank() over (partition by base.country_iso, week order by share_of_outbound_skus asc) as share_of_outbound_skus,
-                    rank() over (partition by base.country_iso, week order by share_negative_corrected asc) as share_negative_corrected,
-                    rank() over (partition by base.country_iso, week order by share_positive_corrected asc) as share_positive_corrected,
+                    rank() over (partition by base.country_iso, week order by share_negative_corrected_skus asc) as share_negative_corrected_skus,
                     rank() over (partition by base.country_iso, week order by share_of_no_show asc) as share_of_no_show,
                     rank() over (partition by base.country_iso, week order by delta_punched_vs_forecasted asc) as delta_punched_vs_forecasted,
-                    rank() over (partition by base.country_iso, week order by share_external_rider_hours desc) as share_external_rider_hours,
+                    rank() over (partition by base.country_iso, week order by share_external_rider_hours asc) as share_external_rider_hours,
                     rank() over (partition by base.country_iso, week order by rider_utr desc) as rider_utr,
                     rank() over (partition by base.country_iso, week order by picker_utr desc) as picker_utr,
                     'Ranking in Country' as dimension
@@ -270,11 +281,10 @@ view: weekly_hubmanager_sendouts {
                     rank() over (partition by base.country_iso, week, bucket order by share_pre_order_swiped asc) as share_pre_order_swiped,
                     rank() over (partition by base.country_iso, week, bucket order by share_post_order_issues asc) as share_post_order_issues,
                     rank() over (partition by base.country_iso, week, bucket order by share_of_outbound_skus asc) as share_of_outbound_skus,
-                    rank() over (partition by base.country_iso, week, bucket order by share_negative_corrected asc) as share_negative_corrected,
-                    rank() over (partition by base.country_iso, week, bucket order by share_positive_corrected asc) as share_positive_corrected,
+                    rank() over (partition by base.country_iso, week, bucket order by share_negative_corrected_skus asc) as share_negative_corrected_skus,
                     rank() over (partition by base.country_iso, week, bucket order by share_of_no_show asc) as share_of_no_show,
                     rank() over (partition by base.country_iso, week, bucket order by delta_punched_vs_forecasted asc) as delta_punched_vs_forecasted,
-                    rank() over (partition by base.country_iso, week, bucket order by share_external_rider_hours desc) as share_external_rider_hours,
+                    rank() over (partition by base.country_iso, week, bucket order by share_external_rider_hours asc) as share_external_rider_hours,
                     rank() over (partition by base.country_iso, week, bucket order by rider_utr desc) as rider_utr,
                     rank() over (partition by base.country_iso, week, bucket order by picker_utr desc) as picker_utr,
                     'Ranking in Bucket' as dimension
@@ -298,8 +308,7 @@ view: weekly_hubmanager_sendouts {
                     share_pre_order_swiped as share_pre_order_swiped,
                     share_post_order_issues as share_post_order_issues,
                     share_of_outbound_skus,
-                    share_negative_corrected,
-                    share_positive_corrected,
+                    share_negative_corrected_skus,
                     share_of_no_show,
                     share_external_rider_hours,
                     delta_punched_vs_forecasted,
@@ -328,8 +337,7 @@ view: weekly_hubmanager_sendouts {
                     share_pre_order_swiped as share_pre_order_swiped,
                     share_post_order_issues as share_post_order_issues,
                     share_of_outbound_skus,
-                    share_negative_corrected,
-                    share_positive_corrected,
+                    share_negative_corrected_skus,
                     share_of_no_show,
                     share_external_rider_hours,
                     delta_punched_vs_forecasted,
@@ -354,8 +362,7 @@ view: weekly_hubmanager_sendouts {
                     round(share_pre_order_swiped,1)   as share_pre_order_swiped,
                     round(share_post_order_issues,1)  as share_post_order_issues,
                     round(share_of_outbound_skus,1)   as share_of_outbound_skus,
-                    round(share_negative_corrected,1) as share_negative_corrected,
-                    round(share_positive_corrected,1) as share_positive_corrected,
+                    round(share_negative_corrected_skus,1) as share_negative_corrected_skus,
                     round(share_of_no_show,1) as share_of_no_show,
                     round(share_external_rider_hours,1) as share_external_rider_hours,
                     round(delta_punched_vs_forecasted,1) as delta_punched_vs_forecasted,
@@ -382,8 +389,7 @@ view: weekly_hubmanager_sendouts {
                     round(share_pre_order_swiped,0) as share_pre_order_swiped,
                     round(share_post_order_issues,0) as share_post_order_issues,
                     round(share_of_outbound_skus,0) as share_of_outbound_skus,
-                    round(share_negative_corrected,0) as share_negative_corrected,
-                    round(share_positive_corrected,0) as share_positive_corrected,
+                    round(share_negative_corrected_skus,0) as share_negative_corrected_skus,
                     round(share_of_no_show,0) as share_of_no_show,
                     round(share_external_rider_hours,0) as share_external_rider_hours,
                     round(delta_punched_vs_forecasted,0) as delta_punched_vs_forecasted,
@@ -410,8 +416,7 @@ view: weekly_hubmanager_sendouts {
                     share_pre_order_swiped,
                     share_post_order_issues,
                     share_of_outbound_skus,
-                    share_negative_corrected,
-                    share_positive_corrected,
+                    share_negative_corrected_skus,
                     share_of_no_show,
                     share_external_rider_hours,
                     delta_punched_vs_forecasted,
@@ -510,17 +515,12 @@ view: weekly_hubmanager_sendouts {
     sql: ${TABLE}.share_of_outbound_skus ;;
   }
 
-  dimension: share_negative_corrected {
+  dimension: share_negative_corrected_skus {
     type: number
     hidden: yes
-    sql: ${TABLE}.share_negative_corrected ;;
+    sql: ${TABLE}.share_negative_corrected_skus ;;
   }
 
-  dimension: share_positive_corrected {
-    type: number
-    hidden: yes
-    sql: ${TABLE}.share_positive_corrected ;;
-  }
 
   dimension: share_of_no_show {
     type: number
@@ -779,6 +779,60 @@ view: weekly_hubmanager_sendouts {
     {% endif %} ;;
   }
 
+  measure: avg_share_negative_corrected_skus {
+    label: "% SKUs Negative Correction"
+    description: "# SKUs with a negative inventory correction / # Sold SKUs"
+    type: average
+    value_format: "0.0%"
+    sql: ${share_negative_corrected_skus} ;;
+    html:  {% if dimension._value == 'WoW' and value <= 0 %}
+          <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center"><img src="http://findicons.com/files/icons/573/must_have/48/check.png" height=20 width=20>{{ value }} pp</p>
+          {% elsif dimension._value == 'WoW' and value > 0 %}
+           <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center"><img src="http://findicons.com/files/icons/719/crystal_clear_actions/64/cancel.png" height=20 width=20>+{{ value }} pp</p>
+          {% elsif dimension._value == 'Ranking in Bucket' and  first_tier_bucket._value >= value %}
+          <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+          {% elsif dimension._value == 'Ranking in Bucket' and  second_tier_bucket._value >= value %}
+          <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+           {% elsif dimension._value == 'Ranking in Bucket' %}
+          <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+           {% elsif dimension._value == 'Ranking in Country' and  first_tier_country._value >= value %}
+          <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+          {% elsif dimension._value == 'Ranking in Country' and  second_tier_country._value >= value %}
+          <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+           {% elsif dimension._value == 'Ranking in Country'  %}
+          <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+          {% else %}
+          {{ rendered_value }}
+          {% endif %} ;;
+  }
+
+  measure: avg_share_outbound_skus {
+    label: "% SKUs Outbound"
+    description: "# SKUs Outbounded / # Sold SKUs"
+    type: average
+    value_format: "0.0%"
+    sql: ${share_of_outbound_skus} ;;
+    html:  {% if dimension._value == 'WoW' and value <= 0 %}
+          <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center"><img src="http://findicons.com/files/icons/573/must_have/48/check.png" height=20 width=20>{{ value }} pp</p>
+          {% elsif dimension._value == 'WoW' and value > 0 %}
+           <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center"><img src="http://findicons.com/files/icons/719/crystal_clear_actions/64/cancel.png" height=20 width=20>+{{ value }} pp</p>
+          {% elsif dimension._value == 'Ranking in Bucket' and  first_tier_bucket._value >= value %}
+          <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+          {% elsif dimension._value == 'Ranking in Bucket' and  second_tier_bucket._value >= value %}
+          <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+           {% elsif dimension._value == 'Ranking in Bucket' %}
+          <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+           {% elsif dimension._value == 'Ranking in Country' and  first_tier_country._value >= value %}
+          <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+          {% elsif dimension._value == 'Ranking in Country' and  second_tier_country._value >= value %}
+          <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+           {% elsif dimension._value == 'Ranking in Country'  %}
+          <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+          {% else %}
+          {{ rendered_value }}
+          {% endif %} ;;
+  }
+
   measure: avg_share_no_show {
     label: "% No Show Rate"
     description: "Rider No Show Rate"
@@ -920,8 +974,7 @@ view: weekly_hubmanager_sendouts {
       share_pre_order_swiped,
       share_post_order_issues,
       share_of_outbound_skus,
-      share_negative_corrected,
-      share_positive_corrected,
+      share_negative_corrected_skus,
       share_of_no_show,
       rider_utr,
       picker_utr,
