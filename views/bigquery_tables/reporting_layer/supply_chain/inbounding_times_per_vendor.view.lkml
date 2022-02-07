@@ -34,7 +34,7 @@ view: inbounding_times_per_vendor {
 
   dimension: erp_vendor_id {
     type: string
-    sql: ${TABLE}.erp_vendor_id ;;
+    sql: ${TABLE}.vendor_id ;;
     hidden: yes
   }
 
