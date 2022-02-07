@@ -9,6 +9,7 @@ view: cs_reporting {
   derived_table: {
     persist_for: "24 hours"
     sql:
+    WITH tb AS (
     SELECT
         c.*,
         conversation_created_timestamp AS creation_timestamp,
@@ -32,6 +33,9 @@ view: cs_reporting {
       order_timestamp AS creation_timestamp,
       order_timestamp
     FROM flink-data-prod.curated.orders
+    )
+
+    SELECT * FROM tb
        ;;
   }
 
