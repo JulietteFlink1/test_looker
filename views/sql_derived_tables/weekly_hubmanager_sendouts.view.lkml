@@ -136,7 +136,7 @@ view: weekly_hubmanager_sendouts {
                     hub_code,
                     date_trunc(shift_date,week(monday))                             as week,
                     sum(case when position_name = 'rider' then number_of_no_show_minutes end)/sum(case when position_name = 'rider' then number_of_planned_minutes end)   as share_of_no_show,
-                    sum(case when position_name = 'rider' then number_of_worked_minutes_external end)/sum(case when position_name = 'rider' then number_of_worked_minutes end) as share_external_rider_hours,
+                    coalesce(sum(case when position_name = 'rider' then number_of_worked_minutes_external end),0)/sum(case when position_name = 'rider' then number_of_worked_minutes end) as share_external_rider_hours,
                     sum(number_of_planned_minutes)                                  as number_of_planned_minutes,
                     sum(number_of_worked_minutes_external)                          as number_of_worked_minutes_external,
                     sum(number_of_worked_minutes)                                   as number_of_worked_minutes,
@@ -147,7 +147,9 @@ view: weekly_hubmanager_sendouts {
 
              from `flink-data-prod.reporting.hub_staffing`
 
+
              where date_trunc(shift_date,week(monday)) between date_sub(date_trunc(current_date(), week(MONDAY)),interval 2 week) and date_sub(date_trunc(current_date(), week(MONDAY)),interval 1 week)
+             and number_of_worked_minutes > 0
 
              group by 1,2
       ),
