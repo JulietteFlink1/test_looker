@@ -83,7 +83,7 @@ explore: supply_chain {
 
   join: inventory_hourly {
 
-    view_label: "03 Inventory Hourly (last 5 days)"
+    view_label: "03 Inventory Hourly (last 8 days)"
 
     type: left_outer
     relationship: one_to_many
