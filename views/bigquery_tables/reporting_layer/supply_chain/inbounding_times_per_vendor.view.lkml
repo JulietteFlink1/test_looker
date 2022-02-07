@@ -283,6 +283,32 @@ view: inbounding_times_per_vendor {
 
   }
 
+  filter: filter_number_of_unique_skus_inbounded{
+    # this filter applies on a dimension aka UNAGGREGATED level. Thus it excludes per row on the raw-data-level.
+
+    label:       "[Filter] # Unique SKUs inbounded"
+    description: "This filter lets you set a threashold on how many different SKU had to be delivered by a supplier on a day to a specific hub
+                  in order to be included in the data.
+                  This filtering is also dependent on what inblunding measures you are using - inbounding as bulk, manual per stock manager or all together"
+
+    type: number
+
+    sql:
+      {% if    select_inbound_times_level._parameter_value == '1' %}
+        ${number_of_unique_skus_inbounded}
+
+      {% elsif select_inbound_times_level._parameter_value == '2' %}
+        ${bulk_number_of_unique_skus_inbounded}
+
+      {% elsif select_inbound_times_level._parameter_value == '3' %}
+        ${manual_number_of_unique_skus_inbounded}
+
+      {% endif %}
+    ;;
+
+
+    }
+
 
 
 }
