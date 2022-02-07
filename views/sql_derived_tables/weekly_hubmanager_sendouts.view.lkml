@@ -282,7 +282,7 @@ view: weekly_hubmanager_sendouts {
                     number_total_hubs_in_bucket,
                     number_total_hubs_in_country,
                     rank() over (partition by base.country_iso, week order by number_of_orders desc) as number_of_orders,
-                    rank() over (partition by base.country_iso, week order by fulfillment_time_minutes desc) as fulfillment_time_minutes,
+                    rank() over (partition by base.country_iso, week order by fulfillment_time_minutes asc) as fulfillment_time_minutes,
                     rank() over (partition by base.country_iso, week order by share_of_orders_with_delta_pdt_less_than_2 desc) as share_of_orders_with_delta_pdt_less_than_2,
                     rank() over (partition by base.country_iso, week order by share_of_orders_delivered_more_than_20 asc) as share_of_orders_delivered_more_than_20,
                     rank() over (partition by base.country_iso, week order by share_pre_order_swiped asc) as share_pre_order_swiped,
@@ -313,7 +313,7 @@ view: weekly_hubmanager_sendouts {
                     number_total_hubs_in_bucket,
                     number_total_hubs_in_country,
                     rank() over (partition by base.country_iso, week, bucket order by number_of_orders desc) as number_of_orders,
-                    rank() over (partition by base.country_iso, week, bucket order by fulfillment_time_minutes desc) as fulfillment_time_minutes,
+                    rank() over (partition by base.country_iso, week, bucket order by fulfillment_time_minutes asc) as fulfillment_time_minutes,
                     rank() over (partition by base.country_iso, week, bucket order by share_of_orders_with_delta_pdt_less_than_2 desc) as share_of_orders_with_delta_pdt_less_than_2,
                     rank() over (partition by base.country_iso, week, bucket order by share_of_orders_delivered_more_than_20 asc) as share_of_orders_delivered_more_than_20,
                     rank() over (partition by base.country_iso, week, bucket order by share_pre_order_swiped asc) as share_pre_order_swiped,
@@ -788,7 +788,7 @@ view: weekly_hubmanager_sendouts {
 
 
   measure: avg_share_pre_order_swiped {
-    label: "% Pre-Delivery Issues (Swipe)"
+    label: "% Partial Fulfillment Rate"
     description: "Share of Orders with pre delivery swipe issue"
     type: average
     value_format: "0.0%"
