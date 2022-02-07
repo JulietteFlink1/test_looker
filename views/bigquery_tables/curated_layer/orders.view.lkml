@@ -1074,6 +1074,24 @@ view: orders {
     sql: ${TABLE}.customer_order_rank ;;
   }
 
+  dimension: external_provider {
+    group_label: "* Order Dimensions *"
+    type: string
+    sql: ${TABLE}.external_provider ;;
+  }
+
+  dimension: external_provider_order_id {
+    group_label: "* IDs *"
+    type: string
+    sql: ${TABLE}.external_provider_order_id ;;
+  }
+
+  dimension: is_external_order {
+    group_label: "* Order Dimensions *"
+    type: yesno
+    sql: ${TABLE}.is_external_order ;;
+  }
+
 
   ######## PARAMETERS
 
@@ -1697,7 +1715,7 @@ view: orders {
         description: "Count of successful Orders"
         hidden:  no
         type: count_distinct
-        sql: ${id} ;;
+        sql: ${order_uuid} ;;
         value_format: "0"
       }
 

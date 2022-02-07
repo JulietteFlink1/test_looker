@@ -233,7 +233,7 @@ view: hub_staffing {
     type: sum
     label:"# Forecasted Hours"
     description: "Number of Needed Employee Hours Based on Forecasted Order Demand"
-    sql:${number_of_forecast_riders_needed};;
+    sql:${number_of_forecast_riders_needed}*0.5;;
     value_format_name: decimal_1
   }
 
