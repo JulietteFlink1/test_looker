@@ -152,12 +152,27 @@ view: weekly_hubmanager_sendouts {
              group by 1,2
       ),
 
+      nps_hub as (
+          select hub_code,
+                 date_trunc(date(submitted_at),week(monday)) as week,
+                 safe_cast((avg(is_promoter) - avg(is_detractor))*100 as int64) as nps
+
+        from  `flink-data-prod.curated.nps_after_order`
+
+        where date_trunc(date(submitted_at),week(monday)) between date_sub(date_trunc(current_date(), week(MONDAY)),interval 2 week) and date_sub(date_trunc(current_date(), week(MONDAY)),interval 1 week)
+
+        group by 1,2
+
+
+      ),
+
       base as(
 
       select orders.*,
              orderline.* except(week, hub_code),
              inventory_tool.* except(week,hub_code),
              staffing_data.* except(week, hub_code),
+             nps_hub.* except(week, hub_code),
              total_hubs_country_bucket.number_total_hubs_in_bucket,
              total_hubs_country_bucket.number_total_hubs_in_country,
 
@@ -171,6 +186,8 @@ view: weekly_hubmanager_sendouts {
       left join staffing_data using(hub_code, week)
 
       left join total_hubs_country_bucket using(hub_code, week)
+
+      left join nps_hub using(hub_code, week)
       ),
 
       last_week as (
@@ -224,6 +241,7 @@ view: weekly_hubmanager_sendouts {
                     (delta_punched_vs_forecasted - lag(delta_punched_vs_forecasted,1) over (partition by hub_code order by week asc))*100 as delta_punched_vs_forecasted,
                     round(rider_utr,2) - round(lag(rider_utr,1) over (partition by hub_code order by week asc),2) as rider_utr,
                     round(picker_utr,2) - round(lag(picker_utr,1) over (partition by hub_code order by week asc),2) as picker_utr,
+                    round(nps,2) - round(lag(nps,1) over (partition by hub_code order by week asc),2) as nps,
 
 
 
@@ -258,6 +276,7 @@ view: weekly_hubmanager_sendouts {
                     rank() over (partition by base.country_iso, week order by share_external_rider_hours asc) as share_external_rider_hours,
                     rank() over (partition by base.country_iso, week order by rider_utr desc) as rider_utr,
                     rank() over (partition by base.country_iso, week order by picker_utr desc) as picker_utr,
+                    rank() over (partition by base.country_iso, week order by nps desc) as nps,
                     'Ranking in Country' as dimension
 
              from base
@@ -287,6 +306,7 @@ view: weekly_hubmanager_sendouts {
                     rank() over (partition by base.country_iso, week, bucket order by share_external_rider_hours asc) as share_external_rider_hours,
                     rank() over (partition by base.country_iso, week, bucket order by rider_utr desc) as rider_utr,
                     rank() over (partition by base.country_iso, week, bucket order by picker_utr desc) as picker_utr,
+                    rank() over (partition by base.country_iso, week, bucket order by nps desc) as nps,
                     'Ranking in Bucket' as dimension
 
              from base
@@ -314,6 +334,7 @@ view: weekly_hubmanager_sendouts {
                     delta_punched_vs_forecasted,
                     rider_utr,
                     picker_utr,
+                    nps,
                     week,
                     number_total_hubs_in_bucket,
                     number_total_hubs_in_country
@@ -343,6 +364,7 @@ view: weekly_hubmanager_sendouts {
                     delta_punched_vs_forecasted,
                     rider_utr,
                     picker_utr,
+                    nps,
                     week,
                     number_total_hubs_in_bucket,
                     number_total_hubs_in_country
@@ -368,6 +390,7 @@ view: weekly_hubmanager_sendouts {
                     round(delta_punched_vs_forecasted,1) as delta_punched_vs_forecasted,
                     round(rider_utr,2)  as rider_utr,
                     round(picker_utr,2) as picker_utr,
+                    round(nps,2) as nps,
                     week,
                     number_total_hubs_in_bucket,
                     number_total_hubs_in_country
@@ -395,6 +418,7 @@ view: weekly_hubmanager_sendouts {
                     round(delta_punched_vs_forecasted,0) as delta_punched_vs_forecasted,
                     round(rider_utr,0) as rider_utr,
                     round(picker_utr,0) as picker_utr,
+                    round(nps,0) as nps,
                     week,
                     number_total_hubs_in_bucket,
                     number_total_hubs_in_country
@@ -422,6 +446,7 @@ view: weekly_hubmanager_sendouts {
                     delta_punched_vs_forecasted,
                     rider_utr,
                     picker_utr,
+                    nps,
                     week,
                     number_total_hubs_in_bucket,
                     number_total_hubs_in_country
@@ -513,6 +538,12 @@ view: weekly_hubmanager_sendouts {
     hidden: yes
     type: number
     sql: ${TABLE}.share_of_outbound_skus ;;
+  }
+
+  dimension: nps {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.nps ;;
   }
 
   dimension: share_negative_corrected_skus {
@@ -960,6 +991,30 @@ view: weekly_hubmanager_sendouts {
      {% elsif dimension._value == 'Ranking in Country'  %}
     <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
     {% endif %};;
+  }
+
+  measure: avg_nps {
+    label: "NPS"
+    type: average
+    value_format: "0"
+    sql: ${nps} ;;
+    html: {% if dimension._value == 'WoW' and value >= 0 %}
+          <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center"><img src="http://findicons.com/files/icons/573/must_have/48/check.png" height=20 width=20>+{{ rendered_value }}</p>
+          {% elsif dimension._value == 'WoW' and value < 0 %}
+           <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center"><img src="http://findicons.com/files/icons/719/crystal_clear_actions/64/cancel.png" height=20 width=20>{{ rendered_value }}</p>
+          {% elsif dimension._value == 'Ranking in Bucket' and  first_tier_bucket._value >= value %}
+          <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+          {% elsif dimension._value == 'Ranking in Bucket' and  second_tier_bucket._value >= value %}
+          <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+           {% elsif dimension._value == 'Ranking in Bucket' %}
+          <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+           {% elsif dimension._value == 'Ranking in Country' and  first_tier_country._value >= value %}
+          <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+          {% elsif dimension._value == 'Ranking in Country' and  second_tier_country._value >= value %}
+          <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+           {% elsif dimension._value == 'Ranking in Country'  %}
+          <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+          {% endif %};;
   }
 
   set: detail {
