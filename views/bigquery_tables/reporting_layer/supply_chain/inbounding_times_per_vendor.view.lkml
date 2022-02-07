@@ -295,13 +295,13 @@ view: inbounding_times_per_vendor {
 
     sql:
       {% if    select_inbound_times_level._parameter_value == '1' %}
-        ${number_of_unique_skus_inbounded}
+        {% condition filter_number_of_unique_skus_inbounded %} ${number_of_unique_skus_inbounded}        {% endcondition %}
 
       {% elsif select_inbound_times_level._parameter_value == '2' %}
-        ${bulk_number_of_unique_skus_inbounded}
+        {% condition filter_number_of_unique_skus_inbounded %} ${bulk_number_of_unique_skus_inbounded}   {% endcondition %}
 
       {% elsif select_inbound_times_level._parameter_value == '3' %}
-        ${manual_number_of_unique_skus_inbounded}
+        {% condition filter_number_of_unique_skus_inbounded %} ${manual_number_of_unique_skus_inbounded} {% endcondition %}
 
       {% endif %}
     ;;
