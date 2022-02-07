@@ -699,6 +699,8 @@ view: weekly_hubmanager_sendouts {
     <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
      {% elsif dimension._value == 'Ranking in Country'  %}
     <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+    {% elsif dimension._value == 'Last Week'  %}
+    <p style="font-weight: bold">{{ rendered_value }}<p>
     {% else %}
     {{ rendered_value }}
     {% endif %} ;;
@@ -726,8 +728,10 @@ view: weekly_hubmanager_sendouts {
           <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
            {% elsif dimension._value == 'Ranking in Country'  %}
           <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+          {% elsif dimension._value == 'Last Week'  %}
+          <p style="font-weight: bold">{{ rendered_value }}<p>
           {% else %}
-          {{rendered_value}}
+          {{ rendered_value }}
           {% endif %}  ;;
   }
 
@@ -754,8 +758,10 @@ view: weekly_hubmanager_sendouts {
     <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
      {% elsif dimension._value == 'Ranking in Country'  %}
     <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+    {% elsif dimension._value == 'Last Week'  %}
+    <p style="font-weight: bold">{{ rendered_value }}<p>
     {% else %}
-    {{rendered_value}}
+    {{ rendered_value }}
     {% endif %}  ;;
   }
 
@@ -781,8 +787,10 @@ view: weekly_hubmanager_sendouts {
     <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
      {% elsif dimension._value == 'Ranking in Country'  %}
     <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+    {% elsif dimension._value == 'Last Week'  %}
+    <p style="font-weight: bold">{{ rendered_value }}<p>
     {% else %}
-    {{rendered_value}}
+    {{ rendered_value }}
     {% endif %} ;;
   }
 
@@ -809,8 +817,10 @@ view: weekly_hubmanager_sendouts {
     <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
      {% elsif dimension._value == 'Ranking in Country'  %}
     <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+    {% elsif dimension._value == 'Last Week'  %}
+    <p style="font-weight: bold">{{ rendered_value }}<p>
     {% else %}
-    {{rendered_value}}
+    {{ rendered_value }}
     {% endif %};;
    }
 
@@ -836,6 +846,8 @@ view: weekly_hubmanager_sendouts {
     <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
      {% elsif dimension._value == 'Ranking in Country'  %}
     <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+    {% elsif dimension._value == 'Last Week'  %}
+    <p style="font-weight: bold">{{ rendered_value }}<p>
     {% else %}
     {{ rendered_value }}
     {% endif %} ;;
@@ -863,6 +875,8 @@ view: weekly_hubmanager_sendouts {
           <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
            {% elsif dimension._value == 'Ranking in Country'  %}
           <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+          {% elsif dimension._value == 'Last Week'  %}
+           <p style="font-weight: bold">{{ rendered_value }}<p>
           {% else %}
           {{ rendered_value }}
           {% endif %} ;;
@@ -890,6 +904,8 @@ view: weekly_hubmanager_sendouts {
           <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
            {% elsif dimension._value == 'Ranking in Country'  %}
           <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+          {% elsif dimension._value == 'Last Week'  %}
+           <p style="font-weight: bold">{{ rendered_value }}<p>
           {% else %}
           {{ rendered_value }}
           {% endif %} ;;
@@ -917,6 +933,8 @@ view: weekly_hubmanager_sendouts {
           <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
            {% elsif dimension._value == 'Ranking in Country'  %}
           <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+          {% elsif dimension._value == 'Last Week'  %}
+           <p style="font-weight: bold">{{ rendered_value }}<p>
           {% else %}
           {{ rendered_value }}
           {% endif %} ;;
@@ -944,6 +962,8 @@ view: weekly_hubmanager_sendouts {
           <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
            {% elsif dimension._value == 'Ranking in Country'  %}
           <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+          {% elsif dimension._value == 'Last Week'  %}
+           <p style="font-weight: bold">{{ rendered_value }}<p>
           {% else %}
           {{ rendered_value }}
           {% endif %} ;;
@@ -971,6 +991,8 @@ view: weekly_hubmanager_sendouts {
           <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
            {% elsif dimension._value == 'Ranking in Country'  %}
           <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+          {% elsif dimension._value == 'Last Week'  %}
+           <p style="font-weight: bold">{{ rendered_value }}<p>
           {% else %}
           {{ rendered_value }}
           {% endif %} ;;
@@ -998,6 +1020,8 @@ view: weekly_hubmanager_sendouts {
           <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
            {% elsif dimension._value == 'Ranking in Country'  %}
           <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+          {% elsif dimension._value == 'Last Week'  %}
+           <p style="font-weight: bold">{{ rendered_value }}<p>
           {% else %}
           {{ rendered_value }}
           {% endif %} ;;
@@ -1024,6 +1048,10 @@ view: weekly_hubmanager_sendouts {
     <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
      {% elsif dimension._value == 'Ranking in Country'  %}
     <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+    {% elsif dimension._value == 'Last Week'  %}
+    <p style="font-weight: bold">{{ rendered_value }}<p>
+    {% else %}
+    {{ rendered_value }}
     {% endif %};;
   }
 
@@ -1048,6 +1076,10 @@ view: weekly_hubmanager_sendouts {
     <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
      {% elsif dimension._value == 'Ranking in Country'  %}
     <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+    {% elsif dimension._value == 'Last Week'  %}
+    <p style="font-weight: bold">{{ rendered_value }}<p>
+    {% else %}
+    {{ rendered_value }}
     {% endif %};;
   }
 
@@ -1072,6 +1104,10 @@ view: weekly_hubmanager_sendouts {
           <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
            {% elsif dimension._value == 'Ranking in Country'  %}
           <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+          {% elsif dimension._value == 'Last Week'  %}
+           <p style="font-weight: bold">{{ rendered_value }}<p>
+          {% else %}
+          {{ rendered_value }}
           {% endif %};;
   }
 
