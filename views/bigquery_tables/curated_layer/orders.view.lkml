@@ -2218,14 +2218,14 @@ view: orders {
         value_format: "0%"
       }
 
-      measure: pct_idle {
-        label: "% Rider Idle Time"
-        group_label: "* Operations / Logistics *"
-        description: "% Rider Time spent not working on an order (not Occupied ) "
-        type: number
-        sql: 1 - ((${order_handling_time_minute}/60)/NULLIF(${shyftplan_riders_pickers_hours.rider_hours},0));;
-        value_format_name:  percent_1
-      }
+      # measure: pct_idle {
+      #   label: "% Rider Idle Time"
+      #   group_label: "* Operations / Logistics *"
+      #   description: "% Rider Time spent not working on an order (not Occupied ) "
+      #   type: number
+      #   sql: 1 - ((${order_handling_time_minute}/60)/NULLIF(${shyftplan_riders_pickers_hours.rider_hours},0));;
+      #   value_format_name:  percent_1
+      # }
 
 
 #######TEMP: adding new fields to compare how PDT versus Time Estimate will perform
