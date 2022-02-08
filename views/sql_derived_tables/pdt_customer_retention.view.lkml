@@ -46,12 +46,14 @@ view: pdt_customer_retention {
   dimension: first_order_date {
     type: date
     datatype: date
+    label: "Order Date"
     sql: ${TABLE}.first_order_date ;;
   }
 
   dimension: next_order_date {
     type: date
     datatype: date
+    label: "Next Order Date"
     sql: ${TABLE}.next_order_date ;;
   }
 

@@ -9,6 +9,7 @@ view: cs_reporting {
   derived_table: {
     persist_for: "24 hours"
     sql:
+    WITH tb AS (
     SELECT
         c.*,
         conversation_created_timestamp AS creation_timestamp,
@@ -21,18 +22,47 @@ view: cs_reporting {
       NULL, NULL, NULL, NULL, NULL,
       NULL, NULL, NULL, NULL, NULL,
       NULL, NULL, NULL, NULL, NULL,
-      NULL, country_iso,
-      NULL, NULL, NULL,
+      NULL, NULL, country_iso,
+      NULL, NULL,
       NULL, NULL, NULL, NULL, NULL,
       NULL, NULL, NULL, NULL, NULL,
-      NULL,
+      NULL, NULL, NULL, NULL, NULL,
       LOWER(order_number) as order_number,
-      NULL, NULL, NULL,NULL, NULL,
-      NULL,
+      NULL, NULL, NULL,NULL,
+      NULL, NULL,NULL, NULL,NULL,
       order_timestamp AS creation_timestamp,
       order_timestamp
     FROM flink-data-prod.curated.orders
+    )
+
+    SELECT * FROM tb
        ;;
+  }
+
+  dimension: date_granularity {
+    label: "Event Time (Dynamic)"
+    label_from_parameter: timeframe_picker
+    type: string # cannot have this as a time type. See this discussion: https://community.looker.com/lookml-5/dynamic-time-granularity-opinions-16675
+    sql:
+    {% if timeframe_picker._parameter_value == 'Hour' %}
+      ${creation_timestamp_hour}
+    {% elsif timeframe_picker._parameter_value == 'Day' %}
+      ${creation_timestamp_date}
+    {% elsif timeframe_picker._parameter_value == 'Week' %}
+      ${creation_timestamp_week}
+    {% elsif timeframe_picker._parameter_value == 'Month' %}
+      ${creation_timestamp_month}
+    {% endif %};;
+  }
+
+  parameter: timeframe_picker {
+    label: "Event Time Granularity"
+    type: unquoted
+    allowed_value: { value: "Hour" }
+    allowed_value: { value: "Day" }
+    allowed_value: { value: "Week" }
+    allowed_value: { value: "Month" }
+    default_value: "Day"
   }
 
   measure: cnt_orders {
@@ -317,6 +347,7 @@ view: cs_reporting {
   }
 
   dimension_group: creation_timestamp {
+    label: "Event Timestamp"
     type: time
     sql: ${TABLE}.creation_timestamp ;;
   }

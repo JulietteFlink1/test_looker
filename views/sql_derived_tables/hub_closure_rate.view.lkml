@@ -22,16 +22,17 @@ closed_events as (
         from dates d
         join closed_events_raw c on date >= date(closed_datetime) and date <= date(opened_datetime)
 ),
+
 open_hours_ as (
-          select date(start_datetime) as date
-        , warehouse
+          select date(start_timestamp) as date
+        , hub_code as warehouse
         , country_iso
         , city
         , sum(case when is_open = 1 then 0.5 end) as open_hours
-        , min(case when is_open = 1 then start_datetime end) as start_hour
-        , max(case when is_open = 1 then end_datetime end) as stop_hour
-      from `flink-data-prod.order_forecast.hub_opening_hours`
-      where date(start_datetime) <= current_date
+        , min(case when is_open = 1 then start_timestamp end) as start_hour
+        , max(case when is_open = 1 then end_timestamp end) as stop_hour
+      from `flink-data-prod.curated.hub_opening_hours`
+      where date(start_timestamp) <= current_date
       group by 1, 2, 3, 4
 ),
 cleaned_hours as (
