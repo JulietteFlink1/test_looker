@@ -36,4 +36,11 @@ explore: hub_level_kpis {
     type: left_outer
   }
 
+  join: weekly_hubmanager_sendouts {
+    view_label: "* Weekly Hubmnager Sendouts *"
+    sql_on: ${hub_level_kpis.hub_code} = ${weekly_hubmanager_sendouts.hub_code} ;;
+    relationship: many_to_many
+    type: left_outer
+  }
+
 }

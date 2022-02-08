@@ -9,6 +9,7 @@ view: cs_reporting {
   derived_table: {
     persist_for: "24 hours"
     sql:
+    WITH tb AS (
     SELECT
         c.*,
         conversation_created_timestamp AS creation_timestamp,
@@ -21,18 +22,47 @@ view: cs_reporting {
       NULL, NULL, NULL, NULL, NULL,
       NULL, NULL, NULL, NULL, NULL,
       NULL, NULL, NULL, NULL, NULL,
-      NULL, country_iso,
-      NULL, NULL, NULL,
+      NULL, NULL, country_iso,
+      NULL, NULL,
       NULL, NULL, NULL, NULL, NULL,
       NULL, NULL, NULL, NULL, NULL,
-      NULL,
+      NULL, NULL, NULL, NULL, NULL,
       LOWER(order_number) as order_number,
-      NULL, NULL, NULL,NULL, NULL,
-      NULL,
+      NULL, NULL, NULL,NULL,
+      NULL, NULL,NULL, NULL,NULL,
       order_timestamp AS creation_timestamp,
       order_timestamp
     FROM flink-data-prod.curated.orders
+    )
+
+    SELECT * FROM tb
        ;;
+  }
+
+  dimension: date_granularity {
+    label: "Event Time (Dynamic)"
+    label_from_parameter: timeframe_picker
+    type: string # cannot have this as a time type. See this discussion: https://community.looker.com/lookml-5/dynamic-time-granularity-opinions-16675
+    sql:
+    {% if timeframe_picker._parameter_value == 'Hour' %}
+      ${creation_timestamp_hour}
+    {% elsif timeframe_picker._parameter_value == 'Day' %}
+      ${creation_timestamp_date}
+    {% elsif timeframe_picker._parameter_value == 'Week' %}
+      ${creation_timestamp_week}
+    {% elsif timeframe_picker._parameter_value == 'Month' %}
+      ${creation_timestamp_month}
+    {% endif %};;
+  }
+
+  parameter: timeframe_picker {
+    label: "Event Time Granularity"
+    type: unquoted
+    allowed_value: { value: "Hour" }
+    allowed_value: { value: "Day" }
+    allowed_value: { value: "Week" }
+    allowed_value: { value: "Month" }
+    default_value: "Day"
   }
 
   measure: cnt_orders {
@@ -50,6 +80,62 @@ view: cs_reporting {
     description: "cnt conversations by creation date"
     type: count_distinct
     sql: ${conversation_uuid} ;;
+  }
+
+  measure: cnt_live_order_conversations {
+    # have to include it as a separate measure here because orders are not linked to a contact reason, so if we filter by contact reason we cannot get a % compared to orders (because # orders will always be 0)
+    label: "# conversations - live order"
+    type: count_distinct
+    sql: ${conversation_uuid} ;;
+    filters: [main_contact_reason: "Live Order"]
+  }
+
+  measure: cnt_cancellation_conversations {
+    # have to include it as a separate measure here because orders are not linked to a contact reason, so if we filter by contact reason we cannot get a % compared to orders (because # orders will always be 0)
+    label: "# conversations - cancellation"
+    type: count_distinct
+    sql: ${conversation_uuid} ;;
+    filters: [secondary_contact_reason: "Cancellation"]
+  }
+
+  # measure: perc_cancellation_cr{
+  #   label: "% cancellation contact rate"
+  #   description: "percentage of conversations with cancellation contact reasion, compared to number of orders"
+  #   type: number
+  #   sql: SAFE_DIVIDE(${cnt_cancellation_conversations},${cnt_conversations}) ;;
+  #   value_format_name: percent_1
+  # }
+
+  measure: cnt_invoice_request_conversations {
+    # have to include it as a separate measure here because orders are not linked to a contact reason, so if we filter by contact reason we cannot get a % compared to orders (because # orders will always be 0)
+    label: "# conversations - invoice request"
+    type: count_distinct
+    sql: ${conversation_uuid} ;;
+    filters: [contact_reason_l3: "invoice request"]
+  }
+
+  measure: perc_invoice_request_cr{
+    label: "% invoice request contact rate"
+    description: "percentage of conversations with invoice request L3 compared to number of orders"
+    type: number
+    sql: SAFE_DIVIDE(${cnt_invoice_request_conversations},${cnt_conversations}) ;;
+    value_format_name: percent_1
+  }
+
+  measure: cnt_deflected_by_bot {
+    label: "# unique conversations deflected by bot"
+    description: "cnt conversations deflected by bot"
+    type: count_distinct
+    sql: ${conversation_uuid} ;;
+    filters: [deflected_by_bot: "yes"]
+  }
+
+  measure: perc_deflected_by_bot {
+    label: "% conversations deflected by bot"
+    description: "percentage of conversations that were deflected by bot"
+    type: number
+    sql: SAFE_DIVIDE(${cnt_deflected_by_bot},${cnt_conversations}) ;;
+    value_format_name: percent_1
   }
 
   dimension: main_contact_reason {
@@ -261,6 +347,7 @@ view: cs_reporting {
   }
 
   dimension_group: creation_timestamp {
+    label: "Event Timestamp"
     type: time
     sql: ${TABLE}.creation_timestamp ;;
   }

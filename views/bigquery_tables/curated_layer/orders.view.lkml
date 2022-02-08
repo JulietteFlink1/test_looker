@@ -1074,6 +1074,24 @@ view: orders {
     sql: ${TABLE}.customer_order_rank ;;
   }
 
+  dimension: external_provider {
+    group_label: "* Order Dimensions *"
+    type: string
+    sql: ${TABLE}.external_provider ;;
+  }
+
+  dimension: external_provider_order_id {
+    group_label: "* IDs *"
+    type: string
+    sql: ${TABLE}.external_provider_order_id ;;
+  }
+
+  dimension: is_external_order {
+    group_label: "* Order Dimensions *"
+    type: yesno
+    sql: ${TABLE}.is_external_order ;;
+  }
+
 
   ######## PARAMETERS
 
@@ -1413,6 +1431,15 @@ view: orders {
         value_format_name: decimal_1
       }
 
+      measure: avg_targeted_delivery_time {
+        group_label: "* Operations / Logistics *"
+        label: "AVG Targeted Delivery Time (min)"
+        description: "Average internal targeted delivery time for hub ops."
+        hidden:  no
+        type: average
+        sql: ${delivery_time_targeted_minutes};;
+        value_format_name: decimal_1
+      }
 
       measure: avg_at_customer_time {
         group_label: "* Operations / Logistics *"
@@ -1688,7 +1715,7 @@ view: orders {
         description: "Count of successful Orders"
         hidden:  no
         type: count_distinct
-        sql: ${id} ;;
+        sql: ${order_uuid} ;;
         value_format: "0"
       }
 
