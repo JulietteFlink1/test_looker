@@ -154,9 +154,6 @@ view: weekly_hubmanager_sendouts {
                     date_trunc(shift_date,week(monday))                             as week,
                     sum(case when position_name = 'rider' then number_of_no_show_minutes end)/sum(case when position_name = 'rider' then number_of_planned_minutes end)   as share_of_no_show,
                     coalesce(sum(case when position_name = 'rider' then number_of_worked_minutes_external end),0)/sum(case when position_name = 'rider' then number_of_worked_minutes end) as share_external_rider_hours,
-                    sum(number_of_planned_minutes)                                  as number_of_planned_minutes,
-                    sum(number_of_worked_minutes_external)                          as number_of_worked_minutes_external,
-                    sum(number_of_worked_minutes)                                   as number_of_worked_minutes,
                     sum(case when position_name = 'rider' then (number_of_worked_minutes/60-number_of_forecast_riders_needed*0.5)  end)/sum(case when position_name = 'rider' then number_of_forecast_riders_needed*0.5 end) as delta_punched_vs_forecasted,
                     sum(case when position_name = 'rider' then safe_cast(number_of_orders as int64) end ) /sum(case when position_name = 'rider'  then safe_cast(number_of_worked_minutes/60 as float64) end) as rider_utr,
                     sum(case when position_name = 'picker' then safe_cast(number_of_orders as int64)  end )/sum(case when position_name = 'picker' then safe_cast(number_of_worked_minutes/60 as float64) end) as picker_utr
