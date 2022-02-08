@@ -13,6 +13,9 @@
 include: "/views/**/*.view"
 
 include: "/**/products_hub_assignment_v2.view"
+include: "/**/replenishment_purchase_orders.view"
+
+
 
 
 explore: supply_chain {
@@ -162,11 +165,26 @@ explore: supply_chain {
 
     type: left_outer
     relationship: one_to_one
+
     sql_on:
         ${inbounding_times_per_vendor.erp_vendor_id} = ${products_hub_assignment.erp_vendor_id} and
         ${inbounding_times_per_vendor.hub_code}      = ${products_hub_assignment.hub_code}      and
         ${inbounding_times_per_vendor.report_date}   = ${products_hub_assignment.report_date}   and
         {% condition global_filters_and_parameters.datasource_filter %} ${inbounding_times_per_vendor.report_date} {% endcondition %}
+    ;;
+  }
+
+  join: replenishment_purchase_orders {
+
+    view_label: "07 Purchase Orders"
+
+    type:         full_outer
+    relationship: one_to_many
+
+    sql_on:
+        ${replenishment_purchase_orders.sku}           = ${products_hub_assignment.sku}      and
+        ${replenishment_purchase_orders.hub_code}      = ${products_hub_assignment.hub_code} and
+        ${replenishment_purchase_orders.delivery_date} = ${products_hub_assignment.report_date}
     ;;
   }
 
