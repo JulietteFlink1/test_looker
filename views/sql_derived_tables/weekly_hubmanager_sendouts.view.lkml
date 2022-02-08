@@ -116,7 +116,9 @@ view: weekly_hubmanager_sendouts {
                             or erp_category like '%Cave%'
                             or erp_category like '%Alkohol%'
                             or erp_category like '%Spiri%'
-                            or erp_category like '%Wijn%'  )
+                            or erp_category like '%Wijn%'
+                            or erp_category like '%Taba%'
+                            or erp_category like '%Rauchen%')
                         and lower(erp_subcategory) not like '%bier%'
                         and erp_subcategory not like '%Bièr%'
                         and abs(quantity_change) <= 100
@@ -359,9 +361,6 @@ view: weekly_hubmanager_sendouts {
                     week,
                     number_total_hubs_in_bucket,
                     number_total_hubs_in_country
-
-
-
 
 
              from last_week
