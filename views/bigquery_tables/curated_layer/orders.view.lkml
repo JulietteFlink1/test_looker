@@ -1362,6 +1362,17 @@ view: orders {
         value_format_name: decimal_1
       }
 
+      measure: avg_discount_value {
+        group_label: "* Monetary Values *"
+        label: "AVG Discount Value"
+        description: "Average Discount Value (only considering orders where discount was applied)"
+        hidden:  no
+        type: average
+        sql: ${discount_amount};;
+        filters: [discount_amount: ">0"]
+        value_format_name: euro_accounting_2_precision
+      }
+
       measure: avg_estimated_picking_time_minutes {
         group_label: "* Operations / Logistics *"
         label: "AVG Estimated Picking Time"
@@ -2218,14 +2229,14 @@ view: orders {
         value_format: "0%"
       }
 
-      measure: pct_idle {
-        label: "% Rider Idle Time"
-        group_label: "* Operations / Logistics *"
-        description: "% Rider Time spent not working on an order (not Occupied ) "
-        type: number
-        sql: 1 - ((${order_handling_time_minute}/60)/NULLIF(${shyftplan_riders_pickers_hours.rider_hours},0));;
-        value_format_name:  percent_1
-      }
+      # measure: pct_idle {
+      #   label: "% Rider Idle Time"
+      #   group_label: "* Operations / Logistics *"
+      #   description: "% Rider Time spent not working on an order (not Occupied ) "
+      #   type: number
+      #   sql: 1 - ((${order_handling_time_minute}/60)/NULLIF(${shyftplan_riders_pickers_hours.rider_hours},0));;
+      #   value_format_name:  percent_1
+      # }
 
 
 #######TEMP: adding new fields to compare how PDT versus Time Estimate will perform

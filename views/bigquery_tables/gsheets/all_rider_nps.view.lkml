@@ -209,6 +209,280 @@ view: all_rider_nps {
     sql: case when ${TABLE}.work_environment_atmosphere is not null then 1 else 0 end;;
   }
 
+  dimension: what_is_your_role_at_flink_ {
+    type: string
+    sql: ${TABLE}.what_is_your_role_at_flink_;;
+  }
+
+  dimension: my_supervisor_s_treats_everyone_fairly_ {
+    type: number
+    sql: ${TABLE}.my_supervisor_s_treats_everyone_fairly_;;
+  }
+
+  dimension: has_responded_my_supervisor_s_treats_everyone_fairly_{
+    type: number
+    sql: case when ${TABLE}.my_supervisor_s_treats_everyone_fairly_ is not null then 1 else 0 end;;
+  }
+
+  dimension: my_supervisor_s_cares_about_their_employees_ {
+    type: number
+    sql: ${TABLE}.my_supervisor_s_cares_about_their_employees_;;
+  }
+
+  dimension: has_responded_my_supervisor_s_cares_about_their_employees_{
+    type: number
+    sql: case when ${TABLE}.my_supervisor_s_cares_about_their_employees_ is not null then 1 else 0 end;;
+  }
+
+  dimension: i_feel_comfortable_giving_opinions_and_feedback_to_managers_ {
+    type: number
+    sql: ${TABLE}.i_feel_comfortable_giving_opinions_and_feedback_to_managers_;;
+  }
+
+  dimension: has_responded_i_feel_comfortable_giving_opinions_and_feedback_to_managers_{
+    type: number
+    sql: case when ${TABLE}.i_feel_comfortable_giving_opinions_and_feedback_to_managers_ is not null then 1 else 0 end;;
+  }
+
+  dimension: if_i_do_great_work_i_know_that_it_will_be_recognised_ {
+    type: number
+    sql: ${TABLE}.if_i_do_great_work_i_know_that_it_will_be_recognised_;;
+  }
+
+  dimension: has_responded_if_i_do_great_work_i_know_that_it_will_be_recognised_{
+    type: number
+    sql: case when ${TABLE}.if_i_do_great_work_i_know_that_it_will_be_recognised_ is not null then 1 else 0 end;;
+  }
+
+  dimension: management {
+    type: number
+    sql: ${TABLE}.management;;
+  }
+
+  dimension: has_responded_management{
+    type: number
+    sql: case when ${TABLE}.management is not null then 1 else 0 end;;
+  }
+
+  dimension: _i_am_satisfied_with_the_hub_working_conditions_ {
+    type: number
+    sql: ${TABLE}._i_am_satisfied_with_the_hub_working_conditions_;;
+  }
+
+  dimension: has_responded_i_am_satisfied_with_the_hub_working_conditions_{
+    type: number
+    sql: case when ${TABLE}._i_am_satisfied_with_the_hub_working_conditions_ is not null then 1 else 0 end;;
+  }
+
+  dimension: _my_hub_adheres_to_the_highest_safety_standards_ {
+    type: number
+    sql: ${TABLE}._my_hub_adheres_to_the_highest_safety_standards_;;
+  }
+
+  dimension: has_responded_my_hub_adheres_to_the_highest_safety_standards_{
+    type: number
+    sql: case when ${TABLE}._my_hub_adheres_to_the_highest_safety_standards_ is not null then 1 else 0 end;;
+  }
+
+  dimension: i_have_adequate_training_to_do_my_job_well_ {
+    type: number
+    sql: ${TABLE}.i_have_adequate_training_to_do_my_job_well_;;
+  }
+
+  dimension: has_responded_i_have_adequate_training_to_do_my_job_well_{
+    type: number
+    sql: case when ${TABLE}.i_have_adequate_training_to_do_my_job_well_ is not null then 1 else 0 end;;
+  }
+
+  dimension: i_receive_my_salary_on_time_and_accurately_ {
+    type: number
+    sql: ${TABLE}.i_receive_my_salary_on_time_and_accurately_;;
+  }
+
+  dimension: has_responded_i_receive_my_salary_on_time_and_accurately_{
+    type: number
+    sql: case when ${TABLE}.i_receive_my_salary_on_time_and_accurately_ is not null then 1 else 0 end;;
+  }
+
+  dimension: my_shifts_are_planned_flexibly_taking_into_account_my_responsibilities_outside_of_flink_ {
+    type: number
+    sql: ${TABLE}.my_shifts_are_planned_flexibly_taking_into_account_my_responsibilities_outside_of_flink_;;
+  }
+
+  dimension: has_responded_my_shifts_are_planned_flexibly_taking_into_account_my_responsibilities_outside_of_flink_{
+    type: number
+    sql: case when ${TABLE}.my_shifts_are_planned_flexibly_taking_into_account_my_responsibilities_outside_of_flink_ is not null then 1 else 0 end;;
+  }
+
+  dimension: quinyx_is_a_good_tool_for_keeping_me_informed_about_upcoming_shifts_and_requesting_absences_ {
+    type: number
+    sql: ${TABLE}.quinyx_is_a_good_tool_for_keeping_me_informed_about_upcoming_shifts_and_requesting_absences_;;
+  }
+
+  dimension: has_responded_quinyx_is_a_good_tool_for_keeping_me_informed_about_upcoming_shifts_and_requesting_absences_{
+    type: number
+    sql: case when ${TABLE}.quinyx_is_a_good_tool_for_keeping_me_informed_about_upcoming_shifts_and_requesting_absences_ is not null then 1 else 0 end;;
+  }
+
+  dimension: i_am_satisfied_with_the_quality_of_rider_equipment_at_flink_ {
+    type: number
+    sql: ${TABLE}.i_am_satisfied_with_the_quality_of_rider_equipment_at_flink_;;
+  }
+
+  dimension: has_responded_i_am_satisfied_with_the_quality_of_rider_equipment_at_flink_{
+    type: number
+    sql: case when ${TABLE}.i_am_satisfied_with_the_quality_of_rider_equipment_at_flink_ is not null then 1 else 0 end;;
+  }
+
+  dimension: i_am_happy_with_my_work_duties_and_role_responsibilities_ {
+    type: number
+    sql: ${TABLE}.i_am_happy_with_my_work_duties_and_role_responsibilities_;;
+  }
+
+  dimension: has_responded_i_am_happy_with_my_work_duties_and_role_responsibilities_{
+    type: number
+    sql: case when ${TABLE}.i_am_happy_with_my_work_duties_and_role_responsibilities_ is not null then 1 else 0 end;;
+  }
+
+  dimension: i_am_satisfied_with_the_level_of_support_communication_from_the_hub_care_team_ {
+    type: number
+    sql: ${TABLE}.i_am_satisfied_with_the_level_of_support_communication_from_the_hub_care_team_;;
+  }
+
+  dimension: has_responded_i_am_satisfied_with_the_level_of_support_communication_from_the_hub_care_team_{
+    type: number
+    sql: case when ${TABLE}.i_am_satisfied_with_the_level_of_support_communication_from_the_hub_care_team_ is not null then 1 else 0 end;;
+  }
+
+  dimension: there_is_a_strong_level_of_teamwork_in_the_hub_ {
+    type: number
+    sql: ${TABLE}.there_is_a_strong_level_of_teamwork_in_the_hub_;;
+  }
+
+  dimension: has_responded_there_is_a_strong_level_of_teamwork_in_the_hub_{
+    type: number
+    sql: case when ${TABLE}.there_is_a_strong_level_of_teamwork_in_the_hub_ is not null then 1 else 0 end;;
+  }
+
+  dimension: dockr_cargo_bikes_ {
+    type: number
+    sql: ${TABLE}.dockr_cargo_bikes_;;
+  }
+
+  dimension: has_responded_dockr_cargo_bikes_ {
+    type: number
+    sql: case when ${TABLE}.dockr_cargo_bikes_ is not null then 1 else 0 end;;
+  }
+
+  dimension: get_henry_black_ {
+    type: number
+    sql: ${TABLE}.get_henry_black_;;
+  }
+
+  dimension: has_responded_get_henry_black_ {
+    type: number
+    sql: case when ${TABLE}.get_henry_black_ is not null then 1 else 0 end;;
+  }
+
+  dimension: get_henry_white_ {
+    type: number
+    sql: ${TABLE}.get_henry_white_;;
+  }
+
+  dimension: has_responded_get_henry_white_ {
+    type: number
+    sql: case when ${TABLE}.get_henry_white_ is not null then 1 else 0 end;;
+  }
+
+  dimension: movelo {
+    type: number
+    sql: ${TABLE}.movelo;;
+  }
+
+  dimension: has_responded_movelo {
+    type: number
+    sql: case when ${TABLE}.movelo is not null then 1 else 0 end;;
+  }
+
+  dimension: smartvelo {
+    type: number
+    sql: ${TABLE}.smartvelo;;
+  }
+
+  dimension: has_responded_smartvelo {
+    type: number
+    sql: case when ${TABLE}.smartvelo is not null then 1 else 0 end;;
+  }
+
+  dimension: swapfiets {
+    type: number
+    sql: ${TABLE}.swapfiets;;
+  }
+
+  dimension: has_responded_swapfiets {
+    type: number
+    sql: case when ${TABLE}.swapfiets is not null then 1 else 0 end;;
+  }
+
+  dimension: tier {
+    type: number
+    sql: ${TABLE}.tier;;
+  }
+
+  dimension: has_responded_tier {
+    type: number
+    sql: case when ${TABLE}.tier is not null then 1 else 0 end;;
+  }
+
+  dimension: zoomo {
+    type: number
+    sql: ${TABLE}.zoomo;;
+  }
+
+  dimension: has_responded_zoomo {
+    type: number
+    sql: case when ${TABLE}.zoomo is not null then 1 else 0 end;;
+  }
+
+  dimension: moby {
+    type: number
+    sql: ${TABLE}.moby;;
+  }
+
+  dimension: has_responded_moby {
+    type: number
+    sql: case when ${TABLE}.moby is not null then 1 else 0 end;;
+  }
+
+  dimension: dott {
+    type: number
+    sql: ${TABLE}.dott;;
+  }
+
+  dimension: has_responded_dott {
+    type: number
+    sql: case when ${TABLE}.dott is not null then 1 else 0 end;;
+  }
+
+  dimension: all_bike_score {
+    type: number
+    sql: ${TABLE}.all_bike_score;;
+  }
+
+  dimension: has_responded_all_bike_score {
+    type: number
+    sql: case when ${TABLE}.all_bike_score is not null then 1 else 0 end;;
+  }
+
+  dimension: total_bikes_response {
+    type: number
+    sql: ${TABLE}.total_bikes_response;;
+  }
+
+  dimension: has_responded_total_bikes_response {
+    type: number
+    sql: case when ${TABLE}.total_bikes_response is not null then 1 else 0 end;;
+  }
 
   ############################### MEASURES ####################################
 
