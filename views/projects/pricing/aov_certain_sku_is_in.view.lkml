@@ -141,7 +141,22 @@ and a.category = b.category
 --where subs_group_or_sku  = "Smirnoff Ice Vodka Mixed Drink 70 cl"
 --and a.hub_code = "nl_gro_cent"
 group by 1,2,3,4,5,6,7,8
+),
 
+max_date_kvi as
+(
+    select
+    max(kvi_date) as max_kvi_date
+    from `flink-data-prod.reporting.key_value_items`
+),
+
+kvi as
+(
+    select
+    sku
+    from `flink-data-prod.reporting.key_value_items` a
+    inner join max_date_kvi  b
+    on a.kvi_date = b.max_kvi_date
 )
 
 --select * from or_sku_categ
@@ -158,7 +173,7 @@ a.hub_code,
 a.subs_group_or_sku,
 a.product_name,
 a.product_sku,
---a.product_name,
+case when d.sku is not null then "KVI" else "Not KVI" end as KVI,
 a.category as category,
 b.orders_sku_date as sum_orders,
 c.orders_categ_date as sum_orders_category,
@@ -166,19 +181,25 @@ sum(quantity) as sum_quantity,
 sum(amt_total_price_gross) as sum_item_value,
 
 from or_sku_categ a
+
 left join numb_or b
 on  a.order_date = b.order_date
 and a.product_sku = b.product_sku
 and a.country_iso = b.country_iso
 and a.hub_code = b.hub_code
 and a.hub_name = b.hub_name
+
 left join numb_or_categ c
 on  a.order_date = c.order_date
 and a.category = c.category
 and a.country_iso = c.country_iso
 and a.hub_code = c.hub_code
 and a.hub_name = c.hub_name
-group by 1,2,3,4,5,6,7,8,9,10,11,12
+
+left join kvi d
+on a.product_sku = d.sku
+
+group by 1,2,3,4,5,6,7,8,9,10,11,12,13
 order by 3
 
 
@@ -339,12 +360,16 @@ dimension: category {
     sql: ${TABLE}.hub_code ;;
   }
 
-
   dimension: hub_name {
     type: string
     sql: ${TABLE}.hub_name ;;
   }
 
+
+  dimension: kvi {
+    type: string
+    sql: ${TABLE}.kvi ;;
+  }
 
 dimension: orders {
   type: number

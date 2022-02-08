@@ -106,6 +106,33 @@ view: inbounding_times_per_vendor {
     hidden: yes
   }
 
+  dimension: filter_number_of_unique_skus_inbounded{
+    # this filter applies on a dimension aka UNAGGREGATED level. Thus it excludes per row on the raw-data-level.
+
+    label:       "[Filter] # Unique SKUs inbounded"
+    description: "This filter lets you set a threashold on how many different SKU had to be delivered by a supplier on a day to a specific hub
+                  in order to be included in the data.
+                  This filtering is also dependent on what inblunding measures you are using - inbounding as bulk, manual per stock manager or all together"
+
+    type: number
+
+    sql:
+      {% if    select_inbound_times_level._parameter_value == '1' %}
+         ${number_of_unique_skus_inbounded}
+
+      {% elsif select_inbound_times_level._parameter_value == '2' %}
+         ${bulk_number_of_unique_skus_inbounded}
+
+      {% elsif select_inbound_times_level._parameter_value == '3' %}
+         ${manual_number_of_unique_skus_inbounded}
+
+      {% endif %}
+    ;;
+
+
+    }
+
+
   dimension_group: first_item_booked_in_timestamp {
 
     label: "Time Inbound Started"
@@ -161,6 +188,9 @@ view: inbounding_times_per_vendor {
   # ~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  #  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
+  # TOTAL
+
   measure: avg_inbounding_time_hours  {
 
     label:       "AVG Inbounding Time per Supplier (Hours) (All Inbounding)"
@@ -185,6 +215,24 @@ view: inbounding_times_per_vendor {
     value_format_name: decimal_1
   }
 
+  measure: avg_hours_per_1k_pieces {
+
+    label:       "AVG Hours per 1k unique SKUs (All Inbounding)"
+    description: "Indicates, how long it takes to inbound 1000 unique SKUs given the current 'AVG Inbounding Time per Supplier' and 'AVG Inbounded SKUs per Supplier'"
+    group_label: "Inbounding - All Inbounding"
+
+    type: number
+    sql:
+        ${avg_inbounding_time_hours} * 1000 / nullif(${avg_number_of_unique_skus_inbounded}, 0)
+    ;;
+
+    value_format_name: decimal_1
+  }
+
+  #  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
+
+
+  #  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
   measure: avg_bulk_inbounding_time_hours  {
 
     label:       "AVG Inbounding Time per Supplier (Hours) (Bulk)"
@@ -208,6 +256,26 @@ view: inbounding_times_per_vendor {
 
     value_format_name: decimal_1
   }
+
+  measure: avg_bulk_hours_per_1k_pieces {
+
+    label:       "AVG Hours per 1k unique SKUs (Bulk)"
+    description: "Indicates, how long it takes to inbound 1000 unique SKUs given the current 'AVG Inbounding Time per Supplier' and 'AVG Inbounded SKUs per Supplier'"
+    group_label: "Inbounding - Bulk Inbounding"
+
+    type: number
+    sql:
+        ${avg_bulk_inbounding_time_hours} * 1000 / nullif(${avg_bulk_number_of_unique_skus_inbounded}, 0)
+    ;;
+
+      value_format_name: decimal_1
+  }
+
+  #  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
+
+
+  #  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
+  # MANUAL
 
   measure: avg_manual_inbounding_time_hours  {
 
@@ -233,12 +301,32 @@ view: inbounding_times_per_vendor {
     value_format_name: decimal_1
   }
 
+  measure: avg_manual_hours_per_1k_pieces {
+
+    label:       "AVG Hours per 1k unique SKUs (Non-Bulk)"
+    description: "Indicates, how long it takes to inbound 1000 unique SKUs given the current 'AVG Inbounding Time per Supplier' and 'AVG Inbounded SKUs per Supplier'"
+    group_label: "Inbounding - Manual Inbounding"
+
+    type: number
+    sql:
+        ${avg_manual_inbounding_time_hours} * 1000 / nullif(${avg_manual_number_of_unique_skus_inbounded}, 0)
+    ;;
+
+      value_format_name: decimal_1
+    }
+  #  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
+
+
+
+  #  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
+  # PARAMETERS
+
   measure: param_number_of_unique_skus_inbounded {
 
     label:       "[Param] AVG Inbounded SKUs per Supplier"
     description: "Depending on the selection in 'Switch Inbounding Times Calculation', show all , only bulk or only manual inbounded number of SKUs"
 
-    label_from_parameter: select_inbound_times_level
+    # label_from_parameter: select_inbound_times_level
 
     type: number
     sql:
@@ -262,7 +350,7 @@ view: inbounding_times_per_vendor {
     label:       "[Param] AVG Inbounding Time per Supplier (Hours)"
     description: "Depending on the selection in 'Switch Inbounding Times Calculation', show all , only bulk or only manual inbounding hours per supplier"
 
-    label_from_parameter: select_inbound_times_level
+    # label_from_parameter: select_inbound_times_level
 
     type: number
 
@@ -283,6 +371,32 @@ view: inbounding_times_per_vendor {
 
   }
 
+  measure: param_inbounding_hours_per_1k_pieces {
+
+    label:       "[Param] AVG Hours per 1k unique SKUs"
+    description: "Depending on the selection in 'Switch Inbounding Times Calculation', show all , only bulk or only manual inbounding hours per 1k unique SKUs"
+
+    # label_from_parameter: select_inbound_times_level
+
+    type: number
+
+    sql:
+      {% if    select_inbound_times_level._parameter_value == '1' %}
+        ${avg_hours_per_1k_pieces}
+
+      {% elsif select_inbound_times_level._parameter_value == '2' %}
+        ${avg_bulk_hours_per_1k_pieces}
+
+      {% elsif select_inbound_times_level._parameter_value == '3' %}
+        ${avg_manual_hours_per_1k_pieces}
+
+      {% endif %}
+    ;;
+
+      value_format_name: decimal_2
+
+    }
+  #  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
 
 
 }
