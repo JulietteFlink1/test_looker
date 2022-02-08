@@ -182,6 +182,13 @@ left join product_added_to_cart cart on cart.id = event_id
       type: count_distinct
       sql: ${anonymous_id} ;;
     }
+    measure: unique_users_product_events {
+      description: "Sum of all add-to-cart events."
+      label: "# Unique Users on add-to-cart"
+      type: count_distinct
+      sql: ${anonymous_id} ;;
+      filters: [event_name: "product_added_to_cart"]
+   }
     measure: events_from_cart {
       group_label: "Add-to-Cart Events"
       description: "Sum of all add-to-cart events from cart."
