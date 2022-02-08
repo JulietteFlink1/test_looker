@@ -86,7 +86,7 @@ select event_id,
             end as user_has_items_in_cart
 from ts_distributed d
 left join product_added_to_cart cart on cart.id = event_id
-where event_name in ('product_added_to_cart','product_details_viewed')
+# where event_name in ('product_added_to_cart','product_details_viewed')
               ;;
     }
 
@@ -169,19 +169,33 @@ where event_name in ('product_added_to_cart','product_details_viewed')
       type: count_distinct
       sql: ${event_uuid};;
     }
+    measure: product_events {
+      description: "Product events based on product_added_to_cart event"
+      label: "#Product Events"
+      type: count_distinct
+      sql: ${event_uuid} ;;
+      filters: [event_name: "product_added_to_cart"]
+    }
     measure: unique_users {
       description: "Sum of all add-to-cart events."
       label: "# Unique Users"
       type: count_distinct
       sql: ${anonymous_id} ;;
     }
+    measure: unique_users_product_events {
+      description: "Sum of all add-to-cart events."
+      label: "# Unique Users on add-to-cart"
+      type: count_distinct
+      sql: ${anonymous_id} ;;
+      filters: [event_name: "product_added_to_cart"]
+   }
     measure: events_from_cart {
       group_label: "Add-to-Cart Events"
       description: "Sum of all add-to-cart events from cart."
       label: "#Events from Cart"
       type: count_distinct
       sql: ${event_uuid} ;;
-      filters: [product_placement: "cart"]
+      filters: [product_placement: "cart", event_name: "product_added_to_cart"]
     }
     measure: events_from_last_bought {
       group_label: "Add-to-Cart Events"
@@ -189,7 +203,7 @@ where event_name in ('product_added_to_cart','product_details_viewed')
       label: "#Events from Last Bought"
       type: count_distinct
       sql: ${event_uuid} ;;
-      filters: [product_placement: "last_bought"]
+      filters: [product_placement: "last_bought", event_name: "product_added_to_cart"]
     }
     measure: events_from_favourites {
       group_label: "Add-to-Cart Events"
@@ -197,7 +211,7 @@ where event_name in ('product_added_to_cart','product_details_viewed')
       label: "#Events from Favourites"
       type: count_distinct
       sql: ${event_uuid} ;;
-      filters: [product_placement: "favourites"]
+      filters: [product_placement: "favourites", event_name: "product_added_to_cart"]
     }
     measure: events_from_swimlane {
       group_label: "Add-to-Cart Events"
@@ -205,7 +219,7 @@ where event_name in ('product_added_to_cart','product_details_viewed')
       label: "#Events from Swimlane"
       type: count_distinct
       sql: ${event_uuid} ;;
-      filters: [product_placement: "swimlane"]
+      filters: [product_placement: "swimlane", event_name: "product_added_to_cart"]
     }
     measure: events_from_search {
       group_label: "Add-to-Cart Events"
@@ -213,7 +227,7 @@ where event_name in ('product_added_to_cart','product_details_viewed')
       label: "#Events from Search"
       type: count_distinct
       sql: ${event_uuid} ;;
-      filters: [product_placement: "search"]
+      filters: [product_placement: "search", event_name: "product_added_to_cart"]
     }
     measure: events_from_category {
       group_label: "Add-to-Cart Events"
@@ -221,7 +235,7 @@ where event_name in ('product_added_to_cart','product_details_viewed')
       label: "#Events from Category"
       type: count_distinct
       sql: ${event_uuid} ;;
-      filters: [product_placement: "category"]
+      filters: [product_placement: "category", event_name: "product_added_to_cart"]
     }
     measure: events_from_pdp {
       group_label: "Add-to-Cart Events"
@@ -229,7 +243,7 @@ where event_name in ('product_added_to_cart','product_details_viewed')
       label: "#Events from PDP"
       type: count_distinct
       sql: ${event_uuid} ;;
-      filters: [product_placement: "pdp"]
+      filters: [product_placement: "pdp", event_name: "product_added_to_cart"]
     }
     measure: avg_event_per_user {#
       description: "AVG amount of add-to-cart events per unique user"
@@ -245,7 +259,7 @@ where event_name in ('product_added_to_cart','product_details_viewed')
       description: "Add-to-cart rate from cart (#add-to-cart-from-Cart / #total_add-to-cart"
       label: "From Cart"
       type: number
-      sql: ${events_from_cart} / ${events};;
+      sql: ${events_from_cart} / ${product_events};;
       value_format_name: percent_2
     }
     measure: add_to_cart_rate_category  {
@@ -253,7 +267,7 @@ where event_name in ('product_added_to_cart','product_details_viewed')
       description: "Add-to-cart rate from category (#add-to-cart-from-Category / #total_add-to-cart"
       label: "From Category"
       type: number
-      sql: ${events_from_category} / ${events};;
+      sql: ${events_from_category} / ${product_events};;
       value_format_name: percent_2
     }
     measure: add_to_cart_rate_last_bought  {
@@ -261,7 +275,7 @@ where event_name in ('product_added_to_cart','product_details_viewed')
       description: "Add-to-cart rate from last bought (#add-to-cart-from-Last_bought / #total_add-to-cart"
       label: "From Last-Bought"
       type: number
-      sql: ${events_from_last_bought} / ${events};;
+      sql: ${events_from_last_bought} / ${product_events};;
       value_format_name: percent_2
     }
       measure: add_to_cart_rate_favourites  {
@@ -269,7 +283,7 @@ where event_name in ('product_added_to_cart','product_details_viewed')
         description: "Add-to-cart rate from favourites (#add-to-cart-from-Favourites / #total_add-to-cart"
         label: "From Favourites"
         type: number
-        sql: ${events_from_favourites} / ${events};;
+        sql: ${events_from_favourites} / ${product_events};;
         value_format_name: percent_2
     }
     measure: add_to_cart_rate_swimlane  {
@@ -277,7 +291,7 @@ where event_name in ('product_added_to_cart','product_details_viewed')
       description: "Add-to-cart rate from cart (#add-to-cart-from-Swimlane / #total_add-to-cart"
       label: "From Swimlane"
       type: number
-      sql: ${events_from_swimlane} / ${events};;
+      sql: ${events_from_swimlane} / ${product_events};;
       value_format_name: percent_2
     }
     measure: add_to_cart_rate_search  {
@@ -285,7 +299,7 @@ where event_name in ('product_added_to_cart','product_details_viewed')
       description: "Add-to-cart rate from cart (#add-to-cart-from-Search / #total_add-to-cart"
       label: "From Search"
       type: number
-      sql: ${events_from_search} / ${events};;
+      sql: ${events_from_search} / ${product_events};;
       value_format_name: percent_2
     }
     measure: add_to_cart_rate_pdp  {
@@ -293,7 +307,7 @@ where event_name in ('product_added_to_cart','product_details_viewed')
       description: "Add-to-cart rate from PDP (#add-to-cart-from-PDP / #total_add-to-cart"
       label: "From PDP"
       type: number
-      sql: ${events_from_pdp} / ${events};;
+      sql: ${events_from_pdp} / ${product_events};;
       value_format_name: percent_2
     }
   }
