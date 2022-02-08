@@ -39,6 +39,32 @@ view: cs_reporting {
        ;;
   }
 
+  dimension: date_granularity {
+    label: "Event Time (Dynamic)"
+    label_from_parameter: timeframe_picker
+    type: string # cannot have this as a time type. See this discussion: https://community.looker.com/lookml-5/dynamic-time-granularity-opinions-16675
+    sql:
+    {% if timeframe_picker._parameter_value == 'Hour' %}
+      ${creation_timestamp_hour}
+    {% elsif timeframe_picker._parameter_value == 'Day' %}
+      ${creation_timestamp_date}
+    {% elsif timeframe_picker._parameter_value == 'Week' %}
+      ${creation_timestamp_week}
+    {% elsif timeframe_picker._parameter_value == 'Month' %}
+      ${creation_timestamp_month}
+    {% endif %};;
+  }
+
+  parameter: timeframe_picker {
+    label: "Event Time Granularity"
+    type: unquoted
+    allowed_value: { value: "Hour" }
+    allowed_value: { value: "Day" }
+    allowed_value: { value: "Week" }
+    allowed_value: { value: "Month" }
+    default_value: "Day"
+  }
+
   measure: cnt_orders {
     label: "# unique orders"
     description: "cnt orders by order date"
@@ -321,6 +347,7 @@ view: cs_reporting {
   }
 
   dimension_group: creation_timestamp {
+    label: "Event Timestamp"
     type: time
     sql: ${TABLE}.creation_timestamp ;;
   }
