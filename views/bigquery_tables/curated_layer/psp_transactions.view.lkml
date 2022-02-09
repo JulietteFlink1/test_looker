@@ -283,6 +283,12 @@ view: psp_transactions {
     value_format_name: euro_accounting_2_precision
     }
 
+  measure: sum_total_chargeback_fixed_fees {
+    type: sum
+    sql: ${markup_sc} + ${scheme_fees_sc};;
+    value_format_name: euro_accounting_2_precision
+  }
+
   dimension: diff_adyen_ct {
     type: number
     sql:  ${orders.total_gross_amount} - ${main_amount}  ;;
