@@ -283,6 +283,12 @@ view: psp_transactions {
     value_format_name: euro_accounting_2_precision
     }
 
+  measure: sum_total_chargeback_fixed_fees {
+    type: sum
+    sql: ${markup_sc} + ${scheme_fees_sc};;
+    value_format_name: euro_accounting_2_precision
+  }
+
   dimension: diff_adyen_ct {
     type: number
     sql:  ${orders.total_gross_amount} - ${main_amount}  ;;
@@ -414,34 +420,6 @@ view: psp_transactions {
     label: "% Orders Chargeback (Settled)"
     type: number
     sql: ${cnt_chargebacks_transactions}/${cnt_settled_transactions};;
-    value_format_name: percent_2
-  }
-
-  measure: percentage_transactions_chargeback_MC_trx {
-    label: "[# MC] % Chargeback (Settled - 1M)"
-    type: number
-    sql: ${cnt_chargebacks_transactions}/offset(${cnt_settled_transactions},1);;
-    value_format_name: percent_2
-  }
-
-    measure: percentage_transactions_chargeback_MC_EUR {
-    label: "[€ MC] % Chargeback (Settled - 1M)"
-    type: number
-    sql: ${sum_main_amount_chargebacks}/offset(${sum_main_amount_settled},1);;
-    value_format_name: percent_2
-  }
-
-    measure: percentage_transactions_chargeback_CarteB_trx {
-    label: "[# CarteB] % Chargeback (Authorised - 2M)"
-    type: number
-    sql: ${cnt_chargebacks_transactions}/offset(${cnt_authorised_transactions},2);;
-    value_format_name: percent_2
-  }
-
-  measure: percentage_transactions_chargeback_CarteB_EUR {
-    label: "[€ CarteB] % Chargeback (Authorised - 2M)"
-    type: number
-    sql: ${sum_main_amount_chargebacks}/offset(${sum_main_amount_authorised},2);;
     value_format_name: percent_2
   }
 

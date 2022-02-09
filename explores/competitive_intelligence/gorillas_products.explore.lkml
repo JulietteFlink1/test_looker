@@ -21,11 +21,4 @@ explore:  gorillas_products {
     type:  left_outer
   }
 
-  # join: gorillas_category_mapping {
-  #   from: gorillas_category_mapping
-  #   sql_on: ${gorillas_categories.subcategory_id} = ${gorillas_category_mapping.gorillas_subcategory_id} ;;
-  #   relationship: many_to_one
-  #   type: left_outer
-  # }
-
 }
