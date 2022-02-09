@@ -1362,6 +1362,17 @@ view: orders {
         value_format_name: decimal_1
       }
 
+      measure: avg_discount_value {
+        group_label: "* Monetary Values *"
+        label: "AVG Discount Value"
+        description: "Average Discount Value (only considering orders where discount was applied)"
+        hidden:  no
+        type: average
+        sql: ${discount_amount};;
+        filters: [discount_amount: ">0"]
+        value_format_name: euro_accounting_2_precision
+      }
+
       measure: avg_estimated_picking_time_minutes {
         group_label: "* Operations / Logistics *"
         label: "AVG Estimated Picking Time"
