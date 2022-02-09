@@ -1,5 +1,5 @@
 view: ctr_chargeback_orders {
-  sql_table_name: `flink-data-prod.reporting.ctr_chargeback_orders`
+  sql_table_name: `flink-data-dev.reporting.ctr_chargeback_orders`
     ;;
 
   dimension: booking_month {
@@ -28,80 +28,128 @@ view: ctr_chargeback_orders {
     primary_key: yes
   }
 
-  measure: percentage_amount_ctr_cbc {
-    type: number
-    sql: ${TABLE}.percentage_amount_ctr_cbc ;;
-    value_format_name: percent_2
-  }
-
-  measure: percentage_amount_ctr_mc {
-    type: number
-    sql: ${TABLE}.percentage_amount_ctr_mc ;;
-    value_format_name: percent_2
-  }
-
-  measure: percentage_amount_ctr_visa {
-    type: number
-    sql: ${TABLE}.percentage_amount_ctr_visa ;;
-    value_format_name: percent_2
-  }
-
-  measure: percentage_trx_ctr_cbc {
-    type: number
-    sql: ${TABLE}.percentage_trx_ctr_cbc ;;
-    value_format_name: percent_2
-  }
-
-  measure: percentage_trx_ctr_mc {
-    type: number
-    sql: ${TABLE}.percentage_trx_ctr_mc ;;
-    value_format_name: percent_2
-  }
-
-  measure: percentage_trx_ctr_visa {
-    type: number
-    sql: ${TABLE}.percentage_trx_ctr_visa ;;
-    value_format_name: percent_2
-  }
-
   measure: total_chargebacks_transactions {
-    type: number
+    type: sum
     sql: ${TABLE}.total_chargebacks_transactions ;;
     value_format_name: decimal_0
   }
 
   measure: total_main_amount_chargeback {
-    type: number
+    type: sum
     sql: ${TABLE}.total_main_amount_chargeback ;;
     value_format_name: eur
   }
 
   measure: total_main_amount_settled {
-    type: number
+    type: sum
     sql: ${TABLE}.total_main_amount_settled ;;
-    value_format_name: eur
+    value_format_name:  eur
+  }
+
+  measure: total_settled_transactions {
+    type: sum
+    sql: ${TABLE}.total_settled_transactions ;;
+    value_format_name: decimal_0
   }
 
   measure: total_main_amount_authorised {
-    type: number
+    type: sum
     sql: ${TABLE}.total_main_amount_authorised ;;
     value_format_name: eur
   }
 
   measure: total_authorised_transactions {
-    type: number
+    type: sum
     sql: ${TABLE}.total_authorised_transactions ;;
     value_format_name: decimal_0
   }
 
-  measure: total_settled_transactions {
-    type: number
-    sql: ${TABLE}.total_settled_transactions ;;
+  measure: total_main_amount_chargeback_previous_month {
+    type: sum
+    sql: ${TABLE}.total_main_amount_chargeback_previous_month ;;
+    value_format_name: eur
+  }
+
+  measure: total_main_amount_settled_previous_month {
+    type: sum
+    sql: ${TABLE}.total_main_amount_settled_previous_month ;;
+    value_format_name: eur
+  }
+
+  measure: total_chargebacks_transactions_previous_month {
+    type: sum
+    sql: ${TABLE}.total_chargebacks_transactions_previous_month ;;
     value_format_name: decimal_0
+  }
+
+  measure: total_settled_transactions_previous_month {
+    type: sum
+    sql: ${TABLE}.total_settled_transactions_previous_month ;;
+    value_format_name: decimal_0
+  }
+
+  measure: total_main_amount_chargeback_previous2_month {
+    type: sum
+    sql: ${TABLE}.total_main_amount_chargeback_previous2_month ;;
+    value_format_name: eur
+  }
+
+  measure: total_main_amount_authorised_previous2_month {
+    type: sum
+    sql: ${TABLE}.total_main_amount_authorised_previous2_month ;;
+    value_format_name: eur
+  }
+
+  measure: total_chargebacks_transactions_previous2_month {
+    type: sum
+    sql: ${TABLE}.total_chargebacks_transactions_previous2_month ;;
+    value_format_name: decimal_0
+  }
+
+  measure: total_authorised_transactions_previous2_month {
+    type: sum
+    sql: ${TABLE}.total_authorised_transactions_previous2_month ;;
+    value_format_name: decimal_0
+  }
+
+  measure: percentage_ctr_mc_trx {
+    type: number
+    sql: ${total_chargebacks_transactions_previous_month} / ${total_settled_transactions_previous_month} ;;
+    value_format_name: percent_2
+  }
+
+  measure: percentage_ctr_visa_trx {
+    type: number
+    sql: ${total_chargebacks_transactions} / ${total_settled_transactions} ;;
+    value_format_name: percent_2
+  }
+
+  measure: percentage_ctr_cbc_trx {
+    type: number
+    sql: ${total_chargebacks_transactions_previous2_month} / ${total_authorised_transactions_previous2_month} ;;
+    value_format_name: percent_2
+  }
+
+  measure: percentage_ctr_mc_amount {
+    type: number
+    sql: ${total_main_amount_chargeback_previous_month} / ${total_main_amount_settled_previous_month} ;;
+    value_format_name: percent_2
+  }
+
+  measure: percentage_ctr_visa_amount {
+    type: number
+    sql: ${total_main_amount_chargeback} / ${total_main_amount_settled} ;;
+    value_format_name: percent_2
+  }
+
+  measure: percentage_ctr_cbc_amount {
+    type: number
+    sql: ${total_main_amount_chargeback_previous2_month} / ${total_main_amount_authorised_previous2_month} ;;
+    value_format_name: percent_2
   }
 
   measure: count {
     type: count
-    drill_fields: [booking_month]
+    drill_fields: []
   }
 }
