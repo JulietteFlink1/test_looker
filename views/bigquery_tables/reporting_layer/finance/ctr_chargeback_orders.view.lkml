@@ -114,7 +114,7 @@ view: ctr_chargeback_orders {
 
   measure: percentage_ctr_mc_trx {
     type: number
-    sql: ${total_chargebacks_transactions_previous_month} / ${total_settled_transactions_previous_month} ;;
+    sql: NULLIF(${total_chargebacks_transactions_previous_month},0) / NULLIF(${total_settled_transactions_previous_month},0) ;;
     value_format_name: percent_2
   }
 
@@ -126,13 +126,13 @@ view: ctr_chargeback_orders {
 
   measure: percentage_ctr_cbc_trx {
     type: number
-    sql: ${total_chargebacks_transactions_previous2_month} / ${total_authorised_transactions_previous2_month} ;;
+    sql: NULLIF(${total_chargebacks_transactions_previous2_month},0) / NULLIF(${total_authorised_transactions_previous2_month},0) ;;
     value_format_name: percent_2
   }
 
   measure: percentage_ctr_mc_amount {
     type: number
-    sql: ${total_main_amount_chargeback_previous_month} / ${total_main_amount_settled_previous_month} ;;
+    sql: NULLIF(${total_main_amount_chargeback_previous_month},0) / NULLIF(${total_main_amount_settled_previous_month},0) ;;
     value_format_name: percent_2
   }
 
@@ -144,7 +144,7 @@ view: ctr_chargeback_orders {
 
   measure: percentage_ctr_cbc_amount {
     type: number
-    sql: ${total_main_amount_chargeback_previous2_month} / ${total_main_amount_authorised_previous2_month} ;;
+    sql: NULLIF(${total_main_amount_chargeback_previous2_month},0) / NULLIF(${total_main_amount_authorised_previous2_month},0) ;;
     value_format_name: percent_2
   }
 
