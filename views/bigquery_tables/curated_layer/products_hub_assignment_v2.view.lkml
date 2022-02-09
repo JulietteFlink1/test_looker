@@ -1,5 +1,5 @@
 view: products_hub_assignment_v2 {
-  sql_table_name: `flink-data-prod.curated.products_hub_assignment_v2`
+  sql_table_name: `flink-data-dev.curated.products_hub_assignment_v2`
     ;;
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -74,19 +74,30 @@ view: products_hub_assignment_v2 {
     # group_label: "* Parameters & Dynamic Fields *"
 
     type: string
+    # sql:
+    #     case
+    #         when {% condition select_calculation_granularity %} 'sku'           {% endcondition %}
+    #         then ${sku}
+
+    #         when {% condition select_calculation_granularity %} 'replenishment' {% endcondition %}
+    #         then coalesce( ${leading_sku_replenishment_substitute_group} , ${sku} )
+
+    #         when {% condition select_calculation_granularity %} 'customer'      {% endcondition %}
+    #         then coalesce( ${leading_sku_ct_substitute_group} , ${sku} )
+
+    #         else null
+    #     end
+    # ;;
+
     sql:
-        case
-            when {% condition select_calculation_granularity %} 'sku'           {% endcondition %}
-            then ${sku}
+    {% if select_calculation_granularity._parameter_value == 'sku' %}
+      ${sku}
+    {% elsif select_calculation_granularity._parameter_value == 'replenishment' %}
+      coalesce( ${leading_sku_replenishment_substitute_group} , ${sku} )
 
-            when {% condition select_calculation_granularity %} 'replenishment' {% endcondition %}
-            then coalesce( ${leading_sku_replenishment_substitute_group} , ${sku} )
-
-            when {% condition select_calculation_granularity %} 'customer'      {% endcondition %}
-            then coalesce( ${leading_sku_ct_substitute_group} , ${sku} )
-
-            else null
-        end
+    {% elsif select_calculation_granularity._parameter_value == 'customer' %}
+      coalesce( ${leading_sku_ct_substitute_group} , ${sku} )
+    {% endif %}
     ;;
   }
 
