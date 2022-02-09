@@ -62,7 +62,7 @@ view: hub_staffing {
   dimension: number_of_forecast_riders_needed {
     type: number
     hidden: yes
-    sql: ${TABLE}.number_of_forecast_riders_needed ;;
+    sql: ${TABLE}.number_of_forecasted_employees_needed ;;
   }
 
   dimension: number_of_no_show_employees {
