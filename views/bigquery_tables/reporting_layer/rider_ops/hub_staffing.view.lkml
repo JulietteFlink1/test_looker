@@ -380,7 +380,7 @@ view: hub_staffing {
     type: number
     label:"# Projected Rider UTR"
     description: "Forecasted Orders / Scheduled Rider Hours"
-    sql:${sum_predicted_orders} / ${sum_planned_hours}*2;;
+    sql:${sum_predicted_orders} / ${sum_planned_hours};;
     value_format_name: decimal_1
   }
 
