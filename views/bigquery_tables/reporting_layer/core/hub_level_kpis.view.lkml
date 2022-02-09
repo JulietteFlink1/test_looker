@@ -262,10 +262,10 @@ view: hub_level_kpis {
     value_format_name: euro_accounting_2_precision
   }
 
-  # =========  Operations Kpis   =========
+  # =========  Ops KPIs   =========
 
   measure: sum_number_of_orders_with_delivery_eta_available {
-    group_label: ">> Operations KPIs"
+    group_label: ">> Ops KPIs"
     label: "# Orders with PDT available"
     description: "Count of Orders where a promised delivery time is available"
     type: sum
@@ -274,7 +274,7 @@ view: hub_level_kpis {
   }
 
   measure: sum_number_of_orders_delayed_under_0_min {
-    group_label: ">> Operations KPIs"
+    group_label: ">> Ops KPIs"
     label: "# Orders delivered in time"
     description: "Count of Orders delivered no later than promised delivery time"
     type: sum
@@ -283,7 +283,7 @@ view: hub_level_kpis {
   }
 
   measure: sum_number_of_orders_delayed_over_5_min {
-    group_label: ">> Operations KPIs"
+    group_label: ">> Ops KPIs"
     label: "# Orders delivered late >5min"
     description: "Count of Orders delivered >5min later than promised delivery time"
     type: sum
@@ -292,7 +292,7 @@ view: hub_level_kpis {
   }
 
   measure: sum_number_of_orders_delayed_over_10_min {
-    group_label: ">> Operations KPIs"
+    group_label: ">> Ops KPIs"
     label: "# Orders delivered late >10min"
     description: "Count of Orders delivered >10min later than promised delivery time"
     type: sum
@@ -301,7 +301,7 @@ view: hub_level_kpis {
   }
 
   measure: sum_number_of_orders_delayed_over_15_min {
-    group_label: ">> Operations KPIs"
+    group_label: ">> Ops KPIs"
     label: "# Orders delivered late >15min"
     description: "Count of Orders delivered >15min later than promised delivery time"
     type: sum
@@ -311,7 +311,7 @@ view: hub_level_kpis {
 
 
   measure: pct_delivery_in_time{
-    group_label: ">> Operations KPIs"
+    group_label: ">> Ops KPIs"
     label: "% Orders delivered in time"
     description: "Share of orders delivered no later than promised ETA (only orders with valid ETA time considered)"
     hidden:  no
@@ -321,7 +321,7 @@ view: hub_level_kpis {
   }
 
   measure: pct_delivery_late_over_5_min{
-    group_label: ">> Operations KPIs"
+    group_label: ">> Ops KPIs"
     label: "% Orders delayed >5min"
     description: "Share of orders delivered >5min later than promised ETA (only orders with valid ETA time considered)"
     hidden:  no
@@ -331,7 +331,7 @@ view: hub_level_kpis {
   }
 
   measure: pct_delivery_late_over_10_min{
-    group_label: ">> Operations KPIs"
+    group_label: ">> Ops KPIs"
     label: "% Orders delayed >10min"
     description: "Share of orders delivered >10min later than promised ETA (only orders with valid ETA time considered)"
     hidden:  no
@@ -341,7 +341,7 @@ view: hub_level_kpis {
   }
 
   measure: pct_delivery_late_over_15_min{
-    group_label: ">> Operations KPIs"
+    group_label: ">> Ops KPIs"
     label: "% Orders delayed >15min"
     description: "Share of orders delivered >15min later than promised ETA (only orders with valid ETA time considered)"
     hidden:  no
@@ -785,24 +785,24 @@ view: hub_level_kpis {
   }
 
 
-  # =========  Shift Metric Kpis   =========
+  # =========  Shift KPIs   =========
 
   measure: sum_filled_ext_picker_hours {
-    group_label: ">> Shift Metric KPIs"
+    group_label: ">> Shift KPIs"
     label: "Hours: Filled Ext. Picker"
     sql: ${TABLE}.number_of_filled_ext_picker_hours ;;
     value_format_name: decimal_1
     type: sum
   }
   measure: sum_filled_ext_rider_hours {
-    group_label: ">> Shift Metric KPIs"
+    group_label: ">> Shift KPIs"
     label: "Hours: Filled Ext. Rider"
     sql: ${TABLE}.number_of_filled_ext_rider_hours ;;
     value_format_name: decimal_1
     type: sum
   }
   measure: sum_filled_ext_hours_total {
-    group_label: ">> Shift Metric KPIs"
+    group_label: ">> Shift KPIs"
     label: "Hours: Filled Ext. Total"
     value_format_name: decimal_1
     type: number
@@ -810,7 +810,7 @@ view: hub_level_kpis {
   }
 
   measure: sum_unfilled_rider_hours {
-    group_label: ">> Shift Metric KPIs"
+    group_label: ">> Shift KPIs"
     label: "Hours: Unfilled Rider"
     sql: if(
               (${sum_planned_rider_hours} - ${sum_filled_rider_hours}) < 0
@@ -822,7 +822,7 @@ view: hub_level_kpis {
     description: "Planned Hours - Filled hours. Unfilled Hours are currently always NULL as we are not tracking Unassigned hours."
   }
   measure: sum_unfilled_picker_hours {
-    group_label: ">> Shift Metric KPIs"
+    group_label: ">> Shift KPIs"
     label: "Hours: Unfilled Picker"
     sql: if(
                 (${sum_planned_picker_hours} - ${sum_filled_picker_hours}) < 0
@@ -835,7 +835,7 @@ view: hub_level_kpis {
   }
 
   measure: sum_unfilled_hours_total {
-    group_label: ">> Shift Metric KPIs"
+    group_label: ">> Shift KPIs"
     label: "Hours: Unfilled Total"
     type: number
     value_format_name: decimal_1
@@ -843,21 +843,21 @@ view: hub_level_kpis {
 
   }
   measure: sum_filled_no_show_picker_hours {
-    group_label: ">> Shift Metric KPIs"
+    group_label: ">> Shift KPIs"
     label: "Hours: No Show Picker"
     sql: ${TABLE}.number_of_filled_no_show_picker_hours ;;
     value_format_name: decimal_1
     type: sum
   }
   measure: sum_filled_no_show_rider_hours {
-    group_label: ">> Shift Metric KPIs"
+    group_label: ">> Shift KPIs"
     label: "Hours: No Show Rider"
     sql: ${TABLE}.number_of_filled_no_show_rider_hours ;;
     value_format_name: decimal_1
     type: sum
   }
   measure: sum_filled_no_show_hours_total {
-    group_label: ">> Shift Metric KPIs"
+    group_label: ">> Shift KPIs"
     label: "Hours: No Show Total"
     value_format_name: decimal_1
     type: number
@@ -865,7 +865,7 @@ view: hub_level_kpis {
   }
 
   measure: sum_filled_picker_hours {
-    group_label: ">> Shift Metric KPIs"
+    group_label: ">> Shift KPIs"
     label: "Hours: Filled Picker"
     sql: ${TABLE}.number_of_filled_picker_hours ;;
     value_format_name: decimal_1
@@ -874,7 +874,7 @@ view: hub_level_kpis {
                   Generated by Quinyx. Hub managers can manually adjust the generated shifts after."
   }
   measure: sum_planned_picker_hours {
-    group_label: ">> Shift Metric KPIs"
+    group_label: ">> Shift KPIs"
     label: "Hours: Planned Picker"
     sql: ${TABLE}.number_of_planned_picker_hours ;;
     value_format_name: decimal_1
@@ -883,7 +883,7 @@ view: hub_level_kpis {
                   At the moment Unassigned Hours are always NULL, so Planned Hours = Scheduled Hours."
   }
   measure: sum_filled_rider_hours {
-    group_label: ">> Shift Metric KPIs"
+    group_label: ">> Shift KPIs"
     label: "Hours: Filled Rider"
     sql: ${TABLE}.number_of_filled_rider_hours ;;
     value_format_name: decimal_1
@@ -892,7 +892,7 @@ view: hub_level_kpis {
                   Generated by Quinyx. Hub managers can manually adjust the generated shifts after."
   }
   measure: sum_planned_rider_hours {
-    group_label: ">> Shift Metric KPIs"
+    group_label: ">> Shift KPIs"
     label: "Hours: Planned Rider"
     sql: ${TABLE}.number_of_planned_rider_hours ;;
     value_format_name: decimal_1
@@ -902,7 +902,7 @@ view: hub_level_kpis {
   }
 
   measure: pct_no_show {
-    group_label: ">> Shift Metric KPIs"
+    group_label: ">> Shift KPIs"
     label: "% No Show Shift Hours"
     description: "The percentage of planned and filled shift hours with employees not showing up"
     type: number
@@ -911,7 +911,7 @@ view: hub_level_kpis {
   }
 
   measure: pct_open_shifts {
-    group_label: ">> Shift Metric KPIs"
+    group_label: ">> Shift KPIs"
     label: "% Open Shift Hours"
     description: "The percentage of planned shift hours, that could not be filled with employees"
     type: number
@@ -920,7 +920,7 @@ view: hub_level_kpis {
   }
 
   measure: pct_ext_shifts {
-    group_label: ">> Shift Metric KPIs"
+    group_label: ">> Shift KPIs"
     label: "% External Shift Hours"
     description: "The percentage of actual shift hours, that were performed by external employees"
     type: number
