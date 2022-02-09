@@ -233,7 +233,7 @@ view: hub_staffing {
     type: sum
     label:"# Forecasted Hours"
     description: "Number of Needed Employee Hours Based on Forecasted Order Demand"
-    sql:${number_of_forecast_riders_needed}*0.5;;
+    sql:NULLIF(${number_of_forecast_riders_needed},0)*0.5;;
     value_format_name: decimal_1
   }
 
@@ -293,7 +293,7 @@ view: hub_staffing {
     label:"% No Show Hours"
     type: number
     description: "# No Show Hours"
-    sql:(${sum_planned_hours} - ${sum_worked_hours})/${sum_planned_hours} ;;
+    sql:(${sum_planned_hours} - ${sum_worked_hours})/nullif(${sum_planned_hours},0) ;;
     value_format_name: percent_1
   }
 
