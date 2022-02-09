@@ -226,7 +226,11 @@ view: hub_staffing {
   }
 
 
-
+  dimension: number_of_target_orders_per_employee {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_target_orders_per_employee ;;
+  }
 
 
   measure: sum_forecast_riders_needed{
@@ -245,6 +249,13 @@ view: hub_staffing {
     value_format_name: decimal_0
   }
 
+  measure: number_of_target_utr{
+    type: average
+    label:"Target UTR"
+    description: "Target UTR used in Forecsating Rider Hours"
+    sql:${number_of_target_orders_per_employee};;
+    value_format_name: decimal_2
+  }
 
   measure: sum_planned_employees{
     type: sum
