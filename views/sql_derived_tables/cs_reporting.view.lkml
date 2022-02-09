@@ -7,35 +7,31 @@ view: cs_reporting__tag_names {
 
 view: cs_reporting {
   derived_table: {
-    persist_for: "24 hours"
+    persist_for: "1 hour"
     sql:
-    WITH tb AS (
-    SELECT
-        c.*,
-        conversation_created_timestamp AS creation_timestamp,
-        NULL AS order_timestamp
-    FROM flink-data-dev.sandbox.cs_conversations c
-
-    UNION ALL
-
       SELECT
-      NULL, NULL, NULL, NULL, NULL,
-      NULL, NULL, NULL, NULL, NULL,
-      NULL, NULL, NULL, NULL, NULL,
-      NULL, NULL, country_iso,
-      NULL, NULL,
-      NULL, NULL, NULL, NULL, NULL,
-      NULL, NULL, NULL, NULL, NULL,
-      NULL, NULL, NULL, NULL, NULL,
-      LOWER(order_number) as order_number,
-      NULL, NULL, NULL,NULL,
-      NULL, NULL,NULL, NULL,NULL,
-      order_timestamp AS creation_timestamp,
-      order_timestamp
-    FROM flink-data-prod.curated.orders
-    )
+          c.*,
+          conversation_created_timestamp AS creation_timestamp,
+          NULL AS order_timestamp
+      FROM flink-data-dev.sandbox.cs_conversations c
 
-    SELECT * FROM tb
+      UNION ALL
+
+        SELECT
+        NULL, NULL, NULL, NULL, NULL,
+        NULL, NULL, NULL, NULL, NULL,
+        NULL, NULL, NULL, NULL, NULL,
+        NULL, NULL, country_iso,
+        NULL, NULL,
+        NULL, NULL, NULL, NULL, NULL,
+        NULL, NULL, NULL, NULL, NULL,
+        NULL, NULL, NULL, NULL, NULL,
+        LOWER(order_number) as order_number,
+        NULL, NULL, NULL,NULL,
+        NULL, NULL,NULL, NULL,NULL,
+        order_timestamp AS creation_timestamp,
+        order_timestamp
+      FROM flink-data-prod.curated.orders
        ;;
   }
 
