@@ -371,7 +371,7 @@ view: hub_staffing {
     type: number
     label:"# Actual Needed Hours"
     description: "Number of needed Employees based on actual order demand"
-    sql:ceiling(${sum_orders} / (2.5 / 2));;
+    sql:ceiling(${sum_orders} / (${number_of_target_utr} / 2));;
     value_format_name: decimal_1
   }
 
