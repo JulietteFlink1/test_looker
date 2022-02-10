@@ -36,19 +36,39 @@ explore: supply_chain {
       {% condition global_filters_and_parameters.datasource_filter %} ${products_hub_assignment.report_date} {% endcondition %}
 
       -- filter for showing only 1 SKU per (Replenishment) Substitute Group
-      and
-      case
-            when {% condition products_hub_assignment.select_calculation_granularity %} 'sku'           {% endcondition %}
-            then true
+      -- and
+      -- case
+      --       when {% condition products_hub_assignment.select_calculation_granularity %} 'sku'           {% endcondition %}
+      --       then true
 
-            when {% condition products_hub_assignment.select_calculation_granularity %} 'replenishment' {% endcondition %}
-            then ${products_hub_assignment.filter_one_sku_per_replenishment_substitute_group} is true
+      --       when {% condition products_hub_assignment.select_calculation_granularity %} 'replenishment' {% endcondition %}
+      --       then ${products_hub_assignment.filter_one_sku_per_replenishment_substitute_group} is true
 
-            when {% condition products_hub_assignment.select_calculation_granularity %} 'customer'      {% endcondition %}
-            then ${products_hub_assignment.filter_one_sku_per_substitute_group} is true
+      --       when {% condition products_hub_assignment.select_calculation_granularity %} 'customer'      {% endcondition %}
+      --       then ${products_hub_assignment.filter_one_sku_per_substitute_group} is true
 
-            else null
-        end
+      --       else null
+      --   end
+
+        and
+            {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku' %}
+              true
+
+            {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
+              ${products_hub_assignment.filter_one_sku_per_replenishment_substitute_group} is true
+
+            {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'customer' %}
+              ${products_hub_assignment.filter_one_sku_per_substitute_group} is true
+
+            {% endif %}
+
+        and
+            ${products_hub_assignment.hub_code} not in ('de_ham_alto')
+        and
+            ${hubs_ct.is_test_hub} is false
+        and
+            ${hubs_ct.live} is not null
+
       ;;
 
   hidden: yes
@@ -63,7 +83,7 @@ explore: supply_chain {
 
   join: global_filters_and_parameters {
 
-    view_label: ""
+    view_label: "Global Filters"
 
     sql_on: ${global_filters_and_parameters.generic_join_dim} = TRUE ;;
     type: left_outer
