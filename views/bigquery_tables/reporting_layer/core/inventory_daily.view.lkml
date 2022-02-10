@@ -23,6 +23,7 @@ view: inventory_daily {
     allowed_value: { value: "Month" }
     default_value: "Week"
   }
+
   dimension: report_date_dynamic {
     group_label: "* Parameters & Dynamic Fields *"
     label: "Inventory Report Date (Dynamic)"
@@ -35,6 +36,21 @@ view: inventory_daily {
     {% elsif date_granularity._parameter_value == 'Month' %}
       ${report_month}
     {% endif %};;
+  }
+
+  parameter: show_oos_formatting {
+
+    label:       "Enable conditional formatting for in-stock (oos) rate"
+    group_label: "* Parameters & Dynamic Fields *"
+
+    type: unquoted
+
+    allowed_value: { value: "1" label: "Enable" }
+    allowed_value: { value: "0" label: "Disable"}
+
+    default_value: "0"
+
+
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -519,20 +535,32 @@ view: inventory_daily {
 
     value_format_name: percent_1
     html:
-    {% if value >= 0.9 %}
-      <p style="color: white; background-color: #FF206E;font-size: 100%; text-align:center">{{ rendered_value }}</p>
-    {% elsif value >= 0.8 %}
-      <p style="color: white; background-color: #FF5C95; font-size:100%; text-align:center">{{ rendered_value }}</p>
-    {% elsif value >= 0.6 %}
-      <p style="color: white; background-color: #FF99BD; font-size:100%; text-align:center">{{ rendered_value }}</p>
-    {% elsif value >= 0.4 %}
-      <p style="color: black; background-color: #FFD6E4; font-size:100%; text-align:center">{{ rendered_value }}</p>
-    {% elsif value >= 0.2 %}
-      <p style="color: black; background-color: #FEFFC2; font-size:100%; text-align:center">{{ rendered_value }}</p>
-    {% elsif value > 0 %}
-      <p style="color: black; background-color: #FFFFEB; font-size:100%; text-align:center">{{ rendered_value }}</p>
-    {% else %}
-      <p style="color: black; font-size:100%; text-align:center">{{ rendered_value }}</p>
+
+    {% if show_oos_formatting._parameter_value == '1' %}
+
+      {% if value >= 0.9 %}
+        <p style="color: white; background-color: #FF206E;font-size: 100%; text-align:center">{{ rendered_value }}</p>
+
+      {% elsif value >= 0.8 %}
+        <p style="color: white; background-color: #FF5C95; font-size:100%; text-align:center">{{ rendered_value }}</p>
+
+      {% elsif value >= 0.6 %}
+        <p style="color: white; background-color: #FF99BD; font-size:100%; text-align:center">{{ rendered_value }}</p>
+
+      {% elsif value >= 0.4 %}
+        <p style="color: black; background-color: #FFD6E4; font-size:100%; text-align:center">{{ rendered_value }}</p>
+
+      {% elsif value >= 0.2 %}
+        <p style="color: black; background-color: #FEFFC2; font-size:100%; text-align:center">{{ rendered_value }}</p>
+
+      {% elsif value > 0 %}
+        <p style="color: black; background-color: #FFFFEB; font-size:100%; text-align:center">{{ rendered_value }}</p>
+
+      {% else %}
+        <p style="color: black; font-size:100%; text-align:center">{{ rendered_value }}</p>
+
+      {% endif %}
+
     {% endif %};;
   }
 
@@ -547,20 +575,32 @@ view: inventory_daily {
 
     value_format_name: percent_1
     html:
-    {% if value <= 0.1 %}
-    <p style="color: white; background-color: #FF206E;font-size: 100%; text-align:center">{{ rendered_value }}</p>
-    {% elsif value <= 0.2 %}
-    <p style="color: white; background-color: #FF5C95; font-size:100%; text-align:center">{{ rendered_value }}</p>
-    {% elsif value <= 0.4 %}
-    <p style="color: white; background-color: #FF99BD; font-size:100%; text-align:center">{{ rendered_value }}</p>
-    {% elsif value <= 0.6 %}
-      <p style="color: black; background-color: #FFD6E4; font-size:100%; text-align:center">{{ rendered_value }}</p>
-    {% elsif value <= 0.8 %}
-      <p style="color: black; background-color: #FEFFC2; font-size:100%; text-align:center">{{ rendered_value }}</p>
-    {% elsif value <= 1 %}
-      <p style="color: black; background-color: #FFFFEB; font-size:100%; text-align:center">{{ rendered_value }}</p>
-    {% else %}
-      <p style="color: black; font-size:100%; text-align:center">{{ rendered_value }}</p>
+
+    {% if show_oos_formatting._parameter_value == '1' %}
+
+      {% if value <= 0.1 %}
+      <p style="color: white; background-color: #FF206E;font-size: 100%; text-align:center">{{ rendered_value }}</p>
+
+      {% elsif value <= 0.2 %}
+      <p style="color: white; background-color: #FF5C95; font-size:100%; text-align:center">{{ rendered_value }}</p>
+
+      {% elsif value <= 0.4 %}
+      <p style="color: white; background-color: #FF99BD; font-size:100%; text-align:center">{{ rendered_value }}</p>
+
+      {% elsif value <= 0.6 %}
+        <p style="color: black; background-color: #FFD6E4; font-size:100%; text-align:center">{{ rendered_value }}</p>
+
+      {% elsif value <= 0.8 %}
+        <p style="color: black; background-color: #FEFFC2; font-size:100%; text-align:center">{{ rendered_value }}</p>
+
+      {% elsif value <= 1 %}
+        <p style="color: black; background-color: #FFFFEB; font-size:100%; text-align:center">{{ rendered_value }}</p>
+
+      {% else %}
+        <p style="color: black; font-size:100%; text-align:center">{{ rendered_value }}</p>
+
+      {% endif %}
+
     {% endif %};;
   }
   # ~~~~~~~~~~~~~    END: Out-Of-Stock Metrics  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
