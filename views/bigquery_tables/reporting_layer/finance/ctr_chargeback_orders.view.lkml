@@ -132,7 +132,7 @@ view: ctr_chargeback_orders {
 
   measure: percentage_ctr_mc_amount {
     type: number
-    sql: NULLIF(${total_main_amount_settled},0) / NULLIF(${total_main_amount_settled_previous_month},0) ;;
+    sql: NULLIF(${total_main_amount_chargeback},0) / NULLIF(${total_main_amount_settled_previous_month},0) ;;
     value_format_name: percent_2
   }
 
