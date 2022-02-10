@@ -1,5 +1,5 @@
 view: products_hub_assignment_v2 {
-  sql_table_name: `flink-data-dev.curated.products_hub_assignment_v2`
+  sql_table_name: `flink-data-prod.curated.products_hub_assignment_v2`
     ;;
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
