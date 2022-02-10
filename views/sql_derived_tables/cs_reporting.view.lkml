@@ -146,6 +146,18 @@ view: cs_reporting {
     sql: TRIM(REGEXP_EXTRACT(contact_reason, r'[a-zA-Z]* - (.*)'));;
   }
 
+  dimension: combined_l2l3_contact_reason {
+    label: "Contact Reason L2/L3"
+    type: string
+    sql: IFNULL(${secondary_contact_reason},'') || IF(${contact_reason_l3} IS NULL, '', '/ ') || IFNULL(${contact_reason_l3},'');;
+  }
+
+  dimension: full_contact_reason {
+    label: "Full Contact Reason"
+    type: string
+    sql: IFNULL(${contact_reason},'') || IF(${contact_reason_l3} IS NULL, '', '/ ') || IFNULL(${contact_reason_l3},'');;
+  }
+
   measure: count {
     type: count
     drill_fields: [detail*]
