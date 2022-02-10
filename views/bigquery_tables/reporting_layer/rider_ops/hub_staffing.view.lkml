@@ -259,16 +259,16 @@ view: hub_staffing {
 
   measure: sum_planned_employees{
     type: sum
-    label:"# Planned Employees"
-    description: "Number of Planned/Scheduled Employees"
+    label:"# Scheduled Employees"
+    description: "Number of Scheduled Employees"
     sql:${number_of_planned_employees};;
     value_format_name: decimal_1
   }
 
   measure: sum_planned_employees_external{
     type: sum
-    label:"# Planned Ext Employees"
-    description: "Number of Planned/Scheduled Ext Employees"
+    label:"# Scheduled Ext Employees"
+    description: "Number of Scheduled Ext Employees"
     sql:${number_of_planned_employees_external};;
     value_format_name: decimal_1
   }
@@ -311,16 +311,16 @@ view: hub_staffing {
 
   measure: sum_planned_hours{
     type: sum
-    label:"# Planned Hours"
-    description: "Number of Planned/Scheduled Hours"
+    label:"# Scheduled Hours"
+    description: "Number of Scheduled Hours"
     sql:${number_of_planned_minutes}/60;;
     value_format_name: decimal_1
   }
 
   measure: sum_planned_hours_external{
     type: sum
-    label:"# Planned Ext Hours"
-    description: "Number of Planned/Scheduled Ext Hours"
+    label:"# Scheduled Ext Hours"
+    description: "Number of Scheduled Ext Hours"
     sql:${number_of_planned_minutes_external}/60;;
     value_format_name: decimal_1
   }
