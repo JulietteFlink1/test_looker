@@ -17,7 +17,7 @@ view: simple_tracking_events_all {
           tracks.timestamp
           FROM
           `flink-data-prod.flink_android_production.tracks` tracks
-          WHERE DATE(tracks._partitiontime) > "2021-08-01"
+          where {% condition filter_event_date %} date(_partitiontime) {% endcondition %}
           AND tracks.event NOT LIKE "%api%"
           AND tracks.event NOT LIKE "%adjust%"
           AND tracks.event NOT LIKE "%install_attributed%"
@@ -51,7 +51,7 @@ view: simple_tracking_events_all {
           tracks.timestamp
           FROM
           `flink-data-prod.flink_ios_production.tracks` tracks
-          WHERE DATE(tracks._partitiontime) > "2021-08-01"
+          where {% condition filter_event_date %} date(_partitiontime) {% endcondition %}
           AND tracks.event NOT LIKE "%api%"
           AND tracks.event NOT LIKE "%adjust%"
           AND tracks.event NOT LIKE "%install_attributed%"
@@ -80,10 +80,16 @@ view: simple_tracking_events_all {
       LAG(joined_table.event) OVER(PARTITION BY joined_table.anonymous_id ORDER BY joined_table.timestamp ASC) AS previous_event,
       LEAD(joined_table.event) OVER(PARTITION BY joined_table.anonymous_id ORDER BY joined_table.timestamp ASC) AS next_event
       FROM joined_table
+      where {% condition filter_event_date %} date(timestamp) {% endcondition %}
        ;;
   }
 
   ### Custom measures and dimensions
+  filter: filter_event_date {
+    label: "Filter: Event Date"
+    type: date
+    datatype: date
+  }
 
   measure: cnt_unique_anonymousid {
     label: "# Unique Users"
