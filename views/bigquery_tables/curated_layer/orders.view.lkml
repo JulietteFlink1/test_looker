@@ -1718,7 +1718,7 @@ view: orders {
         description: "Count of Unique Hubs which received orders"
         hidden:  no
         type: count_distinct
-        sql: ${warehouse_name};;
+        sql: ${hub_code};;
         value_format: "0"
       }
 
