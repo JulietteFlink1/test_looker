@@ -61,6 +61,12 @@ view: cs_reporting {
     default_value: "Day"
   }
 
+  filter: contact_reason_filter {
+    type: string
+    suggest_dimension: contact_reason
+    sql: EXISTS (SELECT ${conversation_uuid} FROM ${TABLE} WHERE {% condition %} contact_reason {% endcondition %} OR (${contact_reason} IS NULL AND ${conversation_uuid} IS NULL)) ;;
+  }
+
   measure: cnt_orders {
     label: "# unique orders"
     description: "cnt orders by order date"
@@ -76,6 +82,22 @@ view: cs_reporting {
     description: "cnt conversations by creation date"
     type: count_distinct
     sql: ${conversation_uuid} ;;
+  }
+
+  measure: cnt_agent_conversations {
+    label: "# agent conversations"
+    description: "cnt conversations in which a CC agent participated"
+    type: count_distinct
+    sql:  ${conversation_uuid} ;;
+    filters: [deflected_by_bot: "no", agent_assignee_id: "NOT NULL"]
+  }
+
+  measure: perc_agent_conversations {
+    label: "% conversations involving a CC agent"
+    description: "percentage of conversations that were handled by a CC agent"
+    type: number
+    sql: SAFE_DIVIDE(${cnt_agent_conversations},${cnt_conversations}) ;;
+    value_format_name: percent_1
   }
 
   measure: cnt_live_order_conversations {
@@ -96,7 +118,7 @@ view: cs_reporting {
 
   # measure: perc_cancellation_cr{
   #   label: "% cancellation contact rate"
-  #   description: "percentage of conversations with cancellation contact reasion, compared to number of orders"
+  #   description: "percentage of conversations with cancellation contact reasion, compared to number of conversations"
   #   type: number
   #   sql: SAFE_DIVIDE(${cnt_cancellation_conversations},${cnt_conversations}) ;;
   #   value_format_name: percent_1
@@ -110,13 +132,13 @@ view: cs_reporting {
     filters: [contact_reason_l3: "invoice request"]
   }
 
-  measure: perc_invoice_request_cr{
-    label: "% invoice request contact rate"
-    description: "percentage of conversations with invoice request L3 compared to number of orders"
-    type: number
-    sql: SAFE_DIVIDE(${cnt_invoice_request_conversations},${cnt_conversations}) ;;
-    value_format_name: percent_1
-  }
+  # measure: perc_invoice_request_cr{
+  #   label: "% invoice requests compared to # conversations"
+  #   description: "percentage of conversations with invoice request L3 compared to total conversations"
+  #   type: number
+  #   sql: SAFE_DIVIDE(${cnt_invoice_request_conversations},${cnt_conversations}) ;;
+  #   value_format_name: percent_1
+  # }
 
   measure: cnt_deflected_by_bot {
     label: "# unique conversations deflected by bot"
@@ -192,6 +214,11 @@ view: cs_reporting {
     label: "Contact Reason L3"
     type: string
     sql: ${TABLE}.contact_reason_l3 ;;
+  }
+
+  dimension: agent_assignee_id {
+    type: number
+    sql: ${TABLE}.agent_assignee_id ;;
   }
 
   dimension: count_assignments {
