@@ -50,6 +50,7 @@ view: orders {
   }
 
   dimension: gmv_gross {
+    group_label: "* Monetary Values *"
     type: number
     hidden: no
     sql: ${TABLE}.amt_gmv_gross ;;
