@@ -51,7 +51,7 @@ view: orders {
 
   dimension: gmv_gross {
     type: number
-    hidden: yes
+    hidden: no
     sql: ${TABLE}.amt_gmv_gross ;;
   }
 
