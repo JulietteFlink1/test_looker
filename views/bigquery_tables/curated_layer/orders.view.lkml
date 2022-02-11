@@ -50,8 +50,9 @@ view: orders {
   }
 
   dimension: gmv_gross {
+    group_label: "* Monetary Values *"
     type: number
-    hidden: yes
+    hidden: no
     sql: ${TABLE}.amt_gmv_gross ;;
   }
 
@@ -1116,7 +1117,7 @@ view: orders {
     allowed_value: { value: "share_of_orders_delayed_5min" label: "% Orders Delayed >5min"}
     allowed_value: { value: "share_of_orders_delayed_10min" label: "% Orders Delayed >10min"}
     allowed_value: { value: "share_of_orders_delayed_15min" label: "% Orders Delayed >15min"}
-    #allowed_value: { value: "share_of_total_orders" label: "% Of Total Orders"}
+    allowed_value: { value: "share_of_orders_fulfilled_over_30min" label: "% Orders Fulfilled >30min"}
     allowed_value: { value: "gmv_gross" label: "GMV (Gross)"}
     allowed_value: { value: "gmv_net" label: "GMV (Net)"}
     allowed_value: { value: "revenue_gross" label: "Revenue (Gross)"}
@@ -1190,8 +1191,8 @@ view: orders {
       ${pct_delivery_late_over_10_min}*100
     {% elsif KPI_parameter._parameter_value == 'share_of_orders_delayed_15min' %}
       ${pct_delivery_late_over_15_min}*100
-    --{% elsif KPI_parameter._parameter_value == 'share_of_total_orders' %}
-    --  ${percent_of_total_orders}*100
+    {% elsif KPI_parameter._parameter_value == 'share_of_orders_fulfilled_over_30min' %}
+      ${pct_fulfillment_over_30_min}*100
     {% elsif KPI_parameter._parameter_value == 'gmv_gross' %}
       ${sum_gmv_gross}
     {% elsif KPI_parameter._parameter_value == 'gmv_net' %}
@@ -1230,6 +1231,8 @@ view: orders {
           {% elsif KPI_parameter._parameter_value == 'share_of_orders_delayed_10min' %}
             {{ rendered_value | round: 2  | append: "%" }}
           {% elsif KPI_parameter._parameter_value == 'share_of_orders_delayed_15min' %}
+            {{ rendered_value | round: 2  | append: "%" }}
+          {% elsif KPI_parameter._parameter_value == 'share_of_orders_fulfilled_over_30min' %}
             {{ rendered_value | round: 2  | append: "%" }}
           {% elsif KPI_parameter._parameter_value == 'share_of_total_orders' %}
             {{ rendered_value | round: 2  | append: "%" }}
@@ -1716,7 +1719,7 @@ view: orders {
         description: "Count of Unique Hubs which received orders"
         hidden:  no
         type: count_distinct
-        sql: ${warehouse_name};;
+        sql: ${hub_code};;
         value_format: "0"
       }
 

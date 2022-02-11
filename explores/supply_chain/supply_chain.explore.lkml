@@ -75,9 +75,13 @@ explore: supply_chain {
 
   always_filter: {
     filters: [
-      products_hub_assignment.is_sku_assigned_to_hub: "Yes",
+      products_hub_assignment.assingment_dynamic: "Yes",
+      products_hub_assignment.select_assignment_logic: "replenishment",
+
       global_filters_and_parameters.datasource_filter: "last 30 days",
+
       products_hub_assignment.select_calculation_granularity: "sku"
+
     ]
   }
 
