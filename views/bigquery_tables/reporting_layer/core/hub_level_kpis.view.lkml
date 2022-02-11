@@ -789,21 +789,21 @@ view: hub_level_kpis {
 
   measure: sum_filled_ext_picker_hours {
     group_label: ">> Shift KPIs"
-    label: "Hours: Filled Ext. Picker"
+    label: "Hours: Assigned Ext. Picker"
     sql: ${TABLE}.number_of_filled_ext_picker_hours ;;
     value_format_name: decimal_1
     type: sum
   }
   measure: sum_filled_ext_rider_hours {
     group_label: ">> Shift KPIs"
-    label: "Hours: Filled Ext. Rider"
+    label: "Hours: Assigned Ext. Rider"
     sql: ${TABLE}.number_of_filled_ext_rider_hours ;;
     value_format_name: decimal_1
     type: sum
   }
   measure: sum_filled_ext_hours_total {
     group_label: ">> Shift KPIs"
-    label: "Hours: Filled Ext. Total"
+    label: "Hours: Assigned Ext. Total"
     value_format_name: decimal_1
     type: number
     sql: ${sum_filled_ext_picker_hours} + ${sum_filled_ext_rider_hours} ;;
@@ -819,7 +819,7 @@ view: hub_level_kpis {
     ) ;;
     value_format_name: decimal_1
     type: number
-    description: "Scheduled Hours - Filled hours. Open Hours are currently always 0 as we are not tracking Unassigned hours (so Scheduled = Filled Hours)"
+    description: "Scheduled Hours - Assigned hours. Open Hours are currently always 0 as we are not tracking Unassigned hours (so Scheduled = Assigned Hours)"
   }
   measure: sum_unfilled_picker_hours {
     group_label: ">> Shift KPIs"
@@ -831,13 +831,13 @@ view: hub_level_kpis {
     );;
     value_format_name: decimal_1
     type: number
-    description: "Scheduled Hours - Filled hours. Open Hours are currently always 0 as we are not tracking Unassigned hours (so Scheduled = Filled Hours)."
+    description: "Scheduled Hours - Assigned hours. Open Hours are currently always 0 as we are not tracking Unassigned hours (so Scheduled = Assigned Hours)."
   }
 
   measure: sum_unfilled_hours_total {
     group_label: ">> Shift KPIs"
     label: "Hours: Open Total"
-    description: "Scheduled Hours - Filled hours. Open Hours are currently always NULL as we are not tracking Unassigned hours."
+    description: "Scheduled Hours - Assigned hours. Open Hours are currently always NULL as we are not tracking Unassigned hours."
     type: number
     value_format_name: decimal_1
     sql: ${sum_unfilled_picker_hours} + ${sum_unfilled_rider_hours} ;;
@@ -870,7 +870,7 @@ view: hub_level_kpis {
   measure: sum_punched_rider_hours {
     group_label: ">> Shift KPIs"
     label: "Hours: Punched Rider"
-    description: "All punched-in hours by actual punch in and out. I.e. Filled Hours - No Show Hours."
+    description: "All punched-in hours by actual punch in and out. I.e. Assigned Hours - No Show Hours."
     value_format_name: decimal_1
     type: number
     sql: ${sum_filled_rider_hours} - ${sum_filled_no_show_rider_hours} ;;
@@ -879,7 +879,7 @@ view: hub_level_kpis {
   measure: sum_punched_picker_hours {
     group_label: ">> Shift KPIs"
     label: "Hours: Punched Picker"
-    description: "All punched-in hours by actual punch in and out. I.e. Filled Hours - No Show Hours."
+    description: "All punched-in hours by actual punch in and out. I.e. Assigned Hours - No Show Hours."
     value_format_name: decimal_1
     type: number
     sql: ${sum_filled_picker_hours} - ${sum_filled_no_show_picker_hours} ;;
@@ -888,7 +888,7 @@ view: hub_level_kpis {
 
   measure: sum_filled_picker_hours {
     group_label: ">> Shift KPIs"
-    label: "Hours: Filled Picker"
+    label: "Hours: Assigned Picker"
     sql: ${TABLE}.number_of_filled_picker_hours ;;
     value_format_name: decimal_1
     type: sum
@@ -906,7 +906,7 @@ view: hub_level_kpis {
   }
   measure: sum_filled_rider_hours {
     group_label: ">> Shift KPIs"
-    label: "Hours: Filled Rider"
+    label: "Hours: Assigned Rider"
     sql: ${TABLE}.number_of_filled_rider_hours ;;
     value_format_name: decimal_1
     type: sum
@@ -926,7 +926,7 @@ view: hub_level_kpis {
   measure: pct_no_show {
     group_label: ">> Shift KPIs"
     label: "% No Show Shift Hours"
-    description: "The percentage of planned and filled shift hours with employees not showing up"
+    description: "The percentage of planned and assigned shift hours with employees not showing up"
     type: number
     sql: (${sum_filled_no_show_rider_hours} + ${sum_filled_no_show_picker_hours}) / nullif((${sum_filled_picker_hours} + ${sum_filled_rider_hours}), 0) ;;
     value_format_name: percent_1
@@ -935,7 +935,7 @@ view: hub_level_kpis {
   measure: pct_open_shifts {
     group_label: ">> Shift KPIs"
     label: "% Open Shift Hours"
-    description: "The percentage of scheduled shift hours that could not have been filled with employees. Open Hours are all unassagned shift hours. I.e. Scheduled Hours - Filled Hours"
+    description: "The percentage of scheduled shift hours that could not have been filled with employees. Open Hours are all unassagned shift hours. I.e. Scheduled Hours - Assigned Hours"
     type: number
     sql: (${sum_unfilled_picker_hours} + ${sum_unfilled_rider_hours}) / nullif((${sum_planned_picker_hours} + ${sum_planned_rider_hours}) ,0) ;;
     value_format_name: percent_1
