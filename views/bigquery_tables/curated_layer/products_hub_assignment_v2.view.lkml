@@ -315,5 +315,9 @@ view: products_hub_assignment_v2 {
     sql: ${sku_dynamic} ;;
   }
 
+  measure: count {
+    type: count
+  }
+
 
 }
