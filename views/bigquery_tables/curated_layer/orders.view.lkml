@@ -1231,6 +1231,8 @@ view: orders {
             {{ rendered_value | round: 2  | append: "%" }}
           {% elsif KPI_parameter._parameter_value == 'share_of_orders_delayed_15min' %}
             {{ rendered_value | round: 2  | append: "%" }}
+          {% elsif KPI_parameter._parameter_value == 'share_of_orders_fulfilled_over_30min' %}
+            {{ rendered_value | round: 2  | append: "%" }}
           {% elsif KPI_parameter._parameter_value == 'share_of_total_orders' %}
             {{ rendered_value | round: 2  | append: "%" }}
           {% elsif KPI_parameter._parameter_value == 'gmv_gross' %}
