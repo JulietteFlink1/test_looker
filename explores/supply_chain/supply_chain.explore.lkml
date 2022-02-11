@@ -208,6 +208,23 @@ explore: supply_chain {
     ;;
   }
 
+  join: erp_master_data {
+
+    from: erp_product_hub_vendor_assignment_v2
+    view_label: "08 ERP Master Data"
+
+    type: left_outer
+    relationship: many_to_one
+
+    sql_on:
+        ${erp_master_data.report_date} = ${products_hub_assignment.report_date} and
+        ${erp_master_data.hub_code}    = ${products_hub_assignment.hub_code}    and
+        ${erp_master_data.sku}         = ${products_hub_assignment.sku}         and
+        ${erp_master_data.vendor_id}   = ${products_hub_assignment.erp_vendor_id}
+
+    ;;
+  }
+
 
 
 }
