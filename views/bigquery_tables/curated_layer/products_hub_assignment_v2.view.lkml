@@ -35,6 +35,30 @@ view: products_hub_assignment_v2 {
 
     default_value: "replenishment"
   }
+
+
+  parameter: select_assignment_logic {
+    # this paramter either applies SKU-to-Hub Assingment logic according to the Supply Chain (replenishment-facing) or Commercial (customer facing)
+
+    label:       "Select SKU-to-Hub Assignment Logic"
+    group_label: "* Parameters & Dynamic Fields *"
+    description: "Chose, if you want to see SKUs, that are assigned to a hub according to Supply Chain needs (what Flink wants to replenish) or Commercial needs (what customers see)"
+
+    type: unquoted
+
+    allowed_value: {
+      label: "Supplier Facing (what Flink wants to replenish)"
+      value: "replenishment"
+    }
+
+    allowed_value: {
+      label: "Customer Facing (what customers see in the app)"
+      value: "customer"
+    }
+
+    default_value: "replenishment"
+
+  }
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Dimensions     ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -90,13 +114,37 @@ view: products_hub_assignment_v2 {
     # ;;
 
     sql:
-    {% if select_calculation_granularity._parameter_value == 'sku' %}
-      ${sku}
-    {% elsif select_calculation_granularity._parameter_value == 'replenishment' %}
-      coalesce( ${leading_sku_replenishment_substitute_group} , ${sku} )
 
-    {% elsif select_calculation_granularity._parameter_value == 'customer' %}
-      coalesce( ${leading_sku_ct_substitute_group} , ${sku} )
+        {% if select_calculation_granularity._parameter_value == 'sku' %}
+          ${sku}
+
+        {% elsif select_calculation_granularity._parameter_value == 'replenishment' %}
+          coalesce( ${leading_sku_replenishment_substitute_group} , ${sku} )
+
+
+        {% elsif select_calculation_granularity._parameter_value == 'customer' %}
+          coalesce( ${leading_sku_ct_substitute_group} , ${sku} )
+
+    {% endif %}
+    ;;
+  }
+
+  dimension: assingment_dynamic {
+
+    label:       "SKU Assignment (Based on Paramter 'Select Metric Aggregation Level' )"
+    description: "Based on the selection of the parameter 'Select Metric Aggregation Level', either the ERP or CT assignment of SKUs to hubs is applied"
+    group_label: "* Parameters & Dynamic Fields *"
+
+    type: yesno
+
+    sql:
+
+        {% if select_assignment_logic._parameter_value == 'replenishment' %}
+          ${TABLE}.is_sku_assigned_to_hub
+
+        {% elsif select_assignment_logic._parameter_value == 'customer' %}
+          ${TABLE}.ct_final_decision_is_sku_assigned_to_hub
+
     {% endif %}
     ;;
   }
