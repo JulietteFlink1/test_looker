@@ -150,6 +150,7 @@ view: ctr_chargeback_orders {
   measure: total_settled_transactions_previous_month_mc {
     group_label: "* MasterCard *"
     type: sum
+    hidden: yes
     sql: ${TABLE}.total_settled_transactions_previous_month ;;
     value_format_name: decimal_0
     filters: [payment_method_grouped: "mc"]
@@ -166,8 +167,25 @@ view: ctr_chargeback_orders {
   measure: total_main_amount_settled_previous_month_mc {
     group_label: "* MasterCard *"
     type: sum
+    hidden: yes
     sql: ${TABLE}.total_main_amount_settled_previous_month ;;
     value_format_name: eur
+    filters: [payment_method_grouped: "mc"]
+  }
+
+  measure: total_settled_transactions_mc {
+    group_label: "* MasterCard *"
+    type: sum
+    sql: ${TABLE}.total_settled_transactions ;;
+    value_format_name: decimal_0
+    filters: [payment_method_grouped: "mc"]
+  }
+
+  measure: total_main_amount_settled_mc {
+    group_label: "* MasterCard *"
+    type: sum
+    sql: ${TABLE}.total_main_amount_settled ;;
+    value_format_name:  eur
     filters: [payment_method_grouped: "mc"]
   }
 
@@ -212,6 +230,7 @@ view: ctr_chargeback_orders {
   measure: total_main_amount_chargeback_previous2_month_cbc {
     group_label: "* Cartebancaire *"
     type: sum
+    hidden: yes
     sql: ${TABLE}.total_main_amount_chargeback_previous2_month ;;
     value_format_name: eur
     filters: [payment_method_grouped: "cartebancaire"]
@@ -220,6 +239,7 @@ view: ctr_chargeback_orders {
   measure: total_main_amount_authorised_previous2_month_cbc {
     group_label: "* Cartebancaire *"
     type: sum
+    hidden:  yes
     sql: ${TABLE}.total_main_amount_authorised_previous2_month ;;
     value_format_name: eur
     filters: [payment_method_grouped: "cartebancaire"]
@@ -228,6 +248,7 @@ view: ctr_chargeback_orders {
   measure: total_chargebacks_transactions_previous2_month_cbc {
     group_label: "* Cartebancaire *"
     type: sum
+    hidden:  yes
     sql: ${TABLE}.total_chargebacks_transactions_previous2_month ;;
     value_format_name: decimal_0
     filters: [payment_method_grouped: "cartebancaire"]
@@ -236,8 +257,41 @@ view: ctr_chargeback_orders {
   measure: total_authorised_transactions_previous2_month_cbc {
     group_label: "* Cartebancaire *"
     type: sum
+    hidden: yes
     sql: ${TABLE}.total_authorised_transactions_previous2_month ;;
     value_format_name: decimal_0
+    filters: [payment_method_grouped: "cartebancaire"]
+  }
+
+  measure: total_chargebacks_transactions_cbc {
+    group_label: "* Cartebancaire *"
+    type: sum
+    sql: ${TABLE}.total_chargebacks_transactions ;;
+    value_format_name: decimal_0
+    filters: [payment_method_grouped: "cartebancaire"]
+  }
+
+  measure: total_authorised_transactions_cbc {
+    group_label: "* Cartebancaire *"
+    type: sum
+    sql: ${TABLE}.total_authorised_transactions ;;
+    value_format_name: decimal_0
+    filters: [payment_method_grouped: "cartebancaire"]
+  }
+
+  measure: total_main_amount_chargeback_cbc {
+    group_label: "* Cartebancaire *"
+    type: sum
+    sql: ${TABLE}.total_main_amount_chargeback ;;
+    value_format_name: eur
+    filters: [payment_method_grouped: "cartebancaire"]
+  }
+
+  measure: total_main_amount_authorised_cbc {
+    group_label: "* Cartebancaire *"
+    type: sum
+    sql: ${TABLE}.total_main_amount_authorised ;;
+    value_format_name:  eur
     filters: [payment_method_grouped: "cartebancaire"]
   }
 
