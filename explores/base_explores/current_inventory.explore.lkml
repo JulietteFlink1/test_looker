@@ -1,6 +1,7 @@
 
 include: "/views/bigquery_tables/curated_layer/*.view"
 include: "/views/extended_tables/order_lineitems_using_inventory.view"
+include: "/views/bigquery_tables/gsheets/price_test_tracking.view"
 
 include: "/**/global_filters_and_parameters.view.lkml"
 
@@ -52,7 +53,6 @@ explore: current_inventory {
     type:  left_outer
   }
 
-
   join: inventory {
     sql_on: ${inventory.sku} = ${products_hub_assignment.sku}
         and ${inventory.hub_code} = ${products_hub_assignment.hub_code}
@@ -62,8 +62,6 @@ explore: current_inventory {
     sql_where: (${inventory.is_most_recent_record} = TRUE) ;;
   }
 
-
-
   join: order_lineitems {
     from:  order_lineitems_using_inventory
     sql_on: ${order_lineitems.product_sku} = ${products_hub_assignment.sku}
@@ -72,7 +70,6 @@ explore: current_inventory {
     ;;
     relationship: many_to_many
     type: left_outer
-
   }
 
   join: orders {
@@ -82,6 +79,12 @@ explore: current_inventory {
     relationship: many_to_one
     type: left_outer
     fields: [orders.is_internal_order, orders.is_successful_order, created_date]
+  }
+
+  join: price_test_tracking {
+    sql_on:  ${products.product_sku} = ${price_test_tracking.product_sku};;
+    relationship: many_to_one
+    type:  left_outer
   }
 
   # join: erp_product_hub_vendor_assignment {

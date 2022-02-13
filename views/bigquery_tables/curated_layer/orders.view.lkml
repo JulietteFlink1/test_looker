@@ -50,8 +50,9 @@ view: orders {
   }
 
   dimension: gmv_gross {
+    group_label: "* Monetary Values *"
     type: number
-    hidden: yes
+    hidden: no
     sql: ${TABLE}.amt_gmv_gross ;;
   }
 
@@ -1116,7 +1117,7 @@ view: orders {
     allowed_value: { value: "share_of_orders_delayed_5min" label: "% Orders Delayed >5min"}
     allowed_value: { value: "share_of_orders_delayed_10min" label: "% Orders Delayed >10min"}
     allowed_value: { value: "share_of_orders_delayed_15min" label: "% Orders Delayed >15min"}
-    #allowed_value: { value: "share_of_total_orders" label: "% Of Total Orders"}
+    allowed_value: { value: "share_of_orders_fulfilled_over_30min" label: "% Orders Fulfilled >30min"}
     allowed_value: { value: "gmv_gross" label: "GMV (Gross)"}
     allowed_value: { value: "gmv_net" label: "GMV (Net)"}
     allowed_value: { value: "revenue_gross" label: "Revenue (Gross)"}
@@ -1190,8 +1191,8 @@ view: orders {
       ${pct_delivery_late_over_10_min}*100
     {% elsif KPI_parameter._parameter_value == 'share_of_orders_delayed_15min' %}
       ${pct_delivery_late_over_15_min}*100
-    --{% elsif KPI_parameter._parameter_value == 'share_of_total_orders' %}
-    --  ${percent_of_total_orders}*100
+    {% elsif KPI_parameter._parameter_value == 'share_of_orders_fulfilled_over_30min' %}
+      ${pct_fulfillment_over_30_min}*100
     {% elsif KPI_parameter._parameter_value == 'gmv_gross' %}
       ${sum_gmv_gross}
     {% elsif KPI_parameter._parameter_value == 'gmv_net' %}
@@ -1230,6 +1231,8 @@ view: orders {
           {% elsif KPI_parameter._parameter_value == 'share_of_orders_delayed_10min' %}
             {{ rendered_value | round: 2  | append: "%" }}
           {% elsif KPI_parameter._parameter_value == 'share_of_orders_delayed_15min' %}
+            {{ rendered_value | round: 2  | append: "%" }}
+          {% elsif KPI_parameter._parameter_value == 'share_of_orders_fulfilled_over_30min' %}
             {{ rendered_value | round: 2  | append: "%" }}
           {% elsif KPI_parameter._parameter_value == 'share_of_total_orders' %}
             {{ rendered_value | round: 2  | append: "%" }}
@@ -1360,6 +1363,17 @@ view: orders {
         type: average
         sql: ${delivery_time};;
         value_format_name: decimal_1
+      }
+
+      measure: avg_discount_value {
+        group_label: "* Monetary Values *"
+        label: "AVG Discount Value"
+        description: "Average Discount Value (only considering orders where discount was applied)"
+        hidden:  no
+        type: average
+        sql: ${discount_amount};;
+        filters: [discount_amount: ">0"]
+        value_format_name: euro_accounting_2_precision
       }
 
       measure: avg_estimated_picking_time_minutes {
@@ -1705,7 +1719,7 @@ view: orders {
         description: "Count of Unique Hubs which received orders"
         hidden:  no
         type: count_distinct
-        sql: ${warehouse_name};;
+        sql: ${hub_code};;
         value_format: "0"
       }
 
@@ -2218,14 +2232,14 @@ view: orders {
         value_format: "0%"
       }
 
-      measure: pct_idle {
-        label: "% Rider Idle Time"
-        group_label: "* Operations / Logistics *"
-        description: "% Rider Time spent not working on an order (not Occupied ) "
-        type: number
-        sql: 1 - ((${order_handling_time_minute}/60)/NULLIF(${shyftplan_riders_pickers_hours.rider_hours},0));;
-        value_format_name:  percent_1
-      }
+      # measure: pct_idle {
+      #   label: "% Rider Idle Time"
+      #   group_label: "* Operations / Logistics *"
+      #   description: "% Rider Time spent not working on an order (not Occupied ) "
+      #   type: number
+      #   sql: 1 - ((${order_handling_time_minute}/60)/NULLIF(${shyftplan_riders_pickers_hours.rider_hours},0));;
+      #   value_format_name:  percent_1
+      # }
 
 
 #######TEMP: adding new fields to compare how PDT versus Time Estimate will perform

@@ -68,8 +68,8 @@ view: daily_hub_staffing {
 
   measure: sum_planned_hours{
     type: sum
-    label:"# Planned Hours"
-    description: "Number of Planned/Scheduled Hours"
+    label:"# Scheduled Hours"
+    description: "Number of Scheduled Hours"
     sql:${number_of_planned_minutes}/60;;
     value_format_name: decimal_1
   }
