@@ -7,31 +7,38 @@ view: cs_reporting__tag_names {
 
 view: cs_reporting {
   derived_table: {
-    persist_for: "1 hour"
     sql:
-      SELECT
-          c.*,
-          conversation_created_timestamp AS creation_timestamp,
-          NULL AS order_timestamp
-      FROM flink-data-dev.sandbox.cs_conversations c
-
-      UNION ALL
-
+      WITH cs_tb AS (
         SELECT
-        NULL, NULL, NULL, NULL, NULL,
-        NULL, NULL, NULL, NULL, NULL,
-        NULL, NULL, NULL, NULL, NULL,
-        NULL, NULL, country_iso,
-        NULL, NULL,
-        NULL, NULL, NULL, NULL, NULL,
-        NULL, NULL, NULL, NULL, NULL,
-        NULL, NULL, NULL, NULL, NULL,
-        LOWER(order_number) as order_number,
-        NULL, NULL, NULL,NULL,
-        NULL, NULL,NULL, NULL,NULL,
-        order_timestamp AS creation_timestamp,
-        order_timestamp
-      FROM flink-data-prod.curated.orders
+            c.*,
+            TRIM(REGEXP_EXTRACT(contact_reason, r'(.+?) -')) AS contact_reason_l1,
+            conversation_created_timestamp AS creation_timestamp,
+            NULL AS order_timestamp
+        FROM flink-data-dev.sandbox.cs_conversations c
+
+        UNION ALL
+
+          SELECT
+          NULL, NULL, NULL, NULL, NULL,
+          NULL, NULL, NULL, NULL, NULL,
+          NULL, NULL, NULL, NULL, NULL,
+          NULL, NULL, country_iso,
+          NULL, NULL,
+          NULL, NULL, NULL, NULL, NULL,
+          NULL, NULL, NULL, NULL, NULL,
+          NULL, NULL, NULL, NULL, NULL,
+          LOWER(order_number) as order_number,
+          NULL, NULL, NULL,NULL,
+          NULL, NULL,NULL, NULL,NULL,
+          NULL AS contact_reason_l1,
+          order_timestamp AS creation_timestamp,
+          order_timestamp
+        FROM flink-data-prod.curated.orders
+      )
+      SELECT *
+      FROM cs_tb
+      WHERE ({% condition contact_reason_l1_filter %} contact_reason_l1 {% endcondition %} OR (contact_reason IS NULL AND conversation_uuid IS NULL))
+      AND ({% condition contact_reason_l1l2_filter %} contact_reason {% endcondition %} OR (contact_reason IS NULL AND conversation_uuid IS NULL))
        ;;
   }
 
@@ -61,10 +68,18 @@ view: cs_reporting {
     default_value: "Day"
   }
 
-  filter: contact_reason_filter {
+  filter: contact_reason_l1_filter {
+    label: "Contact Reason L1 Filter"
+    type: string
+    suggest_dimension: contact_reason_l1
+    sql: EXISTS (SELECT ${creation_timestamp_time} FROM ${TABLE} WHERE {% condition %} contact_reason_l1 {% endcondition %}) ;;
+  }
+
+  filter: contact_reason_l1l2_filter {
+    label: "Contact Reason L1/L2 Filter"
     type: string
     suggest_dimension: contact_reason
-    sql: EXISTS (SELECT ${conversation_uuid} FROM ${TABLE} WHERE {% condition %} contact_reason {% endcondition %} OR (${contact_reason} IS NULL AND ${conversation_uuid} IS NULL)) ;;
+    sql: EXISTS (SELECT ${creation_timestamp_time} FROM ${TABLE} WHERE {% condition %} contact_reason {% endcondition %}) ;;
   }
 
   measure: cnt_orders {
@@ -105,7 +120,7 @@ view: cs_reporting {
     label: "# conversations - live order"
     type: count_distinct
     sql: ${conversation_uuid} ;;
-    filters: [main_contact_reason: "Live Order"]
+    filters: [contact_reason_l1: "Live Order"]
   }
 
   measure: cnt_cancellation_conversations {
@@ -156,12 +171,6 @@ view: cs_reporting {
     value_format_name: percent_1
   }
 
-  dimension: main_contact_reason {
-    label: "Contact Reason L1"
-    type: string
-    sql: TRIM(REGEXP_EXTRACT(${contact_reason}, r'(.+?) -')) ;;
-  }
-
   dimension: secondary_contact_reason {
     label: "Contact Reason L2"
     type: string
@@ -175,7 +184,7 @@ view: cs_reporting {
   }
 
   dimension: full_contact_reason {
-    label: "Full Contact Reason"
+    label: "Contact Reason L1/L2/L3"
     type: string
     sql: IFNULL(${contact_reason},'') || IF(${contact_reason_l3} IS NULL, '', '/ ') || IFNULL(${contact_reason_l3},'');;
   }
@@ -206,8 +215,15 @@ view: cs_reporting {
   }
 
   dimension: contact_reason {
+    label: "Contact Reason L1/L2"
     type: string
     sql: ${TABLE}.contact_reason ;;
+  }
+
+  dimension: contact_reason_l1 {
+    label: "Contact Reason L1"
+    type: string
+    sql: ${TABLE}.contact_reason_l1 ;;
   }
 
   dimension: contact_reason_l3 {
