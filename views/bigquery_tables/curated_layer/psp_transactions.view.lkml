@@ -202,6 +202,34 @@ view: psp_transactions {
     filters: [record_type: "Authorised"]
   }
 
+  measure: percentage_amount_refunded_settled {
+    label: "%  Total Amount Refunded (Settled)"
+    type: number
+    sql: ${sum_main_amount_refunded}/${sum_main_amount_settled};;
+    value_format_name: percent_2
+  }
+
+  measure: percentage_amount_refunded_authorised {
+    label: "%  Total Amount Refunded (Authorised)"
+    type: number
+    sql: ${sum_main_amount_refunded}/${sum_main_amount_authorised};;
+    value_format_name: percent_2
+  }
+
+  measure: percentage_amount_chargeback_settled {
+    label: "%  Total Amount Refunded (Settled)"
+    type: number
+    sql: ${sum_main_amount_chargebacks}/${sum_main_amount_settled};;
+    value_format_name: percent_2
+  }
+
+  measure: percentage_amount_chargeback_authorised {
+    label: "%  Total Amount Refunded (Authorised)"
+    type: number
+    sql: ${sum_main_amount_chargebacks}/${sum_main_amount_authorised};;
+    value_format_name: percent_2
+  }
+
   measure: sum_authorised_pc {
     type: sum
     sql: ${authorised_pc} ;;
@@ -254,6 +282,12 @@ view: psp_transactions {
     sql: ${captured_pc} ;;
     value_format_name: euro_accounting_2_precision
     }
+
+  measure: sum_total_chargeback_fixed_fees {
+    type: sum
+    sql: ${markup_sc} + ${scheme_fees_sc};;
+    value_format_name: euro_accounting_2_precision
+  }
 
   dimension: diff_adyen_ct {
     type: number
@@ -401,7 +435,6 @@ view: psp_transactions {
     value_format_name: euro_accounting_2_precision
   }
 
-
   dimension: authorised_authorised_pc {
     label:  "Authorised Transactions Amount"
     hidden: yes
@@ -409,11 +442,10 @@ view: psp_transactions {
     value_format_name: euro_accounting_2_precision
   }
 
-
-
  measure: diff_authorised_refunded {
  type: sum
   sql: ${authorised_authorised_pc} - ${captured_refunded_pc}  ;;
+  value_format_name: euro_accounting_2_precision
 }
 
 }

@@ -8,7 +8,7 @@ view: aov_per_subcategory_month{
       case when extract (hour from a.order_timestamp)<12 then "1.Before 12PM"
         when  extract (hour from a.order_timestamp)<17 then "2.12PM to 17PM"
         else "3.After 17PM" end as hour,
-      DATE_TRUNC( cast(a.order_timestamp as date), week) as week,
+      DATE_TRUNC( cast(a.order_timestamp as date), week(monday)) as week,
       DATE_TRUNC( cast(a.order_timestamp as date), month) as month,
       a.country_iso,
       hub.country,
@@ -52,7 +52,7 @@ c as
       case when extract (hour from a.order_timestamp)<12 then "1.Before 12PM"
         when  extract (hour from a.order_timestamp)<17 then "2.12PM to 17PM"
         else "3.After 17PM" end as hour,
-      DATE_TRUNC( cast(a.order_timestamp as date), week) as week,
+      DATE_TRUNC( cast(a.order_timestamp as date), week(monday)) as week,
       DATE_TRUNC( cast(a.order_timestamp as date), month) as month,
       a.country_iso,
       hub.country,
@@ -61,7 +61,7 @@ c as
       f.is_discounted_order,
       category as category,
       b.subcategory as subcategory,
-      sum (a.amt_total_price_gross) as sum_item_value,
+      sum (coalesce(a.amt_total_price_gross,0)+coalesce(amt_total_deposit,0)) as sum_item_value,
       sum (a.quantity) as sum_quantity,
       count (distinct a.order_uuid) as orders_subcategory
       FROM `flink-data-prod.curated.order_lineitems` a

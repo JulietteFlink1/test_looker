@@ -32,6 +32,12 @@ view: hub_staffing {
     sql: ${TABLE}.block_starts_at_timestamp ;;
   }
 
+  dimension: block_start_time {
+    type: string
+    hidden: yes
+    sql: split(${block_starts_at_timestamp_time}," ")[offset(1)];;
+  }
+
   dimension: city {
     type: string
     sql: ${TABLE}.city ;;
@@ -56,13 +62,25 @@ view: hub_staffing {
   dimension: number_of_forecast_riders_needed {
     type: number
     hidden: yes
-    sql: ${TABLE}.number_of_forecast_riders_needed ;;
+    sql: ${TABLE}.number_of_forecasted_employees_needed ;;
   }
 
   dimension: number_of_no_show_employees {
     type: number
     hidden: yes
     sql: ${TABLE}.number_of_no_show_employees ;;
+  }
+
+  dimension: number_of_no_show_employees_external {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_no_show_employees_external ;;
+  }
+
+  dimension: number_of_no_show_employees_internal {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_no_show_employees_internal ;;
   }
 
   dimension: number_of_orders {
@@ -75,6 +93,18 @@ view: hub_staffing {
     type: number
     hidden: yes
     sql: ${TABLE}.number_of_planned_employees ;;
+  }
+
+  dimension: number_of_planned_employees_internal {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_planned_employees_internal ;;
+  }
+
+  dimension: number_of_planned_employees_external {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_planned_employees_external ;;
   }
 
   dimension: number_of_predicted_orders {
@@ -101,16 +131,70 @@ view: hub_staffing {
     sql: ${TABLE}.number_of_worked_employees ;;
   }
 
+  dimension: number_of_worked_employees_external {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_worked_employees_external ;;
+  }
+
+  dimension: number_of_worked_employees_internal {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_worked_employees_internal ;;
+  }
+
   dimension: number_of_planned_minutes {
     type: number
     hidden: yes
     sql: ${TABLE}.number_of_planned_minutes ;;
   }
 
+  dimension: number_of_planned_minutes_external {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_planned_minutes_external ;;
+  }
+
+  dimension: number_of_planned_minutes_internal {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_planned_minutes_internal ;;
+  }
+
   dimension: number_of_worked_minutes {
     type: number
     hidden: yes
     sql: ${TABLE}.number_of_worked_minutes ;;
+  }
+
+  dimension: number_of_worked_minutes_internal {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_worked_minutes_internal ;;
+  }
+
+  dimension: number_of_worked_minutes_external {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_worked_minutes_external ;;
+  }
+
+  dimension: number_of_no_show_minutes {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_no_show_minutes ;;
+  }
+
+  dimension: number_of_no_show_minutes_internal {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_no_show_minutes_internal ;;
+  }
+
+  dimension: number_of_no_show_minutes_external {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_no_show_minutes_external ;;
   }
 
   dimension: position_name {
@@ -142,14 +226,18 @@ view: hub_staffing {
   }
 
 
-
+  dimension: number_of_target_orders_per_employee {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_target_orders_per_employee ;;
+  }
 
 
   measure: sum_forecast_riders_needed{
     type: sum
     label:"# Forecasted Hours"
     description: "Number of Needed Employee Hours Based on Forecasted Order Demand"
-    sql:${number_of_forecast_riders_needed};;
+    sql:NULLIF(${number_of_forecast_riders_needed},0)*0.5;;
     value_format_name: decimal_1
   }
 
@@ -161,12 +249,27 @@ view: hub_staffing {
     value_format_name: decimal_0
   }
 
+  measure: number_of_target_utr{
+    type: average
+    label:"Target UTR"
+    description: "Target UTR used in Forecsating Rider Hours"
+    sql:${number_of_target_orders_per_employee};;
+    value_format_name: decimal_2
+  }
 
   measure: sum_planned_employees{
     type: sum
-    label:"# Planned Employees"
-    description: "Number of Planned/Scheduled Employees"
+    label:"# Scheduled Employees"
+    description: "Number of Scheduled Employees"
     sql:${number_of_planned_employees};;
+    value_format_name: decimal_1
+  }
+
+  measure: sum_planned_employees_external{
+    type: sum
+    label:"# Scheduled Ext Employees"
+    description: "Number of Scheduled Ext Employees"
+    sql:${number_of_planned_employees_external};;
     value_format_name: decimal_1
   }
 
@@ -188,29 +291,53 @@ view: hub_staffing {
     value_format_name: decimal_1
   }
 
+  measure: sum_worked_employees_external{
+    type: sum
+    label:"# Worked Ext Employees"
+    description: "Number of Worked Ext Employees"
+    sql:${number_of_worked_employees_external};;
+    value_format_name: decimal_1
+  }
+
 
   measure: pct_no_show_employees{
     label:"% No Show Hours"
     type: number
     description: "# No Show Hours"
-    sql:(${sum_planned_hours} - ${sum_worked_hours})/${sum_planned_hours} ;;
+    sql:(${sum_planned_hours} - ${sum_worked_hours})/nullif(${sum_planned_hours},0) ;;
     value_format_name: percent_1
   }
 
 
   measure: sum_planned_hours{
     type: sum
-    label:"# Planned Hours"
-    description: "Number of Planned/Scheduled Hours"
+    label:"# Scheduled Hours"
+    description: "Number of Scheduled Hours"
     sql:${number_of_planned_minutes}/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: sum_planned_hours_external{
+    type: sum
+    label:"# Scheduled Ext Hours"
+    description: "Number of Scheduled Ext Hours"
+    sql:${number_of_planned_minutes_external}/60;;
     value_format_name: decimal_1
   }
 
   measure: sum_worked_hours{
     type: sum
     label:"# Worked Hours"
-    description: "Number of Planned/Scheduled Hours"
+    description: "Number of Worked Hours"
     sql:${number_of_worked_minutes}/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: sum_worked_hours_external{
+    type: sum
+    label:"# Worked Ext Hours"
+    description: "Number of Worked Ext Hours"
+    sql:${number_of_worked_minutes_external}/60;;
     value_format_name: decimal_1
   }
 
@@ -226,18 +353,25 @@ view: hub_staffing {
 
   measure: sum_no_show_hours{
     label:"# No Show Hours"
-    type: number
+    type: sum
     description: "Sum of No Show Hours"
-    sql:(${sum_planned_hours} - ${sum_worked_hours});;
+    sql:${number_of_no_show_minutes}/60;;
     value_format_name: decimal_1
   }
 
+  measure: sum_no_show_hours_external{
+    label:"# No Show Ext Hours"
+    type: sum
+    description: "Sum of No Show Ext Hours"
+    sql:${number_of_no_show_minutes_external}/60;;
+    value_format_name: decimal_1
+  }
 
   measure: sum_hours_needed {
     type: number
     label:"# Actual Needed Hours"
     description: "Number of needed Employees based on actual order demand"
-    sql:ceiling(${sum_orders} / (2.5 / 2));;
+    sql:ceiling(${sum_orders} / (${number_of_target_utr} / 2));;
     value_format_name: decimal_1
   }
 
@@ -246,7 +380,7 @@ view: hub_staffing {
     type: number
     label:"# Projected Rider UTR"
     description: "Forecasted Orders / Scheduled Rider Hours"
-    sql:${sum_predicted_orders} / ${sum_planned_hours}*2;;
+    sql:${sum_predicted_orders} / ${sum_planned_hours};;
     value_format_name: decimal_1
   }
 

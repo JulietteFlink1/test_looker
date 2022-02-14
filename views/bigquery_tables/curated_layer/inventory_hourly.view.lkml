@@ -34,7 +34,7 @@ view: inventory_hourly {
     sql: ${TABLE}.is_hub_open ;;
   }
 
-  dimension: share_of_hours_oos {
+  dimension: share_of_hours_oos_unaggregated {
 
     label: "Number of Hours OOS"
     description: "An indicator, to show, whether a SKU was out-of-stock at a given hour, with oos (1) partially oos (0.5) or in stock (0)"
@@ -42,9 +42,11 @@ view: inventory_hourly {
 
     type: number
     sql: ${TABLE}.share_of_hours_oos ;;
+
+    hidden: yes
   }
 
-  dimension: share_of_hours_open {
+  dimension: share_of_hours_open_unaggregated {
 
     label: "Number of Hours Open"
     description: "An indicator, to show, whether a hour was open (1) partially open (0.5) or closed (0)"
@@ -52,6 +54,8 @@ view: inventory_hourly {
 
     type: number
     sql: ${TABLE}.share_of_hours_open ;;
+
+    hidden: yes
   }
 
 
@@ -91,39 +95,43 @@ view: inventory_hourly {
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   # ~~~~~~~~~~~~~  START: Out-Of-Stock Metrics  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  measure: sum_of_hours_open {
+  measure: sum_of_hours_open_unaggregated {
 
     label: "# Opening Hours"
     description: "The number of hours, a hub was open (hours were customers could buy)"
     group_label: "OOS-Measures"
 
     type: sum
-    sql: ${share_of_hours_open} ;;
+    sql: ${share_of_hours_open_unaggregated} ;;
 
     value_format_name: decimal_1
+
+    hidden: yes
   }
 
-  measure: sum_of_hours_oos {
+  measure: sum_of_hours_oos_unaggregated {
 
     label: "# Hours Out-Of-Stock"
     description: "The number of business hours, a specific SKU was not available in a hub"
     group_label: "OOS-Measures"
 
     type: sum
-    sql: ${share_of_hours_oos} ;;
+    sql: ${share_of_hours_oos_unaggregated} ;;
 
     value_format_name: decimal_1
 
+    hidden: yes
+
   }
 
-  measure: pct_oos {
+  measure: pct_oos_unaggregated {
 
     label: "% Out Of Stock"
     description: "This rate gives the sum of all hours, an SKU was out of stock compared to all hours, the hub was open for orders"
     group_label: "OOS-Measures"
 
     type: number
-    sql: ${sum_of_hours_oos} / nullif( ${sum_of_hours_open},0) ;;
+    sql: ${sum_of_hours_oos_unaggregated} / nullif( ${sum_of_hours_open_unaggregated},0) ;;
 
     value_format_name: percent_1
     html:
@@ -142,16 +150,18 @@ view: inventory_hourly {
     {% else %}
       <p style="color: black; font-size:100%; text-align:center">{{ rendered_value }}</p>
     {% endif %};;
+
+    hidden: yes
   }
 
-  measure: pct_in_stock {
+  measure: pct_in_stock_unaggregated {
 
     label: "% In Stock"
     description: "This rate gives the sum of all hours, an SKU was in stock compared to all hours, the hub was open for orders"
     group_label: "OOS-Measures"
 
     type: number
-    sql: 1 - ${pct_oos} ;;
+    sql: 1 - ${pct_oos_unaggregated} ;;
 
     value_format_name: percent_1
     html:
@@ -170,6 +180,8 @@ view: inventory_hourly {
     {% else %}
       <p style="color: black; font-size:100%; text-align:center">{{ rendered_value }}</p>
     {% endif %};;
+
+    hidden: yes
   }
   # ~~~~~~~~~~~~~    END: Out-Of-Stock Metrics  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -177,7 +189,7 @@ view: inventory_hourly {
 
 
 # ~~~~~~~~~~~~~  START: Inventory Change  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  measure: avg_inventory {
+  measure: avg_inventory_unaggregated {
 
     label: "AVG Inventory Level"
     description: "The average stock level, based on averaged starting and ending inventory level per day and hub"
@@ -187,10 +199,11 @@ view: inventory_hourly {
     sql: ( (${TABLE}.quantity_from + ${TABLE}.quantity_to) / 2  ) ;;
 
     value_format_name: decimal_1
+    hidden: yes
   }
 
 
-  measure: avg_quantity_from {
+  measure: avg_quantity_from_unaggregated {
 
     label: "AVG Quantity From"
     description: "The average inventory quantity at the start of every hour"
@@ -200,21 +213,25 @@ view: inventory_hourly {
     sql: ${TABLE}.quantity_from ;;
 
     value_format_name: decimal_1
+
+    hidden: yes
   }
 
-  measure: avg_quantity_to {
+  measure: avg_quantity_to_unaggregated {
 
     label: "AVG Quantity To"
     description: "The average inventory quantity at the end of every hour"
     group_label: "Inventory Change"
 
     type: average
-    sql: ${TABLE}.quantity_to ;;
+    sql: ${TABLE}.quantity_to_unaggregated ;;
 
     value_format_name: decimal_1
+
+    hidden: yes
   }
 
-  measure: sum_of_total_correction {
+  measure: sum_of_total_correction_unaggregated {
 
     label: "# Corrections - Total"
     description: "The sum of all inventory corrections"
@@ -224,9 +241,11 @@ view: inventory_hourly {
     sql: ${TABLE}.number_of_total_correction ;;
 
     value_format_name: decimal_0
+
+    hidden: yes
   }
 
-  measure: sum_of_total_inbound {
+  measure: sum_of_total_inbound_unaggregated {
 
     label: "# Inbound - Total"
     description: "The sum of all inventory re-stockings"
@@ -236,9 +255,11 @@ view: inventory_hourly {
     sql: ${TABLE}.number_of_total_inbound ;;
 
     value_format_name: decimal_0
+
+    hidden: yes
   }
 
-  measure: sum_of_total_outbound {
+  measure: sum_of_total_outbound_unaggregated {
 
     label: "# Outbound - Total"
     description: "The sum of all inventory outbounds"
@@ -248,10 +269,12 @@ view: inventory_hourly {
     sql: ${TABLE}.number_of_total_outbound ;;
 
     value_format_name: decimal_0
+
+    hidden: yes
   }
 
 
-  measure: sum_of_correction_product_damaged {
+  measure: sum_of_correction_product_damaged_unaggregated {
 
     label: "# Corrections - Product Damaged"
     description: "The sum of all inventory corrections due to damaged products"
@@ -261,9 +284,11 @@ view: inventory_hourly {
     sql: ${TABLE}.number_of_correction_product_damaged ;;
 
     value_format_name: decimal_0
+
+    hidden: yes
   }
 
-  measure: sum_of_correction_product_expired {
+  measure: sum_of_correction_product_expired_unaggregated {
 
     label: "# Corrections - Product Expired"
     description: "The sum of all inventory corrections due to expired products"
@@ -273,9 +298,11 @@ view: inventory_hourly {
     sql: ${TABLE}.number_of_correction_product_expired ;;
 
     value_format_name: decimal_0
+
+    hidden: yes
   }
 
-  measure: sum_of_correction_stock_taking_increased {
+  measure: sum_of_correction_stock_taking_increased_unaggregated {
 
     label: "# Corrections - Stock Taging (Increased)"
     description: "The sum of all inventory corrections due to stock taking activities, that increased the inventory level"
@@ -285,9 +312,11 @@ view: inventory_hourly {
     sql: ${TABLE}.number_of_correction_stock_taking_increased ;;
 
     value_format_name: decimal_0
+
+    hidden: yes
   }
 
-  measure: sum_of_correction_stock_taking_reduced {
+  measure: sum_of_correction_stock_taking_reduced_unaggregated {
 
     label: "# Corrections - Stock Taging (Reduced)"
     description: "The sum of all inventory corrections due to stock taking activities, that reduced the inventory level"
@@ -297,9 +326,11 @@ view: inventory_hourly {
     sql: ${TABLE}.number_of_correction_stock_taking_reduced ;;
 
     value_format_name: decimal_0
+
+    hidden: yes
   }
 
-  measure: sum_of_outbound_orders {
+  measure: sum_of_outbound_orders_unaggregated {
 
     label: "# Outbound - Orders"
     description: "The number of all inventory changes due to customer orders"
@@ -309,9 +340,11 @@ view: inventory_hourly {
     sql: ${TABLE}.number_of_outbound_orders ;;
 
     value_format_name: decimal_0
+
+    hidden: yes
   }
 
-  measure: sum_of_outbound_others {
+  measure: sum_of_outbound_others_unaggregated {
 
     # TODO: what do these entail?
     label: "# Outbound - Others"
@@ -322,11 +355,13 @@ view: inventory_hourly {
     sql: ${TABLE}.number_of_outbound_others ;;
 
     value_format_name: decimal_0
+
+    hidden: yes
   }
 
 
 
-  measure: sum_of_unspecified {
+  measure: sum_of_unspecified_unaggregated {
 
     label: "# Unspecified Inventory Changes"
     description: "The sum of all inventory changes, that are not mapped to specific reasons"
@@ -336,6 +371,8 @@ view: inventory_hourly {
     sql: ${TABLE}.number_of_unspecified ;;
 
     value_format_name: decimal_0
+
+    hidden: yes
   }
 
   # ~~~~~~~~~~~~~    END: Inventory Change  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
