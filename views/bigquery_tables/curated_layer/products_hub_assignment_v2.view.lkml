@@ -359,6 +359,12 @@ view: products_hub_assignment_v2 {
     sql: ${sku_dynamic} ;;
   }
 
+  measure: cnt_unique_hubs {
+    label: "# unique Hubs"
+    type: count_distinct
+    sql: ${hub_code} ;;
+  }
+
   measure: count {
     type: count
   }
