@@ -71,7 +71,7 @@ explore: supply_chain {
 
       ;;
 
-  hidden: yes
+  hidden: no
 
   always_filter: {
     filters: [
