@@ -32,7 +32,7 @@ explore: orders_discounts {
     sql_on: ${orders_cl.order_uuid} = ${vat_order.order_uuid} ;;
     relationship: one_to_one
     type: left_outer
-    fields: [vat_order.discount_amount_net, vat_order.vat_discount_amount_total]
+    fields: [vat_order.sum_vat_discount_amount_total,vat_order.sum_discount_amount_net]
   }
 
 }
