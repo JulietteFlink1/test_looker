@@ -24,4 +24,13 @@ explore: orders_discounts {
     type: left_outer
   }
 
+  join: vat_order {
+    view_label: "VAT"
+    sql_on:
+      ${orders_cl.order_uuid} = ${vat_order.order_uuid} ;;
+    relationship: one_to_one
+    type: left_outer
+    fields: [vat_order.discount_amount_net, vat_order.vat_discount_amount_total]
+  }
+
 }
