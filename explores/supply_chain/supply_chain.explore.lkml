@@ -198,9 +198,27 @@ explore: supply_chain {
     ;;
   }
 
+
+  join: order_lineitems {
+
+    from: orderline
+
+    view_label: "07 Order Lineitems"
+
+    type: left_outer
+    relationship: many_to_many
+
+    sql_on:
+        ${order_lineitems.product_sku}         = ${products_hub_assignment.sku}         and
+        ${order_lineitems.hub_code}            = ${products_hub_assignment.hub_code}    and
+        ${order_lineitems.created_date}        = ${products_hub_assignment.report_date} and
+        {% condition global_filters_and_parameters.datasource_filter %} ${order_lineitems.created_date} {% endcondition %}
+    ;;
+  }
+
   join: replenishment_purchase_orders {
 
-    view_label: "07 Purchase Orders"
+    view_label: "08 Purchase Orders"
 
     type:         full_outer
     relationship: one_to_many
@@ -215,7 +233,7 @@ explore: supply_chain {
   join: erp_master_data {
 
     from: erp_product_hub_vendor_assignment_v2
-    view_label: "08 ERP Master Data"
+    view_label: "09 ERP Master Data"
 
     type: left_outer
     relationship: many_to_one
