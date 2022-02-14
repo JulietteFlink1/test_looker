@@ -106,6 +106,7 @@ view: cc_conversations {
       time,
       date,
       week,
+      hour,
       month,
       year
     ]
@@ -345,10 +346,10 @@ view: cc_conversations {
   }
 
   dimension: time_to_first_close_minutes {
-  group_label: "* Conversation Statistics *"
-  type: number
-  hidden: yes
-  sql: ${TABLE}.time_to_first_close_minutes ;;
+    group_label: "* Conversation Statistics *"
+    type: number
+    hidden: yes
+    sql: ${TABLE}.time_to_first_close_minutes ;;
   }
 
   dimension: time_to_last_close_minutes {
@@ -388,6 +389,56 @@ view: cc_conversations {
     sql: ${TABLE}.user_id ;;
   }
 
+
+################## Parameter and Dynamic Dates
+
+
+  parameter: date_granularity {
+    group_label: "* Dates and Timestamps *"
+    label: "Date Granularity"
+    type: unquoted
+    allowed_value: { value: "Hour" }
+    allowed_value: { value: "Day" }
+    allowed_value: { value: "Week" }
+    allowed_value: { value: "Month" }
+    default_value: "Day"
+  }
+
+
+  ######## DYNAMIC DIMENSIONS
+
+  dimension: date {
+    group_label: "* Dates & Timestamps *"
+    label: "Date (Dynamic)"
+    label_from_parameter: date_granularity
+    sql:
+    {% if date_granularity._parameter_value == 'Hour' %}
+      ${conversation_created_hour}
+    {% elsif date_granularity._parameter_value == 'Day' %}
+      ${conversation_created_date}
+    {% elsif date_granularity._parameter_value == 'Week' %}
+      ${conversation_created_week}
+    {% elsif date_granularity._parameter_value == 'Month' %}
+      ${conversation_created_month}
+    {% endif %};;
+  }
+
+
+  measure: contact_rate {
+    group_label: "* Dates & Timestamps *"
+    label: "Conversation Date (Dynamic)"
+    label_from_parameter: date_granularity
+    sql:
+    {% if date_granularity._parameter_value == 'Hour' %}
+      ${avg_number_of_conversations_hourly}
+    {% elsif date_granularity._parameter_value == 'Day' %}
+      ${avg_number_of_conversations_daily}
+    {% elsif date_granularity._parameter_value == 'Week' %}
+      ${avg_number_of_conversations_weekly}
+    {% elsif date_granularity._parameter_value == 'Month' %}
+      ${avg_number_of_conversations_monthly}
+    {% endif %};;
+  }
 
 
 
