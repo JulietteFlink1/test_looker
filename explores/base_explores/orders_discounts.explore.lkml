@@ -1,5 +1,7 @@
 include: "/views/bigquery_tables/curated_layer/*.view"
 include: "/views/bigquery_tables/reporting_layer/*.view"
+include: "/views/sql_derived_tables/vat_order.view.lkml"
+
 include: "/**/*.explore"
 
 explore: orders_discounts {
@@ -27,8 +29,7 @@ explore: orders_discounts {
 
   join: vat_order {
     view_label: "* VAT *"
-    sql_on:
-      ${orders_cl.order_uuid} = ${vat_order.order_uuid} ;;
+    sql_on: ${orders_cl.order_uuid} = ${vat_order.order_uuid} ;;
     relationship: one_to_one
     type: left_outer
     fields: [vat_order.discount_amount_net, vat_order.vat_discount_amount_total]
