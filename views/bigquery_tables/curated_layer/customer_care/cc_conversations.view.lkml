@@ -630,12 +630,29 @@ view: cc_conversations {
   }
 
   measure: number_of_deflected_by_bot {
+    group_label: "* Basic Counts *"
+    type: count_distinct
+    value_format: "0.0"
+    label: "# Conversations Deflected by Bot"
+    sql:  conversation_uuid ;;
+    filters: [is_deflected_by_bot: "yes"]
+  }
+
+  measure: number_of_reply_other_day {
     group_label: "* Conversation Statistics *"
     type: count_distinct
     value_format: "0.0"
-    label: "AVG # Reopens"
     sql:  conversation_uuid ;;
-    filters: [is_deflected_by_bot: "yes"]
+    filters: [is_first_reply_the_same_day: "no"]
+  }
+
+  measure: number_of_email_conversations {
+    group_label: "* Basic Counts *"
+    type: count_distinct
+    value_format: "0"
+    label: "# Email Conversations"
+    sql:  conversation_uuid ;;
+    filters: [source_type: "email"]
   }
 
   measure: share_deflected_by_bot {
@@ -644,6 +661,23 @@ view: cc_conversations {
     value_format: "0.0%"
     label: "% Deflected by Bot"
     sql:  ${number_of_deflected_by_bot}/${number_of_conversations} ;;
+  }
+
+  measure: share_email_conversations {
+    group_label: "* Conversation Statistics *"
+    type: number
+    value_format: "0.0%"
+    label: "% Emails"
+    sql:  ${number_of_email_conversations}/${number_of_conversations} ;;
+  }
+
+  measure: share_reply_on_another_day {
+    group_label: "* Conversation Statistics *"
+    type: number
+    value_format: "0.0%"
+    label: "% First Reply on Another Day"
+    description: "Share of conversations that were created on a given day but first agent reply was on a different day"
+    sql:  ${number_of_reply_other_day}/${number_of_conversations} ;;
   }
 
 
