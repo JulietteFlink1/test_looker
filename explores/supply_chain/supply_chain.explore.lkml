@@ -24,7 +24,7 @@ explore: supply_chain {
   description: "This explore covers inventory data based on CommerceTools
                 and Stock Changelogs provided by Hub-Tech. It is enrichted with reporting tables to measure the
                 vendor performance"
-  group_label: "07) Supply Chain"
+  group_label: "04) Supply Chain"
 
   from  :     products_hub_assignment_v2
   view_name:  products_hub_assignment
@@ -71,13 +71,17 @@ explore: supply_chain {
 
       ;;
 
-  hidden: yes
+  hidden: no
 
   always_filter: {
     filters: [
-      products_hub_assignment.is_sku_assigned_to_hub: "Yes",
+      products_hub_assignment.assingment_dynamic: "Yes",
+      products_hub_assignment.select_assignment_logic: "replenishment",
+
       global_filters_and_parameters.datasource_filter: "last 30 days",
+
       products_hub_assignment.select_calculation_granularity: "sku"
+
     ]
   }
 
@@ -205,6 +209,23 @@ explore: supply_chain {
         ${replenishment_purchase_orders.sku}           = ${products_hub_assignment.sku}      and
         ${replenishment_purchase_orders.hub_code}      = ${products_hub_assignment.hub_code} and
         ${replenishment_purchase_orders.delivery_date} = ${products_hub_assignment.report_date}
+    ;;
+  }
+
+  join: erp_master_data {
+
+    from: erp_product_hub_vendor_assignment_v2
+    view_label: "08 ERP Master Data"
+
+    type: left_outer
+    relationship: many_to_one
+
+    sql_on:
+        ${erp_master_data.report_date} = ${products_hub_assignment.report_date} and
+        ${erp_master_data.hub_code}    = ${products_hub_assignment.hub_code}    and
+        ${erp_master_data.sku}         = ${products_hub_assignment.sku}         and
+        ${erp_master_data.vendor_id}   = ${products_hub_assignment.erp_vendor_id}
+
     ;;
   }
 
