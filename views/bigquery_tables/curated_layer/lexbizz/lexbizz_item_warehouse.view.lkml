@@ -10,12 +10,7 @@ view: lexbizz_item_warehouse {
   dimension_group: ingestion {
     type: time
     timeframes: [
-      raw,
-      date,
-      week,
-      month,
-      quarter,
-      year
+      date
     ]
     convert_tz: no
     datatype: date
@@ -25,13 +20,8 @@ view: lexbizz_item_warehouse {
   dimension_group: introduction_timestamp {
     type: time
     timeframes: [
-      raw,
       time,
-      date,
-      week,
-      month,
-      quarter,
-      year
+      date
     ]
     sql: ${TABLE}.introduction_timestamp ;;
   }
@@ -49,13 +39,8 @@ view: lexbizz_item_warehouse {
   dimension_group: last_modified_timestamp {
     type: time
     timeframes: [
-      raw,
       time,
-      date,
-      week,
-      month,
-      quarter,
-      year
+      date
     ]
     sql: ${TABLE}.last_modified_timestamp ;;
   }
@@ -90,13 +75,8 @@ view: lexbizz_item_warehouse {
   dimension_group: termination_timestamp {
     type: time
     timeframes: [
-      raw,
       time,
-      date,
-      week,
-      month,
-      quarter,
-      year
+      date
     ]
     sql: ${TABLE}.termination_timestamp ;;
   }

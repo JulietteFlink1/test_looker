@@ -20,13 +20,8 @@ view: lexbizz_vendor {
   dimension_group: created_at_timestamp {
     type: time
     timeframes: [
-      raw,
       time,
-      date,
-      week,
-      month,
-      quarter,
-      year
+      date
     ]
     sql: ${TABLE}.created_at_timestamp ;;
   }
@@ -44,12 +39,7 @@ view: lexbizz_vendor {
   dimension_group: ingestion {
     type: time
     timeframes: [
-      raw,
-      date,
-      week,
-      month,
-      quarter,
-      year
+      date
     ]
     convert_tz: no
     datatype: date
@@ -59,13 +49,8 @@ view: lexbizz_vendor {
   dimension_group: last_modified_timestamp {
     type: time
     timeframes: [
-      raw,
       time,
-      date,
-      week,
-      month,
-      quarter,
-      year
+      date
     ]
     sql: ${TABLE}.last_modified_timestamp ;;
   }

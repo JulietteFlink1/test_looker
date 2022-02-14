@@ -15,12 +15,7 @@ view: lexbizz_item_vendor {
   dimension_group: ingestion {
     type: time
     timeframes: [
-      raw,
-      date,
-      week,
-      month,
-      quarter,
-      year
+      date
     ]
     convert_tz: no
     datatype: date

@@ -17,12 +17,7 @@ view: lexbizz_buying_price {
   dimension_group: ingestion {
     type: time
     timeframes: [
-      raw,
-      date,
-      week,
-      month,
-      quarter,
-      year
+      date
     ]
     convert_tz: no
     datatype: date
@@ -69,12 +64,7 @@ view: lexbizz_buying_price {
   dimension_group: valid_from {
     type: time
     timeframes: [
-      raw,
-      date,
-      week,
-      month,
-      quarter,
-      year
+      date
     ]
     convert_tz: no
     datatype: date
@@ -84,12 +74,7 @@ view: lexbizz_buying_price {
   dimension_group: valid_to {
     type: time
     timeframes: [
-      raw,
-      date,
-      week,
-      month,
-      quarter,
-      year
+      date
     ]
     convert_tz: no
     datatype: date
