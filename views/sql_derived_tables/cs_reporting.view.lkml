@@ -7,31 +7,38 @@ view: cs_reporting__tag_names {
 
 view: cs_reporting {
   derived_table: {
-    persist_for: "1 hour"
     sql:
-      SELECT
-          c.*,
-          conversation_created_timestamp AS creation_timestamp,
-          NULL AS order_timestamp
-      FROM flink-data-dev.sandbox.cs_conversations c
-
-      UNION ALL
-
+      WITH cs_tb AS (
         SELECT
-        NULL, NULL, NULL, NULL, NULL,
-        NULL, NULL, NULL, NULL, NULL,
-        NULL, NULL, NULL, NULL, NULL,
-        NULL, NULL, country_iso,
-        NULL, NULL,
-        NULL, NULL, NULL, NULL, NULL,
-        NULL, NULL, NULL, NULL, NULL,
-        NULL, NULL, NULL, NULL, NULL,
-        LOWER(order_number) as order_number,
-        NULL, NULL, NULL,NULL,
-        NULL, NULL,NULL, NULL,NULL,
-        order_timestamp AS creation_timestamp,
-        order_timestamp
-      FROM flink-data-prod.curated.orders
+            c.*,
+            TRIM(REGEXP_EXTRACT(contact_reason, r'(.+?) -')) AS contact_reason_l1,
+            conversation_created_timestamp AS creation_timestamp,
+            NULL AS order_timestamp
+        FROM flink-data-dev.sandbox.cs_conversations c
+
+        UNION ALL
+
+          SELECT
+          NULL, NULL, NULL, NULL, NULL,
+          NULL, NULL, NULL, NULL, NULL,
+          NULL, NULL, NULL, NULL, NULL,
+          NULL, NULL, country_iso,
+          NULL, NULL,
+          NULL, NULL, NULL, NULL, NULL,
+          NULL, NULL, NULL, NULL, NULL,
+          NULL, NULL, NULL, NULL, NULL,
+          LOWER(order_number) as order_number,
+          NULL, NULL, NULL,NULL,
+          NULL, NULL,NULL, NULL,NULL,
+          NULL AS contact_reason_l1,
+          order_timestamp AS creation_timestamp,
+          order_timestamp
+        FROM flink-data-prod.curated.orders
+      )
+      SELECT *
+      FROM cs_tb
+      WHERE ({% condition contact_reason_l1_filter %} contact_reason_l1 {% endcondition %} OR (contact_reason IS NULL AND conversation_uuid IS NULL))
+      AND ({% condition contact_reason_l1l2_filter %} contact_reason {% endcondition %} OR (contact_reason IS NULL AND conversation_uuid IS NULL))
        ;;
   }
 
@@ -61,6 +68,20 @@ view: cs_reporting {
     default_value: "Day"
   }
 
+  filter: contact_reason_l1_filter {
+    label: "Contact Reason L1 Filter"
+    type: string
+    suggest_dimension: contact_reason_l1
+    sql: EXISTS (SELECT ${creation_timestamp_time} FROM ${TABLE} WHERE {% condition %} contact_reason_l1 {% endcondition %}) ;;
+  }
+
+  filter: contact_reason_l1l2_filter {
+    label: "Contact Reason L1/L2 Filter"
+    type: string
+    suggest_dimension: contact_reason
+    sql: EXISTS (SELECT ${creation_timestamp_time} FROM ${TABLE} WHERE {% condition %} contact_reason {% endcondition %}) ;;
+  }
+
   measure: cnt_orders {
     label: "# unique orders"
     description: "cnt orders by order date"
@@ -78,12 +99,28 @@ view: cs_reporting {
     sql: ${conversation_uuid} ;;
   }
 
+  measure: cnt_agent_conversations {
+    label: "# agent conversations"
+    description: "cnt conversations in which a CC agent participated"
+    type: count_distinct
+    sql:  ${conversation_uuid} ;;
+    filters: [deflected_by_bot: "no", agent_assignee_id: "NOT NULL"]
+  }
+
+  measure: perc_agent_conversations {
+    label: "% conversations involving a CC agent"
+    description: "percentage of conversations that were handled by a CC agent"
+    type: number
+    sql: SAFE_DIVIDE(${cnt_agent_conversations},${cnt_conversations}) ;;
+    value_format_name: percent_1
+  }
+
   measure: cnt_live_order_conversations {
     # have to include it as a separate measure here because orders are not linked to a contact reason, so if we filter by contact reason we cannot get a % compared to orders (because # orders will always be 0)
     label: "# conversations - live order"
     type: count_distinct
     sql: ${conversation_uuid} ;;
-    filters: [main_contact_reason: "Live Order"]
+    filters: [contact_reason_l1: "Live Order"]
   }
 
   measure: cnt_cancellation_conversations {
@@ -96,7 +133,7 @@ view: cs_reporting {
 
   # measure: perc_cancellation_cr{
   #   label: "% cancellation contact rate"
-  #   description: "percentage of conversations with cancellation contact reasion, compared to number of orders"
+  #   description: "percentage of conversations with cancellation contact reasion, compared to number of conversations"
   #   type: number
   #   sql: SAFE_DIVIDE(${cnt_cancellation_conversations},${cnt_conversations}) ;;
   #   value_format_name: percent_1
@@ -110,13 +147,13 @@ view: cs_reporting {
     filters: [contact_reason_l3: "invoice request"]
   }
 
-  measure: perc_invoice_request_cr{
-    label: "% invoice request contact rate"
-    description: "percentage of conversations with invoice request L3 compared to number of orders"
-    type: number
-    sql: SAFE_DIVIDE(${cnt_invoice_request_conversations},${cnt_conversations}) ;;
-    value_format_name: percent_1
-  }
+  # measure: perc_invoice_request_cr{
+  #   label: "% invoice requests compared to # conversations"
+  #   description: "percentage of conversations with invoice request L3 compared to total conversations"
+  #   type: number
+  #   sql: SAFE_DIVIDE(${cnt_invoice_request_conversations},${cnt_conversations}) ;;
+  #   value_format_name: percent_1
+  # }
 
   measure: cnt_deflected_by_bot {
     label: "# unique conversations deflected by bot"
@@ -134,12 +171,6 @@ view: cs_reporting {
     value_format_name: percent_1
   }
 
-  dimension: main_contact_reason {
-    label: "Contact Reason L1"
-    type: string
-    sql: TRIM(REGEXP_EXTRACT(${contact_reason}, r'(.+?) -')) ;;
-  }
-
   dimension: secondary_contact_reason {
     label: "Contact Reason L2"
     type: string
@@ -153,7 +184,7 @@ view: cs_reporting {
   }
 
   dimension: full_contact_reason {
-    label: "Full Contact Reason"
+    label: "Contact Reason L1/L2/L3"
     type: string
     sql: IFNULL(${contact_reason},'') || IF(${contact_reason_l3} IS NULL, '', '/ ') || IFNULL(${contact_reason_l3},'');;
   }
@@ -184,14 +215,26 @@ view: cs_reporting {
   }
 
   dimension: contact_reason {
+    label: "Contact Reason L1/L2"
     type: string
     sql: ${TABLE}.contact_reason ;;
+  }
+
+  dimension: contact_reason_l1 {
+    label: "Contact Reason L1"
+    type: string
+    sql: ${TABLE}.contact_reason_l1 ;;
   }
 
   dimension: contact_reason_l3 {
     label: "Contact Reason L3"
     type: string
     sql: ${TABLE}.contact_reason_l3 ;;
+  }
+
+  dimension: agent_assignee_id {
+    type: number
+    sql: ${TABLE}.agent_assignee_id ;;
   }
 
   dimension: count_assignments {
