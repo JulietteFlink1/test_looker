@@ -333,14 +333,14 @@ view: ctr_chargeback_orders {
   measure: percentage_ctr_cbc_trx {
     group_label: "* Cartebancaire *"
     type: number
-    sql: NULLIF(${total_chargebacks_transactions_previous2_month_cbc},0) / NULLIF(${total_authorised_transactions_previous2_month_cbc},0) ;;
+    sql: NULLIF(${total_chargebacks_transactions_cbc},0) / NULLIF(${total_authorised_transactions_cbc},0) ;;
     value_format_name: percent_2
   }
 
   measure: percentage_ctr_cbc_amount {
     group_label: "* Cartebancaire *"
     type: number
-    sql: NULLIF(${total_main_amount_chargeback_previous2_month_cbc},0) / NULLIF(${total_main_amount_authorised_previous2_month_cbc},0) ;;
+    sql: NULLIF(${total_main_amount_chargeback_cbc},0) / NULLIF(${total_main_amount_authorised},0) ;;
     value_format_name: percent_2
   }
 
