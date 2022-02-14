@@ -1,4 +1,5 @@
 include: "/views/bigquery_tables/curated_layer/*.view"
+include: "/views/bigquery_tables/reporting_layer/*.view"
 include: "/**/*.explore"
 
 explore: orders_discounts {
@@ -17,7 +18,7 @@ explore: orders_discounts {
   }
 
   join: influencer_vouchers_input {
-    view_label: "Voucher Mapping"
+    view_label: "* Voucher Mapping *"
     sql_on: ${orders_cl.country_iso} = ${influencer_vouchers_input.country_iso} AND
       ${orders_cl.discount_code} = ${influencer_vouchers_input.voucher_code} ;;
     relationship: many_to_one
@@ -25,7 +26,7 @@ explore: orders_discounts {
   }
 
   join: vat_order {
-    view_label: "VAT"
+    view_label: "* VAT *"
     sql_on:
       ${orders_cl.order_uuid} = ${vat_order.order_uuid} ;;
     relationship: one_to_one
