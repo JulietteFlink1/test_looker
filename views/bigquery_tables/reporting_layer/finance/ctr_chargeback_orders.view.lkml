@@ -301,14 +301,14 @@ view: ctr_chargeback_orders {
   measure: percentage_ctr_mc_trx {
     group_label: "* MasterCard *"
     type: number
-    sql: NULLIF(${total_chargebacks_transactions},0) / NULLIF(${total_settled_transactions_previous_month},0) ;;
+    sql: NULLIF(${total_chargebacks_transactions_mc},0) / NULLIF(${total_settled_transactions_previous_month_mc},0) ;;
     value_format_name: percent_2
   }
 
   measure: percentage_ctr_mc_amount {
     group_label: "* MasterCard *"
     type: number
-    sql: NULLIF(${total_main_amount_chargeback},0) / NULLIF(${total_main_amount_settled_previous_month},0) ;;
+    sql: NULLIF(${total_main_amount_chargeback_mc},0) / NULLIF(${total_main_amount_settled_previous_month_mc},0) ;;
     value_format_name: percent_2
   }
 
@@ -317,14 +317,14 @@ view: ctr_chargeback_orders {
   measure: percentage_ctr_visa_trx {
     group_label: "* Visa *"
     type: number
-    sql: ${total_chargebacks_transactions} / ${total_settled_transactions} ;;
+    sql: ${total_chargebacks_transactions_visa} / ${total_settled_transactions_visa} ;;
     value_format_name: percent_2
   }
 
   measure: percentage_ctr_visa_amount {
     group_label: "* Visa *"
     type: number
-    sql: ${total_main_amount_chargeback} / ${total_main_amount_settled} ;;
+    sql: ${total_main_amount_chargeback_visa} / ${total_main_amount_settled_visa} ;;
     value_format_name: percent_2
   }
 
@@ -333,14 +333,14 @@ view: ctr_chargeback_orders {
   measure: percentage_ctr_cbc_trx {
     group_label: "* Cartebancaire *"
     type: number
-    sql: NULLIF(${total_chargebacks_transactions_previous2_month_cbc},0) / NULLIF(${total_authorised_transactions_previous2_month_cbc},0) ;;
+    sql: NULLIF(${total_chargebacks_transactions_cbc},0) / NULLIF(${total_authorised_transactions_cbc},0) ;;
     value_format_name: percent_2
   }
 
   measure: percentage_ctr_cbc_amount {
     group_label: "* Cartebancaire *"
     type: number
-    sql: NULLIF(${total_main_amount_chargeback_previous2_month_cbc},0) / NULLIF(${total_main_amount_authorised_previous2_month},0) ;;
+    sql: NULLIF(${total_main_amount_chargeback_cbc},0) / NULLIF(${total_main_amount_authorised},0) ;;
     value_format_name: percent_2
   }
 

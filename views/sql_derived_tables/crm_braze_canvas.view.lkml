@@ -1,36 +1,5 @@
 view: crm_braze_canvas {
-  derived_table: {
-    sql:
-      SELECT
-          email_sent_at_date            as email_sent_at
-        , country_iso                   as country
-        , canvas_name
-        , canvas_group_name             as canvas_variation_name
-        , canvas_step_name
-        , is_control_group              as in_control_group
-        , sum(number_of_emails_sent)    as total_emails_sent
-        , sum(number_of_emails_bounced) as total_emails_bounced
-        , sum(number_of_emails_delivered) as total_emails_delivered
-        , sum(number_of_unique_emails_opened) as num_unique_emails_opened
-        , sum(number_of_emails_opened) as total_emails_opened
-        , sum(number_of_unique_emails_clicked) as num_unique_emails_clicked
-        , sum(number_of_emails_clicked) as total_emails_clicked
-        , sum(number_of_unique_unsubscribed) as num_unique_unsubscribed
-        , sum(number_of_unique_users_orders) as num_unique_users_orders
-        , sum(number_of_orders) as total_orders
-        , sum(number_of_orders_with_vouchers) as total_orders_with_vouchers
-        , sum(number_of_vouchers_sent) as total_vouchers_sent
-        , sum(amt_discount_gross) as total_discount_amount
-        , sum(amt_gmv_gross) as total_gmv_gross
-        ,   CASE WHEN is_control_group = false THEN SUM(number_of_unique_emails_opened)
-                 WHEN is_control_group = true THEN SUM(number_of_emails_sent)
-                 END as unique_users_denominator
-        , CASE WHEN is_control_group = false THEN sum(number_of_orders)/nullif(sum(number_of_unique_emails_opened),0)
-               WHEN is_control_group = true THEN sum(number_of_orders)/nullif(sum(number_of_emails_sent),0) END as order_rate
- FROM `flink-data-prod.curated.braze_canvas`
- GROUP BY 1,2,3,4,5,6
-;;
-}
+  sql_table_name: `flink-data-prod.reporting.crm_braze_canvas_reporting` ;;
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     #           Dimensions
@@ -40,7 +9,7 @@ view: crm_braze_canvas {
     label: "Country"
     description: "The country code parsed from the email canvas name"
     type: string
-    sql: ${TABLE}.country ;;
+    sql: ${TABLE}.country_iso ;;
   }
 
   dimension: canvas_name {
@@ -68,7 +37,7 @@ view: crm_braze_canvas {
     label: "Control Group for Canvas"
     description: "Canvas group name defined in Braze"
     type: yesno
-    sql: ${TABLE}.in_control_group ;;
+    sql: ${TABLE}.is_control_group ;;
   }
 
   dimension: email_sent_at {
@@ -77,7 +46,7 @@ view: crm_braze_canvas {
     description: "The date, when the email was sent to the customer"
     type: date
     datatype: date
-    sql: ${TABLE}.email_sent_at ;;
+    sql: ${TABLE}.email_sent_at_date ;;
     # hidden: yes
   }
 
@@ -86,98 +55,98 @@ view: crm_braze_canvas {
   dimension: primary_key {
     primary_key: yes
     hidden: yes
-    sql: ${TABLE}.canvas_name,${TABLE}.canvas_variation_name,${TABLE}.canvas_step_name, ${TABLE}.country, ${TABLE}.email_sent_at) ;;
+    sql: ${TABLE}.canvas_name,${TABLE}.canvas_variation_name,${TABLE}.canvas_step_name, ${TABLE}.country_iso, ${TABLE}.email_sent_at_date) ;;
   }
 
   dimension: total_emails_sent {
     hidden: yes
     type: number
-    sql: coalesce(${TABLE}.total_emails_sent, 0) ;;
+    sql: coalesce(${TABLE}.number_of_total_emails_sent, 0) ;;
 
   }
 
   dimension: total_emails_bounced {
     hidden: yes
     type: number
-    sql: coalesce(${TABLE}.total_emails_bounced, 0) ;;
+    sql: coalesce(${TABLE}.number_of_total_emails_bounced, 0) ;;
   }
 
   dimension: total_emails_delivered {
     hidden: yes
     type: number
-    sql: coalesce(${TABLE}.total_emails_delivered, 0) ;;
+    sql: coalesce(${TABLE}.number_of_total_emails_delivered, 0) ;;
   }
 
   dimension: num_unique_emails_opened {
     hidden: yes
     type: number
-    sql: coalesce(${TABLE}.num_unique_emails_opened, 0) ;;
+    sql: coalesce(${TABLE}.number_of_unique_emails_opened, 0) ;;
   }
 
   dimension: total_emails_opened {
     hidden: yes
     type: number
-    sql: coalesce(${TABLE}.total_emails_opened, 0) ;;
+    sql: coalesce(${TABLE}.number_of_total_emails_opened, 0) ;;
   }
 
   dimension: num_unique_emails_clicked {
     hidden: yes
     type: number
-    sql: coalesce(${TABLE}.num_unique_emails_clicked, 0) ;;
+    sql: coalesce(${TABLE}.number_of_unique_emails_clicked, 0) ;;
   }
 
   dimension: total_emails_clicked {
     hidden: yes
     type: number
-    sql: coalesce(${TABLE}.total_emails_clicked, 0) ;;
+    sql: coalesce(${TABLE}.number_of_total_emails_clicked, 0) ;;
   }
 
   dimension: num_unique_unsubscribed {
     hidden: yes
     type: number
-    sql: coalesce(${TABLE}.num_unique_unsubscribed, 0) ;;
+    sql: coalesce(${TABLE}.number_of_unique_unsubscribed, 0) ;;
   }
 
   dimension: num_unique_users_orders {
     hidden: yes
     type: number
-    sql: coalesce(${TABLE}.num_unique_users_orders, 0) ;;
+    sql: coalesce(${TABLE}.number_of_unique_users_orders, 0) ;;
   }
 
   dimension: total_orders {
     hidden: yes
     type: number
-    sql: coalesce(${TABLE}.total_orders, 0) ;;
+    sql: coalesce(${TABLE}.number_of_total_orders, 0) ;;
   }
 
   dimension: total_orders_with_vouchers {
     hidden: yes
     type: number
-    sql: coalesce(${TABLE}.total_orders_with_vouchers, 0) ;;
+    sql: coalesce(${TABLE}.number_of_total_orders_with_vouchers, 0) ;;
   }
 
   dimension: total_vouchers_sent {
     hidden: yes
     type: number
-    sql: coalesce(${TABLE}.total_vouchers_sent, 0) ;;
+    sql: coalesce(${TABLE}.number_of_total_vouchers_sent, 0) ;;
   }
 
   dimension: total_discount_amount {
     hidden: yes
     type: number
-    sql: coalesce(${TABLE}.total_discount_amount, 0) ;;
+    sql: coalesce(${TABLE}.amt_total_discount, 0) ;;
   }
 
   dimension: total_gmv_gross {
     hidden: yes
     type: number
-    sql: coalesce(${TABLE}.total_gmv_gross, 0) ;;
+    sql: coalesce(${TABLE}.amt_total_gmv_gross, 0) ;;
   }
 
   dimension: unique_users_denominator {
     hidden: yes
     type: number
-    sql: coalesce(${TABLE}.unique_users_denominator, 0) ;;
+    sql: coalesce(${TABLE}.number_of_unique_users_denominator, 0) ;;
   }
 
   dimension: order_rate {

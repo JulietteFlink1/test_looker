@@ -338,7 +338,21 @@ view: inventory_daily {
             {% endif %}
         ;;
 
-    }
+  }
+
+  dimension: availability_distribution {
+
+    label:       "Availability"
+    group_label: "OOS-Dimensions"
+
+    type: number
+    sql: 1 - (${number_of_hours_oos} / nullif(${number_of_hours_open},0) )  ;;
+
+    value_format_name: percent_0
+
+
+  }
+
 
   dimension: number_of_outbound_orders {
     group_label: "Inventory Change"
