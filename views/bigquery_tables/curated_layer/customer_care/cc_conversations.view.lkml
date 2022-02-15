@@ -176,6 +176,12 @@ view: cc_conversations {
     sql: ${TABLE}.is_deflected_by_bot ;;
   }
 
+  dimension: is_closed {
+    group_label: "* Conversation Attributes *"
+    type: yesno
+    sql: ${TABLE}.is_closed ;;
+  }
+
   dimension: is_abandoned_by_contact {
     group_label: "* Conversation Attributes *"
     type: yesno
@@ -474,6 +480,15 @@ view: cc_conversations {
     label: "# Conversations"
   }
 
+
+  measure: number_of_closed_conversations {
+    group_label: "* Basic Counts *"
+    type: count_distinct
+    sql: ${conversation_uuid} ;;
+    label: "# Conversations"
+    filters: [is_closed: "yes"]
+  }
+
   measure: number_of_teams {
     group_label: "* Basic Counts *"
     type: count_distinct
@@ -501,6 +516,13 @@ view: cc_conversations {
     value_format: "0.0"
     sql: ${number_of_conversations}/${number_of_agents} ;;
     label: "# Conversations per Agent"
+  }
+
+  measure: share_of_closed_conversations{
+    group_label: "* Basic Counts *"
+    label: "% Closed Conversations"
+    type: number
+    sql: ${number_of_closed_conversations}/${number_of_conversations} ;;
   }
 
 
