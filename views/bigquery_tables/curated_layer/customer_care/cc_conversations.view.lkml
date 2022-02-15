@@ -176,6 +176,12 @@ view: cc_conversations {
     sql: ${TABLE}.is_deflected_by_bot ;;
   }
 
+  dimension: is_abandoned_by_contact {
+    group_label: "* Conversation Attributes *"
+    type: yesno
+    sql: ${TABLE}.is_abandoned_by_contact ;;
+  }
+
   dimension: is_refunded {
     group_label: "* Conversation Attributes *"
     type: yesno
@@ -577,17 +583,17 @@ view: cc_conversations {
   measure: avg_time_first_close_minutes {
     group_label: "* Conversation Statistics *"
     type: average
-    value_format: "0.0"
+    value_format: "hh:mm:ss"
     label: "AVG Time to First Close (Minutes)"
-    sql: ${time_to_first_close_minutes} ;;
+    sql: ${time_to_first_close_minutes}*60/86400.0 ;;
   }
 
   measure: avg_time_last_close_minutes {
     group_label: "* Conversation Statistics *"
     type: average
-    value_format: "0.0"
+    value_format: "hh:mm:ss"
     label: "AVG Time to Last Close (Minutes)"
-    sql: ${time_to_last_close_minutes} ;;
+    sql: ${time_to_last_close_minutes}*60/86400.0;;
   }
 
   measure: avg_time_to_agent_reply_seconds {
@@ -601,9 +607,9 @@ view: cc_conversations {
   measure: avg_time_to_agent_reply_minutes {
     group_label: "* Conversation Statistics *"
     type: average
-    value_format: "0.0"
+    value_format: "mm:ss"
     label: "AVG Time To First Admin Reply (Minutes)"
-    sql:  ${time_to_agent_reply_minutes} ;;
+    sql:  ${time_to_agent_reply_minutes}*60/86400.0 ;;
   }
 
   measure: avg_median_time_to_agent_reply_seconds {
@@ -638,6 +644,15 @@ view: cc_conversations {
     filters: [is_deflected_by_bot: "yes"]
   }
 
+  measure: number_of_abandoned_by_customer {
+    group_label: "* Basic Counts *"
+    type: count_distinct
+    value_format: "0.0"
+    label: "# Conversations Abandoned by Customer"
+    sql:  conversation_uuid ;;
+    filters: [is_abandoned_by_contact: "yes"]
+  }
+
   measure: number_of_reply_other_day {
     group_label: "* Conversation Statistics *"
     type: count_distinct
@@ -669,6 +684,14 @@ view: cc_conversations {
     value_format: "0.0%"
     label: "% Emails"
     sql:  ${number_of_email_conversations}/${number_of_conversations} ;;
+  }
+
+  measure: share_abandoned_conversations {
+    group_label: "* Conversation Statistics *"
+    type: number
+    value_format: "0.0%"
+    label: "% Abandoned Conversations"
+    sql:  ${number_of_abandoned_by_customer}/${number_of_conversations} ;;
   }
 
   measure: share_reply_on_another_day {
