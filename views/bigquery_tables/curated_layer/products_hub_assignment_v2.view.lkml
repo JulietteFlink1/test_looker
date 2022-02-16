@@ -98,20 +98,6 @@ view: products_hub_assignment_v2 {
     # group_label: "* Parameters & Dynamic Fields *"
 
     type: string
-    # sql:
-    #     case
-    #         when {% condition select_calculation_granularity %} 'sku'           {% endcondition %}
-    #         then ${sku}
-
-    #         when {% condition select_calculation_granularity %} 'replenishment' {% endcondition %}
-    #         then coalesce( ${leading_sku_replenishment_substitute_group} , ${sku} )
-
-    #         when {% condition select_calculation_granularity %} 'customer'      {% endcondition %}
-    #         then coalesce( ${leading_sku_ct_substitute_group} , ${sku} )
-
-    #         else null
-    #     end
-    # ;;
 
     sql:
 
@@ -127,6 +113,16 @@ view: products_hub_assignment_v2 {
 
     {% endif %}
     ;;
+
+
+    link: {
+      label: "Check Lexbizz Raw Data"
+      url: "https://goflink.cloud.looker.com/explore/flink_v3/lexbizz_core?qid=iXxvf4rwXuznRROJj8BSbD&origin_space=110&toggle=fil,vis&f[stock_item.sku]={{ value | url_encode }}"
+    }
+    link: {
+      label: "Check CommerceTools Raw Data"
+      url: "https://mc.europe-west1.gcp.commercetools.com/flink-production/products?page=1&searchMode=allFields&searchTerm={{ value | url_encode }}"
+    }
   }
 
   dimension: assingment_dynamic {
@@ -361,6 +357,12 @@ view: products_hub_assignment_v2 {
     label: "# unique SKUs"
     type: count_distinct
     sql: ${sku_dynamic} ;;
+  }
+
+  measure: cnt_unique_hubs {
+    label: "# unique Hubs"
+    type: count_distinct
+    sql: ${hub_code} ;;
   }
 
   measure: count {
