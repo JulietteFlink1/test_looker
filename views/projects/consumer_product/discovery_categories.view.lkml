@@ -21,7 +21,7 @@ view: discovery_categories {
 FROM `flink-data-prod.curated.app_session_events` e
 LEFT JOIN `flink-data-prod.flink_android_production.category_selected` ca ON ca.id = e.event_uuid
 LEFT JOIN `flink-data-prod.flink_ios_production.category_selected` ci ON ci.id = e.event_uuid
-WHERE DATE(e.event_timestamp) >= "2021-10-01"
+WHERE DATE(e.event_timestamp) >= "2022-02-01"
 )
 
 , category AS (
