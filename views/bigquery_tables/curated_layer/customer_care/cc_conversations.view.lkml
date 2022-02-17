@@ -1,5 +1,5 @@
 view: cc_conversations {
-  sql_table_name: `flink-data-dev.curated.cc_conversations`
+  sql_table_name: `flink-data-prod.curated.cc_conversations`
     ;;
 
   dimension: agent_email {
@@ -174,6 +174,18 @@ view: cc_conversations {
     group_label: "* Conversation Attributes *"
     type: yesno
     sql: ${TABLE}.is_deflected_by_bot ;;
+  }
+
+  dimension: is_closed {
+    group_label: "* Conversation Attributes *"
+    type: yesno
+    sql: ${TABLE}.is_closed ;;
+  }
+
+  dimension: is_abandoned_by_contact {
+    group_label: "* Conversation Attributes *"
+    type: yesno
+    sql: ${TABLE}.is_abandoned_by_contact ;;
   }
 
   dimension: is_refunded {
@@ -362,6 +374,7 @@ view: cc_conversations {
   dimension: number_of_reopens {
     group_label: "* Conversation Attributes *"
     type: number
+    hidden: yes
     sql: ${TABLE}.number_of_reopens ;;
   }
 
@@ -468,6 +481,23 @@ view: cc_conversations {
     label: "# Conversations"
   }
 
+
+  measure: number_of_closed_conversations {
+    group_label: "* Basic Counts *"
+    type: count_distinct
+    sql: ${conversation_uuid} ;;
+    label: "# Conversations"
+    filters: [is_closed: "yes"]
+  }
+
+  measure: number_of_non_deflected_conversations {
+    group_label: "* Basic Counts *"
+    type: count_distinct
+    sql: ${conversation_uuid} ;;
+    label: "# Conversations (Non Deflected)"
+    filters: [is_deflected_by_bot: "no"]
+  }
+
   measure: number_of_teams {
     group_label: "* Basic Counts *"
     type: count_distinct
@@ -493,8 +523,15 @@ view: cc_conversations {
     group_label: "* Basic Counts *"
     type: number
     value_format: "0.0"
-    sql: ${number_of_conversations}/${number_of_agents} ;;
+    sql: ${number_of_non_deflected_conversations}/${number_of_agents} ;;
     label: "# Conversations per Agent"
+  }
+
+  measure: share_of_closed_conversations{
+    group_label: "* Basic Counts *"
+    label: "% Closed Conversations"
+    type: number
+    sql: ${number_of_closed_conversations}/${number_of_conversations} ;;
   }
 
 
@@ -574,42 +611,72 @@ view: cc_conversations {
     label: "AVG Rating"
   }
 
+  measure: avg_csat {
+    group_label: "* Conversation Statistics *"
+    type: average
+    value_format: "0%"
+    sql: ${rating}/5 ;;
+    label: "AVG CSAT"
+  }
+
   measure: avg_time_first_close_minutes {
     group_label: "* Conversation Statistics *"
     type: average
-    value_format: "0.0"
+    value_format: "hh:mm:ss"
     label: "AVG Time to First Close (Minutes)"
-    sql: ${time_to_first_close_minutes} ;;
+    sql: ${time_to_first_close_minutes}*60/86400.0 ;;
   }
 
   measure: avg_time_last_close_minutes {
     group_label: "* Conversation Statistics *"
     type: average
-    value_format: "0.0"
-    label: "AVG Time to Last Close (Minutes)"
-    sql: ${time_to_last_close_minutes} ;;
+    value_format: "hh:mm:ss"
+    description: "AVG time to last close (minutes)"
+    label: "AVG Closing Time (Minutes)"
+    sql: ${time_to_last_close_minutes}*60/86400.0;;
+  }
+
+  measure: median_time_last_close_minutes {
+    group_label: "* Conversation Statistics *"
+    type: median
+    value_format: "hh:mm:ss"
+    description: "Median time to last close (minutes)"
+    label: "Median Closing Time (Minutes)"
+    sql: ${time_to_last_close_minutes}*60/86400.0;;
   }
 
   measure: avg_time_to_agent_reply_seconds {
     group_label: "* Conversation Statistics *"
     type: average
-    value_format: "0.0"
-    label: "AVG Time To First Admin Reply (Seconds)"
+    hidden: yes
+    value_format: "0"
+    label: "AVG Response Time (Seconds)"
     sql:  ${time_to_agent_reply_seconds} ;;
   }
 
   measure: avg_time_to_agent_reply_minutes {
     group_label: "* Conversation Statistics *"
     type: average
-    value_format: "0.0"
-    label: "AVG Time To First Admin Reply (Minutes)"
-    sql:  ${time_to_agent_reply_minutes} ;;
+    value_format: "mm:ss"
+    label: "AVG First Response Time (Minutes)"
+    description: "AVG duration until first admin reply. Subtracts out of business hours."
+    sql:  ${time_to_agent_reply_minutes}*60/86400.0 ;;
+  }
+
+  measure: median_time_to_agent_reply_minutes {
+    group_label: "* Conversation Statistics *"
+    type: median
+    value_format: "mm:ss"
+    label: "Median First Response Time (Minutes)"
+    description: "Median Duration until first admin reply. Subtracts out of business hours."
+    sql:  ${time_to_agent_reply_minutes}*60/86400.0 ;;
   }
 
   measure: avg_median_time_to_agent_reply_seconds {
     group_label: "* Conversation Statistics *"
     type: average
-    label: "AVG Median Time To First Admin Reply (Seconds)"
+    hidden: yes
+    label: "AVG Median Response Time (Seconds)"
     sql:  ${median_time_to_reply_seconds} ;;
   }
 
@@ -617,7 +684,8 @@ view: cc_conversations {
     group_label: "* Conversation Statistics *"
     type: average
     value_format: "0.0"
-    label: "AVG Median  Time To First Admin Reply (Minutes)"
+    description: "Median based on all admin replies after a contact reply. Subtracts out of business hours. In seconds."
+    label: "Median Response Time (Minutes)"
     sql:  ${median_time_to_reply_minutes} ;;
   }
 
@@ -629,6 +697,14 @@ view: cc_conversations {
     sql:  ${number_of_reopens} ;;
   }
 
+  measure: sum_number_of_reopens {
+    group_label: "* Conversation Statistics *"
+    type: sum
+    value_format: "0"
+    label: "# Reopens"
+    sql:  ${number_of_reopens} ;;
+  }
+
   measure: number_of_deflected_by_bot {
     group_label: "* Basic Counts *"
     type: count_distinct
@@ -636,6 +712,15 @@ view: cc_conversations {
     label: "# Conversations Deflected by Bot"
     sql:  conversation_uuid ;;
     filters: [is_deflected_by_bot: "yes"]
+  }
+
+  measure: number_of_abandoned_by_customer {
+    group_label: "* Basic Counts *"
+    type: count_distinct
+    value_format: "0.0"
+    label: "# Conversations Abandoned by Customer"
+    sql:  conversation_uuid ;;
+    filters: [is_abandoned_by_contact: "yes"]
   }
 
   measure: number_of_reply_other_day {
@@ -669,6 +754,14 @@ view: cc_conversations {
     value_format: "0.0%"
     label: "% Emails"
     sql:  ${number_of_email_conversations}/${number_of_conversations} ;;
+  }
+
+  measure: share_abandoned_conversations {
+    group_label: "* Conversation Statistics *"
+    type: number
+    value_format: "0.0%"
+    label: "% Abandoned Conversations"
+    sql:  ${number_of_abandoned_by_customer}/${number_of_conversations} ;;
   }
 
   measure: share_reply_on_another_day {
