@@ -611,6 +611,14 @@ view: cc_conversations {
     label: "AVG Rating"
   }
 
+  measure: avg_csat {
+    group_label: "* Conversation Statistics *"
+    type: average
+    value_format: "0%"
+    sql: ${rating}/5 ;;
+    label: "AVG CSAT"
+  }
+
   measure: avg_time_first_close_minutes {
     group_label: "* Conversation Statistics *"
     type: average
@@ -625,6 +633,15 @@ view: cc_conversations {
     value_format: "hh:mm:ss"
     description: "AVG time to last close (minutes)"
     label: "AVG Closing Time (Minutes)"
+    sql: ${time_to_last_close_minutes}*60/86400.0;;
+  }
+
+  measure: median_time_last_close_minutes {
+    group_label: "* Conversation Statistics *"
+    type: median
+    value_format: "hh:mm:ss"
+    description: "Median time to last close (minutes)"
+    label: "Median Closing Time (Minutes)"
     sql: ${time_to_last_close_minutes}*60/86400.0;;
   }
 
