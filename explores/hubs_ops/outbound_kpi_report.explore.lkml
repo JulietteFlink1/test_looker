@@ -35,5 +35,22 @@ explore: inbound_outbound_kpi_report {
     ;;
   }
 
+  join: erp_product_hub_vendor_assignment_v2 {
+
+    type: left_outer
+    relationship: one_to_many
+
+    view_label: "* ERP Master-Data *"
+
+    sql_on:
+
+      ${inventory_changes_daily.inventory_change_date} =  ${erp_product_hub_vendor_assignment_v2.report_date} and
+      ${inventory_changes_daily.hub_code}              =  ${erp_product_hub_vendor_assignment_v2.hub_code}    and
+      ${inventory_changes_daily.sku}                   =  ${erp_product_hub_vendor_assignment_v2.sku}
+
+    ;;
+
+  }
+
 
 }
