@@ -13,8 +13,9 @@ view: cs_reporting {
             c.*,
             TRIM(REGEXP_EXTRACT(contact_reason, r'(.+?) -')) AS contact_reason_l1,
             conversation_created_timestamp AS creation_timestamp,
-            NULL AS order_timestamp
-        FROM flink-data-dev.sandbox.cs_conversations c
+            NULL AS order_timestamp,
+            NULL AS order_number
+        FROM flink-data-dev.curated.cc_conversations c
 
         UNION ALL
 
@@ -22,17 +23,17 @@ view: cs_reporting {
           NULL, NULL, NULL, NULL, NULL,
           NULL, NULL, NULL, NULL, NULL,
           NULL, NULL, NULL, NULL, NULL,
-          NULL, NULL, country_iso,
-          NULL, NULL,
           NULL, NULL, NULL, NULL, NULL,
           NULL, NULL, NULL, NULL, NULL,
           NULL, NULL, NULL, NULL, NULL,
-          LOWER(order_number) as order_number,
-          NULL, NULL, NULL,NULL,
-          NULL, NULL,NULL, NULL,NULL,
+          NULL, NULL, NULL, NULL, NULL,
+          NULL, NULL, NULL, country_iso, NULL,
+          NULL, NULL, NULL, NULL, NULL,
+          NULL, NULL, NULL, NULL, NULL,
           NULL AS contact_reason_l1,
           order_timestamp AS creation_timestamp,
-          order_timestamp
+          order_timestamp,
+          order_number
         FROM flink-data-prod.curated.orders
       )
       SELECT *
@@ -104,7 +105,7 @@ view: cs_reporting {
     description: "cnt conversations in which a CC agent participated"
     type: count_distinct
     sql:  ${conversation_uuid} ;;
-    filters: [deflected_by_bot: "no", agent_assignee_id: "NOT NULL"]
+    filters: [is_deflected_by_bot: "no", agent_id: "NOT NULL"]
   }
 
   measure: perc_agent_conversations {
@@ -155,19 +156,19 @@ view: cs_reporting {
   #   value_format_name: percent_1
   # }
 
-  measure: cnt_deflected_by_bot {
+  measure: cnt_is_deflected_by_bot {
     label: "# unique conversations deflected by bot"
     description: "cnt conversations deflected by bot"
     type: count_distinct
     sql: ${conversation_uuid} ;;
-    filters: [deflected_by_bot: "yes"]
+    filters: [is_deflected_by_bot: "yes"]
   }
 
   measure: perc_deflected_by_bot {
     label: "% conversations deflected by bot"
     description: "percentage of conversations that were deflected by bot"
     type: number
-    sql: SAFE_DIVIDE(${cnt_deflected_by_bot},${cnt_conversations}) ;;
+    sql: SAFE_DIVIDE(${cnt_is_deflected_by_bot},${cnt_conversations}) ;;
     value_format_name: percent_1
   }
 
@@ -201,7 +202,7 @@ view: cs_reporting {
 
   dimension: conversation_type {
     type: string
-    sql: ${TABLE}.conversation_type ;;
+    sql: ${TABLE}.source_type ;;
   }
 
   dimension_group: conversation_updated_timestamp {
@@ -232,9 +233,9 @@ view: cs_reporting {
     sql: ${TABLE}.contact_reason_l3 ;;
   }
 
-  dimension: agent_assignee_id {
+  dimension: agent_id {
     type: number
-    sql: ${TABLE}.agent_assignee_id ;;
+    sql: ${TABLE}.agent_id ;;
   }
 
   dimension: count_assignments {
@@ -332,9 +333,9 @@ view: cs_reporting {
     sql: ${TABLE}.last_contact_updated_timestamp ;;
   }
 
-  dimension: deflected_by_bot {
+  dimension: is_deflected_by_bot {
     type: yesno
-    sql: ${TABLE}.deflected_by_bot ;;
+    sql: ${TABLE}.is_deflected_by_bot ;;
   }
 
   dimension: name {
@@ -440,7 +441,7 @@ view: cs_reporting {
       conv_ingestion_timestamp_time,
       contact_id,
       last_contact_updated_timestamp_time,
-      deflected_by_bot,
+      is_deflected_by_bot,
       name,
       user_id,
       contact_created_timestamp_time,
