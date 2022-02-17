@@ -185,7 +185,7 @@ view: shyftplan_riders_pickers_hours_clean {
   }
 
   measure: wh_ops_hours {
-    label: "Sum of Warehouse Ops Hours (Inventory Associate)"
+    label: "Sum of Inventory Associate Hours (Warehouse Ops)"
     type: sum
     sql:${number_of_worked_minutes}/60;;
     filters: [position_name: "wh, wh operations, inventory"]
@@ -194,7 +194,7 @@ view: shyftplan_riders_pickers_hours_clean {
   }
 
   measure: hub_staff_hours {
-    label: "Sum of Hub Staff Hours (Warehouse Ops and Picker)"
+    label: "Sum of Hub Staff Hours (Inventory Associate and Picker)"
     type: number
     sql:${picker_hours}+${wh_ops_hours};;
     value_format_name: decimal_1
@@ -276,14 +276,14 @@ view: shyftplan_riders_pickers_hours_clean {
   measure: hub_staff_utr {
     label: "AVG Hub Staff UTR"
     type: number
-    description: "# Orders from opened hub / # Worked Hub Staff (Warehouse Ops and Picker) Hours"
+    description: "# Orders from opened hub / # Worked Hub Staff (Inventory Associate and Picker) Hours"
     sql: ${adjusted_orders_riders} / NULLIF(${hub_staff_hours}, 0);;
     value_format_name: decimal_2
     group_label: "UTR"
   }
 
   measure: wh_ops_utr {
-    label: "AVG Warehouse Ops UTR"
+    label: "AVG Inventory Associate UTR"
     type: number
     description: "# Orders from opened hub / # Worked Warehouse Ops Hours"
     sql: ${adjusted_orders_riders} / NULLIF(${wh_ops_hours}, 0);;
