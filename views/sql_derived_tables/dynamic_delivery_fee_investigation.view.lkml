@@ -404,6 +404,7 @@ view: dynamic_delivery_fee_investigation {
 
   dimension: anonymous_id {
     type: string
+    primary_key: yes
     sql: ${TABLE}.anonymous_id ;;
   }
 
