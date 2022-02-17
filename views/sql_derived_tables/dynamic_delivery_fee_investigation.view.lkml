@@ -74,9 +74,8 @@ view: dynamic_delivery_fee_investigation {
       , DATE(original_timestamp) as date_
       , row_number() OVER(PARTITION BY anonymous_id, DATE(original_timestamp) , hub_slug ORDER BY original_timestamp ASC) as event_rank_asc
       FROM `flink-data-prod.flink_ios_production.cart_viewed`
-      WHERE DATE(_PARTITIONTIME) BETWEEN "2022-01-25" AND '2022-02-15'
+      WHERE DATE(_PARTITIONTIME) BETWEEN "2022-01-18" AND '2022-02-15'
           AND sub_total IS NOT NULL and LEFT(hub_slug,2) != 'at'
-      --and anonymous_id = '06A55A77-8D77-4324-83C4-97D7A5A29CD1'
        )
 
       , first_cart_viewed_ios as (
@@ -118,7 +117,7 @@ view: dynamic_delivery_fee_investigation {
           , left(hub_slug , 2 ) as country_iso
           , row_number() OVER(PARTITION BY anonymous_id, DATE(timestamp) , hub_slug ORDER BY original_timestamp ASC) as checkout_ranked
        FROM `flink-data-prod.flink_ios_production.checkout_started`
-       WHERE DATE(_PARTITIONTIME) BETWEEN "2022-01-25" AND '2022-02-15'
+       WHERE DATE(_PARTITIONTIME) BETWEEN "2022-01-18" AND '2022-02-15'
       )
 
       , checkout_started_ios as (
@@ -139,8 +138,7 @@ view: dynamic_delivery_fee_investigation {
           , left(hub_slug , 2 ) as country_iso
           , row_number() OVER(PARTITION BY anonymous_id , order_number, hub_slug ORDER BY original_timestamp ASC) as order_rank
       FROM `flink-data-prod.flink_ios_production.order_placed`
-      WHERE DATE(_PARTITIONTIME) BETWEEN "2022-01-25" AND '2022-02-15'
-      and anonymous_id = '02088E93-EA01-4555-8897-B2C131E58421'
+      WHERE DATE(_PARTITIONTIME) BETWEEN "2022-01-18" AND '2022-02-15'
       )
 
 
@@ -256,9 +254,8 @@ view: dynamic_delivery_fee_investigation {
       , DATE(original_timestamp) as date_
       , row_number() OVER(PARTITION BY anonymous_id, DATE(original_timestamp) , hub_slug ORDER BY original_timestamp ASC) as event_rank_asc
       FROM `flink-data-prod.flink_android_production.cart_viewed`
-      WHERE DATE(_PARTITIONTIME) BETWEEN "2022-01-25" AND '2022-02-15'
+      WHERE DATE(_PARTITIONTIME) BETWEEN "2022-01-18" AND '2022-02-15'
           AND subtotal IS NOT NULL and LEFT(hub_slug,2) != 'at'
-          --and anonymous_id = '04c52131-04bc-444c-bfbe-227fcaa137f0'
        )
 
       , first_cart_viewed_android as (
@@ -302,8 +299,7 @@ view: dynamic_delivery_fee_investigation {
           , left(hub_slug , 2 ) as country_iso
           , row_number() OVER(PARTITION BY anonymous_id , DATE(timestamp), hub_slug ORDER BY original_timestamp ASC) as checkout_ranked
        FROM `flink-data-prod.flink_android_production.checkout_started`
-       WHERE DATE(_PARTITIONTIME) BETWEEN "2022-01-25" AND '2022-02-15'
-       --and anonymous_id = '04c52131-04bc-444c-bfbe-227fcaa137f0'
+       WHERE DATE(_PARTITIONTIME) BETWEEN "2022-01-18" AND '2022-02-15'
       )
 
       , checkout_started_android as (
@@ -323,7 +319,7 @@ view: dynamic_delivery_fee_investigation {
           , left(hub_slug , 2 ) as country_iso
           , row_number() OVER(PARTITION BY anonymous_id , order_number , hub_slug ORDER BY original_timestamp ASC) as order_rank
       FROM `flink-data-prod.flink_android_production.order_placed`
-      WHERE DATE(_PARTITIONTIME) BETWEEN "2022-01-25" AND '2022-02-15'
+      WHERE DATE(_PARTITIONTIME) BETWEEN "2022-01-18" AND '2022-02-15'
 
       )
 
