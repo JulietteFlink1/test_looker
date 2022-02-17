@@ -439,12 +439,12 @@ view: dynamic_delivery_fee_investigation {
     sql: ${TABLE}.ddf_text_first_hit ;;
   }
 
-  measure: delivery_fee_first_hit {
+  dimension: delivery_fee_first_hit {
     type: number
     sql: ${TABLE}.delivery_fee_first_hit ;;
   }
 
-  measure: sub_total_first_hit {
+  dimension: sub_total_first_hit {
     type: number
     sql: ${TABLE}.sub_total_first_hit ;;
   }
@@ -455,16 +455,16 @@ view: dynamic_delivery_fee_investigation {
   }
 
   measure: first_hit {
-    type: number
+    type: sum
     sql: ${TABLE}.first_hit ;;
   }
 
-  measure: ddf_value_last {
+  dimension: ddf_value_last {
     type: number
     sql: ${TABLE}.ddf_value_last ;;
   }
 
-  measure: sub_total_last {
+  dimension: sub_total_last {
     type: number
     sql: ${TABLE}.sub_total_last ;;
   }
@@ -474,37 +474,37 @@ view: dynamic_delivery_fee_investigation {
     sql: ${TABLE}.last_hit ;;
   }
 
-  measure: difference_basket_value_first_to_last {
+  dimension: difference_basket_value_first_to_last {
     type: number
     sql: ${TABLE}.difference_basket_value_first_to_last ;;
   }
 
   measure: checkout_started {
-    type: number
+    type: sum
     sql: ${TABLE}.checkout_started ;;
   }
 
   measure: order_placed {
-    type: number
+    type: sum
     sql: ${TABLE}.order_placed ;;
   }
 
-  measure: delivery_fee {
+  dimension: delivery_fee {
     type: number
     sql: ${TABLE}.delivery_fee ;;
   }
 
-  measure: order_revenue {
+  dimension: order_revenue {
     type: number
     sql: ${TABLE}.order_revenue ;;
   }
 
-  measure: voucher_value {
+  dimension: voucher_value {
     type: number
     sql: ${TABLE}.voucher_value ;;
   }
 
-  measure: order_value {
+  dimension: order_value {
     type: number
     sql: ${TABLE}.order_value ;;
   }
