@@ -374,6 +374,7 @@ view: cc_conversations {
   dimension: number_of_reopens {
     group_label: "* Conversation Attributes *"
     type: number
+    hidden: yes
     sql: ${TABLE}.number_of_reopens ;;
   }
 
@@ -489,6 +490,14 @@ view: cc_conversations {
     filters: [is_closed: "yes"]
   }
 
+  measure: number_of_non_deflected_conversations {
+    group_label: "* Basic Counts *"
+    type: count_distinct
+    sql: ${conversation_uuid} ;;
+    label: "# Conversations (Non Deflected)"
+    filters: [is_deflected_by_bot: "no"]
+  }
+
   measure: number_of_teams {
     group_label: "* Basic Counts *"
     type: count_distinct
@@ -514,7 +523,7 @@ view: cc_conversations {
     group_label: "* Basic Counts *"
     type: number
     value_format: "0.0"
-    sql: ${number_of_conversations}/${number_of_agents} ;;
+    sql: ${number_of_non_deflected_conversations}/${number_of_agents} ;;
     label: "# Conversations per Agent"
   }
 
@@ -602,6 +611,14 @@ view: cc_conversations {
     label: "AVG Rating"
   }
 
+  measure: avg_csat {
+    group_label: "* Conversation Statistics *"
+    type: average
+    value_format: "0%"
+    sql: ${rating}/5 ;;
+    label: "AVG CSAT"
+  }
+
   measure: avg_time_first_close_minutes {
     group_label: "* Conversation Statistics *"
     type: average
@@ -614,15 +631,26 @@ view: cc_conversations {
     group_label: "* Conversation Statistics *"
     type: average
     value_format: "hh:mm:ss"
-    label: "AVG Time to Last Close (Minutes)"
+    description: "AVG time to last close (minutes)"
+    label: "AVG Closing Time (Minutes)"
+    sql: ${time_to_last_close_minutes}*60/86400.0;;
+  }
+
+  measure: median_time_last_close_minutes {
+    group_label: "* Conversation Statistics *"
+    type: median
+    value_format: "hh:mm:ss"
+    description: "Median time to last close (minutes)"
+    label: "Median Closing Time (Minutes)"
     sql: ${time_to_last_close_minutes}*60/86400.0;;
   }
 
   measure: avg_time_to_agent_reply_seconds {
     group_label: "* Conversation Statistics *"
     type: average
-    value_format: "0.0"
-    label: "AVG Time To First Admin Reply (Seconds)"
+    hidden: yes
+    value_format: "0"
+    label: "AVG Response Time (Seconds)"
     sql:  ${time_to_agent_reply_seconds} ;;
   }
 
@@ -630,14 +658,25 @@ view: cc_conversations {
     group_label: "* Conversation Statistics *"
     type: average
     value_format: "mm:ss"
-    label: "AVG Time To First Admin Reply (Minutes)"
+    label: "AVG First Response Time (Minutes)"
+    description: "AVG duration until first admin reply. Subtracts out of business hours."
+    sql:  ${time_to_agent_reply_minutes}*60/86400.0 ;;
+  }
+
+  measure: median_time_to_agent_reply_minutes {
+    group_label: "* Conversation Statistics *"
+    type: median
+    value_format: "mm:ss"
+    label: "Median First Response Time (Minutes)"
+    description: "Median Duration until first admin reply. Subtracts out of business hours."
     sql:  ${time_to_agent_reply_minutes}*60/86400.0 ;;
   }
 
   measure: avg_median_time_to_agent_reply_seconds {
     group_label: "* Conversation Statistics *"
     type: average
-    label: "AVG Median Time To First Admin Reply (Seconds)"
+    hidden: yes
+    label: "AVG Median Response Time (Seconds)"
     sql:  ${median_time_to_reply_seconds} ;;
   }
 
@@ -645,7 +684,8 @@ view: cc_conversations {
     group_label: "* Conversation Statistics *"
     type: average
     value_format: "0.0"
-    label: "AVG Median  Time To First Admin Reply (Minutes)"
+    description: "Median based on all admin replies after a contact reply. Subtracts out of business hours. In seconds."
+    label: "Median Response Time (Minutes)"
     sql:  ${median_time_to_reply_minutes} ;;
   }
 
@@ -654,6 +694,14 @@ view: cc_conversations {
     type: average
     value_format: "0.0"
     label: "AVG # Reopens"
+    sql:  ${number_of_reopens} ;;
+  }
+
+  measure: sum_number_of_reopens {
+    group_label: "* Conversation Statistics *"
+    type: sum
+    value_format: "0"
+    label: "# Reopens"
     sql:  ${number_of_reopens} ;;
   }
 
