@@ -1,5 +1,5 @@
 view: cc_conversations {
-  sql_table_name: `flink-data-dev.curated.cc_conversations`
+  sql_table_name: `flink-data-prod.curated.cc_conversations`
     ;;
 
   dimension: agent_email {
