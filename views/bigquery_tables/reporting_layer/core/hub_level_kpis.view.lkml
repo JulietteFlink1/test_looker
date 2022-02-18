@@ -127,6 +127,110 @@ view: hub_level_kpis {
   }
 
 
+##################################################################################
+#                   DATA-1680
+##################################################################################
+  dimension: hub_tier {
+    label: "Hub Tier"
+    type: number
+    sql: ${TABLE}.hub_tier ;;
+  }
+# ---------------------------------------------------------------------------------
+  dimension: avg_daily_orders_previous_day {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.avg_daily_orders_previous_day ;;
+  }
+
+  dimension: avg_daily_orders_previous_month {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.avg_daily_orders_previous_month ;;
+  }
+
+  dimension: avg_daily_orders_previous_week {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.avg_daily_orders_previous_week ;;
+  }
+
+  dimension: order_bracket {
+    label: "Daily Order Bracket"
+    type: tier
+    tiers: [0,150,300,450,600]
+    style: integer
+    sql:
+        {% if date_granularity._parameter_value == 'Day' %}
+        ${avg_daily_orders_previous_day}
+        {% elsif date_granularity._parameter_value == 'Week' %}
+        ${avg_daily_orders_previous_week}
+        {% elsif date_granularity._parameter_value == 'Month' %}
+        ${avg_daily_orders_previous_month}
+        {% endif %} ;;
+  }
+# ---------------------------------------------------------------------------------
+  dimension: is_orders_target_achieved_day {
+    hidden: yes
+    type: yesno
+    sql: ${TABLE}.is_orders_target_achieved_day ;;
+  }
+
+  dimension: is_orders_target_achieved_month {
+    hidden: yes
+    type: yesno
+    sql: ${TABLE}.is_orders_target_achieved_month ;;
+  }
+
+  dimension: is_orders_target_achieved_week {
+    hidden: yes
+    type: yesno
+    sql: ${TABLE}.is_orders_target_achieved_week ;;
+  }
+
+  dimension: is_orders_target_achieved {
+    label: "Is Orders Target Achieved"
+    type: yesno
+    sql:
+        {% if date_granularity._parameter_value == 'Day' %}
+        ${is_orders_target_achieved_day}
+        {% elsif date_granularity._parameter_value == 'Week' %}
+        ${is_orders_target_achieved_week}
+        {% elsif date_granularity._parameter_value == 'Month' %}
+        ${is_orders_target_achieved_month}
+        {% endif %} ;;
+  }
+# ---------------------------------------------------------------------------------
+  dimension: is_rider_utr_target_achieved_day {
+    hidden: yes
+    type: yesno
+    sql: ${TABLE}.is_rider_utr_target_achieved_day ;;
+  }
+
+  dimension: is_rider_utr_target_achieved_month {
+    hidden: yes
+    type: yesno
+    sql: ${TABLE}.is_rider_utr_target_achieved_month ;;
+  }
+
+  dimension: is_rider_utr_target_achieved_week {
+    hidden: yes
+    type: yesno
+    sql: ${TABLE}.is_rider_utr_target_achieved_week ;;
+  }
+
+  dimension: is_rider_utr_target_achieved {
+    label: "Is Rider UTR Target Achieved"
+    type: yesno
+    sql:
+        {% if date_granularity._parameter_value == 'Day' %}
+        ${is_rider_utr_target_achieved_day}
+        {% elsif date_granularity._parameter_value == 'Week' %}
+        ${is_rider_utr_target_achieved_week}
+        {% elsif date_granularity._parameter_value == 'Month' %}
+        ${is_rider_utr_target_achieved_month}
+        {% endif %} ;;
+  }
+
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Parameters     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1078,4 +1182,76 @@ view: hub_level_kpis {
     type: number
     value_format_name: decimal_0
   }
+
+
+
+##################################################################################
+#                   DATA-1680
+##################################################################################
+
+  measure: sum_orders_target {
+    group_label: ">> Order KPIs"
+    label: "# Orders Target"
+    type: sum
+    sql: ${TABLE}.daily_orders_target ;;
+    value_format_name: decimal_0
+  }
+
+  measure: cnt_unique_hubs {
+    group_label: ">> Ops KPIs"
+    label: "# Hubs"
+    type: count_distinct
+    sql:  ${hub_code};;
+  }
+
+  measure: cnt_hubs_above_orders_target {
+    hidden: yes
+    type: count_distinct
+    sql:
+      {% if date_granularity._parameter_value == 'Day' %}
+      if(is_orders_target_achieved_day=true,${hub_code},null)
+      {% elsif date_granularity._parameter_value == 'Week' %}
+      if(is_orders_target_achieved_week=true,${hub_code},null)
+      {% elsif date_granularity._parameter_value == 'Month' %}
+      if(is_orders_target_achieved_month=true,${hub_code},null)
+      {% endif %} ;;
+  }
+
+  measure: pct_hubs_above_orders_target {
+    group_label: ">> Ops KPIs"
+    label: "% Hubs Above Orders Target"
+    type: number
+    sql: ${cnt_hubs_above_orders_target} / ${cnt_unique_hubs} ;;
+    value_format_name: percent_1
+  }
+
+  measure: cnt_hubs_above_rider_utr_target {
+    hidden: yes
+    type: count_distinct
+    sql:
+      {% if date_granularity._parameter_value == 'Day' %}
+      if(is_rider_utr_target_achieved_day=true,${hub_code},null)
+      {% elsif date_granularity._parameter_value == 'Week' %}
+      if(is_rider_utr_target_achieved_week=true,${hub_code},null)
+      {% elsif date_granularity._parameter_value == 'Month' %}
+      if(is_rider_utr_target_achieved_month=true,${hub_code},null)
+      {% endif %} ;;
+  }
+
+  measure: pct_hubs_above_rider_utr_target {
+    group_label: ">> Ops KPIs"
+    label: "% Hubs Above Rider UTR Target"
+    type: number
+    sql: ${cnt_hubs_above_rider_utr_target} / ${cnt_unique_hubs} ;;
+    value_format_name: percent_1
+  }
+
+  measure: rider_utr_target {
+    group_label: ">> UTR KPIs"
+    label: "Avg Rider UTR Target"
+    type: average
+    sql: ${TABLE}.rider_utr_target ;;
+    value_format_name: decimal_2
+  }
+
 }
