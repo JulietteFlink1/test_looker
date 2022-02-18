@@ -182,7 +182,7 @@ view: cc_contactrate {
   #   value_format_name: percent_1
   # }
 
-  measure: cnt_is_deflected_by_bot {
+  measure: cnt_deflected_by_bot {
     label: "# unique conversations deflected by bot"
     description: "cnt conversations deflected by bot"
     type: count_distinct
@@ -194,7 +194,7 @@ view: cc_contactrate {
     label: "% conversations deflected by bot"
     description: "percentage of conversations that were deflected by bot"
     type: number
-    sql: SAFE_DIVIDE(${cnt_is_deflected_by_bot},${cnt_conversations}) ;;
+    sql: SAFE_DIVIDE(${cnt_deflected_by_bot},${cnt_conversations}) ;;
     value_format_name: percent_1
   }
 
