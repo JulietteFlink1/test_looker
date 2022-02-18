@@ -46,11 +46,30 @@ view: sms_verification_analysis {
     sql: ${TABLE}.country_hub ;;
   }
 
+  # dimension: user_flow {
+  #   description: "User Flow: New registration vs Existing Loggedin/out"
+  #   type: string
+  #   sql: ${TABLE}.user_type_flow ;;
+  # }
+
   dimension: user_flow {
-    description: "User Flow: New registration vs Existing Loggedin/out"
-    type: string
-    sql: ${TABLE}.user_type_flow ;;
+    description: "User Flow: New registration vs Existing Loggedin/out"    type: string
+    case: {
+      when: {
+        sql: ${TABLE}.user_type_flow = "is_registration_flow" ;;
+        label: "New | Registration"
+      }
+      when: {
+        sql: ${TABLE}.user_type_flow = "is_login_flow" ;;
+        label: "Existing | Logged Out"
+      }
+      when: {
+        sql: ${TABLE}.user_type_flow = "is_verification_only" ;;
+        label: "Existing | Logged In"
+      }
+    }
   }
+
 
 ###### Measures
 

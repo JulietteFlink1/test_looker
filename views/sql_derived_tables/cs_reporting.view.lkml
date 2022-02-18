@@ -10,12 +10,13 @@ view: cs_reporting {
     sql:
       WITH cs_tb AS (
         SELECT
-            c.*,
+            c.* EXCEPT(platform),
+            LOWER(platform) AS platform,
             TRIM(REGEXP_EXTRACT(contact_reason, r'(.+?) -')) AS contact_reason_l1,
             conversation_created_timestamp AS creation_timestamp,
             NULL AS order_timestamp,
             NULL AS order_number
-        FROM flink-data-dev.curated.cc_conversations c
+        FROM flink-data-prod.curated.cc_conversations c
 
         UNION ALL
 
@@ -29,7 +30,8 @@ view: cs_reporting {
           NULL, NULL, NULL, NULL, NULL,
           NULL, NULL, NULL, country_iso, NULL,
           NULL, NULL, NULL, NULL, NULL,
-          NULL, NULL, NULL, NULL, NULL,
+          NULL, NULL, NULL, NULL,
+          LOWER(platform) AS platform,
           NULL AS contact_reason_l1,
           order_timestamp AS creation_timestamp,
           order_timestamp,
@@ -40,6 +42,7 @@ view: cs_reporting {
       FROM cs_tb
       WHERE ({% condition contact_reason_l1_filter %} contact_reason_l1 {% endcondition %} OR (contact_reason IS NULL AND conversation_uuid IS NULL))
       AND ({% condition contact_reason_l1l2_filter %} contact_reason {% endcondition %} OR (contact_reason IS NULL AND conversation_uuid IS NULL))
+      AND ({% condition conversation_type_filter %} source_type {% endcondition %} OR (contact_reason IS NULL AND conversation_uuid IS NULL))
        ;;
   }
 
@@ -69,6 +72,22 @@ view: cs_reporting {
     default_value: "Day"
   }
 
+  dimension: platform {
+    description: "Platform from which order or conversation originated"
+    type: string
+    case: {
+      when: {
+        sql: ${TABLE}.platform = "android" ;;
+        label: "Android"
+      }
+      when: {
+        sql: ${TABLE}.platform = "ios" ;;
+        label: "iOS"
+      }
+      else: "Unknown"
+    }
+  }
+
   filter: contact_reason_l1_filter {
     label: "Contact Reason L1 Filter"
     type: string
@@ -83,11 +102,18 @@ view: cs_reporting {
     sql: EXISTS (SELECT ${creation_timestamp_time} FROM ${TABLE} WHERE {% condition %} contact_reason {% endcondition %}) ;;
   }
 
+  filter: conversation_type_filter {
+    label: "Conversation Type Filter"
+    type: string
+    suggest_dimension: conversation_type
+    sql: EXISTS (SELECT ${creation_timestamp_time} FROM ${TABLE} WHERE {% condition %} source_type {% endcondition %}) ;;
+  }
+
   measure: cnt_orders {
     label: "# unique orders"
     description: "cnt orders by order date"
     type: count_distinct
-    sql: CASE WHEN ${conversation_type} IS NULL
+    sql: CASE WHEN ${conversation_uuid} IS NULL
          THEN ${order_number}
          ELSE NULL
          END ;;
@@ -202,7 +228,17 @@ view: cs_reporting {
 
   dimension: conversation_type {
     type: string
-    sql: ${TABLE}.source_type ;;
+    case: {
+      when: {
+        sql: ${TABLE}.source_type = "conversation" ;;
+        label: "Conversation"
+      }
+      when: {
+        sql: ${TABLE}.source_type = "email" ;;
+        label: "Email"
+      }
+      else: "Other"
+    }
   }
 
   dimension_group: conversation_updated_timestamp {
@@ -386,11 +422,6 @@ view: cs_reporting {
   dimension: is_whatsapp_contact {
     type: yesno
     sql: ${TABLE}.is_whatsapp_contact ;;
-  }
-
-  dimension: platform {
-    type: string
-    sql: ${TABLE}.platform ;;
   }
 
   dimension: app_version {
