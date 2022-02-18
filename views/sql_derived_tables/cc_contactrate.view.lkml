@@ -1,11 +1,11 @@
-view: cs_reporting__tag_names {
-  dimension: cs_reporting__tag_names {
+view: cc_contactrate__tag_names {
+  dimension: cc_contactrate__tag_names {
     type: string
-    sql: cs_reporting__tag_names ;;
+    sql: cc_contactrate__tag_names ;;
   }
 }
 
-view: cs_reporting {
+view: cc_contactrate {
   derived_table: {
     sql:
       WITH cs_tb AS (
@@ -16,7 +16,7 @@ view: cs_reporting {
             conversation_created_timestamp AS creation_timestamp,
             NULL AS order_timestamp,
             NULL AS order_number
-        FROM flink-data-dev.curated.cc_conversations c
+        FROM flink-data-prod.curated.cc_conversations c
 
         UNION ALL
 
@@ -84,7 +84,7 @@ view: cs_reporting {
         sql: ${TABLE}.platform = "ios" ;;
         label: "iOS"
       }
-      else: "Other"
+      else: "Unknown"
     }
   }
 
@@ -113,7 +113,7 @@ view: cs_reporting {
     label: "# unique orders"
     description: "cnt orders by order date"
     type: count_distinct
-    sql: CASE WHEN ${conversation_type} IS NULL
+    sql: CASE WHEN ${conversation_uuid} IS NULL
          THEN ${order_number}
          ELSE NULL
          END ;;
@@ -182,7 +182,7 @@ view: cs_reporting {
   #   value_format_name: percent_1
   # }
 
-  measure: cnt_is_deflected_by_bot {
+  measure: cnt_deflected_by_bot {
     label: "# unique conversations deflected by bot"
     description: "cnt conversations deflected by bot"
     type: count_distinct
@@ -194,7 +194,7 @@ view: cs_reporting {
     label: "% conversations deflected by bot"
     description: "percentage of conversations that were deflected by bot"
     type: number
-    sql: SAFE_DIVIDE(${cnt_is_deflected_by_bot},${cnt_conversations}) ;;
+    sql: SAFE_DIVIDE(${cnt_deflected_by_bot},${cnt_conversations}) ;;
     value_format_name: percent_1
   }
 
@@ -228,7 +228,17 @@ view: cs_reporting {
 
   dimension: conversation_type {
     type: string
-    sql: ${TABLE}.source_type ;;
+    case: {
+      when: {
+        sql: ${TABLE}.source_type = "conversation" ;;
+        label: "Conversation"
+      }
+      when: {
+        sql: ${TABLE}.source_type = "email" ;;
+        label: "Email"
+      }
+      else: "Other"
+    }
   }
 
   dimension_group: conversation_updated_timestamp {
