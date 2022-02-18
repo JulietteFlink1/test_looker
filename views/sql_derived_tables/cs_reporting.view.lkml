@@ -16,7 +16,7 @@ view: cs_reporting {
             conversation_created_timestamp AS creation_timestamp,
             NULL AS order_timestamp,
             NULL AS order_number
-        FROM flink-data-dev.curated.cc_conversations c
+        FROM flink-data-prod.curated.cc_conversations c
 
         UNION ALL
 
@@ -84,7 +84,7 @@ view: cs_reporting {
         sql: ${TABLE}.platform = "ios" ;;
         label: "iOS"
       }
-      else: "Other"
+      else: "Unknown"
     }
   }
 
@@ -113,7 +113,7 @@ view: cs_reporting {
     label: "# unique orders"
     description: "cnt orders by order date"
     type: count_distinct
-    sql: CASE WHEN ${conversation_type} IS NULL
+    sql: CASE WHEN ${conversation_uuid} IS NULL
          THEN ${order_number}
          ELSE NULL
          END ;;
@@ -228,7 +228,17 @@ view: cs_reporting {
 
   dimension: conversation_type {
     type: string
-    sql: ${TABLE}.source_type ;;
+    case: {
+      when: {
+        sql: ${TABLE}.source_type = "conversation" ;;
+        label: "Conversation"
+      }
+      when: {
+        sql: ${TABLE}.source_type = "email" ;;
+        label: "Email"
+      }
+      else: "Other"
+    }
   }
 
   dimension_group: conversation_updated_timestamp {
