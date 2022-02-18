@@ -1,11 +1,11 @@
-view: cs_reporting__tag_names {
-  dimension: cs_reporting__tag_names {
+view: cc_contactrate__tag_names {
+  dimension: cc_contactrate__tag_names {
     type: string
-    sql: cs_reporting__tag_names ;;
+    sql: cc_contactrate__tag_names ;;
   }
 }
 
-view: cs_reporting {
+view: cc_contactrate {
   derived_table: {
     sql:
       WITH cs_tb AS (
