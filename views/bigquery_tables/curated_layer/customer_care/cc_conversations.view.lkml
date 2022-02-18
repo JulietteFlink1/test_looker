@@ -680,13 +680,13 @@ view: cc_conversations {
     sql:  ${median_time_to_reply_seconds} ;;
   }
 
-  measure: avg_median_time_to_agent_reply_minutes {
+  measure: median_median_time_to_agent_reply_minutes {
     group_label: "* Conversation Statistics *"
-    type: average
-    value_format: "0.0"
+    type: median
+    value_format: "mm:ss"
     description: "Median based on all admin replies after a contact reply. Subtracts out of business hours. In seconds."
     label: "Median Response Time (Minutes)"
-    sql:  ${median_time_to_reply_minutes} ;;
+    sql:  ${median_time_to_reply_minutes}*60/86400.0 ;;
   }
 
   measure: avg_number_of_reopens {
