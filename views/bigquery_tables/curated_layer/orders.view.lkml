@@ -1952,6 +1952,16 @@ view: orders {
         value_format: "0"
       }
 
+      measure: cnt_orders_fulfilled_under_15_min {
+        group_label: "* Operations / Logistics *"
+        label: "# Orders delivered <15min"
+        description: "Count of Orders delivered in <15min"
+        hidden:  yes
+        type: count
+        filters: [fulfillment_time:"<15"]
+        value_format: "0"
+      }
+
       measure: cnt_orders_fulfilled_over_12_min {
         group_label: "* Operations / Logistics *"
         label: "# Orders delivered >12min"
@@ -2124,6 +2134,16 @@ view: orders {
         hidden:  no
         type: number
         sql: ${cnt_orders_delayed_over_15_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
+        value_format: "0%"
+      }
+
+      measure: pct_fulfillment_under_15_min{
+        group_label: "* Operations / Logistics *"
+        label: "% Orders fulfilled <15min"
+        description: "Share of orders delivered <15min"
+        hidden:  no
+        type: number
+        sql: ${cnt_orders_fulfilled_under_15_min} / NULLIF(${cnt_orders}, 0);;
         value_format: "0%"
       }
 
