@@ -99,37 +99,38 @@ view: adjust_customer_conversions {
 
   measure:  conversion_rate{
     type: number
-    sql: (${count_purchase}/${number_of_installs})*100 ;;
+    sql: ${count_purchase}/nullif(${number_of_installs},0)*100 ;;
     value_format: "0.0\%"
+
   }
 
   measure:  mcvr1{
     type: number
-    sql: (${count_address_selected}/${number_of_installs})*100 ;;
+    sql: ${count_address_selected}/nullif(${number_of_installs},0)*100 ;;
     value_format: "0.0\%"
   }
 
   measure:  mcvr2{
     type: number
-    sql: (${count_add_to_cart}/${count_address_selected})*100 ;;
+    sql: ${count_add_to_cart}/nullif(${count_address_selected},0)*100 ;;
     value_format: "0.0\%"
   }
 
   measure:  mcvr3{
     type: number
-    sql: (${count_checkout_started}/${count_add_to_cart})*100 ;;
+    sql: ${count_checkout_started}/nullif(${count_add_to_cart},0)*100 ;;
     value_format: "0.0\%"
   }
 
   measure:  mcvr4{
     type: number
-    sql: (${count_purchase_confirmed}/${count_checkout_started})*100 ;;
+    sql: ${count_purchase_confirmed}/nullif(${count_checkout_started},0)*100 ;;
     value_format: "0.0\%"
   }
 
   measure:  mcvr5{
     type: number
-    sql: (${count_purchase}/${count_purchase_confirmed})*100 ;;
+    sql: ${count_purchase}/nullif(${count_purchase_confirmed},0)*100 ;;
     value_format: "0.0\%"
   }
 
