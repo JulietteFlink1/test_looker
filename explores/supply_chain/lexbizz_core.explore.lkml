@@ -1,4 +1,5 @@
 include: "/views/**/lexbizz_*.view"
+include: "/views/**/products_hub_assignment_v2.view"
 
 explore: lexbizz_core {
 
@@ -112,6 +113,23 @@ explore: lexbizz_core {
         ${buying_price.ingestion_date}  = ${item_warehouse.ingestion_date}      and
         ${buying_price.vendor_id}       = ${item_warehouse.preferred_vendor_id} and
         ${buying_price.sku}             = ${item_warehouse.sku}
+    ;;
+
+    }
+
+
+  # -----------  assignment data  ------------------------------------------------------------------------------------------
+  join: products_hub_assignment {
+
+    from: products_hub_assignment_v2
+
+    type: left_outer
+    relationship: many_to_one
+
+    sql_on:
+        ${products_hub_assignment.report_date}     = ${item_warehouse.ingestion_date} and
+        ${products_hub_assignment.hub_code}        = ${warehouse.hub_code}            and
+        ${products_hub_assignment.sku}             = ${item_warehouse.sku}
     ;;
 
     }
