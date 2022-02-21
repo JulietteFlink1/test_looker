@@ -185,7 +185,7 @@ view: micro_forecasts_vs_actuals {
 
   dimension: observed_orders_total {
     label: "Total observed orders"
-    hidden: yes
+    hidden: no
     type: number
     sql: ${TABLE}.observed_orders_total;;
     value_format_name: decimal_0

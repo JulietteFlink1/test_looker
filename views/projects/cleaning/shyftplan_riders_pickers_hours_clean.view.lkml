@@ -297,4 +297,76 @@ view: shyftplan_riders_pickers_hours_clean {
       hub_name
     ]
   }
+
+
+  measure: number_of_dynamic_target_utr{
+    type: min
+    label: "Dynamic UTR Target"
+    description: "Target UTR used in Forecasting Rider Hours"
+    sql: ${TABLE}.number_of_target_orders_per_employee ;;
+    filters: [position_name: "rider"]
+    value_format_name: decimal_2
+  }
+
+  measure: sum_forecasted_riders_needed{
+    type: sum
+    label: "# Forecasted Hours"
+    description: "Number of Needed Employee Hours Based on Forecasted Order Demand"
+    sql: NULLIF(${TABLE}.number_of_forecasted_employees_needed,0) * 0.5 ;;
+    filters: [position_name: "rider"]
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  measure: sum_planned_hours{
+    type: sum
+    label: "# Scheduled Hours"
+    description: "Number of Scheduled Hours"
+    sql: ${number_of_planned_minutes} / 60 ;;
+    filters: [position_name: "rider"]
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  measure: pct_overstaffing {
+    type: number
+    label:"% Overstaffing"
+    description: "When Forecasted Hours > Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
+    sql: case
+          when ${sum_forecasted_riders_needed} > ${sum_planned_hours}
+            then (${sum_forecasted_riders_needed} - ${sum_planned_hours}) / nullif(${sum_forecasted_riders_needed},0)
+          else 0 end  ;;
+    value_format_name: percent_0
+  }
+
+  measure: pct_understaffing {
+    type: number
+    label: "% Understaffing"
+    description: "When Forecasted Hours < Scheduled Hours: (Scheduled Hours - Forecasted Hours) / Forecasted Hours"
+    sql: case
+          when ${sum_forecasted_riders_needed} < ${sum_planned_hours}
+            then (${sum_planned_hours} - ${sum_forecasted_riders_needed}) / nullif(${sum_forecasted_riders_needed},0)
+          else 0 end  ;;
+    value_format_name: percent_0
+  }
+
+
+  measure: sum_predicted_orders{
+    type: sum
+    label: "# Forecasted Orders"
+    description: "Number of Forecasted Orders"
+    sql: ${TABLE}.number_of_predicted_orders ;;
+    value_format_name: decimal_0
+    filters: [position_name: "rider"]
+    hidden: yes
+  }
+
+  measure: pct_forecast_deviation {
+    type: number
+    label: "% Forecast Deviation "
+    description: "absolute (Forecasted Orders / Actual Orders)"
+    sql: abs(${sum_predicted_orders} / nullif(${adjusted_orders_riders},0)) ;;
+    value_format_name: percent_0
+  }
+
 }
