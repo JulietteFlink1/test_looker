@@ -200,4 +200,12 @@ view: lexbizz_item {
     type: count
     drill_fields: [item_name]
   }
+
+  measure: cnt_skus {
+
+    label: "# unique SKUs"
+
+    type: count_distinct
+    sql: ${sku} ;;
+  }
 }

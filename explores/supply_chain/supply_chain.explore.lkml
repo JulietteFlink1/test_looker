@@ -248,5 +248,14 @@ explore: supply_chain {
   }
 
 
+  join: top_50_skus_per_gmv_supply_chain_explore {
+    view_label: "10 Top Selling Products (last 14days)"
+    sql_on: ${top_50_skus_per_gmv_supply_chain_explore.sku}         = ${products_hub_assignment.sku}
+        and ${top_50_skus_per_gmv_supply_chain_explore.country_iso} = ${products_hub_assignment.country_iso}
+    ;;
+    type: left_outer
+    relationship: many_to_one
+  }
+
 
 }
