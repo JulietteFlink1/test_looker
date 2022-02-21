@@ -365,7 +365,7 @@ view: shyftplan_riders_pickers_hours_clean {
     type: number
     label: "% Forecast Deviation "
     description: "absolute (Forecasted Orders / Actual Orders)"
-    sql: abs(${sum_predicted_orders} / ${adjusted_orders_riders}) ;;
+    sql: abs(${sum_predicted_orders} / nullif(${adjusted_orders_riders},0)) ;;
     value_format_name: percent_0
   }
 

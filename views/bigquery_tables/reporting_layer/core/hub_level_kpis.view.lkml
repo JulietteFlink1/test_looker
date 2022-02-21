@@ -1221,7 +1221,7 @@ view: hub_level_kpis {
     group_label: ">> Ops KPIs"
     label: "% Hubs Above Orders Target"
     type: number
-    sql: ${cnt_hubs_above_orders_target} / ${cnt_unique_hubs} ;;
+    sql: ${cnt_hubs_above_orders_target} / nullif(${cnt_unique_hubs},0) ;;
     value_format_name: percent_1
   }
 
@@ -1242,7 +1242,7 @@ view: hub_level_kpis {
     group_label: ">> Ops KPIs"
     label: "% Hubs Above Rider UTR Target"
     type: number
-    sql: ${cnt_hubs_above_rider_utr_target} / ${cnt_unique_hubs} ;;
+    sql: ${cnt_hubs_above_rider_utr_target} / nullif(${cnt_unique_hubs},0) ;;
     value_format_name: percent_1
   }
 
