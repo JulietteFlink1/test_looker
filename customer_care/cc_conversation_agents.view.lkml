@@ -23,21 +23,20 @@ view: cc_conversation_agents {
     sql: ${TABLE}.conversation_admin_uuid ;;
   }
 
-  dimension_group: conversation_created_timestamp {
+  dimension_group: conversation_created {
+    hidden: yes
     type: time
     timeframes: [
-      raw,
-      time,
       date,
       week,
       month,
-      quarter,
       year
     ]
     sql: ${TABLE}.conversation_created_timestamp ;;
   }
 
   dimension: conversation_id {
+    hidden: yes
     type: number
     sql: ${TABLE}.conversation_id ;;
   }
@@ -65,6 +64,7 @@ view: cc_conversation_agents {
 
   dimension: timezone {
     type: string
+    hidden:yes
     sql: ${TABLE}.timezone ;;
   }
 
