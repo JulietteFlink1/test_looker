@@ -486,7 +486,7 @@ view: cc_conversations {
     group_label: "* Basic Counts *"
     type: count_distinct
     sql: ${conversation_uuid} ;;
-    label: "# Conversations"
+    label: "# Closed Conversations"
     filters: [is_closed: "yes"]
   }
 
