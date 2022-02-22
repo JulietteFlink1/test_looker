@@ -44,7 +44,7 @@ view: cc_orders_hourly {
     description: "# Conversations / # Orders "
     type: number
     value_format: "0.0%"
-    sql: ${cc_conversations.number_of_conversations}/${sum_number_of_orders} ;;
+    sql: case when ${sum_number_of_orders} > 3 then ${cc_conversations.number_of_conversations}/IFNULL(${sum_number_of_orders},0) end ;;
   }
 
   measure: count {
