@@ -10,7 +10,7 @@ explore: cc_conversations {
   label: "Conversations & Agents"
   description: "This explore provides information on all Intercom chats"
 
-  hidden: yes
+  hidden: no
 
 
   join: cc_orders_hourly {
