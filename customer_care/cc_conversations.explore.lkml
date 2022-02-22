@@ -1,5 +1,5 @@
-include: "/views/bigquery_tables/curated_layer/customer_care/cc_conversations.view.lkml"
-include: "/views/bigquery_tables/reporting_layer/customer_care/cc_orders_hourly.view.lkml"
+include: "/customer_care/cc_conversations.view.lkml"
+include: "/customer_care/cc_orders_hourly.view.lkml"
 
 
 explore: cc_conversations {
