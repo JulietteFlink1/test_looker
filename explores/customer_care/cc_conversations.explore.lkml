@@ -1,5 +1,5 @@
 include: "/views/bigquery_tables/curated_layer/customer_care/cc_conversations.view.lkml"
-include: "/views/bigquery_tables/curated_layer/orders.view.lkml"
+include: "/views/bigquery_tables/reporting_layer/customer_care/cc_orders_hourly.view.lkml"
 
 
 explore: cc_conversations {
@@ -13,12 +13,12 @@ explore: cc_conversations {
   hidden: yes
 
 
-  join: orders {
-    from: orders
-    sql_on: ${cc_conversations.conversation_created_date} = ${orders.order_date}
-    and ${cc_conversations.country_iso} = ${orders.country_iso};;
-    fields: [orders.country_iso,orders.cnt_orders,orders.is_successful_order]
-    relationship: many_to_many
+  join: cc_orders_hourly {
+    from: cc_orders_hourly
+    view_label: "* Orders *"
+    sql_on: timestamp_trunc(${cc_conversations.conversation_created_time},hour) = ${cc_orders_hourly.order_timestamp_hour}
+    and ${cc_conversations.country_iso} = ${cc_orders_hourly.country_iso};;
+    relationship: many_to_one
 
   }
   }
