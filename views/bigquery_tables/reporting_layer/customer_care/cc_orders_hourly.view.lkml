@@ -17,6 +17,7 @@ view: cc_orders_hourly {
     type: time
     timeframes: [
       hour,
+      time,
       date,
       week,
       month,
@@ -36,6 +37,14 @@ view: cc_orders_hourly {
     label: "# Orders"
     type: sum
     sql: ${number_of_orders} ;;
+  }
+
+  measure: contact_rate {
+    label: "% Contact Rate"
+    description: "# Conversations / # Orders "
+    type: number
+    value_format: "0.0%"
+    sql: ${cc_conversations.number_of_conversations}/${sum_number_of_orders} ;;
   }
 
   measure: count {

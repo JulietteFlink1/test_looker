@@ -16,7 +16,7 @@ explore: cc_conversations {
   join: cc_orders_hourly {
     from: cc_orders_hourly
     view_label: "* Orders *"
-    sql_on: timestamp_trunc(${cc_conversations.conversation_created_time},hour) = ${cc_orders_hourly.order_timestamp_hour}
+    sql_on: timestamp_trunc(cast(${cc_conversations.conversation_created_time} as timestamp),hour) = cast(${cc_orders_hourly.order_timestamp_time} as timestamp)
     and ${cc_conversations.country_iso} = ${cc_orders_hourly.country_iso};;
     relationship: many_to_one
 
