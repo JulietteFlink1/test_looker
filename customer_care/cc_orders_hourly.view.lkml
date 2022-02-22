@@ -1,5 +1,5 @@
 view: cc_orders_hourly {
-  sql_table_name: `flink-data-dev.reporting.cc_orders_hourly`
+  sql_table_name: `flink-data-prod.reporting.cc_orders_hourly`
     ;;
 
   dimension: country_iso {
