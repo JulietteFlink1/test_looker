@@ -132,6 +132,19 @@ view: cc_conversations {
     sql: ${TABLE}.conversation_created_day_of_week ;;
   }
 
+  dimension: conversation_created_day_of_week_number {
+    type: string
+    group_label: "* Dates & Timestamps *"
+    sql: case when ${conversation_created_day_of_week} = 'Monday' then 1
+              when ${conversation_created_day_of_week} = 'Tuesday' then 2
+              when ${conversation_created_day_of_week} = 'Wednesday' then 3
+              when ${conversation_created_day_of_week} = 'Thursday' then 4
+              when ${conversation_created_day_of_week} = 'Friday' then 5
+              when ${conversation_created_day_of_week} = 'Saturday' then 6
+              when ${conversation_created_day_of_week} = 'Sunday' then 7
+         end ;;
+  }
+
   dimension: is_first_reply_the_same_day {
     type: yesno
     group_label: "* Dates & Timestamps *"
