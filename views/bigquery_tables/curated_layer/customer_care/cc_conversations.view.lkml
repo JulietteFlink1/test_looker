@@ -736,6 +736,25 @@ view: cc_conversations {
     filters: [is_abandoned_by_contact: "yes"]
   }
 
+  measure: number_of_rated_conversations {
+    group_label: "* Basic Counts *"
+    type: count_distinct
+    value_format: "0"
+    label: "# Conversations with CSAT"
+    sql:  conversation_uuid ;;
+    filters: [rating: ">=0"]
+  }
+
+
+  measure: number_of_conversations_with_refund {
+    group_label: "* Basic Counts *"
+    type: count_distinct
+    value_format: "0"
+    label: "# Conversations with Refunds"
+    sql:  conversation_uuid ;;
+    filters: [is_refunded: "yes"]
+  }
+
   measure: number_of_reply_other_day {
     group_label: "* Conversation Statistics *"
     type: count_distinct
@@ -759,6 +778,22 @@ view: cc_conversations {
     value_format: "0.0%"
     label: "% Deflected by Bot"
     sql:  ${number_of_deflected_by_bot}/${number_of_conversations} ;;
+  }
+
+  measure: share_rated_conversations {
+    group_label: "* Conversation Statistics *"
+    type: number
+    value_format: "0.0%"
+    label: "% Conversations with CSAT"
+    sql:  ${number_of_rated_conversations}/${number_of_conversations} ;;
+  }
+
+  measure: share_conversations_with_refunds {
+    group_label: "* Conversation Statistics *"
+    type: number
+    value_format: "0.0%"
+    label: "% Conversations with Refunds"
+    sql:  ${number_of_conversations_with_refund}/${number_of_conversations} ;;
   }
 
   measure: share_email_conversations {
