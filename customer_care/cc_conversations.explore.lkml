@@ -38,7 +38,7 @@ explore: cc_conversations {
   join: cc_conversation_agents {
     from: cc_conversation_agents
     view_label: "* Agents *"
-    sql_on:${cc_conversation_agents.conversation_id} = ${cc_conversations.conversation_uuid} as timestamp)
+    sql_on:${cc_conversation_agents.conversation_id} = ${cc_conversations.conversation_uuid}
       and ${cc_conversations.country_iso} = ${cc_conversation_agents.country_iso};;
     relationship: one_to_many
     type: left_outer
