@@ -14,6 +14,7 @@ view: cc_orders_hourly {
   }
 
   dimension_group: order_timestamp {
+    hidden: yes
     type: time
     timeframes: [
       hour,
@@ -48,6 +49,7 @@ view: cc_orders_hourly {
   }
 
   measure: count {
+    hidden: yes
     type: count
     drill_fields: []
   }
