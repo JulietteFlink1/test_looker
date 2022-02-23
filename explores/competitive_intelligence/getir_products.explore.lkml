@@ -1,4 +1,5 @@
 include: "/views/**/*.view"
+include: "/views/bigquery_tables/comp-intel/*.view"
 
 explore:  getir_products {
   hidden: no

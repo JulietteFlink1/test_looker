@@ -1,25 +1,13 @@
-view: flink_to_gorillas_global {
-  sql_table_name: `flink-data-prod.comp_intel.flink_to_gorillas_global`
+view: gorillas_to_flink_global {
+  sql_table_name: `flink-data-prod.comp_intel.gorillas_to_flink_global`
     ;;
-
-  dimension: flink_match_id {
-    type: string
-    sql: ${TABLE}.__id_left ;;
-    group_label: "> IDs"
-  }
-
-  dimension: gorillas_match_id {
-    type: string
-    sql: ${TABLE}.__id_right ;;
-    group_label: "> IDs"
-  }
 
   dimension: match_type {
     type:  string
     sql: ${TABLE}.match_type ;;
   }
 
-  dimension: best_match_score {
+  dimension: match_score {
     type: number
     sql: ${TABLE}.match_score ;;
   }
@@ -29,12 +17,6 @@ view: flink_to_gorillas_global {
     sql: ${TABLE}.country_iso ;;
   }
 
-  dimension: flink_matches_uuid {
-    type: string
-    sql: ${TABLE}.flink_matches_uuid ;;
-    group_label: "> IDs"
-  }
-
   dimension: flink_product_name {
     type: string
     sql: ${TABLE}.flink_product_name ;;
@@ -42,15 +24,20 @@ view: flink_to_gorillas_global {
 
   dimension: flink_product_sku {
     type: string
-    sql: ${TABLE}.flink_sku ;;
-    hidden: yes
-    primary_key: yes
+    sql: ${TABLE}.flink_product_sku ;;
+  }
+
+  dimension: table_uuid {
+    type: string
+    sql: ${TABLE}.table_uuid ;;
+    group_label: "> IDs"
   }
 
   dimension: gorillas_product_id {
     type: string
     sql: ${TABLE}.gorillas_product_id ;;
     hidden: yes
+    primary_key: yes
   }
 
   dimension: gorillas_product_name {
