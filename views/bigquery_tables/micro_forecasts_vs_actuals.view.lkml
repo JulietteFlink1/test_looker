@@ -209,6 +209,14 @@ view: micro_forecasts_vs_actuals {
     sql: ABS(${prediction} - ${observed_orders_total})/(GREATEST(1, ${observed_orders_total})) ;;
   }
 
+  measure: bias {
+    group_label: " * Forecasting error * "
+    label: "Bias"
+    type: sum
+    hidden: yes
+    sql: ${prediction} - ${observed_orders_total};;
+  }
+
   measure: mean_absolute_percentage_error {
     group_label: " * Forecasting error * "
     label: "MAPE"
