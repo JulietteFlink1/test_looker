@@ -213,7 +213,6 @@ view: micro_forecasts_vs_actuals {
     group_label: " * Forecasting error * "
     label: "Bias"
     type: sum
-    hidden: yes
     sql: ${prediction} - ${observed_orders_total};;
   }
 
