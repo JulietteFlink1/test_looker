@@ -2,7 +2,6 @@ view: flink_to_gorillas_global {
   sql_table_name: `flink-data-prod.comp_intel.flink_to_gorillas_global`
     ;;
 
-
   dimension: match_type {
     type:  string
     sql: ${TABLE}.match_type ;;
