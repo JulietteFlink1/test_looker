@@ -209,11 +209,18 @@ view: micro_forecasts_vs_actuals {
     sql: ABS(${prediction} - ${observed_orders_total})/(GREATEST(1, ${observed_orders_total})) ;;
   }
 
+  measure: forecast_error {
+    group_label: " * Forecasting error * "
+    type: sum
+    hidden: yes
+    sql: ${prediction} - ${observed_orders_total} ;;
+  }
+
   measure: bias {
     group_label: " * Forecasting error * "
     label: "Bias"
-    type: sum
-    sql: ${prediction} - ${observed_orders_total};;
+    type: number
+    sql: ${forecast_error}/ NULLIF(${count_values}, 0);;
   }
 
   measure: mean_absolute_percentage_error {
