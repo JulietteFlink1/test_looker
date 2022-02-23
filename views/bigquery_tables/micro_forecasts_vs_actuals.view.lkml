@@ -221,6 +221,7 @@ view: micro_forecasts_vs_actuals {
     label: "Bias"
     type: number
     sql: ${forecast_error}/ NULLIF(${count_values}, 0);;
+    value_format_name: decimal_1
   }
 
   measure: mean_absolute_percentage_error {
