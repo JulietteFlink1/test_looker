@@ -2,24 +2,12 @@ view: flink_to_gorillas_global {
   sql_table_name: `flink-data-prod.comp_intel.flink_to_gorillas_global`
     ;;
 
-  dimension: flink_match_id {
-    type: string
-    sql: ${TABLE}.__id_left ;;
-    group_label: "> IDs"
-  }
-
-  dimension: gorillas_match_id {
-    type: string
-    sql: ${TABLE}.__id_right ;;
-    group_label: "> IDs"
-  }
-
   dimension: match_type {
     type:  string
     sql: ${TABLE}.match_type ;;
   }
 
-  dimension: best_match_score {
+  dimension: match_score {
     type: number
     sql: ${TABLE}.match_score ;;
   }
@@ -29,9 +17,9 @@ view: flink_to_gorillas_global {
     sql: ${TABLE}.country_iso ;;
   }
 
-  dimension: flink_matches_uuid {
+  dimension: table_uuid {
     type: string
-    sql: ${TABLE}.flink_matches_uuid ;;
+    sql: ${TABLE}.table_uuid ;;
     group_label: "> IDs"
   }
 
@@ -42,7 +30,7 @@ view: flink_to_gorillas_global {
 
   dimension: flink_product_sku {
     type: string
-    sql: ${TABLE}.flink_sku ;;
+    sql: ${TABLE}.flink_product_sku ;;
     hidden: yes
     primary_key: yes
   }
