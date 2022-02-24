@@ -1,8 +1,6 @@
 view: price_changes_follow_up {
   derived_table: {
     sql:
-
-
 with oos_aux as (
     select
     i.substitute_group,
