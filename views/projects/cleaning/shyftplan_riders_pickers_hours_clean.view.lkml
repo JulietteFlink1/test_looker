@@ -184,6 +184,23 @@ view: shyftplan_riders_pickers_hours_clean {
     group_label: "Working Hours"
   }
 
+  measure: wh_ops_hours {
+    label: "Sum of Inventory Associate Hours (Warehouse Ops)"
+    type: sum
+    sql:${number_of_worked_minutes}/60;;
+    filters: [position_name: "wh, wh operations, inventory"]
+    value_format_name: decimal_1
+    group_label: "Working Hours"
+  }
+
+  measure: hub_staff_hours {
+    label: "Sum of Hub Staff Hours (Inventory Associate and Picker)"
+    type: number
+    sql:${picker_hours}+${wh_ops_hours};;
+    value_format_name: decimal_1
+    group_label: "Working Hours"
+  }
+
   measure: picker_hours_external {
     label: "Sum of Picker Ext Hours"
     type: sum
@@ -256,6 +273,23 @@ view: shyftplan_riders_pickers_hours_clean {
     group_label: "UTR"
   }
 
+  measure: hub_staff_utr {
+    label: "AVG Hub Staff UTR"
+    type: number
+    description: "# Orders from opened hub / # Worked Hub Staff (Inventory Associate and Picker) Hours"
+    sql: ${adjusted_orders_riders} / NULLIF(${hub_staff_hours}, 0);;
+    value_format_name: decimal_2
+    group_label: "UTR"
+  }
+
+  measure: wh_ops_utr {
+    label: "AVG Inventory Associate UTR"
+    type: number
+    description: "# Orders from opened hub / # Worked Warehouse Ops Hours"
+    sql: ${adjusted_orders_riders} / NULLIF(${wh_ops_hours}, 0);;
+    value_format_name: decimal_2
+    group_label: "UTR"
+  }
 
   set: detail {
     fields: [
@@ -263,4 +297,76 @@ view: shyftplan_riders_pickers_hours_clean {
       hub_name
     ]
   }
+
+
+  measure: number_of_dynamic_target_utr{
+    type: min
+    label: "Dynamic UTR Target"
+    description: "Target UTR used in Forecasting Rider Hours"
+    sql: ${TABLE}.number_of_target_orders_per_employee ;;
+    filters: [position_name: "rider"]
+    value_format_name: decimal_2
+  }
+
+  measure: sum_forecasted_riders_needed{
+    type: sum
+    label: "# Forecasted Hours"
+    description: "Number of Needed Employee Hours Based on Forecasted Order Demand"
+    sql: NULLIF(${TABLE}.number_of_forecasted_employees_needed,0) * 0.5 ;;
+    filters: [position_name: "rider"]
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  measure: sum_planned_hours{
+    type: sum
+    label: "# Scheduled Hours"
+    description: "Number of Scheduled Hours"
+    sql: ${number_of_planned_minutes} / 60 ;;
+    filters: [position_name: "rider"]
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  measure: pct_overstaffing {
+    type: number
+    label:"% Overstaffing"
+    description: "When Forecasted Hours > Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
+    sql: case
+          when ${sum_forecasted_riders_needed} > ${sum_planned_hours}
+            then (${sum_forecasted_riders_needed} - ${sum_planned_hours}) / nullif(${sum_forecasted_riders_needed},0)
+          else 0 end  ;;
+    value_format_name: percent_0
+  }
+
+  measure: pct_understaffing {
+    type: number
+    label: "% Understaffing"
+    description: "When Forecasted Hours < Scheduled Hours: (Scheduled Hours - Forecasted Hours) / Forecasted Hours"
+    sql: case
+          when ${sum_forecasted_riders_needed} < ${sum_planned_hours}
+            then (${sum_planned_hours} - ${sum_forecasted_riders_needed}) / nullif(${sum_forecasted_riders_needed},0)
+          else 0 end  ;;
+    value_format_name: percent_0
+  }
+
+
+  measure: sum_predicted_orders{
+    type: sum
+    label: "# Forecasted Orders"
+    description: "Number of Forecasted Orders"
+    sql: ${TABLE}.number_of_predicted_orders ;;
+    value_format_name: decimal_0
+    filters: [position_name: "rider"]
+    hidden: yes
+  }
+
+  measure: pct_forecast_deviation {
+    type: number
+    label: "% Forecast Deviation "
+    description: "absolute (Forecasted Orders / Actual Orders)"
+    sql: abs(${sum_predicted_orders} / nullif(${adjusted_orders_riders},0)) ;;
+    value_format_name: percent_0
+  }
+
 }

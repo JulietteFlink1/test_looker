@@ -1,6 +1,7 @@
 include: "/views/**/*.view"
 include: "/views/bigquery_tables/curated_layer/*.view"
 include: "/views/bigquery_tables/reporting_layer/competitive_intelligence/gorillas_inventory_stock_count.view.lkml"
+include: "/views/bigquery_tables/comp-intel/*.view"
 
 explore:  gorillas_prices {
   hidden: yes

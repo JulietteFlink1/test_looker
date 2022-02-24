@@ -115,15 +115,36 @@ view: psp_transactions {
   }
 
   dimension: payment_method {
+    group_label: "Payment Methods"
     type: string
     sql: ${TABLE}.payment_method ;;
   }
 
-  dimension: payment_method_grouped {
+  dimension: payment_method_grouped_product {
+    group_label: "Payment Methods"
     type: string
-    sql:case when ${payment_method} like 'mc%' then 'mc'
-             when ${payment_method} like 'visa%' then 'visa'
+    sql:case when ${payment_method} like '%applepay' then 'ApplePay'
+             when ${payment_method} like 'mc%' then 'MC'
+             when ${payment_method} like 'directEbank%' THEN 'Sofort'
+             when ${payment_method} like 'carteban%' THEN 'CarteBanCaire'
+             when ${payment_method} like 'paypa%' THEN 'PayPal'
+             when ${payment_method} like 'visa%' OR ${payment_method} like 'electro%' then 'Visa'
+             when ${payment_method} like 'ideal%' then 'Ideal'
+             when ${payment_method} like 'cup%' then 'Cup'
+        else 'other'
+        end ;;
+  }
+
+  dimension: payment_method_grouped_fraud {
+    group_label: "Payment Methods"
+    type: string
+    sql:case when ${payment_method} like 'amex%' then 'amex'
+             when ${payment_method} like 'mc%' then 'mc'
+             when ${payment_method} like 'visa%' OR ${payment_method} like 'electro%' then 'visa'
+             when ${payment_method} like 'maestr%' then 'maestro'
              when ${payment_method} like 'ideal%' then 'ideal'
+             when ${payment_method} like 'cup%' then 'cup'
+             when ${payment_method} like 'jcb%' then 'jcb'
         else ${payment_method}
         end ;;
   }

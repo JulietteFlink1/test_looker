@@ -59,6 +59,8 @@ view: getir_products {
   dimension: product_id {
     type: string
     sql: ${TABLE}.product_id ;;
+
+    primary_key: yes
   }
 
   dimension: product_name {

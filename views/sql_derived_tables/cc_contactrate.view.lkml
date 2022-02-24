@@ -1,20 +1,22 @@
-view: cs_reporting__tag_names {
-  dimension: cs_reporting__tag_names {
+view: cc_contactrate__tag_names {
+  dimension: cc_contactrate__tag_names {
     type: string
-    sql: cs_reporting__tag_names ;;
+    sql: cc_contactrate__tag_names ;;
   }
 }
 
-view: cs_reporting {
+view: cc_contactrate {
   derived_table: {
     sql:
       WITH cs_tb AS (
         SELECT
-            c.*,
+            c.* EXCEPT(platform),
+            LOWER(platform) AS platform,
             TRIM(REGEXP_EXTRACT(contact_reason, r'(.+?) -')) AS contact_reason_l1,
             conversation_created_timestamp AS creation_timestamp,
-            NULL AS order_timestamp
-        FROM flink-data-dev.sandbox.cs_conversations c
+            NULL AS order_timestamp,
+            NULL AS order_number
+        FROM flink-data-prod.curated.cc_conversations c
 
         UNION ALL
 
@@ -22,23 +24,25 @@ view: cs_reporting {
           NULL, NULL, NULL, NULL, NULL,
           NULL, NULL, NULL, NULL, NULL,
           NULL, NULL, NULL, NULL, NULL,
-          NULL, NULL, country_iso,
-          NULL, NULL,
           NULL, NULL, NULL, NULL, NULL,
           NULL, NULL, NULL, NULL, NULL,
           NULL, NULL, NULL, NULL, NULL,
-          LOWER(order_number) as order_number,
-          NULL, NULL, NULL,NULL,
-          NULL, NULL,NULL, NULL,NULL,
+          NULL, NULL, NULL, NULL, NULL,
+          NULL, NULL, NULL, country_iso, NULL,
+          NULL, NULL, NULL, NULL, NULL,
+          NULL, NULL, NULL, NULL,
+          LOWER(platform) AS platform,
           NULL AS contact_reason_l1,
           order_timestamp AS creation_timestamp,
-          order_timestamp
+          order_timestamp,
+          order_number
         FROM flink-data-prod.curated.orders
       )
       SELECT *
       FROM cs_tb
-      WHERE ({% condition contact_reason_l1_filter %} contact_reason_l1 {% endcondition %} OR (contact_reason IS NULL AND conversation_uuid IS NULL))
-      AND ({% condition contact_reason_l1l2_filter %} contact_reason {% endcondition %} OR (contact_reason IS NULL AND conversation_uuid IS NULL))
+      WHERE ({% condition contact_reason_l1l2_filter %} contact_reason {% endcondition %} OR (contact_reason IS NULL AND conversation_uuid IS NULL))
+      AND ({% condition contact_reason_l3_filter %} contact_reason_l3 {% endcondition %} OR (contact_reason IS NULL AND conversation_uuid IS NULL))
+      AND ({% condition conversation_type_filter %} source_type {% endcondition %} OR (contact_reason IS NULL AND conversation_uuid IS NULL))
        ;;
   }
 
@@ -68,11 +72,27 @@ view: cs_reporting {
     default_value: "Day"
   }
 
-  filter: contact_reason_l1_filter {
-    label: "Contact Reason L1 Filter"
+  dimension: platform {
+    description: "Platform from which order or conversation originated"
     type: string
-    suggest_dimension: contact_reason_l1
-    sql: EXISTS (SELECT ${creation_timestamp_time} FROM ${TABLE} WHERE {% condition %} contact_reason_l1 {% endcondition %}) ;;
+    case: {
+      when: {
+        sql: ${TABLE}.platform = "android" ;;
+        label: "Android"
+      }
+      when: {
+        sql: ${TABLE}.platform = "ios" ;;
+        label: "iOS"
+      }
+      else: "Unknown"
+    }
+  }
+
+  filter: contact_reason_l3_filter {
+    label: "Contact Reason L3 Filter"
+    type: string
+    suggest_dimension: contact_reason_l3
+    sql: EXISTS (SELECT ${creation_timestamp_time} FROM ${TABLE} WHERE {% condition %} contact_reason_l3 {% endcondition %}) ;;
   }
 
   filter: contact_reason_l1l2_filter {
@@ -82,11 +102,18 @@ view: cs_reporting {
     sql: EXISTS (SELECT ${creation_timestamp_time} FROM ${TABLE} WHERE {% condition %} contact_reason {% endcondition %}) ;;
   }
 
+  filter: conversation_type_filter {
+    label: "Conversation Type Filter"
+    type: string
+    suggest_dimension: conversation_type
+    sql: EXISTS (SELECT ${creation_timestamp_time} FROM ${TABLE} WHERE {% condition %} source_type {% endcondition %}) ;;
+  }
+
   measure: cnt_orders {
     label: "# unique orders"
     description: "cnt orders by order date"
     type: count_distinct
-    sql: CASE WHEN ${conversation_type} IS NULL
+    sql: CASE WHEN ${conversation_uuid} IS NULL
          THEN ${order_number}
          ELSE NULL
          END ;;
@@ -104,7 +131,7 @@ view: cs_reporting {
     description: "cnt conversations in which a CC agent participated"
     type: count_distinct
     sql:  ${conversation_uuid} ;;
-    filters: [deflected_by_bot: "no", agent_assignee_id: "NOT NULL"]
+    filters: [is_deflected_by_bot: "no", agent_id: "NOT NULL"]
   }
 
   measure: perc_agent_conversations {
@@ -160,7 +187,7 @@ view: cs_reporting {
     description: "cnt conversations deflected by bot"
     type: count_distinct
     sql: ${conversation_uuid} ;;
-    filters: [deflected_by_bot: "yes"]
+    filters: [is_deflected_by_bot: "yes"]
   }
 
   measure: perc_deflected_by_bot {
@@ -201,7 +228,17 @@ view: cs_reporting {
 
   dimension: conversation_type {
     type: string
-    sql: ${TABLE}.conversation_type ;;
+    case: {
+      when: {
+        sql: ${TABLE}.source_type = "conversation" ;;
+        label: "Conversation"
+      }
+      when: {
+        sql: ${TABLE}.source_type = "email" ;;
+        label: "Email"
+      }
+      else: "Other"
+    }
   }
 
   dimension_group: conversation_updated_timestamp {
@@ -232,9 +269,9 @@ view: cs_reporting {
     sql: ${TABLE}.contact_reason_l3 ;;
   }
 
-  dimension: agent_assignee_id {
+  dimension: agent_id {
     type: number
-    sql: ${TABLE}.agent_assignee_id ;;
+    sql: ${TABLE}.agent_id ;;
   }
 
   dimension: count_assignments {
@@ -332,9 +369,9 @@ view: cs_reporting {
     sql: ${TABLE}.last_contact_updated_timestamp ;;
   }
 
-  dimension: deflected_by_bot {
+  dimension: is_deflected_by_bot {
     type: yesno
-    sql: ${TABLE}.deflected_by_bot ;;
+    sql: ${TABLE}.is_deflected_by_bot ;;
   }
 
   dimension: name {
@@ -387,11 +424,6 @@ view: cs_reporting {
     sql: ${TABLE}.is_whatsapp_contact ;;
   }
 
-  dimension: platform {
-    type: string
-    sql: ${TABLE}.platform ;;
-  }
-
   dimension: app_version {
     type: string
     sql: ${TABLE}.app_version ;;
@@ -440,7 +472,7 @@ view: cs_reporting {
       conv_ingestion_timestamp_time,
       contact_id,
       last_contact_updated_timestamp_time,
-      deflected_by_bot,
+      is_deflected_by_bot,
       name,
       user_id,
       contact_created_timestamp_time,
