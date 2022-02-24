@@ -40,8 +40,8 @@ view: cc_contactrate {
       )
       SELECT *
       FROM cs_tb
-      WHERE ({% condition contact_reason_l1_filter %} contact_reason_l1 {% endcondition %} OR (contact_reason IS NULL AND conversation_uuid IS NULL))
-      AND ({% condition contact_reason_l1l2_filter %} contact_reason {% endcondition %} OR (contact_reason IS NULL AND conversation_uuid IS NULL))
+      WHERE ({% condition contact_reason_l1l2_filter %} contact_reason {% endcondition %} OR (contact_reason IS NULL AND conversation_uuid IS NULL))
+      AND ({% condition contact_reason_l3_filter %} contact_reason_l3 {% endcondition %} OR (contact_reason IS NULL AND conversation_uuid IS NULL))
       AND ({% condition conversation_type_filter %} source_type {% endcondition %} OR (contact_reason IS NULL AND conversation_uuid IS NULL))
        ;;
   }
@@ -88,11 +88,11 @@ view: cc_contactrate {
     }
   }
 
-  filter: contact_reason_l1_filter {
-    label: "Contact Reason L1 Filter"
+  filter: contact_reason_l3_filter {
+    label: "Contact Reason L3 Filter"
     type: string
-    suggest_dimension: contact_reason_l1
-    sql: EXISTS (SELECT ${creation_timestamp_time} FROM ${TABLE} WHERE {% condition %} contact_reason_l1 {% endcondition %}) ;;
+    suggest_dimension: contact_reason_l3
+    sql: EXISTS (SELECT ${creation_timestamp_time} FROM ${TABLE} WHERE {% condition %} contact_reason_l3 {% endcondition %}) ;;
   }
 
   filter: contact_reason_l1l2_filter {
