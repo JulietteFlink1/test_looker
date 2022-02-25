@@ -328,6 +328,20 @@ view: psp_transactions {
     value_format_name: euro_accounting_2_precision
   }
 
+  measure: sum_total_trx_fees {
+    group_label: "* Fee Amounts *"
+    type: number
+    sql: SUM(${commission_sc}) + SUM(${interchange_sc}) + SUM(${markup_sc}) + SUM(${processing_fee_fc}) + SUM(${scheme_fees_sc});;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: total_trx_fees_percentage {
+    group_label: "* Fee Amounts *"
+    type: number
+    sql: NULLIF(${sum_total_trx_fees},0) / NULLIF(${sum_main_amount_authorised},0);;
+    value_format_name: percent_2
+  }
+
   dimension: diff_adyen_ct {
     type: number
     sql:  ${orders.total_gross_amount} - ${main_amount}  ;;
