@@ -221,12 +221,13 @@ explore: supply_chain {
     view_label: "08 Purchase Orders"
 
     type:         full_outer
-    relationship: one_to_many
+    relationship: many_to_one
 
     sql_on:
-        ${replenishment_purchase_orders.sku}           = ${products_hub_assignment.sku}      and
-        ${replenishment_purchase_orders.hub_code}      = ${products_hub_assignment.hub_code} and
-        ${replenishment_purchase_orders.delivery_date} = ${products_hub_assignment.report_date}
+        ${replenishment_purchase_orders.sku}           = ${products_hub_assignment.leading_sku_replenishment_substitute_group}      and
+        ${replenishment_purchase_orders.hub_code}      = ${products_hub_assignment.hub_code}                                        and
+        ${replenishment_purchase_orders.delivery_date} = ${products_hub_assignment.report_date}                                     and
+        ${replenishment_purchase_orders.vendor_id}     = ${products_hub_assignment.erp_vendor_id}
     ;;
   }
 
