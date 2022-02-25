@@ -394,11 +394,6 @@ view: cc_contactrate {
     sql: ${TABLE}.contact_email ;;
   }
 
-  dimension: hub_code {
-    type: string
-    sql: ${TABLE}.hub_code ;;
-  }
-
   dimension: contact_country_iso {
     type: string
     sql: ${TABLE}.contact_country_iso ;;
@@ -407,11 +402,6 @@ view: cc_contactrate {
   dimension: first_order {
     type: yesno
     sql: ${TABLE}.first_order ;;
-  }
-
-  dimension: total_orders {
-    type: number
-    sql: ${TABLE}.total_orders ;;
   }
 
   dimension: voucher_code {
@@ -477,10 +467,8 @@ view: cc_contactrate {
       user_id,
       contact_created_timestamp_time,
       contact_email,
-      hub_code,
       contact_country_iso,
       first_order,
-      total_orders,
       voucher_code,
       is_whatsapp_contact,
       platform,
