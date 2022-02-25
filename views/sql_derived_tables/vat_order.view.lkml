@@ -30,17 +30,32 @@ view: vat_order {
     group_label: "Order Date"
     type: time
     timeframes: [
-      raw,
       date,
       week,
       month,
-      quarter,
       year
     ]
     convert_tz: no
     datatype: date
     sql: ${TABLE}.order_date ;;
   }
+
+  dimension_group: refund {
+    group_label: "Refund Date"
+    type: time
+    timeframes: [
+      date,
+      week,
+      month,
+      year
+    ]
+    convert_tz: no
+    datatype: date
+    sql: ${TABLE}.refund_date ;;
+  }
+
+
+
 
   dimension: user_email {
     type: string
