@@ -165,10 +165,26 @@ view: lexbizz_item {
     sql: ${TABLE}.seasonality ;;
   }
 
+
+
   dimension: sku {
     type: string
     sql: ${TABLE}.sku ;;
   }
+
+  dimension: is_leading_sku {
+    type: yesno
+    sql: left(${sku},1) = '9' ;;
+  }
+
+  measure: cnt_leading_skus  {
+    type: count_distinct
+    sql: ${sku} ;;
+    filters: [is_leading_sku: "yes"]
+  }
+
+
+
 
   dimension: table_uuid {
     type: string
