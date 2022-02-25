@@ -1,37 +1,57 @@
 view: price_changes_follow_up {
   derived_table: {
     sql:
-with
+with oos_aux as (
+    select
+    i.substitute_group,
+    i.report_date as inventory_tracking_date,
+    i.sku,
+    i.hub_code,
+number_of_hours_open  as open_hours_total,
+number_of_hours_oos  as hours_oos
 
-oos as
-(
-    SELECT
-    inventory_tracking_date,
-    product_sku as sku,
-    sum(hours_oos) as hours_oos,
-    sum(open_hours_total) as open_hours_total
-        from (
-            SELECT
-                a.inventory_tracking_date,
-                c.hub_name,
-                case when b.category ="Obst & Gemüse" then b.substitute_group else b.product_sku end  as substitute_group,
-                --product_sku,
-                min(hours_oos) as hours_oos,
-                max(open_hours_total) as open_hours_total
-        FROM `flink-data-prod.reporting.inventory_stock_count_daily` a
-        LEFT JOIN `flink-data-prod.curated.products` b
-            on a.sku = b.product_sku
-        LEFT JOIN `flink-data-prod.curated.hubs` c
-            on a.hub_code = c.hub_code
-        -- WHERE inventory_tracking_date >= date_sub(current_date(), interval 88 day)
-        group by 1,2,3
-            )
-    as a
-    left join `flink-data-prod.curated.products` b
-        on a.substitute_group  = case when b.category ="Obst & Gemüse" then b.substitute_group else b.product_sku end
+from      `flink-data-prod.curated.products_hub_assignment_v2` as a
+
+left join `flink-data-prod.reporting.inventory_daily`           as i
+on
+    a.report_date = i.report_date and
+    a.hub_code    = i.hub_code    and
+    a.sku         = i.sku
+
+left join `flink-data-prod.curated.hubs`           as hubs_ct
+on i.hub_code = hubs_ct.hub_code
+
+where a.ct_final_decision_is_sku_assigned_to_hub is true
+ -- and a.erp_final_decision_is_sku_assigned_to_hub
+  --  and date(i.report_date) = "2022-02-23"
+ --   and is_hub_open is true
+  --  and i.hub_code = "de_ber_wilm"
+  --  and i.sku ="11012986"
+  --  and i.substitute_group is not null
+--order by 2 desc,1
+        and
+            hubs_ct.is_test_hub is false
+        and
+            hubs_ct.live is not null
+                   and
+            hubs_ct.hub_code not in ('de_ham_alto')
+)
+,
+
+oos as (
+    select
+    --oos.substitute_group,
+    oos_aux.inventory_tracking_date,
+    oos_aux.sku,
+    --oos_aux.hub_code,
+    sum(open_hours_total) as open_hours_total,
+    sum(hours_oos) as hours_oos
+    from oos_aux
     group by 1,2
-
+    order by 1
 ),
+
+
 
 price_today_aux as
 (
@@ -345,7 +365,6 @@ from pre_final a
         and a.sku = cast(c.sku as string)
 
 
-
       ;;
   }
 
@@ -471,7 +490,7 @@ from pre_final a
     type: number
     label: "% Out of Stock Previous 7 days"
     value_format_name: percent_1
-    sql: ${hours_oos_after_7_days} /nullif(${open_hours_total_after_7days},0)
+    sql: ${hours_oos_before_7_days} /nullif(${open_hours_total_before_7days},0)
     ;;
   }
 
@@ -479,7 +498,7 @@ from pre_final a
     type: number
     label: "% Out of Stock 7 days after"
     value_format_name: percent_1
-    sql: ${hours_oos_before_7_days} /nullif(${open_hours_total_before_7days},0)
+    sql: ${hours_oos_after_7_days} /nullif(${open_hours_total_after_7days},0)
     ;;
   }
 
