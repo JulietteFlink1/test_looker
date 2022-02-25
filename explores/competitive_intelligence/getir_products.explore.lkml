@@ -1,4 +1,5 @@
 include: "/views/**/*.view"
+include: "/views/bigquery_tables/comp-intel/*.view"
 
 explore:  getir_products {
   hidden: no
@@ -41,6 +42,14 @@ explore:  getir_products {
     sql_on: ${getir_hubs.hub_id} = ${competitive_intelligence_active_hubs.hub_id} ;;
     relationship: one_to_many
     type: left_outer
+  }
+
+  join: products {
+    from:  products
+    view_label: "* Flink Product Data *"
+    sql_on: ${products.product_sku} = ${getir_to_flink_global.flink_product_sku};;
+    relationship: one_to_many
+    type: inner
   }
 
 }

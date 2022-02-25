@@ -1,16 +1,9 @@
-view: nl_albert_heijn_to_flink {
-  sql_table_name: `flink-data-prod.comp_intel.nl_albert_heijn_to_flink`
+#this view is to be deleted when relevant Looks have been updated
+#replaced by flink_to_albert_heijn_global
+
+view: nl_flink_to_albert_heijn {
+  sql_table_name: `flink-data-prod.comp_intel.flink_to_albert_heijn_global`
     ;;
-
-  dimension: __id_left {
-    type: string
-    sql: ${TABLE}.__id_left ;;
-  }
-
-  dimension: __id_right {
-    type: string
-    sql: ${TABLE}.__id_right ;;
-  }
 
   dimension: albert_heijn_product_id {
     type: string
@@ -24,7 +17,7 @@ view: nl_albert_heijn_to_flink {
 
   dimension: best_match_score {
     type: number
-    sql: ${TABLE}.best_match_score ;;
+    sql: ${TABLE}.match_score ;;
   }
 
   dimension: flink_product_name {

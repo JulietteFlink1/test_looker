@@ -2,6 +2,7 @@ include: "/views/**/*.view"
 include: "/views/bigquery_tables/curated_layer/*.view"
 include: "/views/bigquery_tables/reporting_layer/competitive_intelligence/*.view"
 include: "/views/bigquery_tables/reporting_layer/competitive_intelligence/gorillas_inventory_stock_count.view.lkml"
+include: "/views/bigquery_tables/comp-intel/*.view"
 
 explore: flink_to_gorillas_global {
   from: products
@@ -73,7 +74,8 @@ explore: flink_to_gorillas_global {
   join: flink_to_getir_global {
     from: flink_to_getir_global
     view_label: "* Flink-Getir Match Data *"
-    sql_on: ${flink_to_getir_global.flink_product_sku} = ${products.product_sku};;
+    sql_on: ${flink_to_getir_global.flink_product_sku} = ${products.product_sku}
+        and ${flink_to_getir_global.country_iso} = ${products.country_iso};;
     relationship: one_to_many
     type: left_outer
   }
@@ -104,10 +106,10 @@ explore: flink_to_gorillas_global {
     type:  left_outer
   }
 
-  join: nl_flink_to_albert_heijn {
-    from: nl_flink_to_albert_heijn
+  join: flink_to_albert_heijn_global {
+    from: flink_to_albert_heijn_global
     view_label: "* Flink-Albert Heijn Match Data *"
-    sql_on: ${nl_flink_to_albert_heijn.flink_product_sku} = ${products.product_sku} ;;
+    sql_on: ${flink_to_albert_heijn_global.flink_product_sku} = ${products.product_sku} ;;
     relationship: one_to_many
     type: left_outer
   }
@@ -115,7 +117,7 @@ explore: flink_to_gorillas_global {
   join: albert_heijn_products {
     from: albert_heijn_products
     view_label: "* Albert Heijn Products *"
-    sql_on: ${albert_heijn_products.product_id} = ${nl_flink_to_albert_heijn.albert_heijn_product_id} ;;
+    sql_on: ${albert_heijn_products.product_id} = ${flink_to_albert_heijn_global.albert_heijn_product_id} ;;
     relationship: one_to_one
     type: left_outer
   }

@@ -24,7 +24,7 @@ explore: supply_chain {
   description: "This explore covers inventory data based on CommerceTools
                 and Stock Changelogs provided by Hub-Tech. It is enrichted with reporting tables to measure the
                 vendor performance"
-  group_label: "07) Supply Chain"
+  group_label: "04) Supply Chain"
 
   from  :     products_hub_assignment_v2
   view_name:  products_hub_assignment
@@ -36,34 +36,58 @@ explore: supply_chain {
       {% condition global_filters_and_parameters.datasource_filter %} ${products_hub_assignment.report_date} {% endcondition %}
 
       -- filter for showing only 1 SKU per (Replenishment) Substitute Group
-      and
-      case
-            when {% condition products_hub_assignment.select_calculation_granularity %} 'sku'           {% endcondition %}
-            then true
+      -- and
+      -- case
+      --       when {% condition products_hub_assignment.select_calculation_granularity %} 'sku'           {% endcondition %}
+      --       then true
 
-            when {% condition products_hub_assignment.select_calculation_granularity %} 'replenishment' {% endcondition %}
-            then ${products_hub_assignment.filter_one_sku_per_replenishment_substitute_group} is true
+      --       when {% condition products_hub_assignment.select_calculation_granularity %} 'replenishment' {% endcondition %}
+      --       then ${products_hub_assignment.filter_one_sku_per_replenishment_substitute_group} is true
 
-            when {% condition products_hub_assignment.select_calculation_granularity %} 'customer'      {% endcondition %}
-            then ${products_hub_assignment.filter_one_sku_per_substitute_group} is true
+      --       when {% condition products_hub_assignment.select_calculation_granularity %} 'customer'      {% endcondition %}
+      --       then ${products_hub_assignment.filter_one_sku_per_substitute_group} is true
 
-            else null
-        end
+      --       else null
+      --   end
+
+        and
+            {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku' %}
+              true
+
+            {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
+              ${products_hub_assignment.filter_one_sku_per_replenishment_substitute_group} is true
+
+            {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'customer' %}
+              ${products_hub_assignment.filter_one_sku_per_substitute_group} is true
+
+            {% endif %}
+
+        and
+            ${products_hub_assignment.hub_code} not in ('de_ham_alto')
+        and
+            ${hubs_ct.is_test_hub} is false
+        and
+            ${hubs_ct.live} is not null
+
       ;;
 
-  hidden: yes
+  hidden: no
 
   always_filter: {
     filters: [
-      products_hub_assignment.is_sku_assigned_to_hub: "Yes",
+      products_hub_assignment.assingment_dynamic: "Yes",
+      products_hub_assignment.select_assignment_logic: "replenishment",
+
       global_filters_and_parameters.datasource_filter: "last 30 days",
+
       products_hub_assignment.select_calculation_granularity: "sku"
+
     ]
   }
 
   join: global_filters_and_parameters {
 
-    view_label: ""
+    view_label: "Global Filters"
 
     sql_on: ${global_filters_and_parameters.generic_join_dim} = TRUE ;;
     type: left_outer
@@ -174,20 +198,65 @@ explore: supply_chain {
     ;;
   }
 
-  join: replenishment_purchase_orders {
 
-    view_label: "07 Purchase Orders"
+  join: order_lineitems {
 
-    type:         full_outer
-    relationship: one_to_many
+    from: orderline
+
+    view_label: "07 Order Lineitems"
+
+    type: left_outer
+    relationship: many_to_many
 
     sql_on:
-        ${replenishment_purchase_orders.sku}           = ${products_hub_assignment.sku}      and
-        ${replenishment_purchase_orders.hub_code}      = ${products_hub_assignment.hub_code} and
-        ${replenishment_purchase_orders.delivery_date} = ${products_hub_assignment.report_date}
+        ${order_lineitems.product_sku}         = ${products_hub_assignment.sku}         and
+        ${order_lineitems.hub_code}            = ${products_hub_assignment.hub_code}    and
+        ${order_lineitems.created_date}        = ${products_hub_assignment.report_date} and
+        {% condition global_filters_and_parameters.datasource_filter %} ${order_lineitems.created_date} {% endcondition %}
     ;;
   }
 
+  join: replenishment_purchase_orders {
+
+    view_label: "08 Purchase Orders"
+
+    type:         full_outer
+    relationship: many_to_one
+
+    sql_on:
+        ${replenishment_purchase_orders.sku}           = ${products_hub_assignment.leading_sku_replenishment_substitute_group}      and
+        ${replenishment_purchase_orders.hub_code}      = ${products_hub_assignment.hub_code}                                        and
+        ${replenishment_purchase_orders.delivery_date} = ${products_hub_assignment.report_date}                                     and
+        ${replenishment_purchase_orders.vendor_id}     = ${products_hub_assignment.erp_vendor_id}
+    ;;
+  }
+
+  join: erp_master_data {
+
+    from: erp_product_hub_vendor_assignment_v2
+    view_label: "09 ERP Master Data"
+
+    type: left_outer
+    relationship: many_to_one
+
+    sql_on:
+        ${erp_master_data.report_date} = ${products_hub_assignment.report_date} and
+        ${erp_master_data.hub_code}    = ${products_hub_assignment.hub_code}    and
+        ${erp_master_data.sku}         = ${products_hub_assignment.sku}         and
+        ${erp_master_data.vendor_id}   = ${products_hub_assignment.erp_vendor_id}
+
+    ;;
+  }
+
+
+  join: top_50_skus_per_gmv_supply_chain_explore {
+    view_label: "10 Top Selling Products (last 14days)"
+    sql_on: ${top_50_skus_per_gmv_supply_chain_explore.sku}         = ${products_hub_assignment.sku}
+        and ${top_50_skus_per_gmv_supply_chain_explore.country_iso} = ${products_hub_assignment.country_iso}
+    ;;
+    type: left_outer
+    relationship: many_to_one
+  }
 
 
 }

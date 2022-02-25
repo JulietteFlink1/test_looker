@@ -1,20 +1,15 @@
 view: getir_to_flink_global {
-  sql_table_name: `flink-data-prod.comp_intel.getir_to_flink_fuzzy_matching`
+  sql_table_name: `flink-data-prod.comp_intel.getir_to_flink_global`
     ;;
 
-  dimension: __id_left {
-    type: string
-    sql: ${TABLE}.__id_left ;;
-  }
-
-  dimension: __id_right {
-    type: string
-    sql: ${TABLE}.__id_right ;;
-  }
-
-  dimension: best_match_score {
+  dimension: match_score {
     type: number
-    sql: ${TABLE}.best_match_score ;;
+    sql: ${TABLE}.match_score ;;
+  }
+
+  dimension: match_type {
+    type: string
+    sql: ${TABLE}.match_type ;;
   }
 
   dimension: country_iso {
@@ -32,14 +27,16 @@ view: getir_to_flink_global {
     sql: ${TABLE}.flink_product_sku ;;
   }
 
-  dimension: getir_fuzzy_match_uuid {
+  dimension: table_uuid {
     type: string
-    sql: ${TABLE}.getir_fuzzy_match_uuid ;;
+    sql: ${TABLE}.table_uuid ;;
   }
 
   dimension: getir_product_id {
     type: string
     sql: ${TABLE}.getir_product_id ;;
+
+    primary_key: yes
   }
 
   dimension: getir_product_name {
