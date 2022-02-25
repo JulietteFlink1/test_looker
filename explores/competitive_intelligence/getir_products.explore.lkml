@@ -44,4 +44,12 @@ explore:  getir_products {
     type: left_outer
   }
 
+  join: products {
+    from:  products
+    view_label: "* Flink Product Data *"
+    sql_on: ${products.product_sku} = ${getir_to_flink_global.flink_product_sku};;
+    relationship: one_to_many
+    type: inner
+  }
+
 }

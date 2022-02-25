@@ -40,8 +40,8 @@ view: cc_contactrate {
       )
       SELECT *
       FROM cs_tb
-      WHERE ({% condition contact_reason_l1_filter %} contact_reason_l1 {% endcondition %} OR (contact_reason IS NULL AND conversation_uuid IS NULL))
-      AND ({% condition contact_reason_l1l2_filter %} contact_reason {% endcondition %} OR (contact_reason IS NULL AND conversation_uuid IS NULL))
+      WHERE ({% condition contact_reason_l1l2_filter %} contact_reason {% endcondition %} OR (contact_reason IS NULL AND conversation_uuid IS NULL))
+      AND ({% condition contact_reason_l3_filter %} contact_reason_l3 {% endcondition %} OR (contact_reason IS NULL AND conversation_uuid IS NULL))
       AND ({% condition conversation_type_filter %} source_type {% endcondition %} OR (contact_reason IS NULL AND conversation_uuid IS NULL))
        ;;
   }
@@ -88,11 +88,11 @@ view: cc_contactrate {
     }
   }
 
-  filter: contact_reason_l1_filter {
-    label: "Contact Reason L1 Filter"
+  filter: contact_reason_l3_filter {
+    label: "Contact Reason L3 Filter"
     type: string
-    suggest_dimension: contact_reason_l1
-    sql: EXISTS (SELECT ${creation_timestamp_time} FROM ${TABLE} WHERE {% condition %} contact_reason_l1 {% endcondition %}) ;;
+    suggest_dimension: contact_reason_l3
+    sql: EXISTS (SELECT ${creation_timestamp_time} FROM ${TABLE} WHERE {% condition %} contact_reason_l3 {% endcondition %}) ;;
   }
 
   filter: contact_reason_l1l2_filter {
@@ -121,7 +121,7 @@ view: cc_contactrate {
 
   measure: cnt_conversations {
     label: "# unique conversations"
-    description: "cnt conversations by creation date"
+    description: "cnt conversations"
     type: count_distinct
     sql: ${conversation_uuid} ;;
   }
@@ -221,9 +221,361 @@ view: cc_contactrate {
     drill_fields: [detail*]
   }
 
+  dimension: agent_email {
+    group_label: "* Agent & Team *"
+    description: "Email of the last agent who took part in the conversation"
+    type: string
+    sql: ${TABLE}.agent_email ;;
+  }
+
+  dimension: agent_id {
+    group_label: "* Agent & Team *"
+    description: "ID of the last agent who took part in the conversation"
+    type: number
+    sql: ${TABLE}.agent_id ;;
+  }
+
+  dimension: agent_name {
+    group_label: "* Agent & Team *"
+    description: "Name of the last agent who took part in the conversation"
+    type: string
+    sql: ${TABLE}.agent_name ;;
+  }
+
+  dimension_group: contact_created {
+    group_label: "* Contact *"
+    type: time
+    timeframes: [
+      date,
+    ]
+    sql: ${TABLE}.contact_created_timestamp ;;
+  }
+
+  dimension: contact_email {
+    group_label: "* Contact *"
+    type: string
+    description: "Email of the user who created the conversation"
+    sql: ${TABLE}.contact_email ;;
+  }
+
+  dimension: contact_id {
+    group_label: "* Contact *"
+    type: number
+    description: "ID of the user who created the conversation"
+    sql: ${TABLE}.contact_id ;;
+  }
+
+  dimension: contact_name {
+    group_label: "* Contact *"
+    type: string
+    description: "Name of the user who created the conversation"
+    sql: ${TABLE}.contact_name ;;
+  }
+
+  dimension_group: first_agent_reply {
+    type: time
+    group_label: "* Dates & Timestamps *"
+    timeframes: [
+      raw,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    hidden: yes
+    convert_tz: no
+    datatype: date
+    sql: ${TABLE}.first_agent_reply_timestamp ;;
+  }
+
+  dimension_group: conversation_created {
+    type: time
+    group_label: "* Dates & Timestamps *"
+    timeframes: [
+      time,
+      date,
+      week,
+      hour,
+      month,
+      year
+    ]
+    sql: ${TABLE}.conversation_created_timestamp ;;
+  }
+
   dimension: conversation_uuid {
     type: number
+    value_format_name: id
+    label: "Conversation ID"
     sql: ${TABLE}.conversation_uuid ;;
+  }
+
+  dimension: country_iso {
+    type: string
+    sql: ${TABLE}.country_iso ;;
+  }
+
+  dimension: is_first_reply_the_same_day {
+    type: yesno
+    group_label: "* Dates & Timestamps *"
+    sql: case when date(${conversation_created_date}) = date(${first_agent_reply_date}) then true else false end ;;
+  }
+
+  dimension_group: first_close_timestamp {
+    type: time
+    hidden: yes
+    group_label: "* Dates & Timestamps *"
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: ${TABLE}.first_close_timestamp ;;
+  }
+
+  dimension_group: first_contact_reply {
+    type: time
+    hidden: yes
+    group_label: "* Dates & Timestamps *"
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: ${TABLE}.first_contact_reply_timestamp ;;
+  }
+
+  dimension: is_deflected_by_bot {
+    group_label: "* Conversation Attributes *"
+    type: yesno
+    sql: ${TABLE}.is_deflected_by_bot ;;
+  }
+
+  dimension: is_closed {
+    group_label: "* Conversation Attributes *"
+    type: yesno
+    sql: ${TABLE}.is_closed ;;
+  }
+
+  dimension: is_abandoned_by_contact {
+    group_label: "* Conversation Attributes *"
+    type: yesno
+    sql: ${TABLE}.is_abandoned_by_contact ;;
+  }
+
+  dimension: is_refunded {
+    group_label: "* Conversation Attributes *"
+    type: yesno
+    sql: ${TABLE}.is_refunded ;;
+  }
+
+  dimension: is_whatsapp_contact {
+    group_label: "* Contact *"
+    type: yesno
+    sql: ${TABLE}.is_whatsapp_contact ;;
+  }
+
+  dimension_group: last_close {
+    type: time
+    group_label: "* Dates & Timestamps *"
+    timeframes: [
+      time,
+      date,
+      week,
+      month,
+      year
+    ]
+    sql: ${TABLE}.last_close_timestamp ;;
+  }
+
+  dimension_group: last_contact_reply {
+    type: time
+    group_label: "* Dates & Timestamps *"
+    timeframes: [
+      time,
+      date,
+      week,
+      month,
+      year
+    ]
+    sql: ${TABLE}.last_contact_reply_timestamp ;;
+  }
+
+  dimension: median_time_to_reply_seconds {
+    type: number
+    hidden: yes
+    group_label: "* Conversation Statistics *"
+    sql: ${TABLE}.median_time_to_reply_seconds ;;
+  }
+
+  dimension: median_time_to_reply_minutes {
+    type: number
+    hidden: yes
+    group_label: "* Conversation Statistics *"
+    sql: ${TABLE}.median_time_to_reply_minutes ;;
+  }
+
+  dimension: conversation_hour {
+    type: number
+    group_label: "* Dates & Timestamps *"
+    sql:  ${TABLE}.conversation_created_hour ;;
+  }
+
+  dimension: number_of_assignments {
+    hidden: yes
+    group_label: "* Conversation Statistics *"
+    type: number
+    sql: ${TABLE}.number_of_assignments ;;
+  }
+
+  dimension: number_of_conversation_parts {
+    type: number
+    hidden:yes
+    group_label: "* Conversation Statistics *"
+    sql: ${TABLE}.number_of_conversation_parts ;;
+  }
+
+  dimension: rating {
+    group_label: "* Conversation Attributes *"
+    type: number
+    sql: ${TABLE}.rating ;;
+  }
+
+  dimension_group: rating_created {
+    type: time
+    group_label: "* Dates & Timestamps *"
+    timeframes: [
+      date,
+      week,
+      month,
+      year
+    ]
+    sql: ${TABLE}.rating_created_timestamp ;;
+  }
+
+  dimension: rating_remark {
+    group_label: "* Conversation Attributes *"
+    type: string
+    sql: ${TABLE}.rating_remark ;;
+  }
+
+  dimension: source_author_type {
+    group_label: "* Conversation Attributes *"
+    type: string
+    sql: ${TABLE}.source_author_type ;;
+  }
+
+  dimension: source_type {
+    group_label: "* Conversation Attributes *"
+    type: string
+    sql: ${TABLE}.source_type ;;
+  }
+
+  dimension: tag_names {
+    group_label: "* Conversation Attributes *"
+    type: string
+    sql: ${TABLE}.tag_names ;;
+  }
+
+  dimension: team_id {
+    group_label: "* Agent & Team *"
+    description: "ID of the last team who took part in the conversation"
+    type: number
+    sql: ${TABLE}.team_id ;;
+  }
+
+  dimension: team_name {
+    group_label: "* Agent & Team *"
+    description: "Team of the last team who took part in the conversation"
+    type: string
+    sql: ${TABLE}.team_name ;;
+  }
+
+  dimension: time_to_agent_reply_seconds {
+    group_label: "* Conversation Statistics *"
+    hidden: yes
+    type: number
+    sql: ${TABLE}.time_to_agent_reply_seconds ;;
+  }
+
+  dimension: time_to_agent_reply_minutes {
+    hidden: yes
+    group_label: "* Conversation Statistics *"
+    type: number
+    sql: ${TABLE}.time_to_agent_reply_minutes ;;
+  }
+
+  dimension: time_to_assignement_seconds {
+    group_label: "* Conversation Statistics *"
+    type: number
+    hidden: yes
+    sql: ${TABLE}.time_to_assignement_seconds ;;
+  }
+
+  dimension: time_to_first_close_seconds {
+    group_label: "* Conversation Statistics *"
+    type: number
+    hidden: yes
+    sql: ${TABLE}.time_to_first_close_seconds ;;
+  }
+
+  dimension: time_to_last_close_seconds {
+    group_label: "* Conversation Statistics *"
+    type: number
+    hidden: yes
+    sql: ${TABLE}.time_to_last_close_seconds ;;
+  }
+
+  dimension: time_to_first_close_minutes {
+    group_label: "* Conversation Statistics *"
+    type: number
+    hidden: yes
+    sql: ${TABLE}.time_to_first_close_minutes ;;
+  }
+
+  dimension: time_to_last_close_minutes {
+    group_label: "* Conversation Statistics *"
+    hidden: yes
+    type: number
+    sql: ${TABLE}.time_to_last_close_minutes ;;
+  }
+
+  dimension: number_of_reopens {
+    group_label: "* Conversation Attributes *"
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_reopens ;;
+  }
+
+  dimension: is_closed_several_times {
+    type: yesno
+    sql: case when ${time_to_first_close_seconds} = ${time_to_last_close_seconds} then false else true end ;;
+  }
+
+  dimension: is_snoozed_conversation {
+    group_label: "* Conversation Attributes *"
+    type: yesno
+    sql: ${TABLE}.is_snoozed_conversation ;;
+  }
+
+  dimension: timezone {
+    group_label: "* Dates & Timestamps *"
+    type: string
+    sql: ${TABLE}.timezone ;;
+  }
+
+  dimension: user_id {
+    group_label: "* Contact *"
+    type: string
+    sql: ${TABLE}.user_id ;;
   }
 
   dimension: conversation_type {
@@ -253,175 +605,23 @@ view: cc_contactrate {
 
   dimension: contact_reason {
     label: "Contact Reason L1/L2"
+    group_label: "* Conversation Attributes *"
     type: string
     sql: ${TABLE}.contact_reason ;;
   }
 
   dimension: contact_reason_l1 {
     label: "Contact Reason L1"
+    group_label: "* Conversation Attributes *"
     type: string
     sql: ${TABLE}.contact_reason_l1 ;;
   }
 
   dimension: contact_reason_l3 {
     label: "Contact Reason L3"
+    group_label: "* Conversation Attributes *"
     type: string
     sql: ${TABLE}.contact_reason_l3 ;;
-  }
-
-  dimension: agent_id {
-    type: number
-    sql: ${TABLE}.agent_id ;;
-  }
-
-  dimension: count_assignments {
-    type: number
-    sql: ${TABLE}.count_assignments ;;
-  }
-
-  dimension: time_to_assignment {
-    type: number
-    sql: ${TABLE}.time_to_assignment ;;
-  }
-
-  dimension: time_to_first_close {
-    type: number
-    sql: ${TABLE}.time_to_first_close ;;
-  }
-
-  dimension: time_to_last_close {
-    type: number
-    sql: ${TABLE}.time_to_last_close ;;
-  }
-
-  dimension: count_conversation_parts {
-    type: number
-    sql: ${TABLE}.count_conversation_parts ;;
-  }
-
-  dimension_group: last_close_timestamp {
-    type: time
-    sql: ${TABLE}.last_close_timestamp ;;
-  }
-
-  dimension_group: first_close_timestamp {
-    type: time
-    sql: ${TABLE}.first_close_timestamp ;;
-  }
-
-  dimension_group: first_contact_reply_timestamp {
-    type: time
-    sql: ${TABLE}.first_contact_reply_timestamp ;;
-  }
-
-  dimension_group: last_contact_reply_timestamp {
-    type: time
-    sql: ${TABLE}.last_contact_reply_timestamp ;;
-  }
-
-  dimension: median_time_to_reply {
-    type: number
-    sql: ${TABLE}.median_time_to_reply ;;
-  }
-
-  dimension: country_iso {
-    type: string
-    sql: ${TABLE}.country_iso ;;
-  }
-
-  dimension: tag_names {
-    type: string
-    sql: ${TABLE}.tag_names ;;
-  }
-
-  dimension: rating_remark {
-    type: string
-    sql: ${TABLE}.rating_remark ;;
-  }
-
-  dimension: rating {
-    type: number
-    sql: ${TABLE}.rating ;;
-  }
-
-  dimension_group: rating_created_timestamp {
-    type: time
-    sql: ${TABLE}.rating_created_timestamp ;;
-  }
-
-  dimension: conv_email {
-    type: string
-    sql: ${TABLE}.conv_email ;;
-  }
-
-  dimension_group: conv_ingestion_timestamp {
-    type: time
-    sql: ${TABLE}.conv_ingestion_timestamp ;;
-  }
-
-  dimension: contact_id {
-    type: string
-    sql: ${TABLE}.contact_id ;;
-  }
-
-  dimension_group: last_contact_updated_timestamp {
-    type: time
-    sql: ${TABLE}.last_contact_updated_timestamp ;;
-  }
-
-  dimension: is_deflected_by_bot {
-    type: yesno
-    sql: ${TABLE}.is_deflected_by_bot ;;
-  }
-
-  dimension: name {
-    type: string
-    sql: ${TABLE}.name ;;
-  }
-
-  dimension: user_id {
-    type: string
-    sql: ${TABLE}.user_id ;;
-  }
-
-  dimension_group: contact_created_timestamp {
-    type: time
-    sql: ${TABLE}.contact_created_timestamp ;;
-  }
-
-  dimension: contact_email {
-    type: string
-    sql: ${TABLE}.contact_email ;;
-  }
-
-  dimension: hub_code {
-    type: string
-    sql: ${TABLE}.hub_code ;;
-  }
-
-  dimension: contact_country_iso {
-    type: string
-    sql: ${TABLE}.contact_country_iso ;;
-  }
-
-  dimension: first_order {
-    type: yesno
-    sql: ${TABLE}.first_order ;;
-  }
-
-  dimension: total_orders {
-    type: number
-    sql: ${TABLE}.total_orders ;;
-  }
-
-  dimension: voucher_code {
-    type: string
-    sql: ${TABLE}.voucher_code ;;
-  }
-
-  dimension: is_whatsapp_contact {
-    type: yesno
-    sql: ${TABLE}.is_whatsapp_contact ;;
   }
 
   dimension: app_version {
@@ -431,6 +631,8 @@ view: cc_contactrate {
 
   dimension_group: creation_timestamp {
     label: "Event Timestamp"
+    description: "Timestamp that includes conversations and orders. Use this if orders should be included"
+    group_label: "* Dates & Timestamps *"
     type: time
     sql: ${TABLE}.creation_timestamp ;;
   }
@@ -453,35 +655,14 @@ view: cc_contactrate {
       conversation_created_timestamp_time,
       contact_reason,
       contact_reason_l3,
-      count_assignments,
-      time_to_assignment,
-      time_to_first_close,
-      time_to_last_close,
-      count_conversation_parts,
-      last_close_timestamp_time,
       first_close_timestamp_time,
-      first_contact_reply_timestamp_time,
-      last_contact_reply_timestamp_time,
-      median_time_to_reply,
       country_iso,
       tag_names,
       rating_remark,
       rating,
-      rating_created_timestamp_time,
-      conv_email,
-      conv_ingestion_timestamp_time,
       contact_id,
-      last_contact_updated_timestamp_time,
-      is_deflected_by_bot,
-      name,
       user_id,
-      contact_created_timestamp_time,
       contact_email,
-      hub_code,
-      contact_country_iso,
-      first_order,
-      total_orders,
-      voucher_code,
       is_whatsapp_contact,
       platform,
       app_version,

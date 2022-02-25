@@ -1,5 +1,5 @@
 view: getir_to_flink_global {
-  sql_table_name: `flink-data-prod.comp_intel.getir_to_flink_fuzzy_matching`
+  sql_table_name: `flink-data-prod.comp_intel.getir_to_flink_global`
     ;;
 
   dimension: match_score {

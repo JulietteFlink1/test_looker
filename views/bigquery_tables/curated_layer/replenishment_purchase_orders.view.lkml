@@ -23,6 +23,31 @@ view: replenishment_purchase_orders {
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Parameters     ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  parameter: show_info {
+    # this paramter does:
+    #  1. replace the SKU with a leading SKU name
+    #  2. reduces the data in inventory tables to report only leading SKU level per group
+
+    # this parameter is defined at the products_hub_assignment level, as this view is the base of the Supply Chain explore
+
+    label:       "Show details per metric"
+    group_label: "* Parameters & Dynamic Fields *"
+    description: "Chose yes, if you want to see more details"
+
+    type: unquoted
+
+    allowed_value: {
+      label: "yes"
+      value: "yes"
+    }
+
+    allowed_value: {
+      label: "no"
+      value: "no"
+    }
+
+    default_value: "no"
+  }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Dimensions     ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -260,6 +285,15 @@ view: replenishment_purchase_orders {
     sql: ${inventory_daily.sum_of_total_inbound} / nullif(${sum_selling_unit_quantity} ,0) ;;
 
     value_format_name: percent_1
+
+    html:
+
+      {% if show_info._parameter_value == 'yes' %}
+        {{ rendered_value }} <br><span style="font-size:8px"> {{ inventory_daily.sum_of_total_inbound._rendered_value }} inb /<br>{{ sum_selling_unit_quantity._rendered_value }} ord</span>
+      {% else %}
+        {{ rendered_value }}
+      {% endif %}
+        ;;
   }
 
 
