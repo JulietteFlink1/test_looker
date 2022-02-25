@@ -197,6 +197,30 @@ view: hub_staffing {
     sql: ${TABLE}.number_of_no_show_minutes_external ;;
   }
 
+  dimension: number_of_unassigned_minutes_internal {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_unassigned_minutes_internal ;;
+  }
+
+  dimension: number_of_unassigned_minutes_external {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_unassigned_minutes_external ;;
+  }
+
+  dimension: number_of_unassigned_employees_internal {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_unassigned_employees_internal ;;
+  }
+
+  dimension: number_of_unassigned_employees_external {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_unassigned_employees_external ;;
+  }
+
   dimension: position_name {
     type: string
     hidden: no
@@ -300,6 +324,23 @@ view: hub_staffing {
   }
 
 
+  measure: sum_unassigned_employees{
+    type: sum
+    label:"# Unassigned Employees"
+    description: "Number of Unassigned Employees"
+    sql:${number_of_unassigned_employees_internal}+${number_of_unassigned_employees_external};;
+    value_format_name: decimal_1
+  }
+
+  measure: sum_unassigned_employees_external{
+    type: sum
+    label:"# Unassigned Ext Employees"
+    description: "Number of Unassigned Ext Employees"
+    sql:${number_of_unassigned_employees_external};;
+    value_format_name: decimal_1
+  }
+
+
   measure: pct_no_show_employees{
     label:"% No Show Hours"
     type: number
@@ -350,6 +391,22 @@ view: hub_staffing {
     value_format_name: decimal_2
   }
 
+
+  measure: number_of_unassigned_hours{
+    type: sum
+    label:"# Unassigned Hours"
+    description: "Number of Unassigned(Open) Hours"
+    sql:(${number_of_unassigned_minutes_internal}+${number_of_unassigned_minutes_external})/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_unassigned_hours_external{
+    type: sum
+    label:"# Unassigned Ext Hours"
+    description: "Number of Unassigned(Open) Ext Hours"
+    sql:${number_of_unassigned_minutes_external}/60;;
+    value_format_name: decimal_1
+  }
 
   measure: sum_no_show_hours{
     label:"# No Show Hours"
