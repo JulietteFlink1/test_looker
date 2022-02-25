@@ -76,6 +76,30 @@ view: shyftplan_riders_pickers_hours_clean {
     sql: ${TABLE}.number_of_worked_employees_external ;;
   }
 
+  dimension: number_of_unassigned_minutes_internal {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_unassigned_minutes_internal ;;
+  }
+
+  dimension: number_of_unassigned_minutes_external {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_unassigned_minutes_external ;;
+  }
+
+  dimension: number_of_unassigned_employees_internal {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_unassigned_employees_internal ;;
+  }
+
+  dimension: number_of_unassigned_employees_external {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_unassigned_employees_external ;;
+  }
+
   dimension: position_name {
     type: string
     hidden: yes
@@ -254,6 +278,97 @@ view: shyftplan_riders_pickers_hours_clean {
     filters:[position_name: "picker"]
     hidden: yes
   }
+
+  measure: sum_unassigned_riders{
+    type: sum
+    hidden: yes
+    label:"# Unassigned Riders"
+    description: "Number of Unassigned Riders"
+    filters:[position_name: "rider"]
+    sql:${number_of_unassigned_employees_internal}+${number_of_unassigned_employees_external};;
+    value_format_name: decimal_1
+    group_label: "Unassigned Hours"
+  }
+
+  measure: sum_unassigned_rider_external{
+    type: sum
+    hidden: yes
+    label:"# Unassigned Ext Riders"
+    description: "Number of Unassigned Ext Riders"
+    filters:[position_name: "rider"]
+    sql:${number_of_unassigned_employees_external};;
+    value_format_name: decimal_1
+    group_label: "Counts"
+  }
+
+
+  measure: sum_unassigned_pickers{
+    type: sum
+    label:"# Unassigned Pickers"
+    hidden: yes
+    description: "Number of Unassigned Pickers"
+    filters:[position_name: "pickers"]
+    sql:${number_of_unassigned_employees_internal}+${number_of_unassigned_employees_external};;
+    value_format_name: decimal_1
+    group_label: "Counts"
+  }
+
+  measure: sum_unassigned_pickers_external{
+    type: sum
+    label:"# Unassigned Ext Pickers"
+    hidden: yes
+    description: "Number of Unassigned Ext Pickers"
+    filters:[position_name: "pickers"]
+    sql:${number_of_unassigned_employees_external};;
+    value_format_name: decimal_1
+    group_label: "Counts"
+  }
+
+  measure: number_of_unassigned_rider_hours{
+    type: sum
+    hidden: yes
+    label:"# Unassigned Rider Hours"
+    description: "Number of Unassigned(Open) Rider Hours"
+    filters:[position_name: "rider"]
+    sql:(${number_of_unassigned_minutes_internal}+${number_of_unassigned_minutes_external})/60;;
+    value_format_name: decimal_1
+    group_label: "Unassigned Hours"
+  }
+
+  measure: number_of_unassigned_hours_rider_external{
+    type: sum
+    hidden: yes
+    label:"# Unassigned Ext Rider Hours"
+    description: "Number of Unassigned(Open) Rider Ext Hours"
+    filters:[position_name: "rider"]
+    sql:${number_of_unassigned_minutes_external}/60;;
+    value_format_name: decimal_1
+    group_label: "Unassigned Hours"
+  }
+
+
+  measure: number_of_unassigned_picker_hours{
+    type: sum
+    hidden: yes
+    label:"# Unassigned Picker Hours"
+    description: "Number of Unassigned(Open) Picker Hours"
+    filters:[position_name: "picker"]
+    sql:(${number_of_unassigned_minutes_internal}+${number_of_unassigned_minutes_external})/60;;
+    value_format_name: decimal_1
+    group_label: "Unassigned Hours"
+  }
+
+  measure: number_of_unassigned_hours_picker_external{
+    type: sum
+    hidden: yes
+    label:"# Unassigned Ext Picker Hours"
+    description: "Number of Unassigned(Open) Picker Ext Hours"
+    filters:[position_name: "picker"]
+    sql:${number_of_unassigned_minutes_external}/60;;
+    value_format_name: decimal_1
+    group_label: "Unassigned Hours"
+  }
+
 
   measure: rider_utr {
     label: "AVG Rider UTR"
