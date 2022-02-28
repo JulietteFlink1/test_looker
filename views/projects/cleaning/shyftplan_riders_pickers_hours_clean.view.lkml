@@ -281,7 +281,6 @@ view: shyftplan_riders_pickers_hours_clean {
 
   measure: sum_unassigned_riders{
     type: sum
-    hidden: yes
     label:"# Unassigned Riders"
     description: "Number of Unassigned Riders"
     filters:[position_name: "rider"]
@@ -292,7 +291,6 @@ view: shyftplan_riders_pickers_hours_clean {
 
   measure: sum_unassigned_rider_external{
     type: sum
-    hidden: yes
     label:"# Unassigned Ext Riders"
     description: "Number of Unassigned Ext Riders"
     filters:[position_name: "rider"]
@@ -305,7 +303,7 @@ view: shyftplan_riders_pickers_hours_clean {
   measure: sum_unassigned_pickers{
     type: sum
     label:"# Unassigned Pickers"
-    hidden: yes
+    # hidden: yes
     description: "Number of Unassigned Pickers"
     filters:[position_name: "pickers"]
     sql:${number_of_unassigned_employees_internal}+${number_of_unassigned_employees_external};;
@@ -316,7 +314,7 @@ view: shyftplan_riders_pickers_hours_clean {
   measure: sum_unassigned_pickers_external{
     type: sum
     label:"# Unassigned Ext Pickers"
-    hidden: yes
+    # hidden: yes
     description: "Number of Unassigned Ext Pickers"
     filters:[position_name: "pickers"]
     sql:${number_of_unassigned_employees_external};;
