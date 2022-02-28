@@ -30,6 +30,7 @@ sum(case when shift_status = 'no_show' then planned_shift_duration_minutes-break
 
 from `flink-data-prod.curated.hub_shifts` as shifts
 left join del_shift on del_shift.id = shifts.shift_id
+where shift_type = 'assigned'
 group by 1,2,3,4,5,6,7
 )
 
