@@ -347,7 +347,7 @@ view: hub_staffing {
     label:"% No Show Hours"
     type: number
     description: "# No Show Hours"
-    sql:(${sum_planned_hours} - ${sum_worked_hours})/nullif(${sum_planned_hours},0) ;;
+    sql:(${sum_no_show_hours})/nullif(${sum_planned_hours},0) ;;
     value_format_name: percent_1
   }
 
