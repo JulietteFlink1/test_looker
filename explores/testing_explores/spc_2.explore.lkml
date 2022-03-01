@@ -1,6 +1,6 @@
-include: "/views/**/sku_performance_base.view"
-include: "/views/**/products.view"
-include: "/views/**/lexbizz_item.view"
+include: "/**/sku_performance_base.view"
+include: "/**/products.view"
+include: "/**/lexbizz_item.view"
 
 explore: spc_2 {
 
