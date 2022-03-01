@@ -10,7 +10,7 @@
 # - All questions around replenishment performance
 # - Questions around inventory movements
 
-include: "/views/**/*.view"
+include: "/**/*.view"
 
 include: "/**/products_hub_assignment_v2.view"
 include: "/**/replenishment_purchase_orders.view"
