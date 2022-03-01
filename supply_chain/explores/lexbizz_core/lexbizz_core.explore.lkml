@@ -1,5 +1,6 @@
-include: "/views/**/lexbizz_*.view"
-include: "/views/**/products_hub_assignment_v2.view"
+include: "/**/lexbizz_*.view"
+include: "/**/products_hub_assignment_v2.view"
+include: "/**/lexbizz_core_ndt_9er_status.view"
 
 explore: lexbizz_core {
 
@@ -39,6 +40,14 @@ explore: lexbizz_core {
     ;;
 
   }
+    join: lexbizz_core_ndt_9er_status {
+
+      type: left_outer
+      relationship: many_to_one
+      sql_on: ${item_vendor_status.vendor_id} = ${lexbizz_core_ndt_9er_status.vendor_id} and
+              ${stock_item.item_replenishment_substitute_group} = ${lexbizz_core_ndt_9er_status.replenishment_substitute_group}
+      ;;
+    }
 
   # -----------  join warehouse ------------------------------------------------------------------------------------------
   join: warehouse {
