@@ -212,6 +212,14 @@ view: psp_transactions {
     filters: [record_type: "Refunded, RefundedExternally"]
   }
 
+  measure: sum_captured_pc_refunded {
+    group_label: "* Amounts Captured *"
+    type: sum
+    sql: ${captured_pc} ;;
+    value_format_name: euro_accounting_2_precision
+    filters: [record_type: "Refunded, RefundedExternally"]
+  }
+
   measure: sum_main_amount_settled {
     group_label: "* Amounts Captured *"
     type: sum
