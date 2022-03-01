@@ -1,5 +1,6 @@
 include: "/**/lexbizz_*.view"
 include: "/**/products_hub_assignment_v2.view"
+include: "/**/products.view"
 include: "/**/lexbizz_core_ndt_9er_status.view"
 
 explore: lexbizz_core {
@@ -25,6 +26,11 @@ explore: lexbizz_core {
     ;;
 
   }
+      join: products {
+        type: left_outer
+        relationship: one_to_one
+        sql_on:  ${products.product_sku} = ${stock_item.sku};;
+      }
 
   # -----------  join item_vendor_status  ------------------------------------------------------------------------------------------
   join: item_vendor_status {
