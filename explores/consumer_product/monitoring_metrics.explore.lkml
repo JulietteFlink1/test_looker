@@ -5,4 +5,9 @@ explore: monitoring_metrics {
   view_label: "Monitoring Events"
   group_label: "Consumer Product"
   description: "Monitoring behavioural metrics for tracking events"
+  always_filter: {
+    filters: [
+    monitoring_metrics.filter_event_date: "last 7 days"
+    ]
+  }
 }
