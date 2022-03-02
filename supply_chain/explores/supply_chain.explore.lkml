@@ -69,6 +69,9 @@ explore: supply_chain {
         and
             ${hubs_ct.live} is not null
 
+        and
+            left(${products_hub_assignment.sku},1) != '9'
+
       ;;
 
   hidden: no
