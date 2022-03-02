@@ -69,6 +69,9 @@ explore: supply_chain {
         and
             ${hubs_ct.live} is not null
 
+        and
+            left(${products_hub_assignment.sku},1) != '9'
+
       ;;
 
   hidden: no
@@ -224,7 +227,7 @@ explore: supply_chain {
     relationship: many_to_one
 
     sql_on:
-        ${replenishment_purchase_orders.sku}           = ${products_hub_assignment.leading_sku_replenishment_substitute_group}      and
+        ${replenishment_purchase_orders.sku}           = coalesce(${products_hub_assignment.leading_sku_replenishment_substitute_group}, ${products_hub_assignment.sku}) and
         ${replenishment_purchase_orders.hub_code}      = ${products_hub_assignment.hub_code}                                        and
         ${replenishment_purchase_orders.delivery_date} = ${products_hub_assignment.report_date}                                     and
         ${replenishment_purchase_orders.vendor_id}     = ${products_hub_assignment.erp_vendor_id}
