@@ -1,6 +1,7 @@
 include: "/**/lexbizz_*.view"
 include: "/**/products_hub_assignment_v2.view"
 include: "/**/products.view"
+include: "/**/hubs_ct.view"
 include: "/**/lexbizz_core_ndt_9er_status.view"
 
 explore: lexbizz_core {
@@ -73,6 +74,7 @@ explore: lexbizz_core {
 
   # -----------  join hub ------------------------------------------------------------------------------------------
   join: hub {
+    view_label: "Hubs ERP"
 
     from: lexbizz_hub
 
@@ -85,6 +87,12 @@ explore: lexbizz_core {
     ;;
 
   }
+      join: hubs_ct {
+        view_label: "Hubs CommerceTools"
+        type: full_outer
+        relationship: many_to_one
+        sql_on: ${hub.hub_code} = ${hubs_ct.hub_code} ;;
+      }
 
   # -----------  join vendor  ------------------------------------------------------------------------------------------
   join: vendor {
