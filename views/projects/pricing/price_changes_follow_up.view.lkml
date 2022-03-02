@@ -7,8 +7,16 @@ with oos_aux as (
     i.report_date as inventory_tracking_date,
     i.sku,
     i.hub_code,
-number_of_hours_open  as open_hours_total,
-number_of_hours_oos  as hours_oos
+case
+            when p.category in ("Obst & Gemüse",
+                              "Fruit","Groente & Aardappelen",
+                              "Fruits","Légumes") then sg_number_of_hours_open
+            else  number_of_hours_open end as open_hours_total,
+    case
+            when p.category in ("Obst & Gemüse",
+                              "Fruit","Groente & Aardappelen",
+                              "Fruits","Légumes") then sg_number_of_hours_oos
+            else  number_of_hours_oos end as hours_oos
 
 from      `flink-data-prod.curated.products_hub_assignment_v2` as a
 
@@ -20,6 +28,9 @@ on
 
 left join `flink-data-prod.curated.hubs`           as hubs_ct
 on i.hub_code = hubs_ct.hub_code
+
+left join `flink-data-prod.curated.products`           as p
+on i.sku = p.product_sku
 
 where a.ct_final_decision_is_sku_assigned_to_hub is true
  -- and a.erp_final_decision_is_sku_assigned_to_hub

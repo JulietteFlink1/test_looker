@@ -3,14 +3,16 @@ view: add_to_cart_rate_events {
     sql: with product_added_to_cart as (
         -- get list_category for add-to-cart event
         -- reason for this CTE and filtering data based on partition (reducing costs)
-        select id, anonymous_id, list_category, context_app_version, context_device_type, timestamp
+        select id, anonymous_id, list_category, context_app_version, context_device_type,
+               context_traits_hub_slug, upper(left(context_traits_hub_slug,2)) as country_iso, timestamp
         from `flink-data-prod.flink_android_production.product_added_to_cart`
         where {% condition filter_event_date %} date(_partitiontime) {% endcondition %}
         and {% condition filter_event_date %} date(timestamp) {% endcondition %}
         QUALIFY ROW_NUMBER() OVER (PARTITION BY id ORDER BY timestamp DESC) = 1
 
         union all
-        select id, anonymous_id, list_category, context_app_version, context_device_type, timestamp
+        select id, anonymous_id, list_category, context_app_version, context_device_type,
+               context_traits_hub_slug, upper(left(context_traits_hub_slug,2)) as country_iso, timestamp
         from `flink-data-prod.flink_ios_production.product_added_to_cart`
         where {% condition filter_event_date %} date(_partitiontime) {% endcondition %}
         and {% condition filter_event_date %} date(timestamp) {% endcondition %}
@@ -60,15 +62,31 @@ view: add_to_cart_rate_events {
     }
     dimension: device_type {
       group_label: "Device Dimensions"
+      label: "Device Type"
       description: "Type of the device: iOS or Android"
       type: string
       sql: ${TABLE}.context_device_type ;;
     }
     dimension: app_version {
       group_label: "Device Dimensions"
+      label: "App Version"
       description: "Version of the app released"
       type: string
       sql: ${TABLE}.context_app_version ;;
+    }
+    dimension: hub_code {
+      group_label: "Hub Dimensions"
+      label: "Hub Code"
+      description: "Hub code associated with user."
+      type: string
+      sql: ${TABLE}.context_traits_hub_slug ;;
+    }
+    dimension: country_iso {
+      group_label: "Hub Dimensions"
+      label: "Country ISO"
+      description: "Country ISO"
+      type: string
+      sql: ${TABLE}.country_iso ;;
     }
     dimension: product_placement {
       group_label: "Event Dimensions"
@@ -94,7 +112,7 @@ view: add_to_cart_rate_events {
     measure: events_from_cart {
       group_label: "Add-to-cart Events"
       description: "Sum of all add-to-cart events from cart."
-      label: "#Events from Cart"
+      label: "# Events from Cart"
       type: count_distinct
       sql: ${event_uuid} ;;
       filters: [product_placement: "cart"]
@@ -102,7 +120,7 @@ view: add_to_cart_rate_events {
     measure: events_from_last_bought {
       group_label: "Add-to-cart Events"
       description: "Sum of all add-to-cart events from last bought."
-      label: "#Events from Last Bought"
+      label: "# Events from Last Bought"
       type: count_distinct
       sql: ${event_uuid} ;;
       filters: [product_placement: "last_bought"]
@@ -110,7 +128,7 @@ view: add_to_cart_rate_events {
     measure: events_from_favourites {
       group_label: "Add-to-cart Events"
       description: "Sum of all add-to-cart events from favourites."
-      label: "#Events from Favourites"
+      label: "# Events from Favourites"
       type: count_distinct
       sql: ${event_uuid} ;;
       filters: [product_placement: "favourites"]
@@ -118,7 +136,7 @@ view: add_to_cart_rate_events {
     measure: events_from_swimlane {
       group_label: "Add-to-cart Events"
       description: "Sum of all add-to-cart events from swimlanes."
-      label: "#Events from Swimlane"
+      label: "# Events from Swimlane"
       type: count_distinct
       sql: ${event_uuid} ;;
       filters: [product_placement: "swimlane"]
@@ -126,7 +144,7 @@ view: add_to_cart_rate_events {
     measure: events_from_search {
       group_label: "Add-to-cart Events"
       description: "Sum of all add-to-cart events from search."
-      label: "#Events from Search"
+      label: "# Events from Search"
       type: count_distinct
       sql: ${event_uuid} ;;
       filters: [product_placement: "search"]
@@ -134,7 +152,7 @@ view: add_to_cart_rate_events {
     measure: events_from_category {
       group_label: "Add-to-cart Events"
       description: "Sum of all add-to-cart events from category pages."
-      label: "#Events from Category"
+      label: "# Events from Category"
       type: count_distinct
       sql: ${event_uuid} ;;
       filters: [product_placement: "category"]
@@ -142,7 +160,7 @@ view: add_to_cart_rate_events {
     measure: events_from_pdp {
       group_label: "Add-to-cart Events"
       description: "Sum of all add-to-cart events."
-      label: "#Events from PDP"
+      label: "# Events from PDP"
       type: count_distinct
       sql: ${event_uuid} ;;
       filters: [product_placement: "pdp"]

@@ -212,6 +212,14 @@ view: psp_transactions {
     filters: [record_type: "Refunded, RefundedExternally"]
   }
 
+  measure: sum_captured_pc_refunded {
+    group_label: "* Amounts Captured *"
+    type: sum
+    sql: ${captured_pc} ;;
+    value_format_name: euro_accounting_2_precision
+    filters: [record_type: "Refunded, RefundedExternally"]
+  }
+
   measure: sum_main_amount_settled {
     group_label: "* Amounts Captured *"
     type: sum
@@ -232,7 +240,7 @@ view: psp_transactions {
     group_label: "* Refunds & Fraud Metrics *"
     label: "%  Total Amount Refunded (Settled)"
     type: number
-    sql: ${sum_main_amount_refunded}/${sum_main_amount_settled};;
+    sql: NULLIF(${sum_main_amount_refunded},0)/NULLIF(${sum_main_amount_settled},0);;
     value_format_name: percent_2
   }
 
@@ -240,7 +248,7 @@ view: psp_transactions {
     group_label: "* Refunds & Fraud Metrics *"
     label: "%  Total Amount Refunded (Authorised)"
     type: number
-    sql: ${sum_main_amount_refunded}/${sum_main_amount_authorised};;
+    sql: NULLIF(${sum_main_amount_refunded},0)/NULLIF(${sum_main_amount_authorised},0);;
     value_format_name: percent_2
   }
 
@@ -248,7 +256,7 @@ view: psp_transactions {
     group_label: "* Refunds & Fraud Metrics *"
     label: "%  Total Amount Refunded (Settled)"
     type: number
-    sql: ${sum_main_amount_chargebacks}/${sum_main_amount_settled};;
+    sql: NULLIF(${sum_main_amount_chargebacks},0)/NULLIF(${sum_main_amount_settled},0);;
     value_format_name: percent_2
   }
 
@@ -256,7 +264,7 @@ view: psp_transactions {
     group_label: "* Refunds & Fraud Metrics *"
     label: "%  Total Amount Refunded (Authorised)"
     type: number
-    sql: ${sum_main_amount_chargebacks}/${sum_main_amount_authorised};;
+    sql: NULLIF(${sum_main_amount_chargebacks},0)/NULLIF(${sum_main_amount_authorised},0);;
     value_format_name: percent_2
   }
 
@@ -309,6 +317,7 @@ view: psp_transactions {
     }
 
   measure: sum_payable_sc {
+    group_label: "* Amounts Captured *"
     type: sum
     sql: ${payable_sc} ;;
     value_format_name: euro_accounting_2_precision
@@ -326,6 +335,20 @@ view: psp_transactions {
     type: sum
     sql: ${markup_sc} + ${scheme_fees_sc};;
     value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_total_trx_fees {
+    group_label: "* Fee Amounts *"
+    type: number
+    sql: SUM(${commission_sc}) + SUM(${interchange_sc}) + SUM(${markup_sc}) + SUM(${processing_fee_fc}) + SUM(${scheme_fees_sc});;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: total_trx_fees_percentage {
+    group_label: "* Fee Amounts *"
+    type: number
+    sql: NULLIF(${sum_total_trx_fees},0) / NULLIF(${sum_main_amount_authorised},0);;
+    value_format_name: percent_2
   }
 
   dimension: diff_adyen_ct {
@@ -476,7 +499,7 @@ view: psp_transactions {
     group_label: "* Orphaned Payments *"
     label: "% Missing Orders Authorised"
     type: number
-    sql: ${sum_empty_order_uuid_authorised}/${cnt_authorised_transactions};;
+    sql: NULLIF(${sum_empty_order_uuid_authorised},0)/NULLIF(${cnt_authorised_transactions},0);;
     value_format_name: percent_3
   }
 
@@ -484,7 +507,7 @@ view: psp_transactions {
     group_label: "* Orphaned Payments *"
     label: "% Missing Orders Settled"
     type: number
-    sql: ${sum_empty_order_uuid_settled}/${cnt_settled_transactions};;
+    sql: NULLIF(${sum_empty_order_uuid_settled},0)/NULLIF(${cnt_settled_transactions},0);;
     value_format_name: percent_3
   }
 
@@ -492,7 +515,7 @@ view: psp_transactions {
     group_label: "* Orphaned Payments *"
     label: "% Missing Orders Refunded"
     type: number
-    sql: ${sum_empty_order_uuid_refunded}/${cnt_refund_transactions};;
+    sql: NULLIF(${sum_empty_order_uuid_refunded},0)/NULLIF(${cnt_refund_transactions},0);;
     value_format_name: percent_2
   }
 
@@ -500,7 +523,7 @@ view: psp_transactions {
     group_label: "* Orphaned Payments *"
     label: "% Missing Orders Chargeback"
     type: number
-    sql: ${sum_empty_order_uuid_chargeback}/${cnt_chargebacks_transactions};;
+    sql: NULLIF(${sum_empty_order_uuid_chargeback},0)/NULLIF(${cnt_chargebacks_transactions},0);;
     value_format_name: percent_2
   }
 
@@ -508,7 +531,7 @@ view: psp_transactions {
     group_label: "* Refunds & Fraud Metrics *"
     label: "% Orders Refunded (Authorised)"
     type: number
-    sql: ${cnt_refund_transactions}/${cnt_authorised_transactions};;
+    sql: NULLIF(${cnt_refund_transactions},0)/NULLIF(${cnt_authorised_transactions},0);;
     value_format_name: percent_2
   }
 
@@ -516,7 +539,7 @@ view: psp_transactions {
     group_label: "* Refunds & Fraud Metrics *"
     label: "% Orders Refunded (Settled)"
     type: number
-    sql: ${cnt_refund_transactions}/${cnt_settled_transactions};;
+    sql: NULLIF(${cnt_refund_transactions},0)/NULLIF(${cnt_settled_transactions},0);;
     value_format_name: percent_2
   }
 
@@ -524,7 +547,7 @@ view: psp_transactions {
     group_label: "* Refunds & Fraud Metrics *"
     label: "% Orders Chargeback (Authorised)"
     type: number
-    sql: ${cnt_chargebacks_transactions}/${cnt_authorised_transactions};;
+    sql: NULLIF(${cnt_chargebacks_transactions},0)/NULLIF(${cnt_authorised_transactions},0);;
     value_format_name: percent_2
   }
 
@@ -532,11 +555,12 @@ view: psp_transactions {
     group_label: "* Refunds & Fraud Metrics *"
     label: "% Orders Chargeback (Settled)"
     type: number
-    sql: ${cnt_chargebacks_transactions}/${cnt_settled_transactions};;
+    sql: NULLIF(${cnt_chargebacks_transactions},0)/NULLIF(${cnt_settled_transactions},0);;
     value_format_name: percent_2
   }
 
   measure: count {
+    group_label: "* Transaction Totals *"
     type: count
     drill_fields: [user_name]
   }
@@ -556,6 +580,7 @@ view: psp_transactions {
   }
 
  measure: diff_authorised_refunded {
+  group_label: "* Refunds & Fraud Metrics *"
  type: sum
   sql: ${authorised_authorised_pc} - ${captured_refunded_pc}  ;;
   value_format_name: euro_accounting_2_precision

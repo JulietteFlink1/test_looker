@@ -915,7 +915,7 @@ view: hub_level_kpis {
 
   measure: sum_unfilled_rider_hours {
     group_label: ">> Shift KPIs"
-    label: "Hours: Open Rider"
+    label: "Hours: Unassigned Rider"
     sql: if(
               (${sum_planned_rider_hours} - ${sum_filled_rider_hours}) < 0
             , 0
@@ -923,11 +923,11 @@ view: hub_level_kpis {
     ) ;;
     value_format_name: decimal_1
     type: number
-    description: "Scheduled Hours - Assigned hours. Open Hours are currently always 0 as we are not tracking Unassigned hours (so Scheduled = Assigned Hours)"
+    description: "Scheduled Hours - Assigned hours"
   }
   measure: sum_unfilled_picker_hours {
     group_label: ">> Shift KPIs"
-    label: "Hours: Open Picker"
+    label: "Hours: Unassigned Picker"
     sql: if(
                 (${sum_planned_picker_hours} - ${sum_filled_picker_hours}) < 0
               , 0
@@ -935,13 +935,13 @@ view: hub_level_kpis {
     );;
     value_format_name: decimal_1
     type: number
-    description: "Scheduled Hours - Assigned hours. Open Hours are currently always 0 as we are not tracking Unassigned hours (so Scheduled = Assigned Hours)."
+    description: "Scheduled Hours - Assigned hours"
   }
 
   measure: sum_unfilled_hours_total {
     group_label: ">> Shift KPIs"
-    label: "Hours: Open Total"
-    description: "Scheduled Hours - Assigned hours. Open Hours are currently always NULL as we are not tracking Unassigned hours."
+    label: "Hours: Unassigned Total"
+    description: "Scheduled Hours - Assigned hours"
     type: number
     value_format_name: decimal_1
     sql: ${sum_unfilled_picker_hours} + ${sum_unfilled_rider_hours} ;;
@@ -1005,8 +1005,7 @@ view: hub_level_kpis {
     sql: ${TABLE}.number_of_planned_picker_hours ;;
     value_format_name: decimal_1
     type: sum
-    description: "Scheduled hours + Unassigned hours (hours from shifts that were created but were not assigned to anyone).
-                  At the moment Unassigned Hours are always NULL."
+    description: "Scheduled hours + Unassigned hours (hours from shifts that were created but were not assigned to anyone)"
   }
   measure: sum_filled_rider_hours {
     group_label: ">> Shift KPIs"
@@ -1023,8 +1022,7 @@ view: hub_level_kpis {
     sql: ${TABLE}.number_of_planned_rider_hours ;;
     value_format_name: decimal_1
     type: sum
-    description: "Scheduled hours + Unassigned hours (hours from shifts that were created but were not assigned to anyone).
-                  At the moment Unassigned Hours are always NULL."
+    description: "Scheduled hours + Unassigned hours (hours from shifts that were created but were not assigned to anyone)"
   }
 
   measure: pct_no_show {
@@ -1038,8 +1036,8 @@ view: hub_level_kpis {
 
   measure: pct_open_shifts {
     group_label: ">> Shift KPIs"
-    label: "% Open Shift Hours"
-    description: "The percentage of scheduled shift hours that could not have been filled with employees. Open Hours are all unassagned shift hours. I.e. Scheduled Hours - Assigned Hours"
+    label: "% Unassigned Shift Hours"
+    description: "The percentage of scheduled shift hours that could not have been filled with employees. Unassigned Hours are all unassagned shift hours. I.e. Scheduled Hours - Assigned Hours"
     type: number
     sql: (${sum_unfilled_picker_hours} + ${sum_unfilled_rider_hours}) / nullif((${sum_planned_picker_hours} + ${sum_planned_rider_hours}) ,0) ;;
     value_format_name: percent_1
@@ -1120,7 +1118,7 @@ view: hub_level_kpis {
 
   measure: score_open_shifts {
     group_label: ">> Hub Scores"
-    label: "Score: Open Shift Hours"
+    label: "Score: Unassigned Shift Hours"
     sql: if(
             (-5 * ${pct_open_shifts}*100 +100) < 0
             , 0
