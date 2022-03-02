@@ -28,8 +28,8 @@ explore: lexbizz_core {
 
   }
       join: products {
-        type: left_outer
-        relationship: one_to_one
+        type: full_outer
+        relationship: many_to_one
         sql_on:  ${products.product_sku} = ${stock_item.sku};;
       }
 
