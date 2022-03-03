@@ -1,5 +1,5 @@
 view: daily_user_aggregates {
-    sql_table_name: `flink-data-dev.sandbox_patricia.daily_user_aggregates`
+    sql_table_name: `flink-data-prod.curated.daily_user_aggregates`
      ;;
   view_label: "Daily User Aggregates"
 
