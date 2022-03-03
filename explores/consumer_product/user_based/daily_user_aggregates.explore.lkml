@@ -19,7 +19,7 @@ explore: daily_user_aggregates {
   description: "This explore provides an overview of all behavioural events generated on Flink App and Web"
   group_label: "Consumer Product"
 
-  sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} ${event_date} {% endcondition %};;
+  sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} ${event_date_at_date} {% endcondition %};;
 
   access_filter: {
     field: country_iso
@@ -28,7 +28,10 @@ explore: daily_user_aggregates {
 
   always_filter: {
     filters: [
-      global_filters_and_parameters.datasource_filter: "last 7 days"
+      global_filters_and_parameters.datasource_filter: "last 7 days",
+      daily_user_aggregates.is_active_user: "yes",
+      daily_user_aggregates.country_iso: "",
+      daily_user_aggregates.hub_code: ""
     ]
   }
 

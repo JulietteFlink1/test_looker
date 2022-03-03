@@ -1,5 +1,5 @@
 view: daily_user_aggregates {
-    sql_table_name: `flink-data-prod.curated.daily_user_aggregates`
+    sql_table_name: `flink-data-dev.sandbox_patricia.daily_user_aggregates`
      ;;
   view_label: "Daily User Aggregates"
 
@@ -40,10 +40,44 @@ view: daily_user_aggregates {
 
     ######## Dates ########
 
-    dimension: event_date {
-      type: date
+    dimension_group: event_date_at {
+      group_label: "Date Dimensions"
+      label: ""
+      type: time
       datatype: date
+      timeframes: [
+        day_of_week,
+        date,
+        week,
+        month
+      ]
       sql: ${TABLE}.event_date ;;
+    }
+    dimension: event_date_granularity {
+      group_label: "Date Dimensions"
+      label: "Event Date (Dynamic)"
+      label_from_parameter: timeframe_picker
+      type: string # cannot have this as a time type. See this discussion: https://community.looker.com/lookml-5/dynamic-time-granularity-opinions-16675
+      hidden:  yes
+      sql:
+      {% if timeframe_picker._parameter_value == 'Day' %}
+        ${event_date_at_date}
+      {% elsif timeframe_picker._parameter_value == 'Week' %}
+        ${event_date_at_week}
+      {% elsif timeframe_picker._parameter_value == 'Month' %}
+        ${event_date_at_month}
+      {% endif %};;
+    }
+
+    parameter: timeframe_picker {
+      group_label: "Date Dimensions"
+      label: "Event Date Granularity"
+      type: unquoted
+      allowed_value: { value: "Hour" }
+      allowed_value: { value: "Day" }
+      allowed_value: { value: "Week" }
+      allowed_value: { value: "Month" }
+      default_value: "Day"
     }
 
     ######## Device Atributes ########
@@ -762,64 +796,64 @@ view: daily_user_aggregates {
 
   ### These measures reformat cnt so it shows % in the label as well -> for the conversion funnel visualization ###
 
-  # measure: perc_of_total_has_address {
-  #   hidden: yes
-  #   type: number
-  #   sql: ${users_with_address}/${daily_user_uuid} ;;
-  #   value_format_name: percent_1
-  # }
-  # measure: total_has_address {
-  #   hidden: yes
-  #   type: number
-  #   sql: ${users_with_address} ;;
-  #   html: {{ rendered_value }} ({{ perc_of_total_has_address._rendered_value }} % of total) ;;
-  # }
-  # measure: perc_of_total_patc {
-  #   hidden: yes
-  #   type: number
-  #   sql: ${users_with_add_to_cart}/${daily_user_uuid} ;;
-  #   value_format_name: percent_1
-  # }
-  # measure: total_has_patc {
-  #   hidden: yes
-  #   type: number
-  #   sql: ${users_with_add_to_cart} ;;
-  #   html: {{ rendered_value }} ({{ perc_of_total_patc._rendered_value }} % of total) ;;
-  # }
-  # measure: perc_of_total_checkout {
-  #   hidden: yes
-  #   type: number
-  #   sql: ${users_with_checkout_viewed}/${daily_user_uuid} ;;
-  #   value_format_name: percent_1
-  # }
-  # measure: total_has_checkout {
-  #   hidden: yes
-  #   type: number
-  #   sql: ${users_with_checkout_viewed} ;;
-  #   html: {{ rendered_value }} ({{ perc_of_total_checkout._rendered_value }} % of total) ;;
-  # }
-  # measure: perc_of_total_payment {
-  #   hidden: yes
-  #   type: number
-  #   sql: ${users_with_payment_started}/${daily_user_uuid} ;;
-  #   value_format_name: percent_1
-  # }
-  # measure: total_has_payment {
-  #   hidden: yes
-  #   type: number
-  #   sql: ${users_with_payment_started} ;;
-  #   html: {{ rendered_value }} ({{ perc_of_total_payment._rendered_value }} % of total) ;;
-  # }
-  # measure: perc_of_total_order {
-  #   hidden: yes
-  #   type: number
-  #   sql: ${users_with_order}/${daily_user_uuid} ;;
-  #   value_format_name: percent_1
-  # }
-  # measure: total_has_order {
-  #   hidden: yes
-  #   type: number
-  #   sql: ${users_with_order} ;;
-  #   html: {{ rendered_value }} ({{ perc_of_total_order._rendered_value }} % of total) ;;
-  # }
+  measure: perc_of_total_has_address {
+    hidden: yes
+    type: number
+    sql: ${users_with_address}/${active_users} ;;
+    value_format_name: percent_1
+  }
+  measure: total_has_address {
+    hidden: yes
+    type: number
+    sql: ${users_with_address} ;;
+    html: {{ rendered_value }} ({{ perc_of_total_has_address._rendered_value }} % of total) ;;
+  }
+  measure: perc_of_total_patc {
+    hidden: yes
+    type: number
+    sql: ${users_with_add_to_cart}/${active_users} ;;
+    value_format_name: percent_1
+  }
+  measure: total_has_patc {
+    hidden: yes
+    type: number
+    sql: ${users_with_add_to_cart} ;;
+    html: {{ rendered_value }} ({{ perc_of_total_patc._rendered_value }} % of total) ;;
+  }
+  measure: perc_of_total_checkout {
+    hidden: yes
+    type: number
+    sql: ${users_with_checkout_viewed}/${active_users} ;;
+    value_format_name: percent_1
+  }
+  measure: total_has_checkout {
+    hidden: yes
+    type: number
+    sql: ${users_with_checkout_viewed} ;;
+    html: {{ rendered_value }} ({{ perc_of_total_checkout._rendered_value }} % of total) ;;
+  }
+  measure: perc_of_total_payment {
+    hidden: yes
+    type: number
+    sql: ${users_with_payment_started}/${active_users} ;;
+    value_format_name: percent_1
+  }
+  measure: total_has_payment {
+    hidden: yes
+    type: number
+    sql: ${users_with_payment_started} ;;
+    html: {{ rendered_value }} ({{ perc_of_total_payment._rendered_value }} % of total) ;;
+  }
+  measure: perc_of_total_order {
+    hidden: yes
+    type: number
+    sql: ${users_with_order}/${active_users} ;;
+    value_format_name: percent_1
+  }
+  measure: total_has_order {
+    hidden: yes
+    type: number
+    sql: ${users_with_order} ;;
+    html: {{ rendered_value }} ({{ perc_of_total_order._rendered_value }} % of total) ;;
+  }
   }
