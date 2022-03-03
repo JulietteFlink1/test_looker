@@ -53,6 +53,18 @@ view: inventory_daily {
 
   }
 
+  #Added this new filter provisory to check if it works
+
+  parameter: in_stock_cutoff_hours {
+    group_label: "* Parameters & Dynamic Fields *"
+    label: "Select In Stock Cut Off Hours"
+    type: unquoted
+    allowed_value: { value: "1" label: "With Cut Off Hours" }
+    allowed_value: { value: "0" label: "Without Cut Off Hours" }
+    default_value: "0"
+  }
+
+
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Dimensions     ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -307,14 +319,31 @@ view: inventory_daily {
     type: number
     sql:
 
-            {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku' %}
+            {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku'
+                     and in_stock_cutoff_hours._parameter_value == '0' %}
             ${TABLE}.number_of_hours_oos
 
-            {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
+            {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment'
+                     and in_stock_cutoff_hours._parameter_value == '0' %}
             ${TABLE}.rsg_number_of_hours_oos
 
-            {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'customer' %}
+            {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'customer'
+                     and in_stock_cutoff_hours._parameter_value == '0' %}
             ${TABLE}.sg_number_of_hours_oos
+
+  --Added this as new logics to use this cutoff hours filter
+
+            {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'sku'
+                     and in_stock_cutoff_hours._parameter_value == '1' %}
+            ${TABLE}.number_of_hours_oos_with_cutoff_hours
+
+            {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment'
+                     and in_stock_cutoff_hours._parameter_value == '1' %}
+            ${TABLE}.rsg_number_of_hours_oos_with_cutoff_hours
+
+            {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'customer'
+                     and in_stock_cutoff_hours._parameter_value == '1' %}
+            ${TABLE}.sg_number_of_hours_oos_with_cutoff_hours
 
             {% endif %}
         ;;
@@ -326,14 +355,31 @@ view: inventory_daily {
     type: number
     sql:
 
-            {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku' %}
+            {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku'
+                     and in_stock_cutoff_hours._parameter_value == '0' %}
             ${TABLE}.number_of_hours_open
 
-            {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
+            {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment'
+                     and in_stock_cutoff_hours._parameter_value == '0'%}
             ${TABLE}.rsg_number_of_hours_open
 
-            {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'customer' %}
+            {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'customer'
+                     and in_stock_cutoff_hours._parameter_value == '0'%}
             ${TABLE}.sg_number_of_hours_open
+
+  --Added this as new logics to use this cutoff hours filter
+
+            {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'sku'
+                     and in_stock_cutoff_hours._parameter_value == '1' %}
+            ${TABLE}.number_of_hours_open_with_cutoff_hours
+
+            {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment'
+                     and in_stock_cutoff_hours._parameter_value == '1'%}
+            ${TABLE}.rsg_number_of_hours_open_with_cutoff_hours
+
+            {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'customer'
+                     and in_stock_cutoff_hours._parameter_value == '1'%}
+            ${TABLE}.sg_number_of_hours_open_with_cutoff_hours
 
             {% endif %}
         ;;
