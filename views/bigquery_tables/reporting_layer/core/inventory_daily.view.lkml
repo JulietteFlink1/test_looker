@@ -61,7 +61,7 @@ view: inventory_daily {
     type: unquoted
     allowed_value: { value: "1" label: "With Cut Off Hours" }
     allowed_value: { value: "0" label: "Without Cut Off Hours" }
-    default_value: "0"
+    default_value: "1"
   }
 
 
