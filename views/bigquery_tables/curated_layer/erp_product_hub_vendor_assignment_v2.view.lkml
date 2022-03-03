@@ -420,7 +420,7 @@ view: erp_product_hub_vendor_assignment_v2 {
   dimension: sku {
     type: string
     sql: ${TABLE}.sku ;;
-    hidden: yes
+    hidden: no
   }
 
 

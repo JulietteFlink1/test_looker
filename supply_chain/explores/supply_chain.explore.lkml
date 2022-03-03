@@ -10,7 +10,7 @@
 # - All questions around replenishment performance
 # - Questions around inventory movements
 
-include: "/views/**/*.view"
+include: "/**/*.view"
 
 include: "/**/products_hub_assignment_v2.view"
 include: "/**/replenishment_purchase_orders.view"
@@ -68,6 +68,9 @@ explore: supply_chain {
             ${hubs_ct.is_test_hub} is false
         and
             ${hubs_ct.live} is not null
+
+        and
+            left(${products_hub_assignment.sku},1) != '9'
 
       ;;
 
@@ -221,12 +224,13 @@ explore: supply_chain {
     view_label: "08 Purchase Orders"
 
     type:         full_outer
-    relationship: one_to_many
+    relationship: many_to_one
 
     sql_on:
-        ${replenishment_purchase_orders.sku}           = ${products_hub_assignment.sku}      and
-        ${replenishment_purchase_orders.hub_code}      = ${products_hub_assignment.hub_code} and
-        ${replenishment_purchase_orders.delivery_date} = ${products_hub_assignment.report_date}
+        ${replenishment_purchase_orders.sku}           = coalesce(${products_hub_assignment.leading_sku_replenishment_substitute_group}, ${products_hub_assignment.sku}) and
+        ${replenishment_purchase_orders.hub_code}      = ${products_hub_assignment.hub_code}                                        and
+        ${replenishment_purchase_orders.delivery_date} = ${products_hub_assignment.report_date}                                     and
+        ${replenishment_purchase_orders.vendor_id}     = ${products_hub_assignment.erp_vendor_id}
     ;;
   }
 

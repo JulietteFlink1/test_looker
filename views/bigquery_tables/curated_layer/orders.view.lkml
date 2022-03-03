@@ -1069,6 +1069,12 @@ view: orders {
               ;;
   }
 
+  dimension: is_business_day_completed {
+    group_label: "* Dates and Timestamps *"
+    type: yesno
+    sql:  IF(${order_date} < ${now_date}, TRUE, FALSE) ;;
+  }
+
   dimension: customer_order_rank {
     group_label: "* Order Dimensions *"
     type: number

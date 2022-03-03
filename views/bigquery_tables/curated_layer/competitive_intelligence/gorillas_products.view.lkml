@@ -185,7 +185,7 @@ view: gorillas_products {
 
   measure: cnt_distinct_products {
     label: "# Unique Products"
-    description: "Count of unique products."
+    description: "Number of unique products."
     hidden:  no
     type: count_distinct
     sql: ${product_id};;
