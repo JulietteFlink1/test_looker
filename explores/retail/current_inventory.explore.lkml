@@ -8,7 +8,7 @@ include: "/**/global_filters_and_parameters.view.lkml"
 explore: current_inventory {
   from: products
   view_name: products
-  group_label: "02) Inventory"
+  group_label: "Commercial"
   view_label: "* Product Information *"
   label: "Products & Inventory"
   description: "This explore provides information on all SKUs (published/unpublished), on the recent inventory stock levels as well as some order related metrics"

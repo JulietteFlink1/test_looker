@@ -81,6 +81,11 @@ view: lexbizz_item {
     sql: ${TABLE}.item_replenishment_substitute_group ;;
   }
 
+  dimension: similar_rsg {
+    type: string
+    sql: lower(left(${item_replenishment_substitute_group}, 10)) ;;
+  }
+
   dimension: item_safety_stock {
     type: number
     sql: ${TABLE}.item_safety_stock ;;

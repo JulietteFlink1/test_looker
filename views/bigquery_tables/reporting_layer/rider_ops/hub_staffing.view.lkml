@@ -326,6 +326,7 @@ view: hub_staffing {
 
   measure: sum_unassigned_employees{
     type: sum
+    hidden: yes
     label:"# Unassigned Employees"
     description: "Number of Unassigned Employees"
     sql:${number_of_unassigned_employees_internal}+${number_of_unassigned_employees_external};;
@@ -334,6 +335,7 @@ view: hub_staffing {
 
   measure: sum_unassigned_employees_external{
     type: sum
+    hidden: yes
     label:"# Unassigned Ext Employees"
     description: "Number of Unassigned Ext Employees"
     sql:${number_of_unassigned_employees_external};;
@@ -345,7 +347,7 @@ view: hub_staffing {
     label:"% No Show Hours"
     type: number
     description: "# No Show Hours"
-    sql:(${sum_planned_hours} - ${sum_worked_hours})/nullif(${sum_planned_hours},0) ;;
+    sql:(${sum_no_show_hours})/nullif(${sum_planned_hours},0) ;;
     value_format_name: percent_1
   }
 
@@ -428,7 +430,7 @@ view: hub_staffing {
     type: number
     label:"# Actual Needed Hours"
     description: "Number of needed Employees based on actual order demand"
-    sql:ceiling(${sum_orders} / (${number_of_target_utr} / 2));;
+    sql:ceiling(NULLIF(${sum_orders},0) / (${number_of_target_utr}));;
     value_format_name: decimal_1
   }
 

@@ -5,7 +5,7 @@ explore: order_lineitems_margins {
 
   extends: [order_orderline_cl]
 
-  group_label: "Retail"
+  group_label: "Commercial"
   label: "RESTRICTED: Orders, Lineitems & Margins"
   description: "Orderline Items sold quantities, prices, gmv, etc. as well as buying prices and margin data"
 

@@ -2,7 +2,7 @@ include: "/**/*.view"
 
 # ct table: inventory_stock_count_daily, before in saleor called daily_historical_stock_levels
 explore: inventory_stock_count_hourly {
-  hidden: no
+  hidden: yes
   label: "Inventory Metrics (hourly granularity)"
   description: "This explores provdes information on inventory stock levels per hub and hour (historically) for the past 7 days. If you need data further in the past, use the (daily level)
                 Inventory Metrics (daily granularity) !

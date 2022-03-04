@@ -7,7 +7,7 @@ explore: current_inventory_updated_hourly {
   # view_label: "Current Inventory - Updated Hourly"
   label: "Products & Inventory (Updated Hourly)"
 
-  hidden: no
+  hidden: yes
   persist_with: flink_hourly_datagroup
 
 }

@@ -4,7 +4,7 @@ include: "/views/native_derived_tables/retail/category_performance/weekly/orders
 explore: orders_revenue_subcategory_level {
   hidden: no
   label: "Subcategory Performance Tracker"
-  group_label: "Retail"
+  group_label: "Commercial"
   access_filter: {
     field: country_iso
     user_attribute: country_iso
