@@ -52,9 +52,8 @@ dimension: communication_support {
 
 
 dimension: contract_type {
-  hidden: yes
   type: string
-  sql: ${TABLE}.contract_type;;
+  sql:case when ${TABLE}.contract_type in ('Rider','Rider Captain') then ${TABLE}.contract_type else null end ;;
 }
 
 dimension: hub_code {
@@ -170,7 +169,7 @@ dimension: work_environment_atmosphere {
 
 dimension: what_is_your_role_at_flink_ {
   type: string
-  sql: ${TABLE}.what_is_your_role_at_flink_;;
+  sql: coalesce(${TABLE}.what_is_your_role_at_flink_,${contract_type});;
 }
 
 dimension: my_supervisor_s_treats_everyone_fairly_ {
