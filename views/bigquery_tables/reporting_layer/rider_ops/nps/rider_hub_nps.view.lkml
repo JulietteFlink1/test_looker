@@ -1,8 +1,9 @@
 view: rider_hub_nps {
-  sql_table_name: `flink-data-dev.reporting.rider_hub_nps`
+  sql_table_name: `flink-data-prod.reporting.rider_hub_nps`
     ;;
 
  dimension: uuid {
+  hidden: yes
   type: string
   primary_key: yes
   sql: ${TABLE}.rider_hub_nps_uuid;;
@@ -14,6 +15,7 @@ dimension: npssource {
 }
 
 dimension: score {
+  hidden: yes
   type: number
   sql: ${TABLE}.nps_score;;
 }
@@ -26,119 +28,83 @@ dimension: nps {
     ;;
 }
 
-dimension: has_responded_nps {
-  type: number
-  sql: case when ${TABLE}.nps is not null then 1 else 0;;
-}
-
 
 dimension: group {
   type: string
+  description: "Promoters, Detractors or Passives"
   sql: CASE WHEN ${score}<=6 THEN "Detractors"
               WHEN ${score}>=9 THEN "Promoters"
               ELSE "Passives" END;;
 }
 
 dimension: bikes {
+  hidden: yes
   type: number
   sql: ${TABLE}.bikes;;
 }
 
-dimension: has_responded_bikes {
-  type: number
-  sql: case when ${TABLE}.bikes is not null then 1 else 0 end;;
-}
-
 
 dimension: communication_support {
+  hidden: yes
   type: number
   sql: ${TABLE}.communication_support;;
 }
 
-dimension: has_responded_communication_support {
-  type: number
-  sql: case when ${TABLE}.communication_support is not null then 1 else 0 end;;
-}
-
 
 dimension: contract_type {
+  hidden: yes
   type: string
   sql: ${TABLE}.contract_type;;
 }
 
 dimension: hub_code {
+  hidden: yes
   type: string
   sql: ${TABLE}.hub_code;;
 }
 
 
 dimension: hub_infrastructure {
+  hidden: yes
   type: number
   sql: ${TABLE}.hub_infrastructure;;
 }
 
-dimension: has_responded_hub_infrastructure{
-  type: number
-  sql: case when ${TABLE}.hub_infrastructure is not null then 1 else 0 end;;
-}
-
-
 dimension: on_boarding_experience {
+  hidden: yes
   type: number
   sql: ${TABLE}.on_boarding_experience;;
 }
 
-dimension: has_responded_on_boarding_experience{
-  type: number
-  sql: case when ${TABLE}.on_boarding_experience is not null then 1 else 0 end;;
-}
-
 
 dimension: payments {
+  hidden: yes
   type: number
   sql: ${TABLE}.payments;;
 }
 
-dimension: has_responded_payments{
-  type: number
-  sql: case when ${TABLE}.payments is not null then 1 else 0 end;;
-}
-
 
 dimension: rider_app {
+  hidden: yes
   type: number
   sql: ${TABLE}.rider_app;;
 }
 
-dimension: has_responded_rider_app{
-  type: number
-  sql: case when ${TABLE}.rider_app is not null then 1 else 0 end;;
-}
-
 
 dimension: shift_planning {
+  hidden: yes
   type: number
   sql: ${TABLE}.shift_planning;;
-}
-
-dimension: has_responded_shift_planning{
-  type: number
-  sql: case when ${TABLE}.shift_planning is not null then 1 else 0 end;;
 }
 
 
 dimension_group: submitted_at {
   type: time
   timeframes: [
-    raw,
-    hour_of_day,
-    hour,
-    time,
     date,
     day_of_week,
     week,
     month,
-    quarter,
     year
   ]
   sql: ${TABLE}.submitted_at_timestamp;;
@@ -174,8 +140,10 @@ dimension: what_can_flink_do_to_make_work_better_for_you_sharing_this_will_help_
 }
 
 dimension: what_hub_are_you_based_in_ {
+  label: "Hub Code"
+  hidden: yes
   type: string
-  sql: ${TABLE}.what_hub_are_you_based_in_;;
+  sql: coalesce(${hub_code},${TABLE}.what_hub_are_you_based_in_);;
 }
 
 dimension: country_iso {
@@ -189,17 +157,14 @@ dimension: city {
 }
 
 dimension: work_duties {
+  hidden: yes
   type: number
   sql: ${TABLE}.work_duties;;
 }
 
-dimension: has_responded_work_duties{
-  type: number
-  sql: case when ${TABLE}.work_duties is not null then 1 else 0 end;;
-}
-
 
 dimension: work_environment_atmosphere {
+  hidden: yes
   type: number
   sql: ${TABLE}.work_environment_atmosphere;;
 }
@@ -210,104 +175,123 @@ dimension: what_is_your_role_at_flink_ {
 }
 
 dimension: my_supervisor_s_treats_everyone_fairly_ {
+  hidden: yes
   type: number
   sql: ${TABLE}.my_supervisor_s_treats_everyone_fairly_;;
 }
 
 dimension: my_supervisor_s_cares_about_their_employees_ {
+  hidden: yes
   type: number
   sql: ${TABLE}.my_supervisor_s_cares_about_their_employees_;;
 }
 
-
 dimension: i_feel_comfortable_giving_opinions_and_feedback_to_managers_ {
+  hidden: yes
   type: number
   sql: ${TABLE}.i_feel_comfortable_giving_opinions_and_feedback_to_managers_;;
 }
 
 dimension: if_i_do_great_work_i_know_that_it_will_be_recognised_ {
+  hidden: yes
   type: number
   sql: ${TABLE}.if_i_do_great_work_i_know_that_it_will_be_recognised_;;
 }
 
 dimension: _i_am_satisfied_with_the_hub_working_conditions_ {
+  hidden: yes
   type: number
   sql: ${TABLE}._i_am_satisfied_with_the_hub_working_conditions_;;
 }
 
 dimension: _my_hub_adheres_to_the_highest_safety_standards_ {
+  hidden: yes
   type: number
   sql: ${TABLE}._my_hub_adheres_to_the_highest_safety_standards_;;
 }
 
 dimension: my_shifts_are_planned_flexibly_taking_into_account_my_responsibilities_outside_of_flink_ {
+  hidden: yes
   type: number
   sql: ${TABLE}.my_shifts_are_planned_flexibly_taking_into_account_my_responsibilities_outside_of_flink_;;
 }
 
 dimension: quinyx_is_a_good_tool_for_keeping_me_informed_about_upcoming_shifts_and_requesting_absences_ {
+  hidden: yes
   type: number
   sql: ${TABLE}.quinyx_is_a_good_tool_for_keeping_me_informed_about_upcoming_shifts_and_requesting_absences_;;
 }
 
 
 dimension: dockr_cargo_bikes_ {
+  hidden: yes
   type: number
   sql: ${TABLE}.dockr_cargo_bikes_;;
 }
 
 
 dimension: get_henry_black_ {
+  hidden: yes
   type: number
   sql: ${TABLE}.get_henry_black_;;
 }
 
 dimension: get_henry_white_ {
+  hidden: yes
   type: number
   sql: ${TABLE}.get_henry_white_;;
 }
 
 dimension: movelo {
+  hidden: yes
   type: number
   sql: ${TABLE}.movelo;;
 }
 
 dimension: smartvelo {
+  hidden: yes
   type: number
   sql: ${TABLE}.smartvelo;;
 }
 
 dimension: swapfiets {
+  hidden: yes
   type: number
   sql: ${TABLE}.swapfiets;;
 }
 
 dimension: tier {
+  hidden: yes
   type: number
   sql: ${TABLE}.tier;;
 }
 
 dimension: zoomo {
+  hidden: yes
   type: number
   sql: ${TABLE}.zoomo;;
 }
 
 dimension: moby {
+  hidden: yes
   type: number
   sql: ${TABLE}.moby;;
 }
 
 dimension: dott {
+  hidden: yes
   type: number
   sql: ${TABLE}.dott;;
 }
 
 dimension: kemmrod {
+  hidden: yes
   type: number
   sql: ${TABLE}.kemmrod;;
 }
 
 dimension: vely_velo {
+  hidden: yes
   type: number
   sql: ${TABLE}.vely_velo;;
 }
@@ -326,189 +310,215 @@ dimension: vely_velo {
 
 
 measure: sum_responded_bikes {
+  group_label: "# Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
-  filters: [bikes: "is not null"]
+  filters: [bikes: "not null"]
 }
 
 
 measure: sum_responded_dockr_cargo_bikes {
+  group_label: "# Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
   filters: [dockr_cargo_bikes_: ">0"]
 }
 
-measure: sum_responded_get_henry_black_ {
+measure: sum_responded_get_henry_black {
+  group_label: "# Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
-  filters: [get_henry_black_: "is not null"]
+  filters: [get_henry_black_: "not null"]
 }
 
-measure: sum_responded_get_henry_white_ {
+measure: sum_responded_get_henry_white {
+  group_label: "# Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
-  filters: [get_henry_white_: "is not null"]
+  filters: [get_henry_white_: "not null"]
 }
 
 measure: sum_responded_movelo {
+  group_label: "# Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
-  filters: [movelo: "is not null"]
+  filters: [movelo: "not null"]
 }
 
 measure: sum_responded_smartvelo {
+  group_label: "# Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
-  filters: [smartvelo: "is not null"]
+  filters: [smartvelo: "not null"]
 }
 
 measure: sum_responded_swapfiets {
+  group_label: "# Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
-  filters: [swapfiets: "is not null"]
+  filters: [swapfiets: "not null"]
 }
 
 measure: sum_responded_tier {
+  group_label: "# Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
-  filters: [tier: "is not null"]
+  filters: [tier: "not null"]
 }
 
 measure: sum_responded_zoomo {
+  group_label: "# Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
-  filters: [zoomo: "is not null"]
+  filters: [zoomo: "not null"]
 }
 
 measure: sum_responded_moby {
+  group_label: "# Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
-  filters: [moby: "is not null"]
+  filters: [moby: "not null"]
 }
 
 measure: sum_responded_dott {
+  group_label: "# Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
-  filters: [dott: "is not null"]
+  filters: [dott: "not null"]
 }
 
 measure: sum_responded_kemmrod {
+  group_label: "# Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
-  filters: [kemmrod: "is not null"]
+  filters: [kemmrod: "not null"]
 }
 
 measure: sum_responded_vely_velo {
+  group_label: "# Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
-  filters: [vely_velo: "is not null"]
+  filters: [vely_velo: "not null"]
 }
 
 measure: sum_responded_i_am_satisfied_with_the_hub_working_conditions_ {
+  group_label: "# Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
-  filters: [_i_am_satisfied_with_the_hub_working_conditions_: "is not null"]
+  filters: [_i_am_satisfied_with_the_hub_working_conditions_: "not null"]
 }
 
 measure: sum_responded_my_hub_adheres_to_the_highest_safety_standards_ {
+  group_label: "# Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
-  filters: [_my_hub_adheres_to_the_highest_safety_standards_: "is not null"]
+  filters: [_my_hub_adheres_to_the_highest_safety_standards_: "not null"]
 }
 
 measure: sum_responded_my_shifts_are_planned_flexibly_taking_into_account_my_responsibilities_outside_of_flink_ {
+  group_label: "# Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
-  filters: [my_shifts_are_planned_flexibly_taking_into_account_my_responsibilities_outside_of_flink_: "is not null"]
+  filters: [my_shifts_are_planned_flexibly_taking_into_account_my_responsibilities_outside_of_flink_: "not null"]
 }
 
 measure: sum_responded_quinyx_is_a_good_tool_for_keeping_me_informed_about_upcoming_shifts_and_requesting_absences_ {
+  group_label: "# Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
-  filters: [quinyx_is_a_good_tool_for_keeping_me_informed_about_upcoming_shifts_and_requesting_absences_: "is not null"]
+  filters: [quinyx_is_a_good_tool_for_keeping_me_informed_about_upcoming_shifts_and_requesting_absences_: "not null"]
 }
 
 measure: sum_responded_my_supervisor_s_cares_about_their_employees_ {
+  group_label: "# Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
-  filters: [my_supervisor_s_cares_about_their_employees_: "is not null"]
+  filters: [my_supervisor_s_cares_about_their_employees_: "not null"]
 }
 
 measure: sum_responded_my_supervisor_s_treats_everyone_fairly_ {
+  group_label: "# Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
-  filters: [my_supervisor_s_treats_everyone_fairly_: "is not null"]
+  filters: [my_supervisor_s_treats_everyone_fairly_: "not null"]
 }
 
 measure: sum_responded_i_feel_comfortable_giving_opinions_and_feedback_to_managers_ {
+  group_label: "# Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
-  filters: [i_feel_comfortable_giving_opinions_and_feedback_to_managers_: "is not null"]
+  filters: [i_feel_comfortable_giving_opinions_and_feedback_to_managers_: "not null"]
 }
 
 measure: sum_responded_if_i_do_great_work_i_know_that_it_will_be_recognised_ {
+  group_label: "# Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
-  filters: [if_i_do_great_work_i_know_that_it_will_be_recognised_:  "is not null"]
+  filters: [if_i_do_great_work_i_know_that_it_will_be_recognised_:  "not null"]
 }
 
 
 measure: sum_responded_communication_support {
+  group_label: "# Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
-  filters: [if_i_do_great_work_i_know_that_it_will_be_recognised_:  "is not null"]
+  filters: [communication_support:  "not null"]
 }
 
 
 measure: sum_responded_hub_infrastructure {
+  group_label: "# Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
-  filters: [if_i_do_great_work_i_know_that_it_will_be_recognised_:  "is not null"]
+  filters: [hub_code:  "not null"]
 }
 
 measure: sum_responded_on_boarding_experience {
+  group_label: "# Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
-  filters: [if_i_do_great_work_i_know_that_it_will_be_recognised_:  "is not null"]
+  filters: [on_boarding_experience:  "not null"]
 }
 
 measure: sum_responded_payments {
+  group_label: "# Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
-  filters: [if_i_do_great_work_i_know_that_it_will_be_recognised_:  "is not null"]
+  filters: [payments:   "not null"]
 }
 
 
 measure: sum_responded_rider_app {
+  group_label: "# Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
-  filters: [if_i_do_great_work_i_know_that_it_will_be_recognised_:  "is not null"]
+  filters: [rider_app:  "not null"]
 }
 
 
@@ -516,23 +526,25 @@ measure: sum_responded_shift_scheduling {
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
-  filters: [if_i_do_great_work_i_know_that_it_will_be_recognised_:  "is not null"]
+  filters: [shift_planning:  "not null"]
 }
 
 
 measure: sum_responded_work_duties {
+  group_label: "# Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
-  filters: [if_i_do_great_work_i_know_that_it_will_be_recognised_:  "is not null"]
+  filters: [work_duties: "not null"]
 }
 
 
 measure: sum_responded_work_environment_atmosphere {
+  group_label: "# Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
-  filters: [if_i_do_great_work_i_know_that_it_will_be_recognised_:  "is not null"]
+  filters: [work_environment_atmosphere: "not null"]
 }
 
 
@@ -559,6 +571,8 @@ measure: avg_dockr_cargo_bikes_ {
   type: average
   value_format: "0.0"
   sql: ${dockr_cargo_bikes_};;
+  html:  {{rendered_value}} <br><i>(# {{ sum_responded_dockr_cargo_bikes._rendered_value }} answers)</i> ;;
+
 }
 
 measure: avg_get_henry_black_ {
@@ -567,6 +581,8 @@ measure: avg_get_henry_black_ {
   type: average
   value_format: "0.0"
   sql: ${get_henry_black_};;
+  html:  {{rendered_value}} <br><i>(# {{ sum_responded_get_henry_black._rendered_value }} answers)</i> ;;
+
 }
 
 
@@ -576,6 +592,8 @@ measure: avg_get_henry_white_ {
   type: average
   value_format: "0.0"
   sql: ${get_henry_white_};;
+  html:  {{rendered_value}} <br><i>(# {{ sum_responded_get_henry_white._rendered_value }} answers)</i> ;;
+
 }
 
 measure: avg_movelo {
@@ -584,6 +602,8 @@ measure: avg_movelo {
   type: average
   value_format: "0.0"
   sql: ${movelo};;
+  html:  {{rendered_value}} <br><i>(# {{ sum_responded_movelo._rendered_value }} answers)</i> ;;
+
 }
 
 measure: avg_smartvelo {
@@ -592,6 +612,8 @@ measure: avg_smartvelo {
   type: average
   value_format: "0.0"
   sql: ${smartvelo};;
+  html:  {{rendered_value}} <br><i>(# {{ sum_responded_smartvelo._rendered_value }} answers)</i> ;;
+
 }
 
 measure: avg_swapfiets {
@@ -600,6 +622,8 @@ measure: avg_swapfiets {
   type: average
   value_format: "0.0"
   sql: ${swapfiets};;
+  html:  {{rendered_value}} <br><i>(# {{ sum_responded_swapfiets._rendered_value }} answers)</i> ;;
+
 }
 
 measure: avg_tier {
@@ -608,6 +632,7 @@ measure: avg_tier {
   type: average
   value_format: "0.0"
   sql: ${tier};;
+  html:  {{rendered_value}} <br><i>(# {{ sum_responded_tier._rendered_value }} answers)</i> ;;
 }
 
 measure: avg_zoomo {
@@ -616,6 +641,8 @@ measure: avg_zoomo {
   type: average
   value_format: "0.0"
   sql: ${zoomo};;
+  html:  {{rendered_value}} <br><i>(# {{ sum_responded_zoomo._rendered_value }} answers)</i> ;;
+
 }
 
 measure: avg_moby {
@@ -624,6 +651,8 @@ measure: avg_moby {
   type: average
   value_format: "0.0"
   sql: ${moby};;
+  html:  {{rendered_value}} <br><i>(# {{ sum_responded_moby._rendered_value }} answers)</i> ;;
+
 }
 
 measure: avg_dott {
@@ -632,6 +661,8 @@ measure: avg_dott {
   type: average
   value_format: "0.0"
   sql: ${dott};;
+  html:  {{rendered_value}} <br><i>(# {{ sum_responded_dott._rendered_value }} answers)</i> ;;
+
 }
 
 measure: avg_kemmrod {
@@ -640,6 +671,8 @@ measure: avg_kemmrod {
   type: average
   value_format: "0.0"
   sql: ${kemmrod};;
+  html:  {{rendered_value}} <br><i>(# {{ sum_responded_kemmrod._rendered_value }} answers)</i> ;;
+
 }
 
 measure: avg_vely_velo {
@@ -648,6 +681,8 @@ measure: avg_vely_velo {
   type: average
   value_format: "0.0"
   sql: ${vely_velo};;
+  html:  {{rendered_value}} <br><i>(# {{ sum_responded_vely_velo._rendered_value }} answers)</i> ;;
+
 }
 
   measure: avg_i_am_satisfied_with_the_hub_working_conditions_ {
@@ -656,6 +691,7 @@ measure: avg_vely_velo {
     type: average
     value_format: "0.0"
     sql: ${_i_am_satisfied_with_the_hub_working_conditions_};;
+
   }
 
 measure: avg_i_am_satisfied_with_the_quality_of_rider_equipment_at_flink_ {
@@ -692,7 +728,7 @@ measure: avg_quinyx_is_a_good_tool_for_keeping_me_informed_about_upcoming_shifts
 
 measure: avg_my_supervisor_s_cares_about_their_employees_ {
   group_label: "Work Environment"
-  label: "My Supervisors Cares About Their Employees"
+  label: "My Supervisor(s) Cares About Their Employees"
   type: average
   value_format: "0.0"
   sql: ${my_supervisor_s_cares_about_their_employees_};;
@@ -700,7 +736,7 @@ measure: avg_my_supervisor_s_cares_about_their_employees_ {
 
 measure: avg_my_supervisor_s_treats_everyone_fairly_ {
   group_label: "Work Environment"
-  label: "My Supervisors Treats Everyone Fairly"
+  label: "My Supervisor(s) Treats Everyone Fairly"
   type: average
   value_format: "0.0"
   sql: ${my_supervisor_s_treats_everyone_fairly_};;
@@ -786,5 +822,12 @@ measure: avg_work_environment_atmosphere {
   value_format: "0.0"
   sql: ${work_environment_atmosphere};;
 }
+
+
+
+  measure: count {
+    type: count
+    drill_fields: []
+  }
 
 }
