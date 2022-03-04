@@ -7,4 +7,8 @@ explore: all_rider_nps {
   view_label: "Rider NPS"
   group_label: "Rider Ops"
   description: "Rider NPS Results"
-  }
+
+  access_filter: {
+    field: all_rider_nps.country_iso
+    user_attribute: country_iso
+  }}
