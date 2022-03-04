@@ -59,8 +59,9 @@ dimension: contract_type {
 dimension: hub_code {
   hidden: yes
   type: string
-  sql: ${TABLE}.hub_code;;
+  sql: ${TABLE}.hub_code ;;
 }
+
 
 
 dimension: hub_infrastructure {
@@ -141,7 +142,8 @@ dimension: what_can_flink_do_to_make_work_better_for_you_sharing_this_will_help_
 dimension: what_hub_are_you_based_in_ {
   label: "Hub Code"
   type: string
-  sql: coalesce(${hub_code},${TABLE}.what_hub_are_you_based_in_);;
+  sql: coalesce(${hub_code}, lower(REGEXP_EXTRACT(${TABLE}.what_hub_are_you_based_in_, r'([a-zA-Z0-9-][a-zA-Z0-9-.]_[a-zA-Z0-9-.][a-zA-Z0-9-.][a-zA-Z0-9-.]_[a-zA-Z0-9-.][a-zA-Z0-9-.][a-zA-Z0-9-.][a-zA-Z0-9-.])'))
+  );;
 }
 
 dimension: country_iso {
@@ -151,7 +153,7 @@ dimension: country_iso {
 
 dimension: city {
   type: string
-  sql: ${TABLE}.city;;
+  sql: coalesce(${TABLE}.city,REGEXP_EXTRACT(${TABLE}.what_hub_are_you_based_in_,r'\((.*?)\)' ));;
 }
 
 dimension: work_duties {
