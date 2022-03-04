@@ -141,7 +141,6 @@ dimension: what_can_flink_do_to_make_work_better_for_you_sharing_this_will_help_
 
 dimension: what_hub_are_you_based_in_ {
   label: "Hub Code"
-  hidden: yes
   type: string
   sql: coalesce(${hub_code},${TABLE}.what_hub_are_you_based_in_);;
 }
