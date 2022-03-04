@@ -22,7 +22,7 @@ view: all_rider_nps {
     type: number
     sql: case when ${score} <= 6 then -100
               when ${score} >= 9 then 100
-              else 0 end
+         else 0    end
     ;;
   }
 
