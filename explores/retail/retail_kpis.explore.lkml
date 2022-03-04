@@ -17,7 +17,7 @@ include: "/**/*.explore"
 
 explore: retail_kpis {
   label: "Retail SKU KPIs"
-  group_label: "Retail"
+  group_label: "Commercial"
   hidden: no
 
   join: products {

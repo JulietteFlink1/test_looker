@@ -33,6 +33,12 @@ explore: lexbizz_core {
         sql_on:  ${products.product_sku} = ${stock_item.sku};;
       }
 
+      join: lexbizz_core_ndt_similar_rsg {
+        type: left_outer
+        relationship: many_to_one
+        sql_on: ${lexbizz_core_ndt_similar_rsg.similar_rsg} = ${stock_item.similar_rsg} ;;
+      }
+
   # -----------  join item_vendor_status  ------------------------------------------------------------------------------------------
   join: item_vendor_status {
 
