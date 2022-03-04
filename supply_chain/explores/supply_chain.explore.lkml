@@ -24,7 +24,7 @@ explore: supply_chain {
   description: "This explore covers inventory data based on CommerceTools
                 and Stock Changelogs provided by Hub-Tech. It is enrichted with reporting tables to measure the
                 vendor performance"
-  group_label: "04) Supply Chain"
+  group_label: "Supply Chain"
 
   from  :     products_hub_assignment_v2
   view_name:  products_hub_assignment

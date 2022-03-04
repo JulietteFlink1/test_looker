@@ -3,7 +3,7 @@ include: "/**/global_filters_and_parameters.view.lkml"
 
 # ct table: inventory_stock_count_daily, before in saleor called daily_historical_stock_levels
 explore: inventory_stock_count_daily {
-  hidden: no
+  hidden: yes
   label: "Inventory Metrics (daily granularity)"
   group_label: "02) Inventory"
 
