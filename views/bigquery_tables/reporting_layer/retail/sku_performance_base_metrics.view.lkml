@@ -55,7 +55,7 @@ view: +sku_performance_base {
 
   measure: avg_number_of_connections {
 
-    label:       "# Item-Connections"
+    label:       "AVG Item-Connections"
     description: "The number of items, that were in the same baskets than the SKU of interest, given that the 2 items were ordered together at least 10 times (per hub in reporting period)"
     group_label: "Report Period"
 
