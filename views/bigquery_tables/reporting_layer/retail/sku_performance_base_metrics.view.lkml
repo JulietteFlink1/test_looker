@@ -53,6 +53,19 @@ view: +sku_performance_base {
 
   }
 
+  measure: avg_number_of_connections {
+
+    label:       "# Item-Connections"
+    description: "The number of items, that were in the same baskets than the SKU of interest, given that the 2 items were ordered together at least 10 times (per hub in reporting period)"
+    group_label: "Report Period"
+
+    type: average
+    sql: ${number_of_connections} ;;
+
+    value_format_name: decimal_0
+
+  }
+
   measure: sum_number_of_orders_corrected {
 
     label:       "# Orders (Corrected)"
@@ -587,7 +600,7 @@ view: +sku_performance_base {
     group_label: "Proposed Decision Metrics"
 
     type: number
-    sql: ${sum_number_of_connections} / nullif(${avg_total_assortment_size} ,0) ;;
+    sql: ${avg_number_of_connections} / nullif(${avg_total_assortment_size} ,0) ;;
 
     value_format_name: percent_2
   }
