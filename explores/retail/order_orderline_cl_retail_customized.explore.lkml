@@ -6,11 +6,11 @@ include: "/views/native_derived_tables/retail/category_performance/weekly/orders
 include: "/views/native_derived_tables/retail/category_performance/monthly/orders_country_level_monthly.view"
 include: "/views/native_derived_tables/retail/category_performance/monthly/orders_revenue_subcategory_level_monthly.view"
 include: "/views/native_derived_tables/retail/category_performance/monthly/orders_revenue_category_level_monthly.view"
-
+include: "/views/bigquery_tables/gsheets/commercial_department_names.view"
 
 explore: order_orderline_cl_retail_customized {
   extends: [order_orderline_cl]
-  group_label: "Retail"
+  group_label: "Commercial"
   label: "Orders & Items (Retail Version)"
   hidden: no
 
@@ -66,5 +66,12 @@ explore: order_orderline_cl_retail_customized {
     relationship: many_to_one
   }
 
+  join: commercial_department_names {
+    view_label: "* Order Lineitems *"
+    sql_on: lower(${commercial_department_names.category}) = lower(${products.category})
+      and lower(${commercial_department_names.subcategory}) = lower(${products.subcategory});;
+    relationship: many_to_one
+
+  }
 
 }

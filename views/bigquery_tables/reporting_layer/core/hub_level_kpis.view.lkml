@@ -127,6 +127,110 @@ view: hub_level_kpis {
   }
 
 
+##################################################################################
+#                   DATA-1680
+##################################################################################
+  dimension: hub_tier {
+    label: "Hub Tier"
+    type: number
+    sql: ${TABLE}.hub_tier ;;
+  }
+# ---------------------------------------------------------------------------------
+  dimension: avg_daily_orders_previous_day {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.avg_daily_orders_previous_day ;;
+  }
+
+  dimension: avg_daily_orders_previous_month {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.avg_daily_orders_previous_month ;;
+  }
+
+  dimension: avg_daily_orders_previous_week {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.avg_daily_orders_previous_week ;;
+  }
+
+  dimension: order_bracket {
+    label: "Daily Order Bracket"
+    type: tier
+    tiers: [0,150,300,450,600]
+    style: integer
+    sql:
+        {% if date_granularity._parameter_value == 'Day' %}
+        ${avg_daily_orders_previous_day}
+        {% elsif date_granularity._parameter_value == 'Week' %}
+        ${avg_daily_orders_previous_week}
+        {% elsif date_granularity._parameter_value == 'Month' %}
+        ${avg_daily_orders_previous_month}
+        {% endif %} ;;
+  }
+# ---------------------------------------------------------------------------------
+  dimension: is_orders_target_achieved_day {
+    hidden: yes
+    type: yesno
+    sql: ${TABLE}.is_orders_target_achieved_day ;;
+  }
+
+  dimension: is_orders_target_achieved_month {
+    hidden: yes
+    type: yesno
+    sql: ${TABLE}.is_orders_target_achieved_month ;;
+  }
+
+  dimension: is_orders_target_achieved_week {
+    hidden: yes
+    type: yesno
+    sql: ${TABLE}.is_orders_target_achieved_week ;;
+  }
+
+  dimension: is_orders_target_achieved {
+    label: "Is Orders Target Achieved"
+    type: yesno
+    sql:
+        {% if date_granularity._parameter_value == 'Day' %}
+        ${is_orders_target_achieved_day}
+        {% elsif date_granularity._parameter_value == 'Week' %}
+        ${is_orders_target_achieved_week}
+        {% elsif date_granularity._parameter_value == 'Month' %}
+        ${is_orders_target_achieved_month}
+        {% endif %} ;;
+  }
+# ---------------------------------------------------------------------------------
+  dimension: is_rider_utr_target_achieved_day {
+    hidden: yes
+    type: yesno
+    sql: ${TABLE}.is_rider_utr_target_achieved_day ;;
+  }
+
+  dimension: is_rider_utr_target_achieved_month {
+    hidden: yes
+    type: yesno
+    sql: ${TABLE}.is_rider_utr_target_achieved_month ;;
+  }
+
+  dimension: is_rider_utr_target_achieved_week {
+    hidden: yes
+    type: yesno
+    sql: ${TABLE}.is_rider_utr_target_achieved_week ;;
+  }
+
+  dimension: is_rider_utr_target_achieved {
+    label: "Is Rider UTR Target Achieved"
+    type: yesno
+    sql:
+        {% if date_granularity._parameter_value == 'Day' %}
+        ${is_rider_utr_target_achieved_day}
+        {% elsif date_granularity._parameter_value == 'Week' %}
+        ${is_rider_utr_target_achieved_week}
+        {% elsif date_granularity._parameter_value == 'Month' %}
+        ${is_rider_utr_target_achieved_month}
+        {% endif %} ;;
+  }
+
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Parameters     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -173,6 +277,24 @@ view: hub_level_kpis {
     label: "# Orders"
     type: sum
     sql: ${TABLE}.number_of_orders ;;
+    value_format_name: decimal_0
+  }
+
+  measure: sum_number_of_adjusted_picker_orders {
+    group_label: ">> Order KPIs"
+    label: "# Orders"
+    hidden: yes
+    type: sum
+    sql: ${TABLE}.number_of_adjusted_picker_orders ;;
+    value_format_name: decimal_0
+  }
+
+  measure: sum_number_of_adjusted_rider_orders {
+    group_label: ">> Order KPIs"
+    label: "# Orders"
+    type: sum
+    hidden: yes
+    sql: ${TABLE}.number_of_adjusted_rider_orders ;;
     value_format_name: decimal_0
   }
 
@@ -244,10 +366,10 @@ view: hub_level_kpis {
     value_format_name: euro_accounting_2_precision
   }
 
-  # =========  Operations Kpis   =========
+  # =========  Ops KPIs   =========
 
   measure: sum_number_of_orders_with_delivery_eta_available {
-    group_label: ">> Operations KPIs"
+    group_label: ">> Ops KPIs"
     label: "# Orders with PDT available"
     description: "Count of Orders where a promised delivery time is available"
     type: sum
@@ -256,7 +378,7 @@ view: hub_level_kpis {
   }
 
   measure: sum_number_of_orders_delayed_under_0_min {
-    group_label: ">> Operations KPIs"
+    group_label: ">> Ops KPIs"
     label: "# Orders delivered in time"
     description: "Count of Orders delivered no later than promised delivery time"
     type: sum
@@ -265,7 +387,7 @@ view: hub_level_kpis {
   }
 
   measure: sum_number_of_orders_delayed_over_5_min {
-    group_label: ">> Operations KPIs"
+    group_label: ">> Ops KPIs"
     label: "# Orders delivered late >5min"
     description: "Count of Orders delivered >5min later than promised delivery time"
     type: sum
@@ -274,7 +396,7 @@ view: hub_level_kpis {
   }
 
   measure: sum_number_of_orders_delayed_over_10_min {
-    group_label: ">> Operations KPIs"
+    group_label: ">> Ops KPIs"
     label: "# Orders delivered late >10min"
     description: "Count of Orders delivered >10min later than promised delivery time"
     type: sum
@@ -283,7 +405,7 @@ view: hub_level_kpis {
   }
 
   measure: sum_number_of_orders_delayed_over_15_min {
-    group_label: ">> Operations KPIs"
+    group_label: ">> Ops KPIs"
     label: "# Orders delivered late >15min"
     description: "Count of Orders delivered >15min later than promised delivery time"
     type: sum
@@ -293,7 +415,7 @@ view: hub_level_kpis {
 
 
   measure: pct_delivery_in_time{
-    group_label: ">> Operations KPIs"
+    group_label: ">> Ops KPIs"
     label: "% Orders delivered in time"
     description: "Share of orders delivered no later than promised ETA (only orders with valid ETA time considered)"
     hidden:  no
@@ -303,7 +425,7 @@ view: hub_level_kpis {
   }
 
   measure: pct_delivery_late_over_5_min{
-    group_label: ">> Operations KPIs"
+    group_label: ">> Ops KPIs"
     label: "% Orders delayed >5min"
     description: "Share of orders delivered >5min later than promised ETA (only orders with valid ETA time considered)"
     hidden:  no
@@ -313,7 +435,7 @@ view: hub_level_kpis {
   }
 
   measure: pct_delivery_late_over_10_min{
-    group_label: ">> Operations KPIs"
+    group_label: ">> Ops KPIs"
     label: "% Orders delayed >10min"
     description: "Share of orders delivered >10min later than promised ETA (only orders with valid ETA time considered)"
     hidden:  no
@@ -323,7 +445,7 @@ view: hub_level_kpis {
   }
 
   measure: pct_delivery_late_over_15_min{
-    group_label: ">> Operations KPIs"
+    group_label: ">> Ops KPIs"
     label: "% Orders delayed >15min"
     description: "Share of orders delivered >15min later than promised ETA (only orders with valid ETA time considered)"
     hidden:  no
@@ -718,9 +840,12 @@ view: hub_level_kpis {
   measure: adjusted_orders_riders {
     group_label: ">> UTR KPIs"
     type: sum
+    description: "exclude orders when total daily worked hour = 0"
     sql: ${TABLE}.number_of_adjusted_orders_riders ;;
     hidden: yes
   }
+
+
 
   measure: adjusted_orders_pickers {
     type: sum
@@ -733,7 +858,7 @@ view: hub_level_kpis {
     label: "Sum of Rider Hours"
     type: sum
     sql: ${TABLE}.number_of_rider_hours ;;
-    value_format_name: decimal_2
+    value_format_name: decimal_1
   }
 
   measure: picker_hours {
@@ -741,7 +866,7 @@ view: hub_level_kpis {
     label: "Sum of Picker Hours"
     type: sum
     sql: ${TABLE}.number_of_picker_hours ;;
-    value_format_name: decimal_0
+    value_format_name: decimal_1
   }
 
   measure: rider_utr {
@@ -749,7 +874,7 @@ view: hub_level_kpis {
     label: "AVG Rider UTR"
     hidden: no
     type: number
-    sql: ${sum_number_of_orders} / NULLIF(${rider_hours}, 0);;
+    sql: ${sum_number_of_adjusted_rider_orders} / NULLIF(${rider_hours}, 0);;
     value_format_name: decimal_2
   }
 
@@ -758,39 +883,39 @@ view: hub_level_kpis {
     label: "AVG Picker UTR"
     type: number
     hidden: no
-    sql: ${sum_number_of_orders} / NULLIF(${picker_hours}, 0);;
+    sql: ${sum_number_of_adjusted_rider_orders} / NULLIF(${picker_hours}, 0);;
     value_format_name: decimal_2
 
   }
 
 
-  # =========  Shift Metric Kpis   =========
+  # =========  Shift KPIs   =========
 
   measure: sum_filled_ext_picker_hours {
-    group_label: ">> Shift Metric KPIs"
-    label: "Hours: Filled Ext. Picker"
+    group_label: ">> Shift KPIs"
+    label: "Hours: Assigned Ext. Picker"
     sql: ${TABLE}.number_of_filled_ext_picker_hours ;;
     value_format_name: decimal_1
     type: sum
   }
   measure: sum_filled_ext_rider_hours {
-    group_label: ">> Shift Metric KPIs"
-    label: "Hours: Filled Ext. Rider"
+    group_label: ">> Shift KPIs"
+    label: "Hours: Assigned Ext. Rider"
     sql: ${TABLE}.number_of_filled_ext_rider_hours ;;
     value_format_name: decimal_1
     type: sum
   }
   measure: sum_filled_ext_hours_total {
-    group_label: ">> Shift Metric KPIs"
-    label: "Hours: Filled Ext. Total"
+    group_label: ">> Shift KPIs"
+    label: "Hours: Assigned Ext. Total"
     value_format_name: decimal_1
     type: number
     sql: ${sum_filled_ext_picker_hours} + ${sum_filled_ext_rider_hours} ;;
   }
 
   measure: sum_unfilled_rider_hours {
-    group_label: ">> Shift Metric KPIs"
-    label: "Hours: Unfilled Rider"
+    group_label: ">> Shift KPIs"
+    label: "Hours: Unassigned Rider"
     sql: if(
               (${sum_planned_rider_hours} - ${sum_filled_rider_hours}) < 0
             , 0
@@ -798,10 +923,11 @@ view: hub_level_kpis {
     ) ;;
     value_format_name: decimal_1
     type: number
+    description: "Scheduled Hours - Assigned hours"
   }
   measure: sum_unfilled_picker_hours {
-    group_label: ">> Shift Metric KPIs"
-    label: "Hours: Unfilled Picker"
+    group_label: ">> Shift KPIs"
+    label: "Hours: Unassigned Picker"
     sql: if(
                 (${sum_planned_picker_hours} - ${sum_filled_picker_hours}) < 0
               , 0
@@ -809,87 +935,116 @@ view: hub_level_kpis {
     );;
     value_format_name: decimal_1
     type: number
+    description: "Scheduled Hours - Assigned hours"
   }
 
   measure: sum_unfilled_hours_total {
-    group_label: ">> Shift Metric KPIs"
-    label: "Hours: Unfilled Total"
+    group_label: ">> Shift KPIs"
+    label: "Hours: Unassigned Total"
+    description: "Scheduled Hours - Assigned hours"
     type: number
     value_format_name: decimal_1
     sql: ${sum_unfilled_picker_hours} + ${sum_unfilled_rider_hours} ;;
 
   }
   measure: sum_filled_no_show_picker_hours {
-    group_label: ">> Shift Metric KPIs"
+    group_label: ">> Shift KPIs"
     label: "Hours: No Show Picker"
+    description: "All shift hours that have no punch & accepted absense attached."
     sql: ${TABLE}.number_of_filled_no_show_picker_hours ;;
     value_format_name: decimal_1
     type: sum
   }
   measure: sum_filled_no_show_rider_hours {
-    group_label: ">> Shift Metric KPIs"
+    group_label: ">> Shift KPIs"
     label: "Hours: No Show Rider"
+    description: "All shift hours that have no punch & accepted absense attached."
     sql: ${TABLE}.number_of_filled_no_show_rider_hours ;;
     value_format_name: decimal_1
     type: sum
   }
   measure: sum_filled_no_show_hours_total {
-    group_label: ">> Shift Metric KPIs"
+    group_label: ">> Shift KPIs"
     label: "Hours: No Show Total"
     value_format_name: decimal_1
     type: number
     sql: ${sum_filled_no_show_picker_hours} + ${sum_filled_no_show_rider_hours} ;;
   }
 
+  measure: sum_punched_rider_hours {
+    group_label: ">> Shift KPIs"
+    label: "Hours: Punched Rider"
+    description: "All punched-in hours by actual punch in and out. I.e. Assigned Hours - No Show Hours."
+    value_format_name: decimal_1
+    type: number
+    sql: ${sum_filled_rider_hours} - ${sum_filled_no_show_rider_hours} ;;
+  }
+
+  measure: sum_punched_picker_hours {
+    group_label: ">> Shift KPIs"
+    label: "Hours: Punched Picker"
+    description: "All punched-in hours by actual punch in and out. I.e. Assigned Hours - No Show Hours."
+    value_format_name: decimal_1
+    type: number
+    sql: ${sum_filled_picker_hours} - ${sum_filled_no_show_picker_hours} ;;
+  }
+
+
   measure: sum_filled_picker_hours {
-    group_label: ">> Shift Metric KPIs"
-    label: "Hours: Filled Picker"
+    group_label: ">> Shift KPIs"
+    label: "Hours: Assigned Picker"
     sql: ${TABLE}.number_of_filled_picker_hours ;;
     value_format_name: decimal_1
     type: sum
+    description: "All scheduled hours (hours from scheduled shifts), regardless if hours were worked or not.
+                  Generated by Quinyx. Hub managers can manually adjust the generated shifts after."
   }
   measure: sum_planned_picker_hours {
-    group_label: ">> Shift Metric KPIs"
-    label: "Hours: Planned Picker"
+    group_label: ">> Shift KPIs"
+    label: "Hours: Scheduled Picker"
     sql: ${TABLE}.number_of_planned_picker_hours ;;
     value_format_name: decimal_1
     type: sum
+    description: "Scheduled hours + Unassigned hours (hours from shifts that were created but were not assigned to anyone)"
   }
   measure: sum_filled_rider_hours {
-    group_label: ">> Shift Metric KPIs"
-    label: "Hours: Filled Rider"
+    group_label: ">> Shift KPIs"
+    label: "Hours: Assigned Rider"
     sql: ${TABLE}.number_of_filled_rider_hours ;;
     value_format_name: decimal_1
     type: sum
+    description: "All scheduled hours (hours from scheduled shifts), regardless if hours were worked or not.
+                  Generated by Quinyx. Hub managers can manually adjust the generated shifts after."
   }
   measure: sum_planned_rider_hours {
-    group_label: ">> Shift Metric KPIs"
-    label: "Hours: Planned Rider"
+    group_label: ">> Shift KPIs"
+    label: "Hours: Scheduled Rider"
     sql: ${TABLE}.number_of_planned_rider_hours ;;
     value_format_name: decimal_1
     type: sum
+    description: "Scheduled hours + Unassigned hours (hours from shifts that were created but were not assigned to anyone)"
   }
 
   measure: pct_no_show {
-    group_label: ">> Shift Metric KPIs"
+    group_label: ">> Shift KPIs"
     label: "% No Show Shift Hours"
-    description: "The percentage of planned and filled shift hours with employees not showing up"
+    description: "The percentage of planned and assigned shift hours with employees not showing up"
     type: number
     sql: (${sum_filled_no_show_rider_hours} + ${sum_filled_no_show_picker_hours}) / nullif((${sum_filled_picker_hours} + ${sum_filled_rider_hours}), 0) ;;
     value_format_name: percent_1
   }
 
   measure: pct_open_shifts {
-    group_label: ">> Shift Metric KPIs"
-    label: "% Open Shift Hours"
-    description: "The percentage of planned shift hours, that could not be filled with employees"
+    group_label: ">> Shift KPIs"
+    label: "% Unassigned Shift Hours"
+    description: "The percentage of scheduled shift hours that could not have been filled with employees. Unassigned Hours are all unassagned shift hours. I.e. Scheduled Hours - Assigned Hours"
     type: number
     sql: (${sum_unfilled_picker_hours} + ${sum_unfilled_rider_hours}) / nullif((${sum_planned_picker_hours} + ${sum_planned_rider_hours}) ,0) ;;
     value_format_name: percent_1
   }
 
   measure: pct_ext_shifts {
-    group_label: ">> Shift Metric KPIs"
+    group_label: ">> Shift KPIs"
     label: "% External Shift Hours"
     description: "The percentage of actual shift hours, that were performed by external employees"
     type: number
@@ -963,7 +1118,7 @@ view: hub_level_kpis {
 
   measure: score_open_shifts {
     group_label: ">> Hub Scores"
-    label: "Score: Open Shift Hours"
+    label: "Score: Unassigned Shift Hours"
     sql: if(
             (-5 * ${pct_open_shifts}*100 +100) < 0
             , 0
@@ -1025,4 +1180,76 @@ view: hub_level_kpis {
     type: number
     value_format_name: decimal_0
   }
+
+
+
+##################################################################################
+#                   DATA-1680
+##################################################################################
+
+  measure: sum_orders_target {
+    group_label: ">> Order KPIs"
+    label: "# Orders Target"
+    type: sum
+    sql: ${TABLE}.daily_orders_target ;;
+    value_format_name: decimal_0
+  }
+
+  measure: cnt_unique_hubs {
+    group_label: ">> Ops KPIs"
+    label: "# Hubs"
+    type: count_distinct
+    sql:  ${hub_code};;
+  }
+
+  measure: cnt_hubs_above_orders_target {
+    hidden: yes
+    type: count_distinct
+    sql:
+      {% if date_granularity._parameter_value == 'Day' %}
+      if(is_orders_target_achieved_day=true,${hub_code},null)
+      {% elsif date_granularity._parameter_value == 'Week' %}
+      if(is_orders_target_achieved_week=true,${hub_code},null)
+      {% elsif date_granularity._parameter_value == 'Month' %}
+      if(is_orders_target_achieved_month=true,${hub_code},null)
+      {% endif %} ;;
+  }
+
+  measure: pct_hubs_above_orders_target {
+    group_label: ">> Ops KPIs"
+    label: "% Hubs Above Orders Target"
+    type: number
+    sql: ${cnt_hubs_above_orders_target} / nullif(${cnt_unique_hubs},0) ;;
+    value_format_name: percent_1
+  }
+
+  measure: cnt_hubs_above_rider_utr_target {
+    hidden: yes
+    type: count_distinct
+    sql:
+      {% if date_granularity._parameter_value == 'Day' %}
+      if(is_rider_utr_target_achieved_day=true,${hub_code},null)
+      {% elsif date_granularity._parameter_value == 'Week' %}
+      if(is_rider_utr_target_achieved_week=true,${hub_code},null)
+      {% elsif date_granularity._parameter_value == 'Month' %}
+      if(is_rider_utr_target_achieved_month=true,${hub_code},null)
+      {% endif %} ;;
+  }
+
+  measure: pct_hubs_above_rider_utr_target {
+    group_label: ">> Ops KPIs"
+    label: "% Hubs Above Rider UTR Target"
+    type: number
+    sql: ${cnt_hubs_above_rider_utr_target} / nullif(${cnt_unique_hubs},0) ;;
+    value_format_name: percent_1
+  }
+
+  measure: rider_utr_target {
+    group_label: ">> UTR KPIs"
+    label: "Avg Rider UTR Target"
+    type: average
+    sql: ${TABLE}.rider_utr_target ;;
+    value_format_name: decimal_2
+  }
+
 }

@@ -275,18 +275,18 @@ view: app_sessions {
     type: yesno
     sql: ${TABLE}.is_session_with_checkout_started ;;
   }
-  # dimension: is_session_with_checkout_viewed {
-  #   group_label: "Generic Dimensions"
-  #   description: "Session with started viewed"
-  #   type: yesno
-  #   sql: ${TABLE}.is_session_with_checkout_viewed ;;
-  # }
-  # dimension: is_session_with_cart_viewed {
-  #   group_label: "Generic Dimensions"
-  #   description: "Session with cart viewed"
-  #   type: yesno
-  #   sql: ${TABLE}.is_session_with_cart_viewed ;;
-  # }
+  dimension: is_session_with_checkout_viewed {
+    group_label: "Generic Dimensions"
+    description: "Session with started viewed"
+    type: yesno
+    sql: ${TABLE}.is_session_with_checkout_viewed ;;
+  }
+  dimension: is_session_with_cart_viewed {
+    group_label: "Generic Dimensions"
+    description: "Session with cart viewed"
+    type: yesno
+    sql: ${TABLE}.is_session_with_cart_viewed ;;
+  }
   dimension: is_session_with_payment_started {
     group_label: "Generic Dimensions"
     description: "Session with started payment"
@@ -419,13 +419,14 @@ view: app_sessions {
     type: count
     filters: [is_session_with_checkout_started: "yes"]
   }
-  # measure: cnt_checkout_viewed {
-  #   group_label: "Sessions with Event Flags"
-  #   label: "# Sessions with Checkout Viewed"
-  #   description: "Number of sessions in which at least one Checkout Viewed event happened"
-  #   type: count
-  #   filters: [is_session_with_checkout_viewed: "yes"]
-  # }
+
+  measure: cnt_checkout_viewed {
+    group_label: "Sessions with Event Flags"
+    label: "# Sessions with Checkout Viewed"
+    description: "Number of sessions in which at least one Checkout Viewed event happened"
+    type: count
+    filters: [is_session_with_checkout_viewed: "yes"]
+  }
 
   measure: cnt_payment_started {
     group_label: "Sessions with Event Flags"
@@ -492,14 +493,14 @@ view: app_sessions {
   measure: perc_of_total_checkout {
     hidden: yes
     type: number
-    sql: ${cnt_checkout_started}/${count} ;;
+    sql: ${cnt_checkout_viewed}/${count} ;;
     value_format_name: percent_1
   }
 
   measure: total_has_checkout {
     hidden: yes
     type: number
-    sql: ${cnt_checkout_started} ;;
+    sql: ${cnt_checkout_viewed} ;;
     html: {{ rendered_value }} ({{ perc_of_total_checkout._rendered_value }} % of total) ;;
   }
 
@@ -565,7 +566,7 @@ view: app_sessions {
     type: number
     description: "#sessions in which there was a Checkout Started event happened, compared to the number of sessions in which there was a Product Added To Cart"
     value_format_name: percent_1
-    sql: ${cnt_checkout_started}/NULLIF(${cnt_add_to_cart},0) ;;
+    sql: ${cnt_checkout_viewed}/NULLIF(${cnt_add_to_cart},0) ;;
   }
 
   measure: mcvr4 {
@@ -574,7 +575,7 @@ view: app_sessions {
     type: number
     description: "# sessions in which there was a Payment Started event happened, compared to the number of sessions in which there was a Checkout Started"
     value_format_name: percent_1
-    sql: ${cnt_payment_started}/NULLIF(${cnt_checkout_started},0) ;;
+    sql: ${cnt_payment_started}/NULLIF(${cnt_checkout_viewed},0) ;;
   }
 
   measure: mcvr5 {

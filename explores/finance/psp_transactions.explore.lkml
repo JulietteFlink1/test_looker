@@ -19,9 +19,9 @@ explore: psp_transactions {
 
   always_filter: {
     filters: [
+      orders.order_date: "",
       orders.is_successful_order: "",
       psp_transactions.merchant_account: "",
-      global_filters_and_parameters.datasource_filter: "",
       psp_transactions.booking_date: "",
       psp_transactions.record_type: ""
     ]

@@ -68,8 +68,8 @@ view: daily_hub_staffing {
 
   measure: sum_planned_hours{
     type: sum
-    label:"# Planned Hours"
-    description: "Number of Planned/Scheduled Hours"
+    label:"# Scheduled Hours"
+    description: "Number of Scheduled Hours"
     sql:${number_of_planned_minutes}/60;;
     value_format_name: decimal_1
   }
@@ -116,7 +116,7 @@ view: daily_hub_staffing {
     label:"% No Show Hours"
     type: number
     description: "Number of No Show Employees"
-    sql:(${sum_planned_hours} - ${sum_worked_hours})/${sum_planned_hours} ;;
+    sql:(${sum_planned_hours} - ${sum_worked_hours})/nullif(${sum_planned_hours},0) ;;
     value_format_name: percent_1
   }
 

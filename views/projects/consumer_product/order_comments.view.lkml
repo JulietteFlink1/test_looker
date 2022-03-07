@@ -97,6 +97,7 @@ view: order_comments {
 
   dimension: delivery_timeliness {
     group_label: "* Delivery Dimensions *"
+    label: "Delivery Timeliness"
     type: string
     case: {
       when: {

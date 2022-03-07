@@ -123,107 +123,148 @@ view: micro_forecasts_vs_actuals {
 
 
 
-  measure: ok_orders {
+  dimension: ok_orders {
     label: "Ok_orders"
     hidden: yes
-    type: sum
+    type: number
     sql: ${TABLE}.ok_orders;;
     value_format_name: decimal_0
   }
 
 
-  measure: prediction {
+  dimension: prediction {
     label: "prediction"
-    hidden: yes
-    type: sum
+    hidden: no
+    type: number
     sql: ${TABLE}.prediction;;
     value_format_name: decimal_0
   }
 
-  measure: prediction_lower_bound {
+  dimension: prediction_lower_bound {
     label: "prediction_lower_bound"
     hidden: yes
-    type: sum
+    type: number
     sql: ${TABLE}.prediction_lower_bound;;
     value_format_name: decimal_0
   }
 
 
-  measure: prediction_upper_bound {
+  dimension: prediction_upper_bound {
     label: "prediction_upper_bound"
     hidden: yes
-    type: sum
+    type: number
     sql: ${TABLE}.prediction_upper_bound;;
     value_format_name: decimal_0
   }
 
-  measure: public_holiday_left_shoulder_width {
+  dimension: public_holiday_left_shoulder_width {
     label: "public_holiday_left_shoulder_width"
     hidden: yes
-    type: sum
+    type: number
     sql: ${TABLE}.public_holiday_left_shoulder_width;;
     value_format_name: decimal_0
   }
 
-  measure: public_holiday_right_shoulder_width {
+  dimension: public_holiday_right_shoulder_width {
     label: "public_holiday_right_shoulder_width"
     hidden: yes
-    type: sum
+    type: number
     sql: ${TABLE}.public_holiday_right_shoulder_width;;
     value_format_name: decimal_0
   }
 
 
-  measure: closure_missed_orders {
+  dimension: closure_missed_orders {
     label: "closure_missed_orders"
     hidden: yes
-    type: sum
+    type: number
     sql: ${TABLE}.closure_missed_orders;;
     value_format_name: decimal_0
   }
 
 
-  measure: total_orders {
-    label: "total_orders"
+  dimension: observed_orders_total {
+    label: "Total observed orders"
+    hidden: no
+    type: number
+    sql: ${TABLE}.observed_orders_total;;
+    value_format_name: decimal_0
+  }
+
+  dimension: forecast_horizon {
+    label: "Forecast horizon - days"
+    type:  number
+    sql:  DATE_DIFF(${local_date}, ${job_date}, DAY) ;;
+  }
+
+  measure: count_values {
+    type: count
+  }
+
+
+  measure: absolute_percentage_error {
+    group_label: " * Forecasting error * "
+    type: sum
     hidden: yes
-    type: sum
-    sql: ${TABLE}.total_orders;;
-    value_format_name: decimal_0
+    sql: ABS(${prediction} - ${observed_orders_total})/(GREATEST(1, ${observed_orders_total})) ;;
   }
 
-
-  measure: number_of_orders {
-    label: "actual orders"
+  measure: forecast_error {
+    group_label: " * Forecasting error * "
     type: sum
-    sql: (case when ${TABLE}.model_name = 'exponential_smoothing' then ${TABLE}.total_orders end);;
-    value_format_name: decimal_0
+    hidden: yes
+    sql: ${prediction} - ${observed_orders_total} ;;
   }
 
-
-  measure: forecasted_orders_expo {
-    label: "exponential smoothing"
-    type: sum
-    sql: (case when ${TABLE}.model_name = 'exponential_smoothing' then ${TABLE}.prediction end);;
-    value_format_name: decimal_0
+  measure: bias {
+    group_label: " * Forecasting error * "
+    label: "Bias"
+    type: number
+    sql: ${forecast_error}/ NULLIF(${count_values}, 0);;
+    value_format_name: decimal_1
   }
 
-
-  measure: forecasted_orders_naive {
-    label: "seasonal naive period 7"
-    type: sum
-    sql: (case when ${TABLE}.model_name = 'seasonal_naive_period_7' then ${TABLE}.prediction end);;
-    value_format_name: decimal_0
+  measure: mean_absolute_percentage_error {
+    group_label: " * Forecasting error * "
+    label: "MAPE"
+    type: number
+    sql: ${absolute_percentage_error}/ NULLIF(${count_values}, 0);;
+    value_format_name: percent_0
   }
 
-
-  measure: forecasted_orders_prophet {
-    label: "prophet prophet shoulder days"
-    type: sum
-    sql: (case when ${TABLE}.model_name = 'prophet_shoulder_days' then ${TABLE}.prediction end);;
-    value_format_name: decimal_0
+  measure: weighted_mean_absolute_percentage_error {
+    group_label: " * Forecasting error * "
+    label: "wMAPE"
+    type: number
+    sql: ${summed_absolute_error}/${summed_absolute_actuals};;
+    value_format_name: percent_0
   }
 
+  measure: summed_absolute_error {
+    group_label: " * Orders * "
+    type: sum
+    hidden: yes
+    sql: ABS(${prediction} - ${observed_orders_total});;
+  }
 
+  measure: summed_absolute_actuals {
+    group_label: " * Orders * "
+    type: sum
+    hidden: yes
+    sql: ABS(${observed_orders_total});;
+  }
 
+  measure: sum_orders {
+    group_label: " * Orders * "
+    label: "# Total observed orders"
+    sql: ${observed_orders_total} ;;
+    type: sum
+  }
 
+  measure: sum_predicted_orders {
+    group_label: " * Orders * "
+    label: "# Forecasted orders"
+    sql: ${prediction} ;;
+    type: sum
+  }
 }

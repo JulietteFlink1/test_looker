@@ -1,4 +1,4 @@
-include: "/explores/base_explores/current_inventory_updated_hourly.explore"
+include: "/**/current_inventory_updated_hourly.explore"
 
 explore: retail_current_inventory {
   extends: [current_inventory_updated_hourly]

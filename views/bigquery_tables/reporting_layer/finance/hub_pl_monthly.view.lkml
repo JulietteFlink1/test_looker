@@ -1,5 +1,5 @@
 view: hub_pl_monthly {
-  sql_table_name: `flink-data-dev.reporting.hub_pl_monthly`
+  sql_table_name: `flink-data-prod.reporting.hub_pl_monthly`
     ;;
 
   dimension: amt_citymanager_salaries {
@@ -24,6 +24,42 @@ view: hub_pl_monthly {
     type: number
     hidden: yes
     sql: ${TABLE}.amt_discount_gross ;;
+  }
+
+  dimension: amt_discount_net {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_discount_net ;;
+  }
+
+  dimension: amt_discount_net_marketing_acquisition {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_discount_net_marketing_acquisition ;;
+  }
+
+  dimension: amt_discount_net_marketing_brand {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_discount_net_marketing_brand ;;
+  }
+
+  dimension: amt_discount_net_marketing_retention {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_discount_net_marketing_retention ;;
+  }
+
+  dimension: amt_discount_net_customer_service {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_discount_net_customer_service ;;
+  }
+
+  dimension: amt_discount_net_unknown_use_case {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_discount_net_unknown_use_case ;;
   }
 
   dimension: amt_ebikes {
@@ -176,6 +212,7 @@ view: hub_pl_monthly {
     sql: ${TABLE}.amt_total_net ;;
   }
 
+
   dimension: amt_total_gross {
     type: number
     hidden: yes
@@ -185,13 +222,44 @@ view: hub_pl_monthly {
   dimension: amt_transaction_fees {
     type: string
     hidden: yes
-    sql: ${TABLE}.amt_transaction_fees ;;
+    sql: ${TABLE}.amt_adyen_paypal_transaction_fees ;;
   }
 
   dimension: amt_vat {
     type: number
     hidden: yes
     sql: ${TABLE}.amt_vat ;;
+  }
+
+  dimension: amt_internal_picker_wages {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_internal_picker_wages ;;
+  }
+
+  dimension: amt_external_pickerzenjob_salaries {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_external_pickerzenjob_salaries ;;
+  }
+
+
+  dimension: amt_external_riderzenjob_salalries {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_external_riderzenjob_salalries ;;
+  }
+
+  dimension: amt_external_riderother_salalries {
+    type: string
+    hidden: yes
+    sql: ${TABLE}.amt_external_riderother_salalries ;;
+  }
+
+  dimension: amt_external_operationsStuditemps_salaries {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_external_operationsStuditemps_salaries ;;
   }
 
   dimension: amt_waste_gross {
@@ -220,11 +288,14 @@ view: hub_pl_monthly {
 
   dimension: amt_hub_staff_compensation {
     hidden: yes
-    sql: ${amt_hubmanager_salaries} +
-       ${amt_external_operations_salaries} +
-       ${amt_internal_operations_salaries} +
-       ${amt_citymanager_salaries} +
-       ${amt_shiftlead_salaries}
+    sql: coalesce(${amt_hubmanager_salaries},0) +
+       coalesce(${amt_external_operations_salaries},0) +
+       coalesce(${amt_internal_operations_salaries},0) +
+       coalesce(${amt_citymanager_salaries},0) +
+       coalesce(${amt_shiftlead_salaries},0) +
+       coalesce(${amt_internal_picker_wages},0) +
+       coalesce(${amt_external_pickerzenjob_salaries},0) +
+       coalesce(${amt_external_operationsStuditemps_salaries},0)
        ;;
     value_format_name: euro_accounting_2_precision
   }
@@ -232,8 +303,10 @@ view: hub_pl_monthly {
   dimension: amt_rider_wages {
     hidden: yes
     sql:
-       ${amt_external_rider_salalries} +
-       ${amt_external_operations_salaries}
+       coalesce(${amt_external_rider_salalries},0) +
+       coalesce(${amt_internal_rider_salaries},0) +
+      coalesce(${amt_external_riderzenjob_salalries},0) +
+      coalesce(${amt_external_riderother_salalries},0)
 
        ;;
     value_format_name: euro_accounting_2_precision
@@ -242,18 +315,18 @@ view: hub_pl_monthly {
   dimension: amt_operational_hub_cost {
     hidden: yes
     sql:
-       ${amt_rent} +
-       ${amt_ebikes} +
-       ${amt_packaging} +
-       ${amt_other_hub_recurring} +
-       ${amt_rider_equipment}      ;;
+       coalesce(${amt_rent},0) +
+       coalesce(${amt_ebikes},0) +
+       coalesce(${amt_packaging},0) +
+       coalesce(${amt_other_hub_recurring},0) +
+       coalesce(${amt_rider_equipment},0)      ;;
     value_format_name: euro_accounting_2_precision
   }
 
   dimension: amt_total_logistics_cost {
     hidden: yes
     sql:
-       ${amt_logistics_costs} + ${amt_other_logistics_costs}     ;;
+       coalesce(${amt_logistics_costs},0) + coalesce(${amt_other_logistics_costs} ,0)    ;;
     value_format_name: euro_accounting_2_precision
   }
 
@@ -276,29 +349,7 @@ view: hub_pl_monthly {
 
 
 
-  measure: sum_amt_delivery_fee_gross {
-    type: sum
-    group_label: "* GMV *"
-    label: "Delivery Fees Gross"
-    sql: ${amt_delivery_fee_gross};;
-    value_format_name: euro_accounting_2_precision
-  }
 
-  measure: sum_amt_gmv_gross {
-    type: sum
-    label: "GMV Gross"
-    group_label: "* GMV *"
-    sql: ${amt_gmv_gross};;
-    value_format_name: euro_accounting_2_precision
-  }
-
-  measure: sum_amt_delivery_fee_net {
-    type: sum
-    label: "Delivery Fees Net"
-    group_label: "* GMV *"
-    sql: ${amt_delivery_fee_net};;
-    value_format_name: euro_accounting_2_precision
-  }
 
 
 
@@ -323,6 +374,14 @@ view: hub_pl_monthly {
     value_format_name: euro_accounting_2_precision
   }
 
+  measure: sum_amt_internal_picker_wages {
+    type: sum
+    group_label: "* Hub Staff Compensation *"
+    label: "Internal Picker Salaries"
+    sql: ${amt_internal_picker_wages};;
+    value_format_name: euro_accounting_2_precision
+  }
+
   measure: sum_amt_citymanager_salaries {
     type: sum
     group_label: "* Hub Staff Compensation *"
@@ -339,11 +398,37 @@ view: hub_pl_monthly {
     value_format_name: euro_accounting_2_precision
   }
 
+
+  measure: sum_amt_external_pickerzenjob_salaries {
+    type: sum
+    group_label: "* Hub Staff Compensation *"
+    label: "Zenjob Picker Salaries"
+    sql: ${amt_external_pickerzenjob_salaries};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_external_operationsStuditemps_salaries {
+    type: sum
+    group_label: "* Hub Staff Compensation *"
+    label: "Other (Zenjob/Studitemps)"
+    sql: ${amt_external_operationsStuditemps_salaries};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+
   measure: sum_amt_external_operations_salaries {
     type: sum
     group_label: "* Hub Staff Compensation *"
     label: "External Operation Salaries"
     sql: ${amt_external_operations_salaries};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_hub_staff_compensation {
+    type: sum
+    group_label: "* Hub Staff Compensation *"
+    label: "Total Hub Staff Compensation"
+    sql: ${amt_hub_staff_compensation};;
     value_format_name: euro_accounting_2_precision
   }
 
@@ -383,9 +468,24 @@ view: hub_pl_monthly {
     type: sum
     group_label: "* Rider Wages *"
     label: "Total Rider Wages"
-    sql: ${amt_external_rider_salalries} +
-       ${amt_external_operations_salaries}
+    sql: ${amt_rider_wages}
        ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_external_riderzenjob_salalries {
+    type: sum
+    group_label: "* Rider Wages *"
+    label: "Zenjob Rider Salaries"
+    sql: ${amt_external_riderzenjob_salalries};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_external_riderother_salalries {
+    type: sum
+    group_label: "* Rider Wages *"
+    label: "Other Rider Salaries"
+    sql: ${amt_external_riderother_salalries};;
     value_format_name: euro_accounting_2_precision
   }
 
@@ -433,6 +533,11 @@ view: hub_pl_monthly {
     value_format_name: euro_accounting_2_precision
   }
 
+
+  ################# Discounts
+
+
+
   measure: sum_amt_discount_gross {
     type: sum
     label: "Discounts Gross"
@@ -441,13 +546,64 @@ view: hub_pl_monthly {
     value_format_name: euro_accounting_2_precision
   }
 
-  measure: sum_amt_packaging {
+  measure: sum_amt_discount_net {
     type: sum
-    label: "Discounts Gross"
-    group_label: "* GMV *"
-    sql: ${amt_discount_gross};;
+    label: "Discounts Net"
+    group_label: "* Discounts *"
+    sql: ${amt_discount_net};;
     value_format_name: euro_accounting_2_precision
   }
+
+
+  measure: share_total_discounts_net_over_total_net {
+    type: average
+    group_label: "* Discounts *"
+    label: "% Total Discounts Net / Revenue Net"
+    sql: ${amt_discount_net}/${amt_total_net};;
+    value_format_name: percent_1
+  }
+
+
+  measure: sum_amt_discount_net_customer_service {
+    type: sum
+    label: "Discounts Customer Service Net"
+    group_label: "* Discounts *"
+    sql: ${amt_discount_net_customer_service};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_discount_net_marketing_acquisition {
+    type: sum
+    label: "Discounts Marketing Acquisition Net"
+    group_label: "* Discounts *"
+    sql: ${amt_discount_net_marketing_acquisition};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_discount_net_marketing_retention {
+    type: sum
+    label: "Discounts Marketing Retention Net"
+    group_label: "* Discounts *"
+    sql: ${amt_discount_net_marketing_retention};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_discount_net_marketing_brand{
+    type: sum
+    label: "Discounts Marketing Brand Net"
+    group_label: "* Discounts *"
+    sql: ${amt_discount_net_marketing_brand};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_aamt_discount_net_unknown_use_case{
+    type: sum
+    label: "Discounts Unknown Use Case Net"
+    group_label: "* Discounts *"
+    sql: ${amt_discount_net_unknown_use_case};;
+    value_format_name: euro_accounting_2_precision
+  }
+
 
 
 
@@ -461,7 +617,7 @@ view: hub_pl_monthly {
 
   measure: sum_amt_logistics_costs {
     type: sum
-    label: "Logictic Costs"
+    label: "Logistics Costs"
     group_label: "* Logistics *"
     sql: ${amt_logistics_costs};;
     value_format_name: euro_accounting_2_precision
@@ -470,7 +626,7 @@ view: hub_pl_monthly {
 
   measure: sum_amt_other_logistics_costs {
     type: sum
-    label: "Other Logictic Costs"
+    label: "Other Logistics Costs"
     group_label: "* Logistics *"
     sql: ${amt_other_logistics_costs};;
     value_format_name: euro_accounting_2_precision
@@ -478,7 +634,7 @@ view: hub_pl_monthly {
 
   measure: sum_amt_total_logistics_costs {
     type: sum
-    label: "Total Logictic Costs"
+    label: "Total Logistics Costs"
     group_label: "* Logistics *"
     sql: ${amt_total_logistics_cost};;
     value_format_name: euro_accounting_2_precision
@@ -500,6 +656,14 @@ view: hub_pl_monthly {
 
 
 
+  measure: sum_amt_total_operational_hub_costs {
+    type: sum
+    label: "Total Operational Hub Costs"
+    group_label: "* Operational Hub Costs *"
+    sql: ${amt_operational_hub_cost};;
+    value_format_name: euro_accounting_2_precision
+  }
+
 
 
   measure: sum_amt_other_hub_recurring {
@@ -513,7 +677,7 @@ view: hub_pl_monthly {
   measure: sum_amt_rider_equipment {
     type: sum
     group_label: "* Operational Hub Costs *"
-    label: "Other Hub Recurring"
+    label: "Rider Equipment"
     sql: ${amt_rider_equipment};;
     value_format_name: euro_accounting_2_precision
   }
@@ -526,14 +690,6 @@ view: hub_pl_monthly {
     value_format_name: percent_1
   }
 
-  measure: sum_amt_operational_hub_cost {
-    type: sum
-    group_label: "* Operational Hub Costs *"
-    label: "Total Operational Hub Costs"
-    sql: ${amt_operational_hub_cost}
-      ;;
-    value_format_name: euro_accounting_2_precision
-  }
 
   measure: sum_amt_ebikes {
     type: sum
@@ -550,6 +706,15 @@ view: hub_pl_monthly {
     sql: ${amt_rent};;
     value_format_name: euro_accounting_2_precision
   }
+
+  measure: sum_amt_packaging {
+    type: sum
+    label: "Packaging"
+    group_label: "* Operational Hub Costs *"
+    sql: ${amt_packaging};;
+    value_format_name: euro_accounting_2_precision
+  }
+
 
 
 
@@ -648,6 +813,30 @@ view: hub_pl_monthly {
   }
 
 
+  measure: sum_amt_delivery_fee_gross {
+    type: sum
+    group_label: "* GMV *"
+    label: "Delivery Fees Gross"
+    sql: ${amt_delivery_fee_gross};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_gmv_gross {
+    type: sum
+    label: "GMV Gross"
+    group_label: "* GMV *"
+    sql: ${amt_gmv_gross};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_delivery_fee_net {
+    type: sum
+    label: "Delivery Fees Net"
+    group_label: "* GMV *"
+    sql: ${amt_delivery_fee_net};;
+    value_format_name: euro_accounting_2_precision
+  }
+
 
 
 
@@ -674,6 +863,7 @@ view: hub_pl_monthly {
   measure: sum_amt_total_net {
     type: sum
     label: "Revenue Net"
+    description: "Revenue Net = Items Price Net + Delivery Fee Net - Discount Amount Net - Refund Amount Net"
     group_label: "* Revenue *"
     sql: ${amt_total_net};;
     value_format_name: euro_accounting_2_precision
@@ -690,7 +880,8 @@ view: hub_pl_monthly {
 
   measure: sum_amt_supplier_funding {
     type: sum
-    group_label: "*.Revenue *"
+    group_label: "* Revenue *"
+    description: "Supplier Fundings Revenue is Revenue coming from the suppliers for product advertisment"
     label: "Supplier Fundings"
     sql: ${amt_supplier_funding};;
     value_format_name: euro_accounting_2_precision
@@ -710,6 +901,7 @@ view: hub_pl_monthly {
     type: sum
     label: "Transaction Fees"
     group_label: "* Transaction Fees *"
+    description: "Sum of Transactions Fees from Adyen and Paypal. Include Transactions Fees for all kind of transactions (payment, refunds etc.)"
     sql: ${amt_transaction_fees};;
     value_format_name: euro_accounting_2_precision
   }
@@ -718,7 +910,7 @@ view: hub_pl_monthly {
     type: average
     group_label: "* Transaction Fees *"
     label: "% Transaction Fees / Revenue Net"
-    sql: ${amt_waste_gross}/${amt_total_net};;
+    sql: ${amt_transaction_fees}/${amt_total_net};;
     value_format_name: percent_1
   }
 
