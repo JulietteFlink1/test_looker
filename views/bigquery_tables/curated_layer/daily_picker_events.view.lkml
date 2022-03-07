@@ -170,6 +170,7 @@ view: daily_picker_events {
 
   dimension: event_uuid {
     type: string
+    primary_key: yes
     sql: ${TABLE}.event_uuid ;;
     hidden: yes
   }
