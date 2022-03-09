@@ -108,19 +108,19 @@ view: weekly_hubmanager_sendouts {
              select
                     hub_code,
                     date_trunc(shift_date,week(monday))                             as week,
-                    sum(case when position_name = 'rider' then number_of_no_show_minutes end)/sum(case when position_name = 'rider' then number_of_planned_minutes end)   as share_of_no_show,
-                    coalesce(sum(case when position_name = 'rider' then number_of_worked_minutes_external end),0)/sum(case when position_name = 'rider' then number_of_worked_minutes end) as share_external_rider_hours,
-                    sum(case when position_name = 'rider' then (number_of_worked_minutes/60-number_of_forecasted_employees_needed*0.5)  end)/sum(case when position_name = 'rider' then number_of_forecasted_employees_needed*0.5 end) as delta_punched_vs_forecasted,
-                    sum(case when position_name = 'rider' then safe_cast(number_of_orders as int64) end ) /sum(case when position_name = 'rider'  then safe_cast(number_of_worked_minutes/60 as float64) end) as rider_utr,
-                    sum(case when position_name = 'picker' then safe_cast(number_of_orders as int64)  end )/sum(case when position_name = 'picker' then safe_cast(number_of_worked_minutes/60 as float64) end) as picker_utr,
-                    sum(case when position_name = 'picker' then safe_cast(number_of_orders as int64)  end )/sum(case when position_name in ('picker','wh','wh operations', 'inventory') then safe_cast(number_of_worked_minutes/60 as float64) end) as hub_staff_utr
+                    safe_divide(sum(case when position_name = 'rider' then number_of_no_show_minutes end),sum(case when position_name = 'rider' then number_of_planned_minutes end))   as share_of_no_show,
+                    safe_divide(coalesce(sum(case when position_name = 'rider' then number_of_worked_minutes_external end),0),sum(case when position_name = 'rider' then number_of_worked_minutes end)) as share_external_rider_hours,
+                    safe_divide(sum(case when position_name = 'rider' then (number_of_worked_minutes/60-number_of_forecasted_employees_needed*0.5)  end),sum(case when position_name = 'rider' then number_of_forecasted_employees_needed*0.5 end)) as delta_punched_vs_forecasted,
+                    safe_divide(sum(case when position_name = 'rider' then safe_cast(number_of_orders as int64) end ),sum(case when position_name = 'rider'  then safe_cast(number_of_worked_minutes/60 as float64) end)) as rider_utr,
+                    safe_divide(sum(case when position_name = 'picker' then safe_cast(number_of_orders as int64)  end ),sum(case when position_name = 'picker' then safe_cast(number_of_worked_minutes/60 as float64) end)) as picker_utr,
+                    safe_divide(sum(case when position_name = 'rider' then safe_cast(number_of_orders as int64)  end ),sum(case when position_name in ('picker','wh','wh operations', 'inventory') then safe_cast(number_of_worked_minutes/60 as float64) end)) as hub_staff_utr
 
 
-             from `flink-data-prod.reporting.hub_staffing`
+             from `flink-data-prod.reporting.daily_hub_staffing`
 
 
              where date_trunc(shift_date,week(monday)) between date_sub(date_trunc(current_date(), week(MONDAY)),interval 2 week) and date_sub(date_trunc(current_date(), week(MONDAY)),interval 1 week)
-             and number_of_worked_minutes > 0
+             --and number_of_worked_minutes > 0
 
              group by 1,2
       ),
