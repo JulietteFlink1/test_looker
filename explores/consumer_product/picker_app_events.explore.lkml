@@ -8,6 +8,7 @@
 # - How pickers use the functionality of the picker app
 
 include: "/views/bigquery_tables/curated_layer/daily_picker_events.view"
+include: "/views/bigquery_tables/curated_layer/products.view"
 include: "/**/global_filters_and_parameters.view.lkml"
 
 explore: daily_picker_events {
@@ -39,6 +40,12 @@ explore: daily_picker_events {
 
   join: global_filters_and_parameters {
     sql_on: ${global_filters_and_parameters.generic_join_dim} = TRUE ;;
+    type: left_outer
+    relationship: many_to_one
+  }
+
+  join: products {
+    sql_on: ${daily_picker_events.sku} = ${products.product_sku} ;;
     type: left_outer
     relationship: many_to_one
   }
