@@ -22,8 +22,10 @@ explore: ddf_tracking {
   }
 
   join: app_sessions {
-    sql_on: ${app_sessions.hub_code}              = ${orderline.hub_code}
-    and     ${app_sessions.session_start_at_date} = ${orderline.created_date}  ;;
+    sql_on: ${app_sessions.hub_code}              = ${orders_cl.hub_code}
+    and     ${app_sessions.session_start_at_date} = ${orders_cl.created_date}
+     and     ${app_sessions.is_new_user}          = ${orders_cl.is_first_order}
+    ;;
     relationship: one_to_many
   }
 
