@@ -307,7 +307,7 @@ view: weekly_hubmanager_sendouts {
     label: "% Partial Fulfillment Rate"
     description: "Share of Orders with pre delivery swipe issue"
     type: average
-    value_format: "0.0%"
+    value_format: "0.00%"
     sql: ${share_pre_order_swiped} ;;
     html: {% if dimension._value == 'WoW' and value <= 0 %}
     <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center"><img src="http://findicons.com/files/icons/573/must_have/48/check.png" height=20 width=20>{{ value }} pp</p>
@@ -336,7 +336,7 @@ view: weekly_hubmanager_sendouts {
     label: "% Post-Delivery Issues"
     description: "Share of Orders with post delivery issues"
     type: average
-    value_format: "0.0%"
+    value_format: "0.00%"
     sql: ${share_post_order_issues} ;;
     html:  {% if dimension._value == 'WoW' and value <= 0 %}
     <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center"><img src="http://findicons.com/files/icons/573/must_have/48/check.png" height=20 width=20>{{ value }} pp</p>
