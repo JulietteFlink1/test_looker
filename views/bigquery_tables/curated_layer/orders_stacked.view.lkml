@@ -65,7 +65,7 @@ view: +orders {
     label: "AVG Delivery Time: Hub to 2nd Customer (min)"
     description: "The time it took a rider to deliver from the hub to the 2nd customer in a stacked order"
     group_label: "* Stacked Orders *"
-    sql: ${TABLE}.delivery_time_minutes ;;
+    sql: ${TABLE}.riding_time_minutes ;;
     filters: [stacking_sequence: "2"]
     type: average
     value_format_name: decimal_1
@@ -95,7 +95,7 @@ view: +orders {
     label: "AVG Delivery time to 1st Customer (min)"
     description: "The time it took a rider to deliver from the hub to the 1st customer in a stacked order"
     group_label: "* Stacked Orders *"
-    sql: ${TABLE}.delivery_time_minutes ;;
+    sql: ${TABLE}.riding_time_minutes ;;
     filters: [stacking_sequence: "1"]
     type: average
     value_format_name: decimal_1
