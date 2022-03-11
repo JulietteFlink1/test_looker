@@ -14,6 +14,22 @@ view: erp_product_hub_vendor_assignment_v2 {
     ]
   }
 
+  set: pricing_fields_base {
+    fields: [
+      currency,
+      is_promotional,
+      valid_from_date,
+      valid_to_date,
+      price_per_unit,
+      price_unit,
+      unit_of_measure,
+      avg_vendor_price
+
+    ]
+  }
+
+
+
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Parameters     ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
