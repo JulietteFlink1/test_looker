@@ -36,10 +36,15 @@ dimension: kvi_date {
     sql: ${TABLE}.rank_country_kvi ;;
   }
 
+  dimension: is_kvi {
+    type: yesno
+    sql: ${TABLE}.is_kvi ;;
+    label: "Is KVI"
+  }
+
   dimension: kvi {
     type: string
     sql: case when (${sku} is not null) then "KVI" else "Not KVI" end ;;
-
   }
 
 
