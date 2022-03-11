@@ -270,6 +270,15 @@ ORDER BY start_timestamp, job_date, hub_code
     value_format_name: percent_0
   }
 
+
+  measure: mean_absolute_error {
+    group_label: " * Forecasting error * "
+    label: "MAE"
+    type: number
+    sql: ${summed_absolute_error}/NULLIF(${count_values},0) ;;
+    value_format_name: decimal_1
+  }
+
   measure: summed_absolute_error {
     group_label: " * Orders * "
     type: sum
@@ -316,6 +325,10 @@ ORDER BY start_timestamp, job_date, hub_code
       label: "MAPE"
       value: "MAPE"
     }
+    allowed_value: {
+      label: "MAE"
+      value: "MAE"
+    }
   }
 
   measure: selected_measure {
@@ -330,6 +343,8 @@ ORDER BY start_timestamp, job_date, hub_code
       THEN ${bias}
     WHEN {% condition select_measure %} "MAPE" {% endcondition %}
       THEN ${mean_absolute_percentage_error}*100
+    WHEN {% condition select_measure %} "MAE" {% endcondition %}
+      THEN ${mean_absolute_error}
     END ;;
 
     html:
@@ -341,6 +356,8 @@ ORDER BY start_timestamp, job_date, hub_code
     {{ rendered_value | round: 4 }}
     {% elsif select_measure._parameter_value == "MAPE" %}
     {{ rendered_value | round: 2  | append: "%" }}
+    {% elsif select_measure._parameter_value == "bias" %}
+    {{ rendered_value | round: 4 }}
     {% else %}
     {{ rendered_value }}
     {% endif %}
