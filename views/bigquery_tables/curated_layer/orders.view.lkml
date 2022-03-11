@@ -376,7 +376,7 @@ view: orders {
   dimension: delivery_time {
     group_label: "* Operations / Logistics *"
     type: number
-    sql: ${TABLE}.delivery_time_minutes ;;
+    sql: ${TABLE}.riding_time_minutes ;;
   }
 
   dimension: return_to_hub_time_minutes {
@@ -440,7 +440,7 @@ view: orders {
     description: "The internally predicted time in minutes for the order to arrive at the customer"
     group_label: "* Operations / Logistics *"
     type: number
-    sql: ${TABLE}.estimated_delivery_time_minutes;;
+    sql: ${TABLE}.estimated_fulfillment_time_minutes;;
   }
 
   dimension: delivery_time_targeted_minutes {
@@ -448,7 +448,7 @@ view: orders {
     description: "The internally targeted time in minutes for the order to arrive at the customer"
     group_label: "* Operations / Logistics *"
     type: number
-    sql: ${TABLE}.targeted_delivery_time_minutes;;
+    sql: ${TABLE}.targeted_fulfillment_time_minutes;;
   }
 
   dimension: estimated_queuing_time_for_picker_minutes {
@@ -456,7 +456,7 @@ view: orders {
     description: "The internally predicted time in minutes for the picker queuing"
     group_label: "* Operations / Logistics *"
     type: number
-    sql: ${TABLE}.estimated_queuing_time_for_picker_minutes;;
+    sql: ${TABLE}.estimated_reaction_time_minutes;;
   }
 
   dimension: queuing_time_for_picker_minutes {
@@ -484,7 +484,7 @@ view: orders {
     description: "The internally predicted time in minutes for the rider queuing"
     group_label: "* Operations / Logistics *"
     type: number
-    sql: ${TABLE}.estimated_queuing_time_for_rider_minutes;;
+    sql: ${TABLE}.estimated_acceptance_time_minutes;;
   }
 
   dimension: pre_riding_time {
@@ -549,7 +549,7 @@ view: orders {
   dimension: is_delivery_more_than_30_minute {
     group_label: "* Operations / Logistics *"
     type: yesno
-    sql: ${TABLE}.is_delivery_above_30min ;;
+    sql: ${TABLE}.is_riding_above_30min ;;
   }
 
   dimension: is_delivery_eta_available {
