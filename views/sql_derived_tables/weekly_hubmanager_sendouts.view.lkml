@@ -215,7 +215,7 @@ view: weekly_hubmanager_sendouts {
   }
 
   measure: avg_share_of_orders_with_delta_pdt_less_than_2 {
-    label: "% Orders < 2min vs PDT"
+    label: "% Orders <= 2min vs PDT"
     description: "Share of orders delivered with a delta <= 2min vs PDT"
     type: average
     sql: ${share_of_orders_with_delta_pdt_less_than_2} ;;
