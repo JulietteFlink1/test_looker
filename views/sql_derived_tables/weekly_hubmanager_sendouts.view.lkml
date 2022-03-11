@@ -304,8 +304,8 @@ view: weekly_hubmanager_sendouts {
 
 
   measure: avg_share_pre_order_issues {
-    label: "% Partial Fulfillment Rate"
-    description: "Share of Orders with pre delivery swipe issue"
+    label: "% Pre Order Issue Rate"
+    description: "Share of Orders with pre delivery issues"
     type: average
     value_format: "0.00%"
     sql: ${share_pre_order_issues} ;;
