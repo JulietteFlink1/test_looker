@@ -270,7 +270,7 @@ view: order_cohorts_base {
   dimension: delivery_time {
     group_label: "* Operations / Logistics *"
     type: number
-    sql: ${TABLE}.delivery_time_minutes ;;
+    sql: ${TABLE}.riding_time_minutes ;;
   }
 
   dimension: discount_code {
@@ -327,7 +327,7 @@ view: order_cohorts_base {
   dimension: is_delivery_more_than_30_minute {
     group_label: "* Operations / Logistics *"
     type: yesno
-    sql: ${TABLE}.is_delivery_above_30min ;;
+    sql: ${TABLE}.is_riding_above_30min ;;
   }
 
   dimension: is_delivery_eta_available {
