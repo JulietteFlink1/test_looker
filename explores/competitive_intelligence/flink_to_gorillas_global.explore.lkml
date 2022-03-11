@@ -22,6 +22,12 @@ explore: flink_to_gorillas_global {
     sql_where: (${inventory.is_most_recent_record} = TRUE) ;;
   }
 
+  join: unique_assortment {
+    sql_on: ${products.product_sku} = ${unique_assortment.product_sku} ;;
+    relationship: many_to_one
+    type: left_outer
+  }
+
   join: hubs {
     from:  hubs_ct
     view_label: "* Flink Hubs *"

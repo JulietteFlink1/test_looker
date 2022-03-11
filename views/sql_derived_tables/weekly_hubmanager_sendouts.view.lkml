@@ -54,10 +54,10 @@ view: weekly_hubmanager_sendouts {
     sql: ${TABLE}.share_of_orders_delivered_more_than_20 ;;
   }
 
-  dimension: share_pre_order_swiped {
+  dimension: share_pre_order_issues {
     type: number
     hidden: yes
-    sql: ${TABLE}.share_pre_order_swiped ;;
+    sql: ${TABLE}.share_pre_order_issues ;;
   }
 
   dimension: fulfillment_time_minutes {
@@ -303,12 +303,12 @@ view: weekly_hubmanager_sendouts {
   }
 
 
-  measure: avg_share_pre_order_swiped {
-    label: "% Partial Fulfillment Rate"
-    description: "Share of Orders with pre delivery swipe issue"
+  measure: avg_share_pre_order_issues {
+    label: "% Pre Order Issue Rate"
+    description: "Share of Orders with pre delivery issues"
     type: average
     value_format: "0.00%"
-    sql: ${share_pre_order_swiped} ;;
+    sql: ${share_pre_order_issues} ;;
     html: {% if dimension._value == 'WoW' and value <= 0 %}
     <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center"><img src="http://findicons.com/files/icons/573/must_have/48/check.png" height=20 width=20>{{ value }} pp</p>
     {% elsif dimension._value == 'WoW' and value > 0 %}
@@ -569,7 +569,7 @@ view: weekly_hubmanager_sendouts {
       number_of_orders,
       share_of_orders_with_delta_pdt_less_than_2,
       share_of_orders_delivered_more_than_20,
-      share_pre_order_swiped,
+      share_pre_order_issues,
       share_post_order_issues,
       share_of_no_show,
       rider_utr,
