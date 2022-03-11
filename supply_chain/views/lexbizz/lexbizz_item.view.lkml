@@ -217,6 +217,24 @@ view: lexbizz_item {
     sql: ${TABLE}.valuation_method ;;
   }
 
+
+
+  dimension: erp_ct_sync_check {
+    type: yesno
+
+    sql:
+      lower(${base_uom})             = lower(${products.unit_of_measure})
+      and replace(lower(${item_category}),' ', '')  = concat(lower(${products.erp_category}), lower(${products.erp_subcategory}))
+      and ${item_name} = ${products.product_name}
+      and ((${item_status} = 'Active' and ${products.is_published} is true) or (${item_status} != 'Active' and ${products.is_published} is false))
+      and ((${item_substitute_group} = ${products.substitute_group}) or (${item_substitute_group} is null and ${products.substitute_group} is null))
+      and ((${item_weight} = ${products.weight}) or (${item_weight} is null and ${products.weight} is null))
+      and ${noos_item} = ${products.is_noos_group}
+      and ${noos_leading_product} = ${products.is_leading_product}
+
+    ;;
+  }
+
   measure: count {
     type: count
     drill_fields: [item_name]

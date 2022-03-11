@@ -2314,6 +2314,8 @@ view: orders {
         label: "AVG Daily Orders per hub"
         type: number
         sql: (${cnt_orders}/NULLIF(${cnt_unique_hubs},0))/ NULLIF(${cnt_unique_date},0);;
+
+        value_format_name:decimal_2
       }
 
 
