@@ -128,4 +128,10 @@ explore: flink_to_gorillas_global {
     type: left_outer
   }
 
+  join: key_value_items {
+    sql_on: ${products.product_sku} = ${key_value_items.sku} ;;
+    relationship: many_to_one
+    type: left_outer
+  }
+
 }
