@@ -83,7 +83,7 @@ view: cc_orders_hourly {
     label: "% CC Discounted Orders"
     type: number
     value_format: "0.0%"
-    sql: safe_divide(${sum_number_of_cc_discounted_orders}_orders},${sum_number_of_orders}) ;;
+    sql: safe_divide(${sum_number_of_cc_discounted_orders},${sum_number_of_orders}) ;;
   }
 
   measure: count {
