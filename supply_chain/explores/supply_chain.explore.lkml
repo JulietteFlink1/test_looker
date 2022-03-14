@@ -237,7 +237,7 @@ explore: supply_chain {
   join: erp_master_data {
 
     from: erp_product_hub_vendor_assignment_v2
-    view_label: "09 ERP Master Data"
+    view_label: "09 Lexbizz Master Data"
 
     type: left_outer
     relationship: many_to_one

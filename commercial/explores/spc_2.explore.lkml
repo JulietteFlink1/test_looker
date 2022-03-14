@@ -19,8 +19,18 @@ explore: spc_2 {
   }
 
   join: lexbizz_item {
+
     type: left_outer
     relationship: many_to_one
-    sql: ${lexbizz_item.sku} = ${sku_performance_base.sku} ;;
+
+    sql_on: ${lexbizz_item.sku} = ${sku_performance_base.sku} and
+            ${lexbizz_item.ingestion_date} = current_date()
+    ;;
   }
+
+  # join: lexbizz_item {
+  #   type: left_outer
+  #   relationship: many_to_one
+  #   sql: ${lexbizz_item.sku} = ${sku_performance_base.sku} ;;
+  # }
 }
