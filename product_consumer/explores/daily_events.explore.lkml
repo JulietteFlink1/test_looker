@@ -7,7 +7,7 @@
 # Questions that can be answered
 # - Questions around behavioural events with country and device drill downs
 
-include: "/views/bigquery_tables/curated_layer/consumer_product/daily_events.view"
+include: "/**/daily_events.view"
 include: "/**/global_filters_and_parameters.view.lkml"
 
 explore: daily_events {
