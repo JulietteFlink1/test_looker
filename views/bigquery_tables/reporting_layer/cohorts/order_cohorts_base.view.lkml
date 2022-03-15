@@ -325,6 +325,7 @@ view: order_cohorts_base {
   }
 
   dimension: is_delivery_more_than_30_minute {
+    label: "Is Riding Above 30min"
     group_label: "* Operations / Logistics *"
     type: yesno
     sql: ${TABLE}.is_riding_above_30min ;;
@@ -978,7 +979,7 @@ view: order_cohorts_base {
 
       measure: avg_delivery_time {
         group_label: "* Operations / Logistics *"
-        label: "AVG Delivery Time"
+        label: "AVG Riding Time"
         description: "Average Delivery Time considering delivery start to delivery completion. Outliers excluded (<0min or >30min)"
         hidden:  no
         type: average
