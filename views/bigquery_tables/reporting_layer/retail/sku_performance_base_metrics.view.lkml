@@ -390,7 +390,7 @@ view: +sku_performance_base {
     description: "The number of items, that are being remove from the inventory due to products being damaged"
     group_label: "PoP Period"
 
-    type: number
+    type: sum
     sql: ${pop_waste_damaged} ;;
 
     value_format_name: decimal_0
@@ -403,7 +403,7 @@ view: +sku_performance_base {
     description: "The number of items, that are being remove from the inventory due to products being expired"
     group_label: "PoP Period"
 
-    type: number
+    type: sum
     sql: ${pop_waste_expired} ;;
 
     value_format_name: decimal_0
