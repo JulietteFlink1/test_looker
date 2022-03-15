@@ -14,6 +14,23 @@ view: erp_product_hub_vendor_assignment_v2 {
     ]
   }
 
+  set: pricing_fields_base {
+    fields: [
+      currency,
+      is_promotional,
+      valid_from_date,
+      valid_to_date,
+      price_per_unit,
+      vendor_price,
+      price_unit,
+      unit_of_measure,
+      avg_vendor_price
+
+    ]
+  }
+
+
+
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Parameters     ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -341,6 +358,26 @@ view: erp_product_hub_vendor_assignment_v2 {
 
     type: number
     sql: ${TABLE}.price_per_unit ;;
+
+    value_format_name: decimal_4
+
+    hidden: yes
+  }
+
+  dimension: vendor_price {
+    # dimension name as in erp_buying_prices.view in order to not break existing dashboards
+
+    required_access_grants: [can_view_buying_information]
+
+    label:       "Buying Price per Unit"
+    description: "The buying price per unit"
+    group_label: "> Buying Prices (CONFIDENTIAL)"
+
+    type: number
+    sql: ${price_per_unit} ;;
+
+    value_format_name: decimal_4
+
   }
 
   dimension: price_unit {

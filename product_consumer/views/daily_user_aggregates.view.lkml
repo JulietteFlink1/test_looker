@@ -107,7 +107,7 @@ view: daily_user_aggregates {
       group_label: "Device Dimensions"
       label: "Platform"
       type: string
-      description: "Platform is either App or Web"
+      description: "Platform is either iOS, Android or Web"
       sql: ${TABLE}.platform ;;
     }
     dimension: is_platform_web {
@@ -115,10 +115,15 @@ view: daily_user_aggregates {
       type: yesno
       sql: ${TABLE}.is_platform_web ;;
     }
-    dimension: is_platform_app {
+    dimension: is_platform_ios {
       group_label: "Device Dimensions"
       type: yesno
-      sql: ${TABLE}.is_platform_app ;;
+      sql: ${TABLE}.is_platform_ios ;;
+    }
+    dimension: is_platform_android {
+    group_label: "Device Dimensions"
+    type: yesno
+    sql: ${TABLE}.is_platform_android ;;
     }
     dimension: is_device_android {
       group_label: "Device Dimensions"
@@ -171,21 +176,29 @@ view: daily_user_aggregates {
       type: number
       sql: ${TABLE}.delivery_lng ;;
     }
+    dimension: delivery_pdt {
+      group_label: "Location Dimensions"
+      label: "Delivery PDT"
+      description: "Delivery Promised Time Delivery"
+      type: number
+      sql: ${TABLE}.delivery_pdt ;;
+    }
 
     ######## Event Flags ########
-    # Conversion Flags
+    # User Flags
 
     dimension: is_active_user {
-      group_label: "Flags | Conversion"
+      group_label: "Flags | User"
       type: yesno
       sql: ${TABLE}.is_active_user ;;
     }
     dimension: is_new_user {
-      group_label: "Flags | Conversion"
+      group_label: "Flags | User"
       type: yesno
       sql: ${TABLE}.is_new_user ;;
     }
 
+    # Conversion Flags
     dimension: is_web_app_opened {
       group_label: "Flags | Conversion"
       type: yesno
@@ -225,22 +238,22 @@ view: daily_user_aggregates {
     # Product Flags
 
     dimension: is_product_removed_from_cart {
-      group_label: "Flags | Product"
+      group_label: "Flags | Event"
       type: yesno
       sql: ${TABLE}.is_product_removed_from_cart ;;
     }
     dimension: is_product_added_to_favourites {
-      group_label: "Flags | Product"
+      group_label: "Flags | Event"
       type: yesno
       sql: ${TABLE}.is_product_added_to_favourites ;;
     }
     dimension: is_product_details_viewed {
-      group_label: "Flags | Product"
+      group_label: "Flags | Event"
       type: yesno
       sql: ${TABLE}.is_product_details_viewed ;;
     }
     dimension: is_product_search_viewed {
-      group_label: "Flags | Product"
+      group_label: "Flags | Event"
       type: yesno
       sql: ${TABLE}.is_product_search_viewed ;;
     }
@@ -248,69 +261,69 @@ view: daily_user_aggregates {
     # Checkout Flags
 
     dimension: is_checkout_started {
-      group_label: "Flags | Checkout"
+      group_label: "Flags | Event"
       type: yesno
       sql: ${TABLE}.is_checkout_started ;;
     }
     dimension: is_payment_failed {
-      group_label: "Flags | Checkout"
+      group_label: "Flags | Event"
       type: yesno
       sql: ${TABLE}.is_payment_failed ;;
     }
     dimension: is_first_order_placed {
-      group_label: "Flags | Checkout"
+      group_label: "Flags | Event"
       type: yesno
       sql: ${TABLE}.is_first_order_placed ;;
     }
     dimension: is_voucher_redemption_attempted {
-      group_label: "Flags | Checkout"
+      group_label: "Flags | Event"
       type: yesno
       sql: ${TABLE}.is_voucher_redemption_attempted ;;
     }
     dimension: is_voucher_applied_succeeded {
-      group_label: "Flags | Checkout"
+      group_label: "Flags | Event"
       type: yesno
       sql: ${TABLE}.is_voucher_applied_succeeded ;;
     }
     dimension: is_voucher_applied_failed {
-      group_label: "Flags | Checkout"
+      group_label: "Flags | Event"
       type: yesno
       sql: ${TABLE}.is_voucher_applied_failed ;;
     }
     dimension: is_rider_tip_selected {
-      group_label: "Flags | Checkout"
+      group_label: "Flags | Event"
       type: yesno
       sql: ${TABLE}.is_rider_tip_selected ;;
     }
 
     # Generic Flags
     dimension: is_address_confirmed {
-      group_label: "Flags | Generic"
+      group_label: "Flags | Event"
       type: yesno
       sql: ${TABLE}.is_address_confirmed ;;
     }
     dimension: is_account_login_succeeded {
-      group_label: "Flags | Generic"
+      group_label: "Flags | Event"
       type: yesno
       sql: ${TABLE}.is_account_login_succeeded ;;
     }
     dimension: is_account_logout_clicked {
-      group_label: "Flags | Generic"
+      group_label: "Flags | Event"
       type: yesno
       sql: ${TABLE}.is_account_logout_clicked ;;
     }
     dimension: is_account_registration_succeeded {
-      group_label: "Flags | Generic"
+      group_label: "Flags | Event"
       type: yesno
       sql: ${TABLE}.is_account_registration_succeeded ;;
     }
     dimension: is_home_viewed {
-      group_label: "Flags | Generic"
+      group_label: "Flags | Event"
       type: yesno
       sql: ${TABLE}.is_home_viewed ;;
     }
     dimension: is_category_selected {
-      group_label: "Flags | Generic"
+      group_label: "Flags | Event"
       type: yesno
       sql: ${TABLE}.is_category_selected ;;
     }
@@ -691,7 +704,7 @@ view: daily_user_aggregates {
   measure: active_users {
     group_label: "User Metrics"
     label: "# Active Users"
-    description: "Active user generated at least 2 various event during session"
+    description: "Active user generated at least 2 various events when browsing Flink app/web"
     type: count_distinct
     sql: ${user_uuid} ;;
     filters: [is_active_user: "yes"]
