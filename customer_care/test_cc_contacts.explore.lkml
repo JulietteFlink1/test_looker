@@ -8,10 +8,10 @@ explore: cc_contacts {
   view_name: cc_contacts
   group_label: "Customer Care"
   view_label: "* Intercom Conversations *"
-  label: "Conversations & Agents"
+  label: "Contacts & Agents"
   description: "This explore provides information on all Intercom chats"
 
-  hidden: no
+  hidden: yes
 
   access_filter: {
     field: cc_contacts.country_iso
