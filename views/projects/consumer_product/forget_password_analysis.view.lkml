@@ -1,5 +1,6 @@
 view: forget_password_analysis {
-derived_table: {
+  derived_table: {
+    persist_for: "24 hours"
   sql:
 with ios as (
   select *, if((password_forgotten_viewed = 0 and password_reset_requested = 0 and account_login_succeeded = 1 and checkout_viewed = 1),0,1) as login_filter  from (

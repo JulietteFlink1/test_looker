@@ -176,24 +176,38 @@ ORDER BY start_timestamp, job_date, hub_code
 
 
 
-  measure: observed_orders_total {
-    label: "# Actual Orders"
+  measure: summed_observed_orders_total {
+    label: "# Actual Orders Sum"
     hidden: no
     type: sum
     sql: ${TABLE}.observed_orders_total;;
     value_format_name: decimal_0
   }
 
+  dimension: observed_orders_total {
+    label: "# Actual Orders"
+    hidden: no
+    type: number
+    sql: ${TABLE}.observed_orders_total;;
+    value_format_name: decimal_0
+  }
 
-  measure: prediction {
-    label: "# Predicted Orders"
+
+  measure: summed_prediction {
+    label: "# Predicted Orders Sum"
     hidden: no
     type: sum
     sql: ${TABLE}.prediction;;
     value_format_name: decimal_0
   }
 
-
+  dimension: prediction {
+    label: "prediction"
+    hidden: no
+    type: number
+    sql: ${TABLE}.prediction;;
+    value_format_name: decimal_0
+  }
 
   measure: missed_orders_forced_closure {
     label: "# closure Missed Orders"
@@ -203,5 +217,150 @@ ORDER BY start_timestamp, job_date, hub_code
     value_format_name: decimal_0
   }
 
+  measure: squared_error {
+    type: sum
+    sql: pow(${prediction} - ${observed_orders_total}, 2) ;;
+  }
 
+  measure: count_values {
+    type: count
+  }
+
+  measure: root_mean_squared_error {
+    type: number
+    sql: sqrt(${squared_error}  / NULLIF(${count_values}, 0)) ;;
+    value_format_name: decimal_1
+  }
+
+  measure: absolute_percentage_error {
+    group_label: " * Forecasting error * "
+    type: sum
+    hidden: yes
+    sql: ABS(${prediction} - ${observed_orders_total})/(GREATEST(1, ${observed_orders_total})) ;;
+  }
+
+  measure: forecast_error {
+    group_label: " * Forecasting error * "
+    type: sum
+    hidden: yes
+    sql: ${prediction} - ${observed_orders_total} ;;
+  }
+
+  measure: bias {
+    group_label: " * Forecasting error * "
+    label: "Bias"
+    type: number
+    sql: ${forecast_error}/ NULLIF(${count_values}, 0);;
+    value_format_name: decimal_1
+  }
+
+  measure: mean_absolute_percentage_error {
+    group_label: " * Forecasting error * "
+    label: "MAPE"
+    type: number
+    sql: ${absolute_percentage_error}/ NULLIF(${count_values}, 0);;
+    value_format_name: percent_0
+  }
+
+  measure: weighted_mean_absolute_percentage_error {
+    group_label: " * Forecasting error * "
+    label: "wMAPE"
+    type: number
+    sql: ${summed_absolute_error}/${summed_absolute_actuals};;
+    value_format_name: percent_0
+  }
+
+
+  measure: mean_absolute_error {
+    group_label: " * Forecasting error * "
+    label: "MAE"
+    type: number
+    sql: ${summed_absolute_error}/NULLIF(${count_values},0) ;;
+    value_format_name: decimal_1
+  }
+
+  measure: summed_absolute_error {
+    group_label: " * Orders * "
+    type: sum
+    hidden: yes
+    sql: ABS(${prediction} - ${observed_orders_total});;
+  }
+
+  measure: summed_absolute_actuals {
+    group_label: " * Orders * "
+    type: sum
+    hidden: yes
+    sql: ABS(${observed_orders_total});;
+  }
+
+  measure: sum_orders {
+    group_label: " * Orders * "
+    label: "# Total observed orders"
+    sql: ${observed_orders_total} ;;
+    type: sum
+  }
+
+  measure: sum_predicted_orders {
+    group_label: " * Orders * "
+    label: "# Forecasted orders"
+    sql: ${prediction} ;;
+    type: sum
+  }
+
+  parameter: select_measure {
+    type: unquoted
+    allowed_value: {
+      label: "wMAPE"
+      value: "wMAPE"
+    }
+    allowed_value: {
+      label: "RMSE"
+      value: "RMSE"
+    }
+    allowed_value: {
+      label: "Bias"
+      value: "bias"
+    }
+    allowed_value: {
+      label: "MAPE"
+      value: "MAPE"
+    }
+    allowed_value: {
+      label: "MAE"
+      value: "MAE"
+    }
+  }
+
+  measure: selected_measure {
+    type: number
+    label_from_parameter: select_measure
+    sql: CASE
+    WHEN {% condition select_measure %} "wMAPE" {% endcondition %}
+      THEN ${weighted_mean_absolute_percentage_error}*100
+    WHEN {% condition select_measure %} "RMSE" {% endcondition %}
+      THEN ${root_mean_squared_error}
+    WHEN {% condition select_measure %} "bias" {% endcondition %}
+      THEN ${bias}
+    WHEN {% condition select_measure %} "MAPE" {% endcondition %}
+      THEN ${mean_absolute_percentage_error}*100
+    WHEN {% condition select_measure %} "MAE" {% endcondition %}
+      THEN ${mean_absolute_error}
+    END ;;
+
+    html:
+    {% if select_measure._parameter_value ==  "wMAPE" %}
+    {{ rendered_value | round: 2  | append: "%" }}
+    {% elsif select_measure._parameter_value == "RMSE" %}
+    {{ rendered_value | round: 4}}
+    {% elsif select_measure._parameter_value == "bias" %}
+    {{ rendered_value | round: 4 }}
+    {% elsif select_measure._parameter_value == "MAPE" %}
+    {{ rendered_value | round: 2  | append: "%" }}
+    {% elsif select_measure._parameter_value == "bias" %}
+    {{ rendered_value | round: 4 }}
+    {% else %}
+    {{ rendered_value }}
+    {% endif %}
+    ;;
+  }
 }

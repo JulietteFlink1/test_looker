@@ -1,7 +1,7 @@
 view: price_change {
   derived_table: {
     sql:
-          with w as
+   with w as
 (
 
 SELECT
@@ -204,64 +204,64 @@ group by 1,2,3
 
 
 
-oos as
-(
-select
-inventory_tracking_date,
-product_sku,
-sum(hours_oos) as hours_oos,
-sum(open_hours_total) as open_hours_total
-from (
-SELECT
-a.inventory_tracking_date,
-c.hub_name,
---COALESCE(b.substitute_group, b.product_name) as substitute_group,
-product_sku,
-min(hours_oos) as hours_oos,
-max(open_hours_total) as open_hours_total
-FROM `flink-data-prod.reporting.inventory_stock_count_daily` a
-LEFT JOIN `flink-data-prod.curated.products` b
-on a.sku = b.product_sku
-left join `flink-data-prod.curated.hubs` c
-on a.hub_code = c.hub_code
- WHERE inventory_tracking_date >= date_sub(current_date(), interval 88 day)
- group by 1,2,3
+oos_aux as (
+
+ select
+    i.report_date as inventory_tracking_date,
+    i.sku as product_sku,
+    i.hub_code,
+    number_of_hours_open as open_hours_total,
+    number_of_hours_oos as hours_oos,
+    sg_number_of_hours_open as sg_open_hours_total,
+    sg_number_of_hours_oos as sg_hours_oos,
+
+from      `flink-data-prod.curated.products_hub_assignment_v2` as a
+
+left join `flink-data-prod.reporting.inventory_daily`           as i
+on
+    a.report_date = i.report_date and
+    a.hub_code    = i.hub_code    and
+    a.sku         = i.sku
+
+left join `flink-data-prod.curated.hubs`           as hubs_ct
+on i.hub_code = hubs_ct.hub_code
+
+left join `flink-data-prod.curated.products`           as p
+on i.sku = p.product_sku
+
+where a.ct_final_decision_is_sku_assigned_to_hub is true
+
+        and
+            hubs_ct.is_test_hub is false
+        and
+            hubs_ct.live is not null
+                   and
+            hubs_ct.hub_code not in ('de_ham_alto')
 )
-as a
-group by 1,2
+,
 
-),
-
-
-oos_sub_gr as
-(
-    SELECT
-    date(inventory_tracking_timestamp) as inventory_tracking_date,
-    product_sku,
-    sum(hours_oos) as hours_oos_subsgr,
-    sum(open_hours_total) as open_hours_total_subsgr
-        from (
-            SELECT
-                a.inventory_tracking_timestamp,
-                c.hub_name,
-                case when b.substitute_group is not null then b.substitute_group else b.product_sku end  as substitute_group,
-                --product_sku,
-                min(is_oos) as hours_oos,
-                max(is_hub_open) as open_hours_total
-        FROM `flink-data-prod.reporting.inventory_stock_count_hourly` a
-        LEFT JOIN `flink-data-prod.curated.products` b
-            on a.sku = b.product_sku
-        LEFT JOIN `flink-data-prod.curated.hubs` c
-            on a.hub_code = c.hub_code
-         WHERE date(a.inventory_tracking_timestamp) >= date_sub(current_date(), interval 88 day)
-
-        group by 1,2,3
-            )
-    as a
-    left join `flink-data-prod.curated.products` b
-        on a.substitute_group  =  case when b.substitute_group is not null then b.substitute_group else b.product_sku end
+oos as (
+    select
+    oos_aux.inventory_tracking_date,
+    oos_aux.product_sku,
+    sum(open_hours_total) as open_hours_total,
+    sum(hours_oos) as hours_oos
+    from oos_aux
     group by 1,2
+    order by 1
 ),
+
+oos_sub_gr as (
+    select
+    oos_aux.inventory_tracking_date,
+    oos_aux.product_sku,
+    sum(sg_open_hours_total) as open_hours_total_subsgr,
+    sum(sg_hours_oos) as hours_oos_subsgr
+    from oos_aux
+    group by 1,2
+    order by 1
+),
+
 
 day_country as
       (
@@ -492,7 +492,7 @@ flink_lvl.avg_unit_price_gross as avg_unit_price_gross_company
       on day_sku_country_oos.period = flink_lvl.period
       and day_sku_country_oos.order_date = flink_lvl.order_date
       and day_sku_country_oos.country_iso = flink_lvl.country_iso
-      ;;
+       ;;
 }
 
   measure: sum_item_value {

@@ -376,7 +376,7 @@ view: orders {
   dimension: delivery_time {
     group_label: "* Operations / Logistics *"
     type: number
-    sql: ${TABLE}.delivery_time_minutes ;;
+    sql: ${TABLE}.riding_time_minutes ;;
   }
 
   dimension: return_to_hub_time_minutes {
@@ -440,7 +440,7 @@ view: orders {
     description: "The internally predicted time in minutes for the order to arrive at the customer"
     group_label: "* Operations / Logistics *"
     type: number
-    sql: ${TABLE}.estimated_delivery_time_minutes;;
+    sql: ${TABLE}.estimated_fulfillment_time_minutes;;
   }
 
   dimension: delivery_time_targeted_minutes {
@@ -448,15 +448,15 @@ view: orders {
     description: "The internally targeted time in minutes for the order to arrive at the customer"
     group_label: "* Operations / Logistics *"
     type: number
-    sql: ${TABLE}.targeted_delivery_time_minutes;;
+    sql: ${TABLE}.targeted_fulfillment_time_minutes;;
   }
 
   dimension: estimated_queuing_time_for_picker_minutes {
-    label: "Picker Queuing Time Estimate (min)"
+    label: "Picker Reaction Time Estimate (min)"
     description: "The internally predicted time in minutes for the picker queuing"
     group_label: "* Operations / Logistics *"
     type: number
-    sql: ${TABLE}.estimated_queuing_time_for_picker_minutes;;
+    sql: ${TABLE}.estimated_reaction_time_minutes;;
   }
 
   dimension: queuing_time_for_picker_minutes {
@@ -480,11 +480,11 @@ view: orders {
   }
 
   dimension: estimated_queuing_time_for_rider_minutes {
-    label: "Rider Queuing Time Estimate (min)"
+    label: "Rider Acceptance Time Estimate (min)"
     description: "The internally predicted time in minutes for the rider queuing"
     group_label: "* Operations / Logistics *"
     type: number
-    sql: ${TABLE}.estimated_queuing_time_for_rider_minutes;;
+    sql: ${TABLE}.estimated_acceptance_time_minutes;;
   }
 
   dimension: pre_riding_time {
@@ -547,9 +547,10 @@ view: orders {
   }
 
   dimension: is_delivery_more_than_30_minute {
+    label: "Is Riding Above 30min"
     group_label: "* Operations / Logistics *"
     type: yesno
-    sql: ${TABLE}.is_delivery_above_30min ;;
+    sql: ${TABLE}.is_riding_above_30min ;;
   }
 
   dimension: is_delivery_eta_available {
@@ -621,6 +622,7 @@ view: orders {
   }
 
   dimension: is_delivery_less_than_0_minute {
+    label: "Is Riding Time less than 0 minute"
     hidden: yes
     group_label: "* Operations / Logistics *"
     type: yesno
@@ -1363,7 +1365,7 @@ view: orders {
 
       measure: avg_delivery_time {
         group_label: "* Operations / Logistics *"
-        label: "AVG Delivery Time"
+        label: "AVG Riding Time"
         description: "Average riding to customer time considering delivery start to arrival at customer. Outliers excluded (<1min or >30min)"
         hidden:  no
         type: average
@@ -1543,7 +1545,7 @@ view: orders {
 
       measure: avg_ratio_customer_to_hub {
         group_label: "* Operations / Logistics *"
-        label: "% Return to Hub vs. Delivery Time"
+        label: "% Return to Hub vs. Riding Time"
         description: "AVG [(Return to Hub Time / Delivery Time) - 1]"
         hidden: no
         type: average
@@ -2314,6 +2316,8 @@ view: orders {
         label: "AVG Daily Orders per hub"
         type: number
         sql: (${cnt_orders}/NULLIF(${cnt_unique_hubs},0))/ NULLIF(${cnt_unique_date},0);;
+
+        value_format_name:decimal_2
       }
 
 
@@ -2354,7 +2358,7 @@ view: orders {
   }
 
       measure: rmse_delivery_time_estimate {
-        label: "Delivery Time Estimate (RMSE)"
+        label: "Delivery Time Estimate Error (RMSE)"
         description: "The root-mean-squared-error when comparing actuall fulfillment times and predicted delivery estimate times"
         group_label: "* Operations / Logistics *"
         type: number
@@ -2364,7 +2368,7 @@ view: orders {
 
       measure: delta_return_delivery_time {
         group_label: "* Operations / Logistics *"
-        label: "Delta between Return Time and Delivery Time"
+        label: "Delta between Return Time and Riding Time"
         type: number
         value_format: "0.0"
         sql: ${avg_delivery_time} - ${avg_return_to_hub_time} ;;
