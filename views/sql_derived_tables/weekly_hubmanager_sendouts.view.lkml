@@ -2,7 +2,7 @@ view: weekly_hubmanager_sendouts {
   derived_table: {
     sql:
       select *
-      from flink-data-dev.reporting.weekly_hubmanager_sendouts;;
+      from flink-data-prod.reporting.weekly_hubmanager_sendouts;;
   }
 
   measure: count {
@@ -192,21 +192,21 @@ view: weekly_hubmanager_sendouts {
     value_format: "0"
     sql: ${number_of_orders} ;;
     html: {% if dimension._value == 'WoW' and value >= 0 %}
-    <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center"><img src="http://findicons.com/files/icons/573/must_have/48/check.png" height=20 width=20>+{{ value }} %</p>
+    <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center">+{{ value }} %</p>
     {% elsif dimension._value == 'WoW' and value < 0 %}
-     <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center"><img src="http://findicons.com/files/icons/719/crystal_clear_actions/64/cancel.png" height=20 width=20>{{ value }} %</p>
+     <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center">{{ value }} %</p>
     {% elsif dimension._value == 'Ranking in Bucket' and  first_tier_bucket._value >= value %}
-    <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+    <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_bucket._value | round}}</p>
     {% elsif dimension._value == 'Ranking in Bucket' and  second_tier_bucket._value >= value %}
-    <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+    <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_bucket._value | round}}</p>
      {% elsif dimension._value == 'Ranking in Bucket' %}
-    <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+    <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_bucket._value | round}}</p>
      {% elsif dimension._value == 'Ranking in Country' and  first_tier_country._value >= value %}
-    <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+    <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_country._value | round}}</p>
     {% elsif dimension._value == 'Ranking in Country' and  second_tier_country._value >= value %}
-    <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+    <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_country._value | round}}</p>
      {% elsif dimension._value == 'Ranking in Country'  %}
-    <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+    <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_country._value | round}}</p>
     {% elsif dimension._value == 'Last Week'  %}
     <p style="font-weight: bold">{{ rendered_value }}<p>
     {% else %}
@@ -225,17 +225,17 @@ view: weekly_hubmanager_sendouts {
           {% elsif dimension._value == 'WoW' and value < 0 %}
            <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center"><img src="http://findicons.com/files/icons/719/crystal_clear_actions/64/cancel.png" height=20 width=20>{{ value }} pp</p>
           {% elsif dimension._value == 'Ranking in Bucket' and  first_tier_bucket._value >= value %}
-          <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+          <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_bucket._value | round}}</p>
           {% elsif dimension._value == 'Ranking in Bucket' and  second_tier_bucket._value >= value %}
-          <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+          <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_bucket._value | round}}</p>
            {% elsif dimension._value == 'Ranking in Bucket' %}
-          <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+          <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_bucket._value | round}}</p>
            {% elsif dimension._value == 'Ranking in Country' and  first_tier_country._value >= value %}
-          <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+          <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_country._value | round}}</p>
           {% elsif dimension._value == 'Ranking in Country' and  second_tier_country._value >= value %}
-          <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+          <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_country._value | round}}</p>
            {% elsif dimension._value == 'Ranking in Country'  %}
-          <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+          <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_country._value | round}}</p>
           {% elsif dimension._value == 'Last Week'  %}
           <p style="font-weight: bold">{{ rendered_value }}<p>
           {% else %}
@@ -255,17 +255,17 @@ view: weekly_hubmanager_sendouts {
     {% elsif dimension._value == 'WoW' and value > 0 %}
      <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center"><img src="http://findicons.com/files/icons/719/crystal_clear_actions/64/cancel.png" height=20 width=20>+{{ value }}%</p>
     {% elsif dimension._value == 'Ranking in Bucket' and  first_tier_bucket._value >= value %}
-    <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+    <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_bucket._value | round}}</p>
     {% elsif dimension._value == 'Ranking in Bucket' and  second_tier_bucket._value >= value %}
-    <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+    <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_bucket._value | round}}</p>
      {% elsif dimension._value == 'Ranking in Bucket' %}
-    <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+    <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_bucket._value | round}}</p>
      {% elsif dimension._value == 'Ranking in Country' and  first_tier_country._value >= value %}
-    <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+    <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_country._value | round}}</p>
     {% elsif dimension._value == 'Ranking in Country' and  second_tier_country._value >= value %}
-    <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+    <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_country._value | round}}</p>
      {% elsif dimension._value == 'Ranking in Country'  %}
-    <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+    <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_country._value | round}}</p>
     {% elsif dimension._value == 'Last Week'  %}
     <p style="font-weight: bold">{{ rendered_value }}<p>
     {% else %}
@@ -284,17 +284,17 @@ view: weekly_hubmanager_sendouts {
     {% elsif dimension._value == 'WoW' and value > 0 %}
      <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center"><img src="http://findicons.com/files/icons/719/crystal_clear_actions/64/cancel.png" height=20 width=20>+{{ value }} pp</p>
     {% elsif dimension._value == 'Ranking in Bucket' and  first_tier_bucket._value >= value %}
-    <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+    <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_bucket._value | round}}</p>
     {% elsif dimension._value == 'Ranking in Bucket' and  second_tier_bucket._value >= value %}
-    <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+    <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_bucket._value | round}}</p>
      {% elsif dimension._value == 'Ranking in Bucket' %}
-    <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+    <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_bucket._value | round}}</p>
      {% elsif dimension._value == 'Ranking in Country' and  first_tier_country._value >= value %}
-    <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+    <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_country._value | round}}</p>
     {% elsif dimension._value == 'Ranking in Country' and  second_tier_country._value >= value %}
-    <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+    <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_country._value | round}}</p>
      {% elsif dimension._value == 'Ranking in Country'  %}
-    <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+    <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_country._value | round}}</p>
     {% elsif dimension._value == 'Last Week'  %}
     <p style="font-weight: bold">{{ rendered_value }}<p>
     {% else %}
@@ -314,17 +314,17 @@ view: weekly_hubmanager_sendouts {
     {% elsif dimension._value == 'WoW' and value > 0 %}
      <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center"><img src="http://findicons.com/files/icons/719/crystal_clear_actions/64/cancel.png" height=20 width=20>+{{ value }} pp</p>
     {% elsif dimension._value == 'Ranking in Bucket' and  first_tier_bucket._value >= value %}
-    <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+    <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_bucket._value | round}}</p>
     {% elsif dimension._value == 'Ranking in Bucket' and  second_tier_bucket._value >= value %}
-    <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+    <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_bucket._value | round}}</p>
      {% elsif dimension._value == 'Ranking in Bucket' %}
-    <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+    <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_bucket._value | round}}</p>
      {% elsif dimension._value == 'Ranking in Country' and  first_tier_country._value >= value %}
-    <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+    <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_country._value | round}}</p>
     {% elsif dimension._value == 'Ranking in Country' and  second_tier_country._value >= value %}
-    <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+    <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_country._value | round}}</p>
      {% elsif dimension._value == 'Ranking in Country'  %}
-    <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+    <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_country._value | round}}</p>
     {% elsif dimension._value == 'Last Week'  %}
     <p style="font-weight: bold">{{ rendered_value }}<p>
     {% else %}
@@ -343,17 +343,17 @@ view: weekly_hubmanager_sendouts {
     {% elsif dimension._value == 'WoW' and value > 0 %}
      <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center"><img src="http://findicons.com/files/icons/719/crystal_clear_actions/64/cancel.png" height=20 width=20>+{{ value }} pp</p>
     {% elsif dimension._value == 'Ranking in Bucket' and  first_tier_bucket._value >= value %}
-    <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+    <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_bucket._value | round}}</p>
     {% elsif dimension._value == 'Ranking in Bucket' and  second_tier_bucket._value >= value %}
-    <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+    <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_bucket._value | round}}</p>
      {% elsif dimension._value == 'Ranking in Bucket' %}
-    <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+    <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_bucket._value | round}}</p>
      {% elsif dimension._value == 'Ranking in Country' and  first_tier_country._value >= value %}
-    <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+    <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_country._value | round}}</p>
     {% elsif dimension._value == 'Ranking in Country' and  second_tier_country._value >= value %}
-    <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+    <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_country._value | round}}</p>
      {% elsif dimension._value == 'Ranking in Country'  %}
-    <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+    <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_country._value | round}}</p>
     {% elsif dimension._value == 'Last Week'  %}
     <p style="font-weight: bold">{{ rendered_value }}<p>
     {% else %}
@@ -372,17 +372,17 @@ view: weekly_hubmanager_sendouts {
           {% elsif dimension._value == 'WoW' and value > 0 %}
            <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center"><img src="http://findicons.com/files/icons/719/crystal_clear_actions/64/cancel.png" height=20 width=20>+{{ value }} pp</p>
           {% elsif dimension._value == 'Ranking in Bucket' and  first_tier_bucket._value >= value %}
-          <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+          <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_bucket._value | round}}</p>
           {% elsif dimension._value == 'Ranking in Bucket' and  second_tier_bucket._value >= value %}
-          <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+          <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_bucket._value | round}}</p>
            {% elsif dimension._value == 'Ranking in Bucket' %}
-          <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+          <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_bucket._value | round}}</p>
            {% elsif dimension._value == 'Ranking in Country' and  first_tier_country._value >= value %}
-          <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+          <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_country._value | round}}</p>
           {% elsif dimension._value == 'Ranking in Country' and  second_tier_country._value >= value %}
-          <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+          <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_country._value | round}}</p>
            {% elsif dimension._value == 'Ranking in Country'  %}
-          <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+          <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_country._value | round}}</p>
           {% elsif dimension._value == 'Last Week'  %}
            <p style="font-weight: bold">{{ rendered_value }}<p>
           {% else %}
@@ -401,17 +401,17 @@ view: weekly_hubmanager_sendouts {
           {% elsif dimension._value == 'WoW' and value > 0 %}
            <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center"><img src="http://findicons.com/files/icons/719/crystal_clear_actions/64/cancel.png" height=20 width=20>+{{ value }} pp</p>
           {% elsif dimension._value == 'Ranking in Bucket' and  first_tier_bucket._value >= value %}
-          <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+          <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_bucket._value | round}}</p>
           {% elsif dimension._value == 'Ranking in Bucket' and  second_tier_bucket._value >= value %}
-          <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+          <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_bucket._value | round}}</p>
            {% elsif dimension._value == 'Ranking in Bucket' %}
-          <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+          <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_bucket._value | round}}</p>
            {% elsif dimension._value == 'Ranking in Country' and  first_tier_country._value >= value %}
-          <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+          <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_country._value | round}}</p>
           {% elsif dimension._value == 'Ranking in Country' and  second_tier_country._value >= value %}
-          <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+          <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_country._value | round}}</p>
            {% elsif dimension._value == 'Ranking in Country'  %}
-          <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+          <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_country._value | round}}</p>
           {% elsif dimension._value == 'Last Week'  %}
            <p style="font-weight: bold">{{ rendered_value }}<p>
           {% else %}
@@ -430,17 +430,17 @@ view: weekly_hubmanager_sendouts {
           {% elsif dimension._value == 'WoW' and value > 0 %}
            <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center"><img src="http://findicons.com/files/icons/719/crystal_clear_actions/64/cancel.png" height=20 width=20>+{{ value }} pp</p>
           {% elsif dimension._value == 'Ranking in Bucket' and  first_tier_bucket._value >= value %}
-          <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+          <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_bucket._value | round}}</p>
           {% elsif dimension._value == 'Ranking in Bucket' and  second_tier_bucket._value >= value %}
-          <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+          <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_bucket._value | round}}</p>
            {% elsif dimension._value == 'Ranking in Bucket' %}
-          <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+          <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_bucket._value | round}}</p>
            {% elsif dimension._value == 'Ranking in Country' and  first_tier_country._value >= value %}
-          <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+          <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_country._value | round}}</p>
           {% elsif dimension._value == 'Ranking in Country' and  second_tier_country._value >= value %}
-          <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+          <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_country._value | round}}</p>
            {% elsif dimension._value == 'Ranking in Country'  %}
-          <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+          <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_country._value | round}}</p>
           {% elsif dimension._value == 'Last Week'  %}
            <p style="font-weight: bold">{{ rendered_value }}<p>
           {% else %}
@@ -454,21 +454,21 @@ view: weekly_hubmanager_sendouts {
     value_format: "0.00"
     sql: ${rider_utr} ;;
     html: {% if dimension._value == 'WoW' and value >= 0 %}
-    <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center"><img src="http://findicons.com/files/icons/573/must_have/48/check.png" height=20 width=20>+{{ rendered_value }}</p>
+    <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center">+{{ rendered_value }}</p>
     {% elsif dimension._value == 'WoW' and value < 0 %}
-     <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center"><img src="http://findicons.com/files/icons/719/crystal_clear_actions/64/cancel.png" height=20 width=20>{{ rendered_value }}</p>
+     <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center">{{ rendered_value }}</p>
     {% elsif dimension._value == 'Ranking in Bucket' and  first_tier_bucket._value >= value %}
-    <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+    <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_bucket._value | round}}</p>
     {% elsif dimension._value == 'Ranking in Bucket' and  second_tier_bucket._value >= value %}
-    <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+    <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_bucket._value | round}}</p>
      {% elsif dimension._value == 'Ranking in Bucket' %}
-    <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+    <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_bucket._value | round}}</p>
      {% elsif dimension._value == 'Ranking in Country' and  first_tier_country._value >= value %}
-    <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+    <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_country._value | round}}</p>
     {% elsif dimension._value == 'Ranking in Country' and  second_tier_country._value >= value %}
-    <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+    <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_country._value | round}}</p>
      {% elsif dimension._value == 'Ranking in Country'  %}
-    <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+    <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_country._value | round}}</p>
     {% elsif dimension._value == 'Last Week'  %}
     <p style="font-weight: bold">{{ rendered_value }}<p>
     {% else %}
@@ -486,17 +486,17 @@ view: weekly_hubmanager_sendouts {
     {% elsif dimension._value == 'WoW' and value < 0 %}
      <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center"><img src="http://findicons.com/files/icons/719/crystal_clear_actions/64/cancel.png" height=20 width=20>{{ rendered_value }}</p>
     {% elsif dimension._value == 'Ranking in Bucket' and  first_tier_bucket._value >= value %}
-    <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+    <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_bucket._value | round}}</p>
     {% elsif dimension._value == 'Ranking in Bucket' and  second_tier_bucket._value >= value %}
-    <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+    <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_bucket._value | round}}</p>
      {% elsif dimension._value == 'Ranking in Bucket' %}
-    <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+    <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_bucket._value | round}}</p>
      {% elsif dimension._value == 'Ranking in Country' and  first_tier_country._value >= value %}
-    <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+    <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value | round:0 }} / {{avg_number_total_hubs_in_country._value | round:0}}</p>
     {% elsif dimension._value == 'Ranking in Country' and  second_tier_country._value >= value %}
-    <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+    <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_country._value | round}}</p>
      {% elsif dimension._value == 'Ranking in Country'  %}
-    <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+    <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{_value | round:0}} / {{avg_number_total_hubs_in_country._value | round:0}}</p>
     {% elsif dimension._value == 'Last Week'  %}
     <p style="font-weight: bold">{{ rendered_value }}<p>
     {% else %}
@@ -514,17 +514,17 @@ view: weekly_hubmanager_sendouts {
           {% elsif dimension._value == 'WoW' and value < 0 %}
            <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center"><img src="http://findicons.com/files/icons/719/crystal_clear_actions/64/cancel.png" height=20 width=20>{{ rendered_value }}</p>
           {% elsif dimension._value == 'Ranking in Bucket' and  first_tier_bucket._value >= value %}
-          <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+          <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_bucket._value | round}}</p>
           {% elsif dimension._value == 'Ranking in Bucket' and  second_tier_bucket._value >= value %}
-          <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+          <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_bucket._value | round}}</p>
            {% elsif dimension._value == 'Ranking in Bucket' %}
-          <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+          <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_bucket._value | round}}</p>
            {% elsif dimension._value == 'Ranking in Country' and  first_tier_country._value >= value %}
-          <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+          <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_country._value | round}}</p>
           {% elsif dimension._value == 'Ranking in Country' and  second_tier_country._value >= value %}
-          <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+          <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_country._value | round}}</p>
            {% elsif dimension._value == 'Ranking in Country'  %}
-          <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+          <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_country._value | round}}</p>
           {% elsif dimension._value == 'Last Week'  %}
           <p style="font-weight: bold">{{ rendered_value }}<p>
           {% else %}
@@ -538,21 +538,21 @@ view: weekly_hubmanager_sendouts {
     value_format: "0"
     sql: ${nps} ;;
     html: {% if dimension._value == 'WoW' and value >= 0 %}
-          <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center"><img src="http://findicons.com/files/icons/573/must_have/48/check.png" height=20 width=20>+{{ rendered_value }}</p>
+          <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center">+{{ rendered_value }}</p>
           {% elsif dimension._value == 'WoW' and value < 0 %}
-           <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center"><img src="http://findicons.com/files/icons/719/crystal_clear_actions/64/cancel.png" height=20 width=20>{{ rendered_value }}</p>
+           <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center">{{ rendered_value }}</p>
           {% elsif dimension._value == 'Ranking in Bucket' and  first_tier_bucket._value >= value %}
-          <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+          <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_bucket._value | round}}</p>
           {% elsif dimension._value == 'Ranking in Bucket' and  second_tier_bucket._value >= value %}
-          <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+          <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_bucket._value | round}}</p>
            {% elsif dimension._value == 'Ranking in Bucket' %}
-          <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_bucket._value}}</p>
+          <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_bucket._value | round}}</p>
            {% elsif dimension._value == 'Ranking in Country' and  first_tier_country._value >= value %}
-          <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+          <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_country._value | round}}</p>
           {% elsif dimension._value == 'Ranking in Country' and  second_tier_country._value >= value %}
-          <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+          <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_country._value | round}}</p>
            {% elsif dimension._value == 'Ranking in Country'  %}
-          <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value}} / {{avg_number_total_hubs_in_country._value}}</p>
+          <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_country._value | round}}</p>
           {% elsif dimension._value == 'Last Week'  %}
            <p style="font-weight: bold">{{ rendered_value }}<p>
           {% else %}
