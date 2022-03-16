@@ -69,7 +69,8 @@ explore: order_orderline_cl_retail_customized {
   join: commercial_department_names {
     view_label: "* Order Lineitems *"
     sql_on: lower(${commercial_department_names.category}) = lower(${products.category})
-      and lower(${commercial_department_names.subcategory}) = lower(${products.subcategory});;
+      and lower(${commercial_department_names.subcategory}) = lower(${products.subcategory})
+      and lower(${commercial_department_names.country_iso}) = lower(${products.country_iso});;
     relationship: many_to_one
 
   }

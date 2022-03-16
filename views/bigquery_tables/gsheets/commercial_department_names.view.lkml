@@ -32,6 +32,14 @@ view: commercial_department_names {
     sql: ${TABLE}.sub_category ;;
   }
 
+  dimension: country_iso {
+    label: "Country Iso"
+    group_label: "> Product Attributes"
+    type: string
+    hidden: yes
+    sql: ${TABLE}.country_iso ;;
+  }
+
   measure: count {
     type: count
     drill_fields: []
