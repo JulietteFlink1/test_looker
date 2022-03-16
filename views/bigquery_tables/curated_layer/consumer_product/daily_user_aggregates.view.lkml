@@ -509,7 +509,7 @@ view: daily_user_aggregates {
   }
   measure: number_of_payment_started {
     group_label: "Event Metrics"
-    label: "# Payment Atarted"
+    label: "# Payment Started"
     type: sum
     hidden: no
     sql: ${dim_number_of_payment_started};;
@@ -559,7 +559,6 @@ view: daily_user_aggregates {
     type: sum
     hidden: no
     sql: ${dim_number_of_checkout_started} ;;
-    value_format_name: euro_accounting_0_precision
   }
   measure: number_of_payment_failed {
     group_label: "Event Metrics"
@@ -676,7 +675,7 @@ view: daily_user_aggregates {
   measure: users_with_address {
     group_label: "User Metrics"
     label: "# Users with Address Set"
-    description: "Number of users with at least one order"
+    description: "Number of users with at least one address"
     type: count_distinct
     sql: ${user_uuid} ;;
     filters: [is_address_set: "yes"]
@@ -684,7 +683,7 @@ view: daily_user_aggregates {
   measure: users_with_add_to_cart {
     group_label: "User Metrics"
     label: "# Users with Add-to-Cart"
-    description: "Number of users with at least one order"
+    description: "Number of users with at least one product added to cart"
     type: count_distinct
     sql: ${user_uuid} ;;
     filters: [is_product_added_to_cart: "yes"]
@@ -692,7 +691,7 @@ view: daily_user_aggregates {
   measure: users_with_checkout_viewed {
     group_label: "User Metrics"
     label: "# Users with Checkout Viewed"
-    description: "Number of users with at least one order"
+    description: "Number of users with at least one checkout view"
     type: count_distinct
     sql: ${user_uuid} ;;
     filters: [is_checkout_viewed: "yes"]
@@ -700,7 +699,7 @@ view: daily_user_aggregates {
   measure: users_with_payment_started {
     group_label: "User Metrics"
     label: "# Users with Payment Started"
-    description: "Number of users with at least one order"
+    description: "Number of users with at least one payment started"
     type: count_distinct
     sql: ${user_uuid} ;;
     filters: [is_payment_started: "yes"]
