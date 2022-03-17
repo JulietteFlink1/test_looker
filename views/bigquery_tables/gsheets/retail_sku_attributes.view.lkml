@@ -1,6 +1,6 @@
 view: retail_sku_attributes {
 
-  view_label: "* Customer SKU Definitions *"
+  view_label: "* Custom SKU Definitions *"
   sql_table_name: `flink-data-prod.google_sheets.retail_sku_attributes`
     ;;
 
