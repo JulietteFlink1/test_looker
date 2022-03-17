@@ -1,5 +1,5 @@
 view: nps_comments_labeled {
-  sql_table_name: `flink-data-prod.reporting.nps_comments_labeled`
+  sql_table_name: `flink-data-dev.reporting.nps_comments_labeled`
     ;;
 
   dimension: country_iso {
@@ -35,10 +35,10 @@ view: nps_comments_labeled {
               when ${TABLE}.label = 'all_good_prediction' then 'All Good'
               when ${TABLE}.label = 'rider_behavior_prediction' then 'Rider Behavior'
               when ${TABLE}.label = 'product_ux_prediction' then 'Product/UX'
-              when ${TABLE}.label = 'company_values_prediction' then 'Business Model'
+              when ${TABLE}.label = 'business_model_prediction' then 'Business Model'
               when ${TABLE}.label = 'customer_service_prediction' then 'Customer Service'
               when ${TABLE}.label = 'vouchers_prediction' then 'Vouchers'
-              when ${TABLE}.label = 'assortment_prediction' then 'Product Selection'
+              when ${TABLE}.label = 'product_selection_prediction' then 'Product Selection'
               else ${TABLE}.label end ;;
   }
 

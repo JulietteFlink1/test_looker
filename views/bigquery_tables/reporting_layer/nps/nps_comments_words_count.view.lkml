@@ -1,5 +1,5 @@
 view: nps_comments_words_count {
-  sql_table_name: `flink-data-prod.reporting.nps_comments_words_count`
+  sql_table_name: `flink-data-dev.reporting.nps_comments_words_count`
     ;;
 
   dimension: column {
