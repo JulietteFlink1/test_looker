@@ -436,7 +436,7 @@ view: orders {
   }
 
   dimension: delivery_time_estimate_minutes {
-    label: "Delivery Time Estimate (min)"
+    label: "Fulfillment Time Estimate (min)"
     description: "The internally predicted time in minutes for the order to arrive at the customer"
     group_label: "* Operations / Logistics *"
     type: number
@@ -444,7 +444,7 @@ view: orders {
   }
 
   dimension: delivery_time_targeted_minutes {
-    label: "Delivery Time Targeted (min)"
+    label: "Fulfillment Time Targeted (min)"
     description: "The internally targeted time in minutes for the order to arrive at the customer"
     group_label: "* Operations / Logistics *"
     type: number
@@ -1305,7 +1305,7 @@ view: orders {
       }
 
       measure: avg_delivery_time_estimate {
-        label: "AVG Delivery Time Estimate (min)"
+        label: "AVG Fulfillment Time Estimate (min)"
         description: "The average internally predicted time in minutes for the order to arrive at the customer (dynamic model result - not necessarily the PDT shown to the customer as some conversion can be applied in between)"
         group_label: "* Operations / Logistics *"
         type: average
@@ -1455,7 +1455,7 @@ view: orders {
 
       measure: avg_targeted_delivery_time {
         group_label: "* Operations / Logistics *"
-        label: "AVG Targeted Delivery Time (min)"
+        label: "AVG Targeted Fulfillment Time (min)"
         description: "Average internal targeted delivery time for hub ops."
         hidden:  no
         type: average
@@ -1797,7 +1797,7 @@ view: orders {
       # group_label: "* Operations / Logistics *"
       view_label: "* Hubs *"
       group_label: "Hub Leaderboard - Order Metrics"
-      label: "# Orders with Targeted Delivery Time is available"
+      label: "# Orders with Targeted Fulfillment Time is available"
       description: "Count of Orders where a Targeted Delivery Time  is available"
       hidden:  no
       type: count
@@ -2341,7 +2341,7 @@ view: orders {
 
       measure: cnt_orders_with_delivery_time_estimate {
         group_label: "* Operations / Logistics *"
-        label: "# Orders with Delivery Time Estimate"
+        label: "# Orders with Fulfillment Time Estimate"
         hidden:  yes
         type: count
         filters: [delivery_time_estimate_minutes: ">0", fulfillment_time: ">0"]
@@ -2350,7 +2350,7 @@ view: orders {
 
   measure: cnt_orders_with_delivery_time_targeted {
     group_label: "* Operations / Logistics *"
-    label: "# Orders with Delivery Time Estimate"
+    label: "# Orders with Fulfillment Time Targeted"
     hidden:  yes
     type: count
     filters: [delivery_time_targeted_minutes: ">0", fulfillment_time: ">0"]
@@ -2358,7 +2358,7 @@ view: orders {
   }
 
       measure: rmse_delivery_time_estimate {
-        label: "Delivery Time Estimate Error (RMSE)"
+        label: "Fulfillment Time Estimate Error (RMSE)"
         description: "The root-mean-squared-error when comparing actuall fulfillment times and predicted delivery estimate times"
         group_label: "* Operations / Logistics *"
         type: number
