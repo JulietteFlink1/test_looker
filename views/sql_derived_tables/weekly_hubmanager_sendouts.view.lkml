@@ -42,16 +42,18 @@ view: weekly_hubmanager_sendouts {
     sql: ${TABLE}.number_of_orders ;;
   }
 
-  dimension: share_of_orders_with_delta_pdt_less_than_2 {
+  dimension: share_of_orders_fulfilled_before_targeted_estimate {
+    alias: [share_of_orders_with_delta_pdt_less_than_2]
     type: number
     hidden: yes
-    sql: ${TABLE}.share_of_orders_with_delta_pdt_less_than_2 ;;
+    sql: ${TABLE}.share_of_orders_fulfilled_before_targeted_estimate ;;
   }
 
-  dimension: share_of_orders_delivered_more_than_20 {
+  dimension: share_of_orders_fulfilled_more_than_20 {
+    alias: [share_of_orders_delivered_more_than_20]
     type: number
     hidden: yes
-    sql: ${TABLE}.share_of_orders_delivered_more_than_20 ;;
+    sql: ${TABLE}.share_of_orders_fulfilled_more_than_20 ;;
   }
 
   dimension: share_pre_order_issues {
@@ -214,11 +216,12 @@ view: weekly_hubmanager_sendouts {
     {% endif %} ;;
   }
 
-  measure: avg_share_of_orders_with_delta_pdt_less_than_2 {
-    label: "% Orders <= 2min vs PDT"
-    description: "Share of orders delivered with a delta <= 2min vs PDT"
+  measure: avg_share_of_orders_fulfilled_before_targeted_estimate {
+    alias: [avg_share_of_orders_with_delta_pdt_less_than_2]
+    label: "% Orders fulfilled in Time (Internal target)"
+    description: "Share of orders fulfilled before the internal targeted estimate"
     type: average
-    sql: ${share_of_orders_with_delta_pdt_less_than_2} ;;
+    sql: ${share_of_orders_fulfilled_before_targeted_estimate} ;;
     value_format: "0.0%"
     html: {% if dimension._value == 'WoW' and value >= 0 %}
           <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center"><img src="http://findicons.com/files/icons/573/must_have/48/check.png" height=20 width=20>+{{ value }} pp</p>
@@ -273,12 +276,13 @@ view: weekly_hubmanager_sendouts {
     {% endif %}  ;;
   }
 
-  measure: avg_share_of_orders_delivered_more_than_20 {
+  measure: avg_share_of_orders_fulfilled_more_than_20 {
+    alias: [avg_share_of_orders_delivered_more_than_20]
     label: "% Orders > 20min"
     description: "Share of Orders delivered in more than 20min"
     type: average
     value_format: "0.0%"
-    sql: ${share_of_orders_delivered_more_than_20} ;;
+    sql: ${share_of_orders_fulfilled_more_than_20} ;;
     html: {% if dimension._value == 'WoW' and value <= 0 %}
     <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center"><img src="http://findicons.com/files/icons/573/must_have/48/check.png" height=20 width=20>{{ value }} pp</p>
     {% elsif dimension._value == 'WoW' and value > 0 %}
@@ -567,8 +571,6 @@ view: weekly_hubmanager_sendouts {
       country_iso,
       bucket,
       number_of_orders,
-      share_of_orders_with_delta_pdt_less_than_2,
-      share_of_orders_delivered_more_than_20,
       share_pre_order_issues,
       share_post_order_issues,
       share_of_no_show,

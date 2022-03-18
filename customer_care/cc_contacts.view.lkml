@@ -16,7 +16,8 @@ dimension: agent_id {
   sql: ${TABLE}.agent_id ;;
 }
 
-dimension: agent_name_test {
+dimension: agent_name_test{
+  alias: [agent_name]
   group_label: "* Agent & Team *"
   description: "Name of the last agent who took part in the conversation"
   type: string
