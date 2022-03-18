@@ -1,5 +1,5 @@
-include: "/views/bigquery_tables/curated_layer/orderline.view"
-include: "/views/bigquery_tables/curated_layer/inventory.view"
+include: "/**/orderline.view"
+include: "/**/inventory.view"
 
 
 view: order_lineitems_using_inventory {
