@@ -22,6 +22,12 @@ explore: flink_to_gorillas_global {
     sql_where: (${inventory.is_most_recent_record} = TRUE) ;;
   }
 
+  join: unique_assortment {
+    sql_on: ${products.product_sku} = ${unique_assortment.product_sku} ;;
+    relationship: many_to_one
+    type: left_outer
+  }
+
   join: hubs {
     from:  hubs_ct
     view_label: "* Flink Hubs *"
@@ -119,6 +125,12 @@ explore: flink_to_gorillas_global {
     view_label: "* Albert Heijn Products *"
     sql_on: ${albert_heijn_products.product_id} = ${flink_to_albert_heijn_global.albert_heijn_product_id} ;;
     relationship: one_to_one
+    type: left_outer
+  }
+
+  join: key_value_items {
+    sql_on: ${products.product_sku} = ${key_value_items.sku} ;;
+    relationship: many_to_one
     type: left_outer
   }
 
