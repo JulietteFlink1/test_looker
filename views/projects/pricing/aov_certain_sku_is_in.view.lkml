@@ -254,6 +254,14 @@ measure: presence_in_basket {
 
 }
 
+  # measure: orders_per_country {
+  #   type: count_distinct
+  #   sql: ${sum_orders} ;;
+  #   filters: [dimension: "country_iso"]
+  # }
+
+
+
 #dimension: order_date {
 #  type: date
 #  datatype: date
