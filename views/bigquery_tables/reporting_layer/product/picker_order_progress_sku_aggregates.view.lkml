@@ -124,4 +124,9 @@ view: picker_order_progress_sku_aggregates {
     type: sum
     sql: ${TABLE}.number_of_item_unavailable ;;
   }
+
+  measure: number_of_orders {
+    type: count_distinct
+    sql: ${TABLE}.order_id ;;
+  }
 }
