@@ -22,8 +22,8 @@ explore: picker_order_progress_sku_level_aggregation {
   # reveived_at is due cost reduction given a table is partitioned by this dimensions
   # event_date filter will fitler for the desired time frame when events triggered
 
-  sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} $daily_picker_events.{event_recieved_at} {% endcondition %}
-    and {% condition global_filters_and_parameters.datasource_filter %} $daily_picker_events.{event_timestamp} {% endcondition %};;
+  sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} picker_order_progress_sku_aggregates.{date} {% endcondition %}
+    and {% condition global_filters_and_parameters.datasource_filter %} picker_order_progress_sku_aggregates.{date} {% endcondition %};;
 
   access_filter: {
     field: picker_order_progress_sku_aggregates.country_iso
