@@ -52,11 +52,11 @@ select
  from
  `flink-data-prod.flink_android_production.account_login_viewed` tracks
  left join
-  `flink-data-prod.flink_android.screen_viewed` screen_viewed
+  `flink-data-prod.flink_android_production.screen_viewed` screen_viewed
   on tracks.anonymous_id = screen_viewed.anonymous_id
     and date(tracks.timestamp) = date(screen_viewed.timestamp)
  left join
-  `flink-data-prod.flink_android.click` click
+  `flink-data-prod.flink_android_production.click` click
   on screen_viewed.anonymous_id = click.anonymous_id
     and date(screen_viewed.timestamp) = date(click.timestamp)
  left join

@@ -257,6 +257,16 @@ view: hub_staffing {
   }
 
 
+  dimension_group: last_update {
+    type: time
+    timeframes: [
+      time
+    ]
+    convert_tz: yes
+    datatype: datetime
+    sql: ${TABLE}.last_updated_timestamp ;;
+  }
+
   measure: sum_forecast_riders_needed{
     type: sum
     label:"# Forecasted Hours"
