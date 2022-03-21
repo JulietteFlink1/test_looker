@@ -87,6 +87,18 @@ explore: current_inventory {
     type:  left_outer
   }
 
+  join: unique_assortment {
+    sql_on: ${products.product_sku} = ${unique_assortment.product_sku} ;;
+    relationship: many_to_one
+    type: left_outer
+  }
+
+  join: key_value_items {
+    sql_on: ${products.product_sku} = ${key_value_items.sku} ;;
+    relationship: many_to_one
+    type: left_outer
+  }
+
   # join: erp_product_hub_vendor_assignment {
   #   sql_on:  ${erp_product_hub_vendor_assignment.country_iso}    = ${products_hub_assignment.country_iso}
   #       and ${erp_product_hub_vendor_assignment.sku}            = ${products_hub_assignment.sku}

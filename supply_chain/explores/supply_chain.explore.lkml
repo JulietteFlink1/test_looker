@@ -14,6 +14,7 @@ include: "/**/*.view"
 
 include: "/**/products_hub_assignment_v2.view"
 include: "/**/replenishment_purchase_orders.view"
+include: "/**/bulk_items.view"
 
 
 
@@ -234,10 +235,31 @@ explore: supply_chain {
     ;;
   }
 
+  join: bulk_items {
+
+    # keep hidden for now
+    view_label: ""
+
+    type: left_outer
+    relationship: many_to_one
+
+    sql_on:
+        ${bulk_items.hub_code} = ${products_hub_assignment.hub_code}
+    and ${bulk_items.inbounded_timestamp_date} = ${products_hub_assignment.report_date}
+    and case
+          when ${bulk_items.sku} is not null
+          then ${bulk_items.sku} = ${products_hub_assignment.sku}
+          else true
+        end
+    ;;
+
+
+  }
+
   join: erp_master_data {
 
     from: erp_product_hub_vendor_assignment_v2
-    view_label: "09 ERP Master Data"
+    view_label: "09 Lexbizz Master Data"
 
     type: left_outer
     relationship: many_to_one
@@ -247,9 +269,9 @@ explore: supply_chain {
         ${erp_master_data.hub_code}    = ${products_hub_assignment.hub_code}    and
         ${erp_master_data.sku}         = ${products_hub_assignment.sku}         and
         ${erp_master_data.vendor_id}   = ${products_hub_assignment.erp_vendor_id}
-
     ;;
   }
+
 
 
   join: top_50_skus_per_gmv_supply_chain_explore {

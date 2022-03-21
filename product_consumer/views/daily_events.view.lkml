@@ -189,7 +189,7 @@ view: daily_events {
   }
   measure: logged_in_anonymous_users {
     label: "# All Users"
-    description: "Number of users who did logged-in during a day"
+    description: "Number of all users regardless of their login status."
     type: count_distinct
     sql: ${TABLE}.anonymous_id ;;
   }

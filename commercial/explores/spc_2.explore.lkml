@@ -1,6 +1,7 @@
 include: "/**/sku_performance_base.view"
 include: "/**/products.view"
 include: "/**/lexbizz_item.view"
+include: "/**/hubs_ct.view"
 
 explore: spc_2 {
 
@@ -19,8 +20,27 @@ explore: spc_2 {
   }
 
   join: lexbizz_item {
+
     type: left_outer
     relationship: many_to_one
-    sql: ${lexbizz_item.sku} = ${sku_performance_base.sku} ;;
+
+    sql_on: ${lexbizz_item.sku} = ${sku_performance_base.sku} and
+            ${lexbizz_item.ingestion_date} = current_date()
+    ;;
   }
+
+  join: hubs_ct {
+    view_label: "Hub Data"
+
+    type: left_outer
+    relationship: many_to_one
+
+    sql_on:  ${sku_performance_base.hub_code} = ${hubs_ct.hub_code};;
+  }
+
+  # join: lexbizz_item {
+  #   type: left_outer
+  #   relationship: many_to_one
+  #   sql: ${lexbizz_item.sku} = ${sku_performance_base.sku} ;;
+  # }
 }
