@@ -4,7 +4,7 @@ view: onboarding_task_artur {
 
   measure: avg_fulfillment_time {
 
-    type: number
+    type: average
     sql: ${TABLE}.avg_fulfillment_time ;;
   }
 
