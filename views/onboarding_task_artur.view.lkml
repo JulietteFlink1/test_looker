@@ -38,7 +38,7 @@ view: onboarding_task_artur {
 
   measure: num_of_riders {
 
-    type: number
+    type: sum
     sql: ${TABLE}.num_of_riders ;;
   }
 
