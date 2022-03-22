@@ -2,14 +2,14 @@ view: onboarding_task_artur {
   sql_table_name: `flink-data-dev.sandbox_artur.onboarding_task_artur`
     ;;
 
-  dimension: avg_fulfillment_time {
-    hidden:yes
+  measure: avg_fulfillment_time {
+
     type: number
     sql: ${TABLE}.avg_fulfillment_time ;;
   }
 
-  dimension: avg_num_of_items {
-    hidden:yes
+  measure: avg_num_of_items {
+
     type: number
     sql: ${TABLE}.avg_num_of_items ;;
   }
@@ -24,26 +24,26 @@ view: onboarding_task_artur {
     sql: ${TABLE}.hub_code ;;
   }
 
-  dimension: num_of_hours_worked {
-    hidden:yes
+  measure: num_of_hours_worked {
+
     type: number
     sql: ${TABLE}.num_of_hours_worked ;;
   }
 
-  dimension: num_of_orders {
-    hidden:yes
+  measure: num_of_orders {
+
     type: number
     sql: ${TABLE}.num_of_orders ;;
   }
 
   dimension: num_of_riders {
-    hidden:yes
+
     type: number
     sql: ${TABLE}.num_of_riders ;;
   }
 
   dimension_group: order {
-    type: time
+    type:  time
     timeframes: [
       date,
       week,
@@ -61,28 +61,4 @@ view: onboarding_task_artur {
     drill_fields: []
   }
 
-  measure: avg_fulfillment {
-    type: number
-    drill_fields: []
-  }
-
-  measure: avg_items {
-    type: number
-    drill_fields: []
-  }
-
-  measure: hours_worked {
-    type: number
-    drill_fields: []
-  }
-
-  measure: orders {
-    type: number
-    drill_fields: []
-  }
-
-  measure: riders {
-    type: number
-    drill_fields: []
-  }
 }
