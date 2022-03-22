@@ -4,7 +4,7 @@ view: onboarding_task_artur {
 
   measure: avg_fulfillment_time {
 
-    type: average
+    type: number
     sql: ${TABLE}.avg_fulfillment_time ;;
   }
 
@@ -38,7 +38,7 @@ view: onboarding_task_artur {
 
   measure: num_of_riders {
 
-    type: sum
+    type: number
     sql: ${TABLE}.num_of_riders ;;
   }
 
