@@ -4,13 +4,13 @@ view: onboarding_task_artur {
 
   measure: avg_fulfillment_time {
 
-    type: number
+    type: average
     sql: ${TABLE}.avg_fulfillment_time ;;
   }
 
   measure: avg_num_of_items {
 
-    type: number
+    type: average
     sql: ${TABLE}.avg_num_of_items ;;
   }
 
@@ -26,19 +26,19 @@ view: onboarding_task_artur {
 
   measure: num_of_hours_worked {
 
-    type: number
+    type: sum
     sql: ${TABLE}.num_of_hours_worked ;;
   }
 
   measure: num_of_orders {
 
-    type: number
+    type: sum
     sql: ${TABLE}.num_of_orders ;;
   }
 
-  dimension: num_of_riders {
+  measure: num_of_riders {
 
-    type: number
+    type: sum
     sql: ${TABLE}.num_of_riders ;;
   }
 
