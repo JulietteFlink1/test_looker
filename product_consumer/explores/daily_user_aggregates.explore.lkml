@@ -7,16 +7,16 @@
 # Questions that can be answered
 # - user based conversions
 
-include: "/views/bigquery_tables/curated_layer/consumer_product/daily_user_aggregates.view"
+include: "/**/daily_user_aggregates.view"
 include: "/**/global_filters_and_parameters.view.lkml"
 
 explore: daily_user_aggregates {
   from:  daily_user_aggregates
   view_name: daily_user_aggregates
-  hidden: yes
+  hidden: no
 
   label: "Daily User Aggregates"
-  description: "This explore provides an overview of all behavioural events generated on Flink App and Web"
+  description: "This explore provides an aggregated overview of Flink active users, including monetary values and conversion metrics (both App & Web)"
   group_label: "Consumer Product"
 
   sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} ${event_date_at_date} {% endcondition %};;

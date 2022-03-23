@@ -72,6 +72,20 @@ view: cc_orders_hourly {
     sql:  safe_divide(${cc_conversations.number_of_conversations},${sum_number_of_orders})  ;;
   }
 
+  measure: cc_refunded_order_rate {
+    label: "% Refunded Orders"
+    type: number
+    value_format: "0.0%"
+    sql: safe_divide(${sum_number_of_refunded_orders},${sum_number_of_orders}) ;;
+  }
+
+  measure: cc_discounted_order_rate {
+    label: "% CC Discounted Orders"
+    type: number
+    value_format: "0.0%"
+    sql: safe_divide(${sum_number_of_cc_discounted_orders},${sum_number_of_orders}) ;;
+  }
+
   measure: count {
     hidden: yes
     type: count

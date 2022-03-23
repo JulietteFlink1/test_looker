@@ -15,9 +15,16 @@ explore: order_orderline_cl_retail_customized {
   hidden: no
 
   join: sku_level_aggregated_metrics {
+
+    # hiding this field, as the metrics generated with this table, can actually be derived with the orderline core data
+    # see here: https://goflink.cloud.looker.com/explore/flink_v3/order_orderline_cl_retail_customized?qid=tIISqYLHbe9rlCjMF08Vvq&toggle=fil
+    view_label: ""
+
+
     sql_on:  ${sku_level_aggregated_metrics.sku} = ${products.product_sku};;
     type: left_outer
     relationship: many_to_one
+
   }
 
   join: orders_country_level {
@@ -69,7 +76,8 @@ explore: order_orderline_cl_retail_customized {
   join: commercial_department_names {
     view_label: "* Order Lineitems *"
     sql_on: lower(${commercial_department_names.category}) = lower(${products.category})
-      and lower(${commercial_department_names.subcategory}) = lower(${products.subcategory});;
+      and lower(${commercial_department_names.subcategory}) = lower(${products.subcategory})
+      and lower(${commercial_department_names.country_iso}) = lower(${products.country_iso});;
     relationship: many_to_one
 
   }

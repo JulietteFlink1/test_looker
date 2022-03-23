@@ -11,6 +11,8 @@ explore: inbound_outbound_kpi_report {
   view_name: inventory_changes_daily
   view_label: "* Inventory Changes Daily *"
 
+  fields: [ALL_FIELDS*, -erp_product_hub_vendor_assignment_v2.pricing_fields_refined*]
+
   join: products {
     type: left_outer
     relationship: many_to_one
