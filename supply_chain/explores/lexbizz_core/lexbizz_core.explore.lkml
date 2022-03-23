@@ -49,7 +49,8 @@ explore: lexbizz_core {
 
     sql_on:
         ${item_warehouse.ingestion_date} = ${item_vendor_status.ingestion_date} and
-        ${item_warehouse.sku}            = ${item_vendor_status.sku}
+        ${item_warehouse.sku}            = ${item_vendor_status.sku} and
+        ${item_warehouse.preferred_vendor_id} = ${item_vendor_status.vendor_id}
     ;;
 
   }
