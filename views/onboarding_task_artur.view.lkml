@@ -6,12 +6,15 @@ view: onboarding_task_artur {
 
     type: average
     sql: ${TABLE}.avg_fulfillment_time ;;
+    value_format: "$#.00;($#.00)"
+
   }
 
   measure: avg_num_of_items {
 
     type: average
     sql: ${TABLE}.avg_num_of_items ;;
+    value_format: "$#.00;($#.00)"
   }
 
   dimension: country_iso {
@@ -26,7 +29,7 @@ view: onboarding_task_artur {
 
   measure: num_of_hours_worked {
 
-    type: sum
+    type: number
     sql: ${TABLE}.num_of_hours_worked ;;
   }
 
@@ -38,7 +41,7 @@ view: onboarding_task_artur {
 
   measure: num_of_riders {
 
-    type: sum
+    type: number
     sql: ${TABLE}.num_of_riders ;;
   }
 
