@@ -7,7 +7,7 @@
 # Questions that can be answered
 # - How pickers progress through picking items
 
-include: "/views/bigquery_tables/reporting_layer/product/picker_order_progress_sku_aggregates.view"
+include: "/views/bigquery_tables/reporting_layer/product/picker_order_progress_sku_aggregates.view.lkml"
 include: "/**/global_filters_and_parameters.view.lkml"
 
 explore: picker_order_progress_sku_level_aggregation {
@@ -16,7 +16,7 @@ explore: picker_order_progress_sku_level_aggregation {
 
   label: "Picker Order Progress Aggregates"
   description: "This explore provides an overview of how prickers progress through picking items."
-  group_label: "Hub Product"
+  group_label: "Consumer Product"
 
   # implement both date filters:
   # reveived_at is due cost reduction given a table is partitioned by this dimensions
