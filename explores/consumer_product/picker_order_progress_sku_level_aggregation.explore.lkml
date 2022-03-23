@@ -11,9 +11,8 @@ include: "/views/bigquery_tables/reporting_layer/product/picker_order_progress_s
 include: "/**/global_filters_and_parameters.view.lkml"
 
 explore: picker_order_progress_sku_level_aggregation {
-  from:  picker_order_progress_sku_aggregates
   view_name: picker_order_progress_sku_aggregates
-
+  hidden:  no
   label: "Picker Order Progress Aggregates"
   description: "This explore provides an overview of how prickers progress through picking items."
   group_label: "Consumer Product"
@@ -32,7 +31,7 @@ explore: picker_order_progress_sku_level_aggregation {
 
   always_filter: {
     filters: [
-      global_filters_and_parameters.datasource_filter: "last 21 days"
+      global_filters_and_parameters.datasource_filter: "last 14 days"
     ]
   }
 
