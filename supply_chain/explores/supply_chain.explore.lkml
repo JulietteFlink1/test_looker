@@ -14,6 +14,10 @@ include: "/**/*.view"
 
 include: "/**/products_hub_assignment_v2.view"
 include: "/**/replenishment_purchase_orders.view"
+include: "/**/bulk_items.view"
+include: "/**/bulk_inbounding_performance.view"
+
+
 
 
 
@@ -219,9 +223,25 @@ explore: supply_chain {
     ;;
   }
 
+  join: bulk_inbounding_performance {
+
+    # keep hidden for now
+    view_label: "08 Dispatch Notifications"
+
+    type: left_outer
+    relationship: many_to_one
+
+    sql_on:
+        ${bulk_inbounding_performance.hub_code}        = ${products_hub_assignment.hub_code}
+    and ${bulk_inbounding_performance.inbounding_date} = ${products_hub_assignment.report_date}
+    and ${bulk_inbounding_performance.sku}             = ${products_hub_assignment.sku}
+    ;;
+
+  }
+
   join: replenishment_purchase_orders {
 
-    view_label: "08 Purchase Orders"
+    view_label: "09 Purchase Orders"
 
     type:         full_outer
     relationship: many_to_one
@@ -237,7 +257,7 @@ explore: supply_chain {
   join: erp_master_data {
 
     from: erp_product_hub_vendor_assignment_v2
-    view_label: "09 Lexbizz Master Data"
+    view_label: "10 Lexbizz Master Data"
 
     type: left_outer
     relationship: many_to_one
@@ -247,13 +267,13 @@ explore: supply_chain {
         ${erp_master_data.hub_code}    = ${products_hub_assignment.hub_code}    and
         ${erp_master_data.sku}         = ${products_hub_assignment.sku}         and
         ${erp_master_data.vendor_id}   = ${products_hub_assignment.erp_vendor_id}
-
     ;;
   }
 
 
+
   join: top_50_skus_per_gmv_supply_chain_explore {
-    view_label: "10 Top Selling Products (last 14days)"
+    view_label: "11 Top Selling Products (last 14days)"
     sql_on: ${top_50_skus_per_gmv_supply_chain_explore.sku}         = ${products_hub_assignment.sku}
         and ${top_50_skus_per_gmv_supply_chain_explore.country_iso} = ${products_hub_assignment.country_iso}
     ;;

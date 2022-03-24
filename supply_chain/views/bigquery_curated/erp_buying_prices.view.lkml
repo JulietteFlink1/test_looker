@@ -2,7 +2,7 @@ include: "/**/*.view"
 
 view: erp_buying_prices {
 
-  sql_table_name: `flink-data-prod.curated.erp_buying_prices`;;
+  sql_table_name: `flink-data-prod.curated.erp_buying_prices_tmp`;;
 
   required_access_grants: [can_view_buying_information]
   view_label: "* ERP Vendor Prices *"
@@ -102,6 +102,13 @@ view: erp_buying_prices {
       quarter,
       year
     ]
+    sql: ${TABLE}.ingestion_timestamp ;;
+    hidden: yes
+  }
+
+  dimension: report_date {
+    type: date
+    datatype: date
     sql: ${TABLE}.ingestion_timestamp ;;
     hidden: yes
   }

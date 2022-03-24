@@ -145,6 +145,12 @@ view: daily_user_aggregates {
       type: yesno
       sql: ${TABLE}.is_device_macintosh ;;
     }
+    dimension: full_app_version {
+      group_label: "Device Dimensions"
+      type: string
+      description: "Concatenation of device_type and app_version"
+      sql: ${device_type} || '-' || ${app_version} ;;
+    }
 
     ######## Location Atributes ########
 
@@ -327,6 +333,7 @@ view: daily_user_aggregates {
       type: yesno
       sql: ${TABLE}.is_category_selected ;;
     }
+
 
   # ~~~~~~~~~~~ Hidden Dimensions ~~~~~~~~~~~~ #
 
@@ -622,6 +629,15 @@ view: daily_user_aggregates {
     hidden: no
     sql: ${dim_number_of_first_order_placed};;
   }
+  measure: number_of_rider_tip_selected {
+    group_label: "Event Metrics"
+    label: "# Rider Tip Selected"
+    type: sum
+    hidden: no
+    sql: ${dim_number_of_rider_tip_selected};;
+  }
+
+ ## Voucher Event Metrics
   measure: number_of_voucher_redemption_attempted {
     group_label: "Event Metrics"
     label: "# Voucher Redemption Attempted"
@@ -643,12 +659,29 @@ view: daily_user_aggregates {
     hidden: no
     sql: ${dim_number_of_voucher_applied_failed};;
   }
-  measure: number_of_rider_tip_selected {
+  measure: voucher_failure_rate {
     group_label: "Event Metrics"
-    label: "# Rider Tip Selected"
-    type: sum
+    label: "% Voucher Failure Rate"
+    type: number
     hidden: no
-    sql: ${dim_number_of_rider_tip_selected};;
+    sql: ${number_of_voucher_applied_failed}/${number_of_voucher_redemption_attempted};;
+    value_format_name: percent_1
+  }
+  measure: voucher_success_rate {
+    group_label: "Event Metrics"
+    label: "% Voucher Success Rate"
+    type: number
+    hidden: no
+    sql: ${number_of_voucher_applied_succeeded}/${number_of_voucher_redemption_attempted};;
+    value_format_name: percent_1
+      }
+  measure: voucher_attempt_rate {
+    group_label: "Event Metrics"
+    label: "% Voucher Attempt Rate"
+    type: number
+    hidden: no
+    sql: ${number_of_voucher_redemption_attempted}/${number_of_checkout_viewed};;
+    value_format_name: percent_1
   }
 
   # Other Event Metrics
@@ -752,6 +785,7 @@ view: daily_user_aggregates {
     sql: ${user_uuid} ;;
     filters: [is_payment_started: "yes"]
   }
+
 
   #### Conversions ###
 
@@ -869,4 +903,4 @@ view: daily_user_aggregates {
     sql: ${users_with_order} ;;
     html: {{ rendered_value }} ({{ perc_of_total_order._rendered_value }} % of total) ;;
   }
-  }
+}
