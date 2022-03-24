@@ -145,7 +145,6 @@ view: daily_user_aggregates {
       type: yesno
       sql: ${TABLE}.is_device_macintosh ;;
     }
-
     dimension: full_app_version {
       group_label: "Device Dimensions"
       type: string
@@ -681,7 +680,7 @@ view: daily_user_aggregates {
     label: "% Voucher Attempt Rate"
     type: number
     hidden: no
-    sql: ${number_of_voucher_redemption_attempted}/${number_of_checkout_started};;
+    sql: ${number_of_voucher_redemption_attempted}/${number_of_checkout_viewed};;
     value_format_name: percent_1
   }
 
