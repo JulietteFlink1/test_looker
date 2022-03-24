@@ -25,6 +25,12 @@ view: cc_orders_hourly {
     sql: ${TABLE}.number_of_refunded_orders ;;
   }
 
+  dimension: number_of_refunded_orders_over_5 {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.number_of_refunded_orders_over_5 ;;
+  }
+
   dimension_group: order_timestamp {
     hidden: yes
     type: time
@@ -58,6 +64,12 @@ view: cc_orders_hourly {
     sql: ${number_of_refunded_orders} ;;
   }
 
+  measure: sum_number_of_refunded_orders_over_5 {
+    label: "# CC Refunded Orders"
+    type: sum
+    sql: ${number_of_refunded_orders_over_5} ;;
+  }
+
   measure: sum_number_of_cc_discounted_orders {
     label: "# CC Discounted Orders"
     type: sum
@@ -78,6 +90,24 @@ view: cc_orders_hourly {
     value_format: "0.0%"
     sql: safe_divide(${sum_number_of_refunded_orders},${sum_number_of_orders}) ;;
   }
+
+  measure: cc_refunded_order_over_5_rate {
+    label: "% Refunded Orders over 5euros / Refunded Orders"
+    description: "# Refunded Orders over 5euros / # Refunded Orders"
+    type: number
+    value_format: "0.0%"
+    sql: safe_divide(${sum_number_of_refunded_orders_over_5},${sum_number_of_refunded_orders}) ;;
+  }
+
+  measure: cc_refunded_order_over_5_contact_rate {
+    label: "% Refunded Orders over 5euros / Contacts"
+    description: "# Refunded Orders over 5euros / # Contacts"
+    type: number
+    value_format: "0.0%"
+    sql: safe_divide(${sum_number_of_refunded_orders_over_5},${cc_conversations.number_of_conversations}) ;;
+  }
+
+
 
   measure: cc_discounted_order_rate {
     label: "% CC Discounted Orders"
