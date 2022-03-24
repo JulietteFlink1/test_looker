@@ -2,7 +2,7 @@ include: "/**/*.view"
 
 view: erp_buying_prices {
 
-  sql_table_name: `flink-data-prod.curated.erp_buying_prices_tmp`;;
+  sql_table_name: `flink-data-prod.curated.erp_buying_prices`;;
 
   required_access_grants: [can_view_buying_information]
   view_label: "* ERP Vendor Prices *"
