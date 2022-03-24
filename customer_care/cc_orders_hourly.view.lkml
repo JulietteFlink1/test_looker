@@ -65,7 +65,7 @@ view: cc_orders_hourly {
   }
 
   measure: sum_number_of_refunded_orders_over_5 {
-    label: "# CC Refunded Orders"
+    label: "# CC Refunded Orders >5 euros"
     type: sum
     sql: ${number_of_refunded_orders_over_5} ;;
   }
