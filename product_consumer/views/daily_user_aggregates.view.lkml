@@ -145,7 +145,6 @@ view: daily_user_aggregates {
       type: yesno
       sql: ${TABLE}.is_device_macintosh ;;
     }
-
     dimension: full_app_version {
       group_label: "Device Dimensions"
       type: string
