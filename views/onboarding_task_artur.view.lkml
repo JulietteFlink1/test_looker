@@ -91,6 +91,12 @@ view: onboarding_task_artur {
 
   }
 
+  measure: UTR {
+    type: sum
+    sql: ${num_of_orders} /  ${num_of_riders} ;;
+  }
+
+
   measure: count {
     type: count
     drill_fields: []
