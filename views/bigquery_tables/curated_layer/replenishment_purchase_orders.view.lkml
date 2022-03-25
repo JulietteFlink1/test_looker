@@ -63,6 +63,25 @@ view: replenishment_purchase_orders {
     sql: ${TABLE}.vendor_id ;;
   }
 
+  dimension: vendor_id_original {
+
+    label:       "Original Vendor ID of PO"
+    description: "The original vendor id of the purchase order. This vendor id resembles more a warehouse_id, in case the vendor is a DC"
+
+    type: string
+    sql: ${TABLE}.vendor_id_original ;;
+  }
+
+  dimension: is_vendor_dc {
+
+    label: "Is Vendor DC"
+    description: "This flag indicates, if the purchase order was actually been sent to a DC first, before being send to the hub"
+
+    type: yesno
+    sql: ${TABLE}.is_vendor_dc ;;
+  }
+
+
   dimension: status {
     type: string
     sql: ${TABLE}.status ;;
