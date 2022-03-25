@@ -17,12 +17,12 @@ explore: order_lineitems_margins {
   join: erp_buying_prices {
     type: left_outer
     # n orders have the same price
-    relationship: many_to_many
+    relationship: many_to_one
     sql_on:
         ${erp_buying_prices.hub_code}         =  ${orderline.hub_code}                                and
         ${erp_buying_prices.sku}              =  ${orderline.product_sku}                             and
         -- a prive is valid in a certain time frame
-        ${orderline.created_date} between ${erp_buying_prices.valid_from} and ${erp_buying_prices.valid_to}
+        ${orderline.created_date}             = ${erp_buying_prices.report_date}
     ;;
   }
 
