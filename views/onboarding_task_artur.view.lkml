@@ -57,7 +57,6 @@ view: onboarding_task_artur {
   measure: orders {
     type: sum_distinct
     sql: ${num_of_orders} ;;
-    value_format: "$#.00;($#.00)"
   }
 
   dimension: num_of_riders {
@@ -69,7 +68,6 @@ view: onboarding_task_artur {
   measure: riders {
     type: sum
     sql: ${num_of_riders} ;;
-    value_format: "$#.00;($#.00)"
   }
 
   dimension_group: date {
