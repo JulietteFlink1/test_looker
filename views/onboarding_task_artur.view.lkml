@@ -11,7 +11,7 @@ view: onboarding_task_artur {
   measure: avg_fulfil_time {
     type: average
     sql: ${avg_fulfillment_time} ;;
-    value_format: "$#.00;($#.00)"
+    value_format: "0"
   }
 
   dimension: avg_num_of_items {
@@ -23,7 +23,7 @@ view: onboarding_task_artur {
   measure: avg_item_numbers {
     type: average
     sql: ${avg_num_of_items} ;;
-    value_format: "$#.00;($#.00)"
+    value_format: "#.00;($#.00)"
   }
 
   dimension: country_iso {
@@ -45,7 +45,7 @@ view: onboarding_task_artur {
   measure: worked_hours  {
     type: sum
     sql: ${num_of_hours_worked}
-    value_format: "$#.00;($#.00)";;
+    value_format: "#.0;($#.00)";;
   }
 
   dimension: num_of_orders {
@@ -55,9 +55,8 @@ view: onboarding_task_artur {
   }
 
   measure: orders {
-    type: sum_distinct
+    type: sum
     sql: ${num_of_orders} ;;
-    value_format: "$#.00;($#.00)"
   }
 
   dimension: num_of_riders {
@@ -68,8 +67,7 @@ view: onboarding_task_artur {
 
   measure: riders {
     type: sum
-    sql: ${num_of_orders} ;;
-    value_format: "$#.00;($#.00)"
+    sql: ${num_of_riders} ;;
   }
 
   dimension_group: date {
