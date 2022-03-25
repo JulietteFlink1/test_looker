@@ -334,7 +334,7 @@ view: search_keywords {
     value_format_name: percent_2
     sql: (${number_of_pdp_after_search} + ${number_of_add_to_cart_after_search}) / nullif(${number_of_all_searches},0);;
   }
-  measure: cvr {
+  measure: add_to_cart_rate {
     group_label: "Rates (%)"
     label: "Add-To-Cart Rate"
     type: number
