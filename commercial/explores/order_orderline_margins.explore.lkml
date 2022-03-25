@@ -22,7 +22,7 @@ explore: order_lineitems_margins {
         ${erp_buying_prices.hub_code}         =  ${orderline.hub_code}                                and
         ${erp_buying_prices.sku}              =  ${orderline.product_sku}                             and
         -- a prive is valid in a certain time frame
-        ${orderline.created_date} between ${erp_buying_prices.valid_from} and ${erp_buying_prices.valid_to}
+        ${orderline.created_date}             = ${erp_buying_prices.report_date}
     ;;
   }
 

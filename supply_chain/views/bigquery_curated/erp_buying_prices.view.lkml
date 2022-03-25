@@ -106,6 +106,13 @@ view: erp_buying_prices {
     hidden: yes
   }
 
+  dimension: report_date {
+    type: date
+    datatype: date
+    sql: ${TABLE}.ingestion_timestamp ;;
+    hidden: yes
+  }
+
   dimension: country_iso {
     type: string
     sql: ${TABLE}.country_iso ;;
