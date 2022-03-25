@@ -257,6 +257,16 @@ view: hub_staffing {
   }
 
 
+  dimension_group: last_update {
+    type: time
+    timeframes: [
+      time
+    ]
+    convert_tz: yes
+    datatype: datetime
+    sql: ${TABLE}.last_updated_timestamp ;;
+  }
+
   measure: sum_forecast_riders_needed{
     type: sum
     label:"# Forecasted Hours"
@@ -430,7 +440,7 @@ view: hub_staffing {
     type: number
     label:"# Actual Needed Hours"
     description: "Number of needed Employees based on actual order demand"
-    sql:ceiling(NULLIF(${sum_orders},0) / (${number_of_target_utr}));;
+    sql:ceiling(NULLIF(${sum_orders},0) / nullif(${number_of_target_utr},0));;
     value_format_name: decimal_1
   }
 
