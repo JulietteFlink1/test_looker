@@ -106,6 +106,12 @@ view: lexbizz_item {
     sql: ${TABLE}.item_type ;;
   }
 
+
+  dimension: item_class {
+    type: string
+    sql: ${TABLE}.item_class ;;
+  }
+
   dimension: item_volumne {
     type: number
     sql: ${TABLE}.item_volumne ;;
@@ -170,6 +176,20 @@ view: lexbizz_item {
     sql: ${TABLE}.seasonality ;;
   }
 
+  dimension: ean {
+    type: string
+    sql: ${TABLE}.ean ;;
+  }
+
+  dimension: ean_length {
+    type: string
+    sql: length(${ean}) ;;
+  }
+
+  dimension: ean_matching_digits {
+    type: yesno
+    sql: (${ean_length} = 8 or ${ean_length} = 13) ;;
+  }
 
 
   dimension: sku {
