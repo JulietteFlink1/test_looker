@@ -92,10 +92,9 @@ view: onboarding_task_artur {
   }
 
   measure: UTR {
-    type: sum
+    type: number
     sql: ${num_of_orders} /  ${num_of_riders} ;;
   }
-
 
   measure: count {
     type: count
