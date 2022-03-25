@@ -132,11 +132,23 @@ explore: supply_chain {
 
   join: products {
 
-    view_label: "* Products *"
+    view_label: "* Products (CT) *"
 
     type: left_outer
     relationship: many_to_one
     sql_on: ${products.product_sku} = ${products_hub_assignment.sku} ;;
+
+  }
+
+  join: lexbizz_item {
+
+    view_label: "* Products (ERP) *"
+
+    type: left_outer
+    relationship: many_to_one
+    sql_on: ${lexbizz_item.sku}            = ${products_hub_assignment.sku}
+        and ${lexbizz_item.ingestion_date} = current_date()
+    ;;
 
   }
 
