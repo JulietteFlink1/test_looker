@@ -55,7 +55,7 @@ view: onboarding_task_artur {
   }
 
   measure: orders {
-    type: number
+    type: sum
     sql: ${num_of_orders} ;;
   }
 
