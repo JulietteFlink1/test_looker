@@ -68,7 +68,7 @@ view: onboarding_task_artur {
 
   measure: riders {
     type: sum
-    sql: ${num_of_orders} ;;
+    sql: ${num_of_riders} ;;
     value_format: "$#.00;($#.00)"
   }
 
