@@ -11,7 +11,7 @@ view: onboarding_task_artur {
   measure: avg_fulfil_time {
     type: average
     sql: ${avg_fulfillment_time} ;;
-    value_format: "$#.00;($#.00)"
+    value_format: "#.00;($#.00)"
   }
 
   dimension: avg_num_of_items {
