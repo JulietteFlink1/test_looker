@@ -102,6 +102,7 @@ view: onboarding_task_artur {
   measure: UTR {
     type: number
     sql: ${sum_num_of_orders} / NULLIF (${sum_num_of_riders},0) ;;
+    value_format: "#.0;($#.0)"
   }
 
   measure: count {
