@@ -45,7 +45,7 @@ view: onboarding_task_artur {
   measure: worked_hours  {
     type: sum
     sql: ${num_of_hours_worked}
-    value_format: "#.0;($#.00)";;
+    value_format: "#.0;($#.0)";;
   }
 
   dimension: num_of_orders {
@@ -77,6 +77,8 @@ view: onboarding_task_artur {
     timeframes: [
       date,
       week,
+      day_of_week,
+      day_of_week_index,
       month,
       quarter,
       year
@@ -85,6 +87,16 @@ view: onboarding_task_artur {
     datatype: date
     sql: ${TABLE}.report_date ;;
   }
+
+dimension: until_today {
+  type: yesno
+  sql: ${date_day_of_week_index} <= WEEKDAY(NOW()) AND ${date_day_of_week_index} >= 0  ;;
+}
+
+
+
+
+
 
   filter: WoW {
     type: yesno
