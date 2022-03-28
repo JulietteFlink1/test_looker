@@ -54,7 +54,8 @@ view: onboarding_task_artur {
     sql: ${TABLE}.num_of_orders ;;
   }
 
-  measure: orders {
+  measure: sum_num_of_orders {
+    label: "Orders"
     type: sum
     sql: ${num_of_orders} ;;
   }
@@ -65,7 +66,8 @@ view: onboarding_task_artur {
     sql: ${TABLE}.num_of_riders ;;
   }
 
-  measure: riders {
+  measure: sum_num_of_riders {
+    label: "Riders"
     type: sum
     sql: ${num_of_riders} ;;
   }
@@ -98,8 +100,8 @@ view: onboarding_task_artur {
   }
 
   measure: UTR {
-    type: sum
-    sql: sum (${TABLE}.num_of_orders) / NULLIF (sum(${TABLE}.num_of_riders),0) ;;
+    type: number
+    sql: ${sum_num_of_orders} / NULLIF (${sum_num_of_riders},0) ;;
   }
 
   measure: count {
