@@ -88,8 +88,8 @@ view: onboarding_task_artur {
 
   filter: WoW {
     type: yesno
-    sql: ${date_date}>=date_trunc(date_add(date_trunc(current_date(), quarter), interval -1 quarter), ISOWEEK)
-    AND ${date_date}<date_add(date_trunc(date_add(date_trunc(current_date(), quarter), interval -1 week), ISOWEEK), interval 1 week) ;;
+    sql: ${date_date}>=date_trunc(date_add(date_trunc(current_date(), month), interval -1 month), ISOWEEK)
+    AND ${date_date}<date_add(date_trunc(date_add(date_trunc(current_date(), month), interval -1 week), ISOWEEK), interval 1 week) ;;
   }
 
 
