@@ -13,6 +13,7 @@ include: "/**/competitive_intelligence/gorillas_products_hist.view"
 include: "/**/competitive_intelligence/gorillas_categories.view"
 include: "/**/competitive_intelligence/gorillas_hubs.view"
 include: "/**/global_filters_and_parameters.view"
+include: "/views/bigquery_tables/curated_layer/competitive_intelligence/*.view"
 
 explore: gorillas_products_hist {
 
@@ -49,5 +50,14 @@ explore: gorillas_products_hist {
     sql_on: ${gorillas_hubs.hub_id} = ${gorillas_categories.hub_id} ;;
     relationship: many_to_one
     type:  left_outer
+  }
+
+  join: gorillas_pricing_hist {
+    from:  gorillas_pricing_hist
+    sql_on: ${gorillas_pricing_hist.hub_id} = ${gorillas_products_hist.hub_id} AND
+            ${gorillas_pricing_hist.product_id} = ${gorillas_products_hist.product_id} AND
+            ${gorillas_pricing_hist.scrape_date} = ${gorillas_products_hist.partition_timestamp_date};;
+    relationship: one_to_one
+    type: left_outer
   }
 }
