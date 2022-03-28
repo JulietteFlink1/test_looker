@@ -67,7 +67,10 @@ view: vat_order {
     sql: ${TABLE}.is_free_delivery_discount ;;
   }
 
-
+  dimension: is_external_order {
+    type: yesno
+    sql: ${TABLE}.is_external_order ;;
+  }
 
   dimension: discount_free_delivery_gross {
     type: number

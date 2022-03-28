@@ -13,14 +13,14 @@ include: "/**/global_filters_and_parameters.view.lkml"
 explore: daily_events {
   from:  daily_events
   view_name: daily_events
-  hidden: yes
+  hidden: no
 
   label: "Daily Events"
   description: "This explore provides an overview of all behavioural events generated on Flink App and Web"
   group_label: "Consumer Product"
 
   # implement both date filters:
-    # reveived_at is due cost reduction given a table is partitioned by this dimensions
+    # received_at is due cost reduction given a table is partitioned by this dimensions
     # event_date filter will fitler for the desired time frame when events triggered
 
   sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} ${received_at_date} {% endcondition %}

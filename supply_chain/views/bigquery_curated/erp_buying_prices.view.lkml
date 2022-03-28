@@ -106,6 +106,13 @@ view: erp_buying_prices {
     hidden: yes
   }
 
+  dimension: report_date {
+    type: date
+    datatype: date
+    sql: ${TABLE}.ingestion_timestamp ;;
+    hidden: no
+  }
+
   dimension: country_iso {
     type: string
     sql: ${TABLE}.country_iso ;;
@@ -139,6 +146,14 @@ view: erp_buying_prices {
     sql: ${TABLE}.sku ;;
     # for joining only
     hidden: yes
+  }
+
+  measure: ctn_skus {
+
+    label: "# Unique SKUs"
+
+    type: count_distinct
+    sql: ${sku} ;;
   }
 
   # =========  IDs   =========
