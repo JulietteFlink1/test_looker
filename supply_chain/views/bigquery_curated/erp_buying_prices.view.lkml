@@ -2,7 +2,7 @@ include: "/**/*.view"
 
 view: erp_buying_prices {
 
-  sql_table_name: `flink-data-prod.curated.erp_buying_prices_tmp`;;
+  sql_table_name: `flink-data-prod.curated.erp_buying_prices`;;
 
   required_access_grants: [can_view_buying_information]
   view_label: "* ERP Vendor Prices *"
@@ -110,7 +110,7 @@ view: erp_buying_prices {
     type: date
     datatype: date
     sql: ${TABLE}.ingestion_timestamp ;;
-    hidden: yes
+    hidden: no
   }
 
   dimension: country_iso {
@@ -146,6 +146,14 @@ view: erp_buying_prices {
     sql: ${TABLE}.sku ;;
     # for joining only
     hidden: yes
+  }
+
+  measure: ctn_skus {
+
+    label: "# Unique SKUs"
+
+    type: count_distinct
+    sql: ${sku} ;;
   }
 
   # =========  IDs   =========

@@ -2,19 +2,28 @@ view: onboarding_task_artur {
   sql_table_name: `flink-data-dev.sandbox_artur.onboarding_task_artur`
     ;;
 
-  measure: avg_fulfillment_time {
-
-    type: average
+  dimension: avg_fulfillment_time {
+    type: number
     sql: ${TABLE}.avg_fulfillment_time ;;
-    value_format: "$#.00;($#.00)"
-
+    hidden: yes
   }
 
-  measure: avg_num_of_items {
-
+  measure: avg_fulfil_time {
     type: average
+    sql: ${avg_fulfillment_time} ;;
+    value_format: "0"
+  }
+
+  dimension: avg_num_of_items {
+    type: number
+    hidden: yes
     sql: ${TABLE}.avg_num_of_items ;;
-    value_format: "$#.00;($#.00)"
+  }
+
+  measure: avg_item_numbers {
+    type: average
+    sql: ${avg_num_of_items} ;;
+    value_format: "#.00;($#.00)"
   }
 
   dimension: country_iso {
@@ -27,26 +36,42 @@ view: onboarding_task_artur {
     sql: ${TABLE}.hub_code ;;
   }
 
-  measure: num_of_hours_worked {
-
+  dimension: num_of_hours_worked {
     type: number
+    hidden: yes
     sql: ${TABLE}.num_of_hours_worked ;;
   }
 
-  measure: num_of_orders {
-
+  measure: worked_hours  {
     type: sum
+    sql: ${num_of_hours_worked}
+    value_format: "#.0;($#.00)";;
+  }
+
+  dimension: num_of_orders {
+    type: number
+    hidden: yes
     sql: ${TABLE}.num_of_orders ;;
   }
 
-  measure: num_of_riders {
+  measure: orders {
+    type: sum
+    sql: ${num_of_orders} ;;
+  }
 
+  dimension: num_of_riders {
     type: number
+    hidden: yes
     sql: ${TABLE}.num_of_riders ;;
   }
 
-  dimension_group: order {
-    type:  time
+  measure: riders {
+    type: sum
+    sql: ${num_of_riders} ;;
+  }
+
+  dimension_group: date {
+    type: time
     timeframes: [
       date,
       week,
@@ -56,12 +81,29 @@ view: onboarding_task_artur {
     ]
     convert_tz: no
     datatype: date
-    sql: ${TABLE}.order_date ;;
+    sql: ${TABLE}.report_date ;;
+  }
+
+  measure: last_updated_date {
+    type: date
+    sql: MIN(${date_date}) ;;
+
+  }
+
+  dimension: table_uuid {
+    type: string
+    primary_key: yes
+    sql: ${TABLE}.table_uuid ;;
+
+  }
+
+  measure: UTR {
+    type: sum
+    sql: sum ${TABLE}.num_of_orders / sum ${TABLE}.num_of_riders ;;
   }
 
   measure: count {
     type: count
     drill_fields: []
   }
-
 }
