@@ -99,7 +99,7 @@ view: onboarding_task_artur {
 
   measure: UTR {
     type: sum
-    sql: sum ${TABLE}.num_of_orders / NULLIF (${TABLE}.num_of_riders,0) ;;
+    sql: sum (${TABLE}.num_of_orders) / NULLIF (sum(${TABLE}.num_of_riders),0) ;;
   }
 
   measure: count {
