@@ -15,6 +15,9 @@ include: "/**/*.view"
 include: "/**/products_hub_assignment_v2.view"
 include: "/**/replenishment_purchase_orders.view"
 include: "/**/bulk_items.view"
+include: "/**/bulk_inbounding_performance.view"
+
+
 
 
 
@@ -129,11 +132,23 @@ explore: supply_chain {
 
   join: products {
 
-    view_label: "* Products *"
+    view_label: "* Products (CT) *"
 
     type: left_outer
     relationship: many_to_one
     sql_on: ${products.product_sku} = ${products_hub_assignment.sku} ;;
+
+  }
+
+  join: lexbizz_item {
+
+    view_label: "* Products (ERP) *"
+
+    type: left_outer
+    relationship: many_to_one
+    sql_on: ${lexbizz_item.sku}            = ${products_hub_assignment.sku}
+        and ${lexbizz_item.ingestion_date} = current_date()
+    ;;
 
   }
 
@@ -220,9 +235,25 @@ explore: supply_chain {
     ;;
   }
 
+  join: bulk_inbounding_performance {
+
+    # keep hidden for now
+    view_label: "08 Dispatch Notifications"
+
+    type: left_outer
+    relationship: many_to_one
+
+    sql_on:
+        ${bulk_inbounding_performance.hub_code}        = ${products_hub_assignment.hub_code}
+    and ${bulk_inbounding_performance.inbounding_date} = ${products_hub_assignment.report_date}
+    and ${bulk_inbounding_performance.sku}             = ${products_hub_assignment.sku}
+    ;;
+
+  }
+
   join: replenishment_purchase_orders {
 
-    view_label: "08 Purchase Orders"
+    view_label: "09 Purchase Orders"
 
     type:         full_outer
     relationship: many_to_one
@@ -235,31 +266,10 @@ explore: supply_chain {
     ;;
   }
 
-  join: bulk_items {
-
-    # keep hidden for now
-    view_label: ""
-
-    type: left_outer
-    relationship: many_to_one
-
-    sql_on:
-        ${bulk_items.hub_code} = ${products_hub_assignment.hub_code}
-    and ${bulk_items.inbounded_timestamp_date} = ${products_hub_assignment.report_date}
-    and case
-          when ${bulk_items.sku} is not null
-          then ${bulk_items.sku} = ${products_hub_assignment.sku}
-          else true
-        end
-    ;;
-
-
-  }
-
   join: erp_master_data {
 
     from: erp_product_hub_vendor_assignment_v2
-    view_label: "09 Lexbizz Master Data"
+    view_label: "10 Lexbizz Master Data"
 
     type: left_outer
     relationship: many_to_one
@@ -275,7 +285,7 @@ explore: supply_chain {
 
 
   join: top_50_skus_per_gmv_supply_chain_explore {
-    view_label: "10 Top Selling Products (last 14days)"
+    view_label: "11 Top Selling Products (last 14days)"
     sql_on: ${top_50_skus_per_gmv_supply_chain_explore.sku}         = ${products_hub_assignment.sku}
         and ${top_50_skus_per_gmv_supply_chain_explore.country_iso} = ${products_hub_assignment.country_iso}
     ;;

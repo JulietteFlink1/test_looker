@@ -2,8 +2,7 @@ include: "/views/bigquery_tables/reporting_layer/cohorts/order_cohorts_base.view
 include: "/views/bigquery_tables/reporting_layer/cohorts/customer_cohorts_base.view.lkml"
 include: "/views/bigquery_tables/curated_layer/hubs_ct.view.lkml"
 # include all views in the views/ folder in this project
-# include: "/**/*.view.lkml"                 # include all views in this project
-# include: "my_dashboard.dashboard.lookml"   # include a LookML dashboard called my_dashboard
+include: "/views/bigquery_tables/curated_layer/*.view"
 
 # # Select the views that should be a part of this model,
 # # and define the joins that connect them together.
@@ -29,6 +28,14 @@ explore: order_cohorts_base {
     sql_on: ${customer_cohorts_base.first_order_hub_code} = ${hubs_ct.hub_code} ;;
     type: left_outer
     relationship: many_to_one
+  }
+
+  join: discounts {
+    sql_on: ${order_cohorts_base.voucher_id} = ${discounts.discount_id}
+       and ${order_cohorts_base.discount_code} = ${discounts.discount_code}
+    ;;
+    type: left_outer
+    relationship: one_to_one
   }
 
 }
