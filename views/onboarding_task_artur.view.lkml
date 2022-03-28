@@ -84,6 +84,12 @@ view: onboarding_task_artur {
     sql: ${TABLE}.report_date ;;
   }
 
+  measure: last_updated_date {
+    type: date
+    sql: MIN(${date_date}) ;;
+
+  }
+
   dimension: table_uuid {
     type: string
     primary_key: yes
@@ -93,7 +99,7 @@ view: onboarding_task_artur {
 
   measure: UTR {
     type: sum
-    sql: ${TABLE}.num_of_orders /  ${TABLE}.num_of_riders ;;
+    sql: sum ${TABLE}.num_of_orders / sum ${TABLE}.num_of_riders ;;
   }
 
   measure: count {
