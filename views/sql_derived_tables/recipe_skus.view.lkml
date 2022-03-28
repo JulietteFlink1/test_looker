@@ -21,7 +21,7 @@ view: recipe_skus {
 
                 from recipes
 
-                left join `flink-data-prod.curated.order_lineitems` lineitems on recipes.recipe_card_sku = CAST(lineitems.sku AS INT64) and lineitems.country_iso = recipes.country_iso
+                left join `flink-data-prod.curated.order_lineitems` lineitems on recipes.recipe_card_sku = lineitems.sku and lineitems.country_iso = recipes.country_iso
 
                 where true
 
