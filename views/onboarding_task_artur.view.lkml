@@ -86,6 +86,13 @@ view: onboarding_task_artur {
     sql: ${TABLE}.report_date ;;
   }
 
+  filter: WoW {
+    type: string
+    sql: ${date_date}>=date_trunc(date_add(date_trunc(current_date(), quarter), interval -1 quarter), ISOWEEK)
+    AND ${date_date}<date_add(date_trunc(date_add(date_trunc(current_date(), quarter), interval -1 week), ISOWEEK), interval 1 week) ;;
+  }
+
+
   measure: last_updated_date {
     type: date
     sql: MIN(${date_date}) ;;
