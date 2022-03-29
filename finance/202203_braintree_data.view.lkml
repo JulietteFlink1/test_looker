@@ -1,4 +1,4 @@
-view: 202203_braintree_data {
+view: braintree_data_202203 {
   sql_table_name: `flink-data-dev.sandbox_justine.202203_braintree_data`
     ;;
 
@@ -8,25 +8,26 @@ view: 202203_braintree_data {
   }
 
   dimension: amt_submitted_for_settlement {
+    hidden: yes
     type: number
     sql: ${TABLE}.amt_submitted_for_settlement ;;
   }
 
   dimension: billing_country {
     type: string
+    label: "Country"
     sql: ${TABLE}.billing_country ;;
   }
 
   dimension_group: created_timestamp {
+    label: "Created"
     type: time
     timeframes: [
-      raw,
-      time,
+
       date,
       week,
       month,
-      quarter,
-      year
+
     ]
     sql: ${TABLE}.created_timestamp ;;
   }
@@ -49,12 +50,9 @@ view: 202203_braintree_data {
   dimension_group: settlement {
     type: time
     timeframes: [
-      raw,
       date,
       week,
-      month,
-      quarter,
-      year
+      month
     ]
     convert_tz: no
     datatype: date
@@ -63,6 +61,7 @@ view: 202203_braintree_data {
 
   dimension: transaction_id {
     type: string
+    primary_key: yes
     sql: ${TABLE}.transaction_id ;;
   }
 
@@ -84,6 +83,12 @@ view: 202203_braintree_data {
   measure: sum_amt_authorised {
     type: sum
     sql: ${amt_authorised} ;;
-    value_format_name: euro_accounting_2
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_submitted_for_settlement {
+    type: sum
+    sql: ${amt_submitted_for_settlement} ;;
+    value_format_name: euro_accounting_2_precision
   }
 }
