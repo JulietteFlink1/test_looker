@@ -45,7 +45,7 @@ view: onboarding_task_artur {
   measure: worked_hours  {
     type: sum
     sql: ${num_of_hours_worked}
-    value_format: "#.0;($#.00)";;
+    value_format: "#.0;($#.0)";;
   }
 
   dimension: num_of_orders {
@@ -54,7 +54,8 @@ view: onboarding_task_artur {
     sql: ${TABLE}.num_of_orders ;;
   }
 
-  measure: orders {
+  measure: sum_num_of_orders {
+    label: "Orders"
     type: sum
     sql: ${num_of_orders} ;;
   }
@@ -65,7 +66,8 @@ view: onboarding_task_artur {
     sql: ${TABLE}.num_of_riders ;;
   }
 
-  measure: riders {
+  measure: sum_num_of_riders {
+    label: "Riders"
     type: sum
     sql: ${num_of_riders} ;;
   }
@@ -75,6 +77,8 @@ view: onboarding_task_artur {
     timeframes: [
       date,
       week,
+      day_of_week,
+      day_of_week_index,
       month,
       quarter,
       year
@@ -82,6 +86,25 @@ view: onboarding_task_artur {
     convert_tz: no
     datatype: date
     sql: ${TABLE}.report_date ;;
+  }
+
+dimension: until_today {
+  type: yesno
+  sql: ${date_day_of_week_index} <= DAYOFWEEK(current_date()) AND ${date_day_of_week_index} >= 0  ;;
+}
+
+
+  filter: WoW {
+    type: yesno
+    sql: ${date_date}>=date_trunc(date_add(date_trunc(current_date(), week), interval -1 week), ISOWEEK)
+    AND ${date_date}<date_add(date_trunc(date_add(date_trunc(current_date(), week), interval -1 week), ISOWEEK), interval 1 week) ;;
+  }
+
+
+  measure: last_updated_date {
+    type: date
+    sql: MIN(${date_date}) ;;
+
   }
 
   dimension: table_uuid {
@@ -92,10 +115,10 @@ view: onboarding_task_artur {
   }
 
   measure: UTR {
-    type: sum
-    sql: ${num_of_orders} /  ${num_of_riders} ;;
+    type: number
+    sql: ${sum_num_of_orders} / NULLIF (${sum_num_of_riders},0) ;;
+    value_format: "#.0;($#.0)"
   }
-
 
   measure: count {
     type: count
