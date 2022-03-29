@@ -1134,6 +1134,8 @@ view: orders {
     allowed_value: { value: "AVG_fulfillment_time" label: "AVG Fulfillment Time"}
     allowed_value: { value: "AVG_order_value_gross" label: "AVG Order Value (Gross)"}
     allowed_value: { value: "AVG_order_value_net" label: "AVG Order Value (Net)"}
+    allowed_value: { value: "avg_item_value_gross" label: "AVG Item Value (Gross)"}
+    allowed_value: { value: "avg_item_value_net" label: "AVG Item Value (Net)"}
     allowed_value: { value: "rider_utr" label: "Rider UTR"}
     allowed_value: { value: "picker_utr" label: "Picker UTR"}
     allowed_value: { value: "picker_hours" label: "# Picker Hours"}
@@ -1217,6 +1219,10 @@ view: orders {
       ${avg_order_value_gross}
     {% elsif KPI_parameter._parameter_value == 'AVG_order_value_net' %}
       ${avg_order_value_net}
+    {% elsif KPI_parameter._parameter_value == 'avg_item_value_gross' %}
+      ${avg_item_value_gross}
+    {% elsif KPI_parameter._parameter_value == 'avg_item_value_net' %}
+      ${avg_item_value_net}
     {% elsif KPI_parameter._parameter_value == 'rider_utr' %}
       ${shyftplan_riders_pickers_hours.rider_utr}
     {% elsif KPI_parameter._parameter_value == 'picker_utr' %}
@@ -1259,6 +1265,10 @@ view: orders {
           {% elsif KPI_parameter._parameter_value == 'AVG_order_value_gross' %}
             €{{ rendered_value }}
           {% elsif KPI_parameter._parameter_value == 'AVG_order_value_net' %}
+            €{{ rendered_value }}
+          {% elsif KPI_parameter._parameter_value == 'avg_item_value_gross' %}
+            €{{ rendered_value }}
+          {% elsif KPI_parameter._parameter_value == 'avg_item_value_net' %}
             €{{ rendered_value }}
           {% elsif KPI_parameter._parameter_value == 'rider_utr' %}
             {{ rendered_value }}
