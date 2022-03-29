@@ -28,6 +28,8 @@ view: +erp_product_hub_vendor_assignment_v2 {
     required_access_grants: [can_view_buying_information]
 
     value_format_name: eur
+
+    hidden: yes
   }
 
   dimension: margin_absolute {
@@ -41,6 +43,8 @@ view: +erp_product_hub_vendor_assignment_v2 {
     required_access_grants: [can_view_buying_information]
 
     value_format_name: eur
+
+    hidden: yes
   }
 
   dimension: margin_relative {
@@ -54,6 +58,8 @@ view: +erp_product_hub_vendor_assignment_v2 {
     required_access_grants: [can_view_buying_information]
 
     value_format_name: percent_1
+
+    hidden: yes
   }
 
   measure: avg_vendor_price {
@@ -67,6 +73,8 @@ view: +erp_product_hub_vendor_assignment_v2 {
     required_access_grants: [can_view_buying_information]
 
     value_format_name: decimal_4
+
+    hidden: yes
   }
 
   measure: sum_total_net_income {
@@ -81,6 +89,8 @@ view: +erp_product_hub_vendor_assignment_v2 {
 
     value_format_name: eur
     sql_distinct_key: concat(${table_uuid}, ${order_lineitems.order_lineitem_uuid}) ;;
+
+    hidden: yes
   }
 
   measure: sum_vendor_price {
@@ -95,6 +105,8 @@ view: +erp_product_hub_vendor_assignment_v2 {
 
     value_format_name: eur
     sql_distinct_key: concat(${table_uuid}, ${order_lineitems.order_lineitem_uuid}) ;;
+
+    hidden: yes
 
 
   }
@@ -111,6 +123,8 @@ view: +erp_product_hub_vendor_assignment_v2 {
 
     value_format_name: eur
     sql_distinct_key: concat(${table_uuid}, ${order_lineitems.order_lineitem_uuid}) ;;
+
+    hidden: yes
   }
 
   measure: pct_total_margin_relative {
@@ -124,6 +138,8 @@ view: +erp_product_hub_vendor_assignment_v2 {
     required_access_grants: [can_view_buying_information]
 
     value_format_name: percent_1
+
+    hidden: yes
   }
 
 }

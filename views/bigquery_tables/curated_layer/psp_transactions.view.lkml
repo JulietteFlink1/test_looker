@@ -351,11 +351,18 @@ view: psp_transactions {
     value_format_name: percent_2
   }
 
-  dimension: diff_adyen_ct {
-    type: number
-    sql:  ${orders.total_gross_amount} - ${main_amount}  ;;
+  measure: diff_adyen_ct_filter {
+    type: sum
+    sql:  (${orders.gmv_gross}-${orders.discount_amount}) - ${main_amount}  ;;
     value_format_name: euro_accounting_2_precision
-    description: "CT Orders Revenue Gross - Adyen Main Amount"
+    description: "CT <> Adyen Filter"
+  }
+
+  measure: diff_adyen_ct {
+    type: sum
+    sql:  ${orders.gmv_gross} - ${main_amount}  ;;
+    value_format_name: euro_accounting_2_precision
+    description: "CT Orders GMV Gross - Adyen Main Amount"
   }
 
   measure: cnt_chargebacks_transactions {
