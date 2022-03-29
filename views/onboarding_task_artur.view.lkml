@@ -8,12 +8,6 @@ view: onboarding_task_artur {
     hidden: yes
   }
 
-  measure: average_fulfillment_time {
-    type: average
-    sql: ${fulfillment_time} ;;
-    value_format: "0"
-  }
-
   dimension: number_of_items {
     type: number
     hidden: yes
@@ -35,6 +29,7 @@ view: onboarding_task_artur {
     type: string
     sql: ${TABLE}.hub_code ;;
   }
+
 
   dimension: number_of_hours_worked {
     type: number
@@ -71,6 +66,13 @@ view: onboarding_task_artur {
     type: sum
     sql: ${number_of_riders} ;;
   }
+
+measure: average_fulfillment_time {
+  type: average
+  sql_distinct_key: ${country_iso} ;;
+  sql: ${fulfillment_time} ;;
+  value_format: "0"
+}
 
   dimension_group: date {
     type: time
