@@ -90,12 +90,8 @@ view: onboarding_task_artur {
 
 dimension: until_today {
   type: yesno
-  sql: ${date_day_of_week_index} <= WEEKDAY(NOW()) AND ${date_day_of_week_index} >= 0  ;;
+  sql: ${date_day_of_week_index} <= DAYOFWEEK(current_date()) AND ${date_day_of_week_index} >= 0  ;;
 }
-
-
-
-
 
 
   filter: WoW {
