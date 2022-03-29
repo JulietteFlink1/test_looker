@@ -1493,20 +1493,22 @@ view: orders {
         value_format_name: euro_accounting_2_precision
       }
 
-      measure: avg_product_value_gross {
+      measure: avg_item_value_gross {
+        alias: [avg_product_value_gross]
         group_label: "* Monetary Values *"
-        label: "AVG Product Value (Gross)"
-        description: "Average value of product items (incl. VAT). Excludes fees (gross), before deducting discounts."
+        label: "AVG Item Value (Gross)"
+        description: "AIV represents the Average value of items (incl. VAT). Excludes fees (gross), before deducting discounts."
         hidden:  no
         type: average
         sql: ${gmv_gross} - ${shipping_price_gross_amount};;
         value_format_name: euro_accounting_2_precision
       }
 
-      measure: avg_product_value_net {
+      measure: avg_item_value_net {
+        alias: [avg_product_value_net]
         group_label: "* Monetary Values *"
-        label: "AVG Product Value (Net)"
-        description: "Average value of product items (excl. VAT). Excludes fees (net), before deducting discounts."
+        label: "AVG Item Value (Net)"
+        description: "AIV represents the Average value of product items (excl. VAT). Excludes fees (net), before deducting discounts."
         hidden:  no
         type: average
         sql: ${gmv_net} - ${shipping_price_net_amount};;
