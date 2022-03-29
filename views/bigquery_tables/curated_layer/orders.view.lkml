@@ -61,7 +61,7 @@ view: orders {
     type: tier
     tiers: [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70]
     style: relational
-    sql: ${total_gross_amount} + ${discount_amount} ;;
+    sql: ${gmv_gross} ;;
   }
 
   dimension: gmv_gross_tier_5 {
@@ -69,7 +69,7 @@ view: orders {
     type: tier
     tiers: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70]
     style: relational
-    sql: ${total_gross_amount} + ${discount_amount} ;;
+    sql: ${gmv_gross} ;;
   }
 
   dimension: gmv_net {
@@ -78,6 +78,33 @@ view: orders {
     sql: ${TABLE}.amt_gmv_net ;;
   }
 
+  dimension: item_value_gross {
+    type: number
+    hidden: no
+    sql: ${gmv_gross} - ${shipping_price_gross_amount} ;;
+  }
+
+  dimension: item_value_net {
+    type: number
+    hidden: no
+    sql: ${gmv_net} - ${shipping_price_net_amount} ;;
+  }
+
+  dimension: item_value_gross_tier {
+    group_label: "* Monetary Values *"
+    type: tier
+    tiers: [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70]
+    style: relational
+    sql: ${item_value_gross} ;;
+  }
+
+  dimension: item_value_gross_tier_5 {
+    group_label: "* Monetary Values *"
+    type: tier
+    tiers: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70]
+    style: relational
+    sql: ${item_value_gross} ;;
+  }
   dimension: rider_tip {
     type: number
     hidden: yes
@@ -1510,7 +1537,7 @@ view: orders {
         description: "AIV represents the Average value of items (incl. VAT). Excludes fees (gross), before deducting discounts."
         hidden:  no
         type: average
-        sql: ${gmv_gross} - ${shipping_price_gross_amount};;
+        sql: ${item_value_gross};;
         value_format_name: euro_accounting_2_precision
       }
 
@@ -1521,7 +1548,7 @@ view: orders {
         description: "AIV represents the Average value of product items (excl. VAT). Excludes fees (net), before deducting discounts."
         hidden:  no
         type: average
-        sql: ${gmv_net} - ${shipping_price_net_amount};;
+        sql: ${item_value_net};;
         value_format_name: euro_accounting_2_precision
       }
 
