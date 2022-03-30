@@ -12,7 +12,7 @@ view: daily_hub_performance {
 
   parameter: max_rank {
     label: "Max rank"
-    description: "For specifying Top N by user"
+    description: "For specifying Top/Bottom N by user"
     type: number
   }
 
@@ -20,12 +20,9 @@ view: daily_hub_performance {
     label: "Choose metric"
     description: "For sorting Top N Hubs based on selected metric"
     type: unquoted
-    allowed_value: { value: "Order" }
-    allowed_value: { value: "UTR" }
-    allowed_value: { value: "AVG fulfillment time" }
-    allowed_value: { value: "AVG # items" }
-    allowed_value: { value: "# Riders" }
-    allowed_value: { value: "# Hours" }
+    allowed_value: { value: "order" label: "Order" }
+    allowed_value: { value: "avg_rider_utr" label: "AVG Rider UTR" }
+    allowed_value: { value: "avg_number_of_items" label: "AVG # Items" }
 
     default_value: "Order"
   }
@@ -35,6 +32,8 @@ view: daily_hub_performance {
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   dimension: fulfillment_tier {
+    label: "AVG fullfillment time tier"
+    description: "Bins for AVG fulfillment time"
     type: tier
     tiers: [10,12,14,16,18,20]
     style: relational
@@ -57,16 +56,24 @@ view: daily_hub_performance {
 
   dimension: country_iso {
     label: "Country ISO"
-    description: "Country code"
+    description: "Country"
     type: string
     hidden: yes
     sql: ${TABLE}.country_iso
     ;;
   }
 
+  dimension: order_dow {
+    label: "Day of the week"
+    description: "Order day of the week"
+    type: string
+    sql: ${TABLE}.order_dow
+      ;;
+  }
+
   dimension: hub_code {
     label: "Hub code"
-    description: "Hub code"
+    description: "Hub"
     type: string
     hidden: yes
     sql: ${TABLE}.hub_code ;;
@@ -74,8 +81,9 @@ view: daily_hub_performance {
 
 
   dimension: daily_hub_uuid {
-    description: "Unique ID for each recor"
+    description: "Unique ID for each record"
     type: string
+    hidden: yes
     sql: ${TABLE}.daily_hub_uuid ;;
   }
 
@@ -100,20 +108,20 @@ view: daily_hub_performance {
     type: number
     value_format_name: decimal_2
     sql:
-      CASE
-      WHEN {% parameter metric_selector %} = 'Order' THEN ${number_of_orders}
-      WHEN {% parameter metric_selector %} = 'UTR' THEN ${utr}
-      WHEN {% parameter metric_selector %} = 'AVG fulfillment time' THEN ${avg_fulfillment_time_minutes}
-      WHEN {% parameter metric_selector %} = 'AVG # items' THEN ${avg_number_of_items}
-      WHEN {% parameter metric_selector %} = '# Riders' THEN ${number_of_worked_riders}
-      WHEN {% parameter metric_selector %} = '# Hours' THEN ${number_of_hours_worked_by_riders}
-      ELSE NULL
-    END ;;
+    {% if metric_selector._parameter_value == 'order' %}
+      ${number_of_orders}
+    {% elsif metric_selector._parameter_value == 'avg_rider_utr' %}
+      ${utr}
+    {% elsif metric_selector._parameter_value == 'avg_number_of_items' %}
+      ${avg_number_of_items}
+
+      {% endif %};;
   }
+
 
   measure: number_of_orders  {
     label: "# Orders"
-    description: "Number of daily orders for hub"
+    description: "Number of daily orders per hub"
     type: sum
     sql: ${TABLE}.number_of_orders;;
     value_format_name: decimal_0
@@ -153,8 +161,9 @@ view: daily_hub_performance {
 
 
   measure: utr  {
-    label: "Rider UTR"
+    label: "AVG Rider UTR"
     description: "Utilisation Rate of Riders"
+    type: number
     sql: ${number_of_orders}/nullif(${number_of_hours_worked_by_riders},0) ;;
     value_format_name: decimal_2
   }

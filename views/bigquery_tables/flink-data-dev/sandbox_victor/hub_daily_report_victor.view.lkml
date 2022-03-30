@@ -5,7 +5,7 @@
 
 
 view: hub_daily_report_victor {
-  sql_table_name: `flink-data-dev.sandbox_victor.hub_daily_report_victor`
+  sql_table_name: `flink-data-prod.sandbox_victor.hub_daily_report_victor`
     ;;
   view_label: "* Hub Daily Report Victor *"
 
@@ -28,10 +28,10 @@ view: hub_daily_report_victor {
     type: unquoted
     allowed_value: { value: "orders" label: "# Orders"}
     allowed_value: {value: "hours_worked" label: "# Hours Worked"}
-    allowed_value: {value: "items" label: "# Items"}
     allowed_value: {value: "riders_worked" label: "# Riders Worked"}
     allowed_value: {value: "avg_nb_items" label: "AVG # Items"}
     allowed_value: {value: "avg_fulfillment_time" label: "AVG Fulfillment Time"}
+    allowed_value: {value: "rider_utr" label: "AVG Rider UTR"}
     default_value: "orders"
   }
 
@@ -132,15 +132,6 @@ view: hub_daily_report_victor {
     value_format_name: decimal_1
   }
 
-  # dimension: number_of_orders_1o {
-  #   label:       "# orders [orders table]"
-  #   description: "# orders from orders table, debug comparison"
-  #   hidden:  yes
-  #   type: number
-  #   sql: ${TABLE}.number_of_orders_1o ;;
-
-  #   value_format_name: decimal_1
-  # }
 
   dimension: total_fulfillment_time {
     label:       "Total amount of fulfillment time"
@@ -162,6 +153,21 @@ view: hub_daily_report_victor {
     value_format_name: decimal_1
   }
 
+  dimension: date_granularity_pass_through {
+    group_label: "* Parameters *"
+    description: "To use the parameter value in a table calculation (e.g WoW, % Growth) we need to materialize it into a dimension "
+    type: string
+    hidden: no # yes
+    sql:
+            {% if date_granularity._parameter_value == 'Day' %}
+              "Day"
+            {% elsif date_granularity._parameter_value == 'Week' %}
+              "Week"
+            {% elsif date_granularity._parameter_value == 'Month' %}
+              "Month"
+            {% endif %};;
+  }
+
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -180,14 +186,14 @@ view: hub_daily_report_victor {
       ${nb_of_orders}
     {% elsif KPI_parameter._parameter_value == 'hours_worked' %}
       ${nb_of_worked_hours}
-    {% elsif KPI_parameter._parameter_value == 'items' %}
-      ${tot_number_of_items}
     {% elsif KPI_parameter._parameter_value == 'riders_worked' %}
       ${nb_of_worked_employees}
     {% elsif KPI_parameter._parameter_value == 'avg_nb_items' %}
       ${weighted_avg_number_of_items}
     {% elsif KPI_parameter._parameter_value == 'avg_fulfillment_time' %}
       ${weighted_avg_fulfillment_time}
+    {% elsif KPI_parameter._parameter_value == 'rider_utr' %}
+      ${rider_utilization_rate}
 
     {% endif %};;
     }
@@ -223,15 +229,6 @@ view: hub_daily_report_victor {
     value_format_name: decimal_1
   }
 
-  # measure: nb_of_orders_1o {
-
-  #   label:       "# orders [orders table]"
-  #   description: "# orders from orders table, debug comparison"
-  #   type: sum
-  #   sql: ${number_of_orders_1o} ;;
-
-  #   value_format_name: decimal_1
-  # }
 
   measure: tot_fulfillment_time {
 
@@ -269,5 +266,13 @@ view: hub_daily_report_victor {
     sql: ${tot_number_of_items}/${nb_of_orders} ;;
 
     value_format_name: decimal_1
+  }
+
+  measure: rider_utilization_rate {
+    label: "AVG Rider UTR"
+    type: number
+    description: "# Orders from opened hub / # Worked Rider Hours"
+    sql: ${nb_of_orders} / NULLIF(${nb_of_worked_hours}, 0);;
+    value_format_name: decimal_2
   }
 }
