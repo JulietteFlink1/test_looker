@@ -95,7 +95,7 @@ view: hired_applicants {
 
   dimension: contract_label{
     label: "Contract Type label"
-    group_item_label: "* Funnel Dimensions *"
+    group_label: "* Funnel Dimensions *"
     type: string
     sql: case
               -- DE/AT Contract Type

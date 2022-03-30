@@ -237,11 +237,11 @@ view: discovery_events {
 
   measure: count {
     group_label: "Basic Counts (Orders / Customers etc.)"
-    label: "Count All Events"
+    label: "# Events"
     description: "Count of all events"
     type: count
     drill_fields: [detail*]
-    hidden: yes
+    hidden: no
   }
 
   measure: cnt_unique_anonymousid {

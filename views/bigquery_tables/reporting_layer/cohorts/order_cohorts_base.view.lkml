@@ -270,7 +270,7 @@ view: order_cohorts_base {
   dimension: delivery_time {
     group_label: "* Operations / Logistics *"
     type: number
-    sql: ${TABLE}.delivery_time_minutes ;;
+    sql: ${TABLE}.riding_time_minutes ;;
   }
 
   dimension: discount_code {
@@ -325,9 +325,10 @@ view: order_cohorts_base {
   }
 
   dimension: is_delivery_more_than_30_minute {
+    label: "Is Riding Above 30min"
     group_label: "* Operations / Logistics *"
     type: yesno
-    sql: ${TABLE}.is_delivery_above_30min ;;
+    sql: ${TABLE}.is_riding_above_30min ;;
   }
 
   dimension: is_delivery_eta_available {
@@ -552,8 +553,10 @@ view: order_cohorts_base {
   dimension_group: time_between_hub_launch_and_order {
     group_label: "* Hub Dimensions *"
     type: duration
-    sql_start: null ;;
-    sql_end: null ;;
+    sql_start: ${hubs_ct.start_date} ;;
+    sql_end: ${order_date} ;;
+    datatype: date
+
   }
 
   #dimension: time_since_sign_up_biweekly {
@@ -569,6 +572,7 @@ view: order_cohorts_base {
   dimension: order_date {
     group_label: "* Dates and Timestamps *"
     type: date
+    datatype: date
     sql: ${TABLE}.order_date ;;
   }
 
@@ -978,7 +982,7 @@ view: order_cohorts_base {
 
       measure: avg_delivery_time {
         group_label: "* Operations / Logistics *"
-        label: "AVG Delivery Time"
+        label: "AVG Riding Time"
         description: "Average Delivery Time considering delivery start to delivery completion. Outliers excluded (<0min or >30min)"
         hidden:  no
         type: average

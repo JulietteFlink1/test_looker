@@ -21,11 +21,12 @@ explore:  gorillas_products {
     type:  left_outer
   }
 
-  # join: gorillas_category_mapping {
-  #   from: gorillas_category_mapping
-  #   sql_on: ${gorillas_categories.subcategory_id} = ${gorillas_category_mapping.gorillas_subcategory_id} ;;
-  #   relationship: many_to_one
-  #   type: left_outer
-  # }
+  join: gorillas_to_flink_global {
+    from: gorillas_to_flink_global
+    view_label: "* gorillas-Flink Product Matches *"
+    sql_on: ${gorillas_to_flink_global.gorillas_product_id} = ${gorillas_products.product_id} ;;
+    relationship: one_to_many
+    type: left_outer
+  }
 
 }

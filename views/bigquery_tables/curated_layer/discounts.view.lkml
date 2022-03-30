@@ -159,10 +159,36 @@ view: discounts {
     sql: ${TABLE}.use_case ;;
   }
 
-  measure: used {
+  dimension: discount_use_case {
+    type: string
+    case: {
+      when: {
+        sql: ${TABLE}.use_case = "400600 - Customer Service" ;;
+        label: "Customer Service"
+      }
+      when: {
+        sql: ${TABLE}.use_case = "400810 - Marketing Acquisition" ;;
+        label: "MKT - Acquisition"
+      }
+      when: {
+        sql: ${TABLE}.use_case = "400820 - Marketing Retention" ;;
+        label: "MKT - Retention"
+      }
+        when: {
+          sql: ${TABLE}.use_case = "400830 - Marketing Brand" ;;
+          label: "MKT - Brand"
+      }
+      when: {
+        sql: ${TABLE}.use_case = "Employee" ;;
+        label: "Employee"
+      }
+        else: "Other"
+    }
+  }
+
+  dimension: used {
     label: "Discounts Used"
     sql: ${TABLE}.used ;;
-    type: sum
     value_format_name: decimal_0
   }
 
