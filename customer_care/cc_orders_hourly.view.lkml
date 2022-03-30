@@ -183,7 +183,7 @@ view: cc_orders_hourly {
     label: "AVG CC Discount Value per Contact"
     description: "Total CC Discount Value / Contact"
     type: number
-    value_format: "0.0%"
+    value_format_name: euro_accounting_2_precision
     sql: safe_divide(${sum_amt_cc_discount_value},${cc_conversations.number_of_conversations}) ;;
   }
 
