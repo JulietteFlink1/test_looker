@@ -120,7 +120,7 @@ view: daily_hub_performance_v2 {
   }
 
   measure: number_of_hours_worked_by_riders  {
-    label: "# Hours"
+    label: "# Rider hours"
     description: "Number of hours worked by riders"
     type: sum
     sql: ${TABLE}.number_of_hours_worked_by_riders ;;
@@ -133,5 +133,13 @@ view: daily_hub_performance_v2 {
     type: sum
     sql: ${TABLE}.number_of_worked_riders ;;
     value_format_name: decimal_0
+  }
+
+  measure: utr  {
+    label: "Rider UTR"
+    description: "Utilisation Rate of Riders"
+    type: number
+    sql: ${number_of_orders}/nullif(${number_of_hours_worked_by_riders},0) ;;
+    value_format_name: decimal_2
   }
 }
