@@ -16,6 +16,16 @@ view: daily_hub_performance_v2 {
     type: number
   }
 
+  parameter: metric_selector {
+    label: "Choose metric"
+    description: "For sorting Top N Hubs based on selected metric"
+    type: unquoted
+    allowed_value: { value: "order" label: "Order" }
+    allowed_value: { value: "avg_rider_utr" label: "AVG Rider UTR" }
+    allowed_value: { value: "avg_number_of_items" label: "AVG # Items" }
+
+    default_value: "Order"
+  }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Dimensions     ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -77,6 +87,54 @@ view: daily_hub_performance_v2 {
   # ~~~~~~~~~~~~~~~       Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  measure: chosen_metric {
+    label_from_parameter: metric_selector
+    type: number
+    value_format_name: decimal_2
+    sql:
+    {% if metric_selector._parameter_value == 'order' %}
+      ${number_of_orders}
+    {% elsif metric_selector._parameter_value == 'avg_rider_utr' %}
+      ${utr}
+    {% elsif metric_selector._parameter_value == 'avg_number_of_items' %}
+      ${avg_number_of_items}
+
+    {% endif %};;
+  }
+
+  measure: fulfillment_tier {
+
+    case: {
+      when: {
+        sql: ${avg_fulfillment_time_minutes} < 10.0;;
+        label: "<10"
+      }
+      when: {
+        sql: ${avg_fulfillment_time_minutes} >= 10.0 AND ${avg_fulfillment_time_minutes} < 12.0;;
+        label: ">=10 and <12"
+      }
+      when: {
+        sql: ${avg_fulfillment_time_minutes} >= 12.0 AND ${avg_fulfillment_time_minutes} < 14.0;;
+        label: ">=12 and <14"
+      }
+      when: {
+        sql: ${avg_fulfillment_time_minutes} >= 14.0 AND ${avg_fulfillment_time_minutes} < 16.0;;
+        label: ">=14 and <16"
+      }
+      when: {
+        sql: ${avg_fulfillment_time_minutes} >= 16.0 AND ${avg_fulfillment_time_minutes} < 18.0;;
+        label: ">=16 and <18"
+      }
+      when: {
+        sql: ${avg_fulfillment_time_minutes} >= 18.0 AND ${avg_fulfillment_time_minutes} < 20.0;;
+        label: ">=18 and <20"
+      }
+      when: {
+        sql: ${avg_fulfillment_time_minutes} >= 20.0;;
+        label: ">=20"
+      }
+    }
+  }
 
   measure: number_of_orders  {
     label: "# Orders"
@@ -136,7 +194,7 @@ view: daily_hub_performance_v2 {
   }
 
   measure: utr  {
-    label: "Rider UTR"
+    label: "AVG Rider UTR"
     description: "Utilisation Rate of Riders"
     type: number
     sql: ${number_of_orders}/nullif(${number_of_hours_worked_by_riders},0) ;;

@@ -20,12 +20,9 @@ view: daily_hub_performance {
     label: "Choose metric"
     description: "For sorting Top N Hubs based on selected metric"
     type: unquoted
-    allowed_value: { value: "Order" }
-    allowed_value: { value: "UTR" }
-    allowed_value: { value: "AVG fulfillment time" }
-    allowed_value: { value: "AVG # items" }
-    allowed_value: { value: "# Riders" }
-    allowed_value: { value: "# Hours" }
+    allowed_value: { value: "order" label: "Order" }
+    allowed_value: { value: "avg_rider_utr" label: "AVG Rider UTR" }
+    allowed_value: { value: "avg_number_of_items" label: "AVG # Items" }
 
     default_value: "Order"
   }
@@ -111,16 +108,16 @@ view: daily_hub_performance {
     type: number
     value_format_name: decimal_2
     sql:
-      CASE
-      WHEN {% parameter metric_selector %} = 'Order' THEN ${number_of_orders}
-      WHEN {% parameter metric_selector %} = 'UTR' THEN ${utr}
-      WHEN {% parameter metric_selector %} = 'AVG fulfillment time' THEN ${avg_fulfillment_time_minutes}
-      WHEN {% parameter metric_selector %} = 'AVG # items' THEN ${avg_number_of_items}
-      WHEN {% parameter metric_selector %} = '# Riders' THEN ${number_of_worked_riders}
-      WHEN {% parameter metric_selector %} = '# Hours' THEN ${number_of_hours_worked_by_riders}
-      ELSE NULL
-    END ;;
+    {% if metric_selector._parameter_value == 'order' %}
+      ${number_of_orders}
+    {% elsif metric_selector._parameter_value == 'avg_rider_utr' %}
+      ${utr}
+    {% elsif metric_selector._parameter_value == 'avg_number_of_items' %}
+      ${avg_number_of_items}
+
+      {% endif %};;
   }
+
 
   measure: number_of_orders  {
     label: "# Orders"
@@ -164,7 +161,7 @@ view: daily_hub_performance {
 
 
   measure: utr  {
-    label: "Rider UTR"
+    label: "AVG Rider UTR"
     description: "Utilisation Rate of Riders"
     type: number
     sql: ${number_of_orders}/nullif(${number_of_hours_worked_by_riders},0) ;;
