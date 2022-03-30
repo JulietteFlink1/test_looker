@@ -180,7 +180,7 @@ view: cc_orders_hourly {
 
   measure: avg_discount_value {
     group_label: "* Discounts *"
-    label: "AVG CC discount Value per Contact"
+    label: "AVG CC Discount Value per Contact"
     description: "Total CC Discount Value / Contact"
     type: number
     value_format: "0.0%"
