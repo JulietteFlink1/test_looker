@@ -71,10 +71,11 @@ explore: supply_chain {
         and
             ${hubs_ct.is_test_hub} is false
         and
-            ${hubs_ct.live} is not null
+            ${hubs_ct.start_date} <= ${products_hub_assignment.report_date}
 
         and
             left(${products_hub_assignment.sku},1) != '9'
+
 
       ;;
 
