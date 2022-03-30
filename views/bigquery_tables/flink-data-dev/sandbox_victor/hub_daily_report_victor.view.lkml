@@ -31,6 +31,7 @@ view: hub_daily_report_victor {
     allowed_value: {value: "riders_worked" label: "# Riders Worked"}
     allowed_value: {value: "avg_nb_items" label: "AVG # Items"}
     allowed_value: {value: "avg_fulfillment_time" label: "AVG Fulfillment Time"}
+    allowed_value: {value: "rider_utr" label: "AVG Rider UTR"}
     default_value: "orders"
   }
 
@@ -131,15 +132,6 @@ view: hub_daily_report_victor {
     value_format_name: decimal_1
   }
 
-  # dimension: number_of_orders_1o {
-  #   label:       "# orders [orders table]"
-  #   description: "# orders from orders table, debug comparison"
-  #   hidden:  yes
-  #   type: number
-  #   sql: ${TABLE}.number_of_orders_1o ;;
-
-  #   value_format_name: decimal_1
-  # }
 
   dimension: total_fulfillment_time {
     label:       "Total amount of fulfillment time"
@@ -200,6 +192,8 @@ view: hub_daily_report_victor {
       ${weighted_avg_number_of_items}
     {% elsif KPI_parameter._parameter_value == 'avg_fulfillment_time' %}
       ${weighted_avg_fulfillment_time}
+    {% elsif KPI_parameter._parameter_value == 'rider_utr' %}
+      ${rider_utilization_rate}
 
     {% endif %};;
     }
@@ -234,7 +228,6 @@ view: hub_daily_report_victor {
 
     value_format_name: decimal_1
   }
-
 
 
   measure: tot_fulfillment_time {
@@ -275,12 +268,11 @@ view: hub_daily_report_victor {
     value_format_name: decimal_1
   }
 
-  measure: rider_utr {
+  measure: rider_utilization_rate {
     label: "AVG Rider UTR"
     type: number
     description: "# Orders from opened hub / # Worked Rider Hours"
     sql: ${nb_of_orders} / NULLIF(${nb_of_worked_hours}, 0);;
     value_format_name: decimal_2
-    group_label: "UTR"
   }
 }
