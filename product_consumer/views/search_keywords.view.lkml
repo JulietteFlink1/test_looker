@@ -136,6 +136,13 @@ view: search_keywords {
     type: string
     sql: ${TABLE}.hub_code ;;
   }
+  dimension: city {
+    group_label: "Location Dimensions"
+    label: "City"
+    description: "City"
+    type: string
+    sql: ${TABLE}.city ;;
+  }
   dimension: country_iso {
     group_label: "Location Dimensions"
     label: "Country ISO"
