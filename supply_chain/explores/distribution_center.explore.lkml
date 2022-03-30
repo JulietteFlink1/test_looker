@@ -25,11 +25,12 @@ explore: distribution_center {
 
 ### FILTERS
 
-  #always_filter: {
-  #  filters: [
-  #      replenishment_dc_batchbalance.dc_code: "DE_BER_DC01"
-  #  ]
-  #}
+  always_filter: {
+    filters: [
+        replenishment_dc_batchbalance.dc_code: "DE_BER_DC01, DE_NAG_WUST, DE_MEY_AICH, DE_FRU_WESS",
+        replenishment_dc_batchbalance.stock_balance_date_date: "yesterday"
+    ]
+  }
 
   #conditionally_filter: {
   #  filters: [replenishment_dc_batchbalance.stock_balance_date_date: "1 day"]
