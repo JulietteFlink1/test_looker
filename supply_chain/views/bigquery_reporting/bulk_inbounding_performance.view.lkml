@@ -1,5 +1,5 @@
 view: bulk_inbounding_performance {
-  sql_table_name: `flink-data-prod.reporting.bulk_inbounding_performance`
+  sql_table_name: `flink-data-dev.reporting.bulk_inbounding_performance`
     ;;
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -15,13 +15,7 @@ view: bulk_inbounding_performance {
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   # =========  __main__   =========
-  dimension: sku_mapping_status {
 
-    label:       "SKU Mapping Status"
-    description: "Defines, whether the inbounding service could match an external SKU with our internal SKU, if there is manual decision needed or no match found at all."
-    type: string
-    sql: ${TABLE}.sku_mapping_status ;;
-  }
 
   dimension: provider_name {
 
@@ -32,7 +26,7 @@ view: bulk_inbounding_performance {
     sql: ${TABLE}.provider_name ;;
   }
 
-  dimension: minutes_inbounding_start_to_item_inbounded {
+  dimension: hours_inbounding_start_to_item_inbounded {
 
     label:       "# Hours Bulk Inbounded"
     description: "The duration in hours between bulk-inbounding process started (first bulk inbounded) and sku inbounding time"
@@ -70,48 +64,14 @@ view: bulk_inbounding_performance {
     hidden: yes
   }
 
-  dimension: is_first_inbounded_bulk {
 
-    label: "Is First Inbounded Bulk"
-    description: "Boolean, that defines whether a inbounded item of a bulk was the first inbounded bulk per dispatch notification"
-
-    type: yesno
-    sql: ${TABLE}.is_first_inbounded_bulk ;;
-
-  }
-
-  dimension: number_of_bulks_per_dispatch_notification {
-
-    label: "# Bulks per Dispatch Notification"
-    description: "Defines the total number of bulks/rollies per dispatch notification"
-
-    type: number
-    sql: ${TABLE}.number_of_bulks_per_dispatch_notification ;;
-
-    value_format_name: decimal_0
-
-    hidden: yes
-
-  }
 
 
 
 
 
   # =========  dates / timestamps   =========
-  dimension_group: first_bulk_inbounding_timestamp {
-
-    label: "First Bulk Inbounding"
-
-    type: time
-    timeframes: [
-      time,
-      date
-    ]
-    sql: ${TABLE}.first_bulk_inbounding_timestamp ;;
-  }
-
-  dimension_group: inventory_change_timestamp {
+  dimension_group: inbounding_timestamp {
 
     label:       "Inbounding"
     description: "The datetime, when a SKU was inbounded"
@@ -121,16 +81,16 @@ view: bulk_inbounding_performance {
       time,
       date
     ]
-    sql: ${TABLE}.inventory_change_timestamp ;;
+    sql: ${TABLE}.inbounding_timestamp ;;
   }
 
-  dimension: inbounding_date {
+  dimension: first_bulk_inbounding_date {
 
     label: "Dispatch Notification Date"
     type: date
     datatype: date
-    sql: ${TABLE}.inbounding_date ;;
-    hidden: yes
+    sql: ${TABLE}.first_bulk_inbounding_date ;;
+    hidden: no
   }
 
 
@@ -193,57 +153,53 @@ view: bulk_inbounding_performance {
 
 
   # =========  hidden   =========
-  dimension: bulk_inbounding_rank {
+
+
+  dimension: delivered_handling_units_count {
     type: number
-    sql: ${TABLE}.bulk_inbounding_rank ;;
+    sql: ${TABLE}.delivered_handling_units_count ;;
     hidden: yes
   }
 
-  dimension: total_handling_units {
+  dimension: delivered_total_quantity {
     type: number
-    sql: ${TABLE}.total_handling_units ;;
+    sql: ${TABLE}.delivered_total_quantity ;;
     hidden: yes
   }
 
-  dimension: total_quantity_delivered {
+  dimension: delivered_quantity_per_handling_unit {
     type: number
-    sql: ${TABLE}.total_quantity_delivered ;;
+    sql: ${TABLE}.delivered_quantity_per_handling_unit ;;
     hidden: yes
   }
 
-  dimension: total_quantity_per_handling_unit {
+  dimension: delivered_total_quantity_per_dispatch_notification {
     type: number
-    sql: ${TABLE}.total_quantity_per_handling_unit ;;
+    sql: ${TABLE}.delivered_total_quantity_per_dispatch_notification ;;
     hidden: yes
   }
 
-  dimension: total_quantity_delivered_per_dispatch_notification {
+  dimension: delivered_total_quantity_per_dispatch_notification_and_category {
     type: number
-    sql: ${TABLE}.total_quantity_delivered_per_dispatch_notification ;;
+    sql: ${TABLE}.delivered_total_quantity_per_dispatch_notification_and_category ;;
     hidden: yes
   }
 
-  dimension: total_quantity_delivered_per_dispatch_notification_category {
+  dimension: run_sum_inbounded_quantity_per_dispatch_notification {
     type: number
-    sql: ${TABLE}.total_quantity_delivered_per_dispatch_notification_category ;;
+    sql: ${TABLE}.run_sum_inbounded_quantity_per_dispatch_notification ;;
     hidden: yes
   }
 
-  dimension: run_sum_items_inbounded_per_dispatch_notification {
+  dimension: run_sum_inbounded_quantity_per_dispatch_notification_and_category {
     type: number
-    sql: ${TABLE}.run_sum_items_inbounded_per_dispatch_notification ;;
+    sql: ${TABLE}.run_sum_inbounded_quantity_per_dispatch_notification_and_category ;;
     hidden: yes
   }
 
-  dimension: run_sum_items_inbounded_per_dispatch_notification_category {
+  dimension: inbounded_quantity {
     type: number
-    sql: ${TABLE}.run_sum_items_inbounded_per_dispatch_notification_category ;;
-    hidden: yes
-  }
-
-  dimension: items_inbounded {
-    type: number
-    sql: ${TABLE}.items_inbounded ;;
+    sql: ${TABLE}.inbounded_quantity ;;
     hidden: yes
   }
 
@@ -259,6 +215,13 @@ view: bulk_inbounding_performance {
     hidden: yes
   }
 
+  dimension: is_90_percent_inbounded_timestamp {
+
+    type: yesno
+    sql: ${TABLE}.is_90_percent_inbounded_timestamp ;;
+    hidden: yes
+  }
+
 
 
 
@@ -269,25 +232,13 @@ view: bulk_inbounding_performance {
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-
-  measure: avg_bulk_inbounding_rank {
-
-    label:       "AVG Inbounding Rank (Dispatch Notification)"
-    description: "Defines, on which order a certain rollie of a dispatch notification was inbounded"
-
-    type: average
-    sql: ${bulk_inbounding_rank} ;;
-
-    value_format_name: decimal_0
-  }
-
   measure: sum_items_inbounded {
 
     label: "# Items Inbounded"
     description: "The number of inbounded products via the bulk-inbounding service"
 
     type: sum
-    sql: ${items_inbounded} ;;
+    sql: ${inbounded_quantity} ;;
 
     value_format_name: decimal_0
   }
@@ -298,24 +249,27 @@ view: bulk_inbounding_performance {
     description: "The number of inbounded products within 2 hours since first bulk of dispatch notification inbounded via the bulk-inbounding service"
 
     type: sum
-    sql: ${items_inbounded} ;;
+    sql: ${inbounded_quantity} ;;
 
-    filters: [minutes_inbounding_start_to_item_inbounded: "<= 2"]
+    filters: [hours_inbounding_start_to_item_inbounded: "<= 2"]
 
     value_format_name: decimal_0
   }
 
-  measure: avg_number_of_bulks_per_dispatch_notification {
+  measure: sum_items_inbounded_after_3h {
 
-    label: "AVG # Bulks per Dispatch Notification"
-    description: "Defines the total number of bulks/rollies per dispatch notification"
+    label:       "# Items Inbounded after 3h"
+    description: "The number of inbounded products within 2 hours since first bulk of dispatch notification inbounded via the bulk-inbounding service"
 
-    type: average
-    sql: ${number_of_bulks_per_dispatch_notification} ;;
+    type: sum
+    sql: ${inbounded_quantity} ;;
+
+    filters: [hours_inbounding_start_to_item_inbounded: "<= 3"]
 
     value_format_name: decimal_0
-
   }
+
+
 
   measure: sum_total_handling_units {
 
@@ -323,7 +277,7 @@ view: bulk_inbounding_performance {
     description: "The sum of handling units according to the dispatch notification"
 
     type: sum
-    sql: ${total_handling_units} ;;
+    sql: ${delivered_handling_units_count} ;;
 
     value_format_name: decimal_0
 
@@ -335,7 +289,7 @@ view: bulk_inbounding_performance {
     description: "The sum of selling units according to the dispatch notification"
 
     type: sum
-    sql: ${total_quantity_delivered} ;;
+    sql: ${delivered_total_quantity} ;;
 
     value_format_name: decimal_0
   }
@@ -371,6 +325,20 @@ view: bulk_inbounding_performance {
     value_format_name: percent_0
   }
 
+  measure:pct_items_booked_after_3h{
+
+    # this logic works, as we are joining currently bulks with inboundins from inventory_changes on the inbounding_date
+    # thus implicitely, only items, that have the same day as the dispatch notification will be considered
+
+    label:       "% Products Booked-In 3h"
+    description: "The number of products per dispatch notification, that are inbounded within the first 3 hours since first bulk-item of dispatch notification inbounded"
+
+    type: number
+    sql: safe_divide(${sum_items_inbounded_after_3h}, ${sum_total_quantity_delivered}) ;;
+
+    value_format_name: percent_0
+  }
+
 
   measure: avg_hours_required_to_book_in_90_percent {
 
@@ -378,8 +346,8 @@ view: bulk_inbounding_performance {
     description: "The average number of hours it takes to inbound 90% of the selling units of a dispatch notification "
 
     type: average
-    sql: ${minutes_inbounding_start_to_item_inbounded} ;;
-    filters: [ninety_pct_inbounded: "yes"]
+    sql: ${hours_inbounding_start_to_item_inbounded} ;;
+    filters: [is_90_percent_inbounded_timestamp: "yes"]
 
     value_format_name: decimal_1
   }
