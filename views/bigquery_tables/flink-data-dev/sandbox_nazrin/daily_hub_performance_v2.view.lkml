@@ -98,7 +98,7 @@ view: daily_hub_performance_v2 {
     label: "AVG # Items"
     description: "AVG number of items in basket "
     type: number
-    sql: ${number_of_orders}/${number_of_items} ;;
+    sql: ${number_of_items}/${number_of_orders} ;;
     value_format_name: decimal_2
   }
 
