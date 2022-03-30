@@ -12,13 +12,11 @@ view: adhoc_gorillas_mov {
               Lag(minimum_order_value, 1) OVER(ORDER BY hub_id, time_scraped ASC) as previous_minimum_order_value,
               minimum_order_value != Lag(minimum_order_value, 1) OVER(ORDER BY hub_id, time_scraped ASC) AS Change
           FROM `flink-data-prod.curated.gorillas_hubs_hist`
-          WHERE
           order by 2,1 asc
           )
-      Select c.* except (change), ah.* except (hub_id, first_seen, last_seen, h3_index)
+      Select c.* except (change)
       from change_dates c
-      left join `flink-data-prod.curated.competitive_intelligence_active_hubs` ah on c.hub_id = ah.hub_id
-      where order by date_scraped asc
+      order by date_scraped asc
        ;;
   }
 
