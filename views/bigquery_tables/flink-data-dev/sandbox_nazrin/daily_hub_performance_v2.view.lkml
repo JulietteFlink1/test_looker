@@ -4,7 +4,7 @@
 # This view is created for onboarding task. It contains main KPIs such as # riders, # worked hours, # orders, etc. in daily hub level.
 
 view: daily_hub_performance_v2 {
-  sql_table_name: `flink-data-dev.sandbox_nazrin.daily_hub_performance_v2`;;
+  sql_table_name: `flink-data-prod.sandbox_nazrin.daily_hub_performance`;;
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Parameters     ~~~~~~~~~~~~~~~~~~~~~~~~~
