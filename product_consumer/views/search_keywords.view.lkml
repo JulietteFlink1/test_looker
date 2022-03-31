@@ -165,8 +165,12 @@ view: search_keywords {
     group_label: "Search Dimensions"
     label: "Is Search Label Used"
     description: "Whether predefined search label was used"
-    type: yesno
-    sql: ${TABLE}.is_search_label_used ;;
+    type: string
+    sql: case
+            when ${TABLE}.is_search_label_used = true then 'Yes'
+            when ${TABLE}.is_search_label_used = false then 'No'
+            when ${TABLE}.is_search_label_used is null then 'Unkown'
+        end ;;
   }
 
   dimension: is_added_to_cart_after_search {
