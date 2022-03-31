@@ -1,22 +1,30 @@
 view: onboarding_task_artur {
-  sql_table_name: `flink-data-dev.sandbox_artur.onboarding_task_artur`
+  sql_table_name: `flink-data-prod.sandbox_artur.onboarding_task_artur`
     ;;
 
-  dimension: fulfillment_time {
+  dimension: average_fulfillment_time {
     type: number
-    sql: ${TABLE}.fulfillment_time ;;
+    sql: ${TABLE}.average_fulfillment_time ;;
     hidden: yes
   }
 
-  dimension: number_of_items {
-    type: number
-    hidden: yes
-    sql: ${TABLE}.number_of_items ;;
-  }
-
-  measure: average_number_of_items {
+  measure: avg_average_fulfillment_time {
+    label: "Average fulfillment time"
     type: average
-    sql: ${number_of_items}_of_items} ;;
+    sql: ${average_fulfillment_time} ;;
+    value_format: "0"
+  }
+
+  dimension: average_number_of_items {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.average_number_of_items ;;
+  }
+
+  measure: avg_average_number_of_items {
+    label: "Average number of items"
+    type: average
+    sql: ${average_number_of_items} ;;
     value_format: "#.00;($#.00)"
   }
 
@@ -30,7 +38,6 @@ view: onboarding_task_artur {
     sql: ${TABLE}.hub_code ;;
   }
 
-
   dimension: number_of_hours_worked {
     type: number
     hidden: yes
@@ -38,8 +45,9 @@ view: onboarding_task_artur {
   }
 
   measure: sum_number_of_hours_worked  {
+    label: "Hours worked by riders"
     type: sum
-    sql: ${number_of_hours_worked}of_hours_worke}
+    sql: ${number_of_hours_worked}
     value_format: "#.0;($#.0)";;
   }
 
@@ -67,12 +75,6 @@ view: onboarding_task_artur {
     sql: ${number_of_riders} ;;
   }
 
-measure: average_fulfillment_time {
-  type: average
-  sql_distinct_key: ${country_iso} ;;
-  sql: ${fulfillment_time} ;;
-  value_format: "0"
-}
 
   dimension_group: date {
     type: time
