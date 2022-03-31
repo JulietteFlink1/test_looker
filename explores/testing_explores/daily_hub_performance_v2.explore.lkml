@@ -7,8 +7,7 @@
 
 include: "/views/bigquery_tables/flink-data-dev/sandbox_nazrin/daily_hub_performance_v2.view"
 include: "/views/bigquery_tables/curated_layer/hubs_ct.view"
-include: "/views/bigquery_tables/reporting_layer/core/hub_level_kpis.view"
-
+include: "/views/bigquery_tables/flink-data-dev/sandbox_nazrin/derived_table.view"
 
 explore: daily_hub_performance_v2 {
   group_label: "Hub Performance V2"
@@ -25,4 +24,13 @@ explore: daily_hub_performance_v2 {
     sql_on:
     lower(${daily_hub_performance_v2.hub_code}) = lower(${hubs.hub_code}) ;;
   }
+
+  join: derived_table {
+    from: derived_table
+    type: left_outer
+    relationship: one_to_one
+    sql_on:
+    lower(${derived_table.hub_name}) = lower(${hubs.hub_name}) and ${derived_table.order_date}=${daily_hub_performance_v2.order_date} ;;
+  }
+
 }

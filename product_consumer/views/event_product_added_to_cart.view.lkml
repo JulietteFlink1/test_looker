@@ -1,0 +1,299 @@
+view: event_product_added_to_cart {
+  sql_table_name: `flink-data-prod.curated.event_product_added_to_cart`
+  ;;
+  view_label: "Event Product Added To Cart"
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+# ~~~~~~~~~~~~~~~     Dimensions    ~~~~~~~~~~~~~~~ #
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+# ======= IDs ======= #
+
+dimension: event_uuid {
+  group_label: "IDs"
+  label: "Event UUID"
+  description: "Unique identifier of an event"
+  type: string
+  sql: ${TABLE}.event_uuid ;;
+}
+dimension: user_id {
+  group_label: "IDs"
+  label: "User ID"
+  description: "User ID generated upon user registration"
+  type: string
+  sql: ${TABLE}.user_id ;;
+}
+dimension: anonymous_id {
+  group_label: "IDs"
+  label: "Anonymous ID"
+  description: "User ID set by Segment"
+  type: string
+  sql: ${TABLE}.anonymous_id ;;
+}
+dimension: device_id {
+  group_label: "IDs"
+  label: "Device ID"
+  description: "ID of an device"
+  type: string
+  sql: ${TABLE}.device_id ;;
+}
+dimension: category_id {
+  group_label: "IDs"
+  label: "Category ID"
+  description: "ID of product's category"
+  type: string
+  sql: ${TABLE}.category_id ;;
+}
+
+dimension: sub_category_id {
+  group_label: "IDs"
+  label: "Sub-Category ID"
+  description: "ID of product's sub-category"
+  type: string
+  sql: ${TABLE}.sub_category_id ;;
+}
+
+# ======= Generic Dimensions ======= #
+
+dimension: is_user_logged_in {
+  group_label: "Generic Dimensions"
+  label: "Is User Logged-in"
+  description: "Whether a user was logged-in when an event was triggered"
+  type: yesno
+  sql: ${TABLE}.is_user_logged_in ;;
+}
+dimension: has_selected_address {
+  group_label: "Generic Dimensions"
+  label: "Is Address Selected"
+  description: "Whether a user had selected address when an event was triggered"
+  type: yesno
+  sql: ${TABLE}.has_selected_address ;;
+}
+dimension: event_name {
+  group_label: "Generic Dimensions"
+  label: "Event Name"
+  description: "Name of the event triggered"
+  type: string
+  sql: ${TABLE}.event_name ;;
+}
+dimension: page_path {
+  group_label: "Generic Dimensions"
+  label: "Page Path"
+  description: "Page path on web"
+  type: string
+  sql: ${TABLE}.page_path ;;
+}
+
+# ======= Device Dimensions ======= #
+
+dimension: platform {
+  group_label: "Device Dimensions"
+  label: "Platform"
+  description: "Platform is either iOS, Android or Web"
+  type: string
+  sql: ${TABLE}.platform ;;
+}
+dimension: device_type {
+  group_label: "Device Dimensions"
+  label: "Device Type"
+  description: "Device type is one of: ios, android, windows, macintosh, linux or other"
+  type: string
+  sql: ${TABLE}.device_type ;;
+}
+dimension: device_model {
+  group_label: "Device Dimensions"
+  label: "Device Model"
+  description: "Model of the device"
+  type: string
+  sql: ${TABLE}.device_model ;;
+}
+dimension: os_version {
+  group_label: "Device Dimensions"
+  label: "OS Version"
+  description: "Version of the operating system"
+  type: string
+  sql: ${TABLE}.os_version ;;
+}
+dimension: app_version {
+  group_label: "Device Dimensions"
+  label: "App Version"
+  description: "Version of the app"
+  type: string
+  sql: ${TABLE}.app_version ;;
+}
+dimension: full_app_version {
+  group_label: "Device Dimensions"
+  type: string
+  description: "Concatenation of device_type and app_version"
+  sql: ${device_type} || '-' || ${app_version} ;;
+}
+
+# ======= Location Dimension ======= #
+
+dimension: locale {
+  group_label: "Location Dimensions"
+  label: "Locale"
+  description: "Language code | Coutnry, region code"
+  type: string
+  sql: ${TABLE}.locale ;;
+}
+dimension: timezone {
+  group_label: "Location Dimensions"
+  label: "Timezone"
+  description: "Timezone of user's device"
+  type: string
+  sql: ${TABLE}.timezone ;;
+}
+dimension: hub_code {
+  group_label: "Location Dimensions"
+  label: "Hub Code"
+  description: "Hub Code"
+  type: string
+  sql: ${TABLE}.hub_code ;;
+}
+dimension: country_iso {
+  group_label: "Location Dimensions"
+  label: "Country ISO"
+  description: "ISO country"
+  type: string
+  sql: ${TABLE}.country_iso ;;
+}
+
+# ======= Product Dimensions =======
+
+dimension: product_sku {
+  group_label: "Product Dimensions"
+  label: "Product SKU"
+  description: "SKU of the product"
+  type: string
+  sql: ${TABLE}.product_sku ;;
+}
+
+dimension: product_name {
+  group_label: "Product Dimensions"
+  label: "Product Name"
+  description: "Name of the product"
+  type: string
+  sql: ${TABLE}.product_name ;;
+}
+
+dimension: product_position {
+  group_label: "Product Dimensions"
+  label: "Product Position"
+  description: "Position of a product within a swimlane / grid, start counting from 1 from top left corner."
+  type: number
+  sql: ${TABLE}.product_position ;;
+}
+
+dimension: product_price {
+  group_label: "Product Dimensions"
+  label: "Product"
+  description: "Price of the product"
+  type: number
+  value_format: "2 decimals"
+  sql: ${TABLE}.product_price ;;
+}
+
+dimension: category_name {
+  group_label: "Product Dimensions"
+  label: "Category Name"
+  description: "Name of a category where product was listed"
+  type: string
+  sql: ${TABLE}.category_name ;;
+}
+
+dimension: sub_category_name {
+  group_label: "Product Dimensions"
+  label: "Sub-Category name"
+  description: "Name of a sub-category where product was listed"
+  type: string
+  sql: ${TABLE}.sub_category_name ;;
+}
+
+dimension: list_category {
+  group_label: "Product Dimensions"
+  label: "Product Placement"
+  description: "Placement in the app where product was listed, e.i. search, pdp, category"
+  type: string
+  sql: ${TABLE}.list_category ;;
+}
+
+dimension: origin_screen {
+  group_label: "Product Dimensions"
+  label: "Screen Name"
+  description: "Name of the screen."
+  type: string
+  sql: ${TABLE}.origin_screen ;;
+}
+
+# ======= Dates / Timestamps =======
+
+dimension_group: event {
+  group_label: "Date / Timestamp"
+  label: "Event"
+  description: "Timestamp of when an event happened"
+  type: time
+  timeframes: [
+    time,
+    date,
+    week,
+    quarter
+  ]
+  sql: ${TABLE}.event_timestamp ;;
+  datatype: timestamp
+}
+
+# ======= HIDDEN Dimension ======= #
+
+dimension_group: received_at {
+  hidden: yes
+  type: time
+  timeframes: [
+    date
+  ]
+  sql: ${TABLE}.received_at ;;
+  datatype: timestamp
+}
+dimension: search_query_id {
+  hidden: yes
+  type: string
+  sql: ${TABLE}.search_query_id ;;
+}
+dimension: list_position {
+  hidden: yes
+  group_label: "Product Dimensions"
+  label: "Placement Position"
+  description: "Placement of the UI element"
+  type: number
+  sql: ${TABLE}.list_position ;;
+}
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+# ~~~~~~~~~~~~~~~      Measures     ~~~~~~~~~~~~~~~ #
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+measure: events {
+  label: "# Events"
+  description: "Number of events trigegred by users"
+  type: count_distinct
+  sql: ${TABLE}.event_uuid ;;
+}
+measure: logged_in_users {
+  label: "# Registered Users"
+  description: "Number of users who logged-in during a day"
+  type: count_distinct
+  sql: ${TABLE}.user_id ;;
+}
+measure: logged_in_anonymous_users {
+  label: "# All Users"
+  description: "Number of all users regardless of their login status."
+  type: count_distinct
+  sql: ${TABLE}.anonymous_id ;;
+}
+  measure: products {
+    label: "# Unique Products"
+    description: "Number of unique products added to cart"
+    type: count_distinct
+    sql: ${TABLE}.product_sku ;;
+  }
+}
