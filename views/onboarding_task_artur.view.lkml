@@ -11,6 +11,7 @@ view: onboarding_task_artur {
   measure: avg_average_fulfillment_time {
     label: "Average fulfillment time"
     type: average
+    sql_distinct_key: ${date_date},${country_iso},${hub_code};;
     sql: ${average_fulfillment_time} ;;
     value_format: "0"
   }
