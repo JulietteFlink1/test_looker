@@ -1082,6 +1082,22 @@ view: orders {
     sql: ${TABLE}.weight ;;
   }
 
+  dimension: weight_kg {
+    group_label: "* Order Dimensions *"
+    description: "Weight (kg)"
+    hidden: no
+    type: number
+    sql: ${TABLE}.weight/1000 ;;
+  }
+
+  dimension: weight_kg_tier {
+    group_label: "* Order Dimensions *"
+    type: tier
+    tiers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+    style: relational
+    sql: ${weight_kg} ;;
+  }
+
   dimension: is_customer_location_available {
     group_label: "* Operations / Logistics *"
     type: yesno
