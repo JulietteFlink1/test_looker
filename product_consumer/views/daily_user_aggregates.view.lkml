@@ -149,7 +149,7 @@ view: daily_user_aggregates {
       group_label: "Device Dimensions"
       type: string
       description: "Concatenation of device_type and app_version"
-      sql: ${device_type} || '-' || ${app_version} ;;
+      sql: CASE WHEN ${TABLE}.device_type IN ('ios','android') THEN  (${TABLE}.device_type || '-' || ${TABLE}.app_version ) END ;;
     }
 
     ######## Location Atributes ########
