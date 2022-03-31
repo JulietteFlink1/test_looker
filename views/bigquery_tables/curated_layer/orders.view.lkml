@@ -61,7 +61,7 @@ view: orders {
     type: tier
     tiers: [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70]
     style: relational
-    sql: ${total_gross_amount} + ${discount_amount} ;;
+    sql: ${gmv_gross} ;;
   }
 
   dimension: gmv_gross_tier_5 {
@@ -69,7 +69,7 @@ view: orders {
     type: tier
     tiers: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70]
     style: relational
-    sql: ${total_gross_amount} + ${discount_amount} ;;
+    sql: ${gmv_gross} ;;
   }
 
   dimension: gmv_net {
@@ -78,6 +78,33 @@ view: orders {
     sql: ${TABLE}.amt_gmv_net ;;
   }
 
+  dimension: item_value_gross {
+    type: number
+    hidden: no
+    sql: ${gmv_gross} - ${shipping_price_gross_amount} ;;
+  }
+
+  dimension: item_value_net {
+    type: number
+    hidden: no
+    sql: ${gmv_net} - ${shipping_price_net_amount} ;;
+  }
+
+  dimension: item_value_gross_tier {
+    group_label: "* Monetary Values *"
+    type: tier
+    tiers: [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70]
+    style: relational
+    sql: ${item_value_gross} ;;
+  }
+
+  dimension: item_value_gross_tier_5 {
+    group_label: "* Monetary Values *"
+    type: tier
+    tiers: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70]
+    style: relational
+    sql: ${item_value_gross} ;;
+  }
   dimension: rider_tip {
     type: number
     hidden: yes
@@ -1055,6 +1082,22 @@ view: orders {
     sql: ${TABLE}.weight ;;
   }
 
+  dimension: weight_kg {
+    group_label: "* Order Dimensions *"
+    description: "Weight (kg)"
+    hidden: no
+    type: number
+    sql: ${TABLE}.weight/1000 ;;
+  }
+
+  dimension: weight_kg_tier {
+    group_label: "* Order Dimensions *"
+    type: tier
+    tiers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+    style: relational
+    sql: ${weight_kg} ;;
+  }
+
   dimension: is_customer_location_available {
     group_label: "* Operations / Logistics *"
     type: yesno
@@ -1134,6 +1177,8 @@ view: orders {
     allowed_value: { value: "AVG_fulfillment_time" label: "AVG Fulfillment Time"}
     allowed_value: { value: "AVG_order_value_gross" label: "AVG Order Value (Gross)"}
     allowed_value: { value: "AVG_order_value_net" label: "AVG Order Value (Net)"}
+    allowed_value: { value: "avg_item_value_gross" label: "AVG Item Value (Gross)"}
+    allowed_value: { value: "avg_item_value_net" label: "AVG Item Value (Net)"}
     allowed_value: { value: "rider_utr" label: "Rider UTR"}
     allowed_value: { value: "picker_utr" label: "Picker UTR"}
     allowed_value: { value: "picker_hours" label: "# Picker Hours"}
@@ -1217,6 +1262,10 @@ view: orders {
       ${avg_order_value_gross}
     {% elsif KPI_parameter._parameter_value == 'AVG_order_value_net' %}
       ${avg_order_value_net}
+    {% elsif KPI_parameter._parameter_value == 'avg_item_value_gross' %}
+      ${avg_item_value_gross}
+    {% elsif KPI_parameter._parameter_value == 'avg_item_value_net' %}
+      ${avg_item_value_net}
     {% elsif KPI_parameter._parameter_value == 'rider_utr' %}
       ${shyftplan_riders_pickers_hours.rider_utr}
     {% elsif KPI_parameter._parameter_value == 'picker_utr' %}
@@ -1259,6 +1308,10 @@ view: orders {
           {% elsif KPI_parameter._parameter_value == 'AVG_order_value_gross' %}
             €{{ rendered_value }}
           {% elsif KPI_parameter._parameter_value == 'AVG_order_value_net' %}
+            €{{ rendered_value }}
+          {% elsif KPI_parameter._parameter_value == 'avg_item_value_gross' %}
+            €{{ rendered_value }}
+          {% elsif KPI_parameter._parameter_value == 'avg_item_value_net' %}
             €{{ rendered_value }}
           {% elsif KPI_parameter._parameter_value == 'rider_utr' %}
             {{ rendered_value }}
@@ -1493,23 +1546,25 @@ view: orders {
         value_format_name: euro_accounting_2_precision
       }
 
-      measure: avg_product_value_gross {
+      measure: avg_item_value_gross {
+        alias: [avg_product_value_gross]
         group_label: "* Monetary Values *"
-        label: "AVG Product Value (Gross)"
-        description: "Average value of product items (incl. VAT). Excludes fees (gross), before deducting discounts."
+        label: "AVG Item Value (Gross)"
+        description: "AIV represents the Average value of items (incl. VAT). Excludes fees (gross), before deducting discounts."
         hidden:  no
         type: average
-        sql: ${gmv_gross} - ${shipping_price_gross_amount};;
+        sql: ${item_value_gross};;
         value_format_name: euro_accounting_2_precision
       }
 
-      measure: avg_product_value_net {
+      measure: avg_item_value_net {
+        alias: [avg_product_value_net]
         group_label: "* Monetary Values *"
-        label: "AVG Product Value (Net)"
-        description: "Average value of product items (excl. VAT). Excludes fees (net), before deducting discounts."
+        label: "AVG Item Value (Net)"
+        description: "AIV represents the Average value of product items (excl. VAT). Excludes fees (net), before deducting discounts."
         hidden:  no
         type: average
-        sql: ${gmv_net} - ${shipping_price_net_amount};;
+        sql: ${item_value_net};;
         value_format_name: euro_accounting_2_precision
       }
 

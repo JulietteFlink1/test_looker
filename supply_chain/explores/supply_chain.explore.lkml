@@ -14,6 +14,10 @@ include: "/**/*.view"
 
 include: "/**/products_hub_assignment_v2.view"
 include: "/**/replenishment_purchase_orders.view"
+include: "/**/bulk_items.view"
+include: "/**/bulk_inbounding_performance.view"
+
+
 
 
 
@@ -67,10 +71,11 @@ explore: supply_chain {
         and
             ${hubs_ct.is_test_hub} is false
         and
-            ${hubs_ct.live} is not null
+            ${hubs_ct.start_date} <= ${products_hub_assignment.report_date}
 
         and
             left(${products_hub_assignment.sku},1) != '9'
+
 
       ;;
 
@@ -128,11 +133,23 @@ explore: supply_chain {
 
   join: products {
 
-    view_label: "* Products *"
+    view_label: "* Products (CT) *"
 
     type: left_outer
     relationship: many_to_one
     sql_on: ${products.product_sku} = ${products_hub_assignment.sku} ;;
+
+  }
+
+  join: lexbizz_item {
+
+    view_label: "* Products (ERP) *"
+
+    type: left_outer
+    relationship: many_to_one
+    sql_on: ${lexbizz_item.sku}            = ${products_hub_assignment.sku}
+        and ${lexbizz_item.ingestion_date} = current_date()
+    ;;
 
   }
 
@@ -219,9 +236,26 @@ explore: supply_chain {
     ;;
   }
 
+  join: bulk_inbounding_performance {
+
+    # keep hidden for now
+    view_label: "08 Dispatch Notifications"
+
+    type: left_outer
+    relationship: many_to_one
+
+    sql_on:
+        ${bulk_inbounding_performance.hub_code}                   = ${products_hub_assignment.hub_code}
+    and ${bulk_inbounding_performance.first_bulk_inbounding_date} = ${products_hub_assignment.report_date}
+    and ${bulk_inbounding_performance.sku}                        = ${products_hub_assignment.sku} and
+        {% condition global_filters_and_parameters.datasource_filter %} ${bulk_inbounding_performance.first_bulk_inbounding_date} {% endcondition %}
+    ;;
+
+  }
+
   join: replenishment_purchase_orders {
 
-    view_label: "08 Purchase Orders"
+    view_label: "09 Purchase Orders"
 
     type:         full_outer
     relationship: many_to_one
@@ -237,7 +271,7 @@ explore: supply_chain {
   join: erp_master_data {
 
     from: erp_product_hub_vendor_assignment_v2
-    view_label: "09 Lexbizz Master Data"
+    view_label: "10 Lexbizz Master Data"
 
     type: left_outer
     relationship: many_to_one
@@ -247,13 +281,45 @@ explore: supply_chain {
         ${erp_master_data.hub_code}    = ${products_hub_assignment.hub_code}    and
         ${erp_master_data.sku}         = ${products_hub_assignment.sku}         and
         ${erp_master_data.vendor_id}   = ${products_hub_assignment.erp_vendor_id}
-
     ;;
   }
 
+  join: erp_buying_prices {
+
+      view_label: "11 ERP Vendor Prices *"
+
+
+      type: left_outer
+      relationship: many_to_one
+
+      sql_on:
+        ${erp_buying_prices.hub_code}         =  ${products_hub_assignment.hub_code}        and
+        ${erp_buying_prices.sku}              =  ${products_hub_assignment.sku}             and
+        ${erp_buying_prices.report_date}      = ${products_hub_assignment.report_date}
+    ;;
+  }
+      #
+      # --- Adding this join only to make a cross-referenced variable work in erp_buying_prices
+      #
+      join: orderline {
+
+        view_label: ""
+
+        type: left_outer
+        relationship: one_to_many
+
+        sql_on:
+            ${orderline.product_sku}         = ${products_hub_assignment.sku}         and
+            ${orderline.hub_code}            = ${products_hub_assignment.hub_code}    and
+            ${orderline.created_date}        = ${products_hub_assignment.report_date} and
+            {% condition global_filters_and_parameters.datasource_filter %} ${orderline.created_date} {% endcondition %}
+        ;;
+      }
+
+
 
   join: top_50_skus_per_gmv_supply_chain_explore {
-    view_label: "10 Top Selling Products (last 14days)"
+    view_label: "12 Top Selling Products (last 14days)"
     sql_on: ${top_50_skus_per_gmv_supply_chain_explore.sku}         = ${products_hub_assignment.sku}
         and ${top_50_skus_per_gmv_supply_chain_explore.country_iso} = ${products_hub_assignment.country_iso}
     ;;
