@@ -14,8 +14,6 @@ explore: daily_hub_performance {
   view_label: "*Daily Hub Performance *"
   label: "Daily Hub Performance"
   description: "Hub Performance KPIs such as # worked hours,# riders, # orders etc ."
-  hidden: yes
-
 
   join: hubs {
     from: hubs_ct
