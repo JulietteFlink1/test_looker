@@ -81,13 +81,13 @@ view: orders {
   dimension: item_value_gross {
     type: number
     hidden: no
-    sql: ${gmv_gross} - ${shipping_price_gross_amount} ;;
+    sql: ${gmv_gross} - ${shipping_price_gross_amount} - ${rider_tip} ;;
   }
 
   dimension: item_value_net {
     type: number
     hidden: no
-    sql: ${gmv_net} - ${shipping_price_net_amount} ;;
+    sql: ${gmv_net} - ${shipping_price_net_amount} - ${rider_tip} ;;
   }
 
   dimension: item_value_gross_tier {
