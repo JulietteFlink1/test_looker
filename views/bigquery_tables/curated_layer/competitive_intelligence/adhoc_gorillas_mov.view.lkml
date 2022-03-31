@@ -36,13 +36,23 @@ view: adhoc_gorillas_mov {
     sql: ${TABLE}.hub_id ;;
   }
 
-  measure: minimum_order_value {
+  dimension: minimum_order_value_dimension {
     type: number
     sql: ${TABLE}.minimum_order_value ;;
   }
 
-  measure: previous_minimum_order_value {
+  dimension: previous_minimum_order_value_dimension {
     type: number
+    sql: ${TABLE}.previous_minimum_order_value ;;
+  }
+
+  measure: minimum_order_value {
+    type: min
+    sql: ${TABLE}.minimum_order_value ;;
+  }
+
+  measure: previous_minimum_order_value {
+    type: min
     sql: ${TABLE}.previous_minimum_order_value ;;
   }
 

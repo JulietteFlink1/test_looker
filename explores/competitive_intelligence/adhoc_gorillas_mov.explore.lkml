@@ -19,7 +19,7 @@ explore: adhoc_gorillas_mov {
 
   join: gorillas_daily_orders {
     from:  gorillas_daily_orders
-    sql_on: ${gorillas_daily_orders.hub_id} = ${adhoc_gorillas_mov.hub_id} and ${gorillas_daily_orders.number_of_orders = ${adhoc_gorillas_mov.date_scraped}} ;;
+    sql_on: ${gorillas_daily_orders.hub_id} = ${adhoc_gorillas_mov.hub_id} and ${gorillas_daily_orders.order_date} = ${adhoc_gorillas_mov.date_scraped} ;;
     relationship: many_to_one
     type:  left_outer
   }
