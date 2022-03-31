@@ -299,6 +299,8 @@ view: erp_product_hub_vendor_assignment_v2 {
 
     type: string
     sql: ${TABLE}.currency ;;
+
+    hidden: yes
   }
 
   dimension: is_promotional {
@@ -311,6 +313,8 @@ view: erp_product_hub_vendor_assignment_v2 {
 
     type: yesno
     sql: ${TABLE}.is_promotional ;;
+
+    hidden: yes
   }
 
   dimension_group: valid_from {
@@ -328,6 +332,8 @@ view: erp_product_hub_vendor_assignment_v2 {
     convert_tz: no
     datatype: date
     sql: ${TABLE}.valid_from_date ;;
+
+    hidden: yes
   }
 
   dimension_group: valid_to {
@@ -345,6 +351,8 @@ view: erp_product_hub_vendor_assignment_v2 {
     convert_tz: no
     datatype: date
     sql: ${TABLE}.valid_to_date ;;
+
+    hidden: yes
   }
 
 
@@ -378,6 +386,8 @@ view: erp_product_hub_vendor_assignment_v2 {
 
     value_format_name: decimal_4
 
+    hidden: yes
+
   }
 
   dimension: price_unit {
@@ -390,6 +400,8 @@ view: erp_product_hub_vendor_assignment_v2 {
 
     type: number
     sql: ${TABLE}.price_unit ;;
+
+    hidden: yes
   }
 
 
@@ -403,6 +415,8 @@ view: erp_product_hub_vendor_assignment_v2 {
 
     type: string
     sql: ${TABLE}.unit_of_measure ;;
+
+    hidden: yes
 
   }
 
@@ -418,6 +432,8 @@ view: erp_product_hub_vendor_assignment_v2 {
     sql: ${price_per_unit} ;;
 
     value_format_name: decimal_4
+
+    hidden: yes
   }
   # - - - - - - - - - - - - -   END: Pricing Data - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

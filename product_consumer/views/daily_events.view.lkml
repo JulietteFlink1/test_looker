@@ -78,14 +78,14 @@ view: daily_events {
     dimension: platform {
       group_label: "Device Dimensions"
       label: "Platform"
-      description: "Platform of a device: app or web"
+      description: "Platform is either iOS, Android or Web"
       type: string
       sql: ${TABLE}.platform ;;
     }
     dimension: device_type {
       group_label: "Device Dimensions"
       label: "Device Type"
-      description: "Type of the device used"
+      description: "Device type is one of: ios, android, windows, macintosh, linux or other"
       type: string
       sql: ${TABLE}.device_type ;;
     }

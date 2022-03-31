@@ -1,28 +1,31 @@
 view: onboarding_task_artur {
-  sql_table_name: `flink-data-dev.sandbox_artur.onboarding_task_artur`
+  sql_table_name: `flink-data-prod.sandbox_artur.onboarding_task_artur`
     ;;
 
-  dimension: avg_fulfillment_time {
+  dimension: average_fulfillment_time {
     type: number
-    sql: ${TABLE}.avg_fulfillment_time ;;
+    sql: ${TABLE}.average_fulfillment_time ;;
     hidden: yes
   }
 
-  measure: avg_fulfil_time {
+  measure: avg_average_fulfillment_time {
+    label: "Average fulfillment time"
     type: average
-    sql: ${avg_fulfillment_time} ;;
+    sql_distinct_key: ${date_date},${country_iso},${hub_code};;
+    sql: ${average_fulfillment_time} ;;
     value_format: "0"
   }
 
-  dimension: avg_num_of_items {
+  dimension: average_number_of_items {
     type: number
     hidden: yes
-    sql: ${TABLE}.avg_num_of_items ;;
+    sql: ${TABLE}.average_number_of_items ;;
   }
 
-  measure: avg_item_numbers {
+  measure: avg_average_number_of_items {
+    label: "Average number of items"
     type: average
-    sql: ${avg_num_of_items} ;;
+    sql: ${average_number_of_items} ;;
     value_format: "#.00;($#.00)"
   }
 
@@ -36,41 +39,43 @@ view: onboarding_task_artur {
     sql: ${TABLE}.hub_code ;;
   }
 
-  dimension: num_of_hours_worked {
+  dimension: number_of_hours_worked {
     type: number
     hidden: yes
-    sql: ${TABLE}.num_of_hours_worked ;;
+    sql: ${TABLE}.number_of_hours_worked ;;
   }
 
-  measure: worked_hours  {
+  measure: sum_number_of_hours_worked  {
+    label: "Hours worked by riders"
     type: sum
-    sql: ${num_of_hours_worked}
+    sql: ${number_of_hours_worked}
     value_format: "#.0;($#.0)";;
   }
 
-  dimension: num_of_orders {
+  dimension: number_of_orders {
     type: number
     hidden: yes
-    sql: ${TABLE}.num_of_orders ;;
+    sql: ${TABLE}.number_of_orders ;;
   }
 
-  measure: sum_num_of_orders {
+  measure: sum_number_of_orders {
     label: "Orders"
     type: sum
-    sql: ${num_of_orders} ;;
+    sql: ${number_of_orders} ;;
   }
 
-  dimension: num_of_riders {
+  dimension: number_of_riders {
     type: number
     hidden: yes
-    sql: ${TABLE}.num_of_riders ;;
+    sql: ${TABLE}.number_of_riders ;;
   }
 
-  measure: sum_num_of_riders {
+  measure: sum_number_of_riders {
     label: "Riders"
     type: sum
-    sql: ${num_of_riders} ;;
+    sql: ${number_of_riders} ;;
   }
+
 
   dimension_group: date {
     type: time
@@ -93,13 +98,11 @@ dimension: until_today {
   sql: ${date_day_of_week_index} <= DAYOFWEEK(current_date()) AND ${date_day_of_week_index} >= 0  ;;
 }
 
-
   filter: WoW {
     type: yesno
     sql: ${date_date}>=date_trunc(date_add(date_trunc(current_date(), week), interval -1 week), ISOWEEK)
     AND ${date_date}<date_add(date_trunc(date_add(date_trunc(current_date(), week), interval -1 week), ISOWEEK), interval 1 week) ;;
   }
-
 
   measure: last_updated_date {
     type: date
@@ -116,7 +119,7 @@ dimension: until_today {
 
   measure: UTR {
     type: number
-    sql: ${sum_num_of_orders} / NULLIF (${sum_num_of_riders},0) ;;
+    sql: ${sum_number_of_orders} / NULLIF (${sum_number_of_riders},0) ;;
     value_format: "#.0;($#.0)"
   }
 
