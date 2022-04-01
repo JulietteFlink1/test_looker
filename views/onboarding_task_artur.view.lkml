@@ -49,8 +49,8 @@ view: onboarding_task_artur {
   measure: sum_number_of_hours_worked  {
     label: "Hours worked by riders"
     type: sum
-    sql: ${number_of_hours_worked}
-    value_format: "#.0;($#.0)";;
+    sql: ${number_of_hours_worked};;
+    value_format: "0"
   }
 
   dimension: number_of_orders {
@@ -101,13 +101,13 @@ dimension: until_today {
 
   filter: WoW {
     type: yesno
-    sql: ${date_date}<=date_add(date_trunc(date_add(date_trunc(current_date(), week), interval -1 week), ISOWEEK), interval 1 week) ;;
+    sql: ${date_date}<date_add(date_trunc(date_add(date_trunc(current_date(), week), interval 1 week), ISOWEEK), interval 0 week) ;;
+    description: "Show only completed week, week_start_day by default Monday"
   }
 
   measure: last_updated_date {
     type: date
     sql: MIN(${date_date}) ;;
-
   }
 
   dimension: table_uuid {
