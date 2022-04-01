@@ -344,18 +344,26 @@ view: psp_transactions {
     value_format_name: euro_accounting_2_precision
   }
 
-  measure: total_trx_fees_percentage {
+  measure: total_trx_fees_percentage_of_gmv {
     group_label: "* Fee Amounts *"
     type: number
-    sql: NULLIF(${sum_total_trx_fees},0) / NULLIF(${sum_main_amount_authorised},0);;
+    sql: NULLIF(${sum_total_trx_fees},0) / NULLIF(${orders.sum_gmv_gross},0);;
     value_format_name: percent_2
+    description: "payments processing fees as % of GMV (gross)"
   }
 
-  dimension: diff_adyen_ct {
-    type: number
-    sql:  ${orders.total_gross_amount} - ${main_amount}  ;;
+  measure: diff_adyen_ct_filter {
+    type: sum
+    sql:  (${orders.gmv_gross}-${orders.discount_amount}) - ${main_amount}  ;;
     value_format_name: euro_accounting_2_precision
-    description: "CT Orders Revenue Gross - Adyen Main Amount"
+    description: "CT <> Adyen Filter"
+  }
+
+  measure: diff_adyen_ct {
+    type: sum
+    sql:  ${orders.gmv_gross} - ${main_amount}  ;;
+    value_format_name: euro_accounting_2_precision
+    description: "CT Orders GMV Gross - Adyen Main Amount"
   }
 
   measure: cnt_chargebacks_transactions {

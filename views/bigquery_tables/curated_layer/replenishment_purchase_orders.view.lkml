@@ -63,6 +63,25 @@ view: replenishment_purchase_orders {
     sql: ${TABLE}.vendor_id ;;
   }
 
+  dimension: vendor_id_original {
+
+    label:       "Original Vendor ID of PO"
+    description: "The original vendor id of the purchase order. This vendor id resembles more a warehouse_id, in case the vendor is a DC"
+
+    type: string
+    sql: ${TABLE}.vendor_id_original ;;
+  }
+
+  dimension: is_vendor_dc {
+
+    label: "Is Vendor DC"
+    description: "This flag indicates, if the purchase order was actually been sent to a DC first, before being send to the hub"
+
+    type: yesno
+    sql: ${TABLE}.is_vendor_dc ;;
+  }
+
+
   dimension: status {
     type: string
     sql: ${TABLE}.status ;;
@@ -296,9 +315,39 @@ view: replenishment_purchase_orders {
         ;;
   }
 
+  measure: cnt_of_orders {
+
+    label:       "# Count of orders"
+    description: "The amount of delivered orders"
+    #group_label: " >> Line Item Data"
+
+    type: count_distinct
+    sql: ${order_id} ;;
+
+}
+
+  measure: cnt_of_skus_per_order {
+
+    label:       "# Count of skus per orders"
+    description: "The amount of skus per orders"
+    #group_label: " >> Line Item Data"
+
+    type: count_distinct
+    sql: ${sku} ;;
+
+  }
+
+  measure: avg_items_per_order  {
+    label: "AVG Items per Order"
+    description: "AVG Items per Order per SKU"
+    sql: round(${cnt_of_skus_per_order}/${cnt_of_orders}, 2) ;;
+
+  }
+
 
   measure: count {
     type: count
+    hidden: yes
     drill_fields: [name]
   }
 }

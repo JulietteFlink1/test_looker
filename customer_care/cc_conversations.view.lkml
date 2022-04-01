@@ -4,27 +4,27 @@ view: cc_conversations {
 
   dimension: agent_email {
     group_label: "* Agent & Team *"
-    description: "Email of the last agent who took part in the conversation"
+    description: "Email of the last agent who took part in the chat"
     type: string
     sql: ${TABLE}.agent_email ;;
   }
 
   dimension: agent_id {
     group_label: "* Agent & Team *"
-    description: "ID of the last agent who took part in the conversation"
+    description: "ID of the last agent who took part in the chat"
     type: string
     sql: ${TABLE}.agent_id ;;
   }
 
   dimension: agent_name {
     group_label: "* Agent & Team *"
-    description: "Name of the last agent who took part in the conversation"
+    description: "Name of the last agent who took part in the chat"
     type: string
     sql: ${TABLE}.agent_name ;;
   }
 
   dimension_group: contact_created {
-    group_label: "* Contact *"
+    group_label: "* User *"
     type: time
     timeframes: [
       date,
@@ -33,34 +33,34 @@ view: cc_conversations {
   }
 
   dimension: contact_email {
-    group_label: "* Contact *"
+    group_label: "* User *"
     type: string
-    description: "Email of the user who created the conversation"
+    description: "Email of the user who created the contact"
     sql: ${TABLE}.contact_email ;;
   }
 
   dimension: contact_id {
-    group_label: "* Contact *"
+    group_label: "* User *"
     type: string
-    description: "ID of the user who created the conversation"
+    description: "ID of the user who created the contact"
     sql: ${TABLE}.contact_id ;;
   }
 
   dimension: contact_name {
-    group_label: "* Contact *"
+    group_label: "* User *"
     type: string
-    description: "Name of the user who created the conversation"
+    description: "Name of the user who created the contact"
     sql: ${TABLE}.contact_name ;;
   }
 
   dimension: contact_reason {
-    group_label: "* Conversation Attributes *"
+    group_label: "* Contact Attributes *"
     type: string
     sql: ${TABLE}.contact_reason ;;
   }
 
   dimension: contact_reason_l3 {
-    group_label: "* Conversation Attributes *"
+    group_label: "* Contact Attributes *"
     type: string
     sql: ${TABLE}.contact_reason_l3 ;;
   }
@@ -117,7 +117,7 @@ view: cc_conversations {
     type: number
     primary_key: yes
     value_format_name: id
-    label: "Conversation ID"
+    label: "Contact ID"
     sql: ${TABLE}.conversation_uuid ;;
   }
 
@@ -184,31 +184,31 @@ view: cc_conversations {
   }
 
   dimension: is_deflected_by_bot {
-    group_label: "* Conversation Attributes *"
+    group_label: "* Contact Attributes *"
     type: yesno
     sql: ${TABLE}.is_deflected_by_bot ;;
   }
 
   dimension: is_closed {
-    group_label: "* Conversation Attributes *"
+    group_label: "* Contact Attributes *"
     type: yesno
     sql: ${TABLE}.is_closed ;;
   }
 
   dimension: is_abandoned_by_contact {
-    group_label: "* Conversation Attributes *"
+    group_label: "* Contact Attributes *"
     type: yesno
     sql: ${TABLE}.is_abandoned_by_contact ;;
   }
 
   dimension: is_refunded {
-    group_label: "* Conversation Attributes *"
+    group_label: "* Contact Attributes *"
     type: yesno
     sql: ${TABLE}.is_refunded ;;
   }
 
   dimension: is_whatsapp_contact {
-    group_label: "* Contact *"
+    group_label: "* User *"
     type: yesno
     sql: ${TABLE}.is_whatsapp_contact ;;
   }
@@ -242,14 +242,14 @@ view: cc_conversations {
   dimension: median_time_to_reply_seconds {
     type: number
     hidden: yes
-    group_label: "* Conversation Statistics *"
+    group_label: "* Contact Statistics *"
     sql: ${TABLE}.median_time_to_reply_seconds ;;
   }
 
   dimension: median_time_to_reply_minutes {
     type: number
     hidden: yes
-    group_label: "* Conversation Statistics *"
+    group_label: "* Contact Statistics *"
     sql: ${TABLE}.median_time_to_reply_minutes ;;
   }
 
@@ -261,7 +261,7 @@ view: cc_conversations {
 
   dimension: number_of_assignments {
     hidden: yes
-    group_label: "* Conversation Statistics *"
+    group_label: "* Contact Statistics *"
     type: number
     sql: ${TABLE}.number_of_assignments ;;
   }
@@ -269,18 +269,18 @@ view: cc_conversations {
   dimension: number_of_conversation_parts {
     type: number
     hidden:yes
-    group_label: "* Conversation Statistics *"
+    group_label: "* Contact Statistics *"
     sql: ${TABLE}.number_of_conversation_parts ;;
   }
 
   dimension: platform {
-    group_label: "* Conversation Attributes *"
+    group_label: "* Contact Attributes *"
     type: string
     sql: ${TABLE}.platform ;;
   }
 
   dimension: rating {
-    group_label: "* Conversation Attributes *"
+    group_label: "* Contact Attributes *"
     type: number
     sql: ${TABLE}.rating ;;
   }
@@ -298,45 +298,45 @@ view: cc_conversations {
   }
 
   dimension: rating_remark {
-    group_label: "* Conversation Attributes *"
+    group_label: "* Contact Attributes *"
     type: string
     sql: ${TABLE}.rating_remark ;;
   }
 
   dimension: source_author_type {
-    group_label: "* Conversation Attributes *"
+    group_label: "* Contact Attributes *"
     type: string
     sql: ${TABLE}.source_author_type ;;
   }
 
   dimension: source_type {
-    group_label: "* Conversation Attributes *"
+    group_label: "* Contact Attributes *"
     type: string
     sql: ${TABLE}.source_type ;;
   }
 
   dimension: tag_names {
-    group_label: "* Conversation Attributes *"
+    group_label: "* Contact Attributes *"
     type: string
     sql: ${TABLE}.tag_names ;;
   }
 
   dimension: team_id {
     group_label: "* Agent & Team *"
-    description: "ID of the last team who took part in the conversation"
+    description: "ID of the last team who took part in the chat"
     type: number
     sql: ${TABLE}.team_id ;;
   }
 
   dimension: team_name {
     group_label: "* Agent & Team *"
-    description: "Team of the last team who took part in the conversation"
+    description: "Team of the last team who took part in the chat"
     type: string
     sql: ${TABLE}.team_name ;;
   }
 
   dimension: time_to_agent_reply_seconds {
-    group_label: "* Conversation Statistics *"
+    group_label: "* Contact Statistics *"
     hidden: yes
     type: number
     sql: ${TABLE}.time_to_agent_reply_seconds ;;
@@ -344,48 +344,48 @@ view: cc_conversations {
 
   dimension: time_to_agent_reply_minutes {
     hidden: yes
-    group_label: "* Conversation Statistics *"
+    group_label: "* Contact Statistics *"
     type: number
     sql: ${TABLE}.time_to_agent_reply_minutes ;;
   }
 
   dimension: time_to_assignement_seconds {
-    group_label: "* Conversation Statistics *"
+    group_label: "* Contact Statistics *"
     type: number
     hidden: yes
     sql: ${TABLE}.time_to_assignement_seconds ;;
   }
 
   dimension: time_to_first_close_seconds {
-    group_label: "* Conversation Statistics *"
+    group_label: "* Contact Statistics *"
     type: number
     hidden: yes
     sql: ${TABLE}.time_to_first_close_seconds ;;
   }
 
   dimension: time_to_last_close_seconds {
-    group_label: "* Conversation Statistics *"
+    group_label: "* Contact Statistics *"
     type: number
     hidden: yes
     sql: ${TABLE}.time_to_last_close_seconds ;;
   }
 
   dimension: time_to_first_close_minutes {
-    group_label: "* Conversation Statistics *"
+    group_label: "* Contact Statistics *"
     type: number
     hidden: yes
     sql: ${TABLE}.time_to_first_close_minutes ;;
   }
 
   dimension: time_to_last_close_minutes {
-    group_label: "* Conversation Statistics *"
+    group_label: "* Contact Statistics *"
     hidden: yes
     type: number
     sql: ${TABLE}.time_to_last_close_minutes ;;
   }
 
   dimension: number_of_reopens {
-    group_label: "* Conversation Attributes *"
+    group_label: "* Contact Attributes *"
     type: number
     hidden: yes
     sql: ${TABLE}.number_of_reopens ;;
@@ -398,7 +398,7 @@ view: cc_conversations {
 
 
   dimension: is_snoozed_conversation {
-    group_label: "* Conversation Attributes *"
+    group_label: "* Contact Attributes *"
     type: yesno
     sql: ${TABLE}.is_snoozed_conversation ;;
   }
@@ -410,7 +410,7 @@ view: cc_conversations {
   }
 
   dimension: user_id {
-    group_label: "* Contact *"
+    group_label: "* User *"
     type: string
     sql: ${TABLE}.user_id ;;
   }
@@ -435,7 +435,7 @@ view: cc_conversations {
 
   dimension: date {
     group_label: "* Dates & Timestamps *"
-    label: "Conversation Date (Dynamic)"
+    label: "Contact Date (Dynamic)"
     label_from_parameter: date_granularity
     sql:
     {% if date_granularity._parameter_value == 'Day' %}
@@ -491,7 +491,7 @@ view: cc_conversations {
     group_label: "* Basic Counts *"
     type: count_distinct
     sql: ${conversation_uuid} ;;
-    label: "# Conversations"
+    label: "# Contacts"
   }
 
 
@@ -499,7 +499,7 @@ view: cc_conversations {
     group_label: "* Basic Counts *"
     type: count_distinct
     sql: ${conversation_uuid} ;;
-    label: "# Closed Conversations"
+    label: "# Closed Contacts"
     filters: [is_closed: "yes"]
   }
 
@@ -507,7 +507,7 @@ view: cc_conversations {
     group_label: "* Basic Counts *"
     type: count_distinct
     sql: ${conversation_uuid} ;;
-    label: "# Conversations (Non Deflected)"
+    label: "# Contacts (Non Deflected)"
     filters: [is_deflected_by_bot: "no"]
   }
 
@@ -529,7 +529,7 @@ view: cc_conversations {
     group_label: "* Basic Counts *"
     type: count_distinct
     sql: ${contact_id} ;;
-    label: "# Unique Contacts"
+    label: "# Unique Users"
   }
 
   measure: number_of_conversation_per_agent {
@@ -537,12 +537,12 @@ view: cc_conversations {
     type: number
     value_format: "0.0"
     sql: ${number_of_non_deflected_conversations}/${number_of_agents} ;;
-    label: "# Conversations per Agent"
+    label: "# Contacts per Agent"
   }
 
   measure: share_of_closed_conversations{
     group_label: "* Basic Counts *"
-    label: "% Closed Conversations"
+    label: "% Closed Contacts"
     type: number
     sql: ${number_of_closed_conversations}/${number_of_conversations} ;;
   }
@@ -617,7 +617,7 @@ view: cc_conversations {
 
 
   measure: avg_rating {
-    group_label: "* Conversation Statistics *"
+    group_label: "* Contact Statistics *"
     type: average
     value_format: "0.0"
     sql: ${rating} ;;
@@ -625,7 +625,7 @@ view: cc_conversations {
   }
 
   measure: avg_csat {
-    group_label: "* Conversation Statistics *"
+    group_label: "* Contact Statistics *"
     type: average
     value_format: "0%"
     sql: ${rating}/5 ;;
@@ -633,7 +633,7 @@ view: cc_conversations {
   }
 
   measure: avg_time_first_close_minutes {
-    group_label: "* Conversation Statistics *"
+    group_label: "* Contact Statistics *"
     type: average
     value_format: "hh:mm:ss"
     label: "AVG Time to First Close (Minutes)"
@@ -641,7 +641,7 @@ view: cc_conversations {
   }
 
   measure: avg_time_last_close_minutes {
-    group_label: "* Conversation Statistics *"
+    group_label: "* Contact Statistics *"
     type: average
     value_format: "hh:mm:ss"
     description: "AVG time to last close (minutes)"
@@ -650,7 +650,7 @@ view: cc_conversations {
   }
 
   measure: median_time_last_close_minutes {
-    group_label: "* Conversation Statistics *"
+    group_label: "* Contact Statistics *"
     type: median
     value_format: "hh:mm:ss"
     description: "Median time to last close (minutes)"
@@ -659,7 +659,7 @@ view: cc_conversations {
   }
 
   measure: avg_time_to_agent_reply_seconds {
-    group_label: "* Conversation Statistics *"
+    group_label: "* Contact Statistics *"
     type: average
     hidden: yes
     value_format: "0"
@@ -668,7 +668,7 @@ view: cc_conversations {
   }
 
   measure: avg_time_to_agent_reply_minutes {
-    group_label: "* Conversation Statistics *"
+    group_label: "* Contact Statistics *"
     type: average
     value_format: "mm:ss"
     label: "AVG First Response Time (Minutes)"
@@ -677,7 +677,7 @@ view: cc_conversations {
   }
 
   measure: median_time_to_agent_reply_minutes {
-    group_label: "* Conversation Statistics *"
+    group_label: "* Contact Statistics *"
     type: median
     value_format: "mm:ss"
     label: "Median First Response Time (Minutes)"
@@ -686,7 +686,7 @@ view: cc_conversations {
   }
 
   measure: avg_median_time_to_agent_reply_seconds {
-    group_label: "* Conversation Statistics *"
+    group_label: "* Contact Statistics *"
     type: average
     hidden: yes
     label: "AVG Median Response Time (Seconds)"
@@ -694,7 +694,7 @@ view: cc_conversations {
   }
 
   measure: median_median_time_to_agent_reply_minutes {
-    group_label: "* Conversation Statistics *"
+    group_label: "* Contact Statistics *"
     type: median
     value_format: "mm:ss"
     description: "Median based on all admin replies after a contact reply. Subtracts out of business hours. In seconds."
@@ -703,7 +703,7 @@ view: cc_conversations {
   }
 
   measure: avg_number_of_reopens {
-    group_label: "* Conversation Statistics *"
+    group_label: "* Contact Statistics *"
     type: average
     value_format: "0.0"
     label: "AVG # Reopens"
@@ -711,7 +711,7 @@ view: cc_conversations {
   }
 
   measure: sum_number_of_reopens {
-    group_label: "* Conversation Statistics *"
+    group_label: "* Contact Statistics *"
     type: sum
     value_format: "0"
     label: "# Reopens"
@@ -722,7 +722,7 @@ view: cc_conversations {
     group_label: "* Basic Counts *"
     type: count_distinct
     value_format: "0.0"
-    label: "# Conversations Deflected by Bot"
+    label: "# Contacts Deflected by Bot"
     sql:  conversation_uuid ;;
     filters: [is_deflected_by_bot: "yes"]
   }
@@ -731,7 +731,7 @@ view: cc_conversations {
     group_label: "* Basic Counts *"
     type: count_distinct
     value_format: "0.0"
-    label: "# Conversations Abandoned by Customer"
+    label: "# Contacts Abandoned by Customer"
     sql:  conversation_uuid ;;
     filters: [is_abandoned_by_contact: "yes"]
   }
@@ -740,7 +740,7 @@ view: cc_conversations {
     group_label: "* Basic Counts *"
     type: count_distinct
     value_format: "0"
-    label: "# Conversations with CSAT"
+    label: "# Contacts with CSAT"
     sql:  conversation_uuid ;;
     filters: [rating: ">=0"]
   }
@@ -750,13 +750,13 @@ view: cc_conversations {
     group_label: "* Basic Counts *"
     type: count_distinct
     value_format: "0"
-    label: "# Conversations with Refunds"
+    label: "# Contacts with Refunds"
     sql:  conversation_uuid ;;
     filters: [is_refunded: "yes"]
   }
 
   measure: number_of_reply_other_day {
-    group_label: "* Conversation Statistics *"
+    group_label: "* Contact Statistics *"
     type: count_distinct
     value_format: "0.0"
     sql:  conversation_uuid ;;
@@ -767,37 +767,37 @@ view: cc_conversations {
     group_label: "* Basic Counts *"
     type: count_distinct
     value_format: "0"
-    label: "# Email Conversations"
+    label: "# Email Contacts"
     sql:  conversation_uuid ;;
     filters: [source_type: "email"]
   }
 
   measure: share_deflected_by_bot {
-    group_label: "* Conversation Statistics *"
+    group_label: "* Contact Statistics *"
     type: number
     value_format: "0.0%"
-    label: "% Deflected by Bot"
+    label: "% Deflected Rate"
     sql:  ${number_of_deflected_by_bot}/${number_of_conversations} ;;
   }
 
   measure: share_rated_conversations {
-    group_label: "* Conversation Statistics *"
+    group_label: "* Contact Statistics *"
     type: number
     value_format: "0.0%"
-    label: "% Conversations with CSAT"
+    label: "% Contacts with CSAT"
     sql:  ${number_of_rated_conversations}/${number_of_conversations} ;;
   }
 
   measure: share_conversations_with_refunds {
-    group_label: "* Conversation Statistics *"
+    group_label: "* Contact Statistics *"
     type: number
     value_format: "0.0%"
-    label: "% Conversations with Refunds"
+    label: "% Contacts with Refunds"
     sql:  ${number_of_conversations_with_refund}/${number_of_conversations} ;;
   }
 
   measure: share_email_conversations {
-    group_label: "* Conversation Statistics *"
+    group_label: "* Contact Statistics *"
     type: number
     value_format: "0.0%"
     label: "% Emails"
@@ -805,19 +805,19 @@ view: cc_conversations {
   }
 
   measure: share_abandoned_conversations {
-    group_label: "* Conversation Statistics *"
+    group_label: "* Contact Statistics *"
     type: number
     value_format: "0.0%"
-    label: "% Abandoned Conversations"
+    label: "% Abandoned Contacts"
     sql:  ${number_of_abandoned_by_customer}/${number_of_conversations} ;;
   }
 
   measure: share_reply_on_another_day {
-    group_label: "* Conversation Statistics *"
+    group_label: "* Contact Statistics *"
     type: number
     value_format: "0.0%"
     label: "% First Reply on Another Day"
-    description: "Share of conversations that were created on a given day but first agent reply was on a different day"
+    description: "Share of contacts that were created on a given day but first agent reply was on a different day"
     sql:  ${number_of_reply_other_day}/${number_of_conversations} ;;
   }
 

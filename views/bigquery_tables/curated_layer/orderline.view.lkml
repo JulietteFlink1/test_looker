@@ -488,6 +488,15 @@ view: orderline {
   }
 
 
+  measure: count_order_uuid {
+    label: "Count Order"
+    sql: ${order_uuid} ;;
+    type: count_distinct
+    value_format: "0"
+    group_label: "> Absolute Metrics"
+  }
+
+
 
   ###################### orderline facts
 
@@ -606,6 +615,16 @@ view: orderline {
     sql: ${quantity} * ${unit_price_gross_amount};;
     value_format_name: eur
     filters: [created_date: "7 days ago for 7 days"]
+    group_label: "> Monetary Metrics"
+  }
+
+  measure: avg_item_value_gross {
+    label: "AVG Item Value (Gross)"
+    description: "AIV represents the Average value of items (incl. VAT). Excludes fees (gross), before deducting discounts."
+    hidden: no
+    type:number
+    sql: ${sum_item_price_gross} / ${count_order_uuid} ;;
+    value_format_name: eur
     group_label: "> Monetary Metrics"
   }
 

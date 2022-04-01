@@ -344,7 +344,7 @@ pre_final as
 max_date_kvi as
 (
     select
-    max(kvi_date) as max_kvi_date
+    max(partition_date) as max_kvi_date
     from `flink-data-prod.reporting.key_value_items`
 ),
 
@@ -354,7 +354,7 @@ kvi as
     sku
     from `flink-data-prod.reporting.key_value_items` a
     inner join max_date_kvi  b
-    on a.kvi_date = b.max_kvi_date
+    on a.partition_date = b.max_kvi_date
 )
 
 select
