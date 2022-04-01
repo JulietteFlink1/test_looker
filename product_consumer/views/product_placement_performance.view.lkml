@@ -79,10 +79,10 @@ view: product_placement_performance {
   }
   dimension: product_price {
     group_label: "Product Dimensions"
-    label: "Product"
+    label: "Product Price"
     description: "Price of the product"
     type: number
-    value_format_name: "decimal_2"
+    value_format_name: decimal_2
     sql: ${TABLE}.product_price ;;
   }
   dimension: category_name {
@@ -94,7 +94,7 @@ view: product_placement_performance {
   }
   dimension: subcategory_name {
     group_label: "Product Dimensions"
-    label: "Sub-Category name"
+    label: "Sub-Category Name"
     description: "Name of a sub-category where product was listed"
     type: string
     sql: ${TABLE}.subcategory_name ;;
@@ -108,7 +108,7 @@ view: product_placement_performance {
   }
   dimension: pdp_origin {
     group_label: "Product Dimensions"
-    label: "PDP origin"
+    label: "PDP Origin"
     description: "From where (which product placement in the app) PDP came"
     type: string
     sql: ${TABLE}.pdp_origin ;;
