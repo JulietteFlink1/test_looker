@@ -49,8 +49,8 @@ view: onboarding_task_artur {
   measure: sum_number_of_hours_worked  {
     label: "Hours worked by riders"
     type: sum
-    sql: ${number_of_hours_worked}
-    value_format: "#.0;($#.0)";;
+    sql: ${number_of_hours_worked};;
+    value_format: "0"
   }
 
   dimension: number_of_orders {
