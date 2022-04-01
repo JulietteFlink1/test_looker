@@ -45,7 +45,7 @@ explore: distribution_center {
 
     type: left_outer
     relationship: many_to_one
-    sql_on: ${replenishment_dc_assortment.sku}            = ${replenishment_dc_batchbalance.sku}
+    sql_on: ${replenishment_dc_assortment.sku} = ${replenishment_dc_batchbalance.sku}
     ;;
 
    }
@@ -75,6 +75,18 @@ explore: distribution_center {
 
   }
 
+
+  join: replenishment_dc_agg_derived_table {
+
+    view_label: " 05 Distribution Center Inventory Aggregated "
+
+    type: left_outer
+    relationship: many_to_one
+    sql_on: ${replenishment_dc_agg_derived_table.sku} = ${replenishment_dc_batchbalance.sku}
+        and ${replenishment_dc_agg_derived_table.dc_code} = ${replenishment_dc_batchbalance.dc_code}
+        and ${replenishment_dc_agg_derived_table.stock_balance_date_date} = ${replenishment_dc_batchbalance.stock_balance_date_date};;
+
+  }
 
 
 
