@@ -101,13 +101,13 @@ dimension: until_today {
 
   filter: WoW {
     type: yesno
-    sql: ${date_date}<=date_add(date_trunc(date_add(date_trunc(current_date(), day), interval -1 week), ISOWEEK), interval 1 week) ;;
+    sql: ${date_date}<date_add(date_trunc(date_add(date_trunc(current_date(), week), interval 1 week), ISOWEEK), interval 0 week) ;;
+    description: "Show only completed week, week_start_day by default Monday"
   }
 
   measure: last_updated_date {
     type: date
     sql: MIN(${date_date}) ;;
-
   }
 
   dimension: table_uuid {
