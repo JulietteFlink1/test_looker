@@ -101,7 +101,7 @@ dimension: until_today {
 
   filter: WoW {
     type: yesno
-    sql: ${date_date}<date_add(date_trunc(date_add(date_trunc(current_date(), week), interval 0 week), ISOWEEK), interval 0 week) ;;
+    sql: ${date_date}<=date_add(date_trunc(date_add(date_trunc(current_date(), week), interval 0 week), ISOWEEK), interval 0 week) ;;
   }
 
   measure: last_updated_date {
