@@ -618,14 +618,14 @@ view: orderline {
     group_label: "> Monetary Metrics"
   }
 
-  measure: average_item_value {
-    label: "AVG Item Value "
-    description: "Sum of item values divided by divided by total number of orders"
+  measure: avg_item_value_gross {
+    label: "AVG Item Value (Gross)"
+    description: "AIV represents the Average value of items (incl. VAT). Excludes fees (gross), before deducting discounts."
     hidden: no
     type:number
     sql: ${sum_item_price_gross} / ${count_order_uuid} ;;
     value_format_name: eur
-
+    group_label: "> Monetary Metrics"
   }
 
   measure: number_of_orderlines {
