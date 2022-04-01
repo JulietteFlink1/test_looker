@@ -56,7 +56,7 @@ view: orders_revenue_subcategory_level {
     hidden: yes
   }
 
-  ########### Measures
+  ############ Measures
 
   measure: pop_revenue_max {
     type: average

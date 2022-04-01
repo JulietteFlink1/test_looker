@@ -257,9 +257,20 @@ view: replenishment_dc_batchbalance {
 
   measure: total_stock_available {
     label: "# Total Stock Available"
+    description: "Use this metric when checking the current stock"
     type: sum
 
     sql: ${available_stock} ;;
+  }
+
+  measure: avg_stock_available {
+    label: "AVG Stock Available"
+    hidden: yes
+    description: "This metric must be used when comparing different time periods"
+    type: average
+
+    sql: ${replenishment_dc_agg_derived_table.total_stock_available} ;;
+    value_format_name: decimal_2
   }
 
   measure: batchs_per_sku {
@@ -284,6 +295,125 @@ view: replenishment_dc_batchbalance {
 
     sql: min(${date_diff_numeric}) ;;
   }
+
+  measure: total_stock_available_in_units  {
+    label: "# Total Stock Available in Units"
+    description: "Use this metric when checking the current stock"
+    type: sum
+    sql: ${available_stock} * cast(${replenishment_dc_assortment.pu_per_hu} as numeric) ;;
+  }
+
+  measure: avg_stock_available_in_units  {
+    label: "AVG Stock Available in Units"
+    hidden: yes
+    description: "This metric must be used when comparing different time periods"
+    type: average
+    sql: ${replenishment_dc_agg_derived_table.total_stock_available} * cast(${replenishment_dc_assortment.pu_per_hu} as numeric) ;;
+    value_format_name: decimal_2
+  }
+
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~   Period Comparison Measures   ~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+  measure: stock_available_last_7days  {
+    label: "AVG Stock Available in the last 7 days"
+    hidden: yes
+    group_label: "Variation Metrics"
+    type: average
+    sql:  ${replenishment_dc_agg_derived_table.total_stock_available};;
+    filters: [stock_balance_date_date: "last 7 days"]
+    value_format_name: decimal_1
+  }
+
+
+  measure: stock_available_last_7days_pre  {
+    label: "Period before the last 7 days"
+    hidden: yes
+    group_label: "Variation Metrics"
+    type: average
+    sql:  ${replenishment_dc_agg_derived_table.total_stock_available};;
+    filters: [stock_balance_date_date: "14 days ago for 7 days"]
+    value_format_name: decimal_1
+  }
+
+
+  measure: delta_last_7days {
+    label: "% Delta last 7 days over previous period"
+    hidden: yes
+    group_label: "Variation Metrics"
+    type: number
+    sql: (${stock_available_last_7days}/ nullif(${stock_available_last_7days_pre},0)) - 1 ;;
+    value_format_name: percent_1
+  }
+
+
+  measure: stock_available_last_15days  {
+    label: "AVG Stock Available in the last 15 days"
+    hidden: yes
+    group_label: "Variation Metrics"
+    type: average
+    sql:  ${replenishment_dc_agg_derived_table.total_stock_available};;
+    filters: [stock_balance_date_date: "last 15 days"]
+    value_format_name: decimal_1
+  }
+
+
+  measure: stock_available_last_15days_pre  {
+    label: "Period before the last 15 days"
+    hidden: yes
+    group_label: "Variation Metrics"
+    type: average
+    sql:  ${replenishment_dc_agg_derived_table.total_stock_available};;
+    filters: [stock_balance_date_date: "30 days ago for 15 days"]
+    value_format_name: decimal_1
+  }
+
+
+  measure: delta_last_15days {
+    label: "% Delta last 15 days over previous period"
+    hidden: yes
+    group_label: "Variation Metrics"
+    type: number
+    sql: (${stock_available_last_15days}/ nullif(${stock_available_last_15days_pre},0)) - 1 ;;
+    value_format_name: percent_1
+  }
+
+
+  measure: stock_available_last_30days  {
+    label: "AVG Stock Available in the last 30 days"
+    hidden: yes
+    group_label: "Variation Metrics"
+    type: average
+    sql:  ${replenishment_dc_agg_derived_table.total_stock_available};;
+    filters: [stock_balance_date_date: "last 30 days"]
+    value_format_name: decimal_1
+  }
+
+
+  measure: stock_available_last_30days_pre  {
+    label: "Period before the last 30 days"
+    hidden: yes
+    group_label: "Variation Metrics"
+    type: average
+    sql:  ${replenishment_dc_agg_derived_table.total_stock_available};;
+    filters: [stock_balance_date_date: "60 days ago for 30 days"]
+    value_format_name: decimal_1
+  }
+
+
+  measure: delta_last_30days {
+    label: "% Delta last 30 days over previous period"
+    hidden: yes
+    group_label: "Variation Metrics"
+    type: number
+    sql: (${stock_available_last_30days}/ nullif(${stock_available_last_30days_pre},0)) - 1 ;;
+    value_format_name: percent_1
+  }
+
 
 
 }

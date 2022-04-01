@@ -70,6 +70,7 @@ view: replenishment_dc_assortment {
   }
 
   dimension: line_type {
+    hidden: yes
     type: string
     sql: ${TABLE}.line_type ;;
   }
@@ -173,7 +174,8 @@ view: replenishment_dc_assortment {
 
 
   dimension: pu_per_hu {
-    hidden: yes
+    label: "Units per Handling Unit"
+    hidden: no
     type: string
     sql: ${TABLE}.pu_per_hu ;;
   }

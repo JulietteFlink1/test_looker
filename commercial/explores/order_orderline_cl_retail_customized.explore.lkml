@@ -11,7 +11,7 @@ include: "/views/bigquery_tables/gsheets/commercial_department_names.view"
 explore: order_orderline_cl_retail_customized {
   extends: [order_orderline_cl]
   group_label: "Commercial"
-  label: "Orders & Items (Retail Version)"
+  label: "Orders & Items (Commercial Dept. Version)"
   hidden: no
 
   join: sku_level_aggregated_metrics {
