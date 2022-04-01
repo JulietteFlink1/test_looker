@@ -31,6 +31,11 @@ view: sku_performance_base {
     sql: ${TABLE}.sku ;;
   }
 
+  dimension: joining_sku {
+    type: string
+    sql: ${TABLE}.joining_sku ;;
+  }
+
 
 
   # =========  hidden   =========
