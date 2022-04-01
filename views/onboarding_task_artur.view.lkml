@@ -25,6 +25,7 @@ view: onboarding_task_artur {
   measure: avg_average_number_of_items {
     label: "Average number of items"
     type: average
+    sql_distinct_key: ${date_date},${country_iso},${hub_code};;
     sql: ${average_number_of_items} ;;
     value_format: "#.00;($#.00)"
   }
@@ -100,8 +101,7 @@ dimension: until_today {
 
   filter: WoW {
     type: yesno
-    sql: ${date_date}>=date_trunc(date_add(date_trunc(current_date(), week), interval -1 week), ISOWEEK)
-    AND ${date_date}<date_add(date_trunc(date_add(date_trunc(current_date(), week), interval -1 week), ISOWEEK), interval 1 week) ;;
+    sql: ${date_date}<date_add(date_trunc(date_add(date_trunc(current_date(), week), interval -1 week), ISOWEEK), interval 1 week) ;;
   }
 
   measure: last_updated_date {
