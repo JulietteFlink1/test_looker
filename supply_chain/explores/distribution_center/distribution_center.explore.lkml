@@ -20,7 +20,6 @@ explore: distribution_center {
 
   from  :     replenishment_dc_batchbalance
   view_name:  replenishment_dc_batchbalance
-  hidden: yes
   view_label: " 01 Distribution Center Inventory "
 
 ### FILTERS
