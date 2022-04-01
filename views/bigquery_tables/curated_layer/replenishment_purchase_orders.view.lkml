@@ -315,9 +315,39 @@ view: replenishment_purchase_orders {
         ;;
   }
 
+  measure: cnt_of_orders {
+
+    label:       "# Count of orders"
+    description: "The amount of delivered orders"
+    #group_label: " >> Line Item Data"
+
+    type: count_distinct
+    sql: ${order_id} ;;
+
+}
+
+  measure: cnt_of_skus_per_order {
+
+    label:       "# Count of skus per orders"
+    description: "The amount of skus per orders"
+    #group_label: " >> Line Item Data"
+
+    type: count_distinct
+    sql: ${sku} ;;
+
+  }
+
+  measure: avg_items_per_order  {
+    label: "AVG Items per Order"
+    description: "AVG Items per Order per SKU"
+    sql: round(${cnt_of_skus_per_order}/${cnt_of_orders}, 2) ;;
+
+  }
+
 
   measure: count {
     type: count
+    hidden: yes
     drill_fields: [name]
   }
 }
