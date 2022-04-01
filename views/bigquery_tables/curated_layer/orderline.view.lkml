@@ -488,6 +488,15 @@ view: orderline {
   }
 
 
+  measure: count_order_uuid {
+    label: "Count Order"
+    sql: ${order_uuid} ;;
+    type: count_distinct
+    value_format: "0"
+    group_label: "> Absolute Metrics"
+  }
+
+
 
   ###################### orderline facts
 
@@ -607,6 +616,16 @@ view: orderline {
     value_format_name: eur
     filters: [created_date: "7 days ago for 7 days"]
     group_label: "> Monetary Metrics"
+  }
+
+  measure: average_item_value {
+    label: "AVG Item Value "
+    description: "Sum of item values divided by divided by total number of orders"
+    hidden: no
+    type:number
+    sql: ${sum_item_price_gross} / ${count_order_uuid} ;;
+    value_format_name: eur
+
   }
 
   measure: number_of_orderlines {

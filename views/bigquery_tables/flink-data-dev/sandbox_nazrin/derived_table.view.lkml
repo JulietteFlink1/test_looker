@@ -25,20 +25,12 @@ view: derived_table {
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  # ~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~
-  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  measure: count {
-    type: count
-    drill_fields: [detail*]
-    hidden: yes
-  }
-
-  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Dimensions     ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   dimension: order_date {
+    label: "Order date"
+    description: "Order date"
     hidden: yes
     type: date
     datatype: date
@@ -46,24 +38,32 @@ view: derived_table {
   }
 
   dimension: hub_country_iso {
+    label: "Country ISO"
+    description: "Country"
     hidden: yes
     type: string
     sql: ${TABLE}.hub_country_iso ;;
   }
 
   dimension: hub_city {
+    label: "City"
+    description: "City"
     hidden: yes
     type: string
     sql: ${TABLE}.hub_city ;;
   }
 
   dimension: hub_name {
+    label: "Hub name"
+    description: "Hub name"
     hidden: yes
     type: string
     sql: ${TABLE}.hub_name ;;
   }
 
   dimension: avg_fulfillment_time_minutes {
+    label: "AVG Fulfillment time"
+    description: "AVG Fulfillment time in minutes"
     hidden: yes
     type: number
     sql: ${TABLE}.avg_fulfillment_time_minutes ;;
@@ -77,12 +77,4 @@ view: derived_table {
     style: relational
     sql: ${avg_fulfillment_time_minutes} ;;
   }
-
-  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  # ~~~~~~~~~~~~~~~        Sets        ~~~~~~~~~~~~~~~~~~~~~~~~~
-  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  set: detail {
-    fields: [order_date, hub_country_iso, hub_city, hub_name, avg_fulfillment_time_minutes]
   }
-}
