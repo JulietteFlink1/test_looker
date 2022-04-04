@@ -4,7 +4,7 @@ view: key_value_items {
 
 dimension: kvi_date {
   type: string
-  sql: ${TABLE}.kvi_date ;;
+  sql: ${TABLE}.partition_date ;;
 }
 
 
