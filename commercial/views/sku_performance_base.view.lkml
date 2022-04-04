@@ -305,4 +305,17 @@ view: sku_performance_base {
     hidden: yes
   }
 
+  dimension: number_of_customers_corrected {
+    type: number
+    sql: ${TABLE}.number_of_customers_corrected ;;
+    hidden: yes
+  }
+
+  dimension: pop_number_of_customers_corrected {
+    type: number
+    sql: ${TABLE}.pop_number_of_customers_corrected ;;
+    hidden: yes
+  }
+
+
 }
