@@ -81,7 +81,8 @@ view: orders {
   dimension: item_value_gross {
     type: number
     hidden: no
-    sql: ${gmv_gross} - ${shipping_price_gross_amount} - ${rider_tip} ;;
+    sql: coalesce(${gmv_gross},0) - coalesce(${shipping_price_gross_amount},0) - coalesce(${rider_tip},0)
+    ;;
   }
 
   dimension: item_value_net {

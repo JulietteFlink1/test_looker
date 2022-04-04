@@ -51,6 +51,8 @@ view: +sku_performance_base {
 
     value_format_name: decimal_0
 
+    hidden: yes
+
   }
 
   measure: avg_number_of_connections {
@@ -205,6 +207,33 @@ view: +sku_performance_base {
 
   }
 
+  measure: sum_number_of_customers_corrected {
+
+    label:      "# Customers [L4W]"
+    description: "The number of customers, have ordered in the current period"
+    group_label: "Report Period"
+
+    type: sum
+    sql:  ${number_of_customers_corrected};;
+
+    value_format_name: decimal_0
+
+  }
+
+  measure: pct_buying_frequency {
+
+    label:       "Buying Frequency [L4W]"
+    description: "The number of orders divided by the number of custoemrs in the current period"
+    group_label: "Report Period"
+
+    type: number
+    sql: safe_divide(${sum_number_of_orders_corrected}, ${sum_number_of_customers_corrected}) ;;
+
+    value_format_name: decimal_2
+
+  }
+
+
   measure: pct_waste {
 
     label:      "% Waste [L4W]"
@@ -241,6 +270,8 @@ view: +sku_performance_base {
 
     value_format_name: percent_4
   }
+
+
 
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -369,6 +400,32 @@ view: +sku_performance_base {
     sql: ${pop_share_of_hours_open} ;;
 
     value_format_name: decimal_0
+
+  }
+
+  measure: sum_pop_number_of_customers_corrected {
+
+    label:      "# Customers [PoP]"
+    description: "The number of customers, have ordered in the previous period"
+    group_label: "PoP Period"
+
+    type: sum
+    sql:  ${pop_number_of_customers_corrected};;
+
+    value_format_name: decimal_0
+
+  }
+
+  measure: pct_pop_buying_frequency {
+
+    label:       "Buying Frequency [PoP]"
+    description: "The number of orders divided by the number of custoemrs in the previous period"
+    group_label: "PoP Period"
+
+    type: number
+    sql: safe_divide(${sum_pop_number_of_orders_corrected}, ${sum_pop_number_of_customers_corrected}) ;;
+
+    value_format_name: decimal_2
 
   }
 

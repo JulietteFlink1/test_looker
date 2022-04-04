@@ -7,14 +7,15 @@ view: orders_revenue_subcategory_level {
       column: country_iso { field: orderline.country_iso }
       column: date { field: orderline.created_week }
       column: revenue_gross { field: orderline.sum_item_price_gross}
+      column: category { field: orderline.product_category_erp}
       column: subcategory { field: orderline.product_subcategory_erp}
       derived_column: unique_id {
-        sql: concat(country_iso, date, ifnull(subcategory, '')) ;;
+        sql: concat(country_iso, date, ifnull(category, ''), ifnull(subcategory, '')) ;;
       }
       derived_column: pop_revenue {
-        sql:  (revenue_gross - LEAD(revenue_gross) OVER (PARTITION BY country_iso, subcategory ORDER BY date DESC))
+        sql:  (revenue_gross - LEAD(revenue_gross) OVER (PARTITION BY country_iso, category, subcategory ORDER BY date DESC))
             /
-            nullif(LEAD(revenue_gross) OVER (PARTITION BY country_iso, subcategory ORDER BY date DESC), 0) ;;
+            nullif(LEAD(revenue_gross) OVER (PARTITION BY country_iso, category, subcategory ORDER BY date DESC), 0) ;;
       }
     }
   }
@@ -42,6 +43,11 @@ view: orders_revenue_subcategory_level {
     description: "Sum of Gross Revenue"
     value_format_name: eur_0
     type: number
+  }
+
+  dimension: category {
+    hidden: yes
+    label: "Category"
   }
 
   dimension: subcategory {
