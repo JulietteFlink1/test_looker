@@ -3,9 +3,11 @@ view: key_value_items {
 
 
 dimension: kvi_date {
-  type: string
+  type: date
+  datatype: date
   sql: ${TABLE}.partition_date ;;
 }
+
 
 
   dimension: country_iso {
