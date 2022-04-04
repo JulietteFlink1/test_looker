@@ -82,12 +82,14 @@ view: braintree_data_202203 {
 
   measure: sum_amt_authorised {
     type: sum
+    label: "Amt Authorised"
     sql: ${amt_authorised} ;;
     value_format_name: euro_accounting_2_precision
   }
 
   measure: sum_amt_submitted_for_settlement {
     type: sum
+    label: "Amt Submitted for Settlement"
     sql: ${amt_submitted_for_settlement} ;;
     value_format_name: euro_accounting_2_precision
   }
