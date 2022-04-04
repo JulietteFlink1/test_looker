@@ -71,10 +71,11 @@ explore: supply_chain {
         and
             ${hubs_ct.is_test_hub} is false
         and
-            ${hubs_ct.live} is not null
+            ${hubs_ct.start_date} <= ${products_hub_assignment.report_date}
 
         and
             left(${products_hub_assignment.sku},1) != '9'
+
 
       ;;
 
@@ -244,9 +245,10 @@ explore: supply_chain {
     relationship: many_to_one
 
     sql_on:
-        ${bulk_inbounding_performance.hub_code}        = ${products_hub_assignment.hub_code}
-    and ${bulk_inbounding_performance.inbounding_date} = ${products_hub_assignment.report_date}
-    and ${bulk_inbounding_performance.sku}             = ${products_hub_assignment.sku}
+        ${bulk_inbounding_performance.hub_code}                   = ${products_hub_assignment.hub_code}
+    and ${bulk_inbounding_performance.first_bulk_inbounding_date} = ${products_hub_assignment.report_date}
+    and ${bulk_inbounding_performance.sku}                        = ${products_hub_assignment.sku} and
+        {% condition global_filters_and_parameters.datasource_filter %} ${bulk_inbounding_performance.first_bulk_inbounding_date} {% endcondition %}
     ;;
 
   }

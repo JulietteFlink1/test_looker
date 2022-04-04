@@ -685,6 +685,19 @@ view: inventory_daily {
     value_format_name: decimal_1
   }
 
+  measure: unique_inbounded_skus {
+
+    label:       "# Unique Inbounded SKUs"
+    description: "The number of unique products /SKUs, that have been inbounded"
+    group_label: "Inventory Change"
+
+    type: count_distinct
+    sql: ${sku} ;;
+    filters: [number_of_total_inbound: ">0"]
+
+    value_format_name: decimal_0
+  }
+
   measure: sum_of_total_correction {
 
     label: "# Corrections - Total"
@@ -869,6 +882,8 @@ view: inventory_daily {
 
     type: count
   }
+
+
 
 
 

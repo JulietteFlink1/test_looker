@@ -19,6 +19,17 @@ explore: inbound_outbound_kpi_report {
     sql_on: ${inventory_changes_daily.sku} = ${products.product_sku} ;;
   }
 
+  join: lexbizz_item {
+
+    view_label: "* Products (ERP)*"
+
+    type: left_outer
+    relationship: many_to_one
+    sql_on: ${inventory_changes_daily.sku} = ${lexbizz_item.sku}  and
+            ${lexbizz_item.ingestion_date} = current_date()
+    ;;
+  }
+
   join: hubs_ct {
     type: left_outer
     relationship: many_to_one

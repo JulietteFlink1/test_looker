@@ -81,13 +81,13 @@ view: orders {
   dimension: item_value_gross {
     type: number
     hidden: no
-    sql: ${gmv_gross} - ${shipping_price_gross_amount} ;;
+    sql: ${gmv_gross} - ${shipping_price_gross_amount} - ${rider_tip} ;;
   }
 
   dimension: item_value_net {
     type: number
     hidden: no
-    sql: ${gmv_net} - ${shipping_price_net_amount} ;;
+    sql: ${gmv_net} - ${shipping_price_net_amount} - ${rider_tip} ;;
   }
 
   dimension: item_value_gross_tier {
@@ -1080,6 +1080,22 @@ view: orders {
     hidden: no
     type: number
     sql: ${TABLE}.weight ;;
+  }
+
+  dimension: weight_kg {
+    group_label: "* Order Dimensions *"
+    description: "Weight (kg)"
+    hidden: no
+    type: number
+    sql: ${TABLE}.weight/1000 ;;
+  }
+
+  dimension: weight_kg_tier {
+    group_label: "* Order Dimensions *"
+    type: tier
+    tiers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+    style: relational
+    sql: ${weight_kg} ;;
   }
 
   dimension: is_customer_location_available {

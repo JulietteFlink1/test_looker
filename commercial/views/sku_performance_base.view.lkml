@@ -31,6 +31,11 @@ view: sku_performance_base {
     sql: ${TABLE}.sku ;;
   }
 
+  dimension: joining_sku {
+    type: string
+    sql: ${TABLE}.joining_sku ;;
+  }
+
 
 
   # =========  hidden   =========
@@ -57,6 +62,7 @@ view: sku_performance_base {
   }
 
   measure: count {
+    label: "Count of Hubs and SKUs"
     type: count
     drill_fields: []
   }
@@ -298,5 +304,18 @@ view: sku_performance_base {
     sql: ${TABLE}.waste_expired ;;
     hidden: yes
   }
+
+  dimension: number_of_customers_corrected {
+    type: number
+    sql: ${TABLE}.number_of_customers_corrected ;;
+    hidden: yes
+  }
+
+  dimension: pop_number_of_customers_corrected {
+    type: number
+    sql: ${TABLE}.pop_number_of_customers_corrected ;;
+    hidden: yes
+  }
+
 
 }
