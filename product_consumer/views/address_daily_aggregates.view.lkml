@@ -67,7 +67,7 @@ view: address_daily_aggregates {
     group_label: "Device Dimensions"
     description: "Device type and app version combined in one dimension"
     type: string
-    sql: ${platform} || '-' || ${app_version} ;;
+    sql: CASE WHEN ${TABLE}.device_type IN ('ios','android') THEN  (${TABLE}.device_type || '-' || ${TABLE}.app_version ) END ;;
   }
 
   ########## Location attributes #########

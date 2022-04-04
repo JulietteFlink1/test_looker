@@ -11,7 +11,7 @@ include: "/views/bigquery_tables/gsheets/commercial_department_names.view"
 explore: order_orderline_cl_retail_customized {
   extends: [order_orderline_cl]
   group_label: "Commercial"
-  label: "Orders & Items (Retail Version)"
+  label: "Orders & Items (Commercial Dept. Version)"
   hidden: no
 
   join: sku_level_aggregated_metrics {
@@ -38,6 +38,7 @@ explore: order_orderline_cl_retail_customized {
     view_label: "* PoP *"
     sql_on: ${orders_revenue_subcategory_level.date} = ${orders_cl.created_week}
       and ${orders_revenue_subcategory_level.country_iso} = ${orders_cl.country_iso}
+      and ${orders_revenue_subcategory_level.category} = ${orderline.product_category_erp}
       and ${orders_revenue_subcategory_level.subcategory} = ${orderline.product_subcategory_erp};;
     relationship: many_to_one
   }
@@ -61,6 +62,7 @@ explore: order_orderline_cl_retail_customized {
     view_label: "* PoP *"
     sql_on: ${orders_revenue_subcategory_level_monthly.date} = ${orders_cl.created_month}
       and ${orders_revenue_subcategory_level_monthly.country_iso} = ${orders_cl.country_iso}
+      and ${orders_revenue_subcategory_level_monthly.category} = ${orderline.product_category_erp}
       and ${orders_revenue_subcategory_level_monthly.subcategory} = ${orderline.product_subcategory_erp};;
     relationship: many_to_one
   }

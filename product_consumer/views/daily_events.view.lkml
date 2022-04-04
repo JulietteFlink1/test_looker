@@ -78,14 +78,14 @@ view: daily_events {
     dimension: platform {
       group_label: "Device Dimensions"
       label: "Platform"
-      description: "Platform of a device: app or web"
+      description: "Platform is either iOS, Android or Web"
       type: string
       sql: ${TABLE}.platform ;;
     }
     dimension: device_type {
       group_label: "Device Dimensions"
       label: "Device Type"
-      description: "Type of the device used"
+      description: "Device type is one of: ios, android, windows, macintosh, linux or other"
       type: string
       sql: ${TABLE}.device_type ;;
     }
@@ -114,7 +114,7 @@ view: daily_events {
       group_label: "Device Dimensions"
       type: string
       description: "Concatenation of device_type and app_version"
-      sql: ${device_type} || '-' || ${app_version} ;;
+      sql: case when ${TABLE}.device_type in ('ios','android') then  (${TABLE}.device_type || '-' || ${TABLE}.app_version ) end ;;
     }
 
   # ======= Location Dimension ======= #

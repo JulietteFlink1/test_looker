@@ -127,4 +127,13 @@ view: price_test_tracking {
     sql: ${TABLE}.test_id ;;
   }
 
+  dimension: is_live_test {
+
+    label:  "Is Test Live"
+    description: "If this product is currently part of a price test, then yes, if not, then no"
+
+    type:  yesno
+    sql: ${start_date} <= CURRENT_DATE() AND ${end_date} >= CURRENT_DATE();;
+  }
+
 }

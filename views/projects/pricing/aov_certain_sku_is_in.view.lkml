@@ -99,7 +99,7 @@ c.hub_name,
 c.hub_code,
 b.category,
 a.quantity,
-a.amt_total_price_gross
+coalesce(a.amt_total_price_gross,0)+coalesce(a.amt_total_deposit,0) as amt_total_price_gross,
 
 FROM `flink-data-prod.curated.order_lineitems` a
 left join `flink-data-prod.curated.products` b
@@ -146,7 +146,7 @@ group by 1,2,3,4,5,6,7,8
 max_date_kvi as
 (
     select
-    max(kvi_date) as max_kvi_date
+    max(partition_date) as max_kvi_date
     from `flink-data-prod.reporting.key_value_items`
 ),
 
@@ -156,7 +156,7 @@ kvi as
     sku
     from `flink-data-prod.reporting.key_value_items` a
     inner join max_date_kvi  b
-    on a.kvi_date = b.max_kvi_date
+    on a.partition_date = b.max_kvi_date
 )
 
 --select * from or_sku_categ

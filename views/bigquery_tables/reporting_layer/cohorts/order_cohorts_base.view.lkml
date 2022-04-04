@@ -553,8 +553,10 @@ view: order_cohorts_base {
   dimension_group: time_between_hub_launch_and_order {
     group_label: "* Hub Dimensions *"
     type: duration
-    sql_start: null ;;
-    sql_end: null ;;
+    sql_start: ${hubs_ct.start_date} ;;
+    sql_end: ${order_date} ;;
+    datatype: date
+
   }
 
   #dimension: time_since_sign_up_biweekly {
@@ -570,6 +572,7 @@ view: order_cohorts_base {
   dimension: order_date {
     group_label: "* Dates and Timestamps *"
     type: date
+    datatype: date
     sql: ${TABLE}.order_date ;;
   }
 

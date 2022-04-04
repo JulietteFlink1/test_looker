@@ -110,7 +110,7 @@ view: search_keywords {
     group_label: "Device Dimensions"
     type: string
     description: "Concatenation of device_type and app_version"
-    sql: ${device_type} || '-' || ${app_version} ;;
+    sql: case when ${TABLE}.device_type in ('ios','android') then  (${TABLE}.device_type || '-' || ${TABLE}.app_version ) end ;;
   }
 
   # ======= Location Dimension ======= #
@@ -136,6 +136,13 @@ view: search_keywords {
     type: string
     sql: ${TABLE}.hub_code ;;
   }
+  dimension: city {
+    group_label: "Location Dimensions"
+    label: "City"
+    description: "City"
+    type: string
+    sql: ${TABLE}.city ;;
+  }
   dimension: country_iso {
     group_label: "Location Dimensions"
     label: "Country ISO"
@@ -158,8 +165,12 @@ view: search_keywords {
     group_label: "Search Dimensions"
     label: "Is Search Label Used"
     description: "Whether predefined search label was used"
-    type: yesno
-    sql: ${TABLE}.is_search_label_used ;;
+    type: string
+    sql: case
+            when ${TABLE}.is_search_label_used = true then 'Yes'
+            when ${TABLE}.is_search_label_used = false then 'No'
+            when ${TABLE}.is_search_label_used is null then 'Unkown'
+        end ;;
   }
 
   dimension: is_added_to_cart_after_search {
