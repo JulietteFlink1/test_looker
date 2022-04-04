@@ -51,6 +51,8 @@ view: +sku_performance_base {
 
     value_format_name: decimal_0
 
+    hidden: yes
+
   }
 
   measure: avg_number_of_connections {
