@@ -7,6 +7,7 @@ include: "/views/native_derived_tables/retail/category_performance/monthly/order
 include: "/views/native_derived_tables/retail/category_performance/monthly/orders_revenue_subcategory_level_monthly.view"
 include: "/views/native_derived_tables/retail/category_performance/monthly/orders_revenue_category_level_monthly.view"
 include: "/views/bigquery_tables/gsheets/commercial_department_names.view"
+include: "/commercial/views/dynamically_filtered_measures.view"
 
 explore: order_orderline_cl_retail_customized {
   extends: [order_orderline_cl]
@@ -80,6 +81,15 @@ explore: order_orderline_cl_retail_customized {
     sql_on: lower(${commercial_department_names.category}) = lower(${products.category})
       and lower(${commercial_department_names.subcategory}) = lower(${products.subcategory})
       and lower(${commercial_department_names.country_iso}) = lower(${products.country_iso});;
+    relationship: many_to_one
+
+  }
+
+  join: dynamically_filtered_measures {
+    view_label: "* Dynamically Filtered Measures *"
+    sql_on: ${dynamically_filtered_measures.country_iso} = ${orders_cl.country_iso}
+      and ${dynamically_filtered_measures.created_date} = ${orders_cl.created_date}
+      and ${dynamically_filtered_measures.sku} = ${orderline.product_sku} ;;
     relationship: many_to_one
 
   }
