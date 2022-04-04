@@ -102,15 +102,15 @@ view: hub_daily_report_victor {
 
   }
 
-  dimension: number_of_orders {
-    label:"# orders"
-    description: ""
-    hidden:  yes
-    type: number
-    sql: ${TABLE}.number_of_orders ;;
+  # dimension: number_of_orders {
+  #   label:"# orders"
+  #   description: ""
+  #   hidden:  yes
+  #   type: number
+  #   sql: ${TABLE}.number_of_orders ;;
 
-    value_format_name: decimal_1
-  }
+  #   value_format_name: decimal_1
+  # }
 
   dimension: number_of_worked_employees {
     label:       "# riders worked"
@@ -198,15 +198,21 @@ view: hub_daily_report_victor {
     {% endif %};;
     }
 
-
   measure: nb_of_orders {
 
     label: "# Orders"
     type: sum
-    sql: ${number_of_orders} ;;
-
+    sql: ${TABLE}.number_of_orders  ;;
     value_format_name: decimal_1
   }
+  # measure: nb_of_orders {
+
+  #   label: "# Orders"
+  #   type: sum
+  #   sql: ${number_of_orders} ;;
+
+  #   value_format_name: decimal_1
+  # }
 
   measure: nb_of_worked_employees {
 
