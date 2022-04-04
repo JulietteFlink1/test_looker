@@ -628,6 +628,16 @@ view: orderline {
     group_label: "> Monetary Metrics"
   }
 
+  measure: avg_item_value_net {
+    label: "AVG Item Value (Net)"
+    description: "AIV represents the Average value of items (excl. VAT). Excludes fees (net), before deducting discounts."
+    hidden: no
+    type:number
+    sql: ${sum_item_price_net} / ${count_order_uuid} ;;
+    value_format_name: eur
+    group_label: "> Monetary Metrics"
+  }
+
   measure: number_of_orderlines {
     label: "# Order Lineitems"
     group_label: "> Absolute Metrics"
