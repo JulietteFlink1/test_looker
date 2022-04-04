@@ -62,6 +62,7 @@ view: sku_performance_base {
   }
 
   measure: count {
+    label: "Count of Hubs and SKUs"
     type: count
     drill_fields: []
   }

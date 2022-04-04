@@ -2,6 +2,8 @@ include: "/**/sku_performance_base.view"
 include: "/**/products.view"
 include: "/**/lexbizz_item.view"
 include: "/**/hubs_ct.view"
+include: "/**/spc_2_ranks.view"
+
 
 explore: spc_2 {
 
@@ -36,6 +38,18 @@ explore: spc_2 {
     relationship: many_to_one
 
     sql_on:  ${sku_performance_base.hub_code} = ${hubs_ct.hub_code};;
+  }
+
+  join: spc_2_ranks {
+
+    view_label: "SPC 2.0 Core Data"
+
+    type: left_outer
+    relationship: many_to_one
+
+    sql_on: ${sku_performance_base.hub_code} = ${spc_2_ranks.hub_code} and
+            ${sku_performance_base.sku}      = ${spc_2_ranks.sku}
+            ;;
   }
 
   # join: lexbizz_item {
