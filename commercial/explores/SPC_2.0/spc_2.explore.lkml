@@ -3,6 +3,9 @@ include: "/**/products.view"
 include: "/**/lexbizz_item.view"
 include: "/**/hubs_ct.view"
 include: "/**/spc_2_ranks.view"
+include: "/**/lexbizz_item_warehouse.view"
+include: "/**/lexbizz_warehouse.view"
+
 
 
 explore: spc_2 {
@@ -52,9 +55,33 @@ explore: spc_2 {
             ;;
   }
 
-  # join: lexbizz_item {
-  #   type: left_outer
-  #   relationship: many_to_one
-  #   sql: ${lexbizz_item.sku} = ${sku_performance_base.sku} ;;
-  # }
+  join: lexbizz_warehouse {
+
+    view_label: ""
+
+    type: left_outer
+    relationship: many_to_one
+
+    sql_on: ${lexbizz_warehouse.hub_code} =  ${sku_performance_base.hub_code}
+    and   ${lexbizz_warehouse.ingestion_date} = current_date()
+    ;;
+
+  }
+
+  join: lexbizz_item_warehouse {
+
+    type: left_outer
+    relationship: many_to_one
+
+    sql_on: ${lexbizz_item_warehouse.warehouse_id} = ${lexbizz_warehouse.warehouse_id} and
+            ${lexbizz_item_warehouse.sku}        =${sku_performance_base.sku} and
+            ${lexbizz_item_warehouse.ingestion_date} = current_date()
+    ;;
+
+    fields: [lexbizz_item_warehouse.item_at_warehouse_status]
+  }
+
+
+
+
 }
