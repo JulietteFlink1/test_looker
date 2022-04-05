@@ -192,6 +192,30 @@ view: address_daily_aggregates {
     sql: ${TABLE}.is_waitlist_signup_selected ;;
   }
 
+  dimension: is_checkout_viewed {
+    group_label: "Event Occurences"
+    label: "Is Hub Updated With Cart"
+    description: "Did daily_user_uuid update their address or hub after they already put a product into their cart?"
+    type: yesno
+    sql: ${TABLE}.is_checkout_viewed ;;
+  }
+
+  dimension: is_hub_updated_with_cart {
+    group_label: "Event Occurences"
+    label: "Is Hub Updated With Cart"
+    description: "Did daily_user_uuid update their address or hub after they already put a product into their cart?"
+    type: yesno
+    sql: ${TABLE}.is_hub_updated_with_cart ;;
+  }
+
+  dimension: is_addres_tappped_at_checkout {
+    group_label: "Event Occurences"
+    label: "Is Waitlist Signup Selected"
+    description: "Did daily_user_uuid tap the address at checkout?"
+    type: yesno
+    sql: ${TABLE}.is_addres_tappped_at_checkout ;;
+  }
+
   ######### User Metrics ###########
 
   measure: cnt_users_with_address {
@@ -336,6 +360,30 @@ view: address_daily_aggregates {
     description: "# daily users who viewed address selection map at least once"
     type: count
     filters: [is_map_viewed: "yes"]
+  }
+
+  measure: cnt_is_hub_updated_with_cart {
+    group_label: "# Daily Users"
+    label: "# Daily Users With Address Updated With Cart"
+    description: "# daily users who updated their address after having added at least one product to their cart"
+    type: count
+    filters: [is_hub_updated_with_cart: "yes"]
+  }
+
+  measure: cnt_is_addres_tappped_at_checkout {
+    group_label: "# Daily Users"
+    label: "# Daily Users With Address Tapped At Checkout"
+    description: "# daily users who tapped on the delivery address on the checkout screen"
+    type: count
+    filters: [is_addres_tappped_at_checkout: "yes"]
+  }
+
+  measure: cnt_is_checkout_viewed {
+    group_label: "# Daily Users"
+    label: "# Daily Users With Checkout Viewed"
+    description: "# daily users with at least one Checkout Viewed event"
+    type: count
+    filters: [is_checkout_viewed: "yes"]
   }
 
   ######## Daily Attributes ########
