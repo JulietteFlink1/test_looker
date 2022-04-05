@@ -6,14 +6,17 @@ view: dynamically_filtered_measures {
     explore_source: order_orderline_cl {
       column: country_iso { field: orderline.country_iso }
       column: created_date { field: orderline.created_date }
-      column: sku { field: orderline.product_sku }
+      column: sku { field: products.product_sku }
+      column: product_name { field: products.product_name }
+      column: hub_code { field: hubs.hub_code }
+      column: city { field: hubs.city }
       column: category { field: orderline.product_category_erp}
       column: subcategory { field: orderline.product_subcategory_erp}
       column: cnt_orders { field: orders_cl.cnt_orders }
       column: revenue_gross { field: orderline.sum_item_price_gross}
       column: sum_item_quantity { field: orderline.sum_item_quantity}
       derived_column: unique_id {
-        sql: concat(sku, country_iso, created_date) ;;
+        sql: concat(sku, country_iso, created_date, hub_code) ;;
       }
       # derived_column: pop_orders {
       #   sql:  (cnt_orders - LEAD(cnt_orders) OVER (PARTITION BY country_iso ORDER BY date DESC))
@@ -25,6 +28,11 @@ view: dynamically_filtered_measures {
       #       /
       #       nullif(LEAD(revenue_gross) OVER (PARTITION BY country_iso ORDER BY date DESC), 0) ;;
       # }
+
+      # Only works if joined to the table it is derived on, then you only have define smallest level dimensions
+      # and the measures you want to aggregate
+      #bind_all_filters: yes
+
     }
   }
 
@@ -51,6 +59,12 @@ view: dynamically_filtered_measures {
     type: string
   }
 
+  dimension: product_name {
+    hidden: yes
+    label: "Product Name"
+    type: string
+  }
+
   dimension: category {
     hidden: yes
     label: "Parent Category"
@@ -60,6 +74,18 @@ view: dynamically_filtered_measures {
   dimension: subcategory {
     hidden: yes
     label: "Sub-Category"
+    type: string
+  }
+
+  dimension: hub_code {
+    hidden: yes
+    label: "Hub Code"
+    type: string
+  }
+
+  dimension: city {
+    hidden: yes
+    label: "City"
     type: string
   }
 
@@ -124,9 +150,51 @@ view: dynamically_filtered_measures {
   filter: sku_filter {
     type: string
     label: "SKU Dynamic Filter"
-    group_label: "SKU"
+    group_label: "Product Attributes"
     suggest_dimension: sku
   }
+
+  filter: product_name_filter {
+    type: string
+    label: "Product Name Dynamic Filter"
+    group_label: "Product Attributes"
+    suggest_dimension: product_name
+  }
+
+  filter: category_filter {
+    type: string
+    label: "Parent Category Dynamic Filter"
+    group_label: "Product Attributes"
+    suggest_dimension: category
+  }
+  filter: sub_category_filter {
+    type: string
+    label: "Sub-Category Dynamic Filter"
+    group_label: "Product Attributes"
+    suggest_dimension: subcategory
+  }
+
+  filter: hub_code_filter {
+    type: string
+    label: "Hub Code Dynamic Filter"
+    group_label: "Geographic Dimensions"
+    suggest_dimension: hub_code
+  }
+
+  filter: city_filter {
+    type: string
+    label: "City Dynamic Filter"
+    group_label: "Geographic Dimensions"
+    suggest_dimension: city
+  }
+
+  filter: country_iso_filter {
+    type: string
+    label: "Country ISO Dynamic Filter"
+    group_label: "Geographic Dimensions"
+    suggest_dimension: country_iso
+  }
+
 
   ############### Dynamically filtered dimensions
 
@@ -136,16 +204,66 @@ view: dynamically_filtered_measures {
     sql: {% condition sku_filter %} ${sku} {% endcondition %} ;;
   }
 
+  dimension: product_name_satisfies_filter {
+    type: yesno
+    hidden: yes
+    sql: {% condition product_name_filter %} ${product_name} {% endcondition %} ;;
+  }
+
+  dimension: category_satisfies_filter {
+    type: yesno
+    hidden: yes
+    sql: {% condition category_filter %} ${category} {% endcondition %} ;;
+  }
+
+  dimension: sub_category_satisfies_filter {
+    type: yesno
+    hidden: yes
+    sql: {% condition sub_category_filter %} ${subcategory} {% endcondition %} ;;
+  }
+
+  dimension: hub_code_satisfies_filter {
+    type: yesno
+    hidden: yes
+    sql: {% condition hub_code_filter %} ${hub_code} {% endcondition %} ;;
+  }
+
+  dimension: city_satisfies_filter {
+    type: yesno
+    hidden: yes
+    sql: {% condition city_filter %} ${city} {% endcondition %} ;;
+  }
+
+  dimension: country_iso_satisfies_filter {
+    type: yesno
+    hidden: yes
+    sql: {% condition country_iso_filter %} ${country_iso} {% endcondition %} ;;
+  }
+
   ############### Dynamically filtered measures
 
-  measure: revenue_dynamic_filter_sku {
+  measure: revenue_dynamic_filter {
     type: sum
     sql: ${revenue_gross} ;;
-    label: "SKU Filter: Revenue"
-    description: "Sum of Item Prices Sold where SKU is SKU Dynamic Filter"
-    group_label: "SKU"
+    label: "SUM Item Prices Sold (gross) - Dynamic Filter"
+    description: "Sum of Item Prices Sold with dynamic filters applied"
     value_format_name: euro_accounting_2_precision
-    filters: [sku_satisfies_filter: "yes"]
+    filters: [sku_satisfies_filter: "yes", product_name_satisfies_filter: "yes",
+      category_satisfies_filter: "yes", sub_category_satisfies_filter: "yes",
+      hub_code_satisfies_filter: "yes", city_satisfies_filter: "yes",
+      country_iso_satisfies_filter: "yes"]
+  }
+
+  measure: quantity_dynamic_filter {
+    type: sum
+    sql: ${sum_item_quantity} ;;
+    label: "SUM Item Quantity Sold - Dynamic Filter"
+    description: "Sum of Item Quantity Sold with dynamic filters applied"
+    value_format: "0"
+    filters: [sku_satisfies_filter: "yes", product_name_satisfies_filter: "yes",
+      category_satisfies_filter: "yes", sub_category_satisfies_filter: "yes",
+      hub_code_satisfies_filter: "yes", city_satisfies_filter: "yes",
+      country_iso_satisfies_filter: "yes"]
   }
 
 }

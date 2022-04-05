@@ -89,7 +89,8 @@ explore: order_orderline_cl_retail_customized {
     view_label: "* Dynamically Filtered Measures *"
     sql_on: ${dynamically_filtered_measures.country_iso} = ${orders_cl.country_iso}
       and ${dynamically_filtered_measures.created_date} = ${orders_cl.created_date}
-      and ${dynamically_filtered_measures.sku} = ${orderline.product_sku} ;;
+      and ${dynamically_filtered_measures.sku} = ${products.product_sku}
+      and ${dynamically_filtered_measures.hub_code} = ${hubs.hub_code};;
     relationship: many_to_one
 
   }
