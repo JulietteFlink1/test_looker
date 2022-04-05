@@ -2,11 +2,6 @@ view: address_daily_aggregates {
   sql_table_name: `flink-data-dev.reporting.address_daily_aggregates`
     ;;
 
-  dimension: has_order {
-    type: yesno
-    sql: ${TABLE}.has_order ;;
-  }
-
   ## I want to additional fields: one is the hub that appOpened detected, one is a flag that says whether appOpened changed the hub assignment since the last other event happened
 
   measure: count {
@@ -23,11 +18,11 @@ view: address_daily_aggregates {
     sql: ${TABLE}.daily_user_uuid ;;
   }
 
-  ######## Event Flags ########
+  ######## Flags | Event ########
   # User Flags
 
   dimension: is_address_confirmed {
-    group_label: "Event Occurences"
+    group_label: "Flags | Event"
     label: "Is Address Confirmed"
     description: "Did daily_user_uuid select a (new) address?"
     type: yesno
@@ -35,7 +30,7 @@ view: address_daily_aggregates {
   }
 
   dimension: is_location_pin_placed {
-    group_label: "Event Occurences"
+    group_label: "Flags | Event"
     label: "Is Location Pin Placed"
     description: "Did daily_user_uuid choose a location on the map?"
     type: yesno
@@ -43,7 +38,7 @@ view: address_daily_aggregates {
   }
 
   dimension: is_address_resolution_failed_inside_area {
-    group_label: "Event Occurences"
+    group_label: "Flags | Event"
     label: "Is Address Resolution Failed Events Inside Delivery Area"
     description: "Did daily_user_uuid experience any addressResolutionFailed events inside delivery area?"
     type: yesno
@@ -51,7 +46,7 @@ view: address_daily_aggregates {
   }
 
   dimension: is_address_resolution_failed_outside_area {
-    group_label: "Event Occurences"
+    group_label: "Flags | Event"
     label: "Is Address Resolution Failed Events Outside Delivery Area"
     description: "Did daily_user_uuid experience any addressResolutionFailed events outside delivery area?"
     type: yesno
@@ -59,7 +54,7 @@ view: address_daily_aggregates {
   }
 
   dimension: is_address_skipped {
-    group_label: "Event Occurences"
+    group_label: "Flags | Event"
     label: "Is Address Skipped"
     description: "Did daily_user_uuid skip address selection while being inside delivery area?"
     type: yesno
@@ -67,7 +62,7 @@ view: address_daily_aggregates {
   }
 
   dimension: is_map_viewed {
-    group_label: "Event Occurences"
+    group_label: "Flags | Event"
     label: "Is Map Viewed"
     description: "Did daily_user_uuid view the address selection map?"
     type: yesno
@@ -75,7 +70,7 @@ view: address_daily_aggregates {
   }
 
   dimension: is_selection_browse_selected {
-    group_label: "Event Occurences"
+    group_label: "Flags | Event"
     label: "Is Browse Selection"
     description: "Did daily_user_uuid choose to browse selection while being outside of our delivery area?"
     type: yesno
@@ -83,7 +78,7 @@ view: address_daily_aggregates {
   }
 
   dimension: is_waitlist_signup_selected {
-    group_label: "Event Occurences"
+    group_label: "Flags | Event"
     label: "Is Waitlist Signup Selected"
     description: "Did daily_user_uuid tap the waitlist sign up button?"
     type: yesno
@@ -91,7 +86,7 @@ view: address_daily_aggregates {
   }
 
   dimension: is_hub_updated_with_cart {
-    group_label: "Event Occurences"
+    group_label: "Flags | Event"
     label: "Is Hub Updated With Cart"
     description: "Did daily_user_uuid update their address or hub after they already put a product into their cart?"
     type: yesno
@@ -99,7 +94,7 @@ view: address_daily_aggregates {
   }
 
   dimension: is_addres_tappped_at_checkout {
-    group_label: "Event Occurences"
+    group_label: "Flags | Event"
     label: "Is Waitlist Signup Selected"
     description: "Did daily_user_uuid tap the address at checkout?"
     type: yesno
