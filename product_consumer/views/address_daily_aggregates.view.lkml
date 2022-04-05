@@ -16,12 +16,12 @@ view: address_daily_aggregates {
   }
 
   ######### IDs ##########
-  dimension: user_uuid {
-    group_label: "IDs"
-    description: "User ID that is either ID from logged-in user (generated when user creates an account with us) or anonymous ID from not logged-in user"
-    type: string
-    sql: ${TABLE}.user_uuid ;;
-  }
+  # dimension: user_uuid {
+  #   group_label: "IDs"
+  #   description: "User ID that is either ID from logged-in user (generated when user creates an account with us) or anonymous ID from not logged-in user"
+  #   type: string
+  #   sql: ${TABLE}.user_uuid ;;
+  # }
 
   dimension: daily_user_uuid {
     group_label: "IDs"
@@ -38,84 +38,84 @@ view: address_daily_aggregates {
 
 # removed fields: session_id, anonymous_id, user_id, session_duration_minutes, session_start_at, session_end_at
 
-  ########## Device attributes #########
-  dimension: app_version {
-    group_label: "Device Dimensions"
-    label: "App version"
-    description: "App version used in the session"
-    type: string
-    sql: ${TABLE}.app_version ;;
-  }
+  # ########## Device attributes #########
+  # dimension: app_version {
+  #   group_label: "Device Dimensions"
+  #   label: "App version"
+  #   description: "App version used in the session"
+  #   type: string
+  #   sql: ${TABLE}.app_version ;;
+  # }
 
-  dimension: platform {
-    group_label: "Device Dimensions"
-    label: "Platform"
-    description: "Platform type: android, ios or web"
-    type: string
-    sql: ${TABLE}.platform ;;
-  }
+  # dimension: platform {
+  #   group_label: "Device Dimensions"
+  #   label: "Platform"
+  #   description: "Platform type: android, ios or web"
+  #   type: string
+  #   sql: ${TABLE}.platform ;;
+  # }
 
-  dimension: device_type {
-    group_label: "Device Dimensions"
-    label: "Device Type"
-    description: "Device type, e.g. ios, android, windows, linux, etc."
-    type: string
-    sql: ${TABLE}.device_type ;;
-  }
+  # dimension: device_type {
+  #   group_label: "Device Dimensions"
+  #   label: "Device Type"
+  #   description: "Device type, e.g. ios, android, windows, linux, etc."
+  #   type: string
+  #   sql: ${TABLE}.device_type ;;
+  # }
 
-  dimension: full_app_version {
-    group_label: "Device Dimensions"
-    description: "Device type and app version combined in one dimension"
-    type: string
-    sql: CASE WHEN ${TABLE}.device_type IN ('ios','android') THEN  (${TABLE}.device_type || '-' || ${TABLE}.app_version ) END ;;
-  }
+  # dimension: full_app_version {
+  #   group_label: "Device Dimensions"
+  #   description: "Device type and app version combined in one dimension"
+  #   type: string
+  #   sql: CASE WHEN ${TABLE}.device_type IN ('ios','android') THEN  (${TABLE}.device_type || '-' || ${TABLE}.app_version ) END ;;
+  # }
 
   ########## Location attributes #########
-  dimension: hub_code {
-    group_label: "Location Dimensions"
-    description: "Hub code associated with the last address the user selected"
-    type: string
-    sql: ${TABLE}.hub_code ;;
-  }
+  # dimension: hub_code {
+  #   group_label: "Location Dimensions"
+  #   description: "Hub code associated with the last address the user selected"
+  #   type: string
+  #   sql: ${TABLE}.hub_code ;;
+  # }
 
-  dimension: hub_city {
-    group_label: "Location Dimensions"
-    label: "City"
-    description: "City associated with the last address the user selected"
-    type: string
-    sql: ${TABLE}.city ;;
-  }
+  # dimension: hub_city {
+  #   group_label: "Location Dimensions"
+  #   label: "City"
+  #   description: "City associated with the last address the user selected"
+  #   type: string
+  #   sql: ${TABLE}.city ;;
+  # }
 
-  dimension: country_iso {
-    hidden: yes
-    type: string
-    sql: ${TABLE}.country_iso ;;
-  }
+  # dimension: country_iso {
+  #   hidden: yes
+  #   type: string
+  #   sql: ${TABLE}.country_iso ;;
+  # }
 
-  dimension: country {
-    group_label: "Location Dimensions"
-    description: "Country ISO associated with the last address the user selected"
-    type: string
-    case: {
-      when: {
-        sql: ${country_iso} = "DE" ;;
-        label: "Germany"
-      }
-      when: {
-        sql: ${country_iso} = "FR" ;;
-        label: "France"
-      }
-      when: {
-        sql: ${country_iso} = "NL" ;;
-        label: "Netherlands"
-      }
-      when: {
-        sql: ${country_iso} = "AT" ;;
-        label: "Austria"
-      }
-      else: "Other / Unknown"
-    }
-  }
+  # dimension: country {
+  #   group_label: "Location Dimensions"
+  #   description: "Country ISO associated with the last address the user selected"
+  #   type: string
+  #   case: {
+  #     when: {
+  #       sql: ${country_iso} = "DE" ;;
+  #       label: "Germany"
+  #     }
+  #     when: {
+  #       sql: ${country_iso} = "FR" ;;
+  #       label: "France"
+  #     }
+  #     when: {
+  #       sql: ${country_iso} = "NL" ;;
+  #       label: "Netherlands"
+  #     }
+  #     when: {
+  #       sql: ${country_iso} = "AT" ;;
+  #       label: "Austria"
+  #     }
+  #     else: "Other / Unknown"
+  #   }
+  # }
 
   ######## Event Flags ########
   # User Flags
@@ -512,7 +512,6 @@ view: address_daily_aggregates {
     fields: [
       daily_user_uuid,
       event_date_at_date,
-      user_uuid,
       is_address_set,
       has_seen_inside_delivery_area,
       has_seen_outside_delivery_area,
@@ -524,12 +523,7 @@ view: address_daily_aggregates {
       is_address_resolution_failed_outside_area,
       is_address_confirmed,
       is_waitlist_signup_selected,
-      app_version,
-      device_type,
       is_new_user,
-      hub_code,
-      country_iso,
-      hub_city,
       delivery_pdt,
     ]
   }
