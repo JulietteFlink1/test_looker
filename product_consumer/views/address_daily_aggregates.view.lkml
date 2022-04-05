@@ -15,14 +15,6 @@ view: address_daily_aggregates {
     drill_fields: [detail*]
   }
 
-  ######### IDs ##########
-  # dimension: user_uuid {
-  #   group_label: "IDs"
-  #   description: "User ID that is either ID from logged-in user (generated when user creates an account with us) or anonymous ID from not logged-in user"
-  #   type: string
-  #   sql: ${TABLE}.user_uuid ;;
-  # }
-
   dimension: daily_user_uuid {
     group_label: "IDs"
     description: "A surrogate key representing a unique identifier per user per day. If the same users interacted with the app on two different days, they will get a different identifier."
@@ -30,92 +22,6 @@ view: address_daily_aggregates {
     primary_key: yes
     sql: ${TABLE}.daily_user_uuid ;;
   }
-
-  # dimension: timezone {
-  #   type: string
-  #   sql: ${TABLE}.timezone ;;
-  # }
-
-# removed fields: session_id, anonymous_id, user_id, session_duration_minutes, session_start_at, session_end_at
-
-  # ########## Device attributes #########
-  # dimension: app_version {
-  #   group_label: "Device Dimensions"
-  #   label: "App version"
-  #   description: "App version used in the session"
-  #   type: string
-  #   sql: ${TABLE}.app_version ;;
-  # }
-
-  # dimension: platform {
-  #   group_label: "Device Dimensions"
-  #   label: "Platform"
-  #   description: "Platform type: android, ios or web"
-  #   type: string
-  #   sql: ${TABLE}.platform ;;
-  # }
-
-  # dimension: device_type {
-  #   group_label: "Device Dimensions"
-  #   label: "Device Type"
-  #   description: "Device type, e.g. ios, android, windows, linux, etc."
-  #   type: string
-  #   sql: ${TABLE}.device_type ;;
-  # }
-
-  # dimension: full_app_version {
-  #   group_label: "Device Dimensions"
-  #   description: "Device type and app version combined in one dimension"
-  #   type: string
-  #   sql: CASE WHEN ${TABLE}.device_type IN ('ios','android') THEN  (${TABLE}.device_type || '-' || ${TABLE}.app_version ) END ;;
-  # }
-
-  ########## Location attributes #########
-  # dimension: hub_code {
-  #   group_label: "Location Dimensions"
-  #   description: "Hub code associated with the last address the user selected"
-  #   type: string
-  #   sql: ${TABLE}.hub_code ;;
-  # }
-
-  # dimension: hub_city {
-  #   group_label: "Location Dimensions"
-  #   label: "City"
-  #   description: "City associated with the last address the user selected"
-  #   type: string
-  #   sql: ${TABLE}.city ;;
-  # }
-
-  # dimension: country_iso {
-  #   hidden: yes
-  #   type: string
-  #   sql: ${TABLE}.country_iso ;;
-  # }
-
-  # dimension: country {
-  #   group_label: "Location Dimensions"
-  #   description: "Country ISO associated with the last address the user selected"
-  #   type: string
-  #   case: {
-  #     when: {
-  #       sql: ${country_iso} = "DE" ;;
-  #       label: "Germany"
-  #     }
-  #     when: {
-  #       sql: ${country_iso} = "FR" ;;
-  #       label: "France"
-  #     }
-  #     when: {
-  #       sql: ${country_iso} = "NL" ;;
-  #       label: "Netherlands"
-  #     }
-  #     when: {
-  #       sql: ${country_iso} = "AT" ;;
-  #       label: "Austria"
-  #     }
-  #     else: "Other / Unknown"
-  #   }
-  # }
 
   ######## Event Flags ########
   # User Flags
@@ -126,14 +32,6 @@ view: address_daily_aggregates {
     description: "Did daily_user_uuid select a (new) address?"
     type: yesno
     sql: ${TABLE}.is_address_confirmed ;;
-  }
-
-  dimension: is_home_viewed {
-    group_label: "Event Occurences"
-    label: "Is Home Viewed"
-    description: "Did daily_user_uuid view home?"
-    type: yesno
-    sql: ${TABLE}.is_home_viewed ;;
   }
 
   dimension: is_location_pin_placed {
@@ -192,14 +90,6 @@ view: address_daily_aggregates {
     sql: ${TABLE}.is_waitlist_signup_selected ;;
   }
 
-  dimension: is_checkout_viewed {
-    group_label: "Event Occurences"
-    label: "Is Hub Updated With Cart"
-    description: "Did daily_user_uuid update their address or hub after they already put a product into their cart?"
-    type: yesno
-    sql: ${TABLE}.is_checkout_viewed ;;
-  }
-
   dimension: is_hub_updated_with_cart {
     group_label: "Event Occurences"
     label: "Is Hub Updated With Cart"
@@ -217,14 +107,6 @@ view: address_daily_aggregates {
   }
 
   ######### User Metrics ###########
-
-  measure: cnt_users_with_address {
-    group_label: "# Daily Users"
-    label: "# Daily Users With Address"
-    description: "# daily users with address (selected in the past or on that day)"
-    type: count
-    filters: [is_address_set: "yes"]
-  }
 
   measure: cnt_users_address_selected {
     group_label: "# Daily Users"
@@ -378,53 +260,7 @@ view: address_daily_aggregates {
     filters: [is_addres_tappped_at_checkout: "yes"]
   }
 
-  measure: cnt_is_checkout_viewed {
-    group_label: "# Daily Users"
-    label: "# Daily Users With Checkout Viewed"
-    description: "# daily users with at least one Checkout Viewed event"
-    type: count
-    filters: [is_checkout_viewed: "yes"]
-  }
-
   ######## Daily Attributes ########
-
-  dimension: is_address_set {
-    group_label: "Daily User Dimensions"
-    description: "Whether the Daily User had an Address Confirmed (either saved from a previous day or selected in the current)"
-    type: yesno
-    sql: ${TABLE}.is_address_set ;;
-  }
-
-  dimension: is_new_user {
-    group_label: "Session Dimensions"
-    description: "Whether it was the first session of the user (= new user)"
-    type: yesno
-    sql: ${TABLE}.is_new_user ;;
-  }
-
-  dimension: delivery_pdt {
-    group_label: "Session Dimensions"
-    label: "Delivery PDT"
-    description: "The delivery PDT in minutes associated with the selected address"
-    type: number
-    sql: ${TABLE}.delivery_pdt ;;
-  }
-
-  dimension: delivery_lat {
-    group_label: "Location Dimensions"
-    label: "Delivery Latitude"
-    description: "The latitude of the delivery address selected by user"
-    type: number
-    sql: ${TABLE}.delivery_lat ;;
-  }
-
-  dimension: delivery_lng {
-    group_label: "Location Dimensions"
-    label: "Delivery Longitude"
-    description: "The longitude of the delivery address selected by user"
-    type: number
-    sql: ${TABLE}.delivery_lng ;;
-  }
 
   dimension: has_seen_inside_delivery_area {
     group_label: "Location Dimensions"
@@ -512,7 +348,6 @@ view: address_daily_aggregates {
     fields: [
       daily_user_uuid,
       event_date_at_date,
-      is_address_set,
       has_seen_inside_delivery_area,
       has_seen_outside_delivery_area,
       has_seen_deliverable_location,
@@ -522,9 +357,7 @@ view: address_daily_aggregates {
       is_address_resolution_failed_inside_area,
       is_address_resolution_failed_outside_area,
       is_address_confirmed,
-      is_waitlist_signup_selected,
-      is_new_user,
-      delivery_pdt,
+      is_waitlist_signup_selected
     ]
   }
 }

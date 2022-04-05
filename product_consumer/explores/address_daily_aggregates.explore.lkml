@@ -32,5 +32,9 @@ explore: address_daily_aggregates {
     , daily_user_aggregates.is_home_viewed
     , daily_user_aggregates.is_checkout_viewed
     , daily_user_aggregates.is_order_placed
+    , daily_user_aggregates.is_active_user
+    , daily_user_aggregates.active_users
+    , daily_user_aggregates.users_with_address
+    , daily_user_aggregates.users_with_checkout_viewed
     , address_daily_aggregates*]
 }

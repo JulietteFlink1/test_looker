@@ -711,7 +711,7 @@
     model: flink_v3
     explore: address_daily_aggregates
     type: looker_line
-    fields: [address_daily_aggregates.event_date_at_date, address_daily_aggregates.cnt_is_checkout_viewed,
+    fields: [address_daily_aggregates.event_date_at_date, daily_user_aggregates.users_with_checkout_viewed,
       address_daily_aggregates.cnt_is_addres_tappped_at_checkout, daily_user_aggregates.platform]
     pivots: [daily_user_aggregates.platform]
     fill_fields: [address_daily_aggregates.event_date_at_date]
@@ -720,10 +720,10 @@
     limit: 500
     column_limit: 50
     row_total: right
-    dynamic_fields: [{category: table_calculation, expression: "${address_daily_aggregates.cnt_is_addres_tappped_at_checkout}/${address_daily_aggregates.cnt_is_checkout_viewed}",
+    dynamic_fields: [{category: table_calculation, expression: "${address_daily_aggregates.cnt_is_addres_tappped_at_checkout}/${daily_user_aggregates.users_with_checkout_viewed}",
         label: "% address change at checkout", value_format: !!null '', value_format_name: percent_1,
         _kind_hint: measure, table_calculation: address_change_at_checkout, _type_hint: number},
-      {category: table_calculation, expression: "${address_daily_aggregates.cnt_is_addres_tappped_at_checkout:row_total}/${address_daily_aggregates.cnt_is_checkout_viewed:row_total}",
+      {category: table_calculation, expression: "${address_daily_aggregates.cnt_is_addres_tappped_at_checkout:row_total}/${daily_user_aggregates.users_with_checkout_viewed:row_total}",
         label: "% tapped address at checkout", value_format: !!null '', value_format_name: percent_1,
         _kind_hint: supermeasure, table_calculation: tapped_address_at_checkout, _type_hint: number}]
     query_timezone: Europe/Berlin
@@ -770,7 +770,7 @@
       ios - address_change_at_checkout: triangle
       web - address_change_at_checkout: triangle
     defaults_version: 1
-    hidden_fields: [address_daily_aggregates.cnt_is_addres_tappped_at_checkout, address_daily_aggregates.cnt_is_checkout_viewed,
+    hidden_fields: [address_daily_aggregates.cnt_is_addres_tappped_at_checkout, daily_user_aggregates.users_with_checkout_viewed,
       tapped_address_at_checkout]
     note_state: collapsed
     note_display: hover
@@ -860,7 +860,7 @@
     explore: address_daily_aggregates
     type: looker_line
     fields: [address_daily_aggregates.event_date_at_date, address_daily_aggregates.count,
-      address_daily_aggregates.cnt_is_checkout_viewed, address_daily_aggregates.cnt_is_hub_updated_with_cart,
+      daily_user_aggregates.users_with_checkout_viewed, address_daily_aggregates.cnt_is_hub_updated_with_cart,
       daily_user_aggregates.platform]
     pivots: [daily_user_aggregates.platform]
     fill_fields: [address_daily_aggregates.event_date_at_date]
@@ -868,7 +868,7 @@
     sorts: [address_daily_aggregates.event_date_at_date desc, daily_user_aggregates.platform]
     limit: 500
     column_limit: 50
-    dynamic_fields: [{category: table_calculation, expression: "${address_daily_aggregates.cnt_is_addres_tappped_at_checkout}/${address_daily_aggregates.cnt_is_checkout_viewed}",
+    dynamic_fields: [{category: table_calculation, expression: "${address_daily_aggregates.cnt_is_addres_tappped_at_checkout}/${daily_user_aggregates.users_with_checkout_viewed}",
         label: "% address change at checkout", value_format: !!null '', value_format_name: percent_1,
         _kind_hint: measure, table_calculation: address_change_at_checkout, _type_hint: number,
         is_disabled: true}, {category: table_calculation, expression: "${address_daily_aggregates.cnt_is_hub_updated_with_cart}/${address_daily_aggregates.count}",
@@ -921,7 +921,7 @@
       web - hub_updated: triangle
       android - hub_updated: triangle
     defaults_version: 1
-    hidden_fields: [address_daily_aggregates.cnt_is_checkout_viewed, address_daily_aggregates.cnt_is_hub_updated_with_cart,
+    hidden_fields: [daily_user_aggregates.users_with_checkout_viewed, address_daily_aggregates.cnt_is_hub_updated_with_cart,
       address_daily_aggregates.count]
     note_state: collapsed
     note_display: hover
