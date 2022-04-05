@@ -4,6 +4,7 @@ view: braintree_data_202203 {
 
   dimension: amt_authorised {
     type: number
+    hidden: yes
     sql: ${TABLE}.amt_authorised ;;
   }
 
@@ -49,6 +50,7 @@ view: braintree_data_202203 {
 
   dimension_group: settlement {
     type: time
+    hidden: yes
     timeframes: [
       date,
       week,
