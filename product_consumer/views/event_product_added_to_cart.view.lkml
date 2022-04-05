@@ -190,7 +190,6 @@ dimension: product_price {
   label: "Product"
   description: "Price of the product"
   type: number
-  value_format: "2 decimals"
   sql: ${TABLE}.product_price ;;
 }
 
