@@ -3,6 +3,37 @@ view: daily_user_aggregates {
      ;;
   view_label: "Daily User Aggregates"
 
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+  # ~~~~~~~~~~~~~~~     Sets    ~~~~~~~~~~~~~~~ #
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+  set: device_attributes {
+    fields: [
+      device_type,
+      device_model,
+      app_version,
+      full_app_version,
+      platform,
+      is_platform_web,
+      is_platform_ios,
+      is_platform_android,
+      is_device_android,
+      is_device_ios,
+      is_device_macintosh
+    ]
+  }
+
+  set: location_attributes {
+    fields: [
+      hub_code,
+      city,
+      country_iso,
+      delivery_lat,
+      delivery_lng,
+      delivery_pdt
+    ]
+  }
+
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
   # ~~~~~~~~~~~~~~~     Dimensions    ~~~~~~~~~~~~~~~ #
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #

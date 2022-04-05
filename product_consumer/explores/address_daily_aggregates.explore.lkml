@@ -10,31 +10,23 @@ explore: address_daily_aggregates {
 
   join: daily_user_aggregates {
     from: daily_user_aggregates
-    type: left_outer
+    type: inner
     relationship: one_to_one
     sql_on: ${daily_user_aggregates.daily_user_uuid}=${address_daily_aggregates.daily_user_uuid} ;;
+    fields: [
+      device_attributes*
+      , location_attributes*
+      , user_uuid
+      , is_new_user
+      , is_address_set
+      , is_address_confirmed
+      , is_home_viewed
+      , is_checkout_viewed
+      , is_order_placed
+      , is_active_user
+      , active_users
+      , users_with_address
+      , users_with_checkout_viewed
+      ]
+    }
   }
-
-  fields: [daily_user_aggregates.user_uuid
-    , daily_user_aggregates.country_iso
-    , daily_user_aggregates.city
-    , daily_user_aggregates.hub_code
-    , daily_user_aggregates.device_type
-    , daily_user_aggregates.platform
-    , daily_user_aggregates.app_version
-    , daily_user_aggregates.full_app_version
-    , daily_user_aggregates.delivery_pdt
-    , daily_user_aggregates.delivery_lat
-    , daily_user_aggregates.delivery_lng
-    , daily_user_aggregates.is_new_user
-    , daily_user_aggregates.is_address_set
-    , daily_user_aggregates.is_address_confirmed
-    , daily_user_aggregates.is_home_viewed
-    , daily_user_aggregates.is_checkout_viewed
-    , daily_user_aggregates.is_order_placed
-    , daily_user_aggregates.is_active_user
-    , daily_user_aggregates.active_users
-    , daily_user_aggregates.users_with_address
-    , daily_user_aggregates.users_with_checkout_viewed
-    , address_daily_aggregates*]
-}
