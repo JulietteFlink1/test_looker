@@ -1,5 +1,5 @@
 view: braintree_data_202203 {
-  sql_table_name: `flink-data-dev.sandbox_justine.new_braintree_clean`
+  sql_table_name: `flink-data-dev.sandbox_justine.braintree_clean`
     ;;
 
   dimension: amt_authorised {
