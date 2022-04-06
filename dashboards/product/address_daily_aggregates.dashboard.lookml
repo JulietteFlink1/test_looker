@@ -2,15 +2,15 @@
   title: "[WIP] Address Daily Aggregates 2"
   layout: newspaper
   preferred_viewer: dashboards-next
-  description: description
+  description: "User's progression through address selection and waitlist flow"
   elements:
   - title: Address Selected
     name: Address Selected
     model: flink_v3
     explore: address_daily_aggregates
     type: single_value
-    fields: [address_daily_aggregates.count, address_daily_aggregates.cnt_users_address_selected,
-      address_daily_aggregates.cnt_confirmed_and_skipped_area_available, address_daily_aggregates.cnt_address_confirmed_area_available]
+    fields: [daily_user_aggregates.active_users, address_daily_aggregates.cnt_users_address_selected,
+    address_daily_aggregates.cnt_confirmed_and_skipped_area_available, address_daily_aggregates.cnt_address_confirmed_area_available]
     limit: 500
     column_limit: 50
     dynamic_fields: [{category: table_calculation, expression: " (${address_daily_aggregates.cnt_address_confirmed_area_available}+${address_daily_aggregates.cnt_confirmed_and_skipped_area_available})",
@@ -19,10 +19,10 @@
         is_disabled: true}, {category: table_calculation, expression: "${confirmed_available}/${address_daily_aggregates.cnt_users_address_selected}",
         label: "% confirmed available", value_format: !!null '', value_format_name: percent_1,
         _kind_hint: measure, table_calculation: confirmed_available_1, _type_hint: number,
-        is_disabled: true}, {category: table_calculation, expression: "(${address_daily_aggregates.cnt_address_confirmed_area_available}+${address_daily_aggregates.cnt_confirmed_and_skipped_area_available})/${address_daily_aggregates.count}",
+        is_disabled: true}, {category: table_calculation, expression: "(${address_daily_aggregates.cnt_address_confirmed_area_available}+${address_daily_aggregates.cnt_confirmed_and_skipped_area_available})/${daily_user_aggregates.active_users}",
         label: conversion over active users, value_format: !!null '', value_format_name: percent_1,
         _kind_hint: measure, table_calculation: cvr, _type_hint: number}, {category: table_calculation,
-        expression: 'sum(offset_list(${address_daily_aggregates.cnt_users_address_selected},7,7))/sum(offset_list(${address_daily_aggregates.count},7,7))',
+        expression: 'sum(offset_list(${address_daily_aggregates.cnt_users_address_selected},7,7))/sum(offset_list(${daily_user_aggregates.active_users},7,7))',
         label: conversion last week, value_format: !!null '', value_format_name: percent_1,
         _kind_hint: measure, table_calculation: conversion_last_week, _type_hint: number,
         is_disabled: true}, {category: table_calculation, expression: "(${conversion_this_week}-${conversion_last_week})*100",
@@ -68,7 +68,7 @@
     interpolation: linear
     defaults_version: 1
     series_types: {}
-    hidden_fields: [address_daily_aggregates.count, address_daily_aggregates.cnt_users_address_selected,
+    hidden_fields: [daily_user_aggregates.active_users, address_daily_aggregates.cnt_users_address_selected,
       address_daily_aggregates.cnt_confirmed_and_skipped_area_available, address_daily_aggregates.cnt_address_confirmed_area_available]
     y_axes: []
     note_state: collapsed
@@ -90,7 +90,7 @@
     model: flink_v3
     explore: address_daily_aggregates
     type: single_value
-    fields: [address_daily_aggregates.cnt_has_waitlist_signup_selected, address_daily_aggregates.count,
+    fields: [address_daily_aggregates.cnt_has_waitlist_signup_selected, daily_user_aggregates.active_users,
       address_daily_aggregates.cnt_waitlist_area_unavailable, address_daily_aggregates.cnt_waitlist_and_browse_area_unavailable]
     limit: 500
     column_limit: 50
@@ -101,10 +101,10 @@
         is_disabled: true}, {category: table_calculation, expression: "${waitlist_in_available_area}/${address_daily_aggregates.cnt_has_waitlist_signup_selected}",
         label: "% waitlist available area", value_format: !!null '', value_format_name: percent_1,
         _kind_hint: measure, table_calculation: waitlist_available_area, _type_hint: number,
-        is_disabled: true}, {category: table_calculation, expression: "(${address_daily_aggregates.cnt_waitlist_area_unavailable}+${address_daily_aggregates.cnt_waitlist_and_browse_area_unavailable})/${address_daily_aggregates.count}",
+        is_disabled: true}, {category: table_calculation, expression: "(${address_daily_aggregates.cnt_waitlist_area_unavailable}+${address_daily_aggregates.cnt_waitlist_and_browse_area_unavailable})/${daily_user_aggregates.active_users}",
         label: conversion, value_format: !!null '', value_format_name: percent_1,
         _kind_hint: measure, table_calculation: cvr, _type_hint: number}, {category: table_calculation,
-        expression: 'sum(offset_list(${address_daily_aggregates.cnt_has_waitlist_signup_selected},7,7))/sum(offset_list(${address_daily_aggregates.count},7,7))',
+        expression: 'sum(offset_list(${address_daily_aggregates.cnt_has_waitlist_signup_selected},7,7))/sum(offset_list(${daily_user_aggregates.active_users},7,7))',
         label: conversion last week, value_format: !!null '', value_format_name: percent_1,
         _kind_hint: measure, table_calculation: conversion_last_week, _type_hint: number,
         is_disabled: true}, {category: table_calculation, expression: "(${conversion_this_week}-${conversion_last_week})*100",
@@ -163,7 +163,7 @@
     interpolation: linear
     defaults_version: 1
     series_types: {}
-    hidden_fields: [address_daily_aggregates.cnt_has_waitlist_signup_selected, address_daily_aggregates.count,
+    hidden_fields: [address_daily_aggregates.cnt_has_waitlist_signup_selected, daily_user_aggregates.active_users,
       address_daily_aggregates.cnt_waitlist_area_unavailable, address_daily_aggregates.cnt_waitlist_and_browse_area_unavailable]
     ordering: none
     show_null_labels: false
@@ -191,7 +191,7 @@
     model: flink_v3
     explore: address_daily_aggregates
     type: looker_column
-    fields: [address_daily_aggregates.event_date_at_date, address_daily_aggregates.count,
+    fields: [address_daily_aggregates.event_date_at_date, daily_user_aggregates.active_users,
       address_daily_aggregates.cnt_users_location_pin_placed, address_daily_aggregates.cnt_address_confirmed_area_available,
       address_daily_aggregates.cnt_address_skipped_in_available_area, address_daily_aggregates.cnt_available_area,
       address_daily_aggregates.cnt_noaction_area_available, address_daily_aggregates.cnt_confirmed_and_skipped_area_available]
@@ -199,19 +199,19 @@
     sorts: [address_daily_aggregates.event_date_at_date desc]
     limit: 500
     column_limit: 50
-    dynamic_fields: [{category: table_calculation, expression: "${address_daily_aggregates.cnt_available_area}/${address_daily_aggregates.count}",
+    dynamic_fields: [{category: table_calculation, expression: "${address_daily_aggregates.cnt_available_area}/${daily_user_aggregates.active_users}",
         label: "% inside delivery zone", value_format: !!null '', value_format_name: percent_1,
         _kind_hint: measure, table_calculation: inside_delivery_zone, _type_hint: number},
-      {category: table_calculation, expression: "${address_daily_aggregates.cnt_address_confirmed_area_available}/${address_daily_aggregates.count}",
+      {category: table_calculation, expression: "${address_daily_aggregates.cnt_address_confirmed_area_available}/${daily_user_aggregates.active_users}",
         label: "% address confirmed", value_format: !!null '', value_format_name: percent_1,
         _kind_hint: measure, table_calculation: address_confirmed, _type_hint: number},
-      {category: table_calculation, expression: "${address_daily_aggregates.cnt_confirmed_and_skipped_area_available}/${address_daily_aggregates.count}",
+      {category: table_calculation, expression: "${address_daily_aggregates.cnt_confirmed_and_skipped_area_available}/${daily_user_aggregates.active_users}",
         label: "% skipped and confirmed", value_format: !!null '', value_format_name: percent_1,
         _kind_hint: measure, table_calculation: skipped_and_confirmed, _type_hint: number},
-      {category: table_calculation, expression: "${address_daily_aggregates.cnt_address_skipped_in_available_area}/${address_daily_aggregates.count}",
+      {category: table_calculation, expression: "${address_daily_aggregates.cnt_address_skipped_in_available_area}/${daily_user_aggregates.active_users}",
         label: "% address skipped", value_format: !!null '', value_format_name: percent_1,
         _kind_hint: measure, table_calculation: address_skipped, _type_hint: number},
-      {category: table_calculation, expression: "${address_daily_aggregates.cnt_noaction_area_available}/${address_daily_aggregates.count}",
+      {category: table_calculation, expression: "${address_daily_aggregates.cnt_noaction_area_available}/${daily_user_aggregates.active_users}",
         label: "% no action", value_format: !!null '', value_format_name: percent_1,
         _kind_hint: measure, table_calculation: no_action, _type_hint: number}, {
         category: table_calculation, expression: "${address_confirmed}+${address_skipped}+${no_action}+${skipped_and_confirmed}",
@@ -264,7 +264,7 @@
     show_null_points: true
     interpolation: linear
     defaults_version: 1
-    hidden_fields: [address_daily_aggregates.count, address_daily_aggregates.cnt_users_location_pin_placed,
+    hidden_fields: [daily_user_aggregates.active_users, address_daily_aggregates.cnt_users_location_pin_placed,
       address_daily_aggregates.cnt_address_confirmed_area_available, address_daily_aggregates.cnt_address_skipped_in_available_area,
       address_daily_aggregates.cnt_available_area, address_daily_aggregates.cnt_noaction_area_available,
       inside_delivery_zone, sum_actions, address_daily_aggregates.cnt_confirmed_and_skipped_area_available]
@@ -287,7 +287,7 @@
     model: flink_v3
     explore: address_daily_aggregates
     type: looker_column
-    fields: [address_daily_aggregates.event_date_at_date, address_daily_aggregates.count,
+    fields: [address_daily_aggregates.event_date_at_date, daily_user_aggregates.active_users,
       address_daily_aggregates.cnt_users_location_pin_placed, address_daily_aggregates.cnt_waitlist_area_unavailable,
       address_daily_aggregates.cnt_browse_area_unavailable, address_daily_aggregates.cnt_unavailable_area,
       address_daily_aggregates.cnt_noaction_area_unavailable, address_daily_aggregates.cnt_waitlist_and_browse_area_unavailable]
@@ -295,19 +295,19 @@
     sorts: [address_daily_aggregates.event_date_at_date desc]
     limit: 500
     column_limit: 50
-    dynamic_fields: [{category: table_calculation, expression: "${address_daily_aggregates.cnt_unavailable_area}/${address_daily_aggregates.count}",
+    dynamic_fields: [{category: table_calculation, expression: "${address_daily_aggregates.cnt_unavailable_area}/${daily_user_aggregates.active_users}",
         label: "% inside delivery zone", value_format: !!null '', value_format_name: percent_1,
         _kind_hint: measure, table_calculation: inside_delivery_zone, _type_hint: number},
-      {category: table_calculation, expression: "${address_daily_aggregates.cnt_waitlist_area_unavailable}/${address_daily_aggregates.count}",
+      {category: table_calculation, expression: "${address_daily_aggregates.cnt_waitlist_area_unavailable}/${daily_user_aggregates.active_users}",
         label: "% waitlist intent", value_format: !!null '', value_format_name: percent_1,
         _kind_hint: measure, table_calculation: waitlist_intent, _type_hint: number},
-      {category: table_calculation, expression: "${address_daily_aggregates.cnt_waitlist_and_browse_area_unavailable}/${address_daily_aggregates.count}",
+      {category: table_calculation, expression: "${address_daily_aggregates.cnt_waitlist_and_browse_area_unavailable}/${daily_user_aggregates.active_users}",
         label: "% waitlist and browse", value_format: !!null '', value_format_name: percent_1,
         _kind_hint: measure, table_calculation: waitlist_and_browse, _type_hint: number},
-      {category: table_calculation, expression: "${address_daily_aggregates.cnt_browse_area_unavailable}/${address_daily_aggregates.count}",
+      {category: table_calculation, expression: "${address_daily_aggregates.cnt_browse_area_unavailable}/${daily_user_aggregates.active_users}",
         label: "% selection browse", value_format: !!null '', value_format_name: percent_1,
         _kind_hint: measure, table_calculation: selection_browse, _type_hint: number},
-      {category: table_calculation, expression: "${address_daily_aggregates.cnt_noaction_area_unavailable}/${address_daily_aggregates.count}",
+      {category: table_calculation, expression: "${address_daily_aggregates.cnt_noaction_area_unavailable}/${daily_user_aggregates.active_users}",
         label: "% no action", value_format: !!null '', value_format_name: percent_1,
         _kind_hint: measure, table_calculation: no_action, _type_hint: number}, {
         category: table_calculation, expression: "${waitlist_intent}+${selection_browse}+${no_action}+${waitlist_and_browse}",
@@ -362,7 +362,7 @@
     show_null_points: true
     interpolation: linear
     defaults_version: 1
-    hidden_fields: [address_daily_aggregates.count, address_daily_aggregates.cnt_users_location_pin_placed,
+    hidden_fields: [daily_user_aggregates.active_users, address_daily_aggregates.cnt_users_location_pin_placed,
       inside_delivery_zone, sum_actions, address_daily_aggregates.cnt_unavailable_area,
       address_daily_aggregates.cnt_waitlist_area_unavailable, address_daily_aggregates.cnt_browse_area_unavailable,
       address_daily_aggregates.cnt_noaction_area_unavailable, address_daily_aggregates.cnt_waitlist_and_browse_area_unavailable]
@@ -386,10 +386,10 @@
     explore: address_daily_aggregates
     type: single_value
     fields: [address_daily_aggregates.cnt_users_location_pin_placed, address_daily_aggregates.cnt_unavailable_area,
-      address_daily_aggregates.count]
+      daily_user_aggregates.active_users]
     limit: 500
     column_limit: 50
-    dynamic_fields: [{category: table_calculation, expression: "${address_daily_aggregates.cnt_unavailable_area}/${address_daily_aggregates.count}",
+    dynamic_fields: [{category: table_calculation, expression: "${address_daily_aggregates.cnt_unavailable_area}/${daily_user_aggregates.active_users}",
         label: "% Daily users in undeliverable locations over all active daily users",
         value_format: !!null '', value_format_name: percent_1, _kind_hint: measure,
         table_calculation: users_with_unavailable_areas_over_active_users, _type_hint: number},
@@ -417,7 +417,7 @@
     single_value_title: ''
     comparison_label: From Prior
     hidden_fields: [address_daily_aggregates.cnt_unavailable_area, address_daily_aggregates.cnt_users_location_pin_placed,
-      address_daily_aggregates.count]
+      daily_user_aggregates.active_users]
     x_axis_gridlines: false
     y_axis_gridlines: true
     show_view_names: false
@@ -467,7 +467,7 @@
     type: looker_column
     fields: [address_daily_aggregates.cnt_unavailable_area, address_daily_aggregates.event_date_at_date,
       daily_user_aggregates.platform, address_daily_aggregates.cnt_users_location_pin_placed,
-      address_daily_aggregates.count]
+      daily_user_aggregates.active_users]
     pivots: [daily_user_aggregates.platform]
     fill_fields: [address_daily_aggregates.event_date_at_date]
     filters: {}
@@ -475,7 +475,7 @@
     limit: 500
     column_limit: 50
     row_total: right
-    dynamic_fields: [{category: table_calculation, expression: "${address_daily_aggregates.cnt_unavailable_area}/${address_daily_aggregates.count}",
+    dynamic_fields: [{category: table_calculation, expression: "${address_daily_aggregates.cnt_unavailable_area}/${daily_user_aggregates.active_users}",
         label: "% users in undeliverable location", value_format: !!null '', value_format_name: percent_1,
         _kind_hint: measure, table_calculation: users_unavailable_area_vs_total, _type_hint: number},
       {category: table_calculation, expression: 'sum(offset_list(${address_daily_aggregates.cnt_unavailable_area},0,7))/sum(offset_list(${address_daily_aggregates.cnt_users_location_pin_placed},0,7))',
@@ -484,7 +484,7 @@
         _type_hint: number, is_disabled: true}, {category: table_calculation, expression: 'sum(offset_list(${address_daily_aggregates.cnt_unavailable_area},7,7))/sum(offset_list(${address_daily_aggregates.cnt_users_location_pin_placed},7,7))',
         label: "% users in undeliverable location prior 7 days", value_format: !!null '',
         value_format_name: percent_1, _kind_hint: measure, table_calculation: users_with_unavailable_area_prior_7_days,
-        _type_hint: number, is_disabled: true}, {category: table_calculation, expression: "${address_daily_aggregates.cnt_unavailable_area:row_total}/${address_daily_aggregates.count:row_total}",
+        _type_hint: number, is_disabled: true}, {category: table_calculation, expression: "${address_daily_aggregates.cnt_unavailable_area:row_total}/${daily_user_aggregates.active_users:row_total}",
         label: "% undeliverable location", value_format: !!null '', value_format_name: percent_1,
         _kind_hint: supermeasure, table_calculation: unavailable_area, _type_hint: number}]
     query_timezone: Europe/Berlin
@@ -533,10 +533,10 @@
       unavailable_area: line
       web - users_unavailable_area_vs_total: line
     series_colors:
-      address_daily_aggregates.count: "#9eeaea"
+      daily_user_aggregates.active_users: "#9eeaea"
       users_with_unavailable_areas_over_active_users: "#B1399E"
-      android - address_daily_aggregates.count: "#75E2E2"
-      ios - address_daily_aggregates.count: "#9eeaea"
+      android - daily_user_aggregates.active_users: "#75E2E2"
+      ios - daily_user_aggregates.active_users: "#9eeaea"
       ios - users_with_unavailable_areas_over_active_users: "#e5508e"
       android - address_daily_aggregates.cnt_users_location_pin_placed: "#75E2E2"
       ios - address_daily_aggregates.cnt_users_location_pin_placed: "#d5f6f6"
@@ -545,10 +545,10 @@
       unavailable_area: "#B1399E"
       web - users_unavailable_area_vs_total: "#d7b9f9"
     series_labels:
-      address_daily_aggregates.count: Active Users
+      daily_user_aggregates.active_users: Active Users
       users_with_unavailable_areas_over_active_users: "% Users in undeliverable location"
-      android - address_daily_aggregates.count: Active Users (Android)
-      ios - address_daily_aggregates.count: Active Users (iOS)
+      android - daily_user_aggregates.active_users: Active Users (Android)
+      ios - daily_user_aggregates.active_users: Active Users (iOS)
       android - users_with_unavailable_areas_over_active_users: "% Users in undeliverable\
         \ location"
       ios - users_with_unavailable_areas_over_active_users: "% Users in undeliverable\
@@ -574,7 +574,7 @@
     single_value_title: Users Who Enter Address Selection And Check An Undeliverable
       Location (Last 7 Days)
     hidden_fields: [address_daily_aggregates.cnt_unavailable_area, address_daily_aggregates.cnt_users_location_pin_placed,
-      address_daily_aggregates.count]
+      daily_user_aggregates.active_users]
     show_null_points: true
     interpolation: linear
     defaults_version: 1
@@ -859,7 +859,7 @@
     model: flink_v3
     explore: address_daily_aggregates
     type: looker_line
-    fields: [address_daily_aggregates.event_date_at_date, address_daily_aggregates.count,
+    fields: [address_daily_aggregates.event_date_at_date, daily_user_aggregates.active_users,
       daily_user_aggregates.users_with_checkout_viewed, address_daily_aggregates.cnt_is_hub_updated_with_cart,
       daily_user_aggregates.platform]
     pivots: [daily_user_aggregates.platform]
@@ -871,7 +871,7 @@
     dynamic_fields: [{category: table_calculation, expression: "${address_daily_aggregates.cnt_is_addres_tappped_at_checkout}/${daily_user_aggregates.users_with_checkout_viewed}",
         label: "% address change at checkout", value_format: !!null '', value_format_name: percent_1,
         _kind_hint: measure, table_calculation: address_change_at_checkout, _type_hint: number,
-        is_disabled: true}, {category: table_calculation, expression: "${address_daily_aggregates.cnt_is_hub_updated_with_cart}/${address_daily_aggregates.count}",
+        is_disabled: true}, {category: table_calculation, expression: "${address_daily_aggregates.cnt_is_hub_updated_with_cart}/${daily_user_aggregates.active_users}",
         label: "% hub updated", value_format: !!null '', value_format_name: percent_2,
         _kind_hint: measure, table_calculation: hub_updated, _type_hint: number}]
     query_timezone: Europe/Berlin
@@ -922,7 +922,7 @@
       android - hub_updated: triangle
     defaults_version: 1
     hidden_fields: [daily_user_aggregates.users_with_checkout_viewed, address_daily_aggregates.cnt_is_hub_updated_with_cart,
-      address_daily_aggregates.count]
+      daily_user_aggregates.active_users]
     note_state: collapsed
     note_display: hover
     note_text: What % of daily users lose their cart because they changed location
@@ -1072,7 +1072,7 @@
     model: flink_v3
     explore: address_daily_aggregates
     type: looker_column
-    fields: [address_daily_aggregates.count, address_daily_aggregates.cnt_users_location_pin_placed,
+    fields: [daily_user_aggregates.active_users, address_daily_aggregates.cnt_users_location_pin_placed,
       address_daily_aggregates.cnt_available_area, address_daily_aggregates.cnt_address_confirmed_area_available,
       address_daily_aggregates.cnt_confirmed_and_skipped_area_available, daily_user_aggregates.is_new_user]
     fill_fields: [daily_user_aggregates.is_new_user]
@@ -1116,12 +1116,12 @@
         steps: 5
     x_axis_label: Is New User (First Day)
     series_colors:
-      address_daily_aggregates.count: "#75E2E2"
+      daily_user_aggregates.active_users: "#75E2E2"
       address_daily_aggregates.cnt_users_location_pin_placed: "#3EB0D5"
       address_daily_aggregates.cnt_available_area: "#4691d6"
       address_confirmed_total: "#4276BE"
     series_labels:
-      address_daily_aggregates.count: Active users
+      daily_user_aggregates.active_users: Active users
       address_daily_aggregates.cnt_users_location_pin_placed: Address Flow Started
       address_daily_aggregates.cnt_available_area: Address Inside Delivery Area
       address_confirmed_total: Address Selected
@@ -1151,7 +1151,7 @@
     model: flink_v3
     explore: address_daily_aggregates
     type: looker_column
-    fields: [daily_user_aggregates.is_new_user, address_daily_aggregates.count,
+    fields: [daily_user_aggregates.is_new_user, daily_user_aggregates.active_users,
       address_daily_aggregates.cnt_users_location_pin_placed, address_daily_aggregates.cnt_unavailable_area,
       address_daily_aggregates.cnt_waitlist_and_browse_area_unavailable, address_daily_aggregates.cnt_waitlist_area_unavailable]
     fill_fields: [daily_user_aggregates.is_new_user]
@@ -1195,14 +1195,14 @@
         steps: 5
     x_axis_label: Is New User (First Day)
     series_colors:
-      address_daily_aggregates.count: "#75E2E2"
+      daily_user_aggregates.active_users: "#75E2E2"
       address_daily_aggregates.cnt_users_location_pin_placed: "#3EB0D5"
       address_daily_aggregates.cnt_available_area: "#4691d6"
       address_confirmed_total: "#4276BE"
       address_daily_aggregates.cnt_unavailable_area: "#B1399E"
       waitlist_intent_total: "#d36ade"
     series_labels:
-      address_daily_aggregates.count: Active Users
+      daily_user_aggregates.active_users: Active Users
       address_daily_aggregates.cnt_users_location_pin_placed: Address Flow Started
       address_daily_aggregates.cnt_available_area: Users With Deliverable Location
       address_confirmed_total: Users With Address

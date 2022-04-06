@@ -19,7 +19,7 @@ view: address_daily_aggregates {
   }
 
   ######## Flags | Event ########
-  # User Flags
+  # User Flags specific to addresses (not part of the daily_user_aggregates model)
 
   dimension: is_address_confirmed {
     group_label: "Flags | Event"
@@ -129,7 +129,7 @@ view: address_daily_aggregates {
 
   measure: cnt_available_area {
     group_label: "# Daily Users"
-    label: "# Daily Users At Deliverable Location"
+    label: "# Daily Users Inside Delivery Area"
     description: "# daily users with least one Location Pin Placed at a location we can deliver to (=inside delivery zone and resolvable address)"
     type: count
     filters: [has_seen_inside_delivery_area: "yes", is_location_pin_placed: "yes"]
@@ -137,7 +137,7 @@ view: address_daily_aggregates {
 
   measure: cnt_unavailable_area {
     group_label: "# Daily Users"
-    label: "# Daily Users Outside Deliverable Locations"
+    label: "# Daily Users Outside Delivery Area"
     description: "# daily users with at least one Location Pin Placed at a location we cannot deliver to (=outside delivery zone or no resolvable address)"
     type: count
     filters: [has_seen_outside_delivery_area: "yes", is_location_pin_placed: "yes"]
@@ -289,7 +289,7 @@ view: address_daily_aggregates {
     sql: ${TABLE}.has_seen_undeliverable_location;;
   }
 
-######## Dates ########
+  ######## Dates ########
 
   dimension_group: event_date_at {
     group_label: "Date Dimensions"
@@ -329,14 +329,6 @@ view: address_daily_aggregates {
     allowed_value: { value: "Week" }
     allowed_value: { value: "Month" }
     default_value: "Day"
-  }
-
-  measure: mcvr1 {
-    label: "mCVR1"
-    type: number
-    description: "Number of daily_user_uuid where an address was selected, compared to the total number of active users"
-    value_format_name: percent_1
-    sql: ${cnt_users_address_selected}/NULLIF(${count},0) ;;
   }
 
   set: detail {
