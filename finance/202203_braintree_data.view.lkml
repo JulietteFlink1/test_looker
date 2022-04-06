@@ -53,15 +53,18 @@ view: braintree_data_202203 {
 
   dimension: date {
     type: date
+    group_label: "Date"
     sql: ${TABLE}.date ;;
   }
 
   dimension: time {
+    group_label: "Date"
     type: string
     sql: ${TABLE}.time ;;
   }
 
   dimension: month {
+    group_label: "Date"
     type: number
     sql: ${TABLE}.month ;;
   }
