@@ -278,6 +278,17 @@ view: orderline {
     sql: ${TABLE}.brand ;;
   }
 
+  dimension: is_charity_sku {
+
+    label:       "Is Charity SKU"
+    description: "This boolean is TRUE, in case a SKU refers to a donation SKU and is FALSE, if not"
+    group_label: "> Product Attributes"
+
+    type: yesno
+    sql: ${TABLE}.is_charity_sku ;;
+
+  }
+
   dimension: translated_product_name {
     type: string
     sql: null ;;
