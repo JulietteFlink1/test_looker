@@ -241,7 +241,7 @@ view: +sku_performance_base {
     group_label: "Report Period"
 
     type: number
-    sql: (${sum_waste_damaged} + ${sum_waste_expired}) / nullif( ${sum_number_of_orders_corrected} ,0) ;;
+    sql: (${sum_waste_damaged} + ${sum_waste_expired}) / nullif( ${sum_quantity_sold_corrected} ,0) ;;
 
     value_format_name: percent_2
 
