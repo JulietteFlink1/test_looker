@@ -34,20 +34,20 @@ view: waste_index {
   }
   dimension: mean_item_price_gross {
     label: "Mean Item Price Gross"
-    group_label: "> Waste Metrics"
+    group_label: "> Waste Risk Metrics"
     description: ""
     type: number
     value_format_name: decimal_2
   }
   dimension: var_item_price_gross {
     label: "Var Item Price Gross"
-    group_label: "> Waste Metrics"
+    group_label: "> Waste Risk Metrics"
     description: ""
     type: number
   }
   dimension: std_item_price_gross {
     label: "StD Item Price Gross"
-    group_label: "> Waste Metrics"
+    group_label: "> Waste Risk Metrics"
     description: ""
     type: number
   }
@@ -58,8 +58,8 @@ view: waste_index {
     type: date_time
   }
   dimension: key_index {
-    label: "Waste Index"
-    group_label: "> Waste Metrics"
+    label: "Waste Risk Index"
+    group_label: "> Waste Risk Metrics"
     description: ""
     type: number
   }
@@ -72,7 +72,7 @@ view: waste_index {
   dimension: key_index_tier  {
     type: tier
     label: "Waste Risk Index Tier"
-    group_label: "> Waste Metrics"
+    group_label: "> Waste Risk Metrics"
     tiers: [0,0.5,1,1.5,2,2.5,3,3.5,4,4.5,5,5.5,6]
     style: relational
     hidden: no
