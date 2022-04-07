@@ -12,7 +12,7 @@ view: mean_and_std{
     }
   }
 
-  dimension: tabel_uuid  {
+  dimension: tabel_uuid {
     hidden: yes
     sql: concat(${created_date},${hub_code},${product_sku}) ;;
     primary_key: yes
@@ -46,23 +46,25 @@ view: mean_and_std{
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 measure: mean_item_price_gross {
-  label: "Mean Item Price Gross"
-  hidden: no
+  label: "Mean Item Price Gross ori"
+  hidden: yes
   sql: ${sum_item_price_gross} ;;
   type: average
   value_format_name: decimal_2
 }
 
+
 measure: std_item_price_gross {
   label: "StD Item Price Gross"
-  hidden: no
+  hidden: yes
   type: number
+ # sql_distinct_key: ${created_date} ;;
   sql: round(stddev(${sum_item_price_gross}), 2) ;;
 }
 
   measure: var_item_price_gross {
     label: "Var Item Price Gross"
-    hidden: no
+    hidden: yes
     type: number
     sql: round(variance(${sum_item_price_gross}), 2) ;;
   }
