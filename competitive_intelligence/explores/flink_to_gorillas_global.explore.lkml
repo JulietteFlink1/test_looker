@@ -3,6 +3,7 @@ include: "/views/bigquery_tables/curated_layer/*.view"
 include: "/views/bigquery_tables/reporting_layer/competitive_intelligence/*.view"
 include: "/views/bigquery_tables/reporting_layer/competitive_intelligence/gorillas_inventory_stock_count.view.lkml"
 include: "/views/bigquery_tables/comp-intel/*.view"
+include: "/views/bigquery_tables/gsheets/price_test_tracking.view"
 
 explore: flink_to_gorillas_global {
   from: products
@@ -132,6 +133,12 @@ explore: flink_to_gorillas_global {
     sql_on: ${products.product_sku} = ${key_value_items.sku} ;;
     relationship: many_to_one
     type: left_outer
+  }
+
+  join: price_test_tracking {
+    sql_on:  ${products.product_sku} = ${price_test_tracking.product_sku};;
+    relationship: many_to_one
+    type:  left_outer
   }
 
 }

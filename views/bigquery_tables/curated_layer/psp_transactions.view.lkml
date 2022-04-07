@@ -454,6 +454,21 @@ view: psp_transactions {
     filters: [record_type: "Authorised"]
   }
 
+  measure: cnt_distinct_orders {
+    group_label: "* Transaction Totals *"
+    label: "# Orders"
+    type: count_distinct
+    sql: ${order_uuid} ;;
+  }
+
+  measure: order_completion_rate {
+    group_label: "* Payment Metrics *"
+    label: "Order Completion Rate"
+    type: number
+    sql: ${cnt_distinct_orders}/${cnt_authorised_transactions} ;;
+    value_format_name: percent_2
+  }
+
   measure: cnt_refund_transactions {
     group_label: "* Transaction Totals *"
     label: "# Refunded"

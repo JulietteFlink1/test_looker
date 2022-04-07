@@ -61,7 +61,8 @@ c as
       f.is_discounted_order,
       category as category,
       b.subcategory as subcategory,
-      sum (coalesce(a.amt_total_price_gross,0)+coalesce(amt_total_deposit,0)) as sum_item_value,
+      sum (coalesce(a.amt_total_price_gross,0)) as sum_item_value,
+      --+coalesce(amt_total_deposit,0))
       sum (a.quantity) as sum_quantity,
       count (distinct a.order_uuid) as orders_subcategory
       FROM `flink-data-prod.curated.order_lineitems` a
