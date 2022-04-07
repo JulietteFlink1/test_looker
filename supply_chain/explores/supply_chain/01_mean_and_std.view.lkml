@@ -46,7 +46,7 @@ view: mean_and_std{
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 measure: mean_item_price_gross {
-  label: "Mean Item Price Gross ori"
+  label: "Mean Item Price Gross"
   hidden: yes
   sql: ${sum_item_price_gross} ;;
   type: average
