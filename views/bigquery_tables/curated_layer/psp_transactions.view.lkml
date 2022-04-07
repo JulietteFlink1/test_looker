@@ -344,11 +344,12 @@ view: psp_transactions {
     value_format_name: euro_accounting_2_precision
   }
 
-  measure: total_trx_fees_percentage {
+  measure: total_trx_fees_percentage_of_gmv {
     group_label: "* Fee Amounts *"
     type: number
-    sql: NULLIF(${sum_total_trx_fees},0) / NULLIF(${sum_main_amount_authorised},0);;
+    sql: NULLIF(${sum_total_trx_fees},0) / NULLIF(${orders.sum_gmv_gross},0);;
     value_format_name: percent_2
+    description: "payments processing fees as % of GMV (gross)"
   }
 
   measure: diff_adyen_ct_filter {
@@ -451,6 +452,21 @@ view: psp_transactions {
     type: count_distinct
     sql: ${psp_transaction_uuid} ;;
     filters: [record_type: "Authorised"]
+  }
+
+  measure: cnt_distinct_orders {
+    group_label: "* Transaction Totals *"
+    label: "# Orders"
+    type: count_distinct
+    sql: ${order_uuid} ;;
+  }
+
+  measure: order_completion_rate {
+    group_label: "* Payment Metrics *"
+    label: "Order Completion Rate"
+    type: number
+    sql: ${cnt_distinct_orders}/${cnt_authorised_transactions} ;;
+    value_format_name: percent_2
   }
 
   measure: cnt_refund_transactions {

@@ -536,7 +536,7 @@ view: cc_conversations {
     group_label: "* Basic Counts *"
     type: number
     value_format: "0.0"
-    sql: ${number_of_non_deflected_conversations}/${number_of_agents} ;;
+    sql: safe_divide(${number_of_non_deflected_conversations},${number_of_agents}) ;;
     label: "# Contacts per Agent"
   }
 

@@ -44,12 +44,18 @@ view: erp_buying_prices {
     label: "Vendor Name"
     type: string
     sql: ${TABLE}.erp_vendor_name ;;
+
+    # this field is not part of the refactored table anymore, but can be derived from e.g. erp_product_hub_vendor_assignment_v2
+    hidden: yes
   }
 
   dimension: erp_item_name {
     label: "Product Name (ERP)"
     type: string
     sql: ${TABLE}.erp_item_name ;;
+
+    # this field is not part of the refactored table anymore, but can be derived from e.g. erp_product_hub_vendor_assignment_v2
+    hidden: yes
   }
 
   dimension: valid_to {

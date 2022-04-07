@@ -81,13 +81,14 @@ view: orders {
   dimension: item_value_gross {
     type: number
     hidden: no
-    sql: ${gmv_gross} - ${shipping_price_gross_amount} ;;
+    sql: coalesce(${gmv_gross},0) - coalesce(${shipping_price_gross_amount},0) - coalesce(${rider_tip},0)
+    ;;
   }
 
   dimension: item_value_net {
     type: number
     hidden: no
-    sql: ${gmv_net} - ${shipping_price_net_amount} ;;
+    sql: ${gmv_net} - ${shipping_price_net_amount} - ${rider_tip} ;;
   }
 
   dimension: item_value_gross_tier {
@@ -1574,7 +1575,7 @@ view: orders {
         description: "Average value of Delivery Fees (Gross)"
         hidden:  no
         type: average
-        sql: ${shipping_price_gross_amount};;
+        sql: coalesce(${shipping_price_gross_amount});;
         value_format_name: euro_accounting_2_precision
       }
 
@@ -1615,7 +1616,7 @@ view: orders {
         label: "AVG Rider Tip"
         hidden:  no
         type: average
-        sql: ${rider_tip};;
+        sql: coalesce(${rider_tip}, 0);;
         value_format_name: euro_accounting_2_precision
       }
 

@@ -99,7 +99,8 @@ c.hub_name,
 c.hub_code,
 b.category,
 a.quantity,
-a.amt_total_price_gross
+coalesce(a.amt_total_price_gross,0) as amt_total_price_gross,
+--+coalesce(a.amt_total_deposit,0) as amt_total_price_gross,
 
 FROM `flink-data-prod.curated.order_lineitems` a
 left join `flink-data-prod.curated.products` b

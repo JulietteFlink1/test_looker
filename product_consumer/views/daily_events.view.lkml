@@ -114,7 +114,7 @@ view: daily_events {
       group_label: "Device Dimensions"
       type: string
       description: "Concatenation of device_type and app_version"
-      sql: ${device_type} || '-' || ${app_version} ;;
+      sql: case when ${TABLE}.device_type in ('ios','android') then  (${TABLE}.device_type || '-' || ${TABLE}.app_version ) end ;;
     }
 
   # ======= Location Dimension ======= #
