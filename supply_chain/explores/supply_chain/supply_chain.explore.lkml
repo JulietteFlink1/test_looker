@@ -343,4 +343,13 @@ explore: supply_chain {
     sql_on: ${waste_index.hub_code} = ${products_hub_assignment.hub_code}
     and ${waste_index.product_sku} = ${products_hub_assignment.sku} ;;
 }
+
+  join: avg_waste_index_per_hub {
+    view_label: "07 Order Lineitems"
+    type: left_outer
+    relationship: many_to_one
+    sql_on: ${avg_waste_index_per_hub.hub_code} = ${products_hub_assignment.hub_code}
+      and ${avg_waste_index_per_hub.product_sku} = ${products_hub_assignment.sku} ;;
+  }
+
 }
