@@ -4,15 +4,19 @@ include: "/**/*.explore"
 
 
 explore: order_orderline_cl {
+
   extends: [orders_cl]
+
   group_label: "01) Performance"
-  label: "Orders & Lineitems"
+  label:       "Orders & Lineitems"
   description: "Orderline Items sold quantities, prices, gmv, etc."
   hidden: no
-  # view_name: base_order_orderline
-  #extension: required
+
+  # take all fields except those in the pricing_fields_refined set in erp_product_hub_vendor_assignment_v2_buying_prices.view
+  fields: [ALL_FIELDS*, -erp_product_hub_vendor_assignment.pricing_fields_refined*]
 
   join: orderline {
+
     view_label: "* Order Lineitems *"
     sql_on: ${orderline.country_iso} = ${orders_cl.country_iso} AND
             ${orderline.order_uuid}    = ${orders_cl.order_uuid} AND
@@ -37,10 +41,12 @@ explore: order_orderline_cl {
   }
 
   join: erp_product_hub_vendor_assignment {
-    sql_on:  ${erp_product_hub_vendor_assignment.country_iso}    = ${orderline.country_iso}
-         and ${erp_product_hub_vendor_assignment.sku}            = ${orderline.product_sku}
+
+    from: erp_product_hub_vendor_assignment_v2
+
+    sql_on:  ${erp_product_hub_vendor_assignment.sku}            = ${orderline.product_sku}
          and ${erp_product_hub_vendor_assignment.hub_code}       = ${orderline.hub_code}
-         and ${erp_product_hub_vendor_assignment.ingestion_date} = ${orderline.created_date}
+         and ${erp_product_hub_vendor_assignment.report_date}    = ${orderline.created_date}
     ;;
     type: left_outer
     relationship: one_to_many

@@ -1,6 +1,6 @@
 view: erp_product_hub_vendor_assignment_v2 {
-  sql_table_name: `flink-data-prod.curated.erp_product_hub_vendor_assignment_v2`
-    ;;
+  sql_table_name: `flink-data-prod.curated.erp_product_hub_vendor_assignment_v2`;;
+  view_label: "* ERP/Lexbizz data *"
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~       Sets.         ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -79,6 +79,8 @@ view: erp_product_hub_vendor_assignment_v2 {
     description: "The replenishment group of an item according to Lexbizz. Here, multiple SKUs are part of a group - for the replenishment process, it is important to only source ONE of the SKUs in the group"
     group_label: "> Item Level ERP Data"
 
+    alias: [erp_item_replenishment_substitute_group]
+
     type: string
     sql: ${TABLE}.item_replenishment_substitute_group ;;
 
@@ -89,6 +91,8 @@ view: erp_product_hub_vendor_assignment_v2 {
     label:       "Item Status"
     description: "The item status of an item according to Lexbizz"
     group_label: "> Item Level ERP Data"
+
+    alias: [erp_item_status]
 
     type: string
     sql: ${TABLE}.item_status ;;
@@ -148,6 +152,8 @@ view: erp_product_hub_vendor_assignment_v2 {
     description: "The hub id of a Flink hub according to Lexbizz"
     group_label: "> Hub Level ERP Data"
 
+    alias: [erp_hub_id]
+
     type: string
     sql: ${TABLE}.hub_id ;;
   }
@@ -157,6 +163,8 @@ view: erp_product_hub_vendor_assignment_v2 {
     label:       "Hub Name"
     description: "The hub name of a Flink hub according to Lexbizz"
     group_label: "> Hub Level ERP Data"
+
+    alias: [erp_hub_name]
 
     type: string
     sql: ${TABLE}.hub_name ;;
@@ -192,6 +200,8 @@ view: erp_product_hub_vendor_assignment_v2 {
     label:       "Warehouse ID"
     description: "ID of a vendors warehouse according to Lexbizz"
     group_label: "> Warehouse Level ERP Data"
+
+    alias: [erp_warehouse_id]
 
     type: string
     sql: ${TABLE}.warehouse_id ;;
@@ -250,6 +260,8 @@ view: erp_product_hub_vendor_assignment_v2 {
     description: "Identifier of a vendor in lexbizz"
     group_label: "> Vendor Level ERP Data"
 
+    alias: [erp_vendor_id]
+
     type: string
     sql: ${TABLE}.vendor_id ;;
   }
@@ -259,6 +271,8 @@ view: erp_product_hub_vendor_assignment_v2 {
     label:       "Vendor Location ID"
     description: "Identifier of a vendors location according to lexbizz"
     group_label: "> Vendor Level ERP Data"
+
+    alias: [erp_vendor_location_id]
 
     type: string
     sql: ${TABLE}.vendor_location ;;
@@ -270,6 +284,8 @@ view: erp_product_hub_vendor_assignment_v2 {
     description: "Name of a vendor in lexbizz"
     group_label: "> Vendor Level ERP Data"
 
+    alias: [erp_vendor_name]
+
     type: string
     sql: ${TABLE}.vendor_name ;;
   }
@@ -279,6 +295,8 @@ view: erp_product_hub_vendor_assignment_v2 {
     label:       "Vendor Status"
     description: "Status of a vendor according to lexbizz - it determines, whether a vendor is actively supplying to Flink"
     group_label: "> Vendor Level ERP Data"
+
+    alias: [erp_vendor_status]
 
     type: string
     sql: ${TABLE}.vendor_status ;;
@@ -455,6 +473,9 @@ view: erp_product_hub_vendor_assignment_v2 {
 
 
   dimension_group: report {
+
+    alias: [ingestion]
+
     type: time
     timeframes: [
       raw,
