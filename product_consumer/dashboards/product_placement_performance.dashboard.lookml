@@ -1,5 +1,5 @@
-- dashboard: user_journey_per_category_or_product_copy
-  title: User journey per Category or Product (copy)
+- dashboard: product_placement_performance
+  title: Product Placement Level Performance
   layout: newspaper
   preferred_viewer: dashboards-next
   description: ''
