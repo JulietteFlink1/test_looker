@@ -60,7 +60,8 @@ view: aov_per_category_month{
           hub.city,
           f.is_discounted_order,
           case when category is null then "null" else category end as category,
-          sum (coalesce(a.amt_total_price_gross,0)+coalesce(amt_total_deposit,0)) as sum_item_value,
+          sum (coalesce(a.amt_total_price_gross,0)) as sum_item_value,
+          --+coalesce(amt_total_deposit,0))
           sum (a.quantity) as sum_quantity,
           count (distinct a.order_uuid) as orders_category
           FROM `flink-data-prod.curated.order_lineitems` a

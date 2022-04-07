@@ -11,7 +11,7 @@ view: derived_table {
           hubs.city  AS hub_city,
           hubs.hub_name  AS hub_name,
               COALESCE(SUM(daily_hub_performance_v2.fulfillment_time_minutes ), 0) / nullif(COALESCE(SUM(daily_hub_performance_v2.number_of_orders), 0), 0) AS avg_fulfillment_time_minutes
-      FROM `flink-data-dev.sandbox_nazrin.daily_hub_performance_v2` AS daily_hub_performance_v2
+      FROM `flink-data-prod.sandbox_nazrin.daily_hub_performance` AS daily_hub_performance_v2
       LEFT JOIN `flink-data-prod.curated.hubs`
            AS hubs ON lower(daily_hub_performance_v2.hub_code) = lower(hubs.hub_code)
       GROUP BY

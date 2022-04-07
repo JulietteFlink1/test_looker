@@ -1,5 +1,5 @@
 view: sku_performance_base {
-  sql_table_name: `flink-data-dev.reporting.sku_performance_base`
+  sql_table_name: `flink-data-prod.reporting.sku_performance_base`
     ;;
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -217,25 +217,25 @@ view: sku_performance_base {
 
   dimension: pop_total_waste_damaged {
     type: number
-    sql: ${TABLE}.pop_total_waste_damaged ;;
+    sql: abs(${TABLE}.pop_total_waste_damaged) ;;
     hidden: yes
   }
 
   dimension: pop_total_waste_expired {
     type: number
-    sql: ${TABLE}.pop_total_waste_expired ;;
+    sql: abs(${TABLE}.pop_total_waste_expired) ;;
     hidden: yes
   }
 
   dimension: pop_waste_damaged {
     type: number
-    sql: ${TABLE}.pop_waste_damaged ;;
+    sql: abs(${TABLE}.pop_waste_damaged) ;;
     hidden: yes
   }
 
   dimension: pop_waste_expired {
     type: number
-    sql: ${TABLE}.pop_waste_expired ;;
+    sql: abs(${TABLE}.pop_waste_expired) ;;
     hidden: yes
   }
 
@@ -283,25 +283,25 @@ view: sku_performance_base {
 
   dimension: total_waste_damaged {
     type: number
-    sql: ${TABLE}.total_waste_damaged ;;
+    sql: abs(${TABLE}.total_waste_damaged) ;;
     hidden: yes
   }
 
   dimension: total_waste_expired {
     type: number
-    sql: ${TABLE}.total_waste_expired ;;
+    sql: abs(${TABLE}.total_waste_expired) ;;
     hidden: yes
   }
 
   dimension: waste_damaged {
     type: number
-    sql: ${TABLE}.waste_damaged ;;
+    sql: abs(${TABLE}.waste_damaged) ;;
     hidden: yes
   }
 
   dimension: waste_expired {
     type: number
-    sql: ${TABLE}.waste_expired ;;
+    sql: abs(${TABLE}.waste_expired) ;;
     hidden: yes
   }
 
