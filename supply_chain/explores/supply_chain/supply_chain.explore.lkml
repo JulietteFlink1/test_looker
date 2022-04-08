@@ -352,4 +352,11 @@ explore: supply_chain {
       and ${avg_waste_index_per_hub.product_sku} = ${products_hub_assignment.sku} ;;
   }
 
+  join: v2_avg_waste_index_per_hub {
+    view_label: "07 Order Lineitems"
+    type: left_outer
+    relationship: many_to_one
+    sql_on: ${v2_avg_waste_index_per_hub.hub_code} = ${products_hub_assignment.hub_code} ;;
+  }
+
 }
