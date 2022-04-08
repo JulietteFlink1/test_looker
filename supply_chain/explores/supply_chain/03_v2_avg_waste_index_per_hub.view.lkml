@@ -16,7 +16,7 @@ view: v2_avg_waste_index_per_hub {
     primary_key: yes
   }
   dimension: avg_waste_index {
-    label: "AVG Waste Risk Index"
+    label: "AVG Waste Risk Index per Hub"
     group_label: "> Waste Risk Metrics"
     description: ""
     value_format: "#,##0.00"
