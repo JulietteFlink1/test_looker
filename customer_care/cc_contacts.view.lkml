@@ -1,5 +1,5 @@
 view: cc_contacts {
-  sql_table_name: `flink-data-dev.curated.cc_contacts`
+  sql_table_name: `flink-data-prod.curated.cc_contacts`
     ;;
 
   dimension: agent_email {
