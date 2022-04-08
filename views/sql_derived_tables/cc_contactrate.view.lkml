@@ -10,40 +10,90 @@ view: cc_contactrate {
     sql:
       WITH cs_tb AS (
         SELECT
-            c.* EXCEPT(platform),
-            LOWER(platform) AS platform,
+            c.contact_uuid as conversation_uuid,
+            c.intercom_user_id as contact_id,
+            c.contact_created_timestamp as conversation_created_timestamp,
+            c.contact_created_date as conversation_created_hour,
+            c.contact_created_hour as conversation_created_hour,
+            c.contact_created_day_of_week as conversation_created_day_of_week,
+            c.timezone,
+            c.contact_reason,
+            c.contact_reason_l3,
+            c.number_of_assignments,
+            c.time_to_assignement_seconds,
+            c.time_to_assignement_minutes,
+            c.time_to_first_close_minutes,
+            c.time_to_first_close_seconds,
+            c.time_to_last_close_seconds,
+            c.time_to_last_close_minutes,
+            c.number_of_contact_parts as number_of_conversation_parts,
+            c.number_of_reopens,
+            c.last_close_timestamp,
+            c.first_close_timestamp,
+            c.first_user_reply_timestamp as first_contact_reply_timestamp,
+            c.first_agent_reply_timestamp,
+            c.last_user_reply_timestamp as last_contact_reply_timestamp,
+            c.time_to_agent_reply_seconds,
+            c.time_to_agent_reply_minutes,
+            c.median_time_to_reply_seconds,
+            c.median_time_to_reply_minutes,
+            c.tag_names,
+            c.rating_remark,
+            c.rating,
+            c.rating_created_timestamp,
+            c.is_refunded,
+            c.user_email as contact_email,
+            c.source_type,
+            c.source_author_type,
+            c.is_closed,
+            c.is_snoozed_contact as is_snoozed_conversation,
+            c.is_abandoned_by_user as is_abandoned_by_contact,
+            c.country_iso,
+            c.team_id,
+            c.team_name,
+            c.agent_id,
+            c.is_deflected_by_bot,
+            c.agent_email,
+            c.agent_name,
+            c.user_name as contact_name,
+            c.user_id,
+            c.user_created_timestamp as contact_created_timestamp,
+            c.is_whatsapp_user as is_whatsapp_contact,
+            lower(c.platform) as platform,
             TRIM(REGEXP_EXTRACT(contact_reason, r'(.+?) -')) AS contact_reason_l1,
-            conversation_created_timestamp AS creation_timestamp,
+            contact_created_timestamp AS creation_timestamp,
             NULL AS order_timestamp,
-            NULL AS order_number
-        FROM flink-data-prod.curated.cc_conversations c
+            NULL AS order_number,
+            c.user_phone_number
+        FROM flink-data-prod.curated.cc_contacts c
 
-        UNION ALL
+      UNION ALL
 
-          SELECT
-          NULL, NULL, NULL, NULL, NULL,
-          NULL, NULL, NULL, NULL, NULL,
-          NULL, NULL, NULL, NULL, NULL,
-          NULL, NULL, NULL, NULL, NULL,
-          NULL, NULL, NULL, NULL, NULL,
-          NULL, NULL, NULL, NULL, NULL,
-          NULL, NULL, NULL, NULL, NULL,
-          NULL, NULL, NULL, country_iso, NULL,
-          NULL, NULL, NULL, NULL, NULL,
-          NULL, NULL, NULL, NULL,
-          LOWER(platform) AS platform,
-          NULL AS contact_reason_l1,
-          order_timestamp AS creation_timestamp,
-          order_timestamp,
-          order_number
-        FROM flink-data-prod.curated.orders
+      SELECT
+      NULL, NULL, NULL, NULL, NULL,
+      NULL, NULL, NULL, NULL, NULL,
+      NULL, NULL, NULL, NULL, NULL,
+      NULL, NULL, NULL, NULL, NULL,
+      NULL, NULL, NULL, NULL, NULL,
+      NULL, NULL, NULL, NULL, NULL,
+      NULL, NULL, NULL, NULL, NULL,
+      NULL, NULL, NULL, country_iso, NULL,
+      NULL, NULL, NULL, NULL, NULL,
+      NULL, NULL, NULL, NULL,
+      LOWER(platform) AS platform,
+      NULL AS contact_reason_l1,
+      order_timestamp AS creation_timestamp,
+      order_timestamp,
+      order_number,
+      NULL AS user_phone_number
+      FROM flink-data-prod.curated.orders
       )
       SELECT *
       FROM cs_tb
       WHERE ({% condition contact_reason_l1l2_filter %} contact_reason {% endcondition %} OR (contact_reason IS NULL AND conversation_uuid IS NULL))
       AND ({% condition contact_reason_l3_filter %} contact_reason_l3 {% endcondition %} OR (contact_reason IS NULL AND conversation_uuid IS NULL))
       AND ({% condition conversation_type_filter %} source_type {% endcondition %} OR (contact_reason IS NULL AND conversation_uuid IS NULL))
-       ;;
+      ;;
   }
 
   dimension: date_granularity {
