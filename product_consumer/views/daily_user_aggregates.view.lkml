@@ -129,11 +129,11 @@ view: daily_user_aggregates {
     }
   dimension: app_version_order {
     group_label: "Device Dimensions"
-    label: "App Version"
+    label: "App Version order"
     type: string
     ##hidden: yes
     description: "App release version middle digits for ordering"
-    sql: split(${TABLE}.app_version,".")[OFFSET(1)] ;;
+    sql: CAST(split(${TABLE}.app_version,".")[OFFSET(1)] as int64) ;;
     }
     dimension: app_version {
       group_label: "Device Dimensions"
