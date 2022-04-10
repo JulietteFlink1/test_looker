@@ -95,4 +95,13 @@ join: orders {
     fields: [psp_reference_authorised_date.psp_reference_authorised_booking_date,psp_reference_authorised_date.psp_reference_authorised_booking_month]
   }
 
+  # join: payment_transactions {
+  #   view_label: "* Payment Transaction *"
+  #   sql_on: ${payment_transactions.order_uuid} = ${psp_transactions.order_uuid}
+  #   and  ${payment_transactions.interaction_id} = ${psp_transactions.psp_reference} ;;
+  #   relationship: many_to_many
+  #   type: left_outer
+  #   #fields: [psp_reference_authorised_date.psp_reference_authorised_booking_date,psp_reference_authorised_date.psp_reference_authorised_booking_month]
+  # }
+
 }

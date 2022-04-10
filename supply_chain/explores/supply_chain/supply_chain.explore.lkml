@@ -327,5 +327,36 @@ explore: supply_chain {
     relationship: many_to_one
   }
 
+  join: mean_and_std {
+    view_label: "07 Order Lineitems"
+    type: left_outer
+    relationship: many_to_one
+    sql_on:  ${mean_and_std.hub_code}     = ${products_hub_assignment.hub_code}
+        and  ${mean_and_std.product_sku}  = ${products_hub_assignment.sku};;
+  }
+
+
+  join: waste_index {
+    view_label: "07 Order Lineitems"
+    type: left_outer
+    relationship: many_to_one
+    sql_on: ${waste_index.hub_code} = ${products_hub_assignment.hub_code}
+    and ${waste_index.product_sku} = ${products_hub_assignment.sku} ;;
+}
+
+  join: avg_waste_index_per_hub {
+    view_label: "07 Order Lineitems"
+    type: left_outer
+    relationship: many_to_one
+    sql_on: ${avg_waste_index_per_hub.hub_code} = ${products_hub_assignment.hub_code}
+      and ${avg_waste_index_per_hub.product_sku} = ${products_hub_assignment.sku} ;;
+  }
+
+  join: v2_avg_waste_index_per_hub {
+    view_label: "07 Order Lineitems"
+    type: left_outer
+    relationship: many_to_one
+    sql_on: ${v2_avg_waste_index_per_hub.hub_code} = ${products_hub_assignment.hub_code} ;;
+  }
 
 }
