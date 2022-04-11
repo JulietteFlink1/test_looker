@@ -1,6 +1,6 @@
-include: "/customer_care/cc_contacts.view.lkml"
-include: "/customer_care/cc_orders_hourly2.view.lkml"
-include: "/customer_care/cc_contact_agents.view.lkml"
+include: "/*/**/cc_contacts.view.lkml"
+include: "/*/**/cc_orders_hourly2.view.lkml"
+include: "/*/**/cc_contact_agents.view.lkml"
 
 
 explore: cc_contacts {
