@@ -133,7 +133,7 @@ view: daily_user_aggregates {
     type: number
     hidden: yes
     description: "App release version middle digits for ordering"
-    sql: split(${TABLE}.app_version,".")[OFFSET(1)] ;;
+    sql: split(${TABLE}.app_version,".")[SAFE_OFFSET(1)] ;;
     }
     dimension: app_version {
       group_label: "Device Dimensions"
