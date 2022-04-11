@@ -1,12 +1,12 @@
 view: shyftplan_riders_pickers_hours_clean {
-  sql_table_name: `flink-data-prod.reporting.daily_hub_staffing`
+  sql_table_name: `flink-data-prod.reporting.hub_staffing`
     ;;
 
   dimension: id {
     type: string
     primary_key: yes
     hidden: yes
-    sql: ${TABLE}.daily_staffing_uuid ;;
+    sql: ${TABLE}.staffing_uuid ;;
   }
 
 
@@ -110,6 +110,8 @@ view: shyftplan_riders_pickers_hours_clean {
     type: time
     timeframes: [
       raw,
+      hour,
+      minute30,
       date,
       week,
       month,
@@ -118,8 +120,8 @@ view: shyftplan_riders_pickers_hours_clean {
     ]
     convert_tz: no
     hidden: yes
-    datatype: date
-    sql: ${TABLE}.shift_date ;;
+    datatype: datetime
+    sql: ${TABLE}.block_starts_at_timestamp ;;
   }
 
 

@@ -1,4 +1,4 @@
-view: braintree_data_202203 {
+view: braintree_data {
   sql_table_name: `flink-data-dev.sandbox_justine.braintree_clean`
     ;;
 
