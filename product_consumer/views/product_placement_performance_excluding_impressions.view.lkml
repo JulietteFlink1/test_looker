@@ -158,14 +158,14 @@ view: product_placement_performance_excluding_impressions {
     label: "# Registered Users"
     description: "Number of users who logged-in during a day"
     type: sum
-    sql: ${TABLE}.logged_in_users ;;
+    sql: ${TABLE}.number_of_logged_in_users ;;
   }
   measure: anonymous_users {
     group_label: "User Metrics"
     label: "# All Users"
     description: "Number of all users regardless of their login status."
     type: sum
-    sql: ${TABLE}.users ;;
+    sql: ${TABLE}.number_of_users ;;
   }
   measure: products {
     group_label: "Product Metrics"
@@ -174,48 +174,51 @@ view: product_placement_performance_excluding_impressions {
     type: count_distinct
     sql: ${TABLE}.product_sku ;;
   }
+
+  # ======= Product Event Level Measures =======
+
   measure: impressions {
     hidden: yes
     group_label: "Product Metrics"
     label: "# Impressions"
     description: "Number of unique impressions per product"
     type: sum
-    sql: ${TABLE}.impressions ;;
+    sql: ${TABLE}.number_of_product_impressions ;;
   }
   measure: add_to_carts {
     group_label: "Product Metrics"
     label: "# Products Added to Cart"
     description: "Number of unique products added to cart"
     type: sum
-    sql: ${TABLE}.add_to_carts ;;
+    sql: ${TABLE}.number_of_product_add_to_carts ;;
   }
   measure: removed_from_carts {
     group_label: "Product Metrics"
     label: "# Products Removed from Cart"
     description: "Number of unique products removed from cart"
     type: sum
-    sql: ${TABLE}.removed_from_carts ;;
+    sql: ${TABLE}.number_of_product_removed_from_carts ;;
   }
   measure: pdps {
     group_label: "Product Metrics"
     label: "# PDPs"
     description: "Number of PDPs (product details viewed) per product"
     type: sum
-    sql: ${TABLE}.pdps ;;
+    sql: ${TABLE}.number_of_pdp_views ;;
   }
   measure: favourites {
     group_label: "Product Metrics"
     label: "# Favourite Products"
     description: "Number of unique products added to favourites"
     type: sum
-    sql: ${TABLE}.favourites ;;
+    sql: ${TABLE}.number_of_added_to_favourites ;;
   }
   measure: orders {
     group_label: "Product Metrics"
     label: "# Ordered Products "
-    description: "Number of products which were ordered"
+    description: "Number of orders with the product"
     type: sum
-    sql: ${TABLE}.orders ;;
+    sql: ${TABLE}.number_of_orders ;;
   }
   measure: click_through_rate {
     hidden: yes
@@ -251,5 +254,50 @@ view: product_placement_performance_excluding_impressions {
     description: "# ordered products / # total products impressions"
     value_format_name: percent_2
     sql: ${orders} / nullif(${impressions},0);;
+  }
+
+  # ======= User Level Measures =======
+  measure: users_with_impressions {
+    group_label: "Product Metrics"
+    label: "# Products Added to Cart"
+    description: "Number of unique products added to cart"
+    type: sum
+    sql: ${TABLE}.number_of_users_with_impressions ;;
+  }
+
+  measure: users_with_add_to_carts {
+    group_label: "Product Metrics"
+    label: "# Products Added to Cart"
+    description: "Number of unique products added to cart"
+    type: sum
+    sql: ${TABLE}.number_of_users_with_add_to_carts ;;
+  }
+  measure: users_with_removed_from_carts {
+    group_label: "Product Metrics"
+    label: "# Products Removed from Cart"
+    description: "Number of unique products removed from cart"
+    type: sum
+    sql: ${TABLE}.number_of_users_with_removed_from_carts ;;
+  }
+  measure: users_with_pdp_viewed {
+    group_label: "Product Metrics"
+    label: "# PDPs"
+    description: "Number of PDPs (product details viewed) per product"
+    type: sum
+    sql: ${TABLE}.number_of_users_with_pdp_views ;;
+  }
+  measure: users_with_add_to_favourites {
+    group_label: "Product Metrics"
+    label: "# Favourite Products"
+    description: "Number of unique products added to favourites"
+    type: sum
+    sql: ${TABLE}.number_of_users_with_added_to_favourites ;;
+  }
+  measure: users_with_orders {
+    group_label: "Product Metrics"
+    label: "# Ordered Products "
+    description: "Number of orders with the product"
+    type: sum
+    sql: ${TABLE}.number_of_users_with_order ;;
   }
 }
