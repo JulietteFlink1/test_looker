@@ -210,22 +210,23 @@ view: hubs_ct {
     group_label: "> IDs"
   }
 
-  filter:  lighthouse_hubs {
+  dimension:  lighthouse_hubs {
     label: "Is Lighthouse"
     description: "Identifies if the hub is Lighthouse hub or not"
     type: string
-    sql: case
-            when ${hub_code}
-                  in (
+    case:  {
+      when: {
+        sql: ${hub_code}
+                   in (
                   'de_aah_burt','de_ber_alex','de_ber_mit2','de_ber_noll','de_ber_pren',
                   'de_ber_wedd','de_bon_zent','de_bra_mich','de_cgn_lind','de_cgn_nipp','de_dar_zent',
                   'de_dus_pemp','de_ess_hols','de_ham_roth','de_ham_wint','de_lei_plag','de_man_inne',
                   'de_maz_inne','de_muc_maxv','de_nrm_suds','de_wie_mitt'
-                  )
-            then 'Yes'
-            else 'No'
-          end
-    ;;
+                  ) ;;
+        label: "Yes"
+      }
+      else: "No"
+    }
   }
 
   measure: count {
