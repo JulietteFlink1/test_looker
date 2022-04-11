@@ -80,7 +80,7 @@ view: onboarding_task_roman {
     label: "AVG # Minutes Fulfillment"
     description: "Average # minutes needed to fulfill the order"
     hidden:  no
-    type: number
+    type: average
     sql: ${fulfillment_time_minutes_total} / NULLIF(${number_of_orders_with_fulfillment_time},0);;
     value_format_name: decimal_1
   }
@@ -89,7 +89,7 @@ view: onboarding_task_roman {
     label: "AVG # Items In Basket"
     description: "Average # items in a basket"
     hidden:  no
-    type: number
+    type: average
     sql: ${number_of_items_total} / ${number_of_orders_total};;
     value_format_name: decimal_1
   }
@@ -102,16 +102,18 @@ view: onboarding_task_roman {
     label: "# Orders"
     description: "Total # of orders"
     hidden:  no
-    type: number
+    type: sum
     sql: ${number_of_orders_total};;
+    value_format: "0"
   }
 
   measure: sum_number_of_riders{
     label: "# Riders"
     description: "Total # Riders worked in a day in the hub"
     hidden:  no
-    type: number
+    type: sum
     sql: ${number_of_worked_riders_total};;
+    value_format: "0"
   }
 
 }
