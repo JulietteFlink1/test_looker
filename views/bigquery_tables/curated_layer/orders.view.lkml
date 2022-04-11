@@ -1020,6 +1020,14 @@ view: orders {
     sql: ${TABLE}.at_customer_time_minutes ;;
   }
 
+  dimension: at_customer_time_minutes_tier_5 {
+    group_label: "* Operations / Logistics *"
+    label: "At Customer Time Minutes Tier"
+    type: tier
+    tiers: [0, 0.5, 1, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0]
+    sql: ${at_customer_time_minutes} ;;
+  }
+
   dimension: rider_id {
     hidden: no
     group_label: "* IDs *"
