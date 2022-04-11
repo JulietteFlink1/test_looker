@@ -1,5 +1,5 @@
 view: cc_contacts {
-  sql_table_name: `flink-data-dev.curated.cc_contacts`
+  sql_table_name: `flink-data-prod.curated.cc_contacts`
     ;;
 
   dimension: agent_email {
@@ -46,11 +46,11 @@ view: cc_contacts {
     sql: ${TABLE}.user_email ;;
   }
 
-  dimension: user_id {
+  dimension: intercom_user_id {
     group_label: "* User *"
     type: string
     description: "ID of the user who created the contact"
-    sql: ${TABLE}.user_id ;;
+    sql: ${TABLE}.intercom_user_id ;;
   }
 
   dimension: user_name {
@@ -100,7 +100,7 @@ view: cc_contacts {
       quarter,
       year
     ]
-    hidden: yes
+    hidden: no
     convert_tz: no
     datatype: date
     sql: ${TABLE}.first_agent_reply_timestamp ;;
@@ -133,11 +133,28 @@ view: cc_contacts {
     sql: ${TABLE}.country_iso ;;
   }
 
+  # dimension: contact_created_day_of_week {
+  #   type: string
+  #   group_label: "* Dates & Timestamps *"
+  #   sql: ${TABLE}.contact_created_day_of_week ;;
+  # }
+
   dimension: contact_created_day_of_week {
-    type: string
+    type:  string
     group_label: "* Dates & Timestamps *"
-    sql: ${TABLE}.contact_created_day_of_week ;;
+    # label: "test day of week"
+
+    sql: case when extract(dayofweek from ${contact_created_date}) = 1 then  'Sunday'
+              when extract(dayofweek from ${contact_created_date}) = 2 then  'Monday'
+              when extract(dayofweek from ${contact_created_date}) = 3 then  'Tuesday'
+              when extract(dayofweek from ${contact_created_date}) = 4 then  'Wednesday'
+              when extract(dayofweek from ${contact_created_date}) = 5 then  'Thursday'
+              when extract(dayofweek from ${contact_created_date}) = 6 then  'Friday'
+              when extract(dayofweek from ${contact_created_date}) = 7 then 'Saturday'
+         end ;;
+
   }
+
 
   dimension: contact_created_day_of_week_number {
     type: string
@@ -350,7 +367,8 @@ view: cc_contacts {
   }
 
   dimension: time_to_agent_reply_minutes {
-    hidden: yes
+    hidden: no
+    label: "Time to Agent Reply"
     group_label: "* Contact Statistics *"
     type: number
     sql: ${TABLE}.time_to_agent_reply_minutes ;;
@@ -416,10 +434,10 @@ view: cc_contacts {
     sql: ${TABLE}.timezone ;;
   }
 
-  dimension: app_user_id {
+  dimension: user_id {
     group_label: "* User *"
     type: string
-    sql: ${TABLE}.app_user_id ;;
+    sql: ${TABLE}.user_id ;;
   }
 
 
@@ -535,7 +553,7 @@ view: cc_contacts {
   measure: number_of_users {
     group_label: "* Basic Counts *"
     type: count_distinct
-    sql: ${user_id} ;;
+    sql: ${intercom_user_id} ;;
     label: "# Unique Users"
   }
 
@@ -686,10 +704,10 @@ view: cc_contacts {
   measure: median_time_to_agent_reply_minutes {
     group_label: "* Contact Statistics *"
     type: median
-    value_format: "mm:ss"
+    value_format: "hh:mm:ss"
     label: "Median First Response Time (Minutes)"
     description: "Median Duration until first admin reply. Subtracts out of business hours."
-    sql:  ${time_to_agent_reply_minutes}*60/86400.0 ;;
+    sql:${time_to_agent_reply_minutes}*60/86400.0 ;;
   }
 
   measure: avg_median_time_to_agent_reply_seconds {
@@ -703,7 +721,7 @@ view: cc_contacts {
   measure: median_median_time_to_agent_reply_minutes {
     group_label: "* Contact Statistics *"
     type: median
-    value_format: "mm:ss"
+    value_format: "hh:mm:ss"
     description: "Median based on all admin replies after a user reply. Subtracts out of business hours. In seconds."
     label: "Median Response Time (Minutes)"
     sql:  ${median_time_to_reply_minutes}*60/86400.0 ;;

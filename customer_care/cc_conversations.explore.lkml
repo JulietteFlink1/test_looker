@@ -11,7 +11,7 @@ explore: cc_conversations {
   label: "Conversations & Agents"
   description: "This explore provides information on all Intercom chats"
 
-  hidden: no
+  hidden: yes
 
   access_filter: {
     field: cc_conversations.country_iso

@@ -52,15 +52,15 @@ view: daily_user_aggregates {
       label: "User UUID"
       type: string
       description: "Unique user identifier: if user was logged in, the identifier is 'user_id' populated upon registration, else 'anonymous_id' populated by Segment"
-      sql: ${TABLE}.user_uuid ;;
+      sql: ${TABLE}.anonymous_id ;;
     }
-    dimension: anonymous_ids {
-      group_label: "IDs"
-      label: "Anonymous IDs"
-      type: string
-      description: "An array of anonymous IDs populated by Segment as a user identifier"
-      sql: ${TABLE}.anonymous_ids ;;
-    }
+    # dimension: anonymous_ids {
+    #   group_label: "IDs"
+    #   label: "Anonymous IDs"
+    #   type: string
+    #   description: "An array of anonymous IDs populated by Segment as a user identifier"
+    #   sql: ${TABLE}.anonymous_ids ;;
+    # }
     dimension: order_uuids {
       group_label: "IDs"
       label: "Order UUIDs"
@@ -127,11 +127,20 @@ view: daily_user_aggregates {
       description: "Model of the device"
       sql: ${TABLE}.device_model ;;
     }
+  dimension: app_version_order {
+    group_label: "Device Dimensions"
+    label: "App Version order"
+    type: number
+    hidden: yes
+    description: "App release version middle digits for ordering"
+    sql: split(${TABLE}.app_version,".")[SAFE_OFFSET(1)] ;;
+    }
     dimension: app_version {
       group_label: "Device Dimensions"
       label: "App Version"
       type: string
       description: "App release version"
+      order_by_field: app_version_order
       sql: ${TABLE}.app_version ;;
     }
     dimension: platform {
@@ -180,6 +189,7 @@ view: daily_user_aggregates {
       group_label: "Device Dimensions"
       type: string
       description: "Concatenation of device_type and app_version"
+      order_by_field: app_version_order
       sql: CASE WHEN ${TABLE}.device_type IN ('ios','android') THEN  (${TABLE}.device_type || '-' || ${TABLE}.app_version ) END ;;
     }
 
