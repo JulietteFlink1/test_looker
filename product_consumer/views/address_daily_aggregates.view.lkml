@@ -1,5 +1,5 @@
 view: address_daily_aggregates {
-  sql_table_name: `flink-data-dev.reporting.daily_user_address_aggregates`
+  sql_table_name: `flink-data-prod.reporting.daily_user_address_aggregates`
     ;;
 
   ## I want to additional fields: one is the hub that appOpened detected, one is a flag that says whether appOpened changed the hub assignment since the last other event happened
