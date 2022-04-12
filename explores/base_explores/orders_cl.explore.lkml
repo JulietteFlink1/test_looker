@@ -56,7 +56,7 @@ explore: orders_cl {
 
   join: hub_level_kpis {
     from: hub_level_kpis
-    view_label: "* Hub Level KPIs *"
+    view_label: ""
     sql_on: lower(${orders_cl.hub_code}) = ${hub_level_kpis.hub_code} and
             ${orders_cl.created_date} = ${hub_level_kpis.order_date}  and
             ${orders_cl.is_successful_order} = ${hub_level_kpis.is_successful_order}
