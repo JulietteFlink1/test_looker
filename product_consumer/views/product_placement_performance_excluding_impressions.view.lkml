@@ -128,6 +128,7 @@ view: product_placement_performance_excluding_impressions {
     label: "Event"
     description: "Timestamp of when an event happened"
     type: time
+    datatype: date
     timeframes: [
       date,
       week,
@@ -135,7 +136,32 @@ view: product_placement_performance_excluding_impressions {
       quarter
     ]
     sql: ${TABLE}.event_date ;;
-    datatype: date
+  }
+  dimension: event_date_granularity {
+    group_label: "Date Dimensions"
+    label: "Event Date (Dynamic)"
+    label_from_parameter: timeframe_picker
+    type: string # cannot have this as a time type. See this discussion: https://community.looker.com/lookml-5/dynamic-time-granularity-opinions-16675
+    hidden:  yes
+    sql:
+      {% if timeframe_picker._parameter_value == 'Day' %}
+        ${event_date}
+      {% elsif timeframe_picker._parameter_value == 'Week' %}
+        ${event_week}
+      {% elsif timeframe_picker._parameter_value == 'Month' %}
+        ${event_month}
+      {% endif %};;
+  }
+
+  parameter: timeframe_picker {
+    group_label: "Date Dimensions"
+    label: "Event Date Granularity"
+    type: unquoted
+    allowed_value: { value: "Hour" }
+    allowed_value: { value: "Day" }
+    allowed_value: { value: "Week" }
+    allowed_value: { value: "Month" }
+    default_value: "Day"
   }
 
   # ======= HIDDEN Dimension ======= #

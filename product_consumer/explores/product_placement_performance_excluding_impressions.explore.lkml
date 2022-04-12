@@ -29,9 +29,7 @@ explore: product_placement_performance_excluding_impressions {
   always_filter: {
     filters: [
       global_filters_and_parameters.datasource_filter: "last 7 days",
-      product_placement_performance_excluding_impressions.country_iso: "",
-      product_placement_performance_excluding_impressions.platform: "",
-      product_placement_performance_excluding_impressions.product_placement: "category, search, last_bought, swimlane"
+      product_placement_performance_excluding_impressions.country_iso: ""
     ]
   }
 
