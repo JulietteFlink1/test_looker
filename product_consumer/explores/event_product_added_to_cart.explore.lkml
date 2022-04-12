@@ -16,7 +16,7 @@ explore: event_product_added_to_cart {
   hidden: no
 
   label: "Event Product Added to Cart"
-  description: "This explore provides an overview of all behavioural events generated on Flink App and Web"
+  description: "This explore provides an overview of event product_added_to_cart with its parameters across App and Web"
   group_label: "Consumer Product"
 
   # implement both date filters:

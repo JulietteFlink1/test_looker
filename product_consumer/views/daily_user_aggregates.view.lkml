@@ -120,11 +120,20 @@ view: daily_user_aggregates {
       description: "Model of the device"
       sql: ${TABLE}.device_model ;;
     }
+  dimension: app_version_order {
+    group_label: "Device Dimensions"
+    label: "App Version order"
+    type: number
+    hidden: yes
+    description: "App release version middle digits for ordering"
+    sql: split(${TABLE}.app_version,".")[SAFE_OFFSET(1)] ;;
+    }
     dimension: app_version {
       group_label: "Device Dimensions"
       label: "App Version"
       type: string
       description: "App release version"
+      order_by_field: app_version_order
       sql: ${TABLE}.app_version ;;
     }
     dimension: platform {
@@ -173,6 +182,7 @@ view: daily_user_aggregates {
       group_label: "Device Dimensions"
       type: string
       description: "Concatenation of device_type and app_version"
+      order_by_field: app_version_order
       sql: CASE WHEN ${TABLE}.device_type IN ('ios','android') THEN  (${TABLE}.device_type || '-' || ${TABLE}.app_version ) END ;;
     }
 
