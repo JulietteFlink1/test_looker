@@ -1030,9 +1030,9 @@
     type: text
     title_text: Disclaimer
     subtitle_text: ''
-    body_text: "The model that this dashboard relies on was depreciated on March 29th\
-      \ 2022, and the numbers shown have not been updated since then. \n\nWe will\
-      \ share a new explore & view shortly. "
+    body_text: "The model considers last-in first-out daily attribution of add-to-cart events to order.
+      \n\n\ Please note that this report does not replace the source of truth of products sold.
+      For this purpose please use Order Lineitems Explore. "
     row: 0
     col: 0
     width: 18
