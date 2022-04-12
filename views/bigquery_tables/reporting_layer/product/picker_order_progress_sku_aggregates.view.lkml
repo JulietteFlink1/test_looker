@@ -126,30 +126,35 @@ view: picker_order_progress_sku_aggregates {
 
   measure: total_code_damanged {
     group_label: "Total Metrics"
+    label: "# Code Damaged"
     type: sum
     sql: ${TABLE}.number_of_code_damanged ;;
   }
 
   measure: total_code_wrong {
     group_label: "Total Metrics"
+    label: "# Code Wrong"
     type: sum
     sql: ${TABLE}.number_of_code_wrong ;;
   }
 
   measure: total_item_unavailable {
     group_label: "Total Metrics"
+    label: "# Items Unavailable"
     type: sum
     sql: ${TABLE}.number_of_item_unavailable ;;
   }
 
   measure: total_item_picked {
     group_label: "Total Metrics"
+    label: "# Items Picked"
     type: sum
     sql: ${TABLE}.number_of_item_picked ;;
   }
 
   measure: total_items {
     group_label: "Total Metrics"
+    label: "# Total Items"
     type: sum
     description: "# items picked + items swiped (code_wrong + code_damaged) + items unavailable"
     sql: (${TABLE}.number_of_code_damanged + ${TABLE}.number_of_code_wrong + ${TABLE}.number_of_item_unavailable +  ${TABLE}.number_of_item_picked) ;;
@@ -157,6 +162,7 @@ view: picker_order_progress_sku_aggregates {
 
   measure: number_of_orders {
     group_label: "Total Metrics"
+    label: "# Orders"
     type: count_distinct
     sql: ${TABLE}.order_id ;;
   }
