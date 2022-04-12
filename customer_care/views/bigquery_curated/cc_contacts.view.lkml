@@ -490,8 +490,8 @@ view: cc_contacts {
 
 
   measure: contact_rate {
-    group_label: "* Contact Rates *"
-    label: "Contact Rate (Dynamic)"
+    group_label: "* Contact Frequency *"
+    label: "AVG Contact per Time Period (Dynamic)"
     label_from_parameter: date_granularity
     sql:
     {% if date_granularity._parameter_value == 'Day' %}
@@ -603,34 +603,34 @@ view: cc_contacts {
   }
 
   measure: avg_number_of_contacts_hourly {
-    group_label: "* Contact Rates *"
+    group_label: "* Contact Frequency *"
     type: number
     value_format: "0.0"
     sql: ${number_of_contacts}/NULLIF(${number_of_unique_hours},0) ;;
-    label: "Contact Rate - Hourly"
+    label: "AVG Contacts / Hour"
   }
   measure: avg_number_of_contacts_daily {
-    group_label: "* Contact Rates *"
+    group_label: "* Contact Frequency *"
     type: number
     value_format: "0.0"
     sql: ${number_of_contacts}/NULLIF(${number_of_unique_days},0) ;;
-    label: "Contact Rate - Daily"
+    label: "AVG Contacts / Day"
   }
 
   measure: avg_number_of_contacts_weekly {
-    group_label: "* Contact Rates *"
+    group_label: "* Contact Frequency *"
     type: number
     value_format: "0.0"
     sql: ${number_of_contacts}/NULLIF(${number_of_unique_weeks},0) ;;
-    label: "Contact Rate - Weekly"
+    label: "AVG Contacts / Week"
   }
 
   measure: avg_number_of_contacts_monthly {
-    group_label: "* Contact Rates *"
+    group_label: "* Contact Frequency *"
     type: number
     value_format: "0.0"
     sql: ${number_of_contacts}/NULLIF(${number_of_unique_months},0) ;;
-    label: "Contact Rate - Monthly"
+    label: "AVG Contacts / Month"
   }
 
 
