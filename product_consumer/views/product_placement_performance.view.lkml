@@ -104,7 +104,9 @@ view: product_placement_performance {
     label: "Product Placement"
     description: "Placement in the app where product was listed, e.i. search, pdp, category"
     type: string
-    sql: ${TABLE}.product_placement ;;
+    sql: case when ${TABLE}.product_placement in ('checkout','cart') then 'cart'
+              else ${TABLE}.product_placement
+              end ;;
   }
   dimension: pdp_origin {
     group_label: "Product Dimensions"
