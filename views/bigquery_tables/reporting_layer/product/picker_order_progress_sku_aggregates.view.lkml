@@ -13,14 +13,11 @@ view: picker_order_progress_sku_aggregates {
   #~~~~~~~~~~~~~~~     Dimensions     ~~~~~~~~~~~~~~~~~~~~~~~~~
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  # ~~ IDs & Date Filters ~~
-
-  dimension: country_iso {
-    type: string
-    sql: ${TABLE}.country_iso ;;
-  }
+  ### Dates ###
 
   dimension_group: date {
+    group_label: "Date Dimensions"
+    label: ""
     type: time
     timeframes: [
       raw,
@@ -35,65 +32,85 @@ view: picker_order_progress_sku_aggregates {
     sql: ${TABLE}.date ;;
   }
 
+  ### Location Atributes ###
+
+  dimension: country_iso {
+    group_label: "Location Dimensions"
+    label: "Country ISO"
+    type: string
+    sql: ${TABLE}.country_iso ;;
+  }
+
   dimension: hub_code {
+    group_label: "Location Dimensions"
     type: string
     sql: ${TABLE}.hub_code ;;
   }
 
+  ### Order IDs ###
+
   dimension: order_id {
+    group_label: "Order ID"
     type: string
     sql: ${TABLE}.order_id ;;
   }
 
+  dimension: order_product_uuid {
+    hidden: yes
+    type: string
+    sql: ${TABLE}.order_product_uuid ;;
+  }
 
-  # ~~ Product Filters ~~
+  ### Product Filters ###
 
   dimension: category {
+    group_label: "Product Attributes"
     type: string
     sql: ${TABLE}.category ;;
   }
 
   dimension: is_ean_available {
+    group_label: "Product Attributes"
     type: yesno
     sql: ${TABLE}.is_ean_available ;;
   }
 
   dimension: product_name {
+    group_label: "Product Attributes"
     type: string
     sql: ${TABLE}.product_name ;;
   }
 
   dimension: sku {
+    group_label: "Product Attributes"
     type: string
     sql: ${TABLE}.sku ;;
   }
 
-  # ~~ Aggregated Columns ~~
+  ### Hidden Columns ###
 
   dimension: number_of_code_damanged {
+    hidden: yes
     type: number
     sql: ${TABLE}.number_of_code_damanged ;;
   }
 
   dimension: number_of_code_wrong {
+    hidden: yes
     type: number
     sql: ${TABLE}.number_of_code_wrong ;;
   }
 
   dimension: number_of_item_picked {
+    hidden: yes
     type: number
     sql: ${TABLE}.number_of_item_picked ;;
   }
 
   dimension: number_of_item_unavailable {
+    hidden: yes
     type: number
     sql: ${TABLE}.number_of_item_unavailable ;;
-  }
-
-  dimension: order_product_uuid {
-    type: string
-    hidden: yes
-    sql: ${TABLE}.order_product_uuid ;;
   }
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -134,6 +151,7 @@ view: picker_order_progress_sku_aggregates {
   measure: total_items {
     group_label: "Total Metrics"
     type: sum
+    description: "# items picked + items swiped (code_wrong + code_damaged) + items unavailable"
     sql: (${TABLE}.number_of_code_damanged + ${TABLE}.number_of_code_wrong + ${TABLE}.number_of_item_unavailable +  ${TABLE}.number_of_item_picked) ;;
   }
 
@@ -143,23 +161,23 @@ view: picker_order_progress_sku_aggregates {
     sql: ${TABLE}.order_id ;;
   }
 
-  ### Rates metrics ###
+  ### Rate metrics ###
 
   measure: swiped_items_per_total_items {
-    group_label: "Rates Metrics"
-    label: "CVR"
+    group_label: "Rate Metrics"
+    label: "% Swiped EAN Items"
     type: number
-    description: "# users with at least one order / # active users"
+    description: "# items swiped (code_wrong + code_damaged) / # total items"
     value_format_name: percent_1
-    sql: ((${total_code_wrong}+${total_code_damanged}) / nullif((${total_code_wrong}+${total_code_damanged}+${total_item_unavailable}+${total_item_unavailable}),0) ;;
+    sql: ((${total_code_wrong}+${total_code_damanged}) / nullif((${total_items}),0) ;;
   }
 
   measure: unavailable_items_per_total_items {
-    group_label: "Rates Metrics"
-    label: "CVR"
+    group_label: "Rate Metrics"
+    label: "% Partial Fulfilment"
     type: number
-    description: "# users with at least one order / # active users"
+    description: "# items unavailable / # total items"
     value_format_name: percent_1
-    sql: ((${total_code_wrong}+${total_code_damanged}) / nullif((${total_code_wrong}+${total_code_damanged}+${total_item_unavailable}+${total_item_unavailable}),0) ;;
+    sql: ((${total_item_unavailable}) / nullif((${total_items}),0) ;;
   }
 }
