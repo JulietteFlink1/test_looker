@@ -100,33 +100,66 @@ view: picker_order_progress_sku_aggregates {
   #~~~~~~~~~~~~~~~     Measures.      ~~~~~~~~~~~~~~~~~~~~~~~~~
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  ### Sum and count Metrics ###
+
   measure: count {
     type: count
     drill_fields: [product_name]
   }
 
-  measure: sum_of_code_damanged {
+  measure: total_code_damanged {
+    group_label: "Total Metrics"
     type: sum
     sql: ${TABLE}.number_of_code_damanged ;;
   }
 
-  measure: sum_of_code_wrong {
+  measure: total_code_wrong {
+    group_label: "Total Metrics"
     type: sum
     sql: ${TABLE}.number_of_code_wrong ;;
   }
 
-  measure: sum_of_item_picked {
-    type: sum
-    sql: ${TABLE}.number_of_item_picked ;;
-  }
-
-  measure: sum_of_item_unavailable {
+  measure: total_item_unavailable {
+    group_label: "Total Metrics"
     type: sum
     sql: ${TABLE}.number_of_item_unavailable ;;
   }
 
+  measure: total_item_picked {
+    group_label: "Total Metrics"
+    type: sum
+    sql: ${TABLE}.number_of_item_picked ;;
+  }
+
+  measure: total_items {
+    group_label: "Total Metrics"
+    type: sum
+    sql: (${TABLE}.number_of_code_damanged + ${TABLE}.number_of_code_wrong + ${TABLE}.number_of_item_unavailable +  ${TABLE}.number_of_item_picked) ;;
+  }
+
   measure: number_of_orders {
+    group_label: "Total Metrics"
     type: count_distinct
     sql: ${TABLE}.order_id ;;
+  }
+
+  ### Rates metrics ###
+
+  measure: swiped_items_per_total_items {
+    group_label: "Rates Metrics"
+    label: "CVR"
+    type: number
+    description: "# users with at least one order / # active users"
+    value_format_name: percent_1
+    sql: ((${total_code_wrong}+${total_code_damanged}) / nullif((${total_code_wrong}+${total_code_damanged}+${total_item_unavailable}+${total_item_unavailable}),0) ;;
+  }
+
+  measure: unavailable_items_per_total_items {
+    group_label: "Rates Metrics"
+    label: "CVR"
+    type: number
+    description: "# users with at least one order / # active users"
+    value_format_name: percent_1
+    sql: ((${total_code_wrong}+${total_code_damanged}) / nullif((${total_code_wrong}+${total_code_damanged}+${total_item_unavailable}+${total_item_unavailable}),0) ;;
   }
 }
