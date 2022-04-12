@@ -126,6 +126,14 @@ view: cc_orders_hourly2 {
     sql:  safe_divide(${cc_contacts.number_of_contacts},${sum_number_of_orders})  ;;
   }
 
+  measure: contact_rate_without_deflection {
+    label: "% Contact Rate (Excl. Deflection)"
+    description: "# Contacts without Bot Deflection / # Orders "
+    type: number
+    value_format: "0.0%"
+    sql:  safe_divide(${cc_contacts.number_of_non_deflected_contacts},${sum_number_of_orders})  ;;
+  }
+
   measure: cc_refunded_order_rate {
     group_label: "* Refunds *"
     label: "% Refunded Orders"

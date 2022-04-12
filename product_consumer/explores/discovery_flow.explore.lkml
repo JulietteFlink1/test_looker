@@ -16,7 +16,7 @@ explore: discovery_flow {
   hidden: yes
 
   label: "Discovery Flow"
-  description: "This explore provides an overview of all behavioural events generated on Flink App and Web"
+  description: "This explore provides user discovery flow on Flink App and Web"
   group_label: "Consumer Product"
 
   # implement both date filters:
