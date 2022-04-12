@@ -278,6 +278,17 @@ view: orderline {
     sql: ${TABLE}.brand ;;
   }
 
+  dimension: is_charity_sku {
+
+    label:       "Is Charity SKU"
+    description: "This boolean is TRUE, in case a SKU refers to a donation SKU and is FALSE, if not"
+    group_label: "> Product Attributes"
+
+    type: yesno
+    sql: ${TABLE}.is_charity_sku ;;
+
+  }
+
   dimension: translated_product_name {
     type: string
     sql: null ;;
@@ -624,6 +635,16 @@ view: orderline {
     hidden: no
     type:number
     sql: ${sum_item_price_gross} / ${count_order_uuid} ;;
+    value_format_name: eur
+    group_label: "> Monetary Metrics"
+  }
+
+  measure: avg_item_value_net {
+    label: "AVG Item Value (Net)"
+    description: "AIV represents the Average value of items (excl. VAT). Excludes fees (net), before deducting discounts."
+    hidden: no
+    type:number
+    sql: ${sum_item_price_net} / ${count_order_uuid} ;;
     value_format_name: eur
     group_label: "> Monetary Metrics"
   }
