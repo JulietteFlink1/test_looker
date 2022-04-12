@@ -202,8 +202,8 @@ view: inventory_changes_daily {
   }
 
   measure: pct_waste_quote_gmv {
-    label: "% Waste Ratio (GMV)"
-    description: "The value of out bounded products as waste (defined by the number out bounded * item price) divided by the GMV of sold products in the same hub-sku-date combination"
+    label: "% Waste Ratio (Item-Revenue)"
+    description: "The value of out bounded products as waste (defined by the number out bounded * item price) divided by the item revenue of sold products in the same hub-sku-date combination"
     group_label: "* Inventory Changes Daily *"
 
     type: number
@@ -264,7 +264,7 @@ view: inventory_changes_daily {
   }
 
   measure: pct_reduced_correction_quote_gmv {
-    label: "% Negative Correction Ratio (GMV)"
+    label: "% Negative Correction Ratio (Item Revenue)"
     description: "The value of corrected (reduced) inventory (defined by the number * item price) divided by the GMV of sold products in the same hub-sku-date combination"
     group_label: "* Inventory Changes Daily *"
 
@@ -284,8 +284,8 @@ view: inventory_changes_daily {
   }
 
   measure: pct_increased_correction_quote_gmv {
-    label: "% Positive Correction Ratio (GMV)"
-    description: "The value of corrected (increased) inventory (defined by the number * item price) divided by the GMV of sold products in the same hub-sku-date combination"
+    label: "% Positive Correction Ratio (Item Revenue)"
+    description: "The value of corrected (increased) inventory (defined by the number * item price) divided by the item revenue of sold products in the same hub-sku-date combination"
     group_label: "* Inventory Changes Daily *"
 
     type: number

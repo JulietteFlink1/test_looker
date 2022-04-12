@@ -2,6 +2,7 @@ include: "/views/bigquery_tables/curated_layer/web_sessions.view.lkml"
 
 
 explore: web_sessions {
+  hidden: yes
   label: "Sessions Web"
   view_label: "Sessions - Web"
   group_label: "Consumer Product"

@@ -1,7 +1,38 @@
 view: daily_user_aggregates {
-    sql_table_name: `flink-data-prod.curated.daily_user_aggregates`
+    sql_table_name: `flink-data-prod.reporting.daily_user_aggregates`
      ;;
   view_label: "Daily User Aggregates"
+
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+  # ~~~~~~~~~~~~~~~     Sets    ~~~~~~~~~~~~~~~ #
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+  set: device_attributes {
+    fields: [
+      device_type,
+      device_model,
+      app_version,
+      full_app_version,
+      platform,
+      is_platform_web,
+      is_platform_ios,
+      is_platform_android,
+      is_device_android,
+      is_device_ios,
+      is_device_macintosh
+    ]
+  }
+
+  set: location_attributes {
+    fields: [
+      hub_code,
+      city,
+      country_iso,
+      delivery_lat,
+      delivery_lng,
+      delivery_pdt
+    ]
+  }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
   # ~~~~~~~~~~~~~~~     Dimensions    ~~~~~~~~~~~~~~~ #
@@ -21,14 +52,7 @@ view: daily_user_aggregates {
       label: "User UUID"
       type: string
       description: "Unique user identifier: if user was logged in, the identifier is 'user_id' populated upon registration, else 'anonymous_id' populated by Segment"
-      sql: ${TABLE}.user_uuid ;;
-    }
-    dimension: anonymous_ids {
-      group_label: "IDs"
-      label: "Anonymous IDs"
-      type: string
-      description: "An array of anonymous IDs populated by Segment as a user identifier"
-      sql: ${TABLE}.anonymous_ids ;;
+      sql: ${TABLE}.anonymous_id ;;
     }
     dimension: order_uuids {
       group_label: "IDs"
@@ -96,11 +120,20 @@ view: daily_user_aggregates {
       description: "Model of the device"
       sql: ${TABLE}.device_model ;;
     }
+  dimension: app_version_order {
+    group_label: "Device Dimensions"
+    label: "App Version order"
+    type: number
+    hidden: yes
+    description: "App release version middle digits for ordering"
+    sql: split(${TABLE}.app_version,".")[SAFE_OFFSET(1)] ;;
+    }
     dimension: app_version {
       group_label: "Device Dimensions"
       label: "App Version"
       type: string
       description: "App release version"
+      order_by_field: app_version_order
       sql: ${TABLE}.app_version ;;
     }
     dimension: platform {
@@ -149,6 +182,7 @@ view: daily_user_aggregates {
       group_label: "Device Dimensions"
       type: string
       description: "Concatenation of device_type and app_version"
+      order_by_field: app_version_order
       sql: CASE WHEN ${TABLE}.device_type IN ('ios','android') THEN  (${TABLE}.device_type || '-' || ${TABLE}.app_version ) END ;;
     }
 
@@ -239,6 +273,63 @@ view: daily_user_aggregates {
       group_label: "Flags | Conversion"
       type: yesno
       sql: ${TABLE}.is_order_placed ;;
+    }
+
+    # Add-to-Cart even flags
+
+    dimension: is_category_placement {
+      group_label: "Flags | Product Placement"
+      hidden:  yes
+      type: yesno
+      sql: ${TABLE}.is_add_to_cart_from_category_placement ;;
+    }
+    dimension: is_search_placement {
+      group_label: "Flags | Product Placement"
+      hidden:  yes
+      type: yesno
+      sql: ${TABLE}.is_add_to_cart_from_search_placement ;;
+    }
+    dimension: is_cart_placement {
+      group_label: "Flags | Product Placement"
+      hidden:  yes
+      type: yesno
+      sql: ${TABLE}.is_add_to_cart_from_cart_placement ;;
+    }
+    dimension: is_pdp_placement {
+      group_label: "Flags | Product Placement"
+      hidden:  yes
+      type: yesno
+      sql: ${TABLE}.is_add_to_cart_from_pdp_placement ;;
+    }
+    dimension: is_favourites_placement {
+      group_label: "Flags | Product Placement"
+      hidden:  yes
+      type: yesno
+      sql: ${TABLE}.is_add_to_cart_from_favourites_placement ;;
+    }
+    dimension: is_swimlane_placement {
+      group_label: "Flags | Product Placement"
+      hidden:  yes
+      type: yesno
+      sql: ${TABLE}.is_add_to_cart_from_swimlane_placement ;;
+    }
+    dimension: is_last_bought_placement {
+      group_label: "Flags | Product Placement"
+      hidden:  yes
+      type: yesno
+      sql: ${TABLE}.is_add_to_cart_from_last_bought_placement ;;
+    }
+    dimension: is_recommendation_placement {
+      group_label: "Flags | Product Placement"
+      hidden:  yes
+      type: yesno
+      sql: ${TABLE}.is_add_to_cart_from_recommendation_placement ;;
+    }
+    dimension: is_undefined_placement {
+      group_label: "Flags | Product Placement"
+      hidden:  yes
+      type: yesno
+      sql: ${TABLE}.is_add_to_cart_from_undefined_placement ;;
     }
 
     # Product Flags
@@ -786,7 +877,6 @@ view: daily_user_aggregates {
     filters: [is_payment_started: "yes"]
   }
 
-
   #### Conversions ###
 
   measure: cvr {
@@ -839,7 +929,132 @@ view: daily_user_aggregates {
   }
 
 
+  ### Conversions mcvr2 from product placement ###
+
+  measure: mcvr_2_category {
+    group_label: "Conversions | Product Placement mCVR2 (%)"
+    label: "Category mCVR2"
+    type: number
+    description: "# users with add-to-cart from Category, compared to the total number of users with an address"
+    value_format_name: percent_1
+    sql: ${users_with_category_atc} / nullif(${users_with_address},0);;
+  }
+  measure: mcvr_2_search {
+    group_label: "Conversions | Product Placement mCVR2 (%)"
+    label: "Search mCVR2"
+    type: number
+    description: "# users with add-to-cart from Search, compared to the total number of users with an address"
+    value_format_name: percent_1
+    sql: ${users_with_search_atc} / nullif(${users_with_address},0);;
+  }
+  measure: mcvr_2_cart {
+    group_label: "Conversions | Product Placement mCVR2 (%)"
+    label: "Cart mCVR2"
+    type: number
+    description: "# users with add-to-cart from Cart, compared to the total number of users with an address"
+    value_format_name: percent_1
+    sql: ${users_with_cart_atc} / nullif(${users_with_address},0);;
+  }
+  measure: mcvr_2_favourites {
+    group_label: "Conversions | Product Placement mCVR2 (%)"
+    label: "Favourites mCVR2"
+    type: number
+    description: "# users with add-to-cart from Favourites, compared to the total number of users with an address"
+    value_format_name: percent_1
+    sql: ${users_with_favourites_atc} / nullif(${users_with_address},0);;
+  }
+  measure: mcvr_2_pdp {
+    group_label: "Conversions | Product Placement mCVR2 (%)"
+    label: "PDP mCVR2"
+    type: number
+    description: "# users with add-to-cart from PDP (Product Details Viewed), compared to the total number of users with an address"
+    value_format_name: percent_1
+    sql: ${users_with_pdp_atc} / nullif(${users_with_address},0);;
+  }
+  measure: mcvr_2_swimlane {
+    group_label: "Conversions | Product Placement mCVR2 (%)"
+    label: "Swimlane mCVR2"
+    type: number
+    description: "# users with add-to-cart from Swimlane, compared to the total number of users with an address"
+    value_format_name: percent_1
+    sql: ${users_with_swimlane_atc} / nullif(${users_with_address},0);;
+  }
+  measure: mcvr_2_last_bought {
+    group_label: "Conversions | Product Placement mCVR2 (%)"
+    label: "Last Bought mCVR2"
+    type: number
+    description: "# users with add-to-cart from Last Bought, compared to the total number of users with an address"
+    value_format_name: percent_1
+    sql: ${users_with_last_bought_atc} / nullif(${users_with_address},0);;
+  }
+  measure: mcvr_2_recommendation {
+    group_label: "Conversions | Product Placement mCVR2 (%)"
+    label: "Recommendation mCVR2"
+    type: number
+    hidden: yes
+    description: "# users with add-to-cart from Recommendation, compared to the total number of users with an address"
+    value_format_name: percent_1
+    sql: ${users_with_recommendation_atc} / nullif(${users_with_address},0);;
+  }
+
   # ========= HIDDEN ========== #
+
+  ### Hidden supporting metrics: Users with Add-to-Cart Product Placement ###
+
+  measure: users_with_category_atc {
+    type: count_distinct
+    hidden:  yes
+    sql: ${user_uuid} ;;
+    filters: [is_category_placement: "yes"]
+  }
+  measure: users_with_search_atc {
+    type: count_distinct
+    hidden:  yes
+    sql: ${user_uuid} ;;
+    filters: [is_search_placement: "yes"]
+  }
+  measure: users_with_cart_atc {
+    type: count_distinct
+    hidden:  yes
+    sql: ${user_uuid} ;;
+    filters: [is_cart_placement: "yes"]
+  }
+  measure: users_with_favourites_atc {
+    type: count_distinct
+    hidden:  yes
+    sql: ${user_uuid} ;;
+    filters: [is_favourites_placement: "yes"]
+  }
+  measure: users_with_pdp_atc {
+    type: count_distinct
+    hidden:  yes
+    sql: ${user_uuid} ;;
+    filters: [is_pdp_placement: "yes"]
+  }
+  measure: users_with_swimlane_atc {
+    type: count_distinct
+    hidden:  yes
+    sql: ${user_uuid} ;;
+    filters: [is_swimlane_placement: "yes"]
+  }
+  measure: users_with_last_bought_atc {
+    type: count_distinct
+    hidden:  yes
+    sql: ${user_uuid} ;;
+    filters: [is_last_bought_placement: "yes"]
+  }
+  measure: users_with_recommendation_atc {
+    type: count_distinct
+    hidden:  yes
+    sql: ${user_uuid} ;;
+    filters: [is_recommendation_placement: "yes"]
+  }
+  measure: users_with_undefined_atc {
+    type: count_distinct
+    hidden:  yes
+    sql: ${user_uuid} ;;
+    filters: [is_undefined_placement: "yes"]
+  }
 
   ### These measures reformat cnt so it shows % in the label as well -> for the conversion funnel visualization ###
 

@@ -232,6 +232,8 @@ view: hub_staffing {
     timeframes: [
       raw,
       date,
+      day_of_week,
+      day_of_week_index,
       week,
       month,
       quarter,

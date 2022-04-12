@@ -256,6 +256,12 @@ view: order_placed_events {
     sql: ${revenue} ;;
   }
 
+  dimension: payment_method_raw {
+    group_label: "* Order Dimensions *"
+    description: "Payment method used to place the order raw"
+    type: string
+    sql: ${TABLE}.payment_method ;;
+}
 
   dimension: payment_method {
     group_label: "* Order Dimensions *"
@@ -267,7 +273,11 @@ view: order_placed_events {
         label: "CreditCard"
       }
       when: {
-        sql: ${TABLE}.payment_method = "Carte bancaire" ;;
+        sql: ${TABLE}.payment_method = "directEbanking" ;;
+        label: "CreditCard"
+      }
+      when: {
+        sql: ${TABLE}.payment_method LIKE "Carte%" ;;
         label: "CreditCard"
       }
       when: {

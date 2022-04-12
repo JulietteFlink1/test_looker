@@ -241,14 +241,14 @@ explore: supply_chain {
     # keep hidden for now
     view_label: "08 Dispatch Notifications"
 
-    type: left_outer
+    type: full_outer
     relationship: many_to_one
 
     sql_on:
         ${bulk_inbounding_performance.hub_code}                   = ${products_hub_assignment.hub_code}
-    and ${bulk_inbounding_performance.first_bulk_inbounding_date} = ${products_hub_assignment.report_date}
-    and ${bulk_inbounding_performance.sku}                        = ${products_hub_assignment.sku} and
-        {% condition global_filters_and_parameters.datasource_filter %} ${bulk_inbounding_performance.first_bulk_inbounding_date} {% endcondition %}
+    and ${bulk_inbounding_performance.estimated_delivery_date}    = ${products_hub_assignment.report_date}
+    and ${bulk_inbounding_performance.sku}                        = ${products_hub_assignment.leading_sku_replenishment_substitute_group}
+    and {% condition global_filters_and_parameters.datasource_filter %} ${bulk_inbounding_performance.estimated_delivery_date} {% endcondition %}
     ;;
 
   }
@@ -327,5 +327,36 @@ explore: supply_chain {
     relationship: many_to_one
   }
 
+  join: mean_and_std {
+    view_label: "07 Order Lineitems"
+    type: left_outer
+    relationship: many_to_one
+    sql_on:  ${mean_and_std.hub_code}     = ${products_hub_assignment.hub_code}
+        and  ${mean_and_std.product_sku}  = ${products_hub_assignment.sku};;
+  }
+
+
+  join: waste_index {
+    view_label: "07 Order Lineitems"
+    type: left_outer
+    relationship: many_to_one
+    sql_on: ${waste_index.hub_code} = ${products_hub_assignment.hub_code}
+    and ${waste_index.product_sku} = ${products_hub_assignment.sku} ;;
+}
+
+  join: avg_waste_index_per_hub {
+    view_label: "07 Order Lineitems"
+    type: left_outer
+    relationship: many_to_one
+    sql_on: ${avg_waste_index_per_hub.hub_code} = ${products_hub_assignment.hub_code}
+      and ${avg_waste_index_per_hub.product_sku} = ${products_hub_assignment.sku} ;;
+  }
+
+  join: v2_avg_waste_index_per_hub {
+    view_label: "07 Order Lineitems"
+    type: left_outer
+    relationship: many_to_one
+    sql_on: ${v2_avg_waste_index_per_hub.hub_code} = ${products_hub_assignment.hub_code} ;;
+  }
 
 }
