@@ -3,31 +3,26 @@ view: braintree_bq {
     ;;
 
   dimension: adyen_id {
-    hidden: yes
     type: string
     sql: ${TABLE}.Adyen_ID ;;
   }
 
   dimension: adyen_revenue {
-    hidden: yes
     type: string
     sql: ${TABLE}.Adyen_revenue ;;
   }
 
   dimension: adyen_status {
-    hidden: yes
     type: string
     sql: ${TABLE}.Adyen_Status ;;
   }
 
   dimension: adyen_vs_bq {
-    hidden: yes
     type: string
     sql: ${TABLE}.Adyen_vs_BQ ;;
   }
 
   dimension: bq_revenue {
-    hidden: yes
     type: number
     sql: ${TABLE}.BQ_revenue ;;
   }
@@ -54,7 +49,6 @@ view: braintree_bq {
   }
 
   dimension: difference_bq_adyen {
-    hidden: yes
     type: string
     sql: ${TABLE}.Difference_BQ_Adyen ;;
   }
