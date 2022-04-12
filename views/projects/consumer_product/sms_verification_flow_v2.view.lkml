@@ -144,17 +144,39 @@ view: sms_verification_flow_v2 {
   ## Percentages recalculated in Looker
 
   measure: rcc_pct_verification_success {
-    description: "Recalculated SMS Verification success"
+    description: "total Recalculated SMS Verification success"
     type: number
     value_format_name: percent_1
     sql: ${step_5_sms_verification_confirmed}/NULLIF(${step_1_sms_verification_request_viewed},0) ;;
   }
 
-  measure: rcc_pct_order_placed_vv {
-    description: "Order Rate of users exposed to SMS Verification "
+  # measure: rcc_pct_verification_success_registrated {
+  #   description: "registrated Recalculated SMS Verification success"
+  #   type: number
+  #   value_format_name: percent_1
+  #   sql: ${step_5_sms_verification_confirmed}/NULLIF(${step_01_account_registration_succeeded},0) ;;
+  # }
+
+  measure: rcc_pct_user_auth {
+    description: "Recalculated User Auth success"
     type: number
     value_format_name: percent_1
-    sql: ${order_placed}/NULLIF(${step_1_sms_verification_request_viewed},0) ;;
+    sql: ${step_01_account_registration_succeeded}/NULLIF(${step_0_account_registation_viewed},0) ;;
+  }
+
+
+  # measure: rcc_pct_order_placed_vv {
+  #   description: "Order Rate of users exposed to SMS Verification "
+  #   type: number
+  #   value_format_name: percent_1
+  #   sql: ${order_placed}/NULLIF(${step_1_sms_verification_request_viewed},0) ;;
+  # }
+
+  measure: rcc_pct_order_placed_ar {
+    description: "Order Rate of users who were exposed to user auth "
+    type: number
+    value_format_name: percent_1
+    sql: ${order_placed}/NULLIF(${step_0_account_registation_viewed},0) ;;
   }
 
   measure: rcc_pct_order_placed_vs {
