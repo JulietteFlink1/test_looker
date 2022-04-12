@@ -1,8 +1,7 @@
 include: "/views/bigquery_tables/curated_layer/orders.view"
 include: "/views/extended_tables/orders_using_hubs.view"
 include: "/views/projects/cleaning/shyftplan_riders_pickers_hours_clean.view"
-include: "/views/bigquery_tables/reporting_layer/rider_ops/daily_hub_staffing.view"
-# include: "/views/projects/cleaning/issue_rates_clean.view"
+
 
 include: "/views/bigquery_tables/curated_layer/hubs_ct.view"
 include: "/views/bigquery_tables/curated_layer/nps_after_order_cl.view"
@@ -76,24 +75,17 @@ explore: orders_cl {
     type: left_outer
   }
 
+
   join: shyftplan_riders_pickers_hours {
     from: shyftplan_riders_pickers_hours_clean
     view_label: "* Shifts *"
-    sql_on: ${orders_cl.created_date} = ${shyftplan_riders_pickers_hours.date} and
+    sql_on: ${orders_cl.created_minute30} = ${shyftplan_riders_pickers_hours.shift_minute30} and
       ${hubs.hub_code}          = lower(${shyftplan_riders_pickers_hours.hub_name});;
     relationship: many_to_many
     type: left_outer
   }
 
 
-  # join: daily_hub_staffing {
-  #   from: daily_hub_staffing
-  #   view_label: "* Hub Staffing *"
-  #   sql_on: ${orders_cl.created_date} = ${daily_hub_staffing.shift_date} and
-  #     ${hubs.hub_code}          = lower(${daily_hub_staffing.hub_code});;
-  #   relationship: many_to_one
-  #   type: left_outer
-  # }
 
   join: nps_after_order {
     from: nps_after_order_cl

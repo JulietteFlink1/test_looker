@@ -59,7 +59,7 @@ measure: std_item_price_gross {
   hidden: yes
   type: number
  # sql_distinct_key: ${created_date} ;;
-  sql: round(stddev(${sum_item_price_gross}), 2) ;;
+  sql: coalesce(round(stddev(${sum_item_price_gross}), 2),0) ;;
 }
 
   measure: var_item_price_gross {
@@ -73,7 +73,7 @@ measure: key_index {
   label: "Key Index"
   hidden: yes
   type: number
-  sql: round(${mean_item_price_gross} / nullif(${std_item_price_gross}, 0), 2) ;;
+  sql: coalesce(round(${mean_item_price_gross} / nullif(${std_item_price_gross}, 0), 2),0) ;;
 }
 
 
