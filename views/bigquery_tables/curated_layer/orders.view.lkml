@@ -84,6 +84,12 @@ view: orders {
     sql: ${gmv_gross} - ${shipping_price_gross_amount} - ${rider_tip} ;;
   }
 
+  dimension: item_value_gross_2 {
+    type: number
+    hidden: no
+    sql: ${TABLE}.amt_total_price_gross ;;
+  }
+
   dimension: item_value_net {
     type: number
     hidden: no
@@ -1556,6 +1562,26 @@ view: orders {
         sql: ${item_value_gross};;
         value_format_name: euro_accounting_2_precision
       }
+
+      measure: sum_item_value_gross_2 {
+        type: sum
+        hidden:  no
+        sql: ${item_value_gross_2};;
+
+      }
+
+      measure: avg_item_value_gross_2 {
+        alias: [avg_product_value_gross]
+        group_label: "* Monetary Values *"
+        label: "AVG Item Value (Gross) 2"
+        description: "AIV represents the Average value of items (incl. VAT). Excludes fees (gross), before deducting discounts."
+        hidden:  no
+        type: number
+        sql: ${sum_item_value_gross_2} / ${cnt_orders};;
+        value_format_name: euro_accounting_2_precision
+  }
+
+
 
       measure: avg_item_value_net {
         alias: [avg_product_value_net]
