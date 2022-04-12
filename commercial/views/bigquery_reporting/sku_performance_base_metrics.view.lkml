@@ -43,7 +43,7 @@ view: +sku_performance_base {
   measure: sum_number_of_connections {
 
     label:       "# Item-Connections [L4W]"
-    description: "The number of items, that were in the same baskets than the SKU of interest, given that the 2 items were ordered together at least 10 times (per hub in reporting period)"
+    description: "The number of items, that were in the same baskets than the SKU of interest, given that the 2 items were ordered together at least 5 times (per hub in reporting period)"
     group_label: "Report Period"
 
     type: sum
@@ -58,7 +58,7 @@ view: +sku_performance_base {
   measure: avg_number_of_connections {
 
     label:       "AVG Item-Connections [L4W]"
-    description: "The number of items, that were in the same baskets than the SKU of interest, given that the 2 items were ordered together at least 10 times (per hub in reporting period)"
+    description: "The number of items, that were in the same baskets than the SKU of interest, given that the 2 items were ordered together at least 5 times (per hub in reporting period)"
     group_label: "Report Period"
 
     type: average
@@ -241,7 +241,7 @@ view: +sku_performance_base {
     group_label: "Report Period"
 
     type: number
-    sql: (${sum_waste_damaged} + ${sum_waste_expired}) / nullif( ${sum_number_of_orders_corrected} ,0) ;;
+    sql: (${sum_waste_damaged} + ${sum_waste_expired}) / nullif( ${sum_quantity_sold_corrected} ,0) ;;
 
     value_format_name: percent_2
 

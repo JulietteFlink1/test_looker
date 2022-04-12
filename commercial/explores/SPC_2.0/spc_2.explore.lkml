@@ -5,6 +5,7 @@ include: "/**/hubs_ct.view"
 include: "/**/spc_2_ranks.view"
 include: "/**/lexbizz_item_warehouse.view"
 include: "/**/lexbizz_warehouse.view"
+include: "/**/spc_model_results.view"
 
 
 
@@ -74,11 +75,19 @@ explore: spc_2 {
     relationship: many_to_one
 
     sql_on: ${lexbizz_item_warehouse.warehouse_id} = ${lexbizz_warehouse.warehouse_id} and
-            ${lexbizz_item_warehouse.sku}        =${sku_performance_base.sku} and
+            ${lexbizz_item_warehouse.sku}        =${sku_performance_base.joining_sku} and
             ${lexbizz_item_warehouse.ingestion_date} = current_date()
     ;;
 
     fields: [lexbizz_item_warehouse.item_at_warehouse_status]
+  }
+
+  join: spc_model_results {
+
+    type: left_outer
+    relationship: many_to_one
+
+    sql_on: ${spc_model_results.sku} = ${sku_performance_base.sku} ;;
   }
 
 

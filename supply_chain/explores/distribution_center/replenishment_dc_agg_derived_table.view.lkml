@@ -8,19 +8,14 @@ view: replenishment_dc_agg_derived_table {
       column: sku { field: replenishment_dc_batchbalance.sku }
       column: stock_balance_date_date { field: replenishment_dc_batchbalance.stock_balance_date_date }
       column: total_stock_available { field: replenishment_dc_batchbalance.total_stock_available }
-      filters: {
-        field: replenishment_dc_batchbalance.stock_balance_date_date
-        value: ""
-      }
-      filters: {
-        field: replenishment_dc_batchbalance.dc_code
-        value: ""
-      }
-      filters: {
-        field: replenishment_dc_batchbalance.sku
-        value: ""
-      }
+    bind_all_filters: yes
     }
+  }
+  dimension: table_uuid {
+    hidden: yes
+    primary_key: yes
+    sql: concat(${stock_balance_date_date},${dc_code},${sku}) ;;
+
   }
   dimension: dc_code {
     label: " 01 Distribution Center Inventory  Distribution Center Code"

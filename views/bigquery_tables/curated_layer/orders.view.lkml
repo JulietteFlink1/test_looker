@@ -81,7 +81,8 @@ view: orders {
   dimension: item_value_gross {
     type: number
     hidden: no
-    sql: ${gmv_gross} - ${shipping_price_gross_amount} - ${rider_tip} ;;
+    sql: coalesce(${gmv_gross},0) - coalesce(${shipping_price_gross_amount},0) - coalesce(${rider_tip},0)
+    ;;
   }
 
   dimension: item_value_gross_2 {
@@ -1025,6 +1026,14 @@ view: orders {
     sql: ${TABLE}.at_customer_time_minutes ;;
   }
 
+  dimension: at_customer_time_minutes_tier_5 {
+    group_label: "* Operations / Logistics *"
+    label: "At Customer Time Minutes Tier"
+    type: tier
+    tiers: [0, 0.5, 1, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0]
+    sql: ${at_customer_time_minutes} ;;
+  }
+
   dimension: rider_id {
     hidden: no
     group_label: "* IDs *"
@@ -1600,7 +1609,7 @@ view: orders {
         description: "Average value of Delivery Fees (Gross)"
         hidden:  no
         type: average
-        sql: ${shipping_price_gross_amount};;
+        sql: coalesce(${shipping_price_gross_amount});;
         value_format_name: euro_accounting_2_precision
       }
 
@@ -1641,7 +1650,7 @@ view: orders {
         label: "AVG Rider Tip"
         hidden:  no
         type: average
-        sql: ${rider_tip};;
+        sql: coalesce(${rider_tip}, 0);;
         value_format_name: euro_accounting_2_precision
       }
 

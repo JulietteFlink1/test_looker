@@ -1,35 +1,23 @@
-view: braintree_data_202203 {
-  sql_table_name: `flink-data-dev.sandbox_justine.202203_braintree_data`
+view: braintree_data {
+  sql_table_name: `flink-data-dev.sandbox_justine.braintree_clean`
     ;;
 
   dimension: amt_authorised {
     type: number
-    sql: ${TABLE}.amt_authorised ;;
+    hidden: yes
+    sql: ${TABLE}.Amount_Authorized  ;;
   }
 
   dimension: amt_submitted_for_settlement {
     hidden: yes
     type: number
-    sql: ${TABLE}.amt_submitted_for_settlement ;;
+    sql: ${TABLE}.Amount_Submitted_For_Settlement ;;
   }
 
   dimension: billing_country {
     type: string
     label: "Country"
-    sql: ${TABLE}.billing_country ;;
-  }
-
-  dimension_group: created_timestamp {
-    label: "Created"
-    type: time
-    timeframes: [
-
-      date,
-      week,
-      month,
-
-    ]
-    sql: ${TABLE}.created_timestamp ;;
+    sql: ${TABLE}.Braintree_Billing_Country ;;
   }
 
   dimension: customer_email {
@@ -47,18 +35,6 @@ view: braintree_data_202203 {
     sql: ${TABLE}.sale_id ;;
   }
 
-  dimension_group: settlement {
-    type: time
-    timeframes: [
-      date,
-      week,
-      month
-    ]
-    convert_tz: no
-    datatype: date
-    sql: ${TABLE}.settlement_date ;;
-  }
-
   dimension: transaction_id {
     type: string
     primary_key: yes
@@ -73,6 +49,24 @@ view: braintree_data_202203 {
   dimension: transaction_type {
     type: string
     sql: ${TABLE}.transaction_type ;;
+  }
+
+  dimension: date {
+    type: date
+    group_label: "Date"
+    sql: ${TABLE}.date ;;
+  }
+
+  dimension: time {
+    group_label: "Date"
+    type: string
+    sql: ${TABLE}.time ;;
+  }
+
+  dimension: month {
+    group_label: "Date"
+    type: number
+    sql: ${TABLE}.month ;;
   }
 
   measure: count {

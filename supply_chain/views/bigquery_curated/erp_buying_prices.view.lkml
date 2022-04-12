@@ -20,7 +20,11 @@ view: erp_buying_prices {
     label: "Net Income"
     description: "The incoming cash defined as net item-price"
     type: number
-    sql:  ${orderline.unit_price_gross_amount} / nullif((1 + ${orderline.tax_rate}) ,0);;
+    sql:  coalesce(
+            ${orderline.unit_price_gross_amount} / nullif((1 + ${orderline.tax_rate}) ,0),
+            ${products.amt_product_price_gross}  / nullif((1 + ${products.tax_rate}), 0)
+          )
+    ;;
     value_format_name: eur
   }
 
@@ -44,12 +48,18 @@ view: erp_buying_prices {
     label: "Vendor Name"
     type: string
     sql: ${TABLE}.erp_vendor_name ;;
+
+    # this field is not part of the refactored table anymore, but can be derived from e.g. erp_product_hub_vendor_assignment_v2
+    hidden: yes
   }
 
   dimension: erp_item_name {
     label: "Product Name (ERP)"
     type: string
     sql: ${TABLE}.erp_item_name ;;
+
+    # this field is not part of the refactored table anymore, but can be derived from e.g. erp_product_hub_vendor_assignment_v2
+    hidden: yes
   }
 
   dimension: valid_to {
