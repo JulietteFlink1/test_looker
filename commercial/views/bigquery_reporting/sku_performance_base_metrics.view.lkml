@@ -653,13 +653,13 @@ view: +sku_performance_base {
     label:       "Indirect SKU Contribution"
     description: "The indirect contribution of an SKU defined by its cross-selling potential. The KPI is defined as
 
-                  (# Item-Connections) / (# Unique SKUs)"
+                  (# Item-Connections) / (# Unique SKUs) * 10.000 for better interpretability"
     group_label: "Proposed Decision Metrics"
 
     type: number
-    sql: ${avg_number_of_connections} / nullif(${avg_total_assortment_size} ,0) ;;
+    sql: (${avg_number_of_connections} / nullif(${avg_total_assortment_size} ,0) ) * 10000 ;;
 
-    value_format_name: percent_2
+    value_format_name: decimal_4
   }
 
 

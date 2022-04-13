@@ -1,8 +1,8 @@
-include: "/product_consumer/views/address_daily_aggregates.view.lkml"
+include: "/product_consumer/views/daily_user_address_aggregates.view.lkml"
 include: "/product_consumer/views/daily_user_aggregates.view.lkml"
 
-explore: address_daily_aggregates {
-  view_name: address_daily_aggregates
+explore: daily_user_address_aggregates {
+  view_name: daily_user_address_aggregates
   label: "Address Daily User Activity"
   view_label: "Address Daily User Activity"
   group_label: "Consumer Product"
@@ -12,7 +12,7 @@ explore: address_daily_aggregates {
     from: daily_user_aggregates
     type: inner
     relationship: one_to_one
-    sql_on: ${daily_user_aggregates.daily_user_uuid}=${address_daily_aggregates.daily_user_uuid} ;;
+    sql_on: ${daily_user_aggregates.daily_user_uuid}=${daily_user_address_aggregates.daily_user_uuid} ;;
     fields: [
       device_attributes*
       , location_attributes*
