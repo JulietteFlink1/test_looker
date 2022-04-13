@@ -8,8 +8,9 @@ view: braintree_bq {
   }
 
   dimension: adyen_revenue {
-    type: string
-    sql: ${TABLE}.Adyen_revenue ;;
+    type: number
+    hidden: yes
+    sql: safe_cast(${TABLE}.Adyen_revenue as float64) ;;
   }
 
   dimension: adyen_status {
@@ -24,6 +25,7 @@ view: braintree_bq {
 
   dimension: bq_revenue {
     type: number
+    hidden: yes
     sql: ${TABLE}.BQ_revenue ;;
   }
 
@@ -97,8 +99,17 @@ view: braintree_bq {
   }
 
   measure: sum_bq_revenue {
+    group_label: "BQ Revenue"
     type: sum
     sql: ${bq_revenue};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_adyen_revenue {
+    type: sum
+    group_label: "Revenue"
+    label: "Adyen Revenue"
+    sql: ${adyen_revenue};;
     value_format_name: euro_accounting_2_precision
   }
 
