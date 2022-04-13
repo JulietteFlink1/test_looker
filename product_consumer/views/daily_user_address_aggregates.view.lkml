@@ -1,4 +1,4 @@
-view: address_daily_aggregates {
+view: daily_user_address_aggregates {
   sql_table_name: `flink-data-prod.reporting.daily_user_address_aggregates`
     ;;
 
