@@ -40,16 +40,16 @@ view: shyftplan_riders_pickers_hours_clean {
     sql: ${TABLE}.number_of_worked_minutes_external ;;
   }
 
-  dimension: numbre_of_no_show_minutes {
+  dimension: number_of_no_show_minutes {
     type: number
     hidden: yes
-    sql: ${TABLE}.numbre_of_no_show_minutes ;;
+    sql: ${TABLE}.number_of_no_show_minutes ;;
   }
 
-  dimension: numbre_of_no_show_minutes_external {
+  dimension: number_of_no_show_minutes_external {
     type: number
     hidden: yes
-    sql: ${TABLE}.numbre_of_no_show_minutes_external ;;
+    sql: ${TABLE}.number_of_no_show_minutes_external ;;
   }
 
   dimension: number_of_planned_employees {
@@ -446,9 +446,9 @@ view: shyftplan_riders_pickers_hours_clean {
   measure: pct_overstaffing {
     type: number
     label:"% Overstaffing"
-    description: "When Forecasted Hours > Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
+    description: "When Forecasted Hours < Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
     sql: case
-          when ${sum_forecasted_riders_needed} > ${sum_planned_hours}
+          when ${sum_forecasted_riders_needed} < ${sum_planned_hours}
             then (${sum_forecasted_riders_needed} - ${sum_planned_hours}) / nullif(${sum_forecasted_riders_needed},0)
           else 0 end  ;;
     value_format_name: percent_0
@@ -457,9 +457,9 @@ view: shyftplan_riders_pickers_hours_clean {
   measure: pct_understaffing {
     type: number
     label: "% Understaffing"
-    description: "When Forecasted Hours < Scheduled Hours: (Scheduled Hours - Forecasted Hours) / Forecasted Hours"
+    description: "When Forecasted Hours > Scheduled Hours: (Scheduled Hours - Forecasted Hours) / Forecasted Hours"
     sql: case
-          when ${sum_forecasted_riders_needed} < ${sum_planned_hours}
+          when ${sum_forecasted_riders_needed} > ${sum_planned_hours}
             then (${sum_planned_hours} - ${sum_forecasted_riders_needed}) / nullif(${sum_forecasted_riders_needed},0)
           else 0 end  ;;
     value_format_name: percent_0
