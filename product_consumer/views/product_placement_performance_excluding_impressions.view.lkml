@@ -104,7 +104,9 @@ view: product_placement_performance_excluding_impressions {
     label: "Product Placement"
     description: "Placement in the app where product was listed, e.i. search, pdp, category"
     type: string
-    sql: ${TABLE}.product_placement ;;
+    sql: case when ${TABLE}.product_placement in ('checkout','cart') then 'cart'
+              else ${TABLE}.product_placement
+              end;;
   }
   dimension: pdp_origin {
     group_label: "Product Dimensions"
@@ -128,6 +130,7 @@ view: product_placement_performance_excluding_impressions {
     label: "Event"
     description: "Timestamp of when an event happened"
     type: time
+    datatype: date
     timeframes: [
       date,
       week,
@@ -135,7 +138,32 @@ view: product_placement_performance_excluding_impressions {
       quarter
     ]
     sql: ${TABLE}.event_date ;;
-    datatype: date
+  }
+  dimension: event_date_granularity {
+    group_label: "Date Dimensions"
+    label: "Event Date (Dynamic)"
+    label_from_parameter: timeframe_picker
+    type: string # cannot have this as a time type. See this discussion: https://community.looker.com/lookml-5/dynamic-time-granularity-opinions-16675
+    hidden:  yes
+    sql:
+      {% if timeframe_picker._parameter_value == 'Day' %}
+        ${event_date}
+      {% elsif timeframe_picker._parameter_value == 'Week' %}
+        ${event_week}
+      {% elsif timeframe_picker._parameter_value == 'Month' %}
+        ${event_month}
+      {% endif %};;
+  }
+
+  parameter: timeframe_picker {
+    group_label: "Date Dimensions"
+    label: "Event Date Granularity"
+    type: unquoted
+    allowed_value: { value: "Hour" }
+    allowed_value: { value: "Day" }
+    allowed_value: { value: "Week" }
+    allowed_value: { value: "Month" }
+    default_value: "Day"
   }
 
   # ======= HIDDEN Dimension ======= #
@@ -158,14 +186,14 @@ view: product_placement_performance_excluding_impressions {
     label: "# Registered Users"
     description: "Number of users who logged-in during a day"
     type: sum
-    sql: ${TABLE}.logged_in_users ;;
+    sql: ${TABLE}.number_of_logged_in_users ;;
   }
   measure: anonymous_users {
     group_label: "User Metrics"
     label: "# All Users"
     description: "Number of all users regardless of their login status."
     type: sum
-    sql: ${TABLE}.users ;;
+    sql: ${TABLE}.number_of_users ;;
   }
   measure: products {
     group_label: "Product Metrics"
@@ -174,48 +202,51 @@ view: product_placement_performance_excluding_impressions {
     type: count_distinct
     sql: ${TABLE}.product_sku ;;
   }
+
+  # ======= Product Event Level Measures =======
+
   measure: impressions {
     hidden: yes
     group_label: "Product Metrics"
     label: "# Impressions"
     description: "Number of unique impressions per product"
     type: sum
-    sql: ${TABLE}.impressions ;;
+    sql: ${TABLE}.number_of_product_impressions ;;
   }
   measure: add_to_carts {
     group_label: "Product Metrics"
     label: "# Products Added to Cart"
     description: "Number of unique products added to cart"
     type: sum
-    sql: ${TABLE}.add_to_carts ;;
+    sql: ${TABLE}.number_of_product_add_to_carts ;;
   }
   measure: removed_from_carts {
     group_label: "Product Metrics"
     label: "# Products Removed from Cart"
     description: "Number of unique products removed from cart"
     type: sum
-    sql: ${TABLE}.removed_from_carts ;;
+    sql: ${TABLE}.number_of_product_removed_from_carts ;;
   }
   measure: pdps {
     group_label: "Product Metrics"
     label: "# PDPs"
     description: "Number of PDPs (product details viewed) per product"
     type: sum
-    sql: ${TABLE}.pdps ;;
+    sql: ${TABLE}.number_of_pdp_views ;;
   }
   measure: favourites {
     group_label: "Product Metrics"
     label: "# Favourite Products"
     description: "Number of unique products added to favourites"
     type: sum
-    sql: ${TABLE}.favourites ;;
+    sql: ${TABLE}.number_of_added_to_favourites ;;
   }
   measure: orders {
     group_label: "Product Metrics"
     label: "# Ordered Products "
-    description: "Number of products which were ordered"
+    description: "Number of orders with the product"
     type: sum
-    sql: ${TABLE}.orders ;;
+    sql: ${TABLE}.number_of_orders ;;
   }
   measure: click_through_rate {
     hidden: yes
@@ -251,5 +282,50 @@ view: product_placement_performance_excluding_impressions {
     description: "# ordered products / # total products impressions"
     value_format_name: percent_2
     sql: ${orders} / nullif(${impressions},0);;
+  }
+
+  # ======= User Level Measures =======
+  measure: users_with_impressions {
+    group_label: "User Metrics"
+    label: "# Users with Impressions"
+    description: "Number of unique products added to cart"
+    type: sum
+    sql: ${TABLE}.number_of_users_with_impressions ;;
+  }
+
+  measure: users_with_add_to_carts {
+    group_label: "User Metrics"
+    label: "# Users with Added to Cart"
+    description: "Number of unique products added to cart"
+    type: sum
+    sql: ${TABLE}.number_of_users_with_add_to_carts ;;
+  }
+  measure: users_with_removed_from_carts {
+    group_label: "User Metrics"
+    label: "# Users with Removed from Cart"
+    description: "Number of unique products removed from cart"
+    type: sum
+    sql: ${TABLE}.number_of_users_with_removed_from_carts ;;
+  }
+  measure: users_with_pdp_viewed {
+    group_label: "User Metrics"
+    label: "# Users with PDP views"
+    description: "Number of PDPs (product details viewed) per product"
+    type: sum
+    sql: ${TABLE}.number_of_users_with_pdp_views ;;
+  }
+  measure: users_with_add_to_favourites {
+    group_label: "User Metrics"
+    label: "# Users adding to favourites"
+    description: "Number of unique products added to favourites"
+    type: sum
+    sql: ${TABLE}.number_of_users_with_added_to_favourites ;;
+  }
+  measure: users_with_orders {
+    group_label: "User Metrics"
+    label: "# Users with with orders "
+    description: "Number of orders with the product"
+    type: sum
+    sql: ${TABLE}.number_of_users_with_order ;;
   }
 }

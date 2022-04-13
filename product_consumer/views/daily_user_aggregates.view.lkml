@@ -54,13 +54,6 @@ view: daily_user_aggregates {
       description: "Unique user identifier: if user was logged in, the identifier is 'user_id' populated upon registration, else 'anonymous_id' populated by Segment"
       sql: ${TABLE}.anonymous_id ;;
     }
-    # dimension: anonymous_ids {
-    #   group_label: "IDs"
-    #   label: "Anonymous IDs"
-    #   type: string
-    #   description: "An array of anonymous IDs populated by Segment as a user identifier"
-    #   sql: ${TABLE}.anonymous_ids ;;
-    # }
     dimension: order_uuids {
       group_label: "IDs"
       label: "Order UUIDs"
