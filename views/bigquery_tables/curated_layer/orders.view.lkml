@@ -81,20 +81,14 @@ view: orders {
   dimension: item_value_gross {
     type: number
     hidden: no
-    sql: coalesce(${gmv_gross},0) - coalesce(${shipping_price_gross_amount},0) - coalesce(${rider_tip},0)
+    sql: ${TABLE}.amt_total_price_gross
     ;;
-  }
-
-  dimension: item_value_gross_2 {
-    type: number
-    hidden: no
-    sql: ${TABLE}.amt_total_price_gross ;;
   }
 
   dimension: item_value_net {
     type: number
     hidden: no
-    sql: ${gmv_net} - ${shipping_price_net_amount} - ${rider_tip} ;;
+    sql: ${TABLE}.amt_total_price_net   ;;
   }
 
   dimension: item_value_gross_tier {
@@ -1159,6 +1153,12 @@ view: orders {
     sql: ${TABLE}.is_external_order ;;
   }
 
+  dimension: deposit {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_deposit ;;
+  }
+
 
   ######## PARAMETERS
 
@@ -1572,26 +1572,6 @@ view: orders {
         value_format_name: euro_accounting_2_precision
       }
 
-      measure: sum_item_value_gross_2 {
-        type: sum
-        hidden:  no
-        sql: ${item_value_gross_2};;
-
-      }
-
-      measure: avg_item_value_gross_2 {
-        alias: [avg_product_value_gross]
-        group_label: "* Monetary Values *"
-        label: "AVG Item Value (Gross) 2"
-        description: "AIV represents the Average value of items (incl. VAT). Excludes fees (gross), before deducting discounts."
-        hidden:  no
-        type: number
-        sql: ${sum_item_value_gross_2} / ${cnt_orders};;
-        value_format_name: euro_accounting_2_precision
-  }
-
-
-
       measure: avg_item_value_net {
         alias: [avg_product_value_net]
         group_label: "* Monetary Values *"
@@ -1651,6 +1631,16 @@ view: orders {
         hidden:  no
         type: average
         sql: coalesce(${rider_tip}, 0);;
+        value_format_name: euro_accounting_2_precision
+      }
+
+       measure: avg_deposit {
+        group_label: "* Monetary Values *"
+        description: "AVG Deposit Amount considering Orders having items with deposit "
+        label: "AVG Deposit"
+        hidden:  no
+        type: average
+        sql: coalesce(${deposit}, 0);;
         value_format_name: euro_accounting_2_precision
       }
 
@@ -1774,6 +1764,15 @@ view: orders {
         sql:${avg_acceptance_time} + ${avg_reaction_time};;
         value_format_name: decimal_1
       }
+
+      measure: sum_deposit {
+        group_label: "* Monetary Values *"
+        label: "SUM Deposit"
+        hidden:  no
+        type: sum
+        sql: ${deposit};;
+        value_format_name: euro_accounting_2_precision
+  }
 
       ############
       ## COUNTS ##
