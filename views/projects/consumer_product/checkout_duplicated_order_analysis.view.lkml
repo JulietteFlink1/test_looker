@@ -1,6 +1,6 @@
 view: checkout_duplicated_order_analysis {
   derived_table: {
-    sql: WITH base as (
+    sql:     WITH base as (
     SELECT  anonymous_id
     , order_date
     , order_week
@@ -39,6 +39,7 @@ view: checkout_duplicated_order_analysis {
     , raw as (
         SELECT b.*
         , CASE WHEN c.order_uuid IS NULL THEN 0 ELSE 1 end as chargeback_dummy
+        , c.main_amount as amount_chargebacked
         FROM base as b
         LEFT JOIN chargebacks as c ON b.order_uuid = c.order_uuid
     )
@@ -48,8 +49,11 @@ view: checkout_duplicated_order_analysis {
           customer_email
         , order_date
         , order_week
+        , order_uuid
+        , amt_gmv_gross
         , platform
         , chargeback_dummy
+        , amount_chargebacked
         , case when number_of_duplications > 1 then true else false end as has_duplicated_order
         , number_of_duplications
         , first_order
@@ -58,9 +62,12 @@ view: checkout_duplicated_order_analysis {
         SELECT DISTINCT
             customer_email
             , order_date
+            , order_uuid
+            , amt_gmv_gross
             , order_week
             , platform
             , chargeback_dummy
+            , amount_chargebacked
             , LAST_VALUE(rank_day_orders_gmv) OVER (partition by customer_email, platform, order_date, amt_gmv_gross, number_of_items order by order_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) as number_of_duplications
             , FIRST_VALUE(is_first_order) OVER (partition by customer_email, platform, order_date, amt_gmv_gross, number_of_items order by order_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) as first_order
             , FIRST_VALUE(order_timestamp) OVER (partition by customer_email, platform, order_date, amt_gmv_gross, number_of_items order by order_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) as first_timestamp
@@ -77,12 +84,13 @@ view: checkout_duplicated_order_analysis {
         , number_of_duplications
         , has_duplicated_order
         , first_order
+        , SUM(amt_gmv_gross) as total_gmv_gross
         , SUM(chargeback_dummy) as total_chargebacks
+        , SUM(amount_chargebacked) as total_chargeback_amount
         , count(distinct customer_email) as customer_email_count
         , avg(min_diff_order_created) as avg_min_diff_order_created
     FROM calcs
     GROUP BY 1,2,3,4,5,6
-     ORDER BY 1,2,3,4,5,6
   ;;
 
   }
@@ -144,6 +152,17 @@ view: checkout_duplicated_order_analysis {
     sql: ${TABLE}.total_chargebacks ;;
   }
 
+  dimension: total_chargebacks_amount {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.total_chargeback_amount ;;
+  }
+
+  dimension: total_gmv_gross {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.total_gmv_gross
+
     dimension: avg_min_diff_order_created {
       type: number
       sql: ${TABLE}.avg_min_diff_order_created ;;
@@ -156,6 +175,18 @@ view: checkout_duplicated_order_analysis {
     label: "# Unique Customers"
     type: sum
     sql: ${customer_email_count} ;;
+  }
+
+  measure: sum_chargeback_amount {
+    label: "# Total Amount Chargebacks"
+    type: sum
+    sql: ${total_chargebacks_amount} ;;
+  }
+
+  measure: sum_gmv_gross {
+    label: "# Total GMV Gross"
+    type: sum
+    sql: ${total_gmv_gross} ;;
   }
 
   measure: sum_chargebacks_total {
