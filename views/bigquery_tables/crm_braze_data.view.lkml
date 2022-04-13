@@ -249,409 +249,409 @@ view: crm_braze_data {
 
   measure: total_recipients {
     type: sum
-    label: "Unique Sents"
+    label: "# Unique Sents"
     description: "The number of unique recipients of an email campaign"
-    group_label: "Numbers"
+    group_label: "Absolute"
     sql: ${num_emails_sent} ;;
     value_format_name: decimal_0
   }
 
   measure: total_all_sent {
     type: sum
-    label: "Total Emails Sent"
+    label: "# Total Emails Sent"
     description: "The number of unique recipients of an email campaign"
-    group_label: "Numbers"
+    group_label: "Absolute"
     sql: ${num_all_sents} ;;
     value_format_name: decimal_0
   }
 
   measure: total_emails_bounced_unique {
     type: sum
-    label: "Bounces"
+    label: "# Bounces"
     description: "The number of emails, that have been bounced by the customers email provider"
-    group_label: "Numbers"
+    group_label: "Absolute"
     sql: ${num_unique_emails_bounced};;
     value_format_name: decimal_0
   }
 
   measure: total_emails_soft_bounced_unique {
     type: sum
-    label: "Soft Bounces"
+    label: "# Soft Bounces"
     description: "The number of emails, that have been bounced by the customers email provider"
-    group_label: "Numbers"
+    group_label: "Absolute"
     sql: ${num_unique_emails_soft_bounced} ;;
     value_format_name: decimal_0
   }
 
   measure: total_emails_delivered {
     type: sum
-    label: "Deliveries"
+    label: "# Deliveries"
     description: "The number of emails, that have been delivered to the customer - aka they have been received"
-    group_label: "Numbers"
+    group_label: "Absolute"
     sql: ${num_emails_delivered} ;;
     value_format_name: decimal_0
   }
 
   measure: total_emails_opened_unique {
     type:  sum
-    label: "Unique Opens"
+    label: "# Unique Opens"
     description: "The number of unique opens of an email - one customer can be counted only once per sent-put"
-    group_label: "Numbers"
+    group_label: "Absolute"
     sql: ${num_unique_emails_opened} ;;
     value_format_name: decimal_0
   }
 
   measure: total_emails_opened {
     type:  sum
-    label: "Total Opens"
-    description: "The number of unique opens of an email - one customer can be counted n-times per sent-put"
-    group_label: "Numbers"
+    label: "# Total Opens"
+    description: "The number of unique opens of an email - one customer can be counted n-times per send-out"
+    group_label: "Absolute"
     sql: ${num_emails_opened} ;;
     value_format_name: decimal_0
   }
 
   measure: total_emails_clicked_unique {
     type: sum
-    label: "Unique Clicks"
-    description: "The number of unique clicks of an email - one customer can be counted only once per sent-put"
-    group_label: "Numbers"
+    label: "# Unique Clicks"
+    description: "The number of unique clicks of an email - one customer can be counted only once per send-put"
+    group_label: "Absolute"
     sql: ${num_unique_emails_clicked} ;;
     value_format_name: decimal_0
   }
 
   measure: total_emails_clicked {
     type: sum
-    label: "Total Clicks"
-    description: "The number of unique clicks of an email - one customer can be counted n-times per sent-put"
-    group_label: "Numbers"
+    label: "# Total Clicks"
+    description: "The number of unique clicks of an email - one customer can be counted N times per send-out"
+    group_label: "Absolute"
     sql: ${num_emails_clicked} ;;
     value_format_name: decimal_0
   }
 
   measure: total_cta_clicks {
     type: number
-    label: "Total CTA Clicks"
-    description: "The total clicks, that are not clicks on the unsubscribe-link"
-    group_label: "Numbers"
+    label: "# Total CTA Clicks"
+    description: "The number of total clicks that are not clicks on the unsubscribe-link"
+    group_label: "Absolute"
     sql:  ${total_emails_clicked} - ${total_emails_unsubscribed};;
     value_format_name: decimal_0
   }
 
   measure: unique_cta_clicks {
     type: number
-    label: "Unique CTA Clicks"
-    description: "The unique clicks, that are not clicks on the unsubscribe-link"
-    group_label: "Numbers"
+    label: "# Unique CTA Clicks"
+    description: "The number of unique clicks that are not clicks on the unsubscribe-link"
+    group_label: "Absolute"
     sql: ${total_emails_clicked_unique} - ${total_emails_unsubscribed}  ;;
     value_format_name: decimal_0
   }
 
   measure: total_emails_unsubscribed {
     type: sum
-    label: "Unsubscribes"
-    description: "The number of customers, that have clicked on the unsubscribe-link"
-    group_label: "Numbers"
+    label: "# Unsubscribes"
+    description: "The number of customers that have clicked on the unsubscribe-link"
+    group_label: "Absolute"
     sql: ${num_unique_unsubscribed} ;;
     value_format_name: decimal_0
   }
 
   measure: avg_days_sent_open {
     type: average
-    label: "ø Days Sent to Open"
-    description: "The days between the sent-out and the first opening of an email"
-    group_label: "Numbers"
+    label: "# Days Sent to Open"
+    description: "The days between the send-out and the first opening of an email"
+    group_label: "Absolute"
     sql:  ${days_sent_to_open};;
     value_format_name: decimal_2
   }
 
   measure: avg_days_sent_click {
     type: average
-    label: "ø Days Sent to Click"
-    description: "The days between the sent-out and the first click of an email"
-    group_label: "Numbers"
+    label: "# Days Sent to Click"
+    description: "The days between the send-out and the first click of an email"
+    group_label: "Absolute"
     sql: ${days_sent_to_click} ;;
     value_format_name: decimal_2
   }
 
   measure: total_orders_opened {
     type: sum
-    label: "Total Orders opened "
-    description: "Number of Orders that happened in the 24h after the last email open"
-    group_label: "Numbers"
+    label: "# Total Orders (Opened Emails) "
+    description: "Number of orders that happened in the 24h after the last email was open"
+    group_label: "Absolute"
     sql: ${num_orders_opened};;
     value_format_name: decimal_0
   }
 
   measure: total_orders_sent {
     type: sum
-    label: "Total Orders sent"
-    description: "Number of Orders that happened in the 24h after the last email open"
-    group_label: "Numbers"
+    label: "# Total Orders (Sent Emails)"
+    description: "Number of orders that happened in the 24h after the last email was sent"
+    group_label: "Absolute"
     sql: ${num_orders_sent};;
     value_format_name: decimal_0
   }
 
   measure: unique_orders_opened {
     type: sum
-    label: "Unique Orders opened"
-    description: "Number of Orders that happened in the 24h after the last email open"
-    group_label: "Numbers"
+    label: "# Unique Orders (Opened Emails)"
+    description: "Number of orders that happened in the 24h after the last email was open"
+    group_label: "Absolute"
     sql: ${num_unique_orders_opened};;
     value_format_name: decimal_0
   }
 
   measure: unique_orders_sent {
     type: sum
-    label: "Unique Orders sent"
-    description: "Number of Orders that happened in the 24h after the last email open"
-    group_label: "Numbers"
+    label: "# Unique Orders (Sent Emails)"
+    description: "Number of orders that happened in the 24h after the last email was sent"
+    group_label: "Absolute"
     sql: ${num_unique_orders_sent};;
     value_format_name: decimal_0
   }
 
   measure: total_orders_with_vouchers_opened {
     type: sum
-    label: "Total Orders with Vouchers opened"
-    description: "Number of Orders with Vouchers that happened in the 24h after the last email open"
-    group_label: "Numbers"
+    label: "# Total Orders with Vouchers (Opened Emails)"
+    description: "Number of Orders with Vouchers that happened in the 24h after the last email was open"
+    group_label: "Absolute"
     sql: ${num_orders_with_vouchers_opened};;
     value_format_name: decimal_0
   }
 
   measure: total_orders_with_vouchers_sent {
     type: sum
-    label: "Total Orders with Vouchers sent"
-    description: "Number of Orders with Vouchers that happened in the 24h after the last email open"
-    group_label: "Numbers"
+    label: "# Total Orders with Vouchers (Sent Emails)"
+    description: "Number of Orders with Vouchers that happened in the 24h after the last email was sent"
+    group_label: "Absolute"
     sql: ${num_orders_with_vouchers_sent};;
     value_format_name: decimal_0
   }
 
   measure: total_discount_opened {
     type: sum
-    label: "Total Discount opened"
+    label: "Discount Amount (Opened Emails)"
     description: "Total Value of discount vouchers"
-    group_label: "Numbers"
+    group_label: "Monetary"
     sql: ${discount_amount_opened};;
     value_format_name: decimal_0
   }
 
   measure: total_discount_sent {
     type: sum
-    label: "Total Discount sent"
+    label: "Discount Amount (Sent Emails)"
     description: "Total Value of discount vouchers"
-    group_label: "Numbers"
+    group_label: "Monetary"
     sql: ${discount_amount_sent};;
     value_format_name: decimal_0
   }
 
   measure: total_gmv_gross_opened {
     type: sum
-    label: "Total GMV (gross) opened"
+    label: "Total GMV Gross (Opened Emails)"
     description: "Total GMV (gross) of orders"
-    group_label: "Numbers"
+    group_label: "Monetary"
     sql: ${gmv_gross_opened};;
     value_format_name: decimal_0
   }
 
   measure: total_gmv_gross_sent {
     type: sum
-    label: "Total GMV (gross) sent"
+    label: "Total GMV Gross (Sent Emails)"
     description: "Total GMV (gross) of orders"
-    group_label: "Numbers"
+    group_label: "Monetary"
     sql: ${gmv_gross_sent};;
     value_format_name: decimal_0
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  #           Ratios
+  #           Relative
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   measure: bounced_emails_per_total_emails_sent {
     type: number
-    label: "Bounce Rate"
+    label: "% Bounce Rate"
     description: "Percentage: how many emails have been bounced based on all emails sent"
-    group_label: "Ratios"
+    group_label: "Relative"
     sql: ${total_emails_bounced_unique} / NULLIF(${total_all_sent}, 0);;
     value_format_name: percent_2
   }
 
   measure: delivered_emails_per_total_emails_sent {
     type: number
-    label: "Deliveries Rate"
+    label: "% Deliveries Rate"
     description: "Percentage: how many emails have been delivered based on all emails sent"
-    group_label: "Ratios"
+    group_label: "Relative"
     sql: ${total_emails_delivered} / NULLIF(${total_all_sent}, 0);;
     value_format_name: percent_2
   }
 
   measure: total_opened_emails_per_emails_delivered {
     type: number
-    label: "Total Opens Rate"
+    label: "% Total Opens Rate"
     description: "Percentage: number of emails opened divided by the number of emails delivered"
-    group_label: "Ratios"
+    group_label: "Relative"
     sql: ${total_emails_opened} / NULLIF(${total_emails_delivered}, 0);;
     value_format_name: percent_2
   }
 
   measure: unique_opened_emails_per_emails_delivered {
     type: number
-    label: "Unique Opens Rate"
+    label: "% Unique Opens Rate"
     description: "Percentage: number of unique emails opened divided by the number of emails delivered"
-    group_label: "Ratios"
+    group_label: "Relative"
     sql: ${total_emails_opened_unique} / NULLIF(${total_emails_delivered}, 0);;
     value_format_name: percent_2
   }
 
   measure: total_clicked_emails_per_emails_delivered {
     type: number
-    label: "Total Clicks Rate"
+    label: "% Total Clicks Rate"
     description: "Percentage: number of emails clicked divided by the number of emails delivered"
-    group_label: "Ratios"
+    group_label: "Relative"
     sql: ${total_emails_clicked} / NULLIF(${total_emails_delivered}, 0);;
     value_format_name: percent_2
   }
 
   measure: total_cta_clicked_emails_per_emails_delivered {
     type: number
-    label: "Total CTA Clicks Rate"
+    label: "% Total CTA Clicks Rate"
     description: "Percentage: number of emails clicked on CTA (not the unsubscribe-link) divided by the number of emails delivered"
-    group_label: "Ratios"
+    group_label: "Relative"
     sql: ${total_emails_clicked} / NULLIF(${total_emails_delivered}, 0);;
     value_format_name: percent_2
   }
 
   measure: unique_clicked_emails_per_emails_delivered {
     type: number
-    label: "Unique Clicks Rate"
+    label: "% Unique Clicks Rate"
     description: "Percentage: number of unique emails clicked divided by the number of emails delivered"
-    group_label: "Ratios"
+    group_label: "Relative"
     sql: ${total_emails_clicked_unique} / NULLIF(${total_emails_delivered}, 0);;
     value_format_name: percent_2
   }
 
   measure: unique_cta_clicked_emails_per_emails_delivered {
     type: number
-    label: "Unique CTA Clicks Rate"
+    label: "% Unique CTA Clicks Rate"
     description: "Percentage: number of unique emails clicked on CTA (not the unsubscribe-link) divided by the number of emails delivered"
-    group_label: "Ratios"
+    group_label: "Relative"
     sql: ${unique_cta_clicks} / NULLIF(${total_emails_delivered}, 0);;
     value_format_name: percent_2
   }
 
   measure: unsubscribed_emails_per_emails_delivered {
     type: number
-    label: "Unsubscribes Rate"
+    label: "% Unsubscribes Rate"
     description: "Percentage: number of emails clicked on unsubscribe-link divided by the number of emails delivered"
-    group_label: "Ratios"
+    group_label: "Relative"
     sql: ${total_emails_unsubscribed} / NULLIF(${total_emails_delivered}, 0);;
     value_format_name: percent_2
   }
 
   measure: total_order_rate_opened {
     type: number
-    label: "Total Order Rate (opened)"
+    label: "% Total Order Rate (Opened Emails)"
     description: "Percentage: number of orders made in the 12h after the last opening of the email divided by the number of emails opened"
-    group_label: "Ratios"
+    group_label: "Relative"
     sql: ${total_orders_opened} / NULLIF(${total_emails_opened}, 0);;
     value_format_name: percent_2
   }
 
   measure: total_order_rate_sent {
     type: number
-    label: "Total Order Rate (sent)"
-    description: "Percentage: number of orders made in the 12h after email being sent divided by the number of emails opened"
-    group_label: "Ratios"
+    label: "% Total Order Rate (Sent Emails)"
+    description: "Percentage: number of orders made in the 12h after email being sent divided by the number of emails sent"
+    group_label: "Relative"
     sql: ${total_orders_sent} / NULLIF(${total_all_sent}, 0);;
     value_format_name: percent_2
   }
 
   measure: unique_order_rate_opened {
     type: number
-    label: "Unique Order Rate (opened)"
+    label: "% Unique Order Rate (Opened Emails)"
     description: "Percentage: number of unique orders made in the 24h after the last opening of the email divided by the number of unique emails opened"
-    group_label: "Ratios"
+    group_label: "Relative"
     sql: ${unique_orders_opened} / NULLIF(${total_emails_opened_unique}, 0);;
     value_format_name: percent_2
   }
 
   measure: unique_order_rate_sent {
     type: number
-    label: "Unique Order Rate (sent)"
-    description: "Percentage: number of unique orders made in the 12h after sending an email divided by the number of unique emails opened"
-    group_label: "Ratios"
+    label: "% Unique Order Rate (Sent Emails)"
+    description: "Percentage: number of unique orders made in the 12h after sending an email divided by the number of unique emails sent"
+    group_label: "Relative"
     sql: ${unique_orders_sent} / NULLIF(${total_recipients}, 0);;
     value_format_name: percent_2
   }
 
   measure: total_order_rate_with_vouchers_opened {
     type: number
-    label: "Total Order Rate with Vouchers (opened)"
+    label: "% Total Order Rate with Vouchers (Opened Emails)"
     description: "Percentage: number of orders made in the 12h after the last opening of the email divided by the number of emails opened"
-    group_label: "Ratios"
+    group_label: "Relative"
     sql: ${total_orders_with_vouchers_opened} / NULLIF(${total_emails_opened}, 0);;
     value_format_name: percent_2
   }
 
   measure: total_order_rate_with_vouchers_sent {
     type: number
-    label: "Total Order Rate with Vouchers (sent)"
-    description: "Percentage: number of orders made in the 12h after sending an email divided by the number of emails opened"
-    group_label: "Ratios"
+    label: "% Total Order Rate with Vouchers (Sent Emails)"
+    description: "Percentage: number of orders made in the 12h after sending an email divided by the number of emails sent"
+    group_label: "Relative"
     sql: ${total_orders_with_vouchers_sent} / NULLIF(${total_all_sent}, 0);;
     value_format_name: percent_2
   }
 
   measure: discount_order_share_opened {
     type: number
-    label: "Discount Order Share (opened)"
+    label: "% Discount Order Share (Opened Emails)"
     description: "Percentage: number of orders with voucher discounts divided by the total number of ordres made in the 12h after the last opening of the email"
-    group_label: "Ratios"
+    group_label: "Relative"
     sql: ${total_orders_with_vouchers_opened} / NULLIF(${total_orders_opened}, 0);;
     value_format_name: percent_2
   }
 
   measure: discount_order_share_sent {
     type: number
-    label: "Discount Order Share (sent)"
+    label: "% Discount Order Share (Sent Emails)"
     description: "Percentage: number of orders with voucher discounts divided by the total number of ordres made in the 12h after sending an email"
-    group_label: "Ratios"
+    group_label: "Relative"
     sql: ${total_order_rate_with_vouchers_sent} / NULLIF(${total_orders_sent}, 0);;
     value_format_name: percent_2
   }
 
   measure: discount_value_share_opened {
     type: number
-    label: "Discount Value Share (opened) "
+    label: "% Discount Value Share (Opened Emails) "
     description: "Percentage: total of voucher discounts divided by the total gmv (gross) of ordres made in the 12h after the last opening of the email"
-    group_label: "Ratios"
+    group_label: "Relative"
     sql: ${total_discount_opened} / NULLIF(${total_gmv_gross_opened}, 0);;
     value_format_name: percent_2
   }
 
   measure: discount_value_share_sent {
     type: number
-    label: "Discount Value Share (sent) "
+    label: "% Discount Value Share (Sent Emails) "
     description: "Percentage: total of voucher discounts divided by the total gmv (gross) of ordres made in the 12h after sending an email"
-    group_label: "Ratios"
+    group_label: "Relative"
     sql: ${total_discount_sent} / NULLIF(${total_gmv_gross_sent}, 0);;
     value_format_name: percent_2
   }
 
   measure: average_order_value_opened {
     type: number
-    label: "Average Order Value (opened)"
+    label: "Average Order Value (Opened Emails)"
     description: "Average GMV (gross) based on Total Orders"
-    group_label: "Ratios"
+    group_label: "Monetary"
     sql: ${total_gmv_gross_opened} / NULLIF(${total_orders_opened}, 0);;
     value_format_name: decimal_2
   }
 
   measure: average_order_value_sent {
     type: number
-    label: "Average Order Value (sent)"
+    label: "Average Order Value (Sent Emails)"
     description: "Average GMV (gross) based on Total Orders"
-    group_label: "Ratios"
+    group_label: "Monetary"
     sql: ${total_gmv_gross_sent} / NULLIF(${total_orders_sent}, 0);;
     value_format_name: decimal_2
   }

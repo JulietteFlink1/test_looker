@@ -458,8 +458,8 @@ view: hub_staffing {
   measure: pct_over_stafing {
     type: number
     label:"% Over Staffing "
-    description: "When Forecasted Hours > Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
-    sql:case when ${sum_forecast_riders_needed} > ${sum_planned_hours}
+    description: "When Forecasted Hours < Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
+    sql:case when ${sum_forecast_riders_needed} < ${sum_planned_hours}
                   then (${sum_forecast_riders_needed} - ${sum_planned_hours} )  / ${sum_forecast_riders_needed}
              else
                   0
@@ -470,8 +470,8 @@ view: hub_staffing {
   measure: pct_under_stafing {
     type: number
     label:"% Under Staffing "
-    description: "When Forecasted Hours < Scheduled Hours: (Scheduled Hours - Forecasted Hours) / Forecasted Hours"
-    sql:case when ${sum_forecast_riders_needed} < ${sum_planned_hours}
+    description: "When Forecasted Hours > Scheduled Hours: (Scheduled Hours - Forecasted Hours) / Forecasted Hours"
+    sql:case when ${sum_forecast_riders_needed} > ${sum_planned_hours}
                   then (${sum_planned_hours} - ${sum_forecast_riders_needed})  / ${sum_forecast_riders_needed}
              else
                   0
