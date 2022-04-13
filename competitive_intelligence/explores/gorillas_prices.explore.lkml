@@ -1,7 +1,9 @@
-include: "/views/**/*.view"
-include: "/views/bigquery_tables/curated_layer/*.view"
-include: "/views/bigquery_tables/reporting_layer/competitive_intelligence/gorillas_inventory_stock_count.view.lkml"
-include: "/views/bigquery_tables/comp-intel/*.view"
+include: "/**/gorillas_products.view"
+include: "/**/gorillas_categories.view"
+include: "/**/gorillas_hubs.view"
+include: "/**/gorillas_historical_prices_fact.view"
+include: "/**/gorillas_to_flink_global.view"
+include: "/**/products.view"
 
 explore:  gorillas_prices {
   hidden: yes
