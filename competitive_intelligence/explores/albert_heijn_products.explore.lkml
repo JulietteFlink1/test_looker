@@ -1,5 +1,6 @@
-include: "/views/**/*.view"
-include: "/views/bigquery_tables/comp-intel/*.view"
+include: "/**/albert_hejn_products.view"
+include: "/**/albert_heijn_to_flink_global.view"
+include: "/**/products.view"
 
 explore:  albert_heijn_products {
   hidden: yes
