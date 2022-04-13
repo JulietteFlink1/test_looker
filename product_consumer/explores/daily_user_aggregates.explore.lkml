@@ -19,7 +19,9 @@ explore: daily_user_aggregates {
   description: "This explore provides an aggregated overview of Flink active users, including monetary values and conversion metrics (both App & Web)"
   group_label: "Consumer Product"
 
-  sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} ${event_date_at_date} {% endcondition %};;
+  sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} ${event_date_at_date} {% endcondition %}
+                    and ${event_date_at_date}<= CURRENT_DATE();;
+#                   Adding event_date<= current_date to avoid displaying the future events
 
   access_filter: {
     field: country_iso

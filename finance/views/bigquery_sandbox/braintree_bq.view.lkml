@@ -3,32 +3,29 @@ view: braintree_bq {
     ;;
 
   dimension: adyen_id {
-    hidden: yes
     type: string
     sql: ${TABLE}.Adyen_ID ;;
   }
 
   dimension: adyen_revenue {
+    type: number
     hidden: yes
-    type: string
-    sql: ${TABLE}.Adyen_revenue ;;
+    sql: safe_cast(${TABLE}.Adyen_revenue as float64) ;;
   }
 
   dimension: adyen_status {
-    hidden: yes
     type: string
     sql: ${TABLE}.Adyen_Status ;;
   }
 
   dimension: adyen_vs_bq {
-    hidden: yes
     type: string
     sql: ${TABLE}.Adyen_vs_BQ ;;
   }
 
   dimension: bq_revenue {
-    hidden: yes
     type: number
+    hidden: yes
     sql: ${TABLE}.BQ_revenue ;;
   }
 
@@ -54,7 +51,6 @@ view: braintree_bq {
   }
 
   dimension: difference_bq_adyen {
-    hidden: yes
     type: string
     sql: ${TABLE}.Difference_BQ_Adyen ;;
   }
@@ -67,6 +63,7 @@ view: braintree_bq {
 
   dimension: order_uuid {
     type: string
+    primary_key:  yes
     sql: ${TABLE}.order_uuid ;;
   }
 
@@ -102,8 +99,17 @@ view: braintree_bq {
   }
 
   measure: sum_bq_revenue {
+    group_label: "BQ Revenue"
     type: sum
     sql: ${bq_revenue};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_adyen_revenue {
+    type: sum
+    group_label: "Revenue"
+    label: "Adyen Revenue"
+    sql: ${adyen_revenue};;
     value_format_name: euro_accounting_2_precision
   }
 
