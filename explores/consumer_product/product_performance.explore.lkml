@@ -6,7 +6,7 @@ explore: product_performance {
   view_label: "Product Performance"
   group_label: "Consumer Product"
   description: "Product Performance Explore based on behavioural data. Please note: order_placed did not fire properly for iOS version 2.15.0 (2021/11/29 - ~2021/12/20)"
-  hidden: no
+  hidden: yes
 }
 
   always_filter: {

@@ -23,8 +23,7 @@ explore: daily_events {
     # received_at is due cost reduction given a table is partitioned by this dimensions
     # event_date filter will fitler for the desired time frame when events triggered
 
-  sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} ${received_at_date} {% endcondition %}
-               and {% condition global_filters_and_parameters.datasource_filter %} ${event_date} {% endcondition %};;
+  sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} ${event_date} {% endcondition %};;
 
   access_filter: {
     field: daily_events.country_iso
