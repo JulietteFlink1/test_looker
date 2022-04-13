@@ -1,5 +1,5 @@
 view: bulk_inbounding_performance {
-  sql_table_name: `flink-data-dev.reporting.bulk_inbounding_performance`;;
+  sql_table_name: `flink-data-prod.reporting.bulk_inbounding_performance`;;
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~       Sets.         ~~~~~~~~~~~~~~~~~~~~~~~~~
