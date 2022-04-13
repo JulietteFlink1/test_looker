@@ -1,13 +1,13 @@
-include: "/explores/base_explores/**/*.explore"
+include: "/**/*.explore"
 include: "/**/*.view"
-include: "/views/native_derived_tables/retail/category_performance/weekly/orders_country_level.view"
-include: "/views/native_derived_tables/retail/category_performance/weekly/orders_revenue_subcategory_level.view"
-include: "/views/native_derived_tables/retail/category_performance/weekly/orders_revenue_category_level.view"
-include: "/views/native_derived_tables/retail/category_performance/monthly/orders_country_level_monthly.view"
-include: "/views/native_derived_tables/retail/category_performance/monthly/orders_revenue_subcategory_level_monthly.view"
-include: "/views/native_derived_tables/retail/category_performance/monthly/orders_revenue_category_level_monthly.view"
-include: "/views/bigquery_tables/gsheets/commercial_department_names.view"
-include: "/commercial/views/dynamically_filtered_measures.view"
+include: "/**/orders_country_level.view"
+include: "/**/orders_revenue_subcategory_level.view"
+include: "/**/orders_revenue_category_level.view"
+include: "/**/orders_country_level_monthly.view"
+include: "/**/orders_revenue_subcategory_level_monthly.view"
+include: "/**/orders_revenue_category_level_monthly.view"
+include: "/**/commercial_department_names.view"
+include: "/**/dynamically_filtered_measures.view"
 
 explore: order_orderline_cl_retail_customized {
   extends: [order_orderline_cl]

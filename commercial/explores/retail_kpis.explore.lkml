@@ -18,7 +18,7 @@ include: "/**/*.explore"
 explore: retail_kpis {
   label: "Retail SKU KPIs"
   group_label: "Commercial"
-  hidden: no
+  hidden: yes
 
   join: products {
     sql_on: ${products.product_sku} = ${retail_kpis.sku} ;;

@@ -1,20 +1,21 @@
 # If necessary, uncomment the line below to include explore_source.
-include: "/explores/base_explores/order_orderline_cl.explore.lkml"
+include: "/**/order_orderline_cl.explore.lkml"
 
-view: orders_revenue_category_level {
+view: orders_revenue_subcategory_level {
   derived_table: {
     explore_source: order_orderline_cl {
       column: country_iso { field: orderline.country_iso }
       column: date { field: orderline.created_week }
       column: revenue_gross { field: orderline.sum_item_price_gross}
       column: category { field: orderline.product_category_erp}
+      column: subcategory { field: orderline.product_subcategory_erp}
       derived_column: unique_id {
-        sql: concat(country_iso, date, ifnull(category, '')) ;;
+        sql: concat(country_iso, date, ifnull(category, ''), ifnull(subcategory, '')) ;;
       }
       derived_column: pop_revenue {
-        sql:  (revenue_gross - LEAD(revenue_gross) OVER (PARTITION BY country_iso, category ORDER BY date DESC))
+        sql:  (revenue_gross - LEAD(revenue_gross) OVER (PARTITION BY country_iso, category, subcategory ORDER BY date DESC))
             /
-            nullif(LEAD(revenue_gross) OVER (PARTITION BY country_iso, category ORDER BY date DESC), 0) ;;
+            nullif(LEAD(revenue_gross) OVER (PARTITION BY country_iso, category, subcategory ORDER BY date DESC), 0) ;;
       }
     }
   }
@@ -49,19 +50,24 @@ view: orders_revenue_category_level {
     label: "Category"
   }
 
+  dimension: subcategory {
+    hidden: yes
+    label: "Subcategory"
+  }
+
   dimension: pop_revenue {
-    label: "PoP (Week) Revenue Growth - Category"
+    label: "PoP (Week) Revenue Growth - Subcategory"
     type: number
     value_format_name: percent_2
     hidden: yes
   }
 
-  ######### Measures
+  ############ Measures
 
   measure: pop_revenue_max {
     type: average
     sql: ${pop_revenue} ;;
-    label: "PoP Revenue - Category"
+    label: "PoP Revenue - Subcategory"
     group_label: "Weekly"
     value_format_name: percent_2
   }
