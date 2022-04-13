@@ -1,5 +1,5 @@
 view: onboarding_task_roman {
-  sql_table_name: `flink-data-dev.sandbox.onboarding_task_roman`
+  sql_table_name: `flink-data-prod.sandbox.onboarding_task_roman`
     ;;
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -13,6 +13,7 @@ view: onboarding_task_roman {
 
   dimension: fulfillment_time_minutes_total {
     type: number
+    description: "Total # of minutes spend by the hub to fulfill all the orders in a day"
     sql: ${TABLE}.fulfillment_time_minutes_total ;;
   }
 
@@ -23,26 +24,36 @@ view: onboarding_task_roman {
 
   dimension: number_of_items_total {
     type: number
+    hidden: yes
+    description: "Total number of items delivered by the hub in a day"
     sql: ${TABLE}.number_of_items_total ;;
   }
 
   dimension: number_of_orders_total {
     type: number
+    hidden: yes
+    description: "Total number of orders fulfilled by the hub in a day"
     sql: ${TABLE}.number_of_orders_total ;;
   }
 
   dimension: number_of_orders_with_fulfillment_time {
     type: number
+    hidden: yes
+    description: "Total number of orders fulfilled by the hub in a day where fulfillment time is available"
     sql: ${TABLE}.number_of_orders_with_fulfillment_time ;;
   }
 
   dimension: number_of_worked_hours_riders_total {
     type: number
+    hidden: yes
+    description: "Total number of hours worked by riders in the hub in a day"
     sql: ${TABLE}.number_of_worked_hours_riders_total ;;
   }
 
   dimension: number_of_worked_riders_total {
     type: number
+    hidden: yes
+    description: "Total number of riders worked in the hub in a day"
     sql: ${TABLE}.number_of_worked_riders_total ;;
   }
 
@@ -63,6 +74,7 @@ view: onboarding_task_roman {
 
   dimension: table_uuid {
     type: string
+    hidden: yes
     primary_key: yes
     sql: ${TABLE}.table_uuid ;;
   }
@@ -77,7 +89,7 @@ view: onboarding_task_roman {
   }
 
   measure: avg_fulfillment_time_minutes {
-    label: "AVG # Minutes Fulfillment"
+    label: "AVG Fulfillment Time Minutes"
     description: "Average # minutes needed to fulfill the order"
     hidden:  no
     type: average
