@@ -31,7 +31,7 @@ explore: order_orderline_cl_retail_customized {
   join: orders_country_level {
     view_label: "* PoP *"
     sql_on: ${orders_country_level.country_iso} = ${orders_cl.country_iso}
-    and ${orders_country_level.date} = ${orders_cl.created_week};;
+      and ${orders_country_level.date} = ${orders_cl.created_week};;
     relationship: many_to_one
   }
 
@@ -93,6 +93,21 @@ explore: order_orderline_cl_retail_customized {
       and ${dynamically_filtered_measures.hub_code} = ${hubs.hub_code};;
     relationship: many_to_one
 
+  }
+
+  join: erp_buying_prices {
+
+    view_label: "* ERP Vendor Prices *"
+
+
+    type: left_outer
+    relationship: many_to_one
+
+    sql_on:
+        ${erp_buying_prices.hub_code}         =  ${orders_cl.hub_code}        and
+        ${erp_buying_prices.sku}              =  ${products.product_sku}             and
+        ${erp_buying_prices.report_date}      = ${orderline.created_date}
+    ;;
   }
 
 }
