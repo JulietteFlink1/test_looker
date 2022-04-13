@@ -1,5 +1,9 @@
-include: "/views/**/*.view"
-include: "/views/bigquery_tables/comp-intel/*.view"
+include: "/**/getir_to_flink_global.view"
+include: "/**/getir_products.view"
+include: "/**/getir_categories.view"
+include: "/**/getir_hubs.view"
+include: "/**/competitive_intelligence_active_hubs.view"
+include: "/**/products.view"
 
 explore:  getir_products {
   hidden: no
