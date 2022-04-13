@@ -1,10 +1,12 @@
 view: replenishment_dc_desadvs {
-  sql_table_name: `flink-data-prod.curated.replenishment_dc_desadvs`
+  sql_table_name: `flink-data-dev.curated.replenishment_dc_desadvs`
     ;;
 
+
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# ~~~~~~~~~~~~~~~   Date Dimensions   ~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~   Date Dimensions   ~~~~~~~~~~~~~~~~~~~~~~~
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 
   dimension_group: delivery_date {
     group_label: "> Date Dimensions"
@@ -54,10 +56,12 @@ view: replenishment_dc_desadvs {
     sql: ${TABLE}.requested_delivery_date ;;
   }
 
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# ~~~~~~~~~~~~~~~~~~~~   Dimensions   ~~~~~~~~~~~~~~~~~~~~~~~~
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~~ Dimensions   ~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   dimension: article_description {
     label: "SKU Description"
@@ -71,11 +75,24 @@ view: replenishment_dc_desadvs {
     sql: ${TABLE}.article_gtin_hu ;;
   }
 
+  dimension: delivered_to {
+    label: "Delivered to"
+    type: string
+    sql: ${TABLE}.delivered_to ;;
+  }
+
+  dimension: delivered_to_gln {
+    label: "Delivered to GLN"
+    type: string
+    sql: ${TABLE}.delivered_to_gln ;;
+  }
+
   dimension: delivery_amount_hu {
     label: "Delivery Amount Hu"
     type: number
     sql: ${TABLE}.delivery_amount_hu ;;
   }
+
 
   dimension: despatch_advice_number {
     label: "Despatch Advice Number"
@@ -84,22 +101,20 @@ view: replenishment_dc_desadvs {
   }
 
   dimension: edi {
-    label: "Edi"
+    label: "EDI"
     type: string
     sql: ${TABLE}.edi ;;
   }
 
   dimension: line_number {
-    description: "This comes from Transus and in the case of Internal Tool we created a fake one by partioning on despatch_advice_date and despatch_advice_number.
-                    It is necessary for uniqueness"
     label: "Line Number"
-    hidden: no
+    hidden: yes
     type: number
     sql: ${TABLE}.line_number ;;
   }
 
   dimension: manufacturer_gln {
-    label: "Manufacturer gln"
+    label: "Manufacturer GLN"
     type: string
     sql: ${TABLE}.manufacturer_gln ;;
   }
@@ -110,9 +125,8 @@ view: replenishment_dc_desadvs {
     sql: ${TABLE}.reference ;;
   }
 
-
   dimension: ship_from_party_gln {
-    label: "Ship from Party gln"
+    label: "Ship from Party GLN"
     type: string
     sql: ${TABLE}.ship_from_party_gln ;;
   }
@@ -125,9 +139,9 @@ view: replenishment_dc_desadvs {
 
   dimension: source {
     label: "Source"
+    hidden: yes
     type: string
     sql: ${TABLE}.source ;;
-    hidden: yes
   }
 
   dimension: sscc {
@@ -135,6 +149,32 @@ view: replenishment_dc_desadvs {
     type: string
     sql: ${TABLE}.sscc ;;
   }
+
+  dimension: table_uuid {
+    hidden: yes
+    type: string
+    sql: ${TABLE}.table_uuid ;;
+    primary_key: yes
+  }
+
+  dimension: temperature_zone {
+    label: "Temperature Zone"
+    type: string
+    sql: ${TABLE}.temperature_zone ;;
+  }
+
+  dimension: transaction_id {
+    label: "Transaction ID"
+    hidden: yes
+    type: string
+    sql: ${TABLE}.transaction_id ;;
+  }
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~ Supplier Dimensions   ~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 
   dimension: supplier {
     label: "Supplier Name"
@@ -165,7 +205,7 @@ view: replenishment_dc_desadvs {
   }
 
   dimension: supplier_gln {
-    label: "Supplier gln"
+    label: "Supplier GLN"
     group_label: "> Supplier Dimensions"
     type: string
     sql: ${TABLE}.supplier_gln ;;
@@ -178,26 +218,11 @@ view: replenishment_dc_desadvs {
     sql: ${TABLE}.supplier_zip ;;
   }
 
-  dimension: table_uuid {
-    type: string
-    sql: ${TABLE}.table_uuid ;;
-    primary_key: yes
-    hidden: yes
-  }
 
-  dimension: transaction_id {
-    description: "This comes from Transus and in the case of Internal Tool we created a fake one with the combination of Despatch Advice Number + IT.
-                    It is necessary for uniqueness"
-    label: "Transaction ID"
-    type: string
-    sql: ${TABLE}.transaction_id ;;
-    hidden: no
-  }
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# ~~~~~~~~~~~~~~~~~~~~~~   Measures   ~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~~~  Measures   ~~~~~~~~~~~~~~~~~~~~~~~
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 
   measure: count {
     hidden: yes
