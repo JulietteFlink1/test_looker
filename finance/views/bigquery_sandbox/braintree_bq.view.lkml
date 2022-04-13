@@ -61,6 +61,7 @@ view: braintree_bq {
 
   dimension: order_uuid {
     type: string
+    primary_key:  yes
     sql: ${TABLE}.order_uuid ;;
   }
 

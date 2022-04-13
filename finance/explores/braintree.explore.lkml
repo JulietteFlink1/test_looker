@@ -11,11 +11,4 @@ explore: braintree {
 
   view_label: "* Braintree *"
 
-  join: braintree_bq {
-    view_label: "* Saleor & Braintree Mapping *"
-    sql_on: ${braintree.transaction_id} = ${braintree_bq.braintree_id} ;;
-    type: left_outer
-    relationship: one_to_many
-  }
-
   }
