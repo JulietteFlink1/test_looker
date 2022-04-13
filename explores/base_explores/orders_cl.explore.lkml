@@ -1,7 +1,7 @@
 include: "/views/bigquery_tables/curated_layer/orders.view"
 include: "/views/extended_tables/orders_using_hubs.view"
 include: "/views/projects/cleaning/shyftplan_riders_pickers_hours_clean.view"
-
+# include: "/views/projects/cleaning/hub_stafing_test.view"
 
 include: "/views/bigquery_tables/curated_layer/hubs_ct.view"
 include: "/views/bigquery_tables/curated_layer/nps_after_order_cl.view"
@@ -56,12 +56,12 @@ explore: orders_cl {
 
   join: hub_level_kpis {
     from: hub_level_kpis
-    view_label: "* Hub Level KPIs *"
+    view_label: ""
     sql_on: lower(${orders_cl.hub_code}) = ${hub_level_kpis.hub_code} and
             ${orders_cl.created_date} = ${hub_level_kpis.order_date}  and
             ${orders_cl.is_successful_order} = ${hub_level_kpis.is_successful_order}
 
-            ;;
+      ;;
     relationship: many_to_one
     type: left_outer
   }
@@ -79,13 +79,21 @@ explore: orders_cl {
   join: shyftplan_riders_pickers_hours {
     from: shyftplan_riders_pickers_hours_clean
     view_label: "* Shifts *"
-    sql_on: ${orders_cl.created_minute30} = ${shyftplan_riders_pickers_hours.shift_minute30} and
+    sql_on: ${orders_cl.created_date} = ${shyftplan_riders_pickers_hours.shift_date} and
       ${hubs.hub_code}          = lower(${shyftplan_riders_pickers_hours.hub_name});;
     relationship: many_to_many
     type: left_outer
   }
 
 
+  # join: hub_stafing_test {
+  #   from: hub_stafing_test
+  #   view_label: "* Hub Staffing *"
+  #   sql_on: ${orders_cl.created_minute30} = ${hub_stafing_test.shift_minute30} and
+  #     ${hubs.hub_code}          = lower(${hub_stafing_test.hub_name});;
+  #   relationship: many_to_many
+  #   type: left_outer
+  # }
 
   join: nps_after_order {
     from: nps_after_order_cl
@@ -122,7 +130,7 @@ explore: orders_cl {
             ${orderline_issue_rate_core_kpis.order_uuid}    = ${orders_cl.order_uuid} AND
             {% condition global_filters_and_parameters.datasource_filter %} ${orderline_issue_rate_core_kpis.created_date} {% endcondition %}
 
-            ;;
+      ;;
     relationship: one_to_many
     type: left_outer
     fields: [orderline_issue_rate_core_kpis.orders_core_fields*]
