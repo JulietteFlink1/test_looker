@@ -157,7 +157,7 @@ view: picker_order_progress_sku_aggregates {
     label: "# Total Items"
     type: sum
     description: "# items picked + items swiped (code_wrong + code_damaged) + items unavailable"
-    sql: (${TABLE}.number_of_code_damanged + ${TABLE}.number_of_code_wrong + ${TABLE}.number_of_item_unavailable +  ${TABLE}.number_of_item_picked) ;;
+    sql: ${TABLE}.number_of_code_damanged + ${TABLE}.number_of_code_wrong + ${TABLE}.number_of_item_unavailable + ${TABLE}.number_of_item_picked ;;
   }
 
   measure: number_of_orders {
@@ -175,7 +175,7 @@ view: picker_order_progress_sku_aggregates {
     type: number
     description: "# items swiped (code_wrong + code_damaged) / # total items"
     value_format_name: percent_1
-    sql: ((${total_code_wrong}+${total_code_damanged}) / nullif(${total_items},0) ;;
+    sql: (${total_code_wrong}+${total_code_damanged}) / nullif(${total_items},0) ;;
   }
 
   measure: unavailable_items_per_total_items {
@@ -184,6 +184,6 @@ view: picker_order_progress_sku_aggregates {
     type: number
     description: "# items unavailable / # total items"
     value_format_name: percent_1
-    sql: ((${total_item_unavailable}) / nullif(${total_items},0) ;;
+    sql: ${total_item_unavailable} / nullif(${total_items},0) ;;
   }
 }
