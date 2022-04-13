@@ -158,15 +158,10 @@ view: checkout_duplicated_order_analysis {
     sql: ${TABLE}.total_chargeback_amount ;;
   }
 
-  dimension: total_gmv_gross {
-    hidden: yes
+  dimension: avg_min_diff_order_created {
     type: number
-    sql: ${TABLE}.total_gmv_gross
-
-    dimension: avg_min_diff_order_created {
-      type: number
-      sql: ${TABLE}.avg_min_diff_order_created ;;
-    }
+    sql: ${TABLE}.avg_min_diff_order_created ;;
+  }
 
 
 ### Measures
@@ -181,12 +176,6 @@ view: checkout_duplicated_order_analysis {
     label: "# Total Amount Chargebacks"
     type: sum
     sql: ${total_chargebacks_amount} ;;
-  }
-
-  measure: sum_gmv_gross {
-    label: "# Total GMV Gross"
-    type: sum
-    sql: ${total_gmv_gross} ;;
   }
 
   measure: sum_chargebacks_total {
