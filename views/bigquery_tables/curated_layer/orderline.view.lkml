@@ -634,7 +634,7 @@ view: orderline {
     description: "AIV represents the Average value of items (incl. VAT). Excludes fees (gross), before deducting discounts."
     hidden: no
     type:number
-    sql: ${sum_item_price_gross} / ${count_order_uuid} ;;
+    sql: ${sum_item_price_gross} / nullif(${count_order_uuid},0) ;;
     value_format_name: eur
     group_label: "> Monetary Metrics"
   }
@@ -644,7 +644,7 @@ view: orderline {
     description: "AIV represents the Average value of items (excl. VAT). Excludes fees (net), before deducting discounts."
     hidden: no
     type:number
-    sql: ${sum_item_price_net} / ${count_order_uuid} ;;
+    sql: ${sum_item_price_net} / nullif(${count_order_uuid},0) ;;
     value_format_name: eur
     group_label: "> Monetary Metrics"
   }

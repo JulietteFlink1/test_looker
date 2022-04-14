@@ -10,7 +10,7 @@ view: double_listed_products {
   }
 
   dimension: is_double_listed {
-    type: yesno
+    type: string
     label: "Double listed"
     hidden: no
     sql: ${TABLE}.is_double_listed ;;

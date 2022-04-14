@@ -183,6 +183,24 @@ view: shyftplan_riders_pickers_hours_clean {
     group_label: "Working Hours"
   }
 
+  measure: rider_captain {
+    label: "# Rider Captain"
+    type: sum
+    sql:${number_of_worked_employees};;
+    filters: [position_name: "rider captain"]
+    group_label: "Counts"
+  }
+
+
+  measure: rider_captain_hours {
+    label: "Sum of Rider Captain Hours"
+    type: sum
+    sql:${number_of_worked_minutes}/60;;
+    filters: [position_name: "rider captain"]
+    value_format_name: decimal_1
+    group_label: "Working Hours"
+  }
+
   measure: riders {
     label: "# Riders"
     type: sum

@@ -1,5 +1,5 @@
 include: "/*/**/cc_contacts.view.lkml"
-include: "/*/**/cc_orders_hourly2.view.lkml"
+include: "/*/**/cc_orders_hourly.view.lkml"
 include: "/*/**/cc_contact_agents.view.lkml"
 
 
