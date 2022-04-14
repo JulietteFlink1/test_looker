@@ -6,6 +6,7 @@ include: "/**/spc_2_ranks.view"
 include: "/**/lexbizz_item_warehouse.view"
 include: "/**/lexbizz_warehouse.view"
 include: "/**/spc_model_results.view"
+include: "/**/orderline.view"
 
 
 
@@ -33,6 +34,19 @@ explore: spc_2 {
     sql_on: ${lexbizz_item.sku} = ${sku_performance_base.joining_sku} and
             ${lexbizz_item.ingestion_date} = current_date()
     ;;
+  }
+
+  join: orderline {
+
+    view_label: "Order Lineitems (Reporting Period)"
+
+    type: left_outer
+    relationship: one_to_many
+
+    sql_on: ${orderline.product_sku} =  ${sku_performance_base.joining_sku}
+       and  ${orderline.hub_code}    = ${sku_performance_base.hub_code}
+       and ${orderline.created_date} between ${sku_performance_base.reporting_period_start_date} and ${sku_performance_base.reporting_period_end_date}
+      ;;
   }
 
   join: hubs_ct {

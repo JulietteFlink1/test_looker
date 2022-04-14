@@ -36,6 +36,42 @@ view: sku_performance_base {
     sql: ${TABLE}.joining_sku ;;
   }
 
+  dimension: reporting_period_start_date {
+
+    group_label: "> Dates & Times"
+
+    type: date
+    datatype: date
+    sql: ${TABLE}.reporting_period_start_date ;;
+  }
+
+  dimension: reporting_period_end_date {
+
+    group_label: "> Dates & Times"
+
+    type: date
+    datatype: date
+    sql: ${TABLE}.reporting_period_end_date ;;
+  }
+
+  dimension: previous_period_start_date {
+
+    group_label: "> Dates & Times"
+
+    type: date
+    datatype: date
+    sql: ${TABLE}.previous_period_start_date ;;
+  }
+
+  dimension: previous_period_end_date {
+
+    group_label: "> Dates & Times"
+
+    type: date
+    datatype: date
+    sql: ${TABLE}.previous_period_end_date ;;
+  }
+
 
 
   # =========  hidden   =========
@@ -115,6 +151,12 @@ view: sku_performance_base {
     hidden: yes
   }
 
+  dimension: unit_price_net {
+    type: number
+    sql: ${TABLE}.unit_price_net ;;
+    hidden: yes
+  }
+
 
   dimension: total_assortment_size {
     type: number
@@ -133,6 +175,12 @@ view: sku_performance_base {
   dimension: item_revenue_gross_corrected {
     type: number
     sql: ${TABLE}.item_revenue_gross_corrected ;;
+    hidden: yes
+  }
+
+  dimension: item_revenue_net_corrected {
+    type: number
+    sql: ${TABLE}.item_revenue_net_corrected ;;
     hidden: yes
   }
 
@@ -158,6 +206,12 @@ view: sku_performance_base {
   dimension: pop_item_revenue_gross_corrected {
     type: number
     sql: ${TABLE}.pop_item_revenue_gross_corrected ;;
+    hidden: yes
+  }
+
+  dimension: pop_item_revenue_net_corrected {
+    type: number
+    sql: ${TABLE}.pop_item_revenue_net_corrected ;;
     hidden: yes
   }
 
@@ -200,6 +254,12 @@ view: sku_performance_base {
   dimension: pop_total_item_revenue_gross_corrected {
     type: number
     sql: ${TABLE}.pop_total_item_revenue_gross_corrected ;;
+    hidden: yes
+  }
+
+  dimension: pop_total_item_revenue_net_corrected {
+    type: number
+    sql: ${TABLE}.pop_total_item_revenue_net_corrected ;;
     hidden: yes
   }
 
@@ -269,6 +329,12 @@ view: sku_performance_base {
     hidden: yes
   }
 
+  dimension: total_item_revenue_net_corrected {
+    type: number
+    sql: ${TABLE}.total_item_revenue_net_corrected ;;
+    hidden: yes
+  }
+
   dimension: total_number_of_orders_corrected {
     type: number
     sql: ${TABLE}.total_number_of_orders_corrected ;;
@@ -314,6 +380,24 @@ view: sku_performance_base {
   dimension: pop_number_of_customers_corrected {
     type: number
     sql: ${TABLE}.pop_number_of_customers_corrected ;;
+    hidden: yes
+  }
+
+  dimension: total_margin {
+
+    required_access_grants: [can_view_buying_information]
+
+    type: number
+    sql: ${TABLE}.total_margin ;;
+    hidden: yes
+  }
+
+  dimension: pop_total_margin {
+
+    required_access_grants: [can_view_buying_information]
+
+    type: number
+    sql: ${TABLE}.pop_total_margin ;;
     hidden: yes
   }
 
