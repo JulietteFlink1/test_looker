@@ -99,7 +99,8 @@ view: braintree_bq {
   }
 
   measure: sum_bq_revenue {
-    group_label: "BQ Revenue"
+    group_label: "Revenue"
+    label: "BQ Revenue"
     type: sum
     sql: ${bq_revenue};;
     value_format_name: euro_accounting_2_precision

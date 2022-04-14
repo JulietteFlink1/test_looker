@@ -79,6 +79,9 @@ view: orders {
   }
 
   dimension: item_value_gross {
+
+    alias: [amt_total_price_gross]
+
     type: number
     hidden: no
     sql: ${TABLE}.amt_total_price_gross
@@ -86,6 +89,9 @@ view: orders {
   }
 
   dimension: item_value_net {
+
+    alias: [amt_total_price_net]
+
     type: number
     hidden: no
     sql: ${TABLE}.amt_total_price_net   ;;
