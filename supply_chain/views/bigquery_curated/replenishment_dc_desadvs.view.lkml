@@ -1,5 +1,5 @@
 view: replenishment_dc_desadvs {
-  sql_table_name: `flink-data-dev.curated.replenishment_dc_desadvs`
+  sql_table_name: `flink-data-prod.curated.replenishment_dc_desadvs`
     ;;
 
 
