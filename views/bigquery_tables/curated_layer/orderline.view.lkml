@@ -1,5 +1,5 @@
 view: orderline {
-  sql_table_name: `flink-data-prod.curated.order_lineitems`
+  sql_table_name: `flink-data-dev.curated.order_lineitems`
     ;;
   view_label: "* Order Lineitems *"
   drill_fields: [id]
@@ -362,6 +362,92 @@ view: orderline {
   }
 
 
+  ############# Delivery Issue
+
+  dimension: number_of_order_lineitems_with_perished_light_issues_dim {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.number_of_order_lineitems_with_perished_light_issues ;;
+  }
+  dimension: number_of_order_lineitems_with_perished_products_post_dim {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.number_of_order_lineitems_with_perished_products_post;;
+  }
+
+  dimension: number_of_order_lineitems_with_perished_products_pre_dim {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.number_of_order_lineitems_with_perished_products_pre;;
+  }
+
+  dimension: number_of_order_lineitems_with_products_not_on_shelf_pre_dim {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.number_of_order_lineitems_with_products_not_on_shelf_pre;;
+  }
+
+  dimension: number_of_order_lineitems_with_products_not_on_shelf_post_dim {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.number_of_order_lineitems_with_products_not_on_shelf_post;;
+  }
+
+  dimension: number_of_order_lineitems_with_damaged_products_pre_dim {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.number_of_order_lineitems_with_damaged_products_pre;;
+  }
+
+  dimension: number_of_order_lineitems_with_damaged_products_post_dim {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.number_of_order_lineitems_with_damaged_products_post;;
+  }
+
+  dimension: number_of_order_lineitems_with_missing_products_dim {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.number_of_order_lineitems_with_missing_products ;;
+  }
+
+  dimension: number_of_order_lineitems_with_wrong_products_dim {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.number_of_order_lineitems_with_wrong_products ;;
+  }
+
+  dimension: number_of_order_lineitems_with_swapped_products_dim {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.number_of_order_lineitems_with_swapped_products ;;
+  }
+
+  dimension: number_of_order_lineitems_with_cancelled_products_dim {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.number_of_order_lineitems_with_cancelled_products ;;
+  }
+
+  dimension: number_of_order_lineitems_with_item_description_issues_dim {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.number_of_order_lineitems_with_item_description_issues ;;
+  }
+
+  dimension: number_of_order_lineitems_with_item_quality_issues_dim {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.number_of_order_lineitems_with_item_quality_issues ;;
+  }
+
+  dimension: number_of_order_lineitems_with_undefined_issues_dim {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.number_of_order_lineitems_with_undefined_issues ;;
+  }
+
+
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -506,6 +592,148 @@ view: orderline {
     value_format: "0"
     group_label: "> Absolute Metrics"
   }
+
+
+  ############# Delivery Issues #############
+
+
+  measure: number_of_order_lineitems_with_delivery_issues {
+    label: "# Lineitems Delivery Issues"
+    description: "Number of order lineitems that had a delivery issue. Cancelled are not taken into account."
+    group_label: "> Delivery Issues Lineitems"
+    type: sum
+    sql: ${TABLE}.number_of_order_lineitems_with_delivery_issues;;
+  }
+
+  measure: number_of_order_lineitems_with_pre_delivery_issues {
+    label: "# Lineitems Pre Delivery Issues"
+    description: "Number of order lineitems that had a pre-delivery issue."
+    group_label: "> Delivery Issues Lineitems"
+    type: sum
+    sql: ${TABLE}.number_of_order_lineitems_with_pre_delivery_issues;;
+  }
+
+  measure: number_of_order_lineitems_with_post_delivery_issues {
+    label: "# Lineitems Post Delivery Issues"
+    description: "Number of order lineitems that had a post-delivery issue."
+    group_label: "> Delivery Issues Lineitems"
+    type: sum
+    sql: ${TABLE}.number_of_order_lineitems_with_post_delivery_issues;;
+  }
+
+  measure: number_of_order_lineitems_with_perished_light_issues {
+    label: "# Lineitems Perished Light"
+    description: "Number of order lineitems, that had issues with perished_light products (Post-delivery)"
+    group_label: "> Delivery Issues Lineitems"
+    type: sum
+    sql: ${TABLE}.number_of_order_lineitems_with_perished_light_issues ;;
+  }
+
+  measure: number_of_order_lineitems_with_perished_products_pre {
+    label: "# Lineitems Perished (Pre Delivery)"
+    description: "The number of order lineitems, that had issues with perished products and were identified in the picking process (Swipe) "
+    group_label: "> Delivery Issues Lineitems"
+    type: sum
+    sql: ${TABLE}.number_of_order_lineitems_with_perished_products_pre;;
+  }
+
+  measure: number_of_order_lineitems_with_perished_products_post {
+    label: "# Lineitems Perished (Post Delivery)"
+    description: "The number of order lineitems, that had issues with perished products and were and were claimed through the Customer Service"
+    group_label: "> Delivery Issues Lineitems"
+    type: sum
+    sql: ${TABLE}.number_of_order_lineitems_with_perished_products_post;;
+  }
+
+  measure: number_of_order_lineitems_with_products_not_on_shelf_pre {
+    label: "# Lineitems Products not on shelf (Pre Delivery)"
+    description: "The number of order lineitems, that had issues with products not being in stock and were identified in the picking process (Swipe)"
+    group_label: "> Delivery Issues Lineitems"
+    type: sum
+    sql: ${TABLE}.number_of_order_lineitems_with_products_not_on_shelf_pre;;
+  }
+
+  measure: number_of_order_lineitems_with_products_not_on_shelf_post {
+    label: "# Lineitems Products not on shelf (Post Delivery)"
+    description: "The number of order lineitems, that had issues with products not being in stock and were claimed through the Customer Service"
+    group_label: "> Delivery Issues Lineitems"
+    type: sum
+    sql: ${TABLE}.number_of_order_lineitems_with_products_not_on_shelf_post;;
+  }
+
+  measure: number_of_order_lineitems_with_damaged_products_pre {
+    label: "# Lineitems Damaged Products (Pre Delivery)"
+    description: "The number of order lineitems, that had issues with damaged products and were identified in the picking process (Swipe)"
+    group_label: "> Delivery Issues Lineitems"
+    type: sum
+    sql: ${TABLE}.number_of_order_lineitems_with_damaged_products_pre;;
+  }
+
+  measure: number_of_order_lineitems_with_damaged_products_post {
+    label: "# Lineitems Damaged Products (Post Delivery)"
+    description: "The number of order lineitems, that had issues with damaged products and were claimed through the Customer Service"
+    group_label: "> Delivery Issues Lineitems"
+    type: sum
+    sql: ${TABLE}.number_of_order_lineitems_with_damaged_products_post;;
+  }
+
+  measure: number_of_order_lineitems_with_missing_products {
+    label: "# Lineitems Missing Products (Post Delivery)"
+    description: "The number of order lineitems, that had issues with missing products"
+    group_label: "> Delivery Issues Lineitems"
+    type: sum
+    sql: ${TABLE}.number_of_order_lineitems_with_missing_products ;;
+  }
+
+  measure: number_of_order_lineitems_with_wrong_products {
+    label: "# Lineitems Wrong Products (Post Delivery)"
+    description: "The number of order lineitems, that had issues with wrong products"
+    group_label: "> Delivery Issues Lineitems"
+    type: sum
+    sql: ${TABLE}.number_of_order_lineitems_with_wrong_products ;;
+  }
+
+  measure: number_of_order_lineitems_with_swapped_products {
+    label: "# Lineitems Swapped Products (Post Delivery)"
+    description: "The number of order lineitems, that had issues with swapped products"
+    group_label: "> Delivery Issues Lineitems"
+    type: sum
+    sql: ${TABLE}.number_of_order_lineitems_with_swapped_products ;;
+  }
+
+  measure: number_of_order_lineitems_with_cancelled_products {
+    # This metric is not part of the issue rates, as the customer voluntary cancelled a product.
+    label:  "# Lineitems Cancelled Products (Post Delivery)"
+    description: "The number of order lineitems, that had issues with cancelled products"
+    group_label: "> Delivery Issues Lineitems"
+    type: sum
+    sql: ${TABLE}.number_of_order_lineitems_with_cancelled_products ;;
+  }
+
+  measure: number_of_order_lineitems_with_item_description_issues {
+    label: "# Lineitems Issue Item Description (Post Delivery)"
+    description: "The number of order lineitems, that had issues related to item descriptions"
+    group_label: "> Delivery Issues Lineitems"
+    type: sum
+    sql: ${TABLE}.number_of_order_lineitems_with_item_description_issues ;;
+  }
+
+  measure: number_of_order_lineitems_with_item_quality_issues {
+    label: "# Lineitems Issue Item Quality (Post Delivery)"
+    description: "The number of order lineitems, that had issues related to item quality"
+    group_label: "> Delivery Issues Lineitems"
+    type: sum
+    sql: ${TABLE}.number_of_order_lineitems_with_item_quality_issues ;;
+  }
+
+  measure: number_of_order_lineitems_with_undefined_issues {
+    label:       "# Unknown Issues (Post Delivery)"
+    description: "The number of order lineitems, that had issues with unknown issue groups (see Return Reason to check the specific issue reasons)"
+    group_label: "> Delivery Issues Lineitems"
+    type: sum
+    sql: ${TABLE}.number_of_order_lineitems_with_undefined_issues ;;
+  }
+
 
 
 
