@@ -27,8 +27,7 @@ base as (
         else "other"
         end as renamed_event
     from `flink-data-prod.curated.daily_events`
-    where date(received_at) > "2022-01-01"
-    and event_date > "2022-01-01"
+    where {% condition filter_event_date %} date(event_timestamp) {% endcondition %}
     -- take only events which could contribute to add_to_cart events
     and event_name in ("app_opened","web_opened","address_confirmed","home_viewed", "product_details_viewed", "product_clicked","product_added_to_cart","product_added",
                    "product_removed_from_cart","product_removed","category_selected","product_search_executed","product_search_viewed","cart_viewed","checkout_viewed")
@@ -95,7 +94,11 @@ from final
 # ~~~~~~~~~~~~~~~     Dimensions    ~~~~~~~~~~~~~~~ #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
-
+  filter: filter_event_date {
+    label: "Filter: Event Date"
+    type: date
+    datatype: date
+    }
     ### IDs ###
 
     dimension: event_uuid {

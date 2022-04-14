@@ -1,11 +1,11 @@
 # If necessary, uncomment the line below to include explore_source.
-include: "/explores/base_explores/order_orderline_cl.explore.lkml"
+include: "/**/order_orderline_cl.explore.lkml"
 
-view: orders_revenue_category_level_monthly {
+view: orders_revenue_category_level {
   derived_table: {
     explore_source: order_orderline_cl {
       column: country_iso { field: orderline.country_iso }
-      column: date { field: orderline.created_month }
+      column: date { field: orderline.created_week }
       column: revenue_gross { field: orderline.sum_item_price_gross}
       column: category { field: orderline.product_category_erp}
       derived_column: unique_id {
@@ -32,8 +32,8 @@ view: orders_revenue_category_level_monthly {
 
   dimension: date {
     hidden: yes
-    label: "Month"
-    type: date_month
+    label: "Week"
+    type: date_week
   }
 
   dimension: revenue_gross {
@@ -50,7 +50,7 @@ view: orders_revenue_category_level_monthly {
   }
 
   dimension: pop_revenue {
-    label: "PoP (Month) Revenue Growth - Category"
+    label: "PoP (Week) Revenue Growth - Category"
     type: number
     value_format_name: percent_2
     hidden: yes
@@ -62,7 +62,7 @@ view: orders_revenue_category_level_monthly {
     type: average
     sql: ${pop_revenue} ;;
     label: "PoP Revenue - Category"
-    group_label: "Monthly"
+    group_label: "Weekly"
     value_format_name: percent_2
   }
 

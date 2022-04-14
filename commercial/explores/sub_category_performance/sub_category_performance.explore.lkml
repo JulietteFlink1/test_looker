@@ -1,8 +1,8 @@
-include: "/views/native_derived_tables/retail/category_performance/weekly/orders_country_level.view"
-include: "/views/native_derived_tables/retail/category_performance/weekly/orders_revenue_subcategory_level.view"
+include: "/**/orders_country_level.view"
+include: "/**/orders_revenue_subcategory_level.view"
 
 explore: orders_revenue_subcategory_level {
-  hidden: no
+  hidden: yes
   label: "Subcategory Performance Tracker"
   group_label: "Commercial"
   access_filter: {

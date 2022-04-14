@@ -159,7 +159,6 @@ view: product_placement_performance_excluding_impressions {
     group_label: "Date Dimensions"
     label: "Event Date Granularity"
     type: unquoted
-    allowed_value: { value: "Hour" }
     allowed_value: { value: "Day" }
     allowed_value: { value: "Week" }
     allowed_value: { value: "Month" }

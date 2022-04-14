@@ -1,5 +1,5 @@
 # If necessary, uncomment the line below to include explore_source.
-include: "/explores/base_explores/order_orderline_cl.explore.lkml"
+include: "/**/order_orderline_cl.explore.lkml"
 
 view: orders_revenue_subcategory_level_monthly {
   derived_table: {
