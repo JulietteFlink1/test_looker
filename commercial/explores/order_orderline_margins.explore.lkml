@@ -11,7 +11,7 @@ explore: order_lineitems_margins {
 
   # only for users in the group access_buying_prices
   required_access_grants: [can_view_buying_information]
-  hidden: yes
+  hidden: no
 
 
   join: erp_buying_prices {
