@@ -217,6 +217,12 @@ view: search_keywords {
     sql: ${TABLE}.received_at ;;
     datatype: timestamp
   }
+  dimension_group: event_date_partition {
+    hidden: yes
+    type: time
+    datatype: date
+    sql: ${TABLE}.event_date ;;
+  }
   dimension: dim_number_of_available_results {
     type: number
     hidden: yes

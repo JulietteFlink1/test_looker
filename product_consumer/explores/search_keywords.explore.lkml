@@ -20,7 +20,7 @@ explore: search_keywords {
   description: "This explore provides search query information, 0 search results rate, which query was followed by add-to-cart or PDP (CTR or CVR)"
   group_label: "Consumer Product"
 
-  sql_always_where: {% condition global_filters_and_parameters.datasource_filter %} ${event_date} {% endcondition %};;
+  sql_always_where: {% condition global_filters_and_parameters.datasource_filter %} ${event_date_partition_date} {% endcondition %};;
 
   access_filter: {
     field: country_iso

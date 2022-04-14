@@ -1,4 +1,4 @@
-include: "/explores/base_explores/order_orderline_cl.explore"
+include: "/**/order_orderline_cl.explore"
 include: "/views/**/*.view"
 
 explore: order_orderline_cl_updated_hourly {
