@@ -21,7 +21,7 @@ view: replenishment_dc_desadvs {
     ]
     convert_tz: no
     datatype: date
-    sql: ${TABLE}.delivery_date ;;
+    sql: case when ${TABLE}.delivery_date is null then ${TABLE}.despatch_advice_date else ${TABLE}.delivery_date end   ;;
   }
 
   dimension_group: despatch_advice {
