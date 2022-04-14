@@ -79,16 +79,22 @@ view: orders {
   }
 
   dimension: item_value_gross {
+
+    alias: [amt_total_price_gross]
+
     type: number
     hidden: no
-    sql: coalesce(${gmv_gross},0) - coalesce(${shipping_price_gross_amount},0) - coalesce(${rider_tip},0)
+    sql: ${TABLE}.amt_total_price_gross
     ;;
   }
 
   dimension: item_value_net {
+
+    alias: [amt_total_price_net]
+
     type: number
     hidden: no
-    sql: ${gmv_net} - ${shipping_price_net_amount} - ${rider_tip} ;;
+    sql: ${TABLE}.amt_total_price_net   ;;
   }
 
   dimension: item_value_gross_tier {
@@ -1020,6 +1026,14 @@ view: orders {
     sql: ${TABLE}.at_customer_time_minutes ;;
   }
 
+  dimension: at_customer_time_minutes_tier_5 {
+    group_label: "* Operations / Logistics *"
+    label: "At Customer Time Minutes Tier"
+    type: tier
+    tiers: [0, 0.5, 1, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0]
+    sql: ${at_customer_time_minutes} ;;
+  }
+
   dimension: rider_id {
     hidden: no
     group_label: "* IDs *"
@@ -1143,6 +1157,12 @@ view: orders {
     group_label: "* Order Dimensions *"
     type: yesno
     sql: ${TABLE}.is_external_order ;;
+  }
+
+  dimension: deposit {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_deposit ;;
   }
 
 
@@ -1620,6 +1640,16 @@ view: orders {
         value_format_name: euro_accounting_2_precision
       }
 
+       measure: avg_deposit {
+        group_label: "* Monetary Values *"
+        description: "AVG Deposit Amount considering Orders having items with deposit "
+        label: "AVG Deposit"
+        hidden:  no
+        type: average
+        sql: coalesce(${deposit}, 0);;
+        value_format_name: euro_accounting_2_precision
+      }
+
 
       ##########
       ## SUMS ##
@@ -1740,6 +1770,15 @@ view: orders {
         sql:${avg_acceptance_time} + ${avg_reaction_time};;
         value_format_name: decimal_1
       }
+
+      measure: sum_deposit {
+        group_label: "* Monetary Values *"
+        label: "SUM Deposit"
+        hidden:  no
+        type: sum
+        sql: ${deposit};;
+        value_format_name: euro_accounting_2_precision
+  }
 
       ############
       ## COUNTS ##

@@ -296,6 +296,7 @@ view: hub_staffing {
   measure: sum_planned_employees{
     type: sum
     label:"# Scheduled Employees"
+    hidden: yes
     description: "Number of Scheduled Employees"
     sql:${number_of_planned_employees};;
     value_format_name: decimal_1
@@ -303,6 +304,7 @@ view: hub_staffing {
 
   measure: sum_planned_employees_external{
     type: sum
+    hidden: yes
     label:"# Scheduled Ext Employees"
     description: "Number of Scheduled Ext Employees"
     sql:${number_of_planned_employees_external};;
@@ -322,6 +324,7 @@ view: hub_staffing {
   measure: sum_worked_employees{
     type: sum
     label:"# Worked Employees"
+    hidden: yes
     description: "Number of Worked Employees"
     sql:${number_of_worked_employees};;
     value_format_name: decimal_1
@@ -329,6 +332,7 @@ view: hub_staffing {
 
   measure: sum_worked_employees_external{
     type: sum
+    hidden: yes
     label:"# Worked Ext Employees"
     description: "Number of Worked Ext Employees"
     sql:${number_of_worked_employees_external};;
@@ -458,8 +462,8 @@ view: hub_staffing {
   measure: pct_over_stafing {
     type: number
     label:"% Over Staffing "
-    description: "When Forecasted Hours > Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
-    sql:case when ${sum_forecast_riders_needed} > ${sum_planned_hours}
+    description: "When Forecasted Hours < Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
+    sql:case when ${sum_forecast_riders_needed} < ${sum_planned_hours}
                   then (${sum_forecast_riders_needed} - ${sum_planned_hours} )  / ${sum_forecast_riders_needed}
              else
                   0
@@ -470,8 +474,8 @@ view: hub_staffing {
   measure: pct_under_stafing {
     type: number
     label:"% Under Staffing "
-    description: "When Forecasted Hours < Scheduled Hours: (Scheduled Hours - Forecasted Hours) / Forecasted Hours"
-    sql:case when ${sum_forecast_riders_needed} < ${sum_planned_hours}
+    description: "When Forecasted Hours > Scheduled Hours: (Scheduled Hours - Forecasted Hours) / Forecasted Hours"
+    sql:case when ${sum_forecast_riders_needed} > ${sum_planned_hours}
                   then (${sum_planned_hours} - ${sum_forecast_riders_needed})  / ${sum_forecast_riders_needed}
              else
                   0

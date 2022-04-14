@@ -2,6 +2,7 @@ include: "/views/bigquery_tables/curated_layer/app_sessions.view.lkml"
 
 
 explore: app_sessions {
+  hidden: yes
   label: "Sessions App"
   view_label: "Sessions - App"
   group_label: "Consumer Product"
