@@ -1,4 +1,4 @@
-include: "/views/sql_derived_tables/cc_contactrate.view.lkml"
+include: "/customer_care/views/sql_derived_tables/cc_contactrate.view.lkml"
 
 explore: cc_contactrate {
   hidden: no
