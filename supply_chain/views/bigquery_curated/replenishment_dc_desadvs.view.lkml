@@ -1,5 +1,5 @@
 view: replenishment_dc_desadvs {
-  sql_table_name: `flink-data-dev.curated.replenishment_dc_desadvs`
+  sql_table_name: `flink-data-prod.curated.replenishment_dc_desadvs`
     ;;
 
 
@@ -21,7 +21,7 @@ view: replenishment_dc_desadvs {
     ]
     convert_tz: no
     datatype: date
-    sql: ${TABLE}.delivery_date ;;
+    sql: case when ${TABLE}.delivery_date is null then ${TABLE}.despatch_advice_date else ${TABLE}.delivery_date end   ;;
   }
 
   dimension_group: despatch_advice {
@@ -218,6 +218,12 @@ view: replenishment_dc_desadvs {
     sql: ${TABLE}.supplier_zip ;;
   }
 
+  dimension: supplier_id {
+    label: "Supplier ID"
+    group_label: "> Supplier Dimensions"
+    type: string
+    sql: ${TABLE}.supplier_id ;;
+  }
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

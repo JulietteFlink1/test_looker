@@ -1,4 +1,4 @@
-include: "/views/sql_derived_tables/vat_order.view.lkml"
+include: "/*/**/vat_order.view.lkml"
 
 explore: vat_order {
   hidden: no

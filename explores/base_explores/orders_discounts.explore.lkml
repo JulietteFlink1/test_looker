@@ -1,6 +1,6 @@
 include: "/views/bigquery_tables/curated_layer/*.view"
 include: "/**/*.view"
-include: "/views/sql_derived_tables/vat_order.view.lkml"
+include: "/*/**/vat_order.view.lkml"
 
 include: "/**/*.explore"
 
