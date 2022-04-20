@@ -200,7 +200,7 @@ view: shyftplan_riders_pickers_hours_clean {
 
   measure: number_of_scheduled_rider_hours {
     label: "# Scheduled Rider Hours"
-    description: "# Scheduled Rider Hours (Assigned + Unassigned)"
+    description: "# Scheduled Rider Hours (Assigned + Open)"
     group_label: ">> Rider KPIs"
     type: number
     sql: ${number_of_unassigned_rider_hours}+${sum_planned_hours};;
@@ -210,7 +210,7 @@ view: shyftplan_riders_pickers_hours_clean {
 
   measure: number_of_scheduled_picker_hours {
     label: "# Scheduled Picker Hours"
-    description: "# Scheduled Picker Hours (Assigned + Unassigned)"
+    description: "# Scheduled Picker Hours (Assigned + Open)"
     group_label: ">> Picker KPIs"
     type: number
     sql: ${number_of_unassigned_picker_hours}+${sum_planned_picker_hours};;
@@ -220,7 +220,7 @@ view: shyftplan_riders_pickers_hours_clean {
 
   measure: number_of_scheduled_shift_lead_hours {
     label: "# Scheduled Shift Lead Hours"
-    description: "# Scheduled Shift Lead Hours (Assigned + Unassigned)"
+    description: "# Scheduled Shift Lead Hours (Assigned + Open)"
     group_label: ">> Shift Lead KPIs"
     type: number
     sql: ${number_of_unassigned_shift_lead_hours}+${sum_planned_shift_lead_hours};;
@@ -230,7 +230,7 @@ view: shyftplan_riders_pickers_hours_clean {
 
   measure: number_of_scheduled_rider_captain_hours {
     label: "# Scheduled Rider Captain Hours"
-    description: "# Scheduled Rider Captain Hours (Assigned + Unassigned)"
+    description: "# Scheduled Rider Captain Hours (Assigned + Open)"
     group_label: ">> Rider Captain KPIs"
     type: number
     sql: ${number_of_unassigned_rider_captain_hours}+${sum_planned_rider_captain_hours};;
@@ -240,7 +240,7 @@ view: shyftplan_riders_pickers_hours_clean {
 
   measure: number_of_scheduled_wh_hours {
     label: "# Scheduled WH Hours"
-    description: "# Scheduled WH Hours (Assigned + Unassigned)"
+    description: "# Scheduled WH Hours (Assigned + Open)"
     group_label: ">> WH KPIs"
     type: number
     sql: ${number_of_unassigned_wh_hours}+${sum_planned_wh_hours};;
@@ -294,45 +294,45 @@ view: shyftplan_riders_pickers_hours_clean {
     value_format_name: percent_1
   }
 
-  ##### Worked Hours
+  ##### Punched Hours
   measure: rider_hours {
-    label: "# Worked Rider Hours"
+    label: "# Punched Rider Hours"
     type: sum
     sql:${number_of_worked_minutes}/60;;
     filters: [position_name: "rider"]
     value_format_name: decimal_1
     group_label: ">> Rider KPIs"
-    }
+  }
 
   measure: rider_hours_external {
-    label: "# Worked Rider Ext Hours"
+    label: "# Punched Rider Ext Hours"
     type: sum
     sql:${number_of_worked_minutes_external}/60;;
     filters: [position_name: "rider"]
     value_format_name: decimal_1
     group_label: ">> Rider KPIs"
-    }
+  }
 
   measure: picker_hours {
-    label: "# Worked Picker Hours"
+    label: "# Punched Picker Hours"
     type: sum
     sql:${number_of_worked_minutes}/60;;
     filters: [position_name: "picker"]
     value_format_name: decimal_1
     group_label: ">> Picker KPIs"
-    }
+  }
 
   measure: picker_hours_external {
-    label: "# Worked Picker Ext Hours"
+    label: "# Punched Picker Ext Hours"
     type: sum
     sql:${number_of_worked_minutes_external}/60;;
     filters: [position_name: "picker"]
     value_format_name: decimal_1
     group_label: ">> Picker KPIs"
-    }
+  }
 
   measure: shift_lead_hours {
-    label: "# Worked Shift Lead Hours"
+    label: "# Punched Shift Lead Hours"
     type: sum
     sql:${number_of_worked_minutes}/60;;
     filters: [position_name: "shift lead"]
@@ -342,30 +342,30 @@ view: shyftplan_riders_pickers_hours_clean {
   }
 
   measure: rider_captain_hours {
-    label: "# Worked Rider Captain Hours"
+    label: "# Punched Rider Captain Hours"
     type: sum
     sql:${number_of_worked_minutes}/60;;
     filters: [position_name: "rider captain"]
     value_format_name: decimal_1
     group_label: ">> Rider Captain KPIs"
-    }
+  }
 
   measure: wh_ops_hours {
-    label: "# Worked Inventory Associate Hours (Warehouse Ops)"
+    label: "# Punched Inventory Associate Hours (Warehouse Ops)"
     type: sum
     sql:${number_of_worked_minutes}/60;;
     filters: [position_name: "wh, wh operations, inventory"]
     value_format_name: decimal_1
     group_label: ">> WH KPIs"
-    }
+  }
 
   measure: hub_staff_hours {
-    label: "# Worked Hub Staff Hours (Inventory Associate and Picker)"
+    label: "# Punched Hub Staff Hours (Inventory Associate and Picker)"
     type: number
     sql:${picker_hours}+${wh_ops_hours};;
     value_format_name: decimal_1
     group_label: ">> Hub Staff KPIs (Inventory Associate and Picker)"
-    }
+  }
 
   ##### No Show Hours
   measure: sum_rider_no_show_hours{
@@ -427,7 +427,7 @@ view: shyftplan_riders_pickers_hours_clean {
     sql:${number_of_worked_employees};;
     filters: [position_name: "rider captain"]
     group_label: ">> Rider Captain KPIs"
-    }
+  }
 
 
   measure: riders {
@@ -436,7 +436,7 @@ view: shyftplan_riders_pickers_hours_clean {
     sql:${number_of_worked_employees};;
     filters: [position_name: "rider"]
     group_label: ">> Rider KPIs"
-    }
+  }
 
   measure: riders_external {
     label: "# Ext Riders"
@@ -444,7 +444,7 @@ view: shyftplan_riders_pickers_hours_clean {
     sql:${number_of_worked_employees_external};;
     filters: [position_name: "rider"]
     group_label: ">> Rider KPIs"
-    }
+  }
 
   measure: pickers {
     label: "# Pickers"
@@ -452,7 +452,7 @@ view: shyftplan_riders_pickers_hours_clean {
     sql:${number_of_worked_employees};;
     filters: [position_name: "picker"]
     group_label: ">> Picker KPIs"
-    }
+  }
 
   measure: pickers_external {
     label: "# Ext Pickers"
@@ -460,7 +460,7 @@ view: shyftplan_riders_pickers_hours_clean {
     sql:${number_of_worked_employees_external};;
     filters: [position_name: "picker"]
     group_label: ">> Picker KPIs"
-    }
+  }
 
 
   measure: shift_orders {
@@ -493,7 +493,7 @@ view: shyftplan_riders_pickers_hours_clean {
     sql:${number_of_unassigned_employees_internal}+${number_of_unassigned_employees_external};;
     value_format_name: decimal_1
     group_label: ">> Rider KPIs"
-    }
+  }
 
   measure: sum_unassigned_rider_external{
     type: sum
@@ -503,7 +503,7 @@ view: shyftplan_riders_pickers_hours_clean {
     sql:${number_of_unassigned_employees_external};;
     value_format_name: decimal_1
     group_label: ">> Rider KPIs"
-    }
+  }
 
   measure: sum_unassigned_pickers{
     type: sum
@@ -514,7 +514,7 @@ view: shyftplan_riders_pickers_hours_clean {
     sql:${number_of_unassigned_employees_internal}+${number_of_unassigned_employees_external};;
     value_format_name: decimal_1
     group_label: ">> Picker KPIs"
-    }
+  }
 
   measure: sum_unassigned_pickers_external{
     type: sum
@@ -525,59 +525,59 @@ view: shyftplan_riders_pickers_hours_clean {
     sql:${number_of_unassigned_employees_external};;
     value_format_name: decimal_1
     group_label: ">> Picker KPIs"
-    }
+  }
 
-  ##### Unassigned Hours
+  ##### Open Hours
 
   measure: number_of_unassigned_rider_hours{
     type: sum
     hidden: no
-    label:"# Unassigned Rider Hours"
+    label:"# Open Rider Hours"
     description: "Number of Unassigned(Open) Rider Hours"
     filters:[position_name: "rider"]
     sql:(${number_of_unassigned_minutes_internal}+${number_of_unassigned_minutes_external})/60;;
     value_format_name: decimal_1
     group_label: ">> Rider KPIs"
-    }
+  }
 
   measure: number_of_unassigned_hours_rider_external{
     type: sum
     hidden: yes
-    label:"# Unassigned Ext Rider Hours"
+    label:"# Open Ext Rider Hours"
     description: "Number of Unassigned(Open) Rider Ext Hours"
     filters:[position_name: "rider"]
     sql:${number_of_unassigned_minutes_external}/60;;
     value_format_name: decimal_1
     group_label: ">> Rider KPIs"
-    }
+  }
 
 
   measure: number_of_unassigned_picker_hours{
     type: sum
     hidden: yes
-    label:"# Unassigned Picker Hours"
+    label:"# Open Picker Hours"
     description: "Number of Unassigned(Open) Picker Hours"
     filters:[position_name: "picker"]
     sql:(${number_of_unassigned_minutes_internal}+${number_of_unassigned_minutes_external})/60;;
     value_format_name: decimal_1
     group_label: ">> Picker KPIs"
-    }
+  }
 
   measure: number_of_unassigned_hours_picker_external{
     type: sum
     hidden: yes
-    label:"# Unassigned Ext Picker Hours"
+    label:"# Open Ext Picker Hours"
     description: "Number of Unassigned(Open) Picker Ext Hours"
     filters:[position_name: "picker"]
     sql:${number_of_unassigned_minutes_external}/60;;
     value_format_name: decimal_1
     group_label: ">> Picker KPIs"
-    }
+  }
 
   measure: number_of_unassigned_shift_lead_hours{
     type: sum
     hidden: no
-    label:"# Unassigned Shift Lead Hours"
+    label:"# Open Shift Lead Hours"
     group_label: ">> Shift Lead KPIs"
     description: "Number of Unassigned(Open) Shift Lead Hours"
     filters: [position_name: "shift lead"]
@@ -588,18 +588,18 @@ view: shyftplan_riders_pickers_hours_clean {
   measure: number_of_unassigned_hours_shift_lead_external{
     type: sum
     hidden: yes
-    label:"# Unassigned Ext Shift Lead Hours"
+    label:"# Open Ext Shift Lead Hours"
     description: "Number of Unassigned(Open) Shift Lead Ext Hours"
     filters:[position_name: "shift lead"]
     sql:${number_of_unassigned_minutes_external}/60;;
     value_format_name: decimal_1
     group_label: ">> Shift Lead KPIs"
-    }
+  }
 
   measure: number_of_unassigned_rider_captain_hours{
     type: sum
     hidden: no
-    label:"# Unassigned Rider Captain Hours"
+    label:"# Open Rider Captain Hours"
     group_label: ">> Rider Captain KPIs"
     description: "Number of Unassigned(Open) Rider Captain Hours"
     filters: [position_name: "rider captain"]
@@ -610,7 +610,7 @@ view: shyftplan_riders_pickers_hours_clean {
   measure: number_of_unassigned_hours_rider_captain_external{
     type: sum
     hidden: yes
-    label:"# Unassigned Ext Rider Captain Hours"
+    label:"# Open Ext Rider Captain Hours"
     description: "Number of Unassigned(Open) Rider Captain Ext Hours"
     filters:[position_name: "rider captain"]
     sql:${number_of_unassigned_minutes_external}/60;;
@@ -622,7 +622,7 @@ view: shyftplan_riders_pickers_hours_clean {
   measure: number_of_unassigned_wh_hours{
     type: sum
     hidden: no
-    label:"# Unassigned WH Hours"
+    label:"# Open WH Hours"
     group_label: ">> WH KPIs"
     description: "Number of Unassigned(Open) WH Hours"
     filters: [position_name: "wh, wh operations, inventory"]
@@ -633,7 +633,7 @@ view: shyftplan_riders_pickers_hours_clean {
   measure: number_of_unassigned_hours_wh_external{
     type: sum
     hidden: yes
-    label:"# Unassigned Ext WH Hours"
+    label:"# Open Ext WH Hours"
     description: "Number of Unassigned(Open) WH Ext Hours"
     filters: [position_name: "wh, wh operations, inventory"]
     sql:${number_of_unassigned_minutes_external}/60;;
@@ -646,38 +646,38 @@ view: shyftplan_riders_pickers_hours_clean {
   measure: rider_utr {
     label: "AVG Rider UTR"
     type: number
-    description: "# Orders from opened hub / # Worked Rider Hours"
+    description: "# Orders from opened hub / # Punched Rider Hours"
     sql: ${adjusted_orders_riders} / NULLIF(${rider_hours}, 0);;
     value_format_name: decimal_2
     group_label: ">> Rider KPIs"
-    }
+  }
 
   measure: picker_utr {
     label: "AVG Picker UTR"
     type: number
-    description: "# Orders from opened hub / # Worked Picker Hours"
+    description: "# Orders from opened hub / # Punched Picker Hours"
     sql: ${adjusted_orders_pickers} / NULLIF(${picker_hours}, 0);;
     value_format_name: decimal_2
     group_label: ">> Picker KPIs"
-    }
+  }
 
   measure: hub_staff_utr {
     label: "AVG Hub Staff UTR"
     type: number
-    description: "# Orders from opened hub / # Worked Hub Staff (Inventory Associate and Picker) Hours"
+    description: "# Orders from opened hub / # Punched Hub Staff (Inventory Associate and Picker) Hours"
     sql: ${adjusted_orders_riders} / NULLIF(${hub_staff_hours}, 0);;
     value_format_name: decimal_2
     group_label: ">> Hub Staff KPIs (Inventory Associate and Picker)"
-    }
+  }
 
   measure: wh_ops_utr {
     label: "AVG Inventory Associate UTR"
     type: number
-    description: "# Orders from opened hub / # Worked Warehouse Ops Hours"
+    description: "# Orders from opened hub / # Punched Warehouse Ops Hours"
     sql: ${adjusted_orders_riders} / NULLIF(${wh_ops_hours}, 0);;
     value_format_name: decimal_2
     group_label: ">> WH KPIs"
-    }
+  }
 
   set: detail {
     fields: [
@@ -764,7 +764,7 @@ view: shyftplan_riders_pickers_hours_clean {
   measure: sum_planned_hours{
     type: sum
     group_label: ">> Rider KPIs"
-    label: "# Assigned Rider Hours"
+    label: "# Filled Rider Hours"
     description: "Number of Assigned Rider Hours"
     sql: ${number_of_planned_minutes} / 60 ;;
     filters: [position_name: "rider"]
@@ -774,7 +774,7 @@ view: shyftplan_riders_pickers_hours_clean {
 
   measure: sum_planned_picker_hours{
     type: sum
-    label: "# Assigned Picker Hours"
+    label: "# Filled Picker Hours"
     group_label: ">> Picker KPIs"
     description: "Number of Assigned Picker Hours"
     sql: ${number_of_planned_minutes} / 60 ;;
@@ -785,7 +785,7 @@ view: shyftplan_riders_pickers_hours_clean {
 
   measure: sum_planned_shift_lead_hours{
     type: sum
-    label: "# Assigned Shift Lead Hours"
+    label: "# Filled Shift Lead Hours"
     group_label: ">> Shift Lead KPIs"
     description: "Number of Assigned Shift Lead Hours"
     sql: ${number_of_planned_minutes} / 60 ;;
@@ -796,7 +796,7 @@ view: shyftplan_riders_pickers_hours_clean {
 
   measure: sum_planned_rider_captain_hours{
     type: sum
-    label: "# Assigned Rider Captain Hours"
+    label: "# Filled Rider Captain Hours"
     group_label: ">> Rider Captain KPIs"
     description: "Number of Assigned Rider Captain Hours"
     sql: ${number_of_planned_minutes} / 60 ;;
@@ -807,7 +807,7 @@ view: shyftplan_riders_pickers_hours_clean {
 
   measure: sum_planned_wh_hours{
     type: sum
-    label: "# Assigned WH Hours"
+    label: "# Filled WH Hours"
     group_label: ">> WH KPIs"
     description: "Number of Assigned WH Hours"
     sql: ${number_of_planned_minutes} / 60 ;;
@@ -949,7 +949,7 @@ view: shyftplan_riders_pickers_hours_clean {
 
   measure: assigned_hours_by_position {
     type: number
-    label: "# Assigned Hours"
+    label: "# Filled Hours"
     value_format_name: decimal_1
     group_label: ">> Dynamic Values"
     sql:
@@ -965,7 +965,7 @@ view: shyftplan_riders_pickers_hours_clean {
 
   measure: unassigned_hours_by_position {
     type: number
-    label: "# Unassigned Hours"
+    label: "# Open Hours"
     value_format_name: decimal_1
     group_label: ">> Dynamic Values"
     sql:
@@ -981,7 +981,7 @@ view: shyftplan_riders_pickers_hours_clean {
 
   measure: worked_hours_by_position {
     type: number
-    label: "# Worked Hours"
+    label: "# Punched Hours"
     value_format_name: decimal_1
     group_label: ">> Dynamic Values"
     sql:
