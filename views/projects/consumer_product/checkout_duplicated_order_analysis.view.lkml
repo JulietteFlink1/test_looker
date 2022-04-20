@@ -176,6 +176,7 @@ view: checkout_duplicated_order_analysis {
     label: "# Total Amount Chargebacks"
     type: sum
     sql: ${total_chargebacks_amount} ;;
+    value_format_name: eur_0
   }
 
   measure: sum_chargebacks_total {
