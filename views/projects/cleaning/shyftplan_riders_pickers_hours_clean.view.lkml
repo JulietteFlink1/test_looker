@@ -133,6 +133,16 @@ view: shyftplan_riders_pickers_hours_clean {
     sql: ${TABLE}.block_starts_at_timestamp ;;
   }
 
+  dimension_group: last_update {
+    type: time
+    timeframes: [
+      time
+    ]
+    convert_tz: yes
+    datatype: datetime
+    sql: ${TABLE}.last_updated_timestamp ;;
+  }
+
   dimension: date {
     label: "Shift starts at"
     type: date
