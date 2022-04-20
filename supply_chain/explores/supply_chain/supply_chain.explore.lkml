@@ -263,7 +263,7 @@ explore: supply_chain {
     sql_on:
         ${replenishment_purchase_orders.sku}           = coalesce(${products_hub_assignment.leading_sku_replenishment_substitute_group}, ${products_hub_assignment.sku}) and
         ${replenishment_purchase_orders.hub_code}      = ${products_hub_assignment.hub_code}                                        and
-        ${replenishment_purchase_orders.delivery_date} = ${products_hub_assignment.report_date}                                     and
+        ${replenishment_purchase_orders.order_date}    = ${products_hub_assignment.report_date}                                     and
         ${replenishment_purchase_orders.vendor_id}     = ${products_hub_assignment.erp_vendor_id}
     ;;
   }
