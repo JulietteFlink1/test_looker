@@ -116,7 +116,7 @@ view: shyftplan_riders_pickers_hours_clean {
       quarter,
       year
     ]
-    convert_tz: no
+    convert_tz: yes
     hidden: yes
     datatype: date
     sql: ${TABLE}.shift_date ;;
