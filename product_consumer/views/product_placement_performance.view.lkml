@@ -85,19 +85,35 @@ view: product_placement_performance {
     value_format_name: decimal_2
     sql: ${TABLE}.product_price ;;
   }
+  dimension: swimlane_name {
+    group_label: "Product Dimensions"
+    label: "Swimlane Name"
+    description: "Name of a swimlane where products were shown"
+    type: string
+    sql: case when ${TABLE}.product_placement in ('swimlane')
+              then ${TABLE}.category_name
+         else null
+         end ;;
+  }
   dimension: category_name {
     group_label: "Product Dimensions"
     label: "Category Name"
     description: "Name of a category where product was listed"
     type: string
-    sql: ${TABLE}.category_name ;;
+    sql: case when ${TABLE}.product_placement in ('category','pdp')
+              then ${TABLE}.category_name
+         else null
+         end ;;
   }
   dimension: subcategory_name {
     group_label: "Product Dimensions"
     label: "Sub-Category Name"
     description: "Name of a sub-category where product was listed"
     type: string
-    sql: ${TABLE}.subcategory_name ;;
+    sql: case when ${TABLE}.product_placement in ('category','pdp')
+              then ${TABLE}.subcategory_name
+         else null
+         end ;;
   }
   dimension: product_placement {
     group_label: "Product Dimensions"
@@ -106,7 +122,7 @@ view: product_placement_performance {
     type: string
     sql: case when ${TABLE}.product_placement in ('checkout','cart') then 'cart'
               else ${TABLE}.product_placement
-              end ;;
+              end;;
   }
   dimension: pdp_origin {
     group_label: "Product Dimensions"
