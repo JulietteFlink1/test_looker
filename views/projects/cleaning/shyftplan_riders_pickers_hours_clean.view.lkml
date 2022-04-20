@@ -286,7 +286,7 @@ view: shyftplan_riders_pickers_hours_clean {
 
   ##### Worked Hours
   measure: rider_hours {
-    label: "Sum of Worked Rider Hours"
+    label: "# Worked Rider Hours"
     type: sum
     sql:${number_of_worked_minutes}/60;;
     filters: [position_name: "rider"]
@@ -295,7 +295,7 @@ view: shyftplan_riders_pickers_hours_clean {
     }
 
   measure: rider_hours_external {
-    label: "Sum of Worked Rider Ext Hours"
+    label: "# Worked Rider Ext Hours"
     type: sum
     sql:${number_of_worked_minutes_external}/60;;
     filters: [position_name: "rider"]
@@ -304,7 +304,7 @@ view: shyftplan_riders_pickers_hours_clean {
     }
 
   measure: picker_hours {
-    label: "Sum of Worked Picker Hours"
+    label: "# Worked Picker Hours"
     type: sum
     sql:${number_of_worked_minutes}/60;;
     filters: [position_name: "picker"]
@@ -313,7 +313,7 @@ view: shyftplan_riders_pickers_hours_clean {
     }
 
   measure: picker_hours_external {
-    label: "Sum of Worked Picker Ext Hours"
+    label: "# Worked Picker Ext Hours"
     type: sum
     sql:${number_of_worked_minutes_external}/60;;
     filters: [position_name: "picker"]
@@ -322,7 +322,7 @@ view: shyftplan_riders_pickers_hours_clean {
     }
 
   measure: shift_lead_hours {
-    label: "Sum of Worked Shift Lead Hours"
+    label: "# Worked Shift Lead Hours"
     type: sum
     sql:${number_of_worked_minutes}/60;;
     filters: [position_name: "shift lead"]
@@ -332,7 +332,7 @@ view: shyftplan_riders_pickers_hours_clean {
   }
 
   measure: rider_captain_hours {
-    label: "Sum of Worked Rider Captain Hours"
+    label: "# Worked Rider Captain Hours"
     type: sum
     sql:${number_of_worked_minutes}/60;;
     filters: [position_name: "rider captain"]
@@ -341,7 +341,7 @@ view: shyftplan_riders_pickers_hours_clean {
     }
 
   measure: wh_ops_hours {
-    label: "Sum of Worked Inventory Associate Hours (Warehouse Ops)"
+    label: "# Worked Inventory Associate Hours (Warehouse Ops)"
     type: sum
     sql:${number_of_worked_minutes}/60;;
     filters: [position_name: "wh, wh operations, inventory"]
@@ -350,7 +350,7 @@ view: shyftplan_riders_pickers_hours_clean {
     }
 
   measure: hub_staff_hours {
-    label: "Sum of Worked Hub Staff Hours (Inventory Associate and Picker)"
+    label: "# Worked Hub Staff Hours (Inventory Associate and Picker)"
     type: number
     sql:${picker_hours}+${wh_ops_hours};;
     value_format_name: decimal_1
@@ -987,7 +987,7 @@ view: shyftplan_riders_pickers_hours_clean {
 
   measure: pct_no_show_by_position {
     type: number
-    label: "No Show (%)"
+    label: "% No Show"
     value_format_name: percent_1
     group_label: ">> Dynamic Values"
     sql:
