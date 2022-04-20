@@ -1751,6 +1751,15 @@ view: orders {
         value_format_name: decimal_2
       }
 
+      measure: avg_order_handling_time_minute {
+        label: "AVG Order Handling Time (min)"
+        group_label: "* Operations / Logistics *"
+        description: "AVG ider Time spent from claiming an order until returning to the hub "
+        type: average
+        sql:2 * TIMESTAMP_DIFF(safe_cast(${rider_completed_delivery_timestamp} as timestamp), safe_cast(${order_rider_claimed_timestamp} as timestamp), minute);;
+        value_format_name: decimal_2
+      }
+
       measure: sum_rider_tip {
         group_label: "* Monetary Values *"
         label: "SUM Rider Tip"
@@ -1829,12 +1838,26 @@ view: orders {
       measure: cnt_orders {
         group_label: "* Basic Counts (Orders / Customers etc.) *"
         label: "# Orders"
-        description: "Count of successful Orders"
+        description: "Count of Orders"
         hidden:  no
         type: count_distinct
         sql: ${order_uuid} ;;
         value_format: "0"
       }
+
+    measure: cnt_successful_orders {
+      group_label: "* Basic Counts (Orders / Customers etc.) *"
+      label: "# Successful Orders"
+      description: "Count of Successful Orders"
+      hidden:  no
+      type: count_distinct
+      sql: ${order_uuid} ;;
+      value_format: "0"
+      filters: [
+        is_successful_order: "yes"
+      ]
+    }
+
 
       measure: cnt_orders_with_discount {
         group_label: "* Basic Counts (Orders / Customers etc.) *"
