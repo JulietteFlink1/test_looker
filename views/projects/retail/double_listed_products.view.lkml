@@ -2,21 +2,8 @@ view: double_listed_products {
   sql_table_name: `flink-data-prod.curated.double_listed_products`
     ;;
 
-  dimension: category_name {
-    type: string
-    label: "Category"
-    hidden: no
-    sql: ${TABLE}.category_name ;;
-  }
 
-  dimension: is_double_listed {
-    type: string
-    label: "Double listed"
-    hidden: no
-    sql: ${TABLE}.is_double_listed ;;
-  }
-
-  dimension_group: report {
+ dimension_group: report {
     type: time
     timeframes: [
       raw,
@@ -31,11 +18,25 @@ view: double_listed_products {
     sql: ${TABLE}.report_date ;;
   }
 
-  dimension: sku {
+ dimension: sku {
     type: string
     label: "SKU"
     hidden: no
     sql: ${TABLE}.sku ;;
+  }
+
+  dimension: is_double_listed {
+    type: string
+    label: "Double listed"
+    hidden: no
+    sql: ${TABLE}.is_double_listed ;;
+  }
+
+dimension: category_name {
+    type: string
+    label: "Category"
+    hidden: no
+    sql: ${TABLE}.category_name ;;
   }
 
   dimension: subcategory_name {
@@ -45,10 +46,18 @@ view: double_listed_products {
     sql: ${TABLE}.subcategory_name ;;
   }
 
-  dimension: subcategory_id {
+  dimension: is_label {
     type: string
-    hidden: yes
-    sql: ${TABLE}.subcategory_id ;;
+    label: "Listed as Label"
+    hidden: no
+    sql: ${TABLE}.is_label;;
+  }
+
+  dimension: is_special {
+    type: string
+    label: "Listed as Special"
+    hidden: no
+    sql: ${TABLE}.is_special;;
   }
 
   dimension: table_uuid {
