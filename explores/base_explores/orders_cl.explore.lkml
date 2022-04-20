@@ -71,7 +71,7 @@ explore: orders_cl {
   join: shyftplan_riders_pickers_hours {
     from: shyftplan_riders_pickers_hours_clean
     view_label: "* Shifts *"
-    sql_on: ${time_grid.start_datetime_minute30} = ${shyftplan_riders_pickers_hours.shift_minute30} and
+    sql_on: ${time_grid.start_datetime_minute30} = ${shyftplan_riders_pickers_hours.block_starts_at_timestamp_minute30} and
      lower(${time_grid.hub_code})          = lower(${shyftplan_riders_pickers_hours.hub_name});;
     relationship: many_to_many
     type: left_outer

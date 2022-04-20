@@ -113,7 +113,7 @@ view: shyftplan_riders_pickers_hours_clean {
     sql: ${TABLE}.position_name ;;
   }
 
-  dimension_group: shift {
+  dimension_group: block_starts_at_timestamp {
     type: time
     timeframes: [
       raw,
@@ -137,7 +137,7 @@ view: shyftplan_riders_pickers_hours_clean {
     label: "Shift starts at"
     type: date
     datatype: date
-    sql: ${shift_date} ;;
+    sql: ${block_starts_at_timestamp_date} ;;
   }
 
   dimension: hub_name {
