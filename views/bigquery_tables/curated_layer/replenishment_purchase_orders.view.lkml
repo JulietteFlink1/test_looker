@@ -53,7 +53,9 @@ view: replenishment_purchase_orders {
   # ~~~~~~~~~~~~~~~     Dimensions     ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+
   # =========  __main__   =========
+
   dimension: vendor_id {
 
     label:       "Vendor ID"
