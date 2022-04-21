@@ -1,5 +1,5 @@
 view: orderline {
-  sql_table_name: `flink-data-dev.curated.order_lineitems`
+  sql_table_name: `flink-data-prod.curated.order_lineitems`
     ;;
   view_label: "* Order Lineitems *"
   drill_fields: [id]
@@ -363,6 +363,26 @@ view: orderline {
 
 
   ############# Delivery Issue
+
+  dimension: delivery_issue_stage {
+
+    label: "Delivery Issue Stage"
+    description: "Classifies delivery issues in either Pre delivery (source: picker) or Post delivery (source: customer care)"
+    group_label: "> Delivery Issues"
+
+    type: string
+    sql: ${TABLE}.delivery_issue_stage ;;
+  }
+
+  dimension: delivery_issue_groups {
+
+    label: "Delivery Issue Groups"
+    description: "The delivery issue groups based on CT"
+    group_label: "> Delivery Issues"
+
+    type: string
+    sql: ${TABLE}.return_reason ;;
+  }
 
   dimension: number_of_products_with_perished_light_issues_dim {
 
