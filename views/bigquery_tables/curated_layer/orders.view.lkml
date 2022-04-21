@@ -959,6 +959,14 @@ view: orders {
     sql: ${TABLE}.order_uuid ;;
   }
 
+  dimension: customer_uuid {
+    type: string
+    group_label: "* IDs *"
+    label: "Customer UUID"
+    hidden: yes
+    sql: ${TABLE}.customer_uuid ;;
+  }
+
   dimension: order_week {
     group_label: "* Dates and Timestamps *"
     type: date_time
@@ -1796,20 +1804,20 @@ view: orders {
       measure: cnt_unique_customers {
         group_label: "* Basic Counts (Orders / Customers etc.) *"
         label: "# Unique Customers"
-        description: "Count of Unique Customers identified via their Email"
+        description: "Count of Unique Customers identified via their Customer UUID"
         hidden:  no
         type: count_distinct
-        sql: ${user_email};;
+        sql: ${customer_uuid};;
         value_format: "0"
       }
 
       measure: cnt_unique_customers_with_voucher {
         group_label: "* Basic Counts (Orders / Customers etc.) *"
         label: "# Unique Customers (with Voucher)"
-        description: "Count of Unique Customers identified via their Email (only considering orders with a voucher)"
+        description: "Count of Unique Customers identified via their Customer UUID (only considering orders with a voucher)"
         hidden:  no
         type: count_distinct
-        sql: ${user_email};;
+        sql: ${customer_uuid};;
         filters: [discount_amount: ">0"]
         value_format: "0"
       }
@@ -1817,10 +1825,10 @@ view: orders {
       measure: cnt_unique_customers_without_voucher {
         group_label: "* Basic Counts (Orders / Customers etc.) *"
         label: "# Unique Customers (without Voucher)"
-        description: "Count of Unique Customers identified via their Email (not considering orders with a voucher)"
+        description: "Count of Unique Customers identified via their Customer UUID (not considering orders with a voucher)"
         hidden:  no
         type: count_distinct
-        sql: ${user_email};;
+        sql: ${customer_uuid};;
         filters: [discount_amount: "0 OR null"]
         value_format: "0"
       }

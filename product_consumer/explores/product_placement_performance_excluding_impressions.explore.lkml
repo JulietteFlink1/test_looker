@@ -16,7 +16,8 @@ explore: product_placement_performance_excluding_impressions {
   hidden: no
 
   label: "Product Placement Performance"
-  description: "This explore provides an aggregated overview of Flink active users, including placement conversion metrics (both App & Web)"
+  description: "This explore provides an aggregated overview of product performance and its placement in the app & web. Please note the daily last-in first-out attribution logic. For ultimate truth on an order level, please refer to the Orders Explore.
+  Product impressions are not part of this report."
   group_label: "Consumer Product"
 
   access_filter: {
