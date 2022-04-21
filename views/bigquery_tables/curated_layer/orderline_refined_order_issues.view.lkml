@@ -7,20 +7,20 @@ view: +orderline {
       pct_pre_order_issue_rate_per_total_items_picked,
       pct_pre_order_issue_rate_per_total_orders,
       pct_post_order_issue_rate_per_total_orders,
-      number_of_order_lineitems_with_perished_light_issues_dim,
-      number_of_order_lineitems_with_perished_products_pre_dim,
-      number_of_order_lineitems_with_perished_products_post_dim,
-      number_of_order_lineitems_with_products_not_on_shelf_pre_dim,
-      number_of_order_lineitems_with_products_not_on_shelf_post_dim,
-      number_of_order_lineitems_with_damaged_products_pre_dim,
-      number_of_order_lineitems_with_damaged_products_post_dim,
-      number_of_order_lineitems_with_missing_products_dim,
-      number_of_order_lineitems_with_wrong_products_dim,
-      number_of_order_lineitems_with_swapped_products_dim,
-      number_of_order_lineitems_with_cancelled_products_dim,
-      number_of_order_lineitems_with_item_description_issues_dim,
-      number_of_order_lineitems_with_item_quality_issues_dim,
-      number_of_order_lineitems_with_undefined_issues_dim
+      number_of_products_with_perished_light_issues_dim,
+      number_of_products_with_perished_issues_pre_dim,
+      number_of_products_with_perished_issues_post_dim,
+      number_of_products_with_products_not_on_shelf_issues_pre_dim,
+      number_of_products_with_products_not_on_shelf_issues_post_dim,
+      number_of_products_with_damaged_products_issues_pre_dim,
+      number_of_products_with_damaged_products_issues_post_dim,
+      number_of_products_with_missing_products_issues_dim,
+      number_of_products_with_wrong_products_issues_dim,
+      number_of_products_with_swapped_products_issues_dim,
+      number_of_products_with_cancelled_products_issues_dim,
+      number_of_products_with_item_description_issues_dim,
+      number_of_products_with_item_quality_issues_dim,
+      number_of_products_with_undefined_issues_dim
 
     ]
   }
@@ -36,7 +36,7 @@ view: +orderline {
   measure: count_order_lineitems {
     type: count_distinct
     label: "# Lineitems"
-    group_label: "> Delivery Issues Lineitems"
+    group_label: "> Delivery Issues Products"
     hidden:  yes
     sql: ${order_lineitem_uuid} ;;
   }
@@ -134,7 +134,7 @@ view: +orderline {
     group_label: "> Delivery Issues"
     type: count_distinct
     sql: ${order_uuid} ;;
-    filters: [number_of_order_lineitems_with_perished_light_issues_dim: ">0"]
+    filters: [number_of_products_with_perished_light_issues_dim: ">0"]
   }
 
   measure: cnt_perished_products_post {
@@ -145,7 +145,7 @@ view: +orderline {
 
     type: count_distinct
     sql: ${order_uuid} ;;
-    filters: [number_of_order_lineitems_with_perished_products_post_dim: ">0"]
+    filters: [number_of_products_with_perished_issues_post_dim: ">0"]
 
     value_format_name: decimal_0
 
@@ -158,7 +158,7 @@ view: +orderline {
 
     type: count_distinct
     sql: ${order_uuid} ;;
-    filters: [number_of_order_lineitems_with_perished_products_pre_dim: ">0"]
+    filters: [number_of_products_with_perished_issues_pre_dim: ">0"]
 
     value_format_name: decimal_0
 
@@ -173,7 +173,7 @@ view: +orderline {
 
     type: count_distinct
     sql: ${order_uuid} ;;
-    filters: [number_of_order_lineitems_with_products_not_on_shelf_post_dim: ">0"]
+    filters: [number_of_products_with_products_not_on_shelf_issues_post_dim: ">0"]
 
     value_format_name: decimal_0
 
@@ -186,7 +186,7 @@ view: +orderline {
 
     type: count_distinct
     sql: ${order_uuid} ;;
-    filters: [number_of_order_lineitems_with_products_not_on_shelf_pre_dim: ">0"]
+    filters: [number_of_products_with_products_not_on_shelf_issues_pre_dim: ">0"]
 
     value_format_name: decimal_0
 
@@ -199,7 +199,7 @@ view: +orderline {
     group_label: "> Delivery Issues"
     type: count_distinct
     sql: ${order_uuid} ;;
-    filters: [number_of_order_lineitems_with_damaged_products_post_dim: ">0"]
+    filters: [number_of_products_with_damaged_products_issues_post_dim: ">0"]
 
     value_format_name: decimal_0
 
@@ -210,7 +210,7 @@ view: +orderline {
     group_label: "> Delivery Issues"
     type: count_distinct
     sql: ${order_uuid} ;;
-    filters: [number_of_order_lineitems_with_damaged_products_pre_dim: ">0"]
+    filters: [number_of_products_with_damaged_products_issues_pre_dim: ">0"]
 
     value_format_name: decimal_0
 
@@ -228,7 +228,7 @@ view: +orderline {
 
     type: count_distinct
     sql: ${order_uuid} ;;
-    filters: [number_of_order_lineitems_with_missing_products_dim: ">0"]
+    filters: [number_of_products_with_missing_products_issues_dim: ">0"]
 
     value_format_name: decimal_0
 
@@ -242,7 +242,7 @@ view: +orderline {
 
     type: count_distinct
     sql: ${order_uuid} ;;
-    filters: [number_of_order_lineitems_with_wrong_products_dim: ">0"]
+    filters: [number_of_products_with_wrong_products_issues_dim: ">0"]
 
     value_format_name: decimal_0
 
@@ -256,7 +256,7 @@ view: +orderline {
 
     type: count_distinct
     sql: ${order_uuid} ;;
-    filters: [number_of_order_lineitems_with_swapped_products_dim: ">0"]
+    filters: [number_of_products_with_swapped_products_issues_dim: ">0"]
 
     value_format_name: decimal_0
 
@@ -271,7 +271,7 @@ view: +orderline {
 
     type: count_distinct
     sql: ${order_uuid} ;;
-    filters: [number_of_order_lineitems_with_cancelled_products_dim: ">0"]
+    filters: [number_of_products_with_cancelled_products_issues_dim: ">0"]
 
     value_format_name: decimal_0
 
@@ -285,7 +285,7 @@ view: +orderline {
 
     type: count_distinct
     sql: ${order_uuid} ;;
-    filters: [number_of_order_lineitems_with_item_description_issues_dim: ">0"]
+    filters: [number_of_products_with_item_description_issues_dim: ">0"]
 
     value_format_name: decimal_0
 
@@ -299,7 +299,7 @@ view: +orderline {
 
     type: count_distinct
     sql: ${order_uuid} ;;
-    filters: [number_of_order_lineitems_with_item_quality_issues_dim: ">0"]
+    filters: [number_of_products_with_item_quality_issues_dim: ">0"]
 
     value_format_name: decimal_0
 
@@ -313,7 +313,7 @@ view: +orderline {
 
     type: count_distinct
     sql: ${order_uuid} ;;
-    filters: [number_of_order_lineitems_with_undefined_issues_dim: ">0"]
+    filters: [number_of_products_with_undefined_issues_dim: ">0"]
 
     value_format_name: decimal_0
     hidden: no
@@ -330,7 +330,7 @@ view: +orderline {
   # ~~~~~~~~~~~~  START Percentages   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   measure: pct_pre_order_issue_rate_per_total_orders {
 
-    label:       "% Orders Partial fulfillment Rate (preoder)"
+    label:       "% Orders Partial Fulfillment (preoder)"
     group_label: "> Delivery Issues"
     description: "The percentage of orders, that had pre-delivery issues"
 
@@ -343,7 +343,7 @@ view: +orderline {
 
   measure: pct_post_order_issue_rate_per_total_orders {
 
-    label:       "% Orders Issue Rate (post order)"
+    label:       "% Orders Issue (post order)"
     group_label: "> Delivery Issues"
     description: "The percentage of orders, that had post-delivery issues"
 
@@ -356,7 +356,7 @@ view: +orderline {
 
   measure: pct_pre_order_issue_rate_per_total_items_picked {
 
-    label:       "% Orders Item unfulfilled (preorder)"
+    label:       "% Orders Item Unfulfilled (preorder)"
     group_label: "> Delivery Issues"
     description: "The percentage of unique SKUs per order, that had pre-delivery issues"
 
@@ -369,7 +369,7 @@ view: +orderline {
 
   measure: pct_pre_order_fulfillment_rate {
 
-    label:       "% Orders Pre-Order Fulfillment Rate"
+    label:       "% Orders Pre-Order Fulfillment"
     group_label: "> Delivery Issues"
     description: "The percentage of orders, that had no pre-delivery issues"
 
@@ -386,7 +386,7 @@ view: +orderline {
 
   measure: pct_not_on_shelf_issue_rate {
 
-    label:       "% Orders Goods Not On Shelf Issue Rate"
+    label:       "% Orders Goods Not On Shelf Issue"
     group_label: "> Delivery Issues"
 
     type: number
@@ -398,7 +398,7 @@ view: +orderline {
 
   measure: pct_missing_product_issue_rate {
 
-    label:       "% Orders Missing Product Issue Rate"
+    label:       "% Orders Missing Product Issue"
     group_label: "> Delivery Issues"
 
     type: number
@@ -410,7 +410,7 @@ view: +orderline {
 
   measure: pct_damaged_product_issue_rate {
 
-    label:       "% Orders Damaged Product Issue Rate"
+    label:       "% Orders Damaged Product Issue"
     group_label: "> Delivery Issues"
 
     type: number
@@ -422,7 +422,7 @@ view: +orderline {
 
   measure: pct_cancelled_product_issue_rate {
 
-    label:       "% Orders Cancelled Product Issue Rate"
+    label:       "% Orders Cancelled Product Issue"
     group_label: "> Delivery Issues"
 
     type: number
@@ -434,7 +434,7 @@ view: +orderline {
 
   measure: pct_perished_product_issue_rate {
 
-    label:       "% Orders Perished Product Issue Rate"
+    label:       "% Orders Perished Product Issue"
     group_label: "> Delivery Issues"
 
     type: number
@@ -446,7 +446,7 @@ view: +orderline {
 
   measure: pct_wrong_product_issue_rate {
 
-    label:       "% Orders Wrong Product Issue Rate"
+    label:       "% Orders Wrong Product Issue"
     group_label: "> Delivery Issues"
 
     type: number
@@ -458,7 +458,7 @@ view: +orderline {
 
   measure: pct_swapped_product_issue_rate {
 
-    label:       "% Orders Swapped Product Issue Rate"
+    label:       "% Orders Swapped Product Issue"
     group_label: "> Delivery Issues"
 
     type: number
@@ -470,7 +470,7 @@ view: +orderline {
 
   measure: pct_products_item_description_issues {
 
-    label:       "% Orders Item Description Issue Rate"
+    label:       "% Orders Item Description Issue"
     group_label: "> Delivery Issues"
 
     type: number
@@ -482,7 +482,7 @@ view: +orderline {
 
   measure: pct_products_bad_quality_issues {
 
-    label:       "% Orders Item Quality Issue Rate"
+    label:       "% Orders Item Quality Issue"
     group_label: "> Delivery Issues"
 
     type: number
@@ -494,23 +494,14 @@ view: +orderline {
 
   # ~~~~~~~ Perished Light
   measure: pct_orders_perished_light {
-    label: "% Orders Perished Light"
+
+    label: "% Orders Perished Light Issue"
     group_label: "> Delivery Issues"
 
     type: number
     sql: ${count_perished_light} / nullif(${cnt_total_orders},0) ;;
 
     value_format_name: percent_2
-  }
-
-  measure: pct_orderlineitems_perished_light {
-    label: "% Lineitems Perished Light"
-    group_label: "> Delivery Issues Lineitems"
-
-    type: number
-    sql: ${number_of_order_lineitems_with_perished_light_issues} / nullif(${count_order_lineitems},0) ;;
-
-    value_format_name: percent_3
   }
 
 
