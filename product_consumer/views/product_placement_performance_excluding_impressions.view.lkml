@@ -85,19 +85,35 @@ view: product_placement_performance_excluding_impressions {
     value_format_name: decimal_2
     sql: ${TABLE}.product_price ;;
   }
+  dimension: swimlane_name {
+    group_label: "Product Dimensions"
+    label: "Swimlane Name"
+    description: "Name of a swimlane where products were shown"
+    type: string
+    sql: case when ${TABLE}.product_placement in ('swimlane')
+              then ${TABLE}.category_name
+         else null
+         end ;;
+  }
   dimension: category_name {
     group_label: "Product Dimensions"
     label: "Category Name"
     description: "Name of a category where product was listed"
     type: string
-    sql: ${TABLE}.category_name ;;
+    sql: case when ${TABLE}.product_placement in ('category','pdp')
+              then ${TABLE}.category_name
+         else null
+         end ;;
   }
   dimension: subcategory_name {
     group_label: "Product Dimensions"
     label: "Sub-Category Name"
     description: "Name of a sub-category where product was listed"
     type: string
-    sql: ${TABLE}.subcategory_name ;;
+    sql: case when ${TABLE}.product_placement in ('category','pdp')
+              then ${TABLE}.subcategory_name
+         else null
+         end ;;
   }
   dimension: product_placement {
     group_label: "Product Dimensions"
@@ -204,14 +220,6 @@ view: product_placement_performance_excluding_impressions {
 
   # ======= Product Event Level Measures =======
 
-  measure: impressions {
-    hidden: yes
-    group_label: "Product Metrics"
-    label: "# Impressions"
-    description: "Number of unique impressions per product"
-    type: sum
-    sql: ${TABLE}.number_of_product_impressions ;;
-  }
   measure: add_to_carts {
     group_label: "Product Metrics"
     label: "# Products Added to Cart"
@@ -243,27 +251,9 @@ view: product_placement_performance_excluding_impressions {
   measure: orders {
     group_label: "Product Metrics"
     label: "# Ordered Products "
-    description: "Number of orders with the product"
+    description: "Number of purchased products"
     type: sum
     sql: ${TABLE}.number_of_orders ;;
-  }
-  measure: click_through_rate {
-    hidden: yes
-    group_label: "Rates (%)"
-    label: "Click-Through Rate (CTR)"
-    type: number
-    description: "# products with either PDP or Add-to-Cart / # total product impressions"
-    value_format_name: percent_2
-    sql: (${add_to_carts} + ${pdps}) / nullif(${impressions},0);;
-  }
-  measure: impression_to_atc_rate {
-    hidden: yes
-    group_label: "Rates (%)"
-    label: "Impression to Add-to-Cart Rate"
-    type: number
-    description: "# products with Add-to-Cart / # total product impressions"
-    value_format_name: percent_2
-    sql: ${add_to_carts} / nullif(${impressions},0);;
   }
   measure: atc_to_order_rate {
     group_label: "Rates (%)"
@@ -273,25 +263,8 @@ view: product_placement_performance_excluding_impressions {
     value_format_name: percent_2
     sql: ${orders} / nullif(${add_to_carts},0);;
   }
-  measure: impression_to_order_rate{
-    hidden: yes
-    group_label: "Rates (%)"
-    label: "Impression to Order Rate"
-    type: number
-    description: "# ordered products / # total products impressions"
-    value_format_name: percent_2
-    sql: ${orders} / nullif(${impressions},0);;
-  }
 
   # ======= User Level Measures =======
-  measure: users_with_impressions {
-    group_label: "User Metrics"
-    label: "# Users with Impressions"
-    description: "Number of unique products added to cart"
-    type: sum
-    sql: ${TABLE}.number_of_users_with_impressions ;;
-  }
-
   measure: users_with_add_to_carts {
     group_label: "User Metrics"
     label: "# Users with Added to Cart"
@@ -322,7 +295,7 @@ view: product_placement_performance_excluding_impressions {
   }
   measure: users_with_orders {
     group_label: "User Metrics"
-    label: "# Users with with orders "
+    label: "# Users with with Orders "
     description: "Number of orders with the product"
     type: sum
     sql: ${TABLE}.number_of_users_with_order ;;

@@ -1,7 +1,7 @@
 
 include: "/views/bigquery_tables/curated_layer/*.view"
 include: "/views/extended_tables/order_lineitems_using_inventory.view"
-include: "/views/bigquery_tables/gsheets/price_test_tracking.view"
+include: "/**/price_test_tracking.view"
 
 include: "/**/global_filters_and_parameters.view.lkml"
 
