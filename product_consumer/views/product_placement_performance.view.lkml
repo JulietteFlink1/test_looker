@@ -188,6 +188,11 @@ view: product_placement_performance {
     sql: ${TABLE}.is_added_to_favourites ;;
   }
 
+  dimension: is_order_placed {
+    group_label: "Event Flags"
+    type: yesno
+    sql: ${TABLE}.is_order_placed ;;
+  }
   # ======= HIDDEN Dimension ======= #
 
   dimension: product_placement_uuid {
@@ -338,10 +343,11 @@ view: product_placement_performance {
     filters: [is_added_to_favourites: "yes"]
   }
   measure: users_with_orders {
-    group_label: "Product Metrics"
-    label: "# Ordered Products "
-    description: "Number of orders with the product"
-    type: sum
-    sql: ${TABLE}.number_of_users_with_order ;;
+    group_label: "User Metrics"
+    label: "# Users with add to favourites"
+    description: "Number of users with add to favourites"
+    type: count_distinct
+    sql: ${anonymous_id} ;;
+    filters: [is_order_placed: "yes"]
   }
 }
