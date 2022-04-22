@@ -1,8 +1,9 @@
-include: "/views/bigquery_tables/reporting_layer/cohorts/order_cohorts_base.view.lkml"
+#include: "/views/bigquery_tables/reporting_layer/cohorts/order_cohorts_base.view.lkml"
 include: "/views/bigquery_tables/reporting_layer/cohorts/customer_cohorts_base.view.lkml"
 include: "/views/bigquery_tables/curated_layer/hubs_ct.view.lkml"
-# include all views in the views/ folder in this project
-include: "/views/bigquery_tables/curated_layer/*.view"
+include: "/views/bigquery_tables/curated_layer/discounts.view"
+include: "/views/bigquery_tables/curated_layer/orders.view"
+include: "/views/projects/cleaning/shyftplan_riders_pickers_hours_clean.view"
 
 # # Select the views that should be a part of this model,
 # # and define the joins that connect them together.
@@ -11,14 +12,14 @@ explore: order_cohorts_base {
   label: "Phone-Based Customer Cohorts"
   description: "Phone-Based Logic"
   view_label: "* Orders *"
-  from: order_cohorts_base
+  from: orders
   hidden: yes
 
   join: customer_cohorts_base {
     view_label: "*.Customers *"
     from: customer_cohorts_base
     sql_on:
-    ${order_cohorts_base.customer_id_mapped} =  ${customer_cohorts_base.customer_id_mapped};;
+    ${order_cohorts_base.customer_uuid} =  ${customer_cohorts_base.customer_id_mapped};;
     type: left_outer
     relationship: many_to_one
   }
@@ -37,5 +38,14 @@ explore: order_cohorts_base {
     type: left_outer
     relationship: one_to_one
   }
-
+# has to do this join because of the circular reference in orders.view that is using shyftplan_riders_pickers_hours
+# hiding it with a view_lavel: ""
+  join: shyftplan_riders_pickers_hours {
+    from: shyftplan_riders_pickers_hours_clean
+    view_label: ""
+    sql_on: ${order_cohorts_base.created_date} = ${shyftplan_riders_pickers_hours.shift_date} and
+      ${hubs_ct.hub_code}          = lower(${shyftplan_riders_pickers_hours.hub_name});;
+    relationship: many_to_many
+    type: left_outer
+  }
 }

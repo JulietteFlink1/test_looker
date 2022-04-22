@@ -14,6 +14,7 @@ view: hub_staffing {
       year
     ]
     sql: ${TABLE}.block_ends_at_timestamp ;;
+    convert_tz: yes
   }
 
   dimension_group: block_starts_at_timestamp {
@@ -21,6 +22,7 @@ view: hub_staffing {
     timeframes: [
       raw,
       time,
+      minute30,
       hour_of_day,
       time_of_day,
       date,
@@ -30,6 +32,7 @@ view: hub_staffing {
       year
     ]
     sql: ${TABLE}.block_starts_at_timestamp ;;
+    convert_tz: yes
   }
 
   dimension: block_start_time {
