@@ -15,6 +15,7 @@ view: aov_per_category_month{
           hub.country,
           hub.hub_name,
           hub.city,
+          hub.hub_code,
           f.is_discounted_order,
          --b.category,
           --sum (a.amt_total_price_gross) as sum_item_value,
@@ -29,7 +30,7 @@ view: aov_per_category_month{
                  on a.order_uuid = f.order_uuid
           WHERE DATE(a.order_timestamp) >= "2021-02-01"
               and f.is_successful_order = true
-                group by 1,2,3,4,5,6,7,8,9
+                group by 1,2,3,4,5,6,7,8,9,10
 
     ),
 
@@ -57,6 +58,7 @@ view: aov_per_category_month{
           a.country_iso,
           hub.country,
           hub.hub_name,
+          hub.hub_code,
           hub.city,
           f.is_discounted_order,
           case when category is null then "null" else category end as category,
@@ -73,7 +75,7 @@ view: aov_per_category_month{
                  on a.order_uuid = f.order_uuid
           WHERE DATE(a.order_timestamp) >= "2021-02-01"
               and f.is_successful_order = true
-          group by 1,2,3,4,5,6,7,8,9,10
+          group by 1,2,3,4,5,6,7,8,9,10,11
 
 
     ),
@@ -106,6 +108,7 @@ view: aov_per_category_month{
           a.country_iso,
           --a.country,
           a.hub_name,
+          a.hub_code,
            case when a.is_discounted_order is true then "Yes" else "No" end as is_discounted_order,
           a.city,
           b.category,
@@ -273,6 +276,12 @@ view: aov_per_category_month{
     sql: ${TABLE}.hub_name ;;
   }
 
+  dimension: hub_code {
+    label: "hub_code"
+    type: string
+    sql: ${TABLE}.hub_code ;;
+  }
+
   dimension: city {
     label: "city"
     type: string
@@ -310,6 +319,7 @@ view: aov_per_category_month{
       country_iso,
       city,
       hub_name,
+      hub_code,
       category,
       sum_item_value,
       orders]
