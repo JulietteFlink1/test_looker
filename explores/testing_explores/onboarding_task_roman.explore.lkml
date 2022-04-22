@@ -1,4 +1,4 @@
-include: "/views/onboarding_task_roman.view"
+include: "/views/projects/cleaning/onboarding_task_roman.view"
 
 explore: onboarding_task_roman {
   from:  test_content_validator
