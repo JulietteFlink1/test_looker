@@ -9,6 +9,7 @@
 
 include: "/**/product_placement_performance.view"
 include: "/**/global_filters_and_parameters.view.lkml"
+include: "/**/affected_by_impression_users.view"
 
 explore: product_placement_performance {
   from:  product_placement_performance
@@ -31,6 +32,20 @@ explore: product_placement_performance {
       product_placement_performance.platform: "",
       product_placement_performance.product_placement: "category, search, last_bought, swimlane"
     ]
+  }
+
+  always_join: [affected_by_impression_users]
+
+  join: global_filters_and_parameters {
+    sql_on: ${global_filters_and_parameters.generic_join_dim} = TRUE ;;
+    type: left_outer
+    relationship: many_to_one
+  }
+
+  join: affected_by_impression_users {
+    sql_on: ${product_placement_performance.anonymous_id}= ${affected_by_impression_users.anonymous_id} ;;
+    type: inner
+    relationship: many_to_one
   }
 
 }
