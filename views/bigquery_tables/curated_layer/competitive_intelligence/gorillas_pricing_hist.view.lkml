@@ -7,6 +7,11 @@ view: gorillas_pricing_hist {
     sql: ${TABLE}.hub_id ;;
   }
 
+  dimension: country_iso {
+    type:  string
+    sql: ${TABLE}.country_iso ;;
+  }
+
   dimension: is_price_decrease {
     type: yesno
     sql: ${TABLE}.is_price_decrease ;;
@@ -79,6 +84,42 @@ view: gorillas_pricing_hist {
   dimension: table_uuid {
     type: string
     sql: ${TABLE}.table_uuid ;;
+  }
+
+  dimension: number_of_daily_price_increases {
+    type: number
+    sql: ${TABLE}.number_of_daily_price_increases ;;
+    description: "Number of price increases by date and country"
+  }
+
+  dimension: number_of_daily_price_decreases {
+    type: number
+    sql: ${TABLE}.number_of_daily_price_decreases ;;
+    description: "Number of price decreases by date and country"
+  }
+
+  dimension: average_product_price {
+    type: number
+    sql: ${TABLE}.average_product_price ;;
+    description: "Average price of this product on a daily granularity"
+  }
+
+  dimension: minimum_product_price {
+    type: number
+    sql: ${TABLE}.minimum_product_price ;;
+    description: "Minimum price of this product on a daily granularity"
+  }
+
+  dimension: maximum_product_price {
+    type: number
+    sql: ${TABLE}.maximum_product_price ;;
+    description: "Maximum price of this product on a daily granularity"
+  }
+
+  dimension: is_geographic_price_difference {
+    type: yesno
+    sql: ${TABLE}.is_geographic_price_difference ;;
+    description: "Value is true if a hub-level price difference exists for this product on a given day"
   }
 
   measure: count {
