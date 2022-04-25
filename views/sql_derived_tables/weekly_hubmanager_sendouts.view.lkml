@@ -68,10 +68,11 @@ view: weekly_hubmanager_sendouts {
     sql: ${TABLE}.fulfillment_time_minutes ;;
   }
 
-  dimension: share_post_order_issues {
+  dimension: share_hub_related_post_order_issues {
+    alias: [share_post_order_issues]
     type: number
     hidden: yes
-    sql: ${TABLE}.share_post_order_issues ;;
+    sql: ${TABLE}.share_hub_related_post_order_issues ;;
   }
 
   dimension: delta_punched_vs_forecasted {
@@ -338,10 +339,10 @@ view: weekly_hubmanager_sendouts {
 
   measure: avg_share_post_order_issues {
     label: "% Post-Delivery Issues"
-    description: "Share of Orders with post delivery issues"
+    description: "Share of Orders with post delivery issues related to hubs"
     type: average
     value_format: "0.00%"
-    sql: ${share_post_order_issues} ;;
+    sql: ${share_hub_related_post_order_issues} ;;
     html:  {% if dimension._value == 'WoW' and value <= 0 %}
     <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center"><img src="http://findicons.com/files/icons/573/must_have/48/check.png" height=20 width=20>{{ value }} pp</p>
     {% elsif dimension._value == 'WoW' and value > 0 %}
@@ -572,7 +573,7 @@ view: weekly_hubmanager_sendouts {
       bucket,
       number_of_orders,
       share_pre_order_issues,
-      share_post_order_issues,
+      share_hub_related_post_order_issues,
       share_of_no_show,
       rider_utr,
       picker_utr,

@@ -2,6 +2,10 @@ view: micro_forecasts_vs_actuals {
   sql_table_name: `flink-data-prod.order_forecast.micro_forecasts_vs_actuals`
     ;;
 
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~     Dimensions     ~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   dimension: city {
     type: string
     sql: ${TABLE}.city ;;
@@ -120,9 +124,6 @@ view: micro_forecasts_vs_actuals {
   }
 
 
-
-
-
   dimension: ok_orders {
     label: "Ok_orders"
     hidden: yes
@@ -195,6 +196,52 @@ view: micro_forecasts_vs_actuals {
     label: "Forecast horizon - days"
     type:  number
     sql:  DATE_DIFF(${local_date}, ${job_date}, DAY) ;;
+  }
+
+
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~     Dimensions     ~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+  measure: 1d_forecasted_orders {
+    label: "# Forecasted Orders (D-1)"
+    type:  sum
+    sql: CASE
+          WHEN DATE_DIFF(${local_date}, ${job_date}, DAY)=1 THEN ${prediction}
+          END ;;
+  }
+
+  measure: 7d_forecasted_orders {
+    label: "# Forecasted Orders (D-7)"
+    type:  sum
+    sql: CASE
+          WHEN DATE_DIFF(${local_date}, ${job_date}, DAY)=7 THEN ${prediction}
+          END ;;
+  }
+
+  measure: 14d_forecasted_orders {
+    label: "# Forecasted Orders (D-14)"
+    type:  sum
+    sql: CASE
+          WHEN DATE_DIFF(${local_date}, ${job_date}, DAY)=14 THEN ${prediction}
+          END ;;
+  }
+
+  measure: 21d_forecasted_orders {
+    label: "# Forecasted Orders (D-21)"
+    type:  sum
+    sql: CASE
+          WHEN DATE_DIFF(${local_date}, ${job_date}, DAY)=21 THEN ${prediction}
+          END ;;
+  }
+
+  measure: pct_forecast_deviation {
+    type: number
+    label: "% Forecast Deviation "
+    description: "Observed Orders - Forecasted Orders / Observed Orders"
+    sql: abs(${summed_absolute_actuals}-${sum_predicted_orders})/ nullif(${summed_absolute_actuals},0) ;;
+    value_format_name: percent_0
   }
 
   measure: count_values {
