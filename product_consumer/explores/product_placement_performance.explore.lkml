@@ -43,7 +43,8 @@ explore: product_placement_performance {
   }
 
   join: affected_by_impression_users {
-    sql_on: ${product_placement_performance.anonymous_id}= ${affected_by_impression_users.anonymous_id} ;;
+    sql_on: ${product_placement_performance.anonymous_id}= ${affected_by_impression_users.anonymous_id}
+            and ${product_placement_performance.event_date}=${affected_by_impression_users.event_date};;
     type: inner
     relationship: many_to_one
   }
