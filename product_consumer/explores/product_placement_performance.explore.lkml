@@ -20,6 +20,8 @@ explore: product_placement_performance {
   description: "This explore provides an aggregated overview of product performance and its placement in the app & web. Please note the daily last-in first-out attribution logic. For ultimate truth on an order level, please refer to the Orders Explore."
   group_label: "Consumer Product"
 
+  sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} ${event_date} {% endcondition %};;
+
   access_filter: {
     field: country_iso
     user_attribute: country_iso
@@ -27,7 +29,7 @@ explore: product_placement_performance {
 
   always_filter: {
     filters: [
-      product_placement_performance.event_date: "last 7 days",
+      global_filters_and_parameters.datasource_filter: "last 7 days",
       product_placement_performance.country_iso: "",
       product_placement_performance.platform: "",
       product_placement_performance.product_placement: "category, search, last_bought, swimlane"
