@@ -7,6 +7,7 @@ view: +orderline {
       pct_pre_order_issue_rate_per_total_items_picked,
       pct_pre_order_issue_rate_per_total_orders,
       pct_post_order_issue_rate_per_total_orders,
+      pct_hub_related_post_order_issue_rate_per_total_orders,
       delivery_issue_groups,
       number_of_products_with_perished_light_issues_dim,
       number_of_products_with_perished_issues_pre_dim,
