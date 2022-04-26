@@ -352,8 +352,8 @@ view: product_placement_performance {
   }
   measure: users_with_orders {
     group_label: "User Metrics"
-    label: "# Users with add to favourites"
-    description: "Number of users with add to favourites"
+    label: "# Users with orders"
+    description: "Number of users with orders"
     type: count_distinct
     sql: ${anonymous_id} ;;
     filters: [is_order_placed: "yes"]
