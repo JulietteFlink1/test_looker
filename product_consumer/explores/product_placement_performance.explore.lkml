@@ -32,7 +32,8 @@ explore: product_placement_performance {
       global_filters_and_parameters.datasource_filter: "last 7 days",
       product_placement_performance.country_iso: "",
       product_placement_performance.platform: "",
-      product_placement_performance.product_placement: "category, search, last_bought, swimlane"
+      product_placement_performance.product_placement: "category, search, last_bought, swimlane",
+      affected_by_impression_users.is_exposed_to_impressions: "Yes"
     ]
   }
 
@@ -47,7 +48,7 @@ explore: product_placement_performance {
   join: affected_by_impression_users {
     sql_on: ${product_placement_performance.anonymous_id}= ${affected_by_impression_users.anonymous_id}
             and ${product_placement_performance.event_date}=${affected_by_impression_users.event_date};;
-    type: inner
+    type: left_outer
     relationship: many_to_one
   }
 

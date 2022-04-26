@@ -302,6 +302,14 @@ view: product_placement_performance {
   }
 
   # ======= User Level Measures =======
+  measure: number_of_users {
+    group_label: "User Metrics"
+    label: "# Users"
+    description: "Number of users"
+    type: count_distinct
+    sql: ${anonymous_id} ;;
+  }
+
   measure: users_with_impressions {
     group_label: "User Metrics"
     label: "# Users with impressions"
