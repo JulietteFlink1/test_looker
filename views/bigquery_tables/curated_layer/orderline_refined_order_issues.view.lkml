@@ -355,6 +355,24 @@ view: +orderline {
 
   }
 
+  measure: pct_hub_related_post_order_issue_rate_per_total_orders {
+
+    label:       "% Orders Issue (post order hub related)"
+    group_label: "> Delivery Issues"
+    description: "The percentage of orders that had hub related post-delivery issues
+    (Missing Product, Wrong Product, Damaged, Perished, Swapped)"
+
+    type: number
+    sql:  (${cnt_damaged_products_post}+
+          ${cnt_perished_products_post}+
+          ${cnt_missing_products}+
+          ${cnt_swapped_products}+
+          ${cnt_wrong_products})/ nullif(${cnt_total_orders} ,0);;
+
+    value_format_name: percent_2
+
+  }
+
   measure: pct_pre_order_issue_rate_per_total_items_picked {
 
     label:       "% Orders Item Unfulfilled (preorder)"
