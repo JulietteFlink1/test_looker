@@ -5,6 +5,7 @@ view: albert_heijn_products {
   dimension: albert_heijn_products_hist_uuid {
     type: string
     sql: ${TABLE}.albert_hejn_products_hist_uuid ;;
+    primary_key: yes
   }
 
   dimension: category_id {
