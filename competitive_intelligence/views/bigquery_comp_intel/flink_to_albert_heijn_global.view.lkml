@@ -40,6 +40,7 @@ view: flink_to_albert_heijn_global {
   dimension: table_uuid {
     type: string
     sql: ${TABLE}.table_uuid ;;
+    primary_key: yes
   }
 
   measure: count {

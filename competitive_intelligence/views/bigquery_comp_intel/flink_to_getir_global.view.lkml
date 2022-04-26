@@ -20,6 +20,7 @@ view: flink_to_getir_global {
   dimension: table_uuid {
     type: string
     sql: ${TABLE}.table_uuid ;;
+    primary_key: yes
   }
 
   dimension: flink_product_name {
