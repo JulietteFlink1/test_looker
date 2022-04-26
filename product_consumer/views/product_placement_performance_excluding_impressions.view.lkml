@@ -196,13 +196,6 @@ view: product_placement_performance_excluding_impressions {
   # ~~~~~~~~~~~~~~~     Measures      ~~~~~~~~~~~~~~~ #
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
-  measure: logged_in_users {
-    group_label: "User Metrics"
-    label: "# Registered Users"
-    description: "Number of users who logged-in during a day"
-    type: sum
-    sql: ${TABLE}.number_of_logged_in_users ;;
-  }
   measure: anonymous_users {
     group_label: "User Metrics"
     label: "# All Users"
@@ -262,42 +255,5 @@ view: product_placement_performance_excluding_impressions {
     description: "# ordered products / # products with Add-to-Cart"
     value_format_name: percent_2
     sql: ${orders} / nullif(${add_to_carts},0);;
-  }
-
-  # ======= User Level Measures =======
-  measure: users_with_add_to_carts {
-    group_label: "User Metrics"
-    label: "# Users with Added to Cart"
-    description: "Number of unique products added to cart"
-    type: sum
-    sql: ${TABLE}.number_of_users_with_add_to_carts ;;
-  }
-  measure: users_with_removed_from_carts {
-    group_label: "User Metrics"
-    label: "# Users with Removed from Cart"
-    description: "Number of unique products removed from cart"
-    type: sum
-    sql: ${TABLE}.number_of_users_with_removed_from_carts ;;
-  }
-  measure: users_with_pdp_viewed {
-    group_label: "User Metrics"
-    label: "# Users with PDP views"
-    description: "Number of PDPs (product details viewed) per product"
-    type: sum
-    sql: ${TABLE}.number_of_users_with_pdp_views ;;
-  }
-  measure: users_with_add_to_favourites {
-    group_label: "User Metrics"
-    label: "# Users adding to favourites"
-    description: "Number of unique products added to favourites"
-    type: sum
-    sql: ${TABLE}.number_of_users_with_added_to_favourites ;;
-  }
-  measure: users_with_orders {
-    group_label: "User Metrics"
-    label: "# Users with with Orders "
-    description: "Number of orders with the product"
-    type: sum
-    sql: ${TABLE}.number_of_users_with_order ;;
   }
 }

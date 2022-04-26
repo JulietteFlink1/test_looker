@@ -49,7 +49,6 @@ explore: product_placement_performance {
             and ${product_placement_performance.event_date}=${affected_by_impression_users.event_date};;
     type: inner
     relationship: many_to_one
-    sql_where: {% condition global_filters_and_parameters.datasource_filter %} ${event_date} {% endcondition %} ;;
   }
 
 }

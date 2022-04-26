@@ -1,5 +1,5 @@
 view: product_placement_performance {
-  sql_table_name: `flink-data-dev.reporting.product_placement_performance`
+  sql_table_name: `flink-data-prod.reporting.product_placement_performance`
     ;;
   view_label: "Product Placement Performance"
 
