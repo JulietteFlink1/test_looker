@@ -200,8 +200,8 @@ view: product_placement_performance_excluding_impressions {
     group_label: "User Metrics"
     label: "# All Users"
     description: "Number of all users regardless of their login status."
-    type: sum
-    sql: ${TABLE}.number_of_users ;;
+    type: count_distinct
+    sql: ${TABLE}.anonymous_id ;;
   }
   measure: products {
     group_label: "Product Metrics"
