@@ -156,6 +156,43 @@ view: product_placement_performance {
     datatype: date
   }
 
+    # ======= Event Flags ======= #
+
+  dimension: is_product_impression {
+    group_label: "Event Flags"
+    type: yesno
+    sql: ${TABLE}.is_product_impression ;;
+  }
+
+  dimension: is_product_add_to_cart {
+    group_label: "Event Flags"
+    type: yesno
+    sql: ${TABLE}.is_product_add_to_cart ;;
+  }
+
+  dimension: is_product_removed_from_cart {
+    group_label: "Event Flags"
+    type: yesno
+    sql: ${TABLE}.is_product_removed_from_cart ;;
+  }
+
+  dimension: is_pdp_viewed {
+    group_label: "Event Flags"
+    type: yesno
+    sql: ${TABLE}.is_pdp_viewed ;;
+  }
+
+  dimension: is_added_to_favourites {
+    group_label: "Event Flags"
+    type: yesno
+    sql: ${TABLE}.is_added_to_favourites ;;
+  }
+
+  dimension: is_order_placed {
+    group_label: "Event Flags"
+    type: yesno
+    sql: ${TABLE}.is_order_placed ;;
+  }
   # ======= HIDDEN Dimension ======= #
 
   dimension: product_placement_uuid {
@@ -167,24 +204,19 @@ view: product_placement_performance {
     sql: ${TABLE}.event_uuid ;;
   }
 
+  dimension: anonymous_id {
+    hidden: yes
+    group_label: "IDs"
+    label: "Anonymous Id"
+    description: "User ID set by Segment"
+    type: string
+    sql: ${TABLE}.anonymous_id ;;
+    }
+
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
   # ~~~~~~~~~~~~~~~     Measures      ~~~~~~~~~~~~~~~ #
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
-  measure: logged_in_users {
-    group_label: "User Metrics"
-    label: "# Registered Users"
-    description: "Number of users who logged-in during a day"
-    type: sum
-    sql: ${TABLE}.number_of_logged_in_users ;;
-  }
-  measure: anonymous_users {
-    group_label: "User Metrics"
-    label: "# All Users"
-    description: "Number of all users regardless of their login status."
-    type: sum
-    sql: ${TABLE}.number_of_users ;;
-  }
   measure: products {
     group_label: "Product Metrics"
     label: "# Unique Products"
@@ -195,7 +227,6 @@ view: product_placement_performance {
   # ======= Product Event Level Measures =======
 
   measure: impressions {
-    hidden: yes
     group_label: "Product Metrics"
     label: "# Impressions"
     description: "Number of unique impressions per product"
@@ -238,7 +269,6 @@ view: product_placement_performance {
     sql: ${TABLE}.number_of_orders ;;
   }
   measure: click_through_rate {
-    hidden: yes
     group_label: "Rates (%)"
     label: "Click-Through Rate (CTR)"
     type: number
@@ -247,7 +277,6 @@ view: product_placement_performance {
     sql: (${add_to_carts} + ${pdps}) / nullif(${impressions},0);;
   }
   measure: impression_to_atc_rate {
-    hidden: yes
     group_label: "Rates (%)"
     label: "Impression to Add-to-Cart Rate"
     type: number
@@ -264,7 +293,6 @@ view: product_placement_performance {
     sql: ${orders} / nullif(${add_to_carts},0);;
   }
   measure: impression_to_order_rate{
-    hidden: yes
     group_label: "Rates (%)"
     label: "Impression to Order Rate"
     type: number
@@ -274,46 +302,60 @@ view: product_placement_performance {
   }
 
   # ======= User Level Measures =======
+  measure: number_of_users {
+    group_label: "User Metrics"
+    label: "# Users"
+    description: "Number of users"
+    type: count_distinct
+    sql: ${anonymous_id} ;;
+  }
+
   measure: users_with_impressions {
-    group_label: "Product Metrics"
-    label: "# Products Added to Cart"
-    description: "Number of unique products added to cart"
-    type: sum
-    sql: ${TABLE}.number_of_users_with_impressions ;;
+    group_label: "User Metrics"
+    label: "# Users with impressions"
+    description: "Number of users with impressions"
+    type: count_distinct
+    sql: ${anonymous_id} ;;
+    filters: [is_product_impression: "yes"]
   }
   measure: users_with_add_to_carts {
-    group_label: "Product Metrics"
-    label: "# Products Added to Cart"
-    description: "Number of unique products added to cart"
-    type: sum
-    sql: ${TABLE}.number_of_users_with_add_to_carts ;;
+    group_label: "User Metrics"
+    label: "# Users with add to cart"
+    description: "Number of users with add to cart"
+    type: count_distinct
+    sql: ${anonymous_id} ;;
+    filters: [is_product_add_to_cart: "yes"]
   }
-  measure: users_with_removed_from_carts {
-    group_label: "Product Metrics"
-    label: "# Products Removed from Cart"
-    description: "Number of unique products removed from cart"
-    type: sum
-    sql: ${TABLE}.number_of_users_with_removed_from_carts ;;
+  measure: users_with_removed_from_cart {
+    group_label: "User Metrics"
+    label: "# Users with removed to cart"
+    description: "Number of users with removed to cart"
+    type: count_distinct
+    sql: ${anonymous_id} ;;
+    filters: [is_product_removed_from_cart: "yes"]
   }
   measure: users_with_pdp_viewed {
-    group_label: "Product Metrics"
-    label: "# PDPs"
-    description: "Number of PDPs (product details viewed) per product"
-    type: sum
-    sql: ${TABLE}.number_of_users_with_pdp_views ;;
+    group_label: "User Metrics"
+    label: "# Users with pdp viewed"
+    description: "Number of users with pdp viewed"
+    type: count_distinct
+    sql: ${anonymous_id} ;;
+    filters: [is_pdp_viewed: "yes"]
   }
   measure: users_with_add_to_favourites {
-    group_label: "Product Metrics"
-    label: "# Favourite Products"
-    description: "Number of unique products added to favourites"
-    type: sum
-    sql: ${TABLE}.number_of_users_with_added_to_favourites ;;
+    group_label: "User Metrics"
+    label: "# Users with add to favourites"
+    description: "Number of users with add to favourites"
+    type: count_distinct
+    sql: ${anonymous_id} ;;
+    filters: [is_added_to_favourites: "yes"]
   }
   measure: users_with_orders {
-    group_label: "Product Metrics"
-    label: "# Ordered Products "
-    description: "Number of orders with the product"
-    type: sum
-    sql: ${TABLE}.number_of_users_with_order ;;
+    group_label: "User Metrics"
+    label: "# Users with add to favourites"
+    description: "Number of users with add to favourites"
+    type: count_distinct
+    sql: ${anonymous_id} ;;
+    filters: [is_order_placed: "yes"]
   }
 }
