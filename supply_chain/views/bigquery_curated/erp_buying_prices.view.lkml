@@ -182,8 +182,8 @@ view: erp_buying_prices {
   measure: avg_vendor_price {
     label: "AVG Buying Price"
     description: "The  sum of COGS divided by the sum of Item Quantity Sold"
-    type: number
-    sql: ${sum_total_cost} / nullif( ${orderline.quantity} ,0) ;;
+    type: average
+    sql: ${vendor_price} ;;
     value_format_name: decimal_4
   }
 
