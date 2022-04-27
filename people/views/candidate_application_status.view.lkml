@@ -412,6 +412,14 @@ view: candidate_application_status {
     value_format: "0.0"
   }
 
+  measure: avg_number_of_interviews {
+    type: average
+    group_label: "> Counts"
+    label: "AVG # Interviews"
+    sql: ${number_of_interviews} ;;
+    value_format: "0.0"
+  }
+
 
     ################ Conversion Rates
 
@@ -428,6 +436,6 @@ view: candidate_application_status {
     group_label: "> Conversion Rates"
     sql: safe_divide(${number_of_hired},${number_of_offered}) ;;
     label: "% Offer Acceptance (Offered → Hired)"
-    value_format: "0.00%"
+    value_format: "0.0%"
   }
 }

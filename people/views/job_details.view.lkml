@@ -38,6 +38,11 @@ view: job_details {
     sql: ${TABLE}.experience_level ;;
   }
 
+  dimension: recruiter_name {
+    type: string
+    sql: ${TABLE}.recruiter_name ;;
+  }
+
   dimension: function {
     type: string
     sql: ${TABLE}.function ;;
