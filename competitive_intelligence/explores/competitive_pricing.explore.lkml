@@ -97,7 +97,7 @@ explore: competitive_pricing {
     from: flink_to_gorillas_global
     view_label: "* Flink-Gorillas Match Data *"
     sql_on: ${flink_to_gorillas_global.flink_product_sku} = ${products.product_sku};;
-    relationship: one_to_many
+    relationship: one_to_one
     type: left_outer
   }
 
@@ -106,7 +106,7 @@ explore: competitive_pricing {
     view_label: "* Gorillas Products *"
     sql_on: ${gorillas_products.product_id} = ${flink_to_gorillas_global.gorillas_product_id}
       AND ${flink_to_gorillas_global.gorillas_product_name} = ${gorillas_products.product_name};;
-    relationship: one_to_one
+    relationship: one_to_many
     type: left_outer
   }
 
@@ -130,7 +130,7 @@ explore: competitive_pricing {
     from: gorillas_historical_prices_fact
     view_label: "* Gorillas Historical Prices *"
     sql_on: ${gorillas_products.product_id} = ${gorillas_historical_prices_fact.product_id} ;;
-    relationship: one_to_many
+    relationship: many_to_one
     type: left_outer
   }
 
@@ -138,7 +138,7 @@ explore: competitive_pricing {
     from: flink_to_getir_global
     view_label: "* Flink-Getir Match Data *"
     sql_on: ${flink_to_getir_global.flink_product_sku} = ${products.product_sku} ;;
-    relationship: one_to_many
+    relationship: one_to_one
     type: left_outer
   }
 
@@ -146,7 +146,7 @@ explore: competitive_pricing {
     from: getir_products
     view_label: "* Getir Products *"
     sql_on: ${flink_to_getir_global.getir_product_id} = ${getir_products.product_id} ;;
-    relationship: many_to_one
+    relationship: one_to_many
     type: left_outer
   }
 
@@ -171,8 +171,9 @@ explore: competitive_pricing {
   join: flink_to_albert_heijn_global {
     from: flink_to_albert_heijn_global
     view_label: "* Flink-Albert Heijn Match Data *"
-    sql_on: ${flink_to_albert_heijn_global.flink_product_sku} = ${products.product_sku} ;;
-    relationship: one_to_many
+    sql_on: ${flink_to_albert_heijn_global.flink_product_sku} = ${products.product_sku} and
+            ${flink_to_albert_heijn_global.country_iso} = ${products.country_iso};;
+    relationship: one_to_one
     type: left_outer
   }
 
@@ -180,7 +181,7 @@ explore: competitive_pricing {
     from: albert_heijn_products
     view_label: "* Albert Heijn Products *"
     sql_on: ${albert_heijn_products.product_id} = ${flink_to_albert_heijn_global.albert_heijn_product_id} ;;
-    relationship: one_to_many
+    relationship: one_to_one
     type: left_outer
   }
 
