@@ -400,6 +400,27 @@ view: shyftplan_riders_pickers_hours_clean {
   }
 
 
+  measure: sum_assigned_rider_hours{
+    type: sum
+    label:"# Scheduled Rider Hours"
+    description: "Number of Scheduled Rider Hours"
+    sql:${number_of_planned_minutes}/60;;
+    filters:[position_name: "rider"]
+    value_format_name: decimal_1
+    group_label: "Assigned Hours"
+  }
+
+  measure: sum_assigned_picker_hours{
+    type: sum
+    label:"# Scheduled Picker Hours"
+    description: "Number of Scheduled Picker Hours"
+    sql:${number_of_planned_minutes}/60;;
+    filters:[position_name: "picker"]
+    value_format_name: decimal_1
+    group_label: "Assigned Hours"
+  }
+
+
   measure: rider_utr {
     label: "AVG Rider UTR"
     type: number
