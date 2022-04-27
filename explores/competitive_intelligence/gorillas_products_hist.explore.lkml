@@ -13,7 +13,7 @@ include: "/**/competitive_intelligence/gorillas_products_hist.view"
 include: "/**/competitive_intelligence/gorillas_categories.view"
 include: "/**/competitive_intelligence/gorillas_hubs.view"
 include: "/**/global_filters_and_parameters.view"
-include: "/views/bigquery_tables/curated_layer/competitive_intelligence/*.view"
+include: "/**/gorillas_pricing_hist.view"
 
 explore: gorillas_products_hist {
 

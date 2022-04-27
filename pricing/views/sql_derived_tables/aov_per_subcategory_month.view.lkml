@@ -12,6 +12,7 @@ view: aov_per_subcategory_month{
       DATE_TRUNC( cast(a.order_timestamp as date), month) as month,
       a.country_iso,
       hub.country,
+      hub.hub_code,
       hub.hub_name,
       hub.city,
       f.is_discounted_order,
@@ -29,7 +30,7 @@ view: aov_per_subcategory_month{
              on a.order_uuid = f.order_uuid
       WHERE DATE(a.order_timestamp) >= "2021-02-01"
           and f.is_successful_order = true
-            group by 1,2,3,4,5,6,7,8,9,10
+            group by 1,2,3,4,5,6,7,8,9,10,11
 
 ),
 
@@ -56,6 +57,7 @@ c as
       DATE_TRUNC( cast(a.order_timestamp as date), month) as month,
       a.country_iso,
       hub.country,
+      hub.hub_code,
       hub.hub_name,
       hub.city,
       f.is_discounted_order,
@@ -74,7 +76,7 @@ c as
              on a.order_uuid = f.order_uuid
       WHERE DATE(a.order_timestamp) >= "2021-02-01"
           and f.is_successful_order = true
-      group by 1,2,3,4,5,6,7,8,9,10,11
+      group by 1,2,3,4,5,6,7,8,9,10,11,12
       order by 9
      ),
 
@@ -107,6 +109,7 @@ d as
       a.country_iso,
       --a.country,
       a.hub_name,
+      a.hub_code,
        case when a.is_discounted_order is true then "Yes" else "No" end as is_discounted_order,
       a.city,
       b.category,
@@ -275,6 +278,12 @@ d as
     sql: ${TABLE}.hub_name ;;
   }
 
+  dimension: hub_code {
+    label: "hub_code"
+    type: string
+    sql: ${TABLE}.hub_code ;;
+  }
+
   dimension: city {
     label: "city"
     type: string
@@ -315,6 +324,7 @@ d as
       country_iso,
       city,
       hub_name,
+      hub_code,
       category,
       subcategory,
       sum_item_value,
