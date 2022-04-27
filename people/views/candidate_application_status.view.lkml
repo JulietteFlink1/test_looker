@@ -441,6 +441,14 @@ view: candidate_application_status {
     value_format: "0.0%"
   }
 
+  measure: conversion_rate_new2rejection {
+    type: number
+    group_label: "> Conversion Rates"
+    sql: ${number_of_rejected}/${number_of_new_applications} ;;
+    label: "% Rejection Rate (New Application → Rejected)"
+    value_format: "0.0%"
+  }
+
   measure: offer_acceptance_rate_offered2hired {
     type: number
     group_label: "> Conversion Rates"
