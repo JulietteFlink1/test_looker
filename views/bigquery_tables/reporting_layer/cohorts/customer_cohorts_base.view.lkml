@@ -319,7 +319,7 @@ view: customer_cohorts_base {
   dimension: days_since_sign_up_tiered {
     group_label: "* User Dimensions *"
     type: tier
-    tiers: [0,1,30,60,90,120,150,180,210,240]
+    tiers: [0,1,30,60,90,120,150,180,210,240,270,300,330,360,390,420,450]
     style: interval
     sql: ${days_time_since_sign_up} ;;
   }
