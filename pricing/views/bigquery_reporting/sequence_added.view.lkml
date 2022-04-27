@@ -126,29 +126,6 @@ view: sequence_added{
 
 
 
-  # dimension: substitute_group {
-  #   type: string
-  #   sql: ${TABLE}.substitute_group ;;
-  # }
-
-
-
-  # dimension: category {
-  #   type: string
-  #   sql: ${TABLE}.category ;;
-  # }
-
-
-  # dimension: subcategory {
-  #   type: string
-  #   sql: ${TABLE}.subcategory ;;
-  # }
-
-  # dimension: product_name {
-  #   type: string
-  #   sql: ${TABLE}.product_name ;;
-  # }
-
 
 
 
