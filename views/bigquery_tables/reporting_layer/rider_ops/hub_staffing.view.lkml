@@ -261,6 +261,18 @@ view: hub_staffing {
     sql: ${TABLE}.number_of_target_orders_per_employee ;;
   }
 
+  dimension: number_of_forecasted_minutes {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_forecasted_minutes ;;
+  }
+
+
+  dimension: number_of_predicted_no_show_minutes {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_predicted_no_show_minutes ;;
+  }
 
   dimension_group: last_update {
     type: time
@@ -270,14 +282,6 @@ view: hub_staffing {
     convert_tz: yes
     datatype: datetime
     sql: ${TABLE}.last_updated_timestamp ;;
-  }
-
-  measure: sum_forecast_riders_needed{
-    type: sum
-    label:"# Forecasted Hours"
-    description: "Number of Needed Employee Hours Based on Forecasted Order Demand"
-    sql:NULLIF(${number_of_forecast_riders_needed},0)*0.5;;
-    value_format_name: decimal_1
   }
 
 
@@ -361,16 +365,6 @@ view: hub_staffing {
     value_format_name: decimal_1
   }
 
-
-  measure: pct_no_show_employees{
-    label:"% No Show Hours"
-    type: number
-    description: "# No Show Hours"
-    sql:(${sum_no_show_hours})/nullif(${sum_planned_hours},0) ;;
-    value_format_name: percent_1
-  }
-
-
   measure: sum_planned_hours{
     type: sum
     label:"# Scheduled Hours"
@@ -403,6 +397,49 @@ view: hub_staffing {
     value_format_name: decimal_1
   }
 
+  measure: sum_forecast_hours{
+    type: sum
+    label:"# Forecasted Hours (excluding No show)"
+    description: "Number of Needed Employee Hours Based on Forecasted Order Demand excluding no show hours"
+    sql:NULLIF(${number_of_forecasted_minutes},0)/60;;
+    value_format_name: decimal_1
+  }
+
+
+  measure: sum_forecast_no_show_hours{
+    type: sum
+    label:"# Forecasted No Show Hours"
+    description: "Number of No Show Employee Hours Based on Forecasted Order Demand"
+    sql:NULLIF(${number_of_predicted_no_show_minutes},0)/60;;
+    value_format_name: decimal_1
+  }
+
+
+  measure: sum_forecast_riders_needed{
+    type: number
+    label:"# Forecasted Hours (including No show)"
+    description: "Number of Needed Employee Hours Based on Forecasted Order Demand including no show hours"
+    sql:NULLIF(${sum_forecast_hours}+${sum_forecast_no_show_hours},0);;
+    value_format_name: decimal_1
+  }
+
+
+  measure: pct_no_show_employees{
+    label:"% Actual No Show Hours"
+    type: number
+    description: "% Actual No Show Hours"
+    sql:(${sum_no_show_hours})/nullif(${sum_planned_hours},0) ;;
+    value_format_name: percent_1
+  }
+
+  measure: pct_forecast_no_show_employees{
+    label:"% Forecasted No Show Hours"
+    type: number
+    description: "% Forecasted No Show Hours"
+    sql:(${sum_forecast_no_show_hours})/nullif(${sum_forecast_riders_needed},0) ;;
+    value_format_name: percent_1
+  }
+
 
   measure: avg_employees_utr{
     label:"UTR"
@@ -430,7 +467,7 @@ view: hub_staffing {
   }
 
   measure: sum_no_show_hours{
-    label:"# No Show Hours"
+    label:"# Actual No Show Hours"
     type: sum
     description: "Sum of No Show Hours"
     sql:${number_of_no_show_minutes}/60;;
