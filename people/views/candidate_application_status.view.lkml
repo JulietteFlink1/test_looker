@@ -412,12 +412,22 @@ view: candidate_application_status {
     value_format: "0.0"
   }
 
+  measure: avg_number_of_days_new_to_withdrawn {
+    type: average
+    group_label: "> Duration Between Stages"
+    label: "AVG # Days New to Withdrawn"
+    sql: ${number_of_days_new_to_withdrawn} ;;
+    value_format: "0.0"
+  }
+
   measure: avg_number_of_interviews {
     type: average
     group_label: "> Counts"
     label: "AVG # Interviews"
+    description: "AVG number of interviews for the candidates who enter the interview process"
     sql: ${number_of_interviews} ;;
     value_format: "0.0"
+    filters: [status_first_interview: "not null"]
   }
 
 
