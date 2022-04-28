@@ -143,17 +143,18 @@ view: candidate_application_status {
     sql: ${TABLE}.status_last_interview_date ;;
   }
 
-  dimension_group: status_new {
+  dimension_group: application_date {
+    alias: [status_new]
     type: time
     timeframes: [ date,
       week,
       month
     ]
     datatype: date
+    label: "Application"
     convert_tz: no
     group_label: "> Core Funnel Dates"
-    label: "New"
-    sql: ${TABLE}.status_new_date ;;
+    sql: ${TABLE}.application_date ;;
   }
 
   dimension: status_in_review {
@@ -283,7 +284,7 @@ view: candidate_application_status {
     type: count_distinct
     label: "# New Applications"
     sql: ${application_uuid} ;;
-    filters: [status_new_date: "not null"]
+    filters: [application_date_date: "not null"]
   }
 
   measure: number_of_rejected {
@@ -456,4 +457,5 @@ view: candidate_application_status {
     label: "% Offer Acceptance (Offered → Hired)"
     value_format: "0.0%"
   }
+
 }
