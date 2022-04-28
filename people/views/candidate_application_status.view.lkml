@@ -143,17 +143,18 @@ view: candidate_application_status {
     sql: ${TABLE}.status_last_interview_date ;;
   }
 
-  dimension_group: status_new {
+  dimension_group: application_date {
+    alias: [status_new]
     type: time
     timeframes: [ date,
       week,
       month
     ]
     datatype: date
+    label: "Application"
     convert_tz: no
     group_label: "> Core Funnel Dates"
-    label: "New"
-    sql: ${TABLE}.status_new_date ;;
+    sql: ${TABLE}.application_date ;;
   }
 
   dimension: status_in_review {
@@ -283,7 +284,7 @@ view: candidate_application_status {
     type: count_distinct
     label: "# New Applications"
     sql: ${application_uuid} ;;
-    filters: [status_new_date: "not null"]
+    filters: [application_date_date: "not null"]
   }
 
   measure: number_of_rejected {
@@ -412,12 +413,22 @@ view: candidate_application_status {
     value_format: "0.0"
   }
 
+  measure: avg_number_of_days_new_to_withdrawn {
+    type: average
+    group_label: "> Duration Between Stages"
+    label: "AVG # Days New to Withdrawn"
+    sql: ${number_of_days_new_to_withdrawn} ;;
+    value_format: "0.0"
+  }
+
   measure: avg_number_of_interviews {
     type: average
     group_label: "> Counts"
     label: "AVG # Interviews"
+    description: "AVG number of interviews for the candidates who enter the interview process"
     sql: ${number_of_interviews} ;;
     value_format: "0.0"
+    filters: [status_first_interview: "not null"]
   }
 
 
@@ -431,6 +442,14 @@ view: candidate_application_status {
     value_format: "0.0%"
   }
 
+  measure: conversion_rate_new2rejection {
+    type: number
+    group_label: "> Conversion Rates"
+    sql: ${number_of_rejected}/${number_of_new_applications} ;;
+    label: "% Rejection Rate (New Application → Rejected)"
+    value_format: "0.0%"
+  }
+
   measure: offer_acceptance_rate_offered2hired {
     type: number
     group_label: "> Conversion Rates"
@@ -438,4 +457,5 @@ view: candidate_application_status {
     label: "% Offer Acceptance (Offered → Hired)"
     value_format: "0.0%"
   }
+
 }
