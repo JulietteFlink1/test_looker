@@ -81,7 +81,7 @@ view: vat_order {
   }
 
   dimension: order_status {
-    type: yesno
+    type: string
     sql: ${TABLE}.status ;;
   }
 
