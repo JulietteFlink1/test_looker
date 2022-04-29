@@ -92,6 +92,13 @@ view: job_positions {
     filters: [status: "CREATED"]
   }
 
+  measure: number_of_positions {
+    group_label: "> Position Status"
+    label: "# Positions"
+    type: count_distinct
+    sql: ${job_position_uuid} ;;
+  }
+
   ########## Parameters
 
   parameter: date_granularity {
