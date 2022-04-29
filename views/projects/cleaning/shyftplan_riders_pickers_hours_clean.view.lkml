@@ -549,7 +549,7 @@ view: shyftplan_riders_pickers_hours_clean {
     type: sum
     label:"Sum Rider Forecasted Hours (excluding No show)"
     description: "Number of Needed Employee Hours Based on Forecasted Order Demand excluding no show hours"
-    sql:NULLIF(${number_of_forecasted_minutes},0)/60;;
+    sql:NULLIF(${number_of_forecasted_minutes}-${number_of_predicted_no_show_minutes},0)/60;;
     filters: [position_name: "rider"]
     group_label: "No Show"
     value_format_name: decimal_1
@@ -571,7 +571,7 @@ view: shyftplan_riders_pickers_hours_clean {
     type: sum
     label:"Sum Rider Forecasted Hours (including No show)"
     description: "Number of Needed Employee Hours Based on Forecasted Order Demand including no show hours"
-    sql:NULLIF(${number_of_forecasted_minutes}+${number_of_predicted_no_show_minutes},0)/60;;
+    sql:NULLIF(${number_of_forecasted_minutes},0)/60;;
     filters: [position_name: "rider"]
     group_label: "No Show"
     value_format_name: decimal_1
