@@ -1,4 +1,4 @@
-include: "/views/bigquery_tables/curated_layer/cs_conversations.view.lkml"
+include: "/customer_care/views/bigquery_curated/cs_conversations.view"
 include: "/views/bigquery_tables/curated_layer/orders.view.lkml"
 
 # tag_names is a repeated record. join to get all the fully nested relationships from this view
