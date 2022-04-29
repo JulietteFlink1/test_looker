@@ -458,4 +458,48 @@ view: candidate_application_status {
     value_format: "0.0%"
   }
 
+  ########## Parameters
+
+  parameter: date_granularity {
+    group_label: "* Dates and Timestamps *"
+    label: "Date Granularity"
+    type: unquoted
+    allowed_value: { value: "Day" }
+    allowed_value: { value: "Week" }
+    allowed_value: { value: "Month" }
+    default_value: "Day"
+  }
+
+  ######## DYNAMIC DIMENSIONS
+
+  dimension: application_date_dynamic {
+    group_label:  "> Core Funnel Dates"
+    label: "Application Date (Dynamic)"
+    label_from_parameter: date_granularity
+    sql:
+    {% if date_granularity._parameter_value == 'Day' %}
+      ${application_date_date}
+    {% elsif date_granularity._parameter_value == 'Week' %}
+      ${application_date_week}
+    {% elsif date_granularity._parameter_value == 'Month' %}
+      ${application_date_month}
+    {% endif %};;
+  }
+
+  # dimension: date_granularity_pass_through {
+  #   group_label: "> Parameters"
+  #   description: "To use the parameter value in a table calculation (e.g WoW, % Growth) we need to materialize it into a dimension "
+  #   type: string
+  #   hidden: no # yes
+  #   sql:
+  #           {% if date_granularity._parameter_value == 'Day' %}
+  #             "Day"
+  #           {% elsif date_granularity._parameter_value == 'Week' %}
+  #             "Week"
+  #           {% elsif date_granularity._parameter_value == 'Month' %}
+  #             "Month"
+  #           {% endif %};;
+  # }
+
+
 }

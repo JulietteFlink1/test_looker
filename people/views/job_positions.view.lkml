@@ -91,4 +91,46 @@ view: job_positions {
     sql: ${job_position_uuid} ;;
     filters: [status: "CREATED"]
   }
+
+  ########## Parameters
+
+  parameter: date_granularity {
+    group_label: "> Dates"
+    label: "Date Granularity"
+    type: unquoted
+    allowed_value: { value: "Day" }
+    allowed_value: { value: "Week" }
+    allowed_value: { value: "Month" }
+    default_value: "Day"
+  }
+
+  ######## DYNAMIC DIMENSIONS
+
+  dimension: position_open_date_dynamic {
+    group_label:  "> Dates"
+    label: "Position Open Date (Dynamic)"
+    label_from_parameter: date_granularity
+    sql:
+    {% if date_granularity._parameter_value == 'Day' %}
+      ${position_open_date}
+    {% elsif date_granularity._parameter_value == 'Week' %}
+      ${position_open_week}
+    {% elsif date_granularity._parameter_value == 'Month' %}
+      ${position_open_month}
+    {% endif %};;
+  }
+
+  dimension: target_start_date_dynamic {
+    group_label:  "> Dates"
+    label: "Target Start Date (Dynamic)"
+    label_from_parameter: date_granularity
+    sql:
+    {% if date_granularity._parameter_value == 'Day' %}
+      ${target_start_date}
+    {% elsif date_granularity._parameter_value == 'Week' %}
+      ${target_start_week}
+    {% elsif date_granularity._parameter_value == 'Month' %}
+      ${target_start_month}
+    {% endif %};;
+  }
 }
