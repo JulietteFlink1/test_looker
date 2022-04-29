@@ -1,4 +1,4 @@
-view: onboarding_task_roman {
+view: test_content_validator {
   sql_table_name: `flink-data-prod.sandbox.onboarding_task_roman`
     ;;
 

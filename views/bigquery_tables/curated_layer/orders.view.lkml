@@ -707,6 +707,12 @@ view: orders {
     sql: ${TABLE}.is_successful_order ;;
   }
 
+  dimension: is_click_and_collect_order {
+    group_label: "* Order Dimensions *"
+    type: yesno
+    sql: ${TABLE}.is_click_and_collect_order ;;
+  }
+
   dimension: language_code {
     group_label: "* Geographic Dimensions *"
     type: string

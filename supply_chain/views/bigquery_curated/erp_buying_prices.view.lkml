@@ -17,8 +17,8 @@ view: erp_buying_prices {
 
   # =========  __main__   =========
   dimension: net_income {
-    label: "Net Income"
-    description: "The incoming cash defined as net item-price"
+    label: "Net Unit Price"
+    description: "The incoming cash defined as net item price"
     type: number
     sql:  coalesce(
             ${orderline.unit_price_gross_amount} / nullif((1 + ${orderline.tax_rate}) ,0),
@@ -29,16 +29,16 @@ view: erp_buying_prices {
   }
 
   dimension: margin_absolute {
-    label: "Margin (absolute)"
-    description: "The absolute margin defined as Net Income substracted by the Buying Price"
+    label: "€ Unit Margin"
+    description: "The unit margin defined as Net Unit Price substracted by the Buying Price"
     type: number
     sql: ${net_income} - ${vendor_price} ;;
     value_format_name: eur
   }
 
   dimension: margin_relative {
-    label: "Margin (%)"
-    description: "The relative margin defined as the Margin (absolute) divided by the Net Income"
+    label: "% Unit Margin"
+    description: "The relative margin defined as Unit Margin divided by the Net Unit Price"
     type: number
     sql: ${margin_absolute} / nullif(${net_income},0) ;;
     value_format_name: percent_1
@@ -178,17 +178,18 @@ view: erp_buying_prices {
   # ~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+
   measure: avg_vendor_price {
     label: "AVG Buying Price"
-    description: "The average buying price"
+    description: "The  sum of COGS divided by the sum of Item Quantity Sold"
     type: average
-    sql: ${TABLE}.vendor_price ;;
+    sql: ${vendor_price} ;;
     value_format_name: decimal_4
   }
 
   measure: sum_total_net_income {
-    label: "€ Total Net Income"
-    description: "The sum of all unit_prices multiplied by the quantity of products sold"
+    label: "€ Sum Item Prices Sold (Net)"
+    description: "The sum of all Net Unit Price multiplied by the sum of Item Quantity Sold"
     type: sum
     sql: (${orderline.quantity} * ${net_income}) ;;
     value_format_name: eur
@@ -196,8 +197,8 @@ view: erp_buying_prices {
   }
 
   measure: sum_total_margin_abs {
-    label: "€ Total Margin"
-    description: "The sum of all margins defined as Net Income minus Buying Price"
+    label: "€ Sum Gross Profit"
+    description: "The sum of all Unit Margins defined as Net Unit Price minus Buying Price"
     type: sum
     sql: (${orderline.quantity} * ${margin_absolute}) ;;
     value_format_name: eur
@@ -205,11 +206,19 @@ view: erp_buying_prices {
   }
 
   measure: pct_total_margin_relative {
-    label: "% Total Margin"
-    description: "The € Total Margin divided by the € Total Net Income"
+    label: "% Blended Margin"
+    description: "The sum of Gross Profit divided by the sum of Item Prices Sold (Net)"
     type: number
     sql: ${sum_total_margin_abs} / nullif( ${sum_total_net_income} ,0);;
     value_format_name: percent_1
+  }
+
+  measure: sum_total_cost {
+    label: "€ Sum COGS"
+    description: "The sum of Item Prices Sold (Net) minus sum of Gross Profit"
+    type: number
+    sql: ${sum_total_net_income} - ${sum_total_margin_abs} ;;
+    value_format_name: eur
   }
 
 }
