@@ -111,11 +111,16 @@ view: candidate_application_status {
 
   ################# Core Funnel Dates
 
-  dimension: start {
-    type: date
+  dimension_group: start_date {
+    type: time
+    timeframes: [date,
+      week,
+      month
+    ]
+    datatype: date
     convert_tz: no
     group_label: "> Core Funnel Dates"
-    label: "Start Date"
+    label: "Start"
     sql: ${TABLE}.start_date ;;
   }
 
@@ -502,6 +507,20 @@ view: candidate_application_status {
       ${hiring_date_week}
     {% elsif date_granularity._parameter_value == 'Month' %}
       ${hiring_date_month}
+    {% endif %};;
+  }
+
+  dimension: start_date_dynamic {
+    group_label:  "> Core Funnel Dates"
+    label: "Start Date (Dynamic)"
+    label_from_parameter: date_granularity
+    sql:
+    {% if date_granularity._parameter_value == 'Day' %}
+      ${start_date_date}
+    {% elsif date_granularity._parameter_value == 'Week' %}
+      ${start_date_week}
+    {% elsif date_granularity._parameter_value == 'Month' %}
+      ${start_date_month}
     {% endif %};;
   }
 
