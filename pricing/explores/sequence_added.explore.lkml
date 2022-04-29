@@ -24,5 +24,13 @@ explore: sequence_added {
   }
 
 
+  join: key_value_items {
+    sql_on: ${sequence_added.sku}              = ${key_value_items.sku}
+    and ${key_value_items.kvi_date} >=current_date() - 6
+      ;;
+    relationship: many_to_one
+  }
+
+
 
 }
