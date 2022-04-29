@@ -127,11 +127,16 @@ view: candidate_application_status {
     sql: ${TABLE}.status_first_interview_date ;;
   }
 
-  dimension: status_hired {
-    type: date
+  dimension_group: hiring_date {
+    type: time
+    timeframes: [ date,
+      week,
+      month
+    ]
+    datatype: date
+    label: "Hiring"
     convert_tz: no
     group_label: "> Core Funnel Dates"
-    label: "Hired Date"
     sql: ${TABLE}.status_hired_date ;;
   }
 
@@ -351,7 +356,7 @@ view: candidate_application_status {
     type: count_distinct
     label: "# Hired"
     sql: ${application_uuid} ;;
-    filters: [status_hired: "not null"]
+    filters: [hiring_date_date: "not null"]
   }
 
   measure: number_of_offered {
@@ -483,6 +488,20 @@ view: candidate_application_status {
       ${application_date_week}
     {% elsif date_granularity._parameter_value == 'Month' %}
       ${application_date_month}
+    {% endif %};;
+  }
+
+  dimension: hiring_date_dynamic {
+    group_label:  "> Core Funnel Dates"
+    label: "Hiring Date (Dynamic)"
+    label_from_parameter: date_granularity
+    sql:
+    {% if date_granularity._parameter_value == 'Day' %}
+      ${hiring_date_date}
+    {% elsif date_granularity._parameter_value == 'Week' %}
+      ${hiring_date_week}
+    {% elsif date_granularity._parameter_value == 'Month' %}
+      ${hiring_date_month}
     {% endif %};;
   }
 

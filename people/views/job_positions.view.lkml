@@ -133,4 +133,18 @@ view: job_positions {
       ${target_start_month}
     {% endif %};;
   }
+
+  dimension: hiring_date_dynamic {
+    group_label:  "> Dates"
+    label: "Hiring Date (Dynamic)"
+    label_from_parameter: date_granularity
+    sql:
+    {% if date_granularity._parameter_value == 'Day' %}
+      ${candidate_application_funnel.hiring_date_date}
+    {% elsif date_granularity._parameter_value == 'Week' %}
+      ${candidate_application_funnel.hiring_date_week}
+    {% elsif date_granularity._parameter_value == 'Month' %}
+      ${candidate_application_funnel.hiring_date_month}
+    {% endif %};;
+  }
 }
