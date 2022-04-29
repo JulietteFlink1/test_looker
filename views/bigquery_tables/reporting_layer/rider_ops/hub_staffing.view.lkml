@@ -417,7 +417,7 @@ view: hub_staffing {
     type: sum
     label:"# Forecasted Hours (excluding No show)"
     description: "Number of Needed Employee Hours Based on Forecasted Order Demand excluding no show hours"
-    sql:NULLIF(${number_of_forecasted_minutes},0)/60;;
+    sql:NULLIF(${number_of_forecasted_minutes}-${number_of_predicted_no_show_minutes},0)/60;;
     value_format_name: decimal_1
   }
 
@@ -432,10 +432,10 @@ view: hub_staffing {
 
 
   measure: sum_forecast_riders_needed{
-    type: number
+    type: sum
     label:"# Forecasted Hours (including No show)"
     description: "Number of Needed Employee Hours Based on Forecasted Order Demand including no show hours"
-    sql:NULLIF(${sum_forecast_hours}+${sum_forecast_no_show_hours},0);;
+    sql:NULLIF(${number_of_forecasted_minutes},0)/60;;
     value_format_name: decimal_1
   }
 
