@@ -202,7 +202,7 @@ view: product_placement_performance {
     label: "Event UUID"
     description: "Unique identifier of an event"
     type: string
-    sql: ${TABLE}.event_uuid ;;
+    sql: ${TABLE}.product_placement_uuid ;;
   }
 
   dimension: anonymous_id {
