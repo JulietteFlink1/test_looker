@@ -31,6 +31,17 @@ explore: sequence_added {
     relationship: many_to_one
   }
 
+join: geographic_pricing_hub_cluster {
+sql_on: ${sequence_added.hub_code}              = ${geographic_pricing_hub_cluster.hub_code}
+  ;;
+relationship: many_to_one
+}
+
+  join: geographic_pricing_sku_cluster {
+    sql_on: ${sequence_added.sku}              = ${geographic_pricing_sku_cluster.sku}
+      ;;
+    relationship: many_to_one
+  }
 
 
 }
