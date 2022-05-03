@@ -1,4 +1,5 @@
-include: "/views/**/*.view"
+include: "/competitive_intelligence/views/bigquery_curated/picnic_products.view.lkml"
+include: "/competitive_intelligence/views/bigquery_curated/picnic_categories.view.lkml"
 
 explore:  picnic_products {
   hidden: no

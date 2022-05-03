@@ -1,4 +1,5 @@
-include: "/competitive_intelligence/views/**/*.view.lkml"
+include: "/competitive_intelligence/views/bigquery_curated/gorillas_promise_time.view.lkml"
+include: "/competitive_intelligence/views/bigquery_curated/gorillas_hubs.view.lkml"
 
 explore:  gorillas_promise_time {
   hidden: yes

@@ -12,7 +12,7 @@ include: "/**/getir_products.view"
 include: "/**/getir_categories.view"
 include: "/**/getir_hubs.view"
 include: "/**/flink_to_albert_heijn_global.view"
-include: "/**/albert_hejn_products.view"
+include: "/competitive_intelligence/views/bigquery_curated/albert_heijn_products.view.lkml"
 include: "/**/key_value_items.view"
 include: "/**/price_test_tracking.view"
 

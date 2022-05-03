@@ -1,4 +1,5 @@
-include: "/competitive_intelligence/views/**/*.view.lkml"
+include: "/competitive_intelligence/views/bigquery_reporting/gorillas_inventory_stock_count.view.lkml"
+include: "/competitive_intelligence/views/bigquery_curated/gorillas_categories.view.lkml"
 
 explore: gorillas_inventory_stock_count {
   view_name: gorillas_inventory_stock_count

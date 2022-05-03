@@ -1,4 +1,4 @@
-include: "/competitive_intelligence/views/**/*.view.lkml"
+include: "/competitive_intelligence/views/bigquery_curated/albert_heijn_products.view.lkml"
 
 explore:  albert_heijn_products {
   hidden: yes

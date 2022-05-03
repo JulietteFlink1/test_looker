@@ -1,5 +1,4 @@
-include: "/competitive_intelligence/views/**/*.view.lkml"
-include: "/competitive_intelligence/explores/**/*.explore.lkml"
+include: "/competitive_intelligence/views/bigquery_curated/competitive_intelligence_active_hubs.view.lkml"
 
 explore: competitive_intelligence_active_hubs {
   view_name: competitive_intelligence_active_hubs

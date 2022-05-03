@@ -1,4 +1,6 @@
-include: "/competitive_intelligence/views/**/*.view.lkml"
+include: "/competitive_intelligence/views/bigquery_curated/getir_products.view.lkml"
+include: "/competitive_intelligence/views/bigquery_curated/getir_categories.view.lkml"
+include: "/competitive_intelligence/views/bigquery_curated/getir_hubs.view.lkml"
 
 explore:  getir_products {
   hidden: no

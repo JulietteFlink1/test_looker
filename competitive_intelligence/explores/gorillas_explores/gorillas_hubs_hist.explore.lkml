@@ -1,4 +1,4 @@
-include: "/competitive_intelligence/views/**/*.view.lkml"
+include: "/competitive_intelligence/views/bigquery_curated/gorillas_hubs_hist.view.lkml"
 
 explore: gorillas_hubs_hist {
   view_name: gorillas_hubs_hist
