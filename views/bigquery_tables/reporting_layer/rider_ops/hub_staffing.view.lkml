@@ -367,15 +367,15 @@ view: hub_staffing {
 
   measure: sum_planned_hours{
     type: sum
-    label:"# Scheduled Hours"
-    description: "Number of Scheduled Hours"
+    label:"# Filled Hours"
+    description: "Number of Scheduled(Assigned) Hours"
     sql:${number_of_planned_minutes}/60;;
     value_format_name: decimal_1
   }
 
   measure: sum_planned_hours_external{
     type: sum
-    label:"# Scheduled Ext Hours"
+    label:"# Filled Ext Hours"
     description: "Number of Scheduled Ext Hours"
     sql:${number_of_planned_minutes_external}/60;;
     value_format_name: decimal_1
@@ -383,7 +383,7 @@ view: hub_staffing {
 
   measure: sum_worked_hours{
     type: sum
-    label:"# Worked Hours"
+    label:"# Punched Hours"
     description: "Number of Worked Hours"
     sql:${number_of_worked_minutes}/60;;
     value_format_name: decimal_1
@@ -391,9 +391,25 @@ view: hub_staffing {
 
   measure: sum_worked_hours_external{
     type: sum
-    label:"# Worked Ext Hours"
+    label:"# Punched Ext Hours"
     description: "Number of Worked Ext Hours"
     sql:${number_of_worked_minutes_external}/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_scheduled_hours {
+    label: "# Scheduled Hours"
+    description: "# Scheduled Hours (Post-Adjustments) (Assigned + Open)"
+    type: number
+    sql: ${number_of_unassigned_hours}+${sum_planned_hours};;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_scheduled_hours_external {
+    label: "# Scheduled Ext Hours"
+    description: "# Scheduled Ext Hours (Post-Adjustments) (Assigned + Open)"
+    type: number
+    sql: ${number_of_unassigned_hours_external}+${sum_planned_hours_external};;
     value_format_name: decimal_1
   }
 
@@ -401,7 +417,7 @@ view: hub_staffing {
     type: sum
     label:"# Forecasted Hours (excluding No show)"
     description: "Number of Needed Employee Hours Based on Forecasted Order Demand excluding no show hours"
-    sql:NULLIF(${number_of_forecasted_minutes},0)/60;;
+    sql:NULLIF(${number_of_forecasted_minutes}-${number_of_predicted_no_show_minutes},0)/60;;
     value_format_name: decimal_1
   }
 
@@ -416,10 +432,10 @@ view: hub_staffing {
 
 
   measure: sum_forecast_riders_needed{
-    type: number
+    type: sum
     label:"# Forecasted Hours (including No show)"
     description: "Number of Needed Employee Hours Based on Forecasted Order Demand including no show hours"
-    sql:NULLIF(${sum_forecast_hours}+${sum_forecast_no_show_hours},0);;
+    sql:NULLIF(${number_of_forecasted_minutes},0)/60;;
     value_format_name: decimal_1
   }
 
@@ -452,7 +468,7 @@ view: hub_staffing {
 
   measure: number_of_unassigned_hours{
     type: sum
-    label:"# Unassigned Hours"
+    label:"# Open Hours"
     description: "Number of Unassigned(Open) Hours"
     sql:(${number_of_unassigned_minutes_internal}+${number_of_unassigned_minutes_external})/60;;
     value_format_name: decimal_1
@@ -460,7 +476,7 @@ view: hub_staffing {
 
   measure: number_of_unassigned_hours_external{
     type: sum
-    label:"# Unassigned Ext Hours"
+    label:"# Open Ext Hours"
     description: "Number of Unassigned(Open) Ext Hours"
     sql:${number_of_unassigned_minutes_external}/60;;
     value_format_name: decimal_1
@@ -484,7 +500,7 @@ view: hub_staffing {
 
   measure: sum_hours_needed {
     type: number
-    label:"# Actual Needed Hours"
+    label:"# Actually Needed Hours"
     description: "Number of needed Employees based on actual order demand"
     sql:ceiling(NULLIF(${sum_orders},0) / nullif(${number_of_target_utr},0));;
     value_format_name: decimal_1

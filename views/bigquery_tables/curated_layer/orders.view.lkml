@@ -1796,10 +1796,11 @@ view: orders {
 
       measure: sum_deposit {
         group_label: "* Monetary Values *"
-        label: "SUM Deposit"
+        label: "SUM Total Deposit"
         hidden:  no
         type: sum
         sql: ${deposit};;
+        description: "Sum of all deposits, paid by Flink or by the customers "
         value_format_name: euro_accounting_2_precision
   }
 

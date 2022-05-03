@@ -1,5 +1,5 @@
 view: candidate_application_status {
-  sql_table_name: `flink-data-dev.curated.candidate_application_status`
+  sql_table_name: `flink-data-prod.curated.candidate_application_status`
     ;;
 
   dimension: application_uuid {
@@ -111,11 +111,16 @@ view: candidate_application_status {
 
   ################# Core Funnel Dates
 
-  dimension: start {
-    type: date
+  dimension_group: start_date {
+    type: time
+    timeframes: [date,
+      week,
+      month
+    ]
+    datatype: date
     convert_tz: no
     group_label: "> Core Funnel Dates"
-    label: "Start Date"
+    label: "Start"
     sql: ${TABLE}.start_date ;;
   }
 
@@ -127,11 +132,16 @@ view: candidate_application_status {
     sql: ${TABLE}.status_first_interview_date ;;
   }
 
-  dimension: status_hired {
-    type: date
+  dimension_group: hiring_date {
+    type: time
+    timeframes: [ date,
+      week,
+      month
+    ]
+    datatype: date
+    label: "Hiring"
     convert_tz: no
     group_label: "> Core Funnel Dates"
-    label: "Hired Date"
     sql: ${TABLE}.status_hired_date ;;
   }
 
@@ -143,17 +153,18 @@ view: candidate_application_status {
     sql: ${TABLE}.status_last_interview_date ;;
   }
 
-  dimension_group: status_new {
+  dimension_group: application_date {
+    alias: [status_new]
     type: time
     timeframes: [ date,
       week,
       month
     ]
     datatype: date
+    label: "Application"
     convert_tz: no
     group_label: "> Core Funnel Dates"
-    label: "New"
-    sql: ${TABLE}.status_new_date ;;
+    sql: ${TABLE}.application_date ;;
   }
 
   dimension: status_in_review {
@@ -210,7 +221,7 @@ view: candidate_application_status {
     type: date
     convert_tz: no
     group_label: "> Interview Dates"
-    label: "[INTERVIEW] F2F Executive Interview Date"
+    label: " F2F Executive Interview Date"
     sql: ${TABLE}.substatus_interview_f2f_executive_date ;;
   }
 
@@ -218,7 +229,7 @@ view: candidate_application_status {
     type: date
     convert_tz: no
     group_label: "> Interview Dates"
-    label: "[INTERVIEW] F2F Founder Interview Date"
+    label: " F2F Founder Interview Date"
     sql: ${TABLE}.substatus_interview_f2f_founder_date ;;
   }
 
@@ -226,7 +237,7 @@ view: candidate_application_status {
     type: date
     convert_tz: no
     group_label: "> Interview Dates"
-    label: "[INTERVIEW] F2F Peer Interview Date"
+    label: " F2F Peer Interview Date"
     sql: ${TABLE}.substatus_interview_f2f_peer_date ;;
   }
 
@@ -234,7 +245,7 @@ view: candidate_application_status {
     type: date
     convert_tz: no
     group_label: "> Interview Dates"
-    label: "[INTERVIEW] F2F Recruiter & Hiring Manager Date"
+    label: " F2F Recruiter & Hiring Manager Date"
     sql: ${TABLE}.substatus_interview_f2f_recruiter_hiring_manager_date ;;
   }
 
@@ -242,7 +253,7 @@ view: candidate_application_status {
     type: date
     convert_tz: no
     group_label: "> Interview Dates"
-    label: "[INTERVIEW] Preliminary Interview Date"
+    label: " Preliminary Interview Date"
     sql: ${TABLE}.substatus_interview_preliminary_date ;;
   }
 
@@ -250,7 +261,7 @@ view: candidate_application_status {
     type: date
     convert_tz: no
     group_label: "> Interview Dates"
-    label: "[INTERVIEW] Pre-screen Interview Date"
+    label: " Pre-screen Interview Date"
     sql: ${TABLE}.substatus_interview_prescreen_date ;;
   }
 
@@ -258,7 +269,7 @@ view: candidate_application_status {
     type: date
     convert_tz: no
     group_label: "> Interview Dates"
-    label: "[INTERVIEW] Test Assignment Date"
+    label: " Test Assignment Date"
     sql: ${TABLE}.substatus_interview_test_assignment_date ;;
   }
 
@@ -283,7 +294,7 @@ view: candidate_application_status {
     type: count_distinct
     label: "# New Applications"
     sql: ${application_uuid} ;;
-    filters: [status_new_date: "not null"]
+    filters: [application_date_date: "not null"]
   }
 
   measure: number_of_rejected {
@@ -350,7 +361,7 @@ view: candidate_application_status {
     type: count_distinct
     label: "# Hired"
     sql: ${application_uuid} ;;
-    filters: [status_hired: "not null"]
+    filters: [hiring_date_date: "not null"]
   }
 
   measure: number_of_offered {
@@ -412,12 +423,22 @@ view: candidate_application_status {
     value_format: "0.0"
   }
 
+  measure: avg_number_of_days_new_to_withdrawn {
+    type: average
+    group_label: "> Duration Between Stages"
+    label: "AVG # Days New to Withdrawn"
+    sql: ${number_of_days_new_to_withdrawn} ;;
+    value_format: "0.0"
+  }
+
   measure: avg_number_of_interviews {
     type: average
     group_label: "> Counts"
     label: "AVG # Interviews"
+    description: "AVG number of interviews for the candidates who enter the interview process"
     sql: ${number_of_interviews} ;;
     value_format: "0.0"
+    filters: [status_first_interview: "not null"]
   }
 
 
@@ -431,6 +452,14 @@ view: candidate_application_status {
     value_format: "0.0%"
   }
 
+  measure: conversion_rate_new2rejection {
+    type: number
+    group_label: "> Conversion Rates"
+    sql: ${number_of_rejected}/${number_of_new_applications} ;;
+    label: "% Rejection Rate (New Application → Rejected)"
+    value_format: "0.0%"
+  }
+
   measure: offer_acceptance_rate_offered2hired {
     type: number
     group_label: "> Conversion Rates"
@@ -438,4 +467,77 @@ view: candidate_application_status {
     label: "% Offer Acceptance (Offered → Hired)"
     value_format: "0.0%"
   }
+
+  ########## Parameters
+
+  parameter: date_granularity {
+    group_label: "* Dates and Timestamps *"
+    label: "Date Granularity"
+    type: unquoted
+    allowed_value: { value: "Day" }
+    allowed_value: { value: "Week" }
+    allowed_value: { value: "Month" }
+    default_value: "Day"
+  }
+
+  ######## DYNAMIC DIMENSIONS
+
+  dimension: application_date_dynamic {
+    group_label:  "> Core Funnel Dates"
+    label: "Application Date (Dynamic)"
+    label_from_parameter: date_granularity
+    sql:
+    {% if date_granularity._parameter_value == 'Day' %}
+      ${application_date_date}
+    {% elsif date_granularity._parameter_value == 'Week' %}
+      ${application_date_week}
+    {% elsif date_granularity._parameter_value == 'Month' %}
+      ${application_date_month}
+    {% endif %};;
+  }
+
+  dimension: hiring_date_dynamic {
+    group_label:  "> Core Funnel Dates"
+    label: "Hiring Date (Dynamic)"
+    label_from_parameter: date_granularity
+    sql:
+    {% if date_granularity._parameter_value == 'Day' %}
+      ${hiring_date_date}
+    {% elsif date_granularity._parameter_value == 'Week' %}
+      ${hiring_date_week}
+    {% elsif date_granularity._parameter_value == 'Month' %}
+      ${hiring_date_month}
+    {% endif %};;
+  }
+
+  dimension: start_date_dynamic {
+    group_label:  "> Core Funnel Dates"
+    label: "Start Date (Dynamic)"
+    label_from_parameter: date_granularity
+    sql:
+    {% if date_granularity._parameter_value == 'Day' %}
+      ${start_date_date}
+    {% elsif date_granularity._parameter_value == 'Week' %}
+      ${start_date_week}
+    {% elsif date_granularity._parameter_value == 'Month' %}
+      ${start_date_month}
+    {% endif %};;
+  }
+
+  # dimension: date_granularity_pass_through {
+  #   group_label: "> Parameters"
+  #   description: "To use the parameter value in a table calculation (e.g WoW, % Growth) we need to materialize it into a dimension "
+  #   type: string
+  #   hidden: no # yes
+  #   sql:
+  #           {% if date_granularity._parameter_value == 'Day' %}
+  #             "Day"
+  #           {% elsif date_granularity._parameter_value == 'Week' %}
+  #             "Week"
+  #           {% elsif date_granularity._parameter_value == 'Month' %}
+  #             "Month"
+  #           {% endif %};;
+  # }
+
+
 }

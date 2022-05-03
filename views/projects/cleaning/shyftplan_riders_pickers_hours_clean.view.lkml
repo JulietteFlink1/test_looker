@@ -430,6 +430,15 @@ view: shyftplan_riders_pickers_hours_clean {
     group_label: "UTR"
   }
 
+  measure: rider_rider_cap_utr {
+    label: "AVG Rider UTR (incl. Rider Captains)"
+    type: number
+    description: "# Orders from opened hub / # Worked Rider Hours (incl. Rider Captains)"
+    sql: ${adjusted_orders_riders} / NULLIF(${rider_hours}+${rider_captain_hours}, 0);;
+    value_format_name: decimal_2
+    group_label: "UTR"
+  }
+
   measure: picker_utr {
     label: "AVG Picker UTR"
     type: number
@@ -453,6 +462,15 @@ view: shyftplan_riders_pickers_hours_clean {
     type: number
     description: "# Orders from opened hub / # Worked Warehouse Ops Hours"
     sql: ${adjusted_orders_riders} / NULLIF(${wh_ops_hours}, 0);;
+    value_format_name: decimal_2
+    group_label: "UTR"
+  }
+
+  measure: rider_captain_utr {
+    label: "AVG Rider Captain UTR"
+    type: number
+    description: "# Orders from opened hub / # Worked Rider Captain Hours"
+    sql: ${adjusted_orders_riders} / NULLIF(${rider_captain_hours}, 0);;
     value_format_name: decimal_2
     group_label: "UTR"
   }
@@ -549,7 +567,7 @@ view: shyftplan_riders_pickers_hours_clean {
     type: sum
     label:"Sum Rider Forecasted Hours (excluding No show)"
     description: "Number of Needed Employee Hours Based on Forecasted Order Demand excluding no show hours"
-    sql:NULLIF(${number_of_forecasted_minutes},0)/60;;
+    sql:NULLIF(${number_of_forecasted_minutes}-${number_of_predicted_no_show_minutes},0)/60;;
     filters: [position_name: "rider"]
     group_label: "No Show"
     value_format_name: decimal_1
@@ -571,7 +589,7 @@ view: shyftplan_riders_pickers_hours_clean {
     type: sum
     label:"Sum Rider Forecasted Hours (including No show)"
     description: "Number of Needed Employee Hours Based on Forecasted Order Demand including no show hours"
-    sql:NULLIF(${number_of_forecasted_minutes}+${number_of_predicted_no_show_minutes},0)/60;;
+    sql:NULLIF(${number_of_forecasted_minutes},0)/60;;
     filters: [position_name: "rider"]
     group_label: "No Show"
     value_format_name: decimal_1
@@ -580,20 +598,18 @@ view: shyftplan_riders_pickers_hours_clean {
 
   measure: pct_no_show_employees{
     label:"% Actual No Show Rider Hours"
-    type: sum
+    type: number
     description: "% Actual No Show Hours"
-    sql:(${number_of_no_show_minutes})/nullif(${number_of_planned_minutes},0) ;;
-    filters: [position_name: "rider"]
+    sql:(${sum_no_show_hours})/nullif(${sum_planned_hours},0) ;;
     group_label: "No Show"
     value_format_name: percent_1
   }
 
   measure: pct_forecast_no_show_employees{
     label:"% Forecasted No Show Rider Hours"
-    type: sum
+    type: number
     description: "% Forecasted No Show Hours"
-    sql:(${number_of_predicted_no_show_minutes})/nullif(${number_of_forecasted_minutes}+${number_of_predicted_no_show_minutes},0) ;;
-    filters: [position_name: "rider"]
+    sql:(${sum_forecast_no_show_hours})/nullif(${sum_forecast_hours_needed},0) ;;
     group_label: "No Show"
     value_format_name: percent_1
   }

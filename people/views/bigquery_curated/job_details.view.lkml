@@ -1,5 +1,5 @@
 view: job_details {
-  sql_table_name: `flink-data-dev.curated.job_details`
+  sql_table_name: `flink-data-prod.curated.job_details`
     ;;
 
   dimension: city {

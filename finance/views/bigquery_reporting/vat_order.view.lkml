@@ -11,17 +11,20 @@ view: vat_order {
 
   dimension: order_uuid {
     hidden: no
+    group_label: "> IDs"
     primary_key: yes
     type: string
     sql: concat(${country_iso},'_',${order_id}) ;;
   }
 
   dimension: order_id {
+    group_label: "> IDs"
     type: string
     sql: ${TABLE}.order_id ;;
   }
 
   dimension: country_iso {
+    group_label: "> Geographic"
     type: string
     sql: ${TABLE}.country_iso ;;
   }
@@ -72,6 +75,16 @@ view: vat_order {
     sql: ${TABLE}.is_external_order ;;
   }
 
+  dimension: is_successful_order {
+    type: yesno
+    sql: ${TABLE}.is_successful_order ;;
+  }
+
+  dimension: order_status {
+    type: string
+    sql: ${TABLE}.status ;;
+  }
+
   dimension: discount_free_delivery_gross {
     type: number
     hidden: yes
@@ -81,11 +94,13 @@ view: vat_order {
 
 
   dimension: hub_name {
+    group_label: "> Geographic"
     type: string
     sql: ${TABLE}.hub_name ;;
   }
 
   dimension: hub_code {
+    group_label: "> Geographic"
     type: string
     sql: ${TABLE}.hub_code ;;
   }
@@ -96,6 +111,7 @@ view: vat_order {
   }
 
   dimension: cost_center {
+    group_label: "> Geographic"
     type: string
     sql: ${TABLE}.cost_center ;;
   }
