@@ -430,6 +430,15 @@ view: shyftplan_riders_pickers_hours_clean {
     group_label: "UTR"
   }
 
+  measure: rider_rider_cap_utr {
+    label: "AVG Rider UTR (incl. Rider Captains)"
+    type: number
+    description: "# Orders from opened hub / # Worked Rider Hours (incl. Rider Captains)"
+    sql: ${adjusted_orders_riders} / NULLIF(${rider_hours}+${rider_captain_hours}, 0);;
+    value_format_name: decimal_2
+    group_label: "UTR"
+  }
+
   measure: picker_utr {
     label: "AVG Picker UTR"
     type: number
