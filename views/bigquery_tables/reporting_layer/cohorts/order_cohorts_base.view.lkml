@@ -782,7 +782,7 @@ view: order_cohorts_base {
   }
 
 
-  ######## PARAMETERS
+  ####### PARAMETERS
 
   parameter: date_granularity {
     group_label: "* Dates and Timestamps *"
@@ -823,7 +823,7 @@ view: order_cohorts_base {
     default_value: "orders"
   }
 
-  ######## DYNAMIC DIMENSIONS
+  ####### DYNAMIC DIMENSIONS
 
   dimension: date {
     group_label: "* Dates and Timestamps *"

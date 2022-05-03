@@ -707,6 +707,12 @@ view: orders {
     sql: ${TABLE}.is_successful_order ;;
   }
 
+  dimension: is_click_and_collect_order {
+    group_label: "* Order Dimensions *"
+    type: yesno
+    sql: ${TABLE}.is_click_and_collect_order ;;
+  }
+
   dimension: language_code {
     group_label: "* Geographic Dimensions *"
     type: string
@@ -957,6 +963,14 @@ view: orders {
     primary_key: yes
     hidden: no
     sql: ${TABLE}.order_uuid ;;
+  }
+
+  dimension: customer_uuid {
+    type: string
+    group_label: "* IDs *"
+    label: "Customer UUID"
+    hidden: yes
+    sql: ${TABLE}.customer_uuid ;;
   }
 
   dimension: order_week {
@@ -1751,6 +1765,15 @@ view: orders {
         value_format_name: decimal_2
       }
 
+      measure: avg_order_handling_time_minute {
+        label: "AVG Order Handling Time (min)"
+        group_label: "* Operations / Logistics *"
+        description: "AVG ider Time spent from claiming an order until returning to the hub "
+        type: average
+        sql:2 * TIMESTAMP_DIFF(safe_cast(${rider_completed_delivery_timestamp} as timestamp), safe_cast(${order_rider_claimed_timestamp} as timestamp), minute);;
+        value_format_name: decimal_2
+      }
+
       measure: sum_rider_tip {
         group_label: "* Monetary Values *"
         label: "SUM Rider Tip"
@@ -1773,10 +1796,11 @@ view: orders {
 
       measure: sum_deposit {
         group_label: "* Monetary Values *"
-        label: "SUM Deposit"
+        label: "SUM Total Deposit"
         hidden:  no
         type: sum
         sql: ${deposit};;
+        description: "Sum of all deposits, paid by Flink or by the customers "
         value_format_name: euro_accounting_2_precision
   }
 
@@ -1787,20 +1811,20 @@ view: orders {
       measure: cnt_unique_customers {
         group_label: "* Basic Counts (Orders / Customers etc.) *"
         label: "# Unique Customers"
-        description: "Count of Unique Customers identified via their Email"
+        description: "Count of Unique Customers identified via their Customer UUID"
         hidden:  no
         type: count_distinct
-        sql: ${user_email};;
+        sql: ${customer_uuid};;
         value_format: "0"
       }
 
       measure: cnt_unique_customers_with_voucher {
         group_label: "* Basic Counts (Orders / Customers etc.) *"
         label: "# Unique Customers (with Voucher)"
-        description: "Count of Unique Customers identified via their Email (only considering orders with a voucher)"
+        description: "Count of Unique Customers identified via their Customer UUID (only considering orders with a voucher)"
         hidden:  no
         type: count_distinct
-        sql: ${user_email};;
+        sql: ${customer_uuid};;
         filters: [discount_amount: ">0"]
         value_format: "0"
       }
@@ -1808,10 +1832,10 @@ view: orders {
       measure: cnt_unique_customers_without_voucher {
         group_label: "* Basic Counts (Orders / Customers etc.) *"
         label: "# Unique Customers (without Voucher)"
-        description: "Count of Unique Customers identified via their Email (not considering orders with a voucher)"
+        description: "Count of Unique Customers identified via their Customer UUID (not considering orders with a voucher)"
         hidden:  no
         type: count_distinct
-        sql: ${user_email};;
+        sql: ${customer_uuid};;
         filters: [discount_amount: "0 OR null"]
         value_format: "0"
       }
@@ -1829,12 +1853,26 @@ view: orders {
       measure: cnt_orders {
         group_label: "* Basic Counts (Orders / Customers etc.) *"
         label: "# Orders"
-        description: "Count of successful Orders"
+        description: "Count of Orders"
         hidden:  no
         type: count_distinct
         sql: ${order_uuid} ;;
         value_format: "0"
       }
+
+    measure: cnt_successful_orders {
+      group_label: "* Basic Counts (Orders / Customers etc.) *"
+      label: "# Successful Orders"
+      description: "Count of Successful Orders"
+      hidden:  no
+      type: count_distinct
+      sql: ${order_uuid} ;;
+      value_format: "0"
+      filters: [
+        is_successful_order: "yes"
+      ]
+    }
+
 
       measure: cnt_orders_with_discount {
         group_label: "* Basic Counts (Orders / Customers etc.) *"

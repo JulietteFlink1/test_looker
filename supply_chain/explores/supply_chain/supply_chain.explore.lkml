@@ -261,10 +261,10 @@ explore: supply_chain {
     relationship: many_to_one
 
     sql_on:
-        ${replenishment_purchase_orders.sku}           = coalesce(${products_hub_assignment.leading_sku_replenishment_substitute_group}, ${products_hub_assignment.sku}) and
-        ${replenishment_purchase_orders.hub_code}      = ${products_hub_assignment.hub_code}                                        and
-        ${replenishment_purchase_orders.delivery_date} = ${products_hub_assignment.report_date}                                     and
-        ${replenishment_purchase_orders.vendor_id}     = ${products_hub_assignment.erp_vendor_id}
+        ${replenishment_purchase_orders.sku}              = coalesce(${products_hub_assignment.leading_sku_replenishment_substitute_group}, ${products_hub_assignment.sku}) and
+        ${replenishment_purchase_orders.hub_code}         = ${products_hub_assignment.hub_code}                                        and
+        ${replenishment_purchase_orders.order_date}       = ${products_hub_assignment.report_date}                                     and
+        ${replenishment_purchase_orders.vendor_id}        = ${products_hub_assignment.erp_vendor_id}
     ;;
   }
 
@@ -358,5 +358,16 @@ explore: supply_chain {
     relationship: many_to_one
     sql_on: ${v2_avg_waste_index_per_hub.hub_code} = ${products_hub_assignment.hub_code} ;;
   }
+
+  join: last_hour_inventory_level {
+      view_label: "03 Inventory Hourly (last 8 days)"
+      type: left_outer
+      relationship: many_to_one
+      sql_on: ${last_hour_inventory_level.report_timestamp_date} = ${products_hub_assignment.report_date} and
+              ${last_hour_inventory_level.hub_code}              = ${products_hub_assignment.hub_code}    and
+              ${last_hour_inventory_level.sku}                   = ${products_hub_assignment.sku}         and
+              ${last_hour_inventory_level.time} = 23
+              ;;
+      }
 
 }

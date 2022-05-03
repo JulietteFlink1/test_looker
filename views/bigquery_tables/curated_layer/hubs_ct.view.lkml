@@ -181,6 +181,26 @@ view: hubs_ct {
     group_label: "> Admin Data"
   }
 
+  dimension: hub_size {
+    label: "Hub Size"
+    type: string
+    sql:  ${TABLE}.hub_size;;
+    group_label: "> Admin Data"
+  }
+
+  dimension: rewe_tier {
+    label: "Rewe Tier"
+    type: number
+    sql:  ${TABLE}.rewe_tier;;
+    group_label: "> Admin Data"
+  }
+
+  dimension: is_2_0_layout_hub{
+    label: "Is 2.0 Layout Hub"
+    type: string # Did not change to boolean since there are few null values (mostly inactive hubs)
+    sql:  ${TABLE}.hub_2_0_layout;;
+    group_label: "> Admin Data"
+  }
 
   # =========  ID Data   =========
   dimension: distribution_channel_id {

@@ -7,8 +7,23 @@ view: +orderline {
       pct_pre_order_issue_rate_per_total_items_picked,
       pct_pre_order_issue_rate_per_total_orders,
       pct_post_order_issue_rate_per_total_orders,
+      pct_hub_related_post_order_issue_rate_per_total_orders,
       delivery_issue_groups,
-      hlp_pre_post_filter
+      number_of_products_with_perished_light_issues_dim,
+      number_of_products_with_perished_issues_pre_dim,
+      number_of_products_with_perished_issues_post_dim,
+      number_of_products_with_products_not_on_shelf_issues_pre_dim,
+      number_of_products_with_products_not_on_shelf_issues_post_dim,
+      number_of_products_with_damaged_products_issues_pre_dim,
+      number_of_products_with_damaged_products_issues_post_dim,
+      number_of_products_with_missing_products_issues_dim,
+      number_of_products_with_wrong_products_issues_dim,
+      number_of_products_with_swapped_products_issues_dim,
+      number_of_products_with_cancelled_products_issues_dim,
+      number_of_products_with_item_description_issues_dim,
+      number_of_products_with_item_quality_issues_dim,
+      number_of_products_with_undefined_issues_dim
+
     ]
   }
 
@@ -18,6 +33,14 @@ view: +orderline {
     sql: ${order_uuid};;
     hidden: yes
     group_label: "> Delivery Issues"
+  }
+
+  measure: count_order_lineitems {
+    type: count_distinct
+    label: "# Lineitems"
+    group_label: "> Delivery Issues Products"
+    hidden:  yes
+    sql: ${order_lineitem_uuid} ;;
   }
 
   measure: cnt_total_picks {
@@ -37,78 +60,8 @@ view: +orderline {
     sql: lower(${TABLE}.return_reason) ;;
   }
 
-  dimension: delivery_issue_groups {
-    type: string
-    label: "Delivery Issue Groups"
-    group_label: "> Delivery Issues"
-    description: "The delivery issue groups based on CommerceTools"
-    sql:
-
-      case
-          when ${return_reason} like '%missing%'            then 'missing product'
-          when ${return_reason} like '%wrong%'              then 'wrong product'
-          when ${return_reason} like '%perished%'
-            or ${return_reason} like '%perrished%'
-            or ${return_reason} = 'purished'
-            or ${return_reason} = 'goods_spoiled'           then 'perished product'
-          when ${return_reason} like '%swapped%'            then 'swapped product'
-          when ${return_reason} like '%damage%'             then 'damaged product'
-          when ${return_reason} like '%cancel%'             then 'cancelled product'
-          when ${return_reason} like '%not_on_shelf%'
-            or ${return_reason} like '%out of stock%'
-            or ${return_reason} like '%out_of_stock%'
-            or ${return_reason} like '%not in stock%'
-            or ${return_reason} = 'goods_not_shelf'
-            or ${return_reason} = 'goods_not_on _shelf'
-                                                            then 'goods not on shelf'
-          -- no other match
-          when ${return_reason} like '%miss%'
-            or ${return_reason} = 'misisng'
-            or ${return_reason} = 'mıssıng'
-            or ${return_reason} = 'not received'            then 'missing product'
-
-          when ${return_reason} like '%description%'        then 'item-description'
-
-          when ${return_reason} like '%quality%'        then 'item-quality'
-
-          when ${return_reason} is not null                 then 'undefined group'
-      end
-
-    ;;
-  }
-
-  dimension: delivery_issue_stage {
-
-    label: "Delivery Issue Stage"
-    description: "Classifies delivery issues in either Pre-Delivery Issues (source: picker) or Post-Delivery Issues (source: customer)"
-    group_label: "> Delivery Issues"
-
-    type: string
-    sql:
-      case
-          when ${return_reason} in (
-                              'goods_not_on_shelf',
-                              'goods_damaged',
-                              'goods_spoiled'
-                                )
-          then "pre-delivery issues"
-          when ${return_reason} is not null
-           and ${return_reason} not in (
-                              'goods_not_on_shelf',
-                              'goods_damaged',
-                              'goods_spoiled'
-                                )
-            and ${return_reason} not like '%cancel%'
-          then "post-delivery issues"
-      end
-    ;;
-
-
-  }
-
-
   measure: cnt_delivery_issues {
-    label: "# Delivery Issues (Post- + Pre-Delivery)"
+    label: "# Orders Delivery Issues (Post- + Pre-Delivery)"
     group_label: "> Delivery Issues"
     type: number
     sql:
@@ -130,7 +83,7 @@ view: +orderline {
 
   measure: cnt_pre_delivery_issues {
 
-    label:       "# Pre-Delivery Issues"
+    label:       "# Orders Pre-Delivery Issues"
     description: "Order-Issues, that are detected pre-delivery"
     group_label: "> Delivery Issues"
 
@@ -145,7 +98,7 @@ view: +orderline {
 
   measure: cnt_post_delivery_issues {
 
-    label:       "# Post-Delivery Issues"
+    label:       "# Orders Post-Delivery Issues"
     description: "Order-Issues, that are detected post-delivery"
     group_label: "> Delivery Issues"
 
@@ -173,64 +126,41 @@ view: +orderline {
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~  START Issue Reasons - Granular Metrics   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  dimension: hlp_pre_post_filter {
-
-    type: string
-    sql:
-      case
-        when ${delivery_issue_groups} = "perished product"
-         and ${delivery_issue_stage}  = "pre-delivery issues"
-        then "pre_perished"
-
-        when ${delivery_issue_groups} = "perished product"
-         and ${delivery_issue_stage}  = "post-delivery issues"
-        then "post_perished"
-
-        when ${delivery_issue_groups} = "goods not on shelf"
-         and ${delivery_issue_stage}  = "pre-delivery issues"
-        then "pre_shelf"
-
-        when ${delivery_issue_groups} = "goods not on shelf"
-         and ${delivery_issue_stage}  = "post-delivery issues"
-        then "post_shelf"
-
-        when ${delivery_issue_groups} = "damaged product"
-         and ${delivery_issue_stage}  = "pre-delivery issues"
-        then "pre_damaged"
-
-        when ${delivery_issue_groups} = "damaged product"
-         and ${delivery_issue_stage}  = "post-delivery issues"
-        then "post_damaged"
-
-      end
-    ;;
-    hidden: yes
-
-  }
 
   # >>> PRE + POST Order Issues  :: START
+
+  measure: count_perished_light {
+    label: "# Orders Perished Light"
+    description: "The number of orders, that had issues with perished light products and were claimed through the Customer Service.
+                  Not counted in # Post Delivery Issues nor # Delivery Issues"
+    group_label: "> Delivery Issues"
+    type: count_distinct
+    sql: ${order_uuid} ;;
+    filters: [number_of_products_with_perished_light_issues_dim: ">0"]
+  }
+
   measure: cnt_perished_products_post {
 
-    label:       "# Perished Products (Post Delivery Issues)"
+    label:       "# Orders Perished Products (Post Delivery Issues)"
     description: "The number of orders, that had issues with perished products and were claimed through the Customer Service"
     group_label: "> Delivery Issues"
 
     type: count_distinct
     sql: ${order_uuid} ;;
-    filters: [hlp_pre_post_filter: "post_perished"]
+    filters: [number_of_products_with_perished_issues_post_dim: ">0"]
 
     value_format_name: decimal_0
 
   }
   measure: cnt_perished_products_pre {
 
-    label:       "# Perished Products (Pre Delivery Issues)"
+    label:       "# Orders Perished Products (Pre Delivery Issues)"
     description: "The number of orders, that had issues with perished products and were identified in the picking process (Swipe) "
     group_label: "> Delivery Issues"
 
     type: count_distinct
     sql: ${order_uuid} ;;
-    filters: [hlp_pre_post_filter: "pre_perished"]
+    filters: [number_of_products_with_perished_issues_pre_dim: ">0"]
 
     value_format_name: decimal_0
 
@@ -239,26 +169,26 @@ view: +orderline {
 
   measure: cnt_products_not_on_shelf_post {
 
-    label:       "# Products not on shelf (Post Delivery Issues)"
+    label:       "# Orders Products not on shelf (Post Delivery Issues)"
     description: "The number of orders, that had issues with products not being in stock and were claimed through the Customer Service"
     group_label: "> Delivery Issues"
 
     type: count_distinct
     sql: ${order_uuid} ;;
-    filters: [hlp_pre_post_filter: "post_shelf"]
+    filters: [number_of_products_with_products_not_on_shelf_issues_post_dim: ">0"]
 
     value_format_name: decimal_0
 
   }
   measure: cnt_products_not_on_shelf_pre {
 
-    label:       "# Products not on shelf (Pre Delivery Issues)"
+    label:       "# Orders Products not on shelf (Pre Delivery Issues)"
     description: "The number of orders, that had issues with products not being in stock and were identified in the picking process (Swipe)"
     group_label: "> Delivery Issues"
 
     type: count_distinct
     sql: ${order_uuid} ;;
-    filters: [hlp_pre_post_filter: "pre_shelf"]
+    filters: [number_of_products_with_products_not_on_shelf_issues_pre_dim: ">0"]
 
     value_format_name: decimal_0
 
@@ -266,23 +196,23 @@ view: +orderline {
 
 
   measure: cnt_damaged_products_post {
-    label: "# Damaged Products (Post Delivery Issues)"
+    label: "# Orders Damaged Products (Post Delivery Issues)"
     description: "The number of orders, that had issues with damaged products and were claimed through the Customer Service"
     group_label: "> Delivery Issues"
     type: count_distinct
     sql: ${order_uuid} ;;
-    filters: [hlp_pre_post_filter: "post_damaged"]
+    filters: [number_of_products_with_damaged_products_issues_post_dim: ">0"]
 
     value_format_name: decimal_0
 
   }
   measure: cnt_damaged_products_pre {
-    label: "# Damaged Products (Pre Delivery Issues)"
+    label: "# Orders Damaged Products (Pre Delivery Issues)"
     description: "The number of orders, that had issues with damaged products and were identified in the picking process (Swipe)"
     group_label: "> Delivery Issues"
     type: count_distinct
     sql: ${order_uuid} ;;
-    filters: [hlp_pre_post_filter: "pre_damaged"]
+    filters: [number_of_products_with_damaged_products_issues_pre_dim: ">0"]
 
     value_format_name: decimal_0
 
@@ -294,13 +224,13 @@ view: +orderline {
   # >>> POST Order Issues  :: START
   measure: cnt_missing_products {
 
-    label:       "# Missing Products (Post Delivery Issues)"
+    label:       "# Orders Missing Products (Post Delivery Issues)"
     description: "The number of orders, that had issues with missing products"
     group_label: "> Delivery Issues"
 
     type: count_distinct
     sql: ${order_uuid} ;;
-    filters: [delivery_issue_groups: "missing product"]
+    filters: [number_of_products_with_missing_products_issues_dim: ">0"]
 
     value_format_name: decimal_0
 
@@ -308,13 +238,13 @@ view: +orderline {
 
   measure: cnt_wrong_products {
 
-    label:       "# Wrong Products (Post Delivery Issues)"
+    label:       "# Orders Wrong Products (Post Delivery Issues)"
     description: "The number of orders, that had issues with wrong products"
     group_label: "> Delivery Issues"
 
     type: count_distinct
     sql: ${order_uuid} ;;
-    filters: [delivery_issue_groups: "wrong product"]
+    filters: [number_of_products_with_wrong_products_issues_dim: ">0"]
 
     value_format_name: decimal_0
 
@@ -322,13 +252,13 @@ view: +orderline {
 
   measure: cnt_swapped_products {
 
-    label:       "# Swapped Products (Post Delivery Issues)"
+    label:       "# Orders Swapped Products (Post Delivery Issues)"
     description: "The number of orders, that had issues with swapped products"
     group_label: "> Delivery Issues"
 
     type: count_distinct
     sql: ${order_uuid} ;;
-    filters: [delivery_issue_groups: "swapped product"]
+    filters: [number_of_products_with_swapped_products_issues_dim: ">0"]
 
     value_format_name: decimal_0
 
@@ -337,13 +267,13 @@ view: +orderline {
   measure: cnt_cancelled_products {
 
     # This metric is not part of the issue rates, as the customer vóluntary cancelled a product.
-    label:       "# Cancelled Products (Post Delivery Issues)"
+    label:       "# Orders Cancelled Products (Post Delivery Issues)"
     description: "The number of orders, that had issues with cancelled products"
     group_label: "> Delivery Issues"
 
     type: count_distinct
     sql: ${order_uuid} ;;
-    filters: [delivery_issue_groups: "cancelled product"]
+    filters: [number_of_products_with_cancelled_products_issues_dim: ">0"]
 
     value_format_name: decimal_0
 
@@ -351,13 +281,13 @@ view: +orderline {
 
   measure: cnt_products_item_description_issues {
 
-    label:       "# Products Issue Item Description (Post Delivery Issues)"
+    label:       "# Orders Products Issue Item Description (Post Delivery Issues)"
     description: "The number of orders, that had issues related to item descriptions"
     group_label: "> Delivery Issues"
 
     type: count_distinct
     sql: ${order_uuid} ;;
-    filters: [delivery_issue_groups: "item-description"]
+    filters: [number_of_products_with_item_description_issues_dim: ">0"]
 
     value_format_name: decimal_0
 
@@ -365,13 +295,13 @@ view: +orderline {
 
   measure: cnt_products_bad_quality_issues {
 
-    label:       "# Products Issue Item Quality (Post Delivery Issues)"
+    label:       "# Orders Products Issue Item Quality (Post Delivery Issues)"
     description: "The number of orders, that had issues related to item quality"
     group_label: "> Delivery Issues"
 
     type: count_distinct
     sql: ${order_uuid} ;;
-    filters: [delivery_issue_groups: "item-quality"]
+    filters: [number_of_products_with_item_quality_issues_dim: ">0"]
 
     value_format_name: decimal_0
 
@@ -379,13 +309,13 @@ view: +orderline {
 
   measure: cnt_undefined_issues {
 
-    label:       "# Unknown Issues (Post Delivery Issues)"
+    label:       "# Orders Unknown Issues (Post Delivery Issues)"
     description: "The number of orders, that had issues with unknown issue groups (see Return Reason to check the specific issue reasons)"
     group_label: "> Delivery Issues"
 
     type: count_distinct
     sql: ${order_uuid} ;;
-    filters: [delivery_issue_groups: "undefined group"]
+    filters: [number_of_products_with_undefined_issues_dim: ">0"]
 
     value_format_name: decimal_0
     hidden: no
@@ -402,7 +332,7 @@ view: +orderline {
   # ~~~~~~~~~~~~  START Percentages   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   measure: pct_pre_order_issue_rate_per_total_orders {
 
-    label:       "% Partial fulfillment Rate (preoder)"
+    label:       "% Orders Partial Fulfillment (preoder)"
     group_label: "> Delivery Issues"
     description: "The percentage of orders, that had pre-delivery issues"
 
@@ -415,7 +345,7 @@ view: +orderline {
 
   measure: pct_post_order_issue_rate_per_total_orders {
 
-    label:       "% Issue Rate (post order)"
+    label:       "% Orders Issue (post order)"
     group_label: "> Delivery Issues"
     description: "The percentage of orders, that had post-delivery issues"
 
@@ -426,9 +356,27 @@ view: +orderline {
 
   }
 
+  measure: pct_hub_related_post_order_issue_rate_per_total_orders {
+
+    label:       "% Orders Issue (post order hub related)"
+    group_label: "> Delivery Issues"
+    description: "The percentage of orders that had hub related post-delivery issues
+    (Missing Product, Wrong Product, Damaged, Perished, Swapped)"
+
+    type: number
+    sql:  (${cnt_damaged_products_post}+
+          ${cnt_perished_products_post}+
+          ${cnt_missing_products}+
+          ${cnt_swapped_products}+
+          ${cnt_wrong_products})/ nullif(${cnt_total_orders} ,0);;
+
+    value_format_name: percent_2
+
+  }
+
   measure: pct_pre_order_issue_rate_per_total_items_picked {
 
-    label:       "% Item unfulfilled (preorder)"
+    label:       "% Orders Item Unfulfilled (preorder)"
     group_label: "> Delivery Issues"
     description: "The percentage of unique SKUs per order, that had pre-delivery issues"
 
@@ -441,7 +389,7 @@ view: +orderline {
 
   measure: pct_pre_order_fulfillment_rate {
 
-    label:       "% Pre-Order Fulfillment Rate"
+    label:       "% Orders Pre-Order Fulfillment"
     group_label: "> Delivery Issues"
     description: "The percentage of orders, that had no pre-delivery issues"
 
@@ -458,7 +406,7 @@ view: +orderline {
 
   measure: pct_not_on_shelf_issue_rate {
 
-    label:       "% Goods Not On Shelf Issue Rate"
+    label:       "% Orders Goods Not On Shelf Issue"
     group_label: "> Delivery Issues"
 
     type: number
@@ -470,7 +418,7 @@ view: +orderline {
 
   measure: pct_missing_product_issue_rate {
 
-    label:       "% Missing Product Issue Rate"
+    label:       "% Orders Missing Product Issue"
     group_label: "> Delivery Issues"
 
     type: number
@@ -482,7 +430,7 @@ view: +orderline {
 
   measure: pct_damaged_product_issue_rate {
 
-    label:       "% Damaged Product Issue Rate"
+    label:       "% Orders Damaged Product Issue"
     group_label: "> Delivery Issues"
 
     type: number
@@ -494,7 +442,7 @@ view: +orderline {
 
   measure: pct_cancelled_product_issue_rate {
 
-    label:       "% Cancelled Product Issue Rate"
+    label:       "% Orders Cancelled Product Issue"
     group_label: "> Delivery Issues"
 
     type: number
@@ -506,7 +454,7 @@ view: +orderline {
 
   measure: pct_perished_product_issue_rate {
 
-    label:       "% Perished Product Issue Rate"
+    label:       "% Orders Perished Product Issue"
     group_label: "> Delivery Issues"
 
     type: number
@@ -518,7 +466,7 @@ view: +orderline {
 
   measure: pct_wrong_product_issue_rate {
 
-    label:       "% Wrong Product Issue Rate"
+    label:       "% Orders Wrong Product Issue"
     group_label: "> Delivery Issues"
 
     type: number
@@ -530,7 +478,7 @@ view: +orderline {
 
   measure: pct_swapped_product_issue_rate {
 
-    label:       "% Swapped Product Issue Rate"
+    label:       "% Orders Swapped Product Issue"
     group_label: "> Delivery Issues"
 
     type: number
@@ -542,7 +490,7 @@ view: +orderline {
 
   measure: pct_products_item_description_issues {
 
-    label:       "% Item Description Issue Rate"
+    label:       "% Orders Item Description Issue"
     group_label: "> Delivery Issues"
 
     type: number
@@ -554,7 +502,7 @@ view: +orderline {
 
   measure: pct_products_bad_quality_issues {
 
-    label:       "% Item Quality Issue Rate"
+    label:       "% Orders Item Quality Issue"
     group_label: "> Delivery Issues"
 
     type: number
@@ -563,6 +511,20 @@ view: +orderline {
     value_format_name: percent_2
 
   }
+
+  # ~~~~~~~ Perished Light
+  measure: pct_orders_perished_light {
+
+    label: "% Orders Perished Light Issue"
+    group_label: "> Delivery Issues"
+
+    type: number
+    sql: ${count_perished_light} / nullif(${cnt_total_orders},0) ;;
+
+    value_format_name: percent_2
+  }
+
+
 
   # ~~~~~~~~~~~~  END Percentages   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

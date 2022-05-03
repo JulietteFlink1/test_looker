@@ -43,7 +43,7 @@ view: crm_braze_canvas {
   dimension: email_sent_at {
     allow_fill: yes
     label: "Date Email Sent"
-    description: "The date, when the email was sent to the customer"
+    description: "The date when the email was sent to the customer"
     type: date
     datatype: date
     sql: ${TABLE}.email_sent_at_date ;;
@@ -161,8 +161,8 @@ view: crm_braze_canvas {
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   measure: sum_total_emails_sent {
-    group_label: "Numbers"
-    label: "All Unique Sents"
+    group_label: "Absolute"
+    label: "# Unique Sents"
     description: "The number of unique recipients of an email canvas"
     type: sum
     sql: ${total_emails_sent} ;;
@@ -170,90 +170,90 @@ view: crm_braze_canvas {
   }
 
   measure: sum_total_emails_bounced {
-    group_label: "Numbers"
-    label: "Bounces"
-    description: "The number of emails, that have been bounced by the customers email provider"
+    group_label: "Absolute"
+    label: "# Bounces"
+    description: "The number of emails that have been bounced by the customers email provider"
     type: sum
     sql: ${total_emails_bounced} ;;
     # value_format_name: decimal_0
   }
 
   measure: sum_total_emails_delivered {
-    group_label: "Numbers"
-    label: "Deliveries"
-    description: "The number of emails, that have been delivered to the customer - aka they have been received"
+    group_label: "Absolute"
+    label: "# Deliveries"
+    description: "The number of emails that have been delivered to the customer (aka they have been received)"
     type: sum
     sql: ${total_emails_delivered} ;;
     # value_format_name: decimal_0
   }
 
   measure: sum_unique_emails_opened {
-    group_label: "Numbers"
-    label: "Unique Opens"
-    description: "The number of unique opens of an email - one customer can be counted only once per sent-out"
+    group_label: "Absolute"
+    label: "# Unique Opens"
+    description: "The number of unique opens of an email - one customer can be counted only once per a send-out"
     type: sum
     sql: ${num_unique_emails_opened} ;;
     # value_format_name: decimal_0
   }
 
   measure: sum_total_emails_opened {
-    group_label: "Numbers"
-    label: "Total Opens"
-    description: "The number of unique opens of an email - one customer can be counted n-times per sent-out"
+    group_label: "Absolute"
+    label: "# Total Opens"
+    description: "The number of unique opens of an email - one customer can be counted N times per a send-out"
     type: sum
     sql: ${total_emails_opened} ;;
     # value_format_name: decimal_0
   }
 
   measure: sum_unique_emails_clicked {
-    group_label: "Numbers"
-    label: "Unique Clicks"
-    description: "The number of unique clicks of an email - one customer can be counted only once per sent-put"
+    group_label: "Absolute"
+    label: "# Unique Clicks"
+    description: "The number of unique clicks of an email - one customer can be counted only once per a send-out"
     type: sum
     sql: ${num_unique_emails_clicked} ;;
     # value_format_name: decimal_0
   }
 
   measure: sum_total_emails_clicked {
-    group_label: "Numbers"
-    label: "Total Clicks"
-    description: "The number of unique clicks of an email - one customer can be counted n-times per sent-put"
+    group_label: "Absolute"
+    label: "# Total Clicks"
+    description: "The number of unique clicks of an email - one customer can be counted N times per a send-out"
     type: sum
     sql: ${total_emails_clicked} ;;
     # value_format_name: decimal_0
   }
 
   measure: sum_unique_unsubscribed {
-    group_label: "Numbers"
-    label: "Unsubscribes"
-    description: "The number of customers, that have clicked on the unsubscribe-link"
+    group_label: "Absolute"
+    label: "# Unsubscribes"
+    description: "The number of customers that have clicked on the unsubscribe-link"
     type: sum
     sql: ${num_unique_unsubscribed} ;;
     # value_format_name: decimal_0
   }
 
   measure: sum_unique_users_orders {
-    group_label: "Numbers"
-    label: "Unique Users with Orders "
-    description: "Number of Unique Users with at leats 1 Order that happened in the 12h after the last email open"
+    group_label: "Absolute"
+    label: "# Unique Users with Orders "
+    description: "Number of unique users with at leats 1 order that happened in the 12h window after the last email opening"
     type: sum
     sql: ${num_unique_users_orders} ;;
     # value_format_name: decimal_0
   }
 
   measure: sum_total_orders {
-    group_label: "Numbers"
-    label: "Total Orders "
-    description: "Number of Orders that happened in the 12h after the last email open"
+    group_label: "Absolute"
+    label: "# Total Orders "
+    description: "Number of orders that happened in the 12h window after the last email opening"
     type: sum
     sql: ${total_orders} ;;
     # value_format_name: decimal_0
   }
 
   measure: sum_total_orders_with_vouchers {
-    group_label: "Numbers"
-    label: "Total Orders with Vouchers"
-    description: "Number of Orders with Vouchers that happened in the 12h after the last email open"
+    group_label: "Absolute"
+    label: "# Total Orders with Vouchers"
+    description: "Number of orders with vouchers that happened in the 12h window after the last email opening"
     type: sum
     sql: ${total_orders_with_vouchers} ;;
     # value_format_name: decimal_0
@@ -261,8 +261,8 @@ view: crm_braze_canvas {
 
   measure: sum_unique_users_denominator {
     hidden:  yes
-    group_label: "Numbers"
-    label: "Unique Deliveries or Opens"
+    group_label: "Absolute"
+    label: "# Unique Deliveries or Opens"
     description: "Denominator for Order Rate"
     type: sum
     sql: ${unique_users_denominator} ;;
@@ -270,8 +270,8 @@ view: crm_braze_canvas {
   }
 
   measure: sum_total_vouchers_sent {
-    group_label: "Numbers"
-    label: "Total Vouchers Sent"
+    group_label: "Absolute"
+    label: "# Total Vouchers Sent"
     description: "Number of Vouchers that sent in orders that happened in the 12h after the last email open"
     type: sum
     sql: ${total_vouchers_sent} ;;
@@ -279,8 +279,8 @@ view: crm_braze_canvas {
   }
 
   measure: sum_total_discount_amount {
-    group_label: "Numbers"
-    label: "Total Discount"
+    group_label: "Monetary"
+    label: "Discount Amount"
     description: "Total Value of discount vouchers"
     type: sum
     sql: ${total_discount_amount} ;;
@@ -288,7 +288,7 @@ view: crm_braze_canvas {
   }
 
   measure: sum_total_gmv_gross {
-    group_label: "Numbers"
+    group_label: "Monetary"
     label: "Total GMV (gross) "
     description: "Total GMV (gross) of orders"
     type: sum
@@ -298,8 +298,8 @@ view: crm_braze_canvas {
 
   measure: avg_order_rate {
     hidden:  yes
-    group_label: "Ratios"
-    label: "Order Rate "
+    group_label: "Relative"
+    label: "% Order Rate "
     description: "Average Order Rate"
     type: average
     sql: ${order_rate} ;;
@@ -307,12 +307,12 @@ view: crm_braze_canvas {
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  #           Ratios based on measures
+  #           Relative based on measures
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   measure: bounce_rate {
-    group_label: "Ratios"
-    label: "Bounce Rate"
+    group_label: "Relative"
+    label: "% Bounce Rate"
     description: "Percentage: how many emails have been bounced based on all emails sent"
     type: number
     sql: ${sum_total_emails_bounced} / NULLIF(${sum_total_emails_sent}, 0) ;;
@@ -320,8 +320,8 @@ view: crm_braze_canvas {
   }
 
   measure: deliveries_rate {
-    group_label: "Ratios"
-    label: "Deliveries Rate"
+    group_label: "Relative"
+    label: "% Deliveries Rate"
     description: "Percentage: how many emails have been delivered based on all emails sent"
     type: number
     sql: ${sum_total_emails_delivered} / NULLIF(${sum_total_emails_sent}, 0) ;;
@@ -329,8 +329,8 @@ view: crm_braze_canvas {
   }
 
   measure: total_opens_rate {
-    group_label: "Ratios"
-    label: "Total Opens Rate"
+    group_label: "Relative"
+    label: "% Total Opens Rate"
     description: "Percentage: how many emails have been delivered based on all emails delivered"
     type: number
     sql: ${sum_total_emails_opened} / NULLIF(${sum_total_emails_delivered}, 0) ;;
@@ -338,8 +338,8 @@ view: crm_braze_canvas {
   }
 
   measure: unique_opens_rate {
-    group_label: "Ratios"
-    label: "Unique Opens Rate"
+    group_label: "Relative"
+    label: "% Unique Opens Rate"
     description: "Percentage: how many emails have been delivered based on all emails delivered"
     type: number
     sql: ${sum_unique_emails_opened} / NULLIF(${sum_total_emails_delivered}, 0) ;;
@@ -347,8 +347,8 @@ view: crm_braze_canvas {
   }
 
   measure: total_clicks_rate {
-    group_label: "Ratios"
-    label: "Total Clicks Rate"
+    group_label: "Relative"
+    label: "% Total Clicks Rate"
     description: "Percentage: number of emails clicked divided by the number of emails delivered"
     type: number
     sql: ${sum_total_emails_clicked} / NULLIF(${sum_total_emails_delivered}, 0) ;;
@@ -356,8 +356,8 @@ view: crm_braze_canvas {
   }
 
   measure: unique_clicks_rate {
-    group_label: "Ratios"
-    label: "Unique Clicks Rate"
+    group_label: "Relative"
+    label: "% Unique Clicks Rate"
     description: "Percentage: number of unique emails clicked divided by the number of emails delivered"
     type: number
     sql: ${sum_unique_emails_clicked} / NULLIF(${sum_total_emails_delivered}, 0) ;;
@@ -365,8 +365,8 @@ view: crm_braze_canvas {
   }
 
   measure: unsubscribe_rate {
-    group_label: "Ratios"
-    label: "Unsubscribes Rate"
+    group_label: "Relative"
+    label: "% Unsubscribes Rate"
     description: "Percentage: number of emails clicked on unsubscribe-link divided by the number of emails delivered"
     type: number
     sql: ${sum_unique_unsubscribed} / NULLIF(${sum_total_emails_delivered}, 0) ;;
@@ -374,8 +374,8 @@ view: crm_braze_canvas {
   }
 
   measure: total_order_rate {
-    group_label: "Ratios"
-    label: "Total Order Rate"
+    group_label: "Relative"
+    label: "% Total Order Rate"
     description: "Percentage: number of orders made in the 12h after the last opening of the email divided by the number of emails opened (or sent)"
     type: number
     sql: ${sum_total_orders} / NULLIF(${sum_unique_users_denominator}, 0) ;;
@@ -383,8 +383,8 @@ view: crm_braze_canvas {
   }
 
   measure: unique_order_rate {
-    group_label: "Ratios"
-    label: "Unique Order Rate"
+    group_label: "Relative"
+    label: "% Unique Order Rate"
     description: "Percentage: number of users who made at least 1 order in the 12h after the last opening of the email divided by the number of emails opened (or sent)"
     type: number
     sql: ${sum_unique_users_orders} / NULLIF(${sum_unique_users_denominator}, 0) ;;
@@ -392,8 +392,8 @@ view: crm_braze_canvas {
   }
 
   measure: order_rate_with_voucher {
-    group_label: "Ratios"
-    label: "Total Order Rate with Vouchers"
+    group_label: "Relative"
+    label: "% Total Order Rate with Vouchers"
     description: "Percentage: number of orders made in the 12h after sending an email divided by the number of emails opened (or sent)"
     type: number
     sql: ${sum_total_orders_with_vouchers} / NULLIF(${sum_unique_users_denominator}, 0) ;;
@@ -401,8 +401,8 @@ view: crm_braze_canvas {
   }
 
   measure: discount_order_share {
-    group_label: "Ratios"
-    label: "Discount Order Share"
+    group_label: "Relative"
+    label: "% Discount Order Share"
     description: "Percentage: number of orders with voucher discounts divided by the total number of ordres made in the 12h after the last opening of the email"
     type: number
     sql: ${sum_total_orders_with_vouchers} / NULLIF(${sum_total_orders}, 0);;
@@ -410,8 +410,8 @@ view: crm_braze_canvas {
     }
 
   measure: discount_value_share {
-    group_label: "Ratios"
-    label: "Discount Value Share "
+    group_label: "Relative"
+    label: "% Discount Value Share "
     description: "Percentage: total of voucher discounts divided by the total gmv (gross) of ordres made in the 12h after the last opening of the email"
     type: number
     sql: ${sum_total_discount_amount} / NULLIF(${sum_total_gmv_gross}, 0);;
@@ -419,7 +419,7 @@ view: crm_braze_canvas {
     }
 
   measure: average_order_value {
-    group_label: "Ratios"
+    group_label: "Monetary"
     label: "Average Order Value"
     description: "Average GMV (gross) based on Total Orders"
     type: number
@@ -486,6 +486,7 @@ view: crm_braze_canvas {
     group_label: "* Dynamic KPI Fields *"
     label: "{% if reporting_parameter._parameter_value == \"unique\"%} Unique Emails Opened {% else %} Total Opens {% endif%}"
     type: number
+    hidden: yes
     # value_format_name: id
     sql:
     {% if reporting_parameter._parameter_value == 'total' %}
@@ -499,6 +500,7 @@ view: crm_braze_canvas {
     group_label: "* Dynamic KPI Fields *"
     label: "{% if reporting_parameter._parameter_value == \"unique\"%} Unique Emails Clicked {% else %} Total Clicks {% endif%}"
     type: number
+    hidden: yes
     # value_format_name: id
     sql:
     {% if reporting_parameter._parameter_value == 'total' %}
@@ -512,6 +514,7 @@ view: crm_braze_canvas {
     group_label: "* Dynamic KPI Fields *"
     label: "{% if reporting_parameter._parameter_value == \"unique\"%} Unique Users Ordered {% else %} Total Orders {% endif%}"
     type: number
+    hidden: yes
     # value_format_name: id
     sql:
     {% if reporting_parameter._parameter_value == 'total' %}
@@ -525,6 +528,7 @@ view: crm_braze_canvas {
     group_label: "* Dynamic KPI Fields *"
     label: "{% if reporting_parameter._parameter_value == \"unique\"%} Unique Open Rate {% else %} Total Open Rate {% endif%}"
     type: number
+    hidden: yes
     value_format: "0.0%"
     sql:
     {% if reporting_parameter._parameter_value == 'total' %}
@@ -538,6 +542,7 @@ view: crm_braze_canvas {
     group_label: "* Dynamic KPI Fields *"
     label: "{% if reporting_parameter._parameter_value == \"unique\"%} Unique Click Rate {% else %} Total Click Rate {% endif%}"
     type: number
+    hidden: yes
     value_format: "0.0%"
     sql:
     {% if reporting_parameter._parameter_value == 'total' %}
@@ -551,6 +556,7 @@ view: crm_braze_canvas {
     group_label: "* Dynamic KPI Fields *"
     label: "{% if reporting_parameter._parameter_value == \"unique\"%} Unique Order Rate {% else %} Total Order Rate {% endif%}"
     type: number
+    hidden: yes
     value_format: "0.0%"
     sql:
     {% if reporting_parameter._parameter_value == 'total' %}
@@ -563,6 +569,7 @@ view: crm_braze_canvas {
   measure: KPI_absolute_dynamic {
     group_label: "* Dynamic KPI Fields *"
     label_from_parameter: KPI_absolute
+    hidden: yes
     value_format_name: decimal_2
     type: number
     sql:
@@ -596,6 +603,7 @@ view: crm_braze_canvas {
   measure: KPI_rates_dynamic {
     group_label: "* Dynamic KPI Fields *"
     label_from_parameter: KPI_rates
+    hidden: yes
     value_format: "0.0%"
     type: number
     sql:

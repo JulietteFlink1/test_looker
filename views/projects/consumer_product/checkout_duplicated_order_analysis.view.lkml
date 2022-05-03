@@ -173,15 +173,18 @@ view: checkout_duplicated_order_analysis {
   }
 
   measure: sum_chargeback_amount {
-    label: "# Total Amount Chargebacks"
+    label: "# Total Amount Chargebacks Duplicate"
     type: sum
     sql: ${total_chargebacks_amount} ;;
+    filters: [has_duplicated_order: "yes"]
+    value_format_name: eur_0
   }
 
-  measure: sum_chargebacks_total {
-    label: "# Total Chargebacks"
+  measure: sum_chargebacks_total_duplicate {
+    label: "# Total Chargebacks Duplicate"
     type: sum
     sql: ${total_chargebacks} ;;
+    filters: [has_duplicated_order: "yes"]
   }
 
   measure: sum_customer_count_correct_orders {
@@ -209,7 +212,7 @@ view: checkout_duplicated_order_analysis {
     label: "% Orders Chargebacked"
     description: "Chargeback rate out of all duplicated orders"
     type: number
-    sql: NULLIF(${sum_chargebacks_total},0)/NULLIF(${sum_customer_count_with_duplicated_orders},0) ;;
+    sql: NULLIF(${sum_chargebacks_total_duplicate},0)/NULLIF(${sum_customer_count_with_duplicated_orders},0) ;;
     value_format_name: percent_2
   }
 

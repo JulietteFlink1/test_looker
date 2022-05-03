@@ -5,7 +5,7 @@ include: "/views/projects/cleaning/shyftplan_riders_pickers_hours_clean.view"
 
 include: "/views/bigquery_tables/curated_layer/hubs_ct.view"
 include: "/views/bigquery_tables/curated_layer/nps_after_order_cl.view"
-include: "/views/bigquery_tables/curated_layer/cs_post_delivery_issues.view"
+include: "/customer_care/views/bigquery_curated/cs_post_delivery_issues.view"
 
 include: "/explores/base_explores/orders_cl.explore"
 

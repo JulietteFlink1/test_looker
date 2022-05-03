@@ -519,7 +519,7 @@ from pre_final a
     type: number
     label: "% Price Change Weighted by avg revenue"
     value_format_name: percent_1
-    sql: ${perc_price_change_weight_rev_nominator}/${perc_price_change_weight_rev_denominator}
+    sql: ${perc_price_change_weight_rev_nominator}/nullif(${perc_price_change_weight_rev_denominator},0)
       ;;
   }
 
