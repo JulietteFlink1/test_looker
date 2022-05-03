@@ -1,5 +1,4 @@
-include: "/views/**/*.view"
-include: "/explores/**/*.explore"
+include: "/competitive_intelligence/views/**/*.view.lkml"
 
 
 explore: adhoc_gorillas_mov {

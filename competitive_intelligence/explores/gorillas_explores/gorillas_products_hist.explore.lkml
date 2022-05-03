@@ -9,11 +9,8 @@
 #
 # Jira Ticket: DATA-1780
 
-include: "/**/competitive_intelligence/gorillas_products_hist.view"
-include: "/**/competitive_intelligence/gorillas_categories.view"
-include: "/**/competitive_intelligence/gorillas_hubs.view"
+include: "/competitive_intelligence/views/**/*.view.lkml"
 include: "/**/global_filters_and_parameters.view"
-include: "/**/gorillas_pricing_hist.view"
 
 explore: gorillas_products_hist {
 

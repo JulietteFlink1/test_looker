@@ -1,4 +1,4 @@
-include: "/views/**/*.view"
+include: "/competitive_intelligence/views/**/*.view.lkml"
 
 explore:  gorillas_promise_time {
   hidden: yes

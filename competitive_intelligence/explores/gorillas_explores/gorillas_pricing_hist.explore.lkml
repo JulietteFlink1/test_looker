@@ -8,10 +8,7 @@
 # April 26, 2022 Note, joins need to be fixed. Currently have some issues. Committing as is for testing.
 
 
-include: "/**/competitive_intelligence/gorillas_products.view"
-include: "/**/competitive_intelligence/gorillas_categories.view"
-include: "/**/competitive_intelligence/gorillas_hubs.view"
-include: "/**/gorillas_pricing_hist.view"
+include: "/competitive_intelligence/views/**/*.view.lkml"
 
 explore: gorillas_pricing_hist {
 
