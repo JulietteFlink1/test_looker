@@ -47,6 +47,22 @@ view: picker_order_progress_sku_aggregates {
     sql: ${TABLE}.hub_code ;;
   }
 
+  ### Device Attributes ###
+
+  dimension: device_model {
+    group_label: "Device Attributes"
+    type: string
+    sql: ${TABLE}.device_model ;;
+  }
+
+  ### Employee Attributes ###
+
+  dimension: employee_id {
+    group_label: "Employee Attributes"
+    type: string
+    sql: ${TABLE}.employee_id ;;
+  }
+
   ### Order IDs ###
 
   dimension: order_id {
