@@ -1,5 +1,5 @@
 view: job_positions {
-  sql_table_name: `flink-data-dev.curated.job_positions`
+  sql_table_name: `flink-data-prod.curated.job_positions`
     ;;
 
   dimension: country_iso {
