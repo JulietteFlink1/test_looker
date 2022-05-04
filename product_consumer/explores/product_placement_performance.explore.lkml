@@ -38,7 +38,7 @@ explore: product_placement_performance {
     ]
   }
 
-  always_join: [affected_by_impression_users]
+#  always_join: [global_filters_and_parameters]
 
   join: global_filters_and_parameters {
     sql_on: ${global_filters_and_parameters.generic_join_dim} = TRUE ;;
