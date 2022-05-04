@@ -1,4 +1,7 @@
-include: "/views/**/*.view"
+include: "/competitive_intelligence/views/bigquery_curated/gorillas_products.view.lkml"
+include: "/competitive_intelligence/views/bigquery_curated/gorillas_categories.view.lkml"
+include: "/competitive_intelligence/views/bigquery_curated/gorillas_hubs.view.lkml"
+include: "/competitive_intelligence/views/bigquery_comp_intel/gorillas_to_flink_global.view.lkml"
 
 explore:  gorillas_products {
   hidden: yes

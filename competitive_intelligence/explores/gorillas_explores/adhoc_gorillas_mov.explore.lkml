@@ -1,5 +1,6 @@
-include: "/views/**/*.view"
-include: "/explores/**/*.explore"
+include: "/competitive_intelligence/views/bigquery_curated/adhoc_gorillas_mov.view.lkml"
+include: "/competitive_intelligence/views/bigquery_curated/gorillas_hubs.view.lkml"
+include: "/competitive_intelligence/views/bigquery_reporting/gorillas_daily_orders.view.lkml"
 
 
 explore: adhoc_gorillas_mov {

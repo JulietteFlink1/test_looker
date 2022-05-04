@@ -1,6 +1,4 @@
-include: "/views/bigquery_tables/reporting_layer/competitive_intelligence/gorillas_daily_orders.view.lkml"
-include: "/explores/competitive_intelligence/comp_intel_hub_mapping.explore.lkml"
-include: "/explores/base_explores/orders_cl.explore.lkml"
+include: "/competitive_intelligence/views/bigquery_curated/competitive_intelligence_active_hubs.view.lkml"
 
 explore: competitive_intelligence_active_hubs {
   view_name: competitive_intelligence_active_hubs
