@@ -1,5 +1,4 @@
-include: "/views/bigquery_tables/reporting_layer/competitive_intelligence/gorillas_daily_orders.view.lkml"
-include: "/explores/competitive_intelligence/comp_intel_hub_mapping.explore.lkml"
+include: "/competitive_intelligence/views/bigquery_reporting/gorillas_daily_orders.view.lkml"
 include: "/explores/base_explores/orders_cl.explore.lkml"
 
 explore: gorillas_daily_orders {

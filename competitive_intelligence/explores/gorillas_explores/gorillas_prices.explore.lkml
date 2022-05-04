@@ -1,10 +1,11 @@
-include: "/**/gorillas_products.view"
-include: "/**/gorillas_categories.view"
-include: "/**/gorillas_hubs.view"
-include: "/**/gorillas_historical_prices_fact.view"
-include: "/**/gorillas_to_flink_global.view"
+include: "/competitive_intelligence/views/bigquery_curated/gorillas_products.view"
+include: "/competitive_intelligence/views/bigquery_curated/gorillas_categories.view"
+include: "/competitive_intelligence/views/bigquery_curated/gorillas_hubs.view"
+include: "/competitive_intelligence/views/bigquery_reporting/gorillas_historical_prices_fact.view"
+include: "/competitive_intelligence/views/bigquery_comp_intel/gorillas_to_flink_global.view"
 include: "/**/products.view"
 
+include: "/competitive_intelligence/views/bigquery_curated/getir_hubs.view.lkml"
 explore:  gorillas_prices {
   hidden: yes
   label: "Gorillas Prices"

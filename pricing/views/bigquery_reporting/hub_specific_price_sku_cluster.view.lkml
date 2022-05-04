@@ -17,4 +17,10 @@ view: geographic_pricing_sku_cluster {
     type: string
     sql: cast(${TABLE}.sku as string) ;;
   }
+
+  dimension: price_sku_cluster_actual {
+    type: string
+    sql: ${TABLE}.price_sku_cluster_actual ;;
+  }
+
   }
