@@ -618,6 +618,16 @@ view: +sku_performance_base {
     value_format_name: eur
   }
 
+  measure: sum_item_buying_price {
+
+    required_access_grants: [can_view_buying_information]
+
+    type: sum
+    sql: ${quantity_sold_corrected} * ${buying_price} ;;
+    hidden: yes
+
+  }
+
   measure: pct_margin {
 
     required_access_grants: [can_view_buying_information]
@@ -627,7 +637,7 @@ view: +sku_performance_base {
     group_label: "Margin Metrics"
 
     type: number
-    sql: safe_divide( ${sum_item_revenue_net_corrected} - sum(${quantity_sold_corrected} * ${buying_price}), ${sum_item_revenue_net_corrected}) ;;
+    sql: safe_divide( ${sum_item_revenue_net_corrected} - ${sum_item_buying_price}, ${sum_item_revenue_net_corrected}) ;;
 
     value_format_name: percent_0
 
