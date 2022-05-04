@@ -42,6 +42,10 @@ explore: order_orderline_cl {
 
   join: erp_product_hub_vendor_assignment {
 
+    # hiding this table, as it is filtered already by assigned SKUs, which also excludes information on No-Purchase items (we sell them, but do not replenish)
+    # this will be deprecated in favour of the raw ERP data
+    view_label: ""
+
     from: erp_product_hub_vendor_assignment_v2
 
     sql_on:  ${erp_product_hub_vendor_assignment.sku}            = ${orderline.product_sku}
@@ -51,4 +55,77 @@ explore: order_orderline_cl {
     type: left_outer
     relationship: one_to_many
   }
+
+  # ----------------------------------------
+  # Join Lexbizz Raw-Data Model
+
+  join: lexbizz_warehouse {
+
+    view_label: "Lexbizz Master Data"
+
+    type: left_outer
+    relationship: many_to_one
+    fields: [
+             # lexbizz_warehouse.hub_code,
+             # lexbizz_warehouse.ingestion_date,
+             # lexbizz_warehouse.warehouse_id,
+             lexbizz_warehouse.is_warehouse_active,
+             # lexbizz_item_warehouse.country_iso
+            ]
+
+    sql_on:
+          ${lexbizz_warehouse.hub_code}         =  ${orderline.hub_code}
+      and ${lexbizz_warehouse.ingestion_date}   =  ${orderline.created_date}
+      and ${lexbizz_warehouse.country_iso}      =  ${orderline.country_iso}
+    ;;
+  }
+
+  join: lexbizz_item_warehouse {
+
+    view_label: "Lexbizz Master Data"
+
+    type: left_outer
+    relationship: many_to_one
+    fields: [
+      lexbizz_item_warehouse.ingestion_date,
+      lexbizz_item_warehouse.warehouse_id,
+      lexbizz_item_warehouse.sku,
+      lexbizz_item_warehouse.item_status,
+      lexbizz_item_warehouse.item_at_warehouse_status,
+      lexbizz_item_warehouse.preferred_vendor_id,
+      lexbizz_item_warehouse.preferred_vendor_location,
+      # lexbizz_item_warehouse.country_iso
+    ]
+
+    sql_on:
+           ${lexbizz_item_warehouse.ingestion_date} = ${orderline.created_date}
+      and  ${lexbizz_item_warehouse.warehouse_id}   = ${lexbizz_warehouse.warehouse_id}
+      and  ${lexbizz_item_warehouse.sku}            = ${orderline.product_sku}
+      and  ${lexbizz_item_warehouse.country_iso}    = ${orderline.country_iso}
+    ;;
+  }
+
+  join: lexbizz_vendor {
+
+    view_label: "Lexbizz Master Data"
+
+    type: left_outer
+    relationship: many_to_one
+    fields: [
+      lexbizz_vendor.gln,
+      lexbizz_vendor.vendor_status,
+      lexbizz_vendor.vendor_class,
+      lexbizz_vendor.vendor_name
+    ]
+
+    sql_on:
+           ${lexbizz_vendor.vendor_id}      =  ${lexbizz_item_warehouse.preferred_vendor_id}
+      and  ${lexbizz_vendor.ingestion_date} =  ${lexbizz_item_warehouse.ingestion_date}
+      and  ${lexbizz_vendor.country_iso}    =  ${lexbizz_item_warehouse.country_iso}
+    ;;
+  }
+
+  # Join Lexbizz Raw-Data Model
+  # ----------------------------------------
+
 }
