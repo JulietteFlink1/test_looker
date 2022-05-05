@@ -77,6 +77,10 @@ explore: order_orderline_cl {
           ${lexbizz_warehouse.hub_code}         =  ${orderline.hub_code}
       and ${lexbizz_warehouse.ingestion_date}   =  ${orderline.created_date}
       and ${lexbizz_warehouse.country_iso}      =  ${orderline.country_iso}
+
+      -- remove the "* N" aka test warehouses, otherwise the join duplicates the data
+      and ${lexbizz_warehouse.is_warehouse_active} is true
+      --and SUBSTR(${lexbizz_warehouse.warehouse_id}, LENGTH(${lexbizz_warehouse.warehouse_id}) -1, LENGTH(${lexbizz_warehouse.warehouse_id})) = ' N'
     ;;
   }
 
