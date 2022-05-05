@@ -131,12 +131,12 @@ view: product_placement_performance {
     type: string
     sql: ${TABLE}.pdp_origin ;;
   }
-  dimension: origin_screen {
+  dimension: screen_name {
     group_label: "Product Dimensions"
     label: "Screen Name"
     description: "Name of the screen."
     type: string
-    sql: ${TABLE}.origin_screen ;;
+    sql: ${TABLE}.screen_name ;;
   }
 
   # ======= Dates / Timestamps =======

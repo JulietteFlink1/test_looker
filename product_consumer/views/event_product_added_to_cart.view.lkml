@@ -168,7 +168,6 @@ dimension: product_sku {
   type: string
   sql: ${TABLE}.product_sku ;;
 }
-
 dimension: product_name {
   group_label: "Product Dimensions"
   label: "Product Name"
@@ -176,7 +175,6 @@ dimension: product_name {
   type: string
   sql: ${TABLE}.product_name ;;
 }
-
 dimension: product_position {
   group_label: "Product Dimensions"
   label: "Product Position"
@@ -184,15 +182,27 @@ dimension: product_position {
   type: number
   sql: ${TABLE}.product_position ;;
 }
-
 dimension: product_price {
   group_label: "Product Dimensions"
-  label: "Product"
+  label: "Product Price"
   description: "Price of the product"
   type: number
   sql: ${TABLE}.product_price ;;
 }
-
+dimension: original_price {
+  group_label: "Product Dimensions"
+  label: "Product Price (Original)"
+  description: "Original price of the product before discount"
+  type: number
+  sql: ${TABLE}.original_price ;;
+}
+dimension: is_discount_applied {
+  group_label: "Product Dimensions"
+  label: "Is Discount Applied"
+  description: "Whether a discount was applied on a product."
+  type: yesno
+  sql: ${TABLE}.is_discount_applied ;;
+}
 dimension: category_name {
   group_label: "Product Dimensions"
   label: "Category Name"
@@ -200,7 +210,6 @@ dimension: category_name {
   type: string
   sql: ${TABLE}.category_name ;;
 }
-
 dimension: sub_category_name {
   group_label: "Product Dimensions"
   label: "Sub-Category name"
@@ -208,21 +217,19 @@ dimension: sub_category_name {
   type: string
   sql: ${TABLE}.sub_category_name ;;
 }
-
-dimension: list_category {
+dimension: product_placement {
   group_label: "Product Dimensions"
   label: "Product Placement"
   description: "Placement in the app where product was listed, e.i. search, pdp, category"
   type: string
-  sql: ${TABLE}.list_category ;;
+  sql: ${TABLE}.product_placement ;;
 }
-
-dimension: origin_screen {
+dimension: screen_name {
   group_label: "Product Dimensions"
   label: "Screen Name"
   description: "Name of the screen."
   type: string
-  sql: ${TABLE}.origin_screen ;;
+  sql: ${TABLE}.screen_name ;;
 }
 
 # ======= Dates / Timestamps =======
@@ -289,10 +296,31 @@ measure: logged_in_anonymous_users {
   type: count_distinct
   sql: ${TABLE}.anonymous_id ;;
 }
-  measure: products {
-    label: "# Unique Products"
-    description: "Number of unique products added to cart"
-    type: count_distinct
-    sql: ${TABLE}.product_sku ;;
+measure: products {
+  label: "# Unique Products"
+  description: "Number of unique products added to cart"
+  type: count_distinct
+  sql: ${TABLE}.product_sku ;;
+}
+measure: original_product_price{
+  group_label: "Product Dimensions"
+  label: "Product Discount"
+  description: "Original price - Product Price"
+  type: number
+  sql: ${original_price} ;;
+}
+measure: actual_product_price{
+  group_label: "Product Dimensions"
+  label: "Product Discount"
+  description: "Original price - Product Price"
+  type: number
+  sql: ${product_price} ;;
+}
+  measure: discount {
+    label: "Sum Discount"
+    description: "Sum of discounts applied"
+    type: number
+    value_format_name: decimal_2
+    sql: ${original_product_price} - ${actual_product_price} ;;
   }
 }
