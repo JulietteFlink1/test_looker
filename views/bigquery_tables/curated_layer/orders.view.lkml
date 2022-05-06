@@ -413,6 +413,22 @@ view: orders {
     sql: ${TABLE}.riding_time_minutes ;;
   }
 
+  dimension: delivery_time_tier_2 {
+    group_label: "* Operations / Logistics *"
+    type: tier
+    tiers: [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70]
+    style: relational
+    sql: ${delivery_time} ;;
+  }
+
+  dimension: delivery_time_tier_5 {
+    group_label: "* Operations / Logistics *"
+    type: tier
+    tiers: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70]
+    style: relational
+    sql: ${delivery_time} ;;
+  }
+
   dimension: return_to_hub_time_minutes {
     label: "Return To Hub Time (min)"
     description: "The time for a rider to cycle from the customer back to the hub"
