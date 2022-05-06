@@ -201,7 +201,11 @@ dimension: is_discount_applied {
   label: "Is Discount Applied"
   description: "Whether a discount was applied on a product."
   type: yesno
-  sql: ${TABLE}.is_discount_applied ;;
+  sql: case
+        when ${TABLE}.is_discount_applied = true then 'Yes'
+        when ${TABLE}.is_discount_applied = false then 'No'
+        when ${TABLE}.is_discount_applied is null then 'Unkown'
+      end ;;
 }
 dimension: category_name {
   group_label: "Product Dimensions"
