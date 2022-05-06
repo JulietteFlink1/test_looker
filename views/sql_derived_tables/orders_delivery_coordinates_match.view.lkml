@@ -207,6 +207,19 @@ WHERE is_current_hub_area IS TRUE
     value_format_name: percent_2
   }
 
+  measure: cnt_distance_greater_than_100 {
+    description: "count number of orders where the discrepancy between backend and client location is larger than 100m"
+    type: count
+    filters: [client_backend_location_distance: ">100"]
+  }
+
+  measure: perc_distance_greater_than_100 {
+    description: "% of orders where the discrepancy between backend and client location is larger than 100m"
+    type: number
+    sql: ${cnt_distance_greater_than_20}/${count} ;;
+    value_format_name: percent_2
+  }
+
   #####
 
   measure: count {
