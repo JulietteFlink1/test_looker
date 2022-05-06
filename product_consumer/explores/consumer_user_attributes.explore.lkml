@@ -31,7 +31,9 @@ explore: consumer_user_attributes {
     -customers_metrics.hours_time_since_sign_up,
     -customers_metrics.minutes_time_since_sign_up,
     -customers_metrics.seconds_time_since_sign_up,
-    -customers_metrics.weeks_time_since_sign_up_number
+    -customers_metrics.weeks_time_since_sign_up_number,
+    -orders.sum_rider_hours,
+    -orders.KPI
     ]
 
 
@@ -41,6 +43,14 @@ explore: consumer_user_attributes {
     relationship: one_to_one
     type: left_outer
   }
+
+  join: orders {
+    view_label: "* Orders *"
+    sql_on: ${user_attributes_jobs_to_be_done.customer_uuid} = ${orders.customer_uuid} ;;
+    relationship: one_to_many
+    type: left_outer
+  }
+
 
   access_filter: {
     field: user_attributes_jobs_to_be_done.country_iso
