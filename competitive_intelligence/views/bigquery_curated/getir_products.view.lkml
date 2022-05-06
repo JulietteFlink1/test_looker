@@ -10,6 +10,8 @@ view: getir_products {
   dimension: getir_products_uuid {
     type: string
     sql: ${TABLE}.getir_products_uuid ;;
+
+    primary_key: yes
   }
 
   dimension: hub_id {
