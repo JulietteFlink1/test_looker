@@ -17,13 +17,13 @@ include: "/**/global_filters_and_parameters.view"
 
 explore: gorillas_products_hist {
 
-  label:       "Gorillas Products Hist"
+  label:       "Gorillas Catalog"
   description: "This explore give us a view of all historical scraped data from Gorillas
   and allows us to view Gorillas' price changes over time."
   group_label: "Competitive Intelligence"
-  view_label:  "Gorillas Products Hist"
+  view_label:  "Gorillas Catalog"
 
-  hidden: yes
+  hidden: no
 
   always_filter: {
     filters: [
