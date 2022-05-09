@@ -65,8 +65,8 @@ view: orders {
     sql: ${gmv_gross} ;;
   }
 
-  dimension: gmv_gross_tier_2 {
-    alias: [gmv_gross_tier]
+  dimension: gmv_gross_tier {
+    alias: [gmv_gross_tier_2]
     group_label: "* Monetary Values *"
     label: "GMV (tiered, 2 EUR)"
     type: tier
@@ -118,8 +118,8 @@ view: orders {
     sql: ${item_value_gross} ;;
   }
 
-  dimension: item_value_gross_tier_2 {
-    alias: [item_value_gross_tier]
+  dimension: item_value_gross_tier {
+    alias: [item_value_gross_tier_2]
     group_label: "* Monetary Values *"
     label: "Item Value (tiered, 2 EUR)"
     type: tier
