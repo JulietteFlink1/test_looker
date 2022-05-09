@@ -58,6 +58,7 @@ view: orders {
 
   dimension: gmv_gross_tier {
     group_label: "* Monetary Values *"
+    label: "GMV (tiered, 2 EUR)"
     type: tier
     tiers: [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70]
     style: relational
@@ -66,6 +67,7 @@ view: orders {
 
   dimension: gmv_gross_tier_5 {
     group_label: "* Monetary Values *"
+    label: "GMV (tiered, 5 EUR)"
     type: tier
     tiers: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70]
     style: relational
@@ -99,6 +101,7 @@ view: orders {
 
   dimension: item_value_gross_tier {
     group_label: "* Monetary Values *"
+    label: "Item Value (tiered, 2 EUR)"
     type: tier
     tiers: [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70]
     style: relational
@@ -107,6 +110,7 @@ view: orders {
 
   dimension: item_value_gross_tier_5 {
     group_label: "* Monetary Values *"
+    label: "Item Value (tiered, 5 EUR)"
     type: tier
     tiers: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70]
     style: relational
@@ -558,14 +562,25 @@ view: orders {
 
   dimension: fulfillment_time_tier {
     group_label: "* Operations / Logistics *"
+    label: "Fulfillment Time (tiered, 1min)"
     type: tier
-    tiers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]
+    tiers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50]
     style: interval
+    sql: ${fulfillment_time} ;;
+  }
+
+  dimension: fulfillment_time_tier_2 {
+    group_label: "* Operations / Logistics *"
+    label: "Fulfillment Time (tiered, 2min)"
+    type: tier
+    tiers: [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70]
+    style: relational
     sql: ${fulfillment_time} ;;
   }
 
   dimension: acceptance_time_tier {
     group_label: "* Operations / Logistics *"
+    label: "Acceptance Time (tiered, 1min)"
     type: tier
     tiers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]
     style: interval
@@ -574,6 +589,7 @@ view: orders {
 
   dimension: reaction_time_tier {
     group_label: "* Operations / Logistics *"
+    label: "Reaction Time (tiered, 1min)"
     type: tier
     tiers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]
     style: interval
@@ -1042,7 +1058,7 @@ view: orders {
 
   dimension: at_customer_time_minutes_tier_5 {
     group_label: "* Operations / Logistics *"
-    label: "At Customer Time Minutes Tier"
+    label: "At Customer Time Minutes (tiered, 0.5min)"
     type: tier
     tiers: [0, 0.5, 1, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0]
     sql: ${at_customer_time_minutes} ;;
@@ -1121,6 +1137,7 @@ view: orders {
 
   dimension: weight_kg_tier {
     group_label: "* Order Dimensions *"
+    label: "Weight (tiered, 1kg)"
     type: tier
     tiers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
     style: relational
@@ -2481,14 +2498,14 @@ view: orders {
         value_format: "0"
       }
 
-  measure: cnt_orders_with_delivery_time_targeted {
-    group_label: "* Operations / Logistics *"
-    label: "# Orders with Fulfillment Time Targeted"
-    hidden:  yes
-    type: count
-    filters: [delivery_time_targeted_minutes: ">0", fulfillment_time: ">0"]
-    value_format: "0"
-  }
+      measure: cnt_orders_with_delivery_time_targeted {
+        group_label: "* Operations / Logistics *"
+        label: "# Orders with Fulfillment Time Targeted"
+        hidden:  yes
+        type: count
+        filters: [delivery_time_targeted_minutes: ">0", fulfillment_time: ">0"]
+        value_format: "0"
+      }
 
       measure: rmse_delivery_time_estimate {
         label: "Fulfillment Time Estimate Error (RMSE)"
@@ -2506,6 +2523,5 @@ view: orders {
         value_format: "0.0"
         sql: ${avg_delivery_time} - ${avg_return_to_hub_time} ;;
       }
-
 
     }

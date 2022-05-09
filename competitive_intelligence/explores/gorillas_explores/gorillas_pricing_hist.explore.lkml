@@ -8,10 +8,10 @@
 # April 26, 2022 Note, joins need to be fixed. Currently have some issues. Committing as is for testing.
 
 
-include: "/**/competitive_intelligence/gorillas_products.view"
-include: "/**/competitive_intelligence/gorillas_categories.view"
-include: "/**/competitive_intelligence/gorillas_hubs.view"
-include: "/**/gorillas_pricing_hist.view"
+include: "/competitive_intelligence/views/bigquery_curated/gorillas_pricing_hist.view.lkml"
+include: "/competitive_intelligence/views/bigquery_curated/gorillas_products.view.lkml"
+include: "/competitive_intelligence/views/bigquery_curated/gorillas_categories.view.lkml"
+include: "/competitive_intelligence/views/bigquery_curated/gorillas_hubs.view.lkml"
 
 explore: gorillas_pricing_hist {
 

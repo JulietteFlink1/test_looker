@@ -990,7 +990,7 @@ view: daily_user_aggregates {
     group_label: "Conversions | Product Placement mCVR2 (%)"
     label: "Recommendation mCVR2"
     type: number
-    hidden: yes
+    hidden: no
     description: "# users with add-to-cart from Recommendation, compared to the total number of users with an address"
     value_format_name: percent_1
     sql: ${users_with_recommendation_atc} / nullif(${users_with_address},0);;

@@ -9,21 +9,21 @@
 #
 # Jira Ticket: DATA-1780
 
-include: "/**/competitive_intelligence/gorillas_products_hist.view"
-include: "/**/competitive_intelligence/gorillas_categories.view"
-include: "/**/competitive_intelligence/gorillas_hubs.view"
+include: "/competitive_intelligence/views/bigquery_curated/gorillas_products_hist.view.lkml"
+include: "/competitive_intelligence/views/bigquery_curated/gorillas_categories.view.lkml"
+include: "/competitive_intelligence/views/bigquery_curated/gorillas_hubs.view.lkml"
+include: "/competitive_intelligence/views/bigquery_curated/gorillas_pricing_hist.view.lkml"
 include: "/**/global_filters_and_parameters.view"
-include: "/**/gorillas_pricing_hist.view"
 
 explore: gorillas_products_hist {
 
-  label:       "Gorillas Products Hist"
+  label:       "Gorillas Catalog"
   description: "This explore give us a view of all historical scraped data from Gorillas
   and allows us to view Gorillas' price changes over time."
   group_label: "Competitive Intelligence"
-  view_label:  "Gorillas Products Hist"
+  view_label:  "Gorillas Catalog"
 
-  hidden: yes
+  hidden: no
 
   always_filter: {
     filters: [

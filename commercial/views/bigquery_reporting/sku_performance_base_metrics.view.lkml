@@ -700,13 +700,13 @@ view: +sku_performance_base {
     group_label: "Proposed Decision Metrics"
 
     type: number
-    sql: if(
+    sql: (if(
             ${pct_item_revenue_gross_corrected_vs_total} > ${pct_quantity_sold_corrected_vs_total},
             ${pct_item_revenue_gross_corrected_vs_total},
             ${pct_quantity_sold_corrected_vs_total}
-            ) ;;
+            )) * 10000 ;;
 
-    value_format_name: percent_4
+    value_format_name: percent_2
 
   }
 
@@ -719,9 +719,9 @@ view: +sku_performance_base {
     group_label: "Proposed Decision Metrics"
 
     type: number
-    sql: (${avg_number_of_connections} / nullif(${avg_total_assortment_size} ,0) ) * 10000 ;;
+    sql: (${avg_number_of_connections} / nullif(${avg_total_assortment_size} ,0) ) ;;
 
-    value_format_name: decimal_4
+    value_format_name: percent_2
   }
 
 

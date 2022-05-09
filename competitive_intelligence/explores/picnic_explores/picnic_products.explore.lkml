@@ -1,10 +1,11 @@
-include: "/views/**/*.view"
+include: "/competitive_intelligence/views/bigquery_curated/picnic_products.view.lkml"
+include: "/competitive_intelligence/views/bigquery_curated/picnic_categories.view.lkml"
 
 explore:  picnic_products {
-  hidden: no
+  hidden: yes
   label: "Picnic Products"
   view_label: "Picnic Products"
-  group_label: "Competitive Intel"
+  group_label: "Competitive Intelligence"
   description: "Competitive Intelligence Data"
 
   join: category_l0 {
