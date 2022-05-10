@@ -214,6 +214,7 @@ view: psp_transactions {
 
   measure: sum_captured_pc_refunded {
     group_label: "* Amounts Captured *"
+    description: "Sum Main Amount for Refunded/RefundedExternally Record Type"
     type: sum
     sql: ${captured_pc} ;;
     value_format_name: euro_accounting_2_precision
@@ -223,14 +224,34 @@ view: psp_transactions {
   measure: sum_main_amount_settled {
     group_label: "* Amounts Captured *"
     type: sum
+    description: "Sum Main Amount for Settled Record Type"
     sql: ${main_amount} ;;
     value_format_name: euro_accounting_2_precision
     filters: [record_type: "Settled"]
   }
 
+  measure: sum_main_amount_sent_for_settle {
+    group_label: "* Amounts Captured *"
+    type: sum
+    description: "Sum Main Amount for Sent for Settle Record Type"
+    sql: ${main_amount} ;;
+    value_format_name: euro_accounting_2_precision
+    filters: [record_type: "SentForSettle"]
+  }
+
+  measure: sum_main_amount_sent_for_refund {
+    group_label: "* Amounts Captured *"
+    type: sum
+    description: "Sum Main Amount for Sent for Refund Record Type"
+    sql: ${main_amount} ;;
+    value_format_name: euro_accounting_2_precision
+    filters: [record_type: "SentForRefund"]
+  }
+
   measure: sum_main_amount_authorised {
     group_label: "* Amounts Captured *"
     type: sum
+    description: "Sum Main Amount for Authorised Record Type"
     sql: ${main_amount} ;;
     value_format_name: euro_accounting_2_precision
     filters: [record_type: "Authorised"]
