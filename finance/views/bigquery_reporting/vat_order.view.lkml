@@ -1,6 +1,6 @@
 view: vat_order {
   derived_table: {
-    sql:select * from `flink-data-dev.reporting.vat_order`
+    sql:select * from `flink-data-prod.reporting.vat_order`
     ;;
   }
 
