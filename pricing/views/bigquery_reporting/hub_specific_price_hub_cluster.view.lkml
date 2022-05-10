@@ -12,4 +12,25 @@ view: geographic_pricing_hub_cluster {
     type: string
     sql: ${TABLE}.hub_code ;;
   }
+
+  parameter: hub_granularity {
+    type: unquoted
+    allowed_value: { value: "price_hub_cluster" }
+    allowed_value: { value: "hub_code" }
+    allowed_value: {  label: "No granularity"
+      value: "" }
+    default_value: ""
+  }
+
+  dimension: hub_dimension {
+    sql:
+    {% if hub_granularity._parameter_value == 'price_hub_cluster' %}
+      ${price_hub_cluster}
+    {% elsif hub_granularity._parameter_value == 'hub_code' %}
+      ${hub_code}
+    {% else %}
+      ""
+    {% endif %};;
+  }
+
 }

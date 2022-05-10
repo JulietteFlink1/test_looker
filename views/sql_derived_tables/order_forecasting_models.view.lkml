@@ -258,7 +258,7 @@ ORDER BY start_timestamp, job_date, hub_code
     group_label: " * Forecasting error * "
     label: "MAPE"
     type: number
-    sql: ${absolute_percentage_error}/ NULLIF(${count_values}, 0);;
+    sql: ${absolute_percentage_error} / NULLIF(${count_values}, 0);;
     value_format_name: percent_0
   }
 
@@ -266,7 +266,7 @@ ORDER BY start_timestamp, job_date, hub_code
     group_label: " * Forecasting error * "
     label: "wMAPE"
     type: number
-    sql: ${summed_absolute_error}/${summed_absolute_actuals};;
+    sql: ${summed_absolute_error} / NULLIF(${summed_absolute_actuals}, 0);;
     value_format_name: percent_0
   }
 

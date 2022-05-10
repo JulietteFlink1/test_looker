@@ -7,7 +7,7 @@
 
 include: "/**/products.view"
 include: "/**/global_filters_and_parameters.view.lkml"
-include: "/**/products_hub_assignment.view"
+include: "/**/products_hub_assignment_v2.view"
 include: "/**/inventory.view"
 include: "/**/unique_assortment.view"
 include: "/**/hubs_ct.view"
@@ -21,7 +21,7 @@ include: "/**/getir_products.view"
 include: "/**/getir_categories.view"
 include: "/**/getir_hubs.view"
 include: "/**/flink_to_albert_heijn_global.view"
-include: "/**/albert_hejn_products.view"
+include: "/competitive_intelligence/views/bigquery_curated/albert_heijn_products.view.lkml"
 include: "/**/key_value_items.view"
 include: "/**/price_test_tracking.view"
 
@@ -54,8 +54,11 @@ explore: competitive_pricing {
   }
 
   join: products_hub_assignment {
-    sql_on: ${products_hub_assignment.sku} = ${products.product_sku} ;;
-    sql_where: ${products_hub_assignment.is_most_recent_record} = TRUE ;;
+
+    from: products_hub_assignment_v2
+
+    sql_on: ${products_hub_assignment.sku} = ${products.product_sku}
+           and ${products_hub_assignment.report_date} = current_date() ;;
     type: left_outer
     relationship: one_to_many
   }

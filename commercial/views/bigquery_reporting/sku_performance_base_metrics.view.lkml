@@ -618,6 +618,16 @@ view: +sku_performance_base {
     value_format_name: eur
   }
 
+  measure: sum_item_buying_price {
+
+    required_access_grants: [can_view_buying_information]
+
+    type: sum
+    sql: ${quantity_sold_corrected} * ${buying_price} ;;
+    hidden: yes
+
+  }
+
   measure: pct_margin {
 
     required_access_grants: [can_view_buying_information]
@@ -627,7 +637,7 @@ view: +sku_performance_base {
     group_label: "Margin Metrics"
 
     type: number
-    sql: safe_divide( ${sum_item_revenue_net_corrected} - sum(${quantity_sold_corrected} * ${buying_price}), ${sum_item_revenue_net_corrected}) ;;
+    sql: safe_divide( ${sum_item_revenue_net_corrected} - ${sum_item_buying_price}, ${sum_item_revenue_net_corrected}) ;;
 
     value_format_name: percent_0
 
@@ -690,13 +700,13 @@ view: +sku_performance_base {
     group_label: "Proposed Decision Metrics"
 
     type: number
-    sql: if(
+    sql: (if(
             ${pct_item_revenue_gross_corrected_vs_total} > ${pct_quantity_sold_corrected_vs_total},
             ${pct_item_revenue_gross_corrected_vs_total},
             ${pct_quantity_sold_corrected_vs_total}
-            ) ;;
+            )) * 10000 ;;
 
-    value_format_name: percent_4
+    value_format_name: percent_2
 
   }
 
@@ -709,9 +719,9 @@ view: +sku_performance_base {
     group_label: "Proposed Decision Metrics"
 
     type: number
-    sql: (${avg_number_of_connections} / nullif(${avg_total_assortment_size} ,0) ) * 10000 ;;
+    sql: (${avg_number_of_connections} / nullif(${avg_total_assortment_size} ,0) ) ;;
 
-    value_format_name: decimal_4
+    value_format_name: percent_2
   }
 
 
