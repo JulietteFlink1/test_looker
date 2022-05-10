@@ -21,7 +21,7 @@ explore: consumer_user_attributes {
   view_label: "* User Level JTBD *"
   description: "This explore provides an overview of user attributes"
   group_label: "Consumer Product"
-  sql_always_where: ${customers_metrics.first_order_month} >= '2021-10-01';;
+  sql_always_where: ${customers_metrics.first_order_month} > '2021-09-30';;
   fields: [
     ALL_FIELDS*,
     -customers_metrics.years_time_since_sign_up,
