@@ -41,8 +41,6 @@ explore: competitive_pricing {
 
   always_filter: {
     filters: [
-      products_hub_assignment.is_sku_assigned_to_hub: "",
-      hubs.is_hub_opened: "Yes",
       global_filters_and_parameters.datasource_filter: "last 30 days"
     ]
   }
