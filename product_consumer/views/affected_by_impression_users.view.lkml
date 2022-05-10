@@ -1,6 +1,7 @@
 view: affected_by_impression_users {
   derived_table: {
-    sql: SELECT
+    sql:WITH global_filters_and_parameters AS (select TRUE as generic_join_dim)
+        SELECT
             (DATE(daily_events.event_timestamp , 'Europe/Berlin')) AS event_date,
             daily_events.anonymous_id  AS anonymous_id,
             TRUE as is_exposed_to_impressions

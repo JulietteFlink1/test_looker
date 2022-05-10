@@ -131,12 +131,12 @@ view: product_placement_performance {
     type: string
     sql: ${TABLE}.pdp_origin ;;
   }
-  dimension: origin_screen {
+  dimension: screen_name {
     group_label: "Product Dimensions"
     label: "Screen Name"
     description: "Name of the screen."
     type: string
-    sql: ${TABLE}.origin_screen ;;
+    sql: ${TABLE}.screen_name ;;
   }
 
   # ======= Dates / Timestamps =======
@@ -193,6 +193,7 @@ view: product_placement_performance {
     type: yesno
     sql: ${TABLE}.is_order_placed ;;
   }
+
   # ======= HIDDEN Dimension ======= #
 
   dimension: product_placement_uuid {
@@ -201,7 +202,7 @@ view: product_placement_performance {
     label: "Event UUID"
     description: "Unique identifier of an event"
     type: string
-    sql: ${TABLE}.event_uuid ;;
+    sql: ${TABLE}.product_placement_uuid ;;
   }
 
   dimension: anonymous_id {
@@ -212,6 +213,13 @@ view: product_placement_performance {
     type: string
     sql: ${TABLE}.anonymous_id ;;
     }
+
+  dimension: is_pdp_or_atc {
+    hidden: yes
+    group_label: "Event Flags"
+    type: yesno
+    sql: ${TABLE}.is_pdp_viewed or ${TABLE}.is_product_add_to_cart ;;
+  }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
   # ~~~~~~~~~~~~~~~     Measures      ~~~~~~~~~~~~~~~ #
@@ -268,13 +276,21 @@ view: product_placement_performance {
     type: sum
     sql: ${TABLE}.number_of_orders ;;
   }
+  measure: number_of_clicks {
+    group_label: "Product Metrics"
+    label: "# Products clicked (PDP or ATC)"
+    description: "Number of products clicked. Can be either PDP or ATC"
+    type: count_distinct
+    sql: ${product_placement_uuid} ;;
+    filters: [is_pdp_or_atc: "yes" ]
+  }
   measure: click_through_rate {
     group_label: "Rates (%)"
     label: "Click-Through Rate (CTR)"
     type: number
     description: "# products with either PDP or Add-to-Cart / # total product impressions"
     value_format_name: percent_2
-    sql: (${add_to_carts} + ${pdps}) / nullif(${impressions},0);;
+    sql: (${number_of_clicks}) / nullif(${impressions},0);;
   }
   measure: impression_to_atc_rate {
     group_label: "Rates (%)"
