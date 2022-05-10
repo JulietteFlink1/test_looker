@@ -120,6 +120,7 @@ dimension: has_breakfast_orders {
   type: yesno
   label: "Has Breakfast Orders"
   group_label: "User Activity - Last 12 Weeks"
+  description: "Yes if the user has breakfast orders in the past 12 weeks"
   sql: CASE WHEN ${TABLE}.number_of_breakfast_orders_last_twelve_weeks > 0 THEN TRUE
     ELSE FALSE END ;;
 }
@@ -128,6 +129,7 @@ dimension: has_emergency_orders {
   type: yesno
   label: "Has Emergency Orders"
   group_label: "User Activity - Last 12 Weeks"
+  description: "Yes if the user has emergency orders in the past 12 weeks"
   sql: CASE WHEN ${TABLE}.number_of_emergency_orders_last_twelve_weeks > 0 THEN TRUE
     ELSE FALSE END ;;
 }
@@ -136,6 +138,7 @@ dimension: has_household_shopping_orders {
   type: yesno
   label: "Has Household Shopping Orders"
   group_label: "User Activity - Last 12 Weeks"
+  description: "Yes if the user has household shopping orders in the past 12 weeks"
   sql: CASE WHEN ${TABLE}.number_of_household_shopping_orders_last_twelve_weeks > 0 THEN TRUE
     ELSE FALSE END ;;
 }
@@ -144,6 +147,7 @@ dimension: has_late_night_snack_orders {
   type: yesno
   label: "Has Late Night Snack Orders"
   group_label: "User Activity - Last 12 Weeks"
+  description: "Yes if the user has last night snack orders orders in the past 12 weeks"
   sql: CASE WHEN ${TABLE}.number_of_late_night_snack_orders_last_twelve_weeks > 0 THEN TRUE
     ELSE FALSE END ;;
 }
@@ -152,6 +156,7 @@ dimension: has_party_time_orders {
   type: yesno
   label: "Has Party Time Orders"
   group_label: "User Activity - Last 12 Weeks"
+  description: "Yes if the user has party time orders in the past 12 weeks"
   sql: CASE WHEN ${TABLE}.number_of_party_time_orders_last_twelve_weeks > 0 THEN TRUE
     ELSE FALSE END ;;
 }

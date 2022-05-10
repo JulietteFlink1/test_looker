@@ -56,7 +56,17 @@ view: orders {
     sql: ${TABLE}.amt_gmv_gross ;;
   }
 
+  dimension: gmv_gross_tier_1 {
+    group_label: "* Monetary Values *"
+    label: "GMV (tiered, 1 EUR)"
+    type: tier
+    tiers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35]
+    style: relational
+    sql: ${gmv_gross} ;;
+  }
+
   dimension: gmv_gross_tier {
+    alias: [gmv_gross_tier_2]
     group_label: "* Monetary Values *"
     label: "GMV (tiered, 2 EUR)"
     type: tier
@@ -99,7 +109,17 @@ view: orders {
     sql: ${TABLE}.amt_total_price_net   ;;
   }
 
+  dimension: item_value_gross_tier_1 {
+    group_label: "* Monetary Values *"
+    label: "Item Value (tiered, 1 EUR)"
+    type: tier
+    tiers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35]
+    style: relational
+    sql: ${item_value_gross} ;;
+  }
+
   dimension: item_value_gross_tier {
+    alias: [item_value_gross_tier_2]
     group_label: "* Monetary Values *"
     label: "Item Value (tiered, 2 EUR)"
     type: tier

@@ -18,6 +18,7 @@ view: payment_transactions {
   }
 
   dimension: order_uuid {
+    hidden: yes
     primary_key: yes
     type: string
     sql: ${TABLE}.order_uuid ;;
@@ -30,6 +31,7 @@ view: payment_transactions {
 
   dimension: psp_reference {
     type: string
+    hidden: yes
     sql: ${TABLE}.psp_reference ;;
   }
 
@@ -103,13 +105,13 @@ view: payment_transactions {
     value_format: "0.00€"
   }
 
-  dimension: diff_transaction_amount {
-    description: "Transaction Amount - Order Gross Revenue"
-    label: "Payment Difference (Adyen vs CT)"
-    type: number
-    sql: ${orders_cl.total_gross_amount} - ${transaction_amount} ;;
-    value_format: "0.00€"
-  }
+  # dimension: diff_transaction_amount {
+  #   description: "Transaction Amount - Order Gross Revenue"
+  #   label: "Payment Difference (Adyen vs CT)"
+  #   type: number
+  #   sql: ${orders_cl.total_gross_amount} - ${transaction_amount} ;;
+  #   value_format: "0.00€"
+  # }
 
   measure: count {
     type: count

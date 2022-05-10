@@ -120,6 +120,77 @@ view: bulk_items {
   }
 
 
+  # =========  New dimension added on 6-5-2022   =========
+
+
+  dimension: dispatch_advice_number {
+
+    label:       "Dispatch Advice Number"
+    type: string
+    sql: ${TABLE}.dispatch_advice_number ;;
+  }
+
+
+  dimension: sscc {
+
+    label:       "SSCC"
+    type: string
+    sql: ${TABLE}.sscc ;;
+  }
+
+
+  dimension: warehouse_number {
+
+    label:       "Warehouse Number"
+    type: string
+    sql: ${TABLE}.warehouse_number ;;
+  }
+
+  dimension: warehouse_number_array {
+
+    label:       "All Possible Warehouse Numbers"
+    type: string
+    sql: ${TABLE}.all_possible_warehouse_numbers ;;
+  }
+
+
+  dimension: order_number {
+
+    label:       "Order Number"
+    type: string
+    sql: ${TABLE}.order_number ;;
+  }
+
+
+  dimension: order_number_array {
+
+    label:       "All Possible Order Numbers"
+    type: string
+    sql: ${TABLE}.all_possible_order_numbers ;;
+  }
+
+
+
+  dimension_group: loaded_in_truck_timestamp {
+
+    label:       "Loaded in truck"
+    description: "The datetime, when the everything was loaded in the truck (comes from suppliers)"
+
+    type: time
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: ${TABLE}.loaded_in_truck_timestamp ;;
+  }
+
+
+
   # =========  timestamps   =========
   dimension_group: first_bulk_inbounding_timestamp {
 
@@ -180,43 +251,43 @@ view: bulk_items {
   dimension: table_uuid {
     type: string
     sql: ${TABLE}.table_uuid ;;
-    hidden: yes
+    hidden: no
     primary_key: yes
   }
 
   dimension: replenishment_substitute_group_array {
-    hidden: yes
+    hidden: no
     sql: ${TABLE}.replenishment_substitute_group_array ;;
   }
 
   dimension: internal_sku_array {
-    hidden: yes
+    hidden: no
     sql: ${TABLE}.internal_sku_array ;;
   }
 
   dimension: product_name {
     type: string
     sql: ${TABLE}.product_name ;;
-    hidden: yes
+    hidden: no
   }
 
   dimension: handling_units_count {
     type: number
     sql: ${TABLE}.handling_units_count ;;
-    hidden: yes
+    hidden: no
   }
 
   dimension: quantity_per_handling_unit {
     type: number
     sql: ${TABLE}.quantity_per_handling_unit ;;
-    hidden: yes
+    hidden: no
   }
 
 
   dimension: total_quantity {
     type: number
     sql: ${TABLE}.total_quantity ;;
-    hidden: yes
+    hidden: no
   }
 
 
@@ -342,31 +413,31 @@ view: bulk_items {
     value_format_name: percent_1
   }
 
-  measure: sum_number_of_bulks_FV_booked_in_2h {
+ # measure: sum_number_of_bulks_FV_booked_in_2h {
 
-    label:       "# Bulks F&V inbounded within 2h"
-    description: "The number of bulks, that contain fruits and vegetables and were inbounded within 2 hours."
-
-    type: count_distinct
-    sql: ${bulk_id};;
-    filters: [minutes_inbounding_duration: "-500", products.category: "Obst & Gemüse"]
-
-    value_format_name: decimal_0
-  }
-
-  measure: sum_number_of_bulks_FV {
-
-    label:       "# Bulks F&V"
-    description: "The number of bulks, that contain fruits and vegetables"
-
-    type: count_distinct
-    sql: ${bulk_id};;
-    filters: [products.category: "Obst & Gemüse"]
-
-    value_format_name: decimal_0
-  }
-
-
+#    label:       "# Bulks F&V inbounded within 2h"
+#    description: "The number of bulks, that contain fruits and vegetables and were inbounded within 2 hours."
+#
+#    type: count_distinct
+#    sql: ${bulk_id};;
+#    filters: [minutes_inbounding_duration: "-500", products.category: "Obst & Gemüse"]
+#
+#    value_format_name: decimal_0
+#  }
+#
+#  measure: sum_number_of_bulks_FV {
+#
+#    label:       "# Bulks F&V"
+#    description: "The number of bulks, that contain fruits and vegetables"
+#
+#    type: count_distinct
+#    sql: ${bulk_id};;
+#    filters: [products.category: "Obst & Gemüse"]
+#
+#    value_format_name: decimal_0
+#  }
+#
+#
   measure: sum_number_of_dispatch_notifications {
 
     label:       "# Dispatch Notifications"
