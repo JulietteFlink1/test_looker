@@ -96,6 +96,12 @@ view: customer_cohorts_base {
     sql: ${TABLE}.first_order_uuid ;;
   }
 
+  dimension: first_order_number {
+    group_label: "* IDs *"
+    type: string
+    sql: ${TABLE}.first_order_number ;;
+  }
+
   dimension: first_order_city {
     group_label: "* User Dimensions *"
     type: string
@@ -186,6 +192,12 @@ view: customer_cohorts_base {
     group_label: "* IDs *"
     type: string
     sql: ${TABLE}.last_order_uuid ;;
+  }
+
+  dimension: last_order_number {
+    group_label: "* IDs *"
+    type: string
+    sql: ${TABLE}.last_order_number ;;
   }
 
   dimension: lifetime_orders {
