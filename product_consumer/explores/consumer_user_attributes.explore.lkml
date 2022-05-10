@@ -51,6 +51,12 @@ explore: consumer_user_attributes {
     type: left_outer
   }
 
+  join: user_attributes_order_classification {
+    view_label: "* Order Classifications *"
+    sql_on: ${user_attributes_order_classification.order_uuid} = ${orders.order_uuid} ;;
+    relationship: one_to_one
+    type: left_outer
+  }
 
   access_filter: {
     field: user_attributes_jobs_to_be_done.country_iso
