@@ -21,6 +21,7 @@ explore: consumer_user_attributes {
   view_label: "* User Level JTBD *"
   description: "This explore provides an overview of user attributes"
   group_label: "Consumer Product"
+  sql_always_where: ${customers_metrics.first_order_month} > '2021-09-30';;
   fields: [
     ALL_FIELDS*,
     -customers_metrics.years_time_since_sign_up,
@@ -51,6 +52,12 @@ explore: consumer_user_attributes {
     type: left_outer
   }
 
+  join: user_attributes_order_classification {
+    view_label: "* Order Classifications *"
+    sql_on: ${user_attributes_order_classification.order_uuid} = ${orders.order_uuid} ;;
+    relationship: one_to_one
+    type: left_outer
+  }
 
   access_filter: {
     field: user_attributes_jobs_to_be_done.country_iso
