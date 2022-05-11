@@ -1,8 +1,8 @@
 include: "/explores/consumer_product/order_backend_and_client.explore.lkml"
 # include: "/views/projects/consumer_product/contact_customer_service_selected_view.view.lkml"
 # include: "/views/projects/consumer_product/order_tracking_raw.view.lkml"
-include: "/views/projects/consumer_product/order_comments.view.lkml"
-include: "/views/projects/consumer_product/postorder_events.view.lkml"
+include: "/**/*/order_comments.view.lkml"
+include: "/**/*//postorder_events.view.lkml"
 include: "/views/bigquery_tables/curated_layer/nps_after_order_cl.view"
 
 explore: order_for_postorder{
