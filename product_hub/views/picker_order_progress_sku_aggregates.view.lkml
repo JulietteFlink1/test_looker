@@ -178,8 +178,8 @@ view: picker_order_progress_sku_aggregates {
     group_label: "Total Metrics"
     label: "# Total Items"
     type: sum
-    description: "# items picked + items swiped (code_wrong + code_damaged) + items unavailable"
-    sql: ${TABLE}.number_of_item_unavailable + ${TABLE}.number_of_item_picked ;;
+    description: "# items picked + items unavailable"
+    sql: ${TABLE}.number_of_item_picked + ${TABLE}.number_of_item_unavailable ;;
   }
 
   measure: number_of_orders {
