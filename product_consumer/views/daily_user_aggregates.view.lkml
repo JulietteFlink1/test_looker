@@ -408,10 +408,40 @@ view: daily_user_aggregates {
       type: yesno
       sql: ${TABLE}.is_account_logout_clicked ;;
     }
+    dimension: is_account_registration_viewed {
+      group_label: "Flags | Event"
+      type: yesno
+      sql: ${TABLE}.is_account_registration_viewed ;;
+    }
     dimension: is_account_registration_succeeded {
       group_label: "Flags | Event"
       type: yesno
       sql: ${TABLE}.is_account_registration_succeeded ;;
+    }
+    dimension: is_sms_verification_request_viewed {
+      group_label: "Flags | Event"
+      type: yesno
+      sql: ${TABLE}.is_sms_verification_request_viewed ;;
+    }
+    dimension: is_sms_verification_send_code_clicked {
+      group_label: "Flags | Event"
+      type: yesno
+      sql: ${TABLE}.is_sms_verification_send_code_clicked ;;
+    }
+    dimension: is_sms_verification_viewed {
+      group_label: "Flags | Event"
+      type: yesno
+      sql: ${TABLE}.is_sms_verification_viewed ;;
+    }
+    dimension: is_sms_verification_clicked {
+      group_label: "Flags | Event"
+      type: yesno
+      sql: ${TABLE}.is_sms_verification_clicked ;;
+    }
+    dimension: is_sms_verification_confirmed {
+      group_label: "Flags | Event"
+      type: yesno
+      sql: ${TABLE}.is_sms_verification_confirmed ;;
     }
     dimension: is_home_viewed {
       group_label: "Flags | Event"
@@ -551,11 +581,6 @@ view: daily_user_aggregates {
       type: number
       hidden: yes
       sql: ${TABLE}.number_of_account_logout_clicked ;;
-    }
-    dimension: dim_number_of_account_registration_succeeded {
-      type: number
-      hidden: yes
-      sql: ${TABLE}.number_of_account_registration_succeeded ;;
     }
     dimension: dim_number_of_categories_selected {
       type: number
@@ -789,13 +814,6 @@ view: daily_user_aggregates {
     hidden: no
     sql: ${dim_number_of_account_logout_clicked};;
   }
-  measure: number_of_account_registration_succeeded {
-    group_label: "Event Metrics"
-    label: "# Accounts Registered"
-    type: sum
-    hidden: no
-    sql: ${dim_number_of_account_registration_succeeded};;
-  }
   measure: number_of_categories_selected {
     group_label: "Event Metrics"
     label: "# Category Selected"
@@ -995,6 +1013,137 @@ view: daily_user_aggregates {
     value_format_name: percent_1
     sql: ${users_with_recommendation_atc} / nullif(${users_with_address},0);;
   }
+
+  # ======= User Authentication & SMS Verification Metrics ======= #
+
+                    ###### Total aggregates ######
+
+  measure: new_users_with_acc_registration_viewed {
+    group_label: "User And Account Verification Metrics"
+    label: "# New Users with Acc Reg Viewed "
+    type: count_distinct
+    sql: ${user_uuid} ;;
+    filters: [is_account_login_succeeded: "no" , is_account_registration_viewed: "yes"]
+  }
+  measure: all_users_with_account_registration_viewed {
+    group_label: "User And Account Verification Metrics"
+    label: "# All Users with Account Registration Viewed"
+    description: "Number of users viewing account registration"
+    type: count_distinct
+    sql: ${user_uuid} ;;
+    filters: [is_account_registration_viewed: "yes"]
+  }
+  measure: new_users_with_account_registration_success {
+    group_label: "User And Account Verification Metrics"
+    label: "# New Users with Account Registration Success"
+    description: "Number of new users successfully registrating account"
+    type: count_distinct
+    sql: ${user_uuid} ;;
+    filters: [is_account_login_succeeded: "no" , is_account_registration_succeeded: "yes"]
+  }
+  measure: all_users_with_account_registration_success {
+    group_label: "User And Account Verification Metrics"
+    label: "# All Users with Account Registration Success"
+    description: "Number of new users successfully registrating account"
+    type: count_distinct
+    sql: ${user_uuid} ;;
+    filters: [is_account_registration_succeeded: "yes"]
+  }
+  measure: new_users_with_sms_verification_request_viewed {
+    group_label: "User And Account Verification Metrics"
+    label: "# New Users with SMS Veri Request Viewed "
+    type: count_distinct
+    sql: ${user_uuid} ;;
+    filters: [is_account_login_succeeded: "no" , is_sms_verification_request_viewed: "yes"]
+  }
+  measure: all_users_with_sms_verification_request_viewed {
+    group_label: "User And Account Verification Metrics"
+    label: "# All Users with SMS Veri Request Viewed"
+    description: "Number of users viewing sms verification request"
+    type: count_distinct
+    sql: ${user_uuid} ;;
+    filters: [is_sms_verification_request_viewed: "yes"]
+  }
+  measure: users_with_sms_verification_send_code_clicked {
+    group_label: "User And Account Verification Metrics"
+    label: "# All Users with Clicking Send Code for SMS Verification"
+    description: "Number of users clicking send code for SMS verification"
+    type: count_distinct
+    sql: ${user_uuid} ;;
+    filters: [is_sms_verification_send_code_clicked: "yes"]
+  }
+  measure: users_with_sms_verification_viewed {
+    group_label: "User And Account Verification Metrics"
+    label: "# All Users with Viewing SMS Verification"
+    description: "Number of users viewing SMS verification"
+    type: count_distinct
+    sql: ${user_uuid} ;;
+    filters: [is_sms_verification_viewed: "yes"]
+  }
+  measure: users_with_sms_verification_clicked {
+    group_label: "User And Account Verification Metrics"
+    label: "# All Users with Clicking SMS Verification"
+    description: "Number of users clicking SMS verification"
+    type: count_distinct
+    sql: ${user_uuid} ;;
+    filters: [is_sms_verification_clicked: "yes"]
+  }
+  measure: all_users_with_sms_verification_confirmed {
+    group_label: "User And Account Verification Metrics"
+    label: "# All Users with Successful SMS Verification"
+    description: "Number of users successfully verifying their account through SMS"
+    type: count_distinct
+    sql: ${user_uuid} ;;
+    filters: [is_sms_verification_confirmed: "yes"]
+  }
+  measure: new_users_with_sms_verification_confirmed {
+    group_label: "User And Account Verification Metrics"
+    label: "# New Users with Successful SMS Verification"
+    description: "Number of users successfully verifying their account through SMS"
+    type: count_distinct
+    sql: ${user_uuid} ;;
+    filters: [is_account_login_succeeded: "no", is_sms_verification_confirmed: "yes"]
+  }
+
+        ##### User Auth & SMS Verification Rates ######
+
+  measure: user_sms_verification_rate_all_users{
+    group_label: "User And Account Verification Metrics"
+    label: "SMS Verification - All Users(%)"
+    type: number
+    hidden: no
+    description: "# Users with Successful SMS Verification, compared to the total number of all users with SMS verification requested"
+    value_format_name: percent_1
+    sql: ${all_users_with_sms_verification_confirmed} / nullif(${all_users_with_sms_verification_request_viewed},0);;
+  }
+  measure: user_sms_verification_rate_new_users{
+    group_label: "User And Account Verification Metrics"
+    label: "SMS Verification - New Users (%)"
+    type: number
+    hidden: no
+    description: "# New Users with Successful SMS Verification, compared to the total number of users with SMS verification requested"
+    value_format_name: percent_1
+    sql: ${new_users_with_sms_verification_confirmed} / nullif(${new_users_with_sms_verification_request_viewed},0);;
+  }
+  measure: user_authentication_rate_new_users {
+    group_label: "User And Account Verification Metrics"
+    label: "User Authentication - New Users (%)"
+    type: number
+    hidden: no
+    description: "# users with Successfully Registered Account, compared to the total number of users viewing account registration page"
+    value_format_name: percent_1
+    sql: ${new_users_with_account_registration_success} / nullif(${new_users_with_acc_registration_viewed},0);;
+  }
+  measure: user_authentication_rate_all_users {
+    group_label: "User And Account Verification Metrics"
+    label: "User Authentication - All Users (%)"
+    type: number
+    hidden: no
+    description: "# users with Successfully Registered Account, compared to the total number of users viewing account registration page"
+    value_format_name: percent_1
+    sql: ${all_users_with_account_registration_success} / nullif(${all_users_with_account_registration_viewed},0);;
+  }
+
 
   # ========= HIDDEN ========== #
 

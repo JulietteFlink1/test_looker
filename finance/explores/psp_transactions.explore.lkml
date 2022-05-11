@@ -95,6 +95,15 @@ join: orders {
     fields: [psp_reference_authorised_date.psp_reference_authorised_booking_date,psp_reference_authorised_date.psp_reference_authorised_booking_month]
   }
 
+  join: payment_transactions {
+    view_label: "* CT Payment Transactions *"
+    sql_on: ${payment_transactions.country_iso} = ${orders.country_iso} AND
+      ${payment_transactions.order_uuid}    = ${orders.order_uuid} ;;
+    relationship: many_to_many
+    type: left_outer
+    fields: [payment_transactions.interaction_id]
+  }
+
   # join: payment_transactions {
   #   view_label: "* Payment Transaction *"
   #   sql_on: ${payment_transactions.order_uuid} = ${psp_transactions.order_uuid}
