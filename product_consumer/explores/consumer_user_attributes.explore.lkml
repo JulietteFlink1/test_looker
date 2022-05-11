@@ -8,7 +8,7 @@
 # Questions that can be answered
 # - What are the attributes of our users?
 
-include: "/**/user_attributes_jobs_to_be_done.view"
+include: "/product_consumer/views/bigquery_reporting/user_attributes_jobs_to_be_done.view"
 include: "/**/global_filters_and_parameters.view.lkml"
 include: "/**/customers_metrics.view.lkml"
 include: "/**/orders_cl.explore.lkml"
