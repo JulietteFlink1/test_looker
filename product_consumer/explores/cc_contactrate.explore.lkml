@@ -1,4 +1,6 @@
-include: "/customer_care/views/sql_derived_tables/cc_contactrate.view.lkml"
+## Owner: Product Analytics
+
+include: "/**/*/cc_contactrate.view.lkml"
 
 explore: cc_contactrate {
   hidden: no
