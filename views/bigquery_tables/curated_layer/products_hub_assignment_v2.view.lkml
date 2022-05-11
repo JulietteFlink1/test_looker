@@ -97,6 +97,8 @@ view: products_hub_assignment_v2 {
                   when the parameter 'Select Metric Aggregation Level' is defined accordingly"
     # group_label: "* Parameters & Dynamic Fields *"
 
+    bypass_suggest_restrictions: yes
+
     type: string
 
     sql:
@@ -230,6 +232,7 @@ view: products_hub_assignment_v2 {
   dimension: erp_vendor_name {
 
     label: "Supplier Name"
+    bypass_suggest_restrictions: yes
     description: "The name of the supplier of a SKU as defined in ERP/lexbizz"
     group_label: "ERP Fields"
 
@@ -250,6 +253,7 @@ view: products_hub_assignment_v2 {
   dimension: leading_sku_replenishment_substitute_group {
 
     label: "Replenishment Group - Leading SKU"
+    bypass_suggest_restrictions: yes
     description: "The parent SKU of a SKU that is part of a replenishment substitute group - these SKUs usually start with 99x"
     group_label: "ERP Fields"
 
