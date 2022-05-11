@@ -71,6 +71,12 @@ view: picker_order_progress_sku_aggregates {
     sql: ${TABLE}.order_id ;;
   }
 
+  dimension: order_number {
+    group_label: "Order number"
+    type: string
+    sql: ${TABLE}.order_number ;;
+  }
+
   dimension: order_product_uuid {
     hidden: yes
     type: string
