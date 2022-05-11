@@ -136,20 +136,36 @@ view: customer_cohorts_base {
     sql: ${TABLE}.first_order_fulfillment_time_minutes ;;
   }
 
-  dimension: first_order_delivery_pdt_minutes {
+  dimension: first_order_delivery_pdt {
+    group_label: "* User Dimensions *"
+    label: "First Order PDT (min)"
+    type: number
+    sql: ${TABLE}.first_order_delivery_pdt_minutes ;;
+  }
+
+  dimension: first_order_delivery_pdt_tier {
+    group_label: "* User Dimensions *"
+    label: "First Order PDT (tiered, 1min)"
+    type: tier
+    tiers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50]
+    style: interval
+    sql: ${TABLE}.first_order_delivery_pdt_minutes ;;
+  }
+
+  dimension: first_order_delivery_delay_since_eta_min {
     group_label: "* User Dimensions *"
     label: "First Order Delta to PDT"
     type: number
-    sql: ${TABLE}.first_order_delivery_pdt_minutes ;;
+    sql: ${TABLE}.first_order_fulfillment_time_minutes - ${TABLE}.first_order_delivery_pdt_minutes ;;
   }
 
   dimension: first_order_delivery_pdt_minutes_tier {
     group_label: "* User Dimensions *"
     label: "First Order Delta to PDT (tiered, 1min)"
     type: tier
-    tiers: [-7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7]
+    tiers: [-7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
     style: interval
-    sql: ${TABLE}.first_order_delivery_pdt_minutes ;;
+    sql: ${first_order_delivery_delay_since_eta_min} ;;
   }
 
   dimension: first_order_discount_code {
