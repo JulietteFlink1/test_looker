@@ -48,6 +48,7 @@ explore: key_value_items {
   #  type: left_outer
   #  relationship: many_to_many
   #}
+
   # join: aov_certain_sku_is_in {
   #   sql_on:
   #           ${aov_certain_sku_is_in.product_sku}  = ${orderline.product_sku} and
@@ -64,6 +65,7 @@ explore: key_value_items {
   #   type: left_outer
   #   relationship: one_to_many #changed from one_to_one
   # }
+
   #join: inventory_daily {
   #  sql_on:
   #      ${inventory_daily.hub_code}    = ${orderline.hub_code}     and
