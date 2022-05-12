@@ -7,6 +7,7 @@ include: "/**/lexbizz_item_warehouse.view"
 include: "/**/lexbizz_warehouse.view"
 include: "/**/spc_model_results.view"
 include: "/**/orderline.view"
+include: "/**/*.view"
 
 
 
