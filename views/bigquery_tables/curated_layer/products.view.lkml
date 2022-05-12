@@ -10,6 +10,7 @@ view: products {
   # =========  __main__   =========
   dimension: category {
     type: string
+    bypass_suggest_restrictions: yes
     label: "Parent Category"
     group_label: "> Product Attributes"
     description: "This is CT reporting category"
@@ -26,6 +27,7 @@ view: products {
 
   dimension: erp_category {
     type: string
+    bypass_suggest_restrictions: yes
     label: "Parent Category (ERP)"
     group_label: "> Product Attributes"
     sql: ${TABLE}.erp_category ;;
@@ -51,6 +53,7 @@ view: products {
   }
 
   dimension: product_brand {
+    bypass_suggest_restrictions: yes
     label: "Brand"
     type: string
     sql: ${TABLE}.product_brand ;;
@@ -86,6 +89,7 @@ view: products {
 
   dimension: subcategory {
     label: "Sub-Category"
+    bypass_suggest_restrictions: yes
     description: "This is CT reporting subcategory"
     type: string
     sql: ${TABLE}.subcategory ;;

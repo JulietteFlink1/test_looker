@@ -91,9 +91,10 @@ view: inventory_changes_daily {
   }
 
   dimension: price_gross {
+    label: "Product Price Gross (Used for Waste)"
     type: number
     sql: ${products.amt_product_price_gross} ;;
-    hidden: yes
+    hidden: no
   }
 
   dimension: inventory_correction_increased {

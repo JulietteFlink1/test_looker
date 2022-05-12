@@ -1,4 +1,4 @@
-# Owner: Patricia Mitterova
+# Owner: Product Analytics, Patricia Mitterova, Flavia Alvarez
 
 # Main Stakeholder:
 # - Consumer Product
@@ -7,9 +7,9 @@
 # Questions that can be answered
 # - user based conversions
 
-include: "/**/product_placement_performance.view"
+include: "/product_consumer/views/bigquery_reporting/product_placement_performance.view"
 include: "/**/global_filters_and_parameters.view.lkml"
-include: "/**/affected_by_impression_users.view"
+include: "/product_consumer/views/sql_derived_tables/affected_by_impression_users.view"
 
 explore: product_placement_performance {
   from:  product_placement_performance

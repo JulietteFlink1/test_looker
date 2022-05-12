@@ -71,6 +71,12 @@ view: picker_order_progress_sku_aggregates {
     sql: ${TABLE}.order_id ;;
   }
 
+  dimension: order_number {
+    group_label: "Order number"
+    type: string
+    sql: ${TABLE}.order_number ;;
+  }
+
   dimension: order_product_uuid {
     hidden: yes
     type: string
@@ -172,8 +178,8 @@ view: picker_order_progress_sku_aggregates {
     group_label: "Total Metrics"
     label: "# Total Items"
     type: sum
-    description: "# items picked + items swiped (code_wrong + code_damaged) + items unavailable"
-    sql: ${TABLE}.number_of_code_damanged + ${TABLE}.number_of_code_wrong + ${TABLE}.number_of_item_unavailable + ${TABLE}.number_of_item_picked ;;
+    description: "# items picked + items unavailable"
+    sql: ${TABLE}.number_of_item_picked + ${TABLE}.number_of_item_unavailable ;;
   }
 
   measure: number_of_orders {

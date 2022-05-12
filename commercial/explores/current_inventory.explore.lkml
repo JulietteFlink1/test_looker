@@ -10,7 +10,7 @@ explore: current_inventory {
   from: products
   view_name: products
   group_label: "Commercial"
-  view_label: "* Product Information *"
+  view_label: "* Product Information (CT) *"
   label: "Products & Inventory"
   description: "This explore provides information on all SKUs (published/unpublished), on the recent inventory stock levels as well as some order related metrics"
 
@@ -49,6 +49,19 @@ explore: current_inventory {
     ;;
     type: left_outer
     relationship: one_to_many
+  }
+
+  join: lexbizz_item {
+
+    view_label: "* Product Information (ERP) *"
+
+    type: left_outer
+    relationship: one_to_one
+
+    sql_on:
+            ${products.product_sku} = ${lexbizz_item.sku}
+        and ${lexbizz_item.ingestion_date} = current_date()
+    ;;
   }
 
   join: hubs {
