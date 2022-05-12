@@ -1,4 +1,4 @@
-# Owner: Patricia Mitterova
+# Owner: Product Analytics, Patricia Mitterova
 
 # Main Stakeholder:
 # - Consumer Product
@@ -7,7 +7,7 @@
 # Questions that can be answered
 # - Questions around behavioural events with country and device drill downs
 
-include: "/**/event_product_added_to_cart.view"
+include: "/product_consumer/views/bigquery_curated/event_product_added_to_cart.view"
 include: "/**/global_filters_and_parameters.view.lkml"
 
 explore: event_product_added_to_cart {

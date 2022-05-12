@@ -1,4 +1,4 @@
-# Owner: Patricia Mitterova
+# Owner: Product Analytics, Patricia Mitterova
 
 # Main Stakeholder:
 # - Consumer Product
@@ -7,7 +7,7 @@
 # Questions that can be answered
 # - Questions around behavioural events with country and device drill downs
 
-include: "/**/discovery_flow.view"
+include: "/**/*/discovery_flow.view.lkml"
 include: "/**/global_filters_and_parameters.view.lkml"
 
 explore: discovery_flow {
