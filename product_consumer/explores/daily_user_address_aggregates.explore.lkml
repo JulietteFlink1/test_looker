@@ -1,5 +1,7 @@
-include: "/product_consumer/views/daily_user_address_aggregates.view.lkml"
-include: "/product_consumer/views/daily_user_aggregates.view.lkml"
+# Owner: Product Analytics
+
+include: "/product_consumer/views/bigquery_reporting/daily_user_address_aggregates.view.lkml"
+include: "/product_consumer/views/bigquery_reporting/daily_user_aggregates.view.lkml"
 
 explore: daily_user_address_aggregates {
   view_name: daily_user_address_aggregates

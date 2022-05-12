@@ -2,6 +2,7 @@
 include: "/views/bigquery_tables/curated_layer/*.view"
 include: "/views/extended_tables/order_lineitems_using_inventory.view"
 include: "/**/price_test_tracking.view"
+include: "/**/*.view"
 
 include: "/**/global_filters_and_parameters.view.lkml"
 
@@ -9,7 +10,7 @@ explore: current_inventory {
   from: products
   view_name: products
   group_label: "Commercial"
-  view_label: "* Product Information *"
+  view_label: "* Product Information (CT) *"
   label: "Products & Inventory"
   description: "This explore provides information on all SKUs (published/unpublished), on the recent inventory stock levels as well as some order related metrics"
 
@@ -40,10 +41,27 @@ explore: current_inventory {
   }
 
   join: products_hub_assignment {
-    sql_on: ${products_hub_assignment.sku} = ${products.product_sku} ;;
-    sql_where: ${products_hub_assignment.is_most_recent_record} = TRUE ;;
+
+    from: products_hub_assignment_v2
+
+    sql_on: ${products_hub_assignment.sku} = ${products.product_sku}
+       and ${products_hub_assignment.report_date} = current_date()
+    ;;
     type: left_outer
     relationship: one_to_many
+  }
+
+  join: lexbizz_item {
+
+    view_label: "* Product Information (ERP) *"
+
+    type: left_outer
+    relationship: one_to_one
+
+    sql_on:
+            ${products.product_sku} = ${lexbizz_item.sku}
+        and ${lexbizz_item.ingestion_date} = current_date()
+    ;;
   }
 
   join: hubs {

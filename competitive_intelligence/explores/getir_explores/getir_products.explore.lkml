@@ -4,9 +4,9 @@ include: "/competitive_intelligence/views/bigquery_curated/getir_hubs.view.lkml"
 
 explore:  getir_products {
   hidden: no
-  label: "Getir Products"
-  view_label: "Getir Products"
-  group_label: "Competitive Intel"
+  label: "Getir Catalog "
+  view_label: "Getir Catalog"
+  group_label: "Competitive Intelligence"
   description: "Competitive Intelligence Data"
 
   join: getir_categories {

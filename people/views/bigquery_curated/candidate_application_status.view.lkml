@@ -431,6 +431,14 @@ view: candidate_application_status {
     value_format: "0.0"
   }
 
+  measure: avg_number_of_days_new_to_start {
+    type: average
+    group_label: "> Duration Between Stages"
+    label: "AVG # Days New to Start"
+    sql: ${number_of_days_new_to_start} ;;
+    value_format: "0.0"
+  }
+
   measure: avg_number_of_interviews {
     type: average
     group_label: "> Counts"
@@ -448,7 +456,7 @@ view: candidate_application_status {
     type: number
     group_label: "> Conversion Rates"
     sql: ${number_of_hired}/${number_of_new_applications} ;;
-    label: "% Transformation Rate (New Application → Hired)"
+    label: "% Application2Hire"
     value_format: "0.0%"
   }
 

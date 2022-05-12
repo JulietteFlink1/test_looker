@@ -1,4 +1,4 @@
-# Owner: Patricia Mitterova
+# Owner: Product Analytics, Patricia Mitterova
 
 # Main Stakeholder:
 # - Consumer Product
@@ -8,7 +8,7 @@
 # - what our customer look for > search query
 # - CTR and CVR per market and hub
 
-include: "/**/search_keywords.view"
+include: "/product_consumer/views/bigquery_reporting/search_keywords.view"
 include: "/**/global_filters_and_parameters.view.lkml"
 
 explore: search_keywords {

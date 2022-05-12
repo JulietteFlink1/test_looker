@@ -1,4 +1,4 @@
-include: "/views/projects/consumer_product/postorder_events.view.lkml"
+include: "/product_consumer/views/sql_derived_tables/postorder_events.view.lkml"
 
 explore: postorder_events {
   view_name: postorder_events

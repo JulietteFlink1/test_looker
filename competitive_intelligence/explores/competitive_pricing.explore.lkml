@@ -7,7 +7,7 @@
 
 include: "/**/products.view"
 include: "/**/global_filters_and_parameters.view.lkml"
-include: "/**/products_hub_assignment.view"
+include: "/**/products_hub_assignment_v2.view"
 include: "/**/inventory.view"
 include: "/**/unique_assortment.view"
 include: "/**/hubs_ct.view"
@@ -41,8 +41,6 @@ explore: competitive_pricing {
 
   always_filter: {
     filters: [
-      products_hub_assignment.is_sku_assigned_to_hub: "",
-      hubs.is_hub_opened: "Yes",
       global_filters_and_parameters.datasource_filter: "last 30 days"
     ]
   }
@@ -54,8 +52,11 @@ explore: competitive_pricing {
   }
 
   join: products_hub_assignment {
-    sql_on: ${products_hub_assignment.sku} = ${products.product_sku} ;;
-    sql_where: ${products_hub_assignment.is_most_recent_record} = TRUE ;;
+
+    from: products_hub_assignment_v2
+
+    sql_on: ${products_hub_assignment.sku} = ${products.product_sku}
+           and ${products_hub_assignment.report_date} = current_date() ;;
     type: left_outer
     relationship: one_to_many
   }
