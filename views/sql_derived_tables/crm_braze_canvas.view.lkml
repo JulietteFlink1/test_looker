@@ -424,7 +424,7 @@ view: crm_braze_canvas {
     description: "Average GMV (gross) based on Total Orders"
     type: number
     sql: ${sum_total_gmv_gross} / NULLIF(${sum_total_orders}, 0);;
-    value_format_name: percent_1
+    value_format_name: decimal_2
     }
 
 

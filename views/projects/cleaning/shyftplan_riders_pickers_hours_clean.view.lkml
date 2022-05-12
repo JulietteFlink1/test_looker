@@ -100,6 +100,20 @@ view: shyftplan_riders_pickers_hours_clean {
     sql: ${TABLE}.number_of_unassigned_employees_external ;;
   }
 
+  dimension: number_of_forecasted_minutes {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_forecasted_minutes ;;
+  }
+
+
+  dimension: number_of_predicted_no_show_minutes {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_predicted_no_show_minutes ;;
+  }
+
+
   dimension: position_name {
     type: string
     hidden: yes
@@ -386,11 +400,41 @@ view: shyftplan_riders_pickers_hours_clean {
   }
 
 
+  measure: sum_assigned_rider_hours{
+    type: sum
+    label:"# Scheduled Rider Hours"
+    description: "Number of Scheduled Rider Hours"
+    sql:${number_of_planned_minutes}/60;;
+    filters:[position_name: "rider"]
+    value_format_name: decimal_1
+    group_label: "Assigned Hours"
+  }
+
+  measure: sum_assigned_picker_hours{
+    type: sum
+    label:"# Scheduled Picker Hours"
+    description: "Number of Scheduled Picker Hours"
+    sql:${number_of_planned_minutes}/60;;
+    filters:[position_name: "picker"]
+    value_format_name: decimal_1
+    group_label: "Assigned Hours"
+  }
+
+
   measure: rider_utr {
     label: "AVG Rider UTR"
     type: number
     description: "# Orders from opened hub / # Worked Rider Hours"
     sql: ${adjusted_orders_riders} / NULLIF(${rider_hours}, 0);;
+    value_format_name: decimal_2
+    group_label: "UTR"
+  }
+
+  measure: rider_rider_cap_utr {
+    label: "AVG Rider UTR (incl. Rider Captains)"
+    type: number
+    description: "# Orders from opened hub / # Worked Rider Hours (incl. Rider Captains)"
+    sql: ${adjusted_orders_riders} / NULLIF(${rider_hours}+${rider_captain_hours}, 0);;
     value_format_name: decimal_2
     group_label: "UTR"
   }
@@ -422,6 +466,15 @@ view: shyftplan_riders_pickers_hours_clean {
     group_label: "UTR"
   }
 
+  measure: rider_captain_utr {
+    label: "AVG Rider Captain UTR"
+    type: number
+    description: "# Orders from opened hub / # Worked Rider Captain Hours"
+    sql: ${adjusted_orders_riders} / NULLIF(${rider_captain_hours}, 0);;
+    value_format_name: decimal_2
+    group_label: "UTR"
+  }
+
   set: detail {
     fields: [
       date,
@@ -441,7 +494,7 @@ view: shyftplan_riders_pickers_hours_clean {
 
   measure: sum_forecasted_riders_needed{
     type: sum
-    label: "# Forecasted Hours"
+    label: "# Forecasted Hours Rider"
     description: "Number of Needed Employee Hours Based on Forecasted Order Demand"
     sql: NULLIF(${TABLE}.number_of_forecasted_employees_needed,0) * 0.5 ;;
     filters: [position_name: "rider"]
@@ -451,10 +504,20 @@ view: shyftplan_riders_pickers_hours_clean {
 
   measure: sum_planned_hours{
     type: sum
-    label: "# Scheduled Hours"
-    description: "Number of Scheduled Hours"
+    label: "# Scheduled Hours Rider"
+    description: "Number of Scheduled Hours Rider"
     sql: ${number_of_planned_minutes} / 60 ;;
     filters: [position_name: "rider"]
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  measure: number_of_planned_hours_rider_picker{
+    type: sum
+    label: "# Scheduled Hours Rider+Picker"
+    description: "Number of Scheduled Hours Rider+Picker"
+    sql: ${number_of_planned_minutes} / 60 ;;
+    filters: [position_name: "rider, picker"]
     value_format_name: decimal_1
     hidden: yes
   }
@@ -498,6 +561,95 @@ view: shyftplan_riders_pickers_hours_clean {
     description: "absolute (Forecasted Orders / Actual Orders)"
     sql: abs(${sum_predicted_orders} / nullif(${adjusted_orders_riders},0)) ;;
     value_format_name: percent_0
+  }
+
+  measure: sum_no_show_hours{
+    label:"Sum Rider Actual No Show Hours"
+    type: sum
+    description: "Sum Rider Actual No Show Hours"
+    sql:${number_of_no_show_minutes}/60;;
+    filters: [position_name: "rider"]
+    group_label: "No Show"
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_no_show_hours_rider_picker{
+    label:"Sum Rider+Picker No Show Hours"
+    type: sum
+    description: "Sum Rider+Picker No Show Hours"
+    sql:${number_of_no_show_minutes}/60;;
+    filters: [position_name: "rider, picker"]
+    group_label: "No Show"
+    value_format_name: decimal_1
+  }
+
+  measure: sum_forecast_hours{
+    type: sum
+    label:"Sum Rider Forecasted Hours (excluding No show)"
+    description: "Number of Needed Employee Hours Based on Forecasted Order Demand excluding no show hours"
+    sql:NULLIF(${number_of_forecasted_minutes}-${number_of_predicted_no_show_minutes},0)/60;;
+    filters: [position_name: "rider"]
+    group_label: "No Show"
+    value_format_name: decimal_1
+  }
+
+
+  measure: sum_forecast_no_show_hours{
+    type: sum
+    label:"Sum Rider Forecasted No Show Hours"
+    description: "Number of No Show Employee Hours Based on Forecasted Order Demand"
+    sql:NULLIF(${number_of_predicted_no_show_minutes},0)/60;;
+    filters: [position_name: "rider"]
+    group_label: "No Show"
+    value_format_name: decimal_1
+  }
+
+
+  measure: sum_forecast_hours_needed{
+    type: sum
+    label:"Sum Rider Forecasted Hours (including No show)"
+    description: "Number of Needed Employee Hours Based on Forecasted Order Demand including no show hours"
+    sql:NULLIF(${number_of_forecasted_minutes},0)/60;;
+    filters: [position_name: "rider"]
+    group_label: "No Show"
+    value_format_name: decimal_1
+  }
+
+
+  measure: pct_no_show_employees{
+    label:"% Actual No Show Rider Hours"
+    type: number
+    description: "% Actual No Show Rider Hours"
+    sql:(${sum_no_show_hours})/nullif(${sum_planned_hours},0) ;;
+    group_label: "No Show"
+    value_format_name: percent_1
+  }
+
+  measure: pct_no_show_hours_rider_picker{
+    label:"% Actual No Show Rider+Picker Hours"
+    type: number
+    description: "% Actual No Show Rider + Picker Hours"
+    sql:(${number_of_no_show_hours_rider_picker})/nullif(${number_of_planned_hours_rider_picker},0) ;;
+    group_label: "No Show"
+    value_format_name: percent_1
+  }
+
+  measure: pct_forecast_no_show_employees{
+    label:"% Forecasted No Show Rider Hours"
+    type: number
+    description: "% Forecasted No Show Rider Hours"
+    sql:(${sum_forecast_no_show_hours})/nullif(${sum_forecast_hours_needed},0) ;;
+    group_label: "No Show"
+    value_format_name: percent_1
+  }
+
+  measure: pct_external_hours_rider_picker{
+    label:"% External Hours Rider+Picker"
+    type: number
+    description: "% Hours Worked by External Rides + Pickers"
+    sql:(${picker_hours_external}+${rider_hours_external})/nullif((${rider_hours}+${picker_hours}),0) ;;
+    group_label: "Working Hours"
+    value_format_name: percent_1
   }
 
 }

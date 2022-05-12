@@ -7,7 +7,7 @@
 
 include: "/**/products.view"
 include: "/**/global_filters_and_parameters.view.lkml"
-include: "/**/products_hub_assignment.view"
+include: "/**/products_hub_assignment_v2.view"
 include: "/**/inventory.view"
 include: "/**/unique_assortment.view"
 include: "/**/hubs_ct.view"
@@ -21,7 +21,7 @@ include: "/**/getir_products.view"
 include: "/**/getir_categories.view"
 include: "/**/getir_hubs.view"
 include: "/**/flink_to_albert_heijn_global.view"
-include: "/**/albert_hejn_products.view"
+include: "/competitive_intelligence/views/bigquery_curated/albert_heijn_products.view.lkml"
 include: "/**/key_value_items.view"
 include: "/**/price_test_tracking.view"
 
@@ -41,8 +41,6 @@ explore: competitive_pricing {
 
   always_filter: {
     filters: [
-      products_hub_assignment.is_sku_assigned_to_hub: "",
-      hubs.is_hub_opened: "Yes",
       global_filters_and_parameters.datasource_filter: "last 30 days"
     ]
   }
@@ -54,8 +52,11 @@ explore: competitive_pricing {
   }
 
   join: products_hub_assignment {
-    sql_on: ${products_hub_assignment.sku} = ${products.product_sku} ;;
-    sql_where: ${products_hub_assignment.is_most_recent_record} = TRUE ;;
+
+    from: products_hub_assignment_v2
+
+    sql_on: ${products_hub_assignment.sku} = ${products.product_sku}
+           and ${products_hub_assignment.report_date} = current_date() ;;
     type: left_outer
     relationship: one_to_many
   }
@@ -97,7 +98,7 @@ explore: competitive_pricing {
     from: flink_to_gorillas_global
     view_label: "* Flink-Gorillas Match Data *"
     sql_on: ${flink_to_gorillas_global.flink_product_sku} = ${products.product_sku};;
-    relationship: one_to_many
+    relationship: one_to_one
     type: left_outer
   }
 
@@ -106,7 +107,7 @@ explore: competitive_pricing {
     view_label: "* Gorillas Products *"
     sql_on: ${gorillas_products.product_id} = ${flink_to_gorillas_global.gorillas_product_id}
       AND ${flink_to_gorillas_global.gorillas_product_name} = ${gorillas_products.product_name};;
-    relationship: one_to_one
+    relationship: one_to_many
     type: left_outer
   }
 
@@ -130,7 +131,7 @@ explore: competitive_pricing {
     from: gorillas_historical_prices_fact
     view_label: "* Gorillas Historical Prices *"
     sql_on: ${gorillas_products.product_id} = ${gorillas_historical_prices_fact.product_id} ;;
-    relationship: one_to_many
+    relationship: many_to_one
     type: left_outer
   }
 
@@ -138,7 +139,7 @@ explore: competitive_pricing {
     from: flink_to_getir_global
     view_label: "* Flink-Getir Match Data *"
     sql_on: ${flink_to_getir_global.flink_product_sku} = ${products.product_sku} ;;
-    relationship: one_to_many
+    relationship: one_to_one
     type: left_outer
   }
 
@@ -146,7 +147,7 @@ explore: competitive_pricing {
     from: getir_products
     view_label: "* Getir Products *"
     sql_on: ${flink_to_getir_global.getir_product_id} = ${getir_products.product_id} ;;
-    relationship: many_to_one
+    relationship: one_to_many
     type: left_outer
   }
 
@@ -171,8 +172,9 @@ explore: competitive_pricing {
   join: flink_to_albert_heijn_global {
     from: flink_to_albert_heijn_global
     view_label: "* Flink-Albert Heijn Match Data *"
-    sql_on: ${flink_to_albert_heijn_global.flink_product_sku} = ${products.product_sku} ;;
-    relationship: one_to_many
+    sql_on: ${flink_to_albert_heijn_global.flink_product_sku} = ${products.product_sku} and
+            ${flink_to_albert_heijn_global.country_iso} = ${products.country_iso};;
+    relationship: one_to_one
     type: left_outer
   }
 
@@ -180,7 +182,7 @@ explore: competitive_pricing {
     from: albert_heijn_products
     view_label: "* Albert Heijn Products *"
     sql_on: ${albert_heijn_products.product_id} = ${flink_to_albert_heijn_global.albert_heijn_product_id} ;;
-    relationship: one_to_many
+    relationship: one_to_one
     type: left_outer
   }
 

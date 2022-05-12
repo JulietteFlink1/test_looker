@@ -11,17 +11,20 @@ view: vat_order {
 
   dimension: order_uuid {
     hidden: no
+    group_label: "> IDs"
     primary_key: yes
     type: string
     sql: concat(${country_iso},'_',${order_id}) ;;
   }
 
   dimension: order_id {
+    group_label: "> IDs"
     type: string
     sql: ${TABLE}.order_id ;;
   }
 
   dimension: country_iso {
+    group_label: "> Geographic"
     type: string
     sql: ${TABLE}.country_iso ;;
   }
@@ -72,6 +75,16 @@ view: vat_order {
     sql: ${TABLE}.is_external_order ;;
   }
 
+  dimension: is_successful_order {
+    type: yesno
+    sql: ${TABLE}.is_successful_order ;;
+  }
+
+  dimension: order_status {
+    type: string
+    sql: ${TABLE}.status ;;
+  }
+
   dimension: discount_free_delivery_gross {
     type: number
     hidden: yes
@@ -81,11 +94,13 @@ view: vat_order {
 
 
   dimension: hub_name {
+    group_label: "> Geographic"
     type: string
     sql: ${TABLE}.hub_name ;;
   }
 
   dimension: hub_code {
+    group_label: "> Geographic"
     type: string
     sql: ${TABLE}.hub_code ;;
   }
@@ -96,6 +111,7 @@ view: vat_order {
   }
 
   dimension: cost_center {
+    group_label: "> Geographic"
     type: string
     sql: ${TABLE}.cost_center ;;
   }
@@ -181,7 +197,49 @@ view: vat_order {
   dimension: amt_total_deposit {
     hidden: yes
     type: number
-    sql: ${TABLE}.amt_total_deposit ;;
+    sql: ${TABLE}.deposit_amount_gross ;;
+  }
+
+  dimension: deposit_amount_standard_gross {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.deposit_amount_standard_gross ;;
+  }
+
+  dimension: deposit_amount_reduced_gross {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.deposit_amount_reduced_gross ;;
+  }
+
+  dimension: deposit_amount_special_gross {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.deposit_amount_special_gross ;;
+  }
+
+  dimension: deposit_amount_standard_net {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.deposit_amount_standard_net ;;
+  }
+
+  dimension: deposit_amount_reduced_net {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.deposit_amount_reduced_net ;;
+  }
+
+  dimension: deposit_amount_special_net {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.deposit_amount_special_net ;;
+  }
+
+  dimension: deposit_amount_net {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.deposit_amount_net ;;
   }
 
   dimension: quantity_deposit {
@@ -877,6 +935,69 @@ view: vat_order {
     value_format: "#,##0.00€"
     type: sum
     sql: ${amt_total_deposit} ;;
+  }
+
+  measure: sum_deposit_amount_standard_gross {
+    group_label: "* Deposit *"
+    label: "Deposit Amount Standard Gross"
+    description: ""
+    value_format: "#,##0.00€"
+    type: sum
+    sql: ${deposit_amount_standard_gross} ;;
+  }
+
+  measure: sum_deposit_amount_reduced_gross {
+    group_label: "* Deposit *"
+    label: "Deposit Amount Reduced Gross"
+    description: ""
+    value_format: "#,##0.00€"
+    type: sum
+    sql: ${deposit_amount_reduced_gross} ;;
+  }
+
+  measure: sum_deposit_amount_special_gross {
+    group_label: "* Deposit *"
+    label: "Deposit Amount Special Gross"
+    description: ""
+    value_format: "#,##0.00€"
+    type: sum
+    sql: ${deposit_amount_special_gross} ;;
+  }
+
+  measure: sum_deposit_amount_net {
+    group_label: "* Deposit *"
+    label: "Net Deposit"
+    description: ""
+    value_format: "#,##0.00€"
+    type: sum
+    sql: ${deposit_amount_net} ;;
+  }
+
+  measure: sum_deposit_amount_standard_net {
+    group_label: "* Deposit *"
+    label: "Deposit Amount Standard Net"
+    description: ""
+    value_format: "#,##0.00€"
+    type: sum
+    sql: ${deposit_amount_standard_net} ;;
+  }
+
+  measure: sum_deposit_amount_reduced_net {
+    group_label: "* Deposit *"
+    label: "Deposit Amount Reduced Net"
+    description: ""
+    value_format: "#,##0.00€"
+    type: sum
+    sql: ${deposit_amount_reduced_net} ;;
+  }
+
+  measure: sum_deposit_amount_special_net {
+    group_label: "* Deposit *"
+    label: "Deposit Amount Special Net"
+    description: ""
+    value_format: "#,##0.00€"
+    type: sum
+    sql: ${deposit_amount_special_net} ;;
   }
 
   measure: sum_quantity_deposit {

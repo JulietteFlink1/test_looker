@@ -1,7 +1,8 @@
-include: "/**/gorillas_inventory_stock_count.view"
-include: "/**/gorillas_to_flink_global.view"
+include: "/competitive_intelligence/views/bigquery_comp_intel/gorillas_to_flink_global.view.lkml"
+include: "/competitive_intelligence/views/bigquery_curated/gorillas_products.view.lkml"
+include: "/competitive_intelligence/views/bigquery_reporting/gorillas_inventory_stock_count.view.lkml"
 include: "/**/products.view"
-include: "/**/gorillas_products.view"
+
 
 explore:  gorillas_to_flink_global {
   view_name: gorillas_inventory_stock_count
