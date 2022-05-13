@@ -115,6 +115,38 @@ view: candidate_application_status {
     sql: coalesce(${number_of_days_new_to_hired},${number_of_days_new_to_rejection},${number_of_days_new_to_withdrawn}) ;;
   }
 
+  dimension: substatus_first_interview {
+    type: date
+    convert_tz: no
+    group_label: "> Interview Dates"
+    label: " 1st Interview Date"
+    sql: ${TABLE}.substatus_first_interview_date ;;
+  }
+
+  dimension: substatus_second_interview {
+    type: date
+    convert_tz: no
+    group_label: "> Interview Dates"
+    label: " 2nd Interview Date"
+    sql: ${TABLE}.substatus_second_interview_date ;;
+  }
+
+  dimension: substatus_third_interview {
+    type: date
+    convert_tz: no
+    group_label: "> Interview Dates"
+    label: " 3rd Interview Date"
+    sql: ${TABLE}.substatus_third_interview_date ;;
+  }
+
+  dimension: substatus_final_interview {
+    type: date
+    convert_tz: no
+    group_label: "> Interview Dates"
+    label: " Final Interview Date"
+    sql: ${TABLE}.substatus_final_interview_date ;;
+  }
+
   ################# Core Funnel Dates
 
   dimension_group: start_date {
