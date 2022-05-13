@@ -109,6 +109,12 @@ view: candidate_application_status {
     sql: ${TABLE}.source ;;
   }
 
+  dimension: number_of_days_new_to_end_of_process {
+    hidden: yes
+    type: number
+    sql: coalesce(${number_of_days_new_to_hired},${number_of_days_new_to_rejection},${number_of_days_new_to_withdrawn}) ;;
+  }
+
   ################# Core Funnel Dates
 
   dimension_group: start_date {
@@ -436,6 +442,15 @@ view: candidate_application_status {
     group_label: "> Duration Between Stages"
     label: "AVG # Days New to Start"
     sql: ${number_of_days_new_to_start} ;;
+    value_format: "0.0"
+  }
+
+  measure: avg_number_of_days_new_to_end_of_process {
+    type: average
+    group_label: "> Duration Between Stages"
+    label: "AVG # Days New to End of Process"
+    description: "End of process can be Hire, Rejection or Withdrawn"
+    sql: ${number_of_days_new_to_end_of_process} ;;
     value_format: "0.0"
   }
 
