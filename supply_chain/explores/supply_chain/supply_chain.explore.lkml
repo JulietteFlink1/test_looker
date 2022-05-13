@@ -368,6 +368,20 @@ explore: supply_chain {
               ${last_hour_inventory_level.sku}                   = ${products_hub_assignment.sku}         and
               ${last_hour_inventory_level.time} = 23
               ;;
-      }
+  }
+
+  join: key_value_items {
+
+    view_label: "13 Key Value Items"
+
+    type: left_outer
+    relationship: many_to_one
+
+    sql_on:
+           ${key_value_items.sku} =  ${products_hub_assignment.sku}
+           -- get only the most recent KVIs (they are upadted every Monday)
+       and ${key_value_items.kvi_date} >= current_date() - 6
+    ;;
+  }
 
 }
