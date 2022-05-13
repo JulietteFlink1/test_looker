@@ -20,9 +20,10 @@ explore: key_value_items {
   # }
 
 
-
+  #deleting date because was generated twice in the same week
   join: key_value_items {
-    sql_on: ${key_value_items.sku}           = ${orderline.product_sku} ;;
+    sql_on: ${key_value_items.sku}           = ${orderline.product_sku} and
+            ${key_value_items.kvi_date}      <> "2022-05-10";;
     type: left_outer
     relationship: many_to_many #changed from one_to_many
   }
