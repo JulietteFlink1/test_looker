@@ -240,11 +240,13 @@ view: hubs_ct {
     case:  {
       when: {
         sql: ${hub_code}
-                   in (
-                  'de_aah_burt','de_ber_alex','de_ber_frie','de_ber_mit2','de_ber_noll',
-                  'de_ber_pren','de_ber_wedd','de_cgn_inne','de_dar_zent','de_dus_pemp',
-                  'de_ham_otte','de_ham_roth','de_ham_wint','de_man_inne','de_maz_inne',
-                  'de_muc_maxv','de_nrm_suds','de_zcz_mitt'
+                   in
+                  (
+                  'de_ham_wint','de_ham_roth', 'de_maz_inne','de_ber_pren','de_dar_zent','de_bra_mich',
+                  'de_man_inne','de_ber_frie','de_nrm_suds','de_muc_maxv','de_ham_otte',
+                  'de_zcz_mitt','de_dus_pemp','de_wup_elbe','de_ber_mit2','de_cgn_nipp',
+                  'de_ber_wedd','de_aah_burt','de_ber_kotd', 'de_ber_alex', 'de_cgn_inne',
+                  'de_ber_noll', 'de_ber_schl', 'de_ham_wate'
                   ) ;;
         label: "Yes"
       }
