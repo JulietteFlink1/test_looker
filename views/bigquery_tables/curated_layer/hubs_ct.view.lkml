@@ -23,7 +23,7 @@ view: hubs_ct {
     type: duration
     sql_start: timestamp(${TABLE}.start_date) ;;
     sql_end: current_timestamp ;;
-    group_label: "> Dates & Timestamps"
+    group_label: "> Dates & Timestamps "
   }
 
   # =========  Geographic Data   =========
