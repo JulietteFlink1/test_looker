@@ -226,7 +226,9 @@ dimension: product_placement {
   label: "Product Placement"
   description: "Placement in the app where product was listed, e.i. search, pdp, category"
   type: string
-  sql: ${TABLE}.product_placement ;;
+  sql: case when ${TABLE}.product_placement = 'swimlane' and ${TABLE}.category_id = 'last-bought' then 'last_bought'
+       else ${TABLE}.product_placement
+       end;;
 }
 dimension: screen_name {
   group_label: "Product Dimensions"
