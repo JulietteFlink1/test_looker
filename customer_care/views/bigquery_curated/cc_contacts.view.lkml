@@ -37,6 +37,7 @@ view: cc_contacts {
     type: string
     description: "Phone number of the user who created the contact"
     sql: ${TABLE}.user_phone_number ;;
+    required_access_grants: [can_view_customer_data]
   }
 
   dimension: user_email {
@@ -44,6 +45,7 @@ view: cc_contacts {
     type: string
     description: "Email of the user who created the contact"
     sql: ${TABLE}.user_email ;;
+    required_access_grants: [can_view_customer_data]
   }
 
   dimension: intercom_user_id {
@@ -58,6 +60,7 @@ view: cc_contacts {
     type: string
     description: "Name of the user who created the contact"
     sql: ${TABLE}.user_name ;;
+    required_access_grants: [can_view_customer_data]
   }
 
   dimension: contact_reason {
