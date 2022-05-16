@@ -209,6 +209,7 @@ view: orders {
     group_label: "* User Dimensions *"
     type: string
     sql: ${TABLE}.customer_email ;;
+    required_access_grants: [can_view_customer_data]
   }
 
   dimension: customer_id {
