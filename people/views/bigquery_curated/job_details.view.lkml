@@ -25,7 +25,7 @@ view: job_details {
 
   dimension: department {
     type: string
-    sql: ${TABLE}.department ;;
+    sql: case when ${TABLE}.department = 'Tech' then 'Technology' else ${TABLE}.department end  ;;
   }
 
   dimension: division {
