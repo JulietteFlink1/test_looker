@@ -34,7 +34,8 @@ explore: consumer_user_attributes {
     -customers_metrics.seconds_time_since_sign_up,
     -customers_metrics.weeks_time_since_sign_up_number,
     -orders.sum_rider_hours,
-    -orders.KPI
+    -orders.KPI,
+    -customers_metrics.user_email
     ]
 
 
