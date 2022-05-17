@@ -116,7 +116,7 @@ view: job_positions {
     description: "# Filled positions for Job with status FILLED, INTERVIEW, SOURCING, OFFER / # All position for jobs with status FILLED, INTERVIEW, SOURCING, OFFER"
     type: number
     value_format: "0%"
-    sql: safe_divide(${number_of_filled_positions},${number_of_positions_filtered}) ;;
+    sql: safe_divide(${number_of_filled_positions}+ ${number_of_hired_positions},${number_of_positions_filtered}) ;;
   }
 
   ########## Parameters
