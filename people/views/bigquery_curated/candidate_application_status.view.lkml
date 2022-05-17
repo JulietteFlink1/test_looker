@@ -381,7 +381,8 @@ view: candidate_application_status {
   measure: number_of_first_interviews {
     group_label: "> Counts"
     type: count_distinct
-    label: "# First Interview"
+    label: "# First Interview (any)"
+    description: "Number of first interviews after pre-screen, excluding test assignments. Any substatus"
     sql: ${application_uuid} ;;
     filters: [status_first_interview: "not null"]
   }
@@ -392,6 +393,42 @@ view: candidate_application_status {
     label: "# Last Interview"
     sql: ${application_uuid} ;;
     filters: [status_last_interview: "not null"]
+  }
+
+  measure: number_of_first_interviews_substatus {
+    group_label: "> Counts"
+    type: count_distinct
+    label: "# 1st Interview"
+    description: "Number of Interviews with substatus 1st interview"
+    sql: ${application_uuid} ;;
+    filters: [substatus_first_interview: "not null"]
+  }
+
+  measure: number_of_second_interviews_substatus {
+    group_label: "> Counts"
+    type: count_distinct
+    label: "# 2nd Interview"
+    description: "Number of Interviews with substatus 2nd interview"
+    sql: ${application_uuid} ;;
+    filters: [substatus_second_interview: "not null"]
+  }
+
+  measure: number_of_third_interviews_substatus {
+    group_label: "> Counts"
+    type: count_distinct
+    label: "# 3rd Interview"
+    description: "Number of Interviews with substatus 3rd interview"
+    sql: ${application_uuid} ;;
+    filters: [substatus_third_interview: "not null"]
+  }
+
+  measure: number_of_final_interviews_substatus {
+    group_label: "> Counts"
+    type: count_distinct
+    label: "# Final Interview"
+    description: "Number of Interviews with substatus Final interview"
+    sql: ${application_uuid} ;;
+    filters: [substatus_final_interview: "not null"]
   }
 
   measure: number_of_hired {
