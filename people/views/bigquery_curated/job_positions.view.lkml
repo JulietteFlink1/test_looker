@@ -65,7 +65,7 @@ view: job_positions {
     label: "# Filled Positions"
     type: count_distinct
     sql: ${job_position_uuid} ;;
-    filters: [status: "FILLED"]
+    filters: [status: "FILLED", job_details.job_status: "FILLED, INTERVIEW, SOURCING, OFFER, CREATED"]
   }
 
   measure: number_of_hired_positions {
@@ -73,15 +73,16 @@ view: job_positions {
     label: "# Hired Positions"
     type: count_distinct
     sql: ${job_position_uuid} ;;
-    filters: [status: "HIRED"]
+    filters: [status: "HIRED", job_details.job_status: "FILLED, INTERVIEW, SOURCING, OFFER, CREATED"]
   }
 
   measure: number_of_open_positions {
     group_label: "> Position Status"
     label: "# Open Positions"
+    description: "# Open positions for jobs with status INTERVIEW, SOURCING, OFFER"
     type: count_distinct
     sql: ${job_position_uuid} ;;
-    filters: [status: "OPEN"]
+    filters: [status: "OPEN", job_details.job_status: "INTERVIEW, SOURCING, OFFER"]
   }
 
   measure: number_of_created_positions {
@@ -94,9 +95,28 @@ view: job_positions {
 
   measure: number_of_positions {
     group_label: "> Position Status"
+    hidden: yes
     label: "# Positions"
     type: count_distinct
     sql: ${job_position_uuid} ;;
+  }
+
+  measure: number_of_positions_filtered {
+    group_label: "> Position Status"
+    label: "# Positions"
+    description: "# Positions for job with status FILLED, INTERVIEW, SOURCING, OFFER, CREATED. Excluding ON_HOLD and CANCELLED"
+    type: count_distinct
+    sql: ${job_position_uuid} ;;
+    filters: [job_details.job_status: "FILLED, INTERVIEW, SOURCING, OFFER, CREATED"]
+  }
+
+  measure: fill_rate {
+    group_label: "> Fill Rate"
+    label: "% Fill Rate"
+    description: "# Filled positions for Job with status FILLED, INTERVIEW, SOURCING, OFFER / # All position for jobs with status FILLED, INTERVIEW, SOURCING, OFFER"
+    type: number
+    value_format: "0%"
+    sql: safe_divide(${number_of_filled_positions}+ ${number_of_hired_positions},${number_of_positions_filtered}) ;;
   }
 
   ########## Parameters
