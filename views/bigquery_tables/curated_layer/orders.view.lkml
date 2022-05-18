@@ -1879,7 +1879,7 @@ view: orders {
       }
 
       measure: sum_amt_cancelled_gross {
-        group_label: "* Monetary Values *"
+        group_label: "* Cancelled Orders *"
         label: "SUM Cancelled Amount (Gross)"
         hidden:  no
         type: sum
@@ -2039,6 +2039,33 @@ view: orders {
         hidden:  no
         type: count
         filters: [rider_tip: ">0"]
+        value_format: "0"
+      }
+
+      measure: cnt_cancelled_orders {
+        group_label: "* Cancelled Orders *"
+        label: "# Cancelled Orders"
+        hidden:  no
+        type: count
+        filters: [amt_cancelled_gross: ">0"]
+        value_format: "0"
+      }
+
+      measure: cnt_agent_cancelled_orders {
+        group_label: "* Cancelled Orders *"
+        label: "# Agent Cancelled Orders"
+        hidden:  no
+        type: count
+        filters: [amt_cancelled_gross: ">0",cancellation_category: "CS Agent"]
+        value_format: "0"
+      }
+
+      measure: cnt_self_cancelled_orders {
+        group_label: "* Cancelled Orders *"
+        label: "# Self Cancelled Orders"
+        hidden:  no
+        type: count
+        filters: [amt_cancelled_gross: ">0",cancellation_category: "Customer"]
         value_format: "0"
       }
 
@@ -2318,6 +2345,46 @@ view: orders {
         hidden:  no
         type: number
         sql: ${sum_rider_tip} / NULLIF(${sum_gmv_gross}, 0);;
+        value_format: "0%"
+      }
+
+      measure: pct_cancelled_amount_value_of_gross_total{
+        group_label: "* Cancelled Orders *"
+        label: "% Cancelled Value Share"
+        description: "Dividing Total Cancelled amount Gross over GMV Gross"
+        hidden:  no
+        type: number
+        sql: ${sum_amt_cancelled_gross} / NULLIF(${sum_gmv_gross}, 0);;
+        value_format: "0%"
+      }
+
+      measure: pct_cancelled_orders{
+        group_label: "* Cancelled Orders *"
+        label: "% Cancelled Orders"
+        description: "Dividing Number of Cancelled Orders over Number of Orders"
+        hidden:  no
+        type: number
+        sql: ${cnt_cancelled_orders} / NULLIF(${cnt_orders}, 0);;
+        value_format: "0%"
+      }
+
+      measure: pct_self_cancelled_orders{
+        group_label: "* Cancelled Orders *"
+        label: "% Self Cancelled Orders"
+        description: "Dividing Number of Self-Cancelled Orders by Customer over Number of Orders"
+        hidden:  no
+        type: number
+        sql: ${cnt_self_cancelled_orders} / NULLIF(${cnt_orders}, 0);;
+        value_format: "0%"
+      }
+
+      measure: pct_agent_cancelled_orders{
+        group_label: "* Cancelled Orders *"
+        label: "% Agent Cancelled Orders"
+        description: "Dividing Number of Self-Cancelled Orders by CC Agents over Number of Orders"
+        hidden:  no
+        type: number
+        sql: ${cnt_agent_cancelled_orders} / NULLIF(${cnt_orders}, 0);;
         value_format: "0%"
       }
 
