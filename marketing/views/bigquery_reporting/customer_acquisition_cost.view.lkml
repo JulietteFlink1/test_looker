@@ -37,7 +37,7 @@ view: customer_acquisition_cost {
   # =========  __main__   =========
   dimension_group: report {
     type: time
-    label: "CAC Report"
+    label: "Report"
     timeframes: [
       raw,
       date,
@@ -92,7 +92,7 @@ view: customer_acquisition_cost {
 
   measure: total_amt_spend {
 
-    label: "Total Marketing Spend"
+    label: "SUM Spend"
     description: "Total of online marketing spend"
     group_label: "CAC Measures"
 
@@ -104,7 +104,7 @@ view: customer_acquisition_cost {
 
   measure: total_installs {
 
-    label: "# Total Installs"
+    label: "# Installs"
     description: "Total of installs"
     group_label: "CAC Measures"
 
@@ -116,7 +116,7 @@ view: customer_acquisition_cost {
 
   measure: total_acquisitions {
 
-    label: "# Total Acquisitions"
+    label: "# Acquisitions"
     description: "Total of acquisitions"
     group_label: "CAC Measures"
 
