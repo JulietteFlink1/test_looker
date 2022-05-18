@@ -1249,7 +1249,7 @@ view: orders {
   dimension: amt_cancelled_gross {
     group_label: "* Cancelled Orders *"
     hidden: yes
-    type: string
+    type: number
     sql: ${TABLE}.amt_cancelled_gross;;
   }
 
