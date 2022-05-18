@@ -21,5 +21,16 @@ explore: geographic_pricing {
     relationship: many_to_one #changed from one_to_many
   }
 
+  join: key_value_items {
+    view_label: "Key Value Items"
+    type: left_outer
+    relationship: many_to_many
+
+    sql_on:
+           ${key_value_items.sku} =  ${orderline.product_sku}
+           -- get only the most recent KVIs (they are upadted every Monday)
+       and ${key_value_items.kvi_date} >= current_date() - 6
+    ;;
+  }
 
 }

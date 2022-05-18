@@ -1,4 +1,4 @@
-# Owner: Patricia Mitterova
+# Owner: Product Analytics, Patricia Mitterova
 
 # Main Stakeholder:
 # - Consumer Product
@@ -7,7 +7,7 @@
 # Questions that can be answered
 # - user based conversions
 
-include: "/**/daily_user_aggregates.view"
+include: "/product_consumer/views/bigquery_reporting/daily_user_aggregates.view"
 include: "/**/global_filters_and_parameters.view.lkml"
 
 explore: daily_user_aggregates {

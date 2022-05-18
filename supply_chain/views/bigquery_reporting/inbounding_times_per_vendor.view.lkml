@@ -16,7 +16,7 @@ view: inbounding_times_per_vendor {
     allowed_value: { value: "1" label: "All Inbounding" }
     allowed_value: { value: "2" label: "Bulk-Inbounding" }
     allowed_value: { value: "3" label: "Manual Inbounding" }
-    default_value: "Day"
+    default_value: "1"
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

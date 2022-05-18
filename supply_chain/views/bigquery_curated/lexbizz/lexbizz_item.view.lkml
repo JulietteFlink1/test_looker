@@ -176,6 +176,11 @@ view: lexbizz_item {
     sql: ${TABLE}.seasonality ;;
   }
 
+  dimension: min_days_to_best_before_date {
+    type: string
+    sql: ${TABLE}.min_days_to_best_before_date ;;
+  }
+
   dimension: ean {
     type: string
     sql: ${TABLE}.ean ;;

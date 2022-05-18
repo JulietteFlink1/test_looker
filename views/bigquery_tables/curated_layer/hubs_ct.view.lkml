@@ -23,7 +23,7 @@ view: hubs_ct {
     type: duration
     sql_start: timestamp(${TABLE}.start_date) ;;
     sql_end: current_timestamp ;;
-    group_label: "> Dates & Timestamps"
+    group_label: "> Dates & Timestamps "
   }
 
   # =========  Geographic Data   =========
@@ -240,11 +240,12 @@ view: hubs_ct {
     case:  {
       when: {
         sql: ${hub_code}
-                   in (
-                  'de_aah_burt','de_ber_alex','de_ber_mit2','de_ber_noll','de_ber_pren',
-                  'de_ber_wedd','de_bon_zent','de_bra_mich','de_cgn_lind','de_cgn_nipp','de_dar_zent',
-                  'de_dus_pemp','de_ess_hols','de_ham_roth','de_ham_wint','de_lei_plag','de_man_inne',
-                  'de_maz_inne','de_muc_maxv','de_nrm_suds','de_wie_mitt'
+                   in
+                  (
+                  'de_ber_alex','de_ber_frie','de_ber_kotd','de_ber_mit2','de_ber_noll','de_ber_pren',
+                  'de_ber_wedd','de_bra_mich','de_cgn_nipp','de_dar_zent','de_dus_pemp','de_muc_maxv',
+                  'de_ham_otte','de_ham_roth','de_ham_wint','de_man_inne','de_maz_inne','de_zcz_mitt',
+                  'de_nrm_suds','de_wup_elbe'
                   ) ;;
         label: "Yes"
       }

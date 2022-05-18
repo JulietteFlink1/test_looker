@@ -7,16 +7,16 @@
 # Questions that can be answered
 # - Questions around behavioural events with country and device drill downs
 
-include: "/product_consumer/views/bigquery_curated/event_product_added_to_cart.view"
+include: "/product_consumer/views/bigquery_curated/event_category_selected.view"
 include: "/**/global_filters_and_parameters.view.lkml"
 
-explore: event_product_added_to_cart {
-  from:  event_product_added_to_cart
-  view_name: event_product_added_to_cart
+explore: event_category_selected {
+  from:  event_category_selected
+  view_name: event_category_selected
   hidden: no
 
-  label: "Event Product Added to Cart"
-  description: "This explore provides an overview of event product_added_to_cart with its parameters across App and Web"
+  label: "Event Category Selected"
+  description: "This explore provides an overview of all catgeories cliked / used by users across app & web"
   group_label: "Consumer Product"
 
   # implement both date filters:
@@ -26,7 +26,7 @@ explore: event_product_added_to_cart {
   sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} ${event_date} {% endcondition %};;
 
   access_filter: {
-    field: event_product_added_to_cart.country_iso
+    field: event_category_selected.country_iso
     user_attribute: country_iso
   }
 
