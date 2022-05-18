@@ -2355,7 +2355,7 @@ view: orders {
         hidden:  no
         type: number
         sql: ${sum_amt_cancelled_gross} / NULLIF(${sum_gmv_gross}, 0);;
-        value_format: "0%"
+        value_format: "0.0%"
       }
 
       measure: pct_cancelled_orders{
@@ -2365,7 +2365,7 @@ view: orders {
         hidden:  no
         type: number
         sql: ${cnt_cancelled_orders} / NULLIF(${cnt_orders}, 0);;
-        value_format: "0%"
+        value_format: "0.0%"
       }
 
       measure: pct_self_cancelled_orders{
@@ -2375,7 +2375,7 @@ view: orders {
         hidden:  no
         type: number
         sql: ${cnt_self_cancelled_orders} / NULLIF(${cnt_orders}, 0);;
-        value_format: "0%"
+        value_format: "0.0%"
       }
 
       measure: pct_agent_cancelled_orders{
@@ -2385,7 +2385,7 @@ view: orders {
         hidden:  no
         type: number
         sql: ${cnt_agent_cancelled_orders} / NULLIF(${cnt_orders}, 0);;
-        value_format: "0%"
+        value_format: "0.0%"
       }
 
       measure: pct_delivery_in_time{
