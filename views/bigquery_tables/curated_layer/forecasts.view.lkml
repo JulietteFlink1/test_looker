@@ -4,8 +4,7 @@
 # This view contains forecast data from multiple forecast tables on time slot, hub, and job date level.
 
 view: forecasts {
-  sql_table_name: `flink-data-prod.curated.forecasts`
-    ;;
+  sql_table_name: `flink-data-prod.curated.forecasts`;;
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Dimensions     ~~~~~~~~~~~~~~~~~~~~~~~~~
