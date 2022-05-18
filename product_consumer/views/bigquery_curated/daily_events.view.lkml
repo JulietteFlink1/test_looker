@@ -72,6 +72,48 @@ view: daily_events {
      type: string
      sql: ${TABLE}.page_path ;;
    }
+  dimension: screen_name {
+    group_label: "Generic Dimensions"
+    label: "Page Path"
+    description: "Screen name where the event was triggered"
+    type: string
+    sql: ${TABLE}.screen_name ;;
+  }
+  dimension: component_name {
+    group_label: "Generic Dimensions"
+    label: "Component name where the event was triggered"
+    description: "component_name"
+    type: string
+    sql: ${TABLE}.component_name ;;
+  }
+  dimension: component_content {
+    group_label: "Generic Dimensions"
+    label: "Component content where the event was triggered"
+    description: "Page path on web"
+    type: string
+    sql: ${TABLE}.component_content ;;
+  }
+  dimension: component_value {
+    group_label: "Generic Dimensions"
+    label: "Component value where the event was triggered"
+    description: "Page path on web"
+    type: string
+    sql: ${TABLE}.component_value ;;
+  }
+  dimension: component_position {
+    group_label: "Generic Dimensions"
+    label: "Page Path"
+    description: "Page path on web"
+    type: string
+    sql: ${TABLE}.component_value ;;
+  }
+  dimension: event_origin {
+    group_label: "Generic Dimensions"
+    label: "The origin of the event, used to determine where the event was generated"
+    description: "Page path on web"
+    type: string
+    sql: ${TABLE}.component_value ;;
+  }
 
   # ======= Device Dimensions ======= #
 
