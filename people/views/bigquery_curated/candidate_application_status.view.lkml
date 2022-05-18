@@ -115,6 +115,38 @@ view: candidate_application_status {
     sql: coalesce(${number_of_days_new_to_hired},${number_of_days_new_to_rejection},${number_of_days_new_to_withdrawn}) ;;
   }
 
+  dimension: substatus_first_interview {
+    type: date
+    convert_tz: no
+    group_label: "> Interview Dates"
+    label: " 1st Interview Date"
+    sql: ${TABLE}.substatus_first_interview_date ;;
+  }
+
+  dimension: substatus_second_interview {
+    type: date
+    convert_tz: no
+    group_label: "> Interview Dates"
+    label: " 2nd Interview Date"
+    sql: ${TABLE}.substatus_second_interview_date ;;
+  }
+
+  dimension: substatus_third_interview {
+    type: date
+    convert_tz: no
+    group_label: "> Interview Dates"
+    label: " 3rd Interview Date"
+    sql: ${TABLE}.substatus_third_interview_date ;;
+  }
+
+  dimension: substatus_final_interview {
+    type: date
+    convert_tz: no
+    group_label: "> Interview Dates"
+    label: " Final Interview Date"
+    sql: ${TABLE}.substatus_final_interview_date ;;
+  }
+
   ################# Core Funnel Dates
 
   dimension_group: start_date {
@@ -349,7 +381,8 @@ view: candidate_application_status {
   measure: number_of_first_interviews {
     group_label: "> Counts"
     type: count_distinct
-    label: "# First Interview"
+    label: "# First Interview (any)"
+    description: "Number of first interviews after pre-screen, excluding test assignments. Any substatus"
     sql: ${application_uuid} ;;
     filters: [status_first_interview: "not null"]
   }
@@ -360,6 +393,42 @@ view: candidate_application_status {
     label: "# Last Interview"
     sql: ${application_uuid} ;;
     filters: [status_last_interview: "not null"]
+  }
+
+  measure: number_of_first_interviews_substatus {
+    group_label: "> Counts"
+    type: count_distinct
+    label: "# 1st Interview"
+    description: "Number of Interviews with substatus 1st interview"
+    sql: ${application_uuid} ;;
+    filters: [substatus_first_interview: "not null"]
+  }
+
+  measure: number_of_second_interviews_substatus {
+    group_label: "> Counts"
+    type: count_distinct
+    label: "# 2nd Interview"
+    description: "Number of Interviews with substatus 2nd interview"
+    sql: ${application_uuid} ;;
+    filters: [substatus_second_interview: "not null"]
+  }
+
+  measure: number_of_third_interviews_substatus {
+    group_label: "> Counts"
+    type: count_distinct
+    label: "# 3rd Interview"
+    description: "Number of Interviews with substatus 3rd interview"
+    sql: ${application_uuid} ;;
+    filters: [substatus_third_interview: "not null"]
+  }
+
+  measure: number_of_final_interviews_substatus {
+    group_label: "> Counts"
+    type: count_distinct
+    label: "# Final Interview"
+    description: "Number of Interviews with substatus Final interview"
+    sql: ${application_uuid} ;;
+    filters: [substatus_final_interview: "not null"]
   }
 
   measure: number_of_hired {
