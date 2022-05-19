@@ -1,167 +1,29 @@
 view: hub_closure_rate {
-  derived_table: {
-    sql: with dates as (
-            select * from unnest( generate_date_array('2021-07-01', current_date)) as date
-),
-closed_events_raw as (
-        select closed_date_utc
-        , closed_datetime
-        , opened_datetime
-        , warehouse
-        , closure_reason_clean
-        , closure_reason
-        from `flink-data-prod.order_forecast.forced_hub_closures`
-),
-closed_events as (
-        select d.date as closed_date_utc
-             ,c.closed_datetime
-             ,c.opened_datetime
-             ,c.warehouse
-             ,c.closure_reason_clean
-             ,c.closure_reason
-        from dates d
-        join closed_events_raw c on date >= date(closed_datetime) and date <= date(opened_datetime)
-),
-
-open_hours_ as (
-          select date(start_timestamp) as date
-        , hub_code as warehouse
-        , country_iso
-        , city
-        , sum(case when is_open = 1 then 0.5 end) as open_hours
-        , min(case when is_open = 1 then start_timestamp end) as start_hour
-        , max(case when is_open = 1 then end_timestamp end) as stop_hour
-      from `flink-data-prod.curated.hub_opening_hours`
-      where date(start_timestamp) <= current_date
-      group by 1, 2, 3, 4
-),
-cleaned_hours as (
-      select c.closed_datetime
-        , c.opened_datetime
-        , c.closure_reason_clean
-        , c.closure_reason
-        , o.warehouse
-        , o.date
-        , DATE_TRUNC( o.date, week) as week
-        , DATE_TRUNC( o.date, month) as month
-        , o.country_iso
-        , o.city
-        , o.open_hours
-        , case when closed_datetime < start_hour then start_hour
-               when closed_datetime > stop_hour then stop_hour
-               else closed_datetime end as cleaned_closed_datetime
-        , case when opened_datetime > stop_hour then stop_hour
-               when opened_datetime < start_hour then start_hour
-               when opened_datetime is null then stop_hour
-               else opened_datetime end as cleaned_opened_datetime
-
-      from open_hours_ as o
-      left join closed_events  as c on o.date = c.closed_date_utc
-      and o.warehouse = c.warehouse
-      where open_hours is not null
-      and o.date >= "2021-07-01" --no available data before this date
-      and o.warehouse != "de_ham_alto"
-),
-final as (
-        select date
-          , week
-          , month
-          , country_iso
-          , city
-          , warehouse
-          , open_hours
-          , round(TIMESTAMP_DIFF(cleaned_opened_datetime, cleaned_closed_datetime, MINUTE)/60, 2) as closure_hours
-          , case when closure_reason_clean = "External factor" then "External_factor"
-                when closure_reason_clean = "Property issue" then "Property_issue"
-                else closure_reason_clean end as closure_reason_clean
-          from cleaned_hours
-),
-
-
-missed_orders as (
-        select date
-         , warehouse
-         , sum(missed_orders_forced_closure) as total_missed_orders
-        from `flink-data-prod.missed_orders.historical_missed_orders`
-        group by 1, 2
-),
-
-aov as (
-    select order_date
-    , hub_code
-    , avg(amt_gmv_gross) as aov
-from `flink-data-prod.curated.orders` o
-group by 1, 2
-)
-
-select f.date
-, week
-, month
-, country_iso
-, city
-, f.warehouse as hub_code
-, open_hours
-, mo.total_missed_orders
-, a.aov
-, coalesce(sum(case when closure_reason_clean = 'Understaffing' then mo.total_missed_orders end),0) as missed_orders_understaffing
-, coalesce(sum(case when closure_reason_clean = 'Weather' then mo.total_missed_orders end),0) as missed_orders_weather
-, coalesce(sum(case when closure_reason_clean = 'Remodelling' then mo.total_missed_orders end),0) as missed_orders_remodelling
-, coalesce(sum(case when closure_reason_clean = 'External_factor' then mo.total_missed_orders end),0) as missed_orders_external_factor
-, coalesce(sum(case when closure_reason_clean = 'Property_issue' then mo.total_missed_orders end),0) as missed_orders_property_issue
-, coalesce(sum(case when closure_reason_clean = 'Other' then mo.total_missed_orders end),0) as missed_orders_other
-, coalesce(sum(case when closure_reason_clean = 'Equipment' then mo.total_missed_orders end),0) as missed_orders_equipment
-, coalesce(sum(case when closure_reason_clean = 'Understaffing' then a.aov end),0) as lost_gmv_understaffing
-, coalesce(sum(case when closure_reason_clean = 'Weather' then a.aov end),0) as lost_gmv_weather
-, coalesce(sum(case when closure_reason_clean = 'Remodelling' then a.aov end),0) as lost_gmv_remodelling
-, coalesce(sum(case when closure_reason_clean = 'External_factor' then a.aov end),0) as lost_gmv_external_factor
-, coalesce(sum(case when closure_reason_clean = 'Property_issue' then a.aov end),0) as lost_gmv_property_issue
-, coalesce(sum(case when closure_reason_clean = 'Other' then a.aov end),0) as lost_gmv_other
-, coalesce(sum(case when closure_reason_clean = 'Equipment' then a.aov end),0) as lost_gmv_equipment
-, coalesce(sum(case when closure_reason_clean = 'Understaffing' then closure_hours end),0) as total_closure_hours_understaffing
-, coalesce(sum(case when closure_reason_clean = 'Weather' then closure_hours end),0) as total_closure_hours_weather
-, coalesce(sum(case when closure_reason_clean = 'Remodelling' then closure_hours end),0) as total_closure_hours_remodelling
-, coalesce(sum(case when closure_reason_clean = 'External_factor' then closure_hours end),0) as total_closure_hours_external_factor
-, coalesce(sum(case when closure_reason_clean = 'Property_issue' then closure_hours end),0) as total_closure_hours_property_issue
-, coalesce(sum(case when closure_reason_clean = 'Other' then closure_hours end),0) as total_closure_hours_other
-, coalesce(sum(case when closure_reason_clean = 'Equipment' then closure_hours end),0) as total_closure_hours_equipment
-, ifnull(sum(closure_hours), 0) as total_closure_hours
-from final f
-left join aov a on f.date = a.order_date
-and f.warehouse = a.hub_code
-left join missed_orders mo
-on f.date = mo.date
-and f.warehouse = mo.warehouse
-group by 1, 2, 3, 4, 5, 6, 7, 8, 9
-       ;;
-  }
+  sql_table_name: flink-data-prod.reporting.hub_closures ;;
 
   measure: count {
     type: count
     drill_fields: [detail*]
   }
 
+  dimension_group: created {
+    group_label: "* Dates and Timestamps *"
+    label: "Closure"
+    description: "Closure Date"
+    type: time
+    timeframes: [
+      date,
+      week,
+      month
+    ]
+    sql: ${TABLE}.date_current ;;
+    datatype: date
+  }
+
   dimension: primary_key {
     primary_key: yes
     hidden: yes
-    sql: CONCAT(${TABLE}.hub_code, '_', ${TABLE}.day) ;;
-  }
-
-  dimension: day {
-    type: date
-    datatype: date
-    sql: ${TABLE}.date ;;
-  }
-
-  dimension: week {
-    type: date
-    datatype: date
-    sql: ${TABLE}.week ;;
-  }
-
-  dimension: month {
-    type: date
-    datatype: date
-    sql: ${TABLE}.month ;;
+    sql: ${TABLE}.hub_closure_uuid ;;
   }
 
   dimension: country_iso {
@@ -330,17 +192,11 @@ group by 1, 2, 3, 4, 5, 6, 7, 8, 9
     sql: ${TABLE}.total_closure_hours ;;
   }
 
-  dimension: closure_reason_clean {
+  dimension: closure_reason_overall {
     label: "Closure Reason"
     type: string
-    hidden:  yes
-    sql: ${TABLE}.closure_reason_clean ;;
-  }
-
-  dimension: closure_reason {
-    type: string
-    sql: ${TABLE}.closure_reason ;;
-    hidden:  yes
+    hidden:  no
+    sql: ${TABLE}.closure_reason_overall ;;
   }
 
   parameter: date_granularity {
@@ -359,11 +215,11 @@ group by 1, 2, 3, 4, 5, 6, 7, 8, 9
       label_from_parameter: date_granularity
       sql:
       {% if date_granularity._parameter_value == 'Day' %}
-      ${day}
+      ${created_date}
       {% elsif date_granularity._parameter_value == 'Week' %}
-      ${week}
+      ${created_week}
       {% elsif date_granularity._parameter_value == 'Month' %}
-      ${month}
+      ${created_month}
       {% endif %};;
   }
 
@@ -724,15 +580,21 @@ group by 1, 2, 3, 4, 5, 6, 7, 8, 9
     label: "Total GMV Lost"
     hidden:  yes
     type: sum
-    sql: ifnull(${total_missed_orders}*${aov},0);;
+    sql: ${lost_gmv_equipment} +
+         ${lost_gmv_other} +
+        ${lost_gmv_property_issue} +
+        ${lost_gmv_external_factor} +
+        ${lost_gmv_remodelling} +
+        ${lost_gmv_weather} +
+        ${lost_gmv_understaffing} ;;
     value_format_name: eur_0
   }
 
   set: detail {
     fields: [
-      day,
-      week,
-      month,
+      # day,
+      # week,
+      # month,
       country_iso,
       city,
       hub_code,
