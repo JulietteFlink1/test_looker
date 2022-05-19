@@ -1,5 +1,5 @@
 # If necessary, uncomment the line below to include explore_source.
-# include: "spc_2.explore.lkml"
+include: "spc_2.explore.lkml"
 
 view: spc_2_ranks {
   derived_table: {

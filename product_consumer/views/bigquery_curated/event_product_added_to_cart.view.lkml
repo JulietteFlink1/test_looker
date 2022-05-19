@@ -226,7 +226,9 @@ dimension: product_placement {
   label: "Product Placement"
   description: "Placement in the app where product was listed, e.i. search, pdp, category"
   type: string
-  sql: ${TABLE}.product_placement ;;
+  sql: case when ${TABLE}.product_placement = 'swimlane' and ${TABLE}.category_id = 'last-bought' then 'last_bought'
+       else ${TABLE}.product_placement
+       end;;
 }
 dimension: screen_name {
   group_label: "Product Dimensions"
@@ -283,7 +285,7 @@ dimension: list_position {
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
 measure: events {
-  label: "# Events"
+  label: "# Total Products"
   description: "Number of events trigegred by users"
   type: count_distinct
   sql: ${TABLE}.event_uuid ;;
@@ -307,24 +309,35 @@ measure: products {
   sql: ${TABLE}.product_sku ;;
 }
 measure: original_product_price{
-  group_label: "Product Dimensions"
-  label: "Product Discount"
-  description: "Original price - Product Price"
-  type: number
+  group_label: "Monetary Measures"
+  label: "Original Product Price"
+  description: "Product price before discount"
+  type: sum
+  value_format_name: decimal_2
   sql: ${original_price} ;;
 }
 measure: actual_product_price{
-  group_label: "Product Dimensions"
-  label: "Product Discount"
-  description: "Original price - Product Price"
-  type: number
+  group_label: "Monetary Measures"
+  label: "Product Price"
+  description: "Product price shows to a user (if discount applied then with a discount)"
+  type: sum
+  value_format_name: decimal_2
   sql: ${product_price} ;;
 }
-  measure: discount {
-    label: "Sum Discount"
-    description: "Sum of discounts applied"
-    type: number
-    value_format_name: decimal_2
-    sql: ${original_product_price} - ${actual_product_price} ;;
-  }
+measure: aiv {
+  group_label: "Monetary Measures"
+  label: "AIV - Average Item Value"
+  description: "Sum of value of product price / sum all products"
+  type: number
+  value_format_name: decimal_2
+  sql: ${actual_product_price} / ${events} ;;
+}
+measure: discount {
+  group_label: "Monetary Measures"
+  label: "Sum Product Discount"
+  description: "Sum of discounts applied on add-to-cart event (no voucher)"
+  type: number
+  value_format_name: decimal_2
+  sql: (${original_product_price} - ${actual_product_price}) * -1 ;;
+}
 }

@@ -44,10 +44,11 @@ dimension: kvi_date {
     label: "Is KVI"
   }
 
-  dimension: kvi {
-    type: string
-    sql: case when (${sku} is not null) then "KVI" else "Not KVI" end ;;
-  }
+
+ # dimension: kvi {
+ #   type: string
+ #   sql: case when (${sku} is not null) then "KVI" else "Not KVI" end ;;
+ # }
 
 
   }

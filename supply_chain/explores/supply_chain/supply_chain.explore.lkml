@@ -327,6 +327,42 @@ explore: supply_chain {
     relationship: many_to_one
   }
 
+#Matching Logic Metrics
+
+  join: matching_inventory_level {
+
+    view_label: "13 Matching Inventory"
+
+    type:         left_outer
+    relationship: many_to_one
+
+    sql_on:
+        ${matching_inventory_level.sku}                     = coalesce(${products_hub_assignment.leading_sku_replenishment_substitute_group}, ${products_hub_assignment.sku}) and
+        ${matching_inventory_level.hub_code}                = ${products_hub_assignment.hub_code}                                        and
+        ${matching_inventory_level.promised_delivery_date}  = ${products_hub_assignment.report_date}                                     and
+        ${matching_inventory_level.vendor_id}               = ${products_hub_assignment.erp_vendor_id}
+    ;;
+  }
+
+  join: replenishment_purchase_orders_all_dates {
+
+    view_label: ""
+
+    type:         left_outer
+    relationship: many_to_one
+    from: replenishment_purchase_orders
+
+    sql_on:
+    ${replenishment_purchase_orders_all_dates.sku}              = coalesce(${products_hub_assignment.leading_sku_replenishment_substitute_group}, ${products_hub_assignment.sku}) and
+    ${replenishment_purchase_orders_all_dates.hub_code}         = ${products_hub_assignment.hub_code}                                        and
+    ${replenishment_purchase_orders_all_dates.delivery_date}    = ${products_hub_assignment.report_date}                                     and
+    ${replenishment_purchase_orders_all_dates.vendor_id}        = ${products_hub_assignment.erp_vendor_id}
+    ;;
+  }
+
+
+
+
   join: mean_and_std {
     view_label: "07 Order Lineitems"
     type: left_outer
@@ -368,6 +404,20 @@ explore: supply_chain {
               ${last_hour_inventory_level.sku}                   = ${products_hub_assignment.sku}         and
               ${last_hour_inventory_level.time} = 23
               ;;
-      }
+  }
+
+  join: key_value_items {
+
+    view_label: "13 Key Value Items"
+
+    type: left_outer
+    relationship: many_to_one
+
+    sql_on:
+           ${key_value_items.sku} =  ${products_hub_assignment.sku}
+           -- get only the most recent KVIs (they are upadted every Monday)
+       and ${key_value_items.kvi_date} >= current_date() - 6
+    ;;
+  }
 
 }
