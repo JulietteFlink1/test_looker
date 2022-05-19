@@ -43,6 +43,11 @@ view: daily_picker_events {
     sql: ${TABLE}.order_id ;;
   }
 
+  dimension: anonymous_id {
+    type: string
+    sql: ${TABLE}.anonymous_id ;;
+  }
+
 
   # ~~ App, Device & Connectivity ~~
 
@@ -146,12 +151,6 @@ view: daily_picker_events {
   }
 
   # ~~ Hidden ~~
-
-  dimension: anonymous_id {
-    type: string
-    sql: ${TABLE}.anonymous_id ;;
-    hidden: yes
-  }
 
   dimension_group: event_recieved {
     type: time
