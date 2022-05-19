@@ -294,7 +294,7 @@ view: replenishment_purchase_orders {
     group_label: ">Metrics <"
 
     type: sum
-    sql: safe_cast(${TABLE}.handling_unit_quantity as int64) ;;
+    sql: safe_cast(${TABLE}.handling_unit_quantity as numeric) ;;
   }
 
   measure: pct_order_inbounded {
