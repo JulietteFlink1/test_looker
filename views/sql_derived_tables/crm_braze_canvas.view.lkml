@@ -47,8 +47,25 @@ view: crm_braze_canvas {
     type: date
     datatype: date
     sql: ${TABLE}.email_sent_at_date ;;
-    # hidden: yes
+    hidden: yes
   }
+
+  dimension_group: email_sent_at {
+    label: "Date Email Sent"
+    description: "The date, when the email was sent to the customer"
+    type: time
+    timeframes: [
+      date,
+      day_of_week,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: ${email_sent_at} ;;
+    datatype: date
+  }
+
 
   ## hidden dimensions
 
