@@ -21,6 +21,7 @@ view: orders {
 
   dimension: acceptance_time {
     type: number
+    group_label: "* Operations / Logistics *"
     hidden: no
     sql: ${TABLE}.acceptance_time_minutes ;;
   }
@@ -93,7 +94,7 @@ view: orders {
   dimension: item_value_gross {
 
     alias: [amt_total_price_gross]
-
+    group_label: "* Monetary Values *"
     type: number
     hidden: no
     sql: ${TABLE}.amt_total_price_gross
@@ -103,7 +104,7 @@ view: orders {
   dimension: item_value_net {
 
     alias: [amt_total_price_net]
-
+    group_label: "* Monetary Values *"
     type: number
     hidden: no
     sql: ${TABLE}.amt_total_price_net   ;;
@@ -1217,6 +1218,41 @@ view: orders {
     sql: ${TABLE}.amt_deposit ;;
   }
 
+  dimension: cancellation_reason {
+    group_label: "* Cancelled Orders *"
+    description: "Reason for the cancellation of the order (e.g. Wrong Address, Delivery Too Long...)"
+    type: string
+    sql: ${TABLE}.cancellation_reason;;
+  }
+
+  dimension: cancellation_user_name {
+    group_label: "* Cancelled Orders *"
+    description: "Either the name of the CS Agent who cancelled the order, either 'Self' if the customer cancelled him/herself"
+    type: string
+    sql: ${TABLE}.cancellation_user_name;;
+  }
+
+  dimension: cancellation_type {
+    group_label: "* Cancelled Orders *"
+    description: "Takes value Full if the whole order was cancelled."
+    type: string
+    sql: ${TABLE}.cancellation_type;;
+  }
+
+  dimension: cancellation_category {
+    group_label: "* Cancelled Orders *"
+    description: "Takes values CS Agent or Customer depending on the person who initiated the cancellation"
+    type: string
+    sql: ${TABLE}.cancellation_category;;
+  }
+
+  dimension: amt_cancelled_gross {
+    group_label: "* Cancelled Orders *"
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_cancelled_gross;;
+  }
+
 
   ######## PARAMETERS
 
@@ -1749,8 +1785,8 @@ view: orders {
 
       measure: sum_discount_amt {
         group_label: "* Monetary Values *"
-        label: "SUM Discount Amount"
-        description: "Sum of Discount amount applied on orders"
+        label: "SUM Discount Amount (Gross)"
+        description: "Sum of Discount amount applied on orders. Includes both Product and Cart discounts."
         hidden:  no
         type: sum
         sql: ${discount_amount};;
@@ -1840,7 +1876,16 @@ view: orders {
         sql: ${deposit};;
         description: "Sum of all deposits, paid by Flink or by the customers "
         value_format_name: euro_accounting_2_precision
-  }
+      }
+
+      measure: sum_amt_cancelled_gross {
+        group_label: "* Cancelled Orders *"
+        label: "SUM Cancelled Amount (Gross)"
+        hidden:  no
+        type: sum
+        sql: ${amt_cancelled_gross};;
+        value_format_name: euro_accounting_2_precision
+      }
 
       ############
       ## COUNTS ##
@@ -1994,6 +2039,33 @@ view: orders {
         hidden:  no
         type: count
         filters: [rider_tip: ">0"]
+        value_format: "0"
+      }
+
+      measure: cnt_cancelled_orders {
+        group_label: "* Cancelled Orders *"
+        label: "# Cancelled Orders"
+        hidden:  no
+        type: count
+        filters: [amt_cancelled_gross: ">0"]
+        value_format: "0"
+      }
+
+      measure: cnt_agent_cancelled_orders {
+        group_label: "* Cancelled Orders *"
+        label: "# Agent Cancelled Orders"
+        hidden:  no
+        type: count
+        filters: [amt_cancelled_gross: ">0",cancellation_category: "CS Agent"]
+        value_format: "0"
+      }
+
+      measure: cnt_self_cancelled_orders {
+        group_label: "* Cancelled Orders *"
+        label: "# Self Cancelled Orders"
+        hidden:  no
+        type: count
+        filters: [amt_cancelled_gross: ">0",cancellation_category: "Customer"]
         value_format: "0"
       }
 
@@ -2276,6 +2348,46 @@ view: orders {
         value_format: "0%"
       }
 
+      measure: pct_cancelled_amount_value_of_gross_total{
+        group_label: "* Cancelled Orders *"
+        label: "% Cancelled Value Share"
+        description: "Dividing Total Cancelled amount Gross over GMV Gross"
+        hidden:  no
+        type: number
+        sql: ${sum_amt_cancelled_gross} / NULLIF(${sum_gmv_gross}, 0);;
+        value_format: "0.0%"
+      }
+
+      measure: pct_cancelled_orders{
+        group_label: "* Cancelled Orders *"
+        label: "% Cancelled Orders"
+        description: "Dividing Number of Cancelled Orders over Number of Orders"
+        hidden:  no
+        type: number
+        sql: ${cnt_cancelled_orders} / NULLIF(${cnt_orders}, 0);;
+        value_format: "0.0%"
+      }
+
+      measure: pct_self_cancelled_orders{
+        group_label: "* Cancelled Orders *"
+        label: "% Self Cancelled Orders"
+        description: "Dividing Number of Self-Cancelled Orders by Customer over Number of Orders"
+        hidden:  no
+        type: number
+        sql: ${cnt_self_cancelled_orders} / NULLIF(${cnt_orders}, 0);;
+        value_format: "0.0%"
+      }
+
+      measure: pct_agent_cancelled_orders{
+        group_label: "* Cancelled Orders *"
+        label: "% Agent Cancelled Orders"
+        description: "Dividing Number of Self-Cancelled Orders by CC Agents over Number of Orders"
+        hidden:  no
+        type: number
+        sql: ${cnt_agent_cancelled_orders} / NULLIF(${cnt_orders}, 0);;
+        value_format: "0.0%"
+      }
+
       measure: pct_delivery_in_time{
         group_label: "* Operations / Logistics *"
         label: "% Orders delivered in time (PDT)"
@@ -2544,5 +2656,6 @@ view: orders {
         value_format: "0.0"
         sql: ${avg_delivery_time} - ${avg_return_to_hub_time} ;;
       }
+
 
     }
