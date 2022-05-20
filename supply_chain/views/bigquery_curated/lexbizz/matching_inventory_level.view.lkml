@@ -310,6 +310,14 @@ dimension: inbounded_on {
 
 #Fill rate
 
+  measure: sum_handling_units_purchased{
+    group_label: "> Measures (Fill Rate) <"
+    label: "SUM Hand. U. Purchased"
+    type: sum
+    sql: cast(${handling_unit_quantity_purchased} as numeric) ;;
+
+  }
+
   measure: sum_selling_units_purchased{
     group_label: "> Measures (Fill Rate) <"
     label: "SUM Sell. U. Purchased"

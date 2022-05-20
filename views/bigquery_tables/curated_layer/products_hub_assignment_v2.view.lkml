@@ -12,24 +12,29 @@ view: products_hub_assignment_v2 {
 
     # this parameter is defined at the products_hub_assignment level, as this view is the base of the Supply Chain explore
 
-    label:       "Select Metric Aggregation Level"
+    label:       "Select Metric Aggregation Level + SKU-to-Hub Assignment Logic"
     group_label: "* Parameters & Dynamic Fields *"
     description: "Chose, on what level you want to calculate metrics such as esp. the oos-rate"
 
     type: unquoted
 
     allowed_value: {
-      label: "per SKU"
-      value: "sku"
+      label: "per SKU + No Aggregated + Supplier Facing (what Flink wants to replenish)"
+      value: "sku_replenishment"
     }
 
     allowed_value: {
-      label: "per SKU - Aggregated per Replenishment Groups"
+      label: "per SKU  + No Aggregated + Customer Facing (what customers see in the app)"
+      value: "sku_customer"
+    }
+
+    allowed_value: {
+      label: "Aggregated per Replenishment Groups + Supplier Facing (what Flink wants to replenish)"
       value: "replenishment"
     }
 
     allowed_value: {
-      label: "per SKU - Aggregated per Substitute Groups"
+      label: "Aggregated per Substitute Groups + Customer Facing (what customers see in the app)"
       value: "customer"
     }
 
@@ -37,28 +42,28 @@ view: products_hub_assignment_v2 {
   }
 
 
-  parameter: select_assignment_logic {
-    # this paramter either applies SKU-to-Hub Assingment logic according to the Supply Chain (replenishment-facing) or Commercial (customer facing)
+  #parameter: select_assignment_logic {
+  #  # this paramter either applies SKU-to-Hub Assingment logic according to the Supply Chain (replenishment-facing) or Commercial (customer facing)
 
-    label:       "Select SKU-to-Hub Assignment Logic"
-    group_label: "* Parameters & Dynamic Fields *"
-    description: "Chose, if you want to see SKUs, that are assigned to a hub according to Supply Chain needs (what Flink wants to replenish) or Commercial needs (what customers see)"
+  #  label:       "Select SKU-to-Hub Assignment Logic"
+  #  group_label: "* Parameters & Dynamic Fields *"
+  #  description: "Chose, if you want to see SKUs, that are assigned to a hub according to Supply Chain needs (what Flink wants to replenish) or Commercial needs (what customers see)"
 
-    type: unquoted
+  #  type: unquoted
 
-    allowed_value: {
-      label: "Supplier Facing (what Flink wants to replenish)"
-      value: "replenishment"
-    }
+  #  allowed_value: {
+  #    label: "Supplier Facing (what Flink wants to replenish)"
+  #    value: "replenishment"
+  #  }
 
-    allowed_value: {
-      label: "Customer Facing (what customers see in the app)"
-      value: "customer"
-    }
+  #  allowed_value: {
+  #    label: "Customer Facing (what customers see in the app)"
+  #    value: "customer"
+  #  }
 
-    default_value: "replenishment"
+  #  default_value: "replenishment"
 
-  }
+  #}
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Dimensions     ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -103,7 +108,8 @@ view: products_hub_assignment_v2 {
 
     sql:
 
-        {% if select_calculation_granularity._parameter_value == 'sku' %}
+        {% if select_calculation_granularity._parameter_value == 'sku_replenishment'
+          or select_calculation_granularity._parameter_value == 'sku_customer' %}
           ${sku}
 
         {% elsif select_calculation_granularity._parameter_value == 'replenishment' %}
@@ -137,10 +143,16 @@ view: products_hub_assignment_v2 {
 
     sql:
 
-        {% if select_assignment_logic._parameter_value == 'replenishment' %}
+        {% if select_calculation_granularity._parameter_value == 'sku_replenishment' %}
           ${TABLE}.is_sku_assigned_to_hub
 
-        {% elsif select_assignment_logic._parameter_value == 'customer' %}
+        {% elsif select_calculation_granularity._parameter_value == 'sku_customer' %}
+          ${TABLE}.ct_final_decision_is_sku_assigned_to_hub
+
+        {% elsif select_calculation_granularity._parameter_value == 'replenishment' %}
+          ${TABLE}.is_sku_assigned_to_hub
+
+        {% elsif select_calculation_granularity._parameter_value == 'customer' %}
           ${TABLE}.ct_final_decision_is_sku_assigned_to_hub
 
     {% endif %}
