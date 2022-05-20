@@ -50,7 +50,7 @@ view: erp_buying_prices {
     sql: ${TABLE}.erp_vendor_name ;;
 
     # this field is not part of the refactored table anymore, but can be derived from e.g. erp_product_hub_vendor_assignment_v2
-    hidden: yes
+    hidden: no
   }
 
   dimension: erp_item_name {
