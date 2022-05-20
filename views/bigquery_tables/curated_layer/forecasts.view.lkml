@@ -75,17 +75,6 @@ view: forecasts {
     hidden: no
   }
 
-  dimension_group: order {
-    type: time
-    timeframes: [
-      raw,
-      date
-    ]
-    convert_tz: no
-    datatype: date
-    sql: ${TABLE}.order_date ;;
-  }
-
   dimension_group: job {
     label: "Job"
     type: time
@@ -196,7 +185,7 @@ view: forecasts {
   }
 
   dimension: stacking_effect_multiplier {
-    label: "Stacking Effect mULTIPLIER"
+    label: "Stacking Effect Multiplier"
     type: number
     sql: ${TABLE}.stacking_effect_multiplier ;;
     hidden: yes
