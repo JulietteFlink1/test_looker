@@ -1,17 +1,16 @@
 view: ad_hoc_nima_peter_inventory_vs_rewe_desadv {
   derived_table: {
     sql:
-    with
+with
 rewe_desadv_info as (
 
     select
-        extract(year from inbounded_timestamp)  as report_year
-      , extract(month from inbounded_timestamp) as report_month
-      , country_iso                             as country_iso
-      , hub_code                                as hub_code
-      , sku                                     as sku
-      , cast(null as string)                    as all_parent_skus
-      , sum(total_quantity)                     as total_delivery_quantity
+        date(timestamp_trunc(inbounded_timestamp, month))   as report_date
+      , country_iso                                         as country_iso
+      , hub_code                                            as hub_code
+      , sku                                                 as sku
+      , cast(null as string)                                as all_parent_skus
+      , sum(total_quantity)                                 as total_delivery_quantity
 
     from `flink-data-prod`.curated.bulk_items
     where
@@ -19,7 +18,7 @@ rewe_desadv_info as (
         -- date(inbounded_timestamp) between '2022-04-01' and '2022-04-30'
         date(inbounded_timestamp) >= '2022-03-01'
     group by
-        1, 2, 3, 4, 5, 6
+        1, 2, 3, 4
 ),
 
 lexbizz_item as (
@@ -49,8 +48,7 @@ actual_inbounding_data as (
 
     select
 
-        extract(year from inventory_daily.report_date)  as report_year
-      , extract(month from inventory_daily.report_date) as report_month
+        date_trunc(inventory_daily.report_date, month)  as report_date
       , inventory_daily.country_iso                     as country_iso
       , inventory_daily.hub_code                        as hub_code
       , coalesce(
@@ -96,7 +94,7 @@ actual_inbounding_data as (
         and lexbizz_item_warehouse.preferred_vendor_id = 'L000000039'
 
     group by
-        1,2,3,4,5,6
+        1,2,3,4,5
 
 ),
 
@@ -104,8 +102,7 @@ merge_rewe_and_inbound as (
 
     select
 
-        report_year,
-        report_month,
+        report_date,
         country_iso,
         hub_code,
         sku,
@@ -115,8 +112,7 @@ merge_rewe_and_inbound as (
 
     from (
          (select
-            report_year,
-            report_month,
+            report_date,
             country_iso,
             hub_code,
             sku,
@@ -128,8 +124,7 @@ merge_rewe_and_inbound as (
         union all
 
         (select
-            report_year,
-            report_month,
+            report_date,
             country_iso,
             hub_code,
             sku,
@@ -139,12 +134,10 @@ merge_rewe_and_inbound as (
          from actual_inbounding_data)
         )
     group by
-        1,2,3,4,5,6
+        1,2,3,4,5
 )
 
 select * from merge_rewe_and_inbound
-
-
  ;;
   }
 
@@ -156,23 +149,19 @@ select * from merge_rewe_and_inbound
   dimension: primary_key {
     primary_key: yes
     hidden: yes
-    sql: concat(${report_year}, ${report_month}, ${hub_code}, ${sku}) ;;
+    sql: concat(${report_date}, ${hub_code}, ${sku}) ;;
   }
 
-  dimension: report_year {
-    type: number
-    sql: ${TABLE}.report_year ;;
+  dimension: report_date {
+    type: date
+    datatype: date
+    sql: ${TABLE}.report_date ;;
   }
 
   dimension: all_parent_skus {
     label: "All possible parent SKUs"
     type: string
     sql: ${TABLE}.all_parent_skus ;;
-  }
-
-  dimension: report_month {
-    type: number
-    sql: ${TABLE}.report_month ;;
   }
 
   dimension: country_iso {
@@ -234,8 +223,7 @@ select * from merge_rewe_and_inbound
 
   set: detail {
     fields: [
-      report_year,
-      report_month,
+      report_date,
       country_iso,
       hub_code,
       sku,
