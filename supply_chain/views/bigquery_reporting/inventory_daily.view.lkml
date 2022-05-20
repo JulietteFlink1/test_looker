@@ -243,7 +243,8 @@ view: inventory_daily {
     type: number
     sql:
 
-        {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku' %}
+        {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
+          or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer'%}
         ${TABLE}.number_of_correction_product_damaged
 
         {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
@@ -262,8 +263,10 @@ view: inventory_daily {
     type: number
     sql:
 
-      {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku' %}
+      {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
+        or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer' %}
       ${TABLE}.number_of_correction_product_expired
+
 
       {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
       ${TABLE}.rsg_number_of_correction_product_expired
@@ -281,8 +284,10 @@ view: inventory_daily {
     type: number
     sql:
 
-    {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku' %}
+    {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
+      or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer' %}
     ${TABLE}.number_of_correction_stock_taking_increased
+
 
     {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
     ${TABLE}.rsg_number_of_correction_stock_taking_increased
@@ -300,8 +305,10 @@ view: inventory_daily {
     type: number
     sql:
 
-            {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku' %}
+            {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
+              or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer' %}
             ${TABLE}.number_of_correction_stock_taking_reduced
+
 
             {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
             ${TABLE}.rsg_number_of_correction_stock_taking_reduced
@@ -319,9 +326,11 @@ view: inventory_daily {
     type: number
     sql:
 
-            {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku'
+            {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
+                      or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer'
                      and in_stock_cutoff_hours._parameter_value == '0' %}
             ${TABLE}.number_of_hours_oos
+
 
             {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment'
                      and in_stock_cutoff_hours._parameter_value == '0' %}
@@ -333,9 +342,11 @@ view: inventory_daily {
 
   --Added this as new logics to use this cutoff hours filter
 
-            {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'sku'
+            {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
+                      or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer'
                      and in_stock_cutoff_hours._parameter_value == '1' %}
             ${TABLE}.number_of_hours_oos_with_cutoff_hours
+
 
             {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment'
                      and in_stock_cutoff_hours._parameter_value == '1' %}
@@ -355,9 +366,11 @@ view: inventory_daily {
     type: number
     sql:
 
-            {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku'
+            {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
+                      or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer'
                      and in_stock_cutoff_hours._parameter_value == '0' %}
             ${TABLE}.number_of_hours_open
+
 
             {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment'
                      and in_stock_cutoff_hours._parameter_value == '0'%}
@@ -369,9 +382,11 @@ view: inventory_daily {
 
   --Added this as new logics to use this cutoff hours filter
 
-            {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'sku'
+            {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
+                      or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer'
                      and in_stock_cutoff_hours._parameter_value == '1' %}
             ${TABLE}.number_of_hours_open_with_cutoff_hours
+
 
             {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment'
                      and in_stock_cutoff_hours._parameter_value == '1'%}
@@ -405,7 +420,8 @@ view: inventory_daily {
     type: number
     sql:
 
-            {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku' %}
+            {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
+                  or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer' %}
             ${TABLE}.number_of_outbound_orders
 
             {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
@@ -424,8 +440,10 @@ view: inventory_daily {
     type: number
     sql:
 
-            {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku' %}
+            {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
+              or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer'%}
             ${TABLE}.number_of_outbound_others
+
 
             {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
             ${TABLE}.rsg_number_of_outbound_others
@@ -443,8 +461,10 @@ view: inventory_daily {
     type: number
     sql:
 
-            {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku' %}
+            {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
+              or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer' %}
             ${TABLE}.number_of_total_correction
+
 
             {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
             ${TABLE}.rsg_number_of_total_correction
@@ -462,7 +482,8 @@ view: inventory_daily {
     type: number
     sql:
 
-            {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku' %}
+            {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
+              or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer' %}
             ${TABLE}.number_of_total_inbound
 
             {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
@@ -481,8 +502,10 @@ view: inventory_daily {
     type: number
     sql:
 
-            {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku' %}
+            {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
+                  or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer' %}
             ${TABLE}.number_of_total_outbound
+
 
             {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
             ${TABLE}.rsg_number_of_total_outbound
@@ -499,7 +522,8 @@ view: inventory_daily {
     group_label: "Inventory Change"
     type: number
     sql:
-            {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku' %}
+            {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
+              or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer' %}
             ${TABLE}.number_of_unspecified
 
             {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
@@ -518,7 +542,8 @@ view: inventory_daily {
     type: number
     sql:
 
-            {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku' %}
+            {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
+              or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer' %}
             ${TABLE}.quantity_from
 
             {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
@@ -537,7 +562,8 @@ view: inventory_daily {
     type: number
     sql:
 
-            {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku' %}
+            {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
+              or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer' %}
             ${TABLE}.quantity_to
 
             {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}

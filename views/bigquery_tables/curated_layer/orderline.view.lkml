@@ -578,7 +578,7 @@ view: orderline {
 
   measure: ctn_skus {
     type: count_distinct
-    label: "# Unqiue SKUS"
+    label: "# Unique SKUS"
     sql: ${product_sku} ;;
     value_format_name: decimal_1
     group_label: "> Absolute Metrics"
