@@ -6,8 +6,6 @@ view: dynamically_filtered_measures {
     explore_source: order_orderline_cl {
       column: country_iso { field: orderline.country_iso }
       column: created_date { field: orderline.created_date }
-      column: created_hour { field: orderline.created_hour }
-      column: created_hour_of_day { field: orderline.created_hour_of_day }
       column: sku { field: products.product_sku }
       column: product_name { field: products.product_name }
       column: hub_code { field: hubs.hub_code }
@@ -18,7 +16,7 @@ view: dynamically_filtered_measures {
       column: revenue_gross { field: orderline.sum_item_price_gross}
       column: sum_item_quantity { field: orderline.sum_item_quantity}
       derived_column: unique_id {
-        sql: concat(sku, country_iso, created_hour, hub_code) ;;
+        sql: concat(sku, country_iso, created_date, hub_code) ;;
       }
       # derived_column: pop_orders {
       #   sql:  (cnt_orders - LEAD(cnt_orders) OVER (PARTITION BY country_iso ORDER BY date DESC))
@@ -53,18 +51,6 @@ view: dynamically_filtered_measures {
     hidden: yes
     label: "Order Date"
     type: date
-  }
-
-  dimension: created_hour {
-    hidden: yes
-    label: "Order Date - Hour"
-    type: date_hour
-  }
-
-  dimension: created_hour_of_day {
-    hidden: yes
-    label: "Order Date - Hour"
-    type: date_hour_of_day
   }
 
   dimension: sku {
@@ -292,5 +278,17 @@ view: dynamically_filtered_measures {
       hub_code_satisfies_filter: "yes", city_satisfies_filter: "yes",
       country_iso_satisfies_filter: "yes"]
   }
+
+  #measure: cnt_orders_dynamic_filter {
+  #  type: sum
+  #  sql: ${cnt_orders} ;;
+  #  label: "# of Orders - Dynamic Filter"
+  #  description: "# of Orders with dynamic filters applied. Note that you no not apply smaller than order filters"
+  #  value_format: "0"
+  #  filters: [sku_satisfies_filter: "yes", product_name_satisfies_filter: "yes",
+  #    category_satisfies_filter: "yes", sub_category_satisfies_filter: "yes",
+  #    hub_code_satisfies_filter: "yes", city_satisfies_filter: "yes",
+  #    country_iso_satisfies_filter: "yes"]
+  #}
 
 }
