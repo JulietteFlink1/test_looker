@@ -279,4 +279,16 @@ view: dynamically_filtered_measures {
       country_iso_satisfies_filter: "yes"]
   }
 
+  #measure: cnt_orders_dynamic_filter {
+  #  type: sum
+  #  sql: ${cnt_orders} ;;
+  #  label: "# of Orders - Dynamic Filter"
+  #  description: "# of Orders with dynamic filters applied. Note that you no not apply smaller than order filters"
+  #  value_format: "0"
+  #  filters: [sku_satisfies_filter: "yes", product_name_satisfies_filter: "yes",
+  #    category_satisfies_filter: "yes", sub_category_satisfies_filter: "yes",
+  #    hub_code_satisfies_filter: "yes", city_satisfies_filter: "yes",
+  #    country_iso_satisfies_filter: "yes"]
+  #}
+
 }
