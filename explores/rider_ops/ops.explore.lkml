@@ -14,7 +14,7 @@ explore: staffing {
   group_label: "Rider Ops"
   view_label: "* Staffing *"
   label: "Ops"
-  hidden: no
+  hidden: yes
 
   always_filter: {
     filters:  [
