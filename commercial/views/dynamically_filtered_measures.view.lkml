@@ -6,8 +6,6 @@ view: dynamically_filtered_measures {
     explore_source: order_orderline_cl {
       column: country_iso { field: orderline.country_iso }
       column: created_date { field: orderline.created_date }
-      column: created_hour { field: orderline.created_hour }
-      column: created_hour_of_day { field: orderline.created_hour_of_day }
       column: sku { field: products.product_sku }
       column: product_name { field: products.product_name }
       column: hub_code { field: hubs.hub_code }
@@ -18,7 +16,7 @@ view: dynamically_filtered_measures {
       column: revenue_gross { field: orderline.sum_item_price_gross}
       column: sum_item_quantity { field: orderline.sum_item_quantity}
       derived_column: unique_id {
-        sql: concat(sku, country_iso, created_hour, hub_code) ;;
+        sql: concat(sku, country_iso, created_date, hub_code) ;;
       }
       # derived_column: pop_orders {
       #   sql:  (cnt_orders - LEAD(cnt_orders) OVER (PARTITION BY country_iso ORDER BY date DESC))
@@ -53,18 +51,6 @@ view: dynamically_filtered_measures {
     hidden: yes
     label: "Order Date"
     type: date
-  }
-
-  dimension: created_hour {
-    hidden: yes
-    label: "Order Date - Hour"
-    type: date_hour
-  }
-
-  dimension: created_hour_of_day {
-    hidden: yes
-    label: "Order Date - Hour"
-    type: date_hour_of_day
   }
 
   dimension: sku {
