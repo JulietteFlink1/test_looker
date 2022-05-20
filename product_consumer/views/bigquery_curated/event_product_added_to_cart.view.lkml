@@ -333,6 +333,7 @@ measure: aiv {
   sql: ${actual_product_price} / ${events} ;;
 }
 measure: discount {
+  hidden: yes
   group_label: "Monetary Measures"
   label: "Sum Product Discount"
   description: "Sum of discounts applied on add-to-cart event (no voucher)"

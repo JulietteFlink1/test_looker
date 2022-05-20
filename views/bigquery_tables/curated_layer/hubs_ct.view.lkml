@@ -225,6 +225,12 @@ view: hubs_ct {
     group_label: "> IDs"
   }
 
+  dimension: shipping_method_id {
+    type: string
+    sql: ${TABLE}.shipping_method_id ;;
+    group_label: "> IDs"
+  }
+
   dimension: hub_name_anonymized   {
     label: "Hub ID"
     description: "Identifier of a Hub"

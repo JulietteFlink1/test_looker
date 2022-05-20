@@ -280,7 +280,7 @@ view: replenishment_purchase_orders {
 
     label:       "# Quantity Selling Unit"
     description: "The amount of ordered items"
-    group_label: " >> Line Item Data"
+    group_label: ">Metrics <"
 
     type: sum
     sql: safe_cast(${TABLE}.selling_unit_quantity as int64) ;;
@@ -291,16 +291,16 @@ view: replenishment_purchase_orders {
 
     label:       "# Quantity Handling Unit"
     description: "The amount of ordered handling units"
-    group_label: " >> Line Item Data"
+    group_label: ">Metrics <"
 
     type: sum
-    sql: safe_cast(${TABLE}.handling_unit_quantity as int64) ;;
+    sql: safe_cast(${TABLE}.handling_unit_quantity as numeric) ;;
   }
 
   measure: pct_order_inbounded {
     label:       "% of ERP Order Inbounded"
     description: "How many of the ordered items have been inbounded in the hubs on the promised delivery date of the order"
-    group_label: " >> Inbounding-Metrics"
+    group_label: ">Metrics <"
 
     type: number
     sql: ${inventory_daily.sum_of_total_inbound} / nullif(${sum_selling_unit_quantity} ,0) ;;

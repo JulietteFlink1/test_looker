@@ -55,7 +55,8 @@ explore: supply_chain {
       --   end
 
         and
-            {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku' %}
+            {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
+              or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer' %}
               true
 
             {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
@@ -78,20 +79,20 @@ explore: supply_chain {
 
 
       ;;
-
   hidden: no
 
   always_filter: {
     filters: [
       products_hub_assignment.assingment_dynamic: "Yes",
-      products_hub_assignment.select_assignment_logic: "replenishment",
 
       global_filters_and_parameters.datasource_filter: "last 30 days",
 
-      products_hub_assignment.select_calculation_granularity: "sku"
+      products_hub_assignment.select_calculation_granularity: "replenishment"
 
     ]
   }
+
+  # products_hub_assignment.select_assignment_logic: "replenishment",
 
   join: global_filters_and_parameters {
 
@@ -326,6 +327,42 @@ explore: supply_chain {
     type: left_outer
     relationship: many_to_one
   }
+
+#Matching Logic Metrics
+
+  join: matching_inventory_level {
+
+    view_label: "13 Matching Inventory"
+
+    type:         left_outer
+    relationship: many_to_one
+
+    sql_on:
+        ${matching_inventory_level.sku}                     = coalesce(${products_hub_assignment.leading_sku_replenishment_substitute_group}, ${products_hub_assignment.sku}) and
+        ${matching_inventory_level.hub_code}                = ${products_hub_assignment.hub_code}                                        and
+        ${matching_inventory_level.promised_delivery_date}  = ${products_hub_assignment.report_date}                                     and
+        ${matching_inventory_level.vendor_id}               = ${products_hub_assignment.erp_vendor_id}
+    ;;
+  }
+
+  join: replenishment_purchase_orders_all_dates {
+
+    view_label: ""
+
+    type:         left_outer
+    relationship: many_to_one
+    from: replenishment_purchase_orders
+
+    sql_on:
+    ${replenishment_purchase_orders_all_dates.sku}              = coalesce(${products_hub_assignment.leading_sku_replenishment_substitute_group}, ${products_hub_assignment.sku}) and
+    ${replenishment_purchase_orders_all_dates.hub_code}         = ${products_hub_assignment.hub_code}                                        and
+    ${replenishment_purchase_orders_all_dates.delivery_date}    = ${products_hub_assignment.report_date}                                     and
+    ${replenishment_purchase_orders_all_dates.vendor_id}        = ${products_hub_assignment.erp_vendor_id}
+    ;;
+  }
+
+
+
 
   join: mean_and_std {
     view_label: "07 Order Lineitems"

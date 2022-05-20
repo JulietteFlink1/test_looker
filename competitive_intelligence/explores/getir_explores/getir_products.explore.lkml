@@ -1,6 +1,7 @@
 include: "/competitive_intelligence/views/bigquery_curated/getir_products.view.lkml"
 include: "/competitive_intelligence/views/bigquery_curated/getir_categories.view.lkml"
 include: "/competitive_intelligence/views/bigquery_curated/getir_hubs.view.lkml"
+include: "/**/competitive_intelligence_active_hubs.view.lkml"
 
 explore:  getir_products {
   hidden: no
@@ -37,13 +38,13 @@ explore:  getir_products {
   #     type: left_outer
   # }
 
-  # join: competitive_intelligence_active_hubs {
-  #   from:  competitive_intelligence_active_hubs
-  #   view_label: "* Active Hubs *"
-  #   sql_on: ${getir_hubs.hub_id} = ${competitive_intelligence_active_hubs.hub_id} ;;
-  #   relationship: one_to_many
-  #   type: left_outer
-  # }
+  join: competitive_intelligence_active_hubs {
+    from:  competitive_intelligence_active_hubs
+    view_label: "* Active Hubs *"
+    sql_on: ${getir_hubs.hub_id} = ${competitive_intelligence_active_hubs.hub_id} ;;
+    relationship: many_to_one
+    type: left_outer
+  }
 
   # join: products {
   #   from:  products
