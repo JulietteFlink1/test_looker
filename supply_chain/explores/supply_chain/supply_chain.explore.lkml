@@ -87,7 +87,7 @@ explore: supply_chain {
 
       global_filters_and_parameters.datasource_filter: "last 30 days",
 
-      products_hub_assignment.select_calculation_granularity: "replenishment"
+      products_hub_assignment.select_calculation_granularity: "customer"
 
     ]
   }
