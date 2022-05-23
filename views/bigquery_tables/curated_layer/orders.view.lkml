@@ -2436,6 +2436,7 @@ view: orders {
       }
 
       measure: pct_discount_products_order_share {
+       group_label: "* Monetary Values *"
        label: "% Product Discount Order Share"
        description: "Share of Orders which had some Cart Discount applied"
        hidden:  no
@@ -2455,6 +2456,7 @@ view: orders {
       }
 
       measure: pct_discount_products_value_of_gross_total{
+        group_label: "* Monetary Values *"
         label: "% Product Discount Value Share"
         description: "Dividing Total Discount Products amounts over GMV"
         hidden:  no
