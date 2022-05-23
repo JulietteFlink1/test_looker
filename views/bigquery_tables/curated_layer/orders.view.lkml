@@ -1573,7 +1573,7 @@ view: orders {
       measure: avg_discount_cart_gross {
         group_label: "* Monetary Values *"
         label: "AVG Cart Discount Value (Gross)"
-        description: "Average Discount Value Gross (only considering orders where cart discount was applied)"
+        description: "Average of Cart Discount Value Gross (voucher applied at a checkout). Includes delivery discounts."
         hidden:  no
         type: average
         sql: ${amt_discount_cart_gross};;
@@ -1584,7 +1584,7 @@ view: orders {
       measure: avg_discount_cart_net {
         group_label: "* Monetary Values *"
         label: "AVG Cart Discount Value (Net)"
-        description: "Average Discount Value Net (only considering orders where cart discount was applied)"
+        description: "Average of Cart Discount Value Net (voucher applied at a checkout). Includes delivery discounts."
         hidden:  no
         type: average
         sql: ${amt_discount_cart_net};;
@@ -1864,7 +1864,7 @@ view: orders {
       measure: sum_discount_cart_gross {
         group_label: "* Monetary Values *"
         label: "SUM Cart Discount Amount (Gross)"
-        description: "Sum of Discount amount (Gross) applied on orders. Includes only Cart discounts."
+        description: "Sum of Cart Discounts Gross (voucher applied at a checkout). Includes delivery discounts."
         hidden:  no
         type: sum
         sql: ${amt_discount_cart_gross};;
@@ -1874,7 +1874,7 @@ view: orders {
       measure: sum_discount_cart_net {
         group_label: "* Monetary Values *"
         label: "SUM Cart Discount Amount (Net)"
-        description: "Sum of Discount amount (Net) applied on orders. Includes only Cart discounts."
+        description: "Sum of Cart Discounts Net (voucher applied at a checkout). Includes delivery discounts."
         hidden:  no
         type: sum
         sql: ${amt_discount_cart_net};;
