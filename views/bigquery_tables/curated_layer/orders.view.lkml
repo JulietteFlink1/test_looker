@@ -39,38 +39,50 @@ view: orders {
   }
 
   dimension: discount_amount {
+    group_label: "* Monetary Values *"
+    label: "Total Discount Amount (Gross)"
     type: number
-    hidden: yes
+    hidden: no
     sql: ${TABLE}.amt_discount_gross ;;
   }
 
   dimension: amt_discount_net {
+    group_label: "* Monetary Values *"
+    label: "Total Discount Amount (Net)"
     type: number
-    hidden: yes
+    hidden: no
     sql: ${TABLE}.amt_discount_net ;;
   }
 
   dimension: amt_discount_cart_gross {
+    group_label: "* Monetary Values *"
+    label: "Cart Discount Amount (Gross)"
     type: number
-    hidden: yes
+    hidden: no
     sql: ${TABLE}.amt_discount_cart_gross ;;
   }
 
   dimension: amt_discount_cart_net {
+    group_label: "* Monetary Values *"
+    label: "Cart Discount Amount (Net)"
     type: number
-    hidden: yes
+    hidden: no
     sql: ${TABLE}.amt_discount_cart_net ;;
   }
 
   dimension: amt_discount_products_gross {
+    group_label: "* Monetary Values *"
+    label: "Product Discount Amount (Gross)"
     type: number
-    hidden: yes
+    hidden: no
     sql: ${TABLE}.amt_discount_products_gross ;;
   }
 
   dimension: amt_discount_products_net {
+    group_label: "* Monetary Values *"
+    label: "Product Discount Amount (Net)"
     type: number
-    hidden: yes
+    hidden: no
     sql: ${TABLE}.amt_discount_products_net ;;
   }
 
