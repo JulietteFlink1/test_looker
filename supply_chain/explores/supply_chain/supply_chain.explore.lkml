@@ -55,7 +55,8 @@ explore: supply_chain {
       --   end
 
         and
-            {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku' %}
+            {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
+              or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer' %}
               true
 
             {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
@@ -78,20 +79,20 @@ explore: supply_chain {
 
 
       ;;
-
   hidden: no
 
   always_filter: {
     filters: [
       products_hub_assignment.assingment_dynamic: "Yes",
-      products_hub_assignment.select_assignment_logic: "replenishment",
 
       global_filters_and_parameters.datasource_filter: "last 30 days",
 
-      products_hub_assignment.select_calculation_granularity: "sku"
+      products_hub_assignment.select_calculation_granularity: "customer"
 
     ]
   }
+
+  # products_hub_assignment.select_assignment_logic: "replenishment",
 
   join: global_filters_and_parameters {
 
@@ -263,8 +264,7 @@ explore: supply_chain {
     sql_on:
         ${replenishment_purchase_orders.sku}              = coalesce(${products_hub_assignment.leading_sku_replenishment_substitute_group}, ${products_hub_assignment.sku}) and
         ${replenishment_purchase_orders.hub_code}         = ${products_hub_assignment.hub_code}                                        and
-        ${replenishment_purchase_orders.order_date}    = ${products_hub_assignment.report_date}                                     and
-        ${replenishment_purchase_orders.vendor_id}        = ${products_hub_assignment.erp_vendor_id}
+        ${replenishment_purchase_orders.order_date}    = ${products_hub_assignment.report_date}
     ;;
   }
 

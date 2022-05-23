@@ -32,7 +32,8 @@ view: +inventory_hourly {
     type: number
 
     sql:
-         {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku' %}
+         {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
+               or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer'%}
                ${TABLE}.share_of_hours_oos
 
          {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
@@ -54,7 +55,8 @@ view: +inventory_hourly {
     type: number
 
     sql:
-        {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku' %}
+        {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
+          or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer' %}
           ${TABLE}.share_of_hours_open
 
         {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
@@ -77,7 +79,8 @@ view: +inventory_hourly {
 
     type: number
     sql:
-        {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku' %}
+        {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
+              or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer'%}
         ${TABLE}.quantity_from
 
         {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
@@ -103,8 +106,10 @@ view: +inventory_hourly {
 
     type: number
     sql:
-        {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku' %}
+        {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
+          or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer' %}
         ${TABLE}.quantity_to
+
 
         {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
         ${TABLE}.rsg_quantity_to
@@ -261,7 +266,8 @@ view: +inventory_hourly {
     type: sum
     sql:
 
-        {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku' %}
+        {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
+              or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer' %}
         ${TABLE}.number_of_total_correction
 
         {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
@@ -286,7 +292,8 @@ view: +inventory_hourly {
     type: sum
     sql:
 
-        {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku' %}
+        {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
+              or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer' %}
         ${TABLE}.number_of_total_inbound
 
         {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
@@ -311,7 +318,8 @@ view: +inventory_hourly {
     type: sum
     sql:
 
-        {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku' %}
+        {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
+          or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer' %}
         ${TABLE}.number_of_total_outbound
 
         {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
@@ -337,7 +345,8 @@ view: +inventory_hourly {
     type: sum
     sql:
 
-        {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku' %}
+        {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
+          or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer' %}
         ${TABLE}.number_of_correction_product_damaged
 
         {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
@@ -362,7 +371,8 @@ view: +inventory_hourly {
     type: sum
     sql:
 
-        {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku' %}
+        {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
+          or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer' %}
         ${TABLE}.number_of_correction_product_expired
 
         {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
@@ -387,7 +397,8 @@ view: +inventory_hourly {
     type: sum
     sql:
 
-        {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku' %}
+        {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
+          or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer' %}
         ${TABLE}.number_of_correction_stock_taking_increased
 
         {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
@@ -412,7 +423,8 @@ view: +inventory_hourly {
     type: sum
     sql:
 
-        {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku' %}
+        {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
+          or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer' %}
         ${TABLE}.number_of_correction_stock_taking_reduced
 
         {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
@@ -437,7 +449,8 @@ view: +inventory_hourly {
     type: sum
     sql:
 
-        {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku' %}
+        {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
+          or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer'%}
         ${TABLE}.number_of_outbound_orders
 
         {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
@@ -463,7 +476,8 @@ view: +inventory_hourly {
     type: sum
     sql:
 
-        {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku' %}
+        {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
+          or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer'%}
         ${TABLE}.number_of_outbound_others
 
         {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
@@ -490,7 +504,8 @@ view: +inventory_hourly {
     type: sum
     sql:
 
-        {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku' %}
+        {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
+              or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer' %}
         ${TABLE}.number_of_unspecified
 
         {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}

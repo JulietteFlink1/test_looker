@@ -21,20 +21,6 @@ view: crm_braze_data {
     sql: ${TABLE}.campaign_name ;;
   }
 
-  dimension: canvas_id {
-    label: "Canvas ID"
-    description: "The email canvas ID defined in Braze"
-    type: string
-    sql: ${TABLE}.canvas_name ;;
-  }
-
-  dimension: canvas_name {
-    label: "Canvas Name"
-    description: "The email canvas name defined in Braze"
-    type: string
-    sql: ${TABLE}.canvas_name ;;
-  }
-
 
   dimension: in_control_group_campaign {
     label: "Control Group for Campaign"
@@ -852,7 +838,6 @@ view: crm_braze_data {
   set: detail {
     fields: [
       campaign_name,
-      canvas_name,
       in_control_group_campaign,
       country,
       email_sent_at,

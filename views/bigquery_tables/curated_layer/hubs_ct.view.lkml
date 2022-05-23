@@ -14,6 +14,12 @@ view: hubs_ct {
     sql: ${TABLE}.hub_code ;;
   }
 
+  dimension: is_hub_opened_14d {
+    label: "Hub is Live more than 14 days?"
+    type: yesno
+    sql: ${start_date} <= DATE_SUB(current_date(), Interval 14 day) ;;
+  }
+
   dimension: hub_name {
     type: string
     sql: ${TABLE}.hub_name ;;

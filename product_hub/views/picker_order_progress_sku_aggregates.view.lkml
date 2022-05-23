@@ -66,13 +66,13 @@ view: picker_order_progress_sku_aggregates {
   ### Order IDs ###
 
   dimension: order_id {
-    group_label: "Order ID"
+    group_label: "Order IDs"
     type: string
     sql: ${TABLE}.order_id ;;
   }
 
   dimension: order_number {
-    group_label: "Order number"
+    group_label: "Order IDs"
     type: string
     sql: ${TABLE}.order_number ;;
   }
