@@ -1853,7 +1853,7 @@ view: orders {
 
       measure: sum_discount_amt {
         group_label: "* Monetary Values *"
-        label: "SUM Discount Amount (Gross)"
+        label: "SUM Total Discount Amount (Gross)"
         description: "Sum of Discount amount applied on orders. Includes both Product and Cart discounts."
         hidden:  no
         type: sum
@@ -1863,7 +1863,7 @@ view: orders {
 
       measure: sum_discount_cart_gross {
         group_label: "* Monetary Values *"
-        label: "SUM Cart Discount (Gross)"
+        label: "SUM Cart Discount Amount (Gross)"
         description: "Sum of Discount amount (Gross) applied on orders. Includes only Cart discounts."
         hidden:  no
         type: sum
@@ -1873,7 +1873,7 @@ view: orders {
 
       measure: sum_discount_cart_net {
         group_label: "* Monetary Values *"
-        label: "SUM Cart Discount (Net)"
+        label: "SUM Cart Discount Amount (Net)"
         description: "Sum of Discount amount (Net) applied on orders. Includes only Cart discounts."
         hidden:  no
         type: sum
@@ -1883,7 +1883,7 @@ view: orders {
 
       measure: sum_discount_products_gross {
         group_label: "* Monetary Values *"
-        label: "SUM Product Discount (Gross)"
+        label: "SUM Product Discount Amount (Gross)"
         description: "Sum of Discount amount (Gross) applied on orders. Includes only Product discounts."
         hidden:  no
         type: sum
@@ -1893,7 +1893,7 @@ view: orders {
 
       measure: sum_discount_products_net {
         group_label: "* Monetary Values *"
-        label: "SUM Product Discount (Net)"
+        label: "SUM Product Discount Amount (Net)"
         description: "Sum of Discount amount (Net) applied on orders. Includes only Product discounts."
         hidden:  no
         type: sum
