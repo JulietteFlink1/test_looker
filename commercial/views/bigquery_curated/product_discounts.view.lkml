@@ -78,12 +78,14 @@ view: product_discounts {
     type: number
     sql: ${TABLE}.amt_absolute_product_discount ;;
     description: "Absolute (€0.00) discount value. This amount is subtracted from the product price."
+    value_format: "€0.00"
   }
 
   dimension: amt_relative_product_discount_percent {
     type: number
     sql: ${TABLE}.amt_relative_product_discount_percent ;;
     description: "Relative (%) discount value. This is the percent reduction applied to the product price"
+    value_format: "0.00\%"
   }
 
   dimension: product_discount_name {
