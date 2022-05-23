@@ -2440,7 +2440,7 @@ view: orders {
       measure: pct_discount_cart_order_share {
         group_label: "* Marketing *"
         label: "% Cart Discount Order Share"
-        description: "Share of Orders which had some Cart Discount applied"
+        description: "Share of Orders which had voucher applied at a checkout. Includes delivery discounts."
         hidden:  no
         type: number
         sql: ${cnt_orders_with_discount_cart} / NULLIF(${cnt_orders}, 0);;
@@ -2450,7 +2450,7 @@ view: orders {
       measure: pct_discount_products_order_share {
        group_label: "* Monetary Values *"
        label: "% Product Discount Order Share"
-       description: "Share of Orders which had some Cart Discount applied"
+       description: "Share of Orders which had some product discount applied."
        hidden:  no
        type: number
        sql: ${cnt_orders_with_discount_products} / NULLIF(${cnt_orders}, 0);;
