@@ -1609,7 +1609,7 @@ view: orders {
         description: "Average Discount Value Net (only considering orders where discount on products was applied)"
         hidden:  no
         type: average
-        sql: ${amt_discount_products_gross};;
+        sql: ${amt_discount_products_net};;
         filters: [amt_discount_products_net: ">0"]
         value_format_name: euro_accounting_2_precision
       }
