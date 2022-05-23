@@ -12,12 +12,14 @@ view: hub_closure_rate {
     description: "Closure Date"
     type: time
     timeframes: [
+      minute30,
+      hour_of_day,
       date,
       week,
       month
     ]
-    sql: ${TABLE}.date_current ;;
-    datatype: date
+    sql: ${TABLE}.start_timestamp ;;
+    datatype: timestamp
   }
 
   dimension: primary_key {
@@ -297,21 +299,21 @@ view: hub_closure_rate {
     type: number
     sql:
       {% if closure_reason_parameter._parameter_value == 'Understaffing' %}
-      ${sum_closure_hours_understaffing}/${sum_opened_hours}
+      ${sum_closure_hours_understaffing} / NULLIF(${sum_opened_hours},0)
       {% elsif closure_reason_parameter._parameter_value == 'Weather' %}
-      ${sum_closure_hours_weather}/${sum_opened_hours}
+      ${sum_closure_hours_weather} / NULLIF(${sum_opened_hours},0)
       {% elsif closure_reason_parameter._parameter_value == 'Remodelling' %}
-      ${sum_closure_hours_remodelling}/${sum_opened_hours}
+      ${sum_closure_hours_remodelling} / NULLIF(${sum_opened_hours},0)
       {% elsif closure_reason_parameter._parameter_value == 'External_factor' %}
-      ${sum_closure_hours_external_factor}/${sum_opened_hours}
+      ${sum_closure_hours_external_factor} / NULLIF(${sum_opened_hours},0)
       {% elsif closure_reason_parameter._parameter_value == 'Property_issue' %}
-      ${sum_closure_hours_property_issue}/${sum_opened_hours}
+      ${sum_closure_hours_property_issue} / NULLIF(${sum_opened_hours},0)
       {% elsif closure_reason_parameter._parameter_value == 'Other' %}
-      ${sum_closure_hours_other}/${sum_opened_hours}
+      ${sum_closure_hours_other} / NULLIF(${sum_opened_hours},0)
       {% elsif closure_reason_parameter._parameter_value == 'Equipment' %}
-      ${sum_closure_hours_equipment}/${sum_opened_hours}
+      ${sum_closure_hours_equipment} / NULLIF(${sum_opened_hours},0)
       {% elsif closure_reason_parameter._parameter_value == 'All' %}
-      ${sum_closed_hours}/${sum_opened_hours}
+      ${sum_closed_hours} / NULLIF(${sum_opened_hours},0)
       {% endif %};;
     value_format: "0.0%"
   }
@@ -320,7 +322,7 @@ view: hub_closure_rate {
     label: "% Understaffing"
     hidden:  no
     type: number
-    sql: ${sum_closure_hours_understaffing}/${sum_opened_hours};;
+    sql: ${sum_closure_hours_understaffing} / NULLIF(${sum_opened_hours},0);;
     value_format: "0.0%"
   }
 
@@ -328,7 +330,7 @@ view: hub_closure_rate {
     label: "% Weather"
     hidden:  no
     type: number
-    sql: ${sum_closure_hours_weather}/${sum_opened_hours};;
+    sql: ${sum_closure_hours_weather} / NULLIF(${sum_opened_hours},0);;
     value_format: "0.0%"
   }
 
@@ -336,7 +338,7 @@ view: hub_closure_rate {
     label: "% Remodelling"
     hidden:  no
     type: number
-    sql: ${sum_closure_hours_remodelling}/${sum_opened_hours};;
+    sql: ${sum_closure_hours_remodelling} / NULLIF(${sum_opened_hours},0);;
     value_format: "0.0%"
   }
 
@@ -344,7 +346,7 @@ view: hub_closure_rate {
     label: "% External Factor"
     hidden:  no
     type: number
-    sql: ${sum_closure_hours_external_factor}/${sum_opened_hours};;
+    sql: ${sum_closure_hours_external_factor} / NULLIF(${sum_opened_hours},0);;
     value_format: "0.0%"
   }
 
@@ -352,7 +354,7 @@ view: hub_closure_rate {
     label: "% Property Issue"
     hidden:  no
     type: number
-    sql: ${sum_closure_hours_property_issue}/${sum_opened_hours};;
+    sql: ${sum_closure_hours_property_issue} /  NULLIF(${sum_opened_hours},0);;
     value_format: "0.0%"
   }
 
@@ -360,7 +362,7 @@ view: hub_closure_rate {
     label: "% Other"
     hidden:  no
     type: number
-    sql: ${sum_closure_hours_other}/${sum_opened_hours};;
+    sql: ${sum_closure_hours_other} / NULLIF(${sum_opened_hours},0);;
     value_format: "0.0%"
   }
 
@@ -368,7 +370,7 @@ view: hub_closure_rate {
     label: "% Equipment"
     hidden:  no
     type: number
-    sql: ${sum_closure_hours_equipment}/${sum_opened_hours};;
+    sql: ${sum_closure_hours_equipment} / NULLIF(${sum_opened_hours},0);;
     value_format: "0.0%"
   }
 
@@ -376,7 +378,7 @@ view: hub_closure_rate {
     label: "% All Closure Rate"
     hidden:  no
     type: number
-    sql: ${sum_closed_hours}/${sum_opened_hours};;
+    sql: ${sum_closed_hours} / NULLIF(${sum_opened_hours},0);;
     value_format: "0.0%"
   }
 
