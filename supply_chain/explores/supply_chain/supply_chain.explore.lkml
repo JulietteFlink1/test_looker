@@ -87,7 +87,7 @@ explore: supply_chain {
 
       global_filters_and_parameters.datasource_filter: "last 30 days",
 
-      products_hub_assignment.select_calculation_granularity: "replenishment"
+      products_hub_assignment.select_calculation_granularity: "customer"
 
     ]
   }
@@ -264,8 +264,7 @@ explore: supply_chain {
     sql_on:
         ${replenishment_purchase_orders.sku}              = coalesce(${products_hub_assignment.leading_sku_replenishment_substitute_group}, ${products_hub_assignment.sku}) and
         ${replenishment_purchase_orders.hub_code}         = ${products_hub_assignment.hub_code}                                        and
-        ${replenishment_purchase_orders.order_date}    = ${products_hub_assignment.report_date}                                     and
-        ${replenishment_purchase_orders.vendor_id}        = ${products_hub_assignment.erp_vendor_id}
+        ${replenishment_purchase_orders.order_date}    = ${products_hub_assignment.report_date}
     ;;
   }
 
@@ -361,6 +360,19 @@ explore: supply_chain {
     ;;
   }
 
+  join: unplanned_inbounds {
+
+    view_label: "13 Matching Inventory"
+
+    type:         left_outer
+    relationship: many_to_one
+
+    sql_on:
+        ${unplanned_inbounds.sku}          = coalesce(${products_hub_assignment.leading_sku_replenishment_substitute_group}, ${products_hub_assignment.sku}) and
+        ${unplanned_inbounds.hub_code}     = ${products_hub_assignment.hub_code}                                        and
+        ${unplanned_inbounds.report_date}  = ${products_hub_assignment.report_date}
+    ;;
+  }
 
 
 

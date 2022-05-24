@@ -63,5 +63,4 @@ explore: staffing {
     relationship: many_to_many
     type: left_outer
   }
-
 }

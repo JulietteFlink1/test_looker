@@ -75,17 +75,6 @@ view: forecasts {
     hidden: no
   }
 
-  dimension_group: order {
-    type: time
-    timeframes: [
-      raw,
-      date
-    ]
-    convert_tz: no
-    datatype: date
-    sql: ${TABLE}.order_date ;;
-  }
-
   dimension_group: job {
     label: "Job"
     type: time
@@ -171,7 +160,7 @@ view: forecasts {
 
   dimension: pct_idleness_target_rider {
     group_label: ">> Rider KPIs"
-    label: "% Idleness Rider"
+    label: "% Idleness Assumption Rider"
     type: number
     value_format_name: percent_1
     sql: ${TABLE}.pct_idleness_target_rider ;;
@@ -179,7 +168,7 @@ view: forecasts {
 
   dimension: pct_idleness_target_picker {
     group_label: ">> Picker KPIs"
-    label: "% Idleness Picker"
+    label: "% Idleness Assumption Picker"
     type: number
     value_format_name: percent_1
     sql: ${TABLE}.pct_idleness_target_picker ;;
@@ -196,10 +185,12 @@ view: forecasts {
   }
 
   dimension: stacking_effect_multiplier {
-    label: "Stacking Effect mULTIPLIER"
+    group_label: ">> Order KPIs"
+    label: "Stacking Effect Multiplier"
     type: number
     sql: ${TABLE}.stacking_effect_multiplier ;;
-    hidden: yes
+    hidden: no
+    value_format_name: decimal_1
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -310,6 +301,7 @@ view: forecasts {
     type: average_distinct
     sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
     sql: ${TABLE}.forecasted_avg_order_handling_duration_seconds ;;
+    value_format_name: decimal_1
   }
 
   measure: forecasted_avg_order_handling_duration_minutes {
@@ -318,6 +310,7 @@ view: forecasts {
     type: average_distinct
     sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
     sql: ${TABLE}.forecasted_avg_order_handling_duration_minutes ;;
+    value_format_name: decimal_1
   }
 
   measure: number_of_missed_orders {
@@ -409,20 +402,6 @@ view: forecasts {
     sql: ${number_of_forecasted_hours_by_position}-${number_of_no_show_hours_by_position} ;;
   }
 
-  dimension: number_of_idleness_target_by_position {
-    type: number
-    label: "# Idleness Target"
-    value_format_name: decimal_1
-    group_label: ">> Dynamic Values"
-    sql:
-        CASE
-          WHEN {% parameter staffing.position_parameter %} = 'Rider' THEN ${pct_idleness_target_rider}
-          WHEN {% parameter staffing.position_parameter %} = 'Picker' THEN ${pct_idleness_target_picker}
-      ELSE NULL
-      END ;;
-    hidden: yes
-  }
-
   measure: number_of_target_orders_by_position {
     type: number
     label: "Base UTR"
@@ -447,6 +426,19 @@ view: forecasts {
         CASE
           WHEN {% parameter staffing.position_parameter %} = 'Rider' THEN ${forecasted_base_utr_incl_stacking_rider}
           WHEN {% parameter staffing.position_parameter %} = 'Picker' THEN ${forecasted_base_utr_incl_stacking_picker}
+      ELSE NULL
+      END ;;
+  }
+
+  measure: idleness_assumption_by_position {
+    type: average
+    label: "% Idleness Assumption"
+    value_format_name: decimal_1
+    group_label: ">> Dynamic Values"
+    sql:
+        CASE
+          WHEN {% parameter staffing.position_parameter %} = 'Rider' THEN ${pct_idleness_target_rider}
+          WHEN {% parameter staffing.position_parameter %} = 'Picker' THEN ${pct_idleness_target_picker}
       ELSE NULL
       END ;;
   }
