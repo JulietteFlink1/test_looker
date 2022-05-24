@@ -486,6 +486,7 @@ view: orders {
 
   dimension: rider_handling_time_minutes {
     group_label: "* Operations / Logistics *"
+    label: "Rider Handling Time (min)"
     description: "Total time needed for the rider to handle the order: Riding to customer + At customer + Riding to hub"
     type: number
     sql: ${TABLE}.rider_handling_time_minutes ;;
@@ -493,9 +494,18 @@ view: orders {
 
   dimension: potential_rider_handling_time_without_stacking_minutes {
     group_label: "* Operations / Logistics *"
+    label: "Potential Rider Handling Time Without Stacking Effect"
     description: "Total potential time needed for the rider to handle the order if it wasn't stacked. Definition depends on the stacking sequence of the order."
     type: number
     sql: ${TABLE}.potential_rider_handling_time_without_stacking_minutes ;;
+  }
+
+  dimension: rider_handling_time_minutes_saved_with_stacking {
+    group_label: "* Operations / Logistics *"
+    label: "Estimated number of minutes saved on this order due to stacking"
+    description: "Total time needed for the rider to handle the order: Riding to customer + At customer + Riding to hub"
+    type: number
+    sql: ${TABLE}.potential_rider_handling_time_without_stacking_minutes - ${TABLE}.rider_handling_time_minutes ;;
   }
 
   dimension: discount_code {
@@ -1824,6 +1834,18 @@ view: orders {
         value_format_name: euro_accounting_2_precision
       }
 
+      measure: avg_rider_handling_time_minutes_saved_with_stacking  {
+        group_label: "* Operations / Logistics *"
+        label: "Average Rider Handling Time Minutes Saved (Stacking)"
+        description: "Average number of minutes saved on each order due to stacking (compared to estimated handling time without stacking)"
+        hidden: no
+        type: average
+        sql: ${rider_handling_time_minutes_saved_with_stacking} ;;
+        value_format: "0%"
+
+      }
+
+
 
       ##########
       ## SUMS ##
@@ -2010,6 +2032,36 @@ view: orders {
         hidden:  no
         type: sum
         sql: ${amt_cancelled_gross};;
+        value_format_name: euro_accounting_2_precision
+      }
+
+      measure: sum_rider_handling_time_minutes_saved_with_stacking  {
+        group_label: "* Operations / Logistics *"
+        label: "SUM Rider Handling Time Minutes Saved With Stacking"
+        description: "Total number of minutes saved on all orders due to stacking (compared to estimated handling time without stacking)"
+        hidden: no
+        type: sum
+        sql: ${rider_handling_time_minutes_saved_with_stacking} ;;
+        value_format_name: decimal_1
+
+      }
+
+      measure: sum_rider_handling_time_minutes {
+        group_label: "* Operations / Logistics *"
+        label: "SUM Rider Handling Ttimes"
+        hidden:  no
+        type: sum
+        sql: ${rider_handling_time_minutes};;
+        value_format_name: euro_accounting_2_precision
+      }
+
+      measure: sum_potential_rider_handling_time_without_stacking_minutes {
+        group_label: "* Operations / Logistics *"
+        label: "SUM Potential Rider Handling Times (Without Stacking)"
+        description: "Total estimated sum of minutes it would potentially take for a rider to handle all the orders without stacking"
+        hidden:  no
+        type: sum
+        sql: ${potential_rider_handling_time_without_stacking_minutes};;
         value_format_name: euro_accounting_2_precision
       }
 
@@ -2661,6 +2713,16 @@ view: orders {
         hidden:  no
         type: number
         sql: ${cnt_orders_delayed_over_60_min_internal_estimate} / NULLIF(${cnt_orders}, 0);;
+        value_format: "0%"
+      }
+
+      measure: pct_rider_handling_time_saved_with_stacking {
+        group_label: "* Operations / Logistics *"
+        label: "% Rider Handling Time Saved Due To Stacking"
+        description: "% Total rider handling time savings achieved due to stacking. Compares estimated savings with the potential rider handling time without stacking."
+        hidden:  no
+        type: number
+        sql: ${sum_rider_handling_time_minutes_saved_with_stacking} / NULLIF(${sum_potential_rider_handling_time_without_stacking_minutes}, 0);;
         value_format: "0%"
       }
 
