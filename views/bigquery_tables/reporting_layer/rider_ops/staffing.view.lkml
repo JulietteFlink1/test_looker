@@ -1523,7 +1523,7 @@ view: staffing {
   }
 
   dimension_group: start_timestamp {
-    label: "Time slot"
+    label: "Timeslot"
     type: time
     timeframes: [
       raw,
