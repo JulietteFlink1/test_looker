@@ -39,15 +39,51 @@ view: orders {
   }
 
   dimension: discount_amount {
+    group_label: "* Monetary Values *"
+    label: "Total Discount Amount (Gross)"
     type: number
-    hidden: yes
+    hidden: no
     sql: ${TABLE}.amt_discount_gross ;;
   }
 
   dimension: amt_discount_net {
+    group_label: "* Monetary Values *"
+    label: "Total Discount Amount (Net)"
     type: number
-    hidden: yes
+    hidden: no
     sql: ${TABLE}.amt_discount_net ;;
+  }
+
+  dimension: amt_discount_cart_gross {
+    group_label: "* Monetary Values *"
+    label: "Cart Discount Amount (Gross)"
+    type: number
+    hidden: no
+    sql: ${TABLE}.amt_discount_cart_gross ;;
+  }
+
+  dimension: amt_discount_cart_net {
+    group_label: "* Monetary Values *"
+    label: "Cart Discount Amount (Net)"
+    type: number
+    hidden: no
+    sql: ${TABLE}.amt_discount_cart_net ;;
+  }
+
+  dimension: amt_discount_products_gross {
+    group_label: "* Monetary Values *"
+    label: "Product Discount Amount (Gross)"
+    type: number
+    hidden: no
+    sql: ${TABLE}.amt_discount_products_gross ;;
+  }
+
+  dimension: amt_discount_products_net {
+    group_label: "* Monetary Values *"
+    label: "Product Discount Amount (Net)"
+    type: number
+    hidden: no
+    sql: ${TABLE}.amt_discount_products_net ;;
   }
 
   dimension: gmv_gross {
@@ -1538,11 +1574,55 @@ view: orders {
       measure: avg_discount_value {
         group_label: "* Monetary Values *"
         label: "AVG Discount Value"
-        description: "Average Discount Value (only considering orders where discount was applied)"
+        description: "Average Discount Value (only considering orders where discount was applied). Includes both Product and Cart discounts"
         hidden:  no
         type: average
         sql: ${discount_amount};;
         filters: [discount_amount: ">0"]
+        value_format_name: euro_accounting_2_precision
+      }
+
+      measure: avg_discount_cart_gross {
+        group_label: "* Monetary Values *"
+        label: "AVG Cart Discount Value (Gross)"
+        description: "Average of Cart Discount Value Gross (voucher applied at a checkout). Includes delivery discounts."
+        hidden:  no
+        type: average
+        sql: ${amt_discount_cart_gross};;
+        filters: [amt_discount_cart_gross: ">0"]
+        value_format_name: euro_accounting_2_precision
+      }
+
+      measure: avg_discount_cart_net {
+        group_label: "* Monetary Values *"
+        label: "AVG Cart Discount Value (Net)"
+        description: "Average of Cart Discount Value Net (voucher applied at a checkout). Includes delivery discounts."
+        hidden:  no
+        type: average
+        sql: ${amt_discount_cart_net};;
+        filters: [amt_discount_cart_net: ">0"]
+        value_format_name: euro_accounting_2_precision
+      }
+
+      measure: avg_discount_product_gross {
+        group_label: "* Monetary Values *"
+        label: "AVG Product Discount Value (Gross)"
+        description: "Average Discount Value Gross (only considering orders where discount on products was applied)"
+        hidden:  no
+        type: average
+        sql: ${amt_discount_products_gross};;
+        filters: [amt_discount_products_gross: ">0"]
+        value_format_name: euro_accounting_2_precision
+      }
+
+       measure: avg_discount_product_net {
+        group_label: "* Monetary Values *"
+        label: "AVG Product Discount Value (Net)"
+        description: "Average Discount Value Net (only considering orders where discount on products was applied)"
+        hidden:  no
+        type: average
+        sql: ${amt_discount_products_net};;
+        filters: [amt_discount_products_net: ">0"]
         value_format_name: euro_accounting_2_precision
       }
 
@@ -1785,11 +1865,51 @@ view: orders {
 
       measure: sum_discount_amt {
         group_label: "* Monetary Values *"
-        label: "SUM Discount Amount (Gross)"
+        label: "SUM Total Discount Amount (Gross)"
         description: "Sum of Discount amount applied on orders. Includes both Product and Cart discounts."
         hidden:  no
         type: sum
         sql: ${discount_amount};;
+        value_format_name: euro_accounting_2_precision
+      }
+
+      measure: sum_discount_cart_gross {
+        group_label: "* Monetary Values *"
+        label: "SUM Cart Discount Amount (Gross)"
+        description: "Sum of Cart Discounts Gross (voucher applied at a checkout). Includes delivery discounts."
+        hidden:  no
+        type: sum
+        sql: ${amt_discount_cart_gross};;
+        value_format_name: euro_accounting_2_precision
+      }
+
+      measure: sum_discount_cart_net {
+        group_label: "* Monetary Values *"
+        label: "SUM Cart Discount Amount (Net)"
+        description: "Sum of Cart Discounts Net (voucher applied at a checkout). Includes delivery discounts."
+        hidden:  no
+        type: sum
+        sql: ${amt_discount_cart_net};;
+        value_format_name: euro_accounting_2_precision
+      }
+
+      measure: sum_discount_products_gross {
+        group_label: "* Monetary Values *"
+        label: "SUM Product Discount Amount (Gross)"
+        description: "Sum of Discount amount (Gross) applied on orders. Includes only Product discounts."
+        hidden:  no
+        type: sum
+        sql: ${amt_discount_products_gross};;
+        value_format_name: euro_accounting_2_precision
+      }
+
+      measure: sum_discount_products_net {
+        group_label: "* Monetary Values *"
+        label: "SUM Product Discount Amount (Net)"
+        description: "Sum of Discount amount (Net) applied on orders. Includes only Product discounts."
+        hidden:  no
+        type: sum
+        sql: ${amt_discount_products_net};;
         value_format_name: euro_accounting_2_precision
       }
 
@@ -1903,23 +2023,23 @@ view: orders {
 
       measure: cnt_unique_customers_with_voucher {
         group_label: "* Basic Counts (Orders / Customers etc.) *"
-        label: "# Unique Customers (with Voucher)"
-        description: "Count of Unique Customers identified via their Customer UUID (only considering orders with a voucher)"
+        label: "# Unique Customers (with Cart Discount)"
+        description: "Count of Unique Customers identified via their Customer UUID (only considering orders with a cart discount)"
         hidden:  no
         type: count_distinct
         sql: ${customer_uuid};;
-        filters: [discount_amount: ">0"]
+        filters: [amt_discount_cart_gross: ">0"]
         value_format: "0"
       }
 
       measure: cnt_unique_customers_without_voucher {
         group_label: "* Basic Counts (Orders / Customers etc.) *"
-        label: "# Unique Customers (without Voucher)"
-        description: "Count of Unique Customers identified via their Customer UUID (not considering orders with a voucher)"
+        label: "# Unique Customers (without Cart Discount)"
+        description: "Count of Unique Customers identified via their Customer UUID (not considering orders with a cart discount)"
         hidden:  no
         type: count_distinct
         sql: ${customer_uuid};;
-        filters: [discount_amount: "0 OR null"]
+        filters: [amt_discount_cart_gross: "0 OR null"]
         value_format: "0"
       }
 
@@ -1956,24 +2076,33 @@ view: orders {
       ]
     }
 
-
-      measure: cnt_orders_with_discount {
+      measure: cnt_orders_with_discount_cart {
         group_label: "* Basic Counts (Orders / Customers etc.) *"
-        label: "# Orders with Discount"
-        description: "Count of successful Orders with some Discount applied"
+        label: "# Orders with Cart Discount"
+        description: "Count of successful Orders with some Cart Discount applied"
         hidden:  no
         type: count
-        filters: [discount_amount: ">0"]
+        filters: [amt_discount_cart_gross: ">0"]
         value_format: "0"
       }
 
-      measure: cnt_orders_without_discount {
+      measure: cnt_orders_with_discount_products {
         group_label: "* Basic Counts (Orders / Customers etc.) *"
-        label: "# Orders without Discount"
-        description: "Count of successful Orders with no Discount applied"
+        label: "# Orders with Product Discount"
+        description: "Count of successful Orders with some Product Discount applied"
         hidden:  no
         type: count
-        filters: [discount_amount: "0 OR null"]
+        filters: [amt_discount_products_gross: ">0"]
+        value_format: "0"
+      }
+
+      measure: cnt_orders_without_discount_cart {
+        group_label: "* Basic Counts (Orders / Customers etc.) *"
+        label: "# Orders without Discount"
+        description: "Count of successful Orders with no Cart Discount applied"
+        hidden:  no
+        type: count
+        filters: [amt_discount_cart_gross: "0 OR null"]
         value_format: "0"
       }
 
@@ -2308,23 +2437,43 @@ view: orders {
         value_format: "0%"
       }
 
-      measure: pct_discount_order_share {
+      measure: pct_discount_cart_order_share {
         group_label: "* Marketing *"
-        label: "% Discount Order Share"
-        description: "Share of Orders which had some Discount applied"
+        label: "% Cart Discount Order Share"
+        description: "Share of Orders which had voucher applied at a checkout. Includes delivery discounts."
         hidden:  no
         type: number
-        sql: ${cnt_orders_with_discount} / NULLIF(${cnt_orders}, 0);;
+        sql: ${cnt_orders_with_discount_cart} / NULLIF(${cnt_orders}, 0);;
         value_format: "0%"
       }
 
-      measure: pct_discount_value_of_gross_total{
+      measure: pct_discount_products_order_share {
+       group_label: "* Monetary Values *"
+       label: "% Product Discount Order Share"
+       description: "Share of Orders which had some product discount applied."
+       hidden:  no
+       type: number
+       sql: ${cnt_orders_with_discount_products} / NULLIF(${cnt_orders}, 0);;
+       value_format: "0%"
+  }
+
+      measure: pct_discount_cart_value_of_gross_total{
         group_label: "* Marketing *"
-        label: "% Discount Value Share"
-        description: "Dividing Total Discount amounts over GMV"
+        label: "% Cart Discount Value Share"
+        description: "Dividing Total Discount Cart amounts over GMV"
         hidden:  no
         type: number
-        sql: ${sum_discount_amt} / NULLIF(${sum_gmv_gross}, 0);;
+        sql: ${sum_discount_cart_gross} / NULLIF(${sum_gmv_gross}, 0);;
+        value_format_name: percent_1
+      }
+
+      measure: pct_discount_products_value_of_gross_total{
+        group_label: "* Monetary Values *"
+        label: "% Product Discount Value Share"
+        description: "Dividing Total Discount Products amounts over GMV"
+        hidden:  no
+        type: number
+        sql: ${sum_discount_products_gross} / NULLIF(${sum_gmv_gross}, 0);;
         value_format_name: percent_1
       }
 
