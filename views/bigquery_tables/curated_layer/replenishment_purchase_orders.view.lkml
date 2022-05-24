@@ -60,6 +60,7 @@ view: replenishment_purchase_orders {
 
     label:       "Vendor ID"
     description: "The Id of the supplier"
+    bypass_suggest_restrictions: yes
 
     type: string
     sql: ${TABLE}.vendor_id ;;
@@ -86,6 +87,7 @@ view: replenishment_purchase_orders {
 
   dimension: status {
     type: string
+    bypass_suggest_restrictions: yes
     sql: ${TABLE}.status ;;
   }
 
@@ -94,11 +96,13 @@ view: replenishment_purchase_orders {
     label:       "Vendor Location"
     description: "Location of the supplier"
     type: string
+    bypass_suggest_restrictions: yes
     sql: ${TABLE}.vendor_location ;;
   }
 
   dimension: hub_code {
     type: string
+    bypass_suggest_restrictions: yes
     sql: ${TABLE}.hub_code ;;
     hidden: no
   }
@@ -169,6 +173,7 @@ view: replenishment_purchase_orders {
     group_label: " >> Line Item Data"
 
     type: string
+    bypass_suggest_restrictions: yes
     sql: ${TABLE}.sku ;;
     hidden: no
   }
