@@ -185,7 +185,7 @@
       orders_cl.avg_reaction_time: 115
       orders_cl.avg_picking_time: 106
       orders_cl.avg_fulfillment_time: 169
-      orders_cl.avg_delivery_time: 154
+      orders_cl.avg_riding_to_customer_time: 154
       orders_cl.cnt_orders: 102
       orders_cl.pct_discount_order_share: 110
       orders_cl.sum_discount_amt: 117
@@ -1398,8 +1398,8 @@
     explore: orders_cl
     type: looker_column
     fields: [orders_cl.avg_fulfillment_time, orders_cl.avg_reaction_time, orders_cl.avg_picking_time,
-      orders_cl.avg_acceptance_time, orders_cl.avg_delivery_time, orders_cl.avg_promised_eta,
-      orders_cl.date, orders_cl.avg_delivery_time_estimate, orders_cl.avg_return_to_hub_time,
+      orders_cl.avg_acceptance_time, orders_cl.avg_riding_to_customer_time, orders_cl.avg_promised_eta,
+      orders_cl.date, orders_cl.avg_delivery_time_estimate, orders_cl.avg_riding_to_hub_time,
       orders_cl.avg_at_customer_time]
     filters:
       orders_cl.is_successful_order: 'yes'
@@ -1438,8 +1438,8 @@
     y_axes: [{label: '', orientation: left, series: [{axisId: orders_cl.avg_reaction_time,
             id: orders_cl.avg_reaction_time, name: AVG Reaction Time}, {axisId: orders_cl.avg_picking_time,
             id: orders_cl.avg_picking_time, name: AVG Picking Time}, {axisId: orders_cl.avg_acceptance_time,
-            id: orders_cl.avg_acceptance_time, name: AVG Acceptance Time}, {axisId: orders_cl.avg_delivery_time,
-            id: orders_cl.avg_delivery_time, name: AVG Delivery Time}], showLabels: true,
+            id: orders_cl.avg_acceptance_time, name: AVG Acceptance Time}, {axisId: orders_cl.avg_riding_to_customer_time,
+            id: orders_cl.avg_riding_to_customer_time, name: AVG Riding To Customer Teim}], showLabels: true,
         showValues: true, unpinAxis: false, tickDensity: default, type: linear}, {
         label: !!null '', orientation: right, series: [{axisId: orders_cl.avg_promised_eta,
             id: orders_cl.avg_promised_eta, name: AVG PDT}, {axisId: orders_cl.avg_fulfillment_time,

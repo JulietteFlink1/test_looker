@@ -433,20 +433,34 @@ view: orders {
     sql: ${TABLE}.delivery_provider ;;
   }
 
-  dimension: delivery_time {
+  dimension: riding_to_customer_time_minutes {
     group_label: "* Operations / Logistics *"
+    description: "The time for a rider to cycle from the hub to the customer (non-stacked orders) or from the previous customer to the current one (stacked orders)"
     type: number
-    sql: ${TABLE}.riding_time_minutes ;;
+    sql: ${TABLE}.riding_to_customer_time_minutes ;;
   }
 
-  dimension: return_to_hub_time_minutes {
-    label: "Return To Hub Time (min)"
-    description: "The time for a rider to cycle from the customer back to the hub"
+  dimension: riding_to_hub_time_minutes {
+    label: "Riding To Hub Time (min)"
+    description: "The time for a rider to cycle from the customer back to the hub. Set to NULL for not-final stacked orders."
     group_label: "* Operations / Logistics *"
     type: number
-    sql: ${TABLE}.return_to_hub_time_minutes ;;
+    sql: ${TABLE}.riding_to_hub_time_minutes ;;
   }
 
+  dimension: rider_handling_time_minutes {
+    group_label: "* Operations / Logistics *"
+    description: "Total time needed for the rider to handle the order: Riding to customer + At customer + Riding to hub"
+    type: number
+    sql: ${TABLE}.rider_handling_time_minutes ;;
+  }
+
+  dimension: potential_rider_handling_time_without_stacking_minutes {
+    group_label: "* Operations / Logistics *"
+    description: "Total potential time needed for the rider to handle the order if it wasn't stacked. Definition depends on the stacking sequence of the order."
+    type: number
+    sql: ${TABLE}.potential_rider_handling_time_without_stacking_minutes ;;
+  }
 
   dimension: discount_code {
     group_label: "* Order Dimensions *"
@@ -618,11 +632,11 @@ view: orders {
     sql: ${reaction_time} ;;
   }
 
-  dimension: is_delivery_more_than_30_minute {
-    label: "Is Riding Above 30min"
+  dimension: is_riding_to_customer_above_30_minute {
+    label: "Is Riding To Customer Above 30min"
     group_label: "* Operations / Logistics *"
     type: yesno
-    sql: ${TABLE}.is_riding_above_30min ;;
+    sql: ${TABLE}.is_riding_to_customer_above_30_minute ;;
   }
 
   dimension: is_delivery_eta_available {
@@ -691,14 +705,6 @@ view: orders {
     group_label: "* Operations / Logistics *"
     type: yesno
     sql: ${reaction_time} > 30 ;;
-  }
-
-  dimension: is_delivery_less_than_0_minute {
-    label: "Is Riding Time less than 0 minute"
-    hidden: yes
-    group_label: "* Operations / Logistics *"
-    type: yesno
-    sql: ${delivery_time} < 0 ;;
   }
 
   dimension: is_picking_less_than_0_minute {
@@ -1525,13 +1531,13 @@ view: orders {
         value_format_name: decimal_1
       }
 
-      measure: avg_delivery_time {
+      measure: avg_riding_to_customer_time {
         group_label: "* Operations / Logistics *"
-        label: "AVG Riding Time"
+        label: "AVG Riding To Customer Time"
         description: "Average riding to customer time considering delivery start to arrival at customer. Outliers excluded (<1min or >30min)"
         hidden:  no
         type: average
-        sql: ${delivery_time};;
+        sql: ${riding_to_customer_time_minutes};;
         value_format_name: decimal_1
       }
 
@@ -1605,13 +1611,13 @@ view: orders {
         value_format_name: decimal_1
       }
 
-      measure: avg_return_to_hub_time {
+      measure: avg_riding_to_hub_time {
         group_label: "* Operations / Logistics *"
-        label: "AVG Return to Hub time"
-        description: "Average riding time from customer location back to the hub (<1min or >30min)"
+        label: "AVG Riding to Hub time"
+        description: "Average riding time from customer location back to the hub (<1min or >30min)."
         hidden:  no
         type: average
-        sql: ${return_to_hub_time_minutes};;
+        sql: ${riding_to_hub_time_minutes};;
         value_format_name: decimal_1
       }
 
@@ -1709,11 +1715,11 @@ view: orders {
 
       measure: avg_ratio_customer_to_hub {
         group_label: "* Operations / Logistics *"
-        label: "% Return to Hub vs. Riding Time"
-        description: "AVG [(Return to Hub Time / Delivery Time) - 1]"
+        label: "% Riding to Hub vs. Riding to Customer Time"
+        description: "AVG [(Riding to Hub Time / Riding to Customer Time) - 1]"
         hidden: no
         type: average
-        sql: (${return_to_hub_time_minutes} / NULLIF(${delivery_time}, 0)) - 1 ;;
+        sql: (${riding_to_hub_time_minutes} / NULLIF(${riding_to_customer_time_minutes}, 0)) - 1 ;;
         value_format: "0%"
 
       }
@@ -2651,10 +2657,10 @@ view: orders {
 
       measure: delta_return_delivery_time {
         group_label: "* Operations / Logistics *"
-        label: "Delta between Return Time and Riding Time"
+        label: "Delta between Riding to Customer Time and Riding to Hub Time"
         type: number
         value_format: "0.0"
-        sql: ${avg_delivery_time} - ${avg_return_to_hub_time} ;;
+        sql: ${avg_riding_to_customer_time} - ${avg_riding_to_hub_time} ;;
       }
 
 

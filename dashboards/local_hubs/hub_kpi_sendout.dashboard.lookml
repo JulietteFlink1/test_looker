@@ -114,7 +114,7 @@
     explore: orders_customers
     type: looker_column
     fields: [orders_cl.created_date, orders_cl.avg_reaction_time, orders_cl.avg_picking_time,
-      orders_cl.avg_acceptance_time, orders_cl.avg_delivery_time, orders_cl.avg_fulfillment_time,
+      orders_cl.avg_acceptance_time, orders_cl.avg_riding_to_customer_time, orders_cl.avg_fulfillment_time,
       orders_cl.avg_promised_eta]
     filters:
       orders_cl.created_date: 28 days ago for 28 days
@@ -158,8 +158,8 @@
     y_axes: [{label: '', orientation: left, series: [{axisId: orders_cl.avg_reaction_time,
             id: orders_cl.avg_reaction_time, name: AVG Reaction Time}, {axisId: orders_cl.avg_picking_time,
             id: orders_cl.avg_picking_time, name: AVG Picking Time}, {axisId: orders_cl.avg_acceptance_time,
-            id: orders_cl.avg_acceptance_time, name: AVG Acceptance Time}, {axisId: orders_cl.avg_delivery_time,
-            id: orders_cl.avg_delivery_time, name: AVG Delivery Time}], showLabels: true,
+            id: orders_cl.avg_acceptance_time, name: AVG Acceptance Time}, {axisId: orders_cl.avg_riding_to_customer_time,
+            id: orders_cl.avg_riding_to_customer_time, name: AVG Riding To Customer Time}], showLabels: true,
         showValues: true, maxValue: 15, minValue: 0, unpinAxis: false, tickDensity: default,
         type: linear}, {label: !!null '', orientation: right, series: [{axisId: orders_cl.avg_fulfillment_time,
             id: orders_cl.avg_fulfillment_time, name: AVG Fulfillment Time (decimal)},
@@ -208,7 +208,7 @@
       orders_cl.avg_reaction_time: 115
       orders_cl.avg_picking_time: 106
       orders_cl.avg_fulfillment_time: 169
-      orders_cl.avg_delivery_time: 154
+      orders_cl.avg_riding_to_customer_time: 154
       orders_cl.cnt_orders: 126
       orders_cl.pct_discount_order_share: 117
       orders_cl.sum_discount_amt: 124
@@ -396,7 +396,7 @@
       orders_cl.avg_reaction_time: 115
       orders_cl.avg_picking_time: 106
       orders_cl.avg_fulfillment_time: 169
-      orders_cl.avg_delivery_time: 154
+      orders_cl.avg_riding_to_customer_time: 154
       orders_cl.cnt_orders: 113
       orders_cl.pct_discount_order_share: 117
       orders_cl.sum_discount_amt: 124
@@ -569,7 +569,7 @@
     explore: orders_customers
     type: looker_line
     fields: [orders_cl.cnt_orders, orders_cl.avg_fulfillment_time, orders_cl.order_date_30_min_bins,
-      orders_cl.avg_picking_time, orders_cl.avg_delivery_time, orders_cl.avg_promised_eta,
+      orders_cl.avg_picking_time, orders_cl.avg_riding_to_customer_time, orders_cl.avg_promised_eta,
       orders_cl.pct_delivery_in_time]
     filters:
       orders_cl.is_internal_order: 'no'
@@ -612,8 +612,8 @@
             id: orders_cl.avg_promised_eta, name: AVG Promised ETA}, {axisId: orders_cl.avg_fulfillment_time,
             id: orders_cl.avg_fulfillment_time, name: AVG Fulfillment Time (decimal)},
           {axisId: orders_cl.avg_picking_time, id: orders_cl.avg_picking_time,
-            name: AVG Picking Time}, {axisId: orders_cl.avg_delivery_time, id: orders_cl.avg_delivery_time,
-            name: AVG Delivery Time}], showLabels: true, showValues: true, unpinAxis: false,
+            name: AVG Picking Time}, {axisId: orders_cl.avg_riding_to_customer_time, id: orders_cl.avg_riding_to_customer_time,
+            name: AVG Riding To Customer Time}], showLabels: true, showValues: true, unpinAxis: false,
         tickDensity: default, tickDensityCustom: 5, type: linear}, {label: !!null '',
         orientation: right, series: [{axisId: orders_cl.pct_delivery_in_time, id: orders_cl.pct_delivery_in_time,
             name: "% Orders delivered in time"}], showLabels: true, showValues: true,
@@ -1151,7 +1151,7 @@
       orders_cl.avg_reaction_time: 115
       orders_cl.avg_picking_time: 106
       orders_cl.avg_fulfillment_time: 169
-      orders_cl.avg_delivery_time: 154
+      orders_cl.avg_riding_to_customer_time: 154
       orders_cl.cnt_orders: 117
       orders_cl.pct_discount_order_share: 117
       orders_cl.sum_discount_amt: 124
