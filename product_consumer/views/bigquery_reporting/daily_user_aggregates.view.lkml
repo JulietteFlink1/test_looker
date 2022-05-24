@@ -952,14 +952,6 @@ view: daily_user_aggregates {
     value_format_name: percent_1
     sql: ${users_with_cart_viewed} / nullif(${active_users},0);;
   }
-  measure: cart_abandonment_rate {
-    group_label: "Conversions - Subsequent Steps (%)"
-    label: "Cart Abandonment Rate"
-    type: number
-    description: "% users that viewed their cart and did not proceed to checkout "
-    value_format_name: percent_1
-    sql: 1 -  ${users_with_checkout_viewed} / nullif(${users_with_cart_viewed},0);;
-  }
   measure: mcvr_3_old {
     group_label: "Conversions - Subsequent Steps (%)"
     label: "mCVR3 [old]"
@@ -1007,6 +999,27 @@ view: daily_user_aggregates {
     description: "# user with at least one order, compared to users with payment started"
     value_format_name: percent_1
     sql: ${users_with_order} / nullif(${users_with_payment_started},0);;
+  }
+
+
+
+    #### Abandonment Rates ###
+
+  measure: cart_abandonment_rate {
+    group_label: "Funnel Abandonment Rates (%)"
+    label: "Cart Abandonment Rate"
+    type: number
+    description: "% users that viewed their cart but did not proceed to checkout "
+    value_format_name: percent_1
+    sql: 1 -  ${users_with_cart_viewed} / nullif(${users_with_add_to_cart},0);;
+  }
+  measure: checkout_abandonment_rate {
+    group_label: "Funnel Abandonment Rates (%)"
+    label: "Checkout Abandonment Rate"
+    type: number
+    description: "% users that viewed checkout but did not start the payment process"
+    value_format_name: percent_1
+    sql: 1 -  ${users_with_checkout_viewed} / nullif(${users_with_cart_viewed},0);;
   }
 
 
