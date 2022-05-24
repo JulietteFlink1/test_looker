@@ -23,7 +23,7 @@ explore: ops {
       hubs.country: "",
       hubs.hub_name: "",
       forecasts.start_timestamp_date: "yesterday",
-      forecasts.forecast_horizon: "1"
+      forecasts.forecast_horizon: "0"
 
     ]
   }

@@ -2091,7 +2091,7 @@ view: staffing {
   measure: number_of_scheduled_hours_picker {
     group_label: ">> Picker KPIs"
     label: "# Scheduled Picker Hours"
-    type: sum_distinct
+    type: number
     sql_distinct_key: ${staffing_uuid} ;;
     sql: ${number_of_unassigned_hours_picker}+${number_of_planned_hours_picker};;
     value_format_name: decimal_1
@@ -2122,7 +2122,7 @@ view: staffing {
   measure: number_of_scheduled_hours_wh {
     group_label: ">> WH KPIs"
     label: "# Scheduled WH Employee Hours"
-    type: sum_distinct
+    type: number
     sql_distinct_key: ${staffing_uuid} ;;
     sql: ${number_of_unassigned_hours_wh}+${number_of_planned_hours_wh};;
     value_format_name: decimal_1
