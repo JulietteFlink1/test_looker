@@ -1711,6 +1711,26 @@ view: orders {
         value_format_name: decimal_1
       }
 
+      measure: avg_rider_handling_time {
+        group_label: "* Operations / Logistics *"
+        label: "AVG Rider Handling Time"
+        description: "Average total rider handling time: riding to customer + at customer + riding to hub"
+        hidden:  no
+        type: average
+        sql: ${rider_handling_time_minutes};;
+        value_format_name: decimal_1
+      }
+
+      measure: avg_potential_rider_handling_time_without_stacking {
+        group_label: "* Operations / Logistics *"
+        label: "AVG Potential Rider Handling Time Without Stacking"
+        description: "Average potential rider handling time estimated without stacking."
+        hidden:  no
+        type: average
+        sql: ${potential_rider_handling_time_without_stacking_minutes};;
+        value_format_name: decimal_1
+      }
+
       measure: avg_targeted_delivery_time {
         group_label: "* Operations / Logistics *"
         label: "AVG Targeted Fulfillment Time (min)"
@@ -1836,12 +1856,12 @@ view: orders {
 
       measure: avg_rider_handling_time_minutes_saved_with_stacking  {
         group_label: "* Operations / Logistics *"
-        label: "Average Rider Handling Time Minutes Saved (Stacking)"
+        label: "AVG Rider Handling Time Minutes Saved (Stacking)"
         description: "Average number of minutes saved on each order due to stacking (compared to estimated handling time without stacking)"
         hidden: no
         type: average
         sql: ${rider_handling_time_minutes_saved_with_stacking} ;;
-        value_format: "0%"
+        value_format_name: decimal_1
 
       }
 
