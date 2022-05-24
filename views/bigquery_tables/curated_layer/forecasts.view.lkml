@@ -150,10 +150,11 @@ view: forecasts {
 
   dimension: pct_forecasted_no_show_rider {
     group_label: ">> Rider Dimensions"
-    label: "% No Show Rider"
+    label: "% No Show Riders"
     type: number
     value_format_name: percent_1
     sql: ${TABLE}.pct_forecasted_no_show_rider ;;
+    hidden: yes
   }
 
   # =========  Idleness   =========
@@ -291,7 +292,7 @@ view: forecasts {
     group_label: ">> Rider KPIs"
     label: "# Forecasted No Show Minutes Rider"
     type: sum_distinct
-    sql_distinct_key: ${forecast_uuid} ;;
+    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
     sql: ${TABLE}.number_of_forecasted_no_show_minutes_rider ;;
   }
 
@@ -386,10 +387,10 @@ view: forecasts {
     group_label: ">> Dynamic KPIs"
     sql:
         CASE
-          WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${pct_forecasted_no_show_rider}
+          WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${number_of_no_show_hours_by_position}/nullif(${number_of_forecasted_hours_by_position},0)
       ELSE NULL
       END ;;
-      hidden: yes
+      hidden: no
   }
 
   measure: number_of_no_show_hours_by_position {

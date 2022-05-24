@@ -17,6 +17,7 @@ explore: ops {
   label: "Ops"
   hidden: yes
 
+  sql_always_where: ${orders_cl.is_successful_order} is True ;;
   always_filter: {
     filters:  [
       ops.position_parameter: "Rider",
@@ -24,7 +25,6 @@ explore: ops {
       hubs.hub_name: "",
       forecasts.start_timestamp_date: "yesterday",
       forecasts.forecast_horizon: "0"
-
     ]
   }
 
