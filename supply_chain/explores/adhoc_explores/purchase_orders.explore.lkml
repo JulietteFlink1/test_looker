@@ -25,7 +25,7 @@ explore: purchase_orders {
 
 ### FILTERS
 
-fields: [ALL_FIELDS*,-purchase_orders.pct_order_inbounded]
+fields: [ALL_FIELDS*,-purchase_orders.pct_order_inbounded,-purchase_orders.sum_purchase_price]
 
   always_filter: {
     filters: [
