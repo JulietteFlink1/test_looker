@@ -1011,7 +1011,7 @@ view: daily_user_aggregates {
     type: number
     description: "% users that viewed their cart but did not proceed to checkout "
     value_format_name: percent_1
-    sql: 1 -  ${users_with_cart_viewed} / nullif(${users_with_add_to_cart},0);;
+    sql: 1 -  ${users_with_checkout_viewed} / nullif(${users_with_cart_viewed},0);;
   }
   measure: checkout_abandonment_rate {
     group_label: "Funnel Abandonment Rates (%)"
@@ -1019,7 +1019,7 @@ view: daily_user_aggregates {
     type: number
     description: "% users that viewed checkout but did not start the payment process"
     value_format_name: percent_1
-    sql: 1 -  ${users_with_checkout_viewed} / nullif(${users_with_cart_viewed},0);;
+    sql: 1 -  ${users_with_payment_started} / nullif(${users_with_checkout_viewed},0);;
   }
 
 
