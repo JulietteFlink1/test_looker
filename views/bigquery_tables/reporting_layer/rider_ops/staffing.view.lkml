@@ -1514,6 +1514,7 @@ view: staffing {
     convert_tz: no
     datatype: date
     sql: ${TABLE}.shift_date ;;
+    hidden: yes
   }
 
   dimension: staffing_uuid {

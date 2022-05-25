@@ -17,7 +17,7 @@ explore: ops {
   label: "Ops"
   hidden: yes
 
-  sql_always_where: ${orders_cl.is_successful_order} is True ;;
+  #sql_always_where: ${orders_cl.is_successful_order} is True ;;
   always_filter: {
     filters:  [
       ops.position_parameter: "Rider",

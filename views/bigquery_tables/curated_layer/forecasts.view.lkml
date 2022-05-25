@@ -177,8 +177,9 @@ view: forecasts {
 
   dimension: forecast_horizon {
     label: "Forecast Horizon - Days"
+    description: "Days between Timeslot Date and Job Date"
     type: number
-    value_format_name: percent_1
+    value_format_name: decimal_0
     sql:  date_diff(${start_timestamp_date}, ${job_date}, day) ;;
     }
 
