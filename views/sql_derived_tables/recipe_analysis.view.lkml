@@ -140,16 +140,45 @@ select * from final
   }
 
 
-  dimension_group: visit_date {
+  ######## Dates ########
+
+  dimension_group: event_date_at {
+    group_label: "Date Dimensions"
+    label: ""
     type: time
+    datatype: date
     timeframes: [
+      day_of_week,
       date,
       week,
-      month,
-      year
+      month
     ]
-    sql: CAST(${TABLE}.visit_date AS DATE) ;;
-    datatype: date
+    sql: ${TABLE}.visit_date ;;
+  }
+  dimension: event_date_granularity {
+    group_label: "Date Dimensions"
+    label: "Event Date (Dynamic)"
+    label_from_parameter: timeframe_picker
+    type: string # cannot have this as a time type. See this discussion: https://community.looker.com/lookml-5/dynamic-time-granularity-opinions-16675
+    # hidden:  yes
+    sql:
+      {% if timeframe_picker._parameter_value == 'Day' %}
+        ${event_date_at_date}
+      {% elsif timeframe_picker._parameter_value == 'Week' %}
+        ${event_date_at_week}
+      {% elsif timeframe_picker._parameter_value == 'Month' %}
+        ${event_date_at_month}
+      {% endif %};;
+  }
+
+  parameter: timeframe_picker {
+    group_label: "Date Dimensions"
+    label: "Event Date Granularity"
+    type: unquoted
+    allowed_value: { value: "Day" }
+    allowed_value: { value: "Week" }
+    allowed_value: { value: "Month" }
+    default_value: "Day"
   }
 
   dimension: anonymous_id {
