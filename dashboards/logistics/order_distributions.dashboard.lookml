@@ -228,7 +228,7 @@
     explore: orders_cl
     type: looker_line
     fields: [orders_cl.cnt_orders, orders_cl.avg_fulfillment_time, orders_cl.order_date_30_min_bins,
-      orders_cl.avg_picking_time, orders_cl.avg_delivery_time, orders_cl.avg_promised_eta,
+      orders_cl.avg_picking_time, orders_cl.avg_riding_to_customer_time, orders_cl.avg_promised_eta,
       orders_cl.pct_delivery_in_time]
     filters:
       orders_cl.is_internal_order: 'no'
@@ -269,8 +269,8 @@
             id: orders_cl.avg_promised_eta, name: AVG Promised ETA}, {axisId: orders_cl.avg_fulfillment_time,
             id: orders_cl.avg_fulfillment_time, name: AVG Fulfillment Time (decimal)},
           {axisId: orders_cl.avg_picking_time, id: orders_cl.avg_picking_time,
-            name: AVG Picking Time}, {axisId: orders_cl.avg_delivery_time, id: orders_cl.avg_delivery_time,
-            name: AVG Delivery Time}], showLabels: true, showValues: true, unpinAxis: false,
+            name: AVG Picking Time}, {axisId: orders_cl.avg_riding_to_customer_time, id: orders_cl.avg_riding_to_customer_time,
+            name: AVG Riding To Customer Time}], showLabels: true, showValues: true, unpinAxis: false,
         tickDensity: default, tickDensityCustom: 5, type: linear}, {label: !!null '',
         orientation: right, series: [{axisId: orders_cl.pct_delivery_in_time, id: orders_cl.pct_delivery_in_time,
             name: "% Orders delivered in time"}], showLabels: true, showValues: true,
@@ -303,7 +303,7 @@
     explore: orders_cl
     type: looker_grid
     fields: [orders_cl.order_date_30_min_bins, orders_cl.cnt_orders, orders_cl.avg_promised_eta,
-      orders_cl.avg_fulfillment_time, orders_cl.avg_picking_time, orders_cl.avg_delivery_time,
+      orders_cl.avg_fulfillment_time, orders_cl.avg_picking_time, orders_cl.avg_riding_to_customer_time,
       orders_cl.pct_delivery_in_time, orders_cl.pct_delivery_late_over_5_min,
       orders_cl.pct_delivery_late_over_10_min, orders_cl.pct_delivery_late_over_15_min,
       orders_cl.avg_delivery_distance_km]

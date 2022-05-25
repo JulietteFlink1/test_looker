@@ -60,6 +60,7 @@ view: replenishment_purchase_orders {
 
     label:       "Vendor ID"
     description: "The Id of the supplier"
+    bypass_suggest_restrictions: yes
 
     type: string
     sql: ${TABLE}.vendor_id ;;
@@ -86,6 +87,7 @@ view: replenishment_purchase_orders {
 
   dimension: status {
     type: string
+    bypass_suggest_restrictions: yes
     sql: ${TABLE}.status ;;
   }
 
@@ -94,11 +96,13 @@ view: replenishment_purchase_orders {
     label:       "Vendor Location"
     description: "Location of the supplier"
     type: string
+    bypass_suggest_restrictions: yes
     sql: ${TABLE}.vendor_location ;;
   }
 
   dimension: hub_code {
     type: string
+    bypass_suggest_restrictions: yes
     sql: ${TABLE}.hub_code ;;
     hidden: no
   }
@@ -169,6 +173,7 @@ view: replenishment_purchase_orders {
     group_label: " >> Line Item Data"
 
     type: string
+    bypass_suggest_restrictions: yes
     sql: ${TABLE}.sku ;;
     hidden: no
   }
@@ -201,7 +206,8 @@ view: replenishment_purchase_orders {
     group_label: " >> Line Item Data"
 
     type: number
-    sql: ${TABLE}.selling_unit_quantity ;;
+    # sql: ${TABLE}.selling_unit_quantity ;;
+    sql: safe_cast(${TABLE}.selling_unit_quantity as int64) ;;
 
   }
 
@@ -344,6 +350,16 @@ view: replenishment_purchase_orders {
     description: "AVG Items per Order per SKU"
     sql: round(${cnt_of_skus_per_order}/${cnt_of_orders}, 2) ;;
 
+  }
+
+  measure: sum_purchase_price {
+    label:       "€ Sum Purchased Products Value"
+    description: "This measure multiplies the vendor price of an item with the number of selling units we ordered and thus provides the cumulative value of the replenished items."
+
+    type: sum
+    sql: coalesce((${selling_unit_quantity} * ${erp_buying_prices.vendor_price}),0) ;;
+    value_format_name: eur
+    sql_distinct_key: concat(${table_uuid}, ${erp_buying_prices.table_uuid}) ;;
   }
 
 

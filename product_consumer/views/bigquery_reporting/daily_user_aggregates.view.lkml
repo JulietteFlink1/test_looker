@@ -864,7 +864,7 @@ view: daily_user_aggregates {
   measure: users_with_address {
     group_label: "User Metrics"
     label: "# Users with Address Set"
-    description: "Number of users with at least one order"
+    description: "Number of users with at least one address set"
     type: count_distinct
     sql: ${user_uuid} ;;
     filters: [is_address_set: "yes"]
@@ -872,15 +872,23 @@ view: daily_user_aggregates {
   measure: users_with_add_to_cart {
     group_label: "User Metrics"
     label: "# Users with Add-to-Cart"
-    description: "Number of users with at least one order"
+    description: "Number of users with at least one product added to cart"
     type: count_distinct
     sql: ${user_uuid} ;;
     filters: [is_product_added_to_cart: "yes"]
   }
+  measure: users_with_cart_viewed {
+    group_label: "User Metrics"
+    label: "# Users with Cart Viewed"
+    description: "Number of users with viewed their cart at least once"
+    type: count_distinct
+    sql: ${user_uuid} ;;
+    filters: [is_cart_viewed: "yes"]
+  }
   measure: users_with_checkout_viewed {
     group_label: "User Metrics"
     label: "# Users with Checkout Viewed"
-    description: "Number of users with at least one order"
+    description: "Number of users with viewed checkout at least once"
     type: count_distinct
     sql: ${user_uuid} ;;
     filters: [is_checkout_viewed: "yes"]
@@ -888,7 +896,7 @@ view: daily_user_aggregates {
   measure: users_with_payment_started {
     group_label: "User Metrics"
     label: "# Users with Payment Started"
-    description: "Number of users with at least one order"
+    description: "Number of users with started the payment process at least once"
     type: count_distinct
     sql: ${user_uuid} ;;
     filters: [is_payment_started: "yes"]
@@ -897,7 +905,7 @@ view: daily_user_aggregates {
   #### Conversions ###
 
   measure: cvr {
-    group_label: "Conversions (%)"
+    group_label: "Conversions - All Active Users (%)"
     label: "CVR"
     type: number
     description: "# users with at least one order / # active users"
@@ -905,44 +913,113 @@ view: daily_user_aggregates {
     sql: ${users_with_order} / nullif(${active_users},0) ;;
   }
   measure: mcvr_1 {
-    group_label: "Conversions (%)"
-    label: "mCVR1"
+    group_label: "Conversions - All Active Users (%)"
+    label: "mCVR1 [AAU]"
     type: number
     description: "# users with an address (either selected in previous session or in current session), compared to the total number of active users"
     value_format_name: percent_1
     sql: ${users_with_address} / nullif(${active_users},0);;
   }
-  measure: mcvr_2 {
-    group_label: "Conversions (%)"
-    label: "mCVR2"
+  measure: mcvr_2_add_to_cart {
+    group_label: "Conversions - Subsequent Steps (%)"
+    label: "mCVR2 - Add-To-Cart"
     type: number
     description: "# users with add-to-cart, compared to the total number of users with an address"
     value_format_name: percent_1
     sql: ${users_with_add_to_cart} / nullif(${users_with_address},0);;
   }
-  measure: mcvr_3 {
-    group_label: "Conversions (%)"
-    label: "mCVR3"
+  measure: mcvr_2_add_to_cart_all_active_users {
+    group_label: "Conversions - All Active Users (%)"
+    label: "mCVR2 - Add-To-Cart [AAU]"
+    type: number
+    description: "# users with add-to-cart, compared to # of all active users"
+    value_format_name: percent_1
+    sql: ${users_with_add_to_cart} / nullif(${active_users},0);;
+  }
+  measure: mcvr_2_cart_viewed {
+    group_label: "Conversions - Subsequent Steps (%)"
+    label: "mCVR2 - Cart Viewed"
+    type: number
+    description: "# users with cart-viewed, compared to the total number of users with add to cart"
+    value_format_name: percent_1
+    sql: ${users_with_cart_viewed} / nullif(${users_with_add_to_cart},0);;
+  }
+  measure: mcvr_2_cart_viewed_all_active_users {
+    group_label: "Conversions - All Active Users (%)"
+    label: "mCVR2 - Cart Viewed [AAU]"
+    type: number
+    description: "# users with cart-viewed, compared to # of all active users"
+    value_format_name: percent_1
+    sql: ${users_with_cart_viewed} / nullif(${active_users},0);;
+  }
+  measure: mcvr_3_old {
+    group_label: "Conversions - Subsequent Steps (%)"
+    label: "mCVR3 [old]"
     type: number
     description: "# users with checkout started, compared to users with add-to-cart"
     value_format_name: percent_1
     sql: ${users_with_checkout_viewed} / nullif(${users_with_add_to_cart},0);;
   }
+  measure: mcvr_3 {
+    group_label: "Conversions - Subsequent Steps (%)"
+    label: "mCVR3 [new] "
+    type: number
+    description: "# users with checkout started, compared to users with cart viewed"
+    value_format_name: percent_1
+    sql: ${users_with_checkout_viewed} / nullif(${users_with_cart_viewed},0);;
+  }
+  measure: mcvr_3_all_active_users {
+    group_label: "Conversions - All Active Users (%)"
+    label: "mCVR3 [AAU]"
+    type: number
+    description: "# users with checkout started, compared to # of all active users"
+    value_format_name: percent_1
+    sql: ${users_with_checkout_viewed} / nullif(${active_users},0);;
+  }
   measure: mcvr_4 {
-    group_label: "Conversions (%)"
+    group_label: "Conversions - Subsequent Steps (%)"
     label: "mCVR4"
     type: number
     description: "# users with payment started, compared to users with checkout started"
     value_format_name: percent_1
     sql: ${users_with_payment_started} / nullif(${users_with_checkout_viewed},0);;
   }
+  measure: mcvr_4_all_active_users {
+    group_label: "Conversions - All Active Users (%)"
+    label: "mCVR4 [AAU]"
+    type: number
+    description: "# users with payment started, compared to users with checkout started"
+    value_format_name: percent_1
+    sql: ${users_with_payment_started} / nullif(${active_users},0);;
+  }
   measure: auth_rate {
-    group_label: "Conversions (%)"
+    group_label: "Conversions - Subsequent Steps (%)"
     label: "Authentication Rate"
     type: number
     description: "# user with at least one order, compared to users with payment started"
     value_format_name: percent_1
     sql: ${users_with_order} / nullif(${users_with_payment_started},0);;
+  }
+
+
+
+    #### Abandonment Rates ###
+
+  measure: cart_abandonment_rate {
+    group_label: "Funnel Abandonment Rates (%)"
+    label: "Cart Abandonment Rate"
+    type: number
+    description: "% users that viewed their cart but did not proceed to checkout "
+    value_format_name: percent_1
+    sql: 1 -  ${users_with_checkout_viewed} / nullif(${users_with_cart_viewed},0);;
+  }
+  measure: checkout_abandonment_rate {
+    group_label: "Funnel Abandonment Rates (%)"
+    label: "Checkout Abandonment Rate"
+    type: number
+    description: "% users that viewed checkout but did not start the payment process"
+    value_format_name: percent_1
+    sql: 1 -  ${users_with_payment_started} / nullif(${users_with_checkout_viewed},0);;
   }
 
 
