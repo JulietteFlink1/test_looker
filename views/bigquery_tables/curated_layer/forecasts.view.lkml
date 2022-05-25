@@ -293,7 +293,7 @@ view: forecasts {
     group_label: ">> Rider KPIs"
     label: "# Forecasted No Show Minutes Rider"
     type: sum_distinct
-    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
+    sql_distinct_key: ${forecast_uuid} ;;
     sql: ${TABLE}.number_of_forecasted_no_show_minutes_rider ;;
   }
 
