@@ -1,14 +1,22 @@
 view: recipe_analysis {
   derived_table: {
     sql:
-     with daily_recipes as (
+with daily_recipes as (
 select
-    event_date
-  , anonymous_id
+    daily_events.event_date
+  , daily_events.anonymous_id
   , platform
   , event_name
-  , split(page_path,"/")[safe_offset(3)] as recipe_title
- from `flink-data-prod.curated.daily_events`
+  , split(page_path,"/")[safe_offset(3)]  as recipe_title
+  , context_campaign_source               as utm_source
+  , context_campaign_medium               as utm_medium
+  , context_campaign_name                 as utm_campaign
+
+ from `flink-data-prod.curated.daily_events`daily_events
+  left join
+    `flink-data-prod.flink_website_production.pages` pages
+    on daily_events.anonymous_id = pages.anonymous_id
+    and daily_events.event_date = cast(pages.original_timestamp as date)
  where
   platform = 'web'
  and
@@ -24,7 +32,7 @@ select
  and
   page_path not like '%test%' -- to exclude test traffic
 group by
-   1,2,3,4,5
+   1,2,3,4,5,6,7,8
 )
 
 , daily_recipes_clean as (
@@ -45,9 +53,13 @@ group by
           left(split(right(recipe_title,8),"-")[safe_offset(1)],2) = '04' then 'AT'
         end
             as country_iso -- derived from recipe_id
+    , utm_source
+    , utm_medium
+    , utm_campaign
 from daily_recipes
 where recipe_title <> 'recipes' -- to exclude test traffic
-group by 1,2,3,4
+group by
+  1,2,3,4,5,6,7,8,9
 )
 
 , daily_events as (
@@ -90,12 +102,15 @@ group by
 )
 
 , final as (
-select
+select distinct
     daily_recipes_clean.event_date  as visit_date
   , daily_recipes_clean.anonymous_id as anonymous_id
   , recipe_mapping.recipe_name       as recipe_name
   , daily_recipes_clean.recipe_id    as recipe_id
   , daily_recipes_clean.country_iso  as country_iso
+  , daily_recipes_clean.utm_source   as utm_source
+  , daily_recipes_clean.utm_medium   as utm_medium
+  , daily_recipes_clean.utm_campaign as utm_campaign
   , if(daily_recipes_clean.anonymous_id is not null,true,false) as recipe_page_visited
   , if(daily_events.anonymous_id is not null,true,false) as is_active_user -- if user is present in daily_events
   , daily_events.entered_webshop_cart_cta_click as entered_webshop_cart_cta_click
@@ -147,6 +162,21 @@ select * from final
   dimension: country_iso {
     type: string
     sql: ${TABLE}.country_iso ;;
+  }
+
+  dimension: utm_source {
+    type: string
+    sql: ${TABLE}.utm_source ;;
+  }
+
+  dimension: utm_medium {
+    type: string
+    sql: ${TABLE}.utm_medium ;;
+  }
+
+  dimension: utm_campaign {
+    type: string
+    sql: ${TABLE}.utm_campaign ;;
   }
 
   dimension: recipe_name {
