@@ -20,7 +20,7 @@ explore: order_backend_and_client{
   fields: [order_backend_and_client.fulfillment_time
     , order_backend_and_client.fulfillment_time_tier
     , order_backend_and_client.is_fulfillment_less_than_1_minute
-    , order_backend_and_client.is_successful_order, delivery_time
+    , order_backend_and_client.is_successful_order, riding_to_customer_time_minutes
     , order_backend_and_client.delivery_eta_minutes
     , order_backend_and_client.is_internal_order
     , order_backend_and_client.delivery_eta_timestamp_date

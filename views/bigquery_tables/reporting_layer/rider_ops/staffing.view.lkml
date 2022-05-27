@@ -1514,6 +1514,7 @@ view: staffing {
     convert_tz: no
     datatype: date
     sql: ${TABLE}.shift_date ;;
+    hidden: yes
   }
 
   dimension: staffing_uuid {
@@ -1523,7 +1524,7 @@ view: staffing {
   }
 
   dimension_group: start_timestamp {
-    label: "Time slot"
+    label: "Timeslot"
     type: time
     timeframes: [
       raw,
@@ -2091,7 +2092,7 @@ view: staffing {
   measure: number_of_scheduled_hours_picker {
     group_label: ">> Picker KPIs"
     label: "# Scheduled Picker Hours"
-    type: sum_distinct
+    type: number
     sql_distinct_key: ${staffing_uuid} ;;
     sql: ${number_of_unassigned_hours_picker}+${number_of_planned_hours_picker};;
     value_format_name: decimal_1
@@ -2122,7 +2123,7 @@ view: staffing {
   measure: number_of_scheduled_hours_wh {
     group_label: ">> WH KPIs"
     label: "# Scheduled WH Employee Hours"
-    type: sum_distinct
+    type: number
     sql_distinct_key: ${staffing_uuid} ;;
     sql: ${number_of_unassigned_hours_wh}+${number_of_planned_hours_wh};;
     value_format_name: decimal_1
@@ -2451,7 +2452,7 @@ view: staffing {
     type: number
     label: "# Filled Hours"
     value_format_name: decimal_1
-    group_label: ">> Dynamic Values"
+    group_label: ">> Dynamic KPIs"
     sql:
         CASE
           WHEN {% parameter position_parameter %} = 'Rider' THEN ${number_of_planned_hours_rider}
@@ -2468,7 +2469,7 @@ view: staffing {
     type: number
     label: "# Open Hours"
     value_format_name: decimal_1
-    group_label: ">> Dynamic Values"
+    group_label: ">> Dynamic KPIs"
     sql:
         CASE
           WHEN {% parameter position_parameter %} = 'Rider' THEN ${number_of_unassigned_hours_rider}
@@ -2485,7 +2486,7 @@ view: staffing {
     type: number
     label: "# Scheduled Hours"
     value_format_name: decimal_1
-    group_label: ">> Dynamic Values"
+    group_label: ">> Dynamic KPIs"
     sql:
         CASE
           WHEN {% parameter position_parameter %} = 'Rider' THEN ${number_of_scheduled_hours_rider}
@@ -2502,7 +2503,7 @@ view: staffing {
     type: number
     label: "# Punched Hours"
     value_format_name: decimal_1
-    group_label: ">> Dynamic Values"
+    group_label: ">> Dynamic KPIs"
     sql:
         CASE
           WHEN {% parameter position_parameter %} = 'Rider' THEN ${number_of_worked_hours_rider}
@@ -2518,7 +2519,7 @@ view: staffing {
     type: number
     label: "# No Show Hours"
     value_format_name: decimal_1
-    group_label: ">> Dynamic Values"
+    group_label: ">> Dynamic KPIs"
     sql:
         CASE
           WHEN {% parameter position_parameter %} = 'Rider' THEN ${number_of_no_show_hours_rider}
@@ -2535,7 +2536,7 @@ view: staffing {
     type: number
     label: "% No Show Hours"
     value_format_name: percent_1
-    group_label: ">> Dynamic Values"
+    group_label: ">> Dynamic KPIs"
     sql:
         CASE
           WHEN {% parameter position_parameter %} = 'Rider' THEN ${pct_no_show_hours_rider}
@@ -2552,7 +2553,7 @@ view: staffing {
     type: number
     label: "UTR"
     value_format_name: decimal_2
-    group_label: ">> Dynamic Values"
+    group_label: ">> Dynamic KPIs"
     sql:
         CASE
           WHEN {% parameter position_parameter %} = 'Rider' THEN ${utr_rider}

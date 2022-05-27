@@ -1,7 +1,7 @@
 # Owner:   Nazrin Guliyeva
 # Created: 2022-05-17
 
-# This view contains forecast data from multiple forecast tables on time slot, hub, and job date level.
+# This view contains forecast data from multiple forecast tables on timeslot, hub, and job date level.
 
 view: forecasts {
   sql_table_name: `flink-data-prod.curated.forecasts`;;
@@ -27,8 +27,8 @@ view: forecasts {
   }
 
   dimension: is_hub_open {
-    label: "Is Hub Open ?"
-    type: number
+    label: "Is Hub Open"
+    type: yesno
     sql: ${TABLE}.is_hub_open ;;
   }
 
@@ -56,7 +56,7 @@ view: forecasts {
   }
 
   dimension_group: start_timestamp {
-    label: "Time slot"
+    label: "Timeslot"
     type: time
     timeframes: [
       raw,
@@ -149,17 +149,18 @@ view: forecasts {
 
 
   dimension: pct_forecasted_no_show_rider {
-    group_label: ">> Rider KPIs"
-    label: "% No Show Rider"
+    group_label: ">> Rider Dimensions"
+    label: "% No Show Riders"
     type: number
     value_format_name: percent_1
     sql: ${TABLE}.pct_forecasted_no_show_rider ;;
+    hidden: yes
   }
 
   # =========  Idleness   =========
 
   dimension: pct_idleness_target_rider {
-    group_label: ">> Rider KPIs"
+    group_label: ">> Rider Dimensions"
     label: "% Idleness Assumption Rider"
     type: number
     value_format_name: percent_1
@@ -167,25 +168,36 @@ view: forecasts {
   }
 
   dimension: pct_idleness_target_picker {
-    group_label: ">> Picker KPIs"
+    group_label: ">> Picker Dimensions"
     label: "% Idleness Assumption Picker"
     type: number
     value_format_name: percent_1
     sql: ${TABLE}.pct_idleness_target_picker ;;
   }
 
+  dimension: forecast_horizon {
+    label: "Forecast Horizon - Days"
+    description: "Days between Timeslot Date and Job Date"
+    type: number
+    value_format_name: decimal_0
+    sql:  date_diff(${start_timestamp_date}, ${job_date}, day) ;;
+  }
+
   # =========  Stacking   =========
 
+  # This metric has a value of 0 or default %. Therefore, while aggregating, we can use the max value to
+  # avoid 0s
   dimension: pct_stacking_assumption {
-    group_label: ">> Order KPIs"
+    group_label: ">> Order Dimensions"
     label: "% Stacking Assumption"
     type: number
     value_format_name: percent_1
     sql: ${TABLE}.pct_stacking_assumption ;;
   }
 
+  # This metric has multiple values throughout the day. While aggregating we should take the
   dimension: stacking_effect_multiplier {
-    group_label: ">> Order KPIs"
+    group_label: ">> Order Dimensions"
     label: "Stacking Effect Multiplier"
     type: number
     sql: ${TABLE}.stacking_effect_multiplier ;;
@@ -297,7 +309,7 @@ view: forecasts {
 
   measure: forecasted_avg_order_handling_duration_seconds {
     group_label: ">> Order KPIs"
-    label: "Forecasted Order Handling Duration (Seconds)"
+    label: "Forecasted Orders Handling Duration (Seconds)"
     type: average_distinct
     sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
     sql: ${TABLE}.forecasted_avg_order_handling_duration_seconds ;;
@@ -306,7 +318,7 @@ view: forecasts {
 
   measure: forecasted_avg_order_handling_duration_minutes {
     group_label: ">> Order KPIs"
-    label: "Forecasted Order Handling Duration (Minutes)"
+    label: "Forecasted Orders Handling Duration (Minutes)"
     type: average_distinct
     sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
     sql: ${TABLE}.forecasted_avg_order_handling_duration_minutes ;;
@@ -346,11 +358,11 @@ view: forecasts {
     type: number
     label: "# Forecasted Employees"
     value_format_name: decimal_1
-    group_label: ">> Dynamic Values"
+    group_label: ">> Dynamic KPIs"
     sql:
         CASE
-          WHEN {% parameter staffing.position_parameter %} = 'Rider' THEN ${number_of_forecasted_riders}
-          WHEN {% parameter staffing.position_parameter %} = 'Picker' THEN ${number_of_forecasted_pickers}
+          WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${number_of_forecasted_riders}
+          WHEN {% parameter ops.position_parameter %} = 'Picker' THEN ${number_of_forecasted_pickers}
       ELSE NULL
       END ;;
     hidden: yes
@@ -360,11 +372,11 @@ view: forecasts {
     type: number
     label: "# Forecasted Hours (Incl. No Show)"
     value_format_name: decimal_1
-    group_label: ">> Dynamic Values"
+    group_label: ">> Dynamic KPIs"
     sql:
         CASE
-          WHEN {% parameter staffing.position_parameter %} = 'Rider' THEN ${number_of_forecasted_hours_rider}
-          WHEN {% parameter staffing.position_parameter %} = 'Picker' THEN ${number_of_forecasted_hours_picker}
+          WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${number_of_forecasted_hours_rider}
+          WHEN {% parameter ops.position_parameter %} = 'Picker' THEN ${number_of_forecasted_hours_picker}
       ELSE NULL
       END ;;
   }
@@ -373,23 +385,23 @@ view: forecasts {
     type: number
     label: "% Forecasted No Show Hours"
     value_format_name: percent_1
-    group_label: ">> Dynamic Values"
+    group_label: ">> Dynamic KPIs"
     sql:
         CASE
-          WHEN {% parameter staffing.position_parameter %} = 'Rider' THEN ${pct_forecasted_no_show_rider}
+          WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${number_of_no_show_hours_by_position}/nullif(${number_of_forecasted_hours_by_position},0)
       ELSE NULL
       END ;;
-      hidden: yes
+    hidden: no
   }
 
   measure: number_of_no_show_hours_by_position {
     type: number
     label: "# Forecasted No Show Hours"
     value_format_name: decimal_1
-    group_label: ">> Dynamic Values"
+    group_label: ">> Dynamic KPIs"
     sql:
         CASE
-          WHEN {% parameter staffing.position_parameter %} = 'Rider' THEN ${number_of_forecasted_no_show_minutes_rider}/60
+          WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${number_of_forecasted_no_show_minutes_rider}/60
       ELSE NULL
       END ;;
   }
@@ -398,7 +410,7 @@ view: forecasts {
     type: number
     label: "# Forecasted Hours (Excl. No Show)"
     value_format_name: decimal_1
-    group_label: ">> Dynamic Values"
+    group_label: ">> Dynamic KPIs"
     sql: ${number_of_forecasted_hours_by_position}-${number_of_no_show_hours_by_position} ;;
   }
 
@@ -407,11 +419,11 @@ view: forecasts {
     label: "Base UTR"
     description: "# Target Orders per hour per Position"
     value_format_name: decimal_1
-    group_label: ">> Dynamic Values"
+    group_label: ">> Dynamic KPIs"
     sql:
         CASE
-          WHEN {% parameter staffing.position_parameter %} = 'Rider' THEN ${number_of_target_orders_per_rider}
-          WHEN {% parameter staffing.position_parameter %} = 'Picker' THEN ${number_of_target_orders_per_picker}
+          WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${number_of_target_orders_per_rider}
+          WHEN {% parameter ops.position_parameter %} = 'Picker' THEN ${number_of_target_orders_per_picker}
       ELSE NULL
       END ;;
   }
@@ -421,11 +433,11 @@ view: forecasts {
     label: "Base UTR (Incl. Stacking)"
     description: "Base UTR * Stacking Effect Multiplier"
     value_format_name: decimal_1
-    group_label: ">> Dynamic Values"
+    group_label: ">> Dynamic KPIs"
     sql:
         CASE
-          WHEN {% parameter staffing.position_parameter %} = 'Rider' THEN ${forecasted_base_utr_incl_stacking_rider}
-          WHEN {% parameter staffing.position_parameter %} = 'Picker' THEN ${forecasted_base_utr_incl_stacking_picker}
+          WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${forecasted_base_utr_incl_stacking_rider}
+          WHEN {% parameter ops.position_parameter %} = 'Picker' THEN ${forecasted_base_utr_incl_stacking_picker}
       ELSE NULL
       END ;;
   }
@@ -434,11 +446,11 @@ view: forecasts {
     type: average
     label: "% Idleness Assumption"
     value_format_name: decimal_1
-    group_label: ">> Dynamic Values"
+    group_label: ">> Dynamic KPIs"
     sql:
         CASE
-          WHEN {% parameter staffing.position_parameter %} = 'Rider' THEN ${pct_idleness_target_rider}
-          WHEN {% parameter staffing.position_parameter %} = 'Picker' THEN ${pct_idleness_target_picker}
+          WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${pct_idleness_target_rider}
+          WHEN {% parameter ops.position_parameter %} = 'Picker' THEN ${pct_idleness_target_picker}
       ELSE NULL
       END ;;
   }
@@ -448,15 +460,16 @@ view: forecasts {
     label: "Final UTR"
     description: "Forecasted Orders/Forecasted Hours"
     value_format_name: decimal_1
-    group_label: ">> Dynamic Values"
+    group_label: ">> Dynamic KPIs"
     sql: ${number_of_forecasted_orders}/nullif(${number_of_forecasted_hours_by_position},0);;
   }
 
   measure: actual_needed_hours_by_position {
     type: number
     label: "# Actually Needed Hours"
+    description: "# Hours needed based on # Orders and forecasted UTR - # Orders/Base UTR (Target UTR)"
     value_format_name: decimal_1
-    group_label: ">> Dynamic Values"
+    group_label: ">> Dynamic KPIs"
     sql: ${orders_cl.cnt_successful_orders}/nullif(${number_of_target_orders_by_position},0);;
   }
 

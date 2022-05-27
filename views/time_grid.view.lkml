@@ -1,13 +1,6 @@
 view: time_grid {
-  sql_table_name: `flink-data-dev.calendar.dim_date`
+  sql_table_name: `flink-data-prod.order_forecast.time_grid`
     ;;
-
-  dimension: hub_code {
-    sql: ${TABLE}.hub_code ;;
-    type: string
-    hidden: yes
-
-  }
 
   dimension_group: date {
     type: time
@@ -45,10 +38,10 @@ view: time_grid {
     convert_tz: yes
     hidden: yes
     sql: ${TABLE}.end_datetime ;;
-    datatype: datetime
   }
 
   dimension_group: start_datetime {
+    label: "Timeslot"
     type: time
     timeframes: [
       raw,
@@ -64,13 +57,7 @@ view: time_grid {
     ]
     convert_tz: yes
     sql: ${TABLE}.start_datetime ;;
-    datatype: datetime
-    hidden: yes
+    hidden: no
 
-  }
-
-  measure: count {
-    type: count
-    drill_fields: []
   }
 }
