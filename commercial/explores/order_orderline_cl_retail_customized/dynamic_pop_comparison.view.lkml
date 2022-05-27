@@ -14,8 +14,10 @@ view: dynamic_pop_comparison {
       column: category { field: products.category}
       column: subcategory { field: products.subcategory}
       column: cnt_orders { field: orders_cl.cnt_orders }
+      column: order_uuid { field: orders_cl.order_uuid }
       column: sum_item_price_gross { field: orderline.sum_item_price_gross}
       column: sum_item_quantity { field: orderline.sum_item_quantity}
+      column: margin_absolute { field: erp_buying_prices.margin_absolute}
       derived_column: unique_id {
         sql: concat(sku, country_iso, created_raw, hub_code) ;;
       }
@@ -106,6 +108,13 @@ view: dynamic_pop_comparison {
     type: number
   }
 
+  dimension: order_uuid {
+    type: string
+    group_label: "* IDs *"
+    label: "Order UUID"
+    hidden: yes
+  }
+
   dimension: sum_item_price_gross {
     hidden: yes
     label: "Sum Item Prices Sold (gross)"
@@ -119,6 +128,14 @@ view: dynamic_pop_comparison {
     label: "SUM Item Quantity Sold"
     description: "Sum of Item Quantity Sold"
     value_format: "0"
+    type: number
+  }
+
+  dimension: margin_absolute {
+    hidden: yes
+    label: "€ Unit Margin"
+    description: "€ Unit Margin"
+    value_format_name: eur_0
     type: number
   }
 
@@ -192,15 +209,17 @@ view: dynamic_pop_comparison {
     sql: ${sum_item_price_gross};;
     group_label: "SUM Item Prices Sold (gross)"
     filters: [period_selected: "Second Period"]
+    value_format_name: euro_accounting_2_precision
   }
 
   measure: first_period_sum_item_price_gross {
     view_label: "* Dynamic PoP *"
-    label: "Second P. - SUM Item Prices Sold (gross)"
+    label: "First P. - SUM Item Prices Sold (gross)"
     type: sum
     sql: ${sum_item_price_gross};;
     group_label: "SUM Item Prices Sold (gross)"
     filters: [period_selected: "First Period"]
+    value_format_name: euro_accounting_2_precision
   }
 
   measure: sum_item_price_gross_pop_change {
@@ -211,6 +230,96 @@ view: dynamic_pop_comparison {
     group_label: "SUM Item Prices Sold (gross)"
     value_format_name: percent_2
   }
+
+# SUM Item Quantity Sold
+  measure: second_period_sum_item_quantity {
+    view_label: "* Dynamic PoP *"
+    label: "Second P. - SUM Item Quantity Sold"
+    type: sum
+    sql: ${sum_item_quantity};;
+    group_label: "SUM Item Quantity Sold"
+    filters: [period_selected: "Second Period"]
+    value_format_name: decimal_0
+  }
+
+  measure: first_period_sum_item_quantity {
+    view_label: "* Dynamic PoP *"
+    label: "First P. - SUM Item Quantity Sold"
+    type: sum
+    sql: ${sum_item_quantity};;
+    group_label: "SUM Item Quantity Sold"
+    filters: [period_selected: "First Period"]
+    value_format_name: decimal_0
+  }
+
+  measure: sum_item_quantity_pop_change {
+    view_label: "* Dynamic PoP *"
+    label: "% PoP - SUM Item Quantity Sold"
+    type: number
+    sql: (1.0 * ${second_period_sum_item_quantity} / NULLIF(${first_period_sum_item_quantity} ,0)) - 1 ;;
+    group_label: "SUM Item Quantity Sold"
+    value_format_name: percent_2
+  }
+
+# # of Orders
+  measure: second_period_cnt_orders {
+    view_label: "* Dynamic PoP *"
+    label: "Second P. - # of Orders"
+    type: count_distinct
+    sql: ${order_uuid};;
+    group_label: "# of Orders"
+    filters: [period_selected: "Second Period"]
+    value_format_name: decimal_0
+  }
+
+  measure: first_period_cnt_orders {
+    view_label: "* Dynamic PoP *"
+    label: "First P. - # of Orders"
+    type: count_distinct
+    sql: ${order_uuid};;
+    group_label: "# of Orders"
+    filters: [period_selected: "First Period"]
+    value_format_name: decimal_0
+  }
+
+  measure: cnt_orders_pop_change {
+    view_label: "* Dynamic PoP *"
+    label: "% PoP - # of Orders"
+    type: number
+    sql: (1.0 * ${second_period_cnt_orders} / NULLIF(${first_period_cnt_orders} ,0)) - 1 ;;
+    group_label: "# of Orders"
+    value_format_name: percent_2
+  }
+
+# Gross Profit
+#  measure: second_period_sum_total_margin_abs {
+#    view_label: "* Dynamic PoP *"
+#    label: "Second P. - € Sum Gross Profit"
+#    type: sum
+#    sql: ${margin_absolute};;
+#    group_label: "€ Sum Gross Profit"
+#    filters: [period_selected: "Second Period"]
+#    value_format_name: euro_accounting_2_precision
+#  }
+#
+#  measure: first_period_sum_total_margin_abs {
+#    view_label: "* Dynamic PoP *"
+#    label: "First P. - € Sum Gross Profit"
+#    type: sum
+#    sql: ${margin_absolute};;
+#    group_label: "€ Sum Gross Profit"
+#    filters: [period_selected: "First Period"]
+#    value_format_name: euro_accounting_2_precision
+#  }
+#
+#  measure: sum_total_margin_abs_pop_change {
+#    view_label: "* Dynamic PoP *"
+#    label: "% PoP - € Sum Gross Profit"
+#    type: number
+#    sql: (1.0 * ${second_period_sum_total_margin_abs} / NULLIF(${first_period_sum_total_margin_abs} ,0)) - 1 ;;
+#    group_label: "€ Sum Gross Profit"
+#    value_format_name: percent_2
+#  }
 
   dimension: ytd_only {hidden:yes}
   dimension: mtd_only {hidden:yes}
