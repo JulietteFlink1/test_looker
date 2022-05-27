@@ -8,6 +8,8 @@ include: "/**/orders_revenue_subcategory_level_monthly.view"
 include: "/**/orders_revenue_category_level_monthly.view"
 include: "/**/commercial_department_names.view"
 include: "/**/dynamically_filtered_measures.view"
+include: "/**/dynamic_pop_comparison.view"
+
 
 explore: order_orderline_cl_retail_customized {
   extends: [order_orderline_cl]
@@ -91,6 +93,16 @@ explore: order_orderline_cl_retail_customized {
       and ${dynamically_filtered_measures.created_date} = ${orders_cl.created_date}
       and ${dynamically_filtered_measures.sku} = ${products.product_sku}
       and ${dynamically_filtered_measures.hub_code} = ${hubs.hub_code};;
+    relationship: many_to_one
+
+  }
+
+  join: dynamic_pop_comparison {
+    view_label: "* Dynamic PoP *"
+    sql_on: ${dynamic_pop_comparison.country_iso} = ${hubs.country_iso}
+      and ${dynamic_pop_comparison.created_raw} = ${orderline.created_raw}
+      and ${dynamic_pop_comparison.sku} = ${products.product_sku}
+      and ${dynamic_pop_comparison.hub_code} = ${hubs.hub_code};;
     relationship: many_to_one
 
   }

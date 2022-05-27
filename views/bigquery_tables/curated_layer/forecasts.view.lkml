@@ -177,10 +177,11 @@ view: forecasts {
 
   dimension: forecast_horizon {
     label: "Forecast Horizon - Days"
+    description: "Days between Timeslot Date and Job Date"
     type: number
-    value_format_name: percent_1
+    value_format_name: decimal_0
     sql:  date_diff(${start_timestamp_date}, ${job_date}, day) ;;
-    }
+  }
 
   # =========  Stacking   =========
 
@@ -292,7 +293,7 @@ view: forecasts {
     group_label: ">> Rider KPIs"
     label: "# Forecasted No Show Minutes Rider"
     type: sum_distinct
-    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
+    sql_distinct_key: ${forecast_uuid} ;;
     sql: ${TABLE}.number_of_forecasted_no_show_minutes_rider ;;
   }
 
@@ -390,7 +391,7 @@ view: forecasts {
           WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${number_of_no_show_hours_by_position}/nullif(${number_of_forecasted_hours_by_position},0)
       ELSE NULL
       END ;;
-      hidden: no
+    hidden: no
   }
 
   measure: number_of_no_show_hours_by_position {

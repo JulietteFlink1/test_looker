@@ -17,18 +17,31 @@ explore: ops {
   label: "Ops"
   hidden: yes
 
-  sql_always_where: ${orders_cl.is_successful_order} is True ;;
   always_filter: {
     filters:  [
       ops.position_parameter: "Rider",
       hubs.country: "",
       hubs.hub_name: "",
-      forecasts.start_timestamp_date: "yesterday",
+      time_grid.start_datetime_date: "yesterday",
       forecasts.forecast_horizon: "0"
     ]
   }
 
+  # To be consistent remove fileds with view labels formatted with *
+  # Remove successful order filter, as we only take into account those only
+
   fields: [ALL_FIELDS*,-orders_cl.cnt_orders_with_delivery_eta_available,-orders_cl.cnt_orders_with_targeted_eta_available]
+
+  # Dimensional time grid table to have generic date filter
+  join: time_grid {
+    from: time_grid
+    sql_on: ${ops.start_timestamp_raw} = ${time_grid.start_datetime_raw} ;;
+    relationship: one_to_one
+    type: full_outer
+    fields: [time_grid.start_datetime_date, time_grid.start_datetime_hour_of_day, time_grid.start_datetime_minute30,
+            time_grid.start_datetime_month,time_grid.start_datetime_quarter,time_grid.start_datetime_raw,time_grid.start_datetime_time,
+            time_grid.start_datetime_time_of_day,time_grid.start_datetime_week, time_grid.start_datetime_year]
+  }
 
   # Basic Hub data (e.g. name, city, creation date, etc. )
   join: hubs {
@@ -44,8 +57,8 @@ explore: ops {
   join: orders_cl {
     from: orders_using_hubs
     view_label: "Orders"
-    sql_on: ${orders_cl.created_minute30} = ${ops.start_timestamp_minute30}
-      and lower(${orders_cl.hub_code})=lower(${ops.hub_code});;
+    sql_on: ${orders_cl.created_minute30} = ${time_grid.start_datetime_minute30}
+      and lower(${orders_cl.hub_code})=lower(${hubs.hub_code}) and ${orders_cl.is_successful_order}= true;;
     relationship: one_to_many
     type: left_outer
   }
@@ -54,8 +67,8 @@ explore: ops {
   join: forecasts {
     from: forecasts
     view_label: "Forecasts"
-    sql_on: ${forecasts.start_timestamp_minute30} = ${ops.start_timestamp_minute30}
-      and lower(${forecasts.hub_code})=lower(${ops.hub_code});;
+    sql_on: ${forecasts.start_timestamp_minute30} = ${time_grid.start_datetime_minute30}
+      and lower(${forecasts.hub_code})=lower(${hubs.hub_code});;
     relationship: one_to_many
     type: left_outer
   }
@@ -69,4 +82,5 @@ explore: ops {
     relationship: many_to_many
     type: left_outer
   }
+
 }

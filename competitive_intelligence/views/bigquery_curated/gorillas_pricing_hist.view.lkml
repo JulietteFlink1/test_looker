@@ -35,30 +35,35 @@ view: gorillas_pricing_hist {
     type: number
     sql: ${TABLE}.pct_price_change ;;
     description: "The percent increase of decrease of the product price change compared to the previous day"
+    value_format: "0.00\%"
   }
 
   dimension: previous_price_gross {
     type: number
     sql: ${TABLE}.previous_price_gross ;;
     description: "The previous day's price gross"
+    value_format: "€0.00"
   }
 
   dimension: price_change {
     type: number
     sql: ${TABLE}.price_change ;;
     description: "The amount that the product price has changed compared to the previous day"
+    value_format: "€0.00"
   }
 
   dimension: price_gross {
     type: number
     sql: ${TABLE}.price_gross ;;
     description: "The product's gross price"
+    value_format: "€0.00"
   }
 
   dimension: strikethrough_price {
     type: number
     sql: ${TABLE}.strikethrough_price ;;
     description: "The product price before being discounted"
+    value_format: "€0.00"
   }
 
   dimension: number_of_daily_price_increases {
@@ -80,18 +85,21 @@ view: gorillas_pricing_hist {
     sql: ${TABLE}.average_product_price ;;
     description: "Average price of this product on a daily granularity"
     group_label: "Precalculated Measures"
+    value_format: "€0.00"
   }
 
   dimension: minimum_product_price {
     type: number
     sql: ${TABLE}.minimum_product_price ;;
     description: "Minimum price of this product on a daily granularity"
+    value_format: "€0.00"
   }
 
   dimension: maximum_product_price {
     type: number
     sql: ${TABLE}.maximum_product_price ;;
     description: "Maximum price of this product on a daily granularity"
+    value_format: "€0.00"
   }
 
   dimension: is_geographic_price_difference {
