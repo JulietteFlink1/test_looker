@@ -199,13 +199,6 @@ view: hub_closure_rate {
     sql: ${TABLE}.total_closure_hours ;;
   }
 
-  dimension: closure_reason_overall {
-    label: "Closure Reason"
-    type: string
-    hidden:  no
-    sql: ${TABLE}.closure_reason_overall ;;
-  }
-
   parameter: date_granularity {
     group_label: "* Dates and Timestamps *"
     label: "Date Granularity"

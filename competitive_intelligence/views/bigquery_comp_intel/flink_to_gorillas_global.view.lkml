@@ -31,14 +31,14 @@ view: flink_to_gorillas_global {
   dimension: flink_product_sku {
     type: string
     sql: ${TABLE}.flink_product_sku ;;
-    hidden: yes
+    hidden: no
     primary_key: yes
   }
 
   dimension: gorillas_product_id {
     type: string
     sql: ${TABLE}.gorillas_product_id ;;
-    hidden: yes
+    hidden: no
   }
 
   dimension: gorillas_product_name {

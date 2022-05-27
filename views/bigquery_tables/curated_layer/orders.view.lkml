@@ -2145,7 +2145,7 @@ view: orders {
       group_label: "* Basic Counts (Orders / Customers etc.) *"
       label: "# Successful Orders"
       description: "Count of Successful Orders"
-      hidden:  no
+      hidden:  yes
       type: count_distinct
       sql: ${order_uuid} ;;
       value_format: "0"
