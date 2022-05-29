@@ -4,9 +4,9 @@ include: "/competitive_intelligence/views/bigquery_curated/gorillas_hubs.view.lk
 include: "/competitive_intelligence/views/bigquery_comp_intel/gorillas_to_flink_global.view.lkml"
 
 explore:  gorillas_products {
-  hidden: yes
-  label: "Gorillas Products"
-  view_label: "Gorillas Products"
+  hidden: no
+  label: "Gorillas Catalog"
+  view_label: "Gorillas Catalog"
   group_label: "Competitive Intel"
   description: "Competitive Intelligence Data"
 
@@ -22,14 +22,6 @@ explore:  gorillas_products {
     sql_on: ${gorillas_hubs.hub_id} = ${gorillas_categories.hub_id} ;;
     relationship: many_to_one
     type:  left_outer
-  }
-
-  join: gorillas_to_flink_global {
-    from: gorillas_to_flink_global
-    view_label: "* gorillas-Flink Product Matches *"
-    sql_on: ${gorillas_to_flink_global.gorillas_product_id} = ${gorillas_products.product_id} ;;
-    relationship: one_to_many
-    type: left_outer
   }
 
 }
