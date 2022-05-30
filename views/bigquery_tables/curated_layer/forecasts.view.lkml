@@ -72,7 +72,7 @@ view: forecasts {
     ]
     convert_tz: yes
     sql: ${TABLE}.start_timestamp ;;
-    hidden: no
+    hidden: yes
   }
 
   dimension_group: job {
@@ -149,7 +149,6 @@ view: forecasts {
 
 
   dimension: pct_forecasted_no_show_rider {
-    group_label: ">> Rider Dimensions"
     label: "% No Show Riders"
     type: number
     value_format_name: percent_1
@@ -160,7 +159,6 @@ view: forecasts {
   # =========  Idleness   =========
 
   dimension: pct_idleness_target_rider {
-    group_label: ">> Rider Dimensions"
     label: "% Idleness Assumption Rider"
     type: number
     value_format_name: percent_1
@@ -168,7 +166,6 @@ view: forecasts {
   }
 
   dimension: pct_idleness_target_picker {
-    group_label: ">> Picker Dimensions"
     label: "% Idleness Assumption Picker"
     type: number
     value_format_name: percent_1
@@ -188,7 +185,6 @@ view: forecasts {
   # This metric has a value of 0 or default %. Therefore, while aggregating, we can use the max value to
   # avoid 0s
   dimension: pct_stacking_assumption {
-    group_label: ">> Order Dimensions"
     label: "% Stacking Assumption"
     type: number
     value_format_name: percent_1
@@ -197,7 +193,6 @@ view: forecasts {
 
   # This metric has multiple values throughout the day. While aggregating we should take the
   dimension: stacking_effect_multiplier {
-    group_label: ">> Order Dimensions"
     label: "Stacking Effect Multiplier"
     type: number
     sql: ${TABLE}.stacking_effect_multiplier ;;
@@ -212,7 +207,7 @@ view: forecasts {
   # =========  UTR   =========
 
   measure: number_of_target_orders_per_picker {
-    group_label: ">> Picker KPIs"
+    group_label: "> Picker KPIs"
     label: "Base UTR Picker"
     description: "# Target Orders per Hour per Picker (Target UTR)"
     value_format_name: decimal_1
@@ -222,7 +217,7 @@ view: forecasts {
   }
 
   measure: number_of_target_orders_per_rider {
-    group_label: ">> Rider KPIs"
+    group_label: "> Rider KPIs"
     label: "Base UTR Rider"
     description: "# Target Orders per Hour per Rider (Target UTR)"
     value_format_name: decimal_1
@@ -232,7 +227,7 @@ view: forecasts {
   }
 
   measure: forecasted_base_utr_incl_stacking_picker {
-    group_label: ">> Picker KPIs"
+    group_label: "> Picker KPIs"
     label: "Base UTR Picker (Incl. Stacking)"
     description: "Base UTR Picker (Incl. Stacking) - Target UTR * Stacking Effect Multiplier"
     value_format_name: decimal_1
@@ -242,7 +237,7 @@ view: forecasts {
   }
 
   measure: forecasted_base_utr_incl_stacking_rider {
-    group_label: ">> Rider KPIs"
+    group_label: "> Rider KPIs"
     label: "Base UTR Rider (Incl. Stacking)"
     description: "Base UTR Rider (Incl. Stacking) - Target UTR * Stacking Effect Multiplier"
     value_format_name: decimal_1
@@ -252,7 +247,7 @@ view: forecasts {
   }
 
   measure: final_utr_picker {
-    group_label: ">> Picker KPIs"
+    group_label: "> Picker KPIs"
     label: "Final UTR Picker"
     description: "Final UTR - Forecasted Orders / Forecasted Hours"
     value_format_name: decimal_1
@@ -260,7 +255,7 @@ view: forecasts {
   }
 
   measure: final_utr_rider {
-    group_label: ">> Rider KPIs"
+    group_label: "> Rider KPIs"
     label: "Final UTR Rider"
     description: "Final UTR - Forecasted Orders / Forecasted Hours"
     value_format_name: decimal_1
@@ -271,7 +266,7 @@ view: forecasts {
   # =========  Forecasted Employees   =========
 
   measure: number_of_forecasted_pickers {
-    group_label: ">> Picker KPIs"
+    group_label: "> Picker KPIs"
     label: "# Forecasted Pickers"
     type: sum_distinct
     sql_distinct_key: ${forecast_uuid} ;;
@@ -280,7 +275,7 @@ view: forecasts {
   }
 
   measure: number_of_forecasted_riders {
-    group_label: ">> Rider KPIs"
+    group_label: "> Rider KPIs"
     label: "# Forecasted Riders"
     type: sum_distinct
     sql_distinct_key: ${forecast_uuid} ;;
@@ -290,7 +285,7 @@ view: forecasts {
   # =========  No show   =========
 
   measure: number_of_forecasted_no_show_minutes_rider {
-    group_label: ">> Rider KPIs"
+    group_label: "> Rider KPIs"
     label: "# Forecasted No Show Minutes Rider"
     type: sum_distinct
     sql_distinct_key: ${forecast_uuid} ;;
@@ -300,7 +295,7 @@ view: forecasts {
   # =========  Forecasted orders   =========
 
   measure: number_of_forecasted_orders {
-    group_label: ">> Order KPIs"
+    group_label: "> Order KPIs"
     label: "# Forecasted Orders"
     type: sum_distinct
     sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
@@ -308,7 +303,7 @@ view: forecasts {
   }
 
   measure: forecasted_avg_order_handling_duration_seconds {
-    group_label: ">> Order KPIs"
+    group_label: "> Order KPIs"
     label: "Forecasted Orders Handling Duration (Seconds)"
     type: average_distinct
     sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
@@ -317,7 +312,7 @@ view: forecasts {
   }
 
   measure: forecasted_avg_order_handling_duration_minutes {
-    group_label: ">> Order KPIs"
+    group_label: "> Order KPIs"
     label: "Forecasted Orders Handling Duration (Minutes)"
     type: average_distinct
     sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
@@ -326,7 +321,7 @@ view: forecasts {
   }
 
   measure: number_of_missed_orders {
-    group_label: ">> Order KPIs"
+    group_label: "> Order KPIs"
     label: "# Missed Orders"
     type: sum_distinct
     sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
@@ -335,7 +330,7 @@ view: forecasts {
 
 ##### Forecasted Hours
   measure: number_of_forecasted_hours_rider {
-    group_label: ">> Rider KPIs"
+    group_label: "> Rider KPIs"
     label: "# Forecasted Rider Hours"
     type: sum_distinct
     sql_distinct_key: ${forecast_uuid} ;;
@@ -344,7 +339,7 @@ view: forecasts {
   }
 
   measure: number_of_forecasted_hours_picker {
-    group_label: ">> Picker KPIs"
+    group_label: "> Picker KPIs"
     label: "# Forecasted Picker Hours"
     type: sum_distinct
     sql_distinct_key: ${forecast_uuid} ;;
@@ -358,7 +353,7 @@ view: forecasts {
     type: number
     label: "# Forecasted Employees"
     value_format_name: decimal_1
-    group_label: ">> Dynamic KPIs"
+    group_label: "> Dynamic KPIs"
     sql:
         CASE
           WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${number_of_forecasted_riders}
@@ -372,7 +367,7 @@ view: forecasts {
     type: number
     label: "# Forecasted Hours (Incl. No Show)"
     value_format_name: decimal_1
-    group_label: ">> Dynamic KPIs"
+    group_label: "> Dynamic KPIs"
     sql:
         CASE
           WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${number_of_forecasted_hours_rider}
@@ -385,7 +380,7 @@ view: forecasts {
     type: number
     label: "% Forecasted No Show Hours"
     value_format_name: percent_1
-    group_label: ">> Dynamic KPIs"
+    group_label: "> Dynamic KPIs"
     sql:
         CASE
           WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${number_of_no_show_hours_by_position}/nullif(${number_of_forecasted_hours_by_position},0)
@@ -398,7 +393,7 @@ view: forecasts {
     type: number
     label: "# Forecasted No Show Hours"
     value_format_name: decimal_1
-    group_label: ">> Dynamic KPIs"
+    group_label: "> Dynamic KPIs"
     sql:
         CASE
           WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${number_of_forecasted_no_show_minutes_rider}/60
@@ -410,7 +405,7 @@ view: forecasts {
     type: number
     label: "# Forecasted Hours (Excl. No Show)"
     value_format_name: decimal_1
-    group_label: ">> Dynamic KPIs"
+    group_label: "> Dynamic KPIs"
     sql: ${number_of_forecasted_hours_by_position}-${number_of_no_show_hours_by_position} ;;
   }
 
@@ -419,7 +414,7 @@ view: forecasts {
     label: "Base UTR"
     description: "# Target Orders per hour per Position"
     value_format_name: decimal_1
-    group_label: ">> Dynamic KPIs"
+    group_label: "> Dynamic KPIs"
     sql:
         CASE
           WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${number_of_target_orders_per_rider}
@@ -433,7 +428,7 @@ view: forecasts {
     label: "Base UTR (Incl. Stacking)"
     description: "Base UTR * Stacking Effect Multiplier"
     value_format_name: decimal_1
-    group_label: ">> Dynamic KPIs"
+    group_label: "> Dynamic KPIs"
     sql:
         CASE
           WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${forecasted_base_utr_incl_stacking_rider}
@@ -446,7 +441,7 @@ view: forecasts {
     type: average
     label: "% Idleness Assumption"
     value_format_name: decimal_1
-    group_label: ">> Dynamic KPIs"
+    group_label: "> Dynamic KPIs"
     sql:
         CASE
           WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${pct_idleness_target_rider}
@@ -460,7 +455,7 @@ view: forecasts {
     label: "Final UTR"
     description: "Forecasted Orders/Forecasted Hours"
     value_format_name: decimal_1
-    group_label: ">> Dynamic KPIs"
+    group_label: "> Dynamic KPIs"
     sql: ${number_of_forecasted_orders}/nullif(${number_of_forecasted_hours_by_position},0);;
   }
 
@@ -469,8 +464,8 @@ view: forecasts {
     label: "# Actually Needed Hours"
     description: "# Hours needed based on # Orders and forecasted UTR - # Orders/Base UTR (Target UTR)"
     value_format_name: decimal_1
-    group_label: ">> Dynamic KPIs"
-    sql: ${orders_cl.cnt_successful_orders}/nullif(${number_of_target_orders_by_position},0);;
+    group_label: "> Dynamic KPIs"
+    sql: ${orders_with_ops_metrics.cnt_orders}/nullif(${number_of_target_orders_by_position},0);;
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
