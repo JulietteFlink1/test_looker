@@ -294,8 +294,18 @@ view: inventory_changes_daily {
     value_format_name: percent_1
   }
 
-
-
-
+  set: fields_for_utr_calculation {
+    fields: [
+      sum_quantity_change,
+      sum_outbound_orders,
+      sum_inbound_inventory,
+      sum_outbound_waste,
+      sum_outbound_orders,
+      sum_outbound_wrong_delivery,
+      is_inbound,
+      is_outbound_waste,
+      change_reason
+    ]
+  }
 
 }
