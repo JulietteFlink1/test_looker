@@ -133,8 +133,20 @@ view: products {
   dimension: replenishment_substitute_group {
     label: "Replenishment Substitute Groups"
     description: "The substitue groups used by the Supply Chain team as defined in ERP"
+    group_label: "> Product Attributes"
+
     type: string
     sql: ${TABLE}.replenishment_substitute_group ;;
+  }
+
+  dimension: replenishment_substitute_group_parent_sku {
+
+    label:       "Parent SKU (Replenishment Group)"
+    description: "The SKU that serves as an identifier per replenishment group. If an item does not belong to a replenishment group, it is the same as its item-SKU"
+    group_label: "> Product Attributes"
+
+    type: string
+    sql: ${TABLE}.replenishment_substitute_group_parent_sku ;;
   }
 
   dimension: sku_hub_count {
