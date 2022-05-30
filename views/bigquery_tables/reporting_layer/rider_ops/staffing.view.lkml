@@ -2441,9 +2441,39 @@ view: staffing {
   measure: utr_hub_staff {
     group_label: ">> Hub Staff KPIs"
     label: "Hub Staff UTR"
+    description: "Hub Staff UTR (# Orders/Hub Staff Hours)"
     type: number
     sql: ${orders_cl.cnt_successful_orders}/ NULLIF(${number_of_worked_hours_hub_staff}, 0) ;;
     value_format_name: decimal_1
+  }
+
+
+  measure: hub_staff_utr_all_items {
+    group_label: ">> Hub Staff KPIs"
+    label: "Hub Staff UTR (All Items)"
+    description: "Hub Staff UTR (# All inventory Changes/Hub Staff Hours)"
+    type: number
+    sql: abs(${inventory_changes_daily.sum_quantity_change})/${number_of_worked_hours_hub_staff} ;;
+    value_format_name: decimal_2
+  }
+
+  measure: hub_staff_utr_picked_items {
+    group_label: ">> Hub Staff KPIs"
+    label: "Hub Staff UTR (Ordered Items)"
+    description: "Hub Staff UTR (# Ordered Items/Hub Staff Hours)"
+    type: number
+    sql: abs(${inventory_changes_daily.sum_outbound_orders})/${number_of_worked_hours_hub_staff} ;;
+    value_format_name: decimal_2
+  }
+
+  measure: hub_staff_utr_outbounded_items {
+    group_label: ">> Hub Staff KPIs"
+    label: "Hub Staff UTR (Outbounded Items)"
+    description: "Hub Staff UTR (# Outbounded Items/Hub Staff Hours)"
+    type: number
+    sql: abs(${inventory_changes_daily.sum_outbound_waste}+${inventory_changes_daily.sum_outbound_wrong_delivery}+${inventory_changes_daily.sum_outbound_orders})
+      /${number_of_worked_hours_hub_staff} ;;
+    value_format_name: decimal_2
   }
 
   # =========  Dynamic KPIs   =========

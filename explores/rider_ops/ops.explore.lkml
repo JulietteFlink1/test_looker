@@ -9,6 +9,7 @@ include: "/views/bigquery_tables/curated_layer/orders.view"
 include: "/views/extended_tables/orders_using_hubs.view"
 include: "/views/bigquery_tables/reporting_layer/rider_ops/staffing.view"
 include: "/views/bigquery_tables/curated_layer/forecasts.view"
+include: "/supply_chain/views/bigquery_reporting/inventory_changes_daily.view"
 
 explore: ops {
   from: staffing
@@ -74,6 +75,17 @@ explore: ops {
       and lower(${forecasts.hub_code})=lower(${hubs.hub_code});;
     relationship: one_to_many
     type: left_outer
+  }
+
+  # Cross reference dependency from staffing view
+  join: inventory_changes_daily {
+    from: inventory_changes_daily
+    view_label: ""
+    sql_on: lower(${orders_cl.hub_code}) = lower(${inventory_changes_daily.hub_code})
+      and ${orders_cl.created_date}  = ${inventory_changes_daily.inventory_change_date} ;;
+    relationship: many_to_many
+    type: left_outer
+    fields: [inventory_changes_daily.fields_for_utr_calculation*]
   }
 
 }
