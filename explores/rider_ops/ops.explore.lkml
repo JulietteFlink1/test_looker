@@ -23,19 +23,22 @@ explore: ops {
       hubs.country: "",
       hubs.hub_name: "",
       time_grid.start_datetime_date: "yesterday",
-      forecasts.forecast_horizon: "0"
+      forecasts.forecast_horizon: "0",
+      time_grid.start_datetime_hour_of_day: "[6,23]"
     ]
   }
 
   # To be consistent remove fileds with view labels formatted with *
   # Remove successful order filter, as we only take into account those only
+  # Remove fields that use cross reference from shyftplan
 
-  fields: [ALL_FIELDS*,-orders_cl.cnt_orders_with_delivery_eta_available,-orders_cl.cnt_orders_with_targeted_eta_available]
+  fields: [ALL_FIELDS*,-orders_cl.cnt_orders_with_delivery_eta_available,-orders_cl.cnt_orders_with_targeted_eta_available, -orders_cl.KPI,
+        -orders_cl.sum_rider_hours]
 
   # Dimensional time grid table to have generic date filter
   join: time_grid {
     from: time_grid
-    sql_on: ${ops.start_timestamp_raw} = ${time_grid.start_datetime_raw} ;;
+    sql_on: ${ops.start_timestamp_minute30} = ${time_grid.start_datetime_minute30} ;;
     relationship: one_to_one
     type: full_outer
     fields: [time_grid.start_datetime_date, time_grid.start_datetime_hour_of_day, time_grid.start_datetime_minute30,
@@ -70,16 +73,6 @@ explore: ops {
     sql_on: ${forecasts.start_timestamp_minute30} = ${time_grid.start_datetime_minute30}
       and lower(${forecasts.hub_code})=lower(${hubs.hub_code});;
     relationship: one_to_many
-    type: left_outer
-  }
-
-  # Cross reference dependency from orders view
-  join: shyftplan_riders_pickers_hours {
-    from: shyftplan_riders_pickers_hours_clean
-    view_label: ""
-    sql_on: ${orders_cl.created_date} = ${shyftplan_riders_pickers_hours.shift_date}
-      and ${hubs.hub_code} = lower(${shyftplan_riders_pickers_hours.hub_name});;
-    relationship: many_to_many
     type: left_outer
   }
 
