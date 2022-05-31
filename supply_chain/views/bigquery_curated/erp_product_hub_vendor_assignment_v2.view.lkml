@@ -457,6 +457,45 @@ view: erp_product_hub_vendor_assignment_v2 {
 
 
 
+  # - - - - - - - - - - - - -   Start: DC Data - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  dimension: vendor_id_dc_corrected {
+
+    label:       "Corrected Vendor ID (for DC delivering to Hub)"
+    description: "In cases, where the vendor delivers to our distribution centers and the distribution center do deliver to the hubs,
+                  we see the vendor_id of the DC as vendor_id instead of the vendor_id of the original vendor.
+                  To account for that, we provide in this field the vendor_id, that actually sent the item to Flink (to Flinks DCs)"
+    group_label: "> DC data"
+
+    type: string
+    sql: ${TABLE}.vendor_id_dc_corrected ;;
+  }
+
+  dimension: is_dc_warehouse {
+
+    label:       "Is Warehouse DC"
+    description: "This boolean is true, for cases, when a vendor is delivering to a warehouse, that we consider a distribution center."
+    group_label: "> DC data"
+
+    type: yesno
+    sql: ${TABLE}.is_dc_warehouse ;;
+    hidden: yes
+  }
+
+  dimension: is_vendor_dc {
+
+    label:       "Is Vendor DC"
+    description: "This boolean is true, for cases, when the items, that are delivered to a hub are being sent from a distribution center"
+    group_label: "> DC data"
+
+    type: yesno
+    sql: ${TABLE}.is_vendor_dc ;;
+  }
+
+
+  # - - - - - - - - - - - - -   END:   DC Data - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+
 
   # =========  hidden   =========
   dimension: hub_code {
