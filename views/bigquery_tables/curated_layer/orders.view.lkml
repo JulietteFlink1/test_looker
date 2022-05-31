@@ -505,7 +505,7 @@ view: orders {
     label: "Estimated number of minutes saved on this order due to stacking"
     description: "Total time needed for the rider to handle the order: Riding to customer + At customer + Riding to hub"
     type: number
-    sql: ${TABLE}.potential_rider_handling_time_without_stacking_minutes - ${TABLE}.rider_handling_time_minutes ;;
+    sql: case when ${TABLE}.is_stacked_order = true then ${TABLE}.potential_rider_handling_time_without_stacking_minutes - ${TABLE}.rider_handling_time_minutes end ;;
   }
 
   dimension: discount_code {
