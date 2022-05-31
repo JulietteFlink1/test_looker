@@ -173,7 +173,7 @@ view: forecasts {
   }
 
   dimension: forecast_horizon {
-    label: "Forecast Horizon - Days"
+    label: "Forecast Horizon (Days)"
     description: "Days between Timeslot Date and Job Date"
     type: number
     value_format_name: decimal_0
