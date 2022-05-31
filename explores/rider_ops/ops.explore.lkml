@@ -24,8 +24,9 @@ explore: ops {
       hubs.country: "",
       hubs.hub_name: "",
       time_grid.start_datetime_date: "yesterday",
-      forecasts.forecast_horizon: "0",
-      time_grid.start_datetime_hour_of_day: "[6,23]"
+      forecasts.forecast_horizon: "0,NULL",
+      time_grid.start_datetime_hour_of_day: "[6,23]",
+      forecasts.job_date: ""
     ]
   }
 
@@ -67,7 +68,7 @@ explore: ops {
     view_label: "Forecasts"
     sql_on: ${forecasts.start_timestamp_minute30} = ${time_grid.start_datetime_minute30}
       and lower(${forecasts.hub_code})=lower(${hubs.hub_code});;
-    relationship: one_to_many
+    relationship: many_to_many
     type: left_outer
   }
 
