@@ -25,6 +25,27 @@ view: bulk_items {
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~       Sets.         ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  set: main_fields {
+    fields: [dispatch_notification_id,
+             dispatch_advice_number,
+             external_sku,
+             sscc,
+             country_iso,
+             city,
+             hub_code,
+             sku,
+             delivery_date,
+             loaded_in_truck_timestamp_time,
+             loaded_in_truck_timestamp_date,
+             order_number,
+             product_name,
+             sku,
+             provider_name,
+             sum_handling_units_count,
+             sum_total_quantity
+      ]
+  }
+
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Parameters     ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -68,6 +89,7 @@ view: bulk_items {
     sql: ${TABLE}.bulk_inbounding_rank ;;
 
     value_format_name: decimal_0
+    hidden: yes
 
   }
 
@@ -80,6 +102,7 @@ view: bulk_items {
     sql: ${TABLE}.number_of_bulks_per_dispatch_notification ;;
 
     value_format_name: decimal_0
+    hidden: yes
   }
 
   dimension: sku_mapping_status {
@@ -89,6 +112,7 @@ view: bulk_items {
 
     type: string
     sql: ${TABLE}.sku_mapping_status ;;
+    hidden: yes
   }
 
   dimension: inbound_status {
@@ -98,6 +122,7 @@ view: bulk_items {
 
     type: string
     sql: ${TABLE}.inbound_status ;;
+    hidden: yes
   }
 
 
@@ -108,6 +133,7 @@ view: bulk_items {
 
     type: yesno
     sql: ${TABLE}.is_first_inbounded_bulk ;;
+    hidden: yes
   }
 
   dimension: provider_name {
@@ -117,6 +143,7 @@ view: bulk_items {
 
     type: string
     sql: ${TABLE}.provider_name ;;
+
   }
 
 
@@ -126,6 +153,8 @@ view: bulk_items {
   dimension: dispatch_advice_number {
 
     label:       "Dispatch Advice Number"
+    group_label: ">> IDs"
+
     type: string
     sql: ${TABLE}.dispatch_advice_number ;;
   }
@@ -134,6 +163,8 @@ view: bulk_items {
   dimension: sscc {
 
     label:       "SSCC"
+    group_label: ">> IDs"
+
     type: string
     sql: ${TABLE}.sscc ;;
   }
@@ -142,21 +173,29 @@ view: bulk_items {
   dimension: warehouse_number {
 
     label:       "Warehouse Number"
+    group_label: ">> IDs"
+
     type: string
     sql: ${TABLE}.warehouse_number ;;
+    hidden: yes
   }
 
   dimension: warehouse_number_array {
 
     label:       "All Possible Warehouse Numbers"
+    group_label: ">> IDs"
+
     type: string
     sql: ${TABLE}.all_possible_warehouse_numbers ;;
+    hidden: yes
   }
 
 
   dimension: order_number {
 
     label:       "Order Number"
+    group_label: ">> IDs"
+
     type: string
     sql: ${TABLE}.order_number ;;
   }
@@ -165,6 +204,8 @@ view: bulk_items {
   dimension: order_number_array {
 
     label:       "All Possible Order Numbers"
+    group_label: ">> IDs"
+
     type: string
     sql: ${TABLE}.all_possible_order_numbers ;;
   }
@@ -178,13 +219,9 @@ view: bulk_items {
 
     type: time
     timeframes: [
-      raw,
       time,
       date,
-      week,
-      month,
-      quarter,
-      year
+      week
     ]
     sql: ${TABLE}.loaded_in_truck_timestamp ;;
   }
@@ -192,6 +229,16 @@ view: bulk_items {
 
 
   # =========  timestamps   =========
+  dimension: delivery_date {
+
+    label:       "Delivery Date"
+    description: "For REWE DESADVs, the delivery date is the date of DESADV creation aka the loaded-on-truck-date. If this timestamp is later than 8pm, the next day is considered the delivery date"
+
+    type: date
+    datatype: date
+    sql: ${TABLE}.delivery_date ;;
+  }
+
   dimension_group: first_bulk_inbounding_timestamp {
 
     label:       "First Bulk Inbounding"
@@ -208,6 +255,7 @@ view: bulk_items {
       year
     ]
     sql: ${TABLE}.first_bulk_inbounding_timestamp ;;
+    hidden: yes
   }
 
   dimension_group: inbounded_timestamp {
@@ -226,7 +274,9 @@ view: bulk_items {
       year
     ]
     sql: ${TABLE}.inbounded_timestamp ;;
+    hidden: yes
   }
+
 
   dimension_group: inbounding_duration {
 
@@ -238,12 +288,15 @@ view: bulk_items {
 
     sql_start: ${TABLE}.first_bulk_inbounding_timestamp ;;
     sql_end: ${TABLE}.inbounded_timestamp ;;
+
+    hidden: yes
   }
 
   dimension: days_between {
 
     type: number
     sql: date_diff(${first_bulk_inbounding_timestamp_date}, ${first_bulk_inbounding_timestamp_date}, day) ;;
+    hidden: yes
   }
 
 
@@ -251,7 +304,7 @@ view: bulk_items {
   dimension: table_uuid {
     type: string
     sql: ${TABLE}.table_uuid ;;
-    hidden: no
+    hidden: yes
     primary_key: yes
   }
 
@@ -261,7 +314,9 @@ view: bulk_items {
   }
 
   dimension: internal_sku_array {
-    hidden: no
+    group_label: ">> IDs"
+
+    hidden: yes
     sql: ${TABLE}.internal_sku_array ;;
   }
 
@@ -308,6 +363,7 @@ view: bulk_items {
 
     type: string
     sql: ${TABLE}.bulk_id ;;
+    hidden: yes
 
   }
 
@@ -317,6 +373,7 @@ view: bulk_items {
 
     type: string
     sql: ${TABLE}.bulk_items_id ;;
+    hidden: yes
 
   }
 
@@ -336,6 +393,7 @@ view: bulk_items {
 
     type: string
     sql: ${TABLE}.provider_id ;;
+    hidden: yes
   }
 
 
@@ -350,7 +408,6 @@ view: bulk_items {
     label:       "# Handling Units"
     description: "THe sum of handling units for items defined per dispatch notification"
 
-
     type: sum
     sql: ${handling_units_count} ;;
 
@@ -361,6 +418,7 @@ view: bulk_items {
 
     label:       "AVG Bulks per dispatch notification"
     description: "This field defines, how many bulks were contained in a specific dispatch notification"
+    group_label: "Special Use Cases"
 
     type: average
     sql: ${number_of_bulks_per_dispatch_notification} ;;
@@ -383,6 +441,7 @@ view: bulk_items {
 
     label:       "# Bulks"
     description: "The total number of bulks"
+    group_label: "Special Use Cases"
 
     type: count_distinct
     sql: ${bulk_id} ;;
@@ -394,6 +453,7 @@ view: bulk_items {
 
     label:       "# Bulks inbounded on delivery day"
     description: "The number of bulks, that were inbounded in the same they of the delivery (more precise: the day of the first inbounding of a bulk within a dispatch notification)"
+    group_label: "Special Use Cases"
 
     type: count_distinct
     sql: ${bulk_id};;
@@ -406,6 +466,7 @@ view: bulk_items {
 
     label:       "% Bulks inbounded same day"
     description: "The number of bulks that are inbounded on the day of the first inbounding compared to all bulks of a dispatch notification"
+    group_label: "Special Use Cases"
 
     type: number
     sql: safe_divide(${sum_number_of_bulks_booked_in_same_day}, ${sum_number_of_bulks}) ;;
@@ -442,6 +503,7 @@ view: bulk_items {
 
     label:       "# Dispatch Notifications"
     description: "The total number of dispatch notifications"
+    group_label: "Special Use Cases"
 
     type: count_distinct
     sql: ${dispatch_notification_id} ;;
