@@ -25,7 +25,8 @@ explore: ops {
       hubs.hub_name: "",
       time_grid.start_datetime_date: "yesterday",
       forecasts.forecast_horizon: "0,NULL",
-      time_grid.start_datetime_hour_of_day: "[6,23]"
+      time_grid.start_datetime_hour_of_day: "[6,23]",
+      forecasts.job_date: ""
     ]
   }
 

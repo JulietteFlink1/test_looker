@@ -151,6 +151,10 @@ view: order_comments {
     sql: ${customer_location::latitude} || '-' || ${customer_location::longitude};;
   }
 
+  dimension: order_date {
+    hidden: no
+  }
+
   ## these dimensions have to be hidden manually
   dimension: date_granularity_pass_through {
     hidden: yes
