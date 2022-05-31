@@ -482,6 +482,7 @@ view: forecasts {
     type: string
     allowed_value: { value: "Rider" }
     allowed_value: { value: "Picker" }
+    hidden: yes
   }
 
 }
