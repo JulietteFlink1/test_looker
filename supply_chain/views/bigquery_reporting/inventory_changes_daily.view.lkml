@@ -2,7 +2,7 @@ view: inventory_changes_daily {
 
   view_label: "* Inventory Changes Daily*"
 
-  sql_table_name: `flink-data-prod.reporting.inventory_changes_daily`
+  sql_table_name: `flink-data-dev.reporting.inventory_changes_daily`
     ;;
 
 
@@ -58,15 +58,17 @@ view: inventory_changes_daily {
 
   dimension:is_outbound_waste {
     label: "Is Outbound (Waste)"
-    description: "Boolean - indicates, if a inventory chqnge is based on waste - determined by the reasons 'product-damaged'm 'product-expired' or 'too-good-to-go'"
+    description: "Boolean - indicates, if a inventory chqnge is based on waste - determined by the reasons 'product-damaged' ('delivery damaged'), 'product-expired' ('delivery-expired') or 'too-good-to-go'"
     type: yesno
-    sql: case when ${change_reason} in ('product-damaged', 'product-expired', 'too-good-to-go') then true else false end ;;
+    # sql: case when ${change_reason} in ('product-damaged', 'product-expired', 'too-good-to-go') then true else false end ;;
+    sql: ${TABLE}.is_outbound_waste ;;
 
   }
 
   dimension: is_inbound {
     type: yesno
-    sql: case when ${change_type} in ('inbound', 'inbound-bulk') then true else false end ;;
+    # sql: case when ${change_type} in ('inbound', 'inbound-bulk') then true else false end ;;
+    sql: ${TABLE}.is_inbound ;;
     hidden: yes
   }
 
