@@ -69,6 +69,14 @@ view: daily_user_address_aggregates {
     sql: ${TABLE}.is_waitlist_signup_selected ;;
   }
 
+  dimension: is_city_not_available {
+    group_label: "Flags | Event"
+    label: "Is City Not Available Selected"
+    description: "Did daily_user_uuid choose to browse as guest and then select that their city is not available?"
+    type: yesno
+    sql: ${TABLE}.is_city_not_available ;;
+  }
+
   dimension: is_hub_updated_with_cart {
     group_label: "Flags | Event"
     label: "Is Hub Updated With Cart"
@@ -156,6 +164,14 @@ view: daily_user_address_aggregates {
     description: "# daily users who were in an unavailable area and did not have a waitlist joining intent or browsing selection action"
     type: count
     filters: [is_selected_address_outside_delivery_area: "yes", is_skip_waitlist: "no", is_waitlist_signup_selected: "no"]
+  }
+
+  measure: cnt_is_city_unavailable {
+    group_label: "# Daily Users"
+    label: "# Daily Users With Unavailable Cities"
+    description: "# daily users that tapped City Not Available"
+    type: count
+    filters: [is_city_not_available: "yes"]
   }
 
   measure: cnt_address_resolution_failed {

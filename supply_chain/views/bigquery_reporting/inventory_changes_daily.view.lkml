@@ -90,6 +90,11 @@ view: inventory_changes_daily {
     hidden: no
   }
 
+  dimension: parent_sku {
+    type: string
+    sql: ${TABLE}.parent_sku ;;
+  }
+
   dimension: price_gross {
     label: "Product Price Gross (Used for Waste)"
     type: number
