@@ -2,7 +2,7 @@ view: inventory_changes_daily {
 
   view_label: "* Inventory Changes Daily*"
 
-  sql_table_name: `flink-data-dev.reporting.inventory_changes_daily`
+  sql_table_name: `flink-data-prod.reporting.inventory_changes_daily`
     ;;
 
 
