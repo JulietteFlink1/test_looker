@@ -14,6 +14,7 @@ include: "/**/gorillas_hubs.view.lkml"
 include: "/**/gorillas_pricing_hist.view.lkml"
 include: "/**/global_filters_and_parameters.view"
 include: "/**/flink_to_gorillas_global.view"
+include: "/**/products.view"
 
 explore: gorillas_products_hist {
 
@@ -39,6 +40,7 @@ explore: gorillas_products_hist {
 
   join: gorillas_categories {
     from: gorillas_categories
+    view_label: "Gorillas Product Categories"
     sql_on: ${gorillas_categories.hub_id} = ${gorillas_products_hist.hub_id} AND
             ${gorillas_categories.product_id} = ${gorillas_products_hist.product_id};;
     relationship: many_to_one
@@ -47,6 +49,7 @@ explore: gorillas_products_hist {
 
   join: gorillas_hubs {
     from:  gorillas_hubs
+    view_label: "Gorillas Hubs"
     sql_on: ${gorillas_hubs.hub_id} = ${gorillas_categories.hub_id} ;;
     relationship: many_to_one
     type:  left_outer
@@ -54,6 +57,7 @@ explore: gorillas_products_hist {
 
   join: gorillas_pricing_hist {
     from:  gorillas_pricing_hist
+    view_label: "Gorillas Historical Pricing Data"
     sql_on: ${gorillas_pricing_hist.hub_id} = ${gorillas_products_hist.hub_id} AND
             ${gorillas_pricing_hist.product_id} = ${gorillas_products_hist.product_id} AND
             ${gorillas_pricing_hist.scrape_date} = ${gorillas_products_hist.partition_timestamp_date};;
@@ -63,8 +67,17 @@ explore: gorillas_products_hist {
 
   join: flink_to_gorillas_global {
     from: flink_to_gorillas_global
+    view_label: "Flink <> Gorillas Product Matches"
     sql_on: ${gorillas_products_hist.product_id} = ${flink_to_gorillas_global.gorillas_product_id} ;;
     relationship: many_to_many
+    type: left_outer
+  }
+
+  join: products {
+    from: products
+    view_label: "Flink Product Data"
+    sql_on: ${flink_to_gorillas_global.flink_product_sku} = ${products.product_sku} ;;
+    relationship: one_to_many
     type: left_outer
   }
 }

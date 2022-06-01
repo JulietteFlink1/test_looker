@@ -58,16 +58,18 @@ view: inventory_changes_daily {
 
   dimension:is_outbound_waste {
     label: "Is Outbound (Waste)"
-    description: "Boolean - indicates, if a inventory chqnge is based on waste - determined by the reasons 'product-damaged'm 'product-expired' or 'too-good-to-go'"
+    description: "Boolean - indicates, if a inventory chqnge is based on waste - determined by the reasons 'product-damaged' ('delivery damaged'), 'product-expired' ('delivery-expired') or 'too-good-to-go'"
     type: yesno
-    sql: case when ${change_reason} in ('product-damaged', 'product-expired', 'too-good-to-go') then true else false end ;;
+    # sql: case when ${change_reason} in ('product-damaged', 'product-expired', 'too-good-to-go') then true else false end ;;
+    sql: ${TABLE}.is_outbound_waste ;;
 
   }
 
   dimension: is_inbound {
     type: yesno
-    sql: case when ${change_type} in ('inbound', 'inbound-bulk') then true else false end ;;
-    hidden: yes
+    # sql: case when ${change_type} in ('inbound', 'inbound-bulk') then true else false end ;;
+    sql: ${TABLE}.is_inbound ;;
+    hidden: no
   }
 
 
@@ -88,6 +90,11 @@ view: inventory_changes_daily {
     type: string
     sql: ${TABLE}.sku ;;
     hidden: no
+  }
+
+  dimension: parent_sku {
+    type: string
+    sql: ${TABLE}.parent_sku ;;
   }
 
   dimension: price_gross {
@@ -294,8 +301,18 @@ view: inventory_changes_daily {
     value_format_name: percent_1
   }
 
-
-
-
+  set: fields_for_utr_calculation {
+    fields: [
+      sum_quantity_change,
+      sum_outbound_orders,
+      sum_inbound_inventory,
+      sum_outbound_waste,
+      sum_outbound_orders,
+      sum_outbound_wrong_delivery,
+      is_inbound,
+      is_outbound_waste,
+      change_reason
+    ]
+  }
 
 }

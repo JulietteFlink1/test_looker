@@ -117,6 +117,22 @@ view: orderline {
     sql: ${TABLE}.amt_discount/(1+${tax_rate}) ;;
   }
 
+  dimension: amt_discount_products_gross {
+    label: "Product Discount Amount (Gross)"
+    group_label: "> Monetary Dimensions"
+    type: number
+    value_format_name: euro_accounting_0_precision
+    sql: ${TABLE}.amt_discount_products_gross ;;
+  }
+
+  dimension: amt_discount_products_net {
+    label: "Product Discount Amount (Net)"
+    group_label: "> Monetary Dimensions"
+    type: number
+    value_format_name: euro_accounting_0_precision
+    sql: ${TABLE}.amt_discount_products_net ;;
+  }
+
   dimension: amt_revenue_gross {
     label: "Revenue Gross"
     group_label: "> Monetary Dimensions"
@@ -564,6 +580,22 @@ view: orderline {
     type: sum
     value_format_name: euro_accounting_2_precision
     sql: ${amt_discount_net} ;;
+  }
+
+  measure: sum_amt_discount_products_gross {
+    group_label: "> Monetary Metrics"
+    label: "SUM Product Discount Amount (Gross)"
+    type: sum
+    value_format_name: euro_accounting_2_precision
+    sql: ${amt_discount_products_gross} ;;
+  }
+
+  measure: sum_amt_discount_products_net {
+    group_label: "> Monetary Metrics"
+    label: "SUM Product Discount Amount (Net)"
+    type: sum
+    value_format_name: euro_accounting_2_precision
+    sql: ${amt_discount_products_net} ;;
   }
 
   measure: sum_item_price_fulfilled_net {
