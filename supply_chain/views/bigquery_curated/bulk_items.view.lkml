@@ -42,7 +42,8 @@ view: bulk_items {
              sku,
              provider_name,
              sum_handling_units_count,
-             sum_total_quantity
+             sum_total_quantity,
+             sum_total_quantity_po_derived
       ]
   }
 
@@ -345,6 +346,12 @@ view: bulk_items {
     hidden: no
   }
 
+  dimension: total_quantity_po_derived {
+    type: number
+    sql: ${TABLE}.total_quantity_po_derived ;;
+    hidden: no
+  }
+
 
 
 
@@ -429,10 +436,21 @@ view: bulk_items {
   measure: sum_total_quantity {
 
     label:       "# Selling Units"
-    description: "The sum of all products (selling units)"
+    description: "The sum of all product quantities listed on the DESADV (selling units)"
 
     type: sum
     sql: ${total_quantity} ;;
+
+    value_format_name: decimal_0
+  }
+
+  measure: sum_total_quantity_po_derived {
+
+    label:       "# Corrected Selling Units (PO)"
+    description: "The sum of all purchase units from products as defined in the latest know Purchase Order. This measure was introduced, due to some parsing problems for certain SKUs in DESADVS, that eventually had incorrect selling units stated (e.g. 1 Banana per DESADV)"
+
+    type: sum
+    sql: ${total_quantity_po_derived} ;;
 
     value_format_name: decimal_0
   }

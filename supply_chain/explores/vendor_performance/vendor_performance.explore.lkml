@@ -43,7 +43,10 @@ explore: vendor_performance {
 
     fields: [vendor_performance_fill_rate.avg_desadv_fill_rate,
              vendor_performance_fill_rate.desadv_fill_rate,
-             vendor_performance_fill_rate.is_desadv_inbounded
+             vendor_performance_fill_rate.is_desadv_inbounded,
+             vendor_performance_fill_rate.desadv_fill_rate_po_corrected,
+             vendor_performance_fill_rate.avg_desadv_fill_rate_po_corrected
+
             ]
   }
 
