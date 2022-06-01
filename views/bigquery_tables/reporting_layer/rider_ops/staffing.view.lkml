@@ -1540,6 +1540,7 @@ view: staffing {
     ]
     sql: ${TABLE}.start_timestamp ;;
     convert_tz: yes
+    hidden: yes
   }
 
   dimension: timezone {
@@ -1561,7 +1562,7 @@ view: staffing {
   # =========  Hours   =========
   ##### All
   measure: number_of_worked_hours_rider {
-    group_label: ">> Rider KPIs"
+    group_label: "> Rider Measures"
     label: "# Punched Rider Hours"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -1570,7 +1571,7 @@ view: staffing {
   }
 
   measure: number_of_worked_hours_picker {
-    group_label: ">> Picker KPIs"
+    group_label: "> Picker Measures"
     label: "# Punched Picker Hours"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -1579,7 +1580,7 @@ view: staffing {
   }
 
   measure: number_of_worked_hours_shift_lead {
-    group_label: ">> Shift Lead KPIs"
+    group_label: "> Shift Lead Measures"
     label: "# Punched Shift Lead Hours"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -1587,7 +1588,7 @@ view: staffing {
     value_format_name: decimal_1
   }
   measure: number_of_worked_hours_rider_captain {
-    group_label: ">> Rider Captain KPIs"
+    group_label: "> Rider Captain Measures"
     label: "# Punched Rider Captain Hours"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -1595,7 +1596,7 @@ view: staffing {
     value_format_name: decimal_1
   }
   measure: number_of_worked_hours_co_ops {
-    group_label: ">> Co Ops KPIs"
+    group_label: "> Co Ops Measures"
     label: "# Punched Co Ops Hours"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -1604,7 +1605,7 @@ view: staffing {
   }
 
   measure: number_of_worked_hours_wh {
-    group_label: ">> WH KPIs"
+    group_label: "> WH Measures"
     label: "# Punched WH Hours"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -1613,7 +1614,7 @@ view: staffing {
   }
 
   measure: number_of_worked_hours_cc_agent {
-    group_label: ">> CC Agent KPIs"
+    group_label: "> CC Agent Measures"
     label: "# Punched CC Agent Hours"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -1622,7 +1623,7 @@ view: staffing {
   }
 
   measure: number_of_worked_hours_hub_staff {
-    group_label: ">> Hub Staff KPIs"
+    group_label: "> Hub Staff Measures"
     label: "# Punched Hub Staff Hours"
     type: number
     sql: ${number_of_worked_hours_wh}+${number_of_worked_hours_picker};;
@@ -1631,7 +1632,7 @@ view: staffing {
 
   ##### External
   measure: number_of_worked_hours_external_rider {
-    group_label: ">> Rider KPIs"
+    group_label: "> Rider Measures"
     label: "# Punched External Rider Hours"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -1640,7 +1641,7 @@ view: staffing {
   }
 
   measure: number_of_worked_hours_external_picker {
-    group_label: ">> Picker KPIs"
+    group_label: "> Picker Measures"
     label: "# Punched External Picker Hours"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -1649,7 +1650,7 @@ view: staffing {
   }
 
   measure: number_of_worked_hours_external_shift_lead {
-    group_label: ">> Shift Lead KPIs"
+    group_label: "> Shift Lead Measures"
     label: "# Punched External Shift Lead Hours"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -1657,7 +1658,7 @@ view: staffing {
     value_format_name: decimal_1
   }
   measure: number_of_worked_hours_external_rider_captain {
-    group_label: ">> Rider Captain KPIs"
+    group_label: "> Rider Captain Measures"
     label: "# Punched External Rider Captain Hours"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -1665,7 +1666,7 @@ view: staffing {
     value_format_name: decimal_1
   }
   measure: number_of_worked_hours_external_co_ops {
-    group_label: ">> Co Ops KPIs"
+    group_label: "> Co Ops Measures"
     label: "# Punched External Co Ops Hours"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -1674,7 +1675,7 @@ view: staffing {
   }
 
   measure: number_of_worked_hours_external_wh {
-    group_label: ">> WH KPIs"
+    group_label: "> WH Measures"
     label: "# Punched External WH Hours"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -1683,7 +1684,7 @@ view: staffing {
   }
 
   measure: number_of_worked_hours_external_cc_agent {
-    group_label: ">> CC Agent KPIs"
+    group_label: "> CC Agent Measures"
     label: "# Punched External CC Agent Hours"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -1694,7 +1695,7 @@ view: staffing {
   # =========  Employees   =========
   #### All
   measure: sum_of_worked_employees_rider {
-    group_label: ">> Rider KPIs"
+    group_label: "> Rider Measures"
     label: "# Punched Riders"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -1703,7 +1704,7 @@ view: staffing {
   }
 
   measure: sum_of_worked_employees_picker {
-    group_label: ">> Picker KPIs"
+    group_label: "> Picker Measures"
     label: "# Punched Pickers"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -1712,7 +1713,7 @@ view: staffing {
   }
 
   measure: sum_of_worked_employees_shift_lead {
-    group_label: ">> Shift Lead KPIs"
+    group_label: "> Shift Lead Measures"
     label: "# Punched Shift Leads"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -1720,7 +1721,7 @@ view: staffing {
     value_format_name: decimal_1
   }
   measure: sum_of_worked_employees_rider_captain {
-    group_label: ">> Rider Captain KPIs"
+    group_label: "> Rider Captain Measures"
     label: "# Punched Rider Captains"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -1728,7 +1729,7 @@ view: staffing {
     value_format_name: decimal_1
   }
   measure: sum_of_worked_employees_co_ops {
-    group_label: ">> Co Ops KPIs"
+    group_label: "> Co Ops Measures"
     label: "# Punched Co Ops Employees"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -1737,7 +1738,7 @@ view: staffing {
   }
 
   measure: sum_of_worked_employees_wh {
-    group_label: ">> WH KPIs"
+    group_label: "> WH Measures"
     label: "# Punched WH Employees"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -1746,7 +1747,7 @@ view: staffing {
   }
 
   measure: sum_of_worked_employees_cc_agent {
-    group_label: ">> CC Agent KPIs"
+    group_label: "> CC Agent Measures"
     label: "# Punched CC Agents"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -1756,7 +1757,7 @@ view: staffing {
 
   #### External
   measure: sum_of_worked_employees_external_rider {
-    group_label: ">> Rider KPIs"
+    group_label: "> Rider Measures"
     label: "# Punched External Riders"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -1765,7 +1766,7 @@ view: staffing {
   }
 
   measure: sum_of_worked_employees_external_pickers {
-    group_label: ">> Picker KPIs"
+    group_label: "> Picker Measures"
     label: "# Punched External Pickers"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -1774,7 +1775,7 @@ view: staffing {
   }
 
   measure: sum_of_worked_employees_external_shift_lead {
-    group_label: ">> Shift Lead KPIs"
+    group_label: "> Shift Lead Measures"
     label: "# Punched External Shift Leads"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -1782,7 +1783,7 @@ view: staffing {
     value_format_name: decimal_1
   }
   measure: sum_of_worked_employees_external_rider_captain {
-    group_label: ">> Rider Captain KPIs"
+    group_label: "> Rider Captain Measures"
     label: "# Punched External Rider Captains"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -1790,7 +1791,7 @@ view: staffing {
     value_format_name: decimal_1
   }
   measure: sum_of_worked_employees_external_co_ops {
-    group_label: ">> Co Ops KPIs"
+    group_label: "> Co Ops Measures"
     label: "# Punched External Co Ops Employees"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -1799,7 +1800,7 @@ view: staffing {
   }
 
   measure: sum_of_worked_employees_external_wh {
-    group_label: ">> WH KPIs"
+    group_label: "> WH Measures"
     label: "# Punched External WH Employees"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -1808,7 +1809,7 @@ view: staffing {
   }
 
   measure: sum_of_worked_employees_external_cc_agent {
-    group_label: ">> CC Agent KPIs"
+    group_label: "> CC Agent Measures"
     label: "# Punched External CC Agents"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -1818,7 +1819,7 @@ view: staffing {
 
   #### Internal
   measure: sum_of_worked_employees_internal_rider {
-    group_label: ">> Rider KPIs"
+    group_label: "> Rider Measures"
     label: "# Punched Internal Riders"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -1827,7 +1828,7 @@ view: staffing {
   }
 
   measure: sum_of_worked_employees_internal_pickers {
-    group_label: ">> Picker KPIs"
+    group_label: "> Picker Measures"
     label: "# Punched Internal Pickers"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -1836,7 +1837,7 @@ view: staffing {
   }
 
   measure: sum_of_worked_employees_internal_shift_lead {
-    group_label: ">> Shift Lead KPIs"
+    group_label: "> Shift Lead Measures"
     label: "# Punched Internal Shift Leads"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -1844,7 +1845,7 @@ view: staffing {
     value_format_name: decimal_1
   }
   measure: sum_of_worked_employees_internal_rider_captain {
-    group_label: ">> Rider Captain KPIs"
+    group_label: "> Rider Captain Measures"
     label: "# Punched Internal Rider Captains"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -1852,7 +1853,7 @@ view: staffing {
     value_format_name: decimal_1
   }
   measure: sum_of_worked_employees_internal_co_ops {
-    group_label: ">> Co Ops KPIs"
+    group_label: "> Co Ops Measures"
     label: "# Punched Internal Co Ops Employees"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -1861,7 +1862,7 @@ view: staffing {
   }
 
   measure: sum_of_worked_employees_internal_wh {
-    group_label: ">> WH KPIs"
+    group_label: "> WH Measures"
     label: "# Punched Internal WH Employees"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -1870,7 +1871,7 @@ view: staffing {
   }
 
   measure: sum_of_worked_employees_internal_cc_agent {
-    group_label: ">> CC Agent KPIs"
+    group_label: "> CC Agent Measures"
     label: "# Punched Internal CC Agents"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -1882,7 +1883,7 @@ view: staffing {
   ##### All
 
   measure: sum_of_unassigned_employees_rider {
-    group_label: ">> Rider KPIs"
+    group_label: "> Rider Measures"
     label: "# Unassigned Riders"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -1891,7 +1892,7 @@ view: staffing {
   }
 
   measure: sum_of_unassigned_employees_pickers {
-    group_label: ">> Picker KPIs"
+    group_label: "> Picker Measures"
     label: "# Unassigned Pickers"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -1900,7 +1901,7 @@ view: staffing {
   }
 
   measure: sum_of_unassigned_employees_shift_lead {
-    group_label: ">> Shift Lead KPIs"
+    group_label: "> Shift Lead Measures"
     label: "# Unassigned Shift Leads"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -1908,7 +1909,7 @@ view: staffing {
     value_format_name: decimal_1
   }
   measure: sum_of_unassigned_employees_rider_captain {
-    group_label: ">> Rider Captain KPIs"
+    group_label: "> Rider Captain Measures"
     label: "# Unassigned Rider Captains"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -1916,7 +1917,7 @@ view: staffing {
     value_format_name: decimal_1
   }
   measure: sum_of_unassigned_employees_co_ops {
-    group_label: ">> Co Ops KPIs"
+    group_label: "> Co Ops Measures"
     label: "# Unassigned Co Ops Employees"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -1925,7 +1926,7 @@ view: staffing {
   }
 
   measure: sum_of_unassigned_employees_wh {
-    group_label: ">> WH KPIs"
+    group_label: "> WH Measures"
     label: "# Unassigned WH Employees"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -1934,7 +1935,7 @@ view: staffing {
   }
 
   measure: sum_of_unassigned_employees_cc_agent {
-    group_label: ">> CC Agent KPIs"
+    group_label: "> CC Agent Measures"
     label: "# Unassigned CC Agents"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -1945,7 +1946,7 @@ view: staffing {
   # =========  Open Hours   =========
 
   measure: number_of_unassigned_hours_rider {
-    group_label: ">> Rider KPIs"
+    group_label: "> Rider Measures"
     label: "# Open Rider Hours"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -1954,7 +1955,7 @@ view: staffing {
   }
 
   measure: number_of_unassigned_hours_picker {
-    group_label: ">> Picker KPIs"
+    group_label: "> Picker Measures"
     label: "# Open Picker Hours"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -1963,7 +1964,7 @@ view: staffing {
   }
 
   measure: number_of_unassigned_hours_shift_lead {
-    group_label: ">> Shift Lead KPIs"
+    group_label: "> Shift Lead Measures"
     label: "# Open Shift Lead Hours"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -1971,7 +1972,7 @@ view: staffing {
     value_format_name: decimal_1
   }
   measure: number_of_unassigned_hours_rider_captain {
-    group_label: ">> Rider Captain KPIs"
+    group_label: "> Rider Captain Measures"
     label: "# Open Rider Captain Hours"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -1979,7 +1980,7 @@ view: staffing {
     value_format_name: decimal_1
   }
   measure: number_of_unassigned_hours_co_ops {
-    group_label: ">> Co Ops KPIs"
+    group_label: "> Co Ops Measures"
     label: "# Open Co Ops Employee Hours"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -1988,7 +1989,7 @@ view: staffing {
   }
 
   measure: number_of_unassigned_hours_wh {
-    group_label: ">> WH KPIs"
+    group_label: "> WH Measures"
     label: "# Open WH Employee Hours"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -1997,7 +1998,7 @@ view: staffing {
   }
 
   measure: number_of_unassigned_hours_cc_agent {
-    group_label: ">> CC Agent KPIs"
+    group_label: "> CC Agent Measures"
     label: "# Open CC Agent Hours"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -2005,7 +2006,7 @@ view: staffing {
     value_format_name: decimal_1
   }
   measure: number_of_unassigned_hours_hub_staff {
-    group_label: ">> Hub Staff KPIs"
+    group_label: "> Hub Staff Measures"
     label: "# Open Hub Staff Hours"
     type: number
     sql: ${number_of_unassigned_hours_picker}+${number_of_unassigned_hours_wh};;
@@ -2013,7 +2014,7 @@ view: staffing {
   }
   ##### Planned (filled)
   measure: number_of_planned_hours_rider {
-    group_label: ">> Rider KPIs"
+    group_label: "> Rider Measures"
     label: "# Planned Rider Hours"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -2022,7 +2023,7 @@ view: staffing {
   }
 
   measure: number_of_planned_hours_picker {
-    group_label: ">> Picker KPIs"
+    group_label: "> Picker Measures"
     label: "# Planned Picker Hours"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -2031,7 +2032,7 @@ view: staffing {
   }
 
   measure: number_of_planned_hours_shift_lead {
-    group_label: ">> Shift Lead KPIs"
+    group_label: "> Shift Lead Measures"
     label: "# Planned Shift Lead Hours"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -2039,7 +2040,7 @@ view: staffing {
     value_format_name: decimal_1
   }
   measure: number_of_planned_hours_rider_captain {
-    group_label: ">> Rider Captain KPIs"
+    group_label: "> Rider Captain Measures"
     label: "# Planned Rider Captain Hours"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -2047,7 +2048,7 @@ view: staffing {
     value_format_name: decimal_1
   }
   measure: number_of_planned_hours_co_ops {
-    group_label: ">> Co Ops KPIs"
+    group_label: "> Co Ops Measures"
     label: "# Planned Co Ops Hours"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -2056,7 +2057,7 @@ view: staffing {
   }
 
   measure: number_of_planned_hours_wh {
-    group_label: ">> WH KPIs"
+    group_label: "> WH Measures"
     label: "# Planned WH Hours"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -2065,7 +2066,7 @@ view: staffing {
   }
 
   measure: number_of_planned_hours_cc_agent {
-    group_label: ">> CC Agent KPIs"
+    group_label: "> CC Agent Measures"
     label: "# Planned CC Agent Hours"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -2073,7 +2074,7 @@ view: staffing {
     value_format_name: decimal_1
   }
   measure: number_of_planned_hours_hub_staff {
-    group_label: ">> Hub Staff KPIs"
+    group_label: "> Hub Staff Measures"
     label: "# Planned Hub Staff Hours"
     type: number
     sql: ${number_of_planned_hours_picker}+${number_of_planned_hours_wh};;
@@ -2082,7 +2083,7 @@ view: staffing {
   # =========  Scheduled Hours (Post-adjustments)   =========
   ##### All
   measure: number_of_scheduled_hours_rider {
-    group_label: ">> Rider KPIs"
+    group_label: "> Rider Measures"
     label: "# Scheduled Rider Hours"
     type: number
     sql: ${number_of_unassigned_hours_rider}+${number_of_planned_hours_rider};;
@@ -2090,7 +2091,7 @@ view: staffing {
   }
 
   measure: number_of_scheduled_hours_picker {
-    group_label: ">> Picker KPIs"
+    group_label: "> Picker Measures"
     label: "# Scheduled Picker Hours"
     type: number
     sql_distinct_key: ${staffing_uuid} ;;
@@ -2099,21 +2100,21 @@ view: staffing {
   }
 
   measure: number_of_scheduled_hours_shift_lead {
-    group_label: ">> Shift Lead KPIs"
+    group_label: "> Shift Lead Measures"
     label: "# Scheduled Shift Lead Hours"
     type: number
     sql: ${number_of_unassigned_hours_shift_lead}+${number_of_planned_hours_shift_lead};;
     value_format_name: decimal_1
   }
   measure: number_of_scheduled_hours_rider_captain {
-    group_label: ">> Rider Captain KPIs"
+    group_label: "> Rider Captain Measures"
     label: "# Scheduled Rider Captain Hours"
     type: number
     sql: ${number_of_unassigned_hours_rider_captain}+${number_of_planned_hours_rider_captain};;
     value_format_name: decimal_1
   }
   measure: number_of_scheduled_hours_co_ops {
-    group_label: ">> Co Ops KPIs"
+    group_label: "> Co Ops Measures"
     label: "# Scheduled Co Ops Employee Hours"
     type: number
     sql: ${number_of_unassigned_hours_co_ops}+${number_of_planned_hours_co_ops};;
@@ -2121,7 +2122,7 @@ view: staffing {
   }
 
   measure: number_of_scheduled_hours_wh {
-    group_label: ">> WH KPIs"
+    group_label: "> WH Measures"
     label: "# Scheduled WH Employee Hours"
     type: number
     sql_distinct_key: ${staffing_uuid} ;;
@@ -2130,14 +2131,14 @@ view: staffing {
   }
 
   measure: number_of_scheduled_hours_cc_agent {
-    group_label: ">> CC Agent KPIs"
+    group_label: "> CC Agent Measures"
     label: "# Scheduled CC Agent Hours"
     type: number
     sql: ${number_of_unassigned_hours_cc_agent}+${number_of_planned_hours_cc_agent};;
     value_format_name: decimal_1
   }
   measure: number_of_scheduled_hours_hub_staff {
-    group_label: ">> Hub Staff KPIs"
+    group_label: "> Hub Staff Measures"
     label: "# Scheduled Hub Staff Hours"
     type: number
     sql: ${number_of_scheduled_hours_picker}+${number_of_scheduled_hours_wh};;
@@ -2145,7 +2146,7 @@ view: staffing {
   }
   ##### External
   measure: number_of_scheduled_hours_external_rider {
-    group_label: ">> Rider KPIs"
+    group_label: "> Rider Measures"
     label: "# External Scheduled Rider Hours"
     description: "# External Scheduled Rider Hours (Post-Adjustments) (Assigned + Open)"
     type: sum_distinct
@@ -2155,7 +2156,7 @@ view: staffing {
   }
 
   measure: number_of_scheduled_hours_external_picker {
-    group_label: ">> Picker KPIs"
+    group_label: "> Picker Measures"
     label: "# External Scheduled Picker Hours"
     description: "# External Scheduled Picker Hours (Post-Adjustments) (Assigned + Open)"
     type: sum_distinct
@@ -2165,7 +2166,7 @@ view: staffing {
   }
 
   measure: number_of_scheduled_hours_external_shift_lead {
-    group_label: ">> Shift Lead KPIs"
+    group_label: "> Shift Lead Measures"
     label: "# External Scheduled Shift Lead Hours"
     description: "# External Scheduled Shift Lead Hours (Post-Adjustments) (Assigned + Open)"
     type: sum_distinct
@@ -2174,7 +2175,7 @@ view: staffing {
     value_format_name: decimal_1
   }
   measure: number_of_scheduled_hours_external_rider_captain {
-    group_label: ">> Rider Captain KPIs"
+    group_label: "> Rider Captain Measures"
     label: "# External Scheduled Rider Captain Hours"
     description: "# External Scheduled Rider Captain Hours (Post-Adjustments) (Assigned + Open)"
     type: sum_distinct
@@ -2183,7 +2184,7 @@ view: staffing {
     value_format_name: decimal_1
   }
   measure: number_of_scheduled_hours_external_co_ops {
-    group_label: ">> Co Ops KPIs"
+    group_label: "> Co Ops Measures"
     label: "# External Scheduled Co Ops Employee Hours"
     description: "# External Scheduled Co Ops Employee Hours (Post-Adjustments) (Assigned + Open)"
     type: sum_distinct
@@ -2193,7 +2194,7 @@ view: staffing {
   }
 
   measure: number_of_scheduled_hours_external_wh {
-    group_label: ">> WH KPIs"
+    group_label: "> WH Measures"
     label: "# External Scheduled WH Employee Hours"
     description: "# External Scheduled WH Employee Hours (Post-Adjustments) (Assigned + Open)"
     type: sum_distinct
@@ -2203,7 +2204,7 @@ view: staffing {
   }
 
   measure: number_of_scheduled_hours_external_cc_agent {
-    group_label: ">> CC Agent KPIs"
+    group_label: "> CC Agent Measures"
     label: "# External Scheduled CC Agent Hours"
     description: "# External Scheduled CC Agent Hours (Post-Adjustments) (Assigned + Open)"
     type: sum_distinct
@@ -2212,7 +2213,7 @@ view: staffing {
     value_format_name: decimal_1
   }
   measure: number_of_scheduled_hours_external_hub_staff {
-    group_label: ">> Hub Staff KPIs"
+    group_label: "> Hub Staff Measures"
     label: "# External Scheduled Hub Staff Hours"
     description: "# External Scheduled Hub Staff Hours (Post-Adjustments) (Assigned + Open)"
     type: number
@@ -2222,7 +2223,7 @@ view: staffing {
   # =========  No Show Hours   =========
   ##### All
   measure: number_of_no_show_hours_rider {
-    group_label: ">> Rider KPIs"
+    group_label: "> Rider Measures"
     label: "# No Show Rider Hours"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -2231,7 +2232,7 @@ view: staffing {
   }
 
   measure: number_of_no_show_hours_picker {
-    group_label: ">> Picker KPIs"
+    group_label: "> Picker Measures"
     label: "# No Show Picker Hours"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -2240,7 +2241,7 @@ view: staffing {
   }
 
   measure: number_of_no_show_hours_shift_lead {
-    group_label: ">> Shift Lead KPIs"
+    group_label: "> Shift Lead Measures"
     label: "# No Show Shift Lead Hours"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -2248,7 +2249,7 @@ view: staffing {
     value_format_name: decimal_1
   }
   measure: number_of_no_show_hours_rider_captain {
-    group_label: ">> Rider Captain KPIs"
+    group_label: "> Rider Captain Measures"
     label: "# No Show Rider Captain Hours"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -2256,7 +2257,7 @@ view: staffing {
     value_format_name: decimal_1
   }
   measure: number_of_no_show_hours_co_ops {
-    group_label: ">> Co Ops KPIs"
+    group_label: "> Co Ops Measures"
     label: "# No Show Co Ops Hours"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -2265,7 +2266,7 @@ view: staffing {
   }
 
   measure: number_of_no_show_hours_wh {
-    group_label: ">> WH KPIs"
+    group_label: "> WH Measures"
     label: "# No Show WH Hours"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -2274,7 +2275,7 @@ view: staffing {
   }
 
   measure: number_of_no_show_hours_cc_agent {
-    group_label: ">> CC Agent KPIs"
+    group_label: "> CC Agent Measures"
     label: "# No Show CC Agent Hours"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -2282,7 +2283,7 @@ view: staffing {
     value_format_name: decimal_1
   }
   measure: number_of_no_show_hours_hub_staff {
-    group_label: ">> Hub Staff KPIs"
+    group_label: "> Hub Staff Measures"
     label: "# No Show Hub Staff Hours"
     type: number
     sql: ${number_of_no_show_hours_picker}+${number_of_no_show_hours_wh};;
@@ -2290,7 +2291,7 @@ view: staffing {
   }
   ##### External
   measure: number_of_no_show_hours_external_rider {
-    group_label: ">> Rider KPIs"
+    group_label: "> Rider Measures"
     label: "# External No Show Rider Hours"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -2299,7 +2300,7 @@ view: staffing {
   }
 
   measure: number_of_no_show_hours_external_picker {
-    group_label: ">> Picker KPIs"
+    group_label: "> Picker Measures"
     label: "# External No Show Picker Hours"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -2308,7 +2309,7 @@ view: staffing {
   }
 
   measure: number_of_no_show_hours_external_shift_lead {
-    group_label: ">> Shift Lead KPIs"
+    group_label: "> Shift Lead Measures"
     label: "# External No Show Shift Lead Hours"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -2316,7 +2317,7 @@ view: staffing {
     value_format_name: decimal_1
   }
   measure: number_of_no_show_hours_external_rider_captain {
-    group_label: ">> Rider Captain KPIs"
+    group_label: "> Rider Captain Measures"
     label: "# External No Show Rider Captain Hours"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -2324,7 +2325,7 @@ view: staffing {
     value_format_name: decimal_1
   }
   measure: number_of_no_show_hours_external_co_ops {
-    group_label: ">> Co Ops KPIs"
+    group_label: "> Co Ops Measures"
     label: "# External No Show Co Ops Hours"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -2333,7 +2334,7 @@ view: staffing {
   }
 
   measure: number_of_no_show_hours_external_wh {
-    group_label: ">> WH KPIs"
+    group_label: "> WH Measures"
     label: "# External No Show WH Hours"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -2342,7 +2343,7 @@ view: staffing {
   }
 
   measure: number_of_no_show_hours_external_cc_agent {
-    group_label: ">> CC Agent KPIs"
+    group_label: "> CC Agent Measures"
     label: "# External No Show CC Agent Hours"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -2350,7 +2351,7 @@ view: staffing {
     value_format_name: decimal_1
   }
   measure: number_of_no_show_hours_external_hub_staff {
-    group_label: ">> Hub Staff KPIs"
+    group_label: "> Hub Staff Measures"
     label: "# External No Show Hub Staff Hours"
     type: sum_distinct
     sql_distinct_key: ${staffing_uuid} ;;
@@ -2361,7 +2362,7 @@ view: staffing {
 
   # =========  No Show %   =========
   measure: pct_no_show_hours_rider {
-    group_label: ">> Rider KPIs"
+    group_label: "> Rider Measures"
     label: "% No Show Rider Hours"
     type: number
     sql:(${number_of_no_show_hours_rider})/nullif(${number_of_planned_hours_rider},0) ;;
@@ -2369,28 +2370,28 @@ view: staffing {
   }
 
   measure: pct_no_show_hours_picker {
-    group_label: ">> Picker KPIs"
+    group_label: "> Picker Measures"
     label: "% No Show Picker Hours"
     sql:(${number_of_no_show_hours_picker})/nullif(${number_of_planned_hours_picker},0) ;;
     value_format_name: percent_1
   }
 
   measure: pct_no_show_hours_shift_lead {
-    group_label: ">> Shift Lead KPIs"
+    group_label: "> Shift Lead Measures"
     label: "% No Show Shift Lead Hours"
     type: number
     sql:(${number_of_no_show_hours_shift_lead})/nullif(${number_of_planned_hours_shift_lead},0) ;;
     value_format_name: percent_1
   }
   measure: pct_no_show_hours_rider_captain {
-    group_label: ">> Rider Captain KPIs"
+    group_label: "> Rider Captain Measures"
     label: "% No Show Rider Captain Hours"
     type: number
     sql:(${number_of_no_show_hours_rider_captain})/nullif(${number_of_planned_hours_rider_captain},0) ;;
     value_format_name: percent_1
   }
   measure: pct_no_show_hours_co_ops {
-    group_label: ">> Co Ops KPIs"
+    group_label: "> Co Ops Measures"
     label: "% No Show Co Ops Hours"
     type: number
     sql:(${number_of_no_show_hours_co_ops})/nullif(${number_of_planned_hours_co_ops},0) ;;
@@ -2398,21 +2399,21 @@ view: staffing {
   }
 
   measure: pct_no_show_hours_wh {
-    group_label: ">> WH KPIs"
+    group_label: "> WH Measures"
     label: "% No Show WH Hours"
     sql:(${number_of_no_show_hours_wh})/nullif(${number_of_planned_hours_wh},0) ;;
     value_format_name: percent_1
   }
 
   measure: pct_no_show_hours_cc_agent {
-    group_label: ">> CC Agent KPIs"
+    group_label: "> CC Agent Measures"
     label: "% No Show CC Agent Hours"
     type: number
     sql:(${number_of_no_show_hours_cc_agent})/nullif(${number_of_planned_hours_cc_agent},0) ;;
     value_format_name: percent_1
   }
   measure: pct_no_show_hours_hub_staff {
-    group_label: ">> Hub Staff KPIs"
+    group_label: "> Hub Staff Measures"
     label: "% No Show Hub Staff Hours"
     type: number
     sql:(${number_of_no_show_hours_hub_staff})/nullif(${number_of_planned_hours_hub_staff},0) ;;
@@ -2423,33 +2424,33 @@ view: staffing {
   # =========  UTR   =========
 
   measure: utr_rider {
-    group_label: ">> Rider KPIs"
+    group_label: "> Rider Measures"
     label: "Rider UTR"
     type: number
-    sql: ${orders_cl.cnt_successful_orders}/ NULLIF(${number_of_worked_hours_rider}, 0) ;;
+    sql: ${orders_with_ops_metrics.cnt_orders}/ NULLIF(${number_of_worked_hours_rider}, 0) ;;
     value_format_name: decimal_1
   }
 
   measure: utr_picker {
-    group_label: ">> Picker KPIs"
+    group_label: "> Picker Measures"
     label: "Picker UTR"
     type: number
-    sql: ${orders_cl.cnt_successful_orders}/ NULLIF(${number_of_worked_hours_picker}, 0) ;;
+    sql: ${orders_with_ops_metrics.cnt_orders}/ NULLIF(${number_of_worked_hours_picker}, 0) ;;
     value_format_name: decimal_1
   }
 
   measure: utr_hub_staff {
-    group_label: ">> Hub Staff KPIs"
+    group_label: "> Hub Staff Measures"
     label: "Hub Staff UTR"
     description: "Hub Staff UTR (# Orders/Hub Staff Hours)"
     type: number
-    sql: ${orders_cl.cnt_successful_orders}/ NULLIF(${number_of_worked_hours_hub_staff}, 0) ;;
+    sql: ${orders_with_ops_metrics.cnt_orders}/ NULLIF(${number_of_worked_hours_hub_staff}, 0) ;;
     value_format_name: decimal_1
   }
 
 
   measure: hub_staff_utr_all_items {
-    group_label: ">> Hub Staff KPIs"
+    group_label: "> Hub Staff Measures"
     label: "Hub Staff UTR (All Items)"
     description: "Hub Staff UTR (# All inventory Changes/Hub Staff Hours)"
     type: number
@@ -2458,7 +2459,7 @@ view: staffing {
   }
 
   measure: hub_staff_utr_picked_items {
-    group_label: ">> Hub Staff KPIs"
+    group_label: "> Hub Staff Measures"
     label: "Hub Staff UTR (Ordered Items)"
     description: "Hub Staff UTR (# Ordered Items/Hub Staff Hours)"
     type: number
@@ -2467,7 +2468,7 @@ view: staffing {
   }
 
   measure: hub_staff_utr_outbounded_items {
-    group_label: ">> Hub Staff KPIs"
+    group_label: "> Hub Staff Measures"
     label: "Hub Staff UTR (Outbounded Items)"
     description: "Hub Staff UTR (# Outbounded Items/Hub Staff Hours)"
     type: number
@@ -2476,13 +2477,13 @@ view: staffing {
     value_format_name: decimal_2
   }
 
-  # =========  Dynamic KPIs   =========
+  # =========  Dynamic Measures   =========
 
   measure: number_of_planned_hours_by_position {
     type: number
     label: "# Filled Hours"
     value_format_name: decimal_1
-    group_label: ">> Dynamic KPIs"
+    group_label: "> Dynamic Measures"
     sql:
         CASE
           WHEN {% parameter position_parameter %} = 'Rider' THEN ${number_of_planned_hours_rider}
@@ -2499,7 +2500,7 @@ view: staffing {
     type: number
     label: "# Open Hours"
     value_format_name: decimal_1
-    group_label: ">> Dynamic KPIs"
+    group_label: "> Dynamic Measures"
     sql:
         CASE
           WHEN {% parameter position_parameter %} = 'Rider' THEN ${number_of_unassigned_hours_rider}
@@ -2516,7 +2517,7 @@ view: staffing {
     type: number
     label: "# Scheduled Hours"
     value_format_name: decimal_1
-    group_label: ">> Dynamic KPIs"
+    group_label: "> Dynamic Measures"
     sql:
         CASE
           WHEN {% parameter position_parameter %} = 'Rider' THEN ${number_of_scheduled_hours_rider}
@@ -2533,7 +2534,7 @@ view: staffing {
     type: number
     label: "# Punched Hours"
     value_format_name: decimal_1
-    group_label: ">> Dynamic KPIs"
+    group_label: "> Dynamic Measures"
     sql:
         CASE
           WHEN {% parameter position_parameter %} = 'Rider' THEN ${number_of_worked_hours_rider}
@@ -2549,7 +2550,7 @@ view: staffing {
     type: number
     label: "# No Show Hours"
     value_format_name: decimal_1
-    group_label: ">> Dynamic KPIs"
+    group_label: "> Dynamic Measures"
     sql:
         CASE
           WHEN {% parameter position_parameter %} = 'Rider' THEN ${number_of_no_show_hours_rider}
@@ -2566,7 +2567,7 @@ view: staffing {
     type: number
     label: "% No Show Hours"
     value_format_name: percent_1
-    group_label: ">> Dynamic KPIs"
+    group_label: "> Dynamic Measures"
     sql:
         CASE
           WHEN {% parameter position_parameter %} = 'Rider' THEN ${pct_no_show_hours_rider}
@@ -2583,7 +2584,7 @@ view: staffing {
     type: number
     label: "UTR"
     value_format_name: decimal_2
-    group_label: ">> Dynamic KPIs"
+    group_label: "> Dynamic Measures"
     sql:
         CASE
           WHEN {% parameter position_parameter %} = 'Rider' THEN ${utr_rider}
