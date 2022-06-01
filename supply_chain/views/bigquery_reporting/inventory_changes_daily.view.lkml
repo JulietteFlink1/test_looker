@@ -69,7 +69,7 @@ view: inventory_changes_daily {
     type: yesno
     # sql: case when ${change_type} in ('inbound', 'inbound-bulk') then true else false end ;;
     sql: ${TABLE}.is_inbound ;;
-    hidden: yes
+    hidden: no
   }
 
 

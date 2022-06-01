@@ -120,8 +120,15 @@ view: inventory_changes {
     label: "Is Outbound (Waste)"
     description: "Boolean - indicates, if a inventory change is based on waste - determined by the reasons 'product-damaged', 'product-expired' or 'too-good-to-go'"
     type: yesno
-    sql: case when ${change_reason} in ('product-damaged', 'product-expired', 'too-good-to-go') then true else false end ;;
+    sql: ${TABLE}.is_outbound_waste ;;
 
+  }
+
+  dimension: is_inbound {
+    type: yesno
+    # sql: case when ${change_type} in ('inbound', 'inbound-bulk') then true else false end ;;
+    sql: ${TABLE}.is_inbound ;;
+    hidden: no
   }
 
   dimension: price_gross {
