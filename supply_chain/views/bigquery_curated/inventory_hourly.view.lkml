@@ -302,6 +302,34 @@ view: inventory_hourly {
     hidden: yes
   }
 
+  measure: sum_of_correction_product_delivery_damaged {
+
+    label: "# Corrections - Product Delivery Damaged"
+    description: "The sum of all inventory corrections due to damaged products at the point of inbounding"
+    group_label: "Inventory Change"
+
+    type: sum
+    sql: ${TABLE}.number_of_correction_product_delivery_damaged ;;
+
+    value_format_name: decimal_0
+
+    hidden: yes
+  }
+
+  measure: sum_of_correction_product_delivery_expired {
+
+    label: "# Corrections - Product Expired"
+    description: "The sum of all inventory corrections due to expired products at the point of inbounding"
+    group_label: "Inventory Change"
+
+    type: sum
+    sql: ${TABLE}.number_of_correction_product_delivery_expired ;;
+
+    value_format_name: decimal_0
+
+    hidden: yes
+  }
+
   measure: sum_of_correction_stock_taking_increased_unaggregated {
 
     label: "# Corrections - Stock Taging (Increased)"

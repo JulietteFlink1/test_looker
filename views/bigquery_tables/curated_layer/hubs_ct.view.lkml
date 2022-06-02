@@ -25,11 +25,67 @@ view: hubs_ct {
     sql: ${TABLE}.hub_name ;;
   }
 
+  ########## Dates & Timestamps data
+
   dimension_group: time_between_hub_launch_and_today {
     type: duration
     sql_start: timestamp(${TABLE}.start_date) ;;
     sql_end: current_timestamp ;;
     group_label: "> Dates & Timestamps "
+  }
+
+  dimension_group: created {
+    group_label: "> Dates & Timestamps "
+    label: "Start Date"
+    description: "Hub Start Date"
+    type: time
+    timeframes: [
+      date,
+      week,
+      month
+    ]
+    sql: timestamp(${TABLE}.start_date) ;;
+    datatype: timestamp
+  }
+
+  dimension: date {
+    group_label: "> Dates & Timestamps "
+    label: "Hub Start Date (Dynamic)"
+    label_from_parameter: date_granularity
+    sql:
+    {% if date_granularity._parameter_value == 'Day' %}
+      ${created_date}
+    {% elsif date_granularity._parameter_value == 'Week' %}
+      ${created_week}
+    {% elsif date_granularity._parameter_value == 'Month' %}
+      ${created_month}
+    {% endif %};;
+  }
+
+  dimension: date_granularity_pass_through {
+    group_label: "> Parameters"
+    description: "To use the parameter value in a table calculation (e.g WoW, % Growth) we need to materialize it into a dimension "
+    type: string
+    hidden: no # yes
+    sql:
+            {% if date_granularity._parameter_value == 'Day' %}
+              "Day"
+            {% elsif date_granularity._parameter_value == 'Week' %}
+              "Week"
+            {% elsif date_granularity._parameter_value == 'Month' %}
+              "Month"
+            {% endif %};;
+  }
+
+  ######### Parameters
+  parameter: date_granularity {
+    group_label: "> Dates & Timestamps "
+    label: "Date Granularity"
+    type: unquoted
+    allowed_value: { value: "Day" }
+    allowed_value: { value: "Week" }
+    allowed_value: { value: "Month" }
+    default_value: "Day"
   }
 
   # =========  Geographic Data   =========
@@ -269,6 +325,6 @@ view: hubs_ct {
   measure: count {
     type: count
     drill_fields: [hub_name]
-    hidden: yes
+    hidden: no
   }
 }

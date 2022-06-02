@@ -1,15 +1,22 @@
 
 view: sales_weighted_avg_buying_prices {
   derived_table: {
-    explore_source: order_orderline_margins {
+    explore_source: order_lineitems_margins {
+      column: order_lineitem_uuid {field:orderline.order_lineitem_uuid}
       column: sku {field:orderline.product_sku}
       column: hub_code {field: orderline.hub_code}
-      column: last_modified {field:orderline.last_modified}
-      column: created {field:orderline.created}
+      column: created {field:orderline.created_date}
       column: quantity_sold{field:orderline.quantity}
       column: buying_price {field:erp_buying_prices.vendor_price}
-    bind_all_filters: yes
     }
+
+  }
+
+  dimension: order_lineitem_uuid {
+    type: string
+    primary_key: yes
+    hidden: yes
+    group_label: "> IDs"
   }
 
   dimension: sku {
@@ -27,20 +34,6 @@ view: sales_weighted_avg_buying_prices {
     label: "Quantity Sold"
     type: number
     group_label: "> Monetary Dimensions"
-  }
-
-  dimension_group: last_modified {
-    type: time
-    timeframes: [
-      raw,
-      time,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    group_label: "> Dates & Timestamps"
   }
 
   dimension_group: created {
@@ -69,10 +62,40 @@ view: sales_weighted_avg_buying_prices {
     label: "Buying Price"
     type: number
     value_format_name: decimal_4
-  }
-
-
-
-
 
   }
+
+  measure: sum_quantity_sold {
+    label: "SUM Item Quantity sold"
+    description: "Quantity of Order Line Items sold"
+    hidden:  no
+    type: sum
+    sql: ${quantity_sold};;
+    value_format: "0"
+    group_label: "> Absolute Metrics"
+  }
+
+  ###### metrics   ######
+
+  dimension: quantity_per_buying_price {
+    type: number
+    hidden: yes
+    sql:  (${quantity_sold} * ${buying_price})  ;;
+
+  }
+
+  measure: sum_quantity_per_buying_price {
+    type: sum
+    hidden: yes
+    sql: ${quantity_per_buying_price};;
+
+  }
+
+  measure: weighted_buying_price {
+    label: "Sales Weighted Buying Price"
+    type: number
+    value_format_name: euro_accounting_2_precision
+    sql: ${sum_quantity_per_buying_price} / nullif (${sum_quantity_sold},0);;
+  }
+
+}
