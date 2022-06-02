@@ -450,7 +450,7 @@ view: bulk_items {
     description: "The sum of all purchase units from products as defined in the latest know Purchase Order. This measure was introduced, due to some parsing problems for certain SKUs in DESADVS, that eventually had incorrect selling units stated (e.g. 1 Banana per DESADV)"
 
     type: sum
-    sql: ${total_quantity_po_derived} ;;
+    sql: ${total_quantity_po_derived};;
 
     value_format_name: decimal_0
   }

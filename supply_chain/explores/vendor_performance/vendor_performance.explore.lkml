@@ -19,7 +19,7 @@ explore: vendor_performance {
   join: inventory_changes_daily {
 
     type: left_outer
-    relationship: one_to_many
+    relationship: many_to_many
     sql_on:
            ${inventory_changes_daily.parent_sku} = ${bulk_items.sku}
        and ${inventory_changes_daily.hub_code}              = ${bulk_items.hub_code}
