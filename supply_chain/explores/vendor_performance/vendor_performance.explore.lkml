@@ -8,11 +8,14 @@ explore: vendor_performance {
   view_name: bulk_items
   view_label: "* DESADV data *"
 
-  fields: [bulk_items.main_fields*,
+  fields: [bulk_items.main_fields*, bulk_items.cross_referenced_fields*,
            inventory_changes_daily*,
            vendor_performance_fill_rate*,
            products*
           ]
+
+  sql_always_where:  ${bulk_items.sku} is not null -- excludes deposits (we don't have a SKU for those)
+  ;;
 
 
 
