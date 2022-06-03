@@ -66,7 +66,6 @@ view: reordering_from_order {
   }
 
   dimension: amt_cancelled_gross {
-    group_label: "* Cancelled Orders *"
     hidden: yes
     type: number
     sql: ${TABLE}.amt_cancelled_gross;;
@@ -76,6 +75,47 @@ view: reordering_from_order {
     label: "Order State At Cancellation"
     type: string
     sql: ${TABLE}.cancellation_at_state ;;
+  }
+
+######## DYNAMIC DIMENSIONS
+
+  dimension: date {
+    group_label: "* Dates and Timestamps *"
+    label: "Order Date (Dynamic)"
+    label_from_parameter: date_granularity
+    sql:
+    {% if date_granularity._parameter_value == 'Day' %}
+      ${order_timestamp_date}
+    {% elsif date_granularity._parameter_value == 'Week' %}
+      ${order_timestamp_week}
+    {% elsif date_granularity._parameter_value == 'Month' %}
+      ${order_timestamp_month}
+    {% endif %};;
+  }
+
+  dimension: date_granularity_pass_through {
+    group_label: "* Parameters *"
+    description: "To use the parameter value in a table calculation (e.g WoW, % Growth) we need to materialize it into a dimension "
+    type: string
+    hidden: yes
+    sql:
+            {% if date_granularity._parameter_value == 'Day' %}
+              "Day"
+            {% elsif date_granularity._parameter_value == 'Week' %}
+              "Week"
+            {% elsif date_granularity._parameter_value == 'Month' %}
+              "Month"
+            {% endif %};;
+  }
+
+  parameter: date_granularity {
+    group_label: "* Dates and Timestamps *"
+    label: "Date Granularity"
+    type: unquoted
+    allowed_value: { value: "Day" }
+    allowed_value: { value: "Week" }
+    allowed_value: { value: "Month" }
+    default_value: "Day"
   }
 
   dimension_group: order_timestamp {
@@ -153,6 +193,12 @@ view: reordering_from_order {
     sql: ${time_to_next_order_minutes} <= 15 ;;
   }
 
+  dimension: reordered_within_30_minutes {
+    label: "Reordered Within 15 Minutes"
+    type: yesno
+    sql: ${time_to_next_order_minutes} <= 30 ;;
+  }
+
   measure: cnt_orders {
     label: "# Orders"
     type: count_distinct
@@ -172,8 +218,13 @@ view: reordering_from_order {
     filters: [time_to_next_order_minutes: "not null", reordered_within_15_minutes: "yes", amt_cancelled_gross: ">0"]
   }
 
+  measure: cnt_reorders_within_30_minutes {
+    label: "# Cancelled Orders With Reorders Within 30 Minutes"
+    type: count
+    filters: [time_to_next_order_minutes: "not null", reordered_within_30_minutes: "yes", amt_cancelled_gross: ">0"]
+  }
+
   measure: cnt_cancelled_orders {
-    group_label: "* Cancelled Orders *"
     label: "# Cancelled Orders"
     hidden:  no
     type: count
