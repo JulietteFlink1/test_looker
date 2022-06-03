@@ -1059,7 +1059,7 @@ view: orders {
     type: string
     group_label: "* IDs *"
     label: "Customer UUID"
-    hidden: yes
+    hidden: no
     sql: ${TABLE}.customer_uuid ;;
   }
 

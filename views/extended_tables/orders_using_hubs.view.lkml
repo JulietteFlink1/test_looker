@@ -59,4 +59,101 @@ view: orders_using_hubs {
     filters: [is_delivery_distance_over_10km: "no"]
   }
 
+  ######### Order New/Existing Hubs
+
+  dimension: is_order_new_hub {
+    group_label: "* Order Dimensions *"
+    label: "Is Order New Hub"
+    description: "An order is considered to come from a new hub if it was placed less than 30 days after the hub start date."
+    type: yesno
+
+    sql: (date_diff(${order_date},${hubs.start_date},day)<= 30) ;;
+  }
+
+  ###### Sums
+
+  measure: sum_gmv_new_hubs {
+    group_label: "* Monetary Values *"
+    label: "SUM GMV New Hubs"
+    description: "GMV from orders from new hubs."
+    type: sum
+    value_format_name: euro_accounting_0_precision
+    sql: ${gmv_gross};;
+    filters: [is_order_new_hub: "yes"]
+  }
+
+  measure: sum_gmv_existing_hubs {
+    group_label: "* Monetary Values *"
+    label: "SUM GMV Existing Hubs"
+    description: "GMV from orders from existing hubs."
+    type: sum
+    value_format_name: euro_accounting_0_precision
+    sql: ${gmv_gross};;
+    filters: [is_order_new_hub: "no"]
+  }
+
+  measure: sum_orders_existing_hubs {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Orders Existing Hubs"
+    description: "# Orders coming from existing hubs."
+    type: count_distinct
+    sql: ${order_uuid} ;;
+    value_format: "0"
+    filters: [is_order_new_hub: "no"]
+  }
+
+  measure: sum_orders_new_hubs {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Orders New Hubs"
+    description: "# Orders coming from new hubs."
+    type: count_distinct
+    sql: ${order_uuid} ;;
+    value_format: "0"
+    filters: [is_order_new_hub: "yes"]
+  }
+
+  ##### Shares
+
+  measure: pct_gmv_new_hubs {
+    group_label: "* Monetary Values *"
+    label: "% GMV New Hubs"
+    description: "% GMV coming from new hubs."
+    type: number
+    sql: ${sum_gmv_new_hubs} / NULLIF(${sum_gmv_gross}, 0);;
+    value_format: "0.0%"
+  }
+
+  measure: pct_gmv_existing_hubs {
+    group_label: "* Monetary Values *"
+    label: "% GMV Existing Hubs"
+    description: "% GMV coming from existing hubs."
+    type: number
+    sql: ${sum_gmv_existing_hubs} / NULLIF(${sum_gmv_gross}, 0);;
+    value_format: "0.0%"
+  }
+
+  measure: pct_orders_new_hubs {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "% Orders New Hubs"
+    description: "Share of orders coming from new hubs."
+    type: number
+    sql: ${sum_orders_new_hubs} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0.0%"
+  }
+
+  measure: pct_orders_existing_hubs {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "% Orders Existing Hubs"
+    description: "Share of orders coming from existing hubs."
+    type: number
+    sql: ${sum_orders_existing_hubs} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0.0%"
+  }
+
+
+
+
+
+
+
 }

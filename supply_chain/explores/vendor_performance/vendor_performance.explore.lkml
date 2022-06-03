@@ -8,18 +8,21 @@ explore: vendor_performance {
   view_name: bulk_items
   view_label: "* DESADV data *"
 
-  fields: [bulk_items.main_fields*,
+  fields: [bulk_items.main_fields*, bulk_items.cross_referenced_fields*,
            inventory_changes_daily*,
            vendor_performance_fill_rate*,
            products*
           ]
+
+  sql_always_where:  ${bulk_items.sku} is not null -- excludes deposits (we don't have a SKU for those)
+  ;;
 
 
 
   join: inventory_changes_daily {
 
     type: left_outer
-    relationship: one_to_many
+    relationship: many_to_many
     sql_on:
            ${inventory_changes_daily.parent_sku} = ${bulk_items.sku}
        and ${inventory_changes_daily.hub_code}              = ${bulk_items.hub_code}
@@ -43,7 +46,10 @@ explore: vendor_performance {
 
     fields: [vendor_performance_fill_rate.avg_desadv_fill_rate,
              vendor_performance_fill_rate.desadv_fill_rate,
-             vendor_performance_fill_rate.is_desadv_inbounded
+             vendor_performance_fill_rate.is_desadv_inbounded,
+             vendor_performance_fill_rate.desadv_fill_rate_po_corrected,
+             vendor_performance_fill_rate.avg_desadv_fill_rate_po_corrected
+
             ]
   }
 

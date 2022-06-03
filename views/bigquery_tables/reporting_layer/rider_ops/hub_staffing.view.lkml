@@ -242,9 +242,9 @@ view: hub_staffing {
       quarter,
       year
     ]
-    convert_tz: no
+    convert_tz: yes
     datatype: date
-    sql: ${TABLE}.shift_date ;;
+    sql: ${block_starts_at_timestamp_date} ;;
   }
 
   dimension: staffing_uuid {
