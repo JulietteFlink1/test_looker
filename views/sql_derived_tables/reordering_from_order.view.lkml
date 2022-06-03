@@ -174,20 +174,20 @@ view: reordering_from_order {
 
   measure: cnt_cancelled_orders {
     group_label: "* Cancelled Orders *"
-    label: "# Cancelled Orders According to AMT"
+    label: "# Cancelled Orders"
     hidden:  no
     type: count
     filters: [amt_cancelled_gross: ">0"]
     value_format: "0"
   }
 
-  measure: cnt_cancelled_orders2 {
-    group_label: "* Cancelled Orders *"
-    label: "# Cancelled Orders According to status"
-    hidden:  no
-    type: count
-    filters: [status: "Cancelled"]
-  }
+  # measure: cnt_cancelled_orders2 {
+  #   group_label: "* Cancelled Orders *"
+  #   label: "# Cancelled Orders According to status"
+  #   hidden:  no
+  #   type: count
+  #   filters: [status: "Cancelled"]
+  # }
 
   # measure: cnt_cancelled_orders {
   #   label: "# Cancelled Orders"
