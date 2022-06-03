@@ -24,9 +24,10 @@ explore: ops {
       hubs.country: "",
       hubs.hub_name: "",
       time_grid.start_datetime_date: "yesterday",
-      forecasts.forecast_horizon: "0,NULL",
+      forecasts.forecast_horizon: "1,NULL",
       time_grid.start_datetime_hour_of_day: "[6,23]",
-      forecasts.job_date: ""
+      forecasts.job_date: "",
+
     ]
   }
 
