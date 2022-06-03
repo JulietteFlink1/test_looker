@@ -244,20 +244,18 @@ view: forecasts {
     group_label: "> Picker Measures"
     label: "Base UTR Picker (Incl. Stacking)"
     description: "Base UTR Picker (Incl. Stacking) - Target UTR * Stacking Effect Multiplier"
+    type: number
     value_format_name: decimal_1
-    type: average_distinct
-    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
-    sql: ${TABLE}.forecasted_base_utr_incl_stacking_picker ;;
+    sql: ${number_of_target_orders_per_picker}*${stacking_effect_multiplier} ;;
   }
 
   measure: forecasted_base_utr_incl_stacking_rider {
     group_label: "> Rider Measures"
     label: "Base UTR Rider (Incl. Stacking)"
     description: "Base UTR Rider (Incl. Stacking) - Target UTR * Stacking Effect Multiplier"
+    type:  number
     value_format_name: decimal_1
-    type: average_distinct
-    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
-    sql: ${TABLE}.forecasted_base_utr_incl_stacking_rider ;;
+    sql: ${number_of_target_orders_per_rider}*${stacking_effect_multiplier} ;;
   }
 
   measure: final_utr_picker {
