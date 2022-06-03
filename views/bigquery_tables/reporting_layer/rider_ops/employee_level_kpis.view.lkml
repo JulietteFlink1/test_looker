@@ -151,54 +151,57 @@ view: employee_level_kpis {
     sql: ${TABLE}.number_of_end_late_minutes ;;
   }
 
-  measure: number_of_no_show_minutes {
+  measure: number_of_no_show_hours {
     type: sum
-    label: "# No Show Minutes"
-    sql: ${TABLE}.number_of_no_show_minutes ;;
+    label: "# No Show Hours"
+    sql: ${TABLE}.number_of_no_show_minutes/60 ;;
   }
 
   measure: number_of_orders_with_available_nps_score {
-    type: number
+    type: sum
+    hidden: yes
     sql: ${TABLE}.number_of_orders_with_available_nps_score ;;
   }
 
-  dimension: number_of_planned_minutes {
-    type: number
-    sql: ${TABLE}.number_of_planned_minutes ;;
+  measure: number_of_planned_minutes {
+    type: sum
+    label: "# Scheduled Hours"
+    sql: ${TABLE}.number_of_planned_minutes/60 ;;
   }
 
-  dimension: number_of_products_with_damaged_products_issues_post {
-    type: number
+  measure: number_of_products_with_damaged_products_issues_post {
+    type: sum
     sql: ${TABLE}.number_of_products_with_damaged_products_issues_post ;;
   }
 
-  dimension: number_of_return_to_hub_time_minutes {
-    type: number
+  measure: number_of_return_to_hub_time_minutes {
+    type: sum
     sql: ${TABLE}.number_of_return_to_hub_time_minutes ;;
   }
 
-  dimension: number_of_sick_minutes {
-    type: number
-    sql: ${TABLE}.number_of_sick_minutes ;;
+  measure: number_of_sick_hours {
+    type: sum
+    sql: ${TABLE}.number_of_sick_minutes/60 ;;
   }
 
-  dimension: number_of_start_early_minutes {
-    type: number
+  measure: number_of_start_early_minutes {
+    type: sum
     sql: ${TABLE}.number_of_start_early_minutes ;;
   }
 
-  dimension: number_of_start_late_minutes {
-    type: number
+  measure: number_of_start_late_minutes {
+    type: sum
     sql: ${TABLE}.number_of_start_late_minutes ;;
   }
 
-  measure: number_of_worked_minutes {
+  measure: number_of_worked_hours {
     type: sum
-    sql: ${TABLE}.number_of_worked_minutes ;;
+    label: "# Worked Hours"
+    sql: ${TABLE}.number_of_worked_minutes/60 ;;
   }
 
-  dimension: sum_nps_score {
-    type: number
+  measure: sum_nps_score {
+    type: sum
     sql: ${TABLE}.sum_nps_score ;;
   }
 
