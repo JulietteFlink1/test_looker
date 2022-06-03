@@ -1,6 +1,8 @@
 include: "/**/ad_hoc_nima_peter_inventory_vs_rewe_desadv.view"
 include:"/**/*.view"
 
+# Ad-Hoc Explore by Andreas
+
 explore: sc_adhoc {
 
   from: ad_hoc_nima_peter_inventory_vs_rewe_desadv
