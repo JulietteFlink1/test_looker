@@ -9,8 +9,8 @@ include: "/views/projects/cleaning/shyftplan_riders_pickers_hours_clean.view"
 # # and define the joins that connect them together.
 #
 explore: order_cohorts_base {
-  label: "Phone-Based Customer Cohorts"
-  description: "Phone-Based Logic"
+  label: "Customer Cohorts"
+  description: "Customer UUID Logic"
   view_label: "* Orders *"
   from: orders
   hidden: yes
