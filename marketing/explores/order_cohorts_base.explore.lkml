@@ -1,5 +1,5 @@
 #include: "/views/bigquery_tables/reporting_layer/cohorts/order_cohorts_base.view.lkml"
-include: "/views/bigquery_tables/reporting_layer/cohorts/customer_cohorts_base.view.lkml"
+include: "/marketing/views/bigquery_reporting/customer_cohorts_base.view.lkml"
 include: "/views/bigquery_tables/curated_layer/hubs_ct.view.lkml"
 include: "/views/bigquery_tables/curated_layer/discounts.view"
 include: "/views/bigquery_tables/curated_layer/orders.view"

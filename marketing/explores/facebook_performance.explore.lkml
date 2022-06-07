@@ -1,4 +1,4 @@
-include: "/views/projects/marketing/facebook_campaigns_performance.view.lkml"
+include: "/marketing/views/sql_derived_tables/facebook_campaigns_performance.view.lkml"
 
 explore: facebook_campaigns_performance {
   hidden: yes
