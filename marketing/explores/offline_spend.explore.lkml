@@ -1,4 +1,4 @@
-include: "/views/bigquery_tables/curated_layer/offline_marketing_spend.view"
+include: "/marketing/views/bigquery_curated/offline_marketing_spend.view.lkml"
 
 explore: offline_marketing_spend {
   hidden: no

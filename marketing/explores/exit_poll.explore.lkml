@@ -1,4 +1,4 @@
-include: "/views/bigquery_tables/curated_layer/mktg_exit_poll.view"
+include: "/marketing/views/bigquery_curated/mktg_exit_poll.view.lkml"
 
 explore: mktg_exit_poll {
   hidden: no

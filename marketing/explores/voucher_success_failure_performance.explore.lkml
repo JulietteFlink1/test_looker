@@ -1,4 +1,4 @@
-include: "/views/bigquery_tables/reporting_layer/marketing/voucher_success_failure_performance.view.lkml"
+include: "/marketing/views/bigquery_reporting/voucher_success_failure_performance.view.lkml"
 
 explore: voucher_success_failure_performance {
   hidden: yes

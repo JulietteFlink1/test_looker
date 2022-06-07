@@ -362,7 +362,7 @@ view: crm_braze_data {
   measure: total_orders_opened {
     type: sum
     label: "# Total Orders (Opened Emails) "
-    description: "Number of orders that happened in the 24h after the last email was open"
+    description: "Number of orders that happened in the 12h after the last email was open"
     group_label: "Absolute"
     sql: ${num_orders_opened};;
     value_format_name: decimal_0
@@ -371,7 +371,7 @@ view: crm_braze_data {
   measure: total_orders_sent {
     type: sum
     label: "# Total Orders (Sent Emails)"
-    description: "Number of orders that happened in the 24h after the last email was sent"
+    description: "Number of orders that happened in the 12h after the last email was sent"
     group_label: "Absolute"
     sql: ${num_orders_sent};;
     value_format_name: decimal_0
@@ -380,7 +380,7 @@ view: crm_braze_data {
   measure: unique_orders_opened {
     type: sum
     label: "# Unique Orders (Opened Emails)"
-    description: "Number of orders that happened in the 24h after the last email was open"
+    description: "Number of orders that happened in the 12h after the last email was open"
     group_label: "Absolute"
     sql: ${num_unique_orders_opened};;
     value_format_name: decimal_0
@@ -389,7 +389,7 @@ view: crm_braze_data {
   measure: unique_orders_sent {
     type: sum
     label: "# Unique Orders (Sent Emails)"
-    description: "Number of orders that happened in the 24h after the last email was sent"
+    description: "Number of orders that happened in the 12h after the last email was sent"
     group_label: "Absolute"
     sql: ${num_unique_orders_sent};;
     value_format_name: decimal_0
@@ -398,7 +398,7 @@ view: crm_braze_data {
   measure: total_orders_with_vouchers_opened {
     type: sum
     label: "# Total Orders with Vouchers (Opened Emails)"
-    description: "Number of Orders with Vouchers that happened in the 24h after the last email was open"
+    description: "Number of Orders with Vouchers that happened in the 12h after the last email was open"
     group_label: "Absolute"
     sql: ${num_orders_with_vouchers_opened};;
     value_format_name: decimal_0
@@ -407,7 +407,7 @@ view: crm_braze_data {
   measure: total_orders_with_vouchers_sent {
     type: sum
     label: "# Total Orders with Vouchers (Sent Emails)"
-    description: "Number of Orders with Vouchers that happened in the 24h after the last email was sent"
+    description: "Number of Orders with Vouchers that happened in the 12h after the last email was sent"
     group_label: "Absolute"
     sql: ${num_orders_with_vouchers_sent};;
     value_format_name: decimal_0
@@ -555,7 +555,7 @@ view: crm_braze_data {
   measure: unique_order_rate_opened {
     type: number
     label: "% Unique Order Rate (Opened Emails)"
-    description: "Percentage: number of unique orders made in the 24h after the last opening of the email divided by the number of unique emails opened"
+    description: "Percentage: number of unique orders made in the 12h after the last opening of the email divided by the number of unique emails opened"
     group_label: "Relative"
     sql: ${unique_orders_opened} / NULLIF(${total_emails_opened_unique}, 0);;
     value_format_name: percent_2

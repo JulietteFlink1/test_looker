@@ -1,4 +1,4 @@
-include: "/views/bigquery_tables/reporting_layer/**/*.view"
+include: "/marketing/views/bigquery_reporting/**/*.view"
 
 explore: voucher_retention {
   hidden: yes
