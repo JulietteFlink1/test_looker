@@ -19,11 +19,12 @@ view: orders {
     ]
   }
 
-  dimension: acceptance_time {
+  dimension: rider_queuing_time {
+    alias: [acceptance_time]
     type: number
     group_label: "* Operations / Logistics *"
     hidden: no
-    sql: ${TABLE}.acceptance_time_minutes ;;
+    sql: ${TABLE}.rider_queuing_time_minutes ;;
   }
 
   dimension: shipping_price_gross_amount {
@@ -505,7 +506,7 @@ view: orders {
     label: "Estimated number of minutes saved on this order due to stacking"
     description: "Total time needed for the rider to handle the order: Riding to customer + At customer + Riding to hub"
     type: number
-    sql: ${TABLE}.potential_rider_handling_time_without_stacking_minutes - ${TABLE}.rider_handling_time_minutes ;;
+    sql: case when ${TABLE}.is_stacked_order = true then ${TABLE}.potential_rider_handling_time_without_stacking_minutes - ${TABLE}.rider_handling_time_minutes end ;;
   }
 
   dimension: discount_code {
@@ -572,11 +573,11 @@ view: orders {
   }
 
   dimension: estimated_queuing_time_for_picker_minutes {
-    label: "Picker Reaction Time Estimate (min)"
+    label: "Picker Queuing Time Estimate (min)"
     description: "The internally predicted time in minutes for the picker queuing"
     group_label: "* Operations / Logistics *"
     type: number
-    sql: ${TABLE}.estimated_reaction_time_minutes;;
+    sql: ${TABLE}.estimated_picker_queuing_time_minutes;;
   }
 
   dimension: queuing_time_for_picker_minutes {
@@ -600,19 +601,19 @@ view: orders {
   }
 
   dimension: estimated_queuing_time_for_rider_minutes {
-    label: "Rider Acceptance Time Estimate (min)"
+    label: "Rider Queuing Time Estimate (min)"
     description: "The internally predicted time in minutes for the rider queuing"
     group_label: "* Operations / Logistics *"
     type: number
-    sql: ${TABLE}.estimated_acceptance_time_minutes;;
+    sql: ${TABLE}.estimated_rider_queuing_time_minutes;;
   }
 
   dimension: pre_riding_time {
     label: "Pre Riding Time (min)"
-    description: "Reaction Time + Picking Time + Acceptance Time"
+    description: "Picker Queuing Time + Picking Time + Rider Queuing Time"
     group_label: "* Operations / Logistics *"
     type: number
-    sql: ${reaction_time} + ${acceptance_time} + ${time_diff_between_two_subsequent_fulfillments};;
+    sql: ${picker_queuing_time} + ${rider_queuing_time} + ${time_diff_between_two_subsequent_fulfillments};;
   }
 
   dimension: is_critical_delivery_time_estimate_underestimation {
@@ -660,22 +661,24 @@ view: orders {
     sql: ${fulfillment_time} ;;
   }
 
-  dimension: acceptance_time_tier {
+  dimension: rider_queuing_time_tier {
+    alias: [acceptance_time_tier]
     group_label: "* Operations / Logistics *"
-    label: "Acceptance Time (tiered, 1min)"
+    label: "Rider Queuing Time (tiered, 1min)"
     type: tier
     tiers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]
     style: interval
-    sql: ${acceptance_time} ;;
+    sql: ${rider_queuing_time} ;;
   }
 
-  dimension: reaction_time_tier {
+  dimension: picker_queuing_time_tier {
+    alias: [reaction_time_tier]
     group_label: "* Operations / Logistics *"
-    label: "Reaction Time (tiered, 1min)"
+    label: "Picker Queuing Time (tiered, 1min)"
     type: tier
     tiers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]
     style: interval
-    sql: ${reaction_time} ;;
+    sql: ${picker_queuing_time} ;;
   }
 
   dimension: is_riding_to_customer_above_30_minute {
@@ -725,32 +728,36 @@ view: orders {
     sql: ${fulfillment_time} < 1 ;;
   }
 
-  dimension: is_acceptance_less_than_0_minute {
+  dimension: is_rider_queuing_time_less_than_0_minute {
+    alias: [is_acceptance_less_than_0_minute]
     hidden: yes
     group_label: "* Operations / Logistics *"
     type: yesno
-    sql: ${acceptance_time} < 0 ;;
+    sql: ${rider_queuing_time} < 0 ;;
   }
 
-  dimension: is_acceptance_more_than_30_minute {
+  dimension: is_rider_queuing_time_more_than_30_minute {
+    alias: [is_acceptance_more_than_30_minute]
     hidden: yes
     group_label: "* Operations / Logistics *"
     type: yesno
-    sql: ${acceptance_time} > 30 ;;
+    sql: ${rider_queuing_time} > 30 ;;
   }
 
-  dimension: is_reaction_less_than_0_minute {
+  dimension: is_picker_queuing_less_than_0_minute {
+    alias: [is_reaction_less_than_0_minute]
     hidden: yes
     group_label: "* Operations / Logistics *"
     type: yesno
-    sql: ${reaction_time} < 0 ;;
+    sql: ${picker_queuing_time} < 0 ;;
   }
 
-  dimension: is_reaction_more_than_30_minute {
+  dimension: is_picker_queuing_more_than_30_minute {
+    alias: [is_reaction_more_than_30_minute]
     hidden: yes
     group_label: "* Operations / Logistics *"
     type: yesno
-    sql: ${reaction_time} > 30 ;;
+    sql: ${picker_queuing_time} > 30 ;;
   }
 
   dimension: is_picking_less_than_0_minute {
@@ -1059,7 +1066,7 @@ view: orders {
     type: string
     group_label: "* IDs *"
     label: "Customer UUID"
-    hidden: yes
+    hidden: no
     sql: ${TABLE}.customer_uuid ;;
   }
 
@@ -1116,11 +1123,12 @@ view: orders {
     sql: ${TABLE}.picking_time_minutes ;;
   }
 
-  dimension: reaction_time {
+  dimension: picker_queuing_time {
+    alias: [reaction_time]
     group_label: "* Operations / Logistics *"
-    label: "Reaction Time Minutes"
+    label: "Picker Queuing Time Minutes"
     type: number
-    sql: ${TABLE}.reaction_time_minutes ;;
+    sql: ${TABLE}.picker_queuing_time_minutes ;;
   }
 
   dimension: at_customer_time_minutes {
@@ -1530,7 +1538,7 @@ view: orders {
       measure: avg_fulfillment_time {
         group_label: "* Operations / Logistics *"
         label: "AVG Fulfillment Time (decimal)"
-        description: "Average Fulfillment Time (decimal minutes) considering order placement to delivery. Outliers excluded (<1min or >30min)"
+        description: "Average Fulfillment Time (decimal minutes) considering order placement to delivery (rider at customer). Outliers excluded (<3min or >180min)"
         hidden:  no
         type: average
         sql: ${fulfillment_time};;
@@ -1539,21 +1547,22 @@ view: orders {
 
       measure: avg_fulfillment_time_mm_ss {
         group_label: "* Operations / Logistics *"
-        label: "AVG Fulfillment Time (MM:SS)"
-        description: "Average Fulfillment Time considering order placement to delivery. Outliers excluded (<1min or >30min)"
+        label: "AVG Fulfillment Time (HH:MM:SS)"
+        description: "Average Fulfillment Time considering order placement to delivery (rider at customer). Outliers excluded (<3min or >180min)"
         type: average
         sql: ${fulfillment_time} * 60 / 86400.0;;
-        value_format: "mm:ss"
+        value_format: "hh:mm:ss"
       }
 
 
-      measure: avg_reaction_time {
+      measure: avg_picker_queuing_time {
+        alias: [avg_reaction_time]
         group_label: "* Operations / Logistics *"
-        label: "AVG Reaction Time"
-        description: "Average Reaction Time of the Picker considering order placement until picking started. Outliers excluded (<0min or >30min)"
+        label: "AVG Picker Queuing Time"
+        description: "Average Picker Queuing Time of the Picker considering order placement until picking started. Outliers excluded (<0min or >30min)"
         hidden:  no
         type: average
-        sql:${reaction_time};;
+        sql:${picker_queuing_time};;
         value_format_name: decimal_1
       }
 
@@ -1567,13 +1576,14 @@ view: orders {
         value_format_name: decimal_1
       }
 
-      measure: avg_acceptance_time {
+      measure: avg_rider_queuing_time {
+        alias: [avg_acceptance_time]
         group_label: "* Operations / Logistics *"
-        label: "AVG Acceptance Time"
-        description: "Average time between picking completion and rider having claimed the order. Only considering cases where rider claimed order AFTER picking was completed"
+        label: "AVG Rider Queuing Time"
+        description: "Average time between picking completion and rider having claimed the order."
         hidden:  no
         type: average
-        sql:${acceptance_time};;
+        sql:${rider_queuing_time};;
         value_format_name: decimal_1
       }
 
@@ -1721,6 +1731,38 @@ view: orders {
         value_format_name: decimal_1
       }
 
+      measure: avg_rider_handling_time_stacked {
+        group_label: "* Operations / Logistics *"
+        label: "AVG Rider Handling Time Stacked"
+        description: "Average total rider handling time (stacked): riding to customer + at customer + riding to hub"
+        hidden:  yes
+        type: average
+        sql:
+          case when ${TABLE}.is_stacked_order = true then ${rider_handling_time_minutes} end;;
+        value_format_name: decimal_1
+      }
+
+      measure: avg_rider_handling_time_non_stacked {
+        group_label: "* Operations / Logistics *"
+        label: "AVG Rider Handling Time Non Stacked"
+        description: "Average total rider handling time (non-stacked): riding to customer + at customer + riding to hub"
+        hidden:  yes
+        type: average
+        sql: case when ${TABLE}.is_stacked_order = false then ${rider_handling_time_minutes} end;;
+        value_format_name: decimal_1
+      }
+
+      measure: avg_rider_handling_time_saved_vs_non_stacked_orders {
+        group_label: "* Stacked Orders *"
+        label: "AVG Rider Handling Time Minutes Saved Stacked vs. Non-Stacked Orders"
+        description: "The difference in minutes for average rider handling time between stacked and non-stacked orders"
+        hidden:  no
+        type: number
+        sql: ${avg_rider_handling_time_non_stacked} - ${avg_rider_handling_time_stacked};;
+        value_format_name: decimal_1
+      }
+
+
       measure: avg_potential_rider_handling_time_without_stacking {
         group_label: "* Operations / Logistics *"
         label: "AVG Potential Rider Handling Time Without Stacking"
@@ -1864,6 +1906,10 @@ view: orders {
         value_format_name: decimal_1
 
       }
+
+
+
+
 
 
 
@@ -2026,13 +2072,14 @@ view: orders {
       }
 
 
-      measure: sum_avg_acceptance_reaction_time {
+      measure: sum_avg_queuing_time {
+        alias: [sum_avg_acceptance_reaction_time]
         group_label: "* Operations / Logistics *"
-        label: "AVG Reaction + Acceptance Time"
-        description: "Sum of the average of acceptance time and the average of reaction time"
+        label: "AVG Picker Queuing Time + Rider Queuing Time"
+        description: "Sum of the average of rider queuing time and the average of picker queuing time"
         hidden:  no
         type: number
-        sql:${avg_acceptance_time} + ${avg_reaction_time};;
+        sql:${avg_rider_queuing_time} + ${avg_picker_queuing_time};;
         value_format_name: decimal_1
       }
 
@@ -2743,6 +2790,16 @@ view: orders {
         hidden:  no
         type: number
         sql: ${sum_rider_handling_time_minutes_saved_with_stacking} / NULLIF(${sum_potential_rider_handling_time_without_stacking_minutes}, 0);;
+        value_format: "0%"
+      }
+
+      measure: pct_rider_handling_time_saved_with_stacking_vs_non_stacked {
+        group_label: "* Stacked Orders *"
+        label: "% Rider Handling Time Saved Stacked vs. Non-Stacked Orders"
+        description: "Compared to non-stacked orders' average rider handling time, what are the % savings for stacked orders"
+        hidden:  no
+        type: number
+        sql: (${avg_rider_handling_time_non_stacked} - ${avg_rider_handling_time_stacked})/${avg_rider_handling_time_non_stacked};;
         value_format: "0%"
       }
 

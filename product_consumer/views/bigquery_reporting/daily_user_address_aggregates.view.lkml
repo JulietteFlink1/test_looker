@@ -29,52 +29,36 @@ view: daily_user_address_aggregates {
     sql: ${TABLE}.is_address_confirmed ;;
   }
 
-  dimension: is_location_pin_placed {
+  dimension: is_skip_address_selection_onboarding {
     group_label: "Flags | Event"
-    label: "Is Location Pin Placed"
-    description: "Did daily_user_uuid choose a location on the map?"
+    label: "Is Address Selection Skipped"
+    description: "Did daily_user_uuid choose to browse selection on onboarding screen and skip address selection?"
     type: yesno
-    sql: ${TABLE}.is_location_pin_placed ;;
+    sql: ${TABLE}.is_skip_address_selection_onboarding ;;
   }
 
-  dimension: is_address_resolution_failed_inside_area {
+  dimension: is_seen_unresolved_address {
     group_label: "Flags | Event"
-    label: "Is Address Resolution Failed Events Inside Delivery Area"
-    description: "Did daily_user_uuid experience any addressResolutionFailed events inside delivery area?"
+    label: "Is Address Resolution Failed Event"
+    description: "Did daily_user_uuid experience any address resolution failure?"
     type: yesno
-    sql: ${TABLE}.is_address_resolution_failed_inside_area ;;
+    sql: ${TABLE}.is_seen_unresolved_address ;;
   }
 
-  dimension: is_address_resolution_failed_outside_area {
-    group_label: "Flags | Event"
-    label: "Is Address Resolution Failed Events Outside Delivery Area"
-    description: "Did daily_user_uuid experience any addressResolutionFailed events outside delivery area?"
-    type: yesno
-    sql: ${TABLE}.is_address_resolution_failed_outside_area ;;
-  }
-
-  dimension: is_address_skipped {
-    group_label: "Flags | Event"
-    label: "Is Address Skipped"
-    description: "Did daily_user_uuid skip address selection while being inside delivery area?"
-    type: yesno
-    sql: ${TABLE}.is_address_skipped ;;
-  }
-
-  dimension: is_map_viewed {
+  dimension: is_seen_address_search {
     group_label: "Flags | Event"
     label: "Is Map Viewed"
     description: "Did daily_user_uuid view the address selection map?"
     type: yesno
-    sql: ${TABLE}.is_map_viewed ;;
+    sql: ${TABLE}.is_seen_address_search ;;
   }
 
-  dimension: is_selection_browse_selected {
+  dimension: is_skip_waitlist {
     group_label: "Flags | Event"
-    label: "Is Browse Selection"
+    label: "Is Browsing Because Outside Of Delivery Area"
     description: "Did daily_user_uuid choose to browse selection while being outside of our delivery area?"
     type: yesno
-    sql: ${TABLE}.is_selection_browse_selected ;;
+    sql: ${TABLE}.is_skip_waitlist ;;
   }
 
   dimension: is_waitlist_signup_selected {
@@ -83,6 +67,14 @@ view: daily_user_address_aggregates {
     description: "Did daily_user_uuid tap the waitlist sign up button?"
     type: yesno
     sql: ${TABLE}.is_waitlist_signup_selected ;;
+  }
+
+  dimension: is_city_not_available {
+    group_label: "Flags | Event"
+    label: "Is City Not Available Selected"
+    description: "Did daily_user_uuid choose to browse as guest and then select that their city is not available?"
+    type: yesno
+    sql: ${TABLE}.is_city_not_available ;;
   }
 
   dimension: is_hub_updated_with_cart {
@@ -95,7 +87,7 @@ view: daily_user_address_aggregates {
 
   dimension: is_addres_tappped_at_checkout {
     group_label: "Flags | Event"
-    label: "Is Waitlist Signup Selected"
+    label: "Address Tap At Checkout"
     description: "Did daily_user_uuid tap the address at checkout?"
     type: yesno
     sql: ${TABLE}.is_addres_tappped_at_checkout ;;
@@ -111,14 +103,6 @@ view: daily_user_address_aggregates {
     filters: [is_address_confirmed: "yes"]
   }
 
-  measure: cnt_users_location_pin_placed {
-    group_label: "# Daily Users"
-    label: "# Daily Users With Location Pin Placed"
-    description: "# daily users with at least one Location Pin Placed event"
-    type: count
-    filters: [is_location_pin_placed: "yes"]
-  }
-
   measure: cnt_has_waitlist_signup_selected {
     group_label: "# Daily Users"
     label: "# Daily Users With Waitlist Intent"
@@ -130,113 +114,80 @@ view: daily_user_address_aggregates {
   measure: cnt_available_area {
     group_label: "# Daily Users"
     label: "# Daily Users Inside Delivery Area"
-    description: "# daily users with least one Location Pin Placed at a location we can deliver to (=inside delivery zone and resolvable address)"
+    description: "# daily users who selected at least one address that is inside our delivery area and saw the address refinement screen"
     type: count
-    filters: [is_seen_inside_delivery_area: "yes", is_location_pin_placed: "yes"]
+    filters: [is_selected_address_inside_delivery_area: "yes"]
+  }
+
+  measure: cnt_noaction_area_available {
+    group_label: "# Daily Users"
+    label: "# Daily Users Without Address Confirmed Inside Delivery Area"
+    description: "# daily users who were in an available area but did not confirm any address"
+    type: count
+    filters: [is_selected_address_inside_delivery_area: "yes", is_address_confirmed: "no"]
+  }
+
+  measure: cnt_browse_area_unavailable {
+    label: "# Daily Users Outside Delivery Selecting Browse Products"
+    description: "# daily users who were in an unavailable area and selected browse products and did not sign up for waitlist"
+    type: count
+    filters: [is_selected_address_outside_delivery_area: "yes", is_skip_waitlist: "yes", is_waitlist_signup_selected: "no"]
   }
 
   measure: cnt_unavailable_area {
     group_label: "# Daily Users"
     label: "# Daily Users Outside Delivery Area"
-    description: "# daily users with at least one Location Pin Placed at a location we cannot deliver to (=outside delivery zone or no resolvable address)"
+    description: "# daily users who selected at least one address that is outside our delivery area and saw the out of delivery area screen"
     type: count
-    filters: [is_seen_outside_delivery_area: "yes", is_location_pin_placed: "yes"]
+    filters: [is_selected_address_outside_delivery_area: "yes"]
   }
 
-  measure: cnt_address_skipped_in_available_area {
+  measure: cnt_has_waitlist_signup_selected_no_browsing {
     group_label: "# Daily Users"
-    label: "# Daily Users With Address Skipped, At Deliverable Location"
-    description: "# daily users who skipped address selection at least once and the user was at a deliverable location and did not select any address"
+    label: "# Daily Users With Waitlist Intent And Without Selecting Browse Products"
+    description: "# daily users who were in an unavailable area and selected to join waitlist and did not select browse products"
     type: count
-    filters: [is_seen_inside_delivery_area: "yes", is_address_skipped: "yes", is_address_confirmed: "no"]
+    filters: [is_waitlist_signup_selected: "yes"]
   }
 
-  measure: cnt_address_confirmed_area_available {
+  measure: cnt_has_waitlist_signup_selected_and_browsing {
     group_label: "# Daily Users"
-    label: "# Daily Users With Address Confirmed, Inside Delivery Area"
-    description: "# daily users with at least one address was selected and address selection wasn't skipped"
+    label: "# Daily Users With Waitlist Intent And Selecting Browse Products"
+    description: "# daily users who were in an unavailable area and tapped both the join waitlist and select browse products buttons"
     type: count
-    filters: [is_seen_inside_delivery_area: "yes", is_address_confirmed: "yes", is_address_skipped: "no"]
-  }
-
-  measure: cnt_confirmed_and_skipped_area_available {
-    group_label: "# Daily Users"
-    label: "# Daily Users With Address Confirmed AND Address Skipped, Inside Delivery Area"
-    description: "# daily users who were in an available area and both selected and skipped address at least once"
-    type: count
-    filters: [is_seen_inside_delivery_area: "yes", is_address_confirmed: "yes", is_address_skipped: "yes"]
-  }
-
-  measure: cnt_noaction_area_available {
-    group_label: "# Daily Users"
-    label: "# Daily Users Without Address Confirmed or Address Skipped but Location Pin Placed, Inside Delivery Area"
-    description: "# daily users who were in an available area but did not perform any address selection or skipping action"
-    type: count
-    filters: [is_seen_inside_delivery_area: "yes", is_address_confirmed: "no", is_address_skipped: "no"]
-  }
-
-  measure: cnt_waitlist_area_unavailable {
-    group_label: "# Daily Users"
-    label: " # Daily Users With Waitlist Intent, Outside Delivery Area"
-    description: "# daily users who were in an unavailable area and selected join waitlist but did not browse products"
-    type: count
-    filters: [is_seen_outside_delivery_area: "yes", is_waitlist_signup_selected: "yes", is_selection_browse_selected: "no"]
-  }
-
-  measure: cnt_browse_area_unavailable {
-    label: "# Daily Users With Product Browsing, Outside Delivery Area"
-    description: "# daily users who were in an unavailable area and selected browse products but did not sign up for waitlist"
-    type: count
-    filters: [is_seen_outside_delivery_area: "yes", is_selection_browse_selected: "yes", is_waitlist_signup_selected: "no"]
-  }
-
-  measure: cnt_waitlist_and_browse_area_unavailable {
-    group_label: "# Daily Users"
-    label: "# Daily Users With Waitlist Intent AND Product Browsing, Outside Delivery Area"
-    description: "# daily users who were in an unavailable area and both selected join waitlist and browsed products"
-    type: count
-    filters: [is_seen_outside_delivery_area: "yes", is_selection_browse_selected: "yes", is_waitlist_signup_selected: "yes"]
+    filters: [is_waitlist_signup_selected: "yes", is_skip_waitlist: "yes"]
   }
 
   measure: cnt_noaction_area_unavailable {
     group_label: "# Daily Users"
-    label: "# Daily Users Without Waitlist Intent or Product Browsing but Location Pin Placed, Outside Delivery Area"
+    label: "# Daily Users Outside Delivery Area Without Waitlist Intent or Product Browsing"
     description: "# daily users who were in an unavailable area and did not have a waitlist joining intent or browsing selection action"
     type: count
-    filters: [is_seen_outside_delivery_area: "yes", is_selection_browse_selected: "no", is_waitlist_signup_selected: "no"]
+    filters: [is_selected_address_outside_delivery_area: "yes", is_skip_waitlist: "no", is_waitlist_signup_selected: "no"]
   }
 
-  # NOTE: want to update this to also be able to specify whether it's failed within delivery area or not
-  measure: cnt_address_resolution_failed_inside_area {
+  measure: cnt_is_city_unavailable {
     group_label: "# Daily Users"
-    label: "# Daily Users With Address Unidentified, Inside Delivery Area"
-    description: "# daily users that experienced at least one unidentified address inside delivery area"
+    label: "# Daily Users With Unavailable Cities"
+    description: "# daily users that tapped City Not Available"
     type: count
-    filters: [is_address_resolution_failed_inside_area: "yes"]
+    filters: [is_city_not_available: "yes"]
   }
 
-  measure: cnt_address_resolution_failed_outside_area {
+  measure: cnt_address_resolution_failed {
     group_label: "# Daily Users"
-    label: "# Daily Users With Address Unidentified, Outside Delivery Area"
-    description: "# daily users that experienced at least one unidentified address inside delivery areaa"
+    label: "# Daily Users With Unidentified Address"
+    description: "# daily users that experienced at least one unidentified address"
     type: count
-    filters: [is_address_resolution_failed_outside_area: "yes"]
+    filters: [is_seen_unresolved_address: "yes"]
   }
 
-  measure: cnt_address_skipped {
+  measure: cnt_is_seen_address_search {
     group_label: "# Daily Users"
-    label: "# Daily Users With Address Skipped"
-    description: "# daily users who skipped address selection"
+    label: "# Daily Users Who Started Address Search"
+    description: "# daily users who viewed address search screen at least once"
     type: count
-    filters: [is_address_skipped: "yes"]
-  }
-
-  measure: cnt_map_viewed {
-    group_label: "# Daily Users"
-    label: "# Daily Users With Map Viewed"
-    description: "# daily users who viewed address selection map at least once"
-    type: count
-    filters: [is_map_viewed: "yes"]
+    filters: [is_seen_address_search: "yes"]
   }
 
   measure: cnt_is_hub_updated_with_cart {
@@ -257,36 +208,20 @@ view: daily_user_address_aggregates {
 
   ######## Daily Attributes ########
 
-  dimension: is_seen_inside_delivery_area {
+  dimension: is_selected_address_inside_delivery_area {
     group_label: "Location Dimensions"
-    label: "Has Seen Location Inside Delivery Area"
-    description: "TRUE if there was any locationPinPlaced inside of the delivery area, FALSE otherwise"
+    label: "Has Selected A Location Inside Delivery Area"
+    description: "TRUE if user selected at least one address inside the delivery area and saw the address refinement screen"
     type: yesno
-    sql: ${TABLE}.is_seen_inside_delivery_area;;
+    sql: ${TABLE}.is_selected_address_inside_delivery_area;;
   }
 
-  dimension: is_seen_outside_delivery_area {
+  dimension: is_selected_address_outside_delivery_area {
     group_label: "Location Dimensions"
-    label: "Has Seen Location Inside Delivery Area"
+    label: "Has Seen Location outside Delivery Area"
     description: "TRUE if there was any locationPinPlaced outside of the delivery area, FALSE otherwise"
     type: yesno
-    sql: ${TABLE}.is_seen_outside_delivery_area;;
-  }
-
-  dimension: is_seen_deliverable_location {
-    group_label: "Location Dimensions"
-    label: "Has Seen Deliverable Location"
-    description: "TRUE if there was any locationPinPlaced within a deliverable location, FALSE otherwise"
-    type: yesno
-    sql: ${TABLE}.is_seen_deliverable_location;;
-  }
-
-  dimension: is_seen_undeliverable_location {
-    group_label: "Location Dimensions"
-    label: "Has Seen Undeliverable Location"
-    description: "TRUE if there was any locationPinPlaced on a location that was not deliverable (=either outside of delivery area or inside of delivery area on a location that is not deliverable), FALSE otherwise"
-    type: yesno
-    sql: ${TABLE}.is_seen_undeliverable_location;;
+    sql: ${TABLE}.is_selected_address_outside_delivery_area;;
   }
 
   ######## Dates ########
@@ -334,14 +269,10 @@ view: daily_user_address_aggregates {
     fields: [
       daily_user_uuid,
       event_date_at_date,
-      is_seen_inside_delivery_area,
-      is_seen_outside_delivery_area,
-      is_seen_deliverable_location,
-      is_seen_undeliverable_location,
-      is_location_pin_placed,
-      is_address_skipped,
-      is_address_resolution_failed_inside_area,
-      is_address_resolution_failed_outside_area,
+      is_selected_address_inside_delivery_area,
+      is_selected_address_outside_delivery_area,
+      is_skip_address_selection_onboarding,
+      is_skip_waitlist,
       is_address_confirmed,
       is_waitlist_signup_selected
     ]

@@ -1,4 +1,4 @@
-include: "/views/bigquery_tables/reporting_layer/marketing/adjust_customer_conversions.view.lkml"
+include: "/**/*.view.lkml"
 
 explore: adjust_customer_conversion {
   hidden: no

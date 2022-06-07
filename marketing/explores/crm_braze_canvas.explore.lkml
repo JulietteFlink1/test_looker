@@ -1,4 +1,4 @@
-include: "/views/sql_derived_tables/crm_braze_canvas.view.lkml"
+include: "/marketing/views/bigquery_reporting/crm_braze_canvas.view.lkml"
 # include: "/views/**/*.view"
 # include: "/**/*.view"
 

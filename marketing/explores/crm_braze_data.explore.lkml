@@ -1,4 +1,4 @@
-include: "/views/bigquery_tables/crm_braze_data.view.lkml"
+include: "/marketing/views/bigquery_curated/crm_braze_data.view.lkml"
 
 explore: crm_braze_data {
   hidden: no

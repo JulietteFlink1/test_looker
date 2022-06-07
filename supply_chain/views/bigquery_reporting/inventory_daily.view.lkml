@@ -241,6 +241,7 @@ view: inventory_daily {
   dimension: number_of_correction_product_damaged {
     group_label: "Inventory Change"
     type: number
+    hidden: yes
     sql:
 
         {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
@@ -261,6 +262,7 @@ view: inventory_daily {
   dimension: number_of_correction_product_expired {
     group_label: "Inventory Change"
     type: number
+    hidden: yes
     sql:
 
       {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
@@ -282,6 +284,7 @@ view: inventory_daily {
   dimension: number_of_correction_stock_taking_increased {
     group_label: "Inventory Change"
     type: number
+    hidden: yes
     sql:
 
     {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
@@ -303,6 +306,7 @@ view: inventory_daily {
   dimension: number_of_correction_stock_taking_reduced {
     group_label: "Inventory Change"
     type: number
+    hidden: yes
     sql:
 
             {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
@@ -324,6 +328,7 @@ view: inventory_daily {
   dimension: number_of_hours_oos {
     group_label: "OOS-Dimensions"
     type: number
+    hidden: yes
     sql:
 
             {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
@@ -364,6 +369,7 @@ view: inventory_daily {
   dimension: number_of_hours_open {
     group_label: "OOS-Dimensions"
     type: number
+    hidden: yes
     sql:
 
             {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
@@ -407,6 +413,7 @@ view: inventory_daily {
     group_label: "OOS-Dimensions"
 
     type: number
+    hidden: yes
     sql: 1 - (${number_of_hours_oos} / nullif(${number_of_hours_open},0) )  ;;
 
     value_format_name: percent_0
@@ -418,6 +425,7 @@ view: inventory_daily {
   dimension: number_of_outbound_orders {
     group_label: "Inventory Change"
     type: number
+    hidden: yes
     sql:
 
             {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
@@ -438,6 +446,7 @@ view: inventory_daily {
   dimension: number_of_outbound_others {
     group_label: "Inventory Change"
     type: number
+    hidden: yes
     sql:
 
             {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
@@ -459,6 +468,7 @@ view: inventory_daily {
   dimension: number_of_total_correction {
     group_label: "Inventory Change"
     type: number
+    hidden: yes
     sql:
 
             {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
@@ -480,6 +490,7 @@ view: inventory_daily {
   dimension: number_of_total_inbound {
     group_label: "Inventory Change"
     type: number
+    hidden: yes
     sql:
 
             {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
@@ -500,6 +511,7 @@ view: inventory_daily {
   dimension: number_of_total_outbound {
     group_label: "Inventory Change"
     type: number
+    hidden: yes
     sql:
 
             {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
@@ -521,6 +533,7 @@ view: inventory_daily {
   dimension: number_of_unspecified {
     group_label: "Inventory Change"
     type: number
+    hidden: yes
     sql:
             {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
               or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer' %}
@@ -540,6 +553,7 @@ view: inventory_daily {
   dimension: quantity_from {
     group_label: "Inventory Change"
     type: number
+    hidden: yes
     sql:
 
             {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
@@ -560,6 +574,7 @@ view: inventory_daily {
   dimension: quantity_to {
     group_label: "Inventory Change"
     type: number
+    hidden: yes
     sql:
 
             {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
@@ -576,6 +591,49 @@ view: inventory_daily {
         ;;
 
     }
+
+
+  dimension: number_of_correction_product_delivery_damaged {
+    group_label: "Inventory Change"
+    type: number
+    hidden: yes
+    sql:
+
+            {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
+              or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer' %}
+            ${TABLE}.number_of_correction_product_delivery_damaged
+
+      {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
+      ${TABLE}.rsg_number_of_correction_product_delivery_damaged
+
+      {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'customer' %}
+      ${TABLE}.sg_number_of_correction_product_delivery_damaged
+
+      {% endif %}
+      ;;
+
+  }
+
+  dimension: number_of_correction_product_delivery_expired {
+    group_label: "Inventory Change"
+    type: number
+    hidden: yes
+    sql:
+
+            {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
+              or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer' %}
+            ${TABLE}.number_of_correction_product_delivery_expired
+
+      {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
+      ${TABLE}.rsg_number_of_correction_product_delivery_expired
+
+      {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'customer' %}
+      ${TABLE}.sg_number_of_correction_product_delivery_expired
+
+      {% endif %}
+      ;;
+
+  }
 
 
 
@@ -781,6 +839,30 @@ view: inventory_daily {
 
     type: sum
     sql: ${number_of_correction_product_expired} ;;
+
+    value_format_name: decimal_0
+  }
+
+  measure: sum_of_correction_product_delivery_damaged {
+
+    label: "# Corrections - Product Delivery Damaged"
+    description: "The sum of all inventory corrections due to damaged products at the point of inbounding"
+    group_label: "Inventory Change"
+
+    type: sum
+    sql: ${number_of_correction_product_delivery_damaged} ;;
+
+    value_format_name: decimal_0
+  }
+
+  measure: sum_of_correction_product_delivery_expired {
+
+    label: "# Corrections - Product Delivery Expired"
+    description: "The sum of all inventory corrections due to expired products at the point of inbounding"
+    group_label: "Inventory Change"
+
+    type: sum
+    sql: ${number_of_correction_product_delivery_expired} ;;
 
     value_format_name: decimal_0
   }
