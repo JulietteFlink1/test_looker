@@ -144,6 +144,7 @@ view: matching_inventory_level {
     sql: ${TABLE}.hub_code ;;
     group_label: "> IDs Dimensions <"
     label: "Hub Code"
+    bypass_suggest_restrictions: yes
   }
 
   dimension: sku {
@@ -151,6 +152,7 @@ view: matching_inventory_level {
     sql: ${TABLE}.sku ;;
     group_label: "> IDs Dimensions <"
     label: "SKU"
+    bypass_suggest_restrictions: yes
   }
 
   dimension: vendor_id {
@@ -158,6 +160,7 @@ view: matching_inventory_level {
     sql: ${TABLE}.vendor_id ;;
     group_label: "> IDs Dimensions <"
     label: "Vendor ID"
+    bypass_suggest_restrictions: yes
   }
 
   dimension: order_number {
@@ -165,6 +168,7 @@ view: matching_inventory_level {
     sql: ${TABLE}.order_number ;;
     group_label: "> IDs Dimensions <"
     label: "Order Number"
+    bypass_suggest_restrictions: yes
   }
 
   dimension: table_uuid {
@@ -283,7 +287,7 @@ dimension: inbounded_on {
 
   measure: count_orders_promised {
     group_label: "> Measures (Order Count) <"
-    label: "COUNT Orders Promised"
+    label: "# Orders Promised"
     type: count_distinct
     sql: ${order_number} ;;
     drill_fields: []
@@ -291,7 +295,7 @@ dimension: inbounded_on {
 
   measure: count_orders_delivered {
     group_label: "> Measures (Order Count) <"
-    label: "COUNT Orders Delivered"
+    label: "# Orders Delivered"
     type: count_distinct
     sql: ${order_number} ;;
     filters: [inbounded_timestamp_adjusted_date: "Not Null",
