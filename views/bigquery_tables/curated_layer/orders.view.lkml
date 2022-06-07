@@ -1530,7 +1530,7 @@ view: orders {
       measure: avg_fulfillment_time {
         group_label: "* Operations / Logistics *"
         label: "AVG Fulfillment Time (decimal)"
-        description: "Average Fulfillment Time (decimal minutes) considering order placement to delivery. Outliers excluded (<1min or >30min)"
+        description: "Average Fulfillment Time (decimal minutes) considering order placement to delivery (rider at customer). Outliers excluded (<3min or >180min)"
         hidden:  no
         type: average
         sql: ${fulfillment_time};;
@@ -1539,11 +1539,11 @@ view: orders {
 
       measure: avg_fulfillment_time_mm_ss {
         group_label: "* Operations / Logistics *"
-        label: "AVG Fulfillment Time (MM:SS)"
-        description: "Average Fulfillment Time considering order placement to delivery. Outliers excluded (<1min or >30min)"
+        label: "AVG Fulfillment Time (HH:MM:SS)"
+        description: "Average Fulfillment Time considering order placement to delivery (rider at customer). Outliers excluded (<3min or >180min)"
         type: average
         sql: ${fulfillment_time} * 60 / 86400.0;;
-        value_format: "mm:ss"
+        value_format: "hh:mm:ss"
       }
 
 
