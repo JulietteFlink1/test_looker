@@ -194,9 +194,15 @@ view: reordering_from_order {
   }
 
   dimension: reordered_within_30_minutes {
-    label: "Reordered Within 15 Minutes"
+    label: "Reordered Within 30 Minutes"
     type: yesno
     sql: ${time_to_next_order_minutes} <= 30 ;;
+  }
+
+  dimension: reordered_within_60_minutes {
+    label: "Reordered Within 60 Minutes"
+    type: yesno
+    sql: ${time_to_next_order_minutes} <= 60 ;;
   }
 
   measure: cnt_orders {
@@ -222,6 +228,12 @@ view: reordering_from_order {
     label: "# Cancelled Orders With Reorders Within 30 Minutes"
     type: count
     filters: [time_to_next_order_minutes: "not null", reordered_within_30_minutes: "yes", amt_cancelled_gross: ">0"]
+  }
+
+  measure: cnt_reorders_within_60_minutes {
+    label: "# Cancelled Orders With Reorders Within 30 Minutes"
+    type: count
+    filters: [time_to_next_order_minutes: "not null", reordered_within_60_minutes: "yes", amt_cancelled_gross: ">0"]
   }
 
   measure: cnt_cancelled_orders {
