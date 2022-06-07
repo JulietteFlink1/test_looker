@@ -33,6 +33,7 @@ view: vendor_performance_fill_rate {
 
     value_format: "#,##0"
     type: number
+    hidden: yes
   }
 
   dimension: sum_total_quantity_po_derived {
@@ -43,6 +44,7 @@ view: vendor_performance_fill_rate {
 
     value_format: "#,##0"
     type: number
+    hidden: yes
   }
 
   dimension: sum_inbound_inventory {
@@ -53,6 +55,7 @@ view: vendor_performance_fill_rate {
 
     value_format: "#,##0"
     type: number
+    hidden: yes
   }
 
   dimension: desadv_fill_rate  {
@@ -65,6 +68,7 @@ view: vendor_performance_fill_rate {
     type: number
 
     value_format_name: percent_1
+    hidden: yes
   }
 
   dimension: desadv_fill_rate_po_corrected  {
@@ -96,6 +100,26 @@ view: vendor_performance_fill_rate {
             then 'less than 25% booked in'
         end
     ;;
+    type: string
+  }
+
+  dimension: is_desadv_inbounded_po_corrected {
+
+    label:       "DESADV Inbounded Status (PO Corrected)"
+    description: "This field classifies DESADVS in how much of their selling units (corrected to take selling units from values from latest purchase orders) are actually inbounded"
+    group_label: "DESADV aggregated"
+
+    sql: case
+            when ${desadv_fill_rate_po_corrected} > 0.8
+            then 'booked in'
+
+      when ${desadv_fill_rate_po_corrected} > 0.25 and ${desadv_fill_rate_po_corrected} <= 0.8
+      then 'less than 80% booked in'
+
+      when ${desadv_fill_rate_po_corrected} <= 0.25
+      then 'less than 25% booked in'
+      end
+      ;;
     type: string
   }
 

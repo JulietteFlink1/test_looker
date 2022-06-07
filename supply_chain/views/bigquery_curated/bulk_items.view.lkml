@@ -43,8 +43,15 @@ view: bulk_items {
              provider_name,
              sum_handling_units_count,
              sum_total_quantity,
-             sum_total_quantity_po_derived
+             sum_total_quantity_po_derived,
       ]
+  }
+
+  set: cross_referenced_fields {
+    fields: [
+      pct_items_inbounded,
+      pct_items_inbounded_capped
+    ]
   }
 
 
@@ -450,7 +457,7 @@ view: bulk_items {
     description: "The sum of all purchase units from products as defined in the latest know Purchase Order. This measure was introduced, due to some parsing problems for certain SKUs in DESADVS, that eventually had incorrect selling units stated (e.g. 1 Banana per DESADV)"
 
     type: sum
-    sql: ${total_quantity_po_derived} ;;
+    sql: ${total_quantity_po_derived};;
 
     value_format_name: decimal_0
   }
@@ -527,6 +534,36 @@ view: bulk_items {
     sql: ${dispatch_notification_id} ;;
 
     value_format_name: decimal_0
+  }
+
+
+  # ------------------------------------------------
+  # WARNING: Cross-referenced fields
+  measure: pct_items_inbounded {
+
+    label:       "% Fill Rate"
+    description: "The sum of items that are listed on the DESADV (PO corrected) compared to the number of items, that have been inbounded on the delivery date"
+
+    type: number
+    value_format_name: percent_1
+    sql: safe_divide(${inventory_changes_daily.sum_inbound_inventory}, ${sum_total_quantity_po_derived}) ;;
+  }
+
+  measure: pct_items_inbounded_capped {
+
+    label:       "% Delivery In Full"
+    description: "The sum of items that are listed on the DESADV (PO corrected) compared to the number of items, that have been inbounded on the delivery date. This metric is capped to have at max a value of 100%"
+
+    type: number
+    value_format_name: percent_1
+    sql:
+      case
+        when ${inventory_changes_daily.sum_inbound_inventory} > ${sum_total_quantity_po_derived} -- when more inbouded then on DESADV
+        then 1 -- then define as 100%
+        else safe_divide(${inventory_changes_daily.sum_inbound_inventory}, ${sum_total_quantity_po_derived})  -- else take the actual inbounded rate
+      end
+
+    ;;
   }
 
   measure: count {

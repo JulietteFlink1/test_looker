@@ -22,6 +22,8 @@ explore: bulk_items {
   view_label: " 01 Delivery Notifications REWE"
   hidden: yes
 
+  fields: [ALL_FIELDS*, -bulk_items.cross_referenced_fields*]
+
 ### FILTERS
 
 
