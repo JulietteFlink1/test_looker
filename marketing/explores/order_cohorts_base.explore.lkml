@@ -1,5 +1,5 @@
 #include: "/views/bigquery_tables/reporting_layer/cohorts/order_cohorts_base.view.lkml"
-include: "/views/bigquery_tables/reporting_layer/cohorts/customer_cohorts_base.view.lkml"
+include: "/marketing/views/bigquery_reporting/customer_cohorts_base.view.lkml"
 include: "/views/bigquery_tables/curated_layer/hubs_ct.view.lkml"
 include: "/views/bigquery_tables/curated_layer/discounts.view"
 include: "/views/bigquery_tables/curated_layer/orders.view"
@@ -9,8 +9,8 @@ include: "/views/projects/cleaning/shyftplan_riders_pickers_hours_clean.view"
 # # and define the joins that connect them together.
 #
 explore: order_cohorts_base {
-  label: "Phone-Based Customer Cohorts"
-  description: "Phone-Based Logic"
+  label: "Customer Cohorts"
+  description: "Customer UUID Logic"
   view_label: "* Orders *"
   from: orders
   hidden: yes

@@ -1,5 +1,5 @@
 
-include: "/explores/base_explores/orders_discounts.explore"
+include: "/marketing/explores/orders_discounts.explore.lkml"
 
 
 explore: orders_discounts_hourly {
