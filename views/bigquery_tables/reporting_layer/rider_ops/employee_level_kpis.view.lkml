@@ -45,9 +45,10 @@ view: employee_level_kpis {
   }
 
   dimension: staff_number {
-    type: number
+    type:  number
     label: "Staff Number"
     sql: ${TABLE}.staff_number ;;
+    value_format: "0"
   }
 
   dimension: acquisition_channel {
@@ -144,21 +145,13 @@ view: employee_level_kpis {
   measure: last_worked_date {
     datatype: date
     description: "date of the last worked/punched shift"
-    sql: max(case when ${TABLE}.number_of_worked_minutes > 0 then ${TABLE}.shift_date end ) ;;
+    sql: max(case when ${TABLE}.number_of_worked_minutes > 0 then ${TABLE}.shift_date end);;
   }
 
   measure: first_worked_date {
     datatype: date
     description: "date of the first worked/punched shift"
-    sql: (min(case when ${TABLE}.number_of_worked_minutes > 0 then ${TABLE}.shift_date end) ) ;;
-  }
-
-
-  measure: number_of_at_customer_time_minutes {
-    type: average
-    label: "AVG At Customer Time Minutes"
-    sql: ${TABLE}.number_of_at_customer_time_minutes ;;
-    value_format_name: decimal_1
+    sql: min(case when ${TABLE}.number_of_worked_minutes > 0 then ${TABLE}.shift_date end);;
   }
 
   measure: number_of_delivered_orders {
@@ -167,26 +160,9 @@ view: employee_level_kpis {
     sql: ${TABLE}.number_of_delivered_orders ;;
   }
 
-  measure: number_of_early_punched_out_hours {
-    type: sum
-    label: "# Early Punched Out Hours"
-    description: "Employee Punch Out Before shift end"
-    sql: ${TABLE}.number_of_end_early_minutes/60 ;;
-    value_format_name: decimal_1
-  }
-
-  measure: number_of_late_punched_out_hours {
-    type: sum
-    label: "# Late Punched Out Hours"
-    description: "Employee Punch Out After shift end"
-    sql: ${TABLE}.number_of_end_late_minutes/60 ;;
-    value_format_name: decimal_1
-  }
-
-
   measure: number_of_orders_with_available_nps_score {
     type: sum
-    hidden: yes
+    hidden: no
     sql: ${TABLE}.number_of_orders_with_available_nps_score ;;
   }
 
@@ -199,14 +175,96 @@ view: employee_level_kpis {
 
   measure: number_of_products_with_damaged_products_issues_post {
     type: sum
-    sql: ${TABLE}.number_of_products_with_damaged_products_issues_post ;;
+    label: "# Products Damaged (Post Delivery)"
+    description: "The number of products, that were damaged and were claimed through the Customer Service"
+    sql: ${TABLE}.number_of_orders_with_damaged_products ;;
   }
 
-  measure: number_of_riding_to_hub_minutes {
-    type: average
-    label: "AVG Riding to Hub Time Minutes"
+  measure: number_of_orders_with_damaged_products{
+    type: sum
+    label: "# Orders with Products Damaged (Post Delivery)"
+    description: "The number of Orders, with products that were damaged and were claimed through the Customer Service"
+    sql: ${TABLE}.number_of_orders_with_damaged_products ;;
+  }
+
+  measure: sum_rider_handling_time_minutes {
+    type: sum
+    label: "Sum Rider Handling Time (min)"
+    description: "Sum time needed for the rider to handle the order: Riding to customer + At customer + Riding to hub"
+    sql: ${TABLE}.number_of_rider_handling_time_minutes ;;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_rider_handling_time_minutes {
+    type: number
+    label: "AVG Rider Handling Time (min)"
+    description: "Average time needed for the rider to handle the order: Riding to customer + At customer + Riding to hub"
+    sql: ${sum_rider_handling_time_minutes}/nullif(${number_of_delivered_orders},0) ;;
+    value_format_name: decimal_1
+  }
+
+  measure: sum_riding_to_hub_minutes {
+    type: sum
+    label: "Sum Riding to Hub time (min)"
+    description: "Sum Riding time from customer location back to the hub (<1min or >30min)."
     sql: ${TABLE}.number_of_return_to_hub_time_minutes ;;
     value_format_name: decimal_1
+  }
+
+  measure: avg_riding_to_hub_minutes {
+    type: number
+    label: "AVG Riding to Hub time (min)"
+    description: "Average Riding time from customer location back to the hub (<1min or >30min)."
+    sql: ${sum_riding_to_hub_minutes}/nullif(${number_of_delivered_orders},0) ;;
+    value_format_name: decimal_1
+  }
+
+  measure: sum_riding_to_customer_time_minutes {
+    type: sum
+    label: "Sum Riding To Customer Time (min)"
+    description: "Sum riding to customer time considering delivery start to arrival at customer. Outliers excluded (<1min or >30min)"
+    sql: ${TABLE}.number_of_riding_to_customer_time_minutes ;;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_riding_to_customer_time_minutes {
+    type: number
+    label: "AVG Riding To Customer Time (min)"
+    description: "Average riding to customer time considering delivery start to arrival at customer. Outliers excluded (<1min or >30min)"
+    sql: ${sum_riding_to_customer_time_minutes}/nullif(${number_of_delivered_orders},0) ;;
+    value_format_name: decimal_1
+  }
+
+  measure: sum_at_customer_time_minutes {
+    type: sum
+    label: "Sum At Customer Time (min)"
+    description: "Sum Time the Rider spent at the customer between arrival and order completion confirmation"
+    sql: ${TABLE}.number_of_at_customer_time_minutes ;;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_at_customer_time_minutes {
+    type: number
+    label: "AVG At Customer Time (min)"
+    description: "Average Time the Rider spent at the customer between arrival and order completion confirmation"
+    sql: ${sum_at_customer_time_minutes}/nullif(${number_of_delivered_orders},0) ;;
+    value_format_name: decimal_1
+  }
+
+  measure: pct_riding_to_customer_time {
+    type: number
+    label: "% Riding To Customer Time"
+    description: "Riding to Customer Time / Riding Time (To Customer + Back To Hub) "
+    sql: ${TABLE}.number_of_riding_to_customer_time_minutes / nullif(${TABLE}.number_of_riding_to_customer_time_minutes + ${TABLE}.number_of_return_to_hub_time_minutes,0)  ;;
+    value_format: "0%"
+  }
+
+  measure: pct_riding_back_to_hub_time {
+    type: number
+    label: "% Riding Back To Hub"
+    description: "Riding Back to Hub Time / Riding Time (To Customer + Back To Hub) "
+    sql: ${TABLE}.number_of_return_to_hub_time_minutes / nullif(${TABLE}.number_of_riding_to_customer_time_minutes + ${TABLE}.number_of_return_to_hub_time_minutes,0)  ;;
+    value_format: "0%"
   }
 
   measure: number_of_sick_hours {
@@ -216,19 +274,43 @@ view: employee_level_kpis {
     value_format_name: decimal_1
   }
 
+  measure: number_of_early_punched_out_minutes {
+    type: sum
+    label: "# Early Punched-Out (min)"
+    description: "Number of Early Punch-Out Minutes"
+    sql: ${TABLE}.number_of_end_early_minutes ;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_late_punched_out_minutes {
+    type: sum
+    label: "# Late Punched-Out (min)"
+    description: "Number of Late Punch-Out Minutes"
+    sql: ${TABLE}.number_of_end_late_minutes ;;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_early_punched_in_minutes {
     type: sum
-    label: "# Early Punched in Hours"
-    description: "Employee Punch in before shift start"
-    sql: ${TABLE}.number_of_start_early_minutes/60 ;;
+    label: "# Early Punched-In (min)"
+    description: "Number of Early Punch-In Minutes"
+    sql: ${TABLE}.number_of_start_early_minutes ;;
     value_format_name: decimal_1
   }
 
   measure: number_of_late_punched_in_minutes {
     type: sum
-    label: "# Late Punched in Hours"
-    description: "Employee Punch in After shift start"
-    sql: ${TABLE}.number_of_start_late_minutes/60 ;;
+    label: "# Late Punched-In (min)"
+    description: "Number of Late Punch-In Minutes"
+    sql: ${TABLE}.number_of_start_late_minutes ;;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_late_punched_in_minutes {
+    type: average
+    label: "AVG Late Punched-In (min)"
+    description: "AVG Employee Late Punch-In Minutes"
+    sql: ${TABLE}.number_of_start_late_minutes ;;
     value_format_name: decimal_1
   }
 
@@ -246,11 +328,18 @@ view: employee_level_kpis {
     value_format_name: decimal_1
   }
 
+  measure: avg_rider_utr {
+    type: number
+    label: "AVG Rider UTR"
+    sql: ${number_of_delivered_orders}/nullif(${number_of_worked_hours},0) ;;
+    value_format_name: decimal_1
+  }
+
   measure: pct_no_show_hours {
     type: number
     hidden: no
     label: "% No Show Hours "
-    sql: ${number_of_no_show_hours}/${number_of_scheduled_hours} ;;
+    sql: ${number_of_no_show_hours}/nullif(${number_of_scheduled_hours},0) ;;
     value_format: "0%"
   }
 
@@ -258,15 +347,61 @@ view: employee_level_kpis {
     type: number
     hidden: no
     label: "% Sickness Hours "
-    sql: ${number_of_sick_hours}/${number_of_scheduled_hours} ;;
+    sql: ${number_of_sick_hours}/nullif(${number_of_scheduled_hours},0) ;;
     value_format: "0%"
   }
 
   measure: pct_contract_fulfillment {
     type: number
     hidden: no
-    label: "% Contracted Hours Fulfillment "
-    sql: ${number_of_worked_hours}/(${weekly_contracted_hours}*${number_of_scheduled_weeks}) ;;
+    label: "% Contracted Hours Fulfillment"
+    description: "Worked hours / (weekly_contracted_hours * number_of_weeks)"
+    sql: ${number_of_worked_hours}/nullif(${weekly_contracted_hours}*${number_of_scheduled_weeks},0) ;;
+    value_format: "0%"
+  }
+
+  measure: cnt_responses {
+    label: "# NPS Responses"
+    type: sum
+    sql: ${TABLE}.number_of_nps_responses ;;
+  }
+
+  measure: cnt_detractors {
+    label: "# Detractors"
+    type: sum
+    sql: ${TABLE}.number_of_detractors ;;
+  }
+
+  measure: cnt_promoters {
+    label: "# Promoters"
+    type: sum
+    sql: ${TABLE}.number_of_promoters ;;
+  }
+
+  measure: pct_detractors{
+    label: "% Detractors"
+    description: "Share of Detractors over total Responses"
+    hidden:  no
+    type: number
+    sql: ${cnt_detractors} / NULLIF(${cnt_responses}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_promoters{
+    label: "% Promoters"
+    description: "Share of Promoters over total Responses"
+    hidden:  no
+    type: number
+    sql: ${cnt_promoters} / NULLIF(${cnt_responses}, 0);;
+    value_format: "0%"
+  }
+
+  measure: nps_score{
+    label: "% NPS"
+    description: "NPS Score (After Order)"
+    hidden:  no
+    type: number
+    sql: ${pct_promoters} - ${pct_detractors};;
     value_format: "0%"
   }
 
@@ -278,7 +413,7 @@ view: employee_level_kpis {
 
   measure: avg_nps_score {
     type: number
-    label: "AVG NPS Score"
+    label: "AVG Customer NPS"
     sql: ${sum_nps_score}/nullif(${number_of_orders_with_available_nps_score},0) ;;
   }
 
