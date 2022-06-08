@@ -11,7 +11,7 @@ view: inventory_changes_daily_extended {
     description: "In-and-outbounded items value based on buying prices corresponding to the inventory change date."
 
     type: number
-    sql:  ${inventory_changes_daily_extended.quantity_change} * ${product_prices_daily.buying_price};;
+    sql:  ${quantity_change} * ${product_prices_daily.buying_price};;
     required_access_grants: [can_view_buying_information]
 
     value_format_name: eur
@@ -25,7 +25,7 @@ view: inventory_changes_daily_extended {
     description: "In-and-outbounded items value based on average product prices (gross) corresponding to the inventory change date."
 
     type: number
-    sql:  ${inventory_changes_daily_extended.quantity_change} * ${product_prices_daily.avg_amt_product_price_gross};;
+    sql:  ${quantity_change} * ${product_prices_daily.avg_amt_product_price_gross};;
     required_access_grants: [can_view_buying_information]
 
     value_format_name: eur
