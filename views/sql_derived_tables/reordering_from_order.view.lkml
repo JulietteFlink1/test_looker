@@ -19,7 +19,8 @@ view: reordering_from_order {
           lead(order_timestamp) over (partition by customer_uuid order by order_timestamp) as next_order_timestamp,
           status,
           platform,
-          is_first_order
+          is_first_order,
+          hub_name
         from `flink-data-prod.curated.orders`
       )
 
@@ -62,9 +63,9 @@ view: reordering_from_order {
     sql: ${TABLE}.country_iso ;;
   }
 
-  dimension: hub_code {
+  dimension: hub_name {
     type: string
-    sql: ${TABLE}.hub_code ;;
+    sql: ${TABLE}.hub_name ;;
   }
 
   dimension: platform {
@@ -272,6 +273,6 @@ view: reordering_from_order {
   # }
 
   set: detail {
-    fields: [country_iso, hub_code, cancellation_category, cancellation_reason]
+    fields: [country_iso, hub_name, cancellation_category, cancellation_reason]
   }
 }
