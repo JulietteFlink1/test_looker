@@ -433,4 +433,17 @@ explore: supply_chain {
     ;;
   }
 
+  join: product_prices_daily {
+
+    view_label: "14 Product Prices"
+
+    type: left_outer
+    relationship: one_to_one
+    sql_on:
+          ${product_prices_daily.reporting_date} = ${products_hub_assignment.report_date}
+      and ${product_prices_daily.hub_code}       = ${products_hub_assignment.hub_code}
+      and ${product_prices_daily.sku}            = ${products_hub_assignment.sku}
+    ;;
+  }
+
 }
