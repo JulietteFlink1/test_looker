@@ -335,6 +335,7 @@ dimension: inbounded_on {
     label: "SUM Sell. U. Inbounded"
     type: sum
     sql: ${total_inbounded_adjusted}  ;;
+    filters: [inbounded_on: "On time"]
 
   }
 
