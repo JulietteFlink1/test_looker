@@ -101,7 +101,7 @@ view: orders_with_ops_metrics {
     group_label: "> Basic Counts"
     label: "% Stacked Orders"
     description: "The % of orders, that were part of a stacked delivery"
-    sql: ${cnt_stacked_orders} / nullif(${cnt_orders} ,0) ;;
+    sql: ${cnt_stacked_orders} / NULLIF(${cnt_orders} ,0) ;;
     type: number
     value_format_name: percent_1
   }
@@ -277,10 +277,19 @@ view: orders_with_ops_metrics {
 
   measure: avg_order_handling_time_minute {
     group_label: "> Operations / Logistics"
-    label: "AVG Order Handling Time (min)"
-    description: "AVG ider Time spent from claiming an order until returning to the hub "
+    label: "AVG Order Handling Time (Minutes)"
+    description: "AVG rider Time spent from claiming an order until returning to the hub "
     value_format: "#,##0.00"
     type: average
+  }
+
+  measure: avg_order_handling_time_seconds {
+    group_label: "> Operations / Logistics"
+    label: "AVG Order Handling Time (Seconds)"
+    description: "AVG rider Time spent from claiming an order until returning to the hub "
+    value_format: "#,##0.00"
+    sql: ${avg_order_handling_time_minute}*60 ;;
+
   }
 
   measure: avg_delivery_time_estimate {
