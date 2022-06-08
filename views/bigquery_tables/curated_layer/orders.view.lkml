@@ -2310,7 +2310,7 @@ view: orders {
         label: "# Agent Cancelled Orders"
         hidden:  no
         type: count
-        filters: [amt_cancelled_gross: ">0",cancellation_category: "CS Agent"]
+        filters: [amt_cancelled_gross: ">0",cancellation_category: "- Customer"]
         value_format: "0"
       }
 
