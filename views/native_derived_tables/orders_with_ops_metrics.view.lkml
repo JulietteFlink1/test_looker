@@ -374,10 +374,18 @@ view: orders_with_ops_metrics {
 
   measure: avg_rider_handling_time {
     group_label: "> Operations / Logistics"
-    label: "AVG Rider Handling Time"
+    label: "AVG Rider Handling Time (Minutes)"
     description: "Average total rider handling time: riding to customer + at customer + riding to hub"
     value_format: "#,##0.0"
     type: average
+  }
+
+  measure: avg_rider_handling_time_seconds {
+    group_label: "> Operations / Logistics"
+    label: "AVG Rider Handling Time (Seconds)"
+    description: "Average total rider handling time: riding to customer + at customer + riding to hub"
+    value_format: "#,##0.0"
+    sql: ${avg_rider_handling_time}*60 ;;
   }
 
   measure: avg_reaction_time {
