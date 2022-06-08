@@ -20,7 +20,8 @@ view: reordering_from_order {
           status,
           platform,
           is_first_order,
-          hub_name
+          hub_name,
+          country_iso
         from `flink-data-prod.curated.orders`
       )
 
