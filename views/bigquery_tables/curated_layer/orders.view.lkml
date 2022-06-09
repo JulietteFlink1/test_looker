@@ -27,6 +27,13 @@ view: orders {
     sql: ${TABLE}.rider_queuing_time_minutes ;;
   }
 
+  dimension: google_cycling_time_minutes {
+    type: number
+    group_label: "* Operations / Logistics *"
+    hidden: yes
+    sql: ${TABLE}.google_cycling_time_minutes ;;
+  }
+
   dimension: shipping_price_gross_amount {
     type: number
     label: "Delivery Fee (Gross)"
@@ -1538,10 +1545,30 @@ view: orders {
         value_format_name: decimal_1
       }
 
+      measure: avg_google_cycling_time_minutes {
+        group_label: "* Operations / Logistics *"
+        label: "AVG Google Cycling Time"
+        description: "Average time needed to cycle to the customer estimated by Google in the moment of order placement"
+        hidden:  no
+        type: average
+        sql: ${google_cycling_time_minutes};;
+        value_format_name: decimal_1
+      }
+
+      measure: avg_diff_riding_to_customer_actual_vs_google {
+        group_label: "* Operations / Logistics *"
+        label: "AVG Riding to Customer Time Difference Actuals vs. Google Estimate"
+        description: "The average of the difference beween the actual riding to customer time and what Google estimated is needed in the moment of order placement"
+        hidden:  no
+        type: average
+        sql: ${riding_to_customer_time_minutes}-${google_cycling_time_minutes};;
+        value_format_name: decimal_1
+      }
+
       measure: avg_fulfillment_time {
         group_label: "* Operations / Logistics *"
         label: "AVG Fulfillment Time (decimal)"
-        description: "Average Fulfillment Time (decimal minutes) considering order placement to delivery (rider at customer). Outliers excluded (<3min or >180min)"
+        description: "Average Fulfillment Time (decimal minutes) considering order placement to delivery (rider at customer). Outliers excluded (<3min or >210min)"
         hidden:  no
         type: average
         sql: ${fulfillment_time};;
@@ -1551,7 +1578,7 @@ view: orders {
       measure: avg_fulfillment_time_mm_ss {
         group_label: "* Operations / Logistics *"
         label: "AVG Fulfillment Time (HH:MM:SS)"
-        description: "Average Fulfillment Time considering order placement to delivery (rider at customer). Outliers excluded (<3min or >180min)"
+        description: "Average Fulfillment Time considering order placement to delivery (rider at customer). Outliers excluded (<3min or >210min)"
         type: average
         sql: ${fulfillment_time} * 60 / 86400.0;;
         value_format: "hh:mm:ss"
@@ -1562,7 +1589,7 @@ view: orders {
         alias: [avg_reaction_time]
         group_label: "* Operations / Logistics *"
         label: "AVG Picker Queuing Time"
-        description: "Average Picker Queuing Time of the Picker considering order placement until picking started. Outliers excluded (<0min or >30min)"
+        description: "Average Picker Queuing Time of the Picker considering order placement until picking started. Outliers excluded (<0min or >120min)"
         hidden:  no
         type: average
         sql:${picker_queuing_time};;
