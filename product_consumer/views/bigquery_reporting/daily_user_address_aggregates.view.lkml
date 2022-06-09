@@ -1,5 +1,5 @@
 view: daily_user_address_aggregates {
-  sql_table_name: `flink-data-prod.reporting.daily_user_address_aggregates`
+  sql_table_name: `flink-data-dev.reporting.daily_user_address_aggregates`
     ;;
 
   ## I want to additional fields: one is the hub that appOpened detected, one is a flag that says whether appOpened changed the hub assignment since the last other event happened
@@ -16,6 +16,14 @@ view: daily_user_address_aggregates {
     type: string
     primary_key: yes
     sql: ${TABLE}.daily_user_uuid ;;
+  }
+
+  dimension: user_uuid {
+    group_label: "IDs"
+    label: "User UUID"
+    type: string
+    description: "Unique user identifier: if user was logged in, the identifier is 'user_id' populated upon registration, else 'anonymous_id' populated by Segment"
+    sql: ${TABLE}.anonymous_id ;;
   }
 
   ######## Flags | Event ########
@@ -96,113 +104,128 @@ view: daily_user_address_aggregates {
   ######### User Metrics ###########
 
   measure: cnt_users_address_selected {
-    group_label: "# Daily Users"
-    label: "# Daily Users With Address Confirmed"
+    group_label: "# Active User Metrics"
+    label: "# Active Users With Address Confirmed"
     description: "# daily users with at least one Address Confirmed event"
-    type: count
+    type: count_distinct
+    sql: ${user_uuid} ;;
     filters: [is_address_confirmed: "yes"]
   }
 
   measure: cnt_has_waitlist_signup_selected {
-    group_label: "# Daily Users"
-    label: "# Daily Users With Waitlist Intent"
+    group_label: "# Active User Metrics"
+    label: "# Active Users With Waitlist Intent"
     description: "# daily users with Waitlist Signup Selected event"
-    type: count
+    type: count_distinct
+    sql: ${user_uuid} ;;
     filters: [is_waitlist_signup_selected: "yes"]
   }
 
   measure: cnt_available_area {
-    group_label: "# Daily Users"
-    label: "# Daily Users Inside Delivery Area"
+    group_label: "# Active User Metrics"
+    label: "# Active Users Inside Delivery Area"
     description: "# daily users who selected at least one address that is inside our delivery area and saw the address refinement screen"
-    type: count
+    type: count_distinct
+    sql: ${user_uuid} ;;
     filters: [is_selected_address_inside_delivery_area: "yes"]
   }
 
   measure: cnt_noaction_area_available {
-    group_label: "# Daily Users"
-    label: "# Daily Users Without Address Confirmed Inside Delivery Area"
+    group_label: "# Active User Metrics"
+    label: "# Active Users Without Address Confirmed Inside Delivery Area"
     description: "# daily users who were in an available area but did not confirm any address"
-    type: count
+    type: count_distinct
+    sql: ${user_uuid} ;;
     filters: [is_selected_address_inside_delivery_area: "yes", is_address_confirmed: "no"]
   }
 
   measure: cnt_browse_area_unavailable {
-    label: "# Daily Users Outside Delivery Selecting Browse Products"
+    group_label: "# Active User Metrics"
+    label: "# Active Users Outside Delivery Selecting Browse Products"
     description: "# daily users who were in an unavailable area and selected browse products and did not sign up for waitlist"
-    type: count
+    type: count_distinct
+    sql: ${user_uuid} ;;
     filters: [is_selected_address_outside_delivery_area: "yes", is_skip_waitlist: "yes", is_waitlist_signup_selected: "no"]
   }
 
   measure: cnt_unavailable_area {
-    group_label: "# Daily Users"
-    label: "# Daily Users Outside Delivery Area"
+    group_label: "# Active User Metrics"
+    label: "# Active Users Outside Delivery Area"
     description: "# daily users who selected at least one address that is outside our delivery area and saw the out of delivery area screen"
-    type: count
+    type: count_distinct
+    sql: ${user_uuid} ;;
     filters: [is_selected_address_outside_delivery_area: "yes"]
   }
 
   measure: cnt_has_waitlist_signup_selected_no_browsing {
-    group_label: "# Daily Users"
-    label: "# Daily Users With Waitlist Intent And Without Selecting Browse Products"
+    group_label: "# Active User Metrics"
+    label: "# Active Users With Waitlist Intent And Without Selecting Browse Products"
     description: "# daily users who were in an unavailable area and selected to join waitlist and did not select browse products"
-    type: count
+    type: count_distinct
+    sql: ${user_uuid} ;;
     filters: [is_waitlist_signup_selected: "yes"]
   }
 
   measure: cnt_has_waitlist_signup_selected_and_browsing {
-    group_label: "# Daily Users"
-    label: "# Daily Users With Waitlist Intent And Selecting Browse Products"
+    group_label: "# Active User Metrics"
+    label: "# Active Users With Waitlist Intent And Selecting Browse Products"
     description: "# daily users who were in an unavailable area and tapped both the join waitlist and select browse products buttons"
-    type: count
+    type: count_distinct
+    sql: ${user_uuid} ;;
     filters: [is_waitlist_signup_selected: "yes", is_skip_waitlist: "yes"]
   }
 
   measure: cnt_noaction_area_unavailable {
-    group_label: "# Daily Users"
-    label: "# Daily Users Outside Delivery Area Without Waitlist Intent or Product Browsing"
+    group_label: "# Active User Metrics"
+    label: "# Active Users Outside Delivery Area Without Waitlist Intent or Product Browsing"
     description: "# daily users who were in an unavailable area and did not have a waitlist joining intent or browsing selection action"
-    type: count
+    type: count_distinct
+    sql: ${user_uuid} ;;
     filters: [is_selected_address_outside_delivery_area: "yes", is_skip_waitlist: "no", is_waitlist_signup_selected: "no"]
   }
 
   measure: cnt_is_city_unavailable {
-    group_label: "# Daily Users"
-    label: "# Daily Users With Unavailable Cities"
+    group_label: "# Active User Metrics"
+    label: "# Active Users With Unavailable Cities"
     description: "# daily users that tapped City Not Available"
-    type: count
+    type: count_distinct
+    sql: ${user_uuid} ;;
     filters: [is_city_not_available: "yes"]
   }
 
   measure: cnt_address_resolution_failed {
-    group_label: "# Daily Users"
-    label: "# Daily Users With Unidentified Address"
+    group_label: "# Active User Metrics"
+    label: "# Active Users With Unidentified Address"
     description: "# daily users that experienced at least one unidentified address"
-    type: count
+    type: count_distinct
+    sql: ${user_uuid} ;;
     filters: [is_seen_unresolved_address: "yes"]
   }
 
   measure: cnt_is_seen_address_search {
-    group_label: "# Daily Users"
-    label: "# Daily Users Who Started Address Search"
+    group_label: "# Active User Metrics"
+    label: "# Active Users Who Started Address Search"
     description: "# daily users who viewed address search screen at least once"
-    type: count
+    type: count_distinct
+    sql: ${user_uuid} ;;
     filters: [is_seen_address_search: "yes"]
   }
 
   measure: cnt_is_hub_updated_with_cart {
-    group_label: "# Daily Users"
-    label: "# Daily Users With Address Updated With Cart"
+    group_label: "# Active User Metrics"
+    label: "# Active Users With Address Updated With Cart"
     description: "# daily users who updated their address after having added at least one product to their cart"
-    type: count
+    type: count_distinct
+    sql: ${user_uuid} ;;
     filters: [is_hub_updated_with_cart: "yes"]
   }
 
   measure: cnt_is_addres_tappped_at_checkout {
-    group_label: "# Daily Users"
-    label: "# Daily Users With Address Tapped At Checkout"
+    group_label: "# Active User Metrics"
+    label: "# Active Users With Address Tapped At Checkout"
     description: "# daily users who tapped on the delivery address on the checkout screen"
-    type: count
+    type: count_distinct
+    sql: ${user_uuid} ;;
     filters: [is_addres_tappped_at_checkout: "yes"]
   }
 
