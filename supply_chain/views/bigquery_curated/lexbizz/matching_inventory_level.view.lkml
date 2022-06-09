@@ -307,7 +307,7 @@ dimension: inbounded_on {
     group_label: "> Measures (Order Count) <"
     label: "% On Time Orders"
     type: number
-    sql: nullif(${count_orders_delivered},0) / nullif(${count_orders_promised},0) ;;
+    sql: ${count_orders_delivered} / nullif(${count_orders_promised},0) ;;
     value_format: "0.00%"
 
   }
@@ -335,6 +335,7 @@ dimension: inbounded_on {
     label: "SUM Sell. U. Inbounded"
     type: sum
     sql: ${total_inbounded_adjusted}  ;;
+    filters: [inbounded_on: "On time"]
 
   }
 
@@ -343,7 +344,7 @@ dimension: inbounded_on {
     group_label: "> Measures (Fill Rate) <"
     label: "% Fill Rate"
     type: number
-    sql: nullif(${sum_selling_units_inbounded},0) / nullif(${sum_selling_units_purchased},0) ;;
+    sql: ${sum_selling_units_inbounded} / nullif(${sum_selling_units_purchased},0) ;;
     value_format: "0.00%"
 
   }

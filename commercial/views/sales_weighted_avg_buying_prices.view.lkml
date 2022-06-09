@@ -11,11 +11,10 @@ view: sales_weighted_avg_buying_prices {
 
   }
 
-
   dimension: order_lineitem_uuid {
     type: string
     primary_key: yes
-    hidden: no
+    hidden: yes
     group_label: "> IDs"
   }
 
