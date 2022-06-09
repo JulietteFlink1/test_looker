@@ -492,6 +492,7 @@ view: orders {
     label: "Rider Handling Time (min)"
     description: "Total time needed for the rider to handle the order: Riding to customer + At customer + Riding to hub"
     type: number
+    hidden: yes
     sql: ${TABLE}.rider_handling_time_minutes ;;
   }
 
@@ -2051,7 +2052,8 @@ view: orders {
         group_label: "* Operations / Logistics *"
         description: "Rider Time spent from claiming an order until returning to the hub "
         type: sum
-        sql:2 * TIMESTAMP_DIFF(safe_cast(${rider_completed_delivery_timestamp} as timestamp), safe_cast(${order_rider_claimed_timestamp} as timestamp), minute);;
+        hidden: yes
+        sql:${TABLE}.rider_handling_time_minutes ;;
         value_format_name: decimal_2
       }
 
@@ -2060,7 +2062,8 @@ view: orders {
         group_label: "* Operations / Logistics *"
         description: "AVG ider Time spent from claiming an order until returning to the hub "
         type: average
-        sql:2 * TIMESTAMP_DIFF(safe_cast(${rider_completed_delivery_timestamp} as timestamp), safe_cast(${order_rider_claimed_timestamp} as timestamp), minute);;
+        hidden: yes
+        sql:${TABLE}.rider_handling_time_minutes;;
         value_format_name: decimal_2
       }
 
@@ -2121,7 +2124,7 @@ view: orders {
         hidden:  no
         type: sum
         sql: ${rider_handling_time_minutes};;
-        value_format_name: euro_accounting_2_precision
+        value_format_name: decimal_1
       }
 
       measure: sum_potential_rider_handling_time_without_stacking_minutes {
@@ -2131,7 +2134,7 @@ view: orders {
         hidden:  no
         type: sum
         sql: ${potential_rider_handling_time_without_stacking_minutes};;
-        value_format_name: euro_accounting_2_precision
+        value_format_name: decimal_1
       }
 
       ############
