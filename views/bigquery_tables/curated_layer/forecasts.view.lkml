@@ -163,7 +163,7 @@ view: forecasts {
     label: "% Stacking Assumption"
     type: number
     value_format_name: percent_1
-    sql: ${number_of_forecasted_stacked_orders}/${number_of_forecasted_orders} ;;
+    sql: ${number_of_forecasted_stacked_orders}/nullif(${number_of_forecasted_orders},0) ;;
   }
   # =========  No show  =========
 
@@ -189,6 +189,7 @@ view: forecasts {
   # =========  Idleness minutes   =========
 
   measure: number_of_forecasted_idleness_minutes_picker {
+    group_label: "> Picker Measures"
     label: "# Forecasted Idle Picker Minutes"
     type: sum_distinct
     sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
@@ -196,6 +197,7 @@ view: forecasts {
   }
 
   measure: number_of_forecasted_idleness_minutes_rider {
+    group_label: "> Rider Measures"
     label: "# Forecasted Idle Rider Minutes"
     type: sum_distinct
     sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
@@ -207,7 +209,7 @@ view: forecasts {
     label: "% Idleness Assumption Rider"
     type: number
     value_format_name: percent_1
-    sql: ${number_of_forecasted_idleness_minutes_rider}/${number_of_forecasted_minutes_rider} ;;
+    sql: ${number_of_forecasted_idleness_minutes_rider}/nullif(${number_of_forecasted_minutes_rider},0) ;;
   }
 
   measure: pct_idleness_target_picker {
@@ -215,7 +217,7 @@ view: forecasts {
     label: "% Idleness Assumption Picker"
     type: number
     value_format_name: percent_1
-    sql: ${number_of_forecasted_idleness_minutes_picker}/${number_of_forecasted_minutes_picker} ;;
+    sql: ${number_of_forecasted_idleness_minutes_picker}/nullif(${number_of_forecasted_minutes_picker},0) ;;
   }
 
   # =========  UTR   =========
@@ -458,7 +460,7 @@ view: forecasts {
 
   measure: idleness_assumption_by_position {
     label: "% Idleness Assumption"
-    value_format_name: decimal_1
+    value_format_name: percent_1
     group_label: "> Dynamic Measures"
     sql:
         CASE

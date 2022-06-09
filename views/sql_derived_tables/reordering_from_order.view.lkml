@@ -17,7 +17,11 @@ view: reordering_from_order {
           rider_arrived_at_customer_timestamp,
           rider_completed_delivery_timestamp,
           lead(order_timestamp) over (partition by customer_uuid order by order_timestamp) as next_order_timestamp,
-          status
+          status,
+          platform,
+          is_first_order,
+          hub_name,
+          country_iso
         from `flink-data-prod.curated.orders`
       )
 
@@ -60,9 +64,20 @@ view: reordering_from_order {
     sql: ${TABLE}.country_iso ;;
   }
 
-  dimension: hub_code {
+  dimension: hub_name {
     type: string
-    sql: ${TABLE}.hub_code ;;
+    sql: ${TABLE}.hub_name ;;
+  }
+
+  dimension: platform {
+    type: string
+    sql: ${TABLE}.platform ;;
+  }
+
+  dimension: is_first_order {
+    label: "Is New Customer"
+    type: yesno
+    sql: ${TABLE}.is_first_order ;;
   }
 
   dimension: amt_cancelled_gross {
@@ -231,7 +246,7 @@ view: reordering_from_order {
   }
 
   measure: cnt_reorders_within_60_minutes {
-    label: "# Cancelled Orders With Reorders Within 30 Minutes"
+    label: "# Cancelled Orders With Reorders Within 60 Minutes"
     type: count
     filters: [time_to_next_order_minutes: "not null", reordered_within_60_minutes: "yes", amt_cancelled_gross: ">0"]
   }
@@ -259,6 +274,6 @@ view: reordering_from_order {
   # }
 
   set: detail {
-    fields: [country_iso, hub_code, cancellation_category, cancellation_reason]
+    fields: [country_iso, hub_name, cancellation_category, cancellation_reason]
   }
 }

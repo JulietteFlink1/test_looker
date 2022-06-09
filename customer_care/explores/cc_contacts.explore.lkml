@@ -1,6 +1,7 @@
 include: "/*/**/cc_contacts.view.lkml"
 include: "/*/**/cc_orders_hourly.view.lkml"
 include: "/*/**/cc_contact_agents.view.lkml"
+include: "/*/**/cc_headcount_forecast_performance.view.lkml"
 
 
 explore: cc_contacts {
@@ -43,5 +44,14 @@ explore: cc_contacts {
     relationship: one_to_many
     type: left_outer
 
+  }
+
+  join: cc_headcount_forecast_performance {
+    from: cc_headcount_forecast_performance
+    view_label: "* Headcount Forecast *"
+    sql_on: ${cc_contacts.cc_team} = ${cc_headcount_forecast_performance.team}
+        and ${cc_contacts.contact_created_date} = ${cc_headcount_forecast_performance.forecasted_date}            ;;
+    relationship: many_to_one
+    type: left_outer
   }
 }
