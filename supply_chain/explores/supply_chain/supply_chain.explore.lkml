@@ -166,6 +166,7 @@ explore: supply_chain {
   join: inventory_changes_daily {
 
     view_label: "04 Inventory Changes Daily"
+    from: inventory_changes_daily_extended
 
     type: left_outer
     relationship: one_to_many

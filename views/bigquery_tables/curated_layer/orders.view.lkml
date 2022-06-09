@@ -29,13 +29,15 @@ view: orders {
 
   dimension: shipping_price_gross_amount {
     type: number
-    hidden: yes
+    label: "Delivery Fee (Gross)"
+    hidden: no
     sql: ${TABLE}.amt_delivery_fee_gross ;;
   }
 
   dimension: shipping_price_net_amount {
     type: number
-    hidden: yes
+    label: "Delivery Fee (Net)"
+    hidden: no
     sql: ${TABLE}.amt_delivery_fee_net ;;
   }
 
