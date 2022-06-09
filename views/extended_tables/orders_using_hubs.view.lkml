@@ -59,28 +59,26 @@ view: orders_using_hubs {
     filters: [is_delivery_distance_over_10km: "no"]
   }
 
-  ######### Order New/Existing Hubs
+  ######### Order New/Existing Hubs - Cell Split Hubs
 
   dimension: is_order_new_hub {
     group_label: "* Order Dimensions *"
-    label: "Is Order New Hub"
+    label: "Is Order From New Hub"
     description: "An order is considered to come from a new hub if it was placed less than 30 days after the hub start date."
     type: yesno
-
-    sql: (date_diff(${order_date},${hubs.start_date},day)<= 30) ;;
+    sql: ${TABLE}.is_order_from_new_hub ;;
+  }
+# (date_diff(${order_date},${hubs.start_date},day)<= 30)
+  dimension: is_order_from_cell_split_hub{
+    group_label: "* Order Dimensions *"
+    label: "Is Order From Cell Split Hub"
+    description: "Order coming from an identified cell split hub"
+    hidden:  yes
+    type: yesno
+    sql: case when ${hubs.is_cell_split_hub} = true then true end;;
   }
 
   ###### Sums
-
-  measure: sum_gmv_new_hubs {
-    group_label: "* Monetary Values *"
-    label: "SUM GMV New Hubs"
-    description: "GMV from orders from new hubs."
-    type: sum
-    value_format_name: euro_accounting_0_precision
-    sql: ${gmv_gross};;
-    filters: [is_order_new_hub: "yes"]
-  }
 
   measure: sum_gmv_existing_hubs {
     group_label: "* Monetary Values *"
@@ -92,6 +90,37 @@ view: orders_using_hubs {
     filters: [is_order_new_hub: "no"]
   }
 
+  measure: sum_gmv_new_hubs {
+    group_label: "* Monetary Values *"
+    label: "SUM GMV New Hubs"
+    description: "GMV from orders from new hubs."
+    type: sum
+    value_format_name: euro_accounting_0_precision
+    sql: ${gmv_gross};;
+    filters: [is_order_new_hub: "yes"]
+  }
+
+  measure: sum_gmv_new_cell_split_hubs {
+    group_label: "* Monetary Values *"
+    label: "SUM GMV New Hubs (Cell Split)"
+    description: "GMV from orders from new hubs that are cell split."
+    type: sum
+    value_format_name: euro_accounting_0_precision
+    sql: ${gmv_gross};;
+    filters: [is_order_new_hub: "yes", is_order_from_cell_split_hub: "yes"]
+  }
+
+  measure: sum_gmv_new_non_cell_split_hubs {
+    group_label: "* Monetary Values *"
+    label: "SUM GMV New Hubs (Non Cell Split)"
+    description: "GMV from orders from new hubs that are not cell split."
+    type: sum
+    value_format_name: euro_accounting_0_precision
+    sql: ${gmv_gross};;
+    filters: [is_order_new_hub: "yes", is_order_from_cell_split_hub: "no"]
+  }
+
+### # orders
   measure: sum_orders_existing_hubs {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
     label: "# Orders Existing Hubs"
@@ -105,23 +134,34 @@ view: orders_using_hubs {
   measure: sum_orders_new_hubs {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
     label: "# Orders New Hubs"
-    description: "# Orders coming from new hubs."
+    description: "# Orders coming from new hubs. Don't take cell split into account"
     type: count_distinct
     sql: ${order_uuid} ;;
     value_format: "0"
     filters: [is_order_new_hub: "yes"]
   }
 
-  ##### Shares
-
-  measure: pct_gmv_new_hubs {
-    group_label: "* Monetary Values *"
-    label: "% GMV New Hubs"
-    description: "% GMV coming from new hubs."
-    type: number
-    sql: ${sum_gmv_new_hubs} / NULLIF(${sum_gmv_gross}, 0);;
-    value_format: "0.0%"
+  measure: sum_orders_new_cell_split_hubs {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Orders New Hubs (Cell Split)"
+    description: "# Orders coming from hubs that are new and cell split."
+    type: count_distinct
+    sql: ${order_uuid} ;;
+    value_format: "0"
+    filters: [is_order_from_cell_split_hub: "yes", is_order_new_hub: "yes"]
   }
+
+  measure: sum_orders_new_non_cell_split_hubs {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Orders New Hubs (Non Cell Split)"
+    description: "# Orders coming from hubs that are new and non cell split."
+    type: count_distinct
+    sql: ${order_uuid} ;;
+    value_format: "0"
+    filters: [is_order_from_cell_split_hub: "no", is_order_new_hub: "yes"]
+  }
+
+  ##### Shares
 
   measure: pct_gmv_existing_hubs {
     group_label: "* Monetary Values *"
@@ -132,12 +172,30 @@ view: orders_using_hubs {
     value_format: "0.0%"
   }
 
-  measure: pct_orders_new_hubs {
-    group_label: "* Basic Counts (Orders / Customers etc.) *"
-    label: "% Orders New Hubs"
-    description: "Share of orders coming from new hubs."
+  measure: pct_gmv_new_hubs {
+    group_label: "* Monetary Values *"
+    label: "% GMV New Hubs"
+    description: "% GMV coming from new hubs."
     type: number
-    sql: ${sum_orders_new_hubs} / NULLIF(${cnt_orders}, 0);;
+    sql: ${sum_gmv_new_hubs} / NULLIF(${sum_gmv_gross}, 0);;
+    value_format: "0.0%"
+  }
+
+  measure: pct_gmv_new_cell_split_hubs {
+    group_label: "* Monetary Values *"
+    label: "% GMV New Hubs (Cell Split)"
+    description: "% GMV coming from new hubs that are cell split."
+    type: number
+    sql: ${sum_gmv_new_cell_split_hubs} / NULLIF(${sum_gmv_gross}, 0);;
+    value_format: "0.0%"
+  }
+
+  measure: pct_gmv_new_non_cell_split_hubs {
+    group_label: "* Monetary Values *"
+    label: "% GMV New Hubs (Non Cell Split)"
+    description: "% GMV coming from new hubs that are not cell split."
+    type: number
+    sql: ${sum_gmv_new_non_cell_split_hubs} / NULLIF(${sum_gmv_gross}, 0);;
     value_format: "0.0%"
   }
 
@@ -150,10 +208,31 @@ view: orders_using_hubs {
     value_format: "0.0%"
   }
 
+  measure: pct_orders_new_hubs {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "% Orders New Hubs"
+    description: "Share of orders coming from new hubs."
+    type: number
+    sql: ${sum_orders_new_hubs} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0.0%"
+  }
 
+  measure: pct_orders_new_cell_split_hubs {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "% Orders New Hubs (Cell Split)"
+    description: "Share of orders coming from new hubs that are cell split."
+    type: number
+    sql: ${sum_orders_new_cell_split_hubs} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0.0%"
+  }
 
-
-
-
+  measure: pct_orders_new_non_cell_split_hubs {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "% Orders New Hubs (Non Cell Split)"
+    description: "Share of orders coming from new hubs that are not cell split."
+    type: number
+    sql: ${sum_orders_new_non_cell_split_hubs} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0.0%"
+  }
 
 }
