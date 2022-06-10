@@ -13,7 +13,7 @@ explore: erp_buying_prices_raw {
   join: hubs {
     from: hubs_ct
     view_label: "* Hubs *"
-    sql_on: lower(${erp_buying_prices_raw.hub_code}}) = ${hubs.hub_code} ;;
+    sql_on: lower(${erp_buying_prices_raw.hub_code}) = ${hubs.hub_code} ;;
     relationship: many_to_one
     type: left_outer
   }

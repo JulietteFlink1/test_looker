@@ -137,5 +137,17 @@ view: erp_buying_prices_raw {
     primary_key: yes
   }
 
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+  measure: avg_vendor_price {
+    label: "AVG Buying Price"
+    description: "The  sum of COGS divided by the sum of Item Quantity Sold"
+    type: average
+    sql: ${vendor_price} ;;
+    value_format_name: decimal_4
+  }
 
   }
