@@ -17,6 +17,8 @@ view: orders_with_ops_metrics {
       column: avg_estimated_picking_time_minutes {}
       column: avg_estimated_queuing_time_for_picker_minutes {}
       column: avg_estimated_queuing_time_for_rider_minutes {}
+      column: avg_queuing_time_for_pickers_minutes {}
+      column: avg_queuing_time_for_riders_minutes {}
       column: avg_fulfillment_time {}
       column: avg_estimated_riding_time_minutes {}
       column: avg_fulfillment_time_mm_ss {}
@@ -99,7 +101,7 @@ view: orders_with_ops_metrics {
     group_label: "> Basic Counts"
     label: "% Stacked Orders"
     description: "The % of orders, that were part of a stacked delivery"
-    sql: ${cnt_stacked_orders} / nullif(${cnt_orders} ,0) ;;
+    sql: ${cnt_stacked_orders} / NULLIF(${cnt_orders} ,0) ;;
     type: number
     value_format_name: percent_1
   }
@@ -219,6 +221,7 @@ view: orders_with_ops_metrics {
     description: ""
     value_format: "#,##0.0"
     type: average
+    hidden: yes
   }
 
   measure: avg_estimated_queuing_time_for_rider_minutes {
@@ -227,6 +230,25 @@ view: orders_with_ops_metrics {
     description: ""
     value_format: "#,##0.0"
     type: average
+    hidden: yes
+  }
+
+  measure: avg_queuing_time_for_picker_minutes {
+    group_label: "> Operations / Logistics"
+    label: "AVG Queuing Time for Pickers"
+    description: ""
+    value_format: "#,##0.0"
+    type: average
+    hidden: yes
+  }
+
+  measure: avg_queuing_time_for_rider_minutes {
+    group_label: "> Operations / Logistics"
+    label: "AVG Queuing Time for Riders"
+    description: ""
+    value_format: "#,##0.0"
+    type: average
+    hidden: yes
   }
 
   measure: avg_fulfillment_time {
@@ -255,10 +277,19 @@ view: orders_with_ops_metrics {
 
   measure: avg_order_handling_time_minute {
     group_label: "> Operations / Logistics"
-    label: "AVG Order Handling Time (min)"
-    description: "AVG ider Time spent from claiming an order until returning to the hub "
+    label: "AVG Order Handling Time (Minutes)"
+    description: "AVG rider Time spent from claiming an order until returning to the hub "
     value_format: "#,##0.00"
     type: average
+  }
+
+  measure: avg_order_handling_time_seconds {
+    group_label: "> Operations / Logistics"
+    label: "AVG Order Handling Time (Seconds)"
+    description: "AVG rider Time spent from claiming an order until returning to the hub "
+    value_format: "#,##0.00"
+    sql: ${avg_order_handling_time_minute}*60 ;;
+
   }
 
   measure: avg_delivery_time_estimate {
@@ -343,10 +374,18 @@ view: orders_with_ops_metrics {
 
   measure: avg_rider_handling_time {
     group_label: "> Operations / Logistics"
-    label: "AVG Rider Handling Time"
+    label: "AVG Rider Handling Time (Minutes)"
     description: "Average total rider handling time: riding to customer + at customer + riding to hub"
     value_format: "#,##0.0"
     type: average
+  }
+
+  measure: avg_rider_handling_time_seconds {
+    group_label: "> Operations / Logistics"
+    label: "AVG Rider Handling Time (Seconds)"
+    description: "Average total rider handling time: riding to customer + at customer + riding to hub"
+    value_format: "#,##0.0"
+    sql: ${avg_rider_handling_time}*60 ;;
   }
 
   measure: avg_reaction_time {
@@ -396,6 +435,30 @@ view: orders_with_ops_metrics {
     description: "The time it took to deliver the order to the 2nd customer from order-creation until delivery in a stacked order"
     value_format: "#,##0.0"
     type: average
+  }
+
+  measure: avg_estimated_queuing_time_by_position {
+    group_label: "> Operations / Logistics"
+    label: "AVG Estimated Queuing Time (Minutes)"
+    value_format_name: decimal_1
+    sql:
+        CASE
+          WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${avg_estimated_queuing_time_for_rider_minutes}
+          WHEN {% parameter ops.position_parameter %} = 'Picker' THEN ${avg_estimated_queuing_time_for_picker_minutes}
+      ELSE NULL
+      END ;;
+  }
+
+  measure: avg_queuing_time_by_position {
+    group_label: "> Operations / Logistics"
+    label: "AVG Queuing Time (Minutes)"
+    value_format_name: decimal_1
+    sql:
+        CASE
+          WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${avg_estimated_queuing_time_for_rider_minutes}
+          WHEN {% parameter ops.position_parameter %} = 'Picker' THEN ${avg_estimated_queuing_time_for_picker_minutes}
+      ELSE NULL
+      END ;;
   }
 
   dimension: order_uuid {
