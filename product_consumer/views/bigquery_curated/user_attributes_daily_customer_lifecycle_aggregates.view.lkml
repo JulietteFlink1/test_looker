@@ -1,5 +1,5 @@
 view: user_attributes_daily_customer_lifecycle_aggregates {
-  sql_table_name: `flink-data-dev.sandbox_natalia.customer_lifecycle_aggregate`;;
+  sql_table_name: `flink-data-dev.sandbox_natalia.customer_lifecycle_aggregates`;;
   view_label: "Daily Events "
 
 
