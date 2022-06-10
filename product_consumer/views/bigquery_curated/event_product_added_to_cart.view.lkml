@@ -341,4 +341,137 @@ measure: discount {
   value_format_name: decimal_2
   sql: (${original_product_price} - ${actual_product_price}) * -1 ;;
 }
+
+### events per product placement ###
+  measure: placement_cart {
+    group_label: "# Events / # Products per Placement"
+    label: "# Products - Cart"
+    description: "Number of events trigegred by users from cart product placement"
+    type: count_distinct
+    sql: ${TABLE}.event_uuid ;;
+    filters: [product_placement: "cart"]
+  }
+  measure: placement_category {
+    group_label: "# Events / # Products per Placement"
+    label: "# Products - Category"
+    description: "Number of events trigegred by users from category product placement"
+    type: count_distinct
+    sql: ${TABLE}.event_uuid ;;
+    filters: [product_placement: "category"]
+  }
+  measure: placement_search {
+    group_label: "# Events / # Products per Placement"
+    label: "# Products - Search"
+    description: "Number of events trigegred by users from search product placement"
+    type: count_distinct
+    sql: ${TABLE}.event_uuid ;;
+    filters: [product_placement: "search"]
+  }
+  measure: placement_last_bought{
+    group_label: "# Events / # Products per Placement"
+    label: "# Products - Last bought"
+    description: "Number of events trigegred by users from last_bought product placement"
+    type: count_distinct
+    sql: ${TABLE}.event_uuid ;;
+    filters: [product_placement: "last_bought"]
+  }
+  measure: placement_pdp {
+    group_label: "# Events / # Products per Placement"
+    label: "# Products - PDP"
+    description: "Number of events trigegred by users"
+    type: count_distinct
+    sql: ${TABLE}.event_uuid ;;
+    filters: [product_placement: "pdp"]
+  }
+  measure: placement_swimlane {
+    group_label: "# Events / # Products per Placement"
+    label: "# Products - Swimlane"
+    description: "Number of events trigegred by users from swimlane product placement"
+    type: count_distinct
+    sql: ${TABLE}.event_uuid ;;
+    filters: [product_placement: "swimlane"]
+  }
+  measure: placement_favourites {
+    group_label: "# Events / # Products per Placement"
+    label: "# Products - Favourites"
+    description: "Number of events trigegred by users from favourites product placement"
+    type: count_distinct
+    sql: ${TABLE}.event_uuid ;;
+    filters: [product_placement: "favourites"]
+  }
+  measure: placement_recommendation {
+    group_label: "# Events / # Products per Placement"
+    label: "# Products - Recommendation"
+    description: "Number of events trigegred by users from recommendation product placement"
+    type: count_distinct
+    sql: ${TABLE}.event_uuid ;;
+    filters: [product_placement: "recommendation"]
+  }
+
+  ### ATC rates
+
+  measure: atc_cart {
+    group_label: "Add-to-cart Rates"
+    label: "ATC rate - Cart"
+    description: "ATC (add-to-cart) Rate from product placem events from ent. #cart / # total events"
+    type: number
+    value_format_name: percent_1
+    sql: ${placement_cart} / ${events};;
+  }
+  measure: atc_category {
+    group_label: "Add-to-cart Rates"
+    label: "ATC rate - Category"
+    description: "ATC (add-to-cart) Rate from product placement. events from  #category / # total events"
+    type: number
+    value_format_name: percent_1
+    sql: ${placement_category} / ${events};;
+  }
+  measure: atc_search {
+    group_label: "Add-to-cart Rates"
+    label: "ATC rate - Search"
+    description: "ATC (add-to-cart) Rate from product placemen events from t. #search / # total events"
+    type: number
+    value_format_name: percent_1
+    sql: ${placement_search} / ${events};;
+  }
+  measure: atc_last_bought{
+    group_label: "Add-to-cart Rates"
+    label: "ATC rate - Last bought"
+    description: "ATC (add-to-cart) Rate from product placement. #l events from ast_bought / # total events"
+    type: number
+    value_format_name: percent_1
+    sql: ${placement_last_bought} / ${events};;
+  }
+  measure: atc_pdp {
+    group_label: "Add-to-cart Rates"
+    label: "ATC rate - PDP"
+    description: "ATC (add-to-cart) Rate from product place events from ment. #pdp / # total events"
+    type: number
+    value_format_name: percent_1
+    sql: ${placement_pdp} / ${events};;
+  }
+  measure: atc_swimlane {
+    group_label: "Add-to-cart Rates"
+    label: "ATC rate - Swimlane"
+    description: "ATC (add-to-cart) Rate from product placement. events from  #swimlane / # total events"
+    type: number
+    value_format_name: percent_1
+    sql: ${placement_swimlane} / ${events};;
+  }
+  measure: atc_favourites {
+    group_label: "Add-to-cart Rates"
+    label: "ATC rate - Favourites"
+    description: "ATC (add-to-cart) Rate from product placement. # events from favourites / # total events"
+    type: number
+    value_format_name: percent_1
+    sql: ${placement_favourites} / ${events};;
+  }
+  measure: atc_recommendation {
+    group_label: "Add-to-cart Rates"
+    label: "ATC rate - Recommendation"
+    description: "ATC (add-to-cart) Rate from product placement. #reco events from mmendation / # total events"
+    type: number
+    value_format_name: percent_1
+    sql: ${placement_recommendation} / ${events};;
+  }
 }
