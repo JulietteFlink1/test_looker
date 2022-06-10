@@ -6,7 +6,7 @@ explore: erp_buying_prices_raw {
 
   from: erp_buying_prices_raw
   label: "ERP Buying Prices"
-  view_label: "EPR Buying Prices"
+  view_label: "* EPR Buying Prices *"
   group_label: "Commercial"
   required_access_grants: [can_view_buying_information]
 
