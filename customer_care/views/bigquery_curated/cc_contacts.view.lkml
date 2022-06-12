@@ -63,6 +63,14 @@ view: cc_contacts {
     required_access_grants: [can_view_customer_data]
   }
 
+  dimension: cc_team {
+    group_label: "* Agent & Team *"
+    label: "CC Team"
+    hidden: yes
+    type: string
+    sql: ${TABLE}.cc_team ;;
+  }
+
   dimension: contact_reason {
     group_label: "* Contact Attributes *"
     type: string

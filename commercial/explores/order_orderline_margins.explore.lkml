@@ -26,4 +26,15 @@ explore: order_lineitems_margins {
     ;;
   }
 
+  join: sales_weighted_avg_buying_prices {
+    type: left_outer
+    relationship:many_to_one
+    sql_on:
+        ${sales_weighted_avg_buying_prices.order_lineitem_uuid} =  ${orderline.order_lineitem_uuid}                      and
+        ${sales_weighted_avg_buying_prices.product_sku}         =  ${orderline.product_sku}                              and
+        ${sales_weighted_avg_buying_prices.hub_code}            =  ${orderline.hub_code}                                 and
+        ${sales_weighted_avg_buying_prices.created_date}        =  ${orderline.created_date}
+    ;;
+  }
+
 }

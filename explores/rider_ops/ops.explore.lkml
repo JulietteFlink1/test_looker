@@ -25,8 +25,7 @@ explore: ops {
       hubs.hub_name: "",
       time_grid.start_datetime_date: "yesterday",
       time_grid.start_datetime_hour_of_day: "[6,23]",
-      forecasts.job_date: "Tuesday-7 days, NULL",
-
+      forecasts.job_date: "",
     ]
   }
 
@@ -76,8 +75,8 @@ explore: ops {
   join: inventory_changes_daily {
     from: inventory_changes_daily
     view_label: ""
-    sql_on: lower(${orders_with_ops_metrics.hub_code}) = lower(${inventory_changes_daily.hub_code})
-      and ${orders_with_ops_metrics.created_date}  = ${inventory_changes_daily.inventory_change_date} ;;
+    sql_on: lower(${hubs.hub_code}) = lower(${inventory_changes_daily.hub_code})
+      and ${time_grid.start_datetime_date}  = ${inventory_changes_daily.inventory_change_date} ;;
     relationship: many_to_many
     type: left_outer
     fields: [inventory_changes_daily.fields_for_utr_calculation*]

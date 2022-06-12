@@ -8,6 +8,12 @@ view: user_attributes_order_classification {
     sql: ${TABLE}.order_classification ;;
   }
 
+  dimension: is_local_order {
+    type: yesno
+    description: "The classification whether the order was local or not. Local means that products within the order were available only on one city."
+    sql: ${TABLE}.is_local_order ;;
+  }
+
   dimension_group: order_timestamp {
     type: time
     hidden: yes

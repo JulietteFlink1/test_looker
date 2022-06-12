@@ -246,6 +246,14 @@ view: hubs_ct {
     group_label: "> Admin Data"
   }
 
+  dimension: is_cell_split_hub {
+    label: "Is Cell Split Hub"
+    description: "Cell Split Hub: when launched, its delivery area covered more than 20% of an existing delivery area"
+    type: yesno
+    sql: ${TABLE}.is_cell_split_hub ;;
+    group_label: "> Admin Data"
+  }
+
   dimension: hub_size {
     label: "Hub Size"
     type: string

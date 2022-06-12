@@ -353,7 +353,7 @@ view: replenishment_purchase_orders {
   }
 
   measure: sum_purchase_price {
-    label:       "€ Sum Purchased Products Value"
+    label:       "€ Sum Purchased Products Value (Buying Price)"
     description: "This measure multiplies the vendor price of an item with the number of selling units we ordered and thus provides the cumulative value of the replenished items."
 
     type: sum
