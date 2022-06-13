@@ -321,6 +321,7 @@ view: consumer_behaviour_dynamic_delivery_fee {
     group_label: "Financial Metrics"
     label: "Revenue"
     type: number
+    value_format_name: decimal_1
     sql: ${TABLE}.revenue ;;
   }
 
@@ -328,6 +329,7 @@ view: consumer_behaviour_dynamic_delivery_fee {
     group_label: "Delivery Fee Metrics"
     label: "AVG Cart Difference"
     type: average
+    value_format_name: decimal_1
     sql: ${TABLE}.cart_difference_amount ;;
   }
 
@@ -335,6 +337,7 @@ view: consumer_behaviour_dynamic_delivery_fee {
     group_label: "Delivery Fee Metrics"
     label: "AVG First Cart Total "
     type: average
+    value_format_name: decimal_1
     sql: ${TABLE}.first_event_sub_total ;;
   }
 
@@ -342,6 +345,7 @@ view: consumer_behaviour_dynamic_delivery_fee {
     group_label: "Delivery Fee Metrics"
     label: "AVG Last Cart Total "
     type: average
+    value_format_name: decimal_1
     sql: ${TABLE}.last_event_sub_total ;;
   }
 
@@ -349,6 +353,7 @@ view: consumer_behaviour_dynamic_delivery_fee {
     group_label: "Financial Metrics"
     label: "Total Number of Products Ordered"
     type: sum
+    value_format_name: decimal_0
     sql: ${TABLE}.number_of_products_ordered ;;
   }
 
@@ -356,6 +361,7 @@ view: consumer_behaviour_dynamic_delivery_fee {
     group_label: "Financial Metrics"
     label: "Total Revenue"
     type: sum
+    value_format_name: decimal_1
     sql: ${TABLE}.revenue ;;
   }
 
@@ -363,6 +369,7 @@ view: consumer_behaviour_dynamic_delivery_fee {
     group_label: "Delivery Fee Metrics"
     label: "Avg. Delivery Fee"
     type: average
+    value_format_name: decimal_1
     sql: ${TABLE}.delivery_fee ;;
   }
 
@@ -370,13 +377,15 @@ view: consumer_behaviour_dynamic_delivery_fee {
     group_label: "Delivery Fee Metrics"
     label: "Total Delivery Fee"
     type: sum
+    value_format_name: decimal_1
     sql: ${TABLE}.delivery_fee ;;
   }
 
-  measure: discount_value {
+  measure: discount_value_avg {
     group_label: "Financial Metrics"
-    label: "Discount Value "
-    type: number
+    label: "AVG Discount Value "
+    type: average
+    value_format_name: decimal_1
     sql: ${TABLE}.discount_value ;;
   }
 
@@ -384,6 +393,7 @@ view: consumer_behaviour_dynamic_delivery_fee {
     group_label: "Financial Metrics"
     label: "Rider Tip Total"
     type: sum
+    value_format_name: decimal_0
     sql: ${TABLE}.rider_tip_value ;;
   }
 
@@ -439,5 +449,14 @@ view: consumer_behaviour_dynamic_delivery_fee {
     type: number
     value_format_name: percent_1
     sql:  1- (${payment_started_cnt} / NULLIF(${checkout_viewed_cnt},0) ) ;;
+  }
+
+  measure: order_placed_rate {
+    group_label: "# Active User Metrics"
+    label: "% Active Users Placing an Order Compared to Cart Viewed"
+    description: "# of daily active users placing order"
+    type: number
+    value_format_name: percent_1
+    sql: ${order_placed_cnt} / ${cart_viewed_cnt} ;;
   }
 }
