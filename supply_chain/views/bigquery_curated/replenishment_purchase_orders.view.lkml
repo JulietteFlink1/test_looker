@@ -14,10 +14,35 @@ view: replenishment_purchase_orders {
     ]
   }
 
-  set: cross_references_inventory_daily {
+  set: cross_references_inventory_changes_daily {
     fields: [
 
     ]
+  }
+
+  set: main_fields {
+    fields: [
+      vendor_id,
+      status,
+      hub_code,
+      sku,
+      delivery_date,
+      order_date,
+      vendor_location,
+      name,
+      order_id,
+      order_number,
+      flink_buyer_id,
+
+      sum_handling_unit_quantity,
+      sum_selling_unit_quantity,
+      sum_purchase_price,
+      avg_items_per_order,
+      cnt_of_orders,
+      cnt_of_skus_per_order,
+      pct_order_inbounded
+    ]
+
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -286,7 +311,7 @@ view: replenishment_purchase_orders {
 
     label:       "# Quantity Selling Unit"
     description: "The amount of ordered items"
-    group_label: ">Metrics <"
+
 
     type: sum
     sql: safe_cast(${TABLE}.selling_unit_quantity as int64) ;;
@@ -297,30 +322,30 @@ view: replenishment_purchase_orders {
 
     label:       "# Quantity Handling Unit"
     description: "The amount of ordered handling units"
-    group_label: ">Metrics <"
+
 
     type: sum
     sql: safe_cast(${TABLE}.handling_unit_quantity as numeric) ;;
   }
 
   measure: pct_order_inbounded {
-    label:       "% of ERP Order Inbounded"
+    label:       "% Fill Rate (PO > Inventory)"
     description: "How many of the ordered items have been inbounded in the hubs on the promised delivery date of the order"
-    group_label: ">Metrics <"
+
 
     type: number
-    sql: ${inventory_daily.sum_of_total_inbound} / nullif(${sum_selling_unit_quantity} ,0) ;;
+    sql: ${inventory_changes_daily.sum_inbound_inventory} / nullif(${sum_selling_unit_quantity} ,0) ;;
 
     value_format_name: percent_1
 
-    html:
+    # html:
 
-      {% if show_info._parameter_value == 'yes' %}
-        {{ rendered_value }} <br><span style="font-size:8px"> {{ inventory_daily.sum_of_total_inbound._rendered_value }} inb /<br>{{ sum_selling_unit_quantity._rendered_value }} ord</span>
-      {% else %}
-        {{ rendered_value }}
-      {% endif %}
-        ;;
+    #   {% if show_info._parameter_value == 'yes' %}
+    #     {{ rendered_value }} <br><span style="font-size:8px"> {{ inventory_changes_daily.sum_inbound_inventory._rendered_value }} inb /<br>{{ sum_selling_unit_quantity._rendered_value }} ord</span>
+    #   {% else %}
+    #     {{ rendered_value }}
+    #   {% endif %}
+    #     ;;
   }
 
   measure: cnt_of_orders {

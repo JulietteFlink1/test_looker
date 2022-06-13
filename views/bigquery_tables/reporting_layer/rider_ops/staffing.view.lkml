@@ -2454,7 +2454,7 @@ view: staffing {
     label: "Hub Staff UTR (All Items)"
     description: "Hub Staff UTR (# All inventory Changes/Hub Staff Hours)"
     type: number
-    sql: abs(${inventory_changes_daily.sum_quantity_change})/${number_of_worked_hours_hub_staff} ;;
+    sql: abs(${inventory_changes_daily.sum_quantity_change})/nullif(${number_of_worked_hours_hub_staff},0) ;;
     value_format_name: decimal_2
   }
 
@@ -2463,7 +2463,7 @@ view: staffing {
     label: "Hub Staff UTR (Ordered Items)"
     description: "Hub Staff UTR (# Ordered Items/Hub Staff Hours)"
     type: number
-    sql: abs(${inventory_changes_daily.sum_outbound_orders})/${number_of_worked_hours_hub_staff} ;;
+    sql: abs(${inventory_changes_daily.sum_outbound_orders})/nullif(${number_of_worked_hours_hub_staff},0) ;;
     value_format_name: decimal_2
   }
 
@@ -2473,7 +2473,7 @@ view: staffing {
     description: "Hub Staff UTR (# Outbounded Items/Hub Staff Hours)"
     type: number
     sql: abs(${inventory_changes_daily.sum_outbound_waste}+${inventory_changes_daily.sum_outbound_wrong_delivery}+${inventory_changes_daily.sum_outbound_orders})
-      /${number_of_worked_hours_hub_staff} ;;
+      /nullif(${number_of_worked_hours_hub_staff},0) ;;
     value_format_name: decimal_2
   }
 

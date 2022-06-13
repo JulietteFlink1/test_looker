@@ -3,6 +3,13 @@ view: products_hub_assignment_v2 {
     ;;
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~        Sets        ~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  set: minimal_fields {
+    fields: [hub_code, sku, report_date, leading_sku_replenishment_substitute_group]
+  }
+
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Parameter      ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   parameter: select_calculation_granularity {
@@ -78,13 +85,13 @@ view: products_hub_assignment_v2 {
   dimension: sku {
     type: string
     sql: ${TABLE}.sku ;;
-    hidden: yes
+    hidden: no
   }
 
   dimension: hub_code {
     type: string
     sql: ${TABLE}.hub_code ;;
-    hidden: yes
+    hidden: no
   }
 
 
