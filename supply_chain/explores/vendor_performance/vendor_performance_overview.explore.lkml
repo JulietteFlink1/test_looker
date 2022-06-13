@@ -19,7 +19,7 @@ explore: vendor_performance_overview {
     vendor_performance_fill_rate*,
     products*,
     vendor_performance_ndt_desadv_fill_rates*,
-    purchase_orders*
+    purchase_orders.main_fields*
   ]
 
   sql_always_where: {% condition global_filters_and_parameters.datasource_filter %} ${products_hub_assignment.report_date} {% endcondition %} ;;
