@@ -54,7 +54,7 @@ view: +orders {
   }
 
   measure: cnt_stacked_orders {
-    label: "# Orders - Stacked Order"
+    label: "# Stacked Orders"
     description: "The number of orders, that were part of a stacked delivery"
     group_label: "* Stacked Orders *"
     type: count
