@@ -14,7 +14,7 @@ view: replenishment_purchase_orders {
     ]
   }
 
-  set: cross_references_inventory_daily {
+  set: cross_references_inventory_changes_daily {
     fields: [
 
     ]
@@ -309,14 +309,14 @@ view: replenishment_purchase_orders {
     group_label: ">Metrics <"
 
     type: number
-    sql: ${inventory_daily.sum_of_total_inbound} / nullif(${sum_selling_unit_quantity} ,0) ;;
+    sql: ${inventory_changes_daily.sum_inbound_inventory} / nullif(${sum_selling_unit_quantity} ,0) ;;
 
     value_format_name: percent_1
 
     html:
 
       {% if show_info._parameter_value == 'yes' %}
-        {{ rendered_value }} <br><span style="font-size:8px"> {{ inventory_daily.sum_of_total_inbound._rendered_value }} inb /<br>{{ sum_selling_unit_quantity._rendered_value }} ord</span>
+        {{ rendered_value }} <br><span style="font-size:8px"> {{ inventory_changes_daily.sum_inbound_inventory._rendered_value }} inb /<br>{{ sum_selling_unit_quantity._rendered_value }} ord</span>
       {% else %}
         {{ rendered_value }}
       {% endif %}
