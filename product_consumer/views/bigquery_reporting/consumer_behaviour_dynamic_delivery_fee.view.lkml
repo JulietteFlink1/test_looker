@@ -373,6 +373,14 @@ view: consumer_behaviour_dynamic_delivery_fee {
     sql: ${TABLE}.revenue ;;
   }
 
+  measure: orders_placed_cnt {
+    group_label: "Financial Metrics"
+    label: "Total Orders Placed"
+    type: count_distinct
+    value_format_name: decimal_0
+    sql: ${TABLE}.order_uuid ;;
+  }
+
   measure: delivery_fee_avg {
     group_label: "Delivery Fee Metrics"
     label: "Avg. Delivery Fee"
@@ -485,4 +493,6 @@ view: consumer_behaviour_dynamic_delivery_fee {
     value_format_name: percent_1
     sql: ${order_placed_cnt} / NULLIF(${cart_viewed_cnt},0) ;;
   }
+
+
 }
