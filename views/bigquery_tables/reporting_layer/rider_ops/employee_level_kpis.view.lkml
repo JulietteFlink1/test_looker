@@ -115,7 +115,7 @@ view: employee_level_kpis {
 
   dimension: type_of_contract {
     type: string
-    description: "Based on fountain data: full-time, part-time, min/max, 15, 30, etc"
+    description: "Based on fountain data: full-time, part-time, min/max, 15, 30, etc (null when no matching ID between Quinyx and Fountain)"
     sql: ${TABLE}.type_of_contract ;;
   }
 
