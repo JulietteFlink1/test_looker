@@ -321,7 +321,15 @@ view: consumer_behaviour_dynamic_delivery_fee {
     group_label: "Financial Metrics"
     label: "Revenue"
     type: number
-    value_format_name: decimal_1
+    value_format_name: eur
+    sql: ${TABLE}.revenue ;;
+  }
+
+  measure: revenue_avg {
+    group_label: "Financial Metrics"
+    label: "AVG Revenue"
+    type: average
+    value_format_name: eur
     sql: ${TABLE}.revenue ;;
   }
 
@@ -329,7 +337,7 @@ view: consumer_behaviour_dynamic_delivery_fee {
     group_label: "Delivery Fee Metrics"
     label: "AVG Cart Difference"
     type: average
-    value_format_name: decimal_1
+    value_format_name: eur
     sql: ${TABLE}.cart_difference_amount ;;
   }
 
@@ -337,7 +345,7 @@ view: consumer_behaviour_dynamic_delivery_fee {
     group_label: "Delivery Fee Metrics"
     label: "AVG First Cart Total "
     type: average
-    value_format_name: decimal_1
+    value_format_name: eur
     sql: ${TABLE}.first_event_sub_total ;;
   }
 
@@ -345,7 +353,7 @@ view: consumer_behaviour_dynamic_delivery_fee {
     group_label: "Delivery Fee Metrics"
     label: "AVG Last Cart Total "
     type: average
-    value_format_name: decimal_1
+    value_format_name: eur
     sql: ${TABLE}.last_event_sub_total ;;
   }
 
@@ -361,15 +369,23 @@ view: consumer_behaviour_dynamic_delivery_fee {
     group_label: "Financial Metrics"
     label: "Total Revenue"
     type: sum
-    value_format_name: decimal_1
+    value_format_name: eur
     sql: ${TABLE}.revenue ;;
+  }
+
+  measure: orders_placed_cnt {
+    group_label: "Financial Metrics"
+    label: "Total Orders Placed"
+    type: count_distinct
+    value_format_name: decimal_0
+    sql: ${TABLE}.order_uuid ;;
   }
 
   measure: delivery_fee_avg {
     group_label: "Delivery Fee Metrics"
     label: "Avg. Delivery Fee"
     type: average
-    value_format_name: decimal_1
+    value_format_name: eur
     sql: ${TABLE}.delivery_fee ;;
   }
 
@@ -377,7 +393,7 @@ view: consumer_behaviour_dynamic_delivery_fee {
     group_label: "Delivery Fee Metrics"
     label: "Total Delivery Fee"
     type: sum
-    value_format_name: decimal_1
+    value_format_name: eur
     sql: ${TABLE}.delivery_fee ;;
   }
 
@@ -385,7 +401,7 @@ view: consumer_behaviour_dynamic_delivery_fee {
     group_label: "Financial Metrics"
     label: "AVG Discount Value "
     type: average
-    value_format_name: decimal_1
+    value_format_name: eur
     sql: ${TABLE}.discount_value ;;
   }
 
@@ -393,7 +409,7 @@ view: consumer_behaviour_dynamic_delivery_fee {
     group_label: "Financial Metrics"
     label: "Rider Tip Total"
     type: sum
-    value_format_name: decimal_0
+    value_format_name: eur
     sql: ${TABLE}.rider_tip_value ;;
   }
 
@@ -439,24 +455,44 @@ view: consumer_behaviour_dynamic_delivery_fee {
     description: "% of daily active users abandoning cart"
     type: number
     value_format_name: percent_1
-    sql:  1- (${checkout_viewed_cnt} / NULLIF(${cart_viewed_cnt},2) ) ;;
+    sql: (1 - ( ${checkout_viewed_cnt} / NULLIF(${cart_viewed_cnt},2))) ;;
   }
 
   measure: checkout_abandonment_rate {
     group_label: "# Active User Metrics"
     label: "% Active Users Abandoning Checkout"
-    description: "% of daily active users abandoning cart"
+    description: "% of daily active users abandoning checkout compared to users on cart"
     type: number
     value_format_name: percent_1
-    sql:  1- (${payment_started_cnt} / NULLIF(${checkout_viewed_cnt},0) ) ;;
+    sql: (1 - ( ${payment_started_cnt} / NULLIF(${cart_viewed_cnt},0))) ;;
+  }
+
+  measure: checkout_success_rate {
+    group_label: "# Active User Metrics"
+    label: "% Active Users Checkout Success Rate"
+    description: "% of daily active users hitting the pay buttong"
+    type: number
+    value_format_name: percent_1
+    sql:  ${payment_started_cnt} / NULLIF(${cart_viewed_cnt},0) ;;
+  }
+
+  measure: cart_success_rate {
+    group_label: "# Active User Metrics"
+    label: "% Active Users Cart Success Rate"
+    description: "% of daily active users moving to checkout screen"
+    type: number
+    value_format_name: percent_1
+    sql: ${checkout_viewed_cnt} / NULLIF(${cart_viewed_cnt},2)  ;;
   }
 
   measure: order_placed_rate {
     group_label: "# Active User Metrics"
-    label: "% Active Users Placing an Order Compared to Cart Viewed"
-    description: "# of daily active users placing order"
+    label: "% Active Users Placing Order Rate"
+    description: "# of daily active users placing order Compared to Cart Viewed"
     type: number
     value_format_name: percent_1
-    sql: ${order_placed_cnt} / ${cart_viewed_cnt} ;;
+    sql: ${order_placed_cnt} / NULLIF(${cart_viewed_cnt},0) ;;
   }
+
+
 }
