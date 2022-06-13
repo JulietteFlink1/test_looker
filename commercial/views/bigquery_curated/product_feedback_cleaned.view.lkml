@@ -1,6 +1,20 @@
 view: product_feedback_cleaned {
-  sql_table_name: `flink-data-dev.sandbox.product_feedback_cleaned`
+  sql_table_name: `flink-data-dev.sandbox_lautaro.product_feedback_cleaned`
     ;;
+
+  dimension_group: date {
+    type: time
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: ${TABLE}.date ;;
+  }
 
   dimension: phrases_matches {
     type: string

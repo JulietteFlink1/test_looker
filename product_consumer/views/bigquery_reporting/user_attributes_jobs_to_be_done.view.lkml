@@ -56,6 +56,17 @@ dimension: days_since_last_party_time_order {
   sql: ${TABLE}.days_since_last_party_time_order ;;
 }
 
+dimension: days_since_last_lunch_order {
+  type: number
+  hidden:  yes
+  sql: ${TABLE}.days_since_last_lunch_order ;;
+}
+dimension: days_since_last_local_order {
+  type: number
+  hidden:  yes
+  sql: ${TABLE}.days_since_last_local_order ;;
+}
+
 dimension: number_of_breakfast_orders_last_twelve_weeks {
   type: number
   label: "Number of Breakfast Orders Last 12 Weeks"
@@ -82,6 +93,20 @@ dimension: number_of_late_night_snack_orders_last_twelve_weeks {
   label: "Number of Late Night Snack Orders Last 12 Weeks"
   group_label: "User Activity - Last 12 Weeks"
   sql: ${TABLE}.number_of_late_night_snack_orders_last_twelve_weeks ;;
+}
+
+dimension: number_of_lunch_orders_last_twelve_weeks {
+  type: number
+  label: "Number of Lunch Orders Last 12 Weeks"
+  group_label: "User Activity - Last 12 Weeks"
+  sql: ${TABLE}.number_of_lunch_orders_last_twelve_weeks ;;
+}
+
+dimension: number_of_local_orders_last_twelve_weeks {
+  type: number
+  label: "Number of Local Orders Last 12 Weeks"
+  group_label: "User Activity - Last 12 Weeks"
+  sql: ${TABLE}.number_of_local_orders_last_twelve_weeks ;;
 }
 
 dimension: number_of_orders {
@@ -161,6 +186,24 @@ dimension: has_party_time_orders {
     ELSE FALSE END ;;
 }
 
+dimension: has_lunch_orders {
+  type: yesno
+  label: "Has Lunch Orders"
+  group_label: "User Activity - Last 12 Weeks"
+  description: "Yes if the user has lunch orders in the past 12 weeks"
+  sql: CASE WHEN ${TABLE}.number_of_lunch_orders_last_twelve_weeks > 0 THEN TRUE
+    ELSE FALSE END ;;
+}
+
+dimension: has_local_orders {
+  type: yesno
+  label: "Has Local Orders"
+  group_label: "User Activity - Last 12 Weeks"
+  description: "Yes if the user has local  orders in the past 12 weeks"
+  sql: CASE WHEN ${TABLE}.number_of_local_orders_last_twelve_weeks > 0 THEN TRUE
+    ELSE FALSE END ;;
+}
+
 ### Measures
 
 measure: count {
@@ -224,12 +267,29 @@ measure: household_orders {
   sql: ${number_of_household_shopping_orders_last_twelve_weeks};;
 }
 
+measure: lunch_orders {
+  group_label: "Counts (#) - Last 12 Weeks"
+  label: "# Lunch Orders"
+  type: sum
+  description: "Number of lunch orders"
+  sql: ${number_of_lunch_orders_last_twelve_weeks};;
+}
+
+measure: local_orders {
+  group_label: "Counts (#) - Last 12 Weeks"
+  label: "# Local Orders"
+  type: sum
+  description: "Number of local orders (orders where SKUs are available only in one city)"
+  sql: ${number_of_local_orders_last_twelve_weeks};;
+}
+
 measure: unclassified_orders {
   group_label: "Counts (#) - Last 12 Weeks"
   label: "# Unclassified Orders"
   type: number
   description: "Number of household orders"
-  sql: ${total_orders} - ${breakfast_orders} - ${party_orders} - ${emergency_orders} - ${late_night_snack_orders} - ${household_orders};;
+  sql: ${total_orders} - ${breakfast_orders} - ${party_orders} - ${emergency_orders} - ${late_night_snack_orders}
+  - ${household_orders} - ${lunch_orders} - ${local_orders};;
 }
 
 measure: breakfast_order_rate {
@@ -275,6 +335,24 @@ measure: household_rate {
   description: "Number of household shopping orders, over total orders"
   value_format_name: percent_1
   sql: ${household_orders} / nullif(${total_orders},0);;
+}
+
+measure: lunch_rate {
+  group_label: "Shares (%) - Last 12 Weeks"
+  label: "Lunch Order Rate"
+  type: number
+  description: "Number of lunch orders, over total orders"
+  value_format_name: percent_1
+  sql: ${lunch_orders} / nullif(${total_orders},0);;
+}
+
+measure: local_rate {
+  group_label: "Shares (%) - Last 12 Weeks"
+  label: "Local Order Rate"
+  type: number
+  description: "Number of local orders, over total orders"
+  value_format_name: percent_1
+  sql: ${local_orders} / nullif(${total_orders},0);;
 }
 
 measure: unclassified_rate {
