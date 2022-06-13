@@ -325,6 +325,14 @@ view: consumer_behaviour_dynamic_delivery_fee {
     sql: ${TABLE}.revenue ;;
   }
 
+  measure: revenue_avg {
+    group_label: "Financial Metrics"
+    label: "AVG Revenue"
+    type: average
+    value_format_name: eur
+    sql: ${TABLE}.revenue ;;
+  }
+
   measure: cart_difference_amount_avg {
     group_label: "Delivery Fee Metrics"
     label: "AVG Cart Difference"
