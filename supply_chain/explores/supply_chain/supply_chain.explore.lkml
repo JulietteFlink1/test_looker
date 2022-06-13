@@ -332,7 +332,7 @@ explore: supply_chain {
 
   join: matching_inventory_level {
 
-    view_label: "13 Matching Inventory"
+    view_label: ""
 
     type:         left_outer
     relationship: many_to_one
