@@ -1,5 +1,5 @@
 view: product_feedback_cleaned {
-  sql_table_name: `flink-data-dev.sandbox_lautaro.product_feedback_cleaned`
+  sql_table_name: `flink-data-dev.sandbox.product_feedback_cleaned`
     ;;
 
   dimension_group: date {
