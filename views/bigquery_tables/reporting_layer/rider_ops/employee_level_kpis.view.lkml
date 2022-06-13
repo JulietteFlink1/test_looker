@@ -1,6 +1,6 @@
 # Owner:   Omar Alshobaki
 # Created: 2022-06-01
-# This view contains daily aggregation of shift and ops related kpis as well as employment info in per distinct hub employee and position
+# This view contains daily aggregation of shift, Customer NPS and ops related kpis as well as employment info per distinct hub employee and position
 
 view: employee_level_kpis {
   sql_table_name: `flink-data-prod.reporting.employee_level_kpis`
@@ -48,7 +48,7 @@ view: employee_level_kpis {
   dimension: staff_number {
     type:  number
     label: "Staff Number"
-    description: "Based on Quinyx badgeNo field"
+    description: "Based on Quinyx badgeNo field (Badge No)"
     sql: ${TABLE}.staff_number ;;
     value_format: "0"
   }
@@ -56,14 +56,14 @@ view: employee_level_kpis {
   dimension: acquisition_channel {
     type: string
     label: "Acquisition Channel"
-    description: "Based on fountain field"
+    description: "Based on fountain field (utm source)"
     sql: ${TABLE}.acquisition_channel ;;
   }
 
   dimension: ats_id {
     type: string
     label: "ATS ID"
-    description: "Based on fountain field"
+    description: "Based on fountain ID field (Applicant Tracking System ID)"
     sql: ${TABLE}.ats_id ;;
   }
 
@@ -75,14 +75,14 @@ view: employee_level_kpis {
   dimension: external_agency_name {
     type: string
     label: "External Agency Name"
-    description: "Based on Quinyx field"
+    description: "Based on Quinyx field (External Agency)"
     sql: ${TABLE}.external_agency_name ;;
   }
 
   dimension: fleet_type {
     type: string
     label: "Fleet Type"
-    description: "Based on Quinyx field (Internal/Partnership/One-Time)"
+    description: "Based on Quinyx data (Internal/Partnership/One-Time)"
     sql: ${TABLE}.fleet_type ;;
   }
 
@@ -98,7 +98,7 @@ view: employee_level_kpis {
     ]
     convert_tz: no
     datatype: date
-    description: "Based on hiring funnel (fountain)"
+    description: "Based on fountain hiring funnel (the date when an applicant transits to Creating Accounts or Approved stage)"
     sql: ${TABLE}.hire_date ;;
   }
 
@@ -122,7 +122,7 @@ view: employee_level_kpis {
   dimension: weekly_contracted_hours {
     type: number
     sql: ${TABLE}.weekly_contracted_hours ;;
-    description: "Based on Quinyx field"
+    description: "Based on Quinyx field (Agreement Working Hours) attached to each shift"
 
   }
 
