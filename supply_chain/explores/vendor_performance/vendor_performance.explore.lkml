@@ -28,9 +28,8 @@ explore: vendor_performance {
     global_filters_and_parameters.datasource_filter,
     bulk_items.main_fields*, bulk_items.cross_referenced_fields*,
     inventory_changes_daily*,
-    vendor_performance_fill_rate*,
-    products*,
     vendor_performance_ndt_desadv_fill_rates*,
+    products*,
     purchase_orders.main_fields*
   ]
 
@@ -48,7 +47,9 @@ explore: vendor_performance {
 
 
 
-  join: bulk_items{
+  join: bulk_items {
+
+    from: dispatch_notifications
 
     view_label: "* DESADVs *"
 
