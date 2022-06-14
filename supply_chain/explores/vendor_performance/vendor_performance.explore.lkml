@@ -74,10 +74,23 @@ explore: vendor_performance {
        and {% condition global_filters_and_parameters.datasource_filter %} ${inventory_changes_daily.inventory_change_date} {% endcondition %}
     ;;
 
-    fields: [inventory_changes_daily.sum_inbound_inventory,
+    fields: [
+      inventory_changes_daily.sum_inbound_inventory,
+      inventory_changes_daily.sum_outbound_orders,
+      inventory_changes_daily.sum_outbound_waste,
+      inventory_changes_daily.sum_inventory_correction_increased,
+      inventory_changes_daily.sum_inventory_correction_reduced,
+      inventory_changes_daily.sum_correction_order_cancelled,
+      inventory_changes_daily.sum_correction_product_damaged,
+      inventory_changes_daily.sum_correction_product_delivery_damaged,
+      inventory_changes_daily.sum_correction_product_expired,
+      inventory_changes_daily.sum_correction_product_delivery_expired,
+      inventory_changes_daily.sum_outbound_too_good_to_go,
       inventory_changes_daily.sku,
       inventory_changes_daily.parent_sku,
-      inventory_changes_daily.is_inbound
+      inventory_changes_daily.is_inbound,
+      inventory_changes_daily.change_reason,
+      inventory_changes_daily.is_outbound_waste
     ]
   }
 
