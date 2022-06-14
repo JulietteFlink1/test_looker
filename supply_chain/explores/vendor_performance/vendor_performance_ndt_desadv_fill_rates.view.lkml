@@ -3,19 +3,12 @@
 
 view: vendor_performance_ndt_desadv_fill_rates {
   derived_table: {
-    explore_source: vendor_performance_overview {
+    explore_source: vendor_performance {
 
       column: dispatch_notification_id      { field: bulk_items.dispatch_notification_id }
       column: sum_total_quantity            { field: bulk_items.sum_total_quantity }
       column: sum_total_quantity_po_derived { field: bulk_items.sum_total_quantity_po_derived}
       column: sum_inbound_inventory         { field: inventory_changes_daily.sum_inbound_inventory }
-
-      filters: {
-        field: bulk_items.product_name
-        value: "-\"PFAND 0,25 EINWEGPFAND V-MWST\""
-      }
-
-      bind_all_filters: yes
 
     }
   }

@@ -24,7 +24,7 @@ explore: vendor_performance_overview {
 
   sql_always_where: {% condition global_filters_and_parameters.datasource_filter %} ${products_hub_assignment.report_date} {% endcondition %} ;;
 
-  always_filter: {filters: [global_filters_and_parameters.datasource_filter: "8 days ago for 7 days"]}
+  always_filter: {filters: [global_filters_and_parameters.datasource_filter: "60 days ago"]}
 
   join: global_filters_and_parameters {
     view_label: "* Global *"
@@ -39,7 +39,7 @@ explore: vendor_performance_overview {
 
   join: bulk_items{
 
-    view_label: "* DESADV data *"
+    view_label: "* DESADVs *"
 
     type: left_outer
     relationship: one_to_many
@@ -71,7 +71,7 @@ explore: vendor_performance_overview {
 
   join: vendor_performance_ndt_desadv_fill_rates {
 
-    view_label: "* DESADV data *"
+    view_label: "* DESADVs *"
 
     type: left_outer
     relationship: many_to_one
@@ -91,7 +91,7 @@ explore: vendor_performance_overview {
 
   join: purchase_orders {
 
-    view_label: "* Purchase Order (PO) data *"
+    view_label: "* Purchase Orders (PO) *"
 
     from: replenishment_purchase_orders
 
