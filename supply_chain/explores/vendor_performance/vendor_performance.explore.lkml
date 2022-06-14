@@ -28,10 +28,10 @@ explore: vendor_performance {
     global_filters_and_parameters.datasource_filter,
     bulk_items.main_fields*, bulk_items.cross_referenced_fields*,
     inventory_changes_daily*,
-    vendor_performance_fill_rate*,
-    products*,
     vendor_performance_ndt_desadv_fill_rates*,
-    purchase_orders.main_fields*
+    products*,
+    purchase_orders.main_fields*,
+    erp_product_hub_vendor_assignment_v2*
   ]
 
   sql_always_where: {% condition global_filters_and_parameters.datasource_filter %} ${products_hub_assignment.report_date} {% endcondition %} ;;
@@ -48,7 +48,9 @@ explore: vendor_performance {
 
 
 
-  join: bulk_items{
+  join: bulk_items {
+
+    from: dispatch_notifications
 
     view_label: "* DESADVs *"
 
@@ -141,6 +143,25 @@ explore: vendor_performance {
         and ${erp_buying_prices.hub_code} = ${products_hub_assignment.hub_code}
         and ${erp_buying_prices.sku} = ${products_hub_assignment.sku}
     ;;
+  }
+
+  join: erp_product_hub_vendor_assignment_v2 {
+
+    view_label: "* Global *"
+
+    type: left_outer
+    relationship: one_to_one
+    sql_on:
+        ${erp_product_hub_vendor_assignment_v2.report_date} = ${products_hub_assignment.report_date}
+    and ${erp_product_hub_vendor_assignment_v2.hub_code}    = ${products_hub_assignment.hub_code}
+    and ${erp_product_hub_vendor_assignment_v2.sku}         = ${products_hub_assignment.sku}
+    and {% condition global_filters_and_parameters.datasource_filter %} ${erp_product_hub_vendor_assignment_v2.report_date} {% endcondition %}
+    ;;
+
+    fields: [
+      erp_product_hub_vendor_assignment_v2.vendor_id,
+      erp_product_hub_vendor_assignment_v2.vendor_name
+    ]
   }
 
 }
