@@ -32,7 +32,8 @@ view: dispatch_notifications {
   set: cross_referenced_fields {
     fields: [
       pct_items_inbounded,
-      pct_items_inbounded_capped
+      pct_items_inbounded_capped,
+      pct_items_inbounded_or_pos_corrected
     ]
   }
 
@@ -390,6 +391,16 @@ view: dispatch_notifications {
       end
 
       ;;
+  }
+
+  measure: pct_items_inbounded_or_pos_corrected {
+
+    label:       "% Inbound + pos. Corrected Rate"
+    description: "The sum of items that are listed on the DESADV (PO corrected) compared to the number of items, that have been either inbounded or corrected with a positive amount (stock increase) on the delivery date"
+
+    type: number
+    value_format_name: percent_1
+    sql: safe_divide((${inventory_changes_daily.sum_inbound_inventory} + ${inventory_changes_daily.sum_inventory_correction_increased}), ${sum_total_quantity}) ;;
   }
 
 
