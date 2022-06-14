@@ -14,7 +14,7 @@ view: top_5_category_inventory_change {
       column: sum_inventory_correction_increased  { field: inventory_changes_daily.sum_inventory_correction_increased }
       column: sum_outbound_waste                  { field: inventory_changes_daily.sum_outbound_waste }
 
-      derived_column: rank_negative     { sql: row_number() over (partition by country_iso, hub_code, inventory_change_date order by sum_inventory_correction_reduced ) ;; }
+      derived_column: rank_negative     { sql: row_number() over (partition by country_iso, hub_code, inventory_change_date order by sum_inventory_correction_reduced desc) ;; }
       derived_column: rank_positive     { sql: row_number() over (partition by country_iso, hub_code, inventory_change_date order by sum_inventory_correction_increased desc) ;; }
       derived_column: rank_outbounded   { sql: row_number() over (partition by country_iso, hub_code, inventory_change_date order by sum_outbound_waste desc) ;; }
 
