@@ -22,7 +22,7 @@ view: dispatch_notifications {
       order_number,
       product_name,
       sku,
-      # provider_name,
+      provider_name,
       sum_handling_units_count,
       sum_total_quantity,
       # sum_total_quantity_po_derived,
@@ -65,25 +65,25 @@ view: dispatch_notifications {
     sql: ${TABLE}.sku ;;
   }
 
-  # dimension: provider_name {
+  dimension: provider_name {
 
-  #   label:       "Supplier Name"
-  #   description: "The name of the supplier (accoridng to bulk-inbounding service)"
+    label:       "Supplier Name"
+    description: "The name of the supplier (accoridng to bulk-inbounding service)"
 
-  #   type: string
-  #   sql: ${TABLE}.provider_name ;;
+    type: string
+    sql: ${TABLE}.supplier_name ;;
 
-  # }
+  }
 
-  # dimension: provider_id {
+  dimension: provider_id {
 
-  #   label:        "External Supplier ID"
-  #   group_label: ">> IDs"
+    label:        "External Supplier ID"
+    group_label: ">> IDs"
 
-  #   type: string
-  #   sql: ${TABLE}.provider_id ;;
-  #   hidden: yes
-  # }
+    type: string
+    sql: ${TABLE}.supplier_id ;;
+    hidden: yes
+  }
 
 
   dimension: product_name {
