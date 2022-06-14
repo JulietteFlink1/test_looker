@@ -1,8 +1,23 @@
+# Owner:
+# Andreas Stüber
+#
+# Main Stakeholder:
+# - Supply Chain team
+# - Hub-Ops team
+#
+# Questions that can be answered
+# - All questions around vendor delivery performance
+# - questions concerning how well Flink inbounds arriving deliveries
+
 include: "/**/*.view"
 
 
 
+
 explore: vendor_performance {
+
+  label: "Vendor Performance Overivew"
+  group_label: "Supply Chain"
 
   from: products_hub_assignment_v2
   view_name: products_hub_assignment
