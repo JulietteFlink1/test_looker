@@ -192,6 +192,12 @@ view: consumer_behaviour_dynamic_delivery_fee {
     sql: ${TABLE}.platform ;;
   }
 
+  dimension: revenue {
+    type: number
+    hidden:  yes
+    sql: ${TABLE}.revenue ;;
+  }
+
   dimension: rider_tip_value {
     type: number
     sql: ${TABLE}.rider_tip_value ;;
@@ -316,14 +322,6 @@ view: consumer_behaviour_dynamic_delivery_fee {
   }
 
   ######## Measures ########
-
-  measure: revenue {
-    group_label: "Financial Metrics"
-    label: "Revenue"
-    type: number
-    value_format_name: eur
-    sql: ${TABLE}.revenue ;;
-  }
 
   measure: revenue_avg {
     group_label: "Financial Metrics"
