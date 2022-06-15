@@ -65,5 +65,17 @@ explore: inbound_outbound_kpi_report {
 
   }
 
+  join: top_5_category_inventory_change {
+
+    view_label: "* Top 5 Categories by Inventory Change Type Daily [Hub-Level] *"
+
+    type: left_outer
+    relationship: many_to_one
+    sql_on:
+          date(${top_5_category_inventory_change.inventory_change_date}) = date(${inventory_changes_daily.inventory_change_date})
+      and ${top_5_category_inventory_change.hub_code}                    = ${inventory_changes_daily.hub_code}
+      and ${top_5_category_inventory_change.category}                    = ${sku_hub_day_level_orders.category}
+    ;;
+  }
 
 }

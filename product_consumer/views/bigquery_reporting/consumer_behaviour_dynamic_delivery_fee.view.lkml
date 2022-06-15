@@ -192,6 +192,12 @@ view: consumer_behaviour_dynamic_delivery_fee {
     sql: ${TABLE}.platform ;;
   }
 
+  dimension: revenue {
+    type: number
+    hidden:  yes
+    sql: ${TABLE}.revenue ;;
+  }
+
   dimension: rider_tip_value {
     type: number
     sql: ${TABLE}.rider_tip_value ;;
@@ -317,14 +323,6 @@ view: consumer_behaviour_dynamic_delivery_fee {
 
   ######## Measures ########
 
-  measure: revenue {
-    group_label: "Financial Metrics"
-    label: "Revenue"
-    type: number
-    value_format_name: eur
-    sql: ${TABLE}.revenue ;;
-  }
-
   measure: revenue_avg {
     group_label: "Financial Metrics"
     label: "AVG Revenue"
@@ -371,6 +369,14 @@ view: consumer_behaviour_dynamic_delivery_fee {
     type: sum
     value_format_name: eur
     sql: ${TABLE}.revenue ;;
+  }
+
+  measure: orders_placed_cnt {
+    group_label: "Financial Metrics"
+    label: "Total Orders Placed"
+    type: count_distinct
+    value_format_name: decimal_0
+    sql: ${TABLE}.order_uuid ;;
   }
 
   measure: delivery_fee_avg {
@@ -485,4 +491,6 @@ view: consumer_behaviour_dynamic_delivery_fee {
     value_format_name: percent_1
     sql: ${order_placed_cnt} / NULLIF(${cart_viewed_cnt},0) ;;
   }
+
+
 }

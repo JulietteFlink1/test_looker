@@ -1,5 +1,5 @@
 view: user_attributes_daily_customer_lifecycle_aggregates {
-  sql_table_name: `flink-data-dev.sandbox_natalia.customer_lifecycle_aggregates`;;
+  sql_table_name: `flink-data-dev.sandbox_natalia.user_attributes_daily_user_aggregates`;;
   view_label: "Daily Events "
 
 
@@ -39,7 +39,7 @@ view: user_attributes_daily_customer_lifecycle_aggregates {
     group_label: "IDs"
     label: "customer_uuid_filled"
     type: string
-    sql: ${TABLE}.customer_uuid_filled ;;
+    sql: ${TABLE}.daily_unique_customer_uuid ;;
   }
 
   dimension: daily_user_uuid {
