@@ -27,9 +27,11 @@ explore: psp_settlement_details {
   always_filter: {
     filters: [
       psp_settlement_details.booking_date: "28 days ago for 28 days",
+      orders.order_date: "",
       psp_settlement_details.country_iso: "",
       psp_settlement_details.merchant_account: "",
-      psp_settlement_details.type: ""
+      psp_settlement_details.psp_reference: "",
+      psp_settlement_details.type: "",
     ]
   }
 
