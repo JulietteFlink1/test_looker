@@ -55,6 +55,11 @@ view: orderline {
     group_label: "> IDs"
   }
 
+  dimension: is_successful_order {
+    label: "Is Successful Order"
+    type: yesno
+    sql: ${TABLE}.is_successful_order ;;
+  }
 
 
   # =========  hidden   =========
