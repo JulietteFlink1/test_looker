@@ -17,6 +17,7 @@ view: dispatch_notifications {
       hub_code,
       sku,
       delivery_date,
+      estimated_delivery_timestamp,
       loaded_in_truck_timestamp_time,
       loaded_in_truck_timestamp_date,
       order_number,
@@ -113,6 +114,7 @@ view: dispatch_notifications {
     description: "Based on the Delivery Date, the Estimated Delivery Time considers the time as the delivery time, whenever firstly 2% of the DESADV have been inbounded in the hub.
     This rule is covered by the 100% inbounding initiative, that should ensure, all vendor delivery are inbounded immediately and all on the same day as the delivery"
     datatype: timestamp
+    type: date_time
     sql: ${TABLE}.estimated_delivery_timestamp ;;
   }
 

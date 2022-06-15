@@ -145,6 +145,17 @@ explore: vendor_performance {
     ;;
   }
 
+  join: hubs {
+
+    from:  hubs_ct
+    type: left_outer
+    relationship: many_to_one
+    sql_on: ${hubs.hub_code} = ${products_hub_assignment.hub_code} ;;
+    fields: [
+      hubs.city_manager
+    ]
+  }
+
   join: erp_product_hub_vendor_assignment_v2 {
 
     view_label: "* Global *"
