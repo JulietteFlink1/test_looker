@@ -248,16 +248,16 @@ view: employee_level_kpis {
     type: number
     label: "% Riding To Customer Time"
     description: "Riding to Customer Time / Riding Time (To Customer + Back To Hub) "
-    sql: ${TABLE}.number_of_riding_to_customer_time_minutes / nullif(${TABLE}.number_of_riding_to_customer_time_minutes + ${TABLE}.number_of_return_to_hub_time_minutes,0)  ;;
+    sql: sum(${TABLE}.number_of_riding_to_customer_time_minutes) / nullif(sum(${TABLE}.number_of_riding_to_customer_time_minutes + ${TABLE}.number_of_return_to_hub_time_minutes),0)  ;;
     value_format: "0%"
   }
 
   measure: pct_riding_back_to_hub_time {
     group_label: "* Logistics *"
     type: number
-    label: "% Riding Back To Hub"
+    label: "% Riding Back To Hub Time"
     description: "Riding Back to Hub Time / Riding Time (To Customer + Back To Hub) "
-    sql: ${TABLE}.number_of_return_to_hub_time_minutes / nullif(${TABLE}.number_of_riding_to_customer_time_minutes + ${TABLE}.number_of_return_to_hub_time_minutes,0)  ;;
+    sql: sum(${TABLE}.number_of_return_to_hub_time_minutes) / nullif(sum(${TABLE}.number_of_riding_to_customer_time_minutes + ${TABLE}.number_of_return_to_hub_time_minutes),0)  ;;
     value_format: "0%"
   }
 
@@ -305,7 +305,7 @@ view: employee_level_kpis {
     group_label: "* Shift related *"
     type: sum
     label: "# Early Punched-Out (min)"
-    description: "Number of Early Punch-Out Minutes"
+    description: "Number of Early Punch-Out Minutes where employee punch-out early before a shift ends e.g. a shift is scheduled to end at 10 pm but an employee punches at 09:45 will results in 15 minutes early punch-out"
     sql: ${TABLE}.number_of_end_early_minutes ;;
     value_format_name: decimal_1
   }
@@ -314,7 +314,7 @@ view: employee_level_kpis {
     group_label: "* Shift related *"
     type: sum
     label: "# Late Punched-Out (min)"
-    description: "Number of Late Punch-Out Minutes"
+    description: "Number of Late Punch-Out Minutes where employee punch-out late after a shift ends e.g. a shift is scheduled to end at 10 pm but an employee punches at 10:15 will results in 15 minutes late punch-out"
     sql: ${TABLE}.number_of_end_late_minutes ;;
     value_format_name: decimal_1
   }
@@ -323,7 +323,7 @@ view: employee_level_kpis {
     group_label: "* Shift related *"
     type: sum
     label: "# Early Punched-In (min)"
-    description: "Number of Early Punch-In Minutes"
+    description: "Number of Early Punch-In Minutes where employee punch-in early before a shift starts e.g. a shift is scheduled to start at 8 am but an employee punches at 7:45 will results in 15 minutes early punch-in"
     sql: ${TABLE}.number_of_start_early_minutes ;;
     value_format_name: decimal_1
   }
@@ -332,7 +332,7 @@ view: employee_level_kpis {
     group_label: "* Shift related *"
     type: sum
     label: "# Late Punched-In (min)"
-    description: "Number of Late Punch-In Minutes"
+    description: "Number of Late Punch-In Minutes where employee punch-in late after a shift starts e.g. a shift is scheduled to start  at 8 am but an employee punches at 8:15 will results in 15 minutes late punch-in"
     sql: ${TABLE}.number_of_start_late_minutes ;;
     value_format_name: decimal_1
   }

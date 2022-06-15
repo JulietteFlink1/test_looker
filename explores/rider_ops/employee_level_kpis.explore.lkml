@@ -5,7 +5,7 @@ explore: employee_level_kpis {
   group_label: "Rider Ops"
   view_label: "* Employee Level KPIs *"
   label: "Employee Level KPIs"
-  description: "Daily aggregation of shift and ops related kpis as well as employment info in per distinct hub employee and position"
+  description: "Daily aggregation of shift, ops and NPS related kpis as well as employment info in per distinct hub employee and position"
   hidden: no
 
 
