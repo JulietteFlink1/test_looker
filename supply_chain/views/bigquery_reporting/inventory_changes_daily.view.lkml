@@ -53,7 +53,7 @@ view: inventory_changes_daily {
     type: number
     sql: ${TABLE}.quantity_change ;;
     value_format_name: decimal_0
-    hidden: yes
+    hidden: no
   }
 
   dimension:is_outbound_waste {
@@ -189,7 +189,7 @@ view: inventory_changes_daily {
                   relate to wine, hard alcohol and tabac"
     group_label: "* Inventory Changes Daily *"
     type: sum
-    sql: abs(${quantity_change}) * ${price_gross};;
+    sql: ${quantity_change} * ${price_gross};;
     filters: [is_drug_waste: "Yes"]
     value_format_name: eur
   }
