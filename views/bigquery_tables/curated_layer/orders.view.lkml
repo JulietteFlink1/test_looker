@@ -1970,7 +1970,7 @@ view: orders {
       measure: sum_revenue_gross {
         group_label: "* Monetary Values *"
         label: "SUM Revenue (gross)"
-        description: "Sum of Revenue (GMV after subsidies) incl. VAT"
+        description: "Sum of Revenue (GMV after subsidies) incl. VAT. After deduction of discounts, tips and deposit."
         hidden:  no
         type: sum
         sql: ${total_gross_amount};;
