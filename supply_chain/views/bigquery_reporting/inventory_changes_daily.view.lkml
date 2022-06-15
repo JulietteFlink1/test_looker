@@ -72,6 +72,30 @@ view: inventory_changes_daily {
     hidden: no
   }
 
+  dimension: is_drug_waste {
+    label:       "Is Drug Waste"
+    description: "This flag is true for all direct or indirect waste reasons including inventory corrections (incl. e.g. product-damaged etc,) and too-good-to-go for parent categories that
+                  relate to wine, hard alcohol and tabac"
+    type: yesno
+    sql:
+
+    case
+      when
+
+      (    lower(${products.category}) like 'spirit%'
+        or lower(${products.category}) like 'tabak%'
+        or lower(${products.category}) like 'rauchen%'
+        or lower(${products.category}) like '%champagnes'
+        or lower(${products.category}) like 'wein%'
+        or lower(${products.category}) like 'wijn%'
+        )
+
+      and (${change_type} = 'correction' or ${change_reason} = 'too-good-to-go' )
+      then true
+      else false end ;;
+  }
+
+
 
   # =========  hidden   =========
   dimension: country_iso {
@@ -155,6 +179,18 @@ view: inventory_changes_daily {
     type: sum
     sql: abs(${quantity_change}) * ${price_gross};;
     filters: [is_outbound_waste: "Yes"]
+    value_format_name: eur
+  }
+
+  measure: sum_drug_waste_eur {
+    label:       "€ Drug Waste"
+    description: "This metric reflects the number of drug waste valued with the most recent product price as defined as: \n
+                  all direct or indirect waste reasons including inventory corrections (incl. e.g. product-damaged etc,) and too-good-to-go for parent categories that
+                  relate to wine, hard alcohol and tabac"
+    group_label: "* Inventory Changes Daily *"
+    type: sum
+    sql: abs(${quantity_change}) * ${price_gross};;
+    filters: [is_drug_waste: "Yes"]
     value_format_name: eur
   }
 
