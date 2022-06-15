@@ -27,7 +27,7 @@ view: product_feedback_cleaned {
   }
 
   dimension: stemmed_words {
-    label: "Root Keyword Product"
+    label: "Root Product Keyword"
     description: "This field reflects the root keyword that we use to match all the Product Name/Type/Category/etc. found in
                   multiple comments. E.g. Veg-- (Vegan/Veganz/Veggetarian)"
     group_label: "Feedback Comments"
@@ -37,7 +37,7 @@ view: product_feedback_cleaned {
   }
 
   dimension: word_matches {
-    label: "Keyword Product"
+    label: "Product Keyword"
     description: "This field reflects the Keyword (Product Name/Type/Category/etc.) we could identify from the comments
                   received from our customers (Since a Customer Comments is a free text field, we could receive
                   for example a long text with just one word that actually refers to a product"
