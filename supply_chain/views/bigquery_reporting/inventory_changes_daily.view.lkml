@@ -158,6 +158,8 @@ view: inventory_changes_daily {
     value_format_name: eur
   }
 
+  # ------- Sums of granular inventory movement metrics
+
   measure: sum_outbound_orders {
     label: "# Outbound (Orders)"
     description: "The number of inventory changes, that are based on customer orders"
@@ -168,6 +170,70 @@ view: inventory_changes_daily {
     value_format_name: decimal_0
   }
 
+  measure: sum_outbound_too_good_to_go {
+    label: "# Outbound (Too-Good-To-Go)"
+    description: "The number of outbounded items, that are due to donations to the app too-good-to-go."
+    group_label: "* Inventory Changes Daily *"
+    type: sum
+    sql: abs(${quantity_change}) ;;
+    filters: [change_reason: "too-good-to-go"]
+    value_format_name: decimal_0
+  }
+
+  measure: sum_correction_product_expired {
+    label: "# Correction (Product Expired)"
+    description: "The number of corrected items, that are due to expiration (too close to best-before-date) while storing them in our hubs."
+    group_label: "* Inventory Changes Daily *"
+    type: sum
+    sql: abs(${quantity_change}) ;;
+    filters: [change_reason: "product-expired"]
+    value_format_name: decimal_0
+  }
+
+  measure: sum_correction_product_delivery_expired {
+    label: "# Correction (Product Delivery Expired)"
+    description: "The number of corrected items, that are due to expiration (too close to best-before-date) when being delivered to our hubs."
+    group_label: "* Inventory Changes Daily *"
+    type: sum
+    sql: abs(${quantity_change}) ;;
+    filters: [change_reason: "product-delivery-expired"]
+    value_format_name: decimal_0
+  }
+
+  measure: sum_correction_product_delivery_damaged {
+    label: "# Correction (Product Delivery Damaged)"
+    description: "The number of corrected items, that are due to being damaged (too close to best-before-date) when being delivered to our hubs."
+    group_label: "* Inventory Changes Daily *"
+    type: sum
+    sql: abs(${quantity_change}) ;;
+    filters: [change_reason: "product-delivery-damaged"]
+    value_format_name: decimal_0
+  }
+
+  measure: sum_correction_product_damaged {
+    label: "# Correction (Product Damaged)"
+    description: "The number of corrected items, that are due to being damaged (too close to best-before-date) while storing them in our hubs."
+    group_label: "* Inventory Changes Daily *"
+    type: sum
+    sql: abs(${quantity_change}) ;;
+    filters: [change_reason: "product-damaged"]
+    value_format_name: decimal_0
+  }
+
+  measure: sum_correction_order_cancelled {
+    label: "# Correction (Order Cancelled)"
+    description: "The number of corrected items, that are due to being part of customers orders, that have been cancelled."
+    group_label: "* Inventory Changes Daily *"
+    type: sum
+    sql: abs(${quantity_change}) ;;
+    filters: [change_reason: "order-aborted, order-cancelled"]
+    value_format_name: decimal_0
+  }
+
+
+
+
+  # TODO: deprecate
   measure: sum_outbound_wrong_delivery {
     label: "# Outbound (Wrong Delivery)"
     description: "The number of inventory changes, that are based on wrong deliveries"
@@ -176,8 +242,10 @@ view: inventory_changes_daily {
     sql: abs(${quantity_change}) ;;
     filters: [change_reason: "wrong-delivery"]
     value_format_name: decimal_0
+    hidden: yes
   }
 
+  # TODO: deprecate
   measure: sum_inventory_correction {
     label: "# Inventory Correction"
     description: "The sum of inventory changes related to inventory corrections"
@@ -188,6 +256,9 @@ view: inventory_changes_daily {
     value_format_name: decimal_0
     hidden: yes
   }
+
+
+
 
   measure: sum_inbound_inventory {
     label: "# Inbound Inventory"

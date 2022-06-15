@@ -207,21 +207,38 @@ from  daily_events
   measure: users_with_native_ui_prompt_shown_order_tracking{
     type: count_distinct
     sql: ${TABLE}.anonymous_id ;;
-    filters: [native_ui_prompt_shown_order_tracking: "yes"]
+    filters: [order_placed: "yes", native_ui_prompt_shown_order_tracking: "yes"]
   }
 
   measure: users_with_native_ui_response_allow_order_tracking{
     type: count_distinct
     sql: ${TABLE}.anonymous_id ;;
-    filters: [native_ui_response_allow_order_tracking: "yes"]
+    filters: [order_placed: "yes", native_ui_response_allow_order_tracking: "yes"]
   }
 
   measure: users_with_native_ui_response_deny_order_tracking{
     type: count_distinct
     sql: ${TABLE}.anonymous_id ;;
-    filters: [native_ui_response_deny_order_tracking: "yes"]
+    filters: [order_placed: "yes", native_ui_response_deny_order_tracking: "yes"]
   }
 
+  measure: users_with_order_placed_push_primer {
+    type: count_distinct
+    sql: ${TABLE}.anonymous_id ;;
+    filters: [order_placed: "yes", notification_request_viewed: "yes"]
+  }
+
+  measure: users_with_order_placed_accept_primer {
+    type: count_distinct
+    sql: ${TABLE}.anonymous_id ;;
+    filters: [order_placed: "yes", notification_request_succeeded: "yes"]
+  }
+
+  measure: users_with_order_placed_postpone_primer {
+    type: count_distinct
+    sql: ${TABLE}.anonymous_id ;;
+    filters: [order_placed: "yes", notification_request_postponed: "yes"]
+  }
 
 
 }
