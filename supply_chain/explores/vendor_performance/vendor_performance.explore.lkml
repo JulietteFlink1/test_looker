@@ -31,7 +31,8 @@ explore: vendor_performance {
     vendor_performance_ndt_desadv_fill_rates*,
     products*,
     purchase_orders.main_fields*,
-    erp_product_hub_vendor_assignment_v2*
+    erp_product_hub_vendor_assignment_v2*,
+    hubs*
   ]
 
   sql_always_where: {% condition global_filters_and_parameters.datasource_filter %} ${products_hub_assignment.report_date} {% endcondition %} ;;
