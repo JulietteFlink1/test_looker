@@ -12,7 +12,7 @@ explore: psp_settlement_details {
   from: psp_settlement_details
   view_label: "* PSP Settlement Details *"
   group_label: "Finance"
-  description: "This Explore contains all data coming from the Settlement Details Report in Adyen starting from 2022-01-03. It is matched to order data through PSP reference."
+  description: "This Explore contains all data coming from Adyen's Settlement Details Report starting from 2022-01-03. It is matched to CT Order data through PSP reference."
 
   access_filter: {
     field: hubs.country_iso
@@ -26,7 +26,9 @@ explore: psp_settlement_details {
 
   always_filter: {
     filters: [
-      psp_settlement_details.booking_date: "last 28 complete days",
+      psp_settlement_details.booking_date: "28 days ago for 28 days",
+      psp_settlement_details.country_iso: "",
+      psp_settlement_details.merchant_account: "",
       psp_settlement_details.type: ""
     ]
   }
