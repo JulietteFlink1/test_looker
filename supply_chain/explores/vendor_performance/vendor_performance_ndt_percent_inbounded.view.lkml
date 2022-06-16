@@ -24,10 +24,6 @@ view: vendor_performance_ndt_percent_inbounded {
         ;;
       }
 
-      filters: {
-        field: inventory_changes.is_inbound
-        value: "Yes"
-      }
     }
   }
 
