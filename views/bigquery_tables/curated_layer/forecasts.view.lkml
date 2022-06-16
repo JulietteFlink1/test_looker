@@ -93,6 +93,63 @@ view: forecasts {
     hidden: yes
   }
 
+  # =========  Model names   =========
+  dimension: model_name_historical_forecasts {
+    group_label: "> Model Names"
+    label: "Model Name: Order Forecast"
+    type: string
+    sql: ${TABLE}.model_name_historical_forecasts ;;
+    hidden: no
+  }
+
+  dimension: model_name_headcount_forecasts {
+    group_label: "> Model Names"
+    label: "Model Name: Headcount Forecast"
+    type: string
+    sql: ${TABLE}.model_name_headcount_forecasts ;;
+    hidden: no
+  }
+
+  dimension: model_name_riders_needed {
+    group_label: "> Model Names"
+    label: "Model Name: Riders Needed"
+    type: string
+    sql: ${TABLE}.model_name_riders_needed ;;
+    hidden: no
+  }
+
+  dimension: model_name_pickers_needed {
+    group_label: "> Model Names"
+    label: "Model Name: Pickers Needed"
+    type: string
+    sql: ${TABLE}.model_name_pickers_needed ;;
+    hidden: no
+  }
+
+  dimension: model_name_rider_idleness {
+    group_label: "> Model Names"
+    label: "Model Name: Rider Idleness"
+    type: string
+    sql: ${TABLE}.model_name_rider_idleness ;;
+    hidden: no
+  }
+
+  dimension: model_name_picker_idleness {
+    group_label: "> Model Names"
+    label: "Model Name: Picker Idleness"
+    type: string
+    sql: ${TABLE}.model_name_picker_idleness ;;
+    hidden: no
+  }
+
+  dimension: model_name_order_handling_duration {
+    group_label: "> Model Names"
+    label: "Model Name: Order Handling Duration"
+    type: string
+    sql: ${TABLE}.model_name_order_handling_duration ;;
+    hidden: no
+  }
+
   # =========  Forecasted orders   =========
 
   dimension: number_of_forecasted_orders_lower_bound {
@@ -333,7 +390,7 @@ view: forecasts {
     sql: ${TABLE}.number_of_missed_orders ;;
   }
 
-##### Forecasted Hours
+  ##### Forecasted Hours
 
   # =========  Forecasted minutes   =========
 
@@ -367,6 +424,15 @@ view: forecasts {
     type: number
     sql: ${number_of_forecasted_minutes_picker}/60;;
     value_format_name: decimal_1
+  }
+  ##### Forecast errors
+
+  measure: wmape_orders {
+    group_label: "> Forecasting error"
+    label: "wMAPE Orders"
+    type: number
+    sql: abs(${number_of_forecasted_orders} - ${orders_with_ops_metrics.cnt_orders})/nullif(${orders_with_ops_metrics.cnt_orders}, 0);;
+    value_format_name: percent_0
   }
 
   # =========  Dynamic values   =========
