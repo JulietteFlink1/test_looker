@@ -113,6 +113,7 @@ view: dispatch_notifications {
     label:       "Estimated Delivery Time"
     description: "Based on the Delivery Date, the Estimated Delivery Time considers the time as the delivery time, whenever firstly 2% of the DESADV have been inbounded in the hub.
     This rule is covered by the 100% inbounding initiative, that should ensure, all vendor delivery are inbounded immediately and all on the same day as the delivery"
+    group_label: ">> Dates & Timestamps"
     datatype: timestamp
     type: date_time
     sql: ${TABLE}.estimated_delivery_timestamp ;;

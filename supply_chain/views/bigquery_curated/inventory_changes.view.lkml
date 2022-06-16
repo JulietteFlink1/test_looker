@@ -101,7 +101,7 @@ view: inventory_changes {
   dimension: sku {
     type: string
     sql: ${TABLE}.sku ;;
-    hidden: yes
+    hidden: no
   }
 
   dimension: user_id {
@@ -162,11 +162,22 @@ view: inventory_changes {
   measure: sum_outbound_waste_eur {
     label: "€ Outbound (Waste)"
     description: "The quantity '# Outbound (Waste)' multiplied by the latest product price (gross)"
-    group_label: "* Inventory Changes Daily *"
+
     type: sum
     sql: abs(${quantity_change}) * ${price_gross};;
     filters: [is_outbound_waste: "Yes"]
     value_format_name: eur
   }
+
+  measure: sum_inbound_inventory {
+    label: "# Inbound Inventory"
+    description: "The sum of inventory changes based on restockings"
+
+    type: sum
+    sql: abs(${quantity_change}) ;;
+    filters: [is_inbound: "Yes"]
+    value_format_name: decimal_0
+  }
+
 
 }

@@ -28,7 +28,9 @@ explore: vendor_performance {
     global_filters_and_parameters.datasource_filter,
     bulk_items.main_fields*, bulk_items.cross_referenced_fields*,
     inventory_changes_daily*,
+    inventory_changes*,
     vendor_performance_ndt_desadv_fill_rates*,
+    vendor_performance_ndt_percent_inbounded*,
     products*,
     purchase_orders.main_fields*,
     erp_product_hub_vendor_assignment_v2*,
@@ -97,6 +99,25 @@ explore: vendor_performance {
     ]
   }
 
+  join: inventory_changes {
+
+    type: left_outer
+    relationship: one_to_many
+    sql_on:
+            ${inventory_changes.inventory_change_timestamp_date} = ${products_hub_assignment.report_date}
+        and ${inventory_changes.hub_code}                        = ${products_hub_assignment.hub_code}
+        and ${inventory_changes.sku}                             = ${products_hub_assignment.sku}
+        and {% condition global_filters_and_parameters.datasource_filter %} ${inventory_changes.inventory_change_timestamp_date} {% endcondition %}
+    ;;
+
+    fields: [
+      inventory_changes.inventory_change_timestamp_time,
+      inventory_changes.is_inbound,
+      inventory_changes.sum_inbound_inventory,
+      inventory_changes.sku
+    ]
+  }
+
   join: vendor_performance_ndt_desadv_fill_rates {
 
     view_label: "* DESADVs *"
@@ -108,6 +129,19 @@ explore: vendor_performance {
     fields: [
       vendor_performance_ndt_desadv_fill_rates.is_desadv_inbounded_po_corrected
     ]
+  }
+
+  join: vendor_performance_ndt_percent_inbounded {
+
+    view_label: "* DESADVs *"
+
+    type: left_outer
+    relationship: one_to_many
+    sql_on:
+          ${vendor_performance_ndt_percent_inbounded.dispatch_notification_id} = ${bulk_items.dispatch_notification_id}
+      and ${vendor_performance_ndt_percent_inbounded.sku_desadv} = ${bulk_items.sku}
+      and {% condition global_filters_and_parameters.datasource_filter %} date(${vendor_performance_ndt_percent_inbounded.estimated_delivery_timestamp}) {% endcondition %}
+    ;;
   }
 
   join: products {

@@ -1521,6 +1521,7 @@ view: staffing {
     type: string
     sql: ${TABLE}.staffing_uuid ;;
     hidden: yes
+    primary_key: yes
   }
 
   dimension_group: start_timestamp {
@@ -2094,7 +2095,7 @@ view: staffing {
     group_label: "> Picker Measures"
     label: "# Scheduled Picker Hours"
     type: number
-    sql_distinct_key: ${staffing_uuid} ;;
+    # sql_distinct_key: ${staffing_uuid} ;;
     sql: ${number_of_unassigned_hours_picker}+${number_of_planned_hours_picker};;
     value_format_name: decimal_1
   }
@@ -2125,7 +2126,7 @@ view: staffing {
     group_label: "> WH Measures"
     label: "# Scheduled WH Employee Hours"
     type: number
-    sql_distinct_key: ${staffing_uuid} ;;
+    # sql_distinct_key: ${staffing_uuid} ;;
     sql: ${number_of_unassigned_hours_wh}+${number_of_planned_hours_wh};;
     value_format_name: decimal_1
   }
@@ -2350,14 +2351,14 @@ view: staffing {
     sql: ${number_of_no_show_minutes_external_wh}/60;;
     value_format_name: decimal_1
   }
-  measure: number_of_no_show_hours_external_hub_staff {
-    group_label: "> Hub Staff Measures"
-    label: "# External No Show Hub Staff Hours"
-    type: sum_distinct
-    sql_distinct_key: ${staffing_uuid} ;;
-    sql: ${number_of_no_show_hours_picker}+${number_of_no_show_hours_wh};;
-    value_format_name: decimal_1
-  }
+  # measure: number_of_no_show_hours_external_hub_staff {
+  #   group_label: "> Hub Staff Measures"
+  #   label: "# External No Show Hub Staff Hours"
+  #   type: sum_distinct
+  #   # sql_distinct_key: ${staffing_uuid} ;;
+  #   sql: ${number_of_no_show_hours_picker}+${number_of_no_show_hours_wh};;
+  #   value_format_name: decimal_1
+  # }
 
 
   # =========  No Show %   =========
