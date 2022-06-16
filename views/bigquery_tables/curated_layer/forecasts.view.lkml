@@ -102,11 +102,20 @@ view: forecasts {
     hidden: no
   }
 
-  dimension: model_name_headcount_forecasts {
+  dimension: model_name_headcount_riders_forecasts {
+    alias: [model_name_headcount_forecasts]
     group_label: "> Model Names"
-    label: "Model Name: Headcount Forecast"
+    label: "Model Name: Headcount Forecast (Riders)"
     type: string
-    sql: ${TABLE}.model_name_headcount_forecasts ;;
+    sql: ${TABLE}.model_name_headcount_riders_forecasts ;;
+    hidden: no
+  }
+
+  dimension: model_name_headcount_pickers_forecasts {
+    group_label: "> Model Names"
+    label: "Model Name: Headcount Forecast (Pickers)"
+    type: string
+    sql: ${TABLE}.model_name_headcount_pickers_forecasts ;;
     hidden: no
   }
 
