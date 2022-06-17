@@ -30,7 +30,8 @@ explore: vendor_performance {
     inventory_changes_daily*,
     inventory_changes*,
     vendor_performance_ndt_desadv_fill_rates*,
-    vendor_performance_ndt_percent_inbounded*,
+    vendor_performance_ndt_inbounded_skus*,
+  #  vendor_performance_ndt_percent_inbounded*,
     products*,
     purchase_orders.main_fields*,
     erp_product_hub_vendor_assignment_v2*,
@@ -112,6 +113,8 @@ explore: vendor_performance {
 
     fields: [
       inventory_changes.inventory_change_timestamp_time,
+      inventory_changes.max_inbounding_time,
+      inventory_changes.min_inbounding_time,
       inventory_changes.is_inbound,
       inventory_changes.sum_inbound_inventory,
       inventory_changes.sku
@@ -126,23 +129,32 @@ explore: vendor_performance {
     relationship: many_to_one
     sql_on: ${vendor_performance_ndt_desadv_fill_rates.dispatch_notification_id} =  ${bulk_items.dispatch_notification_id};;
 
-    fields: [
-      vendor_performance_ndt_desadv_fill_rates.is_desadv_inbounded_po_corrected
-    ]
   }
 
-  join: vendor_performance_ndt_percent_inbounded {
+  join: vendor_performance_ndt_inbounded_skus {
 
     view_label: "* DESADVs *"
 
     type: left_outer
-    relationship: one_to_many
+    relationship: one_to_one
     sql_on:
-          ${vendor_performance_ndt_percent_inbounded.dispatch_notification_id} = ${bulk_items.dispatch_notification_id}
-      and ${vendor_performance_ndt_percent_inbounded.sku_desadv} = ${bulk_items.sku}
-      and {% condition global_filters_and_parameters.datasource_filter %} date(${vendor_performance_ndt_percent_inbounded.estimated_delivery_timestamp}) {% endcondition %}
+            ${vendor_performance_ndt_inbounded_skus.dispatch_notification_id} = ${bulk_items.dispatch_notification_id}
+        and ${vendor_performance_ndt_inbounded_skus.sku} = ${bulk_items.sku}
     ;;
   }
+
+  # join: vendor_performance_ndt_percent_inbounded {
+
+  #   view_label: "* DESADVs *"
+
+  #   type: left_outer
+  #   relationship: one_to_many
+  #   sql_on:
+  #         ${vendor_performance_ndt_percent_inbounded.dispatch_notification_id} = ${bulk_items.dispatch_notification_id}
+  #     and ${vendor_performance_ndt_percent_inbounded.sku_desadv} = ${bulk_items.sku}
+  #     and {% condition global_filters_and_parameters.datasource_filter %} date(${vendor_performance_ndt_percent_inbounded.estimated_delivery_timestamp}) {% endcondition %}
+  #   ;;
+  # }
 
   join: products {
 

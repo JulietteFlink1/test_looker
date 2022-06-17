@@ -24,9 +24,13 @@ explore: daily_picker_events {
     user_attribute: country_iso
   }
 
+sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} ${event_timestamp_date} {% endcondition %};;
+
   always_filter: {
     filters: [
-      global_filters_and_parameters.datasource_filter: "last 7 days"
+      global_filters_and_parameters.datasource_filter: "last 7 days",
+      daily_picker_events.country_iso: "",
+      daily_picker_events.hub_code: ""
     ]
   }
 

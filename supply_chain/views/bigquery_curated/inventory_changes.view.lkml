@@ -179,5 +179,25 @@ view: inventory_changes {
     value_format_name: decimal_0
   }
 
+  measure: max_inbounding_time {
+    label: "MAX Inbound Time"
+    description: "The last timestamp, the SKU was inbounded given the dimension choosen in a Look"
+    group_label: "> Special Use Cases"
+
+    type: date_time
+    datatype: timestamp
+    sql: MAX(${TABLE}.inventory_change_timestamp) ;;
+  }
+
+  measure: min_inbounding_time {
+    label: "MIN Inbound Time"
+    description: "The first timestamp, the SKU was inbounded given the dimension choosen in a Look"
+    group_label: "> Special Use Cases"
+
+    type: date_time
+    datatype: timestamp
+    sql: MAX(${TABLE}.inventory_change_timestamp) ;;
+  }
+
 
 }

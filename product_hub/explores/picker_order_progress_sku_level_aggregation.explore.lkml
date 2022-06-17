@@ -9,6 +9,7 @@
 
 include: "/product_hub/views/picker_order_progress_sku_aggregates.view.lkml"
 include: "/**/global_filters_and_parameters.view.lkml"
+include: "/product_hub/views/picker_order_times.view.lkml"
 
 explore: picker_order_progress_sku_level_aggregation {
   view_name: picker_order_progress_sku_aggregates
@@ -39,6 +40,12 @@ explore: picker_order_progress_sku_level_aggregation {
 
   join: global_filters_and_parameters {
     sql_on: ${global_filters_and_parameters.generic_join_dim} = TRUE ;;
+    type: left_outer
+    relationship: many_to_one
+  }
+
+  join: picker_order_times {
+    sql_on: ${picker_order_times.order_id} = ${picker_order_progress_sku_aggregates.order_id} ;;
     type: left_outer
     relationship: many_to_one
   }

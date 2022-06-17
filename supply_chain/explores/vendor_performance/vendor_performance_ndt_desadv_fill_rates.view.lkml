@@ -20,30 +20,30 @@ view: vendor_performance_ndt_desadv_fill_rates {
 
   dimension: sum_total_quantity {
 
-    label:       "SUM Selling Units derived from PO"
+    label:       "SUM Selling Units ((per DESADV))"
     description: "The sum of all products of the DESADV multiplied by the selling units derived from the latest purchase order containing the given SKU in a given hub"
     group_label: "DESADV aggregated"
 
     value_format: "#,##0"
     type: number
-    hidden: yes
+    hidden: no
   }
 
   dimension: sum_inbound_inventory {
 
-    label: "SUM Inbounded DESADV Units"
+    label: "SUM Inbounded DESADV Units (per DESADV)"
     description: "The sum of inventory changes based on restockings"
     group_label: "DESADV aggregated"
 
     value_format: "#,##0"
     type: number
-    hidden: yes
+    hidden: no
   }
 
 
   dimension: desadv_fill_rate_po_corrected  {
 
-    label:       "% DESADV inbounded"
+    label:       "% DESADV inbounded (per DESADV)"
     description: "The percent of selling units (as defined in the latest purchase order of a given SKU in a given hub) of a dispatch notification that are actually been inbounded"
     group_label: "DESADV aggregated"
 
@@ -51,7 +51,7 @@ view: vendor_performance_ndt_desadv_fill_rates {
     type: number
 
     value_format_name: percent_1
-    hidden: yes
+    hidden: no
   }
 
   dimension: is_desadv_inbounded_po_corrected {
