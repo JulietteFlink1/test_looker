@@ -16,7 +16,7 @@ view: replenishment_purchase_orders {
 
   set: cross_references_inventory_changes_daily {
     fields: [
-
+      pct_order_inbounded
     ]
   }
 
@@ -40,7 +40,6 @@ view: replenishment_purchase_orders {
       avg_items_per_order,
       cnt_of_orders,
       cnt_of_skus_per_order,
-      pct_order_inbounded
     ]
 
   }
@@ -224,17 +223,9 @@ view: replenishment_purchase_orders {
 
   }
 
-  dimension: selling_unit_quantity {
 
-    label:       "Quantity Selling Unit"
-    description: "The amount of ordered items"
-    group_label: " >> Line Item Data"
 
-    type: number
-    # sql: ${TABLE}.selling_unit_quantity ;;
-    sql: safe_cast(${TABLE}.selling_unit_quantity as int64) ;;
 
-  }
 
   dimension: handling_unit_quantity {
 
@@ -243,7 +234,19 @@ view: replenishment_purchase_orders {
     group_label: " >> Line Item Data"
 
     type: number
-    sql: ${TABLE}.handling_unit_quantity ;;
+    sql: safe_cast(${TABLE}.handling_unit_quantity as numeric) ;;
+  }
+
+  dimension: selling_unit_quantity {
+
+    label:       "Quantity Selling Unit"
+    description: "The amount of ordered items"
+    group_label: " >> Line Item Data"
+
+    type: number
+    # sql: ${TABLE}.selling_unit_quantity ;;
+    sql: safe_cast(${TABLE}.selling_unit_quantity as numeric) ;;
+
   }
 
 
@@ -280,8 +283,8 @@ view: replenishment_purchase_orders {
     description: "Order Number for orders placed by Flink to it's suppliers"
     group_label: " >> IDs "
 
-    type: number
-    sql: ${TABLE}.order_number ;;
+    type: string
+    sql: safe_cast(${TABLE}.order_number as string) ;;
   }
 
   dimension: flink_buyer_id {
@@ -309,23 +312,23 @@ view: replenishment_purchase_orders {
 
   measure: sum_selling_unit_quantity {
 
-    label:       "# Quantity Selling Unit"
+    label:       "# Quantity Selling Units (PO)"
     description: "The amount of ordered items"
 
 
     type: sum
-    sql: safe_cast(${TABLE}.selling_unit_quantity as int64) ;;
+    sql: ${selling_unit_quantity} ;;
 
   }
 
   measure: sum_handling_unit_quantity {
 
-    label:       "# Quantity Handling Unit"
+    label:       "# Quantity Handling Units (PO)"
     description: "The amount of ordered handling units"
 
 
     type: sum
-    sql: safe_cast(${TABLE}.handling_unit_quantity as numeric) ;;
+    sql: ${handling_unit_quantity} ;;
   }
 
   measure: pct_order_inbounded {
@@ -337,7 +340,6 @@ view: replenishment_purchase_orders {
     sql: ${inventory_changes_daily.sum_inbound_inventory} / nullif(${sum_selling_unit_quantity} ,0) ;;
 
     value_format_name: percent_1
-
     # html:
 
     #   {% if show_info._parameter_value == 'yes' %}
@@ -347,6 +349,7 @@ view: replenishment_purchase_orders {
     #   {% endif %}
     #     ;;
   }
+
 
   measure: cnt_of_orders {
 

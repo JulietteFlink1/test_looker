@@ -275,7 +275,7 @@ view: dispatch_notifications {
 
   measure: sum_handling_units_count {
 
-    label:       "# Handling Units"
+    label:       "# Quantity Handling Units (DESADV)"
     description: "THe sum of handling units for items defined per dispatch notification"
 
     type: sum
@@ -286,7 +286,7 @@ view: dispatch_notifications {
 
   measure: avg_number_of_bulks_per_dispatch_notification {
 
-    label:       "AVG Bulks per dispatch notification"
+    label:       "AVG Bulks per dispatch notification (DESADV)"
     description: "This field defines, how many bulks were contained in a specific dispatch notification"
     group_label: "Special Use Cases"
 
@@ -298,7 +298,7 @@ view: dispatch_notifications {
 
   measure: sum_total_quantity {
 
-    label:       "# Selling Units"
+    label:       "# Quantity Selling Units (DESADV)"
     description: "The sum of all product quantities listed on the DESADV (selling units)"
 
     type: sum
@@ -320,7 +320,7 @@ view: dispatch_notifications {
 
   measure: sum_number_of_bulks {
 
-    label:       "# Bulks"
+    label:       "# Bulks (DESADV)"
     description: "The total number of bulks"
     group_label: "Special Use Cases"
 
@@ -356,7 +356,7 @@ view: dispatch_notifications {
 
   measure: sum_number_of_dispatch_notifications {
 
-    label:       "# Dispatch Notifications"
+    label:       "# Dispatch Notifications (DESADV)"
     description: "The total number of dispatch notifications"
     group_label: "Special Use Cases"
 
