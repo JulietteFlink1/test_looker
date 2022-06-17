@@ -416,6 +416,7 @@ view: inventory_changes_daily {
       sum_outbound_waste,
       sum_outbound_orders,
       sum_outbound_wrong_delivery,
+      sum_outbound_too_good_to_go,
       is_inbound,
       is_outbound_waste,
       change_reason
