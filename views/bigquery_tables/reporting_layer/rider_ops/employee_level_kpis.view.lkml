@@ -273,14 +273,14 @@ view: employee_level_kpis {
 
   measure: last_worked_date {
     group_label: "* Shift related *"
-    datatype: date
+    type: date
     description: "Date of the last worked/punched shift"
     sql: max(case when ${TABLE}.number_of_worked_minutes > 0 then ${TABLE}.shift_date end);;
   }
 
   measure: first_worked_date {
     group_label: "* Shift related *"
-    datatype: date
+    type: date
     description: "Date of the first worked/punched shift"
     sql: min(case when ${TABLE}.number_of_worked_minutes > 0 then ${TABLE}.shift_date end);;
   }

@@ -234,17 +234,18 @@ view: hub_staffing {
     type: time
     timeframes: [
       raw,
+      time,
+      minute30,
+      hour_of_day,
+      time_of_day,
       date,
-      day_of_week,
-      day_of_week_index,
       week,
       month,
       quarter,
       year
     ]
+    sql: ${TABLE}.block_starts_at_timestamp ;;
     convert_tz: yes
-    datatype: date
-    sql: ${block_starts_at_timestamp_date} ;;
   }
 
   dimension: staffing_uuid {
