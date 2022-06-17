@@ -33,7 +33,7 @@ explore: vendor_performance {
     vendor_performance_ndt_inbounded_skus*,
   #  vendor_performance_ndt_percent_inbounded*,
     products*,
-    purchase_orders.main_fields*,
+    purchase_orders.main_fields*, purchase_orders.cross_references_inventory_changes_daily*,
     erp_product_hub_vendor_assignment_v2*,
     hubs*
   ]
