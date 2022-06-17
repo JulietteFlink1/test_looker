@@ -101,7 +101,7 @@ view: inventory_changes {
   dimension: sku {
     type: string
     sql: ${TABLE}.sku ;;
-    hidden: yes
+    hidden: no
   }
 
   dimension: user_id {
@@ -120,8 +120,15 @@ view: inventory_changes {
     label: "Is Outbound (Waste)"
     description: "Boolean - indicates, if a inventory change is based on waste - determined by the reasons 'product-damaged', 'product-expired' or 'too-good-to-go'"
     type: yesno
-    sql: case when ${change_reason} in ('product-damaged', 'product-expired', 'too-good-to-go') then true else false end ;;
+    sql: ${TABLE}.is_outbound_waste ;;
 
+  }
+
+  dimension: is_inbound {
+    type: yesno
+    # sql: case when ${change_type} in ('inbound', 'inbound-bulk') then true else false end ;;
+    sql: ${TABLE}.is_inbound ;;
+    hidden: no
   }
 
   dimension: price_gross {
@@ -155,11 +162,42 @@ view: inventory_changes {
   measure: sum_outbound_waste_eur {
     label: "€ Outbound (Waste)"
     description: "The quantity '# Outbound (Waste)' multiplied by the latest product price (gross)"
-    group_label: "* Inventory Changes Daily *"
+
     type: sum
     sql: abs(${quantity_change}) * ${price_gross};;
     filters: [is_outbound_waste: "Yes"]
     value_format_name: eur
   }
+
+  measure: sum_inbound_inventory {
+    label: "# Inbound Inventory"
+    description: "The sum of inventory changes based on restockings"
+
+    type: sum
+    sql: abs(${quantity_change}) ;;
+    filters: [is_inbound: "Yes"]
+    value_format_name: decimal_0
+  }
+
+  measure: max_inbounding_time {
+    label: "MAX Inbound Time"
+    description: "The last timestamp, the SKU was inbounded given the dimension choosen in a Look"
+    group_label: "> Special Use Cases"
+
+    type: date_time
+    datatype: timestamp
+    sql: MAX(${TABLE}.inventory_change_timestamp) ;;
+  }
+
+  measure: min_inbounding_time {
+    label: "MIN Inbound Time"
+    description: "The first timestamp, the SKU was inbounded given the dimension choosen in a Look"
+    group_label: "> Special Use Cases"
+
+    type: date_time
+    datatype: timestamp
+    sql: MAX(${TABLE}.inventory_change_timestamp) ;;
+  }
+
 
 }

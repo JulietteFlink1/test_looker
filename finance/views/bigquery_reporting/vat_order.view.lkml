@@ -1,7 +1,7 @@
 view: vat_order {
   derived_table: {
     sql:select * from `flink-data-prod.reporting.vat_order`
-    ;;
+      ;;
   }
 
   measure: count {
@@ -408,6 +408,79 @@ view: vat_order {
     sql: ${TABLE}.vat_discount_amount_total ;;
   }
 
+  ########### Product Discounts
+
+  dimension: discount_products_amount_net {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.discount_products_amount_net ;;
+  }
+
+  dimension: discount_products_amount_gross {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.discount_products_amount_gross ;;
+  }
+
+  dimension: discount_products_amount_reduced_net {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.discount_products_amount_reduced_net ;;
+  }
+
+  dimension: discount_products_amount_reduced_gross {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.discount_products_amount_reduced_gross ;;
+  }
+
+  dimension: discount_products_amount_special_net {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.discount_products_amount_special_net ;;
+  }
+
+  dimension: discount_products_amount_special_gross {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.discount_products_amount_special_gross ;;
+  }
+
+  dimension: discount_products_amount_standard_gross {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.discount_products_amount_standard_gross ;;
+  }
+
+  dimension: discount_products_amount_standard_net {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.discount_products_amount_standard_net ;;
+  }
+
+  dimension: vat_discount_products_amount_reduced {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.vat_discount_products_amount_reduced ;;
+  }
+
+  dimension: vat_discount_products_amount_special {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.vat_discount_products_amount_special ;;
+  }
+
+  dimension: vat_discount_products_amount_standard {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.vat_discount_products_amount_standard ;;
+  }
+
+  dimension: vat_discount_products_amount_total {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.vat_discount_products_amount ;;
+  }
   ############### REFUNDS #############
 
   dimension: refund_amount_net {
@@ -539,6 +612,7 @@ view: vat_order {
 
   measure: sum_items_price_gross {
     group_label: "* Items *"
+    description: "SUM of Items Price incl. VAT before deduction of Product and Cart Discounts"
     type: sum
     value_format: "#,##0.00€"
     sql: ${items_price_gross} ;;
@@ -546,12 +620,14 @@ view: vat_order {
 
   measure: sum_items_price_reduced_gross {
     group_label: "* Items *"
+    description: "SUM of Items Price with Reduced tax rate incl.VAT before deduction of Product and Cart Discounts"
     type: sum
     value_format: "#,##0.00€"
     sql: ${items_price_reduced_gross} ;;
   }
 
   measure: sum_items_price_reduced_net {
+    description: "SUM of Items Price with Reduced tax rate excl. VAT before deduction of Product and Cart Discounts"
     group_label: "* Items *"
     type: sum
     value_format: "#,##0.00€"
@@ -559,6 +635,7 @@ view: vat_order {
   }
 
   measure: sum_items_price_special_gross {
+    description: "SUM of Items Price with Special tax rate incl.VAT before deduction of Product and Cart Discounts"
     group_label: "* Items *"
     type: sum
     value_format: "#,##0.00€"
@@ -567,12 +644,14 @@ view: vat_order {
 
   measure: sum_items_price_special_net {
     group_label: "* Items *"
+    description: "SUM of Items Price with Special tax rate excl. VAT before deduction of Product and Cart Discounts"
     type: sum
     value_format: "#,##0.00€"
     sql: ${items_price_special_net} ;;
   }
 
   measure: sum_items_price_standard_gross {
+    description: "SUM of Items Price with Standard tax rate incl.VAT before deduction of Product and Cart Discounts"
     group_label: "* Items *"
     type: sum
     value_format: "#,##0.00€"
@@ -580,6 +659,7 @@ view: vat_order {
   }
 
   measure: sum_items_price_standard_net {
+    description: "SUM of Items Price with Standard tax rate excl. VAT before deduction of Product and Cart Discounts"
     group_label: "* Items *"
     type: sum
     value_format: "#,##0.00€"
@@ -588,6 +668,7 @@ view: vat_order {
 
   measure: sum_vat_items_reduced {
     group_label: "* Items *"
+    description: "SUM Items Price Reduced Gross - SUM Items Price Reduced Net"
     type: sum
     value_format: "#,##0.00€"
     sql: ${vat_items_reduced} ;;
@@ -595,6 +676,7 @@ view: vat_order {
 
   measure: sum_vat_items_special {
     group_label: "* Items *"
+    description: "SUM Items Price Special Gross - SUM Items Price Special Net"
     type: sum
     value_format: "#,##0.00€"
     sql: ${vat_items_special} ;;
@@ -602,6 +684,7 @@ view: vat_order {
 
   measure: sum_vat_items_standard {
     group_label: "* Items *"
+    description: "SUM Items Price Standard Gross - SUM Items Price Standard Net"
     type: sum
     value_format: "#,##0.00€"
     sql: ${vat_items_standard} ;;
@@ -609,6 +692,7 @@ view: vat_order {
 
   measure: sum_vat_items_total {
     group_label: "* Items *"
+    description: "SUM Items Price Gross - SUM Items Price Net"
     type: sum
     value_format: "#,##0.00€"
     sql: ${vat_items_total} ;;
@@ -704,11 +788,12 @@ view: vat_order {
   }
 
 
-    ##################### Discounts  ##########################
+  ##################### Discounts  ##########################
 
 
   measure: sum_discount_amount_net {
     group_label: "* Discounts *"
+    description: "Include all Cart Discounts and Product Discounts"
     type: sum
     value_format: "#,##0.00€"
     sql: ${discount_amount_net} ;;
@@ -716,6 +801,7 @@ view: vat_order {
 
   measure: sum_discount_amount_gross {
     group_label: "* Discounts *"
+    description: "Include all Cart Discounts and Product Discounts"
     type: sum
     value_format: "#,##0.00€"
     sql: ${discount_amount_gross} ;;
@@ -724,6 +810,7 @@ view: vat_order {
 
   measure: sum_discount_amount_reduced_net {
     group_label: "* Discounts *"
+    description: "Include all Cart Discounts and Product Discounts"
     type: sum
     value_format: "#,##0.00€"
     sql: ${discount_amount_reduced_net} ;;
@@ -731,12 +818,14 @@ view: vat_order {
 
   measure: sum_discount_amount_standard_net {
     group_label: "* Discounts *"
+    description: "Include all Cart Discounts and Product Discounts"
     type: sum
     value_format: "#,##0.00€"
     sql: ${discount_amount_standard_net} ;;
   }
 
   measure: sum_discount_amount_special_net {
+    description: "Include all Cart Discounts and Product Discounts"
     group_label: "* Discounts *"
     type: sum
     value_format: "#,##0.00€"
@@ -744,6 +833,7 @@ view: vat_order {
   }
 
   measure: sum_discount_amount_reduced_gross {
+    description: "Include all Cart Discounts and Product Discounts"
     group_label: "* Discounts *"
     type: sum
     value_format: "#,##0.00€"
@@ -751,6 +841,7 @@ view: vat_order {
   }
 
   measure: sum_discount_amount_special_gross {
+    description: "Include all Cart Discounts and Product Discounts"
     group_label: "* Discounts *"
     type: sum
     value_format: "#,##0.00€"
@@ -758,6 +849,7 @@ view: vat_order {
   }
 
   measure: sum_discount_amount_standard_gross {
+    description: "Include all Cart Discounts and Product Discounts"
     group_label: "* Discounts *"
     type: sum
     value_format: "#,##0.00€"
@@ -765,6 +857,7 @@ view: vat_order {
   }
 
   measure: sum_vat_discount_amount_reduced {
+    description: "Include all Cart Discounts and Product Discounts"
     group_label: "* Discounts *"
     type: sum
     value_format: "#,##0.00€"
@@ -772,6 +865,7 @@ view: vat_order {
   }
 
   measure: sum_vat_discount_amount_standard {
+    description: "Include all Cart Discounts and Product Discounts"
     group_label: "* Discounts *"
     type: sum
     value_format: "#,##0.00€"
@@ -779,6 +873,7 @@ view: vat_order {
   }
 
   measure: sum_vat_discount_amount_special {
+    description: "Include all Cart Discounts and Product Discounts"
     group_label: "* Discounts *"
     type: sum
     value_format: "#,##0.00€"
@@ -786,6 +881,7 @@ view: vat_order {
   }
 
   measure: sum_vat_discount_amount_total {
+    description: "Include all Cart Discounts and Product Discounts"
     group_label: "* Discounts *"
     type: sum
     value_format: "#,##0.00€"
@@ -793,6 +889,7 @@ view: vat_order {
   }
 
   measure: sum_discount_amount_free_delivery_gross {
+    description: "Include all Cart Discounts and Product Discounts"
     group_label: "* Discounts *"
     value_format: "#,##0.00€"
     type: sum
@@ -801,8 +898,95 @@ view: vat_order {
   }
 
 
+  ################## Product Discounts
 
-    #####################  Refunds  ##########################
+  measure: sum_discount_products_amount_net {
+    group_label: "* Product Discounts *"
+    type: sum
+    value_format: "#,##0.00€"
+    sql: ${discount_products_amount_net} ;;
+  }
+
+  measure: sum_discount_products_amount_gross {
+    group_label: "* Product Discounts *"
+    type: sum
+    value_format: "#,##0.00€"
+    sql: ${discount_products_amount_gross} ;;
+  }
+
+
+  measure: sum_discount_products_amount_reduced_net {
+    group_label: "* Product Discounts *"
+    type: sum
+    value_format: "#,##0.00€"
+    sql: ${discount_products_amount_reduced_net} ;;
+  }
+
+  measure: sum_discount_products_amount_standard_net {
+    group_label: "* Product Discounts *"
+    type: sum
+    value_format: "#,##0.00€"
+    sql: ${discount_products_amount_standard_net} ;;
+  }
+
+  measure: sum_discount_products_amount_special_net {
+    group_label: "* Product Discounts *"
+    type: sum
+    value_format: "#,##0.00€"
+    sql: ${discount_products_amount_special_net} ;;
+  }
+
+  measure: sum_discount_products_amount_reduced_gross {
+    group_label: "* Product Discounts *"
+    type: sum
+    value_format: "#,##0.00€"
+    sql: ${discount_products_amount_reduced_gross} ;;
+  }
+
+  measure: sum_discount_products_amount_special_gross {
+    group_label: "* Product Discounts *"
+    type: sum
+    value_format: "#,##0.00€"
+    sql: ${discount_products_amount_special_gross} ;;
+  }
+
+  measure: sum_discount_products_amount_standard_gross {
+    group_label: "* Product Discounts *"
+    type: sum
+    value_format: "#,##0.00€"
+    sql: ${discount_products_amount_standard_gross} ;;
+  }
+
+  measure: sum_vat_discount_products_amount_reduced {
+    group_label: "* Product Discounts *"
+    type: sum
+    value_format: "#,##0.00€"
+    sql: ${vat_discount_products_amount_reduced} ;;
+  }
+
+  measure: sum_vat_discount_products_amount_standard {
+    group_label: "* Product Discounts *"
+    type: sum
+    value_format: "#,##0.00€"
+    sql: ${vat_discount_products_amount_standard} ;;
+  }
+
+  measure: sum_vat_discount_products_amount_special {
+    group_label: "* Product Discounts *"
+    type: sum
+    value_format: "#,##0.00€"
+    sql: ${vat_discount_products_amount_special} ;;
+  }
+
+  measure: sum_vat_discount_products_amount_total {
+    group_label: "* Product Discounts *"
+    type: sum
+    value_format: "#,##0.00€"
+    sql: ${vat_discount_products_amount_total} ;;
+  }
+
+
+  #####################  Refunds  ##########################
 
 
   measure: sum_refund_amount_net {
@@ -890,11 +1074,12 @@ view: vat_order {
   }
 
 
-    #####################  Total VAT  ##########################
+  #####################  Total VAT  ##########################
 
   measure: sum_total_gross {
     group_label: "* Total *"
     type: sum
+    label: "Gross Revenue after Refunds & Discounts deduction"
     description: "Items Gross + DF Gross - Discounts Gross - Refunds Gross"
     value_format: "#,##0.00€"
     sql: ${total_gross} ;;
@@ -903,6 +1088,7 @@ view: vat_order {
   measure: sum_total_net {
     group_label: "* Total *"
     type: sum
+    label: "Net Revenue after Refunds & Discounts deduction"
     description: "Items Net + DF Net - Discounts Net - Refunds Net"
     value_format: "#,##0.00€"
     sql: ${total_net} ;;
@@ -911,7 +1097,7 @@ view: vat_order {
   measure: sum_total_vat {
     group_label: "* Total *"
     type: sum
-    description: "Total Gross - Total Net"
+    description: "Revenue (Gross) - Revenue (Net). After Deduction of Discounts and Refunds."
     value_format: "#,##0.00€"
     sql: ${total_vat} ;;
   }
@@ -931,7 +1117,7 @@ view: vat_order {
   measure: sum_amt_total_deposit {
     group_label: "* Deposit *"
     label: "Gross Deposit"
-    description: "Tax and Discount don't apply to deposit"
+    description: "Discount don't apply to deposit"
     value_format: "#,##0.00€"
     type: sum
     sql: ${amt_total_deposit} ;;

@@ -35,7 +35,7 @@ view: forecasts {
   dimension: quinyx_pipeline_status {
     label: "Quinyx Pipeline Status"
     type: string
-    sql: ${TABLE}.quinyx_pipeline_status ;;
+    sql: coalesce(${TABLE}.quinyx_pipeline_status, "N/A") ;;
   }
 
   # =========  Dates   =========
@@ -80,11 +80,7 @@ view: forecasts {
     type: time
     timeframes: [
       raw,
-      date,
-      week,
-      month,
-      quarter,
-      year
+      date
     ]
     convert_tz: no
     datatype: date
@@ -97,20 +93,70 @@ view: forecasts {
     hidden: yes
   }
 
-  # =========  Forecasted minutes   =========
-
-  dimension: number_of_forecasted_minutes_picker {
-    label: "# Forecasted Picker Minutes"
-    type: number
-    sql: ${TABLE}.number_of_forecasted_minutes_picker ;;
-    hidden: yes
+  # =========  Model names   =========
+  dimension: model_name_historical_forecasts {
+    group_label: "> Model Names"
+    label: "Model Name: Order Forecast"
+    type: string
+    sql: ${TABLE}.model_name_historical_forecasts ;;
+    hidden: no
   }
 
-  dimension: number_of_forecasted_minutes_rider {
-    label: "# Forecasted Rider Minutes"
-    type: number
-    sql: ${TABLE}.number_of_forecasted_minutes_rider ;;
-    hidden: yes
+  dimension: model_name_headcount_riders_forecasts {
+    alias: [model_name_headcount_forecasts]
+    group_label: "> Model Names"
+    label: "Model Name: Headcount Forecast (Riders)"
+    type: string
+    sql: ${TABLE}.model_name_headcount_riders_forecasts ;;
+    hidden: no
+  }
+
+  dimension: model_name_headcount_pickers_forecasts {
+    group_label: "> Model Names"
+    label: "Model Name: Headcount Forecast (Pickers)"
+    type: string
+    sql: ${TABLE}.model_name_headcount_pickers_forecasts ;;
+    hidden: no
+  }
+
+  dimension: model_name_riders_needed {
+    group_label: "> Model Names"
+    label: "Model Name: Riders Needed"
+    type: string
+    sql: ${TABLE}.model_name_riders_needed ;;
+    hidden: no
+  }
+
+  dimension: model_name_pickers_needed {
+    group_label: "> Model Names"
+    label: "Model Name: Pickers Needed"
+    type: string
+    sql: ${TABLE}.model_name_pickers_needed ;;
+    hidden: no
+  }
+
+  dimension: model_name_rider_idleness {
+    group_label: "> Model Names"
+    label: "Model Name: Rider Idleness"
+    type: string
+    sql: ${TABLE}.model_name_rider_idleness ;;
+    hidden: no
+  }
+
+  dimension: model_name_picker_idleness {
+    group_label: "> Model Names"
+    label: "Model Name: Picker Idleness"
+    type: string
+    sql: ${TABLE}.model_name_picker_idleness ;;
+    hidden: no
+  }
+
+  dimension: model_name_order_handling_duration {
+    group_label: "> Model Names"
+    label: "Model Name: Order Handling Duration"
+    type: string
+    sql: ${TABLE}.model_name_order_handling_duration ;;
+    hidden: no
   }
 
   # =========  Forecasted orders   =========
@@ -159,15 +205,6 @@ view: forecasts {
 
   # =========  Stacking   =========
 
-  measure: pct_stacking_assumption {
-    group_label: "> Order Measures"
-    label: "% Stacking Assumption"
-    type: average_distinct
-    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
-    value_format_name: percent_1
-    sql: ${TABLE}.pct_stacking_assumption ;;
-  }
-
   measure: stacking_effect_multiplier {
     group_label: "> Order Measures"
     label: "Stacking Effect Multiplier"
@@ -178,37 +215,75 @@ view: forecasts {
     value_format_name: decimal_1
   }
 
+  measure: number_of_forecasted_stacked_orders {
+    group_label: "> Order Measures"
+    label: "# Forecasted Stacked Orders"
+    type: sum_distinct
+    value_format_name: decimal_1
+    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
+    sql: ${TABLE}.number_of_forecasted_stacked_orders ;;
+  }
+
+  measure: pct_stacking_assumption {
+    group_label: "> Order Measures"
+    label: "% Stacking Assumption"
+    type: number
+    value_format_name: percent_1
+    sql: ${number_of_forecasted_stacked_orders}/nullif(${number_of_forecasted_orders},0) ;;
+  }
   # =========  No show  =========
 
 
   measure: pct_forecasted_no_show_rider {
     group_label: "> Rider Measures"
     label: "% No Show Riders"
-    type: average_distinct
-    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
+    type: number
     value_format_name: percent_1
     sql: ${TABLE}.pct_forecasted_no_show_rider ;;
     hidden: yes
   }
 
-  # =========  Idleness   =========
+  measure: number_of_forecasted_no_show_minutes_rider {
+    group_label: "> Rider Measures"
+    label: "# Forecasted No Show Minutes Rider"
+    type: sum_distinct
+    sql_distinct_key: ${forecast_uuid} ;;
+    sql: ${TABLE}.number_of_forecasted_no_show_minutes_rider ;;
+  }
+
+
+  # =========  Idleness minutes   =========
+
+  measure: number_of_forecasted_idleness_minutes_picker {
+    group_label: "> Picker Measures"
+    label: "# Forecasted Idle Picker Minutes"
+    type: sum_distinct
+    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
+    sql: ${TABLE}.number_of_forecasted_idleness_minutes_picker ;;
+  }
+
+  measure: number_of_forecasted_idleness_minutes_rider {
+    group_label: "> Rider Measures"
+    label: "# Forecasted Idle Rider Minutes"
+    type: sum_distinct
+    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
+    sql: ${TABLE}.number_of_forecasted_idleness_minutes_rider ;;
+  }
 
   measure: pct_idleness_target_rider {
     group_label: "> Rider Measures"
     label: "% Idleness Assumption Rider"
-    type: average_distinct
-    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
+    type: number
     value_format_name: percent_1
-    sql: ${TABLE}.pct_idleness_target_rider ;;
+    sql: ${number_of_forecasted_idleness_minutes_rider}/nullif(${number_of_forecasted_minutes_rider},0) ;;
   }
 
   measure: pct_idleness_target_picker {
-    group_label: "> Rider Measures"
+    group_label: "> Picker Measures"
     label: "% Idleness Assumption Picker"
-    type: average_distinct
-    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
+    type: number
     value_format_name: percent_1
-    sql: ${TABLE}.pct_idleness_target_picker ;;
+    sql: ${number_of_forecasted_idleness_minutes_picker}/nullif(${number_of_forecasted_minutes_picker},0) ;;
   }
 
   # =========  UTR   =========
@@ -237,20 +312,18 @@ view: forecasts {
     group_label: "> Picker Measures"
     label: "Base UTR Picker (Incl. Stacking)"
     description: "Base UTR Picker (Incl. Stacking) - Target UTR * Stacking Effect Multiplier"
+    type: number
     value_format_name: decimal_1
-    type: average_distinct
-    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
-    sql: ${TABLE}.forecasted_base_utr_incl_stacking_picker ;;
+    sql: ${number_of_target_orders_per_picker}*${stacking_effect_multiplier} ;;
   }
 
   measure: forecasted_base_utr_incl_stacking_rider {
     group_label: "> Rider Measures"
     label: "Base UTR Rider (Incl. Stacking)"
     description: "Base UTR Rider (Incl. Stacking) - Target UTR * Stacking Effect Multiplier"
+    type:  number
     value_format_name: decimal_1
-    type: average_distinct
-    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
-    sql: ${TABLE}.forecasted_base_utr_incl_stacking_rider ;;
+    sql: ${number_of_target_orders_per_rider}*${stacking_effect_multiplier} ;;
   }
 
   measure: final_utr_picker {
@@ -287,16 +360,7 @@ view: forecasts {
     type: sum_distinct
     sql_distinct_key: ${forecast_uuid} ;;
     sql: ${TABLE}.number_of_forecasted_riders ;;
-  }
-
-  # =========  No show   =========
-
-  measure: number_of_forecasted_no_show_minutes_rider {
-    group_label: "> Rider Measures"
-    label: "# Forecasted No Show Minutes Rider"
-    type: sum_distinct
-    sql_distinct_key: ${forecast_uuid} ;;
-    sql: ${TABLE}.number_of_forecasted_no_show_minutes_rider ;;
+    hidden: yes
   }
 
   # =========  Forecasted orders   =========
@@ -335,12 +399,30 @@ view: forecasts {
     sql: ${TABLE}.number_of_missed_orders ;;
   }
 
-##### Forecasted Hours
+  ##### Forecasted Hours
+
+  # =========  Forecasted minutes   =========
+
+  measure: number_of_forecasted_minutes_picker {
+    label: "# Forecasted Picker Minutes"
+    type: sum_distinct
+    sql_distinct_key: ${forecast_uuid} ;;
+    sql: ${TABLE}.number_of_forecasted_minutes_picker ;;
+    hidden: yes
+  }
+
+  measure: number_of_forecasted_minutes_rider {
+    label: "# Forecasted Rider Minutes"
+    type: sum_distinct
+    sql_distinct_key: ${forecast_uuid} ;;
+    sql: ${TABLE}.number_of_forecasted_minutes_rider ;;
+    hidden: yes
+  }
+
   measure: number_of_forecasted_hours_rider {
     group_label: "> Rider Measures"
     label: "# Forecasted Rider Hours"
-    type: sum_distinct
-    sql_distinct_key: ${forecast_uuid} ;;
+    type: number
     sql: ${number_of_forecasted_minutes_rider}/60;;
     value_format_name: decimal_1
   }
@@ -348,10 +430,18 @@ view: forecasts {
   measure: number_of_forecasted_hours_picker {
     group_label: "> Picker Measures"
     label: "# Forecasted Picker Hours"
-    type: sum_distinct
-    sql_distinct_key: ${forecast_uuid} ;;
+    type: number
     sql: ${number_of_forecasted_minutes_picker}/60;;
     value_format_name: decimal_1
+  }
+  ##### Forecast errors
+
+  measure: wmape_orders {
+    group_label: "> Forecasting error"
+    label: "wMAPE Orders"
+    type: number
+    sql: abs(${number_of_forecasted_orders} - ${orders_with_ops_metrics.cnt_orders})/nullif(${orders_with_ops_metrics.cnt_orders}, 0);;
+    value_format_name: percent_0
   }
 
   # =========  Dynamic values   =========
@@ -383,19 +473,6 @@ view: forecasts {
       END ;;
   }
 
-  measure: pct_no_show_by_position {
-    type: number
-    label: "% Forecasted No Show Hours"
-    value_format_name: percent_1
-    group_label: "> Dynamic Measures"
-    sql:
-        CASE
-          WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${number_of_no_show_hours_by_position}/nullif(${number_of_forecasted_hours_by_position},0)
-      ELSE NULL
-      END ;;
-    hidden: no
-  }
-
   measure: number_of_no_show_hours_by_position {
     type: number
     label: "# Forecasted No Show Hours"
@@ -404,6 +481,18 @@ view: forecasts {
     sql:
         CASE
           WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${number_of_forecasted_no_show_minutes_rider}/60
+      ELSE NULL
+      END ;;
+  }
+
+  measure: pct_no_show_by_position {
+    type: number
+    label: "% Forecasted No Show Hours"
+    value_format_name: percent_1
+    group_label: "> Dynamic Measures"
+    sql:
+        CASE
+          WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${number_of_no_show_hours_by_position}/nullif(${number_of_forecasted_hours_by_position},0)
       ELSE NULL
       END ;;
   }
@@ -446,7 +535,7 @@ view: forecasts {
 
   measure: idleness_assumption_by_position {
     label: "% Idleness Assumption"
-    value_format_name: decimal_1
+    value_format_name: percent_1
     group_label: "> Dynamic Measures"
     sql:
         CASE
@@ -482,6 +571,7 @@ view: forecasts {
     type: string
     allowed_value: { value: "Rider" }
     allowed_value: { value: "Picker" }
+    hidden: yes
   }
 
 }

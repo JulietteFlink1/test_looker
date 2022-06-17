@@ -53,6 +53,22 @@ view: daily_picker_events {
     sql: ${TABLE}.anonymous_id ;;
   }
 
+# ~~ Order times ~~
+  measure: order_received {
+    group_label: "Date Dimensions"
+    hidden: yes
+    sql: MIN(IF(${event_name} in ('order_state', 'order_state_updated') and ${action}='received', ${TABLE}.event_timestamp,null)) ;;
+  }
+  measure: order_accepted {
+    group_label: "Date Dimensions"
+    hidden: yes
+    sql: MAX(IF(${event_name} in ('order_state', 'order_state_updated') and ${action}='accepted', ${TABLE}.event_timestamp,null)) ;;
+  }
+  measure: order_finished {
+    group_label: "Date Dimensions"
+    hidden: yes
+    sql: MAX(IF(${event_name} in ('order_state', 'order_state_updated') and ${action}='finished', ${TABLE}.event_timestamp,null)) ;;
+  }
 
   # ~~ App, Device & Connectivity ~~
 

@@ -131,7 +131,7 @@ view: shyftplan_riders_pickers_hours_clean {
       year
     ]
     convert_tz: no
-    hidden: yes
+    hidden: no
     datatype: date
     sql: ${TABLE}.shift_date ;;
   }
@@ -356,7 +356,6 @@ view: shyftplan_riders_pickers_hours_clean {
 
   measure: number_of_unassigned_rider_hours{
     type: sum
-    hidden: yes
     label:"# Unassigned Rider Hours"
     description: "Number of Unassigned(Open) Rider Hours"
     filters:[position_name: "rider"]
@@ -379,7 +378,6 @@ view: shyftplan_riders_pickers_hours_clean {
 
   measure: number_of_unassigned_picker_hours{
     type: sum
-    hidden: yes
     label:"# Unassigned Picker Hours"
     description: "Number of Unassigned(Open) Picker Hours"
     filters:[position_name: "picker"]
@@ -520,6 +518,25 @@ view: shyftplan_riders_pickers_hours_clean {
     filters: [position_name: "rider, picker"]
     value_format_name: decimal_1
     hidden: yes
+  }
+
+  measure: number_of_unassigned_hours_rider_picker{
+    type: number
+    label: "# Unassigned Hours Rider+Picker"
+    description: "Number of Unassigned Hours Rider+Picker"
+    sql: ${number_of_unassigned_rider_hours}+${number_of_unassigned_picker_hours} ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  measure: pct_unaasigned_hours{
+    label:"% Unassigned Shift Hours"
+    type: number
+    description: "% Unassigned Shift Hours (Riders & Pickers)"
+    sql:(${number_of_unassigned_hours_rider_picker})
+      /nullif(${number_of_unassigned_hours_rider_picker}+${number_of_planned_hours_rider_picker},0) ;;
+    group_label: "Unassigned Hours"
+    value_format_name: percent_1
   }
 
   measure: pct_overstaffing {
