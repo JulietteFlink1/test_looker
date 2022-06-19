@@ -26,6 +26,7 @@ explore: vendor_performance {
   fields: [
     products_hub_assignment.minimal_fields*,
     global_filters_and_parameters.datasource_filter,
+    global_filters_and_parameters.timeframe_picker,
     bulk_items.main_fields*, bulk_items.cross_referenced_fields*,
     inventory_changes_daily*,
     inventory_changes*,
@@ -34,6 +35,8 @@ explore: vendor_performance {
   #  vendor_performance_ndt_percent_inbounded*,
     products*,
     purchase_orders.main_fields*, purchase_orders.cross_references_inventory_changes_daily*,
+    lexbizz_vendor*,
+    vendor_performance_ndt_po_fill_rate*,
     erp_product_hub_vendor_assignment_v2*,
     hubs*
   ]
@@ -47,6 +50,7 @@ explore: vendor_performance {
     sql_on: ${global_filters_and_parameters.generic_join_dim} = TRUE ;;
     type: left_outer
     relationship: one_to_one
+
   }
 
 
@@ -176,6 +180,31 @@ explore: vendor_performance {
         and ${products_hub_assignment.hub_code}                                   = ${purchase_orders.hub_code}
         and ${products_hub_assignment.leading_sku_replenishment_substitute_group} = ${purchase_orders.sku}
         and {% condition global_filters_and_parameters.datasource_filter %} ${purchase_orders.delivery_date} {% endcondition %}
+    ;;
+  }
+
+  join: lexbizz_vendor {
+
+    view_label: "* Purchase Orders (PO) *"
+
+    type: left_outer
+    relationship: many_to_one
+    sql_on:
+          ${lexbizz_vendor.vendor_id} = ${purchase_orders.vendor_id}
+      and ${lexbizz_vendor.ingestion_date} = current_date()
+    ;;
+
+    fields: [lexbizz_vendor.vendor_name]
+  }
+
+  join: vendor_performance_ndt_po_fill_rate {
+
+    view_label: "* Purchase Orders (PO) *"
+
+    type: left_outer
+    relationship: many_to_one
+    sql_on:
+      ${purchase_orders.order_number} = ${vendor_performance_ndt_po_fill_rate.order_number}
     ;;
   }
 

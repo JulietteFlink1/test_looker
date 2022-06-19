@@ -1,3 +1,4 @@
+
 view: replenishment_purchase_orders {
   sql_table_name: `flink-data-prod.curated.replenishment_purchase_orders`
     ;;
@@ -27,12 +28,16 @@ view: replenishment_purchase_orders {
       hub_code,
       sku,
       delivery_date,
+      delivery_week,
+      delivery_month,
       order_date,
       vendor_location,
       name,
       order_id,
       order_number,
       flink_buyer_id,
+      dynamic_delivery_date,
+      global_filters_and_parameters.timeframe_picker,
 
       sum_handling_unit_quantity,
       sum_selling_unit_quantity,
@@ -71,6 +76,28 @@ view: replenishment_purchase_orders {
     }
 
     default_value: "no"
+  }
+
+  dimension: dynamic_delivery_date {
+
+    label:       "Dynamic Delivery Date"
+    group_label: ">> Dates and Timestamps"
+
+    label_from_parameter: global_filters_and_parameters.timeframe_picker
+    sql:
+    {% if    global_filters_and_parameters.timeframe_picker._parameter_value == 'Date' %}
+        ${delivery_date}
+
+      {% elsif global_filters_and_parameters.timeframe_picker._parameter_value == 'Week' %}
+      ${delivery_week}
+
+      {% elsif global_filters_and_parameters.timeframe_picker._parameter_value == 'Month' %}
+      ${delivery_month}
+
+      {% else %}
+      ${delivery_month}
+
+      {% endif %};;
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -172,7 +199,7 @@ view: replenishment_purchase_orders {
   dimension_group: delivery {
 
     label: "Delivery"
-    description: "The delivery date of the order according to the replenishment db"
+    description: "The promised delivery date of the order according to the replenishment db"
     group_label: ">> Dates & Timestamps"
 
     type: time

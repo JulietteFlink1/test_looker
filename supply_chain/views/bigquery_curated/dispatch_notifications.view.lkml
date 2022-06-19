@@ -17,6 +17,8 @@ view: dispatch_notifications {
       hub_code,
       sku,
       delivery_date,
+      delivery_week,
+      delivery_month,
       estimated_delivery_timestamp,
       loaded_in_truck_timestamp_time,
       loaded_in_truck_timestamp_date,
@@ -26,7 +28,9 @@ view: dispatch_notifications {
       provider_name,
       sum_handling_units_count,
       sum_total_quantity,
-      # sum_total_quantity_po_derived,
+      sum_number_of_dispatch_notifications,
+
+      dynamic_delivery_date
     ]
   }
 
@@ -41,6 +45,28 @@ view: dispatch_notifications {
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Parameters     ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  dimension: dynamic_delivery_date {
+
+    label:       "Dynamic Delivery Date"
+    group_label: ">> Dates and Timestamps"
+
+    label_from_parameter: global_filters_and_parameters.timeframe_picker
+    sql:
+    {% if    global_filters_and_parameters.timeframe_picker._parameter_value == 'Date' %}
+        ${delivery_date}
+
+    {% elsif global_filters_and_parameters.timeframe_picker._parameter_value == 'Week' %}
+        ${delivery_week}
+
+    {% elsif global_filters_and_parameters.timeframe_picker._parameter_value == 'Month' %}
+        ${delivery_month}
+
+    {% else %}
+      ${delivery_month}
+
+    {% endif %};;
+  }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Dimensions     ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -96,15 +122,22 @@ view: dispatch_notifications {
 
 
   # =========  Dates & Timestamps   =========
-  dimension: delivery_date {
+  dimension_group: delivery {
+
+    type: time
+    datatype: date
+    timeframes: [
+      date,
+      week,
+      month
+    ]
+
 
     label:       "Delivery Date"
     description: "The date, when we was Flink think the delivery will arrive based on the Load-On-Truck Date:
     If the Load-On-Truck-Date is before 8 p.m. local time, then we assume the delivery date to be the same as the Load-On-Truck-Date.
     If the Load-On-Truck-Date is after 8 p.m. local time, we assume the delivery to arrive 1 day after the Load-On-Truck-Date"
     group_label: ">> Dates & Timestamps"
-    type: date
-    datatype: date
     sql: ${TABLE}.delivery_date ;;
   }
 
@@ -118,22 +151,6 @@ view: dispatch_notifications {
     type: date_time
     sql: ${TABLE}.estimated_delivery_timestamp ;;
   }
-
-
-  # dimension_group: loaded_in_truck {
-  #   type: time
-  #   timeframes: [
-  #     raw,
-  #     date,
-  #     week,
-  #     month,
-  #     quarter,
-  #     year
-  #   ]
-  #   convert_tz: no
-  #   datatype: date
-  #   sql: ${TABLE}.loaded_in_truck_date ;;
-  # }
 
   dimension_group: loaded_in_truck_timestamp {
 
@@ -307,17 +324,6 @@ view: dispatch_notifications {
     value_format_name: decimal_0
   }
 
-  # measure: sum_total_quantity_po_derived {
-
-  #   label:       "# Corrected Selling Units (PO)"
-  #   description: "The sum of all purchase units from products as defined in the latest know Purchase Order. This measure was introduced, due to some parsing problems for certain SKUs in DESADVS, that eventually had incorrect selling units stated (e.g. 1 Banana per DESADV)"
-
-  #   type: sum
-  #   sql: ${total_quantity_po_derived};;
-
-  #   value_format_name: decimal_0
-  # }
-
   measure: sum_number_of_bulks {
 
     label:       "# Bulks (DESADV)"
@@ -329,30 +335,6 @@ view: dispatch_notifications {
 
     value_format_name: decimal_0
   }
-
-  # measure: sum_number_of_bulks_booked_in_same_day {
-
-  #   label:       "# Bulks inbounded on delivery day"
-  #   description: "The number of bulks, that were inbounded in the same they of the delivery (more precise: the day of the first inbounding of a bulk within a dispatch notification)"
-  #   group_label: "Special Use Cases"
-
-  #   type: count_distinct
-  #   sql: ${sscc};;
-
-  #   value_format_name: decimal_0
-  # }
-
-  # measure: pct_bulks_inbounded_same_day{
-
-  #   label:       "% Bulks inbounded same day"
-  #   description: "The number of bulks that are inbounded on the day of the first inbounding compared to all bulks of a dispatch notification"
-  #   group_label: "Special Use Cases"
-
-  #   type: number
-  #   sql: safe_divide(${sum_number_of_bulks_booked_in_same_day}, ${sum_number_of_bulks}) ;;
-
-  #   value_format_name: percent_1
-  # }
 
   measure: sum_number_of_dispatch_notifications {
 
