@@ -2394,9 +2394,9 @@ view: staffing {
   measure: hub_staff_utr_outbounded_items {
     group_label: "> Hub Staff Measures"
     label: "Hub Staff UTR (Outbounded Items)"
-    description: "Hub Staff UTR (# Outbounded Items/Hub Staff Hours)"
+    description: "Hub Staff UTR (# Outbounded Items (Waste, Orders, Too good to go,Wrong delivery)/Hub Staff Hours)"
     type: number
-    sql: abs(${inventory_changes_daily.sum_outbound_waste}+${inventory_changes_daily.sum_outbound_wrong_delivery}+${inventory_changes_daily.sum_outbound_orders})
+    sql: abs(${inventory_changes_daily.sum_outbound_too_good_to_go}+${inventory_changes_daily.sum_outbound_waste}+${inventory_changes_daily.sum_outbound_wrong_delivery}+${inventory_changes_daily.sum_outbound_orders})
       /nullif(${number_of_worked_hours_hub_staff},0) ;;
     value_format_name: decimal_2
   }
