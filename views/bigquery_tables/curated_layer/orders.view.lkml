@@ -2246,10 +2246,20 @@ view: orders {
       measure: cnt_orders_with_discount_products {
         group_label: "* Basic Counts (Orders / Customers etc.) *"
         label: "# Orders with Product Discount"
-        description: "Count of successful Orders with some Product Discount applied"
+        description: "Number of successful Orders with a Product Discount included"
         hidden:  no
         type: count
         filters: [amt_discount_products_gross: ">0"]
+        value_format: "0"
+      }
+
+      measure: cnt_orders_without_discount_products {
+        group_label: "* Basic Counts (Orders / Customers etc.) *"
+        label: "# Orders without Product Discount"
+        description: "Number of successful Orders without a Product Discount included"
+        hidden:  no
+        type: count
+        filters: [amt_discount_products_gross: "0 OR null"]
         value_format: "0"
       }
 
