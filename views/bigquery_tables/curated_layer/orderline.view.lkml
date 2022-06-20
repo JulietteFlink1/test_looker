@@ -626,7 +626,7 @@ view: orderline {
   }
 
   measure: sum_item_price_fulfilled_after_product_discount_gross {
-    label: "SUM Item Prices fulfilled (gross)"
+    label: "SUM Item Prices fulfilled After Product Discount (gross)"
     description: "Sum of fulfilled Item prices after Deduction of Product Discount (incl. VAT)"
     hidden:  no
     type: sum
@@ -636,7 +636,7 @@ view: orderline {
   }
 
   measure: sum_item_price_fulfilled_after_product_discount_net {
-    label: "SUM Item Prices fulfilled (net)"
+    label: "SUM Item Prices fulfilled After Product Discount (net)"
     description: "Sum of fulfilled Item prices after Deduction of Product Discount (excl. VAT)"
     hidden:  no
     type: sum
