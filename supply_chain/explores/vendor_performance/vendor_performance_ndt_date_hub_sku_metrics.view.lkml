@@ -18,10 +18,8 @@ view: vendor_performance_ndt_date_hub_sku_metrics {
       column: inbound_quantity      { field: inventory_changes_daily.sum_inbound_inventory }
       column: po_quantity           { field: purchase_orders.sum_selling_unit_quantity }
       column: desadv_quantity       { field: bulk_items.sum_total_quantity }
-      filters: {
-        field: global_filters_and_parameters.datasource_filter
-        value: "4 days ago for 4 days"
-      }
+
+      bind_all_filters: yes
     }
   }
 
@@ -118,9 +116,16 @@ view: vendor_performance_ndt_date_hub_sku_metrics {
 
   measure: sum_po_quantity {
 
-    hidden: yes
+    hidden: no
     type: sum
     sql: ${po_quantity} ;;
+  }
+
+  measure: sum_inbound_quantity {
+
+    hidden: no
+    type: sum
+    sql: ${inbound_quantity} ;;
   }
 
   measure: sum_over_inbound_items_po {

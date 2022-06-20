@@ -183,6 +183,8 @@ explore: vendor_performance {
             ${products_hub_assignment.report_date}                                = ${purchase_orders.delivery_date}
         and ${products_hub_assignment.hub_code}                                   = ${purchase_orders.hub_code}
         and ${products_hub_assignment.leading_sku_replenishment_substitute_group} = ${purchase_orders.sku}
+        -- only include purchase orders, that were actually sent to the suppliers
+        and ${purchase_orders.status} = 'Sent'
         and {% condition global_filters_and_parameters.datasource_filter %} ${purchase_orders.delivery_date} {% endcondition %}
     ;;
   }
@@ -227,6 +229,9 @@ explore: vendor_performance {
 
 
   join: vendor_performance_ndt_date_hub_sku_metrics {
+
+    view_label: "* Over- | Unplanned Inbounds *"
+
     type: left_outer
     relationship: one_to_one
     sql_on:
