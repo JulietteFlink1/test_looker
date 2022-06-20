@@ -32,6 +32,7 @@ explore: vendor_performance {
     inventory_changes*,
     vendor_performance_ndt_desadv_fill_rates*,
     vendor_performance_ndt_inbounded_skus*,
+    vendor_performance_ndt_date_hub_sku_metrics*,
   #  vendor_performance_ndt_percent_inbounded*,
     products*,
     purchase_orders.main_fields*, purchase_orders.cross_references_inventory_changes_daily*,
@@ -221,6 +222,17 @@ explore: vendor_performance {
             ${erp_buying_prices.report_date} = ${products_hub_assignment.report_date}
         and ${erp_buying_prices.hub_code} = ${products_hub_assignment.hub_code}
         and ${erp_buying_prices.sku} = ${products_hub_assignment.sku}
+    ;;
+  }
+
+
+  join: vendor_performance_ndt_date_hub_sku_metrics {
+    type: left_outer
+    relationship: one_to_one
+    sql_on:
+            ${vendor_performance_ndt_date_hub_sku_metrics.report_date} = ${products_hub_assignment.report_date}
+        and ${vendor_performance_ndt_date_hub_sku_metrics.hub_code}    = ${products_hub_assignment.hub_code}
+        and ${vendor_performance_ndt_date_hub_sku_metrics.sku}         = ${products_hub_assignment.sku}
     ;;
   }
 
