@@ -109,7 +109,7 @@ view: replenishment_purchase_orders {
 
   dimension: vendor_id {
 
-    label:       "Vendor ID"
+    label:       "Supplier ID"
     description: "The Id of the supplier"
     bypass_suggest_restrictions: yes
 
@@ -119,8 +119,8 @@ view: replenishment_purchase_orders {
 
   dimension: vendor_id_original {
 
-    label:       "Original Vendor ID of PO"
-    description: "The original vendor id of the purchase order. This vendor id resembles more a warehouse_id, in case the vendor is a DC"
+    label:       "Original Supplier ID of PO"
+    description: "The original supplier id of the purchase order. This supplier id resembles more a warehouse_id, in case the supplier is a DC"
 
     type: string
     sql: ${TABLE}.vendor_id_original ;;
@@ -128,7 +128,7 @@ view: replenishment_purchase_orders {
 
   dimension: is_vendor_dc {
 
-    label: "Is Vendor DC"
+    label: "Is Supplier DC"
     description: "This flag indicates, if the purchase order was actually been sent to a DC first, before being send to the hub"
 
     type: yesno
@@ -144,7 +144,7 @@ view: replenishment_purchase_orders {
 
   dimension: vendor_location {
 
-    label:       "Vendor Location"
+    label:       "Supplier Location"
     description: "Location of the supplier"
     type: string
     bypass_suggest_restrictions: yes
@@ -409,7 +409,7 @@ view: replenishment_purchase_orders {
 
   measure: sum_purchase_price {
     label:       "€ Sum Purchased Products Value (Buying Price)"
-    description: "This measure multiplies the vendor price of an item with the number of selling units we ordered and thus provides the cumulative value of the replenished items."
+    description: "This measure multiplies the supplier price of an item with the number of selling units we ordered and thus provides the cumulative value of the replenished items."
 
     type: sum
     sql: coalesce((${selling_unit_quantity} * ${erp_buying_prices.vendor_price}),0) ;;

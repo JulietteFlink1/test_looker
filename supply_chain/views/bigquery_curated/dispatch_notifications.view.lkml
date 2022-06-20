@@ -145,7 +145,7 @@ view: dispatch_notifications {
 
     label:       "Estimated Delivery Time"
     description: "Based on the Delivery Date, the Estimated Delivery Time considers the time as the delivery time, whenever firstly 2% of the DESADV have been inbounded in the hub.
-    This rule is covered by the 100% inbounding initiative, that should ensure, all vendor delivery are inbounded immediately and all on the same day as the delivery"
+    This rule is covered by the 100% inbounding initiative, that should ensure, all suppliers delivery are inbounded immediately and all on the same day as the delivery"
     group_label: ">> Dates & Timestamps"
     datatype: timestamp
     type: date_time
@@ -203,7 +203,7 @@ view: dispatch_notifications {
   dimension: external_sku {
 
     label:       "External SKU"
-    description: "The identifier of a product based on the specifications of a vendor."
+    description: "The identifier of a product based on the specifications of a supplier."
     group_label: ">> IDs"
 
     type: string
@@ -223,7 +223,7 @@ view: dispatch_notifications {
   dimension: warehouse_number {
 
     label:       "Warehouse Number"
-    description: "The identifier of a vendors warehouse."
+    description: "The identifier of a suppliers warehouse."
     group_label: ">> IDs"
 
     type: string
