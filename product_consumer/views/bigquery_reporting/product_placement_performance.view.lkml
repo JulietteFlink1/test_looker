@@ -9,6 +9,14 @@ view: product_placement_performance {
 
   # ======= Device Dimensions ======= #
 
+  dimension: order_uuid {
+    group_label: "Product Dimensions"
+    label: "Order UUID"
+    description: "Unique identifier for an order"
+    type: string
+    sql: ${TABLE}.order_uuid ;;
+  }
+
   dimension: platform {
     group_label: "Device Dimensions"
     label: "Platform"
@@ -185,7 +193,7 @@ view: product_placement_performance {
   dimension: is_added_to_favourites {
     group_label: "Event Flags"
     type: yesno
-    sql: ${TABLE}.is_added_to_favourites ;;
+    sql: ${TABLE}.is_product_added_to_favourites ;;
   }
 
   dimension: is_order_placed {
@@ -232,6 +240,23 @@ view: product_placement_performance {
     type: count_distinct
     sql: ${TABLE}.product_sku ;;
   }
+  measure: orders {
+    group_label: "Product Metrics"
+    label: "# Orders "
+    description: "Number of unique orders based on order_uuid"
+    type: count_distinct
+    sql: ${TABLE}.order_uuid ;;
+  }
+  measure: amt_total_price_net {
+    hidden: no
+    group_label: "Product Metrics"
+    label: "SUM Item Prices Sold (net)"
+    description: "Sum of all items sold, net value."
+    type: sum
+    value_format_name: decimal_2
+    sql: ${TABLE}.product_price ;;
+    filters: [is_order_placed: "yes"]
+  }
   # ======= Product Event Level Measures =======
 
   measure: impressions {
@@ -268,13 +293,6 @@ view: product_placement_performance {
     description: "Number of unique products added to favourites"
     type: sum
     sql: ${TABLE}.number_of_added_to_favourites ;;
-  }
-  measure: orders {
-    group_label: "Product Metrics"
-    label: "# Ordered Products "
-    description: "Number of orders with the product"
-    type: sum
-    sql: ${TABLE}.number_of_orders ;;
   }
   measure: number_of_clicks {
     group_label: "Product Metrics"
