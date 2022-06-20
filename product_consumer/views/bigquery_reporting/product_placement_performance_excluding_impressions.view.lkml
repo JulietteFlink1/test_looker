@@ -299,8 +299,16 @@ view: product_placement_performance_excluding_impressions {
   }
   measure: orders {
     group_label: "Product Metrics"
+    label: "# Ordered Products"
+    description: "Number of unique products placed"
+    type: count_distinct
+    sql: ${product_sku} ;;
+    filters: [is_order_placed: "yes"]
+  }
+  measure: unique_orders {
+    group_label: "Product Metrics"
     label: "# Orders"
-    description: "Number of unique orders based on order_uuid"
+    description: "Number of unique orders placed."
     type: count_distinct
     sql: ${TABLE}.order_uuid ;;
   }
