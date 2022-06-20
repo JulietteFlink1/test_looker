@@ -513,7 +513,7 @@ view: shyftplan_riders_pickers_hours_clean {
   measure: shift_lead_hours {
     label: "Sum of Shift Lead Hours"
     type: sum
-    ## shift lead dont punch in/out and they get paid on monthly basis, therefore we will need to consider worked hours = planned hours
+    description: "Number of shift lead Wroked Hours (note: shift lead dont punch in/out and they get paid on monthly basis, therefore we need to consider worked hours = planned hours)"
     sql:${number_of_planned_minutes}/60;;
     filters: [position_name: "shift lead"]
     value_format_name: decimal_1
