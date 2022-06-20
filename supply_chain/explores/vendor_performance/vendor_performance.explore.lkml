@@ -100,7 +100,10 @@ explore: vendor_performance {
       inventory_changes_daily.parent_sku,
       inventory_changes_daily.is_inbound,
       inventory_changes_daily.change_reason,
-      inventory_changes_daily.is_outbound_waste
+      inventory_changes_daily.is_outbound_waste,
+      inventory_changes_daily.pct_product_delivery_damaged_to_inbounds,
+      inventory_changes_daily.dynamic_inventory_change_date,
+      inventory_changes_daily.quantity_change_inbounded
     ]
   }
 

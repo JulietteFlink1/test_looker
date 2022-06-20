@@ -388,11 +388,37 @@ view: dispatch_notifications {
     sql: safe_divide((${inventory_changes_daily.sum_inbound_inventory} + ${inventory_changes_daily.sum_inventory_correction_increased}), ${sum_total_quantity}) ;;
   }
 
+  # measure: sum_over_inbounded_items {
+      # NOT WORKING, DEU TO VALUE OVERFLOW
+
+  #   label: "# Items Over-Ibounded"
+  #   description: "The number of item quantities, that are higher than the selling unit listed on the DESADV (Given the DESADV states 10 items and we inbounded 12 items, this metric would show 2 items. Given the DESADV states 10 items, but we inbounded 9, this metric is empty (NULL)). "
+  #   hidden: no
+
+  #   type: sum
+  #   value_format_name: decimal_0
+  #   sql:
+  #     case
+  #       -- only sum those units, that have more items being inbounded than listed on the DESADV
+  #       when ${total_quantity} < ${inventory_changes_daily.quantity_change_inbounded}
+  #       then ${inventory_changes_daily.quantity_change_inbounded}
+  #       else 0
+  #       end
+  #   ;;
+
+  #   sql_distinct_key: concat(${table_uuid}, ${inventory_changes_daily.tqble_uuid}) ;;
+  # }
+
+  # measure: pct_over_inbounded_items {
+
+  #   label: "% Items Over-Ibounded"
+  #   description: "The percentage of item quantities, that are higher than the selling unit listed on the DESADV compared to all selling units listed on a DESADV (Given the DESADV states 10 items and we inbounded 12 items, this metric would show 2 items. Given the DESADV states 10 items, but we inbounded 9, this metric is empty (NULL)). "
 
 
-
-
-
+  #   type: number
+  #   value_format_name: percent_1
+  #   sql: safe_divide(${sum_over_inbounded_items}, ${sum_total_quantity}) ;;
+  # }
 
 
 
