@@ -32,6 +32,7 @@ explore: vendor_performance {
     inventory_changes*,
     vendor_performance_ndt_desadv_fill_rates*,
     vendor_performance_ndt_inbounded_skus*,
+    vendor_performance_ndt_date_hub_sku_metrics*,
   #  vendor_performance_ndt_percent_inbounded*,
     products*,
     purchase_orders.main_fields*, purchase_orders.cross_references_inventory_changes_daily*,
@@ -182,6 +183,8 @@ explore: vendor_performance {
             ${products_hub_assignment.report_date}                                = ${purchase_orders.delivery_date}
         and ${products_hub_assignment.hub_code}                                   = ${purchase_orders.hub_code}
         and ${products_hub_assignment.leading_sku_replenishment_substitute_group} = ${purchase_orders.sku}
+        -- only include purchase orders, that were actually sent to the suppliers
+        and ${purchase_orders.status} = 'Sent'
         and {% condition global_filters_and_parameters.datasource_filter %} ${purchase_orders.delivery_date} {% endcondition %}
     ;;
   }
@@ -221,6 +224,20 @@ explore: vendor_performance {
             ${erp_buying_prices.report_date} = ${products_hub_assignment.report_date}
         and ${erp_buying_prices.hub_code} = ${products_hub_assignment.hub_code}
         and ${erp_buying_prices.sku} = ${products_hub_assignment.sku}
+    ;;
+  }
+
+
+  join: vendor_performance_ndt_date_hub_sku_metrics {
+
+    view_label: "* Over- | Unplanned Inbounds *"
+
+    type: left_outer
+    relationship: one_to_one
+    sql_on:
+            ${vendor_performance_ndt_date_hub_sku_metrics.report_date} = ${products_hub_assignment.report_date}
+        and ${vendor_performance_ndt_date_hub_sku_metrics.hub_code}    = ${products_hub_assignment.hub_code}
+        and ${vendor_performance_ndt_date_hub_sku_metrics.sku}         = ${products_hub_assignment.sku}
     ;;
   }
 
