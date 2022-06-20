@@ -174,7 +174,7 @@ view: orderline {
   }
 
   dimension: amt_total_price_after_product_discount_gross {
-    label: "Total Price (After Product Discount) Gross"
+    label: "Total Price Gross (After Product Discount)"
     description: "Unit Price of the Product after Deduction of Product discounts multiplied by Quantity Sold. incl. VAT"
     group_label: "> Monetary Dimensions"
     type: number
@@ -182,23 +182,23 @@ view: orderline {
   }
 
   dimension: amt_total_price_after_product_discount_net {
-    label: "Total Price (After Product Discount) Net"
+    label: "Total Price Net (After Product Discount)"
     description: "Unit Price of the Product after Deduction of Product discounts multiplied by Quantity Sold. excl. VAT"
     group_label: "> Monetary Dimensions"
     type: number
     sql: ${TABLE}.amt_total_price_after_product_discount_net ;;
   }
 
-  dimension: unit_price_net_after_product_discount_amount {
-    label: "Unit Price (After Product Discount) Net"
+  dimension: unit_price_after_product_discount_net {
+    label: "Unit Price Net (After Product Discount)"
     description: "Unit Price of the Product after Deduction of Product discounts. excl. VAT"
     group_label: "> Monetary Dimensions"
     type: number
     sql: ${TABLE}.amt_unit_price_after_product_discount_net ;;
   }
 
-  dimension: unit_price_gross_after_product_discount_amount {
-    label: "Unit Price (After Product Discount) Gross"
+  dimension: unit_price_after_product_discount_gross {
+    label: "Unit Price Gross (After Product Discount)"
     description: "Unit Price of the Product after Deduction of Product discounts. incl. VAT"
     group_label: "> Monetary Dimensions"
     type: number
