@@ -191,7 +191,7 @@ explore: vendor_performance {
     relationship: many_to_one
     sql_on:
           ${lexbizz_vendor.vendor_id} = ${purchase_orders.vendor_id}
-      and ${lexbizz_vendor.ingestion_date} = current_date()
+      and ${lexbizz_vendor.ingestion_date} = current_date()-1
     ;;
 
     fields: [lexbizz_vendor.vendor_name]
