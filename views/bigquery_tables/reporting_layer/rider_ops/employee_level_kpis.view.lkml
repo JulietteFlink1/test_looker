@@ -171,6 +171,15 @@ view: employee_level_kpis {
     sql: ${TABLE}.number_of_orders_with_damaged_products ;;
   }
 
+  measure: pct_orders_with_damaged_products{
+    group_label: "* Logistics *"
+    type: number
+    label: "% Delivered Orders with Products Damaged "
+    description: "% Delivered Orders, with products that were damaged and were claimed through the Customer Service"
+    sql: sum(${TABLE}.number_of_orders_with_damaged_products)/nullif(sum(${TABLE}.number_of_delivered_orders),0) ;;
+    value_format_name: percent_1
+  }
+
   measure: sum_rider_handling_time_minutes {
     group_label: "* Logistics *"
     type: sum
@@ -261,6 +270,15 @@ view: employee_level_kpis {
     value_format: "0%"
   }
 
+  measure: pct_delta_between_to_hub_and_to_customer_time{
+    group_label: "* Logistics *"
+    type: number
+    label: "% Delta Riding Time Between To Hub and To Customer"
+    description: "% Difference Riding time between To Hub and To Customer e.g. a rider spent 5 minutes riding between hub to customer then spend another 5 minutes riding between customer to hub then that will result in % Delta Riding Time Between To Hub and To Customer to be 0%"
+    sql: sum(${TABLE}.number_of_return_to_hub_time_minutes) / nullif(sum(${TABLE}.number_of_riding_to_customer_time_minutes),0) -1 ;;
+    value_format_name: percent_1
+  }
+
   # ~~~~~~~~~~~~~~~     Shift related     ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
@@ -335,6 +353,16 @@ view: employee_level_kpis {
     description: "Number of Late Punch-In Minutes where employee punch-in late after a shift starts e.g. a shift is scheduled to start  at 8 am but an employee punches in at 8:15 will results in 15 minutes late punch-in"
     sql: ${TABLE}.number_of_start_late_minutes ;;
     value_format_name: decimal_1
+  }
+
+  measure: pct_latess {
+    group_label: "* Shift related *"
+    type: number
+    label: "% Lateness (> 5 min)"
+    description: "% of Lateness shift (> 5 minutes late punch-in) e.g. e.g. a 4 hours shift is scheduled to start at 8 am but an employee punches in at 9:00 will results in 25% late (1 hour late / 4 hours shift duration )"
+    sql: sum(case when ${TABLE}.number_of_start_late_minutes > 5
+              then ${TABLE}.number_of_start_late_minutes end)/nullif(sum(${TABLE}.number_of_planned_minutes),0)  ;;
+    value_format_name: percent_1
   }
 
   measure: avg_late_punched_in_minutes {
