@@ -7,7 +7,7 @@
 
   parameter: timeframe_picker {
 
-    label: "Delivery Date Granularity"
+    label: "Date Granularity"
     group_label: ">> Dates & Timestamps"
 
     type: unquoted

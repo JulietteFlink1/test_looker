@@ -226,7 +226,9 @@ explore: vendor_performance {
     relationship: many_to_one
     sql_on: ${hubs.hub_code} = ${products_hub_assignment.hub_code} ;;
     fields: [
-      hubs.city_manager
+      hubs.city_manager,
+      hubs.city,
+      hubs.country_iso
     ]
   }
 
