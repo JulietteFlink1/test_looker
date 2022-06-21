@@ -1,5 +1,5 @@
 view: shyftplan_riders_pickers_hours_clean {
-  sql_table_name: `flink-data-prod.reporting.daily_hub_staffing`
+  sql_table_name: `flink-data-dev.reporting.daily_hub_staffing`
     ;;
 
   dimension: id {
@@ -510,6 +510,16 @@ view: shyftplan_riders_pickers_hours_clean {
     hidden: yes
   }
 
+  measure: shift_lead_hours {
+    label: "Sum of Shift Lead Hours"
+    type: sum
+    description: "Number of shift lead Wroked Hours (note: shift lead dont punch in/out and they get paid on monthly basis, therefore we need to consider worked hours = planned hours)"
+    sql:${number_of_planned_minutes}/60;;
+    filters: [position_name: "shift lead"]
+    value_format_name: decimal_1
+    group_label: "Working Hours"
+  }
+
   measure: number_of_planned_hours_rider_picker{
     type: sum
     label: "# Scheduled Hours Rider+Picker"
@@ -518,6 +528,15 @@ view: shyftplan_riders_pickers_hours_clean {
     filters: [position_name: "rider, picker"]
     value_format_name: decimal_1
     hidden: yes
+  }
+
+  measure: all_staff_utr {
+    label: "AVG All Staff UTR (incl. Rider,Picker,WH Ops, Rider Captain and Shift Lead)"
+    type: number
+    description: "# Orders from opened hub / # Worked All Staff (incl. Rider,Picker,WH Ops, Rider Captain and Shift Lead) Hours"
+    sql: ${adjusted_orders_riders} / NULLIF(${rider_hours}+${picker_hours}+${wh_ops_hours}+${shift_lead_hours}+${rider_captain_hours}, 0);;
+    value_format_name: decimal_2
+    group_label: "UTR"
   }
 
   measure: number_of_unassigned_hours_rider_picker{

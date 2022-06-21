@@ -1,3 +1,4 @@
+
 view: replenishment_purchase_orders {
   sql_table_name: `flink-data-prod.curated.replenishment_purchase_orders`
     ;;
@@ -16,7 +17,7 @@ view: replenishment_purchase_orders {
 
   set: cross_references_inventory_changes_daily {
     fields: [
-
+      pct_order_inbounded
     ]
   }
 
@@ -27,12 +28,16 @@ view: replenishment_purchase_orders {
       hub_code,
       sku,
       delivery_date,
+      delivery_week,
+      delivery_month,
       order_date,
       vendor_location,
       name,
       order_id,
       order_number,
       flink_buyer_id,
+      dynamic_delivery_date,
+      global_filters_and_parameters.timeframe_picker,
 
       sum_handling_unit_quantity,
       sum_selling_unit_quantity,
@@ -40,7 +45,6 @@ view: replenishment_purchase_orders {
       avg_items_per_order,
       cnt_of_orders,
       cnt_of_skus_per_order,
-      pct_order_inbounded
     ]
 
   }
@@ -74,6 +78,28 @@ view: replenishment_purchase_orders {
     default_value: "no"
   }
 
+  dimension: dynamic_delivery_date {
+
+    label:       "Dynamic Delivery Date"
+    group_label: ">> Dates & Timestamps"
+
+    label_from_parameter: global_filters_and_parameters.timeframe_picker
+    sql:
+    {% if    global_filters_and_parameters.timeframe_picker._parameter_value == 'Date' %}
+        ${delivery_date}
+
+      {% elsif global_filters_and_parameters.timeframe_picker._parameter_value == 'Week' %}
+      ${delivery_week}
+
+      {% elsif global_filters_and_parameters.timeframe_picker._parameter_value == 'Month' %}
+      ${delivery_month}
+
+      {% else %}
+      ${delivery_month}
+
+      {% endif %};;
+  }
+
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Dimensions     ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -83,7 +109,7 @@ view: replenishment_purchase_orders {
 
   dimension: vendor_id {
 
-    label:       "Vendor ID"
+    label:       "Supplier ID"
     description: "The Id of the supplier"
     bypass_suggest_restrictions: yes
 
@@ -93,8 +119,8 @@ view: replenishment_purchase_orders {
 
   dimension: vendor_id_original {
 
-    label:       "Original Vendor ID of PO"
-    description: "The original vendor id of the purchase order. This vendor id resembles more a warehouse_id, in case the vendor is a DC"
+    label:       "Original Supplier ID of PO"
+    description: "The original supplier id of the purchase order. This supplier id resembles more a warehouse_id, in case the supplier is a DC"
 
     type: string
     sql: ${TABLE}.vendor_id_original ;;
@@ -102,7 +128,7 @@ view: replenishment_purchase_orders {
 
   dimension: is_vendor_dc {
 
-    label: "Is Vendor DC"
+    label: "Is Supplier DC"
     description: "This flag indicates, if the purchase order was actually been sent to a DC first, before being send to the hub"
 
     type: yesno
@@ -118,7 +144,7 @@ view: replenishment_purchase_orders {
 
   dimension: vendor_location {
 
-    label:       "Vendor Location"
+    label:       "Supplier Location"
     description: "Location of the supplier"
     type: string
     bypass_suggest_restrictions: yes
@@ -173,7 +199,7 @@ view: replenishment_purchase_orders {
   dimension_group: delivery {
 
     label: "Delivery"
-    description: "The delivery date of the order according to the replenishment db"
+    description: "The promised delivery date of the order according to the replenishment db"
     group_label: ">> Dates & Timestamps"
 
     type: time
@@ -224,17 +250,9 @@ view: replenishment_purchase_orders {
 
   }
 
-  dimension: selling_unit_quantity {
 
-    label:       "Quantity Selling Unit"
-    description: "The amount of ordered items"
-    group_label: " >> Line Item Data"
 
-    type: number
-    # sql: ${TABLE}.selling_unit_quantity ;;
-    sql: safe_cast(${TABLE}.selling_unit_quantity as int64) ;;
 
-  }
 
   dimension: handling_unit_quantity {
 
@@ -243,7 +261,19 @@ view: replenishment_purchase_orders {
     group_label: " >> Line Item Data"
 
     type: number
-    sql: ${TABLE}.handling_unit_quantity ;;
+    sql: safe_cast(${TABLE}.handling_unit_quantity as numeric) ;;
+  }
+
+  dimension: selling_unit_quantity {
+
+    label:       "Quantity Selling Unit"
+    description: "The amount of ordered items"
+    group_label: " >> Line Item Data"
+
+    type: number
+    # sql: ${TABLE}.selling_unit_quantity ;;
+    sql: safe_cast(${TABLE}.selling_unit_quantity as numeric) ;;
+
   }
 
 
@@ -280,8 +310,8 @@ view: replenishment_purchase_orders {
     description: "Order Number for orders placed by Flink to it's suppliers"
     group_label: " >> IDs "
 
-    type: number
-    sql: ${TABLE}.order_number ;;
+    type: string
+    sql: safe_cast(${TABLE}.order_number as string) ;;
   }
 
   dimension: flink_buyer_id {
@@ -309,23 +339,23 @@ view: replenishment_purchase_orders {
 
   measure: sum_selling_unit_quantity {
 
-    label:       "# Quantity Selling Unit"
+    label:       "# Quantity Selling Units (PO)"
     description: "The amount of ordered items"
 
 
     type: sum
-    sql: safe_cast(${TABLE}.selling_unit_quantity as int64) ;;
+    sql: ${selling_unit_quantity} ;;
 
   }
 
   measure: sum_handling_unit_quantity {
 
-    label:       "# Quantity Handling Unit"
+    label:       "# Quantity Handling Units (PO)"
     description: "The amount of ordered handling units"
 
 
     type: sum
-    sql: safe_cast(${TABLE}.handling_unit_quantity as numeric) ;;
+    sql: ${handling_unit_quantity} ;;
   }
 
   measure: pct_order_inbounded {
@@ -337,7 +367,6 @@ view: replenishment_purchase_orders {
     sql: ${inventory_changes_daily.sum_inbound_inventory} / nullif(${sum_selling_unit_quantity} ,0) ;;
 
     value_format_name: percent_1
-
     # html:
 
     #   {% if show_info._parameter_value == 'yes' %}
@@ -347,6 +376,7 @@ view: replenishment_purchase_orders {
     #   {% endif %}
     #     ;;
   }
+
 
   measure: cnt_of_orders {
 
@@ -379,7 +409,7 @@ view: replenishment_purchase_orders {
 
   measure: sum_purchase_price {
     label:       "€ Sum Purchased Products Value (Buying Price)"
-    description: "This measure multiplies the vendor price of an item with the number of selling units we ordered and thus provides the cumulative value of the replenished items."
+    description: "This measure multiplies the supplier price of an item with the number of selling units we ordered and thus provides the cumulative value of the replenished items."
 
     type: sum
     sql: coalesce((${selling_unit_quantity} * ${erp_buying_prices.vendor_price}),0) ;;
