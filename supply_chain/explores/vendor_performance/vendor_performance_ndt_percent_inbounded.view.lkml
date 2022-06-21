@@ -24,6 +24,8 @@ view: vendor_performance_ndt_percent_inbounded {
         ;;
       }
 
+      bind_all_filters: yes
+
     }
   }
 
