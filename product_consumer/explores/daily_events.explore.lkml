@@ -60,7 +60,7 @@ explore: daily_events {
       event_product_added_to_cart.sub_category_name, event_product_added_to_cart.sub_category_id,
       event_product_added_to_cart.screen_name, event_product_added_to_cart.product_name,
       event_product_added_to_cart.product_sku, event_product_added_to_cart.actual_product_price,
-      event_product_added_to_cart.aiv, event_product_added_to_cart.discount, event_product_added_to_cart.is_discount_applied,
+      event_product_added_to_cart.discount, event_product_added_to_cart.is_discount_applied,
       event_product_added_to_cart.list_position, event_product_added_to_cart.original_price, event_product_added_to_cart.original_product_price,
       event_product_added_to_cart.product_placement, event_product_added_to_cart.product_position,
       event_product_added_to_cart.search_query_id]

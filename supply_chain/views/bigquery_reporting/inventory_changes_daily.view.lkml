@@ -5,6 +5,32 @@ view: inventory_changes_daily {
   sql_table_name: `flink-data-prod.reporting.inventory_changes_daily`
     ;;
 
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~     Parameters     ~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  dimension: dynamic_inventory_change_date {
+
+    label:       "Dynamic Inventory Change Date"
+    group_label: ">> Dates & Timestamps"
+
+    label_from_parameter: global_filters_and_parameters.timeframe_picker
+    sql:
+    {% if    global_filters_and_parameters.timeframe_picker._parameter_value == 'Date' %}
+        ${inventory_change_date}
+
+      {% elsif global_filters_and_parameters.timeframe_picker._parameter_value == 'Week' %}
+      ${inventory_change_week}
+
+      {% elsif global_filters_and_parameters.timeframe_picker._parameter_value == 'Month' %}
+      ${inventory_change_month}
+
+      {% else %}
+      ${inventory_change_month}
+
+      {% endif %};;
+  }
+
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Dimensions     ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -54,6 +80,12 @@ view: inventory_changes_daily {
     sql: ${TABLE}.quantity_change ;;
     value_format_name: decimal_0
     hidden: no
+  }
+
+  dimension: quantity_change_inbounded {
+    type: number
+    sql: case when ${is_inbound} then ${quantity_change} else 0 end ;;
+    hidden: yes
   }
 
   dimension:is_outbound_waste {
@@ -246,6 +278,16 @@ view: inventory_changes_daily {
     value_format_name: decimal_0
   }
 
+  measure: pct_product_delivery_damaged_to_inbounds {
+    label:       "% Delivery Damage Rate"
+    description: "The percentage of items delivered by a supplier, that needed to be booked-out (corrected) due to items being damaged when being delivered to a hub"
+    group_label: "* Inventory Changes Daily *"
+
+    type: number
+    sql: safe_divide(${sum_correction_product_delivery_damaged},${sum_inbound_inventory}) ;;
+    value_format_name: percent_2
+  }
+
   measure: sum_correction_product_damaged {
     label: "# Correction (Product Damaged)"
     description: "The number of corrected items, that are due to being damaged (too close to best-before-date) while storing them in our hubs."
@@ -416,6 +458,7 @@ view: inventory_changes_daily {
       sum_outbound_waste,
       sum_outbound_orders,
       sum_outbound_wrong_delivery,
+      sum_outbound_too_good_to_go,
       is_inbound,
       is_outbound_waste,
       change_reason

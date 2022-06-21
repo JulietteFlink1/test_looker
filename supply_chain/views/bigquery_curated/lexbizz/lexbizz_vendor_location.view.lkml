@@ -55,16 +55,19 @@ view: lexbizz_vendor_location {
   }
 
   dimension: vendor_id {
+    label: "Supplier ID"
     type: string
     sql: ${TABLE}.vendor_id ;;
   }
 
   dimension: vendor_location {
+    label: "Supplier Location"
     type: string
     sql: ${TABLE}.vendor_location ;;
   }
 
   dimension: vendor_status {
+    label: "Supplier Status"
     type: string
     sql: ${TABLE}.vendor_status ;;
   }

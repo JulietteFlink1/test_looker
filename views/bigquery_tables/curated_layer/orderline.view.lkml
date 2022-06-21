@@ -173,6 +173,40 @@ view: orderline {
     sql: ${TABLE}.amt_unit_price_net ;;
   }
 
+  dimension: amt_total_price_after_product_discount_gross {
+    label: "Total Price Gross (After Product Discount)"
+    description: "Unit Price of the Product after Deduction of Product discounts multiplied by Quantity Sold. incl. VAT"
+    group_label: "> Monetary Dimensions"
+    type: number
+    sql: ${TABLE}.amt_total_price_after_product_discount_gross ;;
+  }
+
+  dimension: amt_total_price_after_product_discount_net {
+    label: "Total Price Net (After Product Discount)"
+    description: "Unit Price of the Product after Deduction of Product discounts multiplied by Quantity Sold. excl. VAT"
+    group_label: "> Monetary Dimensions"
+    type: number
+    sql: ${TABLE}.amt_total_price_after_product_discount_net ;;
+  }
+
+  dimension: unit_price_after_product_discount_net {
+    label: "Unit Price Net (After Product Discount)"
+    description: "Unit Price of the Product after Deduction of Product discounts. excl. VAT"
+    group_label: "> Monetary Dimensions"
+    type: number
+    sql: ${TABLE}.amt_unit_price_after_product_discount_net ;;
+  }
+
+  dimension: unit_price_after_product_discount_gross {
+    label: "Unit Price Gross (After Product Discount)"
+    description: "Unit Price of the Product after Deduction of Product discounts. incl. VAT"
+    group_label: "> Monetary Dimensions"
+    type: number
+    sql: ${TABLE}.amt_unit_price_after_product_discount_gross ;;
+  }
+
+
+
   dimension: currency {
     type: string
     sql: ${TABLE}.currency ;;
@@ -561,12 +595,52 @@ view: orderline {
     group_label: "> Monetary Metrics"
   }
 
+  measure: sum_item_price_after_product_discount_gross {
+    label: "SUM Item Prices sold After Product Discount (gross)"
+    description: "Total Price of sold Items after Deduction of Product Discounts. incl. VAT"
+    hidden:  no
+    type: sum
+    sql: ${amt_total_price_after_product_discount_gross};;
+    value_format_name: euro_accounting_2_precision
+    group_label: "> Monetary Metrics"
+  }
+
+  measure: sum_item_price_after_product_discount_net {
+    label: "SUM Item Prices sold After Product Discount (net)"
+    description: "Total Price of sold Items after Deduction of Product Discounts. excl. VAT"
+    hidden:  no
+    type: sum
+    sql: ${amt_total_price_after_product_discount_net};;
+    value_format_name: euro_accounting_2_precision
+    group_label: "> Monetary Metrics"
+  }
+
   measure: sum_item_price_fulfilled_gross {
     label: "SUM Item Prices fulfilled (gross)"
     description: "Sum of fulfilled Item prices (incl. VAT)"
     hidden:  no
     type: sum
     sql: ${amt_total_price_gross};;
+    value_format_name: euro_accounting_2_precision
+    group_label: "> Monetary Metrics"
+  }
+
+  measure: sum_item_price_fulfilled_after_product_discount_gross {
+    label: "SUM Item Prices fulfilled After Product Discount (gross)"
+    description: "Sum of fulfilled Item prices after Deduction of Product Discount (incl. VAT)"
+    hidden:  no
+    type: sum
+    sql: ${amt_total_price_after_product_discount_gross};;
+    value_format_name: euro_accounting_2_precision
+    group_label: "> Monetary Metrics"
+  }
+
+  measure: sum_item_price_fulfilled_after_product_discount_net {
+    label: "SUM Item Prices fulfilled After Product Discount (net)"
+    description: "Sum of fulfilled Item prices after Deduction of Product Discount (excl. VAT)"
+    hidden:  no
+    type: sum
+    sql: ${amt_total_price_after_product_discount_net};;
     value_format_name: euro_accounting_2_precision
     group_label: "> Monetary Metrics"
   }
@@ -983,10 +1057,138 @@ view: orderline {
     group_label: "> Monetary Metrics"
   }
 
+  measure: avg_item_value_after_product_discount_gross {
+    label: "AVG Item Value After Product Discount (Gross)"
+    description: "AIV represents the Average value of items (incl. VAT). Excludes fees (gross), after deducting Product Discounts. before deducting Cart Discounts."
+    hidden: no
+    type:number
+    sql: ${sum_item_price_after_product_discount_gross} / nullif(${count_order_uuid},0) ;;
+    value_format_name: eur
+    group_label: "> Monetary Metrics"
+  }
+
+  measure: avg_item_value_after_product_discount_net {
+    label: "AVG Item Value After Product Discount (Net)"
+    description: "AIV represents the Average value of items (excl. VAT). Excludes fees (gross), after deducting Product Discounts. before deducting Cart Discounts."
+    hidden: no
+    type:number
+    sql: ${sum_item_price_after_product_discount_net} / nullif(${count_order_uuid},0) ;;
+    value_format_name: eur
+    group_label: "> Monetary Metrics"
+  }
+
   measure: number_of_orderlines {
     label: "# Order Lineitems"
     group_label: "> Absolute Metrics"
     type: count
     drill_fields: [id, name]
   }
+
+  ########## Parameters
+
+  parameter: is_after_product_discounts {
+    group_label: "> Parameters"
+    type: yesno
+    label: "Is After Deduction of Product Discounts"
+    default_value: "No"
+  }
+
+  #########  Dynamic measures
+
+  measure: sum_item_price_fulfilled_gross_dynamic {
+    group_label: "> Dynamic Monetary Metrics"
+    label: "SUM Items Price Fulfilled Gross (Before/After Product Discount Deduction)"
+    description: "To be used together with the Is After Product Discounts Deduction parameter."
+    label_from_parameter: is_after_product_discounts
+    value_format_name: eur
+    type: number
+    sql:
+    {% if is_after_product_discounts._parameter_value == "true" %}
+    ${sum_item_price_fulfilled_after_product_discount_gross}
+    {% elsif is_after_product_discounts._parameter_value == "false" %}
+    ${sum_item_price_fulfilled_gross}
+    {% endif %}
+    ;;
+}
+
+  measure: sum_item_price_sold_gross_dynamic {
+    group_label: "> Dynamic Monetary Metrics"
+    label: "SUM Items Price Sold Gross (Before/After Product Discount Deduction)"
+    description: "To be used together with the Is After Product Discounts Deduction parameter."
+    label_from_parameter: is_after_product_discounts
+    value_format_name: eur
+    type: number
+    sql:
+    {% if is_after_product_discounts._parameter_value == 'true' %}
+    ${sum_item_price_after_product_discount_gross}
+    {% elsif is_after_product_discounts._parameter_value == 'false' %}
+    ${sum_item_price_gross}
+    {% endif %}
+    ;;
+  }
+
+  measure: sum_item_price_fulfilled_net_dynamic {
+    group_label: "> Dynamic Monetary Metrics"
+    label: "SUM Items Price Fulfilled Net (Before/After Product Discount Deduction)"
+    description: "To be used together with the Is After Product Discounts Deduction parameter."
+    label_from_parameter: is_after_product_discounts
+    value_format_name: eur
+    type: number
+    sql:
+    {% if is_after_product_discounts._parameter_value == 'true' %}
+    ${sum_item_price_fulfilled_after_product_discount_net}
+    {% elsif is_after_product_discounts._parameter_value == 'false' %}
+    ${sum_item_price_fulfilled_net}
+    {% endif %}
+    ;;
+  }
+
+  measure: sum_item_price_sold_net_dynamic {
+    group_label: "> Dynamic Monetary Metrics"
+    label: "SUM Items Price Sold Net (Before/After Product Discount Deduction)"
+    description: "To be used together with the Is After Product Discounts Deduction parameter."
+    label_from_parameter: is_after_product_discounts
+    value_format_name: eur
+    type: number
+    sql:
+    {% if is_after_product_discounts._parameter_value == 'true' %}
+    ${sum_item_price_after_product_discount_net}
+    {% elsif is_after_product_discounts._parameter_value == 'false' %}
+    ${sum_item_price_net}
+    {% endif %}
+    ;;
+  }
+
+  measure: avg_item_value_gross_dynamic {
+    group_label: "> Dynamic Monetary Metrics"
+    label: "AVG Item Value (Before/After Product Discount Deduction) (Gross)"
+    description: "AIV represents the Average value of items (incl. VAT). Excludes fees (gross). before deducting Cart Discounts. To be used together with the Is After Product Discounts Deduction parameter."
+    label_from_parameter: is_after_product_discounts
+    value_format_name: eur
+    type: number
+    sql:
+    {% if is_after_product_discounts._parameter_value == 'true' %}
+    ${avg_item_value_after_product_discount_gross}
+    {% elsif is_after_product_discounts._parameter_value == 'false' %}
+    ${avg_item_value_gross}
+    {% endif %}
+    ;;
+  }
+
+  measure: avg_item_value_net_dynamic {
+    group_label: "> Dynamic Monetary Metrics"
+    label: "AVG Item Value (Before/After Product Discount Deduction) (Net)"
+    description: "AIV represents the Average value of items (incl. VAT). Excludes fees (gross). before deducting Cart Discounts. To be used together with the Is After Product Discounts Deduction parameter."
+    label_from_parameter: is_after_product_discounts
+    value_format_name: eur
+    type: number
+    sql:
+    {% if is_after_product_discounts._parameter_value == 'true' %}
+    ${avg_item_value_after_product_discount_net}
+    {% elsif is_after_product_discounts._parameter_value == 'false' %}
+    ${avg_item_value_net}
+    {% endif %}
+    ;;
+  }
+
 }

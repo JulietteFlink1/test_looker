@@ -10,7 +10,8 @@ explore: consumer_behaviour_dynamic_delivery_fee {
   group_label: "Consumer Product"
   description: "Effects of DDF on Consumer Behaviour"
 
-  sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} ${event_date} {% endcondition %};;
+  sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} ${event_date} {% endcondition %}
+  and ${country_iso} IS NOT NULL;;
 
 
   join: global_filters_and_parameters {

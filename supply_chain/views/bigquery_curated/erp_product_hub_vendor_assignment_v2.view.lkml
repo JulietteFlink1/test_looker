@@ -101,7 +101,7 @@ view: erp_product_hub_vendor_assignment_v2 {
 
   dimension: item_at_vendor_status {
 
-    label:       "Item at Vendor status"
+    label:       "Item at Supplier status"
     description: "The status indicating, if a vendor is supplying the given SKU"
     group_label: "> Item Level ERP Data"
 
@@ -198,7 +198,7 @@ view: erp_product_hub_vendor_assignment_v2 {
   dimension: warehouse_id {
 
     label:       "Warehouse ID"
-    description: "ID of a vendors warehouse according to Lexbizz"
+    description: "ID of a suppliers warehouse according to Lexbizz"
     group_label: "> Warehouse Level ERP Data"
 
     alias: [erp_warehouse_id]
@@ -210,7 +210,7 @@ view: erp_product_hub_vendor_assignment_v2 {
   dimension: warehouse_name {
 
     label:       "Warehouse Name"
-    description: "Name of a vendors warehouse according to Lexbizz"
+    description: "Name of a suppliers warehouse according to Lexbizz"
     group_label: "> Warehouse Level ERP Data"
 
     type: string
@@ -220,7 +220,7 @@ view: erp_product_hub_vendor_assignment_v2 {
   dimension: is_warehouse_active {
 
     label:       "Is Warehouse Active"
-    description: "Boolean, that indicates, if a vendors warehouse is active according to Lexbizz and thus delivers to related Flink hubs"
+    description: "Boolean, that indicates, if a suppliers warehouse is active according to Lexbizz and thus delivers to related Flink hubs"
     group_label: "> Warehouse Level ERP Data"
 
     type: yesno
@@ -246,9 +246,9 @@ view: erp_product_hub_vendor_assignment_v2 {
   # - - - - - - - - - - - - - START: Vendor-Level Data - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   dimension: vendor_class {
 
-    label:       "Vendor Class"
+    label:       "Supplier Class"
     description: "Classification of a vendor according to lexbizz"
-    group_label: "> Vendor Level ERP Data"
+    group_label: "> Supplier Level ERP Data"
 
     type: string
     sql: ${TABLE}.vendor_class ;;
@@ -256,9 +256,9 @@ view: erp_product_hub_vendor_assignment_v2 {
 
   dimension: vendor_id {
 
-    label:       "Vendor ID"
+    label:       "Supplier ID"
     description: "Identifier of a vendor in lexbizz"
-    group_label: "> Vendor Level ERP Data"
+    group_label: "> Supplier Level ERP Data"
 
     alias: [erp_vendor_id]
 
@@ -268,9 +268,9 @@ view: erp_product_hub_vendor_assignment_v2 {
 
   dimension: vendor_location {
 
-    label:       "Vendor Location ID"
+    label:       "Supplier Location ID"
     description: "Identifier of a vendors location according to lexbizz"
-    group_label: "> Vendor Level ERP Data"
+    group_label: "> Supplier Level ERP Data"
 
     alias: [erp_vendor_location_id]
 
@@ -280,9 +280,9 @@ view: erp_product_hub_vendor_assignment_v2 {
 
   dimension: vendor_name {
 
-    label:       "Vendor Name"
+    label:       "Supplier Name"
     description: "Name of a vendor in lexbizz"
-    group_label: "> Vendor Level ERP Data"
+    group_label: "> Supplier Level ERP Data"
 
     alias: [erp_vendor_name]
 
@@ -292,9 +292,9 @@ view: erp_product_hub_vendor_assignment_v2 {
 
   dimension: vendor_status {
 
-    label:       "Vendor Status"
-    description: "Status of a vendor according to lexbizz - it determines, whether a vendor is actively supplying to Flink"
-    group_label: "> Vendor Level ERP Data"
+    label:       "Supplier Status"
+    description: "Status of a supplier according to lexbizz - it determines, whether a vendor is actively supplying to Flink"
+    group_label: "> Supplier Level ERP Data"
 
     alias: [erp_vendor_status]
 
@@ -460,8 +460,8 @@ view: erp_product_hub_vendor_assignment_v2 {
   # - - - - - - - - - - - - -   Start: DC Data - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   dimension: vendor_id_dc_corrected {
 
-    label:       "Corrected Vendor ID (for DC delivering to Hub)"
-    description: "In cases, where the vendor delivers to our distribution centers and the distribution center do deliver to the hubs,
+    label:       "Corrected Supplier ID (for DC delivering to Hub)"
+    description: "In cases, where the supplier delivers to our distribution centers and the distribution center do deliver to the hubs,
                   we see the vendor_id of the DC as vendor_id instead of the vendor_id of the original vendor.
                   To account for that, we provide in this field the vendor_id, that actually sent the item to Flink (to Flinks DCs)"
     group_label: "> DC data"
@@ -483,7 +483,7 @@ view: erp_product_hub_vendor_assignment_v2 {
 
   dimension: is_vendor_dc {
 
-    label:       "Is Vendor DC"
+    label:       "Is Supplier DC"
     description: "This boolean is true, for cases, when the items, that are delivered to a hub are being sent from a distribution center"
     group_label: "> DC data"
 
