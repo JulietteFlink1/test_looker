@@ -12,7 +12,7 @@ view: inventory_changes_daily {
   dimension: dynamic_inventory_change_date {
 
     label:       "Dynamic Inventory Change Date"
-    group_label: ">> Dates and Timestamps"
+    group_label: ">> Dates & Timestamps"
 
     label_from_parameter: global_filters_and_parameters.timeframe_picker
     sql:

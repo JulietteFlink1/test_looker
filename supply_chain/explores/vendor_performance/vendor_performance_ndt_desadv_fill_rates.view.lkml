@@ -9,6 +9,8 @@ view: vendor_performance_ndt_desadv_fill_rates {
       column: sum_total_quantity            { field: bulk_items.sum_total_quantity }
       column: sum_inbound_inventory         { field: inventory_changes_daily.sum_inbound_inventory }
 
+      bind_all_filters: yes
+
     }
   }
   dimension: dispatch_notification_id {
@@ -62,15 +64,15 @@ view: vendor_performance_ndt_desadv_fill_rates {
 
     sql: case
             when ${desadv_fill_rate_po_corrected} > 0.8
-            then 'booked in'
+            then '1) booked in'
 
       when ${desadv_fill_rate_po_corrected} > 0.25 and ${desadv_fill_rate_po_corrected} <= 0.8
-      then 'less than 80% booked in'
+      then '2) less than 80% booked in'
 
       when ${desadv_fill_rate_po_corrected} <= 0.25
-      then 'less than 25% booked in'
+      then '3) less than 25% booked in'
 
-      else 'not booked in'
+      else '4) not booked in'
 
       end
       ;;
@@ -79,7 +81,7 @@ view: vendor_performance_ndt_desadv_fill_rates {
 
   dimension: is_desadv_delivered_on_day {
     type: yesno
-    sql: ${is_desadv_inbounded_po_corrected} != 'not booked in' ;;
+    sql: ${is_desadv_inbounded_po_corrected} != '4) not booked in' ;;
     hidden: yes
   }
 

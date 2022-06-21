@@ -9,6 +9,8 @@ view: vendor_performance_ndt_po_fill_rate {
       column: sum_total_quantity     { field: purchase_orders.sum_selling_unit_quantity }
       column: sum_inbound_inventory  { field: inventory_changes_daily.sum_inbound_inventory }
 
+      bind_all_filters: yes
+
     }
   }
   dimension: order_number {
@@ -62,15 +64,15 @@ view: vendor_performance_ndt_po_fill_rate {
 
     sql: case
             when ${po_fill_rate} > 0.8
-            then 'booked in'
+            then '1) booked in'
 
       when ${po_fill_rate} > 0.25 and ${po_fill_rate} <= 0.8
-      then 'less than 80% booked in'
+      then '2) less than 80% booked in'
 
-      when ${po_fill_rate} <= 0.25
-      then 'less than 25% booked in'
+      when ${po_fill_rate} > 0 and ${po_fill_rate} <= 0.25
+      then '3) less than 25% booked in'
 
-      else 'not booked in'
+      else '4) not booked in'
 
       end
       ;;
@@ -79,7 +81,7 @@ view: vendor_performance_ndt_po_fill_rate {
 
   dimension: is_po_delivered_on_day {
     type: yesno
-    sql: ${is_po_inbounded_po_corrected} != 'not booked in' ;;
+    sql: ${is_po_inbounded_po_corrected} != '4) not booked in' ;;
     hidden: yes
   }
 

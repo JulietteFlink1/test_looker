@@ -49,7 +49,7 @@ view: dispatch_notifications {
   dimension: dynamic_delivery_date {
 
     label:       "Dynamic Delivery Date"
-    group_label: ">> Dates and Timestamps"
+    group_label: ">> Dates & Timestamps"
 
     label_from_parameter: global_filters_and_parameters.timeframe_picker
     sql:
