@@ -144,7 +144,7 @@ view: orders {
     type: number
     hidden: no
     sql: ${TABLE}.amt_total_price_gross
-    ;;
+      ;;
   }
 
   dimension: item_value_net {
@@ -714,8 +714,6 @@ view: orders {
 
   dimension: is_voucher_order{
     group_label: "* Order Dimensions *"
-    label: "Is Discounted Order (Yes/No)"
-    description: "Flags if an Order has any Discount (Cart or Product) applied"
     type: yesno
     sql: ${TABLE}.is_discounted_order ;;
   }
@@ -1326,47 +1324,6 @@ view: orders {
   }
 
 
-  dimension: amt_refund_gross {
-    hidden: yes
-    type: number
-    sql: ${TABLE}.amt_refund_gross;;
-  }
-  dimension: amt_total_sales_gross {
-    hidden: yes
-    type: number
-    sql: ${TABLE}.amt_total_sales_gross;;
-  }
-  dimension: amt_total_sales_excluding_deposit_gross {
-    hidden: yes
-    type: number
-    sql: ${TABLE}.amt_total_sales_excluding_deposit_gross;;
-  }
-  dimension: amt_total_sales_after_discount_gross {
-    hidden: yes
-    type: number
-    sql: ${TABLE}.amt_total_sales_after_discount_gross;;
-  }
-  dimension: amt_total_sales_after_discount_and_refund_gross {
-    hidden: yes
-    type: number
-    sql: ${TABLE}.amt_total_sales_after_discount_and_refund_gross;;
-  }
-  dimension: amt_total_sales_after_discount_and_refund_excluding_deposit_gross {
-    hidden: yes
-    type: number
-    sql: ${TABLE}.amt_total_sales_after_discount_and_refund_excluding_deposit_gross;;
-  }
-  dimension: amt_gpv_gross {
-    hidden: yes
-    type: number
-    sql: ${TABLE}.amt_gpv_gross;;
-  }
-  dimension: amt_npv_gross {
-    hidden: yes
-    type: number
-    sql: ${TABLE}.amt_npv_gross;;
-  }
-
   ######## PARAMETERS
 
   parameter: date_granularity {
@@ -1393,8 +1350,6 @@ view: orders {
     allowed_value: { value: "share_of_orders_fulfilled_over_30min" label: "% Orders Fulfilled >30min"}
     allowed_value: { value: "gmv_gross" label: "GMV (Gross)"}
     allowed_value: { value: "gmv_net" label: "GMV (Net)"}
-    allowed_value: { value: "revenue_gross" label: "Revenue (Gross)"}
-    allowed_value: { value: "revenue_net" label: "Revenue (Net)"}
     allowed_value: { value: "discount_amount" label: "Discount Amount"}
     allowed_value: { value: "AVG_fulfillment_time" label: "AVG Fulfillment Time"}
     allowed_value: { value: "AVG_order_value_gross" label: "AVG Order Value (Gross)"}
@@ -1472,10 +1427,6 @@ view: orders {
       ${sum_gmv_gross}
     {% elsif KPI_parameter._parameter_value == 'gmv_net' %}
       ${sum_gmv_net}
-    {% elsif KPI_parameter._parameter_value == 'revenue_gross' %}
-      ${sum_revenue_gross}
-    {% elsif KPI_parameter._parameter_value == 'revenue_net' %}
-      ${sum_revenue_net}
     {% elsif KPI_parameter._parameter_value == 'discount_amount' %}
       ${sum_discount_amt}
     {% elsif KPI_parameter._parameter_value == 'AVG_fulfillment_time' %}
@@ -1502,7 +1453,7 @@ view: orders {
       ${shyftplan_riders_pickers_hours.riders}
     {% endif %};;
 
-      html:
+    html:
           {% if KPI_parameter._parameter_value == 'share_of_orders_delivered_in_time' %}
             {{ rendered_value | round: 2  | append: "%" }}
           {% elsif KPI_parameter._parameter_value == 'share_of_orders_delayed_5min' %}
@@ -1518,10 +1469,6 @@ view: orders {
           {% elsif KPI_parameter._parameter_value == 'gmv_gross' %}
             €{{ value | round }}
           {% elsif KPI_parameter._parameter_value == 'gmv_net' %}
-            €{{ value | round }}
-          {% elsif KPI_parameter._parameter_value == 'revenue_gross' %}
-            €{{ value | round }}
-          {% elsif KPI_parameter._parameter_value == 'revenue_net' %}
             €{{ value | round }}
           {% elsif KPI_parameter._parameter_value == 'discount_amount' %}
             €{{ value | round }}
@@ -1547,1594 +1494,1494 @@ view: orders {
             {{ value }}
           {% endif %};;
 
-      }
-
-
-      ##############
-      ## AVERAGES ##
-      ##############
-
-
-      measure: count {
-        type: count
-        drill_fields: [translated_discount_name, shipping_method_name, warehouse_name, discount_name]
-      }
-
-      measure: avg_promised_eta {
-        group_label: "* Operations / Logistics *"
-        label: "AVG PDT"
-        description: "Average Promised Fulfillment Time (PDT) a shown to customer"
-        hidden:  no
-        type: average
-        sql: ${delivery_eta_minutes};;
-        value_format_name: decimal_1
-      }
-
-      measure: avg_pdt_mm_ss {
-        group_label: "* Operations / Logistics *"
-        label: "AVG PDT (MM:SS)"
-        description: "Average Promised Fulfillment Time (PDT) a shown to customer"
-        type: average
-        sql: ${delivery_eta_minutes} * 60 / 86400.0;;
-        value_format: "mm:ss"
-      }
-
-      measure: avg_delivery_time_estimate {
-        label: "AVG Fulfillment Time Estimate (min)"
-        description: "The average internally predicted time in minutes for the order to arrive at the customer (dynamic model result - not necessarily the PDT shown to the customer as some conversion can be applied in between)"
-        group_label: "* Operations / Logistics *"
-        type: average
-        sql: ${delivery_time_estimate_minutes} ;;
-        value_format_name: decimal_1
-      }
-
-      measure: avg_google_cycling_time_minutes {
-        group_label: "* Operations / Logistics *"
-        label: "AVG Google Cycling Time"
-        description: "Average time needed to cycle to the customer estimated by Google in the moment of order placement"
-        hidden:  no
-        type: average
-        sql: ${google_cycling_time_minutes};;
-        value_format_name: decimal_1
-      }
-
-      measure: avg_diff_riding_to_customer_actual_vs_google {
-        group_label: "* Operations / Logistics *"
-        label: "AVG Riding to Customer Time Difference Actuals vs. Google Estimate"
-        description: "The average of the difference beween the actual riding to customer time and what Google estimated is needed in the moment of order placement"
-        hidden:  no
-        type: average
-        sql: ${riding_to_customer_time_minutes}-${google_cycling_time_minutes};;
-        value_format_name: decimal_1
-      }
-
-      measure: avg_fulfillment_time {
-        group_label: "* Operations / Logistics *"
-        label: "AVG Fulfillment Time (decimal)"
-        description: "Average Fulfillment Time (decimal minutes) considering order placement to delivery (rider at customer). Outliers excluded (<3min or >210min)"
-        hidden:  no
-        type: average
-        sql: ${fulfillment_time};;
-        value_format_name: decimal_1
-      }
-
-      measure: avg_fulfillment_time_mm_ss {
-        group_label: "* Operations / Logistics *"
-        label: "AVG Fulfillment Time (HH:MM:SS)"
-        description: "Average Fulfillment Time considering order placement to delivery (rider at customer). Outliers excluded (<3min or >210min)"
-        type: average
-        sql: ${fulfillment_time} * 60 / 86400.0;;
-        value_format: "hh:mm:ss"
-      }
-
-
-      measure: avg_picker_queuing_time {
-        alias: [avg_reaction_time]
-        group_label: "* Operations / Logistics *"
-        label: "AVG Picker Queuing Time"
-        description: "Average Picker Queuing Time of the Picker considering order placement until picking started. Outliers excluded (<0min or >120min)"
-        hidden:  no
-        type: average
-        sql:${picker_queuing_time};;
-        value_format_name: decimal_1
-      }
-
-      measure: avg_picking_time {
-        group_label: "* Operations / Logistics *"
-        label: "AVG Picking Time"
-        description: "Average Picking Time considering first fulfillment to second fulfillment created. Outliers excluded (<0min or >30min)"
-        hidden:  no
-        type: average
-        sql:${time_diff_between_two_subsequent_fulfillments};;
-        value_format_name: decimal_1
-      }
-
-      measure: avg_rider_queuing_time {
-        alias: [avg_acceptance_time]
-        group_label: "* Operations / Logistics *"
-        label: "AVG Rider Queuing Time"
-        description: "Average time between picking completion and rider having claimed the order."
-        hidden:  no
-        type: average
-        sql:${rider_queuing_time};;
-        value_format_name: decimal_1
-      }
-
-      measure: avg_riding_to_customer_time {
-        group_label: "* Operations / Logistics *"
-        label: "AVG Riding To Customer Time"
-        description: "Average riding to customer time considering delivery start to arrival at customer. Outliers excluded (<1min or >30min)"
-        hidden:  no
-        type: average
-        sql: ${riding_to_customer_time_minutes};;
-        value_format_name: decimal_1
-      }
-
-      measure: avg_discount_value {
-        group_label: "* Monetary Values *"
-        label: "AVG Discount Value"
-        description: "Average Discount Value (only considering orders where discount was applied). Includes both Product and Cart discounts"
-        hidden:  no
-        type: average
-        sql: ${discount_amount};;
-        filters: [discount_amount: ">0"]
-        value_format_name: euro_accounting_2_precision
-      }
-
-      measure: avg_discount_cart_gross {
-        group_label: "* Monetary Values *"
-        label: "AVG Cart Discount Value (Gross)"
-        description: "Average of Cart Discount Value Gross (voucher applied at a checkout). Includes delivery discounts."
-        hidden:  no
-        type: average
-        sql: ${amt_discount_cart_gross};;
-        filters: [amt_discount_cart_gross: ">0"]
-        value_format_name: euro_accounting_2_precision
-      }
-
-      measure: avg_discount_cart_net {
-        group_label: "* Monetary Values *"
-        label: "AVG Cart Discount Value (Net)"
-        description: "Average of Cart Discount Value Net (voucher applied at a checkout). Includes delivery discounts."
-        hidden:  no
-        type: average
-        sql: ${amt_discount_cart_net};;
-        filters: [amt_discount_cart_net: ">0"]
-        value_format_name: euro_accounting_2_precision
-      }
-
-      measure: avg_discount_product_gross {
-        group_label: "* Monetary Values *"
-        label: "AVG Product Discount Value (Gross)"
-        description: "Average Discount Value Gross (only considering orders where discount on products was applied)"
-        hidden:  no
-        type: average
-        sql: ${amt_discount_products_gross};;
-        filters: [amt_discount_products_gross: ">0"]
-        value_format_name: euro_accounting_2_precision
-      }
-
-       measure: avg_discount_product_net {
-        group_label: "* Monetary Values *"
-        label: "AVG Product Discount Value (Net)"
-        description: "Average Discount Value Net (only considering orders where discount on products was applied)"
-        hidden:  no
-        type: average
-        sql: ${amt_discount_products_net};;
-        filters: [amt_discount_products_net: ">0"]
-        value_format_name: euro_accounting_2_precision
-      }
-
-      measure: avg_gpv_gross {
-        group_label: "* Monetary Values *"
-        label: "AVG GPV"
-        description: "Gross Payment Value. Actual amount paid by the customer in CT. Sum of Delivery Fees, Items Price, Tips, Deposit. Excl. Donations. After Deduction of Cart and Product Discounts. Incl. VAT"
-        hidden:  no
-        type: average
-        sql: ${amt_gpv_gross};;
-        value_format_name: euro_accounting_2_precision
-      }
-
-      measure: avg_npv_gross {
-        group_label: "* Monetary Values *"
-        label: "AVG NPV"
-        description: "Net Payment Value. Actual amount paid by the customer in CT after Refunds. Sum of Delivery Fees, Items Price, Tips, Deposit. Excl. Donations. After Deduction of Cart and Product Discounts. After Refunds. Incl. VAT"
-        hidden:  no
-        type: average
-        sql: ${amt_npv_gross};;
-        value_format_name: euro_accounting_2_precision
-      }
-
-      measure: avg_estimated_picking_time_minutes {
-        group_label: "* Operations / Logistics *"
-        label: "AVG Estimated Picking Time"
-        type: average
-        sql: ${estimated_picking_time_minutes};;
-        value_format_name: decimal_1
-      }
-
-
-      measure: avg_estimated_riding_time_minutes {
-        group_label: "* Operations / Logistics *"
-        label: "AVG Estimated Riding Time"
-        type: average
-        sql: ${estimated_riding_time_minutes};;
-        value_format_name: decimal_1
-      }
-
-      measure: avg_estimated_queuing_time_for_picker_minutes {
-        group_label: "* Operations / Logistics *"
-        label: "AVG Estimated Queuing Time for Pickers"
-        type: average
-        sql: ${estimated_queuing_time_for_picker_minutes};;
-        value_format_name: decimal_1
-      }
-
-      measure: avg_queuing_time_for_pickers_minutes {
-        group_label: "* Operations / Logistics *"
-        label: "AVG Queuing Time for Pickers"
-        type: average
-        sql: ${queuing_time_for_picker_minutes} ;;
-        value_format_name: decimal_1
-        hidden: yes
-      }
-
-      measure: avg_queuing_time_for_riders_minutes {
-        group_label: "* Operations / Logistics *"
-        label: "AVG Queuing Time for Riders"
-        type: average
-        sql: ${queuing_time_for_rider_minutes} ;;
-        value_format_name: decimal_1
-        hidden: yes
-      }
-
-      measure: avg_pre_riding_time {
-        group_label: "* Operations / Logistics *"
-        label: "AVG Pre Riding Time"
-        type: average
-        sql: ${pre_riding_time} ;;
-        value_format_name: decimal_1
-      }
-
-      measure: avg_estimated_queuing_time_for_rider_minutes {
-        group_label: "* Operations / Logistics *"
-        label: "AVG Estimated Queuing Time for Riders"
-        type: average
-        sql: ${estimated_queuing_time_for_rider_minutes};;
-        value_format_name: decimal_1
-      }
-
-      measure: avg_riding_to_hub_time {
-        group_label: "* Operations / Logistics *"
-        label: "AVG Riding to Hub time"
-        description: "Average riding time from customer location back to the hub (<1min or >30min)."
-        hidden:  no
-        type: average
-        sql: ${riding_to_hub_time_minutes};;
-        value_format_name: decimal_1
-      }
-
-      measure: avg_rider_handling_time {
-        group_label: "* Operations / Logistics *"
-        label: "AVG Rider Handling Time"
-        description: "Average total rider handling time: riding to customer + at customer + riding to hub"
-        hidden:  no
-        type: average
-        sql: ${rider_handling_time_minutes};;
-        value_format_name: decimal_1
-      }
-
-      measure: avg_rider_handling_time_stacked {
-        group_label: "* Operations / Logistics *"
-        label: "AVG Rider Handling Time Stacked"
-        description: "Average total rider handling time (stacked): riding to customer + at customer + riding to hub"
-        hidden:  yes
-        type: average
-        sql:
-          case when ${TABLE}.is_stacked_order = true then ${rider_handling_time_minutes} end;;
-        value_format_name: decimal_1
-      }
-
-      measure: avg_rider_handling_time_non_stacked {
-        group_label: "* Operations / Logistics *"
-        label: "AVG Rider Handling Time Non Stacked"
-        description: "Average total rider handling time (non-stacked): riding to customer + at customer + riding to hub"
-        hidden:  yes
-        type: average
-        sql: case when ${TABLE}.is_stacked_order = false then ${rider_handling_time_minutes} end;;
-        value_format_name: decimal_1
-      }
-
-      measure: avg_rider_handling_time_saved_vs_non_stacked_orders {
-        group_label: "* Stacked Orders *"
-        label: "AVG Rider Handling Time Minutes Saved Stacked vs. Non-Stacked Orders"
-        description: "The difference in minutes for average rider handling time between stacked and non-stacked orders"
-        hidden:  no
-        type: number
-        sql: ${avg_rider_handling_time_non_stacked} - ${avg_rider_handling_time_stacked};;
-        value_format_name: decimal_1
-      }
-
-
-      measure: avg_potential_rider_handling_time_without_stacking {
-        group_label: "* Operations / Logistics *"
-        label: "AVG Potential Rider Handling Time Without Stacking"
-        description: "Average potential rider handling time estimated without stacking."
-        hidden:  no
-        type: average
-        sql: ${potential_rider_handling_time_without_stacking_minutes};;
-        value_format_name: decimal_1
-      }
-
-      measure: avg_targeted_delivery_time {
-        group_label: "* Operations / Logistics *"
-        label: "AVG Targeted Fulfillment Time (min)"
-        description: "Average internal targeted delivery time for hub ops."
-        hidden:  no
-        type: average
-        sql: ${delivery_time_targeted_minutes};;
-        value_format_name: decimal_1
-      }
-
-      measure: avg_at_customer_time {
-        group_label: "* Operations / Logistics *"
-        label: "AVG At Customer Time"
-        description: "Average Time the Rider spent at the customer between arrival and order completion confirmation"
-        hidden:  no
-        type: average
-        sql:${at_customer_time_minutes};;
-        value_format_name: decimal_1
-      }
-
-      measure: avg_order_value_gross {
-        group_label: "* Monetary Values *"
-        label: "AVG Order Value (Gross)"
-        description: "Average value of orders considering total gross order values. Includes fees (gross), before deducting discounts."
-        hidden:  no
-        type: average
-        sql: ${gmv_gross};;
-        value_format_name: euro_accounting_2_precision
-      }
-
-      measure: avg_order_value_net {
-        group_label: "* Monetary Values *"
-        label: "AVG Order Value (Net)"
-        description: "Average value of orders considering total net order values. Includes fees (net), before deducting discounts."
-        hidden:  no
-        type: average
-        sql: ${gmv_net};;
-        value_format_name: euro_accounting_2_precision
-      }
-
-      measure: avg_item_value_gross {
-        alias: [avg_product_value_gross]
-        group_label: "* Monetary Values *"
-        label: "AVG Item Value (Gross)"
-        description: "AIV represents the Average value of items (incl. VAT). Excludes fees (gross), before deducting discounts."
-        hidden:  no
-        type: average
-        sql: ${item_value_gross};;
-        value_format_name: euro_accounting_2_precision
-      }
-
-      measure: avg_item_value_net {
-        alias: [avg_product_value_net]
-        group_label: "* Monetary Values *"
-        label: "AVG Item Value (Net)"
-        description: "AIV represents the Average value of product items (excl. VAT). Excludes fees (net), before deducting discounts."
-        hidden:  no
-        type: average
-        sql: ${item_value_net};;
-        value_format_name: euro_accounting_2_precision
-      }
-
-      measure: avg_delivery_fee_gross {
-        group_label: "* Monetary Values *"
-        label: "AVG Delivery Fee (Gross)"
-        description: "Average value of Delivery Fees (Gross)"
-        hidden:  no
-        type: average
-        sql: coalesce(${shipping_price_gross_amount});;
-        value_format_name: euro_accounting_2_precision
-      }
-
-      measure: avg_delivery_fee_net {
-        group_label: "* Monetary Values *"
-        label: "AVG Delivery Fee (Net)"
-        description: "Average value of Delivery Fees (Net)"
-        hidden:  no
-        type: average
-        sql: ${shipping_price_net_amount};;
-        value_format_name: euro_accounting_2_precision
-      }
-
-      measure: avg_number_items {
-        group_label: "* Basic Counts (Orders / Customers etc.) *"
-        label: "AVG # items"
-        description: "Average number of items per order"
-        hidden:  no
-        type: number
-        sql: ${sum_quantity_fulfilled}/nullif(${cnt_orders},0);;
-        value_format_name: decimal_1
-      }
-
-      measure: avg_ratio_customer_to_hub {
-        group_label: "* Operations / Logistics *"
-        label: "% Riding to Hub vs. Riding to Customer Time"
-        description: "AVG [(Riding to Hub Time / Riding to Customer Time) - 1]"
-        hidden: no
-        type: average
-        sql: (${riding_to_hub_time_minutes} / NULLIF(${riding_to_customer_time_minutes}, 0)) - 1 ;;
-        value_format: "0%"
-
-      }
-
-      measure: avg_rider_tip {
-        group_label: "* Monetary Values *"
-        description: "AVG Rider Tip Amount considering Orders where a tip was applied"
-        label: "AVG Rider Tip"
-        hidden:  no
-        type: average
-        sql: coalesce(${rider_tip}, 0);;
-        value_format_name: euro_accounting_2_precision
-      }
-
-       measure: avg_deposit {
-        group_label: "* Monetary Values *"
-        description: "AVG Deposit Amount considering Orders having items with deposit "
-        label: "AVG Deposit"
-        hidden:  no
-        type: average
-        sql: coalesce(${deposit}, 0);;
-        value_format_name: euro_accounting_2_precision
-      }
-
-      measure: avg_rider_handling_time_minutes_saved_with_stacking  {
-        group_label: "* Operations / Logistics *"
-        label: "AVG Rider Handling Time Minutes Saved (Stacking)"
-        description: "Average number of minutes saved on each order due to stacking (compared to estimated handling time without stacking)"
-        hidden: no
-        type: average
-        sql: ${rider_handling_time_minutes_saved_with_stacking} ;;
-        value_format_name: decimal_1
-
-      }
-
-
-
-
-
-
-
-      ##########
-      ## SUMS ##
-      ##########
-
-      measure: sum_gmv_gross {
-        group_label: "* Monetary Values *"
-        label: "SUM GMV (Gross)"
-        description: "Sum of Gross Merchandise Value of orders incl. fees and before deduction of discounts (incl. VAT)"
-        hidden:  no
-        type: sum
-        sql: ${gmv_gross};;
-        value_format_name: euro_accounting_0_precision
-      }
-
-      measure: sum_gmv_net {
-        group_label: "* Monetary Values *"
-        label: "SUM GMV (Net)"
-        description: "Sum of Gross Merchandise Value of orders incl. fees and before deduction of discounts (excl. VAT)"
-        hidden:  no
-        type: sum
-        sql: ${gmv_net};;
-        value_format_name: euro_accounting_0_precision
-      }
-
-      measure: sum_revenue_gross {
-        group_label: "* Monetary Values *"
-        label: "SUM Revenue (gross)"
-        description: "Sum of Revenue (GMV after subsidies) incl. VAT. After deduction of discounts, tips and deposit."
-        hidden:  no
-        type: sum
-        sql: ${total_gross_amount};;
-        value_format_name: euro_accounting_2_precision
-      }
-
-      measure: sum_revenue_net {
-        group_label: "* Monetary Values *"
-        label: "SUM Revenue (Net)"
-        description: "Sum of Revenue (GMV after subsidies) excl. VAT"
-        hidden:  no
-        type: sum
-        sql: ${total_net_amount};;
-        value_format_name: euro_accounting_0_precision
-      }
-
-      measure: sum_discount_amt {
-        group_label: "* Monetary Values *"
-        label: "SUM Total Discount Amount (Gross)"
-        description: "Sum of Discount amount applied on orders. Includes both Product and Cart discounts."
-        hidden:  no
-        type: sum
-        sql: ${discount_amount};;
-        value_format_name: euro_accounting_2_precision
-      }
-
-      measure: sum_discount_cart_gross {
-        group_label: "* Monetary Values *"
-        label: "SUM Cart Discount Amount (Gross)"
-        description: "Sum of Cart Discounts Gross (voucher applied at a checkout). Includes delivery discounts."
-        hidden:  no
-        type: sum
-        sql: ${amt_discount_cart_gross};;
-        value_format_name: euro_accounting_2_precision
-      }
-
-      measure: sum_discount_cart_net {
-        group_label: "* Monetary Values *"
-        label: "SUM Cart Discount Amount (Net)"
-        description: "Sum of Cart Discounts Net (voucher applied at a checkout). Includes delivery discounts."
-        hidden:  no
-        type: sum
-        sql: ${amt_discount_cart_net};;
-        value_format_name: euro_accounting_2_precision
-      }
-
-      measure: sum_discount_products_gross {
-        group_label: "* Monetary Values *"
-        label: "SUM Product Discount Amount (Gross)"
-        description: "Sum of Discount amount (Gross) applied on orders. Includes only Product discounts."
-        hidden:  no
-        type: sum
-        sql: ${amt_discount_products_gross};;
-        value_format_name: euro_accounting_2_precision
-      }
-
-      measure: sum_discount_products_net {
-        group_label: "* Monetary Values *"
-        label: "SUM Product Discount Amount (Net)"
-        description: "Sum of Discount amount (Net) applied on orders. Includes only Product discounts."
-        hidden:  no
-        type: sum
-        sql: ${amt_discount_products_net};;
-        value_format_name: euro_accounting_2_precision
-      }
-
-      measure: sum_delivery_fee_gross {
-        group_label: "* Monetary Values *"
-        label: "SUM Delivery Fee (Gross)"
-        description: "Sum of Delivery Fees (Gross) paid by Customers"
-        hidden:  no
-        type: sum
-        sql: ${shipping_price_gross_amount};;
-        value_format_name: euro_accounting_0_precision
-      }
-
-      measure: sum_delivery_fee_net {
-        group_label: "* Monetary Values *"
-        label: "SUM Delivery Fee (Net)"
-        description: "Sum of Delivery Fees (Net) paid by Customers"
-        hidden:  no
-        type: sum
-        sql: ${shipping_price_net_amount};;
-        value_format_name: euro_accounting_0_precision
-      }
-
-      measure: sum_refund_gross {
-        group_label: "* Monetary Values *"
-        label: "SUM Refund (Gross)"
-        description: "Sum of Refunds (Gross). Includes Items, Deposit, Delivery Fee and Tips Refunds."
-        hidden:  no
-        type: sum
-        sql: ${amt_refund_gross};;
-        value_format_name: euro_accounting_2_precision
-      }
-
-      measure: sum_total_sales_gross {
-        group_label: "* Monetary Values *"
-        label: "SUM Total Sales (Gross)"
-        description: "Sum of Delivery Fees and Items Price and Deposit. Excl. Tips, Donations. Before Deduction of any Discount. Incl. VAT"
-        hidden:  no
-        type: sum
-        sql: ${amt_total_sales_gross};;
-        value_format_name: euro_accounting_2_precision
-      }
-
-      measure: sum_total_sales_excluding_deposit_gross {
-        group_label: "* Monetary Values *"
-        label: "SUM Total Sales excl. Deposit (Gross)"
-        description: "Sum of Delivery Fees and Items Price. Excl. Deposit, Tips, Donations. Before Deduction of any Discount. Incl. VAT"
-        hidden:  no
-        type: sum
-        sql: ${amt_total_sales_excluding_deposit_gross};;
-        value_format_name: euro_accounting_2_precision
-      }
-
-      measure: sum_total_sales_after_discounts_gross {
-        group_label: "* Monetary Values *"
-        label: "SUM Total Sales After Discount (Gross)"
-        description: "Sum of Delivery Fees and Items Price and Deposit. Excl. Tips, Donations. After Deduction of Cart and Product Discounts. Incl. VAT"
-        hidden:  no
-        type: sum
-        sql: ${amt_total_sales_after_discount_gross};;
-        value_format_name: euro_accounting_2_precision
-      }
-
-      measure: sum_total_sales_after_discount_and_refund_gross {
-        group_label: "* Monetary Values *"
-        label: "SUM Total Sales After Discounts & Refunds (Gross)"
-        description: "Sum of Delivery Fees and Items Price and Deposit. Excl. Tips, Donations. After Deduction of Cart and Product Discounts. After Refunds. Incl. VAT"
-        hidden:  no
-        type: sum
-        sql: ${amt_total_sales_after_discount_and_refund_gross};;
-        value_format_name: euro_accounting_2_precision
-      }
-
-      measure: sum_total_sales_after_discount_and_refund_excluding_deposit_gross {
-        group_label: "* Monetary Values *"
-        label: "SUM Total Sales After Discounts & Refunds excl. Deposit (Gross)"
-        description: "Sum of Delivery Fees and Items Price. Excl. Tips, Deposit, Donations. After Deduction of Cart and Product Discounts. After Refunds. Incl. VAT"
-        hidden:  no
-        type: sum
-        sql: ${amt_total_sales_after_discount_and_refund_excluding_deposit_gross};;
-        value_format_name: euro_accounting_2_precision
-      }
-
-      measure: sum_gpv_gross {
-        group_label: "* Monetary Values *"
-        label: "SUM GPV (Gross)"
-        description: "Actual amount paid by the customer in CT. Sum of Delivery Fees, Items Price, Tips, Deposit. Excl. Donations. After Deduction of Cart and Product Discounts. Incl. VAT"
-        hidden:  no
-        type: sum
-        sql: ${amt_gpv_gross};;
-        value_format_name: euro_accounting_2_precision
-      }
-
-      measure: sum_npv_gross {
-        group_label: "* Monetary Values *"
-        label: "SUM NPV (Gross)"
-        description: "Net Payment Value. Actual amount paid by the customer in CT after Refunds. Sum of Delivery Fees, Items Price, Tips, Deposit. Excl. Donations. After Deduction of Cart and Product Discounts. Incl. VAT"
-        hidden:  no
-        type: sum
-        sql: ${amt_npv_gross};;
-        value_format_name: euro_accounting_2_precision
-      }
-
-      measure: sum_quantity_fulfilled {
-        label: "Item Quantity Fulfilled"
-        group_label: "* Basic Counts (Orders / Customers etc.) *"
-        description: "Fulfilled Quantity"
-        type: sum
-        sql: ${number_of_items} ;;
-      }
-
-      measure: sum_rider_hours {
-        label: "Sum Worked Rider Hours"
-        group_label: "* Operations / Logistics *"
-        description: "Sum of completed Rider shift Hours"
-        type: number
-        sql: NULLIF(${shyftplan_riders_pickers_hours.rider_hours},0);;
-      }
-
-
-      measure: order_handling_time_minute {
-        label: "Sum Order Handling Time (min)"
-        group_label: "* Operations / Logistics *"
-        description: "Rider Time spent from claiming an order until returning to the hub "
-        type: sum
-        hidden: yes
-        sql:${TABLE}.rider_handling_time_minutes ;;
-        value_format_name: decimal_2
-      }
-
-      measure: avg_order_handling_time_minute {
-        label: "AVG Order Handling Time (min)"
-        group_label: "* Operations / Logistics *"
-        description: "AVG ider Time spent from claiming an order until returning to the hub "
-        type: average
-        hidden: yes
-        sql:${TABLE}.rider_handling_time_minutes;;
-        value_format_name: decimal_2
-      }
-
-      measure: sum_rider_tip {
-        group_label: "* Monetary Values *"
-        label: "SUM Rider Tip"
-        hidden:  no
-        type: sum
-        sql: ${rider_tip};;
-        value_format_name: euro_accounting_2_precision
-      }
-
-
-      measure: sum_avg_queuing_time {
-        alias: [sum_avg_acceptance_reaction_time]
-        group_label: "* Operations / Logistics *"
-        label: "AVG Picker Queuing Time + Rider Queuing Time"
-        description: "Sum of the average of rider queuing time and the average of picker queuing time"
-        hidden:  no
-        type: number
-        sql:${avg_rider_queuing_time} + ${avg_picker_queuing_time};;
-        value_format_name: decimal_1
-      }
-
-      measure: sum_deposit {
-        group_label: "* Monetary Values *"
-        label: "SUM Total Deposit"
-        hidden:  no
-        type: sum
-        sql: ${deposit};;
-        description: "Sum of all deposits, paid by Flink or by the customers "
-        value_format_name: euro_accounting_2_precision
-      }
-
-      measure: sum_amt_cancelled_gross {
-        group_label: "* Cancelled Orders *"
-        label: "SUM Cancelled Amount (Gross)"
-        hidden:  no
-        type: sum
-        sql: ${amt_cancelled_gross};;
-        value_format_name: euro_accounting_2_precision
-      }
-
-      measure: sum_rider_handling_time_minutes_saved_with_stacking  {
-        group_label: "* Operations / Logistics *"
-        label: "SUM Rider Handling Time Minutes Saved With Stacking"
-        description: "Total number of minutes saved on all orders due to stacking (compared to estimated handling time without stacking)"
-        hidden: no
-        type: sum
-        sql: ${rider_handling_time_minutes_saved_with_stacking} ;;
-        value_format_name: decimal_1
-
-      }
-
-      measure: sum_rider_handling_time_minutes {
-        group_label: "* Operations / Logistics *"
-        label: "SUM Rider Handling Ttimes"
-        hidden:  no
-        type: sum
-        sql: ${rider_handling_time_minutes};;
-        value_format_name: decimal_1
-      }
-
-      measure: sum_potential_rider_handling_time_without_stacking_minutes {
-        group_label: "* Operations / Logistics *"
-        label: "SUM Potential Rider Handling Times (Without Stacking)"
-        description: "Total estimated sum of minutes it would potentially take for a rider to handle all the orders without stacking"
-        hidden:  no
-        type: sum
-        sql: ${potential_rider_handling_time_without_stacking_minutes};;
-        value_format_name: decimal_1
-      }
-
-      ############
-      ## COUNTS ##
-      ############
-
-      measure: cnt_unique_customers {
-        group_label: "* Basic Counts (Orders / Customers etc.) *"
-        label: "# Unique Customers"
-        description: "Count of Unique Customers identified via their Customer UUID"
-        hidden:  no
-        type: count_distinct
-        sql: ${customer_uuid};;
-        value_format: "0"
-      }
-
-      measure: cnt_unique_customers_with_voucher {
-        group_label: "* Basic Counts (Orders / Customers etc.) *"
-        label: "# Unique Customers (with Cart Discount)"
-        description: "Count of Unique Customers identified via their Customer UUID (only considering orders with a cart discount)"
-        hidden:  no
-        type: count_distinct
-        sql: ${customer_uuid};;
-        filters: [amt_discount_cart_gross: ">0"]
-        value_format: "0"
-      }
-
-      measure: cnt_unique_customers_without_voucher {
-        group_label: "* Basic Counts (Orders / Customers etc.) *"
-        label: "# Unique Customers (without Cart Discount)"
-        description: "Count of Unique Customers identified via their Customer UUID (not considering orders with a cart discount)"
-        hidden:  no
-        type: count_distinct
-        sql: ${customer_uuid};;
-        filters: [amt_discount_cart_gross: "0 OR null"]
-        value_format: "0"
-      }
-
-      measure: cnt_unique_hubs {
-        group_label: "* Basic Counts (Orders / Customers etc.) *"
-        label: "# Unique Hubs"
-        description: "Count of Unique Hubs which received orders"
-        hidden:  no
-        type: count_distinct
-        sql: ${hub_code};;
-        value_format: "0"
-      }
-
-      measure: cnt_orders {
-        group_label: "* Basic Counts (Orders / Customers etc.) *"
-        label: "# Orders"
-        description: "Count of Orders"
-        hidden:  no
-        type: count_distinct
-        sql: ${order_uuid} ;;
-        value_format: "0"
-      }
-
-    measure: cnt_successful_orders {
-      group_label: "* Basic Counts (Orders / Customers etc.) *"
-      label: "# Successful Orders"
-      description: "Count of Successful Orders"
-      hidden:  yes
-      type: count_distinct
-      sql: ${order_uuid} ;;
-      value_format: "0"
-      filters: [
-        is_successful_order: "yes"
-      ]
-    }
-
-      measure: cnt_orders_with_discount_cart {
-        group_label: "* Basic Counts (Orders / Customers etc.) *"
-        label: "# Orders with Cart Discount"
-        description: "Count of successful Orders with some Cart Discount applied"
-        hidden:  no
-        type: count
-        filters: [amt_discount_cart_gross: ">0"]
-        value_format: "0"
-      }
-
-      measure: cnt_orders_with_discount_products {
-        group_label: "* Basic Counts (Orders / Customers etc.) *"
-        label: "# Orders with Product Discount"
-        description: "Number of successful Orders with a Product Discount included"
-        hidden:  no
-        type: count
-        filters: [amt_discount_products_gross: ">0"]
-        value_format: "0"
-      }
-
-      measure: cnt_orders_without_discount_products {
-        group_label: "* Basic Counts (Orders / Customers etc.) *"
-        label: "# Orders without Product Discount"
-        description: "Number of successful Orders without a Product Discount included"
-        hidden:  no
-        type: count
-        filters: [amt_discount_products_gross: "0 OR null"]
-        value_format: "0"
-      }
-
-      measure: cnt_orders_without_discount_cart {
-        group_label: "* Basic Counts (Orders / Customers etc.) *"
-        label: "# Orders without Discount"
-        description: "Count of successful Orders with no Cart Discount applied"
-        hidden:  no
-        type: count
-        filters: [amt_discount_cart_gross: "0 OR null"]
-        value_format: "0"
-      }
-
-      measure: cnt_unique_orders_new_customers {
-        group_label: "* Basic Counts (Orders / Customers etc.) *"
-        label: "# Orders New Customers"
-        description: "Count of successful Orders placed by new customers (Acquisitions)"
-        hidden:  no
-        type: count
-        value_format: "0"
-        filters: [customer_type: "New Customer"]
-      }
-
-      measure: cnt_unique_orders_existing_customers {
-        group_label: "* Basic Counts (Orders / Customers etc.) *"
-        label: "# Orders Existing Customers"
-        description: "Count of successful Orders placed by returning customers"
-        hidden:  no
-        type: count
-        value_format: "0"
-        filters: [customer_type: "Existing Customer"]
-      }
-
-      measure: cnt_orders_with_delivery_eta_available {
-        # group_label: "* Operations / Logistics *"
-        view_label: "* Hubs *"
-        group_label: "Hub Leaderboard - Order Metrics"
-        label: "# Orders with Delivery PDT available"
-        description: "Count of Orders where a PDT is available"
-        hidden:  no
-        type: count
-        filters: [is_delivery_eta_available: "yes"]
-        value_format: "0"
-      }
-
-    measure: cnt_orders_with_targeted_eta_available {
-      # group_label: "* Operations / Logistics *"
-      view_label: "* Hubs *"
-      group_label: "Hub Leaderboard - Order Metrics"
-      label: "# Orders with Targeted Fulfillment Time is available"
-      description: "Count of Orders where a Targeted Delivery Time  is available"
-      hidden:  no
-      type: count
-      filters: [is_targeted_eta_available: "yes"]
-      value_format: "0"
-    }
-
-      measure: cnt_orders_delayed_under_0_min {
-        # group_label: "* Operations / Logistics *"
-        view_label: "* Hubs *"
-        group_label: "Hub Leaderboard - Order Metrics"
-        label: "# Orders delivered on time (30 sec tolerance)"
-        description: "Count of Orders delivered no later than PDT"
-        hidden:  yes
-        type: count
-        filters: [delivery_delay_since_eta:"<=0.5"]
-        value_format: "0"
-      }
-
-      measure: cnt_orders_with_rider_tip {
-        group_label: "* Basic Counts (Orders / Customers etc.) *"
-        label: "# Orders with Rider Tip"
-        hidden:  no
-        type: count
-        filters: [rider_tip: ">0"]
-        value_format: "0"
-      }
-
-      measure: cnt_cancelled_orders {
-        group_label: "* Cancelled Orders *"
-        label: "# Cancelled Orders"
-        hidden:  no
-        type: count
-        filters: [amt_cancelled_gross: ">0"]
-        value_format: "0"
-      }
-
-      measure: cnt_agent_cancelled_orders {
-        group_label: "* Cancelled Orders *"
-        label: "# Agent Cancelled Orders"
-        hidden:  no
-        type: count
-        filters: [amt_cancelled_gross: ">0",cancellation_category: "- Customer"]
-        value_format: "0"
-      }
-
-      measure: cnt_self_cancelled_orders {
-        group_label: "* Cancelled Orders *"
-        label: "# Self Cancelled Orders"
-        hidden:  no
-        type: count
-        filters: [amt_cancelled_gross: ">0",cancellation_category: "Customer"]
-        value_format: "0"
-      }
-
-
-      ############### Delays compared to delivery time internal estimate ###########
-
-      measure: cnt_orders_delayed_over_12_min_internal_estimate {
-        # group_label: "* Operations / Logistics *"
-        view_label: "* Hubs *"
-        group_label: "Hub Leaderboard - Order Metrics"
-        label: "# Orders delivered late >12min (internal estimate)"
-        description: "Count of Orders delivered >12min later than delivery time estimate"
-        hidden:  yes
-        type: count
-        filters: [delivery_delay_since_time_estimate:">=12"]
-        value_format: "0"
-      }
-
-      measure: cnt_orders_delayed_over_20_min_internal_estimate {
-        # group_label: "* Operations / Logistics *"
-        view_label: "* Hubs *"
-        group_label: "Hub Leaderboard - Order Metrics"
-        label: "# Orders delivered late >20min (internal estimate)"
-        description: "Count of Orders delivered >20min later than delivery time estimate"
-        hidden:  yes
-        type: count
-        filters: [delivery_delay_since_time_estimate:">=20"]
-        value_format: "0"
-      }
-
-
-      measure: cnt_orders_delayed_over_30_min_internal_estimate {
-        # group_label: "* Operations / Logistics *"
-        view_label: "* Hubs *"
-        group_label: "Hub Leaderboard - Order Metrics"
-        label: "# Orders delivered late >30min (internal estimate)"
-        description: "Count of Orders delivered >30min later than delivery time estimate"
-        hidden:  yes
-        type: count
-        filters: [delivery_delay_since_time_estimate:">=30"]
-        value_format: "0"
-      }
-
-      measure: cnt_orders_delayed_over_60_min_internal_estimate {
-        # group_label: "* Operations / Logistics *"
-        view_label: "* Hubs *"
-        group_label: "Hub Leaderboard - Order Metrics"
-        label: "# Orders delivered late >20min (internal estimate)"
-        description: "Count of Orders delivered >60min later than delivery time estimate"
-        hidden:  yes
-        type: count
-        filters: [delivery_delay_since_time_estimate:">=60"]
-        value_format: "0"
-      }
-
-      measure: cnt_orders_delayed_over_5_min {
-        # group_label: "* Operations / Logistics *"
-        view_label: "* Hubs *"
-        group_label: "Hub Leaderboard - Order Metrics"
-        label: "# Orders delivered late >5min"
-        description: "Count of Orders delivered >5min later than PDT"
-        hidden:  yes
-        type: count
-        filters: [delivery_delay_since_eta:">=5"]
-        value_format: "0"
-      }
-
-      measure: cnt_orders_delayed_over_10_min {
-        group_label: "* Operations / Logistics *"
-        label: "# Orders delivered late >10min"
-        description: "Count of Orders delivered >10min later than PDT"
-        hidden:  yes
-        type: count
-        filters: [delivery_delay_since_eta:">=10"]
-        value_format: "0"
-      }
-
-      measure: cnt_orders_delayed_over_15_min {
-        group_label: "* Operations / Logistics *"
-        label: "# Orders delivered late >15min"
-        description: "Count of Orders delivered >15min later than PDT"
-        hidden:  yes
-        type: count
-        filters: [delivery_delay_since_eta:">=15"]
-        value_format: "0"
-      }
-
-
-#######TEMP: adding new fields to compare how PDT versus Time Estimate will perform
-      measure: cnt_orders_delayed_under_0_min_time_estimate {
-        # group_label: "* Operations / Logistics *"
-        view_label: "* Hubs *"
-        group_label: "Hub Leaderboard - Order Metrics"
-        label: "# Orders delivered in time (time estimate)"
-        description: "Count of Orders delivered no later than internal time estimate"
-        hidden:  yes
-        type: count
-        filters: [delivery_delay_since_time_estimate:"<=0"]
-        value_format: "0"
-      }
-
-    measure: cnt_orders_delayed_under_0_min_time_targeted {
-      # group_label: "* Operations / Logistics *"
-      view_label: "* Hubs *"
-      group_label: "Hub Leaderboard - Order Metrics"
-      label: "# Orders delivered in time (time estimate)"
-      description: "Count of Orders delivered no later than internal time estimate"
-      hidden:  yes
-      type: count
-      filters: [delivery_delay_since_time_targeted:"<=0"]
-      value_format: "0"
-    }
-
-      measure: cnt_orders_delayed_over_5_min_time_estimate {
-        # group_label: "* Operations / Logistics *"
-        view_label: "* Hubs *"
-        group_label: "Hub Leaderboard - Order Metrics"
-        label: "# Orders delivered in time (time estimate)"
-        description: "Count of Orders delivered >5min later than internal time estimate"
-        hidden:  yes
-        type: count
-        filters: [delivery_delay_since_time_estimate:">=5"]
-        value_format: "0"
-      }
-
-      measure: cnt_orders_delayed_over_10_min_time_estimate {
-        # group_label: "* Operations / Logistics *"
-        view_label: "* Hubs *"
-        group_label: "Hub Leaderboard - Order Metrics"
-        label: "# Orders delivered in time (time estimate)"
-        description: "Count of Orders delivered >10min later than internal time estimate"
-        hidden:  yes
-        type: count
-        filters: [delivery_delay_since_time_estimate:">=10"]
-        value_format: "0"
-      }
-
-      measure: cnt_orders_fulfilled_under_15_min {
-        group_label: "* Operations / Logistics *"
-        label: "# Orders delivered <15min"
-        description: "Count of Orders delivered in <15min"
-        hidden:  yes
-        type: count
-        filters: [fulfillment_time:"<15"]
-        value_format: "0"
-      }
-
-      measure: cnt_orders_fulfilled_over_12_min {
-        group_label: "* Operations / Logistics *"
-        label: "# Orders delivered >12min"
-        description: "Count of Orders delivered in >12min"
-        hidden:  yes
-        type: count
-        filters: [fulfillment_time:">12"]
-        value_format: "0"
-      }
-
-      measure: cnt_orders_fulfilled_over_20_min {
-        group_label: "* Operations / Logistics *"
-        label: "# Orders fulfilled >20min"
-        description: "Count of Orders delivered >20min fulfillment time"
-        hidden:  yes
-        type: count
-        filters: [fulfillment_time:">20"]
-        value_format: "0"
-      }
-
-      measure: cnt_orders_fulfilled_over_30_min {
-        group_label: "* Operations / Logistics *"
-        label: "# Orders fulfilled >30min"
-        description: "Count of Orders delivered >30min fulfillment time"
-        hidden:  yes
-        type: count
-        filters: [fulfillment_time:">=30"]
-        value_format: "0"
-      }
-
-      measure: cnt_orders_fulfilled_over_60_min {
-        group_label: "* Operations / Logistics *"
-        label: "# Orders delivered >60min"
-        description: "Count of Orders delivered in >60min"
-        hidden:  yes
-        type: count
-        filters: [fulfillment_time:">60"]
-        value_format: "0"
-      }
-
-      measure: cnt_orders_delivery_time_critical_underestimation {
-        group_label: "* Operations / Logistics *"
-        label:       "# Orders with critical under-estimation delivery time"
-        description: "# Orders with critical under-estimation delivery time"
-        hidden:      yes
-        type:        count
-        filters:     [is_critical_delivery_time_estimate_underestimation: "Yes"]
-        value_format: "0"
-      }
-
-      measure: cnt_orders_delivery_time_critical_overestimation {
-        group_label: "* Operations / Logistics *"
-        label:       "# Orders with critical over-estimation delivery time"
-        description: "# Orders with critical over-estimation delivery time"
-        hidden:      yes
-        type:        count
-        filters:     [is_critical_delivery_time_estimate_overestimation: "Yes"]
-        value_format: "0"
-      }
-
-      measure: cnt_unique_date {
-        group_label: "* Basic Counts (Orders / Customers etc.) *"
-        label: "# Unique Date"
-        description: "Count of Unique Dates"
-        hidden:  no
-        type: count_distinct
-        sql: case when ${country_iso} = 'DE' and ${order_dow} = 'Sunday' then null
-          else ${order_date} end;;
-        value_format: "0"
-      }
-
-
-      measure: cnt_rider {
-        label: "# Riders Delivering Orders"
-        type: number
-        group_label: "* Operations / Logistics *"
-        sql:count (distinct ${rider_id});;
-        value_format_name: decimal_0
-      }
-
-
-      ################
-      ## PERCENTAGE ##
-      ################
-
-      measure: pct_acquisition_share {
-        group_label: "* Marketing *"
-        label: "% Acquisition Share"
-        description: "Share of New Customer Acquisitions over Total Orders"
-        hidden:  no
-        type: number
-        sql: ${cnt_unique_orders_new_customers} / NULLIF(${cnt_orders}, 0);;
-        value_format: "0%"
-      }
-
-      measure: pct_discount_cart_order_share {
-        group_label: "* Marketing *"
-        label: "% Cart Discount Order Share"
-        description: "Share of Orders which had voucher applied at a checkout. Includes delivery discounts."
-        hidden:  no
-        type: number
-        sql: ${cnt_orders_with_discount_cart} / NULLIF(${cnt_orders}, 0);;
-        value_format: "0%"
-      }
-
-      measure: pct_discount_products_order_share {
-       group_label: "* Monetary Values *"
-       label: "% Product Discount Order Share"
-       description: "Share of Orders which had some product discount applied."
-       hidden:  no
-       type: number
-       sql: ${cnt_orders_with_discount_products} / NULLIF(${cnt_orders}, 0);;
-       value_format: "0%"
   }
 
-      measure: pct_discount_cart_value_of_gross_total{
-        group_label: "* Marketing *"
-        label: "% Cart Discount Value Share"
-        description: "Dividing Total Discount Cart amounts over GMV"
-        hidden:  no
-        type: number
-        sql: ${sum_discount_cart_gross} / NULLIF(${sum_gmv_gross}, 0);;
-        value_format_name: percent_1
-      }
 
-      measure: pct_discount_products_value_of_gross_total{
-        group_label: "* Monetary Values *"
-        label: "% Product Discount Value Share"
-        description: "Dividing Total Discount Products amounts over GMV"
-        hidden:  no
-        type: number
-        sql: ${sum_discount_products_gross} / NULLIF(${sum_gmv_gross}, 0);;
-        value_format_name: percent_1
-      }
+  ##############
+  ## AVERAGES ##
+  ##############
 
-      measure: pct_tip_order_share {
-        group_label: "* Basic Counts (Orders / Customers etc.) *"
-        label: "% Tip Order Share"
-        description: "Share of Orders which had some Rider Tip applied"
-        hidden:  no
-        type: number
-        sql: ${cnt_orders_with_rider_tip} / NULLIF(${cnt_orders}, 0);;
-        value_format: "0%"
-      }
 
-      measure: pct_tip_value_of_gross_total{
-        group_label: "* Basic Counts (Orders / Customers etc.) *"
-        label: "% Tip Value Share"
-        description: "Dividing Total Rider Tip amounts over GMV"
-        hidden:  no
-        type: number
-        sql: ${sum_rider_tip} / NULLIF(${sum_gmv_gross}, 0);;
-        value_format: "0%"
-      }
+  measure: count {
+    type: count
+    drill_fields: [translated_discount_name, shipping_method_name, warehouse_name, discount_name]
+  }
 
-      measure: pct_cancelled_amount_value_of_gross_total{
-        group_label: "* Cancelled Orders *"
-        label: "% Cancelled Value Share"
-        description: "Dividing Total Cancelled amount Gross over GMV Gross"
-        hidden:  no
-        type: number
-        sql: ${sum_amt_cancelled_gross} / NULLIF(${sum_gmv_gross}, 0);;
-        value_format: "0.0%"
-      }
+  measure: avg_promised_eta {
+    group_label: "* Operations / Logistics *"
+    label: "AVG PDT"
+    description: "Average Promised Fulfillment Time (PDT) a shown to customer"
+    hidden:  no
+    type: average
+    sql: ${delivery_eta_minutes};;
+    value_format_name: decimal_1
+  }
 
-      measure: pct_cancelled_orders{
-        group_label: "* Cancelled Orders *"
-        label: "% Cancelled Orders"
-        description: "Dividing Number of Cancelled Orders over Number of Orders"
-        hidden:  no
-        type: number
-        sql: ${cnt_cancelled_orders} / NULLIF(${cnt_orders}, 0);;
-        value_format: "0.0%"
-      }
+  measure: avg_pdt_mm_ss {
+    group_label: "* Operations / Logistics *"
+    label: "AVG PDT (MM:SS)"
+    description: "Average Promised Fulfillment Time (PDT) a shown to customer"
+    type: average
+    sql: ${delivery_eta_minutes} * 60 / 86400.0;;
+    value_format: "mm:ss"
+  }
 
-      measure: pct_self_cancelled_orders{
-        group_label: "* Cancelled Orders *"
-        label: "% Self Cancelled Orders"
-        description: "Dividing Number of Self-Cancelled Orders by Customer over Number of Orders"
-        hidden:  no
-        type: number
-        sql: ${cnt_self_cancelled_orders} / NULLIF(${cnt_orders}, 0);;
-        value_format: "0.0%"
-      }
+  measure: avg_delivery_time_estimate {
+    label: "AVG Fulfillment Time Estimate (min)"
+    description: "The average internally predicted time in minutes for the order to arrive at the customer (dynamic model result - not necessarily the PDT shown to the customer as some conversion can be applied in between)"
+    group_label: "* Operations / Logistics *"
+    type: average
+    sql: ${delivery_time_estimate_minutes} ;;
+    value_format_name: decimal_1
+  }
 
-      measure: pct_agent_cancelled_orders{
-        group_label: "* Cancelled Orders *"
-        label: "% Agent Cancelled Orders"
-        description: "Dividing Number of Self-Cancelled Orders by CC Agents over Number of Orders"
-        hidden:  no
-        type: number
-        sql: ${cnt_agent_cancelled_orders} / NULLIF(${cnt_orders}, 0);;
-        value_format: "0.0%"
-      }
+  measure: avg_google_cycling_time_minutes {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Google Cycling Time"
+    description: "Average time needed to cycle to the customer estimated by Google in the moment of order placement"
+    hidden:  no
+    type: average
+    sql: ${google_cycling_time_minutes};;
+    value_format_name: decimal_1
+  }
 
-      measure: pct_delivery_in_time{
-        group_label: "* Operations / Logistics *"
-        label: "% Orders delivered in time (PDT)"
-        description: "Share of orders delivered no later than PDT (30 sec tolerance)"
-        hidden:  no
-        type: number
-        sql: ${cnt_orders_delayed_under_0_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
-        value_format: "0%"
-      }
+  measure: avg_diff_riding_to_customer_actual_vs_google {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Riding to Customer Time Difference Actuals vs. Google Estimate"
+    description: "The average of the difference beween the actual riding to customer time and what Google estimated is needed in the moment of order placement"
+    hidden:  no
+    type: average
+    sql: ${riding_to_customer_time_minutes}-${google_cycling_time_minutes};;
+    value_format_name: decimal_1
+  }
 
-      measure: pct_delivery_late_over_5_min{
-        group_label: "* Operations / Logistics *"
-        label: "% Orders delayed >5min"
-        description: "Share of orders delivered >5min later than PDT"
-        hidden:  no
-        type: number
-        sql: ${cnt_orders_delayed_over_5_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
-        value_format: "0%"
-      }
+  measure: avg_fulfillment_time {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Fulfillment Time (decimal)"
+    description: "Average Fulfillment Time (decimal minutes) considering order placement to delivery (rider at customer). Outliers excluded (<3min or >210min)"
+    hidden:  no
+    type: average
+    sql: ${fulfillment_time};;
+    value_format_name: decimal_1
+  }
 
-      measure: pct_delivery_late_over_10_min{
-        group_label: "* Operations / Logistics *"
-        label: "% Orders delayed >10min"
-        description: "Share of orders delivered >10min later than PDT"
-        hidden:  no
-        type: number
-        sql: ${cnt_orders_delayed_over_10_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
-        value_format: "0%"
-      }
+  measure: avg_fulfillment_time_mm_ss {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Fulfillment Time (HH:MM:SS)"
+    description: "Average Fulfillment Time considering order placement to delivery (rider at customer). Outliers excluded (<3min or >210min)"
+    type: average
+    sql: ${fulfillment_time} * 60 / 86400.0;;
+    value_format: "hh:mm:ss"
+  }
 
-      measure: pct_delivery_late_over_15_min{
-        group_label: "* Operations / Logistics *"
-        label: "% Orders delayed >15min"
-        description: "Share of orders delivered >15min later than PDT"
-        hidden:  no
-        type: number
-        sql: ${cnt_orders_delayed_over_15_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
-        value_format: "0%"
-      }
 
-      measure: pct_fulfillment_under_15_min{
-        group_label: "* Operations / Logistics *"
-        label: "% Orders fulfilled <15min"
-        description: "Share of orders delivered <15min"
-        hidden:  no
-        type: number
-        sql: ${cnt_orders_fulfilled_under_15_min} / NULLIF(${cnt_orders}, 0);;
-        value_format: "0%"
-      }
+  measure: avg_picker_queuing_time {
+    alias: [avg_reaction_time]
+    group_label: "* Operations / Logistics *"
+    label: "AVG Picker Queuing Time"
+    description: "Average Picker Queuing Time of the Picker considering order placement until picking started. Outliers excluded (<0min or >120min)"
+    hidden:  no
+    type: average
+    sql:${picker_queuing_time};;
+    value_format_name: decimal_1
+  }
 
-      measure: pct_fulfillment_over_12_min{
-        group_label: "* Operations / Logistics *"
-        label: "% Orders fulfilled >12min"
-        description: "Share of orders delivered >12min"
-        hidden:  no
-        type: number
-        sql: ${cnt_orders_fulfilled_over_12_min} / NULLIF(${cnt_orders}, 0);;
-        value_format: "0%"
-      }
+  measure: avg_picking_time {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Picking Time"
+    description: "Average Picking Time considering first fulfillment to second fulfillment created. Outliers excluded (<0min or >30min)"
+    hidden:  no
+    type: average
+    sql:${time_diff_between_two_subsequent_fulfillments};;
+    value_format_name: decimal_1
+  }
 
-      measure: pct_fulfillment_over_20_min{
-        group_label: "* Operations / Logistics *"
-        label: "% Orders fulfilled >20min"
-        description: "Share of orders delivered >20min"
-        hidden:  no
-        type: number
-        sql: ${cnt_orders_fulfilled_over_20_min} / NULLIF(${cnt_orders}, 0);;
-        value_format: "0%"
-      }
+  measure: avg_rider_queuing_time {
+    alias: [avg_acceptance_time]
+    group_label: "* Operations / Logistics *"
+    label: "AVG Rider Queuing Time"
+    description: "Average time between picking completion and rider having claimed the order."
+    hidden:  no
+    type: average
+    sql:${rider_queuing_time};;
+    value_format_name: decimal_1
+  }
 
-      measure: pct_fulfillment_over_60_min{
-        group_label: "* Operations / Logistics *"
-        label: "% Orders fulfilled >60min"
-        description: "Share of orders delivered >60min"
-        hidden:  no
-        type: number
-        sql: ${cnt_orders_fulfilled_over_60_min} / NULLIF(${cnt_orders}, 0);;
-        value_format: "0%"
-      }
+  measure: avg_riding_to_customer_time {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Riding To Customer Time"
+    description: "Average riding to customer time considering delivery start to arrival at customer. Outliers excluded (<1min or >30min)"
+    hidden:  no
+    type: average
+    sql: ${riding_to_customer_time_minutes};;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_discount_value {
+    group_label: "* Monetary Values *"
+    label: "AVG Discount Value"
+    description: "Average Discount Value (only considering orders where discount was applied). Includes both Product and Cart discounts"
+    hidden:  no
+    type: average
+    sql: ${discount_amount};;
+    filters: [discount_amount: ">0"]
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: avg_discount_cart_gross {
+    group_label: "* Monetary Values *"
+    label: "AVG Cart Discount Value (Gross)"
+    description: "Average of Cart Discount Value Gross (voucher applied at a checkout). Includes delivery discounts."
+    hidden:  no
+    type: average
+    sql: ${amt_discount_cart_gross};;
+    filters: [amt_discount_cart_gross: ">0"]
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: avg_discount_cart_net {
+    group_label: "* Monetary Values *"
+    label: "AVG Cart Discount Value (Net)"
+    description: "Average of Cart Discount Value Net (voucher applied at a checkout). Includes delivery discounts."
+    hidden:  no
+    type: average
+    sql: ${amt_discount_cart_net};;
+    filters: [amt_discount_cart_net: ">0"]
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: avg_discount_product_gross {
+    group_label: "* Monetary Values *"
+    label: "AVG Product Discount Value (Gross)"
+    description: "Average Discount Value Gross (only considering orders where discount on products was applied)"
+    hidden:  no
+    type: average
+    sql: ${amt_discount_products_gross};;
+    filters: [amt_discount_products_gross: ">0"]
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: avg_discount_product_net {
+    group_label: "* Monetary Values *"
+    label: "AVG Product Discount Value (Net)"
+    description: "Average Discount Value Net (only considering orders where discount on products was applied)"
+    hidden:  no
+    type: average
+    sql: ${amt_discount_products_net};;
+    filters: [amt_discount_products_net: ">0"]
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: avg_estimated_picking_time_minutes {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Estimated Picking Time"
+    type: average
+    sql: ${estimated_picking_time_minutes};;
+    value_format_name: decimal_1
+  }
+
+
+  measure: avg_estimated_riding_time_minutes {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Estimated Riding Time"
+    type: average
+    sql: ${estimated_riding_time_minutes};;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_estimated_queuing_time_for_picker_minutes {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Estimated Queuing Time for Pickers"
+    type: average
+    sql: ${estimated_queuing_time_for_picker_minutes};;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_queuing_time_for_pickers_minutes {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Queuing Time for Pickers"
+    type: average
+    sql: ${queuing_time_for_picker_minutes} ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  measure: avg_queuing_time_for_riders_minutes {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Queuing Time for Riders"
+    type: average
+    sql: ${queuing_time_for_rider_minutes} ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  measure: avg_pre_riding_time {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Pre Riding Time"
+    type: average
+    sql: ${pre_riding_time} ;;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_estimated_queuing_time_for_rider_minutes {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Estimated Queuing Time for Riders"
+    type: average
+    sql: ${estimated_queuing_time_for_rider_minutes};;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_riding_to_hub_time {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Riding to Hub time"
+    description: "Average riding time from customer location back to the hub (<1min or >30min)."
+    hidden:  no
+    type: average
+    sql: ${riding_to_hub_time_minutes};;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_rider_handling_time {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Rider Handling Time"
+    description: "Average total rider handling time: riding to customer + at customer + riding to hub"
+    hidden:  no
+    type: average
+    sql: ${rider_handling_time_minutes};;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_rider_handling_time_stacked {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Rider Handling Time Stacked"
+    description: "Average total rider handling time (stacked): riding to customer + at customer + riding to hub"
+    hidden:  yes
+    type: average
+    sql:
+          case when ${TABLE}.is_stacked_order = true then ${rider_handling_time_minutes} end;;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_rider_handling_time_non_stacked {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Rider Handling Time Non Stacked"
+    description: "Average total rider handling time (non-stacked): riding to customer + at customer + riding to hub"
+    hidden:  yes
+    type: average
+    sql: case when ${TABLE}.is_stacked_order = false then ${rider_handling_time_minutes} end;;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_rider_handling_time_saved_vs_non_stacked_orders {
+    group_label: "* Stacked Orders *"
+    label: "AVG Rider Handling Time Minutes Saved Stacked vs. Non-Stacked Orders"
+    description: "The difference in minutes for average rider handling time between stacked and non-stacked orders"
+    hidden:  no
+    type: number
+    sql: ${avg_rider_handling_time_non_stacked} - ${avg_rider_handling_time_stacked};;
+    value_format_name: decimal_1
+  }
+
+
+  measure: avg_potential_rider_handling_time_without_stacking {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Potential Rider Handling Time Without Stacking"
+    description: "Average potential rider handling time estimated without stacking."
+    hidden:  no
+    type: average
+    sql: ${potential_rider_handling_time_without_stacking_minutes};;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_targeted_delivery_time {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Targeted Fulfillment Time (min)"
+    description: "Average internal targeted delivery time for hub ops."
+    hidden:  no
+    type: average
+    sql: ${delivery_time_targeted_minutes};;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_at_customer_time {
+    group_label: "* Operations / Logistics *"
+    label: "AVG At Customer Time"
+    description: "Average Time the Rider spent at the customer between arrival and order completion confirmation"
+    hidden:  no
+    type: average
+    sql:${at_customer_time_minutes};;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_order_value_gross {
+    group_label: "* Monetary Values *"
+    label: "AVG Order Value (Gross)"
+    description: "Average value of orders considering total gross order values. Includes fees (gross), before deducting discounts."
+    hidden:  no
+    type: average
+    sql: ${gmv_gross};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: avg_order_value_net {
+    group_label: "* Monetary Values *"
+    label: "AVG Order Value (Net)"
+    description: "Average value of orders considering total net order values. Includes fees (net), before deducting discounts."
+    hidden:  no
+    type: average
+    sql: ${gmv_net};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: avg_item_value_gross {
+    alias: [avg_product_value_gross]
+    group_label: "* Monetary Values *"
+    label: "AVG Item Value (Gross)"
+    description: "AIV represents the Average value of items (incl. VAT). Excludes fees (gross), before deducting discounts."
+    hidden:  no
+    type: average
+    sql: ${item_value_gross};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: avg_item_value_net {
+    alias: [avg_product_value_net]
+    group_label: "* Monetary Values *"
+    label: "AVG Item Value (Net)"
+    description: "AIV represents the Average value of product items (excl. VAT). Excludes fees (net), before deducting discounts."
+    hidden:  no
+    type: average
+    sql: ${item_value_net};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: avg_delivery_fee_gross {
+    group_label: "* Monetary Values *"
+    label: "AVG Delivery Fee (Gross)"
+    description: "Average value of Delivery Fees (Gross)"
+    hidden:  no
+    type: average
+    sql: coalesce(${shipping_price_gross_amount});;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: avg_delivery_fee_net {
+    group_label: "* Monetary Values *"
+    label: "AVG Delivery Fee (Net)"
+    description: "Average value of Delivery Fees (Net)"
+    hidden:  no
+    type: average
+    sql: ${shipping_price_net_amount};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: avg_number_items {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "AVG # items"
+    description: "Average number of items per order"
+    hidden:  no
+    type: number
+    sql: ${sum_quantity_fulfilled}/nullif(${cnt_orders},0);;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_ratio_customer_to_hub {
+    group_label: "* Operations / Logistics *"
+    label: "% Riding to Hub vs. Riding to Customer Time"
+    description: "AVG [(Riding to Hub Time / Riding to Customer Time) - 1]"
+    hidden: no
+    type: average
+    sql: (${riding_to_hub_time_minutes} / NULLIF(${riding_to_customer_time_minutes}, 0)) - 1 ;;
+    value_format: "0%"
+
+  }
+
+  measure: avg_rider_tip {
+    group_label: "* Monetary Values *"
+    description: "AVG Rider Tip Amount considering Orders where a tip was applied"
+    label: "AVG Rider Tip"
+    hidden:  no
+    type: average
+    sql: coalesce(${rider_tip}, 0);;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: avg_deposit {
+    group_label: "* Monetary Values *"
+    description: "AVG Deposit Amount considering Orders having items with deposit "
+    label: "AVG Deposit"
+    hidden:  no
+    type: average
+    sql: coalesce(${deposit}, 0);;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: avg_rider_handling_time_minutes_saved_with_stacking  {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Rider Handling Time Minutes Saved (Stacking)"
+    description: "Average number of minutes saved on each order due to stacking (compared to estimated handling time without stacking)"
+    hidden: no
+    type: average
+    sql: ${rider_handling_time_minutes_saved_with_stacking} ;;
+    value_format_name: decimal_1
+
+  }
+
+
+
+
+
+
+
+  ##########
+  ## SUMS ##
+  ##########
+
+  measure: sum_gmv_gross {
+    group_label: "* Monetary Values *"
+    label: "SUM GMV (Gross)"
+    description: "Sum of Gross Merchandise Value of orders incl. fees and before deduction of discounts (incl. VAT)"
+    hidden:  no
+    type: sum
+    sql: ${gmv_gross};;
+    value_format_name: euro_accounting_0_precision
+  }
+
+  measure: sum_gmv_net {
+    group_label: "* Monetary Values *"
+    label: "SUM GMV (Net)"
+    description: "Sum of Gross Merchandise Value of orders incl. fees and before deduction of discounts (excl. VAT)"
+    hidden:  no
+    type: sum
+    sql: ${gmv_net};;
+    value_format_name: euro_accounting_0_precision
+  }
+
+  measure: sum_revenue_gross {
+    group_label: "* Monetary Values *"
+    label: "SUM Revenue (gross)"
+    description: "Sum of Revenue (GMV after subsidies) incl. VAT. After deduction of discounts, tips and deposit."
+    hidden:  yes
+    type: sum
+    sql: ${total_gross_amount};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_revenue_net {
+    group_label: "* Monetary Values *"
+    label: "SUM Revenue (Net)"
+    description: "Sum of Revenue (GMV after subsidies) excl. VAT"
+    hidden:  yes
+    type: sum
+    sql: ${total_net_amount};;
+    value_format_name: euro_accounting_0_precision
+  }
+
+  measure: sum_discount_amt {
+    group_label: "* Monetary Values *"
+    label: "SUM Total Discount Amount (Gross)"
+    description: "Sum of Discount amount applied on orders. Includes both Product and Cart discounts."
+    hidden:  no
+    type: sum
+    sql: ${discount_amount};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_discount_cart_gross {
+    group_label: "* Monetary Values *"
+    label: "SUM Cart Discount Amount (Gross)"
+    description: "Sum of Cart Discounts Gross (voucher applied at a checkout). Includes delivery discounts."
+    hidden:  no
+    type: sum
+    sql: ${amt_discount_cart_gross};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_discount_cart_net {
+    group_label: "* Monetary Values *"
+    label: "SUM Cart Discount Amount (Net)"
+    description: "Sum of Cart Discounts Net (voucher applied at a checkout). Includes delivery discounts."
+    hidden:  no
+    type: sum
+    sql: ${amt_discount_cart_net};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_discount_products_gross {
+    group_label: "* Monetary Values *"
+    label: "SUM Product Discount Amount (Gross)"
+    description: "Sum of Discount amount (Gross) applied on orders. Includes only Product discounts."
+    hidden:  no
+    type: sum
+    sql: ${amt_discount_products_gross};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_discount_products_net {
+    group_label: "* Monetary Values *"
+    label: "SUM Product Discount Amount (Net)"
+    description: "Sum of Discount amount (Net) applied on orders. Includes only Product discounts."
+    hidden:  no
+    type: sum
+    sql: ${amt_discount_products_net};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_delivery_fee_gross {
+    group_label: "* Monetary Values *"
+    label: "SUM Delivery Fee (Gross)"
+    description: "Sum of Delivery Fees (Gross) paid by Customers"
+    hidden:  no
+    type: sum
+    sql: ${shipping_price_gross_amount};;
+    value_format_name: euro_accounting_0_precision
+  }
+
+  measure: sum_delivery_fee_net {
+    group_label: "* Monetary Values *"
+    label: "SUM Delivery Fee (Net)"
+    description: "Sum of Delivery Fees (Net) paid by Customers"
+    hidden:  no
+    type: sum
+    sql: ${shipping_price_net_amount};;
+    value_format_name: euro_accounting_0_precision
+  }
+
+  measure: sum_quantity_fulfilled {
+    label: "Item Quantity Fulfilled"
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    description: "Fulfilled Quantity"
+    type: sum
+    sql: ${number_of_items} ;;
+  }
+
+  measure: sum_rider_hours {
+    label: "Sum Worked Rider Hours"
+    group_label: "* Operations / Logistics *"
+    description: "Sum of completed Rider shift Hours"
+    type: number
+    sql: NULLIF(${shyftplan_riders_pickers_hours.rider_hours},0);;
+  }
+
+
+  measure: order_handling_time_minute {
+    label: "Sum Order Handling Time (min)"
+    group_label: "* Operations / Logistics *"
+    description: "Rider Time spent from claiming an order until returning to the hub "
+    type: sum
+    hidden: yes
+    sql:${TABLE}.rider_handling_time_minutes ;;
+    value_format_name: decimal_2
+  }
+
+  measure: avg_order_handling_time_minute {
+    label: "AVG Order Handling Time (min)"
+    group_label: "* Operations / Logistics *"
+    description: "AVG ider Time spent from claiming an order until returning to the hub "
+    type: average
+    hidden: yes
+    sql:${TABLE}.rider_handling_time_minutes;;
+    value_format_name: decimal_2
+  }
+
+  measure: sum_rider_tip {
+    group_label: "* Monetary Values *"
+    label: "SUM Rider Tip"
+    hidden:  no
+    type: sum
+    sql: ${rider_tip};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+
+  measure: sum_avg_queuing_time {
+    alias: [sum_avg_acceptance_reaction_time]
+    group_label: "* Operations / Logistics *"
+    label: "AVG Picker Queuing Time + Rider Queuing Time"
+    description: "Sum of the average of rider queuing time and the average of picker queuing time"
+    hidden:  no
+    type: number
+    sql:${avg_rider_queuing_time} + ${avg_picker_queuing_time};;
+    value_format_name: decimal_1
+  }
+
+  measure: sum_deposit {
+    group_label: "* Monetary Values *"
+    label: "SUM Total Deposit"
+    hidden:  no
+    type: sum
+    sql: ${deposit};;
+    description: "Sum of all deposits, paid by Flink or by the customers "
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_cancelled_gross {
+    group_label: "* Cancelled Orders *"
+    label: "SUM Cancelled Amount (Gross)"
+    hidden:  no
+    type: sum
+    sql: ${amt_cancelled_gross};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_rider_handling_time_minutes_saved_with_stacking  {
+    group_label: "* Operations / Logistics *"
+    label: "SUM Rider Handling Time Minutes Saved With Stacking"
+    description: "Total number of minutes saved on all orders due to stacking (compared to estimated handling time without stacking)"
+    hidden: no
+    type: sum
+    sql: ${rider_handling_time_minutes_saved_with_stacking} ;;
+    value_format_name: decimal_1
+
+  }
+
+  measure: sum_rider_handling_time_minutes {
+    group_label: "* Operations / Logistics *"
+    label: "SUM Rider Handling Ttimes"
+    hidden:  no
+    type: sum
+    sql: ${rider_handling_time_minutes};;
+    value_format_name: decimal_1
+  }
+
+  measure: sum_potential_rider_handling_time_without_stacking_minutes {
+    group_label: "* Operations / Logistics *"
+    label: "SUM Potential Rider Handling Times (Without Stacking)"
+    description: "Total estimated sum of minutes it would potentially take for a rider to handle all the orders without stacking"
+    hidden:  no
+    type: sum
+    sql: ${potential_rider_handling_time_without_stacking_minutes};;
+    value_format_name: decimal_1
+  }
+
+  ############
+  ## COUNTS ##
+  ############
+
+  measure: cnt_unique_customers {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Unique Customers"
+    description: "Count of Unique Customers identified via their Customer UUID"
+    hidden:  no
+    type: count_distinct
+    sql: ${customer_uuid};;
+    value_format: "0"
+  }
+
+  measure: cnt_unique_customers_with_voucher {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Unique Customers (with Cart Discount)"
+    description: "Count of Unique Customers identified via their Customer UUID (only considering orders with a cart discount)"
+    hidden:  no
+    type: count_distinct
+    sql: ${customer_uuid};;
+    filters: [amt_discount_cart_gross: ">0"]
+    value_format: "0"
+  }
+
+  measure: cnt_unique_customers_without_voucher {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Unique Customers (without Cart Discount)"
+    description: "Count of Unique Customers identified via their Customer UUID (not considering orders with a cart discount)"
+    hidden:  no
+    type: count_distinct
+    sql: ${customer_uuid};;
+    filters: [amt_discount_cart_gross: "0 OR null"]
+    value_format: "0"
+  }
+
+  measure: cnt_unique_hubs {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Unique Hubs"
+    description: "Count of Unique Hubs which received orders"
+    hidden:  no
+    type: count_distinct
+    sql: ${hub_code};;
+    value_format: "0"
+  }
+
+  measure: cnt_orders {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Orders"
+    description: "Count of Orders"
+    hidden:  no
+    type: count_distinct
+    sql: ${order_uuid} ;;
+    value_format: "0"
+  }
+
+  measure: cnt_successful_orders {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Successful Orders"
+    description: "Count of Successful Orders"
+    hidden:  yes
+    type: count_distinct
+    sql: ${order_uuid} ;;
+    value_format: "0"
+    filters: [
+      is_successful_order: "yes"
+    ]
+  }
+
+  measure: cnt_orders_with_discount_cart {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Orders with Cart Discount"
+    description: "Count of successful Orders with some Cart Discount applied"
+    hidden:  no
+    type: count
+    filters: [amt_discount_cart_gross: ">0"]
+    value_format: "0"
+  }
+
+  measure: cnt_orders_with_discount_products {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Orders with Product Discount"
+    description: "Number of successful Orders with a Product Discount included"
+    hidden:  no
+    type: count
+    filters: [amt_discount_products_gross: ">0"]
+    value_format: "0"
+  }
+
+  measure: cnt_orders_without_discount_products {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Orders without Product Discount"
+    description: "Number of successful Orders without a Product Discount included"
+    hidden:  no
+    type: count
+    filters: [amt_discount_products_gross: "0 OR null"]
+    value_format: "0"
+  }
+
+  measure: cnt_orders_without_discount_cart {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Orders without Discount"
+    description: "Count of successful Orders with no Cart Discount applied"
+    hidden:  no
+    type: count
+    filters: [amt_discount_cart_gross: "0 OR null"]
+    value_format: "0"
+  }
+
+  measure: cnt_unique_orders_new_customers {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Orders New Customers"
+    description: "Count of successful Orders placed by new customers (Acquisitions)"
+    hidden:  no
+    type: count
+    value_format: "0"
+    filters: [customer_type: "New Customer"]
+  }
+
+  measure: cnt_unique_orders_existing_customers {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Orders Existing Customers"
+    description: "Count of successful Orders placed by returning customers"
+    hidden:  no
+    type: count
+    value_format: "0"
+    filters: [customer_type: "Existing Customer"]
+  }
+
+  measure: cnt_orders_with_delivery_eta_available {
+    # group_label: "* Operations / Logistics *"
+    view_label: "* Hubs *"
+    group_label: "Hub Leaderboard - Order Metrics"
+    label: "# Orders with Delivery PDT available"
+    description: "Count of Orders where a PDT is available"
+    hidden:  no
+    type: count
+    filters: [is_delivery_eta_available: "yes"]
+    value_format: "0"
+  }
+
+  measure: cnt_orders_with_targeted_eta_available {
+    # group_label: "* Operations / Logistics *"
+    view_label: "* Hubs *"
+    group_label: "Hub Leaderboard - Order Metrics"
+    label: "# Orders with Targeted Fulfillment Time is available"
+    description: "Count of Orders where a Targeted Delivery Time  is available"
+    hidden:  no
+    type: count
+    filters: [is_targeted_eta_available: "yes"]
+    value_format: "0"
+  }
+
+  measure: cnt_orders_delayed_under_0_min {
+    # group_label: "* Operations / Logistics *"
+    view_label: "* Hubs *"
+    group_label: "Hub Leaderboard - Order Metrics"
+    label: "# Orders delivered on time (30 sec tolerance)"
+    description: "Count of Orders delivered no later than PDT"
+    hidden:  yes
+    type: count
+    filters: [delivery_delay_since_eta:"<=0.5"]
+    value_format: "0"
+  }
+
+  measure: cnt_orders_with_rider_tip {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Orders with Rider Tip"
+    hidden:  no
+    type: count
+    filters: [rider_tip: ">0"]
+    value_format: "0"
+  }
+
+  measure: cnt_cancelled_orders {
+    group_label: "* Cancelled Orders *"
+    label: "# Cancelled Orders"
+    hidden:  no
+    type: count
+    filters: [amt_cancelled_gross: ">0"]
+    value_format: "0"
+  }
+
+  measure: cnt_agent_cancelled_orders {
+    group_label: "* Cancelled Orders *"
+    label: "# Agent Cancelled Orders"
+    hidden:  no
+    type: count
+    filters: [amt_cancelled_gross: ">0",cancellation_category: "- Customer"]
+    value_format: "0"
+  }
+
+  measure: cnt_self_cancelled_orders {
+    group_label: "* Cancelled Orders *"
+    label: "# Self Cancelled Orders"
+    hidden:  no
+    type: count
+    filters: [amt_cancelled_gross: ">0",cancellation_category: "Customer"]
+    value_format: "0"
+  }
+
+
+  ############### Delays compared to delivery time internal estimate ###########
+
+  measure: cnt_orders_delayed_over_12_min_internal_estimate {
+    # group_label: "* Operations / Logistics *"
+    view_label: "* Hubs *"
+    group_label: "Hub Leaderboard - Order Metrics"
+    label: "# Orders delivered late >12min (internal estimate)"
+    description: "Count of Orders delivered >12min later than delivery time estimate"
+    hidden:  yes
+    type: count
+    filters: [delivery_delay_since_time_estimate:">=12"]
+    value_format: "0"
+  }
+
+  measure: cnt_orders_delayed_over_20_min_internal_estimate {
+    # group_label: "* Operations / Logistics *"
+    view_label: "* Hubs *"
+    group_label: "Hub Leaderboard - Order Metrics"
+    label: "# Orders delivered late >20min (internal estimate)"
+    description: "Count of Orders delivered >20min later than delivery time estimate"
+    hidden:  yes
+    type: count
+    filters: [delivery_delay_since_time_estimate:">=20"]
+    value_format: "0"
+  }
+
+
+  measure: cnt_orders_delayed_over_30_min_internal_estimate {
+    # group_label: "* Operations / Logistics *"
+    view_label: "* Hubs *"
+    group_label: "Hub Leaderboard - Order Metrics"
+    label: "# Orders delivered late >30min (internal estimate)"
+    description: "Count of Orders delivered >30min later than delivery time estimate"
+    hidden:  yes
+    type: count
+    filters: [delivery_delay_since_time_estimate:">=30"]
+    value_format: "0"
+  }
+
+  measure: cnt_orders_delayed_over_60_min_internal_estimate {
+    # group_label: "* Operations / Logistics *"
+    view_label: "* Hubs *"
+    group_label: "Hub Leaderboard - Order Metrics"
+    label: "# Orders delivered late >20min (internal estimate)"
+    description: "Count of Orders delivered >60min later than delivery time estimate"
+    hidden:  yes
+    type: count
+    filters: [delivery_delay_since_time_estimate:">=60"]
+    value_format: "0"
+  }
+
+  measure: cnt_orders_delayed_over_5_min {
+    # group_label: "* Operations / Logistics *"
+    view_label: "* Hubs *"
+    group_label: "Hub Leaderboard - Order Metrics"
+    label: "# Orders delivered late >5min"
+    description: "Count of Orders delivered >5min later than PDT"
+    hidden:  yes
+    type: count
+    filters: [delivery_delay_since_eta:">=5"]
+    value_format: "0"
+  }
+
+  measure: cnt_orders_delayed_over_10_min {
+    group_label: "* Operations / Logistics *"
+    label: "# Orders delivered late >10min"
+    description: "Count of Orders delivered >10min later than PDT"
+    hidden:  yes
+    type: count
+    filters: [delivery_delay_since_eta:">=10"]
+    value_format: "0"
+  }
+
+  measure: cnt_orders_delayed_over_15_min {
+    group_label: "* Operations / Logistics *"
+    label: "# Orders delivered late >15min"
+    description: "Count of Orders delivered >15min later than PDT"
+    hidden:  yes
+    type: count
+    filters: [delivery_delay_since_eta:">=15"]
+    value_format: "0"
+  }
+
+
+#######TEMP: adding new fields to compare how PDT versus Time Estimate will perform
+  measure: cnt_orders_delayed_under_0_min_time_estimate {
+    # group_label: "* Operations / Logistics *"
+    view_label: "* Hubs *"
+    group_label: "Hub Leaderboard - Order Metrics"
+    label: "# Orders delivered in time (time estimate)"
+    description: "Count of Orders delivered no later than internal time estimate"
+    hidden:  yes
+    type: count
+    filters: [delivery_delay_since_time_estimate:"<=0"]
+    value_format: "0"
+  }
+
+  measure: cnt_orders_delayed_under_0_min_time_targeted {
+    # group_label: "* Operations / Logistics *"
+    view_label: "* Hubs *"
+    group_label: "Hub Leaderboard - Order Metrics"
+    label: "# Orders delivered in time (time estimate)"
+    description: "Count of Orders delivered no later than internal time estimate"
+    hidden:  yes
+    type: count
+    filters: [delivery_delay_since_time_targeted:"<=0"]
+    value_format: "0"
+  }
+
+  measure: cnt_orders_delayed_over_5_min_time_estimate {
+    # group_label: "* Operations / Logistics *"
+    view_label: "* Hubs *"
+    group_label: "Hub Leaderboard - Order Metrics"
+    label: "# Orders delivered in time (time estimate)"
+    description: "Count of Orders delivered >5min later than internal time estimate"
+    hidden:  yes
+    type: count
+    filters: [delivery_delay_since_time_estimate:">=5"]
+    value_format: "0"
+  }
+
+  measure: cnt_orders_delayed_over_10_min_time_estimate {
+    # group_label: "* Operations / Logistics *"
+    view_label: "* Hubs *"
+    group_label: "Hub Leaderboard - Order Metrics"
+    label: "# Orders delivered in time (time estimate)"
+    description: "Count of Orders delivered >10min later than internal time estimate"
+    hidden:  yes
+    type: count
+    filters: [delivery_delay_since_time_estimate:">=10"]
+    value_format: "0"
+  }
+
+  measure: cnt_orders_fulfilled_under_15_min {
+    group_label: "* Operations / Logistics *"
+    label: "# Orders delivered <15min"
+    description: "Count of Orders delivered in <15min"
+    hidden:  yes
+    type: count
+    filters: [fulfillment_time:"<15"]
+    value_format: "0"
+  }
+
+  measure: cnt_orders_fulfilled_over_12_min {
+    group_label: "* Operations / Logistics *"
+    label: "# Orders delivered >12min"
+    description: "Count of Orders delivered in >12min"
+    hidden:  yes
+    type: count
+    filters: [fulfillment_time:">12"]
+    value_format: "0"
+  }
+
+  measure: cnt_orders_fulfilled_over_20_min {
+    group_label: "* Operations / Logistics *"
+    label: "# Orders fulfilled >20min"
+    description: "Count of Orders delivered >20min fulfillment time"
+    hidden:  yes
+    type: count
+    filters: [fulfillment_time:">20"]
+    value_format: "0"
+  }
+
+  measure: cnt_orders_fulfilled_over_30_min {
+    group_label: "* Operations / Logistics *"
+    label: "# Orders fulfilled >30min"
+    description: "Count of Orders delivered >30min fulfillment time"
+    hidden:  yes
+    type: count
+    filters: [fulfillment_time:">=30"]
+    value_format: "0"
+  }
+
+  measure: cnt_orders_fulfilled_over_60_min {
+    group_label: "* Operations / Logistics *"
+    label: "# Orders delivered >60min"
+    description: "Count of Orders delivered in >60min"
+    hidden:  yes
+    type: count
+    filters: [fulfillment_time:">60"]
+    value_format: "0"
+  }
+
+  measure: cnt_orders_delivery_time_critical_underestimation {
+    group_label: "* Operations / Logistics *"
+    label:       "# Orders with critical under-estimation delivery time"
+    description: "# Orders with critical under-estimation delivery time"
+    hidden:      yes
+    type:        count
+    filters:     [is_critical_delivery_time_estimate_underestimation: "Yes"]
+    value_format: "0"
+  }
+
+  measure: cnt_orders_delivery_time_critical_overestimation {
+    group_label: "* Operations / Logistics *"
+    label:       "# Orders with critical over-estimation delivery time"
+    description: "# Orders with critical over-estimation delivery time"
+    hidden:      yes
+    type:        count
+    filters:     [is_critical_delivery_time_estimate_overestimation: "Yes"]
+    value_format: "0"
+  }
+
+  measure: cnt_unique_date {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Unique Date"
+    description: "Count of Unique Dates"
+    hidden:  no
+    type: count_distinct
+    sql: case when ${country_iso} = 'DE' and ${order_dow} = 'Sunday' then null
+      else ${order_date} end;;
+    value_format: "0"
+  }
+
+
+  measure: cnt_rider {
+    label: "# Riders Delivering Orders"
+    type: number
+    group_label: "* Operations / Logistics *"
+    sql:count (distinct ${rider_id});;
+    value_format_name: decimal_0
+  }
+
+
+  ################
+  ## PERCENTAGE ##
+  ################
+
+  measure: pct_acquisition_share {
+    group_label: "* Marketing *"
+    label: "% Acquisition Share"
+    description: "Share of New Customer Acquisitions over Total Orders"
+    hidden:  no
+    type: number
+    sql: ${cnt_unique_orders_new_customers} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_discount_cart_order_share {
+    group_label: "* Marketing *"
+    label: "% Cart Discount Order Share"
+    description: "Share of Orders which had voucher applied at a checkout. Includes delivery discounts."
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_with_discount_cart} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_discount_products_order_share {
+    group_label: "* Monetary Values *"
+    label: "% Product Discount Order Share"
+    description: "Share of Orders which had some product discount applied."
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_with_discount_products} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_discount_cart_value_of_gross_total{
+    group_label: "* Marketing *"
+    label: "% Cart Discount Value Share"
+    description: "Dividing Total Discount Cart amounts over GMV"
+    hidden:  no
+    type: number
+    sql: ${sum_discount_cart_gross} / NULLIF(${sum_gmv_gross}, 0);;
+    value_format_name: percent_1
+  }
+
+  measure: pct_discount_products_value_of_gross_total{
+    group_label: "* Monetary Values *"
+    label: "% Product Discount Value Share"
+    description: "Dividing Total Discount Products amounts over GMV"
+    hidden:  no
+    type: number
+    sql: ${sum_discount_products_gross} / NULLIF(${sum_gmv_gross}, 0);;
+    value_format_name: percent_1
+  }
+
+  measure: pct_tip_order_share {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "% Tip Order Share"
+    description: "Share of Orders which had some Rider Tip applied"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_with_rider_tip} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_tip_value_of_gross_total{
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "% Tip Value Share"
+    description: "Dividing Total Rider Tip amounts over GMV"
+    hidden:  no
+    type: number
+    sql: ${sum_rider_tip} / NULLIF(${sum_gmv_gross}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_cancelled_amount_value_of_gross_total{
+    group_label: "* Cancelled Orders *"
+    label: "% Cancelled Value Share"
+    description: "Dividing Total Cancelled amount Gross over GMV Gross"
+    hidden:  no
+    type: number
+    sql: ${sum_amt_cancelled_gross} / NULLIF(${sum_gmv_gross}, 0);;
+    value_format: "0.0%"
+  }
+
+  measure: pct_cancelled_orders{
+    group_label: "* Cancelled Orders *"
+    label: "% Cancelled Orders"
+    description: "Dividing Number of Cancelled Orders over Number of Orders"
+    hidden:  no
+    type: number
+    sql: ${cnt_cancelled_orders} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0.0%"
+  }
+
+  measure: pct_self_cancelled_orders{
+    group_label: "* Cancelled Orders *"
+    label: "% Self Cancelled Orders"
+    description: "Dividing Number of Self-Cancelled Orders by Customer over Number of Orders"
+    hidden:  no
+    type: number
+    sql: ${cnt_self_cancelled_orders} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0.0%"
+  }
+
+  measure: pct_agent_cancelled_orders{
+    group_label: "* Cancelled Orders *"
+    label: "% Agent Cancelled Orders"
+    description: "Dividing Number of Self-Cancelled Orders by CC Agents over Number of Orders"
+    hidden:  no
+    type: number
+    sql: ${cnt_agent_cancelled_orders} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0.0%"
+  }
+
+  measure: pct_delivery_in_time{
+    group_label: "* Operations / Logistics *"
+    label: "% Orders delivered in time (PDT)"
+    description: "Share of orders delivered no later than PDT (30 sec tolerance)"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_delayed_under_0_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_delivery_late_over_5_min{
+    group_label: "* Operations / Logistics *"
+    label: "% Orders delayed >5min"
+    description: "Share of orders delivered >5min later than PDT"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_delayed_over_5_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_delivery_late_over_10_min{
+    group_label: "* Operations / Logistics *"
+    label: "% Orders delayed >10min"
+    description: "Share of orders delivered >10min later than PDT"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_delayed_over_10_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_delivery_late_over_15_min{
+    group_label: "* Operations / Logistics *"
+    label: "% Orders delayed >15min"
+    description: "Share of orders delivered >15min later than PDT"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_delayed_over_15_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_fulfillment_under_15_min{
+    group_label: "* Operations / Logistics *"
+    label: "% Orders fulfilled <15min"
+    description: "Share of orders delivered <15min"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_fulfilled_under_15_min} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_fulfillment_over_12_min{
+    group_label: "* Operations / Logistics *"
+    label: "% Orders fulfilled >12min"
+    description: "Share of orders delivered >12min"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_fulfilled_over_12_min} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_fulfillment_over_20_min{
+    group_label: "* Operations / Logistics *"
+    label: "% Orders fulfilled >20min"
+    description: "Share of orders delivered >20min"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_fulfilled_over_20_min} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_fulfillment_over_60_min{
+    group_label: "* Operations / Logistics *"
+    label: "% Orders fulfilled >60min"
+    description: "Share of orders delivered >60min"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_fulfilled_over_60_min} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0%"
+  }
 ###########  Delays with regards to Delivery Time Internal Estimate
 
-      measure: pct_delayed_over_12_min_internal_estimate {
-        group_label: "* Operations / Logistics *"
-        label: "% Orders delayed >12min (Internal Estimate)"
-        description: "Share of orders delayed >12min than Delivery Time Internal Estimate"
-        hidden:  no
-        type: number
-        sql: ${cnt_orders_delayed_over_12_min_internal_estimate} / NULLIF(${cnt_orders}, 0);;
-        value_format: "0%"
-      }
+  measure: pct_delayed_over_12_min_internal_estimate {
+    group_label: "* Operations / Logistics *"
+    label: "% Orders delayed >12min (Internal Estimate)"
+    description: "Share of orders delayed >12min than Delivery Time Internal Estimate"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_delayed_over_12_min_internal_estimate} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0%"
+  }
 
-      measure: pct_delayed_over_20_min_internal_estimate {
-        group_label: "* Operations / Logistics *"
-        label: "% Orders delayed >20min (Internal Estimate)"
-        description: "Share of orders delayed >20min than Delivery Time Internal Estimate"
-        hidden:  no
-        type: number
-        sql: ${cnt_orders_delayed_over_20_min_internal_estimate} / NULLIF(${cnt_orders}, 0);;
-        value_format: "0%"
-      }
+  measure: pct_delayed_over_20_min_internal_estimate {
+    group_label: "* Operations / Logistics *"
+    label: "% Orders delayed >20min (Internal Estimate)"
+    description: "Share of orders delayed >20min than Delivery Time Internal Estimate"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_delayed_over_20_min_internal_estimate} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0%"
+  }
 
-      measure: pct_delayed_over_30_min_internal_estimate {
-        group_label: "* Operations / Logistics *"
-        label: "% Orders delayed >30min (Internal Estimate)"
-        description: "Share of orders delayed >30min than Delivery Time Internal Estimate"
-        hidden:  no
-        type: number
-        sql: ${cnt_orders_delayed_over_30_min_internal_estimate} / NULLIF(${cnt_orders}, 0);;
-        value_format: "0%"
-      }
+  measure: pct_delayed_over_30_min_internal_estimate {
+    group_label: "* Operations / Logistics *"
+    label: "% Orders delayed >30min (Internal Estimate)"
+    description: "Share of orders delayed >30min than Delivery Time Internal Estimate"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_delayed_over_30_min_internal_estimate} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0%"
+  }
 
-      measure: pct_delayed_over_60_min_internal_estimate {
-        group_label: "* Operations / Logistics *"
-        label: "% Orders delayed >60min (Internal Estimate)"
-        description: "Share of orders delayed >60min than Delivery Time Internal Estimate"
-        hidden:  no
-        type: number
-        sql: ${cnt_orders_delayed_over_60_min_internal_estimate} / NULLIF(${cnt_orders}, 0);;
-        value_format: "0%"
-      }
+  measure: pct_delayed_over_60_min_internal_estimate {
+    group_label: "* Operations / Logistics *"
+    label: "% Orders delayed >60min (Internal Estimate)"
+    description: "Share of orders delayed >60min than Delivery Time Internal Estimate"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_delayed_over_60_min_internal_estimate} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0%"
+  }
 
-      measure: pct_rider_handling_time_saved_with_stacking {
-        group_label: "* Operations / Logistics *"
-        label: "% Rider Handling Time Saved Due To Stacking"
-        description: "% Total rider handling time savings achieved due to stacking. Compares estimated savings with the potential rider handling time without stacking."
-        hidden:  no
-        type: number
-        sql: ${sum_rider_handling_time_minutes_saved_with_stacking} / NULLIF(${sum_potential_rider_handling_time_without_stacking_minutes}, 0);;
-        value_format: "0%"
-      }
+  measure: pct_rider_handling_time_saved_with_stacking {
+    group_label: "* Operations / Logistics *"
+    label: "% Rider Handling Time Saved Due To Stacking"
+    description: "% Total rider handling time savings achieved due to stacking. Compares estimated savings with the potential rider handling time without stacking."
+    hidden:  no
+    type: number
+    sql: ${sum_rider_handling_time_minutes_saved_with_stacking} / NULLIF(${sum_potential_rider_handling_time_without_stacking_minutes}, 0);;
+    value_format: "0%"
+  }
 
-      measure: pct_rider_handling_time_saved_with_stacking_vs_non_stacked {
-        group_label: "* Stacked Orders *"
-        label: "% Rider Handling Time Saved Stacked vs. Non-Stacked Orders"
-        description: "Compared to non-stacked orders' average rider handling time, what are the % savings for stacked orders"
-        hidden:  no
-        type: number
-        sql: (${avg_rider_handling_time_non_stacked} - ${avg_rider_handling_time_stacked})/${avg_rider_handling_time_non_stacked};;
-        value_format: "0%"
-      }
+  measure: pct_rider_handling_time_saved_with_stacking_vs_non_stacked {
+    group_label: "* Stacked Orders *"
+    label: "% Rider Handling Time Saved Stacked vs. Non-Stacked Orders"
+    description: "Compared to non-stacked orders' average rider handling time, what are the % savings for stacked orders"
+    hidden:  no
+    type: number
+    sql: (${avg_rider_handling_time_non_stacked} - ${avg_rider_handling_time_stacked})/${avg_rider_handling_time_non_stacked};;
+    value_format: "0%"
+  }
 
 #######TEMP: adding new fields to compare how PDT versus Time Estimate will perform
 
-      measure: pct_delivery_in_time_time_estimate{
-        group_label: "* Operations / Logistics *"
-        label: "% Orders delivered in time (targeted estimate)"
-        description: "Share of orders delivered no later than targeted estimate"
-        hidden:  no
-        type: number
-        sql: ${cnt_orders_delayed_under_0_min_time_targeted} / NULLIF(${cnt_orders_with_targeted_eta_available}, 0);;
-        value_format: "0%"
-      }
+  measure: pct_delivery_in_time_time_estimate{
+    group_label: "* Operations / Logistics *"
+    label: "% Orders delivered in time (targeted estimate)"
+    description: "Share of orders delivered no later than targeted estimate"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_delayed_under_0_min_time_targeted} / NULLIF(${cnt_orders_with_targeted_eta_available}, 0);;
+    value_format: "0%"
+  }
 
-      ###### The below measure should not be removed
+  ###### The below measure should not be removed
 
-      measure: pct_delivery_late_over_5_min_time_estimate{
-        group_label: "* Operations / Logistics *"
-        label: "% Orders delayed >5min (internal estimate)"
-        description: "Share of orders delivered >5min later than internal estimate"
-        hidden:  no
-        type: number
-        sql: ${cnt_orders_delayed_over_5_min_time_estimate} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
-        value_format: "0%"
-      }
+  measure: pct_delivery_late_over_5_min_time_estimate{
+    group_label: "* Operations / Logistics *"
+    label: "% Orders delayed >5min (internal estimate)"
+    description: "Share of orders delivered >5min later than internal estimate"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_delayed_over_5_min_time_estimate} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
+    value_format: "0%"
+  }
 
-      measure: pct_delivery_late_over_10_min_time_estimate{
-        group_label: "* Operations / Logistics *"
-        label: "% Orders delayed >10min (internal estimate)"
-        description: "Share of orders delivered >10min later than internal estimate"
-        hidden:  no
-        type: number
-        sql: ${cnt_orders_delayed_over_10_min_time_estimate} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
-        value_format: "0%"
-      }
+  measure: pct_delivery_late_over_10_min_time_estimate{
+    group_label: "* Operations / Logistics *"
+    label: "% Orders delayed >10min (internal estimate)"
+    description: "Share of orders delivered >10min later than internal estimate"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_delayed_over_10_min_time_estimate} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
+    value_format: "0%"
+  }
 
-      # measure: pct_idle {
-      #   label: "% Rider Idle Time"
-      #   group_label: "* Operations / Logistics *"
-      #   description: "% Rider Time spent not working on an order (not Occupied ) "
-      #   type: number
-      #   sql: 1 - ((${order_handling_time_minute}/60)/NULLIF(${shyftplan_riders_pickers_hours.rider_hours},0));;
-      #   value_format_name:  percent_1
-      # }
+  # measure: pct_idle {
+  #   label: "% Rider Idle Time"
+  #   group_label: "* Operations / Logistics *"
+  #   description: "% Rider Time spent not working on an order (not Occupied ) "
+  #   type: number
+  #   sql: 1 - ((${order_handling_time_minute}/60)/NULLIF(${shyftplan_riders_pickers_hours.rider_hours},0));;
+  #   value_format_name:  percent_1
+  # }
 
 
 #######TEMP: adding new fields to compare how PDT versus Time Estimate will perform
 
 #### ADDED PERMANENTLY --- SEE LINE 1873
 
-      #measure: pct_fulfillment_over_20_min{
-      #  group_label: "* Operations / Logistics *"
-      #  label: "% Orders fulfilled >20min"
-      #  description: "Share of orders delivered > 20min"
-      #  hidden:  no
-      #  type: number
-      #  sql: ${cnt_orders_fulfilled_over_20_min} / NULLIF(${cnt_orders}, 0);;
-      #  value_format: "0%"
-      #}
+  #measure: pct_fulfillment_over_20_min{
+  #  group_label: "* Operations / Logistics *"
+  #  label: "% Orders fulfilled >20min"
+  #  description: "Share of orders delivered > 20min"
+  #  hidden:  no
+  #  type: number
+  #  sql: ${cnt_orders_fulfilled_over_20_min} / NULLIF(${cnt_orders}, 0);;
+  #  value_format: "0%"
+  #}
 
-      measure: pct_fulfillment_over_30_min{
-        group_label: "* Operations / Logistics *"
-        label: "% Orders fulfilled >30min"
-        description: "Share of orders delivered > 30min"
-        hidden:  no
-        type: number
-        sql: ${cnt_orders_fulfilled_over_30_min} / NULLIF(${cnt_orders}, 0);;
-        value_format: "0%"
-      }
+  measure: pct_fulfillment_over_30_min{
+    group_label: "* Operations / Logistics *"
+    label: "% Orders fulfilled >30min"
+    description: "Share of orders delivered > 30min"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_fulfilled_over_30_min} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0%"
+  }
 
-      measure: percent_of_total_orders {
-        group_label: "* Basic Counts (Orders / Customers etc.) *"
-        label: "% Of Total Orders"
-        direction: "column"
-        type: percent_of_total
-        sql: ${cnt_orders} ;;
-      }
+  measure: percent_of_total_orders {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "% Of Total Orders"
+    direction: "column"
+    type: percent_of_total
+    sql: ${cnt_orders} ;;
+  }
 
-      measure: avg_orders_per_hub{
-        group_label: "* Basic Counts (Orders / Customers etc.) *"
-        label: "AVG # Orders per hub"
-        type: number
-        sql: ${cnt_orders}/NULLIF(${cnt_unique_hubs},0) ;;
-        value_format: "0.00"
-        html:  {{rendered_value}}  || # {{ cnt_unique_hubs._rendered_value }} unique hubs ;;
-      }
+  measure: avg_orders_per_hub{
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "AVG # Orders per hub"
+    type: number
+    sql: ${cnt_orders}/NULLIF(${cnt_unique_hubs},0) ;;
+    value_format: "0.00"
+    html:  {{rendered_value}}  || # {{ cnt_unique_hubs._rendered_value }} unique hubs ;;
+  }
 
-      measure: avg_daily_orders_per_hub{
-        group_label: "* Basic Counts (Orders / Customers etc.) *"
-        label: "AVG Daily Orders per hub"
-        type: number
-        sql: (${cnt_orders}/NULLIF(${cnt_unique_hubs},0))/ NULLIF(${cnt_unique_date},0);;
+  measure: avg_daily_orders_per_hub{
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "AVG Daily Orders per hub"
+    type: number
+    sql: (${cnt_orders}/NULLIF(${cnt_unique_hubs},0))/ NULLIF(${cnt_unique_date},0);;
 
-        value_format_name:decimal_2
-      }
-
-
-      measure: pct_delivery_time_estimate_critical_over_estimation {
-        group_label: "* Operations / Logistics *"
-        label:       "% Orders with critical over-estimation of delivery time"
-        description: "% Orders with critical over-estimation of delivery time"
-        type:        number
-        sql:         ${cnt_orders_delivery_time_critical_overestimation} / ${cnt_orders} ;;
-        value_format_name:  percent_2
-      }
-
-      measure: pct_delivery_time_estimate_critical_under_estimation {
-        group_label: "* Operations / Logistics *"
-        label:       "% Orders with critical under-estimation of delivery time"
-        description: "% Orders with critical under-estimation of delivery time"
-        type:        number
-        sql:         ${cnt_orders_delivery_time_critical_underestimation} / ${cnt_orders} ;;
-        value_format_name:  percent_2
-      }
-
-      measure: cnt_orders_with_delivery_time_estimate {
-        group_label: "* Operations / Logistics *"
-        label: "# Orders with Fulfillment Time Estimate"
-        hidden:  yes
-        type: count
-        filters: [delivery_time_estimate_minutes: ">0", fulfillment_time: ">0"]
-        value_format: "0"
-      }
-
-      measure: cnt_orders_with_delivery_time_targeted {
-        group_label: "* Operations / Logistics *"
-        label: "# Orders with Fulfillment Time Targeted"
-        hidden:  yes
-        type: count
-        filters: [delivery_time_targeted_minutes: ">0", fulfillment_time: ">0"]
-        value_format: "0"
-      }
-
-      measure: rmse_delivery_time_estimate {
-        label: "Fulfillment Time Estimate Error (RMSE)"
-        description: "The root-mean-squared-error when comparing actuall fulfillment times and predicted delivery estimate times"
-        group_label: "* Operations / Logistics *"
-        type: number
-        sql: sqrt(sum(power((${fulfillment_time}- ${delivery_time_estimate_minutes}), 2)) / nullif(${cnt_orders_with_delivery_time_estimate}, 0) )  ;;
-        value_format_name: decimal_2
-      }
-
-      measure: delta_return_delivery_time {
-        group_label: "* Operations / Logistics *"
-        label: "Delta between Riding to Customer Time and Riding to Hub Time"
-        type: number
-        value_format: "0.0"
-        sql: ${avg_riding_to_customer_time} - ${avg_riding_to_hub_time} ;;
-      }
+    value_format_name:decimal_2
+  }
 
 
-    }
+  measure: pct_delivery_time_estimate_critical_over_estimation {
+    group_label: "* Operations / Logistics *"
+    label:       "% Orders with critical over-estimation of delivery time"
+    description: "% Orders with critical over-estimation of delivery time"
+    type:        number
+    sql:         ${cnt_orders_delivery_time_critical_overestimation} / ${cnt_orders} ;;
+    value_format_name:  percent_2
+  }
+
+  measure: pct_delivery_time_estimate_critical_under_estimation {
+    group_label: "* Operations / Logistics *"
+    label:       "% Orders with critical under-estimation of delivery time"
+    description: "% Orders with critical under-estimation of delivery time"
+    type:        number
+    sql:         ${cnt_orders_delivery_time_critical_underestimation} / ${cnt_orders} ;;
+    value_format_name:  percent_2
+  }
+
+  measure: cnt_orders_with_delivery_time_estimate {
+    group_label: "* Operations / Logistics *"
+    label: "# Orders with Fulfillment Time Estimate"
+    hidden:  yes
+    type: count
+    filters: [delivery_time_estimate_minutes: ">0", fulfillment_time: ">0"]
+    value_format: "0"
+  }
+
+  measure: cnt_orders_with_delivery_time_targeted {
+    group_label: "* Operations / Logistics *"
+    label: "# Orders with Fulfillment Time Targeted"
+    hidden:  yes
+    type: count
+    filters: [delivery_time_targeted_minutes: ">0", fulfillment_time: ">0"]
+    value_format: "0"
+  }
+
+  measure: rmse_delivery_time_estimate {
+    label: "Fulfillment Time Estimate Error (RMSE)"
+    description: "The root-mean-squared-error when comparing actuall fulfillment times and predicted delivery estimate times"
+    group_label: "* Operations / Logistics *"
+    type: number
+    sql: sqrt(sum(power((${fulfillment_time}- ${delivery_time_estimate_minutes}), 2)) / nullif(${cnt_orders_with_delivery_time_estimate}, 0) )  ;;
+    value_format_name: decimal_2
+  }
+
+  measure: delta_return_delivery_time {
+    group_label: "* Operations / Logistics *"
+    label: "Delta between Riding to Customer Time and Riding to Hub Time"
+    type: number
+    value_format: "0.0"
+    sql: ${avg_riding_to_customer_time} - ${avg_riding_to_hub_time} ;;
+  }
+
+
+}
