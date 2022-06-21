@@ -70,7 +70,7 @@ view: vendor_performance_ndt_date_hub_sku_metrics_po {
 
   measure: sum_po_quantity {
 
-    hidden: no
+    hidden: yes
     type: sum
     sql: ${po_quantity} ;;
     group_label: "Over-Inbound (PO)"
@@ -78,7 +78,7 @@ view: vendor_performance_ndt_date_hub_sku_metrics_po {
 
   measure: sum_inbound_quantity {
 
-    hidden: no
+    hidden: yes
     type: sum
     sql: ${inbound_quantity} ;;
     group_label: "Over-Inbound (PO)"
@@ -129,7 +129,7 @@ view: vendor_performance_ndt_date_hub_sku_metrics_po {
 
     type: number
     value_format_name: percent_1
-    sql: safe_divide(${sum_unplanned_inbounds_po}, ${sum_po_quantity}) ;;
+    sql: safe_divide(${sum_unplanned_inbounds_po}, ${sum_inbound_quantity}) ;;
 
   }
 

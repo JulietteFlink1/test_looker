@@ -60,7 +60,7 @@ view: vendor_performance_ndt_date_hub_sku_metrics_desadv {
   #  - - - - - - - - - -    DESADV metrics
   measure: sum_desadv_quantity {
 
-    hidden: no
+    hidden: yes
     type: sum
     sql: ${desadv_quantity} ;;
     group_label: "Over-Inbound (DESADV)"
@@ -68,7 +68,7 @@ view: vendor_performance_ndt_date_hub_sku_metrics_desadv {
 
   measure: sum_inbound_quantity {
 
-    hidden: no
+    hidden: yes
     type: sum
     sql: ${inbound_quantity} ;;
     group_label: "Over-Inbound (DESADV)"
