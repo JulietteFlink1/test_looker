@@ -2196,7 +2196,7 @@ view: orders {
         description: "Net Payment Value. Actual amount paid by the customer in CT after Refunds. Sum of Delivery Fees, Items Price, Tips, Deposit. Excl. Donations. After Deduction of Cart and Product Discounts. Incl. VAT"
         hidden:  no
         type: sum
-        sql: ${amt_gpv_gross};;
+        sql: ${amt_npv_gross};;
         value_format_name: euro_accounting_2_precision
       }
 
