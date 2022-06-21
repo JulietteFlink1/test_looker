@@ -6,7 +6,11 @@ view: products_hub_assignment_v2 {
   # ~~~~~~~~~~~~~~~        Sets        ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   set: minimal_fields {
-    fields: [hub_code, sku, report_date, leading_sku_replenishment_substitute_group]
+    fields: [hub_code,
+             sku,
+             report_date,
+             erp_vendor_id,
+             leading_sku_replenishment_substitute_group]
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -236,12 +240,14 @@ view: products_hub_assignment_v2 {
   }
 
   dimension: erp_vendor_id {
+    label: "Supplier ID"
     group_label: "ERP Fields"
     type: string
     sql: ${TABLE}.erp_vendor_id ;;
   }
 
   dimension: erp_vendor_location_id {
+    label: "Supplier Location ID"
     group_label: "ERP Fields"
     type: string
     sql: ${TABLE}.erp_vendor_location_id ;;

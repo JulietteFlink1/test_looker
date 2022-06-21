@@ -32,8 +32,8 @@ explore: vendor_performance {
     inventory_changes*,
     vendor_performance_ndt_desadv_fill_rates*,
     vendor_performance_ndt_inbounded_skus*,
-    vendor_performance_ndt_date_hub_sku_metrics*,
-  #  vendor_performance_ndt_percent_inbounded*,
+    vendor_performance_ndt_date_hub_sku_metrics_desadv*,
+    vendor_performance_ndt_date_hub_sku_metrics_po*,
     products*,
     purchase_orders.main_fields*, purchase_orders.cross_references_inventory_changes_daily*,
     lexbizz_vendor*,
@@ -55,7 +55,9 @@ explore: vendor_performance {
   }
 
 
-
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  #  - - - - - - - - - -    Main Tables
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   join: bulk_items {
 
@@ -129,6 +131,30 @@ explore: vendor_performance {
     ]
   }
 
+
+  join: purchase_orders {
+
+    view_label: "* Purchase Orders (PO) *"
+
+    from: replenishment_purchase_orders
+
+    type: left_outer
+    relationship: one_to_many
+    sql_on:
+            ${products_hub_assignment.report_date}                                = ${purchase_orders.delivery_date}
+        and ${products_hub_assignment.hub_code}                                   = ${purchase_orders.hub_code}
+        and ${products_hub_assignment.leading_sku_replenishment_substitute_group} = ${purchase_orders.sku}
+        -- only include purchase orders, that were actually sent to the suppliers
+        and ${purchase_orders.status} = 'Sent'
+        and {% condition global_filters_and_parameters.datasource_filter %} ${purchase_orders.delivery_date} {% endcondition %}
+    ;;
+  }
+
+
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  #  - - - - - - - - - -    Native Derived Tables
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   join: vendor_performance_ndt_desadv_fill_rates {
 
     view_label: "* DESADVs *"
@@ -151,57 +177,19 @@ explore: vendor_performance {
     ;;
   }
 
-  # join: vendor_performance_ndt_percent_inbounded {
+  join: vendor_performance_ndt_date_hub_sku_metrics_desadv {
 
-  #   view_label: "* DESADVs *"
-
-  #   type: left_outer
-  #   relationship: one_to_many
-  #   sql_on:
-  #         ${vendor_performance_ndt_percent_inbounded.dispatch_notification_id} = ${bulk_items.dispatch_notification_id}
-  #     and ${vendor_performance_ndt_percent_inbounded.sku_desadv} = ${bulk_items.sku}
-  #     and {% condition global_filters_and_parameters.datasource_filter %} date(${vendor_performance_ndt_percent_inbounded.estimated_delivery_timestamp}) {% endcondition %}
-  #   ;;
-  # }
-
-  join: products {
+    view_label: "* DESADVs *"
 
     type: left_outer
-    relationship: many_to_one
-    sql_on: ${products.product_sku} = ${products_hub_assignment.sku} ;;
-  }
-
-  join: purchase_orders {
-
-    view_label: "* Purchase Orders (PO) *"
-
-    from: replenishment_purchase_orders
-
-    type: left_outer
-    relationship: one_to_many
+    relationship: one_to_one
     sql_on:
-            ${products_hub_assignment.report_date}                                = ${purchase_orders.delivery_date}
-        and ${products_hub_assignment.hub_code}                                   = ${purchase_orders.hub_code}
-        and ${products_hub_assignment.leading_sku_replenishment_substitute_group} = ${purchase_orders.sku}
-        -- only include purchase orders, that were actually sent to the suppliers
-        and ${purchase_orders.status} = 'Sent'
-        and {% condition global_filters_and_parameters.datasource_filter %} ${purchase_orders.delivery_date} {% endcondition %}
+            ${vendor_performance_ndt_date_hub_sku_metrics_desadv.report_date} = ${products_hub_assignment.report_date}
+        and ${vendor_performance_ndt_date_hub_sku_metrics_desadv.hub_code}    = ${products_hub_assignment.hub_code}
+        and ${vendor_performance_ndt_date_hub_sku_metrics_desadv.leading_sku_replenishment_substitute_group} = ${products_hub_assignment.leading_sku_replenishment_substitute_group}
     ;;
   }
 
-  join: lexbizz_vendor {
-
-    view_label: "* Purchase Orders (PO) *"
-
-    type: left_outer
-    relationship: many_to_one
-    sql_on:
-          ${lexbizz_vendor.vendor_id} = ${purchase_orders.vendor_id}
-      and ${lexbizz_vendor.ingestion_date} = current_date()-1
-    ;;
-
-    fields: [lexbizz_vendor.vendor_name]
-  }
 
   join: vendor_performance_ndt_po_fill_rate {
 
@@ -214,33 +202,23 @@ explore: vendor_performance {
     ;;
   }
 
-  # joined to account for erp_buying_price dependency in purchase_orders
-  join: erp_buying_prices {
+  join: vendor_performance_ndt_date_hub_sku_metrics_po {
 
-    view_label: ""
-    type: left_outer
-    relationship: one_to_one
-    sql_on:
-            ${erp_buying_prices.report_date} = ${products_hub_assignment.report_date}
-        and ${erp_buying_prices.hub_code} = ${products_hub_assignment.hub_code}
-        and ${erp_buying_prices.sku} = ${products_hub_assignment.sku}
-    ;;
-  }
-
-
-  join: vendor_performance_ndt_date_hub_sku_metrics {
-
-    view_label: "* Over- | Unplanned Inbounds *"
+    view_label: "* Purchase Orders (PO) *"
 
     type: left_outer
     relationship: one_to_one
     sql_on:
-            ${vendor_performance_ndt_date_hub_sku_metrics.report_date} = ${products_hub_assignment.report_date}
-        and ${vendor_performance_ndt_date_hub_sku_metrics.hub_code}    = ${products_hub_assignment.hub_code}
-        and ${vendor_performance_ndt_date_hub_sku_metrics.sku}         = ${products_hub_assignment.sku}
+            ${vendor_performance_ndt_date_hub_sku_metrics_po.report_date} = ${products_hub_assignment.report_date}
+        and ${vendor_performance_ndt_date_hub_sku_metrics_po.hub_code}    = ${products_hub_assignment.hub_code}
+        and ${vendor_performance_ndt_date_hub_sku_metrics_po.leading_sku_replenishment_substitute_group} = ${products_hub_assignment.leading_sku_replenishment_substitute_group}
     ;;
   }
 
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  #  - - - - - - - - - -    Master Data
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   join: hubs {
 
     from:  hubs_ct
@@ -269,6 +247,42 @@ explore: vendor_performance {
       erp_product_hub_vendor_assignment_v2.vendor_id,
       erp_product_hub_vendor_assignment_v2.vendor_name
     ]
+  }
+
+  join: lexbizz_vendor {
+
+    view_label: "* Purchase Orders (PO) *"
+
+    type: left_outer
+    relationship: many_to_one
+    sql_on:
+          ${lexbizz_vendor.vendor_id} = ${purchase_orders.vendor_id}
+      and ${lexbizz_vendor.ingestion_date} = current_date()-1
+    ;;
+
+    fields: [lexbizz_vendor.vendor_name]
+  }
+
+
+
+  # joined to account for erp_buying_price dependency in purchase_orders
+  join: erp_buying_prices {
+
+    view_label: ""
+    type: left_outer
+    relationship: one_to_one
+    sql_on:
+            ${erp_buying_prices.report_date} = ${products_hub_assignment.report_date}
+        and ${erp_buying_prices.hub_code} = ${products_hub_assignment.hub_code}
+        and ${erp_buying_prices.sku} = ${products_hub_assignment.sku}
+    ;;
+  }
+
+  join: products {
+
+    type: left_outer
+    relationship: many_to_one
+    sql_on: ${products.product_sku} = ${products_hub_assignment.sku} ;;
   }
 
 }
