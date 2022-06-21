@@ -19,6 +19,7 @@ explore: current_product_discounts {
   extends: [current_inventory]
 
   group_label: "Pricing"
+  label: "CommerceTools Product Discounts"
 
   join: double_listed_products {
     from: double_listed_products
