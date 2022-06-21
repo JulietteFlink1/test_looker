@@ -714,6 +714,8 @@ view: orders {
 
   dimension: is_voucher_order{
     group_label: "* Order Dimensions *"
+    label: "Is Discounted Order (Yes/No)"
+    description: "Flags if an Order has any Discount (Cart or Product) applied"
     type: yesno
     sql: ${TABLE}.is_discounted_order ;;
   }
