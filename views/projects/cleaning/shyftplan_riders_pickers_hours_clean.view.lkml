@@ -1,5 +1,5 @@
 view: shyftplan_riders_pickers_hours_clean {
-  sql_table_name: `flink-data-prod.reporting.daily_hub_staffing`
+  sql_table_name: `flink-data-dev.reporting.daily_hub_staffing`
     ;;
 
   dimension: id {
@@ -534,7 +534,7 @@ view: shyftplan_riders_pickers_hours_clean {
     label: "AVG All Staff UTR (incl. Rider,Picker,WH Ops and Shift Lead)"
     type: number
     description: "# Orders from opened hub / # Worked All Staff (incl. Rider,Picker,WH Ops and Shift Lead) Hours"
-    sql: ${adjusted_orders_riders} / NULLIF(${rider_hours}+${picker_hours}+${wh_ops_hours}+${shift_lead_hours}, 0);;
+    sql: ${adjusted_orders_riders} / NULLIF(${rider_hours}+${picker_hours}+${wh_ops_hours}+${shift_lead_hours}+${rider_captain_hours}, 0);;
     value_format_name: decimal_2
     group_label: "UTR"
   }
