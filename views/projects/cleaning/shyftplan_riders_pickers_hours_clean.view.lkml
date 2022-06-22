@@ -1,5 +1,5 @@
 view: shyftplan_riders_pickers_hours_clean {
-  sql_table_name: `flink-data-dev.reporting.daily_hub_staffing`
+  sql_table_name: `flink-data-prod.reporting.daily_hub_staffing`
     ;;
 
   dimension: id {
