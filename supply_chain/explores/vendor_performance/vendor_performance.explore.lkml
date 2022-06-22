@@ -34,6 +34,7 @@ explore: vendor_performance {
     vendor_performance_ndt_inbounded_skus*,
     vendor_performance_ndt_date_hub_sku_metrics_desadv*,
     vendor_performance_ndt_date_hub_sku_metrics_po*,
+    vendor_performance_sql_derived_hub_ops_kpis*,
     products*,
     purchase_orders.main_fields*, purchase_orders.cross_references_inventory_changes_daily*,
     lexbizz_vendor*,
@@ -127,7 +128,8 @@ explore: vendor_performance {
       inventory_changes.min_inbounding_time,
       inventory_changes.is_inbound,
       inventory_changes.sum_inbound_inventory,
-      inventory_changes.sku
+      inventory_changes.sku,
+      inventory_changes.hub_code
     ]
   }
 
@@ -213,6 +215,18 @@ explore: vendor_performance {
         and ${vendor_performance_ndt_date_hub_sku_metrics_po.hub_code}    = ${products_hub_assignment.hub_code}
         and ${vendor_performance_ndt_date_hub_sku_metrics_po.leading_sku_replenishment_substitute_group} = ${products_hub_assignment.leading_sku_replenishment_substitute_group}
     ;;
+  }
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  #  - - - - - - - - - -    SQL Derived Tables - to be migrated to dbt
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  join: vendor_performance_sql_derived_hub_ops_kpis {
+    view_label: "* DESADVs *"
+
+    type: left_outer
+    relationship: many_to_one
+    sql_on:
+      ${bulk_items.dispatch_notification_id} = ${vendor_performance_sql_derived_hub_ops_kpis.dispatch_notification_id};;
   }
 
 
