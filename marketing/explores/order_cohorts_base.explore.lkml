@@ -14,6 +14,9 @@ explore: order_cohorts_base {
   view_label: "* Orders *"
   from: orders
   hidden: yes
+  always_filter: {
+    filters: [is_external_order: "No"]
+  }
 
   join: customer_cohorts_base {
     view_label: "*.Customers *"

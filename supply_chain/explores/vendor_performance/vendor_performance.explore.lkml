@@ -34,6 +34,7 @@ explore: vendor_performance {
     vendor_performance_ndt_inbounded_skus*,
     vendor_performance_ndt_date_hub_sku_metrics_desadv*,
     vendor_performance_ndt_date_hub_sku_metrics_po*,
+    hub_ops_inbounding_kpis*,
     products*,
     purchase_orders.main_fields*, purchase_orders.cross_references_inventory_changes_daily*,
     lexbizz_vendor*,
@@ -127,7 +128,8 @@ explore: vendor_performance {
       inventory_changes.min_inbounding_time,
       inventory_changes.is_inbound,
       inventory_changes.sum_inbound_inventory,
-      inventory_changes.sku
+      inventory_changes.sku,
+      inventory_changes.hub_code
     ]
   }
 
@@ -148,6 +150,15 @@ explore: vendor_performance {
         and ${purchase_orders.status} = 'Sent'
         and {% condition global_filters_and_parameters.datasource_filter %} ${purchase_orders.delivery_date} {% endcondition %}
     ;;
+  }
+
+  join: hub_ops_inbounding_kpis {
+    view_label: "* DESADVs *"
+
+    type: left_outer
+    relationship: many_to_one
+    sql_on:
+      ${bulk_items.dispatch_notification_id} = ${hub_ops_inbounding_kpis.dispatch_notification_id};;
   }
 
 
@@ -214,6 +225,7 @@ explore: vendor_performance {
         and ${vendor_performance_ndt_date_hub_sku_metrics_po.leading_sku_replenishment_substitute_group} = ${products_hub_assignment.leading_sku_replenishment_substitute_group}
     ;;
   }
+
 
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
