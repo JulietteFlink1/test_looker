@@ -136,6 +136,16 @@ view: lexbizz_item {
     sql: ${TABLE}.last_modified_timestamp ;;
   }
 
+  dimension_group: item_status_modified {
+    type: time
+    timeframes: [
+      date
+    ]
+    convert_tz: no
+    datatype: date
+    sql: ${TABLE}.item_status_update ;;
+  }
+
   dimension: max_shelf_life_days {
     type: number
     sql: ${TABLE}.max_shelf_life_days ;;
