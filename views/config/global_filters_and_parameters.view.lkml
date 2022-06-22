@@ -5,6 +5,20 @@
 
   view_label: "Generic"
 
+  parameter: timeframe_picker {
+
+    label: "Date Granularity"
+    group_label: ">> Dates & Timestamps"
+
+    type: unquoted
+    allowed_value: { value: "Date" }
+    allowed_value: { value: "Week" }
+    allowed_value: { value: "Month" }
+
+    default_value: "Date"
+
+  }
+
 
   dimension: generic_join_dim {
     type: yesno

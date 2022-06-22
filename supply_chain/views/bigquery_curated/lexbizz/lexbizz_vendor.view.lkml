@@ -88,21 +88,25 @@ view: lexbizz_vendor {
   }
 
   dimension: vendor_class {
+    label: "Supplier Class"
     type: string
     sql: ${TABLE}.vendor_class ;;
   }
 
   dimension: vendor_id {
+    label: "Supplier ID"
     type: string
     sql: ${TABLE}.vendor_id ;;
   }
 
   dimension: vendor_name {
+    label: "Supplier Name"
     type: string
     sql: ${TABLE}.vendor_name ;;
   }
 
   dimension: vendor_status {
+    label: "Supplier Status"
     type: string
     sql: ${TABLE}.vendor_status ;;
   }

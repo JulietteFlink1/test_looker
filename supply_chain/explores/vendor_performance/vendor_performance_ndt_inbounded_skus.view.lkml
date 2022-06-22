@@ -14,6 +14,8 @@ view: vendor_performance_ndt_inbounded_skus {
         sql: sum(sum_inbound_inventory) over (partition by dispatch_notification_id order by max_inbounding_time, sku) ;;
       }
 
+      bind_all_filters: yes
+
       filters: {
         field: inventory_changes.is_inbound
         value: "Yes"

@@ -14,9 +14,6 @@ view: daily_user_aggregates {
       app_version,
       full_app_version,
       platform,
-      is_platform_web,
-      is_platform_ios,
-      is_platform_android,
       is_device_android,
       is_device_ios,
       is_device_macintosh
@@ -141,21 +138,6 @@ view: daily_user_aggregates {
       type: string
       description: "Platform is either iOS, Android or Web"
       sql: ${TABLE}.platform ;;
-    }
-    dimension: is_platform_web {
-      group_label: "Device Dimensions"
-      type: yesno
-      sql: ${TABLE}.is_platform_web ;;
-    }
-    dimension: is_platform_ios {
-      group_label: "Device Dimensions"
-      type: yesno
-      sql: ${TABLE}.is_platform_ios ;;
-    }
-    dimension: is_platform_android {
-    group_label: "Device Dimensions"
-    type: yesno
-    sql: ${TABLE}.is_platform_android ;;
     }
     dimension: is_device_android {
       group_label: "Device Dimensions"
@@ -353,6 +335,11 @@ view: daily_user_aggregates {
       type: yesno
       sql: ${TABLE}.is_product_search_viewed ;;
     }
+    dimension: is_product_search_executed {
+      group_label: "Flags | Event"
+      type: yesno
+      sql: ${TABLE}.is_product_search_executed ;;
+  }
 
     # Checkout Flags
 
@@ -453,7 +440,6 @@ view: daily_user_aggregates {
       type: yesno
       sql: ${TABLE}.is_category_selected ;;
     }
-
 
   # ~~~~~~~~~~~ Hidden Dimensions ~~~~~~~~~~~~ #
 
@@ -586,6 +572,11 @@ view: daily_user_aggregates {
       type: number
       hidden: yes
       sql: ${TABLE}.number_of_categories_selected ;;
+    }
+    dimension: dim_number_of_product_search_executed {
+      type: number
+      hidden: yes
+      sql: ${TABLE}.number_of_product_search_executed ;;
     }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
@@ -828,6 +819,13 @@ view: daily_user_aggregates {
     hidden: no
     sql: ${dim_number_of_home_viewed} ;;
   }
+  measure: number_of_search_executed {
+    group_label: "Event Metrics"
+    label: "# Product Search Executed"
+    type: sum
+    hidden: no
+    sql: ${dim_number_of_product_search_executed} ;;
+  }
 
   # Basic counts
   measure: daily_user_events {
@@ -872,7 +870,7 @@ view: daily_user_aggregates {
   measure: users_with_add_to_cart {
     group_label: "User Metrics"
     label: "# Users with Add-to-Cart"
-    description: "Number of users with at least one product added to cart"
+    description: "Number of users who at least one product added to cart"
     type: count_distinct
     sql: ${user_uuid} ;;
     filters: [is_product_added_to_cart: "yes"]
@@ -880,7 +878,7 @@ view: daily_user_aggregates {
   measure: users_with_cart_viewed {
     group_label: "User Metrics"
     label: "# Users with Cart Viewed"
-    description: "Number of users with viewed their cart at least once"
+    description: "Number of users who viewed their cart at least once"
     type: count_distinct
     sql: ${user_uuid} ;;
     filters: [is_cart_viewed: "yes"]
@@ -888,7 +886,7 @@ view: daily_user_aggregates {
   measure: users_with_checkout_viewed {
     group_label: "User Metrics"
     label: "# Users with Checkout Viewed"
-    description: "Number of users with viewed checkout at least once"
+    description: "Number of users who viewed checkout at least once"
     type: count_distinct
     sql: ${user_uuid} ;;
     filters: [is_checkout_viewed: "yes"]
@@ -896,12 +894,51 @@ view: daily_user_aggregates {
   measure: users_with_payment_started {
     group_label: "User Metrics"
     label: "# Users with Payment Started"
-    description: "Number of users with started the payment process at least once"
+    description: "Number of users who started the payment process at least once"
     type: count_distinct
     sql: ${user_uuid} ;;
     filters: [is_payment_started: "yes"]
   }
-
+  measure: users_with_home_viewed {
+    group_label: "User Metrics"
+    label: "# Users with Home Viewed"
+    description: "Number of users who viewed home at least once"
+    type: count_distinct
+    sql: ${user_uuid} ;;
+    filters: [is_home_viewed: "yes"]
+  }
+  measure: users_with_category_selected {
+    group_label: "User Metrics"
+    label: "# Users with Category Selected"
+    description: "Number of users who clicked on a category at least once"
+    type: count_distinct
+    sql: ${user_uuid} ;;
+    filters: [is_category_selected: "yes"]
+  }
+  measure: users_with_product_search {
+    group_label: "User Metrics"
+    label: "# Users with Executed Search"
+    description: "Number of users with started the payment process at least once"
+    type: count_distinct
+    sql: ${user_uuid} ;;
+    filters: [is_product_search_executed: "yes"]
+  }
+  measure: users_with_product_search_viewed {
+    group_label: "User Metrics"
+    label: "# Users with Viewing Search"
+    description: "Number of users with started the payment process at least once"
+    type: count_distinct
+    sql: ${user_uuid} ;;
+    filters: [is_product_search_viewed: "yes"]
+  }
+  measure: users_with_product_details_viewed {
+    group_label: "User Metrics"
+    label: "# Users with PDP"
+    description: "Number of users who viwed (PDP) a product at least once"
+    type: count_distinct
+    sql: ${user_uuid} ;;
+    filters: [is_product_details_viewed: "yes"]
+  }
   #### Conversions ###
 
   measure: cvr {

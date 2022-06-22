@@ -56,6 +56,13 @@ view: product_placement_performance_excluding_impressions {
 
   # ======= Product Dimensions =======
 
+  dimension: order_uuid {
+    group_label: "Product Dimensions"
+    label: "Order UUID"
+    description: "Unique identifier for an order"
+    type: string
+    sql: ${TABLE}.order_uuid ;;
+  }
   dimension: product_sku {
     group_label: "Product Dimensions"
     label: "Product SKU"
@@ -139,6 +146,44 @@ view: product_placement_performance_excluding_impressions {
     sql: ${TABLE}.screen_name ;;
   }
 
+  # ======= Product Flags =======
+
+  dimension: is_order_placed {
+    group_label: "Product Flags"
+    label: "Is Order Placed"
+    description: "Boolen whether product was ordered."
+    type: yesno
+    sql: ${TABLE}.is_order_placed ;;
+  }
+  dimension: is_product_add_to_cart {
+    group_label: "Product Flags"
+    label: "Is Product Added to Cart"
+    description: "Boolen whether product was added to cart."
+    type: yesno
+    sql: ${TABLE}.is_product_add_to_cart ;;
+  }
+  dimension: is_product_removed_from_cart {
+    group_label: "Product Flags"
+    label: "Is Product Removed from Cart"
+    description: "Boolen whether product was removed from cart."
+    type: yesno
+    sql: ${TABLE}.is_product_removed_from_cart ;;
+  }
+  dimension: is_pdp_viewed {
+    group_label: "Product Flags"
+    label: "Is Product Viewed (PDP)"
+    description: "Boolen whether product was viewed / clicked."
+    type: yesno
+    sql: ${TABLE}.is_pdp_viewed ;;
+  }
+  dimension: is_product_added_to_favourites {
+    group_label: "Product Flags"
+    label: "Is Product Added to Favourites"
+    description: "Boolen whether product was addded to favourites."
+    type: yesno
+    sql: ${TABLE}.is_product_added_to_favourites ;;
+  }
+
   # ======= Dates / Timestamps =======
 
   dimension_group: event {
@@ -189,13 +234,24 @@ view: product_placement_performance_excluding_impressions {
     label: "Event UUID"
     description: "Unique identifier of an event"
     type: string
-    sql: ${TABLE}.event_uuid ;;
+    sql: ${TABLE}.product_placement_uuid ;;
   }
+
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
   # ~~~~~~~~~~~~~~~     Measures      ~~~~~~~~~~~~~~~ #
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
+  measure: amt_total_price_net {
+    hidden: no
+    group_label: "Product Metrics"
+    label: "SUM Item Prices Sold (net)"
+    description: "Sum of all items sold, net value."
+    type: sum
+    value_format_name: decimal_2
+    sql: ${TABLE}.product_price ;;
+    filters: [is_order_placed: "yes"]
+  }
   measure: anonymous_users {
     group_label: "User Metrics"
     label: "# All Users"
@@ -243,10 +299,18 @@ view: product_placement_performance_excluding_impressions {
   }
   measure: orders {
     group_label: "Product Metrics"
-    label: "# Ordered Products "
-    description: "Number of purchased products"
-    type: sum
-    sql: ${TABLE}.number_of_orders ;;
+    label: "# Ordered Products"
+    description: "Number of unique products placed"
+    type: count_distinct
+    sql: ${product_sku} ;;
+    filters: [is_order_placed: "yes"]
+  }
+  measure: unique_orders {
+    group_label: "Product Metrics"
+    label: "# Orders"
+    description: "Number of unique orders placed."
+    type: count_distinct
+    sql: ${TABLE}.order_uuid ;;
   }
   measure: atc_to_order_rate {
     group_label: "Rates (%)"

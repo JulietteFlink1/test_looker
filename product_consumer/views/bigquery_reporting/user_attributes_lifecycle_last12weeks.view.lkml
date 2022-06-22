@@ -1,11 +1,16 @@
 view: user_attributes_lifecycle_last12weeks {
-  sql_table_name: `reporting.user_attributes_lifecycle_last12weeks`
+  sql_table_name: `flink-data-prod.reporting.user_attributes_lifecycle_last12weeks`
     ;;
 
   measure: cnt_customers {
     label: "# Customers"
     type: count_distinct
     sql: ${customer_uuid} ;;
+  }
+
+  dimension: customer_uuid {
+    type: string
+    sql: ${TABLE}.customer_uuid ;;
   }
 
   dimension: amt_gmv_gross {
@@ -56,11 +61,6 @@ view: user_attributes_lifecycle_last12weeks {
   dimension: avg_revenue_net {
     type: number
     sql: ${TABLE}.avg_revenue_net ;;
-  }
-
-  dimension: customer_uuid {
-    type: string
-    sql: ${TABLE}.customer_uuid ;;
   }
 
   dimension_group: execution {
@@ -161,29 +161,29 @@ view: user_attributes_lifecycle_last12weeks {
     sql: ${TABLE}.last_visit_date ;;
   }
 
-  dimension: num_days_ordering {
+  dimension: number_of_days_ordering {
     type: number
-    sql: ${TABLE}.num_days_ordering ;;
+    sql: ${TABLE}.number_of_days_ordering ;;
   }
 
-  dimension: num_days_to_first_order {
+  dimension: number_of_days_to_first_order {
     type: number
-    sql: ${TABLE}.num_days_to_first_order ;;
+    sql: ${TABLE}.number_of_days_to_first_order ;;
   }
 
-  dimension: num_days_visited {
+  dimension: number_of_days_visited {
     type: number
-    sql: ${TABLE}.num_days_visited ;;
+    sql: ${TABLE}.number_of_days_visited ;;
   }
 
-  dimension: num_of_orders {
+  dimension: number_of_orders {
     type: number
-    sql: ${TABLE}.num_of_orders ;;
+    sql: ${TABLE}.number_of_orders ;;
   }
 
-  dimension: num_visits_to_first_order {
+  dimension: number_of_visits_to_first_order {
     type: number
-    sql: ${TABLE}.num_visits_to_first_order ;;
+    sql: ${TABLE}.number_of_visits_to_first_order ;;
   }
 
   dimension_group: oldest_order {

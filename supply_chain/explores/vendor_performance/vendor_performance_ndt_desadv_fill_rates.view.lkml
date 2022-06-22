@@ -9,6 +9,8 @@ view: vendor_performance_ndt_desadv_fill_rates {
       column: sum_total_quantity            { field: bulk_items.sum_total_quantity }
       column: sum_inbound_inventory         { field: inventory_changes_daily.sum_inbound_inventory }
 
+      bind_all_filters: yes
+
     }
   }
   dimension: dispatch_notification_id {
@@ -21,12 +23,12 @@ view: vendor_performance_ndt_desadv_fill_rates {
   dimension: sum_total_quantity {
 
     label:       "SUM Selling Units ((per DESADV))"
-    description: "The sum of all products of the DESADV multiplied by the selling units derived from the latest purchase order containing the given SKU in a given hub"
+    description: "The sum of all products listed on the DESADV"
     group_label: "DESADV aggregated"
 
     value_format: "#,##0"
     type: number
-    hidden: no
+    hidden: yes
   }
 
   dimension: sum_inbound_inventory {
@@ -37,7 +39,7 @@ view: vendor_performance_ndt_desadv_fill_rates {
 
     value_format: "#,##0"
     type: number
-    hidden: no
+    hidden: yes
   }
 
 
@@ -62,16 +64,57 @@ view: vendor_performance_ndt_desadv_fill_rates {
 
     sql: case
             when ${desadv_fill_rate_po_corrected} > 0.8
-            then 'booked in'
+            then '1) booked in'
 
       when ${desadv_fill_rate_po_corrected} > 0.25 and ${desadv_fill_rate_po_corrected} <= 0.8
-      then 'less than 80% booked in'
+      then '2) less than 80% booked in'
 
       when ${desadv_fill_rate_po_corrected} <= 0.25
-      then 'less than 25% booked in'
+      then '3) less than 25% booked in'
+
+      else '4) not booked in'
+
       end
       ;;
     type: string
+  }
+
+  dimension: is_desadv_delivered_on_day {
+    type: yesno
+    sql: ${is_desadv_inbounded_po_corrected} != '4) not booked in' ;;
+    hidden: yes
+  }
+
+  measure: sum_number_of_inbounded_desadvs_on_day {
+
+    label:       "# DESADV Inbounded on Estimated Delivery Date"
+    description: "THe number of dispatch notifications, that have been inbounded on their (estimaed) delivery date"
+    group_label: "DESADV aggregated"
+
+    type: count_distinct
+    sql: ${dispatch_notification_id} ;;
+    filters: [is_desadv_delivered_on_day: "yes"]
+
+    value_format_name: decimal_0
+  }
+
+  measure: sum_number_of_desadvs {
+    hidden: yes
+    type: count_distinct
+    sql: ${dispatch_notification_id} ;;
+  }
+
+  measure: pct_desadvs_inbounded_on_day {
+
+    label: "% DESADVs Inbounded in Delivery Date"
+    description: "The percentage of dispatch notifications, that have actually been delivered on the estimated delivery date"
+    group_label: "DESADV aggregated"
+
+    type: number
+    sql: safe_divide(${sum_number_of_inbounded_desadvs_on_day}, ${sum_number_of_desadvs}) ;;
+
+    value_format_name: percent_1
+
   }
 
 }

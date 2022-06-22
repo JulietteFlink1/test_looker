@@ -5,7 +5,7 @@ view: erp_buying_prices {
   sql_table_name: `flink-data-prod.curated.erp_buying_prices`;;
 
   required_access_grants: [can_view_buying_information]
-  view_label: "* ERP Vendor Prices *"
+  view_label: "* ERP Supplier Prices *"
 
 
 
@@ -45,7 +45,7 @@ view: erp_buying_prices {
   }
 
   dimension: erp_vendor_name {
-    label: "Vendor Name"
+    label: "Supplier Name"
     type: string
     sql: ${TABLE}.erp_vendor_name ;;
 
@@ -131,6 +131,7 @@ view: erp_buying_prices {
   }
 
   dimension: erp_vendor_id {
+    label: "Supplier ID"
     type: string
     sql: ${TABLE}.erp_vendor_id ;;
     # for joining only
