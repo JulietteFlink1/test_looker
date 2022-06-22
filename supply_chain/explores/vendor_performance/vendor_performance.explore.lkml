@@ -127,7 +127,8 @@ explore: vendor_performance {
       inventory_changes.min_inbounding_time,
       inventory_changes.is_inbound,
       inventory_changes.sum_inbound_inventory,
-      inventory_changes.sku
+      inventory_changes.sku,
+      inventory_changes.hub_code
     ]
   }
 
