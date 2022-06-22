@@ -305,7 +305,6 @@ view: product_placement_performance_excluding_impressions {
     sql: ${product_placement_uuid} ;;
     filters: [is_order_placed: "yes"]
   }
-
   measure: unique_orders {
     group_label: "Product Metrics"
     label: "# Orders"
