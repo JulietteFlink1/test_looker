@@ -297,14 +297,15 @@ view: product_placement_performance_excluding_impressions {
     type: sum
     sql: ${TABLE}.number_of_added_to_favourites ;;
   }
-  measure: orders {
+  measure: orders { ## name should not be changed as charts would break
     group_label: "Product Metrics"
     label: "# Ordered Products"
     description: "Number of unique products placed"
     type: count_distinct
-    sql: ${product_sku} ;;
+    sql: ${product_placement_uuid} ;;
     filters: [is_order_placed: "yes"]
   }
+
   measure: unique_orders {
     group_label: "Product Metrics"
     label: "# Orders"
