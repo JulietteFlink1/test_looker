@@ -339,7 +339,7 @@ view: replenishment_purchase_orders {
 
   measure: sum_selling_unit_quantity {
 
-    label:       "# Quantity Selling Units (PO)"
+    label:       "# Selling Units (PO)"
     description: "The amount of ordered items"
 
 
@@ -350,7 +350,7 @@ view: replenishment_purchase_orders {
 
   measure: sum_handling_unit_quantity {
 
-    label:       "# Quantity Handling Units (PO)"
+    label:       "# Handling Units (PO)"
     description: "The amount of ordered handling units"
 
 
@@ -380,7 +380,7 @@ view: replenishment_purchase_orders {
 
   measure: cnt_of_orders {
 
-    label:       "# Count of orders"
+    label:       "# Orders"
     description: "The amount of delivered orders"
     #group_label: " >> Line Item Data"
 
@@ -391,7 +391,7 @@ view: replenishment_purchase_orders {
 
   measure: cnt_of_skus_per_order {
 
-    label:       "# Count of skus per orders"
+    label:       "# SKUs per orders"
     description: "The amount of skus per orders"
     #group_label: " >> Line Item Data"
 

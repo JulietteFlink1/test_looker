@@ -17,6 +17,7 @@ view: aov_per_category_month{
           hub.city,
           hub.hub_code,
           f.is_discounted_order,
+          f.is_external_order,
          --b.category,
           --sum (a.amt_total_price_gross) as sum_item_value,
           --sum (a.quantity) as sum_quantity,
@@ -30,7 +31,7 @@ view: aov_per_category_month{
                  on a.order_uuid = f.order_uuid
           WHERE DATE(a.order_timestamp) >= "2021-02-01"
               and f.is_successful_order = true
-                group by 1,2,3,4,5,6,7,8,9,10
+                group by 1,2,3,4,5,6,7,8,9,10,11
 
     ),
 
@@ -61,6 +62,7 @@ view: aov_per_category_month{
           hub.hub_code,
           hub.city,
           f.is_discounted_order,
+          f.is_external_order,
           case when category is null then "null" else category end as category,
           sum (coalesce(a.amt_total_price_gross,0)) as sum_item_value,
           --+coalesce(amt_total_deposit,0))
@@ -75,7 +77,7 @@ view: aov_per_category_month{
                  on a.order_uuid = f.order_uuid
           WHERE DATE(a.order_timestamp) >= "2021-02-01"
               and f.is_successful_order = true
-          group by 1,2,3,4,5,6,7,8,9,10,11
+          group by 1,2,3,4,5,6,7,8,9,10,11,12
 
 
     ),
@@ -89,12 +91,13 @@ view: aov_per_category_month{
             else "3.After 17PM" end as hour,
             hub_name,
             is_discounted_order,
+            is_external_order,
             count (distinct d.order_uuid) as orders
 
       FROM `flink-data-prod.curated.orders` d
           WHERE DATE(d.order_timestamp) >= "2021-02-01"
           and d.is_successful_order = true
-          group by 1,2,3,4
+          group by 1,2,3,4,5
 
     )
 
@@ -110,6 +113,7 @@ view: aov_per_category_month{
           a.hub_name,
           a.hub_code,
            case when a.is_discounted_order is true then "Yes" else "No" end as is_discounted_order,
+           case when a.is_external_order is true then "Yes" else "No" end as is_external_order,
           a.city,
           b.category,
           /*cast(c.sum_item_value as int) as */sum_item_value,
@@ -127,11 +131,13 @@ view: aov_per_category_month{
           and a.hub_name = c.hub_name
           and b.category = c.category
           and a.is_discounted_order = c.is_discounted_order
+          and a.is_external_order = c.is_external_order
           inner join d
           on a.order_date = d.order_date
           and a.hour = d.hour
           and a.hub_name = d.hub_name
           and a.is_discounted_order = d.is_discounted_order
+          and a.is_external_order = d.is_external_order
            ;;
   }
 
@@ -293,6 +299,12 @@ view: aov_per_category_month{
     label: "is_discounted_order"
     type: string
     sql: ${TABLE}.is_discounted_order ;;
+  }
+
+  dimension: is_external_order {
+    label: "is_external_order"
+    type: string
+    sql: ${TABLE}.is_external_order ;;
   }
 
   dimension: category {

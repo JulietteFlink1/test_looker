@@ -11,6 +11,8 @@ include: "/product_consumer/views/bigquery_curated/daily_events.view.lkml"
 include: "/**/global_filters_and_parameters.view.lkml"
 include: "/product_consumer/views/bigquery_curated/event_product_added_to_cart.view.lkml"
 include: "/product_consumer/views/bigquery_curated/event_category_selected.view.lkml"
+include: "/product_consumer/views/bigquery_curated/event_address_confirmed.view.lkml"
+include: "/product_consumer/views/bigquery_curated/event_contact_customer_service_selected.view.lkml"
 
 explore: daily_events {
   from:  daily_events
@@ -65,6 +67,22 @@ explore: daily_events {
       event_product_added_to_cart.product_placement, event_product_added_to_cart.product_position,
       event_product_added_to_cart.search_query_id]
     sql_on: ${event_product_added_to_cart.event_uuid} = ${daily_events.event_uuid}  ;;
+    type: left_outer
+    relationship: one_to_one
+  }
+
+  join: event_address_confirmed {
+    view_label: "Event: Address Confirmed"
+    fields: [event_attributes*]
+    sql_on: ${event_address_confirmed.event_uuid} = ${daily_events.event_uuid}  ;;
+    type: left_outer
+    relationship: one_to_one
+  }
+
+  join: event_contact_customer_service_selected {
+    view_label: "Event: Contact Customer Service Selected"
+    fields: [event_attributes*]
+    sql_on: ${event_contact_customer_service_selected.event_uuid} = ${daily_events.event_uuid}  ;;
     type: left_outer
     relationship: one_to_one
   }

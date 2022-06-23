@@ -107,7 +107,7 @@ view: orders {
     group_label: "* Monetary Values *"
     label: "GMV (tiered, 1 EUR)"
     type: tier
-    tiers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35]
+    tiers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50]
     style: relational
     sql: ${gmv_gross} ;;
   }
@@ -714,6 +714,8 @@ view: orders {
 
   dimension: is_voucher_order{
     group_label: "* Order Dimensions *"
+    label: "Is Discounted Order (Yes/No)"
+    description: "Flags if an Order has any Discount (Cart or Product) applied"
     type: yesno
     sql: ${TABLE}.is_discounted_order ;;
   }
@@ -1325,6 +1327,47 @@ view: orders {
   }
 
 
+  dimension: amt_refund_gross {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_refund_gross;;
+  }
+  dimension: amt_total_sales_gross {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_total_sales_gross;;
+  }
+  dimension: amt_total_sales_excluding_deposit_gross {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_total_sales_excluding_deposit_gross;;
+  }
+  dimension: amt_total_sales_after_discount_gross {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_total_sales_after_discount_gross;;
+  }
+  dimension: amt_total_sales_after_discount_and_refund_gross {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_total_sales_after_discount_and_refund_gross;;
+  }
+  dimension: amt_total_sales_after_discount_and_refund_excluding_deposit_gross {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_total_sales_after_discount_and_refund_excluding_deposit_gross;;
+  }
+  dimension: amt_gpv_gross {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_gpv_gross;;
+  }
+  dimension: amt_npv_gross {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_npv_gross;;
+  }
+
   ######## PARAMETERS
 
   parameter: date_granularity {
@@ -1670,6 +1713,26 @@ view: orders {
     type: average
     sql: ${amt_discount_products_net};;
     filters: [amt_discount_products_net: ">0"]
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: avg_gpv_gross {
+    group_label: "* Monetary Values *"
+    label: "AVG GPV"
+    description: "Gross Payment Value. Actual amount paid by the customer in CT. Sum of Delivery Fees, Items Price, Tips, Deposit. Excl. Donations. After Deduction of Cart and Product Discounts. Incl. VAT"
+    hidden:  no
+    type: average
+    sql: ${amt_gpv_gross};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: avg_npv_gross {
+    group_label: "* Monetary Values *"
+    label: "AVG NPV"
+    description: "Net Payment Value. Actual amount paid by the customer in CT after Refunds. Sum of Delivery Fees, Items Price, Tips, Deposit. Excl. Donations. After Deduction of Cart and Product Discounts. After Refunds. Incl. VAT"
+    hidden:  no
+    type: average
+    sql: ${amt_npv_gross};;
     value_format_name: euro_accounting_2_precision
   }
 
@@ -2046,6 +2109,86 @@ view: orders {
     type: sum
     sql: ${shipping_price_net_amount};;
     value_format_name: euro_accounting_0_precision
+  }
+
+  measure: sum_refund_gross {
+    group_label: "* Monetary Values *"
+    label: "SUM Refund (Gross)"
+    description: "Sum of Refunds (Gross). Includes Items, Deposit, Delivery Fee and Tips Refunds."
+    hidden:  no
+    type: sum
+    sql: ${amt_refund_gross};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_total_sales_gross {
+    group_label: "* Monetary Values *"
+    label: "SUM Total Sales (Gross)"
+    description: "Sum of Delivery Fees and Items Price and Deposit. Excl. Tips, Donations. Before Deduction of any Discount. Incl. VAT"
+    hidden:  no
+    type: sum
+    sql: ${amt_total_sales_gross};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_total_sales_excluding_deposit_gross {
+    group_label: "* Monetary Values *"
+    label: "SUM Total Sales excl. Deposit (Gross)"
+    description: "Sum of Delivery Fees and Items Price. Excl. Deposit, Tips, Donations. Before Deduction of any Discount. Incl. VAT"
+    hidden:  no
+    type: sum
+    sql: ${amt_total_sales_excluding_deposit_gross};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_total_sales_after_discounts_gross {
+    group_label: "* Monetary Values *"
+    label: "SUM Total Sales After Discount (Gross)"
+    description: "Sum of Delivery Fees and Items Price and Deposit. Excl. Tips, Donations. After Deduction of Cart and Product Discounts. Incl. VAT"
+    hidden:  no
+    type: sum
+    sql: ${amt_total_sales_after_discount_gross};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_total_sales_after_discount_and_refund_gross {
+    group_label: "* Monetary Values *"
+    label: "SUM Total Sales After Discounts & Refunds (Gross)"
+    description: "Sum of Delivery Fees and Items Price and Deposit. Excl. Tips, Donations. After Deduction of Cart and Product Discounts. After Refunds. Incl. VAT"
+    hidden:  no
+    type: sum
+    sql: ${amt_total_sales_after_discount_and_refund_gross};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_total_sales_after_discount_and_refund_excluding_deposit_gross {
+    group_label: "* Monetary Values *"
+    label: "SUM Total Sales After Discounts & Refunds excl. Deposit (Gross)"
+    description: "Sum of Delivery Fees and Items Price. Excl. Tips, Deposit, Donations. After Deduction of Cart and Product Discounts. After Refunds. Incl. VAT"
+    hidden:  no
+    type: sum
+    sql: ${amt_total_sales_after_discount_and_refund_excluding_deposit_gross};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_gpv_gross {
+    group_label: "* Monetary Values *"
+    label: "SUM GPV (Gross)"
+    description: "Actual amount paid by the customer in CT. Sum of Delivery Fees, Items Price, Tips, Deposit. Excl. Donations. After Deduction of Cart and Product Discounts. Incl. VAT"
+    hidden:  no
+    type: sum
+    sql: ${amt_gpv_gross};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_npv_gross {
+    group_label: "* Monetary Values *"
+    label: "SUM NPV (Gross)"
+    description: "Net Payment Value. Actual amount paid by the customer in CT after Refunds. Sum of Delivery Fees, Items Price, Tips, Deposit. Excl. Donations. After Deduction of Cart and Product Discounts. Incl. VAT"
+    hidden:  no
+    type: sum
+    sql: ${amt_npv_gross};;
+    value_format_name: euro_accounting_2_precision
   }
 
   measure: sum_quantity_fulfilled {

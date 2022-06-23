@@ -1,5 +1,5 @@
 view: shyftplan_riders_pickers_hours_clean {
-  sql_table_name: `flink-data-dev.reporting.daily_hub_staffing`
+  sql_table_name: `flink-data-prod.reporting.daily_hub_staffing`
     ;;
 
   dimension: id {
@@ -110,7 +110,7 @@ view: shyftplan_riders_pickers_hours_clean {
   dimension: number_of_predicted_no_show_minutes {
     type: number
     hidden: yes
-    sql: ${TABLE}.number_of_predicted_no_show_minutes ;;
+    sql: case when is_nan(${TABLE}.number_of_predicted_no_show_minutes) is true then NULL else ${TABLE}.number_of_predicted_no_show_minutes end ;;
   }
 
 
