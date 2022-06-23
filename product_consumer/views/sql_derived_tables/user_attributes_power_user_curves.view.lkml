@@ -2,7 +2,7 @@ view: user_attributes_power_user_curves {
   derived_table: {
     sql:  with daily_user_aggregates as (
         select *
-        from `flink-data-dev.reporting.user_attributes_daily_user_aggregates`
+        from `flink-data-prod.reporting.user_attributes_daily_user_aggregates`
         where
          date_diff(visit_date, first_visit_date, DAY) < 28
       )
