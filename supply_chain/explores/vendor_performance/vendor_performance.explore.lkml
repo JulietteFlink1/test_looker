@@ -147,7 +147,7 @@ explore: vendor_performance {
         and ${products_hub_assignment.hub_code}                                   = ${purchase_orders.hub_code}
         and ${products_hub_assignment.leading_sku_replenishment_substitute_group} = ${purchase_orders.sku}
         -- only include purchase orders, that were actually sent to the suppliers
-        and ${purchase_orders.status} = 'Sent'
+        -- and ${purchase_orders.status} = 'Sent'
         and {% condition global_filters_and_parameters.datasource_filter %} ${purchase_orders.delivery_date} {% endcondition %}
     ;;
   }
