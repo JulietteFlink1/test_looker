@@ -340,7 +340,6 @@ view: dispatch_notifications {
 
     label:       "# Dispatch Notifications (DESADV)"
     description: "The total number of dispatch notifications"
-    group_label: "Special Use Cases"
 
     type: count_distinct
     sql: ${dispatch_notification_id} ;;
