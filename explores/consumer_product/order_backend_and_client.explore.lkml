@@ -4,7 +4,7 @@ include: "/views/bigquery_tables/curated_layer/orders.view.lkml"
 explore: order_backend_and_client{
   from: orders
   # view_name: order_backend_and_client
-  hidden: no
+  hidden: yes
   label: "(Internal Use Only) Frontend vs. Backend Order Match"
   view_label: "Order Backend"
   group_label: "Consumer Product"
