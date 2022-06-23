@@ -65,6 +65,29 @@ view: vendor_performance_ndt_date_hub_sku_metrics_po {
     ;;
   }
 
+  dimension: is_completely_inbounded {
+    type: yesno
+    hidden: yes
+    sql:
+           ${po_quantity} > 0
+      and  ${inbound_quantity} > 0
+      and ${inbound_quantity} >= ${po_quantity}
+    ;;
+  }
+
+  dimension: is_delivered_but_desadv_zero {
+
+    label: "Is Inbounded but 0 PO Selling Units"
+    type: yesno
+
+    sql:
+
+          ${po_quantity} = 0
+      and ${inbound_quantity} > 0
+      and ${inbound_quantity} >= ${po_quantity}
+    ;;
+  }
+
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   #  - - - - - - - - - -    PO metrics
 
@@ -132,6 +155,33 @@ view: vendor_performance_ndt_date_hub_sku_metrics_po {
     sql: safe_divide(${sum_unplanned_inbounds_po}, ${sum_inbound_quantity}) ;;
 
   }
+
+  # based on Peters comment in JIRA: https://goflink.atlassian.net/browse/DATA-2691?focusedCommentId=68836
+  # to handle issues where we falsely calculate the fill-rates (e.g. Banaas as item with highest quantity - delivered 100 bananas and the hub can decided to
+  # ... either inbound the bananas as pieces of 1 or as bundles of 5 )
+  measure: cnt_skus_in_po {
+    hidden: yes
+    type: count_distinct
+    sql:  ${leading_sku_replenishment_substitute_group};;
+  }
+
+  measure: cnt_skus_in_po_fully_inbounded {
+    hidden: yes
+    type: count_distinct
+    filters: [is_completely_inbounded: "yes"]
+    sql: ${leading_sku_replenishment_substitute_group};;
+  }
+
+  measure: pct_skus_fully_inbounded {
+
+    label:       "% SKUs In Full (PO)"
+    description: "This metrics compared the total number of products listed on a purchase order (PO) with all those products that are fully inbounded (>> how many SKU have been fully inbounded from a PO). "
+
+    type: number
+    sql: safe_divide(${cnt_skus_in_po_fully_inbounded}, ${cnt_skus_in_po}) ;;
+    value_format_name: percent_1
+  }
+
 
 
 }
