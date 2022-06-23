@@ -1,21 +1,21 @@
 view: daily_violations_aggregates {
   sql_table_name: `flink-data-dev.reporting.daily_violations_aggregates`
     ;;
+  view_label: "Daily Violations Aggregates"
 
-  dimension: app_build {
-    type: string
-    sql: ${TABLE}.app_build ;;
-  }
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+  # ~~~~~~~~~~~~~~~     Dimensions    ~~~~~~~~~~~~~~~ #
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
-  dimension: app_version {
-    type: string
-    sql: ${TABLE}.app_version ;;
-  }
+    ######## Table ID ########
 
   dimension: daily_violation_uuid {
     type: string
+    hidden: yes
     sql: ${TABLE}.daily_violation_uuid ;;
   }
+
+    ######## Dates ########
 
   dimension_group: event {
     type: time
@@ -27,20 +27,28 @@ view: daily_violations_aggregates {
       quarter,
       year
     ]
-    convert_tz: no
     datatype: date
     sql: ${TABLE}.event_date ;;
   }
 
-  dimension: number_of_violations {
-    type: number
-    sql: ${TABLE}.number_of_violations ;;
+    ######## Device Attributes ########
+
+  dimension: app_build {
+    type: string
+    sql: ${TABLE}.app_build ;;
+  }
+
+  dimension: app_version {
+    type: string
+    sql: ${TABLE}.app_version ;;
   }
 
   dimension: platform {
     type: string
     sql: ${TABLE}.platform ;;
   }
+
+    ######## Segment Violation Attributes ########
 
   dimension: tracking_plan_id {
     type: string
@@ -65,6 +73,15 @@ view: daily_violations_aggregates {
   dimension: violation_type {
     type: string
     sql: ${TABLE}.violation_type ;;
+  }
+
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+  # ~~~~~~~~~~~~~~~     Measures    ~~~~~~~~~~~~~~~~~ #
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+  measure: number_of_violations {
+    type: sum
+    sql: ${TABLE}.number_of_violations ;;
   }
 
   measure: count {
