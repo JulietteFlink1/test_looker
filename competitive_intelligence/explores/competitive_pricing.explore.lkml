@@ -24,6 +24,8 @@ include: "/**/flink_to_albert_heijn_global.view"
 include: "/competitive_intelligence/views/bigquery_curated/albert_heijn_products.view.lkml"
 include: "/**/key_value_items.view"
 include: "/**/price_test_tracking.view"
+include: "/**/product_prices_daily.view"
+include: "/**/gorillas_pricing_hist.view"
 
 explore: competitive_pricing {
   from: products
@@ -76,6 +78,14 @@ explore: competitive_pricing {
     sql_where: (${inventory.is_most_recent_record} = TRUE) ;;
   }
 
+  join: product_prices_daily {
+    view_label: "* Flink Product Prices Daily *"
+    sql_on: ${product_prices_daily.sku} = ${products.product_sku} and
+      ${product_prices_daily.hub_code} = ${products_hub_assignment.hub_code} ;;
+    relationship: one_to_many
+    type: left_outer
+  }
+
   join: price_test_tracking {
     sql_on:  ${products.product_sku} = ${price_test_tracking.product_sku};;
     relationship: many_to_one
@@ -108,6 +118,12 @@ explore: competitive_pricing {
     sql_on: ${gorillas_products.product_id} = ${flink_to_gorillas_global.gorillas_product_id}
       AND ${flink_to_gorillas_global.gorillas_product_name} = ${gorillas_products.product_name};;
     relationship: one_to_many
+    type: left_outer
+  }
+
+  join: gorillas_pricing_hist {
+    sql_on: ${gorillas_products.product_id} = ${gorillas_pricing_hist.product_id} ;;
+    relationship: many_to_many
     type: left_outer
   }
 
