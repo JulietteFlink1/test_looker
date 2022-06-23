@@ -230,18 +230,18 @@ explore: vendor_performance {
     ;;
   }
 
-  # join: vendor_performance_ndt_date_hub_sku_metrics_po {
+  join: vendor_performance_ndt_date_hub_sku_metrics_po {
 
-  #   view_label: "* Purchase Orders (PO) *"
+    view_label: "* Purchase Orders (PO) *"
 
-  #   type: left_outer
-  #   relationship: one_to_one
-  #   sql_on:
-  #           ${vendor_performance_ndt_date_hub_sku_metrics_po.report_date} = ${products_hub_assignment.report_date}
-  #       and ${vendor_performance_ndt_date_hub_sku_metrics_po.hub_code}    = ${products_hub_assignment.hub_code}
-  #       and ${vendor_performance_ndt_date_hub_sku_metrics_po.leading_sku_replenishment_substitute_group} = ${products_hub_assignment.leading_sku_replenishment_substitute_group}
-  #   ;;
-  # }
+    type: left_outer
+    relationship: one_to_one
+    sql_on:
+            ${vendor_performance_ndt_date_hub_sku_metrics_po.report_date} = ${products_hub_assignment.report_date}
+        and ${vendor_performance_ndt_date_hub_sku_metrics_po.hub_code}    = ${products_hub_assignment.hub_code}
+        and ${vendor_performance_ndt_date_hub_sku_metrics_po.leading_sku_replenishment_substitute_group} = ${products_hub_assignment.leading_sku_replenishment_substitute_group}
+    ;;
+  }
 
 
 
