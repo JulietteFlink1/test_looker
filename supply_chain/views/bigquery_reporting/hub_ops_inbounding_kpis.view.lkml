@@ -13,8 +13,8 @@ view: hub_ops_inbounding_kpis {
 
   measure: avg_percent_FaV_inbounded_in_3_h {
 
-    label: "AVG F&V Inbounded in 3h"
-    description: "This metric shows, how many items in the fruits and vegetables group are inbounded within the first 3 hours since delivery. The metric is an average across dispatch notifications (DESADVs)"
+    label: "% F&V Inbounded in 3h"
+    description: "This metric shows, how many items in the fruits and vegetables category are inbounded within the first 3 hours since delivery. The metric is an average across dispatch notifications (DESADVs)"
     group_label: "Inbounding Performance"
 
     type: average
@@ -24,8 +24,8 @@ view: hub_ops_inbounding_kpis {
 
   measure: avg_percent_FaV_inbounded_in_2_h {
 
-    label: "AVG F&V Inbounded in 2h"
-    description: "This metric shows, how many items in the fruits and vegetables group are inbounded within the first 2 hours since delivery. The metric is an average across dispatch notifications (DESADVs)"
+    label: "% F&V Inbounded in 2h"
+    description: "This metric shows, how many items in the fruits and vegetables category are inbounded within the first 2 hours since delivery. The metric is an average across dispatch notifications (DESADVs)"
     group_label: "Inbounding Performance"
 
     type: average
