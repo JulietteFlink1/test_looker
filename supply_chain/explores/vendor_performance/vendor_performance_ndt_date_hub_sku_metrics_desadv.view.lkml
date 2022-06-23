@@ -74,6 +74,8 @@ view: vendor_performance_ndt_date_hub_sku_metrics_desadv {
     group_label: "Over-Inbound (DESADV)"
   }
 
+
+
   measure: sum_over_inbound_items_desadv {
 
     label:       "# Over-Inbounded Items (DESADV)"
