@@ -1,5 +1,5 @@
 view: hub_ops_inbounding_kpis {
-  sql_table_name: `flink-data-dev.reporting.hub_ops_inbounding_kpis`;;
+  sql_table_name: `flink-data-prod.reporting.hub_ops_inbounding_kpis`;;
 
 
   dimension: dispatch_notification_id {
