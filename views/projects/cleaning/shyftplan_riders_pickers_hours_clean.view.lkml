@@ -143,7 +143,7 @@ view: shyftplan_riders_pickers_hours_clean {
     hidden: yes
     description: "Number of Orders from hubs that have worked hours"
     sql:${number_of_orders};;
-    filters:[position_name: "rider"]
+    filters:[position_name: "picker"]
     value_format_name: decimal_0
   }
 
@@ -297,6 +297,7 @@ view: shyftplan_riders_pickers_hours_clean {
     hidden: yes
   }
 
+  # Excluding Click & Collect and Ubereats orders
   measure: adjusted_orders_riders {
     type: sum
     sql:${number_of_orders};;
@@ -304,6 +305,7 @@ view: shyftplan_riders_pickers_hours_clean {
     hidden: yes
   }
 
+  # Including Click & Collect and Ubereats orders
   measure: adjusted_orders_pickers {
     type: sum
     sql:${number_of_orders};;
@@ -441,7 +443,7 @@ view: shyftplan_riders_pickers_hours_clean {
     label: "AVG Picker UTR"
     type: number
     description: "# Orders from opened hub / # Worked Picker Hours"
-    sql: ${adjusted_orders_riders} / NULLIF(${picker_hours}, 0);;
+    sql: ${adjusted_orders_pickers} / NULLIF(${picker_hours}, 0);;
     value_format_name: decimal_2
     group_label: "UTR"
   }
@@ -450,7 +452,7 @@ view: shyftplan_riders_pickers_hours_clean {
     label: "AVG Hub Staff UTR"
     type: number
     description: "# Orders from opened hub / # Worked Hub Staff (Inventory Associate and Picker) Hours"
-    sql: ${adjusted_orders_riders} / NULLIF(${hub_staff_hours}, 0);;
+    sql: ${adjusted_orders_pickers} / NULLIF(${hub_staff_hours}, 0);;
     value_format_name: decimal_2
     group_label: "UTR"
   }
@@ -459,7 +461,7 @@ view: shyftplan_riders_pickers_hours_clean {
     label: "AVG Inventory Associate UTR"
     type: number
     description: "# Orders from opened hub / # Worked Warehouse Ops Hours"
-    sql: ${adjusted_orders_riders} / NULLIF(${wh_ops_hours}, 0);;
+    sql: ${adjusted_orders_pickers} / NULLIF(${wh_ops_hours}, 0);;
     value_format_name: decimal_2
     group_label: "UTR"
   }
@@ -534,7 +536,7 @@ view: shyftplan_riders_pickers_hours_clean {
     label: "AVG All Staff UTR (incl. Rider,Picker,WH Ops, Rider Captain and Shift Lead)"
     type: number
     description: "# Orders from opened hub / # Worked All Staff (incl. Rider,Picker,WH Ops, Rider Captain and Shift Lead) Hours"
-    sql: ${adjusted_orders_riders} / NULLIF(${rider_hours}+${picker_hours}+${wh_ops_hours}+${shift_lead_hours}+${rider_captain_hours}, 0);;
+    sql: ${adjusted_orders_pickers} / NULLIF(${rider_hours}+${picker_hours}+${wh_ops_hours}+${shift_lead_hours}+${rider_captain_hours}, 0);;
     value_format_name: decimal_2
     group_label: "UTR"
   }
@@ -595,7 +597,7 @@ view: shyftplan_riders_pickers_hours_clean {
     type: number
     label: "% Forecast Deviation "
     description: "absolute (Forecasted Orders / Actual Orders)"
-    sql: abs(${sum_predicted_orders} / nullif(${adjusted_orders_riders},0)) ;;
+    sql: abs(${sum_predicted_orders} / nullif(${adjusted_orders_pickers},0)) ;;
     value_format_name: percent_0
   }
 

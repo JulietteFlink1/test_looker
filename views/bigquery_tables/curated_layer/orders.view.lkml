@@ -1313,7 +1313,8 @@ view: orders {
 
   dimension: cancellation_category {
     group_label: "* Cancelled Orders *"
-    description: "Takes values CS Agent or Customer depending on the person who initiated the cancellation"
+    description: "Takes values CS Agent or Customer depending on the person who initiated the cancellation.
+    All CT cancelled orders are considered to be CS Agent"
     type: string
     sql: ${TABLE}.cancellation_category;;
   }
@@ -2366,6 +2367,34 @@ view: orders {
     ]
   }
 
+  measure: cnt_click_and_collect_orders {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Click & Collect Orders"
+    description: "Count of Click & Collect Orders"
+    hidden:  yes
+    type: count_distinct
+    sql: ${order_uuid} ;;
+    value_format: "0"
+    filters: [
+      is_click_and_collect_order: "yes",
+      is_successful_order: "yes"
+    ]
+  }
+
+  measure: cnt_ubereats_orders {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Click & Collect Orders"
+    description: "Count of Click & Collect Orders"
+    hidden:  yes
+    type: count_distinct
+    sql: ${order_uuid} ;;
+    value_format: "0"
+    filters: [
+      external_provider: "ubereats",
+      is_successful_order: "yes"
+    ]
+  }
+
   measure: cnt_orders_with_discount_cart {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
     label: "# Orders with Cart Discount"
@@ -2483,6 +2512,7 @@ view: orders {
   measure: cnt_agent_cancelled_orders {
     group_label: "* Cancelled Orders *"
     label: "# Agent Cancelled Orders"
+    description: "Agent cancelled orders, also includes CT cancelled orders"
     hidden:  no
     type: count
     filters: [amt_cancelled_gross: ">0",cancellation_category: "- Customer"]
@@ -2495,6 +2525,15 @@ view: orders {
     hidden:  no
     type: count
     filters: [amt_cancelled_gross: ">0",cancellation_category: "Customer"]
+    value_format: "0"
+  }
+
+  measure: cnt_ct_cancelled_orders {
+    group_label: "* Cancelled Orders *"
+    label: "# CT Cancelled Orders"
+    hidden:  no
+    type: count
+    filters: [amt_cancelled_gross: ">0",cancellation_reason: "NULL"]
     value_format: "0"
   }
 
@@ -2830,10 +2869,21 @@ view: orders {
   measure: pct_agent_cancelled_orders{
     group_label: "* Cancelled Orders *"
     label: "% Agent Cancelled Orders"
-    description: "Dividing Number of Self-Cancelled Orders by CC Agents over Number of Orders"
+    description: "Dividing Number of Cancelled Orders by CC Agents over Number of Orders.
+    CT-cancelled orders are included in Agent-Cancelled orders."
     hidden:  no
     type: number
     sql: ${cnt_agent_cancelled_orders} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0.0%"
+  }
+
+  measure: pct_ct_cancelled_orders {
+    group_label: "* Cancelled Orders *"
+    label: "% CT Cancelled Orders"
+    description: "Dividing Number of CT-Cancelled Orders by CC Agents over Number of Orders"
+    hidden:  no
+    type: number
+    sql: ${cnt_ct_cancelled_orders} / NULLIF(${cnt_orders}, 0);;
     value_format: "0.0%"
   }
 
