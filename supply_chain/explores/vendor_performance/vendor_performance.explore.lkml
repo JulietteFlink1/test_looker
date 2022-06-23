@@ -16,6 +16,8 @@ include: "/**/*.view"
 
 explore: vendor_performance {
 
+  hidden: yes
+
   label: "Vendor Performance Overivew"
   group_label: "Supply Chain"
 
@@ -143,7 +145,8 @@ explore: vendor_performance {
 
   join: vendor_performance_po_to_desadv {
 
-    view_label: "PO >> DESADV"
+    # view_label: "PO >> DESADV"
+    view_label: ""
 
     type: left_outer
     # not working properly
