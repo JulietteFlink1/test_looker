@@ -2366,6 +2366,34 @@ view: orders {
     ]
   }
 
+  measure: cnt_click_and_collect_orders {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Click & Collect Orders"
+    description: "Count of Click & Collect Orders"
+    hidden:  yes
+    type: count_distinct
+    sql: ${order_uuid} ;;
+    value_format: "0"
+    filters: [
+      is_click_and_collect_order: "yes",
+      is_successful_order: "yes"
+    ]
+  }
+
+  measure: cnt_ubereats_orders {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Click & Collect Orders"
+    description: "Count of Click & Collect Orders"
+    hidden:  yes
+    type: count_distinct
+    sql: ${order_uuid} ;;
+    value_format: "0"
+    filters: [
+      external_provider: "ubereats",
+      is_successful_order: "yes"
+    ]
+  }
+
   measure: cnt_orders_with_discount_cart {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
     label: "# Orders with Cart Discount"
