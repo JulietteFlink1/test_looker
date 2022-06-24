@@ -223,7 +223,6 @@ view: replenishment_purchase_orders {
 
     label:       "SKU"
     description: "The identified of a product"
-    group_label: " >> Line Item Data"
 
     type: string
     bypass_suggest_restrictions: yes
@@ -235,7 +234,6 @@ view: replenishment_purchase_orders {
 
     label:       "Product Name"
     description: "The name of a product"
-    group_label: " >> Line Item Data"
 
     type: string
     sql: ${TABLE}.name ;;
