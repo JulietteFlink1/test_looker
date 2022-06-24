@@ -1,5 +1,5 @@
 view: hub_ops_inbounding_kpis {
-  sql_table_name: `flink-data-dev.reporting.hub_ops_inbounding_kpis`;;
+  sql_table_name: `flink-data-prod.reporting.hub_ops_inbounding_kpis`;;
 
 
   dimension: dispatch_notification_id {
@@ -35,7 +35,7 @@ view: hub_ops_inbounding_kpis {
 
   measure: hours_needed_to_inbound_90_percent {
 
-    label: "AVG Hours to Inbound 90% Delivery"
+    label: "AVG # Hours to Inbound 90% Delivery"
     description: "This metric shows, how many hours are needed to inbound 90% of a related dispatch notification. If the dispatch notification was not inbounded at least to a degree of 90%, this field is empty. The metric is an average across dispatch notifications (DESADVs)"
     group_label: "Inbounding Performance"
 

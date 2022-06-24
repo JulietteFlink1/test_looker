@@ -720,6 +720,22 @@ view: orders {
     sql: ${TABLE}.is_discounted_order ;;
   }
 
+  dimension: is_product_discounted_order{
+    group_label: "* Order Dimensions *"
+    label: "Is Product Discounted Order (Yes/No)"
+    description: "Flags if an Order has a Product Discount (Commercial) applied"
+    type: yesno
+    sql: ${TABLE}.is_product_discounted_order ;;
+  }
+
+  dimension: is_cart_discounted_order{
+    group_label: "* Order Dimensions *"
+    label: "Is Cart Discounted Order (Yes/No)"
+    description: "Flags if an Order has a Cart Discount (Marketing) applied"
+    type: yesno
+    sql: ${TABLE}.is_cart_discounted_order ;;
+  }
+
   dimension: is_first_order {
     group_label: "* Order Dimensions *"
     type: yesno
@@ -2363,6 +2379,34 @@ view: orders {
     sql: ${order_uuid} ;;
     value_format: "0"
     filters: [
+      is_successful_order: "yes"
+    ]
+  }
+
+  measure: cnt_click_and_collect_orders {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Click & Collect Orders"
+    description: "Count of Click & Collect Orders"
+    hidden:  yes
+    type: count_distinct
+    sql: ${order_uuid} ;;
+    value_format: "0"
+    filters: [
+      is_click_and_collect_order: "yes",
+      is_successful_order: "yes"
+    ]
+  }
+
+  measure: cnt_ubereats_orders {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Click & Collect Orders"
+    description: "Count of Click & Collect Orders"
+    hidden:  yes
+    type: count_distinct
+    sql: ${order_uuid} ;;
+    value_format: "0"
+    filters: [
+      external_provider: "ubereats",
       is_successful_order: "yes"
     ]
   }
