@@ -49,6 +49,8 @@ view: orders_with_ops_metrics {
       column: cnt_orders_with_delivery_eta_available {}
       column: cnt_orders_with_targeted_eta_available {}
       column: cnt_orders_delayed_under_0_min_time_targeted {}
+      column: cnt_ubereats_orders {}
+      column: cnt_click_and_collect_orders {}
       column: sum_rider_handling_time_minutes_saved_with_stacking {}
       column: sum_potential_rider_handling_time_without_stacking_minutes {}
       filters: {
@@ -72,6 +74,32 @@ view: orders_with_ops_metrics {
     sql: ${order_uuid} ;;
   }
 
+  measure: cnt_click_and_collect_orders {
+    group_label: "> Basic Counts"
+    label: "# Click & Collect Orders"
+    description: "Count of Click & Collect Orders"
+    hidden:  yes
+    type: sum
+    value_format: "0"
+  }
+
+  measure: cnt_ubereats_orders {
+    group_label: "> Basic Counts"
+    label: "# Ubereats Orders"
+    description: "Count of Ubereats Orders"
+    hidden:  yes
+    type: sum
+    value_format: "0"
+  }
+
+  measure: cnt_rider_orders {
+    group_label: "> Basic Counts"
+    label: "# Orders (excl. Click & Collect and Ubereats)"
+    description: "Count of Orders that require no riders (e.g. Click and collect)"
+    hidden:  yes
+    sql: ${cnt_orders}-${cnt_click_and_collect_orders}-${cnt_ubereats_orders} ;;
+    value_format: "0"
+  }
   measure: percent_of_total_orders {
     group_label: "> Basic Counts"
     label: "% Of Total Orders"

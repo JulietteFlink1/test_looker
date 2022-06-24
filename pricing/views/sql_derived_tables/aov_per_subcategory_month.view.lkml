@@ -16,6 +16,7 @@ view: aov_per_subcategory_month{
       hub.hub_name,
       hub.city,
       f.is_discounted_order,
+      f.is_external_order,
       1 as flag,
      --b.category,
       --sum (a.amt_total_price_gross) as sum_item_value,
@@ -30,7 +31,7 @@ view: aov_per_subcategory_month{
              on a.order_uuid = f.order_uuid
       WHERE DATE(a.order_timestamp) >= "2021-02-01"
           and f.is_successful_order = true
-            group by 1,2,3,4,5,6,7,8,9,10,11
+            group by 1,2,3,4,5,6,7,8,9,10,11,12
 
 ),
 
@@ -61,6 +62,7 @@ c as
       hub.hub_name,
       hub.city,
       f.is_discounted_order,
+      f.is_external_order,
       category as category,
       b.subcategory as subcategory,
       sum (coalesce(a.amt_total_price_gross,0)) as sum_item_value,
@@ -76,7 +78,7 @@ c as
              on a.order_uuid = f.order_uuid
       WHERE DATE(a.order_timestamp) >= "2021-02-01"
           and f.is_successful_order = true
-      group by 1,2,3,4,5,6,7,8,9,10,11,12
+      group by 1,2,3,4,5,6,7,8,9,10,11,12,13
       order by 9
      ),
 
@@ -89,13 +91,14 @@ d as
         else "3.After 17PM" end as hour,
         hub_name,
         is_discounted_order,
+        is_external_order,
         count (distinct d.order_uuid) as orders
 
   FROM `flink-data-prod.curated.orders` d
       WHERE DATE(d.order_timestamp) >= "2021-02-01"
       and d.is_successful_order = true
 
-      group by 1,2,3,4
+      group by 1,2,3,4,5
 
 )
 
@@ -111,6 +114,7 @@ d as
       a.hub_name,
       a.hub_code,
        case when a.is_discounted_order is true then "Yes" else "No" end as is_discounted_order,
+       case when a.is_external_order is true then "Yes" else "No" end as is_external_order,
       a.city,
       b.category,
       b.subcategory,
@@ -130,11 +134,13 @@ d as
       and b.category = c.category
       and b.subcategory = c.subcategory
       and a.is_discounted_order = c.is_discounted_order
+      and a.is_external_order = c.is_external_order
       inner join d
       on a.order_date = d.order_date
       and a.hour = d.hour
       and a.hub_name = d.hub_name
       and a.is_discounted_order = d.is_discounted_order
+      and a.is_external_order = d.is_external_order
        ;;
   }
 
@@ -294,6 +300,12 @@ d as
     label: "is_discounted_order"
     type: string
     sql: ${TABLE}.is_discounted_order ;;
+  }
+
+  dimension: is_external_order {
+    label: "is_external_order"
+    type: string
+    sql: ${TABLE}.is_external_order ;;
   }
 
   dimension: category {

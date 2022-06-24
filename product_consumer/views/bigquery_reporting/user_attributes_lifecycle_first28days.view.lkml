@@ -1,5 +1,5 @@
-view: user_attributes_lifecycle_last12weeks {
-  sql_table_name: `flink-data-prod.reporting.user_attributes_lifecycle_last12weeks`
+view: user_attributes_lifecycle_first28days {
+  sql_table_name: `reporting.user_attributes_lifecycle_first28days`
     ;;
 
   measure: cnt_customers {
@@ -8,9 +8,21 @@ view: user_attributes_lifecycle_last12weeks {
     sql: ${customer_uuid} ;;
   }
 
+
   dimension: customer_uuid {
+    primary_key: yes
     type: string
     sql: ${TABLE}.customer_uuid ;;
+  }
+
+  dimension: amt_discount_gross {
+    type: number
+    sql: ${TABLE}.amt_discount_gross ;;
+  }
+
+  dimension: amt_discount_net {
+    type: number
+    sql: ${TABLE}.amt_discount_net ;;
   }
 
   dimension: amt_gmv_gross {
@@ -43,6 +55,16 @@ view: user_attributes_lifecycle_last12weeks {
     sql: ${TABLE}.avg_days_between_visits ;;
   }
 
+  dimension: avg_discount_gross {
+    type: number
+    sql: ${TABLE}.avg_discount_gross ;;
+  }
+
+  dimension: avg_discount_net {
+    type: number
+    sql: ${TABLE}.avg_discount_net ;;
+  }
+
   dimension: avg_gmv_gross {
     type: number
     sql: ${TABLE}.avg_gmv_gross ;;
@@ -61,24 +83,6 @@ view: user_attributes_lifecycle_last12weeks {
   dimension: avg_revenue_net {
     type: number
     sql: ${TABLE}.avg_revenue_net ;;
-  }
-
-  dimension_group: execution {
-    type: time
-    timeframes: [
-      raw,
-      date,
-      week,
-      month,
-      quarter,
-      day_of_week_index,
-      day_of_week,
-      day_of_month,
-      year
-    ]
-    convert_tz: no
-    datatype: date
-    sql: ${TABLE}.execution_date ;;
   }
 
   dimension: first_country_iso {
@@ -176,6 +180,11 @@ view: user_attributes_lifecycle_last12weeks {
     sql: ${TABLE}.number_of_days_visited ;;
   }
 
+  dimension: number_of_discounted_orders {
+    type: number
+    sql: ${TABLE}.number_of_discounted_orders ;;
+  }
+
   dimension: number_of_orders {
     type: number
     sql: ${TABLE}.number_of_orders ;;
@@ -184,36 +193,6 @@ view: user_attributes_lifecycle_last12weeks {
   dimension: number_of_visits_to_first_order {
     type: number
     sql: ${TABLE}.number_of_visits_to_first_order ;;
-  }
-
-  dimension_group: oldest_order {
-    type: time
-    timeframes: [
-      raw,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    convert_tz: no
-    datatype: date
-    sql: ${TABLE}.oldest_order_date ;;
-  }
-
-  dimension_group: oldest_visit {
-    type: time
-    timeframes: [
-      raw,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    convert_tz: no
-    datatype: date
-    sql: ${TABLE}.oldest_visit_date ;;
   }
 
   measure: count {

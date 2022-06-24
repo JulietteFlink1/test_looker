@@ -56,6 +56,31 @@ view: vendor_performance_ndt_date_hub_sku_metrics_desadv {
     ;;
   }
 
+  dimension: is_completely_inbounded {
+    type: yesno
+    hidden: yes
+    sql:
+
+          ${desadv_quantity}  > 0
+      and ${inbound_quantity} > 0
+      and ${inbound_quantity} >= ${desadv_quantity}
+    ;;
+  }
+
+  dimension: is_delivered_but_desadv_zero {
+
+    label: "Is Inbounded but 0 DESADV Selling Units"
+    type: yesno
+    hidden: yes
+
+    sql:
+
+          ${desadv_quantity} = 0
+      and ${inbound_quantity} > 0
+      and ${inbound_quantity} >= ${desadv_quantity}
+    ;;
+  }
+
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   #  - - - - - - - - - -    DESADV metrics
   measure: sum_desadv_quantity {
@@ -74,11 +99,12 @@ view: vendor_performance_ndt_date_hub_sku_metrics_desadv {
     group_label: "Over-Inbound (DESADV)"
   }
 
+
+
   measure: sum_over_inbound_items_desadv {
 
     label:       "# Over-Inbounded Items (DESADV)"
     description: "The sum of item quantities, that are higher than their related quantity on the dispatch notification"
-    group_label: "Over-Inbound (DESADV)"
 
     type: sum
     value_format_name: decimal_0
@@ -90,10 +116,35 @@ view: vendor_performance_ndt_date_hub_sku_metrics_desadv {
 
     label: "% Over-Inbounded Items (DESADV)"
     description: "The sum of item quantities, that are higher than their related quantity on the dispatch notification compared to all item quantities on the DESADV"
-    group_label: "Over-Inbound (DESADV)"
 
     type: number
     sql: safe_divide(${sum_over_inbound_items_desadv}, ${sum_desadv_quantity}) ;;
+    value_format_name: percent_1
+  }
+
+  # based on Peters comment in JIRA: https://goflink.atlassian.net/browse/DATA-2691?focusedCommentId=68836
+  # to handle issues where we falsely calculate the fill-rates (e.g. Banaas as item with highest quantity - delivered 100 bananas and the hub can decided to
+  # ... either inbound the bananas as pieces of 1 or as bundles of 5 )
+  measure: cnt_skus_in_desadv {
+    hidden: yes
+    type: count_distinct
+    sql:  ${leading_sku_replenishment_substitute_group};;
+  }
+
+  measure: cnt_skus_in_desadv_fully_inbounded {
+    hidden: yes
+    type: count_distinct
+    filters: [is_completely_inbounded: "yes"]
+    sql: ${leading_sku_replenishment_substitute_group};;
+  }
+
+  measure: pct_skus_fully_inbounded {
+
+    label:       "% SKUs In Full (DESADV)"
+    description: "This metrics compared the total number of products listed on a dispatch notification (DESADV) with all those products that are fully inbounded (>> how many SKU have been fully inbounded from a DESADV). "
+
+    type: number
+    sql: safe_divide(${cnt_skus_in_desadv_fully_inbounded}, ${cnt_skus_in_desadv}) ;;
     value_format_name: percent_1
   }
 

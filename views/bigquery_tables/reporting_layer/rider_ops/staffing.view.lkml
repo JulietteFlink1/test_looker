@@ -2351,7 +2351,7 @@ view: staffing {
     group_label: "> Rider Measures"
     label: "Rider UTR"
     type: number
-    sql: ${orders_with_ops_metrics.cnt_orders}/ NULLIF(${number_of_worked_hours_rider}, 0) ;;
+    sql: ${orders_with_ops_metrics.cnt_rider_orders}/ NULLIF(${number_of_worked_hours_rider}, 0) ;;
     value_format_name: decimal_1
   }
 

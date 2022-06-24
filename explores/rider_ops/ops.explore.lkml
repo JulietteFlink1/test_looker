@@ -57,7 +57,7 @@ explore: ops {
     view_label: "Orders"
     sql_on: ${orders_with_ops_metrics.created_minute30} = ${time_grid.start_datetime_minute30}
       and lower(${orders_with_ops_metrics.hub_code})=lower(${hubs.hub_code});;
-    relationship: one_to_one
+    relationship: one_to_many
     type: left_outer
   }
 
@@ -67,7 +67,7 @@ explore: ops {
     view_label: "Forecasts"
     sql_on: ${forecasts.start_timestamp_minute30} = ${time_grid.start_datetime_minute30}
       and lower(${forecasts.hub_code})=lower(${hubs.hub_code});;
-    relationship: many_to_many
+    relationship: one_to_many
     type: left_outer
   }
 

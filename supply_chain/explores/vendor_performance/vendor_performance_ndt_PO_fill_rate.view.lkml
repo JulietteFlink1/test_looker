@@ -21,23 +21,11 @@ view: vendor_performance_ndt_po_fill_rate {
 
 
   dimension: sum_total_quantity {
-
-    label:       "SUM Selling Units ((per PO))"
-    description: "The sum of all products of listed on a purchase order"
-    group_label: "PO aggregated"
-
-    value_format: "#,##0"
     type: number
     hidden: yes
   }
 
   dimension: sum_inbound_inventory {
-
-    label: "SUM Inbounded PO Units (per PO)"
-    description: "The sum of inventory changes based on restockings"
-    group_label: "PO aggregated"
-
-    value_format: "#,##0"
     type: number
     hidden: yes
   }
@@ -47,20 +35,18 @@ view: vendor_performance_ndt_po_fill_rate {
 
     label:       "% PO inbounded (per PO)"
     description: "The percent of selling unitson a purchase order that are actually been inbounded"
-    group_label: "PO aggregated"
 
     sql: safe_divide(${sum_inbound_inventory}, ${sum_total_quantity}) ;;
     type: number
 
     value_format_name: percent_1
-    hidden: no
+    hidden: yes
   }
 
   dimension: is_po_inbounded_po_corrected {
 
-    label:       "PO Inbounded Status"
+    label:       "Inbound Status (PO)"
     description: "This field classifies purchase orders in how much of their selling units are actually inbounded"
-    group_label: "PO aggregated"
 
     sql: case
             when ${po_fill_rate} > 0.8
@@ -96,6 +82,7 @@ view: vendor_performance_ndt_po_fill_rate {
     filters: [is_po_delivered_on_day: "yes"]
 
     value_format_name: decimal_0
+    hidden: yes
   }
 
   measure: sum_number_of_po {
@@ -106,9 +93,8 @@ view: vendor_performance_ndt_po_fill_rate {
 
   measure: pct_po_inbounded_on_day {
 
-    label: "% PO Inbounded on Delivery Date"
+    label: "% Orders Delivered on Planned Day (PO)"
     description: "The percentage of purchase orders, that have actually been delivered on the promised delivery date"
-    group_label: "PO aggregated"
 
     type: number
     sql: safe_divide(${sum_number_of_inbounded_po_on_day}, ${sum_number_of_po}) ;;

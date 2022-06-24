@@ -298,6 +298,7 @@ view: hub_staffing {
     label:"Target UTR"
     description: "Target UTR used in Forecsating Rider Hours"
     sql:${number_of_target_orders_per_employee};;
+    hidden: yes
     value_format_name: decimal_2
   }
 
@@ -325,6 +326,7 @@ view: hub_staffing {
     label:"# Forecasted Orders"
     description: "Number of Forecasted Orders"
     sql:${number_of_predicted_orders};;
+    hidden: yes
     value_format_name: decimal_0
   }
 
@@ -419,6 +421,7 @@ view: hub_staffing {
     label:"# Forecasted Hours (excluding No show)"
     description: "Number of Needed Employee Hours Based on Forecasted Order Demand excluding no show hours"
     sql:NULLIF(${number_of_forecasted_minutes}-${number_of_predicted_no_show_minutes},0)/60;;
+    hidden: yes
     value_format_name: decimal_1
   }
 
@@ -428,6 +431,7 @@ view: hub_staffing {
     label:"# Forecasted No Show Hours"
     description: "Number of No Show Employee Hours Based on Forecasted Order Demand"
     sql:NULLIF(${number_of_predicted_no_show_minutes},0)/60;;
+    hidden: yes
     value_format_name: decimal_1
   }
 
@@ -437,6 +441,7 @@ view: hub_staffing {
     label:"# Forecasted Hours (including No show)"
     description: "Number of Needed Employee Hours Based on Forecasted Order Demand including no show hours"
     sql:NULLIF(${number_of_forecasted_minutes},0)/60;;
+    hidden: yes
     value_format_name: decimal_1
   }
 
@@ -454,6 +459,7 @@ view: hub_staffing {
     type: number
     description: "% Forecasted No Show Hours"
     sql:(${sum_forecast_no_show_hours})/nullif(${sum_forecast_riders_needed},0) ;;
+    hidden: yes
     value_format_name: percent_1
   }
 
@@ -504,6 +510,7 @@ view: hub_staffing {
     label:"# Actually Needed Hours"
     description: "Number of needed Employees based on actual order demand"
     sql:ceiling(NULLIF(${sum_orders},0) / nullif(${number_of_target_utr},0));;
+    hidden: yes
     value_format_name: decimal_1
   }
 
@@ -513,6 +520,7 @@ view: hub_staffing {
     label:"# Projected Rider UTR"
     description: "Forecasted Orders / Scheduled Rider Hours"
     sql:${sum_predicted_orders} / ${sum_planned_hours};;
+    hidden: yes
     value_format_name: decimal_1
   }
 
@@ -526,6 +534,7 @@ view: hub_staffing {
                   0
         end          ;;
     value_format_name: percent_0
+    hidden: yes
   }
 
   measure: pct_under_stafing {
@@ -538,6 +547,7 @@ view: hub_staffing {
                   0
         end          ;;
     value_format_name: percent_0
+    hidden: yes
   }
 
   measure: forecast_deviation {
@@ -546,6 +556,7 @@ view: hub_staffing {
     description: "absolute (Forecasted Orders / Actual Orders)"
     sql:abs(${sum_predicted_orders}/${sum_orders});;
     value_format_name: percent_0
+    hidden: yes
   }
 
 

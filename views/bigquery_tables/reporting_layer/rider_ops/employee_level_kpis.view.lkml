@@ -274,7 +274,7 @@ view: employee_level_kpis {
     group_label: "* Logistics *"
     type: number
     label: "% Delta Riding Time Between To Hub and To Customer"
-    description: "% Difference Riding time between To Hub and To Customer e.g. a rider spent 5 minutes riding between hub to customer then spend another 5 minutes riding between customer to hub then that will result in % Delta Riding Time Between To Hub and To Customer to be 0%"
+    description: "% Difference Riding time between To Hub and To Customer (positive value indicates Time To Hub > Time To Customer) e.g. a rider spent 5 minutes riding between hub to customer then spend another 5 minutes riding between customer to hub then that will result in % Delta Riding Time Between To Hub and To Customer to be 0%"
     sql: sum(${TABLE}.number_of_return_to_hub_time_minutes) / nullif(sum(${TABLE}.number_of_riding_to_customer_time_minutes),0) -1 ;;
     value_format_name: percent_1
   }
