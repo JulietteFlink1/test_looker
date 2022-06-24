@@ -720,7 +720,7 @@ view: orders {
     sql: ${TABLE}.is_discounted_order ;;
   }
 
-  dimension: is_product_dicounted_order{
+  dimension: is_product_discounted_order{
     group_label: "* Order Dimensions *"
     label: "Is Product Discounted Order (Yes/No)"
     description: "Flags if an Order has a Product Discount (Commercial) applied"
@@ -728,7 +728,7 @@ view: orders {
     sql: ${TABLE}.is_product_discounted_order ;;
   }
 
-  dimension: is_cart_dicounted_order{
+  dimension: is_cart_discounted_order{
     group_label: "* Order Dimensions *"
     label: "Is Cart Discounted Order (Yes/No)"
     description: "Flags if an Order has a Cart Discount (Marketing) applied"
