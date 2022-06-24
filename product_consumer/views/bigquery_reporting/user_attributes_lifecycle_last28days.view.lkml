@@ -7,6 +7,8 @@ view: user_attributes_lifecycle_last28days {
     sql: ${TABLE}.customer_uuid ;;
   }
 
+  #========= Monetary =========#
+
   dimension: avg_gmv_gross_tier_2 {
     group_label: "* Monetary Values *"
     label: "Average GMV (tiered, 2 EUR)"
@@ -91,6 +93,9 @@ view: user_attributes_lifecycle_last28days {
     sql: ${TABLE}.execution_date ;;
   }
 
+
+  #========= User Attributes =========#
+
   dimension: first_country_iso {
     group_label: "* User Attributes *"
     type: string
@@ -159,6 +164,9 @@ view: user_attributes_lifecycle_last28days {
     sql: ${TABLE}.number_of_visits_to_first_order ;;
   }
 
+
+  #========= Recency Values =========#
+
   dimension: days_since_last_visit {
     group_label: "* Recency Values *"
     type: number
@@ -170,7 +178,6 @@ view: user_attributes_lifecycle_last28days {
     type: number
     sql: date_diff(${execution_date}, ${last_order_date}, day) ;;
   }
-
 
   dimension_group: last_order {
     group_label: "* Recency Values *"
@@ -204,6 +211,9 @@ view: user_attributes_lifecycle_last28days {
     sql: ${TABLE}.last_visit_date ;;
   }
 
+
+  #========= Frequency Values =========#
+
   dimension: avg_days_between_orders {
     group_label: "* Frequency Values*"
     type: number
@@ -233,6 +243,26 @@ view: user_attributes_lifecycle_last28days {
     type: number
     sql: ${TABLE}.number_of_orders ;;
   }
+
+  dimension: order_to_visit_ratio_tier {
+    group_label: "* Frequency Values*"
+    label: "Order To Visit Ratio (tiered, 0.05)"
+    type: tier
+    tiers: [0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1]
+    style: relational
+    sql: ${order_to_visit_ratio} ;;
+  }
+
+  dimension: order_to_visit_ratio {
+    group_label: "* Frequency Values*"
+    type: number
+    sql: 1.0* ${number_of_days_ordering}/${number_of_days_visited} ;;
+    value_format_name: decimal_2
+  }
+
+
+  #========= Hidden =========#
+
   dimension_group: oldest_order {
     hidden: yes
     type: time
