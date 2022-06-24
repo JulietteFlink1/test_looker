@@ -71,6 +71,12 @@ view: onboarding_task_olya {
     sql: ${TABLE}.number_of_worked_hours ;;
   }
 
+  dimension: number_of_orders_with_fulfillment_time {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_orders_with_fulfillment_time ;;
+  }
+
   dimension: table_uuid {
     type: string
     primary_key: yes
@@ -81,22 +87,67 @@ view: onboarding_task_olya {
   # ~~~~~~~~~~~~~~~     Metrics     ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  measure: fulfillment_time_min {
+
+  measure: avg_fulfillment_time_min {
     type: number
-    hidden: yes
-    sql: ${TABLE}.fulfillment_time_minutes ;;
+    label: "AVG # Fulfillment time min"
+    value_format: "0.0"
+    sql: if(${sum_number_of_orders_with_fulfillment_time} = 0, 0,
+      ${fulfillment_time_min} / ${sum_number_of_orders_with_fulfillment_time});;
   }
 
-  measure: avg_fulfillment_time_minutes {
+  measure: fulfillment_time_min {
+    type: sum
+    description: "Amount of fulfillment time in minutes"
+    label: "Fulfillment time min"
+    value_format: "0.0"
+    sql: ${fulfillment_time_minutes} ;;
+  }
+
+  measure: sum_number_of_orders_with_fulfillment_time {
+    type: sum
+    description: "Amount of orders with non-null fulfillment time"
+    label: "Orders with fulfillment"
+    value_format: "0.0"
+    sql: ${number_of_orders_with_fulfillment_time} ;;
+  }
+
+  measure: avg_number_of_items {
     type: number
-    label: "AVG fulfillment time min"
-    sql: ${fulfillment_time_min} / ${number_of_orders} ;;
+    label: "AVG # Number of items in basket"
+    value_format: "0.#"
+    sql: if(${sum_number_of_orders} = 0, 0,
+      ${sum_number_of_items} / ${sum_number_of_orders}) ;;
   }
 
   measure: sum_number_of_items {
     type: sum
-    hidden: yes
-    sql: ${TABLE}.number_of_items ;;
+    description: "Total amount of items"
+    label: "Amount of items"
+    sql: ${number_of_items} ;;
+  }
+
+  measure: sum_number_of_orders {
+    type: sum
+    description: "Number of orders"
+    label: "Orders"
+    value_format: "#,##0"
+    sql: ${number_of_orders} ;;
+  }
+
+  measure: sum_number_of_riders {
+    type: sum
+    description: "Number of riders"
+    label: "Riders"
+    sql: ${number_of_riders} ;;
+  }
+
+  measure: sum_number_of_riders_worked_hours {
+    type: sum
+    description: "Sum of Worked hours by riders"
+    label: "Worked hours by riders"
+    value_format: "#,##0.0"
+    sql: ${number_of_worked_hours} ;;
   }
 
   measure: count {
