@@ -401,14 +401,14 @@ view: replenishment_purchase_orders {
   }
 
   measure: avg_items_per_order  {
-    label: "AVG Items per Order"
+    label: "AVG # Items per Order"
     description: "AVG Items per Order per SKU"
     sql: round(${cnt_of_skus_per_order}/${cnt_of_orders}, 2) ;;
 
   }
 
   measure: sum_purchase_price {
-    label:       "€ Sum Purchased Products Value (Buying Price)"
+    label:       "€ Selling Units (Buying Price)"
     description: "This measure multiplies the supplier price of an item with the number of selling units we ordered and thus provides the cumulative value of the replenished items."
 
     type: sum

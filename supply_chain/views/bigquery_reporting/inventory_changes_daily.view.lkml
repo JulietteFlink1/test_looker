@@ -194,7 +194,7 @@ view: inventory_changes_daily {
   }
 
   measure: sum_outbound_waste {
-    label: "# Outbound (Waste)"
+    label: "# Outbounded Items (Waste)"
     description: "The sum of all inventory changes, that ar related to waste"
     group_label: ">> Waste Metrics"
     type: sum
@@ -204,7 +204,7 @@ view: inventory_changes_daily {
   }
 
   measure: sum_outbound_waste_eur {
-    label: "€ Outbound (Waste)"
+    label: "€ Outbounded Items (Waste)"
     description: "The quantity '# Outbound (Waste)' multiplied by the latest product price (gross)"
     group_label: ">> Waste Metrics"
     type: sum
@@ -228,7 +228,7 @@ view: inventory_changes_daily {
   # ------- Sums of granular inventory movement metrics
 
   measure: sum_outbound_orders {
-    label: "# Outbounds (Orders)"
+    label: "# Outbounded Items (Orders)"
     description: "The number of inventory changes, that are based on customer orders"
     type: sum
     sql: abs(${quantity_change}) ;;
@@ -237,7 +237,7 @@ view: inventory_changes_daily {
   }
 
   measure: sum_outbound_too_good_to_go {
-    label: "# Outbounds (Too-Good-To-Go)"
+    label: "# Outbounded Items (Too-Good-To-Go)"
     description: "The number of outbounded items, that are due to donations to the app too-good-to-go."
     group_label: ">> Waste Metrics"
     type: sum
@@ -247,7 +247,7 @@ view: inventory_changes_daily {
   }
 
   measure: sum_correction_product_expired {
-    label: "# Corrections (Product Expired)"
+    label: "# Corrected Items (Product Expired)"
     description: "The number of corrected items, that are due to expiration (too close to best-before-date) while storing them in our hubs."
     group_label: ">> Waste Metrics"
     type: sum
@@ -257,7 +257,7 @@ view: inventory_changes_daily {
   }
 
   measure: sum_correction_product_delivery_expired {
-    label: "# Corrections (Product Delivery Expired)"
+    label: "# Corrected Items (Product Delivery Expired)"
     description: "The number of corrected items, that are due to expiration (too close to best-before-date) when being delivered to our hubs."
     group_label: ">> Waste Metrics"
     type: sum
@@ -267,7 +267,7 @@ view: inventory_changes_daily {
   }
 
   measure: sum_correction_product_delivery_damaged {
-    label: "# Corrections (Product Delivery Damaged)"
+    label: "# Corrected Items (Product Delivery Damaged)"
     description: "The number of corrected items, that are due to being damaged (too close to best-before-date) when being delivered to our hubs."
     group_label: ">> Waste Metrics"
     type: sum
@@ -287,7 +287,7 @@ view: inventory_changes_daily {
   }
 
   measure: sum_correction_product_damaged {
-    label: "# Corrections (Product Damaged)"
+    label: "# Corrected Items (Product Damaged)"
     description: "The number of corrected items, that are due to being damaged (too close to best-before-date) while storing them in our hubs."
     group_label: ">> Waste Metrics"
 
@@ -298,7 +298,7 @@ view: inventory_changes_daily {
   }
 
   measure: sum_correction_order_cancelled {
-    label: "# Corrections (Order Cancelled)"
+    label: "# Corrected Items (Order Cancelled)"
     description: "The number of corrected items, that are due to being part of customers orders, that have been cancelled."
     group_label: ">> Waste Metrics"
 
@@ -313,7 +313,7 @@ view: inventory_changes_daily {
 
   # TODO: deprecate
   measure: sum_outbound_wrong_delivery {
-    label: "# Outbound (Wrong Delivery)"
+    label: "# Outbounded Items (Wrong Delivery)"
     description: "The number of inventory changes, that are based on wrong deliveries"
     group_label: "* Inventory Changes Daily *"
     type: sum
@@ -339,7 +339,7 @@ view: inventory_changes_daily {
 
 
   measure: sum_inbound_inventory {
-    label: "# Inbounds (Delivery)"
+    label: "# Inbounded Items (Delivery)"
     description: "The sum of inventory changes based on restockings caused by vendor deliveries (excluding inbounds due to cancelled orders)"
     type: sum
     sql: abs(${quantity_change}) ;;
@@ -374,8 +374,8 @@ view: inventory_changes_daily {
   # -- CORRECTIONS ------------------------------------------------------------------------------------------------------------------
 
   measure: sum_inventory_correction_increased {
-    label: "# Inventory Corrections (Increased)"
-    description: "The sum of inventory changes related to inventory corrections that increased the inventory"
+    label: "# Corrected Items (Generic - Increased)"
+    description: "The sum of inventory changes related to unspecified inventory corrections that increased the inventory"
     group_label: ">> Waste Metrics"
 
     type: sum
@@ -384,8 +384,8 @@ view: inventory_changes_daily {
   }
 
   measure: sum_inventory_correction_reduced {
-    label: "# Inventory Corrections (Reduced)"
-    description: "The sum of inventory changes related to inventory corrections that reduced the inventory"
+    label: "# Corrected Items (Generic - Reduced)"
+    description: "The sum of inventory changes related to unspecified inventory corrections that reduced the inventory"
     group_label: ">> Waste Metrics"
 
     type: sum
@@ -394,8 +394,8 @@ view: inventory_changes_daily {
   }
 
   measure: sum_inventory_correction_increased_gmv {
-    label: "€ Inventory Corrections (Increased)"
-    description: "The sum of inventory changes related to inventory corrections that increased the inventory multiplied by the price of the item"
+    label: "€ Corrected Items (Generic - Increased)"
+    description: "The sum of inventory changes related to unspecified inventory corrections that increased the inventory multiplied by the price of the item"
     group_label: ">> Waste Metrics"
 
     type: sum
@@ -404,8 +404,8 @@ view: inventory_changes_daily {
   }
 
   measure: sum_inventory_correction_reduced_gmv {
-    label: "€ Inventory Corrections (Reduced)"
-    description: "The sum of inventory changes related to inventory corrections that reduced the inventory multiplied by the price of the item"
+    label: "€ Corrected Items (Generic - Reduced)"
+    description: "The sum of inventory changes related to unspecified inventory corrections that reduced the inventory multiplied by the price of the item"
     group_label: ">> Waste Metrics"
 
     type: sum

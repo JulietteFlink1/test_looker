@@ -16,9 +16,9 @@ include: "/**/*.view"
 
 explore: vendor_performance {
 
-  hidden: yes
+  hidden: no
 
-  label: "Vendor Performance Overivew"
+  label: "Vendor Performance"
   group_label: "Supply Chain"
 
   from: products_hub_assignment_v2
