@@ -93,7 +93,7 @@ view: vendor_performance_ndt_po_fill_rate {
 
   measure: pct_po_inbounded_on_day {
 
-    label: "% Orders Delivered on Planned Day"
+    label: "% Orders Delivered on Planned Day (PO)"
     description: "The percentage of purchase orders, that have actually been delivered on the promised delivery date"
 
     type: number

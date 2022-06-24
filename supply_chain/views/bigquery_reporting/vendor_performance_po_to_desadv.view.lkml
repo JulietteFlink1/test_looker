@@ -1,5 +1,5 @@
 view: vendor_performance_po_to_desadv {
-  sql_table_name: `flink-data-dev.reporting.vendor_performance_po_to_desadv`
+  sql_table_name: `flink-data-prod.reporting.vendor_performance_po_to_desadv`
     ;;
 
 
