@@ -7,6 +7,178 @@ view: user_attributes_lifecycle_last28days {
     sql: ${TABLE}.customer_uuid ;;
   }
 
+
+  #=========== Measures ===========#
+
+  measure: cnt_customers {
+    label: "# Customers"
+    type: count_distinct
+    sql: ${customer_uuid} ;;
+  }
+
+  measure: count {
+    type: count
+    drill_fields: []
+  }
+
+  measure: avg_gmv_min {
+    type: min
+    sql: ${avg_gmv_gross} ;;
+    value_format_name: eur
+  }
+  measure: avg_gmv_percentile_25 {
+    type: percentile
+    percentile: 25
+    sql: ${avg_gmv_gross} ;;
+    value_format_name: eur
+  }
+  measure: avg_gmv_percentile_50 {
+    type: median
+    sql: ${avg_gmv_gross} ;;
+    value_format_name: eur
+  }
+  measure: avg_gmv_percentile_75 {
+    type: percentile
+    percentile: 75
+    sql: ${avg_gmv_gross} ;;
+    value_format_name: eur
+  }
+  measure: avg_gmv_percentile_95 {
+    type: percentile
+    percentile: 75
+    sql: ${avg_gmv_gross} ;;
+    value_format_name: eur
+  }
+  measure: avg_gmv_max {
+    type: max
+    sql: ${avg_gmv_gross} ;;
+    value_format_name: eur
+  }
+
+  measure: days_since_last_order_min {
+    type: min
+    sql: ${days_since_last_order} ;;
+  }
+  measure: days_since_last_order_percentile_25 {
+    type: percentile
+    percentile: 25
+    sql: ${days_since_last_order} ;;
+  }
+  measure: days_since_last_order_percentile_50 {
+    type: median
+    sql: ${days_since_last_order} ;;
+  }
+  measure: days_since_last_order_percentile_75 {
+    type: percentile
+    percentile: 75
+    sql: ${days_since_last_order} ;;
+  }
+  measure: days_since_last_order_percentile_95 {
+    type: percentile
+    percentile: 95
+    sql: ${days_since_last_order} ;;
+  }
+  measure: days_since_last_order_max {
+    type: max
+    sql: ${days_since_last_order} ;;
+  }
+
+  measure: number_of_days_ordering_min {
+    type: min
+    sql: ${number_of_days_ordering} ;;
+  }
+  measure: number_of_days_ordering_percentile_25 {
+    type: percentile
+    percentile: 25
+    sql: ${number_of_days_ordering} ;;
+  }
+  measure: number_of_days_ordering_percentile_50 {
+    type: median
+    sql: ${number_of_days_ordering} ;;
+  }
+  measure: number_of_days_ordering_percentile_75 {
+    type: percentile
+    percentile: 75
+    sql: ${number_of_days_ordering} ;;
+  }
+  measure: number_of_days_ordering_percentile_95 {
+    type: percentile
+    percentile: 95
+    sql: ${number_of_days_ordering} ;;
+  }
+  measure: number_of_days_ordering_max {
+    type: max
+    sql: ${number_of_days_ordering} ;;
+  }
+
+  #========= RFM categories =========#
+  dimension: avg_gmv_category {
+    case: {
+      when: {
+        sql: ${avg_gmv_gross} <17 ;;
+        label: "Less than 17EUR AVG GMV"
+      }
+      when: {
+        sql: ${avg_gmv_gross} <23 ;;
+        label: "17-23EUR AVG GMV"
+      }
+      when: {
+        sql: ${avg_gmv_gross} <31 ;;
+        label: "23- 31EUR AVG GMV"
+      }
+      when: {
+        sql: ${avg_gmv_gross} >=31 ;;
+        label: "More than 31 EUR AVG GMV"
+      }
+      else: "unknown"
+    }
+  }
+
+  dimension: days_ordering_category {
+    case: {
+      when: {
+        sql: ${number_of_days_ordering} <1 ;;
+        label: "No days ordering"
+      }
+      when: {
+        sql: ${number_of_days_ordering} <2 ;;
+        label: "1 day ordering"
+      }
+      when: {
+        sql: ${number_of_days_ordering} <3 ;;
+        label: "2 days ordering"
+      }
+      when: {
+        sql: ${number_of_days_ordering} >=3 ;;
+        label: "3 or more days ordering"
+      }
+      else: "unknown"
+    }
+  }
+
+  dimension: days_since_last_order_category {
+    case: {
+      when: {
+        sql: ${days_since_last_order} < 4 ;;
+        label: "Ordered less than 4 days ago"
+      }
+      when: {
+        sql: ${days_since_last_order} < 9 ;;
+        label: "Ordered 4-9 days ago"
+      }
+      when: {
+        sql: ${days_since_last_order} < 18 ;;
+        label: "Ordered 9-18 days ago "
+      }
+      when: {
+        sql: ${days_since_last_order} >= 18 ;;
+        label: "Ordered 18 or more days ago"
+      }
+      else: "unknown"
+    }
+  }
+
+
   #========= Monetary =========#
 
   dimension: avg_gmv_gross_tier_2 {
@@ -253,6 +425,15 @@ view: user_attributes_lifecycle_last28days {
     sql: ${order_to_visit_ratio} ;;
   }
 
+  dimension: order_to_visit_ratio_tier3 {
+    group_label: "* Frequency Values*"
+    label: "Order To Visit Ratio (tiered, 3)"
+    type: tier
+    tiers: [0, 0.33, 0.66, 1]
+    style: relational
+    sql: ${order_to_visit_ratio} ;;
+  }
+
   dimension: order_to_visit_ratio {
     group_label: "* Frequency Values*"
     type: number
@@ -293,18 +474,5 @@ view: user_attributes_lifecycle_last28days {
     convert_tz: no
     datatype: date
     sql: ${TABLE}.oldest_visit_date ;;
-  }
-
-  #=========== Measures ===========#
-
-  measure: cnt_customers {
-    label: "# Customers"
-    type: count_distinct
-    sql: ${customer_uuid} ;;
-  }
-
-  measure: count {
-    type: count
-    drill_fields: []
   }
 }
