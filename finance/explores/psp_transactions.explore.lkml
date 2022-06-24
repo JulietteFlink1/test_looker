@@ -6,6 +6,7 @@ explore: psp_transactions {
   from: psp_transactions
   view_label: "* PSP Transactions *"
   group_label: "Finance"
+  fields: [ALL_FIELDS*,-shyftplan_riders_pickers_hours.rider_utr_cleaned, -orders.pct_orders_delivered_by_riders]
 
   access_filter: {
     field: hubs.country_iso
