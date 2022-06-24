@@ -94,6 +94,7 @@ view: vendor_performance_ndt_desadv_fill_rates {
     filters: [is_desadv_delivered_on_day: "yes"]
 
     value_format_name: decimal_0
+    hidden: yes
   }
 
   measure: sum_number_of_desadvs {
