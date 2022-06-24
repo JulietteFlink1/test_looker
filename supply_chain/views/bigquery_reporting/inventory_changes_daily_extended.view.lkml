@@ -35,7 +35,7 @@ view: inventory_changes_daily_extended {
 
   measure: sum_in_and_outbounded_items_by_buying_prices {
 
-    label: "€ Sum Items Value (by Buying Price)"
+    label: "€ Item Value (Buying Price)"
     description: "In-and-outbounded items value based on buying prices corresponding to the inventory change date."
 
     type: sum
@@ -49,7 +49,7 @@ view: inventory_changes_daily_extended {
 
   measure: sum_in_and_outbounded_items_by_product_price_gross {
 
-    label: "€ Sum Items Value (by Product Price)"
+    label: "€ Item Value (Selling Price)"
     description: "In-and-outbounded items value based on average product prices (gross) corresponding to the inventory change date."
 
     type: sum

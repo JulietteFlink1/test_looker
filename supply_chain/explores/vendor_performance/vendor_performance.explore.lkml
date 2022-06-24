@@ -145,16 +145,15 @@ explore: vendor_performance {
 
   join: vendor_performance_po_to_desadv {
 
-    # view_label: "PO >> DESADV"
-    view_label: ""
+    view_label: "* Purchase Orders (PO) *"
+    # view_label: ""
 
     type: left_outer
     # not working properly
     relationship: one_to_one
     sql_on:
-            ${purchase_orders.order_number} = ${vendor_performance_po_to_desadv.order_number}
+            safe_cast(${purchase_orders.order_number} as int64) = ${vendor_performance_po_to_desadv.order_number}
         and ${purchase_orders.sku} = ${vendor_performance_po_to_desadv.sku}
-        and ${vendor_performance_po_to_desadv.is_item_on_po}
     ;;
   }
 

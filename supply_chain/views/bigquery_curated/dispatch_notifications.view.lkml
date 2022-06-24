@@ -370,6 +370,7 @@ view: dispatch_notifications {
     sql:
       case
         when ${inventory_changes_daily.sum_inbound_inventory} > ${sum_total_quantity} -- when more inbouded then on DESADV
+         and ${sum_total_quantity} > 0 -- and when there was an inbound expected
         then 1 -- then define as 100%
         else safe_divide(${inventory_changes_daily.sum_inbound_inventory}, ${sum_total_quantity})  -- else take the actual inbounded rate
       end
