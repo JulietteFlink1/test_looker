@@ -12,13 +12,13 @@ view: customers_metrics {
   dimension: reorder_number_28_days {
     group_label: "* User Dimensions *"
     type: number
-    sql: ${TABLE}.number_of_orders_28days_after_first_order ;;
+    sql: COALESCE(${TABLE}.number_of_orders_28days_after_first_order,0) ;;
   }
 
   dimension: reorder_number_30_days {
     group_label: "* User Dimensions *"
     type: number
-    sql: ${TABLE}.number_of_orders_30days_after_first_order ;;
+    sql: COALESCE(${TABLE}.number_of_orders_30days_after_first_order,0) ;;
   }
 
   dimension: lifetime_revenue_gross {
