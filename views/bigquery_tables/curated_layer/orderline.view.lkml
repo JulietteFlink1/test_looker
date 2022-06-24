@@ -1097,7 +1097,7 @@ view: orderline {
 
   measure: sum_item_price_fulfilled_gross_dynamic {
     group_label: "> Dynamic Monetary Metrics"
-    label: "SUM Items Price Fulfilled Gross (Before/After Product Discount Deduction)"
+    label: "SUM Items Price Fulfilled Gross (Dynamic)"
     description: "To be used together with the Is After Product Discounts Deduction parameter."
     label_from_parameter: is_after_product_discounts
     value_format_name: eur
@@ -1113,7 +1113,7 @@ view: orderline {
 
   measure: sum_item_price_sold_gross_dynamic {
     group_label: "> Dynamic Monetary Metrics"
-    label: "SUM Items Price Sold Gross (Before/After Product Discount Deduction)"
+    label: "SUM Items Price Sold Gross (Dynamic)"
     description: "To be used together with the Is After Product Discounts Deduction parameter."
     label_from_parameter: is_after_product_discounts
     value_format_name: eur
@@ -1129,7 +1129,7 @@ view: orderline {
 
   measure: sum_item_price_fulfilled_net_dynamic {
     group_label: "> Dynamic Monetary Metrics"
-    label: "SUM Items Price Fulfilled Net (Before/After Product Discount Deduction)"
+    label: "SUM Items Price Fulfilled Net (Dynamic)"
     description: "To be used together with the Is After Product Discounts Deduction parameter."
     label_from_parameter: is_after_product_discounts
     value_format_name: eur
@@ -1145,7 +1145,7 @@ view: orderline {
 
   measure: sum_item_price_sold_net_dynamic {
     group_label: "> Dynamic Monetary Metrics"
-    label: "SUM Items Price Sold Net (Before/After Product Discount Deduction)"
+    label: "SUM Items Price Sold Net (Dynamic)"
     description: "To be used together with the Is After Product Discounts Deduction parameter."
     label_from_parameter: is_after_product_discounts
     value_format_name: eur
@@ -1161,7 +1161,7 @@ view: orderline {
 
   measure: avg_item_value_gross_dynamic {
     group_label: "> Dynamic Monetary Metrics"
-    label: "AVG Item Value (Before/After Product Discount Deduction) (Gross)"
+    label: "AVG Item Value (Dynamic) (Gross)"
     description: "AIV represents the Average value of items (incl. VAT). Excludes fees (gross). before deducting Cart Discounts. To be used together with the Is After Product Discounts Deduction parameter."
     label_from_parameter: is_after_product_discounts
     value_format_name: eur
@@ -1177,7 +1177,7 @@ view: orderline {
 
   measure: avg_item_value_net_dynamic {
     group_label: "> Dynamic Monetary Metrics"
-    label: "AVG Item Value (Before/After Product Discount Deduction) (Net)"
+    label: "AVG Item Value (Dynamic) (Net)"
     description: "AIV represents the Average value of items (incl. VAT). Excludes fees (gross). before deducting Cart Discounts. To be used together with the Is After Product Discounts Deduction parameter."
     label_from_parameter: is_after_product_discounts
     value_format_name: eur

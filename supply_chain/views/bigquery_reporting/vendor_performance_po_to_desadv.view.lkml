@@ -1,5 +1,5 @@
 view: vendor_performance_po_to_desadv {
-  sql_table_name: `flink-data-dev.reporting.vendor_performance_po_to_desadv`
+  sql_table_name: `flink-data-prod.reporting.vendor_performance_po_to_desadv`
     ;;
 
 
@@ -16,20 +16,6 @@ view: vendor_performance_po_to_desadv {
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   # =========  __main__   =========
-  dimension: is_item_on_desadv {
-    label: "Is PO item on DESADV"
-    type: yesno
-    sql: ${TABLE}.is_item_on_desadv ;;
-  }
-
-  dimension: is_item_on_po {
-    label: "Is DESADV item on PO"
-    type: yesno
-    sql: ${TABLE}.is_item_on_po ;;
-  }
-
-
-
 
 
   # =========  IDs   =========
@@ -59,15 +45,15 @@ view: vendor_performance_po_to_desadv {
     hidden: yes
   }
 
-  dimension: number_of_items_on_desadv {
+  dimension: number_selling_units_desadv {
     type: number
-    sql: ${TABLE}.number_of_items_on_desadv ;;
+    sql: ${TABLE}.number_selling_units_desadv ;;
     hidden: yes
   }
 
-  dimension: number_of_items_on_po {
+  dimension: number_selling_units_po {
     type: number
-    sql: ${TABLE}.number_of_items_on_po ;;
+    sql: ${TABLE}.number_selling_units_po ;;
     hidden: yes
   }
 
@@ -76,24 +62,23 @@ view: vendor_performance_po_to_desadv {
   # ~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  measure: sum_number_of_items_on_desadv_listed_on_po {
+  measure: sum_number_selling_units_desadv {
 
     label: "# Selling Units (DESADV - listed on PO)"
 
     type: sum
-    filters: [is_item_on_po: "Yes"]
-    sql: ${number_of_items_on_desadv} ;;
+    sql: ${number_selling_units_desadv} ;;
     value_format_name: decimal_0
   }
 
-  measure: sum_number_of_items_listed_on_po {
+  measure: sum_number_selling_units_po {
 
     label: "# Selling Units (PO)"
 
     type: sum
-    filters: [is_item_on_po: "Yes"]
-    sql: ${number_of_items_on_desadv} ;;
+    sql: ${number_selling_units_po} ;;
     value_format_name: decimal_0
+    hidden: yes
   }
 
   measure: pct_fill_rate_po_to_desadv {
@@ -101,7 +86,7 @@ view: vendor_performance_po_to_desadv {
     label: "% Fill Rate (PO >> DESADV)"
 
     type: number
-    sql: safe_divide(${sum_number_of_items_on_desadv_listed_on_po}, ${sum_number_of_items_listed_on_po}) ;;
+    sql: safe_divide(${sum_number_selling_units_desadv}, ${sum_number_selling_units_po}) ;;
     value_format_name: percent_1
   }
 

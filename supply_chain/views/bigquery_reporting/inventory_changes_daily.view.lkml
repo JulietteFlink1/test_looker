@@ -1,6 +1,6 @@
 view: inventory_changes_daily {
 
-  view_label: "* Inventory Changes Daily*"
+  view_label: "* Inventory Changes Daily *"
 
   sql_table_name: `flink-data-prod.reporting.inventory_changes_daily`
     ;;
@@ -187,7 +187,6 @@ view: inventory_changes_daily {
   measure: sum_quantity_change {
     label: "# Inventory Change Quantity"
     description: "The sum of all inventory changes"
-    group_label: "* Inventory Changes Daily *"
 
     type: sum
     sql: ${quantity_change} ;;
@@ -195,9 +194,9 @@ view: inventory_changes_daily {
   }
 
   measure: sum_outbound_waste {
-    label: "# Outbound (Waste)"
+    label: "# Outbounded Items (Waste)"
     description: "The sum of all inventory changes, that ar related to waste"
-    group_label: "* Inventory Changes Daily *"
+    group_label: ">> Waste Metrics"
     type: sum
     sql: abs(${quantity_change}) ;;
     filters: [is_outbound_waste: "Yes"]
@@ -205,9 +204,9 @@ view: inventory_changes_daily {
   }
 
   measure: sum_outbound_waste_eur {
-    label: "€ Outbound (Waste)"
+    label: "€ Outbounded Items (Waste)"
     description: "The quantity '# Outbound (Waste)' multiplied by the latest product price (gross)"
-    group_label: "* Inventory Changes Daily *"
+    group_label: ">> Waste Metrics"
     type: sum
     sql: abs(${quantity_change}) * ${price_gross};;
     filters: [is_outbound_waste: "Yes"]
@@ -219,7 +218,7 @@ view: inventory_changes_daily {
     description: "This metric reflects the number of drug waste valued with the most recent product price as defined as: \n
                   all direct or indirect waste reasons including inventory corrections (incl. e.g. product-damaged etc,) and too-good-to-go for parent categories that
                   relate to wine, hard alcohol and tabac"
-    group_label: "* Inventory Changes Daily *"
+    group_label: ">> Waste Metrics"
     type: sum
     sql: ${quantity_change} * ${price_gross};;
     filters: [is_drug_waste: "Yes"]
@@ -229,9 +228,8 @@ view: inventory_changes_daily {
   # ------- Sums of granular inventory movement metrics
 
   measure: sum_outbound_orders {
-    label: "# Outbound (Orders)"
+    label: "# Outbounded Items (Orders)"
     description: "The number of inventory changes, that are based on customer orders"
-    group_label: "* Inventory Changes Daily *"
     type: sum
     sql: abs(${quantity_change}) ;;
     filters: [change_reason: "order-created"]
@@ -239,9 +237,9 @@ view: inventory_changes_daily {
   }
 
   measure: sum_outbound_too_good_to_go {
-    label: "# Outbound (Too-Good-To-Go)"
+    label: "# Outbounded Items (Too-Good-To-Go)"
     description: "The number of outbounded items, that are due to donations to the app too-good-to-go."
-    group_label: "* Inventory Changes Daily *"
+    group_label: ">> Waste Metrics"
     type: sum
     sql: abs(${quantity_change}) ;;
     filters: [change_reason: "too-good-to-go"]
@@ -249,9 +247,9 @@ view: inventory_changes_daily {
   }
 
   measure: sum_correction_product_expired {
-    label: "# Correction (Product Expired)"
+    label: "# Corrected Items (Product Expired)"
     description: "The number of corrected items, that are due to expiration (too close to best-before-date) while storing them in our hubs."
-    group_label: "* Inventory Changes Daily *"
+    group_label: ">> Waste Metrics"
     type: sum
     sql: abs(${quantity_change}) ;;
     filters: [change_reason: "product-expired"]
@@ -259,9 +257,9 @@ view: inventory_changes_daily {
   }
 
   measure: sum_correction_product_delivery_expired {
-    label: "# Correction (Product Delivery Expired)"
+    label: "# Corrected Items (Product Delivery Expired)"
     description: "The number of corrected items, that are due to expiration (too close to best-before-date) when being delivered to our hubs."
-    group_label: "* Inventory Changes Daily *"
+    group_label: ">> Waste Metrics"
     type: sum
     sql: abs(${quantity_change}) ;;
     filters: [change_reason: "product-delivery-expired"]
@@ -269,9 +267,9 @@ view: inventory_changes_daily {
   }
 
   measure: sum_correction_product_delivery_damaged {
-    label: "# Correction (Product Delivery Damaged)"
+    label: "# Corrected Items (Product Delivery Damaged)"
     description: "The number of corrected items, that are due to being damaged (too close to best-before-date) when being delivered to our hubs."
-    group_label: "* Inventory Changes Daily *"
+    group_label: ">> Waste Metrics"
     type: sum
     sql: abs(${quantity_change}) ;;
     filters: [change_reason: "product-delivery-damaged"]
@@ -281,7 +279,7 @@ view: inventory_changes_daily {
   measure: pct_product_delivery_damaged_to_inbounds {
     label:       "% Delivery Damage Rate"
     description: "The percentage of items delivered by a supplier, that needed to be booked-out (corrected) due to items being damaged when being delivered to a hub"
-    group_label: "* Inventory Changes Daily *"
+    group_label: ">> Waste Metrics"
 
     type: number
     sql: safe_divide(${sum_correction_product_delivery_damaged},${sum_inbound_inventory}) ;;
@@ -289,9 +287,10 @@ view: inventory_changes_daily {
   }
 
   measure: sum_correction_product_damaged {
-    label: "# Correction (Product Damaged)"
+    label: "# Corrected Items (Product Damaged)"
     description: "The number of corrected items, that are due to being damaged (too close to best-before-date) while storing them in our hubs."
-    group_label: "* Inventory Changes Daily *"
+    group_label: ">> Waste Metrics"
+
     type: sum
     sql: abs(${quantity_change}) ;;
     filters: [change_reason: "product-damaged"]
@@ -299,9 +298,10 @@ view: inventory_changes_daily {
   }
 
   measure: sum_correction_order_cancelled {
-    label: "# Correction (Order Cancelled)"
+    label: "# Corrected Items (Order Cancelled)"
     description: "The number of corrected items, that are due to being part of customers orders, that have been cancelled."
-    group_label: "* Inventory Changes Daily *"
+    group_label: ">> Waste Metrics"
+
     type: sum
     sql: abs(${quantity_change}) ;;
     filters: [change_reason: "order-aborted, order-cancelled"]
@@ -313,7 +313,7 @@ view: inventory_changes_daily {
 
   # TODO: deprecate
   measure: sum_outbound_wrong_delivery {
-    label: "# Outbound (Wrong Delivery)"
+    label: "# Outbounded Items (Wrong Delivery)"
     description: "The number of inventory changes, that are based on wrong deliveries"
     group_label: "* Inventory Changes Daily *"
     type: sum
@@ -339,9 +339,8 @@ view: inventory_changes_daily {
 
 
   measure: sum_inbound_inventory {
-    label: "# Inbound Inventory"
-    description: "The sum of inventory changes based on restockings"
-    group_label: "* Inventory Changes Daily *"
+    label: "# Inbounded Items (Delivery)"
+    description: "The sum of inventory changes based on restockings caused by vendor deliveries (excluding inbounds due to cancelled orders)"
     type: sum
     sql: abs(${quantity_change}) ;;
     filters: [is_inbound: "Yes"]
@@ -351,7 +350,7 @@ view: inventory_changes_daily {
   measure: pct_waste_quote_items {
     label: "% Waste Quote (# Items)"
     description: "The sum of out bounded inventory as waste divided by the number of fulfilled items in the same hub-sku-date combination"
-    group_label: "* Inventory Changes Daily *"
+    group_label: ">> Waste Metrics"
 
     type: number
     sql: ${sum_outbound_waste} / nullif( ${sku_hub_day_level_orders.sum_item_quantity_fulfilled} , 0 ) ;;
@@ -361,7 +360,7 @@ view: inventory_changes_daily {
   measure: pct_waste_quote_gmv {
     label: "% Waste Ratio (Item-Revenue)"
     description: "The value of out bounded products as waste (defined by the number out bounded * item price) divided by the item revenue of sold products in the same hub-sku-date combination"
-    group_label: "* Inventory Changes Daily *"
+    group_label: ">> Waste Metrics"
 
     type: number
     sql: ${sum_outbound_waste_eur} / nullif( ${sku_hub_day_level_orders.sum_item_price_fulfilled_gross} , 0 ) ;;
@@ -375,36 +374,40 @@ view: inventory_changes_daily {
   # -- CORRECTIONS ------------------------------------------------------------------------------------------------------------------
 
   measure: sum_inventory_correction_increased {
-    label: "# Inventory Correction (Increased)"
-    description: "The sum of inventory changes related to inventory corrections that increased the inventory"
-    group_label: "* Inventory Changes Daily *"
+    label: "# Corrected Items (Generic - Increased)"
+    description: "The sum of inventory changes related to unspecified inventory corrections that increased the inventory"
+    group_label: ">> Waste Metrics"
+
     type: sum
     sql: case when ${inventory_correction_increased} between 0 and 100 then ${inventory_correction_increased} end ;;
     value_format_name: decimal_0
   }
 
   measure: sum_inventory_correction_reduced {
-    label: "# Inventory Correction (Reduced)"
-    description: "The sum of inventory changes related to inventory corrections that reduced the inventory"
-    group_label: "* Inventory Changes Daily *"
+    label: "# Corrected Items (Generic - Reduced)"
+    description: "The sum of inventory changes related to unspecified inventory corrections that reduced the inventory"
+    group_label: ">> Waste Metrics"
+
     type: sum
     sql: case when ${inventory_correction_reduced} between -100 and 0 then abs(${inventory_correction_reduced}) end ;;
     value_format_name: decimal_0
   }
 
   measure: sum_inventory_correction_increased_gmv {
-    label: "€ Inventory Correction (Increased)"
-    description: "The sum of inventory changes related to inventory corrections that increased the inventory multiplied by the price of the item"
-    group_label: "* Inventory Changes Daily *"
+    label: "€ Corrected Items (Generic - Increased)"
+    description: "The sum of inventory changes related to unspecified inventory corrections that increased the inventory multiplied by the price of the item"
+    group_label: ">> Waste Metrics"
+
     type: sum
     sql: case when ${inventory_correction_increased} between 0 and 100 then ${inventory_correction_increased} * ${price_gross} end ;;
     value_format_name: eur
   }
 
   measure: sum_inventory_correction_reduced_gmv {
-    label: "€ Inventory Correction (Reduced)"
-    description: "The sum of inventory changes related to inventory corrections that reduced the inventory multiplied by the price of the item"
-    group_label: "* Inventory Changes Daily *"
+    label: "€ Corrected Items (Generic - Reduced)"
+    description: "The sum of inventory changes related to unspecified inventory corrections that reduced the inventory multiplied by the price of the item"
+    group_label: ">> Waste Metrics"
+
     type: sum
     sql: case when ${inventory_correction_reduced} between -100 and 0 then abs(${inventory_correction_reduced} * ${price_gross}) end ;;
     value_format_name: eur
@@ -413,7 +416,7 @@ view: inventory_changes_daily {
   measure: pct_reduced_correction_quote_items {
     label: "% Negative Correction Quote (# Items)"
     description: "The sum of corrected (reduced) inventory divided by the number of fulfilled items in the same hub-sku-date combination"
-    group_label: "* Inventory Changes Daily *"
+    group_label: ">> Waste Metrics"
 
     type: number
     sql: ${sum_inventory_correction_reduced} / nullif( ${sku_hub_day_level_orders.sum_item_quantity_fulfilled} , 0 ) ;;
@@ -423,7 +426,7 @@ view: inventory_changes_daily {
   measure: pct_reduced_correction_quote_gmv {
     label: "% Negative Correction Ratio (Item Revenue)"
     description: "The value of corrected (reduced) inventory (defined by the number * item price) divided by the GMV of sold products in the same hub-sku-date combination"
-    group_label: "* Inventory Changes Daily *"
+    group_label: ">> Waste Metrics"
 
     type: number
     sql: ${sum_inventory_correction_reduced_gmv} / nullif( ${sku_hub_day_level_orders.sum_item_price_fulfilled_gross} , 0 ) ;;
@@ -433,7 +436,7 @@ view: inventory_changes_daily {
   measure: pct_increased_correction_quote_items {
     label: "% Positive Correction Quote (# Items)"
     description: "The sum of corrected (increased) inventory divided by the number of fulfilled items in the same hub-sku-date combination"
-    group_label: "* Inventory Changes Daily *"
+    group_label: ">> Waste Metrics"
 
     type: number
     sql: ${sum_inventory_correction_increased} / nullif( ${sku_hub_day_level_orders.sum_item_quantity_fulfilled} , 0 ) ;;
@@ -443,7 +446,7 @@ view: inventory_changes_daily {
   measure: pct_increased_correction_quote_gmv {
     label: "% Positive Correction Ratio (Item Revenue)"
     description: "The value of corrected (increased) inventory (defined by the number * item price) divided by the item revenue of sold products in the same hub-sku-date combination"
-    group_label: "* Inventory Changes Daily *"
+    group_label: ">> Waste Metrics"
 
     type: number
     sql: ${sum_inventory_correction_increased_gmv} / nullif( ${sku_hub_day_level_orders.sum_item_price_fulfilled_gross} , 0 ) ;;

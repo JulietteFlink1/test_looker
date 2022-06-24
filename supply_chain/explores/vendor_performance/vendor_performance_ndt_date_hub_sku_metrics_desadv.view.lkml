@@ -71,6 +71,7 @@ view: vendor_performance_ndt_date_hub_sku_metrics_desadv {
 
     label: "Is Inbounded but 0 DESADV Selling Units"
     type: yesno
+    hidden: yes
 
     sql:
 
@@ -104,7 +105,6 @@ view: vendor_performance_ndt_date_hub_sku_metrics_desadv {
 
     label:       "# Over-Inbounded Items (DESADV)"
     description: "The sum of item quantities, that are higher than their related quantity on the dispatch notification"
-    group_label: "Over-Inbound (DESADV)"
 
     type: sum
     value_format_name: decimal_0
@@ -116,7 +116,6 @@ view: vendor_performance_ndt_date_hub_sku_metrics_desadv {
 
     label: "% Over-Inbounded Items (DESADV)"
     description: "The sum of item quantities, that are higher than their related quantity on the dispatch notification compared to all item quantities on the DESADV"
-    group_label: "Over-Inbound (DESADV)"
 
     type: number
     sql: safe_divide(${sum_over_inbound_items_desadv}, ${sum_desadv_quantity}) ;;
