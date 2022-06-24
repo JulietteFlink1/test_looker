@@ -76,7 +76,7 @@ view: vendor_performance_ndt_date_hub_sku_metrics_po {
   }
 
   dimension: is_delivered_but_desadv_zero {
-
+    hidden: yes
     label: "Is Inbounded but 0 PO Selling Units"
     type: yesno
 
@@ -92,26 +92,21 @@ view: vendor_performance_ndt_date_hub_sku_metrics_po {
   #  - - - - - - - - - -    PO metrics
 
   measure: sum_po_quantity {
-
     hidden: yes
     type: sum
     sql: ${po_quantity} ;;
-    group_label: "Over-Inbound (PO)"
   }
 
   measure: sum_inbound_quantity {
-
     hidden: yes
     type: sum
     sql: ${inbound_quantity} ;;
-    group_label: "Over-Inbound (PO)"
   }
 
   measure: sum_over_inbound_items_po {
 
     label:       "# Over-Inbounded Items (PO)"
     description: "The sum of item quantities, that are higher than their related quantity on the purchase order"
-    group_label: "Over-Inbound (PO)"
 
     type: sum
     value_format_name: decimal_0
@@ -123,7 +118,6 @@ view: vendor_performance_ndt_date_hub_sku_metrics_po {
 
     label:       "% Over-Inbounded Items (PO)"
     description: "The sum of item quantities, that are higher than their related quantity on the purchase order compared to all item quantities on the purchase order"
-    group_label: "Over-Inbound (PO)"
 
     type: number
     sql: safe_divide(${sum_over_inbound_items_po}, ${sum_po_quantity}) ;;
@@ -135,7 +129,6 @@ view: vendor_performance_ndt_date_hub_sku_metrics_po {
 
     label:       "# Unplanned Items (vs. PO)"
     description: "The sum of item quantities, that are inbounded, but are not listed on a related purchase order"
-    group_label: "Unplanned Inbound (PO)"
 
     type: sum
     value_format_name: decimal_0
@@ -148,7 +141,6 @@ view: vendor_performance_ndt_date_hub_sku_metrics_po {
 
     label:       "% Unplanned Items (vs. PO)"
     description: "The sum of item quantities, that are inbounded, but are not listed on a related purchase order compared to all item quantities on a purchase order"
-    group_label: "Unplanned Inbound (PO)"
 
     type: number
     value_format_name: percent_1
