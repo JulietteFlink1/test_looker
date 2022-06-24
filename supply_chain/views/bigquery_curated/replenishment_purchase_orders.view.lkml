@@ -137,6 +137,8 @@ view: replenishment_purchase_orders {
 
 
   dimension: status {
+    label: "Order Status"
+    description: "The order status defines, whether a purchase order was Sent or NotSent to the vendor"
     type: string
     bypass_suggest_restrictions: yes
     sql: ${TABLE}.status ;;

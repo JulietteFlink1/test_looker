@@ -21,23 +21,11 @@ view: vendor_performance_ndt_po_fill_rate {
 
 
   dimension: sum_total_quantity {
-
-    label:       "SUM Selling Units ((per PO))"
-    description: "The sum of all products of listed on a purchase order"
-    group_label: "PO aggregated"
-
-    value_format: "#,##0"
     type: number
     hidden: yes
   }
 
   dimension: sum_inbound_inventory {
-
-    label: "SUM Inbounded PO Units (per PO)"
-    description: "The sum of inventory changes based on restockings"
-    group_label: "PO aggregated"
-
-    value_format: "#,##0"
     type: number
     hidden: yes
   }
@@ -47,7 +35,6 @@ view: vendor_performance_ndt_po_fill_rate {
 
     label:       "% PO inbounded (per PO)"
     description: "The percent of selling unitson a purchase order that are actually been inbounded"
-    group_label: "PO aggregated"
 
     sql: safe_divide(${sum_inbound_inventory}, ${sum_total_quantity}) ;;
     type: number
@@ -58,9 +45,8 @@ view: vendor_performance_ndt_po_fill_rate {
 
   dimension: is_po_inbounded_po_corrected {
 
-    label:       "Inbounded Status (PO)"
+    label:       "Inbound Status (PO)"
     description: "This field classifies purchase orders in how much of their selling units are actually inbounded"
-    group_label: "PO aggregated"
 
     sql: case
             when ${po_fill_rate} > 0.8
