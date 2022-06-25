@@ -87,6 +87,11 @@ view: competitive_intelligence_order_comparison {
     sql: ${TABLE}.number_of_orders ;;
   }
 
+  dimension: number_of_orders_internal {
+    type: number
+    sql: ${TABLE}.number_of_orders_internal ;;
+  }
+
   dimension_group: order {
     type: time
     timeframes: [
@@ -121,5 +126,17 @@ view: competitive_intelligence_order_comparison {
   measure: sum_number_of_orders{
     type: sum
     sql: ${number_of_orders} ;;
+  }
+
+  measure: sum_number_of_orders_internal{
+    type: sum
+    sql: ${number_of_orders_internal} ;;
+  }
+
+  parameter: order_type {
+    label: "Order Type"
+    type: unquoted
+    allowed_value: {value:"sum_number_of_orders" label:"# orders"}
+    allowed_value: {value:"sum_number_of_orders_internal" label:"# internal orders"}
   }
 }
