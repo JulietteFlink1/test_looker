@@ -21,6 +21,12 @@ view: user_attributes_lifecycle_last28days {
     drill_fields: []
   }
 
+  measure: total_gmv_gross {
+    type: sum
+    sql: ${amt_gmv_gross} ;;
+  }
+
+
   measure: avg_gmv_min {
     type: min
     sql: ${avg_gmv_gross} ;;
@@ -45,7 +51,7 @@ view: user_attributes_lifecycle_last28days {
   }
   measure: avg_gmv_percentile_95 {
     type: percentile
-    percentile: 75
+    percentile: 95
     sql: ${avg_gmv_gross} ;;
     value_format_name: eur
   }
@@ -112,7 +118,7 @@ view: user_attributes_lifecycle_last28days {
   }
 
   #========= RFM categories =========#
-  dimension: avg_gmv_category {
+  dimension: aov_category {
     case: {
       when: {
         sql: ${avg_gmv_gross} <17 ;;
@@ -156,6 +162,21 @@ view: user_attributes_lifecycle_last28days {
     }
   }
 
+  dimension: aov_split {
+    case: {
+      when: {
+        sql: ${avg_gmv_gross} <17 ;;
+        label: "Low"
+      }
+      when: {
+        sql: ${avg_gmv_gross} >=31 ;;
+        label: "High"
+      }
+      else: "Middle"
+    }
+  }
+
+
   dimension: days_since_last_order_category {
     case: {
       when: {
@@ -177,6 +198,66 @@ view: user_attributes_lifecycle_last28days {
       else: "unknown"
     }
   }
+
+  dimension: rf_categories {
+    case: {
+      when: {
+        sql: (${days_since_last_order} < 4) and (${number_of_days_ordering} >=3);;
+        label: "Recent, frequent customers"
+      }
+      when: {
+        sql: (${days_since_last_order} < 4) and (${number_of_days_ordering} = 1);;
+        label: "Recent, infrequent customers"
+      }
+      when: {
+        sql: (${days_since_last_order} >= 18) and (${number_of_days_ordering} >=3);;
+        label: "Not recent, frequent customers"
+      }
+      when: {
+        sql: (${days_since_last_order} >= 18) and (${number_of_days_ordering} = 1);;
+        label: "Not recent, infrequent customers"
+      }
+      else: "other"
+    }
+  }
+
+  # dimension: rfm_overall_categories {
+  #   case: {
+  #     when: {
+  #       sql: (${days_since_last_order} < 4) and (${number_of_days_ordering} >=3) and (${avg_gmv_gross} >=31);;
+  #       label: "Recent, frequent, high value customers"
+  #     }
+  #     when: {
+  #       sql: (${days_since_last_order} < 4) and (${number_of_days_ordering} >=3) and (${avg_gmv_gross} <17);;
+  #       label: "Recent, frequent, low value customers"
+  #     }
+  #     when: {
+  #       sql: (${days_since_last_order} < 4) and (${number_of_days_ordering} = 1) and (${avg_gmv_gross} >=31);;
+  #       label: "Recent, infrequent, high value customers"
+  #     }
+  #     when: {
+  #       sql: (${days_since_last_order} < 4) and (${number_of_days_ordering} = 1) and (${avg_gmv_gross} <17);;
+  #       label: "Recent, infrequent, low value customers"
+  #     }
+  #     when: {
+  #       sql: (${days_since_last_order} >= 18) and (${number_of_days_ordering} >=3) and (${avg_gmv_gross} >=31);;
+  #       label: "Not recent, frequent, high value customers"
+  #     }
+  #     when: {
+  #       sql: (${days_since_last_order} >= 18) and (${number_of_days_ordering} >=3) and (${avg_gmv_gross} <17);;
+  #       label: "Not recent, frequent, low value customers"
+  #     }
+  #     when: {
+  #       sql: (${days_since_last_order} >= 18) and (${number_of_days_ordering} = 1) and (${avg_gmv_gross} >=31);;
+  #       label: "Not recent, infrequent, high value customers"
+  #     }
+  #     when: {
+  #       sql: (${days_since_last_order} >= 18) and (${number_of_days_ordering} = 1) and (${avg_gmv_gross} <17);;
+  #       label: "Not recent, infrequent, low value customers"
+  #     }
+  #     else: "other"
+  #   }
+  # }
 
 
   #========= Monetary =========#
