@@ -133,6 +133,15 @@ view: competitive_intelligence_order_comparison {
     sql: ${number_of_orders_internal} ;;
   }
 
+  measure: sum_orders {
+    type: sum
+    sql:  {% if order_type._parameter_value == 'sum_number_of_orders' %}
+        ${number_of_orders}
+        {% elsif order_type._parameter_value == 'sum_number_of_orders_internal' %}
+        ${number_of_orders_internal}
+        {% endif %} ;;
+  }
+
   parameter: order_type {
     label: "Order Type"
     type: unquoted
