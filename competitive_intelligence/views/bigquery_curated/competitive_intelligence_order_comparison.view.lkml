@@ -89,7 +89,7 @@ view: competitive_intelligence_order_comparison {
 
   dimension: number_of_orders_internal {
     type: number
-    sql: ${TABLE}.number_of_orders_internal ;;
+    sql: ${TABLE}.number_of_internal_orders ;;
   }
 
   dimension_group: order {
