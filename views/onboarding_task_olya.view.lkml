@@ -13,18 +13,16 @@ view: onboarding_task_olya {
   # ~~~~~~~~~~~~~~~     Dimentions     ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  dimension_group: date {
+  dimension_group: order_date {
     type: time
     group_label: "Order date/time"
     timeframes: [
-      raw,
       date,
       week,
-      month,
-      quarter,
-      year
+      month
     ]
     convert_tz: no
+    label: "Order"
     datatype: date
     sql: ${TABLE}.order_date ;;
   }
@@ -83,6 +81,54 @@ view: onboarding_task_olya {
     sql: ${TABLE}.table_uuid ;;
   }
 
+  dimension: date_granularity_pass_through {
+    group_label: "* Parameters *"
+    description: "To use the parameter value in a table calculation (e.g WoW, % Growth) we need to materialize it into a dimension "
+    type: string
+    sql:
+            {% if date_granularity._parameter_value == 'Day' %}
+              "Day"
+            {% elsif date_granularity._parameter_value == 'Week' %}
+              "Week"
+            {% elsif date_granularity._parameter_value == 'Month' %}
+              "Month"
+            {% endif %};;
+  }
+
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~     Parametrs     ~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+  parameter: date_granularity {
+    group_label: "* Dates and Timestamps *"
+    label: "Date Granularity"
+    type: unquoted
+    allowed_value: { value: "Day" }
+    allowed_value: { value: "Week" }
+    allowed_value: { value: "Month" }
+    default_value: "Day"
+  }
+
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~     Dynamic Dimensions  ~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+  dimension: date {
+    group_label: "* Dates and Timestamps *"
+    label: "Date (Dynamic)"
+    label_from_parameter: date_granularity
+    sql:
+    {% if date_granularity._parameter_value == 'Day' %}
+      ${order_date_date}
+    {% elsif date_granularity._parameter_value == 'Week' %}
+      ${order_date_week}
+    {% elsif date_granularity._parameter_value == 'Month' %}
+      ${order_date_month}
+    {% endif %};;
+  }
+
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Metrics     ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -114,7 +160,7 @@ view: onboarding_task_olya {
 
   measure: avg_number_of_items {
     type: number
-    label: "AVG # Number of items in basket"
+    label: "AVG # Items in basket"
     value_format: "0.#"
     sql: if(${sum_number_of_orders} = 0, 0,
       ${sum_number_of_items} / ${sum_number_of_orders}) ;;
