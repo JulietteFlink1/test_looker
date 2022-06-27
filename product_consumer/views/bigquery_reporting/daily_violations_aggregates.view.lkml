@@ -18,6 +18,7 @@ view: daily_violations_aggregates {
     ######## Dates ########
 
   dimension_group: event {
+    group_label: "Date Dimensions"
     type: time
     timeframes: [
       raw,
@@ -34,16 +35,19 @@ view: daily_violations_aggregates {
     ######## Device Attributes ########
 
   dimension: app_build {
+    group_label: "Device Attributes"
     type: string
     sql: ${TABLE}.app_build ;;
   }
 
   dimension: app_version {
+    group_label: "Device Attributes"
     type: string
     sql: ${TABLE}.app_version ;;
   }
 
   dimension: platform {
+    group_label: "Device Attributes"
     type: string
     sql: ${TABLE}.platform ;;
   }
@@ -51,26 +55,31 @@ view: daily_violations_aggregates {
     ######## Segment Violation Attributes ########
 
   dimension: tracking_plan_id {
+    group_label: "Violation Attributes"
     type: string
     sql: ${TABLE}.tracking_plan_id ;;
   }
 
   dimension: violated_event_name {
+    group_label: "Violation Attributes"
     type: string
     sql: ${TABLE}.violated_event_name ;;
   }
 
   dimension: violation_description {
+    group_label: "Violation Attributes"
     type: string
     sql: ${TABLE}.violation_description ;;
   }
 
   dimension: violation_field {
+    group_label: "Violation Attributes"
     type: string
     sql: ${TABLE}.violation_field ;;
   }
 
   dimension: violation_type {
+    group_label: "Violation Attributes"
     type: string
     sql: ${TABLE}.violation_type ;;
   }
