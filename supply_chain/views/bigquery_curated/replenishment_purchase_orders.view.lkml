@@ -137,6 +137,8 @@ view: replenishment_purchase_orders {
 
 
   dimension: status {
+    label: "Order Status"
+    description: "The order status defines, whether a purchase order was Sent or NotSent to the vendor"
     type: string
     bypass_suggest_restrictions: yes
     sql: ${TABLE}.status ;;
@@ -221,7 +223,6 @@ view: replenishment_purchase_orders {
 
     label:       "SKU"
     description: "The identified of a product"
-    group_label: " >> Line Item Data"
 
     type: string
     bypass_suggest_restrictions: yes
@@ -233,7 +234,6 @@ view: replenishment_purchase_orders {
 
     label:       "Product Name"
     description: "The name of a product"
-    group_label: " >> Line Item Data"
 
     type: string
     sql: ${TABLE}.name ;;
@@ -339,7 +339,7 @@ view: replenishment_purchase_orders {
 
   measure: sum_selling_unit_quantity {
 
-    label:       "# Quantity Selling Units (PO)"
+    label:       "# Selling Units (PO)"
     description: "The amount of ordered items"
 
 
@@ -350,7 +350,7 @@ view: replenishment_purchase_orders {
 
   measure: sum_handling_unit_quantity {
 
-    label:       "# Quantity Handling Units (PO)"
+    label:       "# Handling Units (PO)"
     description: "The amount of ordered handling units"
 
 
@@ -380,7 +380,7 @@ view: replenishment_purchase_orders {
 
   measure: cnt_of_orders {
 
-    label:       "# Count of orders"
+    label:       "# Orders"
     description: "The amount of delivered orders"
     #group_label: " >> Line Item Data"
 
@@ -391,7 +391,7 @@ view: replenishment_purchase_orders {
 
   measure: cnt_of_skus_per_order {
 
-    label:       "# Count of skus per orders"
+    label:       "# SKUs per orders"
     description: "The amount of skus per orders"
     #group_label: " >> Line Item Data"
 
@@ -401,14 +401,14 @@ view: replenishment_purchase_orders {
   }
 
   measure: avg_items_per_order  {
-    label: "AVG Items per Order"
+    label: "AVG # Items per Order"
     description: "AVG Items per Order per SKU"
     sql: round(${cnt_of_skus_per_order}/${cnt_of_orders}, 2) ;;
 
   }
 
   measure: sum_purchase_price {
-    label:       "€ Sum Purchased Products Value (Buying Price)"
+    label:       "€ Selling Units (Buying Price)"
     description: "This measure multiplies the supplier price of an item with the number of selling units we ordered and thus provides the cumulative value of the replenished items."
 
     type: sum

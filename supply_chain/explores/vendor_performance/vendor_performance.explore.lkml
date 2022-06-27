@@ -16,7 +16,9 @@ include: "/**/*.view"
 
 explore: vendor_performance {
 
-  label: "Vendor Performance Overivew"
+  hidden: no
+
+  label: "Vendor Performance"
   group_label: "Supply Chain"
 
   from: products_hub_assignment_v2
@@ -29,12 +31,11 @@ explore: vendor_performance {
     global_filters_and_parameters.timeframe_picker,
     bulk_items.main_fields*, bulk_items.cross_referenced_fields*,
     inventory_changes_daily*,
-    inventory_changes*,
     vendor_performance_ndt_desadv_fill_rates*,
-    vendor_performance_ndt_inbounded_skus*,
     vendor_performance_ndt_date_hub_sku_metrics_desadv*,
     vendor_performance_ndt_date_hub_sku_metrics_po*,
     hub_ops_inbounding_kpis*,
+    vendor_performance_po_to_desadv*,
     products*,
     purchase_orders.main_fields*, purchase_orders.cross_references_inventory_changes_daily*,
     lexbizz_vendor*,
@@ -111,28 +112,6 @@ explore: vendor_performance {
     ]
   }
 
-  join: inventory_changes {
-
-    type: left_outer
-    relationship: one_to_many
-    sql_on:
-            ${inventory_changes.inventory_change_timestamp_date} = ${products_hub_assignment.report_date}
-        and ${inventory_changes.hub_code}                        = ${products_hub_assignment.hub_code}
-        and ${inventory_changes.sku}                             = ${products_hub_assignment.sku}
-        and {% condition global_filters_and_parameters.datasource_filter %} ${inventory_changes.inventory_change_timestamp_date} {% endcondition %}
-    ;;
-
-    fields: [
-      inventory_changes.inventory_change_timestamp_time,
-      inventory_changes.max_inbounding_time,
-      inventory_changes.min_inbounding_time,
-      inventory_changes.is_inbound,
-      inventory_changes.sum_inbound_inventory,
-      inventory_changes.sku,
-      inventory_changes.hub_code
-    ]
-  }
-
 
   join: purchase_orders {
 
@@ -141,7 +120,7 @@ explore: vendor_performance {
     from: replenishment_purchase_orders
 
     type: left_outer
-    relationship: one_to_many
+    relationship: many_to_one
     sql_on:
             ${products_hub_assignment.report_date}                                = ${purchase_orders.delivery_date}
         and ${products_hub_assignment.hub_code}                                   = ${purchase_orders.hub_code}
@@ -152,6 +131,9 @@ explore: vendor_performance {
     ;;
   }
 
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  #  - - - - - - - - - -    Aggregated Reporting Dataset Tables
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   join: hub_ops_inbounding_kpis {
     view_label: "* DESADVs *"
 
@@ -159,6 +141,20 @@ explore: vendor_performance {
     relationship: many_to_one
     sql_on:
       ${bulk_items.dispatch_notification_id} = ${hub_ops_inbounding_kpis.dispatch_notification_id};;
+  }
+
+  join: vendor_performance_po_to_desadv {
+
+    view_label: "* Purchase Orders (PO) *"
+    # view_label: ""
+
+    type: left_outer
+    # not working properly
+    relationship: one_to_one
+    sql_on:
+            safe_cast(${purchase_orders.order_number} as int64) = ${vendor_performance_po_to_desadv.order_number}
+        and ${purchase_orders.sku} = ${vendor_performance_po_to_desadv.sku}
+    ;;
   }
 
 
@@ -174,18 +170,6 @@ explore: vendor_performance {
     relationship: many_to_one
     sql_on: ${vendor_performance_ndt_desadv_fill_rates.dispatch_notification_id} =  ${bulk_items.dispatch_notification_id};;
 
-  }
-
-  join: vendor_performance_ndt_inbounded_skus {
-
-    view_label: "* DESADVs *"
-
-    type: left_outer
-    relationship: one_to_one
-    sql_on:
-            ${vendor_performance_ndt_inbounded_skus.dispatch_notification_id} = ${bulk_items.dispatch_notification_id}
-        and ${vendor_performance_ndt_inbounded_skus.sku} = ${bulk_items.sku}
-    ;;
   }
 
   join: vendor_performance_ndt_date_hub_sku_metrics_desadv {
