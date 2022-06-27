@@ -367,14 +367,13 @@ view: replenishment_purchase_orders {
     sql: ${inventory_changes_daily.sum_inbound_inventory} / nullif(${sum_selling_unit_quantity} ,0) ;;
 
     value_format_name: percent_1
-    # html:
-
-    #   {% if show_info._parameter_value == 'yes' %}
-    #     {{ rendered_value }} <br><span style="font-size:8px"> {{ inventory_changes_daily.sum_inbound_inventory._rendered_value }} inb /<br>{{ sum_selling_unit_quantity._rendered_value }} ord</span>
-    #   {% else %}
-    #     {{ rendered_value }}
-    #   {% endif %}
-    #     ;;
+    html:
+    {% if global_filters_and_parameters.show_info._parameter_value == 'yes' %}
+    {{ rendered_value }} ({{ sum_selling_unit_quantity._rendered_value }} ordered items)
+    {% else %}
+    {{ rendered_value }}
+    {% endif %}
+    ;;
   }
 
 

@@ -284,6 +284,14 @@ view: inventory_changes_daily {
     type: number
     sql: safe_divide(${sum_correction_product_delivery_damaged},${sum_inbound_inventory}) ;;
     value_format_name: percent_2
+
+    html:
+    {% if global_filters_and_parameters.show_info._parameter_value == 'yes' %}
+    {{ rendered_value }} ({{ sum_inbound_inventory._rendered_value }} inbounded items)
+    {% else %}
+    {{ rendered_value }}
+    {% endif %}
+    ;;
   }
 
   measure: sum_correction_product_damaged {

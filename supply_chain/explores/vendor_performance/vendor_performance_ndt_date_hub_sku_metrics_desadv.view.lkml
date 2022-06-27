@@ -120,6 +120,14 @@ view: vendor_performance_ndt_date_hub_sku_metrics_desadv {
     type: number
     sql: safe_divide(${sum_over_inbound_items_desadv}, ${sum_desadv_quantity}) ;;
     value_format_name: percent_1
+
+    html:
+    {% if global_filters_and_parameters.show_info._parameter_value == 'yes' %}
+    {{ rendered_value }} ({{ sum_desadv_quantity._rendered_value }} listed items)
+    {% else %}
+    {{ rendered_value }}
+    {% endif %}
+    ;;
   }
 
   # based on Peters comment in JIRA: https://goflink.atlassian.net/browse/DATA-2691?focusedCommentId=68836
