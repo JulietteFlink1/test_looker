@@ -8,7 +8,7 @@
   parameter: timeframe_picker {
 
     label: "Date Granularity"
-    group_label: ">> Dates & Timestamps"
+    group_label: ">> Settings"
 
     type: unquoted
     allowed_value: { value: "Date" }
@@ -32,7 +32,7 @@
     datatype: date
     default_value: "last 30 days"
     label: "Timeframe"
-    group_label: ">> Database Filter"
+    group_label: ">> Settings"
     description: "Limits the data for the big tables, that are used in this explore."
   }
 

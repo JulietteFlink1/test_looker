@@ -302,7 +302,6 @@ dimension: vely_velo {
     sql: ${TABLE}.i_am_satisfied_with_the_quality_of_rider_equipment_at_flink_;;
   }
 
-
 ######################################### MEASURES ##############################################
 
 
