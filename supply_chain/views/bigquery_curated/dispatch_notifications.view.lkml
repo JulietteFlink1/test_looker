@@ -30,7 +30,8 @@ view: dispatch_notifications {
       sum_total_quantity,
       sum_number_of_dispatch_notifications,
 
-      dynamic_delivery_date
+      dynamic_delivery_date,
+      is_double_parent_sku
     ]
   }
 
@@ -117,6 +118,15 @@ view: dispatch_notifications {
   dimension: product_name {
     type: string
     sql: ${TABLE}.product_name ;;
+  }
+
+  dimension: is_double_parent_sku {
+
+    label:       "Is SKU matched to 2 Parent SKUs"
+    description: "This fields highlights those SKUs of a dispatch notification, that are part of a replenishment substitute group AND that are assigned to 2 parent-SKUs (9x SKUs) by the Hub-Tech conversion logic of external SKUs to FLink SKUs"
+
+    type: yesno
+    sql: ${TABLE}.is_double_parent_sku ;;
   }
 
 
