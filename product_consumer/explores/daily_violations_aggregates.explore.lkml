@@ -9,7 +9,7 @@ include: "/**/global_filters_and_parameters.view.lkml"
 explore: daily_violations_aggregates {
   from:  daily_violations_aggregates
   view_name: daily_violations_aggregates
-  hidden: no
+  hidden: yes
   label: "Daily Violations Aggregates"
   description: "This explore provides info on the segment violations generated in Android and iOS"
   group_label: "Consumer Product"
