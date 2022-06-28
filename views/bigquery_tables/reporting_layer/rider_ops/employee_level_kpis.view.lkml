@@ -431,7 +431,7 @@ view: employee_level_kpis {
     hidden: no
     label: "% Contracted Hours Fulfillment"
     description: "Worked hours / (weekly_contracted_hours * number_of_weeks)"
-    sql: ${number_of_worked_hours}/nullif(${weekly_contracted_hours}*${number_of_scheduled_weeks},0) ;;
+    sql: ${number_of_worked_hours}/nullif(sum(${weekly_contracted_hours})*${number_of_scheduled_weeks},0) ;;
     value_format: "0%"
   }
 
