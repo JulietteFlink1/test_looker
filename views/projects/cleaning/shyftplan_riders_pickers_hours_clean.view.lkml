@@ -698,4 +698,13 @@ view: shyftplan_riders_pickers_hours_clean {
     value_format_name: percent_1
   }
 
+  measure: rider_utr_cleaned {
+    label: "AVG Rider UTR (Rider Shifts)"
+    type: number
+    description: "# Orders Delivered by Riders/# Worked Rider Hours"
+    sql: ${employee_level_kpis.number_of_delivered_orders_by_riders}/nullif(${rider_hours},0) ;;
+    value_format_name: decimal_2
+    group_label: "UTR"
+  }
+
 }
