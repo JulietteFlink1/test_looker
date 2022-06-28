@@ -3192,5 +3192,12 @@ view: orders {
     sql: ${avg_riding_to_customer_time} - ${avg_riding_to_hub_time} ;;
   }
 
-
+  measure: pct_orders_delivered_by_riders {
+    group_label: "* Operations / Logistics *"
+    label: "% Orders Delivered by Riders"
+    description: "Share of orders delivered by only riders"
+    type: number
+    sql: ${employee_level_kpis.number_of_delivered_orders_by_riders}/nullif(${cnt_successful_orders},0) ;;
+    value_format_name: percent_1
+  }
 }

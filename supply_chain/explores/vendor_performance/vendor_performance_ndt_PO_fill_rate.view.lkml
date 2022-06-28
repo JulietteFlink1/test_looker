@@ -101,6 +101,14 @@ view: vendor_performance_ndt_po_fill_rate {
 
     value_format_name: percent_1
 
+    html:
+    {% if global_filters_and_parameters.show_info._parameter_value == 'yes' %}
+    {{ rendered_value }} ({{ sum_number_of_po._rendered_value }} orders)
+    {% else %}
+    {{ rendered_value }}
+    {% endif %}
+    ;;
+
   }
 
 }

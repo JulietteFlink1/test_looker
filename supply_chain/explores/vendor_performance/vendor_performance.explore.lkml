@@ -29,6 +29,7 @@ explore: vendor_performance {
     products_hub_assignment.minimal_fields*,
     global_filters_and_parameters.datasource_filter,
     global_filters_and_parameters.timeframe_picker,
+    global_filters_and_parameters.show_info,
     bulk_items.main_fields*, bulk_items.cross_referenced_fields*,
     inventory_changes_daily*,
     vendor_performance_ndt_desadv_fill_rates*,
