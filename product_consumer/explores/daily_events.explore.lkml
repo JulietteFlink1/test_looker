@@ -15,6 +15,7 @@ include: "/product_consumer/views/bigquery_curated/event_address_confirmed.view.
 include: "/product_consumer/views/bigquery_curated/event_contact_customer_service_selected.view.lkml"
 include: "/product_consumer/views/bigquery_curated/event_cart_viewed.view.lkml"
 include: "/product_consumer/views/bigquery_curated/event_order_placed.view.lkml"
+include: "/product_consumer/views/bigquery_reporting/daily_violations_aggregates.view.lkml"
 
 explore: daily_events {
   from:  daily_events
@@ -106,4 +107,11 @@ explore: daily_events {
     type: left_outer
     relationship: one_to_one
   }
+
+join: daily_violations_aggregates {
+  view_label: "Event: Violation Generated"
+  sql_on: ${daily_events.event_name_camel_case} = ${daily_violations_aggregates.violated_event_name} and ${daily_events.event_date}=${daily_violations_aggregates.event_date};;
+  type: left_outer
+  relationship: many_to_many
+}
 }
