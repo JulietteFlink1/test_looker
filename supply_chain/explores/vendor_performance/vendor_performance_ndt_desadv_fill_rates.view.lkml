@@ -53,14 +53,13 @@ view: vendor_performance_ndt_desadv_fill_rates {
     type: number
 
     value_format_name: percent_1
-    hidden: no
+    hidden: yes
   }
 
   dimension: is_desadv_inbounded_po_corrected {
 
-    label:       "DESADV Inbounded Status"
+    label:       "Inbound Status (DESADV)"
     description: "This field classifies DESADVS in how much of their selling units (corrected to take selling units from values from latest purchase orders) are actually inbounded"
-    group_label: "DESADV aggregated"
 
     sql: case
             when ${desadv_fill_rate_po_corrected} > 0.8
@@ -89,13 +88,13 @@ view: vendor_performance_ndt_desadv_fill_rates {
 
     label:       "# DESADV Inbounded on Estimated Delivery Date"
     description: "THe number of dispatch notifications, that have been inbounded on their (estimaed) delivery date"
-    group_label: "DESADV aggregated"
 
     type: count_distinct
     sql: ${dispatch_notification_id} ;;
     filters: [is_desadv_delivered_on_day: "yes"]
 
     value_format_name: decimal_0
+    hidden: yes
   }
 
   measure: sum_number_of_desadvs {
@@ -106,14 +105,21 @@ view: vendor_performance_ndt_desadv_fill_rates {
 
   measure: pct_desadvs_inbounded_on_day {
 
-    label: "% DESADVs Inbounded in Delivery Date"
+    label: "% Orders Delivered on Planned Day (DESADV)"
     description: "The percentage of dispatch notifications, that have actually been delivered on the estimated delivery date"
-    group_label: "DESADV aggregated"
 
     type: number
     sql: safe_divide(${sum_number_of_inbounded_desadvs_on_day}, ${sum_number_of_desadvs}) ;;
 
     value_format_name: percent_1
+    html:
+
+      {% if global_filters_and_parameters.show_info._parameter_value == 'yes' %}
+        {{ rendered_value }} ({{ sum_number_of_desadvs._rendered_value }} desadvs)
+      {% else %}
+        {{ rendered_value }}
+      {% endif %}
+        ;;
 
   }
 

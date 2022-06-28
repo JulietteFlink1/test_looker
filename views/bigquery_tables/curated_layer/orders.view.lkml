@@ -107,7 +107,7 @@ view: orders {
     group_label: "* Monetary Values *"
     label: "GMV (tiered, 1 EUR)"
     type: tier
-    tiers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35]
+    tiers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50]
     style: relational
     sql: ${gmv_gross} ;;
   }
@@ -720,6 +720,22 @@ view: orders {
     sql: ${TABLE}.is_discounted_order ;;
   }
 
+  dimension: is_product_discounted_order{
+    group_label: "* Order Dimensions *"
+    label: "Is Product Discounted Order (Yes/No)"
+    description: "Flags if an Order has a Product Discount (Commercial) applied"
+    type: yesno
+    sql: ${TABLE}.is_product_discounted_order ;;
+  }
+
+  dimension: is_cart_discounted_order{
+    group_label: "* Order Dimensions *"
+    label: "Is Cart Discounted Order (Yes/No)"
+    description: "Flags if an Order has a Cart Discount (Marketing) applied"
+    type: yesno
+    sql: ${TABLE}.is_cart_discounted_order ;;
+  }
+
   dimension: is_first_order {
     group_label: "* Order Dimensions *"
     type: yesno
@@ -1313,7 +1329,8 @@ view: orders {
 
   dimension: cancellation_category {
     group_label: "* Cancelled Orders *"
-    description: "Takes values CS Agent or Customer depending on the person who initiated the cancellation"
+    description: "Takes values CS Agent or Customer depending on the person who initiated the cancellation.
+    All CT cancelled orders are considered to be CS Agent"
     type: string
     sql: ${TABLE}.cancellation_category;;
   }
@@ -2366,6 +2383,34 @@ view: orders {
     ]
   }
 
+  measure: cnt_click_and_collect_orders {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Click & Collect Orders"
+    description: "Count of Click & Collect Orders"
+    hidden:  yes
+    type: count_distinct
+    sql: ${order_uuid} ;;
+    value_format: "0"
+    filters: [
+      is_click_and_collect_order: "yes",
+      is_successful_order: "yes"
+    ]
+  }
+
+  measure: cnt_ubereats_orders {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Click & Collect Orders"
+    description: "Count of Click & Collect Orders"
+    hidden:  yes
+    type: count_distinct
+    sql: ${order_uuid} ;;
+    value_format: "0"
+    filters: [
+      external_provider: "ubereats",
+      is_successful_order: "yes"
+    ]
+  }
+
   measure: cnt_orders_with_discount_cart {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
     label: "# Orders with Cart Discount"
@@ -2483,6 +2528,7 @@ view: orders {
   measure: cnt_agent_cancelled_orders {
     group_label: "* Cancelled Orders *"
     label: "# Agent Cancelled Orders"
+    description: "Agent cancelled orders, also includes CT cancelled orders"
     hidden:  no
     type: count
     filters: [amt_cancelled_gross: ">0",cancellation_category: "- Customer"]
@@ -2495,6 +2541,15 @@ view: orders {
     hidden:  no
     type: count
     filters: [amt_cancelled_gross: ">0",cancellation_category: "Customer"]
+    value_format: "0"
+  }
+
+  measure: cnt_ct_cancelled_orders {
+    group_label: "* Cancelled Orders *"
+    label: "# CT Cancelled Orders"
+    hidden:  no
+    type: count
+    filters: [amt_cancelled_gross: ">0",cancellation_reason: "NULL"]
     value_format: "0"
   }
 
@@ -2830,10 +2885,21 @@ view: orders {
   measure: pct_agent_cancelled_orders{
     group_label: "* Cancelled Orders *"
     label: "% Agent Cancelled Orders"
-    description: "Dividing Number of Self-Cancelled Orders by CC Agents over Number of Orders"
+    description: "Dividing Number of Cancelled Orders by CC Agents over Number of Orders.
+    CT-cancelled orders are included in Agent-Cancelled orders."
     hidden:  no
     type: number
     sql: ${cnt_agent_cancelled_orders} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0.0%"
+  }
+
+  measure: pct_ct_cancelled_orders {
+    group_label: "* Cancelled Orders *"
+    label: "% CT Cancelled Orders"
+    description: "Dividing Number of CT-Cancelled Orders by CC Agents over Number of Orders"
+    hidden:  no
+    type: number
+    sql: ${cnt_ct_cancelled_orders} / NULLIF(${cnt_orders}, 0);;
     value_format: "0.0%"
   }
 
@@ -3126,5 +3192,12 @@ view: orders {
     sql: ${avg_riding_to_customer_time} - ${avg_riding_to_hub_time} ;;
   }
 
-
+  measure: pct_orders_delivered_by_riders {
+    group_label: "* Operations / Logistics *"
+    label: "% Orders Delivered by Riders"
+    description: "Share of orders delivered by only riders"
+    type: number
+    sql: ${employee_level_kpis.number_of_delivered_orders_by_riders}/nullif(${cnt_successful_orders},0) ;;
+    value_format_name: percent_1
+  }
 }

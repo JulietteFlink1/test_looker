@@ -30,7 +30,8 @@ view: dispatch_notifications {
       sum_total_quantity,
       sum_number_of_dispatch_notifications,
 
-      dynamic_delivery_date
+      dynamic_delivery_date,
+      is_double_parent_sku
     ]
   }
 
@@ -117,6 +118,15 @@ view: dispatch_notifications {
   dimension: product_name {
     type: string
     sql: ${TABLE}.product_name ;;
+  }
+
+  dimension: is_double_parent_sku {
+
+    label:       "Is SKU matched to 2 Parent SKUs"
+    description: "This fields highlights those SKUs of a dispatch notification, that are part of a replenishment substitute group AND that are assigned to 2 parent-SKUs (9x SKUs) by the Hub-Tech conversion logic of external SKUs to FLink SKUs"
+
+    type: yesno
+    sql: ${TABLE}.is_double_parent_sku ;;
   }
 
 
@@ -340,7 +350,6 @@ view: dispatch_notifications {
 
     label:       "# Dispatch Notifications (DESADV)"
     description: "The total number of dispatch notifications"
-    group_label: "Special Use Cases"
 
     type: count_distinct
     sql: ${dispatch_notification_id} ;;
@@ -359,6 +368,14 @@ view: dispatch_notifications {
     type: number
     value_format_name: percent_1
     sql: safe_divide(${inventory_changes_daily.sum_inbound_inventory}, ${sum_total_quantity}) ;;
+
+    html:
+    {% if global_filters_and_parameters.show_info._parameter_value == 'yes' %}
+    {{ rendered_value }} ({{ sum_total_quantity._rendered_value }} listed items)
+    {% else %}
+    {{ rendered_value }}
+    {% endif %}
+    ;;
   }
 
   measure: pct_items_inbounded_capped {
@@ -371,11 +388,22 @@ view: dispatch_notifications {
     sql:
       case
         when ${inventory_changes_daily.sum_inbound_inventory} > ${sum_total_quantity} -- when more inbouded then on DESADV
+         and ${sum_total_quantity} > 0 -- and when there was an inbound expected
         then 1 -- then define as 100%
         else safe_divide(${inventory_changes_daily.sum_inbound_inventory}, ${sum_total_quantity})  -- else take the actual inbounded rate
       end
 
       ;;
+
+    html:
+    {% if global_filters_and_parameters.show_info._parameter_value == 'yes' %}
+    {{ rendered_value }} ({{ sum_total_quantity._rendered_value }} listed items)
+    {% else %}
+    {{ rendered_value }}
+    {% endif %}
+    ;;
+
+
   }
 
   measure: pct_items_inbounded_or_pos_corrected {
@@ -386,44 +414,15 @@ view: dispatch_notifications {
     type: number
     value_format_name: percent_1
     sql: safe_divide((${inventory_changes_daily.sum_inbound_inventory} + ${inventory_changes_daily.sum_inventory_correction_increased}), ${sum_total_quantity}) ;;
+
+    html:
+    {% if global_filters_and_parameters.show_info._parameter_value == 'yes' %}
+    {{ rendered_value }} ({{ sum_total_quantity._rendered_value }} listed items)
+    {% else %}
+    {{ rendered_value }}
+    {% endif %}
+    ;;
   }
-
-  # measure: sum_over_inbounded_items {
-      # NOT WORKING, DEU TO VALUE OVERFLOW
-
-  #   label: "# Items Over-Ibounded"
-  #   description: "The number of item quantities, that are higher than the selling unit listed on the DESADV (Given the DESADV states 10 items and we inbounded 12 items, this metric would show 2 items. Given the DESADV states 10 items, but we inbounded 9, this metric is empty (NULL)). "
-  #   hidden: no
-
-  #   type: sum
-  #   value_format_name: decimal_0
-  #   sql:
-  #     case
-  #       -- only sum those units, that have more items being inbounded than listed on the DESADV
-  #       when ${total_quantity} < ${inventory_changes_daily.quantity_change_inbounded}
-  #       then ${inventory_changes_daily.quantity_change_inbounded}
-  #       else 0
-  #       end
-  #   ;;
-
-  #   sql_distinct_key: concat(${table_uuid}, ${inventory_changes_daily.tqble_uuid}) ;;
-  # }
-
-  # measure: pct_over_inbounded_items {
-
-  #   label: "% Items Over-Ibounded"
-  #   description: "The percentage of item quantities, that are higher than the selling unit listed on the DESADV compared to all selling units listed on a DESADV (Given the DESADV states 10 items and we inbounded 12 items, this metric would show 2 items. Given the DESADV states 10 items, but we inbounded 9, this metric is empty (NULL)). "
-
-
-  #   type: number
-  #   value_format_name: percent_1
-  #   sql: safe_divide(${sum_over_inbounded_items}, ${sum_total_quantity}) ;;
-  # }
-
-
-
-
-
 
 
 

@@ -652,7 +652,7 @@ view: products {
   }
 
   measure: sum_amt_product_price_gross{
-    label: "SUM Amt Product Price Gross"
+    label: "SUM Product Price Gross"
     group_label: "* Price Stats *"
     type: sum
     value_format: "0.00"
@@ -660,7 +660,7 @@ view: products {
   }
 
   measure: avg_amt_product_price_gross{
-    label: "AVG Amt Product Price Gross"
+    label: "AVG Product Price Gross"
     group_label: "* Price Stats *"
     type: average
     value_format: "€0.00"
@@ -668,7 +668,7 @@ view: products {
   }
 
   measure: med_amt_product_price_gross{
-    label: "MED Amt Product Price Gross"
+    label: "MED Product Price Gross"
     group_label: "* Price Stats *"
     type: median
     value_format: "€0.00"
@@ -676,7 +676,7 @@ view: products {
   }
 
   measure: max_amt_product_price_gross{
-    label: "MAX Amt Product Price Gross"
+    label: "MAX Product Price Gross"
     group_label: "* Price Stats *"
     type: max
     value_format: "€0.00"
@@ -684,7 +684,7 @@ view: products {
   }
 
   measure: min_amt_product_price_gross{
-    label: "MIN Amt Product Price Gross"
+    label: "MIN Product Price Gross"
     group_label: "* Price Stats *"
     type: min
     value_format: "€0.00"

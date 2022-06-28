@@ -8,7 +8,7 @@
   parameter: timeframe_picker {
 
     label: "Date Granularity"
-    group_label: ">> Dates & Timestamps"
+    group_label: ">> Settings"
 
     type: unquoted
     allowed_value: { value: "Date" }
@@ -17,6 +17,32 @@
 
     default_value: "Date"
 
+  }
+
+  parameter: show_info {
+    # this paramter does:
+    #  1. replace the SKU with a leading SKU name
+    #  2. reduces the data in inventory tables to report only leading SKU level per group
+
+    # this parameter is defined at the products_hub_assignment level, as this view is the base of the Supply Chain explore
+
+    label:       "Show KPI details"
+    group_label: ">> Settings"
+    description: "Chose yes, if you want to see more details"
+
+    type: unquoted
+
+    allowed_value: {
+      label: "yes"
+      value: "yes"
+    }
+
+    allowed_value: {
+      label: "no"
+      value: "no"
+    }
+
+    default_value: "no"
   }
 
 
@@ -32,7 +58,7 @@
     datatype: date
     default_value: "last 30 days"
     label: "Timeframe"
-    group_label: ">> Database Filter"
+    group_label: ">> Settings"
     description: "Limits the data for the big tables, that are used in this explore."
   }
 

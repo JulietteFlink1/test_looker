@@ -28,6 +28,18 @@ view: erp_buying_prices {
     value_format_name: eur
   }
 
+  dimension: net_income_after_product_discount {
+    label: "Net Unit Price After Product Discount"
+    description: "The incoming cash defined as net item price after deduction of Product Discount"
+    type: number
+    sql:  coalesce(
+            ${orderline.unit_price_after_product_discount_gross} / nullif((1 + ${orderline.tax_rate}) ,0),
+            ${products.amt_product_price_gross}  / nullif((1 + ${products.tax_rate}), 0)
+          )
+    ;;
+    value_format_name: eur
+  }
+
   dimension: margin_absolute {
     label: "€ Unit Margin"
     description: "The unit margin defined as Net Unit Price substracted by the Buying Price"
@@ -36,11 +48,27 @@ view: erp_buying_prices {
     value_format_name: eur
   }
 
+  dimension: margin_absolute_after_product_discount {
+    label: "€ Unit Margin After Product Discount"
+    description: "The unit margin defined as Net Unit Price after deduction of Product Discount  substracted by the Buying Price"
+    type: number
+    sql: ${net_income_after_product_discount} - ${vendor_price} ;;
+    value_format_name: eur
+  }
+
   dimension: margin_relative {
     label: "% Unit Margin"
     description: "The relative margin defined as Unit Margin divided by the Net Unit Price"
     type: number
     sql: ${margin_absolute} / nullif(${net_income},0) ;;
+    value_format_name: percent_1
+  }
+
+  dimension: margin_relative_after_product_discount {
+    label: "% Unit Margin After Product Discount"
+    description: "The relative margin defined as Unit Margin divided by the Net Unit Price after deduction of Product Discount"
+    type: number
+    sql: ${margin_absolute_after_product_discount} / nullif(${net_income_after_product_discount},0) ;;
     value_format_name: percent_1
   }
 
@@ -197,11 +225,29 @@ view: erp_buying_prices {
     sql_distinct_key: concat(${table_uuid}, ${orderline.order_lineitem_uuid}) ;;
   }
 
+  measure: sum_total_net_income_after_product_discount{
+    label: "€ Sum Item Prices Sold After Product Discount (Net)"
+    description: "The sum of all Net Unit Price after deduction of Product Discount multiplied by the sum of Item Quantity Sold"
+    type: sum
+    sql: (${orderline.quantity} * ${net_income_after_product_discount}) ;;
+    value_format_name: eur
+    sql_distinct_key: concat(${table_uuid}, ${orderline.order_lineitem_uuid}) ;;
+  }
+
   measure: sum_total_margin_abs {
     label: "€ Sum Gross Profit"
     description: "The sum of all Unit Margins defined as Net Unit Price minus Buying Price"
     type: sum
     sql: (${orderline.quantity} * ${margin_absolute}) ;;
+    value_format_name: eur
+    sql_distinct_key: concat(${table_uuid}, ${orderline.order_lineitem_uuid}) ;;
+  }
+
+  measure: sum_total_margin_abs_after_product_discount {
+    label: "€ Sum Gross Profit After Product Discount"
+    description: "The sum of all Unit Margins defined as Net Unit Price after deduction of Product Discount minus Buying Price"
+    type: sum
+    sql: (${orderline.quantity} * ${margin_absolute_after_product_discount}) ;;
     value_format_name: eur
     sql_distinct_key: concat(${table_uuid}, ${orderline.order_lineitem_uuid}) ;;
   }
@@ -214,6 +260,14 @@ view: erp_buying_prices {
     value_format_name: percent_1
   }
 
+  measure: pct_total_margin_relative_after_product_discount {
+    label: "% Blended Margin After Product Discount"
+    description: "The sum of Gross Profit divided by the sum of Item Prices Sold after deduction of Product Discount (Net)"
+    type: number
+    sql: ${sum_total_margin_abs_after_product_discount} / nullif( ${sum_total_net_income_after_product_discount} ,0);;
+    value_format_name: percent_1
+  }
+
   measure: sum_total_cost {
     label: "€ Sum COGS"
     description: "The sum of Item Prices Sold (Net) minus sum of Gross Profit"
@@ -221,5 +275,119 @@ view: erp_buying_prices {
     sql: ${sum_total_net_income} - ${sum_total_margin_abs} ;;
     value_format_name: eur
   }
+
+  measure: sum_total_cost_after_product_discount {
+    label: "€ Sum COGS After Product Discounts"
+    description: "The sum of Item Prices Sold after deduction of Product Discount (Net) minus sum of Gross Profit"
+    type: number
+    sql: ${sum_total_net_income_after_product_discount} - ${sum_total_margin_abs_after_product_discount} ;;
+    value_format_name: eur
+  }
+
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~     Parameters     ~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  parameter: is_after_product_discounts {
+    group_label: "> Parameters"
+    type: yesno
+    label: "Is After Deduction of Product Discounts"
+    default_value: "No"
+  }
+
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~     Dynamic Measures & Dimensions     ~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  dimension: net_income_dynamic {
+    label: "Net Unit Price (Dynamic)"
+    description: "The incoming cash defined as net item price. To be used together with Is After Deduction of Product Discounts parameter"
+    label_from_parameter: is_after_product_discounts
+    value_format_name: eur
+    type: number
+    sql:
+    {% if is_after_product_discounts._parameter_value == "true" %}
+    ${net_income_after_product_discount}
+    {% elsif is_after_product_discounts._parameter_value == "false" %}
+    ${net_income}
+    {% endif %}
+    ;;
+  }
+
+  dimension: margin_absolute_dynamic {
+    label: "€ Unit Margin (Dynamic)"
+    description: "The unit margin defined as Net Unit Price substracted by the Buying Price. To be used together with Is After Deduction of Product Discounts parameter"
+    label_from_parameter: is_after_product_discounts
+    value_format_name: eur
+    type: number
+    sql:
+    {% if is_after_product_discounts._parameter_value == "true" %}
+    ${margin_absolute_after_product_discount}
+    {% elsif is_after_product_discounts._parameter_value == "false" %}
+    ${margin_absolute}
+    {% endif %}
+    ;;
+  }
+
+  measure: sum_total_net_income_dynamic {
+    label: "€ Sum Item Prices Sold (Net) (Dynamic)"
+    description: "The sum of all Net Unit Price multiplied by the sum of Item Quantity Sold. To be used together with Is After Deduction of Product Discounts parameter"
+    label_from_parameter: is_after_product_discounts
+    value_format_name: eur
+    type: number
+    sql:
+    {% if is_after_product_discounts._parameter_value == "true" %}
+    ${sum_total_net_income_after_product_discount}
+    {% elsif is_after_product_discounts._parameter_value == "false" %}
+    ${sum_total_net_income}
+    {% endif %}
+    ;;
+  }
+
+  measure: sum_total_margin_abs_dynamic {
+    label: "€ Sum Gross Profit (Dynamic)"
+    description: "The sum of all Unit Margins defined as Net Unit Price minus Buying Price. To be used together with Is After Deduction of Product Discounts parameter"
+    label_from_parameter: is_after_product_discounts
+    value_format_name: eur
+    type: number
+    sql:
+    {% if is_after_product_discounts._parameter_value == "true" %}
+    ${sum_total_margin_abs_after_product_discount}
+    {% elsif is_after_product_discounts._parameter_value == "false" %}
+    ${sum_total_margin_abs}
+    {% endif %}
+    ;;
+  }
+
+  measure: pct_total_margin_relative_dynamic {
+    label: "% Blended Margin (Dynamic)"
+    description: "The sum of Gross Profit divided by the sum of Item Prices Sold (Net). To be used together with Is After Deduction of Product Discounts parameter"
+    label_from_parameter: is_after_product_discounts
+    value_format_name: eur
+    type: number
+    sql:
+    {% if is_after_product_discounts._parameter_value == "true" %}
+    ${pct_total_margin_relative_after_product_discount}
+    {% elsif is_after_product_discounts._parameter_value == "false" %}
+    ${pct_total_margin_relative}
+    {% endif %}
+    ;;
+  }
+
+  measure: sum_total_cost_dynamic {
+    label: "€ Sum COGS (Dynamic)"
+    description: "The sum of Item Prices Sold (Net) minus sum of Gross Profit. To be used together with Is After Deduction of Product Discounts parameter"
+    label_from_parameter: is_after_product_discounts
+    value_format_name: eur
+    type: number
+    sql:
+    {% if is_after_product_discounts._parameter_value == "true" %}
+    ${sum_total_cost_after_product_discount}
+    {% elsif is_after_product_discounts._parameter_value == "false" %}
+    ${sum_total_cost}
+    {% endif %}
+    ;;
+  }
+
 
 }

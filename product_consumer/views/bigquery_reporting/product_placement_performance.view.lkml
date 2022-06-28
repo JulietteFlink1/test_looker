@@ -247,6 +247,14 @@ view: product_placement_performance {
     type: count_distinct
     sql: ${TABLE}.order_uuid ;;
   }
+  measure: ordered_products { ## name should not be changed as charts would break
+    group_label: "Product Metrics"
+    label: "# Ordered Products"
+    description: "Number of unique products placed"
+    type: count_distinct
+    sql: ${product_placement_uuid} ;;
+    filters: [is_order_placed: "yes"]
+  }
   measure: amt_total_price_net {
     hidden: no
     group_label: "Product Metrics"
@@ -324,7 +332,7 @@ view: product_placement_performance {
     type: number
     description: "# ordered products / # products with Add-to-Cart"
     value_format_name: percent_2
-    sql: ${orders} / nullif(${add_to_carts},0);;
+    sql: ${ordered_products} / nullif(${add_to_carts},0);;
   }
   measure: impression_to_order_rate{
     group_label: "Rates (%)"
@@ -332,7 +340,7 @@ view: product_placement_performance {
     type: number
     description: "# ordered products / # total products impressions"
     value_format_name: percent_2
-    sql: ${orders} / nullif(${impressions},0);;
+    sql: ${ordered_products} / nullif(${impressions},0);;
   }
 
   # ======= User Level Measures =======

@@ -1,10 +1,10 @@
 view: user_attributes_power_user_curves {
   derived_table: {
-    sql: with daily_user_aggregates as (
+    sql:  with daily_user_aggregates as (
         select *
-        from `flink-data-dev.reporting.user_attributes_daily_user_aggregates`
+        from `flink-data-prod.reporting.user_attributes_daily_user_aggregates`
         where
-         date_diff(visit_date, first_visit_date, DAY) <= 28
+         date_diff(visit_date, first_visit_date, DAY) < 28
       )
 
       select
@@ -15,11 +15,12 @@ view: user_attributes_power_user_curves {
       , first_visit_date
       , first_order_date
       , has_converted
-      , num_days_to_first_order
-      , num_visits_to_first_order
-      , max(visit_rank)               as visits_28d
-      , max(num_of_orders_cumulative) as orders_28d
-      , max(num_of_discounted_orders) as discounted_orders_28d
+      , number_of_days_to_first_order
+      , number_of_visits_to_first_order
+      , max(visit_rank)                  as visits_28d
+      , sum(if(number_of_daily_orders>0,1,0)) as orders_28d
+      , sum(number_of_daily_orders)      as sum_orders_28d
+      , sum(number_of_discounted_orders) as discounted_orders_28d
       from daily_user_aggregates
       group by 1,2,3,4,5,6,7,8,9
       ;;
@@ -82,16 +83,16 @@ view: user_attributes_power_user_curves {
     sql: ${TABLE}.has_converted ;;
   }
 
-  dimension: num_days_to_first_order {
+  dimension: number_of_days_to_first_order {
     description: "Amount of days until user made first order"
     type: number
-    sql: ${TABLE}.num_days_to_first_order ;;
+    sql: ${TABLE}.number_of_days_to_first_order ;;
   }
 
-  dimension: num_visits_to_first_order {
+  dimension: number_of_visits_to_first_order {
     description: "Amount of visits until user made first order"
     type: number
-    sql: ${TABLE}.num_visits_to_first_order ;;
+    sql: ${TABLE}.number_of_visits_to_first_order ;;
   }
 
   dimension: visits_in_28d {
@@ -101,10 +102,16 @@ view: user_attributes_power_user_curves {
   }
 
   dimension: orders_in_28d {
-    description: "Amount of orders in 28 days since first visit"
+    description: "Amount of days with orders in 28 days since first visit"
     type: number
     sql: ${TABLE}.orders_28d  ;;
   }
+
+  dimension: sum_orders_28d {
+    description: "Amount of orders in 28 days since first visit"
+    type: number
+    sql: ${TABLE}.sum_orders_28d  ;;
+    }
 
   dimension: discounted_orders_28d {
     description: "Amount of discounted orders in 28 days since first visit"
