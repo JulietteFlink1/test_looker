@@ -367,14 +367,13 @@ view: replenishment_purchase_orders {
     sql: ${inventory_changes_daily.sum_inbound_inventory} / nullif(${sum_selling_unit_quantity} ,0) ;;
 
     value_format_name: percent_1
-    # html:
-
-    #   {% if show_info._parameter_value == 'yes' %}
-    #     {{ rendered_value }} <br><span style="font-size:8px"> {{ inventory_changes_daily.sum_inbound_inventory._rendered_value }} inb /<br>{{ sum_selling_unit_quantity._rendered_value }} ord</span>
-    #   {% else %}
-    #     {{ rendered_value }}
-    #   {% endif %}
-    #     ;;
+    html:
+    {% if global_filters_and_parameters.show_info._parameter_value == 'yes' %}
+    {{ rendered_value }} ({{ sum_selling_unit_quantity._rendered_value }} ordered items)
+    {% else %}
+    {{ rendered_value }}
+    {% endif %}
+    ;;
   }
 
 
@@ -401,14 +400,14 @@ view: replenishment_purchase_orders {
   }
 
   measure: avg_items_per_order  {
-    label: "AVG Items per Order"
+    label: "AVG # Items per Order"
     description: "AVG Items per Order per SKU"
     sql: round(${cnt_of_skus_per_order}/${cnt_of_orders}, 2) ;;
 
   }
 
   measure: sum_purchase_price {
-    label:       "€ Sum Purchased Products Value (Buying Price)"
+    label:       "€ Selling Units (Buying Price)"
     description: "This measure multiplies the supplier price of an item with the number of selling units we ordered and thus provides the cumulative value of the replenished items."
 
     type: sum

@@ -30,7 +30,8 @@ view: dispatch_notifications {
       sum_total_quantity,
       sum_number_of_dispatch_notifications,
 
-      dynamic_delivery_date
+      dynamic_delivery_date,
+      is_double_parent_sku
     ]
   }
 
@@ -117,6 +118,15 @@ view: dispatch_notifications {
   dimension: product_name {
     type: string
     sql: ${TABLE}.product_name ;;
+  }
+
+  dimension: is_double_parent_sku {
+
+    label:       "Is SKU matched to 2 Parent SKUs"
+    description: "This fields highlights those SKUs of a dispatch notification, that are part of a replenishment substitute group AND that are assigned to 2 parent-SKUs (9x SKUs) by the Hub-Tech conversion logic of external SKUs to FLink SKUs"
+
+    type: yesno
+    sql: ${TABLE}.is_double_parent_sku ;;
   }
 
 
@@ -358,6 +368,14 @@ view: dispatch_notifications {
     type: number
     value_format_name: percent_1
     sql: safe_divide(${inventory_changes_daily.sum_inbound_inventory}, ${sum_total_quantity}) ;;
+
+    html:
+    {% if global_filters_and_parameters.show_info._parameter_value == 'yes' %}
+    {{ rendered_value }} ({{ sum_total_quantity._rendered_value }} listed items)
+    {% else %}
+    {{ rendered_value }}
+    {% endif %}
+    ;;
   }
 
   measure: pct_items_inbounded_capped {
@@ -376,6 +394,16 @@ view: dispatch_notifications {
       end
 
       ;;
+
+    html:
+    {% if global_filters_and_parameters.show_info._parameter_value == 'yes' %}
+    {{ rendered_value }} ({{ sum_total_quantity._rendered_value }} listed items)
+    {% else %}
+    {{ rendered_value }}
+    {% endif %}
+    ;;
+
+
   }
 
   measure: pct_items_inbounded_or_pos_corrected {
@@ -386,6 +414,14 @@ view: dispatch_notifications {
     type: number
     value_format_name: percent_1
     sql: safe_divide((${inventory_changes_daily.sum_inbound_inventory} + ${inventory_changes_daily.sum_inventory_correction_increased}), ${sum_total_quantity}) ;;
+
+    html:
+    {% if global_filters_and_parameters.show_info._parameter_value == 'yes' %}
+    {{ rendered_value }} ({{ sum_total_quantity._rendered_value }} listed items)
+    {% else %}
+    {{ rendered_value }}
+    {% endif %}
+    ;;
   }
 
 
