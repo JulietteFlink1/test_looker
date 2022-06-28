@@ -217,10 +217,16 @@ view: inventory_changes_daily {
     label:       "€ Drug Waste"
     description: "This metric reflects the number of drug waste valued with the most recent product price as defined as: \n
                   all direct or indirect waste reasons including inventory corrections (incl. e.g. product-damaged etc,) and too-good-to-go for parent categories that
-                  relate to wine, hard alcohol and tabac"
+                  relate to wine, hard alcohol and tabac."
     group_label: ">> Waste Metrics"
     type: sum
-    sql: ${quantity_change} * ${price_gross};;
+    sql:
+    -- if the change reason is inventory-correction, we also remove such corrections >200 here (as we do with the other correction metrics)
+    if(
+        ${change_reason} =  "inventory-correction",
+        if(abs(${quantity_change}) <= 200, ${quantity_change}, 0),
+        ${quantity_change}
+    ) * ${price_gross};;
     filters: [is_drug_waste: "Yes"]
     value_format_name: eur
   }
@@ -337,7 +343,7 @@ view: inventory_changes_daily {
     description: "The sum of inventory changes related to inventory corrections"
     group_label: "* Inventory Changes Daily *"
     type: sum
-    sql: case when abs(${quantity_change}) <= 100 then  abs(${quantity_change}) end;; # remove outlier - requested by @Fabian Hardenberg
+    sql: case when abs(${quantity_change}) <= 200 then  abs(${quantity_change}) end;; # remove outlier - requested by @Fabian Hardenberg
     filters: [change_reason: "inventory-correction"]
     value_format_name: decimal_0
     hidden: yes
@@ -387,7 +393,7 @@ view: inventory_changes_daily {
     group_label: ">> Waste Metrics"
 
     type: sum
-    sql: case when ${inventory_correction_increased} between 0 and 100 then ${inventory_correction_increased} end ;;
+    sql: case when ${inventory_correction_increased} between 0 and 200 then ${inventory_correction_increased} end ;;
     value_format_name: decimal_0
   }
 
@@ -397,7 +403,7 @@ view: inventory_changes_daily {
     group_label: ">> Waste Metrics"
 
     type: sum
-    sql: case when ${inventory_correction_reduced} between -100 and 0 then abs(${inventory_correction_reduced}) end ;;
+    sql: case when ${inventory_correction_reduced} between -200 and 0 then abs(${inventory_correction_reduced}) end ;;
     value_format_name: decimal_0
   }
 
@@ -407,7 +413,7 @@ view: inventory_changes_daily {
     group_label: ">> Waste Metrics"
 
     type: sum
-    sql: case when ${inventory_correction_increased} between 0 and 100 then ${inventory_correction_increased} * ${price_gross} end ;;
+    sql: case when ${inventory_correction_increased} between 0 and 200 then ${inventory_correction_increased} * ${price_gross} end ;;
     value_format_name: eur
   }
 
@@ -417,7 +423,7 @@ view: inventory_changes_daily {
     group_label: ">> Waste Metrics"
 
     type: sum
-    sql: case when ${inventory_correction_reduced} between -100 and 0 then abs(${inventory_correction_reduced} * ${price_gross}) end ;;
+    sql: case when ${inventory_correction_reduced} between -200 and 0 then abs(${inventory_correction_reduced} * ${price_gross}) end ;;
     value_format_name: eur
   }
 
