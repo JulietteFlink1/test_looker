@@ -1,5 +1,5 @@
 view: daily_violations_aggregates {
-  sql_table_name: `flink-data-dev.reporting.daily_violations_aggregates`
+  sql_table_name: `flink-data-prod.reporting.daily_violations_aggregates`
     ;;
   view_label: "Daily Violations Aggregates"
 
@@ -11,7 +11,7 @@ view: daily_violations_aggregates {
 
   dimension: daily_violation_uuid {
     type: string
-    hidden: yes
+    hidden: no
     primary_key: yes
     sql: ${TABLE}.daily_violation_uuid ;;
   }

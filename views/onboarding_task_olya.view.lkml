@@ -36,6 +36,7 @@ view: onboarding_task_olya {
 
   dimension: hub_code {
     type: string
+    hidden: yes
     label: "Hub Code"
     sql: ${TABLE}.hub_code ;;
   }
@@ -103,7 +104,7 @@ view: onboarding_task_olya {
 
 
   parameter: date_granularity {
-    group_label: "> Dates and Timestamps "
+    group_label: "> Dates & Timestamps "
     label: "Date Granularity"
     type: unquoted
     allowed_value: { value: "Day" }
@@ -118,7 +119,7 @@ view: onboarding_task_olya {
 
 
   dimension: date {
-    group_label: "> Dates and Timestamps "
+    group_label: "> Dates & Timestamps "
     label: "Date (Dynamic)"
     label_from_parameter: date_granularity
     sql:
