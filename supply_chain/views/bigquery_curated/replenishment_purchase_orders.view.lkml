@@ -45,6 +45,7 @@ view: replenishment_purchase_orders {
       avg_items_per_order,
       cnt_of_orders,
       cnt_of_skus_per_order,
+      edi
     ]
 
   }
@@ -243,7 +244,7 @@ view: replenishment_purchase_orders {
 
     label:       "EDI"
     description: "Unique ID for SKUs to be ordered from supplier"
-    group_label: " >> Line Item Data"
+    # group_label: " >> Line Item Data"
 
     type: string
     sql: ${TABLE}.edi ;;
