@@ -7,15 +7,15 @@
 view: onboarding_task_olya {
   sql_table_name: `flink-data-dev.sandbox.onboarding_task_olya`
     ;;
-  view_label: "Onboarding task Olya"
+  view_label: "* Onboarding Data Olya *"
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  # ~~~~~~~~~~~~~~~     Dimentions     ~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~     Dimensions     ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   dimension_group: order_date {
     type: time
-    group_label: "Order date/time"
+    group_label: "> Dates & Timestamps "
     timeframes: [
       date,
       week,
@@ -29,13 +29,14 @@ view: onboarding_task_olya {
 
   dimension: country_iso {
     type: string
+    group_label: "> Georgaphic Data "
     label: "Country iso"
     sql: ${TABLE}.country_iso ;;
   }
 
   dimension: hub_code {
     type: string
-    label: "Hub code"
+    label: "Hub Code"
     sql: ${TABLE}.hub_code ;;
   }
 
@@ -78,11 +79,12 @@ view: onboarding_task_olya {
   dimension: table_uuid {
     type: string
     primary_key: yes
+    hidden: yes
     sql: ${TABLE}.table_uuid ;;
   }
 
   dimension: date_granularity_pass_through {
-    group_label: "* Parameters *"
+    group_label: "> Parameters "
     description: "To use the parameter value in a table calculation (e.g WoW, % Growth) we need to materialize it into a dimension "
     type: string
     sql:
@@ -96,12 +98,12 @@ view: onboarding_task_olya {
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  # ~~~~~~~~~~~~~~~     Parametrs     ~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~     Parameters     ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
   parameter: date_granularity {
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps "
     label: "Date Granularity"
     type: unquoted
     allowed_value: { value: "Day" }
@@ -116,7 +118,7 @@ view: onboarding_task_olya {
 
 
   dimension: date {
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps "
     label: "Date (Dynamic)"
     label_from_parameter: date_granularity
     sql:
@@ -130,38 +132,40 @@ view: onboarding_task_olya {
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  # ~~~~~~~~~~~~~~~     Metrics     ~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~     Measures    ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
   measure: avg_fulfillment_time_min {
     type: number
-    label: "AVG # Fulfillment time min"
-    value_format: "0.0"
+    description: "Average fulfillment time for orders in minutes"
+    label: "AVG Fulfillment Time"
+    value_format: "hh:mm:ss"
     sql: if(${sum_number_of_orders_with_fulfillment_time} = 0, 0,
-      ${fulfillment_time_min} / ${sum_number_of_orders_with_fulfillment_time});;
+      (${fulfillment_time_min} * 60 / 86400.0) / ${sum_number_of_orders_with_fulfillment_time});;
   }
 
   measure: fulfillment_time_min {
     type: sum
     description: "Amount of fulfillment time in minutes"
-    label: "Fulfillment time min"
+    label: "SUM Fulfillment Time"
     value_format: "0.0"
+    hidden: yes
     sql: ${fulfillment_time_minutes} ;;
   }
 
   measure: sum_number_of_orders_with_fulfillment_time {
     type: sum
     description: "Amount of orders with non-null fulfillment time"
-    label: "Orders with fulfillment"
+    label: "# Orders with Fulfillment"
     value_format: "0.0"
     sql: ${number_of_orders_with_fulfillment_time} ;;
   }
 
   measure: avg_number_of_items {
     type: number
-    label: "AVG # Items in basket"
-    value_format: "0.#"
+    label: "AVG # Items in Basket"
+    value_format: "0.0"
     sql: if(${sum_number_of_orders} = 0, 0,
       ${sum_number_of_items} / ${sum_number_of_orders}) ;;
   }
@@ -169,29 +173,29 @@ view: onboarding_task_olya {
   measure: sum_number_of_items {
     type: sum
     description: "Total amount of items"
-    label: "Amount of items"
+    label: "# Items"
     sql: ${number_of_items} ;;
   }
 
   measure: sum_number_of_orders {
     type: sum
-    description: "Number of orders"
-    label: "Orders"
+    description: "Number of successful orders"
+    label: "# Orders"
     value_format: "#,##0"
     sql: ${number_of_orders} ;;
   }
 
   measure: sum_number_of_riders {
     type: sum
-    description: "Number of riders"
-    label: "Riders"
+    description: "Number of worked riders"
+    label: "# Riders"
     sql: ${number_of_riders} ;;
   }
 
   measure: sum_number_of_riders_worked_hours {
     type: sum
     description: "Sum of Worked hours by riders"
-    label: "Worked hours by riders"
+    label: "SUM Worked hours by Riders"
     value_format: "#,##0.0"
     sql: ${number_of_worked_hours} ;;
   }
