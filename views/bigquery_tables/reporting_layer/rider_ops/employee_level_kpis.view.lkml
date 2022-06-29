@@ -141,6 +141,14 @@ view: employee_level_kpis {
 
     # ~~~~~~~~~~~~~~~     Logistics     ~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  measure: number_of_delivered_orders_by_riders {
+    group_label: "* Logistics *"
+    type: sum
+    label: "# Delivered Orders by Riders"
+    sql: ${TABLE}.number_of_delivered_orders ;;
+    filters: [position_name: "rider"]
+  }
+
   measure: number_of_delivered_orders {
     group_label: "* Logistics *"
     type: sum
@@ -423,7 +431,7 @@ view: employee_level_kpis {
     hidden: no
     label: "% Contracted Hours Fulfillment"
     description: "Worked hours / (weekly_contracted_hours * number_of_weeks)"
-    sql: ${number_of_worked_hours}/nullif(${weekly_contracted_hours}*${number_of_scheduled_weeks},0) ;;
+    sql: ${number_of_worked_hours}/nullif(sum(${weekly_contracted_hours})*${number_of_scheduled_weeks},0) ;;
     value_format: "0%"
   }
 

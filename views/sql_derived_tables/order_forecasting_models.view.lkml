@@ -25,7 +25,6 @@ SELECT
     f.country_iso,
     f.city,
     f.hub_code,
-    f.is_open,
     f.model_name,
     f.prediction,
     f.observed_orders_total,
@@ -46,7 +45,6 @@ UNION ALL
     f.country_iso,
     f.city,
     f.hub_code,
-    f.is_open,
     'actual_orders' as model_name,
     f.observed_orders_total as prediction,
     f.observed_orders_total,
@@ -90,11 +88,6 @@ ORDER BY start_timestamp, job_date, hub_code
   dimension: hub_code {
     type: string
     sql: ${TABLE}.hub_code ;;
-  }
-
-  dimension: is_open {
-    type: number
-    sql: ${TABLE}.is_open ;;
   }
 
   dimension_group: job {

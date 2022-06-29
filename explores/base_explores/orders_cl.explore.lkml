@@ -82,6 +82,16 @@ explore: orders_cl {
       type: left_outer
     }
 
+    # To get cleaned UTRs (based on Orders delivered just by riders)
+
+    join: employee_level_kpis {
+      from: employee_level_kpis
+      view_label: ""
+      sql_on: ${orders_cl.created_date} = ${employee_level_kpis.shift_date} and
+        ${hubs.hub_code}          = lower(${employee_level_kpis.hub_code});;
+      relationship: many_to_many
+      type: left_outer
+    }
 
     # join: hub_stafing_test {
     #   from: hub_stafing_test
