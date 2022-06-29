@@ -88,6 +88,15 @@ view: vendor_performance_po_to_desadv {
     type: number
     sql: safe_divide(${sum_number_selling_units_desadv}, ${sum_number_selling_units_po}) ;;
     value_format_name: percent_1
+
+    html:
+
+    {% if global_filters_and_parameters.show_info._parameter_value == 'yes' %}
+    {{ rendered_value }} ({{ sum_number_selling_units_po._rendered_value }} ordered items)
+    {% else %}
+    {{ rendered_value }}
+    {% endif %}
+    ;;
   }
 
 

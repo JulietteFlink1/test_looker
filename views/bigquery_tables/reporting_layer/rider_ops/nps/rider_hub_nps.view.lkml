@@ -198,6 +198,12 @@ dimension: if_i_do_great_work_i_know_that_it_will_be_recognised_ {
   sql: ${TABLE}.if_i_do_great_work_i_know_that_it_will_be_recognised_;;
 }
 
+dimension: there_is_a_strong_level_of_teamwork_in_the_hub_{
+  hidden:  yes
+  type:  number
+  sql: ${TABLE}.there_is_a_strong_level_of_teamwork_in_the_hub_ ;;
+}
+
 dimension: _i_am_satisfied_with_the_hub_working_conditions_ {
   hidden: yes
   type: number
@@ -296,6 +302,10 @@ dimension: vely_velo {
   sql: ${TABLE}.vely_velo;;
 }
 
+  dimension: i_am_satisfied_with_the_quality_of_rider_equipment_at_flink_clothing {
+    type: number
+    sql: ${TABLE}.i_am_satisfied_with_the_quality_of_rider_equipment_at_flink_clothing ;;
+  }
 
   dimension: i_am_satisfied_with_the_quality_of_rider_equipment_at_flink_ {
     type: number
@@ -476,6 +486,14 @@ measure: sum_responded_if_i_do_great_work_i_know_that_it_will_be_recognised_ {
   sql: ${uuid};;
   filters: [if_i_do_great_work_i_know_that_it_will_be_recognised_:  "not null"]
 }
+
+  measure: sum_responded_there_is_a_strong_level_of_teamwork_in_the_hub_ {
+    group_label: "# Responses"
+    type: count_distinct
+    value_format: "0"
+    sql: ${uuid};;
+    filters: [there_is_a_strong_level_of_teamwork_in_the_hub_:  "not null"]
+  }
 
 
 measure: sum_responded_communication_support {
@@ -701,6 +719,14 @@ measure: avg_i_am_satisfied_with_the_quality_of_rider_equipment_at_flink_ {
   sql: ${i_am_satisfied_with_the_quality_of_rider_equipment_at_flink_};;
 }
 
+measure: avg_i_am_satisfied_with_the_quality_of_rider_equipment_at_flink_clothing {
+  group_label: "Bikes"
+  label: "I Am Satisfied With The Quality Of Rider Equipment at Flink (Clothing)"
+  type: average
+  value_format: "0.0"
+  sql: ${i_am_satisfied_with_the_quality_of_rider_equipment_at_flink_clothing};;
+}
+
 measure: avg_my_hub_adheres_to_the_highest_safety_standards_ {
   group_label: "Hub Infrastructure"
   label: "My Hub Adheres To The Highest Safety Standards"
@@ -756,6 +782,14 @@ measure: avg_if_i_do_great_work_i_know_that_it_will_be_recognised_ {
   value_format: "0.0"
   sql: ${if_i_do_great_work_i_know_that_it_will_be_recognised_};;
 }
+
+  measure: avg_there_is_a_strong_level_of_teamwork_in_the_hub_ {
+    group_label: "Work Environment"
+    label: "There Is A Strong Level Of Teamwork In The Hub"
+    type: average
+    value_format: "0.0"
+    sql: ${there_is_a_strong_level_of_teamwork_in_the_hub_};;
+  }
 
 
 measure: avg_communication_support {

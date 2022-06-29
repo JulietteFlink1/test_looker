@@ -122,6 +122,14 @@ view: vendor_performance_ndt_date_hub_sku_metrics_po {
     type: number
     sql: safe_divide(${sum_over_inbound_items_po}, ${sum_po_quantity}) ;;
     value_format_name: percent_1
+
+    html:
+    {% if global_filters_and_parameters.show_info._parameter_value == 'yes' %}
+    {{ rendered_value }} ({{ sum_po_quantity._rendered_value }} ordered items)
+    {% else %}
+    {{ rendered_value }}
+    {% endif %}
+    ;;
   }
 
 
@@ -145,6 +153,14 @@ view: vendor_performance_ndt_date_hub_sku_metrics_po {
     type: number
     value_format_name: percent_1
     sql: safe_divide(${sum_unplanned_inbounds_po}, ${sum_inbound_quantity}) ;;
+
+    html:
+    {% if global_filters_and_parameters.show_info._parameter_value == 'yes' %}
+    {{ rendered_value }} ({{ sum_inbound_quantity._rendered_value }} inbounded items)
+    {% else %}
+    {{ rendered_value }}
+    {% endif %}
+    ;;
 
   }
 
