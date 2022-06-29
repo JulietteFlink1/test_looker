@@ -11,7 +11,7 @@ view: daily_violations_aggregates {
 
   dimension: daily_violation_uuid {
     type: string
-    hidden: yes
+    hidden: no
     primary_key: yes
     sql: ${TABLE}.daily_violation_uuid ;;
   }
