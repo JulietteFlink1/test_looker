@@ -75,15 +75,21 @@ view: forecasts {
     hidden: yes
   }
 
-  dimension_group: job {
-    label: "Job"
-    type: time
-    timeframes: [
-      raw,
-      date
-    ]
+  dimension: job_date {
+    label: "Job 1"
+    description: "This filter could be used if comparirson between 2 job dates is needed"
     convert_tz: no
     datatype: date
+    type: date
+    sql: ${TABLE}.job_date ;;
+  }
+
+  dimension: job_date_2 {
+    label: "Job 2"
+    description: "This filter could be used if comparirson between 2 job dates is needed"
+    convert_tz: no
+    datatype: date
+    type:  date
     sql: ${TABLE}.job_date ;;
   }
 
