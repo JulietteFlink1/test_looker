@@ -75,42 +75,59 @@ view: waste_waterfall_definition {
 ##################################################################################
 
 
-  dimension: waste_reason_clasification {
-    label: "Waste Definition"
+  dimension: waste_buckets {
+    label: "Waste Buckets Definition"
+    group_label: "Waste Dimensions"
     type: string
-    sql: ${TABLE}.waste_reason_clasification ;;
+    sql: ${TABLE}.waste_buckets ;;
   }
 
 
-  dimension: euro_waste {
-    label: "€ Euro Waste"
+  dimension: amt_waste_gross {
+    label: "€ Waste Gross"
     hidden: yes
     type: number
-    sql: ${TABLE}.euro_waste ;;
+    sql: ${TABLE}.amt_waste_gross ;;
   }
 
-  dimension: quantity_change {
-    label: "Outbound Quantity"
+  dimension: number_of_items_waste {
+    label: "# Outbound Items (Waste)"
+    hidden: yes
+    group_label: "Waste Dimensions"
     type: number
-    sql: ${TABLE}.quantity_change ;;
+    sql: ${TABLE}.number_of_items_waste ;;
   }
 
+  dimension: item_selling_price_daily_gross {
+    label: "Item Selling Price Gross"
+    group_label: "Waste Dimensions"
+    hidden: yes
+    type: number
+    sql: ${TABLE}.item_selling_price_daily_gross ;;
+  }
 
 ##################################################################################
 ############################## Measures ##########################################
 ##################################################################################
 
 
-  measure: sum_bucket_a_damaged {
+  measure: sum_waste_gross {
     type: sum
-    sql: ${euro_waste} ;;
-    label: "€ Euro Waste"
+    sql: ${amt_waste_gross} ;;
+    label: "€ SUM Waste Gross"
     value_format: "0.0,\" K\""
+  }
+
+  measure: sum_number_of_items_waste {
+    type: sum
+    sql: ${number_of_items_waste} ;;
+    label: "SUM Outbound Items (Waste)"
   }
 
 
   measure: count {
     type: count
     drill_fields: []
+    hidden: yes
   }
 }
