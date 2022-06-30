@@ -5,6 +5,7 @@
 # Questions that can be answered
 # - Questions around tracking events quality
 include: "/product_consumer/views/bigquery_reporting/daily_violations_aggregates.view"
+include: "/product_consumer/views/bigquery_curated/daily_events.view"
 include: "/**/global_filters_and_parameters.view.lkml"
 explore: daily_violations_aggregates {
   from:  daily_violations_aggregates

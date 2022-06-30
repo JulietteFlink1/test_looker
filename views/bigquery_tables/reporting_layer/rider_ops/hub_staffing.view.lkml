@@ -242,7 +242,9 @@ view: hub_staffing {
       week,
       month,
       quarter,
-      year
+      year,
+      day_of_week,
+      day_of_week_index
     ]
     sql: ${TABLE}.block_starts_at_timestamp ;;
     convert_tz: yes

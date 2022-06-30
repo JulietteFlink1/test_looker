@@ -219,6 +219,12 @@ view: daily_events {
       datatype: timestamp
     }
 
+    dimension: event_name_camel_case {
+      hidden: yes
+      type: string
+      sql: replace(lower(left(replace(INITCAP(${event_name}),'_',' '),1))||right(replace(INITCAP(${event_name}),'_',' '),length(${event_name})-1),' ',"") ;;
+    }
+
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
   # ~~~~~~~~~~~~~~~      Measures     ~~~~~~~~~~~~~~~ #
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
