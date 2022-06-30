@@ -489,6 +489,7 @@ view: shyftplan_riders_pickers_hours_clean {
     description: "Target UTR used in Forecasting Rider Hours"
     sql: ${TABLE}.number_of_target_orders_per_employee ;;
     filters: [position_name: "rider"]
+    hidden: yes
     value_format_name: decimal_2
   }
 
@@ -569,6 +570,7 @@ view: shyftplan_riders_pickers_hours_clean {
             then (${sum_forecasted_riders_needed} - ${sum_planned_hours}) / nullif(${sum_forecasted_riders_needed},0)
           else 0 end  ;;
     value_format_name: percent_0
+    hidden: yes
   }
 
   measure: pct_understaffing {
@@ -580,6 +582,7 @@ view: shyftplan_riders_pickers_hours_clean {
             then (${sum_planned_hours} - ${sum_forecasted_riders_needed}) / nullif(${sum_forecasted_riders_needed},0)
           else 0 end  ;;
     value_format_name: percent_0
+    hidden: yes
   }
 
 
@@ -599,6 +602,7 @@ view: shyftplan_riders_pickers_hours_clean {
     description: "absolute (Forecasted Orders / Actual Orders)"
     sql: abs(${sum_predicted_orders} / nullif(${adjusted_orders_pickers},0)) ;;
     value_format_name: percent_0
+    hidden: yes
   }
 
   measure: sum_no_show_hours{
@@ -629,6 +633,7 @@ view: shyftplan_riders_pickers_hours_clean {
     filters: [position_name: "rider"]
     group_label: "No Show"
     value_format_name: decimal_1
+    hidden: yes
   }
 
 
@@ -640,6 +645,7 @@ view: shyftplan_riders_pickers_hours_clean {
     filters: [position_name: "rider"]
     group_label: "No Show"
     value_format_name: decimal_1
+    hidden: yes
   }
 
 
@@ -651,6 +657,7 @@ view: shyftplan_riders_pickers_hours_clean {
     filters: [position_name: "rider"]
     group_label: "No Show"
     value_format_name: decimal_1
+    hidden: yes
   }
 
 
@@ -679,6 +686,7 @@ view: shyftplan_riders_pickers_hours_clean {
     sql:(${sum_forecast_no_show_hours})/nullif(${sum_forecast_hours_needed},0) ;;
     group_label: "No Show"
     value_format_name: percent_1
+    hidden: yes
   }
 
   measure: pct_external_hours_rider_picker{
@@ -688,6 +696,15 @@ view: shyftplan_riders_pickers_hours_clean {
     sql:(${picker_hours_external}+${rider_hours_external})/nullif((${rider_hours}+${picker_hours}),0) ;;
     group_label: "Working Hours"
     value_format_name: percent_1
+  }
+
+  measure: rider_utr_cleaned {
+    label: "AVG Rider UTR (Rider Shifts)"
+    type: number
+    description: "# Orders Delivered by Riders/# Worked Rider Hours"
+    sql: ${employee_level_kpis.number_of_delivered_orders_by_riders}/nullif(${rider_hours},0) ;;
+    value_format_name: decimal_2
+    group_label: "UTR"
   }
 
 }

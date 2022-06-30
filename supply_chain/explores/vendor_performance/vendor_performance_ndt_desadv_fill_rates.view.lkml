@@ -112,6 +112,14 @@ view: vendor_performance_ndt_desadv_fill_rates {
     sql: safe_divide(${sum_number_of_inbounded_desadvs_on_day}, ${sum_number_of_desadvs}) ;;
 
     value_format_name: percent_1
+    html:
+
+      {% if global_filters_and_parameters.show_info._parameter_value == 'yes' %}
+        {{ rendered_value }} ({{ sum_number_of_desadvs._rendered_value }} desadvs)
+      {% else %}
+        {{ rendered_value }}
+      {% endif %}
+        ;;
 
   }
 
