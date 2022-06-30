@@ -9,11 +9,11 @@ view: daily_violations_aggregates {
 
     ######## Table ID ########
 
-  dimension: daily_violation_uuid {
+  dimension: table_uuid {
     type: string
     hidden: no
     primary_key: yes
-    sql: ${TABLE}.daily_violation_uuid ;;
+    sql: ${TABLE}.table_uuid ;;
   }
 
     ######## Dates ########
