@@ -53,6 +53,8 @@ UNION ALL
     FROM `flink-data-prod.order_forecast.micro_forecasts_vs_actuals` f
     INNER JOIN latest_forecast l ON l.job_date = f.job_date AND l.country_iso = f.country_iso AND l.hub_code = f.hub_code AND l.start_timestamp = f.start_timestamp AND l.end_timestamp = f.end_timestamp AND f.model_name = l.model_name
     WHERE live_model = TRUE
+    
+    QUALIFY ROW_NUMBER() OVER(PARTITION BY f.start_timestamp, f.hub_code) = 1
 )
 
 SELECT * from forecasts_vs_actuals
