@@ -111,7 +111,7 @@ explore: daily_events {
 join: daily_violations_aggregates {
   view_label: "" ##to unhide change the label to: Event: Violation Generated
   fields: [daily_violations_aggregates.violated_event_name , daily_violations_aggregates.number_of_violations]
-  sql_on: ${daily_events.event_name_camel_case} = ${daily_violations_aggregates.violated_event_name} and ${daily_events.event_date}=${daily_violations_aggregates.event_date};;
+  sql_on: ${daily_events.event_name_camel_case} = ${daily_violations_aggregates.violated_event_name} and ${daily_events.event_date}=${daily_violations_aggregates.event_date} and ${daily_events.platform}=${daily_violations_aggregates.platform};;
   type: left_outer
   relationship: many_to_many
 }
