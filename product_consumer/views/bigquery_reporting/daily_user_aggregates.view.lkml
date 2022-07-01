@@ -70,7 +70,8 @@ view: daily_user_aggregates {
         day_of_week,
         date,
         week,
-        month
+        month,
+        quarter
       ]
       sql: ${TABLE}.event_date ;;
     }

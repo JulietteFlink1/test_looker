@@ -4,50 +4,25 @@ view: order_placement_aggregates {
   ;;
   view_label: "Order Placement Aggregates"
 
-  # derived_table: {
-  #   sql:
-  #       SELECT
-  #           event_date
-  #         , platform
-  #         , app_version
-  #         , hub_code
-  #         , country_iso
-  #         , is_order_from_recommendation
-  #         , is_order_from_cart
-  #         , is_order_from_last_bought
-  #         , is_order_from_search
-  #         , is_order_from_category
-  #         , is_order_from_pdp
-  #         , is_order_from_favourites
-  #         , is_order_from_swimlane
-  #         , is_order_from_collection
-  #         , is_order_from_deep_link
-  #         , is_recommendation_on_cart
-  #         , is_recommendation_on_pdp
-  #         , is_recommendation_on_search
-  #         , number_of_orders
-  #         , number_of_users
-  #         , sum(amt_total_price_net) as amt_total_price_net
-
-  #     from `flink-data-dev.reporting.order_placement_aggregates`
-
-  #       group by 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20
-  #       ;;
-  # }
-
-
-    # sql_table_name: `flink-data-prod.reporting.order_placement_aggregates`     ;;
-    # view_label: "Order Placement Aggregates"
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
   # ~~~~~~~~~~~~~~~     Dimensions    ~~~~~~~~~~~~~~~ #
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
 # ======= Date Dimensions ======= #
 
-  dimension: event_date {
-    type: date
-    datatype: date
+  dimension_group: event {
+    group_label: "Date Dimensions"
+    label: "Event"
+    description: "Date when an event happened"
+    type: time
+    timeframes: [
+      date,
+      week,
+      month,
+      quarter
+    ]
     sql: ${TABLE}.event_date ;;
+    datatype: date
   }
 
 # ======= Device Dimensions ======= #
