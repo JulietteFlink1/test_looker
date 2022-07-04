@@ -437,4 +437,27 @@ explore: supply_chain {
     ;;
   }
 
+  join: geographic_pricing_hub_cluster{
+
+    view_label: "15 Pricing Hub Cluster"
+
+    type: left_outer
+    relationship: many_to_one
+    fields: [price_hub_cluster]
+    sql_on:
+       ${geographic_pricing_hub_cluster.hub_code} = ${products_hub_assignment.hub_code}
+    ;;
+  }
+
+  join: geographic_pricing_sku_cluster{
+
+    view_label: "15 Pricing SKU Cluster"
+
+    type: left_outer
+    relationship: many_to_one
+    fields: [price_sku_cluster, price_sku_cluster_desc]
+    sql_on:
+       ${geographic_pricing_sku_cluster.sku} = ${products_hub_assignment.sku}
+    ;;
+  }
 }
