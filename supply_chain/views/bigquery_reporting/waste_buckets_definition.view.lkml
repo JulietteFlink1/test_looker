@@ -1,5 +1,5 @@
 view: waste_waterfall_definition {
-  sql_table_name: `flink-data-dev.reporting.waste_buckets`
+  sql_table_name: `flink-data-prod.reporting.waste_buckets`
     ;;
 
 
@@ -84,10 +84,10 @@ view: waste_waterfall_definition {
 
 
   dimension: amt_waste_gross {
-    label: "€ Waste Gross"
+    label: "€ Waste Selling Price Gross"
     hidden: yes
     type: number
-    sql: ${TABLE}.amt_waste_gross ;;
+    sql: ${TABLE}.amt_waste_selling_price_gross ;;
   }
 
   dimension: number_of_items_waste {
@@ -114,7 +114,7 @@ view: waste_waterfall_definition {
   measure: sum_waste_gross {
     type: sum
     sql: ${amt_waste_gross} ;;
-    label: "€ SUM Waste Gross"
+    label: "€ SUM Waste Selling Price Gross"
     value_format: "0.0,\" K\""
   }
 
