@@ -13,6 +13,18 @@ view: cc_orders_hourly2 {
     sql: ${TABLE}.number_of_orders ;;
   }
 
+  dimension: number_of_orders_all {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.number_of_orders_all ;;
+  }
+
+  dimension: amt_gmv_gross {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.amt_gmv_gross ;;
+  }
+
   dimension: number_of_cc_discounted_orders {
     hidden: yes
     type: number
@@ -37,16 +49,76 @@ view: cc_orders_hourly2 {
     sql: ${TABLE}.amt_cc_discount_value ;;
   }
 
+  dimension: amt_discount_value {
+    hidden: yes
+    type:  number
+    sql: ${TABLE}.amt_discount_value ;;
+  }
+
   dimension: number_of_refunded_orders {
     hidden: yes
     type: number
-    sql: ${TABLE}.number_of_refunded_orders ;;
+    sql: ${TABLE}.number_of_refunded_orders_post_issues ;;
   }
 
   dimension: number_of_refunded_orders_over_5 {
     hidden: yes
     type: number
-    sql: ${TABLE}.number_of_refunded_orders_over_5 ;;
+    sql: ${TABLE}.number_of_refunded_orders_post_issues_over_5 ;;
+  }
+
+  dimension: number_of_fully_cc_cancelled_orders {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.number_of_fully_cc_cancelled_orders ;;
+  }
+
+  dimension: number_of_partially_cancelled_orders {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.number_of_partially_cancelled_orders ;;
+  }
+
+  dimension: number_of_refunded_orders_perished_light {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.number_of_refunded_orders_perished_light ;;
+  }
+
+  dimension: number_of_orders_no_return_reason_but_items_returned {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.number_of_orders_no_return_reason_but_items_returned ;;
+  }
+
+  dimension: amt_refunded_post_issues {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.amt_refunded_post_issues ;;
+  }
+
+  dimension: amt_refunded_fully_cc_cancelled {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.amt_refunded_fully_cc_cancelled ;;
+  }
+
+  dimension: amt_refunded_perished_light {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.amt_refunded_perished_light ;;
+  }
+
+  dimension: amt_refund_orders_no_return_reason_but_items_returned {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_refund_orders_no_return_reason_but_items_returned ;;
+  }
+
+  dimension: amt_refund_total {
+    hidden: yes
+    type:  number
+    sql: ${TABLE}.amt_refund_total ;;
   }
 
   dimension_group: order_timestamp {
@@ -71,14 +143,32 @@ view: cc_orders_hourly2 {
   }
 
   measure: sum_number_of_orders {
-    label: "# Orders"
+    label: "# Successful Orders"
+    description: "Number of successful orders"
     type: sum
     sql: ${number_of_orders} ;;
   }
 
+  measure: sum_number_of_orders_all{
+    label:  "# Orders"
+    description: "Number of orders, includes unsuccessful ones."
+    type: sum
+    sql: ${number_of_orders_all} ;;
+  }
+
+  measure: sum_amt_gmv_gross {
+    label: "GMV (Gross)"
+    description: "Sum of Gross Merchandise Value of orders incl. fees and before deduction of discounts (incl. VAT)"
+    type: sum
+    sql: ${amt_gmv_gross} ;;
+    value_format_name: euro_accounting_0_precision
+  }
+
   measure: sum_number_of_refunded_orders {
     group_label: "* Refunds *"
-    label: "# CC Refunded Orders"
+    label: "# CC Refunded Orders (Post Issues)"
+    description: "Number of orders that had a post delivery issue leading to a refund by a CC agent.
+    Includes Perished Light issues. Excludes fully refunded orders."
     type: sum
     sql: ${number_of_refunded_orders} ;;
   }
@@ -86,8 +176,88 @@ view: cc_orders_hourly2 {
   measure: sum_number_of_refunded_orders_over_5 {
     group_label: "* Refunds *"
     label: "# CC Refunded Orders >5 euros"
+    description: "Number of orders that had a post delivery issue leading to a refund > 5 euros by a CC agent"
     type: sum
     sql: ${number_of_refunded_orders_over_5} ;;
+  }
+
+  measure: sum_number_of_fully_cc_cancelled_orders {
+    group_label: "* Refunds *"
+    label: "# CC Fully Cancelled Orders"
+    description: "Number of orders that were fully cancelled and refunded by CC Agents"
+    type: sum
+    sql: ${number_of_fully_cc_cancelled_orders} ;;
+  }
+
+  measure: sum_number_of_partially_cancelled_orders {
+    group_label: "* Refunds *"
+    label: "# CC Partially Cancelled Orders"
+    description: "Number of orders that had some items cancelled by CC Agents.
+      Excludes orders with all products returned but only some marked as cancelled."
+    type: sum
+    sql: ${number_of_partially_cancelled_orders} ;;
+  }
+
+  measure: sum_number_of_refunded_orders_perished_light {
+    group_label: "* Refunds *"
+    label: "# CC Refunded Orders Perished Light"
+    description: "Number of orders that had some items refunded by CC Agents due to perished light issues."
+    type: sum
+    sql: ${number_of_refunded_orders_perished_light} ;;
+  }
+
+  measure: sum_number_of_orders_no_return_reason_but_items_returned {
+    group_label: "* Refunds *"
+    label: "# CC Refunded Orders No Return Reason"
+    description: "Number of orders that had some items refunded by CC Agents but had no return reason."
+    type: sum
+    sql: ${number_of_orders_no_return_reason_but_items_returned} ;;
+  }
+
+  measure: sum_amt_refunded_post_issues {
+    group_label: "* Refunds *"
+    label: "SUM Refunds Post Issues"
+    description: "Sum of refunds issued by CC agents due to post delivery issues. Includes deposit."
+    type: sum
+    sql: ${amt_refunded_post_issues} ;;
+    value_format_name: euro_accounting_0_precision
+  }
+
+  measure: sum_amt_refunded_fully_cc_cancelled {
+    group_label: "* Refunds *"
+    label: "SUM Refunds Fully Cancelled"
+    description: "Sum of refunds issued by CC agents for fully cancelled orders.
+    Includes deposit, rider tip, delivery fees."
+    type: sum
+    sql: ${amt_refunded_fully_cc_cancelled} ;;
+    value_format_name: euro_accounting_0_precision
+  }
+
+  measure: sum_amt_refunded_perished_light {
+    group_label: "* Refunds *"
+    label: "SUM Refunds Perished Light"
+    description: "Sum of refunds issued by CC agents due to perished light issues. Includes deposit"
+    type: sum
+    sql: ${amt_refunded_perished_light} ;;
+    value_format_name: euro_accounting_0_precision
+  }
+
+  measure: sum_amt_refund_orders_no_return_reason_but_items_returned {
+    group_label: "* Refunds *"
+    label: "SUM Refunds Orders No Return Reason"
+    description: "Sum of refunds issued by CC agents for items with no return reason. Includes deposit"
+    type: sum
+    sql: ${amt_refund_orders_no_return_reason_but_items_returned} ;;
+    value_format_name: euro_accounting_0_precision
+  }
+
+  measure: sum_amt_refund_total {
+    group_label: "* Refunds *"
+    label: "SUM CC Refunds"
+    description: "Sum of refunds issued by CC agents. Includes Fully cancelled orders. Excludes Pre delivery issues refunds."
+    type: sum
+    sql: ${amt_refund_total} ;;
+    value_format_name: euro_accounting_0_precision
   }
 
   measure: sum_number_of_cc_discounted_orders {
@@ -116,6 +286,33 @@ view: cc_orders_hourly2 {
     group_label: "* Discounts *"
     type: sum
     sql: ${amt_cc_discount_value} ;;
+    value_format_name: euro_accounting_0_precision
+  }
+
+  measure: sum_amt_discount_value {
+    label: "Total Discount Value"
+    group_label: "* Discounts *"
+    type: sum
+    sql: ${amt_discount_value} ;;
+    value_format_name: euro_accounting_0_precision
+  }
+
+  measure: cc_discounts_share {
+    label: "% CC Discounts"
+    group_label: "* Discounts *"
+    description: "amt cc discounts / all discounts "
+    type: number
+    value_format: "0.0%"
+    sql:  safe_divide(${sum_amt_cc_discount_value},${sum_amt_discount_value})  ;;
+  }
+
+  measure: cc_discounts_gmv_share {
+    label: "% CC Discounts of GMV"
+    group_label: "* Discounts *"
+    description: "amt cc discounts / GMV "
+    type: number
+    value_format: "0.0%"
+    sql:  safe_divide(${sum_amt_cc_discount_value},${sum_amt_gmv_gross})  ;;
   }
 
   measure: contact_rate {
@@ -137,6 +334,7 @@ view: cc_orders_hourly2 {
   measure: cc_refunded_order_rate {
     group_label: "* Refunds *"
     label: "% Refunded Orders"
+    description: "# orders with post delivery issue (that led to a CC refund) / # successful orders"
     type: number
     value_format: "0.0%"
     sql: safe_divide(${sum_number_of_refunded_orders},${sum_number_of_orders}) ;;
