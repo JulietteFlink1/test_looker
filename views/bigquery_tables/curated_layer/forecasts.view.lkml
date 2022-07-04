@@ -76,7 +76,7 @@ view: forecasts {
   }
 
   dimension: job_date {
-    label: "Job 1"
+    label: "Job Date 1"
     description: "This filter could be used if comparirson between 2 job dates is needed"
     convert_tz: no
     datatype: date
@@ -85,7 +85,7 @@ view: forecasts {
   }
 
   dimension: job_date_2 {
-    label: "Job 2"
+    label: "Job Date 2"
     description: "This filter could be used if comparirson between 2 job dates is needed"
     convert_tz: no
     datatype: date
@@ -377,6 +377,7 @@ view: forecasts {
     type: sum_distinct
     sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
     sql: ${TABLE}.number_of_forecasted_orders ;;
+    value_format_name: decimal_0
   }
 
   measure: forecasted_avg_order_handling_duration_seconds {
@@ -560,13 +561,20 @@ view: forecasts {
     sql: ${number_of_forecasted_orders}/nullif(${number_of_forecasted_hours_by_position},0);;
   }
 
+  parameter: dynamic_text_utr {
+    label: "Define Target UTR"
+    description: "Use this field to calculate Actually Needed Houts"
+    type: number
+    #required_fields: [dynamic_text_utr]
+  }
+
   measure: actual_needed_hours_by_position {
     type: number
     label: "# Actually Needed Hours"
-    description: "# Hours needed based on # Orders and forecasted UTR - # Orders/Base UTR (Target UTR)"
+    description: "# Hours needed based on # Orders and User-defined UTR - # Orders/Defined UTR"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
-    sql: ${orders_with_ops_metrics.cnt_orders}/nullif(${number_of_target_orders_by_position},0);;
+    sql: nullif(${orders_with_ops_metrics.cnt_orders},0)/nullif({% parameter dynamic_text_utr %},0);;
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

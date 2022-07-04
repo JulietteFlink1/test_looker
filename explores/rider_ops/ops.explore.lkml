@@ -38,7 +38,7 @@ explore: ops {
     type: full_outer
     fields: [time_grid.start_datetime_date, time_grid.start_datetime_hour_of_day, time_grid.start_datetime_minute30,
       time_grid.start_datetime_month,time_grid.start_datetime_quarter,time_grid.start_datetime_raw,time_grid.start_datetime_time,
-      time_grid.start_datetime_time_of_day,time_grid.start_datetime_week, time_grid.start_datetime_year]
+      time_grid.start_datetime_time_of_day,time_grid.start_datetime_week, time_grid.start_datetime_year, time_grid.is_hour_before_now_hour]
   }
 
   # Basic Hub data (e.g. name, city, creation date, etc. )
