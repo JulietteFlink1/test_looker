@@ -830,7 +830,7 @@ view: vat_order {
   dimension: total_vat {
     hidden: yes
     type: number
-    sql: ${TABLE}.amt_total_VAT ;;
+    sql: ${TABLE}.amt_total_vat ;;
   }
 
 
