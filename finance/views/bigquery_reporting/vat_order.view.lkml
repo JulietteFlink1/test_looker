@@ -1381,6 +1381,7 @@ view: vat_order {
   measure: sum_amt_refund_delivery_fee_net {
     group_label: "> Refunds Delivery Fee"
     label: "SUM Refund Delivery Fee Net"
+    description: "Populated from 2022-07-01."
     type: sum
     value_format: "#,##0.00€"
     sql: ${amt_refund_delivery_fee_net} ;;
@@ -1389,6 +1390,7 @@ view: vat_order {
   measure: sum_amt_refund_delivery_fee_gross {
     group_label: "> Refunds Delivery Fee"
     label: "SUM Refund Delivery Fee Gross"
+    description: "Populated from 2022-07-01."
     type: sum
     value_format: "#,##0.00€"
     sql: ${amt_refund_delivery_fee_gross} ;;
@@ -1397,6 +1399,7 @@ view: vat_order {
   measure: sum_amt_refund_delivery_fee_reduced_net {
     group_label: "> Refunds Delivery Fee"
     label: "SUM Refund Delivery Fee Reduced Net"
+    description: "Populated from 2022-07-01."
     type: sum
     value_format: "#,##0.00€"
     sql: ${amt_refund_delivery_fee_reduced_net} ;;
@@ -1405,6 +1408,7 @@ view: vat_order {
   measure: sum_amt_refund_delivery_fee_standard_net {
     group_label: "> Refunds Delivery Fee"
     label: "SUM Refund Delivery Fee Standard Net"
+    description: "Populated from 2022-07-01"
     type: sum
     value_format: "#,##0.00€"
     sql: ${amt_refund_delivery_fee_standard_net} ;;
@@ -1413,6 +1417,7 @@ view: vat_order {
   measure: sum_amt_refund_delivery_fee_special_net {
     group_label: "> Refunds Delivery Fee"
     label: "SUM Refund Delivery Fee Special Net"
+    description: "Populated from 2022-07-01"
     type: sum
     value_format: "#,##0.00€"
     sql: ${amt_refund_delivery_fee_special_net} ;;
@@ -1421,6 +1426,7 @@ view: vat_order {
   measure: sum_amt_refund_delivery_fee_reduced_gross {
     group_label: "> Refunds Delivery Fee"
     label: "SUM Refund Delivery Fee Reduced Gross"
+    description: "Populated from 2022-07-01"
     type: sum
     value_format: "#,##0.00€"
     sql: ${amt_refund_delivery_fee_reduced_gross} ;;
@@ -1429,6 +1435,7 @@ view: vat_order {
   measure: sum_amt_refund_delivery_fee_standard_gross {
     group_label: "> Refunds Delivery Fee"
     label: "SUM Refund Delivery Fee Standard Gross"
+    description: "Populated from 2022-07-01"
     type: sum
     value_format: "#,##0.00€"
     sql: ${amt_refund_delivery_fee_standard_gross} ;;
@@ -1437,6 +1444,7 @@ view: vat_order {
   measure: sum_amt_refund_delivery_fee_special_gross {
     group_label: "> Refunds Delivery Fee"
     label: "SUM Refund Delivery Fee Special Gross"
+    description: "Populated from 2022-07-01"
     type: sum
     value_format: "#,##0.00€"
     sql: ${amt_refund_delivery_fee_special_gross} ;;
@@ -1445,6 +1453,7 @@ view: vat_order {
   measure: sum_amt_vat_refund_delivery_fee_reduced {
     group_label: "> Refunds Delivery Fee"
     label: "SUM VAT Refund Delivery Fee Reduced"
+    description: "Populated from 2022-07-01"
     type: sum
     value_format: "#,##0.00€"
     sql: ${amt_vat_refund_delivery_fee_reduced} ;;
@@ -1453,6 +1462,7 @@ view: vat_order {
   measure: sum_amt_vat_refund_delivery_fee_standard {
     group_label: "> Refunds Delivery Fee"
     label: "SUM VAT Refund Delivery Fee Standard"
+    description: "Populated from 2022-07-01"
     type: sum
     value_format: "#,##0.00€"
     sql: ${amt_vat_refund_delivery_fee_standard} ;;
@@ -1461,6 +1471,7 @@ view: vat_order {
   measure: sum_amt_vat_refund_delivery_fee_special {
     group_label: "> Refunds Delivery Fee"
     label: "SUM VAT Refund Delivery Fee Special"
+    description: "Populated from 2022-07-01"
     type: sum
     value_format: "#,##0.00€"
     sql: ${amt_vat_refund_delivery_fee_special} ;;
@@ -1469,6 +1480,7 @@ view: vat_order {
   measure: sum_amt_vat_refund_delivery_fee_total {
     group_label: "> Refunds Delivery Fee"
     label: "SUM VAT Refund Delivery Fee Total"
+    description: "Populated from 2022-07-01"
     value_format: "#,##0.00€"
     type: sum
     sql: ${amt_vat_refund_delivery_fee_total} ;;
@@ -1479,6 +1491,7 @@ view: vat_order {
   measure: sum_amt_refund_items_net {
     group_label: "> Refunds Items"
     label: "SUM Refund Items Net"
+    description: "Populated from 2022-07-01"
     type: sum
     value_format: "#,##0.00€"
     sql: ${amt_refund_items_net} ;;
@@ -1487,6 +1500,7 @@ view: vat_order {
   measure: sum_amt_refund_items_gross {
     group_label: "> Refunds Items"
     label: "SUM Refund Items Gross"
+    description: "Populated from 2022-07-01"
     type: sum
     value_format: "#,##0.00€"
     sql: ${amt_refund_items_gross} ;;
@@ -1495,6 +1509,7 @@ view: vat_order {
   measure: sum_amt_refund_items_reduced_net {
     group_label: "> Refunds Items"
     label: "SUM Refund Items Reduced Net"
+    description: "Populated from 2022-07-01"
     type: sum
     value_format: "#,##0.00€"
     sql: ${amt_refund_items_reduced_net} ;;
@@ -1503,6 +1518,7 @@ view: vat_order {
   measure: sum_amt_refund_items_standard_net {
     group_label: "> Refunds Items"
     label: "SUM Refund Items Standard Net"
+    description: "Populated from 2022-07-01"
     type: sum
     value_format: "#,##0.00€"
     sql: ${amt_refund_items_standard_net} ;;
@@ -1511,6 +1527,7 @@ view: vat_order {
   measure: sum_amt_refund_items_special_net {
     group_label: "> Refunds Items"
     label: "SUM Refund Items Special Net"
+    description: "Populated from 2022-07-01"
     type: sum
     value_format: "#,##0.00€"
     sql: ${amt_refund_items_special_net} ;;
@@ -1519,6 +1536,7 @@ view: vat_order {
   measure: sum_amt_refund_items_reduced_gross {
     group_label: "> Refunds Items"
     label: "SUM Refund Items Reduced Gross"
+    description: "Populated from 2022-07-01"
     type: sum
     value_format: "#,##0.00€"
     sql: ${amt_refund_items_reduced_gross} ;;
@@ -1527,6 +1545,7 @@ view: vat_order {
   measure: sum_amt_refund_items_standard_gross {
     group_label: "> Refunds Items"
     label: "SUM Refund Items Standard Gross"
+    description: "Populated from 2022-07-01"
     type: sum
     value_format: "#,##0.00€"
     sql: ${amt_refund_items_standard_gross} ;;
@@ -1535,6 +1554,7 @@ view: vat_order {
   measure: sum_amt_refund_items_special_gross {
     group_label: "> Refunds Items"
     label: "SUM Refund Items Special Gross"
+    description: "Populated from 2022-07-01"
     type: sum
     value_format: "#,##0.00€"
     sql: ${amt_refund_items_special_gross} ;;
@@ -1543,6 +1563,7 @@ view: vat_order {
   measure: sum_amt_vat_refund_items_reduced {
     group_label: "> Refunds Items"
     label: "SUM VAT Refund Items Reduced"
+    description: "Populated from 2022-07-01"
     type: sum
     value_format: "#,##0.00€"
     sql: ${amt_vat_refund_items_reduced} ;;
@@ -1551,6 +1572,7 @@ view: vat_order {
   measure: sum_amt_vat_refund_items_standard {
     group_label: "> Refunds Items"
     label: "SUM VAT Refund Items Standard"
+    description: "Populated from 2022-07-01"
     type: sum
     value_format: "#,##0.00€"
     sql: ${amt_vat_refund_items_standard} ;;
@@ -1559,6 +1581,7 @@ view: vat_order {
   measure: sum_amt_vat_refund_items_special {
     group_label: "> Refunds Items"
     label: "SUM VAT Refund Items Special"
+    description: "Populated from 2022-07-01"
     type: sum
     value_format: "#,##0.00€"
     sql: ${amt_vat_refund_items_special} ;;
@@ -1567,6 +1590,7 @@ view: vat_order {
   measure: sum_amt_vat_refund_items_total {
     group_label: "> Refunds Items"
     label: "SUM VAT Refund Items Total"
+    description: "Populated from 2022-07-01"
     value_format: "#,##0.00€"
     type: sum
     sql: ${amt_vat_refund_items_total} ;;
@@ -1577,6 +1601,7 @@ view: vat_order {
   measure: sum_amt_refund_deposit_net {
     group_label: "> Refunds Deposit"
     label: "SUM Refund Deposit Net"
+    description: "Populated from 2022-07-01"
     type: sum
     value_format: "#,##0.00€"
     sql: ${amt_refund_deposit_net} ;;
@@ -1585,6 +1610,7 @@ view: vat_order {
   measure: sum_amt_refund_deposit_gross {
     group_label: "> Refunds Deposit"
     label: "SUM Refund Deposit Gross"
+    description: "Populated from 2022-07-01"
     type: sum
     value_format: "#,##0.00€"
     sql: ${amt_refund_deposit_gross} ;;
@@ -1593,6 +1619,7 @@ view: vat_order {
   measure: sum_amt_refund_deposit_reduced_net {
     group_label: "> Refunds Deposit"
     label: "SUM Refund Deposit Reduced Net"
+    description: "Populated from 2022-07-01"
     type: sum
     value_format: "#,##0.00€"
     sql: ${amt_refund_deposit_reduced_net} ;;
@@ -1601,6 +1628,7 @@ view: vat_order {
   measure: sum_amt_refund_deposit_standard_net {
     group_label: "> Refunds Deposit"
     label: "SUM Refund Deposit Standard Net"
+    description: "Populated from 2022-07-01"
     type: sum
     value_format: "#,##0.00€"
     sql: ${amt_refund_deposit_standard_net} ;;
@@ -1609,6 +1637,7 @@ view: vat_order {
   measure: sum_amt_refund_deposit_special_net {
     group_label: "> Refunds Deposit"
     label: "SUM Refund Deposit Special Net"
+    description: "Populated from 2022-07-01"
     type: sum
     value_format: "#,##0.00€"
     sql: ${amt_refund_deposit_special_net} ;;
@@ -1617,6 +1646,7 @@ view: vat_order {
   measure: sum_amt_refund_deposit_reduced_gross {
     group_label: "> Refunds Deposit"
     label: "SUM Refund Deposit Reduced Gross"
+    description: "Populated from 2022-07-01"
     type: sum
     value_format: "#,##0.00€"
     sql: ${amt_refund_deposit_reduced_gross} ;;
@@ -1625,6 +1655,7 @@ view: vat_order {
   measure: sum_amt_refund_deposit_standard_gross {
     group_label: "> Refunds Deposit"
     label: "SUM Refund Deposit Standard Gross"
+    description: "Populated from 2022-07-01"
     type: sum
     value_format: "#,##0.00€"
     sql: ${amt_refund_deposit_standard_gross} ;;
@@ -1633,6 +1664,7 @@ view: vat_order {
   measure: sum_amt_refund_deposit_special_gross {
     group_label: "> Refunds Deposit"
     label: "SUM Refund Deposit Special Gross"
+    description: "Populated from 2022-07-01"
     type: sum
     value_format: "#,##0.00€"
     sql: ${amt_refund_deposit_special_gross} ;;
@@ -1641,6 +1673,7 @@ view: vat_order {
   measure: sum_amt_vat_refund_deposit_reduced {
     group_label: "> Refunds Deposit"
     label: "SUM VAT Refund Deposit Reduced"
+    description: "Populated from 2022-07-01"
     type: sum
     value_format: "#,##0.00€"
     sql: ${amt_vat_refund_deposit_reduced} ;;
@@ -1649,6 +1682,7 @@ view: vat_order {
   measure: sum_amt_vat_refund_deposit_standard {
     group_label: "> Refunds Deposit"
     label: "SUM VAT Refund Deposit Standard"
+    description: "Populated from 2022-07-01"
     type: sum
     value_format: "#,##0.00€"
     sql: ${amt_vat_refund_deposit_standard} ;;
@@ -1657,6 +1691,7 @@ view: vat_order {
   measure: sum_amt_vat_refund_deposit_special {
     group_label: "> Refunds Deposit"
     label: "SUM VAT Refund Deposit Special"
+    description: "Populated from 2022-07-01"
     type: sum
     value_format: "#,##0.00€"
     sql: ${amt_vat_refund_deposit_special} ;;
@@ -1665,6 +1700,7 @@ view: vat_order {
   measure: sum_amt_vat_refund_deposit_total {
     group_label: "> Refunds Deposit"
     label: "SUM VAT Refund Deposit Total"
+    description: "Populated from 2022-07-01"
     value_format: "#,##0.00€"
     type: sum
     sql: ${amt_vat_refund_deposit_total} ;;
@@ -1712,6 +1748,7 @@ view: vat_order {
   measure: sum_refund_rider_tip {
     group_label: "> Rider Tips"
     label: "SUM Refunds Rider Tips (Gross)"
+    description: "Populated from 2022-07-01"
     value_format: "#,##0.00€"
     type: sum
     sql: ${amt_refund_rider_tip_gross} ;;
