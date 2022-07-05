@@ -103,6 +103,12 @@ view: cc_orders_hourly2 {
     sql: ${TABLE}.amt_refunded_fully_cc_cancelled ;;
   }
 
+  dimension: amt_refunded_partially_cancelled {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.amt_refunded_partially_cancelled ;;
+  }
+
   dimension: amt_refunded_perished_light {
     hidden:  yes
     type: number
@@ -233,10 +239,20 @@ view: cc_orders_hourly2 {
     value_format_name: euro_accounting_0_precision
   }
 
+  measure: sum_amt_refunded_partially_cancelled {
+    group_label: "* Refunds *"
+    label: "SUM Refunds Partially Cancelled"
+    description: "Sum of refund amounts issued by CC agents for orders with some items cancelled.
+    Includes deposit."
+    type: sum
+    sql: ${amt_refunded_partially_cancelled} ;;
+    value_format_name: euro_accounting_0_precision
+  }
+
   measure: sum_amt_refunded_perished_light {
     group_label: "* Refunds *"
     label: "SUM Refunds Perished Light"
-    description: "Sum of refunds issued by CC agents due to perished light issues. Includes deposit"
+    description: "Sum of refund amounts issued by CC agents due to perished light issues. Includes deposit"
     type: sum
     sql: ${amt_refunded_perished_light} ;;
     value_format_name: euro_accounting_0_precision
@@ -245,7 +261,7 @@ view: cc_orders_hourly2 {
   measure: sum_amt_refund_orders_no_return_reason_but_items_returned {
     group_label: "* Refunds *"
     label: "SUM Refunds Orders No Return Reason"
-    description: "Sum of refunds issued by CC agents for items with no return reason. Includes deposit"
+    description: "Sum of refund amounts issued by CC agents for items returned with no return reason. Includes deposit"
     type: sum
     sql: ${amt_refund_orders_no_return_reason_but_items_returned} ;;
     value_format_name: euro_accounting_0_precision
@@ -254,7 +270,8 @@ view: cc_orders_hourly2 {
   measure: sum_amt_refund_total {
     group_label: "* Refunds *"
     label: "SUM CC Refunds"
-    description: "Sum of refunds issued by CC agents. Includes Fully cancelled orders. Excludes Pre delivery issues refunds."
+    description: "Sum of refunds issued by CC agents. Includes Fully cancelled orders.
+    Excludes Pre delivery issues refunds and self cancelled orders."
     type: sum
     sql: ${amt_refund_total} ;;
     value_format_name: euro_accounting_0_precision
@@ -298,18 +315,18 @@ view: cc_orders_hourly2 {
   }
 
   measure: cc_discounts_share {
-    label: "% CC Discounts"
+    label: "% CC Discounts (all Discounts)"
     group_label: "* Discounts *"
-    description: "amt cc discounts / all discounts "
+    description: "amt cc discounts / all discounts. CC Discounts as share of all Discounts"
     type: number
     value_format: "0.0%"
     sql:  safe_divide(${sum_amt_cc_discount_value},${sum_amt_discount_value})  ;;
   }
 
   measure: cc_discounts_gmv_share {
-    label: "% CC Discounts of GMV"
+    label: "% CC Discounts (GMV)"
     group_label: "* Discounts *"
-    description: "amt cc discounts / GMV "
+    description: "amt cc discounts / GMV. CC Discounts as share of GMV"
     type: number
     value_format: "0.0%"
     sql:  safe_divide(${sum_amt_cc_discount_value},${sum_amt_gmv_gross})  ;;
@@ -333,7 +350,7 @@ view: cc_orders_hourly2 {
 
   measure: cc_refunded_order_rate {
     group_label: "* Refunds *"
-    label: "% Refunded Orders"
+    label: "% Refunded Orders (Post Issues)"
     description: "# orders with post delivery issue (that led to a CC refund) / # successful orders"
     type: number
     value_format: "0.0%"
@@ -358,7 +375,53 @@ view: cc_orders_hourly2 {
     sql: safe_divide(${sum_number_of_refunded_orders_over_5},${cc_contacts.number_of_contacts}) ;;
   }
 
+  measure: cc_fully_refunded_orders_rate {
+    label: "% CC Fully Refunded Orders / Orders"
+    description: "# Fully Cancelled Orders / # Orders (successful + unsuccessful)"
+    type: number
+    group_label: "* Refunds *"
+    value_format: "0.0%"
+    sql: safe_divide(${sum_number_of_fully_cc_cancelled_orders},${sum_number_of_orders_all}) ;;
+  }
 
+  measure: cc_refunds_gmv_share {
+    label: "% CC Refunds (GMV)"
+    description: "CC Refunds as Share of GMV"
+    type: number
+    group_label: "* Refunds *"
+    value_format: "0.0%"
+    sql: safe_divide(${sum_amt_refund_total},${sum_amt_gmv_gross}) ;;
+  }
+
+  measure: cc_perished_light_refunded_share {
+    label: "% Perished Light Refunds"
+    description: "Perished Light Refunds as share of CC Refunds (excluding
+    Self cancelled and refunds due to pre-order issues)"
+    type: number
+    group_label: "* Refunds *"
+    value_format: "0.0%"
+    sql: safe_divide(${sum_amt_refunded_perished_light},${sum_amt_refund_total}) ;;
+  }
+
+  measure: cc_no_return_refunded_share {
+    label: "% No Return Reason Refunds"
+    description: "Refunds for Orders with No Return Reason as share of CC Refunds (excluding
+    Self cancelled and refunds due to pre-order issues)"
+    type: number
+    group_label: "* Refunds *"
+    value_format: "0.0%"
+    sql: safe_divide(${sum_amt_refund_orders_no_return_reason_but_items_returned},${sum_amt_refund_total}) ;;
+  }
+
+  measure: cc_partially_cancelled_refunded_share {
+    label: "% CC Partially Cancelled Orders Refunds"
+    description: "Partially Cancelled Orders Refunds as share of CC Refunds (excluding
+    Self cancelled and refunds due to pre-order issues)"
+    type: number
+    group_label: "* Refunds *"
+    value_format: "0.0%"
+    sql: safe_divide(${sum_amt_refunded_partially_cancelled},${sum_amt_refund_total}) ;;
+  }
 
   measure: cc_discounted_order_rate {
     group_label: "* Discounts *"
