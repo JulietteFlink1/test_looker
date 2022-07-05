@@ -409,16 +409,6 @@ explore: supply_chain {
     sql_on: ${v2_avg_waste_index_per_hub.hub_code} = ${products_hub_assignment.hub_code} ;;
   }
 
-  join: last_hour_inventory_level {
-      view_label: "03 Inventory Hourly (last 8 days)"
-      type: left_outer
-      relationship: many_to_one
-      sql_on: ${last_hour_inventory_level.report_timestamp_date} = ${products_hub_assignment.report_date} and
-              ${last_hour_inventory_level.hub_code}              = ${products_hub_assignment.hub_code}    and
-              ${last_hour_inventory_level.sku}                   = ${products_hub_assignment.sku}         and
-              ${last_hour_inventory_level.time} = 23
-              ;;
-  }
 
   join: key_value_items {
 
@@ -447,4 +437,27 @@ explore: supply_chain {
     ;;
   }
 
+  join: geographic_pricing_hub_cluster{
+
+    view_label: "15 Pricing Hub Cluster"
+
+    type: left_outer
+    relationship: many_to_one
+    fields: [price_hub_cluster]
+    sql_on:
+       ${geographic_pricing_hub_cluster.hub_code} = ${products_hub_assignment.hub_code}
+    ;;
+  }
+
+  join: geographic_pricing_sku_cluster{
+
+    view_label: "15 Pricing SKU Cluster"
+
+    type: left_outer
+    relationship: many_to_one
+    fields: [price_sku_cluster, price_sku_cluster_desc]
+    sql_on:
+       ${geographic_pricing_sku_cluster.sku} = ${products_hub_assignment.sku}
+    ;;
+  }
 }

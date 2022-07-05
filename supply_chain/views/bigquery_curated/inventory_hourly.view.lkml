@@ -46,6 +46,16 @@ view: inventory_hourly {
     hidden: yes
   }
 
+  dimension: source_system {
+
+    label:       "Data Source"
+    description: "Defines the data generating system (either Stock-Changelogs or CommerceTools). It also distinguishes Commercetools source data between new SKUs and legacy SKUs (as we usually expect to find all data in the stock-changelogs db, but in some special cases, we have SKUs that never had any inventory movement)."
+    group_label: "Special Purpose Fields"
+
+    type: string
+    sql: ${TABLE}.source_system ;;
+  }
+
   dimension: share_of_hours_open_unaggregated {
 
     label: "Number of Hours Open"
@@ -79,6 +89,12 @@ view: inventory_hourly {
   dimension: sku {
     type: string
     sql: ${TABLE}.sku ;;
+    hidden: yes
+  }
+
+  dimension: parent_sku {
+    type: string
+    sql: ${TABLE}.parent_sku ;;
     hidden: yes
   }
 
