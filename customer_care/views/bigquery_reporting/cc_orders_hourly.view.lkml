@@ -181,7 +181,7 @@ view: cc_orders_hourly2 {
 
   measure: sum_number_of_refunded_orders_over_5 {
     group_label: "* Refunds *"
-    label: "# CC Refunded Orders >5 euros"
+    label: "# CC Refunded Orders >5 euros (Post Issues)"
     description: "Number of orders that had a post delivery issue leading to a refund > 5 euros by a CC agent"
     type: sum
     sql: ${number_of_refunded_orders_over_5} ;;
@@ -358,7 +358,7 @@ view: cc_orders_hourly2 {
   }
 
   measure: cc_refunded_order_over_5_rate {
-    label: "% Refunded Orders over 5euros / Refunded Orders"
+    label: "% Refunded Orders over 5euros (Post Issues) / Refunded Orders (Post Issues)"
     description: "# Refunded Orders over 5euros / # Refunded Orders"
     type: number
     group_label: "* Refunds *"
@@ -368,7 +368,7 @@ view: cc_orders_hourly2 {
 
   measure: cc_refunded_order_over_5_contact_rate {
     group_label: "* Refunds *"
-    label: "% Refunded Orders over 5euros / Contacts"
+    label: "% Refunded Orders over 5euros (Post Issues) / Contacts"
     description: "# Refunded Orders over 5euros / # Contacts"
     type: number
     value_format: "0.0%"
@@ -376,7 +376,7 @@ view: cc_orders_hourly2 {
   }
 
   measure: cc_fully_refunded_orders_rate {
-    label: "% CC Fully Refunded Orders / Orders"
+    label: "% CC Fully Cancelled Orders / Orders"
     description: "# Fully Cancelled Orders / # Orders (successful + unsuccessful)"
     type: number
     group_label: "* Refunds *"
@@ -421,6 +421,15 @@ view: cc_orders_hourly2 {
     group_label: "* Refunds *"
     value_format: "0.0%"
     sql: safe_divide(${sum_amt_refunded_partially_cancelled},${sum_amt_refund_total}) ;;
+  }
+
+  measure: avg_refund_value {
+    group_label: "* Refunds *"
+    label: "AVG CC Refund Value per Contact"
+    description: "Total CC Refund Value / Contact"
+    type: number
+    value_format_name: euro_accounting_2_precision
+    sql: safe_divide(${sum_amt_refund_total},${cc_contacts.number_of_contacts}) ;;
   }
 
   measure: cc_discounted_order_rate {
