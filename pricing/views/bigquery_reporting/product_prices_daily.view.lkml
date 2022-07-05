@@ -370,5 +370,15 @@ view: product_prices_daily {
     value_format_name: decimal_4
   }
 
+  measure: avg_avg_amt_margin {
+
+    label: "AVG Margin"
+    description: "The average margin based off average buying and selling prices for each product"
+    required_access_grants: [can_view_buying_information]
+
+    type: average
+    sql: ${avg_amt_margin} ;;
+    value_format_name: decimal_4
+  }
 
 }

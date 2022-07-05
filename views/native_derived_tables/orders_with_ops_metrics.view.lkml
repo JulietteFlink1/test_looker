@@ -17,8 +17,8 @@ view: orders_with_ops_metrics {
       column: avg_estimated_picking_time_minutes {}
       column: avg_estimated_queuing_time_for_picker_minutes {}
       column: avg_estimated_queuing_time_for_rider_minutes {}
-      column: avg_queuing_time_for_pickers_minutes {}
-      column: avg_queuing_time_for_riders_minutes {}
+      column: avg_picker_queuing_time {}
+      column: avg_rider_queuing_time {}
       column: avg_fulfillment_time {}
       column: avg_estimated_riding_time_minutes {}
       column: avg_fulfillment_time_mm_ss {}
@@ -261,22 +261,20 @@ view: orders_with_ops_metrics {
     hidden: yes
   }
 
-  measure: avg_queuing_time_for_picker_minutes {
+  measure: avg_picker_queuing_time {
     group_label: "> Operations / Logistics"
     label: "AVG Queuing Time for Pickers"
     description: ""
     value_format: "#,##0.0"
     type: average
-    hidden: yes
   }
 
-  measure: avg_queuing_time_for_rider_minutes {
+  measure: avg_rider_queuing_time {
     group_label: "> Operations / Logistics"
     label: "AVG Queuing Time for Riders"
     description: ""
     value_format: "#,##0.0"
     type: average
-    hidden: yes
   }
 
   measure: avg_fulfillment_time {

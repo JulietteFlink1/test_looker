@@ -105,6 +105,12 @@ view: inventory_daily {
     hidden: yes
   }
 
+  dimension: parent_sku {
+    type: string
+    sql: ${TABLE}.parent_sku ;;
+    hidden: yes
+  }
+
 
   # =========  IDs   =========
   dimension: table_uuid {

@@ -45,6 +45,7 @@ view: replenishment_purchase_orders {
       avg_items_per_order,
       cnt_of_orders,
       cnt_of_skus_per_order,
+      edi
     ]
 
   }
@@ -243,7 +244,7 @@ view: replenishment_purchase_orders {
 
     label:       "EDI"
     description: "Unique ID for SKUs to be ordered from supplier"
-    group_label: " >> Line Item Data"
+    # group_label: " >> Line Item Data"
 
     type: string
     sql: ${TABLE}.edi ;;
@@ -262,6 +263,7 @@ view: replenishment_purchase_orders {
 
     type: number
     sql: safe_cast(${TABLE}.handling_unit_quantity as numeric) ;;
+    hidden: yes
   }
 
   dimension: selling_unit_quantity {
@@ -273,6 +275,7 @@ view: replenishment_purchase_orders {
     type: number
     # sql: ${TABLE}.selling_unit_quantity ;;
     sql: safe_cast(${TABLE}.selling_unit_quantity as numeric) ;;
+    hidden: yes
 
   }
 
@@ -345,6 +348,7 @@ view: replenishment_purchase_orders {
 
     type: sum
     sql: ${selling_unit_quantity} ;;
+    value_format_name: decimal_0
 
   }
 
@@ -356,6 +360,7 @@ view: replenishment_purchase_orders {
 
     type: sum
     sql: ${handling_unit_quantity} ;;
+    value_format_name: decimal_0
   }
 
   measure: pct_order_inbounded {
@@ -385,6 +390,7 @@ view: replenishment_purchase_orders {
 
     type: count_distinct
     sql: ${order_id} ;;
+    value_format_name: decimal_0
 
 }
 
@@ -396,13 +402,16 @@ view: replenishment_purchase_orders {
 
     type: count_distinct
     sql: ${sku} ;;
+    value_format_name: decimal_0
 
   }
 
   measure: avg_items_per_order  {
     label: "AVG # Items per Order"
     description: "AVG Items per Order per SKU"
-    sql: round(${cnt_of_skus_per_order}/${cnt_of_orders}, 2) ;;
+    sql: safe_divide(${cnt_of_skus_per_order} , ${cnt_of_orders}) ;;
+
+    value_format_name: percent_2
 
   }
 
