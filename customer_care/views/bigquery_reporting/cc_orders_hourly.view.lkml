@@ -315,7 +315,7 @@ view: cc_orders_hourly2 {
   }
 
   measure: cc_discounts_share {
-    label: "% CC Discounts (all Discounts)"
+    label: "% CC Discounts / all Discounts"
     group_label: "* Discounts *"
     description: "amt cc discounts / all discounts. CC Discounts as share of all Discounts"
     type: number
@@ -324,7 +324,7 @@ view: cc_orders_hourly2 {
   }
 
   measure: cc_discounts_gmv_share {
-    label: "% CC Discounts (GMV)"
+    label: "% CC Discounts / GMV"
     group_label: "* Discounts *"
     description: "amt cc discounts / GMV. CC Discounts as share of GMV"
     type: number
@@ -385,7 +385,7 @@ view: cc_orders_hourly2 {
   }
 
   measure: cc_refunds_gmv_share {
-    label: "% CC Refunds (GMV)"
+    label: "% CC Refunds / GMV"
     description: "CC Refunds as Share of GMV"
     type: number
     group_label: "* Refunds *"
