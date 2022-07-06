@@ -536,6 +536,12 @@ view: orderline {
     sql: ${TABLE}.number_of_products_with_undefined_issues ;;
   }
 
+  dimension: number_of_products_with_products_not_on_shelf_issues_carrefour_dim {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.number_of_products_with_products_not_on_shelf_issues_carrefour ;;
+  }
+
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
