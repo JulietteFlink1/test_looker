@@ -147,6 +147,15 @@ view: orders {
       ;;
   }
 
+  dimension: item_value_after_product_discount_gross {
+
+    group_label: "* Monetary Values *"
+    type: number
+    hidden: no
+    sql: ${TABLE}.amt_total_price_after_product_discount_gross
+      ;;
+  }
+
   dimension: item_value_net {
 
     alias: [amt_total_price_net]
@@ -154,6 +163,15 @@ view: orders {
     type: number
     hidden: no
     sql: ${TABLE}.amt_total_price_net   ;;
+  }
+
+  dimension: item_value_after_product_discount_net {
+
+    group_label: "* Monetary Values *"
+    type: number
+    hidden: no
+    sql: ${TABLE}.amt_total_price_after_product_discount_net
+      ;;
   }
 
   dimension: item_value_gross_tier_1 {
@@ -1425,6 +1443,12 @@ view: orders {
     default_value: "orders"
   }
 
+  parameter: is_after_product_discounts {
+    type: yesno
+    label: "Is After Deduction of Product Discounts"
+    default_value: "No"
+  }
+
   ######## DYNAMIC DIMENSIONS
 
   dimension: date {
@@ -1556,6 +1580,37 @@ view: orders {
 
   }
 
+  measure: avg_item_value_gross_dynamic {
+    group_label: "> Monetary Values"
+    label: "AVG Item Value (Dynamic) (Gross)"
+    description: "AIV represents the Average value of items (incl. VAT). Excludes fees (gross). before deducting Cart Discounts. To be used together with the Is After Product Discounts Deduction parameter."
+    label_from_parameter: is_after_product_discounts
+    value_format_name: eur
+    type: number
+    sql:
+    {% if is_after_product_discounts._parameter_value == 'true' %}
+    ${avg_item_value_after_product_discount_gross}
+    {% elsif is_after_product_discounts._parameter_value == 'false' %}
+    ${avg_item_value_gross}
+    {% endif %}
+    ;;
+  }
+
+  measure: avg_item_value_net_dynamic {
+    group_label: "> Monetary Values"
+    label: "AVG Item Value (Dynamic) (Net)"
+    description: "AIV represents the Average value of items (excl. VAT). Excludes fees (net). before deducting Cart Discounts. To be used together with the Is After Product Discounts Deduction parameter."
+    label_from_parameter: is_after_product_discounts
+    value_format_name: eur
+    type: number
+    sql:
+    {% if is_after_product_discounts._parameter_value == 'true' %}
+    ${avg_item_value_after_product_discount_net}
+    {% elsif is_after_product_discounts._parameter_value == 'false' %}
+    ${avg_item_value_net}
+    {% endif %}
+    ;;
+  }
 
   ##############
   ## AVERAGES ##
@@ -1924,6 +1979,16 @@ view: orders {
     value_format_name: euro_accounting_2_precision
   }
 
+  measure: avg_item_value_after_product_discount_gross {
+    group_label: "* Monetary Values *"
+    label: "AVG Item Value After Product Discount (Gross)"
+    description: "AIV represents the Average value of items (incl. VAT). Excludes fees (gross), before deducting cart discount. After deducting product (commercial) discounts"
+    hidden:  no
+    type: average
+    sql: ${item_value_after_product_discount_gross};;
+    value_format_name: euro_accounting_2_precision
+  }
+
   measure: avg_item_value_net {
     alias: [avg_product_value_net]
     group_label: "* Monetary Values *"
@@ -1932,6 +1997,16 @@ view: orders {
     hidden:  no
     type: average
     sql: ${item_value_net};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: avg_item_value_after_product_discount_net {
+    group_label: "* Monetary Values *"
+    label: "AVG Item Value After Product Discount (Net)"
+    description: "AIV represents the Average value of items (excl. VAT). Excludes fees (net), before deducting cart discount. After deducting product (commercial) discounts"
+    hidden:  no
+    type: average
+      sql: ${item_value_after_product_discount_net};;
     value_format_name: euro_accounting_2_precision
   }
 
