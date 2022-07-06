@@ -8,6 +8,11 @@ view: albert_heijn_products {
     primary_key: yes
   }
 
+  dimension: shop_id {
+    type: number
+    sql: ${TABLE}.shop_id ;;
+  }
+
   dimension: category_id {
     type: number
     sql: ${TABLE}.category_id ;;
@@ -41,6 +46,11 @@ view: albert_heijn_products {
   dimension: product_id {
     type: string
     sql: ${TABLE}.product_id ;;
+  }
+
+  dimension: product_uuid {
+    type: string
+    sql: ${TABLE}.product_uuid ;;
   }
 
   dimension: product_name {
