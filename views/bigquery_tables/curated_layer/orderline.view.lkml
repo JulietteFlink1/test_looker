@@ -22,13 +22,7 @@ view: orderline {
 
   dimension: quantity {
     label: "Quantity Sold"
-    type: number
-    sql: ${TABLE}.quantity ;;
-    group_label: "> Monetary Dimensions"
-  }
-
-  dimension: quantity_fulfilled {
-    label: "Quantity Fulfilled"
+    alias: [quantity_fulfilled]
     type: number
     sql: ${TABLE}.quantity ;;
     group_label: "> Monetary Dimensions"
@@ -553,20 +547,11 @@ view: orderline {
 
   measure: sum_item_quantity {
     label: "SUM Item Quantity sold"
+    alias: [sum_item_quantity_fulfilled]
     description: "Quantity of Order Line Items sold"
     hidden:  no
     type: sum
     sql: ${quantity};;
-    value_format: "0"
-    group_label: "> Absolute Metrics"
-  }
-
-  measure: sum_item_quantity_fulfilled {
-    label: "SUM Item Quantity fulfilled"
-    description: "Quantity of Order Line Items fulfilled"
-    hidden:  no
-    type: sum
-    sql: ${quantity_fulfilled};;
     value_format: "0"
     group_label: "> Absolute Metrics"
   }
@@ -583,6 +568,7 @@ view: orderline {
 
   measure: sum_item_price_gross {
     label: "SUM Item Prices sold (gross)"
+    alias: [sum_item_price_fulfilled_gross]
     description: "Sum of sold Item prices (incl. VAT)"
     hidden:  no
     type: sum
@@ -593,6 +579,7 @@ view: orderline {
 
   measure: sum_item_price_net {
     label: "SUM Item Prices sold (net)"
+    alias: [sum_item_price_fulfilled_net]
     description: "Sum of sold Item prices (excl. VAT)"
     hidden:  no
     type: sum
@@ -603,6 +590,7 @@ view: orderline {
 
   measure: sum_item_price_after_product_discount_gross {
     label: "SUM Item Prices sold After Product Discount (gross)"
+    alias: [sum_item_price_fulfilled_after_product_discount_gross]
     description: "Total Price of sold Items after Deduction of Product Discounts. incl. VAT"
     hidden:  no
     type: sum
@@ -613,37 +601,8 @@ view: orderline {
 
   measure: sum_item_price_after_product_discount_net {
     label: "SUM Item Prices sold After Product Discount (net)"
+    alias: [sum_item_price_fulfilled_after_product_discount_net]
     description: "Total Price of sold Items after Deduction of Product Discounts. excl. VAT"
-    hidden:  no
-    type: sum
-    sql: ${amt_total_price_after_product_discount_net};;
-    value_format_name: euro_accounting_2_precision
-    group_label: "> Monetary Metrics"
-  }
-
-  measure: sum_item_price_fulfilled_gross {
-    label: "SUM Item Prices fulfilled (gross)"
-    description: "Sum of fulfilled Item prices (incl. VAT)"
-    hidden:  no
-    type: sum
-    sql: ${amt_total_price_gross};;
-    value_format_name: euro_accounting_2_precision
-    group_label: "> Monetary Metrics"
-  }
-
-  measure: sum_item_price_fulfilled_after_product_discount_gross {
-    label: "SUM Item Prices fulfilled After Product Discount (gross)"
-    description: "Sum of fulfilled Item prices after Deduction of Product Discount (incl. VAT)"
-    hidden:  no
-    type: sum
-    sql: ${amt_total_price_after_product_discount_gross};;
-    value_format_name: euro_accounting_2_precision
-    group_label: "> Monetary Metrics"
-  }
-
-  measure: sum_item_price_fulfilled_after_product_discount_net {
-    label: "SUM Item Prices fulfilled After Product Discount (net)"
-    description: "Sum of fulfilled Item prices after Deduction of Product Discount (excl. VAT)"
     hidden:  no
     type: sum
     sql: ${amt_total_price_after_product_discount_net};;
@@ -683,15 +642,6 @@ view: orderline {
     sql: ${amt_discount_products_net} ;;
   }
 
-  measure: sum_item_price_fulfilled_net {
-    label: "SUM Item Prices fulfilled (net)"
-    description: "Sum of fulfilled Item prices (excl. VAT)"
-    hidden:  no
-    type: sum
-    sql: ${amt_total_price_net};;
-    value_format_name: euro_accounting_2_precision
-    group_label: "> Monetary Metrics"
-  }
 
   measure: ctn_skus {
     type: count_distinct
@@ -1101,25 +1051,11 @@ view: orderline {
 
   #########  Dynamic measures
 
-  measure: sum_item_price_fulfilled_gross_dynamic {
-    group_label: "> Dynamic Monetary Metrics"
-    label: "SUM Items Price Fulfilled Gross (Dynamic)"
-    description: "To be used together with the Is After Product Discounts Deduction parameter."
-    label_from_parameter: is_after_product_discounts
-    value_format_name: eur
-    type: number
-    sql:
-    {% if is_after_product_discounts._parameter_value == "true" %}
-    ${sum_item_price_fulfilled_after_product_discount_gross}
-    {% elsif is_after_product_discounts._parameter_value == "false" %}
-    ${sum_item_price_fulfilled_gross}
-    {% endif %}
-    ;;
-}
 
   measure: sum_item_price_sold_gross_dynamic {
     group_label: "> Dynamic Monetary Metrics"
     label: "SUM Items Price Sold Gross (Dynamic)"
+    alias: [sum_item_price_fulfilled_gross_dynamic]
     description: "To be used together with the Is After Product Discounts Deduction parameter."
     label_from_parameter: is_after_product_discounts
     value_format_name: eur
@@ -1133,25 +1069,10 @@ view: orderline {
     ;;
   }
 
-  measure: sum_item_price_fulfilled_net_dynamic {
-    group_label: "> Dynamic Monetary Metrics"
-    label: "SUM Items Price Fulfilled Net (Dynamic)"
-    description: "To be used together with the Is After Product Discounts Deduction parameter."
-    label_from_parameter: is_after_product_discounts
-    value_format_name: eur
-    type: number
-    sql:
-    {% if is_after_product_discounts._parameter_value == 'true' %}
-    ${sum_item_price_fulfilled_after_product_discount_net}
-    {% elsif is_after_product_discounts._parameter_value == 'false' %}
-    ${sum_item_price_fulfilled_net}
-    {% endif %}
-    ;;
-  }
-
   measure: sum_item_price_sold_net_dynamic {
     group_label: "> Dynamic Monetary Metrics"
     label: "SUM Items Price Sold Net (Dynamic)"
+    alias: [sum_item_price_fulfilled_net_dynamic]
     description: "To be used together with the Is After Product Discounts Deduction parameter."
     label_from_parameter: is_after_product_discounts
     value_format_name: eur
