@@ -58,6 +58,11 @@ view: albert_heijn_products {
     sql: ${TABLE}.product_name ;;
   }
 
+  dimension: product_name_and_size {
+    type: string
+    sql: ${TABLE}.product_name_and_size ;;
+  }
+
   dimension: product_quantity {
     type: string
     sql: ${TABLE}.product_quantity ;;
