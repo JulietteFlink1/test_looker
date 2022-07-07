@@ -98,8 +98,8 @@ view: orders_with_ops_metrics {
     description: "Count of Orders that require no riders (e.g. Click and collect)"
     hidden:  yes
     sql: ${cnt_orders}-${cnt_click_and_collect_orders}-${cnt_ubereats_orders} ;;
-    value_format: "0"
-  }
+    value_format_name: decimal_0
+    }
   measure: percent_of_total_orders {
     group_label: "> Basic Counts"
     label: "% Of Total Orders"
@@ -263,7 +263,7 @@ view: orders_with_ops_metrics {
 
   measure: avg_picker_queuing_time {
     group_label: "> Operations / Logistics"
-    label: "AVG Queuing Time for Pickers"
+    label: "AVG Picker Queuing Time"
     description: ""
     value_format: "#,##0.0"
     type: average
@@ -271,7 +271,7 @@ view: orders_with_ops_metrics {
 
   measure: avg_rider_queuing_time {
     group_label: "> Operations / Logistics"
-    label: "AVG Queuing Time for Riders"
+    label: "AVG Rider Queuing Time"
     description: ""
     value_format: "#,##0.0"
     type: average
