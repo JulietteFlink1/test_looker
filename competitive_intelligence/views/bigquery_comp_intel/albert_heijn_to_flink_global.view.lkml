@@ -42,6 +42,11 @@ view: albert_heijn_to_flink_global {
     sql: ${TABLE}.table_uuid ;;
   }
 
+  dimension: conversion_factor {
+    type: number
+    sql: ${TABLE}.conversion_factor ;;
+  }
+
   measure: count {
     type: count
     drill_fields: [albert_heijn_product_name, flink_product_name]
