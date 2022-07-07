@@ -322,7 +322,7 @@ view: hubs_ct {
                   'de_ber_wedd','de_bra_mich','de_cgn_nipp','de_dar_zent','de_dus_pemp','de_muc_maxv',
                   'de_ham_otte','de_ham_roth','de_ham_wint','de_man_inne','de_maz_inne','de_zcz_mitt',
                   'de_nrm_suds',
-                  'nl_ape_cent', 'nl_gro_cent', 'nl_dev_cent', 'nl_lee_cent', 'nl_ens_cent', 'nl_nij_cent', 'nl_rot_veer'
+                  'nl_ape_cent', 'nl_alk_cent', 'nl_dev_cent', 'nl_dbo_cent', 'nl_ens_cent', 'nl_ein_west', 'nl_til_noor'
                   ) ;;
         label: "Yes"
       }

@@ -27,7 +27,7 @@ view: double_listed_products {
 
   dimension: is_double_listed {
     type: string
-    label: "Double listed"
+    label: "Is Double listed"
     hidden: no
     sql: ${TABLE}.is_double_listed ;;
   }
@@ -48,14 +48,14 @@ dimension: category_name {
 
   dimension: is_label {
     type: string
-    label: "Listed as Label"
+    label: "Is Listed as Label"
     hidden: no
     sql: ${TABLE}.is_label;;
   }
 
   dimension: is_special {
     type: string
-    label: "Listed as Special"
+    label: "Is Listed as Special"
     hidden: no
     sql: ${TABLE}.is_special;;
   }

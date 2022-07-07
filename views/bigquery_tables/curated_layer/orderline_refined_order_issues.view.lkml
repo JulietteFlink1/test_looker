@@ -22,7 +22,8 @@ view: +orderline {
       number_of_products_with_cancelled_products_issues_dim,
       number_of_products_with_item_description_issues_dim,
       number_of_products_with_item_quality_issues_dim,
-      number_of_products_with_undefined_issues_dim
+      number_of_products_with_undefined_issues_dim,
+      number_of_products_with_products_not_on_shelf_issues_carrefour_dim
 
     ]
   }
@@ -322,6 +323,22 @@ view: +orderline {
 
   }
   # >>> POST Order Issues  :: END
+
+  ## CARREFOUR ##
+
+  measure: count_products_not_on_shelf_issues_carrefour {
+
+    label:       "# CRF Orders Products Not On Shelf"
+    description: "The number of CARREFOUR orders, that had issues with product not on shelf issue"
+    group_label: "> Delivery Issues"
+
+    type: count_distinct
+    sql: ${order_uuid} ;;
+    filters: [number_of_products_with_products_not_on_shelf_issues_carrefour_dim: ">0"]
+
+    value_format_name: decimal_0
+
+  }
 
 
   # ~~~~~~~~~~~~    END Issue Reasons - Granular Metrics   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

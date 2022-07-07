@@ -207,7 +207,17 @@ view: dispatch_notifications {
     group_label: ">> IDs"
 
     type: string
+    sql: safe_cast(${TABLE}.order_number as string) ;;
+  }
+
+  dimension: order_number_int {
+    label:       "Order Number"
+    description: "The identifier of a order. In this context, the order number defines, to which specific order a product which is part of a delivery (DESADV) belongs to."
+    group_label: ">> IDs"
+
+    type: string
     sql: ${TABLE}.order_number ;;
+    hidden: yes
   }
 
   dimension: external_sku {

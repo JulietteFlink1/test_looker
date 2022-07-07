@@ -74,9 +74,10 @@ explore: vendor_performance {
             ${products_hub_assignment.report_date}                                = ${bulk_items.delivery_date}
         and ${products_hub_assignment.hub_code}                                   = ${bulk_items.hub_code}
         and ${products_hub_assignment.leading_sku_replenishment_substitute_group} = ${bulk_items.sku}
+        -- filters when joining
         and {% condition global_filters_and_parameters.datasource_filter %} ${bulk_items.delivery_date} {% endcondition %}
+        and ${bulk_items.sku} is not null -- excludes deposits (we don't have a SKU for those)
     ;;
-    sql_where: ${bulk_items.sku} is not null -- excludes deposits (we don't have a SKU for those) ;;
   }
 
   join: inventory_changes_daily {

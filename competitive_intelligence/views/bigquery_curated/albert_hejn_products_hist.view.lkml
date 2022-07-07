@@ -7,6 +7,11 @@ view: albert_heijn_products_hist {
     sql: ${TABLE}.albert_hejn_products_hist_uuid ;;
   }
 
+  dimension: shop_id {
+    type: number
+    sql: ${TABLE}.shop_id ;;
+  }
+
   dimension: category_id {
     type: number
     sql: ${TABLE}.category_id ;;
@@ -35,6 +40,11 @@ view: albert_heijn_products_hist {
     type: number
     sql: ${TABLE}.price_gross ;;
     value_format_name: euro_accounting_2_precision
+  }
+
+  dimension: product_uuid {
+    type: string
+    sql: ${TABLE}.product_uuid ;;
   }
 
   dimension: product_id {
