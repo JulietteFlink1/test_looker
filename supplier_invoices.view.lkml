@@ -177,7 +177,7 @@ view: supplier_invoices {
     group_label: " >> Line Item Data"
     type: number
     hidden: no
-    sql: safe_cast(${TABLE}.amt_total_price as numeric) ;;
+    sql: safe_cast(${TABLE}.amt_total_price_net as numeric) ;;
   }
 
   dimension: item_tax_rate {
