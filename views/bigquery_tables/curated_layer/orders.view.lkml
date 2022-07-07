@@ -1581,7 +1581,7 @@ view: orders {
   }
 
   measure: avg_item_value_gross_dynamic {
-    group_label: "> Monetary Values"
+    group_label: "* Monetary Values *"
     label: "AVG Item Value (Dynamic) (Gross)"
     description: "AIV represents the Average value of items (incl. VAT). Excludes fees (gross). before deducting Cart Discounts. To be used together with the Is After Product Discounts Deduction parameter."
     label_from_parameter: is_after_product_discounts
@@ -1597,7 +1597,7 @@ view: orders {
   }
 
   measure: avg_item_value_net_dynamic {
-    group_label: "> Monetary Values"
+    group_label: "* Monetary Values *"
     label: "AVG Item Value (Dynamic) (Net)"
     description: "AIV represents the Average value of items (excl. VAT). Excludes fees (net). before deducting Cart Discounts. To be used together with the Is After Product Discounts Deduction parameter."
     label_from_parameter: is_after_product_discounts

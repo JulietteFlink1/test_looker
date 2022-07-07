@@ -60,4 +60,25 @@ view: time_grid {
     hidden: no
 
   }
+
+  dimension: is_hour_before_now_hour {
+    label: "Is Hour Before Now ?"
+    type: yesno
+    sql: ${start_datetime_hour_of_day} < ${now_hour_of_day} ;;
+  }
+
+  dimension_group: now {
+    group_label: "* Dates and Timestamps *"
+    label: "Now"
+    description: "Current Date/Time"
+    type: time
+    timeframes: [
+      raw,
+      hour_of_day
+    ]
+    sql: current_timestamp;;
+    datatype: timestamp
+    hidden: yes
+  }
+
 }

@@ -8,6 +8,7 @@ view: +orderline {
       pct_pre_order_issue_rate_per_total_orders,
       pct_post_order_issue_rate_per_total_orders,
       pct_hub_related_post_order_issue_rate_per_total_orders,
+      pct_pre_order_issue_rate_per_total_orders_crf,
       delivery_issue_groups,
       number_of_products_with_perished_light_issues_dim,
       number_of_products_with_perished_issues_pre_dim,
@@ -82,6 +83,28 @@ view: +orderline {
         ;;
   }
 
+  measure: cnt_delivery_issues_crf {
+    label: "# CRF Orders Delivery Issues (Post- + Pre-Delivery)"
+    description: "# CRF orders that had delivery issues.
+    Still need to filter for external provider = ubereats"
+    group_label: "> Delivery Issues"
+    type: number
+    sql:
+          ${count_products_not_on_shelf_issues_carrefour} +
+          ${cnt_damaged_products_pre}                     +
+          ${cnt_perished_products_pre}                    +
+
+          ${cnt_damaged_products_post}            +
+          ${cnt_perished_products_post}           +
+          ${cnt_missing_products}                 +
+          ${cnt_swapped_products}                 +
+          ${cnt_products_item_description_issues} +
+          ${cnt_products_bad_quality_issues}      +
+          ${cnt_wrong_products}                   +
+          ${cnt_undefined_issues}
+      ;;
+  }
+
   measure: cnt_pre_delivery_issues {
 
     label:       "# Orders Pre-Delivery Issues"
@@ -90,6 +113,23 @@ view: +orderline {
 
     type: number
     sql: ${cnt_products_not_on_shelf_pre} +
+         ${cnt_damaged_products_pre}      +
+         ${cnt_perished_products_pre}
+    ;;
+
+    value_format_name: decimal_0
+  }
+
+  ## CARREFOUR ##
+  measure: cnt_pre_delivery_issues_crf {
+
+    label:       "# CRF Orders Pre-Delivery Issues"
+    description: "CRF Order-Issues, that are detected pre-delivery.
+    Still need to filter for external provider = ubereats"
+    group_label: "> Delivery Issues"
+
+    type: number
+    sql: ${count_products_not_on_shelf_issues_carrefour} +
          ${cnt_damaged_products_pre}      +
          ${cnt_perished_products_pre}
     ;;
@@ -360,6 +400,20 @@ view: +orderline {
 
   }
 
+  ## CARREFOUR ##
+  measure: pct_pre_order_issue_rate_per_total_orders_crf {
+
+    label:       "% CRF Orders Partial Fulfillment (preoder)"
+    group_label: "> Delivery Issues"
+    description: "The percentage of CRF orders, that had pre-delivery issues"
+
+    type: number
+    sql:  ${cnt_pre_delivery_issues_crf} / nullif(${cnt_total_orders} ,0);;
+
+    value_format_name: percent_2
+
+  }
+
   measure: pct_post_order_issue_rate_per_total_orders {
 
     label:       "% Orders Issue (post order)"
@@ -404,6 +458,20 @@ view: +orderline {
 
   }
 
+  measure: pct_pre_order_issue_rate_per_total_items_picked_crf {
+
+    label:       "% CRF Orders Item Unfulfilled (preorder)"
+    group_label: "> Delivery Issues"
+    description: "The percentage of unique SKUs per CRF order, that had pre-delivery issues.
+    Still need to filer for external provider = ubereats."
+
+    type: number
+    sql:  ${cnt_pre_delivery_issues_crf} / nullif(${cnt_total_picks} ,0);;
+
+    value_format_name: percent_2
+
+  }
+
   measure: pct_pre_order_fulfillment_rate {
 
     label:       "% Orders Pre-Order Fulfillment"
@@ -412,6 +480,20 @@ view: +orderline {
 
     type: number
     sql: 1 - ${pct_pre_order_issue_rate_per_total_orders} ;;
+
+    value_format_name: percent_2
+
+  }
+
+  measure: pct_pre_order_fulfillment_rate_crf {
+
+    label:       "% CRF Orders Pre-Order Fulfillment"
+    group_label: "> Delivery Issues"
+    description: "The percentage of orders, that had no pre-delivery issues.
+    Still need to filter for external provider = ubereats."
+
+    type: number
+    sql: 1 - ${pct_pre_order_issue_rate_per_total_orders_crf} ;;
 
     value_format_name: percent_2
 
@@ -428,6 +510,20 @@ view: +orderline {
 
     type: number
     sql: (${cnt_products_not_on_shelf_pre} + ${cnt_products_not_on_shelf_post}) / nullif( ${cnt_total_orders} ,0 ) ;;
+
+    value_format_name: percent_2
+
+  }
+
+  measure: pct_not_on_shelf_issue_rate_crf {
+
+    label:       "% CRF Orders Goods Not On Shelf Issue"
+    group_label: "> Delivery Issues"
+    description: "% CRF orders with products not on shelf issues. Still need to filter for
+    external provider = ubereats"
+
+    type: number
+    sql: (${count_products_not_on_shelf_issues_carrefour}) / nullif( ${cnt_total_orders} ,0 ) ;;
 
     value_format_name: percent_2
 

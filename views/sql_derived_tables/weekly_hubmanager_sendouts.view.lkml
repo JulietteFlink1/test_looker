@@ -219,8 +219,8 @@ view: weekly_hubmanager_sendouts {
 
   measure: avg_share_of_orders_fulfilled_before_targeted_estimate {
     alias: [avg_share_of_orders_with_delta_pdt_less_than_2]
-    label: "% Orders fulfilled in Time (Internal target)"
-    description: "Share of orders fulfilled before the internal targeted estimate"
+    label: "% Orders Delivered in Time (Internal target)"
+    description: "Share of orders delivered before the internal targeted estimate"
     type: average
     sql: ${share_of_orders_fulfilled_before_targeted_estimate} ;;
     value_format: "0.0%"

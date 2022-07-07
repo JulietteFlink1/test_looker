@@ -2372,13 +2372,21 @@ view: staffing {
     value_format_name: decimal_1
   }
 
-
   measure: hub_staff_utr_all_items {
     group_label: "> Hub Staff Measures"
     label: "Hub Staff UTR (All Items)"
     description: "Hub Staff UTR (# All inventory Changes/Hub Staff Hours)"
     type: number
     sql: abs(${inventory_changes_daily.sum_quantity_change})/nullif(${number_of_worked_hours_hub_staff},0) ;;
+    value_format_name: decimal_2
+  }
+
+  measure: hub_staff_utr_inbounded_handling_units {
+    group_label: "> Hub Staff Measures"
+    label: "Hub Staff UTR (Inbounded Handling Units)"
+    description: "Hub Staff UTR (# All inventory Changes/Hub Staff Hours)"
+    type: number
+    sql: abs(${inventory_changes_daily.sum_inbound_inventory_handling_units})/nullif(${number_of_worked_hours_hub_staff},0) ;;
     value_format_name: decimal_2
   }
 
