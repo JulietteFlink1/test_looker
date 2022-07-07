@@ -77,7 +77,7 @@ view: forecasts {
 
   dimension: job_date {
     label: "Job Date 1"
-    description: "This filter could be used if comparirson between 2 job dates is needed"
+    description: "This filter could be used if comparison between 2 job dates is needed"
     convert_tz: no
     datatype: date
     type: date
@@ -86,7 +86,7 @@ view: forecasts {
 
   dimension: job_date_2 {
     label: "Job Date 2"
-    description: "This filter could be used if comparirson between 2 job dates is needed"
+    description: "This filter could be used if comparison between 2 job dates is needed"
     convert_tz: no
     datatype: date
     type:  date
@@ -563,7 +563,7 @@ view: forecasts {
 
   parameter: dynamic_text_utr {
     label: "Define Target UTR"
-    description: "Use this field to calculate Actually Needed Houts"
+    description: "Use this field to calculate Actually Needed Hours"
     type: number
     #required_fields: [dynamic_text_utr]
   }
