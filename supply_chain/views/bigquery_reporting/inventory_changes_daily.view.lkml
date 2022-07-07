@@ -496,7 +496,8 @@ view: inventory_changes_daily {
       sum_outbound_too_good_to_go,
       is_inbound,
       is_outbound_waste,
-      change_reason
+      change_reason,
+      sum_inbound_inventory_handling_units
     ]
   }
 
