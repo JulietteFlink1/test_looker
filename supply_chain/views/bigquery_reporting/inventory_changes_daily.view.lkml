@@ -172,6 +172,13 @@ view: inventory_changes_daily {
     hidden: yes
   }
 
+  dimension: purchase_unit {
+    sql: ${TABLE}.purchase_unit ;;
+    type: number
+    label: "Purchase Unit"
+    hidden: yes
+  }
+
   # =========  IDs   =========
   dimension: table_uuid {
     type: string
@@ -353,10 +360,21 @@ view: inventory_changes_daily {
 
 
   measure: sum_inbound_inventory {
-    label: "# Inbounded Items (Delivery)"
-    description: "The sum of inventory changes based on restockings caused by vendor deliveries (excluding inbounds due to cancelled orders)"
+    label: "# Inbounded Items (Delivery) in Sell. Units"
+    description: "The sum of inventory changes based on restockings caused by vendor deliveries in Selling Units (excluding inbounds due to cancelled orders)"
     type: sum
     sql: abs(${quantity_change}) ;;
+    filters: [is_inbound: "Yes"]
+    value_format_name: decimal_0
+  }
+
+  measure: sum_inbound_inventory_handling_units {
+    label: "# Inbounded Items (Delivery) in Handl. Units"
+    description: "The sum of inventory changes based on restockings caused by vendor deliveries in Handling Units (excluding inbounds due to cancelled orders)
+                  If this is null is probably because we don't have
+                  Purch. Units defined for this SKU so we can't do the conversion from Sell. Units to Handl. Units"
+    type: sum
+    sql: safe_divide(abs(${quantity_change}),${purchase_unit}) ;;
     filters: [is_inbound: "Yes"]
     value_format_name: decimal_0
   }
