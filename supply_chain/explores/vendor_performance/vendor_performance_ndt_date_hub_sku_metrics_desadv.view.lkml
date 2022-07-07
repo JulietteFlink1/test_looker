@@ -56,6 +56,16 @@ view: vendor_performance_ndt_date_hub_sku_metrics_desadv {
     ;;
   }
 
+  dimension: is_shadow_waste {
+    type: yesno
+    hidden: yes
+    sql:
+           ${desadv_quantity} is not null
+      and  ${inbound_quantity} is not null
+      and ${inbound_quantity} < ${desadv_quantity}
+    ;;
+  }
+
   dimension: is_completely_inbounded {
     type: yesno
     hidden: yes
@@ -110,6 +120,18 @@ view: vendor_performance_ndt_date_hub_sku_metrics_desadv {
     value_format_name: decimal_0
     sql: (${inbound_quantity} - ${desadv_quantity}) ;;
     filters: [is_over_inbound_desadv: "yes"]
+  }
+
+  measure: sum_shadow_waste {
+
+    label:       "# Shadow Waste (DESADV)"
+    description: "The sum of item quantities, that are inbounded with less quantities than their related counterpart on the dispatch notification"
+
+    type: sum
+    value_format_name: decimal_0
+    sql: (${desadv_quantity} - ${inbound_quantity}) ;;
+    filters: [is_shadow_waste: "yes"]
+
   }
 
   measure: pct_over_inbounded_items_desadv {
