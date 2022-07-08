@@ -39,21 +39,6 @@ explore: supply_chain {
       -- filter the time for all big tables of this explore
       {% condition global_filters_and_parameters.datasource_filter %} ${products_hub_assignment.report_date} {% endcondition %}
 
-      -- filter for showing only 1 SKU per (Replenishment) Substitute Group
-      -- and
-      -- case
-      --       when {% condition products_hub_assignment.select_calculation_granularity %} 'sku'           {% endcondition %}
-      --       then true
-
-      --       when {% condition products_hub_assignment.select_calculation_granularity %} 'replenishment' {% endcondition %}
-      --       then ${products_hub_assignment.filter_one_sku_per_replenishment_substitute_group} is true
-
-      --       when {% condition products_hub_assignment.select_calculation_granularity %} 'customer'      {% endcondition %}
-      --       then ${products_hub_assignment.filter_one_sku_per_substitute_group} is true
-
-      --       else null
-      --   end
-
         and
             {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
               or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer' %}
@@ -92,15 +77,15 @@ explore: supply_chain {
     ]
   }
 
-  access_filter: {
-    field: hubs_ct.country_iso
-    user_attribute: country_iso
+  # access_filter: {
+  #   field: hubs_ct.country_iso
+  #   user_attribute: country_iso
 
-  }
-  access_filter: {
-    field: hubs_ct.city
-    user_attribute: city
-  }
+  # }
+  # access_filter: {
+  #   field: hubs_ct.city
+  #   user_attribute: city
+  # }
 
   # products_hub_assignment.select_assignment_logic: "replenishment",
 
