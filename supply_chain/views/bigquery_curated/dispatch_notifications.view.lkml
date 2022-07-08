@@ -266,6 +266,14 @@ view: dispatch_notifications {
     sql: ${TABLE}.delivery_party_id ;;
   }
 
+  dimension: is_supplier_oos {
+    label: "Is Supplier OOS"
+    description: "Whenever a SKU listed on a DESADV has a handling unit count of 0, this usually indicates, that the supplier was not able to deliver the ordered SKU"
+
+    type: yesno
+    sql: ${handling_units_count} = 0 ;;
+  }
+
 
   # =========  hidden   =========
   dimension: source {
