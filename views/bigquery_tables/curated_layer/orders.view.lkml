@@ -14,7 +14,7 @@ view: orders {
       customer_type,
       gmv_gross,
       discount_amount,
-      delivery_eta_timestamp_raw,
+      delivery_pdt_timestamp_raw,
       delivery_timestamp_raw
     ]
   }
@@ -423,7 +423,8 @@ view: orders {
     sql: ${created_hour_of_day} < ${now_hour_of_day} ;;
   }
 
-  dimension_group: delivery_eta_timestamp {
+  dimension_group: delivery_pdt_timestamp {
+    alias: [delivery_eta_timestamp]
     group_label: "* Dates and Timestamps *"
     label: "Delivery PDT"
     description: "Promised Delivery time as shown to customer"
@@ -443,23 +444,31 @@ view: orders {
     sql: ${TABLE}.delivery_pdt_timestamp ;;
   }
 
-  dimension: delivery_delay_since_eta {
+  dimension: delivery_delay_since_pdt {
+    alias: [delivery_delay_since_eta]
     group_label: "* Operations / Logistics *"
-    label: "Delta to PDT (min)"
+    label: "Delivery delay to PDT (min)"
     description: "Delay versus promised delivery time (as shown to customer)"
-    type: duration_minute
-    sql_start: ${delivery_eta_timestamp_raw};;
-    sql_end: ${delivery_timestamp_raw};;
+    type: number
+    sql: ${TABLE}.delivery_delay_since_pdt_minutes ;;
   }
 
-  dimension: delivery_delay_since_eta_seconds {
+  dimension: delta_to_pdt_minutes {
     group_label: "* Operations / Logistics *"
-    label: "Delta to PDT (sec)"
-    description: "Delay versus promised delivery time (as shown to customer)"
+    label: "Delta to PDT (min)"
+    description: "Delta to promised delivery time (as shown to customer)"
+    type: number
+    sql: ${TABLE}.delta_to_pdt_minutes ;;
+  }
+
+  dimension: delivery_delay_since_pdt_seconds {
+    alias: [delivery_delay_since_eta_seconds]
+    group_label: "* Operations / Logistics *"
+    label: "Delivery delay to PDT (sec)"
+    description: "Delay versus promised delivery time in seconds (as shown to customer)"
     hidden: yes
-    type: duration_second
-    sql_start: ${delivery_eta_timestamp_raw};;
-    sql_end: ${delivery_timestamp_raw};;
+    type: number
+    sql: ${TABLE}.delivery_delay_since_pdt_minutes * 60 ;;
   }
 
   dimension: delivery_delay_since_time_estimate {
@@ -2578,7 +2587,7 @@ view: orders {
     description: "Count of Orders delivered no later than PDT"
     hidden:  yes
     type: count
-    filters: [delivery_delay_since_eta:"<=0.5"]
+    filters: [delta_to_pdt_minutes:"<=0.5"]
     value_format: "0"
   }
 
@@ -2688,7 +2697,7 @@ view: orders {
     description: "Count of Orders delivered >5min later than PDT"
     hidden:  yes
     type: count
-    filters: [delivery_delay_since_eta:">=5"]
+    filters: [delta_to_pdt_minutes:">=5"]
     value_format: "0"
   }
 
@@ -2698,7 +2707,7 @@ view: orders {
     description: "Count of Orders delivered >10min later than PDT"
     hidden:  yes
     type: count
-    filters: [delivery_delay_since_eta:">=10"]
+    filters: [delta_to_pdt_minutes:">=10"]
     value_format: "0"
   }
 
@@ -2708,7 +2717,7 @@ view: orders {
     description: "Count of Orders delivered >15min later than PDT"
     hidden:  yes
     type: count
-    filters: [delivery_delay_since_eta:">=15"]
+    filters: [delta_to_pdt_minutes:">=15"]
     value_format: "0"
   }
 
