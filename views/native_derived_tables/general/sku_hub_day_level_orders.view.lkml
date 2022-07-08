@@ -21,9 +21,9 @@ view: sku_hub_day_level_orders {
       column: unit_price_gross_amount        { field: products.amt_product_price_gross }
 
       # measures
-      column: sum_item_price_fulfilled_gross { field: orderline.sum_item_price_fulfilled_gross }
-      column: sum_item_price_fulfilled_net   { field: orderline.sum_item_price_fulfilled_net }
-      column: sum_item_quantity_fulfilled    { field: orderline.sum_item_quantity_fulfilled }
+      column: sum_item_price_fulfilled_gross { field: orderline.sum_item_price_gross }
+      column: sum_item_price_fulfilled_net   { field: orderline.sum_item_price_net }
+      column: sum_item_quantity_fulfilled    { field: orderline.sum_item_quantity }
 
 
       filters: {

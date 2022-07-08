@@ -7,7 +7,7 @@ view: skus_fulfilled_per_hub_and_date {
       column: created_date                { field: orders_cl.created_date }
       column: hub_code_lowercase          { field: hubs.hub_code }
       column: product_sku                 { field: products.product_sku }
-      column: sum_item_quantity_fulfilled { field: orderline.sum_item_quantity_fulfilled }
+      column: sum_item_quantity_fulfilled { field: orderline.sum_item_quantity }
       column: sum_item_quantity           { field: orderline.sum_item_quantity }
     }
   }
