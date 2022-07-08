@@ -16,21 +16,21 @@ view: order_comments {
     group_label: "* Delivery Dimensions *"
     hidden: no
     type: yesno
-    sql: TIME_DIFF(TIME(${delivery_eta_timestamp_raw}), TIME(${delivery_timestamp_raw}), MINUTE) > 0 ;;
+    sql: TIME_DIFF(TIME(${delivery_pdt_timestamp_raw}), TIME(${delivery_timestamp_raw}), MINUTE) > 0 ;;
   }
 
   dimension: is_late_delivery {
     group_label: "* Delivery Dimensions *"
     hidden: no
     type: yesno
-    sql: TIME_DIFF(TIME(${delivery_eta_timestamp_raw}), TIME(${delivery_timestamp_raw}), MINUTE) < 0 ;;
+    sql: TIME_DIFF(TIME(${delivery_pdt_timestamp_raw}), TIME(${delivery_timestamp_raw}), MINUTE) < 0 ;;
   }
 
   dimension: is_on_time_delivery {
     group_label: "* Delivery Dimensions *"
     hidden: no
     type: yesno
-    sql: TIME_DIFF(TIME(${delivery_eta_timestamp_raw}), TIME(${delivery_timestamp_raw}), MINUTE) = 0 ;;
+    sql: TIME_DIFF(TIME(${delivery_pdt_timestamp_raw}), TIME(${delivery_timestamp_raw}), MINUTE) = 0 ;;
   }
 
   dimension: picker_acceptance_time {
@@ -101,17 +101,17 @@ view: order_comments {
     type: string
     case: {
       when: {
-        sql: TIME_DIFF(TIME(${delivery_eta_timestamp_raw}), TIME(${delivery_timestamp_raw}), MINUTE) > 0
+        sql: TIME_DIFF(TIME(${delivery_pdt_timestamp_raw}), TIME(${delivery_timestamp_raw}), MINUTE) > 0
           AND (${status}="Complete" OR ${status}="fulfilled" OR ${status}="partially fulfilled");;
         label: "Early"
       }
       when: {
-        sql: TIME_DIFF(TIME(${delivery_eta_timestamp_raw}), TIME(${delivery_timestamp_raw}), MINUTE) = 0
+        sql: TIME_DIFF(TIME(${delivery_pdt_timestamp_raw}), TIME(${delivery_timestamp_raw}), MINUTE) = 0
           AND (${status}="Complete" OR ${status}="fulfilled" OR ${status}="partially fulfilled");;
         label: "On Time"
       }
       when: {
-        sql: TIME_DIFF(TIME(${delivery_eta_timestamp_raw}), TIME(${delivery_timestamp_raw}), MINUTE) < 0
+        sql: TIME_DIFF(TIME(${delivery_pdt_timestamp_raw}), TIME(${delivery_timestamp_raw}), MINUTE) < 0
           AND (${status}="Complete" OR ${status}="fulfilled" OR ${status}="partially fulfilled");;
         label: "Late"
       }
