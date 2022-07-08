@@ -31,7 +31,8 @@ view: dispatch_notifications {
       sum_number_of_dispatch_notifications,
 
       dynamic_delivery_date,
-      is_double_parent_sku
+      is_double_parent_sku,
+      is_supplier_oos
     ]
   }
 
@@ -267,7 +268,7 @@ view: dispatch_notifications {
   }
 
   dimension: is_supplier_oos {
-    label: "Is Supplier OOS"
+    label: "Is out of stock at supplier"
     description: "Whenever a SKU listed on a DESADV has a handling unit count of 0, this usually indicates, that the supplier was not able to deliver the ordered SKU"
 
     type: yesno

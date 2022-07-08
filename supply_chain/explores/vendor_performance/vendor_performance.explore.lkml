@@ -48,6 +48,15 @@ explore: vendor_performance {
   sql_always_where: {% condition global_filters_and_parameters.datasource_filter %} ${products_hub_assignment.report_date} {% endcondition %} ;;
 
   always_filter: {filters: [global_filters_and_parameters.datasource_filter: "8 days ago for 7 days"]}
+  access_filter: {
+    field: hubs.country_iso
+    user_attribute: country_iso
+
+  }
+  access_filter: {
+    field: hubs.city
+    user_attribute: city
+  }
 
   join: global_filters_and_parameters {
     view_label: "* Global *"
