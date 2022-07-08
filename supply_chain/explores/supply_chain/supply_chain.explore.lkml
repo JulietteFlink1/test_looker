@@ -92,6 +92,16 @@ explore: supply_chain {
     ]
   }
 
+  access_filter: {
+    field: hubs_ct.country_iso
+    user_attribute: country_iso
+
+  }
+  access_filter: {
+    field: hubs_ct.city
+    user_attribute: city
+  }
+
   # products_hub_assignment.select_assignment_logic: "replenishment",
 
   join: global_filters_and_parameters {
