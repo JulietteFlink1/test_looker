@@ -74,25 +74,9 @@ explore: supply_chain {
       -- filter the time for all big tables of this explore
       {% condition global_filters_and_parameters.datasource_filter %} ${products_hub_assignment.report_date} {% endcondition %}
 
-        and
-            {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
-              or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer' %}
-              true
-
-            {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
-              ${products_hub_assignment.filter_one_sku_per_replenishment_substitute_group} is true
-
-            {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'customer' %}
-              ${products_hub_assignment.filter_one_sku_per_substitute_group} is true
-
-            {% endif %}
-
-        and
-            ${products_hub_assignment.hub_code} not in ('de_ham_alto')
-        and
-            ${hubs_ct.is_test_hub} is false
-        and
-            ${hubs_ct.start_date} <= ${products_hub_assignment.report_date}
+        and ${products_hub_assignment.hub_code} not in ('de_ham_alto')
+        and ${hubs_ct.is_test_hub} is false
+        and ${hubs_ct.start_date} <= ${products_hub_assignment.report_date}
       ;;
 
 
@@ -110,19 +94,36 @@ explore: supply_chain {
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   #  - - - - - - - - - -    JOINED TABLES
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  # ~ ~ ~ ~ ~ ~  START: NEW AVAILIABILITY FILERING APPROACH ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
   join: inventory_daily {
 
     view_label: "02 Inventory Daily"
 
     type: left_outer
-    relationship: one_to_one
+    relationship: many_to_one
     sql_on:
         ${inventory_daily.hub_code}    = ${products_hub_assignment.hub_code}     and
         ${inventory_daily.sku}         = ${products_hub_assignment.sku}          and
         ${inventory_daily.report_date} = ${products_hub_assignment.report_date}  and
         {% condition global_filters_and_parameters.datasource_filter %} ${inventory_daily.report_date} {% endcondition %}
+        -- dynamic filtering per Assignment and Groups
+        and
+            {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
+              or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer' %}
+              true
+
+            {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
+              ${products_hub_assignment.one_sku_per_replenishment_substitute_group} = ${inventory_daily.sku}
+
+            {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'customer' %}
+              ${products_hub_assignment.one_sku_per_substitute_group} = ${inventory_daily.sku}
+
+            {% endif %}
     ;;
   }
+
+  # ~ ~ ~ ~ ~ ~  END: NEW AVAILIABILITY FILERING APPROACH ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
   join: inventory_hourly {
 
