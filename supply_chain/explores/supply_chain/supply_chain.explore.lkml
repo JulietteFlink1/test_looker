@@ -335,22 +335,6 @@ explore: supply_chain {
     relationship: many_to_one
   }
 
-#Matching Logic Metrics
-
-  join: matching_inventory_level {
-
-    view_label: ""
-
-    type:         left_outer
-    relationship: many_to_one
-
-    sql_on:
-        ${matching_inventory_level.sku}                     = coalesce(${products_hub_assignment.leading_sku_replenishment_substitute_group}, ${products_hub_assignment.sku}) and
-        ${matching_inventory_level.hub_code}                = ${products_hub_assignment.hub_code}                                        and
-        ${matching_inventory_level.promised_delivery_date}  = ${products_hub_assignment.report_date}                                     and
-        ${matching_inventory_level.vendor_id}               = ${products_hub_assignment.erp_vendor_id}
-    ;;
-  }
 
 
 
