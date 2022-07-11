@@ -174,6 +174,13 @@ view: picker_order_progress_sku_aggregates {
     sql: ${TABLE}.number_of_item_picked ;;
   }
 
+  measure: total_item_skipped {
+    group_label: "Total Metrics"
+    label: "# Items Skipped"
+    type: sum
+    sql: ${TABLE}.number_of_item_skipped ;;
+  }
+
   measure: total_items {
     group_label: "Total Metrics"
     label: "# Total Items"
@@ -207,5 +214,14 @@ view: picker_order_progress_sku_aggregates {
     description: "# items unavailable / # total items"
     value_format_name: percent_1
     sql: ${total_item_unavailable} / nullif(${total_items},0) ;;
+  }
+
+  measure: skipped_items_per_total_items {
+    group_label: "Rate Metrics"
+    label: "% Skipped items"
+    type: number
+    description: "# items skipped / # total items"
+    value_format_name: percent_1
+    sql: ${total_item_skipped} / nullif(${total_items},0) ;;
   }
 }
