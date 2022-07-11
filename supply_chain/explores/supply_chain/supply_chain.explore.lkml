@@ -24,16 +24,51 @@ include: "/**/bulk_inbounding_performance.view"
 
 explore: supply_chain {
 
+
   label:       "Supply Chain Explore"
   description: "This explore covers inventory data based on CommerceTools
                 and Stock Changelogs provided by Hub-Tech. It is enrichted with reporting tables to measure the
                 vendor performance"
   group_label: "Supply Chain"
 
+
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  #  - - - - - - - - - -    BASE TABLE
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   from  :     products_hub_assignment_v2
   view_name:  products_hub_assignment
   view_label: "01 Products Hub Assignment"
 
+
+
+
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  #  - - - - - - - - - -    FILTER & SETTINGS
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  hidden: no
+
+  always_filter: {
+    filters: [
+      products_hub_assignment.assingment_dynamic: "Yes",
+
+      global_filters_and_parameters.datasource_filter: "last 30 days",
+
+      products_hub_assignment.select_calculation_granularity: "customer"
+
+    ]
+  }
+
+  access_filter: {
+    field: hubs_ct.country_iso
+    user_attribute: country_iso
+
+  }
+  access_filter: {
+    field: hubs_ct.city
+    user_attribute: city
+  }
 
   sql_always_where:
       -- filter the time for all big tables of this explore
@@ -58,36 +93,8 @@ explore: supply_chain {
             ${hubs_ct.is_test_hub} is false
         and
             ${hubs_ct.start_date} <= ${products_hub_assignment.report_date}
-
-        and
-            left(${products_hub_assignment.sku},1) != '9'
-
-
       ;;
-  hidden: no
 
-  always_filter: {
-    filters: [
-      products_hub_assignment.assingment_dynamic: "Yes",
-
-      global_filters_and_parameters.datasource_filter: "last 30 days",
-
-      products_hub_assignment.select_calculation_granularity: "customer"
-
-    ]
-  }
-
-  # access_filter: {
-  #   field: hubs_ct.country_iso
-  #   user_attribute: country_iso
-
-  # }
-  # access_filter: {
-  #   field: hubs_ct.city
-  #   user_attribute: city
-  # }
-
-  # products_hub_assignment.select_assignment_logic: "replenishment",
 
   join: global_filters_and_parameters {
 
@@ -98,6 +105,11 @@ explore: supply_chain {
     relationship: one_to_one
   }
 
+
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  #  - - - - - - - - - -    JOINED TABLES
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   join: inventory_daily {
 
     view_label: "02 Inventory Daily"
