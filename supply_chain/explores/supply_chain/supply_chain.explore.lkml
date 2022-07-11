@@ -368,20 +368,6 @@ explore: supply_chain {
     ;;
   }
 
-  join: unplanned_inbounds {
-
-    view_label: "13 Matching Inventory"
-
-    type:         left_outer
-    relationship: many_to_one
-
-    sql_on:
-        ${unplanned_inbounds.sku}          = coalesce(${products_hub_assignment.leading_sku_replenishment_substitute_group}, ${products_hub_assignment.sku}) and
-        ${unplanned_inbounds.hub_code}     = ${products_hub_assignment.hub_code}                                        and
-        ${unplanned_inbounds.report_date}  = ${products_hub_assignment.report_date}
-    ;;
-  }
-
 
 
   join: mean_and_std {
