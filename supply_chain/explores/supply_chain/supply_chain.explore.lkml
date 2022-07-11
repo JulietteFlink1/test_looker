@@ -352,22 +352,6 @@ explore: supply_chain {
     ;;
   }
 
-  join: replenishment_purchase_orders_all_dates {
-
-    view_label: ""
-
-    type:         left_outer
-    relationship: many_to_one
-    from: replenishment_purchase_orders
-
-    sql_on:
-    ${replenishment_purchase_orders_all_dates.sku}              = coalesce(${products_hub_assignment.leading_sku_replenishment_substitute_group}, ${products_hub_assignment.sku}) and
-    ${replenishment_purchase_orders_all_dates.hub_code}         = ${products_hub_assignment.hub_code}                                        and
-    ${replenishment_purchase_orders_all_dates.delivery_date}    = ${products_hub_assignment.report_date}                                     and
-    ${replenishment_purchase_orders_all_dates.vendor_id}        = ${products_hub_assignment.erp_vendor_id}
-    ;;
-  }
-
 
 
   join: mean_and_std {
