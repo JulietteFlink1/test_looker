@@ -24,61 +24,29 @@ include: "/**/bulk_inbounding_performance.view"
 
 explore: supply_chain {
 
+
   label:       "Supply Chain Explore"
   description: "This explore covers inventory data based on CommerceTools
                 and Stock Changelogs provided by Hub-Tech. It is enrichted with reporting tables to measure the
                 vendor performance"
   group_label: "Supply Chain"
 
+
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  #  - - - - - - - - - -    BASE TABLE
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   from  :     products_hub_assignment_v2
   view_name:  products_hub_assignment
   view_label: "01 Products Hub Assignment"
 
 
-  sql_always_where:
-      -- filter the time for all big tables of this explore
-      {% condition global_filters_and_parameters.datasource_filter %} ${products_hub_assignment.report_date} {% endcondition %}
-
-      -- filter for showing only 1 SKU per (Replenishment) Substitute Group
-      -- and
-      -- case
-      --       when {% condition products_hub_assignment.select_calculation_granularity %} 'sku'           {% endcondition %}
-      --       then true
-
-      --       when {% condition products_hub_assignment.select_calculation_granularity %} 'replenishment' {% endcondition %}
-      --       then ${products_hub_assignment.filter_one_sku_per_replenishment_substitute_group} is true
-
-      --       when {% condition products_hub_assignment.select_calculation_granularity %} 'customer'      {% endcondition %}
-      --       then ${products_hub_assignment.filter_one_sku_per_substitute_group} is true
-
-      --       else null
-      --   end
-
-        and
-            {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
-              or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer' %}
-              true
-
-            {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
-              ${products_hub_assignment.filter_one_sku_per_replenishment_substitute_group} is true
-
-            {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'customer' %}
-              ${products_hub_assignment.filter_one_sku_per_substitute_group} is true
-
-            {% endif %}
-
-        and
-            ${products_hub_assignment.hub_code} not in ('de_ham_alto')
-        and
-            ${hubs_ct.is_test_hub} is false
-        and
-            ${hubs_ct.start_date} <= ${products_hub_assignment.report_date}
-
-        and
-            left(${products_hub_assignment.sku},1) != '9'
 
 
-      ;;
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  #  - - - - - - - - - -    FILTER & SETTINGS
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   hidden: no
 
   always_filter: {
@@ -102,7 +70,31 @@ explore: supply_chain {
     user_attribute: city
   }
 
-  # products_hub_assignment.select_assignment_logic: "replenishment",
+  sql_always_where:
+      -- filter the time for all big tables of this explore
+      {% condition global_filters_and_parameters.datasource_filter %} ${products_hub_assignment.report_date} {% endcondition %}
+
+        and
+            {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
+              or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer' %}
+              true
+
+            {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
+              ${products_hub_assignment.filter_one_sku_per_replenishment_substitute_group} is true
+
+            {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'customer' %}
+              ${products_hub_assignment.filter_one_sku_per_substitute_group} is true
+
+            {% endif %}
+
+        and
+            ${products_hub_assignment.hub_code} not in ('de_ham_alto')
+        and
+            ${hubs_ct.is_test_hub} is false
+        and
+            ${hubs_ct.start_date} <= ${products_hub_assignment.report_date}
+      ;;
+
 
   join: global_filters_and_parameters {
 
@@ -113,6 +105,11 @@ explore: supply_chain {
     relationship: one_to_one
   }
 
+
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  #  - - - - - - - - - -    JOINED TABLES
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   join: inventory_daily {
 
     view_label: "02 Inventory Daily"
