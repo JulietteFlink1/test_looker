@@ -7,13 +7,10 @@ view: product_feedback_cleaned {
     description: "Date when we received the Customer Feedback Response"
     type: time
     timeframes: [
-      raw,
       time,
       date,
       week,
-      month,
-      quarter,
-      year
+      month
     ]
     sql: ${TABLE}.date ;;
   }

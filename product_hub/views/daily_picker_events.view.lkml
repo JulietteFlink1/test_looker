@@ -187,6 +187,13 @@ view: daily_picker_events {
     sql: ${TABLE}.reason ;;
   }
 
+  dimension: ean_failed {
+    group_label: "Event Dimensions"
+    type: string
+    description: "The failed EAN scanned when the action is code_wrong or code_damaged"
+    sql: ${TABLE}.ean_failed ;;
+  }
+
   # ~~ Hidden ~~
 
   dimension_group: event_recieved {
