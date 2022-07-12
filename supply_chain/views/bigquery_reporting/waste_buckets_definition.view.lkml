@@ -16,18 +16,28 @@ view: waste_waterfall_definition {
   }
 
   dimension: sku {
+    label: "SKU"
     type: string
     #group_label: "ID Dimensions"
     sql: ${TABLE}.sku ;;
   }
 
+  dimension: parent_sku {
+    label: "Parent SKU"
+    type: string
+    #group_label: "ID Dimensions"
+    sql: ${TABLE}.parent_sku ;;
+  }
+
   dimension: hub_code {
+    label: "Hub Code"
     type: string
     #group_label: "ID Dimensions"
     sql: ${TABLE}.hub_code ;;
   }
 
   dimension: country_iso {
+    label: "Country ISO"
     type: string
     #group_label: "ID Dimensions"
     sql: ${TABLE}.country_iso ;;
@@ -39,6 +49,7 @@ view: waste_waterfall_definition {
 ##################################################################################
 
   dimension_group: inventory_change {
+    label: "> Inventory Change"
     type: time
     timeframes: [
       raw,
