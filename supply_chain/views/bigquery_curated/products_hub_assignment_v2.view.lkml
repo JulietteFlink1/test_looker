@@ -52,6 +52,30 @@ view: products_hub_assignment_v2 {
     default_value: "replenishment"
   }
 
+  parameter: date_granularity {
+    group_label: "* Parameters & Dynamic Fields *"
+    label: "Select Date Granularity"
+    type: unquoted
+    allowed_value: { value: "Day" }
+    allowed_value: { value: "Week" }
+    allowed_value: { value: "Month" }
+    default_value: "Week"
+  }
+
+  dimension: report_date_dynamic {
+    group_label: "* Parameters & Dynamic Fields *"
+    label: "Report Date (Dynamic)"
+    label_from_parameter: date_granularity
+    sql:
+    {% if date_granularity._parameter_value == 'Day' %}
+      ${report_date}
+    {% elsif date_granularity._parameter_value == 'Week' %}
+      ${report_week}
+    {% elsif date_granularity._parameter_value == 'Month' %}
+      ${report_month}
+    {% endif %};;
+  }
+
 
   #parameter: select_assignment_logic {
   #  # this paramter either applies SKU-to-Hub Assingment logic according to the Supply Chain (replenishment-facing) or Commercial (customer facing)
@@ -99,8 +123,21 @@ view: products_hub_assignment_v2 {
   }
 
 
-  dimension: report_date {
-    type: date
+  # dimension: report_date {
+  #   type: date
+  #   datatype: date
+  #   sql: ${TABLE}.report_date ;;
+  # }
+
+  dimension_group: report {
+    label: "Report"
+    type: time
+    timeframes: [
+      raw,
+      date,
+      week,
+      month
+    ]
     datatype: date
     sql: ${TABLE}.report_date ;;
   }
@@ -356,6 +393,14 @@ view: products_hub_assignment_v2 {
     hidden: yes
   }
 
+  dimension: one_sku_per_replenishment_substitute_group {
+
+    hidden: yes
+    sql: if(${filter_one_sku_per_replenishment_substitute_group} is true
+      and ${is_sku_assigned_to_hub} is true,
+      ${sku}, null) ;;
+  }
+
   dimension: filter_one_sku_per_substitute_group {
 
     label: "Filter: Only leading SKU per CT Substitute Group"
@@ -365,6 +410,13 @@ view: products_hub_assignment_v2 {
     type: yesno
     sql: ${TABLE}.filter_one_sku_per_substitute_group  ;;
     hidden: yes
+  }
+
+  dimension: one_sku_per_substitute_group {
+
+    hidden: yes
+    sql: if(${filter_one_sku_per_substitute_group} is true
+    and ${ct_final_decision_is_sku_assigned_to_hub} is true, ${sku}, null) ;;
   }
 
 
