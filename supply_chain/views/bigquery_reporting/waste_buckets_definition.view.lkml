@@ -46,7 +46,8 @@ view: waste_waterfall_definition {
       week,
       month,
       quarter,
-      year
+      year,
+      week_of_year
     ]
     convert_tz: yes
     datatype: date
