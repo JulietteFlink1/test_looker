@@ -23,7 +23,7 @@ view: products_hub_assignment_v2 {
 
     # this parameter is defined at the products_hub_assignment level, as this view is the base of the Supply Chain explore
 
-    label:       "Select Metric Aggregation Level + SKU-to-Hub Assignment Logic"
+    label:       "[Availability] Select Aggregation & Assignment Logic"
     group_label: "* Parameters & Dynamic Fields *"
     description: "Chose, on what level you want to calculate metrics such as esp. the oos-rate"
 
