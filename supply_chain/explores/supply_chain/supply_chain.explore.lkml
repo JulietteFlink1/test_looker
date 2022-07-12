@@ -107,9 +107,11 @@ explore: supply_chain {
         {% condition global_filters_and_parameters.datasource_filter %} ${inventory_daily.report_date} {% endcondition %}
         -- dynamic filtering per Assignment and Groups
         and
-            {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
-              or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer' %}
-              true
+            {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment' %}
+              ${products_hub_assignment.one_sku_per_erp_assignment_logic} = ${inventory_daily.sku}
+
+            {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer' %}
+              ${products_hub_assignment.one_sku_per_ct_assignment_logic} = ${inventory_daily.sku}
 
             {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
               ${products_hub_assignment.one_sku_per_replenishment_substitute_group} = ${inventory_daily.sku}

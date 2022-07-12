@@ -392,7 +392,7 @@ view: products_hub_assignment_v2 {
     sql: ${TABLE}.filter_one_sku_per_replenishment_substitute_group  ;;
     hidden: yes
   }
-
+  # ~ ~ ~ ~ ~ ~  START: NEW AVAILIABILITY FILERING APPROACH ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
   dimension: one_sku_per_replenishment_substitute_group {
 
     hidden: yes
@@ -418,6 +418,17 @@ view: products_hub_assignment_v2 {
     sql: if(${filter_one_sku_per_substitute_group} is true
     and ${ct_final_decision_is_sku_assigned_to_hub} is true, ${sku}, null) ;;
   }
+
+  dimension: one_sku_per_ct_assignment_logic {
+    hidden: yes
+    sql: if(${ct_final_decision_is_sku_assigned_to_hub} is true, ${sku}, null) ;;
+  }
+
+  dimension: one_sku_per_erp_assignment_logic {
+    hidden: yes
+    sql: if(${is_sku_assigned_to_hub} is true, ${sku}, null) ;;
+  }
+  # ~ ~ ~ ~ ~ ~  END: NEW AVAILIABILITY FILERING APPROACH ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 
   # =========  IDs   =========
