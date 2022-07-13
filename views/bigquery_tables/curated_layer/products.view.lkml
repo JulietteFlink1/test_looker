@@ -207,6 +207,12 @@ view: products {
     sql: ${TABLE}.weight ;;
   }
 
+  dimension: organic_control_number {
+    group_label: "> Product Attributes"
+    type: string
+    sql: ${TABLE}.organic_control_number ;;
+  }
+
   ####### Product Compliance Report Fields ########
 
   dimension: is_ingredients_missing {
