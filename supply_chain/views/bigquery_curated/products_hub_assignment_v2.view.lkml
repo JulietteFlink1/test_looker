@@ -136,7 +136,8 @@ view: products_hub_assignment_v2 {
       raw,
       date,
       week,
-      month
+      month,
+      day_of_week_index
     ]
     datatype: date
     sql: ${TABLE}.report_date ;;
@@ -460,6 +461,44 @@ view: products_hub_assignment_v2 {
   measure: count {
     type: count
   }
+
+
+####################################################################################################################################
+####################################################################################################################################
+################################################ Demand Planning ###################################################################
+####################################################################################################################################
+####################################################################################################################################
+
+
+
+  measure: cnt_unique_skus_today {
+    label: "# unique SKUs Today"
+    group_label: "Demand Planning"
+    type: count_distinct
+    sql: ${sku_dynamic} ;;
+    hidden: yes
+    filters: [report_date: "today", is_sku_assigned_to_hub: "yes"]
+  }
+
+  measure: cnt_unique_skus_7_days_ago {
+    label: "# unique SKUs - Same day last week"
+    group_label: "Demand Planning"
+    type: count_distinct
+    sql: ${sku_dynamic} ;;
+    hidden: yes
+    filters: [report_date: "7 days ago", is_sku_assigned_to_hub: "yes"]
+  }
+
+  measure: pct_unique_skus_dod {
+    label: "% Growth unique SKUs Today - Same day last week"
+    group_label: "Demand Planning"
+    type: number
+    hidden: yes
+    sql: (${cnt_unique_skus_today} - ${cnt_unique_skus_7_days_ago})/ nullif(${cnt_unique_skus_7_days_ago}, 0)  ;;
+    value_format_name: percent_1
+
+    }
+
 
 
 }

@@ -172,4 +172,294 @@ view: sku_hub_day_level_orders {
     type: average
     value_format_name: eur
   }
+
+##########################################################################################################################
+##########################################################################################################################
+############################################# Demand Planning ############################################################
+##########################################################################################################################
+##########################################################################################################################
+
+  #This is needed to calculate week to date
+
+  dimension_group: report_date {
+    label: "Order Date Timeframe"
+    # group_label: "* Order Lineitems *"
+    description: "Order Placement Date"
+    type: time
+    timeframes: [
+      raw,
+      date,
+      week,
+      month,
+      day_of_week,
+      day_of_week_index
+    ]
+    hidden: yes
+    datatype: date
+    sql: ${created_date} ;;
+  }
+
+  dimension_group: current_date_t_1 {
+    label: "Current Date - 1"
+    type: time
+    timeframes: [
+      date,
+      week,
+      month,
+      day_of_week_index,
+      day_of_week
+    ]
+    convert_tz: no
+    datatype: date
+    sql: date_sub(current_date(), interval 1 day) ;;
+    hidden: yes
+  }
+
+  dimension: until_today {
+    type: yesno
+    sql: ${report_date_day_of_week_index} <= ${current_date_t_1_day_of_week_index} AND
+      ${report_date_day_of_week_index} >= 0 ;;
+    hidden: yes
+  }
+
+
+ ## Quantity in Items
+
+## Daily
+
+  measure: sum_item_quantity_fulfilled_t_1 {
+    label: "SUM Item Quantity fulfilled t-1"
+    group_label: "Demand Planning"
+    description: "Quantity of Order Line Items fulfilled t-1"
+    value_format_name: decimal_0
+    type: sum
+    sql: ${TABLE}.sum_item_quantity_fulfilled ;;
+    filters: [created_date: "yesterday"]
+    hidden: yes
+  }
+
+  measure: sum_item_quantity_fulfilled_t_2 {
+    label: "SUM Item Quantity fulfilled t-2"
+    group_label: "Demand Planning"
+    description: "Quantity of Order Line Items fulfilled t-2"
+    value_format_name: decimal_0
+    type: sum
+    sql: ${TABLE}.sum_item_quantity_fulfilled ;;
+    filters: [created_date: "2 days ago"]
+    hidden: yes
+  }
+
+  measure: sum_item_quantity_fulfilled_t_3 {
+    label: "SUM Item Quantity fulfilled t-3"
+    group_label: "Demand Planning"
+    description: "Quantity of Order Line Items fulfilled t-3"
+    value_format_name: decimal_0
+    type: sum
+    sql: ${TABLE}.sum_item_quantity_fulfilled ;;
+    filters: [created_date: "3 days ago"]
+    hidden: yes
+  }
+
+  measure: sum_item_quantity_fulfilled_t_4 {
+    label: "SUM Item Quantity fulfilled t-4"
+    group_label: "Demand Planning"
+    description: "Quantity of Order Line Items fulfilled t-4"
+    value_format_name: decimal_0
+    type: sum
+    sql: ${TABLE}.sum_item_quantity_fulfilled ;;
+    filters: [created_date: "4 days ago"]
+    hidden: yes
+  }
+
+  ## weekly
+
+  measure: sum_item_quantity_fulfilled_w_1 {
+    label: "SUM Item Quantity fulfilled w-1"
+    group_label: "Demand Planning"
+    description: "Quantity of Order Line Items fulfilled w-1"
+    value_format_name: decimal_0
+    type: sum
+    sql: ${TABLE}.sum_item_quantity_fulfilled ;;
+    filters: [created_date: "1 week ago"]
+    hidden: yes
+  }
+
+  measure: sum_item_quantity_fulfilled_w_2 {
+    label: "SUM Item Quantity fulfilled w-2"
+    group_label: "Demand Planning"
+    description: "Quantity of Order Line Items fulfilled w-2"
+    value_format_name: decimal_0
+    type: sum
+    sql: ${TABLE}.sum_item_quantity_fulfilled ;;
+    filters: [created_date: "2 weeks ago"]
+    hidden: yes
+  }
+
+  measure: sum_item_quantity_fulfilled_w_3 {
+    label: "SUM Item Quantity fulfilled w-3"
+    group_label: "Demand Planning"
+    description: "Quantity of Order Line Items fulfilled w-3"
+    value_format_name: decimal_0
+    type: sum
+    sql: ${TABLE}.sum_item_quantity_fulfilled ;;
+    filters: [created_date: "3 weeks ago"]
+    hidden: yes
+  }
+
+  measure: sum_item_quantity_fulfilled_w_4 {
+    label: "SUM Item Quantity fulfilled w-4"
+    group_label: "Demand Planning"
+    description: "Quantity of Order Line Items fulfilled w-4"
+    value_format_name: decimal_0
+    type: sum
+    sql: ${TABLE}.sum_item_quantity_fulfilled ;;
+    filters: [created_date: "4 weeks ago"]
+    hidden: yes
+  }
+
+
+
+  ## Quantity in Euro
+
+  measure: sum_item_price_fulfilled_gross_t_1 {
+    label: "SUM GMV (gross) t-1"
+    group_label: "Demand Planning"
+    description: "Sum of fulfilled Item prices (incl. VAT) t-1"
+    value_format_name: eur
+    type: sum
+    sql: ${TABLE}.sum_item_price_fulfilled_gross ;;
+    filters: [created_date: "yesterday"]
+    hidden: yes
+  }
+
+  measure: sum_item_price_fulfilled_gross_t_2 {
+    label: "SUM GMV (gross) t-2"
+    group_label: "Demand Planning"
+    description: "Sum of fulfilled Item prices (incl. VAT) t-2"
+    value_format_name: eur
+    type: sum
+    sql: ${TABLE}.sum_item_price_fulfilled_gross ;;
+    filters: [created_date: "2 days ago"]
+    hidden: yes
+  }
+
+  measure: sum_item_price_fulfilled_gross_t_3 {
+    label: "SUM GMV (gross) t-3"
+    group_label: "Demand Planning"
+    description: "Sum of fulfilled Item prices (incl. VAT) t-3"
+    value_format_name: eur
+    type: sum
+    sql: ${TABLE}.sum_item_price_fulfilled_gross ;;
+    filters: [created_date: "3 days ago"]
+    hidden: yes
+  }
+
+  measure: sum_item_price_fulfilled_gross_t_4 {
+    label: "SUM GMV (gross) t-4"
+    group_label: "Demand Planning"
+    description: "Sum of fulfilled Item prices (incl. VAT) t-4"
+    value_format_name: eur
+    type: sum
+    sql: ${TABLE}.sum_item_price_fulfilled_gross ;;
+    filters: [created_date: "4 days ago"]
+    hidden: yes
+  }
+
+   ## weekly
+
+  measure: sum_item_price_fulfilled_gross_w_1 {
+    label: "SUM GMV (gross) w-1"
+    group_label: "Demand Planning"
+    description: "Sum of fulfilled Item prices (incl. VAT) w-1"
+    value_format_name: eur
+    type: sum
+    sql: ${TABLE}.sum_item_price_fulfilled_gross ;;
+    filters: [created_date: "1 week ago"]
+    hidden: yes
+  }
+
+  measure: sum_item_price_fulfilled_gross_w_2 {
+    label: "SUM GMV (gross) w-2"
+    group_label: "Demand Planning"
+    description: "Sum of fulfilled Item prices (incl. VAT) w-2"
+    value_format_name: eur
+    type: sum
+    sql: ${TABLE}.sum_item_price_fulfilled_gross ;;
+    filters: [created_date: "2 weeks ago"]
+    hidden: yes
+  }
+
+  measure: sum_item_price_fulfilled_gross_w_3 {
+    label: "SUM GMV (gross) w-3"
+    group_label: "Demand Planning"
+    description: "Sum of fulfilled Item prices (incl. VAT) w-3"
+    value_format_name: eur
+    type: sum
+    sql: ${TABLE}.sum_item_price_fulfilled_gross ;;
+    filters: [created_date: "3 weeks ago"]
+    hidden: yes
+  }
+
+  measure: sum_item_price_fulfilled_gross_w_4 {
+    label: "SUM GMV (gross) w-4"
+    group_label: "Demand Planning"
+    description: "Sum of fulfilled Item prices (incl. VAT) w-4"
+    value_format_name: eur
+    type: sum
+    sql: ${TABLE}.sum_item_price_fulfilled_gross ;;
+    filters: [created_date: "4 weeks ago"]
+    hidden: yes
+  }
+
+
+  ### w2d
+
+  #Items
+  measure: sum_item_quantity_fulfilled_wtd {
+    label: "SUM Item Quantity fulfilled WtD"
+    group_label: "Demand Planning"
+    description: "Quantity of Order Line Items fulfilled - WtD"
+    value_format_name: decimal_0
+    type: sum
+    sql: ${TABLE}.sum_item_quantity_fulfilled ;;
+    filters: [created_date: "this week", until_today: "yes"]
+    hidden: yes
+  }
+
+  measure: sum_item_quantity_fulfilled_wtd_w_1 {
+    label: "SUM Item Quantity fulfilled WtD w-1"
+    group_label: "Demand Planning"
+    description: "Quantity of Order Line Items fulfilled - Previous week WtD"
+    value_format_name: decimal_0
+    type: sum
+    sql: ${TABLE}.sum_item_quantity_fulfilled ;;
+    filters: [created_date: "1 week ago", until_today: "yes"]
+    hidden: yes
+  }
+
+  #EURO
+
+  measure: sum_item_price_fulfilled_gross_wtd {
+    label: "SUM GMV (gross) WtD"
+    group_label: "Demand Planning"
+    description: "Sum of fulfilled Item prices (incl. VAT) - WtD"
+    value_format_name: eur
+    type: sum
+    sql: ${TABLE}.sum_item_price_fulfilled_gross ;;
+    filters: [created_date: "this week", until_today: "yes"]
+    hidden: yes
+  }
+
+  measure: sum_item_price_fulfilled_gross_wtd_w_1 {
+    label: "SUM GMV (gross) WtD w-1"
+    group_label: "Demand Planning"
+    description: "Sum of fulfilled Item prices (incl. VAT) - Previous week WtD"
+    value_format_name: eur
+    type: sum
+    sql: ${TABLE}.sum_item_price_fulfilled_gross ;;
+    filters: [created_date: "1 week ago", until_today: "yes"]
+    hidden: yes
+  }
+
+
 }
