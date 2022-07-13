@@ -23,14 +23,16 @@ explore: gorillas_pricing_hist {
 
   join: gorillas_products {
     from: gorillas_products
-    sql_on: ${gorillas_products.product_id} = ${gorillas_pricing_hist.product_id} ;;
-            relationship: one_to_many
+    sql_on: ${gorillas_products.product_id} = ${gorillas_pricing_hist.product_id}
+        and ${gorillas_products.hub_id} = ${gorillas_pricing_hist.hub_id};;
+            relationship: one_to_one
             type: left_outer
   }
 
   join: gorillas_categories {
     from: gorillas_categories
-    sql_on: ${gorillas_categories.product_id} = ${gorillas_pricing_hist.product_id};;
+    sql_on: ${gorillas_categories.product_id} = ${gorillas_products.product_id}
+        and ${gorillas_categories.hub_id} = ${gorillas_products.hub_id};;
     relationship: one_to_many
     type:  left_outer
   }
@@ -38,7 +40,7 @@ explore: gorillas_pricing_hist {
   join: gorillas_hubs {
     from:  gorillas_hubs
     sql_on: ${gorillas_hubs.hub_id} = ${gorillas_categories.hub_id} ;;
-    relationship: one_to_many
+    relationship: many_to_one
     type:  left_outer
   }
 
