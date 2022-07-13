@@ -161,6 +161,7 @@ view: gorillas_pricing_hist {
     type: string
     sql: ${TABLE}.product_id ;;
     description: "The Gorillas product ID. Use this field to join Gorillas product data."
+    primary_key: yes
   }
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -182,7 +183,8 @@ view: gorillas_pricing_hist {
 
   measure: count {
     type: count
-    drill_fields: []
+    drill_fields: [product_id, is_geographic_price_difference]
     description: "Generic count measure."
   }
+
 }

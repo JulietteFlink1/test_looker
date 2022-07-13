@@ -28,9 +28,23 @@ explore: order_orderline_cl {
   }
 
   join: products {
+
+    view_label: "* Product Data (CT) *"
+
     sql_on: ${products.product_sku} = ${orderline.product_sku} ;;
     relationship: many_to_one
     type: left_outer
+  }
+
+  join: lexbizz_item {
+
+    view_label: "* Product Data (ERP) *"
+
+    type: left_outer
+    relationship: many_to_one
+    sql_on: ${lexbizz_item.sku}            = ${orderline.product_sku}
+        and ${lexbizz_item.ingestion_date} = current_date()
+    ;;
   }
 
   join: customer_address {

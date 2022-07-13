@@ -1,4 +1,6 @@
-connection: "flink_bq"
+connection: "bq_flat_rate_slots"
+# connection: "flink_bq"
+
 label: "Flink Core Data Model"
 
 include: "/**/*.view.lkml"                # include all views in the views/ folder in this project
