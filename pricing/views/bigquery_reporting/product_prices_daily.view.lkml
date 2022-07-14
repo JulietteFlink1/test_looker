@@ -1,5 +1,5 @@
 view: product_prices_daily {
-  sql_table_name: `flink-data-dev.dbt_astueber.product_prices_daily`
+  sql_table_name: `flink-data-prod.reporting.product_prices_daily`
     ;;
 
   # this view was created by Andreas Stueber

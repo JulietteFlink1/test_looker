@@ -15,6 +15,7 @@ view: products {
     group_label: "> Product Attributes"
     description: "This is CT reporting category"
     sql: ${TABLE}.category ;;
+    drill_fields: [subcategory]
   }
 
   dimension: random_ct_category {
