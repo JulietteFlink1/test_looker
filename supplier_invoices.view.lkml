@@ -41,7 +41,7 @@ view: supplier_invoices {
       month,
     ]
     convert_tz: no
-    hidden: yes
+    hidden: no
     datatype: date
     sql: ${TABLE}.billing_period_end ;;
   }
@@ -57,9 +57,9 @@ view: supplier_invoices {
       month,
     ]
     convert_tz: no
-    hidden: yes
+    hidden: no
     datatype: date
-    sql: ${TABLE}.reference_date ;;
+    sql: ${TABLE}.invoice_creation_date ;;
   }
 
 ########################################################################################################
