@@ -145,5 +145,14 @@ explore: order_orderline_cl {
 
   # Join Lexbizz Raw-Data Model
   # ----------------------------------------
+  join: product_prices_daily {
+    relationship: one_to_one
+    type: left_outer
+    sql_on: ${product_prices_daily.sku}            = ${orderline.product_sku}
+        and ${product_prices_daily.hub_code}       = ${orderline.hub_code}
+        and ${product_prices_daily.reporting_date} = ${orderline.order_date_utc}
+        and {% condition global_filters_and_parameters.datasource_filter %} ${product_prices_daily.reporting_date} {% endcondition %}
+        ;;
+  }
 
 }

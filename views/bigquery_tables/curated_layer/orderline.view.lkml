@@ -411,6 +411,14 @@ view: orderline {
     datatype: timestamp
   }
 
+  dimension: order_date_utc {
+    hidden: yes
+    convert_tz: no
+    sql: date(${TABLE}.order_timestamp) ;;
+    datatype: date
+    type: date
+  }
+
 
   ############# Delivery Issue
 

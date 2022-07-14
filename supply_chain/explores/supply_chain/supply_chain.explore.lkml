@@ -396,6 +396,7 @@ explore: supply_chain {
           ${product_prices_daily.reporting_date} = ${products_hub_assignment.report_date}
       and ${product_prices_daily.hub_code}       = ${products_hub_assignment.hub_code}
       and ${product_prices_daily.sku}            = ${products_hub_assignment.sku}
+      and {% condition global_filters_and_parameters.datasource_filter %} ${product_prices_daily.reporting_date} {% endcondition %}
     ;;
   }
 
