@@ -1,6 +1,6 @@
 view: supplier_invoices {
   sql_table_name: `flink-data-prod.curated.supplier_invoices`
-      ;;
+    ;;
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ~~~~~~~~~~~~~~~     Parameters     ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -48,7 +48,7 @@ view: supplier_invoices {
 
   dimension_group: invoice_creation_date {
     type: time
-    label:       "Delivery date"
+    label:       "Invoice Creation Date"
     description: "Date when the dispatch notification is imported."
     group_label: ">> Dates & Timestamps"
     timeframes: [
@@ -216,15 +216,6 @@ view: supplier_invoices {
     type: sum
     sql: ${amt_total_price_gross} ;;
   }
-
-
-
-
-
-
-
-
-
 
 
 
