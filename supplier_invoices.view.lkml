@@ -1,5 +1,5 @@
 view: supplier_invoices {
-  sql_table_name: `flink-data-dev.curated.supplier_invoices`
+  sql_table_name: `flink-data-prod.curated.supplier_invoices`
       ;;
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -16,7 +16,7 @@ view: supplier_invoices {
 
   dimension_group: billing_period_start {
     type: time
-    label:       "Invoice date"
+    label:       "Invoice Date Start"
     description: "First date of the billing period and date when the invoice is issued."
     group_label: ">> Dates & Timestamps"
     timeframes: [
@@ -32,7 +32,7 @@ view: supplier_invoices {
 
   dimension_group: billing_period_end {
     type: time
-    label:       "Invoice date"
+    label:       "Invoice Date End"
     description: "Last date of the billing period."
     group_label: ">> Dates & Timestamps"
     timeframes: [
@@ -46,7 +46,7 @@ view: supplier_invoices {
     sql: ${TABLE}.billing_period_end ;;
   }
 
-  dimension_group: reference_date {
+  dimension_group: invoice_creation_date {
     type: time
     label:       "Delivery date"
     description: "Date when the dispatch notification is imported."
@@ -162,8 +162,8 @@ view: supplier_invoices {
     sql: safe_cast(${TABLE}.handling_units_count as numeric) ;;
   }
 
-  dimension: amt_item_price {
-    label:       "Item Price Net"
+  dimension: amt_item_price_gross {
+    label:       "Item Price Gross"
     description: "The price (net) per one item."
     group_label: " >> Line Item Data"
     type: number
@@ -171,8 +171,8 @@ view: supplier_invoices {
     sql: safe_cast(${TABLE}.amt_item_price as numeric) ;;
   }
 
-  dimension: amt_total_price {
-    label:       "Item Total Price Net"
+  dimension: amt_total_price_gross {
+    label:       "Item Total Price Gross"
     description: "The total price (net) per item (item price multiplied by item quantity)."
     group_label: " >> Line Item Data"
     type: number
@@ -206,7 +206,7 @@ view: supplier_invoices {
     label:       "€ Item Price Net"
     description: "The price (net) per one item."
     type: sum
-    sql: ${amt_item_price} ;;
+    sql: ${amt_item_price_gross} ;;
   }
 
   measure: sum_amt_total_price {
@@ -214,7 +214,7 @@ view: supplier_invoices {
     label:       "€ Item Total Price Net"
     description: "The total price (net) per item (item price multiplied by item quantity)."
     type: sum
-    sql: ${amt_total_price} ;;
+    sql: ${amt_total_price_gross} ;;
   }
 
 
