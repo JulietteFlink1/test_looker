@@ -14,11 +14,11 @@ include: "/**/*.view"
 
 explore: waste_buckets {
 
-  label:       "Waste Waterfall"
+  label:       "Waste Buckets"
   description: "This explore covers all the necessary data coming from waste_waterfall_definition reporting model"
 
   from  :     waste_waterfall_definition
-  view_label: " 01 Waste Waterfall"
+  view_label: " 01 Waste Buckets"
   group_label: "Supply Chain"
   hidden: yes
 
