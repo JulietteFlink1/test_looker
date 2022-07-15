@@ -1474,6 +1474,62 @@ view: inventory_daily {
   }
 
 
+#Current stock available
+
+  measure: quantity_to_t_1 {
+
+    label: "Quantity To - t-1"
+    description: "The stock level t-1, at the end of the day per day and hub"
+    group_label: "Demand Planning"
+    type: sum
+    sql:  ${inventory_daily.quantity_to} ;;
+    filters: [report_date: "yesterday"]
+    hidden: yes
+
+    value_format_name: decimal_1
+  }
+
+  measure: quantity_to_t_2 {
+
+    label: "Quantity To - t-2"
+    description: "The stock level t-2, at the end of the day per day and hub"
+    group_label: "Demand Planning"
+    type: sum
+    sql:  ${inventory_daily.quantity_to} ;;
+    filters: [report_date: "2 days ago"]
+    hidden: yes
+
+    value_format_name: decimal_1
+  }
+
+
+  measure: quantity_to_adjusted {
+
+    label: "# Current Stock"
+    description: "The stock level t-1, at the end of the day per day and hub"
+    group_label: "Demand Planning"
+    type: number
+    sql:  coalesce(${quantity_to_t_1}, ${quantity_to_t_2}) ;;
+    hidden: no
+
+
+    value_format_name: decimal_1
+  }
+
+
+  measure: days_coverage {
+
+    label: "Days Coverage"
+    description: "The stock level t-1, at the end of the day per day and hub"
+    group_label: "Demand Planning"
+    type: number
+    sql:  (${quantity_to_adjusted} + ${replenishment_purchase_orders.sum_selling_unit_quantity_next_7_days}) / nullif(${orderline.avg_daily_item_quantity_last_14d}, 0) ;;
+    hidden: no
+
+
+    value_format_name: decimal_2
+  }
+
 
 
 
