@@ -15,6 +15,7 @@ view: products {
     group_label: "> Product Attributes"
     description: "This is CT reporting category"
     sql: ${TABLE}.category ;;
+    drill_fields: [subcategory, hubs.hub_code, hubs_ct.hub_code]
   }
 
   dimension: random_ct_category {
