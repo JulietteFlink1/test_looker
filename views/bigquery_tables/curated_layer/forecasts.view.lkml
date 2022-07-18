@@ -388,14 +388,6 @@ view: forecasts {
     value_format_name: decimal_1
   }
 
-  measure: number_of_missed_orders {
-    group_label: "> Order Measures"
-    label: "# Missed Orders"
-    type: sum_distinct
-    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
-    sql: ${TABLE}.number_of_missed_orders ;;
-  }
-
   ##### Forecasted Hours
 
   # =========  Forecasted minutes   =========
