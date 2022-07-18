@@ -38,6 +38,12 @@ view: forecasts {
     sql: coalesce(${TABLE}.quinyx_pipeline_status, "N/A") ;;
   }
 
+  dimension: forecast_horizon {
+    label: "Forecast Horizon (Days)"
+    type: number
+    sql: date_diff(${start_timestamp_date}, ${job_date}, day) ;;
+  }
+
   # =========  Dates   =========
 
   dimension_group: end_timestamp {
@@ -179,30 +185,6 @@ view: forecasts {
     type: number
     sql: ${TABLE}.number_of_forecasted_orders_upper_bound ;;
     hidden: yes
-  }
-
-  # =========  Missed orders   =========
-
-  dimension: number_of_missed_orders_forced_closure {
-    label: "# Missed Orders - Forced Closure"
-    type: number
-    sql: ${TABLE}.number_of_missed_orders_forced_closure ;;
-    hidden: yes
-  }
-
-  dimension: number_of_missed_orders_planned_closure {
-    label: "# Missed Orders - Planned Closure"
-    type: number
-    sql: ${TABLE}.number_of_missed_orders_planned_closure ;;
-    hidden: yes
-  }
-
-  dimension: forecast_horizon {
-    label: "Forecast Horizon (Days)"
-    description: "Days between Timeslot Date and Job Date"
-    type: number
-    value_format_name: decimal_0
-    sql:  date_diff(${start_timestamp_date}, ${job_date}, day) ;;
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -378,6 +360,14 @@ view: forecasts {
     sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
     sql: ${TABLE}.number_of_forecasted_orders ;;
     value_format_name: decimal_0
+  }
+
+  measure: pct_forecast_deviation {
+    group_label: "> Order Measures"
+    label: "% Forecast Deviation"
+    type: number
+    sql: (${orders_with_ops_metrics.cnt_orders}/nullif(${number_of_forecasted_orders},0))-1 ;;
+    value_format_name: percent_1
   }
 
   measure: forecasted_avg_order_handling_duration_seconds {
