@@ -408,6 +408,22 @@ view: forecasts {
     hidden: yes
   }
 
+  measure: number_of_forecasted_adjusted_minutes_picker {
+    label: "# Forecasted Adjusted Picker Minutes"
+    type: sum_distinct
+    sql_distinct_key: ${forecast_uuid} ;;
+    sql: ${TABLE}.number_of_forecasted_adjusted_minutes_picker ;;
+    hidden: yes
+  }
+
+  measure: number_of_forecasted_adjusted_minutes_rider {
+    label: "# Forecasted Adjusted Rider Minutes"
+    type: sum_distinct
+    sql_distinct_key: ${forecast_uuid} ;;
+    sql: ${TABLE}.number_of_forecasted_adjusted_minutes_rider ;;
+    hidden: yes
+  }
+
   measure: number_of_forecasted_hours_rider {
     group_label: "> Rider Measures"
     label: "# Forecasted Rider Hours"
@@ -421,6 +437,22 @@ view: forecasts {
     label: "# Forecasted Picker Hours"
     type: number
     sql: ${number_of_forecasted_minutes_picker}/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_forecasted_adjusted_hours_rider {
+    group_label: "> Rider Measures"
+    label: "# Forecasted Adjusted Rider Hours"
+    type: number
+    sql: ${number_of_forecasted_adjusted_minutes_rider}/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_forecasted_adjusted_hours_picker {
+    group_label: "> Picker Measures"
+    label: "# Forecasted Adjusted Picker Hours"
+    type: number
+    sql: ${number_of_forecasted_adjusted_minutes_picker}/60;;
     value_format_name: decimal_1
   }
   ##### Forecast errors
