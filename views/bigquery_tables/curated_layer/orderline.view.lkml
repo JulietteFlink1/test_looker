@@ -55,6 +55,12 @@ view: orderline {
     sql: ${TABLE}.is_successful_order ;;
   }
 
+  dimension: external_provider {
+    type: string
+    label: "External Provider"
+    sql: ${TABLE}.external_provider ;;
+  }
+
 
   # =========  hidden   =========
   dimension: is_shipping_required {
@@ -530,10 +536,10 @@ view: orderline {
     sql: ${TABLE}.number_of_products_with_undefined_issues ;;
   }
 
-  dimension: number_of_products_with_products_not_on_shelf_issues_carrefour_dim {
-    hidden:  yes
+  dimension: number_of_products_with_post_delivery_issues_dim {
+    hidden: yes
     type: number
-    sql: ${TABLE}.number_of_products_with_products_not_on_shelf_issues_carrefour ;;
+    sql: ${TABLE}.number_of_products_with_post_delivery_issues ;;
   }
 
 
