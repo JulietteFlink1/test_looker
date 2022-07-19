@@ -1,5 +1,5 @@
 view: candidate_application_status {
-  sql_table_name: `flink-data-prod.curated.candidate_application_status`
+  sql_table_name: `flink-data-dev.dbt_jgrammatikas.candidate_application_status`
     ;;
 
   dimension: application_uuid {
@@ -563,7 +563,7 @@ view: candidate_application_status {
   ########## Parameters
 
   parameter: date_granularity {
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     label: "Date Granularity"
     type: unquoted
     allowed_value: { value: "Day" }

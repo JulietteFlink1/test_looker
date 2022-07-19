@@ -60,20 +60,33 @@ view: job_positions {
     drill_fields: []
   }
 
-  measure: number_of_filled_positions {
+  measure: number_of_hired_started_positions {
+    alias: [number_of_filled_positions]
     group_label: "> Position Status"
-    label: "# Filled Positions"
+    label: "# Hired Positions (started)"
     type: count_distinct
     sql: ${job_position_uuid} ;;
-    filters: [status: "FILLED", job_details.job_status: "FILLED, INTERVIEW, SOURCING, OFFER, CREATED"]
+    description: "Number of positions with status FILLED for jobs with any status"
+    filters: [status: "FILLED", job_details.job_status: "FILLED, INTERVIEW, SOURCING, OFFER, CREATED, ON_HOLD, CANCELLED"]
   }
 
-  measure: number_of_hired_positions {
+  measure: number_of_hired_not_started_positions {
+    alias: [number_of_hired_positions]
     group_label: "> Position Status"
-    label: "# Hired Positions"
+    label: "# Hired Positions (not started)"
+    description: "Number of positions with status HIRED for jobs with any status"
     type: count_distinct
     sql: ${job_position_uuid} ;;
-    filters: [status: "HIRED", job_details.job_status: "FILLED, INTERVIEW, SOURCING, OFFER, CREATED"]
+    filters: [status: "HIRED", job_details.job_status: "FILLED, INTERVIEW, SOURCING, OFFER, CREATED, ON-HOLD, CANCELLED"]
+  }
+
+  measure: number_of_all_hired_positions {
+    group_label: "> Position Status"
+    label: "# Hired Positions (all)"
+    description: "Number of positions with status HIRED or FILLED for jobs with any status"
+    type: count_distinct
+    sql: ${job_position_uuid} ;;
+    filters: [status: "HIRED, FILLED", job_details.job_status: "FILLED, INTERVIEW, SOURCING, OFFER, CREATED, ON-HOLD, CANCELLED"]
   }
 
   measure: number_of_open_positions {
@@ -116,7 +129,7 @@ view: job_positions {
     description: "# Filled positions for Job with status FILLED, INTERVIEW, SOURCING, OFFER / # All position for jobs with status FILLED, INTERVIEW, SOURCING, OFFER"
     type: number
     value_format: "0%"
-    sql: safe_divide(${number_of_filled_positions}+ ${number_of_hired_positions},${number_of_positions_filtered}) ;;
+    sql: safe_divide(${number_of_all_hired_positions},${number_of_positions_filtered}) ;;
   }
 
   ########## Parameters
