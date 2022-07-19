@@ -18,8 +18,8 @@ explore: stock_management_progress_sku_aggregation {
   # reveived_at is due cost reduction given a table is partitioned by this dimensions
   # event_date filter will fitler for the desired time frame when events triggered
 
-  sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} stock_management_progress_sku_aggregates.date {% endcondition %}
-    and {% condition global_filters_and_parameters.datasource_filter %} stock_management_progress_sku_aggregates.date {% endcondition %};;
+  sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} stock_management_progress_sku_aggregates.event_date {% endcondition %}
+    and {% condition global_filters_and_parameters.datasource_filter %} stock_management_progress_sku_aggregates.event_date {% endcondition %};;
 
   access_filter: {
     field: stock_management_progress_sku_aggregates.country_iso

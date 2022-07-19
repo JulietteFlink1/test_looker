@@ -63,53 +63,40 @@ view: stock_management_progress_sku_aggregates {
   ### Inventory Process Attributes ###
 
   dimension: inventory_movement_id {
+    group_label: "Inventory Process Attributes"
     type: string
     sql: ${TABLE}.inventory_movement_id ;;
   }
 
   dimension: direction {
+    group_label: "Inventory Process Attributes"
     type: string
     sql: ${TABLE}.direction ;;
   }
 
   dimension_group: time_to_cart_created {
+    group_label: "Inventory Process Attributes"
     type: time
     timeframes: [
-      raw,
-      time,
-      date,
-      week,
-      month,
-      quarter,
-      year
+      raw
     ]
     sql: ${TABLE}.time_to_cart_created ;;
   }
 
   dimension_group: time_to_dropping_list_created {
+    group_label: "Inventory Process Attributes"
     type: time
     timeframes: [
-      raw,
-      time,
-      date,
-      week,
-      month,
-      quarter,
-      year
+      raw
     ]
     sql: ${TABLE}.time_to_dropping_list_created ;;
   }
 
   dimension_group: time_to_dropping_list_finished {
+    group_label: "Inventory Process Attributes"
     type: time
     timeframes: [
-      raw,
-      time,
-      date,
-      week,
-      month,
-      quarter,
-      year
+      raw
     ]
     sql: ${TABLE}.time_to_dropping_list_finished ;;
   }
@@ -161,24 +148,6 @@ view: stock_management_progress_sku_aggregates {
 
   ### Hidden Columns ###
 
-  dimension: number_of_item_added_to_cart {
-    hidden: yes
-    type: number
-    sql: ${TABLE}.number_of_item_added_to_cart ;;
-  }
-
-  dimension: number_of_item_dropped {
-    hidden: yes
-    type: number
-    sql: ${TABLE}.number_of_item_dropped ;;
-  }
-
-  dimension: number_of_item_removed_from_cart {
-    hidden: yes
-    type: number
-    sql: ${TABLE}.number_of_item_removed_from_cart ;;
-  }
-
   dimension: quantity {
     hidden: yes
     type: number
@@ -192,12 +161,14 @@ view: stock_management_progress_sku_aggregates {
   ### Time to metrics ###
 
   dimension: cart_to_drop_list_seconds {
+    group_label: "Inventory Process Attributes"
     description: "Difference in seconds between time_to_cart_created and time_to_dropping_list timestamps"
     type: number
     sql: DATETIME_DIFF(time_to_dropping_list_created,time_to_cart_created, SECOND) ;;
   }
 
   dimension: drop_list_created_to_finished_seconds {
+    group_label: "Inventory Process Attributes"
     description: "Difference in seconds between time_to_cart_created and time_to_dropping_list_finished timestamps"
     type: number
     sql: DATETIME_DIFF(time_to_dropping_list_finished, time_to_dropping_list_created, SECOND) ;;
@@ -213,21 +184,49 @@ view: stock_management_progress_sku_aggregates {
   measure: total_item_added_to_cart {
     group_label: "Total Metrics"
     label: "# Items Added To Cart"
-    type: sum
-    sql: if(${TABLE}.number_of_item_added_to_cart>0, ${TABLE}.quantity,0) ;;
+    type: count_distinct
+    sql: if(${TABLE}.number_of_item_added_to_cart>0, ${TABLE}.sku,null) ;;
   }
 
   measure: total_item_dropped {
     group_label: "Total Metrics"
     label: "# Items Dropped"
-    type: sum
-    sql: if(${TABLE}.number_of_item_dropped>0, ${TABLE}.quantity,0) ;;
+    type: count_distinct
+    sql: if(${TABLE}.number_of_item_dropped>0, ${TABLE}.sku,null) ;;
   }
 
   measure: total_item_removed_from_cart {
     group_label: "Total Metrics"
     label: "# Items Removed From Cart"
+    type: count_distinct
+    sql: if(${TABLE}.number_of_item_removed_from_cart>0, ${TABLE}.sku,null) ;;
+  }
+
+  measure: number_of_inventory_movement_ids {
+    group_label: "Total Metrics"
+    label: "# Inventory Movement Ids"
+    type: count_distinct
+    sql: ${TABLE}.inventory_movement_id  ;;
+  }
+
+  measure: number_of_item_added_to_cart {
+    group_label: "Total Metrics"
+    label: "# Events Added To Cart"
     type: sum
-    sql: if(${TABLE}.number_of_item_removed_from_cart>0, ${TABLE}.quantity,0) ;;
+    sql: ${TABLE}.number_of_item_added_to_cart ;;
+  }
+
+  measure: number_of_item_dropped {
+    group_label: "Total Metrics"
+    label: "# Events item Dropped"
+    type: sum
+    sql: ${TABLE}.number_of_item_dropped ;;
+  }
+
+  measure: number_of_item_removed_from_cart {
+    group_label: "Total Metrics"
+    label: "# Events Removed To Cart"
+    type: sum
+    sql: ${TABLE}.number_of_item_removed_from_cart ;;
   }
 }
