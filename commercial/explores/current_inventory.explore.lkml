@@ -99,6 +99,15 @@ explore: current_inventory {
     fields: [orders.is_internal_order, orders.is_successful_order, created_date]
   }
 
+  join: product_prices_daily {
+    relationship: one_to_one
+    type: left_outer
+    sql_on: ${product_prices_daily.sku}      = ${products_hub_assignment.sku}
+        and ${product_prices_daily.hub_code} = ${products_hub_assignment.hub_code}
+        and ${product_prices_daily.reporting_date} = current_date() - 1
+        ;;
+  }
+
   join: price_test_tracking {
     sql_on:  ${products.product_sku} = ${price_test_tracking.product_sku};;
     relationship: many_to_one

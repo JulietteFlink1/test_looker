@@ -407,6 +407,7 @@ view: orderline {
       time,
       date,
       day_of_week,
+      day_of_week_index,
       week,
       month,
       quarter,
@@ -414,6 +415,14 @@ view: orderline {
     ]
     sql: ${TABLE}.order_timestamp ;;
     datatype: timestamp
+  }
+
+  dimension: order_date_utc {
+    hidden: yes
+    convert_tz: no
+    sql: date(${TABLE}.order_timestamp) ;;
+    datatype: date
+    type: date
   }
 
 
@@ -1123,5 +1132,197 @@ view: orderline {
     {% endif %}
     ;;
   }
+
+####################################################################################################################################
+####################################################################################################################################
+################################################ Demand Planning ###################################################################
+####################################################################################################################################
+####################################################################################################################################
+
+
+  #Needed for wtd calculation
+
+  dimension_group: current_date_t_1 {
+    label: "Current Date - 1"
+    type: time
+    timeframes: [
+      date,
+      week,
+      month,
+      day_of_week_index,
+      day_of_week
+    ]
+    convert_tz: no
+    datatype: date
+    sql: date_sub(current_date(), interval 1 day) ;;
+    hidden: yes
+  }
+
+  dimension: until_today {
+    type: yesno
+    sql: ${created_day_of_week_index} <= ${current_date_t_1_day_of_week_index} AND
+      ${created_day_of_week_index} >= 0 ;;
+    hidden: yes
+  }
+
+  #Sold Quantities
+
+  #Daily
+
+
+  measure: sum_item_quantity_t_1 {
+    group_label: "Demand Planning"
+    label: "# Total Sales t-1"
+    description: "Quantity of Order Line Items sold in the previous t-1"
+    hidden: yes
+    type: sum
+    sql: ${quantity};;
+    filters: [created_date: "yesterday"]
+    value_format: "0.0"
+  }
+
+  measure: sum_item_quantity_t_2 {
+    group_label: "Demand Planning"
+    label: "# Total Sales t-2"
+    description: "Quantity of Order Line Items sold in the previous t-2"
+    hidden: yes
+    type: sum
+    sql: ${quantity};;
+    filters: [created_date: "2 days ago"]
+    value_format: "0.0"
+  }
+
+  measure: sum_item_quantity_t_3 {
+    group_label: "Demand Planning"
+    label: "# Total Sales t-3"
+    description: "Quantity of Order Line Items sold in the previous t-3"
+    hidden: yes
+    type: sum
+    sql: ${quantity};;
+    filters: [created_date: "3 days ago"]
+    value_format: "0.0"
+  }
+
+  measure: sum_item_quantity_t_4 {
+    group_label: "Demand Planning"
+    label: "# Total Sales t-4"
+    description: "Quantity of Order Line Items sold in the previous t-4"
+    hidden: yes
+    type: sum
+    sql: ${quantity};;
+    filters: [created_date: "4 days ago"]
+    value_format: "0.0"
+  }
+
+
+  #weekly
+
+  measure: sum_item_quantity_w_1 {
+    group_label: "Demand Planning"
+    label: "# Total Sales w-1"
+    description: "Quantity of Order Line Items sold in the previous w-1"
+    hidden: yes
+    type: sum
+    sql: ${quantity};;
+    filters: [created_date: "1 week ago"]
+    value_format: "0.0"
+  }
+
+
+  measure: sum_item_quantity_w_2 {
+    group_label: "Demand Planning"
+    label: "# Total Sales w-2"
+    description: "Quantity of Order Line Items sold in the previous w-2"
+    hidden: yes
+    type: sum
+    sql: ${quantity};;
+    filters: [created_date: "2 weeks ago"]
+    value_format: "0.0"
+  }
+
+  measure: sum_item_quantity_w_3 {
+    group_label: "Demand Planning"
+    label: "# Total Sales w-3"
+    description: "Quantity of Order Line Items sold in the previous w-3"
+    hidden: yes
+    type: sum
+    sql: ${quantity};;
+    filters: [created_date: "3 weeks ago"]
+    value_format: "0.0"
+  }
+
+  measure: sum_item_quantity_w_4 {
+    group_label: "Demand Planning"
+    label: "# Total Sales w-4"
+    description: "Quantity of Order Line Items sold in the previous w-4"
+    hidden: yes
+    type: sum
+    sql: ${quantity};;
+    filters: [created_date: "4 weeks ago"]
+    value_format: "0.0"
+  }
+
+
+#w2d
+
+  measure: sum_item_quantity_wtd {
+    group_label: "Demand Planning"
+    label: "# Total Sales WtD"
+    description: "Quantity of Order Line Items sold in the previous - WtD"
+    hidden: yes
+    type: sum
+    sql: ${quantity};;
+    filters: [created_date: "this week", until_today: "yes"]
+    value_format: "0.0"
+  }
+
+  measure: sum_item_quantity_wtd_w_1 {
+    group_label: "Demand Planning"
+    label: "# Total Sales WtD w-1"
+    description: "Quantity of Order Line Items sold in the previous - Previous week WtD"
+    hidden:  yes
+    type: sum
+    sql: ${quantity};;
+    filters: [created_date: "1 week ago", until_today: "yes"]
+    value_format: "0.0"
+  }
+
+  #calculations
+
+  measure: sum_item_quantity_wow_wtd {
+    group_label: "Demand Planning"
+    label: "# Total Sales WOW Growth - WtD"
+    description: "Quantity of Order Line Items sold in the previous - WtD WoW Growth"
+    hidden: yes
+    type: number
+    sql: (${sum_item_quantity_wtd} - ${sum_item_quantity_wtd_w_1}) / nullif(${sum_item_quantity_wtd_w_1}, 0);;
+    value_format_name: percent_1
+  }
+
+  measure: sum_item_quantity_wow_w_1_vs_w_2 {
+    group_label: "Demand Planning"
+    label: "# Total Sales WOW Growth (w-1 vs w-2)"
+    description: "Quantity of Order Line Items sold in the previous - WoW Growth (w-1 vs w-2)"
+    hidden: yes
+    type: number
+    sql: (${sum_item_quantity_w_1} - ${sum_item_quantity_w_2}) / nullif(${sum_item_quantity_w_2}, 0);;
+    value_format_name: percent_1
+  }
+
+
+#For sorting (GMV last 90 days)
+
+
+  measure: sum_item_price_gross_90d {
+    label: "SUM Item Prices sold (gross) - Last 90 days"
+    description: "Sum of sold Item prices (incl. VAT) - in the Last 90 days"
+    hidden: yes
+    type: sum
+    sql: ${quantity} * ${unit_price_gross_amount};;
+    value_format_name: eur
+    filters: [created_date: "90 days ago for 90 days"]
+    group_label: "Demand Planning"
+  }
+
 
 }

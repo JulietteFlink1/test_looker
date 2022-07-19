@@ -12,6 +12,7 @@ view: hubs_ct {
     bypass_suggest_restrictions: yes
     type: string
     sql: ${TABLE}.hub_code ;;
+    drill_fields: [products.product_sku, products.category, products.subcategory]
   }
 
   dimension: is_hub_opened_14d {
