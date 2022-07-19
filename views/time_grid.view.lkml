@@ -67,6 +67,12 @@ view: time_grid {
     sql: ${start_datetime_hour_of_day} < ${now_hour_of_day} ;;
   }
 
+  dimension: is_date_before_today {
+    label: "Is Date Before Today ?"
+    type: yesno
+    sql: ${start_datetime_date} < ${now_date} ;;
+  }
+
   dimension_group: now {
     group_label: "* Dates and Timestamps *"
     label: "Now"
@@ -74,7 +80,8 @@ view: time_grid {
     type: time
     timeframes: [
       raw,
-      hour_of_day
+      hour_of_day,
+      date
     ]
     sql: current_timestamp;;
     datatype: timestamp
