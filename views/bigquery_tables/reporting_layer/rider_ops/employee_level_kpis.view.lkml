@@ -420,8 +420,8 @@ view: employee_level_kpis {
     type: number
     hidden: no
     label: "% Sickness Hours "
-    description: "(Sickness hours + Scheduled hours) / Scheduled hours"
-    sql: (${number_of_sick_hours}+${number_of_scheduled_hours})/nullif(${number_of_scheduled_hours},0) ;;
+    description: "Sickness hours / (Sickness hours + Scheduled hours)"
+    sql: (${number_of_sick_hours})/nullif(${number_of_sick_hours}+${number_of_scheduled_hours},0) ;;
     value_format: "0%"
   }
 
