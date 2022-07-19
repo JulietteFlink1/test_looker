@@ -51,6 +51,7 @@ view: orders_with_ops_metrics {
       column: cnt_orders_delayed_under_0_min_time_targeted {}
       column: cnt_ubereats_orders {}
       column: cnt_click_and_collect_orders {}
+      column: cnt_orders_fulfilled_over_30_min {}
       column: sum_rider_handling_time_minutes_saved_with_stacking {}
       column: sum_potential_rider_handling_time_without_stacking_minutes {}
       filters: {
@@ -125,6 +126,15 @@ view: orders_with_ops_metrics {
     sql: ${cnt_orders_delayed_under_0_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
   }
 
+  measure: pct_fulfillment_over_30_min {
+    group_label: "> Operations / Logistics"
+    label: "% Orders fulfilled >30min"
+    description: "Share of orders delivered > 30min"
+    type: number
+    value_format: "0%"
+    sql: ${cnt_orders_fulfilled_over_30_min} / NULLIF(${cnt_orders}, 0);;
+    }
+
   measure: pct_stacked_orders {
     group_label: "> Basic Counts"
     label: "% Stacked Orders"
@@ -177,6 +187,15 @@ view: orders_with_ops_metrics {
     description: "Count of Orders delivered no later than PDT"
     type: sum
     hidden: yes
+  }
+
+  measure: cnt_orders_fulfilled_over_30_min {
+    group_label: "* Operations / Logistics *"
+    label: "# Orders fulfilled >30min"
+    description: "Count of Orders delivered >30min fulfillment time"
+    hidden:  yes
+    type: sum
+    value_format: "0"
   }
 
   measure: cnt_orders_with_delivery_eta_available {

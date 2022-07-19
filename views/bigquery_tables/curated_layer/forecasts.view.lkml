@@ -38,6 +38,12 @@ view: forecasts {
     sql: coalesce(${TABLE}.quinyx_pipeline_status, "N/A") ;;
   }
 
+  dimension: forecast_horizon {
+    label: "Forecast Horizon (Days)"
+    type: number
+    sql: date_diff(${start_timestamp_date}, ${job_date}, day) ;;
+  }
+
   # =========  Dates   =========
 
   dimension_group: end_timestamp {
@@ -179,30 +185,6 @@ view: forecasts {
     type: number
     sql: ${TABLE}.number_of_forecasted_orders_upper_bound ;;
     hidden: yes
-  }
-
-  # =========  Missed orders   =========
-
-  dimension: number_of_missed_orders_forced_closure {
-    label: "# Missed Orders - Forced Closure"
-    type: number
-    sql: ${TABLE}.number_of_missed_orders_forced_closure ;;
-    hidden: yes
-  }
-
-  dimension: number_of_missed_orders_planned_closure {
-    label: "# Missed Orders - Planned Closure"
-    type: number
-    sql: ${TABLE}.number_of_missed_orders_planned_closure ;;
-    hidden: yes
-  }
-
-  dimension: forecast_horizon {
-    label: "Forecast Horizon (Days)"
-    description: "Days between Timeslot Date and Job Date"
-    type: number
-    value_format_name: decimal_0
-    sql:  date_diff(${start_timestamp_date}, ${job_date}, day) ;;
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -380,6 +362,14 @@ view: forecasts {
     value_format_name: decimal_0
   }
 
+  measure: pct_forecast_deviation {
+    group_label: "> Order Measures"
+    label: "% Forecast Deviation"
+    type: number
+    sql: (${orders_with_ops_metrics.cnt_orders}/nullif(${number_of_forecasted_orders},0))-1 ;;
+    value_format_name: percent_1
+  }
+
   measure: forecasted_avg_order_handling_duration_seconds {
     group_label: "> Order Measures"
     label: "Forecasted Orders Handling Duration (Seconds)"
@@ -396,14 +386,6 @@ view: forecasts {
     sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
     sql: ${TABLE}.forecasted_avg_order_handling_duration_minutes ;;
     value_format_name: decimal_1
-  }
-
-  measure: number_of_missed_orders {
-    group_label: "> Order Measures"
-    label: "# Missed Orders"
-    type: sum_distinct
-    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
-    sql: ${TABLE}.number_of_missed_orders ;;
   }
 
   ##### Forecasted Hours
@@ -426,6 +408,22 @@ view: forecasts {
     hidden: yes
   }
 
+  measure: number_of_forecasted_adjusted_minutes_picker {
+    label: "# Forecasted Adjusted Picker Minutes"
+    type: sum_distinct
+    sql_distinct_key: ${forecast_uuid} ;;
+    sql: ${TABLE}.number_of_forecasted_adjusted_minutes_picker ;;
+    hidden: yes
+  }
+
+  measure: number_of_forecasted_adjusted_minutes_rider {
+    label: "# Forecasted Adjusted Rider Minutes"
+    type: sum_distinct
+    sql_distinct_key: ${forecast_uuid} ;;
+    sql: ${TABLE}.number_of_forecasted_adjusted_minutes_rider ;;
+    hidden: yes
+  }
+
   measure: number_of_forecasted_hours_rider {
     group_label: "> Rider Measures"
     label: "# Forecasted Rider Hours"
@@ -439,6 +437,22 @@ view: forecasts {
     label: "# Forecasted Picker Hours"
     type: number
     sql: ${number_of_forecasted_minutes_picker}/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_forecasted_adjusted_hours_rider {
+    group_label: "> Rider Measures"
+    label: "# Forecasted Adjusted Rider Hours"
+    type: number
+    sql: ${number_of_forecasted_adjusted_minutes_rider}/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_forecasted_adjusted_hours_picker {
+    group_label: "> Picker Measures"
+    label: "# Forecasted Adjusted Picker Hours"
+    type: number
+    sql: ${number_of_forecasted_adjusted_minutes_picker}/60;;
     value_format_name: decimal_1
   }
   ##### Forecast errors
