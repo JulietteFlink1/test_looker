@@ -74,31 +74,31 @@ view: stock_management_progress_sku_aggregates {
     sql: ${TABLE}.direction ;;
   }
 
-  dimension_group: time_to_cart_created {
+  dimension_group: cart_created_time {
     group_label: "Inventory Process Attributes"
     type: time
     timeframes: [
       raw
     ]
-    sql: ${TABLE}.time_to_cart_created ;;
+    sql: ${TABLE}.cart_created_time ;;
   }
 
-  dimension_group: time_to_dropping_list_created {
+  dimension_group: dropping_list_created_time {
     group_label: "Inventory Process Attributes"
     type: time
     timeframes: [
       raw
     ]
-    sql: ${TABLE}.time_to_dropping_list_created ;;
+    sql: ${TABLE}.dropping_list_created_time ;;
   }
 
-  dimension_group: time_to_dropping_list_finished {
+  dimension_group: dropping_list_finished_time {
     group_label: "Inventory Process Attributes"
     type: time
     timeframes: [
       raw
     ]
-    sql: ${TABLE}.time_to_dropping_list_finished ;;
+    sql: ${TABLE}.dropping_list_finished_time ;;
   }
 
   ### Product Attributes ###
@@ -145,6 +145,27 @@ view: stock_management_progress_sku_aggregates {
     sql: ${TABLE}.sku ;;
   }
 
+  dimension_group: item_added_to_cart_time {
+    group_label: "Product Attributes"
+    type: time
+    timeframes: [
+      raw,
+      date,
+      hour
+    ]
+    sql: ${TABLE}.item_added_to_cart_time ;;
+  }
+
+  dimension_group: item_dropped_time {
+    group_label: "Product Attributes"
+    type: time
+    timeframes: [
+      raw,
+      date,
+      hour
+    ]
+    sql: ${TABLE}.item_dropped_time ;;
+  }
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   #~~~~~~~~~~~~~~~     Measures.      ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -154,23 +175,23 @@ view: stock_management_progress_sku_aggregates {
 
   dimension: cart_to_drop_list_seconds {
     group_label: "Inventory Process Attributes"
-    description: "Difference in seconds between time_to_cart_created and time_to_dropping_list timestamps"
+    description: "Difference in seconds between cart_created_time and dropping_list_created_time timestamps"
     type: number
-    sql: DATETIME_DIFF(time_to_dropping_list_created,time_to_cart_created, SECOND) ;;
+    sql: DATETIME_DIFF(time_to_dropping_list_created,cart_created_time, SECOND) ;;
   }
 
   dimension: drop_list_created_to_finished_seconds {
     group_label: "Inventory Process Attributes"
-    description: "Difference in seconds between time_to_dropping_list_created and time_to_dropping_list_finished timestamps"
+    description: "Difference in seconds between dropping_list_created_time and dropping_list_finished_time timestamps"
     type: number
-    sql: DATETIME_DIFF(time_to_dropping_list_finished, time_to_dropping_list_created, SECOND) ;;
+    sql: DATETIME_DIFF(dropping_list_finished_time, dropping_list_created_time, SECOND) ;;
   }
 
   dimension: cart_to_finished_seconds {
     group_label: "Inventory Process Attributes"
-    description: "Difference in seconds between time_to_cart_created and time_to_dropping_list_finished timestamps"
+    description: "Difference in seconds between cart_created_time and dropping_list_finished_time timestamps"
     type: number
-    sql: DATETIME_DIFF(time_to_dropping_list_finished, time_to_cart_created, SECOND) ;;
+    sql: DATETIME_DIFF(dropping_list_finished_time, cart_created_time, SECOND) ;;
   }
 
   ### Sum and count Metrics ###
