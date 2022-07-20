@@ -2,35 +2,36 @@
 
 view: stock_management_movement_ids {
   derived_table: {
-    explore_source: stock_management_progress_sku_aggregation {
-      column: hub_code { field: stock_management_progress_sku_aggregates.hub_code }
-      column: inventory_movement_id { field: stock_management_progress_sku_aggregates.inventory_movement_id }
-      column: employee_id { field: stock_management_progress_sku_aggregates.employee_id }
-      column: cart_to_drop_list_seconds { field: stock_management_progress_sku_aggregates.cart_to_drop_list_seconds }
-      column: drop_list_created_to_finished_seconds { field: stock_management_progress_sku_aggregates.drop_list_created_to_finished_seconds }
-      column: total_item_added_to_cart { field: stock_management_progress_sku_aggregates.total_item_added_to_cart }
-      column: total_item_dropped { field: stock_management_progress_sku_aggregates.total_item_dropped }
-      column: total_item_removed_from_cart { field: stock_management_progress_sku_aggregates.total_item_removed_from_cart }
-      column: quantity { field: stock_management_progress_sku_aggregates.quantity }
-      column: is_handling_unit { field: stock_management_progress_sku_aggregates.is_handling_unit }
-      column: cart_to_finished_seconds { field: stock_management_progress_sku_aggregates.cart_to_finished_seconds }
-      filters: {
-        field: global_filters_and_parameters.datasource_filter
-        value: ""
-      }
-      filters: {
-        field: stock_management_progress_sku_aggregates.country_iso
-        value: ""
-      }
-      filters: {
-        field: stock_management_progress_sku_aggregates.hub_code
-        value: ""
-      }
-      filters: {
-        field: stock_management_progress_sku_aggregates.is_ean_available
-        value: "Yes"
-      }
-    }
+    sql:WITH global_filters_and_parameters AS (select TRUE as generic_join_dim)
+        SELECT
+            (CASE WHEN stock_management_progress_sku_aggregates.is_handling_unit  THEN 'Yes' ELSE 'No' END) AS stock_management_progress_sku_aggregates_is_handling_unit,
+                (stock_management_progress_sku_aggregates.event_date ) AS stock_management_progress_sku_aggregates_event_date,
+            stock_management_progress_sku_aggregates.country_iso  AS stock_management_progress_sku_aggregates_country_iso,
+            stock_management_progress_sku_aggregates.hub_code  AS stock_management_progress_sku_aggregates_hub_code,
+            stock_management_progress_sku_aggregates.inventory_movement_id  AS stock_management_progress_sku_aggregates_inventory_movement_id,
+            stock_management_progress_sku_aggregates.employee_id  AS stock_management_progress_sku_aggregates_employee_id,
+            DATETIME_DIFF(time_to_dropping_list_created,time_to_cart_created, SECOND)  AS stock_management_progress_sku_aggregates_cart_to_drop_list_seconds,
+            DATETIME_DIFF(time_to_dropping_list_finished, time_to_dropping_list_created, SECOND)  AS stock_management_progress_sku_aggregates_drop_list_created_to_finished_seconds,
+            DATETIME_DIFF(time_to_dropping_list_finished, time_to_cart_created, SECOND)  AS stock_management_progress_sku_aggregates_cart_to_finished_seconds,
+            COUNT(DISTINCT if(stock_management_progress_sku_aggregates.number_of_item_added_to_cart>0, stock_management_progress_sku_aggregates.sku,null) ) AS stock_management_progress_sku_aggregates_total_item_added_to_cart,
+            COUNT(DISTINCT if(stock_management_progress_sku_aggregates.number_of_item_dropped>0, stock_management_progress_sku_aggregates.sku,null) ) AS stock_management_progress_sku_aggregates_total_item_dropped,
+            COUNT(DISTINCT if(stock_management_progress_sku_aggregates.number_of_item_removed_from_cart>0, stock_management_progress_sku_aggregates.sku,null) ) AS stock_management_progress_sku_aggregates_total_item_removed_from_cart,
+            COALESCE(SUM(stock_management_progress_sku_aggregates.quantity ), 0) AS stock_management_progress_sku_aggregates_quantity
+        FROM `flink-data-dev.dbt_falvarez.stock_management_progress_sku_aggregates`
+             AS stock_management_progress_sku_aggregates
+        LEFT JOIN global_filters_and_parameters ON global_filters_and_parameters.generic_join_dim = TRUE
+        WHERE (stock_management_progress_sku_aggregates.is_ean_available ) and {% condition global_filters_and_parameters.datasource_filter %} stock_management_progress_sku_aggregates.event_date {% endcondition %}
+        GROUP BY
+            1,2,3,4,5,6,7,8,9;;
+  }
+  dimension: event_date {
+    label: "Stock Management Progress SKU Aggregates  Date"
+    description: ""
+    type: date
+  }
+  dimension: country_iso {
+    label: "Stock Management Progress SKU Aggregates Country ISO"
+    description: ""
   }
   dimension: hub_code {
     description: ""
@@ -47,6 +48,10 @@ view: stock_management_movement_ids {
   }
   dimension: drop_list_created_to_finished_seconds {
     description: "Difference in seconds between time_to_dropping_list_created and time_to_dropping_list_finished timestamps"
+    type: number
+  }
+  dimension: cart_to_finished_seconds {
+    description: "Difference in seconds between time_to_cart_created and time_to_dropping_list_finished timestamps"
     type: number
   }
   dimension: total_item_added_to_cart {
@@ -72,9 +77,5 @@ view: stock_management_movement_ids {
     label: "Stock Management Progress SKU Aggregates Is Handling Unit (Yes / No)"
     description: ""
     type: yesno
-  }
-  dimension: cart_to_finished_seconds {
-    description: "Difference in seconds between time_to_cart_created and time_to_dropping_list_finished timestamps"
-    type: number
   }
 }
