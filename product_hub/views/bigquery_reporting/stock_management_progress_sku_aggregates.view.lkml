@@ -146,14 +146,6 @@ view: stock_management_progress_sku_aggregates {
   }
 
 
-  ### Hidden Columns ###
-
-  dimension: quantity {
-    hidden: yes
-    type: number
-    sql: ${TABLE}.quantity ;;
-  }
-
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   #~~~~~~~~~~~~~~~     Measures.      ~~~~~~~~~~~~~~~~~~~~~~~~~
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -169,9 +161,16 @@ view: stock_management_progress_sku_aggregates {
 
   dimension: drop_list_created_to_finished_seconds {
     group_label: "Inventory Process Attributes"
-    description: "Difference in seconds between time_to_cart_created and time_to_dropping_list_finished timestamps"
+    description: "Difference in seconds between time_to_dropping_list_created and time_to_dropping_list_finished timestamps"
     type: number
     sql: DATETIME_DIFF(time_to_dropping_list_finished, time_to_dropping_list_created, SECOND) ;;
+  }
+
+  dimension: cart_to_finished_seconds {
+    group_label: "Inventory Process Attributes"
+    description: "Difference in seconds between time_to_cart_created and time_to_dropping_list_finished timestamps"
+    type: number
+    sql: DATETIME_DIFF(time_to_dropping_list_finished, time_to_cart_created, SECOND) ;;
   }
 
   ### Sum and count Metrics ###
@@ -179,6 +178,11 @@ view: stock_management_progress_sku_aggregates {
   measure: count {
     type: count
     drill_fields: [product_name]
+  }
+
+  measure: quantity {
+    type: sum
+    sql: ${TABLE}.quantity ;;
   }
 
   measure: total_item_added_to_cart {
