@@ -82,8 +82,8 @@ view: forecasts {
   }
 
   dimension: job_date {
-    label: "Job Date 1"
-    description: "This filter could be used if comparison between 2 job dates is needed"
+    label: "Job Date"
+    description: "Date when forecast ran"
     convert_tz: no
     datatype: date
     type: date
@@ -97,6 +97,7 @@ view: forecasts {
     datatype: date
     type:  date
     sql: ${TABLE}.job_date ;;
+    hidden: yes
   }
 
   measure: count {
