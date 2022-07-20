@@ -366,6 +366,7 @@ view: forecasts {
   measure: pct_forecast_deviation {
     group_label: "> Order Measures"
     label: "% Forecast Deviation"
+    description: "(# Orders/# Forecasted Orders) -1"
     type: number
     sql: (${orders_with_ops_metrics.cnt_orders}/nullif(${number_of_forecasted_orders},0))-1 ;;
     value_format_name: percent_1
