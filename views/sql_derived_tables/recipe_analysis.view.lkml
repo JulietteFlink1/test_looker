@@ -105,7 +105,7 @@ group by
 select distinct
     daily_recipes_clean.event_date  as visit_date
   , daily_recipes_clean.anonymous_id as anonymous_id
-  , recipe_mapping.recipe_name       as recipe_name
+  , recipe_mapping.recipe_en_        as recipe_name
   , daily_recipes_clean.recipe_id    as recipe_id
   , daily_recipes_clean.country_iso  as country_iso
   , daily_recipes_clean.utm_source   as utm_source
@@ -131,8 +131,8 @@ from
  on daily_recipes_clean.anonymous_id = daily_events.anonymous_id
   and daily_recipes_clean.event_date = daily_events.event_date
  left join
-  `flink-data-dev.sandbox_natalia.recipe_mapping` recipe_mapping
-  on daily_recipes_clean.recipe_id = recipe_mapping.recipe_id
+  `flink-data-prod.google_sheets.recipe_mapping` recipe_mapping
+  on daily_recipes_clean.recipe_id = recipe_mapping.id
 )
 
 select * from final
