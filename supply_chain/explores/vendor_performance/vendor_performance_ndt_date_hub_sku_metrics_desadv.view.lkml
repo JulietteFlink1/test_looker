@@ -135,15 +135,15 @@ view: vendor_performance_ndt_date_hub_sku_metrics_desadv {
   # ... either inbound the bananas as pieces of 1 or as bundles of 5 )
   measure: cnt_skus_in_desadv {
     hidden: yes
-    type: count_distinct
-    sql:  ${leading_sku_replenishment_substitute_group};;
+    type: count
+    #sql:  ${leading_sku_replenishment_substitute_group};;
   }
 
   measure: cnt_skus_in_desadv_fully_inbounded {
     hidden: yes
-    type: count_distinct
+    type: count
     filters: [is_completely_inbounded: "yes"]
-    sql: ${leading_sku_replenishment_substitute_group};;
+    #sql: ${leading_sku_replenishment_substitute_group};;
   }
 
   measure: pct_skus_fully_inbounded {

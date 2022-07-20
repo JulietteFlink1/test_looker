@@ -1730,7 +1730,7 @@ view: vat_order {
     group_label: "> Total"
     type: sum
     label: "SUM VAT Order Total"
-    description: "Revenue (Gross) - Revenue (Net). After Deduction of Discounts and Refunds."
+    description: "Revenue (Gross) after Refunds & Discounts deduction - Revenue (Net) after Refunds & Discounts deduction. After Deduction of Discounts and Refunds."
     value_format: "#,##0.00€"
     sql: ${total_vat} ;;
   }
