@@ -97,15 +97,8 @@ view: orders_with_ops_metrics {
     hidden:  no
     sql: ${sum_orders}-${cnt_click_and_collect_orders}-${cnt_ubereats_orders} ;;
     value_format_name: decimal_0
+    type: number
     }
-  measure: percent_of_total_orders {
-    group_label: "> Basic Counts"
-    label: "% Of Total Orders"
-    description: ""
-    sql: ${sum_orders} ;;
-    #value_format: "#,##0"%""
-    type: percent_of_total
-  }
 
   measure: avg_number_items {
     group_label: "> Basic Counts"
