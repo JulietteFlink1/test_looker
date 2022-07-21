@@ -177,7 +177,7 @@ view: stock_management_progress_sku_aggregates {
     group_label: "Inventory Process Attributes"
     description: "Difference in seconds between cart_created_time and dropping_list_created_time timestamps"
     type: number
-    sql: DATETIME_DIFF(time_to_dropping_list_created,cart_created_time, SECOND) ;;
+    sql: DATETIME_DIFF(dropping_list_created_time,cart_created_time, SECOND) ;;
   }
 
   dimension: drop_list_created_to_finished_seconds {
