@@ -1,5 +1,5 @@
 view: user_attributes_lifecycle_first28days {
-  sql_table_name: `reporting.user_attributes_lifecycle_first28days`
+  sql_table_name: `flink-data-prod.reporting.user_attributes_lifecycle_first28days`
     ;;
 
   measure: cnt_customers {
