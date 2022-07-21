@@ -42,7 +42,8 @@ explore: vendor_performance {
     lexbizz_vendor*,
     vendor_performance_ndt_po_fill_rate*,
     erp_product_hub_vendor_assignment_v2*,
-    hubs*
+    hubs*,
+    key_value_items*
   ]
 
   sql_always_where: {% condition global_filters_and_parameters.datasource_filter %} ${products_hub_assignment.report_date} {% endcondition %} ;;
@@ -292,6 +293,22 @@ explore: vendor_performance {
     type: left_outer
     relationship: many_to_one
     sql_on: ${products.product_sku} = ${products_hub_assignment.sku} ;;
+  }
+
+
+  join: key_value_items {
+
+    view_label: "* Product Data *"
+    
+    type: left_outer
+    relationship: many_to_one
+
+    sql_on:
+           ${key_value_items.sku} =  ${products_hub_assignment.sku}
+           -- get only the most recent KVIs (they are upadted every Monday)
+       and ${key_value_items.kvi_date} >= current_date() - 6
+    ;;
+    fields: [key_value_items.is_kvi]
   }
 
 }

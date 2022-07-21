@@ -1510,7 +1510,7 @@ view: inventory_daily {
     group_label: "Demand Planning"
     type: number
     sql:  coalesce(${quantity_to_t_1}, ${quantity_to_t_2}) ;;
-    hidden: no
+    hidden: yes
 
 
     value_format_name: decimal_1
@@ -1524,7 +1524,7 @@ view: inventory_daily {
     group_label: "Demand Planning"
     type: number
     sql:  (${quantity_to_adjusted} + ${replenishment_purchase_orders.sum_selling_unit_quantity_next_7_days}) / nullif(${orderline.avg_daily_item_quantity_last_14d}, 0) ;;
-    hidden: no
+    hidden: yes
 
 
     value_format_name: decimal_2
