@@ -363,7 +363,7 @@ view: erp_buying_prices {
     label: "% Blended Margin (Dynamic)"
     description: "The sum of Gross Profit divided by the sum of Item Prices Sold (Net). To be used together with Is After Deduction of Product Discounts parameter"
     label_from_parameter: is_after_product_discounts
-    value_format_name: eur
+    value_format_name: percent_1
     type: number
     sql:
     {% if is_after_product_discounts._parameter_value == "true" %}

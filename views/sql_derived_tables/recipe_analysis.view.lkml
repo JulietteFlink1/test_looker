@@ -56,6 +56,22 @@ view: recipe_analysis {
     sql: ${TABLE}.country_iso ;;
   }
 
+  dimension: platform {
+    type: string
+    sql: ${TABLE}.platform ;;
+  }
+
+  dimension: device_type {
+    type: string
+    sql: ${TABLE}.device_type ;;
+  }
+
+  dimension: device_category {
+    type: string
+    description: "Device is either web for desktop based users or mobile for ios or android users."
+    sql: ${TABLE}.device_category ;;
+  }
+
   dimension: utm_source {
     type: string
     sql: ${TABLE}.utm_source ;;
@@ -86,12 +102,42 @@ view: recipe_analysis {
     sql: ${TABLE}.recipe_page_visited ;;
   }
 
+  dimension: is_bounce {
+    type: yesno
+    sql: ${TABLE}.is_bounce ;;
+  }
+
+  dimension: is_user_logged_in {
+    type: yesno
+    sql: ${TABLE}.is_user_logged_in ;;
+  }
+
   dimension: is_active_user {
     type: yesno
     sql: ${TABLE}.is_active_user ;;
   }
 
+  dimension: address_confirmed {
+    type: yesno
+    sql: ${TABLE}.address_confirmed ;;
+  }
+
+  dimension: address_existing_confirmed {
+    type: yesno
+    sql: ${TABLE}.address_existing_confirmed ;;
+  }
+
+  dimension: address_search_viewed {
+    type: yesno
+    sql: ${TABLE}.address_search_viewed ;;
+  }
+
   # Dimensions for recipe interactions
+
+  dimension: num_of_unique_visits {
+    type: number
+    sql: ${TABLE}.num_of_unique_visits ;;
+  }
 
   dimension: entered_webshop_cart_cta_click {
     type: yesno
@@ -143,6 +189,21 @@ view: recipe_analysis {
     sql: ${TABLE}.checkout_started ;;
   }
 
+  dimension: checkout_started_on_recipes {
+    type: yesno
+    sql: ${TABLE}.checkout_started_on_recipes ;;
+  }
+
+  dimension: cart_viewed_on_recipes {
+    type: yesno
+    sql: ${TABLE}.cart_viewed_on_recipes ;;
+  }
+
+  dimension: product_added_to_cart_on_recipes {
+    type: yesno
+    sql: ${TABLE}.product_added_to_cart_on_recipes ;;
+  }
+
   dimension: order_completed {
     type: yesno
     sql: ${TABLE}.order_completed ;;
@@ -161,6 +222,12 @@ view: recipe_analysis {
     type: count_distinct
     sql: ${anonymous_id} ;;
     filters: [recipe_page_visited: "yes"]
+  }
+
+  measure: is_bounce_count {
+    type: count_distinct
+    sql: ${anonymous_id} ;;
+    filters: [is_bounce: "yes"]
   }
 
   measure: order_ingredients_click_count {
