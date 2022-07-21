@@ -82,8 +82,8 @@ view: forecasts {
   }
 
   dimension: job_date {
-    label: "Job Date 1"
-    description: "This filter could be used if comparison between 2 job dates is needed"
+    label: "Job Date"
+    description: "Date when forecast ran"
     convert_tz: no
     datatype: date
     type: date
@@ -97,6 +97,7 @@ view: forecasts {
     datatype: date
     type:  date
     sql: ${TABLE}.job_date ;;
+    hidden: yes
   }
 
   measure: count {
@@ -365,6 +366,7 @@ view: forecasts {
   measure: pct_forecast_deviation {
     group_label: "> Order Measures"
     label: "% Forecast Deviation"
+    description: "(# Orders/# Forecasted Orders) -1"
     type: number
     sql: (${orders_with_ops_metrics.cnt_orders}/nullif(${number_of_forecasted_orders},0))-1 ;;
     value_format_name: percent_1
@@ -408,19 +410,19 @@ view: forecasts {
     hidden: yes
   }
 
-  measure: number_of_forecasted_adjusted_minutes_picker {
-    label: "# Forecasted Adjusted Picker Minutes"
+  measure: number_of_adjusted_forecasted_minutes_picker {
+    label: "# Forecasted Picker Minutes - Post Adjustments"
     type: sum_distinct
     sql_distinct_key: ${forecast_uuid} ;;
-    sql: ${TABLE}.number_of_forecasted_adjusted_minutes_picker ;;
+    sql: ${TABLE}.number_of_adjusted_forecasted_minutes_picker ;;
     hidden: yes
   }
 
-  measure: number_of_forecasted_adjusted_minutes_rider {
-    label: "# Forecasted Adjusted Rider Minutes"
+  measure: number_of_adjusted_forecasted_minutes_rider {
+    label: "# Forecasted Rider Minutes - Post Adjustments"
     type: sum_distinct
     sql_distinct_key: ${forecast_uuid} ;;
-    sql: ${TABLE}.number_of_forecasted_adjusted_minutes_rider ;;
+    sql: ${TABLE}.number_of_adjusted_forecasted_minutes_rider ;;
     hidden: yes
   }
 
@@ -440,19 +442,19 @@ view: forecasts {
     value_format_name: decimal_1
   }
 
-  measure: number_of_forecasted_adjusted_hours_rider {
+  measure: number_of_adjusted_forecasted_hours_rider {
     group_label: "> Rider Measures"
-    label: "# Forecasted Adjusted Rider Hours"
+    label: "# Forecasted Rider Hours - Post Adjustments"
     type: number
-    sql: ${number_of_forecasted_adjusted_minutes_rider}/60;;
+    sql: ${number_of_adjusted_forecasted_minutes_rider}/60;;
     value_format_name: decimal_1
   }
 
   measure: number_of_forecasted_adjusted_hours_picker {
     group_label: "> Picker Measures"
-    label: "# Forecasted Adjusted Picker Hours"
+    label: "# Forecasted Picker Hours - Post Adjustments"
     type: number
-    sql: ${number_of_forecasted_adjusted_minutes_picker}/60;;
+    sql: ${number_of_adjusted_forecasted_minutes_picker}/60;;
     value_format_name: decimal_1
   }
   ##### Forecast errors
@@ -494,6 +496,19 @@ view: forecasts {
       END ;;
   }
 
+  measure: number_of_adjusted_forecasted_hours_by_position {
+    type: number
+    label: "# Forecasted Hours - Post Adjustment (Incl. No Show)"
+    value_format_name: decimal_1
+    group_label: "> Dynamic Measures"
+    sql:
+        CASE
+          WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${number_of_adjusted_forecasted_hours_rider}
+          WHEN {% parameter ops.position_parameter %} = 'Picker' THEN ${number_of_forecasted_adjusted_hours_picker}
+      ELSE NULL
+      END ;;
+  }
+
   measure: number_of_no_show_hours_by_position {
     type: number
     label: "# Forecasted No Show Hours"
@@ -509,11 +524,12 @@ view: forecasts {
   measure: pct_no_show_by_position {
     type: number
     label: "% Forecasted No Show Hours"
+    description: "# No Show Hours / # Forecasted Hours (Post-Adjustment)"
     value_format_name: percent_1
     group_label: "> Dynamic Measures"
     sql:
         CASE
-          WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${number_of_no_show_hours_by_position}/nullif(${number_of_forecasted_hours_by_position},0)
+          WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${number_of_no_show_hours_by_position}/nullif(${number_of_adjusted_forecasted_hours_by_position},0)
       ELSE NULL
       END ;;
   }
@@ -524,6 +540,14 @@ view: forecasts {
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql: ${number_of_forecasted_hours_by_position}-${number_of_no_show_hours_by_position} ;;
+  }
+
+  measure: number_of_adjusted_forecasted_hours_excl_no_show_by_position {
+    type: number
+    label: "# Forecasted Hours - Post Adjustment (Excl. No Show)"
+    value_format_name: decimal_1
+    group_label: "> Dynamic Measures"
+    sql: ${number_of_adjusted_forecasted_hours_by_position}-${number_of_no_show_hours_by_position} ;;
   }
 
   measure: number_of_target_orders_by_position {
@@ -569,10 +593,10 @@ view: forecasts {
   measure: final_utr_by_position {
     type: number
     label: "Final UTR"
-    description: "Forecasted Orders/Forecasted Hours"
+    description: "Forecasted Orders/Forecasted Hours (Post Adjsutment)"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
-    sql: ${number_of_forecasted_orders}/nullif(${number_of_forecasted_hours_by_position},0);;
+    sql: ${number_of_forecasted_orders}/nullif(${number_of_adjusted_forecasted_hours_by_position},0);;
   }
 
   parameter: dynamic_text_utr {

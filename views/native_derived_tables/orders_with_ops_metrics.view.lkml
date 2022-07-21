@@ -11,7 +11,6 @@ view: orders_with_ops_metrics {
       column: pct_delivery_in_time_time_estimate {}
       column: pct_rider_handling_time_saved_with_stacking {}
       column: avg_ratio_customer_to_hub {}
-      column: avg_acceptance_time {}
       column: avg_at_customer_time {}
       column: avg_delivery_distance_km {}
       column: avg_estimated_picking_time_minutes {}
@@ -22,7 +21,6 @@ view: orders_with_ops_metrics {
       column: avg_fulfillment_time {}
       column: avg_estimated_riding_time_minutes {}
       column: avg_fulfillment_time_mm_ss {}
-      column: avg_order_handling_time_minute {}
       column: avg_delivery_time_estimate {}
       column: avg_promised_eta {}
       column: avg_pdt_mm_ss {}
@@ -34,11 +32,8 @@ view: orders_with_ops_metrics {
       column: avg_riding_to_customer_time {}
       column: avg_rider_handling_time_minutes_saved_with_stacking {}
       column: avg_rider_handling_time {}
-      column: avg_reaction_time {}
-      column: sum_avg_acceptance_reaction_time {}
       column: cnt_stacked_orders {}
       column: pct_stacked_orders {}
-      column: avg_delivery_time_from_prev_customer_minutes {}
       column: avg_fulfillment_time_1st_order_in_stack {}
       column: avg_fulfillment_time_2nd_order_in_stack {}
       column: order_uuid {}
@@ -70,9 +65,18 @@ view: orders_with_ops_metrics {
     group_label: "> Basic Counts"
     label: "# Orders"
     description: "Count of Orders"
-    type: count_distinct
+    type: sum
     value_format: "0"
-    sql: ${order_uuid} ;;
+  }
+
+  dimension: cnt_orders_dim {
+    group_label: "> Basic Counts"
+    label: "# Orders"
+    description: "Count of Orders"
+    type: number
+    value_format: "0"
+    sql: ${TABLE}.cnt_orders ;;
+    hidden: yes
   }
 
   measure: cnt_click_and_collect_orders {
@@ -230,14 +234,6 @@ view: orders_with_ops_metrics {
     type: average
   }
 
-  measure: avg_acceptance_time {
-    group_label: "> Operations / Logistics"
-    label: "AVG Acceptance Time"
-    description: "Average time between picking completion and rider having claimed the order. Only considering cases where rider claimed order AFTER picking was completed"
-    value_format: "#,##0.0"
-    type: average
-  }
-
   measure: avg_at_customer_time {
     group_label: "> Operations / Logistics"
     label: "AVG At Customer Time"
@@ -318,23 +314,6 @@ view: orders_with_ops_metrics {
     description: "Average Fulfillment Time considering order placement to delivery. Outliers excluded (<1min or >30min)"
     value_format: "mm:ss"
     type: average
-  }
-
-  measure: avg_order_handling_time_minute {
-    group_label: "> Operations / Logistics"
-    label: "AVG Order Handling Time (Minutes)"
-    description: "AVG rider Time spent from claiming an order until returning to the hub "
-    value_format: "#,##0.00"
-    type: average
-  }
-
-  measure: avg_order_handling_time_seconds {
-    group_label: "> Operations / Logistics"
-    label: "AVG Order Handling Time (Seconds)"
-    description: "AVG rider Time spent from claiming an order until returning to the hub "
-    value_format: "#,##0.00"
-    sql: ${avg_order_handling_time_minute}*60 ;;
-
   }
 
   measure: avg_delivery_time_estimate {
@@ -433,37 +412,12 @@ view: orders_with_ops_metrics {
     sql: ${avg_rider_handling_time}*60 ;;
   }
 
-  measure: avg_reaction_time {
-    group_label: "> Operations / Logistics"
-    label: "AVG Reaction Time"
-    description: "Average Reaction Time of the Picker considering order placement until picking started. Outliers excluded (<0min or >30min)"
-    value_format: "#,##0.0"
-    type: average
-  }
-
-  measure: sum_avg_acceptance_reaction_time {
-    group_label: "> Operations / Logistics"
-    label: "AVG Reaction + Acceptance Time"
-    description: "Sum of the average of acceptance time and the average of reaction time"
-    type: number
-    value_format: "#,##0.0"
-    sql: ${avg_acceptance_time}+${avg_reaction_time} ;;
-  }
-
   measure: cnt_stacked_orders {
     group_label: "> Basic Counts"
     label: "# Orders - Stacked Order"
     description: "The number of orders, that were part of a stacked delivery"
     type: sum
     value_format: "0"
-  }
-
-  measure: avg_delivery_time_from_prev_customer_minutes {
-    group_label: "> Operations / Logistics"
-    label: "AVG Delivery time to next customer (min)"
-    description: "Indicates, how long it took for the rider to arrive from one to the following customer in a stacked order"
-    value_format: "#,##0.0"
-    type: average
   }
 
   measure: avg_fulfillment_time_1st_order_in_stack {
