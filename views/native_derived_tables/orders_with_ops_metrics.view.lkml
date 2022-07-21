@@ -94,7 +94,7 @@ view: orders_with_ops_metrics {
     group_label: "> Basic Counts"
     label: "# Orders (excl. Click & Collect and Ubereats)"
     description: "Count of Orders that require no riders (e.g. Click and collect)"
-    hidden:  yes
+    hidden:  no
     sql: ${sum_orders}-${cnt_click_and_collect_orders}-${cnt_ubereats_orders} ;;
     value_format_name: decimal_0
     }
