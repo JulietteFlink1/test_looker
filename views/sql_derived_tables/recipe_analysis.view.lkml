@@ -224,7 +224,7 @@ view: recipe_analysis {
     filters: [recipe_page_visited: "yes"]
   }
 
-  measure: is_bounvce_count {
+  measure: is_bounce_count {
     type: count_distinct
     sql: ${anonymous_id} ;;
     filters: [is_bounce: "yes"]
