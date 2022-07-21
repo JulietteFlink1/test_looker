@@ -2,7 +2,7 @@
 # Created: 2022-07-14
 
 view: stock_management_progress_sku_aggregates {
-  sql_table_name: `flink-data-dev.dbt_falvarez.stock_management_progress_sku_aggregates`
+  sql_table_name: `flink-data-prod.reporting.stock_management_progress_sku_aggregates`
     ;;
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

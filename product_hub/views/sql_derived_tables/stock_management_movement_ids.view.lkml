@@ -17,7 +17,7 @@ view: stock_management_movement_ids {
             COUNT(DISTINCT if(stock_management_progress_sku_aggregates.number_of_item_dropped>0, stock_management_progress_sku_aggregates.sku,null) ) AS total_item_dropped,
             COUNT(DISTINCT if(stock_management_progress_sku_aggregates.number_of_item_removed_from_cart>0, stock_management_progress_sku_aggregates.sku,null) ) AS total_item_removed_from_cart,
             COALESCE(SUM(stock_management_progress_sku_aggregates.quantity ), 0) AS quantity
-        FROM `flink-data-dev.dbt_falvarez.stock_management_progress_sku_aggregates`
+        FROM `flink-data-prod.reporting.stock_management_progress_sku_aggregates`
              AS stock_management_progress_sku_aggregates
         LEFT JOIN global_filters_and_parameters ON global_filters_and_parameters.generic_join_dim = TRUE
         WHERE (stock_management_progress_sku_aggregates.is_ean_available ) and {% condition global_filters_and_parameters.datasource_filter %} stock_management_progress_sku_aggregates.event_date {% endcondition %}
