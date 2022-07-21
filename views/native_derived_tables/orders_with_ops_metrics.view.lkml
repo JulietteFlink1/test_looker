@@ -97,6 +97,7 @@ view: orders_with_ops_metrics {
     hidden:  no
     sql: ${sum_orders}-${cnt_click_and_collect_orders}-${cnt_ubereats_orders} ;;
     value_format_name: decimal_0
+    type: number
     }
 
   measure: avg_number_items {

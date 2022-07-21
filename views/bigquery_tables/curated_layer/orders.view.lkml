@@ -2502,7 +2502,7 @@ view: orders {
     filters: [
       external_provider: "ubereats",
       is_successful_order: "yes"
-    ]
+      ]
   }
 
   measure: cnt_orders_with_discount_cart {
