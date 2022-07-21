@@ -4,7 +4,7 @@
 # - Hub Tech
 # - Hub Operations
 
-include: "/product_hub/views/sql_derived_tables/stock_management_movement_ids.view.lkml"
+include: "/product_hub/views/sql_derived_tables/stock_management_movement_ids_aggregates.view.lkml"
 include: "/**/global_filters_and_parameters.view.lkml"
 
 explore: stock_management_movement_ids {
