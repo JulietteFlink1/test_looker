@@ -214,6 +214,8 @@ view: stock_management_progress_sku_aggregates {
 
   measure: quantity {
     type: sum
+    group_label: "Total Metrics"
+    label: "# Units"
     sql: ${TABLE}.quantity ;;
   }
 
