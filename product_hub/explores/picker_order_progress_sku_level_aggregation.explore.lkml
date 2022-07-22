@@ -9,7 +9,7 @@
 
 include: "/product_hub/views/picker_order_progress_sku_aggregates.view.lkml"
 include: "/**/global_filters_and_parameters.view.lkml"
-include: "/product_hub/views/picker_order_times.view.lkml"
+include: "/product_hub/views/sql_derived_tables/picker_order_times.view.lkml"
 
 explore: picker_order_progress_sku_level_aggregation {
   view_name: picker_order_progress_sku_aggregates
