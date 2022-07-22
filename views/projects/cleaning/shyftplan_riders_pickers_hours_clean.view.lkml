@@ -533,6 +533,16 @@ view: shyftplan_riders_pickers_hours_clean {
     hidden: yes
   }
 
+  measure: number_of_planned_hours_hub_employees{
+    type: sum
+    label: "# Scheduled Hours Rider+Picker+WH+Rider Captain"
+    description: "Number of Scheduled Hours Rider+Picker+WH+Rider Captain"
+    sql: ${number_of_planned_minutes} / 60 ;;
+    filters: [position_name: "rider, picker,wh, rider_captain"]
+    value_format_name: decimal_1
+    hidden: no
+  }
+
   measure: all_staff_utr {
     label: "AVG All Staff UTR (incl. Rider,Picker,WH Ops, Rider Captain and Shift Lead)"
     type: number
@@ -634,6 +644,17 @@ view: shyftplan_riders_pickers_hours_clean {
     value_format_name: decimal_1
   }
 
+
+  measure: number_of_no_show_hours_hub_employees{
+    label:"Sum Rider+Picker+WH+Rider Captain No Show Hours"
+    type: sum
+    description: "Sum Rider+Picker+wh+rider_captain No Show Hours"
+    sql:${number_of_no_show_minutes}/60;;
+    filters: [position_name: "rider, picker,wh, rider_captain"]
+    group_label: "No Show"
+    value_format_name: decimal_1
+  }
+
   measure: sum_forecast_hours{
     type: sum
     label:"Sum Rider Forecasted Hours (excluding No show)"
@@ -684,6 +705,15 @@ view: shyftplan_riders_pickers_hours_clean {
     type: number
     description: "% Actual No Show Rider + Picker Hours"
     sql:(${number_of_no_show_hours_rider_picker})/nullif(${number_of_planned_hours_rider_picker},0) ;;
+    group_label: "No Show"
+    value_format_name: percent_1
+  }
+
+  measure: pct_no_show_hours_hub_employees{
+    label:"% Actual No Show Rider+Picker+WH +Rider Captain Hours"
+    type: number
+    description: "% Actual No Show Rider + Picker + WH + Rider Captain Hours"
+    sql:(${number_of_no_show_hours_hub_employees})/nullif(${number_of_planned_hours_hub_employees},0) ;;
     group_label: "No Show"
     value_format_name: percent_1
   }
