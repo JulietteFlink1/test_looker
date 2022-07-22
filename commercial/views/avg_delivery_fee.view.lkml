@@ -1,67 +1,84 @@
 view: avg_delivery_fee {
-  derived_table: {
-    explore_source: orders_cl {
-      column: order_uuid {field:orders_cl.order_uuid}
-      column: order_date {field:orders_cl.order_date}
-      column: shipping_price_gross_amount {field:orders_cl.shipping_price_gross_amount}
-      column: shipping_price_net_amount {field:orders_cl.shipping_price_net_amount}
+    derived_table: {
+      explore_source: order_lineitems_margins {
+        column: created_month { field: orders_cl.created_month }
+        column: created_date { field: orders_cl.created_date }
+        column: country_iso { field: orders_cl.country_iso }
+        column: avg_delivery_fee_gross { field: orders_cl.avg_delivery_fee_gross }
+        column: avg_delivery_fee_net { field: orders_cl.avg_delivery_fee_net }
+        filters: {
+          field: orders_cl.is_successful_order
+          value: "Yes"
+        }
+        filters: {
+          field: global_filters_and_parameters.datasource_filter
+          value: ""
+        }
+        filters: {
+          field: hubs.hub_name
+          value: ""
+        }
+        filters: {
+          field: hubs.country
+          value: ""
+        }
+      }
     }
+
+    dimension: created_month {
+      label: "* Orders * Order Month"
+      description: "Order Placement Time/Date"
+      type: date_month
+      hidden: yes
+    }
+
+    dimension: created_date {
+      label: "* Orders * Order Date"
+      description: "Order Placement Time/Date"
+      type: date
+      hidden: yes
+    }
+
+  dimension: country_iso {
+    label: "* Hubs * Country Iso"
+    description: ""
+    hidden: yes
   }
 
-  dimension: order_uuid {
-    type: string
-    group_label: "* IDs *"
-    label: "Order UUID"
-    primary_key: yes
-    hidden: no
-    sql: ${TABLE}.order_uuid ;;
+    dimension: avg_delivery_fee_gross {
+      label: "* Orders * AVG Delivery Fee (Gross)"
+      description: "Average value of Delivery Fees (Gross)"
+      value_format_name: euro_accounting_2_precision
+      type: number
+      hidden: yes
+    }
+
+    dimension: avg_delivery_fee_net {
+      label: "* Orders * AVG Delivery Fee (Net)"
+      description: "Average value of Delivery Fees (Net)"
+      value_format_name: euro_accounting_2_precision
+      type: number
+      hidden: yes
+    }
+
+    measure: avg_delivery_fee_gross_measure {
+      label: "AVG Delivery Fee (Gross)"
+      description: "Average value of Delivery Fees (Gross)"
+      hidden:  no
+      type: average
+      sql: (${avg_delivery_fee_gross});;
+      value_format_name: euro_accounting_2_precision
+      sql_distinct_key: concat (${created_date},${country_iso} ) ;;
+    }
+
+    measure: avg_delivery_fee_net_measure {
+      label: "AVG Delivery Fee (Net)"
+      description: "Average value of Delivery Fees (Net)"
+      hidden:  no
+      type: average
+      sql: ${avg_delivery_fee_net};;
+      value_format_name: euro_accounting_2_precision
+      sql_distinct_key: concat (${created_date},${country_iso} ) ;;
+    }
+
   }
-
-  dimension: order_date {
-    group_label: "* Dates and Timestamps *"
-    type: date
-    datatype: date
-    sql: ${TABLE}.order_date ;;
-    hidden: no
-  }
-
-  dimension: shipping_price_gross_amount {
-    type: number
-    label: "Delivery Fee (Gross)"
-    hidden: no
-    sql: ${TABLE}.amt_delivery_fee_gross ;;
-  }
-
-  dimension: shipping_price_net_amount {
-    type: number
-    label: "Delivery Fee (Net)"
-    hidden: no
-    sql: ${TABLE}.amt_delivery_fee_net ;;
-  }
-
-  measure: avg_delivery_fee_gross {
-    group_label: "* Monetary Values *"
-    label: "AVG Delivery Fee (Gross)"
-    description: "Average value of Delivery Fees (Gross)"
-    hidden:  no
-    type: average
-    sql: coalesce(${shipping_price_gross_amount});;
-    value_format_name: euro_accounting_2_precision
-  }
-
-  measure: avg_delivery_fee_net {
-    group_label: "* Monetary Values *"
-    label: "AVG Delivery Fee (Net)"
-    description: "Average value of Delivery Fees (Net)"
-    hidden:  no
-    type: average
-    sql: ${shipping_price_net_amount};;
-    value_format_name: euro_accounting_2_precision
-  }
-
-
-
-
-
-
-   }
