@@ -88,6 +88,12 @@ view: interview_interviewers {
     sql: ${TABLE}.interview_rank ;;
   }
 
+  dimension: interviewer_role {
+    group_label: "> Interview Dimensions"
+    type: number
+    sql: ${TABLE}.interviewer_role ;;
+  }
+
   measure: count {
     hidden: yes
     type: count
@@ -115,7 +121,7 @@ view: interview_interviewers {
   ########## Parameters
 
   parameter: date_granularity {
-    group_label: "> Dates and Timestamps"
+    group_label: "> Dates & Timestamps"
     label: "Date Granularity"
     type: unquoted
     allowed_value: { value: "Day" }
@@ -127,7 +133,7 @@ view: interview_interviewers {
   ######## DYNAMIC DIMENSIONS
 
   dimension: interview_date_dynamic {
-    group_label:  "> Dates and Timestamps"
+    group_label:  "> Dates & Timestamps"
     label: "Interview Date (Dynamic)"
     label_from_parameter: date_granularity
     sql:
