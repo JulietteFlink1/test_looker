@@ -9,7 +9,7 @@ explore: candidate_application_funnel {
   hidden: yes
   group_label: "People"
   label: "Recruitment Funnel"
-  view_label: "* Candidate Application Status *"
+  view_label: "Candidate Application Status"
   description: "SR Data"
 
   join: job_details {

@@ -1,5 +1,5 @@
 view: candidate_application_status {
-  sql_table_name: `flink-data-dev.dbt_jgrammatikas.candidate_application_status`
+  sql_table_name: `flink-data-prod.curated.candidate_application_status`
     ;;
 
   dimension: application_uuid {

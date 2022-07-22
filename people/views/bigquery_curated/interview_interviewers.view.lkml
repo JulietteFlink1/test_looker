@@ -1,5 +1,5 @@
 view: interview_interviewers {
-  sql_table_name: `flink-data-dev.dbt_jgrammatikas.interview_interviewers`
+  sql_table_name: `flink-data-prod.curated.interview_interviewers`
     ;;
 
   dimension: candidate_id {
@@ -80,6 +80,12 @@ view: interview_interviewers {
     group_label: "> IDs"
     type: string
     sql: ${TABLE}.job_id ;;
+  }
+
+  dimension: interview_rank {
+    group_label: "> Interview Dimensions"
+    type: number
+    sql: ${TABLE}.interview_rank ;;
   }
 
   measure: count {
