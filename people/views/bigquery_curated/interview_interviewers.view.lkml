@@ -111,4 +111,33 @@ view: interview_interviewers {
     sql_distinct_key: ${interview_id} ;;
     value_format: "0.00"
   }
+
+  ########## Parameters
+
+  parameter: date_granularity {
+    group_label: "> Dates and Timestamps"
+    label: "Date Granularity"
+    type: unquoted
+    allowed_value: { value: "Day" }
+    allowed_value: { value: "Week" }
+    allowed_value: { value: "Month" }
+    default_value: "Day"
+  }
+
+  ######## DYNAMIC DIMENSIONS
+
+  dimension: interview_date_dynamic {
+    group_label:  "> Dates and Timestamps"
+    label: "Interview Date (Dynamic)"
+    label_from_parameter: date_granularity
+    sql:
+    {% if date_granularity._parameter_value == 'Day' %}
+      ${interview_date}
+    {% elsif date_granularity._parameter_value == 'Week' %}
+      ${interview_week}
+    {% elsif date_granularity._parameter_value == 'Month' %}
+      ${interview_month}
+    {% endif %};;
+  }
+
 }
