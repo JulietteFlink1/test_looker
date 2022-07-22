@@ -94,6 +94,7 @@ view: job_positions {
     label: "# Hired Positions (all)"
     description: "Number of positions with status HIRED or FILLED for jobs with any status except ON-HOLD and CANCELLED"
     type: count_distinct
+    hidden: yes
     sql: ${job_position_uuid} ;;
     filters: [status: "HIRED, FILLED", job_details.job_status: "FILLED, INTERVIEW, SOURCING, OFFER, CREATED"]
   }
