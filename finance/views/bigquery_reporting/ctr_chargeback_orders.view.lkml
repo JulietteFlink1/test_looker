@@ -1,5 +1,5 @@
 view: ctr_chargeback_orders {
-  sql_table_name: `flink-data-dev.reporting.ctr_chargeback_orders`
+  sql_table_name: `flink-data-prod.reporting.ctr_chargeback_orders`
     ;;
 
   dimension_group: booking_month_ {

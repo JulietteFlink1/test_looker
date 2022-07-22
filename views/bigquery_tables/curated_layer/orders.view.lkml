@@ -201,9 +201,11 @@ view: orders {
     style: relational
     sql: ${item_value_gross} ;;
   }
+
   dimension: rider_tip {
+    group_label: "* Monetary Values *"
     type: number
-    hidden: yes
+    hidden: no
     sql: ${TABLE}.amt_rider_tip ;;
   }
 
@@ -767,6 +769,14 @@ view: orders {
     group_label: "* Order Dimensions *"
     type: yesno
     sql: ${TABLE}.is_first_order ;;
+  }
+
+  dimension: is_rider_tip {
+    group_label: "* Order Dimensions *"
+    label: "Is Rider Tip Order (Yes/No)"
+    description: "Flags if an Order contained a tip for the rider"
+    type: yesno
+    sql: ${TABLE}.amt_rider_tip > 0  ;;
   }
 
   dimension: is_fulfillment_more_than_30_minute {
@@ -2492,7 +2502,7 @@ view: orders {
     filters: [
       external_provider: "ubereats",
       is_successful_order: "yes"
-    ]
+      ]
   }
 
   measure: cnt_orders_with_discount_cart {

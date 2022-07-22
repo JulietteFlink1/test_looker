@@ -171,19 +171,19 @@ view: product_prices_daily {
   # ------- calculated dimensions
   dimension: avg_amt_selling_price {
     type: number
-    sql: coalesce(${avg_amt_discount_price}, ${avg_amt_product_price_gross}) ;;
+    sql: ${TABLE}.avg_amt_selling_price_gross ;;
     hidden: yes
   }
 
   dimension: min_amt_selling_price {
     type: number
-    sql: coalesce(${min_amt_discount_price}, ${min_amt_product_price_gross}) ;;
+    sql: ${TABLE}.min_amt_selling_price_gross ;;
     hidden: yes
   }
 
   dimension: max_amt_selling_price {
     type: number
-    sql: coalesce(${max_amt_discount_price}, ${max_amt_product_price_gross}) ;;
+    sql: ${TABLE}.max_amt_selling_price_gross ;;
     hidden: yes
   }
 
@@ -328,7 +328,7 @@ view: product_prices_daily {
     description: "The discounted product price gross (the minimum price per day and hub) represents the reduced prie of a unit users can see in the app, if Flink offers a discount (below the strikethrough price). IMPORTANT: this field is only set, when a discount was active"
     group_label: "Product Discount Price Gross"
 
-    type: max
+    type: min
     sql: ${min_amt_discount_price} ;;
     value_format_name: decimal_4
   }
@@ -339,7 +339,7 @@ view: product_prices_daily {
     description: "The discounted product price gross (the average price per day and hub) represents the reduced prie of a unit users can see in the app, if Flink offers a discount (below the strikethrough price). IMPORTANT: this field is only set, when a discount was active"
     group_label: "Product Discount Price Gross"
 
-    type: max
+    type: average
     sql: ${avg_amt_discount_price} ;;
     value_format_name: decimal_4
   }
@@ -357,11 +357,11 @@ view: product_prices_daily {
     value_format_name: decimal_4
   }
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   #  - - - - - - - - - -    Buying Price
   measure:  avg_buying_price{
 
-    label:       "AVG Vendor Price"
+    label:       "AVG Buying Price"
     description: "The average buying price of a product, that Flink pays to its vendor"
     required_access_grants: [can_view_buying_information]
 
@@ -379,6 +379,37 @@ view: product_prices_daily {
     type: average
     sql: ${avg_amt_margin} ;;
     value_format_name: decimal_4
+  }
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  #  - - - - - - - - - -    Data Checks
+
+  drill_fields: [hub_code, sku]
+
+  dimension: is_buying_price_set {
+    type: yesno
+    sql: ${buying_price} is not null ;;
+    hidden: yes
+  }
+  dimension: is_selling_price_set {
+    type: yesno
+    sql: ${avg_amt_selling_price} is not null ;;
+    hidden: yes
+  }
+
+  measure: sum_skus_with_buying_price {
+    type: count_distinct
+    sql: ${sku} ;;
+    filters: [is_buying_price_set: "yes"]
+    hidden: yes
+    drill_fields: [hub_code, sum_skus_with_buying_price]
+  }
+
+  measure: sum_skus_with_selling_price {
+    type: count_distinct
+    sql: ${sku} ;;
+    filters: [is_selling_price_set: "yes"]
+    hidden: yes
   }
 
 }

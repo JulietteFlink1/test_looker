@@ -276,6 +276,14 @@ view: erp_buying_prices {
     value_format_name: eur
   }
 
+  measure: avg_total_cost {
+    label: "€ AVG COGS"
+    description: ""
+    type: number
+    sql: (${sum_total_net_income} - ${sum_total_margin_abs}) / ${orderline.count_order_uuid};;
+    value_format_name: eur
+  }
+
   measure: sum_total_cost_after_product_discount {
     label: "€ Sum COGS After Product Discounts"
     description: "The sum of Item Prices Sold after deduction of Product Discount (Net) minus sum of Gross Profit"
@@ -363,7 +371,7 @@ view: erp_buying_prices {
     label: "% Blended Margin (Dynamic)"
     description: "The sum of Gross Profit divided by the sum of Item Prices Sold (Net). To be used together with Is After Deduction of Product Discounts parameter"
     label_from_parameter: is_after_product_discounts
-    value_format_name: eur
+    value_format_name: percent_1
     type: number
     sql:
     {% if is_after_product_discounts._parameter_value == "true" %}
