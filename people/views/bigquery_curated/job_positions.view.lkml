@@ -67,7 +67,7 @@ view: job_positions {
     type: count_distinct
     sql: ${job_position_uuid} ;;
     description: "Number of positions with status FILLED for jobs with any status"
-    filters: [status: "FILLED", job_details.job_status: "FILLED, INTERVIEW, SOURCING, OFFER, CREATED, ON_HOLD, CANCELLED"]
+    filters: [status: "FILLED", job_details.job_status: "FILLED, INTERVIEW, SOURCING, OFFER, CREATED, ON-HOLD, CANCELLED"]
   }
 
   measure: number_of_hired_not_started_positions {
@@ -126,7 +126,7 @@ view: job_positions {
   measure: fill_rate {
     group_label: "> Fill Rate"
     label: "% Fill Rate"
-    description: "# Filled positions for Job with status FILLED, INTERVIEW, SOURCING, OFFER / # All position for jobs with status FILLED, INTERVIEW, SOURCING, OFFER"
+    description: "# Hired positions for Job with any status / # All positions for jobs with status FILLED, INTERVIEW, SOURCING, OFFER"
     type: number
     value_format: "0%"
     sql: safe_divide(${number_of_all_hired_positions},${number_of_positions_filtered}) ;;
