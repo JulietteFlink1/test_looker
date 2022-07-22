@@ -4,12 +4,9 @@ view: orders_with_ops_metrics {
   derived_table: {
     explore_source: orders_cl {
       column: hub_code {}
+      column: order_uuid {}
       column: cnt_orders {}
-      column: percent_of_total_orders {}
       column: avg_number_items {}
-      column: pct_delivery_in_time {}
-      column: pct_delivery_in_time_time_estimate {}
-      column: pct_rider_handling_time_saved_with_stacking {}
       column: avg_ratio_customer_to_hub {}
       column: avg_at_customer_time {}
       column: avg_delivery_distance_km {}
@@ -33,11 +30,8 @@ view: orders_with_ops_metrics {
       column: avg_rider_handling_time_minutes_saved_with_stacking {}
       column: avg_rider_handling_time {}
       column: cnt_stacked_orders {}
-      column: pct_stacked_orders {}
       column: avg_fulfillment_time_1st_order_in_stack {}
       column: avg_fulfillment_time_2nd_order_in_stack {}
-      column: order_uuid {}
-      column: created_time {}
       column: created_date {}
       column: created_minute30 {}
       column: cnt_orders_delayed_under_0_min {}
@@ -61,22 +55,21 @@ view: orders_with_ops_metrics {
     hidden: yes
   }
 
-  measure: cnt_orders {
+  dimension: cnt_orders {
+    group_label: "> Basic Counts"
+    label: "# Orders"
+    description: "Count of Orders"
+    value_format: "0"
+    hidden: yes
+  }
+
+  measure: sum_orders {
     group_label: "> Basic Counts"
     label: "# Orders"
     description: "Count of Orders"
     type: sum
     value_format: "0"
-  }
-
-  dimension: cnt_orders_dim {
-    group_label: "> Basic Counts"
-    label: "# Orders"
-    description: "Count of Orders"
-    type: number
-    value_format: "0"
-    sql: ${TABLE}.cnt_orders ;;
-    hidden: yes
+    sql: ${cnt_orders} ;;
   }
 
   measure: cnt_click_and_collect_orders {
@@ -101,17 +94,11 @@ view: orders_with_ops_metrics {
     group_label: "> Basic Counts"
     label: "# Orders (excl. Click & Collect and Ubereats)"
     description: "Count of Orders that require no riders (e.g. Click and collect)"
-    hidden:  yes
-    sql: ${cnt_orders}-${cnt_click_and_collect_orders}-${cnt_ubereats_orders} ;;
+    hidden:  no
+    sql: ${sum_orders}-${cnt_click_and_collect_orders}-${cnt_ubereats_orders} ;;
     value_format_name: decimal_0
+    type: number
     }
-  measure: percent_of_total_orders {
-    group_label: "> Basic Counts"
-    label: "% Of Total Orders"
-    description: ""
-    #value_format: "#,##0"%""
-    type: percent_of_total
-  }
 
   measure: avg_number_items {
     group_label: "> Basic Counts"
@@ -136,14 +123,14 @@ view: orders_with_ops_metrics {
     description: "Share of orders delivered > 30min"
     type: number
     value_format: "0%"
-    sql: ${cnt_orders_fulfilled_over_30_min} / NULLIF(${cnt_orders}, 0);;
+    sql: ${cnt_orders_fulfilled_over_30_min} / NULLIF(${sum_orders}, 0);;
     }
 
   measure: pct_stacked_orders {
     group_label: "> Basic Counts"
     label: "% Stacked Orders"
     description: "The % of orders, that were part of a stacked delivery"
-    sql: ${cnt_stacked_orders} / NULLIF(${cnt_orders} ,0) ;;
+    sql: ${cnt_stacked_orders} / NULLIF(${sum_orders} ,0) ;;
     type: number
     value_format_name: percent_1
   }

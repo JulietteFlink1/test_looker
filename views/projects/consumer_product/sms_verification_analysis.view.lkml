@@ -1,5 +1,5 @@
 view: sms_verification_analysis {
-  sql_table_name: `flink-data-dev.sandbox_natalia.sms_verification_flow` ;;
+  sql_table_name: `flink-data-dev.dbt_nwierzbowska.sms_verification_flow` ;;
 
   view_label: "* SMS Verification *"
   drill_fields: [core_dimensions*]
