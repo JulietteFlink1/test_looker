@@ -538,7 +538,7 @@ view: shyftplan_riders_pickers_hours_clean {
     label: "# Scheduled Hours Rider+Picker+WH+Rider Captain"
     description: "Number of Scheduled Hours Rider+Picker+WH+Rider Captain"
     sql: ${number_of_planned_minutes} / 60 ;;
-    filters: [position_name: "rider, picker,wh, rider_captain"]
+    filters: [position_name: "rider, picker,wh, rider captain"]
     value_format_name: decimal_1
     hidden: no
   }
@@ -650,7 +650,7 @@ view: shyftplan_riders_pickers_hours_clean {
     type: sum
     description: "Sum Rider+Picker+wh+rider_captain No Show Hours"
     sql:${number_of_no_show_minutes}/60;;
-    filters: [position_name: "rider, picker,wh, rider_captain"]
+    filters: [position_name: "rider, picker,wh, rider captain"]
     group_label: "No Show"
     value_format_name: decimal_1
   }
