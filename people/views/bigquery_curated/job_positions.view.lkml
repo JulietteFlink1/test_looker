@@ -129,7 +129,10 @@ view: job_positions {
     description: "# Hired positions for Job with any status / # All positions for jobs with status FILLED, INTERVIEW, SOURCING, OFFER"
     type: number
     value_format: "0%"
-    sql: safe_divide(${number_of_all_hired_positions},${number_of_positions_filtered}) ;;
+    sql: case
+            when safe_divide(${number_of_all_hired_positions},${number_of_positions_filtered}) > 1
+            then 1
+         else safe_divide(${number_of_all_hired_positions},${number_of_positions_filtered}) end;;
   }
 
   ########## Parameters
