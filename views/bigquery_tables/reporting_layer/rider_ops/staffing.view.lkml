@@ -2413,7 +2413,7 @@ view: staffing {
     group_label: "> Picker Measures"
     label: "Picker UTR"
     type: number
-    sql: ${orders_with_ops_metrics.cnt_orders}/ NULLIF(${number_of_worked_hours_picker}, 0) ;;
+    sql: ${orders_with_ops_metrics.sum_orders}/ NULLIF(${number_of_worked_hours_picker}, 0) ;;
     value_format_name: decimal_1
   }
 
@@ -2422,7 +2422,7 @@ view: staffing {
     label: "Hub Staff UTR"
     description: "Hub Staff UTR (# Orders/Hub Staff Hours)"
     type: number
-    sql: ${orders_with_ops_metrics.cnt_orders}/ NULLIF(${number_of_worked_hours_hub_staff}, 0) ;;
+    sql: ${orders_with_ops_metrics.sum_orders}/ NULLIF(${number_of_worked_hours_hub_staff}, 0) ;;
     value_format_name: decimal_1
   }
 

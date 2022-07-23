@@ -563,7 +563,7 @@ view: candidate_application_status {
   ########## Parameters
 
   parameter: date_granularity {
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     label: "Date Granularity"
     type: unquoted
     allowed_value: { value: "Day" }
