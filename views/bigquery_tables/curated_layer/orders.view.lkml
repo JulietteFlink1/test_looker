@@ -2665,6 +2665,7 @@ view: orders {
   measure: sum_amt_storage_fee_gross {
     group_label: "* Monetary Values *"
     label: "SUM Storage Fees (Gross)"
+    description: "Sum of Storage Fees Gross, applied when an item requiring such a fee is added to the basket."
     value_format_name: euro_accounting_2_precision
     type:  sum
     sql: ${amt_storage_fee_gross} ;;
@@ -2672,6 +2673,7 @@ view: orders {
   measure: sum_amt_storage_fee_net {
     group_label: "* Monetary Values *"
     label: "SUM Storage Fees (Net)"
+    description: "Sum of Storage Fees Net, applied when an item requiring such a fee is added to the basket."
     value_format_name: euro_accounting_2_precision
     type:  sum
     sql: ${amt_storage_fee_net} ;;
@@ -2684,8 +2686,8 @@ view: orders {
     label: "SUM Total Fees (Gross)"
     description: "Sum of Delivery Fees (Gross) and Storage Fees (Gross)"
     hidden:  no
-    type: sum
-    sql: ${shipping_price_gross_amount} + ${amt_storage_fee_gross};;
+    type: number
+    sql: ${sum_delivery_fee_gross} + ${sum_amt_storage_fee_gross};;
     value_format_name: euro_accounting_2_precision
   }
 

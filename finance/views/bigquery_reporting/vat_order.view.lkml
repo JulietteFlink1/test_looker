@@ -1975,6 +1975,7 @@ view: vat_order {
   measure: sum_amt_storage_fee_gross {
     group_label: "> Storage Fees"
     label: "SUM Storage Fees (Gross)"
+    description: "Sum of Storage Fees Gross, applied when an item requiring such a fee is added to the basket."
     value_format_name: euro_accounting_2_precision
     type:  sum
     sql: ${amt_storage_fee_gross} ;;
@@ -1982,6 +1983,7 @@ view: vat_order {
   measure: sum_amt_storage_fee_net {
     group_label: "> Storage Fees"
     label: "SUM Storage Fees (Net)"
+    description: "Sum of Storage Fees Net, applied when an item requiring such a fee is added to the basket."
     value_format_name: euro_accounting_2_precision
     type:  sum
     sql: ${amt_storage_fee_net} ;;
