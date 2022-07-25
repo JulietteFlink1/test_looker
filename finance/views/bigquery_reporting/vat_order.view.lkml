@@ -833,6 +833,139 @@ view: vat_order {
     sql: ${TABLE}.amt_total_vat ;;
   }
 
+  ############### STORAGE FEES ################
+  dimension: amt_storage_fee_gross {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.amt_storage_fee_gross ;;
+  }
+  dimension: amt_storage_fee_net {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.amt_storage_fee_net ;;
+  }
+
+
+  dimension: amt_storage_fee_standard_gross {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.amt_storage_fee_standard_gross ;;
+  }
+  dimension: amt_storage_fee_standard_net {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.amt_storage_fee_standard_net ;;
+  }
+  dimension: amt_storage_fee_reduced_gross {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.amt_storage_fee_reduced_gross ;;
+  }
+  dimension: amt_storage_fee_reduced_net {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.amt_storage_fee_reduced_net ;;
+  }
+  dimension: amt_storage_fee_special_gross {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.amt_storage_fee_special_gross ;;
+  }
+  dimension: amt_storage_fee_special_net {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.amt_storage_fee_special_net ;;
+  }
+
+
+  dimension: amt_vat_storage_fee_standard {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.amt_vat_storage_fee_standard ;;
+  }
+  dimension: amt_vat_storage_fee_reduced {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.amt_vat_storage_fee_reduced ;;
+  }
+  dimension: amt_vat_storage_fee_special {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.amt_vat_storage_fee_special ;;
+  }
+  dimension: amt_vat_storage_fee_total {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.amt_vat_storage_fee_total ;;
+  }
+
+    ############### REFUND STORAGE FEES ################
+
+  dimension: amt_refund_storage_fee_gross {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.amt_refund_storage_fee_gross ;;
+  }
+  dimension: amt_refund_storage_fee_net {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.amt_refund_storage_fee_net ;;
+  }
+  dimension: amt_refund_storage_fee_standard_gross {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.amt_refund_storage_fee_standard_gross ;;
+  }
+
+
+  dimension: amt_refund_storage_fee_standard_net {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.amt_refund_storage_fee_standard_net ;;
+  }
+  dimension: amt_refund_storage_fee_reduced_gross {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.amt_refund_storage_fee_reduced_gross ;;
+  }
+  dimension: amt_refund_storage_fee_reduced_net {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.amt_refund_storage_fee_reduced_net ;;
+  }
+  dimension: amt_refund_storage_fee_special_gross {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.amt_refund_storage_fee_special_gross ;;
+  }
+  dimension: amt_refund_storage_fee_special_net {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.amt_refund_storage_fee_special_net ;;
+  }
+
+
+  dimension: amt_vat_refund_storage_fee_standard {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.amt_vat_refund_storage_fee_standard ;;
+  }
+  dimension: amt_vat_refund_storage_fee_reduced {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.amt_vat_refund_storage_fee_reduced ;;
+  }
+  dimension: amt_vat_refund_storage_fee_special {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.amt_vat_refund_storage_fee_special ;;
+  }
+  dimension: amt_vat_refund_storage_fee_total {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.amt_vat_refund_storage_fee_total ;;
+  }
+
 
   ############################  Measures   #######################
 
@@ -1836,6 +1969,190 @@ view: vat_order {
     type: sum
     sql: ${quantity_deposit} ;;
   }
+
+############### STORAGE FEES ################
+
+  measure: sum_amt_storage_fee_gross {
+    group_label: "> Storage Fees"
+    label: "SUM Storage Fees (Gross)"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_storage_fee_gross} ;;
+  }
+  measure: sum_amt_storage_fee_net {
+    group_label: "> Storage Fees"
+    label: "SUM Storage Fees (Net)"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_storage_fee_net} ;;
+  }
+
+
+  measure: sum_amt_storage_fee_standard_gross {
+    group_label: "> Storage Fees"
+    label: "SUM Storage Fees Standard (Gross)"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_storage_fee_standard_gross} ;;
+  }
+  measure: sum_amt_storage_fee_standard_net {
+    group_label: "> Storage Fees"
+    label: "SUM Storage Fees Standard (Net)"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_storage_fee_standard_net} ;;
+  }
+  measure: sum_amt_storage_fee_reduced_gross {
+    group_label: "> Storage Fees"
+    label: "SUM Storage Fees Reduced (Gross)"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_storage_fee_reduced_gross} ;;
+  }
+  measure: sum_amt_storage_fee_reduced_net {
+    group_label: "> Storage Fees"
+    label: "SUM Storage Fees Reduced (Net)"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_storage_fee_reduced_net} ;;
+  }
+  measure: sum_amt_storage_fee_special_gross {
+    group_label: "> Storage Fees"
+    label: "SUM Storage Fees Special (Gross)"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_storage_fee_special_gross} ;;
+  }
+  measure: sum_amt_storage_fee_special_net {
+    group_label: "> Storage Fees"
+    label: "SUM Storage Fees Special (Net)"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_storage_fee_special_net} ;;
+  }
+
+
+  measure: sum_amt_vat_storage_fee_standard {
+    group_label: "> Storage Fees"
+    label: "SUM VAT Storage Fees Standard"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_vat_storage_fee_standard} ;;
+  }
+  measure: sum_amt_vat_storage_fee_reduced {
+    group_label: "> Storage Fees"
+    label: "SUM VAT Storage Fees Reduced"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_vat_storage_fee_reduced} ;;
+  }
+  measure: sum_amt_vat_storage_fee_special {
+    group_label: "> Storage Fees"
+    label: "SUM VAT Storage Fees Special"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_vat_storage_fee_special} ;;
+  }
+  measure: sum_amt_vat_storage_fee_total {
+    group_label: "> Storage Fees"
+    label: "SUM VAT Storage Fees Total"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_vat_storage_fee_total} ;;
+  }
+
+  ############### REFUND STORAGE FEES ################
+
+  measure: sum_amt_refund_storage_fee_gross {
+    group_label: "> Refunds Storage Fees"
+    label: "SUM Refunds Storage Fees (Gross)"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_refund_storage_fee_gross} ;;
+  }
+  measure: sum_amt_refund_storage_fee_net {
+    group_label: "> Refunds Storage Fees"
+    label: "SUM Refunds Storage Fees (Net)"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_refund_storage_fee_net} ;;
+  }
+  measure: sum_amt_refund_storage_fee_standard_gross {
+    group_label: "> Refunds Storage Fees"
+    label: "SUM Refunds Storage Fees Standard (Gross)"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_refund_storage_fee_standard_gross} ;;
+  }
+
+
+  measure: sum_amt_refund_storage_fee_standard_net {
+    group_label: "> Refunds Storage Fees"
+    label: "SUM Refunds Storage Fees Standard (Net)"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_refund_storage_fee_standard_net} ;;
+  }
+  measure: sum_amt_refund_storage_fee_reduced_gross {
+    group_label: "> Refunds Storage Fees"
+    label: "SUM Refunds Storage Fees Reduced (Gross)"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_refund_storage_fee_reduced_gross} ;;
+  }
+  measure: sum_amt_refund_storage_fee_reduced_net {
+    group_label: "> Refunds Storage Fees"
+    label: "SUM Refunds Storage Fees Reduced (Net)"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_refund_storage_fee_reduced_net} ;;
+  }
+  measure: sum_amt_refund_storage_fee_special_gross {
+    group_label: "> Refunds Storage Fees"
+    label: "SUM Refunds Storage Fees Special (Gross)"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_refund_storage_fee_special_gross} ;;
+  }
+  measure: sum_amt_refund_storage_fee_special_net {
+    group_label: "> Refunds Storage Fees"
+    label: "SUM Refunds Storage Fees Special (Net)"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_refund_storage_fee_special_net} ;;
+  }
+
+
+  measure: sum_amt_vat_refund_storage_fee_standard {
+    group_label: "> Refunds Storage Fees"
+    label: "SUM VAT Refunds Storage Fees Standard"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_vat_refund_storage_fee_standard} ;;
+  }
+  measure: sum_amt_vat_refund_storage_fee_reduced {
+    group_label: "> Refunds Storage Fees"
+    label: "SUM VAT Refunds Storage Fees Reduced"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_vat_refund_storage_fee_reduced} ;;
+  }
+  measure: sum_amt_vat_refund_storage_fee_special {
+    group_label: "> Refunds Storage Fees"
+    label: "SUM VAT Refunds Storage Fees Special"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_vat_refund_storage_fee_special} ;;
+  }
+  measure: sum_amt_vat_refund_storage_fee_total {
+    group_label: "> Refunds Storage Fees"
+    label: "SUM VAT Refunds Storage Fees Total"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_vat_refund_storage_fee_total} ;;
+  }
+
+
 
 
 
