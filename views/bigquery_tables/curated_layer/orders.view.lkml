@@ -1421,6 +1421,19 @@ view: orders {
     sql: ${TABLE}.amt_npv_gross;;
   }
 
+  ########### STORAGE FEES ##########
+
+  dimension: amt_storage_fee_gross {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.amt_storage_fee_gross ;;
+  }
+  dimension: amt_storage_fee_net {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.amt_storage_fee_net ;;
+  }
+
   ######## PARAMETERS
 
   parameter: date_granularity {
@@ -2645,6 +2658,47 @@ view: orders {
     type: count
     filters: [amt_cancelled_gross: ">0",cancellation_reason: "NULL"]
     value_format: "0"
+  }
+
+############### STORAGE FEES ################
+
+  measure: sum_amt_storage_fee_gross {
+    group_label: "* Monetary Values *"
+    label: "SUM Storage Fees (Gross)"
+    description: "Sum of Storage Fees Gross, applied when an item requiring such a fee is added to the basket."
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_storage_fee_gross} ;;
+  }
+  measure: sum_amt_storage_fee_net {
+    group_label: "* Monetary Values *"
+    label: "SUM Storage Fees (Net)"
+    description: "Sum of Storage Fees Net, applied when an item requiring such a fee is added to the basket."
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_storage_fee_net} ;;
+  }
+
+  ##### Total Fees #####
+
+  measure: sum_total_fees {
+    group_label: "* Monetary Values *"
+    label: "SUM Total Fees (Gross)"
+    description: "Sum of Delivery Fees (Gross) and Storage Fees (Gross)"
+    hidden:  no
+    type: number
+    sql: ${sum_delivery_fee_gross} + ${sum_amt_storage_fee_gross};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: avg_total_fees_gross {
+    group_label: "* Monetary Values *"
+    label: "AVG Total Fees (Gross)"
+    description: "Average value of Delivery Fees (Gross) + Storage Fees (Gross)"
+    hidden:  no
+    type: average
+    sql: coalesce(${shipping_price_gross_amount}) + coalesce(${amt_storage_fee_gross});;
+    value_format_name: euro_accounting_2_precision
   }
 
 
