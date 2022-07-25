@@ -2086,6 +2086,16 @@ view: orders {
     value_format_name: decimal_1
   }
 
+  measure: avg_number_sku {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "AVG # SKUs"
+    description: "Average number of SKUs per order"
+    hidden:  no
+    type: number
+    sql: ${sum_distinct_skus}/nullif(${cnt_orders},0);;
+    value_format_name: decimal_1
+  }
+
   measure: avg_ratio_customer_to_hub {
     group_label: "* Operations / Logistics *"
     label: "% Riding to Hub vs. Riding to Customer Time"
@@ -2370,6 +2380,14 @@ view: orders {
     description: "Fulfilled Quantity"
     type: sum
     sql: ${number_of_items} ;;
+  }
+
+  measure: sum_distinct_skus {
+    label: "SKU Quantity"
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    description: "Number of distinct SKUs"
+    type: sum
+    sql: ${no_distinct_skus} ;;
   }
 
   measure: sum_rider_hours {
