@@ -31,6 +31,21 @@ view: sequence_added{
     sql: ${TABLE}.hub_code ;;
   }
 
+  dimension: is_first_order {
+    type: yesno
+    sql: ${TABLE}.is_first_order ;;
+  }
+
+  dimension: is_external_order {
+    type: yesno
+    sql: ${TABLE}.is_external_order ;;
+  }
+
+  dimension: is_discounted_order {
+    type: yesno
+    sql: ${TABLE}.is_discounted_order ;;
+  }
+
 
   dimension: seq_added {
     type: string
