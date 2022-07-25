@@ -1310,19 +1310,5 @@ view: orderline {
   }
 
 
-#For sorting (GMV last 90 days)
-
-
-  measure: sum_item_price_gross_90d {
-    label: "SUM Item Prices sold (gross) - Last 90 days"
-    description: "Sum of sold Item prices (incl. VAT) - in the Last 90 days"
-    hidden: yes
-    type: sum
-    sql: ${quantity} * ${unit_price_gross_amount};;
-    value_format_name: eur
-    filters: [created_date: "90 days ago for 90 days"]
-    group_label: "Demand Planning"
-  }
-
 
 }

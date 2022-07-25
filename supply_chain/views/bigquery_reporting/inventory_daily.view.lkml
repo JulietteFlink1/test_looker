@@ -1062,7 +1062,7 @@ view: inventory_daily {
     hidden: yes
   }
 
-  ################## Hours Open t-
+  ################## Hours OOS t-
 
   measure: sum_of_hours_oos_t_1 {
 
@@ -1121,6 +1121,8 @@ view: inventory_daily {
     value_format_name: decimal_1
     hidden: yes
   }
+
+### % IN STOCK
 
   measure: pct_in_stock_t_1 {
 
@@ -1230,7 +1232,7 @@ view: inventory_daily {
     hidden: yes
   }
 
-  ##################Hours Open w-
+  ##################Hours OOS w-
 
   measure: sum_of_hours_oos_w_1 {
 
@@ -1290,7 +1292,7 @@ view: inventory_daily {
     hidden: yes
   }
 
-  ################## In stock w-
+  ################## %IN STOCK Weekly
 
   measure: pct_in_stock_w_1 {
 
@@ -1340,6 +1342,9 @@ view: inventory_daily {
     hidden: yes
   }
 
+
+  ################## %IN STOCK W-1 vs W-2
+
   measure: pct_in_stock_wow_w_1_vs_w_2 {
     label: "% In Stock WOW Growth (w-1 vs w-2) "
     group_label: "Demand Planning"
@@ -1379,7 +1384,9 @@ view: inventory_daily {
 
 
 
-################## w2t
+################## W2T
+
+#Hours Open WTD
 
   measure: sum_of_hours_open_wtd {
 
@@ -1407,6 +1414,8 @@ view: inventory_daily {
     value_format_name: decimal_1
     hidden: yes
   }
+
+  #Hours OOS WTD
 
   measure: sum_of_hours_oos_wtd {
 
@@ -1437,6 +1446,7 @@ view: inventory_daily {
 
   }
 
+####%IN STOCK WTD
 
   measure: pct_in_stock_wtd {
 
@@ -1474,7 +1484,7 @@ view: inventory_daily {
   }
 
 
-#Current stock available
+#####CURRENT STOCK AVAILABLE
 
   measure: quantity_to_t_1 {
 
@@ -1516,6 +1526,7 @@ view: inventory_daily {
     value_format_name: decimal_1
   }
 
+#### DAYS COVERAGE
 
   measure: days_coverage {
 
@@ -1530,7 +1541,155 @@ view: inventory_daily {
     value_format_name: decimal_2
   }
 
+### OOS
 
+## DAILY
+
+  measure: lost_sales_t_1 {
+
+    label: "€ Lost Sales (Gross) t-1"
+    description: "This shows how much money we lost due OOS levels per sku t-1"
+    group_label: "Demand Planning"
+
+    type: number
+    sql: ((1 - ${pct_in_stock_t_1}) * ${sku_hub_day_level_orders.sum_item_price_fulfilled_gross_t_1}) / nullif(${pct_in_stock_t_1},0)  ;;
+    value_format_name: eur
+    hidden: yes
+  }
+
+  measure: lost_sales_t_2 {
+
+    label: "€ Lost Sales (Gross) t-2"
+    description: "This shows how much money we lost due OOS levels per sku t-2"
+    group_label: "Demand Planning"
+
+    type: number
+    sql: ((1 - ${pct_in_stock_t_2}) * ${sku_hub_day_level_orders.sum_item_price_fulfilled_gross_t_2}) / nullif(${pct_in_stock_t_2},0)  ;;
+    value_format_name: eur
+    hidden: yes
+  }
+
+  measure: lost_sales_t_3 {
+
+    label: "€ Lost Sales (Gross) t-3"
+    description: "This shows how much money we lost due OOS levels per sku t-3"
+    group_label: "Demand Planning"
+
+    type: number
+    sql: ((1 - ${pct_in_stock_t_3}) * ${sku_hub_day_level_orders.sum_item_price_fulfilled_gross_t_3}) / nullif(${pct_in_stock_t_3},0)  ;;
+    value_format_name: eur
+    hidden: yes
+  }
+
+  measure: lost_sales_t_4 {
+
+    label: "€ Lost Sales (Gross) t-4"
+    description: "This shows how much money we lost due OOS levels per sku t-4"
+    group_label: "Demand Planning"
+
+    type: number
+    sql: ((1 - ${pct_in_stock_t_4}) * ${sku_hub_day_level_orders.sum_item_price_fulfilled_gross_t_4}) / nullif(${pct_in_stock_t_4},0)  ;;
+    value_format_name: eur
+    hidden: yes
+  }
+
+  ## WEEKLY
+
+  measure: lost_sales_w_1 {
+
+    label: "€ Lost Sales (Gross) w-1"
+    description: "This shows how much money we lost due OOS levels per sku w-1"
+    group_label: "Demand Planning"
+
+    type: number
+    sql: ((1 - ${pct_in_stock_w_1}) * ${sku_hub_day_level_orders.sum_item_price_fulfilled_gross_w_1}) / nullif(${pct_in_stock_w_1},0)  ;;
+    value_format_name: eur
+    hidden: yes
+  }
+
+  measure: lost_sales_w_2 {
+
+    label: "€ Lost Sales (Gross) w-2"
+    description: "This shows how much money we lost due OOS levels per sku w-2"
+    group_label: "Demand Planning"
+
+    type: number
+    sql: ((1 - ${pct_in_stock_w_2}) * ${sku_hub_day_level_orders.sum_item_price_fulfilled_gross_w_2}) / nullif(${pct_in_stock_w_2},0)  ;;
+    value_format_name: eur
+    hidden: yes
+  }
+
+  measure: lost_sales_w_3 {
+
+    label: "€ Lost Sales (Gross) w-3"
+    description: "This shows how much money we lost due OOS levels per sku w-3"
+    group_label: "Demand Planning"
+
+    type: number
+    sql: ((1 - ${pct_in_stock_w_3}) * ${sku_hub_day_level_orders.sum_item_price_fulfilled_gross_w_3}) / nullif(${pct_in_stock_w_3},0)  ;;
+    value_format_name: eur
+    hidden: yes
+  }
+
+  measure: lost_sales_w_4 {
+
+    label: "€ Lost Sales (Gross) w-4"
+    description: "This shows how much money we lost due OOS levels per sku w-4"
+    group_label: "Demand Planning"
+
+    type: number
+    sql: ((1 - ${pct_in_stock_w_4}) * ${sku_hub_day_level_orders.sum_item_price_fulfilled_gross_w_4}) / nullif(${pct_in_stock_w_4},0)  ;;
+    value_format_name: eur
+    hidden: yes
+  }
+
+
+####WTD
+
+  measure: lost_sales_wtd {
+
+    label: "€ Lost Sales (Gross) WtD"
+    description: "This shows how much money we lost due OOS levels per sku - WtD"
+    group_label: "Demand Planning"
+
+    type: number
+    sql: ((1 - ${pct_in_stock_wtd}) * ${sku_hub_day_level_orders.sum_item_price_fulfilled_gross_wtd}) / nullif(${pct_in_stock_wtd},0)  ;;
+    value_format_name: eur
+    hidden: yes
+  }
+
+  measure: lost_sales_wtd_w_1 {
+
+    label: "€ Lost Sales (Gross) WtD w-1"
+    description: "This shows how much money we lost due OOS levels per sku - Previous week WtD"
+    group_label: "Demand Planning"
+
+    type: number
+    sql: ((1 - ${pct_in_stock_wtd_w_1}) * ${sku_hub_day_level_orders.sum_item_price_fulfilled_gross_wtd_w_1}) / nullif(${pct_in_stock_wtd_w_1},0)  ;;
+    value_format_name: eur
+    hidden: yes
+  }
+
+
+  measure: pct_lost_sales_wow_wtd {
+    label: "% Lost Sales WOW Growth - WtD"
+    group_label: "Demand Planning"
+
+    type: number
+    sql: (${lost_sales_wtd} - ${lost_sales_wtd_w_1})/nullif(${lost_sales_wtd_w_1}, 0)  ;;
+    value_format_name: percent_1
+    hidden: yes
+  }
+
+  measure: pct_lost_sales_wow_w_1_vs_w_2 {
+    label: "% Lost Sales WOW Growth (w-1 vs w-2) "
+    group_label: "Demand Planning"
+
+    type: number
+    sql: (${lost_sales_w_1} - ${lost_sales_w_2})/nullif(${lost_sales_w_2},0)  ;;
+    value_format_name: percent_1
+    hidden: yes
+  }
 
 
 }
