@@ -2679,6 +2679,16 @@ view: orders {
     sql: ${amt_storage_fee_net} ;;
   }
 
+  measure: avg_storage_fee_gross {
+    group_label: "* Monetary Values *"
+    label: "AVG Storage Fee (Gross)"
+    description: "Average value of Storage Fees (Gross)"
+    hidden:  no
+    type: average
+    sql: coalesce(${amt_storage_fee_gross});;
+    value_format_name: euro_accounting_2_precision
+  }
+
   ##### Total Fees #####
 
   measure: sum_total_fees {
