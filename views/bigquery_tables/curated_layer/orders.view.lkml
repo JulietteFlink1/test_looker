@@ -1,5 +1,6 @@
 view: orders {
-  sql_table_name: `flink-data-prod.curated.orders`
+  # sql_table_name: `flink-data-prod.curated.orders`
+  sql_table_name: `flink-data-dev.dbt_obotanova.orders`
     ;;
 
   view_label: "* Orders *"
@@ -1434,6 +1435,59 @@ view: orders {
     sql: ${TABLE}.amt_storage_fee_net ;;
   }
 
+  ########### CRF FEES DIMENSIONS ##########
+
+  dimension: amt_gmv_excluding_crf_fees_gross {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.amt_gmv_excluding_crf_fees_gross ;;
+  }
+  dimension: amt_gmv_excluding_crf_fees_net {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.amt_gmv_excluding_crf_fees_net ;;
+  }
+  dimension: amt_crf_total_fee_gross {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.amt_crf_total_fee_gross ;;
+  }
+  dimension: amt_crf_total_fee_net {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.amt_crf_total_fee_net ;;
+  }
+  dimension: amt_crf_markdown_fee_gross {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.amt_crf_markdown_fee_gross ;;
+  }
+  dimension: amt_crf_markdown_fee_net {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.amt_crf_markdown_fee_net ;;
+  }
+  dimension: amt_crf_it_cost_fee_gross {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.amt_crf_it_cost_fee_gross ;;
+  }
+  dimension: amt_crf_it_cost_fee_net {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.amt_crf_it_cost_fee_net ;;
+  }
+  dimension: amt_crf_fulfillment_fee_gross {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.amt_crf_fulfillment_fee_gross ;;
+  }
+  dimension: amt_crf_fulfillment_fee_net {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.amt_crf_fulfillment_fee_net ;;
+  }
+
   ######## PARAMETERS
 
   parameter: date_granularity {
@@ -1478,6 +1532,12 @@ view: orders {
   parameter: is_after_product_discounts {
     type: yesno
     label: "Is After Deduction of Product Discounts"
+    default_value: "No"
+  }
+
+  parameter: is_after_crf_fees_deduction {
+    type: yesno
+    label: "Is after CRF Fees Deduction"
     default_value: "No"
   }
 
@@ -2129,9 +2189,15 @@ view: orders {
     label: "SUM GMV (Gross)"
     description: "Sum of Gross Merchandise Value of orders incl. fees and before deduction of discounts (incl. VAT)"
     hidden:  no
+    label_from_parameter: is_after_crf_fees_deduction
     type: sum
-    sql: ${gmv_gross};;
     value_format_name: euro_accounting_0_precision
+    sql:
+    {% if is_after_crf_fees_deduction._parameter_value == 'true' %}
+    ${amt_gmv_excluding_crf_fees_gross}
+    {% elsif is_after_crf_fees_deduction._parameter_value == 'false' %}
+    ${gmv_gross}
+    {% endif %};;
   }
 
   measure: sum_gmv_net {
@@ -2139,9 +2205,15 @@ view: orders {
     label: "SUM GMV (Net)"
     description: "Sum of Gross Merchandise Value of orders incl. fees and before deduction of discounts (excl. VAT)"
     hidden:  no
+    label_from_parameter: is_after_crf_fees_deduction
     type: sum
-    sql: ${gmv_net};;
     value_format_name: euro_accounting_0_precision
+    sql:
+    {% if is_after_crf_fees_deduction._parameter_value == 'true' %}
+    ${amt_gmv_excluding_crf_fees_net}
+    {% elsif is_after_crf_fees_deduction._parameter_value == 'false' %}
+    ${gmv_net}
+    {% endif %};;
   }
 
   measure: sum_revenue_gross {
@@ -2699,6 +2771,89 @@ view: orders {
     type: average
     sql: coalesce(${shipping_price_gross_amount}) + coalesce(${amt_storage_fee_gross});;
     value_format_name: euro_accounting_2_precision
+  }
+
+########### CRF FEES MEASURES ##########
+
+  measure: sum_amt_gmv_excluding_crf_fees_gross {
+    group_label: "* Monetary Values *"
+    label: "SUM GMV excluding CRF fees gross"
+    description: "Sum of GMV gross - CRF fees gross "
+    type: sum
+    value_format_name: euro_accounting_2_precision
+    sql: ${amt_gmv_excluding_crf_fees_gross} ;;
+  }
+  measure: sum_amt_gmv_excluding_crf_fees_net {
+    group_label: "* Monetary Values *"
+    label: "SUM GMV excluding CRF fees net"
+    description: "Sum of GMV net - CRF fees net "
+    type: sum
+    value_format_name: euro_accounting_2_precision
+    sql: ${amt_gmv_excluding_crf_fees_net} ;;
+  }
+  measure: sum_amt_crf_total_fee_gross {
+    group_label: "* Monetary Values *"
+    label: "SUM CRF Total fees gross"
+    description: "Sum (gross): IT cost fee + Markdown fee + Fulfillment fee"
+    type: sum
+    value_format_name: euro_accounting_2_precision
+    sql: ${amt_crf_total_fee_gross} ;;
+  }
+  measure: sum_amt_crf_total_fee_net {
+    group_label: "* Monetary Values *"
+    label: "SUM CRF Total fees net"
+    description: "Sum (net): IT cost fee + Markdown fee + Fulfillment fee"
+    type: sum
+    value_format_name: euro_accounting_2_precision
+    sql: ${amt_crf_total_fee_net} ;;
+  }
+  measure: sum_amt_crf_markdown_fee_gross {
+    group_label: "* Monetary Values *"
+    label: "SUM CRF Markdown fee gross"
+    description: "Sum of CRF Markdown fee gross"
+    type: sum
+    value_format_name: euro_accounting_2_precision
+    sql: ${amt_crf_markdown_fee_gross} ;;
+  }
+  measure: sum_amt_crf_markdown_fee_net {
+    group_label: "* Monetary Values *"
+    label: "SUM CRF Markdown fee net"
+    description: "Sum of CRF Markdown fee net"
+    type: sum
+    value_format_name: euro_accounting_2_precision
+    sql: ${amt_crf_markdown_fee_net} ;;
+  }
+  measure: sum_amt_crf_it_cost_fee_gross {
+    group_label: "* Monetary Values *"
+    label: "SUM CRF IT cost fee gross"
+    description: "Sum of CRF IT cost fee gross"
+    type: sum
+    value_format_name: euro_accounting_2_precision
+    sql: ${amt_crf_it_cost_fee_gross} ;;
+  }
+  measure: sum_amt_crf_it_cost_fee_net {
+    group_label: "* Monetary Values *"
+    label: "SUM CRF IT cost fee net"
+    description: "Sum of CRF IT cost fee net"
+    type: sum
+    value_format_name: euro_accounting_2_precision
+    sql: ${amt_crf_it_cost_fee_net} ;;
+  }
+  measure: sum_amt_crf_fulfillment_fee_gross {
+    group_label: "* Monetary Values *"
+    label: "SUM CRF Fulfillment fee gross"
+    description: "Sum of CRF Fulfillmet fee gross"
+    type: sum
+    value_format_name: euro_accounting_2_precision
+    sql: ${amt_crf_fulfillment_fee_gross} ;;
+  }
+  measure: sum_amt_crf_fulfillment_fee_net {
+    group_label: "* Monetary Values *"
+    label: "SUM CRF Fulfillment fee net"
+    description: "Sum of CRF Fulfillmet fee net"
+    type: sum
+    value_format_name: euro_accounting_2_precision
+    sql: ${amt_crf_fulfillment_fee_net} ;;
   }
 
 
