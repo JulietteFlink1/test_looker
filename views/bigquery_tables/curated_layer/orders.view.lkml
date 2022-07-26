@@ -2899,7 +2899,7 @@ view: orders {
   measure: sum_amt_crf_total_fee_net {
     group_label: "* Monetary Values *"
     label: "SUM CRF Total fees net"
-    description: "Sum (net): IT cost fee + Markdown fee + Fulfillment fee"
+    description: "Sum (net): IT cost fee + Markdown fee + Fulfillment fee. 20% tax rate applied."
     type: sum
     value_format_name: euro_accounting_2_precision
     sql: ${amt_crf_total_fee_net} ;;
@@ -2907,7 +2907,7 @@ view: orders {
   measure: sum_amt_crf_markdown_fee_gross {
     group_label: "* Monetary Values *"
     label: "SUM CRF Markdown fee gross"
-    description: "Sum of CRF Markdown fee gross"
+    description: "Sum of CRF Markdown fee gross. Markdown fee calculated as 3% of the total net product prices sum"
     type: sum
     value_format_name: euro_accounting_2_precision
     sql: ${amt_crf_markdown_fee_gross} ;;
@@ -2915,7 +2915,7 @@ view: orders {
   measure: sum_amt_crf_markdown_fee_net {
     group_label: "* Monetary Values *"
     label: "SUM CRF Markdown fee net"
-    description: "Sum of CRF Markdown fee net"
+    description: "Sum of CRF Markdown fee net. Markdown fee calculated as 3% of the total net product prices sum. 20% tax rate applied."
     type: sum
     value_format_name: euro_accounting_2_precision
     sql: ${amt_crf_markdown_fee_net} ;;
@@ -2923,7 +2923,7 @@ view: orders {
   measure: sum_amt_crf_it_cost_fee_gross {
     group_label: "* Monetary Values *"
     label: "SUM CRF IT cost fee gross"
-    description: "Sum of CRF IT cost fee gross"
+    description: "Sum of CRF IT cost fee gross. IT cost fee is 0.15 per order."
     type: sum
     value_format_name: euro_accounting_2_precision
     sql: ${amt_crf_it_cost_fee_gross} ;;
@@ -2931,7 +2931,7 @@ view: orders {
   measure: sum_amt_crf_it_cost_fee_net {
     group_label: "* Monetary Values *"
     label: "SUM CRF IT cost fee net"
-    description: "Sum of CRF IT cost fee net"
+    description: "Sum of CRF IT cost fee net. IT cost fee is 0.15 per order. 20% tax rate applied."
     type: sum
     value_format_name: euro_accounting_2_precision
     sql: ${amt_crf_it_cost_fee_net} ;;
@@ -2939,7 +2939,7 @@ view: orders {
   measure: sum_amt_crf_fulfillment_fee_gross {
     group_label: "* Monetary Values *"
     label: "SUM CRF Fulfillment fee gross"
-    description: "Sum of CRF Fulfillmet fee gross"
+    description: "Sum of CRF Fulfillmet fee gross. This fee might vary throughout the last settlement period. The final value is known on the 20th of each month for the previous 30-day period."
     type: sum
     value_format_name: euro_accounting_2_precision
     sql: ${amt_crf_fulfillment_fee_gross} ;;
@@ -2947,7 +2947,7 @@ view: orders {
   measure: sum_amt_crf_fulfillment_fee_net {
     group_label: "* Monetary Values *"
     label: "SUM CRF Fulfillment fee net"
-    description: "Sum of CRF Fulfillmet fee net"
+    description: "Sum of CRF Fulfillmet fee net. This fee might vary throughout the last settlement period. The final value is known on the 20th of each month for the previous 30-day period. 20% tax rate applied."
     type: sum
     value_format_name: euro_accounting_2_precision
     sql: ${amt_crf_fulfillment_fee_net} ;;
