@@ -2206,7 +2206,7 @@ view: orders {
   measure: sum_gmv_gross_dynamic {
     group_label: "* Monetary Values *"
     label: "SUM GMV (Gross) (Dynamic)"
-    description: "Sum of Gross Merchandise Value of orders incl. fees and before deduction of discounts (incl. VAT)"
+    description: "Sum of Gross Merchandise Value of orders incl. fees and before deduction of discounts (incl. VAT). To be used together with the Is After CRF Fees Deduction parameter."
     hidden:  no
     label_from_parameter: is_after_crf_fees_deduction
     type: sum
@@ -2222,7 +2222,7 @@ view: orders {
   measure: sum_gmv_net_dynamic {
     group_label: "* Monetary Values *"
     label: "SUM GMV (Net) (Dynamic)"
-    description: "Sum of Gross Merchandise Value of orders incl. fees and before deduction of discounts (excl. VAT)"
+    description: "Sum of Gross Merchandise Value of orders incl. fees and before deduction of discounts (excl. VAT). To be used together with the Is After CRF Fees Deduction parameter."
     hidden:  no
     label_from_parameter: is_after_crf_fees_deduction
     type: sum
