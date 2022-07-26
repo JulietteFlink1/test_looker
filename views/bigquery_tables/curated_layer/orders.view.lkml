@@ -2745,7 +2745,7 @@ view: orders {
     description: "Count of Orders where a PDT is available"
     hidden:  no
     type: count
-    filters: [is_delivery_eta_available: "yes"]
+    filters: [is_delivery_eta_available: "yes", is_click_and_collect_order: "no"]
     value_format: "0"
   }
 
