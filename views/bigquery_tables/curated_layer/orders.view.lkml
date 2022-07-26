@@ -1,6 +1,5 @@
 view: orders {
-  # sql_table_name: `flink-data-prod.curated.orders`
-  sql_table_name: `flink-data-dev.dbt_obotanova.orders`
+  sql_table_name: `flink-data-prod.curated.orders`
     ;;
 
   view_label: "* Orders *"
@@ -2189,6 +2188,26 @@ view: orders {
     label: "SUM GMV (Gross)"
     description: "Sum of Gross Merchandise Value of orders incl. fees and before deduction of discounts (incl. VAT)"
     hidden:  no
+    type: sum
+    value_format_name: euro_accounting_0_precision
+    sql: ${gmv_gross};;
+  }
+
+  measure: sum_gmv_net {
+    group_label: "* Monetary Values *"
+    label: "SUM GMV (Net)"
+    description: "Sum of Gross Merchandise Value of orders incl. fees and before deduction of discounts (excl. VAT)"
+    hidden:  no
+    type: sum
+    value_format_name: euro_accounting_0_precision
+    sql: ${gmv_net};;
+  }
+
+  measure: sum_gmv_gross_dynamic {
+    group_label: "* Monetary Values *"
+    label: "SUM GMV (Gross) (Dynamic)"
+    description: "Sum of Gross Merchandise Value of orders incl. fees and before deduction of discounts (incl. VAT)"
+    hidden:  no
     label_from_parameter: is_after_crf_fees_deduction
     type: sum
     value_format_name: euro_accounting_0_precision
@@ -2200,9 +2219,9 @@ view: orders {
     {% endif %};;
   }
 
-  measure: sum_gmv_net {
+  measure: sum_gmv_net_dynamic {
     group_label: "* Monetary Values *"
-    label: "SUM GMV (Net)"
+    label: "SUM GMV (Net) (Dynamic)"
     description: "Sum of Gross Merchandise Value of orders incl. fees and before deduction of discounts (excl. VAT)"
     hidden:  no
     label_from_parameter: is_after_crf_fees_deduction
