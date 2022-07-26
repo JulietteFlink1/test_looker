@@ -3464,4 +3464,12 @@ view: orders {
     sql: ${employee_level_kpis.number_of_delivered_orders_by_riders}/nullif(${cnt_successful_orders},0) ;;
     value_format_name: percent_1
   }
+
+  measure: std_fulfillment_time {
+    type: number
+    group_label: "* Operations / Logistics *"
+    label: "Fulfillment Time Standard Deviation"
+    sql: stddev_pop(${fulfillment_time}) ;;
+    value_format_name: decimal_1
+  }
 }
