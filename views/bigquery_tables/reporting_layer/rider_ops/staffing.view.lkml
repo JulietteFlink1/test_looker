@@ -2411,7 +2411,7 @@ view: staffing {
 
   measure: logistics_index {
     label: "Logistics Index"
-    description: "AVG Fulfillment Time / UTR"
+    description: "AVG Fulfillment Time / Rider UTR"
     type: number
     sql: ${orders_with_ops_metrics.avg_fulfillment_time}/${utr_rider} ;;
     value_format_name: decimal_1
