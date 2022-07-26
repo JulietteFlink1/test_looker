@@ -188,7 +188,7 @@ view: micro_forecasts_vs_actuals {
     label: "Total observed orders"
     hidden: no
     type: number
-    sql: ${TABLE}.observed_orders_total + 1;;
+    sql: ${TABLE}.observed_orders_total;;
     value_format_name: decimal_0
   }
 
@@ -283,7 +283,7 @@ view: micro_forecasts_vs_actuals {
     group_label: " * Forecasting error * "
     label: "wMAPE"
     type: number
-    sql: ${summed_absolute_error}/${summed_absolute_actuals};;
+    sql: ${summed_absolute_error}/nullif(${summed_absolute_actuals},0);;
     value_format_name: percent_0
   }
 
