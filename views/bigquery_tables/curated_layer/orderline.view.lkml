@@ -141,8 +141,9 @@ view: orderline {
   dimension: amt_revenue_gross {
     label: "Revenue Gross"
     group_label: "> Monetary Dimensions"
+    description: "SUM of Item Sold Prices after deduction of all discounts (Cart and Product Discounts)"
     type: number
-    sql: ${TABLE}.amt_revenue_gross ;;
+    sql: ${amt_total_price_gross} - ${amt_discount_gross} ;;
   }
 
   dimension: amt_total_price_gross {
@@ -669,6 +670,7 @@ view: orderline {
   measure: sum_revenue_gross {
     label: "SUM of Gross Revenue"
     sql: ${amt_revenue_gross} ;;
+    description: "SUM of Item Sold Prices after deduction of all discounts (Cart and Product Discounts)"
     type: sum
     value_format_name: euro_accounting_2_precision
     group_label: "> Monetary Metrics"

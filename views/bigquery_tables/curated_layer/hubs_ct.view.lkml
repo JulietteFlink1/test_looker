@@ -247,6 +247,14 @@ view: hubs_ct {
     group_label: "> Admin Data"
   }
 
+  dimension: is_hub_active_now {
+    label: "Is Active Hub Now"
+    description: "Takes the data from the hub geolocator source and shows if a hub is currently operating or not"
+    type: yesno
+    sql: ${TABLE}.is_active_hub ;;
+    group_label: "> Admin Data"
+  }
+
   dimension: is_cell_split_hub {
     label: "Is Cell Split Hub"
     description: "Cell Split Hub: when launched, its delivery area covered more than 20% of an existing delivery area"
