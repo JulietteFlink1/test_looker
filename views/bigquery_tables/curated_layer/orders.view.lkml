@@ -652,7 +652,7 @@ view: orders {
     description: "Picker Queuing Time + Picking Time + Rider Queuing Time"
     group_label: "* Operations / Logistics *"
     type: number
-    sql: ${picker_queuing_time} + ${rider_queuing_time} + ${time_diff_between_two_subsequent_fulfillments};;
+    sql: ${picker_queuing_time} + ${rider_queuing_time} + ${picking_time_minutes};;
   }
 
   dimension: is_critical_delivery_time_estimate_underestimation {
@@ -666,6 +666,20 @@ view: orders {
     description: "The actual fulfillment took more than 10min less than the internally predicted delivery time"
     type:  yesno
     sql: ${fulfillment_time_raw_minutes} < (${delivery_time_estimate_minutes} - 10) ;;
+    hidden: yes
+  }
+
+  dimension: is_critical_pdt_underestimation {
+    description: "The actual fulfillment took more than 10min longer than the PDT"
+    type:  yesno
+    sql: ${fulfillment_time_raw_minutes} > (10 + ${delivery_eta_minutes}) ;;
+    hidden: yes
+  }
+
+  dimension: is_critical_pdt_overestimation {
+    description: "The actual fulfillment took more than 10min less than the PDT"
+    type:  yesno
+    sql: ${fulfillment_time_raw_minutes} < (${delivery_eta_minutes} - 10) ;;
     hidden: yes
   }
 
@@ -829,14 +843,14 @@ view: orders {
     hidden: yes
     group_label: "* Operations / Logistics *"
     type: yesno
-    sql: ${time_diff_between_two_subsequent_fulfillments} < 0 ;;
+    sql: ${picking_time_minutes} < 0 ;;
   }
 
   dimension: is_picking_more_than_30_minute {
     hidden: yes
     group_label: "* Operations / Logistics *"
     type: yesno
-    sql: ${time_diff_between_two_subsequent_fulfillments} > 30 ;;
+    sql: ${picking_time_minutes} > 30 ;;
   }
 
   dimension: is_internal_order {
@@ -1181,7 +1195,7 @@ view: orders {
     sql: ${TABLE}.picker_id ;;
   }
 
-  dimension: time_diff_between_two_subsequent_fulfillments {
+  dimension: picking_time_minutes {
     group_label: "* Operations / Logistics *"
     label: "Picking Time Minutes"
     type: number
@@ -1419,6 +1433,19 @@ view: orders {
     hidden: yes
     type: number
     sql: ${TABLE}.amt_npv_gross;;
+  }
+
+  ########### STORAGE FEES ##########
+
+  dimension: amt_storage_fee_gross {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.amt_storage_fee_gross ;;
+  }
+  dimension: amt_storage_fee_net {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.amt_storage_fee_net ;;
   }
 
   ######## PARAMETERS
@@ -1726,7 +1753,7 @@ view: orders {
     description: "Average Picking Time considering first fulfillment to second fulfillment created. Outliers excluded (<0min or >30min)"
     hidden:  no
     type: average
-    sql:${time_diff_between_two_subsequent_fulfillments};;
+    sql:${picking_time_minutes};;
     value_format_name: decimal_1
   }
 
@@ -2059,6 +2086,16 @@ view: orders {
     value_format_name: decimal_1
   }
 
+  measure: avg_number_sku {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "AVG # SKUs"
+    description: "Average number of SKUs per order"
+    hidden:  no
+    type: number
+    sql: ${sum_distinct_skus}/nullif(${cnt_orders},0);;
+    value_format_name: decimal_1
+  }
+
   measure: avg_ratio_customer_to_hub {
     group_label: "* Operations / Logistics *"
     label: "% Riding to Hub vs. Riding to Customer Time"
@@ -2101,9 +2138,45 @@ view: orders {
 
   }
 
+  measure: picking_time_estimate_mae {
+    group_label: "* Operations / Logistics *"
+    label: "Mean Absolute Error Picking Time Estimate"
+    description: "The mean absolute error between actual picking time and estimated picking time"
+    hidden:  no
+    type: average
+    sql: abs(${picking_time_minutes} - ${estimated_picking_time_minutes});;
+    value_format_name: decimal_1
+  }
 
+  measure: riding_time_estimate_mae {
+    group_label: "* Operations / Logistics *"
+    label: "Mean Absolute Error Riding Time Estimate"
+    description: "The mean absolute error between actual riding to customer time and estimated riding to customer time"
+    hidden:  no
+    type: average
+    sql:  abs(${riding_to_customer_time_minutes} - ${estimated_riding_time_minutes});;
+    value_format_name: decimal_1
+  }
 
+  measure: picker_queuing_time_estimate_mae {
+    group_label: "* Operations / Logistics *"
+    label: "Mean Absolute Error Picker Queuing Time Estimate"
+    description: "The mean absolute error between actual picker queuing time and estimated picker queuing time"
+    hidden:  no
+    type: average
+    sql: abs(${picker_queuing_time} - ${estimated_queuing_time_for_picker_minutes});;
+    value_format_name: decimal_1
+  }
 
+  measure: rider_queuing_time_estimate_mae {
+    group_label: "* Operations / Logistics *"
+    label: "Mean Absolute Error Rider Queuing Time Estimate"
+    description: "The mean absolute error between actual rider queuing time and estimated rider queuing time"
+    hidden:  no
+    type: average
+    sql: abs(${rider_queuing_time} - ${estimated_queuing_time_for_rider_minutes});;
+    value_format_name: decimal_1
+  }
 
 
 
@@ -2307,6 +2380,14 @@ view: orders {
     description: "Fulfilled Quantity"
     type: sum
     sql: ${number_of_items} ;;
+  }
+
+  measure: sum_distinct_skus {
+    label: "SKU Quantity"
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    description: "Number of distinct SKUs"
+    type: sum
+    sql: ${no_distinct_skus} ;;
   }
 
   measure: sum_rider_hours {
@@ -2647,6 +2728,57 @@ view: orders {
     value_format: "0"
   }
 
+############### STORAGE FEES ################
+
+  measure: sum_amt_storage_fee_gross {
+    group_label: "* Monetary Values *"
+    label: "SUM Storage Fees (Gross)"
+    description: "Sum of Storage Fees Gross, applied when an item requiring such a fee is added to the basket."
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_storage_fee_gross} ;;
+  }
+  measure: sum_amt_storage_fee_net {
+    group_label: "* Monetary Values *"
+    label: "SUM Storage Fees (Net)"
+    description: "Sum of Storage Fees Net, applied when an item requiring such a fee is added to the basket."
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_storage_fee_net} ;;
+  }
+
+  measure: avg_storage_fee_gross {
+    group_label: "* Monetary Values *"
+    label: "AVG Storage Fee (Gross)"
+    description: "Average value of Storage Fees (Gross)"
+    hidden:  no
+    type: average
+    sql: coalesce(${amt_storage_fee_gross});;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  ##### Total Fees #####
+
+  measure: sum_total_fees {
+    group_label: "* Monetary Values *"
+    label: "SUM Total Fees (Gross)"
+    description: "Sum of Delivery Fees (Gross) and Storage Fees (Gross)"
+    hidden:  no
+    type: number
+    sql: ${sum_delivery_fee_gross} + ${sum_amt_storage_fee_gross};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: avg_total_fees_gross {
+    group_label: "* Monetary Values *"
+    label: "AVG Total Fees (Gross)"
+    description: "Average value of Delivery Fees (Gross) + Storage Fees (Gross)"
+    hidden:  no
+    type: average
+    sql: coalesce(${shipping_price_gross_amount}) + coalesce(${amt_storage_fee_gross});;
+    value_format_name: euro_accounting_2_precision
+  }
+
 
   ############### Delays compared to delivery time internal estimate ###########
 
@@ -2848,6 +2980,26 @@ view: orders {
     hidden:      yes
     type:        count
     filters:     [is_critical_delivery_time_estimate_overestimation: "Yes"]
+    value_format: "0"
+  }
+
+  measure: cnt_orders_pdt_critical_underestimation {
+    group_label: "* Operations / Logistics *"
+    label:       "# Orders with critical under-estimation PDT"
+    description: "# Orders with critical under-estimation PDT"
+    hidden:      yes
+    type:        count
+    filters:     [is_critical_pdt_underestimation: "Yes"]
+    value_format: "0"
+  }
+
+  measure: cnt_orders_pdt_critical_overestimation {
+    group_label: "* Operations / Logistics *"
+    label:       "# Orders with critical over-estimation PDT"
+    description: "# Orders with critical over-estimation PDT"
+    hidden:      yes
+    type:        count
+    filters:     [is_critical_pdt_overestimation: "Yes"]
     value_format: "0"
   }
 
@@ -3251,6 +3403,24 @@ view: orders {
     value_format_name:  percent_2
   }
 
+  measure: pct_pdt_critical_over_estimation {
+    group_label: "* Operations / Logistics *"
+    label:       "% Orders with critical over-estimation of PDT"
+    description: "% Orders with critical over-estimation of PDT"
+    type:        number
+    sql:         ${cnt_orders_pdt_critical_overestimation} / ${cnt_orders} ;;
+    value_format_name:  percent_2
+  }
+
+  measure: pct_pdt_critical_under_estimation {
+    group_label: "* Operations / Logistics *"
+    label:       "% Orders with critical under-estimation of PDT"
+    description: "% Orders with critical under-estimation of PDT"
+    type:        number
+    sql:         ${cnt_orders_pdt_critical_underestimation} / ${cnt_orders} ;;
+    value_format_name:  percent_2
+  }
+
   measure: cnt_orders_with_delivery_time_estimate {
     group_label: "* Operations / Logistics *"
     label: "# Orders with Fulfillment Time Estimate"
@@ -3293,5 +3463,13 @@ view: orders {
     type: number
     sql: ${employee_level_kpis.number_of_delivered_orders_by_riders}/nullif(${cnt_successful_orders},0) ;;
     value_format_name: percent_1
+  }
+
+  measure: std_fulfillment_time {
+    type: number
+    group_label: "* Operations / Logistics *"
+    label: "Fulfillment Time Standard Deviation"
+    sql: stddev_pop(${fulfillment_time}) ;;
+    value_format_name: decimal_1
   }
 }
