@@ -340,7 +340,7 @@ view: forecasts {
     type: sum_distinct
     sql_distinct_key: ${forecast_uuid} ;;
     sql: ${TABLE}.number_of_forecasted_pickers ;;
-    hidden: yes
+    hidden: no
   }
 
   measure: number_of_forecasted_riders {
@@ -349,7 +349,7 @@ view: forecasts {
     type: sum_distinct
     sql_distinct_key: ${forecast_uuid} ;;
     sql: ${TABLE}.number_of_forecasted_riders ;;
-    hidden: yes
+    hidden: no
   }
 
   # =========  Forecasted orders   =========
