@@ -90,7 +90,7 @@ view: interview_interviewers {
 
   dimension: interviewer_role {
     group_label: "> Interview Dimensions"
-    type: number
+    type: string
     sql: ${TABLE}.interviewer_role ;;
   }
 
