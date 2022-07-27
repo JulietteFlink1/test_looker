@@ -1,5 +1,5 @@
 view: hub_staffing {
-  sql_table_name: `flink-data-prod.reporting.hub_staffing`
+  sql_table_name: `flink-data-dev.dbt_oalshobaki.hub_staffing`
     ;;
 
   dimension_group: block_ends_at_timestamp {
@@ -372,9 +372,17 @@ view: hub_staffing {
 
   measure: sum_planned_hours{
     type: sum
-    label:"# Filled Hours"
-    description: "Number of Scheduled(Assigned) Hours"
+    label:"# Filled Hours (Incl. deleted unexcused no show)"
+    description: "Number of Scheduled(Assigned) Hours (including deleted shifts with missing punch and no absence, where shift date <= deletion date)"
     sql:${number_of_planned_minutes}/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: sum_planned_hours_excluding_deleted_shifts{
+    type: number
+    label:"# Filled Hours (excl. deleted unexcused no show)"
+    description: "Number of Scheduled(Assigned) Hours (excluding deleted shifts with missing punch and no absence, where shift date <= deletion date)"
+    sql:${sum_planned_hours} - ${number_of_deleted_unexcused_no_show_minutes};;
     value_format_name: decimal_1
   }
 
@@ -496,6 +504,38 @@ view: hub_staffing {
     type: sum
     description: "Sum of No Show Hours"
     sql:${number_of_no_show_minutes}/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_excused_no_show_minutes{
+    label:"# Excused No Show Hours (included in No show metric)"
+    type: sum
+    description: "Sum of Excused No Show Hours (shifts with missing punch and absence)"
+    sql:${TABLE}.number_of_excused_no_show_minutes/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_unexcused_no_show_minutes{
+    label:"# Unexcused No Show Hours (included in No show metric)"
+    type: sum
+    description: "Sum of Unexcused No Show Hours (shifts with missing punch and no absence)"
+    sql:${TABLE}.number_of_unexcused_no_show_minutes/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_deleted_excused_no_show_minutes{
+    label:"# Deleted Excused No Show Hours (included in No show metric)"
+    type: sum
+    description: "Sum of Deleted Excused No Show Hours (deleted shifts with missing punch and absence, where shift date <= deletion date)"
+    sql:${TABLE}.number_of_deleted_excused_no_show_minutes/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_deleted_unexcused_no_show_minutes{
+    label:"# Deleted Unexcused No Show Hours (not included in No show metric)"
+    type: sum
+    description: "Sum of Deleted Unexcused No Show Hours (deleted shifts with missing punch and no absence, where shift date <= deletion date)"
+    sql:${TABLE}.number_of_deleted_unexcused_no_show_minutes/60;;
     value_format_name: decimal_1
   }
 
