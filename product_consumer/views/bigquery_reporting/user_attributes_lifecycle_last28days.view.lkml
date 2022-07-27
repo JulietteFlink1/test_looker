@@ -26,6 +26,40 @@ view: user_attributes_lifecycle_last28days {
     sql: ${amt_gmv_gross} ;;
   }
 
+  measure: total_gmv_min {
+    type: min
+    sql: ${avg_gmv_gross}*${number_of_days_ordering} ;;
+    value_format_name: eur
+  }
+  measure: total_gmv_percentile_25 {
+    type: percentile
+    percentile: 25
+    sql: ${avg_gmv_gross}*${number_of_days_ordering} ;;
+    value_format_name: eur
+  }
+  measure: total_gmv_percentile_50 {
+    type: median
+    sql: ${avg_gmv_gross}*${number_of_days_ordering} ;;
+    value_format_name: eur
+  }
+  measure: total_gmv_percentile_75 {
+    type: percentile
+    percentile: 75
+    sql: ${avg_gmv_gross}*${number_of_days_ordering} ;;
+    value_format_name: eur
+  }
+  measure: total_gmv_percentile_95 {
+    type: percentile
+    percentile: 95
+    sql: ${avg_gmv_gross}*${number_of_days_ordering} ;;
+    value_format_name: eur
+  }
+  measure: total_gmv_max {
+    type: max
+    sql: ${avg_gmv_gross}*${number_of_days_ordering} ;;
+    value_format_name: eur
+  }
+
   measure: avg_number_of_days_ordering {
     type: average
     sql: ${number_of_days_ordering};;
@@ -34,6 +68,34 @@ view: user_attributes_lifecycle_last28days {
   measure: avg_number_of_days_visiting {
     type: average
     sql: ${number_of_days_visited};;
+  }
+
+  measure: number_of_days_visiting_min {
+    type: min
+    sql: ${number_of_days_visited} ;;
+  }
+  measure: number_of_days_visiting_percentile_25 {
+    type: percentile
+    percentile: 25
+    sql: ${number_of_days_visited} ;;
+  }
+  measure: number_of_days_visiting_percentile_50 {
+    type: median
+    sql: ${number_of_days_visited} ;;
+  }
+  measure: number_of_days_visiting_percentile_75 {
+    type: percentile
+    percentile: 75
+    sql: ${number_of_days_visited} ;;
+  }
+  measure: number_of_days_visiting_percentile_95 {
+    type: percentile
+    percentile: 95
+    sql: ${number_of_days_visited} ;;
+  }
+  measure: number_of_days_visiting_max {
+    type: max
+    sql: ${number_of_days_visited} ;;
   }
 
   measure: avg_gmv_min {
@@ -273,7 +335,7 @@ view: user_attributes_lifecycle_last28days {
       value: "country"
     }
     allowed_value: {
-      label: "Cohort Granularity"
+      label: "Cohort"
       value: "cohort"
     }
     default_value: "cohort"
