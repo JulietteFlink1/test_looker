@@ -22,6 +22,196 @@ view: user_attributes_lifecycle_last12weeks {
     drill_fields: []
   }
 
+  measure: total_gmv_min {
+    type: min
+    sql: ${avg_gmv_gross}*${number_of_days_ordering} ;;
+    value_format_name: eur
+  }
+  measure: total_gmv_percentile_25 {
+    type: percentile
+    percentile: 25
+    sql: ${avg_gmv_gross}*${number_of_days_ordering} ;;
+    value_format_name: eur
+  }
+  measure: total_gmv_percentile_50 {
+    type: median
+    sql: ${avg_gmv_gross}*${number_of_days_ordering} ;;
+    value_format_name: eur
+  }
+  measure: total_gmv_percentile_75 {
+    type: percentile
+    percentile: 75
+    sql: ${avg_gmv_gross}*${number_of_days_ordering} ;;
+    value_format_name: eur
+  }
+  measure: total_gmv_percentile_95 {
+    type: percentile
+    percentile: 95
+    sql: ${avg_gmv_gross}*${number_of_days_ordering} ;;
+    value_format_name: eur
+  }
+  measure: total_gmv_max {
+    type: max
+    sql: ${avg_gmv_gross}*${number_of_days_ordering} ;;
+    value_format_name: eur
+  }
+
+  measure: avg_number_of_days_ordering {
+    type: average
+    sql: ${number_of_days_ordering};;
+  }
+
+  measure: avg_number_of_days_visiting {
+    type: average
+    sql: ${number_of_days_visited};;
+  }
+
+  measure: number_of_days_visiting_min {
+    type: min
+    sql: ${number_of_days_visited} ;;
+  }
+  measure: number_of_days_visiting_percentile_25 {
+    type: percentile
+    percentile: 25
+    sql: ${number_of_days_visited} ;;
+  }
+  measure: number_of_days_visiting_percentile_50 {
+    type: median
+    sql: ${number_of_days_visited} ;;
+  }
+  measure: number_of_days_visiting_percentile_75 {
+    type: percentile
+    percentile: 75
+    sql: ${number_of_days_visited} ;;
+  }
+  measure: number_of_days_visiting_percentile_95 {
+    type: percentile
+    percentile: 95
+    sql: ${number_of_days_visited} ;;
+  }
+  measure: number_of_days_visiting_max {
+    type: max
+    sql: ${number_of_days_visited} ;;
+  }
+
+  measure: avg_gmv_min {
+    type: min
+    sql: ${avg_gmv_gross} ;;
+    value_format_name: eur
+  }
+  measure: avg_gmv_percentile_25 {
+    type: percentile
+    percentile: 25
+    sql: ${avg_gmv_gross} ;;
+    value_format_name: eur
+  }
+  measure: avg_gmv_percentile_50 {
+    type: median
+    sql: ${avg_gmv_gross} ;;
+    value_format_name: eur
+  }
+  measure: avg_gmv_percentile_75 {
+    type: percentile
+    percentile: 75
+    sql: ${avg_gmv_gross} ;;
+    value_format_name: eur
+  }
+  measure: avg_gmv_percentile_95 {
+    type: percentile
+    percentile: 95
+    sql: ${avg_gmv_gross} ;;
+    value_format_name: eur
+  }
+  measure: avg_gmv_max {
+    type: max
+    sql: ${avg_gmv_gross} ;;
+    value_format_name: eur
+  }
+
+  measure: days_since_last_order_min {
+    type: min
+    sql: ${days_since_last_order} ;;
+  }
+  measure: days_since_last_order_percentile_25 {
+    type: percentile
+    percentile: 25
+    sql: ${days_since_last_order} ;;
+  }
+  measure: days_since_last_order_percentile_50 {
+    type: median
+    sql: ${days_since_last_order} ;;
+  }
+  measure: days_since_last_order_percentile_75 {
+    type: percentile
+    percentile: 75
+    sql: ${days_since_last_order} ;;
+  }
+  measure: days_since_last_order_percentile_95 {
+    type: percentile
+    percentile: 95
+    sql: ${days_since_last_order} ;;
+  }
+  measure: days_since_last_order_max {
+    type: max
+    sql: ${days_since_last_order} ;;
+  }
+
+  measure: days_since_last_visit_min {
+    type: min
+    sql: ${days_since_last_visit} ;;
+  }
+  measure: days_since_last_visit_percentile_25 {
+    type: percentile
+    percentile: 25
+    sql: ${days_since_last_visit} ;;
+  }
+  measure: days_since_last_visit_percentile_50 {
+    type: median
+    sql: ${days_since_last_visit} ;;
+  }
+  measure: days_since_last_visit_percentile_75 {
+    type: percentile
+    percentile: 75
+    sql: ${days_since_last_visit} ;;
+  }
+  measure: days_since_last_visit_percentile_95 {
+    type: percentile
+    percentile: 95
+    sql: ${days_since_last_visit} ;;
+  }
+  measure: days_since_last_visit_max {
+    type: max
+    sql: ${days_since_last_order} ;;
+  }
+
+  measure: number_of_days_ordering_min {
+    type: min
+    sql: ${number_of_days_ordering} ;;
+  }
+  measure: number_of_days_ordering_percentile_25 {
+    type: percentile
+    percentile: 25
+    sql: ${number_of_days_ordering} ;;
+  }
+  measure: number_of_days_ordering_percentile_50 {
+    type: median
+    sql: ${number_of_days_ordering} ;;
+  }
+  measure: number_of_days_ordering_percentile_75 {
+    type: percentile
+    percentile: 75
+    sql: ${number_of_days_ordering} ;;
+  }
+  measure: number_of_days_ordering_percentile_95 {
+    type: percentile
+    percentile: 95
+    sql: ${number_of_days_ordering} ;;
+  }
+  measure: number_of_days_ordering_max {
+    type: max
+    sql: ${number_of_days_ordering} ;;
+  }
+
   #========= Monetary =========#
 
   dimension: avg_gmv_gross_tier_2 {

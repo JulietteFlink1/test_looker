@@ -2,11 +2,148 @@ view: user_attributes_lifecycle_first28days {
   sql_table_name: `flink-data-prod.reporting.user_attributes_lifecycle_first28days`
     ;;
 
+  # -------- measures --------- #
   measure: cnt_customers {
     label: "# Customers"
     type: count_distinct
     sql: ${customer_uuid} ;;
   }
+
+  measure: total_gmv_min {
+    type: min
+    sql: ${avg_gmv_gross}*${number_of_days_ordering} ;;
+    value_format_name: eur
+  }
+  measure: total_gmv_percentile_25 {
+    type: percentile
+    percentile: 25
+    sql: ${avg_gmv_gross}*${number_of_days_ordering} ;;
+    value_format_name: eur
+  }
+  measure: total_gmv_percentile_50 {
+    type: median
+    sql: ${avg_gmv_gross}*${number_of_days_ordering} ;;
+    value_format_name: eur
+  }
+  measure: total_gmv_percentile_75 {
+    type: percentile
+    percentile: 75
+    sql: ${avg_gmv_gross}*${number_of_days_ordering} ;;
+    value_format_name: eur
+  }
+  measure: total_gmv_percentile_95 {
+    type: percentile
+    percentile: 95
+    sql: ${avg_gmv_gross}*${number_of_days_ordering} ;;
+    value_format_name: eur
+  }
+  measure: total_gmv_max {
+    type: max
+    sql: ${avg_gmv_gross}*${number_of_days_ordering} ;;
+    value_format_name: eur
+  }
+
+  measure: avg_number_of_days_ordering {
+    type: average
+    sql: ${number_of_days_ordering};;
+  }
+
+  measure: avg_number_of_days_visiting {
+    type: average
+    sql: ${number_of_days_visited};;
+  }
+
+  measure: number_of_days_visiting_min {
+    type: min
+    sql: ${number_of_days_visited} ;;
+  }
+  measure: number_of_days_visiting_percentile_25 {
+    type: percentile
+    percentile: 25
+    sql: ${number_of_days_visited} ;;
+  }
+  measure: number_of_days_visiting_percentile_50 {
+    type: median
+    sql: ${number_of_days_visited} ;;
+  }
+  measure: number_of_days_visiting_percentile_75 {
+    type: percentile
+    percentile: 75
+    sql: ${number_of_days_visited} ;;
+  }
+  measure: number_of_days_visiting_percentile_95 {
+    type: percentile
+    percentile: 95
+    sql: ${number_of_days_visited} ;;
+  }
+  measure: number_of_days_visiting_max {
+    type: max
+    sql: ${number_of_days_visited} ;;
+  }
+
+  measure: avg_gmv_min {
+    type: min
+    sql: ${avg_gmv_gross} ;;
+    value_format_name: eur
+  }
+  measure: avg_gmv_percentile_25 {
+    type: percentile
+    percentile: 25
+    sql: ${avg_gmv_gross} ;;
+    value_format_name: eur
+  }
+  measure: avg_gmv_percentile_50 {
+    type: median
+    sql: ${avg_gmv_gross} ;;
+    value_format_name: eur
+  }
+  measure: avg_gmv_percentile_75 {
+    type: percentile
+    percentile: 75
+    sql: ${avg_gmv_gross} ;;
+    value_format_name: eur
+  }
+  measure: avg_gmv_percentile_95 {
+    type: percentile
+    percentile: 95
+    sql: ${avg_gmv_gross} ;;
+    value_format_name: eur
+  }
+  measure: avg_gmv_max {
+    type: max
+    sql: ${avg_gmv_gross} ;;
+    value_format_name: eur
+  }
+
+  measure: number_of_days_ordering_min {
+    type: min
+    sql: ${number_of_days_ordering} ;;
+  }
+  measure: number_of_days_ordering_percentile_25 {
+    type: percentile
+    percentile: 25
+    sql: ${number_of_days_ordering} ;;
+  }
+  measure: number_of_days_ordering_percentile_50 {
+    type: median
+    sql: ${number_of_days_ordering} ;;
+  }
+  measure: number_of_days_ordering_percentile_75 {
+    type: percentile
+    percentile: 75
+    sql: ${number_of_days_ordering} ;;
+  }
+  measure: number_of_days_ordering_percentile_95 {
+    type: percentile
+    percentile: 95
+    sql: ${number_of_days_ordering} ;;
+  }
+  measure: number_of_days_ordering_max {
+    type: max
+    sql: ${number_of_days_ordering} ;;
+  }
+
+  #----------------------------
 
 
   dimension: customer_uuid {
