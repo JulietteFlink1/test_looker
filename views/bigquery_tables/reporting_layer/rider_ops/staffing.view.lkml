@@ -1216,6 +1216,41 @@ view: staffing {
     hidden: yes
 
   }
+  dimension: number_of_unexcused_no_show_minutes_rider {
+    label: "# Unexcused No Show Rider minutes"
+    type: number
+    sql: ${TABLE}.number_of_unexcused_no_show_minutes_rider ;;
+    hidden: yes
+
+  }
+  dimension: number_of_unexcused_no_show_minutes_rider_captain {
+    label: "# Unexcused No Show Rider Captain minutes"
+    type: number
+    sql: ${TABLE}.number_of_unexcused_no_show_minutes_rider_captain ;;
+    hidden: yes
+
+  }
+  dimension: number_of_unexcused_no_show_minutes_picker {
+    label: "# Unexcused No Show Picker minutes"
+    type: number
+    sql: ${TABLE}.number_of_unexcused_no_show_minutes_picker ;;
+    hidden: yes
+
+  }
+  dimension: number_of_unexcused_no_show_minutes_wh {
+    label: "# Unexcused No Show WH minutes"
+    type: number
+    sql: ${TABLE}.number_of_unexcused_no_show_minutes_wh ;;
+    hidden: yes
+
+  }
+  dimension: number_of_unexcused_no_show_minutes_shift_lead {
+    label: "# Unexcused No Show Shift Lead minutes"
+    type: number
+    sql: ${TABLE}.number_of_unexcused_no_show_minutes_shift_lead ;;
+    hidden: yes
+
+  }
   dimension: number_of_worked_minutes_internal_rider {
     label: "# Worked Internal Rider Minutes"
     type: number
@@ -1526,6 +1561,36 @@ view: staffing {
     label: "# Deleted Excused Rider Captain No Show Hours (included in No show metric)"
     type: number
     sql: ${TABLE}.number_of_deleted_excused_no_show_minutes_rider_captain;;
+    hidden: yes
+  }
+  dimension: number_of_deleted_unexcused_no_show_minutes_rider {
+    label: "# Deleted Unexcused Rider No Show Hours (included in No show metric)"
+    type: number
+    sql: ${TABLE}.number_of_deleted_unexcused_no_show_minutes_rider ;;
+    hidden: yes
+  }
+  dimension: number_of_deleted_unexcused_no_show_minutes_picker {
+    label: "# Deleted Unexcused Picker No Show Hours (included in No show metric)"
+    type: number
+    sql: ${TABLE}.number_of_deleted_unexcused_no_show_minutes_picker ;;
+    hidden: yes
+  }
+  dimension: number_of_deleted_unexcused_no_show_minutes_wh {
+    label: "# Deleted Unexcused WH No Show Hours (included in No show metric)"
+    type: number
+    sql: ${TABLE}.number_of_deleted_unexcused_no_show_minutes_wh ;;
+    hidden: yes
+  }
+  dimension: number_of_deleted_unexcused_no_show_minutes_shift_lead {
+    label: "# Deleted Unexcused Shift Lead No Show Hours (included in No show metric)"
+    type: number
+    sql: ${TABLE}.number_of_deleted_unexcused_no_show_minutes_shift_lead ;;
+    hidden: yes
+  }
+  dimension: number_of_deleted_unexcused_no_show_minutes_rider_captain {
+    label: "# Deleted Unexcused Rider Captain No Show Hours (included in No show metric)"
+    type: number
+    sql: ${TABLE}.number_of_deleted_unexcused_no_show_minutes_rider_captain;;
     hidden: yes
   }
   dimension_group: shift {
@@ -2368,6 +2433,54 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  measure: number_of_unexcused_no_show_hours_rider {
+    group_label: "> Rider Measures"
+    label: "# Unexcused No Show Rider Hours"
+    type: sum
+    sql: ${number_of_unexcused_no_show_minutes_rider}/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_unexcused_no_show_hours_rider_captain {
+    group_label: "> Rider Captain Measures"
+    label: "# Unexcused No Show Rider Captain Hours"
+    type: sum
+    sql: ${number_of_unexcused_no_show_minutes_rider_captain}/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_unexcused_no_show_hours_shift_lead {
+    group_label: "> Shift Lead Measures"
+    label: "# Unexcused No Show Shift Lead Hours"
+    type: sum
+    sql: ${number_of_unexcused_no_show_minutes_shift_lead}/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_unexcused_no_show_hours_picker {
+    group_label: "> Picker Measures"
+    label: "# Unexcused No Show Picker Hours"
+    type: sum
+    sql: ${number_of_unexcused_no_show_minutes_picker}/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_unexcused_no_show_hours_wh {
+    group_label: "> WH Measures"
+    label: "# Unexcused No Show WH Hours"
+    type: sum
+    sql: ${number_of_unexcused_no_show_minutes_wh}/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_unexcused_no_show_hours_hub_staff {
+    group_label: "> Hub Staff Measures"
+    label: "# Unexcused No Show Hub Staff Hours"
+    type: sum
+    sql: (${number_of_unexcused_no_show_minutes_picker}+${number_of_unexcused_no_show_minutes_wh})/60;;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_deleted_excused_no_show_hours_rider {
     group_label: "> Rider Measures"
     label: "# Deleted Excused No Show Rider Hours"
@@ -2394,7 +2507,7 @@ view: staffing {
 
   measure: number_of_deleted_excused_no_show_hours_rider_captain {
     group_label: "> Rider Captain Measures"
-    label: "# Excused No Show Rider Captain Hours"
+    label: "# Deleted Excused No Show Rider Captain Hours"
     type: sum
     sql: ${number_of_deleted_excused_no_show_minutes_rider_captain}/60;;
     value_format_name: decimal_1
@@ -2402,12 +2515,51 @@ view: staffing {
 
   measure: number_of_deleted_excused_no_show_hours_shift_lead {
     group_label: "> Shift Lead Measures"
-    label: "# Excused No Show Shift Lead Hours"
+    label: "# Deleted Excused No Show Shift Lead Hours"
     type: sum
     sql: ${number_of_deleted_excused_no_show_minutes_shift_lead}/60;;
     value_format_name: decimal_1
   }
 
+  measure: number_of_deleted_unexcused_no_show_hours_rider {
+    group_label: "> Rider Measures"
+    label: "# Deleted Unexcused No Show Rider Hours"
+    type: sum
+    sql: ${number_of_deleted_unexcused_no_show_minutes_rider}/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_deleted_unexcused_no_show_hours_picker {
+    group_label: "> Picker Measures"
+    label: "# Deleted Unexcused No Show Picker Hours"
+    type: sum
+    sql: ${number_of_deleted_unexcused_no_show_minutes_picker}/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_deleted_unexcused_no_show_hours_wh {
+    group_label: "> WH Measures"
+    label: "# Deleted Unexcused No Show WH Hours"
+    type: sum
+    sql: ${number_of_deleted_unexcused_no_show_minutes_wh}/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_deleted_unexcused_no_show_hours_rider_captain {
+    group_label: "> Rider Captain Measures"
+    label: "# Deleted Unexcused No Show Rider Captain Hours"
+    type: sum
+    sql: ${number_of_deleted_unexcused_no_show_minutes_rider_captain}/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_deleted_unexcused_no_show_hours_shift_lead {
+    group_label: "> Shift Lead Measures"
+    label: "# Deleted Unexcused No Show Shift Lead Hours"
+    type: sum
+    sql: ${number_of_deleted_unexcused_no_show_minutes_shift_lead}/60;;
+    value_format_name: decimal_1
+}
   # =========  No Show %   =========
   measure: pct_no_show_hours_rider {
     group_label: "> Rider Measures"
