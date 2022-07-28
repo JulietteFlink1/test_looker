@@ -25,12 +25,13 @@ view: stock_management_movement_ids {
             1,2,3,4,5,6,7,8;;
   }
   dimension: event_date {
-    label: "Stock Management Progress SKU Aggregates  Date"
+    label: "Event Date"
     description: ""
     type: date
+    convert_tz: no
   }
   dimension: country_iso {
-    label: "Stock Management Progress SKU Aggregates Country ISO"
+    label: "Country ISO"
     description: ""
   }
   dimension: hub_code {
@@ -55,17 +56,17 @@ view: stock_management_movement_ids {
     type: number
   }
   dimension: total_item_added_to_cart {
-    label: "Stock Management Progress SKU Aggregates # Items Added To Cart"
+    label: "# Items Added To Cart"
     description: ""
     type: number
   }
   dimension: total_item_dropped {
-    label: "Stock Management Progress SKU Aggregates # Items Dropped"
+    label: "# Items Dropped"
     description: ""
     type: number
   }
   dimension: total_item_removed_from_cart {
-    label: "Stock Management Progress SKU Aggregates # Items Removed From Cart"
+    label: "# Items Removed From Cart"
     description: ""
     type: number
   }

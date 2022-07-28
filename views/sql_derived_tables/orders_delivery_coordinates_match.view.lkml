@@ -55,10 +55,9 @@ view: orders_delivery_coordinates_match {
           where date(o.order_timestamp) >= '2021-10-18'
       ),
 
-      -- keep track whether / when the delivery area became obsolete. Assumes that delivery_area is_live_coordinates is true from update_timestamp onwards and stops being true upon the next update
+      -- keep track whether / when the delivery area became obsolete. Assumes that delivery_area is_live_coordinates is true from valid_to onwards and stops being true upon valid_to
       delivery_areas AS (
-          SELECT *,
-          LEAD(update_timestamp) OVER (PARTITION BY hub_code ORDER BY update_timestamp ASC) AS next_update
+          SELECT *
           FROM `flink-data-prod.curated.hub_delivery_areas`
           WHERE hub_delivery_area IS NOT NULL
       ),
@@ -81,10 +80,11 @@ joined_tb AS (
       hda.hub_delivery_area_geojson,
       ST_Y(hda.hub_point) AS hub_latitude,
       ST_X(hda.hub_point) AS hub_longitude,
-      hda.update_timestamp,
+      hda.valid_from,
+      hda.valid_to,
       ST_COVERS(ST_GEOGFROMGEOJSON(hub_delivery_area_geojson),ST_GEOGPOINT(customer_longitude, customer_latitude)) AS backend_covered_by_hub_area,
       ST_COVERS(ST_GEOGFROMGEOJSON(hub_delivery_area_geojson),ST_GEOGPOINT(ft.delivery_lng , ft.delivery_lat)) AS client_covered_by_hub_area,
-      bo.order_timestamp >= hda.update_timestamp AND (bo.order_timestamp < hda.next_update OR hda.next_update IS NULL) AS is_current_hub_area
+      bo.order_timestamp >= hda.valid_from AND (bo.order_timestamp < hda.valid_to OR hda.valid_to IS NULL) AS is_current_hub_area
       FROM backend_orders bo
       LEFT JOIN frontend_tracking ft
       ON bo.order_number=ft.order_number
@@ -385,7 +385,7 @@ WHERE is_current_hub_area IS TRUE
     group_label: "> Hub Area"
   }
 
-  dimension_group: update_timestamp {
+  dimension_group: valid_from {
     type: time
     timeframes: [
       raw,
@@ -396,7 +396,22 @@ WHERE is_current_hub_area IS TRUE
       quarter,
       year
     ]
-    sql: ${TABLE}.update_timestamp ;;
+    sql: ${TABLE}.valid_from ;;
+    group_label: "> Hub Area"
+  }
+
+  dimension_group: valid_to {
+    type: time
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: ${TABLE}.valid_to ;;
     group_label: "> Hub Area"
   }
 

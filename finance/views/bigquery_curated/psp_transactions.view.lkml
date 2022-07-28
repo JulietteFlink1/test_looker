@@ -508,16 +508,16 @@ view: psp_transactions {
   }
 
   measure: sum_empty_order_uuid_settled {
-    group_label: "* Transaction Totals *"
-    label: "Total Empty Orders Settled"
+    group_label: "* Orphaned Payments *"
+    label: "Total # Empty Orders Settled"
     type: sum
     sql: CASE WHEN ${order_uuid} IS NULL THEN 1 ELSE 0 END;;
     filters: [record_type: "Settled"]
   }
 
   measure: sum_empty_order_uuid_authorised {
-    group_label: "* Transaction Totals *"
-    label: "Total Empty Orders Authorised"
+    group_label: "* Orphaned Payments *"
+    label: "Total # Empty Orders Authorised"
     type: sum
     sql: CASE WHEN ${order_uuid} IS NULL THEN 1 ELSE 0 END;;
     filters: [record_type: "Authorised"]
@@ -525,18 +525,37 @@ view: psp_transactions {
 
   measure: sum_empty_order_uuid_refunded {
     group_label: "* Transaction Totals *"
-    label: "Total Empty Orders Refunded"
+    label: "Total # Empty Orders Refunded"
     type: sum
     sql: CASE WHEN ${order_uuid} IS NULL THEN 1 ELSE 0 END;;
     filters: [record_type: "Refunded, RefundedExternally"]
   }
 
   measure: sum_empty_order_uuid_chargeback {
-    group_label: "* Transaction Totals *"
-    label: "Total Empty Orders Chargeback"
+    group_label: "* Orphaned Payments *"
+    label: "Total # Empty Orders Chargeback"
     type: sum
     sql: CASE WHEN ${order_uuid} IS NULL THEN 1 ELSE 0 END;;
     filters: [record_type: "Chargeback"]
+  }
+
+  measure: sum_empty_order_trx_fees_refunds {
+    group_label: "* Orphaned Payments *"
+    label: "Total Costs Empty Orders - Refunds"
+    type: sum
+    sql: CASE WHEN ${payment_method} LIKE 'payp%' THEN ${processing_fee_fc}
+    else (coalesce(${commission_sc},0) + coalesce(${processing_fee_fc},0)) end ;;
+    filters: [record_type: "Refunded, SentForRefund"]
+    value_format_name: eur
+  }
+
+  measure: sum_empty_order_amount_authorised {
+    group_label: "* Orphaned Payments *"
+    label: "Total Amount Empty Orders Authorised"
+    type: sum
+    sql: case when ${order_uuid} IS NULL THEN ${main_amount} else 0 end;;
+    filters: [record_type: "Authorised"]
+    value_format_name: eur
   }
 
   measure: percentage_trx_without_orders_authorised {

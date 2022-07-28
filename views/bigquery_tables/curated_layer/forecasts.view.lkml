@@ -174,18 +174,18 @@ view: forecasts {
 
   # =========  Forecasted orders   =========
 
-  dimension: number_of_forecasted_orders_lower_bound {
-    label: "# Forecasted Orders - Lower Bound"
+  dimension: number_of_forecasted_orders_dimension {
+    label: "# Forecasted Orders - Dimension"
     type: number
-    sql: ${TABLE}.number_of_forecasted_orders_lower_bound ;;
-    hidden: yes
+    sql: ${TABLE}.number_of_forecasted_orders;;
+    hidden: no
   }
 
-  dimension: number_of_forecasted_orders_upper_bound {
-    label: "# Forecasted Orders - Upper Bound"
+  dimension: number_of_actual_orders_dimension {
+    label: "# Actual Orders - Dimension"
     type: number
-    sql: ${TABLE}.number_of_forecasted_orders_upper_bound ;;
-    hidden: yes
+    sql: ${TABLE}.number_of_actual_orders;;
+    hidden: no
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -340,7 +340,7 @@ view: forecasts {
     type: sum_distinct
     sql_distinct_key: ${forecast_uuid} ;;
     sql: ${TABLE}.number_of_forecasted_pickers ;;
-    hidden: yes
+    hidden: no
   }
 
   measure: number_of_forecasted_riders {
@@ -349,7 +349,7 @@ view: forecasts {
     type: sum_distinct
     sql_distinct_key: ${forecast_uuid} ;;
     sql: ${TABLE}.number_of_forecasted_riders ;;
-    hidden: yes
+    hidden: no
   }
 
   # =========  Forecasted orders   =========
@@ -363,12 +363,14 @@ view: forecasts {
     value_format_name: decimal_0
   }
 
-  dimension: number_of_forecasted_orders_dim {
+  measure: number_of_actual_orders {
     group_label: "> Order Measures"
-    label: "# Forecasted Orders"
-    sql: ${TABLE}.number_of_forecasted_orders ;;
+    label: "# Actual Orders"
+    description: "# Actual Orders - Excl. Click&Collect and External Orders. Including Cancelled Orders"
+    type: sum_distinct
+    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
+    sql: ${TABLE}.number_of_actual_orders ;;
     value_format_name: decimal_0
-    hidden: yes
   }
 
   measure: pct_forecast_deviation {
@@ -467,19 +469,19 @@ view: forecasts {
   }
   ##### Forecast errors
 
-  measure: weighted_mean_absolute_percentage_error {
+  measure: wmape_orders {
     group_label: "> Forecasting error"
     label: "wMAPE"
     type: number
-    sql: ${summed_absolute_error}/nullif(${number_of_forecasted_orders},0);;
-    value_format_name: percent_0
+    sql: ${summed_absolute_error}/nullif(${number_of_actual_orders},0);;
+    value_format_name: percent_2
   }
 
   measure: summed_absolute_error {
     type: sum_distinct
     sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
-    hidden: yes
-    sql: ABS(${number_of_forecasted_orders_dim} - ${orders_with_ops_metrics.cnt_orders});;
+    hidden: no
+    sql: ABS(${number_of_forecasted_orders_dimension} - ${number_of_actual_orders_dimension});;
   }
 
   # =========  Dynamic values   =========
