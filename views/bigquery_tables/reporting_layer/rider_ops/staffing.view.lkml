@@ -6,7 +6,7 @@
 # on a hub + 30-min slot level
 
 view: staffing {
-  sql_table_name: `flink-data-prod.reporting.staffing`
+  sql_table_name: `flink-data-dev.dbt_oalshobaki.staffing`
     ;;
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

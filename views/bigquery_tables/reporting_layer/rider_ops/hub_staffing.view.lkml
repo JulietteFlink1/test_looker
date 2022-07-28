@@ -1,5 +1,5 @@
 view: hub_staffing {
-  sql_table_name: `flink-data-dev.dbt_oalshobaki.hub_staffing`
+  sql_table_name: `flink-data-prod.reporting.hub_staffing`
     ;;
 
   dimension_group: block_ends_at_timestamp {
