@@ -382,7 +382,7 @@ view: hub_staffing {
     type: number
     label:"# Filled Hours (excl. deleted unexcused no show)"
     description: "Number of Scheduled(Assigned) Hours (excluding deleted shifts with missing punch and no absence, where shift date <= deletion date)"
-    sql:${sum_planned_hours} - ${number_of_deleted_unexcused_no_show_minutes};;
+    sql:${sum_planned_hours} - ${number_of_deleted_excused_no_show_minutes};;
     value_format_name: decimal_1
   }
 
@@ -461,6 +461,14 @@ view: hub_staffing {
     type: number
     description: "% Actual No Show Hours"
     sql:(${sum_no_show_hours})/nullif(${sum_planned_hours},0) ;;
+    value_format_name: percent_1
+  }
+
+  measure: pct_assigned_hours{
+    label:"% Assigned Hours"
+    type: number
+    description: "Assigned Hours / (Assigned Hours + Open Hours)"
+    sql:(${sum_planned_hours})/nullif(${sum_planned_hours} + ${number_of_unassigned_hours},0) ;;
     value_format_name: percent_1
   }
 
