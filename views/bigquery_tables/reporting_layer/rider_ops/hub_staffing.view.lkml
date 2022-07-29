@@ -372,16 +372,16 @@ view: hub_staffing {
 
   measure: sum_planned_hours{
     type: sum
-    label:"# Filled Hours (Incl. deleted unexcused no show)"
-    description: "Number of Scheduled(Assigned) Hours (including deleted shifts with missing punch and no absence, where shift date <= deletion date)"
+    label:"# Filled Hours (Incl. Deleted Excused No Show)"
+    description: "Number of Scheduled(Assigned) Hours (including deleted shifts with missing punch and absence, where shift date <= deletion date)"
     sql:${number_of_planned_minutes}/60;;
     value_format_name: decimal_1
   }
 
   measure: sum_planned_hours_excluding_deleted_shifts{
     type: number
-    label:"# Filled Hours (excl. deleted unexcused no show)"
-    description: "Number of Scheduled(Assigned) Hours (excluding deleted shifts with missing punch and no absence, where shift date <= deletion date)"
+    label:"# Filled Hours (excl. Deleted Excused No Show)"
+    description: "Number of Scheduled(Assigned) Hours (excluding deleted shifts with missing punch and absence, where shift date <= deletion date)"
     sql:${sum_planned_hours} - ${number_of_deleted_excused_no_show_minutes};;
     value_format_name: decimal_1
   }
