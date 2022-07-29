@@ -516,7 +516,7 @@ view: hub_staffing {
   }
 
   measure: number_of_excused_no_show_minutes{
-    label:"# Excused No Show Hours (included in No show metric)"
+    label:"# Excused No Show Hours (included in No show)"
     type: sum
     description: "Sum of Excused No Show Hours (shifts with missing punch and absence)"
     sql:${TABLE}.number_of_excused_no_show_minutes/60;;
@@ -524,7 +524,7 @@ view: hub_staffing {
   }
 
   measure: number_of_unexcused_no_show_minutes{
-    label:"# Unexcused No Show Hours (included in No show metric)"
+    label:"# Unexcused No Show Hours (included in No show)"
     type: sum
     description: "Sum of Unexcused No Show Hours (shifts with missing punch and no absence)"
     sql:${TABLE}.number_of_unexcused_no_show_minutes/60;;
@@ -532,7 +532,7 @@ view: hub_staffing {
   }
 
   measure: number_of_deleted_excused_no_show_minutes{
-    label:"# Deleted Excused No Show Hours (included in No show metric)"
+    label:"# Deleted Excused No Show Hours (included in No show)"
     type: sum
     description: "Sum of Deleted Excused No Show Hours (deleted shifts with missing punch and absence, where shift date <= deletion date)"
     sql:${TABLE}.number_of_deleted_excused_no_show_minutes/60;;
@@ -540,7 +540,7 @@ view: hub_staffing {
   }
 
   measure: number_of_deleted_unexcused_no_show_minutes{
-    label:"# Deleted Unexcused No Show Hours (not included in No show metric)"
+    label:"# Deleted Unexcused No Show Hours (not included in No show)"
     type: sum
     description: "Sum of Deleted Unexcused No Show Hours (deleted shifts with missing punch and no absence, where shift date <= deletion date)"
     sql:${TABLE}.number_of_deleted_unexcused_no_show_minutes/60;;

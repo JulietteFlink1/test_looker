@@ -60,32 +60,7 @@ view: staffing {
   }
   ##### Riders
 
-  dimension: number_of_excused_no_show_employees_external_rider {
-    label: "# Excused No Show Riders External"
-    type: number
-    sql: ${TABLE}.number_of_excused_no_show_employees_external_rider ;;
-    hidden: yes
-  }
 
-  dimension: number_of_excused_no_show_employees_internal_rider {
-    label: "# Excused No Show Riders Internal"
-    type: number
-    sql: ${TABLE}.number_of_excused_no_show_employees_internal_rider ;;
-    hidden: yes
-  }
-
-  dimension: number_of_excused_no_show_employees_rider {
-    label: "# Excused No Show Riders"
-    type: number
-    sql: ${TABLE}.number_of_excused_no_show_employees_rider ;;
-    hidden: yes
-  }
-  dimension: number_of_planned_employees_external_rider {
-    label: "# Planned Riders External"
-    type: number
-    sql: ${TABLE}.number_of_planned_employees_external_rider ;;
-    hidden: yes
-  }
   dimension: number_of_no_show_minutes_rider {
     label: "# No Show Rider Minutes"
     type: number
@@ -103,25 +78,6 @@ view: staffing {
     label: "# No Show External Rider Minutes"
     type: number
     sql: ${TABLE}.number_of_no_show_minutes_external_rider ;;
-    hidden: yes
-  }
-  dimension: number_of_no_show_employees_rider {
-    label: "# No Show Riders"
-    type: number
-    sql: ${TABLE}.number_of_no_show_employees_rider ;;
-    hidden: yes
-  }
-
-  dimension: number_of_no_show_employees_internal_rider {
-    label: "# No Show Internal Riders"
-    type: number
-    sql: ${TABLE}.number_of_no_show_employees_internal_rider ;;
-    hidden: yes
-  }
-  dimension: number_of_no_show_employees_external_rider {
-    label: "# No Show External Riders"
-    type: number
-    sql: ${TABLE}.number_of_no_show_employees_external_rider ;;
     hidden: yes
   }
   dimension: number_of_leave_minutes_rider {
@@ -261,27 +217,6 @@ view: staffing {
 
   }
 
-  dimension: number_of_excused_no_show_employees_external_picker {
-    label: "# Excused External No Show Pickers"
-    type: number
-    sql: ${TABLE}.number_of_excused_no_show_employees_external_picker ;;
-    hidden: yes
-
-  }
-  dimension: number_of_excused_no_show_employees_internal_picker {
-    label: "# Excused Internal No Show Pickers"
-    type: number
-    sql: ${TABLE}.number_of_excused_no_show_employees_internal_picker ;;
-    hidden: yes
-
-  }
-  dimension: number_of_excused_no_show_employees_picker {
-    label: "# Excused No Show Pickers"
-    type: number
-    sql: ${TABLE}.number_of_excused_no_show_employees_picker ;;
-    hidden: yes
-
-  }
   dimension: number_of_excused_no_show_minutes_external_picker {
     label: "# Excused External No Show Picker Minutes"
     type: number
@@ -324,27 +259,7 @@ view: staffing {
     hidden: yes
 
   }
-  dimension: number_of_no_show_employees_external_picker {
-    label: "# No Show External Pickers"
-    type: number
-    sql: ${TABLE}.number_of_no_show_employees_external_picker ;;
-    hidden: yes
 
-  }
-  dimension: number_of_no_show_employees_internal_picker {
-    label: "# No Show Internal Pickers"
-    type: number
-    sql: ${TABLE}.number_of_no_show_employees_internal_picker ;;
-    hidden: yes
-
-  }
-  dimension: number_of_no_show_employees_picker {
-    label: "# No Show Pickers"
-    type: number
-    sql: ${TABLE}.number_of_no_show_employees_picker ;;
-    hidden: yes
-
-  }
   dimension: number_of_worked_minutes_picker {
     label: "# Worked Picker Minutes"
     type: number
@@ -453,27 +368,7 @@ view: staffing {
 
   }
   ##### WH
-  dimension: number_of_excused_no_show_employees_external_wh {
-    label: "# Excused No Show External WH"
-    type: number
-    sql: ${TABLE}.number_of_excused_no_show_employees_external_wh ;;
-    hidden: yes
 
-  }
-  dimension: number_of_no_show_employees_internal_wh {
-    label: "# No Show Internal WH Employees"
-    type: number
-    sql: ${TABLE}.number_of_no_show_employees_internal_wh ;;
-    hidden: yes
-
-  }
-  dimension: number_of_no_show_employees_external_wh {
-    label: "# No Show External WH Employees"
-    type: number
-    sql: ${TABLE}.number_of_no_show_employees_external_wh ;;
-    hidden: yes
-
-  }
   dimension: number_of_leave_minutes_wh {
     label: "# Leave WH Minutes"
     type: number
@@ -513,27 +408,6 @@ view: staffing {
     label: "# Excused No Show External WH Employee Minutes"
     type: number
     sql: ${TABLE}.number_of_excused_no_show_minutes_external_wh ;;
-    hidden: yes
-
-  }
-  dimension: number_of_excused_no_show_employees_wh {
-    label: "# Excused No Show WH Employee Minutes"
-    type: number
-    sql: ${TABLE}.number_of_excused_no_show_employees_wh ;;
-    hidden: yes
-
-  }
-  dimension: number_of_excused_no_show_employees_internal_wh {
-    label: "# Exvused No Show Internal WH Employees"
-    type: number
-    sql: ${TABLE}.number_of_excused_no_show_employees_internal_wh ;;
-    hidden: yes
-
-  }
-  dimension: number_of_no_show_employees_wh {
-    label: "# No Show WH Employees"
-    type: number
-    sql: ${TABLE}.number_of_no_show_employees_wh ;;
     hidden: yes
 
   }
@@ -672,30 +546,6 @@ view: staffing {
   }
 
   ##### CC
-
-  dimension: number_of_excused_no_show_employees_cc_agent {
-    label: "# Excused No Show CC Agents"
-    type: number
-    sql: ${TABLE}.number_of_excused_no_show_employees_cc_agent ;;
-    hidden: yes
-
-  }
-
-  dimension: number_of_excused_no_show_employees_external_cc_agent {
-    label: "# Excused No Show External CC Agents"
-    type: number
-    sql: ${TABLE}.number_of_excused_no_show_employees_external_cc_agent ;;
-    hidden: yes
-
-  }
-
-  dimension: number_of_excused_no_show_employees_internal_cc_agent {
-    label: "# Excused No Show Internal CC Agents"
-    type: number
-    sql: ${TABLE}.number_of_excused_no_show_employees_internal_cc_agent ;;
-    hidden: yes
-
-  }
   dimension: number_of_excused_no_show_minutes_external_cc_agent {
     label: "# Excused No Show External CC Agent Minutes"
     type: number
@@ -714,27 +564,6 @@ view: staffing {
     label: "# Excused No Show Internal CC Agent Minutes"
     type: number
     sql: ${TABLE}.number_of_excused_no_show_minutes_internal_cc_agent ;;
-    hidden: yes
-
-  }
-  dimension: number_of_no_show_employees_cc_agent {
-    label: "# No Show CC Agents"
-    type: number
-    sql: ${TABLE}.number_of_no_show_employees_cc_agent ;;
-    hidden: yes
-
-  }
-  dimension: number_of_no_show_employees_external_cc_agent {
-    label: "# No Show External CC Agents"
-    type: number
-    sql: ${TABLE}.number_of_no_show_employees_external_cc_agent ;;
-    hidden: yes
-
-  }
-  dimension: number_of_no_show_employees_internal_cc_agent {
-    label: "# No Show Internal CC Agents"
-    type: number
-    sql: ${TABLE}.number_of_no_show_employees_internal_cc_agent ;;
     hidden: yes
 
   }
@@ -874,29 +703,6 @@ view: staffing {
   }
   ##### Co Ops
 
-  dimension: number_of_excused_no_show_employees_co_ops {
-    label: "# Excused No Show Co Ops Employees"
-    type: number
-    sql: ${TABLE}.number_of_excused_no_show_employees_co_ops ;;
-    hidden: yes
-
-  }
-
-  dimension: number_of_excused_no_show_employees_external_co_ops {
-    label: "# Excused No Show External Co Ops Employees"
-    type: number
-    sql: ${TABLE}.number_of_excused_no_show_employees_external_co_ops ;;
-    hidden: yes
-
-  }
-
-  dimension: number_of_excused_no_show_employees_internal_co_ops {
-    label: "# Excused No Show internal Co Ops Employees"
-    type: number
-    sql: ${TABLE}.number_of_excused_no_show_employees_internal_co_ops ;;
-    hidden: yes
-
-  }
   dimension: number_of_excused_no_show_minutes_internal_co_ops {
     label: "# Excused No Show Internal Co Ops Employee Minutes"
     type: number
@@ -920,27 +726,7 @@ view: staffing {
     hidden: yes
 
   }
-  dimension: number_of_no_show_employees_co_ops {
-    label: "# No Show Co Ops Employees"
-    type: number
-    sql: ${TABLE}.number_of_no_show_employees_co_ops ;;
-    hidden: yes
 
-  }
-  dimension: number_of_no_show_employees_external_co_ops {
-    label: "# No Show External Co Ops Employees"
-    type: number
-    sql: ${TABLE}.number_of_no_show_employees_external_co_ops ;;
-    hidden: yes
-
-  }
-  dimension: number_of_no_show_employees_internal_co_ops {
-    label: "# No Show Internal Co Ops Employees"
-    type: number
-    sql: ${TABLE}.number_of_no_show_employees_internal_co_ops ;;
-    hidden: yes
-
-  }
   dimension: number_of_unassigned_employees_external_co_ops {
     type: number
     sql: ${TABLE}.number_of_unassigned_employees_external_co_ops ;;
@@ -1083,41 +869,6 @@ view: staffing {
 
   ###### Rider Captain
 
-  dimension: number_of_excused_no_show_employees_external_rider_captain {
-    label: "# Exvused No Show External Rider Captains"
-    type: number
-    sql: ${TABLE}.number_of_excused_no_show_employees_external_rider_captain ;;
-    hidden: yes
-
-  }
-  dimension: number_of_excused_no_show_employees_internal_rider_captain {
-    label: "# Excused No Show Internal Rider Captains"
-    type: number
-    sql: ${TABLE}.number_of_excused_no_show_employees_internal_rider_captain ;;
-    hidden: yes
-
-  }
-  dimension: number_of_excused_no_show_employees_rider_captain {
-    label: "# Excused No Show Rider Captains"
-    type: number
-    sql: ${TABLE}.number_of_excused_no_show_employees_rider_captain ;;
-    hidden: yes
-
-  }
-  dimension: number_of_excused_no_show_minutes_external_rider_captain {
-    label: "# Excused No Show External Rider Captain Minutes"
-    type: number
-    sql: ${TABLE}.number_of_excused_no_show_minutes_external_rider_captain ;;
-    hidden: yes
-
-  }
-  dimension: number_of_excused_no_show_minutes_internal_rider_captain {
-    label: "# Excused No Show Internal Rider Captain Minutes"
-    type: number
-    sql: ${TABLE}.number_of_excused_no_show_minutes_internal_rider_captain ;;
-    hidden: yes
-
-  }
   dimension: number_of_planned_minutes_internal_rider_captain {
     label: "# Planned Internal Rider Captain Minutes"
     type: number
@@ -1167,27 +918,7 @@ view: staffing {
     hidden: yes
 
   }
-  dimension: number_of_no_show_employees_rider_captain {
-    label: "# No Show Rider Captains"
-    type: number
-    sql: ${TABLE}.number_of_no_show_employees_rider_captain ;;
-    hidden: yes
 
-  }
-  dimension: number_of_no_show_employees_internal_rider_captain {
-    label: "# No Show Internal Rider Captains"
-    type: number
-    sql: ${TABLE}.number_of_no_show_employees_internal_rider_captain ;;
-    hidden: yes
-
-  }
-  dimension: number_of_no_show_employees_external_rider_captain {
-    label: "# No Show External Rider Captains"
-    type: number
-    sql: ${TABLE}.number_of_no_show_employees_external_rider_captain ;;
-    hidden: yes
-
-  }
   dimension: number_of_leave_minutes_rider_captain {
     label: "# Leave Rider Captain Minutes"
     type: number
@@ -1344,27 +1075,7 @@ view: staffing {
 
   }
   ##### Shift Lead
-  dimension: number_of_excused_no_show_employees_shift_lead {
-    label: "# Excused No Show Shift Leads"
-    type: number
-    sql: ${TABLE}.number_of_excused_no_show_employees_shift_lead ;;
-    hidden: yes
 
-  }
-  dimension: number_of_excused_no_show_employees_external_shift_lead {
-    label: "# Excused No Show External Shift Leads"
-    type: number
-    sql: ${TABLE}.number_of_excused_no_show_employees_external_shift_lead ;;
-    hidden: yes
-
-  }
-  dimension: number_of_excused_no_show_employees_internal_shift_lead {
-    label: "# Excused No Show Internal Shift Leads"
-    type: number
-    sql: ${TABLE}.number_of_excused_no_show_employees_internal_shift_lead ;;
-    hidden: yes
-
-  }
   dimension: number_of_excused_no_show_minutes_external_shift_lead {
     label: "# Excused No Show External Shift Lead Minutes"
     type: number
@@ -1386,27 +1097,7 @@ view: staffing {
     hidden: yes
 
   }
-  dimension: number_of_no_show_employees_external_shift_lead {
-    label: "# No Show External Shift Leads"
-    type: number
-    sql: ${TABLE}.number_of_no_show_employees_external_shift_lead ;;
-    hidden: yes
 
-  }
-  dimension: number_of_no_show_employees_internal_shift_lead {
-    label: "# No Show Internal Shift Leads"
-    type: number
-    sql: ${TABLE}.number_of_no_show_employees_internal_shift_lead ;;
-    hidden: yes
-
-  }
-  dimension: number_of_no_show_employees_shift_lead {
-    label: "# No Show Shift Leads"
-    type: number
-    sql: ${TABLE}.number_of_no_show_employees_shift_lead ;;
-    hidden: yes
-
-  }
   dimension: number_of_no_show_minutes_external_shift_lead {
     label: "# No Show External Shift Lead Minutes"
     type: number
@@ -2765,7 +2456,7 @@ view: staffing {
 
   measure: number_of_scheduled_hours_by_position {
     type: number
-    label: "# Scheduled Hours (Incl. deleted excused no show)"
+    label: "# Scheduled Hours (Incl. Deleted Excused No Show)"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
@@ -2782,7 +2473,7 @@ view: staffing {
 
   measure: number_of_scheduled_hours_excluding_deleted_shifts_by_position {
     type: number
-    label: "# Scheduled Hours (Excl. deleted excused no show)"
+    label: "# Scheduled Hours (Excl. Deleted Excused No Show)"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
