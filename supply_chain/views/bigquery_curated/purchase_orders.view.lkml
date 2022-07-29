@@ -1,7 +1,7 @@
 ##This view will replace replenishment_purchase_orders.view
 
 view: purchase_orders {
-  sql_table_name: `flink-data-dev.curated.purchase_orders`
+  sql_table_name: `flink-data-prod.curated.purchase_orders`
     ;;
 
 
