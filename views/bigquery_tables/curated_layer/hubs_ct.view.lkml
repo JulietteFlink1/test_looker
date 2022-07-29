@@ -16,9 +16,11 @@ view: hubs_ct {
   }
 
   dimension: is_hub_opened_14d {
-    label: "Hub is Live more than 14 days?"
+    label: "Hub is Active more than 14 days?(Geolocator)"
     type: yesno
-    sql: ${start_date} <= DATE_SUB(current_date(), Interval 14 day) ;;
+    sql: ${start_date} <= DATE_SUB(current_date(), Interval 14 day) and ${is_active_hub} = true ;;
+    description: "This is defined based on start_date curated.hubs and is_hub_active flag coming from hub geolocator system"
+    group_label: "> Admin Data"
   }
 
   dimension: hub_name {
@@ -238,7 +240,20 @@ view: hubs_ct {
     type: yesno
     sql: ${TABLE}.start_date <= current_date() ;;
     group_label: "> Admin Data"
+    hidden: yes
+    description: "This is an outdated definition (incorrect) that uses only start_date to define if a hub is live or not,
+                if we use this flag we will see some hubs as actives but with no units sold in the last month.
+                Check - https://goflink.cloud.looker.com/explore/flink_v3/supply_chain?qid=uisyiwyWly9f9VOkI4UZMb&origin_space=490&toggle=fil,vis"
   }
+
+  dimension: is_active_hub {
+    label: "Hub is Active? (Geolocator)"
+    type: yesno
+    sql: ${TABLE}.is_active_hub ;;
+    group_label: "> Admin Data"
+    description: "Based on the correct is_active_hub logic which comes from hub geolocator system (same system which is responsible for Hub Turfs in the app)"
+  }
+
 
   dimension: is_test_hub {
     label: "Is Test Hub"
