@@ -61,6 +61,11 @@ view: orderline {
     sql: ${TABLE}.external_provider ;;
   }
 
+  dimension: is_external_order {
+    type: yesno
+    label: "Is External Order"
+    sql: ${TABLE}.is_external_order ;;
+  }
 
   # =========  hidden   =========
   dimension: is_shipping_required {
