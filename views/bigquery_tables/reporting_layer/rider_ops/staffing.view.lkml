@@ -2420,6 +2420,39 @@ view: staffing {
         END ;;
   }
 
+  measure: number_of_deleted_excused_no_show_hours_by_position {
+    type: number
+    label: "# Deleted Excused No Show Hours"
+    value_format_name: decimal_1
+    group_label: "> Dynamic Measures"
+    sql:
+        CASE
+          WHEN {% parameter position_parameter %} = 'Rider' THEN ${number_of_deleted_excused_no_show_hours_rider}
+          WHEN {% parameter position_parameter %} = 'Picker' THEN ${number_of_deleted_excused_no_show_hours_picker}
+          WHEN {% parameter position_parameter %} = 'Shift Lead' THEN ${number_of_deleted_excused_no_show_hours_shift_lead}
+          WHEN {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_deleted_excused_no_show_hours_rider_captain}
+          WHEN {% parameter position_parameter %} = 'WH' THEN ${number_of_deleted_excused_no_show_hours_wh}
+          ELSE NULL
+        END ;;
+  }
+
+  measure: number_of_unexcused_no_show_hours_by_position {
+    type: number
+    label: "# Unexcused No Show Hours"
+    value_format_name: decimal_1
+    group_label: "> Dynamic Measures"
+    sql:
+        CASE
+          WHEN {% parameter position_parameter %} = 'Rider' THEN ${number_of_unexcused_no_show_hours_rider}
+          WHEN {% parameter position_parameter %} = 'Picker' THEN ${number_of_unexcused_no_show_hours_picker}
+          WHEN {% parameter position_parameter %} = 'Shift Lead' THEN ${number_of_unexcused_no_show_hours_shift_lead}
+          WHEN {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_unexcused_no_show_hours_rider_captain}
+          WHEN {% parameter position_parameter %} = 'WH' THEN ${number_of_unexcused_no_show_hours_wh}
+          WHEN {% parameter position_parameter %} = 'Hub Staff' THEN ${number_of_unexcused_no_show_hours_hub_staff}
+          ELSE NULL
+        END ;;
+  }
+
   measure: pct_fill_rate {
     type: number
     label: "% Fill Rate"
@@ -2433,9 +2466,16 @@ view: staffing {
     label: "% Unexcused Absence"
     value_format_name: percent_1
     group_label: "> Dynamic Measures"
-    sql: (${number_of_no_show_hours_by_position}-${number_of_excused_no_show_hours_by_position})/nullif(${number_of_no_show_hours_by_position},0);;
+    sql: (${number_of_no_show_hours_by_position}-${number_of_excused_no_show_hours_by_position}-${number_of_deleted_excused_no_show_hours_by_position})/nullif(${number_of_no_show_hours_by_position},0);;
   }
 
+  measure: pct_excused_absence {
+    type: number
+    label: "% Excused Absence"
+    value_format_name: percent_1
+    group_label: "> Dynamic Measures"
+    sql: (${number_of_no_show_hours_by_position}-${number_of_unexcused_no_show_hours_by_position})/nullif(${number_of_no_show_hours_by_position},0);;
+  }
 
   measure: number_of_unassigned_hours_by_position {
     type: number
