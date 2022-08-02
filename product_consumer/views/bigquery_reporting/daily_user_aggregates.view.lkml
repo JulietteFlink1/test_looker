@@ -117,14 +117,14 @@ view: daily_user_aggregates {
       description: "Model of the device"
       sql: ${TABLE}.device_model ;;
     }
-  dimension: app_version_order {
-    group_label: "Device Dimensions"
-    label: "App Version order"
-    type: number
-    hidden: yes
-    description: "App release version middle digits for ordering"
-    sql: split(${TABLE}.app_version,".")[SAFE_OFFSET(1)] ;;
-    }
+    dimension: app_version_order {
+      group_label: "Device Dimensions"
+      label: "App Version order"
+      type: number
+      hidden: no
+      description: "App release version middle digits for ordering"
+      sql: safe_cast(split(app_version,".")[SAFE_OFFSET(1)] as INTEGER) ;;
+      }
     dimension: app_version {
       group_label: "Device Dimensions"
       label: "App Version"
