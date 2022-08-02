@@ -1,5 +1,5 @@
 view: recipe_analysis {
-  sql_table_name: `flink-data-dev.dbt_nwierzbowska.user_recipe_journey_aggregates`
+  sql_table_name: `flink-data-prod.reporting.user_recipe_journey_aggregates`
       ;;
 
 
