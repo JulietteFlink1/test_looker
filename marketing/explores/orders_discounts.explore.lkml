@@ -12,8 +12,16 @@ explore: orders_discounts {
   description: "Order data around Vouchers created in the backend"
 
   join: discounts {
-    sql_on: ${orders_cl.voucher_id}   = ${discounts.discount_id}
-       and ${orders_cl.discount_code} = ${discounts.discount_code}
+    sql_on:
+      (
+        ${orders_cl.voucher_id} = ${discounts.discount_id}
+        and ${orders_cl.discount_code} = ${discounts.discount_code}
+      ) -- Join for CT discounts.
+      or
+      (
+        ${orders_cl.discount_code} = ${discounts.discount_code}
+        and ${orders_cl.voucher_id} = ${discounts.discount_code}
+      ) -- Join for T1 discount that don't have a discount id so it's set to be the discount code.
     ;;
     type: left_outer
     relationship: one_to_many
