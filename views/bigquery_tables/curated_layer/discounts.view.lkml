@@ -37,6 +37,12 @@ view: discounts {
     sql: ${TABLE}.discount_value_type ;;
   }
 
+  dimension: backend_source {
+    label: "Backend Source"
+    type: string
+    sql: ${TABLE}.backend_source ;;
+  }
+
   dimension: minimum_order_value {
     label: " Minimum Order Value"
     type: number
