@@ -223,24 +223,21 @@ view: stock_management_progress_sku_aggregates {
     group_label: "Total Metrics"
     label: "# Items Added To Cart"
     type: sum
-    sql: ${TABLE}.number_of_item_added_to_cart ;;
-    ##if(${TABLE}.number_of_item_added_to_cart>0, ${TABLE}.sku,null) ;;
+    sql: if(${TABLE}.number_of_item_added_to_cart>0, ${TABLE}.quantity,null) ;;
   }
 
   measure: total_item_dropped {
     group_label: "Total Metrics"
     label: "# Items Dropped"
     type: sum
-    sql: ${TABLE}.number_of_item_dropped ;;
-    ##if(${TABLE}.number_of_item_dropped>0, ${TABLE}.sku,null) ;;
+    sql: if(${TABLE}.number_of_item_dropped>0, ${TABLE}.quantity,null) ;;
   }
 
   measure: total_item_removed_from_cart {
     group_label: "Total Metrics"
     label: "# Items Removed From Cart"
     type: sum
-    sql: ${TABLE}.number_of_item_removed_from_cart ;;
-    ##if(${TABLE}.number_of_item_removed_from_cart>0, ${TABLE}.sku,null) ;;
+    sql: if(${TABLE}.number_of_item_removed_from_cart>0, ${TABLE}.quantity,null) ;;
   }
 
   measure: number_of_inventory_movement_ids {
