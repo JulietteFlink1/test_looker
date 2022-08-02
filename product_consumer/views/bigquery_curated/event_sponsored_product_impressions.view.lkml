@@ -9,12 +9,12 @@ view: event_sponsored_product_impressions {
 
   # ======= IDs ======= #
 
-  dimension: event_uuid {
+  dimension: event_id {
     group_label: "IDs"
     label: "Event UUID"
     description: "Unique identifier of an event"
     type: string
-    sql: ${TABLE}.event_uuid ;;
+    sql: ${TABLE}.event_id ;;
   }
   dimension: user_id {
     group_label: "IDs"

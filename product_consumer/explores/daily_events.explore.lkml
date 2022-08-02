@@ -117,7 +117,7 @@ explore: daily_events {
       event_sponsored_product_impressions.product_sku,
       event_sponsored_product_impressions.product_placement, event_sponsored_product_impressions.product_position,
       event_sponsored_product_impressions.ad_decision_id]
-    sql_on: ${event_sponsored_product_impressions.event_uuid} = ${daily_events.event_uuid}  ;;
+    sql_on: ${event_sponsored_product_impressions.event_id} = ${daily_events.event_uuid}  ;;
     type: left_outer
     relationship: one_to_many
   }
