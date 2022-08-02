@@ -13,18 +13,12 @@ explore: orders_discounts {
 
   join: discounts {
     sql_on:
-      (
-        ${orders_cl.voucher_id} = ${discounts.discount_id}
-        and ${orders_cl.discount_code} = ${discounts.discount_code}
-      ) -- Join for CT discounts.
-      or
-      (
+        -- For T1 the discount id is null and we join only on the discount code.
         ${orders_cl.discount_code} = ${discounts.discount_code}
-        and ${orders_cl.voucher_id} = ${discounts.discount_code}
-      ) -- Join for T1 discount that don't have a discount id so it's set to be the discount code.
+        and coalesce(${orders_cl.voucher_id},'') = coalesce(${discounts.discount_id},'')
     ;;
     type: left_outer
-    relationship: one_to_many
+    relationship: many_to_one
   }
 
   join: influencer_vouchers_input {
