@@ -2,6 +2,7 @@ include: "/*/**/vat_order.view.lkml"
 include: "/*/**/orders.view.lkml"
 include: "/*/**/shyftplan_riders_pickers_hours_clean.view.lkml"
 include: "/*/**/employee_level_kpis.view.lkml"
+#include: "/*/**/hubs_ct.view.lkml"
 
 
 explore: vat_order {
@@ -39,8 +40,6 @@ explore: vat_order {
     relationship: many_to_many
     type: left_outer
   }
-
-
 
   always_filter: {
     filters: [
