@@ -135,7 +135,8 @@ view: daily_smart_inventory_checks {
     description: "Date when the sku is supposed to be checked."
     timeframes: [
       raw,
-      date
+      date,
+      day_of_week
     ]
     convert_tz: no
     datatype: date
@@ -166,7 +167,9 @@ view: daily_smart_inventory_checks {
     timeframes: [
       raw,
       time,
-      date
+      date,
+      hour,
+      day_of_week
     ]
     convert_tz: no
     datatype: datetime
