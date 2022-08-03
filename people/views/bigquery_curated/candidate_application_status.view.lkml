@@ -486,14 +486,6 @@ view: candidate_application_status {
     value_format: "0.0"
   }
 
-  measure: avg_number_of_days_new_to_interview_prescreen {
-    group_label: "> Duration Between Stages"
-    type: average
-    label: "AVG # Days New to Pre-Screen Interview"
-    sql: ${number_of_days_new_to_interview_prescreen} ;;
-    value_format: "0.0"
-  }
-
   measure: avg_number_of_days_new_to_rejection {
     type: average
     group_label: "> Duration Between Stages"
