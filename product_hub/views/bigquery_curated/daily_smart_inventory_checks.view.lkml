@@ -34,7 +34,7 @@ view: daily_smart_inventory_checks {
 
   dimension: country_iso {
     type: string
-    group_label: "Location Dimensions"
+    group_label: "1 Location Dimensions"
     label: "Country ISO"
     description: "Country ISO based on 'hub_code'."
     sql: ${TABLE}.country_iso ;;
@@ -42,7 +42,7 @@ view: daily_smart_inventory_checks {
 
   dimension: hub_code {
     type: string
-    group_label: "Location Dimensions"
+    group_label: "1 Location Dimensions"
     label: "Hub Code"
     description: "Code of a hub identical to back-end source tables."
     sql: ${TABLE}.hub_code ;;
@@ -52,7 +52,7 @@ view: daily_smart_inventory_checks {
 
   dimension: completed_by {
     type: string
-    group_label: "Employee Attributes"
+    group_label: "3 Employee Attributes"
     label: "Employee ID"
     description: "Operator who performed the check."
     sql: ${TABLE}.completed_by ;;
@@ -62,15 +62,15 @@ view: daily_smart_inventory_checks {
 
   dimension: sku {
     type: string
-    group_label: "Product Attributes"
-    label: "sku"
+    group_label: "2 Product Attributes"
+    label: "Sku"
     description: "The sku of the product, as available in the backend."
     sql: ${TABLE}.sku ;;
   }
 
   dimension: shelf_number {
     type: string
-    group_label: "Product Attributes"
+    group_label: "2 Product Attributes"
     label: "Shelf Number"
     description: "Number of the shelf (from 0 to 86) where the SKU is stored in the hub followed by a letter which indicates the level within the shelf."
     sql: ${TABLE}.shelf_number ;;
@@ -80,7 +80,7 @@ view: daily_smart_inventory_checks {
 
   dimension: priority {
     type: number
-    group_label: "Check Attributes"
+    group_label: "4 Check Attributes"
     label: "Priority"
     description: "Define when the check needs to be performed during the day."
     sql: ${TABLE}.priority ;;
@@ -88,33 +88,15 @@ view: daily_smart_inventory_checks {
 
   dimension: type {
     type: string
-    group_label: "Check Attributes"
+    group_label: "4 Check Attributes"
     label: "Type"
     description: "Reason why we checked the sku."
     sql: ${TABLE}.type ;;
   }
 
-  dimension_group: scheduled {
-    type: time
-    group_label: "Check Attributes"
-    label: "Scheduled"
-    description: "Date when the sku is supposed to be checked."
-    timeframes: [
-      raw,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    convert_tz: no
-    datatype: date
-    sql: ${TABLE}.scheduled_at ;;
-  }
-
   dimension: status {
     type: string
-    group_label: "Check Attributes"
+    group_label: "4 Check Attributes"
     label: "Status"
     description: "Status of the check."
     sql: ${TABLE}.status ;;
@@ -122,7 +104,7 @@ view: daily_smart_inventory_checks {
 
   dimension: is_postponed {
     type: yesno
-    group_label: "Check Attributes"
+    group_label: "4 Check Attributes"
     label: "Is Posponed"
     description: "Whether or not the check has been postponed."
     sql: ${TABLE}.is_postponed ;;
@@ -130,7 +112,7 @@ view: daily_smart_inventory_checks {
 
   dimension: expected_quantity {
     type: number
-    group_label: "Check Attributes"
+    group_label: "4 Check Attributes"
     label: "Expected Quantity"
     description: "Number of items expected in stock for this sku."
     sql: ${TABLE}.expected_quantity ;;
@@ -138,19 +120,31 @@ view: daily_smart_inventory_checks {
 
   # =========  Check Timestamps   =========
 
+  dimension_group: scheduled {
+    type: time
+    group_label: "5 Check Timestamps"
+    label: "Scheduled"
+    description: "Date when the sku is supposed to be checked."
+    timeframes: [
+      raw,
+      date,
+      time
+    ]
+    convert_tz: no
+    datatype: date
+    sql: ${TABLE}.scheduled_at ;;
+  }
+
   dimension_group: created_at_timestamp {
     type: time
-    group_label: "Check Attributes"
+    hidden: yes
+    group_label: "5 Check Timestamps"
     label: "Created At"
     description: "When the check has been uploaded in UTC."
     timeframes: [
       raw,
-      time,
       date,
-      week,
-      month,
-      quarter,
-      year
+      time
     ]
     convert_tz: no
     datatype: datetime
@@ -159,17 +153,13 @@ view: daily_smart_inventory_checks {
 
   dimension_group: started_at_timestamp {
     type: time
-    group_label: "Check Attributes"
+    group_label: "5 Check Timestamps"
     label: "Started Counting At"
     description: "When the operator started counting the items."
     timeframes: [
       raw,
       time,
-      date,
-      week,
-      month,
-      quarter,
-      year
+      date
     ]
     convert_tz: no
     datatype: datetime
@@ -178,17 +168,13 @@ view: daily_smart_inventory_checks {
 
   dimension_group: ended_at_timestamp {
     type: time
-    group_label: "Check Attributes"
+    group_label: "5 Check Timestamps"
     label: "Ended Counting At"
     description: "When the operator ended counting the items."
     timeframes: [
       raw,
       time,
-      date,
-      week,
-      month,
-      quarter,
-      year
+      date
     ]
     convert_tz: no
     datatype: datetime
@@ -200,7 +186,7 @@ view: daily_smart_inventory_checks {
 
   dimension: is_correction {
     type: yesno
-    group_label: "Correction Attributes"
+    group_label: "6 Correction Attributes"
     label: "Is Correction"
     description: "Whether or not the operator entered a different quantity versus the expeted_quantity."
     sql: ${TABLE}.is_correction ;;
@@ -208,25 +194,25 @@ view: daily_smart_inventory_checks {
 
   dimension_group: correction_done_at_timestamp {
     type: time
-    group_label: "Correction Attributes"
+    group_label: "6 Correction Attributes"
     label: "Correction Finished At"
     description: "When the operator performed the correction."
     timeframes: [
       raw,
       time,
-      date,
-      week,
-      month,
-      quarter,
-      year
+      date
     ]
     convert_tz: no
     sql: ${TABLE}.correction_done_at_timestamp ;;
   }
+      # week,
+      # month,
+      # quarter,
+      # year
 
   dimension: quantity_before_correction {
     type: number
-    group_label: "Correction Attributes"
+    group_label: "6 Correction Attributes"
     label: "Quantity before Correction"
     description: "Should correspond to the expected quantity in case of correction."
     sql: ${TABLE}.quantity_before_correction ;;
@@ -234,7 +220,7 @@ view: daily_smart_inventory_checks {
 
   dimension: quantity_after_correction {
     type: number
-    group_label: "Correction Attributes"
+    group_label: "6 Correction Attributes"
     label: "Quantity after Correction"
     description: "New stock level entered by the operator."
     sql: ${TABLE}.quantity_after_correction ;;
