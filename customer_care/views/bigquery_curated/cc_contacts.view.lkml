@@ -453,24 +453,28 @@ view: cc_contacts {
 
   dimension: compensation_discount_code {
     group_label: "* Contact Compensation *"
+    description: "Compensation discount code which was given to customer"
     type: string
     sql: ${TABLE}.compensation_discount_code ;;
   }
 
   dimension: compensation_reason {
     group_label: "* Contact Compensation *"
+    description: "The reason for compensation"
     type: string
     sql: ${TABLE}.compensation_reason ;;
   }
 
   dimension: is_compensation_discount_used {
     group_label: "* Contact Compensation *"
+    description: "Was compensation discount used by customer or not"
     type: yesno
     sql: ${TABLE}.is_compensation_discount_used ;;
   }
 
   dimension: amt_discount_cart_gross {
     group_label: "* Contact Compensation *"
+    description: "Discount value (Gross)"
     type: number
     hidden: yes
     sql: ${TABLE}.amt_discount_cart_gross ;;
@@ -890,19 +894,27 @@ view: cc_contacts {
   measure: cc_discount_usage_rate {
     group_label: "* Contact Compensation *"
     label: "% CC Discount Usage Rate"
-    description: "Share of CC discount vouchers used by users"
+    description: "Share of CC discount used by users"
     type: number
     value_format: "0.0%"
     sql: safe_divide(
-      count(if(${is_compensation_discount_used}, 1, null)), count(${compensation_discount_code})) ;;
+      count(if(${is_compensation_discount_used} = true, 1, null)), count(${compensation_discount_code})) ;;
   }
 
   measure: number_of_compensation_discount_code {
     group_label: "* Contact Compensation *"
     label: "# CC Compensation Discount Codes"
+    description: "Number CC Compensation Discount codes"
+    type: count_distinct
+    sql: ${compensation_discount_code} ;;
+  }
+
+  measure: number_of_compensation_discount_code_used {
+    group_label: "* Contact Compensation *"
+    label: "# CC Compensation Discount Codes Used"
+    description: "Number CC Compensation Discount codes used by customers"
     type: number
-    value_format: "0.0%"
-    sql: count(${compensation_discount_code})) ;;
+    sql: count(if(${is_compensation_discount_used} = true, 1, null)) ;;
   }
 
   measure: sum_amt_discount_cart_gross {
