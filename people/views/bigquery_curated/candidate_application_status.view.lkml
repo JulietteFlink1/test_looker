@@ -511,6 +511,7 @@ view: candidate_application_status {
   }
 
   measure: avg_number_of_days_in_review_to_prescreen_interview {
+    alias: [avg_number_of_days_new_to_interview_prescreen]
     type: average
     group_label: "> Duration Between Stages"
     label: "AVG # Days New to Pre-Screen"
