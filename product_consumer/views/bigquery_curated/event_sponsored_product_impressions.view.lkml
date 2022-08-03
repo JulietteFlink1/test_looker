@@ -266,24 +266,28 @@ view: event_sponsored_product_impressions {
   }
 
   measure: events {
-    label: "# Events"
+    group_label: "Measures"
+    label: "# Impression Events"
     description: "Number of events triggered by users"
     type: count_distinct
-    sql: ${TABLE}.event_uuid ;;
+    sql: ${TABLE}.product_impression_uuid ;;
   }
   measure: logged_in_users {
+    group_label: "Measures"
     label: "# Registered Users"
     description: "Number of users who logged-in during a day"
     type: count_distinct
     sql: ${TABLE}.user_id ;;
   }
   measure: all_users {
+    group_label: "Measures"
     label: "# All Users"
     description: "Number of all users regardless of their login status."
     type: count_distinct
     sql: ${TABLE}.anonymous_id ;;
   }
   measure: number_of_ad_decisions_ids {
+    group_label: "Measures"
     label: "# Distinct Ad Decision Ids"
     description: "Number of distinct Ad Decision Ids recorded."
     type: count_distinct
