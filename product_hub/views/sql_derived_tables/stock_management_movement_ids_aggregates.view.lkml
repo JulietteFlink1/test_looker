@@ -13,9 +13,9 @@ view: stock_management_movement_ids {
             DATETIME_DIFF(dropping_list_created_time,cart_created_time, SECOND)  AS cart_to_drop_list_seconds,
             DATETIME_DIFF(dropping_list_finished_time, dropping_list_created_time, SECOND)  AS drop_list_created_to_finished_seconds,
             DATETIME_DIFF(dropping_list_finished_time, cart_created_time, SECOND)  AS cart_to_finished_seconds,
-            COUNT(DISTINCT if(stock_management_progress_sku_aggregates.number_of_item_added_to_cart>0, stock_management_progress_sku_aggregates.sku,null) ) AS total_item_added_to_cart,
-            COUNT(DISTINCT if(stock_management_progress_sku_aggregates.number_of_item_dropped>0, stock_management_progress_sku_aggregates.sku,null) ) AS total_item_dropped,
-            COUNT(DISTINCT if(stock_management_progress_sku_aggregates.number_of_item_removed_from_cart>0, stock_management_progress_sku_aggregates.sku,null) ) AS total_item_removed_from_cart,
+            SUM( if(stock_management_progress_sku_aggregates.number_of_item_added_to_cart>0, stock_management_progress_sku_aggregates.quantity,null) ) AS total_item_added_to_cart,
+            SUM( if(stock_management_progress_sku_aggregates.number_of_item_dropped>0, stock_management_progress_sku_aggregates.quantity,null) ) AS total_item_dropped,
+            SUM( if(stock_management_progress_sku_aggregates.number_of_item_removed_from_cart>0, stock_management_progress_sku_aggregates.quantity,null) ) AS total_item_removed_from_cart,
             COALESCE(SUM(stock_management_progress_sku_aggregates.quantity ), 0) AS quantity
         FROM `flink-data-prod.reporting.stock_management_progress_sku_aggregates`
              AS stock_management_progress_sku_aggregates
