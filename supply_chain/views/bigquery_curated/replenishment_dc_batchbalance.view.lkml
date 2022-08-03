@@ -279,7 +279,7 @@ view: replenishment_dc_batchbalance {
     description: "Total Batches per Sku with different expiration dates"
     type: count_distinct
 
-    sql: ${sku_expiration_date} ;;
+    sql: ${table_uuid} ;;
   }
 
   measure: min_expiration_date {
