@@ -283,5 +283,11 @@ view: event_sponsored_product_impressions {
     type: count_distinct
     sql: ${TABLE}.anonymous_id ;;
   }
+  measure: number_of_ad_decisions_ids {
+    label: "# Distinct Ad Decision Ids"
+    description: "Number of distinct Ad Decision Ids recorded."
+    type: count_distinct
+    sql: ${TABLE}.ad_decision_id ;;
+  }
 
 }
