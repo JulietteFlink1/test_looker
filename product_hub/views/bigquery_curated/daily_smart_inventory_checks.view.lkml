@@ -118,6 +118,14 @@ view: daily_smart_inventory_checks {
     sql: ${TABLE}.expected_quantity ;;
   }
 
+  dimension: is_finished {
+    type: yesno
+    group_label: "4 Check Attributes"
+    label: "Is Finished"
+    description: "Boolean to inform if a check has been finished."
+    sql: if(${finished_at_timestamp_time} is not null,True,False) ;;
+  }
+
   # =========  Check Timestamps   =========
 
   dimension_group: scheduled {
@@ -127,8 +135,7 @@ view: daily_smart_inventory_checks {
     description: "Date when the sku is supposed to be checked."
     timeframes: [
       raw,
-      date,
-      time
+      date
     ]
     convert_tz: no
     datatype: date
@@ -166,11 +173,11 @@ view: daily_smart_inventory_checks {
     sql: ${TABLE}.started_at_timestamp ;;
   }
 
-  dimension_group: ended_at_timestamp {
+  dimension_group: finished_at_timestamp {
     type: time
     group_label: "5 Check Timestamps"
-    label: "Ended Counting At"
-    description: "When the operator ended counting the items."
+    label: "Finished Counting At"
+    description: "When the operator finished counting the items."
     timeframes: [
       raw,
       time,
@@ -180,6 +187,15 @@ view: daily_smart_inventory_checks {
     datatype: datetime
 
     sql: ${TABLE}.ended_at_timestamp ;;
+  }
+
+  dimension: started_to_finished_seconds {
+    type: number
+    group_label: "5 Check Timestamps"
+    label: "Started to Finished seconds"
+    description: "Diferrence in seconds between Started Counting and Finished Counting timestamps."
+    value_format: "0"
+    sql: DATETIME_DIFF(${finished_at_timestamp_time}, ${started_at_timestamp_time}, SECOND) ;;
   }
 
   # =========  Correction Attributes  =========
@@ -195,7 +211,7 @@ view: daily_smart_inventory_checks {
   dimension_group: correction_done_at_timestamp {
     type: time
     group_label: "6 Correction Attributes"
-    label: "Correction Finished At"
+    label: "Finished Correction At"
     description: "When the operator performed the correction."
     timeframes: [
       raw,
