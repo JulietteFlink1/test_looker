@@ -266,6 +266,24 @@ view: recipe_analysis {
     filters: [address_book_modal_viewed: "yes"]
   }
 
+  measure: address_search_viewed_count {
+    type: count_distinct
+    sql: ${anonymous_id} ;;
+    filters: [address_search_viewed: "yes"]
+  }
+
+  measure: address_confirmed_count {
+    type: count_distinct
+    sql: ${anonymous_id} ;;
+    filters: [address_confirmed: "yes"]
+  }
+
+  measure: address_existing_confirmed_count {
+    type: count_distinct
+    sql: ${anonymous_id} ;;
+    filters: [address_existing_confirmed: "yes"]
+  }
+
   measure: visited_webshop_count {
     type: count_distinct
     sql: ${anonymous_id} ;;

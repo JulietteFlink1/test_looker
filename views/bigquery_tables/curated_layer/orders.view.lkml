@@ -2739,8 +2739,7 @@ view: orders {
 
   measure: cnt_orders_with_delivery_eta_available {
     # group_label: "* Operations / Logistics *"
-    view_label: "* Hubs *"
-    group_label: "Hub Leaderboard - Order Metrics"
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
     label: "# Orders with Delivery PDT available"
     description: "Count of Orders where a PDT is available"
     hidden:  no
@@ -2751,8 +2750,7 @@ view: orders {
 
   measure: cnt_orders_with_targeted_eta_available {
     # group_label: "* Operations / Logistics *"
-    view_label: "* Hubs *"
-    group_label: "Hub Leaderboard - Order Metrics"
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
     label: "# Orders with Targeted Fulfillment Time is available"
     description: "Count of Orders where a Targeted Delivery Time  is available"
     hidden:  no
