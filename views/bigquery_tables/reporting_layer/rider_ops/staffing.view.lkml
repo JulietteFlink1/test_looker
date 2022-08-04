@@ -2466,7 +2466,7 @@ view: staffing {
     label: "% Unexcused Absence"
     value_format_name: percent_1
     group_label: "> Dynamic Measures"
-    sql: (${number_of_no_show_hours_by_position}-${number_of_excused_no_show_hours_by_position}-${number_of_deleted_excused_no_show_hours_by_position})/nullif(${number_of_no_show_hours_by_position},0);;
+    sql: (${number_of_unexcused_no_show_hours_by_position})/nullif(${number_of_planned_hours_by_position},0);;
   }
 
   measure: pct_excused_absence {
@@ -2474,7 +2474,7 @@ view: staffing {
     label: "% Excused Absence"
     value_format_name: percent_1
     group_label: "> Dynamic Measures"
-    sql: (${number_of_no_show_hours_by_position}-${number_of_unexcused_no_show_hours_by_position})/nullif(${number_of_no_show_hours_by_position},0);;
+    sql: (${number_of_deleted_excused_no_show_hours_by_position}+${number_of_excused_no_show_hours_by_position})/nullif(${number_of_planned_hours_by_position},0);;
   }
 
   measure: number_of_unassigned_hours_by_position {
