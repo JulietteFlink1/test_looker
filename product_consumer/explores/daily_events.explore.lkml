@@ -16,6 +16,7 @@ include: "/product_consumer/views/bigquery_curated/event_contact_customer_servic
 include: "/product_consumer/views/bigquery_curated/event_cart_viewed.view.lkml"
 include: "/product_consumer/views/bigquery_curated/event_order_placed.view.lkml"
 include: "/product_consumer/views/bigquery_reporting/daily_violations_aggregates.view.lkml"
+include: "/product_consumer/views/bigquery_curated/event_sponsored_product_impressions.view.lkml"
 
 explore: daily_events {
   from:  daily_events
@@ -106,6 +107,22 @@ explore: daily_events {
     sql_on: ${event_order_placed.event_id} = ${daily_events.event_uuid}  ;;
     type: left_outer
     relationship: one_to_one
+  }
+
+  join: event_sponsored_product_impressions {
+    view_label: "Event: Sponsored Product Impressions"
+    fields: [event_sponsored_product_impressions.category_name, event_sponsored_product_impressions.category_id,
+      event_sponsored_product_impressions.sub_category_name,
+      event_sponsored_product_impressions.screen_name,
+      event_sponsored_product_impressions.product_sku,
+      event_sponsored_product_impressions.product_placement, event_sponsored_product_impressions.product_position,
+      event_sponsored_product_impressions.ad_decision_id,event_sponsored_product_impressions.event_timestamp_date,
+      event_sponsored_product_impressions.number_of_ad_decisions_ids,event_sponsored_product_impressions.events,
+      event_sponsored_product_impressions.all_users,
+      ]
+    sql_on: ${event_sponsored_product_impressions.event_id} = ${daily_events.event_uuid}  ;;
+    type: left_outer
+    relationship: one_to_many
   }
 
 join: daily_violations_aggregates {

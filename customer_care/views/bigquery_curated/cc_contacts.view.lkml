@@ -451,6 +451,36 @@ view: cc_contacts {
     sql: ${TABLE}.user_id ;;
   }
 
+  dimension: compensation_discount_code {
+    group_label: "* Contact Compensation *"
+    description: "Compensation discount code which was given to customer"
+    type: string
+    sql: ${TABLE}.compensation_discount_code ;;
+  }
+
+  dimension: compensation_reason {
+    group_label: "* Contact Compensation *"
+    description: "The reason for compensation"
+    type: string
+    sql: ${TABLE}.compensation_reason ;;
+  }
+
+  dimension: is_compensation_discount_used {
+    group_label: "* Contact Compensation *"
+    description: "Was compensation discount used by customer or not"
+    type: yesno
+    sql: ${TABLE}.is_compensation_discount_used ;;
+  }
+
+  dimension: amt_discount_cart_gross {
+    group_label: "* Contact Compensation *"
+    description: "Discount value (Gross)"
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_discount_cart_gross ;;
+  }
+
+
 
 ################## Parameter and Dynamic Dates
 
@@ -498,7 +528,7 @@ view: cc_contacts {
             {% endif %};;
   }
 
-
+################# Measures
 
   measure: contact_rate {
     group_label: "* Contact Frequency *"
@@ -515,8 +545,6 @@ view: cc_contacts {
   }
 
 
-
-################# Measures
 
 
 ######################################################################
@@ -855,6 +883,57 @@ view: cc_contacts {
     label: "% First Reply on Another Day"
     description: "Share of contacts that were created on a given day but first agent reply was on a different day"
     sql:  ${number_of_reply_other_day}/${number_of_contacts} ;;
+  }
+
+######################################################################
+################## Contact Compensation Measures #####################
+######################################################################
+
+
+
+  measure: cc_discount_usage_rate {
+    group_label: "* Contact Compensation *"
+    label: "% CC Discount Usage Rate"
+    description: "Share of CC discount used by users"
+    type: number
+    value_format: "0.0%"
+    sql: safe_divide(
+      count(if(${is_compensation_discount_used} = true, 1, null)), count(${compensation_discount_code})) ;;
+  }
+
+  measure: number_of_compensation_discount_code {
+    group_label: "* Contact Compensation *"
+    label: "# CC Compensation Discount Codes"
+    description: "Number CC Compensation Discount codes"
+    type: count_distinct
+    sql: ${compensation_discount_code} ;;
+  }
+
+  measure: number_of_compensation_discount_code_used {
+    group_label: "* Contact Compensation *"
+    label: "# CC Compensation Discount Codes Used"
+    description: "Number CC Compensation Discount codes used by customers"
+    type: number
+    sql: count(if(${is_compensation_discount_used} = true, 1, null)) ;;
+  }
+
+  measure: sum_amt_discount_cart_gross {
+    group_label: "* Contact Compensation *"
+    label: "SUM Discount Cart (Gross)"
+    description: "Sum of Discounts (Gross)"
+    type: sum
+    value_format_name: euro_accounting_2_precision
+    sql: ${amt_discount_cart_gross} ;;
+  }
+
+  measure: avg_discount_cart_gross {
+    group_label: "* Contact Compensation *"
+    label: "AVG CC Discount Value per Contact"
+    description: "SUM of Discounts / Number of Compensation Discount codes"
+    type: number
+    value_format_name: euro_accounting_2_precision
+    sql: safe_divide(
+      ${sum_amt_discount_cart_gross}, ${number_of_compensation_discount_code}) ;;
   }
 
 

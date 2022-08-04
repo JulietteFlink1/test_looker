@@ -221,23 +221,23 @@ view: stock_management_progress_sku_aggregates {
 
   measure: total_item_added_to_cart {
     group_label: "Total Metrics"
-    label: "# Items Added To Cart"
-    type: count_distinct
-    sql: if(${TABLE}.number_of_item_added_to_cart>0, ${TABLE}.sku,null) ;;
+    label: "# Units Added To Cart"
+    type: sum
+    sql: if(${TABLE}.number_of_item_added_to_cart>0, ${TABLE}.quantity,null) ;;
   }
 
   measure: total_item_dropped {
     group_label: "Total Metrics"
-    label: "# Items Dropped"
-    type: count_distinct
-    sql: if(${TABLE}.number_of_item_dropped>0, ${TABLE}.sku,null) ;;
+    label: "# Units Dropped"
+    type: sum
+    sql: if(${TABLE}.number_of_item_dropped>0, ${TABLE}.quantity,null) ;;
   }
 
   measure: total_item_removed_from_cart {
     group_label: "Total Metrics"
-    label: "# Items Removed From Cart"
-    type: count_distinct
-    sql: if(${TABLE}.number_of_item_removed_from_cart>0, ${TABLE}.sku,null) ;;
+    label: "# Units Removed From Cart"
+    type: sum
+    sql: if(${TABLE}.number_of_item_removed_from_cart>0, ${TABLE}.quantity,null) ;;
   }
 
   measure: number_of_inventory_movement_ids {
@@ -249,22 +249,22 @@ view: stock_management_progress_sku_aggregates {
 
   measure: number_of_item_added_to_cart {
     group_label: "Total Metrics"
-    label: "# Events Added To Cart"
-    type: sum
-    sql: ${TABLE}.number_of_item_added_to_cart ;;
+    label: "# Items Added To Cart"
+    type: count_distinct
+    sql: if(${TABLE}.number_of_item_added_to_cart>0, concat(${TABLE}.sku,${TABLE}.inventory_movement_id),null) ;;
   }
 
   measure: number_of_item_dropped {
     group_label: "Total Metrics"
-    label: "# Events item Dropped"
-    type: sum
-    sql: ${TABLE}.number_of_item_dropped ;;
+    label: "# Items Dropped"
+    type: count_distinct
+    sql: if(${TABLE}.number_of_item_dropped>0, concat(${TABLE}.sku,${TABLE}.inventory_movement_id),null);;
   }
 
   measure: number_of_item_removed_from_cart {
     group_label: "Total Metrics"
-    label: "# Events Removed To Cart"
-    type: sum
-    sql: ${TABLE}.number_of_item_removed_from_cart ;;
+    label: "# Items Removed To Cart"
+    type: count_distinct
+    sql: if(${TABLE}.number_of_item_removed_from_cart>0, concat(${TABLE}.sku,${TABLE}.inventory_movement_id),null);;
   }
 }
