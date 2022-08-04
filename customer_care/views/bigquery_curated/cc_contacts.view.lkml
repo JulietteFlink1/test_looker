@@ -922,7 +922,18 @@ view: cc_contacts {
     label: "SUM Discount Cart (Gross)"
     description: "Sum of Discounts (Gross)"
     type: sum
+    value_format_name: euro_accounting_2_precision
     sql: ${amt_discount_cart_gross} ;;
+  }
+
+  measure: avg_discount_cart_gross {
+    group_label: "* Contact Compensation *"
+    label: "AVG CC Discount Value per Contact"
+    description: "SUM of Discounts / Number of Compensation Discount codes"
+    type: number
+    value_format_name: euro_accounting_2_precision
+    sql: safe_divide(
+      ${sum_amt_discount_cart_gross}, ${number_of_compensation_discount_code}) ;;
   }
 
 
