@@ -502,6 +502,12 @@ view: orders {
     sql: ${TABLE}.delivery_method ;;
   }
 
+  dimension: is_gps_order {
+    group_label: "* Order Dimensions *"
+    type: yesno
+    sql: ${TABLE}.is_gps_order ;;
+  }
+
   dimension: delivery_provider {
     group_label: "* Order Dimensions *"
     type: string
