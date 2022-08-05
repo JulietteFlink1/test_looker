@@ -3,7 +3,7 @@
 
 
 view: daily_smart_inventory_checks {
-  sql_table_name: `flink-data-dev.curated.daily_smart_inventory_checks`
+  sql_table_name: `flink-data-prod.curated.daily_smart_inventory_checks`
     ;;
   view_label: "Daily Smart Inventory Checks"
 
