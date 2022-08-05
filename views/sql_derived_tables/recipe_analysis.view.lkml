@@ -266,6 +266,24 @@ view: recipe_analysis {
     filters: [address_book_modal_viewed: "yes"]
   }
 
+  measure: address_search_viewed_count {
+    type: count_distinct
+    sql: ${anonymous_id} ;;
+    filters: [address_search_viewed: "yes"]
+  }
+
+  measure: address_confirmed_count {
+    type: count_distinct
+    sql: ${anonymous_id} ;;
+    filters: [address_confirmed: "yes"]
+  }
+
+  measure: address_existing_confirmed_count {
+    type: count_distinct
+    sql: ${anonymous_id} ;;
+    filters: [address_existing_confirmed: "yes"]
+  }
+
   measure: visited_webshop_count {
     type: count_distinct
     sql: ${anonymous_id} ;;
@@ -278,16 +296,35 @@ view: recipe_analysis {
     filters: [product_added_to_cart: "yes"]
   }
 
+  measure: product_added_to_cart_on_recipes_count {
+    type: count_distinct
+    sql: ${anonymous_id} ;;
+    filters: [product_added_to_cart_on_recipes: "yes"]
+  }
+
+
   measure: cart_viewed_count {
     type: count_distinct
     sql: ${anonymous_id} ;;
     filters: [cart_viewed: "yes"]
   }
 
+  measure: cart_viewed_on_recipes_count {
+    type: count_distinct
+    sql: ${anonymous_id} ;;
+    filters: [cart_viewed_on_recipes: "yes"]
+  }
+
   measure: checkout_started_count {
     type: count_distinct
     sql: ${anonymous_id} ;;
     filters: [checkout_started: "yes"]
+  }
+
+  measure: checkout_started_on_recipes_count {
+    type: count_distinct
+    sql: ${anonymous_id} ;;
+    filters: [checkout_started_on_recipes: "yes"]
   }
 
   measure: order_completed_count {

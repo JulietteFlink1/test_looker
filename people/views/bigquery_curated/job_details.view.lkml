@@ -74,6 +74,10 @@ view: job_details {
   dimension: job_title {
     type: string
     sql: ${TABLE}.job_title ;;
+    link: {
+      label: "See Job in SmartRecruiters"
+      url: "https://www.smartrecruiters.com/app/jobs/details/{{ job_uuid._value | url_encode }}"
+    }
   }
 
   dimension: job_uuid {

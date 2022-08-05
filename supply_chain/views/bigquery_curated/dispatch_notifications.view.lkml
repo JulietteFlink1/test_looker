@@ -9,7 +9,7 @@ view: dispatch_notifications {
   set: main_fields {
     fields: [
       dispatch_notification_id,
-      # dispatch_advice_number,
+      dispatch_advice_number,
       external_sku,
       sscc,
       country_iso,
@@ -191,6 +191,16 @@ view: dispatch_notifications {
     group_label: ">> IDs"
     type: string
     sql: ${TABLE}.dispatch_notification_id ;;
+  }
+
+
+  dimension: dispatch_advice_number {
+
+    label:       "Dispatch Advice Number"
+    group_label: ">> IDs"
+
+    type: string
+    sql: ${TABLE}.dispatch_advice_number ;;
   }
 
   dimension: sscc {
