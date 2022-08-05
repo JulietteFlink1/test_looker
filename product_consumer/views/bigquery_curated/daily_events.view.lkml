@@ -105,15 +105,23 @@ view: daily_events {
     label: "Component Position"
     description: "Position of the component that triggered the event"
     type: string
-    sql: ${TABLE}.component_value ;;
+    sql: ${TABLE}.component_position ;;
   }
   dimension: event_origin {
     group_label: "Generic Dimensions"
     label: "Event Origin"
     description: "The origin of the event, used to determine where the event was generated"
     type: string
-    sql: ${TABLE}.component_value ;;
+    sql: ${TABLE}.event_origin ;;
   }
+  dimension: component_variant {
+    group_label: "Generic Dimensions"
+    label: "Event Variant"
+    description: "Variation of the component if multiple variants exist"
+    type: string
+    sql: ${TABLE}.component_variant ;;
+  }
+
 
   # ======= Device Dimensions ======= #
 
