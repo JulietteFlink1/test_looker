@@ -504,6 +504,7 @@ view: orders {
 
   dimension: is_gps_order {
     group_label: "* Order Dimensions *"
+    description: "A flag for outdoor orders (orders with non-address location)"
     type: yesno
     sql: ${TABLE}.is_gps_order ;;
   }
