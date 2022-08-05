@@ -250,9 +250,17 @@ view: shyftplan_riders_pickers_hours_clean {
   }
 
   measure: hub_staff_hours {
-    label: "Sum of Hub Staff Hours (Inventory Associate and Picker)"
+    label: "Sum of Hub Staff Hours (Inventory Associate, Picker, Rider Captains and shift Lead)"
     type: number
-    sql:${picker_hours}+${wh_ops_hours};;
+    sql:${picker_hours}+${wh_ops_hours}+${rider_captain_hours}+${shift_lead_hours};;
+    value_format_name: decimal_1
+    group_label: "Working Hours"
+  }
+
+  measure: ops_staff_hours {
+    label: "Sum of Ops Staff Hours (Inventory Associate, Picker and  Rider Captain)"
+    type: number
+    sql:${picker_hours}+${wh_ops_hours}+${rider_captain_hours};;
     value_format_name: decimal_1
     group_label: "Working Hours"
   }
@@ -294,7 +302,7 @@ view: shyftplan_riders_pickers_hours_clean {
   measure: shift_orders {
     type: sum
     sql: ${number_of_orders} ;;
-    hidden: yes
+    hidden: no
   }
 
   # Excluding Click & Collect and Ubereats orders
@@ -451,8 +459,17 @@ view: shyftplan_riders_pickers_hours_clean {
   measure: hub_staff_utr {
     label: "AVG Hub Staff UTR"
     type: number
-    description: "# Orders from opened hub / # Worked Hub Staff (Inventory Associate and Picker) Hours"
+    description: "# Orders from opened hub / # Worked Hub (Inventory Associate, Picker, Rider Captains and shift Lead) Hours"
     sql: ${adjusted_orders_pickers} / NULLIF(${hub_staff_hours}, 0);;
+    value_format_name: decimal_2
+    group_label: "UTR"
+  }
+
+  measure: ops_staff_utr {
+    label: "AVG Ops Staff UTR"
+    type: number
+    description: "# Orders from opened hub / # Worked Ops Staff (Inventory Associate, Picker and Rider Captains) Hours"
+    sql: ${adjusted_orders_pickers} / NULLIF(${ops_staff_hours}, 0);;
     value_format_name: decimal_2
     group_label: "UTR"
   }
@@ -548,15 +565,6 @@ view: shyftplan_riders_pickers_hours_clean {
     type: number
     description: "# Orders from opened hub / # Worked All Staff (incl. Rider,Picker,WH Ops, Rider Captain and Shift Lead) Hours"
     sql: ${adjusted_orders_pickers} / NULLIF(${rider_hours}+${picker_hours}+${wh_ops_hours}+${shift_lead_hours}+${rider_captain_hours}, 0);;
-    value_format_name: decimal_2
-    group_label: "UTR"
-  }
-
-  measure: hub_employees_utr {
-    label: "AVG Hub Employees UTR (incl. Picker,WH Ops, Rider Captain and Shift Lead)"
-    type: number
-    description: "# Orders from opened hub / # Worked Hub Employees (incl. Picker,WH Ops, Rider Captain and Shift Lead) Hours"
-    sql: ${adjusted_orders_pickers} / NULLIF(${picker_hours}+${wh_ops_hours}+${shift_lead_hours}+${rider_captain_hours}, 0);;
     value_format_name: decimal_2
     group_label: "UTR"
   }
