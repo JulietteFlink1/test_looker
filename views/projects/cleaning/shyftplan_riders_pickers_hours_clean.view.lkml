@@ -250,7 +250,7 @@ view: shyftplan_riders_pickers_hours_clean {
   }
 
   measure: hub_staff_hours {
-    label: "Sum of Hub Hours (Inventory Associate, Picker, Rider Captains and shift Lead)"
+    label: "Sum of Hub Staff Hours (Inventory Associate, Picker, Rider Captains and shift Lead)"
     type: number
     sql:${picker_hours}+${wh_ops_hours}+${rider_captain_hours}+${shift_lead_hours};;
     value_format_name: decimal_1
@@ -302,7 +302,7 @@ view: shyftplan_riders_pickers_hours_clean {
   measure: shift_orders {
     type: sum
     sql: ${number_of_orders} ;;
-    hidden: yes
+    hidden: no
   }
 
   # Excluding Click & Collect and Ubereats orders
@@ -318,7 +318,7 @@ view: shyftplan_riders_pickers_hours_clean {
     type: sum
     sql:${number_of_orders};;
     filters:[position_name: "picker"]
-    hidden: no
+    hidden: yes
   }
 
   measure: sum_unassigned_riders{
@@ -457,7 +457,7 @@ view: shyftplan_riders_pickers_hours_clean {
   }
 
   measure: hub_staff_utr {
-    label: "AVG Hub UTR"
+    label: "AVG Hub Staff UTR"
     type: number
     description: "# Orders from opened hub / # Worked Hub (Inventory Associate, Picker, Rider Captains and shift Lead) Hours"
     sql: ${adjusted_orders_pickers} / NULLIF(${hub_staff_hours}, 0);;
