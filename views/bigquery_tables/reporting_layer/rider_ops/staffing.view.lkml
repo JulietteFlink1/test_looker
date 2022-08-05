@@ -2339,7 +2339,7 @@ view: staffing {
   }
 
   measure: utr_hub_staff {
-    group_label: "> Hub Staff Measures"
+    group_label: "> Hub Measures"
     label: "Hub Staff UTR"
     description: "Hub Staff UTR (# Orders/Hub Staff Hours)"
     type: number
