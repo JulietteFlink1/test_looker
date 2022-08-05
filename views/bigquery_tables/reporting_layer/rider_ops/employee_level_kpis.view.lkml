@@ -26,9 +26,16 @@ view: employee_level_kpis {
 
   dimension: rider_id {
     type: string
-    label: "Rider ID"
+    label: "Rider ID (old ID)"
     sql: ${TABLE}.rider_id ;;
   }
+
+  dimension: auth0_id {
+    type: string
+    label: "Rider ID (auth0_id)"
+    sql: ${TABLE}.auth0_id ;;
+  }
+
 
   dimension_group: shift {
     type: time
