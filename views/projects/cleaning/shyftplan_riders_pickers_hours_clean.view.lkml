@@ -302,7 +302,7 @@ view: shyftplan_riders_pickers_hours_clean {
   measure: shift_orders {
     type: sum
     sql: ${number_of_orders} ;;
-    hidden: no
+    hidden: yes
   }
 
   # Excluding Click & Collect and Ubereats orders
@@ -558,6 +558,7 @@ view: shyftplan_riders_pickers_hours_clean {
     filters: [position_name: "rider, picker,wh, rider captain"]
     value_format_name: decimal_1
     hidden: no
+    group_label: "Assigned Hours"
   }
 
   measure: all_staff_utr {
