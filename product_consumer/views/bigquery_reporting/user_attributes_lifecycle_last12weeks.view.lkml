@@ -212,6 +212,69 @@ view: user_attributes_lifecycle_last12weeks {
     sql: ${number_of_days_ordering} ;;
   }
 
+  #========= Dimension Selector =========#
+
+  parameter: comparison_selector {
+    label: "Comparison Selector"
+    description: "Controls which dimension X-axis uses"
+    type: unquoted
+    allowed_value: {
+      label: "Platform"
+      value: "platform"
+    }
+    allowed_value: {
+      label: "Country"
+      value: "country"
+    }
+    allowed_value: {
+      label: "Cohort"
+      value: "cohort"
+    }
+    default_value: "cohort"
+  }
+
+  dimension: plotby {
+    label: "Comparison Field (Dynamic)"
+    label_from_parameter: comparison_selector
+    description: "Date OR Full App Version Dynamic Dimension - select using Date or Version Dynamic Selector"
+    type: string
+    sql:
+    {% if comparison_selector._parameter_value == 'platform' %}
+      ${first_order_platform}
+    {% elsif comparison_selector._parameter_value == 'country' %}
+      ${first_country_iso}
+    {% elsif comparison_selector._parameter_value == 'cohort' %}
+      ${first_visit_granularity}
+    {% else %}
+      ${first_visit_granularity}
+    {% endif %};;
+  }
+
+  dimension: first_visit_granularity {
+    group_label: "* User Attributes *"
+    label: "First Visit Cohort (Dynamic)"
+    label_from_parameter: timeframe_picker
+    type: string # cannot have this as a time type. See this discussion: https://community.looker.com/lookml-5/dynamic-time-granularity-opinions-16675
+    hidden:  no
+    sql:
+      {% if timeframe_picker._parameter_value == 'Week' %}
+        ${first_visit_week}
+      {% elsif timeframe_picker._parameter_value == 'Month' %}
+        ${first_visit_month}
+      {% elsif timeframe_picker._parameter_value == 'Year' %}
+        ${first_visit_year}
+      {% endif %};;
+  }
+
+  parameter: timeframe_picker {
+    label: "First Visit Date Granularity"
+    type: unquoted
+    allowed_value: { value: "Week" }
+    allowed_value: { value: "Month" }
+    allowed_value: { value: "Year" }
+    default_value: "Year"
+  }
+
   #========= Monetary =========#
 
   dimension: avg_gmv_gross_tier_2 {
