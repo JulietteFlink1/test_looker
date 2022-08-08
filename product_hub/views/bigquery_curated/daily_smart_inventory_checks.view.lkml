@@ -307,6 +307,7 @@ view: daily_smart_inventory_checks {
 
   measure: corrections_per_completed_checks {
     type: number
+    value_format: "0%"
     group_label: "Rate Metrics"
     label: "% of Corrections"
     description: "# of Corrections/ # of Completed Checks."
@@ -315,6 +316,7 @@ view: daily_smart_inventory_checks {
 
   measure: pct_of_completion {
     type: number
+    value_format: "0%"
     group_label: "Rate Metrics"
     label: "% of Completion"
     description: "# of Completed Checks/ (# of Completed Checks + # of Open Checks)"
