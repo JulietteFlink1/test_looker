@@ -300,7 +300,7 @@ view: daily_smart_inventory_checks {
     label: "# of Open Checks"
     description: "Number of open checks."
     sql: ${table_uuid} ;;
-    filters: [status: "done"]
+    filters: [status: "open"]
   }
 
   # =========  Rate Metrics  =========
