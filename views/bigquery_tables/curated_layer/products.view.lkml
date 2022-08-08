@@ -18,14 +18,6 @@ view: products {
     drill_fields: [subcategory, hubs.hub_code, hubs_ct.hub_code]
   }
 
-  dimension: random_ct_category {
-    type: string
-    hidden:yes
-    label: "Parent Category"
-    group_label: "> Product Attributes"
-    sql: ${TABLE}.random_ct_category ;;
-  }
-
   dimension: erp_category {
     type: string
     bypass_suggest_restrictions: yes
@@ -80,14 +72,6 @@ view: products {
     sql: CONCAT(${TABLE}.product_sku, ' - ', ${TABLE}.product_name) ;;
   }
 
-  dimension: random_ct_subcategory {
-    hidden: yes
-    label: "Sub-Category"
-    type: string
-    sql: ${TABLE}.random_ct_subcategory ;;
-    group_label: "> Product Attributes"
-  }
-
   dimension: subcategory {
     label: "Sub-Category"
     bypass_suggest_restrictions: yes
@@ -103,20 +87,6 @@ view: products {
     sql: ${TABLE}.erp_subcategory ;;
     group_label: "> Product Attributes"
   }
-
-  #dimension: ct_subcategory {
-  #  label: "CT Sub-Category"
-  #  type: string
-  #  sql:  ;;
-  #  group_label: "> Product Attributes"
-  #}
-
-  #dimension: ct_category {
-  #  label: "CT Category"
-  #  type: string
-  #  sql: ${TABLE}.random_ct_category ;;
-  #  group_label: "> Product Attributes"
-  #}
 
   dimension: substitute_group {
     type: string
