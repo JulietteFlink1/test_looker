@@ -17,7 +17,7 @@ view: cc_contactrate {
             c.contact_created_hour as conversation_created_hour,
             c.contact_created_day_of_week as conversation_created_day_of_week,
             c.timezone,
-            c.contact_reason,
+            c.contact_reason_l3 as contact_reason,
             c.contact_reason_l3,
             c.number_of_assignments,
             c.time_to_assignement_seconds,

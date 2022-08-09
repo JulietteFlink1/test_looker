@@ -123,7 +123,7 @@ view: daily_smart_inventory_checks {
     group_label: "4 Check Attributes"
     label: "Is Finished"
     description: "Boolean to inform if a check has been finished."
-    sql: if(${finished_at_timestamp_time} is not null,True,False) ;;
+    sql: if(${status} in ('done'),True,False) ;;
   }
 
   # =========  Check Timestamps   =========
@@ -245,23 +245,32 @@ view: daily_smart_inventory_checks {
     sql: ${TABLE}.quantity_after_correction ;;
   }
 
+  dimension: is_correction_upwards {
+    type: yesno
+    group_label: "6 Correction Attributes"
+    label: "Is Correction Upwards"
+    description: "Flag that identifies if the correction was upwards."
+    sql: if(${quantity_after_correction}-${quantity_before_correction}>0, true, false) ;;
+  }
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  # =========  Total Metrics  =========
+
   measure: number_of_checks {
     type: count_distinct
     group_label: "Total Metrics"
-    label: "# of checks"
-    description: "Number of checks"
+    label: "# of Checks"
+    description: "Number of checks."
     sql: ${table_uuid} ;;
   }
 
   measure: number_of_corrections {
     type: count_distinct
     group_label: "Total Metrics"
-    label: "# of corrections"
-    description: "Number of corrections"
+    label: "# of Corrections"
+    description: "Number of corrections."
     sql: ${table_uuid} ;;
     filters: [is_correction: "yes"]
   }
@@ -269,17 +278,49 @@ view: daily_smart_inventory_checks {
   measure: number_of_items_corrected {
     type: count_distinct
     group_label: "Total Metrics"
-    label: "# of items corrected"
-    description: "Number of items corrected"
+    label: "# of Items Corrected"
+    description: "Number of items corrected."
     sql: ${sku} ;;
     filters: [is_correction: "yes"]
   }
 
-  measure: corrections_per_total_checks {
+  measure: number_of_completed_checks {
+    type: count_distinct
+    group_label: "Total Metrics"
+    label: "# of Completed Checks"
+    description: "Number of completed checks."
+    sql: ${table_uuid} ;;
+    filters: [status: "done"]
+  }
+
+  measure: number_of_open_checks {
+    type: count_distinct
+    hidden: yes
+    group_label: "Total Metrics"
+    label: "# of Open Checks"
+    description: "Number of open checks."
+    sql: ${table_uuid} ;;
+    filters: [status: "open"]
+  }
+
+  # =========  Rate Metrics  =========
+
+  measure: corrections_per_completed_checks {
     type: number
+    value_format: "0%"
     group_label: "Rate Metrics"
     label: "% of Corrections"
-    description: "# of Corrections/ # of Checks"
-    sql: ${number_of_corrections}/${number_of_checks} ;;
+    description: "# of Corrections/ # of Completed Checks."
+    sql: ${number_of_corrections}/${number_of_completed_checks} ;;
   }
+
+  measure: pct_of_completion {
+    type: number
+    value_format: "0%"
+    group_label: "Rate Metrics"
+    label: "% of Completion"
+    description: "# of Completed Checks/ (# of Completed Checks + # of Open Checks)"
+    sql: ${number_of_completed_checks}/(${number_of_completed_checks}+${number_of_open_checks}) ;;
+  }
+
 }
