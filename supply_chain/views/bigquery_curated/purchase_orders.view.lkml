@@ -398,6 +398,9 @@ view: purchase_orders {
     label:       "€ Selling Units (Buying Price)"
     description: "This measure multiplies the supplier price of an item with the number
                   of selling units we ordered and thus provides the cumulative value of the replenished items."
+
+    required_access_grants: [can_view_buying_information]
+
     type: sum
     sql: coalesce((${total_quantity} * ${erp_buying_prices.vendor_price}),0) ;;
     value_format_name: eur
