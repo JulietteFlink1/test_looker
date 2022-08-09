@@ -9,6 +9,7 @@ view: products {
 
   # =========  __main__   =========
   dimension: category {
+    alias: [random_ct_category]
     type: string
     bypass_suggest_restrictions: yes
     label: "Parent Category"
@@ -73,6 +74,7 @@ view: products {
   }
 
   dimension: subcategory {
+    alias: [random_ct_subcategory]
     label: "Sub-Category"
     bypass_suggest_restrictions: yes
     description: "This is CT reporting subcategory"
