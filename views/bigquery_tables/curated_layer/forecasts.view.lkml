@@ -378,7 +378,7 @@ view: forecasts {
     label: "% Forecast Deviation"
     description: "(# Orders/# Forecasted Orders) -1"
     type: number
-    sql: (${orders_with_ops_metrics.sum_orders}/nullif(${number_of_forecasted_orders},0))-1 ;;
+    sql: abs((${number_of_actual_orders}/nullif(${number_of_forecasted_orders},0))-1) ;;
     value_format_name: percent_1
   }
 
@@ -609,7 +609,7 @@ view: forecasts {
 
   measure: final_utr_by_position {
     type: number
-    label: "Final UTR"
+    label: "Forecasted UTR"
     description: "Forecasted Orders/Forecasted Hours (Post Adjsutment)"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
@@ -625,11 +625,20 @@ view: forecasts {
 
   measure: actual_needed_hours_by_position {
     type: number
-    label: "# Actually Needed Hours"
+    label: "# Actually Needed Hours (Dynamic)"
     description: "# Hours needed based on # Orders and User-defined UTR - # Orders/Defined UTR"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql: nullif(${orders_with_ops_metrics.sum_orders},0)/nullif({% parameter dynamic_text_utr %},0);;
+  }
+
+  measure: fixed_actual_needed_hours_by_position {
+    type: number
+    label: "# Actually Needed Hours"
+    description: "# Hours needed based on # Actual Orders/ Forecasted UTR"
+    value_format_name: decimal_1
+    group_label: "> Dynamic Measures"
+    sql: nullif(${orders_with_ops_metrics.sum_orders},0)/nullif(${final_utr_by_position},0);;
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

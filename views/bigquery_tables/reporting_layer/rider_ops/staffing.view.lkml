@@ -2475,6 +2475,7 @@ view: staffing {
   measure: number_of_planned_hours_by_position {
     type: number
     label: "# Filled Hours"
+    description: "# Planned Hours"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
@@ -2587,6 +2588,7 @@ view: staffing {
   measure: number_of_scheduled_hours_by_position {
     type: number
     label: "# Scheduled Hours (Incl. Deleted Excused No Show)"
+    description: "# Planned Hours + # Open Hours"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
