@@ -20,7 +20,6 @@ cast(a.order_timestamp as date) as order_date,
 c.hub_name,
 c.hub_code,
 a.order_uuid,
---b.random_ct_category,
 coalesce (b.substitute_group, b.product_name) as subs_group_or_sku,
 b.product_name,
 b.product_sku
