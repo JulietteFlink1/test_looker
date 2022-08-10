@@ -31,19 +31,7 @@ view: +inventory_hourly {
 
     type: number
 
-    sql:
-         {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
-               or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer'%}
-               ${TABLE}.share_of_hours_oos
-
-         {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
-               ${TABLE}.rsg_share_of_hours_oos
-
-         {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'customer' %}
-              ${TABLE}.sg_share_of_hours_oos
-
-         {% endif %}
-    ;;
+    sql: ${TABLE}.share_of_hours_oos ;;
   }
 
   dimension: share_of_hours_open {
@@ -54,19 +42,7 @@ view: +inventory_hourly {
 
     type: number
 
-    sql:
-        {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
-          or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer' %}
-          ${TABLE}.share_of_hours_open
-
-        {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
-          ${TABLE}.rsg_share_of_hours_open
-
-        {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'customer' %}
-          ${TABLE}.sg_share_of_hours_open
-
-        {% endif %}
-    ;;
+    sql: ${TABLE}.share_of_hours_open ;;
 
   }
 
@@ -78,19 +54,7 @@ view: +inventory_hourly {
     group_label: "Inventory Change"
 
     type: number
-    sql:
-        {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
-              or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer'%}
-        ${TABLE}.quantity_from
-
-        {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
-        ${TABLE}.rsg_quantity_from
-
-        {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'customer' %}
-        ${TABLE}.sg_quantity_from
-
-        {% endif %}
-    ;;
+    sql: ${TABLE}.quantity_from;;
 
 
     value_format_name: decimal_1
@@ -105,20 +69,7 @@ view: +inventory_hourly {
     group_label: "Inventory Change"
 
     type: number
-    sql:
-        {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
-          or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer' %}
-        ${TABLE}.quantity_to
-
-
-        {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
-        ${TABLE}.rsg_quantity_to
-
-        {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'customer' %}
-        ${TABLE}.sg_quantity_to
-
-        {% endif %}
-    ;;
+    sql: ${TABLE}.quantity_to ;;
 
 
     value_format_name: decimal_1
@@ -264,20 +215,7 @@ view: +inventory_hourly {
     group_label: "Inventory Change"
 
     type: sum
-    sql:
-
-        {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
-              or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer' %}
-        ${TABLE}.number_of_total_correction
-
-        {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
-        ${TABLE}.rsg_number_of_total_correction
-
-        {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'customer' %}
-        ${TABLE}.sg_number_of_total_correction
-
-    {% endif %}
-    ;;
+    sql:  ${TABLE}.number_of_total_correction ;;
 
 
     value_format_name: decimal_0
@@ -290,20 +228,7 @@ view: +inventory_hourly {
     group_label: "Inventory Change"
 
     type: sum
-    sql:
-
-        {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
-              or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer' %}
-        ${TABLE}.number_of_total_inbound
-
-        {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
-        ${TABLE}.rsg_number_of_total_inbound
-
-        {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'customer' %}
-        ${TABLE}.sg_number_of_total_inbound
-
-    {% endif %}
-    ;;
+    sql: ${TABLE}.number_of_total_inbound    ;;
 
 
     value_format_name: decimal_0
@@ -316,20 +241,7 @@ view: +inventory_hourly {
     group_label: "Inventory Change"
 
     type: sum
-    sql:
-
-        {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
-          or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer' %}
-        ${TABLE}.number_of_total_outbound
-
-        {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
-        ${TABLE}.rsg_number_of_total_outbound
-
-        {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'customer' %}
-        ${TABLE}.sg_number_of_total_outbound
-
-        {% endif %}
-    ;;
+    sql: ${TABLE}.number_of_total_outbound ;;
 
 
     value_format_name: decimal_0
@@ -343,20 +255,7 @@ view: +inventory_hourly {
     group_label: "Inventory Change"
 
     type: sum
-    sql:
-
-        {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
-          or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer' %}
-        ${TABLE}.number_of_correction_product_damaged
-
-        {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
-        ${TABLE}.rsg_number_of_correction_product_damaged
-
-        {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'customer' %}
-        ${TABLE}.sg_number_of_correction_product_damaged
-
-        {% endif %}
-    ;;
+    sql: ${TABLE}.number_of_correction_product_damaged ;;
 
 
     value_format_name: decimal_0
@@ -369,20 +268,7 @@ view: +inventory_hourly {
     group_label: "Inventory Change"
 
     type: sum
-    sql:
-
-        {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
-          or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer' %}
-        ${TABLE}.number_of_correction_product_expired
-
-        {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
-        ${TABLE}.rsg_number_of_correction_product_expired
-
-        {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'customer' %}
-        ${TABLE}.sg_number_of_correction_product_expired
-
-        {% endif %}
-    ;;
+    sql: ${TABLE}.number_of_correction_product_expired;;
 
 
     value_format_name: decimal_0
@@ -395,20 +281,7 @@ view: +inventory_hourly {
     group_label: "Inventory Change"
 
     type: sum
-    sql:
-
-        {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
-          or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer' %}
-        ${TABLE}.number_of_correction_stock_taking_increased
-
-        {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
-        ${TABLE}.rsg_number_of_correction_stock_taking_increased
-
-        {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'customer' %}
-        ${TABLE}.sg_number_of_correction_stock_taking_increased
-
-        {% endif %}
-    ;;
+    sql: ${TABLE}.number_of_correction_stock_taking_increased ;;
 
 
     value_format_name: decimal_0
@@ -421,20 +294,7 @@ view: +inventory_hourly {
     group_label: "Inventory Change"
 
     type: sum
-    sql:
-
-        {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
-          or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer' %}
-        ${TABLE}.number_of_correction_stock_taking_reduced
-
-        {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
-        ${TABLE}.rsg_number_of_correction_stock_taking_reduced
-
-        {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'customer' %}
-        ${TABLE}.sg_number_of_correction_stock_taking_reduced
-
-        {% endif %}
-    ;;
+    sql: ${TABLE}.number_of_correction_stock_taking_reduced ;;
 
 
     value_format_name: decimal_0
@@ -447,20 +307,7 @@ view: +inventory_hourly {
     group_label: "Inventory Change"
 
     type: sum
-    sql:
-
-        {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
-          or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer'%}
-        ${TABLE}.number_of_outbound_orders
-
-        {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
-        ${TABLE}.rsg_number_of_outbound_orders
-
-        {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'customer' %}
-        ${TABLE}.sg_number_of_outbound_orders
-
-        {% endif %}
-    ;;
+    sql: ${TABLE}.number_of_outbound_orders ;;
 
 
     value_format_name: decimal_0
@@ -474,20 +321,7 @@ view: +inventory_hourly {
     group_label: "Inventory Change"
 
     type: sum
-    sql:
-
-        {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
-          or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer'%}
-        ${TABLE}.number_of_outbound_others
-
-        {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
-        ${TABLE}.rsg_number_of_outbound_others
-
-        {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'customer' %}
-        ${TABLE}.sg_number_of_outbound_others
-
-        {% endif %}
-    ;;
+    sql: ${TABLE}.number_of_outbound_others ;;
 
 
     value_format_name: decimal_0
@@ -502,20 +336,7 @@ view: +inventory_hourly {
     group_label: "Inventory Change"
 
     type: sum
-    sql:
-
-        {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
-              or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer' %}
-        ${TABLE}.number_of_unspecified
-
-        {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
-        ${TABLE}.rsg_number_of_unspecified
-
-        {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'customer' %}
-        ${TABLE}.sg_number_of_unspecified
-
-        {% endif %}
-    ;;
+    sql: ${TABLE}.number_of_unspecified ;;
 
 
     value_format_name: decimal_0

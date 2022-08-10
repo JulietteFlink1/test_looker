@@ -541,10 +541,11 @@ view: psp_transactions {
 
   measure: sum_empty_order_trx_fees_refunds {
     group_label: "* Orphaned Payments *"
-    label: "Total Empty Orders Costs - Refunds"
+    label: "Total Costs Empty Orders - Refunds"
     type: sum
-    sql: coalesce(${commission_sc},0) + coalesce(${interchange_sc},0)  + coalesce(${markup_sc},0) + coalesce(${processing_fee_fc},0)  + coalesce(${scheme_fees_sc},0);;
-    filters: [record_type: "Refunded, RefundedExternally"]
+    sql: CASE WHEN ${payment_method} LIKE 'payp%' THEN ${processing_fee_fc}
+    else (coalesce(${commission_sc},0) + coalesce(${processing_fee_fc},0)) end ;;
+    filters: [record_type: "Refunded, SentForRefund"]
     value_format_name: eur
   }
 
