@@ -384,7 +384,7 @@ view: forecasts {
   measure: pct_forecast_deviation {
     group_label: "> Order Measures"
     label: "% Forecast Deviation"
-    description: "(# Actual Orders (# Actual Orders - Excl. Click&Collect and External Orders. Including Cancelled Orders)/# Forecasted Orders) -1"
+    description: "(# Actual Orders / # Forecasted Orders) -1"
     type: number
     sql: abs((${number_of_actual_orders}/nullif(${number_of_forecasted_orders},0))-1) ;;
     value_format_name: percent_1
@@ -392,7 +392,7 @@ view: forecasts {
 
   measure: forecasted_avg_order_handling_duration_seconds {
     group_label: "> Order Measures"
-    label: "Forecasted Rider Handling Time (Seconds)"
+    label: "Forecasted AVG Rider Handling Time (Seconds)"
     description: "Forecasted AVG Total Rider Handling Time: Riding to Customer + At customer + Riding to Hub"
     type: average_distinct
     sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
@@ -402,7 +402,7 @@ view: forecasts {
 
   measure: forecasted_avg_order_handling_duration_minutes {
     group_label: "> Order Measures"
-    label: "Forecasted Rider Handling Time (Minutes)"
+    label: "Forecasted AVG Rider Handling Time (Minutes)"
     description: "Forecasted AVG Total Rider Handling Time: Riding to Customer + At customer + Riding to Hub"
     type: average_distinct
     sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;

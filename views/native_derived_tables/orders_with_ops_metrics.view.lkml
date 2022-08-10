@@ -66,7 +66,7 @@ view: orders_with_ops_metrics {
   measure: sum_orders {
     group_label: "> Basic Counts"
     label: "# Orders"
-    description: "Count of Orders"
+    description: "Count of Orders (Excl. Cancellations)"
     type: sum
     value_format: "0"
     sql: ${cnt_orders} ;;
