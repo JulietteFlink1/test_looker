@@ -13,7 +13,7 @@ view: orders_delivery_coordinates_match {
           hub_city,
           hub_slug,
           context_device_type AS platform_type,
-          ROW_NUMBER() OVER(PARTITION BY order_number ORDER BY timestamp) as row_number
+          ROW_NUMBER() OVER(PARTITION BY order_id ORDER BY timestamp) as row_number
           FROM `flink-data-prod.flink_android_production.order_tracking_viewed`
 
           UNION ALL
@@ -30,7 +30,7 @@ view: orders_delivery_coordinates_match {
           hub_city,
           hub_slug,
           context_device_type AS platform_type,
-          ROW_NUMBER() OVER(PARTITION BY order_number ORDER BY timestamp) as row_number
+          ROW_NUMBER() OVER(PARTITION BY order_id ORDER BY timestamp) as row_number
           FROM `flink-data-prod.flink_ios_production.order_tracking_viewed`
       ),
 
@@ -44,7 +44,7 @@ view: orders_delivery_coordinates_match {
       backend_orders AS(
       SELECT
           o.country_iso,
-          o.order_number,
+          o.order_id,
           o.order_timestamp,
           o.hub_code,
           o.delivery_id,
@@ -64,7 +64,7 @@ view: orders_delivery_coordinates_match {
 
 joined_tb AS (
       SELECT
-      bo.*,
+      bo.* except(order_id),
       ft.order_id,
       ft.timestamp,
       ft.delivery_eta,
@@ -87,7 +87,7 @@ joined_tb AS (
       bo.order_timestamp >= hda.valid_from AND (bo.order_timestamp < hda.valid_to OR hda.valid_to IS NULL) AS is_current_hub_area
       FROM backend_orders bo
       LEFT JOIN frontend_tracking ft
-      ON bo.order_number=ft.order_number
+      ON bo.order_id=ft.order_id
       -- note that hub_slug is the hub from frontend and hub_code is the hub from backend. Frontend misses around ~4% of orders so for those hub_slug would not be populated
       LEFT JOIN delivery_areas hda
       ON bo.hub_code=hda.hub_code
@@ -95,8 +95,8 @@ joined_tb AS (
 
 tag_tb AS (
 SELECT *,
-MAX(backend_covered_by_hub_area) OVER (PARTITION BY order_number) AS backend_ever_covered,
-MAX(client_covered_by_hub_area) OVER (PARTITION BY order_number) AS client_ever_covered
+MAX(backend_covered_by_hub_area) OVER (PARTITION BY order_id) AS backend_ever_covered,
+MAX(client_covered_by_hub_area) OVER (PARTITION BY order_id) AS client_ever_covered
 FROM joined_tb
 )
 
@@ -231,11 +231,6 @@ WHERE is_current_hub_area IS TRUE
     type: string
     sql: ${TABLE}.country_iso ;;
     group_label: "> Backend Data"
-  }
-
-  dimension: order_number {
-    type: string
-    sql: ${TABLE}.order_number ;;
   }
 
   dimension_group: order_timestamp {
@@ -418,7 +413,7 @@ WHERE is_current_hub_area IS TRUE
   set: detail {
     fields: [
       country_iso,
-      order_number,
+      order_id,
       order_timestamp_time,
       hub_code,
       delivery_id,

@@ -17,7 +17,7 @@ view: cc_contactrate {
             c.contact_created_hour as conversation_created_hour,
             c.contact_created_day_of_week as conversation_created_day_of_week,
             c.timezone,
-            c.contact_reason,
+            c.contact_reason_l3 as contact_reason,
             c.contact_reason_l3,
             c.number_of_assignments,
             c.time_to_assignement_seconds,
@@ -60,7 +60,7 @@ view: cc_contactrate {
             c.user_created_timestamp as contact_created_timestamp,
             c.is_whatsapp_user as is_whatsapp_contact,
             lower(c.platform) as platform,
-            TRIM(REGEXP_EXTRACT(contact_reason, r'(.+?) -')) AS contact_reason_l1,
+            TRIM(REGEXP_EXTRACT(contact_reason_l3, r'(.+?) -')) AS contact_reason_l1,
             contact_created_timestamp AS creation_timestamp,
             NULL AS order_timestamp,
             NULL AS order_number,
@@ -90,9 +90,9 @@ view: cc_contactrate {
       )
       SELECT *
       FROM cs_tb
-      WHERE ({% condition contact_reason_l1l2_filter %} contact_reason {% endcondition %} OR (contact_reason IS NULL AND conversation_uuid IS NULL))
-      AND ({% condition contact_reason_l3_filter %} contact_reason_l3 {% endcondition %} OR (contact_reason IS NULL AND conversation_uuid IS NULL))
-      AND ({% condition conversation_type_filter %} source_type {% endcondition %} OR (contact_reason IS NULL AND conversation_uuid IS NULL))
+      WHERE ({% condition contact_reason_l1l2_filter %} contact_reason_l3 {% endcondition %} OR (contact_reason_l3 IS NULL AND conversation_uuid IS NULL))
+      AND ({% condition contact_reason_l3_filter %} contact_reason_l3 {% endcondition %} OR (contact_reason_l3 IS NULL AND conversation_uuid IS NULL))
+      AND ({% condition conversation_type_filter %} source_type {% endcondition %} OR (contact_reason_l3 IS NULL AND conversation_uuid IS NULL))
       ;;
   }
 
@@ -149,7 +149,7 @@ view: cc_contactrate {
     label: "Contact Reason L1/L2 Filter"
     type: string
     suggest_dimension: contact_reason
-    sql: EXISTS (SELECT ${creation_timestamp_time} FROM ${TABLE} WHERE {% condition %} contact_reason {% endcondition %}) ;;
+    sql: EXISTS (SELECT ${creation_timestamp_time} FROM ${TABLE} WHERE {% condition %} contact_reason_l3 {% endcondition %}) ;;
   }
 
   filter: conversation_type_filter {
@@ -263,7 +263,7 @@ view: cc_contactrate {
   dimension: full_contact_reason {
     label: "Contact Reason L1/L2/L3"
     type: string
-    sql: IFNULL(${contact_reason},'') || IF(${contact_reason_l3} IS NULL, '', '/ ') || IFNULL(${contact_reason_l3},'');;
+    sql: IFNULL(${contact_reason_l3},'') || IF(${contact_reason_l3} IS NULL, '', '/ ') || IFNULL(${contact_reason_l3},'');;
   }
 
   measure: count {
@@ -657,7 +657,7 @@ view: cc_contactrate {
     label: "Contact Reason L1/L2"
     group_label: "* Conversation Attributes *"
     type: string
-    sql: ${TABLE}.contact_reason ;;
+    sql: ${TABLE}.contact_reason_l3 ;;
   }
 
   dimension: contact_reason_l1 {
@@ -703,7 +703,6 @@ view: cc_contactrate {
       conversation_type,
       conversation_updated_timestamp_time,
       conversation_created_timestamp_time,
-      contact_reason,
       contact_reason_l3,
       first_close_timestamp_time,
       country_iso,
