@@ -111,7 +111,7 @@ view: employee_level_kpis {
 
   dimension: contract_start_date {
     label: "Contract Start Date"
-    description: "Contract Start Date based on Quinyx"
+    description: "Based on Quinyx Agreement field - Contract Start Date"
     convert_tz: no
     datatype: date
     type: date
@@ -120,7 +120,7 @@ view: employee_level_kpis {
 
   dimension: contract_end_date {
     label: "Contract End Date"
-    description: "Contract End Date based on Quinyx"
+    description: "Based on Quinyx Agreement field - Contract End Date"
     convert_tz: no
     datatype: date
     type: date
