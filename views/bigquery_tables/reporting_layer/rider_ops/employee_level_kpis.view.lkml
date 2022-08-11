@@ -109,6 +109,24 @@ view: employee_level_kpis {
     sql: ${TABLE}.hire_date ;;
   }
 
+  dimension: contract_start_date {
+    label: "Contract Start Date"
+    description: "Contract Start Date based on Quinyx"
+    convert_tz: no
+    datatype: date
+    type: date
+    sql: ${TABLE}.contract_start_date ;;
+  }
+
+  dimension: contract_end_date {
+    label: "Contract End Date"
+    description: "Contract End Date based on Quinyx"
+    convert_tz: no
+    datatype: date
+    type: date
+    sql: ${TABLE}.contract_end_date ;;
+  }
+
   dimension: hub_code {
     type: string
     sql: ${TABLE}.hub_code ;;
@@ -129,8 +147,21 @@ view: employee_level_kpis {
   dimension: weekly_contracted_hours {
     type: number
     sql: ${TABLE}.weekly_contracted_hours ;;
-    description: "Based on Quinyx field (Agreement Working Hours) attached to each shift"
+    description: "Based on Quinyx Agreements (Agreement Full time Working Hours)"
+  }
 
+  dimension: min_weekly_contracted_hours {
+    type: number
+    sql: ${TABLE}.min_weekly_contracted_hours ;;
+    label: "MIN Weekly Contracted Hours"
+    description: "Based on Quinyx field (Rules for working time)"
+  }
+
+  dimension: max_weekly_contracted_hours {
+    type: number
+    sql: ${TABLE}.max_weekly_contracted_hours ;;
+    label: "MAX Weekly Contracted Hours"
+    description: "Based on Quinyx field (Rules for working time)"
   }
 
   dimension_group: time_between_hire_date_and_today {
