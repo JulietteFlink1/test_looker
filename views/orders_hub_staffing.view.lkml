@@ -1,5 +1,8 @@
 view: orders_hub_staffing {
 
+  ### This view contains all the measures/dim/param that are using a mix of orders and staffing related view (employee_level_kpis,shyftplan_riders_pickers_hours )
+
+
   measure: pct_orders_delivered_by_riders {
     group_label: "* Operations / Logistics *"
     label: "% Orders Delivered by Riders"

@@ -50,15 +50,6 @@ explore: psp_settlement_details {
     type: left_outer
   }
 
-  # join: shyftplan_riders_pickers_hours {
-  #   from: shyftplan_riders_pickers_hours_clean
-  #   view_label: ""
-  #   sql_on: ${orders.created_date} = ${shyftplan_riders_pickers_hours.date} and
-  #     ${hubs.hub_code}          = lower(${shyftplan_riders_pickers_hours.hub_name});;
-  #   relationship: many_to_one
-  #   type: left_outer
-  # }
-
   join: orderline {
     view_label: "* Order Lineitems *"
     sql_on: ${orderline.country_iso} = ${orders.country_iso} AND
