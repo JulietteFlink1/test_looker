@@ -373,7 +373,7 @@ view: forecasts {
 
   measure: number_of_actual_orders {
     group_label: "> Order Measures"
-    label: "# Actual Orders"
+    label: "# Actual Orders (Forecast-related)"
     description: "# Actual Orders - Excl. Click&Collect and External Orders. Including Cancelled Orders"
     type: sum_distinct
     sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
