@@ -147,22 +147,22 @@ view: employee_level_kpis {
   dimension: weekly_contracted_hours {
     type: number
     sql: ${TABLE}.weekly_contracted_hours ;;
-    description: "Based on Quinyx Agreements (Agreement Full time Working Hours)"
+    description: "# Weekly contracted hours based on Quinyx Agreements (Field in Quinyx UI: Agreement full time working hours)"
   }
 
   dimension: min_weekly_contracted_hours {
     type: number
     sql: ${TABLE}.min_weekly_contracted_hours ;;
     label: "MIN Weekly Contracted Hours"
-    description: "Based on Quinyx field (Rules for working time)"
+    description: "# Minimum weekly contracted hours based on Quinyx Agreements (Field in Quinyx UI: Rules for working time)"
   }
 
   dimension: max_weekly_contracted_hours {
     type: number
     sql: ${TABLE}.max_weekly_contracted_hours ;;
     label: "MAX Weekly Contracted Hours"
-    description: "Based on Quinyx field (Rules for working time)"
-  }
+    description: "# Maximum weekly contracted hours based on Quinyx Agreements (Field in Quinyx UI: Rules for working time)"
+    }
 
   dimension_group: time_between_hire_date_and_today {
     type: duration
