@@ -383,10 +383,19 @@ view: forecasts {
 
   measure: pct_forecast_deviation {
     group_label: "> Order Measures"
-    label: "% Forecast Deviation"
+    label: "% Order Forecast Deviation"
     description: "(# Actual Orders / # Forecasted Orders) -1"
     type: number
     sql: abs((${number_of_actual_orders}/nullif(${number_of_forecasted_orders},0))-1) ;;
+    value_format_name: percent_1
+  }
+
+  measure: pct_forecast_deviation_handling_duration {
+    group_label: "> Order Measures"
+    label: "% Rider Handling Duration Forecast Deviation"
+    description: "(AVG Rider Handling Duration (Minutes) / Forecasted AVG Rider Handling Duration) -1"
+    type: number
+    sql: abs((${orders_with_ops_metrics.avg_rider_handling_time}/nullif(${forecasted_avg_order_handling_duration_minutes},0))-1) ;;
     value_format_name: percent_1
   }
 
