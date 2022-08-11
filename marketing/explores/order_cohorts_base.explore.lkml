@@ -14,7 +14,6 @@ explore: order_cohorts_base {
   view_label: "* Orders *"
   from: orders
   hidden: yes
-  fields: [ALL_FIELDS*,-shyftplan_riders_pickers_hours.rider_utr_cleaned, -order_cohorts_base.pct_orders_delivered_by_riders]
   always_filter: {
     filters: [is_external_order: "No"]
   }
@@ -42,14 +41,14 @@ explore: order_cohorts_base {
     type: left_outer
     relationship: one_to_one
   }
-# has to do this join because of the circular reference in orders.view that is using shyftplan_riders_pickers_hours
-# hiding it with a view_lavel: ""
-  join: shyftplan_riders_pickers_hours {
-    from: shyftplan_riders_pickers_hours_clean
-    view_label: ""
-    sql_on: ${order_cohorts_base.created_date} = ${shyftplan_riders_pickers_hours.shift_date} and
-      ${hubs_ct.hub_code}          = lower(${shyftplan_riders_pickers_hours.hub_name});;
-    relationship: many_to_many
-    type: left_outer
-  }
+# # has to do this join because of the circular reference in orders.view that is using shyftplan_riders_pickers_hours
+# # hiding it with a view_lavel: ""
+#   join: shyftplan_riders_pickers_hours {
+#     from: shyftplan_riders_pickers_hours_clean
+#     view_label: ""
+#     sql_on: ${order_cohorts_base.created_date} = ${shyftplan_riders_pickers_hours.shift_date} and
+#       ${hubs_ct.hub_code}          = lower(${shyftplan_riders_pickers_hours.hub_name});;
+#     relationship: many_to_many
+#     type: left_outer
+#   }
 }

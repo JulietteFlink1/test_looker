@@ -1,7 +1,6 @@
 include: "/views/bigquery_tables/curated_layer/orders.view"
 include: "/views/extended_tables/orders_using_hubs.view"
 include: "/views/projects/cleaning/shyftplan_riders_pickers_hours_clean.view"
-# include: "/views/projects/cleaning/hub_stafing_test.view"
 include: "/views/bigquery_tables/curated_layer/hubs_ct.view"
 include: "/views/bigquery_tables/curated_layer/nps_after_order_cl.view"
 include: "/customer_care/views/bigquery_curated/cs_post_delivery_issues.view"
@@ -51,19 +50,6 @@ explore: orders_cl {
       relationship: many_to_one
     }
 
-    join: hub_level_kpis {
-      from: hub_level_kpis
-      view_label: ""
-      sql_on: lower(${orders_cl.hub_code}) = ${hub_level_kpis.hub_code} and
-            ${orders_cl.created_date} = ${hub_level_kpis.order_date}  and
-            ${orders_cl.is_successful_order} = ${hub_level_kpis.is_successful_order}
-
-        ;;
-      relationship: many_to_one
-      type: left_outer
-    }
-
-
     join: hubs {
       from: hubs_ct
       view_label: "* Hubs *"
@@ -71,7 +57,6 @@ explore: orders_cl {
       relationship: many_to_one
       type: left_outer
     }
-
 
     join: shyftplan_riders_pickers_hours {
       from: shyftplan_riders_pickers_hours_clean
@@ -93,15 +78,6 @@ explore: orders_cl {
       type: left_outer
     }
 
-    # join: hub_stafing_test {
-    #   from: hub_stafing_test
-    #   view_label: "* Hub Staffing *"
-    #   sql_on: ${orders_cl.created_minute30} = ${hub_stafing_test.shift_minute30} and
-    #     ${hubs.hub_code}          = lower(${hub_stafing_test.hub_name});;
-    #   relationship: many_to_many
-    #   type: left_outer
-    # }
-
     join: nps_after_order {
       from: nps_after_order_cl
       view_label: "* NPS *"
@@ -109,36 +85,25 @@ explore: orders_cl {
           ${orders_cl.order_number}  =       ${nps_after_order.order_number} ;;
         relationship: one_to_many
         type: left_outer
-
       }
 
-      # join: issue_rates_clean {
-      #   view_label: "* DO NOT USE: Order Issues on Hub-Level *"
-      #   sql_on: ${hubs.hub_code}           =  ${issue_rates_clean.hub_code} and
-      #           ${orders_cl.date}          =  ${issue_rates_clean.date_dynamic};;
-      #   relationship: many_to_one # decided against one_to_many: on this level, many orders have hub-level issue-aggregates
-      #   type: left_outer
-      # }
+    join: orderline_issue_rate_core_kpis {
+      from: orderline
+      view_label: "* Orders *"
+      sql_on: ${orderline_issue_rate_core_kpis.country_iso} = ${orders_cl.country_iso} AND
+          ${orderline_issue_rate_core_kpis.order_uuid}    = ${orders_cl.order_uuid} AND
+          {% condition global_filters_and_parameters.datasource_filter %} ${orderline_issue_rate_core_kpis.created_date} {% endcondition %}
+        ;;
+      relationship: one_to_many
+      type: left_outer
+      fields: [orderline_issue_rate_core_kpis.orders_core_fields*]
+    }
 
-      join: cs_post_delivery_issues {
-        view_label: ""
-        sql_on: ${orders_cl.country_iso} = ${cs_post_delivery_issues.country_iso} AND
-          ${cs_post_delivery_issues.order_nr_} = ${orders_cl.order_number};;
-        relationship: one_to_many
-        type: left_outer
-      }
-      # add issue rate core metrics: https://goflink.atlassian.net/browse/DATA-1452
-      join: orderline_issue_rate_core_kpis {
-        from: orderline
-        view_label: "* Orders *"
-        sql_on: ${orderline_issue_rate_core_kpis.country_iso} = ${orders_cl.country_iso} AND
-            ${orderline_issue_rate_core_kpis.order_uuid}    = ${orders_cl.order_uuid} AND
-            {% condition global_filters_and_parameters.datasource_filter %} ${orderline_issue_rate_core_kpis.created_date} {% endcondition %}
-          ;;
-        relationship: one_to_many
-        type: left_outer
-        fields: [orderline_issue_rate_core_kpis.orders_core_fields*]
-      }
+    join: orders_hub_staffing {
+      sql:  ;;
+      relationship: one_to_one
+      view_label: "* Orders *"
+    }
 
 
     }
