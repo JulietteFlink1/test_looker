@@ -236,7 +236,7 @@ explore: supply_chain {
     view_label: "07 Order Lineitems"
 
     type: left_outer
-    relationship: many_to_many
+    relationship: one_to_many
 
     sql_on:
         ${order_lineitems.product_sku}         = ${products_hub_assignment.sku}         and
