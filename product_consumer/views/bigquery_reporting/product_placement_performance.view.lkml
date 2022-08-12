@@ -365,6 +365,15 @@ view: product_placement_performance {
     value_format_name: percent_2
     sql: ${ordered_products} / nullif(${impressions},0);;
   }
+  measure: out_of_stock_rate{
+    hidden: yes
+    group_label: "Rates (%)"
+    label: "Out-ot-Stock Rate (OoS)"
+    type: number
+    description: "# OoS products / # total products impressions"
+    value_format_name: percent_2
+    sql: ${out_of_stock_products_total} / nullif(${impressions},0);;
+  }
 
   # ======= User Level Measures =======
   measure: number_of_users {
