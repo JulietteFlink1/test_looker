@@ -31,7 +31,7 @@ view: inventory_changes_daily_extended {
     description: "In-and-outbounded items value based on buying prices corresponding to the inventory change date and converted to a gross buying price."
 
     type: number
-    sql:  ${quantity_change} * ${product_prices_daily.buying_price} * ( 1 + ${sku_hub_day_level_orders.tax_rate}) ;;
+    sql:  ${quantity_change} * ${product_prices_daily.buying_price} * ( 1 + ${products.tax_rate}) ;;
     required_access_grants: [can_view_buying_information]
 
     value_format_name: eur
@@ -113,12 +113,14 @@ view: inventory_changes_daily_extended {
 
   measure: sum_outbound_waste_per_buying_price_gross {
 
+    ## IMPORTANT: for a few
+
     label:       "€ Outbounded Items (Waste - per Buying Price Gross)"
     description: "The quantity '# Outbound (Waste)' multiplied by the gross buying price of the product"
     group_label: ">> Waste Metrics"
 
     type: sum
-    sql: abs(${quantity_change}) * ${product_prices_daily.buying_price} * ( 1 + ${sku_hub_day_level_orders.tax_rate});;
+    sql: abs(${quantity_change}) * ${product_prices_daily.buying_price} * ( 1 + ${products.tax_rate});;
     required_access_grants: [can_view_buying_information]
     filters: [is_outbound_waste: "Yes"]
     value_format_name: eur

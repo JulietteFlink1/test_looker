@@ -11,6 +11,29 @@ explore: inbound_outbound_kpi_report {
   view_name: inventory_changes_daily
   view_label: "* Inventory Changes Daily *"
 
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  #  - - - - - - - - - -    FILTER & SETTINGS
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  sql_always_where:
+    -- filter the time for all big tables of this explore
+    {% condition global_filters_and_parameters.datasource_filter %} ${inventory_changes_daily.inventory_change_date} {% endcondition %}  ;;
+
+  always_filter: {
+    filters: [
+      global_filters_and_parameters.datasource_filter: "last 90 days"
+      ]
+  }
+
+  access_filter: {
+    field: hubs_ct.country_iso
+    user_attribute: country_iso
+
+  }
+  access_filter: {
+    field: hubs_ct.city
+    user_attribute: city
+  }
+
   fields: [ALL_FIELDS*, -erp_product_hub_vendor_assignment_v2.pricing_fields_refined*]
 
   join: global_filters_and_parameters {
@@ -18,8 +41,14 @@ explore: inbound_outbound_kpi_report {
     sql_on: ${global_filters_and_parameters.generic_join_dim} = TRUE ;;
     type: left_outer
     relationship: one_to_one
-
   }
+
+
+
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  #  - - - - - - - - - -    JOINED TABLES
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   join: products {
     type: left_outer
@@ -67,7 +96,9 @@ explore: inbound_outbound_kpi_report {
 
       ${inventory_changes_daily.inventory_change_date} =  ${erp_product_hub_vendor_assignment_v2.report_date} and
       ${inventory_changes_daily.hub_code}              =  ${erp_product_hub_vendor_assignment_v2.hub_code}    and
-      ${inventory_changes_daily.sku}                   =  ${erp_product_hub_vendor_assignment_v2.sku}
+      ${inventory_changes_daily.sku}                   =  ${erp_product_hub_vendor_assignment_v2.sku}         and
+      {% condition global_filters_and_parameters.datasource_filter %} ${erp_product_hub_vendor_assignment_v2.report_date} {% endcondition %}
+
 
     ;;
 
@@ -96,7 +127,8 @@ explore: inbound_outbound_kpi_report {
 
     ${inventory_changes_daily.inventory_change_date} =  ${product_prices_daily.reporting_date} and
     ${inventory_changes_daily.hub_code}              =  ${product_prices_daily.hub_code}       and
-    ${inventory_changes_daily.sku}                   =  ${product_prices_daily.sku}
+    ${inventory_changes_daily.sku}                   =  ${product_prices_daily.sku}            and
+    {% condition global_filters_and_parameters.datasource_filter %} ${product_prices_daily.reporting_date} {% endcondition %}
 
     ;;
   }

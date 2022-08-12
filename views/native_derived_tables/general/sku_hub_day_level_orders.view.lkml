@@ -4,6 +4,11 @@ view: sku_hub_day_level_orders {
 
   view_label: "* Order Lineitems Daily *"
   derived_table: {
+
+    # datagroup_trigger: flink_daily_datagroup
+    # partition_keys: ["created_date"]
+    # cluster_keys: ["country_iso", "hub_code"]
+
     explore_source: order_orderline_cl {
 
       column: hub_code                       { field: hubs.hub_code }

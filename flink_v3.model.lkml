@@ -24,6 +24,15 @@ datagroup: flink_hourly_datagroup {
   sql_trigger: SELECT MAX(order_timestamp) FROM `flink-data-prod.curated.orders`;;
   max_cache_age: "1 hour"
 }
+
+datagroup: flink_daily_datagroup {
+  # define daily trigger at 5 am UTC as suggested by Looker documentation:
+  # https://docs.looker.com/reference/view-params/sql_trigger_value  (part: Google BigQuery - Once per day at a specific hour)
+  sql_trigger: SELECT FLOOR(((TIMESTAMP_DIFF(CURRENT_TIMESTAMP(),'1970-01-01 00:00:00',SECOND)) - 60*60*6)/(60*60*24));;
+  max_cache_age: "24 hour"
+}
+
+
 persist_with: flink_default_datagroup
 # END ------------------------ defined persisting strategies ---------------------------------
 
