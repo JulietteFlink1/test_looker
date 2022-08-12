@@ -2270,7 +2270,7 @@ view: orders {
   measure: sum_refund_gross {
     group_label: "* Monetary Values *"
     label: "SUM Refund (Gross)"
-    description: "Sum of Refunds (Gross). Includes Items, Deposit, Delivery Fee and Tips Refunds."
+    description: "Sum of Refunds (Gross). Includes Items, Deposit, Delivery & Storage Fees and Tips Refunds."
     hidden:  no
     type: sum
     sql: ${amt_refund_gross};;
@@ -2280,7 +2280,7 @@ view: orders {
   measure: sum_total_sales_gross {
     group_label: "* Monetary Values *"
     label: "SUM Total Sales (Gross)"
-    description: "Sum of Delivery Fees and Items Price and Deposit. Excl. Tips, Donations. Before Deduction of any Discount. Incl. VAT"
+    description: "Sum of Delivery & Storage Fees and Items Price and Deposit. Excl. Tips, Donations. Before Deduction of any Discount. Incl. VAT"
     hidden:  no
     type: sum
     sql: ${amt_total_sales_gross};;
@@ -2290,7 +2290,7 @@ view: orders {
   measure: sum_total_sales_excluding_deposit_gross {
     group_label: "* Monetary Values *"
     label: "SUM Total Sales excl. Deposit (Gross)"
-    description: "Sum of Delivery Fees and Items Price. Excl. Deposit, Tips, Donations. Before Deduction of any Discount. Incl. VAT"
+    description: "Sum of Delivery & Storage Fees and Items Price. Excl. Deposit, Tips, Donations. Before Deduction of any Discount. Incl. VAT"
     hidden:  no
     type: sum
     sql: ${amt_total_sales_excluding_deposit_gross};;
@@ -2300,7 +2300,7 @@ view: orders {
   measure: sum_total_sales_after_discounts_gross {
     group_label: "* Monetary Values *"
     label: "SUM Total Sales After Discount (Gross)"
-    description: "Sum of Delivery Fees and Items Price and Deposit. Excl. Tips, Donations. After Deduction of Cart and Product Discounts. Incl. VAT"
+    description: "Sum of Delivery & Storage Fees and Items Price and Deposit. Excl. Tips, Donations. After Deduction of Cart and Product Discounts. Incl. VAT"
     hidden:  no
     type: sum
     sql: ${amt_total_sales_after_discount_gross};;
@@ -2310,7 +2310,7 @@ view: orders {
   measure: sum_total_sales_after_discount_and_refund_gross {
     group_label: "* Monetary Values *"
     label: "SUM Total Sales After Discounts & Refunds (Gross)"
-    description: "Sum of Delivery Fees and Items Price and Deposit. Excl. Tips, Donations. After Deduction of Cart and Product Discounts. After Refunds. Incl. VAT"
+    description: "Sum of Delivery & Storage Fees and Items Price and Deposit. Excl. Tips, Donations. After Deduction of Cart and Product Discounts. After Refunds. Incl. VAT"
     hidden:  no
     type: sum
     sql: ${amt_total_sales_after_discount_and_refund_gross};;
@@ -2320,7 +2320,7 @@ view: orders {
   measure: sum_total_sales_after_discount_and_refund_excluding_deposit_gross {
     group_label: "* Monetary Values *"
     label: "SUM Total Sales After Discounts & Refunds excl. Deposit (Gross)"
-    description: "Sum of Delivery Fees and Items Price. Excl. Tips, Deposit, Donations. After Deduction of Cart and Product Discounts. After Refunds. Incl. VAT"
+    description: "Sum of Delivery & Storage Fees and Items Price. Excl. Tips, Deposit, Donations. After Deduction of Cart and Product Discounts. After Refunds. Incl. VAT"
     hidden:  no
     type: sum
     sql: ${amt_total_sales_after_discount_and_refund_excluding_deposit_gross};;
@@ -2330,7 +2330,7 @@ view: orders {
   measure: sum_gpv_gross {
     group_label: "* Monetary Values *"
     label: "SUM GPV (Gross)"
-    description: "Actual amount paid by the customer in CT. Sum of Delivery Fees, Items Price, Tips, Deposit. Excl. Donations. After Deduction of Cart and Product Discounts. Incl. VAT"
+    description: "Actual amount paid by the customer in CT. Sum of Delivery & Storage Fees, Items Price, Tips, Deposit. Excl. Donations. After Deduction of Cart and Product Discounts. Incl. VAT"
     hidden:  no
     type: sum
     sql: ${amt_gpv_gross};;
@@ -2340,7 +2340,7 @@ view: orders {
   measure: sum_npv_gross {
     group_label: "* Monetary Values *"
     label: "SUM NPV (Gross)"
-    description: "Net Payment Value. Actual amount paid by the customer in CT after Refunds. Sum of Delivery Fees, Items Price, Tips, Deposit. Excl. Donations. After Deduction of Cart and Product Discounts. Incl. VAT"
+    description: "Net Payment Value. Actual amount paid by the customer in CT after Refunds. Sum of Delivery & Storage Fees, Items Price, Tips, Deposit. Excl. Donations. After Deduction of Cart and Product Discounts. Incl. VAT"
     hidden:  no
     type: sum
     sql: ${amt_npv_gross};;
