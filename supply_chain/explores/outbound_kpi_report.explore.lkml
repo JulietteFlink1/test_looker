@@ -7,7 +7,7 @@ explore: inbound_outbound_kpi_report {
 
   hidden: yes
 
-  from: inventory_changes_daily
+  from: inventory_changes_daily_extended
   view_name: inventory_changes_daily
   view_label: "* Inventory Changes Daily *"
 
@@ -83,6 +83,21 @@ explore: inbound_outbound_kpi_report {
           date(${top_5_category_inventory_change.inventory_change_date}) = date(${inventory_changes_daily.inventory_change_date})
       and ${top_5_category_inventory_change.hub_code}                    = ${inventory_changes_daily.hub_code}
       and ${top_5_category_inventory_change.category}                    = ${sku_hub_day_level_orders.category}
+    ;;
+  }
+
+  join: product_prices_daily {
+
+    view_label: ""
+
+    type: left_outer
+    relationship: many_to_one
+    sql_on:
+
+    ${inventory_changes_daily.inventory_change_date} =  ${product_prices_daily.reporting_date} and
+    ${inventory_changes_daily.hub_code}              =  ${product_prices_daily.hub_code}       and
+    ${inventory_changes_daily.sku}                   =  ${product_prices_daily.sku}
+
     ;;
   }
 

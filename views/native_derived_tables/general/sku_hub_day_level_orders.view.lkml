@@ -11,6 +11,8 @@ view: sku_hub_day_level_orders {
       column: country_iso                    { field: hubs.country_iso }
 
       column: created_date                   { field: orderline.created_date }
+      column: tax_rate_products              { field: products.tax_rate}
+      column: tax_rate_orderline            { field: orderline.tax_rate }
 
       column: product_sku                    { field: products.product_sku }
       column: product_sku_name               { field: products.product_sku_name }
@@ -50,7 +52,7 @@ view: sku_hub_day_level_orders {
 
   # =========  IDs   =========
   dimension: primary_key {
-    sql: concat(${TABLE}.product_sku, ${TABLE}.hub_code, ${TABLE}.created_date) ;;
+    sql: concat(${TABLE}.product_sku, ${TABLE}.hub_code, ${TABLE}.created_date, ${TABLE}.tax_rate_orderline) ;;
     hidden: yes
     primary_key: yes
   }
@@ -77,6 +79,13 @@ view: sku_hub_day_level_orders {
     description: "Order Placement Date"
     type: date
     hidden: yes
+  }
+
+  dimension: tax_rate {
+    type: number
+    hidden: no
+    # if there were no sales to derive the actual tax rate, take the default one from the products model
+    sql: coalesce(${TABLE}.tax_rate_orderline, ${TABLE}.tax_rate_products) ;;
   }
 
   dimension: country_iso {
