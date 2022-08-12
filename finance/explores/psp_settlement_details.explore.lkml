@@ -13,7 +13,6 @@ explore: psp_settlement_details {
   view_label: "* PSP Settlement Details *"
   group_label: "Finance"
   description: "This Explore contains all data coming from Adyen's Settlement Details Report starting from 2022-01-03. It is matched to CT Order data through PSP reference."
-  fields: [ALL_FIELDS*,-shyftplan_riders_pickers_hours.rider_utr_cleaned, -orders.pct_orders_delivered_by_riders]
   access_filter: {
     field: hubs.country_iso
     user_attribute: country_iso
@@ -47,15 +46,6 @@ explore: psp_settlement_details {
     from: hubs_ct
     view_label: "* Hubs *"
     sql_on: lower(${orders.hub_code}) = ${hubs.hub_code} ;;
-    relationship: many_to_one
-    type: left_outer
-  }
-
-  join: shyftplan_riders_pickers_hours {
-    from: shyftplan_riders_pickers_hours_clean
-    view_label: ""
-    sql_on: ${orders.created_date} = ${shyftplan_riders_pickers_hours.date} and
-      ${hubs.hub_code}          = lower(${shyftplan_riders_pickers_hours.hub_name});;
     relationship: many_to_one
     type: left_outer
   }

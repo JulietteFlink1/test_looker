@@ -160,6 +160,13 @@ view: daily_events {
       type: string
       sql: ${TABLE}.app_version ;;
     }
+  dimension: app_version_order {
+    group_label: "Device Dimensions"
+    label: "App Version as Number"
+    description: "Version of the app used for ordering recent or old versions"
+    type: number
+    sql: cast(replace(${TABLE}.app_version,".","") as INT64) ;;
+  }
     dimension: full_app_version {
       group_label: "Device Dimensions"
       type: string

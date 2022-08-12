@@ -9,6 +9,7 @@ view: products {
 
   # =========  __main__   =========
   dimension: category {
+    alias: [random_ct_category, ct_category]
     type: string
     bypass_suggest_restrictions: yes
     label: "Parent Category"
@@ -16,14 +17,6 @@ view: products {
     description: "This is CT reporting category"
     sql: ${TABLE}.category ;;
     drill_fields: [subcategory, hubs.hub_code, hubs_ct.hub_code]
-  }
-
-  dimension: random_ct_category {
-    type: string
-    hidden:yes
-    label: "Parent Category"
-    group_label: "> Product Attributes"
-    sql: ${TABLE}.random_ct_category ;;
   }
 
   dimension: erp_category {
@@ -80,15 +73,8 @@ view: products {
     sql: CONCAT(${TABLE}.product_sku, ' - ', ${TABLE}.product_name) ;;
   }
 
-  dimension: random_ct_subcategory {
-    hidden: yes
-    label: "Sub-Category"
-    type: string
-    sql: ${TABLE}.random_ct_subcategory ;;
-    group_label: "> Product Attributes"
-  }
-
   dimension: subcategory {
+    alias: [random_ct_subcategory, ct_subcategory]
     label: "Sub-Category"
     bypass_suggest_restrictions: yes
     description: "This is CT reporting subcategory"
@@ -103,20 +89,6 @@ view: products {
     sql: ${TABLE}.erp_subcategory ;;
     group_label: "> Product Attributes"
   }
-
-  #dimension: ct_subcategory {
-  #  label: "CT Sub-Category"
-  #  type: string
-  #  sql:  ;;
-  #  group_label: "> Product Attributes"
-  #}
-
-  #dimension: ct_category {
-  #  label: "CT Category"
-  #  type: string
-  #  sql: ${TABLE}.random_ct_category ;;
-  #  group_label: "> Product Attributes"
-  #}
 
   dimension: substitute_group {
     type: string

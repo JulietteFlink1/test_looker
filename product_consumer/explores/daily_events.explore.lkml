@@ -120,7 +120,8 @@ explore: daily_events {
       event_sponsored_product_impressions.number_of_ad_decisions_ids,event_sponsored_product_impressions.events,
       event_sponsored_product_impressions.all_users,
       ]
-    sql_on: ${event_sponsored_product_impressions.event_id} = ${daily_events.event_uuid}  ;;
+    sql_on: ${event_sponsored_product_impressions.event_id} = ${daily_events.event_uuid}
+           and {% condition global_filters_and_parameters.datasource_filter %} ${event_sponsored_product_impressions.event_timestamp_date} {% endcondition %}  ;;
     type: left_outer
     relationship: one_to_many
   }
