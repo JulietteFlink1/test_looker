@@ -31,14 +31,14 @@ view: order_lineitems_using_inventory {
     type: number
     sql: ${inventory.sum_stock_quantity} / NULLIF(${avg_daily_item_quantity_last_7d}, 0);;
     value_format: "0.0"
-    html:
-    {% if value < 1 %}
-    <p style="color: white; background-color: #E74C3C;font-size: 100%; text-align:center">{{ rendered_value }}</p>
-    {% elsif value < 3 %}
-    <p style="color: #E67E22;background-color: #F4D03F; font-size:100%; text-align:center">{{ rendered_value }}</p>
-    {% else %}
-    <p style="color: black; font-size:100%; text-align:center">{{ rendered_value }}</p>
-    {% endif %};;
+    #html:
+    #{% if value < 1 %}
+    #<p style="color: white; background-color: #E74C3C;font-size: 100%; text-align:center">{{ rendered_value }}</p>
+    #{% elsif value < 3 %}
+    #<p style="color: #E67E22;background-color: #F4D03F; font-size:100%; text-align:center">{{ rendered_value }}</p>
+    #{% else %}
+    #<p style="color: black; font-size:100%; text-align:center">{{ rendered_value }}</p>
+    #{% endif %};;
   }
 
 

@@ -71,13 +71,8 @@ view: cc_contacts {
     sql: ${TABLE}.cc_team ;;
   }
 
-  dimension: contact_reason {
-    group_label: "* Contact Attributes *"
-    type: string
-    sql: ${TABLE}.contact_reason ;;
-  }
-
   dimension: contact_reason_l3 {
+    alias: [contact_reason]
     group_label: "* Contact Attributes *"
     type: string
     sql: ${TABLE}.contact_reason_l3 ;;
