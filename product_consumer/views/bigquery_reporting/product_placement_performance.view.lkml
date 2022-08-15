@@ -366,7 +366,6 @@ view: product_placement_performance {
     sql: ${ordered_products} / nullif(${impressions},0);;
   }
   measure: out_of_stock_rate{
-    hidden: yes
     group_label: "Rates (%)"
     label: "Out-ot-Stock Rate (OoS)"
     type: number
