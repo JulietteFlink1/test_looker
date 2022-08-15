@@ -35,6 +35,8 @@ view: inventory_changes {
     type: time
     timeframes: [
       time,
+      minute10,
+      day_of_week,
       hour,
       hour2,
       hour4,
