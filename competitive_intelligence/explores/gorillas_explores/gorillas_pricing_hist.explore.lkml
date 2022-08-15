@@ -7,7 +7,7 @@
 
 
 include: "/competitive_intelligence/views/bigquery_curated/gorillas_pricing_hist.view.lkml"
-include: "/competitive_intelligence/views/bigquery_curated/gorillas_products.view.lkml"
+include: "/competitive_intelligence/views/bigquery_curated/gorillas_products_hist.view.lkml"
 include: "/competitive_intelligence/views/bigquery_curated/gorillas_categories.view.lkml"
 include: "/competitive_intelligence/views/bigquery_curated/gorillas_hubs.view.lkml"
 
@@ -21,18 +21,19 @@ explore: gorillas_pricing_hist {
 
   hidden: yes
 
-  join: gorillas_products {
-    from: gorillas_products
-    sql_on: ${gorillas_products.product_id} = ${gorillas_pricing_hist.product_id}
-        and ${gorillas_products.hub_id} = ${gorillas_pricing_hist.hub_id};;
-            relationship: one_to_one
-            type: left_outer
+  join: gorillas_products_hist {
+    from: gorillas_products_hist
+    sql_on: ${gorillas_products_hist.product_id} = ${gorillas_pricing_hist.product_id}
+        and ${gorillas_products_hist.hub_id} = ${gorillas_pricing_hist.hub_id}
+        and ${gorillas_products_hist.partition_timestamp_date} = ${gorillas_pricing_hist.latest_timestamp_date} ;;
+    relationship: one_to_one
+    type: left_outer
   }
 
   join: gorillas_categories {
     from: gorillas_categories
-    sql_on: ${gorillas_categories.product_id} = ${gorillas_products.product_id}
-        and ${gorillas_categories.hub_id} = ${gorillas_products.hub_id};;
+    sql_on: ${gorillas_categories.product_id} = ${gorillas_products_hist.product_id}
+        and ${gorillas_categories.hub_id} = ${gorillas_products_hist.hub_id};;
     relationship: one_to_many
     type:  left_outer
   }
