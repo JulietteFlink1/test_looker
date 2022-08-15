@@ -1,5 +1,5 @@
 view: user_attributes_power_user_curves {
-  sql_table_name: `flink-data-dev.dbt_nwierzbowska.user_attributes_all_users_first28days`;;
+  sql_table_name: `flink-data-prod.reporting.user_attributes_all_users_first28days`;;
 
 
   dimension: daily_unique_customer_uuid {
