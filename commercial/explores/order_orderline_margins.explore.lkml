@@ -39,7 +39,9 @@ explore: order_lineitems_margins {
 
   join: inbound_outbound_kpi_report_ndt_waste_per_day_and_hub {
 
-    type: left_outer
+    view_label: "* Orders *"
+
+    type: full_outer
     relationship: many_to_one
     sql_on:
         ${orders_cl.created_date} = ${inbound_outbound_kpi_report_ndt_waste_per_day_and_hub.inventory_change_date} and
