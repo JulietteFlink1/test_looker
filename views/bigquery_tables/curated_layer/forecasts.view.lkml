@@ -106,6 +106,20 @@ view: forecasts {
     hidden: yes
   }
 
+  # =========  Dimensions    =========
+
+  dimension: number_of_adjusted_forecasted_hours_rider_dimension {
+    label: "# Forecasted Rider Hours - Dimension"
+    sql: ${TABLE}.number_of_adjusted_forecasted_minutes_rider/60 ;;
+    hidden: yes
+  }
+
+  dimension: number_of_adjusted_forecasted_hours_picker_dimension {
+    label: "# Forecasted Picker Hours - Dimension"
+    sql: ${TABLE}.number_of_adjusted_forecasted_minutes_picker/60 ;;
+    hidden: yes
+  }
+
   # =========  Model names   =========
   dimension: model_name_historical_forecasts {
     group_label: "> Model Names"
@@ -399,6 +413,15 @@ view: forecasts {
     value_format_name: percent_1
   }
 
+  measure: pct_forecast_deviation_hours {
+    group_label: "> Dynamic Measures"
+    label: "% Scheduled Hours Forecast Deviation"
+    description: "(# Scheduled Hours / # Forecasted Hours) -1"
+    type: number
+    sql: abs((${ops.number_of_scheduled_hours_by_position}/nullif(${number_of_adjusted_forecasted_hours_by_position},0))-1) ;;
+    value_format_name: percent_1
+  }
+
   measure: forecasted_avg_order_handling_duration_seconds {
     group_label: "> Order Measures"
     label: "Forecasted AVG Rider Handling Time (Seconds)"
@@ -493,7 +516,7 @@ view: forecasts {
   measure: wmape_orders {
     group_label: "> Forecasting error"
     label: "wMAPE - Order"
-    description: "Summed Absolute Difference per Hub in 30 min/ # Actual Orders"
+    description: "Summed Absolute Difference of Orders per Hub in 30 min/ # Actual Orders"
     type: number
     sql: ${summed_absolute_error}/nullif(${number_of_actual_orders},0);;
     value_format_name: percent_2
@@ -504,6 +527,22 @@ view: forecasts {
     sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
     hidden: yes
     sql: ABS(${number_of_forecasted_orders_dimension} - ${number_of_actual_orders_dimension});;
+  }
+
+  measure: wmape_hours {
+    group_label: "> Forecasting error"
+    label: "wMAPE - Scheduled Hours"
+    description: "Summed Absolute Difference of Scheduled Hours per Hub in 30 min (# Forecasted Hours (Incl. Airtable Adjustments)- # Scheduled Hours)/ # Scheduled Hours"
+    type: number
+    sql: ${summed_absolute_error_hours}/nullif(${ops.number_of_scheduled_hours_by_position},0);;
+    value_format_name: percent_2
+  }
+
+  measure: summed_absolute_error_hours {
+    type: sum_distinct
+    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
+    hidden: yes
+    sql: ABS(${number_of_adjusted_forecasted_hours_by_position_dimension} - ${ops.number_of_scheduled_hours_by_position_dimension});;
   }
 
   # =========  Dynamic values   =========
@@ -536,6 +575,21 @@ view: forecasts {
       ELSE NULL
       END ;;
   }
+
+  dimension: number_of_adjusted_forecasted_hours_by_position_dimension {
+    type: number
+    label: "# Forecasted Hours - Post Adjustment (Incl. No Show) - Dimension"
+    description: "# Forecasted Hours Needed (Incl. Airtable Adjustments) - No Show Forecasts included in Total Forecasted Hours and not added here explicitly"
+    value_format_name: decimal_1
+    group_label: "> Dynamic Measures"
+    sql:
+        CASE
+          WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${number_of_adjusted_forecasted_hours_rider_dimension}
+          WHEN {% parameter ops.position_parameter %} = 'Picker' THEN ${number_of_adjusted_forecasted_hours_picker_dimension}
+      ELSE NULL
+      END ;;
+  }
+
 
   measure: number_of_adjusted_forecasted_hours_by_position {
     type: number

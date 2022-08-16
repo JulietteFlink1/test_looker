@@ -59,7 +59,12 @@ view: staffing {
     sql: ${TABLE}.last_updated_timestamp ;;
   }
   ##### Riders
-
+  dimension: number_of_scheduled_hours_rider_dimension {
+    label: "# Scheduled Rider Hours (Incl. Deleted Excused No Show) - Dimension"
+    type: number
+    sql: (${TABLE}.number_of_planned_minutes_rider + ${number_of_unassigned_minutes_external_rider}+${number_of_unassigned_minutes_internal_rider})/60 ;;
+    hidden: yes
+  }
 
   dimension: number_of_no_show_minutes_rider {
     label: "# No Show Rider Minutes"
@@ -209,6 +214,15 @@ view: staffing {
   }
 
   ###### Pickers
+
+  dimension: number_of_scheduled_hours_picker_dimension {
+    label: "# Scheduled Picker Hours (Incl. Deleted Excused No Show) - Dimension"
+    type: number
+    sql: (${TABLE}.number_of_planned_minutes_picker + ${number_of_unassigned_minutes_external_picker}+${number_of_unassigned_minutes_internal_picker})/60 ;;
+    hidden: yes
+  }
+
+
   dimension: number_of_worked_employees_picker {
     label: "# Worked Pickers"
     type: number
@@ -2608,6 +2622,21 @@ view: staffing {
           WHEN {% parameter position_parameter %} = 'Ops Staff' THEN ${number_of_scheduled_hours_ops_staff}
       ELSE NULL
       END ;;
+  }
+
+  dimension: number_of_scheduled_hours_by_position_dimension {
+    type: number
+    label: "# Scheduled Hours (Incl. Deleted Excused No Show) - Dimension"
+    description: "Sum of Assigned and not Assigned Shift Hours (Incl. Deleted Excused No Show)"
+    value_format_name: decimal_1
+    group_label: "> Dynamic Measures"
+    sql:
+        CASE
+          WHEN {% parameter position_parameter %} = 'Rider' THEN ${number_of_scheduled_hours_rider_dimension}
+          WHEN {% parameter position_parameter %} = 'Picker' THEN ${number_of_scheduled_hours_picker_dimension}
+      ELSE NULL
+      END ;;
+    hidden: yes
   }
 
   measure: number_of_scheduled_hours_excluding_deleted_shifts_by_position {
