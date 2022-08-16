@@ -115,11 +115,11 @@ view: account_cycling_analysis {
   #   sql: ${TABLE}.order_uuid ;;
   # }
 
-  dimension: is_order_placed {
+  dimension: has_order_placed_after_registration {
     group_label: "Order Dimensions"
-    label: "Is Order Placed"
+    label: "Order Placed after New Registration"
     type: yesno
-    sql: ${TABLE}.is_order_placed;;
+    sql: ${TABLE}.has_order_placed_after_registration;;
   }
 
   dimension: is_first_order {
@@ -130,40 +130,42 @@ view: account_cycling_analysis {
     sql: ${TABLE}.is_first_order ;;
   }
 
-  # dimension: is_discount_order {
-  #   group_label: "Order Dimensions"
-  #   label: "Is Discount Order"
-  #   type: yesno
-  #   sql: ${TABLE}.is_discount_order;;
-  # }
+  dimension: is_discount_order {
+    group_label: "Order Dimensions"
+    label: "Is Discount Order"
+    type: yesno
+    sql: ${TABLE}.order_with_discount;;
+  }
 
-  # dimension: discount_code {
-  #   group_label: "Order Dimensions"
-  #   label: "Discount Code"
-  #   type: string
-  #   sql: ${TABLE}.discount_code;;
-  # }
+  dimension: discount_code {
+    group_label: "Order Dimensions"
+    hidden: yes
+    label: "Discount Code"
+    type: string
+    sql: ${TABLE}.discount_code;;
+  }
 
-  # dimension: discount_group {
-  #   group_label: "Order Dimensions"
-  #   label: "Discount Group"
-  #   type: string
-  #   sql: ${TABLE}.discount_group;;
-  # }
+  dimension: discount_group {
+    group_label: "Order Dimensions"
+    hidden: yes
+    label: "Discount Group"
+    type: string
+    sql: ${TABLE}.discount_group;;
+  }
 
-  # dimension: is_raf_discount {
-  #   group_label: "Order Dimensions"
-  #   label: "Is RAF discount"
-  #   type: yesno
-  #   sql: ${TABLE}.is_raf_discount;;
-  # }
+  dimension: is_raf_discount {
+    group_label: "Order Dimensions"
+    label: "Is RAF discount"
+    type: yesno
+    sql: ${TABLE}.is_raf_discount;;
+  }
 
-  # dimension: is_refund_order {
-  #   group_label: "Order Dimensions"
-  #   label: "Is Refunded Order"
-  #   type: yesno
-  #   sql: ${TABLE}.is_refund_order;;
-  # }
+  dimension: num_days_from_new_account_to_order {
+    group_label: "Order Dimensions"
+    label: "Nmber of Days between New Account and Order"
+    type: number
+    sql: ${TABLE}.num_days_from_new_account_to_order;;
+  }
 
 
 
@@ -177,6 +179,7 @@ view: account_cycling_analysis {
 
   measure: count_anonymous_ids_registration {
     group_label: "Measures"
+    hidden: yes
     label: "# of Anonymous_id registered after deletion"
     type: count_distinct
     sql: ${anonymous_id};;
@@ -185,6 +188,7 @@ view: account_cycling_analysis {
 
   measure: count_anonymous_ids_no_registration {
     group_label: "Measures"
+    hidden: yes
     label: "# of Anonymous_id did not register after deletion"
     type: count_distinct
     sql: ${anonymous_id};;
@@ -193,6 +197,7 @@ view: account_cycling_analysis {
 
   measure: count_anonymous_ids {
     group_label: "Measures"
+    hidden: yes
     label: "# of Anonymous_ids"
     type: count_distinct
     sql: ${anonymous_id};;
@@ -219,6 +224,33 @@ view: account_cycling_analysis {
     label: "# of Device Ids"
     type: count_distinct
     sql: ${device_id};;
+  }
+
+
+  measure: count_device_ids_registration_and_order_placed {
+    group_label: "Measures"
+    label: "# of Device ids registered after deletion and placed an order"
+    type: count_distinct
+    sql: ${device_id};;
+    filters: [is_account_registration_succeeded: "yes", has_order_placed_after_registration: "yes"]
+  }
+
+
+  measure: count_device_ids_registration_and_order_placed_with_discount {
+    group_label: "Measures"
+    label: "# of Device ids registered after deletion and placed an order with a discount"
+    type: count_distinct
+    sql: ${device_id};;
+    filters: [is_account_registration_succeeded: "yes", has_order_placed_after_registration: "yes", is_discount_order: "yes"]
+  }
+
+
+  measure: count_device_ids_registration_and_order_placed_with_discount_raf {
+    group_label: "Measures"
+    label: "# of Device ids registered after deletion and placed an order with a raf discount"
+    type: count_distinct
+    sql: ${device_id};;
+    filters: [is_account_registration_succeeded: "yes", has_order_placed_after_registration: "yes", is_discount_order: "yes", is_raf_discount: "yes"]
   }
 
 
