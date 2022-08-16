@@ -1,7 +1,7 @@
 include: "/views/projects/consumer_product/discovery_event_categories.view.lkml"
 
 explore: discovery_event_categories {
-  hidden: no
+  hidden: yes
   view_name:  discovery_event_categories
   label: "Categories Selection"
   view_label: "Categories Selection"
