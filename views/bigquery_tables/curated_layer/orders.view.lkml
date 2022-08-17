@@ -2695,7 +2695,7 @@ view: orders {
 
   measure: sum_amt_storage_fee_gross {
     group_label: "* Monetary Values *"
-    label:        "SUM Storage Fees (Gross)"
+    label: "SUM Storage Fees (Gross)"
     description: "Sum of Storage Fees Gross, applied when an item requiring such a fee is added to the basket."
 
     value_format_name: euro_accounting_2_precision
@@ -2714,7 +2714,7 @@ view: orders {
 
   measure: avg_storage_fee_gross {
     group_label: "* Monetary Values *"
-    label:       "AVG Storage Fee (Gross)"
+    label: "AVG Storage Fee (Gross)"
     description: "Average value of Storage Fees (Gross)"
 
     type: average
@@ -2724,7 +2724,7 @@ view: orders {
 
   measure: avg_storage_fee_net {
     group_label: "* Monetary Values *"
-    label:       "AVG Storage Fee (Net)"
+    label: "AVG Storage Fee (Net)"
     description: "Average value of Storage Fees (Net)"
 
     type: average
@@ -2749,7 +2749,7 @@ view: orders {
 
   measure: avg_total_fees_gross {
     group_label: "* Monetary Values *"
-    label:       "AVG Total Fees (Gross)"
+    label: "AVG Total Fees (Gross)"
     description: "Average value of Delivery Fees (Gross) + Storage Fees (Gross)"
 
     type: average
@@ -2759,7 +2759,7 @@ view: orders {
 
   measure: sum_total_fees_net {
     group_label: "* Monetary Values *"
-    label:       "SUM Total Fees (Net)"
+    label: "SUM Total Fees (Net)"
     description: "Sum of Delivery Fees (Net) and Storage Fees (Net)"
 
     type: number
@@ -2769,7 +2769,7 @@ view: orders {
 
   measure: avg_total_fees_net {
     group_label: "* Monetary Values *"
-    label:       "AVG Total Fees (Net)"
+    label: "AVG Total Fees (Net)"
     description: "Average value of Delivery Fees (Net) + Storage Fees (Net)"
 
     type: average
