@@ -70,6 +70,7 @@ view: daily_user_aggregates {
         day_of_week,
         date,
         week,
+        week_of_year,
         month,
         quarter
       ]
@@ -90,6 +91,9 @@ view: daily_user_aggregates {
         ${event_date_at_month}
       {% endif %};;
     }
+
+
+
 
     parameter: timeframe_picker {
       group_label: "Date Dimensions"
