@@ -2697,6 +2697,7 @@ view: orders {
     group_label: "* Monetary Values *"
     label: "SUM Storage Fees (Gross)"
     description: "Sum of Storage Fees Gross, applied when an item requiring such a fee is added to the basket."
+
     value_format_name: euro_accounting_2_precision
     type:  sum
     sql: ${amt_storage_fee_gross} ;;
@@ -2705,6 +2706,7 @@ view: orders {
     group_label: "* Monetary Values *"
     label: "SUM Storage Fees (Net)"
     description: "Sum of Storage Fees Net, applied when an item requiring such a fee is added to the basket."
+
     value_format_name: euro_accounting_2_precision
     type:  sum
     sql: ${amt_storage_fee_net} ;;
@@ -2714,19 +2716,32 @@ view: orders {
     group_label: "* Monetary Values *"
     label: "AVG Storage Fee (Gross)"
     description: "Average value of Storage Fees (Gross)"
-    hidden:  no
+
     type: average
-    sql: coalesce(${amt_storage_fee_gross});;
+    sql: ${amt_storage_fee_gross};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: avg_storage_fee_net {
+    group_label: "* Monetary Values *"
+    label: "AVG Storage Fee (Net)"
+    description: "Average value of Storage Fees (Net)"
+
+    type: average
+    sql: ${amt_storage_fee_net};;
     value_format_name: euro_accounting_2_precision
   }
 
   ##### Total Fees #####
 
-  measure: sum_total_fees {
+  measure: sum_total_fees_gross {
+
+    alias: [sum_total_fees]
+
     group_label: "* Monetary Values *"
     label: "SUM Total Fees (Gross)"
     description: "Sum of Delivery Fees (Gross) and Storage Fees (Gross)"
-    hidden:  no
+
     type: number
     sql: ${sum_delivery_fee_gross} + ${sum_amt_storage_fee_gross};;
     value_format_name: euro_accounting_2_precision
@@ -2736,11 +2751,32 @@ view: orders {
     group_label: "* Monetary Values *"
     label: "AVG Total Fees (Gross)"
     description: "Average value of Delivery Fees (Gross) + Storage Fees (Gross)"
-    hidden:  no
+
     type: average
-    sql: coalesce(${shipping_price_gross_amount}) + coalesce(${amt_storage_fee_gross});;
+    sql: (${shipping_price_gross_amount} + ${amt_storage_fee_gross}) ;;
     value_format_name: euro_accounting_2_precision
   }
+
+  measure: sum_total_fees_net {
+    group_label: "* Monetary Values *"
+    label: "SUM Total Fees (Net)"
+    description: "Sum of Delivery Fees (Net) and Storage Fees (Net)"
+
+    type: number
+    sql: ${sum_delivery_fee_net} + ${sum_amt_storage_fee_net};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: avg_total_fees_net {
+    group_label: "* Monetary Values *"
+    label: "AVG Total Fees (Net)"
+    description: "Average value of Delivery Fees (Net) + Storage Fees (Net)"
+
+    type: average
+    sql: (${shipping_price_net_amount} + ${amt_storage_fee_net});;
+    value_format_name: euro_accounting_2_precision
+  }
+
 
 ########### CRF FEES MEASURES ##########
 
