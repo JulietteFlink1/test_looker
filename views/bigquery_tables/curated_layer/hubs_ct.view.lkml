@@ -334,11 +334,13 @@ view: hubs_ct {
         sql: ${hub_code}
                    in
                   (
-                  'de_ber_alex','de_ber_kotd','de_ber_mit2','de_ber_noll','de_ber_pren','de_wup_elbe',
-                  'de_ber_wedd','de_bra_mich','de_cgn_nipp','de_dar_zent','de_dus_pemp','de_muc_maxv',
-                  'de_ham_otte','de_ham_roth','de_ham_wint','de_man_inne','de_maz_inne','de_zcz_mitt',
-                  'de_nrm_suds',
-                  'nl_ape_cent', 'nl_alk_cent', 'nl_dev_cent', 'nl_dbo_cent', 'nl_ens_cent', 'nl_ein_west', 'nl_til_noor'
+                  'de_aah_burt','de_ber_alex','de_ber_bism','de_ber_frie','de_ber_kotd','de_ber_mit2',
+                  'de_ber_pren','de_ber_schl','de_bra_mich','de_cgn_lind','de_cgn_nipp','de_dar_zent',
+                  'de_dus_pemp','de_ham_eppe','de_ham_otte','de_ham_wate','de_ham_wint','de_muc_schw',
+                  'de_nrm_suds','de_wup_elbe',
+
+                  'nl_ape_cent','nl_alk_cent','nl_dev_cent','nl_dbo_cent','nl_ens_cent','nl_ein_west',
+                  'nl_til_noor'
                   ) ;;
         label: "Yes"
       }

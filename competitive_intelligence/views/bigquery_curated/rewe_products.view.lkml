@@ -57,6 +57,21 @@ view: rewe_products {
     sql: ${TABLE}.is_geographic_price_difference ;;
   }
 
+  dimension: lowest_product_price {
+    type: number
+    sql: ${TABLE}.lowest_product_price ;;
+  }
+
+  dimension: highest_product_price {
+    type: number
+    sql: ${TABLE}.highest_product_price ;;
+  }
+
+  dimension: country_iso {
+    type: string
+    sql: ${TABLE}.country_iso ;;
+  }
+
   dimension: is_price_change {
     type: yesno
     sql: ${TABLE}.is_price_change ;;
@@ -118,9 +133,9 @@ view: rewe_products {
     sql: ${TABLE}.previous_amt_product_price ;;
   }
 
-  dimension: price_change {
+  dimension: amt_price_change {
     type: number
-    sql: ${TABLE}.price_change ;;
+    sql: ${TABLE}.amt_price_change ;;
   }
 
   dimension: price_tier {

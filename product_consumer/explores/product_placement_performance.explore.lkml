@@ -14,6 +14,7 @@ include: "/product_consumer/views/sql_derived_tables/affected_by_impression_user
 explore: product_placement_performance {
   from:  product_placement_performance
   view_name: product_placement_performance
+  hidden: no
 
   label: "Impressions Product Placement Performance"
   description: "This explore provides an aggregated overview of product performance and its placement in the app & web. Please note the daily last-in first-out attribution logic. For ultimate truth on an order level, please refer to the Orders Explore."
