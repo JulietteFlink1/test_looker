@@ -31,6 +31,8 @@ explore: supply_chain {
                 vendor performance"
   group_label: "Supply Chain"
 
+  tags: ["supply_chain_explore"]
+
 
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -51,7 +53,7 @@ explore: supply_chain {
 
   always_filter: {
     filters: [
-      global_filters_and_parameters.datasource_filter: "last 30 days",
+      global_filters_and_parameters.datasource_filter: "last 7 days",
 
       products_hub_assignment.select_calculation_granularity: "customer"
 
@@ -236,7 +238,7 @@ explore: supply_chain {
     view_label: "07 Order Lineitems"
 
     type: left_outer
-    relationship: many_to_many
+    relationship: one_to_many
 
     sql_on:
         ${order_lineitems.product_sku}         = ${products_hub_assignment.sku}         and
@@ -420,27 +422,6 @@ explore: supply_chain {
     sql_on:
        ${geographic_pricing_sku_cluster.sku} = ${products_hub_assignment.sku}
     ;;
-  }
-
-  join: avg_delivery_fee {
-
-    view_label: "16 Gross Profit Metrics"
-
-    type: left_outer
-    relationship: many_to_one
-    sql_on: ${avg_delivery_fee.created_date} = ${products_hub_assignment.report_date} and
-            ${avg_delivery_fee.country_iso} = ${products_hub_assignment.country_iso};;
-  }
-
-  join: waste_by_buying_prices {
-
-    view_label: "16 Gross Profit Metrics"
-
-    type: left_outer
-    relationship: many_to_one
-    sql_on: ${waste_by_buying_prices.report_date} = ${products_hub_assignment.report_date} and
-    ${waste_by_buying_prices.report_month} = ${products_hub_assignment.report_month} and
-            ${waste_by_buying_prices.country_iso} = ${products_hub_assignment.country_iso};;
   }
 
 }
