@@ -30,8 +30,6 @@ view: orders_with_ops_metrics {
       column: avg_rider_handling_time_minutes_saved_with_stacking {}
       column: avg_rider_handling_time {}
       column: cnt_stacked_orders {}
-      column: avg_fulfillment_time_1st_order_in_stack {}
-      column: avg_fulfillment_time_2nd_order_in_stack {}
       column: created_date {}
       column: created_minute30 {}
       column: cnt_orders_delayed_under_0_min {}
@@ -66,7 +64,7 @@ view: orders_with_ops_metrics {
   measure: sum_orders {
     group_label: "> Basic Counts"
     label: "# Orders"
-    description: "Count of Orders"
+    description: "Count of Orders (Excl. Cancellations)"
     type: sum
     value_format: "0"
     sql: ${cnt_orders} ;;
@@ -213,14 +211,6 @@ view: orders_with_ops_metrics {
     hidden: yes
   }
 
-  measure: avg_ratio_customer_to_hub {
-    group_label: "> Operations / Logistics"
-    label: "% Riding to Hub vs. Riding to Customer Time"
-    description: "AVG [(Riding to Hub Time / Riding to Customer Time) - 1]"
-    value_format: "0%"
-    type: average
-  }
-
   measure: avg_at_customer_time {
     group_label: "> Operations / Logistics"
     label: "AVG At Customer Time"
@@ -266,7 +256,7 @@ view: orders_with_ops_metrics {
   measure: avg_picker_queuing_time {
     group_label: "> Operations / Logistics"
     label: "AVG Picker Queuing Time"
-    description: ""
+    description: "Average Picker Queuing Time of the Picker considering order placement until picking started. Outliers excluded (<0min or >120min)"
     value_format: "#,##0.0"
     type: average
   }
@@ -274,7 +264,7 @@ view: orders_with_ops_metrics {
   measure: avg_rider_queuing_time {
     group_label: "> Operations / Logistics"
     label: "AVG Rider Queuing Time"
-    description: ""
+    description: "Average time between picking completion and rider having claimed the order."
     value_format: "#,##0.0"
     type: average
   }
@@ -282,7 +272,7 @@ view: orders_with_ops_metrics {
   measure: avg_fulfillment_time {
     group_label: "> Operations / Logistics"
     label: "AVG Fulfillment Time (decimal)"
-    description: "Average Fulfillment Time (decimal minutes) considering order placement to delivery. Outliers excluded (<1min or >30min)"
+    description: "Average Fulfillment Time (decimal minutes) considering order placement to delivery (rider at customer). Outliers excluded (<3min or >210min)"
     value_format: "#,##0.0"
     type: average
   }
@@ -298,7 +288,7 @@ view: orders_with_ops_metrics {
   measure: avg_fulfillment_time_mm_ss {
     group_label: "> Operations / Logistics"
     label: "AVG Fulfillment Time (MM:SS)"
-    description: "Average Fulfillment Time considering order placement to delivery. Outliers excluded (<1min or >30min)"
+    description: "Average Fulfillment Time considering order placement to delivery (rider at customer). Outliers excluded (<3min or >210min)"
     value_format: "mm:ss"
     type: average
   }
@@ -405,22 +395,6 @@ view: orders_with_ops_metrics {
     description: "The number of orders, that were part of a stacked delivery"
     type: sum
     value_format: "0"
-  }
-
-  measure: avg_fulfillment_time_1st_order_in_stack {
-    group_label: "> Operations / Logistics"
-    label: "AVG Fulfillment time 1st Customer (min)"
-    description: "The time it took to deliver the order to the 1st customer from order-creation until delivery in a stacked order"
-    value_format: "#,##0.0"
-    type: average
-  }
-
-  measure: avg_fulfillment_time_2nd_order_in_stack {
-    group_label: "> Operations / Logistics"
-    label: "AVG Fulfillment time 2nd Customer (min)"
-    description: "The time it took to deliver the order to the 2nd customer from order-creation until delivery in a stacked order"
-    value_format: "#,##0.0"
-    type: average
   }
 
   measure: avg_estimated_queuing_time_by_position {
