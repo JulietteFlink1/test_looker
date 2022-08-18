@@ -31,6 +31,8 @@ explore: supply_chain {
                 vendor performance"
   group_label: "Supply Chain"
 
+  tags: ["supply_chain_explore"]
+
 
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -51,7 +53,7 @@ explore: supply_chain {
 
   always_filter: {
     filters: [
-      global_filters_and_parameters.datasource_filter: "last 30 days",
+      global_filters_and_parameters.datasource_filter: "last 7 days",
 
       products_hub_assignment.select_calculation_granularity: "customer"
 
