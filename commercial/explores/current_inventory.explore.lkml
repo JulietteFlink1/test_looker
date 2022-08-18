@@ -121,7 +121,9 @@ explore: current_inventory {
   }
 
   join: key_value_items {
-    sql_on: ${products.product_sku} = ${key_value_items.sku} ;;
+    sql_on: ${products.product_sku} = ${key_value_items.sku}
+     -- get only the most recent KVIs (they are upadted every Monday)
+       and ${key_value_items.kvi_date} >= current_date() - 6;;
     relationship: many_to_one
     type: left_outer
   }
