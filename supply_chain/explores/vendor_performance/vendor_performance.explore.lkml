@@ -299,7 +299,7 @@ explore: vendor_performance {
   join: key_value_items {
 
     view_label: "* Product Data *"
-    
+
     type: left_outer
     relationship: many_to_one
 

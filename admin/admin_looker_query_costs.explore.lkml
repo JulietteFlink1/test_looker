@@ -1,4 +1,4 @@
-include: "/**/looker_query_cost_reporting_tmp.view"
+include: "/admin/*.view"
 
 
 
