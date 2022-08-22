@@ -236,7 +236,8 @@ explore: vendor_performance {
     fields: [
       hubs.city_manager,
       hubs.city,
-      hubs.country_iso
+      hubs.country_iso,
+      hubs.region
     ]
   }
 

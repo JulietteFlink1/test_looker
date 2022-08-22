@@ -30,7 +30,7 @@ explore: current_inventory {
     filters: [
       products_hub_assignment.is_sku_assigned_to_hub: "",
       hubs.is_hub_opened: "Yes",
-      global_filters_and_parameters.datasource_filter: "last 30 days"
+      global_filters_and_parameters.datasource_filter: "last 7 days"
     ]
   }
 
