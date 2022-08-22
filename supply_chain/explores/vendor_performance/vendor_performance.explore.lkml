@@ -236,7 +236,8 @@ explore: vendor_performance {
     fields: [
       hubs.city_manager,
       hubs.city,
-      hubs.country_iso
+      hubs.country_iso,
+      hubs.region
     ]
   }
 
@@ -299,7 +300,7 @@ explore: vendor_performance {
   join: key_value_items {
 
     view_label: "* Product Data *"
-    
+
     type: left_outer
     relationship: many_to_one
 
