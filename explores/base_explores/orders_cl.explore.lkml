@@ -24,7 +24,7 @@ explore: orders_cl {
   always_filter: {
     filters:  [
       orders_cl.is_successful_order: "yes",
-      global_filters_and_parameters.datasource_filter: "last 60 days",
+      global_filters_and_parameters.datasource_filter: "last 7 days",
       hubs.country: "",
       hubs.hub_name: ""
     ]

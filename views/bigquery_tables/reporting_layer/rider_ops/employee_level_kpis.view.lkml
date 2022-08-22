@@ -194,6 +194,13 @@ view: employee_level_kpis {
     sql: ${TABLE}.number_of_delivered_orders ;;
   }
 
+  measure: number_of_picked_items {
+    group_label: "* Logistics *"
+    type: sum
+    label: "# Picked Items (Order items)"
+    sql: ${TABLE}.number_of_picked_items ;;
+  }
+
   measure: number_of_orders_with_handling_time {
     group_label: "* Logistics *"
     type: sum
@@ -235,12 +242,40 @@ view: employee_level_kpis {
     value_format_name: decimal_1
   }
 
+  measure: sum_picking_time_minutes {
+    group_label: "* Logistics *"
+    type: sum
+    label: "Sum Picking Time (min)"
+    description: "Sum time needed for picking items per order"
+    sql: ${TABLE}.number_of_picking_time_minutes ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
   measure: avg_rider_handling_time_minutes {
     group_label: "* Logistics *"
     type: number
     label: "AVG Rider Handling Time (min)"
     description: "Average time needed for the rider to handle the order: Riding to customer + At customer + Riding to hub"
     sql: ${sum_rider_handling_time_minutes}/nullif(${number_of_orders_with_handling_time},0) ;;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_picking_time_order {
+    group_label: "* Logistics *"
+    type: number
+    label: "AVG Picking Time Per Order (min)"
+    description: "Average time needed for picking items per order"
+    sql: ${sum_picking_time_minutes}/nullif(${number_of_delivered_orders},0) ;;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_picking_time_item {
+    group_label: "* Logistics *"
+    type: number
+    label: "AVG Picking Time Per Item (min)"
+    description: "Average time needed for picking items"
+    sql: ${sum_picking_time_minutes}/nullif(${number_of_picked_items},0) ;;
     value_format_name: decimal_1
   }
 

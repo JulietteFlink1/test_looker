@@ -26,7 +26,7 @@ explore: cc_contacts {
   always_filter: {
     filters: [
       cc_contacts.country_iso: "",
-      global_filters_and_parameters.datasource_filter: "last 60 days"
+      global_filters_and_parameters.datasource_filter: "last 7 days"
     ]
   }
 #  ,
