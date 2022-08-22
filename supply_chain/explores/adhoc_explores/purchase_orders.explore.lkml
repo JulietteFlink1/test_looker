@@ -29,7 +29,7 @@ fields: [ALL_FIELDS*,-purchase_orders.pct_order_inbounded,-purchase_orders.sum_p
 
   always_filter: {
     filters: [
-      purchase_orders.order_date: "last 30 days",
+      purchase_orders.order_date: "last 7 days",
 
       purchase_orders.vendor_id: "",
 
