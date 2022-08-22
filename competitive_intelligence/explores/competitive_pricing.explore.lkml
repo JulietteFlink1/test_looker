@@ -43,7 +43,7 @@ explore: competitive_pricing {
 
   always_filter: {
     filters: [
-      global_filters_and_parameters.datasource_filter: "last 30 days"
+      global_filters_and_parameters.datasource_filter: "last 7 days"
     ]
   }
 

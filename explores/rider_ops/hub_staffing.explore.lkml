@@ -12,7 +12,7 @@ explore: hub_staffing {
 
   always_filter: {
     filters:  [
-      hub_staffing.shift_date: "last 14 days",
+      hub_staffing.shift_date: "last 7 days",
       position_name:"rider",
       hubs.country: "",
       hubs.hub_name: ""

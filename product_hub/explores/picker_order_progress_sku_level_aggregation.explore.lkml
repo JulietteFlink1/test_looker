@@ -32,7 +32,7 @@ explore: picker_order_progress_sku_level_aggregation {
 
   always_filter: {
     filters: [
-      global_filters_and_parameters.datasource_filter: "last 14 days",
+      global_filters_and_parameters.datasource_filter: "last 7 days",
       picker_order_progress_sku_aggregates.country_iso: "",
       picker_order_progress_sku_aggregates.hub_code: ""
     ]
