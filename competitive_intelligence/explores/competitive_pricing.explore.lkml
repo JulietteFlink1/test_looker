@@ -21,11 +21,13 @@ include: "/**/getir_products.view"
 include: "/**/getir_categories.view"
 include: "/**/getir_hubs.view"
 include: "/**/flink_to_albert_heijn_global.view"
-include: "/competitive_intelligence/views/bigquery_curated/albert_heijn_products.view.lkml"
+include: "/**/albert_heijn_products.view.lkml"
 include: "/**/key_value_items.view"
 include: "/**/price_test_tracking.view"
 include: "/**/product_prices_daily.view"
 include: "/**/gorillas_pricing_hist.view"
+include: "/**/product_matching_flink_to_rewe.view"
+include: "/**/rewe_products.view"
 
 explore: competitive_pricing {
   from: products
@@ -200,6 +202,22 @@ explore: competitive_pricing {
     view_label: "* Albert Heijn Products *"
     sql_on: ${albert_heijn_products.product_uuid} = ${flink_to_albert_heijn_global.albert_heijn_product_id} ;;
     relationship: one_to_one
+    type: left_outer
+  }
+
+  join: product_matching_flink_to_rewe {
+    from: product_matching_flink_to_rewe
+    view_label: "Flink-REWE Match Data"
+    sql_on: ${product_matching_flink_to_rewe.flink_product_sku} = ${products.product_sku} ;;
+    relationship: many_to_one
+    type: left_outer
+  }
+
+  join: rewe_products {
+    from: rewe_products
+    view_label: "* REWE Products *"
+    sql_on: ${product_matching_flink_to_rewe.rewe_product_id} = ${rewe_products.product_id} ;;
+    relationship: many_to_one
     type: left_outer
   }
 
