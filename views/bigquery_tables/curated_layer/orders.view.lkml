@@ -3035,6 +3035,17 @@ view: orders {
     value_format: "0"
   }
 
+  measure: cnt_orders_fulfilled_over_45_min {
+    group_label: "* Operations / Logistics *"
+    label: "# Orders fulfilled >45min"
+    description: "Count of Orders delivered >45min fulfillment time"
+    hidden:  yes
+    type: count
+    filters: [fulfillment_time:">=45"]
+    value_format: "0"
+  }
+
+
   measure: cnt_orders_fulfilled_over_60_min {
     group_label: "* Operations / Logistics *"
     label: "# Orders delivered >60min"
@@ -3291,6 +3302,7 @@ view: orders {
     value_format: "0%"
   }
 
+
   measure: pct_fulfillment_over_20_min{
     group_label: "* Operations / Logistics *"
     label: "% Orders fulfilled >20min"
@@ -3298,6 +3310,26 @@ view: orders {
     hidden:  no
     type: number
     sql: ${cnt_orders_fulfilled_over_20_min} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_fulfillment_over_30_min{
+    group_label: "* Operations / Logistics *"
+    label: "% Orders fulfilled >30min"
+    description: "Share of orders delivered > 30min"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_fulfilled_over_30_min} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_fulfillment_over_45_min{
+    group_label: "* Operations / Logistics *"
+    label: "% Orders fulfilled >45min"
+    description: "Share of orders delivered > 45min"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_fulfilled_over_45_min} / NULLIF(${cnt_orders}, 0);;
     value_format: "0%"
   }
 
@@ -3430,15 +3462,6 @@ view: orders {
   #  value_format: "0%"
   #}
 
-  measure: pct_fulfillment_over_30_min{
-    group_label: "* Operations / Logistics *"
-    label: "% Orders fulfilled >30min"
-    description: "Share of orders delivered > 30min"
-    hidden:  no
-    type: number
-    sql: ${cnt_orders_fulfilled_over_30_min} / NULLIF(${cnt_orders}, 0);;
-    value_format: "0%"
-  }
 
   measure: percent_of_total_orders {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
