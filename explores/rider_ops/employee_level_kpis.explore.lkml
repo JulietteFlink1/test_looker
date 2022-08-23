@@ -11,7 +11,7 @@ explore: employee_level_kpis {
 
   always_filter: {
     filters:  [
-      employee_level_kpis.shift_date: "last 14 days",
+      employee_level_kpis.shift_date: "last 7 days",
       position_name:"rider",
       hubs.country: "",
       hubs.hub_name: ""

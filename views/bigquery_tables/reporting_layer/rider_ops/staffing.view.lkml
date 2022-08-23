@@ -59,7 +59,12 @@ view: staffing {
     sql: ${TABLE}.last_updated_timestamp ;;
   }
   ##### Riders
-
+  dimension: number_of_scheduled_hours_rider_dimension {
+    label: "# Scheduled Rider Hours (Incl. Deleted Excused No Show) - Dimension"
+    type: number
+    sql: (${TABLE}.number_of_planned_minutes_rider + ${number_of_unassigned_minutes_external_rider}+${number_of_unassigned_minutes_internal_rider})/60 ;;
+    hidden: yes
+  }
 
   dimension: number_of_no_show_minutes_rider {
     label: "# No Show Rider Minutes"
@@ -209,6 +214,15 @@ view: staffing {
   }
 
   ###### Pickers
+
+  dimension: number_of_scheduled_hours_picker_dimension {
+    label: "# Scheduled Picker Hours (Incl. Deleted Excused No Show) - Dimension"
+    type: number
+    sql: (${TABLE}.number_of_planned_minutes_picker + ${number_of_unassigned_minutes_external_picker}+${number_of_unassigned_minutes_internal_picker})/60 ;;
+    hidden: yes
+  }
+
+
   dimension: number_of_worked_employees_picker {
     label: "# Worked Pickers"
     type: number
@@ -1171,7 +1185,6 @@ view: staffing {
   dimension: number_of_unassigned_employees_internal_shift_lead {
     label: "# Unassigned Internal Shift Leads"
     type: number
-    sql: ${TABLE}.number_of_unassigned_employees_internal_shift_lead ;;
     hidden: yes
 
   }
@@ -2475,6 +2488,7 @@ view: staffing {
   measure: number_of_planned_hours_by_position {
     type: number
     label: "# Filled Hours"
+    description: "# Shift Hours Assigned to an Employee"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
@@ -2493,6 +2507,7 @@ view: staffing {
   measure: number_of_excused_no_show_hours_by_position {
     type: number
     label: "# Excused No Show Hours"
+    description: "Sum of shift hours when an employee has a scheduled shift but does not show up to it with leave reason"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
@@ -2511,6 +2526,7 @@ view: staffing {
   measure: number_of_deleted_excused_no_show_hours_by_position {
     type: number
     label: "# Deleted Excused No Show Hours"
+    description: "Sum of deleted shift hours when an employee has a scheduled shift but does not show up to it with leave reason and shift deletion date is on/after shift date (shift date <= deletion date)"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
@@ -2527,6 +2543,7 @@ view: staffing {
   measure: number_of_unexcused_no_show_hours_by_position {
     type: number
     label: "# Unexcused No Show Hours"
+    description: "Sum of shift hours when an employee has a scheduled shift but does not show up to it without leave reason"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
@@ -2545,6 +2562,7 @@ view: staffing {
   measure: pct_fill_rate {
     type: number
     label: "% Fill Rate"
+    description: "# Filled Hours (Assigned to an Employee) / # Scheduled Hours (Total Scheduled Shift Hours - Assigned + Open)"
     value_format_name: percent_1
     group_label: "> Dynamic Measures"
     sql: ${number_of_planned_hours_by_position}/nullif(${number_of_scheduled_hours_by_position},0);;
@@ -2553,6 +2571,7 @@ view: staffing {
     measure: pct_unexcused_absence {
     type: number
     label: "% Unexcused Absence"
+    description: "# Unexcused No Show Hours / # Filled Hours (Assigned to an Employee)"
     value_format_name: percent_1
     group_label: "> Dynamic Measures"
     sql: (${number_of_unexcused_no_show_hours_by_position})/nullif(${number_of_planned_hours_by_position},0);;
@@ -2561,6 +2580,7 @@ view: staffing {
   measure: pct_excused_absence {
     type: number
     label: "% Excused Absence"
+    description: "# Excused No Show Hours / # Filled Hours (Assigned to an Employee)"
     value_format_name: percent_1
     group_label: "> Dynamic Measures"
     sql: (${number_of_deleted_excused_no_show_hours_by_position}+${number_of_excused_no_show_hours_by_position})/nullif(${number_of_planned_hours_by_position},0);;
@@ -2569,6 +2589,7 @@ view: staffing {
   measure: number_of_unassigned_hours_by_position {
     type: number
     label: "# Open Hours"
+    description: "# Open Shift Hours (Not assigned to an Employee)"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
@@ -2587,6 +2608,7 @@ view: staffing {
   measure: number_of_scheduled_hours_by_position {
     type: number
     label: "# Scheduled Hours (Incl. Deleted Excused No Show)"
+    description: "Sum of Assigned and not Assigned Shift Hours (Incl. Deleted Excused No Show)"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
@@ -2602,9 +2624,25 @@ view: staffing {
       END ;;
   }
 
+  dimension: number_of_scheduled_hours_by_position_dimension {
+    type: number
+    label: "# Scheduled Hours (Incl. Deleted Excused No Show) - Dimension"
+    description: "Sum of Assigned and not Assigned Shift Hours (Incl. Deleted Excused No Show)"
+    value_format_name: decimal_1
+    group_label: "> Dynamic Measures"
+    sql:
+        CASE
+          WHEN {% parameter position_parameter %} = 'Rider' THEN ${number_of_scheduled_hours_rider_dimension}
+          WHEN {% parameter position_parameter %} = 'Picker' THEN ${number_of_scheduled_hours_picker_dimension}
+      ELSE NULL
+      END ;;
+    hidden: yes
+  }
+
   measure: number_of_scheduled_hours_excluding_deleted_shifts_by_position {
     type: number
     label: "# Scheduled Hours (Excl. Deleted Excused No Show)"
+    description: "Sum of Assigned and not Assigned Shift Hours (Excl. Deleted Excused No Show)"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
@@ -2623,6 +2661,7 @@ view: staffing {
   measure: number_of_worked_hours_by_position {
     type: number
     label: "# Punched Hours"
+    description: "# Hours Worked by an Employee"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
@@ -2640,6 +2679,7 @@ view: staffing {
   measure: number_of_no_show_hours_by_position {
     type: number
     label: "# No Show Hours"
+    description: "Sum of shift hours when an employee has a scheduled shift but does not show up to it without leave reason including deleted shift hours when deletion date is on or after shift date. includes (Excused No show Hours, Unexcused No show Hours, Excused Deleted No show Hours)"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
@@ -2658,6 +2698,7 @@ view: staffing {
   measure: pct_no_show_hours_by_position {
     type: number
     label: "% No Show Hours"
+    description: "% shift hours when an employee has a scheduled shift but does not show up to it without leave reason including deleted shift hours when deletion date is on or after shift date. includes (Excused No show Hours, Unexcused No show Hours, Excused Deleted No show Hours)"
     value_format_name: percent_1
     group_label: "> Dynamic Measures"
     sql:
@@ -2676,6 +2717,7 @@ view: staffing {
   measure: utr_by_position {
     type: number
     label: "UTR"
+    description: "# Orders (Excl. Cancellations) / # Punched Hours"
     value_format_name: decimal_2
     group_label: "> Dynamic Measures"
     sql:

@@ -2697,6 +2697,7 @@ view: orders {
     group_label: "* Monetary Values *"
     label: "SUM Storage Fees (Gross)"
     description: "Sum of Storage Fees Gross, applied when an item requiring such a fee is added to the basket."
+
     value_format_name: euro_accounting_2_precision
     type:  sum
     sql: ${amt_storage_fee_gross} ;;
@@ -2705,6 +2706,7 @@ view: orders {
     group_label: "* Monetary Values *"
     label: "SUM Storage Fees (Net)"
     description: "Sum of Storage Fees Net, applied when an item requiring such a fee is added to the basket."
+
     value_format_name: euro_accounting_2_precision
     type:  sum
     sql: ${amt_storage_fee_net} ;;
@@ -2714,19 +2716,32 @@ view: orders {
     group_label: "* Monetary Values *"
     label: "AVG Storage Fee (Gross)"
     description: "Average value of Storage Fees (Gross)"
-    hidden:  no
+
     type: average
-    sql: coalesce(${amt_storage_fee_gross});;
+    sql: ${amt_storage_fee_gross};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: avg_storage_fee_net {
+    group_label: "* Monetary Values *"
+    label: "AVG Storage Fee (Net)"
+    description: "Average value of Storage Fees (Net)"
+
+    type: average
+    sql: ${amt_storage_fee_net};;
     value_format_name: euro_accounting_2_precision
   }
 
   ##### Total Fees #####
 
-  measure: sum_total_fees {
+  measure: sum_total_fees_gross {
+
+    alias: [sum_total_fees]
+
     group_label: "* Monetary Values *"
     label: "SUM Total Fees (Gross)"
     description: "Sum of Delivery Fees (Gross) and Storage Fees (Gross)"
-    hidden:  no
+
     type: number
     sql: ${sum_delivery_fee_gross} + ${sum_amt_storage_fee_gross};;
     value_format_name: euro_accounting_2_precision
@@ -2736,11 +2751,32 @@ view: orders {
     group_label: "* Monetary Values *"
     label: "AVG Total Fees (Gross)"
     description: "Average value of Delivery Fees (Gross) + Storage Fees (Gross)"
-    hidden:  no
+
     type: average
-    sql: coalesce(${shipping_price_gross_amount}) + coalesce(${amt_storage_fee_gross});;
+    sql: (${shipping_price_gross_amount} + ${amt_storage_fee_gross}) ;;
     value_format_name: euro_accounting_2_precision
   }
+
+  measure: sum_total_fees_net {
+    group_label: "* Monetary Values *"
+    label: "SUM Total Fees (Net)"
+    description: "Sum of Delivery Fees (Net) and Storage Fees (Net)"
+
+    type: number
+    sql: ${sum_delivery_fee_net} + ${sum_amt_storage_fee_net};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: avg_total_fees_net {
+    group_label: "* Monetary Values *"
+    label: "AVG Total Fees (Net)"
+    description: "Average value of Delivery Fees (Net) + Storage Fees (Net)"
+
+    type: average
+    sql: (${shipping_price_net_amount} + ${amt_storage_fee_net});;
+    value_format_name: euro_accounting_2_precision
+  }
+
 
 ########### CRF FEES MEASURES ##########
 
@@ -2999,6 +3035,17 @@ view: orders {
     value_format: "0"
   }
 
+  measure: cnt_orders_fulfilled_over_45_min {
+    group_label: "* Operations / Logistics *"
+    label: "# Orders fulfilled >45min"
+    description: "Count of Orders delivered >45min fulfillment time"
+    hidden:  yes
+    type: count
+    filters: [fulfillment_time:">=45"]
+    value_format: "0"
+  }
+
+
   measure: cnt_orders_fulfilled_over_60_min {
     group_label: "* Operations / Logistics *"
     label: "# Orders delivered >60min"
@@ -3255,6 +3302,7 @@ view: orders {
     value_format: "0%"
   }
 
+
   measure: pct_fulfillment_over_20_min{
     group_label: "* Operations / Logistics *"
     label: "% Orders fulfilled >20min"
@@ -3262,6 +3310,26 @@ view: orders {
     hidden:  no
     type: number
     sql: ${cnt_orders_fulfilled_over_20_min} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_fulfillment_over_30_min{
+    group_label: "* Operations / Logistics *"
+    label: "% Orders fulfilled >30min"
+    description: "Share of orders delivered > 30min"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_fulfilled_over_30_min} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_fulfillment_over_45_min{
+    group_label: "* Operations / Logistics *"
+    label: "% Orders fulfilled >45min"
+    description: "Share of orders delivered > 45min"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_fulfilled_over_45_min} / NULLIF(${cnt_orders}, 0);;
     value_format: "0%"
   }
 
@@ -3394,15 +3462,6 @@ view: orders {
   #  value_format: "0%"
   #}
 
-  measure: pct_fulfillment_over_30_min{
-    group_label: "* Operations / Logistics *"
-    label: "% Orders fulfilled >30min"
-    description: "Share of orders delivered > 30min"
-    hidden:  no
-    type: number
-    sql: ${cnt_orders_fulfilled_over_30_min} / NULLIF(${cnt_orders}, 0);;
-    value_format: "0%"
-  }
 
   measure: percent_of_total_orders {
     group_label: "* Basic Counts (Orders / Customers etc.) *"

@@ -30,7 +30,7 @@ explore: current_inventory {
     filters: [
       products_hub_assignment.is_sku_assigned_to_hub: "",
       hubs.is_hub_opened: "Yes",
-      global_filters_and_parameters.datasource_filter: "last 30 days"
+      global_filters_and_parameters.datasource_filter: "last 7 days"
     ]
   }
 
@@ -121,7 +121,9 @@ explore: current_inventory {
   }
 
   join: key_value_items {
-    sql_on: ${products.product_sku} = ${key_value_items.sku} ;;
+    sql_on: ${products.product_sku} = ${key_value_items.sku}
+     -- get only the most recent KVIs (they are upadted every Monday)
+       and ${key_value_items.kvi_date} >= current_date() - 6;;
     relationship: many_to_one
     type: left_outer
   }

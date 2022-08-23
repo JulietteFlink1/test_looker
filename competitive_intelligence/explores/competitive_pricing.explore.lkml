@@ -43,7 +43,7 @@ explore: competitive_pricing {
 
   always_filter: {
     filters: [
-      global_filters_and_parameters.datasource_filter: "last 30 days"
+      global_filters_and_parameters.datasource_filter: "last 7 days"
     ]
   }
 
@@ -122,7 +122,8 @@ explore: competitive_pricing {
   }
 
   join: gorillas_pricing_hist {
-    sql_on: ${gorillas_products.product_id} = ${gorillas_pricing_hist.product_id} ;;
+    sql_on: ${gorillas_products.product_id} = ${gorillas_pricing_hist.product_id} and
+            ${gorillas_hubs.hub_id} = ${gorillas_pricing_hist.hub_id};;
     relationship: many_to_many
     type: left_outer
   }
