@@ -92,7 +92,7 @@ view: forecasts {
 
   dimension: job_date_2 {
     label: "Job Date - Day of the week"
-    description: "This filter could be used to see respective day of the last week as a job date for each order date."
+    description: "Fetching respective weekdays based on timeslot date"
     convert_tz: no
     datatype: date
     type:  date
@@ -747,6 +747,7 @@ view: forecasts {
 
   parameter: dow_parameter {
     label: "Job day of the week (Last week)"
+    description: "This filter could be used to see respective day of the last week as a job date for each order date"
     type: string
     allowed_value: { value: "Monday" }
     allowed_value: { value: "Tuesday" }
