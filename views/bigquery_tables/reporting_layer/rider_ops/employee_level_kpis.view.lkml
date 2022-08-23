@@ -150,20 +150,6 @@ view: employee_level_kpis {
     description: "# Weekly contracted hours based on Quinyx Agreements (Field in Quinyx UI: Agreement full time working hours)"
   }
 
-  dimension: number_of_idle_minutes {
-    type: number
-    hidden: yes
-    sql: ${TABLE}.number_of_idle_minutes ;;
-    description: "# Daily idle minutes - the difference between worked minutes and total rider handling time minutes"
-  }
-
-  dimension: number_of_worked_minutes {
-    type: number
-    hidden: yes
-    sql: ${TABLE}.number_of_worked_minutes ;;
-    description: "# Daily worked minutes"
-  }
-
   dimension: min_weekly_contracted_hours {
     type: number
     sql: ${TABLE}.min_weekly_contracted_hours ;;
