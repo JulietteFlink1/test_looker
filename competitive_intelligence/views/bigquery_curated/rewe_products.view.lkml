@@ -18,12 +18,9 @@ view: rewe_products {
   dimension_group: time_scraped {
     type: time
     timeframes: [
-      raw,
       time,
       date,
-      week,
-      month,
-      year
+      week
     ]
     sql: ${TABLE}.time_scraped ;;
   }
@@ -84,46 +81,6 @@ view: rewe_products {
     sql: ${TABLE}.product_id ;;
   }
 
-  dimension: nan {
-
-    label: "NAN"
-    description: "REWE's national aritcle number. May be referred to as NAN, EDI, or Product ID."
-    group_label: "Product Information"
-
-    type: string
-    sql: ${TABLE}.nan ;;
-  }
-
-  dimension: article_id {
-
-    label: "Article ID"
-    description: "REWE's article ID."
-    group_label: "Product Information"
-
-    type: string
-    sql: ${TABLE}.article_id ;;
-  }
-
-  dimension: listing_id {
-
-    label: "Listing ID"
-    description: "Product listing ID."
-    group_label: "Product Information"
-
-    type: string
-    sql: ${TABLE}.listing_id ;;
-  }
-
-  dimension: listing_version {
-
-    label: "Listing Version"
-    description: "Product listing version."
-    group_label: "Product Information"
-
-    type: number
-    sql: ${TABLE}.listing_version ;;
-  }
-
   dimension: product_name {
 
     label: "Product Name"
@@ -155,7 +112,7 @@ view: rewe_products {
     group_label: "Prices"
 
     type: number
-    value_format: "€0.00"
+    value_format_name: eur
     sql: ${TABLE}.amt_product_price ;;
   }
 
@@ -176,7 +133,7 @@ view: rewe_products {
     group_label: "Prices"
 
     type: number
-    value_format: "€0.00"
+    value_format_name: eur
     sql: ${TABLE}.lowest_product_price ;;
   }
 
@@ -187,7 +144,7 @@ view: rewe_products {
     group_label: "Prices"
 
     type: number
-    value_format: "€0.00"
+    value_format_name: eur
     sql: ${TABLE}.highest_product_price ;;
   }
 
@@ -214,7 +171,7 @@ view: rewe_products {
   dimension: number_of_price_tiers {
 
     label: "# Price Tiers"
-    description: "The highest price tier that exists for a given product. Use this field to determine which rank a givne price falls under."
+    description: "The highest price tier that exists for a given product. Use this field to determine which rank a given price falls under."
     group_label: "Prices"
 
     type: number
@@ -233,16 +190,6 @@ view: rewe_products {
 
 # -----------------  Discount Price Data  ------------------
 
-  dimension: savings_id {
-
-    label: "Savings ID"
-    description: "The discount ID."
-    group_label: "Discount Prices"
-
-    type: string
-    sql: ${TABLE}.savings_id ;;
-  }
-
   dimension: is_discounted {
 
     label: "Is Discounted"
@@ -260,7 +207,7 @@ view: rewe_products {
     group_label: "Discount Prices"
 
     type: number
-    value_format: "€0.00"
+    value_format_name: eur
     sql: ${TABLE}.amt_discount_value ;;
   }
 
@@ -282,7 +229,7 @@ view: rewe_products {
     group_label: "Discount Prices"
 
     type: number
-    value_format: "€0.00"
+    value_format_name: eur
     sql: ${TABLE}.amt_strikethrough_price ;;
   }
 
@@ -325,7 +272,7 @@ view: rewe_products {
     group_label: "Price Changes"
 
     type: number
-    value_format: "€0.00"
+    value_format_name: eur
     sql: ${TABLE}.previous_amt_product_price ;;
   }
 
@@ -336,7 +283,7 @@ view: rewe_products {
     group_label: "Price Changes"
 
     type: number
-    value_format: "€0.00"
+    value_format_name: eur
     sql: ${TABLE}.amt_price_change ;;
   }
 
@@ -365,6 +312,66 @@ view: rewe_products {
 
     hidden: yes
     primary_key: yes
+  }
+
+  dimension: nan {
+
+    label: "NAN"
+    description: "REWE's national aritcle number. May be referred to as NAN, EDI, or Product ID."
+    group_label: "Product Information"
+
+    type: string
+    sql: ${TABLE}.nan ;;
+
+    hidden: yes
+  }
+
+  dimension: article_id {
+
+    label: "Article ID"
+    description: "REWE's article ID."
+    group_label: "Product Information"
+
+    type: string
+    sql: ${TABLE}.article_id ;;
+
+    hidden: yes
+  }
+
+  dimension: listing_id {
+
+    label: "Listing ID"
+    description: "Product listing ID."
+    group_label: "Product Information"
+
+    type: string
+    sql: ${TABLE}.listing_id ;;
+
+    hidden: yes
+  }
+
+  dimension: listing_version {
+
+    label: "Listing Version"
+    description: "Product listing version."
+    group_label: "Product Information"
+
+    type: number
+    sql: ${TABLE}.listing_version ;;
+
+    hidden: yes
+  }
+
+  dimension: savings_id {
+
+    label: "Savings ID"
+    description: "The discount ID."
+    group_label: "Discount Prices"
+
+    type: string
+    sql: ${TABLE}.savings_id ;;
+
+    hidden: yes
   }
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
