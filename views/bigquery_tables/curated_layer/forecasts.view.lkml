@@ -28,7 +28,7 @@ view: forecasts {
 
   dimension: is_hub_open {
     label: "Is Hub Open"
-    type: yesno
+    type: number
     sql: ${TABLE}.is_hub_open ;;
   }
 
