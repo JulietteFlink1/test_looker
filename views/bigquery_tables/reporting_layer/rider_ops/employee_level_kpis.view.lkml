@@ -233,12 +233,31 @@ view: employee_level_kpis {
     value_format_name: percent_1
   }
 
+  measure: sum_worked_time_minutes {
+    group_label: "* Shift related *"
+    type: sum
+    label: "# Worked Time (min)"
+    description: "Sum worked time in minutes"
+    sql: ${TABLE}.number_of_worked_minutes ;;
+    value_format_name: decimal_1
+  }
+
   measure: sum_rider_handling_time_minutes {
     group_label: "* Logistics *"
     type: sum
-    label: "Sum Rider Handling Time (min)"
+    label: "# Rider Handling Time (min)"
     description: "Sum time needed for the rider to handle the order: Riding to customer + At customer + Riding to hub"
     sql: ${TABLE}.number_of_rider_handling_time_minutes ;;
+    value_format_name: decimal_1
+  }
+
+
+  measure: sum_rider_idle_time_minutes {
+    group_label: "* Performance *"
+    type: sum
+    label: "# Rider Idle Time (min)"
+    description: "Sum of idle time (min) - the difference between worked minutes and rider handling time minutes"
+    sql: ${TABLE}.number_of_idle_minutes ;;
     value_format_name: decimal_1
   }
 
@@ -250,6 +269,7 @@ view: employee_level_kpis {
     sql: ${TABLE}.number_of_picking_time_minutes ;;
     value_format_name: decimal_1
     hidden: yes
+
   }
 
   measure: avg_rider_handling_time_minutes {
@@ -333,6 +353,7 @@ view: employee_level_kpis {
     value_format_name: decimal_1
   }
 
+
   measure: pct_riding_to_customer_time {
     group_label: "* Logistics *"
     type: number
@@ -358,6 +379,15 @@ view: employee_level_kpis {
     description: "% Difference Riding time between To Hub and To Customer (positive value indicates Time To Hub > Time To Customer) e.g. a rider spent 5 minutes riding between hub to customer then spend another 5 minutes riding between customer to hub then that will result in % Delta Riding Time Between To Hub and To Customer to be 0%"
     sql: sum(${TABLE}.number_of_return_to_hub_time_minutes) / nullif(sum(${TABLE}.number_of_riding_to_customer_time_minutes),0) -1 ;;
     value_format_name: percent_1
+  }
+
+  measure: pct_rider_idle_time {
+    group_label: "* Performance *"
+    type: number
+    label: "% Worked Time Spent Idle (Riders)"
+    description: "% of worked time (min) not spent handling an order - compares the difference between worked time (min) and rider handling time (min) with total worked time (min)"
+    sql: sum(${TABLE}.number_of_idle_minutes) / nullif(sum(${TABLE}.number_of_worked_minutes),0) ;;
+    value_format: "0%"
   }
 
   # ~~~~~~~~~~~~~~~     Shift related     ~~~~~~~~~~~~~~~~~~~~~~~~~
