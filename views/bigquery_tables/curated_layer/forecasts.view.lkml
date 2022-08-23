@@ -91,12 +91,22 @@ view: forecasts {
   }
 
   dimension: job_date_2 {
-    label: "Job Date 2"
-    description: "This filter could be used if comparison between 2 job dates is needed"
+    label: "Job Date - Day of the week"
+    description: "This filter could be used to see respective day of the last week as a job date for each order date."
     convert_tz: no
     datatype: date
     type:  date
-    sql: ${TABLE}.job_date ;;
+    sql:
+      CASE
+        WHEN {% parameter forecasts.dow_parameter %} = 'Monday' THEN date_trunc(${start_timestamp_date}, week(monday))-7
+        WHEN {% parameter forecasts.dow_parameter %} = 'Tuesday' THEN date_trunc(${start_timestamp_date}, week(tuesday))-7
+        WHEN {% parameter forecasts.dow_parameter %} = 'Wednesday' THEN date_trunc(${start_timestamp_date}, week(wednesday))-7
+        WHEN {% parameter forecasts.dow_parameter %} = 'Thursday' THEN date_trunc(${start_timestamp_date}, week(thursday))-7
+        WHEN {% parameter forecasts.dow_parameter %} = 'Friday' THEN date_trunc(${start_timestamp_date}, week(friday))-7
+        WHEN {% parameter forecasts.dow_parameter %} = 'Saturday' THEN date_trunc(${start_timestamp_date}, week(saturday))-7
+        WHEN {% parameter forecasts.dow_parameter %} = 'Sunday' THEN date_trunc(${start_timestamp_date}, week(sunday))-7
+        ELSE NULL
+      END ;;
     hidden: yes
   }
 
@@ -733,6 +743,19 @@ view: forecasts {
     allowed_value: { value: "Rider" }
     allowed_value: { value: "Picker" }
     hidden: yes
+  }
+
+  parameter: dow_parameter {
+    label: "Job day of the week (Last week)"
+    type: string
+    allowed_value: { value: "Monday" }
+    allowed_value: { value: "Tuesday" }
+    allowed_value: { value: "Wednesday" }
+    allowed_value: { value: "Thursday" }
+    allowed_value: { value: "Friday" }
+    allowed_value: { value: "Saturday" }
+    allowed_value: { value: "Sunday" }
+    hidden: no
   }
 
 }
