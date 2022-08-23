@@ -250,7 +250,7 @@ view: employee_level_kpis {
   measure: sum_worked_time_minutes {
     group_label: "* Shift related *"
     type: sum
-    label: "Sum worked time (min)"
+    label: "# Worked Time (min)"
     description: "Sum worked time in minutes"
     sql: ${TABLE}.number_of_worked_minutes ;;
     value_format_name: decimal_1
@@ -259,7 +259,7 @@ view: employee_level_kpis {
   measure: sum_rider_handling_time_minutes {
     group_label: "* Logistics *"
     type: sum
-    label: "Sum Rider Handling Time (min)"
+    label: "# Rider Handling Time (min)"
     description: "Sum time needed for the rider to handle the order: Riding to customer + At customer + Riding to hub"
     sql: ${TABLE}.number_of_rider_handling_time_minutes ;;
     value_format_name: decimal_1
@@ -269,7 +269,7 @@ view: employee_level_kpis {
   measure: sum_rider_idle_time_minutes {
     group_label: "* Performance *"
     type: sum
-    label: "Sum Rider Idle Time (min)"
+    label: "# Rider Idle Time (min)"
     description: "Sum of idle time (min) - the difference between worked minutes and rider handling time minutes"
     sql: ${TABLE}.number_of_idle_minutes ;;
     value_format_name: decimal_1
