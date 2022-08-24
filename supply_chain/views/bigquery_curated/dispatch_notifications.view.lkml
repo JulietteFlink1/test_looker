@@ -9,7 +9,7 @@ view: dispatch_notifications {
   set: main_fields {
     fields: [
       dispatch_notification_id,
-      # dispatch_advice_number,
+      dispatch_advice_number,
       external_sku,
       sscc,
       country_iso,
@@ -31,7 +31,8 @@ view: dispatch_notifications {
       sum_number_of_dispatch_notifications,
 
       dynamic_delivery_date,
-      is_double_parent_sku
+      is_double_parent_sku,
+      is_supplier_oos
     ]
   }
 
@@ -192,6 +193,16 @@ view: dispatch_notifications {
     sql: ${TABLE}.dispatch_notification_id ;;
   }
 
+
+  dimension: dispatch_advice_number {
+
+    label:       "Dispatch Advice Number"
+    group_label: ">> IDs"
+
+    type: string
+    sql: ${TABLE}.dispatch_advice_number ;;
+  }
+
   dimension: sscc {
     label:       "SSCC"
     description: "The identifier of a delivery unit (of a Rolli)"
@@ -207,7 +218,17 @@ view: dispatch_notifications {
     group_label: ">> IDs"
 
     type: string
+    sql: safe_cast(${TABLE}.order_number as string) ;;
+  }
+
+  dimension: order_number_int {
+    label:       "Order Number"
+    description: "The identifier of a order. In this context, the order number defines, to which specific order a product which is part of a delivery (DESADV) belongs to."
+    group_label: ">> IDs"
+
+    type: string
     sql: ${TABLE}.order_number ;;
+    hidden: yes
   }
 
   dimension: external_sku {
@@ -254,6 +275,14 @@ view: dispatch_notifications {
     type: string
     hidden: yes
     sql: ${TABLE}.delivery_party_id ;;
+  }
+
+  dimension: is_supplier_oos {
+    label: "Is out of stock at supplier"
+    description: "Whenever a SKU listed on a DESADV has a handling unit count of 0, this usually indicates, that the supplier was not able to deliver the ordered SKU"
+
+    type: yesno
+    sql: ${handling_units_count} = 0 ;;
   }
 
 

@@ -43,6 +43,11 @@ view: flink_to_getir_global {
     sql: ${TABLE}.getir_product_name ;;
   }
 
+  dimension: conversion_factor {
+    type: number
+    sql: ${TABLE}.conversion_factor ;;
+  }
+
   measure: count {
     type: count
     drill_fields: [flink_product_name, getir_product_name]

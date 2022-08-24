@@ -7,7 +7,7 @@ explore:  gorillas_products {
   hidden: no
   label: "Gorillas Catalog"
   view_label: "Gorillas Catalog"
-  group_label: "Competitive Intel"
+  group_label: "Competitive Intelligence"
   description: "Competitive Intelligence Data"
 
   join: gorillas_categories {

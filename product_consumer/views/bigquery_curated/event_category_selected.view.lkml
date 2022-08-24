@@ -197,6 +197,7 @@ view: event_category_selected {
       time,
       date,
       week,
+      month,
       quarter
     ]
     sql: ${TABLE}.event_timestamp ;;
@@ -237,5 +238,4 @@ view: event_category_selected {
     type: count_distinct
     sql: ${TABLE}.anonymous_id ;;
   }
-
 }

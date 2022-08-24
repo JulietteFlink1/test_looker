@@ -1,30 +1,5 @@
 view: user_attributes_power_user_curves {
-  derived_table: {
-    sql:  with daily_user_aggregates as (
-        select *
-        from `flink-data-prod.reporting.user_attributes_daily_user_aggregates`
-        where
-         date_diff(visit_date, first_visit_date, DAY) < 28
-      )
-
-      select
-      daily_unique_customer_uuid
-      , country_iso
-      , platform
-      , is_active_user
-      , first_visit_date
-      , first_order_date
-      , has_converted
-      , number_of_days_to_first_order
-      , number_of_visits_to_first_order
-      , max(visit_rank)                  as visits_28d
-      , sum(if(number_of_daily_orders>0,1,0)) as orders_28d
-      , sum(number_of_daily_orders)      as sum_orders_28d
-      , sum(number_of_discounted_orders) as discounted_orders_28d
-      from daily_user_aggregates
-      group by 1,2,3,4,5,6,7,8,9
-      ;;
-  }
+  sql_table_name: `flink-data-prod.reporting.user_attributes_all_users_first28days`;;
 
 
   dimension: daily_unique_customer_uuid {
@@ -44,7 +19,7 @@ view: user_attributes_power_user_curves {
   dimension: platform {
     description: "Platform (based on first visit)"
     type: string
-    sql: ${TABLE}.platform ;;
+    sql: ${TABLE}.first_visit_platform ;;
   }
 
   dimension: is_active_user {
@@ -98,25 +73,25 @@ view: user_attributes_power_user_curves {
   dimension: visits_in_28d {
     description: "Amount of days (visits) in 28 days since first visit"
     type: number
-    sql: ${TABLE}.visits_28d  ;;
+    sql: ${TABLE}.number_of_days_visited  ;;
   }
 
   dimension: orders_in_28d {
     description: "Amount of days with orders in 28 days since first visit"
     type: number
-    sql: ${TABLE}.orders_28d  ;;
+    sql: ${TABLE}.number_of_days_ordering  ;;
   }
 
   dimension: sum_orders_28d {
     description: "Amount of orders in 28 days since first visit"
     type: number
-    sql: ${TABLE}.sum_orders_28d  ;;
+    sql: ${TABLE}.number_of_orders  ;;
     }
 
   dimension: discounted_orders_28d {
     description: "Amount of discounted orders in 28 days since first visit"
     type: number
-    sql: ${TABLE}.discounted_orders_28d  ;;
+    sql: ${TABLE}.number_of_discounted_orders  ;;
   }
 
   ############ Measures   ############
@@ -127,12 +102,40 @@ view: user_attributes_power_user_curves {
     sql: ${TABLE}.daily_unique_customer_uuid ;;
   }
 
+  measure: count_visits {
+    description: "Sum of visits in 28 days since first visit"
+    type: sum
+    sql: ${TABLE}.number_of_days_visited  ;;
+  }
+
+  measure: count_visits_with_orders {
+    description: "Sum of visits with orders in 28 days since first visit"
+    type: sum
+    sql: ${TABLE}.number_of_days_ordering  ;;
+  }
+
   measure: count_users_who_converted {
     description: "Unique count of visitors who made a first order"
     type: count_distinct
     sql: ${TABLE}.daily_unique_customer_uuid ;;
     filters: [has_converted: "yes"]
   }
+
+  measure: count_users_who_converted_on_day0 {
+    description: "Unique count of visitors who made a first order on first visit"
+    type: count_distinct
+    sql: ${TABLE}.daily_unique_customer_uuid ;;
+    filters: [has_converted: "yes",number_of_days_to_first_order: "0" ]
+  }
+
+  measure: count_users_who_converted_on_day28 {
+    description: "Unique count of visitors who made a first order on first visit"
+    type: count_distinct
+    sql: ${TABLE}.daily_unique_customer_uuid ;;
+    filters: [has_converted: "yes",number_of_days_to_first_order: "<28" ]
+  }
+
+
 
 
 }

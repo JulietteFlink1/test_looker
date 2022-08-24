@@ -24,75 +24,61 @@ include: "/**/bulk_inbounding_performance.view"
 
 explore: supply_chain {
 
+
   label:       "Supply Chain Explore"
   description: "This explore covers inventory data based on CommerceTools
                 and Stock Changelogs provided by Hub-Tech. It is enrichted with reporting tables to measure the
                 vendor performance"
   group_label: "Supply Chain"
 
+  tags: ["supply_chain_explore"]
+
+
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  #  - - - - - - - - - -    BASE TABLE
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   from  :     products_hub_assignment_v2
   view_name:  products_hub_assignment
   view_label: "01 Products Hub Assignment"
 
 
-  sql_always_where:
-      -- filter the time for all big tables of this explore
-      {% condition global_filters_and_parameters.datasource_filter %} ${products_hub_assignment.report_date} {% endcondition %}
-
-      -- filter for showing only 1 SKU per (Replenishment) Substitute Group
-      -- and
-      -- case
-      --       when {% condition products_hub_assignment.select_calculation_granularity %} 'sku'           {% endcondition %}
-      --       then true
-
-      --       when {% condition products_hub_assignment.select_calculation_granularity %} 'replenishment' {% endcondition %}
-      --       then ${products_hub_assignment.filter_one_sku_per_replenishment_substitute_group} is true
-
-      --       when {% condition products_hub_assignment.select_calculation_granularity %} 'customer'      {% endcondition %}
-      --       then ${products_hub_assignment.filter_one_sku_per_substitute_group} is true
-
-      --       else null
-      --   end
-
-        and
-            {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment'
-              or products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer' %}
-              true
-
-            {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
-              ${products_hub_assignment.filter_one_sku_per_replenishment_substitute_group} is true
-
-            {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'customer' %}
-              ${products_hub_assignment.filter_one_sku_per_substitute_group} is true
-
-            {% endif %}
-
-        and
-            ${products_hub_assignment.hub_code} not in ('de_ham_alto')
-        and
-            ${hubs_ct.is_test_hub} is false
-        and
-            ${hubs_ct.start_date} <= ${products_hub_assignment.report_date}
-
-        and
-            left(${products_hub_assignment.sku},1) != '9'
 
 
-      ;;
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  #  - - - - - - - - - -    FILTER & SETTINGS
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   hidden: no
 
   always_filter: {
     filters: [
-      products_hub_assignment.assingment_dynamic: "Yes",
-
-      global_filters_and_parameters.datasource_filter: "last 30 days",
+      global_filters_and_parameters.datasource_filter: "last 7 days",
 
       products_hub_assignment.select_calculation_granularity: "customer"
 
     ]
   }
 
-  # products_hub_assignment.select_assignment_logic: "replenishment",
+  access_filter: {
+    field: hubs_ct.country_iso
+    user_attribute: country_iso
+
+  }
+  access_filter: {
+    field: hubs_ct.city
+    user_attribute: city
+  }
+
+  sql_always_where:
+      -- filter the time for all big tables of this explore
+      {% condition global_filters_and_parameters.datasource_filter %} ${products_hub_assignment.report_date} {% endcondition %}
+
+        and ${products_hub_assignment.hub_code} not in ('de_ham_alto')
+        and ${hubs_ct.is_test_hub} is false
+        and ${hubs_ct.start_date} <= ${products_hub_assignment.report_date}
+      ;;
+
 
   join: global_filters_and_parameters {
 
@@ -103,19 +89,43 @@ explore: supply_chain {
     relationship: one_to_one
   }
 
+
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  #  - - - - - - - - - -    JOINED TABLES
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  # ~ ~ ~ ~ ~ ~  START: NEW AVAILIABILITY FILERING APPROACH ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
   join: inventory_daily {
 
     view_label: "02 Inventory Daily"
 
     type: left_outer
-    relationship: one_to_one
+    relationship: many_to_one
     sql_on:
         ${inventory_daily.hub_code}    = ${products_hub_assignment.hub_code}     and
         ${inventory_daily.sku}         = ${products_hub_assignment.sku}          and
         ${inventory_daily.report_date} = ${products_hub_assignment.report_date}  and
         {% condition global_filters_and_parameters.datasource_filter %} ${inventory_daily.report_date} {% endcondition %}
+        -- dynamic filtering per Assignment and Groups
+        and
+            {% if    products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_replenishment' %}
+              ${products_hub_assignment.one_sku_per_erp_assignment_logic} = ${inventory_daily.sku}
+
+            {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'sku_customer' %}
+              ${products_hub_assignment.one_sku_per_ct_assignment_logic} = ${inventory_daily.sku}
+
+            {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'replenishment' %}
+              ${products_hub_assignment.one_sku_per_replenishment_substitute_group} = ${inventory_daily.sku}
+
+            {% elsif products_hub_assignment.select_calculation_granularity._parameter_value == 'customer' %}
+              ${products_hub_assignment.one_sku_per_substitute_group} = ${inventory_daily.sku}
+
+            {% endif %}
     ;;
   }
+
+  # ~ ~ ~ ~ ~ ~  END: NEW AVAILIABILITY FILERING APPROACH ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
   join: inventory_hourly {
 
@@ -228,7 +238,7 @@ explore: supply_chain {
     view_label: "07 Order Lineitems"
 
     type: left_outer
-    relationship: many_to_many
+    relationship: one_to_many
 
     sql_on:
         ${order_lineitems.product_sku}         = ${products_hub_assignment.sku}         and
@@ -328,54 +338,6 @@ explore: supply_chain {
     relationship: many_to_one
   }
 
-#Matching Logic Metrics
-
-  join: matching_inventory_level {
-
-    view_label: ""
-
-    type:         left_outer
-    relationship: many_to_one
-
-    sql_on:
-        ${matching_inventory_level.sku}                     = coalesce(${products_hub_assignment.leading_sku_replenishment_substitute_group}, ${products_hub_assignment.sku}) and
-        ${matching_inventory_level.hub_code}                = ${products_hub_assignment.hub_code}                                        and
-        ${matching_inventory_level.promised_delivery_date}  = ${products_hub_assignment.report_date}                                     and
-        ${matching_inventory_level.vendor_id}               = ${products_hub_assignment.erp_vendor_id}
-    ;;
-  }
-
-  join: replenishment_purchase_orders_all_dates {
-
-    view_label: ""
-
-    type:         left_outer
-    relationship: many_to_one
-    from: replenishment_purchase_orders
-
-    sql_on:
-    ${replenishment_purchase_orders_all_dates.sku}              = coalesce(${products_hub_assignment.leading_sku_replenishment_substitute_group}, ${products_hub_assignment.sku}) and
-    ${replenishment_purchase_orders_all_dates.hub_code}         = ${products_hub_assignment.hub_code}                                        and
-    ${replenishment_purchase_orders_all_dates.delivery_date}    = ${products_hub_assignment.report_date}                                     and
-    ${replenishment_purchase_orders_all_dates.vendor_id}        = ${products_hub_assignment.erp_vendor_id}
-    ;;
-  }
-
-  join: unplanned_inbounds {
-
-    view_label: "13 Matching Inventory"
-
-    type:         left_outer
-    relationship: many_to_one
-
-    sql_on:
-        ${unplanned_inbounds.sku}          = coalesce(${products_hub_assignment.leading_sku_replenishment_substitute_group}, ${products_hub_assignment.sku}) and
-        ${unplanned_inbounds.hub_code}     = ${products_hub_assignment.hub_code}                                        and
-        ${unplanned_inbounds.report_date}  = ${products_hub_assignment.report_date}
-    ;;
-  }
-
-
 
   join: mean_and_std {
     view_label: "07 Order Lineitems"
@@ -409,16 +371,6 @@ explore: supply_chain {
     sql_on: ${v2_avg_waste_index_per_hub.hub_code} = ${products_hub_assignment.hub_code} ;;
   }
 
-  join: last_hour_inventory_level {
-      view_label: "03 Inventory Hourly (last 8 days)"
-      type: left_outer
-      relationship: many_to_one
-      sql_on: ${last_hour_inventory_level.report_timestamp_date} = ${products_hub_assignment.report_date} and
-              ${last_hour_inventory_level.hub_code}              = ${products_hub_assignment.hub_code}    and
-              ${last_hour_inventory_level.sku}                   = ${products_hub_assignment.sku}         and
-              ${last_hour_inventory_level.time} = 23
-              ;;
-  }
 
   join: key_value_items {
 
@@ -444,6 +396,31 @@ explore: supply_chain {
           ${product_prices_daily.reporting_date} = ${products_hub_assignment.report_date}
       and ${product_prices_daily.hub_code}       = ${products_hub_assignment.hub_code}
       and ${product_prices_daily.sku}            = ${products_hub_assignment.sku}
+      and {% condition global_filters_and_parameters.datasource_filter %} ${product_prices_daily.reporting_date} {% endcondition %}
+    ;;
+  }
+
+  join: geographic_pricing_hub_cluster{
+
+    view_label: "15 Pricing Hub Cluster"
+
+    type: left_outer
+    relationship: many_to_one
+    fields: [price_hub_cluster]
+    sql_on:
+       ${geographic_pricing_hub_cluster.hub_code} = ${products_hub_assignment.hub_code}
+    ;;
+  }
+
+  join: geographic_pricing_sku_cluster{
+
+    view_label: "15 Pricing SKU Cluster"
+
+    type: left_outer
+    relationship: many_to_one
+    fields: [price_sku_cluster, price_sku_cluster_desc]
+    sql_on:
+       ${geographic_pricing_sku_cluster.sku} = ${products_hub_assignment.sku}
     ;;
   }
 

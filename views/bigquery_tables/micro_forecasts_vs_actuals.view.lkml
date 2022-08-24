@@ -283,7 +283,7 @@ view: micro_forecasts_vs_actuals {
     group_label: " * Forecasting error * "
     label: "wMAPE"
     type: number
-    sql: ${summed_absolute_error}/${summed_absolute_actuals};;
+    sql: ${summed_absolute_error}/nullif(${summed_absolute_actuals},0);;
     value_format_name: percent_0
   }
 

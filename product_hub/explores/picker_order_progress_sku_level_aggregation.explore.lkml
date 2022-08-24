@@ -1,4 +1,4 @@
-# Owner: Product Analytics, Pete Kell
+# Owner: Product Analytics, Pete Kell, Flavia Alvarez
 
 # Main Stakeholder:
 # - Hub Tech
@@ -7,9 +7,9 @@
 # Questions that can be answered
 # - How pickers progress through picking items
 
-include: "/product_hub/views/picker_order_progress_sku_aggregates.view.lkml"
+include: "/product_hub/views/bigquery_reporting/picker_order_progress_sku_aggregates.view.lkml"
 include: "/**/global_filters_and_parameters.view.lkml"
-include: "/product_hub/views/picker_order_times.view.lkml"
+include: "/product_hub/views/sql_derived_tables/picker_order_times.view.lkml"
 
 explore: picker_order_progress_sku_level_aggregation {
   view_name: picker_order_progress_sku_aggregates
@@ -32,7 +32,7 @@ explore: picker_order_progress_sku_level_aggregation {
 
   always_filter: {
     filters: [
-      global_filters_and_parameters.datasource_filter: "last 14 days",
+      global_filters_and_parameters.datasource_filter: "last 7 days",
       picker_order_progress_sku_aggregates.country_iso: "",
       picker_order_progress_sku_aggregates.hub_code: ""
     ]

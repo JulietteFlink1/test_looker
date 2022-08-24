@@ -46,6 +46,11 @@ view: flink_to_gorillas_global {
     sql: ${TABLE}.gorillas_product_name ;;
   }
 
+  dimension: conversion_factor {
+    type: number
+    sql: ${TABLE}.conversion_factor ;;
+  }
+
   measure: count {
     type: count
     drill_fields: [gorillas_product_name, flink_product_name]

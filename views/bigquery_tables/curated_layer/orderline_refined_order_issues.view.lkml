@@ -8,6 +8,7 @@ view: +orderline {
       pct_pre_order_issue_rate_per_total_orders,
       pct_post_order_issue_rate_per_total_orders,
       pct_hub_related_post_order_issue_rate_per_total_orders,
+      pct_pre_order_issue_rate_per_total_orders_crf,
       delivery_issue_groups,
       number_of_products_with_perished_light_issues_dim,
       number_of_products_with_perished_issues_pre_dim,
@@ -22,7 +23,18 @@ view: +orderline {
       number_of_products_with_cancelled_products_issues_dim,
       number_of_products_with_item_description_issues_dim,
       number_of_products_with_item_quality_issues_dim,
-      number_of_products_with_undefined_issues_dim
+      number_of_products_with_undefined_issues_dim,
+      external_provider,
+      is_not_on_shelf_issue_crf,
+      count_products_not_on_shelf_issues_carrefour,
+      cnt_perished_products_pre_crf,
+      cnt_damaged_products_pre_crf,
+      cnt_undefined_issues_crf,
+      cnt_pre_delivery_issues_crf,
+      pct_pre_order_issue_rate_per_total_orders_crf,
+      pct_pre_order_issue_rate_per_total_items_picked_crf,
+      pct_pre_order_fulfillment_rate_crf,
+      pct_not_on_shelf_issue_rate_crf
 
     ]
   }
@@ -33,6 +45,22 @@ view: +orderline {
     sql: ${order_uuid};;
     hidden: yes
     group_label: "> Delivery Issues"
+  }
+
+  measure: cnt_total_orders_not_crf {
+    type: count_distinct
+    sql: ${order_uuid};;
+    hidden: yes
+    group_label: "> Delivery Issues"
+    filters: [external_provider: "null, -ubereats"]
+  }
+
+  measure: cnt_total_orders_crf {
+    type: count_distinct
+    sql: ${order_uuid};;
+    hidden: yes
+    group_label: "> Delivery Issues CRF"
+    filters: [external_provider: "ubereats"]
   }
 
   measure: count_order_lineitems {
@@ -50,6 +78,22 @@ view: +orderline {
     group_label: "> Delivery Issues"
   }
 
+  measure: cnt_total_picks_not_crf {
+    type: count_distinct
+    sql: ${order_lineitem_uuid} ;;
+    hidden: yes
+    group_label: "> Delivery Issues"
+    filters: [external_provider: "null, -ubereats"]
+  }
+
+  measure: cnt_total_picks_crf {
+    type: count_distinct
+    sql: ${order_lineitem_uuid} ;;
+    hidden: yes
+    group_label: "> Delivery Issues CRF"
+    filters: [external_provider: "ubereats"]
+  }
+
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~  START Issue Reasons - BASE   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   dimension: return_reason {
@@ -62,6 +106,7 @@ view: +orderline {
 
   measure: cnt_delivery_issues {
     label: "# Orders Delivery Issues (Post- + Pre-Delivery)"
+    description: "# Orders with delivery issues (Pre + Post), excludes CRF orders."
     group_label: "> Delivery Issues"
     type: number
     sql:
@@ -78,13 +123,13 @@ view: +orderline {
           ${cnt_products_bad_quality_issues}      +
           ${cnt_wrong_products}                   +
           ${cnt_undefined_issues}
-        ;;
+      ;;
   }
 
   measure: cnt_pre_delivery_issues {
 
     label:       "# Orders Pre-Delivery Issues"
-    description: "Order-Issues, that are detected pre-delivery"
+    description: "Order-Issues, that are detected pre-delivery. Excludes CRF orders."
     group_label: "> Delivery Issues"
 
     type: number
@@ -94,12 +139,13 @@ view: +orderline {
     ;;
 
     value_format_name: decimal_0
+
   }
 
   measure: cnt_post_delivery_issues {
 
     label:       "# Orders Post-Delivery Issues"
-    description: "Order-Issues, that are detected post-delivery"
+    description: "Order-Issues, that are detected post-delivery. Excludes CRF orders."
     group_label: "> Delivery Issues"
 
     type: number
@@ -115,6 +161,7 @@ view: +orderline {
         ;;
 
     value_format_name: decimal_0
+
   }
 
   # ~~~~~~~~~~~~  END Issue Reasons - BASE   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -132,11 +179,12 @@ view: +orderline {
   measure: count_perished_light {
     label: "# Orders Perished Light"
     description: "The number of orders, that had issues with perished light products and were claimed through the Customer Service.
-                  Not counted in # Post Delivery Issues nor # Delivery Issues"
+    Not counted in # Post Delivery Issues nor # Delivery Issues"
     group_label: "> Delivery Issues"
     type: count_distinct
     sql: ${order_uuid} ;;
-    filters: [number_of_products_with_perished_light_issues_dim: ">0"]
+    filters: [number_of_products_with_perished_light_issues_dim: ">0",
+      external_provider: "null, -ubereats"]
   }
 
   measure: cnt_perished_products_post {
@@ -147,53 +195,55 @@ view: +orderline {
 
     type: count_distinct
     sql: ${order_uuid} ;;
-    filters: [number_of_products_with_perished_issues_post_dim: ">0"]
+    filters: [number_of_products_with_perished_issues_post_dim: ">0",
+      external_provider: "null, -ubereats"]
 
     value_format_name: decimal_0
 
   }
+
   measure: cnt_perished_products_pre {
 
     label:       "# Orders Perished Products (Pre Delivery Issues)"
-    description: "The number of orders, that had issues with perished products and were identified in the picking process (Swipe) "
+    description: "The number of orders, that had issues with perished products and were identified in the picking process (Swipe). Excludes CRF orders. "
     group_label: "> Delivery Issues"
 
     type: count_distinct
     sql: ${order_uuid} ;;
-    filters: [number_of_products_with_perished_issues_pre_dim: ">0"]
+    filters: [number_of_products_with_perished_issues_pre_dim: ">0",
+      external_provider: "null, -ubereats"]
 
     value_format_name: decimal_0
-
   }
-
 
   measure: cnt_products_not_on_shelf_post {
 
     label:       "# Orders Products not on shelf (Post Delivery Issues)"
-    description: "The number of orders, that had issues with products not being in stock and were claimed through the Customer Service"
+    description: "The number of orders, that had issues with products not being in stock and were claimed through the Customer Service.Excludes CRF orders."
     group_label: "> Delivery Issues"
 
     type: count_distinct
     sql: ${order_uuid} ;;
-    filters: [number_of_products_with_products_not_on_shelf_issues_post_dim: ">0"]
+    filters: [number_of_products_with_products_not_on_shelf_issues_post_dim: ">0",
+      external_provider: "null, -ubereats"]
 
     value_format_name: decimal_0
-
   }
+
   measure: cnt_products_not_on_shelf_pre {
 
     label:       "# Orders Products not on shelf (Pre Delivery Issues)"
-    description: "The number of orders, that had issues with products not being in stock and were identified in the picking process (Swipe)"
+    description: "The number of orders, that had issues with products not being in stock and were identified in the picking process (Swipe).Excludes CRF orders."
     group_label: "> Delivery Issues"
 
     type: count_distinct
     sql: ${order_uuid} ;;
-    filters: [number_of_products_with_products_not_on_shelf_issues_pre_dim: ">0"]
+    filters: [number_of_products_with_products_not_on_shelf_issues_pre_dim: ">0",
+      external_provider: "null, -ubereats"]
 
     value_format_name: decimal_0
 
   }
-
 
   measure: cnt_damaged_products_post {
     label: "# Orders Damaged Products (Post Delivery Issues)"
@@ -201,18 +251,20 @@ view: +orderline {
     group_label: "> Delivery Issues"
     type: count_distinct
     sql: ${order_uuid} ;;
-    filters: [number_of_products_with_damaged_products_issues_post_dim: ">0"]
+    filters: [number_of_products_with_damaged_products_issues_post_dim: ">0",
+      external_provider: "null, -ubereats"]
 
     value_format_name: decimal_0
 
   }
   measure: cnt_damaged_products_pre {
     label: "# Orders Damaged Products (Pre Delivery Issues)"
-    description: "The number of orders, that had issues with damaged products and were identified in the picking process (Swipe)"
+    description: "The number of orders, that had issues with damaged products and were identified in the picking process (Swipe).Excludes CRF orders."
     group_label: "> Delivery Issues"
     type: count_distinct
     sql: ${order_uuid} ;;
-    filters: [number_of_products_with_damaged_products_issues_pre_dim: ">0"]
+    filters: [number_of_products_with_damaged_products_issues_pre_dim: ">0",
+      external_provider: "null, -ubereats"]
 
     value_format_name: decimal_0
 
@@ -230,7 +282,8 @@ view: +orderline {
 
     type: count_distinct
     sql: ${order_uuid} ;;
-    filters: [number_of_products_with_missing_products_issues_dim: ">0"]
+    filters: [number_of_products_with_missing_products_issues_dim: ">0",
+      external_provider: "null, -ubereats"]
 
     value_format_name: decimal_0
 
@@ -244,7 +297,8 @@ view: +orderline {
 
     type: count_distinct
     sql: ${order_uuid} ;;
-    filters: [number_of_products_with_wrong_products_issues_dim: ">0"]
+    filters: [number_of_products_with_wrong_products_issues_dim: ">0",
+      external_provider: "null, -ubereats"]
 
     value_format_name: decimal_0
 
@@ -258,7 +312,8 @@ view: +orderline {
 
     type: count_distinct
     sql: ${order_uuid} ;;
-    filters: [number_of_products_with_swapped_products_issues_dim: ">0"]
+    filters: [number_of_products_with_swapped_products_issues_dim: ">0",
+      external_provider: "null, -ubereats"]
 
     value_format_name: decimal_0
 
@@ -273,7 +328,8 @@ view: +orderline {
 
     type: count_distinct
     sql: ${order_uuid} ;;
-    filters: [number_of_products_with_cancelled_products_issues_dim: ">0"]
+    filters: [number_of_products_with_cancelled_products_issues_dim: ">0",
+      external_provider: "null, -ubereats"]
 
     value_format_name: decimal_0
 
@@ -287,7 +343,8 @@ view: +orderline {
 
     type: count_distinct
     sql: ${order_uuid} ;;
-    filters: [number_of_products_with_item_description_issues_dim: ">0"]
+    filters: [number_of_products_with_item_description_issues_dim: ">0",
+      external_provider: "null, -ubereats"]
 
     value_format_name: decimal_0
 
@@ -301,7 +358,8 @@ view: +orderline {
 
     type: count_distinct
     sql: ${order_uuid} ;;
-    filters: [number_of_products_with_item_quality_issues_dim: ">0"]
+    filters: [number_of_products_with_item_quality_issues_dim: ">0",
+      external_provider: "null, -ubereats"]
 
     value_format_name: decimal_0
 
@@ -310,12 +368,13 @@ view: +orderline {
   measure: cnt_undefined_issues {
 
     label:       "# Orders Unknown Issues (Post Delivery Issues)"
-    description: "The number of orders, that had issues with unknown issue groups (see Return Reason to check the specific issue reasons)"
+    description: "The number of orders, that had issues with unknown issue groups (see Return Reason to check the specific issue reasons).Excludes CRF orders."
     group_label: "> Delivery Issues"
 
     type: count_distinct
     sql: ${order_uuid} ;;
-    filters: [number_of_products_with_undefined_issues_dim: ">0"]
+    filters: [number_of_products_with_undefined_issues_dim: ">0",
+      external_provider: "null, -ubereats"]
 
     value_format_name: decimal_0
     hidden: no
@@ -323,6 +382,184 @@ view: +orderline {
   }
   # >>> POST Order Issues  :: END
 
+  ## CARREFOUR ##
+
+  measure: cnt_product_not_on_shelf_pre_crf {
+
+    label:       "# CRF Orders Products Not On Shelf (Pre Delivery Issues)"
+    description: "The number of CARREFOUR orders, that had issues with product not on shelf issue (Pre)"
+    group_label: "> Delivery Issues CRF"
+    hidden:  yes
+
+    type: count_distinct
+    sql: ${order_uuid} ;;
+    filters: [number_of_products_with_products_not_on_shelf_issues_pre_dim: ">0" ,
+      external_provider: "ubereats"]
+
+    value_format_name: decimal_0
+
+  }
+  measure: cnt_product_not_on_shelf_post_crf {
+
+    label:       "# CRF Orders Products Not On Shelf (Post Delivery Issues)"
+    description: "The number of CARREFOUR orders, that had issues with product not on shelf issue (Post)"
+    group_label: "> Delivery Issues CRF"
+    hidden:  yes
+
+    type: count_distinct
+    sql: ${order_uuid} ;;
+    filters: [number_of_products_with_products_not_on_shelf_issues_post_dim: ">0" ,
+      external_provider: "ubereats"]
+
+    value_format_name: decimal_0
+
+  }
+
+  dimension: is_not_on_shelf_issue_crf {
+    type: yesno
+    hidden:  yes
+    sql: ${number_of_products_with_products_not_on_shelf_issues_post_dim} > 0 OR
+      ${number_of_products_with_products_not_on_shelf_issues_pre_dim} > 0;;
+  }
+
+  measure: count_products_not_on_shelf_issues_carrefour {
+
+    label:       "# CRF Orders Products Not On Shelf (Pre Delivery Issues)"
+    description: "The number of CARREFOUR orders, that had issues with product not on shelf issue"
+    group_label: "> Delivery Issues CRF"
+
+    type: count_distinct
+    sql: ${order_uuid}  ;;
+    filters: [is_not_on_shelf_issue_crf: "yes" ,
+      external_provider: "ubereats"]
+
+    value_format_name: decimal_0
+
+  }
+
+  measure: cnt_perished_products_pre_crf {
+
+    label:       "# CRF Orders Perished Products (Pre Delivery Issues)"
+    description: "The number of CRF orders, that had issues with perished products and were identified in the picking process (Swipe) "
+    group_label: "> Delivery Issues CRF"
+
+    type: count_distinct
+    sql: ${order_uuid} ;;
+    filters: [number_of_products_with_perished_issues_pre_dim: ">0",
+      external_provider: "ubereats"]
+
+    value_format_name: decimal_0
+  }
+
+  measure: cnt_damaged_products_pre_crf {
+    label: "# CRF Orders Damaged Products (Pre Delivery Issues)"
+    description: "The number of CRF orders, that had issues with damaged products and were identified in the picking process (Swipe)"
+    group_label: "> Delivery Issues CRF"
+    type: count_distinct
+    sql: ${order_uuid} ;;
+    filters: [number_of_products_with_damaged_products_issues_pre_dim: ">0",
+      external_provider: "ubereats"]
+
+    value_format_name: decimal_0
+
+  }
+  measure: cnt_undefined_issues_crf {
+
+    label:       "# CRF Orders Unknown Issues (Pre Delivery Issues)"
+    description: "The number of CRF orders, that had issues with unknown issue groups (see Return Reason to check the specific issue reasons)"
+    group_label: "> Delivery Issues CRF"
+
+    type: count_distinct
+    sql: ${order_uuid} ;;
+    filters: [number_of_products_with_undefined_issues_dim: ">0",
+      external_provider: "ubereats"]
+
+    value_format_name: decimal_0
+    hidden: no
+
+  }
+
+  measure: cnt_post_delivery_issues_crf {
+
+    label:       "# CRF Orders Post-Delivery Issues"
+    description: "# CRF Order with Issues, that are detected post-delivery. Should not happen as customer
+    should not be able to reach our customer support."
+    group_label: "> Delivery Issues CRF"
+
+    type: count_distinct
+    sql: ${order_uuid};;
+    filters: [number_of_products_with_post_delivery_issues_dim: ">0",
+      external_provider: "ubereats"]
+  }
+
+  #here include undefined issues as they must be pre order issue
+  measure: cnt_pre_delivery_issues_crf {
+
+    label:       "# CRF Orders Pre-Delivery Issues"
+    description: "# CRF Order with Issues, that are detected pre-delivery."
+    group_label: "> Delivery Issues CRF"
+
+    type: number
+    sql: ${count_products_not_on_shelf_issues_carrefour} +
+           ${cnt_perished_products_pre_crf}              +
+           ${cnt_damaged_products_pre_crf}               +
+           ${cnt_undefined_issues_crf}
+      ;;
+  }
+
+  measure: pct_pre_order_issue_rate_per_total_orders_crf {
+
+    label:       "% CRF Orders Partial Fulfillment (preoder)"
+    group_label: "> Delivery Issues CRF"
+    description: "The percentage of CRF orders, that had pre-delivery issues"
+
+    type: number
+    sql:  ${cnt_pre_delivery_issues_crf} / nullif(${cnt_total_orders_crf} ,0);;
+
+    value_format_name: percent_2
+
+  }
+
+  measure: pct_pre_order_issue_rate_per_total_items_picked_crf {
+
+    label:       "% CRF Orders Item Unfulfilled (preorder)"
+    group_label: "> Delivery Issues CRF"
+    description: "The percentage of unique SKUs per CRF order, that had pre-delivery issues."
+
+    type: number
+    sql:  ${cnt_pre_delivery_issues_crf} / nullif(${cnt_total_picks_crf} ,0);;
+
+    value_format_name: percent_2
+
+  }
+
+  measure: pct_pre_order_fulfillment_rate_crf {
+
+    label:       "% CRF Orders Pre-Order Fulfillment"
+    group_label: "> Delivery Issues CRF"
+    description: "The percentage of orders, that had no pre-delivery issues."
+
+    type: number
+    sql: 1 - ${pct_pre_order_issue_rate_per_total_orders_crf} ;;
+
+    value_format_name: percent_2
+
+  }
+
+  measure: pct_not_on_shelf_issue_rate_crf {
+
+    label:       "% CRF Orders Goods Not On Shelf Issue"
+    group_label: "> Delivery Issues CRF"
+    description: "% CRF orders with products not on shelf issues."
+
+    type: number
+    sql: (${count_products_not_on_shelf_issues_carrefour}) / nullif( ${cnt_total_orders_crf} ,0 ) ;;
+
+    value_format_name: percent_2
+
+  }
+
+  ## END CARREFOUR ##
 
   # ~~~~~~~~~~~~    END Issue Reasons - Granular Metrics   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -337,7 +574,7 @@ view: +orderline {
     description: "The percentage of orders, that had pre-delivery issues"
 
     type: number
-    sql:  ${cnt_pre_delivery_issues} / nullif(${cnt_total_orders} ,0);;
+    sql:  ${cnt_pre_delivery_issues} / nullif(${cnt_total_orders_not_crf} ,0);;
 
     value_format_name: percent_2
 
@@ -350,7 +587,7 @@ view: +orderline {
     description: "The percentage of orders, that had post-delivery issues"
 
     type: number
-    sql:  ${cnt_post_delivery_issues} / nullif(${cnt_total_orders} ,0);;
+    sql:  ${cnt_post_delivery_issues} / nullif(${cnt_total_orders_not_crf} ,0);;
 
     value_format_name: percent_2
 
@@ -368,7 +605,7 @@ view: +orderline {
           ${cnt_perished_products_post}+
           ${cnt_missing_products}+
           ${cnt_swapped_products}+
-          ${cnt_wrong_products})/ nullif(${cnt_total_orders} ,0);;
+          ${cnt_wrong_products})/ nullif(${cnt_total_orders_not_crf} ,0);;
 
     value_format_name: percent_2
 
@@ -381,11 +618,12 @@ view: +orderline {
     description: "The percentage of unique SKUs per order, that had pre-delivery issues"
 
     type: number
-    sql:  ${cnt_pre_delivery_issues} / nullif(${cnt_total_picks} ,0);;
+    sql:  ${cnt_pre_delivery_issues} / nullif(${cnt_total_picks_not_crf} ,0);;
 
     value_format_name: percent_2
 
   }
+
 
   measure: pct_pre_order_fulfillment_rate {
 
@@ -400,7 +638,6 @@ view: +orderline {
 
   }
 
-
   # >>>
 
 
@@ -410,7 +647,7 @@ view: +orderline {
     group_label: "> Delivery Issues"
 
     type: number
-    sql: (${cnt_products_not_on_shelf_pre} + ${cnt_products_not_on_shelf_post}) / nullif( ${cnt_total_orders} ,0 ) ;;
+    sql: (${cnt_products_not_on_shelf_pre} + ${cnt_products_not_on_shelf_post}) / nullif( ${cnt_total_orders_not_crf} ,0 ) ;;
 
     value_format_name: percent_2
 
@@ -422,7 +659,7 @@ view: +orderline {
     group_label: "> Delivery Issues"
 
     type: number
-    sql: ${cnt_missing_products} / nullif( ${cnt_total_orders} ,0 ) ;;
+    sql: ${cnt_missing_products} / nullif( ${cnt_total_orders_not_crf} ,0 ) ;;
 
     value_format_name: percent_2
 
@@ -434,7 +671,7 @@ view: +orderline {
     group_label: "> Delivery Issues"
 
     type: number
-    sql: (${cnt_damaged_products_pre} + ${cnt_damaged_products_post}) / nullif( ${cnt_total_orders} ,0 ) ;;
+    sql: (${cnt_damaged_products_pre} + ${cnt_damaged_products_post}) / nullif( ${cnt_total_orders_not_crf} ,0 ) ;;
 
     value_format_name: percent_2
 
@@ -446,7 +683,7 @@ view: +orderline {
     group_label: "> Delivery Issues"
 
     type: number
-    sql: ${cnt_cancelled_products} / nullif( ${cnt_total_orders} ,0 ) ;;
+    sql: ${cnt_cancelled_products} / nullif( ${cnt_total_orders_not_crf} ,0 ) ;;
 
     value_format_name: percent_2
 
@@ -458,7 +695,7 @@ view: +orderline {
     group_label: "> Delivery Issues"
 
     type: number
-    sql: (${cnt_perished_products_pre} + ${cnt_perished_products_post}) / nullif( ${cnt_total_orders} ,0 ) ;;
+    sql: (${cnt_perished_products_pre} + ${cnt_perished_products_post}) / nullif( ${cnt_total_orders_not_crf} ,0 ) ;;
 
     value_format_name: percent_2
 
@@ -470,7 +707,7 @@ view: +orderline {
     group_label: "> Delivery Issues"
 
     type: number
-    sql: ${cnt_wrong_products} / nullif( ${cnt_total_orders} ,0 ) ;;
+    sql: ${cnt_wrong_products} / nullif( ${cnt_total_orders_not_crf} ,0 ) ;;
 
     value_format_name: percent_2
 
@@ -482,7 +719,7 @@ view: +orderline {
     group_label: "> Delivery Issues"
 
     type: number
-    sql: ${cnt_swapped_products} / nullif( ${cnt_total_orders} ,0 ) ;;
+    sql: ${cnt_swapped_products} / nullif( ${cnt_total_orders_not_crf} ,0 ) ;;
 
     value_format_name: percent_2
 
@@ -494,7 +731,7 @@ view: +orderline {
     group_label: "> Delivery Issues"
 
     type: number
-    sql: ${cnt_products_item_description_issues} / nullif( ${cnt_total_orders} ,0 ) ;;
+    sql: ${cnt_products_item_description_issues} / nullif( ${cnt_total_orders_not_crf} ,0 ) ;;
 
     value_format_name: percent_2
 
@@ -506,7 +743,7 @@ view: +orderline {
     group_label: "> Delivery Issues"
 
     type: number
-    sql: ${cnt_products_bad_quality_issues} / nullif( ${cnt_total_orders} ,0 ) ;;
+    sql: ${cnt_products_bad_quality_issues} / nullif( ${cnt_total_orders_not_crf} ,0 ) ;;
 
     value_format_name: percent_2
 
@@ -519,7 +756,7 @@ view: +orderline {
     group_label: "> Delivery Issues"
 
     type: number
-    sql: ${count_perished_light} / nullif(${cnt_total_orders},0) ;;
+    sql: ${count_perished_light} / nullif(${cnt_total_orders_not_crf},0) ;;
 
     value_format_name: percent_2
   }

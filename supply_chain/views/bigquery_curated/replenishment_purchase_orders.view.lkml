@@ -263,6 +263,7 @@ view: replenishment_purchase_orders {
 
     type: number
     sql: safe_cast(${TABLE}.handling_unit_quantity as numeric) ;;
+    hidden: yes
   }
 
   dimension: selling_unit_quantity {
@@ -274,6 +275,7 @@ view: replenishment_purchase_orders {
     type: number
     # sql: ${TABLE}.selling_unit_quantity ;;
     sql: safe_cast(${TABLE}.selling_unit_quantity as numeric) ;;
+    hidden: yes
 
   }
 
@@ -346,6 +348,7 @@ view: replenishment_purchase_orders {
 
     type: sum
     sql: ${selling_unit_quantity} ;;
+    value_format_name: decimal_0
 
   }
 
@@ -357,6 +360,7 @@ view: replenishment_purchase_orders {
 
     type: sum
     sql: ${handling_unit_quantity} ;;
+    value_format_name: decimal_0
   }
 
   measure: pct_order_inbounded {
@@ -386,6 +390,7 @@ view: replenishment_purchase_orders {
 
     type: count_distinct
     sql: ${order_id} ;;
+    value_format_name: decimal_0
 
 }
 
@@ -397,19 +402,23 @@ view: replenishment_purchase_orders {
 
     type: count_distinct
     sql: ${sku} ;;
+    value_format_name: decimal_0
 
   }
 
   measure: avg_items_per_order  {
     label: "AVG # Items per Order"
     description: "AVG Items per Order per SKU"
-    sql: round(${cnt_of_skus_per_order}/${cnt_of_orders}, 2) ;;
+    sql: safe_divide(${cnt_of_skus_per_order} , ${cnt_of_orders}) ;;
+
+    value_format_name: percent_2
 
   }
 
   measure: sum_purchase_price {
     label:       "€ Selling Units (Buying Price)"
     description: "This measure multiplies the supplier price of an item with the number of selling units we ordered and thus provides the cumulative value of the replenished items."
+    required_access_grants: [can_view_buying_information]
 
     type: sum
     sql: coalesce((${selling_unit_quantity} * ${erp_buying_prices.vendor_price}),0) ;;
@@ -423,4 +432,27 @@ view: replenishment_purchase_orders {
     hidden: yes
     drill_fields: [name]
   }
+
+##################################################################################################################################
+##################################################################################################################################
+#################################################### Demand Planning #############################################################
+##################################################################################################################################
+##################################################################################################################################
+
+  measure: sum_selling_unit_quantity_next_7_days {
+
+    label:       "# Upcoming Selling Units Next 7 Days (PO) "
+    description: "The amount of ordered items to receive in the next 7 days"
+    group_label: "Demand Planning"
+
+    type: sum
+    sql: ${selling_unit_quantity} ;;
+    filters: [delivery_date: "today for 7 days"]
+    value_format_name: decimal_0
+    hidden: yes
+
+  }
+
+
+
 }

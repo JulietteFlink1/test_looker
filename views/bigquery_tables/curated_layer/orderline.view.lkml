@@ -22,13 +22,7 @@ view: orderline {
 
   dimension: quantity {
     label: "Quantity Sold"
-    type: number
-    sql: ${TABLE}.quantity ;;
-    group_label: "> Monetary Dimensions"
-  }
-
-  dimension: quantity_fulfilled {
-    label: "Quantity Fulfilled"
+    alias: [quantity_fulfilled]
     type: number
     sql: ${TABLE}.quantity ;;
     group_label: "> Monetary Dimensions"
@@ -61,6 +55,17 @@ view: orderline {
     sql: ${TABLE}.is_successful_order ;;
   }
 
+  dimension: external_provider {
+    type: string
+    label: "External Provider"
+    sql: ${TABLE}.external_provider ;;
+  }
+
+  dimension: is_external_order {
+    type: yesno
+    label: "Is External Order"
+    sql: ${TABLE}.is_external_order ;;
+  }
 
   # =========  hidden   =========
   dimension: is_shipping_required {
@@ -141,8 +146,9 @@ view: orderline {
   dimension: amt_revenue_gross {
     label: "Revenue Gross"
     group_label: "> Monetary Dimensions"
+    description: "SUM of Item Sold Prices after deduction of all discounts (Cart and Product Discounts)"
     type: number
-    sql: ${TABLE}.amt_revenue_gross ;;
+    sql: ${amt_total_price_gross} - ${amt_discount_gross} ;;
   }
 
   dimension: amt_total_price_gross {
@@ -407,6 +413,7 @@ view: orderline {
       time,
       date,
       day_of_week,
+      day_of_week_index,
       week,
       month,
       quarter,
@@ -414,6 +421,14 @@ view: orderline {
     ]
     sql: ${TABLE}.order_timestamp ;;
     datatype: timestamp
+  }
+
+  dimension: order_date_utc {
+    hidden: yes
+    convert_tz: no
+    sql: date(${TABLE}.order_timestamp) ;;
+    datatype: date
+    type: date
   }
 
 
@@ -536,6 +551,12 @@ view: orderline {
     sql: ${TABLE}.number_of_products_with_undefined_issues ;;
   }
 
+  dimension: number_of_products_with_post_delivery_issues_dim {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.number_of_products_with_post_delivery_issues ;;
+  }
+
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -547,20 +568,11 @@ view: orderline {
 
   measure: sum_item_quantity {
     label: "SUM Item Quantity sold"
+    alias: [sum_item_quantity_fulfilled]
     description: "Quantity of Order Line Items sold"
     hidden:  no
     type: sum
     sql: ${quantity};;
-    value_format: "0"
-    group_label: "> Absolute Metrics"
-  }
-
-  measure: sum_item_quantity_fulfilled {
-    label: "SUM Item Quantity fulfilled"
-    description: "Quantity of Order Line Items fulfilled"
-    hidden:  no
-    type: sum
-    sql: ${quantity_fulfilled};;
     value_format: "0"
     group_label: "> Absolute Metrics"
   }
@@ -577,6 +589,7 @@ view: orderline {
 
   measure: sum_item_price_gross {
     label: "SUM Item Prices sold (gross)"
+    alias: [sum_item_price_fulfilled_gross]
     description: "Sum of sold Item prices (incl. VAT)"
     hidden:  no
     type: sum
@@ -587,6 +600,7 @@ view: orderline {
 
   measure: sum_item_price_net {
     label: "SUM Item Prices sold (net)"
+    alias: [sum_item_price_fulfilled_net]
     description: "Sum of sold Item prices (excl. VAT)"
     hidden:  no
     type: sum
@@ -597,6 +611,7 @@ view: orderline {
 
   measure: sum_item_price_after_product_discount_gross {
     label: "SUM Item Prices sold After Product Discount (gross)"
+    alias: [sum_item_price_fulfilled_after_product_discount_gross]
     description: "Total Price of sold Items after Deduction of Product Discounts. incl. VAT"
     hidden:  no
     type: sum
@@ -607,37 +622,8 @@ view: orderline {
 
   measure: sum_item_price_after_product_discount_net {
     label: "SUM Item Prices sold After Product Discount (net)"
+    alias: [sum_item_price_fulfilled_after_product_discount_net]
     description: "Total Price of sold Items after Deduction of Product Discounts. excl. VAT"
-    hidden:  no
-    type: sum
-    sql: ${amt_total_price_after_product_discount_net};;
-    value_format_name: euro_accounting_2_precision
-    group_label: "> Monetary Metrics"
-  }
-
-  measure: sum_item_price_fulfilled_gross {
-    label: "SUM Item Prices fulfilled (gross)"
-    description: "Sum of fulfilled Item prices (incl. VAT)"
-    hidden:  no
-    type: sum
-    sql: ${amt_total_price_gross};;
-    value_format_name: euro_accounting_2_precision
-    group_label: "> Monetary Metrics"
-  }
-
-  measure: sum_item_price_fulfilled_after_product_discount_gross {
-    label: "SUM Item Prices fulfilled After Product Discount (gross)"
-    description: "Sum of fulfilled Item prices after Deduction of Product Discount (incl. VAT)"
-    hidden:  no
-    type: sum
-    sql: ${amt_total_price_after_product_discount_gross};;
-    value_format_name: euro_accounting_2_precision
-    group_label: "> Monetary Metrics"
-  }
-
-  measure: sum_item_price_fulfilled_after_product_discount_net {
-    label: "SUM Item Prices fulfilled After Product Discount (net)"
-    description: "Sum of fulfilled Item prices after Deduction of Product Discount (excl. VAT)"
     hidden:  no
     type: sum
     sql: ${amt_total_price_after_product_discount_net};;
@@ -677,15 +663,6 @@ view: orderline {
     sql: ${amt_discount_products_net} ;;
   }
 
-  measure: sum_item_price_fulfilled_net {
-    label: "SUM Item Prices fulfilled (net)"
-    description: "Sum of fulfilled Item prices (excl. VAT)"
-    hidden:  no
-    type: sum
-    sql: ${amt_total_price_net};;
-    value_format_name: euro_accounting_2_precision
-    group_label: "> Monetary Metrics"
-  }
 
   measure: ctn_skus {
     type: count_distinct
@@ -698,6 +675,7 @@ view: orderline {
   measure: sum_revenue_gross {
     label: "SUM of Gross Revenue"
     sql: ${amt_revenue_gross} ;;
+    description: "SUM of Item Sold Prices after deduction of all discounts (Cart and Product Discounts)"
     type: sum
     value_format_name: euro_accounting_2_precision
     group_label: "> Monetary Metrics"
@@ -1095,25 +1073,11 @@ view: orderline {
 
   #########  Dynamic measures
 
-  measure: sum_item_price_fulfilled_gross_dynamic {
-    group_label: "> Dynamic Monetary Metrics"
-    label: "SUM Items Price Fulfilled Gross (Dynamic)"
-    description: "To be used together with the Is After Product Discounts Deduction parameter."
-    label_from_parameter: is_after_product_discounts
-    value_format_name: eur
-    type: number
-    sql:
-    {% if is_after_product_discounts._parameter_value == "true" %}
-    ${sum_item_price_fulfilled_after_product_discount_gross}
-    {% elsif is_after_product_discounts._parameter_value == "false" %}
-    ${sum_item_price_fulfilled_gross}
-    {% endif %}
-    ;;
-}
 
   measure: sum_item_price_sold_gross_dynamic {
     group_label: "> Dynamic Monetary Metrics"
     label: "SUM Items Price Sold Gross (Dynamic)"
+    alias: [sum_item_price_fulfilled_gross_dynamic]
     description: "To be used together with the Is After Product Discounts Deduction parameter."
     label_from_parameter: is_after_product_discounts
     value_format_name: eur
@@ -1127,25 +1091,10 @@ view: orderline {
     ;;
   }
 
-  measure: sum_item_price_fulfilled_net_dynamic {
-    group_label: "> Dynamic Monetary Metrics"
-    label: "SUM Items Price Fulfilled Net (Dynamic)"
-    description: "To be used together with the Is After Product Discounts Deduction parameter."
-    label_from_parameter: is_after_product_discounts
-    value_format_name: eur
-    type: number
-    sql:
-    {% if is_after_product_discounts._parameter_value == 'true' %}
-    ${sum_item_price_fulfilled_after_product_discount_net}
-    {% elsif is_after_product_discounts._parameter_value == 'false' %}
-    ${sum_item_price_fulfilled_net}
-    {% endif %}
-    ;;
-  }
-
   measure: sum_item_price_sold_net_dynamic {
     group_label: "> Dynamic Monetary Metrics"
     label: "SUM Items Price Sold Net (Dynamic)"
+    alias: [sum_item_price_fulfilled_net_dynamic]
     description: "To be used together with the Is After Product Discounts Deduction parameter."
     label_from_parameter: is_after_product_discounts
     value_format_name: eur
@@ -1190,5 +1139,183 @@ view: orderline {
     {% endif %}
     ;;
   }
+
+####################################################################################################################################
+####################################################################################################################################
+################################################ Demand Planning ###################################################################
+####################################################################################################################################
+####################################################################################################################################
+
+
+  #Needed for wtd calculation
+
+  dimension_group: current_date_t_1 {
+    label: "Current Date - 1"
+    type: time
+    timeframes: [
+      date,
+      week,
+      month,
+      day_of_week_index,
+      day_of_week
+    ]
+    convert_tz: no
+    datatype: date
+    sql: date_sub(current_date(), interval 1 day) ;;
+    hidden: yes
+  }
+
+  dimension: until_today {
+    type: yesno
+    sql: ${created_day_of_week_index} <= ${current_date_t_1_day_of_week_index} AND
+      ${created_day_of_week_index} >= 0 ;;
+    hidden: yes
+  }
+
+  #Sold Quantities
+
+  #Daily
+
+
+  measure: sum_item_quantity_t_1 {
+    group_label: "Demand Planning"
+    label: "# Total Sales t-1"
+    description: "Quantity of Order Line Items sold in the previous t-1"
+    hidden: yes
+    type: sum
+    sql: ${quantity};;
+    filters: [created_date: "yesterday"]
+    value_format: "0.0"
+  }
+
+  measure: sum_item_quantity_t_2 {
+    group_label: "Demand Planning"
+    label: "# Total Sales t-2"
+    description: "Quantity of Order Line Items sold in the previous t-2"
+    hidden: yes
+    type: sum
+    sql: ${quantity};;
+    filters: [created_date: "2 days ago"]
+    value_format: "0.0"
+  }
+
+  measure: sum_item_quantity_t_3 {
+    group_label: "Demand Planning"
+    label: "# Total Sales t-3"
+    description: "Quantity of Order Line Items sold in the previous t-3"
+    hidden: yes
+    type: sum
+    sql: ${quantity};;
+    filters: [created_date: "3 days ago"]
+    value_format: "0.0"
+  }
+
+  measure: sum_item_quantity_t_4 {
+    group_label: "Demand Planning"
+    label: "# Total Sales t-4"
+    description: "Quantity of Order Line Items sold in the previous t-4"
+    hidden: yes
+    type: sum
+    sql: ${quantity};;
+    filters: [created_date: "4 days ago"]
+    value_format: "0.0"
+  }
+
+
+  #weekly
+
+  measure: sum_item_quantity_w_1 {
+    group_label: "Demand Planning"
+    label: "# Total Sales w-1"
+    description: "Quantity of Order Line Items sold in the previous w-1"
+    hidden: yes
+    type: sum
+    sql: ${quantity};;
+    filters: [created_date: "1 week ago"]
+    value_format: "0.0"
+  }
+
+
+  measure: sum_item_quantity_w_2 {
+    group_label: "Demand Planning"
+    label: "# Total Sales w-2"
+    description: "Quantity of Order Line Items sold in the previous w-2"
+    hidden: yes
+    type: sum
+    sql: ${quantity};;
+    filters: [created_date: "2 weeks ago"]
+    value_format: "0.0"
+  }
+
+  measure: sum_item_quantity_w_3 {
+    group_label: "Demand Planning"
+    label: "# Total Sales w-3"
+    description: "Quantity of Order Line Items sold in the previous w-3"
+    hidden: yes
+    type: sum
+    sql: ${quantity};;
+    filters: [created_date: "3 weeks ago"]
+    value_format: "0.0"
+  }
+
+  measure: sum_item_quantity_w_4 {
+    group_label: "Demand Planning"
+    label: "# Total Sales w-4"
+    description: "Quantity of Order Line Items sold in the previous w-4"
+    hidden: yes
+    type: sum
+    sql: ${quantity};;
+    filters: [created_date: "4 weeks ago"]
+    value_format: "0.0"
+  }
+
+
+#w2d
+
+  measure: sum_item_quantity_wtd {
+    group_label: "Demand Planning"
+    label: "# Total Sales WtD"
+    description: "Quantity of Order Line Items sold in the previous - WtD"
+    hidden: yes
+    type: sum
+    sql: ${quantity};;
+    filters: [created_date: "this week", until_today: "yes"]
+    value_format: "0.0"
+  }
+
+  measure: sum_item_quantity_wtd_w_1 {
+    group_label: "Demand Planning"
+    label: "# Total Sales WtD w-1"
+    description: "Quantity of Order Line Items sold in the previous - Previous week WtD"
+    hidden:  yes
+    type: sum
+    sql: ${quantity};;
+    filters: [created_date: "1 week ago", until_today: "yes"]
+    value_format: "0.0"
+  }
+
+  #calculations
+
+  measure: sum_item_quantity_wow_wtd {
+    group_label: "Demand Planning"
+    label: "# Total Sales WOW Growth - WtD"
+    description: "Quantity of Order Line Items sold in the previous - WtD WoW Growth"
+    hidden: yes
+    type: number
+    sql: (${sum_item_quantity_wtd} - ${sum_item_quantity_wtd_w_1}) / nullif(${sum_item_quantity_wtd_w_1}, 0);;
+    value_format_name: percent_1
+  }
+
+  measure: sum_item_quantity_wow_w_1_vs_w_2 {
+    group_label: "Demand Planning"
+    label: "# Total Sales WOW Growth (w-1 vs w-2)"
+    description: "Quantity of Order Line Items sold in the previous - WoW Growth (w-1 vs w-2)"
+    hidden: yes
+    type: number
+    sql: (${sum_item_quantity_w_1} - ${sum_item_quantity_w_2}) / nullif(${sum_item_quantity_w_2}, 0);;
+    value_format_name: percent_1
+  }
+
+
 
 }

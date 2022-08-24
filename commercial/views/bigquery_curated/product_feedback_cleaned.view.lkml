@@ -1,5 +1,5 @@
 view: product_feedback_cleaned {
-  sql_table_name: `flink-data-dev.sandbox.product_feedback_cleaned`
+  sql_table_name: `flink-data-prod.sandbox.product_feedback_cleaned`
     ;;
 
   dimension_group: date {
@@ -7,15 +7,19 @@ view: product_feedback_cleaned {
     description: "Date when we received the Customer Feedback Response"
     type: time
     timeframes: [
-      raw,
       time,
       date,
       week,
-      month,
-      quarter,
-      year
+      month
     ]
     sql: ${TABLE}.date ;;
+  }
+
+  dimension: country {
+    label: "Country"
+    description: "Country from where our customers sent us their feedback"
+    type: string
+    sql: ${TABLE}.country ;;
   }
 
   dimension: phrases_matches {

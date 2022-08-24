@@ -26,9 +26,16 @@ view: employee_level_kpis {
 
   dimension: rider_id {
     type: string
-    label: "Rider ID"
+    label: "Rider ID (old ID)"
     sql: ${TABLE}.rider_id ;;
   }
+
+  dimension: auth0_id {
+    type: string
+    label: "Rider ID (auth0_id)"
+    sql: ${TABLE}.auth0_id ;;
+  }
+
 
   dimension_group: shift {
     type: time
@@ -102,6 +109,24 @@ view: employee_level_kpis {
     sql: ${TABLE}.hire_date ;;
   }
 
+  dimension: contract_start_date {
+    label: "Contract Start Date"
+    description: "Based on Quinyx Agreement field - Contract Start Date"
+    convert_tz: no
+    datatype: date
+    type: date
+    sql: ${TABLE}.contract_start_date ;;
+  }
+
+  dimension: contract_end_date {
+    label: "Contract End Date"
+    description: "Based on Quinyx Agreement field - Contract End Date"
+    convert_tz: no
+    datatype: date
+    type: date
+    sql: ${TABLE}.contract_end_date ;;
+  }
+
   dimension: hub_code {
     type: string
     sql: ${TABLE}.hub_code ;;
@@ -122,9 +147,22 @@ view: employee_level_kpis {
   dimension: weekly_contracted_hours {
     type: number
     sql: ${TABLE}.weekly_contracted_hours ;;
-    description: "Based on Quinyx field (Agreement Working Hours) attached to each shift"
-
+    description: "# Weekly contracted hours based on Quinyx Agreements (Field in Quinyx UI: Agreement full time working hours)"
   }
+
+  dimension: min_weekly_contracted_hours {
+    type: number
+    sql: ${TABLE}.min_weekly_contracted_hours ;;
+    label: "MIN Weekly Contracted Hours"
+    description: "# Minimum weekly contracted hours based on Quinyx Agreements (Field in Quinyx UI: Rules for working time)"
+  }
+
+  dimension: max_weekly_contracted_hours {
+    type: number
+    sql: ${TABLE}.max_weekly_contracted_hours ;;
+    label: "MAX Weekly Contracted Hours"
+    description: "# Maximum weekly contracted hours based on Quinyx Agreements (Field in Quinyx UI: Rules for working time)"
+    }
 
   dimension_group: time_between_hire_date_and_today {
     type: duration
@@ -154,6 +192,13 @@ view: employee_level_kpis {
     type: sum
     label: "# Delivered Orders"
     sql: ${TABLE}.number_of_delivered_orders ;;
+  }
+
+  measure: number_of_picked_items {
+    group_label: "* Logistics *"
+    type: sum
+    label: "# Picked Items (Order items)"
+    sql: ${TABLE}.number_of_picked_items ;;
   }
 
   measure: number_of_orders_with_handling_time {
@@ -188,13 +233,43 @@ view: employee_level_kpis {
     value_format_name: percent_1
   }
 
+  measure: sum_worked_time_minutes {
+    group_label: "* Shift related *"
+    type: sum
+    label: "# Worked Time (min)"
+    description: "Sum worked time in minutes"
+    sql: ${TABLE}.number_of_worked_minutes ;;
+    value_format_name: decimal_1
+  }
+
   measure: sum_rider_handling_time_minutes {
     group_label: "* Logistics *"
     type: sum
-    label: "Sum Rider Handling Time (min)"
+    label: "# Rider Handling Time (min)"
     description: "Sum time needed for the rider to handle the order: Riding to customer + At customer + Riding to hub"
     sql: ${TABLE}.number_of_rider_handling_time_minutes ;;
     value_format_name: decimal_1
+  }
+
+
+  measure: sum_rider_idle_time_minutes {
+    group_label: "* Performance *"
+    type: sum
+    label: "# Rider Idle Time (min)"
+    description: "Sum of idle time (min) - the difference between worked minutes and rider handling time minutes"
+    sql: ${TABLE}.number_of_idle_minutes ;;
+    value_format_name: decimal_1
+  }
+
+  measure: sum_picking_time_minutes {
+    group_label: "* Logistics *"
+    type: sum
+    label: "Sum Picking Time (min)"
+    description: "Sum time needed for picking items per order"
+    sql: ${TABLE}.number_of_picking_time_minutes ;;
+    value_format_name: decimal_1
+    hidden: yes
+
   }
 
   measure: avg_rider_handling_time_minutes {
@@ -203,6 +278,24 @@ view: employee_level_kpis {
     label: "AVG Rider Handling Time (min)"
     description: "Average time needed for the rider to handle the order: Riding to customer + At customer + Riding to hub"
     sql: ${sum_rider_handling_time_minutes}/nullif(${number_of_orders_with_handling_time},0) ;;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_picking_time_order {
+    group_label: "* Logistics *"
+    type: number
+    label: "AVG Picking Time Per Order (min)"
+    description: "Average time needed for picking items per order"
+    sql: ${sum_picking_time_minutes}/nullif(${number_of_delivered_orders},0) ;;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_picking_time_item {
+    group_label: "* Logistics *"
+    type: number
+    label: "AVG Picking Time Per Item (min)"
+    description: "Average time needed for picking items"
+    sql: ${sum_picking_time_minutes}/nullif(${number_of_picked_items},0) ;;
     value_format_name: decimal_1
   }
 
@@ -260,6 +353,7 @@ view: employee_level_kpis {
     value_format_name: decimal_1
   }
 
+
   measure: pct_riding_to_customer_time {
     group_label: "* Logistics *"
     type: number
@@ -285,6 +379,15 @@ view: employee_level_kpis {
     description: "% Difference Riding time between To Hub and To Customer (positive value indicates Time To Hub > Time To Customer) e.g. a rider spent 5 minutes riding between hub to customer then spend another 5 minutes riding between customer to hub then that will result in % Delta Riding Time Between To Hub and To Customer to be 0%"
     sql: sum(${TABLE}.number_of_return_to_hub_time_minutes) / nullif(sum(${TABLE}.number_of_riding_to_customer_time_minutes),0) -1 ;;
     value_format_name: percent_1
+  }
+
+  measure: pct_rider_idle_time {
+    group_label: "* Performance *"
+    type: number
+    label: "% Worked Time Spent Idle (Riders)"
+    description: "% of worked time (min) not spent handling an order - compares the difference between worked time (min) and rider handling time (min) with total worked time (min)"
+    sql: sum(${TABLE}.number_of_idle_minutes) / nullif(sum(${TABLE}.number_of_worked_minutes),0) ;;
+    value_format: "0%"
   }
 
   # ~~~~~~~~~~~~~~~     Shift related     ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -420,8 +523,8 @@ view: employee_level_kpis {
     type: number
     hidden: no
     label: "% Sickness Hours "
-    description: "(Sickness hours + Scheduled hours) / Scheduled hours"
-    sql: (${number_of_sick_hours}+${number_of_scheduled_hours})/nullif(${number_of_scheduled_hours},0) ;;
+    description: "Sickness hours / (Sickness hours + Scheduled hours)"
+    sql: (${number_of_sick_hours})/nullif(${number_of_sick_hours}+${number_of_scheduled_hours},0) ;;
     value_format: "0%"
   }
 

@@ -77,7 +77,9 @@ view: inventory_daily {
       raw,
       date,
       week,
-      month
+      month,
+      day_of_week,
+      day_of_week_index
     ]
     convert_tz: no
     datatype: date
@@ -102,6 +104,12 @@ view: inventory_daily {
   dimension: sku {
     type: string
     sql: ${TABLE}.sku ;;
+    hidden: yes
+  }
+
+  dimension: parent_sku {
+    type: string
+    sql: ${TABLE}.parent_sku ;;
     hidden: yes
   }
 
@@ -991,13 +999,697 @@ view: inventory_daily {
     type: count
   }
 
+#####################################################################################
+#####################################################################################
+######################### Demand Planning ###########################################
+#####################################################################################
+#####################################################################################
+
+################ Hours Open t-
+
+  measure: sum_of_hours_open_t_1 {
+
+    label: "# Opening Hours t-1"
+    description: "The number of hours, a hub was open (hours were customers could buy) t-1"
+    group_label: "Demand Planning"
+
+    type: sum
+    sql: ${number_of_hours_open} ;;
+    filters: [report_date: "yesterday"]
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  measure: sum_of_hours_open_t_2 {
+
+    label: "# Opening Hours t-2"
+    description: "The number of hours, a hub was open (hours were customers could buy) t-2"
+    group_label: "Demand Planning"
+
+    type: sum
+    sql: ${number_of_hours_open} ;;
+    filters: [report_date: "2 days ago"]
+
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  measure: sum_of_hours_open_t_3 {
+
+    label: "# Opening Hours t-3"
+    description: "The number of hours, a hub was open (hours were customers could buy) t-3"
+    group_label: "Demand Planning"
+
+    type: sum
+    sql: ${number_of_hours_open} ;;
+    filters: [report_date: "3 days ago"]
+
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  measure: sum_of_hours_open_t_4 {
+
+    label: "# Opening Hours t-4"
+    description: "The number of hours, a hub was open (hours were customers could buy) t-4"
+    group_label: "Demand Planning"
+
+    type: sum
+    sql: ${number_of_hours_open} ;;
+    filters: [report_date: "4 days ago"]
+
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  ################## Hours OOS t-
+
+  measure: sum_of_hours_oos_t_1 {
+
+    label: "# Hours Out-Of-Stock t-1"
+    description: "The number of business hours, a specific SKU was not available in a hub t-1"
+    group_label: "Demand Planning"
+
+    type: sum
+    sql: ${number_of_hours_oos} ;;
+    filters: [report_date: "yesterday"]
+    value_format_name: decimal_1
+    hidden: yes
+
+  }
+
+  measure: sum_of_hours_oos_t_2 {
+
+    label: "# Hours Out-Of-Stock t-2"
+    description: "The number of business hours, a specific SKU was not available in a hub t-2"
+    group_label: "Demand Planning"
+
+    type: sum
+    sql: ${number_of_hours_oos} ;;
+    filters: [report_date: "2 days ago"]
+
+    value_format_name: decimal_1
+    hidden: yes
+
+  }
+
+  measure: sum_of_hours_oos_t_3 {
+
+    label: "# Hours Out-Of-Stock t-3"
+    description: "The number of business hours, a specific SKU was not available in a hub t-3"
+    group_label: "Demand Planning"
+
+    type: sum
+    sql: ${number_of_hours_oos} ;;
+    filters: [report_date: "3 days ago"]
+
+    value_format_name: decimal_1
+    hidden: yes
+
+  }
+
+  measure: sum_of_hours_oos_t_4 {
+
+    label: "# Hours Out-Of-Stock t-4"
+    description: "The number of business hours, a specific SKU was not available in a hub t-4"
+    group_label: "Demand Planning"
+
+    type: sum
+    sql: ${number_of_hours_oos} ;;
+    filters: [report_date: "4 days ago"]
+
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+### % IN STOCK
+
+  measure: pct_in_stock_t_1 {
+
+    label: "% In Stock t-1"
+    description: "This rate gives the sum of all hours, an SKU was out of stock compared to all hours, the hub was open for orders t-1"
+    group_label: "Demand Planning"
+
+    type: number
+    sql: 1 - (${sum_of_hours_oos_t_1} / nullif( ${sum_of_hours_open_t_1},0)) ;;
+    value_format_name: percent_1
+    hidden: yes
+  }
+
+  measure: pct_in_stock_t_2 {
+
+    label: "% In Stock t-2"
+    description: "This rate gives the sum of all hours, an SKU was out of stock compared to all hours, the hub was open for orders t-2"
+    group_label: "Demand Planning"
+
+    type: number
+    sql: 1 - (${sum_of_hours_oos_t_2} / nullif( ${sum_of_hours_open_t_2},0)) ;;
+    value_format_name: percent_1
+    hidden: yes
+  }
+
+  measure: pct_in_stock_t_3 {
+
+    label: "% In Stock t-3"
+    description: "This rate gives the sum of all hours, an SKU was out of stock compared to all hours, the hub was open for orders t-3"
+    group_label: "Demand Planning"
+
+    type: number
+    sql: 1 - (${sum_of_hours_oos_t_3} / nullif( ${sum_of_hours_open_t_3},0)) ;;
+    value_format_name: percent_1
+    hidden: yes
+  }
+
+  measure: pct_in_stock_t_4 {
+
+    label: "% In Stock t-4"
+    description: "This rate gives the sum of all hours, an SKU was out of stock compared to all hours, the hub was open for orders t-4"
+    group_label: "Demand Planning"
+
+    type: number
+    sql: 1 - (${sum_of_hours_oos_t_4} / nullif( ${sum_of_hours_open_t_4},0)) ;;
+    value_format_name: percent_1
+    hidden: yes
+  }
+
+
+  ########################## Weekly
+
+################## Hours Open w-
+
+  measure: sum_of_hours_open_w_1 {
+
+    label: "# Opening Hours w-1"
+    description: "The number of hours, a hub was open (hours were customers could buy) w-1"
+    group_label: "Demand Planning"
+
+    type: sum
+    sql: ${number_of_hours_open} ;;
+    filters: [report_date: "1 week ago"]
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  measure: sum_of_hours_open_w_2 {
+
+    label: "# Opening Hours w-2"
+    description: "The number of hours, a hub was open (hours were customers could buy) w-2"
+    group_label: "Demand Planning"
+
+    type: sum
+    sql: ${number_of_hours_open} ;;
+    filters: [report_date: "2 weeks ago"]
+
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  measure: sum_of_hours_open_w_3 {
+
+    label: "# Opening Hours w-3"
+    description: "The number of hours, a hub was open (hours were customers could buy) w-3"
+    group_label: "Demand Planning"
+
+    type: sum
+    sql: ${number_of_hours_open} ;;
+    filters: [report_date: "3 weeks ago"]
+
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  measure: sum_of_hours_open_w_4 {
+
+    label: "# Opening Hours w-4"
+    description: "The number of hours, a hub was open (hours were customers could buy) w-4"
+    group_label: "Demand Planning"
+
+    type: sum
+    sql: ${number_of_hours_open} ;;
+    filters: [report_date: "4 weeks ago"]
+
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  ##################Hours OOS w-
+
+  measure: sum_of_hours_oos_w_1 {
+
+    label: "# Hours Out-Of-Stock w-1"
+    description: "The number of business hours, a specific SKU was not available in a hub w-1"
+    group_label: "Demand Planning"
+
+    type: sum
+    sql: ${number_of_hours_oos} ;;
+    filters: [report_date: "1 week ago"]
+    value_format_name: decimal_1
+    hidden: yes
+
+  }
+
+  measure: sum_of_hours_oos_w_2 {
+
+    label: "# Hours Out-Of-Stock w-2"
+    description: "The number of business hours, a specific SKU was not available in a hub w-2"
+    group_label: "Demand Planning"
+
+    type: sum
+    sql: ${number_of_hours_oos} ;;
+    filters: [report_date: "2 weeks ago"]
+
+    value_format_name: decimal_1
+    hidden: yes
+
+  }
+
+  measure: sum_of_hours_oos_w_3 {
+
+    label: "# Hours Out-Of-Stock w-3"
+    description: "The number of business hours, a specific SKU was not available in a hub w-3"
+    group_label: "Demand Planning"
+
+    type: sum
+    sql: ${number_of_hours_oos} ;;
+    filters: [report_date: "3 weeks ago"]
+
+    value_format_name: decimal_1
+    hidden: yes
+
+  }
+
+  measure: sum_of_hours_oos_w_4 {
+
+    label: "# Hours Out-Of-Stock w-4"
+    description: "The number of business hours, a specific SKU was not available in a hub w-4"
+    group_label: "Demand Planning"
+
+    type: sum
+    sql: ${number_of_hours_oos} ;;
+    filters: [report_date: "4 weeks ago"]
+
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  ################## %IN STOCK Weekly
+
+  measure: pct_in_stock_w_1 {
+
+    label: "% In Stock w-1"
+    description: "This rate gives the sum of all hours, an SKU was out of stock compared to all hours, the hub was open for orders w-1"
+    group_label: "Demand Planning"
+
+    type: number
+    sql: 1 - (${sum_of_hours_oos_w_1} / nullif( ${sum_of_hours_open_w_1},0)) ;;
+    value_format_name: percent_1
+    hidden: yes
+  }
+
+  measure: pct_in_stock_w_2 {
+
+    label: "% In Stock w-2"
+    description: "This rate gives the sum of all hours, an SKU was out of stock compared to all hours, the hub was open for orders w-2"
+    group_label: "Demand Planning"
+
+    type: number
+    sql: 1 - (${sum_of_hours_oos_w_2} / nullif( ${sum_of_hours_open_w_2},0)) ;;
+    value_format_name: percent_1
+    hidden: yes
+  }
+
+  measure: pct_in_stock_w_3 {
+
+    label: "% In Stock w-3"
+    description: "This rate gives the sum of all hours, an SKU was out of stock compared to all hours, the hub was open for orders w-3"
+    group_label: "Demand Planning"
+
+    type: number
+    sql: 1 - (${sum_of_hours_oos_w_3} / nullif( ${sum_of_hours_open_w_3},0)) ;;
+    value_format_name: percent_1
+    hidden: yes
+  }
+
+  measure: pct_in_stock_w_4 {
+
+    label: "% In Stock w-4"
+    description: "This rate gives the sum of all hours, an SKU was out of stock compared to all hours, the hub was open for orders w-4"
+    group_label: "Demand Planning"
+
+    type: number
+    sql: 1 - (${sum_of_hours_oos_w_4} / nullif( ${sum_of_hours_open_w_4},0)) ;;
+    value_format_name: percent_1
+    hidden: yes
+  }
+
+
+  ################## %IN STOCK W-1 vs W-2
+
+  measure: pct_in_stock_wow_w_1_vs_w_2 {
+    label: "% In Stock WOW Growth (w-1 vs w-2) "
+    group_label: "Demand Planning"
+
+    type: number
+    sql: (${pct_in_stock_w_1} - ${pct_in_stock_w_2})/nullif(${pct_in_stock_w_2},0)  ;;
+    value_format_name: percent_1
+    hidden: yes
+  }
 
 
 
 
+  #This is needed to calculate week to date
+  dimension_group: current_date_t_1 {
+    label: "Current Date - 1"
+    type: time
+    timeframes: [
+      date,
+      week,
+      month,
+      day_of_week_index,
+      day_of_week
+    ]
+    convert_tz: no
+    datatype: date
+    sql: date_sub(current_date(), interval 1 day) ;;
+    hidden: yes
+  }
+
+  dimension: until_today {
+    type: yesno
+    sql: ${report_day_of_week_index} <= ${current_date_t_1_day_of_week_index} AND
+      ${report_day_of_week_index} >= 0 ;;
+    hidden: yes
+  }
 
 
 
+################## W2T
+
+#Hours Open WTD
+
+  measure: sum_of_hours_open_wtd {
+
+    label: "# Opening Hours WtD"
+    description: "The number of hours, a hub was open (hours were customers could buy) WtD"
+    group_label: "Demand Planning"
+
+    type: sum
+    sql: ${number_of_hours_open} ;;
+    filters: [report_date: "this week"]
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  measure: sum_of_hours_open_wtd_w_1 {
+
+    label: "# Opening Hours WtD w-1"
+    description: "The number of hours, a hub was open (hours were customers could buy) - Previous week WtD"
+    group_label: "Demand Planning"
+
+    type: sum
+    sql: ${number_of_hours_open} ;;
+    filters: [report_date: "1 week ago", until_today: "yes"]
+
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  #Hours OOS WTD
+
+  measure: sum_of_hours_oos_wtd {
+
+    label: "# Hours Out-Of-Stock WtD"
+    description: "The number of business hours, a specific SKU was not available in a hub - WtD"
+    group_label: "Demand Planning"
+
+    type: sum
+    sql: ${number_of_hours_oos} ;;
+    filters: [report_date: "this week"]
+    value_format_name: decimal_1
+    hidden: yes
+
+  }
+
+  measure: sum_of_hours_oos_wtd_w_1 {
+
+    label: "# Hours Out-Of-Stock WtD w-1"
+    description: "The number of business hours, a specific SKU was not available in a hub - Previous week WtD"
+    group_label: "Demand Planning"
+
+    type: sum
+    sql: ${number_of_hours_oos} ;;
+    filters: [report_date: "1 week ago", until_today: "yes"]
+
+    value_format_name: decimal_1
+    hidden: yes
+
+  }
+
+####%IN STOCK WTD
+
+  measure: pct_in_stock_wtd {
+
+    label: "% In Stock WtD"
+    description: "This rate gives the sum of all hours, an SKU was out of stock compared to all hours, the hub was open for orders - WtD"
+    group_label: "Demand Planning"
+
+    type: number
+    sql: 1 - (${sum_of_hours_oos_wtd} / nullif( ${sum_of_hours_open_wtd},0)) ;;
+    value_format_name: percent_1
+    hidden: yes
+  }
+
+  measure: pct_in_stock_wtd_w_1 {
+
+    label: "% In Stock WtD w-1"
+    description: "This rate gives the sum of all hours, an SKU was out of stock compared to all hours, the hub was open for orders - Previous week WtD"
+    group_label: "Demand Planning"
+
+    type: number
+    sql: 1 - (${sum_of_hours_oos_wtd_w_1} / nullif( ${sum_of_hours_open_wtd_w_1},0)) ;;
+    value_format_name: percent_1
+    hidden: yes
+  }
+
+
+  measure: pct_in_stock_wow_wtd {
+    label: "% In Stock WOW Growth - WtD"
+    group_label: "Demand Planning"
+
+    type: number
+    sql: (${pct_in_stock_wtd} - ${pct_in_stock_wtd_w_1})/nullif(${pct_in_stock_wtd_w_1}, 0)  ;;
+    value_format_name: percent_1
+    hidden: yes
+  }
+
+
+#####CURRENT STOCK AVAILABLE
+
+  measure: quantity_to_t_1 {
+
+    label: "Quantity To - t-1"
+    description: "The stock level t-1, at the end of the day per day and hub"
+    group_label: "Demand Planning"
+    type: sum
+    sql:  ${inventory_daily.quantity_to} ;;
+    filters: [report_date: "yesterday"]
+    hidden: yes
+
+    value_format_name: decimal_1
+  }
+
+  measure: quantity_to_t_2 {
+
+    label: "Quantity To - t-2"
+    description: "The stock level t-2, at the end of the day per day and hub"
+    group_label: "Demand Planning"
+    type: sum
+    sql:  ${inventory_daily.quantity_to} ;;
+    filters: [report_date: "2 days ago"]
+    hidden: yes
+
+    value_format_name: decimal_1
+  }
+
+
+  measure: quantity_to_adjusted {
+
+    label: "# Current Stock"
+    description: "The stock level t-1, at the end of the day per day and hub"
+    group_label: "Demand Planning"
+    type: number
+    sql:  coalesce(${quantity_to_t_1}, ${quantity_to_t_2}) ;;
+    hidden: yes
+
+
+    value_format_name: decimal_1
+  }
+
+#### DAYS COVERAGE
+
+  measure: days_coverage {
+
+    label: "Days Coverage"
+    description: "The stock level t-1, at the end of the day per day and hub"
+    group_label: "Demand Planning"
+    type: number
+    sql:  (${quantity_to_adjusted} + ${replenishment_purchase_orders.sum_selling_unit_quantity_next_7_days}) / nullif(${orderline.avg_daily_item_quantity_last_14d}, 0) ;;
+    hidden: yes
+
+
+    value_format_name: decimal_2
+  }
+
+### OOS
+
+## DAILY
+
+  measure: lost_sales_t_1 {
+
+    label: "€ Lost Sales (Gross) t-1"
+    description: "This shows how much money we lost due OOS levels per sku t-1"
+    group_label: "Demand Planning"
+
+    type: number
+    sql: ((1 - ${pct_in_stock_t_1}) * ${sku_hub_day_level_orders.sum_item_price_fulfilled_gross_t_1}) / nullif(${pct_in_stock_t_1},0)  ;;
+    value_format_name: eur
+    hidden: yes
+  }
+
+  measure: lost_sales_t_2 {
+
+    label: "€ Lost Sales (Gross) t-2"
+    description: "This shows how much money we lost due OOS levels per sku t-2"
+    group_label: "Demand Planning"
+
+    type: number
+    sql: ((1 - ${pct_in_stock_t_2}) * ${sku_hub_day_level_orders.sum_item_price_fulfilled_gross_t_2}) / nullif(${pct_in_stock_t_2},0)  ;;
+    value_format_name: eur
+    hidden: yes
+  }
+
+  measure: lost_sales_t_3 {
+
+    label: "€ Lost Sales (Gross) t-3"
+    description: "This shows how much money we lost due OOS levels per sku t-3"
+    group_label: "Demand Planning"
+
+    type: number
+    sql: ((1 - ${pct_in_stock_t_3}) * ${sku_hub_day_level_orders.sum_item_price_fulfilled_gross_t_3}) / nullif(${pct_in_stock_t_3},0)  ;;
+    value_format_name: eur
+    hidden: yes
+  }
+
+  measure: lost_sales_t_4 {
+
+    label: "€ Lost Sales (Gross) t-4"
+    description: "This shows how much money we lost due OOS levels per sku t-4"
+    group_label: "Demand Planning"
+
+    type: number
+    sql: ((1 - ${pct_in_stock_t_4}) * ${sku_hub_day_level_orders.sum_item_price_fulfilled_gross_t_4}) / nullif(${pct_in_stock_t_4},0)  ;;
+    value_format_name: eur
+    hidden: yes
+  }
+
+  ## WEEKLY
+
+  measure: lost_sales_w_1 {
+
+    label: "€ Lost Sales (Gross) w-1"
+    description: "This shows how much money we lost due OOS levels per sku w-1"
+    group_label: "Demand Planning"
+
+    type: number
+    sql: ((1 - ${pct_in_stock_w_1}) * ${sku_hub_day_level_orders.sum_item_price_fulfilled_gross_w_1}) / nullif(${pct_in_stock_w_1},0)  ;;
+    value_format_name: eur
+    hidden: yes
+  }
+
+  measure: lost_sales_w_2 {
+
+    label: "€ Lost Sales (Gross) w-2"
+    description: "This shows how much money we lost due OOS levels per sku w-2"
+    group_label: "Demand Planning"
+
+    type: number
+    sql: ((1 - ${pct_in_stock_w_2}) * ${sku_hub_day_level_orders.sum_item_price_fulfilled_gross_w_2}) / nullif(${pct_in_stock_w_2},0)  ;;
+    value_format_name: eur
+    hidden: yes
+  }
+
+  measure: lost_sales_w_3 {
+
+    label: "€ Lost Sales (Gross) w-3"
+    description: "This shows how much money we lost due OOS levels per sku w-3"
+    group_label: "Demand Planning"
+
+    type: number
+    sql: ((1 - ${pct_in_stock_w_3}) * ${sku_hub_day_level_orders.sum_item_price_fulfilled_gross_w_3}) / nullif(${pct_in_stock_w_3},0)  ;;
+    value_format_name: eur
+    hidden: yes
+  }
+
+  measure: lost_sales_w_4 {
+
+    label: "€ Lost Sales (Gross) w-4"
+    description: "This shows how much money we lost due OOS levels per sku w-4"
+    group_label: "Demand Planning"
+
+    type: number
+    sql: ((1 - ${pct_in_stock_w_4}) * ${sku_hub_day_level_orders.sum_item_price_fulfilled_gross_w_4}) / nullif(${pct_in_stock_w_4},0)  ;;
+    value_format_name: eur
+    hidden: yes
+  }
+
+
+####WTD
+
+  measure: lost_sales_wtd {
+
+    label: "€ Lost Sales (Gross) WtD"
+    description: "This shows how much money we lost due OOS levels per sku - WtD"
+    group_label: "Demand Planning"
+
+    type: number
+    sql: ((1 - ${pct_in_stock_wtd}) * ${sku_hub_day_level_orders.sum_item_price_fulfilled_gross_wtd}) / nullif(${pct_in_stock_wtd},0)  ;;
+    value_format_name: eur
+    hidden: yes
+  }
+
+  measure: lost_sales_wtd_w_1 {
+
+    label: "€ Lost Sales (Gross) WtD w-1"
+    description: "This shows how much money we lost due OOS levels per sku - Previous week WtD"
+    group_label: "Demand Planning"
+
+    type: number
+    sql: ((1 - ${pct_in_stock_wtd_w_1}) * ${sku_hub_day_level_orders.sum_item_price_fulfilled_gross_wtd_w_1}) / nullif(${pct_in_stock_wtd_w_1},0)  ;;
+    value_format_name: eur
+    hidden: yes
+  }
+
+
+  measure: pct_lost_sales_wow_wtd {
+    label: "% Lost Sales WOW Growth - WtD"
+    group_label: "Demand Planning"
+
+    type: number
+    sql: (${lost_sales_wtd} - ${lost_sales_wtd_w_1})/nullif(${lost_sales_wtd_w_1}, 0)  ;;
+    value_format_name: percent_1
+    hidden: yes
+  }
+
+  measure: pct_lost_sales_wow_w_1_vs_w_2 {
+    label: "% Lost Sales WOW Growth (w-1 vs w-2) "
+    group_label: "Demand Planning"
+
+    type: number
+    sql: (${lost_sales_w_1} - ${lost_sales_w_2})/nullif(${lost_sales_w_2},0)  ;;
+    value_format_name: percent_1
+    hidden: yes
+  }
 
 
 }

@@ -135,7 +135,7 @@ explore: flink_to_gorillas_global {
   join: albert_heijn_products {
     from: albert_heijn_products
     view_label: "* Albert Heijn Products *"
-    sql_on: ${albert_heijn_products.product_id} = ${flink_to_albert_heijn_global.albert_heijn_product_id} ;;
+    sql_on: ${albert_heijn_products.product_uuid} = ${flink_to_albert_heijn_global.albert_heijn_product_id} ;;
     relationship: one_to_one
     type: left_outer
   }

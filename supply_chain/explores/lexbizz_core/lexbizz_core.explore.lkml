@@ -12,6 +12,16 @@ explore: lexbizz_core {
   from: lexbizz_item_warehouse
   view_name: "item_warehouse"
 
+  access_filter: {
+    field: hubs_ct.country_iso
+    user_attribute: country_iso
+
+  }
+  access_filter: {
+    field: hubs_ct.city
+    user_attribute: city
+  }
+
 
   # -----------  join stock_item  ------------------------------------------------------------------------------------------
   join: stock_item {

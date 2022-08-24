@@ -88,6 +88,42 @@ view: candidate_application_status {
     sql: ${TABLE}.number_of_days_offered_to_hired ;;
   }
 
+  dimension: number_of_days_in_review_to_prescreen_interview {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.number_of_days_in_review_to_prescreen_interview ;;
+  }
+
+  dimension: number_of_days_prescreen_to_first_interview {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.number_of_days_prescreen_to_first_interview ;;
+  }
+
+  dimension: number_of_days_first_to_second_interview {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.number_of_days_first_to_second_interview ;;
+  }
+
+  dimension: number_of_days_second_to_third_interview {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.number_of_days_second_to_third_interview ;;
+  }
+
+  dimension: number_of_days_third_to_final_interview {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.number_of_days_third_to_final_interview ;;
+  }
+
+  dimension: number_of_days_final_interview_to_offered {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.number_of_days_final_interview_to_offered ;;
+  }
+
   dimension: number_of_interviews {
     hidden: yes
     type: number
@@ -254,38 +290,6 @@ view: candidate_application_status {
   }
 
   ############### Interview Dates
-
-  dimension: substatus_interview_f2f_executive {
-    type: date
-    convert_tz: no
-    group_label: "> Interview Dates"
-    label: " F2F Executive Interview Date"
-    sql: ${TABLE}.substatus_interview_f2f_executive_date ;;
-  }
-
-  dimension: substatus_interview_f2f_founder {
-    type: date
-    convert_tz: no
-    group_label: "> Interview Dates"
-    label: " F2F Founder Interview Date"
-    sql: ${TABLE}.substatus_interview_f2f_founder_date ;;
-  }
-
-  dimension: substatus_interview_f2f_peer {
-    type: date
-    convert_tz: no
-    group_label: "> Interview Dates"
-    label: " F2F Peer Interview Date"
-    sql: ${TABLE}.substatus_interview_f2f_peer_date ;;
-  }
-
-  dimension: substatus_interview_f2f_recruiter_hiring_manager {
-    type: date
-    convert_tz: no
-    group_label: "> Interview Dates"
-    label: " F2F Recruiter & Hiring Manager Date"
-    sql: ${TABLE}.substatus_interview_f2f_recruiter_hiring_manager_date ;;
-  }
 
   dimension: substatus_interview_preliminary {
     type: date
@@ -482,14 +486,6 @@ view: candidate_application_status {
     value_format: "0.0"
   }
 
-  measure: avg_number_of_days_new_to_interview_prescreen {
-    group_label: "> Duration Between Stages"
-    type: average
-    label: "AVG # Days New to Pre-Screen Interview"
-    sql: ${number_of_days_new_to_interview_prescreen} ;;
-    value_format: "0.0"
-  }
-
   measure: avg_number_of_days_new_to_rejection {
     type: average
     group_label: "> Duration Between Stages"
@@ -514,12 +510,60 @@ view: candidate_application_status {
     value_format: "0.0"
   }
 
-  measure: avg_number_of_days_new_to_end_of_process {
+  measure: avg_number_of_days_in_review_to_prescreen_interview {
+    alias: [avg_number_of_days_new_to_interview_prescreen]
     type: average
     group_label: "> Duration Between Stages"
-    label: "AVG # Days New to End of Process"
-    description: "End of process can be Hire, Rejection or Withdrawn"
-    sql: ${number_of_days_new_to_end_of_process} ;;
+    label: "AVG # Days New to Pre-Screen"
+    sql: ${number_of_days_in_review_to_prescreen_interview} ;;
+    value_format: "0.0"
+  }
+
+  measure: avg_number_of_days_prescreen_to_first_interview {
+    type: average
+    group_label: "> Duration Between Stages"
+    label: "AVG # Days Pre-Screen to 1st Interview"
+    sql: ${number_of_days_prescreen_to_first_interview} ;;
+    value_format: "0.0"
+  }
+
+  measure: avg_number_of_days_first_to_second_interview {
+    type: average
+    group_label: "> Duration Between Stages"
+    label: "AVG # Days 1st to 2nd Interview"
+    sql: ${number_of_days_first_to_second_interview} ;;
+    value_format: "0.0"
+  }
+
+  measure: avg_number_of_days_second_to_third_interview {
+    type: average
+    group_label: "> Duration Between Stages"
+    label: "AVG # Days 2nd to 3rd Interview"
+    sql: ${number_of_days_second_to_third_interview} ;;
+    value_format: "0.0"
+  }
+
+  measure: avg_number_of_days_third_to_final_interview {
+    type: average
+    group_label: "> Duration Between Stages"
+    label: "AVG # Days 3rd to Final Interview"
+    sql: ${number_of_days_third_to_final_interview} ;;
+    value_format: "0.0"
+  }
+
+  measure: avg_number_of_days_final_interview_to_offered {
+    type: average
+    group_label: "> Duration Between Stages"
+    label: "AVG # Days Final Interview to Offer"
+    sql: ${number_of_days_final_interview_to_offered} ;;
+    value_format: "0.0"
+  }
+
+  measure: avg_number_of_days_offered_to_hired {
+    type: average
+    group_label: "> Duration Between Stages"
+    label: "AVG # Days Offer to Hire"
+    sql: ${number_of_days_offered_to_hired} ;;
     value_format: "0.0"
   }
 
@@ -563,7 +607,7 @@ view: candidate_application_status {
   ########## Parameters
 
   parameter: date_granularity {
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     label: "Date Granularity"
     type: unquoted
     allowed_value: { value: "Day" }

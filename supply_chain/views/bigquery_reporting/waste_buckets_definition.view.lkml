@@ -1,5 +1,5 @@
 view: waste_waterfall_definition {
-  sql_table_name: `flink-data-dev.reporting.waste_buckets`
+  sql_table_name: `flink-data-prod.reporting.waste_buckets`
     ;;
 
 
@@ -16,20 +16,30 @@ view: waste_waterfall_definition {
   }
 
   dimension: sku {
+    label: "SKU"
     type: string
-    group_label: "ID Dimensions"
+    #group_label: "ID Dimensions"
     sql: ${TABLE}.sku ;;
   }
 
-  dimension: hub_code {
+  dimension: parent_sku {
+    label: "Parent SKU"
     type: string
-    group_label: "ID Dimensions"
+    #group_label: "ID Dimensions"
+    sql: ${TABLE}.parent_sku ;;
+  }
+
+  dimension: hub_code {
+    label: "Hub Code"
+    type: string
+    #group_label: "ID Dimensions"
     sql: ${TABLE}.hub_code ;;
   }
 
   dimension: country_iso {
+    label: "Country ISO"
     type: string
-    group_label: "ID Dimensions"
+    #group_label: "ID Dimensions"
     sql: ${TABLE}.country_iso ;;
   }
 
@@ -39,6 +49,7 @@ view: waste_waterfall_definition {
 ##################################################################################
 
   dimension_group: inventory_change {
+    label: "> Inventory Change"
     type: time
     timeframes: [
       raw,
@@ -46,9 +57,10 @@ view: waste_waterfall_definition {
       week,
       month,
       quarter,
-      year
+      year,
+      week_of_year
     ]
-    convert_tz: no
+    convert_tz: yes
     datatype: date
     sql: ${TABLE}.inventory_change_date ;;
   }
@@ -75,42 +87,60 @@ view: waste_waterfall_definition {
 ##################################################################################
 
 
-  dimension: waste_reason_clasification {
-    label: "Waste Definition"
+  dimension: waste_buckets {
+    label: "Waste Buckets Definition"
+    #group_label: "Waste Dimensions"
     type: string
-    sql: ${TABLE}.waste_reason_clasification ;;
+    sql: ${TABLE}.waste_buckets ;;
   }
 
 
-  dimension: euro_waste {
-    label: "€ Euro Waste"
+  dimension: amt_waste_gross {
+    label: "Outbound Items (Waste) - Gross"
     hidden: yes
     type: number
-    sql: ${TABLE}.euro_waste ;;
+    sql: ${TABLE}.amt_waste_selling_price_gross ;;
   }
 
-  dimension: quantity_change {
-    label: "Outbound Quantity"
+  dimension: number_of_items_waste {
+    label: "Outbound Items (Waste)"
+    hidden: yes
+    #group_label: "Waste Dimensions"
     type: number
-    sql: ${TABLE}.quantity_change ;;
+    sql: ${TABLE}.number_of_items_waste ;;
   }
 
+  dimension: item_selling_price_daily_gross {
+    label: "Item Selling Price Gross"
+    #group_label: "Waste Dimensions"
+    hidden: yes
+    type: number
+    sql: ${TABLE}.item_selling_price_daily_gross ;;
+  }
 
 ##################################################################################
 ############################## Measures ##########################################
 ##################################################################################
 
 
-  measure: sum_bucket_a_damaged {
+  measure: sum_waste_gross {
     type: sum
-    sql: ${euro_waste} ;;
-    label: "€ Euro Waste"
-    value_format: "0.0,\" K\""
+    sql: abs(${amt_waste_gross}) ;;
+    label: "€ Outbound Items (Waste) - Gross"
+    value_format_name: eur
+    #value_format: "0.0,\" K\""
+  }
+
+  measure: sum_number_of_items_waste {
+    type: sum
+    sql: abs(${number_of_items_waste}) ;;
+    label: "# Outbound Items (Waste)"
   }
 
 
   measure: count {
     type: count
     drill_fields: []
+    hidden: yes
   }
 }

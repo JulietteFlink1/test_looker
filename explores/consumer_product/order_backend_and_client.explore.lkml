@@ -23,9 +23,9 @@ explore: order_backend_and_client{
     , order_backend_and_client.is_successful_order, riding_to_customer_time_minutes
     , order_backend_and_client.delivery_eta_minutes
     , order_backend_and_client.is_internal_order
-    , order_backend_and_client.delivery_eta_timestamp_date
+    , order_backend_and_client.delivery_pdt_timestamp_date
     , order_backend_and_client.delivery_timestamp_date
-    , order_backend_and_client.delivery_delay_since_eta
+    , order_backend_and_client.delivery_delay_since_pdt
     , order_backend_and_client.hub_code
     , order_backend_and_client.created_date
     , order_client*]

@@ -14,7 +14,7 @@ view: orders {
       customer_type,
       gmv_gross,
       discount_amount,
-      delivery_eta_timestamp_raw,
+      delivery_pdt_timestamp_raw,
       delivery_timestamp_raw
     ]
   }
@@ -147,6 +147,15 @@ view: orders {
       ;;
   }
 
+  dimension: item_value_after_product_discount_gross {
+
+    group_label: "* Monetary Values *"
+    type: number
+    hidden: no
+    sql: ${TABLE}.amt_total_price_after_product_discount_gross
+      ;;
+  }
+
   dimension: item_value_net {
 
     alias: [amt_total_price_net]
@@ -154,6 +163,15 @@ view: orders {
     type: number
     hidden: no
     sql: ${TABLE}.amt_total_price_net   ;;
+  }
+
+  dimension: item_value_after_product_discount_net {
+
+    group_label: "* Monetary Values *"
+    type: number
+    hidden: no
+    sql: ${TABLE}.amt_total_price_after_product_discount_net
+      ;;
   }
 
   dimension: item_value_gross_tier_1 {
@@ -183,9 +201,11 @@ view: orders {
     style: relational
     sql: ${item_value_gross} ;;
   }
+
   dimension: rider_tip {
+    group_label: "* Monetary Values *"
     type: number
-    hidden: yes
+    hidden: no
     sql: ${TABLE}.amt_rider_tip ;;
   }
 
@@ -405,7 +425,8 @@ view: orders {
     sql: ${created_hour_of_day} < ${now_hour_of_day} ;;
   }
 
-  dimension_group: delivery_eta_timestamp {
+  dimension_group: delivery_pdt_timestamp {
+    alias: [delivery_eta_timestamp]
     group_label: "* Dates and Timestamps *"
     label: "Delivery PDT"
     description: "Promised Delivery time as shown to customer"
@@ -425,23 +446,31 @@ view: orders {
     sql: ${TABLE}.delivery_pdt_timestamp ;;
   }
 
-  dimension: delivery_delay_since_eta {
+  dimension: delivery_delay_since_pdt {
+    alias: [delivery_delay_since_eta]
     group_label: "* Operations / Logistics *"
-    label: "Delta to PDT (min)"
+    label: "Delivery delay to PDT (min)"
     description: "Delay versus promised delivery time (as shown to customer)"
-    type: duration_minute
-    sql_start: ${delivery_eta_timestamp_raw};;
-    sql_end: ${delivery_timestamp_raw};;
+    type: number
+    sql: ${TABLE}.delivery_delay_since_pdt_minutes ;;
   }
 
-  dimension: delivery_delay_since_eta_seconds {
+  dimension: delta_to_pdt_minutes {
     group_label: "* Operations / Logistics *"
-    label: "Delta to PDT (sec)"
-    description: "Delay versus promised delivery time (as shown to customer)"
+    label: "Delta to PDT (min)"
+    description: "Delta to promised delivery time (as shown to customer)"
+    type: number
+    sql: ${TABLE}.delta_to_pdt_minutes ;;
+  }
+
+  dimension: delivery_delay_since_pdt_seconds {
+    alias: [delivery_delay_since_eta_seconds]
+    group_label: "* Operations / Logistics *"
+    label: "Delivery delay to PDT (sec)"
+    description: "Delay versus promised delivery time in seconds (as shown to customer)"
     hidden: yes
-    type: duration_second
-    sql_start: ${delivery_eta_timestamp_raw};;
-    sql_end: ${delivery_timestamp_raw};;
+    type: number
+    sql: ${TABLE}.delivery_delay_since_pdt_minutes * 60 ;;
   }
 
   dimension: delivery_delay_since_time_estimate {
@@ -471,6 +500,13 @@ view: orders {
     group_label: "* Order Dimensions *"
     type: string
     sql: ${TABLE}.delivery_method ;;
+  }
+
+  dimension: is_gps_order {
+    group_label: "* Order Dimensions *"
+    description: "A flag for outdoor orders (orders with non-address location)"
+    type: yesno
+    sql: ${TABLE}.is_gps_order ;;
   }
 
   dimension: delivery_provider {
@@ -623,7 +659,7 @@ view: orders {
     description: "Picker Queuing Time + Picking Time + Rider Queuing Time"
     group_label: "* Operations / Logistics *"
     type: number
-    sql: ${picker_queuing_time} + ${rider_queuing_time} + ${time_diff_between_two_subsequent_fulfillments};;
+    sql: ${picker_queuing_time} + ${rider_queuing_time} + ${picking_time_minutes};;
   }
 
   dimension: is_critical_delivery_time_estimate_underestimation {
@@ -637,6 +673,20 @@ view: orders {
     description: "The actual fulfillment took more than 10min less than the internally predicted delivery time"
     type:  yesno
     sql: ${fulfillment_time_raw_minutes} < (${delivery_time_estimate_minutes} - 10) ;;
+    hidden: yes
+  }
+
+  dimension: is_critical_pdt_underestimation {
+    description: "The actual fulfillment took more than 10min longer than the PDT"
+    type:  yesno
+    sql: ${fulfillment_time_raw_minutes} > (10 + ${delivery_eta_minutes}) ;;
+    hidden: yes
+  }
+
+  dimension: is_critical_pdt_overestimation {
+    description: "The actual fulfillment took more than 10min less than the PDT"
+    type:  yesno
+    sql: ${fulfillment_time_raw_minutes} < (${delivery_eta_minutes} - 10) ;;
     hidden: yes
   }
 
@@ -742,6 +792,14 @@ view: orders {
     sql: ${TABLE}.is_first_order ;;
   }
 
+  dimension: is_rider_tip {
+    group_label: "* Order Dimensions *"
+    label: "Is Rider Tip Order (Yes/No)"
+    description: "Flags if an Order contained a tip for the rider"
+    type: yesno
+    sql: ${TABLE}.amt_rider_tip > 0  ;;
+  }
+
   dimension: is_fulfillment_more_than_30_minute {
     group_label: "* Operations / Logistics *"
     hidden: yes
@@ -792,14 +850,14 @@ view: orders {
     hidden: yes
     group_label: "* Operations / Logistics *"
     type: yesno
-    sql: ${time_diff_between_two_subsequent_fulfillments} < 0 ;;
+    sql: ${picking_time_minutes} < 0 ;;
   }
 
   dimension: is_picking_more_than_30_minute {
     hidden: yes
     group_label: "* Operations / Logistics *"
     type: yesno
-    sql: ${time_diff_between_two_subsequent_fulfillments} > 30 ;;
+    sql: ${picking_time_minutes} > 30 ;;
   }
 
   dimension: is_internal_order {
@@ -1144,7 +1202,7 @@ view: orders {
     sql: ${TABLE}.picker_id ;;
   }
 
-  dimension: time_diff_between_two_subsequent_fulfillments {
+  dimension: picking_time_minutes {
     group_label: "* Operations / Logistics *"
     label: "Picking Time Minutes"
     type: number
@@ -1249,7 +1307,7 @@ view: orders {
     group_label: "* Order Dimensions *"
     label: "Weight (tiered, 1kg)"
     type: tier
-    tiers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+    tiers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]
     style: relational
     sql: ${weight_kg} ;;
   }
@@ -1384,6 +1442,72 @@ view: orders {
     sql: ${TABLE}.amt_npv_gross;;
   }
 
+  ########### STORAGE FEES ##########
+
+  dimension: amt_storage_fee_gross {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.amt_storage_fee_gross ;;
+  }
+  dimension: amt_storage_fee_net {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.amt_storage_fee_net ;;
+  }
+
+  ########### CRF FEES DIMENSIONS ##########
+
+  dimension: amt_gmv_excluding_crf_fees_gross {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.amt_gmv_excluding_crf_fees_gross ;;
+  }
+  dimension: amt_gmv_excluding_crf_fees_net {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.amt_gmv_excluding_crf_fees_net ;;
+  }
+  dimension: amt_crf_total_fee_gross {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.amt_crf_total_fee_gross ;;
+  }
+  dimension: amt_crf_total_fee_net {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.amt_crf_total_fee_net ;;
+  }
+  dimension: amt_crf_markdown_fee_gross {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.amt_crf_markdown_fee_gross ;;
+  }
+  dimension: amt_crf_markdown_fee_net {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.amt_crf_markdown_fee_net ;;
+  }
+  dimension: amt_crf_it_cost_fee_gross {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.amt_crf_it_cost_fee_gross ;;
+  }
+  dimension: amt_crf_it_cost_fee_net {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.amt_crf_it_cost_fee_net ;;
+  }
+  dimension: amt_crf_fulfillment_fee_gross {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.amt_crf_fulfillment_fee_gross ;;
+  }
+  dimension: amt_crf_fulfillment_fee_net {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.amt_crf_fulfillment_fee_net ;;
+  }
+
   ######## PARAMETERS
 
   parameter: date_granularity {
@@ -1396,33 +1520,17 @@ view: orders {
     default_value: "Day"
   }
 
-  parameter: KPI_parameter {
-    label: "* KPI Parameter *"
-    type: unquoted
-    allowed_value: { value: "orders" label: "# Orders"}
-    allowed_value: { value: "unique_customers" label: "# Unique Customers" }
-    allowed_value: { value: "orders_existing_customers" label: "# Orders Existing Customers" }
-    allowed_value: { value: "orders_new_customers" label: "# Orders New Customers"}
-    allowed_value: { value: "share_of_orders_delivered_in_time" label: "% Orders Delivered In Time"}
-    allowed_value: { value: "share_of_orders_delayed_5min" label: "% Orders Delayed >5min"}
-    allowed_value: { value: "share_of_orders_delayed_10min" label: "% Orders Delayed >10min"}
-    allowed_value: { value: "share_of_orders_delayed_15min" label: "% Orders Delayed >15min"}
-    allowed_value: { value: "share_of_orders_fulfilled_over_30min" label: "% Orders Fulfilled >30min"}
-    allowed_value: { value: "gmv_gross" label: "GMV (Gross)"}
-    allowed_value: { value: "gmv_net" label: "GMV (Net)"}
-    allowed_value: { value: "discount_amount" label: "Discount Amount"}
-    allowed_value: { value: "AVG_fulfillment_time" label: "AVG Fulfillment Time"}
-    allowed_value: { value: "AVG_order_value_gross" label: "AVG Order Value (Gross)"}
-    allowed_value: { value: "AVG_order_value_net" label: "AVG Order Value (Net)"}
-    allowed_value: { value: "avg_item_value_gross" label: "AVG Item Value (Gross)"}
-    allowed_value: { value: "avg_item_value_net" label: "AVG Item Value (Net)"}
-    allowed_value: { value: "rider_utr" label: "Rider UTR"}
-    allowed_value: { value: "picker_utr" label: "Picker UTR"}
-    allowed_value: { value: "picker_hours" label: "# Picker Hours"}
-    allowed_value: { value: "rider_hours" label: "# Rider Hours"}
-    allowed_value: { value: "pickers" label: "# Pickers"}
-    allowed_value: { value: "riders" label: "# Riders"}
-    default_value: "orders"
+
+  parameter: is_after_product_discounts {
+    type: yesno
+    label: "Is After Deduction of Product Discounts"
+    default_value: "No"
+  }
+
+  parameter: is_after_crf_fees_deduction {
+    type: yesno
+    label: "Is after CRF Fees Deduction"
+    default_value: "No"
   }
 
   ######## DYNAMIC DIMENSIONS
@@ -1458,104 +1566,38 @@ view: orders {
 
   ########## Measures
 
-  measure: KPI {
-    group_label: "* Dynamic KPI Fields *"
-    label: "KPI - Dynamic"
-    label_from_parameter: KPI_parameter
-    value_format: "#,##0.00"
+
+  measure: avg_item_value_gross_dynamic {
+    group_label: "* Monetary Values *"
+    label: "AVG Item Value (Dynamic) (Gross)"
+    description: "AIV represents the Average value of items (incl. VAT). Excludes fees (gross). before deducting Cart Discounts. To be used together with the Is After Product Discounts Deduction parameter."
+    label_from_parameter: is_after_product_discounts
+    value_format_name: eur
     type: number
     sql:
-    {% if KPI_parameter._parameter_value == 'orders' %}
-      ${cnt_orders}
-    {% elsif KPI_parameter._parameter_value == 'unique_customers' %}
-      ${cnt_unique_customers}
-    {% elsif KPI_parameter._parameter_value == 'orders_existing_customers' %}
-      ${cnt_unique_orders_existing_customers}
-    {% elsif KPI_parameter._parameter_value == 'orders_new_customers' %}
-      ${cnt_unique_orders_new_customers}
-    {% elsif KPI_parameter._parameter_value == 'share_of_orders_delivered_in_time' %}
-      ${pct_delivery_in_time}*100
-    {% elsif KPI_parameter._parameter_value == 'share_of_orders_delayed_5min' %}
-      ${pct_delivery_late_over_5_min}*100
-    {% elsif KPI_parameter._parameter_value == 'share_of_orders_delayed_10min' %}
-      ${pct_delivery_late_over_10_min}*100
-    {% elsif KPI_parameter._parameter_value == 'share_of_orders_delayed_15min' %}
-      ${pct_delivery_late_over_15_min}*100
-    {% elsif KPI_parameter._parameter_value == 'share_of_orders_fulfilled_over_30min' %}
-      ${pct_fulfillment_over_30_min}*100
-    {% elsif KPI_parameter._parameter_value == 'gmv_gross' %}
-      ${sum_gmv_gross}
-    {% elsif KPI_parameter._parameter_value == 'gmv_net' %}
-      ${sum_gmv_net}
-    {% elsif KPI_parameter._parameter_value == 'discount_amount' %}
-      ${sum_discount_amt}
-    {% elsif KPI_parameter._parameter_value == 'AVG_fulfillment_time' %}
-      ${avg_fulfillment_time}
-    {% elsif KPI_parameter._parameter_value == 'AVG_order_value_gross' %}
-      ${avg_order_value_gross}
-    {% elsif KPI_parameter._parameter_value == 'AVG_order_value_net' %}
-      ${avg_order_value_net}
-    {% elsif KPI_parameter._parameter_value == 'avg_item_value_gross' %}
-      ${avg_item_value_gross}
-    {% elsif KPI_parameter._parameter_value == 'avg_item_value_net' %}
-      ${avg_item_value_net}
-    {% elsif KPI_parameter._parameter_value == 'rider_utr' %}
-      ${shyftplan_riders_pickers_hours.rider_utr}
-    {% elsif KPI_parameter._parameter_value == 'picker_utr' %}
-      ${shyftplan_riders_pickers_hours.picker_utr}
-    {% elsif KPI_parameter._parameter_value == 'picker_hours' %}
-      ${shyftplan_riders_pickers_hours.picker_hours}
-    {% elsif KPI_parameter._parameter_value == 'rider_hours' %}
-      ${shyftplan_riders_pickers_hours.rider_hours}
-    {% elsif KPI_parameter._parameter_value == 'pickers' %}
-      ${shyftplan_riders_pickers_hours.pickers}
-    {% elsif KPI_parameter._parameter_value == 'riders' %}
-      ${shyftplan_riders_pickers_hours.riders}
-    {% endif %};;
-
-    html:
-          {% if KPI_parameter._parameter_value == 'share_of_orders_delivered_in_time' %}
-            {{ rendered_value | round: 2  | append: "%" }}
-          {% elsif KPI_parameter._parameter_value == 'share_of_orders_delayed_5min' %}
-            {{ rendered_value | round: 2  | append: "%" }}
-          {% elsif KPI_parameter._parameter_value == 'share_of_orders_delayed_10min' %}
-            {{ rendered_value | round: 2  | append: "%" }}
-          {% elsif KPI_parameter._parameter_value == 'share_of_orders_delayed_15min' %}
-            {{ rendered_value | round: 2  | append: "%" }}
-          {% elsif KPI_parameter._parameter_value == 'share_of_orders_fulfilled_over_30min' %}
-            {{ rendered_value | round: 2  | append: "%" }}
-          {% elsif KPI_parameter._parameter_value == 'share_of_total_orders' %}
-            {{ rendered_value | round: 2  | append: "%" }}
-          {% elsif KPI_parameter._parameter_value == 'gmv_gross' %}
-            €{{ value | round }}
-          {% elsif KPI_parameter._parameter_value == 'gmv_net' %}
-            €{{ value | round }}
-          {% elsif KPI_parameter._parameter_value == 'discount_amount' %}
-            €{{ value | round }}
-          {% elsif KPI_parameter._parameter_value == 'AVG_fulfillment_time' %}
-            {{ rendered_value }}
-          {% elsif KPI_parameter._parameter_value == 'AVG_order_value_gross' %}
-            €{{ rendered_value }}
-          {% elsif KPI_parameter._parameter_value == 'AVG_order_value_net' %}
-            €{{ rendered_value }}
-          {% elsif KPI_parameter._parameter_value == 'avg_item_value_gross' %}
-            €{{ rendered_value }}
-          {% elsif KPI_parameter._parameter_value == 'avg_item_value_net' %}
-            €{{ rendered_value }}
-          {% elsif KPI_parameter._parameter_value == 'rider_utr' %}
-            {{ rendered_value }}
-          {% elsif KPI_parameter._parameter_value == 'picker_utr' %}
-            {{ rendered_value }}
-          {% elsif KPI_parameter._parameter_value == 'picker_hours' %}
-            {{ value | round }}
-          {% elsif KPI_parameter._parameter_value == 'rider_hours' %}
-            {{ value | round }}
-          {% else %}
-            {{ value }}
-          {% endif %};;
-
+    {% if is_after_product_discounts._parameter_value == 'true' %}
+    ${avg_item_value_after_product_discount_gross}
+    {% elsif is_after_product_discounts._parameter_value == 'false' %}
+    ${avg_item_value_gross}
+    {% endif %}
+    ;;
   }
 
+  measure: avg_item_value_net_dynamic {
+    group_label: "* Monetary Values *"
+    label: "AVG Item Value (Dynamic) (Net)"
+    description: "AIV represents the Average value of items (excl. VAT). Excludes fees (net). before deducting Cart Discounts. To be used together with the Is After Product Discounts Deduction parameter."
+    label_from_parameter: is_after_product_discounts
+    value_format_name: eur
+    type: number
+    sql:
+    {% if is_after_product_discounts._parameter_value == 'true' %}
+    ${avg_item_value_after_product_discount_net}
+    {% elsif is_after_product_discounts._parameter_value == 'false' %}
+    ${avg_item_value_net}
+    {% endif %}
+    ;;
+  }
 
   ##############
   ## AVERAGES ##
@@ -1652,7 +1694,7 @@ view: orders {
     description: "Average Picking Time considering first fulfillment to second fulfillment created. Outliers excluded (<0min or >30min)"
     hidden:  no
     type: average
-    sql:${time_diff_between_two_subsequent_fulfillments};;
+    sql:${picking_time_minutes};;
     value_format_name: decimal_1
   }
 
@@ -1924,6 +1966,16 @@ view: orders {
     value_format_name: euro_accounting_2_precision
   }
 
+  measure: avg_item_value_after_product_discount_gross {
+    group_label: "* Monetary Values *"
+    label: "AVG Item Value After Product Discount (Gross)"
+    description: "AIV represents the Average value of items (incl. VAT). Excludes fees (gross), before deducting cart discount. After deducting product (commercial) discounts"
+    hidden:  no
+    type: average
+    sql: ${item_value_after_product_discount_gross};;
+    value_format_name: euro_accounting_2_precision
+  }
+
   measure: avg_item_value_net {
     alias: [avg_product_value_net]
     group_label: "* Monetary Values *"
@@ -1932,6 +1984,16 @@ view: orders {
     hidden:  no
     type: average
     sql: ${item_value_net};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: avg_item_value_after_product_discount_net {
+    group_label: "* Monetary Values *"
+    label: "AVG Item Value After Product Discount (Net)"
+    description: "AIV represents the Average value of items (excl. VAT). Excludes fees (net), before deducting cart discount. After deducting product (commercial) discounts"
+    hidden:  no
+    type: average
+      sql: ${item_value_after_product_discount_net};;
     value_format_name: euro_accounting_2_precision
   }
 
@@ -1962,6 +2024,16 @@ view: orders {
     hidden:  no
     type: number
     sql: ${sum_quantity_fulfilled}/nullif(${cnt_orders},0);;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_number_sku {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "AVG # SKUs"
+    description: "Average number of SKUs per order"
+    hidden:  no
+    type: number
+    sql: ${sum_distinct_skus}/nullif(${cnt_orders},0);;
     value_format_name: decimal_1
   }
 
@@ -2007,9 +2079,45 @@ view: orders {
 
   }
 
+  measure: picking_time_estimate_mae {
+    group_label: "* Operations / Logistics *"
+    label: "Mean Absolute Error Picking Time Estimate"
+    description: "The mean absolute error between actual picking time and estimated picking time"
+    hidden:  no
+    type: average
+    sql: abs(${picking_time_minutes} - ${estimated_picking_time_minutes});;
+    value_format_name: decimal_1
+  }
 
+  measure: riding_time_estimate_mae {
+    group_label: "* Operations / Logistics *"
+    label: "Mean Absolute Error Riding Time Estimate"
+    description: "The mean absolute error between actual riding to customer time and estimated riding to customer time"
+    hidden:  no
+    type: average
+    sql:  abs(${riding_to_customer_time_minutes} - ${estimated_riding_time_minutes});;
+    value_format_name: decimal_1
+  }
 
+  measure: picker_queuing_time_estimate_mae {
+    group_label: "* Operations / Logistics *"
+    label: "Mean Absolute Error Picker Queuing Time Estimate"
+    description: "The mean absolute error between actual picker queuing time and estimated picker queuing time"
+    hidden:  no
+    type: average
+    sql: abs(${picker_queuing_time} - ${estimated_queuing_time_for_picker_minutes});;
+    value_format_name: decimal_1
+  }
 
+  measure: rider_queuing_time_estimate_mae {
+    group_label: "* Operations / Logistics *"
+    label: "Mean Absolute Error Rider Queuing Time Estimate"
+    description: "The mean absolute error between actual rider queuing time and estimated rider queuing time"
+    hidden:  no
+    type: average
+    sql: abs(${rider_queuing_time} - ${estimated_queuing_time_for_rider_minutes});;
+    value_format_name: decimal_1
+  }
 
 
 
@@ -2023,8 +2131,8 @@ view: orders {
     description: "Sum of Gross Merchandise Value of orders incl. fees and before deduction of discounts (incl. VAT)"
     hidden:  no
     type: sum
-    sql: ${gmv_gross};;
     value_format_name: euro_accounting_0_precision
+    sql: ${gmv_gross};;
   }
 
   measure: sum_gmv_net {
@@ -2033,8 +2141,40 @@ view: orders {
     description: "Sum of Gross Merchandise Value of orders incl. fees and before deduction of discounts (excl. VAT)"
     hidden:  no
     type: sum
-    sql: ${gmv_net};;
     value_format_name: euro_accounting_0_precision
+    sql: ${gmv_net};;
+  }
+
+  measure: sum_gmv_gross_dynamic {
+    group_label: "* Monetary Values *"
+    label: "SUM GMV (Gross) (Dynamic)"
+    description: "Sum of Gross Merchandise Value of orders incl. fees and before deduction of discounts (incl. VAT). To be used together with the Is After CRF Fees Deduction parameter."
+    hidden:  no
+    label_from_parameter: is_after_crf_fees_deduction
+    type: sum
+    value_format_name: euro_accounting_0_precision
+    sql:
+    {% if is_after_crf_fees_deduction._parameter_value == 'true' %}
+    ${amt_gmv_excluding_crf_fees_gross}
+    {% elsif is_after_crf_fees_deduction._parameter_value == 'false' %}
+    ${gmv_gross}
+    {% endif %};;
+  }
+
+  measure: sum_gmv_net_dynamic {
+    group_label: "* Monetary Values *"
+    label: "SUM GMV (Net) (Dynamic)"
+    description: "Sum of Gross Merchandise Value of orders incl. fees and before deduction of discounts (excl. VAT). To be used together with the Is After CRF Fees Deduction parameter."
+    hidden:  no
+    label_from_parameter: is_after_crf_fees_deduction
+    type: sum
+    value_format_name: euro_accounting_0_precision
+    sql:
+    {% if is_after_crf_fees_deduction._parameter_value == 'true' %}
+    ${amt_gmv_excluding_crf_fees_net}
+    {% elsif is_after_crf_fees_deduction._parameter_value == 'false' %}
+    ${gmv_net}
+    {% endif %};;
   }
 
   measure: sum_revenue_gross {
@@ -2130,7 +2270,7 @@ view: orders {
   measure: sum_refund_gross {
     group_label: "* Monetary Values *"
     label: "SUM Refund (Gross)"
-    description: "Sum of Refunds (Gross). Includes Items, Deposit, Delivery Fee and Tips Refunds."
+    description: "Sum of Refunds (Gross). Includes Items, Deposit, Delivery & Storage Fees and Tips Refunds."
     hidden:  no
     type: sum
     sql: ${amt_refund_gross};;
@@ -2140,7 +2280,7 @@ view: orders {
   measure: sum_total_sales_gross {
     group_label: "* Monetary Values *"
     label: "SUM Total Sales (Gross)"
-    description: "Sum of Delivery Fees and Items Price and Deposit. Excl. Tips, Donations. Before Deduction of any Discount. Incl. VAT"
+    description: "Sum of Delivery & Storage Fees and Items Price and Deposit. Excl. Tips, Donations. Before Deduction of any Discount. Incl. VAT"
     hidden:  no
     type: sum
     sql: ${amt_total_sales_gross};;
@@ -2150,7 +2290,7 @@ view: orders {
   measure: sum_total_sales_excluding_deposit_gross {
     group_label: "* Monetary Values *"
     label: "SUM Total Sales excl. Deposit (Gross)"
-    description: "Sum of Delivery Fees and Items Price. Excl. Deposit, Tips, Donations. Before Deduction of any Discount. Incl. VAT"
+    description: "Sum of Delivery & Storage Fees and Items Price. Excl. Deposit, Tips, Donations. Before Deduction of any Discount. Incl. VAT"
     hidden:  no
     type: sum
     sql: ${amt_total_sales_excluding_deposit_gross};;
@@ -2160,7 +2300,7 @@ view: orders {
   measure: sum_total_sales_after_discounts_gross {
     group_label: "* Monetary Values *"
     label: "SUM Total Sales After Discount (Gross)"
-    description: "Sum of Delivery Fees and Items Price and Deposit. Excl. Tips, Donations. After Deduction of Cart and Product Discounts. Incl. VAT"
+    description: "Sum of Delivery & Storage Fees and Items Price and Deposit. Excl. Tips, Donations. After Deduction of Cart and Product Discounts. Incl. VAT"
     hidden:  no
     type: sum
     sql: ${amt_total_sales_after_discount_gross};;
@@ -2170,7 +2310,7 @@ view: orders {
   measure: sum_total_sales_after_discount_and_refund_gross {
     group_label: "* Monetary Values *"
     label: "SUM Total Sales After Discounts & Refunds (Gross)"
-    description: "Sum of Delivery Fees and Items Price and Deposit. Excl. Tips, Donations. After Deduction of Cart and Product Discounts. After Refunds. Incl. VAT"
+    description: "Sum of Delivery & Storage Fees and Items Price and Deposit. Excl. Tips, Donations. After Deduction of Cart and Product Discounts. After Refunds. Incl. VAT"
     hidden:  no
     type: sum
     sql: ${amt_total_sales_after_discount_and_refund_gross};;
@@ -2180,7 +2320,7 @@ view: orders {
   measure: sum_total_sales_after_discount_and_refund_excluding_deposit_gross {
     group_label: "* Monetary Values *"
     label: "SUM Total Sales After Discounts & Refunds excl. Deposit (Gross)"
-    description: "Sum of Delivery Fees and Items Price. Excl. Tips, Deposit, Donations. After Deduction of Cart and Product Discounts. After Refunds. Incl. VAT"
+    description: "Sum of Delivery & Storage Fees and Items Price. Excl. Tips, Deposit, Donations. After Deduction of Cart and Product Discounts. After Refunds. Incl. VAT"
     hidden:  no
     type: sum
     sql: ${amt_total_sales_after_discount_and_refund_excluding_deposit_gross};;
@@ -2190,7 +2330,7 @@ view: orders {
   measure: sum_gpv_gross {
     group_label: "* Monetary Values *"
     label: "SUM GPV (Gross)"
-    description: "Actual amount paid by the customer in CT. Sum of Delivery Fees, Items Price, Tips, Deposit. Excl. Donations. After Deduction of Cart and Product Discounts. Incl. VAT"
+    description: "Actual amount paid by the customer in CT. Sum of Delivery & Storage Fees, Items Price, Tips, Deposit. Excl. Donations. After Deduction of Cart and Product Discounts. Incl. VAT"
     hidden:  no
     type: sum
     sql: ${amt_gpv_gross};;
@@ -2200,7 +2340,7 @@ view: orders {
   measure: sum_npv_gross {
     group_label: "* Monetary Values *"
     label: "SUM NPV (Gross)"
-    description: "Net Payment Value. Actual amount paid by the customer in CT after Refunds. Sum of Delivery Fees, Items Price, Tips, Deposit. Excl. Donations. After Deduction of Cart and Product Discounts. Incl. VAT"
+    description: "Net Payment Value. Actual amount paid by the customer in CT after Refunds. Sum of Delivery & Storage Fees, Items Price, Tips, Deposit. Excl. Donations. After Deduction of Cart and Product Discounts. Incl. VAT"
     hidden:  no
     type: sum
     sql: ${amt_npv_gross};;
@@ -2215,12 +2355,12 @@ view: orders {
     sql: ${number_of_items} ;;
   }
 
-  measure: sum_rider_hours {
-    label: "Sum Worked Rider Hours"
-    group_label: "* Operations / Logistics *"
-    description: "Sum of completed Rider shift Hours"
-    type: number
-    sql: NULLIF(${shyftplan_riders_pickers_hours.rider_hours},0);;
+  measure: sum_distinct_skus {
+    label: "SKU Quantity"
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    description: "Number of distinct SKUs"
+    type: sum
+    sql: ${no_distinct_skus} ;;
   }
 
 
@@ -2408,7 +2548,7 @@ view: orders {
     filters: [
       external_provider: "ubereats",
       is_successful_order: "yes"
-    ]
+      ]
   }
 
   measure: cnt_orders_with_discount_cart {
@@ -2473,20 +2613,18 @@ view: orders {
 
   measure: cnt_orders_with_delivery_eta_available {
     # group_label: "* Operations / Logistics *"
-    view_label: "* Hubs *"
-    group_label: "Hub Leaderboard - Order Metrics"
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
     label: "# Orders with Delivery PDT available"
     description: "Count of Orders where a PDT is available"
     hidden:  no
     type: count
-    filters: [is_delivery_eta_available: "yes"]
+    filters: [is_delivery_eta_available: "yes", is_click_and_collect_order: "no"]
     value_format: "0"
   }
 
   measure: cnt_orders_with_targeted_eta_available {
     # group_label: "* Operations / Logistics *"
-    view_label: "* Hubs *"
-    group_label: "Hub Leaderboard - Order Metrics"
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
     label: "# Orders with Targeted Fulfillment Time is available"
     description: "Count of Orders where a Targeted Delivery Time  is available"
     hidden:  no
@@ -2503,7 +2641,7 @@ view: orders {
     description: "Count of Orders delivered no later than PDT"
     hidden:  yes
     type: count
-    filters: [delivery_delay_since_eta:"<=0.5"]
+    filters: [delta_to_pdt_minutes:"<=0.5"]
     value_format: "0"
   }
 
@@ -2551,6 +2689,176 @@ view: orders {
     type: count
     filters: [amt_cancelled_gross: ">0",cancellation_reason: "NULL"]
     value_format: "0"
+  }
+
+############### STORAGE FEES ################
+
+  measure: sum_amt_storage_fee_gross {
+    group_label: "* Monetary Values *"
+    label: "SUM Storage Fees (Gross)"
+    description: "Sum of Storage Fees Gross, applied when an item requiring such a fee is added to the basket."
+
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_storage_fee_gross} ;;
+  }
+  measure: sum_amt_storage_fee_net {
+    group_label: "* Monetary Values *"
+    label: "SUM Storage Fees (Net)"
+    description: "Sum of Storage Fees Net, applied when an item requiring such a fee is added to the basket."
+
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_storage_fee_net} ;;
+  }
+
+  measure: avg_storage_fee_gross {
+    group_label: "* Monetary Values *"
+    label: "AVG Storage Fee (Gross)"
+    description: "Average value of Storage Fees (Gross)"
+
+    type: average
+    sql: ${amt_storage_fee_gross};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: avg_storage_fee_net {
+    group_label: "* Monetary Values *"
+    label: "AVG Storage Fee (Net)"
+    description: "Average value of Storage Fees (Net)"
+
+    type: average
+    sql: ${amt_storage_fee_net};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  ##### Total Fees #####
+
+  measure: sum_total_fees_gross {
+
+    alias: [sum_total_fees]
+
+    group_label: "* Monetary Values *"
+    label: "SUM Total Fees (Gross)"
+    description: "Sum of Delivery Fees (Gross) and Storage Fees (Gross)"
+
+    type: number
+    sql: ${sum_delivery_fee_gross} + ${sum_amt_storage_fee_gross};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: avg_total_fees_gross {
+    group_label: "* Monetary Values *"
+    label: "AVG Total Fees (Gross)"
+    description: "Average value of Delivery Fees (Gross) + Storage Fees (Gross)"
+
+    type: average
+    sql: (${shipping_price_gross_amount} + ${amt_storage_fee_gross}) ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_total_fees_net {
+    group_label: "* Monetary Values *"
+    label: "SUM Total Fees (Net)"
+    description: "Sum of Delivery Fees (Net) and Storage Fees (Net)"
+
+    type: number
+    sql: ${sum_delivery_fee_net} + ${sum_amt_storage_fee_net};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: avg_total_fees_net {
+    group_label: "* Monetary Values *"
+    label: "AVG Total Fees (Net)"
+    description: "Average value of Delivery Fees (Net) + Storage Fees (Net)"
+
+    type: average
+    sql: (${shipping_price_net_amount} + ${amt_storage_fee_net});;
+    value_format_name: euro_accounting_2_precision
+  }
+
+
+########### CRF FEES MEASURES ##########
+
+  measure: sum_amt_gmv_excluding_crf_fees_gross {
+    group_label: "* Monetary Values *"
+    label: "SUM GMV excluding CRF fees gross"
+    description: "Sum of GMV gross - CRF fees gross "
+    type: sum
+    value_format_name: euro_accounting_2_precision
+    sql: ${amt_gmv_excluding_crf_fees_gross} ;;
+  }
+  measure: sum_amt_gmv_excluding_crf_fees_net {
+    group_label: "* Monetary Values *"
+    label: "SUM GMV excluding CRF fees net"
+    description: "Sum of GMV net - CRF fees net "
+    type: sum
+    value_format_name: euro_accounting_2_precision
+    sql: ${amt_gmv_excluding_crf_fees_net} ;;
+  }
+  measure: sum_amt_crf_total_fee_gross {
+    group_label: "* Monetary Values *"
+    label: "SUM CRF Total fees gross"
+    description: "Sum (gross): IT cost fee + Markdown fee + Fulfillment fee"
+    type: sum
+    value_format_name: euro_accounting_2_precision
+    sql: ${amt_crf_total_fee_gross} ;;
+  }
+  measure: sum_amt_crf_total_fee_net {
+    group_label: "* Monetary Values *"
+    label: "SUM CRF Total fees net"
+    description: "Sum (net): IT cost fee + Markdown fee + Fulfillment fee. 20% tax rate applied."
+    type: sum
+    value_format_name: euro_accounting_2_precision
+    sql: ${amt_crf_total_fee_net} ;;
+  }
+  measure: sum_amt_crf_markdown_fee_gross {
+    group_label: "* Monetary Values *"
+    label: "SUM CRF Markdown fee gross"
+    description: "Sum of CRF Markdown fee gross. Markdown fee calculated as 3% of the total net product prices sum"
+    type: sum
+    value_format_name: euro_accounting_2_precision
+    sql: ${amt_crf_markdown_fee_gross} ;;
+  }
+  measure: sum_amt_crf_markdown_fee_net {
+    group_label: "* Monetary Values *"
+    label: "SUM CRF Markdown fee net"
+    description: "Sum of CRF Markdown fee net. Markdown fee calculated as 3% of the total net product prices sum. 20% tax rate applied."
+    type: sum
+    value_format_name: euro_accounting_2_precision
+    sql: ${amt_crf_markdown_fee_net} ;;
+  }
+  measure: sum_amt_crf_it_cost_fee_gross {
+    group_label: "* Monetary Values *"
+    label: "SUM CRF IT cost fee gross"
+    description: "Sum of CRF IT cost fee gross. IT cost fee is 0.15 per order."
+    type: sum
+    value_format_name: euro_accounting_2_precision
+    sql: ${amt_crf_it_cost_fee_gross} ;;
+  }
+  measure: sum_amt_crf_it_cost_fee_net {
+    group_label: "* Monetary Values *"
+    label: "SUM CRF IT cost fee net"
+    description: "Sum of CRF IT cost fee net. IT cost fee is 0.15 per order. 20% tax rate applied."
+    type: sum
+    value_format_name: euro_accounting_2_precision
+    sql: ${amt_crf_it_cost_fee_net} ;;
+  }
+  measure: sum_amt_crf_fulfillment_fee_gross {
+    group_label: "* Monetary Values *"
+    label: "SUM CRF Fulfillment fee gross"
+    description: "Sum of CRF Fulfillmet fee gross. This fee might vary throughout the last settlement period. The final value is known on the 20th of each month for the previous 30-day period."
+    type: sum
+    value_format_name: euro_accounting_2_precision
+    sql: ${amt_crf_fulfillment_fee_gross} ;;
+  }
+  measure: sum_amt_crf_fulfillment_fee_net {
+    group_label: "* Monetary Values *"
+    label: "SUM CRF Fulfillment fee net"
+    description: "Sum of CRF Fulfillmet fee net. This fee might vary throughout the last settlement period. The final value is known on the 20th of each month for the previous 30-day period. 20% tax rate applied."
+    type: sum
+    value_format_name: euro_accounting_2_precision
+    sql: ${amt_crf_fulfillment_fee_net} ;;
   }
 
 
@@ -2613,7 +2921,7 @@ view: orders {
     description: "Count of Orders delivered >5min later than PDT"
     hidden:  yes
     type: count
-    filters: [delivery_delay_since_eta:">=5"]
+    filters: [delta_to_pdt_minutes:">=5"]
     value_format: "0"
   }
 
@@ -2623,7 +2931,7 @@ view: orders {
     description: "Count of Orders delivered >10min later than PDT"
     hidden:  yes
     type: count
-    filters: [delivery_delay_since_eta:">=10"]
+    filters: [delta_to_pdt_minutes:">=10"]
     value_format: "0"
   }
 
@@ -2633,7 +2941,7 @@ view: orders {
     description: "Count of Orders delivered >15min later than PDT"
     hidden:  yes
     type: count
-    filters: [delivery_delay_since_eta:">=15"]
+    filters: [delta_to_pdt_minutes:">=15"]
     value_format: "0"
   }
 
@@ -2727,6 +3035,17 @@ view: orders {
     value_format: "0"
   }
 
+  measure: cnt_orders_fulfilled_over_45_min {
+    group_label: "* Operations / Logistics *"
+    label: "# Orders fulfilled >45min"
+    description: "Count of Orders delivered >45min fulfillment time"
+    hidden:  yes
+    type: count
+    filters: [fulfillment_time:">=45"]
+    value_format: "0"
+  }
+
+
   measure: cnt_orders_fulfilled_over_60_min {
     group_label: "* Operations / Logistics *"
     label: "# Orders delivered >60min"
@@ -2754,6 +3073,26 @@ view: orders {
     hidden:      yes
     type:        count
     filters:     [is_critical_delivery_time_estimate_overestimation: "Yes"]
+    value_format: "0"
+  }
+
+  measure: cnt_orders_pdt_critical_underestimation {
+    group_label: "* Operations / Logistics *"
+    label:       "# Orders with critical under-estimation PDT"
+    description: "# Orders with critical under-estimation PDT"
+    hidden:      yes
+    type:        count
+    filters:     [is_critical_pdt_underestimation: "Yes"]
+    value_format: "0"
+  }
+
+  measure: cnt_orders_pdt_critical_overestimation {
+    group_label: "* Operations / Logistics *"
+    label:       "# Orders with critical over-estimation PDT"
+    description: "# Orders with critical over-estimation PDT"
+    hidden:      yes
+    type:        count
+    filters:     [is_critical_pdt_overestimation: "Yes"]
     value_format: "0"
   }
 
@@ -2963,6 +3302,7 @@ view: orders {
     value_format: "0%"
   }
 
+
   measure: pct_fulfillment_over_20_min{
     group_label: "* Operations / Logistics *"
     label: "% Orders fulfilled >20min"
@@ -2970,6 +3310,26 @@ view: orders {
     hidden:  no
     type: number
     sql: ${cnt_orders_fulfilled_over_20_min} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_fulfillment_over_30_min{
+    group_label: "* Operations / Logistics *"
+    label: "% Orders fulfilled >30min"
+    description: "Share of orders delivered > 30min"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_fulfilled_over_30_min} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_fulfillment_over_45_min{
+    group_label: "* Operations / Logistics *"
+    label: "% Orders fulfilled >45min"
+    description: "Share of orders delivered > 45min"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_fulfilled_over_45_min} / NULLIF(${cnt_orders}, 0);;
     value_format: "0%"
   }
 
@@ -3102,15 +3462,6 @@ view: orders {
   #  value_format: "0%"
   #}
 
-  measure: pct_fulfillment_over_30_min{
-    group_label: "* Operations / Logistics *"
-    label: "% Orders fulfilled >30min"
-    description: "Share of orders delivered > 30min"
-    hidden:  no
-    type: number
-    sql: ${cnt_orders_fulfilled_over_30_min} / NULLIF(${cnt_orders}, 0);;
-    value_format: "0%"
-  }
 
   measure: percent_of_total_orders {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
@@ -3157,6 +3508,24 @@ view: orders {
     value_format_name:  percent_2
   }
 
+  measure: pct_pdt_critical_over_estimation {
+    group_label: "* Operations / Logistics *"
+    label:       "% Orders with critical over-estimation of PDT"
+    description: "% Orders with critical over-estimation of PDT"
+    type:        number
+    sql:         ${cnt_orders_pdt_critical_overestimation} / ${cnt_orders} ;;
+    value_format_name:  percent_2
+  }
+
+  measure: pct_pdt_critical_under_estimation {
+    group_label: "* Operations / Logistics *"
+    label:       "% Orders with critical under-estimation of PDT"
+    description: "% Orders with critical under-estimation of PDT"
+    type:        number
+    sql:         ${cnt_orders_pdt_critical_underestimation} / ${cnt_orders} ;;
+    value_format_name:  percent_2
+  }
+
   measure: cnt_orders_with_delivery_time_estimate {
     group_label: "* Operations / Logistics *"
     label: "# Orders with Fulfillment Time Estimate"
@@ -3192,12 +3561,12 @@ view: orders {
     sql: ${avg_riding_to_customer_time} - ${avg_riding_to_hub_time} ;;
   }
 
-  measure: pct_orders_delivered_by_riders {
-    group_label: "* Operations / Logistics *"
-    label: "% Orders Delivered by Riders"
-    description: "Share of orders delivered by only riders"
+
+  measure: std_fulfillment_time {
     type: number
-    sql: ${employee_level_kpis.number_of_delivered_orders_by_riders}/nullif(${cnt_successful_orders},0) ;;
-    value_format_name: percent_1
+    group_label: "* Operations / Logistics *"
+    label: "Fulfillment Time Standard Deviation"
+    sql: stddev_pop(${fulfillment_time}) ;;
+    value_format_name: decimal_1
   }
 }

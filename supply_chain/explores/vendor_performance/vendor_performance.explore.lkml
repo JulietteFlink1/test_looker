@@ -42,12 +42,22 @@ explore: vendor_performance {
     lexbizz_vendor*,
     vendor_performance_ndt_po_fill_rate*,
     erp_product_hub_vendor_assignment_v2*,
-    hubs*
+    hubs*,
+    key_value_items*
   ]
 
   sql_always_where: {% condition global_filters_and_parameters.datasource_filter %} ${products_hub_assignment.report_date} {% endcondition %} ;;
 
   always_filter: {filters: [global_filters_and_parameters.datasource_filter: "8 days ago for 7 days"]}
+  access_filter: {
+    field: hubs.country_iso
+    user_attribute: country_iso
+
+  }
+  access_filter: {
+    field: hubs.city
+    user_attribute: city
+  }
 
   join: global_filters_and_parameters {
     view_label: "* Global *"
@@ -74,9 +84,10 @@ explore: vendor_performance {
             ${products_hub_assignment.report_date}                                = ${bulk_items.delivery_date}
         and ${products_hub_assignment.hub_code}                                   = ${bulk_items.hub_code}
         and ${products_hub_assignment.leading_sku_replenishment_substitute_group} = ${bulk_items.sku}
+        -- filters when joining
         and {% condition global_filters_and_parameters.datasource_filter %} ${bulk_items.delivery_date} {% endcondition %}
+        and ${bulk_items.sku} is not null -- excludes deposits (we don't have a SKU for those)
     ;;
-    sql_where: ${bulk_items.sku} is not null -- excludes deposits (we don't have a SKU for those) ;;
   }
 
   join: inventory_changes_daily {
@@ -225,7 +236,8 @@ explore: vendor_performance {
     fields: [
       hubs.city_manager,
       hubs.city,
-      hubs.country_iso
+      hubs.country_iso,
+      hubs.region
     ]
   }
 
@@ -282,6 +294,22 @@ explore: vendor_performance {
     type: left_outer
     relationship: many_to_one
     sql_on: ${products.product_sku} = ${products_hub_assignment.sku} ;;
+  }
+
+
+  join: key_value_items {
+
+    view_label: "* Product Data *"
+
+    type: left_outer
+    relationship: many_to_one
+
+    sql_on:
+           ${key_value_items.sku} =  ${products_hub_assignment.sku}
+           -- get only the most recent KVIs (they are upadted every Monday)
+       and ${key_value_items.kvi_date} >= current_date() - 6
+    ;;
+    fields: [key_value_items.is_kvi]
   }
 
 }

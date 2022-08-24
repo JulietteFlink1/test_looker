@@ -1,12 +1,212 @@
 view: user_attributes_lifecycle_first28days {
-  sql_table_name: `reporting.user_attributes_lifecycle_first28days`
+  sql_table_name: `flink-data-prod.reporting.user_attributes_lifecycle_first28days`
     ;;
 
+  # -------- measures --------- #
   measure: cnt_customers {
     label: "# Customers"
     type: count_distinct
     sql: ${customer_uuid} ;;
   }
+
+  measure: total_gmv_min {
+    type: min
+    sql: ${avg_gmv_gross}*${number_of_days_ordering} ;;
+    value_format_name: eur
+  }
+  measure: total_gmv_percentile_25 {
+    type: percentile
+    percentile: 25
+    sql: ${avg_gmv_gross}*${number_of_days_ordering} ;;
+    value_format_name: eur
+  }
+  measure: total_gmv_percentile_50 {
+    type: median
+    sql: ${avg_gmv_gross}*${number_of_days_ordering} ;;
+    value_format_name: eur
+  }
+  measure: total_gmv_percentile_75 {
+    type: percentile
+    percentile: 75
+    sql: ${avg_gmv_gross}*${number_of_days_ordering} ;;
+    value_format_name: eur
+  }
+  measure: total_gmv_percentile_95 {
+    type: percentile
+    percentile: 95
+    sql: ${avg_gmv_gross}*${number_of_days_ordering} ;;
+    value_format_name: eur
+  }
+  measure: total_gmv_max {
+    type: max
+    sql: ${avg_gmv_gross}*${number_of_days_ordering} ;;
+    value_format_name: eur
+  }
+
+  measure: avg_number_of_days_ordering {
+    type: average
+    sql: ${number_of_days_ordering};;
+  }
+
+  measure: avg_number_of_days_visiting {
+    type: average
+    sql: ${number_of_days_visited};;
+  }
+
+  measure: number_of_days_visiting_min {
+    type: min
+    sql: ${number_of_days_visited} ;;
+  }
+  measure: number_of_days_visiting_percentile_25 {
+    type: percentile
+    percentile: 25
+    sql: ${number_of_days_visited} ;;
+  }
+  measure: number_of_days_visiting_percentile_50 {
+    type: median
+    sql: ${number_of_days_visited} ;;
+  }
+  measure: number_of_days_visiting_percentile_75 {
+    type: percentile
+    percentile: 75
+    sql: ${number_of_days_visited} ;;
+  }
+  measure: number_of_days_visiting_percentile_95 {
+    type: percentile
+    percentile: 95
+    sql: ${number_of_days_visited} ;;
+  }
+  measure: number_of_days_visiting_max {
+    type: max
+    sql: ${number_of_days_visited} ;;
+  }
+
+  measure: avg_gmv_min {
+    type: min
+    sql: ${avg_gmv_gross} ;;
+    value_format_name: eur
+  }
+  measure: avg_gmv_percentile_25 {
+    type: percentile
+    percentile: 25
+    sql: ${avg_gmv_gross} ;;
+    value_format_name: eur
+  }
+  measure: avg_gmv_percentile_50 {
+    type: median
+    sql: ${avg_gmv_gross} ;;
+    value_format_name: eur
+  }
+  measure: avg_gmv_percentile_75 {
+    type: percentile
+    percentile: 75
+    sql: ${avg_gmv_gross} ;;
+    value_format_name: eur
+  }
+  measure: avg_gmv_percentile_95 {
+    type: percentile
+    percentile: 95
+    sql: ${avg_gmv_gross} ;;
+    value_format_name: eur
+  }
+  measure: avg_gmv_max {
+    type: max
+    sql: ${avg_gmv_gross} ;;
+    value_format_name: eur
+  }
+
+  measure: number_of_days_ordering_min {
+    type: min
+    sql: ${number_of_days_ordering} ;;
+  }
+  measure: number_of_days_ordering_percentile_25 {
+    type: percentile
+    percentile: 25
+    sql: ${number_of_days_ordering} ;;
+  }
+  measure: number_of_days_ordering_percentile_50 {
+    type: median
+    sql: ${number_of_days_ordering} ;;
+  }
+  measure: number_of_days_ordering_percentile_75 {
+    type: percentile
+    percentile: 75
+    sql: ${number_of_days_ordering} ;;
+  }
+  measure: number_of_days_ordering_percentile_95 {
+    type: percentile
+    percentile: 95
+    sql: ${number_of_days_ordering} ;;
+  }
+  measure: number_of_days_ordering_max {
+    type: max
+    sql: ${number_of_days_ordering} ;;
+  }
+
+  #========= Dimension Selector =========#
+
+  parameter: comparison_selector {
+    label: "Comparison Selector"
+    description: "Controls which dimension X-axis uses"
+    type: unquoted
+    allowed_value: {
+      label: "Platform"
+      value: "platform"
+    }
+    allowed_value: {
+      label: "Country"
+      value: "country"
+    }
+    allowed_value: {
+      label: "Cohort"
+      value: "cohort"
+    }
+    default_value: "cohort"
+  }
+
+  dimension: plotby {
+    label: "Comparison Field (Dynamic)"
+    label_from_parameter: comparison_selector
+    description: "Date OR Full App Version Dynamic Dimension - select using Date or Version Dynamic Selector"
+    type: string
+    sql:
+    {% if comparison_selector._parameter_value == 'platform' %}
+      ${first_order_platform}
+    {% elsif comparison_selector._parameter_value == 'country' %}
+      ${first_country_iso}
+    {% elsif comparison_selector._parameter_value == 'cohort' %}
+      ${first_visit_granularity}
+    {% else %}
+      ${first_visit_granularity}
+    {% endif %};;
+  }
+
+  dimension: first_visit_granularity {
+    group_label: "* User Attributes *"
+    label: "First Visit Cohort (Dynamic)"
+    label_from_parameter: timeframe_picker
+    type: string # cannot have this as a time type. See this discussion: https://community.looker.com/lookml-5/dynamic-time-granularity-opinions-16675
+    hidden:  no
+    sql:
+      {% if timeframe_picker._parameter_value == 'Week' %}
+        ${first_visit_week}
+      {% elsif timeframe_picker._parameter_value == 'Month' %}
+        ${first_visit_month}
+      {% elsif timeframe_picker._parameter_value == 'Year' %}
+        ${first_visit_year}
+      {% endif %};;
+  }
+
+  parameter: timeframe_picker {
+    label: "First Visit Date Granularity"
+    type: unquoted
+    allowed_value: { value: "Week" }
+    allowed_value: { value: "Month" }
+    allowed_value: { value: "Year" }
+    default_value: "Year"
+  }
+
+  #----------------------------
 
 
   dimension: customer_uuid {

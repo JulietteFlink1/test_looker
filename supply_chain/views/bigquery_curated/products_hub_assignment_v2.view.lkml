@@ -23,7 +23,7 @@ view: products_hub_assignment_v2 {
 
     # this parameter is defined at the products_hub_assignment level, as this view is the base of the Supply Chain explore
 
-    label:       "Select Metric Aggregation Level + SKU-to-Hub Assignment Logic"
+    label:       "[Availability] Select Aggregation & Assignment Logic"
     group_label: "* Parameters & Dynamic Fields *"
     description: "Chose, on what level you want to calculate metrics such as esp. the oos-rate"
 
@@ -50,6 +50,30 @@ view: products_hub_assignment_v2 {
     }
 
     default_value: "replenishment"
+  }
+
+  parameter: date_granularity {
+    group_label: "* Parameters & Dynamic Fields *"
+    label: "Select Date Granularity"
+    type: unquoted
+    allowed_value: { value: "Day" }
+    allowed_value: { value: "Week" }
+    allowed_value: { value: "Month" }
+    default_value: "Week"
+  }
+
+  dimension: report_date_dynamic {
+    group_label: "* Parameters & Dynamic Fields *"
+    label: "Report Date (Dynamic)"
+    label_from_parameter: date_granularity
+    sql:
+    {% if date_granularity._parameter_value == 'Day' %}
+      ${report_date}
+    {% elsif date_granularity._parameter_value == 'Week' %}
+      ${report_week}
+    {% elsif date_granularity._parameter_value == 'Month' %}
+      ${report_month}
+    {% endif %};;
   }
 
 
@@ -99,8 +123,22 @@ view: products_hub_assignment_v2 {
   }
 
 
-  dimension: report_date {
-    type: date
+  # dimension: report_date {
+  #   type: date
+  #   datatype: date
+  #   sql: ${TABLE}.report_date ;;
+  # }
+
+  dimension_group: report {
+    label: "Report"
+    type: time
+    timeframes: [
+      raw,
+      date,
+      week,
+      month,
+      day_of_week_index
+    ]
     datatype: date
     sql: ${TABLE}.report_date ;;
   }
@@ -355,6 +393,14 @@ view: products_hub_assignment_v2 {
     sql: ${TABLE}.filter_one_sku_per_replenishment_substitute_group  ;;
     hidden: yes
   }
+  # ~ ~ ~ ~ ~ ~  START: NEW AVAILIABILITY FILERING APPROACH ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+  dimension: one_sku_per_replenishment_substitute_group {
+
+    hidden: yes
+    sql: if(${filter_one_sku_per_replenishment_substitute_group} is true
+      and ${is_sku_assigned_to_hub} is true,
+      ${sku}, null) ;;
+  }
 
   dimension: filter_one_sku_per_substitute_group {
 
@@ -366,6 +412,24 @@ view: products_hub_assignment_v2 {
     sql: ${TABLE}.filter_one_sku_per_substitute_group  ;;
     hidden: yes
   }
+
+  dimension: one_sku_per_substitute_group {
+
+    hidden: yes
+    sql: if(${filter_one_sku_per_substitute_group} is true
+    and ${ct_final_decision_is_sku_assigned_to_hub} is true, ${sku}, null) ;;
+  }
+
+  dimension: one_sku_per_ct_assignment_logic {
+    hidden: yes
+    sql: if(${ct_final_decision_is_sku_assigned_to_hub} is true, ${sku}, null) ;;
+  }
+
+  dimension: one_sku_per_erp_assignment_logic {
+    hidden: yes
+    sql: if(${is_sku_assigned_to_hub} is true, ${sku}, null) ;;
+  }
+  # ~ ~ ~ ~ ~ ~  END: NEW AVAILIABILITY FILERING APPROACH ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 
   # =========  IDs   =========
@@ -397,6 +461,44 @@ view: products_hub_assignment_v2 {
   measure: count {
     type: count
   }
+
+
+####################################################################################################################################
+####################################################################################################################################
+################################################ Demand Planning ###################################################################
+####################################################################################################################################
+####################################################################################################################################
+
+
+
+  measure: cnt_unique_skus_today {
+    label: "# unique SKUs Today"
+    group_label: "Demand Planning"
+    type: count_distinct
+    sql: ${sku_dynamic} ;;
+    hidden: yes
+    filters: [report_date: "today", is_sku_assigned_to_hub: "yes"]
+  }
+
+  measure: cnt_unique_skus_7_days_ago {
+    label: "# unique SKUs - Same day last week"
+    group_label: "Demand Planning"
+    type: count_distinct
+    sql: ${sku_dynamic} ;;
+    hidden: yes
+    filters: [report_date: "7 days ago", is_sku_assigned_to_hub: "yes"]
+  }
+
+  measure: pct_unique_skus_dod {
+    label: "% Growth unique SKUs Today - Same day last week"
+    group_label: "Demand Planning"
+    type: number
+    hidden: yes
+    sql: (${cnt_unique_skus_today} - ${cnt_unique_skus_7_days_ago})/ nullif(${cnt_unique_skus_7_days_ago}, 0)  ;;
+    value_format_name: percent_1
+
+    }
+
 
 
 }

@@ -12,12 +12,15 @@ view: hubs_ct {
     bypass_suggest_restrictions: yes
     type: string
     sql: ${TABLE}.hub_code ;;
+    drill_fields: [products.product_sku, products.category, products.subcategory]
   }
 
   dimension: is_hub_opened_14d {
-    label: "Hub is Live more than 14 days?"
+    label: "Hub is Active more than 14 days?(Geolocator)"
     type: yesno
-    sql: ${start_date} <= DATE_SUB(current_date(), Interval 14 day) ;;
+    sql: ${start_date} <= DATE_SUB(current_date(), Interval 14 day) and ${is_active_hub} = true ;;
+    description: "This is defined based on start_date curated.hubs and is_hub_active flag coming from hub geolocator system"
+    group_label: "> Admin Data"
   }
 
   dimension: hub_name {
@@ -237,7 +240,20 @@ view: hubs_ct {
     type: yesno
     sql: ${TABLE}.start_date <= current_date() ;;
     group_label: "> Admin Data"
+    hidden: yes
+    description: "This is an outdated definition (incorrect) that uses only start_date to define if a hub is live or not,
+                if we use this flag we will see some hubs as actives but with no units sold in the last month.
+                Check - https://goflink.cloud.looker.com/explore/flink_v3/supply_chain?qid=uisyiwyWly9f9VOkI4UZMb&origin_space=490&toggle=fil,vis"
   }
+
+  dimension: is_active_hub {
+    label: "Hub is Active? (Geolocator)"
+    type: yesno
+    sql: ${TABLE}.is_active_hub ;;
+    group_label: "> Admin Data"
+    description: "Based on the correct is_active_hub logic which comes from hub geolocator system (same system which is responsible for Hub Turfs in the app)"
+  }
+
 
   dimension: is_test_hub {
     label: "Is Test Hub"
@@ -318,11 +334,13 @@ view: hubs_ct {
         sql: ${hub_code}
                    in
                   (
-                  'de_ber_alex','de_ber_kotd','de_ber_mit2','de_ber_noll','de_ber_pren','de_wup_elbe',
-                  'de_ber_wedd','de_bra_mich','de_cgn_nipp','de_dar_zent','de_dus_pemp','de_muc_maxv',
-                  'de_ham_otte','de_ham_roth','de_ham_wint','de_man_inne','de_maz_inne','de_zcz_mitt',
-                  'de_nrm_suds',
-                  'nl_ape_cent', 'nl_gro_cent', 'nl_dev_cent', 'nl_lee_cent', 'nl_ens_cent', 'nl_nij_cent', 'nl_rot_veer'
+                  'de_aah_burt','de_ber_alex','de_ber_bism','de_ber_frie','de_ber_kotd','de_ber_mit2',
+                  'de_ber_pren','de_ber_schl','de_bra_mich','de_cgn_lind','de_cgn_nipp','de_dar_zent',
+                  'de_dus_pemp','de_ham_eppe','de_ham_otte','de_ham_wate','de_ham_wint','de_muc_schw',
+                  'de_nrm_suds','de_wup_elbe',
+
+                  'nl_ape_cent','nl_alk_cent','nl_dev_cent','nl_dbo_cent','nl_ens_cent','nl_ein_west',
+                  'nl_til_noor'
                   ) ;;
         label: "Yes"
       }
