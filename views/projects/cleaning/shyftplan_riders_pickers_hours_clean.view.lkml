@@ -100,20 +100,6 @@ view: shyftplan_riders_pickers_hours_clean {
     sql: ${TABLE}.number_of_unassigned_employees_external ;;
   }
 
-  dimension: number_of_forecasted_minutes {
-    type: number
-    hidden: yes
-    sql: ${TABLE}.number_of_forecasted_minutes ;;
-  }
-
-
-  dimension: number_of_predicted_no_show_minutes {
-    type: number
-    hidden: yes
-    sql: case when is_nan(${TABLE}.number_of_predicted_no_show_minutes) is true then NULL else ${TABLE}.number_of_predicted_no_show_minutes end ;;
-  }
-
-
   dimension: position_name {
     type: string
     hidden: yes
@@ -499,27 +485,6 @@ view: shyftplan_riders_pickers_hours_clean {
     ]
   }
 
-
-  measure: number_of_dynamic_target_utr{
-    type: min
-    label: "Dynamic UTR Target"
-    description: "Target UTR used in Forecasting Rider Hours"
-    sql: ${TABLE}.number_of_target_orders_per_employee ;;
-    filters: [position_name: "rider"]
-    hidden: yes
-    value_format_name: decimal_2
-  }
-
-  measure: sum_forecasted_riders_needed{
-    type: sum
-    label: "# Forecasted Hours Rider"
-    description: "Number of Needed Employee Hours Based on Forecasted Order Demand"
-    sql: NULLIF(${TABLE}.number_of_forecasted_employees_needed,0) * 0.5 ;;
-    filters: [position_name: "rider"]
-    value_format_name: decimal_1
-    hidden: yes
-  }
-
   measure: sum_planned_hours{
     type: sum
     label: "# Scheduled Hours Rider"
@@ -589,50 +554,6 @@ view: shyftplan_riders_pickers_hours_clean {
     value_format_name: percent_1
   }
 
-  measure: pct_overstaffing {
-    type: number
-    label:"% Overstaffing"
-    description: "When Forecasted Hours < Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
-    sql: case
-          when ${sum_forecasted_riders_needed} < ${sum_planned_hours}
-            then (${sum_forecasted_riders_needed} - ${sum_planned_hours}) / nullif(${sum_forecasted_riders_needed},0)
-          else 0 end  ;;
-    value_format_name: percent_0
-    hidden: yes
-  }
-
-  measure: pct_understaffing {
-    type: number
-    label: "% Understaffing"
-    description: "When Forecasted Hours > Scheduled Hours: (Scheduled Hours - Forecasted Hours) / Forecasted Hours"
-    sql: case
-          when ${sum_forecasted_riders_needed} > ${sum_planned_hours}
-            then (${sum_planned_hours} - ${sum_forecasted_riders_needed}) / nullif(${sum_forecasted_riders_needed},0)
-          else 0 end  ;;
-    value_format_name: percent_0
-    hidden: yes
-  }
-
-
-  measure: sum_predicted_orders{
-    type: sum
-    label: "# Forecasted Orders"
-    description: "Number of Forecasted Orders"
-    sql: ${TABLE}.number_of_predicted_orders ;;
-    value_format_name: decimal_0
-    filters: [position_name: "rider"]
-    hidden: yes
-  }
-
-  measure: pct_forecast_deviation {
-    type: number
-    label: "% Forecast Deviation "
-    description: "absolute (Forecasted Orders / Actual Orders)"
-    sql: abs(${sum_predicted_orders} / nullif(${adjusted_orders_pickers},0)) ;;
-    value_format_name: percent_0
-    hidden: yes
-  }
-
   measure: sum_no_show_hours{
     label:"Sum Rider Actual No Show Hours"
     type: sum
@@ -664,41 +585,6 @@ view: shyftplan_riders_pickers_hours_clean {
     value_format_name: decimal_1
   }
 
-  measure: sum_forecast_hours{
-    type: sum
-    label:"Sum Rider Forecasted Hours (excluding No show)"
-    description: "Number of Needed Employee Hours Based on Forecasted Order Demand excluding no show hours"
-    sql:NULLIF(${number_of_forecasted_minutes}-${number_of_predicted_no_show_minutes},0)/60;;
-    filters: [position_name: "rider"]
-    group_label: "No Show"
-    value_format_name: decimal_1
-    hidden: yes
-  }
-
-
-  measure: sum_forecast_no_show_hours{
-    type: sum
-    label:"Sum Rider Forecasted No Show Hours"
-    description: "Number of No Show Employee Hours Based on Forecasted Order Demand"
-    sql:NULLIF(${number_of_predicted_no_show_minutes},0)/60;;
-    filters: [position_name: "rider"]
-    group_label: "No Show"
-    value_format_name: decimal_1
-    hidden: yes
-  }
-
-
-  measure: sum_forecast_hours_needed{
-    type: sum
-    label:"Sum Rider Forecasted Hours (including No show)"
-    description: "Number of Needed Employee Hours Based on Forecasted Order Demand including no show hours"
-    sql:NULLIF(${number_of_forecasted_minutes},0)/60;;
-    filters: [position_name: "rider"]
-    group_label: "No Show"
-    value_format_name: decimal_1
-    hidden: yes
-  }
-
 
   measure: pct_no_show_employees{
     label:"% Actual No Show Rider Hours"
@@ -725,16 +611,6 @@ view: shyftplan_riders_pickers_hours_clean {
     sql:(${number_of_no_show_hours_hub_employees})/nullif(${number_of_planned_hours_hub_employees},0) ;;
     group_label: "No Show"
     value_format_name: percent_1
-  }
-
-  measure: pct_forecast_no_show_employees{
-    label:"% Forecasted No Show Rider Hours"
-    type: number
-    description: "% Forecasted No Show Rider Hours"
-    sql:(${sum_forecast_no_show_hours})/nullif(${sum_forecast_hours_needed},0) ;;
-    group_label: "No Show"
-    value_format_name: percent_1
-    hidden: yes
   }
 
   measure: pct_external_hours_rider_picker{
