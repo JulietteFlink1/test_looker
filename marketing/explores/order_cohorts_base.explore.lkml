@@ -18,7 +18,7 @@ explore: order_cohorts_base {
   }
 
   join: customer_cohorts_base {
-    view_label: "*.Customers *"
+    view_label: "* Customers *"
     from: customer_cohorts_base
     sql_on:
     ${order_cohorts_base.customer_uuid} =  ${customer_cohorts_base.customer_id_mapped};;
@@ -27,7 +27,7 @@ explore: order_cohorts_base {
   }
 
   join: hubs_ct {
-    view_label: "*.Hubs *"
+    view_label: "* Hubs *"
     sql_on: ${customer_cohorts_base.first_order_hub_code} = ${hubs_ct.hub_code} ;;
     type: left_outer
     relationship: many_to_one
