@@ -1,4 +1,7 @@
 view: sales_weighted_avg_buying_prices {
+
+  required_access_grants: [can_view_buying_information]
+
   derived_table: {
     explore_source: order_lineitems_margins {
       column: order_lineitem_uuid {field:orderline.order_lineitem_uuid}
