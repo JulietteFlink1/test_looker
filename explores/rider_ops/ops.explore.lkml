@@ -82,4 +82,14 @@ explore: ops {
     fields: [inventory_changes_daily.fields_for_utr_calculation*]
   }
 
+  # join: hub_monthly_orders {
+  #   from: hub_monthly_orders
+  #   view_label: "Hub Monthly Orders"
+  #   sql_on:
+  #     ${hubs.hub_code} = ${hub_monthly_orders.hub_code} and
+  #     date_trunc(date(${time_grid.start_datetime_raw}),month) = ${hub_monthly_orders.created_month};;
+  #   relationship: many_to_one
+  #   type: left_outer
+  # }
+
 }

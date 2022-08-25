@@ -424,4 +424,14 @@ explore: supply_chain {
     ;;
   }
 
+  join: hub_monthly_orders {
+    from: hub_monthly_orders
+    view_label: "16 Hub Monthly Orders"
+    sql_on:
+      ${products_hub_assignment.hub_code} = ${hub_monthly_orders.hub_code} and
+      date_trunc(${products_hub_assignment.report_date},month) = ${hub_monthly_orders.created_month};;
+    relationship: many_to_one
+    type: left_outer
+  }
+
 }
