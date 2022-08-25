@@ -311,6 +311,18 @@ view: daily_user_aggregates {
       type: yesno
       sql: ${TABLE}.is_add_to_cart_from_recommendation_placement ;;
     }
+    dimension: is_recipes_placement {
+    group_label: "Flags | Product Placement"
+    hidden:  yes
+    type: yesno
+    sql: ${TABLE}.is_add_to_cart_from_recipes_placement ;;
+    }
+    dimension: is_collection_placement {
+    group_label: "Flags | Product Placement"
+    hidden:  yes
+    type: yesno
+    sql: ${TABLE}.is_add_to_cart_from_collection_placement ;;
+    }
     dimension: is_undefined_placement {
       group_label: "Flags | Product Placement"
       hidden:  yes
@@ -1132,6 +1144,24 @@ view: daily_user_aggregates {
     value_format_name: percent_1
     sql: ${users_with_recommendation_atc} / nullif(${users_with_address},0);;
   }
+  measure: mcvr_2_recipes {
+    group_label: "Conversions | Product Placement mCVR2 (%)"
+    label: "Recipes mCVR2"
+    type: number
+    hidden: no
+    description: "# users with add-to-cart from Recipes, compared to the total number of users with an address"
+    value_format_name: percent_1
+    sql: ${users_with_recipes_atc} / nullif(${users_with_address},0);;
+  }
+  measure: mcvr_2_collection {
+    group_label: "Conversions | Product Placement mCVR2 (%)"
+    label: "Collection mCVR2"
+    type: number
+    hidden: no
+    description: "# users with add-to-cart from Collection, compared to the total number of users with an address"
+    value_format_name: percent_1
+    sql: ${users_with_collection_atc} / nullif(${users_with_address},0);;
+  }
 
   # ======= User Authentication & SMS Verification Metrics ======= #
 
@@ -1315,6 +1345,18 @@ view: daily_user_aggregates {
     hidden:  yes
     sql: ${user_uuid} ;;
     filters: [is_recommendation_placement: "yes"]
+  }
+  measure: users_with_recipes_atc {
+    type: count_distinct
+    hidden:  yes
+    sql: ${user_uuid} ;;
+    filters: [is_recipes_placement: "yes"]
+  }
+  measure: users_with_collection_atc {
+    type: count_distinct
+    hidden:  yes
+    sql: ${user_uuid} ;;
+    filters: [is_collection_placement: "yes"]
   }
   measure: users_with_undefined_atc {
     type: count_distinct
