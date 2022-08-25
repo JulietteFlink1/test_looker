@@ -105,7 +105,7 @@ view: inbound_outbound_kpi_report_ndt_waste_per_day_and_hub {
 
   measure: avg_aiv_profit_net {
 
-    label:       "AIV Gross Profit (dynamic - net)"
+    label:       "AIV Gross Profit (dynamic - Net)"
     description: "The AVG Item Value (dynamically pre or post discounts) multiplied by the AVG Margin. All values are net."
     group_label: "* Monetary Values *"
 
@@ -117,7 +117,7 @@ view: inbound_outbound_kpi_report_ndt_waste_per_day_and_hub {
 
   measure: avg_aiv_profit_gross {
 
-    label:       "AIV Gross Profit (dynamic - gross)"
+    label:       "AIV Gross Profit (dynamic - Gross)"
     description: "The AVG Item Value (dynamically pre or post discounts) multiplied by the AVG Margin. All values are gross."
     group_label: "* Monetary Values *"
 
@@ -132,7 +132,7 @@ view: inbound_outbound_kpi_report_ndt_waste_per_day_and_hub {
 
   measure: avg_aiv_proft_after_waste_gross {
 
-    label:       "AIV Gross Profit after Waste (dynamic - gross)"
+    label:       "AIV Gross Profit after Waste (dynamic - Gross)"
     description: "The AVG Item Value (dynamically pre or post discounts) multiplied by the AVG Margin plus by the total fees (containing the delivery and storage fees) deducted by the value of the waste generated per order. All values are gross."
     group_label: "* Monetary Values *"
 
@@ -146,7 +146,7 @@ view: inbound_outbound_kpi_report_ndt_waste_per_day_and_hub {
 
   measure: avg_aiv_proft_after_waste_net {
 
-    label:       "AIV Gross Profit after Waste (dynamic - net)"
+    label:       "AIV Gross Profit after Waste (dynamic - Net)"
     description: "The AVG Item Value (dynamically pre or post discounts) multiplied by the AVG Margin plus by the total fees (containing the delivery and storage fees) deducted by the value of the waste generated per order. All values are net."
     group_label: "* Monetary Values *"
 
