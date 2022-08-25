@@ -1,4 +1,6 @@
 include: "/explores/base_explores/orders_cl.explore.lkml"
+include: "/**/global_filters_and_parameters.view.lkml"
+
 
 view: orders_with_ops_metrics {
   derived_table: {
@@ -41,12 +43,14 @@ view: orders_with_ops_metrics {
       column: cnt_orders_fulfilled_over_30_min {}
       column: sum_rider_handling_time_minutes_saved_with_stacking {}
       column: sum_potential_rider_handling_time_without_stacking_minutes {}
-      filters: {
-        field: orders_cl.is_successful_order
-        value: "yes"
-      }
+
+      filters: [
+        orders_cl.is_successful_order : "yes",
+        global_filters_and_parameters.datasource_filter: "last 90 days"
+      ]
     }
   }
+
   dimension: hub_code {
     label: "Hub Code"
     description: ""

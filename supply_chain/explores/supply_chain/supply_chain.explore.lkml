@@ -77,6 +77,7 @@ explore: supply_chain {
         and ${products_hub_assignment.hub_code} not in ('de_ham_alto')
         and ${hubs_ct.is_test_hub} is false
         and ${hubs_ct.start_date} <= ${products_hub_assignment.report_date}
+        and (${hubs_ct.termination_date} > ${products_hub_assignment.report_date} or ${hubs_ct.termination_date} is null)
       ;;
 
 
