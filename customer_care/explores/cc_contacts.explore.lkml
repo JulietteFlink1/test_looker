@@ -48,15 +48,6 @@ explore: cc_contacts {
     relationship: many_to_one
   }
 
-  join: cc_contact_agents {
-    from: cc_contact_agents
-    view_label: "Agents"
-    sql_on:${cc_contact_agents.contact_id} = ${cc_contacts.contact_uuid}
-      and ${cc_contacts.country_iso} = ${cc_contact_agents.country_iso};;
-    relationship: one_to_many
-    type: left_outer
-  }
-
   join: cc_headcount_forecast_performance {
     from: cc_headcount_forecast_performance
     view_label: "Headcount Forecast"
