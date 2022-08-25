@@ -20,15 +20,45 @@ view: erp_buying_prices {
     label: "Net Unit Price"
     description: "The incoming cash defined as net item price"
     type: number
+    sql:  if(${vendor_price} is not null,
+            coalesce(
+              ${orderline.unit_price_gross_amount} / nullif((1 + ${orderline.tax_rate}) ,0),
+              ${products.amt_product_price_gross}  / nullif((1 + ${products.tax_rate}), 0)
+            ),
+            null)
+    ;;
+    value_format_name: eur
+  }
+
+  dimension: net_income_after_product_discount {
+    label: "Net Unit Price After Product Discount"
+    description: "The incoming cash defined as net item price after deduction of Product Discount"
+    type: number
+    sql:  if(${vendor_price} is not null,
+            coalesce(
+              ${orderline.unit_price_after_product_discount_gross} / nullif((1 + ${orderline.tax_rate}) ,0),
+              ${products.amt_product_price_gross}  / nullif((1 + ${products.tax_rate}), 0)
+            ),
+            null)
+    ;;
+
+    value_format_name: eur
+  }
+
+  dimension: net_income_legacy {
+    label: "Net Unit Price"
+    description: "The incoming cash defined as net item price"
+    type: number
     sql:  coalesce(
             ${orderline.unit_price_gross_amount} / nullif((1 + ${orderline.tax_rate}) ,0),
             ${products.amt_product_price_gross}  / nullif((1 + ${products.tax_rate}), 0)
           )
     ;;
     value_format_name: eur
+    hidden: yes
   }
 
-  dimension: net_income_after_product_discount {
+  dimension: net_income_after_product_discount_legacy {
     label: "Net Unit Price After Product Discount"
     description: "The incoming cash defined as net item price after deduction of Product Discount"
     type: number
@@ -38,6 +68,7 @@ view: erp_buying_prices {
           )
     ;;
     value_format_name: eur
+    hidden: yes
   }
 
   dimension: margin_absolute {
