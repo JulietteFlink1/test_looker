@@ -747,7 +747,7 @@ view: shyftplan_riders_pickers_hours_clean {
   }
 
   measure: pct_rider_idle_time {
-    group_label: "* Operations / Logistics *"
+    group_label: "Rider Performance"
     label: "% Worked Time Spent Idle (Riders)"
     description: "% of worked time (min) not spent handling an order - compares the difference between worked time (min) and rider handling time (min) with total worked time (min)"
     hidden:  no
