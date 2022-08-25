@@ -11,7 +11,7 @@ explore: cc_contacts {
   from: cc_contacts
   view_name: cc_contacts
   group_label: "Customer Care"
-  view_label: "* Intercom Contacts *"
+  view_label: "Intercom Contacts"
   label: "Contacts & Agents"
   description: "This explore provides information on all Intercom chats"
 
@@ -40,7 +40,6 @@ explore: cc_contacts {
       and {% condition global_filters_and_parameters.datasource_filter %} ${cc_orders_hourly2.order_timestamp_date} {% endcondition %};;
     relationship: many_to_one
     type: left_outer
-
   }
 
   join: global_filters_and_parameters {

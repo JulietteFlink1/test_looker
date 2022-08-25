@@ -8,6 +8,12 @@ view: cc_agent_staffing_daily {
     sql: ${TABLE}.agent_email ;;
   }
 
+  dimension: cc_agent_shift_uuid {
+    sql: ${TABLE}.cc_agent_shift_uuid ;;
+    primary_key: yes
+    hidden: yes
+  }
+
   dimension: agent_name {
     group_label: "> Agent Dimensions"
     type: string
@@ -98,6 +104,7 @@ view: cc_agent_staffing_daily {
     label: "# Worked Hours"
     description: "Worked Hours as seen in Quinyx. For external agents we consider the planned hours, for internal agents the punched hours"
     type: sum
+    hidden: no
     sql: ${number_of_worked_hours} ;;
   }
 
@@ -106,6 +113,7 @@ view: cc_agent_staffing_daily {
     label: "# Closed Contacts"
     description: "Number of contacts that were closed by the agent"
     type: sum
+    hidden: no
     sql: ${number_of_closed_contacts} ;;
   }
 
@@ -113,7 +121,8 @@ view: cc_agent_staffing_daily {
     group_label: "> Agent Productivity"
     label: "AVG # Contacts/Hour"
     type: number
-    sql: ${sum_number_of_closed_contacts}/${sum_number_of_worked_hours} ;;
+    hidden: no
+    sql: safe_divide(${sum_number_of_closed_contacts},${sum_number_of_worked_hours}) ;;
     value_format: "0.00"
   }
 
