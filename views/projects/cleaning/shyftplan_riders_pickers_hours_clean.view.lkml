@@ -746,6 +746,16 @@ view: shyftplan_riders_pickers_hours_clean {
     value_format_name: percent_1
   }
 
+  measure: pct_rider_idle_time {
+    group_label: "* Operations / Logistics *"
+    label: "% Worked Time Spent Idle (Riders)"
+    description: "% of worked time (min) not spent handling an order - compares the difference between worked time (min) and rider handling time (min) with total worked time (min)"
+    hidden:  no
+    type: number
+    sql: ${employee_level_kpis.pct_rider_idle_time};;
+    value_format: "0%"
+  }
+
   measure: rider_utr_cleaned {
     label: "AVG Rider UTR (Orders Delivered by Riders)"
     type: number
