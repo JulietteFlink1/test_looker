@@ -1,10 +1,13 @@
+# The main purpose of this table is to provide the AVG # Daily Orders per hub and calendar month
+# This KPI allows to group the hubs into tiers, which is useful to assess trends in groups of 'similar' hubs
+
 view: hub_monthly_orders {
   derived_table: {
     explore_source: orders_cl {
-      column: created_month { field: orders_cl.created_month }
-      column: hub_code { field: orders_cl.hub_code }
+      column: created_month {}
+      column: hub_code {}
       column: country_iso {}
-      column: avg_daily_orders_per_hub { field: orders_cl.avg_daily_orders_per_hub }
+      column: avg_daily_orders_per_hub {}
       column: number_of_days_opened { field: orders_cl.cnt_unique_date }
       column: number_of_orders { field: orders_cl.cnt_orders }
 
@@ -35,7 +38,7 @@ view: hub_monthly_orders {
   }
 
   dimension: created_month {
-    label: "Month"
+    label: "Order Month"
     hidden:  yes
     description: "Order Placement Date"
     type: date
