@@ -62,12 +62,6 @@ view: hub_staffing {
     sql: ${TABLE}.number_of_employees_needed ;;
   }
 
-  dimension: number_of_forecast_riders_needed {
-    type: number
-    hidden: yes
-    sql: ${TABLE}.number_of_forecasted_employees_needed ;;
-  }
-
   dimension: number_of_no_show_employees {
     type: number
     hidden: yes
@@ -108,24 +102,6 @@ view: hub_staffing {
     type: number
     hidden: yes
     sql: ${TABLE}.number_of_planned_employees_external ;;
-  }
-
-  dimension: number_of_predicted_orders {
-    type: number
-    hidden: yes
-    sql: ${TABLE}.number_of_predicted_orders ;;
-  }
-
-  dimension: number_of_predicted_orders_lower_bound {
-    type: number
-    hidden: yes
-    sql: ${TABLE}.number_of_predicted_orders_lower_bound ;;
-  }
-
-  dimension: number_of_predicted_orders_upper_bound {
-    type: number
-    hidden: yes
-    sql: ${TABLE}.number_of_predicted_orders_upper_bound ;;
   }
 
   dimension: number_of_worked_employees {
@@ -257,26 +233,6 @@ view: hub_staffing {
     sql: ${TABLE}.staffing_uuid ;;
   }
 
-
-  dimension: number_of_target_orders_per_employee {
-    type: number
-    hidden: yes
-    sql: ${TABLE}.number_of_target_orders_per_employee ;;
-  }
-
-  dimension: number_of_forecasted_minutes {
-    type: number
-    hidden: yes
-    sql: ${TABLE}.number_of_forecasted_minutes ;;
-  }
-
-
-  dimension: number_of_predicted_no_show_minutes {
-    type: number
-    hidden: yes
-    sql: ${TABLE}.number_of_predicted_no_show_minutes ;;
-  }
-
   dimension_group: last_update {
     type: time
     timeframes: [
@@ -293,15 +249,6 @@ view: hub_staffing {
     label:"# Orders"
     sql:${number_of_orders};;
     value_format_name: decimal_0
-  }
-
-  measure: number_of_target_utr{
-    type: average
-    label:"Target UTR"
-    description: "Target UTR used in Forecsating Rider Hours"
-    sql:${number_of_target_orders_per_employee};;
-    hidden: yes
-    value_format_name: decimal_2
   }
 
   measure: sum_planned_employees{
@@ -321,17 +268,6 @@ view: hub_staffing {
     sql:${number_of_planned_employees_external};;
     value_format_name: decimal_1
   }
-
-
-  measure: sum_predicted_orders{
-    type: sum
-    label:"# Forecasted Orders"
-    description: "Number of Forecasted Orders"
-    sql:${number_of_predicted_orders};;
-    hidden: yes
-    value_format_name: decimal_0
-  }
-
 
   measure: sum_worked_employees{
     type: sum
@@ -426,36 +362,6 @@ view: hub_staffing {
     value_format_name: decimal_1
   }
 
-  measure: sum_forecast_hours{
-    type: sum
-    label:"# Forecasted Hours (excluding No show)"
-    description: "Number of Needed Employee Hours Based on Forecasted Order Demand excluding no show hours"
-    sql:NULLIF(${number_of_forecasted_minutes}-${number_of_predicted_no_show_minutes},0)/60;;
-    hidden: yes
-    value_format_name: decimal_1
-  }
-
-
-  measure: sum_forecast_no_show_hours{
-    type: sum
-    label:"# Forecasted No Show Hours"
-    description: "Number of No Show Employee Hours Based on Forecasted Order Demand"
-    sql:NULLIF(${number_of_predicted_no_show_minutes},0)/60;;
-    hidden: yes
-    value_format_name: decimal_1
-  }
-
-
-  measure: sum_forecast_riders_needed{
-    type: sum
-    label:"# Forecasted Hours (including No show)"
-    description: "Number of Needed Employee Hours Based on Forecasted Order Demand including no show hours"
-    sql:NULLIF(${number_of_forecasted_minutes},0)/60;;
-    hidden: yes
-    value_format_name: decimal_1
-  }
-
-
   measure: pct_no_show_employees{
     label:"% Actual No Show Hours"
     type: number
@@ -471,16 +377,6 @@ view: hub_staffing {
     sql:(${sum_planned_hours})/nullif(${sum_planned_hours} + ${number_of_unassigned_hours},0) ;;
     value_format_name: percent_1
   }
-
-  measure: pct_forecast_no_show_employees{
-    label:"% Forecasted No Show Hours"
-    type: number
-    description: "% Forecasted No Show Hours"
-    sql:(${sum_forecast_no_show_hours})/nullif(${sum_forecast_riders_needed},0) ;;
-    hidden: yes
-    value_format_name: percent_1
-  }
-
 
   measure: avg_employees_utr{
     label:"UTR"
@@ -554,60 +450,5 @@ view: hub_staffing {
     sql:${number_of_no_show_minutes_external}/60;;
     value_format_name: decimal_1
   }
-
-  measure: sum_hours_needed {
-    type: number
-    label:"# Actually Needed Hours"
-    description: "Number of needed Employees based on actual order demand"
-    sql:ceiling(NULLIF(${sum_orders},0) / nullif(${number_of_target_utr},0));;
-    hidden: yes
-    value_format_name: decimal_1
-  }
-
-
-  measure: expected_utr {
-    type: number
-    label:"# Projected Rider UTR"
-    description: "Forecasted Orders / Scheduled Rider Hours"
-    sql:${sum_predicted_orders} / ${sum_planned_hours};;
-    hidden: yes
-    value_format_name: decimal_1
-  }
-
-  measure: pct_over_stafing {
-    type: number
-    label:"% Over Staffing "
-    description: "When Forecasted Hours < Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
-    sql:case when ${sum_forecast_riders_needed} < ${sum_planned_hours}
-                  then (${sum_forecast_riders_needed} - ${sum_planned_hours} )  / ${sum_forecast_riders_needed}
-             else
-                  0
-        end          ;;
-    value_format_name: percent_0
-    hidden: yes
-  }
-
-  measure: pct_under_stafing {
-    type: number
-    label:"% Under Staffing "
-    description: "When Forecasted Hours > Scheduled Hours: (Scheduled Hours - Forecasted Hours) / Forecasted Hours"
-    sql:case when ${sum_forecast_riders_needed} > ${sum_planned_hours}
-                  then (${sum_planned_hours} - ${sum_forecast_riders_needed})  / ${sum_forecast_riders_needed}
-             else
-                  0
-        end          ;;
-    value_format_name: percent_0
-    hidden: yes
-  }
-
-  measure: forecast_deviation {
-    type: number
-    label:"% Forecast Deviation "
-    description: "absolute (Forecasted Orders / Actual Orders)"
-    sql:abs(${sum_predicted_orders}/${sum_orders});;
-    value_format_name: percent_0
-    hidden: yes
-  }
-
 
 }
