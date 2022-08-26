@@ -15,6 +15,7 @@ view: event_product_added_to_cart {
     primary_key: yes
     type: string
     sql: ${TABLE}.event_uuid ;;
+    primary_key: yes
   }
   dimension: user_id {
     group_label: "IDs"

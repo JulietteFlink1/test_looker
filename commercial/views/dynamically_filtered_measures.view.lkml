@@ -18,6 +18,10 @@ view: dynamically_filtered_measures {
       derived_column: unique_id {
         sql: concat(sku, country_iso, created_date, hub_code) ;;
       }
+
+      filters: [
+        global_filters_and_parameters.datasource_filter: ""
+      ]
       # derived_column: pop_orders {
       #   sql:  (cnt_orders - LEAD(cnt_orders) OVER (PARTITION BY country_iso ORDER BY date DESC))
       #       /
