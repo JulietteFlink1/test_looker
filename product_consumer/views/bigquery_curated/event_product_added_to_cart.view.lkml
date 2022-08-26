@@ -12,6 +12,7 @@ view: event_product_added_to_cart {
     group_label: "IDs"
     label: "Event UUID"
     description: "Unique identifier of an event"
+    primary_key: yes
     type: string
     sql: ${TABLE}.event_uuid ;;
     primary_key: yes

@@ -36,6 +36,11 @@ view: employee_level_kpis {
     sql: ${TABLE}.auth0_id ;;
   }
 
+  dimension: employment_id {
+    type: string
+    label: "Employee ID"
+    sql: ${TABLE}.employment_id ;;
+  }
 
   dimension_group: shift {
     type: time
