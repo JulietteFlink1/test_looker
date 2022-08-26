@@ -36,6 +36,11 @@ view: employee_level_kpis {
     sql: ${TABLE}.auth0_id ;;
   }
 
+  dimension: employment_id {
+    type: string
+    label: "Employee ID"
+    sql: ${TABLE}.employment_id ;;
+  }
 
   dimension_group: shift {
     type: time
@@ -233,12 +238,43 @@ view: employee_level_kpis {
     value_format_name: percent_1
   }
 
+  measure: sum_worked_time_minutes {
+    group_label: "* Shift related *"
+    type: sum
+    label: "# Worked Time (min)"
+    description: "Sum worked time in minutes"
+    sql: ${TABLE}.number_of_worked_minutes ;;
+    value_format_name: decimal_1
+  }
+
+  measure: sum_worked_time_minutes_rider {
+    group_label: "* Shift related *"
+    type: sum
+    label: "# Worked Time (min) Riders"
+    hidden: yes
+    description: "Sum worked time in minutes (Riders)"
+    sql: ${TABLE}.number_of_worked_minutes ;;
+    filters: [position_name: "rider"]
+    value_format_name: decimal_1
+  }
+
   measure: sum_rider_handling_time_minutes {
     group_label: "* Logistics *"
     type: sum
-    label: "Sum Rider Handling Time (min)"
+    label: "# Rider Handling Time (min)"
     description: "Sum time needed for the rider to handle the order: Riding to customer + At customer + Riding to hub"
     sql: ${TABLE}.number_of_rider_handling_time_minutes ;;
+    value_format_name: decimal_1
+  }
+
+
+  measure: sum_rider_idle_time_minutes {
+    group_label: "* Performance *"
+    type: sum
+    label: "# Rider Idle Time (min)"
+    description: "Sum of idle time (min) - the difference between worked minutes and rider handling time minutes"
+    sql: ${TABLE}.number_of_idle_minutes ;;
+    filters: [position_name: "rider"]
     value_format_name: decimal_1
   }
 
@@ -250,6 +286,7 @@ view: employee_level_kpis {
     sql: ${TABLE}.number_of_picking_time_minutes ;;
     value_format_name: decimal_1
     hidden: yes
+
   }
 
   measure: avg_rider_handling_time_minutes {
@@ -333,6 +370,7 @@ view: employee_level_kpis {
     value_format_name: decimal_1
   }
 
+
   measure: pct_riding_to_customer_time {
     group_label: "* Logistics *"
     type: number
@@ -360,6 +398,15 @@ view: employee_level_kpis {
     value_format_name: percent_1
   }
 
+  measure: pct_rider_idle_time {
+    group_label: "* Performance *"
+    type: number
+    label: "% Worked Time Spent Idle (Riders)"
+    description: "% of worked time (min) not spent handling an order - compares the difference between worked time (min) and rider handling time (min) with total worked time (min)"
+    sql: ${sum_rider_idle_time_minutes} / nullif(${sum_worked_time_minutes_rider},0) ;;
+    value_format: "0%"
+  }
+
   # ~~~~~~~~~~~~~~~     Shift related     ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
@@ -367,7 +414,11 @@ view: employee_level_kpis {
     group_label: "* Shift related *"
     type: number
     hidden: yes
-    sql:1 + date_DIFF( safe_cast(max(${shift_date}) as date),safe_cast(min(${shift_date}) as date), week) ;;
+    sql:
+      CASE
+        WHEN date_DIFF( safe_cast(max(${shift_date}) as date),safe_cast(min(${shift_date}) as date), week) = 0 THEN 1
+        ELSE date_DIFF( safe_cast(max(${shift_date}) as date),safe_cast(min(${shift_date}) as date), week)
+      END ;;
   }
 
   measure: last_worked_date {
@@ -498,13 +549,21 @@ view: employee_level_kpis {
     value_format: "0%"
   }
 
+  measure: sum_weekly_contracted_hours {
+    label: "Total Weekly Contracted Hours"
+    group_label: "* Contract related *"
+    type: number
+    sql: ${TABLE}.weekly_contracted_hours * ${number_of_scheduled_weeks} ;;
+    description: "Sum of weekly contracted hours based on Quinyx Agreements (Field in Quinyx UI: Agreement full time working hours) - # Weekly Contracted Hours * # Scheduled Weeks"
+  }
+
   measure: pct_contract_fulfillment {
     group_label: "* Shift related *"
     type: number
     hidden: no
     label: "% Contracted Hours Fulfillment"
     description: "Worked hours / (weekly_contracted_hours * number_of_weeks)"
-    sql: ${number_of_worked_hours}/nullif(sum(${weekly_contracted_hours})*${number_of_scheduled_weeks},0) ;;
+    sql: ${number_of_worked_hours}/nullif(${sum_weekly_contracted_hours},0) ;;
     value_format: "0%"
   }
 

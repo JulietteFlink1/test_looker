@@ -197,6 +197,7 @@ view: looker_query_costs {
     group_label: "GCP Logs"
     type: string
     sql: ${TABLE}.query ;;
+    html: <code>{{ rendered_value }}</code> ;;
   }
 
   dimension_group: job_created_timestamp {
