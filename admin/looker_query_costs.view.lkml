@@ -4,7 +4,7 @@ view: looker_query_costs {
 
           from flink-data-dev.dbt_astueber.looker_query_cost_exports as looker
 
-      left join flink-data-dev.dbt_astueber.gcp_logs_looker as gcp
+      left join flink-data-dev.dbt_astueber.gcp_logs_parsed_for_looker as gcp
       on
       gcp.looker_history_slug = History_Slug
       ;;
