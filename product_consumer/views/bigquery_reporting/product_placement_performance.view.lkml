@@ -147,6 +147,14 @@ view: product_placement_performance {
     sql: ${TABLE}.screen_name ;;
   }
 
+  dimension: is_product_out_of_stock {
+    group_label: "Product Dimensions"
+    label: "Is Product OoS"
+    description: "Boolean whether a product was Out-of-Stock on an impression (when users saw the product)"
+    type: yesno
+    sql: ${TABLE}.is_product_out_of_stock ;;
+  }
+
   # ======= Dates / Timestamps =======
 
   dimension_group: event {
@@ -240,6 +248,21 @@ view: product_placement_performance {
     type: count_distinct
     sql: ${TABLE}.product_sku ;;
   }
+  measure: out_of_stock_products {
+    group_label: "Product Metrics"
+    label: "# OoS Products (Unique)"
+    description: "Unique number of products which were out of stock when saw by users (on an impression level)"
+    type: count_distinct
+    sql: ${TABLE}.product_sku ;;
+    filters: [is_product_out_of_stock: "yes"]
+  }
+  measure: out_of_stock_products_total {
+    group_label: "Product Metrics"
+    label: "# OoS Products (Total)"
+    description: "Total number of products which were out of stock when saw by users (on an impression level)"
+    type: count
+    filters: [is_product_out_of_stock: "yes"]
+  }
   measure: orders {
     group_label: "Product Metrics"
     label: "# Orders "
@@ -304,7 +327,7 @@ view: product_placement_performance {
   }
   measure: number_of_clicks {
     group_label: "Product Metrics"
-    label: "# Products clicked (PDP or ATC)"
+    label: "# Products Clicked (PDP or ATC)"
     description: "Number of products clicked. Can be either PDP or ATC"
     type: count_distinct
     sql: ${product_placement_uuid} ;;
@@ -342,6 +365,14 @@ view: product_placement_performance {
     value_format_name: percent_2
     sql: ${ordered_products} / nullif(${impressions},0);;
   }
+  measure: out_of_stock_rate{
+    group_label: "Rates (%)"
+    label: "Out-ot-Stock Rate (OoS)"
+    type: number
+    description: "# OoS products / # total products impressions"
+    value_format_name: percent_2
+    sql: ${out_of_stock_products_total} / nullif(${impressions},0);;
+  }
 
   # ======= User Level Measures =======
   measure: number_of_users {
@@ -354,7 +385,7 @@ view: product_placement_performance {
 
   measure: users_with_impressions {
     group_label: "User Metrics"
-    label: "# Users with impressions"
+    label: "# Users with Impressions"
     description: "Number of users with impressions"
     type: count_distinct
     sql: ${anonymous_id} ;;
@@ -362,7 +393,7 @@ view: product_placement_performance {
   }
   measure: users_with_add_to_carts {
     group_label: "User Metrics"
-    label: "# Users with add to cart"
+    label: "# Users with Add-to-Cart"
     description: "Number of users with add to cart"
     type: count_distinct
     sql: ${anonymous_id} ;;
@@ -370,7 +401,7 @@ view: product_placement_performance {
   }
   measure: users_with_removed_from_cart {
     group_label: "User Metrics"
-    label: "# Users with removed to cart"
+    label: "# Users with Removed-from-Cart"
     description: "Number of users with removed to cart"
     type: count_distinct
     sql: ${anonymous_id} ;;
@@ -378,7 +409,7 @@ view: product_placement_performance {
   }
   measure: users_with_pdp_viewed {
     group_label: "User Metrics"
-    label: "# Users with pdp viewed"
+    label: "# Users with PDP Viewed"
     description: "Number of users with pdp viewed"
     type: count_distinct
     sql: ${anonymous_id} ;;
@@ -386,7 +417,7 @@ view: product_placement_performance {
   }
   measure: users_with_add_to_favourites {
     group_label: "User Metrics"
-    label: "# Users with add to favourites"
+    label: "# Users with Add-to-Favourites"
     description: "Number of users with add to favourites"
     type: count_distinct
     sql: ${anonymous_id} ;;
@@ -394,10 +425,18 @@ view: product_placement_performance {
   }
   measure: users_with_orders {
     group_label: "User Metrics"
-    label: "# Users with orders"
+    label: "# Users with Orders"
     description: "Number of users with orders"
     type: count_distinct
     sql: ${anonymous_id} ;;
     filters: [is_order_placed: "yes"]
+  }
+  measure: users_with_out_of_stock_products {
+    group_label: "User Metrics"
+    label: "# Users with OoS Products"
+    description: "Number of users who saw products which were out of stock"
+    type: count_distinct
+    sql: ${anonymous_id} ;;
+    filters: [is_product_out_of_stock: "yes"]
   }
 }

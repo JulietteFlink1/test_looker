@@ -14,27 +14,8 @@ explore: order_lineitems_margins {
   hidden: no
 
 
-  join: erp_buying_prices {
-    type: left_outer
-    # n orders have the same price
-    relationship: many_to_one
-    sql_on:
-        ${erp_buying_prices.hub_code}         =  ${orderline.hub_code}                                and
-        ${erp_buying_prices.sku}              =  ${orderline.product_sku}                             and
-        -- a prive is valid in a certain time frame
-        ${orderline.created_date}             = ${erp_buying_prices.report_date}
-    ;;
-  }
 
-  join: sales_weighted_avg_buying_prices {
-    type: left_outer
-    relationship:many_to_one
-    sql_on:
-        ${sales_weighted_avg_buying_prices.order_lineitem_uuid} =  ${orderline.order_lineitem_uuid}                      and
-        ${sales_weighted_avg_buying_prices.product_sku}         =  ${orderline.product_sku}                              and
-        ${sales_weighted_avg_buying_prices.hub_code}            =  ${orderline.hub_code}                                 and
-        ${sales_weighted_avg_buying_prices.created_date}        =  ${orderline.created_date}
-    ;;
-  }
+
+
 
 }

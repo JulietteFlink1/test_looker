@@ -408,6 +408,22 @@ view: event_product_added_to_cart {
     sql: ${TABLE}.event_uuid ;;
     filters: [product_placement: "recommendation"]
   }
+  measure: placement_recipes {
+    group_label: "# Events / # Products per Placement"
+    label: "# Products - Recipes"
+    description: "Number of events trigegred by users from recipes product placement"
+    type: count_distinct
+    sql: ${TABLE}.event_uuid ;;
+    filters: [product_placement: "recipes"]
+  }
+  measure: placement_collection {
+    group_label: "# Events / # Products per Placement"
+    label: "# Products - Collection"
+    description: "Number of events trigegred by users from collection product placement"
+    type: count_distinct
+    sql: ${TABLE}.event_uuid ;;
+    filters: [product_placement: "collection"]
+  }
 
   ### ATC rates
 
@@ -470,9 +486,24 @@ view: event_product_added_to_cart {
   measure: atc_recommendation {
     group_label: "Add-to-cart Rates"
     label: "ATC rate - Recommendation"
-    description: "ATC (add-to-cart) Rate from product placement. #reco events from mmendation / # total events"
+    description: "ATC (add-to-cart) Rate from product placement. # events from recommendation / # total events"
     type: number
     value_format_name: percent_1
     sql: ${placement_recommendation} / ${events};;
+  }
+  measure: atc_recipes {
+    group_label: "Add-to-cart Rates"
+    label: "ATC rate - Recipes"
+    description: "ATC (add-to-cart) Rate from product placement. # events from recipes / # total events"
+    type: number
+    value_format_name: percent_1
+    sql: ${placement_recipes} / ${events};;
+  }
+  measure: atc_collection {
+    group_label: "Add-to-cart Rates"
+    description: "ATC (add-to-cart) Rate from product placement. # events from collection / # total events"
+    type: number
+    value_format_name: percent_1
+    sql: ${placement_collection} / ${events};;
   }
 }

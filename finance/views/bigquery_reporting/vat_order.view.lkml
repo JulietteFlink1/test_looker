@@ -57,9 +57,6 @@ view: vat_order {
     sql: ${TABLE}.refund_date ;;
   }
 
-
-
-
   dimension: user_email {
     type: string
     sql: ${TABLE}.user_email ;;
@@ -88,14 +85,6 @@ view: vat_order {
     type: string
     sql: ${TABLE}.status ;;
   }
-
-  dimension: discount_free_delivery_gross {
-    type: number
-    hidden: yes
-    sql: ${TABLE}.discount_free_delivery_gross ;;
-  }
-
-
 
   dimension: hub_name {
     group_label: "> Geographic"
@@ -1290,16 +1279,6 @@ view: vat_order {
     value_format: "#,##0.00€"
     sql: ${vat_discount_amount_total} ;;
   }
-
-  measure: sum_discount_amount_free_delivery_gross {
-    group_label: "> Discounts"
-    label: "SUM Free Delivery Discounts (Gross)"
-    value_format: "#,##0.00€"
-    type: sum
-    hidden: yes
-    sql: ${discount_free_delivery_gross} ;;
-  }
-
 
   ################## Product Discounts
 
