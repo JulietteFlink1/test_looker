@@ -14,6 +14,7 @@ view: event_product_added_to_cart {
     description: "Unique identifier of an event"
     type: string
     sql: ${TABLE}.event_uuid ;;
+    primary_key: yes
   }
   dimension: user_id {
     group_label: "IDs"
