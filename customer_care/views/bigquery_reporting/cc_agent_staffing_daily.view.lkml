@@ -124,4 +124,33 @@ view: cc_agent_staffing_daily {
     value_format: "0.00"
   }
 
+  ######### Parameters
+
+  parameter: date_granularity {
+    group_label: "> Dates"
+    label: "Date Granularity"
+    type: unquoted
+    allowed_value: { value: "Day" }
+    allowed_value: { value: "Week" }
+    allowed_value: { value: "Month" }
+    default_value: "Day"
+  }
+
+
+  ######## Dynamic Dimensions
+
+  dimension: date {
+    group_label: "> Dates"
+    label: "Shift Date (Dynamic)"
+    label_from_parameter: date_granularity
+    sql:
+    {% if date_granularity._parameter_value == 'Day' %}
+      ${shift_date}
+    {% elsif date_granularity._parameter_value == 'Week' %}
+      ${shift_week}
+    {% elsif date_granularity._parameter_value == 'Month' %}
+      ${shift_month}
+    {% endif %};;
+  }
+
 }
