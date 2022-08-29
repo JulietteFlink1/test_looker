@@ -549,11 +549,19 @@ view: employee_level_kpis {
     value_format: "0%"
   }
 
+  measure: sum_weekly_contracted_hours_per_employee {
+    type: sum_distinct
+    sql: ${TABLE}.weekly_contracted_hours ;;
+    sql_distinct_key: ${employment_id} ;;
+    hidden: yes
+    description: "# Weekly contracted hours based on Quinyx Agreements (Field in Quinyx UI: Agreement full time working hours)"
+  }
+
   measure: sum_weekly_contracted_hours {
     label: "Total Weekly Contracted Hours"
     group_label: "* Contract related *"
     type: number
-    sql: ${TABLE}.weekly_contracted_hours * ${number_of_scheduled_weeks} ;;
+    sql: ${sum_weekly_contracted_hours_per_employee} * ${number_of_scheduled_weeks} ;;
     description: "Sum of weekly contracted hours based on Quinyx Agreements (Field in Quinyx UI: Agreement full time working hours) - # Weekly Contracted Hours * # Scheduled Weeks"
   }
 

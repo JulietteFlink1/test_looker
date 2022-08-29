@@ -4,7 +4,7 @@
 # This view contains REWE Products and the best available Flink product match.
 
 view: product_matching_rewe_to_flink {
-  sql_table_name: `flink-data-prod.comp_intel.product_matching_rewe_to_flink`
+  sql_table_name: `flink-data-prod.curated.product_matching_rewe_to_flink`
     ;;
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -1,5 +1,5 @@
 view: flink_to_gorillas_global {
-  sql_table_name: `flink-data-prod.comp_intel.flink_to_gorillas_global`
+  sql_table_name: `flink-data-prod.curated.flink_to_gorillas_global`
     ;;
 
   dimension: match_type {
