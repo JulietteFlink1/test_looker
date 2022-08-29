@@ -1,5 +1,5 @@
 view: albert_heijn_to_flink_global {
-  sql_table_name: `flink-data-prod.comp_intel.albert_heijn_to_flink_global`
+  sql_table_name: `flink-data-prod.curated.albert_heijn_to_flink_global`
     ;;
 
   dimension: albert_heijn_product_id {
