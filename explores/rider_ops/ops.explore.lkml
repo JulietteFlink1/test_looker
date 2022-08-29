@@ -83,8 +83,7 @@ explore: ops {
   }
 
   join: hub_monthly_orders {
-    from: hub_monthly_orders
-    view_label: "Hub Monthly Orders"
+    view_label: "Hub Data"
     sql_on:
       ${hubs.hub_code} = ${hub_monthly_orders.hub_code} and
       date_trunc(${time_grid.start_datetime_date},month) = ${hub_monthly_orders.created_month};;
