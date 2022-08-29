@@ -4,7 +4,7 @@
 # This view contains Flink product SKUs and the best available REWE product match.
 
 view: product_matching_flink_to_rewe {
-  sql_table_name: `flink-data-prod.comp_intel.product_matching_flink_to_rewe` ;;
+  sql_table_name: `flink-data-prod.curated.product_matching_flink_to_rewe` ;;
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ~~~~~~~~~~~~~~~~~~~~     Dimensions     ~~~~~~~~~~~~~~~~~~~~
