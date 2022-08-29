@@ -1698,6 +1698,24 @@ view: orders {
     value_format_name: decimal_1
   }
 
+  measure: sum_picking_time_minutes {
+    group_label: "* Operations / Logistics *"
+    label: "SUM Picking Time (Minutes)"
+    description: "SUM Picking Time in minutes considering first fulfillment to second fulfillment created. Outliers excluded (<0min or >30min)"
+    type: sum
+    sql:${picking_time_minutes};;
+    value_format_name: decimal_2
+  }
+
+  measure: avg_picking_time_per_item {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Picking Time Per Item (Minutes)"
+    description: "Computed as Picking Time / # Items Picked. Outliers excluded (<0min or >30min)"
+    type: number
+    sql:nullif(${sum_picking_time_minutes},0)/nullif(${sum_quantity_fulfilled},0);;
+    value_format_name: decimal_2
+  }
+
   measure: avg_rider_queuing_time {
     alias: [avg_acceptance_time]
     group_label: "* Operations / Logistics *"
