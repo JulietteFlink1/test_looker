@@ -413,7 +413,7 @@ view: employee_level_kpis {
   measure: number_of_scheduled_weeks {
     group_label: "* Shift related *"
     type: number
-    hidden: no
+    hidden: yes
     sql:
       CASE
         WHEN date_DIFF( safe_cast(max(${shift_date}) as date),safe_cast(min(${shift_date}) as date), week) = 0 THEN 1
@@ -549,7 +549,7 @@ view: employee_level_kpis {
     value_format: "0%"
   }
 
-  measure: dimensional_weekly_contracted_hours {
+  measure: sum_weekly_contracted_hours_per_employee {
     type: sum_distinct
     sql: ${TABLE}.weekly_contracted_hours ;;
     sql_distinct_key: ${employment_id} ;;
@@ -561,7 +561,7 @@ view: employee_level_kpis {
     label: "Total Weekly Contracted Hours"
     group_label: "* Contract related *"
     type: number
-    sql: ${dimensional_weekly_contracted_hours} * ${number_of_scheduled_weeks} ;;
+    sql: ${sum_weekly_contracted_hours_per_employee} * ${number_of_scheduled_weeks} ;;
     description: "Sum of weekly contracted hours based on Quinyx Agreements (Field in Quinyx UI: Agreement full time working hours) - # Weekly Contracted Hours * # Scheduled Weeks"
   }
 
