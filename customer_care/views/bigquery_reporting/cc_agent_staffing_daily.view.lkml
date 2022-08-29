@@ -1,5 +1,5 @@
 view: cc_agent_staffing_daily {
-  sql_table_name: `flink-data-dev.dbt_jgrammatikas.cc_agent_staffing_daily`
+  sql_table_name: `flink-data-prod.reporting.cc_agent_staffing_daily`
     ;;
 
   dimension: agent_email {
@@ -120,6 +120,7 @@ view: cc_agent_staffing_daily {
   measure: number_of_contact_per_hour {
     group_label: "> Agent Productivity"
     label: "AVG # Contacts/Hour"
+    description: "AVG Number of contacts closed by an agent in one worked hours."
     type: number
     hidden: no
     sql: safe_divide(${sum_number_of_closed_contacts},${sum_number_of_worked_hours}) ;;
