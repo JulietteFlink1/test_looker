@@ -33,7 +33,6 @@ explore: cc_contacts {
 #  ,
   # cc_contacts.contact_created_date: "last 60 days"
   join: cc_orders_hourly2 {
-    from: cc_orders_hourly2
     view_label: "Orders"
     sql_on: timestamp_trunc(cast(${cc_contacts.contact_created_time} as timestamp),hour) = cast(${cc_orders_hourly2.order_timestamp_time} as timestamp)
       and ${cc_contacts.country_iso} = ${cc_orders_hourly2.country_iso}
@@ -49,7 +48,6 @@ explore: cc_contacts {
   }
 
   join: cc_headcount_forecast_performance {
-    from: cc_headcount_forecast_performance
     view_label: "Headcount Forecast"
     sql_on: ${cc_contacts.cc_team} = ${cc_headcount_forecast_performance.team}
         and ${cc_contacts.contact_created_date} = ${cc_headcount_forecast_performance.forecasted_date}
@@ -59,7 +57,6 @@ explore: cc_contacts {
   }
 
   join: cc_agent_staffing_daily {
-    from: cc_agent_staffing_daily
     view_label: "Shifts"
     sql_on:${cc_agent_staffing_daily.shift_date} = ${cc_contacts.contact_created_date}
       and ${cc_agent_staffing_daily.country_iso} = ${cc_contacts.country_iso};;
