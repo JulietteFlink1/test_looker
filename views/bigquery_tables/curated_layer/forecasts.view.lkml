@@ -398,7 +398,7 @@ view: forecasts {
   measure: number_of_actual_orders {
     group_label: "> Order Measures"
     label: "# Actual Orders (Forecast-related)"
-    description: "# Actual Orders - Excl. Click&Collect and External Orders. Including Cancelled Orders"
+    description: "# Actual Orders - Excl. Click & Collect and External Orders. Including Cancelled Orders"
     type: sum_distinct
     sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
     sql: ${TABLE}.number_of_actual_orders ;;
@@ -408,7 +408,7 @@ view: forecasts {
   measure: pct_actually_needed_hours_deviation {
     group_label: "> Dynamic Measures"
     label: "% Actually Needed Hours Deviation"
-    description: "Deviation of the worked hours from actually needed hours. The degree of how far actually needed hour is from punched hour in the given period. Formula:  (# Punched Hours / # Actually Needed Hours) - 1"
+    description: "Deviation of the worked hours from actually needed hours. The degree of how far # Actually Needed Hours is from # Punched Hours in the given period. Formula:  (# Punched Hours / # Actually Needed Hours) - 1"
     type: number
     sql: (${ops.number_of_worked_hours_by_position}/nullif(${fixed_actual_needed_hours_by_position},0)) - 1 ;;
     value_format_name: percent_1
@@ -417,7 +417,7 @@ view: forecasts {
   measure: pct_forecast_deviation {
     group_label: "> Order Measures"
     label: "% Order Forecast Deviation"
-    description: "Deviation of the actual orders from forecasted orders. The degree of how far forecasted order is from actual order in the given period. Formula: (# Actual Orders / # Forecasted Orders) -1"
+    description: "Deviation of the actual orders from forecasted orders. The degree of how far # Forecasted Orders is from # Actual Orders in the given period. Formula: (# Actual Orders / # Forecasted Orders) -1"
     type: number
     sql: (${number_of_actual_orders}/nullif(${number_of_forecasted_orders},0))-1 ;;
     value_format_name: percent_1
@@ -426,7 +426,7 @@ view: forecasts {
   measure: pct_forecast_deviation_handling_duration {
     group_label: "> Order Measures"
     label: "% Rider Handling Duration Forecast Deviation"
-    description: "Deviation of the actual rider handling time from forecasted rider handling time. The degree of how far forecasted rider handling duration is from actual rider handling duration in the given period. Formula: (AVG Rider Handling Duration (Minutes) / Forecasted AVG Rider Handling Duration) - 1"
+    description: "Deviation of the actual rider handling time from forecasted rider handling time. The degree of how far AVG Forecasted Rider Handling Duration is from AVG Actual Rider Handling Duration in the given period. Formula: (AVG Rider Handling Duration (Minutes) / Forecasted AVG Rider Handling Duration) - 1"
     type: number
     sql: (${orders_with_ops_metrics.avg_rider_handling_time}/nullif(${forecasted_avg_order_handling_duration_minutes},0)) - 1 ;;
     value_format_name: percent_1
@@ -435,7 +435,7 @@ view: forecasts {
   measure: pct_forecast_deviation_hours {
     group_label: "> Dynamic Measures"
     label: "% Scheduled Hours Forecast Deviation"
-    description: "Deviation of the scheduled hours from headcount forecast. The degree of how far headcount forecast is from scheduled hours in the given period. Formula: (# Scheduled Hours / # Forecasted Hours) - 1"
+    description: "Deviation of the scheduled hours from headcount forecast. The degree of how far # Forecasted Hours (Incl. Airtable Adjustments) is from # Scheduled Hours in the given period. Formula: (# Scheduled Hours / # Forecasted Hours) - 1"
     type: number
     sql: (${ops.number_of_scheduled_hours_by_position}/nullif(${number_of_adjusted_forecasted_hours_by_position},0)) - 1 ;;
     value_format_name: percent_1
@@ -753,7 +753,7 @@ view: forecasts {
     type: number
     group_label: "> Dynamic Measures"
     label: "% Overstaffing"
-    description: "How much overstaffed we are compared to what was forecasted. When Forecasted Hours < Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
+    description: "How much overstaffed we are compared to what was forecasted in cases of overstaffing. When Forecasted Hours < Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
     sql: case
           when ${number_of_adjusted_forecasted_hours_by_position} < ${ops.number_of_scheduled_hours_by_position}
             then abs(${number_of_adjusted_forecasted_hours_by_position} - ${ops.number_of_scheduled_hours_by_position}) / nullif(${number_of_adjusted_forecasted_hours_by_position},0)
@@ -766,7 +766,7 @@ view: forecasts {
     type: number
     group_label: "> Dynamic Measures"
     label: "% Understaffing"
-    description: "How much understaffed we are compared to what was forecasted. When Forecasted Hours > Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
+    description: "How much understaffed we are compared to what was forecasted in cases of understaffing. When Forecasted Hours > Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
     sql: case
           when ${number_of_adjusted_forecasted_hours_by_position} > ${ops.number_of_scheduled_hours_by_position}
             then abs(${number_of_adjusted_forecasted_hours_by_position} - ${ops.number_of_scheduled_hours_by_position}) / nullif(${number_of_adjusted_forecasted_hours_by_position},0)
