@@ -410,7 +410,7 @@ view: forecasts {
     label: "% Order Forecast Deviation"
     description: "(# Actual Orders / # Forecasted Orders) -1"
     type: number
-    sql: abs((${number_of_actual_orders}/nullif(${number_of_forecasted_orders},0))-1) ;;
+    sql: (${number_of_actual_orders}/nullif(${number_of_forecasted_orders},0))-1 ;;
     value_format_name: percent_1
   }
 
@@ -419,7 +419,7 @@ view: forecasts {
     label: "% Rider Handling Duration Forecast Deviation"
     description: "(AVG Rider Handling Duration (Minutes) / Forecasted AVG Rider Handling Duration) -1"
     type: number
-    sql: abs((${orders_with_ops_metrics.avg_rider_handling_time}/nullif(${forecasted_avg_order_handling_duration_minutes},0))-1) ;;
+    sql: (${orders_with_ops_metrics.avg_rider_handling_time}/nullif(${forecasted_avg_order_handling_duration_minutes},0))-1 ;;
     value_format_name: percent_1
   }
 
@@ -428,7 +428,7 @@ view: forecasts {
     label: "% Scheduled Hours Forecast Deviation"
     description: "(# Scheduled Hours / # Forecasted Hours) -1"
     type: number
-    sql: abs((${ops.number_of_scheduled_hours_by_position}/nullif(${number_of_adjusted_forecasted_hours_by_position},0))-1) ;;
+    sql: (${ops.number_of_scheduled_hours_by_position}/nullif(${number_of_adjusted_forecasted_hours_by_position},0))-1 ;;
     value_format_name: percent_1
   }
 
