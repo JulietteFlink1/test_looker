@@ -405,6 +405,15 @@ view: forecasts {
     value_format_name: decimal_0
   }
 
+  measure: pct_actually_needed_hours_deviation {
+    group_label: "> Order Measures"
+    label: "% Actually Needed Hours Deviation"
+    description: "(# Punched Hours / # Actually Needed Hours) -1"
+    type: number
+    sql: (${ops.number_of_worked_hours_by_position}/nullif(${actual_needed_hours_by_position},0))-1 ;;
+    value_format_name: percent_1
+  }
+
   measure: pct_forecast_deviation {
     group_label: "> Order Measures"
     label: "% Order Forecast Deviation"
@@ -732,6 +741,33 @@ view: forecasts {
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql: nullif(${orders_with_ops_metrics.sum_orders},0)/nullif(${final_utr_by_position},0);;
+  }
+
+
+  ##### Overstaffing and Understaffing
+
+  measure: pct_overstaffing {
+    type: number
+    label:"% Overstaffing"
+    description: "When Forecasted Hours < Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
+    sql: case
+          when ${number_of_adjusted_forecasted_hours_by_position} < ${ops.number_of_scheduled_hours_by_position}
+            then (${number_of_adjusted_forecasted_hours_by_position} - ${ops.number_of_scheduled_hours_by_position}) / nullif(${number_of_adjusted_forecasted_hours_by_position},0)
+          else null end  ;;
+    value_format_name: percent_0
+    hidden: no
+  }
+
+  measure: pct_understaffing {
+    type: number
+    label:"% Understaffing"
+    description: "When Forecasted Hours > Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
+    sql: case
+          when ${number_of_adjusted_forecasted_hours_by_position} > ${ops.number_of_scheduled_hours_by_position}
+            then (${number_of_adjusted_forecasted_hours_by_position} - ${ops.number_of_scheduled_hours_by_position}) / nullif(${number_of_adjusted_forecasted_hours_by_position},0)
+          else null end  ;;
+    value_format_name: percent_0
+    hidden: no
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
