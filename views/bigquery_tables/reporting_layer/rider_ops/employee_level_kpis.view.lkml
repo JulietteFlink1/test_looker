@@ -570,8 +570,18 @@ view: employee_level_kpis {
     type: number
     hidden: no
     label: "% Contracted Hours Fulfillment"
-    description: "Worked hours / (weekly_contracted_hours * number_of_weeks)"
+    description: "Worked hours / (Weekly Contracted Hours * # Shift Weeks)"
     sql: ${number_of_worked_hours}/nullif(${sum_weekly_contracted_hours},0) ;;
+    value_format: "0%"
+  }
+
+  measure: pct_contracted_hours_vs_scheduled {
+    group_label: "* Shift related *"
+    type: number
+    hidden: no
+    label: "% Scheduled Hours vs Contracted Hours"
+    description: "Scheduled Hours / (Weekly Contracted Hours * # Shift Weeks)"
+    sql: ${number_of_scheduled_hours}/nullif(${sum_weekly_contracted_hours},0) ;;
     value_format: "0%"
   }
 
