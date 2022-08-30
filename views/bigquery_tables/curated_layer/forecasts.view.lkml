@@ -98,13 +98,13 @@ view: forecasts {
     type:  date
     sql:
       CASE
-        WHEN {% parameter forecasts.dow_parameter %} = 'Monday' THEN date_trunc(${start_timestamp_date}, week(monday))-7
-        WHEN {% parameter forecasts.dow_parameter %} = 'Tuesday' THEN date_trunc(${start_timestamp_date}, week(monday))-6
-        WHEN {% parameter forecasts.dow_parameter %} = 'Wednesday' THEN date_trunc(${start_timestamp_date}, week(monday))-5
-        WHEN {% parameter forecasts.dow_parameter %} = 'Thursday' THEN date_trunc(${start_timestamp_date}, week(monday))-4
-        WHEN {% parameter forecasts.dow_parameter %} = 'Friday' THEN date_trunc(${start_timestamp_date}, week(monday))-3
-        WHEN {% parameter forecasts.dow_parameter %} = 'Saturday' THEN date_trunc(${start_timestamp_date}, week(monday))-2
-        WHEN {% parameter forecasts.dow_parameter %} = 'Sunday' THEN date_trunc(${start_timestamp_date}, week(monday))-1
+        WHEN {% parameter forecasts.dow_parameter %} = 'Monday' THEN date_trunc(${start_timestamp_date}, week(monday)) - 7
+        WHEN {% parameter forecasts.dow_parameter %} = 'Tuesday' THEN date_trunc(${start_timestamp_date}, week(monday)) - 6
+        WHEN {% parameter forecasts.dow_parameter %} = 'Wednesday' THEN date_trunc(${start_timestamp_date}, week(monday)) - 5
+        WHEN {% parameter forecasts.dow_parameter %} = 'Thursday' THEN date_trunc(${start_timestamp_date}, week(monday)) - 4
+        WHEN {% parameter forecasts.dow_parameter %} = 'Friday' THEN date_trunc(${start_timestamp_date}, week(monday)) - 3
+        WHEN {% parameter forecasts.dow_parameter %} = 'Saturday' THEN date_trunc(${start_timestamp_date}, week(monday)) - 2
+        WHEN {% parameter forecasts.dow_parameter %} = 'Sunday' THEN date_trunc(${start_timestamp_date}, week(monday)) - 1
         ELSE NULL
       END ;;
     hidden: yes
@@ -408,16 +408,16 @@ view: forecasts {
   measure: pct_actually_needed_hours_deviation {
     group_label: "> Dynamic Measures"
     label: "% Actually Needed Hours Deviation"
-    description: "(# Punched Hours / # Actually Needed Hours) -1"
+    description: "Deviation of the worked hours from actually needed hours. The degree of how far actually needed hour is from punched hour in the given period. Formula:  (# Punched Hours / # Actually Needed Hours) - 1"
     type: number
-    sql: (${ops.number_of_worked_hours_by_position}/nullif(${fixed_actual_needed_hours_by_position},0))-1 ;;
+    sql: (${ops.number_of_worked_hours_by_position}/nullif(${fixed_actual_needed_hours_by_position},0)) - 1 ;;
     value_format_name: percent_1
   }
 
   measure: pct_forecast_deviation {
     group_label: "> Order Measures"
     label: "% Order Forecast Deviation"
-    description: "(# Actual Orders / # Forecasted Orders) -1"
+    description: "Deviation of the actual orders from forecasted orders. The degree of how far forecasted order is from actual order in the given period. Formula: (# Actual Orders / # Forecasted Orders) -1"
     type: number
     sql: (${number_of_actual_orders}/nullif(${number_of_forecasted_orders},0))-1 ;;
     value_format_name: percent_1
@@ -426,18 +426,18 @@ view: forecasts {
   measure: pct_forecast_deviation_handling_duration {
     group_label: "> Order Measures"
     label: "% Rider Handling Duration Forecast Deviation"
-    description: "(AVG Rider Handling Duration (Minutes) / Forecasted AVG Rider Handling Duration) -1"
+    description: "Deviation of the actual rider handling time from forecasted rider handling time. The degree of how far forecasted rider handling duration is from actual rider handling duration in the given period. Formula: (AVG Rider Handling Duration (Minutes) / Forecasted AVG Rider Handling Duration) - 1"
     type: number
-    sql: (${orders_with_ops_metrics.avg_rider_handling_time}/nullif(${forecasted_avg_order_handling_duration_minutes},0))-1 ;;
+    sql: (${orders_with_ops_metrics.avg_rider_handling_time}/nullif(${forecasted_avg_order_handling_duration_minutes},0)) - 1 ;;
     value_format_name: percent_1
   }
 
   measure: pct_forecast_deviation_hours {
     group_label: "> Dynamic Measures"
     label: "% Scheduled Hours Forecast Deviation"
-    description: "(# Scheduled Hours / # Forecasted Hours) -1"
+    description: "Deviation of the scheduled hours from headcount forecast. The degree of how far headcount forecast is from scheduled hours in the given period. Formula: (# Scheduled Hours / # Forecasted Hours) - 1"
     type: number
-    sql: (${ops.number_of_scheduled_hours_by_position}/nullif(${number_of_adjusted_forecasted_hours_by_position},0))-1 ;;
+    sql: (${ops.number_of_scheduled_hours_by_position}/nullif(${number_of_adjusted_forecasted_hours_by_position},0)) - 1 ;;
     value_format_name: percent_1
   }
 
@@ -752,8 +752,8 @@ view: forecasts {
   measure: pct_overstaffing {
     type: number
     group_label: "> Dynamic Measures"
-    label:"% Overstaffing"
-    description: "When Forecasted Hours < Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
+    label: "% Overstaffing"
+    description: "How much overstaffed we are compared to what was forecasted. When Forecasted Hours < Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
     sql: case
           when ${number_of_adjusted_forecasted_hours_by_position} < ${ops.number_of_scheduled_hours_by_position}
             then abs(${number_of_adjusted_forecasted_hours_by_position} - ${ops.number_of_scheduled_hours_by_position}) / nullif(${number_of_adjusted_forecasted_hours_by_position},0)
@@ -765,8 +765,8 @@ view: forecasts {
   measure: pct_understaffing {
     type: number
     group_label: "> Dynamic Measures"
-    label:"% Understaffing"
-    description: "When Forecasted Hours > Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
+    label: "% Understaffing"
+    description: "How much understaffed we are compared to what was forecasted. When Forecasted Hours > Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
     sql: case
           when ${number_of_adjusted_forecasted_hours_by_position} > ${ops.number_of_scheduled_hours_by_position}
             then abs(${number_of_adjusted_forecasted_hours_by_position} - ${ops.number_of_scheduled_hours_by_position}) / nullif(${number_of_adjusted_forecasted_hours_by_position},0)
