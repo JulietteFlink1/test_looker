@@ -107,7 +107,7 @@ view: product_placement_performance_excluding_impressions {
     label: "Category Name"
     description: "Name of a category where product was listed"
     type: string
-    sql: case when ${TABLE}.product_placement in ('category','pdp')
+    sql: case when ${TABLE}.product_placement in ('category','pdp','collection')
               then ${TABLE}.category_name
          else null
          end ;;
@@ -117,7 +117,7 @@ view: product_placement_performance_excluding_impressions {
     label: "Sub-Category Name"
     description: "Name of a sub-category where product was listed"
     type: string
-    sql: case when ${TABLE}.product_placement in ('category','pdp')
+    sql: case when ${TABLE}.product_placement in ('category','pdp','collection')
               then ${TABLE}.subcategory_name
          else null
          end ;;
