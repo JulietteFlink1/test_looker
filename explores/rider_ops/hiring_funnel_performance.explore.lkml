@@ -13,12 +13,6 @@ explore: hiring_funnel_performance_summary {
     user_attribute: country_iso
   }
 
-  access_filter: {
-    field: hiring_funnel_performance_summary.city
-    user_attribute: city
-  }
-
-
     join: hubs {
       from: hubs_ct
       sql_on:

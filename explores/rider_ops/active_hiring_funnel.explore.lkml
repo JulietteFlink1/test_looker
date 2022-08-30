@@ -12,9 +12,4 @@ explore: fountain_funnel_pipeline {
     user_attribute: country_iso
   }
 
-  access_filter: {
-    field: fountain_funnel_pipeline.city
-    user_attribute: city
-  }
-
 }

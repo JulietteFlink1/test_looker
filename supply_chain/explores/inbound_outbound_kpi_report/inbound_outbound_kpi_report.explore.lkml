@@ -29,10 +29,6 @@ explore: inbound_outbound_kpi_report {
     user_attribute: country_iso
 
   }
-  access_filter: {
-    field: hubs_ct.city
-    user_attribute: city
-  }
 
   fields: [ALL_FIELDS*, -erp_product_hub_vendor_assignment_v2.pricing_fields_refined*]
 

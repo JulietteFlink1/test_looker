@@ -17,10 +17,6 @@ explore: lexbizz_core {
     user_attribute: country_iso
 
   }
-  access_filter: {
-    field: hubs_ct.city
-    user_attribute: city
-  }
 
 
   # -----------  join stock_item  ------------------------------------------------------------------------------------------
