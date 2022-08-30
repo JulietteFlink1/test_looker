@@ -12,9 +12,4 @@ explore: fountain_rejection_breakdown {
     user_attribute: country_iso
   }
 
-  access_filter: {
-    field: fountain_rejection_breakdown.city
-    user_attribute: city
-  }
-
 }

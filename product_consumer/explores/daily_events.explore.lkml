@@ -55,7 +55,8 @@ explore: daily_events {
     fields: [event_category_selected.category_name, event_category_selected.category_id,
             event_category_selected.subcategory_name, event_category_selected.sub_category_id,
             event_category_selected.screen_name]
-    sql_on: ${event_category_selected.event_uuid} = ${daily_events.event_uuid} ;;
+    sql_on: ${event_category_selected.event_uuid} = ${daily_events.event_uuid}
+            and {% condition global_filters_and_parameters.datasource_filter %} ${event_category_selected.event_date} {% endcondition %};;
     type: left_outer
     relationship: one_to_one
   }

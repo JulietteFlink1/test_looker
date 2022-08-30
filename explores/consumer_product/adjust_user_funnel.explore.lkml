@@ -12,8 +12,4 @@ explore: adjust_user_funnel {
     user_attribute: country_iso
   }
 
-  access_filter: {
-    field: adjust_user_funnel._city_
-    user_attribute: city
-  }
 }

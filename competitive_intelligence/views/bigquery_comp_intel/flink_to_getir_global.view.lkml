@@ -1,5 +1,5 @@
 view: flink_to_getir_global {
-  sql_table_name: `flink-data-prod.comp_intel.flink_to_getir_global`
+  sql_table_name: `flink-data-prod.curated.flink_to_getir_global`
     ;;
 
   dimension: match_score {

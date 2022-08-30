@@ -24,10 +24,6 @@ explore: inventory_stock_count_daily {
     user_attribute: country_iso
   }
 
-  access_filter: {
-    field: hubs.city
-    user_attribute: city
-  }
 
   join: global_filters_and_parameters {
     sql_on: ${global_filters_and_parameters.generic_join_dim} = TRUE ;;

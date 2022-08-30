@@ -12,11 +12,6 @@ explore: avg_proc_time {
     user_attribute: country_iso
   }
 
-  access_filter: {
-    field: avg_proc_time.city
-    user_attribute: city
-  }
-
   join: active_funnel {
     sql_on: ${avg_proc_time.country} = ${active_funnel.country}
             and ${avg_proc_time.city} = ${active_funnel.city}

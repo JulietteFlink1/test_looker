@@ -65,10 +65,6 @@ explore: supply_chain {
     user_attribute: country_iso
 
   }
-  access_filter: {
-    field: hubs_ct.city
-    user_attribute: city
-  }
 
   sql_always_where:
       -- filter the time for all big tables of this explore
@@ -145,7 +141,7 @@ explore: supply_chain {
 
   join: products {
 
-    view_label: "* Products (CT) *"
+    view_label: "Products (CT)"
 
     type: left_outer
     relationship: many_to_one
@@ -155,7 +151,7 @@ explore: supply_chain {
 
   join: lexbizz_item {
 
-    view_label: "* Products (ERP) *"
+    view_label: "Products (ERP)"
 
     type: left_outer
     relationship: many_to_one
@@ -167,7 +163,7 @@ explore: supply_chain {
 
   join: hubs_ct {
 
-    view_label: "* Hubs *"
+    view_label: "Hubs"
 
     type: left_outer
     relationship: many_to_one
@@ -423,6 +419,15 @@ explore: supply_chain {
     sql_on:
        ${geographic_pricing_sku_cluster.sku} = ${products_hub_assignment.sku}
     ;;
+  }
+
+  join: hub_monthly_orders {
+    view_label: "Hubs"
+    sql_on:
+      ${products_hub_assignment.hub_code} = ${hub_monthly_orders.hub_code} and
+      date_trunc(${products_hub_assignment.report_date},month) = ${hub_monthly_orders.created_month};;
+    relationship: many_to_one
+    type: left_outer
   }
 
 }

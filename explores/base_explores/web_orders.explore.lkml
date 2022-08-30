@@ -34,11 +34,6 @@ explore: web_orders {
     user_attribute: country_iso
   }
 
-  access_filter: {
-    field: hubs.city
-    user_attribute: city
-  }
-
   join: web_orders {
     from: web_orders
     sql_on: ${orders_cl.country_iso}   = ${web_orders.country_iso} AND

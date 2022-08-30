@@ -20,11 +20,6 @@ explore: adjust_sessions {
     user_attribute: country_iso
   }
 
-  access_filter: {
-    field: adjust_sessions.city
-    user_attribute: city
-  }
-
 
   join: adjust_events {
     sql_on: ${adjust_sessions._adid_} = ${adjust_events._adid_}

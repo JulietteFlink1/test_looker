@@ -12,9 +12,5 @@ explore: hires_contract_mix {
     user_attribute: country_iso
   }
 
-  access_filter: {
-    field: hires_contract_mix.city
-    user_attribute: city
-  }
 
 }

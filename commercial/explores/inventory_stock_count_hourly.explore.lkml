@@ -28,10 +28,6 @@ explore: inventory_stock_count_hourly {
     user_attribute: country_iso
   }
 
-  access_filter: {
-    field: hubs.city
-    user_attribute: city
-  }
 
   join: hubs {
     from:  hubs_ct
