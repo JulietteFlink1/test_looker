@@ -575,7 +575,7 @@ view: employee_level_kpis {
     value_format: "0%"
   }
 
-  measure: pct_schedules_hours_vs_contracted {
+  measure: pct_scheduled_hours_vs_contracted {
     group_label: "* Shift related *"
     type: number
     hidden: no
