@@ -414,6 +414,15 @@ view: forecasts {
     value_format_name: percent_1
   }
 
+  measure: pct_forecast_deviation_no_show {
+    group_label: "> Dynamic Measures"
+    label: "% No Show Hours Deviation"
+    description: "The degree of how far # Forecasted No Show Hours is from # Actual No Show Hours in the given period. Formula:  (# Actual No Show Hours / # Forecasted No Show Hours) - 1"
+    type: number
+    sql: (${ops.number_of_no_show_hours_by_position}/nullif(${number_of_no_show_hours_by_position},0)) - 1 ;;
+    value_format_name: percent_1
+  }
+
   measure: pct_forecast_deviation {
     group_label: "> Order Measures"
     label: "% Order Forecast Deviation"
