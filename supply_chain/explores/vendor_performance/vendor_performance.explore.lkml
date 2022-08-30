@@ -54,10 +54,7 @@ explore: vendor_performance {
     user_attribute: country_iso
 
   }
-  access_filter: {
-    field: hubs.city
-    user_attribute: city
-  }
+
 
   join: global_filters_and_parameters {
     view_label: "* Global *"
