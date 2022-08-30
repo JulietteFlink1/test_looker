@@ -107,7 +107,7 @@ view: forecasts {
         WHEN {% parameter forecasts.dow_parameter %} = 'Sunday' THEN date_trunc(${start_timestamp_date}, week(monday))-1
         ELSE NULL
       END ;;
-    hidden: no
+    hidden: yes
   }
 
   measure: count {
