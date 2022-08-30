@@ -406,11 +406,11 @@ view: forecasts {
   }
 
   measure: pct_actually_needed_hours_deviation {
-    group_label: "> Order Measures"
+    group_label: "> Dynamic Measures"
     label: "% Actually Needed Hours Deviation"
     description: "(# Punched Hours / # Actually Needed Hours) -1"
     type: number
-    sql: (${ops.number_of_worked_hours_by_position}/nullif(${actual_needed_hours_by_position},0))-1 ;;
+    sql: (${ops.number_of_worked_hours_by_position}/nullif(${fixed_actual_needed_hours_by_position},0))-1 ;;
     value_format_name: percent_1
   }
 
@@ -607,6 +607,7 @@ view: forecasts {
           WHEN {% parameter ops.position_parameter %} = 'Picker' THEN ${number_of_adjusted_forecasted_hours_picker_dimension}
       ELSE NULL
       END ;;
+    hidden: yes
   }
 
 
@@ -723,6 +724,7 @@ view: forecasts {
     description: "Use this field to calculate Actually Needed Hours"
     type: number
     #required_fields: [dynamic_text_utr]
+    hidden: yes
   }
 
   measure: actual_needed_hours_by_position {
@@ -732,14 +734,15 @@ view: forecasts {
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql: nullif(${orders_with_ops_metrics.sum_orders},0)/nullif({% parameter dynamic_text_utr %},0);;
+    hidden: yes
   }
 
   measure: fixed_actual_needed_hours_by_position {
     type: number
+    group_label: "> Dynamic Measures"
     label: "# Actually Needed Hours"
     description: "# Hours needed based on # Actual Orders / Forecasted UTR"
     value_format_name: decimal_1
-    group_label: "> Dynamic Measures"
     sql: nullif(${orders_with_ops_metrics.sum_orders},0)/nullif(${final_utr_by_position},0);;
   }
 
@@ -748,25 +751,27 @@ view: forecasts {
 
   measure: pct_overstaffing {
     type: number
+    group_label: "> Dynamic Measures"
     label:"% Overstaffing"
     description: "When Forecasted Hours < Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
     sql: case
           when ${number_of_adjusted_forecasted_hours_by_position} < ${ops.number_of_scheduled_hours_by_position}
-            then (${number_of_adjusted_forecasted_hours_by_position} - ${ops.number_of_scheduled_hours_by_position}) / nullif(${number_of_adjusted_forecasted_hours_by_position},0)
+            then abs(${number_of_adjusted_forecasted_hours_by_position} - ${ops.number_of_scheduled_hours_by_position}) / nullif(${number_of_adjusted_forecasted_hours_by_position},0)
           else null end  ;;
-    value_format_name: percent_0
+    value_format_name: percent_1
     hidden: no
   }
 
   measure: pct_understaffing {
     type: number
+    group_label: "> Dynamic Measures"
     label:"% Understaffing"
     description: "When Forecasted Hours > Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
     sql: case
           when ${number_of_adjusted_forecasted_hours_by_position} > ${ops.number_of_scheduled_hours_by_position}
-            then (${number_of_adjusted_forecasted_hours_by_position} - ${ops.number_of_scheduled_hours_by_position}) / nullif(${number_of_adjusted_forecasted_hours_by_position},0)
+            then abs(${number_of_adjusted_forecasted_hours_by_position} - ${ops.number_of_scheduled_hours_by_position}) / nullif(${number_of_adjusted_forecasted_hours_by_position},0)
           else null end  ;;
-    value_format_name: percent_0
+    value_format_name: percent_1
     hidden: no
   }
 
