@@ -18,10 +18,6 @@ explore: psp_settlement_details {
     user_attribute: country_iso
   }
 
-  access_filter: {
-    field: hubs.city
-    user_attribute: city
-  }
 
   always_filter: {
     filters: [

@@ -12,10 +12,6 @@ explore: funnel_performance_summary {
     user_attribute: country_iso
   }
 
-  access_filter: {
-    field: funnel_performance_summary.city
-    user_attribute: city
-  }
 
   join: funnel_marketing_summary {
     sql_on: ${funnel_marketing_summary.country} = ${funnel_performance_summary.country}

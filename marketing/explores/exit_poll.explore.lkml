@@ -13,9 +13,5 @@ explore: mktg_exit_poll {
     user_attribute: country_iso
   }
 
-  access_filter: {
-    field: shipping_city
-    user_attribute: city
-  }
 
 }

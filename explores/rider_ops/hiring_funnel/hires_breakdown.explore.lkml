@@ -12,9 +12,4 @@ explore: hired_applicants {
     user_attribute: country_iso
   }
 
-  access_filter: {
-    field: hired_applicants.city
-    user_attribute: city
-  }
-
 }

@@ -8,9 +8,5 @@ explore: voucher_retention {
     user_attribute: country_iso
   }
 
-  access_filter: {
-    field: voucher_retention.city
-    user_attribute: city
-  }
 
 }

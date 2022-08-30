@@ -12,9 +12,4 @@ explore: fountain_avg_proc_time {
     user_attribute: country_iso
   }
 
-  access_filter: {
-    field: fountain_avg_proc_time.city
-    user_attribute: city
-  }
-
 }

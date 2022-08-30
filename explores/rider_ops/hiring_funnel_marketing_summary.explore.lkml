@@ -13,10 +13,6 @@ explore: hiring_funnel_marketing_summary {
     user_attribute: country_iso
   }
 
-  access_filter: {
-    field: hiring_funnel_marketing_summary.city
-    user_attribute: city
-  }
 
   join: hiring_funnel_performance_summary {
     sql_on: ${hiring_funnel_marketing_summary.country} = ${hiring_funnel_performance_summary.country}

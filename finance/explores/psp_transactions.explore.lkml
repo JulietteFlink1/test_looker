@@ -12,11 +12,6 @@ explore: psp_transactions {
     user_attribute: country_iso
   }
 
-  access_filter: {
-    field: hubs.city
-    user_attribute: city
-  }
-
   always_filter: {
     filters: [
       orders.order_date: "",

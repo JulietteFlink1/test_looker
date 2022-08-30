@@ -65,10 +65,6 @@ explore: supply_chain {
     user_attribute: country_iso
 
   }
-  access_filter: {
-    field: hubs_ct.city
-    user_attribute: city
-  }
 
   sql_always_where:
       -- filter the time for all big tables of this explore
