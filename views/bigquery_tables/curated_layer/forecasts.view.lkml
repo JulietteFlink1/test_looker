@@ -408,7 +408,7 @@ view: forecasts {
   measure: pct_actually_needed_hours_deviation {
     group_label: "> Dynamic Measures"
     label: "% Actually Needed Hours Deviation"
-    description: "Deviation of the worked hours from actually needed hours. The degree of how far # Actually Needed Hours is from # Punched Hours in the given period. Formula:  (# Punched Hours / # Actually Needed Hours) - 1"
+    description: "The degree of how far # Actually Needed Hours is from # Punched Hours in the given period. Formula:  (# Punched Hours / # Actually Needed Hours) - 1"
     type: number
     sql: (${ops.number_of_worked_hours_by_position}/nullif(${fixed_actual_needed_hours_by_position},0)) - 1 ;;
     value_format_name: percent_1
@@ -417,7 +417,7 @@ view: forecasts {
   measure: pct_forecast_deviation {
     group_label: "> Order Measures"
     label: "% Order Forecast Deviation"
-    description: "Deviation of the actual orders from forecasted orders. The degree of how far # Forecasted Orders is from # Actual Orders in the given period. Formula: (# Actual Orders / # Forecasted Orders) -1"
+    description: "The degree of how far # Forecasted Orders is from # Actual Orders in the given period. Formula: (# Actual Orders / # Forecasted Orders) -1"
     type: number
     sql: (${number_of_actual_orders}/nullif(${number_of_forecasted_orders},0))-1 ;;
     value_format_name: percent_1
@@ -426,7 +426,7 @@ view: forecasts {
   measure: pct_forecast_deviation_handling_duration {
     group_label: "> Order Measures"
     label: "% Rider Handling Duration Forecast Deviation"
-    description: "Deviation of the actual rider handling time from forecasted rider handling time. The degree of how far AVG Forecasted Rider Handling Duration is from AVG Actual Rider Handling Duration in the given period. Formula: (AVG Rider Handling Duration (Minutes) / Forecasted AVG Rider Handling Duration) - 1"
+    description: "The degree of how far AVG Forecasted Rider Handling Duration is from AVG Actual Rider Handling Duration in the given period. Formula: (AVG Rider Handling Duration (Minutes) / Forecasted AVG Rider Handling Duration) - 1"
     type: number
     sql: (${orders_with_ops_metrics.avg_rider_handling_time}/nullif(${forecasted_avg_order_handling_duration_minutes},0)) - 1 ;;
     value_format_name: percent_1
@@ -435,7 +435,7 @@ view: forecasts {
   measure: pct_forecast_deviation_hours {
     group_label: "> Dynamic Measures"
     label: "% Scheduled Hours Forecast Deviation"
-    description: "Deviation of the scheduled hours from headcount forecast. The degree of how far # Forecasted Hours (Incl. Airtable Adjustments) is from # Scheduled Hours in the given period. Formula: (# Scheduled Hours / # Forecasted Hours) - 1"
+    description: "The degree of how far # Forecasted Hours (Incl. Airtable Adjustments) is from # Scheduled Hours in the given period. Formula: (# Scheduled Hours / # Forecasted Hours) - 1"
     type: number
     sql: (${ops.number_of_scheduled_hours_by_position}/nullif(${number_of_adjusted_forecasted_hours_by_position},0)) - 1 ;;
     value_format_name: percent_1
