@@ -50,7 +50,7 @@ view: discounts {
   }
 
   dimension_group: created {
-    label: "Discount Code Creation Date"
+    label: "Discount Code Creation"
     type: time
     timeframes: [
       raw,
