@@ -31,7 +31,7 @@ explore: daily_hub_staff_events {
 
   always_filter: {
     filters: [
-      global_filters_and_parameters.datasource_filter: ""
+      global_filters_and_parameters.datasource_filter: "last 7 days"
     ]
   }
 
