@@ -153,4 +153,19 @@ view: cc_agent_staffing_daily {
     {% endif %};;
   }
 
+  dimension: date_granularity_pass_through {
+    group_label: "> Parameters"
+    description: "To use the parameter value in a table calculation (e.g WoW, % Growth) we need to materialize it into a dimension "
+    type: string
+    hidden: no # yes
+    sql:
+            {% if date_granularity._parameter_value == 'Day' %}
+              "Day"
+            {% elsif date_granularity._parameter_value == 'Week' %}
+              "Week"
+            {% elsif date_granularity._parameter_value == 'Month' %}
+              "Month"
+            {% endif %};;
+  }
+
 }
