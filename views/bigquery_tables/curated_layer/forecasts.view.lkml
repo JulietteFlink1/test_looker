@@ -568,7 +568,7 @@ view: forecasts {
 
   measure: summed_absolute_error_hours {
     type: sum_distinct
-    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
+    sql_distinct_key: ${forecast_uuid} ;;
     hidden: yes
     sql: ABS(${number_of_adjusted_forecasted_hours_by_position_dimension} - ${ops.number_of_scheduled_hours_by_position_dimension});;
   }
@@ -758,17 +758,42 @@ view: forecasts {
 
   ##### Overstaffing and Understaffing
 
+  measure: summed_overstaffing_error {
+    group_label: "> Dynamic Measures"
+    label: "Summed Overstaffing Error"
+    type: sum_distinct
+    sql_distinct_key: ${forecast_uuid} ;;
+    description: "How much overstaffed we are compared to what was forecasted in cases of overstaffing. When Forecasted Hours < Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
+    sql: case
+          when ${number_of_adjusted_forecasted_hours_by_position_dimension} < ${ops.number_of_scheduled_hours_by_position_dimension}
+            then abs(${number_of_adjusted_forecasted_hours_by_position_dimension} - ${ops.number_of_scheduled_hours_by_position_dimension})
+          else null end  ;;
+    value_format_name: percent_1
+    hidden: yes
+  }
+
   measure: pct_overstaffing {
     type: number
     group_label: "> Dynamic Measures"
     label: "% Overstaffing"
     description: "How much overstaffed we are compared to what was forecasted in cases of overstaffing. When Forecasted Hours < Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
-    sql: case
-          when ${number_of_adjusted_forecasted_hours_by_position} < ${ops.number_of_scheduled_hours_by_position}
-            then abs(${number_of_adjusted_forecasted_hours_by_position} - ${ops.number_of_scheduled_hours_by_position}) / nullif(${number_of_adjusted_forecasted_hours_by_position},0)
-          else null end  ;;
+    sql:  ${summed_overstaffing_error} / nullif(${number_of_adjusted_forecasted_hours_by_position},0) ;;
     value_format_name: percent_1
     hidden: no
+  }
+
+  measure: summed_understaffing_error {
+    group_label: "> Dynamic Measures"
+    label: "Summed Overstaffing Error"
+    type: sum_distinct
+    sql_distinct_key: ${forecast_uuid} ;;
+    description: "How much overstaffed we are compared to what was forecasted in cases of overstaffing. When Forecasted Hours < Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
+    sql: case
+          when ${number_of_adjusted_forecasted_hours_by_position_dimension} > ${ops.number_of_scheduled_hours_by_position_dimension}
+            then abs(${number_of_adjusted_forecasted_hours_by_position_dimension} - ${ops.number_of_scheduled_hours_by_position_dimension})
+          else null end  ;;
+    value_format_name: percent_1
+    hidden: yes
   }
 
   measure: pct_understaffing {
@@ -776,10 +801,7 @@ view: forecasts {
     group_label: "> Dynamic Measures"
     label: "% Understaffing"
     description: "How much understaffed we are compared to what was forecasted in cases of understaffing. When Forecasted Hours > Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
-    sql: case
-          when ${number_of_adjusted_forecasted_hours_by_position} > ${ops.number_of_scheduled_hours_by_position}
-            then abs(${number_of_adjusted_forecasted_hours_by_position} - ${ops.number_of_scheduled_hours_by_position}) / nullif(${number_of_adjusted_forecasted_hours_by_position},0)
-          else null end  ;;
+    sql:  ${summed_understaffing_error} / nullif(${number_of_adjusted_forecasted_hours_by_position},0) ;;
     value_format_name: percent_1
     hidden: no
   }
