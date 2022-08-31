@@ -1173,6 +1173,8 @@ view: daily_user_aggregates {
 
   ###### Total aggregates ######
 
+  ##### User Auth & SMS Verification Rates ######
+
   measure: all_users_with_account_registration_viewed {
     group_label: "User And Account Verification Metrics"
     label: "# All Users with Account Registration Viewed"
@@ -1191,14 +1193,6 @@ view: daily_user_aggregates {
     filters: [is_account_registration_succeeded: "yes"]
   }
 
-  measure: new_users_with_sms_verification_request_viewed {
-    group_label: "User And Account Verification Metrics"
-    label: "# New Users with SMS Veri Request Viewed "
-    type: count_distinct
-    sql: ${user_uuid} ;;
-    filters: [is_account_registration_succeeded: "yes" , is_sms_verification_request_viewed: "yes"]
-  }
-
   measure: all_users_with_sms_verification_request_viewed {
     group_label: "User And Account Verification Metrics"
     label: "# All Users with SMS Veri Request Viewed"
@@ -1208,7 +1202,7 @@ view: daily_user_aggregates {
     filters: [is_sms_verification_request_viewed: "yes"]
   }
   measure: all_users_with_sms_verification_send_code_clicked {
-    hidden: yes
+    hidden: no
     group_label: "User And Account Verification Metrics"
     label: "# All Users with Clicking Send Code for SMS Verification"
     description: "Number of users clicking send code for SMS verification"
@@ -1217,7 +1211,7 @@ view: daily_user_aggregates {
     filters: [is_sms_verification_send_code_clicked: "yes"]
   }
   measure: all_users_with_sms_verification_viewed {
-    hidden: yes
+    hidden: no
     group_label: "User And Account Verification Metrics"
     label: "# All Users with Viewing SMS Verification"
     description: "Number of users viewing SMS verification"
@@ -1226,7 +1220,7 @@ view: daily_user_aggregates {
     filters: [is_sms_verification_viewed: "yes"]
   }
   measure: all_users_with_sms_verification_clicked {
-    hidden: yes
+    hidden: no
     group_label: "User And Account Verification Metrics"
     label: "# All Users with Clicking SMS Verification"
     description: "Number of users clicking SMS verification"
@@ -1243,17 +1237,8 @@ view: daily_user_aggregates {
     filters: [is_sms_verification_confirmed: "yes"]
   }
 
-  measure: new_users_with_sms_verification_confirmed {
-    group_label: "User And Account Verification Metrics"
-    label: "# New Users with Successful SMS Verification"
-    description: "Number of users successfully verifying their account through SMS"
-    type: count_distinct
-    sql: ${user_uuid} ;;
-    filters: [is_account_registration_succeeded: "yes", is_sms_verification_confirmed: "yes"]
-  }
-
   measure: all_users_with_sms_verification_confirmed_and_order{
-    hidden:  yes
+    hidden:  no
     group_label: "User And Account Verification Metrics"
     label: "# All Users with Successful SMS Verification"
     description: "Number of users successfully verifying their account through SMS"
@@ -1261,17 +1246,6 @@ view: daily_user_aggregates {
     sql: ${user_uuid} ;;
     filters: [is_sms_verification_confirmed: "yes", is_order_placed: "yes"]
   }
-
-  measure: new_users_with_sms_verification_confirmed_and_order{
-    group_label: "User And Account Verification Metrics"
-    label: "# New Users with Successful SMS Verification and Order"
-    description: "Number of New users successfully verifying their account through SMS"
-    type: count_distinct
-    sql: ${user_uuid} ;;
-    filters: [is_account_registration_succeeded: "yes", is_sms_verification_confirmed: "yes", is_order_placed: "yes"]
-  }
-
-  ##### User Auth & SMS Verification Rates ######
 
   measure: user_sms_verification_rate_all_users{
     group_label: "User And Account Verification Metrics"
@@ -1281,17 +1255,6 @@ view: daily_user_aggregates {
     description: "# Users with Successful SMS Verification, compared to the total number of all users with SMS verification requested"
     value_format_name: percent_1
     sql: ${all_users_with_sms_verification_confirmed} / nullif(${all_users_with_sms_verification_request_viewed},0);;
-  }
-
-
-  measure: new_sms_verification_rate_all_users{
-    group_label: "User And Account Verification Metrics"
-    label: "SMS Verification - New Users(%)"
-    type: number
-    hidden: no
-    description: "# New Users with Successful SMS Verification, compared to the total number of all users with SMS verification requested"
-    value_format_name: percent_1
-    sql: ${new_users_with_sms_verification_confirmed} / nullif(${new_users_with_sms_verification_request_viewed},0);;
   }
 
   measure: order_rate_after_sms_vrification{
@@ -1326,6 +1289,128 @@ view: daily_user_aggregates {
 
 
   # ========= HIDDEN ========== #
+
+  ### Hidden supporting metrics: SMS Verification Flow ###
+
+  measure: new_users_with_sms_verification_request_viewed {
+    hidden: yes
+    group_label: "User And Account Verification Metrics"
+    label: "# New Users with SMS Veri Request Viewed "
+    type: count_distinct
+    sql: ${user_uuid} ;;
+    filters: [is_account_registration_succeeded: "yes" , is_sms_verification_request_viewed: "yes"]
+  }
+
+  measure: new_users_with_sms_verification_confirmed {
+    hidden: yes
+    group_label: "User And Account Verification Metrics"
+    label: "# New Users with Successful SMS Verification"
+    description: "Number of users successfully verifying their account through SMS"
+    type: count_distinct
+    sql: ${user_uuid} ;;
+    filters: [is_account_registration_succeeded: "yes", is_sms_verification_confirmed: "yes"]
+  }
+
+  measure: new_users_with_sms_verification_confirmed_and_order{
+    hidden: yes
+    group_label: "User And Account Verification Metrics"
+    label: "# New Users with Successful SMS Verification and Order"
+    description: "Number of New users successfully verifying their account through SMS"
+    type: count_distinct
+    sql: ${user_uuid} ;;
+    filters: [is_account_registration_succeeded: "yes", is_sms_verification_confirmed: "yes", is_order_placed: "yes"]
+  }
+
+  measure: new_sms_verification_rate_all{
+    group_label: "User And Account Verification Metrics"
+    label: "SMS Verification - New Users(%)"
+    type: number
+    hidden: yes
+    description: "# New Users with Successful SMS Verification, compared to the total number of all users with SMS verification requested"
+    value_format_name: percent_1
+    sql: ${new_users_with_sms_verification_confirmed} / nullif(${new_users_with_sms_verification_request_viewed},0);;
+  }
+
+  measure: existing_loggedin_users_with_sms_verification_request_viewed {
+    hidden: yes
+    group_label: "User And Account Verification Metrics"
+    label: "# Existing LoggedIn Users with SMS Veri Request Viewed "
+    type: count_distinct
+    sql: ${user_uuid} ;;
+    filters: [is_account_registration_viewed: "no" , is_sms_verification_request_viewed: "yes"]
+  }
+
+  measure: existing_loggedin_users_with_sms_verification_confirmed {
+    hidden: yes
+    group_label: "User And Account Verification Metrics"
+    label: "# Existing LoggedIn Users with Successful SMS Verification"
+    description: "Number of Existing LoggedIn users successfully verifying their account through SMS"
+    type: count_distinct
+    sql: ${user_uuid} ;;
+    filters: [is_account_registration_viewed: "no", is_sms_verification_confirmed: "yes"]
+  }
+
+  measure: existing_loggedin_users_with_sms_verification_confirmed_and_order{
+    hidden: yes
+    group_label: "User And Account Verification Metrics"
+    label: "# Existing LoggedIn Users with Successful SMS Verification and Order"
+    description: "Number of Existing LoggedIn users successfully verifying their account through SMS and placed order"
+    type: count_distinct
+    sql: ${user_uuid} ;;
+    filters: [is_account_registration_viewed: "no", is_sms_verification_confirmed: "yes", is_order_placed: "yes"]
+  }
+
+  measure: existing_loggedin_sms_verification_rate{
+    group_label: "User And Account Verification Metrics"
+    label: "SMS Verification - Existing LoggedIn Users(%)"
+    type: number
+    hidden: yes
+    description: "# Existing LoggedIn Users with Successful SMS Verification, compared to the total number of all users with SMS verification requested"
+    value_format_name: percent_1
+    sql: ${existing_loggedin_users_with_sms_verification_confirmed} / nullif(${existing_loggedin_users_with_sms_verification_request_viewed},0);;
+  }
+
+
+  measure: existing_loggedout_users_with_sms_verification_request_viewed {
+    hidden: yes
+    group_label: "User And Account Verification Metrics"
+    label: "# Existing LoggedOut Users with SMS Veri Request Viewed "
+    type: count_distinct
+    sql: ${user_uuid} ;;
+    filters: [is_account_login_succeeded: "yes" , is_sms_verification_request_viewed: "yes"]
+  }
+
+  measure: existing_loggedout_users_with_sms_verification_confirmed {
+    hidden: yes
+    group_label: "User And Account Verification Metrics"
+    label: "# Existing LoggedOut Users with Successful SMS Verification"
+    description: "Number of Existing LoggedIn users successfully verifying their account through SMS"
+    type: count_distinct
+    sql: ${user_uuid} ;;
+    filters: [is_account_login_succeeded: "yes", is_sms_verification_confirmed: "yes"]
+  }
+
+  measure: existing_loggedout_users_with_sms_verification_confirmed_and_order{
+    hidden: yes
+    group_label: "User And Account Verification Metrics"
+    label: "# Existing LoggedOut Users with Successful SMS Verification and Order"
+    description: "Number of Existing LoggedIn users successfully verifying their account through SMS and placed order"
+    type: count_distinct
+    sql: ${user_uuid} ;;
+    filters: [is_account_login_succeeded: "yes", is_sms_verification_confirmed: "yes", is_order_placed: "yes"]
+  }
+
+  measure: existing_loggedout_sms_verification_rate{
+    group_label: "User And Account Verification Metrics"
+    label: "SMS Verification - Existing LoggedOut Users(%)"
+    type: number
+    hidden: yes
+    description: "# Existing LoggedOut Users with Successful SMS Verification, compared to the total number of all users with SMS verification requested"
+    value_format_name: percent_1
+    sql: ${existing_loggedout_users_with_sms_verification_confirmed} / nullif(${existing_loggedout_users_with_sms_verification_request_viewed},0);;
+  }
+
+
 
   ### Hidden supporting metrics: Users with Add-to-Cart Product Placement ###
 
