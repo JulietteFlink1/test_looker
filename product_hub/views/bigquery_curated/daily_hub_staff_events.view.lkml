@@ -42,7 +42,7 @@ view: daily_hub_staff_events {
     sql: ${TABLE}.anonymous_id ;;
   }
 
-  # =========  Location Attributes   =========
+  # =========  Location Dimensions   =========
 
   dimension: country_iso {
     type: string
@@ -90,29 +90,12 @@ view: daily_hub_staff_events {
   dimension_group: received {
     type: time
     hidden: yes
-    timeframes: [
-      raw,
-      time,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
     sql: ${TABLE}.received_at ;;
   }
 
   dimension_group: event {
     type: time
     hidden: yes
-    timeframes: [
-      raw,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
     convert_tz: no
     datatype: date
     sql: ${TABLE}.event_date ;;
@@ -176,7 +159,7 @@ view: daily_hub_staff_events {
     sql: ${TABLE}.component_value ;;
   }
 
-  # =========  Other Attributes   =========
+  # =========  Other Dimensions   =========
 
   dimension: context_ip {
     type: string
