@@ -5,13 +5,26 @@ view: event_order_progressed {
   sql_table_name: `flink-data-dev.dbt_falvarez.event_order_progressed`
     ;;
 
-  view_label: "Order Progressed"
+  view_label: "Event: Order Progressed"
 
   # This is the curated table for Order Progressed event coming from Hub One
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Sets          ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  set: event_dimensions {
+    fields: [
+      action,
+      ean,
+      method,
+      order_id,
+      order_number,
+      product_sku,
+      quantity,
+      reason
+    ]
+  }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Parameters     ~~~~~~~~~~~~~~~~~~~~~~~~~
