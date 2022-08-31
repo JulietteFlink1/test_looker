@@ -7,7 +7,7 @@ view: event_order_progressed {
 
   view_label: "Order Progressed"
 
-  # This is the curated layer of the events coming from Hub One app
+  # This is the curated table for Order Progressed event coming from Hub One
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Sets          ~~~~~~~~~~~~~~~~~~~~~~~~~
