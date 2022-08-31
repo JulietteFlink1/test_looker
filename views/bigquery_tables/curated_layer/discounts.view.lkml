@@ -44,13 +44,13 @@ view: discounts {
   }
 
   dimension: minimum_order_value {
-    label: " Minimum Order Value"
+    label: "Minimum Order Value"
     type: number
     sql: ${TABLE}.minimum_order_value ;;
   }
 
   dimension_group: created {
-    label: "Cate Discount Code Creation"
+    label: "Discount Code Creation"
     type: time
     timeframes: [
       raw,
