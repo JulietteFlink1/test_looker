@@ -7,6 +7,7 @@
 # - Questions around behavioural events coming from Hub One app
 
 include: "/**/global_filters_and_parameters.view.lkml"
+include: "/views/bigquery_tables/curated_layer/products.view.lkml"
 include: "/product_hub/views/bigquery_curated/daily_hub_staff_events.view.lkml"
 include: "/product_hub/views/bigquery_curated/event_order_progressed.view.lkml"
 include: "/product_hub/views/bigquery_curated/event_order_state_updated.view.lkml"
@@ -43,16 +44,24 @@ explore: daily_hub_staff_events {
 
   join: event_order_progressed {
     view_label: "Event: Order Progressed"
-    fields: [event_dimensions*]
+    fields: [to_include_dimensions*, to_include_measures*]
     sql_on: ${event_order_progressed.event_uuid} = ${daily_hub_staff_events.event_uuid}
       and {% condition global_filters_and_parameters.datasource_filter %} ${event_order_progressed.event_timestamp_date} {% endcondition %};;
     type: left_outer
     relationship: one_to_one
   }
 
+  join: products {
+    view_label: "Product Dimensions"
+    fields: [product_name, category]
+    sql_on: ${products.product_sku} = ${event_order_progressed.product_sku};;
+    type: left_outer
+    relationship: one_to_one
+  }
+
   join: event_order_state_updated {
     view_label: "Event: Order State Updated"
-    fields: [event_dimensions*]
+    fields: [to_include_dimensions*, to_include_measures*]
     sql_on: ${event_order_state_updated.event_uuid} = ${daily_hub_staff_events.event_uuid}
       and {% condition global_filters_and_parameters.datasource_filter %} ${event_order_state_updated.event_timestamp_date} {% endcondition %};;
     type: left_outer

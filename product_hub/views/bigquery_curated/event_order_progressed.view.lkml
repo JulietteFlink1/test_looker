@@ -13,7 +13,7 @@ view: event_order_progressed {
   # ~~~~~~~~~~~~~~~     Sets          ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  set: event_dimensions {
+  set: to_include_dimensions {
     fields: [
       action,
       ean,
@@ -22,9 +22,26 @@ view: event_order_progressed {
       order_number,
       product_sku,
       quantity,
-      reason,
-      sum_of_quantity
+      reason
     ]
+  }
+
+  set: to_include_measures {
+    fields: [
+      sum_of_quantity,
+      sum_quantity_picked,
+      sum_quantity_reported,
+      sum_quantity_refunded,
+      sum_quantity_skipped,
+      qty_reported_per_total_qty,
+      qty_refunded_per_total_qty,
+      qty_skipped_per_total_qty,
+      qty_scanned_per_qty_picked
+    ]
+  }
+
+  set: to_include_set {
+    fields: [to_include_dimensions*, to_include_measures*]
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -243,7 +260,10 @@ view: event_order_progressed {
   # ~~~~~~~~~~~~~~~      Measures     ~~~~~~~~~~~~~~~ #
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
+  # =========  Total Metrics   =========
+
   measure: number_of_events {
+    group_label: "Total Metrics"
     label: "# Events"
     description: "Number of events trigegred"
     type: count_distinct
@@ -251,9 +271,103 @@ view: event_order_progressed {
   }
 
   measure: sum_of_quantity {
+    group_label: "Total Metrics"
     label: "Total Quantity"
     description: "Sum of quantity."
     type: sum
     sql: ${TABLE}.quantity ;;
   }
+
+  measure: sum_quantity_picked {
+    group_label: "Total Metrics"
+    label: "Quantity Picked"
+    description: "Sum of quantity picked (includes reported items)."
+    type: sum
+    filters: [action: "item_picked"]
+    sql: ${TABLE}.quantity ;;
+  }
+
+  measure: sum_quantity_picked_scanned {
+    group_label: "Total Metrics"
+    label: "Quantity Picked by Scan"
+    description: "Sum of quantity picked by scanning."
+    type: sum
+    filters: [action: "item_picked", method: "scanned"]
+    sql: ${TABLE}.quantity ;;
+  }
+
+  measure: sum_quantity_picked_clicked {
+    group_label: "Total Metrics"
+    label: "Quantity Picked by Click"
+    description: "Sum of quantity picked by clicking."
+    type: sum
+    filters: [action: "item_picked", method: "clicked"]
+    sql: ${TABLE}.quantity ;;
+  }
+
+  measure: sum_quantity_reported {
+    group_label: "Total Metrics"
+    label: "Quantity Reported"
+    description: "Sum of quantity reported."
+    type: sum
+    filters: [action: "item_picked", method: "reported"]
+    sql: ${TABLE}.quantity ;;
+  }
+
+  measure: sum_quantity_refunded {
+    group_label: "Total Metrics"
+    label: "Quantity Refunded"
+    description: "Sum of quantity refunded."
+    type: sum
+    filters: [action: "item_refunded"]
+    sql: ${TABLE}.quantity ;;
+  }
+
+  measure: sum_quantity_skipped {
+    group_label: "Total Metrics"
+    label: "Quantity Skipped"
+    description: "Sum of quantity skipped."
+    type: sum
+    filters: [action: "item_skipped"]
+    sql: ${TABLE}.quantity ;;
+  }
+
+  # =========  Rate Metrics   =========
+
+  measure: qty_refunded_per_total_qty {
+    group_label: "Rate Metrics"
+    label: "% Refunded Items"
+    description: "Quantity Refunded / Total Quantity"
+    type: number
+    value_format_name: percent_1
+    sql: ${sum_quantity_refunded} / nullif(${sum_of_quantity},0) ;;
+  }
+
+  measure: qty_skipped_per_total_qty {
+    group_label: "Rate Metrics"
+    label: "% Skipped Items"
+    description: "Quantity Skipped / Total Quantity"
+    type: number
+    value_format_name: percent_1
+    sql: ${sum_quantity_skipped} / nullif(${sum_of_quantity},0) ;;
+  }
+
+  measure: qty_reported_per_total_qty {
+    group_label: "Rate Metrics"
+    label: "% Reported Items"
+    description: "Quantity Reported / Total Quantity"
+    type: number
+    value_format_name: percent_1
+    sql: ${sum_quantity_reported} / nullif(${sum_of_quantity},0) ;;
+  }
+
+  measure: qty_scanned_per_qty_picked {
+    group_label: "Rate Metrics"
+    label: "% Scanned Items"
+    description: "Quantity Picked by Scan / (Quantity Picked by Scan + Quantity Picked by Click)"
+    type: number
+    value_format_name: percent_1
+    sql: ${sum_quantity_picked_scanned} / nullif(${sum_quantity_picked_scanned}+${sum_quantity_picked_clicked},0) ;;
+  }
+
 }

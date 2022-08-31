@@ -13,17 +13,22 @@ view: event_order_state_updated {
   # ~~~~~~~~~~~~~~~     Sets          ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  set: event_dimensions {
+  set: to_include_dimensions {
     fields: [
       order_id,
       order_number,
       origin,
-      state,
+      state
+    ]
+    }
+
+  set: to_include_measures {
+    fields: [
       order_picked_time,
       order_packed_time,
       packed_to_picked_seconds
     ]
-    }
+  }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Parameters     ~~~~~~~~~~~~~~~~~~~~~~~~~
