@@ -543,7 +543,7 @@ view: forecasts {
 
   measure: wmape_orders {
     group_label: "> Forecasting error"
-    label: "wMAPE - Order"
+    label: "wMAPE - Orders"
     description: "Summed Absolute Difference of Orders per Hub in 30 min/ # Actual Orders"
     type: number
     sql: ${summed_absolute_error}/nullif(${number_of_actual_orders},0);;
@@ -768,7 +768,7 @@ view: forecasts {
           when ${number_of_adjusted_forecasted_hours_by_position_dimension} < ${ops.number_of_scheduled_hours_by_position_dimension}
             then abs(${number_of_adjusted_forecasted_hours_by_position_dimension} - ${ops.number_of_scheduled_hours_by_position_dimension})
           else null end  ;;
-    value_format_name: percent_1
+    value_format_name: decimal_1
     hidden: yes
   }
 
@@ -792,7 +792,7 @@ view: forecasts {
           when ${number_of_adjusted_forecasted_hours_by_position_dimension} > ${ops.number_of_scheduled_hours_by_position_dimension}
             then abs(${number_of_adjusted_forecasted_hours_by_position_dimension} - ${ops.number_of_scheduled_hours_by_position_dimension})
           else null end  ;;
-    value_format_name: percent_1
+    value_format_name: decimal_1
     hidden: yes
   }
 
@@ -829,6 +829,38 @@ view: forecasts {
     allowed_value: { value: "Saturday" }
     allowed_value: { value: "Sunday" }
     hidden: no
+  }
+
+  parameter: date_granularity {
+    label: "Date Granularity"
+    type: unquoted
+    allowed_value: { value: "Day" }
+    allowed_value: { value: "Week" }
+    default_value: "Day"
+  }
+
+  dimension: date {
+    label: "Date (Dynamic)"
+    description: "Dynamic date based on chosen granularity"
+    label_from_parameter: date_granularity
+    sql:
+    {% if date_granularity._parameter_value == 'Day' %}
+      ${start_timestamp_date}
+    {% elsif date_granularity._parameter_value == 'Week' %}
+      ${start_timestamp_week}
+    {% endif %};;
+  }
+
+  dimension: date_granularity_pass_through {
+    description: "To use the parameter value in a table calculation (e.g WoW, % Growth) we need to materialize it into a dimension "
+    type: string
+    hidden: no # yes
+    sql:
+            {% if date_granularity._parameter_value == 'Day' %}
+              "Day"
+            {% elsif date_granularity._parameter_value == 'Week' %}
+              "Week"
+            {% endif %};;
   }
 
 }
