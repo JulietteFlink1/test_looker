@@ -10,6 +10,12 @@ view: assortment_puzzle_pieces {
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   #  - - - - - - - - - -    Main: Hub-Level
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  dimension: hub_code {
+    type: string
+    sql: ${TABLE}.hub_code ;;
+    hidden: no
+  }
+
   dimension: hub_layout {
 
     label:       "Hub Layout"
@@ -51,6 +57,12 @@ view: assortment_puzzle_pieces {
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   #  - - - - - - - - - -    Main: SKU-Level
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  dimension: sku {
+    type: string
+    sql: ${TABLE}.sku ;;
+    hidden: no
+  }
+
   dimension: sku_assigned_hub_layout {
 
     label:       "Hub Layout (assigned SKU)"
@@ -111,6 +123,7 @@ view: assortment_puzzle_pieces {
     ]
     datatype: date
     sql: ${TABLE}.ingestion_date ;;
+    hidden: no
   }
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -127,21 +140,9 @@ view: assortment_puzzle_pieces {
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   #  - - - - - - - - - -    Hidden Fields
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  dimension: hub_code {
-    type: string
-    sql: ${TABLE}.hub_code ;;
-    hidden: yes
-  }
-
   dimension: product_name {
     type: string
     sql: ${TABLE}.product_name ;;
-    hidden: yes
-  }
-
-  dimension: sku {
-    type: string
-    sql: ${TABLE}.sku ;;
     hidden: yes
   }
 
