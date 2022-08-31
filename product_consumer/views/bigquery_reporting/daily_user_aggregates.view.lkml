@@ -1,6 +1,6 @@
 view: daily_user_aggregates {
-    sql_table_name: `flink-data-prod.reporting.daily_user_aggregates`
-     ;;
+  sql_table_name: `flink-data-prod.reporting.daily_user_aggregates`
+    ;;
   view_label: "Daily User Aggregates"
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
@@ -35,54 +35,54 @@ view: daily_user_aggregates {
   # ~~~~~~~~~~~~~~~     Dimensions    ~~~~~~~~~~~~~~~ #
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
-    ######## IDs ########
+  ######## IDs ########
 
-    dimension: daily_user_uuid {
-      type: string
-      hidden: yes
-      primary_key: yes
-      description: "A surrogate key representing a unique identifier per user per day. If the same users interacted with the app on two different days, they will get a different identifier."
-      sql: ${TABLE}.daily_user_uuid ;;
-    }
-    dimension: user_uuid {
-      group_label: "IDs"
-      label: "User UUID"
-      type: string
-      description: "Unique user identifier: if user was logged in, the identifier is 'user_id' populated upon registration, else 'anonymous_id' populated by Segment"
-      sql: ${TABLE}.anonymous_id ;;
-    }
-    dimension: order_uuids {
-      group_label: "IDs"
-      label: "Order UUIDs"
-      type: string
-      description: "An array of order_uuids as a concatenation of country_iso and order_id"
-      sql: ${TABLE}.order_uuids ;;
-    }
+  dimension: daily_user_uuid {
+    type: string
+    hidden: yes
+    primary_key: yes
+    description: "A surrogate key representing a unique identifier per user per day. If the same users interacted with the app on two different days, they will get a different identifier."
+    sql: ${TABLE}.daily_user_uuid ;;
+  }
+  dimension: user_uuid {
+    group_label: "IDs"
+    label: "User UUID"
+    type: string
+    description: "Unique user identifier: if user was logged in, the identifier is 'user_id' populated upon registration, else 'anonymous_id' populated by Segment"
+    sql: ${TABLE}.anonymous_id ;;
+  }
+  dimension: order_uuids {
+    group_label: "IDs"
+    label: "Order UUIDs"
+    type: string
+    description: "An array of order_uuids as a concatenation of country_iso and order_id"
+    sql: ${TABLE}.order_uuids ;;
+  }
 
-    ######## Dates ########
+  ######## Dates ########
 
-    dimension_group: event_date_at {
-      group_label: "Date Dimensions"
-      label: ""
-      type: time
-      datatype: date
-      timeframes: [
-        day_of_week,
-        date,
-        week,
-        week_of_year,
-        month,
-        quarter
-      ]
-      sql: ${TABLE}.event_date ;;
-    }
-    dimension: event_date_granularity {
-      group_label: "Date Dimensions"
-      label: "Event Date (Dynamic)"
-      label_from_parameter: timeframe_picker
-      type: string # cannot have this as a time type. See this discussion: https://community.looker.com/lookml-5/dynamic-time-granularity-opinions-16675
-      hidden:  yes
-      sql:
+  dimension_group: event_date_at {
+    group_label: "Date Dimensions"
+    label: ""
+    type: time
+    datatype: date
+    timeframes: [
+      day_of_week,
+      date,
+      week,
+      week_of_year,
+      month,
+      quarter
+    ]
+    sql: ${TABLE}.event_date ;;
+  }
+  dimension: event_date_granularity {
+    group_label: "Date Dimensions"
+    label: "Event Date (Dynamic)"
+    label_from_parameter: timeframe_picker
+    type: string # cannot have this as a time type. See this discussion: https://community.looker.com/lookml-5/dynamic-time-granularity-opinions-16675
+    hidden:  yes
+    sql:
       {% if timeframe_picker._parameter_value == 'Day' %}
         ${event_date_at_date}
       {% elsif timeframe_picker._parameter_value == 'Week' %}
@@ -90,511 +90,517 @@ view: daily_user_aggregates {
       {% elsif timeframe_picker._parameter_value == 'Month' %}
         ${event_date_at_month}
       {% endif %};;
-    }
+  }
 
 
 
 
-    parameter: timeframe_picker {
-      group_label: "Date Dimensions"
-      label: "Event Date Granularity"
-      type: unquoted
-      allowed_value: { value: "Day" }
-      allowed_value: { value: "Week" }
-      allowed_value: { value: "Month" }
-      default_value: "Day"
-    }
+  parameter: timeframe_picker {
+    group_label: "Date Dimensions"
+    label: "Event Date Granularity"
+    type: unquoted
+    allowed_value: { value: "Day" }
+    allowed_value: { value: "Week" }
+    allowed_value: { value: "Month" }
+    default_value: "Day"
+  }
 
-    ######## Device Atributes ########
+  ######## Device Atributes ########
 
-    dimension: device_type {
-      group_label: "Device Dimensions"
-      label: "Device Type"
-      type: string
-      description: "Device type is one of: ios, android, windows, macintosh, linux or other "
-      sql: ${TABLE}.device_type ;;
-    }
-    dimension: device_model {
-      group_label: "Device Dimensions"
-      label: "Device Model"
-      type: string
-      description: "Model of the device"
-      sql: ${TABLE}.device_model ;;
-    }
-    dimension: app_version_order {
-      group_label: "Device Dimensions"
-      label: "App Version order"
-      type: number
-      hidden: no
-      description: "App release version middle digits for ordering"
-      sql: safe_cast(split(app_version,".")[SAFE_OFFSET(1)] as INTEGER) ;;
-      }
-    dimension: app_version {
-      group_label: "Device Dimensions"
-      label: "App Version"
-      type: string
-      description: "App release version"
-      order_by_field: app_version_order
-      sql: ${TABLE}.app_version ;;
-    }
-    dimension: platform {
-      group_label: "Device Dimensions"
-      label: "Platform"
-      type: string
-      description: "Platform is either iOS, Android or Web"
-      sql: ${TABLE}.platform ;;
-    }
-    dimension: is_device_android {
-      group_label: "Device Dimensions"
-      type: yesno
-      sql: ${TABLE}.is_device_android ;;
-    }
-    dimension: is_device_ios {
-      group_label: "Device Dimensions"
-      type: yesno
-      sql: ${TABLE}.is_device_ios ;;
-    }
-    dimension: is_device_windows {
-      group_label: "Device Dimensions"
-      type: yesno
-      sql: ${TABLE}.is_device_windows ;;
-    }
-    dimension: is_device_macintosh {
-      group_label: "Device Dimensions"
-      type: yesno
-      sql: ${TABLE}.is_device_macintosh ;;
-    }
-    dimension: full_app_version {
-      group_label: "Device Dimensions"
-      type: string
-      description: "Concatenation of device_type and app_version"
-      order_by_field: app_version_order
-      sql: CASE WHEN ${TABLE}.device_type IN ('ios','android') THEN  (${TABLE}.device_type || '-' || ${TABLE}.app_version ) END ;;
-    }
+  dimension: device_type {
+    group_label: "Device Dimensions"
+    label: "Device Type"
+    type: string
+    description: "Device type is one of: ios, android, windows, macintosh, linux or other "
+    sql: ${TABLE}.device_type ;;
+  }
+  dimension: device_model {
+    group_label: "Device Dimensions"
+    label: "Device Model"
+    type: string
+    description: "Model of the device"
+    sql: ${TABLE}.device_model ;;
+  }
+  dimension: app_version_order {
+    group_label: "Device Dimensions"
+    label: "App Version order"
+    type: number
+    hidden: no
+    description: "App release version middle digits for ordering"
+    sql: safe_cast(split(app_version,".")[SAFE_OFFSET(1)] as INTEGER) ;;
+  }
+  dimension: app_version {
+    group_label: "Device Dimensions"
+    label: "App Version"
+    type: string
+    description: "App release version"
+    order_by_field: app_version_order
+    sql: ${TABLE}.app_version ;;
+  }
+  dimension: platform {
+    group_label: "Device Dimensions"
+    label: "Platform"
+    type: string
+    description: "Platform is either iOS, Android or Web"
+    sql: ${TABLE}.platform ;;
+  }
+  dimension: is_device_android {
+    group_label: "Device Dimensions"
+    type: yesno
+    sql: ${TABLE}.is_device_android ;;
+  }
+  dimension: is_device_ios {
+    group_label: "Device Dimensions"
+    type: yesno
+    sql: ${TABLE}.is_device_ios ;;
+  }
+  dimension: is_device_windows {
+    group_label: "Device Dimensions"
+    type: yesno
+    sql: ${TABLE}.is_device_windows ;;
+  }
+  dimension: is_device_macintosh {
+    group_label: "Device Dimensions"
+    type: yesno
+    sql: ${TABLE}.is_device_macintosh ;;
+  }
+  dimension: full_app_version {
+    group_label: "Device Dimensions"
+    type: string
+    description: "Concatenation of device_type and app_version"
+    order_by_field: app_version_order
+    sql: CASE WHEN ${TABLE}.device_type IN ('ios','android') THEN  (${TABLE}.device_type || '-' || ${TABLE}.app_version ) END ;;
+  }
 
-    ######## Location Atributes ########
+  ######## Location Atributes ########
 
-    dimension: hub_code {
-      group_label: "Location Dimensions"
-      type: string
-      sql: ${TABLE}.hub_code ;;
-    }
-    dimension: city {
-      group_label: "Location Dimensions"
-      type: string
-      sql: ${TABLE}.city ;;
-    }
-    dimension: country_iso {
-      group_label: "Location Dimensions"
-      label: "Country ISO"
-      type: string
-      sql: ${TABLE}.country_iso ;;
-    }
-    dimension: delivery_lat {
-      group_label: "Location Dimensions"
-      label: "Delivery Latitude"
-      type: number
-      sql: ${TABLE}.delivery_lat ;;
-    }
-    dimension: delivery_lng {
-      group_label: "Location Dimensions"
-      label: "Delivery Longitude"
-      type: number
-      sql: ${TABLE}.delivery_lng ;;
-    }
-    dimension: delivery_pdt {
-      group_label: "Location Dimensions"
-      label: "Delivery PDT"
-      description: "Delivery Promised Time Delivery"
-      type: number
-      sql: ${TABLE}.delivery_pdt ;;
-    }
+  dimension: hub_code {
+    group_label: "Location Dimensions"
+    type: string
+    sql: ${TABLE}.hub_code ;;
+  }
+  dimension: city {
+    group_label: "Location Dimensions"
+    type: string
+    sql: ${TABLE}.city ;;
+  }
+  dimension: country_iso {
+    group_label: "Location Dimensions"
+    label: "Country ISO"
+    type: string
+    sql: ${TABLE}.country_iso ;;
+  }
+  dimension: delivery_lat {
+    group_label: "Location Dimensions"
+    label: "Delivery Latitude"
+    type: number
+    sql: ${TABLE}.delivery_lat ;;
+  }
+  dimension: delivery_lng {
+    group_label: "Location Dimensions"
+    label: "Delivery Longitude"
+    type: number
+    sql: ${TABLE}.delivery_lng ;;
+  }
+  dimension: delivery_pdt {
+    group_label: "Location Dimensions"
+    label: "Delivery PDT"
+    description: "Delivery Promised Time Delivery"
+    type: number
+    sql: ${TABLE}.delivery_pdt ;;
+  }
 
-    ######## Event Flags ########
-    # User Flags
+  ######## Event Flags ########
+  # User Flags
 
-    dimension: is_active_user {
-      group_label: "Flags | User"
-      type: yesno
-      sql: ${TABLE}.is_active_user ;;
-    }
-    dimension: is_new_user {
-      group_label: "Flags | User"
-      type: yesno
-      sql: ${TABLE}.is_new_user ;;
-    }
+  dimension: is_active_user {
+    group_label: "Flags | User"
+    type: yesno
+    sql: ${TABLE}.is_active_user ;;
+  }
+  dimension: is_new_user {
+    group_label: "Flags | User"
+    type: yesno
+    sql: ${TABLE}.is_new_user ;;
+  }
 
-    # Conversion Flags
-    dimension: is_web_app_opened {
-      group_label: "Flags | Conversion"
-      type: yesno
-      sql: ${TABLE}.is_web_app_opened ;;
-    }
-     dimension: is_address_set {
-      group_label: "Flags | Conversion"
-      type: yesno
-      sql: ${TABLE}.is_address_set ;;
-    }
-    dimension: is_product_added_to_cart {
-      group_label: "Flags | Conversion"
-      type: yesno
-      sql: ${TABLE}.is_product_added_to_cart ;;
-    }
-    dimension: is_cart_viewed {
-     group_label: "Flags | Conversion"
-     type: yesno
-     sql: ${TABLE}.is_cart_viewed ;;
-    }
-    dimension: is_checkout_viewed {
-      group_label: "Flags | Conversion"
-      type: yesno
-      sql: ${TABLE}.is_checkout_viewed ;;
-    }
-    dimension: is_payment_started {
-      group_label: "Flags | Conversion"
-      type: yesno
-      sql: ${TABLE}.is_payment_started ;;
-    }
-    dimension: is_order_placed {
-      group_label: "Flags | Conversion"
-      type: yesno
-      sql: ${TABLE}.is_order_placed ;;
-    }
+  dimension: is_user_logged_in {
+    group_label: "Flags | User"
+    type: yesno
+    sql: ${TABLE}.is_user_logged_in ;;
+  }
 
-    # Add-to-Cart even flags
+  # Conversion Flags
+  dimension: is_web_app_opened {
+    group_label: "Flags | Conversion"
+    type: yesno
+    sql: ${TABLE}.is_web_app_opened ;;
+  }
+  dimension: is_address_set {
+    group_label: "Flags | Conversion"
+    type: yesno
+    sql: ${TABLE}.is_address_set ;;
+  }
+  dimension: is_product_added_to_cart {
+    group_label: "Flags | Conversion"
+    type: yesno
+    sql: ${TABLE}.is_product_added_to_cart ;;
+  }
+  dimension: is_cart_viewed {
+    group_label: "Flags | Conversion"
+    type: yesno
+    sql: ${TABLE}.is_cart_viewed ;;
+  }
+  dimension: is_checkout_viewed {
+    group_label: "Flags | Conversion"
+    type: yesno
+    sql: ${TABLE}.is_checkout_viewed ;;
+  }
+  dimension: is_payment_started {
+    group_label: "Flags | Conversion"
+    type: yesno
+    sql: ${TABLE}.is_payment_started ;;
+  }
+  dimension: is_order_placed {
+    group_label: "Flags | Conversion"
+    type: yesno
+    sql: ${TABLE}.is_order_placed ;;
+  }
 
-    dimension: is_category_placement {
-      group_label: "Flags | Product Placement"
-      hidden:  yes
-      type: yesno
-      sql: ${TABLE}.is_add_to_cart_from_category_placement ;;
-    }
-    dimension: is_search_placement {
-      group_label: "Flags | Product Placement"
-      hidden:  yes
-      type: yesno
-      sql: ${TABLE}.is_add_to_cart_from_search_placement ;;
-    }
-    dimension: is_cart_placement {
-      group_label: "Flags | Product Placement"
-      hidden:  yes
-      type: yesno
-      sql: ${TABLE}.is_add_to_cart_from_cart_placement ;;
-    }
-    dimension: is_pdp_placement {
-      group_label: "Flags | Product Placement"
-      hidden:  yes
-      type: yesno
-      sql: ${TABLE}.is_add_to_cart_from_pdp_placement ;;
-    }
-    dimension: is_favourites_placement {
-      group_label: "Flags | Product Placement"
-      hidden:  yes
-      type: yesno
-      sql: ${TABLE}.is_add_to_cart_from_favourites_placement ;;
-    }
-    dimension: is_swimlane_placement {
-      group_label: "Flags | Product Placement"
-      hidden:  yes
-      type: yesno
-      sql: ${TABLE}.is_add_to_cart_from_swimlane_placement ;;
-    }
-    dimension: is_last_bought_placement {
-      group_label: "Flags | Product Placement"
-      hidden:  yes
-      type: yesno
-      sql: ${TABLE}.is_add_to_cart_from_last_bought_placement ;;
-    }
-    dimension: is_recommendation_placement {
-      group_label: "Flags | Product Placement"
-      hidden:  yes
-      type: yesno
-      sql: ${TABLE}.is_add_to_cart_from_recommendation_placement ;;
-    }
-    dimension: is_recipes_placement {
+  # Add-to-Cart even flags
+
+  dimension: is_category_placement {
+    group_label: "Flags | Product Placement"
+    hidden:  yes
+    type: yesno
+    sql: ${TABLE}.is_add_to_cart_from_category_placement ;;
+  }
+  dimension: is_search_placement {
+    group_label: "Flags | Product Placement"
+    hidden:  yes
+    type: yesno
+    sql: ${TABLE}.is_add_to_cart_from_search_placement ;;
+  }
+  dimension: is_cart_placement {
+    group_label: "Flags | Product Placement"
+    hidden:  yes
+    type: yesno
+    sql: ${TABLE}.is_add_to_cart_from_cart_placement ;;
+  }
+  dimension: is_pdp_placement {
+    group_label: "Flags | Product Placement"
+    hidden:  yes
+    type: yesno
+    sql: ${TABLE}.is_add_to_cart_from_pdp_placement ;;
+  }
+  dimension: is_favourites_placement {
+    group_label: "Flags | Product Placement"
+    hidden:  yes
+    type: yesno
+    sql: ${TABLE}.is_add_to_cart_from_favourites_placement ;;
+  }
+  dimension: is_swimlane_placement {
+    group_label: "Flags | Product Placement"
+    hidden:  yes
+    type: yesno
+    sql: ${TABLE}.is_add_to_cart_from_swimlane_placement ;;
+  }
+  dimension: is_last_bought_placement {
+    group_label: "Flags | Product Placement"
+    hidden:  yes
+    type: yesno
+    sql: ${TABLE}.is_add_to_cart_from_last_bought_placement ;;
+  }
+  dimension: is_recommendation_placement {
+    group_label: "Flags | Product Placement"
+    hidden:  yes
+    type: yesno
+    sql: ${TABLE}.is_add_to_cart_from_recommendation_placement ;;
+  }
+  dimension: is_recipes_placement {
     group_label: "Flags | Product Placement"
     hidden:  yes
     type: yesno
     sql: ${TABLE}.is_add_to_cart_from_recipes_placement ;;
-    }
-    dimension: is_collection_placement {
+  }
+  dimension: is_collection_placement {
     group_label: "Flags | Product Placement"
     hidden:  yes
     type: yesno
     sql: ${TABLE}.is_add_to_cart_from_collection_placement ;;
-    }
-    dimension: is_undefined_placement {
-      group_label: "Flags | Product Placement"
-      hidden:  yes
-      type: yesno
-      sql: ${TABLE}.is_add_to_cart_from_undefined_placement ;;
-    }
-
-    # Product Flags
-
-    dimension: is_product_removed_from_cart {
-      group_label: "Flags | Event"
-      type: yesno
-      sql: ${TABLE}.is_product_removed_from_cart ;;
-    }
-    dimension: is_product_added_to_favourites {
-      group_label: "Flags | Event"
-      type: yesno
-      sql: ${TABLE}.is_product_added_to_favourites ;;
-    }
-    dimension: is_product_details_viewed {
-      group_label: "Flags | Event"
-      type: yesno
-      sql: ${TABLE}.is_product_details_viewed ;;
-    }
-    dimension: is_product_search_viewed {
-      group_label: "Flags | Event"
-      type: yesno
-      sql: ${TABLE}.is_product_search_viewed ;;
-    }
-    dimension: is_product_search_executed {
-      group_label: "Flags | Event"
-      type: yesno
-      sql: ${TABLE}.is_product_search_executed ;;
+  }
+  dimension: is_undefined_placement {
+    group_label: "Flags | Product Placement"
+    hidden:  yes
+    type: yesno
+    sql: ${TABLE}.is_add_to_cart_from_undefined_placement ;;
   }
 
-    # Checkout Flags
+  # Product Flags
 
-    dimension: is_checkout_started {
-      group_label: "Flags | Event"
-      type: yesno
-      sql: ${TABLE}.is_checkout_started ;;
-    }
-    dimension: is_payment_failed {
-      group_label: "Flags | Event"
-      type: yesno
-      sql: ${TABLE}.is_payment_failed ;;
-    }
-    dimension: is_first_order_placed {
-      group_label: "Flags | Event"
-      type: yesno
-      sql: ${TABLE}.is_first_order_placed ;;
-    }
-    dimension: is_voucher_redemption_attempted {
-      group_label: "Flags | Event"
-      type: yesno
-      sql: ${TABLE}.is_voucher_redemption_attempted ;;
-    }
-    dimension: is_voucher_applied_succeeded {
-      group_label: "Flags | Event"
-      type: yesno
-      sql: ${TABLE}.is_voucher_applied_succeeded ;;
-    }
-    dimension: is_voucher_applied_failed {
-      group_label: "Flags | Event"
-      type: yesno
-      sql: ${TABLE}.is_voucher_applied_failed ;;
-    }
-    dimension: is_rider_tip_selected {
-      group_label: "Flags | Event"
-      type: yesno
-      sql: ${TABLE}.is_rider_tip_selected ;;
-    }
+  dimension: is_product_removed_from_cart {
+    group_label: "Flags | Event"
+    type: yesno
+    sql: ${TABLE}.is_product_removed_from_cart ;;
+  }
+  dimension: is_product_added_to_favourites {
+    group_label: "Flags | Event"
+    type: yesno
+    sql: ${TABLE}.is_product_added_to_favourites ;;
+  }
+  dimension: is_product_details_viewed {
+    group_label: "Flags | Event"
+    type: yesno
+    sql: ${TABLE}.is_product_details_viewed ;;
+  }
+  dimension: is_product_search_viewed {
+    group_label: "Flags | Event"
+    type: yesno
+    sql: ${TABLE}.is_product_search_viewed ;;
+  }
+  dimension: is_product_search_executed {
+    group_label: "Flags | Event"
+    type: yesno
+    sql: ${TABLE}.is_product_search_executed ;;
+  }
 
-    # Generic Flags
-    dimension: is_address_confirmed {
-      group_label: "Flags | Event"
-      type: yesno
-      sql: ${TABLE}.is_address_confirmed ;;
-    }
-    dimension: is_account_login_succeeded {
-      group_label: "Flags | Event"
-      type: yesno
-      sql: ${TABLE}.is_account_login_succeeded ;;
-    }
-    dimension: is_account_logout_clicked {
-      group_label: "Flags | Event"
-      type: yesno
-      sql: ${TABLE}.is_account_logout_clicked ;;
-    }
-    dimension: is_account_registration_viewed {
-      group_label: "Flags | Event"
-      type: yesno
-      sql: ${TABLE}.is_account_registration_viewed ;;
-    }
-    dimension: is_account_registration_succeeded {
-      group_label: "Flags | Event"
-      type: yesno
-      sql: ${TABLE}.is_account_registration_succeeded ;;
-    }
-    dimension: is_sms_verification_request_viewed {
-      group_label: "Flags | Event"
-      type: yesno
-      sql: ${TABLE}.is_sms_verification_request_viewed ;;
-    }
-    dimension: is_sms_verification_send_code_clicked {
-      group_label: "Flags | Event"
-      type: yesno
-      sql: ${TABLE}.is_sms_verification_send_code_clicked ;;
-    }
-    dimension: is_sms_verification_viewed {
-      group_label: "Flags | Event"
-      type: yesno
-      sql: ${TABLE}.is_sms_verification_viewed ;;
-    }
-    dimension: is_sms_verification_clicked {
-      group_label: "Flags | Event"
-      type: yesno
-      sql: ${TABLE}.is_sms_verification_clicked ;;
-    }
-    dimension: is_sms_verification_confirmed {
-      group_label: "Flags | Event"
-      type: yesno
-      sql: ${TABLE}.is_sms_verification_confirmed ;;
-    }
-    dimension: is_home_viewed {
-      group_label: "Flags | Event"
-      type: yesno
-      sql: ${TABLE}.is_home_viewed ;;
-    }
-    dimension: is_category_selected {
-      group_label: "Flags | Event"
-      type: yesno
-      sql: ${TABLE}.is_category_selected ;;
-    }
+  # Checkout Flags
+
+  dimension: is_checkout_started {
+    group_label: "Flags | Event"
+    type: yesno
+    sql: ${TABLE}.is_checkout_started ;;
+  }
+  dimension: is_payment_failed {
+    group_label: "Flags | Event"
+    type: yesno
+    sql: ${TABLE}.is_payment_failed ;;
+  }
+  dimension: is_first_order_placed {
+    group_label: "Flags | Event"
+    type: yesno
+    sql: ${TABLE}.is_first_order_placed ;;
+  }
+  dimension: is_voucher_redemption_attempted {
+    group_label: "Flags | Event"
+    type: yesno
+    sql: ${TABLE}.is_voucher_redemption_attempted ;;
+  }
+  dimension: is_voucher_applied_succeeded {
+    group_label: "Flags | Event"
+    type: yesno
+    sql: ${TABLE}.is_voucher_applied_succeeded ;;
+  }
+  dimension: is_voucher_applied_failed {
+    group_label: "Flags | Event"
+    type: yesno
+    sql: ${TABLE}.is_voucher_applied_failed ;;
+  }
+  dimension: is_rider_tip_selected {
+    group_label: "Flags | Event"
+    type: yesno
+    sql: ${TABLE}.is_rider_tip_selected ;;
+  }
+
+  # Generic Flags
+  dimension: is_address_confirmed {
+    group_label: "Flags | Event"
+    type: yesno
+    sql: ${TABLE}.is_address_confirmed ;;
+  }
+  dimension: is_account_login_succeeded {
+    group_label: "Flags | Event"
+    type: yesno
+    sql: ${TABLE}.is_account_login_succeeded ;;
+  }
+  dimension: is_account_logout_clicked {
+    group_label: "Flags | Event"
+    type: yesno
+    sql: ${TABLE}.is_account_logout_clicked ;;
+  }
+  dimension: is_account_registration_viewed {
+    group_label: "Flags | Event"
+    type: yesno
+    sql: ${TABLE}.is_account_registration_viewed ;;
+  }
+  dimension: is_account_registration_succeeded {
+    group_label: "Flags | Event"
+    type: yesno
+    sql: ${TABLE}.is_account_registration_succeeded ;;
+  }
+  dimension: is_sms_verification_request_viewed {
+    group_label: "Flags | Event"
+    type: yesno
+    sql: ${TABLE}.is_sms_verification_request_viewed ;;
+  }
+  dimension: is_sms_verification_send_code_clicked {
+    group_label: "Flags | Event"
+    type: yesno
+    sql: ${TABLE}.is_sms_verification_send_code_clicked ;;
+  }
+  dimension: is_sms_verification_viewed {
+    group_label: "Flags | Event"
+    type: yesno
+    sql: ${TABLE}.is_sms_verification_viewed ;;
+  }
+  dimension: is_sms_verification_clicked {
+    group_label: "Flags | Event"
+    type: yesno
+    sql: ${TABLE}.is_sms_verification_clicked ;;
+  }
+  dimension: is_sms_verification_confirmed {
+    group_label: "Flags | Event"
+    type: yesno
+    sql: ${TABLE}.is_sms_verification_confirmed ;;
+  }
+  dimension: is_home_viewed {
+    group_label: "Flags | Event"
+    type: yesno
+    sql: ${TABLE}.is_home_viewed ;;
+  }
+  dimension: is_category_selected {
+    group_label: "Flags | Event"
+    type: yesno
+    sql: ${TABLE}.is_category_selected ;;
+  }
 
   # ~~~~~~~~~~~ Hidden Dimensions ~~~~~~~~~~~~ #
 
-    dimension: dim_total_amt_gmv_gross {
-      type: number
-      hidden: yes
-      sql: ${TABLE}.total_amt_gmv_gross ;;
-    }
-    dimension: dim_aov_gross {
-      type: number
-      hidden: yes
-      sql: ${TABLE}.aov_gross ;;
-    }
-    dimension: dim_total_rider_tip {
-      type: number
-      hidden: yes
-      sql: ${TABLE}.total_rider_tip ;;
-    }
-    dimension: dim_total_discount_value {
-      type: number
-      hidden: yes
-      sql: ${TABLE}.total_discount_value ;;
-    }
-    dimension: dim_number_of_web_app_opened {
-      type: number
-      hidden: yes
-      sql: ${TABLE}.number_of_web_app_opened ;;
-    }
-    dimension: dim_number_of_address_confirmed {
-      type: number
-      hidden: yes
-      sql: ${TABLE}.number_of_address_confirmed ;;
-    }
-    dimension: dim_number_of_home_viewed {
-      type: number
-      hidden: yes
-      sql: ${TABLE}.number_of_home_viewed ;;
-    }
-    dimension: dim_number_of_product_added_to_cart {
-      type: number
-      hidden: yes
-      sql: ${TABLE}.number_of_product_added_to_cart ;;
-    }
-    dimension: dim_number_of_product_removed_from_cart {
-      type: number
-      hidden: yes
-      sql: ${TABLE}.number_of_product_removed_from_cart ;;
-    }
-    dimension: dim_number_of_product_added_to_favourites {
-      type: number
-      hidden: yes
-      sql: ${TABLE}.number_of_product_added_to_favourites ;;
-    }
-    dimension: dim_number_of_product_details_viewed {
-      type: number
-      hidden: yes
-      sql: ${TABLE}.number_of_product_details_viewed ;;
-    }
-    dimension: dim_number_of_product_search_viewed {
-      type: number
-      hidden: yes
-      sql: ${TABLE}.number_of_product_search_viewed ;;
-    }
-    dimension: dim_number_of_cart_viewed {
-      type: number
-      hidden: yes
-      sql: ${TABLE}.number_of_cart_viewed ;;
-    }
-    dimension: dim_number_of_checkout_viewed {
-      type: number
-      hidden: yes
-      sql: ${TABLE}.number_of_checkout_viewed ;;
-    }
-    dimension: dim_number_of_checkout_started {
-      type: number
-      hidden: yes
-      sql: ${TABLE}.number_of_checkout_started ;;
-    }
-    dimension: dim_number_of_payment_started {
-      type: number
-      hidden: yes
-      sql: ${TABLE}.number_of_payment_started ;;
-    }
-    dimension: dim_number_of_payment_failed {
-      type: number
-      hidden: yes
-      sql: ${TABLE}.number_of_payment_failed ;;
-    }
-    dimension: dim_number_of_first_order_placed {
-      type: number
-      hidden: yes
-      sql: ${TABLE}.number_of_first_order_placed ;;
-    }
-    dimension: dim_number_of_order_placed {
-      type: number
-      hidden: yes
-      sql: ${TABLE}.number_of_order_placed ;;
-    }
-    dimension: dim_number_of_voucher_redemption_attempted {
-      type: number
-      hidden: yes
-      sql: ${TABLE}.number_of_voucher_redemption_attempted ;;
-    }
-    dimension: dim_number_of_voucher_applied_succeeded {
-      type: number
-      hidden: yes
-      sql: ${TABLE}.number_of_voucher_applied_succeeded ;;
-    }
-    dimension: dim_number_of_voucher_applied_failed {
-      type: number
-      hidden: yes
-      sql: ${TABLE}.number_of_voucher_applied_failed ;;
-    }
-    dimension: dim_number_of_rider_tip_selected {
-      type: number
-      hidden: yes
-      sql: ${TABLE}.number_of_rider_tip_selected ;;
-    }
-    dimension: dim_number_of_account_login_succeeded {
-      type: number
-      hidden: yes
-      sql: ${TABLE}.number_of_account_login_succeeded ;;
-    }
-    dimension: dim_number_of_account_logout_clicked {
-      type: number
-      hidden: yes
-      sql: ${TABLE}.number_of_account_logout_clicked ;;
-    }
-    dimension: dim_number_of_categories_selected {
-      type: number
-      hidden: yes
-      sql: ${TABLE}.number_of_categories_selected ;;
-    }
-    dimension: dim_number_of_product_search_executed {
-      type: number
-      hidden: yes
-      sql: ${TABLE}.number_of_product_search_executed ;;
-    }
+  dimension: dim_total_amt_gmv_gross {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.total_amt_gmv_gross ;;
+  }
+  dimension: dim_aov_gross {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.aov_gross ;;
+  }
+  dimension: dim_total_rider_tip {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.total_rider_tip ;;
+  }
+  dimension: dim_total_discount_value {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.total_discount_value ;;
+  }
+  dimension: dim_number_of_web_app_opened {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_web_app_opened ;;
+  }
+  dimension: dim_number_of_address_confirmed {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_address_confirmed ;;
+  }
+  dimension: dim_number_of_home_viewed {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_home_viewed ;;
+  }
+  dimension: dim_number_of_product_added_to_cart {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_product_added_to_cart ;;
+  }
+  dimension: dim_number_of_product_removed_from_cart {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_product_removed_from_cart ;;
+  }
+  dimension: dim_number_of_product_added_to_favourites {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_product_added_to_favourites ;;
+  }
+  dimension: dim_number_of_product_details_viewed {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_product_details_viewed ;;
+  }
+  dimension: dim_number_of_product_search_viewed {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_product_search_viewed ;;
+  }
+  dimension: dim_number_of_cart_viewed {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_cart_viewed ;;
+  }
+  dimension: dim_number_of_checkout_viewed {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_checkout_viewed ;;
+  }
+  dimension: dim_number_of_checkout_started {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_checkout_started ;;
+  }
+  dimension: dim_number_of_payment_started {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_payment_started ;;
+  }
+  dimension: dim_number_of_payment_failed {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_payment_failed ;;
+  }
+  dimension: dim_number_of_first_order_placed {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_first_order_placed ;;
+  }
+  dimension: dim_number_of_order_placed {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_order_placed ;;
+  }
+  dimension: dim_number_of_voucher_redemption_attempted {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_voucher_redemption_attempted ;;
+  }
+  dimension: dim_number_of_voucher_applied_succeeded {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_voucher_applied_succeeded ;;
+  }
+  dimension: dim_number_of_voucher_applied_failed {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_voucher_applied_failed ;;
+  }
+  dimension: dim_number_of_rider_tip_selected {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_rider_tip_selected ;;
+  }
+  dimension: dim_number_of_account_login_succeeded {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_account_login_succeeded ;;
+  }
+  dimension: dim_number_of_account_logout_clicked {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_account_logout_clicked ;;
+  }
+  dimension: dim_number_of_categories_selected {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_categories_selected ;;
+  }
+  dimension: dim_number_of_product_search_executed {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_product_search_executed ;;
+  }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
   # ~~~~~~~~~~~~~~~      Measures     ~~~~~~~~~~~~~~~ #
@@ -760,7 +766,7 @@ view: daily_user_aggregates {
     sql: ${dim_number_of_rider_tip_selected};;
   }
 
- ## Voucher Event Metrics
+  ## Voucher Event Metrics
   measure: number_of_voucher_redemption_attempted {
     group_label: "Event Metrics"
     label: "# Voucher Redemption Attempted"
@@ -797,7 +803,7 @@ view: daily_user_aggregates {
     hidden: no
     sql: ${number_of_voucher_applied_succeeded}/${number_of_voucher_redemption_attempted};;
     value_format_name: percent_1
-      }
+  }
   measure: voucher_attempt_rate {
     group_label: "Event Metrics"
     label: "% Voucher Attempt Rate"
@@ -1057,7 +1063,7 @@ view: daily_user_aggregates {
 
 
 
-    #### Abandonment Rates ###
+  #### Abandonment Rates ###
 
   measure: cart_abandonment_rate {
     group_label: "Funnel Abandonment Rates (%)"
@@ -1165,15 +1171,10 @@ view: daily_user_aggregates {
 
   # ======= User Authentication & SMS Verification Metrics ======= #
 
-                    ###### Total aggregates ######
+  ###### Total aggregates ######
 
-  measure: new_users_with_acc_registration_viewed {
-    group_label: "User And Account Verification Metrics"
-    label: "# New Users with Acc Reg Viewed "
-    type: count_distinct
-    sql: ${user_uuid} ;;
-    filters: [is_account_login_succeeded: "no" , is_account_registration_viewed: "yes"]
-  }
+  ##### User Auth & SMS Verification Rates ######
+
   measure: all_users_with_account_registration_viewed {
     group_label: "User And Account Verification Metrics"
     label: "# All Users with Account Registration Viewed"
@@ -1182,14 +1183,7 @@ view: daily_user_aggregates {
     sql: ${user_uuid} ;;
     filters: [is_account_registration_viewed: "yes"]
   }
-  measure: new_users_with_account_registration_success {
-    group_label: "User And Account Verification Metrics"
-    label: "# New Users with Account Registration Success"
-    description: "Number of new users successfully registrating account"
-    type: count_distinct
-    sql: ${user_uuid} ;;
-    filters: [is_account_login_succeeded: "no" , is_account_registration_succeeded: "yes"]
-  }
+
   measure: all_users_with_account_registration_success {
     group_label: "User And Account Verification Metrics"
     label: "# All Users with Account Registration Success"
@@ -1198,13 +1192,7 @@ view: daily_user_aggregates {
     sql: ${user_uuid} ;;
     filters: [is_account_registration_succeeded: "yes"]
   }
-  measure: new_users_with_sms_verification_request_viewed {
-    group_label: "User And Account Verification Metrics"
-    label: "# New Users with SMS Veri Request Viewed "
-    type: count_distinct
-    sql: ${user_uuid} ;;
-    filters: [is_account_login_succeeded: "no" , is_sms_verification_request_viewed: "yes"]
-  }
+
   measure: all_users_with_sms_verification_request_viewed {
     group_label: "User And Account Verification Metrics"
     label: "# All Users with SMS Veri Request Viewed"
@@ -1213,7 +1201,8 @@ view: daily_user_aggregates {
     sql: ${user_uuid} ;;
     filters: [is_sms_verification_request_viewed: "yes"]
   }
-  measure: users_with_sms_verification_send_code_clicked {
+  measure: all_users_with_sms_verification_send_code_clicked {
+    hidden: no
     group_label: "User And Account Verification Metrics"
     label: "# All Users with Clicking Send Code for SMS Verification"
     description: "Number of users clicking send code for SMS verification"
@@ -1221,7 +1210,8 @@ view: daily_user_aggregates {
     sql: ${user_uuid} ;;
     filters: [is_sms_verification_send_code_clicked: "yes"]
   }
-  measure: users_with_sms_verification_viewed {
+  measure: all_users_with_sms_verification_viewed {
+    hidden: no
     group_label: "User And Account Verification Metrics"
     label: "# All Users with Viewing SMS Verification"
     description: "Number of users viewing SMS verification"
@@ -1229,7 +1219,8 @@ view: daily_user_aggregates {
     sql: ${user_uuid} ;;
     filters: [is_sms_verification_viewed: "yes"]
   }
-  measure: users_with_sms_verification_clicked {
+  measure: all_users_with_sms_verification_clicked {
+    hidden: no
     group_label: "User And Account Verification Metrics"
     label: "# All Users with Clicking SMS Verification"
     description: "Number of users clicking SMS verification"
@@ -1245,16 +1236,16 @@ view: daily_user_aggregates {
     sql: ${user_uuid} ;;
     filters: [is_sms_verification_confirmed: "yes"]
   }
-  measure: new_users_with_sms_verification_confirmed {
+
+  measure: all_users_with_sms_verification_confirmed_and_order{
+    hidden:  no
     group_label: "User And Account Verification Metrics"
-    label: "# New Users with Successful SMS Verification"
+    label: "# All Users with Successful SMS Verification"
     description: "Number of users successfully verifying their account through SMS"
     type: count_distinct
     sql: ${user_uuid} ;;
-    filters: [is_account_login_succeeded: "no", is_sms_verification_confirmed: "yes"]
+    filters: [is_sms_verification_confirmed: "yes", is_order_placed: "yes"]
   }
-
-        ##### User Auth & SMS Verification Rates ######
 
   measure: user_sms_verification_rate_all_users{
     group_label: "User And Account Verification Metrics"
@@ -1265,24 +1256,27 @@ view: daily_user_aggregates {
     value_format_name: percent_1
     sql: ${all_users_with_sms_verification_confirmed} / nullif(${all_users_with_sms_verification_request_viewed},0);;
   }
-  measure: user_sms_verification_rate_new_users{
+
+  measure: order_rate_after_sms_vrification{
     group_label: "User And Account Verification Metrics"
-    label: "SMS Verification - New Users (%)"
+    label: "Order Placed after SMS Verification (%)"
     type: number
     hidden: no
-    description: "# New Users with Successful SMS Verification, compared to the total number of users with SMS verification requested"
+    description: "# Users with Successful Order out of successfull SMS Verification"
     value_format_name: percent_1
-    sql: ${new_users_with_sms_verification_confirmed} / nullif(${new_users_with_sms_verification_request_viewed},0);;
+    sql: ${all_users_with_sms_verification_confirmed_and_order} / nullif(${all_users_with_sms_verification_confirmed},0);;
   }
-  measure: user_authentication_rate_new_users {
+
+  measure: order_rate_after_sms_vrification_new{
     group_label: "User And Account Verification Metrics"
-    label: "User Authentication - New Users (%)"
+    label: "New Users Order Placed after SMS Verification (%)"
     type: number
     hidden: no
-    description: "# users with Successfully Registered Account, compared to the total number of users viewing account registration page"
+    description: "# New Users with Successful Order out of successfull SMS Verification"
     value_format_name: percent_1
-    sql: ${new_users_with_account_registration_success} / nullif(${new_users_with_acc_registration_viewed},0);;
+    sql: ${new_users_with_sms_verification_confirmed_and_order} / nullif(${new_users_with_sms_verification_confirmed},0);;
   }
+
   measure: user_authentication_rate_all_users {
     group_label: "User And Account Verification Metrics"
     label: "User Authentication - All Users (%)"
@@ -1295,6 +1289,128 @@ view: daily_user_aggregates {
 
 
   # ========= HIDDEN ========== #
+
+  ### Hidden supporting metrics: SMS Verification Flow ###
+
+  measure: new_users_with_sms_verification_request_viewed {
+    hidden: yes
+    group_label: "User And Account Verification Metrics"
+    label: "# New Users with SMS Veri Request Viewed "
+    type: count_distinct
+    sql: ${user_uuid} ;;
+    filters: [is_account_registration_succeeded: "yes" , is_sms_verification_request_viewed: "yes"]
+  }
+
+  measure: new_users_with_sms_verification_confirmed {
+    hidden: yes
+    group_label: "User And Account Verification Metrics"
+    label: "# New Users with Successful SMS Verification"
+    description: "Number of users successfully verifying their account through SMS"
+    type: count_distinct
+    sql: ${user_uuid} ;;
+    filters: [is_account_registration_succeeded: "yes", is_sms_verification_confirmed: "yes"]
+  }
+
+  measure: new_users_with_sms_verification_confirmed_and_order{
+    hidden: yes
+    group_label: "User And Account Verification Metrics"
+    label: "# New Users with Successful SMS Verification and Order"
+    description: "Number of New users successfully verifying their account through SMS"
+    type: count_distinct
+    sql: ${user_uuid} ;;
+    filters: [is_account_registration_succeeded: "yes", is_sms_verification_confirmed: "yes", is_order_placed: "yes"]
+  }
+
+  measure: new_sms_verification_rate_all{
+    group_label: "User And Account Verification Metrics"
+    label: "SMS Verification - New Users(%)"
+    type: number
+    hidden: yes
+    description: "# New Users with Successful SMS Verification, compared to the total number of all users with SMS verification requested"
+    value_format_name: percent_1
+    sql: ${new_users_with_sms_verification_confirmed} / nullif(${new_users_with_sms_verification_request_viewed},0);;
+  }
+
+  measure: existing_loggedin_users_with_sms_verification_request_viewed {
+    hidden: yes
+    group_label: "User And Account Verification Metrics"
+    label: "# Existing LoggedIn Users with SMS Veri Request Viewed "
+    type: count_distinct
+    sql: ${user_uuid} ;;
+    filters: [is_account_registration_viewed: "no" , is_sms_verification_request_viewed: "yes"]
+  }
+
+  measure: existing_loggedin_users_with_sms_verification_confirmed {
+    hidden: yes
+    group_label: "User And Account Verification Metrics"
+    label: "# Existing LoggedIn Users with Successful SMS Verification"
+    description: "Number of Existing LoggedIn users successfully verifying their account through SMS"
+    type: count_distinct
+    sql: ${user_uuid} ;;
+    filters: [is_account_registration_viewed: "no", is_sms_verification_confirmed: "yes"]
+  }
+
+  measure: existing_loggedin_users_with_sms_verification_confirmed_and_order{
+    hidden: yes
+    group_label: "User And Account Verification Metrics"
+    label: "# Existing LoggedIn Users with Successful SMS Verification and Order"
+    description: "Number of Existing LoggedIn users successfully verifying their account through SMS and placed order"
+    type: count_distinct
+    sql: ${user_uuid} ;;
+    filters: [is_account_registration_viewed: "no", is_sms_verification_confirmed: "yes", is_order_placed: "yes"]
+  }
+
+  measure: existing_loggedin_sms_verification_rate{
+    group_label: "User And Account Verification Metrics"
+    label: "SMS Verification - Existing LoggedIn Users(%)"
+    type: number
+    hidden: yes
+    description: "# Existing LoggedIn Users with Successful SMS Verification, compared to the total number of all users with SMS verification requested"
+    value_format_name: percent_1
+    sql: ${existing_loggedin_users_with_sms_verification_confirmed} / nullif(${existing_loggedin_users_with_sms_verification_request_viewed},0);;
+  }
+
+
+  measure: existing_loggedout_users_with_sms_verification_request_viewed {
+    hidden: yes
+    group_label: "User And Account Verification Metrics"
+    label: "# Existing LoggedOut Users with SMS Veri Request Viewed "
+    type: count_distinct
+    sql: ${user_uuid} ;;
+    filters: [is_account_login_succeeded: "yes" , is_sms_verification_request_viewed: "yes"]
+  }
+
+  measure: existing_loggedout_users_with_sms_verification_confirmed {
+    hidden: yes
+    group_label: "User And Account Verification Metrics"
+    label: "# Existing LoggedOut Users with Successful SMS Verification"
+    description: "Number of Existing LoggedIn users successfully verifying their account through SMS"
+    type: count_distinct
+    sql: ${user_uuid} ;;
+    filters: [is_account_login_succeeded: "yes", is_sms_verification_confirmed: "yes"]
+  }
+
+  measure: existing_loggedout_users_with_sms_verification_confirmed_and_order{
+    hidden: yes
+    group_label: "User And Account Verification Metrics"
+    label: "# Existing LoggedOut Users with Successful SMS Verification and Order"
+    description: "Number of Existing LoggedIn users successfully verifying their account through SMS and placed order"
+    type: count_distinct
+    sql: ${user_uuid} ;;
+    filters: [is_account_login_succeeded: "yes", is_sms_verification_confirmed: "yes", is_order_placed: "yes"]
+  }
+
+  measure: existing_loggedout_sms_verification_rate{
+    group_label: "User And Account Verification Metrics"
+    label: "SMS Verification - Existing LoggedOut Users(%)"
+    type: number
+    hidden: yes
+    description: "# Existing LoggedOut Users with Successful SMS Verification, compared to the total number of all users with SMS verification requested"
+    value_format_name: percent_1
+    sql: ${existing_loggedout_users_with_sms_verification_confirmed} / nullif(${existing_loggedout_users_with_sms_verification_request_viewed},0);;
+  }
+
+
 
   ### Hidden supporting metrics: Users with Add-to-Cart Product Placement ###
 
@@ -1348,7 +1464,7 @@ view: daily_user_aggregates {
   }
   measure: users_with_recipes_atc {
     type: count_distinct
-    hidden:  yes
+    hidden:  no
     sql: ${user_uuid} ;;
     filters: [is_recipes_placement: "yes"]
   }
