@@ -216,6 +216,7 @@ view: daily_events {
         time,
         date,
         week,
+        hour_of_day,
         quarter
       ]
       sql: ${TABLE}.event_timestamp ;;
