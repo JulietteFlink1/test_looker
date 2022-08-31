@@ -197,9 +197,11 @@ view: daily_hub_staff_events {
 
   # =========  Total Metrics  =========
 
-  measure: count {
-    type: count
-    drill_fields: [component_name, screen_name, event_name]
+  measure: number_of_events {
+    label: "# Events"
+    description: "Number of events trigegred"
+    type: count_distinct
+    sql: ${TABLE}.event_uuid ;;
   }
 
     # =========  Rate Metrics  =========
