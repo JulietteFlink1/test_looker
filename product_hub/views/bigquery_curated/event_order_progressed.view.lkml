@@ -22,7 +22,8 @@ view: event_order_progressed {
       order_number,
       product_sku,
       quantity,
-      reason
+      reason,
+      sum_of_quantity
     ]
   }
 
@@ -247,5 +248,12 @@ view: event_order_progressed {
     description: "Number of events trigegred"
     type: count_distinct
     sql: ${TABLE}.event_uuid ;;
+  }
+
+  measure: sum_of_quantity {
+    label: "Total Quantity"
+    description: "Sum of quantity."
+    type: sum
+    sql: ${TABLE}.quantity ;;
   }
 }
