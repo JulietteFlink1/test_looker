@@ -18,7 +18,10 @@ view: event_order_state_updated {
       order_id,
       order_number,
       origin,
-      state
+      state,
+      order_picked_time,
+      order_packed_time,
+      packed_to_picked_seconds
     ]
     }
 
@@ -173,7 +176,7 @@ view: event_order_state_updated {
   }
 
   dimension: state {
-    description: "State to which the order has been updates. It can be received, picking or packed."
+    description: "State to which the order has been updates. It can be received, picked or packed."
     type: string
     sql: ${TABLE}.state ;;
   }
@@ -219,5 +222,27 @@ view: event_order_state_updated {
     description: "Number of events trigegred"
     type: count_distinct
     sql: ${TABLE}.event_uuid ;;
+  }
+
+  # =========  Picking times Dimensions   =========
+
+  measure: order_picked_time {
+    label: "Order Picked Time"
+    description: "Timestamp for when the order changed to picked."
+    hidden: yes
+    sql: MIN(IF(${state}='picked', ${TABLE}.event_timestamp,null)) ;;
+  }
+  measure: order_packed_time {
+    label: "Order Packed Time"
+    description: "Timestamp for when the order changed to packed."
+    hidden: yes
+    sql: MAX(IF(${state}='packed', ${TABLE}.event_timestamp,null)) ;;
+  }
+
+  measure: packed_to_picked_seconds {
+    label: "Packed to Picked Seconds"
+    description: "Difference in seconds between packed and picked timestamps."
+    hidden: yes
+    sql: DATETIME_DIFF(${order_packed_time}, ${order_picked_time}, SECOND);;
   }
 }

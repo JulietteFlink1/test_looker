@@ -10,6 +10,7 @@ include: "/**/global_filters_and_parameters.view.lkml"
 include: "/product_hub/views/bigquery_curated/daily_hub_staff_events.view.lkml"
 include: "/product_hub/views/bigquery_curated/event_order_progressed.view.lkml"
 include: "/product_hub/views/bigquery_curated/event_order_state_updated.view.lkml"
+include: "/product_hub/views/sql_derived_tables/picking_times.view.lkml"
 
 explore: daily_hub_staff_events {
   from:  daily_hub_staff_events
@@ -21,7 +22,7 @@ explore: daily_hub_staff_events {
   group_label: "Consumer Hub"
 
 
-  sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} ${event_date} {% endcondition %};;
+  sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} ${event_timestamp_date} {% endcondition %};;
 
   access_filter: {
     field: daily_hub_staff_events.country_iso
@@ -30,7 +31,7 @@ explore: daily_hub_staff_events {
 
   always_filter: {
     filters: [
-      global_filters_and_parameters.datasource_filter: "last 7 days"
+      global_filters_and_parameters.datasource_filter: ""
     ]
   }
 
@@ -44,7 +45,7 @@ explore: daily_hub_staff_events {
     view_label: "Event: Order Progressed"
     fields: [event_dimensions*]
     sql_on: ${event_order_progressed.event_uuid} = ${daily_hub_staff_events.event_uuid}
-      and {% condition global_filters_and_parameters.datasource_filter %} ${event_order_progressed.event_date} {% endcondition %};;
+      and {% condition global_filters_and_parameters.datasource_filter %} ${event_order_progressed.event_timestamp_date} {% endcondition %};;
     type: left_outer
     relationship: one_to_one
   }
@@ -53,7 +54,15 @@ explore: daily_hub_staff_events {
     view_label: "Event: Order State Updated"
     fields: [event_dimensions*]
     sql_on: ${event_order_state_updated.event_uuid} = ${daily_hub_staff_events.event_uuid}
-      and {% condition global_filters_and_parameters.datasource_filter %} ${event_order_state_updated.event_date} {% endcondition %};;
+      and {% condition global_filters_and_parameters.datasource_filter %} ${event_order_state_updated.event_timestamp_date} {% endcondition %};;
+    type: left_outer
+    relationship: one_to_one
+  }
+
+  join: picking_times {
+    view_label: "Picking Times"
+    sql_on: ${picking_times.order_id} = ${event_order_state_updated.order_id}
+      and {% condition global_filters_and_parameters.datasource_filter %} ${picking_times.event_timestamp_date} {% endcondition %};;
     type: left_outer
     relationship: one_to_one
   }
