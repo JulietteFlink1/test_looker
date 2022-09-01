@@ -451,4 +451,20 @@ view: hub_staffing {
     value_format_name: decimal_1
   }
 
+  measure: number_of_actual_break_duration_hours{
+    label:"# Actual Break Duration Hours"
+    type: sum
+    description: "Sum of Actual Break Duration Hours"
+    sql:${TABLE}.number_of_actual_break_duration_minutes/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_planned_break_duration_hours{
+    label:"# Planned Break Duration Hours"
+    type: sum
+    description: "Sum of Planned Break Duration Hours"
+    sql:${TABLE}.number_of_planned_break_duration_minutes/60;;
+    value_format_name: decimal_1
+  }
+
 }
