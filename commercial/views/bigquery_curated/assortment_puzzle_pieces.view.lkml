@@ -1,5 +1,5 @@
 view: assortment_puzzle_pieces {
-  sql_table_name: `flink-data-dev.dbt_astueber.assortment_puzzle_pieces`
+  sql_table_name: `flink-data-prod.curated.assortment_puzzle_pieces`
     ;;
 
 
