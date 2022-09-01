@@ -273,6 +273,15 @@ view: psp_settlement_details {
     value_format_name: euro_accounting_2_precision
   }
 
+  measure: sum_gross_credit_gc_settled {
+    type: sum
+    group_label: "> Amounts"
+    label: "SUM Gross Settled Credit (GC)"
+    description: "Amount submitted in the transaction request. For Settled transactions only."
+    sql: ${gross_credit_gc} ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
   measure: sum_gross_debit_gc {
     type: sum
     label: "SUM Gross Debit (GC)"
