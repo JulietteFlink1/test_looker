@@ -29,6 +29,7 @@ view: event_order_progressed {
   set: to_include_measures {
     fields: [
       sum_of_quantity,
+      number_of_orders,
       sum_quantity_picked,
       sum_quantity_reported,
       sum_quantity_refunded,
@@ -268,6 +269,14 @@ view: event_order_progressed {
     description: "Number of events trigegred"
     type: count_distinct
     sql: ${TABLE}.event_uuid ;;
+  }
+
+  measure: number_of_orders {
+    group_label: "Total Metrics"
+    label: "# Orders"
+    description: "Number of Orders."
+    type: count_distinct
+    sql: ${TABLE}.order_id ;;
   }
 
   measure: sum_of_quantity {
