@@ -1709,11 +1709,11 @@ view: orders {
 
   measure: avg_picking_time_per_item {
     group_label: "* Operations / Logistics *"
-    label: "AVG Picking Time Per Item (Minutes)"
+    label: "AVG Picking Time Per Item (Seconds)"
     description: "Computed as Picking Time / # Items Picked. Outliers excluded (<0min or >30min)"
     type: number
-    sql:nullif(${sum_picking_time_minutes},0)/nullif(${sum_quantity_fulfilled},0);;
-    value_format_name: decimal_2
+    sql:nullif(${sum_picking_time_minutes}*60,0)/nullif(${sum_quantity_fulfilled},0);;
+    value_format_name: decimal_1
   }
 
   measure: avg_rider_queuing_time {
