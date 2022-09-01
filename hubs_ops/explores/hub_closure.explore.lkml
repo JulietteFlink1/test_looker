@@ -1,5 +1,5 @@
-include: "/views/sql_derived_tables/hub_closure_rate.view.lkml"
-include: "/views/bigquery_tables/curated_layer/hubs_ct.view.lkml"
+include: "/**/hub_closure_rate.view.lkml"
+include: "/**/hubs_ct.view.lkml"
 
 
 explore: hub_closure {

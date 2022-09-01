@@ -1,6 +1,6 @@
-include: "/explores/base_explores/orders_cl.explore"
-include: "/views/sql_derived_tables/bottom_10_hubs.view"
-include: "/views/sql_derived_tables/bottom_10_hubs_nps.view"
+include: "/**/orders_cl.explore"
+include: "/**/bottom_10_hubs.view"
+include: "/**/bottom_10_hubs_nps.view"
 
 
 explore: orders_hubs_daily {

@@ -1,4 +1,4 @@
-include: "/explores/base_explores/orders_cl.explore.lkml"
+include: "/**/orders_cl.explore.lkml"
 include: "/**/global_filters_and_parameters.view.lkml"
 
 

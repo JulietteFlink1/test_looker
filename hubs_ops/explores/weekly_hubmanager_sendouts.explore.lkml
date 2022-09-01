@@ -1,5 +1,5 @@
-include: "/views/*/weekly_hubmanager_sendouts.view.lkml"
-include: "/views/bigquery_tables/curated_layer/hubs_ct.view.lkml"
+include: "/**/weekly_hubmanager_sendouts.view.lkml"
+include: "/**/hubs_ct.view.lkml"
 
 
 explore: weekly_hubmanager_sendouts {

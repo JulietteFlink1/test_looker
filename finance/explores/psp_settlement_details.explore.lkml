@@ -1,7 +1,6 @@
 include: "/**/psp_settlement_details.view.lkml"
 include: "/**/orders.view.lkml"
 include: "/**/hubs_ct.view.lkml"
-include: "/**/shyftplan_riders_pickers_hours.view.lkml"
 include: "/**/orderline.view.lkml"
 include: "/**/customer_address.view.lkml"
 include: "/**/vat_order.view.lkml"

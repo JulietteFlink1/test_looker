@@ -1,5 +1,5 @@
-include: "/views/sql_derived_tables/daily_rider_no_show.view.lkml"
-include: "/views/bigquery_tables/curated_layer/hubs_ct.view"
+include: "/**/daily_rider_no_show.view.lkml"
+include: "/**/hubs_ct.view"
 
 explore: daily_rider_no_show {
   group_label: "Rider Ops"
