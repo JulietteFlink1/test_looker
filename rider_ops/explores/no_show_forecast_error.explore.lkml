@@ -1,5 +1,5 @@
-include: "/views/micro_no_show_forecast_vs_actuals.view"
-include: "/views/bigquery_tables/curated_layer/hubs_ct.view"
+include: "/**/micro_no_show_forecast_vs_actuals.view"
+include: "/**/hubs_ct.view"
 
 explore: micro_no_show_forecast_vs_actuals {
   hidden: no

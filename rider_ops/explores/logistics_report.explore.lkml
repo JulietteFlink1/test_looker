@@ -1,5 +1,5 @@
-include: "/**/*.view"
-include: "/**/*.explore"
+include: "/**/logistics_report.explore"
+include: "/**/orders_cl.explore"
 
 explore: logistics_report {
   extends: [orders_cl]

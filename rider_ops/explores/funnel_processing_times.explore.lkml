@@ -1,5 +1,4 @@
-include: "/**/*.view"
-include: "/**/*.explore"
+include: "/**/fountain_avg_proc_time.view"
 
 explore: fountain_avg_proc_time {
   hidden: yes

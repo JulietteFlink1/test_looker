@@ -1,6 +1,7 @@
-include: "/**/*.view"
-include: "/**/*.explore"
-
+include: "/**/nps_comments_words_count.view"
+include: "/**/nps_comments_words_ranked.view"
+include: "/**/nps_comments_labeled.view"
+include: "/**/nps_after_order_cl.view"
 
 explore: nps_comments {
   view_name: nps_comments_words_count

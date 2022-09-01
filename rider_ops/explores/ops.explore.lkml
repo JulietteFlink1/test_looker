@@ -4,8 +4,13 @@
 # and forecast data (missed orders, forecasted orders, forecasted employees, etc.)
 # on a hub + 30-min slot level
 
-include: "/**/*.view"
-include: "/**/*.explore"
+include: "/**/staffing.view"
+include: "/**/time_grid.view"
+include: "/**/hubs_ct.view"
+include: "/**/orders_with_ops_metrics.view"
+include: "/**/forecasts.view"
+include: "/**/inventory_changes_daily.view"
+include: "/**/hub_monthly_orders.view"
 
 explore: ops {
   from: staffing

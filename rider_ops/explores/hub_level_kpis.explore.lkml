@@ -1,5 +1,9 @@
-include: "/**/*.view"
-include: "/**/*.explore"
+include: "/**/hub_level_kpis.view"
+include: "/**/hub_leaderboard_current.view"
+include: "/**/hub_leaderboard_previous.view"
+include: "/**/top_5_category_change_type.view"
+include: "/**/hubs_ct.view"
+include: "/**/weekly_hubmanager_sendouts.view"
 
 explore: hub_level_kpis {
   hidden: yes

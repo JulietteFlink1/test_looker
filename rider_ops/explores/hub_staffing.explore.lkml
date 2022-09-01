@@ -1,5 +1,5 @@
-include: "/**/*.view"
-include: "/**/*.explore"
+include: "/**/hub_staffing.view"
+include: "/**/hubs_ct.view"
 
 explore: hub_staffing {
   group_label: "Rider Ops"

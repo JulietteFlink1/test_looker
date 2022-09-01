@@ -1,5 +1,5 @@
-include: "/**/*.view"
-include: "/**/*.explore"
+include: "/**/hiring_funnel_marketing_summary.view"
+include: "/**/hiring_funnel_performance_summary.view"
 
 explore: hiring_funnel_marketing_summary {
   hidden: yes

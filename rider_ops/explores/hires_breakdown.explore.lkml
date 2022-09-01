@@ -1,5 +1,4 @@
-include: "/**/*.view"
-include: "/**/*.explore"
+include: "/**/hired_applicants.view"
 
 explore: hired_applicants {
   hidden: no

@@ -1,5 +1,4 @@
-include: "/**/*.view"
-include: "/**/*.explore"
+include: "/**/fountain_rejection_breakdown.view"
 
 explore: fountain_rejection_breakdown {
   hidden: yes

@@ -1,5 +1,6 @@
-include: "/**/*.view"
-include: "/**/*.explore"
+include: "/**/funnel_performance_summary.view"
+include: "/**/funnel_marketing_summary.view"
+include: "/**/rejection_breakdown.view"
 
 explore: funnel_performance_summary {
   hidden: yes

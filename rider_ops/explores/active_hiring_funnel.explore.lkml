@@ -1,5 +1,4 @@
-include: "/**/*.view"
-include: "/**/*.explore"
+include: "/**/fountain_funnel_pipeline.view"
 
 explore: fountain_funnel_pipeline {
   hidden: yes

@@ -1,5 +1,5 @@
-include: "/views/sql_derived_tables/order_forecasting_models.view"
-include: "/views/bigquery_tables/curated_layer/hubs_ct.view"
+include: "/**/order_forecasting_models.view"
+include: "/**/hubs_ct.view"
 
 explore: order_forecasting_models {
   hidden: no

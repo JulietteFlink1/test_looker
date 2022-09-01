@@ -1,5 +1,4 @@
-include: "/**/*.view"
-include: "/**/*.explore"
+include: "/**/hires_contract_mix.view"
 
 explore: hires_contract_mix {
   hidden: yes

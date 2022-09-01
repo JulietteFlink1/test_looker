@@ -1,6 +1,4 @@
-include: "/**/*.view"
-include: "/**/*.explore"
-
+include: "/**/nps_comments.view"
 
 explore: nps_comments_old {
   #from: nps_comments

@@ -1,7 +1,11 @@
-include: "/**/*.view"
-include: "/**/*.explore"
-
-include: "/**/global_filters_and_parameters.view.lkml"
+include: "/**/orders_cl.explore"
+include: "/**/orders.view"
+include: "/**/orders_using_hubs.view"
+include: "/**/shyftplan_riders_pickers_hours_clean.view"
+include: "/**/hubs_ct.view"
+include: "/**/nps_after_order_cl.view"
+include: "/**/hub_monthly_orders.view"
+include: "/**/global_filters_and_parameters.view"
 
 
 explore: orders_cl {

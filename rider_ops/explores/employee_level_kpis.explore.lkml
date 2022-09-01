@@ -1,5 +1,5 @@
-include: "/**/*.view"
-include: "/**/*.explore"
+include: "/**/employee_level_kpis.view.lkml"
+include: "/**/hubs_ct.view"
 
 explore: employee_level_kpis {
   group_label: "Rider Ops"

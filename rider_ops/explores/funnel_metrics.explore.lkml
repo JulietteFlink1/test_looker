@@ -1,5 +1,5 @@
-include: "/**/*.view"
-include: "/**/*.explore"
+include: "/**/avg_proc_time.view"
+include: "/**/active_funnel.view"
 
 explore: avg_proc_time {
   hidden: yes

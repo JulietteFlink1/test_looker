@@ -1,5 +1,5 @@
-include: "/**/*.view"
-include: "/**/*.explore"
+include: "/**/daily_hub_staffing.view.lkml"
+include: "/**/hubs_ct.view"
 
 explore: daily_hub_staffing {
   group_label: "Rider Ops"

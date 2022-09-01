@@ -1,5 +1,5 @@
-include: "/**/*.view"
-include: "/**/*.explore"
+include: "/**/city_level_employees_capacity.view.lkml"
+include: "/**/orders_aggregated.view.lkml"
 
 explore: city_level_employees_capacity {
   hidden: no

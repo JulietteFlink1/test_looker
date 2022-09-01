@@ -1,5 +1,4 @@
-include: "/**/*.view"
-include: "/**/*.explore"
+include: "/**/rider_hub_nps.view.lkml"
 
 explore: all_rider_nps {
   hidden:yes

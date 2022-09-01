@@ -1,5 +1,4 @@
-include: "/**/*.view"
-include: "/**/*.explore"
+include: "/**/moon_distance.view"
 
 explore: moon_distance {
   group_label: "Rider Ops"

@@ -1,6 +1,10 @@
-include: "/**/*.view"
-include: "/**/*.explore"
-
+include: "/**/orders.view"
+include: "/**/orders_using_hubs.view"
+include: "/**/shyftplan_riders_pickers_hours_clean.view"
+include: "/**/hubs_ct.view"
+include: "/**/nps_after_order_cl.view"
+include: "/**/cs_post_delivery_issues.view"
+include: "/**/orders_cl.explore"
 
 explore: web_orders {
   extends: [orders_cl]
