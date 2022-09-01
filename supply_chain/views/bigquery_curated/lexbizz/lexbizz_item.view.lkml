@@ -270,6 +270,14 @@ view: lexbizz_item {
     ;;
   }
 
+  dimension: group_company {
+    label: "Group Company"
+    description: "The manufacturing company of a product. A group company entails a set of brands, which in turn eintail a set of products."
+
+    type: string
+    sql: ${TABLE}.group_company ;;
+  }
+
   measure: count {
     type: count
     drill_fields: [item_name]
