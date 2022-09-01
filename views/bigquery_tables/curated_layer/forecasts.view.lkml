@@ -543,7 +543,7 @@ view: forecasts {
 
   measure: wmape_orders {
     group_label: "> Forecasting error"
-    label: "wMAPE - Order"
+    label: "wMAPE - Orders"
     description: "Summed Absolute Difference of Orders per Hub in 30 min/ # Actual Orders"
     type: number
     sql: ${summed_absolute_error}/nullif(${number_of_actual_orders},0);;
@@ -568,7 +568,7 @@ view: forecasts {
 
   measure: summed_absolute_error_hours {
     type: sum_distinct
-    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
+    sql_distinct_key: ${forecast_uuid} ;;
     hidden: yes
     sql: ABS(${number_of_adjusted_forecasted_hours_by_position_dimension} - ${ops.number_of_scheduled_hours_by_position_dimension});;
   }
@@ -758,17 +758,42 @@ view: forecasts {
 
   ##### Overstaffing and Understaffing
 
+  measure: summed_overstaffing_error {
+    group_label: "> Dynamic Measures"
+    label: "Summed Overstaffing Error"
+    type: sum_distinct
+    sql_distinct_key: ${forecast_uuid} ;;
+    description: "How much overstaffed we are compared to what was forecasted in cases of overstaffing. When Forecasted Hours < Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
+    sql: case
+          when ${number_of_adjusted_forecasted_hours_by_position_dimension} < ${ops.number_of_scheduled_hours_by_position_dimension}
+            then abs(${number_of_adjusted_forecasted_hours_by_position_dimension} - ${ops.number_of_scheduled_hours_by_position_dimension})
+          else null end  ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
   measure: pct_overstaffing {
     type: number
     group_label: "> Dynamic Measures"
     label: "% Overstaffing"
     description: "How much overstaffed we are compared to what was forecasted in cases of overstaffing. When Forecasted Hours < Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
-    sql: case
-          when ${number_of_adjusted_forecasted_hours_by_position} < ${ops.number_of_scheduled_hours_by_position}
-            then abs(${number_of_adjusted_forecasted_hours_by_position} - ${ops.number_of_scheduled_hours_by_position}) / nullif(${number_of_adjusted_forecasted_hours_by_position},0)
-          else null end  ;;
+    sql:  ${summed_overstaffing_error} / nullif(${number_of_adjusted_forecasted_hours_by_position},0) ;;
     value_format_name: percent_1
     hidden: no
+  }
+
+  measure: summed_understaffing_error {
+    group_label: "> Dynamic Measures"
+    label: "Summed Overstaffing Error"
+    type: sum_distinct
+    sql_distinct_key: ${forecast_uuid} ;;
+    description: "How much overstaffed we are compared to what was forecasted in cases of overstaffing. When Forecasted Hours < Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
+    sql: case
+          when ${number_of_adjusted_forecasted_hours_by_position_dimension} > ${ops.number_of_scheduled_hours_by_position_dimension}
+            then abs(${number_of_adjusted_forecasted_hours_by_position_dimension} - ${ops.number_of_scheduled_hours_by_position_dimension})
+          else null end  ;;
+    value_format_name: decimal_1
+    hidden: yes
   }
 
   measure: pct_understaffing {
@@ -776,10 +801,7 @@ view: forecasts {
     group_label: "> Dynamic Measures"
     label: "% Understaffing"
     description: "How much understaffed we are compared to what was forecasted in cases of understaffing. When Forecasted Hours > Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
-    sql: case
-          when ${number_of_adjusted_forecasted_hours_by_position} > ${ops.number_of_scheduled_hours_by_position}
-            then abs(${number_of_adjusted_forecasted_hours_by_position} - ${ops.number_of_scheduled_hours_by_position}) / nullif(${number_of_adjusted_forecasted_hours_by_position},0)
-          else null end  ;;
+    sql:  ${summed_understaffing_error} / nullif(${number_of_adjusted_forecasted_hours_by_position},0) ;;
     value_format_name: percent_1
     hidden: no
   }
@@ -807,6 +829,38 @@ view: forecasts {
     allowed_value: { value: "Saturday" }
     allowed_value: { value: "Sunday" }
     hidden: no
+  }
+
+  parameter: date_granularity {
+    label: "Date Granularity"
+    type: unquoted
+    allowed_value: { value: "Day" }
+    allowed_value: { value: "Week" }
+    default_value: "Day"
+  }
+
+  dimension: date {
+    label: "Date (Dynamic)"
+    description: "Dynamic date based on chosen granularity"
+    label_from_parameter: date_granularity
+    sql:
+    {% if date_granularity._parameter_value == 'Day' %}
+      ${start_timestamp_date}
+    {% elsif date_granularity._parameter_value == 'Week' %}
+      ${start_timestamp_week}
+    {% endif %};;
+  }
+
+  dimension: date_granularity_pass_through {
+    description: "To use the parameter value in a table calculation (e.g WoW, % Growth) we need to materialize it into a dimension "
+    type: string
+    hidden: no # yes
+    sql:
+            {% if date_granularity._parameter_value == 'Day' %}
+              "Day"
+            {% elsif date_granularity._parameter_value == 'Week' %}
+              "Week"
+            {% endif %};;
   }
 
 }
