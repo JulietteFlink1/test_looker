@@ -522,6 +522,30 @@ view: employee_level_kpis {
     value_format_name: decimal_1
   }
 
+  measure: number_of_excused_no_show_hours {
+    group_label: "* Shift related *"
+    type: sum
+    label: "# No Excused Show Hours"
+    sql: ${TABLE}.number_of_excused_no_show_minutes/60 ;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_unexcused_no_show_hours {
+    group_label: "* Shift related *"
+    type: sum
+    label: "# No Unexcused Show Hours"
+    sql: ${TABLE}.number_of_unexcused_no_show_minutes/60 ;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_deleted_excused_no_show_hours {
+    group_label: "* Shift related *"
+    type: sum
+    label: "# No Deleted Excused Show Hours"
+    sql: ${TABLE}.number_of_deleted_excused_no_show_minutes/60 ;;
+    value_format_name: decimal_1
+  }
+
   measure: avg_rider_utr {
     group_label: "* Logistics *"
     type: number
