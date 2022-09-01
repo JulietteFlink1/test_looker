@@ -17,7 +17,7 @@ explore: order_orderline_cl {
 
   join: orderline {
 
-    view_label: "* Order Lineitems *"
+    view_label: "Order Lineitems"
     sql_on: ${orderline.country_iso} = ${orders_cl.country_iso} AND
             ${orderline.order_uuid}    = ${orders_cl.order_uuid} AND
             {% condition global_filters_and_parameters.datasource_filter %} ${orderline.created_date} {% endcondition %}
@@ -29,7 +29,7 @@ explore: order_orderline_cl {
 
   join: products {
 
-    view_label: "* Product Data (CT) *"
+    view_label: "Product Data (CT)"
 
     sql_on: ${products.product_sku} = ${orderline.product_sku} ;;
     relationship: many_to_one
@@ -38,7 +38,7 @@ explore: order_orderline_cl {
 
   join: lexbizz_item {
 
-    view_label: "* Product Data (ERP) *"
+    view_label: "Product Data (ERP)"
 
     type: left_outer
     relationship: many_to_one
@@ -161,7 +161,7 @@ explore: order_orderline_cl {
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   join: erp_buying_prices {
-    view_label: "* ERP Supplier Prices *"
+    view_label: "ERP Supplier Prices"
     required_access_grants: [can_view_buying_information]
 
     type: left_outer
@@ -176,7 +176,7 @@ explore: order_orderline_cl {
   }
 
   join: sales_weighted_avg_buying_prices {
-    view_label: "* ERP Supplier Prices *"
+    view_label: "ERP Supplier Prices"
     required_access_grants: [can_view_buying_information]
 
     type: left_outer
@@ -193,13 +193,27 @@ explore: order_orderline_cl {
   join: inbound_outbound_kpi_report_ndt_waste_per_day_and_hub {
     required_access_grants: [can_view_buying_information]
 
-    view_label: "* Orders *"
+    view_label: "Orders"
 
     type: full_outer
     relationship: many_to_one
     sql_on:
         ${orders_cl.created_date} = ${inbound_outbound_kpi_report_ndt_waste_per_day_and_hub.inventory_change_date} and
         ${orders_cl.hub_code}     = ${inbound_outbound_kpi_report_ndt_waste_per_day_and_hub.hub_code}
+    ;;
+  }
+
+  join: assortment_puzzle_pieces {
+
+    view_label: "Puzzle Pieces Logic"
+
+    type: full_outer
+    relationship: many_to_one
+    sql_on:
+          ${orderline.created_date} = ${assortment_puzzle_pieces.ingestion_date}
+      and ${orderline.hub_code}     = ${assortment_puzzle_pieces.hub_code}
+      and ${orderline.product_sku}  = ${assortment_puzzle_pieces.sku}
+      and {% condition global_filters_and_parameters.datasource_filter %} ${assortment_puzzle_pieces.ingestion_date} {% endcondition %}
     ;;
   }
 
