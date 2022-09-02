@@ -124,6 +124,15 @@ view: cc_agent_staffing_daily {
     value_format: "0.00"
   }
 
+  measure: number_of_agents {
+    group_label: "> Agent Productivity"
+    label: "# Working Agents"
+    description: "Number of Agent who had a shift in Quinyx"
+    type: count_distinct
+    sql: ${agent_email} ;;
+    value_format: "0"
+  }
+
   ######### Parameters
 
   parameter: date_granularity {
