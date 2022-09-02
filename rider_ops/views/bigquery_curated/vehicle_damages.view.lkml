@@ -113,6 +113,24 @@ view: vehicle_damages {
     sql: ${vehicle_id} ;;
   }
 
+  measure: number_of_solved_damages {
+    group_label: "> Damages Statistics"
+    label: " # Solved Damages"
+    description: "Number of Damages that were solved (status = fixed)"
+    type: count_distinct
+    sql: ${damage_uuid} ;;
+    filters: [status: "fixed"]
+  }
+
+  measure: number_of_reported_damages {
+    group_label: "> Damages Statistics"
+    label: " # Reported Damages"
+    description: "Number of Damages that were reported (status = reported)"
+    type: count_distinct
+    sql: ${damage_uuid} ;;
+    filters: [status: "reported"]
+  }
+
   measure: avg_number_of_days_with_damage {
     group_label: "> Damages Statistics"
     label: " AVG Damage Duration (Days)"

@@ -1,5 +1,6 @@
 include: "/**/vehicle_suppliers.view"
 include: "/**/vehicle_damages.view"
+include: "/**/hubs_ct.view"
 
 
 explore: fleet_management {
@@ -17,5 +18,12 @@ explore: fleet_management {
         and ${fleet_management.supplier_id} = ${vehicle_damages.supplier_id};;
     type: left_outer
     relationship: one_to_many
+  }
+
+  join: hubs_ct {
+    view_label: "Hubs"
+    sql_on: ${fleet_management.hub_code} = ${hubs_ct.hub_code} ;;
+    type: left_outer
+    relationship: one_to_one
   }
 }
