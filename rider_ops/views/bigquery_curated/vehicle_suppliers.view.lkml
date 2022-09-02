@@ -1,0 +1,185 @@
+view: vehicle_suppliers {
+  sql_table_name: `flink-data-prod.curated.vehicle_suppliers`
+    ;;
+
+  dimension_group: archived_at {
+    group_label: "> Dates"
+    type: time
+    timeframes: [
+      date,
+      week,
+      month
+    ]
+    sql: ${TABLE}.archived_at_timestamp ;;
+  }
+
+  dimension: booking_status {
+    group_label: "> Vehicle Properties"
+    description:"Flags if the vehicle is available or not."
+    type: string
+    sql: ${TABLE}.booking_status ;;
+  }
+
+  dimension: country_iso {
+    group_label: "> Geography"
+    type: string
+    sql: ${TABLE}.country_iso ;;
+  }
+
+  dimension_group: created_at {
+    group_label: "> Dates"
+    type: time
+    timeframes: [
+      date,
+      week,
+      month,
+    ]
+    sql: ${TABLE}.created_at_timestamp ;;
+  }
+
+  dimension: hub_code {
+    group_label: "> Geography"
+    type: string
+    sql: ${TABLE}.hub_code ;;
+  }
+
+  dimension: model_name {
+    group_label: "> Vehicle Properties"
+    description: "Name of the vehicle model. e.g. GetHenry e-bike"
+    type: string
+    sql: ${TABLE}.model_name ;;
+  }
+
+  dimension: operational_status {
+    group_label: "> Vehicle Properties"
+    description: "Flags if the vehicle is operational, in maintenance etc."
+    type: string
+    sql: ${TABLE}.operational_status ;;
+  }
+
+  dimension: supplier_code {
+    group_label: "> Supplier Properties"
+    description: "3 letter code to identify the supplier e.g. SWP for Swapfiets"
+    type: string
+    sql: ${TABLE}.supplier_code ;;
+  }
+
+  dimension: supplier_id {
+    group_label: "> Supplier Properties"
+    type: string
+    sql: ${TABLE}.supplier_id ;;
+  }
+
+  dimension: supplier_name {
+    type: string
+    sql: ${TABLE}.supplier_name ;;
+  }
+
+  dimension_group: updated_at {
+    group_label: "> Dates"
+    type: time
+    timeframes: [
+      date,
+      week,
+      month
+    ]
+    sql: ${TABLE}.updated_at_timestamp ;;
+  }
+
+  dimension: vehicle_id {
+    group_label: "> Vehicle Properties"
+    type: string
+    sql: ${TABLE}.vehicle_id ;;
+  }
+
+  dimension: vehicle_kind {
+    group_label: "> Vehicle Properties"
+    description: "Vehicle kind e.g. bicycle"
+    type: string
+    sql: ${TABLE}.vehicle_kind ;;
+  }
+
+  dimension: vehicle_name {
+    group_label: "> Vehicle Properties"
+    description: "Name of the vehicle e.g. GetHenry Henry l"
+    type: string
+    sql: ${TABLE}.vehicle_name ;;
+  }
+
+  dimension: vehicle_supplier_uuid {
+    primary_key: yes
+    hidden: yes
+    type: string
+    sql: ${TABLE}.vehicle_supplier_uuid ;;
+  }
+
+  measure: count {
+    type: count
+    drill_fields: [model_name, supplier_name, vehicle_name]
+  }
+
+
+  ########## Measures
+
+
+  measure: number_of_vehicles {
+    group_label: "> Vehicle Status"
+    label: "# Bikes"
+    description: "Number of bikes with any operational status."
+    type: count_distinct
+    sql: ${vehicle_id} ;;
+  }
+
+  measure: number_of_operational_vehicles {
+    group_label: "> Vehicle Status"
+    label: "# Operational Bikes"
+    description: "Number of bikes currently operational."
+    type: count_distinct
+    sql: ${vehicle_id} ;;
+    filters: [operational_status: "operational"]
+  }
+
+  measure: number_of_in_maintenance_vehicles {
+    group_label: "> Vehicle Status"
+    label: "# In Maintenance Bikes"
+    description: "Number of bikes currently in maintenance."
+    type: count_distinct
+    sql: ${vehicle_id} ;;
+    filters: [operational_status: "in_maintenance"]
+  }
+
+  measure: number_of_maintenance_required_vehicles {
+    group_label: "> Vehicle Status"
+    label: "# Maintenance Required Bikes"
+    description: "Number of bikes for which maintenance is required."
+    type: count_distinct
+    sql: ${vehicle_id} ;;
+    filters: [operational_status: "maintenance_required"]
+  }
+
+  measure: number_of_offline_vehicles {
+    group_label: "> Vehicle Status"
+    label: "# Offline Bikes"
+    description: "Number of offline bikes."
+    type: count_distinct
+    sql: ${vehicle_id} ;;
+    filters: [operational_status: "offline"]
+  }
+
+  measure: share_of_operational_vehicles {
+    type: number
+    label: "% Operational Bikes"
+    description: "Share of bikes that are currently operational out of all bikes"
+    sql: safe_divide(${number_of_operational_vehicles},${number_of_vehicles}) ;;
+    value_format: "0.0%"
+  }
+
+  measure: share_of_in_maintenance_vehicles {
+    type: number
+    label: "% In Maintenance Bikes"
+    description: "Share of bikes that are currently in maintenance out of all bikes"
+    sql: safe_divide(${number_of_in_maintenance_vehicles},${number_of_vehicles}) ;;
+    value_format: "0.0%"
+  }
+
+}
