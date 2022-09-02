@@ -1,12 +1,11 @@
-include: "/views/bigquery_tables/curated_layer/orders.view"
-include: "/views/extended_tables/orders_using_hubs.view"
-include: "/views/projects/cleaning/shyftplan_riders_pickers_hours_clean.view"
-include: "/views/bigquery_tables/curated_layer/hubs_ct.view"
-include: "/views/bigquery_tables/curated_layer/nps_after_order_cl.view"
-include: "/explores/base_explores/orders_cl.explore"
+include: "/**/orders_cl.explore"
+include: "/**/orders.view"
+include: "/**/orders_using_hubs.view"
+include: "/**/shyftplan_riders_pickers_hours_clean.view"
+include: "/**/hubs_ct.view"
+include: "/**/nps_after_order_cl.view"
 include: "/**/hub_monthly_orders.view"
-
-include: "/**/global_filters_and_parameters.view.lkml"
+include: "/**/global_filters_and_parameters.view"
 
 
 explore: orders_cl {

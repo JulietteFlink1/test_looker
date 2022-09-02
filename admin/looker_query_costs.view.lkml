@@ -115,6 +115,47 @@ view: looker_query_costs {
     sql: ${TABLE}.History_Connection_Name ;;
   }
 
+  dimension: user_email {
+    label: "User Email"
+    group_label: "Looker"
+    type: string
+    sql: ${TABLE}.User_Email ;;
+  }
+
+  dimension: user_name {
+    label: "User Name"
+    group_label: "Looker"
+    type: string
+    sql: ${TABLE}.User_Name ;;
+  }
+
+  dimension: is_user_developer {
+    label: "Is User Developer"
+    group_label: "Looker"
+    type: yesno
+    sql: ${TABLE}.User_Facts__updated_hourly__Is_Developer__Yes___No_ ;;
+  }
+
+  dimension: is_user_explorer {
+    label: "Is User Explorer"
+    group_label: "Looker"
+    type: yesno
+    sql: ${TABLE}.User_Facts__updated_hourly__Is_Explorer__Yes___No_ ;;
+  }
+
+  dimension: is_user_viewer {
+    label: "Is User Viewer"
+    group_label: "Looker"
+    type: yesno
+    sql: ${TABLE}.User_Facts__updated_hourly__Is_Viewer__Yes___No_ ;;
+  }
+
+  dimension: user_role {
+    label: "User Role"
+    group_label: "Looker"
+    type: string
+    sql: ${TABLE}.User_Role__updated_hourly__Name ;;
+  }
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   #  - - - - - - - - - -    Looker Dashboard

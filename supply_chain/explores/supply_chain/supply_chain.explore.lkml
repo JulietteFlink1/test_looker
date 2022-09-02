@@ -430,4 +430,18 @@ explore: supply_chain {
     type: left_outer
   }
 
+  join: assortment_puzzle_pieces {
+
+    view_label: "16 Puzzle Pieces Logic"
+
+    type: full_outer
+    relationship: many_to_one
+    sql_on:
+          ${products_hub_assignment.report_date} = ${assortment_puzzle_pieces.ingestion_date}
+      and ${products_hub_assignment.hub_code}    = ${assortment_puzzle_pieces.hub_code}
+      and ${products_hub_assignment.sku}         = ${assortment_puzzle_pieces.sku}
+      and {% condition global_filters_and_parameters.datasource_filter %} ${assortment_puzzle_pieces.ingestion_date} {% endcondition %}
+    ;;
+  }
+
 }
