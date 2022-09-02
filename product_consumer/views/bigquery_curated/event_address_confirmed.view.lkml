@@ -70,6 +70,23 @@ view: event_address_confirmed {
     sql: ${TABLE}.device_id ;;
   }
 
+# ======= Dates / Timestamps =======
+
+  dimension_group: event {
+    type: time
+    timeframes: [
+      raw,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    convert_tz: no
+    datatype: date
+    sql: ${TABLE}.event_date ;;
+  }
+
   # ======= Generic Dimensions ======= #
 
   dimension: is_user_logged_in {
