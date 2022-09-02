@@ -216,7 +216,7 @@ view: employee_level_kpis {
   measure: number_of_products_with_damaged_products_issues_post {
     group_label: "* Logistics *"
     type: sum
-    label: "# Products Damaged (Post Delivery)"
+    label: "# Products Damaged (Post-delivery)"
     description: "The number of products, that were damaged and were claimed through the Customer Service"
     sql: ${TABLE}.number_of_orders_with_damaged_products ;;
   }
@@ -227,6 +227,63 @@ view: employee_level_kpis {
     label: "# Orders with Products Damaged (Post Delivery)"
     description: "The number of Orders, with products that were damaged and were claimed through the Customer Service"
     sql: ${TABLE}.number_of_orders_with_damaged_products ;;
+  }
+
+  measure: number_of_products_with_missing_products_issues{
+    group_label: "* Logistics *"
+    type: sum
+    label: "# Products Missing"
+    description: "The number of missing products"
+    sql: ${TABLE}.number_of_products_with_missing_products_issues ;;
+  }
+
+  measure: number_of_products_with_wrong_products_issues{
+    group_label: "* Logistics *"
+    type: sum
+    label: "# Products Wrong"
+    description: "The number of wrong products"
+    sql: ${TABLE}.number_of_products_with_wrong_products_issues ;;
+  }
+
+  measure: number_of_products_with_perished_issues_post{
+    group_label: "* Logistics *"
+    type: sum
+    label: "# Products Perished"
+    description: "The number of perished products"
+    sql: ${TABLE}.number_of_products_with_perished_issues_post ;;
+  }
+
+  measure: number_of_products_with_pre_delivery_issues{
+    group_label: "* Logistics *"
+    type: sum
+    label: "# Products with Pre-delivery Issues"
+    description: "The number of products having issues before delivery"
+    sql: ${TABLE}.number_of_products_with_pre_delivery_issues ;;
+  }
+
+
+  measure: number_of_products_with_post_delivery_issues{
+    group_label: "* Logistics *"
+    type: sum
+    label: "# Products with Post-delivery Issues"
+    description: "The number of products having issues after delivery and were claiumed through Customer Service"
+    sql: ${TABLE}.number_of_products_with_post_delivery_issues ;;
+  }
+
+  measure: number_of_orders_with_pre_delivery_issues{
+    group_label: "* Logistics *"
+    type: sum
+    label: "# Orders with Pre-delivery Issues"
+    description: "The number of Orders having issues before delivery"
+    sql: ${TABLE}.number_of_orders_with_pre_delivery_issues ;;
+  }
+
+  measure: number_of_orders_with_post_delivery_issues{
+    group_label: "* Logistics *"
+    type: sum
+    label: "# Orders with Post-delivery Issues"
+    description: "The number of Orders having issues after delivery and were claimed through the Customer Service"
+    sql: ${TABLE}.number_of_orders_with_pre_delivery_issues ;;
   }
 
   measure: pct_orders_with_damaged_products{
