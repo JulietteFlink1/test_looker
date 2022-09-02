@@ -130,6 +130,13 @@ view: forecasts {
     hidden: yes
   }
 
+  dimension: number_of_forecasted_no_show_hours_rider_dimension {
+    group_label: "> Rider Measures"
+    label: "# Forecasted No Show Minutes Rider"
+    sql: ${TABLE}.number_of_forecasted_no_show_minutes_rider/60 ;;
+    hidden: yes
+  }
+
   # =========  Model names   =========
   dimension: model_name_historical_forecasts {
     group_label: "> Model Names"
@@ -573,7 +580,37 @@ view: forecasts {
     sql: ABS(${number_of_adjusted_forecasted_hours_by_position_dimension} - ${ops.number_of_scheduled_hours_by_position_dimension});;
   }
 
+  measure: wmape_no_show_hours {
+    group_label: "> Forecasting error"
+    label: "wMAPE - No Show Hours"
+    description: "Summed Absolute Difference of Actual No Show Hours per Hub in 30 min (# Forecasted No Show Hours - # Actual No Show Hours)/ # Actual No Show Hours"
+    type: number
+    sql: ${summed_absolute_error_no_show_hours}/nullif(${ops.number_of_no_show_hours_by_position},0);;
+    value_format_name: percent_2
+  }
+
+  measure: summed_absolute_error_no_show_hours {
+    type: sum_distinct
+    sql_distinct_key: ${forecast_uuid} ;;
+    hidden: no
+    sql: ABS(${number_of_no_show_hours_by_position_dimension} - ${ops.number_of_no_show_hours_by_position_dimension});;
+  }
+
   # =========  Dynamic values   =========
+
+  dimension: number_of_no_show_hours_by_position_dimension {
+    type: number
+    label: "# Forecasted No Show Hours - Dimension"
+    description: "# Forecasted No Show Hours (Based on Forecasted Hours (Excl. Airtable Adjustments))"
+    value_format_name: decimal_1
+    group_label: "> Dynamic Measures"
+    sql:
+        CASE
+          WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${number_of_forecasted_no_show_hours_rider_dimension}
+      ELSE NULL
+      END ;;
+    hidden: yes
+  }
 
   measure: number_of_forecasted_employees_by_position {
     type: number
@@ -755,6 +792,54 @@ view: forecasts {
     sql: nullif(${orders_with_ops_metrics.sum_orders},0)/nullif(${final_utr_by_position},0);;
   }
 
+  measure: wmape_by_parameter {
+    type: number
+    label: "wMape"
+    description: "wMape based on chosen metric"
+    value_format_name: percent_1
+    group_label: "> Forecasting error"
+    sql:
+        CASE
+          WHEN {% parameter wmape_parameter %} = 'Orders' THEN ${wmape_orders}
+          WHEN {% parameter wmape_parameter %} = 'Scheduled Hours' THEN ${wmape_hours}
+          WHEN {% parameter wmape_parameter %} = 'No Show Hours' THEN ${wmape_no_show_hours}
+      ELSE NULL
+      END ;;
+    hidden: yes
+  }
+
+  measure: forecasts {
+    type: number
+    label: "Forecasts"
+    description: "Forecasted Value based on Chosen wMape metric"
+    value_format_name: decimal_0
+    group_label: "> Dynamic Values"
+    sql:
+        CASE
+          WHEN {% parameter wmape_parameter %} = 'Orders' THEN ${number_of_forecasted_orders}
+          WHEN {% parameter wmape_parameter %} = 'Scheduled Hours' THEN ${number_of_adjusted_forecasted_hours_by_position}
+          WHEN {% parameter wmape_parameter %} = 'No Show Hours' THEN ${number_of_no_show_hours_by_position}
+      ELSE NULL
+      END ;;
+    hidden: yes
+  }
+
+  measure: actuals {
+    type: number
+    label: "Actuals"
+    description: "Actual Value based on Chosen wMape metric"
+    value_format_name: decimal_0
+    group_label: "> Dynamic Values"
+    sql:
+        CASE
+          WHEN {% parameter wmape_parameter %} = 'Orders' THEN ${number_of_actual_orders}
+          WHEN {% parameter wmape_parameter %} = 'Scheduled Hours' THEN ${ops.number_of_scheduled_hours_by_position}
+          WHEN {% parameter wmape_parameter %} = 'No Show Hours' THEN ${ops.number_of_no_show_hours_by_position}
+      ELSE NULL
+      END ;;
+    hidden: yes
+  }
+
 
   ##### Overstaffing and Understaffing
 
@@ -837,6 +922,16 @@ view: forecasts {
     allowed_value: { value: "Day" }
     allowed_value: { value: "Week" }
     default_value: "Day"
+  }
+
+  parameter: wmape_parameter {
+    label: "wMape Metric"
+    description: "This filter could be used to see wMape Error based on the chosen metric"
+    type: string
+    allowed_value: { value: "Orders" }
+    allowed_value: { value: "Scheduled Hours" }
+    allowed_value: { value: "No Show Hours" }
+    hidden: yes
   }
 
   dimension: date {
