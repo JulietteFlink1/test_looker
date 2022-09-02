@@ -224,7 +224,7 @@ view: event_order_state_updated {
 
   measure: number_of_events {
     label: "# Events"
-    description: "Number of events trigegred"
+    description: "Number of events triggered"
     type: count_distinct
     sql: ${TABLE}.event_uuid ;;
   }
