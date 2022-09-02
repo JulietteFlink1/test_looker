@@ -4,7 +4,7 @@ view: looker_query_costs {
 
           from flink-data-dev.dbt_astueber.looker_query_cost_exports as looker
 
-      left join flink-data-dev.dbt_astueber.gcp_logs_parsed_for_looker as gcp
+      left join flink-data-prod.reporting.gcp_logs_parsed_for_looker as gcp
       on
       gcp.looker_history_slug = History_Slug
       ;;
@@ -35,7 +35,6 @@ view: looker_query_costs {
       query_count,
       history_query_run_count,
       history_average_runtime_in_seconds,
-      partition_timestamp_time,
       log_name,
       ressource_name,
       service_account,
@@ -230,7 +229,7 @@ view: looker_query_costs {
     label: "GCP Logs Source"
     group_label: "GCP Logs"
     type: string
-    sql: ${TABLE}.source__ ;;
+    sql: ${TABLE}.log_source ;;
   }
 
   dimension: query {
@@ -309,11 +308,14 @@ view: looker_query_costs {
     sql: ${TABLE}.request_permission ;;
   }
 
-  dimension_group: partition_timestamp {
+  dimension_group:  log_timestamp {
+
+    alias: [partition_timestamp]
+
     group_label: "Dates & Timestamps"
     type: time
     timeframes: [time, date]
-    sql: ${TABLE}.partition_timestamp ;;
+    sql: ${TABLE}.log_timestamp ;;
   }
 
   dimension: log_name {
