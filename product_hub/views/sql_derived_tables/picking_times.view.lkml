@@ -12,6 +12,11 @@ view: picking_times {
       bind_all_filters: yes
     }
   }
+
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  #~~~~~~~~~~~~~~~     Dimensions     ~~~~~~~~~~~~~~~~~~~~~~~~~
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   dimension: order_id {
     primary_key: yes
     hidden: yes
@@ -38,5 +43,30 @@ view: picking_times {
     label: "Event Date"
     description: "Timestamp of when an event happened"
     type: date
+  }
+
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  #~~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~~
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  measure: sum_of_picking_time_seconds {
+    label: "Picking Time seconds"
+    description: "Sum of picked_to_packed time in seconds."
+    type: sum
+    sql: ${packed_to_picked_seconds} ;;
+  }
+
+  measure: sum_of_picking_time_minutes {
+    label: "Picking Time minutes"
+    description: "Sum of picked_to_packed time in minutes."
+    type: sum
+    sql: ${packed_to_picked_seconds}/60 ;;
+  }
+
+  measure: sum_of_picking_time_hours {
+    label: "Picking Time hours"
+    description: "Sum of picked_to_packed time in hours."
+    type: sum
+    sql: ${packed_to_picked_seconds}/3600 ;;
   }
 }
