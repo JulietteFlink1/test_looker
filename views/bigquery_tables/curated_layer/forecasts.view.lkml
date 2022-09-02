@@ -585,6 +585,7 @@ view: forecasts {
     label: "wMAPE - No Show Hours"
     description: "Summed Absolute Difference of Actual No Show Hours per Hub in 30 min (# Forecasted No Show Hours - # Actual No Show Hours)/ # Actual No Show Hours"
     type: number
+    hidden: yes
     sql: ${summed_absolute_error_no_show_hours}/nullif(${ops.number_of_no_show_hours_by_position},0);;
     value_format_name: percent_2
   }
