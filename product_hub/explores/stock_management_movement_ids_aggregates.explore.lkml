@@ -6,6 +6,7 @@
 
 include: "/product_hub/views/sql_derived_tables/stock_management_movement_ids_aggregates.view.lkml"
 include: "/**/global_filters_and_parameters.view.lkml"
+include: "/views/bigquery_tables/curated_layer/hubs_ct.view.lkml"
 
 explore: stock_management_movement_ids {
   view_name: stock_management_movement_ids
@@ -36,6 +37,12 @@ explore: stock_management_movement_ids {
 
   join: global_filters_and_parameters {
     sql_on: ${global_filters_and_parameters.generic_join_dim} = TRUE ;;
+    type: left_outer
+    relationship: many_to_one
+  }
+
+  join: hubs_ct {
+    sql_on: ${stock_management_movement_ids.hub_code} = ${hubs_ct.hub_code} ;;
     type: left_outer
     relationship: many_to_one
   }

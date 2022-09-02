@@ -1,14 +1,10 @@
-include: "/views/bigquery_tables/curated_layer/orders.view"
-include: "/views/extended_tables/orders_using_hubs.view"
-include: "/views/projects/cleaning/shyftplan_riders_pickers_hours_clean.view"
-# include: "/views/projects/cleaning/issue_rates_clean.view"
-
-include: "/views/bigquery_tables/curated_layer/hubs_ct.view"
-include: "/views/bigquery_tables/curated_layer/nps_after_order_cl.view"
-include: "/customer_care/views/bigquery_curated/cs_post_delivery_issues.view"
-
-include: "/explores/base_explores/orders_cl.explore"
-
+include: "/**/orders.view"
+include: "/**/orders_using_hubs.view"
+include: "/**/shyftplan_riders_pickers_hours_clean.view"
+include: "/**/hubs_ct.view"
+include: "/**/nps_after_order_cl.view"
+include: "/**/cs_post_delivery_issues.view"
+include: "/**/orders_cl.explore"
 
 explore: web_orders {
   extends: [orders_cl]
