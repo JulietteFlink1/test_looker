@@ -8,7 +8,7 @@ view: vehicle_damages {
     sql: ${TABLE}.country_iso ;;
   }
 
-  dimension_group: created_at {
+  dimension_group: damage_created {
     group_label: "> Dates"
     type: time
     timeframes: [
@@ -40,7 +40,7 @@ view: vehicle_damages {
     sql: ${TABLE}.damage_uuid ;;
   }
 
-  dimension_group: damaged_fixed_at {
+  dimension_group: damaged_solved {
     group_label: "> Dates"
     type: time
     timeframes: [

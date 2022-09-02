@@ -71,6 +71,8 @@ view: vehicle_suppliers {
   }
 
   dimension: supplier_name {
+    group_label: "> Supplier Properties"
+    description: "Full supplier name e.g. Swapfiets"
     type: string
     sql: ${TABLE}.supplier_name ;;
   }
