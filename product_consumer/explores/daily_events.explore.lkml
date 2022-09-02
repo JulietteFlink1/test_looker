@@ -40,7 +40,9 @@ explore: daily_events {
 
   always_filter: {
     filters: [
-      global_filters_and_parameters.datasource_filter: "last 7 days"
+      global_filters_and_parameters.datasource_filter: "last 7 days",
+      daily_events.event_name: "",
+      daily_events.country_iso: ""
       ]
   }
 
@@ -71,7 +73,8 @@ explore: daily_events {
       event_product_added_to_cart.list_position, event_product_added_to_cart.original_price, event_product_added_to_cart.original_product_price,
       event_product_added_to_cart.product_placement, event_product_added_to_cart.product_position,
       event_product_added_to_cart.search_query_id]
-    sql_on: ${event_product_added_to_cart.event_uuid} = ${daily_events.event_uuid}  ;;
+    sql_on: ${event_product_added_to_cart.event_uuid} = ${daily_events.event_uuid}
+            and {% condition global_filters_and_parameters.datasource_filter %} ${event_product_added_to_cart.event_date} {% endcondition %};;
     type: left_outer
     relationship: one_to_one
   }
@@ -79,7 +82,8 @@ explore: daily_events {
   join: event_address_confirmed {
     view_label: "Event: Address Confirmed"
     fields: [event_attributes*]
-    sql_on: ${event_address_confirmed.event_uuid} = ${daily_events.event_uuid}  ;;
+    sql_on: ${event_address_confirmed.event_uuid} = ${daily_events.event_uuid}
+            and {% condition global_filters_and_parameters.datasource_filter %} ${event_address_confirmed.event_date} {% endcondition %};;
     type: left_outer
     relationship: one_to_one
   }
@@ -87,7 +91,8 @@ explore: daily_events {
   join: event_contact_customer_service_selected {
     view_label: "Event: Contact Customer Service Selected"
     fields: [event_attributes*]
-    sql_on: ${event_contact_customer_service_selected.event_uuid} = ${daily_events.event_uuid}  ;;
+    sql_on: ${event_contact_customer_service_selected.event_uuid} = ${daily_events.event_uuid}
+            and {% condition global_filters_and_parameters.datasource_filter %} ${event_contact_customer_service_selected.event_date} {% endcondition %};;
     type: left_outer
     relationship: one_to_one
   }
@@ -96,7 +101,8 @@ explore: daily_events {
     view_label: "Event: Cart Viewed"
     fields: [event_cart_viewed.delivery_fee, event_cart_viewed.rank_of_daily_cart_views , event_cart_viewed.message_displayed,
       event_cart_viewed.avg_daily_cart_events]
-    sql_on: ${event_cart_viewed.event_uuid} = ${daily_events.event_uuid}  ;;
+    sql_on: ${event_cart_viewed.event_uuid} = ${daily_events.event_uuid}
+            and {% condition global_filters_and_parameters.datasource_filter %} ${event_cart_viewed.event_date} {% endcondition %};;
     type: left_outer
     relationship: one_to_one
   }
@@ -105,7 +111,8 @@ explore: daily_events {
     view_label: "Event: Order Placed"
     fields: [event_order_placed.delivery_fee , event_order_placed.delivery_pdt, event_order_placed.discount_value,
       event_order_placed.number_of_products_ordered , event_order_placed.revenue , event_order_placed.rider_tip_value]
-    sql_on: ${event_order_placed.event_id} = ${daily_events.event_uuid}  ;;
+    sql_on: ${event_order_placed.event_id} = ${daily_events.event_uuid}
+            and {% condition global_filters_and_parameters.datasource_filter %} ${event_order_placed.order_date} {% endcondition %};;
     type: left_outer
     relationship: one_to_one
   }
@@ -130,7 +137,9 @@ explore: daily_events {
 join: daily_violations_aggregates {
   view_label: "Event: Violation Generated" ##to unhide change the label to: Event: Violation Generated
   fields: [daily_violations_aggregates.violated_event_name , daily_violations_aggregates.number_of_violations]
-  sql_on: ${daily_events.event_name_camel_case} = ${daily_violations_aggregates.violated_event_name} and ${daily_events.event_date}=${daily_violations_aggregates.event_date} and ${daily_events.platform}=${daily_violations_aggregates.platform};;
+  sql_on: ${daily_events.event_name_camel_case} = ${daily_violations_aggregates.violated_event_name}
+          and {% condition global_filters_and_parameters.datasource_filter %} ${daily_violations_aggregates.event_date} {% endcondition %}
+          and ${daily_events.platform} = ${daily_violations_aggregates.platform};;
   type: left_outer
   relationship: many_to_many
 }
