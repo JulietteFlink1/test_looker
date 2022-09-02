@@ -49,24 +49,35 @@ view: picking_times {
   #~~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~~
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  # Note that for this measures to be accurate we need to use sum_distinct with sql_distinct_key = order_id
+  # This is because this view is being joined to daily_events and if we use a normal sum it will be suming
+  # duplicate values
+
   measure: sum_of_picking_time_seconds {
     label: "Picking Time seconds"
     description: "Sum of picked_to_packed time in seconds."
-    type: sum
+    type: sum_distinct
+    value_format: "0"
+    sql_distinct_key: ${order_id} ;;
     sql: ${packed_to_picked_seconds} ;;
   }
 
   measure: sum_of_picking_time_minutes {
     label: "Picking Time minutes"
     description: "Sum of picked_to_packed time in minutes."
-    type: sum
+    type: sum_distinct
+    value_format: "0"
+    sql_distinct_key: ${order_id} ;;
     sql: ${packed_to_picked_seconds}/60 ;;
   }
 
   measure: sum_of_picking_time_hours {
     label: "Picking Time hours"
     description: "Sum of picked_to_packed time in hours."
-    type: sum
+    type: sum_distinct
+    value_format: "0.#"
+    sql_distinct_key: ${order_id} ;;
     sql: ${packed_to_picked_seconds}/3600 ;;
   }
+
 }
