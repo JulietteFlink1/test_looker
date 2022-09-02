@@ -283,7 +283,7 @@ view: employee_level_kpis {
     type: sum
     label: "# Orders with Post-delivery Issues"
     description: "The number of Orders having issues after delivery and were claimed through the Customer Service"
-    sql: ${TABLE}.number_of_orders_with_pre_delivery_issues ;;
+    sql: ${TABLE}.number_of_orders_with_post_delivery_issues ;;
   }
 
   measure: pct_orders_with_damaged_products{
