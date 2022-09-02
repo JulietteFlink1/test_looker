@@ -13,7 +13,7 @@ explore: fleet_management {
 
   join: vehicle_damages {
     view_label: "Vehicle Damages"
-    sql_on: ${fleet_management.updated_at_week} = ${vehicle_damages.vehicle_id}
+    sql_on: ${fleet_management.vehicle_id} = ${vehicle_damages.vehicle_id}
         and ${fleet_management.supplier_id} = ${vehicle_damages.supplier_id};;
     type: left_outer
     relationship: one_to_many

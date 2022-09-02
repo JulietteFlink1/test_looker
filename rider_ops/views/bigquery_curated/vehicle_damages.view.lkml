@@ -94,4 +94,30 @@ view: vehicle_damages {
     type: count
     drill_fields: []
   }
+
+  ############ Measures
+
+  measure: number_of_damages {
+    group_label: "> Damages Statistics"
+    label: " # Damages"
+    description: "Number of Damages"
+    type: count_distinct
+    sql: ${damage_uuid} ;;
+  }
+
+  measure: number_of_bikes_with_damage {
+    group_label: "> Damages Statistics"
+    label: " # Bikes with Damage"
+    description: "Number of Bikes with Damage"
+    type: count_distinct
+    sql: ${vehicle_id} ;;
+  }
+
+  measure: avg_number_of_days_with_damage {
+    group_label: "> Damages Statistics"
+    label: " AVG Damage Duration (Days)"
+    description: "AVG number of days between damage created date and damage fixed date. If the damage is not fixed number of days between damage created date and today."
+    type: average
+    sql: ${number_of_damaged_days} ;;
+  }
 }

@@ -168,6 +168,7 @@ view: vehicle_suppliers {
 
   measure: share_of_operational_vehicles {
     type: number
+    group_label: "> Vehicle Status"
     label: "% Operational Bikes"
     description: "Share of bikes that are currently operational out of all bikes"
     sql: safe_divide(${number_of_operational_vehicles},${number_of_vehicles}) ;;
@@ -176,6 +177,7 @@ view: vehicle_suppliers {
 
   measure: share_of_in_maintenance_vehicles {
     type: number
+    group_label: "> Vehicle Status"
     label: "% In Maintenance Bikes"
     description: "Share of bikes that are currently in maintenance out of all bikes"
     sql: safe_divide(${number_of_in_maintenance_vehicles},${number_of_vehicles}) ;;
