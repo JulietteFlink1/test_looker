@@ -38,13 +38,14 @@ explore: daily_hub_staff_events {
   }
 
   join: global_filters_and_parameters {
+    view_label: "" # This is to hide this view on the explore
     sql_on: ${global_filters_and_parameters.generic_join_dim} = TRUE ;;
     type: left_outer
     relationship: many_to_one
   }
 
   join: event_order_progressed {
-    view_label: "Event: Order Progressed"
+    view_label: "2 Event: Order Progressed"
     fields: [to_include_dimensions*, to_include_measures*]
     sql_on: ${event_order_progressed.event_uuid} = ${daily_hub_staff_events.event_uuid}
       and {% condition global_filters_and_parameters.datasource_filter %} ${event_order_progressed.event_timestamp_date} {% endcondition %};;
@@ -52,16 +53,8 @@ explore: daily_hub_staff_events {
     relationship: one_to_one
   }
 
-  join: products {
-    view_label: "Product Dimensions"
-    fields: [product_name, category]
-    sql_on: ${products.product_sku} = ${event_order_progressed.product_sku};;
-    type: left_outer
-    relationship: one_to_one
-  }
-
   join: event_order_state_updated {
-    view_label: "Event: Order State Updated"
+    view_label: "3 Event: Order State Updated"
     fields: [to_include_dimensions*, to_include_measures*]
     sql_on: ${event_order_state_updated.event_uuid} = ${daily_hub_staff_events.event_uuid}
       and {% condition global_filters_and_parameters.datasource_filter %} ${event_order_state_updated.event_timestamp_date} {% endcondition %};;
@@ -70,15 +63,23 @@ explore: daily_hub_staff_events {
   }
 
   join: picking_times {
-    view_label: "Picking Times"
+    view_label: "4 Picking Times"
     sql_on: ${picking_times.order_id} = ${event_order_state_updated.order_id}
       and {% condition global_filters_and_parameters.datasource_filter %} ${picking_times.event_timestamp_date} {% endcondition %};;
     type: left_outer
     relationship: one_to_one
   }
 
+  join: products {
+    view_label: "5 Product Dimensions"
+    fields: [product_name, category]
+    sql_on: ${products.product_sku} = ${event_order_progressed.product_sku};;
+    type: left_outer
+    relationship: one_to_one
+  }
+
     join: hubs_ct {
-      view_label: "Hub Dimensions"
+      view_label: "6 Hub Dimensions"
       sql_on: ${daily_hub_staff_events.hub_code} = ${hubs_ct.hub_code} ;;
       type: left_outer
       relationship: many_to_one
