@@ -117,7 +117,7 @@ view: product_placement_performance_excluding_impressions {
     label: "Sub-Category Name"
     description: "Name of a sub-category where product was listed"
     type: string
-    sql: case when ${TABLE}.product_placement in ('category','pdp','collection')
+    sql: case when ${TABLE}.product_placement in ('category','pdp','collection','recipes')
               then ${TABLE}.subcategory_name
          else null
          end ;;
