@@ -14,7 +14,7 @@
 
 ## Explores (if relevant)
 - [ ] I have joined the global_filters_and_parameter view to newly created Explores
-- [ ] I have included access_filters in all newly created Explores
+- [ ] I have included access_filters for country_iso in all newly created Explores
 - [ ] I have checked the join types and relationships
 
 ## Views (if relevant)
@@ -29,4 +29,4 @@
 
 ## 🏗️ To test
 
-- Add here links to Dashboards / Looks / Explores that will help visualize your changes
+- Add here screenshots or links to Dashboards / Looks / Explores that will help visualize your changes
