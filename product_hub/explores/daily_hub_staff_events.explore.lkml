@@ -8,6 +8,7 @@
 
 include: "/**/global_filters_and_parameters.view.lkml"
 include: "/views/bigquery_tables/curated_layer/products.view.lkml"
+include: "/views/bigquery_tables/curated_layer/hubs_ct.view.lkml"
 include: "/product_hub/views/bigquery_curated/daily_hub_staff_events.view.lkml"
 include: "/product_hub/views/bigquery_curated/event_order_progressed.view.lkml"
 include: "/product_hub/views/bigquery_curated/event_order_state_updated.view.lkml"
@@ -75,4 +76,11 @@ explore: daily_hub_staff_events {
     type: left_outer
     relationship: one_to_one
   }
+
+    join: hubs_ct {
+      view_label: "Hub Dimensions"
+      sql_on: ${daily_hub_staff_events.hub_code} = ${hubs_ct.hub_code} ;;
+      type: left_outer
+      relationship: many_to_one
+    }
 }
