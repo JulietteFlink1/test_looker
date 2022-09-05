@@ -1,4 +1,4 @@
-include: "/explores/base_explores/orders_cl.explore"
+include: "/**/orders_cl.explore"
 
 explore: orders_cl_updated_hourly {
   extends: [orders_cl]

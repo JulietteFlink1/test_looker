@@ -116,7 +116,7 @@ view: daily_events {
   }
   dimension: component_variant {
     group_label: "Generic Dimensions"
-    label: "Event Variant"
+    label: "Component Variant"
     description: "Variation of the component if multiple variants exist"
     type: string
     sql: ${TABLE}.component_variant ;;
