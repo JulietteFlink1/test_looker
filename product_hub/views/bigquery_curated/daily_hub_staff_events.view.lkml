@@ -5,7 +5,7 @@
 view: daily_hub_staff_events {
   sql_table_name: `flink-data-prod.curated.daily_hub_staff_events`
     ;;
-  view_label: "Daily Hub Staff Events"
+  view_label: "1 Daily Hub Staff Events"
 
   # This is the curated layer of the events coming from Hub One app
 
