@@ -317,14 +317,14 @@ view: ctr_chargeback_orders {
   measure: percentage_ctr_visa_trx {
     group_label: "* Visa *"
     type: number
-    sql: ${total_chargebacks_transactions_visa} / ${total_settled_transactions_visa} ;;
+    sql: ${total_chargebacks_transactions_visa} / NULLIF(${total_settled_transactions_visa},0) ;;
     value_format_name: percent_2
   }
 
   measure: percentage_ctr_visa_amount {
     group_label: "* Visa *"
     type: number
-    sql: ${total_main_amount_chargeback_visa} / ${total_main_amount_settled_visa} ;;
+    sql: ${total_main_amount_chargeback_visa} / NULLIF(${total_main_amount_settled_visa},0) ;;
     value_format_name: percent_2
   }
 
