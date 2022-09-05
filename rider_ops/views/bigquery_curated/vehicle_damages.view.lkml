@@ -116,7 +116,7 @@ view: vehicle_damages {
   measure: number_of_solved_damages {
     group_label: "> Damage Statistics"
     label: " # Solved Damages"
-    description: "Number of Damages that were solved (status = fixed)"
+    description: "Number of Damages that are solved (status = fixed)"
     type: count_distinct
     sql: ${damage_uuid} ;;
     filters: [status: "fixed"]
@@ -125,7 +125,7 @@ view: vehicle_damages {
   measure: number_of_reported_damages {
     group_label: "> Damage Statistics"
     label: " # Reported Damages"
-    description: "Number of Damages that were reported (status = reported)"
+    description: "Number of Damages that are reported (status = reported)"
     type: count_distinct
     sql: ${damage_uuid} ;;
     filters: [status: "reported"]
