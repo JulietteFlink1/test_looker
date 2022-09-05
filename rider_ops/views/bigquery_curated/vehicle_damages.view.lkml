@@ -136,6 +136,7 @@ view: vehicle_damages {
     label: " AVG Damage Duration (Days)"
     description: "AVG number of days between damage created date and damage fixed date. If the damage is not fixed number of days between damage created date and today."
     type: average
+    value_format: "0.0"
     sql: ${number_of_damaged_days} ;;
   }
 }
