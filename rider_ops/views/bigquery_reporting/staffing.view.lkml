@@ -62,7 +62,7 @@ view: staffing {
   dimension: number_of_scheduled_hours_rider_dimension {
     label: "# Scheduled Rider Hours (Incl. Deleted Excused No Show) - Dimension"
     type: number
-    sql: (${TABLE}.number_of_planned_minutes_rider + ${number_of_unassigned_minutes_external_rider}+${number_of_unassigned_minutes_internal_rider})/60 ;;
+    sql: (${TABLE}.number_of_planned_minutes_rider + ${TABLE}.number_of_unassigned_minutes_external_rider+${TABLE}.number_of_unassigned_minutes_internal_rider)/60 ;;
     hidden: yes
   }
 
@@ -218,7 +218,7 @@ view: staffing {
   dimension: number_of_scheduled_hours_picker_dimension {
     label: "# Scheduled Picker Hours (Incl. Deleted Excused No Show) - Dimension"
     type: number
-    sql: (${TABLE}.number_of_planned_minutes_picker + ${number_of_unassigned_minutes_external_picker}+${number_of_unassigned_minutes_internal_picker})/60 ;;
+    sql: (${TABLE}.number_of_planned_minutes_picker + ${TABLE}.number_of_unassigned_minutes_external_picker+${TABLE}.number_of_unassigned_minutes_internal_picker)/60 ;;
     hidden: yes
   }
 
@@ -1493,6 +1493,7 @@ view: staffing {
     type: sum
     sql: ${number_of_worked_employees_rider};;
     value_format_name: decimal_1
+    hidden: yes
   }
 
   measure: sum_of_worked_employees_picker {
@@ -1501,6 +1502,7 @@ view: staffing {
     type: sum
     sql: ${number_of_worked_employees_picker};;
     value_format_name: decimal_1
+    hidden: yes
   }
 
   measure: sum_of_worked_employees_shift_lead {
@@ -1509,6 +1511,7 @@ view: staffing {
     type: sum
     sql: ${number_of_worked_employees_shift_lead};;
     value_format_name: decimal_1
+    hidden: yes
   }
   measure: sum_of_worked_employees_rider_captain {
     group_label: "> Rider Captain Measures"
@@ -1516,6 +1519,7 @@ view: staffing {
     type: sum
     sql: ${number_of_worked_employees_rider_captain};;
     value_format_name: decimal_1
+    hidden: yes
   }
   measure: sum_of_worked_employees_co_ops {
     group_label: "> Co Ops Measures"
@@ -1523,6 +1527,7 @@ view: staffing {
     type: sum
     sql: ${number_of_worked_employees_co_ops};;
     value_format_name: decimal_1
+    hidden: yes
   }
 
   measure: sum_of_worked_employees_wh {
@@ -1531,6 +1536,7 @@ view: staffing {
     type: sum
     sql: ${number_of_worked_employees_wh};;
     value_format_name: decimal_1
+    hidden: yes
   }
 
   measure: sum_of_worked_employees_cc_agent {
@@ -1539,6 +1545,7 @@ view: staffing {
     type: sum
     sql: ${number_of_worked_employees_cc_agent};;
     value_format_name: decimal_1
+    hidden: yes
   }
 
   #### External
@@ -1548,6 +1555,7 @@ view: staffing {
     type: sum
     sql: ${number_of_worked_employees_external_rider};;
     value_format_name: decimal_1
+    hidden: yes
   }
 
   measure: sum_of_worked_employees_external_pickers {
@@ -1556,6 +1564,7 @@ view: staffing {
     type: sum
     sql: ${number_of_worked_employees_external_picker};;
     value_format_name: decimal_1
+    hidden: yes
   }
 
   measure: sum_of_worked_employees_external_shift_lead {
@@ -1564,6 +1573,7 @@ view: staffing {
     type: sum
     sql: ${number_of_worked_employees_external_shift_lead};;
     value_format_name: decimal_1
+    hidden: yes
   }
   measure: sum_of_worked_employees_external_rider_captain {
     group_label: "> Rider Captain Measures"
@@ -1571,6 +1581,7 @@ view: staffing {
     type: sum
     sql: ${number_of_worked_employees_external_rider_captain};;
     value_format_name: decimal_1
+    hidden: yes
   }
   measure: sum_of_worked_employees_external_co_ops {
     group_label: "> Co Ops Measures"
@@ -1578,6 +1589,7 @@ view: staffing {
     type: sum
     sql: ${number_of_worked_employees_external_co_ops};;
     value_format_name: decimal_1
+    hidden: yes
   }
 
   measure: sum_of_worked_employees_external_wh {
@@ -1586,6 +1598,7 @@ view: staffing {
     type: sum
     sql: ${number_of_worked_employees_external_wh};;
     value_format_name: decimal_1
+    hidden: yes
   }
 
   measure: sum_of_worked_employees_external_cc_agent {
@@ -1594,6 +1607,7 @@ view: staffing {
     type: sum
     sql: ${number_of_worked_employees_external_cc_agent};;
     value_format_name: decimal_1
+    hidden: yes
   }
 
   #### Internal
@@ -1603,6 +1617,7 @@ view: staffing {
     type: sum
     sql: ${number_of_worked_employees_internal_rider};;
     value_format_name: decimal_1
+    hidden: yes
   }
 
   measure: sum_of_worked_employees_internal_pickers {
@@ -1611,6 +1626,7 @@ view: staffing {
     type: sum
     sql: ${number_of_worked_employees_internal_picker};;
     value_format_name: decimal_1
+    hidden: yes
   }
 
   measure: sum_of_worked_employees_internal_shift_lead {
@@ -1619,6 +1635,7 @@ view: staffing {
     type: sum
     sql: ${number_of_worked_employees_internal_shift_lead};;
     value_format_name: decimal_1
+    hidden: yes
   }
   measure: sum_of_worked_employees_internal_rider_captain {
     group_label: "> Rider Captain Measures"
@@ -1626,6 +1643,7 @@ view: staffing {
     type: sum
     sql: ${number_of_worked_employees_internal_rider_captain};;
     value_format_name: decimal_1
+    hidden: yes
   }
   measure: sum_of_worked_employees_internal_co_ops {
     group_label: "> Co Ops Measures"
@@ -1633,6 +1651,7 @@ view: staffing {
     type: sum
     sql: ${number_of_worked_employees_internal_co_ops};;
     value_format_name: decimal_1
+    hidden: yes
   }
 
   measure: sum_of_worked_employees_internal_wh {
@@ -1641,6 +1660,7 @@ view: staffing {
     type: sum
     sql: ${number_of_worked_employees_internal_wh};;
     value_format_name: decimal_1
+    hidden: yes
   }
 
   measure: sum_of_worked_employees_internal_cc_agent {
@@ -1649,6 +1669,7 @@ view: staffing {
     type: sum
     sql: ${number_of_worked_employees_internal_cc_agent};;
     value_format_name: decimal_1
+    hidden: yes
   }
 
   # =========  Unassigned Employees   =========
@@ -1660,6 +1681,7 @@ view: staffing {
     type: sum
     sql: ${number_of_unassigned_employees_external_rider}+${number_of_unassigned_employees_internal_rider};;
     value_format_name: decimal_1
+    hidden: yes
   }
 
   measure: sum_of_unassigned_employees_pickers {
@@ -1668,6 +1690,7 @@ view: staffing {
     type: sum
     sql: ${number_of_unassigned_employees_external_picker}+${number_of_unassigned_employees_internal_picker};;
     value_format_name: decimal_1
+    hidden: yes
   }
 
   measure: sum_of_unassigned_employees_shift_lead {
@@ -1676,6 +1699,7 @@ view: staffing {
     type: sum
     sql: ${number_of_unassigned_employees_external_shift_lead}+${number_of_unassigned_employees_internal_shift_lead};;
     value_format_name: decimal_1
+    hidden: yes
   }
   measure: sum_of_unassigned_employees_rider_captain {
     group_label: "> Rider Captain Measures"
@@ -1683,6 +1707,7 @@ view: staffing {
     type: sum
     sql: ${number_of_unassigned_employees_external_rider_captain}+${number_of_unassigned_employees_internal_rider_captain};;
     value_format_name: decimal_1
+    hidden: yes
   }
   measure: sum_of_unassigned_employees_co_ops {
     group_label: "> Co Ops Measures"
@@ -1690,6 +1715,7 @@ view: staffing {
     type: sum
     sql: ${number_of_unassigned_employees_external_co_ops}+${number_of_unassigned_employees_internal_co_ops};;
     value_format_name: decimal_1
+    hidden: yes
   }
 
   measure: sum_of_unassigned_employees_wh {
@@ -1698,6 +1724,7 @@ view: staffing {
     type: sum
     sql: ${number_of_unassigned_employees_external_wh}+${number_of_unassigned_employees_internal_wh};;
     value_format_name: decimal_1
+    hidden: yes
   }
 
   measure: sum_of_unassigned_employees_cc_agent {
@@ -1706,6 +1733,7 @@ view: staffing {
     type: sum
     sql: ${number_of_unassigned_employees_external_cc_agent}+${number_of_unassigned_employees_internal_cc_agent};;
     value_format_name: decimal_1
+    hidden: yes
   }
 
   # =========  Open Hours   =========
@@ -1760,7 +1788,7 @@ view: staffing {
     group_label: "> CC Agent Measures"
     label: "# Open CC Agent Hours"
     type: sum
-    sql: (${number_of_unassigned_minutes_external_cc_agent}+${number_of_unassigned_employees_internal_cc_agent})/60;;
+    sql: (${number_of_unassigned_minutes_external_cc_agent}+${number_of_unassigned_minutes_internal_cc_agent})/60;;
     value_format_name: decimal_1
   }
   measure: number_of_unassigned_hours_hub_staff {
@@ -2484,6 +2512,20 @@ view: staffing {
   }
 
   # =========  Dynamic Measures   =========
+
+  dimension: number_of_no_show_hours_by_position_dimension {
+    type: number
+    label: "# No Show Hours - Dimension"
+    description: "Sum of shift hours when an employee has a scheduled shift but does not show up to it without leave reason including deleted shift hours when deletion date is on or after shift date. includes (Excused No show Hours, Unexcused No show Hours, Excused Deleted No show Hours)"
+    value_format_name: decimal_1
+    group_label: "> Dynamic Measures"
+    sql:
+        CASE
+          WHEN {% parameter position_parameter %} = 'Rider' THEN ${number_of_no_show_minutes_rider}/60
+      ELSE NULL
+      END ;;
+    hidden: yes
+  }
 
   measure: number_of_planned_hours_by_position {
     type: number

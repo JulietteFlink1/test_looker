@@ -30,6 +30,11 @@ explore: ops {
     ]
   }
 
+  access_filter: {
+    field: hubs.country_iso
+    user_attribute: country_iso
+  }
+
   # Dimensional time grid table to have generic date filter
   join: time_grid {
     from: time_grid
