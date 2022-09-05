@@ -7,7 +7,7 @@
 
 # 📝 Checklist
 
-Please always refer to our [Looker Best Practices](https://goflink.atlassian.net/l/cp/iviRVEmd) .
+Please always refer to our [Looker Best Practices](https://goflink.atlassian.net/l/cp/iviRVEmd) and [naming conventions](https://goflink.cloud.looker.com/projects/flink_v1/files/02_naming_conventions.md).
 
 ## General
 - [ ] My code follows the style guidelines of this project
