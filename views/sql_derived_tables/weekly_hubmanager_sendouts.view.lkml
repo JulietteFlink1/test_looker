@@ -49,11 +49,11 @@ view: weekly_hubmanager_sendouts {
     sql: ${TABLE}.share_of_orders_fulfilled_before_targeted_estimate ;;
   }
 
-  dimension: share_of_orders_fulfilled_more_than_20 {
-    alias: [share_of_orders_delivered_more_than_20]
+  dimension: share_of_orders_fulfilled_more_than_30 {
+    alias: [share_of_orders_delivered_more_than_20,share_of_orders_fulfilled_more_than_20]
     type: number
     hidden: yes
-    sql: ${TABLE}.share_of_orders_fulfilled_more_than_20 ;;
+    sql: ${TABLE}.share_of_orders_fulfilled_more_than_30 ;;
   }
 
   dimension: share_pre_order_issues {
@@ -117,6 +117,24 @@ view: weekly_hubmanager_sendouts {
     type: number
     hidden: yes
     sql: ${TABLE}.hub_staff_utr ;;
+  }
+
+  dimension: stacking_rate {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.share_of_stacked_orders ;;
+  }
+
+  dimension: picking_time_per_item {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.picking_time_per_item_seconds ;;
+  }
+
+  dimension: percent_inbounded_fresh_in_3_hours_per_desadv {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.percent_inbounded_fresh_in_3_hours_per_desadv ;;
   }
 
   dimension: week {
@@ -198,21 +216,10 @@ view: weekly_hubmanager_sendouts {
     <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center">+{{ value }} %</p>
     {% elsif dimension._value == 'WoW' and value < 0 %}
      <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center">{{ value }} %</p>
-    {% elsif dimension._value == 'Ranking in Bucket' and  first_tier_bucket._value >= value %}
-    <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_bucket._value | round}}</p>
-    {% elsif dimension._value == 'Ranking in Bucket' and  second_tier_bucket._value >= value %}
-    <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_bucket._value | round}}</p>
-     {% elsif dimension._value == 'Ranking in Bucket' %}
-    <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_bucket._value | round}}</p>
-     {% elsif dimension._value == 'Ranking in Country' and  first_tier_country._value >= value %}
-    <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_country._value | round}}</p>
-    {% elsif dimension._value == 'Ranking in Country' and  second_tier_country._value >= value %}
-    <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_country._value | round}}</p>
-     {% elsif dimension._value == 'Ranking in Country'  %}
     <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_country._value | round}}</p>
     {% elsif dimension._value == 'Last Week'  %}
     <p style="font-weight: bold">{{ rendered_value }}<p>
-    {% else %}
+    {% elsif dimension._value == 'Previous Week' %}
     {{ rendered_value }}
     {% endif %} ;;
   }
@@ -277,13 +284,13 @@ view: weekly_hubmanager_sendouts {
     {% endif %}  ;;
   }
 
-  measure: avg_share_of_orders_fulfilled_more_than_20 {
-    alias: [avg_share_of_orders_delivered_more_than_20]
-    label: "% Orders > 20min"
-    description: "Share of Orders delivered in more than 20min"
+  measure: avg_share_of_orders_fulfilled_more_than_30 {
+    alias: [avg_share_of_orders_delivered_more_than_20, avg_share_of_orders_fulfilled_more_than_20]
+    label: "% Orders > 30min"
+    description: "Share of Orders delivered in more than 30min"
     type: average
     value_format: "0.0%"
-    sql: ${share_of_orders_fulfilled_more_than_20} ;;
+    sql: ${share_of_orders_fulfilled_more_than_30} ;;
     html: {% if dimension._value == 'WoW' and value <= 0 %}
     <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center"><img src="http://findicons.com/files/icons/573/must_have/48/check.png" height=20 width=20>{{ value }} pp</p>
     {% elsif dimension._value == 'WoW' and value > 0 %}
@@ -364,6 +371,82 @@ view: weekly_hubmanager_sendouts {
     {% else %}
     {{ rendered_value }}
     {% endif %} ;;
+  }
+
+  measure: share_of_stacked_orders {
+    label: "% Orders Stacked"
+    description: "Share of orders that are stacked"
+    type: average
+    value_format: "0.0%"
+    sql: ${stacking_rate} ;;
+    html: {% if dimension._value == 'WoW' and value > 0 %}
+    <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center"><img src="http://findicons.com/files/icons/573/must_have/48/check.png" height=20 width=20>+{{ value }} pp</p>
+    {% elsif dimension._value == 'WoW' and value <= 0 %}
+    <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center"><img src="http://findicons.com/files/icons/719/crystal_clear_actions/64/cancel.png" height=20 width=20>{{ value }} pp</p>
+    {% elsif dimension._value == 'Last Week'  %}
+    <p style="font-weight: bold">{{ rendered_value }}<p>
+    {% elsif dimension._value == 'Previous Week' %}
+    {{ rendered_value }}
+    {% endif %} ;;
+  }
+
+  measure: avg_percent_inbounded_fresh_in_3_hours_per_desadv {
+    label: "% of Fresh - Inbounded in 3h"
+    description: "Share of fresh goods inbounded in 3 hours"
+    type: average
+    sql: ${percent_inbounded_fresh_in_3_hours_per_desadv} ;;
+    value_format: "0.0%"
+    html:   {% if dimension._value == 'WoW' and value >= 0 %}
+            <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center"><img src="http://findicons.com/files/icons/573/must_have/48/check.png" height=20 width=20>+{{ value }} pp</p>
+            {% elsif dimension._value == 'WoW' and value < 0 %}
+            <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center"><img src="http://findicons.com/files/icons/719/crystal_clear_actions/64/cancel.png" height=20 width=20>{{ value }} pp</p>
+            {% elsif dimension._value == 'Ranking in Bucket' and  first_tier_bucket._value >= value %}
+            <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_bucket._value | round}}</p>
+            {% elsif dimension._value == 'Ranking in Bucket' and  second_tier_bucket._value >= value %}
+            <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_bucket._value | round}}</p>
+             {% elsif dimension._value == 'Ranking in Bucket' %}
+            <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_bucket._value | round}}</p>
+             {% elsif dimension._value == 'Ranking in Country' and  first_tier_country._value >= value %}
+            <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_country._value | round}}</p>
+            {% elsif dimension._value == 'Ranking in Country' and  second_tier_country._value >= value %}
+            <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_country._value | round}}</p>
+             {% elsif dimension._value == 'Ranking in Country'  %}
+            <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_country._value | round}}</p>
+            {% elsif dimension._value == 'Last Week'  %}
+            <p style="font-weight: bold">{{ rendered_value }}<p>
+            {% else %}
+            {{ rendered_value }}
+            {% endif %}
+          ;;
+  }
+
+  measure: avg_picking_time_per_item {
+    label: "AVG Picking Time per Item (Seconds)"
+    description: "AVG Time per item picked in seconds"
+    type: average
+    sql: ${picking_time_per_item} ;;
+    value_format: "0.0"
+    html: {% if dimension._value == 'WoW' and value <= 0 %}
+          <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center"><img src="http://findicons.com/files/icons/573/must_have/48/check.png" height=20 width=20>{{ value }}% </p>
+          {% elsif dimension._value == 'WoW' and value > 0 %}
+           <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center"><img src="http://findicons.com/files/icons/719/crystal_clear_actions/64/cancel.png" height=20 width=20>+{{ value }}%</p>
+          {% elsif dimension._value == 'Ranking in Bucket' and  first_tier_bucket._value >= value %}
+          <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_bucket._value | round}}</p>
+          {% elsif dimension._value == 'Ranking in Bucket' and  second_tier_bucket._value >= value %}
+          <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_bucket._value | round}}</p>
+           {% elsif dimension._value == 'Ranking in Bucket' %}
+          <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_bucket._value | round}}</p>
+           {% elsif dimension._value == 'Ranking in Country' and  first_tier_country._value >= value %}
+          <p style="color: black; background-color: lightgreen; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_country._value | round}}</p>
+          {% elsif dimension._value == 'Ranking in Country' and  second_tier_country._value >= value %}
+          <p style="color: black; background-color: orange; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_country._value | round}}</p>
+           {% elsif dimension._value == 'Ranking in Country'  %}
+          <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_country._value | round}}</p>
+          {% elsif dimension._value == 'Last Week'  %}
+          <p style="font-weight: bold">{{ rendered_value }}<p>
+          {% else %}
+          {{ rendered_value }}
+          {% endif %}  ;;
   }
 
   measure: avg_share_no_show {
