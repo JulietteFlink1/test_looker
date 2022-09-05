@@ -22,7 +22,7 @@ explore: admin_looker_query_costs  {
 
   always_filter: {
     filters: [
-      admin_looker_query_costs.partition_timestamp_date: "last 7 days"
+      admin_looker_query_costs.log_timestamp_date: "last 7 days"
     ]
   }
 }

@@ -9,6 +9,7 @@
 
 include: "/product_consumer/views/bigquery_reporting/product_placement_performance_excluding_impressions.view"
 include: "/**/global_filters_and_parameters.view.lkml"
+include: "/**/orders.view"
 
 explore: product_placement_performance_excluding_impressions {
   from:  product_placement_performance_excluding_impressions
@@ -20,6 +21,8 @@ explore: product_placement_performance_excluding_impressions {
   Product impressions are not part of this report."
   group_label: "Consumer Product"
 
+  sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} ${product_placement_performance_excluding_impressions.event_date} {% endcondition %};;
+
   access_filter: {
     field: country_iso
     user_attribute: country_iso
@@ -27,9 +30,24 @@ explore: product_placement_performance_excluding_impressions {
 
   always_filter: {
     filters: [
-      product_placement_performance_excluding_impressions.event_date: "last 7 days",
+      global_filters_and_parameters.datasource_filter: "last 7 days",
       product_placement_performance_excluding_impressions.country_iso: ""
     ]
+  }
+
+  join: global_filters_and_parameters {
+    fields: [global_filters_and_parameters.datasource_filter]
+    sql_on: ${global_filters_and_parameters.generic_join_dim} = TRUE ;;
+    type: left_outer
+    relationship: many_to_one
+  }
+
+  join: orders {
+    fields: [orders.status]
+    sql_on: ${orders.order_uuid} = ${product_placement_performance_excluding_impressions.order_uuid}
+            and {% condition global_filters_and_parameters.datasource_filter %} ${orders.order_date} {% endcondition %} ;;
+    type: left_outer
+    relationship: many_to_one
   }
 
 }
