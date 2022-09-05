@@ -26,7 +26,7 @@ view: vehicle_suppliers {
     sql: ${TABLE}.country_iso ;;
   }
 
-  dimension_group: created_at {
+  dimension_group: created {
     group_label: "> Dates"
     type: time
     timeframes: [
