@@ -1325,7 +1325,7 @@ view: daily_user_aggregates {
     group_label: "User And Account Verification Metrics"
     label: "SMS Verification - New Users(%)"
     type: number
-    hidden: yes
+    hidden: no
     description: "# New Users with Successful SMS Verification, compared to the total number of all users with SMS verification requested"
     value_format_name: percent_1
     sql: ${new_users_with_sms_verification_confirmed} / nullif(${new_users_with_sms_verification_request_viewed},0);;
