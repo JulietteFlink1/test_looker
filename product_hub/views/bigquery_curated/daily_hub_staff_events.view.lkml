@@ -3,7 +3,7 @@
 
 
 view: daily_hub_staff_events {
-  sql_table_name: `flink-data-dev.dbt_falvarez.daily_hub_staff_events`
+  sql_table_name: `flink-data-prod.curated.daily_hub_staff_events`
     ;;
   view_label: "Daily Hub Staff Events"
 

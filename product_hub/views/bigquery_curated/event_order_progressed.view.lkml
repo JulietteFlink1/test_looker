@@ -2,7 +2,7 @@
 # Created: 2022-08-31
 
 view: event_order_progressed {
-  sql_table_name: `flink-data-dev.dbt_falvarez.event_order_progressed`
+  sql_table_name: `flink-data-prod.curated.event_order_progressed`
     ;;
 
   view_label: "Event: Order Progressed"

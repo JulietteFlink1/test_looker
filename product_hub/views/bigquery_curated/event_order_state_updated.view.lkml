@@ -2,7 +2,7 @@
 # Created: 2022-08-31
 
 view: event_order_state_updated {
-  sql_table_name: `flink-data-dev.dbt_falvarez.event_order_state_updated`
+  sql_table_name: `flink-data-prod.curated.event_order_state_updated`
     ;;
 
   view_label: "Event: Order State Updated"
@@ -26,7 +26,8 @@ view: event_order_state_updated {
     fields: [
       order_picked_time,
       order_packed_time,
-      packed_to_picked_seconds
+      picked_to_packed_seconds,
+      count_distinct_picking_hours
     ]
   }
 
@@ -229,6 +230,13 @@ view: event_order_state_updated {
     sql: ${TABLE}.event_uuid ;;
   }
 
+  measure: count_distinct_picking_hours {
+    label: "Count distinct picking hours"
+    description: "Count distint hour_of_day with an order_state_updated event."
+    type: count_distinct
+    sql: concat(${event_date},${event_timestamp_hour_of_day}) ;;
+  }
+
   # =========  Picking times Dimensions   =========
 
   measure: order_picked_time {
@@ -244,9 +252,9 @@ view: event_order_state_updated {
     sql: MAX(IF(${state}='packed', ${TABLE}.event_timestamp,null)) ;;
   }
 
-  measure: packed_to_picked_seconds {
-    label: "Packed to Picked Seconds"
-    description: "Difference in seconds between packed and picked timestamps."
+  measure: picked_to_packed_seconds {
+    label: "Picked to Packed Seconds"
+    description: "Difference in seconds between picked and packed timestamps."
     hidden: yes
     sql: DATETIME_DIFF(${order_packed_time}, ${order_picked_time}, SECOND);;
   }

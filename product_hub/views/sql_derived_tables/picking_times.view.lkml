@@ -7,7 +7,7 @@ view: picking_times {
       column: order_id { field: event_order_state_updated.order_id }
       column: order_picked_time { field: event_order_state_updated.order_picked_time }
       column: order_packed_time { field: event_order_state_updated.order_packed_time }
-      column: packed_to_picked_seconds { field: event_order_state_updated.packed_to_picked_seconds }
+      column: picked_to_packed_seconds { field: event_order_state_updated.picked_to_packed_seconds }
       column: event_timestamp_date {}
       bind_all_filters: yes
     }
@@ -33,9 +33,9 @@ view: picking_times {
     description: "Timestamp for when the order changed to packed."
     type: number
   }
-  dimension: packed_to_picked_seconds {
-    label: "Packed to Picked Seconds"
-    description: "Difference in seconds between packed and picked timestamps."
+  dimension: picked_to_packed_seconds {
+    label: "Picked to Packed Seconds"
+    description: "Difference in seconds between picked and packed timestamps."
     type: number
   }
   dimension: event_timestamp_date {
@@ -59,7 +59,7 @@ view: picking_times {
     type: sum_distinct
     value_format: "0"
     sql_distinct_key: ${order_id} ;;
-    sql: ${packed_to_picked_seconds} ;;
+    sql: ${picked_to_packed_seconds} ;;
   }
 
   measure: sum_of_picking_time_minutes {
@@ -68,7 +68,7 @@ view: picking_times {
     type: sum_distinct
     value_format: "0"
     sql_distinct_key: ${order_id} ;;
-    sql: ${packed_to_picked_seconds}/60 ;;
+    sql: ${picked_to_packed_seconds}/60 ;;
   }
 
   measure: sum_of_picking_time_hours {
@@ -77,7 +77,7 @@ view: picking_times {
     type: sum_distinct
     value_format: "0.#"
     sql_distinct_key: ${order_id} ;;
-    sql: ${packed_to_picked_seconds}/3600 ;;
+    sql: ${picked_to_packed_seconds}/3600 ;;
   }
 
 }
