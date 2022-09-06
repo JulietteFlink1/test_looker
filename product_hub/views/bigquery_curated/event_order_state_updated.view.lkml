@@ -26,8 +26,7 @@ view: event_order_state_updated {
     fields: [
       order_picked_time,
       order_packed_time,
-      picked_to_packed_seconds,
-      count_distinct_picking_hours
+      picked_to_packed_seconds
     ]
   }
 
