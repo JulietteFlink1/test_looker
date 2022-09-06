@@ -11,7 +11,6 @@ Please always refer to our [Looker Best Practices](https://goflink.atlassian.net
 
 ## General
 - [ ] My code follows the style guidelines of this project
-- [ ] I have performed a self-review of my own code
 - [ ] I have commented my code, particularly in hard-to-understand areas
 
 ## Explores (if relevant)
