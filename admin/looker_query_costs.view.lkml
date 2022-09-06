@@ -1,13 +1,53 @@
 view: looker_query_costs {
+
   derived_table: {
-    sql: select *
 
-          from flink-data-dev.dbt_astueber.looker_query_cost_exports as looker
+    datagroup_trigger: flink_daily_datagroup
+    partition_keys: ["log_timestamp"]
+    cluster_keys: ["query_explore", "dashboard_title", "user_name"]
 
-      left join flink-data-prod.reporting.gcp_logs_parsed_for_looker as gcp
+    sql:
+      with
+      looker_data as (
+          select *
+
+          from flink-data-dev.dbt_astueber.looker_query_cost_exports
+      ),
+
+      gcp_data as (
+
+          select *
+
+          from flink-data-prod.reporting.gcp_logs_parsed_for_looker
+      ),
+
+      looker_data_unique_per_history_slug as (
+
+          select
+
+              *,
+              string_agg(User_Role__updated_hourly__Name, ', ')
+                      over (partition by history_slug)  as user_roles
+
+          from looker_data
+
+          where true
+
+          qualify
+              row_number() over(
+                  partition by history_slug
+                  order by      history_created_time
+              ) = 1
+      )
+
+      select *
+
+      from looker_data_unique_per_history_slug as looker
+
+      left join gcp_data
       on
-      gcp.looker_history_slug = History_Slug
-      ;;
+          gcp_data.looker_history_slug = looker.history_slug
+            ;;
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -153,7 +193,7 @@ view: looker_query_costs {
     label: "User Role"
     group_label: "Looker"
     type: string
-    sql: ${TABLE}.User_Role__updated_hourly__Name ;;
+    sql: ${TABLE}.user_roles ;;
   }
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -539,11 +579,21 @@ view: looker_query_costs {
   }
 
   measure: total_query_costs {
-    label: "# Query Cost"
+    label: "# Query Cost (based on billed bytes)"
     description: "The total sum of terrabytes billed multiplied by 5.00€ (staticly defined)"
 
     type: sum
     sql: 5.0 * (coalesce(${total_gigabytes_billed}, 0) / 1000) ;;
+    drill_fields: [detail*]
+    value_format_name: eur
+  }
+
+  measure: total_potential_query_costs {
+    label: "# Hypothetical Query Cost (based on processed bytes)"
+    description: "The total sum of terrabytes processed multiplied by 5.00€ (staticly defined). This serves as the hypothetical number: what would we have payed, if we did not enable slot-based-billing"
+
+    type: sum
+    sql: 5.0 * (coalesce(${total_bytes_processed}, 0) / 1000) ;;
     drill_fields: [detail*]
     value_format_name: eur
   }
