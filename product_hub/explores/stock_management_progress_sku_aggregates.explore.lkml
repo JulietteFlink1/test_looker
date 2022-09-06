@@ -13,7 +13,7 @@ explore: stock_management_progress_sku_aggregation {
   hidden:  no
   label: "Stock Management Progress Aggregates"
   description: "This explore provides an overview of how inventory associates progress through the inventory tasks (inbound, outbound, correction)."
-  group_label: "Consumer Hub"
+  group_label: "Product - Hub Tech"
 
   # implement both date filters:
   # reveived_at is due cost reduction given a table is partitioned by this dimensions

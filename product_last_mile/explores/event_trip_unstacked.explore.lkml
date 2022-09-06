@@ -17,7 +17,7 @@ explore: event_trip_unstacked {
 
   label: "Event Trip Unstacked"
   description: "This explore provides an overview manual unstacks performed in the Hubs"
-  group_label: "Last Mile"
+  group_label: "Product - Last Mile"
 
   # implement both date filters:
   # received_at is due cost reduction given a table is partitioned by this dimensions

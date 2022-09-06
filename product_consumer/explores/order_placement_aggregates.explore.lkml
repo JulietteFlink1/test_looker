@@ -14,7 +14,7 @@ explore: order_placement_aggregates {
 
   label: "Order Placement Aggregates"
   description: "This explore provides an aggregated overview of orders and their AIV per product placement. This explore shall stay hidden."
-  group_label: "Consumer Product"
+  group_label: "Product - Consumer"
   hidden: yes
 
   sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} ${event_date} {% endcondition %};;
