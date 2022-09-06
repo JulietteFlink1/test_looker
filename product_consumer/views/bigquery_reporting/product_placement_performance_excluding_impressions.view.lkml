@@ -230,6 +230,7 @@ view: product_placement_performance_excluding_impressions {
 
   dimension: product_placement_uuid {
     hidden: yes
+    primary_key: yes
     group_label: "IDs"
     label: "Event UUID"
     description: "Unique identifier of an event"
