@@ -32,6 +32,7 @@ view: user_attributes_order_classification {
   dimension: order_uuid {
     type: string
     hidden: yes
+    primary_key: yes
     sql: ${TABLE}.order_uuid ;;
   }
 

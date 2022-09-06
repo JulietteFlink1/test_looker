@@ -15,6 +15,7 @@ view: event_cart_viewed {
 
   dimension: event_uuid {
     type: string
+    primary_key: yes
     sql: ${TABLE}.event_uuid ;;
   }
 
