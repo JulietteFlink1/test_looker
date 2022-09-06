@@ -17,7 +17,7 @@ explore: discovery_flow {
 
   label: "Discovery Flow"
   description: "This explore provides user discovery flow on Flink App and Web"
-  group_label: "Consumer Product"
+  group_label: "Product - Consumer"
 
   # implement both date filters:
   # received_at is due cost reduction given a table is partitioned by this dimensions

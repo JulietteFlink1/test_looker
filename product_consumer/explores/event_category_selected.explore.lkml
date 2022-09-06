@@ -17,7 +17,7 @@ explore: event_category_selected {
 
   label: "Event Category Selected"
   description: "This explore provides an overview of all catgeories cliked / used by users across app & web"
-  group_label: "Consumer Product"
+  group_label: "Product - Consumer"
 
   # implement both date filters:
   # received_at is due cost reduction given a table is partitioned by this dimensions

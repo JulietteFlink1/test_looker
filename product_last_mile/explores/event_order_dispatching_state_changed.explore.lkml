@@ -17,7 +17,7 @@ explore: event_order_dispatching_state_changed {
 
   label: "Event Order Dispatching State Changed"
   description: "This explore provides an information on picker queue states of a given order"
-  group_label: "Last Mile"
+  group_label: "Product - Last Mile"
 
   # implement both date filters:
   # received_at is due cost reduction given a table is partitioned by this dimensions
