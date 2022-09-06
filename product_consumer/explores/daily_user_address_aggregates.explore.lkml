@@ -7,7 +7,7 @@ explore: daily_user_address_aggregates {
   view_name: daily_user_address_aggregates
   label: "Address Daily User Activity"
   view_label: "Address Daily User Activity"
-  group_label: "Consumer Product"
+  group_label: "Product - Consumer"
   description: "Address-centered tracking events aggregated per day per user"
 
   join: daily_user_aggregates {

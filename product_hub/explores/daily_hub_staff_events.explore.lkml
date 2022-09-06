@@ -21,7 +21,7 @@ explore: daily_hub_staff_events {
 
   label: "Daily Hub Staff Events"
   description: "This explore provides an overview of all behavioural events generated on Hub One."
-  group_label: "Consumer Hub"
+  group_label: "Product - Hub Tech"
 
 
   sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} ${event_timestamp_date} {% endcondition %};;

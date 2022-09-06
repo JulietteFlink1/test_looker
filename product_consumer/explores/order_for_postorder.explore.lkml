@@ -10,7 +10,7 @@ explore: order_for_postorder{
   from: order_comments
   label: "Postorder Events"
   view_label: "Postorder Events"
-  group_label: "Consumer Product"
+  group_label: "Product - Consumer"
   description: "Post-order related events, order dimensions, comments and nps"
  #   fields: [ALL_FIELDS*, -order_for_postorder.cnt_orders_delayed_under_0_min,
  #     -order_for_postorder.cnt_orders_delayed_over_5_min, -order_for_postorder.cnt_orders_with_delivery_eta_available, -order_for_postorder.pct_orders_delivered_by_riders]

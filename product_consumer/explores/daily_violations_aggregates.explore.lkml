@@ -13,7 +13,7 @@ explore: daily_violations_aggregates {
   hidden: yes
   label: "Daily Violations Aggregates"
   description: "This explore provides info on the segment violations generated in Android and iOS"
-  group_label: "Consumer Product"
+  group_label: "Product - Consumer"
   sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} ${event_date} {% endcondition %};;
   always_filter: {
     filters: [
