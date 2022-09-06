@@ -234,7 +234,7 @@ view: event_order_state_updated {
     label: "Count distinct picking hours"
     description: "Count distint hour_of_day with an order_state_updated event."
     type: count_distinct
-    sql: concat(${event_date},${event_timestamp_hour_of_day}) ;;
+    sql: concat(${event_date},${quinyx_badge_number},${event_timestamp_hour_of_day}) ;;
   }
 
   # =========  Picking times Dimensions   =========

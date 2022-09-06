@@ -10,6 +10,10 @@ view: picking_times {
       column: picked_to_packed_seconds { field: event_order_state_updated.picked_to_packed_seconds }
       column: event_timestamp_date {}
       bind_all_filters: yes
+      # bind_filters: {
+      #   to_field: picking_times.event_timestamp_date
+      #   from_field: daily_hub_staff_events.event_timestamp_date
+      # }
     }
   }
 
