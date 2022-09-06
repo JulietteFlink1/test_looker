@@ -63,6 +63,7 @@ view: order_placement_aggregates {
 
   dimension: order_placement_uuid {
     type: string
+    primary_key: yes
     sql: ${TABLE}.order_placement_uuid ;;
     hidden: yes
   }
