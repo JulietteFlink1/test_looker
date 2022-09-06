@@ -50,7 +50,6 @@ view: weekly_hubmanager_sendouts {
   }
 
   dimension: share_of_orders_fulfilled_more_than_30 {
-    alias: [share_of_orders_delivered_more_than_20,share_of_orders_fulfilled_more_than_20]
     type: number
     hidden: yes
     sql: ${TABLE}.share_of_orders_fulfilled_more_than_30 ;;
@@ -285,7 +284,6 @@ view: weekly_hubmanager_sendouts {
   }
 
   measure: avg_share_of_orders_fulfilled_more_than_30 {
-    alias: [avg_share_of_orders_delivered_more_than_20, avg_share_of_orders_fulfilled_more_than_20]
     label: "% Orders > 30min"
     description: "Share of Orders delivered in more than 30min"
     type: average
