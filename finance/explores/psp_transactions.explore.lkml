@@ -103,6 +103,7 @@ explore: psp_transactions {
     view_label: "PSP Settlement"
     sql_on: ${psp_transactions.psp_reference}  = ${psp_settlement_details.psp_reference} ;;
     relationship: many_to_many
+    ## Full Outer Join to cover potential cases where psp_reference is missing in one or the other table.
     type: full_outer
   }
 
