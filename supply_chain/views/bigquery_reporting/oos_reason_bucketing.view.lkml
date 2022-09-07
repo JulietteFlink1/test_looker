@@ -28,7 +28,7 @@ view: oos_reason_bucketing {
   }
 
 ########################################################################
-######################## IDs ###########################################
+######################## Dimension #####################################
 ########################################################################
 
   dimension: country_iso {
@@ -67,8 +67,9 @@ view: oos_reason_bucketing {
     type: string
     sql: ${TABLE}.buckets ;;
     label: "Buckets Definition"
-    description: "OOS Reasons based on buckets prioritazion.
-            A product/location OOS could fall into different buckets, based on its relevance we assign an order."
+    description: "This dimension refers to the reasons (bucket) that an SKU on a particular location could
+            fall among all its possible OOS reasons and the bucketing prioritization."
+
   }
 
 ################################
@@ -82,7 +83,9 @@ view: oos_reason_bucketing {
     group_label: "Standalone Buckets"
     label: "Is DC Inactive and No Stock"
 
-    description: "Product/Location OOS and its supplied thru a distribution center which is Inactive and doesn't have stock available."
+    description: "This flag shows if an SKU on a particular location is being delivered thru a Distribution Center that is Inactive in ERP (Lexbizz)
+              and doesn't have stock available of this SKU in the Distribution Center."
+
   }
 
   dimension: is_dc_inactive_and_stock {
@@ -91,7 +94,9 @@ view: oos_reason_bucketing {
     group_label: "Standalone Buckets"
     label: "Is DC Inactive and Stock"
 
-    description: "Product/Location OOS and its supplied thru a distribution center which is Inactive and has stock available."
+    description: "This flag shows if an SKU on a particular location is being delivered thru a Distribution Center that is Inactive in ERP (Lexbizz)
+            and has stock available of this SKU in the Distribution Center."
+
   }
 
   dimension: is_dc_other {
@@ -100,7 +105,8 @@ view: oos_reason_bucketing {
     group_label: "Standalone Buckets"
     label: "Is DC Other"
 
-    description: "Product/Location OOS and its supplied thru a distribution center."
+    description: "This flag shows if an SKU on a particular location is being delivered thru a Distribution Center"
+
   }
 
   dimension: is_delivery_issues {
@@ -108,8 +114,9 @@ view: oos_reason_bucketing {
     sql: ${TABLE}.is_delivery_issues ;;
     group_label: "Standalone Buckets"
     label: "Is Delivery Issues"
+    description: "This flag shows if an SKU on a particular location was outbounded as waste due delivery issues, such as:
+            Product Delivery-Damaged or Product Delivery-Expired"
 
-    description: "Product/Location OOS and it has waste outbound due delivery damaged or delivery expired."
   }
 
   dimension: is_frequent_oos {
@@ -118,7 +125,9 @@ view: oos_reason_bucketing {
     group_label: "Standalone Buckets"
     label: "Is Frequent OOS"
 
-    description: "Product/Location OOS and it fluctuates from In Stock to OOS more than 3 times within a week."
+    description: "This flag shows if an SKU on a particular location fluctuates
+            from 'In stock' to 'Out of Stock' very often (specifically more than 3 times per week)"
+
   }
 
   dimension: is_long_term_oos {
@@ -127,7 +136,9 @@ view: oos_reason_bucketing {
     group_label: "Standalone Buckets"
     label: "Is Long Term OOS Last Week"
 
-    description: "Product/Location OOS current and previous week with Purchase Order (Units ordered) previous week as well."
+    description: "This flag shows if an SKU on a particular location has been OOS in the last week, but it has been ordered (existing PO).
+              This means that we are waiting for this SKU to be delivered soon."
+
   }
 
   dimension: is_really_long_term_oos {
@@ -136,7 +147,9 @@ view: oos_reason_bucketing {
     group_label: "Standalone Buckets"
     label: "Is Really Long Term OOS Last 2 Weeks"
 
-    description: "Product/Location OOS current and previous 2 weeks with Purchase Order (Units ordered) previous 2 weeks as well."
+    description: "This flag shows if an SKU on a particular location has been OOS in the last 2 weeks, but it has been ordered (existing PO).
+             This means that we are waiting for this SKU to be delivered soon."
+
   }
 
   dimension: is_really_long_term_oos_last_4_weeks {
@@ -145,7 +158,8 @@ view: oos_reason_bucketing {
     group_label: "Standalone Buckets"
     label: "Is Really Long Term OOS Last 4 Weeks"
 
-    description: "Product/Location OOS current and previous 4 weeks with Purchase Order (Units ordered) previous 4 weeks as well."
+    description: "This flag shows if an SKU on a particular location has been OOS in the last 4 weeks, but it has been ordered (existing PO).
+            This means that we are waiting for this SKU to be delivered soon."
 
   }
 
@@ -155,9 +169,10 @@ view: oos_reason_bucketing {
     group_label: "Standalone Buckets"
     label: "Is Really Long Term OOS Last 6 Weeks"
 
-    description: "Product/Location OOS current and previous 6 weeks with Purchase Order (Units ordered) previous 6 weeks as well."
-  }
+    description: "This flag shows if an SKU on a particular location has been OOS in the last 6 weeks, but it has been ordered (existing PO).
+            This means that we are waiting for this SKU to be delivered soon."
 
+  }
 
   dimension: is_long_term_supplier_oos {
     type: yesno
@@ -165,8 +180,10 @@ view: oos_reason_bucketing {
     group_label: "Standalone Buckets"
     label: "Is Long Term Supplier OOS Last Week"
 
-    description: "Product/Location OOS current and previous week with Purchase Order (Units ordered) previous week as well
-                    and Handling units = 0 in dispatch notifications, meaning that our supplier is OOS."
+    description: "This flag shows if an SKU on a particular location has been OOS in the last week, there is a purchase order in place (existing PO)
+              but our supplier comunicated to us that it doesn't have stock available of this SKU (Handling units = 0 in DESADVs).
+              This means that we won't receive this SKU soon since the Supplier is OOS."
+
   }
 
   dimension: is_really_long_term_supplier_oos {
@@ -175,8 +192,9 @@ view: oos_reason_bucketing {
     group_label: "Standalone Buckets"
     label: "Is Long Term Supplier OOS Last 2 Weeks"
 
-    description: "Product/Location OOS current and previous 2 weeks with Purchase Order (Units ordered) previous 2 weeks as well
-    and Handling units = 0 in dispatch notifications, meaning that our supplier is OOS."
+    description: "This flag shows if an SKU on a particular location has been OOS in the last 2 weeks, there is a purchase order in place (existing PO)
+              but our supplier comunicated to us that it doesn't have stock available of this SKU (Handling units = 0 in DESADVs).
+              This means that we won't receive this SKU soon since the Supplier is OOS."
 
   }
 
@@ -186,7 +204,8 @@ view: oos_reason_bucketing {
     group_label: "Standalone Buckets"
     label: "Is New Product Location"
 
-    description: "Product/Location OOS and it was inbounded for the first time less than 2 weeks ago."
+    description: "This flag shows if an SKU on a particular location has been inbounded for the first time, less than 2 weeks ago."
+
   }
 
   dimension: is_no_orders {
@@ -195,7 +214,8 @@ view: oos_reason_bucketing {
     group_label: "Standalone Buckets"
     label: "Is No Orders"
 
-    description: "Product/Location OOS and there is no order placed in the last week"
+    description: "This flag shows if an SKU on a particular location doesn't have a purchase order in placed in the last week"
+
   }
 
   dimension: is_po_no_inbounds {
@@ -204,7 +224,9 @@ view: oos_reason_bucketing {
     group_label: "Standalone Buckets"
     label: "Is Purchase Order (PO) with No Inbounds - Sent "
 
-    description: "Product/Location OOS with Purchase Order (SENT) but no items inbounded (No matching PO<>Inbounds)."
+    description: "This flag shows if an SKU on a particular location has a purchase order with status 'SENT' in placed (existing PO),
+              but there is no actual inbounds (No matches between PO<>Inbounds)"
+
   }
 
 
@@ -214,7 +236,10 @@ view: oos_reason_bucketing {
     group_label: "Standalone Buckets"
     label: "Is Technical Issue - PO no Inbounds"
 
-    description: "Product/Location OOS with Purchase Order (NO SENT) but no items inbounded (No matching PO<>Inbounds)."
+    description: "This flag shows if an SKU on a particular location has a purchase order with status 'NOT SENT' in placed (existing PO),
+              but there is no actual inbounds (No matches between PO<>Inbounds) - Usually when we have PO with status 'Not Sent' we have its indentical twin
+              with status 'Sent'. In case we don't, we consider them as 'Sent', that is why we call this flag 'Technical issue'"
+
   }
 
   dimension: is_outbound_before_cutoff_hours_sl_1 {
@@ -223,7 +248,9 @@ view: oos_reason_bucketing {
     group_label: "Standalone Buckets"
     label: "Is Outbound Before Cutoff Hours SL 1"
 
-    description: "Product/Location OOS (SL 1) and waste outbounded before the ending cutoff hours (Cutoff: Mandatory in stock Time Frame)."
+    description: "This flag shows if an SKU on a particular location with Shelf Life = 1,
+              was outbounded as waste before the 'ending' timestamp of the cutoff hours range (Cutoff: Mandatory in stock Time Frame)."
+
   }
 
   dimension: is_too_late_inbound_sl_1 {
@@ -232,7 +259,9 @@ view: oos_reason_bucketing {
     group_label: "Standalone Buckets"
     label: "Is Too Late Inbound SL 1"
 
-    description: "Product/Location OOS (SL 1) and inbounded after the starting cutoff hours (Cutoff: Mandatory in stock Time Frame)."
+    description: "This flag shows if an SKU on a particular location with Shelf Life = 1,
+              was inbounded after the 'starting' timestamp of the cutoff hours range (Cutoff: Mandatory in stock Time Frame)."
+
   }
 
   dimension: is_outbound_more_than_one_hour_before_closing_time_sl_1 {
@@ -241,7 +270,9 @@ view: oos_reason_bucketing {
     group_label: "Standalone Buckets"
     label: "Is Outbound more than 1 Hour before Closing Hub SL 1"
 
-    description: "Product/Location OOS (SL 1) and and waste outbounded more than 1 hour before hub closing hour."
+    description: "This flag shows if an SKU on a particular location with Shelf Life = 1,
+              was outbounded as waste more than 1 hour before the closing hub hour."
+
   }
 
   dimension: is_wrong_purchase_units {
@@ -250,7 +281,9 @@ view: oos_reason_bucketing {
     group_label: "Standalone Buckets"
     label: "Is Wrong Purchase Units"
 
-    description:"Product/Location OOS and repeted behaviour of fill rate (PO<>Inbounds) less than 80% in more than 50% of the hubs"
+    description:"This flag shows if an SKU on a particular location has a fill rate (PO<>Inbounds)
+              less than 80%, and this SKU repeats this behaviour (%Fill rate < 80%) in more than 50% of the hubs.
+              This probably means that purchase units (PK) are wrong."
 
   }
 

@@ -19,6 +19,8 @@ explore: oos_reason_buckets {
 
   always_filter: {
     filters: [
+      oos_reason_buckets.report_week_week: "last week",
+
       oos_reason_buckets.country_iso: "",
 
       oos_reason_buckets.report_week_week_of_year: ""
@@ -36,7 +38,7 @@ explore: oos_reason_buckets {
   join: products {
     view_label: "03 Products (CT) "
     type: left_outer
-    relationship: many_to_one
+    relationship: many_to_many
     sql_on: ${products.replenishment_substitute_group_parent_sku} = ${oos_reason_buckets.parent_sku} ;;
   }
 
