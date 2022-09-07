@@ -558,6 +558,16 @@ view: looker_query_costs {
     value_format_name: decimal_2
   }
 
+  measure: sum_gigabytes_billed {
+    label: "# Gigabytes Billed"
+    description: "The sum of gigabytes that have been billed by BigQuery"
+
+    type: sum
+    sql: ${total_gigabytes_billed}  ;;
+    drill_fields: [detail*]
+    value_format_name: decimal_2
+  }
+
   measure: avg_gigabytes_processed {
     label: "AVG Gigabytes Processed"
     description: "The average number of gigabytes that have been processed by BigQuery"
@@ -593,7 +603,7 @@ view: looker_query_costs {
     description: "The total sum of terrabytes processed multiplied by 5.00€ (staticly defined). This serves as the hypothetical number: what would we have payed, if we did not enable slot-based-billing"
 
     type: sum
-    sql: 5.0 * (coalesce(${total_bytes_processed}, 0) / 1000) ;;
+    sql: 5.0 * (coalesce(${total_gigabytes_processed}, 0) / 1000) ;;
     drill_fields: [detail*]
     value_format_name: eur
   }
