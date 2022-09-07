@@ -19,8 +19,6 @@ explore: oos_reason_buckets {
 
   always_filter: {
     filters: [
-      global_filters_and_parameters.datasource_filter: "last 4 complete weeks",
-
       oos_reason_buckets.country_iso: "",
 
       oos_reason_buckets.report_week_week_of_year: ""
@@ -34,14 +32,6 @@ explore: oos_reason_buckets {
 
   }
 
-  join: global_filters_and_parameters {
-
-    view_label: "Global Filters"
-
-    sql_on: ${global_filters_and_parameters.generic_join_dim} = TRUE ;;
-    type: left_outer
-    relationship: one_to_one
-  }
 
   join: products {
     view_label: "03 Products (CT) "
