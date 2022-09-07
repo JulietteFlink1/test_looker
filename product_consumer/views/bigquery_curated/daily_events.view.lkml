@@ -18,6 +18,7 @@ view: daily_events {
       label: "Event UUID"
       description: "Unique identifier of an event"
       type: string
+      primary_key: yes
       sql: ${TABLE}.event_uuid ;;
     }
     dimension: user_id {
