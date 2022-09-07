@@ -28,4 +28,31 @@ explore: oos_reason_buckets {
     relationship: many_to_one
     sql_on: ${hubs_ct.hub_code} = ${oos_reason_buckets.hub_code} ;;
   }
+
+  always_filter: {
+    filters: [
+      global_filters_and_parameters.datasource_filter: "last 4 complete weeks",
+
+      oos_reason_buckets.country_iso: "",
+
+      oos_reason_buckets.report_week_week_of_year: ""
+
+    ]
+  }
+
+  access_filter: {
+    field: hubs_ct.country_iso
+    user_attribute: country_iso
+
+  }
+
+  join: global_filters_and_parameters {
+
+    view_label: "Global Filters"
+
+    sql_on: ${global_filters_and_parameters.generic_join_dim} = TRUE ;;
+    type: left_outer
+    relationship: one_to_one
+  }
+
 }
