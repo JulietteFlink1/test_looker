@@ -16,18 +16,6 @@ explore: oos_reason_buckets {
   view_label: " 01 OOS Reasons Buckets"
   group_label: "Supply Chain"
   hidden: no
-  join: products {
-    view_label: "03 Products (CT) "
-    type: left_outer
-    relationship: many_to_one
-    sql_on: ${products.replenishment_substitute_group_parent_sku} = ${oos_reason_buckets.parent_sku} ;;
-  }
-  join: hubs_ct {
-    view_label: "02 Hubs"
-    type: left_outer
-    relationship: many_to_one
-    sql_on: ${hubs_ct.hub_code} = ${oos_reason_buckets.hub_code} ;;
-  }
 
   always_filter: {
     filters: [
@@ -53,6 +41,20 @@ explore: oos_reason_buckets {
     sql_on: ${global_filters_and_parameters.generic_join_dim} = TRUE ;;
     type: left_outer
     relationship: one_to_one
+  }
+
+  join: products {
+    view_label: "03 Products (CT) "
+    type: left_outer
+    relationship: many_to_one
+    sql_on: ${products.replenishment_substitute_group_parent_sku} = ${oos_reason_buckets.parent_sku} ;;
+  }
+
+  join: hubs_ct {
+    view_label: "02 Hubs"
+    type: left_outer
+    relationship: many_to_one
+    sql_on: ${hubs_ct.hub_code} = ${oos_reason_buckets.hub_code} ;;
   }
 
 }
