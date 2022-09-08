@@ -68,6 +68,12 @@ view: gorillas_hubs_hist {
     sql: ${TABLE}.longitude ;;
   }
 
+  dimension: delivery_fee {
+    type: number
+    value_format: "0.00€"
+    sql: ${TABLE}.delivery_fee ;;
+  }
+
   dimension: minimum_basket_free_delivery {
     type: number
     value_format: "0.00€"
