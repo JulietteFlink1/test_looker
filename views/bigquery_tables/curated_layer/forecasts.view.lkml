@@ -206,10 +206,17 @@ view: forecasts {
   # =========  Forecasted orders   =========
 
   dimension: number_of_forecasted_orders_dimension {
-    label: "# Forecasted Orders - Dimension"
+    label: "# Forecasted Orders (Excl. All Adjustments) - Dimension"
     type: number
     sql: ${TABLE}.number_of_forecasted_orders;;
     hidden: yes
+  }
+
+  dimension: number_of_adjusted_forecasted_orders_dimension {
+    label: "# Forecasted Orders (Incl. All adjustments) - Dimension"
+    type:  number
+    sql: ${TABLE}.number_of_adjusted_forecasted_orders;;
+    hidden:  yes
   }
 
   dimension: number_of_actual_orders_dimension {
@@ -395,17 +402,26 @@ view: forecasts {
 
   measure: number_of_forecasted_orders {
     group_label: "> Order Measures"
-    label: "# Forecasted Orders"
+    label: "# Forecasted Orders (Excl. All Adjustments)"
     type: sum_distinct
     sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
     sql: ${TABLE}.number_of_forecasted_orders ;;
     value_format_name: decimal_0
   }
 
+  measure: number_of_adjusted_forecasted_orders {
+    group_label: "> Order Measures"
+    label: "# Forecasted Orders (Incl. Adjustments)"
+    type: sum_distinct
+    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
+    sql: ${TABLE}.number_of_adjusted_forecasted_orders ;;
+    value_format_name: decimal_0
+  }
+
   measure: number_of_actual_orders {
     group_label: "> Order Measures"
     label: "# Actual Orders (Forecast-related)"
-    description: "# Actual Orders - Excl. Click & Collect and External Orders. Including Cancelled Orders"
+    description: "# Actual Orders - Excl. Click&Collect and External Orders. Including Cancelled Orders"
     type: sum_distinct
     sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
     sql: ${TABLE}.number_of_actual_orders ;;
@@ -432,10 +448,19 @@ view: forecasts {
 
   measure: pct_forecast_deviation {
     group_label: "> Order Measures"
-    label: "% Order Forecast Deviation"
-    description: "The degree of how far # Forecasted Orders is from # Actual Orders in the given period. Formula: (# Actual Orders / # Forecasted Orders) -1"
+    label: "% Order Forecast Deviation (Excl. Adjustments)"
+    description: "The degree of how far # Forecasted Orders is from # Actual Orders in the given period. Formula: (# Actual Orders / # Forecasted Orders (Excl. Adjustments)) -1"
     type: number
     sql: (${number_of_actual_orders}/nullif(${number_of_forecasted_orders},0))-1 ;;
+    value_format_name: percent_1
+  }
+
+  measure: pct_adjusted_forecast_deviation {
+    group_label: "> Order Measures"
+    label: "% Order Forecast Deviation (Incl. Adjustments)"
+    description: "The degree of how far # Forecasted Orders (After Adjustments) is from # Actual Orders in the given period. Formula: (# Actual Orders / # Forecasted Orders (Incl. Adjustments)) -1"
+    type: number
+    sql: (${number_of_actual_orders}/nullif(${number_of_adjusted_forecasted_orders},0))-1 ;;
     value_format_name: percent_1
   }
 
