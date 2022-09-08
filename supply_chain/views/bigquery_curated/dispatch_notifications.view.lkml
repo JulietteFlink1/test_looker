@@ -48,6 +48,14 @@ view: dispatch_notifications {
     ]
   }
 
+  set: drill_fields {
+    fields: [
+      product_name,
+      sku,
+      delivery_date
+    ]
+  }
+
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Parameters     ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -474,12 +482,14 @@ view: dispatch_notifications {
         then coalesce(${inventory_changes_daily.quantity_change_inbounded},0) - ${total_quantity}
       end
     ;;
+    hidden: yes
   }
 
   dimension: shadow_waste_by_selling_price_gross {
     type: number
     sql: ${shadow_waste} *  ${product_prices_daily.avg_amt_product_price_gross};;
     value_format_name: eur
+    hidden: yes
   }
 
   dimension: shadow_drug_waste {
@@ -488,6 +498,7 @@ view: dispatch_notifications {
             ${shadow_waste},
             NULL);;
     value_format_name: eur
+    hidden: yes
   }
 
   dimension: shadow_drug_waste_by_selling_price_gross {
@@ -496,6 +507,7 @@ view: dispatch_notifications {
             ${shadow_waste_by_selling_price_gross},
             NULL);;
     value_format_name: eur
+    hidden: yes
   }
 
   measure: sum_shadow_waste {
@@ -509,6 +521,7 @@ view: dispatch_notifications {
     type: sum
     sql: ${shadow_waste} ;;
     value_format_name: decimal_0
+    drill_fields: [drill_fields*, sum_shadow_waste]
   }
 
   measure: sum_shadow_waste_by_selling_price_gross {
@@ -522,6 +535,7 @@ view: dispatch_notifications {
     type: sum
     sql: ${shadow_waste_by_selling_price_gross} ;;
     value_format_name: eur
+    drill_fields: [drill_fields*, sum_shadow_waste_by_selling_price_gross]
   }
 
   measure: sum_shadow_drug_waste {
@@ -535,6 +549,7 @@ view: dispatch_notifications {
     type: sum
     sql: ${shadow_drug_waste} ;;
     value_format_name: decimal_0
+    drill_fields: [drill_fields*, sum_shadow_drug_waste]
   }
 
   measure: sum_shadow_drug_waste_by_selling_price_gross {
@@ -548,6 +563,7 @@ view: dispatch_notifications {
     type: sum
     sql: ${shadow_drug_waste_by_selling_price_gross} ;;
     value_format_name: eur
+    drill_fields: [drill_fields*, sum_shadow_drug_waste_by_selling_price_gross]
   }
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   #  - - - - - - - - - -    END: Shadow (Drug) Waste
