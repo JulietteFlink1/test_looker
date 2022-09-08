@@ -39,7 +39,7 @@ view: daily_user_aggregates {
 
   dimension: daily_user_uuid {
     type: string
-    hidden: yes
+    hidden: no
     primary_key: yes
     description: "A surrogate key representing a unique identifier per user per day. If the same users interacted with the app on two different days, they will get a different identifier."
     sql: ${TABLE}.daily_user_uuid ;;
