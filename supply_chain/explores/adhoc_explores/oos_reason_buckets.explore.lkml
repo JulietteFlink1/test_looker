@@ -15,7 +15,7 @@ explore: oos_reason_buckets {
   from  :     oos_reason_bucketing
   view_label: " 01 OOS Reasons Buckets"
   group_label: "Supply Chain"
-  hidden: no
+  hidden: yes
 
   always_filter: {
     filters: [
