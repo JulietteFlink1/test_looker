@@ -63,7 +63,9 @@ view: gorillas_hubs {
       quarter,
       year
     ]
-    sql: ${TABLE}.partition_timestamp ;;
+    sql: ${TABLE}.time_scraped ;;
+
+    hidden: yes
   }
 
   dimension_group: time_scraped {

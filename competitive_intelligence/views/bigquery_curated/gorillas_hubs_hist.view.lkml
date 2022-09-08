@@ -86,6 +86,12 @@ view: gorillas_hubs_hist {
     sql: ${TABLE}.minimum_order_value ;;
   }
 
+  dimension: small_order_fee {
+    type: number
+    value_format: "0.00€"
+    sql: ${TABLE}.small_order_fee ;;
+  }
+
   dimension: number_of_orders {
     type: number
     sql: ${TABLE}.number_of_orders ;;
@@ -102,7 +108,9 @@ view: gorillas_hubs_hist {
       quarter,
       year
     ]
-    sql: ${TABLE}.partition_timestamp ;;
+    sql: ${TABLE}.time_scraped ;;
+
+    hidden: yes
   }
 
   dimension: pickup_enabled {
