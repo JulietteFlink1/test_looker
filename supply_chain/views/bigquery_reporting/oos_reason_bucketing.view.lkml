@@ -65,7 +65,7 @@ view: oos_reason_bucketing {
 
   dimension: buckets {
     type: string
-    sql: ${TABLE}.buckets ;;
+    sql: ${TABLE}.oos_reason_buckets ;;
     label: "Buckets Definition"
     description: "This dimension refers to the reasons (bucket) that an SKU on a particular location could
             fall among all its possible OOS reasons and the bucketing prioritization."
