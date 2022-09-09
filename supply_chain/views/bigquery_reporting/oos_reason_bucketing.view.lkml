@@ -5,7 +5,7 @@
 # - Supply Chain team
 
 view: oos_reason_bucketing {
-  sql_table_name: `flink-data-dev.dbt_lruiz.oos_reason_bucketing`
+  sql_table_name: `flink-data-prod.reporting.oos_reason_bucketing`
     ;;
 
 
