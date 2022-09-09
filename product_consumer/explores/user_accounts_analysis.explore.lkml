@@ -1,4 +1,4 @@
-include: "/views/sql_derived_tables/user_accounts_analysis.view.lkml"
+include: "/**/user_accounts_analysis.view.lkml"
 
 explore: user_accounts_analysis {
   hidden: yes
