@@ -140,6 +140,7 @@ view: employee_level_kpis {
   dimension: is_external {
     type: yesno
     sql: ${TABLE}.is_external ;;
+    label: "Is External Employee"
     description: "Based on Quinyx assinged shift (null when an employee is not assgined any shift)"
   }
 
