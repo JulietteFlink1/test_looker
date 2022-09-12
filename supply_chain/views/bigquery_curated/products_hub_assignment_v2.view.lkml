@@ -66,6 +66,8 @@ view: products_hub_assignment_v2 {
     group_label: "* Parameters & Dynamic Fields *"
     label: "Report Date (Dynamic)"
     label_from_parameter: date_granularity
+    type: date
+    datatype: date
     sql:
     {% if date_granularity._parameter_value == 'Day' %}
       ${report_date}
@@ -75,6 +77,7 @@ view: products_hub_assignment_v2 {
       ${report_month}
     {% endif %};;
   }
+
 
 
   #parameter: select_assignment_logic {
@@ -99,6 +102,37 @@ view: products_hub_assignment_v2 {
   #  default_value: "replenishment"
 
   #}
+
+
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~       Filter       ~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  filter: is_last_7_days_weeks_months {
+
+    label: "Filter for last 7 Days/Weeks/Months"
+    description: "Based on the parameter 'Select Date Granularity', this filter either filters for the last 7 days, last 7 weeks or last 7 months"
+
+    sql:
+    {% if date_granularity._parameter_value == 'Day' %}
+      ${report_date} between current_date() -7 and current_date() - 1
+    {% elsif date_granularity._parameter_value == 'Week' %}
+      ${report_date} between
+          --Monday of week started 7 weeks ago
+          date_sub(date_trunc(current_date(), week(monday)), interval 2 week) and
+          -- Sunday last week
+          date_sub(date_trunc(current_date(), week(monday)), interval 1 day)
+    {% elsif date_granularity._parameter_value == 'Month' %}
+      ${report_date} between
+          -- 1st day of month started 7 month ago
+          date_sub(date_trunc(current_date(), month), interval 2 month) and
+          -- last day of last month
+          date_sub(date_trunc(current_date(), month), interval 1 day)
+    {% endif %};;
+    type: yesno
+
+  }
+
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Dimensions     ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -141,6 +175,7 @@ view: products_hub_assignment_v2 {
     ]
     datatype: date
     sql: ${TABLE}.report_date ;;
+
   }
 
   dimension: sku_dynamic {

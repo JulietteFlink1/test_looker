@@ -589,7 +589,7 @@ view: looker_query_costs {
   }
 
   measure: total_query_costs {
-    label: "# Query Cost (based on billed bytes)"
+    label: "€ Query Cost (based on billed bytes)"
     description: "The total sum of terrabytes billed multiplied by 5.00€ (staticly defined)"
 
     type: sum
@@ -599,7 +599,7 @@ view: looker_query_costs {
   }
 
   measure: total_potential_query_costs {
-    label: "# Hypothetical Query Cost (based on processed bytes)"
+    label: "€ Hypothetical Query Cost (based on processed bytes)"
     description: "The total sum of terrabytes processed multiplied by 5.00€ (staticly defined). This serves as the hypothetical number: what would we have payed, if we did not enable slot-based-billing"
 
     type: sum
