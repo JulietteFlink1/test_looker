@@ -111,12 +111,6 @@ view: hubs_ct {
     group_label: "> Geographic Data"
   }
 
-  dimension: cluster {
-    type: string
-    sql: ${TABLE}.cluster ;;
-    group_label: "> Geographic Data"
-  }
-
   dimension: country {
     type: string
     map_layer_name: countries
@@ -190,12 +184,6 @@ view: hubs_ct {
   dimension: cost_center {
     type: string
     sql: ${TABLE}.cost_center ;;
-    group_label: "> Admin Data"
-  }
-
-  dimension: email_list {
-    type: string
-    sql: ${TABLE}.email_list ;;
     group_label: "> Admin Data"
   }
 
@@ -314,14 +302,6 @@ view: hubs_ct {
   dimension: shipping_method_id {
     type: string
     sql: ${TABLE}.shipping_method_id ;;
-    group_label: "> IDs"
-  }
-
-  dimension: hub_name_anonymized   {
-    label: "Hub ID"
-    description: "Identifier of a Hub"
-    type: string
-    sql: ${TABLE}.hub_name_anonymized  ;;
     group_label: "> IDs"
   }
 
