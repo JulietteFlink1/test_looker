@@ -10,6 +10,7 @@ qualify row_number() over(partition by psp_reference order by booking_timestamp)
   }
 
   measure: count {
+    hidden: yes
     type: count
     drill_fields: [detail*]
   }
@@ -18,15 +19,18 @@ qualify row_number() over(partition by psp_reference order by booking_timestamp)
     type: string
     sql: ${TABLE}.psp_reference ;;
     primary_key: yes
+    hidden: yes
   }
 
   dimension: psp_reference_authorised_booking_date {
+    group_label: "> Dates & Timestamps"
     type: date
     datatype: date
     sql: ${TABLE}.psp_reference_authorised_booking_date ;;
   }
 
   dimension: psp_reference_authorised_booking_month {
+    group_label: "> Dates & Timestamps"
     type: date
     datatype: date
     sql: ${TABLE}.psp_reference_authorised_booking_month ;;

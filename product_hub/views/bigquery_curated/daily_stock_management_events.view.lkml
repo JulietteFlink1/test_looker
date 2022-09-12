@@ -188,7 +188,7 @@ view: daily_stock_management_events {
   }
 
   measure: number_of_inventory_movements {
-    label: "# Events"
+    label: "# Inventory Movements"
     description: "Number of Inventory Movements"
     type: count_distinct
     sql: ${TABLE}.inventory_movement_id ;;
