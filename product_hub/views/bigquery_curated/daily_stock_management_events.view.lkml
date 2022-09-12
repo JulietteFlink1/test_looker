@@ -187,5 +187,38 @@ view: daily_stock_management_events {
     sql: ${TABLE}.event_uuid ;;
   }
 
+  measure: number_of_inventory_movements {
+    label: "# Events"
+    description: "Number of Inventory Movements"
+    type: count_distinct
+    sql: ${TABLE}.inventory_movement_id ;;
+  }
+
+  measure: sum_quantity_inbounded_stock_changed {
+    group_label: "Total Metrics"
+    label: "Quantity Stock Changed Inbounded"
+    description: "Sum of quantity inbounded by old flow."
+    type: sum
+    filters: [event_name: "stock_changed", direction: "inbounding"]
+    sql: ${TABLE}.quantity ;;
+  }
+
+  measure: sum_quantity_inbounded {
+    group_label: "Total Metrics"
+    label: "Quantity Inbounded"
+    description: "Sum of quantity inbounded by new flow."
+    type: sum
+    filters: [event_name: "inventory_progress", action: "item_dropped"]
+    sql: ${TABLE}.quantity ;;
+  }
+
+  measure: sum_quantity_ {
+    group_label: "Total Metrics"
+    label: "Quantity Inbounded"
+    description: "Sum of quantity inbounded by new flow."
+    type: sum
+    filters: [event_name: "inventory_progress", action: "item_dropped"]
+    sql: ${TABLE}.quantity ;;
+  }
   # =========  Rate Metrics  =========
 }
