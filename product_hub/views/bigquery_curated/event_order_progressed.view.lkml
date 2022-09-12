@@ -30,6 +30,7 @@ view: event_order_progressed {
     fields: [
       sum_of_quantity,
       number_of_orders,
+      number_of_refunded_orders,
       sum_quantity_picked,
       sum_quantity_reported,
       sum_quantity_refunded,
@@ -37,7 +38,8 @@ view: event_order_progressed {
       qty_reported_per_total_qty,
       qty_refunded_per_total_qty,
       qty_skipped_per_total_qty,
-      qty_scanned_per_qty_picked
+      qty_scanned_per_qty_picked,
+      pre_order_issue_rate
     ]
   }
 
@@ -279,6 +281,15 @@ view: event_order_progressed {
     sql: ${TABLE}.order_id ;;
   }
 
+  measure: number_of_refunded_orders {
+    group_label: "Total Metrics"
+    label: "# Refunded Orders"
+    description: "Number of Orders with at least one refunded item."
+    type: count_distinct
+    filters: [action: "item_refunded"]
+    sql: ${TABLE}.order_id ;;
+  }
+
   measure: sum_of_quantity {
     group_label: "Total Metrics"
     label: "Total Quantity"
@@ -379,4 +390,12 @@ view: event_order_progressed {
     sql: ${sum_quantity_picked_scanned} / nullif(${sum_quantity_picked_scanned}+${sum_quantity_picked_clicked},0) ;;
   }
 
+  measure: pre_order_issue_rate {
+    group_label: "Rate Metrics"
+    label: "Preorder Issue Rate"
+    description: "# Refunded Orders / # of Orders"
+    type: number
+    value_format_name: percent_1
+    sql: ${number_of_refunded_orders} / nullif(${number_of_orders},0) ;;
+  }
 }

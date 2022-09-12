@@ -10,6 +10,7 @@ include: "/**/global_filters_and_parameters.view.lkml"
 include: "/**/employee_level_kpis.view.lkml"
 include: "/views/bigquery_tables/curated_layer/products.view.lkml"
 include: "/views/bigquery_tables/curated_layer/hubs_ct.view.lkml"
+include: "/views/bigquery_tables/curated_layer/orders.view.lkml"
 include: "/product_hub/views/bigquery_curated/daily_hub_staff_events.view.lkml"
 include: "/product_hub/views/bigquery_curated/event_order_progressed.view.lkml"
 include: "/product_hub/views/bigquery_curated/event_order_state_updated.view.lkml"
@@ -83,7 +84,7 @@ explore: daily_hub_staff_events {
     relationship: one_to_one
   }
 
-    join: hubs_ct {
+  join: hubs_ct {
       view_label: "6 Hub Dimensions"
       sql_on: ${daily_hub_staff_events.hub_code} = ${hubs_ct.hub_code} ;;
       type: left_outer
@@ -98,6 +99,14 @@ explore: daily_hub_staff_events {
     sql_on: cast(${employee_level_kpis.staff_number} as string)=${daily_hub_staff_events.quinyx_badge_number}
       and ${employee_level_kpis.shift_date}=${daily_hub_staff_events.event_timestamp_date}
       and ${employee_level_kpis.hub_code}=${daily_hub_staff_events.hub_code};;
+    type: left_outer
+    relationship: many_to_one
+  }
+
+  join: orders {
+    view_label: "8 Order Dimensions"
+    fields: [orders.is_external_order]
+    sql_on: ${event_order_progressed.order_id} = ${orders.id} ;;
     type: left_outer
     relationship: many_to_one
   }

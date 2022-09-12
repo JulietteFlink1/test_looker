@@ -1,4 +1,4 @@
-include: "/views/projects/consumer_product/user_accounts_flow.view.lkml"
+include: "/**/user_accounts_flow.view.lkml"
 
 explore: user_accounts_flow {
   hidden: yes

@@ -113,19 +113,11 @@ view: inventory_changes_daily {
     sql:
 
     case
-      when
-
-      (    lower(${products.category}) like 'spirit%'
-        or lower(${products.category}) like 'tabak%'
-        or lower(${products.category}) like 'rauchen%'
-        or lower(${products.category}) like '%champagnes'
-        or lower(${products.category}) like 'wein%'
-        or lower(${products.category}) like 'wijn%'
-        )
-
-      and (${change_type} = 'correction' or ${change_reason} = 'too-good-to-go' )
+      when ${products.is_drug_item} is true
+       and (${change_type} = 'correction' or ${change_reason} = 'too-good-to-go' )
       then true
-      else false end ;;
+      else false
+    end ;;
   }
 
 
