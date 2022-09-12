@@ -43,7 +43,7 @@ where a.ct_final_decision_is_sku_assigned_to_hub is true
         and
             hubs_ct.is_test_hub is false
         and
-            hubs_ct.live is not null
+            hubs_ct.is_active_hub is true
                    and
             hubs_ct.hub_code not in ('de_ham_alto')
 )
