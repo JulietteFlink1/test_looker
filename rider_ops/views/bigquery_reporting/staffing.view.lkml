@@ -1943,7 +1943,7 @@ view: staffing {
     group_label: "> Ops Staff Measures"
     label: "# Scheduled Ops Staff Hours"
     type: number
-    sql: ${number_of_scheduled_hours_picker}+${number_of_scheduled_hours_wh}+${number_of_scheduled_hours_shift_lead};;
+    sql: ${number_of_scheduled_hours_picker}+${number_of_scheduled_hours_wh}+${number_of_scheduled_hours_rider_captain};;
     value_format_name: decimal_1
   }
   ##### External
