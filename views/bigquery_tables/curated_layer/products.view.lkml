@@ -585,6 +585,28 @@ view: products {
     label: "Tax Type"
   }
 
+  dimension: is_drug_item {
+    label:       "Is Drug Item"
+    description: "This flag is true for all items that relate to wine, hard alcohol and tabac"
+    type: yesno
+    sql:
+
+    case
+      when
+
+      (  lower(${category}) like 'spirit%'
+      or lower(${category}) like 'tabak%'
+      or lower(${category}) like 'rauchen%'
+      or lower(${category}) like '%champagnes'
+      or lower(${category}) like 'wein%'
+      or lower(${category}) like 'wijn%'
+      )
+
+      then true
+      else false
+    end ;;
+  }
+
   dimension: image_urls {
     type: string
     sql: ${TABLE}.image_urls ;;
