@@ -512,7 +512,7 @@ view: dispatch_notifications {
 
   measure: sum_shadow_waste {
 
-    label: "# Shadow Waste"
+    label: "# Shadow Waste Items"
     description: "The number of items, that have lower inbounding numbers compared to what should have been inbounded according to the related dispatch notification
     (Given that the whole dispatch notification had more than 2% of their items being inbounde on the matched day)."
 
@@ -526,7 +526,7 @@ view: dispatch_notifications {
 
   measure: sum_shadow_waste_by_selling_price_gross {
 
-    label: "€ Shadow Waste (Selling Price Gross)"
+    label: "€ Shadow Waste Items (Selling Price Gross)"
     description: "The number of items valued by their gross selling price, that have lower inbounding numbers compared to what should have been inbounded according to the related dispatch notification
     (Given that the whole dispatch notification had more than 2% of their items being inbounde on the matched day)."
 
@@ -540,7 +540,7 @@ view: dispatch_notifications {
 
   measure: sum_shadow_drug_waste {
 
-    label: "# Shadow Drug Waste"
+    label: "# Shadow Drug Waste Items"
     description: "The number of items of type alcohol or tobacco, that have lower inbounding numbers compared to what should have been inbounded according to the related dispatch notification
     (Given that the whole dispatch notification had more than 2% of their items being inbounde on the matched day)."
 
@@ -554,7 +554,7 @@ view: dispatch_notifications {
 
   measure: sum_shadow_drug_waste_by_selling_price_gross {
 
-    label: "€ Shadow Drug Waste (Selling Price Gross)"
+    label: "€ Shadow Drug Waste Items (Selling Price Gross)"
     description: "The number of items of type alcohol or tobacco valued by their gross selling price, that have lower inbounding numbers compared to what should have been inbounded according to the related dispatch notification
     (Given that the whole dispatch notification had more than 2% of their items being inbounde on the matched day)."
 
