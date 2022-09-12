@@ -724,6 +724,7 @@ view: inventory_daily {
 
     type: number
     sql: 1 - ${pct_oos} ;;
+    drill_fields: [hub_code, sku, pct_in_stock]
 
     value_format_name: percent_1
     html:
