@@ -16,7 +16,7 @@ view: hubs_ct {
   }
 
   dimension: is_hub_opened_14d {
-    label: "Hub is Active more than 14 days?(Geolocator)"
+    label: "Hub is Active more than 14 days?"
     type: yesno
     sql: ${start_date} <= DATE_SUB(current_date(), Interval 14 day) and ${is_active_hub} = true ;;
     description: "This is defined based on start_date curated.hubs and is_hub_active flag coming from hub geolocator system"
@@ -200,12 +200,6 @@ view: hubs_ct {
     group_label: "> Admin Data"
   }
 
-  dimension: live {
-    type: number
-    sql: ${TABLE}.live ;;
-    group_label: "> Admin Data"
-  }
-
   dimension: start_date {
     label: "Hub Start Date"
     type: date
@@ -223,19 +217,9 @@ view: hubs_ct {
     group_label: "> Admin Data"
   }
 
-  dimension: is_hub_opened {
-    label: "Hub is Live?"
-    type: yesno
-    sql: ${TABLE}.start_date <= current_date() ;;
-    group_label: "> Admin Data"
-    hidden: yes
-    description: "This is an outdated definition (incorrect) that uses only start_date to define if a hub is live or not,
-                if we use this flag we will see some hubs as actives but with no units sold in the last month.
-                Check - https://goflink.cloud.looker.com/explore/flink_v3/supply_chain?qid=uisyiwyWly9f9VOkI4UZMb&origin_space=490&toggle=fil,vis"
-  }
 
   dimension: is_active_hub {
-    label: "Hub is Active? (Geolocator)"
+    label: "Hub is Active?"
     type: yesno
     sql: ${TABLE}.is_active_hub ;;
     group_label: "> Admin Data"
