@@ -659,11 +659,19 @@ view: psp_transactions {
     value_format_name: euro_accounting_2_precision
   }
 
- measure: diff_authorised_refunded {
-  group_label: "> Refunds & Fraud Metrics"
- type: sum
-  sql: ${authorised_authorised_pc} - ${captured_refunded_pc}  ;;
-  value_format_name: euro_accounting_2_precision
-}
+  measure: diff_authorised_refunded {
+    group_label: "> Refunds & Fraud Metrics"
+    type: sum
+    sql: ${authorised_authorised_pc} - ${captured_refunded_pc}  ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: number_of_orders_per_psp_reference {
+    group_label: "> Payment Metrics"
+    label: "# Orders"
+    description: "Number of Orders (successful or unsuccessful)"
+    type: count_distinct
+    sql: ${order_uuid}  ;;
+  }
 
 }
