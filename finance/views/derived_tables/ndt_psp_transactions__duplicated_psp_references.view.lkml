@@ -26,6 +26,8 @@ view: ndt_psp_transactions__duplicated_psp_references {
     }
 
     dimension: is_duplicated_psp_reference {
+      group_label: "> Transaction Properties"
+      type: yesno
       description: "Flags if the PSP reference appears in more than one CT order"
       sql:
           case
