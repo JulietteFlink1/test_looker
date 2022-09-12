@@ -162,9 +162,16 @@ view: web_attribution {
   dimension: has_landed_on_webshop {
     description: "Whether user has landed directly on webshop (no previous hit on homepage or lp)"
     type: yesno
-    sql: case when ${TABLE}.landing_page = 'webshop' then  true else false end ;;
+    sql: case when ${TABLE}.landing_page = 'webshop' then true else false end ;;
   }
 
+  dimension: is_landing_page_category {
+    description: "Whether user has landed directly on webshop (no previous hit on homepage or lp)"
+    type: string
+    sql: case when ${TABLE}.page_path like '%city%' then 'city'
+              when ${TABLE}.page_path like '%recipes%' then 'recipe'
+               end ;;
+  }
 
 
   ############ Measures   ############
