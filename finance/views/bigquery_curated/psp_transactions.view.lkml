@@ -668,10 +668,9 @@ view: psp_transactions {
 
   measure: number_of_orders_per_psp_reference {
     group_label: "> Payment Metrics"
-    label: "# Orders (per PSP Reference)"
-    description: "This measure shows the number of distinct orders associated with a PSP reference"
+    label: "# Orders"
+    description: "Number of Orders (successful or unsuccessful)"
     type: count_distinct
-    sql_distinct_key: ${psp_reference} ;;
     sql: ${order_uuid}  ;;
   }
 
