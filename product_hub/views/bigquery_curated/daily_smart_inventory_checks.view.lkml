@@ -311,7 +311,7 @@ view: daily_smart_inventory_checks {
     group_label: "Rate Metrics"
     label: "% of Corrections"
     description: "# of Corrections/ # of Completed Checks."
-    sql: ${number_of_corrections}/${number_of_completed_checks} ;;
+    sql: ${number_of_corrections}/nullif(${number_of_completed_checks},0) ;;
   }
 
   measure: pct_of_completion {
@@ -320,7 +320,7 @@ view: daily_smart_inventory_checks {
     group_label: "Rate Metrics"
     label: "% of Completion"
     description: "# of Completed Checks/ (# of Completed Checks + # of Open Checks)"
-    sql: ${number_of_completed_checks}/(${number_of_completed_checks}+${number_of_open_checks}) ;;
+    sql: ${number_of_completed_checks}/nullif((${number_of_completed_checks}+${number_of_open_checks}),0) ;;
   }
 
 }
