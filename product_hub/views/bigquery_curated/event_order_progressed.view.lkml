@@ -279,6 +279,15 @@ view: event_order_progressed {
     sql: ${TABLE}.order_id ;;
   }
 
+  measure: number_of_refunded_orders {
+    group_label: "Total Metrics"
+    label: "# Refunded Orders"
+    description: "Number of Orders with at least one refunded item."
+    type: count_distinct
+    filters: [action: "item_refunded"]
+    sql: ${TABLE}.order_id ;;
+  }
+
   measure: sum_of_quantity {
     group_label: "Total Metrics"
     label: "Total Quantity"
