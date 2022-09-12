@@ -309,4 +309,23 @@ explore: vendor_performance {
     fields: [key_value_items.is_kvi]
   }
 
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  #  - - - - - - - - - -  DATA-3509 Drug Shadow Waste
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  join: product_prices_daily {
+
+    view_label: ""
+
+    sql_on:
+        ${products_hub_assignment.report_date}  = ${product_prices_daily.reporting_date}
+    and ${products_hub_assignment.hub_code}     = ${product_prices_daily.hub_code}
+    and ${products_hub_assignment.sku}          = ${product_prices_daily.sku}
+    -- filters when joining
+    and {% condition global_filters_and_parameters.datasource_filter %} ${product_prices_daily.reporting_date} {% endcondition %}
+    ;;
+    relationship: one_to_one
+    type: left_outer
+    fields: [product_prices_daily.avg_amt_product_price_gross]
+  }
+
 }

@@ -1,4 +1,7 @@
 view: customers_metrics {
+
+  required_access_grants: [can_view_customer_data]
+
   sql_table_name: `flink-data-prod.crm.crm_customer_feed`
     ;;
 

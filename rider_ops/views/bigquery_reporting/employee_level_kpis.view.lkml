@@ -140,6 +140,7 @@ view: employee_level_kpis {
   dimension: is_external {
     type: yesno
     sql: ${TABLE}.is_external ;;
+    label: "Is External Employee"
     description: "Based on Quinyx assinged shift (null when an employee is not assgined any shift)"
   }
 
@@ -582,7 +583,7 @@ view: employee_level_kpis {
   measure: number_of_excused_no_show_hours {
     group_label: "* Shift related *"
     type: sum
-    label: "# No Excused Show Hours"
+    label: "# Excused No Show Hours"
     sql: ${TABLE}.number_of_excused_no_show_minutes/60 ;;
     value_format_name: decimal_1
   }
@@ -590,7 +591,7 @@ view: employee_level_kpis {
   measure: number_of_unexcused_no_show_hours {
     group_label: "* Shift related *"
     type: sum
-    label: "# No Unexcused Show Hours"
+    label: "# Unexcused No Show Hours"
     sql: ${TABLE}.number_of_unexcused_no_show_minutes/60 ;;
     value_format_name: decimal_1
   }
@@ -598,7 +599,7 @@ view: employee_level_kpis {
   measure: number_of_deleted_excused_no_show_hours {
     group_label: "* Shift related *"
     type: sum
-    label: "# No Deleted Excused Show Hours"
+    label: "# Deleted Excused No Show Hours"
     sql: ${TABLE}.number_of_deleted_excused_no_show_minutes/60 ;;
     value_format_name: decimal_1
   }
