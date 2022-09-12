@@ -666,12 +666,4 @@ view: psp_transactions {
     value_format_name: euro_accounting_2_precision
   }
 
-  measure: number_of_orders {
-    group_label: "> Payment Metrics"
-    label: "# Orders"
-    description: "Number of Orders (successful or unsuccessful)"
-    type: count_distinct
-    sql: ${order_uuid}  ;;
-  }
-
 }

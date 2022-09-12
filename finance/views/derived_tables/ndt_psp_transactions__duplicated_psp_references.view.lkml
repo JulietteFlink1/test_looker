@@ -7,7 +7,7 @@
 view: ndt_psp_transactions__duplicated_psp_references {
     derived_table: {
       explore_source: psp_transactions {
-        column: number_of_orders {}
+        column: number_of_orders {field:psp_transactions.cnt_distinct_orders}
         column: psp_reference {}
       }
     }
