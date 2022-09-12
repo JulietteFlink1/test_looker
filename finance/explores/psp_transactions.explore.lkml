@@ -10,6 +10,7 @@ include: "/**/vat_order.view"
 include: "/**/global_filters_and_parameters.view"
 include: "/**/products.view"
 include: "/**/customer_address.view"
+include: "/**/ndt_psp_transactions__duplicated_psp_references.view"
 
 explore: psp_transactions {
   from: psp_transactions
@@ -105,6 +106,13 @@ explore: psp_transactions {
     relationship: many_to_many
     ## Full Outer Join to cover potential cases where psp_reference is missing in one or the other table.
     type: full_outer
+  }
+
+  join: ndt_psp_transactions__duplicated_psp_references {
+    view_label: "PSP Transactions"
+    sql_on: ${psp_transactions.psp_reference}  = ${ndt_psp_transactions__duplicated_psp_references.psp_reference} ;;
+    relationship: many_to_one
+    type: left_outer
   }
 
 
