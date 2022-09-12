@@ -16,7 +16,7 @@ view: psp_transactions {
   }
 
   dimension: country_iso {
-    group_label: "> Geography"
+    group_label: "> Geographic Dimensions"
     type: string
     sql:${TABLE}.country_iso ;;
   }
@@ -86,7 +86,7 @@ view: psp_transactions {
   }
 
   dimension: merchant_account {
-    group_label: "> Geography"
+    group_label: "> Geographic Dimensions"
     type: string
     sql: ${TABLE}.merchant_account ;;
   }
