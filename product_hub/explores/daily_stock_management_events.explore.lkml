@@ -11,6 +11,7 @@ include: "/**/employee_level_kpis.view.lkml"
 include: "/views/bigquery_tables/curated_layer/products.view.lkml"
 include: "/views/bigquery_tables/curated_layer/hubs_ct.view.lkml"
 include: "/product_hub/views/bigquery_curated/daily_stock_management_events.view.lkml"
+include: "/product_hub/views/sql_derived_tables/inventory_movement_id_times.view"
 
 explore: daily_stock_management_events {
   from:  daily_stock_management_events
@@ -42,9 +43,17 @@ explore: daily_stock_management_events {
     type: left_outer
     relationship: many_to_one
   }
+  join: inventory_movement_id_times {
+    view_label: "Inventory Movement Id Times"
+    sql_on: ${inventory_movement_id_times.inventory_movement_id}=${daily_stock_management_events.inventory_movement_id}
+      and {% condition global_filters_and_parameters.datasource_filter %}
+        ${inventory_movement_id_times.event_timestamp_date} {% endcondition %};;
+    type: left_outer
+    relationship: one_to_one
+  }
 
   join: products {
-    view_label: "5 Product Dimensions"
+    view_label: "Product Dimensions"
     fields: [product_name, category]
     sql_on: ${products.product_sku} = ${daily_stock_management_events.sku};;
     type: left_outer
@@ -52,7 +61,7 @@ explore: daily_stock_management_events {
   }
 
   join: hubs_ct {
-    view_label: "6 Hub Dimensions"
+    view_label: "Hub Dimensions"
     sql_on: ${daily_stock_management_events.hub_code} = ${hubs_ct.hub_code} ;;
     type: left_outer
     relationship: many_to_one
