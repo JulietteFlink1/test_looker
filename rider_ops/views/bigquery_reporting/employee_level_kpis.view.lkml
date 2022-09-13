@@ -214,6 +214,20 @@ view: employee_level_kpis {
     sql: ${TABLE}.number_of_orders_with_handling_time ;;
   }
 
+  measure: number_of_orders_with_riding_to_customer_time {
+    group_label: "* Logistics *"
+    type: sum
+    hidden: yes
+    sql: ${TABLE}.number_of_orders_with_riding_to_customer_time ;;
+  }
+
+  measure: number_of_orders_with_riding_to_hub_time {
+    group_label: "* Logistics *"
+    type: sum
+    hidden: yes
+    sql: ${TABLE}.number_of_orders_with_riding_to_hub_time ;;
+  }
+
   measure: number_of_products_with_damaged_products_issues_post {
     group_label: "* Logistics *"
     type: sum
@@ -388,7 +402,7 @@ view: employee_level_kpis {
     type: number
     label: "AVG Riding to Hub time (min)"
     description: "Average Riding time from customer location back to the hub (<1min or >30min)."
-    sql: ${sum_riding_to_hub_minutes}/nullif(${number_of_orders_with_handling_time},0) ;;
+    sql: ${sum_riding_to_hub_minutes}/nullif(${number_of_orders_with_riding_to_hub_time},0) ;;
     value_format_name: decimal_1
   }
 
@@ -406,7 +420,7 @@ view: employee_level_kpis {
     type: number
     label: "AVG Riding To Customer Time (min)"
     description: "Average riding to customer time considering delivery start to arrival at customer. Outliers excluded (<1min or >30min)"
-    sql: ${sum_riding_to_customer_time_minutes}/nullif(${number_of_orders_with_handling_time},0) ;;
+    sql: ${sum_riding_to_customer_time_minutes}/nullif(${number_of_orders_with_riding_to_customer_time},0) ;;
     value_format_name: decimal_1
   }
 

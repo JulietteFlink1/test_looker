@@ -890,6 +890,14 @@ view: orders {
     sql: ${TABLE}.is_successful_order ;;
   }
 
+  dimension: order_was_withheld {
+    group_label: "* Operations / Logistics *"
+    label: "Was the order withheld (Yes/No)?"
+    description: "Checks if the order was withheld from hub back into dispatching queue at least once."
+    type: yesno
+    sql: ${TABLE}.order_was_withheld ;;
+  }
+
   dimension: is_click_and_collect_order {
     group_label: "* Order Dimensions *"
     type: yesno
@@ -1098,6 +1106,22 @@ view: orders {
     sql: ${TABLE}.picking_started_timestamp ;;
   }
 
+  dimension: order_offered_to_hub_timestamp {
+    group_label: "* Operations / Logistics *"
+    label: "Order Offered to Hub Timestamp"
+    description: "Order offered to hub from dispatching events. Takes the last event if there are multiple *offered* events"
+    type: date_time
+    sql: ${TABLE}.order_offered_to_hub_timestamp ;;
+  }
+
+  dimension: order_withheld_timestamp {
+    group_label: "* Operations / Logistics *"
+    label: "Order Withheld from Hub"
+    description: "Order withheld back into the dispatching queue (if any). Takes the last event if there are multiple *withheld* events"
+    type: date_time
+    sql: ${TABLE}.order_withheld_timestamp ;;
+  }
+
   dimension: order_rider_claimed_timestamp {
     group_label: "* Operations / Logistics *"
     label: "Rider Claimed Timestamp"
@@ -1215,6 +1239,14 @@ view: orders {
     label: "Picker Queuing Time Minutes"
     type: number
     sql: ${TABLE}.picker_queuing_time_minutes ;;
+  }
+
+  dimension: dispatching_queuing_time_minutes {
+    group_label: "* Operations / Logistics *"
+    label: "Dispatching Queuing Time Minutes"
+    description: "Dispatch-related queuing time - from order created to order offered to hub for picking. Outliers excluded (<0min or >120min)"
+    type: number
+    sql: ${TABLE}.dispatching_queuing_time_minutes ;;
   }
 
   dimension: at_customer_time_minutes {
@@ -1676,13 +1708,22 @@ view: orders {
     value_format: "hh:mm:ss"
   }
 
+  measure: avg_dispatching_queuing_time_minutes {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Dispatching Queuing Time"
+    description: "Average dispatch-related queuing time - from order created to order offered to hub for picking. Outliers excluded (<0min or >120min)"
+    type: average
+    sql:${dispatching_queuing_time_minutes};;
+    value_format_name: decimal_1
+  }
 
   measure: avg_picker_queuing_time {
     alias: [avg_reaction_time]
     group_label: "* Operations / Logistics *"
     label: "AVG Picker Queuing Time"
-    description: "Average Picker Queuing Time of the Picker considering order placement until picking started. Outliers excluded (<0min or >120min)"
-    hidden:  no
+    description:
+      "Average picker acceptance-related queuing - from order offered to hub to order started being picked.
+      Outliers excluded (>120min). If offered to hub time is not available (no dispatching event), takes the time from order created to picking started"
     type: average
     sql:${picker_queuing_time};;
     value_format_name: decimal_1
@@ -1692,7 +1733,6 @@ view: orders {
     group_label: "* Operations / Logistics *"
     label: "AVG Picking Time"
     description: "Average Picking Time considering first fulfillment to second fulfillment created. Outliers excluded (<0min or >30min)"
-    hidden:  no
     type: average
     sql:${picking_time_minutes};;
     value_format_name: decimal_1
