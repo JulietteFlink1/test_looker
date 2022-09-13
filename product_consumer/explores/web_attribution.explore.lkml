@@ -38,7 +38,7 @@ explore: web_attribution {
       daily_user_aggregates.is_account_registration_succeeded,daily_user_aggregates.is_account_login_succeeded,
       daily_user_aggregates.is_sms_verification_request_viewed, daily_user_aggregates.is_sms_verification_confirmed,
       daily_user_aggregates.is_voucher_redemption_attempted, daily_user_aggregates.is_voucher_applied_succeeded,
-      daily_user_aggregates.is_active_user, daily_user_aggregates.country_iso
+      daily_user_aggregates.is_active_user, daily_user_aggregates.country_iso, daily_user_aggregates.is_user_logged_in,
     ]
     sql_on: ${web_attribution.event_date_date} = ${daily_user_aggregates.event_date_at_date}
       and ${web_attribution.anonymous_id} = ${daily_user_aggregates.user_uuid};;
