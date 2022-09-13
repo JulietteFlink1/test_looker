@@ -109,8 +109,9 @@ explore: order_orderline_cl_retail_customized {
 
   join: erp_buying_prices {
 
-    # to be deprecated in favour of erp_buying_prices joine in: order_orderline_cl.explore
-    view_label: ""
+    # this join overwrites the existing join of erp_buying_prices in: order_orderline_cl.explore
+    # need to avoid this in the future
+    view_label: "ERP Supplier Prices"
 
 
     type: left_outer
