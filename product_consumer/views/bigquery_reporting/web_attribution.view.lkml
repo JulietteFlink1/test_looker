@@ -1,6 +1,5 @@
 view: web_attribution {
-  # sql_table_name: `flink-data-prod.reporting.daily_web_attribution`;;
-  sql_table_name: `flink-data-dev.dbt_nwierzbowska.daily_web_attribution`;;
+  sql_table_name: `flink-data-prod.reporting.daily_web_attribution`;;
 
 
   ############   Diemnsions   ############
