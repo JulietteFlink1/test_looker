@@ -2163,7 +2163,7 @@ view: orders {
     description: "The mean absolute error between actual picker queuing time and estimated picker queuing time"
     hidden:  no
     type: average
-    sql: abs(${picker_queuing_time} - ${estimated_queuing_time_for_picker_minutes});;
+    sql: abs(${picker_queuing_time}+coalesce(${dispatching_queuing_time_minutes}, 0) - ${estimated_queuing_time_for_picker_minutes});;
     value_format_name: decimal_1
   }
 
