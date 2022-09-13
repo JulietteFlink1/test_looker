@@ -94,6 +94,19 @@ view: vehicle_suppliers {
     sql: ${TABLE}.vehicle_id ;;
   }
 
+  dimension: is_archived_bike {
+    group_label: "> Vehicle Properties"
+    type: yesno
+    sql:
+        case
+            when ${archived_at_date} is not null
+                then
+                    true
+            else
+                false
+        end ;;
+  }
+
   dimension: vehicle_kind {
     group_label: "> Vehicle Properties"
     description: "Vehicle kind e.g. bicycle"
@@ -138,7 +151,7 @@ view: vehicle_suppliers {
     description: "Number of bikes currently operational."
     type: count_distinct
     sql: ${vehicle_id} ;;
-    filters: [operational_status: "operational"]
+    filters: [operational_status: "operational", is_archived_bike: "no"]
   }
 
   measure: number_of_in_maintenance_vehicles {
@@ -147,7 +160,7 @@ view: vehicle_suppliers {
     description: "Number of bikes currently in maintenance."
     type: count_distinct
     sql: ${vehicle_id} ;;
-    filters: [operational_status: "in_maintenance"]
+    filters: [operational_status: "in_maintenance",is_archived_bike: "no"]
   }
 
   measure: number_of_maintenance_required_vehicles {
@@ -156,7 +169,7 @@ view: vehicle_suppliers {
     description: "Number of bikes for which maintenance is required."
     type: count_distinct
     sql: ${vehicle_id} ;;
-    filters: [operational_status: "maintenance_required"]
+    filters: [operational_status: "maintenance_required",is_archived_bike: "no"]
   }
 
   measure: number_of_offline_vehicles {
@@ -165,7 +178,7 @@ view: vehicle_suppliers {
     description: "Number of offline bikes."
     type: count_distinct
     sql: ${vehicle_id} ;;
-    filters: [operational_status: "offline"]
+    filters: [operational_status: "offline",is_archived_bike: "no"]
   }
 
   measure: number_of_online_vehicles {
@@ -174,7 +187,7 @@ view: vehicle_suppliers {
     description: "Number of online bikes. (any operational status except offline)"
     type: count_distinct
     sql: ${vehicle_id} ;;
-    filters: [operational_status: "-offline"]
+    filters: [operational_status: "-offline", is_archived_bike: "no"]
   }
 
   measure: share_of_operational_vehicles {
