@@ -8,9 +8,9 @@
 
 include: "/**/global_filters_and_parameters.view.lkml"
 include: "/**/employee_level_kpis.view.lkml"
-include: "/views/bigquery_tables/curated_layer/products.view.lkml"
-include: "/views/bigquery_tables/curated_layer/hubs_ct.view.lkml"
-include: "/product_hub/views/bigquery_curated/daily_stock_management_events.view.lkml"
+include: "/**/products.view.lkml"
+include: "/**/hubs_ct.view.lkml"
+include: "/**/daily_stock_management_events.view.lkml"
 
 explore: daily_stock_management_events {
   from:  daily_stock_management_events

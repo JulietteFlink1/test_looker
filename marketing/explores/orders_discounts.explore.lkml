@@ -1,4 +1,3 @@
-include: "/views/bigquery_tables/curated_layer/*.view"
 include: "/**/*.view"
 include: "/*/**/vat_order.view.lkml"
 
