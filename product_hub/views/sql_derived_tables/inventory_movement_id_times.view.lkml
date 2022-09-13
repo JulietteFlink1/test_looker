@@ -64,4 +64,35 @@ view: inventory_movement_id_times {
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   #~~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~~
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  # Note that for this measures to be accurate we need to use sum_distinct with sql_distinct_key = order_id
+  # This is because this view is being joined to daily_events and if we use a normal sum it will be suming
+  # duplicate values
+
+  measure: sum_of_cart_to_drop_list_seconds {
+    label: "Cart To Drop List seconds"
+    description: "Sum of cart_to_drop_list time in seconds."
+    type: sum_distinct
+    value_format: "0"
+    sql_distinct_key: ${inventory_movement_id} ;;
+    sql: ${cart_to_drop_list_seconds} ;;
+  }
+
+  measure: sum_of_drop_list_created_to_finished_seconds {
+    label: "Drop List Created to Finished seconds"
+    description: "Sum of drop_list_created_to_finished time in seconds."
+    type: sum_distinct
+    value_format: "0"
+    sql_distinct_key: ${inventory_movement_id} ;;
+    sql: ${drop_list_created_to_finished_seconds} ;;
+  }
+
+  measure: sum_of_cart_to_finished_seconds {
+    label: "Cart to Finished seconds"
+    description: "Sum of cart_to_finished time in seconds."
+    type: sum_distinct
+    value_format: "0.#"
+    sql_distinct_key: ${inventory_movement_id} ;;
+    sql: ${cart_to_finished_seconds} ;;
+  }
 }
