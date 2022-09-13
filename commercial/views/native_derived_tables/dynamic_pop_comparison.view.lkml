@@ -1,23 +1,23 @@
 # If necessary, uncomment the line below to include explore_source.
-include: "order_orderline_cl_retail_customized.explore.lkml"
+include: "/**/order_orderline_cl_retail_customized.explore.lkml"
 
 view: dynamic_pop_comparison {
   derived_table: {
     explore_source: order_orderline_cl_retail_customized {
-      column: country_iso { field: hubs.country_iso }
-      column: created_raw { field: orderline.created_raw }
-      column: created_date { field: orderline.created_date }
-      column: sku { field: products.product_sku }
-      column: product_name { field: products.product_name }
-      column: hub_code { field: hubs.hub_code }
-      column: city { field: hubs.city }
-      column: category { field: products.category}
-      column: subcategory { field: products.subcategory}
-      column: cnt_orders { field: orders_cl.cnt_orders }
-      column: order_uuid { field: orders_cl.order_uuid }
+      column: country_iso          { field: hubs.country_iso }
+      column: created_raw          { field: orderline.created_raw }
+      column: created_date         { field: orderline.created_date }
+      column: sku                  { field: products.product_sku }
+      column: product_name         { field: products.product_name }
+      column: hub_code             { field: hubs.hub_code }
+      column: city                 { field: hubs.city }
+      column: category             { field: products.category}
+      column: subcategory          { field: products.subcategory}
+      column: cnt_orders           { field: orders_cl.cnt_orders }
+      column: order_uuid           { field: orders_cl.order_uuid }
       column: sum_item_price_gross { field: orderline.sum_item_price_gross}
-      column: sum_item_quantity { field: orderline.sum_item_quantity}
-      column: margin_absolute { field: erp_buying_prices.margin_absolute}
+      column: sum_item_quantity    { field: orderline.sum_item_quantity}
+      column: margin_absolute      { field: erp_buying_prices.margin_absolute}
       derived_column: unique_id {
         sql: concat(sku, country_iso, created_raw, hub_code) ;;
       }
