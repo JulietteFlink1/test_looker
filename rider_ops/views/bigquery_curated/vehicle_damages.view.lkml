@@ -139,4 +139,47 @@ view: vehicle_damages {
     value_format: "0.0"
     sql: ${number_of_damaged_days} ;;
   }
+
+  ######### Parameters
+
+  parameter: date_granularity {
+    group_label: "> Dates"
+    label: "Date Granularity"
+    type: unquoted
+    allowed_value: { value: "Day" }
+    allowed_value: { value: "Week" }
+    allowed_value: { value: "Month" }
+    default_value: "Day"
+  }
+
+
+  ######## Dynamic Dimensions
+
+  dimension: damage_solved_date_dynamic {
+    group_label: "> Dates"
+    label: "Damage Solved Date (Dynamic)"
+    label_from_parameter: date_granularity
+    sql:
+    {% if date_granularity._parameter_value == 'Day' %}
+      ${damaged_solved_date}
+    {% elsif date_granularity._parameter_value == 'Week' %}
+      ${damaged_solved_week}
+    {% elsif date_granularity._parameter_value == 'Month' %}
+      ${damaged_solved_month}
+    {% endif %};;
+  }
+
+  dimension: damage_created_date_dynamic {
+    group_label: "> Dates"
+    label: "Damage Created Date (Dynamic)"
+    label_from_parameter: date_granularity
+    sql:
+    {% if date_granularity._parameter_value == 'Day' %}
+      ${damage_created_date}
+    {% elsif date_granularity._parameter_value == 'Week' %}
+      ${damage_created_week}
+    {% elsif date_granularity._parameter_value == 'Month' %}
+      ${damage_created_month}
+    {% endif %};;
+  }
 }

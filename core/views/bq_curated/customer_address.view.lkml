@@ -1,5 +1,5 @@
 view: customer_address {
-  view_label: "* Confidential: Customer Address *"
+  view_label: "⚠️ Confidential: Customer Address ⚠️"
   sql_table_name: `flink-data-prod.curated.customer_address`;;
   required_access_grants: [can_view_customer_data]
 
@@ -74,6 +74,7 @@ view: customer_address {
   dimension: order_uuid {
     type: string
     sql: ${TABLE}.order_uuid ;;
+    primary_key: yes
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
