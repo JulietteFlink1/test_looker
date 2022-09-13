@@ -143,13 +143,13 @@ view: dynamic_pop_comparison {
 ## ------------------ USER FILTERS  ------------------ ##
 
   filter: first_period_filter {
-    view_label: "* Dynamic PoP *"
+    view_label: "Dynamic PoP"
     description: "Choose the first date range to compare against. This must be before the second period"
     type: date
   }
 
   filter: second_period_filter {
-    view_label: "* Dynamic PoP *"
+    view_label: "Dynamic PoP"
     description: "Choose the second date range to compare to. This must be after the first period"
     type: date
   }
@@ -157,14 +157,14 @@ view: dynamic_pop_comparison {
 ## ------------------ HIDDEN HELPER DIMENSIONS  ------------------ ##
 
   dimension: days_from_start_first {
-    view_label: "* Dynamic PoP *"
+    view_label: "Dynamic PoP"
     hidden: yes
     type: number
     sql: DATEDIFF('day',  {% date_start first_period_filter %}, ${created_date}) ;;
   }
 
   dimension: days_from_start_second {
-    view_label: "* Dynamic PoP *"
+    view_label: "Dynamic PoP"
     hidden: yes
     type: number
     sql: DATEDIFF('day',  {% date_start second_period_filter %}, ${created_date}) ;;
@@ -173,7 +173,7 @@ view: dynamic_pop_comparison {
 ## ------------------ DIMENSIONS TO PLOT ------------------ ##
 
   dimension: days_from_first_period {
-    view_label: "* Dynamic PoP *"
+    view_label: "Dynamic PoP"
     description: "Select for Grouping (Rows)"
     type: number
     sql:
@@ -187,7 +187,7 @@ view: dynamic_pop_comparison {
 
 
   dimension: period_selected {
-    view_label: "* Dynamic PoP *"
+    view_label: "Dynamic PoP"
     label: "First or second period"
     description: "Select for Comparison (Pivot)"
     type: string
@@ -203,7 +203,7 @@ view: dynamic_pop_comparison {
 ## Filtered measures
 # SUM Item Prices Sold (gross)
   measure: second_period_sum_item_price_gross {
-    view_label: "* Dynamic PoP *"
+    view_label: "Dynamic PoP"
     label: "Second P. - SUM Item Prices Sold (gross)"
     type: sum
     sql: ${sum_item_price_gross};;
@@ -213,7 +213,7 @@ view: dynamic_pop_comparison {
   }
 
   measure: first_period_sum_item_price_gross {
-    view_label: "* Dynamic PoP *"
+    view_label: "Dynamic PoP"
     label: "First P. - SUM Item Prices Sold (gross)"
     type: sum
     sql: ${sum_item_price_gross};;
@@ -223,7 +223,7 @@ view: dynamic_pop_comparison {
   }
 
   measure: sum_item_price_gross_pop_change {
-    view_label: "* Dynamic PoP *"
+    view_label: "Dynamic PoP"
     label: "% PoP - SUM Item Prices Sold (gross)"
     type: number
     sql: (1.0 * ${second_period_sum_item_price_gross} / NULLIF(${first_period_sum_item_price_gross} ,0)) - 1 ;;
@@ -233,7 +233,7 @@ view: dynamic_pop_comparison {
 
 # SUM Item Quantity Sold
   measure: second_period_sum_item_quantity {
-    view_label: "* Dynamic PoP *"
+    view_label: "Dynamic PoP"
     label: "Second P. - SUM Item Quantity Sold"
     type: sum
     sql: ${sum_item_quantity};;
@@ -243,7 +243,7 @@ view: dynamic_pop_comparison {
   }
 
   measure: first_period_sum_item_quantity {
-    view_label: "* Dynamic PoP *"
+    view_label: "Dynamic PoP"
     label: "First P. - SUM Item Quantity Sold"
     type: sum
     sql: ${sum_item_quantity};;
@@ -253,7 +253,7 @@ view: dynamic_pop_comparison {
   }
 
   measure: sum_item_quantity_pop_change {
-    view_label: "* Dynamic PoP *"
+    view_label: "Dynamic PoP"
     label: "% PoP - SUM Item Quantity Sold"
     type: number
     sql: (1.0 * ${second_period_sum_item_quantity} / NULLIF(${first_period_sum_item_quantity} ,0)) - 1 ;;
@@ -263,7 +263,7 @@ view: dynamic_pop_comparison {
 
 # # of Orders
   measure: second_period_cnt_orders {
-    view_label: "* Dynamic PoP *"
+    view_label: "Dynamic PoP"
     label: "Second P. - # of Orders"
     type: count_distinct
     sql: ${order_uuid};;
@@ -273,7 +273,7 @@ view: dynamic_pop_comparison {
   }
 
   measure: first_period_cnt_orders {
-    view_label: "* Dynamic PoP *"
+    view_label: "Dynamic PoP"
     label: "First P. - # of Orders"
     type: count_distinct
     sql: ${order_uuid};;
@@ -283,7 +283,7 @@ view: dynamic_pop_comparison {
   }
 
   measure: cnt_orders_pop_change {
-    view_label: "* Dynamic PoP *"
+    view_label: "Dynamic PoP"
     label: "% PoP - # of Orders"
     type: number
     sql: (1.0 * ${second_period_cnt_orders} / NULLIF(${first_period_cnt_orders} ,0)) - 1 ;;
@@ -293,7 +293,7 @@ view: dynamic_pop_comparison {
 
 # Gross Profit
 #  measure: second_period_sum_total_margin_abs {
-#    view_label: "* Dynamic PoP *"
+#    view_label: "Dynamic PoP"
 #    label: "Second P. - € Sum Gross Profit"
 #    type: sum
 #    sql: ${margin_absolute};;
@@ -303,7 +303,7 @@ view: dynamic_pop_comparison {
 #  }
 #
 #  measure: first_period_sum_total_margin_abs {
-#    view_label: "* Dynamic PoP *"
+#    view_label: "Dynamic PoP"
 #    label: "First P. - € Sum Gross Profit"
 #    type: sum
 #    sql: ${margin_absolute};;
@@ -313,7 +313,7 @@ view: dynamic_pop_comparison {
 #  }
 #
 #  measure: sum_total_margin_abs_pop_change {
-#    view_label: "* Dynamic PoP *"
+#    view_label: "Dynamic PoP"
 #    label: "% PoP - € Sum Gross Profit"
 #    type: number
 #    sql: (1.0 * ${second_period_sum_total_margin_abs} / NULLIF(${first_period_sum_total_margin_abs} ,0)) - 1 ;;
