@@ -126,7 +126,7 @@ view: vehicle_suppliers {
 
   measure: number_of_vehicles {
     group_label: "> Vehicle Status"
-    label: "# Bikes"
+    label: "# Offline and Online Bikes"
     description: "Number of bikes with any operational status."
     type: count_distinct
     sql: ${vehicle_id} ;;
@@ -168,12 +168,21 @@ view: vehicle_suppliers {
     filters: [operational_status: "offline"]
   }
 
+  measure: number_of_online_vehicles {
+    group_label: "> Vehicle Status"
+    label: "# Bikes"
+    description: "Number of online bikes. (any operational status except offline)"
+    type: count_distinct
+    sql: ${vehicle_id} ;;
+    filters: [operational_status: "-offline"]
+  }
+
   measure: share_of_operational_vehicles {
     type: number
     group_label: "> Vehicle Status"
     label: "% Operational Bikes"
-    description: "Share of bikes that are currently operational out of all bikes"
-    sql: safe_divide(${number_of_operational_vehicles},${number_of_vehicles}) ;;
+    description: "Share of bikes that are currently operational out of all online bikes (excluding offline bikes)"
+    sql: safe_divide(${number_of_operational_vehicles},${number_of_online_vehicles}) ;;
     value_format: "0.0%"
   }
 
@@ -181,8 +190,17 @@ view: vehicle_suppliers {
     type: number
     group_label: "> Vehicle Status"
     label: "% In Maintenance Bikes"
-    description: "Share of bikes that are currently in maintenance out of all bikes"
-    sql: safe_divide(${number_of_in_maintenance_vehicles},${number_of_vehicles}) ;;
+    description: "Share of bikes that are currently in maintenance out of all online bikes"
+    sql: safe_divide(${number_of_in_maintenance_vehicles},${number_of_online_vehicles}) ;;
+    value_format: "0.0%"
+  }
+
+  measure: share_of_maintenance_required_vehicles {
+    type: number
+    group_label: "> Vehicle Status"
+    label: "% Maintenance Required Bikes"
+    description: "Share of bikes with status 'maintenance_required' out of all online bikes"
+    sql: safe_divide(${number_of_in_maintenance_vehicles},${number_of_online_vehicles}) ;;
     value_format: "0.0%"
   }
 
