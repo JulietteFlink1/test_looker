@@ -200,7 +200,7 @@ view: vehicle_suppliers {
     group_label: "> Vehicle Status"
     label: "% Maintenance Required Bikes"
     description: "Share of bikes with status 'maintenance_required' out of all online bikes"
-    sql: safe_divide(${number_of_in_maintenance_vehicles},${number_of_online_vehicles}) ;;
+    sql: safe_divide(${number_of_maintenance_required_vehicles},${number_of_online_vehicles}) ;;
     value_format: "0.0%"
   }
 
