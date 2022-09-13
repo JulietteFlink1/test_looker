@@ -24,12 +24,11 @@ explore: web_attribution {
 
   sql_always_where: {% condition global_filters_and_parameters.datasource_filter %} ${web_attribution.event_date_date} {% endcondition %};;
 
-  always_filter: {
-    filters: [
-      web_attribution.event_date_date: "last 7 days",
-      daily_events.event_date: "last 100 days"
-    ]
-  }
+  # always_filter: {
+  #   filters: [
+  #     web_attribution.event_date_date: "last 7 days"
+  #     ]
+  # }
 
   join: daily_user_aggregates {
     view_label: "Daily User Aggregates"
