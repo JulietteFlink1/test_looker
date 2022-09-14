@@ -8,13 +8,13 @@
 
 include: "/**/global_filters_and_parameters.view.lkml"
 include: "/**/employee_level_kpis.view.lkml"
-include: "/views/bigquery_tables/curated_layer/products.view.lkml"
-include: "/views/bigquery_tables/curated_layer/hubs_ct.view.lkml"
-include: "/views/bigquery_tables/curated_layer/orders.view.lkml"
-include: "/product_hub/views/bigquery_curated/daily_hub_staff_events.view.lkml"
-include: "/product_hub/views/bigquery_curated/event_order_progressed.view.lkml"
-include: "/product_hub/views/bigquery_curated/event_order_state_updated.view.lkml"
-include: "/product_hub/views/sql_derived_tables/picking_times.view.lkml"
+include: "/**/products.view.lkml"
+include: "/**/hubs_ct.view.lkml"
+include: "/**/orders.view.lkml"
+include: "/**/daily_hub_staff_events.view.lkml"
+include: "/**/event_order_progressed.view.lkml"
+include: "/**/event_order_state_updated.view.lkml"
+include: "/**/picking_times.view.lkml"
 
 explore: daily_hub_staff_events {
   from:  daily_hub_staff_events

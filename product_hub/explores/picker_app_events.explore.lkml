@@ -7,8 +7,8 @@
 # Questions that can be answered
 # - How pickers use the functionality of the picker app
 
-include: "/**/views/bigquery_curated/daily_picker_events.view"
-include: "/views/bigquery_tables/curated_layer/products.view"
+include: "/**/daily_picker_events.view"
+include: "/**/products.view"
 include: "/**/global_filters_and_parameters.view.lkml"
 
 explore: daily_picker_events {

@@ -9,9 +9,9 @@
 # - Time spent on checks
 # - Amount of corrections
 
-include: "/**/views/bigquery_curated/daily_smart_inventory_checks.view"
-include: "/views/bigquery_tables/curated_layer/products.view"
-include: "/views/bigquery_tables/curated_layer/hubs_ct.view.lkml"
+include: "/**/daily_smart_inventory_checks.view"
+include: "/**/products.view"
+include: "/**/hubs_ct.view.lkml"
 include: "/**/global_filters_and_parameters.view.lkml"
 
 explore: smart_inventory_checks {
