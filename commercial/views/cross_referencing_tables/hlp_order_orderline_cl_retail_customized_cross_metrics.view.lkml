@@ -2,7 +2,7 @@ view: hlp_order_orderline_cl_retail_customized_cross_metrics {
 
   measure: sum_item_price_after_product_discount_gross_dynamic {
 
-    label: "SUM Item Price sold (gross -dynamic)"
+    label: "SUM Item Price sold (gross - dynamic)"
     description: "Sum of sold Item prices (incl. VAT) before and after application of discounts (defined by the parameter 'Is After Deduction of Product Discounts')."
 
     sql:
@@ -20,7 +20,7 @@ view: hlp_order_orderline_cl_retail_customized_cross_metrics {
   measure: sum_number_of_orders_dynamic {
 
     label: "# Orders (per order-day/week/month & country)"
-    description: "Count of Orders per order-day and country. This metric depends on the parameter 'Select Date Granularity' from the orders table"
+    description: "Count of Orders per order-day/week/month and country. This metric depends on the parameter 'Select Date Granularity' from the orders table"
     group_label: "Gross Profit per Customer/Order"
 
     sql:
