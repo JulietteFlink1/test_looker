@@ -39,6 +39,7 @@ view: daily_user_aggregates {
 
   dimension: daily_user_uuid {
     type: string
+    group_label: "IDs"
     hidden: no
     primary_key: yes
     description: "A surrogate key representing a unique identifier per user per day. If the same users interacted with the app on two different days, they will get a different identifier."
@@ -871,6 +872,14 @@ view: daily_user_aggregates {
     sql: ${user_uuid} ;;
     filters: [is_active_user: "yes"]
   }
+  measure: daily_active_users {
+    group_label: "User Metrics"
+    label: "# Daily Active Users"
+    description: "Unlike the Active Users metric, where a single user is counted once per the given date granularity, this metric counts each user each day that they are active."
+    type: count_distinct
+    sql: ${daily_user_uuid} ;;
+    filters: [is_active_user: "yes"]
+  }
 
   #### User Metrics  ####
 
@@ -880,6 +889,15 @@ view: daily_user_aggregates {
     description: "Number of users with at least one order"
     type: count_distinct
     sql: ${user_uuid} ;;
+    filters: [is_order_placed: "yes"]
+  }
+  measure: daily_users_with_order {
+    group_label: "User Metrics"
+    label: "# Daily Users with Orders"
+    hidden: yes
+    description: "Unlike the Users with orders metric, where a single user is counted once per the given date granularity, this metric counts each user each day that they are active"
+    type: count_distinct
+    sql: ${daily_user_uuid} ;;
     filters: [is_order_placed: "yes"]
   }
   measure: users_with_address {
@@ -971,6 +989,14 @@ view: daily_user_aggregates {
     description: "# users with at least one order / # active users"
     value_format_name: percent_1
     sql: ${users_with_order} / nullif(${active_users},0) ;;
+  }
+  measure: daily_cvr {
+    group_label: "Conversions - All Active Users (%)"
+    label: "Daily CVR"
+    type: number
+    description: "Unlike the CVR metric, where a single user is counted once per the given date granularity, this metric counts each user each day that they are active."
+    value_format_name: percent_1
+    sql: ${daily_users_with_order} / nullif(${daily_active_users},0) ;;
   }
   measure: mcvr_1 {
     group_label: "Conversions - All Active Users (%)"
