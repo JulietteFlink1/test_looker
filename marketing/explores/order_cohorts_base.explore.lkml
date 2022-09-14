@@ -1,8 +1,8 @@
 #include: "/views/bigquery_tables/reporting_layer/cohorts/order_cohorts_base.view.lkml"
-include: "/marketing/views/bigquery_reporting/customer_cohorts_base.view.lkml"
-include: "/views/bigquery_tables/curated_layer/hubs_ct.view.lkml"
-include: "/views/bigquery_tables/curated_layer/discounts.view"
-include: "/views/bigquery_tables/curated_layer/orders.view"
+include: "/**/customer_cohorts_base.view.lkml"
+include: "/**/hubs_ct.view.lkml"
+include: "/**/discounts.view"
+include: "/**/orders.view"
 
 # # Select the views that should be a part of this model,
 # # and define the joins that connect them together.

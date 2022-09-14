@@ -149,7 +149,7 @@ view: daily_stock_management_events {
     group_label: "Generic Dimensions"
     label: "Quantity"
     type: string
-    sql: ${TABLE}.quantity ;;
+    sql: cast(${TABLE}.quantity as int64) ;;
   }
 
   dimension: reason {
@@ -191,6 +191,7 @@ view: daily_stock_management_events {
     label: "# Inventory Movements"
     description: "Number of Inventory Movements"
     type: count_distinct
+    filters: [event_name: "inventory_progress, inventory_state_updated"]
     sql: ${TABLE}.inventory_movement_id ;;
   }
 
@@ -200,25 +201,99 @@ view: daily_stock_management_events {
     description: "Sum of quantity inbounded by old flow."
     type: sum
     filters: [event_name: "stock_changed", direction: "inbounding"]
-    sql: ${TABLE}.quantity ;;
+    sql: ${quantity} ;;
   }
 
-  measure: sum_quantity_inbounded {
+  measure: sum_quantity_dropped {
     group_label: "Total Metrics"
-    label: "Quantity Inbounded"
-    description: "Sum of quantity inbounded by new flow."
+    label: "Quantity Dropped"
+    description: "Sum of quantity dropped."
     type: sum
     filters: [event_name: "inventory_progress", action: "item_dropped"]
-    sql: ${TABLE}.quantity ;;
+    sql: ${quantity} ;;
   }
 
-  measure: sum_quantity_ {
+  measure: sum_quantity_added_to_cart {
     group_label: "Total Metrics"
-    label: "Quantity Inbounded"
-    description: "Sum of quantity inbounded by new flow."
+    label: "Quantity Added To Cart"
+    description: "Sum of quantity added to cart."
     type: sum
-    filters: [event_name: "inventory_progress", action: "item_dropped"]
-    sql: ${TABLE}.quantity ;;
+    filters: [event_name: "inventory_progress", action: "item_added_to_cart"]
+    sql: ${quantity} ;;
   }
-  # =========  Rate Metrics  =========
+
+  measure: sum_quantity_removed_from_cart {
+    group_label: "Total Metrics"
+    label: "Quantity Removed From Cart"
+    description: "Sum of quantity removed from cart."
+    type: sum
+    filters: [event_name: "inventory_progress", action: "item_removed_from_cart"]
+    sql: ${quantity} ;;
+  }
+
+  measure: item_added_to_cart_time {
+    group_label: "Total Metrics"
+    label: "Item Added To Cart Time"
+    description: "Timestamp from when the item has been added to cart."
+    type: max
+    filters: [event_name: "inventory_progress", action: "item_added_to_cart"]
+    sql: ${TABLE}.event_timestamp ;;
+  }
+
+  measure: item_removed_from_cart_time {
+    group_label: "Total Metrics"
+    label: "Item Removed From Cart Time"
+    description: "Timestamp from when the item has been removed from cart."
+    type: max
+    filters: [event_name: "inventory_progress", action: "item_removed_from_cart"]
+    sql: ${TABLE}.event_timestamp ;;
+  }
+
+# =========  Rate Metrics  =========
+
+# =========  Time Metrics  =========
+
+  measure: cart_created_time {
+    hidden: yes
+    label: "Cart Created Time"
+    description: "Timestamp for when the cart has been created."
+    type: max
+    filters: [event_name: "inventory_state_updated", action: "cart_created"]
+    sql: ${TABLE}.event_timestamp ;;
+  }
+
+  measure: dropping_list_created_time {
+    hidden: yes
+    label: "Dropping List Created Time"
+    description: "Timestamp for when the dropping list has been created."
+    type: max
+    filters: [event_name: "inventory_state_updated", action: "dropping_list_created"]
+    sql: ${TABLE}.event_timestamp ;;
+  }
+
+  measure: dropping_list_finished_time {
+    hidden: yes
+    label: "Dropping List Finished Time"
+    description: "Timestamp for when the dropping list has been finished."
+    type: max
+    filters: [event_name: "inventory_state_updated", action: "dropping_list_finished"]
+    sql: ${TABLE}.event_timestamp ;;
+  }
+
+  measure: cart_to_drop_list_seconds {
+    hidden: yes
+    description: "Difference in seconds between time_to_cart_created and time_to_dropping_list timestamps"
+    sql: DATETIME_DIFF(${dropping_list_created_time},${cart_created_time}, SECOND);;
+  }
+
+  measure: drop_list_created_to_finished_seconds {
+    hidden: yes
+    description: "Difference in seconds between time_to_dropping_list_created and time_to_dropping_list_finished timestamps"
+    sql: DATETIME_DIFF(${dropping_list_finished_time}, ${dropping_list_created_time}, SECOND) ;;
+  }
+  measure: cart_to_finished_seconds {
+    hidden: yes
+    description: "Difference in seconds between time_to_cart_created and time_to_dropping_list_finished timestamps"
+    sql: DATETIME_DIFF(${dropping_list_finished_time}, ${cart_created_time}, SECOND) ;;
+  }
 }

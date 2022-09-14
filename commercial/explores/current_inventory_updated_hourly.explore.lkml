@@ -1,5 +1,5 @@
 
-include: "/explores/base_explores/*.explore"
+include: "/**/current_inventory.explore"
 
 explore: current_inventory_updated_hourly {
   extends: [current_inventory]
