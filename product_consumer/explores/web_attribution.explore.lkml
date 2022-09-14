@@ -24,12 +24,11 @@ explore: web_attribution {
 
   sql_always_where: {% condition global_filters_and_parameters.datasource_filter %} ${web_attribution.event_date_date} {% endcondition %};;
 
-  always_filter: {
-    filters: [
-      web_attribution.event_date_date: "last 7 days",
-      daily_events.event_date: "last 100 days"
-    ]
-  }
+  # always_filter: {
+  #   filters: [
+  #     web_attribution.event_date_date: "last 7 days"
+  #     ]
+  # }
 
   join: daily_user_aggregates {
     view_label: "Daily User Aggregates"
@@ -39,7 +38,7 @@ explore: web_attribution {
       daily_user_aggregates.is_account_registration_succeeded,daily_user_aggregates.is_account_login_succeeded,
       daily_user_aggregates.is_sms_verification_request_viewed, daily_user_aggregates.is_sms_verification_confirmed,
       daily_user_aggregates.is_voucher_redemption_attempted, daily_user_aggregates.is_voucher_applied_succeeded,
-      daily_user_aggregates.is_active_user,
+      daily_user_aggregates.is_active_user, daily_user_aggregates.country_iso, daily_user_aggregates.is_user_logged_in,
     ]
     sql_on: ${web_attribution.event_date_date} = ${daily_user_aggregates.event_date_at_date}
       and ${web_attribution.anonymous_id} = ${daily_user_aggregates.user_uuid};;
@@ -53,7 +52,7 @@ explore: web_attribution {
     fields: [daily_events.event_name, daily_events.component_name,
       daily_events.component_value,daily_events.component_content,
       daily_events.screen_name, daily_events.component_variant,
-      daily_events.event_date,
+      daily_events.event_date, daily_events.country_iso
     ]
     sql_on: ${web_attribution.event_date_date} = ${daily_events.event_date}
       and ${web_attribution.anonymous_id} = ${daily_events.anonymous_id};;

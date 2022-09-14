@@ -74,6 +74,7 @@ view: customer_address {
   dimension: order_uuid {
     type: string
     sql: ${TABLE}.order_uuid ;;
+    primary_key: yes
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
