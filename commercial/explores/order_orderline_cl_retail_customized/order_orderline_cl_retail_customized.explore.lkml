@@ -139,4 +139,16 @@ explore: order_orderline_cl_retail_customized {
     required_access_grants: [can_view_buying_information]
   }
 
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  #  - - - - - - - - - -    Cross-Referenced Metrics
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  join: hlp_order_orderline_cl_retail_customized_cross_metrics {
+    view_label: "Orders"
+    relationship: one_to_one
+    type: left_outer
+    sql:  ;;
+  }
+
+
+
 }

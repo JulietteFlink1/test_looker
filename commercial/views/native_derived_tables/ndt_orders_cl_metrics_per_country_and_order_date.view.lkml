@@ -42,45 +42,45 @@ view: ndt_orders_cl_metrics_per_country_and_order_date {
   #  - - - - - - - - - -    Hidden Fields
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   dimension: number_of_daily_orders {
-    label: "# Orders (per order-date & hub)"
-    description: "Count of Orders on a date and hub level"
+    label: "# Orders (per order-date & country)"
+    description: "Count of Orders per order-day and country"
 
     sql: ${TABLE}.number_of_orders ;;
     value_format_name: decimal_0
     type: number
-    hidden: no
+    hidden: yes
   }
   dimension: number_of_daily_unique_customers {
-    label: "# Unique Customers (per order-date & hub)"
-    description: "Count of Unique Customers identified via their Customer UUID aggregated on a order-date and hub level"
+    label: "# Unique Customers (per order-date & country)"
+    description: "Count of Unique Customers identified via their Customer UUID aggregated per order-day and country"
 
     sql: ${TABLE}.number_of_unique_customers ;;
     value_format: "0"
     type: number
-    hidden: no
+    hidden: yes
   }
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   #  - - - - - - - - - -    Exposed Measures
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   measure: sum_number_of_orders {
-    label: "# Orders (per order-date & hub)"
-    description: "Count of Orders on a date and hub level"
+    label: "# Orders (per order-date & country)"
+    description: "Count of Orders per order-day and country"
 
     type: sum
     sql: ${number_of_daily_orders} ;;
     value_format_name: decimal_0
 
-    hidden: no
+    hidden: yes
   }
 
   measure: sum_number_of_unique_customers {
-    label: "# Unique Customers (per order-date & hub)"
-    description: "Count of Unique Customers identified via their Customer UUID aggregated on a order-date and hub level"
+    label: "# Unique Customers (per order-date & country)"
+    description: "Count of Unique Customers identified via their Customer UUID aggregated per order-day and country"
     value_format: "0"
     type: sum
     sql: ${number_of_daily_unique_customers} ;;
-    hidden: no
+    hidden: yes
   }
 
 }

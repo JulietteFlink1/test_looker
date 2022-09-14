@@ -25,6 +25,8 @@ view: orders_country_level_weekly {
             /
             nullif(LEAD(revenue_gross) OVER (PARTITION BY country_iso ORDER BY date DESC), 0) ;;
       }
+
+      filters: [global_filters_and_parameters.datasource_filter: "last 1 year"]
     }
   }
 
@@ -76,23 +78,23 @@ view: orders_country_level_weekly {
   }
 
   dimension: number_of_weekly_unique_customers {
-    label: "# Unique Customers (per order-date & hub)"
-    description: "Count of Unique Customers identified via their Customer UUID aggregated on a order-date and hub level"
+    label: "# Unique Customers (per order-week & country)"
+    description: "Count of Unique Customers identified via their Customer UUID aggregated per order-week and country"
 
     sql: ${TABLE}.number_of_unique_customers ;;
     value_format: "0"
     type: number
-    hidden: no
+    hidden: yes
   }
 
   dimension: number_of_weekly_orders {
-    label: "# Orders (per order-date & hub)"
-    description: "Count of Orders on a date and hub level"
+    label: "# Orders (per order-week & country)"
+    description: "Count of Orders per order-week and country"
 
     sql: ${TABLE}.cnt_orders ;;
     value_format_name: decimal_0
     type: number
-    hidden: no
+    hidden: yes
   }
 
   ############### Measures
@@ -114,23 +116,23 @@ view: orders_country_level_weekly {
   }
 
   measure: sum_number_of_orders {
-    label: "# Orders (per order-date & hub)"
-    description: "Count of Orders on a date and hub level"
+    label: "# Orders (per order-week & country)"
+    description: "Count of Orders per order-week and country"
 
     type: sum
     sql: ${number_of_weekly_orders} ;;
     value_format_name: decimal_0
 
-    hidden: no
+    hidden: yes
   }
 
   measure: sum_number_of_unique_customers {
-    label: "# Unique Customers (per order-date & hub)"
-    description: "Count of Unique Customers identified via their Customer UUID aggregated on a order-date and hub level"
+    label: "# Unique Customers (per order-week & country)"
+    description: "Count of Unique Customers identified via their Customer UUID aggregated per order-week and country"
     value_format: "0"
     type: sum
     sql: ${number_of_weekly_unique_customers} ;;
-    hidden: no
+    hidden: yes
   }
 
 }
