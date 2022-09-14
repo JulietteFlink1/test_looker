@@ -1,3 +1,7 @@
+# author: Andreas Stueber
+# created date: 2022-09-14
+# description: this file defines some metrics specfic to the order_orderline_cl_retail_customized Explore, that are cross-referencing different tables
+
 view: hlp_order_orderline_cl_retail_customized_cross_metrics {
 
   measure: sum_item_price_after_product_discount_gross_dynamic {
