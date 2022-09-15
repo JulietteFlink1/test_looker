@@ -57,6 +57,7 @@ view: product_placement_performance {
     label: "Country ISO"
     description: "ISO country"
     type: string
+    hidden: yes
     sql: ${TABLE}.country_iso ;;
   }
 
