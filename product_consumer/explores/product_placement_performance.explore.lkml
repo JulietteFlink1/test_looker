@@ -12,6 +12,9 @@ include: "/**/global_filters_and_parameters.view.lkml"
 include: "/product_consumer/views/sql_derived_tables/affected_by_impression_users.view"
 include: "/**/orders.view"
 include: "/**/products.view"
+include: "/**/hubs_ct.view"
+include: "/**/hub_specific_price_hub_cluster.view"
+include: "/**/hub_specific_price_sku_cluster.view"
 
 explore: product_placement_performance {
   from:  product_placement_performance
@@ -25,7 +28,7 @@ explore: product_placement_performance {
   sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} ${product_placement_performance.event_date} {% endcondition %};;
 
   access_filter: {
-    field: country_iso
+    field: hubs.country_iso
     user_attribute: country_iso
   }
 
@@ -71,6 +74,32 @@ explore: product_placement_performance {
         sql_on: ${products.product_sku} = ${product_placement_performance.product_sku} ;;
     relationship: many_to_one
     type: left_outer
+  }
+
+  join: hubs {
+    from: hubs_ct
+        view_label: "Hubs"
+        sql_on: lower(${product_placement_performance.hub_code}) = ${hubs.hub_code} ;;
+    relationship: many_to_one
+    type: left_outer
+  }
+
+  join: geographic_pricing_hub_cluster{
+        view_label: "Pricing Hub Cluster"
+        sql_on: ${geographic_pricing_hub_cluster.hub_code} = ${product_placement_performance.hub_code}  ;;
+    type: left_outer
+    relationship: many_to_one
+    fields: [price_hub_cluster]
+
+  }
+
+  join: geographic_pricing_sku_cluster{
+        view_label: "Pricing SKU Cluster"
+        sql_on: ${geographic_pricing_sku_cluster.sku} = ${product_placement_performance.product_sku}  ;;
+    type: left_outer
+    relationship: many_to_one
+    fields: [price_sku_cluster, price_sku_cluster_desc]
+
   }
 
 }
