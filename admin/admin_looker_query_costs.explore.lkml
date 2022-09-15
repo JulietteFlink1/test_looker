@@ -43,7 +43,7 @@ explore: admin_looker_query_costs  {
   join: gcp_logs_parsed_for_looker {
     view_label: "GCP Logs"
     type: left_outer
-    relationship: one_to_one
+    relationship: one_to_many
     sql_on:
       ${gcp_logs_parsed_for_looker.looker_history_slug} = ${admin_looker_query_costs.history_slug}
       and
