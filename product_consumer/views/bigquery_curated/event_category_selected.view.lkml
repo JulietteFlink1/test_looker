@@ -186,6 +186,20 @@ view: event_category_selected {
       else ${TABLE}.origin_screen
       end ;;
   }
+  dimension: component_position {
+    group_label: "Event Dimensions"
+    label: "Component Position"
+    description: "Position of the component (start from 1 top left corner)"
+    type: number
+    sql: ${TABLE}.component_position ;;
+  }
+  dimension: component_name {
+    group_label: "Event Dimensions"
+    label: "Component Name"
+    description: "Name of the compotent clicked, i.e. Category, Subcategory, Recipes, Collection"
+    type: string
+    sql: ${TABLE}.component_name ;;
+  }
 
   # ======= Dates / Timestamps =======
 

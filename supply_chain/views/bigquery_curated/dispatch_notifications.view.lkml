@@ -32,7 +32,9 @@ view: dispatch_notifications {
 
       dynamic_delivery_date,
       is_double_parent_sku,
-      is_supplier_oos
+      is_supplier_oos,
+      unit_gross_weight_value,
+      unit_gross_weight_unit
     ]
   }
 
@@ -295,6 +297,24 @@ view: dispatch_notifications {
 
     type: yesno
     sql: ${handling_units_count} = 0 ;;
+  }
+
+  dimension: unit_gross_weight_value {
+
+    label: "Handling Unit Weight"
+    description: "The weight of a handling unit - for information on the unit, check the field 'Handling Unit Weight Unit'"
+
+    type: number
+    sql: ${TABLE}.unit_gross_weight_value ;;
+  }
+
+  dimension: unit_gross_weight_unit {
+
+    label: "Handling Unit Weight Unit"
+    description: "The unit of the handling unit weigth"
+
+    type: string
+    sql: ${TABLE}.unit_gross_weight_unit ;;
   }
 
 

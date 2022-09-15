@@ -148,7 +148,7 @@ view: daily_stock_management_events {
   dimension: quantity {
     group_label: "Generic Dimensions"
     label: "Quantity"
-    type: string
+    type: number
     sql: cast(${TABLE}.quantity as int64) ;;
   }
 
