@@ -1,4 +1,4 @@
-include: "/views/bigquery_tables/curated_layer/orders.view.lkml"
+include: "/**/orders.view.lkml"
 
 view: order_comments {
   extends: [orders]

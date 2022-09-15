@@ -19,7 +19,7 @@ explore: fleet_management {
       fleet_management.supplier_name: "",
       fleet_management.supplier_code: "",
       fleet_management.operational_status: "",
-      global_filters_and_parameters.datasource_filter: "last 60 days",
+      global_filters_and_parameters.datasource_filter: "last 2 years",
       fleet_management.country_iso: "",
       fleet_management.hub_code: ""
     ]
@@ -43,6 +43,6 @@ explore: fleet_management {
     view_label: "Hubs"
     sql_on: ${fleet_management.hub_code} = ${hubs_ct.hub_code} ;;
     type: left_outer
-    relationship: one_to_one
+    relationship: many_to_one
   }
 }

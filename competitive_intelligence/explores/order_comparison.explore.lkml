@@ -1,5 +1,5 @@
-include: "/competitive_intelligence/views/bigquery_curated/competitive_intelligence_order_comparison.view.lkml"
-include: "/explores/base_explores/orders_cl.explore.lkml"
+include: "/**/competitive_intelligence_order_comparison.view.lkml"
+include: "/**/orders_cl.explore.lkml"
 
 explore: competitive_intelligence_order_comparison {
   view_name: competitive_intelligence_order_comparison
