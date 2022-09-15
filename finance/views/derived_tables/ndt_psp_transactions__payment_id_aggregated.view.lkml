@@ -9,7 +9,7 @@
 view: ndt_psp_transactions__payment_id_aggregated {
     derived_table: {
       explore_source: psp_transactions {
-        column: payment_id {}
+        column: payment_id { field: psp_transactions.payment_id}
         column: sum_gross_credit_gc { field: psp_settlement_details.sum_gross_credit_gc }
         column: sum_gross_debit_gc { field: psp_settlement_details.sum_gross_debit_gc }
         column: order_uuid { field: orders.order_uuid }
