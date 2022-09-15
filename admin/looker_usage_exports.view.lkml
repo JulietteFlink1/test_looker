@@ -97,7 +97,7 @@ view: looker_usage_exports {
 
   dimension_group: created {
 
-    label: "Query Time (Looker)"
+    label: "Query"
 
     type: time
     timeframes: [
