@@ -28,7 +28,7 @@ explore: product_placement_performance {
   sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} ${product_placement_performance.event_date} {% endcondition %};;
 
   access_filter: {
-    field: country_iso
+    field: hubs.country_iso
     user_attribute: country_iso
   }
 
