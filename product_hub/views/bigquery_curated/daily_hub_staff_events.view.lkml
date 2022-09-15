@@ -111,6 +111,7 @@ view: daily_hub_staff_events {
       date,
       week,
       hour_of_day,
+      day_of_week,
       quarter
     ]
     sql: ${TABLE}.event_timestamp ;;

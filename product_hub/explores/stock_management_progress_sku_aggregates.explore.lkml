@@ -4,8 +4,8 @@
 # - Hub Tech
 # - Hub Operations
 
-include: "/product_hub/views/bigquery_reporting/stock_management_progress_sku_aggregates.view.lkml"
-include: "/views/bigquery_tables/curated_layer/hubs_ct.view.lkml"
+include: "/**/stock_management_progress_sku_aggregates.view.lkml"
+include: "/**/hubs_ct.view.lkml"
 include: "/**/global_filters_and_parameters.view.lkml"
 
 explore: stock_management_progress_sku_aggregation {

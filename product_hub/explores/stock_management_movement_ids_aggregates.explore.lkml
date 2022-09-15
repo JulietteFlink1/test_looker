@@ -4,9 +4,9 @@
 # - Hub Tech
 # - Hub Operations
 
-include: "/product_hub/views/sql_derived_tables/stock_management_movement_ids_aggregates.view.lkml"
+include: "/**/stock_management_movement_ids_aggregates.view.lkml"
 include: "/**/global_filters_and_parameters.view.lkml"
-include: "/views/bigquery_tables/curated_layer/hubs_ct.view.lkml"
+include: "/**/hubs_ct.view.lkml"
 
 explore: stock_management_movement_ids {
   view_name: stock_management_movement_ids

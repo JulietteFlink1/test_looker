@@ -11,6 +11,7 @@ include: "/product_consumer/views/bigquery_reporting/product_placement_performan
 include: "/**/global_filters_and_parameters.view.lkml"
 include: "/product_consumer/views/sql_derived_tables/affected_by_impression_users.view"
 include: "/**/orders.view"
+include: "/**/products.view"
 
 explore: product_placement_performance {
   from:  product_placement_performance
@@ -63,6 +64,13 @@ explore: product_placement_performance {
 ;;
     type: left_outer
     relationship: many_to_one
+  }
+
+  join: products {
+        view_label: "Product Data (CT)"
+        sql_on: ${products.product_sku} = ${product_placement_performance.product_sku} ;;
+    relationship: many_to_one
+    type: left_outer
   }
 
 }

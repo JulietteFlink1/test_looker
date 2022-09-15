@@ -94,6 +94,19 @@ view: vehicle_suppliers {
     sql: ${TABLE}.vehicle_id ;;
   }
 
+  dimension: is_archived_bike {
+    group_label: "> Vehicle Properties"
+    type: yesno
+    sql:
+        case
+            when ${archived_at_date} is not null
+                then
+                    true
+            else
+                false
+        end ;;
+  }
+
   dimension: vehicle_kind {
     group_label: "> Vehicle Properties"
     description: "Vehicle kind e.g. bicycle"
@@ -126,7 +139,7 @@ view: vehicle_suppliers {
 
   measure: number_of_vehicles {
     group_label: "> Vehicle Status"
-    label: "# Bikes"
+    label: "# Offline and Online Bikes"
     description: "Number of bikes with any operational status."
     type: count_distinct
     sql: ${vehicle_id} ;;
@@ -138,7 +151,7 @@ view: vehicle_suppliers {
     description: "Number of bikes currently operational."
     type: count_distinct
     sql: ${vehicle_id} ;;
-    filters: [operational_status: "operational"]
+    filters: [operational_status: "operational", is_archived_bike: "no"]
   }
 
   measure: number_of_in_maintenance_vehicles {
@@ -147,7 +160,7 @@ view: vehicle_suppliers {
     description: "Number of bikes currently in maintenance."
     type: count_distinct
     sql: ${vehicle_id} ;;
-    filters: [operational_status: "in_maintenance"]
+    filters: [operational_status: "in_maintenance",is_archived_bike: "no"]
   }
 
   measure: number_of_maintenance_required_vehicles {
@@ -156,7 +169,7 @@ view: vehicle_suppliers {
     description: "Number of bikes for which maintenance is required."
     type: count_distinct
     sql: ${vehicle_id} ;;
-    filters: [operational_status: "maintenance_required"]
+    filters: [operational_status: "maintenance_required",is_archived_bike: "no"]
   }
 
   measure: number_of_offline_vehicles {
@@ -165,15 +178,24 @@ view: vehicle_suppliers {
     description: "Number of offline bikes."
     type: count_distinct
     sql: ${vehicle_id} ;;
-    filters: [operational_status: "offline"]
+    filters: [operational_status: "offline",is_archived_bike: "no"]
+  }
+
+  measure: number_of_online_vehicles {
+    group_label: "> Vehicle Status"
+    label: "# Bikes"
+    description: "Number of online bikes. (any operational status except offline)"
+    type: count_distinct
+    sql: ${vehicle_id} ;;
+    filters: [operational_status: "-offline", is_archived_bike: "no"]
   }
 
   measure: share_of_operational_vehicles {
     type: number
     group_label: "> Vehicle Status"
     label: "% Operational Bikes"
-    description: "Share of bikes that are currently operational out of all bikes"
-    sql: safe_divide(${number_of_operational_vehicles},${number_of_vehicles}) ;;
+    description: "Share of bikes that are currently operational out of all online bikes (excluding offline bikes)"
+    sql: safe_divide(${number_of_operational_vehicles},${number_of_online_vehicles}) ;;
     value_format: "0.0%"
   }
 
@@ -181,9 +203,48 @@ view: vehicle_suppliers {
     type: number
     group_label: "> Vehicle Status"
     label: "% In Maintenance Bikes"
-    description: "Share of bikes that are currently in maintenance out of all bikes"
-    sql: safe_divide(${number_of_in_maintenance_vehicles},${number_of_vehicles}) ;;
+    description: "Share of bikes that are currently in maintenance out of all online bikes"
+    sql: safe_divide(${number_of_in_maintenance_vehicles},${number_of_online_vehicles}) ;;
     value_format: "0.0%"
+  }
+
+  measure: share_of_maintenance_required_vehicles {
+    type: number
+    group_label: "> Vehicle Status"
+    label: "% Maintenance Required Bikes"
+    description: "Share of bikes with status 'maintenance_required' out of all online bikes"
+    sql: safe_divide(${number_of_maintenance_required_vehicles},${number_of_online_vehicles}) ;;
+    value_format: "0.0%"
+  }
+
+
+  ######### Parameters
+
+  parameter: date_granularity {
+    group_label: "> Dates"
+    label: "Date Granularity"
+    type: unquoted
+    allowed_value: { value: "Day" }
+    allowed_value: { value: "Week" }
+    allowed_value: { value: "Month" }
+    default_value: "Day"
+  }
+
+
+  ######## Dynamic Dimensions
+
+  dimension: created_date_dynamic {
+    group_label: "> Dates"
+    label: "Created Date (Dynamic)"
+    label_from_parameter: date_granularity
+    sql:
+    {% if date_granularity._parameter_value == 'Day' %}
+      ${created_date}
+    {% elsif date_granularity._parameter_value == 'Week' %}
+      ${created_week}
+    {% elsif date_granularity._parameter_value == 'Month' %}
+      ${created_month}
+    {% endif %};;
   }
 
 }

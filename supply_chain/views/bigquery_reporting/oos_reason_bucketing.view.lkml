@@ -99,13 +99,13 @@ view: oos_reason_bucketing {
 
   }
 
-  dimension: is_dc_other {
+  dimension: is_dc_active {
     type: yesno
-    sql: ${TABLE}.is_dc_other ;;
+    sql: ${TABLE}.is_dc_active ;;
     group_label: "Standalone Buckets"
-    label: "Is DC Other"
+    label: "Is DC Active"
 
-    description: "This flag shows if an SKU on a particular location is being delivered thru a Distribution Center"
+    description: "This flag shows if an SKU on a particular location is being delivered thru an Active Distribution Center"
 
   }
 
@@ -174,15 +174,15 @@ view: oos_reason_bucketing {
 
   }
 
-  dimension: is_long_term_supplier_oos {
+  dimension: is_supplier_oos {
     type: yesno
-    sql: ${TABLE}.is_long_term_supplier_oos ;;
+    sql: ${TABLE}.is_supplier_oos ;;
     group_label: "Standalone Buckets"
-    label: "Is Long Term Supplier OOS Last Week"
+    label: "Is Supplier OOS"
 
-    description: "This flag shows if an SKU on a particular location has been OOS in the last week, there is a purchase order in place (existing PO)
-              but our supplier comunicated to us that it doesn't have stock available of this SKU (Handling units = 0 in DESADVs).
-              This means that we won't receive this SKU soon since the Supplier is OOS."
+    description: "This flag shows if an SKU on a particular location, our suppliers comunicated to us that it doesn't
+                  have stock available of this SKU (Handling units = 0 in DESADVs).
+                  This means that we won't receive this SKU soon since the Supplier is OOS."
 
   }
 
