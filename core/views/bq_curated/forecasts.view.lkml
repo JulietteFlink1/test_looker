@@ -192,7 +192,7 @@ view: forecasts {
   # =========  Forecasted Orders   =========
 
   dimension: number_of_forecasted_orders_dimension {
-    label: "# Forecasted Orders (Excl. All Adjustments) - Dimension"
+    label: "# Forecasted Orders - Dimension"
     type: number
     sql: ${TABLE}.number_of_forecasted_orders;;
     hidden: yes
@@ -542,8 +542,8 @@ view: forecasts {
 
   measure: pct_forecast_deviation {
     group_label: "> Order Measures"
-    label: "% Order Forecast Deviation (Excl. Adjustments)"
-    description: "The degree of how far # Forecasted Orders is from # Actual Orders in the given period. Formula: (# Actual Orders / # Forecasted Orders (Excl. Adjustments)) -1"
+    label: "% Order Forecast Deviation"
+    description: "The degree of how far # Forecasted Orders is from # Actual Orders in the given period. Formula: (# Actual Orders / # Forecasted Orders) -1"
     type: number
     sql: (${number_of_actual_orders}/nullif(${number_of_forecasted_orders},0))-1 ;;
     value_format_name: percent_1
@@ -647,7 +647,7 @@ view: forecasts {
   measure: number_of_forecasted_hours_rider {
     group_label: "> Rider Measures"
     label: "# Forecasted Rider Hours"
-    description: "# Forecasted Hours Needed for Riders (Excl. Airtable Adjustments)"
+    description: "# Forecasted Hours Needed for Riders"
     type: number
     sql: ${number_of_forecasted_minutes_rider}/60;;
     value_format_name: decimal_1
@@ -665,7 +665,7 @@ view: forecasts {
   measure: number_of_forecasted_hours_picker {
     group_label: "> Picker Measures"
     label: "# Forecasted Picker Hours"
-    description: "# Forecasted Hours Needed for Pickers (Excl. Airtable Adjustments)"
+    description: "# Forecasted Hours Needed for Pickers"
     type: number
     sql: ${number_of_forecasted_minutes_picker}/60;;
     value_format_name: decimal_1
@@ -750,7 +750,7 @@ view: forecasts {
     label: "wMAPE - No Show Hours"
     description: "Summed Absolute Difference of Actual No Show Hours per Hub in 30 min (# Forecasted No Show Hours - # Actual No Show Hours)/ # Actual No Show Hours"
     type: number
-    hidden: yes
+    hidden: no
     sql: ${summed_absolute_error_no_show_hours}/nullif(${ops.number_of_no_show_hours_by_position},0);;
     value_format_name: percent_2
   }
@@ -758,14 +758,14 @@ view: forecasts {
   measure: summed_absolute_error_no_show_hours {
     type: sum_distinct
     sql_distinct_key: ${forecast_uuid} ;;
-    hidden: no
+    hidden: yes
     sql: ABS(${number_of_no_show_hours_by_position_dimension} - ${ops.number_of_no_show_hours_by_position_dimension});;
   }
 
   measure: summed_absolute_error_no_show_hours_adjusted {
     type: sum_distinct
     sql_distinct_key: ${forecast_uuid} ;;
-    hidden: no
+    hidden: yes
     sql: ABS(${number_of_no_show_hours_by_position_adjusted_dimension} - ${ops.number_of_no_show_hours_by_position_dimension});;
   }
 
@@ -774,7 +774,7 @@ view: forecasts {
     label: "wMAPE - No Show Hours (Incl. Airtable Adjustments)"
     description: "Summed Absolute Difference of Actual No Show Hours per Hub in 30 min (# Forecasted No Show Hours (Incl. Airtable Adjustments) - # Actual No Show Hours)/ # Actual No Show Hours"
     type: number
-    hidden: yes
+    hidden: no
     sql: ${summed_absolute_error_no_show_hours_adjusted}/nullif(${ops.number_of_no_show_hours_by_position},0);;
     value_format_name: percent_2
   }
@@ -784,7 +784,7 @@ view: forecasts {
   dimension: number_of_no_show_hours_by_position_dimension {
     type: number
     label: "# Forecasted No Show Hours - Dimension"
-    description: "# Forecasted No Show Hours (Based on Forecasted Hours (Excl. Airtable Adjustments))"
+    description: "# Forecasted No Show Hours (Based on Forecasted Hours)"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
@@ -812,7 +812,7 @@ view: forecasts {
   measure: number_of_forecasted_employees_by_position {
     type: number
     label: "# Forecasted Employees"
-    description: "# Forecasted Employees Needed (Excl. Airtable Adjustments)"
+    description: "# Forecasted Employees Needed"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
@@ -827,7 +827,7 @@ view: forecasts {
   measure: number_of_forecasted_hours_by_position {
     type: number
     label: "# Forecasted Hours (Incl. No Show)"
-    description: "# Forecasted Hours Needed (Excl. Airtable Adjustments) - No Show Forecasts included in Total Forecasted Hours"
+    description: "# Forecasted Hours Needed - No Show Forecasts included in Total Forecasted Hours"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
@@ -940,7 +940,7 @@ view: forecasts {
   measure: number_of_forecasted_hours_excl_no_show_by_position {
     type: number
     label: "# Forecasted Hours (Excl. No Show)"
-    description: "# Forecasted Hours Needed (Excl. Airtable Adjustments) - No Show Forecasts excluded in Total Forecasted Hours (# Forecasted Hours Needed - # Forecasted No Show Hours)"
+    description: "# Forecasted Hours Needed - No Show Forecasts excluded in Total Forecasted Hours (# Forecasted Hours Needed - # Forecasted No Show Hours)"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql: ${number_of_forecasted_hours_by_position}-${number_of_no_show_hours_by_position} ;;
