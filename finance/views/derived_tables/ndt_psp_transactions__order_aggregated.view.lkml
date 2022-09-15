@@ -71,7 +71,7 @@ view: ndt_psp_transactions__order_aggregated {
                     false
             end
         ;;
-        }
+    }
 
     dimension: is_adyen_different_CT_amount {
       group_label: "> Transaction Properties"
