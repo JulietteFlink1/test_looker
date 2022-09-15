@@ -22,27 +22,31 @@ view: ndt_psp_transactions__order_aggregated {
         }
       }
     }
+
     dimension: order_uuid {
       label: "Orders Order UUID"
       description: ""
       hidden: yes
     }
+
     dimension: sum_gpv_gross {
       label: "Orders SUM GPV (Gross)"
       description: "Actual amount paid by the customer in CT. Sum of Delivery & Storage Fees, Items Price, Tips, Deposit. Excl. Donations. After Deduction of Cart and Product Discounts. Incl. VAT"
       hidden: yes
       type: number
     }
+
     dimension: sum_gross_credit_gc {
       label: "PSP Settlement SUM Gross Credit (GC)"
       description: "Amount submitted in the transaction request."
       hidden: yes
       type: number
     }
+
     dimension: is_CT_above_adyen_amount {
       type: yesno
       group_label: "> Transaction Properties"
-      description: "Flags if the GPV visible in CT is higher than the Settled amount paid via Adyen. We exclude full refund payments here."
+      description: "Flags if the gross GPV visible in CT is higher than the gross Settled amount paid via Adyen. We exclude full refund payments here."
       sql:
           case
               when ${sum_gross_credit_gc} < ${sum_gpv_gross}
@@ -53,9 +57,10 @@ view: ndt_psp_transactions__order_aggregated {
           end
       ;;
     }
+
     dimension: is_adyen_above_CT_amount {
       group_label: "> Transaction Properties"
-      description: "Flags if the Adyen Settled amount is higher than the GPV in CT. We exclude full refund payments here."
+      description: "Flags if the gross Adyen Settled amount is higher than the gross GPV in CT. We exclude full refund payments here."
       type: yesno
       sql:
             case
@@ -67,10 +72,11 @@ view: ndt_psp_transactions__order_aggregated {
             end
         ;;
         }
+
     dimension: is_adyen_different_CT_amount {
       group_label: "> Transaction Properties"
       label: "Is CT <> Adyen"
-      description: "Flags if the Adyen Settled amount is different from the GPV in CT. We exclude full refund payments here."
+      description: "Flags if the gross Adyen Settled amount is different from the gross GPV in CT. We exclude full refund payments here."
       type: yesno
       sql:
             case

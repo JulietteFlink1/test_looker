@@ -19,28 +19,33 @@ view: ndt_psp_transactions__payment_id_aggregated {
         }
       }
     }
+
     dimension: payment_id {
       label: "PSP Transactions Payment ID"
-      description: ""
+      description: "CT Payment ID"
       hidden: yes
     }
+
     dimension: sum_gross_credit_gc {
       label: "PSP Settlement SUM Gross Credit (GC)"
       hidden: yes
       description: "Amount submitted in the transaction request."
       type: number
     }
+
     dimension: sum_gross_debit_gc {
       label: "PSP Settlement SUM Gross Debit (GC)"
       description: "Amount submitted in the transaction request."
       hidden: yes
       type: number
     }
+
     dimension: order_uuid {
       label: "Orders Order UUID"
-      description: ""
+      description: "country iso concatenated with CT order id"
       hidden: yes
     }
+
     dimension: is_full_refund_payment {
       type: yesno
       sql:
