@@ -116,28 +116,9 @@ view: forecasts {
     hidden: yes
   }
 
-  # =========  Dimensions    =========
-
-  dimension: number_of_adjusted_forecasted_hours_rider_dimension {
-    label: "# Forecasted Rider Hours - Dimension"
-    sql: ${TABLE}.number_of_adjusted_forecasted_minutes_rider/60 ;;
-    hidden: yes
-  }
-
-  dimension: number_of_adjusted_forecasted_hours_picker_dimension {
-    label: "# Forecasted Picker Hours - Dimension"
-    sql: ${TABLE}.number_of_adjusted_forecasted_minutes_picker/60 ;;
-    hidden: yes
-  }
-
-  dimension: number_of_forecasted_no_show_hours_rider_dimension {
-    group_label: "> Rider Measures"
-    label: "# Forecasted No Show Minutes Rider"
-    sql: ${TABLE}.number_of_forecasted_no_show_minutes_rider/60 ;;
-    hidden: yes
-  }
 
   # =========  Model names   =========
+
   dimension: model_name_historical_forecasts {
     group_label: "> Model Names"
     label: "Model Name: Order Forecast"
@@ -203,7 +184,12 @@ view: forecasts {
     hidden: no
   }
 
-  # =========  Forecasted orders   =========
+
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~     Dimensions from Measures     ~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  # =========  Forecasted Orders   =========
 
   dimension: number_of_forecasted_orders_dimension {
     label: "# Forecasted Orders (Excl. All Adjustments) - Dimension"
@@ -212,10 +198,10 @@ view: forecasts {
     hidden: yes
   }
 
-  dimension: number_of_adjusted_forecasted_orders_dimension {
-    label: "# Forecasted Orders (Incl. All adjustments) - Dimension"
+  dimension: number_of_forecasted_orders_adjusted_dimension {
+    label: "# Forecasted Orders (Incl. Airtable Adjustments) - Dimension"
     type:  number
-    sql: ${TABLE}.number_of_adjusted_forecasted_orders;;
+    sql: ${TABLE}.number_of_forecasted_orders_adjusted;;
     hidden:  yes
   }
 
@@ -223,6 +209,51 @@ view: forecasts {
     label: "# Actual Orders - Dimension"
     type: number
     sql: ${TABLE}.number_of_actual_orders;;
+    hidden: yes
+  }
+
+  # =========  Forecasted Hours   =========
+
+  dimension: number_of_forecasted_hours_rider_adjusted_dimension {
+    alias: [number_of_adjusted_forecasted_hours_rider_dimension]
+    label: "# Forecasted Rider Hours - Dimension (Incl. Airtable Adjustments)"
+    sql: ${TABLE}.number_of_forecasted_minutes_rider_adjusted/60 ;;
+    hidden: yes
+  }
+
+  dimension: number_of_forecasted_hours_rider_dimension {
+    label: "# Forecasted Rider Hours - Dimension"
+    sql: ${TABLE}.number_of_forecasted_minutes_rider/60 ;;
+    hidden: yes
+  }
+
+  dimension: number_of_forecasted_hours_picker_adjusted_dimension {
+    alias: [number_of_adjusted_forecasted_hours_picker_dimension]
+    label: "# Forecasted Picker Hours - Dimension (Incl. Airtable Adjustments)"
+    sql: ${TABLE}.number_of_forecasted_minutes_picker_adjusted/60 ;;
+    hidden: yes
+  }
+
+  dimension: number_of_forecasted_hours_picker_dimension {
+    label: "# Forecasted Picker Hours - Dimension"
+    sql: ${TABLE}.number_of_forecasted_minutes_picker/60 ;;
+    hidden: yes
+  }
+
+  # =========  Forecasted No Show Hours   =========
+
+
+  dimension: number_of_forecasted_no_show_hours_rider_dimension {
+    group_label: "> Rider Measures"
+    label: "# Forecasted No Show Minutes Rider"
+    sql: ${TABLE}.number_of_forecasted_no_show_minutes_rider/60 ;;
+    hidden: yes
+  }
+
+  dimension: number_of_forecasted_no_show_hours_rider_adjusted_dimension {
+    group_label: "> Rider Measures"
+    label: "# Forecasted No Show Minutes Rider (incl. Airtable Adjustments)"
+    sql: ${TABLE}.number_of_forecasted_no_show_minutes_rider_adjusted/60 ;;
     hidden: yes
   }
 
@@ -251,14 +282,6 @@ view: forecasts {
     sql: ${TABLE}.number_of_forecasted_stacked_orders ;;
   }
 
-  measure: pct_stacking_assumption {
-    group_label: "> Order Measures"
-    label: "% Stacking Assumption"
-    description: "% Stacked Orders - Assumption"
-    type: number
-    value_format_name: percent_1
-    sql: ${number_of_forecasted_stacked_orders}/nullif(${number_of_forecasted_orders},0) ;;
-  }
   # =========  No show  =========
 
 
@@ -271,6 +294,15 @@ view: forecasts {
     hidden: yes
   }
 
+  measure: pct_forecasted_no_show_rider_adjsuted {
+    group_label: "> Rider Measures"
+    label: "% No Show Riders (Incl. Airtable Adjustments)"
+    type: number
+    value_format_name: percent_1
+    sql: ${TABLE}.pct_forecasted_no_show_rider_adjusted ;;
+    hidden: yes
+  }
+
   measure: number_of_forecasted_no_show_minutes_rider {
     group_label: "> Rider Measures"
     label: "# Forecasted No Show Minutes Rider"
@@ -280,6 +312,14 @@ view: forecasts {
     hidden: yes
   }
 
+  measure: number_of_forecasted_no_show_minutes_rider_adjusted {
+    group_label: "> Rider Measures"
+    label: "# Forecasted No Show Minutes Rider (Incl. Airtable Adjustments)"
+    type: sum_distinct
+    sql_distinct_key: ${forecast_uuid} ;;
+    sql: ${TABLE}.number_of_forecasted_no_show_minutes_rider_adjusted ;;
+    hidden: yes
+  }
 
   # =========  Idleness minutes   =========
 
@@ -341,6 +381,16 @@ view: forecasts {
     sql: ${TABLE}.number_of_target_orders_per_rider ;;
   }
 
+  measure: number_of_target_orders_per_rider_adjusted {
+    group_label: "> Rider Measures"
+    label: "Base UTR Rider (Incl. Airtable Adjustments)"
+    description: "# Target Orders per Hour per Rider (Target UTR) (Incl. Airtable Adjustments)"
+    value_format_name: decimal_1
+    type: average_distinct
+    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
+    sql: ${TABLE}.number_of_target_orders_per_rider_adjusted ;;
+  }
+
   measure: forecasted_base_utr_incl_stacking_picker {
     group_label: "> Picker Measures"
     label: "Base UTR Picker (Incl. Stacking)"
@@ -359,6 +409,15 @@ view: forecasts {
     sql: ${number_of_target_orders_per_rider}*${stacking_effect_multiplier} ;;
   }
 
+  measure: forecasted_base_utr_incl_stacking_rider_adjusted {
+    group_label: "> Rider Measures"
+    label: "Base UTR Rider (Incl. Stacking and Airtable Adjustments)"
+    description: "Base UTR Rider (Incl. Stacking) - Target UTR * Stacking Effect Multiplier"
+    type:  number
+    value_format_name: decimal_1
+    sql: ${number_of_target_orders_per_rider_adjusted}*${stacking_effect_multiplier} ;;
+  }
+
   measure: final_utr_picker {
     group_label: "> Picker Measures"
     label: "Forecasted UTR Picker"
@@ -367,13 +426,28 @@ view: forecasts {
     sql: ${number_of_forecasted_orders}/nullif(${number_of_forecasted_hours_picker},0) ;;
   }
 
+  measure: final_utr_picker_adjusted {
+    group_label: "> Picker Measures"
+    label: "Forecasted UTR Picker (Incl. Airtable Adjustments)"
+    description: "Forecasted Orders / Forecasted Picker Hours"
+    value_format_name: decimal_1
+    sql: ${number_of_forecasted_orders_adjusted}/nullif(${number_of_forecasted_hours_picker_adjusted},0) ;;
+  }
+
   measure: final_utr_rider {
     group_label: "> Rider Measures"
     label: "Forecasted UTR Rider"
     description: "Forecasted Orders / Forecasted Rider Hours"
     value_format_name: decimal_1
     sql: ${number_of_forecasted_orders}/nullif(${number_of_forecasted_hours_rider},0) ;;
+  }
 
+  measure: final_utr_rider_adjusted {
+    group_label: "> Rider Measures"
+    label: "Forecasted UTR Rider (Incl. Airtable Adjustments)"
+    description: "Forecasted Orders / Forecasted Rider Hours"
+    value_format_name: decimal_1
+    sql: ${number_of_forecasted_orders_adjusted}/nullif(${number_of_forecasted_hours_rider_adjusted},0) ;;
   }
 
   # =========  Forecasted Employees   =========
@@ -385,7 +459,7 @@ view: forecasts {
     type: sum_distinct
     sql_distinct_key: ${forecast_uuid} ;;
     sql: ${TABLE}.number_of_forecasted_pickers ;;
-    hidden: no
+    hidden: yes
   }
 
   measure: number_of_forecasted_riders {
@@ -395,26 +469,27 @@ view: forecasts {
     type: sum_distinct
     sql_distinct_key: ${forecast_uuid} ;;
     sql: ${TABLE}.number_of_forecasted_riders ;;
-    hidden: no
+    hidden: yes
   }
 
   # =========  Forecasted orders   =========
 
   measure: number_of_forecasted_orders {
     group_label: "> Order Measures"
-    label: "# Forecasted Orders (Excl. All Adjustments)"
+    label: "# Forecasted Orders"
     type: sum_distinct
     sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
     sql: ${TABLE}.number_of_forecasted_orders ;;
     value_format_name: decimal_0
   }
 
-  measure: number_of_adjusted_forecasted_orders {
+  measure: number_of_forecasted_orders_adjusted {
+    alias: [number_of_adjusted_forecasted_orders]
     group_label: "> Order Measures"
-    label: "# Forecasted Orders (Incl. Adjustments)"
+    label: "# Forecasted Orders (Incl. Airtable Adjustments)"
     type: sum_distinct
     sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
-    sql: ${TABLE}.number_of_adjusted_forecasted_orders ;;
+    sql: ${TABLE}.number_of_forecasted_orders_adjusted ;;
     value_format_name: decimal_0
   }
 
@@ -437,12 +512,30 @@ view: forecasts {
     value_format_name: percent_1
   }
 
+  measure: pct_actually_needed_hours_deviation_adjusted {
+    group_label: "> Dynamic Measures"
+    label: "% Actually Needed Hours Deviation (Incl. Airtable Adjustments)"
+    description: "The degree of how far # Actually Needed Hours (Incl. Airtable Adjustments) is from # Punched Hours in the given period. Formula:  (# Punched Hours / # Actually Needed Hours) - 1"
+    type: number
+    sql: (${ops.number_of_worked_hours_by_position}/nullif(${fixed_actual_needed_hours_by_position_adjusted},0)) - 1 ;;
+    value_format_name: percent_1
+  }
+
   measure: pct_forecast_deviation_no_show {
     group_label: "> Dynamic Measures"
     label: "% No Show Hours Deviation"
     description: "The degree of how far # Forecasted No Show Hours is from # Actual No Show Hours in the given period. Formula:  (# Actual No Show Hours / # Forecasted No Show Hours) - 1"
     type: number
     sql: (${ops.number_of_no_show_hours_by_position}/nullif(${number_of_no_show_hours_by_position},0)) - 1 ;;
+    value_format_name: percent_1
+  }
+
+  measure: pct_forecast_deviation_no_show_adjusted {
+    group_label: "> Dynamic Measures"
+    label: "% No Show Hours Deviation (Incl. Airtable Adjustments)"
+    description: "The degree of how far # Forecasted No Show Hours (Incl. Airtable Adjustments) is from # Actual No Show Hours in the given period. Formula:  (# Actual No Show Hours / # Forecasted No Show Hours) - 1"
+    type: number
+    sql: (${ops.number_of_no_show_hours_by_position}/nullif(${number_of_no_show_hours_by_position_adjusted},0)) - 1 ;;
     value_format_name: percent_1
   }
 
@@ -455,12 +548,13 @@ view: forecasts {
     value_format_name: percent_1
   }
 
-  measure: pct_adjusted_forecast_deviation {
+  measure: pct_forecast_deviation_adjusted {
+    alias: [pct_adjusted_forecast_deviation]
     group_label: "> Order Measures"
-    label: "% Order Forecast Deviation (Incl. Adjustments)"
-    description: "The degree of how far # Forecasted Orders (After Adjustments) is from # Actual Orders in the given period. Formula: (# Actual Orders / # Forecasted Orders (Incl. Adjustments)) -1"
+    label: "% Order Forecast Deviation (Incl. Airtable Adjustments)"
+    description: "The degree of how far # Forecasted Orders (Incl. Airtable Adjustments) is from # Actual Orders in the given period. Formula: (# Actual Orders / # Forecasted Orders (Incl. Adjustments)) -1"
     type: number
-    sql: (${number_of_actual_orders}/nullif(${number_of_adjusted_forecasted_orders},0))-1 ;;
+    sql: (${number_of_actual_orders}/nullif(${number_of_forecasted_orders_adjusted},0))-1 ;;
     value_format_name: percent_1
   }
 
@@ -476,9 +570,18 @@ view: forecasts {
   measure: pct_forecast_deviation_hours {
     group_label: "> Dynamic Measures"
     label: "% Scheduled Hours Forecast Deviation"
+    description: "The degree of how far # Forecasted Hours is from # Scheduled Hours in the given period. Formula: (# Scheduled Hours / # Forecasted Hours) - 1"
+    type: number
+    sql: (${ops.number_of_scheduled_hours_by_position}/nullif(${number_of_forecasted_hours_by_position},0)) - 1 ;;
+    value_format_name: percent_1
+  }
+
+  measure: pct_forecast_deviation_hours_adjusted {
+    group_label: "> Dynamic Measures"
+    label: "% Scheduled Hours Forecast Deviation (Incl. Airtable Adjustments)"
     description: "The degree of how far # Forecasted Hours (Incl. Airtable Adjustments) is from # Scheduled Hours in the given period. Formula: (# Scheduled Hours / # Forecasted Hours) - 1"
     type: number
-    sql: (${ops.number_of_scheduled_hours_by_position}/nullif(${number_of_adjusted_forecasted_hours_by_position},0)) - 1 ;;
+    sql: (${ops.number_of_scheduled_hours_by_position}/nullif(${number_of_forecasted_hours_by_position_adjusted},0)) - 1 ;;
     value_format_name: percent_1
   }
 
@@ -514,6 +617,15 @@ view: forecasts {
     hidden: yes
   }
 
+  measure: number_of_forecasted_minutes_picker_adjusted {
+    alias: [number_of_adjusted_forecasted_minutes_picker]
+    label: "# Forecasted Picker Minutes (Incl. Airtable Adjustments)"
+    type: sum_distinct
+    sql_distinct_key: ${forecast_uuid} ;;
+    sql: ${TABLE}.number_of_forecasted_minutes_picker_adjusted ;;
+    hidden: yes
+  }
+
   measure: number_of_forecasted_minutes_rider {
     label: "# Forecasted Rider Minutes"
     type: sum_distinct
@@ -522,19 +634,12 @@ view: forecasts {
     hidden: yes
   }
 
-  measure: number_of_adjusted_forecasted_minutes_picker {
-    label: "# Forecasted Picker Minutes - Post Adjustments"
+  measure: number_of_forecasted_minutes_rider_adjusted {
+    alias: [number_of_adjusted_forecasted_minutes_rider]
+    label: "# Forecasted Rider Minutes (Incl. Airtable Adjustments)"
     type: sum_distinct
     sql_distinct_key: ${forecast_uuid} ;;
-    sql: ${TABLE}.number_of_adjusted_forecasted_minutes_picker ;;
-    hidden: yes
-  }
-
-  measure: number_of_adjusted_forecasted_minutes_rider {
-    label: "# Forecasted Rider Minutes - Post Adjustments"
-    type: sum_distinct
-    sql_distinct_key: ${forecast_uuid} ;;
-    sql: ${TABLE}.number_of_adjusted_forecasted_minutes_rider ;;
+    sql: ${TABLE}.number_of_forecasted_minutes_rider_adjusted ;;
     hidden: yes
   }
 
@@ -547,6 +652,15 @@ view: forecasts {
     value_format_name: decimal_1
   }
 
+  measure: number_of_forecasted_hours_rider_adjusted {
+    alias: [number_of_adjusted_forecasted_hours_rider]
+    group_label: "> Rider Measures"
+    label: "# Forecasted Rider Hours (Incl. Airtable Adjustments)"
+    type: number
+    sql: ${number_of_forecasted_minutes_rider_adjusted}/60;;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_forecasted_hours_picker {
     group_label: "> Picker Measures"
     label: "# Forecasted Picker Hours"
@@ -556,19 +670,12 @@ view: forecasts {
     value_format_name: decimal_1
   }
 
-  measure: number_of_adjusted_forecasted_hours_rider {
-    group_label: "> Rider Measures"
-    label: "# Forecasted Rider Hours - Post Adjustments (Incl. Airtable Adjustments)"
-    type: number
-    sql: ${number_of_adjusted_forecasted_minutes_rider}/60;;
-    value_format_name: decimal_1
-  }
-
-  measure: number_of_forecasted_adjusted_hours_picker {
+  measure: number_of_forecasted_hours_picker_adjusted {
+    alias: [number_of_forecasted_adjusted_hours_picker]
     group_label: "> Picker Measures"
-    label: "# Forecasted Picker Hours - Post Adjustments (Incl. Airtable Adjustments)"
+    label: "# Forecasted Picker Hours (Incl. Airtable Adjustments)"
     type: number
-    sql: ${number_of_adjusted_forecasted_minutes_picker}/60;;
+    sql: ${number_of_forecasted_minutes_picker_adjusted}/60;;
     value_format_name: decimal_1
   }
   ##### Forecast errors
@@ -589,10 +696,26 @@ view: forecasts {
     sql: ABS(${number_of_forecasted_orders_dimension} - ${number_of_actual_orders_dimension});;
   }
 
+  measure: summed_absolute_error_adjusted {
+    type: sum_distinct
+    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
+    hidden: yes
+    sql: ABS(${number_of_forecasted_orders_adjusted_dimension} - ${number_of_actual_orders_dimension});;
+  }
+
+  measure: wmape_orders_adjusted {
+    group_label: "> Forecasting error"
+    label: "wMAPE - Orders (Incl. Airtable Adjustments)"
+    description: "Summed Absolute Difference of Orders per Hub in 30 min/ # Actual Orders"
+    type: number
+    sql: ${summed_absolute_error_adjusted}/nullif(${number_of_actual_orders},0);;
+    value_format_name: percent_2
+  }
+
   measure: wmape_hours {
     group_label: "> Forecasting error"
     label: "wMAPE - Scheduled Hours"
-    description: "Summed Absolute Difference of Scheduled Hours per Hub in 30 min (# Forecasted Hours (Incl. Airtable Adjustments)- # Scheduled Hours)/ # Scheduled Hours"
+    description: "Summed Absolute Difference of Scheduled Hours per Hub in 30 min (# Forecasted Hours - # Scheduled Hours)/ # Scheduled Hours"
     type: number
     sql: ${summed_absolute_error_hours}/nullif(${ops.number_of_scheduled_hours_by_position},0);;
     value_format_name: percent_2
@@ -602,7 +725,23 @@ view: forecasts {
     type: sum_distinct
     sql_distinct_key: ${forecast_uuid} ;;
     hidden: yes
-    sql: ABS(${number_of_adjusted_forecasted_hours_by_position_dimension} - ${ops.number_of_scheduled_hours_by_position_dimension});;
+    sql: ABS(${number_of_forecasted_hours_by_position_dimension} - ${ops.number_of_scheduled_hours_by_position_dimension});;
+  }
+
+  measure: summed_absolute_error_hours_adjusted {
+    type: sum_distinct
+    sql_distinct_key: ${forecast_uuid} ;;
+    hidden: yes
+    sql: ABS(${number_of_forecasted_hours_by_position_adjusted_dimension} - ${ops.number_of_scheduled_hours_by_position_dimension});;
+  }
+
+  measure: wmape_hours_adjusted {
+    group_label: "> Forecasting error"
+    label: "wMAPE - Scheduled Hours (Incl. Airtable Adjustments)"
+    description: "Summed Absolute Difference of Scheduled Hours per Hub in 30 min (# Forecasted Hours (Incl. Airtable Adjustments) - # Scheduled Hours)/ # Scheduled Hours"
+    type: number
+    sql: ${summed_absolute_error_hours_adjusted}/nullif(${ops.number_of_scheduled_hours_by_position},0);;
+    value_format_name: percent_2
   }
 
   measure: wmape_no_show_hours {
@@ -622,6 +761,23 @@ view: forecasts {
     sql: ABS(${number_of_no_show_hours_by_position_dimension} - ${ops.number_of_no_show_hours_by_position_dimension});;
   }
 
+  measure: summed_absolute_error_no_show_hours_adjusted {
+    type: sum_distinct
+    sql_distinct_key: ${forecast_uuid} ;;
+    hidden: no
+    sql: ABS(${number_of_no_show_hours_by_position_adjusted_dimension} - ${ops.number_of_no_show_hours_by_position_dimension});;
+  }
+
+  measure: wmape_no_show_hours_adjusted {
+    group_label: "> Forecasting error"
+    label: "wMAPE - No Show Hours (Incl. Airtable Adjustments)"
+    description: "Summed Absolute Difference of Actual No Show Hours per Hub in 30 min (# Forecasted No Show Hours (Incl. Airtable Adjustments) - # Actual No Show Hours)/ # Actual No Show Hours"
+    type: number
+    hidden: yes
+    sql: ${summed_absolute_error_no_show_hours_adjusted}/nullif(${ops.number_of_no_show_hours_by_position},0);;
+    value_format_name: percent_2
+  }
+
   # =========  Dynamic values   =========
 
   dimension: number_of_no_show_hours_by_position_dimension {
@@ -633,6 +789,20 @@ view: forecasts {
     sql:
         CASE
           WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${number_of_forecasted_no_show_hours_rider_dimension}
+      ELSE NULL
+      END ;;
+    hidden: yes
+  }
+
+  dimension: number_of_no_show_hours_by_position_adjusted_dimension {
+    type: number
+    label: "# Forecasted No Show Hours - Dimension (Incl. Airtable Adjustments)"
+    description: "# Forecasted No Show Hours (Based on Forecasted Hours (Incl. Airtable Adjustments))"
+    value_format_name: decimal_1
+    group_label: "> Dynamic Measures"
+    sql:
+        CASE
+          WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${number_of_forecasted_no_show_hours_rider_adjusted_dimension}_dimension}
       ELSE NULL
       END ;;
     hidden: yes
@@ -667,45 +837,73 @@ view: forecasts {
       END ;;
   }
 
-  dimension: number_of_adjusted_forecasted_hours_by_position_dimension {
+  measure: number_of_forecasted_hours_by_position_adjusted {
     type: number
-    label: "# Forecasted Hours - Post Adjustment (Incl. No Show) - Dimension"
+    label: "# Forecasted Hours (Incl. No Show) (Incl. Airtable Adjustments)"
     description: "# Forecasted Hours Needed (Incl. Airtable Adjustments) - No Show Forecasts included in Total Forecasted Hours and not added here explicitly"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
         CASE
-          WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${number_of_adjusted_forecasted_hours_rider_dimension}
-          WHEN {% parameter ops.position_parameter %} = 'Picker' THEN ${number_of_adjusted_forecasted_hours_picker_dimension}
+          WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${number_of_forecasted_hours_rider_adjusted}
+          WHEN {% parameter ops.position_parameter %} = 'Picker' THEN ${number_of_forecasted_hours_picker_adjusted}
+      ELSE NULL
+      END ;;
+  }
+
+  dimension: number_of_forecasted_hours_by_position_dimension {
+    type: number
+    label: "# Forecasted Hours (Incl. No Show) - Dimension"
+    description: "# Forecasted Hours Needed - No Show Forecasts included in Total Forecasted Hours and not added here explicitly"
+    value_format_name: decimal_1
+    group_label: "> Dynamic Measures"
+    sql:
+        CASE
+          WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${number_of_forecasted_hours_rider_dimension}
+          WHEN {% parameter ops.position_parameter %} = 'Picker' THEN ${number_of_forecasted_hours_picker_dimension}
       ELSE NULL
       END ;;
     hidden: yes
   }
 
 
-  measure: number_of_adjusted_forecasted_hours_by_position {
+  dimension: number_of_forecasted_hours_by_position_adjusted_dimension {
     type: number
-    label: "# Forecasted Hours - Post Adjustment (Incl. No Show)"
+    label: "# Forecasted Hours (Incl. No Show) (Incl. Airtable Adjustments) - Dimension"
     description: "# Forecasted Hours Needed (Incl. Airtable Adjustments) - No Show Forecasts included in Total Forecasted Hours and not added here explicitly"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
         CASE
-          WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${number_of_adjusted_forecasted_hours_rider}
-          WHEN {% parameter ops.position_parameter %} = 'Picker' THEN ${number_of_forecasted_adjusted_hours_picker}
+          WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${number_of_forecasted_hours_rider_adjusted_dimension}
+          WHEN {% parameter ops.position_parameter %} = 'Picker' THEN ${number_of_forecasted_hours_picker_adjusted_dimension}
       ELSE NULL
       END ;;
+    hidden: yes
   }
 
   measure: number_of_no_show_hours_by_position {
     type: number
     label: "# Forecasted No Show Hours"
-    description: "# Forecasted No Show Hours (Based on Forecasted Hours (Excl. Airtable Adjustments))"
+    description: "# Forecasted No Show Hours"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
         CASE
           WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${number_of_forecasted_no_show_minutes_rider}/60
+      ELSE NULL
+      END ;;
+  }
+
+  measure: number_of_no_show_hours_by_position_adjusted {
+    type: number
+    label: "# Forecasted No Show Hours (Incl. Airtable Adjustments)"
+    description: "# Forecasted No Show Hours (Based on Forecasted Hours (Incl. Airtable Adjustments))"
+    value_format_name: decimal_1
+    group_label: "> Dynamic Measures"
+    sql:
+        CASE
+          WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${number_of_forecasted_no_show_minutes_rider_adjusted}/60
       ELSE NULL
       END ;;
   }
@@ -718,7 +916,20 @@ view: forecasts {
     group_label: "> Dynamic Measures"
     sql:
         CASE
-          WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${number_of_no_show_hours_by_position}/nullif(${number_of_adjusted_forecasted_hours_by_position},0)
+          WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${number_of_no_show_hours_by_position}/nullif(${number_of_forecasted_hours_by_position},0)
+      ELSE NULL
+      END ;;
+  }
+
+  measure: pct_no_show_by_position_adjusted {
+    type: number
+    label: "% Forecasted No Show Hours (Incl. Airtable Adjustments)"
+    description: "# Forecasted No Show Hours (Incl. Airtable Adjustments) / # Forecasted Hours (Incl. Airtable Adjustments)"
+    value_format_name: percent_1
+    group_label: "> Dynamic Measures"
+    sql:
+        CASE
+          WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${number_of_no_show_hours_by_position_adjusted}/nullif(${number_of_forecasted_hours_by_position_adjusted},0)
       ELSE NULL
       END ;;
   }
@@ -732,13 +943,14 @@ view: forecasts {
     sql: ${number_of_forecasted_hours_by_position}-${number_of_no_show_hours_by_position} ;;
   }
 
-  measure: number_of_adjusted_forecasted_hours_excl_no_show_by_position {
+  measure: number_of_forecasted_hours_excl_no_show_by_position_adjusted {
+    alias: [number_of_adjusted_forecasted_hours_excl_no_show_by_position]
     type: number
-    label: "# Forecasted Hours - Post Adjustment (Excl. No Show)"
+    label: "# Forecasted Hours (Excl. No Show) (Incl. Airtable Adjustments)"
     description: "# Forecasted Hours Needed (Incl. Airtable Adjustments) - No Show Forecasts excluded in Total Forecasted Hours (# Forecasted Hours Needed - # Forecasted No Show Hours)"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
-    sql: ${number_of_adjusted_forecasted_hours_by_position}-${number_of_no_show_hours_by_position} ;;
+    sql: ${number_of_forecasted_hours_by_position_adjusted}-${number_of_no_show_hours_by_position_adjusted} ;;
   }
 
   measure: number_of_target_orders_by_position {
@@ -755,6 +967,19 @@ view: forecasts {
       END ;;
   }
 
+  measure: number_of_target_orders_by_position_adjusted {
+    type: number
+    label: "Base UTR (Incl. Airtable Adjustments)"
+    description: "# Target Orders per Hour per Position (Only available for riders)"
+    value_format_name: decimal_1
+    group_label: "> Dynamic Measures"
+    sql:
+        CASE
+          WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${number_of_target_orders_per_rider_adjusted}
+      ELSE NULL
+      END ;;
+  }
+
   measure: base_utr_incl_stacking_by_position {
     type: number
     label: "Base UTR (Incl. Stacking)"
@@ -765,6 +990,19 @@ view: forecasts {
         CASE
           WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${forecasted_base_utr_incl_stacking_rider}
           WHEN {% parameter ops.position_parameter %} = 'Picker' THEN ${forecasted_base_utr_incl_stacking_picker}
+      ELSE NULL
+      END ;;
+  }
+
+  measure: base_utr_incl_stacking_by_position_adjusted {
+    type: number
+    label: "Base UTR (Incl. Stacking) (Incl. Airtable Adjustments)"
+    description: "Base UTR by considering Stacking and Airtable Adjustments (Base UTR * Stacking Effect Multiplier) (Only available for riders)"
+    value_format_name: decimal_1
+    group_label: "> Dynamic Measures"
+    sql:
+        CASE
+          WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${forecasted_base_utr_incl_stacking_rider_adjusted}
       ELSE NULL
       END ;;
   }
@@ -788,7 +1026,16 @@ view: forecasts {
     description: "Forecasted Orders/Forecasted Hours (Incl. Airtable Adjustments)"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
-    sql: ${number_of_forecasted_orders}/nullif(${number_of_adjusted_forecasted_hours_by_position},0);;
+    sql: ${number_of_forecasted_orders}/nullif(${number_of_forecasted_hours_by_position},0);;
+  }
+
+  measure: final_utr_by_position_adjusted {
+    type: number
+    label: "Forecasted UTR (Incl. Airtable Adjustments)"
+    description: "Forecasted Orders/Forecasted Hours (Incl. Airtable Adjustments)"
+    value_format_name: decimal_1
+    group_label: "> Dynamic Measures"
+    sql: ${number_of_forecasted_orders_adjusted}/nullif(${number_of_forecasted_hours_by_position_adjusted},0);;
   }
 
   parameter: dynamic_text_utr {
@@ -818,6 +1065,15 @@ view: forecasts {
     sql: nullif(${orders_with_ops_metrics.sum_orders},0)/nullif(${final_utr_by_position},0);;
   }
 
+  measure: fixed_actual_needed_hours_by_position_adjusted {
+    type: number
+    group_label: "> Dynamic Measures"
+    label: "# Actually Needed Hours (Incl. Airtable Adjustments)"
+    description: "# Hours needed based on # Actual Orders / Forecasted UTR (Incl. Airtable Adjustments)"
+    value_format_name: decimal_1
+    sql: nullif(${orders_with_ops_metrics.sum_orders},0)/nullif(${final_utr_by_position_adjusted},0);;
+  }
+
   measure: wmape_by_parameter {
     type: number
     label: "wMape"
@@ -843,7 +1099,7 @@ view: forecasts {
     sql:
         CASE
           WHEN {% parameter wmape_parameter %} = 'Orders' THEN ${number_of_forecasted_orders}
-          WHEN {% parameter wmape_parameter %} = 'Scheduled Hours' THEN ${number_of_adjusted_forecasted_hours_by_position}
+          WHEN {% parameter wmape_parameter %} = 'Scheduled Hours' THEN ${number_of_forecasted_hours_by_position}
           WHEN {% parameter wmape_parameter %} = 'No Show Hours' THEN ${number_of_no_show_hours_by_position}
       ELSE NULL
       END ;;
@@ -876,8 +1132,22 @@ view: forecasts {
     sql_distinct_key: ${forecast_uuid} ;;
     description: "How much overstaffed we are compared to what was forecasted in cases of overstaffing. When Forecasted Hours < Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
     sql: case
-          when ${number_of_adjusted_forecasted_hours_by_position_dimension} < ${ops.number_of_scheduled_hours_by_position_dimension}
-            then abs(${number_of_adjusted_forecasted_hours_by_position_dimension} - ${ops.number_of_scheduled_hours_by_position_dimension})
+          when ${number_of_forecasted_hours_by_position_dimension} < ${ops.number_of_scheduled_hours_by_position_dimension}
+            then abs(${number_of_forecasted_hours_by_position_dimension} - ${ops.number_of_scheduled_hours_by_position_dimension})
+          else null end  ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  measure: summed_overstaffing_error_adjusted {
+    group_label: "> Dynamic Measures"
+    label: "Summed Overstaffing Error (Incl. Airtable Adjustments)"
+    type: sum_distinct
+    sql_distinct_key: ${forecast_uuid} ;;
+    description: "How much overstaffed we are compared to what was forecasted (Incl. Airtable Adjustments) in cases of overstaffing. When Forecasted Hours < Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
+    sql: case
+          when ${number_of_forecasted_hours_by_position_adjusted_dimension} < ${ops.number_of_scheduled_hours_by_position_dimension}
+            then abs(${number_of_forecasted_hours_by_position_adjusted_dimension} - ${ops.number_of_scheduled_hours_by_position_dimension})
           else null end  ;;
     value_format_name: decimal_1
     hidden: yes
@@ -888,7 +1158,17 @@ view: forecasts {
     group_label: "> Dynamic Measures"
     label: "% Overstaffing"
     description: "How much overstaffed we are compared to what was forecasted in cases of overstaffing. When Forecasted Hours < Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
-    sql:  ${summed_overstaffing_error} / nullif(${number_of_adjusted_forecasted_hours_by_position},0) ;;
+    sql:  ${summed_overstaffing_error} / nullif(${number_of_forecasted_hours_by_position},0) ;;
+    value_format_name: percent_1
+    hidden: no
+  }
+
+  measure: pct_overstaffing_adjusted {
+    type: number
+    group_label: "> Dynamic Measures"
+    label: "% Overstaffing (Incl. Airtable Adjustments)"
+    description: "How much overstaffed we are compared to what was forecasted (Incl. Airtable Adjustments in cases of overstaffing. When Forecasted Hours < Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
+    sql:  ${summed_overstaffing_error} / nullif(${number_of_forecasted_hours_by_position_adjusted},0) ;;
     value_format_name: percent_1
     hidden: no
   }
@@ -900,8 +1180,22 @@ view: forecasts {
     sql_distinct_key: ${forecast_uuid} ;;
     description: "How much overstaffed we are compared to what was forecasted in cases of overstaffing. When Forecasted Hours < Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
     sql: case
-          when ${number_of_adjusted_forecasted_hours_by_position_dimension} > ${ops.number_of_scheduled_hours_by_position_dimension}
-            then abs(${number_of_adjusted_forecasted_hours_by_position_dimension} - ${ops.number_of_scheduled_hours_by_position_dimension})
+          when ${number_of_forecasted_hours_by_position_dimension} > ${ops.number_of_scheduled_hours_by_position_dimension}
+            then abs(${number_of_forecasted_hours_by_position_dimension} - ${ops.number_of_scheduled_hours_by_position_dimension})
+          else null end  ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  measure: summed_understaffing_error_adjusted {
+    group_label: "> Dynamic Measures"
+    label: "Summed Overstaffing Error (Incl. Airtable Adjustments)"
+    type: sum_distinct
+    sql_distinct_key: ${forecast_uuid} ;;
+    description: "How much overstaffed we are compared to what was forecasted (Incl. Airtable Adjustments) in cases of overstaffing. When Forecasted Hours < Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
+    sql: case
+          when ${number_of_forecasted_hours_by_position_adjusted_dimension} > ${ops.number_of_scheduled_hours_by_position_dimension}
+            then abs(${number_of_forecasted_hours_by_position_adjusted_dimension} - ${ops.number_of_scheduled_hours_by_position_dimension})
           else null end  ;;
     value_format_name: decimal_1
     hidden: yes
@@ -912,7 +1206,17 @@ view: forecasts {
     group_label: "> Dynamic Measures"
     label: "% Understaffing"
     description: "How much understaffed we are compared to what was forecasted in cases of understaffing. When Forecasted Hours > Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
-    sql:  ${summed_understaffing_error} / nullif(${number_of_adjusted_forecasted_hours_by_position},0) ;;
+    sql:  ${summed_understaffing_error} / nullif(${number_of_forecasted_hours_by_position},0) ;;
+    value_format_name: percent_1
+    hidden: no
+  }
+
+  measure: pct_understaffing_adjusted {
+    type: number
+    group_label: "> Dynamic Measures"
+    label: "% Understaffing (Incl. Airtable Adjustments)"
+    description: "How much understaffed we are compared to what was forecasted (Incl. Airtable Adjustments) in cases of understaffing. When Forecasted Hours > Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
+    sql:  ${summed_understaffing_error} / nullif(${number_of_forecasted_hours_by_position_adjusted},0) ;;
     value_format_name: percent_1
     hidden: no
   }
