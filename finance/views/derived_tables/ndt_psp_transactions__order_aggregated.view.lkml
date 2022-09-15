@@ -47,7 +47,7 @@ view: ndt_psp_transactions__order_aggregated {
       type: yesno
       group_label: "> Transaction Properties"
       description: "Flags if the gross GPV visible in CT is higher than the gross Settled amount paid via Adyen. We exclude full refund payments here."
-      sql:${sum_gross_credit_gc} < ${sum_gpv_gross};;
+      sql: ${sum_gross_credit_gc} < ${sum_gpv_gross};;
     }
 
     dimension: is_adyen_above_CT_amount {
