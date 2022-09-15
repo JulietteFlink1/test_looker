@@ -2,7 +2,7 @@
 # Created: 2022-09-09
 
 view: daily_stock_management_events {
-  sql_table_name: `flink-data-dev.curated.daily_stock_management_events`
+  sql_table_name: `flink-data-prod.curated.daily_stock_management_events`
     ;;
   view_label: "Daily Stock Management Events"
 
