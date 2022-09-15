@@ -199,6 +199,7 @@ view: forecasts {
   }
 
   dimension: number_of_forecasted_orders_adjusted_dimension {
+    alias: [number_of_adjusted_forecasted_orders_dimension]
     label: "# Forecasted Orders (Incl. Airtable Adjustments) - Dimension"
     type:  number
     sql: ${TABLE}.number_of_forecasted_orders_adjusted;;
@@ -294,7 +295,7 @@ view: forecasts {
     hidden: yes
   }
 
-  measure: pct_forecasted_no_show_rider_adjsuted {
+  measure: pct_forecasted_no_show_rider_adjusted {
     group_label: "> Rider Measures"
     label: "% No Show Riders (Incl. Airtable Adjustments)"
     type: number
@@ -838,6 +839,7 @@ view: forecasts {
   }
 
   measure: number_of_forecasted_hours_by_position_adjusted {
+    alias: [number_of_adjusted_forecasted_hours_by_position]
     type: number
     label: "# Forecasted Hours (Incl. No Show) (Incl. Airtable Adjustments)"
     description: "# Forecasted Hours Needed (Incl. Airtable Adjustments) - No Show Forecasts included in Total Forecasted Hours and not added here explicitly"
@@ -868,6 +870,7 @@ view: forecasts {
 
 
   dimension: number_of_forecasted_hours_by_position_adjusted_dimension {
+    alias: [number_of_adjusted_forecasted_hours_by_position_dimension]
     type: number
     label: "# Forecasted Hours (Incl. No Show) (Incl. Airtable Adjustments) - Dimension"
     description: "# Forecasted Hours Needed (Incl. Airtable Adjustments) - No Show Forecasts included in Total Forecasted Hours and not added here explicitly"
