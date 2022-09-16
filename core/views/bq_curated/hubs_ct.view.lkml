@@ -287,6 +287,10 @@ view: hubs_ct {
     type: string
     sql: ${TABLE}.shipping_method_id ;;
     group_label: "> IDs"
+    link: {
+      label: "View Shipping Method in CommerceTools"
+      url: "https://mc.europe-west1.gcp.commercetools.com/flink-production/settings/project/shipping-methods/{{ value }}"
+    }
   }
 
   dimension:  lighthouse_hubs {
