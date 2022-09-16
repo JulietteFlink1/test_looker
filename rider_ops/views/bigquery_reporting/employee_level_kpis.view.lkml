@@ -545,7 +545,7 @@ view: employee_level_kpis {
   measure: number_of_absence_minutes {
     group_label: "* Shift related *"
     type: sum
-    label: "# absence Hours"
+    label: "# Absence Hours"
     description: "Number of Absence hours with all different leave reason (excluding absences in case of no show)"
     sql: ${TABLE}.number_of_absence_minutes/60 ;;
     value_format_name: decimal_1
