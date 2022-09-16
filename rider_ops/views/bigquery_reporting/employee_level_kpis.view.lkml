@@ -518,8 +518,36 @@ view: employee_level_kpis {
   measure: number_of_sick_hours {
     group_label: "* Shift related *"
     type: sum
-    label: "# Sickness Hours"
+    label: "# Sick Hours"
+    description: "Number of Absence hours with leave reason containing the word 'sick' or 'wait' or 'arrêt' (excluding absences defined as no shows)"
     sql: ${TABLE}.number_of_sick_minutes/60 ;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_vacation_hours {
+    group_label: "* Shift related *"
+    type: sum
+    label: "# Vacation Hours"
+    description: "Number of Absence hours with leave reason containing the word 'vacation' (excluding absences defined as no shows)"
+    sql: ${TABLE}.number_of_vacation_minutes/60 ;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_unpaid_absence_hours {
+    group_label: "* Shift related *"
+    type: sum
+    label: "# Unpaid Absence Hours"
+    description: "Number of Absence hours with leave reason containing the word 'unpaid' (excluding absences defined as no shows)"
+    sql: ${TABLE}.number_of_unpaid_absence_minutes/60 ;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_absence_hours {
+    group_label: "* Shift related *"
+    type: sum
+    label: "# Absence Hours"
+    description: "Number of Absence hours with all different leave reason (excluding absences defined as no shows)"
+    sql: ${TABLE}.number_of_absence_minutes/60 ;;
     value_format_name: decimal_1
   }
 
