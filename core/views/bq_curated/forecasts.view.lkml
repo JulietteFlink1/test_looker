@@ -392,24 +392,6 @@ view: forecasts {
     sql: ${TABLE}.number_of_target_orders_per_rider_adjusted ;;
   }
 
-  measure: forecasted_base_utr_incl_stacking_rider {
-    group_label: "> Rider Measures"
-    label: "Base UTR Rider (Incl. Stacking)"
-    description: "Base UTR Rider (Incl. Stacking) - Target UTR * Stacking Effect Multiplier"
-    type:  number
-    value_format_name: decimal_1
-    sql: ${number_of_target_orders_per_rider}*${stacking_effect_multiplier} ;;
-  }
-
-  measure: forecasted_base_utr_incl_stacking_rider_adjusted {
-    group_label: "> Rider Measures"
-    label: "Adjusted Base UTR Rider (Incl. Stacking)"
-    description: "Base UTR Rider (Incl. Stacking) - Target UTR * Stacking Effect Multiplier"
-    type:  number
-    value_format_name: decimal_1
-    sql: ${number_of_target_orders_per_rider_adjusted}*${stacking_effect_multiplier} ;;
-  }
-
   measure: final_utr_picker {
     group_label: "> Picker Measures"
     label: "Forecasted UTR Picker"
@@ -970,32 +952,6 @@ view: forecasts {
     sql:
         CASE
           WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${number_of_target_orders_per_rider_adjusted}
-      ELSE NULL
-      END ;;
-  }
-
-  measure: base_utr_incl_stacking_by_position {
-    type: number
-    label: "Base UTR (Incl. Stacking)"
-    description: "Base UTR by considering Stacking (Base UTR * Stacking Effect Multiplier) (Only available for rider)"
-    value_format_name: decimal_1
-    group_label: "> Dynamic Measures"
-    sql:
-        CASE
-          WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${forecasted_base_utr_incl_stacking_rider}
-      ELSE NULL
-      END ;;
-  }
-
-  measure: base_utr_incl_stacking_by_position_adjusted {
-    type: number
-    label: "Adjusted Base UTR (Incl. Stacking)"
-    description: "Base UTR by considering Stacking and Airtable Adjustments (Base UTR * Stacking Effect Multiplier) (Only available for riders)"
-    value_format_name: decimal_1
-    group_label: "> Dynamic Measures"
-    sql:
-        CASE
-          WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${forecasted_base_utr_incl_stacking_rider_adjusted}
       ELSE NULL
       END ;;
   }
