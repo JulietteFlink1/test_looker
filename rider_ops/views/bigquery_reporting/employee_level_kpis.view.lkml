@@ -527,8 +527,8 @@ view: employee_level_kpis {
   measure: number_of_vacation_minutes {
     group_label: "* Shift related *"
     type: sum
-    description: " Sum of Absence hours with leave reason containing the word 'vacation' (excluding absences in case of no show)"
     label: "# Vacation Hours"
+    description: "Number of Absence hours with leave reason containing the word 'vacation' (excluding absences in case of no show)"
     sql: ${TABLE}.number_of_vacation_minutes/60 ;;
     value_format_name: decimal_1
   }
@@ -536,8 +536,8 @@ view: employee_level_kpis {
   measure: number_of_unpaid_absence_minutes {
     group_label: "* Shift related *"
     type: sum
-    description: " Sum of Absence hours with leave reason containing the word 'unpaid' (excluding absences in case of no show)"
     label: "# Unpaid Absence Hours"
+    description: "Number of Absence hours with leave reason containing the word 'unpaid' (excluding absences in case of no show)"
     sql: ${TABLE}.number_of_unpaid_absence_minutes/60 ;;
     value_format_name: decimal_1
   }
@@ -545,8 +545,8 @@ view: employee_level_kpis {
   measure: number_of_absence_minutes {
     group_label: "* Shift related *"
     type: sum
-    description: " Sum of Absence hours with all different leave reason (excluding absences in case of no show)"
     label: "# absence Hours"
+    description: "Number of Absence hours with all different leave reason (excluding absences in case of no show)"
     sql: ${TABLE}.number_of_absence_minutes/60 ;;
     value_format_name: decimal_1
   }
