@@ -8,11 +8,16 @@
 
 view: ndt_psp_transactions__order_aggregated {
     derived_table: {
+     # datagroup_trigger: flink_default_datagroup
       explore_source: psp_transactions {
         column: order_uuid { field: orders.order_uuid }
         column: sum_gpv_gross { field: orders.sum_gpv_gross }
         column: sum_gross_credit_gc { field: psp_settlement_details.sum_gross_credit_gc }
         column: sum_gross_debit_gc {field: ndt_psp_transactions__payment_id_aggregated.sum_gross_debit_gc}
+        column: psp_settlement_booking_date {field: psp_settlement_details.booking_date}
+        column: psp_transactions_booking_date {field: psp_transactions.booking_date}
+        column: order_date {field:orders.created_date}
+
         filters: {
           field: ndt_psp_transactions__payment_id_aggregated.is_full_refund_payment
           value: "No"
@@ -20,6 +25,31 @@ view: ndt_psp_transactions__order_aggregated {
         filters: {
           field: psp_settlement_details.type
           value: "Settled"
+        }
+        filters: {
+          field: psp_settlement_details.booking_date
+          value: "last 3 years"
+        }
+        filters: {
+          field: psp_transactions.booking_date
+          value: "last 3 years"
+        }
+        filters: {
+          field: orders.created_date
+          value: ""
+        }
+
+        bind_filters: {
+          to_field: global_filters_and_parameters.datasource_filter
+          from_field: ndt_psp_transactions__duplicated_psp_references.order_date
+        }
+        bind_filters: {
+          to_field: global_filters_and_parameters.datasource_filter
+          from_field: ndt_psp_transactions__duplicated_psp_references.psp_transactions_booking_date
+        }
+        bind_filters: {
+          to_field: global_filters_and_parameters.datasource_filter
+          from_field: ndt_psp_transactions__duplicated_psp_references.psp_settlement_booking_date
         }
       }
     }
@@ -85,6 +115,21 @@ view: ndt_psp_transactions__order_aggregated {
       description: "Flags if the gross Adyen Settled amount is different from the gross GPV in CT. We exclude full refund payments here."
       type: yesno
       sql: ${sum_gross_credit_adjusted} <> ${sum_gpv_gross} ;;
+    }
+
+    dimension: psp_transactions_booking_date {
+      hidden: yes
+      type: date
+    }
+
+    dimension: psp_settlement_booking_date {
+      hidden: yes
+      type: date
+    }
+
+    dimension: order_date {
+      hidden: yes
+      type: date
     }
 
     measure: sum_difference_ct_adyen {

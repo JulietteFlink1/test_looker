@@ -8,14 +8,43 @@
 
 view: ndt_psp_transactions__payment_id_aggregated {
     derived_table: {
+    #  datagroup_trigger: flink_default_datagroup
       explore_source: psp_transactions {
         column: payment_id { field: psp_transactions.payment_id}
         column: sum_gross_credit_gc { field: psp_settlement_details.sum_gross_credit_gc }
         column: sum_gross_debit_gc { field: psp_settlement_details.sum_gross_debit_gc }
         column: order_uuid { field: orders.order_uuid }
+        column: order_date { field: orders.created_date }
+        column: psp_transactions_booking_date { field: psp_transactions.booking_date }
+        column: psp_settlement_booking_date { field: psp_settlement_details.booking_date }
+
         filters: {
           field: psp_transactions.record_type
           value: "Authorised,Refunded,RefundedExternally,Chargeback"
+        }
+        filters: {
+          field: psp_settlement_details.booking_date
+          value: "last 3 years"
+        }
+        filters: {
+          field: psp_transactions.booking_date
+          value: "last 3 years"
+        }
+        filters: {
+          field: orders.created_date
+          value: "last 3 years"
+        }
+        bind_filters: {
+          to_field: global_filters_and_parameters.datasource_filter
+          from_field: ndt_psp_transactions__duplicated_psp_references.order_date
+        }
+        bind_filters: {
+          to_field: global_filters_and_parameters.datasource_filter
+          from_field: ndt_psp_transactions__duplicated_psp_references.psp_transactions_booking_date
+        }
+        bind_filters: {
+          to_field: global_filters_and_parameters.datasource_filter
+          from_field: ndt_psp_transactions__duplicated_psp_references.psp_settlement_booking_date
         }
       }
     }
@@ -39,6 +68,21 @@ view: ndt_psp_transactions__payment_id_aggregated {
       description: "Amount submitted in the transaction request."
       hidden: yes
       type: number
+    }
+
+    dimension: psp_transactions_booking_date {
+      hidden: yes
+      type: date
+    }
+
+    dimension: psp_settlement_booking_date {
+      hidden: yes
+      type: date
+    }
+
+    dimension: order_date {
+      hidden: yes
+      type: date
     }
 
     dimension: order_uuid {

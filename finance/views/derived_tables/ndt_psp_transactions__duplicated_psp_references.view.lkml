@@ -6,9 +6,52 @@
 
 view: ndt_psp_transactions__duplicated_psp_references {
     derived_table: {
+     # datagroup_trigger: flink_default_datagroup
       explore_source: psp_transactions {
         column: number_of_orders {field:psp_transactions.cnt_distinct_orders}
+        column: psp_settlement_booking_date {field: psp_settlement_details.booking_date}
+        column: psp_transactions_booking_date {field: psp_transactions.booking_date}
+        column: order_date {field:orders.created_date}
         column: psp_reference {}
+
+
+        filters: {
+          field: psp_settlement_details.booking_date
+          value: "last 3 years"
+        }
+        filters: {
+          field: psp_transactions.booking_date
+          value: "last 3 years"
+        }
+        filters: {
+          field: orders.created_date
+          value: "last 3 years"
+        }
+
+        # bind_filters: {
+        #   to_field: orders.created_date
+        #   from_field: ndt_psp_transactions__duplicated_psp_references.order_date
+        # }
+        # bind_filters: {
+        #   to_field: psp_transactions.booking_date
+        #   from_field: ndt_psp_transactions__duplicated_psp_references.psp_transactions_booking_date
+        # }
+        # bind_filters: {
+        #   to_field: psp_settlement_details.booking_date
+        #   from_field: ndt_psp_transactions__duplicated_psp_references.psp_settlement_booking_date
+        # }
+        bind_filters: {
+          to_field: global_filters_and_parameters.datasource_filter
+          from_field: ndt_psp_transactions__duplicated_psp_references.order_date
+        }
+        bind_filters: {
+          to_field: global_filters_and_parameters.datasource_filter
+          from_field: ndt_psp_transactions__duplicated_psp_references.psp_transactions_booking_date
+        }
+        bind_filters: {
+          to_field: global_filters_and_parameters.datasource_filter
+          from_field: ndt_psp_transactions__duplicated_psp_references.psp_settlement_booking_date
+        }
       }
     }
 
@@ -24,6 +67,21 @@ view: ndt_psp_transactions__duplicated_psp_references {
       description: ""
       hidden: yes
       primary_key: yes
+    }
+
+    dimension: psp_transactions_booking_date {
+      hidden: yes
+      type: date
+    }
+
+    dimension: psp_settlement_booking_date {
+      hidden: yes
+      type: date
+    }
+
+    dimension: order_date {
+      hidden: yes
+      type: date
     }
 
     dimension: is_duplicated_psp_reference {
