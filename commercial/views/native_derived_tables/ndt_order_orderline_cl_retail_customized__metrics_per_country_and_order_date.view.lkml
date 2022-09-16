@@ -7,7 +7,7 @@ include: "/**/order_orderline_cl_retail_customized.explore.lkml"
 # If necessary, uncomment the line below to include explore_source.
 # include: "order_orderline_cl_retail_customized.explore.lkml"
 
-view: ndt_orders_cl_metrics_per_country_and_order_date {
+view: ndt_order_orderline_cl_retail_customized__metrics_per_country_and_order_date {
 
   derived_table: {
 
@@ -42,7 +42,7 @@ view: ndt_orders_cl_metrics_per_country_and_order_date {
   #  - - - - - - - - - -    Hidden Fields
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   dimension: number_of_daily_orders {
-    label: "# Orders (per order-date & country)"
+    label: "# Daily Orders per Country"
     description: "Count of Orders per order-day and country"
 
     sql: ${TABLE}.number_of_orders ;;
@@ -64,7 +64,7 @@ view: ndt_orders_cl_metrics_per_country_and_order_date {
   #  - - - - - - - - - -    Exposed Measures
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   measure: sum_number_of_orders {
-    label: "# Orders (per order-date & country)"
+    label: "# Daily Unique Customers per Country"
     description: "Count of Orders per order-day and country"
 
     type: sum
@@ -75,7 +75,7 @@ view: ndt_orders_cl_metrics_per_country_and_order_date {
   }
 
   measure: sum_number_of_unique_customers {
-    label: "# Unique Customers (per order-date & country)"
+    label: "# Daily Unique Customers per Country"
     description: "Count of Unique Customers identified via their Customer UUID aggregated per order-day and country"
     value_format: "0"
     type: sum

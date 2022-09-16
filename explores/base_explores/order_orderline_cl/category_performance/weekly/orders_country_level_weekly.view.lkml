@@ -78,7 +78,7 @@ view: orders_country_level_weekly {
   }
 
   dimension: number_of_weekly_unique_customers {
-    label: "# Unique Customers (per order-week & country)"
+    label: "# Weekly Unique Customers per Country"
     description: "Count of Unique Customers identified via their Customer UUID aggregated per order-week and country"
 
     sql: ${TABLE}.number_of_unique_customers ;;
@@ -88,7 +88,7 @@ view: orders_country_level_weekly {
   }
 
   dimension: number_of_weekly_orders {
-    label: "# Orders (per order-week & country)"
+    label: "# Weekly Orders per Country"
     description: "Count of Orders per order-week and country"
 
     sql: ${TABLE}.cnt_orders ;;
@@ -116,7 +116,7 @@ view: orders_country_level_weekly {
   }
 
   measure: sum_number_of_orders {
-    label: "# Orders (per order-week & country)"
+    label: "# Weekly Orders per Country"
     description: "Count of Orders per order-week and country"
 
     type: sum
@@ -127,7 +127,7 @@ view: orders_country_level_weekly {
   }
 
   measure: sum_number_of_unique_customers {
-    label: "# Unique Customers (per order-week & country)"
+    label: "# Weekly Unique Customers per Country"
     description: "Count of Unique Customers identified via their Customer UUID aggregated per order-week and country"
     value_format: "0"
     type: sum

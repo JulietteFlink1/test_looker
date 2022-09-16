@@ -80,7 +80,7 @@ view: orders_country_level_monthly {
   }
 
   dimension: number_of_monthly_unique_customers {
-    label: "# Unique Customers (per order-month & country)"
+    label: "# Monthly Unique Customers per Country"
     description: "Count of Unique Customers identified via their Customer UUID aggregated per order-month and country"
 
     sql: ${TABLE}.number_of_unique_customers ;;
@@ -90,7 +90,7 @@ view: orders_country_level_monthly {
   }
 
   dimension: number_of_monthly_orders {
-    label: "# Orders (per order-month & country)"
+    label: "# Monthly Orders per Country"
     description: "Count of Orders per order-month and country"
 
     sql: ${TABLE}.cnt_orders ;;
@@ -118,7 +118,7 @@ view: orders_country_level_monthly {
   }
 
   measure: sum_number_of_orders {
-    label: "# Orders (per order-month & country)"
+    label: "# Monthly Orders per Country"
     description: "Count of Orders per order-month and country"
 
     type: sum
@@ -129,7 +129,7 @@ view: orders_country_level_monthly {
   }
 
   measure: sum_number_of_unique_customers {
-    label: "# Unique Customers (per order-month & country)"
+    label: "# Monthly Unique Customers per Country"
     description: "Count of Unique Customers identified via their Customer UUID aggregated per order-month and country"
     value_format: "0"
     type: sum

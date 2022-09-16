@@ -36,12 +36,13 @@ explore: order_orderline_cl_retail_customized {
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   #  - - - - - - - - - -    Day + Country Level tables
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  join: ndt_orders_cl_metrics_per_country_and_order_date {
+  join: ndt_order_orderline_cl_retail_customized__metrics_per_country_and_order_date {
+      view_label: ""
       relationship: many_to_one
       type: left_outer
       sql_on:
-          ${orders_cl.created_date} = ${ndt_orders_cl_metrics_per_country_and_order_date.created_date} and
-          ${hubs.country_iso}       = ${ndt_orders_cl_metrics_per_country_and_order_date.country_iso}
+          ${orders_cl.created_date} = ${ndt_order_orderline_cl_retail_customized__metrics_per_country_and_order_date.created_date} and
+          ${hubs.country_iso}       = ${ndt_order_orderline_cl_retail_customized__metrics_per_country_and_order_date.country_iso}
       ;;
   }
 
@@ -142,7 +143,7 @@ explore: order_orderline_cl_retail_customized {
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   #  - - - - - - - - - -    Cross-Referenced Metrics
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  join: hlp_order_orderline_cl_retail_customized_cross_metrics {
+  join: cr__order_orderline_cl_retail_customized_cross_metrics {
     view_label: "Orders"
     relationship: one_to_one
     type: left_outer
