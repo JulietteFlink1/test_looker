@@ -54,7 +54,6 @@ explore: daily_stock_management_events {
 
   join: products {
     view_label: "Product Dimensions"
-    fields: [product_name, category]
     sql_on: ${products.product_sku} = ${daily_stock_management_events.sku};;
     type: left_outer
     relationship: one_to_one
