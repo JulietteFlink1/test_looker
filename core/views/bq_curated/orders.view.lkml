@@ -2177,6 +2177,16 @@ view: orders {
     value_format_name: decimal_1
   }
 
+  measure: avg_order_weight {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Order Weight "
+    description: "AVG Order Weight (kg)"
+    hidden:  no
+    type: average
+    sql: ${weight_kg};;
+    value_format_name: decimal_1
+  }
+
 
 
   ##########
