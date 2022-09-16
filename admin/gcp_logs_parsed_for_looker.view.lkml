@@ -1,5 +1,5 @@
 view: gcp_logs_parsed_for_looker {
-  sql_table_name: `flink-data-dev.dbt_astueber.gcp_logs_parsed_for_looker`
+  sql_table_name: `flink-data-prod.reporting.gcp_logs_parsed_for_looker`
     ;;
 
 
@@ -187,7 +187,7 @@ view: gcp_logs_parsed_for_looker {
   }
 
   measure: sum_query_count {
-    label: "# Query Counts (GCP)"
+    label: "# Queries"
     description: "The total number of queries, that have been run"
 
     type: sum
