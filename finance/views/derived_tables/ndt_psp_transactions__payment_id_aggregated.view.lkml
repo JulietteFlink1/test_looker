@@ -48,15 +48,7 @@ view: ndt_psp_transactions__payment_id_aggregated {
 
     dimension: is_full_refund_payment {
       type: yesno
-      sql:
-          case
-              when ${sum_gross_credit_gc} = ${sum_gross_debit_gc}
-                  then
-                      true
-              else
-                  false
-          end
-      ;;
+      sql: ${sum_gross_credit_gc} = ${sum_gross_debit_gc} ;;
       group_label: "> Transaction Properties"
       description: "Flags if the payment ID is a full refund payment. Checks if the Authorised amount is equal to the Refunded Amount for the payment."
     }
