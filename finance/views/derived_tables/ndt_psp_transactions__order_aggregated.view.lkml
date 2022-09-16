@@ -28,6 +28,7 @@ view: ndt_psp_transactions__order_aggregated {
       label: "Orders Order UUID"
       description: ""
       hidden: yes
+      primary_key: yes
     }
 
     dimension: sum_gpv_gross {
@@ -53,6 +54,7 @@ view: ndt_psp_transactions__order_aggregated {
 
     dimension: sum_gross_credit_adjusted {
       hidden: yes
+      type: number
       description: "Adjusted Gross debit amount for payments where we have 2 Authorised and 1 Refund transactions, all with the same amounts."
       sql:
           case
@@ -84,4 +86,14 @@ view: ndt_psp_transactions__order_aggregated {
       type: yesno
       sql: ${sum_gross_credit_adjusted} <> ${sum_gpv_gross} ;;
     }
+
+    measure: sum_difference_ct_adyen {
+      group_label: "> Adyen <> CT"
+      label: "SUM Difference Adyen Gross Settled Amount - CT GPV Gross"
+      description: "Difference between the amount actually paid by the customer and the expected Gross Payment Value in CT. Before deduction of Refunds due to returns."
+      type: sum
+      sql: ${sum_gross_credit_adjusted} - ${sum_gpv_gross} ;;
+      value_format_name: eur
+    }
+
 }
