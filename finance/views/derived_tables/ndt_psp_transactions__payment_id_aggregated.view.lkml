@@ -23,6 +23,7 @@ view: ndt_psp_transactions__payment_id_aggregated {
     dimension: payment_id {
       label: "PSP Transactions Payment ID"
       description: "CT Payment ID"
+      primary_key: yes
       hidden: yes
     }
 
