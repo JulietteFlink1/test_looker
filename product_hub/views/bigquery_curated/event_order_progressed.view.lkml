@@ -293,8 +293,9 @@ view: event_order_progressed {
   measure: sum_of_quantity {
     group_label: "Total Metrics"
     label: "Total Quantity"
-    description: "Sum of quantity."
+    description: "Sum of quantity if item is picked or refunded."
     type: sum
+    filters: [action: "item_picked, item_refunded"]
     sql: ${TABLE}.quantity ;;
   }
 

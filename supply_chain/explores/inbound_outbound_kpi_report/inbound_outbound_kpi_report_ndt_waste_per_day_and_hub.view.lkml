@@ -78,7 +78,7 @@ view: inbound_outbound_kpi_report_ndt_waste_per_day_and_hub {
     type: sum
     sql:  - ${outbound_waste_per_buying_price_gross};;
     value_format_name: eur
-    hidden: yes
+    hidden: no
   }
 
   measure: avg_waste_per_order_per_buying_price_net {
