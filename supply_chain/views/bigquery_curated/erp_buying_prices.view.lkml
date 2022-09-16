@@ -323,6 +323,16 @@ view: erp_buying_prices {
     value_format_name: eur
   }
 
+  measure: sum_gross_profit_after_product_discount_gross  {
+
+    label: "€ Gross Profit after Product Discount (Gross)"
+    description: "The gross profit after product discounts (gross) for sold products"
+
+    type: number
+    sql: ${pct_total_margin_relative_after_product_discount} * ${orderline.sum_item_price_after_product_discount_gross} ;;
+    value_format_name: eur
+  }
+
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Parameters     ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
