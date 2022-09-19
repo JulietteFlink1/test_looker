@@ -262,7 +262,7 @@ view: daily_smart_inventory_checks {
     type: count_distinct
     group_label: "Total Metrics"
     label: "# of Checks"
-    description: "Number of checks."
+    description: "Number of checks, includes status: done, open, canceled and unfulfillable."
     sql: ${table_uuid} ;;
   }
 
@@ -301,6 +301,15 @@ view: daily_smart_inventory_checks {
     description: "Number of open checks."
     sql: ${table_uuid} ;;
     filters: [status: "open"]
+  }
+
+  measure: number_of_open_and_completed_checks {
+    type: count_distinct
+    group_label: "Total Metrics"
+    label: "# of Open and Completed Checks"
+    description: "Number of open and completed checks."
+    sql: ${table_uuid} ;;
+    filters: [status: "open, done"]
   }
 
   # =========  Rate Metrics  =========
