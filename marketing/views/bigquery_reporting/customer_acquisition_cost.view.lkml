@@ -1,3 +1,9 @@
+### Author: Artem Avramenko
+### Created: 2022-09-17
+
+### This view represents spend and acquistions data for online marketing channels as well as
+### other campaign performance-related measures.
+
 view: customer_acquisition_cost {
   sql_table_name: `flink-data-dev.sandbox_artem.customer_acquisition_cost`
     ;;
