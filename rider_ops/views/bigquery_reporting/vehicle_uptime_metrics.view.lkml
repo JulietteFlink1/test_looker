@@ -1,0 +1,101 @@
+view: vehicle_uptime_metrics {
+  sql_table_name: `flink-data-dev.dbt_vbreda.vehicle_uptime_metrics` ;;
+
+  drill_fields: [vehicle_id]
+
+  dimension: country_iso {
+    group_label: "> Geography"
+    label: "Country Iso"
+    type: string
+    sql: ${TABLE}.country_iso ;;
+  }
+
+  dimension: hub_code {
+    group_label: "> Geography"
+    label: "Hub Code"
+    type: string
+    sql: ${TABLE}.hub_code ;;
+  }
+
+  dimension: supplier_id {
+    group_label: "> Supplier Properties"
+    label: "Supplier Id"
+    description: "Unique supplier identifier"
+    type: string
+    sql: ${TABLE}.supplier_id ;;
+  }
+
+  dimension: supplier_name {
+    group_label: "> Supplier Properties"
+    description: "Full supplier name e.g. Swapfiets"
+    type: string
+    sql: ${TABLE}.supplier_name ;;
+  }
+
+  dimension: vehicle_id {
+    group_label: "> Vehicle Properties"
+    description: "Unique identifier of a bike"
+    type: string
+    sql: ${TABLE}.vehicle_id ;;
+  }
+
+  dimension: report_date {
+    group_label: "> Dates"
+    label: "Report Date"
+    type: date
+    datatype: date
+    sql: ${TABLE}.report_date ;;
+  }
+
+  dimension: downtime_minutes {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.downtime_minutes ;;
+  }
+
+  dimension: expected_uptime_minutes {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.expected_uptime_minutes ;;
+  }
+
+  ### MEASURES ###
+
+  measure: sum_downtime_minutes {
+    hidden: yes
+    type: sum
+    sql: ${downtime_minutes} ;;
+  }
+
+  measure: sum_expected_uptime_minutes {
+    hidden: yes
+    type: sum
+    sql: ${expected_uptime_minutes} ;;
+  }
+
+  measure: number_of_bikes {
+    label: "# Bikes"
+    description: "Number of bikes that should be available"
+    type: count_distinct
+    sql: ${vehicle_id} ;;
+  }
+
+  measure: number_of_damaged_bikes {
+    label: "# Damaged Bikes"
+    description: "Number of bikes that have a damage that prevents them to be used"
+    type: count_distinct
+    filters: [downtime_minutes : ">0"]
+    sql: ${vehicle_id} ;;
+  }
+
+  measure: share_of_operational_bike_minutes {
+    label: "% Operational Bike Time"
+    description: "Computed as 1 - (downtime / expected uptime).
+                Downtime = sum of duration of damages on a certain day.
+                Expected Uptime: # bikes * opening duration of hub on a certain day."
+    type: number
+    sql: 1 - (${sum_downtime_minutes} / NULLIF(${sum_expected_uptime_minutes},0)) ;;
+    value_format_name: percent_2
+  }
+
+}

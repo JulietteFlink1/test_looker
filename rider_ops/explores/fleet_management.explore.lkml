@@ -1,5 +1,6 @@
 include: "/**/vehicle_suppliers.view"
 include: "/**/vehicle_damages.view"
+include: "/**/vehicle_uptime_metrics.view"
 include: "/**/hubs_ct.view"
 include: "/**/global_filters_and_parameters.view.lkml"
 
@@ -39,10 +40,21 @@ explore: fleet_management {
     relationship: one_to_many
   }
 
+  join: vehicle_uptime_metrics {
+    view_label: "Vehicle Uptime Metrics"
+    sql_on: ${fleet_management.supplier_id} = ${vehicle_uptime_metrics.supplier_id}
+        and ${fleet_management.hub_code} = ${vehicle_uptime_metrics.hub_code}
+        and ${fleet_management.vehicle_id} = ${vehicle_uptime_metrics.vehicle_id}
+        and {% condition global_filters_and_parameters.datasource_filter %} ${vehicle_uptime_metrics.report_date} {% endcondition %} ;;
+    type: left_outer
+    relationship: one_to_many
+  }
+
   join: hubs_ct {
     view_label: "Hubs"
     sql_on: ${fleet_management.hub_code} = ${hubs_ct.hub_code} ;;
     type: left_outer
     relationship: many_to_one
   }
+
 }
