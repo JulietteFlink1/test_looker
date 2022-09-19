@@ -22,6 +22,18 @@ view: customer_acquisition_cost {
     hidden: yes
   }
 
+  dimension: impressions {
+    type: number
+    sql: ${TABLE}.impressions ;;
+    hidden: yes
+  }
+
+  dimension: clicks {
+    type: number
+    sql: ${TABLE}.clicks ;;
+    hidden: yes
+  }
+
   # =========  IDs   =========
   dimension: table_uuid {
     type: string
@@ -126,6 +138,30 @@ view: customer_acquisition_cost {
     value_format_name: decimal_0
   }
 
+  measure: total_impressions {
+
+    label: "# Impressions"
+    description: "Total of impressions"
+    group_label: "CAC Measures"
+
+    type: sum
+    sql: ${impressions} ;;
+
+    value_format_name: decimal_0
+  }
+
+  measure: total_clicks {
+
+    label: "# Clicks"
+    description: "Total of clicks"
+    group_label: "CAC Measures"
+
+    type: sum
+    sql: ${clicks} ;;
+
+    value_format_name: decimal_0
+  }
+
   measure: cac {
     type: number
     label: "CAC"
@@ -142,6 +178,42 @@ view: customer_acquisition_cost {
     group_label: "CAC Measures"
     sql: ${total_amt_spend} / NULLIF(${total_installs}, 0);;
     value_format_name: euro_accounting_2_precision
+  }
+
+  measure: cpm {
+    type: number
+    label: "CPM"
+    description: "Cost Per 1k Impressions: how much does it cost marketing to get 1000 impressions"
+    group_label: "CAC Measures"
+    sql: ${total_amt_spend} / NULLIF(${total_impressions}, 0) * 1000;;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: cpc {
+    type: number
+    label: "CPC"
+    description: "Cost Per Click: how much does it cost marketing to get a click"
+    group_label: "CAC Measures"
+    sql: ${total_amt_spend} / NULLIF(${total_clicks}, 0);;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: ctr {
+    type: number
+    label: "CTR"
+    description: "Click Through Rate: what % of impressions result in clicks"
+    group_label: "CAC Measures"
+    sql: NULLIF(${total_clicks}, 0) / NULLIF(${total_impressions}, 0);;
+    value_format_name: percent_2
+  }
+
+  measure: cvr {
+    type: number
+    label: "CVR"
+    description: "Conversion Rate: what % of installs result in first orders"
+    group_label: "CAC Measures"
+    sql: NULLIF(${total_acquisitions}, 0) / NULLIF(${total_installs}, 0);;
+    value_format_name: percent_2
   }
 
 }
