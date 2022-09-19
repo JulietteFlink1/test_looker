@@ -7,6 +7,7 @@
 # Questions that can be answered
 # - Questions around behavioural events with country and device drill downs
 
+include: "/product_consumer/views/bigquery_reporting/daily_user_aggregates.view.lkml"
 include: "/product_consumer/views/bigquery_curated/daily_events.view.lkml"
 include: "/**/global_filters_and_parameters.view.lkml"
 include: "/product_consumer/views/bigquery_curated/event_product_added_to_cart.view.lkml"
@@ -143,4 +144,21 @@ join: daily_violations_aggregates {
   type: left_outer
   relationship: many_to_many
 }
+
+  join: daily_user_aggregates {
+    view_label: "Daily User Aggregates"
+    fields: [daily_user_aggregates.is_address_confirmed, daily_user_aggregates.is_address_set,
+             daily_user_aggregates.is_checkout_started, daily_user_aggregates.is_checkout_viewed,
+             daily_user_aggregates.is_order_placed,
+             daily_user_aggregates.is_cart_viewed,
+             daily_user_aggregates.is_payment_started,
+             daily_user_aggregates.is_account_registration_viewed,
+    ]
+    sql_on: ${daily_user_aggregates.user_uuid} = ${daily_events.anonymous_id}
+      and ${daily_user_aggregates.event_date_at_date} = ${daily_events.event_date}
+      and {% condition global_filters_and_parameters.datasource_filter %} ${daily_user_aggregates.event_date_at_date} {% endcondition %}  ;;
+    type: left_outer
+    relationship: many_to_one
+  }
+
 }

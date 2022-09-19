@@ -3,12 +3,17 @@
 #include: "/views/bigquery_tables/curated_layer/orderline.view"
 
 view: orders_country_level_monthly {
+
   derived_table: {
+
     explore_source: order_orderline_cl {
-      column: country_iso { field: orderline.country_iso }
-      column: date { field: orderline.created_month }
-      column: cnt_orders { field: orders_cl.cnt_orders }
-      column: revenue_gross { field: orderline.sum_item_price_gross}
+
+      column: country_iso                { field: orderline.country_iso }
+      column: date                       { field: orderline.created_month }
+      column: cnt_orders                 { field: orders_cl.cnt_orders }
+      column: revenue_gross              { field: orderline.sum_item_price_gross}
+      column: number_of_unique_customers { field: orders_cl.cnt_unique_customers }
+
       derived_column: unique_id {
         sql: concat(country_iso, date) ;;
       }
@@ -22,6 +27,8 @@ view: orders_country_level_monthly {
             /
             nullif(LEAD(revenue_gross) OVER (PARTITION BY country_iso ORDER BY date DESC), 0) ;;
       }
+
+      filters: [global_filters_and_parameters.datasource_filter: "last 1 year"]
     }
   }
 
@@ -72,6 +79,26 @@ view: orders_country_level_monthly {
     hidden: yes
   }
 
+  dimension: number_of_monthly_unique_customers {
+    label: "# Monthly Unique Customers per Country"
+    description: "Count of Unique Customers identified via their Customer UUID aggregated per order-month and country"
+
+    sql: ${TABLE}.number_of_unique_customers ;;
+    value_format: "0"
+    type: number
+    hidden: yes
+  }
+
+  dimension: number_of_monthly_orders {
+    label: "# Monthly Orders per Country"
+    description: "Count of Orders per order-month and country"
+
+    sql: ${TABLE}.cnt_orders ;;
+    value_format_name: decimal_0
+    type: number
+    hidden: yes
+  }
+
   ############### Measures
 
   measure: pop_orders_max {
@@ -88,6 +115,26 @@ view: orders_country_level_monthly {
     label: "PoP Revenue - Country"
     group_label: "Monthly"
     value_format_name: percent_2
+  }
+
+  measure: sum_number_of_orders {
+    label: "# Monthly Orders per Country"
+    description: "Count of Orders per order-month and country"
+
+    type: sum
+    sql: ${number_of_monthly_orders} ;;
+    value_format_name: decimal_0
+
+    hidden: yes
+  }
+
+  measure: sum_number_of_unique_customers {
+    label: "# Monthly Unique Customers per Country"
+    description: "Count of Unique Customers identified via their Customer UUID aggregated per order-month and country"
+    value_format: "0"
+    type: sum
+    sql: ${number_of_monthly_unique_customers} ;;
+    hidden: yes
   }
 
 
