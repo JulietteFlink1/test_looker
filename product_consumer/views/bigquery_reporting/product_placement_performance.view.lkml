@@ -71,14 +71,6 @@ view: product_placement_performance {
     type: string
     sql: ${TABLE}.product_sku ;;
   }
-  dimension: product_name {
-    group_label: "Product Dimensions"
-    label: "Product Name"
-    description: "Name of the product"
-    type: string
-    hidden: yes
-    sql: ${TABLE}.product_name ;;
-  }
   dimension: product_position {
     group_label: "Product Dimensions"
     label: "Product Position"
