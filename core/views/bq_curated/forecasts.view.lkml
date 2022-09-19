@@ -567,6 +567,7 @@ view: forecasts {
     sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
     sql: ${TABLE}.forecasted_avg_order_handling_duration_seconds ;;
     value_format_name: decimal_1
+    filters: [is_hub_open: "1"]
   }
 
   measure: forecasted_avg_order_handling_duration_minutes {
