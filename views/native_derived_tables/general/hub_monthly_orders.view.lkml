@@ -78,6 +78,16 @@ view: hub_monthly_orders {
     sql: ${avg_daily_orders_per_hub} ;;
   }
 
+  dimension: avg_daily_orders_per_hub_50 {
+    group_label: "> Monthly Data"
+    label: "AVG # Daily Orders (tiered, 50)"
+    description: "Average number of daily orders per hub/calendar month, tiered. The tiers are: [100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600+]"
+    type: tier
+    tiers: [100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600]
+    style: relational
+    sql: ${avg_daily_orders_per_hub} ;;
+  }
+
   dimension: avg_daily_orders_per_hub_tier {
     group_label: "> Monthly Data"
     label: "AVG # Daily Orders (tiered)"
