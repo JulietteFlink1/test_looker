@@ -48,7 +48,7 @@ view: vehicle_damages {
       week,
       month
     ]
-    sql: ${TABLE}.damaged_fixed_at_timestamp ;;
+    sql: ${TABLE}.fixed_at_timestamp ;;
   }
 
   dimension: description {

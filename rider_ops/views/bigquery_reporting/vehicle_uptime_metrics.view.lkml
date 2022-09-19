@@ -1,5 +1,8 @@
+# Created by Victor Breda - 2022-09-19
+# More documentation on Uptime calculation can be found here: https://goflink.atlassian.net/wiki/spaces/DATA/pages/436962307/Vehicle+Uptime+Calculation
+
 view: vehicle_uptime_metrics {
-  sql_table_name: `flink-data-dev.dbt_vbreda.vehicle_uptime_metrics` ;;
+  sql_table_name: `flink-data-prod.reporting.vehicle_uptime_metrics` ;;
 
   drill_fields: [vehicle_id]
 
@@ -20,13 +23,14 @@ view: vehicle_uptime_metrics {
   dimension: supplier_id {
     group_label: "> Supplier Properties"
     label: "Supplier Id"
-    description: "Unique supplier identifier"
+    description: "Unique bike supplier identifier"
     type: string
     sql: ${TABLE}.supplier_id ;;
   }
 
   dimension: supplier_name {
     group_label: "> Supplier Properties"
+    label: "Supplier Name"
     description: "Full supplier name e.g. Swapfiets"
     type: string
     sql: ${TABLE}.supplier_name ;;
@@ -34,6 +38,7 @@ view: vehicle_uptime_metrics {
 
   dimension: vehicle_id {
     group_label: "> Vehicle Properties"
+    label: "Vehicle Id"
     description: "Unique identifier of a bike"
     type: string
     sql: ${TABLE}.vehicle_id ;;
@@ -49,11 +54,13 @@ view: vehicle_uptime_metrics {
 
   dimension: downtime_minutes {
     hidden: yes
+    description: "For a bike / date / hub: duration of damage within the opening hours of the hub. In minutes."
     type: number
     sql: ${TABLE}.downtime_minutes ;;
   }
 
   dimension: expected_uptime_minutes {
+    description: "For a date / hub / bike (belonging to the hub): how long the hub was open on that date. In minutes."
     hidden: yes
     type: number
     sql: ${TABLE}.expected_uptime_minutes ;;
@@ -63,12 +70,14 @@ view: vehicle_uptime_metrics {
 
   measure: sum_downtime_minutes {
     hidden: yes
+    description: "SUM of downtime in minutes"
     type: sum
     sql: ${downtime_minutes} ;;
   }
 
   measure: sum_expected_uptime_minutes {
     hidden: yes
+    description: "SUM of expected uptime in minutes"
     type: sum
     sql: ${expected_uptime_minutes} ;;
   }
