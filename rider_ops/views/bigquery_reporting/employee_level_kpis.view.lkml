@@ -339,6 +339,14 @@ view: employee_level_kpis {
     value_format_name: decimal_1
   }
 
+  measure: sum_delivery_distance_km {
+    group_label: "* Logistics *"
+    type: sum
+    label: "Sum Delivery Distance (km)"
+    description: "Sum of delivery distance rider drove in kilometer. (It is calculated using the distance between hub and customer address)"
+    sql: ${TABLE}.sum_delivery_distance_km ;;
+    value_format_name: decimal_1
+  }
 
   measure: sum_rider_idle_time_minutes {
     group_label: "* Performance *"
@@ -367,6 +375,15 @@ view: employee_level_kpis {
     label: "AVG Rider Handling Time (min)"
     description: "Average time needed for the rider to handle the order: Riding to customer + At customer + Riding to hub"
     sql: ${sum_rider_handling_time_minutes}/nullif(${number_of_orders_with_handling_time},0) ;;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_delivery_distance_km {
+    group_label: "* Logistics *"
+    type: number
+    label: "AVG Delivery Distance (km)"
+    description: "Average delivery distance rider drove. (It is calculated using the distance between hub and customer address)"
+    sql: ${sum_delivery_distance_km}/nullif(${number_of_orders_with_handling_time},0) ;;
     value_format_name: decimal_1
   }
 
