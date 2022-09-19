@@ -200,7 +200,7 @@ view: daily_stock_management_events {
     label: "Quantity Stock Changed Inbounded"
     description: "Sum of quantity inbounded by old flow."
     type: sum
-    filters: [event_name: "stock_changed", direction: "inbounding"]
+    filters: [event_name: "stock_changed", direction: "inbound"]
     sql: ${quantity} ;;
   }
 
