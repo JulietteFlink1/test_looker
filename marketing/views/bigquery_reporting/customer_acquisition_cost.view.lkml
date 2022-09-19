@@ -186,7 +186,7 @@ view: customer_acquisition_cost {
     value_format_name: euro_accounting_2_precision
   }
 
-  measure: cpm {
+  measure: cost_per_mile {
     type: number
     label: "CPM"
     description: "Cost Per 1k Impressions: how much does it cost marketing to get 1000 impressions"
@@ -195,7 +195,7 @@ view: customer_acquisition_cost {
     value_format_name: euro_accounting_2_precision
   }
 
-  measure: cpc {
+  measure: cost_per_click {
     type: number
     label: "CPC"
     description: "Cost Per Click: how much does it cost marketing to get a click"
@@ -204,18 +204,18 @@ view: customer_acquisition_cost {
     value_format_name: euro_accounting_2_precision
   }
 
-  measure: ctr {
+  measure: click_through_rate {
     type: number
-    label: "CTR"
+    label: "% CTR"
     description: "Click Through Rate: what % of impressions result in clicks"
     group_label: "CAC Measures"
     sql: NULLIF(${total_clicks}, 0) / NULLIF(${total_impressions}, 0);;
     value_format_name: percent_2
   }
 
-  measure: cvr {
+  measure: conversion_rate {
     type: number
-    label: "CVR"
+    label: "% CVR"
     description: "Conversion Rate: what % of installs result in first orders"
     group_label: "CAC Measures"
     sql: NULLIF(${total_acquisitions}, 0) / NULLIF(${total_installs}, 0);;
