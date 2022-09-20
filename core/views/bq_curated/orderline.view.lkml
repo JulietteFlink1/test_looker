@@ -544,6 +544,13 @@ view: orderline {
     sql: ${TABLE}.number_of_products_with_item_quality_issues ;;
   }
 
+  dimension: number_of_products_with_goodwill_issues_dim {
+
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.number_of_products_with_goodwill_issues ;;
+  }
+
   dimension: number_of_products_with_undefined_issues_dim {
 
     hidden:  yes
@@ -880,6 +887,16 @@ view: orderline {
 
     type: sum
     sql: ${TABLE}.number_of_products_with_item_quality_issues ;;
+  }
+
+  measure: number_of_products_with_goodwill_issues {
+
+    label: "# Products Issue Goodwill (Post Delivery)"
+    description: "The number of products, that had issues related to goodwill"
+    group_label: "> Delivery Issues Products"
+
+    type: sum
+    sql: ${TABLE}.number_of_products_with_goodwill_issues ;;
   }
 
   measure: number_of_products_with_undefined_issues {
