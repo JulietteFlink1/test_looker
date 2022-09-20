@@ -931,6 +931,25 @@ view: cc_contacts {
       ${sum_amt_discount_cart_gross}, ${number_of_compensation_discount_code}) ;;
   }
 
+  measure: avg_number_of_compensation_discount_code_per_contact_closed {
+    group_label: "* Contact Compensation *"
+    label: "AVG # CC Compensation Code per Closed Contact"
+    description: "# CC Compensation Code / # Closed Contacts"
+    type: number
+    value_format_name: decimal_2
+    sql: safe_divide(
+      ${number_of_compensation_discount_code}, ${number_of_closed_contacts}) ;;
+  }
+
+  measure: avg_median_time_to_agent_reply_minutes {
+    group_label: "* Contact Statistics *"
+    type: average
+    value_format: "hh:mm:ss"
+    description: "AVG of median response time per contact (Median is based on all admin replies after a user reply). Subtracts out of business hours. In seconds."
+    label: "AVG Response Time (Minutes)"
+    sql:  ${median_time_to_reply_minutes}*60/86400.0 ;;
+  }
+
 
   measure: count {
     type: count
