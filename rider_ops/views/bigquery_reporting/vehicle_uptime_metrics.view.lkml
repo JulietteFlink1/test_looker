@@ -9,6 +9,7 @@ view: vehicle_uptime_metrics {
   dimension: country_iso {
     group_label: "> Geography"
     label: "Country Iso"
+    hidden: yes
     type: string
     sql: ${TABLE}.country_iso ;;
   }
@@ -16,6 +17,7 @@ view: vehicle_uptime_metrics {
   dimension: hub_code {
     group_label: "> Geography"
     label: "Hub Code"
+    hidden:  yes
     type: string
     sql: ${TABLE}.hub_code ;;
   }
@@ -24,6 +26,7 @@ view: vehicle_uptime_metrics {
     group_label: "> Supplier Properties"
     label: "Supplier Id"
     description: "Unique bike supplier identifier"
+    hidden:  yes
     type: string
     sql: ${TABLE}.supplier_id ;;
   }
@@ -32,6 +35,7 @@ view: vehicle_uptime_metrics {
     group_label: "> Supplier Properties"
     label: "Supplier Name"
     description: "Full supplier name e.g. Swapfiets"
+    hidden:  yes
     type: string
     sql: ${TABLE}.supplier_name ;;
   }
@@ -40,6 +44,7 @@ view: vehicle_uptime_metrics {
     group_label: "> Vehicle Properties"
     label: "Vehicle Id"
     description: "Unique identifier of a bike"
+    hidden:  yes
     type: string
     sql: ${TABLE}.vehicle_id ;;
   }
