@@ -694,7 +694,8 @@ view: cc_contacts {
   measure: avg_time_first_close_minutes {
     group_label: "* Contact Statistics *"
     type: average
-    value_format: "hh:mm:ss"
+    # if > 1h then use format hh:mm:ss else use mm:ss
+    value_format: "[>0.0416] hh:mm:ss ; mm:ss"
     label: "AVG Time to First Close (Minutes)"
     sql: ${time_to_first_close_minutes}*60/86400.0 ;;
   }
@@ -702,7 +703,8 @@ view: cc_contacts {
   measure: avg_time_last_close_minutes {
     group_label: "* Contact Statistics *"
     type: average
-    value_format: "hh:mm:ss"
+    # if > 1h then use format hh:mm:ss else use mm:ss
+    value_format: "[>0.0416] hh:mm:ss ; mm:ss"
     description: "AVG time to last close (minutes)"
     label: "AVG Closing Time (Minutes)"
     sql: ${time_to_last_close_minutes}*60/86400.0;;
@@ -711,7 +713,8 @@ view: cc_contacts {
   measure: median_time_last_close_minutes {
     group_label: "* Contact Statistics *"
     type: median
-    value_format: "hh:mm:ss"
+    # if > 1h then use format hh:mm:ss else use mm:ss
+    value_format: "[>0.0416] hh:mm:ss ; mm:ss"
     description: "Median time to last close (minutes)"
     label: "Median Closing Time (Minutes)"
     sql: ${time_to_last_close_minutes}*60/86400.0;;
@@ -737,8 +740,8 @@ view: cc_contacts {
 
   measure: median_time_to_agent_reply_minutes {
     group_label: "* Contact Statistics *"
-    type: median
-    value_format: "hh:mm:ss"
+# if > 1h then use format hh:mm:ss else use mm:ss
+    value_format: "[>0.0416] hh:mm:ss ; mm:ss"
     label: "Median First Response Time (Minutes)"
     description: "Median Duration until first admin reply. Subtracts out of business hours."
     sql:${time_to_agent_reply_minutes}*60/86400.0 ;;
@@ -755,7 +758,8 @@ view: cc_contacts {
   measure: median_median_time_to_agent_reply_minutes {
     group_label: "* Contact Statistics *"
     type: median
-    value_format: "hh:mm:ss"
+    # if > 1h then use format hh:mm:ss else use mm:ss
+    value_format: "[>0.0416] hh:mm:ss ; mm:ss"
     description: "Median based on all admin replies after a user reply. Subtracts out of business hours. In seconds."
     label: "Median Response Time (Minutes)"
     sql:  ${median_time_to_reply_minutes}*60/86400.0 ;;
@@ -944,9 +948,10 @@ view: cc_contacts {
   measure: avg_median_time_to_agent_reply_minutes {
     group_label: "* Contact Statistics *"
     type: average
-    value_format: "hh:mm:ss"
+    # if > 1h then use format hh:mm:ss else use mm:ss
+    value_format: "[>0.0416] hh:mm:ss ; mm:ss"
     description: "AVG of median response time per contact (Median is based on all admin replies after a user reply). Subtracts out of business hours."
-    label: "AVG Response Time (Minutes)"
+    label: "AVG Median Response Time (Minutes)"
     sql:  ${median_time_to_reply_minutes}*60/86400.0 ;;
   }
 
