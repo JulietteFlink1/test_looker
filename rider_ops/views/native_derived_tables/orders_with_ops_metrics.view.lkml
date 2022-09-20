@@ -17,6 +17,7 @@ view: orders_with_ops_metrics {
       column: avg_estimated_queuing_time_for_rider_minutes {}
       column: avg_picker_queuing_time {}
       column: avg_rider_queuing_time {}
+      column: avg_dispatching_queuing_time_minutes {}
       column: avg_fulfillment_time {}
       column: avg_estimated_riding_time_minutes {}
       column: avg_fulfillment_time_mm_ss {}
@@ -35,6 +36,7 @@ view: orders_with_ops_metrics {
       column: created_date {}
       column: created_minute30 {}
       column: cnt_orders_delayed_under_0_min {}
+      column: cnt_external_orders {}
       column: cnt_orders_with_delivery_eta_available {}
       column: cnt_orders_with_targeted_eta_available {}
       column: cnt_orders_delayed_under_0_min_time_targeted {}
@@ -137,6 +139,14 @@ view: orders_with_ops_metrics {
     value_format_name: percent_1
   }
 
+  measure: pct_external_orders {
+    group_label: "> Basic Counts"
+    label: "% External Orders"
+    description: "Share of external orders"
+    type: number
+    value_format_name: percent_1
+    sql: ${cnt_external_orders} / NULLIF(${sum_orders} ,0);;
+  }
 
   measure: pct_rider_handling_time_saved_with_stacking {
     group_label: "> Operations / Logistics"
@@ -260,7 +270,8 @@ view: orders_with_ops_metrics {
   measure: avg_picker_queuing_time {
     group_label: "> Operations / Logistics"
     label: "AVG Picker Queuing Time"
-    description: "Average Picker Queuing Time of the Picker considering order placement until picking started. Outliers excluded (<0min or >120min)"
+    description: "Average picker acceptance-related queuing - from order offered to hub to order started being picked.
+                  Outliers excluded (>120min). If offered to hub time is not available (no dispatching event), takes the time from order created to picking started"
     value_format_name: decimal_1
     type: average
   }
@@ -268,6 +279,14 @@ view: orders_with_ops_metrics {
   measure: avg_rider_queuing_time {
     group_label: "> Operations / Logistics"
     label: "AVG Rider Queuing Time"
+    description: "Average dispatch-related queuing time - from order created to order offered to hub for picking. Outliers excluded (<0min or >120min)"
+    value_format_name: decimal_1
+    type: average
+  }
+
+  measure: avg_dispatching_queuing_time_minutes {
+    group_label: "> Operations / Logistics"
+    label: "AVG Dispatching Queuing Time"
     description: "Average time between picking completion and rider having claimed the order."
     value_format_name: decimal_1
     type: average
@@ -400,6 +419,14 @@ view: orders_with_ops_metrics {
     type: sum
     value_format_name: decimal_0
     }
+
+  measure: cnt_external_orders {
+    group_label: "> Basic Counts"
+    label: "# External Orders"
+    description: "The number of orders, that were external"
+    type: sum
+    value_format_name: decimal_0
+  }
 
   measure: avg_estimated_queuing_time_by_position {
     group_label: "> Operations / Logistics"
