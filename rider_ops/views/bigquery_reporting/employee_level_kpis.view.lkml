@@ -214,6 +214,13 @@ view: employee_level_kpis {
     sql: ${TABLE}.number_of_orders_with_handling_time ;;
   }
 
+  measure: number_of_orders_with_customer_address {
+    group_label: "* Logistics *"
+    type: sum
+    hidden: yes
+    sql: ${TABLE}.number_of_orders_with_customer_address ;;
+  }
+
   measure: number_of_orders_with_riding_to_customer_time {
     group_label: "* Logistics *"
     type: sum
@@ -382,8 +389,8 @@ view: employee_level_kpis {
     group_label: "* Logistics *"
     type: number
     label: "AVG Delivery Distance (km)"
-    description: "Average delivery distance rider drove. (It is calculated using the distance between hub and customer address)"
-    sql: ${sum_delivery_distance_km}/nullif(${number_of_orders_with_handling_time},0) ;;
+    description: "Average distance between hub and customer dropoff (most direct path / straight line). For stacked orders, distance is calculated based on previous order address in stack"
+    sql: ${sum_delivery_distance_km}/nullif(${number_of_orders_with_customer_address},0) ;;
     value_format_name: decimal_1
   }
 
