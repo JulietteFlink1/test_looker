@@ -142,7 +142,7 @@ view: orders_with_ops_metrics {
   measure: pct_external_orders {
     group_label: "> Basic Counts"
     label: "% External Orders"
-    description: "Share of external orders"
+    description: "Share of external orders (# External Orders / # Orders)"
     type: number
     value_format_name: percent_1
     sql: ${cnt_external_orders} / NULLIF(${sum_orders} ,0);;
@@ -423,7 +423,7 @@ view: orders_with_ops_metrics {
   measure: cnt_external_orders {
     group_label: "> Basic Counts"
     label: "# External Orders"
-    description: "The number of orders, that were external"
+    description: "The number of successful and external orders"
     type: sum
     value_format_name: decimal_0
   }
