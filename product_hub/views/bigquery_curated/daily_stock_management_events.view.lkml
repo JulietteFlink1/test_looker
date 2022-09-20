@@ -94,7 +94,9 @@ view: daily_stock_management_events {
       date,
       week,
       hour_of_day,
-      quarter
+      day_of_week,
+      quarter,
+      month_name
     ]
     sql: ${TABLE}.event_timestamp ;;
   }
