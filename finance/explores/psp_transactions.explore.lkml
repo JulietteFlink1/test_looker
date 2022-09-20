@@ -26,7 +26,7 @@ explore: psp_transactions {
 
   always_filter: {
     filters: [
-      global_filters_and_parameters.datasource_filter: "",
+      global_filters_and_parameters.datasource_filter: "last 7 days",
       orders.order_date: "",
       orders.is_successful_order: "",
       psp_transactions.merchant_account: "",
@@ -126,9 +126,10 @@ explore: psp_transactions {
   join: ndt_psp_transactions__duplicated_psp_references {
     view_label: "PSP Transactions"
     sql_on: ${psp_transactions.psp_reference}  = ${ndt_psp_transactions__duplicated_psp_references.psp_reference}
-          and {% condition global_filters_and_parameters.datasource_filter %} ${ndt_psp_transactions__duplicated_psp_references.order_date} {% endcondition %}
-          and {% condition global_filters_and_parameters.datasource_filter %} ${ndt_psp_transactions__duplicated_psp_references.psp_settlement_booking_date} {% endcondition %}
-          and {% condition global_filters_and_parameters.datasource_filter %} ${ndt_psp_transactions__duplicated_psp_references.order_date} {% endcondition %};;
+           and {% condition global_filters_and_parameters.datasource_filter %} ${ndt_psp_transactions__duplicated_psp_references.order_date} {% endcondition %}
+           and {% condition global_filters_and_parameters.datasource_filter %} ${ndt_psp_transactions__duplicated_psp_references.psp_settlement_booking_date} {% endcondition %}
+           and {% condition global_filters_and_parameters.datasource_filter %} ${ndt_psp_transactions__duplicated_psp_references.order_date} {% endcondition %}
+          ;;
     relationship: many_to_one
     type: left_outer
   }
@@ -138,7 +139,8 @@ explore: psp_transactions {
     sql_on: ${psp_transactions.payment_id}  = ${ndt_psp_transactions__payment_id_aggregated.payment_id}
      and {% condition global_filters_and_parameters.datasource_filter %} ${ndt_psp_transactions__payment_id_aggregated.psp_transactions_booking_date} {% endcondition %}
      and {% condition global_filters_and_parameters.datasource_filter %} ${ndt_psp_transactions__payment_id_aggregated.psp_settlement_booking_date} {% endcondition %}
-     and {% condition global_filters_and_parameters.datasource_filter %} ${ndt_psp_transactions__payment_id_aggregated.order_date} {% endcondition %};;
+     and {% condition global_filters_and_parameters.datasource_filter %} ${ndt_psp_transactions__payment_id_aggregated.order_date} {% endcondition %}
+    ;;
     relationship: many_to_one
     type: left_outer
   }
@@ -146,9 +148,10 @@ explore: psp_transactions {
   join: ndt_psp_transactions__order_aggregated {
     view_label: "PSP Transactions"
     sql_on: ${psp_transactions.order_uuid}  = ${ndt_psp_transactions__order_aggregated.order_uuid}
-         and {% condition global_filters_and_parameters.datasource_filter %} ${ndt_psp_transactions__payment_id_aggregated.psp_transactions_booking_date} {% endcondition %}
-         and {% condition global_filters_and_parameters.datasource_filter %} ${ndt_psp_transactions__payment_id_aggregated.psp_settlement_booking_date} {% endcondition %}
-         and {% condition global_filters_and_parameters.datasource_filter %} ${ndt_psp_transactions__payment_id_aggregated.order_date} {% endcondition %};;
+         and {% condition global_filters_and_parameters.datasource_filter %} ${ndt_psp_transactions__order_aggregated.psp_transactions_booking_date} {% endcondition %}
+         and {% condition global_filters_and_parameters.datasource_filter %} ${ndt_psp_transactions__order_aggregated.psp_settlement_booking_date} {% endcondition %}
+         and {% condition global_filters_and_parameters.datasource_filter %} ${ndt_psp_transactions__order_aggregated.order_date} {% endcondition %}
+      ;;
     relationship: many_to_one
     type: left_outer
   }

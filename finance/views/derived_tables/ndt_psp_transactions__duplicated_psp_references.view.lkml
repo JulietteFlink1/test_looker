@@ -13,44 +13,9 @@ view: ndt_psp_transactions__duplicated_psp_references {
         column: psp_transactions_booking_date {field: psp_transactions.booking_date}
         column: order_date {field:orders.created_date}
         column: psp_reference {}
-
-
         filters: {
-          field: psp_settlement_details.booking_date
+          field: global_filters_and_parameters.datasource_filter
           value: "last 3 years"
-        }
-        filters: {
-          field: psp_transactions.booking_date
-          value: "last 3 years"
-        }
-        filters: {
-          field: orders.created_date
-          value: "last 3 years"
-        }
-
-        # bind_filters: {
-        #   to_field: orders.created_date
-        #   from_field: ndt_psp_transactions__duplicated_psp_references.order_date
-        # }
-        # bind_filters: {
-        #   to_field: psp_transactions.booking_date
-        #   from_field: ndt_psp_transactions__duplicated_psp_references.psp_transactions_booking_date
-        # }
-        # bind_filters: {
-        #   to_field: psp_settlement_details.booking_date
-        #   from_field: ndt_psp_transactions__duplicated_psp_references.psp_settlement_booking_date
-        # }
-        bind_filters: {
-          to_field: global_filters_and_parameters.datasource_filter
-          from_field: ndt_psp_transactions__duplicated_psp_references.order_date
-        }
-        bind_filters: {
-          to_field: global_filters_and_parameters.datasource_filter
-          from_field: ndt_psp_transactions__duplicated_psp_references.psp_transactions_booking_date
-        }
-        bind_filters: {
-          to_field: global_filters_and_parameters.datasource_filter
-          from_field: ndt_psp_transactions__duplicated_psp_references.psp_settlement_booking_date
         }
       }
     }
@@ -88,14 +53,6 @@ view: ndt_psp_transactions__duplicated_psp_references {
       group_label: "> Transaction Properties"
       type: yesno
       description: "Flags if the PSP reference appears in more than one CT order"
-      sql:
-          case
-              when
-                  ${number_of_orders}>1
-                  then
-                      true
-              else
-                  false
-          end ;;
+      sql: ${number_of_orders}>1 ;;
     }
   }

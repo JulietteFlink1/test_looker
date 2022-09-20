@@ -8,7 +8,7 @@
 
 view: ndt_psp_transactions__payment_id_aggregated {
     derived_table: {
-    #  datagroup_trigger: flink_default_datagroup
+     # datagroup_trigger: flink_default_datagroup
       explore_source: psp_transactions {
         column: payment_id { field: psp_transactions.payment_id}
         column: sum_gross_credit_gc { field: psp_settlement_details.sum_gross_credit_gc }
@@ -23,28 +23,8 @@ view: ndt_psp_transactions__payment_id_aggregated {
           value: "Authorised,Refunded,RefundedExternally,Chargeback"
         }
         filters: {
-          field: psp_settlement_details.booking_date
+          field: global_filters_and_parameters.datasource_filter
           value: "last 3 years"
-        }
-        filters: {
-          field: psp_transactions.booking_date
-          value: "last 3 years"
-        }
-        filters: {
-          field: orders.created_date
-          value: "last 3 years"
-        }
-        bind_filters: {
-          to_field: global_filters_and_parameters.datasource_filter
-          from_field: ndt_psp_transactions__duplicated_psp_references.order_date
-        }
-        bind_filters: {
-          to_field: global_filters_and_parameters.datasource_filter
-          from_field: ndt_psp_transactions__duplicated_psp_references.psp_transactions_booking_date
-        }
-        bind_filters: {
-          to_field: global_filters_and_parameters.datasource_filter
-          from_field: ndt_psp_transactions__duplicated_psp_references.psp_settlement_booking_date
         }
       }
     }

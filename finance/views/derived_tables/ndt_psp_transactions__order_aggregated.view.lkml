@@ -27,29 +27,8 @@ view: ndt_psp_transactions__order_aggregated {
           value: "Settled"
         }
         filters: {
-          field: psp_settlement_details.booking_date
+          field: global_filters_and_parameters.datasource_filter
           value: "last 3 years"
-        }
-        filters: {
-          field: psp_transactions.booking_date
-          value: "last 3 years"
-        }
-        filters: {
-          field: orders.created_date
-          value: ""
-        }
-
-        bind_filters: {
-          to_field: global_filters_and_parameters.datasource_filter
-          from_field: ndt_psp_transactions__duplicated_psp_references.order_date
-        }
-        bind_filters: {
-          to_field: global_filters_and_parameters.datasource_filter
-          from_field: ndt_psp_transactions__duplicated_psp_references.psp_transactions_booking_date
-        }
-        bind_filters: {
-          to_field: global_filters_and_parameters.datasource_filter
-          from_field: ndt_psp_transactions__duplicated_psp_references.psp_settlement_booking_date
         }
       }
     }
