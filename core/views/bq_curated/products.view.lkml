@@ -3,6 +3,20 @@ view: products {
   sql_table_name: `flink-data-prod.curated.products`
     ;;
 
+  set: product_attributes {
+
+  ### be careful when manipulating this set, it is used in joins
+  ## for product placement reporting ###
+    fields: [
+      product_name,
+      product_sku,
+      is_noos_group,
+      category,
+      subcategory,
+      substitute_group
+    ]
+  }
+
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Dimensions     ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
