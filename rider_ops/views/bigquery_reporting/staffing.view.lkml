@@ -1485,6 +1485,22 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  measure: number_of_worked_hours_external_hub_staff {
+    group_label: "> Rider Measures"
+    label: "# Punched External Hub Staff Hours"
+    type: sum
+    sql: (${number_of_worked_minutes_external_picker}+${number_of_worked_minutes_external_wh}+${number_of_worked_minutes_external_rider_captain}+${number_of_worked_minutes_external_shift_lead})/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_worked_hours_external_ops_staff {
+    group_label: "> Rider Measures"
+    label: "# Punched External Hub Staff Hours"
+    type: sum
+    sql: (${number_of_worked_minutes_external_picker}+${number_of_worked_minutes_external_rider_captain}+${number_of_worked_minutes_external_wh})/60;;
+    value_format_name: decimal_1
+  }
+
   # =========  Employees   =========
   #### All
   measure: sum_of_worked_employees_rider {
@@ -2666,6 +2682,25 @@ view: staffing {
       END ;;
   }
 
+  measure: pct_scheduled_hours_by_position {
+    type: number
+    label: "% External Scheduled Hours"
+    description: "Sum of Assigned and not Assigned External Shift Hours / Total Shift Hours"
+    value_format_name: decimal_1
+    group_label: "> Dynamic Measures"
+    sql:
+        CASE
+          WHEN {% parameter position_parameter %} = 'Rider' THEN ${number_of_scheduled_hours_external_rider}/${number_of_scheduled_hours_rider}
+          WHEN {% parameter position_parameter %} = 'Picker' THEN ${number_of_scheduled_hours_external_picker}/${number_of_scheduled_hours_picker}
+          WHEN {% parameter position_parameter %} = 'Shift Lead' THEN ${number_of_scheduled_hours_external_shift_lead}/${number_of_scheduled_hours_shift_lead}
+          WHEN {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_scheduled_hours_external_rider_captain}/${number_of_scheduled_hours_rider_captain}
+          WHEN {% parameter position_parameter %} = 'WH' THEN ${number_of_scheduled_hours_external_wh}/${number_of_scheduled_hours_wh}
+          WHEN {% parameter position_parameter %} = 'Hub Staff' THEN ${number_of_scheduled_hours_external_hub_staff}/${number_of_scheduled_hours_hub_staff}
+          WHEN {% parameter position_parameter %} = 'Ops Staff' THEN ${number_of_scheduled_hours_external_ops_staff}/${number_of_scheduled_hours_ops_staff}
+      ELSE NULL
+      END ;;
+  }
+
   dimension: number_of_scheduled_hours_by_position_dimension {
     type: number
     label: "# Scheduled Hours (Incl. Deleted Excused No Show) - Dimension"
@@ -2718,6 +2753,7 @@ view: staffing {
       ELSE NULL
       END ;;
   }
+
   measure: number_of_no_show_hours_by_position {
     type: number
     label: "# No Show Hours"
@@ -2733,6 +2769,25 @@ view: staffing {
           WHEN {% parameter position_parameter %} = 'WH' THEN ${number_of_no_show_hours_wh}
           WHEN {% parameter position_parameter %} = 'Hub Staff' THEN ${number_of_no_show_hours_hub_staff}
           WHEN {% parameter position_parameter %} = 'Ops Staff' THEN ${number_of_no_show_hours_ops_staff}
+      ELSE NULL
+      END ;;
+  }
+
+  measure: pct_external_worked_hours_by_position {
+    type: number
+    label: "% External Punched Hours"
+    description: "Sum of External Punched Hours / Total Punched Hours"
+    value_format_name: percent_1
+    group_label: "> Dynamic Measures"
+    sql:
+        CASE
+          WHEN {% parameter position_parameter %} = 'Rider' THEN ${number_of_worked_hours_external_rider}/${number_of_worked_hours_rider}
+          WHEN {% parameter position_parameter %} = 'Picker' THEN ${number_of_worked_hours_external_picker}/${number_of_worked_hours_picker}
+          WHEN {% parameter position_parameter %} = 'Shift Lead' THEN ${number_of_worked_hours_external_shift_lead}/${number_of_worked_hours_shift_lead}
+          WHEN {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_worked_hours_external_rider_captain}/${number_of_worked_hours_rider_captain}
+          WHEN {% parameter position_parameter %} = 'WH' THEN ${number_of_worked_hours_external_wh}/${number_of_worked_hours_wh}
+          WHEN {% parameter position_parameter %} = 'Hub Staff' THEN ${number_of_worked_hours_external_hub_staff}/${number_of_worked_hours_hub_staff}
+          WHEN {% parameter position_parameter %} = 'Ops Staff' THEN ${number_of_worked_hours_external_ops_staff}/${number_of_worked_hours_ops_staff}
       ELSE NULL
       END ;;
   }
