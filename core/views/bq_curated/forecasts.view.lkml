@@ -681,7 +681,7 @@ view: forecasts {
 
   measure: wmape_orders_adjusted {
     group_label: "> Forecasting error"
-    label: "wMAPE - Orders (Incl. Airtable Adjustments)"
+    label: "wMAPE - Adjusted Orders"
     description: "Summed Absolute Difference of Orders per Hub in 30 min/ # Actual Orders"
     type: number
     sql: ${summed_absolute_error_adjusted}/nullif(${number_of_actual_orders},0);;
@@ -713,7 +713,7 @@ view: forecasts {
 
   measure: wmape_hours_adjusted {
     group_label: "> Forecasting error"
-    label: "wMAPE - Scheduled Hours (Incl. Airtable Adjustments)"
+    label: "wMAPE - Adjusted Scheduled Hours"
     description: "Summed Absolute Difference of Scheduled Hours per Hub in 30 min (# Forecasted Hours (Incl. Airtable Adjustments) - # Scheduled Hours)/ # Scheduled Hours"
     type: number
     sql: ${summed_absolute_error_hours_adjusted}/nullif(${ops.number_of_scheduled_hours_by_position},0);;
@@ -746,7 +746,7 @@ view: forecasts {
 
   measure: wmape_no_show_hours_adjusted {
     group_label: "> Forecasting error"
-    label: "wMAPE - No Show Hours (Incl. Airtable Adjustments)"
+    label: "wMAPE - Adjusted No Show Hours"
     description: "Summed Absolute Difference of Actual No Show Hours per Hub in 30 min (# Forecasted No Show Hours (Incl. Airtable Adjustments) - # Actual No Show Hours)/ # Actual No Show Hours"
     type: number
     hidden: no
