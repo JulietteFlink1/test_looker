@@ -389,7 +389,7 @@ view: employee_level_kpis {
     group_label: "* Logistics *"
     type: number
     label: "AVG Delivery Distance (km)"
-    description: "Average distance between hub and customer dropoff (most direct path / straight line). For stacked orders, distance is calculated based on previous order address in stack"
+    description: "Average distance between hub and customer dropoff (most direct path / straight line). For stacked orders, distance is calculated based on previous customer address in stack"
     sql: ${sum_delivery_distance_km}/nullif(${number_of_orders_with_customer_address},0) ;;
     value_format_name: decimal_1
   }
