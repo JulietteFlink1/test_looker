@@ -945,7 +945,7 @@ view: cc_contacts {
     group_label: "* Contact Statistics *"
     type: average
     value_format: "hh:mm:ss"
-    description: "AVG of median response time per contact (Median is based on all admin replies after a user reply). Subtracts out of business hours. In seconds."
+    description: "AVG of median response time per contact (Median is based on all admin replies after a user reply). Subtracts out of business hours."
     label: "AVG Response Time (Minutes)"
     sql:  ${median_time_to_reply_minutes}*60/86400.0 ;;
   }
