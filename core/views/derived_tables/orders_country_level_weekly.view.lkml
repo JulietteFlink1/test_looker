@@ -1,19 +1,17 @@
 # If necessary, uncomment the line below to include explore_source.
 #include: "order_orderline_cl.explore.lkml"
-#include: "/views/bigquery_tables/curated_layer/orderline.view"
 
-view: orders_country_level_monthly {
+view: orders_country_level_weekly {
 
   derived_table: {
 
     explore_source: order_orderline_cl {
 
       column: country_iso                { field: orderline.country_iso }
-      column: date                       { field: orderline.created_month }
+      column: date                       { field: orderline.created_week }
       column: cnt_orders                 { field: orders_cl.cnt_orders }
       column: revenue_gross              { field: orderline.sum_item_price_gross}
       column: number_of_unique_customers { field: orders_cl.cnt_unique_customers }
-
       derived_column: unique_id {
         sql: concat(country_iso, date) ;;
       }
@@ -45,8 +43,8 @@ view: orders_country_level_monthly {
 
   dimension: date {
     hidden: yes
-    label: "Month"
-    type: date_month
+    label: "Week"
+    type: date_week
   }
 
   dimension: cnt_orders {
@@ -66,22 +64,22 @@ view: orders_country_level_monthly {
   }
 
   dimension: pop_orders {
-    label: "PoP (Month) Orders Growth - Country"
+    label: "PoP (Week) Orders Growth - Country"
     type: number
     value_format_name: percent_2
     hidden: yes
   }
 
   dimension: pop_revenue {
-    label: "PoP (Month) Revenue Growth - Country"
+    label: "PoP (Week) Revenue Growth - Country"
     type: number
     value_format_name: percent_2
     hidden: yes
   }
 
-  dimension: number_of_monthly_unique_customers {
-    label: "# Monthly Unique Customers per Country"
-    description: "Count of Unique Customers identified via their Customer UUID aggregated per order-month and country"
+  dimension: number_of_weekly_unique_customers {
+    label: "# Weekly Unique Customers per Country"
+    description: "Count of Unique Customers identified via their Customer UUID aggregated per order-week and country"
 
     sql: ${TABLE}.number_of_unique_customers ;;
     value_format: "0"
@@ -89,9 +87,9 @@ view: orders_country_level_monthly {
     hidden: yes
   }
 
-  dimension: number_of_monthly_orders {
-    label: "# Monthly Orders per Country"
-    description: "Count of Orders per order-month and country"
+  dimension: number_of_weekly_orders {
+    label: "# Weekly Orders per Country"
+    description: "Count of Orders per order-week and country"
 
     sql: ${TABLE}.cnt_orders ;;
     value_format_name: decimal_0
@@ -105,7 +103,7 @@ view: orders_country_level_monthly {
     type: average
     sql: ${pop_orders} ;;
     label: "PoP Orders - Country"
-    group_label: "Monthly"
+    group_label: "Weekly"
     value_format_name: percent_2
   }
 
@@ -113,29 +111,28 @@ view: orders_country_level_monthly {
     type: average
     sql: ${pop_revenue} ;;
     label: "PoP Revenue - Country"
-    group_label: "Monthly"
+    group_label: "Weekly"
     value_format_name: percent_2
   }
 
   measure: sum_number_of_orders {
-    label: "# Monthly Orders per Country"
-    description: "Count of Orders per order-month and country"
+    label: "# Weekly Orders per Country"
+    description: "Count of Orders per order-week and country"
 
     type: sum
-    sql: ${number_of_monthly_orders} ;;
+    sql: ${number_of_weekly_orders} ;;
     value_format_name: decimal_0
 
     hidden: yes
   }
 
   measure: sum_number_of_unique_customers {
-    label: "# Monthly Unique Customers per Country"
-    description: "Count of Unique Customers identified via their Customer UUID aggregated per order-month and country"
+    label: "# Weekly Unique Customers per Country"
+    description: "Count of Unique Customers identified via their Customer UUID aggregated per order-week and country"
     value_format: "0"
     type: sum
-    sql: ${number_of_monthly_unique_customers} ;;
+    sql: ${number_of_weekly_unique_customers} ;;
     hidden: yes
   }
-
 
 }

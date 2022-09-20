@@ -11,6 +11,8 @@ include: "/**/global_filters_and_parameters.view"
 include: "/**/products.view"
 include: "/**/customer_address.view"
 include: "/**/ndt_psp_transactions__duplicated_psp_references.view"
+include: "/**/ndt_psp_transactions__payment_id_aggregated.view"
+include: "/**/ndt_psp_transactions__order_aggregated.view"
 
 explore: psp_transactions {
   from: psp_transactions
@@ -111,6 +113,20 @@ explore: psp_transactions {
   join: ndt_psp_transactions__duplicated_psp_references {
     view_label: "PSP Transactions"
     sql_on: ${psp_transactions.psp_reference}  = ${ndt_psp_transactions__duplicated_psp_references.psp_reference} ;;
+    relationship: many_to_one
+    type: left_outer
+  }
+
+  join: ndt_psp_transactions__payment_id_aggregated {
+    view_label: "PSP Transactions"
+    sql_on: ${psp_transactions.payment_id}  = ${ndt_psp_transactions__payment_id_aggregated.payment_id} ;;
+    relationship: many_to_one
+    type: left_outer
+  }
+
+  join: ndt_psp_transactions__order_aggregated {
+    view_label: "PSP Transactions"
+    sql_on: ${psp_transactions.order_uuid}  = ${ndt_psp_transactions__order_aggregated.order_uuid} ;;
     relationship: many_to_one
     type: left_outer
   }

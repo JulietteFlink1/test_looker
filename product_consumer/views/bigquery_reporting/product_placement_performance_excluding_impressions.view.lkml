@@ -70,13 +70,6 @@ view: product_placement_performance_excluding_impressions {
     type: string
     sql: ${TABLE}.product_sku ;;
   }
-  dimension: product_name {
-    group_label: "Product Dimensions"
-    label: "Product Name"
-    description: "Name of the product"
-    type: string
-    sql: ${TABLE}.product_name ;;
-  }
   dimension: product_position {
     group_label: "Product Dimensions"
     label: "Product Position"
@@ -145,6 +138,7 @@ view: product_placement_performance_excluding_impressions {
     type: string
     sql: ${TABLE}.screen_name ;;
   }
+
 
   # ======= Product Flags =======
 

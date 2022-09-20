@@ -866,8 +866,8 @@ view: daily_user_aggregates {
   }
   measure: active_users {
     group_label: "User Metrics"
-    label: "# Active Users"
-    description: "Active user generated at least 2 various events when browsing Flink app/web"
+    label: "# Active Users (unique)"
+    description: "Number of Unique Active Users within selected timeframe (note: an active user is a user whogenerated at least 2 various events when browsing Flink app/web.)"
     type: count_distinct
     sql: ${user_uuid} ;;
     filters: [is_active_user: "yes"]
@@ -875,7 +875,7 @@ view: daily_user_aggregates {
   measure: daily_active_users {
     group_label: "User Metrics"
     label: "# Daily Active Users"
-    description: "Unlike the Active Users metric, where a single user is counted once per the given date granularity, this metric counts each user each day that they are active."
+    description: "Number of unique Active Users per day. Unlike the Active Users metric, where a single user is counted once per the given date granularity, this metric counts each user each day that they are active."
     type: count_distinct
     sql: ${daily_user_uuid} ;;
     filters: [is_active_user: "yes"]

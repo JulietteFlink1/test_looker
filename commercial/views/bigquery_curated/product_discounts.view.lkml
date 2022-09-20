@@ -150,6 +150,10 @@ view: product_discounts {
     type: string
     sql: ${TABLE}.product_discount_id ;;
     description: "Unique identifier for each product discount found in CommerceTools"
+    link: {
+      label: "View Discount in CommerceTools"
+      url: "https://mc.europe-west1.gcp.commercetools.com/flink-production/discounts/products/{{ value }}"
+    }
   }
 
   dimension: channel_id {
