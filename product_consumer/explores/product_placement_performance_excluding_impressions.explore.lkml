@@ -10,6 +10,7 @@
 include: "/product_consumer/views/bigquery_reporting/product_placement_performance_excluding_impressions.view"
 include: "/**/global_filters_and_parameters.view.lkml"
 include: "/**/orders.view"
+include: "/**/products.view"
 
 explore: product_placement_performance_excluding_impressions {
   from:  product_placement_performance_excluding_impressions
@@ -48,6 +49,13 @@ explore: product_placement_performance_excluding_impressions {
             and {% condition global_filters_and_parameters.datasource_filter %} ${orders.order_date} {% endcondition %} ;;
     type: left_outer
     relationship: many_to_one
+  }
+
+  join: products {
+    view_label: "Product Data (CT)"
+    sql_on: ${products.product_sku} = ${product_placement_performance_excluding_impressions.product_sku} ;;
+    relationship: many_to_one
+    type: left_outer
   }
 
 }
