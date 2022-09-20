@@ -56,6 +56,7 @@ explore: product_placement_performance_excluding_impressions {
     sql_on: ${products.product_sku} = ${product_placement_performance_excluding_impressions.product_sku} ;;
     relationship: many_to_one
     type: left_outer
+    fields: [product_attributes*]
   }
 
 }
