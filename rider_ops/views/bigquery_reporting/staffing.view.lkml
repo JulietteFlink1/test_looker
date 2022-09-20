@@ -1490,7 +1490,7 @@ view: staffing {
     label: "# Punched External Hub Staff Hours"
     description: "Sum of Punched External Picker, WH and Rider Captain hours and Planned External Shift Lead hours"
     type: sum
-    sql: (${number_of_worked_minutes_external_picker}+${number_of_worked_minutes_external_wh}+${number_of_worked_minutes_external_rider_captain}+${number_of_unassigned_minutes_external_shift_lead}+${number_of_planned_minutes_external_shift_lead})/60;;
+    sql: (${number_of_worked_minutes_external_picker}+${number_of_worked_minutes_external_wh}+${number_of_worked_minutes_external_rider_captain}+${number_of_planned_minutes_external_shift_lead})/60;;
     value_format_name: decimal_1
   }
 

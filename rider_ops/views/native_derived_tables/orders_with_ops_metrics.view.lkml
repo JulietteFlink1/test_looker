@@ -415,7 +415,7 @@ view: orders_with_ops_metrics {
   measure: cnt_stacked_orders {
     group_label: "> Basic Counts"
     label: "# Orders - Stacked Order"
-    description: "The number of orders, that were part of a stacked delivery"
+    description: "Count of orders, that were part of a stacked delivery"
     type: sum
     value_format_name: decimal_0
     }
@@ -423,7 +423,7 @@ view: orders_with_ops_metrics {
   measure: cnt_external_orders {
     group_label: "> Basic Counts"
     label: "# External Orders"
-    description: "The number of successful and external orders"
+    description: "Count of External Orders"
     type: sum
     value_format_name: decimal_0
   }
