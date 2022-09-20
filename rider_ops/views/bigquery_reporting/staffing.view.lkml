@@ -1486,7 +1486,7 @@ view: staffing {
   }
 
   measure: number_of_worked_hours_external_hub_staff {
-    group_label: "> Rider Measures"
+    group_label: "> Hub Staff Measures"
     label: "# Punched External Hub Staff Hours"
     type: sum
     sql: (${number_of_worked_minutes_external_picker}+${number_of_worked_minutes_external_wh}+${number_of_worked_minutes_external_rider_captain}+${number_of_worked_minutes_external_shift_lead})/60;;
@@ -1494,8 +1494,8 @@ view: staffing {
   }
 
   measure: number_of_worked_hours_external_ops_staff {
-    group_label: "> Rider Measures"
-    label: "# Punched External Hub Staff Hours"
+    group_label: "> Ops Staff Measures"
+    label: "# Punched External Ops Staff Hours"
     type: sum
     sql: (${number_of_worked_minutes_external_picker}+${number_of_worked_minutes_external_rider_captain}+${number_of_worked_minutes_external_wh})/60;;
     value_format_name: decimal_1
