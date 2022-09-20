@@ -740,6 +740,7 @@ view: cc_contacts {
 
   measure: median_time_to_agent_reply_minutes {
     group_label: "* Contact Statistics *"
+    type: median
 # if > 1h then use format hh:mm:ss else use mm:ss
     value_format: "[>0.0416] hh:mm:ss ; mm:ss"
     label: "Median First Response Time (Minutes)"
