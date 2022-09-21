@@ -152,7 +152,7 @@ join: daily_violations_aggregates {
              daily_user_aggregates.is_order_placed,
              daily_user_aggregates.is_cart_viewed,
              daily_user_aggregates.is_payment_started,
-             daily_user_aggregates.is_account_registration_viewed,
+             daily_user_aggregates.is_account_registration_viewed, is_home_viewed, is_new_user,
     ]
     sql_on: ${daily_user_aggregates.user_uuid} = ${daily_events.anonymous_id}
       and ${daily_user_aggregates.event_date_at_date} = ${daily_events.event_date}
