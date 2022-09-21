@@ -936,12 +936,12 @@ view: cc_contacts {
       ${sum_amt_discount_cart_gross}, ${number_of_compensation_discount_code}) ;;
   }
 
-  measure: avg_number_of_compensation_discount_code_per_contact_closed {
+  measure: share_of_compensation_discount_code_per_contact_closed {
     group_label: "* Contact Compensation *"
-    label: "AVG # CC Compensation Code per Closed Contact"
+    label: "% CC Compensation Code per Closed Contact"
     description: "# CC Compensation Code / # Closed Contacts"
     type: number
-    value_format_name: decimal_2
+    value_format_name: percent_1
     sql: safe_divide(
       ${number_of_compensation_discount_code}, ${number_of_closed_contacts}) ;;
   }
