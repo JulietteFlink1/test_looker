@@ -43,11 +43,10 @@ explore: daily_stock_management_events {
     type: left_outer
     relationship: many_to_one
   }
+
   join: inventory_movement_id_times {
     view_label: "Inventory Movement Id Times"
-    sql_on: ${inventory_movement_id_times.inventory_movement_id}=${daily_stock_management_events.inventory_movement_id}
-      and {% condition global_filters_and_parameters.datasource_filter %}
-        ${inventory_movement_id_times.event_timestamp_date} {% endcondition %};;
+    sql_on: ${inventory_movement_id_times.inventory_movement_id}=${daily_stock_management_events.inventory_movement_id};;
     type: left_outer
     relationship: one_to_one
   }
