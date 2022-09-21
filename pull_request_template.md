@@ -28,7 +28,7 @@ Please always refer to our [Looker Best Practices](https://goflink.atlassian.net
 
 ## ✏️ What does this PR do?
 
-- Please explain briefely the problem? or what you are trying to improve here
+- Please explain briefly the problem or what you are trying to improve here
 - How did you solve the problem?
 
 

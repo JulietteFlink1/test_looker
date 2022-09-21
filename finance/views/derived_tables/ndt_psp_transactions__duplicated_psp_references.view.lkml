@@ -23,6 +23,7 @@ view: ndt_psp_transactions__duplicated_psp_references {
       label: "PSP Transactions Psp Reference"
       description: ""
       hidden: yes
+      primary_key: yes
     }
 
     dimension: is_duplicated_psp_reference {

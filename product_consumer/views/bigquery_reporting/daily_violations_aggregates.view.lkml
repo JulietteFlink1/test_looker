@@ -1,3 +1,6 @@
+# Owner: Product Analytics, Flavia Alvarez
+# Last Updated: 2022-09-20
+
 view: daily_violations_aggregates {
   sql_table_name: `flink-data-prod.reporting.daily_violations_aggregates`
     ;;
@@ -11,7 +14,7 @@ view: daily_violations_aggregates {
 
   dimension: table_uuid {
     type: string
-    hidden: no
+    hidden: yes
     primary_key: yes
     sql: ${TABLE}.table_uuid ;;
   }
@@ -24,8 +27,10 @@ view: daily_violations_aggregates {
     timeframes: [
       raw,
       date,
+      hour_of_day,
+      day_of_week,
       week,
-      month,
+      month_name,
       quarter,
       year
     ]
@@ -54,6 +59,18 @@ view: daily_violations_aggregates {
   }
 
     ######## Segment Violation Attributes ########
+
+  dimension: domain {
+    group_label: "Violation Attributes"
+    type: string
+    sql: ${TABLE}.domain ;;
+  }
+
+  dimension: source_slug {
+    group_label: "Violation Attributes"
+    type: string
+    sql: ${TABLE}.source_slug ;;
+  }
 
   dimension: tracking_plan_id {
     group_label: "Violation Attributes"
