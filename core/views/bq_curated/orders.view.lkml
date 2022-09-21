@@ -2577,6 +2577,17 @@ view: orders {
     value_format: "0"
   }
 
+  measure: cnt_internal_orders {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Internal Orders"
+    description: "Count of Internal Orders"
+    hidden:  no
+    type: count_distinct
+    sql: ${order_uuid} ;;
+    filters: [is_external_order: "no"]
+    value_format: "0"
+  }
+
   measure: cnt_successful_orders {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
     label: "# Successful Orders"
@@ -2606,8 +2617,8 @@ view: orders {
 
   measure: cnt_ubereats_orders {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
-    label: "# Click & Collect Orders"
-    description: "Count of Click & Collect Orders"
+    label: "# Ubereats Orders"
+    description: "Count of Ubereats Orders"
     hidden:  yes
     type: count_distinct
     sql: ${order_uuid} ;;
@@ -2616,6 +2627,20 @@ view: orders {
       external_provider: "ubereats",
       is_successful_order: "yes"
       ]
+  }
+
+  measure: cnt_external_orders {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# External Orders"
+    description: "Count of External Orders"
+    hidden:  yes
+    type: count_distinct
+    sql: ${order_uuid} ;;
+    value_format: "0"
+    filters: [
+      is_external_order: "yes",
+      is_successful_order: "yes"
+    ]
   }
 
   measure: cnt_orders_with_discount_cart {
