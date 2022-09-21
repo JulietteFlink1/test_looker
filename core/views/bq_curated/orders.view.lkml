@@ -2568,6 +2568,17 @@ view: orders {
     value_format: "0"
   }
 
+  measure: cnt_internal_orders {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Internal Orders"
+    description: "Count of Internal Orders"
+    hidden:  no
+    type: count_distinct
+    sql: ${order_uuid} ;;
+    filters: [is_external_order: "no"]
+    value_format: "0"
+  }
+
   measure: cnt_successful_orders {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
     label: "# Successful Orders"
