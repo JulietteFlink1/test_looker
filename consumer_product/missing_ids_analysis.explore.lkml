@@ -1,4 +1,4 @@
-include: "/views/projects/consumer_product/missing_ids_analysis.view.lkml"
+include: "/**/missing_ids_analysis.view.lkml"
 
 
 explore: missing_ids_analysis {

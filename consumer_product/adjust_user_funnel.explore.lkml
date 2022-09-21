@@ -1,4 +1,4 @@
-include: "/views/sql_derived_tables/adjust_user_funnel.view.lkml"
+include: "/**/adjust_user_funnel.view.lkml"
 
 explore: adjust_user_funnel {
   hidden: yes

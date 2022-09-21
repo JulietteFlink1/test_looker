@@ -1,4 +1,4 @@
-include: "/views/**/*.view"
+include: "/**/*.view"
 
 # this view adds fields to the regular orders.view
 # extracted these fields into a separate file for better readability

@@ -1,4 +1,4 @@
-include: "/views/sql_derived_tables/tmp_rider_distances2.view.lkml"
+include: "/**/tmp_rider_distances2.view.lkml"
 
 explore: rider_distances2 {
   hidden: yes

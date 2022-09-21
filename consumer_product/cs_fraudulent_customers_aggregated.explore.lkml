@@ -1,4 +1,4 @@
-include: "/views/sql_derived_tables/cs_fraudulent_customers.view.lkml"
+include: "/**/cs_fraudulent_customers.view.lkml"
 
 explore: cs_fraudulent_customers {
   hidden: yes

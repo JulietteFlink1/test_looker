@@ -1,6 +1,6 @@
 # created : December 2021
 
-include: "/views/**/*.view"
+include: "/**/*.view"
 
 
 explore: recurring_sku_purchases {
