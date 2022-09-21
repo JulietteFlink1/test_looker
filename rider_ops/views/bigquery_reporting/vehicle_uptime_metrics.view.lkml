@@ -57,6 +57,17 @@ view: vehicle_uptime_metrics {
     sql: ${TABLE}.report_date ;;
   }
 
+  # dimension_group: report {
+  #   group_label: "> Dates"
+  #   type: time
+  #   timeframes: [
+  #     date,
+  #     week,
+  #     month,
+  #   ]
+  #   sql: timestamp(${TABLE}.report_date) ;;
+  # }
+
   dimension: downtime_minutes {
     hidden: yes
     description: "For a bike / date / hub: duration of damage within the opening hours of the hub. In minutes."
@@ -111,5 +122,34 @@ view: vehicle_uptime_metrics {
     sql: 1 - (${sum_downtime_minutes} / NULLIF(${sum_expected_uptime_minutes},0)) ;;
     value_format_name: percent_2
   }
+
+  # ######### Parameters
+
+  # parameter: date_granularity {
+  #   group_label: "> Dates"
+  #   label: "Date Granularity"
+  #   type: unquoted
+  #   allowed_value: { value: "Day" }
+  #   allowed_value: { value: "Week" }
+  #   allowed_value: { value: "Month" }
+  #   default_value: "Day"
+  # }
+
+
+  # ######## Dynamic Dimensions
+
+  # dimension: report_date_dynamic {
+  #   group_label: "> Dates"
+  #   label: "Report Date (Dynamic)"
+  #   label_from_parameter: date_granularity
+  #   sql:
+  #   {% if date_granularity._parameter_value == 'Day' %}
+  #     ${report_date}
+  #   {% elsif date_granularity._parameter_value == 'Week' %}
+  #     ${report_week}
+  #   {% elsif date_granularity._parameter_value == 'Month' %}
+  #     ${report_month}
+  #   {% endif %};;
+  # }
 
 }
