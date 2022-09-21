@@ -1,4 +1,4 @@
-include: "/views/bigquery_tables/gsheets/comp_intel_hub_mapping.view"
+include: "/**/comp_intel_hub_mapping.view"
 
 view: gorillas_daily_orders {
   sql_table_name: `flink-data-prod.reporting.gorillas_daily_orders`

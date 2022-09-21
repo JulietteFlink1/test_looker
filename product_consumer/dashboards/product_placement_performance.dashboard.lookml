@@ -10,7 +10,7 @@
     explore: product_placement_performance_excluding_impressions
     type: looker_grid
     fields: [product_placement_performance_excluding_impressions.category_name, product_placement_performance_excluding_impressions.subcategory_name,
-      product_placement_performance_excluding_impressions.product_placement, product_placement_performance_excluding_impressions.product_name, product_placement_performance_excluding_impressions.product_sku,
+      product_placement_performance_excluding_impressions.product_placement, products.product_name, product_placement_performance_excluding_impressions.product_sku,
       product_placement_performance_excluding_impressions.add_to_carts, product_placement_performance_excluding_impressions.orders]
     filters:
       product_placement_performance_excluding_impressions.app_version: ''
@@ -69,7 +69,7 @@
       Event Date: product_placement_performance_excluding_impressions.event_date
       Category Name: product_placement_performance_excluding_impressions.category_name
       Subcategory Name: product_placement_performance_excluding_impressions.subcategory_name
-      Product Name: product_placement_performance_excluding_impressions.product_name
+      Product Name: products.product_name
       country_iso: product_placement_performance_excluding_impressions.country_iso
       Hub Code: product_placement_performance_excluding_impressions.hub_code
       Product Placement: product_placement_performance_excluding_impressions.product_placement
@@ -174,7 +174,7 @@
       Event Date: product_placement_performance_excluding_impressions.event_date
       Category Name: product_placement_performance_excluding_impressions.category_name
       Subcategory Name: product_placement_performance_excluding_impressions.subcategory_name
-      Product Name: product_placement_performance_excluding_impressions.product_name
+      Product Name: products.product_name
       country_iso: product_placement_performance_excluding_impressions.country_iso
       Hub Code: product_placement_performance_excluding_impressions.hub_code
       Product Placement: product_placement_performance_excluding_impressions.product_placement
@@ -264,7 +264,7 @@
       Event Date: product_placement_performance_excluding_impressions.event_date
       Category Name: product_placement_performance_excluding_impressions.category_name
       Subcategory Name: product_placement_performance_excluding_impressions.subcategory_name
-      Product Name: product_placement_performance_excluding_impressions.product_name
+      Product Name: products.product_name
       country_iso: product_placement_performance_excluding_impressions.country_iso
       Hub Code: product_placement_performance_excluding_impressions.hub_code
       Product Placement: product_placement_performance_excluding_impressions.product_placement
@@ -339,7 +339,7 @@
       Event Date: product_placement_performance_excluding_impressions.event_date
       Category Name: product_placement_performance_excluding_impressions.category_name
       Subcategory Name: product_placement_performance_excluding_impressions.subcategory_name
-      Product Name: product_placement_performance_excluding_impressions.product_name
+      Product Name: products.product_name
       country_iso: product_placement_performance_excluding_impressions.country_iso
       Hub Code: product_placement_performance_excluding_impressions.hub_code
       Product Placement: product_placement_performance_excluding_impressions.product_placement
@@ -413,7 +413,7 @@
       Event Date: product_placement_performance_excluding_impressions.event_date
       Category Name: product_placement_performance_excluding_impressions.category_name
       Subcategory Name: product_placement_performance_excluding_impressions.subcategory_name
-      Product Name: product_placement_performance_excluding_impressions.product_name
+      Product Name: products.product_name
       country_iso: product_placement_performance_excluding_impressions.country_iso
       Hub Code: product_placement_performance_excluding_impressions.hub_code
       Product Placement: product_placement_performance_excluding_impressions.product_placement
@@ -487,7 +487,7 @@
       Event Date: product_placement_performance_excluding_impressions.event_date
       Category Name: product_placement_performance_excluding_impressions.category_name
       Subcategory Name: product_placement_performance_excluding_impressions.subcategory_name
-      Product Name: product_placement_performance_excluding_impressions.product_name
+      Product Name: products.product_name
       country_iso: product_placement_performance_excluding_impressions.country_iso
       Hub Code: product_placement_performance_excluding_impressions.hub_code
       Product Placement: product_placement_performance_excluding_impressions.product_placement
@@ -583,7 +583,7 @@
       Event Date: product_placement_performance_excluding_impressions.event_date
       Category Name: product_placement_performance_excluding_impressions.category_name
       Subcategory Name: product_placement_performance_excluding_impressions.subcategory_name
-      Product Name: product_placement_performance_excluding_impressions.product_name
+      Product Name: products.product_name
       country_iso: product_placement_performance_excluding_impressions.country_iso
       Hub Code: product_placement_performance_excluding_impressions.hub_code
       Product Placement: product_placement_performance_excluding_impressions.product_placement
@@ -680,7 +680,7 @@
       Event Date: product_placement_performance_excluding_impressions.event_date
       Category Name: product_placement_performance_excluding_impressions.category_name
       Subcategory Name: product_placement_performance_excluding_impressions.subcategory_name
-      Product Name: product_placement_performance_excluding_impressions.product_name
+      Product Name: products.product_name
       country_iso: product_placement_performance_excluding_impressions.country_iso
       Hub Code: product_placement_performance_excluding_impressions.hub_code
       Product Placement: product_placement_performance_excluding_impressions.product_placement
@@ -774,7 +774,7 @@
       Event Date: product_placement_performance_excluding_impressions.event_date
       Category Name: product_placement_performance_excluding_impressions.category_name
       Subcategory Name: product_placement_performance_excluding_impressions.subcategory_name
-      Product Name: product_placement_performance_excluding_impressions.product_name
+      Product Name: products.product_name
       country_iso: product_placement_performance_excluding_impressions.country_iso
       Hub Code: product_placement_performance_excluding_impressions.hub_code
       Product Placement: product_placement_performance_excluding_impressions.product_placement
@@ -870,7 +870,7 @@
       Event Date: product_placement_performance_excluding_impressions.event_date
       Category Name: product_placement_performance_excluding_impressions.category_name
       Subcategory Name: product_placement_performance_excluding_impressions.subcategory_name
-      Product Name: product_placement_performance_excluding_impressions.product_name
+      Product Name: products.product_name
       country_iso: product_placement_performance_excluding_impressions.country_iso
       Hub Code: product_placement_performance_excluding_impressions.hub_code
       Product Placement: product_placement_performance_excluding_impressions.product_placement
@@ -883,7 +883,7 @@
     model: flink_v3
     explore: product_placement_performance_excluding_impressions
     type: looker_grid
-    fields: [product_placement_performance_excluding_impressions.product_placement, product_placement_performance_excluding_impressions.product_name,
+    fields: [product_placement_performance_excluding_impressions.product_placement, products.product_name,
       product_placement_performance_excluding_impressions.product_sku, product_placement_performance_excluding_impressions.add_to_carts]
     pivots: [product_placement_performance_excluding_impressions.product_placement]
     filters:
@@ -943,7 +943,7 @@
       Event Date: product_placement_performance_excluding_impressions.event_date
       Category Name: product_placement_performance_excluding_impressions.category_name
       Subcategory Name: product_placement_performance_excluding_impressions.subcategory_name
-      Product Name: product_placement_performance_excluding_impressions.product_name
+      Product Name: products.product_name
       country_iso: product_placement_performance_excluding_impressions.country_iso
       Hub Code: product_placement_performance_excluding_impressions.hub_code
       Product Placement: product_placement_performance_excluding_impressions.product_placement
@@ -1018,7 +1018,7 @@
       Event Date: product_placement_performance_excluding_impressions.event_date
       Category Name: product_placement_performance_excluding_impressions.category_name
       Subcategory Name: product_placement_performance_excluding_impressions.subcategory_name
-      Product Name: product_placement_performance_excluding_impressions.product_name
+      Product Name: products.product_name
       country_iso: product_placement_performance_excluding_impressions.country_iso
       Hub Code: product_placement_performance_excluding_impressions.hub_code
       Product Placement: product_placement_performance_excluding_impressions.product_placement
@@ -1065,7 +1065,7 @@
     model: flink_v3
     explore: product_placement_performance_excluding_impressions
     listens_to_filters: []
-    field: product_placement_performance_excluding_impressions.product_name
+    field: products.product_name
   - name: Category Name
     title: Category Name
     type: field_filter

@@ -1,4 +1,4 @@
-include: "/views/**/*.view"
+include: "/**/*.view"
 view: +orderline {
 
   set: orders_core_fields {
@@ -11,6 +11,7 @@ view: +orderline {
       pct_pre_order_issue_rate_per_total_orders_crf,
       delivery_issue_groups,
       number_of_products_with_perished_light_issues_dim,
+      number_of_products_with_goodwill_issues_dim,
       number_of_products_with_perished_issues_pre_dim,
       number_of_products_with_perished_issues_post_dim,
       number_of_products_with_products_not_on_shelf_issues_pre_dim,
@@ -184,6 +185,17 @@ view: +orderline {
     type: count_distinct
     sql: ${order_uuid} ;;
     filters: [number_of_products_with_perished_light_issues_dim: ">0",
+      external_provider: "null, -ubereats"]
+  }
+
+  measure: count_goodwill {
+    label: "# Orders Goodwill"
+    description: "The number of orders, that had issues with goodwill products and were claimed through the Customer Service.
+    Not counted in # Post Delivery Issues nor # Delivery Issues"
+    group_label: "> Delivery Issues"
+    type: count_distinct
+    sql: ${order_uuid} ;;
+    filters: [number_of_products_with_goodwill_issues_dim: ">0",
       external_provider: "null, -ubereats"]
   }
 
@@ -749,7 +761,7 @@ view: +orderline {
 
   }
 
-  # ~~~~~~~ Perished Light
+  # ~~~~~~~ Perished Light & Goodwill
   measure: pct_orders_perished_light {
 
     label: "% Orders Perished Light Issue"
@@ -757,6 +769,17 @@ view: +orderline {
 
     type: number
     sql: ${count_perished_light} / nullif(${cnt_total_orders_not_crf},0) ;;
+
+    value_format_name: percent_2
+  }
+
+  measure: pct_orders_goodwill {
+
+    label: "% Orders Goodwill Issue"
+    group_label: "> Delivery Issues"
+
+    type: number
+    sql: ${count_goodwill} / nullif(${cnt_total_orders_not_crf},0) ;;
 
     value_format_name: percent_2
   }

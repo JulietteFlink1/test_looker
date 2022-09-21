@@ -1,4 +1,4 @@
-include: "/views/**/*.view"
+include: "/**/*.view"
 
 # this view adds fields to the regular orders.view
 # extracted these fields into a separate file for better readability
@@ -108,9 +108,9 @@ view: +orders {
 
   measure: pct_stacked_orders {
     label: "% Stacked Orders"
-    description: "The % of orders, that were part of a stacked delivery"
+    description: "The % of orders, that were part of a stacked delivery. (share of internal orders only)"
     group_label: "* Stacked Orders *"
-    sql: ${cnt_stacked_orders} / nullif(${cnt_orders} ,0) ;;
+    sql: ${cnt_stacked_orders} / nullif(${cnt_internal_orders} ,0) ;;
     type: number
     value_format_name: percent_1
   }
