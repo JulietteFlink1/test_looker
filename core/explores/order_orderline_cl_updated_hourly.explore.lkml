@@ -1,5 +1,4 @@
 include: "/**/order_orderline_cl.explore"
-include: "/views/**/*.view"
 
 explore: order_orderline_cl_updated_hourly {
   extends: [order_orderline_cl]

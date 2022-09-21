@@ -1,10 +1,10 @@
-include: "/views/**/all_pulse_results.view.lkml"
-include: "/views/**/202109_hub_pulse_results.view.lkml"
-include: "/views/**/202109_rider_pulse_results.view.lkml"
-include: "/views/**/202109_hq_pulse_results.view.lkml"
-include: "/views/**/*.view"
-include: "/views/**/hub_pulse_results.view.lkml"
-include: "/views/**/hq_pulse_results.view.lkml"
+include: "/**/all_pulse_results.view.lkml"
+include: "/**/202109_hub_pulse_results.view.lkml"
+include: "/**/202109_rider_pulse_results.view.lkml"
+include: "/**/202109_hq_pulse_results.view.lkml"
+include: "/**/*.view"
+include: "/**/hub_pulse_results.view.lkml"
+include: "/**/hq_pulse_results.view.lkml"
 
 explore: pulse_results {
   hidden:yes

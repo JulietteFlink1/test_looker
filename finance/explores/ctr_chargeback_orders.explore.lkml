@@ -1,6 +1,4 @@
-include: "/views/**/*.view"
-include: "/**/*.view"
-include: "/**/*.explore"
+include: "/**/ctr_chargeback_orders.view"
 
 explore: ctr_chargeback_orders {
   view_name:  ctr_chargeback_orders
