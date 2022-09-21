@@ -1,4 +1,4 @@
-include: "/views/**/recipe_skus.view.lkml"
+include: "/**/recipe_skus.view.lkml"
 
 
 explore: recipe_skus {

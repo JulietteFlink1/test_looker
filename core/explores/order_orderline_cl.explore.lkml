@@ -1,4 +1,3 @@
-include: "/views/**/*.view"
 include: "/**/*.view"
 include: "/**/*.explore"
 

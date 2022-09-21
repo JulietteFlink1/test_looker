@@ -1,5 +1,5 @@
 
-include: "/views/extended_tables/order_lineitems_using_inventory.view"
+include: "/**/order_lineitems_using_inventory.view"
 include: "/**/price_test_tracking.view"
 include: "/**/*.view"
 

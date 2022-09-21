@@ -1,4 +1,4 @@
-include: "/views/projects/consumer_product/address_confirmed_events.view.lkml"
+include: "/**/address_confirmed_events.view.lkml"
 
 explore: address_confirmed_events {
   hidden: yes

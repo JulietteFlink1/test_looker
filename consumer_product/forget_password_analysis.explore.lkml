@@ -1,4 +1,4 @@
-include: "/views/projects/consumer_product/forget_password_analysis.view.lkml"
+include: "/**/forget_password_analysis.view.lkml"
 
 explore: forget_password_analysis {
   hidden: yes
