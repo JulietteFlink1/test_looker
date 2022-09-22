@@ -132,6 +132,49 @@ view: employee_level_kpis {
     sql: ${TABLE}.contract_end_date ;;
   }
 
+  dimension: employment_end_date {
+    label: "Employment End Date"
+    description: "Based on Quinyx 'To' field for inactive employees (Employed field unchecked) - 1 day. Defines 'is_active' field."
+    convert_tz: no
+    datatype: date
+    type: date
+    sql: ${TABLE}.employment_end_date ;;
+  }
+
+  dimension: last_planned_date {
+    label: "Last Planned Date"
+    description: "Date of the last shift defined as 'Planned' (type = Assigned)"
+    convert_tz: no
+    datatype: date
+    type: date
+    sql: ${TABLE}.last_planned_date ;;
+  }
+
+  dimension: last_worked_date_dimension {
+    label: "Last Worked Date"
+    description: "Date of the last shift defined as 'Worked' (type = Assigned and status = Done evaluation)"
+    convert_tz: no
+    datatype: date
+    type: date
+    sql: ${TABLE}.last_worked_date ;;
+  }
+
+  dimension: last_absence_date {
+    label: "Last Absence Date"
+    description: "Date of the last shift defined as 'Absence' (type = Absence and status != Denied)"
+    convert_tz: no
+    datatype: date
+    type: date
+    sql: ${TABLE}.last_absence_date ;;
+  }
+
+  dimension: is_active {
+    type: yesno
+    sql: ${TABLE}.is_active ;;
+    label: "Is Active"
+    description: "Shows if an employee is active (employed) or not. Based on employment end date which is defined in Quinyx ('To' Field for an employee - 1 day)"
+  }
+
   dimension: hub_code {
     type: string
     sql: ${TABLE}.hub_code ;;
