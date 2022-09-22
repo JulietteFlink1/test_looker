@@ -1,9 +1,10 @@
-include: "/supply_chain/views/bigquery_reporting/advanced_supplier_matching.view"
-
 explore: advanced_supplier_matching {
   hidden: yes
   view_label: "TMP - Do NOT use"
 }
+
+
+include: "/supply_chain/views/bigquery_reporting/advanced_supplier_matching.view"
 
 view: +advanced_supplier_matching {
 
@@ -24,11 +25,6 @@ view: +advanced_supplier_matching {
     sql: concat(${parent_sku_desadv}, ${table_uuid}) ;;
     hidden: yes
   }
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  #  - - - - - - - - - -    PO >> DESADV
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-  # ----------------     On Time KPIs    ----------------
 
   measure: cnt_ordered_items_puchase_order {
     label: "# Ordered Items"
@@ -39,6 +35,41 @@ view: +advanced_supplier_matching {
     sql: ${purchase_order_order_lineitems} ;;
     value_format_name: decimal_0
   }
+
+  measure: sum_ordered_items_quantity_po {
+    label: "# Total Quantity (PO)"
+
+    type: sum
+    sql: ${total_quantity_purchase_order} ;;
+    value_format_name: decimal_0
+  }
+
+  measure: sum_ordered_items_quantity_desadv {
+    label: "# Quantity DESADV"
+
+    type: sum
+    sql: ${total_quantity_desadv} ;;
+    value_format_name: decimal_0
+  }
+
+  measure: cnt_ordered_items_desadv {
+    label: "# Delivered Items (DESADV)"
+    description: "The number of SKUs, that have been delivered according to the dispatch notification (DESADV)"
+
+    type: count_distinct
+    # unique SKUS per PO or DESADV:
+    sql: ${desadv_order_lineitems} ;;
+    value_format_name: decimal_0
+  }
+
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  #  - - - - - - - - - -    PO >> DESADV
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  # ----------------     On Time KPIs    ----------------
+
+
 
   measure: cnt_ordered_items_delivered_on_time {
     label: "# Ordered Items Delivered On Time"
@@ -177,15 +208,6 @@ view: +advanced_supplier_matching {
   }
 
   # Fill Rate
-  measure: sum_ordered_items_quantity_po {
-    label: "# Total Quantity (PO)"
-    group_label: "PO >> DESADV | In Full KPIs"
-
-    type: sum
-    sql: ${total_quantity_purchase_order} ;;
-    value_format_name: decimal_0
-  }
-
   measure: sum_ordered_items_quantity_desadv_with_po {
     label: "# Filled Quantities (PO > DESADV)"
     group_label: "PO >> DESADV | In Full KPIs"
@@ -396,17 +418,6 @@ view: +advanced_supplier_matching {
     value_format_name: decimal_0
   }
 
-  measure: cnt_ordered_items_desadv {
-    label: "# Delivered Items (DESADV)"
-    description: "The number of SKUs, that have been delivered according to the dispatch notification (DESADV)"
-    group_label: "PO >> DESADV | Unplanned or Not Fulfilled"
-
-    type: count_distinct
-    # unique SKUS per PO or DESADV:
-    sql: ${desadv_order_lineitems} ;;
-    value_format_name: decimal_0
-  }
-
   measure: pct_ordered_items_po_unplanned {
     label: "% Unplanned delivery (PO > DESADV)"
     description: "Share of unplanned DESADV lines (PO > DESADV) compared to all DESADV lines"
@@ -427,14 +438,6 @@ view: +advanced_supplier_matching {
     value_format_name: decimal_0
   }
 
-  measure: sum_ordered_items_quantity_desadv {
-    label: "# Quantity DESADV"
-
-    type: sum
-    sql: ${total_quantity_desadv} ;;
-    value_format_name: decimal_0
-  }
-
   measure: pct_ordered_items_quantity_po_unplanned {
     label: "% Unplanned delivery quantity (PO > DESADV)"
     description: "Relative amount of unplanned delivery quantities (PO > DESADV) compared to all DESADV quantities"
@@ -443,6 +446,33 @@ view: +advanced_supplier_matching {
     type: number
     sql: safe_divide(${sum_ordered_items_quantity_po_unplanned}, ${sum_ordered_items_quantity_desadv}) ;;
     value_format_name: percent_1
+  }
+
+
+
+
+
+
+# ----------------     On Time KPIs    ----------------
+
+  measure: cnt_desadv_inbounded_items_on_time {
+    label: "# On Time delivery (DESADV > Inbound)"
+    description: "Nu,ber of on time delivered DESADV lines (DESADV > Inbound)"
+    group_label: "DESADV >> Inbound | On Time KPIs"
+
+    type: count_distinct
+    sql: ${desadv_order_lineitems} ;;
+    filters: [is_matched_on_same_date: "yes"]
+    value_format_name: decimal_0
+  }
+
+  measure: pct_desadv_inbounded_items_on_time {
+    label: "% On Time delivery (DESADV > Inbound)"
+    description: "Share of on time delivered DESADV lines (DESADV > Inbound) compared to all DESADV lines "
+    group_label: "DESADV >> Inbound | On Time KPIs"
+
+    type: number
+    sql: ${cnt_desadv_inbounded_items_on_time}, ${cnt_ordered_items_desadv} ;;
   }
 
 }
