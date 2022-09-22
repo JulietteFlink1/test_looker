@@ -1,4 +1,4 @@
-include: "/views/**/*.view"
+include: "/**/*.view"
 view: +orderline {
 
   set: orders_core_fields {

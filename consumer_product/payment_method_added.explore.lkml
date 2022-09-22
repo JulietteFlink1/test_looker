@@ -1,4 +1,4 @@
-include: "/views/projects/consumer_product/payment_method_added.view.lkml"
+include: "/**/payment_method_added.view.lkml"
 
 explore: payment_method_added {
   hidden: yes

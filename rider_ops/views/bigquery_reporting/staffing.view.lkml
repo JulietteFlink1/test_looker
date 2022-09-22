@@ -2691,13 +2691,13 @@ view: staffing {
     group_label: "> Dynamic Measures"
     sql:
         CASE
-          WHEN {% parameter position_parameter %} = 'Rider' THEN ${number_of_scheduled_hours_external_rider}/${number_of_scheduled_hours_rider}
-          WHEN {% parameter position_parameter %} = 'Picker' THEN ${number_of_scheduled_hours_external_picker}/${number_of_scheduled_hours_picker}
-          WHEN {% parameter position_parameter %} = 'Shift Lead' THEN ${number_of_scheduled_hours_external_shift_lead}/${number_of_scheduled_hours_shift_lead}
-          WHEN {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_scheduled_hours_external_rider_captain}/${number_of_scheduled_hours_rider_captain}
-          WHEN {% parameter position_parameter %} = 'WH' THEN ${number_of_scheduled_hours_external_wh}/${number_of_scheduled_hours_wh}
-          WHEN {% parameter position_parameter %} = 'Hub Staff' THEN ${number_of_scheduled_hours_external_hub_staff}/${number_of_scheduled_hours_hub_staff}
-          WHEN {% parameter position_parameter %} = 'Ops Staff' THEN ${number_of_scheduled_hours_external_ops_staff}/${number_of_scheduled_hours_ops_staff}
+          WHEN {% parameter position_parameter %} = 'Rider' THEN ${number_of_scheduled_hours_external_rider}/nullif(${number_of_scheduled_hours_rider},0)
+          WHEN {% parameter position_parameter %} = 'Picker' THEN ${number_of_scheduled_hours_external_picker}/nullif(${number_of_scheduled_hours_picker},0)
+          WHEN {% parameter position_parameter %} = 'Shift Lead' THEN ${number_of_scheduled_hours_external_shift_lead}/nullif(${number_of_scheduled_hours_shift_lead},0)
+          WHEN {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_scheduled_hours_external_rider_captain}/nullif(${number_of_scheduled_hours_rider_captain},0)
+          WHEN {% parameter position_parameter %} = 'WH' THEN ${number_of_scheduled_hours_external_wh}/nullif(${number_of_scheduled_hours_wh},0)
+          WHEN {% parameter position_parameter %} = 'Hub Staff' THEN ${number_of_scheduled_hours_external_hub_staff}/nullif(${number_of_scheduled_hours_hub_staff},0)
+          WHEN {% parameter position_parameter %} = 'Ops Staff' THEN ${number_of_scheduled_hours_external_ops_staff}/nullif(${number_of_scheduled_hours_ops_staff},0)
       ELSE NULL
       END ;;
   }
@@ -2782,13 +2782,13 @@ view: staffing {
     group_label: "> Dynamic Measures"
     sql:
         CASE
-          WHEN {% parameter position_parameter %} = 'Rider' THEN ${number_of_worked_hours_external_rider}/${number_of_worked_hours_rider}
-          WHEN {% parameter position_parameter %} = 'Picker' THEN ${number_of_worked_hours_external_picker}/${number_of_worked_hours_picker}
-          WHEN {% parameter position_parameter %} = 'Shift Lead' THEN ${number_of_worked_hours_external_shift_lead}/${number_of_worked_hours_shift_lead}
-          WHEN {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_worked_hours_external_rider_captain}/${number_of_worked_hours_rider_captain}
-          WHEN {% parameter position_parameter %} = 'WH' THEN ${number_of_worked_hours_external_wh}/${number_of_worked_hours_wh}
-          WHEN {% parameter position_parameter %} = 'Hub Staff' THEN ${number_of_worked_hours_external_hub_staff}/${number_of_worked_hours_hub_staff}
-          WHEN {% parameter position_parameter %} = 'Ops Staff' THEN ${number_of_worked_hours_external_ops_staff}/${number_of_worked_hours_ops_staff}
+          WHEN {% parameter position_parameter %} = 'Rider' THEN ${number_of_worked_hours_external_rider}/nullif(${number_of_worked_hours_rider},0)
+          WHEN {% parameter position_parameter %} = 'Picker' THEN ${number_of_worked_hours_external_picker}/nullif(${number_of_worked_hours_picker},0)
+          WHEN {% parameter position_parameter %} = 'Shift Lead' THEN ${number_of_worked_hours_external_shift_lead}/nullif(${number_of_worked_hours_shift_lead},0)
+          WHEN {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_worked_hours_external_rider_captain}/nullif(${number_of_worked_hours_rider_captain},0)
+          WHEN {% parameter position_parameter %} = 'WH' THEN ${number_of_worked_hours_external_wh}/nullif(${number_of_worked_hours_wh},0)
+          WHEN {% parameter position_parameter %} = 'Hub Staff' THEN ${number_of_worked_hours_external_hub_staff}/nullif(${number_of_worked_hours_hub_staff},0)
+          WHEN {% parameter position_parameter %} = 'Ops Staff' THEN ${number_of_worked_hours_external_ops_staff}/nullif(${number_of_worked_hours_ops_staff},0)
       ELSE NULL
       END ;;
   }
