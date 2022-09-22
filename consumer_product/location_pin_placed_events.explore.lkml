@@ -1,4 +1,4 @@
-include: "/views/projects/consumer_product/location_pin_placed_events.view.lkml"
+include: "/**/location_pin_placed_events.view.lkml"
 
 explore: location_pin_placed_events {
   hidden: yes
