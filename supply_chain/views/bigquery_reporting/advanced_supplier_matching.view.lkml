@@ -473,6 +473,16 @@ view: advanced_supplier_matching {
     sql: ${TABLE}.is_po_desadv_quantity_underdelivery ;;
   }
 
+  dimension: is_unplanned_delivery {
+    type: yesno
+    sql: ${TABLE}.is_unplanned_delivery ;;
+  }
+
+  dimension: is_not_fulfilled_purchase_order {
+    type: yesno
+    sql: ${TABLE}.is_not_fulfilled_purchase_order ;;
+  }
+
   measure: count {
     type: count
     drill_fields: [product_name, supplier_name]
