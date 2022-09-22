@@ -1,4 +1,4 @@
-include: "/views/projects/consumer_product/checkout_tracking.view.lkml"
+include: "/**/checkout_tracking.view.lkml"
 
 explore: checkout_tracking {
   hidden: yes

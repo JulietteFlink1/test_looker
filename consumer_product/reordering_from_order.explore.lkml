@@ -1,4 +1,4 @@
-include: "/views/sql_derived_tables/reordering_from_order.view.lkml"
+include: "/**/reordering_from_order.view.lkml"
 include: "/**/global_filters_and_parameters.view.lkml"
 
 explore: reordering_from_order {

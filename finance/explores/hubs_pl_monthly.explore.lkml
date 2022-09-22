@@ -1,7 +1,6 @@
-include: "/views/**/*.view"
-include: "/**/*.view"
-include: "/**/*.explore"
-
+include: "/**/hub_pl_monthly.view"
+include: "/**/hubs_ct.view"
+include: "/**/global_filters_and_parameters.view"
 
 explore: hubs_pl_monthly {
   label: "Hubs P&Ls Monthly"
