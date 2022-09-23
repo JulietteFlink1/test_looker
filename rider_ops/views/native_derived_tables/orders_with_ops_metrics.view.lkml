@@ -236,7 +236,7 @@ view: orders_with_ops_metrics {
   measure: avg_delivery_distance_km {
     group_label: "> Operations / Logistics"
     label: "AVG Delivery Distance (km)"
-    description: "Average distance between hub and customer dropoff (most direct path / straight line)"
+    description: "Average distance between hub and customer dropoff in kilometers(most direct path / straight line). For stacked orders, it is the average distance from previous customer."
     value_format_name: decimal_2
     type: average
   }
