@@ -522,6 +522,14 @@ view: orders {
     sql: ${TABLE}.riding_to_customer_time_minutes ;;
   }
 
+  dimension: riding_hub_to_customer_time_minutes {
+    group_label: "* Operations / Logistics *"
+    description: "The time for a rider to cycle from the hub to the customer. No matter the stacking sequence, it captures the total time from hub to customer."
+    type: number
+    sql: ${TABLE}.riding_to_customer_time_minutes ;;
+  }
+
+
   dimension: riding_to_hub_time_minutes {
     label: "Riding To Hub Time (min)"
     description: "The time for a rider to cycle from the customer back to the hub. Set to NULL for not-final stacked orders."
@@ -2156,7 +2164,7 @@ view: orders {
     description: "The mean absolute error between actual riding to customer time and estimated riding to customer time"
     hidden:  no
     type: average
-    sql:  abs(${riding_to_customer_time_minutes} - ${estimated_riding_time_minutes});;
+    sql:  abs(${riding_hub_to_customer_time_minutes} - ${estimated_riding_time_minutes});;
     value_format_name: decimal_1
   }
 

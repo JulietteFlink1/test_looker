@@ -95,7 +95,7 @@ explore: daily_hub_staff_events {
   join: employee_level_kpis {
     view_label: "7 Employee Attributes"
     fields: [ employee_level_kpis.number_of_worked_hours
-            , employee_level_kpis.number_of_scheduled_hours
+            , employee_level_kpis.number_of_assigned_hours
             , employee_level_kpis.number_of_no_show_hours]
     sql_on: cast(${employee_level_kpis.staff_number} as string)=${daily_hub_staff_events.quinyx_badge_number}
       and ${employee_level_kpis.shift_date}=${daily_hub_staff_events.event_timestamp_date}
@@ -116,8 +116,10 @@ explore: daily_hub_staff_events {
     view_label: "9 Event: Violation Generated" ##to unhide change the label to: Event: Violation Generated
     fields: [daily_violations_aggregates.violated_event_name , daily_violations_aggregates.number_of_violations]
     sql_on: ${daily_hub_staff_events.event_text} = ${daily_violations_aggregates.violated_event_name}
-          and {% condition global_filters_and_parameters.datasource_filter %} ${daily_violations_aggregates.event_date} {% endcondition %}
-          and ${daily_violations_aggregates.domain}='hub staff';;
+          and ${daily_hub_staff_events.event_date}=${daily_violations_aggregates.event_date}
+          and ${daily_violations_aggregates.domain}='hub staff'
+          and {% condition global_filters_and_parameters.datasource_filter %}
+            ${daily_violations_aggregates.event_date} {% endcondition %};;
     type: left_outer
     relationship: many_to_many
   }

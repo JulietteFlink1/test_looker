@@ -139,9 +139,11 @@ join: daily_violations_aggregates {
   view_label: "Event: Violation Generated" ##to unhide change the label to: Event: Violation Generated
   fields: [daily_violations_aggregates.violated_event_name , daily_violations_aggregates.number_of_violations]
   sql_on: ${daily_events.event_name_camel_case} = ${daily_violations_aggregates.violated_event_name}
-          and {% condition global_filters_and_parameters.datasource_filter %} ${daily_violations_aggregates.event_date} {% endcondition %}
+          and ${daily_events.event_date}=${daily_violations_aggregates.event_date}
           and ${daily_events.platform} = ${daily_violations_aggregates.platform}
-          and ${daily_violations_aggregates.domain}="consumer";;
+          and ${daily_violations_aggregates.domain}="consumer"
+          and {% condition global_filters_and_parameters.datasource_filter %}
+            ${daily_violations_aggregates.event_date} {% endcondition %};;
   type: left_outer
   relationship: many_to_many
 }
