@@ -1,4 +1,3 @@
-
 view: advanced_supplier_matching {
   sql_table_name: `flink-data-dev.dbt_astueber.advanced_supplier_matching`
     ;;
@@ -79,11 +78,13 @@ view: advanced_supplier_matching {
 
   dimension: flink_buyer_id {
     type: string
+    description: "The buyer ID of Flink as defined in ERP/Lexbizz"
     sql: ${TABLE}.flink_buyer_id ;;
   }
 
   dimension: flink_hq_gln {
     type: string
+    description: "The GLN location code of the Flink HQ as defined in ERP/Lexbizz"
     sql: ${TABLE}.flink_hq_gln ;;
   }
 
@@ -97,6 +98,12 @@ view: advanced_supplier_matching {
     type: string
     description: "Code of a hub identical to back-end source tables."
     sql: ${TABLE}.hub_code ;;
+  }
+
+  dimension: inbound_matched_on {
+    type: string
+    description: "Buckets, that define, which logic was applied to match Purchase Order/DESADV with Inbounds"
+    sql: ${TABLE}.inbound_matched_on ;;
   }
 
   dimension_group: inbounded {
@@ -126,6 +133,36 @@ view: advanced_supplier_matching {
     sql: ${TABLE}.internal_sku_array ;;
   }
 
+  dimension: is_desadv_inbounded_in_full {
+    type: yesno
+    description: "This boolean field evaluates to true, if the selling units listed on the DESADV exactly match the inbounded units"
+    sql: ${TABLE}.is_desadv_inbounded_in_full ;;
+  }
+
+  dimension: is_desadv_inbounded_in_full_limited {
+    type: yesno
+    description: "This boolean field evaluates to true, if the inbounded quantity exactly matches or exceeds the  selling units listed on the DESADV"
+    sql: ${TABLE}.is_desadv_inbounded_in_full_limited ;;
+  }
+
+  dimension: is_desadv_inbounded_overdelivery {
+    type: yesno
+    description: "This boolean field evaluates to true, if the inbounded quantity is higher than the selling units listed on the DESADV"
+    sql: ${TABLE}.is_desadv_inbounded_overdelivery ;;
+  }
+
+  dimension: is_desadv_inbounded_underdelivery {
+    type: yesno
+    description: "This boolean field evaluates to true, if the inbounded quantity is lower than the selling units listed on the DESADV"
+    sql: ${TABLE}.is_desadv_inbounded_underdelivery ;;
+  }
+
+  dimension: is_desadv_unfulfilled {
+    type: yesno
+    description: "This boolean field evaluates to true, if the selling units on the DESADV are greater than 0 and not NULL, but no matching inbounded quantity was found"
+    sql: ${TABLE}.is_desadv_unfulfilled ;;
+  }
+
   dimension: is_double_parent_sku {
     type: yesno
     description: "This field indicates, if there are 2 or more parent_skus within the internal_sku_array, that is provided in the raw DESADV data"
@@ -144,22 +181,16 @@ view: advanced_supplier_matching {
     sql: ${TABLE}.is_matched_on_too_early_date ;;
   }
 
-  dimension: is_matched_on_too_early_date_different_units {
-    type: yesno
-    description: "Flag that indicates if it was inbounded early and the units inbounded were different"
-    sql: ${TABLE}.is_matched_on_too_early_date_different_units ;;
-  }
-
   dimension: is_matched_on_too_late_date {
     type: yesno
     description: "Flag that indicates if it was inbounded late and the units inbounded were the same"
     sql: ${TABLE}.is_matched_on_too_late_date ;;
   }
 
-  dimension: is_matched_on_too_late_date_different_units {
+  dimension: is_not_fulfilled_purchase_order {
     type: yesno
-    description: "Flag that indicates if it was inbounded late and the units inbounded were different"
-    sql: ${TABLE}.is_matched_on_too_late_date_different_units ;;
+    description: "This boolean field evaluates to true, if we expected a delivery defined as a positive selling unit on a purchase order, but did not receive the item as listed on the DESADV"
+    sql: ${TABLE}.is_not_fulfilled_purchase_order ;;
   }
 
   dimension: is_po_delivered_on_promised_delivery_date {
@@ -170,43 +201,86 @@ view: advanced_supplier_matching {
 
   dimension: is_po_delivered_too_early {
     type: yesno
-    description: "This boolean indicates, if the purchase orders promised delivery date is the same as the delivery date according to the matched DESADV"
+    description: "This field indicates, that the actual delivery happend after the promised delivery date, that is stated on the purchase order document"
     sql: ${TABLE}.is_po_delivered_too_early ;;
-  }
-
-  dimension: number_of_days_delivered_too_early {
-    type: number
-    sql: ${TABLE}.number_of_days_delivered_too_early ;;
   }
 
   dimension: is_po_delivered_too_late {
     type: yesno
-    description: "This boolean indicates, if the purchase orders promised delivery date is the same as the delivery date according to the matched DESADV"
+    description: "This field indicates, that the actual delivery happend before the promised delivery date, that is stated on the purchase order document"
     sql: ${TABLE}.is_po_delivered_too_late ;;
   }
 
-
-
-
-  dimension: number_of_days_delivered_too_late {
-    type: number
-    sql: ${TABLE}.number_of_days_delivered_too_late ;;
+  dimension: is_po_desadv_quantity_in_full {
+    type: yesno
+    description: "This boolean field evaluates to true, if the selling quantities on the purchase order and the matched DESADV are exactly the same"
+    sql: ${TABLE}.is_po_desadv_quantity_in_full ;;
   }
 
-  dimension: number_of_days_inbounded_too_early {
-    type: number
-    sql: ${TABLE}.number_of_days_inbounded_too_early ;;
+  dimension: is_po_desadv_quantity_in_full_limited {
+    type: yesno
+    description: "This boolean field evaluates to true, if the selling quantities on the purchase order and the matched DESADV are exactly the same or if the DESADV has a higher quantity"
+    sql: ${TABLE}.is_po_desadv_quantity_in_full_limited ;;
   }
 
-  dimension: number_of_days_inbounded_too_late {
-    type: number
-    sql: ${TABLE}.number_of_days_inbounded_too_late ;;
+  dimension: is_po_desadv_quantity_overdelivery {
+    type: yesno
+    description: "This boolean field evaluates to true, if the selling quantities on the DESADV are higher than the one on the matched purchase order"
+    sql: ${TABLE}.is_po_desadv_quantity_overdelivery ;;
+  }
+
+  dimension: is_po_desadv_quantity_underdelivery {
+    type: yesno
+    description: "This boolean field evaluates to true, if the selling quantities on the DESADV are lower than the one on the matched purchase order but if they are not NULL"
+    sql: ${TABLE}.is_po_desadv_quantity_underdelivery ;;
+  }
+
+  dimension: is_purchase_order_inbounded_in_full {
+    type: yesno
+    description: "This boolean field evaluates to true, if the selling units listed on the Purchase Order exactly match the inbounded units"
+    sql: ${TABLE}.is_purchase_order_inbounded_in_full ;;
+  }
+
+  dimension: is_purchase_order_inbounded_in_full_limited {
+    type: yesno
+    description: "This boolean field evaluates to true, if the inbounded quantity exactly matches or exceeds the  selling units listed on the Purchase Order"
+    sql: ${TABLE}.is_purchase_order_inbounded_in_full_limited ;;
+  }
+
+  dimension: is_purchase_order_inbounded_overdelivery {
+    type: yesno
+    description: "This boolean field evaluates to true, if the inbounded quantity is higher than the selling units listed on the Purchase Order"
+    sql: ${TABLE}.is_purchase_order_inbounded_overdelivery ;;
+  }
+
+  dimension: is_purchase_order_inbounded_underdelivery {
+    type: yesno
+    description: "This boolean field evaluates to true, if the inbounded quantity is lower than the selling units listed on the Purchase Order"
+    sql: ${TABLE}.is_purchase_order_inbounded_underdelivery ;;
+  }
+
+  dimension: is_purchase_order_unfulfilled {
+    type: yesno
+    description: "This boolean field evaluates to true, if the selling units on the Purchase Order are greater than 0 and not NULL, but no matching inbounded quantity was found"
+    sql: ${TABLE}.is_purchase_order_unfulfilled ;;
+  }
+
+  dimension: is_quality_issue {
+    type: yesno
+    description: "This boolean field evaluates to true, if an inbound had also corrections with the reasons delivery-damaged or delivery-expired"
+    sql: ${TABLE}.is_quality_issue ;;
   }
 
   dimension: is_underdelivery {
     type: yesno
     description: "Flag that indicates if it was not inbounded, meaning that we have it on PO/DESADVs but was never received"
     sql: ${TABLE}.is_underdelivery ;;
+  }
+
+  dimension: is_unplanned_delivery {
+    type: yesno
+    description: "This boolean field evaluates to true, if an item is only listed on the DESADV but not on the matched purchase order"
+    sql: ${TABLE}.is_unplanned_delivery ;;
   }
 
   dimension: is_unplanned_inbound {
@@ -278,6 +352,48 @@ view: advanced_supplier_matching {
     sql: ${TABLE}.min_open_order_lifetime ;;
   }
 
+  dimension: number_of_days_delivered_too_early {
+    type: number
+    description: "This field defines the difference in days between the delivery date according to the DESADV and the promised delivery date of the purchase order. This field is only calculated, when there is a too early delivery"
+    sql: ${TABLE}.number_of_days_delivered_too_early ;;
+  }
+
+  dimension: number_of_days_delivered_too_late {
+    type: number
+    description: "This field defines the difference in days between the delivery date according to the DESADV and the promised delivery date of the purchase order. This field is only calculated, when there is a too late delivery"
+    sql: ${TABLE}.number_of_days_delivered_too_late ;;
+  }
+
+  dimension: number_of_days_inbounded_too_early {
+    type: number
+    description: "This field defines the difference in days between the inbounded date and the estimated delivery date according to the DESADV (if present) or the promised delivery date of the purchase order. This field is only calculated, when there is a too early inbound"
+    sql: ${TABLE}.number_of_days_inbounded_too_early ;;
+  }
+
+  dimension: number_of_days_inbounded_too_late {
+    type: number
+    description: "This field defines the difference in days between the inbounded date and the estimated delivery date according to the DESADV (if present) or the promised delivery date of the purchase order. This field is only calculated, when there is a too late inbound"
+    sql: ${TABLE}.number_of_days_inbounded_too_late ;;
+  }
+
+  dimension: number_of_delivery_damaged_quality_issues {
+    type: number
+    description: "This field shows the number of item quantities with stock change reason damaged at delivery"
+    sql: ${TABLE}.number_of_delivery_damaged_quality_issues ;;
+  }
+
+  dimension: number_of_delivery_expired_quality_issues {
+    type: number
+    description: "This field shows the number of item quantities with stock change reason expired at delivery"
+    sql: ${TABLE}.number_of_delivery_expired_quality_issues ;;
+  }
+
+  dimension: number_of_quality_issues_delivery {
+    type: number
+    description: "This field shows the number delivery issues (delivery-damaged and delivery-expired) for items, that have an inbound"
+    sql: ${TABLE}.number_of_quality_issues_delivery ;;
+  }
+
   dimension_group: order {
     type: time
     description: "The date when we placed an order to our suppliers."
@@ -330,13 +446,13 @@ view: advanced_supplier_matching {
 
   dimension: parent_sku_desadv {
     type: string
-    description: "The Parent SKU of a product. This groups several child SKUs that belongs to the same replenishment substitute group."
+    description: "The Parent SKU of a product. This groups several child SKUs that belongs to the same replenishment substitute group. (only defined, if the DESADV exists)"
     sql: ${TABLE}.parent_sku_desadv ;;
   }
 
   dimension: parent_sku_purchase_order {
     type: string
-    description: "The Parent SKU of a product. This groups several child SKUs that belongs to the same replenishment substitute group."
+    description: "The Parent SKU of a product. This groups several child SKUs that belongs to the same replenishment substitute group. (only defined, if the purchase order exists)"
     sql: ${TABLE}.parent_sku_purchase_order ;;
   }
 
@@ -437,21 +553,6 @@ view: advanced_supplier_matching {
     sql: ${TABLE}.total_quantity ;;
   }
 
-  dimension: is_po_desadv_quantity_in_full {
-    type: yesno
-    sql: ${TABLE}.is_po_desadv_quantity_in_full ;;
-  }
-
-  dimension: is_po_desadv_quantity_in_full_limited {
-    type: yesno
-    sql: ${TABLE}.is_po_desadv_quantity_in_full_limited ;;
-  }
-
-  dimension: quantity_filled_po_to_desadv {
-    type: number
-    sql: ${TABLE}.quantity_filled_po_to_desadv ;;
-  }
-
   dimension: total_quantity_desadv {
     type: number
     description: "This field shows the number of selling units of a product, that have been delivered/ordered (DESADV)"
@@ -475,116 +576,6 @@ view: advanced_supplier_matching {
     description: "The identifier of a warehouse according to ERP. Usually, 1 warehouse delviery to exactly 1 hub."
     sql: ${TABLE}.warehouse_number ;;
   }
-
-  dimension: is_po_desadv_quantity_overdelivery {
-    type: yesno
-    sql: ${TABLE}.is_po_desadv_quantity_overdelivery ;;
-  }
-
-  dimension: is_po_desadv_quantity_underdelivery {
-    type: yesno
-    sql: ${TABLE}.is_po_desadv_quantity_underdelivery ;;
-  }
-
-  dimension: is_unplanned_delivery {
-    type: yesno
-    sql: ${TABLE}.is_unplanned_delivery ;;
-  }
-
-  dimension: is_not_fulfilled_purchase_order {
-    type: yesno
-    sql: ${TABLE}.is_not_fulfilled_purchase_order ;;
-  }
-
-
-
-  dimension: is_desadv_inbounded_in_full {
-    type: yesno
-    sql: ${TABLE}.is_desadv_inbounded_in_full ;;
-  }
-  dimension: is_desadv_inbounded_in_full_limited {
-    type: yesno
-    sql: ${TABLE}.is_desadv_inbounded_in_full_limited ;;
-  }
-  dimension: is_desadv_inbounded_overdelivery {
-    type: yesno
-    sql: ${TABLE}.is_desadv_inbounded_overdelivery ;;
-  }
-  dimension: is_desadv_inbounded_underdelivery {
-    type: yesno
-    sql: ${TABLE}.is_desadv_inbounded_underdelivery ;;
-  }
-
-
-  dimension: is_purchase_order_inbounded_in_full {
-    type: yesno
-    sql: ${TABLE}.is_purchase_order_inbounded_in_full ;;
-  }
-  dimension: is_purchase_order_inbounded_in_full_limited {
-    type: yesno
-    sql: ${TABLE}.is_purchase_order_inbounded_in_full_limited ;;
-  }
-  dimension: is_purchase_order_inbounded_overdelivery {
-    type: yesno
-    sql: ${TABLE}.is_purchase_order_inbounded_overdelivery ;;
-  }
-  dimension: is_purchase_order_inbounded_underdelivery {
-    type: yesno
-    sql: ${TABLE}.is_purchase_order_inbounded_underdelivery ;;
-  }
-
-
-  dimension: is_desadv_unfulfilled {
-    type: yesno
-    sql: ${TABLE}.is_desadv_unfulfilled ;;
-  }
-
-  dimension: is_purchase_order_unfulfilled {
-    type: yesno
-    sql: ${TABLE}.is_purchase_order_unfulfilled ;;
-  }
-
-
-
-
-
-
-
-
-
-
-  dimension: quality_issue_quantity {
-    type: number
-    sql: ${TABLE}.quality_issue_quantity ;;
-  }
-
-  dimension: is_quality_issue {
-    type: yesno
-    sql: ${TABLE}.is_quality_issue ;;
-  }
-
-  dimension: delivery_damaged_quality_issue_quantity {
-    type: number
-    sql: ${TABLE}.delivery_damaged_quality_issue_quantity ;;
-  }
-
-  dimension: delivery_expired_quality_issue_quantity {
-    type: number
-    sql: ${TABLE}.delivery_expired_quality_issue_quantity ;;
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   measure: count {
     type: count

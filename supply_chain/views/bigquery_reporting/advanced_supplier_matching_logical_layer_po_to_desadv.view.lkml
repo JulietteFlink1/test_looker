@@ -1283,7 +1283,7 @@ view: +advanced_supplier_matching {
     group_label: "Inbound related"
 
     type: sum
-    sql: ${delivery_damaged_quality_issue_quantity} ;;
+    sql: ${number_of_delivery_damaged_quality_issues} ;;
     value_format_name: decimal_0
   }
 
@@ -1303,7 +1303,7 @@ view: +advanced_supplier_matching {
     group_label: "Inbound related"
 
     type: sum
-    sql: ${delivery_expired_quality_issue_quantity} ;;
+    sql: ${number_of_delivery_expired_quality_issues} ;;
     value_format_name: decimal_0
   }
 
