@@ -20,19 +20,16 @@ view: orders_using_hubs {
 
   dimension: delivery_distance_m {
     group_label: "* Operations / Logistics *"
-    type: distance
-    units: meters
-    start_location_field: hub_location
-    end_location_field: customer_location
+    type: number
+    sql: ${TABLE}.delivery_distance_km/1000 ;;
+
   }
 
   dimension: delivery_distance_km {
     group_label: "* Operations / Logistics *"
-    type: distance
-    units: kilometers
-    start_location_field: hub_location
-    end_location_field: customer_location
-  }
+    type: number
+    sql: ${TABLE}.delivery_distance_km ;;
+    }
 
   dimension: delivery_distance_tier {
     group_label: "* Operations / Logistics *"
@@ -51,7 +48,7 @@ view: orders_using_hubs {
   measure: avg_delivery_distance_km {
     group_label: "* Operations / Logistics *"
     label: "AVG Delivery Distance (km)"
-    description: "Average distance between hub and customer dropoff (most direct path / straight line)"
+    description: "Average distance between hub and customer dropoff (most direct path / straight line). For stacked orders, it is the average distance from previous customer."
     hidden:  no
     type: average
     sql: ${delivery_distance_km};;
