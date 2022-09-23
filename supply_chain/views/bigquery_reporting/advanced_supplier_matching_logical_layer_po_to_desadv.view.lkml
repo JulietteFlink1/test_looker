@@ -33,7 +33,7 @@ view: +advanced_supplier_matching {
   }
 
   measure: cnt_ordered_items_puchase_order {
-    label: "# Ordered Items"
+    label: "# Ordered Items (PO)"
     description: "The number of SKUs, that have been ordered"
 
     type: count_distinct
@@ -51,7 +51,7 @@ view: +advanced_supplier_matching {
   }
 
   measure: sum_ordered_items_quantity_desadv {
-    label: "# Quantity DESADV"
+    label: "# Total Quantity (DESADV)"
 
     type: sum
     sql: ${total_quantity_desadv} ;;
@@ -1274,16 +1274,47 @@ view: +advanced_supplier_matching {
 
 
 
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  #  - - - - - - - - - -  Inbound Related
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  measure: sum_inbound_delivery_damaged {
+    label: "# Damaged quantity"
+    description: "Total amount of inbounded damaged quantities"
+    group_label: "Inbound related"
 
+    type: sum
+    sql: ${delivery_damaged_quality_issue_quantity} ;;
+    value_format_name: decimal_0
+  }
 
+  measure: pct_inbound_delivery_damaged {
+    label: "% Damaged quantity"
+    description: "Relative amount of inbounded damaged quantities compared to all inbounded quantities "
+    group_label: "Inbound related"
 
+    type: number
+    sql: safe_divide(${sum_inbound_delivery_damaged}, ${sum_items_inbounded}) ;;
+    value_format_name: percent_0
+  }
 
+  measure: sum_inbound_delivery_expired {
+    label: "# Expired quantity"
+    description: "Relative amount of inbounded expired quantities"
+    group_label: "Inbound related"
 
+    type: sum
+    sql: ${delivery_expired_quality_issue_quantity} ;;
+    value_format_name: decimal_0
+  }
 
+  measure: pct_inbound_delivery_expired {
+    label: "% Expired quantity"
+    description: "Relative amount of inbounded expired quantities compared to all inbounded quantities"
+    group_label: "Inbound related"
 
-
-
-
-
+    type: number
+    sql: safe_divide(${sum_inbound_delivery_expired}, ${sum_items_inbounded}) ;;
+    value_format_name: percent_0
+  }
 
 }

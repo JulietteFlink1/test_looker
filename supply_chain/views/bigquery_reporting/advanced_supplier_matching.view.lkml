@@ -563,6 +563,22 @@ view: advanced_supplier_matching {
     sql: ${TABLE}.is_quality_issue ;;
   }
 
+  dimension: delivery_damaged_quality_issue_quantity {
+    type: number
+    sql: ${TABLE}.delivery_damaged_quality_issue_quantity ;;
+  }
+
+  dimension: delivery_expired_quality_issue_quantity {
+    type: number
+    sql: ${TABLE}.delivery_expired_quality_issue_quantity ;;
+  }
+
+
+
+
+
+
+
 
 
 
