@@ -19,7 +19,7 @@ view: employee_level_kpis {
 
   dimension: position_name {
     type: string
-    label: "Position Name"
+    label: "Worked Position Name"
     description: "Based on Quinyx assinged shift type (null when an employee is not assgined any shift)"
     sql: ${TABLE}.position_name ;;
   }
@@ -54,6 +54,7 @@ view: employee_level_kpis {
     ]
     convert_tz: no
     datatype: date
+    hidden: yes
     sql: ${TABLE}.shift_date ;;
   }
 
@@ -61,6 +62,7 @@ view: employee_level_kpis {
     type:  number
     label: "Staff Number"
     description: "Based on Quinyx badgeNo field (Badge No)"
+    hidden: yes
     sql: ${TABLE}.staff_number ;;
     value_format: "0"
   }
@@ -134,6 +136,7 @@ view: employee_level_kpis {
 
   dimension: hub_code {
     type: string
+    hidden: yes
     sql: ${TABLE}.hub_code ;;
   }
 

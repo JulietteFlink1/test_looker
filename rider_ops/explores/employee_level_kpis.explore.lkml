@@ -1,4 +1,5 @@
 include: "/**/employee_level_kpis.view.lkml"
+include: "/**/employee_level_info.view.lkml"
 include: "/**/hub_fleet_date_grid.view.lkml"
 include: "/**/hubs_ct.view"
 
@@ -12,8 +13,8 @@ include: "/**/hubs_ct.view"
   explore: hub_fleet_date_grid {
     from: hub_fleet_date_grid
     group_label: "Rider Ops"
-    view_label: "Employee Date Grid"
-    label: "Employee Date Grid"
+    view_label: "Date Grid"
+    label: "Employee Level KPIs"
     hidden: no
 
   # always_filter: {
@@ -29,19 +30,35 @@ include: "/**/hubs_ct.view"
       from: employee_level_kpis
       view_label: "Employee Level KPIs"
       sql_on: ${hub_fleet_date_grid.employment_id} = ${employee_level_kpis.employment_id}
-        and ${hub_fleet_date_grid.shift_date} = ${employee_level_kpis.shift_date}
-        -- and ${hub_fleet_date_grid.hub_code} = ${employee_level_kpis.hub_code}
-        ;;
+        and ${hub_fleet_date_grid.shift_date} = ${employee_level_kpis.shift_date};;
       relationship: one_to_one
       type: left_outer
     }
 
-  join: hubs {
+    join: employee_level_info {
+      from: employee_level_info
+      view_label: "Employee Level Info"
+      sql_on: ${hub_fleet_date_grid.employment_id} = ${employee_level_info.employment_id};;
+      relationship: one_to_one
+      type: left_outer
+    }
+
+  join: worked_hub {
     from: hubs_ct
+    view_label: "Worked Hub"
     sql_on:
-    lower(${employee_level_kpis.hub_code}) = lower(${hubs.hub_code}) ;;
+    lower(${employee_level_kpis.hub_code}) = lower(${worked_hub.hub_code}) ;;
     relationship: many_to_one
     type: left_outer
   }
+
+    join: home_hub {
+      from: hubs_ct
+      view_label: "Home Hub"
+      sql_on:
+          lower(${hub_fleet_date_grid.hub_code}) = lower(${home_hub.hub_code}) ;;
+      relationship: many_to_one
+      type: left_outer
+    }
 
 }

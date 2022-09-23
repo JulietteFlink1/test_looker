@@ -74,21 +74,26 @@ view: hub_fleet_date_grid {
 
   dimension: table_uuid {
     type: string
+    hidden: yes
     sql: ${TABLE}.table_uuid ;;
   }
 
   dimension: position_name {
     type: string
+    label: "Assigned Position Name"
+    description: "Based on Quinyx Assinged Position (Not based on worked position)"
     sql: ${TABLE}.position_name ;;
   }
 
   dimension: hub_code {
     type: string
+    hidden: yes
     sql: ${TABLE}.hub_code ;;
   }
 
   dimension: country_iso {
     type: string
+    hidden: yes
     sql: ${TABLE}.country_iso ;;
   }
 
