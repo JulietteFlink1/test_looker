@@ -553,7 +553,8 @@ view: employee_level_kpis {
   measure: number_of_scheduled_hours {
     group_label: "* Shift related *"
     type: sum
-    label: "# Scheduled Hours"
+    label: "# Assigned Hours"
+    description: "All shift hours that are assigned to an employee (before punching) including No show Hours"
     sql: ${TABLE}.number_of_planned_minutes/60 ;;
     value_format_name: decimal_1
   }
