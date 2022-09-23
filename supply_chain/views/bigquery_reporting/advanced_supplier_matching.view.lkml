@@ -185,6 +185,9 @@ view: advanced_supplier_matching {
     sql: ${TABLE}.is_po_delivered_too_late ;;
   }
 
+
+
+
   dimension: number_of_days_delivered_too_late {
     type: number
     sql: ${TABLE}.number_of_days_delivered_too_late ;;

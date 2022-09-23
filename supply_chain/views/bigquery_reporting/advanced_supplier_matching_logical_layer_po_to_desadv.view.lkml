@@ -880,6 +880,331 @@ view: +advanced_supplier_matching {
 
 
 
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  #  - - - - - - - - - -   PO >> Inbound
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  measure: cnt_po_inbounded_items_on_time {
+    label: "# On Time delivery (PO > Inbound)"
+    description: "Total of on time delivered order lines (PO > Inbound)"
+    group_label: "PO >> Inbound | On Time KPIs"
+
+    type: count_distinct
+    sql: ${purchase_order_order_lineitems} ;;
+    filters: [is_matched_on_same_date: "yes"]
+    value_format_name: decimal_0
+  }
+
+  measure: pct_po_inbounded_items_on_time {
+    label: "% On Time delivery (PO > Inbound)"
+    description: "Share of on time delivered order lines (PO > Inbound) compared to all order lines "
+    group_label: "PO >> Inbound | On Time KPIs"
+
+    type: number
+    sql: safe_divide(${cnt_po_inbounded_items_on_time}, ${cnt_ordered_items_puchase_order}) ;;
+    value_format_name: percent_0
+  }
+
+  measure: cnt_po_inbounded_items_too_early {
+    label: "# Too early delivery (PO > Inbound)"
+    description: "Number of too early delivered order lines (PO > Inbound)"
+    group_label: "PO >> Inbound | On Time KPIs"
+
+    type: count_distinct
+    sql: ${purchase_order_order_lineitems} ;;
+    filters: [is_matched_on_too_early_date: "yes"]
+    value_format_name: decimal_0
+  }
+
+  measure: pct_po_inbounded_items_too_early {
+    label: "% Too early delivery (PO > Inbound)"
+    description: "Share of too early delivered order lines (PO > Inbound) compared to all order lines"
+    group_label: "PO >> Inbound | On Time KPIs"
+
+    type: number
+    sql: safe_divide(${cnt_po_inbounded_items_too_early}, ${cnt_ordered_items_puchase_order}) ;;
+    value_format_name: percent_0
+  }
+
+  measure: avg_days_po_inbounded_items_too_early {
+    label: "AVG days of early delivery (PO > Inbound)"
+    description: "Average number of days order lines have been delivered early (PO > Inbound) per early delivered ordered lines"
+    group_label: "PO >> Inbound | On Time KPIs"
+
+    type: average
+    sql: ${number_of_days_inbounded_too_early};;
+    value_format_name: decimal_1
+  }
+
+  measure: cnt_po_inbounded_items_too_late {
+    label: "# Too late delivery (PO > Inbound)"
+    description: "Number of too late delivered order lines (PO > Inbound)"
+    group_label: "PO >> Inbound | On Time KPIs"
+
+    type: count_distinct
+    sql: ${purchase_order_order_lineitems} ;;
+    filters: [is_matched_on_too_early_date: "yes"]
+  value_format_name: decimal_0
+  }
+
+  measure: pct_po_inbounded_items_too_late {
+    label: "% Too late delivery (PO > Inbound)"
+    description: "Share of too late delivered order lines (PO > Inbound) compared to all order lines "
+    group_label: "PO >> Inbound | On Time KPIs"
+
+    type: number
+    sql: safe_divide(${cnt_po_inbounded_items_too_late}, ${cnt_ordered_items_puchase_order});;
+    value_format_name: percent_0
+  }
+
+  measure: avg_days_po_inbounded_items_too_late {
+    label: "AVG days of late delivery (PO > Inbound)"
+    description: "Average number of days order lines have been delivered late (PO > Inbound) per late delivered ordered lines"
+    group_label: "PO >> Inbound | On Time KPIs"
+
+    type: average
+    sql: ${number_of_days_delivered_too_late};;
+    value_format_name: decimal_1
+  }
+
+
+
+# ----------------     In Full KPIs    ----------------
+measure: cnt_po_inbounded_in_full {
+  group_label: "PO >> Inbound | In Full KPIs"
+
+  type: count_distinct
+  sql: ;;
+value_format_name: decimal_0
+}
+
+measure: pct_po_inbounded_in_full {
+  group_label: "PO >> Inbound | In Full KPIs"
+
+  type: number
+  sql: ;;
+value_format_name: percent_0
+}
+
+measure: cnt_po_inbounded_in_full_lim {
+  group_label: "PO >> Inbound | In Full KPIs"
+
+  type: count_distinct
+  sql: ;;
+value_format_name: decimal_0
+}
+
+measure: pct_po_inbounded_in_full_lim {
+  group_label: "PO >> Inbound | In Full KPIs"
+
+  type: number
+  sql: ;;
+value_format_name: percent_0
+}
+
+measure: sum_po_quantity_inbounded {
+  group_label: "PO >> Inbound | In Full KPIs"
+
+  type: sum
+  sql: ;;
+value_format_name: decimal_0
+}
+
+measure: pct_po_fill_rate {
+  group_label: "PO >> Inbound | In Full KPIs"
+
+  type: number
+  sql: ;;
+value_format_name: percent_0
+}
+
+measure: sum_po_quantity_inbounded_lim {
+  group_label: "PO >> Inbound | In Full KPIs"
+
+  type: sum
+  sql: ;;
+value_format_name: decimal_0
+}
+
+measure: pct_po_fill_rate_lim {
+  group_label: "PO >> Inbound | In Full KPIs"
+
+  type: number
+  sql: ;;
+value_format_name: percent_0
+}
+
+measure: cnt_po_inbounded_overdelivery {
+  group_label: "PO >> Inbound | In Full KPIs"
+
+  type: count_distinct
+  sql: ;;
+value_format_name: decimal_0
+}
+
+measure: pct_po_inbounded_overdelivery {
+  group_label: "PO >> Inbound | In Full KPIs"
+
+  type: number
+  sql: ;;
+value_format_name: percent_0
+}
+
+measure: avg_po_inbounded_quantity_overdelivery {
+  group_label: "PO >> Inbound | In Full KPIs"
+
+  type: average
+  sql: ;;
+value_format_name: decimal_1
+}
+
+measure: cnt_po_inbounded_underdelivery {
+  group_label: "PO >> Inbound | In Full KPIs"
+
+  type: count_distinct
+  sql: ;;
+value_format_name: decimal_0
+}
+
+measure: pct_po_inbounded_underdelivery {
+  group_label: "PO >> Inbound | In Full KPIs"
+
+  type: number
+  sql: ;;
+value_format_name: percent_0
+}
+
+measure: avg_po_inbounded_quantity_underdelivery {
+  group_label: "PO >> Inbound | In Full KPIs"
+
+  type: average
+  sql: ;;
+value_format_name: decimal_1
+}
+
+
+# ----------------     IQ & OTIFIQ    ----------------
+measure: sum_po_items_inbounded_in_quality {
+  group_label: "PO >> Inbound | OTIFIQ"
+
+  type: sum
+  sql: ;;
+value_format_name: decimal_0
+}
+
+measure:  pct_po_items_inbounded_in_quality {
+  group_label: "PO >> Inbound | OTIFIQ"
+
+  type: number
+  sql: ;;
+value_format_name: percent_0
+}
+
+measure: sum_po_otifiq_relaxed {
+  group_label: "PO >> Inbound | OTIFIQ"
+
+  type: sum
+  sql: ;;
+value_format_name: decimal_0
+}
+
+measure: pct_po_otifiq_relaxed {
+  group_label: "PO >> Inbound | OTIFIQ"
+
+  type: number
+  sql: ;;
+value_format_name: percent_0
+}
+
+measure: cnt_po_otifiq_stric {
+  group_label: "PO >> Inbound | OTIFIQ"
+
+  type: count_distinct
+  sql: ;;
+value_format_name: decimal_0
+}
+
+measure: pct_po_otifiq_stric {
+  group_label: "PO >> Inbound | OTIFIQ"
+
+  type: number
+  sql: ;;
+value_format_name: percent_0
+}
+
+measure: cnt_po_otifiq_stric_limited {
+  group_label: "PO >> Inbound | OTIFIQ"
+
+  type: count_distinct
+  sql: ;;
+value_format_name: decimal_0
+}
+
+measure: pct_po_otifiq_stric_limited {
+  group_label: "PO >> Inbound | OTIFIQ"
+
+  type: number
+  sql: ;;
+value_format_name: percent_0
+}
+
+
+# ----------------     Not-Fulfilled or Unplanned    ----------------
+measure: cnt_po_ordered_items_unfulfilled {
+  group_label: "PO >> Inbound | Unplanned or Not Fulfilled"
+
+  type: count_distinct
+  sql: ;;
+value_format_name: decimal_0
+}
+
+measure: pct_po_ordered_items_unfulfilled {
+  group_label: "PO >> Inbound | Unplanned or Not Fulfilled"
+
+  type: number
+  sql: ;;
+value_format_name: percent_0
+}
+
+measure: cnt_po_items_unplanned {
+  group_label: "PO >> Inbound | Unplanned or Not Fulfilled"
+
+  type: count_distinct
+  sql: ;;
+value_format_name: decimal_0
+}
+
+measure: pct_po_items_unplanned {
+  group_label: "PO >> Inbound | Unplanned or Not Fulfilled"
+
+  type: number
+  sql: ;;
+value_format_name: percent_0
+}
+
+measure: sum_po_items_quantity_unplanned {
+  group_label: "PO >> Inbound | Unplanned or Not Fulfilled"
+
+  type: sum
+  sql: ;;
+value_format_name: decimal_0
+}
+
+measure: pct_po_items_quantity_unplanned {
+  group_label: "PO >> Inbound | Unplanned or Not Fulfilled"
+
+  type: number
+  sql: ;;
+value_format_name: percent_0
+}
+
+
+
+
+
+
+
+
+
 
 
 
