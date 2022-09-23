@@ -14,6 +14,12 @@ view: +advanced_supplier_matching {
     hidden: yes
   }
 
+  dimension: is_desadv_row_exists {
+    type: yesno
+    sql: ${parent_sku_desadv} is not null ;;
+    hidden: yes
+  }
+
   dimension: purchase_order_order_lineitems {
     type: string
     sql: concat(${parent_sku_purchase_order}, ${table_uuid}) ;;
@@ -451,9 +457,12 @@ view: +advanced_supplier_matching {
 
 
 
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  #  - - - - - - - - - -   DESADV >> Inbound
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
-# ----------------     On Time KPIs    ----------------
+  # ----------------     On Time KPIs    ----------------
 
   measure: cnt_desadv_inbounded_items_on_time {
     label: "# On Time delivery (DESADV > Inbound)"
@@ -472,7 +481,263 @@ view: +advanced_supplier_matching {
     group_label: "DESADV >> Inbound | On Time KPIs"
 
     type: number
-    sql: ${cnt_desadv_inbounded_items_on_time}, ${cnt_ordered_items_desadv} ;;
+    sql: safe_divide(${cnt_desadv_inbounded_items_on_time}, ${cnt_ordered_items_desadv}) ;;
+    value_format_name: percent_0
   }
+
+  measure: cnt_desadv_inbounded_items_too_early {
+    label: "# Too early delivery (DESADV > Inbound)"
+    description: "Number of too early delivered DESADV lines (DESADV > Inbound)"
+    group_label: "DESADV >> Inbound | On Time KPIs"
+
+    type: count_distinct
+    sql:  ${desadv_order_lineitems};;
+    filters: [is_matched_on_too_early_date: "yes"]
+    value_format_name: decimal_0
+  }
+
+  measure: pct_desadv_inbounded_items_too_early {
+    label: "% Too early delivery (DESADV > Inbound)"
+    description: "Share of too early delivered DESADV lines (DESADV > Inbound) compared to all DESADV lines "
+    group_label: "DESADV >> Inbound | On Time KPIs"
+
+    type: number
+    sql: safe_divide(${cnt_desadv_inbounded_items_too_early}, ${cnt_ordered_items_desadv}) ;;
+    value_format_name: percent_0
+  }
+
+  measure: avg_days_desadv_inbounded_items_too_early {
+    label: "AVG days of early delivery (DESADV > Inbound)"
+    description: "Average number of days order lines have been delivered early (DESADV > Inbound) per early delivered ordered lines"
+    group_label: "DESADV >> Inbound | On Time KPIs"
+
+    type: average
+    sql: ${number_of_days_inbounded_too_early} ;;
+    value_format_name: decimal_1
+  }
+
+
+  measure: cnt_desadv_inbounded_items_too_late {
+    label: "# Too late delivery (DESADV > Inbound)"
+    description: "Number of too late delivered DESADV lines (DESADV > Inbound)"
+    group_label: "DESADV >> Inbound | On Time KPIs"
+
+    type: count_distinct
+    sql:  ${desadv_order_lineitems};;
+    filters: [is_matched_on_too_late_date: "yes"]
+    value_format_name: decimal_0
+  }
+
+  measure: pct_desadv_inbounded_items_too_late {
+    label: "% Too late delivery (DESADV > Inbound)"
+    description: "Share of too late delivered DESADV lines (DESADV > Inbound) compared to all DESADV lines "
+    group_label: "DESADV >> Inbound | On Time KPIs"
+
+    type: number
+    sql: safe_divide(${cnt_desadv_inbounded_items_too_late}, ${cnt_ordered_items_desadv}) ;;
+    value_format_name: percent_0
+  }
+
+  measure: avg_days_desadv_inbounded_items_too_late {
+    label: "AVG days of late delivery (DESADV > Inbound)"
+    description: "Average number of days order lines have been delivered late (DESADV > Inbound) per late delivered ordered lines"
+    group_label: "DESADV >> Inbound | On Time KPIs"
+
+    type: average
+    sql: ${number_of_days_inbounded_too_late} ;;
+    value_format_name: decimal_1
+  }
+
+
+
+  # ----------------     In Full KPIs    ----------------
+  measure: cnt_desadv_inbounded_in_full {
+    label: "# In Full delivery (DESADV > Inbound)"
+    description: "Number of in full delivered DESADV lines (DESADV > Inbound)"
+    group_label: "DESADV >> Inbound | In Full KPIs"
+
+    type: count_distinct
+    sql: ${desadv_order_lineitems} ;;
+    filters: [is_desadv_inbounded_in_full: "yes"]
+    value_format_name: decimal_0
+  }
+
+  measure: pct_desadv_inbounded_in_full {
+    label: "% In Full delivery (DESADV > Inbound)"
+    description: "Share of in full delivered DESADV lines (DESADV > Inbound) compared to all DESADV lines "
+    group_label: "DESADV >> Inbound | In Full KPIs"
+
+    type: number
+    sql: safe_divide(${cnt_desadv_inbounded_in_full}, ${cnt_ordered_items_desadv}) ;;
+    value_format_name: percent_0
+  }
+
+  measure: cnt_desadv_inbounded_in_full_lim {
+    label: "# In Full delivery lim. (DESADV > Inbound)"
+    description: "Number of in full delivered DESADV lines (DESADV > Inbound) where an overdelivery counts as an in full delivery"
+    group_label: "DESADV >> Inbound | In Full KPIs"
+
+    type: count_distinct
+    sql: ${desadv_order_lineitems} ;;
+    filters: [is_desadv_inbounded_in_full_limited: "yes"]
+    value_format_name: decimal_0
+  }
+
+  measure: pct_desadv_inbounded_in_full_lim {
+    label: "% In Full delivery lim. (DESADV > Inbound)"
+    description: "Share of in full delivered DESADV lines (DESADV > Inbound) compared to all DESADV lines, where an overdelivery counts as an in full delivery"
+    group_label: "DESADV >> Inbound | In Full KPIs"
+
+    type: number
+    sql: safe_divide(${cnt_desadv_inbounded_in_full_lim}, ${cnt_ordered_items_desadv}) ;;
+    value_format_name: percent_0
+  }
+
+  measure: sum_desadv_quantity_inbounded {
+    label: "# Quantity Inbounded (DESADV > Inbound)"
+    description: "Total amount of fullfilled quantities (DESADV > Inbound)"
+    group_label: "DESADV >> Inbound | In Full KPIs"
+
+    type: sum
+    sql: ${inbounded_quantity} ;;
+    value_format_name: decimal_0
+  }
+
+  measure: pct_desadv_fill_rate {
+    label: "% Fill Rate (DESADV > Inbound)"
+    description: "Relative amount of fullfilled quantities (DESADV > Inbound) compared to overall DESADV quantities "
+    group_label: "DESADV >> Inbound | In Full KPIs"
+
+    type: number
+    sql: safe_divide(${sum_desadv_quantity_inbounded}, ${sum_ordered_items_quantity_desadv}) ;;
+    value_format_name: percent_0
+  }
+
+  measure: sum_desadv_quantity_inbounded_lim {
+    label: "# Quantity Inbounded lim. (DESADV > Inbound)"
+    description: "Total amount of fullfilled quantities (DESADV > Inbound), where an overdelivered quantity is limited to the DESADV quantity"
+    group_label: "DESADV >> Inbound | In Full KPIs"
+
+    type: sum
+    sql: if(${inbounded_quantity} > ${total_quantity_desadv},
+            ${total_quantity_desadv},
+            ${inbounded_quantity}
+          );;
+    value_format_name: decimal_0
+  }
+
+  measure: pct_desadv_fill_rate_lim {
+    label: "% Fill Rate lim. (DESADV > Inbound)"
+    description: "Relative amount of fullfilled quantities (DESADV > Inbound) compared to overall DESADV quantities, where an overdelivered quantity is limited to the DESADV quantity"
+    group_label: "DESADV >> Inbound | In Full KPIs"
+
+    type: number
+    sql: safe_divide(${sum_desadv_quantity_inbounded_lim}, ${sum_ordered_items_quantity_desadv}) ;;
+    value_format_name: percent_0
+  }
+
+  measure: cnt_desadv_inbounded_overdelivery {
+    label: "# Overdelivered order lines (DESADV > Inbound)"
+    description: "Number of overdelivered DESADV lines (DESADV > Inbound)"
+    group_label: "DESADV >> Inbound | In Full KPIs"
+
+    type: count_distinct
+    sql: ${desadv_order_lineitems} ;;
+    filters: [is_desadv_inbounded_overdelivery: "yes"]
+    value_format_name: decimal_0
+  }
+
+  measure: pct_desadv_inbounded_overdelivery {
+    label: "% Overdelivered order lines (DESADV > Inbound)"
+    description: "Share of overdelivered DESADV lines (DESADV > Inbound) compared to all DESADV lines "
+    group_label: "DESADV >> Inbound | In Full KPIs"
+
+    type: number
+    sql: safe_divide(${cnt_desadv_inbounded_overdelivery}, ${cnt_ordered_items_desadv}) ;;
+    value_format_name: percent_0
+  }
+
+  measure: avg_desadv_inbounded_quantity_overdelivery {
+    label: "AVG Overdelivered quantity (DESADV > Inbound)"
+    description: "Average of overdelivered quantity (DESADV > Inbound) per overdelivered order line"
+    group_label: "DESADV >> Inbound | In Full KPIs"
+
+    type: average
+    sql: ${inbounded_quantity} ;;
+    filters: [is_desadv_inbounded_overdelivery: "yes"]
+    value_format_name: decimal_1
+  }
+
+  measure: cnt_desadv_inbounded_underdelivery {
+    label: "# Underdelivered order lines (DESADV > Inbound)"
+    description: "Number of underdelivered DESADV lines (DESADV > Inbound)"
+    group_label: "DESADV >> Inbound | In Full KPIs"
+
+    type: count_distinct
+    sql: ${desadv_order_lineitems} ;;
+    filters: [is_desadv_inbounded_underdelivery: "yes"]
+    value_format_name: decimal_0
+  }
+
+  measure: pct_desadv_inbounded_underdelivery {
+    label: "% Underdelivered order lines (DESADV > Inbound)"
+    description: "Share of underdelivered DESADV lines (DESADV > Inbound) compared to all DESADV lines "
+    group_label: "DESADV >> Inbound | In Full KPIs"
+
+    type: number
+    sql: safe_divide(${cnt_desadv_inbounded_underdelivery}, ${cnt_ordered_items_desadv}) ;;
+    value_format_name: percent_0
+  }
+
+  measure: avg_desadv_inbounded_quantity_underdelivery {
+    label: "AVG Underdelivered quantity (DESADV > Inbound)"
+    description: "Average of underdelivered quantity (DESADV > Inbound) per underdelivered order line"
+    group_label: "DESADV >> Inbound | In Full KPIs"
+
+    type: average
+    sql: ${inbounded_quantity} ;;
+    filters: [is_desadv_inbounded_underdelivery: "yes"]
+    value_format_name: decimal_1
+  }
+
+
+
+  # ----------------     Not-Fulfilled or Unplanned    ----------------
+  measure: cnt_desadv_ordered_items_unfulfilled {
+    label: "# Not fulfilled DESADVs (DESADV > Inbound)"
+    description: "Number of not fulfilled DESADV lines (DESADV > Inbound)"
+    group_label: "DESADV >> Inbound | Unplanned or Not Fulfilled"
+
+    type: count_distinct
+    sql: ${desadv_order_lineitems} ;;
+    filters: [is_underdelivery: "yes"]
+    value_format_name: decimal_0
+  }
+
+  measure: pct_desadv_ordered_items_unfulfilled {
+    label: "% Not fulfilled DESADVs (DESADV > Inbound)"
+    description: "Share of not fulfilled DESADV lines (DESADV > Inbound) compared to all DESADV lines"
+    group_label: "DESADV >> Inbound | Unplanned or Not Fulfilled"
+
+    type: number
+    sql: safe_divide(${cnt_desadv_ordered_items_unfulfilled}, ${cnt_ordered_items_desadv}) ;;
+    value_format_name: percent_0
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }

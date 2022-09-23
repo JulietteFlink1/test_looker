@@ -190,6 +190,16 @@ view: advanced_supplier_matching {
     sql: ${TABLE}.number_of_days_delivered_too_late ;;
   }
 
+  dimension: number_of_days_inbounded_too_early {
+    type: number
+    sql: ${TABLE}.number_of_days_inbounded_too_early ;;
+  }
+
+  dimension: number_of_days_inbounded_too_late {
+    type: number
+    sql: ${TABLE}.number_of_days_inbounded_too_late ;;
+  }
+
   dimension: is_underdelivery {
     type: yesno
     description: "Flag that indicates if it was not inbounded, meaning that we have it on PO/DESADVs but was never received"
@@ -482,6 +492,30 @@ view: advanced_supplier_matching {
     type: yesno
     sql: ${TABLE}.is_not_fulfilled_purchase_order ;;
   }
+
+
+
+  dimension: is_desadv_inbounded_in_full {
+    type: yesno
+    sql: ${TABLE}.is_desadv_inbounded_in_full ;;
+  }
+  dimension: is_desadv_inbounded_in_full_limited {
+    type: yesno
+    sql: ${TABLE}.is_desadv_inbounded_in_full_limited ;;
+  }
+  dimension: is_desadv_inbounded_overdelivery {
+    type: yesno
+    sql: ${TABLE}.is_desadv_inbounded_overdelivery ;;
+  }
+  dimension: is_desadv_inbounded_underdelivery {
+    type: yesno
+    sql: ${TABLE}.is_desadv_inbounded_underdelivery ;;
+  }
+
+
+
+
+
 
   measure: count {
     type: count
