@@ -665,10 +665,10 @@ view: orders {
 
   dimension: pre_riding_time {
     label: "Pre Riding Time (min)"
-    description: "Waiting For Picker Time + Picking Time + Rider Queuing Time"
+    description: "Withheld From Picking + Waiting For Picker Time + Picking Time + Rider Queuing Time"
     group_label: "* Operations / Logistics *"
     type: number
-    sql: ${waiting_for_picker_time} + ${rider_queuing_time} + ${picking_time_minutes};;
+    sql: ${waiting_for_picker_time} + ${rider_queuing_time} + ${picking_time_minutes} + ${withheld_from_picking_time_minutes};;
   }
 
   dimension: is_critical_delivery_time_estimate_underestimation {
