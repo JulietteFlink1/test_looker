@@ -393,7 +393,7 @@ view: employee_level_kpis {
     group_label: "* Logistics *"
     type: sum
     label: "Sum Delivery Distance (km)"
-    description: "Sum of delivery distance between hub and customer dropoff (most direct path / straight line) in kilometers. For stacked orders, it is the sum of distance from previous customer."
+    description: "Sum of delivery distance between hub and customer dropoff in kilometers (most direct path / straight line). For stacked orders, it is the sum of distance from previous customer."
     sql: ${TABLE}.sum_delivery_distance_km ;;
     value_format_name: decimal_1
   }
@@ -432,7 +432,7 @@ view: employee_level_kpis {
     group_label: "* Logistics *"
     type: number
     label: "AVG Delivery Distance (km)"
-    description: "Average distance between hub and customer dropoff (most direct path / straight line) in kilometers. For stacked orders, it is the average distance from previous customer."
+    description: "Average distance between hub and customer dropoff in kilometers(most direct path / straight line). For stacked orders, it is the average distance from previous customer."
     sql: ${sum_delivery_distance_km}/nullif(${number_of_orders_with_customer_address},0) ;;
     value_format_name: decimal_1
   }
