@@ -1,4 +1,4 @@
-include: "/views/projects/consumer_product/dynamic_delivery_eta_analysis.view.lkml"
+include: "/**/dynamic_delivery_eta_analysis.view.lkml"
 
 explore: dynamic_delivery_eta_analysis {
   hidden: yes

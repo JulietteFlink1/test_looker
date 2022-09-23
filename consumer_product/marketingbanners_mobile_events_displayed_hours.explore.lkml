@@ -1,4 +1,4 @@
-include: "/views/projects/consumer_product/marketingbanners_mobile_events_displayed_hours.view.lkml"
+include: "/**/marketingbanners_mobile_events_displayed_hours.view.lkml"
 
 explore: marketingbanners_mobile_events_displayed_hours {
   hidden: yes

@@ -1,4 +1,4 @@
-include: "/views/projects/consumer_product/voucher_api_failure_success.view.lkml"
+include: "/**/voucher_api_failure_success.view.lkml"
 
 explore: voucher_api_failure_success {
   hidden: yes

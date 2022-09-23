@@ -1,4 +1,4 @@
-include: "/views/projects/consumer_product/marketingbanners_mobile_events.view.lkml"
+include: "/**/marketingbanners_mobile_events.view.lkml"
 
 explore: marketingbanners_mobile_events {
   hidden: yes

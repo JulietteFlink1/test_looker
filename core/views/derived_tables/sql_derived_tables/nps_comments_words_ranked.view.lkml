@@ -2,7 +2,7 @@ view: nps_comments_words_ranked {
   derived_table: {
     sql: with words_occurrences AS (
       SELECT word, count(*) as num_occurrences
-      FROM `flink-data-dev.reporting.nps_comments_words_count`
+      FROM `flink-data-prod.reporting.nps_comments_words_count`
       GROUP BY 1)
       select word, row_number() over (order by num_occurrences desc) as rk
       from words_occurrences
