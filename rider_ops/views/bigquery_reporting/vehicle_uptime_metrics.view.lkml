@@ -49,24 +49,16 @@ view: vehicle_uptime_metrics {
     sql: ${TABLE}.vehicle_id ;;
   }
 
-  dimension: report_date {
+  dimension_group: report {
     group_label: "> Dates"
-    label: "Report Date"
-    type: date
-    datatype: date
-    sql: ${TABLE}.report_date ;;
+    type: time
+    timeframes: [
+      date,
+      week,
+      month,
+    ]
+    sql: timestamp(${TABLE}.report_date) ;;
   }
-
-  # dimension_group: report {
-  #   group_label: "> Dates"
-  #   type: time
-  #   timeframes: [
-  #     date,
-  #     week,
-  #     month,
-  #   ]
-  #   sql: timestamp(${TABLE}.report_date) ;;
-  # }
 
   dimension: downtime_minutes {
     hidden: yes
@@ -105,9 +97,17 @@ view: vehicle_uptime_metrics {
     sql: ${vehicle_id} ;;
   }
 
+  measure: number_of_non_damaged_bikes {
+    label: "# Non Damaged Bikes"
+    description: "Number of bikes that do not have a damage reported"
+    type: count_distinct
+    filters: [downtime_minutes : "=0"]
+    sql: ${vehicle_id} ;;
+  }
+
   measure: number_of_damaged_bikes {
     label: "# Damaged Bikes"
-    description: "Number of bikes that have a damage that prevents them to be used"
+    description: "Number of bikes that have a damage reported that prevents them to be used"
     type: count_distinct
     filters: [downtime_minutes : ">0"]
     sql: ${vehicle_id} ;;
@@ -123,33 +123,48 @@ view: vehicle_uptime_metrics {
     value_format_name: percent_2
   }
 
-  # ######### Parameters
+  ######### Parameters
 
-  # parameter: date_granularity {
-  #   group_label: "> Dates"
-  #   label: "Date Granularity"
-  #   type: unquoted
-  #   allowed_value: { value: "Day" }
-  #   allowed_value: { value: "Week" }
-  #   allowed_value: { value: "Month" }
-  #   default_value: "Day"
-  # }
+  parameter: date_granularity {
+    group_label: "> Dates"
+    label: "Date Granularity"
+    type: unquoted
+    allowed_value: { value: "Day" }
+    allowed_value: { value: "Week" }
+    allowed_value: { value: "Month" }
+    default_value: "Day"
+  }
+
+  dimension: date_granularity_pass_through {
+    group_label: "> Parameters"
+    description: "To use the parameter value in a table calculation (e.g WoW, % Growth) we need to materialize it into a dimension "
+    type: string
+    hidden: no # yes
+    sql:
+            {% if date_granularity._parameter_value == 'Day' %}
+              "Day"
+            {% elsif date_granularity._parameter_value == 'Week' %}
+              "Week"
+            {% elsif date_granularity._parameter_value == 'Month' %}
+              "Month"
+            {% endif %};;
+  }
 
 
-  # ######## Dynamic Dimensions
+  ######## Dynamic Dimensions
 
-  # dimension: report_date_dynamic {
-  #   group_label: "> Dates"
-  #   label: "Report Date (Dynamic)"
-  #   label_from_parameter: date_granularity
-  #   sql:
-  #   {% if date_granularity._parameter_value == 'Day' %}
-  #     ${report_date}
-  #   {% elsif date_granularity._parameter_value == 'Week' %}
-  #     ${report_week}
-  #   {% elsif date_granularity._parameter_value == 'Month' %}
-  #     ${report_month}
-  #   {% endif %};;
-  # }
+  dimension: report_date_dynamic {
+    group_label: "> Dates"
+    label: "Report Date (Dynamic)"
+    label_from_parameter: date_granularity
+    sql:
+    {% if date_granularity._parameter_value == 'Day' %}
+      ${report_date}
+    {% elsif date_granularity._parameter_value == 'Week' %}
+      ${report_week}
+    {% elsif date_granularity._parameter_value == 'Month' %}
+      ${report_month}
+    {% endif %};;
+  }
 
 }
