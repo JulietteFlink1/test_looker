@@ -393,7 +393,7 @@ view: employee_level_kpis {
     group_label: "* Logistics *"
     type: sum
     label: "Sum Delivery Distance (km)"
-    description: "Sum of delivery distance rider drove in kilometer. (It is calculated using the distance between hub and customer address)"
+    description: "Sum of delivery distance between hub and customer dropoff (most direct path / straight line). For stacked orders, it is the sum of distance from previous customer."
     sql: ${TABLE}.sum_delivery_distance_km ;;
     value_format_name: decimal_1
   }
