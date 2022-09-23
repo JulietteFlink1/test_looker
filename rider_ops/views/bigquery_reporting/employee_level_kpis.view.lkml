@@ -257,6 +257,13 @@ view: employee_level_kpis {
     sql: ${TABLE}.number_of_orders_with_handling_time ;;
   }
 
+  measure: number_of_orders_with_customer_address {
+    group_label: "* Logistics *"
+    type: sum
+    hidden: yes
+    sql: ${TABLE}.number_of_orders_with_customer_address ;;
+  }
+
   measure: number_of_orders_with_riding_to_customer_time {
     group_label: "* Logistics *"
     type: sum
@@ -382,6 +389,14 @@ view: employee_level_kpis {
     value_format_name: decimal_1
   }
 
+  measure: sum_delivery_distance_km {
+    group_label: "* Logistics *"
+    type: sum
+    label: "Sum Delivery Distance (km)"
+    description: "Sum of delivery distance between hub and customer dropoff in kilometers (most direct path / straight line). For stacked orders, it is the sum of distance from previous customer."
+    sql: ${TABLE}.sum_delivery_distance_km ;;
+    value_format_name: decimal_1
+  }
 
   measure: sum_rider_idle_time_minutes {
     group_label: "* Performance *"
@@ -410,6 +425,15 @@ view: employee_level_kpis {
     label: "AVG Rider Handling Time (min)"
     description: "Average time needed for the rider to handle the order: Riding to customer + At customer + Riding to hub"
     sql: ${sum_rider_handling_time_minutes}/nullif(${number_of_orders_with_handling_time},0) ;;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_delivery_distance_km {
+    group_label: "* Logistics *"
+    type: number
+    label: "AVG Delivery Distance (km)"
+    description: "Average distance between hub and customer dropoff in kilometers(most direct path / straight line). For stacked orders, it is the average distance from previous customer."
+    sql: ${sum_delivery_distance_km}/nullif(${number_of_orders_with_customer_address},0) ;;
     value_format_name: decimal_1
   }
 
