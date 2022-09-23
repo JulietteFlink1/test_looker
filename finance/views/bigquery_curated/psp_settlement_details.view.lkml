@@ -262,6 +262,13 @@ view: psp_settlement_details {
     sql: ${TABLE}.type ;;
   }
 
+  dimension: is_full_refund_payment {
+    type: yesno
+    sql: ${TABLE}.is_full_refund_payment ;;
+    group_label: "> Transaction Properties"
+    description: "Flags if the payment ID is a full refund payment. Checks if the Authorised amount is equal to the Refunded Amount for the payment."
+  }
+
   ######### Measures
 
   measure: sum_gross_credit_gc {
@@ -348,6 +355,7 @@ view: psp_settlement_details {
     sql: ${interchange_nc} ;;
     value_format_name: euro_accounting_2_precision
   }
+
 
 
   measure: count {

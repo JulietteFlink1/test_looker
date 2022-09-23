@@ -10,8 +10,6 @@ include: "/**/vat_order.view"
 include: "/**/global_filters_and_parameters.view"
 include: "/**/products.view"
 include: "/**/customer_address.view"
-include: "/**/ndt_psp_transactions__duplicated_psp_references.view"
-include: "/**/ndt_psp_transactions__payment_id_aggregated.view"
 include: "/**/ndt_psp_transactions__order_aggregated.view"
 
 explore: psp_transactions {
@@ -26,7 +24,7 @@ explore: psp_transactions {
 
   always_filter: {
     filters: [
-      global_filters_and_parameters.datasource_filter: "last 7 days",
+      global_filters_and_parameters.datasource_filter: "",
       orders.order_date: "",
       orders.is_successful_order: "",
       psp_transactions.merchant_account: "",
@@ -121,28 +119,6 @@ explore: psp_transactions {
     relationship: many_to_many
     ## Full Outer Join to cover potential cases where psp_reference is missing in one or the other table.
     type: full_outer
-  }
-
-  join: ndt_psp_transactions__duplicated_psp_references {
-    view_label: "PSP Transactions"
-    sql_on: ${psp_transactions.psp_reference}  = ${ndt_psp_transactions__duplicated_psp_references.psp_reference}
-           and {% condition global_filters_and_parameters.datasource_filter %} ${ndt_psp_transactions__duplicated_psp_references.order_date} {% endcondition %}
-           and {% condition global_filters_and_parameters.datasource_filter %} ${ndt_psp_transactions__duplicated_psp_references.psp_settlement_booking_date} {% endcondition %}
-           and {% condition global_filters_and_parameters.datasource_filter %} ${ndt_psp_transactions__duplicated_psp_references.order_date} {% endcondition %}
-          ;;
-    relationship: many_to_one
-    type: left_outer
-  }
-
-  join: ndt_psp_transactions__payment_id_aggregated {
-    view_label: "PSP Transactions"
-    sql_on: ${psp_transactions.payment_id}  = ${ndt_psp_transactions__payment_id_aggregated.payment_id}
-     and {% condition global_filters_and_parameters.datasource_filter %} ${ndt_psp_transactions__payment_id_aggregated.psp_transactions_booking_date} {% endcondition %}
-     and {% condition global_filters_and_parameters.datasource_filter %} ${ndt_psp_transactions__payment_id_aggregated.psp_settlement_booking_date} {% endcondition %}
-     and {% condition global_filters_and_parameters.datasource_filter %} ${ndt_psp_transactions__payment_id_aggregated.order_date} {% endcondition %}
-    ;;
-    relationship: many_to_one
-    type: left_outer
   }
 
   join: ndt_psp_transactions__order_aggregated {
