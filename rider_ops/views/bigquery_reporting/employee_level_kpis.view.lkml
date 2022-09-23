@@ -393,7 +393,7 @@ view: employee_level_kpis {
     group_label: "* Logistics *"
     type: sum
     label: "Sum Delivery Distance (km)"
-    description: "Sum of delivery distance between hub and customer dropoff (most direct path / straight line) in kilometers. For stacked orders, it is the sum of distance from previous customer."
+    description: "Sum of delivery distance between hub and customer dropoff in kilometers (most direct path / straight line). For stacked orders, it is the sum of distance from previous customer."
     sql: ${TABLE}.sum_delivery_distance_km ;;
     value_format_name: decimal_1
   }
@@ -432,7 +432,7 @@ view: employee_level_kpis {
     group_label: "* Logistics *"
     type: number
     label: "AVG Delivery Distance (km)"
-    description: "Average distance between hub and customer dropoff (most direct path / straight line) in kilometers. For stacked orders, it is the average distance from previous customer."
+    description: "Average distance between hub and customer dropoff in kilometers(most direct path / straight line). For stacked orders, it is the average distance from previous customer."
     sql: ${sum_delivery_distance_km}/nullif(${number_of_orders_with_customer_address},0) ;;
     value_format_name: decimal_1
   }
@@ -574,10 +574,12 @@ view: employee_level_kpis {
     sql: min(case when ${TABLE}.number_of_worked_minutes > 0 then ${TABLE}.shift_date end);;
   }
 
-  measure: number_of_scheduled_hours {
+  measure: number_of_assigned_hours {
     group_label: "* Shift related *"
+    alias: [number_of_scheduled_hours]
     type: sum
-    label: "# Scheduled Hours"
+    label: "# Assigned Hours"
+    description: "All shift hours that are assigned to an employee (before punching) including No show Hours"
     sql: ${TABLE}.number_of_planned_minutes/60 ;;
     value_format_name: decimal_1
   }
@@ -726,7 +728,7 @@ view: employee_level_kpis {
     type: number
     hidden: no
     label: "% No Show Hours "
-    sql: ${number_of_no_show_hours}/nullif(${number_of_scheduled_hours},0) ;;
+    sql: ${number_of_no_show_hours}/nullif(${number_of_assigned_hours},0) ;;
     value_format: "0%"
   }
 
@@ -736,7 +738,7 @@ view: employee_level_kpis {
     hidden: no
     label: "% Sickness Hours "
     description: "Sickness hours / (Sickness hours + Scheduled hours)"
-    sql: (${number_of_sick_hours})/nullif(${number_of_sick_hours}+${number_of_scheduled_hours},0) ;;
+    sql: (${number_of_sick_hours})/nullif(${number_of_sick_hours}+${number_of_assigned_hours},0) ;;
     value_format: "0%"
   }
 
@@ -772,7 +774,7 @@ view: employee_level_kpis {
     hidden: no
     label: "% Scheduled Hours vs Contracted Hours"
     description: "Scheduled Hours / (Weekly Contracted Hours * # Shift Weeks)"
-    sql: ${number_of_scheduled_hours}/nullif(${sum_weekly_contracted_hours},0) ;;
+    sql: ${number_of_assigned_hours}/nullif(${sum_weekly_contracted_hours},0) ;;
     value_format: "0%"
   }
 
