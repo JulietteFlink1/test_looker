@@ -643,6 +643,7 @@ view: +advanced_supplier_matching {
             ${total_quantity_desadv},
             ${inbounded_quantity}
           );;
+    filters: [is_desadv_row_exists: "yes"]
     value_format_name: decimal_0
   }
 
@@ -683,7 +684,7 @@ view: +advanced_supplier_matching {
     group_label: "DESADV >> Inbound | In Full KPIs"
 
     type: average
-    sql: ${inbounded_quantity} ;;
+    sql: (${inbounded_quantity} - ${total_quantity_desadv}) ;;
     filters: [is_desadv_inbounded_overdelivery: "yes"]
     value_format_name: decimal_1
   }
@@ -715,7 +716,7 @@ view: +advanced_supplier_matching {
     group_label: "DESADV >> Inbound | In Full KPIs"
 
     type: average
-    sql: ${inbounded_quantity} ;;
+    sql: (${total_quantity_desadv} - ${inbounded_quantity}) ;;
     filters: [is_desadv_inbounded_underdelivery: "yes"]
     value_format_name: decimal_1
   }
@@ -968,184 +969,244 @@ view: +advanced_supplier_matching {
 
 
 
-# ----------------     In Full KPIs    ----------------
-measure: cnt_po_inbounded_in_full {
-  group_label: "PO >> Inbound | In Full KPIs"
+  # ----------------     In Full KPIs    ----------------
+  measure: cnt_po_inbounded_in_full {
+    label: "# In Full delivery (PO > Inbound)"
+    description: "Number of in full delivered order lines (PO > Inbound)"
+    group_label: "PO >> Inbound | In Full KPIs"
 
-  type: count_distinct
-  sql: ;;
-value_format_name: decimal_0
-}
+    type: count_distinct
+    sql: ${purchase_order_order_lineitems};;
+    filters: [is_purchase_order_inbounded_in_full: "yes"]
+    value_format_name: decimal_0
+  }
 
-measure: pct_po_inbounded_in_full {
-  group_label: "PO >> Inbound | In Full KPIs"
+  measure: pct_po_inbounded_in_full {
+    label: "% In Full delivery (PO > Inbound)"
+    description: "Share of in full delivered order lines (PO > Inbound) compared to all order lines "
+    group_label: "PO >> Inbound | In Full KPIs"
 
-  type: number
-  sql: ;;
-value_format_name: percent_0
-}
+    type: number
+    sql: safe_divide(${cnt_po_inbounded_in_full}, ${cnt_ordered_items_puchase_order}) ;;
+    value_format_name: percent_0
+  }
 
-measure: cnt_po_inbounded_in_full_lim {
-  group_label: "PO >> Inbound | In Full KPIs"
+  measure: cnt_po_inbounded_in_full_lim {
+    label: "# In Full delivery lim. (PO > Inbound)"
+    description: "Number of in full delivered order lines (PO > Inbound), where an overdelivery counts as an in full delivery"
+    group_label: "PO >> Inbound | In Full KPIs"
 
-  type: count_distinct
-  sql: ;;
-value_format_name: decimal_0
-}
+    type: count_distinct
+    sql: ${purchase_order_order_lineitems};;
+    filters: [is_purchase_order_inbounded_in_full_limited: "yes"]
+    value_format_name: decimal_0
+  }
 
-measure: pct_po_inbounded_in_full_lim {
-  group_label: "PO >> Inbound | In Full KPIs"
+  measure: pct_po_inbounded_in_full_lim {
+    label: "% In Full delivery lim. (PO > Inbound)"
+    description: "Share of in full delivered order lines (PO > Inbound) compared to all order lines, where an overdelivery counts as an in full delivery"
+    group_label: "PO >> Inbound | In Full KPIs"
 
-  type: number
-  sql: ;;
-value_format_name: percent_0
-}
+    type: number
+    sql: safe_divide(${cnt_po_inbounded_in_full_lim}, ${cnt_ordered_items_puchase_order}) ;;
+    value_format_name: percent_0
+  }
 
-measure: sum_po_quantity_inbounded {
-  group_label: "PO >> Inbound | In Full KPIs"
+  measure: sum_po_quantity_inbounded {
+    label: "# Filled Quantity (PO > Inbound)"
+    description: "Total amount of fullfilled quantities (PO > Inbound)"
+    group_label: "PO >> Inbound | In Full KPIs"
 
-  type: sum
-  sql: ;;
-value_format_name: decimal_0
-}
+    type: sum
+    sql: ${inbounded_quantity};;
+    filters: [is_purchase_order_row_exists: "yes"]
+    value_format_name: decimal_0
+  }
 
-measure: pct_po_fill_rate {
-  group_label: "PO >> Inbound | In Full KPIs"
+  measure: pct_po_fill_rate {
+    label: "% Fill Rate (PO > Inbound)"
+    description: "Relative amount of fullfilled quantities (PO > Inbound) compared to overall ordered quantities "
+    group_label: "PO >> Inbound | In Full KPIs"
 
-  type: number
-  sql: ;;
-value_format_name: percent_0
-}
+    type: number
+    sql: safe_divide(${sum_po_quantity_inbounded} , ${sum_ordered_items_quantity_po});;
+    value_format_name: percent_0
+  }
 
-measure: sum_po_quantity_inbounded_lim {
-  group_label: "PO >> Inbound | In Full KPIs"
+  measure: sum_po_quantity_inbounded_lim {
+    label: "# Filled Quantity lim. (PO > Inbound)"
+    description: "Total amount of fullfilled quantities (PO > Inbound), where an overdelivered quantity is limited to the PO quantity"
+    group_label: "PO >> Inbound | In Full KPIs"
 
-  type: sum
-  sql: ;;
-value_format_name: decimal_0
-}
+    type: sum
+    sql: if(
+          ${inbounded_quantity} > ${total_quantity_purchase_order},
+          ${total_quantity_purchase_order},
+          ${inbounded_quantity}
+        );;
+    filters: [is_purchase_order_row_exists: "yes"]
+    value_format_name: decimal_0
+  }
 
-measure: pct_po_fill_rate_lim {
-  group_label: "PO >> Inbound | In Full KPIs"
+  measure: pct_po_fill_rate_lim {
+    label: "% Fill Rate lim. (PO > Inbound)"
+    description: "Relative amount of fullfilled quantities (PO > Inbound) compared to overall ordered quantities, where an overdelivered quantity is limited to the PO quantity"
+    group_label: "PO >> Inbound | In Full KPIs"
 
-  type: number
-  sql: ;;
-value_format_name: percent_0
-}
+    type: number
+    sql: safe_divide(${sum_po_quantity_inbounded_lim}, ${sum_ordered_items_quantity_po});;
+    value_format_name: percent_0
+  }
 
-measure: cnt_po_inbounded_overdelivery {
-  group_label: "PO >> Inbound | In Full KPIs"
+  measure: cnt_po_inbounded_overdelivery {
+    label: "# Overdelivered order lines (PO > Inbound)"
+    description: "Number of overdelivered order lines (PO > Inbound)"
+    group_label: "PO >> Inbound | In Full KPIs"
 
-  type: count_distinct
-  sql: ;;
-value_format_name: decimal_0
-}
+    type: count_distinct
+    sql: ${purchase_order_order_lineitems} ;;
+    filters: [is_purchase_order_inbounded_overdelivery: "yes"]
+    value_format_name: decimal_0
+  }
 
-measure: pct_po_inbounded_overdelivery {
-  group_label: "PO >> Inbound | In Full KPIs"
+  measure: pct_po_inbounded_overdelivery {
+    label: "% Overdelivered order lines (PO > Inbound)"
+    description: "Share of overdelivered order lines (PO > Inbound) compared to all order lines "
+    group_label: "PO >> Inbound | In Full KPIs"
 
-  type: number
-  sql: ;;
-value_format_name: percent_0
-}
+    type: number
+    sql: safe_divide(${cnt_po_inbounded_overdelivery}, ${cnt_ordered_items_puchase_order}) ;;
+    value_format_name: percent_0
+  }
 
-measure: avg_po_inbounded_quantity_overdelivery {
-  group_label: "PO >> Inbound | In Full KPIs"
+  measure: avg_po_inbounded_quantity_overdelivery {
+    label: "AVG Overdelivered quantity (PO > Inbound)"
+    description: "Average of overdelivered quantity (PO > Inbound) per overdelivered order line"
+    group_label: "PO >> Inbound | In Full KPIs"
 
-  type: average
-  sql: ;;
-value_format_name: decimal_1
-}
+    type: average
+    sql: (${inbounded_quantity} - ${total_quantity_purchase_order}) ;;
+    filters: [is_purchase_order_inbounded_overdelivery: "yes"]
+    value_format_name: decimal_1
+  }
 
-measure: cnt_po_inbounded_underdelivery {
-  group_label: "PO >> Inbound | In Full KPIs"
+  measure: cnt_po_inbounded_underdelivery {
+    label: "# Underdelivered order lines (PO > Inbound)"
+    description: "Number of underdelivered order lines (PO > Inbound)"
+    group_label: "PO >> Inbound | In Full KPIs"
 
-  type: count_distinct
-  sql: ;;
-value_format_name: decimal_0
-}
+    type: count_distinct
+    sql: ${purchase_order_order_lineitems} ;;
+    filters: [is_purchase_order_inbounded_underdelivery: "yes"]
+    value_format_name: decimal_0
+  }
 
-measure: pct_po_inbounded_underdelivery {
-  group_label: "PO >> Inbound | In Full KPIs"
+  measure: pct_po_inbounded_underdelivery {
+    label: "% Underdelivered order lines (PO > Inbound)"
+    description: "Share of underdelivered order lines (PO > Inbound) compared to all order lines "
+    group_label: "PO >> Inbound | In Full KPIs"
 
-  type: number
-  sql: ;;
-value_format_name: percent_0
-}
+    type: number
+    sql: safe_divide(${cnt_po_inbounded_underdelivery}, ${cnt_ordered_items_puchase_order}) ;;
+    value_format_name: percent_0
+  }
 
-measure: avg_po_inbounded_quantity_underdelivery {
-  group_label: "PO >> Inbound | In Full KPIs"
+  measure: avg_po_inbounded_quantity_underdelivery {
+    label: "AVG Underdelivered quantity (PO > Inbound)"
+    description: "Average of underdelivered quantity (PO > Inbound) per underdelivered order line"
+    group_label: "PO >> Inbound | In Full KPIs"
 
-  type: average
-  sql: ;;
-value_format_name: decimal_1
-}
+    type: average
+    sql: (${total_quantity_purchase_order} - ${inbounded_quantity}) ;;
+    filters: [is_purchase_order_inbounded_underdelivery: "yes"]
+    value_format_name: decimal_1
+  }
 
 
-# ----------------     IQ & OTIFIQ    ----------------
-measure: sum_po_items_inbounded_in_quality {
-  group_label: "PO >> Inbound | OTIFIQ"
+  # ----------------     IQ & OTIFIQ    ----------------
+  measure: sum_po_items_inbounded_in_quality {
+    label: "# In Quality (PO > Inbound)"
+    description: "Number of in quality delivered order lines (PO > Inbound)"
+    group_label: "PO >> Inbound | OTIFIQ"
 
-  type: sum
-  sql: ;;
-value_format_name: decimal_0
-}
+    type: sum
+    sql: ${inbounded_quantity} ;;
+    filters: [is_purchase_order_row_exists: "yes", is_quality_issue: "no"]
+    value_format_name: decimal_0
+  }
 
-measure:  pct_po_items_inbounded_in_quality {
-  group_label: "PO >> Inbound | OTIFIQ"
+  measure:  pct_po_items_inbounded_in_quality {
+    label: "% In Quality (PO > Inbound)"
+    description: "Share of in quality delivered order lines (PO > Inbound) compared to all inbounded order lines"
+    group_label: "PO >> Inbound | OTIFIQ"
 
-  type: number
-  sql: ;;
-value_format_name: percent_0
-}
+    type: number
+    sql: safe_divide(${sum_po_items_inbounded_in_quality}, ${sum_po_quantity_inbounded}) ;;
+    value_format_name: percent_0
+  }
 
-measure: sum_po_otifiq_relaxed {
-  group_label: "PO >> Inbound | OTIFIQ"
+  measure: sum_po_otifiq_relaxed {
+    label: "# OTIFIQ relaxed quantity (PO > Inbound)"
+    description: "Total amount of on time and in quality fulfilled quantities (PO > Inbound)"
+    group_label: "PO >> Inbound | OTIFIQ"
 
-  type: sum
-  sql: ;;
-value_format_name: decimal_0
-}
+    type: sum
+    sql: ${inbounded_quantity} ;;
+    filters: [is_purchase_order_row_exists: "yes", is_quality_issue: "no", is_matched_on_same_date: "yes"]
+    value_format_name: decimal_0
+  }
 
-measure: pct_po_otifiq_relaxed {
-  group_label: "PO >> Inbound | OTIFIQ"
+  measure: pct_po_otifiq_relaxed {
+    label: "% OTIFIQ relaxed quantity (PO > Inbound)"
+    description: "Relative amount of on time and in quality fulfilled quantities (PO > Inbound) compared to overall ordered quantities "
+    group_label: "PO >> Inbound | OTIFIQ"
 
-  type: number
-  sql: ;;
-value_format_name: percent_0
-}
+    type: number
+    sql: safe_divide(${sum_po_otifiq_relaxed}, ${sum_po_quantity_inbounded});;
+    value_format_name: percent_0
+  }
 
-measure: cnt_po_otifiq_stric {
-  group_label: "PO >> Inbound | OTIFIQ"
+  measure: cnt_po_otifiq_stric {
+    label: "# OTIFIQ strict (PO > Inbound)"
+    description: "Number of on time, in full and in quality order lines (PO > Inbound)"
+    group_label: "PO >> Inbound | OTIFIQ"
 
-  type: count_distinct
-  sql: ;;
-value_format_name: decimal_0
-}
+    type: count_distinct
+    sql: ${purchase_order_order_lineitems};;
+    filters: [is_quality_issue: "no", is_matched_on_same_date: "yes", is_purchase_order_inbounded_in_full: "yes"]
+    value_format_name: decimal_0
+  }
 
-measure: pct_po_otifiq_stric {
-  group_label: "PO >> Inbound | OTIFIQ"
+  measure: pct_po_otifiq_stric {
+    label: "% OTIFIQ strict (PO > Inbound)"
+    description: "Share of on time, in full and in quality order lines (PO > Inbound) compared to all order lines "
+    group_label: "PO >> Inbound | OTIFIQ"
 
-  type: number
-  sql: ;;
-value_format_name: percent_0
-}
+    type: number
+    sql: safe_divide(${cnt_po_otifiq_stric}, ${cnt_ordered_items_puchase_order}) ;;
+    value_format_name: percent_0
+  }
 
-measure: cnt_po_otifiq_stric_limited {
-  group_label: "PO >> Inbound | OTIFIQ"
+  measure: cnt_po_otifiq_stric_limited {
+    label: "# OTIFIQ strict lim. (PO > Inbound)"
+    description: "Number of on time, in full and in quality order lines (PO > Inbound), where an overdelivery counts as an in full delivery"
+    group_label: "PO >> Inbound | OTIFIQ"
 
-  type: count_distinct
-  sql: ;;
-value_format_name: decimal_0
-}
+    type: count_distinct
+    sql: ${purchase_order_order_lineitems} ;;
+    filters: [is_quality_issue: "no", is_matched_on_same_date: "yes", is_purchase_order_inbounded_in_full_limited: "yes"]
+    value_format_name: decimal_0
+  }
 
-measure: pct_po_otifiq_stric_limited {
-  group_label: "PO >> Inbound | OTIFIQ"
+  measure: pct_po_otifiq_stric_limited {
+    label: "% OTIFIQ strict lim. (PO > Inbound)"
+    description: "Share of on time, in full and in quality order lines (PO > Inbound) compared to all order lines, where an overdelivery counts as an in full delivery"
+    group_label: "PO >> Inbound | OTIFIQ"
 
-  type: number
-  sql: ;;
-value_format_name: percent_0
-}
+    type: number
+    sql: safe_divide(${cnt_po_otifiq_stric_limited}, ${cnt_ordered_items_puchase_order});;
+    value_format_name: percent_0
+  }
 
 
 # ----------------     Not-Fulfilled or Unplanned    ----------------

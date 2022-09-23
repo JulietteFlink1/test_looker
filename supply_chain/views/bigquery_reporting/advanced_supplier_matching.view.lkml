@@ -516,6 +516,31 @@ view: advanced_supplier_matching {
   }
 
 
+  dimension: is_purchase_order_inbounded_in_full {
+    type: yesno
+    sql: ${TABLE}.is_purchase_order_inbounded_in_full ;;
+  }
+  dimension: is_purchase_order_inbounded_in_full_limited {
+    type: yesno
+    sql: ${TABLE}.is_purchase_order_inbounded_in_full_limited ;;
+  }
+  dimension: is_purchase_order_inbounded_overdelivery {
+    type: yesno
+    sql: ${TABLE}.is_purchase_order_inbounded_overdelivery ;;
+  }
+  dimension: is_purchase_order_inbounded_underdelivery {
+    type: yesno
+    sql: ${TABLE}.is_purchase_order_inbounded_underdelivery ;;
+  }
+
+
+
+
+
+
+
+
+
 
   dimension: quality_issue_quantity {
     type: number
