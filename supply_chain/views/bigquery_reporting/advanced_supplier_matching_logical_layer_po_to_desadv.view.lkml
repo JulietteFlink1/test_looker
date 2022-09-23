@@ -816,7 +816,7 @@ view: +advanced_supplier_matching {
 
     type: count_distinct
     sql: ${desadv_order_lineitems} ;;
-    filters: [is_underdelivery: "yes"]
+    filters: [is_desadv_unfulfilled: "yes"]
     value_format_name: decimal_0
   }
 
@@ -1209,54 +1209,67 @@ view: +advanced_supplier_matching {
   }
 
 
-# ----------------     Not-Fulfilled or Unplanned    ----------------
-measure: cnt_po_ordered_items_unfulfilled {
-  group_label: "PO >> Inbound | Unplanned or Not Fulfilled"
+  # ----------------     Not-Fulfilled or Unplanned    ----------------
+  measure: cnt_po_ordered_items_unfulfilled {
+    label: "# Not fulfilled POs (PO > Inbound)"
+    description: "Number of not fulfilled order lines (PO > Inbound)"
+    group_label: "PO >> Inbound | Unplanned or Not Fulfilled"
 
-  type: count_distinct
-  sql: ;;
-value_format_name: decimal_0
-}
+    type: count_distinct
+    sql: ${purchase_order_order_lineitems} ;;
+    filters: [is_purchase_order_unfulfilled: "yes"]
+    value_format_name: decimal_0
+  }
 
-measure: pct_po_ordered_items_unfulfilled {
-  group_label: "PO >> Inbound | Unplanned or Not Fulfilled"
+  measure: pct_po_ordered_items_unfulfilled {
+    label: "% Not fulfilled POs (PO > Inbound)"
+    description: "Share of not fulfilled order lines (PO > Inbound) compared to all order lines"
+    group_label: "PO >> Inbound | Unplanned or Not Fulfilled"
 
-  type: number
-  sql: ;;
-value_format_name: percent_0
-}
+    type: number
+    sql: safe_divide(${cnt_po_ordered_items_unfulfilled}, ${cnt_ordered_items_puchase_order}) ;;
+    value_format_name: percent_0
+  }
 
-measure: cnt_po_items_unplanned {
-  group_label: "PO >> Inbound | Unplanned or Not Fulfilled"
+  measure: cnt_po_items_unplanned {
+    label: "# Unplanned inbound (PO > Inbound)"
+    description: "Number of unplanned inbound lines (PO > Inbound)"
+    group_label: "PO >> Inbound | Unplanned or Not Fulfilled"
 
-  type: count_distinct
-  sql: ;;
-value_format_name: decimal_0
-}
+    type: number
+    sql: ${cnt_desadv_items_unplanned} ;;
+    value_format_name: decimal_0
+  }
 
-measure: pct_po_items_unplanned {
-  group_label: "PO >> Inbound | Unplanned or Not Fulfilled"
+  measure: pct_po_items_unplanned {
+    label: "% Unplanned inbound (PO > Inbound)"
+    description: "Share of unplanned inbound lines (PO > Inbound) compared to all inbound lines"
+    group_label: "PO >> Inbound | Unplanned or Not Fulfilled"
 
-  type: number
-  sql: ;;
-value_format_name: percent_0
-}
+    type: number
+    sql: ${pct_desadv_items_unplanned};;
+    value_format_name: percent_0
+  }
 
-measure: sum_po_items_quantity_unplanned {
-  group_label: "PO >> Inbound | Unplanned or Not Fulfilled"
+  measure: sum_po_items_quantity_unplanned {
+    label: "# Unplanned inbound quantity (PO > Inbound)"
+    description: "Total amount of unplanned inbounded quantities (PO > Inbound)"
+    group_label: "PO >> Inbound | Unplanned or Not Fulfilled"
 
-  type: sum
-  sql: ;;
-value_format_name: decimal_0
-}
+    type: number
+    sql: ${sum_desadv_items_quantity_unplanned};;
+    value_format_name: decimal_0
+  }
 
-measure: pct_po_items_quantity_unplanned {
-  group_label: "PO >> Inbound | Unplanned or Not Fulfilled"
+  measure: pct_po_items_quantity_unplanned {
+    label: "% Unplanned inbound quantity (PO > Inbound)"
+    description: "Relative amount of unplanned inbounded quantities (PO > Inbound) compared to all inbounded quantities"
+    group_label: "PO >> Inbound | Unplanned or Not Fulfilled"
 
-  type: number
-  sql: ;;
-value_format_name: percent_0
-}
+    type: number
+    sql: ${pct_desadv_items_quantity_unplanned} ;;
+    value_format_name: percent_0
+  }
 
 
 

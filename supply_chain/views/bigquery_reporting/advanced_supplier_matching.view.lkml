@@ -534,6 +534,17 @@ view: advanced_supplier_matching {
   }
 
 
+  dimension: is_desadv_unfulfilled {
+    type: yesno
+    sql: ${TABLE}.is_desadv_unfulfilled ;;
+  }
+
+  dimension: is_purchase_order_unfulfilled {
+    type: yesno
+    sql: ${TABLE}.is_purchase_order_unfulfilled ;;
+  }
+
+
 
 
 
