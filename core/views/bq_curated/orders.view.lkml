@@ -522,6 +522,14 @@ view: orders {
     sql: ${TABLE}.riding_to_customer_time_minutes ;;
   }
 
+  dimension: riding_hub_to_customer_time_minutes {
+    group_label: "* Operations / Logistics *"
+    description: "The time for a rider to cycle from the hub to the customer. No matter the stacking sequence, it captures the total time from hub to customer."
+    type: number
+    sql: ${TABLE}.riding_to_customer_time_minutes ;;
+  }
+
+
   dimension: riding_to_hub_time_minutes {
     label: "Riding To Hub Time (min)"
     description: "The time for a rider to cycle from the customer back to the hub. Set to NULL for not-final stacked orders."
@@ -2153,7 +2161,7 @@ view: orders {
     description: "The mean absolute error between actual riding to customer time and estimated riding to customer time"
     hidden:  no
     type: average
-    sql:  abs(${riding_to_customer_time_minutes} - ${estimated_riding_time_minutes});;
+    sql:  abs(${riding_hub_to_customer_time_minutes} - ${estimated_riding_time_minutes});;
     value_format_name: decimal_1
   }
 
@@ -2577,6 +2585,17 @@ view: orders {
     value_format: "0"
   }
 
+  measure: cnt_internal_orders {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Internal Orders"
+    description: "Count of Internal Orders"
+    hidden:  no
+    type: count_distinct
+    sql: ${order_uuid} ;;
+    filters: [is_external_order: "no"]
+    value_format: "0"
+  }
+
   measure: cnt_successful_orders {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
     label: "# Successful Orders"
@@ -2606,8 +2625,8 @@ view: orders {
 
   measure: cnt_ubereats_orders {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
-    label: "# Click & Collect Orders"
-    description: "Count of Click & Collect Orders"
+    label: "# Ubereats Orders"
+    description: "Count of Ubereats Orders"
     hidden:  yes
     type: count_distinct
     sql: ${order_uuid} ;;
@@ -2616,6 +2635,20 @@ view: orders {
       external_provider: "ubereats",
       is_successful_order: "yes"
       ]
+  }
+
+  measure: cnt_external_orders {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# External Orders"
+    description: "Count of External Orders"
+    hidden:  yes
+    type: count_distinct
+    sql: ${order_uuid} ;;
+    value_format: "0"
+    filters: [
+      is_external_order: "yes",
+      is_successful_order: "yes"
+    ]
   }
 
   measure: cnt_orders_with_discount_cart {

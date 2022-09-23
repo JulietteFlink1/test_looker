@@ -1,6 +1,5 @@
-include: "/views/**/*.view"
 include: "/**/*.view"
-include: "/views/native_derived_tables/cohorts/monthly_cohorts.view"
+include: "/**/monthly_cohorts.view"
 include: "/**/*.explore"
 
 explore: orders_customers {

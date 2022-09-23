@@ -1,5 +1,4 @@
-include: "/views/**/202112_hubtech_all.view.lkml"
-include: "/views/**/*.view"
+include: "/**/202112_hubtech_all.view.lkml"
 
 
 explore: enps_hubtech {
