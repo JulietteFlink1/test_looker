@@ -14,9 +14,6 @@ view: ndt_psp_transactions__order_aggregated {
         column: sum_gpv_gross { field: orders.sum_gpv_gross }
         column: sum_gross_credit_gc { field: psp_settlement_details.sum_gross_credit_gc }
         column: sum_gross_debit_gc {field: psp_settlement_details.sum_gross_debit_gc}
-        column: psp_settlement_booking_date {field: psp_settlement_details.booking_date}
-        column: psp_transactions_booking_date {field: psp_transactions.booking_date}
-        column: order_date {field:orders.created_date}
 
         filters: {
           field: psp_settlement_details.is_full_refund_payment
@@ -26,12 +23,8 @@ view: ndt_psp_transactions__order_aggregated {
           field: psp_settlement_details.type
           value: "Settled"
         }
-        filters: {
-          field: global_filters_and_parameters.datasource_filter
-          value: "last 3 years"
-        }
 
-        bind_all_filters: yes
+       # bind_all_filters: yes
       }
     }
 
@@ -98,20 +91,6 @@ view: ndt_psp_transactions__order_aggregated {
       sql: ${sum_gross_credit_adjusted} <> ${sum_gpv_gross} ;;
     }
 
-    dimension: psp_transactions_booking_date {
-      hidden: yes
-      type: date
-    }
-
-    dimension: psp_settlement_booking_date {
-      hidden: yes
-      type: date
-    }
-
-    dimension: order_date {
-      hidden: yes
-      type: date
-    }
 
     measure: sum_difference_ct_adyen {
       group_label: "> Adyen <> CT"
