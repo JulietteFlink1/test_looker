@@ -95,7 +95,7 @@ explore: daily_hub_staff_events {
   join: employee_level_kpis {
     view_label: "7 Employee Attributes"
     fields: [ employee_level_kpis.number_of_worked_hours
-            , employee_level_kpis.number_of_scheduled_hours
+            , employee_level_kpis.number_of_assigned_hours
             , employee_level_kpis.number_of_no_show_hours]
     sql_on: cast(${employee_level_kpis.staff_number} as string)=${daily_hub_staff_events.quinyx_badge_number}
       and ${employee_level_kpis.shift_date}=${daily_hub_staff_events.event_timestamp_date}
