@@ -68,6 +68,25 @@ view: +advanced_supplier_matching {
     value_format_name: decimal_0
   }
 
+  measure: cnt_items_inbounded {
+    label: "# Inbounded Items"
+    description: "The unique number of inbounded items"
+
+    type: count_distinct
+    sql: concat(${table_uuid}, ${parent_sku}) ;;
+    filters: [inbounded_quantity: ">0"]
+    value_format_name: decimal_0
+  }
+
+  measure: sum_items_inbounded {
+    label: "# Total Quantity Inbounded"
+    description: "The total item quantity, that was inbounded"
+
+    type: sum
+    sql: ${inbounded_quantity} ;;
+    value_format_name: decimal_0
+  }
+
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   #  - - - - - - - - - -    PO >> DESADV
@@ -600,6 +619,7 @@ view: +advanced_supplier_matching {
 
     type: sum
     sql: ${inbounded_quantity} ;;
+    filters: [is_desadv_row_exists: "yes"]
     value_format_name: decimal_0
   }
 
@@ -701,6 +721,91 @@ view: +advanced_supplier_matching {
   }
 
 
+  # ----------------     IQ & OTIFIQ    ----------------
+  measure: sum_desadv_items_inbounded_in_quality {
+    label: "# Items Inbounded In Quality (DESADV > Inbound)"
+    description: "Share of in quality delivered order lines (DESADV > Inbound)"
+    group_label: "DESADV >> Inbound | OTIFIQ"
+
+    type: sum
+    sql: ${inbounded_quantity} ;;
+    filters: [is_desadv_row_exists: "yes", is_quality_issue: "no"]
+    value_format_name: decimal_0
+  }
+
+  measure:  pct_desadv_items_inbounded_in_quality {
+    label: "% In Quality (DESADV > Inbound)"
+    description: "Share of in quality delivered order lines (DESADV > Inbound) compared to all inbounded order lines "
+    group_label: "DESADV >> Inbound | OTIFIQ"
+
+    type: number
+    sql: safe_divide(${sum_desadv_items_inbounded_in_quality}, ${sum_desadv_quantity_inbounded}) ;;
+    value_format_name: percent_0
+  }
+
+  measure: sum_desadv_otifiq_relaxed {
+    label: "# OTIFIQ relaxed quantity (DESADV > Inbound)"
+    description: "Total amount of on time and in quality fulfilled quantities (DESADV > Inbound)"
+    group_label: "DESADV >> Inbound | OTIFIQ"
+
+    type: sum
+    sql: ${inbounded_quantity} ;;
+    filters: [is_desadv_row_exists: "yes", is_quality_issue: "no", is_matched_on_same_date: "yes"]
+    value_format_name: decimal_0
+  }
+
+  measure: pct_desadv_otifiq_relaxed {
+    label: "% OTIFIQ relaxed quantity (DESADV > Inbound)"
+    description: "Relative amount of on time and in quality fulfilled quantities (DESADV > Inbound) compared to overall DESADV quantities "
+    group_label: "DESADV >> Inbound | OTIFIQ"
+
+    type: number
+    sql: safe_divide(${sum_desadv_otifiq_relaxed}, ${sum_ordered_items_quantity_desadv}) ;;
+    value_format_name: percent_0
+  }
+
+  measure: cnt_desadv_otifiq_stric {
+    label: "# OTIFIQ strict (DESADV > Inbound)"
+    description: "Number of on time, in full and in quality DESADV lines (DESADV > Inbound)"
+    group_label: "DESADV >> Inbound | OTIFIQ"
+
+    type: count_distinct
+    sql: ${desadv_order_lineitems} ;;
+    filters: [is_quality_issue: "no", is_matched_on_same_date: "yes", is_desadv_inbounded_in_full: "yes"]
+    value_format_name: decimal_0
+  }
+
+  measure: pct_desadv_otifiq_stric {
+    label: "% OTIFIQ strict (DESADV > Inbound)"
+    description: "Share of on time, in full and in quality DESADV lines (DESADV > Inbound) compared to all DESADV lines "
+    group_label: "DESADV >> Inbound | OTIFIQ"
+
+    type: number
+    sql: safe_divide(${cnt_desadv_otifiq_stric}, ${cnt_ordered_items_desadv}) ;;
+    value_format_name: percent_0
+  }
+
+  measure: cnt_desadv_otifiq_stric_limited {
+    label: "# OTIFIQ strict lim. (DESADV > Inbound)"
+    description: "Total of on time, in full and in quality DESADV lines (DESADV > Inbound), where an overdelivery counts as an in full delivery"
+    group_label: "DESADV >> Inbound | OTIFIQ"
+
+    type: count_distinct
+    sql: ${desadv_order_lineitems} ;;
+    filters: [is_quality_issue: "no", is_matched_on_same_date: "yes", is_desadv_inbounded_in_full_limited: "yes"]
+    value_format_name: decimal_0
+  }
+
+  measure: pct_desadv_otifiq_stric_limited {
+    label: "% OTIFIQ strict lim. (DESADV > Inbound)"
+    description: "Share of on time, in full and in quality DESADV lines (DESADV > Inbound) compared to all DESADV lines, where an overdelivery counts as an in full delivery"
+    group_label: "DESADV >> Inbound | OTIFIQ"
+
+    type: number
+    sql: safe_divide(${cnt_desadv_otifiq_stric_limited}, ${cnt_ordered_items_desadv}) ;;
+    value_format_name: percent_0
+  }
+
 
   # ----------------     Not-Fulfilled or Unplanned    ----------------
   measure: cnt_desadv_ordered_items_unfulfilled {
@@ -721,6 +826,48 @@ view: +advanced_supplier_matching {
 
     type: number
     sql: safe_divide(${cnt_desadv_ordered_items_unfulfilled}, ${cnt_ordered_items_desadv}) ;;
+    value_format_name: percent_0
+  }
+
+  measure: cnt_desadv_items_unplanned {
+    label: "# Unplanned inbound (DESADV > Inbound)"
+    description: "Number of unplanned inbound lines (DESADV > Inbound)"
+    group_label: "DESADV >> Inbound | Unplanned or Not Fulfilled"
+
+    type: count_distinct
+    sql: ${desadv_order_lineitems} ;;
+    filters: [is_unplanned_inbound: "yes"]
+    value_format_name: decimal_0
+  }
+
+  measure: pct_desadv_items_unplanned {
+    label: "% Unplanned inbound (DESADV > Inbound)"
+    description: "Share of unplanned inbound lines (DESADV > Inbound) compared to all inbound lines"
+    group_label: "DESADV >> Inbound | Unplanned or Not Fulfilled"
+
+    type: number
+    sql: safe_divide(${cnt_desadv_items_unplanned}, ${cnt_items_inbounded}) ;;
+    value_format_name: percent_0
+  }
+
+  measure: sum_desadv_items_quantity_unplanned {
+    label: "# Unplanned inbound quantity (DESADV > Inbound)"
+    description: "Total amount of unplanned inbounded quantities (DESADV > Inbound)"
+    group_label: "DESADV >> Inbound | Unplanned or Not Fulfilled"
+
+    type: sum
+    sql: ${inbounded_quantity} ;;
+    filters: [is_unplanned_inbound: "yes"]
+    value_format_name: decimal_0
+  }
+
+  measure: pct_desadv_items_quantity_unplanned {
+    label: "% Unplanned inbound quantity (DESADV > Inbound)"
+    description: "Relative amount of unplanned inbounded quantities (DESADV > Inbound) compared to all inbounded quantities"
+    group_label: "DESADV >> Inbound | Unplanned or Not Fulfilled"
+
+    type: number
+    sql: safe_divide(${sum_desadv_items_quantity_unplanned}, ${sum_items_inbounded}) ;;
     value_format_name: percent_0
   }
 

@@ -514,6 +514,20 @@ view: advanced_supplier_matching {
 
 
 
+  dimension: quality_issue_quantity {
+    type: number
+    sql: ${TABLE}.quality_issue_quantity ;;
+  }
+
+  dimension: is_quality_issue {
+    type: yesno
+    sql: ${TABLE}.is_quality_issue ;;
+  }
+
+
+
+
+
 
 
 
