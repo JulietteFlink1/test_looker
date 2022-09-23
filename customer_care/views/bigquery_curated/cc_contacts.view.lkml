@@ -286,7 +286,7 @@ view: cc_contacts {
   dimension: contact_hour {
     type: number
     group_label: "* Dates & Timestamps *"
-    sql:  ${TABLE}.contact_created_hour ;;
+    sql: extract(hour from timestamp(${contact_created_time})) ;;
   }
 
   dimension: number_of_assignments {
