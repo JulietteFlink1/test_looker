@@ -8,64 +8,52 @@
 # Questions that can be answered
 # - What are the attributes of our users?
 
-include: "/product_consumer/views/bigquery_reporting/user_attributes_jobs_to_be_done.view"
+# based on doc:
+# https://cloud.google.com/looker/docs/reference/param-field-filter
+# https://cloud.google.com/looker/docs/reference/param-explore-join-sql-on
+
+include: "/**/user_attributes_jobs_to_be_done.view"
+include: "/**/user_attributes_lifecycle_last28days.view"
+include: "/**/user_attributes_lifecycle_first28days.view"
 include: "/**/global_filters_and_parameters.view.lkml"
-include: "/**/customers_metrics.view.lkml"
-include: "/**/orders_cl.explore.lkml"
+# include: "/**/customers_metrics.view.lkml"
 
 explore: consumer_user_attributes {
-  from: user_attributes_jobs_to_be_done
-  view_name: user_attributes_jobs_to_be_done
+  from: user_attributes_lifecycle_first28days
+  view_name: user_attributes_lifecycle_first28days
   hidden: no
   label: "User Attributes"
-  view_label: "* User Level JTBD *"
-  description: "This explore provides an overview of user attributes"
+  view_label: "* Customer First 28 Days *"
+  description: "Explore user attributes and related metrics"
   group_label: "Product - Consumer"
-  sql_always_where: ${customers_metrics.first_order_month} > '2021-09-30';;
   fields: [
-    ALL_FIELDS*,
-    -customers_metrics.years_time_since_sign_up,
-    -customers_metrics.quarters_time_since_sign_up,
-    -customers_metrics.months_time_since_sign_up,
-    -customers_metrics.weeks_time_since_sign_up,
-    -customers_metrics.days_time_since_sign_up,
-    -customers_metrics.hours_time_since_sign_up,
-    -customers_metrics.minutes_time_since_sign_up,
-    -customers_metrics.seconds_time_since_sign_up,
-    -customers_metrics.weeks_time_since_sign_up_number,
-    -customers_metrics.user_email,
+    ALL_FIELDS*
     ]
 
-
-  join: customers_metrics {
-    view_label: "* Customer Metrics *"
-    sql_on: ${customers_metrics.customer_uuid} = ${user_attributes_jobs_to_be_done.customer_uuid} ;;
+  join: user_attributes_jobs_to_be_done {
+    view_label: "* Customers JTBD *"
+    sql_on: ${user_attributes_lifecycle_first28days.customer_uuid} = ${user_attributes_jobs_to_be_done.customer_uuid};;
     relationship: one_to_one
     type: left_outer
   }
 
-  join: orders {
-    view_label: "* Orders *"
-    sql_on: ${user_attributes_jobs_to_be_done.customer_uuid} = ${orders.customer_uuid} ;;
-    relationship: one_to_many
-    type: left_outer
-  }
-
-  join: user_attributes_order_classification {
-    view_label: "* Order Classifications *"
-    sql_on: ${user_attributes_order_classification.order_uuid} = ${orders.order_uuid} ;;
+  join: user_attributes_lifecycle_last28days {
+    view_label: "* Customer Last 28 Days *"
+    sql_on: ${user_attributes_lifecycle_first28days.customer_uuid} = ${user_attributes_lifecycle_last28days.customer_uuid};;
+    sql_where: ${user_attributes_lifecycle_last28days.execution_date}=CURRENT_DATE() ;;
     relationship: one_to_one
     type: left_outer
   }
 
   access_filter: {
-    field: user_attributes_jobs_to_be_done.country_iso
+    field: user_attributes_lifecycle_first28days.first_country_iso
     user_attribute: country_iso
   }
 
   always_filter: {
     filters: [
-      global_filters_and_parameters.datasource_filter: "last 1 days"
+      global_filters_and_parameters.datasource_filter: "last 1 days",
+      user_attributes_lifecycle_first28days.first_visit_date: "56 days ago for 28 days"
     ]
   }
 
