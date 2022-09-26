@@ -120,7 +120,7 @@ view: daily_post_order_contact_rate_aggregates {
     label: "App Version"
     group_label: "Device information"
     type: string
-    hidden: yes
+    hidden: no
     description: "Version of the app released, available for apps only."
     sql: ${TABLE}.app_version ;;
   }
@@ -138,7 +138,7 @@ view: daily_post_order_contact_rate_aggregates {
     label: "Platform"
     group_label: "Device information"
     type: string
-    hidden: yes
+    hidden: no
     description: "Platform which user used, can be 'web' or 'app'."
     sql: ${TABLE}.platform ;;
   }
@@ -149,7 +149,7 @@ view: daily_post_order_contact_rate_aggregates {
     label: "Country ISO"
     group_label: "Order attributes"
     type: string
-    hidden: yes
+    hidden: no
     description: "Country ISO based on 'hub_code'."
     sql: ${TABLE}.country_iso ;;
   }
@@ -489,17 +489,187 @@ view: daily_post_order_contact_rate_aggregates {
     sql:  ${order_uuid};;
   }
 
-  measure: number_of_order_cci{
+  measure: number_of_order_ccsi{
     type: count_distinct
+    label: "Number of Orders with CCS Intent"
     hidden:  no
     sql: ${order_uuid} ;;
     filters: [is_contact_cs: "yes"]
   }
 
-  measure: perc_of_orders_has_cci {
-    type: number
+  measure: number_of_order_ccsi_confirmed{
+    type: count_distinct
+    label: "Number of Orders with CCS Intent Status Confirmed"
     hidden:  no
-    sql: ${number_of_order_cci}/${number_of_orders} ;;
+    sql: ${order_uuid} ;;
+    filters: [is_contact_cs_status_confirmation: "yes"]
+  }
+
+  measure: number_of_order_ccsi_packing{
+    type: count_distinct
+    label: "Number of Orders with CCS Intent Status Packing"
+    hidden:  no
+    sql: ${order_uuid} ;;
+    filters: [is_contact_cs_status_packing: "yes"]
+  }
+
+  measure: number_of_order_ccsi_on_way{
+    type: count_distinct
+    label: "Number of Orders with CCS Intent Status On Way"
+    hidden:  no
+    sql: ${order_uuid} ;;
+    filters: [is_contact_cs_status_on_way: "yes"]
+  }
+
+  measure: number_of_order_ccsi_delivered{
+    type: count_distinct
+    label: "Number of Orders with CCS Intent Status Delivered"
+    hidden:  no
+    sql: ${order_uuid} ;;
+    filters: [is_contact_cs_status_delivered: "yes"]
+  }
+
+  measure: number_of_order_otv_confirmed{
+    type: count_distinct
+    label: "Number of Orders with Tracked Status Confirmed"
+    hidden:  no
+    sql: ${order_uuid} ;;
+    filters: [is_order_tracking_viewed_status_confirmation: "yes"]
+  }
+
+  measure: number_of_order_otv_packing{
+    type: count_distinct
+    label: "Number of Orders with Tracked Status Packing"
+    hidden:  no
+    sql: ${order_uuid} ;;
+    filters: [is_order_tracking_viewed_status_packing: "yes"]
+  }
+
+  measure: number_of_order_otv_on_way{
+    type: count_distinct
+    label: "Number of Orders with Tracked Status On Way"
+    hidden:  no
+    sql: ${order_uuid} ;;
+    filters: [is_order_tracking_viewed_status_on_way: "yes"]
+  }
+
+  measure: number_of_order_otv_delivered{
+    type: count_distinct
+    label: "Number of Orders with Tracked Status Delivered"
+    hidden:  no
+    sql: ${order_uuid} ;;
+    filters: [is_order_tracking_viewed_status_delivered: "yes"]
+  }
+
+######## * Percentages * ########
+
+  measure: pct_orders_ccs_intent {
+    group_label: "* Percentages *"
+    label: "% CCS Intent"
+    description: "# orders with CCS intent divided by the total # orders."
+    type: number
+    sql: (1.0 * ${number_of_order_ccsi}) / NULLIF(${number_of_orders}, 0) ;;
     value_format_name: percent_1
   }
+
+  measure: pct_orders_ccs_intent_step1 {
+    group_label: "* Percentages *"
+    label: "% CCS Intent On Order Confirmation"
+    description: "# orders with CCS intent on the order confirmation step divided by the total # orders."
+    type: number
+    sql: (1.0 * ${number_of_order_ccsi_confirmed}) / NULLIF(${number_of_orders}, 0) ;;
+    value_format_name: percent_1
+  }
+
+  measure: pct_orders_ccs_intent_step2 {
+    group_label: "* Percentages *"
+    label: "% CCS Intent On Order Packing"
+    description: "The number of orders with CCS intent on the order confirmation step divided by the total number of orders."
+    type: number
+    sql: (1.0 * ${number_of_order_ccsi_packing}) / NULLIF(${number_of_orders}, 0) ;;
+    value_format_name: percent_1
+  }
+
+  measure: pct_orders_ccs_intent_step3 {
+    group_label: "* Percentages *"
+    label: "% CCS Intent On Order On Way"
+    description: "The number of orders with CCS intent on the order confirmation step divided by the total number of orders."
+    type: number
+    sql: (1.0 * ${number_of_order_ccsi_on_way}) / NULLIF(${number_of_orders}, 0) ;;
+    value_format_name: percent_1
+  }
+
+  measure: pct_orders_ccs_intent_step4 {
+    group_label: "* Percentages *"
+    label: "% CCS Intent On Order Delivered"
+    description: "The number of orders with CCS intent on the order confirmation step divided by the total number of orders."
+    type: number
+    sql: (1.0 * ${number_of_order_ccsi_delivered}) / NULLIF(${number_of_orders}, 0) ;;
+    value_format_name: percent_1
+  }
+
+  ######## * Times & Durations * ########
+
+  dimension: time_ccs_intent_since_order_duration {
+    label: "Time CCS Intent Since Order (minutes)"
+    group_label: "* Times & Durations *"
+    description: "# minutes since the order was placed."
+    type: duration_minute
+    sql_start: ${order_placed_timestamp_raw} ;;
+    sql_end: ${first_contact_cs_timestamp_raw};;
+  }
+
+  dimension: time_since_order_tiers {
+    group_label: "* Times & Durations *"
+    label: "Time Since Order Tiers (minutes)"
+    description: "Tiers of Time Since Order [0, >60)"
+    type: tier
+    tiers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 20, 25, 30, 45, 60]
+    style: interval
+    sql: ${time_ccs_intent_since_order_duration} ;;
+  }
+################## Parameter and Dynamic Dates
+
+
+  parameter: date_granularity {
+    group_label: "* Dates and Timestamps *"
+    label: "Date Granularity"
+    type: unquoted
+    allowed_value: { value: "Day" }
+    allowed_value: { value: "Week" }
+    allowed_value: { value: "Month" }
+    default_value: "Day"
+  }
+######## DYNAMIC DIMENSIONS
+
+  dimension: date {
+    group_label: "* Dates & Timestamps *"
+    label: "Contact Date (Dynamic)"
+    label_from_parameter: date_granularity
+    sql:
+    {% if date_granularity._parameter_value == 'Day' %}
+      ${order_placed_timestamp_date}
+    {% elsif date_granularity._parameter_value == 'Week' %}
+      ${order_placed_timestamp_week}
+    {% elsif date_granularity._parameter_value == 'Month' %}
+      ${order_placed_timestamp_month}
+    {% endif %};;
+  }
+
+  dimension: date_granularity_pass_through {
+    group_label: "* Parameters *"
+    description: "To use the parameter value in a table calculation (e.g WoW, % Growth) we need to materialize it into a dimension "
+    type: string
+    hidden: no # yes
+    sql:
+            {% if date_granularity._parameter_value == 'Day' %}
+              "Day"
+            {% elsif date_granularity._parameter_value == 'Week' %}
+              "Week"
+            {% elsif date_granularity._parameter_value == 'Month' %}
+              "Month"
+            {% endif %};;
+  }
+
+
 }
