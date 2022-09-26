@@ -15,9 +15,9 @@ view: orders_with_ops_metrics {
       column: avg_estimated_picking_time_minutes {}
       column: avg_estimated_queuing_time_for_picker_minutes {}
       column: avg_estimated_queuing_time_for_rider_minutes {}
-      column: avg_picker_queuing_time {}
+      column: avg_waiting_for_picker_time {}
       column: avg_rider_queuing_time {}
-      column: avg_dispatching_queuing_time_minutes {}
+      column: avg_withheld_from_picking_time_minutes {}
       column: avg_fulfillment_time {}
       column: avg_estimated_riding_time_minutes {}
       column: avg_fulfillment_time_mm_ss {}
@@ -267,11 +267,11 @@ view: orders_with_ops_metrics {
     hidden: yes
   }
 
-  measure: avg_picker_queuing_time {
+  measure: avg_waiting_for_picker_time {
     group_label: "> Operations / Logistics"
-    label: "AVG Picker Queuing Time"
+    label: "AVG Waiting For Picker Time"
     description: "Average picker acceptance-related queuing - from order offered to hub to order started being picked.
-                  Outliers excluded (>120min). If offered to hub time is not available (no dispatching event), takes the time from order created to picking started"
+    Outliers excluded (>120min). If offered to hub time is not available (no dispatching event), takes the time from order created to picking started"
     value_format_name: decimal_1
     type: average
   }
@@ -279,15 +279,15 @@ view: orders_with_ops_metrics {
   measure: avg_rider_queuing_time {
     group_label: "> Operations / Logistics"
     label: "AVG Rider Queuing Time"
-    description: "Average dispatch-related queuing time - from order created to order offered to hub for picking. Outliers excluded (<0min or >120min)"
+    description: "Average time between picking completion and rider having claimed the order."
     value_format_name: decimal_1
     type: average
   }
 
-  measure: avg_dispatching_queuing_time_minutes {
+  measure: avg_withheld_from_picking_time_minutes {
     group_label: "> Operations / Logistics"
-    label: "AVG Dispatching Queuing Time"
-    description: "Average time between picking completion and rider having claimed the order."
+    label: "AVG Withheld From Picking Time"
+    description: "Average dispatch-related (withheld) queuing time - from order created to order offered to hub for picking. Outliers excluded (<0min or >120min)"
     value_format_name: decimal_1
     type: average
   }
