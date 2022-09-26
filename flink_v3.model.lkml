@@ -15,18 +15,23 @@ case_sensitive: no
 
 
 # START ------------------------ defined persisting strategies ---------------------------------
+# schedules based on the recommendations of the official Google documentation
+# >> https://cloud.google.com/looker/docs/reference/param-view-sql-trigger-value
 datagroup: flink_default_datagroup {
-  sql_trigger: SELECT MAX(order_timestamp) FROM `flink-data-prod.curated.orders` ;;
+  # every hour
+  sql_trigger: SELECT EXTRACT(HOUR FROM CURRENT_TIMESTAMP()) ;;
   max_cache_age: "24 hour"
 }
 
 datagroup: flink_hourly_datagroup {
-  sql_trigger: SELECT MAX(order_timestamp) FROM `flink-data-prod.curated.orders`;;
-  max_cache_age: "1 hour"
+  # every hour
+  sql_trigger: SELECT EXTRACT(HOUR FROM CURRENT_TIMESTAMP());;
+  max_cache_age: "2 hour"
 }
 
 datagroup: flink_daily_datagroup {
-  interval_trigger: "24 hours"
+  # once per day at 5am
+  sql_trigger: SELECT FLOOR(((TIMESTAMP_DIFF(CURRENT_TIMESTAMP(),'1970-01-01 00:00:00',SECOND)) - 60*60*5)/(60*60*24));;
   max_cache_age: "30 hour"
 }
 
