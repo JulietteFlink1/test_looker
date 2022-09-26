@@ -67,7 +67,6 @@ view: employee_level_kpis {
     type:  number
     label: "Staff Number"
     description: "Based on Quinyx badgeNo field (Badge No)"
-    hidden: yes
     sql: ${TABLE}.staff_number ;;
     value_format: "0"
   }
@@ -232,8 +231,6 @@ view: employee_level_kpis {
     label: "Is Employed"
     description: "Is shift date between employment start date and employment end date ?"
   }
-
-
 
   dimension: is_external {
     type: yesno
