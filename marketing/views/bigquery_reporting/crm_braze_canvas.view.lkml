@@ -269,8 +269,8 @@ view: crm_braze_canvas {
 
   measure: sum_total_orders_with_vouchers {
     group_label: "Absolute"
-    label: "# Total Orders with Vouchers"
-    description: "Number of orders with vouchers that happened in the 12h window after the last email opening"
+    label: "# Total Orders with Cart Discounts"
+    description: "Number of orders with Cart Discounts that happened in the 12h window after the last email opening"
     type: sum
     sql: ${total_orders_with_vouchers} ;;
     # value_format_name: decimal_0
@@ -288,8 +288,8 @@ view: crm_braze_canvas {
 
   measure: sum_total_vouchers_sent {
     group_label: "Absolute"
-    label: "# Total Vouchers Sent"
-    description: "Number of Vouchers that sent in orders that happened in the 12h after the last email open"
+    label: "# Total Cart Discounts Sent"
+    description: "Number of Cart Discounts that sent in orders that happened in the 12h after the last email open"
     type: sum
     sql: ${total_vouchers_sent} ;;
     # value_format_name: decimal_0
@@ -297,8 +297,8 @@ view: crm_braze_canvas {
 
   measure: sum_total_discount_amount {
     group_label: "Monetary"
-    label: "Discount Amount"
-    description: "Total Value of discount vouchers"
+    label: "Cart Discount Amount"
+    description: "Total Value of Cart Discounts"
     type: sum
     sql: ${total_discount_amount} ;;
     # value_format_name: decimal_0
@@ -410,7 +410,7 @@ view: crm_braze_canvas {
 
   measure: order_rate_with_voucher {
     group_label: "Relative"
-    label: "% Total Order Rate with Vouchers"
+    label: "% Total Order Rate with Cart Discounts"
     description: "Percentage: number of orders made in the 12h after sending an email divided by the number of emails opened (or sent)"
     type: number
     sql: ${sum_total_orders_with_vouchers} / NULLIF(${sum_unique_users_denominator}, 0) ;;
@@ -419,8 +419,8 @@ view: crm_braze_canvas {
 
   measure: discount_order_share {
     group_label: "Relative"
-    label: "% Discount Order Share"
-    description: "Percentage: number of orders with voucher discounts divided by the total number of ordres made in the 12h after the last opening of the email"
+    label: "% Cart Discount Order Share"
+    description: "Percentage: number of orders with Cart Discounts divided by the total number of ordres made in the 12h after the last opening of the email"
     type: number
     sql: ${sum_total_orders_with_vouchers} / NULLIF(${sum_total_orders}, 0);;
     value_format_name: percent_1
@@ -428,8 +428,8 @@ view: crm_braze_canvas {
 
   measure: discount_value_share {
     group_label: "Relative"
-    label: "% Discount Value Share "
-    description: "Percentage: total of voucher discounts divided by the total gmv (gross) of ordres made in the 12h after the last opening of the email"
+    label: "% Cart Discount Value Share "
+    description: "Percentage: total of Cart Discounts divided by the total gmv (gross) of ordres made in the 12h after the last opening of the email"
     type: number
     sql: ${sum_total_discount_amount} / NULLIF(${sum_total_gmv_gross}, 0);;
     value_format_name: percent_1
@@ -469,7 +469,7 @@ view: crm_braze_canvas {
     allowed_value: { value: "emails_clicked"                  label: "Emails Clicked"}
     allowed_value: { value: "emails_unsubscribed"             label: "Emails Unsubscribed"}
     allowed_value: { value: "orders"                          label: "Orders"}
-    allowed_value: { value: "orders_with_vouchers"            label: "Orders with vouchers"}
+    allowed_value: { value: "orders_with_vouchers"            label: "Orders with Cart Discounts"}
     allowed_value: { value: "discount_amount"                 label: "Discount Amount"}
     allowed_value: { value: "gmv_gross"                       label: "GMV Gross"}
     allowed_value: { value: "average_order_value"             label: "Average Order Value"}
@@ -487,7 +487,7 @@ view: crm_braze_canvas {
     allowed_value: { value: "click_rate"                      label: "Click Rate"}
     allowed_value: { value: "unsubscribe_rate"                label: "Unsubscribe Rate"}
     allowed_value: { value: "order_rate"                      label: "Order Rate"}
-    allowed_value: { value: "order_rate_with_voucher"         label: "Order Rate with Voucher"}
+    allowed_value: { value: "order_rate_with_voucher"         label: "Order Rate with Cart Discount"}
     allowed_value: { value: "discount_order_share"            label: "Discount Order Share"}
     allowed_value: { value: "discount_value_share"            label: "Discount Value Share"}
 

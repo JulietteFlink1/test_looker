@@ -397,8 +397,8 @@ view: crm_braze_data {
 
   measure: total_orders_with_vouchers_opened {
     type: sum
-    label: "# Total Orders with Vouchers (Opened Emails)"
-    description: "Number of Orders with Vouchers that happened in the 12h after the last email was open"
+    label: "# Total Orders with Cart Discounts (Opened Emails)"
+    description: "Number of Orders with Cart Discounts that happened in the 12h after the last email was open"
     group_label: "Absolute"
     sql: ${num_orders_with_vouchers_opened};;
     value_format_name: decimal_0
@@ -406,8 +406,8 @@ view: crm_braze_data {
 
   measure: total_orders_with_vouchers_sent {
     type: sum
-    label: "# Total Orders with Vouchers (Sent Emails)"
-    description: "Number of Orders with Vouchers that happened in the 12h after the last email was sent"
+    label: "# Total Orders with Cart Discounts (Sent Emails)"
+    description: "Number of Orders with Cart Discounts that happened in the 12h after the last email was sent"
     group_label: "Absolute"
     sql: ${num_orders_with_vouchers_sent};;
     value_format_name: decimal_0
@@ -415,8 +415,8 @@ view: crm_braze_data {
 
   measure: total_discount_opened {
     type: sum
-    label: "Discount Amount (Opened Emails)"
-    description: "Total Value of discount vouchers"
+    label: "Cart Discount Amount (Opened Emails)"
+    description: "Total Value of Cart Discounts"
     group_label: "Monetary"
     sql: ${discount_amount_opened};;
     value_format_name: decimal_0
@@ -424,8 +424,8 @@ view: crm_braze_data {
 
   measure: total_discount_sent {
     type: sum
-    label: "Discount Amount (Sent Emails)"
-    description: "Total Value of discount vouchers"
+    label: "Cart Discount Amount (Sent Emails)"
+    description: "Total Value of Cart Discounts"
     group_label: "Monetary"
     sql: ${discount_amount_sent};;
     value_format_name: decimal_0
@@ -572,7 +572,7 @@ view: crm_braze_data {
 
   measure: total_order_rate_with_vouchers_opened {
     type: number
-    label: "% Total Order Rate with Vouchers (Opened Emails)"
+    label: "% Total Order Rate with Cart Discounts (Opened Emails)"
     description: "Percentage: number of orders made in the 12h after the last opening of the email divided by the number of emails opened"
     group_label: "Relative"
     sql: ${total_orders_with_vouchers_opened} / NULLIF(${total_emails_opened}, 0);;
@@ -581,7 +581,7 @@ view: crm_braze_data {
 
   measure: total_order_rate_with_vouchers_sent {
     type: number
-    label: "% Total Order Rate with Vouchers (Sent Emails)"
+    label: "% Total Order Rate with Cart Discounts (Sent Emails)"
     description: "Percentage: number of orders made in the 12h after sending an email divided by the number of emails sent"
     group_label: "Relative"
     sql: ${total_orders_with_vouchers_sent} / NULLIF(${total_all_sent}, 0);;
@@ -590,8 +590,8 @@ view: crm_braze_data {
 
   measure: discount_order_share_opened {
     type: number
-    label: "% Discount Order Share (Opened Emails)"
-    description: "Percentage: number of orders with voucher discounts divided by the total number of ordres made in the 12h after the last opening of the email"
+    label: "% Cart Discount Order Share (Opened Emails)"
+    description: "Percentage: number of orders with Cart Discount divided by the total number of ordres made in the 12h after the last opening of the email"
     group_label: "Relative"
     sql: ${total_orders_with_vouchers_opened} / NULLIF(${total_orders_opened}, 0);;
     value_format_name: percent_2
@@ -599,8 +599,8 @@ view: crm_braze_data {
 
   measure: discount_order_share_sent {
     type: number
-    label: "% Discount Order Share (Sent Emails)"
-    description: "Percentage: number of orders with voucher discounts divided by the total number of ordres made in the 12h after sending an email"
+    label: "% Cart Discount Order Share (Sent Emails)"
+    description: "Percentage: number of orders with Cart Discounts divided by the total number of ordres made in the 12h after sending an email"
     group_label: "Relative"
     sql: ${total_order_rate_with_vouchers_sent} / NULLIF(${total_orders_sent}, 0);;
     value_format_name: percent_2
@@ -608,8 +608,8 @@ view: crm_braze_data {
 
   measure: discount_value_share_opened {
     type: number
-    label: "% Discount Value Share (Opened Emails) "
-    description: "Percentage: total of voucher discounts divided by the total gmv (gross) of ordres made in the 12h after the last opening of the email"
+    label: "% Cart Discount Value Share (Opened Emails) "
+    description: "Percentage: total of Cart Discounts divided by the total gmv (gross) of ordres made in the 12h after the last opening of the email"
     group_label: "Relative"
     sql: ${total_discount_opened} / NULLIF(${total_gmv_gross_opened}, 0);;
     value_format_name: percent_2
@@ -617,8 +617,8 @@ view: crm_braze_data {
 
   measure: discount_value_share_sent {
     type: number
-    label: "% Discount Value Share (Sent Emails) "
-    description: "Percentage: total of voucher discounts divided by the total gmv (gross) of ordres made in the 12h after sending an email"
+    label: "% Cart Discount Value Share (Sent Emails) "
+    description: "Percentage: total of Cart Discounts divided by the total gmv (gross) of ordres made in the 12h after sending an email"
     group_label: "Relative"
     sql: ${total_discount_sent} / NULLIF(${total_gmv_gross_sent}, 0);;
     value_format_name: percent_2
@@ -690,11 +690,11 @@ view: crm_braze_data {
     allowed_value: { value: "unique_orders_opened"          label: "Unique Orders (opened)"}
     allowed_value: { value: "unique_orders_sent"          label: "Unique Orders (sent)"}
 
-    allowed_value: { value: "total_orders_with_vouchers_opened"        label: "Total Orders with Voucher (opened)"}
-    allowed_value: { value: "total_orders_with_vouchers_sent"        label: "Total Orders with Voucher (sent)"}
+    allowed_value: { value: "total_orders_with_vouchers_opened"        label: "Total Orders with Cart Discount (opened)"}
+    allowed_value: { value: "total_orders_with_vouchers_sent"        label: "Total Orders with Cart Discount (sent)"}
 
-    allowed_value: { value: "total_order_rate_with_vouchers_opened"    label: "Total Order Rate with Voucher (opened)"}
-    allowed_value: { value: "total_order_rate_with_vouchers_sent"    label: "Total Order Rate with Voucher (sent)"}
+    allowed_value: { value: "total_order_rate_with_vouchers_opened"    label: "Total Order Rate with Cart Discount (opened)"}
+    allowed_value: { value: "total_order_rate_with_vouchers_sent"    label: "Total Order Rate with Cart Discount (sent)"}
 
 
     allowed_value: { value: "total_discount_opened"           label: "Total Discount Value (opened)"}

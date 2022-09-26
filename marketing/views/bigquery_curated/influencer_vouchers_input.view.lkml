@@ -21,11 +21,13 @@ view: influencer_vouchers_input {
   }
 
   dimension: voucher_code {
+    label: "Cart Discount Code"
     type: string
     sql: ${TABLE}.voucher_code ;;
   }
 
   dimension: voucher_type {
+    label: "Cart Discount Type"
     type: string
     sql: ${TABLE}.voucher_type ;;
   }
@@ -39,8 +41,8 @@ view: influencer_vouchers_input {
 #### MEASURES
 
   measure: cnt_influencer_community_voucher_redemptions {
-    label: "# Influencer Community Voucher Redemptions"
-    description: "Count of Community Voucher Redemptions"
+    label: "# Influencer Community Cart Discount Redemptions"
+    description: "Count of Community Cart Discount Redemptions"
     hidden:  no
     type: count_distinct
     sql: ${orders_cl.order_uuid} ;;
@@ -50,8 +52,8 @@ view: influencer_vouchers_input {
   }
 
   measure: cnt_influencer_promo_voucher_redemptions {
-    label: "# Influencer Promo Voucher Redemptions"
-    description: "Count of Promo Voucher Redemptions"
+    label: "# Influencer Promo Cart Discount Redemptions"
+    description: "Count of Promo Cart Discount Redemptions"
     hidden:  no
     type: count_distinct
     sql: ${orders_cl.order_uuid} ;;
@@ -61,8 +63,8 @@ view: influencer_vouchers_input {
   }
 
   measure: sum_influencer_community_voucher_costs {
-    label: "SUM Influencer Community Voucher Costs"
-    description: "Sum of Discount amount Influencer Promo vouchers"
+    label: "SUM Influencer Community Cart Discount Costs"
+    description: "Sum of Discount amount Influencer Promo Cart Discounts"
     type: sum
     filters: [voucher_type: "Community"]
     sql: ${orders_cl.discount_amount};;
@@ -71,8 +73,8 @@ view: influencer_vouchers_input {
   }
 
   measure: sum_influencer_promo_voucher_costs {
-    label: "SUM Influencer Promo Voucher Costs"
-    description: "Sum of Discount amount Influencer Promo vouchers"
+    label: "SUM Influencer Promo Cart Discount Costs"
+    description: "Sum of Discount amount Influencer Promo Cart Discounts"
     type: sum
     filters: [voucher_type: "Promo"]
     sql: ${orders_cl.discount_amount};;

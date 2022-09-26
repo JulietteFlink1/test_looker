@@ -138,7 +138,7 @@ view: first_order_refund_analysis {
 
   measure: count_refunds_no_voucher {
     group_label: "Measures"
-    label: "# of Refund orders without voucher"
+    label: "# of Refund orders without Cart Discount"
     type: count_distinct
     sql: ${order_uuid};;
     filters: [is_refund_order: "yes", is_discount_order: "no"]
@@ -146,7 +146,7 @@ view: first_order_refund_analysis {
 
   measure: count_orders_no_voucher {
     group_label: "Measures"
-    label: "# of Orders without voucher"
+    label: "# of Orders without Cart Discount"
     type: count_distinct
     sql: ${order_uuid};;
     filters: [is_discount_order: "no"]
@@ -154,7 +154,7 @@ view: first_order_refund_analysis {
 
   measure: count_refunds_voucher {
     group_label: "Measures"
-    label: "# of Refund orders with voucher"
+    label: "# of Refund orders with Cart Discount"
     type: count_distinct
     sql: ${order_uuid};;
     filters: [is_refund_order: "yes", is_discount_order: "yes", is_raf_discount: "no"]
@@ -162,7 +162,7 @@ view: first_order_refund_analysis {
 
   measure: count_orders_voucher {
     group_label: "Measures"
-    label: "# of Orders with voucher"
+    label: "# of Orders with Cart Discount"
     type: count_distinct
     sql: ${order_uuid};;
     filters: [is_discount_order: "yes", is_raf_discount: "no"]
@@ -171,7 +171,7 @@ view: first_order_refund_analysis {
 
   measure: count_refunds_raf {
     group_label: "Measures"
-    label: "# of Refund orders with raf voucher"
+    label: "# of Refund orders with raf Cart Discount"
     type: count_distinct
     sql: ${order_uuid};;
     filters: [is_refund_order: "yes", is_raf_discount: "yes"]
@@ -179,7 +179,7 @@ view: first_order_refund_analysis {
 
   measure: count_orders_raf {
     group_label: "Measures"
-    label: "# of Orders with raf voucher"
+    label: "# of Orders with raf Cart Discount"
     type: count_distinct
     sql: ${order_uuid};;
     filters: [is_raf_discount: "yes"]

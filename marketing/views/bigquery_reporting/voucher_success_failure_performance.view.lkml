@@ -4,6 +4,7 @@ view: voucher_success_failure_performance {
 
   dimension: voucher_success_failure_event_uuid {
     type: string
+    label: "Cart Discount Success Failure Event UUID"
     primary_key: yes
     hidden: yes
     sql: ${TABLE}.voucher_success_failure_event_uuid ;;
@@ -25,6 +26,7 @@ view: voucher_success_failure_performance {
   }
 
   dimension: voucher_code {
+    label: "Cart Discount Code"
     type: string
     sql: ${TABLE}.voucher_code ;;
   }
@@ -55,11 +57,13 @@ view: voucher_success_failure_performance {
   }
 
   dimension: voucher_event_name {
+    label: "Cart Discount Event Name"
     type: string
     sql: ${TABLE}.voucher_event_name ;;
   }
 
   dimension: voucher_attempted_error_message {
+    label: "Cart Discount Attempted Error Message"
     type: string
     sql: ${TABLE}.voucher_attempted_error_message ;;
   }
