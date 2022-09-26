@@ -19,9 +19,15 @@ view: employee_level_kpis {
 
   dimension: position_name {
     type: string
-    label: "Worked Position Name"
+    label: "Scheduled Position Name"
     description: "Based on Quinyx assinged shift type (null when an employee is not assgined any shift)"
     sql: ${TABLE}.position_name ;;
+  }
+
+  dimension: assigned_position_name {
+    type: string
+    label: "Assigned Position Name"
+    description: "Based on Quinyx Staff Category assinged to each employee profile"
   }
 
   dimension: rider_id {
@@ -54,7 +60,6 @@ view: employee_level_kpis {
     ]
     convert_tz: no
     datatype: date
-    hidden: yes
     sql: ${TABLE}.shift_date ;;
   }
 
@@ -81,10 +86,6 @@ view: employee_level_kpis {
     sql: ${TABLE}.ats_id ;;
   }
 
-  dimension: country_iso {
-    type: string
-    sql: ${TABLE}.country_iso ;;
-  }
 
   dimension: external_agency_name {
     type: string
@@ -170,6 +171,42 @@ view: employee_level_kpis {
     sql: ${TABLE}.last_absence_date ;;
   }
 
+  dimension: last_shift_date {
+    label: "Last Shift Date"
+    description: "Date of the last shift"
+    convert_tz: no
+    datatype: date
+    type: date
+    sql: ${TABLE}.last_shift_date ;;
+  }
+
+  dimension: first_shift_date {
+    label: "First Shift Date"
+    description: "Date of the First shift"
+    convert_tz: no
+    datatype: date
+    type: date
+    sql: ${TABLE}.first_shift_date ;;
+  }
+
+  dimension: account_creation_date {
+    label: "Account Creation Date"
+    description: "Date of Quinyx Account Creation"
+    convert_tz: no
+    datatype: date
+    type: date
+    sql: ${TABLE}.account_creation_date ;;
+  }
+
+  dimension: employment_start_date {
+    label: "Employment Start Date"
+    description: "Start Date of First Employement Contract (Agreement in Quinyx UI)"
+    convert_tz: no
+    datatype: date
+    type: date
+    sql: ${TABLE}.employment_start_date ;;
+  }
+
   dimension: is_active {
     type: yesno
     sql: ${TABLE}.is_active ;;
@@ -182,6 +219,21 @@ view: employee_level_kpis {
     hidden: yes
     sql: ${TABLE}.hub_code ;;
   }
+
+  dimension: home_hub_code {
+    type: string
+    hidden: yes
+    sql: ${TABLE}.home_hub_code ;;
+  }
+
+  dimension: is_employed {
+    type: yesno
+    sql: ${TABLE}.is_employed ;;
+    label: "Is Employed"
+    description: "Is shift date between employment start date and employment end date ?"
+  }
+
+
 
   dimension: is_external {
     type: yesno
