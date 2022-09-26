@@ -94,14 +94,16 @@ view: vehicle_uptime_metrics {
     label: "# Bikes"
     description: "Number of bikes that should be available"
     type: count_distinct
-    sql: ${vehicle_id} ;;
+    filters: [expected_uptime_minutes: "not null"]
+    sql: ${vehicle_id}
+    ;;
   }
 
   measure: number_of_non_damaged_bikes {
     label: "# Non Damaged Bikes"
     description: "Number of bikes that do not have a damage reported"
     type: count_distinct
-    filters: [downtime_minutes : "=0"]
+    filters: [downtime_minutes : "=0", expected_uptime_minutes: "not null"]
     sql: ${vehicle_id} ;;
   }
 
@@ -114,8 +116,8 @@ view: vehicle_uptime_metrics {
   }
 
   measure: share_of_operational_bike_minutes {
-    label: "% Operational Bike Time"
-    description: "Computed as 1 - (downtime / expected uptime).
+    label: "% Operational Bike Time (Damages)"
+    description: "Computed as 1 - (downtime / expected uptime). Based on damages.
                 Downtime = sum of duration of damages on a certain day.
                 Expected Uptime: # bikes * opening duration of hub on a certain day."
     type: number
