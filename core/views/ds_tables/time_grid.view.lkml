@@ -49,6 +49,7 @@ view: time_grid {
       date,
       hour_of_day,
       time_of_day,
+      day_of_week,
       minute30,
       week,
       month,
