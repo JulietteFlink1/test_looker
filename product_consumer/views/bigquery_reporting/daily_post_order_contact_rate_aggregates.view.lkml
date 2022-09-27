@@ -650,9 +650,9 @@ view: daily_post_order_contact_rate_aggregates {
     {% if date_granularity._parameter_value == 'Day' %}
       ${event_date_date}
     {% elsif date_granularity._parameter_value == 'Week' %}
-      ${event_date_date}
+      ${event_date_week}
     {% elsif date_granularity._parameter_value == 'Month' %}
-      ${event_date_date}
+      ${event_date_month}
     {% endif %};;
   }
 
