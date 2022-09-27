@@ -605,11 +605,7 @@ view: employee_level_kpis {
     group_label: "* Shift related *"
     type: number
     hidden: yes
-    sql:
-      CASE
-        WHEN date_DIFF( safe_cast(max(${shift_date}) as date),safe_cast(min(${shift_date}) as date), week) = 0 THEN 1
-        ELSE date_DIFF( safe_cast(max(${shift_date}) as date),safe_cast(min(${shift_date}) as date), week)
-      END ;;
+    sql:date_DIFF( safe_cast(max(${shift_date}) as date),safe_cast(min(${shift_date}) as date), week(monday)) + 1 ;;
   }
 
   measure: last_worked_date {
