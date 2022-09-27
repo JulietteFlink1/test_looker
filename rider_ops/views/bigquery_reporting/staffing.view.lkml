@@ -194,6 +194,7 @@ view: staffing {
     sql: ${TABLE}.number_of_planned_employees_internal_rider ;;
     hidden: yes
   }
+
   dimension: number_of_planned_employees_rider {
     label: "# Planned Riders"
     type: number
@@ -1358,7 +1359,177 @@ view: staffing {
   # ~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+###### Ops Associate
+
+  dimension: number_of_planned_employees_ops_associate {
+    group_label: "> Ops Associate Measures"
+    label: "# Planned Ops Associates"
+    type: number
+    sql: ${TABLE}.number_of_planned_employees_ops_associate;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_planned_employees_internal_ops_associate {
+    group_label: "> Ops Associate Measures"
+    label: "# Planned Internal Ops Associates"
+    type: sum
+    sql: ${TABLE}.number_of_planned_employees_internal_ops_associate;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_planned_employees_external_ops_associate {
+    group_label: "> Ops Associate Measures"
+    label: "# Planned External Ops Associates"
+    type: sum
+    sql: ${TABLE}.number_of_planned_employees_external_ops_associate;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_worked_minutes_ops_associate {
+    group_label: "> Ops Associate Measures"
+    label: "# Punched Ops Associate Minutes"
+    type: sum
+    sql: ${TABLE}.number_of_worked_minutes_ops_associate ;;
+    hidden: yes
+  }
+
+  measure: number_of_worked_minutes_internal_ops_associate {
+    group_label: "> Ops Associate Measures"
+    label: "# Punched Internal Ops Associate Minutes"
+    type: sum
+    sql: ${TABLE}.number_of_worked_minutes_internal_ops_associate ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  measure: number_of_worked_minutes_external_ops_associate {
+    group_label: "> Ops Associate Measures"
+    label: "# Punched External Ops Associate Minutes"
+    type: sum
+    sql: ${TABLE}.number_of_worked_minutes_external_ops_associate ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  measure: number_of_no_show_employees_ops_associate {
+    group_label: "> Ops Associate Measures"
+    label: "# No Show Ops Associates"
+    type: sum
+    sql: ${TABLE}.number_of_no_show_employees_ops_associate;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  measure: number_of_no_show_employees_internal_ops_associate {
+    group_label: "> Ops Associate Measures"
+    label: "# No Show Internal Ops Associates"
+    type: sum
+    sql: ${TABLE}.number_of_no_show_employees_internal_ops_associate;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  measure: number_of_no_show_employees_external_ops_associate {
+    group_label: "> Ops Associate Measures"
+    label: "# No Show External Ops Associates"
+    type: sum
+    sql: ${TABLE}.number_of_no_show_employees_external_ops_associate;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  measure: number_of_no_show_minutes_ops_associate {
+    group_label: "> Ops Associate Measures"
+    label: "# No Show Ops Associate Minutes"
+    type: sum
+    sql: ${TABLE}.number_of_no_show_minutes_ops_associate;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  measure: number_of_no_show_minutes_internal_ops_associate {
+    group_label: "> Ops Associate Measures"
+    label: "# No Show Internal Ops Associate Minutes"
+    type: sum
+    sql: ${TABLE}.number_of_no_show_minutes_internal_ops_associate;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  measure: number_of_no_show_minutes_external_ops_associate {
+    group_label: "> Ops Associate Measures"
+    label: "# No Show External Ops Associate Minutes"
+    type: sum
+    sql: ${TABLE}.number_of_no_show_minutes_external_ops_associate;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  measure: number_of_excused_no_show_minutes_ops_associate {
+    group_label: "> Ops Associate Measures"
+    label: "# Excused No Show Ops Associate Minutes"
+    type: sum
+    sql: ${TABLE}.number_of_excused_no_show_minutes_ops_associate;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  measure: number_of_deleted_excused_no_show_minutes_ops_associate {
+    group_label: "> Ops Associate Measures"
+    label: "# Deleted Excused No Show Ops Associate Minutes"
+    type: sum
+    sql: ${TABLE}.number_of_deleted_excused_no_show_minutes_ops_associate;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  measure: number_of_unexcused_no_show_minutes_ops_associate {
+    group_label: "> Ops Associate Measures"
+    label: "# Unexcused No Show Ops Associate Minutes"
+    type: sum
+    sql: ${TABLE}.number_of_unexcused_no_show_minutes_ops_associate;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  measure: number_of_deleted_unexcused_no_show_minutes_ops_associate {
+    group_label: "> Ops Associate Measures"
+    label: "# Deleted Unexcused No Show Ops Associate Minutes"
+    type: sum
+    sql: ${TABLE}.number_of_deleted_unexcused_no_show_minutes_ops_associate;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  measure: number_of_leave_minutes_ops_associate {
+    group_label: "> Ops Associate Measures"
+    label: "# Leave Ops Associate Minutes"
+    type: sum
+    sql: ${TABLE}.number_of_leave_minutes_ops_associate;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  measure: number_of_leave_minutes_internal_ops_associate {
+    group_label: "> Ops Associate Measures"
+    label: "# Leave Internal Ops Associate Minutes"
+    type: sum
+    sql: ${TABLE}.number_of_leave_minutes_internal_ops_associate;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  measure: number_of_leave_minutes_external_ops_associate {
+    group_label: "> Ops Associate Measures"
+    label: "# Leave External Ops Associate Minutes"
+    type: sum
+    sql: ${TABLE}.number_of_leave_minutes_external_ops_associate;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
   # =========  Hours   =========
+
   ##### All
   measure: number_of_worked_hours_rider {
     group_label: "> Rider Measures"
@@ -1406,6 +1577,15 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  measure: number_of_worked_hours_ops_associate {
+    alias: [number_of_worked_hours_ops_staff]
+    group_label: "> WH Measures"
+    label: "# Punched Ops Associate Hours"
+    type: number
+    sql: ${number_of_worked_minutes_ops_associate}/60;;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_worked_hours_cc_agent {
     group_label: "> CC Agent Measures"
     label: "# Punched CC Agent Hours"
@@ -1413,20 +1593,13 @@ view: staffing {
     sql: ${number_of_worked_minutes_wh}/60;;
     value_format_name: decimal_1
   }
+
 # since shift lead do not consistently punch in/out then we need to consider worked hours = planned hours
   measure: number_of_worked_hours_hub_staff {
     group_label: "> Hub Staff Measures"
     label: "# Punched Hub Staff Hours"
     type: number
-    sql: ${number_of_worked_hours_wh}+${number_of_worked_hours_picker}+${number_of_worked_hours_rider_captain}+${number_of_planned_hours_shift_lead};;
-    value_format_name: decimal_1
-  }
-
-  measure: number_of_worked_hours_ops_staff {
-    group_label: "> Ops Staff Measures"
-    label: "# Punched Ops Staff Hours"
-    type: number
-    sql: ${number_of_worked_hours_wh}+${number_of_worked_hours_picker}+${number_of_worked_hours_rider_captain};;
+    sql: ${number_of_worked_hours_ops_associate}+${number_of_planned_hours_shift_lead};;
     value_format_name: decimal_1
   }
 
@@ -1488,17 +1661,18 @@ view: staffing {
   measure: number_of_worked_hours_external_hub_staff {
     group_label: "> Hub Staff Measures"
     label: "# Punched External Hub Staff Hours"
-    description: "Sum of Punched External Picker, WH and Rider Captain hours and Planned External Shift Lead hours"
-    type: sum
-    sql: (${number_of_worked_minutes_external_picker}+${number_of_worked_minutes_external_wh}+${number_of_worked_minutes_external_rider_captain}+${number_of_planned_minutes_external_shift_lead})/60;;
+    description: "Sum of Punched External Ops Associate(Picker, WH, Ops Associate and Rider Captain) hours and Planned External Shift Lead hours"
+    type: number
+    sql: (${number_of_worked_minutes_external_ops_associate}+sum(${number_of_planned_minutes_external_shift_lead}))/60;;
     value_format_name: decimal_1
   }
 
-  measure: number_of_worked_hours_external_ops_staff {
-    group_label: "> Ops Staff Measures"
-    label: "# Punched External Ops Staff Hours"
-    type: sum
-    sql: (${number_of_worked_minutes_external_picker}+${number_of_worked_minutes_external_rider_captain}+${number_of_worked_minutes_external_wh})/60;;
+  measure: number_of_worked_hours_external_ops_associate {
+    alias: [number_of_worked_hours_external_ops_staff]
+    group_label: "> Ops Associate Measures"
+    label: "# Punched External Ops Associate Hours"
+    type: number
+    sql: ${number_of_worked_minutes_external_ops_associate}/60;;
     value_format_name: decimal_1
   }
 
@@ -1565,7 +1739,26 @@ view: staffing {
     hidden: yes
   }
 
+  measure: sum_of_worked_employees_ops_associate {
+    group_label: "> Ops Associate Measures"
+    label: "# Punched Ops Associates"
+    type: sum
+    sql: ${TABLE}.number_of_worked_employees_ops_associate;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
   #### External
+
+  measure: sum_of_worked_employees_external_ops_associate {
+    group_label: "> Ops Associate Measures"
+    label: "# Punched External Ops Associates"
+    type: sum
+    sql: ${TABLE}.number_of_worked_employees_external_ops_associate;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
   measure: sum_of_worked_employees_external_rider {
     group_label: "> Rider Measures"
     label: "# Punched External Riders"
@@ -1628,6 +1821,16 @@ view: staffing {
   }
 
   #### Internal
+
+  measure: sum_of_worked_employees_internal_ops_associate {
+    group_label: "> Ops Associate Measures"
+    label: "# Punched Internal Ops Associates"
+    type: sum
+    sql: ${TABLE}.number_of_worked_employees_internal_ops_associate;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
   measure: sum_of_worked_employees_internal_rider {
     group_label: "> Rider Measures"
     label: "# Punched Internal Riders"
@@ -1692,6 +1895,33 @@ view: staffing {
   # =========  Unassigned Employees   =========
   ##### All
 
+  measure: sum_of_unassigned_employees_internal_ops_associate {
+    group_label: "> Ops Associate Measures"
+    label: "# Unassigned (Open) Internal Ops Associates"
+    type: sum
+    sql: ${TABLE}.number_of_unassigned_employees_internal_ops_associate;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  measure: sum_of_unassigned_employees_external_ops_associate {
+    group_label: "> Ops Associate Measures"
+    label: "# Unassigned External Ops Associates"
+    type: sum
+    sql: ${TABLE}.number_of_unassgined_employees_external_ops_associate;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  measure: sum_of_unassigned_employees_ops_associate {
+    group_label: "> Ops Associate Measures"
+    label: "# Unassigned (Open) Ops Associates"
+    type: number
+    sql: ${sum_of_unassigned_employees_internal_ops_associate}+${sum_of_unassigned_employees_external_ops_associate};;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
   measure: sum_of_unassigned_employees_rider {
     group_label: "> Rider Measures"
     label: "# Unassigned Riders"
@@ -1755,6 +1985,33 @@ view: staffing {
 
   # =========  Open Hours   =========
 
+  measure: number_of_unassigned_minutes_internal_ops_associate {
+    group_label: "> Ops Associate Measures"
+    label: "# Unassigned (Open) Internal Ops Associate Minutes"
+    type: sum
+    sql: ${TABLE}.number_of_unassigned_minutes_internal_ops_associate;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  measure: number_of_unassigned_minutes_external_ops_associate {
+    group_label: "> Ops Associate Measures"
+    label: "# Unassigned External Ops Associate Minutes"
+    type: sum
+    sql: ${TABLE}.number_of_unassigned_minutes_external_ops_associate;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  measure: number_of_unassigned_hours_ops_associate {
+    alias: [number_of_unassigned_hours_ops_staff]
+    group_label: "> Ops Associate Measures"
+    label: "# Unassigned Ops Associate Hours"
+    type: number
+    sql: (${number_of_unassigned_minutes_internal_ops_associate}+${number_of_unassigned_minutes_external_ops_associate})/60;;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_unassigned_hours_rider {
     group_label: "> Rider Measures"
     label: "# Open Rider Hours"
@@ -1812,19 +2069,48 @@ view: staffing {
     group_label: "> Hub Staff Measures"
     label: "# Open Hub Staff Hours"
     type: number
-    sql: ${number_of_unassigned_hours_picker}+${number_of_unassigned_hours_wh}+${number_of_unassigned_hours_rider_captain}+${number_of_unassigned_hours_shift_lead};;
-    value_format_name: decimal_1
-  }
-
-  measure: number_of_unassigned_hours_ops_staff {
-    group_label: "> Ops Staff Measures"
-    label: "# Open Ops Staff Hours"
-    type: number
-    sql: ${number_of_unassigned_hours_picker}+${number_of_unassigned_hours_wh}+${number_of_unassigned_hours_rider_captain};;
+    sql: ${number_of_unassigned_hours_ops_associate}+${number_of_unassigned_hours_shift_lead};;
     value_format_name: decimal_1
   }
 
   ##### Planned (filled)
+
+  measure: number_of_planned_minutes_ops_associate {
+    group_label: "> Ops Associate Measures"
+    label: "# Planned (Filled) Ops Associate Minutes"
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_ops_associate ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  measure: number_of_planned_hours_ops_associate {
+    alias: [number_of_planned_hours_ops_staff]
+    group_label: "> Ops Associate Measures"
+    label: "# Planned (Filled) Ops Associate Hours"
+    type: number
+    sql: ${number_of_planned_minutes_ops_associate}/60 ;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_planned_minutes_internal_ops_associate {
+    group_label: "> Ops Associate Measures"
+    label: "# Planned (Filled) Internal Ops Associate Minutes"
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_internal_ops_associate ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  measure: number_of_planned_minutes_external_ops_associate {
+    group_label: "> Ops Associate Measures"
+    label: "# Planned (Filled) External Ops Associate Minutes"
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_external_ops_associate ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
   measure: number_of_planned_hours_rider {
     group_label: "> Rider Measures"
     label: "# Planned Rider Hours"
@@ -1882,16 +2168,10 @@ view: staffing {
     group_label: "> Hub Staff Measures"
     label: "# Planned Hub Staff Hours"
     type: number
-    sql: ${number_of_planned_hours_picker}+${number_of_planned_hours_wh}+${number_of_planned_hours_rider_captain}+${number_of_planned_hours_shift_lead};;
+    sql: ${number_of_planned_hours_ops_associate}+${number_of_planned_hours_shift_lead};;
     value_format_name: decimal_1
   }
-  measure: number_of_planned_hours_ops_staff {
-    group_label: "> Ops Staff Measures"
-    label: "# Planned Ops Staff Hours"
-    type: number
-    sql: ${number_of_planned_hours_picker}+${number_of_planned_hours_wh}+${number_of_planned_hours_rider_captain};;
-    value_format_name: decimal_1
-  }
+
   # =========  Scheduled Hours (Post-adjustments)   =========
   ##### All
   measure: number_of_scheduled_hours_rider {
@@ -1953,23 +2233,35 @@ view: staffing {
     group_label: "> Hub Staff Measures"
     label: "# Scheduled Hub Staff Hours"
     type: number
-    sql: ${number_of_scheduled_hours_picker}+${number_of_scheduled_hours_wh}+${number_of_scheduled_hours_shift_lead}+${number_of_scheduled_hours_rider_captain};;
+    sql: ${number_of_scheduled_hours_ops_associate}+${number_of_scheduled_hours_rider_captain};;
     value_format_name: decimal_1
   }
-  measure: number_of_scheduled_hours_ops_staff {
-    group_label: "> Ops Staff Measures"
-    label: "# Scheduled Ops Staff Hours"
+  measure: number_of_scheduled_hours_ops_associate {
+    alias: [number_of_scheduled_hours_ops_staff]
+    group_label: "> Ops Associate Measures"
+    label: "# Scheduled Ops Associate Hours"
     type: number
-    sql: ${number_of_scheduled_hours_picker}+${number_of_scheduled_hours_wh}+${number_of_scheduled_hours_rider_captain};;
+    sql: ${number_of_unassigned_hours_ops_associate}+${number_of_planned_hours_ops_associate};;
     value_format_name: decimal_1
   }
   ##### External
+
   measure: number_of_scheduled_hours_external_rider {
     group_label: "> Rider Measures"
     label: "# External Scheduled Rider Hours"
     description: "# External Scheduled Rider Hours (Post-Adjustments) (Assigned + Open)"
     type: sum
     sql: (${number_of_unassigned_minutes_external_rider}+${number_of_planned_minutes_external_rider})/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_scheduled_hours_external_ops_associate {
+    alias: [number_of_scheduled_hours_external_ops_staff]
+    group_label: "> Ops Associate Measures"
+    label: "# External Scheduled Ops Associate Hours"
+    description: "# External Scheduled Ops Associate Hours (Post-Adjustments) (Assigned + Open)"
+    type: number
+    sql: (${number_of_unassigned_minutes_external_ops_associate}+${number_of_planned_minutes_external_ops_associate})/60;;
     value_format_name: decimal_1
   }
 
@@ -2029,19 +2321,22 @@ view: staffing {
     label: "# External Scheduled Hub Staff Hours"
     description: "# External Scheduled Hub Staff Hours (Post-Adjustments) (Assigned + Open)"
     type: number
-    sql: (${number_of_scheduled_hours_external_picker}+${number_of_scheduled_hours_external_wh}+${number_of_scheduled_hours_external_rider_captain}+${number_of_scheduled_hours_external_shift_lead})/60;;
+    sql: (${number_of_scheduled_hours_external_ops_associate}+${number_of_scheduled_hours_external_shift_lead})/60;;
     value_format_name: decimal_1
   }
-  measure: number_of_scheduled_hours_external_ops_staff {
-    group_label: "> Ops Staff Measures"
-    label: "# External Scheduled Ops Staff Hours"
-    description: "# External Scheduled Ops Staff Hours (Post-Adjustments) (Assigned + Open)"
-    type: number
-    sql: (${number_of_scheduled_hours_external_picker}+${number_of_scheduled_hours_external_wh}+${number_of_scheduled_hours_external_rider_captain})/60;;
-    value_format_name: decimal_1
-  }
+
   # =========  No Show Hours   =========
   ##### All
+
+  measure: number_of_no_show_hours_ops_associate {
+    alias: [number_of_no_show_hours_ops_staff]
+    group_label: "> Ops Associate Measures"
+    label: "# No Show Ops Associate Hours"
+    type: number
+    sql: ${number_of_no_show_minutes_ops_associate}/60;;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_no_show_hours_rider {
     group_label: "> Rider Measures"
     label: "# No Show Rider Hours"
@@ -2099,22 +2394,26 @@ view: staffing {
     group_label: "> Hub Staff Measures"
     label: "# No Show Hub Staff Hours"
     type: number
-    sql: ${number_of_no_show_hours_picker}+${number_of_no_show_hours_wh}+${number_of_no_show_hours_rider_captain}+${number_of_no_show_hours_shift_lead};;
+    sql: ${number_of_no_show_hours_ops_associate}+${number_of_no_show_hours_shift_lead};;
     value_format_name: decimal_1
   }
-  measure: number_of_no_show_hours_ops_staff {
-    group_label: "> Ops Staff Measures"
-    label: "# No Show Ops Staff Hours"
-    type: number
-    sql: ${number_of_no_show_hours_picker}+${number_of_no_show_hours_wh}+${number_of_no_show_hours_rider_captain};;
-    value_format_name: decimal_1
-  }
+
   ##### External
+
   measure: number_of_no_show_hours_external_rider {
     group_label: "> Rider Measures"
     label: "# External No Show Rider Hours"
     type: sum
     sql: ${number_of_no_show_minutes_external_rider}/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_no_show_hours_external_ops_associate {
+    alias: [number_of_no_show_hours_external_ops_staff]
+    group_label: "> Ops Associate Measures"
+    label: "# External No Show Ops Associate Hours"
+    type: number
+    sql: ${number_of_no_show_minutes_external_ops_associate}/60;;
     value_format_name: decimal_1
   }
 
@@ -2168,17 +2467,11 @@ view: staffing {
     group_label: "> Hub Staff Measures"
     label: "# External No Show Hub Staff Hours"
     type: number
-    sql: ${number_of_no_show_hours_external_picker}+${number_of_no_show_hours_external_wh}+${number_of_no_show_hours_external_rider_captain}+${number_of_no_show_hours_external_shift_lead};;
-    value_format_name: decimal_1
- }
-
-  measure: number_of_no_show_hours_external_ops_staff {
-    group_label: "> Ops Staff Measures"
-    label: "# External No Show Ops Staff Hours"
-    type: number
-    sql: ${number_of_no_show_hours_external_picker}+${number_of_no_show_hours_external_wh}+${number_of_no_show_hours_external_rider_captain};;
+    sql: ${number_of_no_show_hours_external_ops_associate}+${number_of_no_show_hours_external_shift_lead};;
     value_format_name: decimal_1
   }
+
+##### Excused No Show
 
   measure: number_of_excused_no_show_hours_rider {
     group_label: "> Rider Measures"
@@ -2231,19 +2524,21 @@ view: staffing {
   measure: number_of_excused_no_show_hours_hub_staff {
     group_label: "> Hub Staff Measures"
     label: "# Excused No Show Hub Staff Hours"
-    type: sum
-    sql: (${number_of_excused_no_show_minutes_picker}+${number_of_excused_no_show_minutes_wh}+${number_of_excused_no_show_minutes_rider_captain}+${number_of_excused_no_show_minutes_shift_lead})/60;;
+    type: number
+    sql: (${number_of_excused_no_show_minutes_ops_associate}+sum(${number_of_excused_no_show_minutes_shift_lead}))/60;;
     value_format_name: decimal_1
   }
 
-  measure: number_of_excused_no_show_hours_ops_staff {
-    group_label: "> Ops Staff Measures"
-    label: "# Excused No Show Ops Staff Hours"
-    type: sum
-    sql: (${number_of_excused_no_show_minutes_picker}+${number_of_excused_no_show_minutes_wh}+${number_of_excused_no_show_minutes_rider_captain})/60;;
+  measure: number_of_excused_no_show_hours_ops_associate {
+    alias: [number_of_excused_no_show_hours_ops_staff]
+    group_label: "> Ops Associate Measures"
+    label: "# Excused No Show Ops Associate Hours"
+    type: number
+    sql: ${number_of_excused_no_show_minutes_ops_associate}/60;;
     value_format_name: decimal_1
   }
 
+##### Unexcused No Show
   measure: number_of_unexcused_no_show_hours_rider {
     group_label: "> Rider Measures"
     label: "# Unexcused No Show Rider Hours"
@@ -2287,18 +2582,21 @@ view: staffing {
   measure: number_of_unexcused_no_show_hours_hub_staff {
     group_label: "> Hub Staff Measures"
     label: "# Unexcused No Show Hub Staff Hours"
-    type: sum
-    sql: (${number_of_unexcused_no_show_minutes_picker}+${number_of_unexcused_no_show_minutes_wh}+${number_of_unexcused_no_show_minutes_rider_captain}+${number_of_unexcused_no_show_minutes_shift_lead})/60;;
+    type: number
+    sql: (${number_of_unexcused_no_show_minutes_ops_associate}+sum(${number_of_unexcused_no_show_minutes_shift_lead}))/60;;
     value_format_name: decimal_1
   }
 
-  measure: number_of_unexcused_no_show_hours_ops_staff {
-    group_label: "> Ops Staff Measures"
-    label: "# Unexcused No Show Ops Staff Hours"
-    type: sum
-    sql: (${number_of_unexcused_no_show_minutes_picker}+${number_of_unexcused_no_show_minutes_wh}+${number_of_unexcused_no_show_minutes_rider_captain})/60;;
+  measure: number_of_unexcused_no_show_hours_ops_associate {
+    alias: [number_of_unexcused_no_show_hours_ops_staff]
+    group_label: "> Ops Associate Measures"
+    label: "# Unexcused No Show Ops Associate Hours"
+    type: number
+    sql: ${number_of_unexcused_no_show_minutes_ops_associate}/60;;
     value_format_name: decimal_1
   }
+
+  ##### Deleted Excused
 
   measure: number_of_deleted_excused_no_show_hours_rider {
     group_label: "> Rider Measures"
@@ -2340,6 +2638,17 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  measure: number_of_deleted_excused_no_show_hours_ops_associate {
+    alias: [number_of_deleted_excused_no_show_hours_ops_staff]
+    group_label: "> Ops Associate Measures"
+    label: "# Deleted Excused No Show Ops Associate Hours"
+    type: number
+    sql: ${number_of_deleted_excused_no_show_minutes_ops_associate}/60;;
+    value_format_name: decimal_1
+  }
+
+  ##### Deleted Unexcused
+
   measure: number_of_deleted_unexcused_no_show_hours_rider {
     group_label: "> Rider Measures"
     label: "# Deleted Unexcused No Show Rider Hours"
@@ -2378,7 +2687,17 @@ view: staffing {
     type: sum
     sql: ${number_of_deleted_unexcused_no_show_minutes_shift_lead}/60;;
     value_format_name: decimal_1
-}
+  }
+
+  measure: number_of_deleted_unexcused_no_show_hours_ops_associate {
+    alias: [number_of_deleted_unexcused_no_show_hours_ops_staff]
+    group_label: "> Ops Associate Measures"
+    label: "# Deleted Unexcused No Show Ops Associate Hours"
+    type: number
+    sql: ${number_of_deleted_unexcused_no_show_minutes_ops_associate}/60;;
+    value_format_name: decimal_1
+  }
+
   # =========  No Show %   =========
   measure: pct_no_show_hours_rider {
     group_label: "> Rider Measures"
@@ -2438,11 +2757,12 @@ view: staffing {
     sql:(${number_of_no_show_hours_hub_staff})/nullif(${number_of_planned_hours_hub_staff},0) ;;
     value_format_name: percent_1
   }
-  measure: pct_no_show_hours_ops_staff {
-    group_label: "> Ops Staff Measures"
-    label: "% No Show Ops Staff Hours"
+  measure: pct_no_show_hours_ops_associate {
+    alias: [pct_no_show_hours_ops_staff]
+    group_label: "> Ops Associate Measures"
+    label: "% No Show Ops Associate Hours"
     type: number
-    sql:(${number_of_no_show_hours_ops_staff})/nullif(${number_of_planned_hours_ops_staff},0) ;;
+    sql:(${number_of_no_show_hours_ops_associate})/nullif(${number_of_planned_hours_ops_associate},0) ;;
     value_format_name: percent_1
   }
 
@@ -2482,12 +2802,13 @@ view: staffing {
     value_format_name: decimal_1
   }
 
-  measure: utr_ops_staff {
-    group_label: "> Ops Staff Measures"
-    label: "Ops Staff UTR"
-    description: "Ops Staff UTR (# Orders/Ops Staff Hours)"
+  measure: utr_ops_associate {
+    alias: [utr_ops_staff]
+    group_label: "> Ops Associate Measures"
+    label: "Ops Associate UTR"
+    description: "Ops Associate UTR (# Orders/# Punched Ops Associate Hours)"
     type: number
-    sql: ${orders_with_ops_metrics.sum_orders}/ NULLIF(${number_of_worked_hours_ops_staff}, 0) ;;
+    sql: ${orders_with_ops_metrics.sum_orders}/ NULLIF(${number_of_worked_hours_ops_associate}, 0) ;;
     value_format_name: decimal_1
   }
 
@@ -2558,7 +2879,7 @@ view: staffing {
           WHEN {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_planned_hours_rider_captain}
           WHEN {% parameter position_parameter %} = 'WH' THEN ${number_of_planned_hours_wh}
           WHEN {% parameter position_parameter %} = 'Hub Staff' THEN ${number_of_planned_hours_hub_staff}
-          WHEN {% parameter position_parameter %} = 'Ops Staff' THEN ${number_of_planned_hours_ops_staff}
+          WHEN {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_planned_hours_ops_associate}
           ELSE NULL
         END ;;
   }
@@ -2577,7 +2898,7 @@ view: staffing {
           WHEN {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_excused_no_show_hours_rider_captain}
           WHEN {% parameter position_parameter %} = 'WH' THEN ${number_of_excused_no_show_hours_wh}
           WHEN {% parameter position_parameter %} = 'Hub Staff' THEN ${number_of_excused_no_show_hours_hub_staff}
-          WHEN {% parameter position_parameter %} = 'Ops Staff' THEN ${number_of_excused_no_show_hours_ops_staff}
+          WHEN {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_excused_no_show_hours_ops_associate}
           ELSE NULL
         END ;;
   }
@@ -2595,6 +2916,7 @@ view: staffing {
           WHEN {% parameter position_parameter %} = 'Shift Lead' THEN ${number_of_deleted_excused_no_show_hours_shift_lead}
           WHEN {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_deleted_excused_no_show_hours_rider_captain}
           WHEN {% parameter position_parameter %} = 'WH' THEN ${number_of_deleted_excused_no_show_hours_wh}
+          WHEN {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_deleted_excused_no_show_hours_ops_associate}
           ELSE NULL
         END ;;
   }
@@ -2613,7 +2935,7 @@ view: staffing {
           WHEN {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_unexcused_no_show_hours_rider_captain}
           WHEN {% parameter position_parameter %} = 'WH' THEN ${number_of_unexcused_no_show_hours_wh}
           WHEN {% parameter position_parameter %} = 'Hub Staff' THEN ${number_of_unexcused_no_show_hours_hub_staff}
-          WHEN {% parameter position_parameter %} = 'Ops Staff' THEN ${number_of_unexcused_no_show_hours_ops_staff}
+          WHEN {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_unexcused_no_show_hours_ops_associate}
           ELSE NULL
         END ;;
   }
@@ -2627,7 +2949,7 @@ view: staffing {
     sql: ${number_of_planned_hours_by_position}/nullif(${number_of_scheduled_hours_by_position},0);;
   }
 
-    measure: pct_unexcused_absence {
+  measure: pct_unexcused_absence {
     type: number
     label: "% Unexcused Absence"
     description: "# Unexcused No Show Hours / # Filled Hours (Assigned to an Employee)"
@@ -2659,7 +2981,7 @@ view: staffing {
           WHEN {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_unassigned_hours_rider_captain}
           WHEN {% parameter position_parameter %} = 'WH' THEN ${number_of_unassigned_hours_wh}
           WHEN {% parameter position_parameter %} = 'Hub Staff' THEN ${number_of_unassigned_hours_hub_staff}
-          WHEN {% parameter position_parameter %} = 'Ops Staff' THEN ${number_of_unassigned_hours_ops_staff}
+          WHEN {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_unassigned_hours_ops_associate}
       ELSE NULL
       END ;;
   }
@@ -2678,7 +3000,7 @@ view: staffing {
           WHEN {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_scheduled_hours_rider_captain}
           WHEN {% parameter position_parameter %} = 'WH' THEN ${number_of_scheduled_hours_wh}
           WHEN {% parameter position_parameter %} = 'Hub Staff' THEN ${number_of_scheduled_hours_hub_staff}
-          WHEN {% parameter position_parameter %} = 'Ops Staff' THEN ${number_of_scheduled_hours_ops_staff}
+          WHEN {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_scheduled_hours_ops_associate}
       ELSE NULL
       END ;;
   }
@@ -2697,7 +3019,7 @@ view: staffing {
           WHEN {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_scheduled_hours_external_rider_captain}/nullif(${number_of_scheduled_hours_rider_captain},0)
           WHEN {% parameter position_parameter %} = 'WH' THEN ${number_of_scheduled_hours_external_wh}/nullif(${number_of_scheduled_hours_wh},0)
           WHEN {% parameter position_parameter %} = 'Hub Staff' THEN ${number_of_scheduled_hours_external_hub_staff}/nullif(${number_of_scheduled_hours_hub_staff},0)
-          WHEN {% parameter position_parameter %} = 'Ops Staff' THEN ${number_of_scheduled_hours_external_ops_staff}/nullif(${number_of_scheduled_hours_ops_staff},0)
+          WHEN {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_scheduled_hours_external_ops_associate}/nullif(${number_of_scheduled_hours_ops_associate},0)
       ELSE NULL
       END ;;
   }
@@ -2730,6 +3052,7 @@ view: staffing {
         WHEN {% parameter position_parameter %} = 'Shift Lead' THEN ${number_of_scheduled_hours_shift_lead} - ${number_of_deleted_excused_no_show_hours_shift_lead}
         WHEN {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_scheduled_hours_rider_captain} - ${number_of_deleted_excused_no_show_hours_rider_captain}
         WHEN {% parameter position_parameter %} = 'WH' THEN ${number_of_scheduled_hours_wh} - ${number_of_deleted_excused_no_show_hours_wh}
+        WHEN {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_scheduled_hours_ops_associate} - ${number_of_deleted_excused_no_show_hours_ops_associate}
     ELSE NULL
     END ;;
   }
@@ -2750,7 +3073,7 @@ view: staffing {
           WHEN {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_worked_hours_rider_captain}
           WHEN {% parameter position_parameter %} = 'WH' THEN ${number_of_worked_hours_wh}
           WHEN {% parameter position_parameter %} = 'Hub Staff' THEN ${number_of_worked_hours_hub_staff}
-          WHEN {% parameter position_parameter %} = 'Ops Staff' THEN ${number_of_worked_hours_ops_staff}
+          WHEN {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_worked_hours_ops_associate}
       ELSE NULL
       END ;;
   }
@@ -2769,7 +3092,7 @@ view: staffing {
           WHEN {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_no_show_hours_rider_captain}
           WHEN {% parameter position_parameter %} = 'WH' THEN ${number_of_no_show_hours_wh}
           WHEN {% parameter position_parameter %} = 'Hub Staff' THEN ${number_of_no_show_hours_hub_staff}
-          WHEN {% parameter position_parameter %} = 'Ops Staff' THEN ${number_of_no_show_hours_ops_staff}
+          WHEN {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_no_show_hours_ops_associate}
       ELSE NULL
       END ;;
   }
@@ -2788,7 +3111,7 @@ view: staffing {
           WHEN {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_worked_hours_external_rider_captain}/nullif(${number_of_worked_hours_rider_captain},0)
           WHEN {% parameter position_parameter %} = 'WH' THEN ${number_of_worked_hours_external_wh}/nullif(${number_of_worked_hours_wh},0)
           WHEN {% parameter position_parameter %} = 'Hub Staff' THEN ${number_of_worked_hours_external_hub_staff}/nullif(${number_of_worked_hours_hub_staff},0)
-          WHEN {% parameter position_parameter %} = 'Ops Staff' THEN ${number_of_worked_hours_external_ops_staff}/nullif(${number_of_worked_hours_ops_staff},0)
+          WHEN {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_worked_hours_external_ops_associate}/nullif(${number_of_worked_hours_ops_associate},0)
       ELSE NULL
       END ;;
   }
@@ -2807,7 +3130,7 @@ view: staffing {
           WHEN {% parameter position_parameter %} = 'Rider Captain' THEN ${pct_no_show_hours_rider_captain}
           WHEN {% parameter position_parameter %} = 'WH' THEN ${pct_no_show_hours_wh}
           WHEN {% parameter position_parameter %} = 'Hub Staff' THEN ${pct_no_show_hours_hub_staff}
-          WHEN {% parameter position_parameter %} = 'Ops Staff' THEN ${pct_no_show_hours_ops_staff}
+          WHEN {% parameter position_parameter %} = 'Ops Associate' THEN ${pct_no_show_hours_ops_associate}
       ELSE NULL
       END ;;
   }
@@ -2822,8 +3145,10 @@ view: staffing {
         CASE
           WHEN {% parameter position_parameter %} = 'Rider' THEN ${utr_rider}
           WHEN {% parameter position_parameter %} = 'Picker' THEN ${utr_picker}
-          ELSE NULL
-        END ;;
+          WHEN {% parameter position_parameter %} = 'Ops Associate' THEN ${utr_ops_associate}
+
+      ELSE NULL
+      END ;;
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2837,7 +3162,7 @@ view: staffing {
     allowed_value: { value: "Shift Lead" }
     allowed_value: { value: "WH" }
     allowed_value: { value: "Rider Captain" }
+    allowed_value: { value: "Ops Associate" }
     allowed_value: { value: "Hub Staff" }
-    allowed_value: { value: "Ops Staff" }
   }
 }
