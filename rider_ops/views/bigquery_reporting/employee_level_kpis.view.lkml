@@ -3,7 +3,7 @@
 # This view contains daily aggregation of shift, Customer NPS and ops related kpis as well as employment info per distinct hub employee and position
 
 view: employee_level_kpis {
-  sql_table_name: `flink-data-prod.reporting.employee_level_kpis`
+  sql_table_name: `flink-data-dev.dbt_omar.employee_level_kpis`
     ;;
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -672,7 +672,7 @@ view: employee_level_kpis {
     value_format_name: decimal_1
   }
 
-  measure: sum_evaluated_hours {
+  measure: number_evaluated_hours {
     group_label: "* Shift related *"
     type: number
     label: "# Evaluated Hours"
@@ -681,7 +681,7 @@ view: employee_level_kpis {
     value_format_name: decimal_1
   }
 
-  measure: sum_recorded_hours {
+  measure: number_recorded_hours {
     group_label: "* Shift related *"
     type: number
     label: "# Recorded Hours"
@@ -838,13 +838,23 @@ view: employee_level_kpis {
     value_format: "0%"
   }
 
-  measure: pct_scheduled_hours_vs_contracted {
+  measure: pct_evaluated_vs_contracted {
     group_label: "* Shift related *"
     type: number
     hidden: no
-    label: "% Scheduled Hours vs Contracted Hours"
-    description: "Scheduled Hours / (Weekly Contracted Hours * # Shift Weeks)"
-    sql: ${number_of_assigned_hours}/nullif(${sum_weekly_contracted_hours},0) ;;
+    label: "% Evaluated Hours vs Contracted Hours"
+    description: "Evaluated Hours (Worked Hours + Absence Hours) / (Weekly Contracted Hours * # Shift Weeks)"
+    sql: ${number_evaluated_hours}/nullif(${sum_weekly_contracted_hours},0) ;;
+    value_format: "0%"
+  }
+
+  measure: pct_recorded_vs_contracted {
+    group_label: "* Shift related *"
+    type: number
+    hidden: no
+    label: "% Recorded Hours vs Contracted Hours"
+    description: "Recorded Hours (Worked Hours + Absence Hours + No Show Hours) / (Weekly Contracted Hours * # Shift Weeks)"
+    sql: ${number_recorded_hours}/nullif(${sum_weekly_contracted_hours},0) ;;
     value_format: "0%"
   }
 
