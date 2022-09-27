@@ -70,13 +70,6 @@ view: product_placement_performance_excluding_impressions {
     type: string
     sql: ${TABLE}.product_sku ;;
   }
-  dimension: product_name {
-    group_label: "Product Dimensions"
-    label: "Product Name"
-    description: "Name of the product"
-    type: string
-    sql: ${TABLE}.product_name ;;
-  }
   dimension: product_position {
     group_label: "Product Dimensions"
     label: "Product Position"
@@ -117,7 +110,7 @@ view: product_placement_performance_excluding_impressions {
     label: "Sub-Category Name"
     description: "Name of a sub-category where product was listed"
     type: string
-    sql: case when ${TABLE}.product_placement in ('category','pdp','collection')
+    sql: case when ${TABLE}.product_placement in ('category','pdp','collection','recipes')
               then ${TABLE}.subcategory_name
          else null
          end ;;
@@ -145,6 +138,7 @@ view: product_placement_performance_excluding_impressions {
     type: string
     sql: ${TABLE}.screen_name ;;
   }
+
 
   # ======= Product Flags =======
 
@@ -230,6 +224,7 @@ view: product_placement_performance_excluding_impressions {
 
   dimension: product_placement_uuid {
     hidden: yes
+    primary_key: yes
     group_label: "IDs"
     label: "Event UUID"
     description: "Unique identifier of an event"

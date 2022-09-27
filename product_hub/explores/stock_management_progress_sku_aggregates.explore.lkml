@@ -4,7 +4,8 @@
 # - Hub Tech
 # - Hub Operations
 
-include: "/product_hub/views/bigquery_reporting/stock_management_progress_sku_aggregates.view.lkml"
+include: "/**/stock_management_progress_sku_aggregates.view.lkml"
+include: "/**/hubs_ct.view.lkml"
 include: "/**/global_filters_and_parameters.view.lkml"
 
 explore: stock_management_progress_sku_aggregation {
@@ -12,7 +13,7 @@ explore: stock_management_progress_sku_aggregation {
   hidden:  no
   label: "Stock Management Progress Aggregates"
   description: "This explore provides an overview of how inventory associates progress through the inventory tasks (inbound, outbound, correction)."
-  group_label: "Consumer Hub"
+  group_label: "Product - Hub Tech"
 
   # implement both date filters:
   # reveived_at is due cost reduction given a table is partitioned by this dimensions
@@ -36,6 +37,13 @@ explore: stock_management_progress_sku_aggregation {
 
   join: global_filters_and_parameters {
     sql_on: ${global_filters_and_parameters.generic_join_dim} = TRUE ;;
+    type: left_outer
+    relationship: many_to_one
+  }
+
+
+  join: hubs_ct {
+    sql_on: ${stock_management_progress_sku_aggregates.hub_code} = ${hubs_ct.hub_code} ;;
     type: left_outer
     relationship: many_to_one
   }

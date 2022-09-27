@@ -724,6 +724,7 @@ view: inventory_daily {
 
     type: number
     sql: 1 - ${pct_oos} ;;
+    drill_fields: [hub_code, sku, pct_in_stock]
 
     value_format_name: percent_1
     html:
@@ -773,6 +774,30 @@ view: inventory_daily {
 
     type: average
     sql: ( (${quantity_from} + ${quantity_to}) / 2  ) ;;
+
+    value_format_name: decimal_1
+  }
+
+  measure: avg_inventory_end_of_day {
+
+    label: "AVG Inventory Level (Days End)"
+    description: "The average stock level of the last known stock level per day, hub and SKU"
+    group_label: "Inventory Change"
+
+    type: average
+    sql: ${quantity_to} ;;
+
+    value_format_name: decimal_1
+  }
+
+  measure: avg_inventory_start_of_day {
+
+    label: "AVG Inventory Level (Days Start)"
+    description: "The average stock level of the first known stock level per day, hub and SKU"
+    group_label: "Inventory Change"
+
+    type: average
+    sql: ${quantity_from} ;;
 
     value_format_name: decimal_1
   }

@@ -7,6 +7,7 @@
 # Questions that can be answered
 # - Questions around behavioural events with country and device drill downs
 
+include: "/product_consumer/views/bigquery_reporting/daily_user_aggregates.view.lkml"
 include: "/product_consumer/views/bigquery_curated/daily_events.view.lkml"
 include: "/**/global_filters_and_parameters.view.lkml"
 include: "/product_consumer/views/bigquery_curated/event_product_added_to_cart.view.lkml"
@@ -25,7 +26,7 @@ explore: daily_events {
 
   label: "Daily Events"
   description: "This explore provides an overview of all behavioural events generated on Flink App and Web"
-  group_label: "Consumer Product"
+  group_label: "Product - Consumer"
 
   # implement both date filters:
     # received_at is due cost reduction given a table is partitioned by this dimensions
@@ -40,7 +41,9 @@ explore: daily_events {
 
   always_filter: {
     filters: [
-      global_filters_and_parameters.datasource_filter: "last 7 days"
+      global_filters_and_parameters.datasource_filter: "last 7 days",
+      daily_events.event_name: "",
+      daily_events.country_iso: ""
       ]
   }
 
@@ -71,7 +74,8 @@ explore: daily_events {
       event_product_added_to_cart.list_position, event_product_added_to_cart.original_price, event_product_added_to_cart.original_product_price,
       event_product_added_to_cart.product_placement, event_product_added_to_cart.product_position,
       event_product_added_to_cart.search_query_id]
-    sql_on: ${event_product_added_to_cart.event_uuid} = ${daily_events.event_uuid}  ;;
+    sql_on: ${event_product_added_to_cart.event_uuid} = ${daily_events.event_uuid}
+            and {% condition global_filters_and_parameters.datasource_filter %} ${event_product_added_to_cart.event_date} {% endcondition %};;
     type: left_outer
     relationship: one_to_one
   }
@@ -79,7 +83,8 @@ explore: daily_events {
   join: event_address_confirmed {
     view_label: "Event: Address Confirmed"
     fields: [event_attributes*]
-    sql_on: ${event_address_confirmed.event_uuid} = ${daily_events.event_uuid}  ;;
+    sql_on: ${event_address_confirmed.event_uuid} = ${daily_events.event_uuid}
+            and {% condition global_filters_and_parameters.datasource_filter %} ${event_address_confirmed.event_date} {% endcondition %};;
     type: left_outer
     relationship: one_to_one
   }
@@ -87,7 +92,8 @@ explore: daily_events {
   join: event_contact_customer_service_selected {
     view_label: "Event: Contact Customer Service Selected"
     fields: [event_attributes*]
-    sql_on: ${event_contact_customer_service_selected.event_uuid} = ${daily_events.event_uuid}  ;;
+    sql_on: ${event_contact_customer_service_selected.event_uuid} = ${daily_events.event_uuid}
+            and {% condition global_filters_and_parameters.datasource_filter %} ${event_contact_customer_service_selected.event_date} {% endcondition %};;
     type: left_outer
     relationship: one_to_one
   }
@@ -96,7 +102,8 @@ explore: daily_events {
     view_label: "Event: Cart Viewed"
     fields: [event_cart_viewed.delivery_fee, event_cart_viewed.rank_of_daily_cart_views , event_cart_viewed.message_displayed,
       event_cart_viewed.avg_daily_cart_events]
-    sql_on: ${event_cart_viewed.event_uuid} = ${daily_events.event_uuid}  ;;
+    sql_on: ${event_cart_viewed.event_uuid} = ${daily_events.event_uuid}
+            and {% condition global_filters_and_parameters.datasource_filter %} ${event_cart_viewed.event_date} {% endcondition %};;
     type: left_outer
     relationship: one_to_one
   }
@@ -105,7 +112,8 @@ explore: daily_events {
     view_label: "Event: Order Placed"
     fields: [event_order_placed.delivery_fee , event_order_placed.delivery_pdt, event_order_placed.discount_value,
       event_order_placed.number_of_products_ordered , event_order_placed.revenue , event_order_placed.rider_tip_value]
-    sql_on: ${event_order_placed.event_id} = ${daily_events.event_uuid}  ;;
+    sql_on: ${event_order_placed.event_id} = ${daily_events.event_uuid}
+            and {% condition global_filters_and_parameters.datasource_filter %} ${event_order_placed.order_date} {% endcondition %};;
     type: left_outer
     relationship: one_to_one
   }
@@ -130,8 +138,30 @@ explore: daily_events {
 join: daily_violations_aggregates {
   view_label: "Event: Violation Generated" ##to unhide change the label to: Event: Violation Generated
   fields: [daily_violations_aggregates.violated_event_name , daily_violations_aggregates.number_of_violations]
-  sql_on: ${daily_events.event_name_camel_case} = ${daily_violations_aggregates.violated_event_name} and ${daily_events.event_date}=${daily_violations_aggregates.event_date} and ${daily_events.platform}=${daily_violations_aggregates.platform};;
+  sql_on: ${daily_events.event_name_camel_case} = ${daily_violations_aggregates.violated_event_name}
+          and ${daily_events.event_date}=${daily_violations_aggregates.event_date}
+          and ${daily_events.platform} = ${daily_violations_aggregates.platform}
+          and ${daily_violations_aggregates.domain}="consumer"
+          and {% condition global_filters_and_parameters.datasource_filter %}
+            ${daily_violations_aggregates.event_date} {% endcondition %};;
   type: left_outer
   relationship: many_to_many
 }
+
+  join: daily_user_aggregates {
+    view_label: "Daily User Aggregates"
+    fields: [daily_user_aggregates.is_address_confirmed, daily_user_aggregates.is_address_set,
+             daily_user_aggregates.is_checkout_started, daily_user_aggregates.is_checkout_viewed,
+             daily_user_aggregates.is_order_placed,
+             daily_user_aggregates.is_cart_viewed,
+             daily_user_aggregates.is_payment_started,
+             daily_user_aggregates.is_account_registration_viewed, is_home_viewed, is_new_user,
+    ]
+    sql_on: ${daily_user_aggregates.user_uuid} = ${daily_events.anonymous_id}
+      and ${daily_user_aggregates.event_date_at_date} = ${daily_events.event_date}
+      and {% condition global_filters_and_parameters.datasource_filter %} ${daily_user_aggregates.event_date_at_date} {% endcondition %}  ;;
+    type: left_outer
+    relationship: many_to_one
+  }
+
 }

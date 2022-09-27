@@ -117,11 +117,20 @@ view: cc_agent_staffing_daily {
 
   measure: number_of_contact_per_hour {
     group_label: "> Agent Productivity"
-    label: "AVG # Closed Contacts/Hour"
+    label: "AVG # Closed Contacts / Hour"
     description: "AVG Number of contacts closed by an agent in one worked hours."
     type: number
     sql: safe_divide(${sum_number_of_closed_contacts},${sum_number_of_worked_hours}) ;;
     value_format: "0.00"
+  }
+
+  measure: number_of_agents {
+    group_label: "> Agent Productivity"
+    label: "# Working Agents"
+    description: "Number of Agents who had a shift in Quinyx"
+    type: count_distinct
+    sql: ${agent_email} ;;
+    value_format: "0"
   }
 
   ######### Parameters
@@ -151,6 +160,21 @@ view: cc_agent_staffing_daily {
     {% elsif date_granularity._parameter_value == 'Month' %}
       ${shift_month}
     {% endif %};;
+  }
+
+  dimension: date_granularity_pass_through {
+    group_label: "> Parameters"
+    description: "To use the parameter value in a table calculation (e.g WoW, % Growth) we need to materialize it into a dimension "
+    type: string
+    hidden: no # yes
+    sql:
+            {% if date_granularity._parameter_value == 'Day' %}
+              "Day"
+            {% elsif date_granularity._parameter_value == 'Week' %}
+              "Week"
+            {% elsif date_granularity._parameter_value == 'Month' %}
+              "Month"
+            {% endif %};;
   }
 
 }

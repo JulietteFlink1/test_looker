@@ -1,6 +1,5 @@
 
-include: "/views/bigquery_tables/curated_layer/*.view"
-include: "/views/extended_tables/order_lineitems_using_inventory.view"
+include: "/**/order_lineitems_using_inventory.view"
 include: "/**/price_test_tracking.view"
 include: "/**/*.view"
 
@@ -25,7 +24,7 @@ explore: current_inventory {
   always_filter: {
     filters: [
       products_hub_assignment.is_sku_assigned_to_hub: "",
-      hubs.is_hub_opened: "Yes",
+      hubs.is_active_hub: "Yes",
       global_filters_and_parameters.datasource_filter: "last 7 days"
     ]
   }

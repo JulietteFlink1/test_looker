@@ -18,6 +18,7 @@ view: daily_events {
       label: "Event UUID"
       description: "Unique identifier of an event"
       type: string
+      primary_key: yes
       sql: ${TABLE}.event_uuid ;;
     }
     dimension: user_id {
@@ -116,7 +117,7 @@ view: daily_events {
   }
   dimension: component_variant {
     group_label: "Generic Dimensions"
-    label: "Event Variant"
+    label: "Component Variant"
     description: "Variation of the component if multiple variants exist"
     type: string
     sql: ${TABLE}.component_variant ;;
@@ -216,6 +217,7 @@ view: daily_events {
         time,
         date,
         week,
+        hour_of_day,
         quarter
       ]
       sql: ${TABLE}.event_timestamp ;;

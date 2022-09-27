@@ -262,7 +262,7 @@ view: daily_smart_inventory_checks {
     type: count_distinct
     group_label: "Total Metrics"
     label: "# of Checks"
-    description: "Number of checks."
+    description: "Number of checks, includes status: done, open, canceled and unfulfillable."
     sql: ${table_uuid} ;;
   }
 
@@ -303,6 +303,15 @@ view: daily_smart_inventory_checks {
     filters: [status: "open"]
   }
 
+  measure: number_of_open_and_completed_checks {
+    type: count_distinct
+    group_label: "Total Metrics"
+    label: "# of Open and Completed Checks"
+    description: "Number of open and completed checks."
+    sql: ${table_uuid} ;;
+    filters: [status: "open, done"]
+  }
+
   # =========  Rate Metrics  =========
 
   measure: corrections_per_completed_checks {
@@ -311,7 +320,7 @@ view: daily_smart_inventory_checks {
     group_label: "Rate Metrics"
     label: "% of Corrections"
     description: "# of Corrections/ # of Completed Checks."
-    sql: ${number_of_corrections}/${number_of_completed_checks} ;;
+    sql: ${number_of_corrections}/nullif(${number_of_completed_checks},0) ;;
   }
 
   measure: pct_of_completion {
@@ -320,7 +329,7 @@ view: daily_smart_inventory_checks {
     group_label: "Rate Metrics"
     label: "% of Completion"
     description: "# of Completed Checks/ (# of Completed Checks + # of Open Checks)"
-    sql: ${number_of_completed_checks}/(${number_of_completed_checks}+${number_of_open_checks}) ;;
+    sql: ${number_of_completed_checks}/nullif((${number_of_completed_checks}+${number_of_open_checks}),0) ;;
   }
 
 }

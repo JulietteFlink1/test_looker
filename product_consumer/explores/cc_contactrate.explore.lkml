@@ -6,7 +6,7 @@ explore: cc_contactrate {
   hidden: no
   label: "Customer Service"
   view_label: "Conversations"
-  group_label: "Consumer Product"
+  group_label: "Product - Consumer"
 
   join: cc_contactrate__tag_names {
     view_label: "Tag Names"

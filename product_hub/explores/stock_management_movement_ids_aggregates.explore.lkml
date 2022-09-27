@@ -4,15 +4,16 @@
 # - Hub Tech
 # - Hub Operations
 
-include: "/product_hub/views/sql_derived_tables/stock_management_movement_ids_aggregates.view.lkml"
+include: "/**/stock_management_movement_ids_aggregates.view.lkml"
 include: "/**/global_filters_and_parameters.view.lkml"
+include: "/**/hubs_ct.view.lkml"
 
 explore: stock_management_movement_ids {
   view_name: stock_management_movement_ids
   hidden:  no
   label: "Stock Management Movement Ids"
   description: ""
-  group_label: "Consumer Hub"
+  group_label: "Product - Hub Tech"
 
   # implement both date filters:
   # reveived_at is due cost reduction given a table is partitioned by this dimensions
@@ -36,6 +37,12 @@ explore: stock_management_movement_ids {
 
   join: global_filters_and_parameters {
     sql_on: ${global_filters_and_parameters.generic_join_dim} = TRUE ;;
+    type: left_outer
+    relationship: many_to_one
+  }
+
+  join: hubs_ct {
+    sql_on: ${stock_management_movement_ids.hub_code} = ${hubs_ct.hub_code} ;;
     type: left_outer
     relationship: many_to_one
   }

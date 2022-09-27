@@ -17,7 +17,7 @@ explore: event_product_added_to_cart {
 
   label: "Event Product Added to Cart"
   description: "This explore provides an overview of event product_added_to_cart with its parameters across App and Web"
-  group_label: "Consumer Product"
+  group_label: "Product - Consumer"
 
   # implement both date filters:
   # received_at is due cost reduction given a table is partitioned by this dimensions

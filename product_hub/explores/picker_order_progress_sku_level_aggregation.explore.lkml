@@ -16,7 +16,7 @@ explore: picker_order_progress_sku_level_aggregation {
   hidden:  no
   label: "Picker Order Progress Aggregates"
   description: "This explore provides an overview of how prickers progress through picking items."
-  group_label: "Consumer Hub"
+  group_label: "Product - Hub Tech"
 
   # implement both date filters:
   # reveived_at is due cost reduction given a table is partitioned by this dimensions

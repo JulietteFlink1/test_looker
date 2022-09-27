@@ -13,6 +13,7 @@ view: event_category_selected {
     label: "Event UUID"
     description: "Unique identifier of an event"
     type: string
+    primary_key: yes
     sql: ${TABLE}.event_uuid ;;
   }
   dimension: user_id {
@@ -184,6 +185,20 @@ view: event_category_selected {
       when ${TABLE}.origin_screen is null and ${platform} = 'web' then 'category'
       else ${TABLE}.origin_screen
       end ;;
+  }
+  dimension: component_position {
+    group_label: "Event Dimensions"
+    label: "Component Position"
+    description: "Position of the component (start from 1 top left corner)"
+    type: number
+    sql: ${TABLE}.component_position ;;
+  }
+  dimension: component_name {
+    group_label: "Event Dimensions"
+    label: "Component Name"
+    description: "Name of the compotent clicked, i.e. Category, Subcategory, Recipes, Collection"
+    type: string
+    sql: ${TABLE}.component_name ;;
   }
 
   # ======= Dates / Timestamps =======

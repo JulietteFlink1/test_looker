@@ -1,6 +1,5 @@
 view: product_placement_performance {
-  sql_table_name: `flink-data-prod.reporting.product_placement_performance`
-    ;;
+  sql_table_name: `flink-data-prod.reporting.product_placement_performance` ;;
   view_label: "Product Placement Performance"
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
@@ -16,7 +15,6 @@ view: product_placement_performance {
     type: string
     sql: ${TABLE}.order_uuid ;;
   }
-
   dimension: platform {
     group_label: "Device Dimensions"
     label: "Platform"
@@ -52,6 +50,7 @@ view: product_placement_performance {
     label: "Hub Code"
     description: "Hub Code"
     type: string
+    hidden: yes
     sql: ${TABLE}.hub_code ;;
   }
   dimension: country_iso {
@@ -59,6 +58,7 @@ view: product_placement_performance {
     label: "Country ISO"
     description: "ISO country"
     type: string
+    hidden: yes
     sql: ${TABLE}.country_iso ;;
   }
 
@@ -70,13 +70,6 @@ view: product_placement_performance {
     description: "SKU of the product"
     type: string
     sql: ${TABLE}.product_sku ;;
-  }
-  dimension: product_name {
-    group_label: "Product Dimensions"
-    label: "Product Name"
-    description: "Name of the product"
-    type: string
-    sql: ${TABLE}.product_name ;;
   }
   dimension: product_position {
     group_label: "Product Dimensions"
@@ -176,6 +169,7 @@ view: product_placement_performance {
 
   dimension: is_product_impression {
     group_label: "Event Flags"
+    hidden: yes
     type: yesno
     sql: ${TABLE}.is_product_impression ;;
   }
@@ -214,6 +208,7 @@ view: product_placement_performance {
 
   dimension: product_placement_uuid {
     hidden: yes
+    primary_key: yes
     group_label: "IDs"
     label: "Event UUID"
     description: "Unique identifier of an event"
@@ -234,7 +229,7 @@ view: product_placement_performance {
     hidden: yes
     group_label: "Event Flags"
     type: yesno
-    sql: ${TABLE}.is_pdp_viewed or ${TABLE}.is_product_add_to_cart ;;
+    sql: coalesce(${TABLE}.is_product_add_to_cart, ${TABLE}.is_pdp_viewed) ;;
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
@@ -329,8 +324,8 @@ view: product_placement_performance {
     group_label: "Product Metrics"
     label: "# Products Clicked (PDP or ATC)"
     description: "Number of products clicked. Can be either PDP or ATC"
-    type: count_distinct
-    sql: ${product_placement_uuid} ;;
+    type: count
+    # sql: ${product_placement_uuid} ;;
     filters: [is_pdp_or_atc: "yes" ]
   }
   measure: click_through_rate {

@@ -16,12 +16,8 @@ explore: event_category_selected {
   hidden: no
 
   label: "Event Category Selected"
-  description: "This explore provides an overview of all catgeories cliked / used by users across app & web"
-  group_label: "Consumer Product"
-
-  # implement both date filters:
-  # received_at is due cost reduction given a table is partitioned by this dimensions
-  # event_date filter will fitler for the desired time frame when events triggered
+  description: "This explore provides an overview of all catgeories cliked by users across app & web (includes category, subcategory, collection and recipes)"
+  group_label: "Product - Consumer"
 
   sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} ${event_date} {% endcondition %};;
 
@@ -32,7 +28,8 @@ explore: event_category_selected {
 
   always_filter: {
     filters: [
-      global_filters_and_parameters.datasource_filter: "last 7 days"
+      global_filters_and_parameters.datasource_filter: "last 7 days",
+      event_category_selected.country_iso: ""
     ]
   }
 

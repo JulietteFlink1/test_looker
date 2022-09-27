@@ -41,6 +41,7 @@ view: event_order_placed {
   dimension: order_uuid {
     group_label: "IDs Dimension"
     type: string
+    primary_key: yes
     sql: ${TABLE}.order_uuid ;;
   }
 

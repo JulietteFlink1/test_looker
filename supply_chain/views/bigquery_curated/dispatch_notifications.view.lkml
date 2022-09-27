@@ -32,7 +32,9 @@ view: dispatch_notifications {
 
       dynamic_delivery_date,
       is_double_parent_sku,
-      is_supplier_oos
+      is_supplier_oos,
+      unit_gross_weight_value,
+      unit_gross_weight_unit
     ]
   }
 
@@ -40,7 +42,19 @@ view: dispatch_notifications {
     fields: [
       pct_items_inbounded,
       pct_items_inbounded_capped,
-      pct_items_inbounded_or_pos_corrected
+      pct_items_inbounded_or_pos_corrected,
+      sum_shadow_waste,
+      sum_shadow_waste_by_selling_price_gross,
+      sum_shadow_drug_waste,
+      sum_shadow_drug_waste_by_selling_price_gross
+    ]
+  }
+
+  set: drill_fields {
+    fields: [
+      product_name,
+      sku,
+      delivery_date
     ]
   }
 
@@ -285,6 +299,24 @@ view: dispatch_notifications {
     sql: ${handling_units_count} = 0 ;;
   }
 
+  dimension: unit_gross_weight_value {
+
+    label: "Handling Unit Weight"
+    description: "The weight of a handling unit - for information on the unit, check the field 'Handling Unit Weight Unit'"
+
+    type: number
+    sql: ${TABLE}.unit_gross_weight_value ;;
+  }
+
+  dimension: unit_gross_weight_unit {
+
+    label: "Handling Unit Weight Unit"
+    description: "The unit of the handling unit weigth"
+
+    type: string
+    sql: ${TABLE}.unit_gross_weight_unit ;;
+  }
+
 
   # =========  hidden   =========
   dimension: source {
@@ -452,6 +484,110 @@ view: dispatch_notifications {
     {% endif %}
     ;;
   }
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  #  - - - - - - - - - -    START: Shadow (Drug) Waste
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  dimension: shadow_waste {
+    type: number
+    sql:
+      case
+        -- some items were expected to be inbounded
+        when ${total_quantity} is not null
+         -- we defined an estimated_delivery_timestamp, thus the DESADV had inbounds in general
+         and ${estimated_delivery_timestamp} is not null
+         -- less items were inbounded compared to what is stated in the DESADV
+         and (coalesce(${inventory_changes_daily.quantity_change_inbounded},0) - ${total_quantity}) < 0
+
+        then coalesce(${inventory_changes_daily.quantity_change_inbounded},0) - ${total_quantity}
+      end
+    ;;
+    hidden: yes
+  }
+
+  dimension: shadow_waste_by_selling_price_gross {
+    type: number
+    sql: ${shadow_waste} *  ${product_prices_daily.avg_amt_product_price_gross};;
+    value_format_name: eur
+    hidden: yes
+  }
+
+  dimension: shadow_drug_waste {
+    type: number
+    sql:  if(${products.is_drug_item} is true,
+            ${shadow_waste},
+            NULL);;
+    value_format_name: eur
+    hidden: yes
+  }
+
+  dimension: shadow_drug_waste_by_selling_price_gross {
+    type: number
+    sql:  if(${products.is_drug_item} is true,
+            ${shadow_waste_by_selling_price_gross},
+            NULL);;
+    value_format_name: eur
+    hidden: yes
+  }
+
+  measure: sum_shadow_waste {
+
+    label: "# Shadow Waste Items"
+    description: "The number of items, that have lower inbounding numbers compared to what should have been inbounded according to the related dispatch notification
+    (Given that the whole dispatch notification had more than 2% of their items being inbounde on the matched day)."
+
+    group_label: "Inbounding Performance"
+
+    type: sum
+    sql: ${shadow_waste} ;;
+    value_format_name: decimal_0
+    drill_fields: [drill_fields*, sum_shadow_waste]
+  }
+
+  measure: sum_shadow_waste_by_selling_price_gross {
+
+    label: "€ Shadow Waste Items (Selling Price Gross)"
+    description: "The number of items valued by their gross selling price, that have lower inbounding numbers compared to what should have been inbounded according to the related dispatch notification
+    (Given that the whole dispatch notification had more than 2% of their items being inbounde on the matched day)."
+
+    group_label: "Inbounding Performance"
+
+    type: sum
+    sql: ${shadow_waste_by_selling_price_gross} ;;
+    value_format_name: eur
+    drill_fields: [drill_fields*, sum_shadow_waste_by_selling_price_gross]
+  }
+
+  measure: sum_shadow_drug_waste {
+
+    label: "# Shadow Drug Waste Items"
+    description: "The number of items of type alcohol or tobacco, that have lower inbounding numbers compared to what should have been inbounded according to the related dispatch notification
+    (Given that the whole dispatch notification had more than 2% of their items being inbounde on the matched day)."
+
+    group_label: "Inbounding Performance"
+
+    type: sum
+    sql: ${shadow_drug_waste} ;;
+    value_format_name: decimal_0
+    drill_fields: [drill_fields*, sum_shadow_drug_waste]
+  }
+
+  measure: sum_shadow_drug_waste_by_selling_price_gross {
+
+    label: "€ Shadow Drug Waste Items (Selling Price Gross)"
+    description: "The number of items of type alcohol or tobacco valued by their gross selling price, that have lower inbounding numbers compared to what should have been inbounded according to the related dispatch notification
+    (Given that the whole dispatch notification had more than 2% of their items being inbounde on the matched day)."
+
+    group_label: "Inbounding Performance"
+
+    type: sum
+    sql: ${shadow_drug_waste_by_selling_price_gross} ;;
+    value_format_name: eur
+    drill_fields: [drill_fields*, sum_shadow_drug_waste_by_selling_price_gross]
+  }
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  #  - - - - - - - - - -    END: Shadow (Drug) Waste
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
 

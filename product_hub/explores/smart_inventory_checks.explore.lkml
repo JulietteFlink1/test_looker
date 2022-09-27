@@ -9,8 +9,9 @@
 # - Time spent on checks
 # - Amount of corrections
 
-include: "/**/views/bigquery_curated/daily_smart_inventory_checks.view"
-include: "/views/bigquery_tables/curated_layer/products.view"
+include: "/**/daily_smart_inventory_checks.view"
+include: "/**/products.view"
+include: "/**/hubs_ct.view.lkml"
 include: "/**/global_filters_and_parameters.view.lkml"
 
 explore: smart_inventory_checks {
@@ -19,7 +20,7 @@ explore: smart_inventory_checks {
 
   label: "Smart Inventory Checks"
   description: "This explore provides an overview of the backend events related to inventory checks and corrections."
-  group_label: "Consumer Hub"
+  group_label: "Product - Hub Tech"
 
   access_filter: {
     field: smart_inventory_checks.country_iso
@@ -44,6 +45,12 @@ explore: smart_inventory_checks {
 
   join: products {
     sql_on: ${smart_inventory_checks.sku} = ${products.product_sku} ;;
+    type: left_outer
+    relationship: many_to_one
+  }
+
+  join: hubs_ct {
+    sql_on: ${smart_inventory_checks.hub_code} = ${hubs_ct.hub_code} ;;
     type: left_outer
     relationship: many_to_one
   }
