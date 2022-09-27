@@ -101,6 +101,14 @@ view: daily_stock_management_events {
     sql: ${TABLE}.event_timestamp ;;
   }
 
+  dimension: event_date_hour {
+    group_label: "Date / Timestamp"
+    label: "Event Date - Hour"
+    description: "Event date concatenated with Event hour_of_day"
+    type: string
+    sql: concat(${event_timestamp_date}, ${event_timestamp_hour_of_day}) ;;
+  }
+
   # =========  Generic Dimensions   =========
 
   dimension: event_name {

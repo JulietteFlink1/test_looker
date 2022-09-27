@@ -185,6 +185,18 @@ view: hubs_ct {
     group_label: "> Admin Data"
   }
 
+  dimension: hub_manager {
+    type: string
+    sql: ${TABLE}.hub_manager ;;
+    group_label: "> Admin Data"
+  }
+
+  dimension: hub_manager_email {
+    type: string
+    sql: ${TABLE}.hub_manager_email ;;
+    group_label: "> Admin Data"
+  }
+
   dimension: cost_center {
     type: string
     sql: ${TABLE}.cost_center ;;
