@@ -1,5 +1,5 @@
 view: advanced_supplier_matching {
-  sql_table_name: `flink-data-dev.dbt_astueber.advanced_supplier_matching`
+  sql_table_name: `flink-data-prod.reporting.advanced_supplier_matching`
     ;;
 
 
