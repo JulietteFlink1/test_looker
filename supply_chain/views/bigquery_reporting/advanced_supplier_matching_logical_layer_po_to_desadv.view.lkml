@@ -21,12 +21,14 @@ view: +advanced_supplier_matching {
   }
 
   dimension: purchase_order_order_lineitems {
+    description: "The unique identifier of a product in a purchase order"
     type: string
     sql: concat(${parent_sku_purchase_order}, ${table_uuid}) ;;
     hidden: yes
   }
 
   dimension: desadv_order_lineitems {
+    description: "The unique identifier of a product in a dispatch notification"
     type: string
     sql: concat(${parent_sku_desadv}, ${table_uuid}) ;;
     hidden: yes
@@ -119,7 +121,7 @@ view: +advanced_supplier_matching {
     value_format_name: percent_0
   }
 
-  #   Too Early
+  #### Too Early
   measure: cnt_ordered_items_delivered_too_early {
     label: "# Ordered Items Delivered Too Early"
     group_label: "PO >> DESADV | On Time KPIs"
@@ -152,7 +154,7 @@ view: +advanced_supplier_matching {
     value_format_name: decimal_1
   }
 
-  #    Too Late
+  #### Too Late
   measure: cnt_ordered_items_delivered_too_late {
     label: "# Ordered Items Delivered Too Late"
     group_label: "PO >> DESADV | On Time KPIs"
@@ -189,9 +191,10 @@ view: +advanced_supplier_matching {
 
 
   # ----------------     In Full KPIs    ----------------
-  # In full
+  #### In full
   measure: cnt_ordered_items_in_full {
     label: "# In Full delivery (PO > DESADV)"
+    description: "Number of in full delivered order lines (PO > DESADV)"
     group_label: "PO >> DESADV | In Full KPIs"
 
     type: count_distinct
@@ -213,6 +216,7 @@ view: +advanced_supplier_matching {
 
   measure: cnt_ordered_items_in_full_limited {
     label: "# In Full delivery lim. (PO > DESADV)"
+    description: "Number of in full delivered order lines (PO > DESADV), where an overdelivery counts as an in full delivery"
     group_label: "PO >> DESADV | In Full KPIs"
 
     type: count_distinct
@@ -232,9 +236,10 @@ view: +advanced_supplier_matching {
     value_format_name: percent_0
   }
 
-  # Fill Rate
+  #### Fill Rate
   measure: sum_ordered_items_quantity_desadv_with_po {
     label: "# Filled Quantities (PO > DESADV)"
+    description: "Sum of fullfilled quantities (PO > DESADV)"
     group_label: "PO >> DESADV | In Full KPIs"
 
     type: sum
@@ -254,6 +259,7 @@ view: +advanced_supplier_matching {
 
   measure: sum_ordered_items_quantity_desadv_limited {
     label: "# Filled Quantities lim. (PO > DESADV)"
+    description: "Sum of fullfilled quantities (PO > DESADV) , where an overdelivered quantity is limited to the PO quantity"
     group_label: "PO >> DESADV | In Full KPIs"
 
     type: sum
@@ -275,9 +281,10 @@ view: +advanced_supplier_matching {
     value_format_name: percent_0
   }
 
-  # Overdeliveries
+  #### Overdeliveries
   measure: cnt_ordered_items_delivered_overdelivered {
     label: "# Overdelivered order lines (PO > DESADV)"
+    description: "Number of overdelivered order lines (PO > DESADV)"
     group_label: "PO >> DESADV | In Full KPIs"
 
     type: count_distinct
@@ -307,9 +314,10 @@ view: +advanced_supplier_matching {
     value_format_name: decimal_1
   }
 
-  # Underdeliveries
+  #### Underdeliveries
   measure: cnt_ordered_items_delivered_underdelivered {
     label: "# Underdelivered order lines (PO > DESADV)"
+    description: "Number of underdelivered order lines (PO > DESADV)"
     group_label: "PO >> DESADV | In Full KPIs"
 
     type: count_distinct
@@ -346,6 +354,7 @@ view: +advanced_supplier_matching {
   # ----------------     On-Time In-Full    ----------------
   measure: sum_ordered_items_quantity_desadv_on_time {
     label: "# OTIF relaxed quantity (PO > DESADV)"
+    description: "Sum of on time fulfilled quantities (PO > DESADV)"
     group_label: "PO >> DESADV | OTIF KPIs"
 
     type: sum
@@ -368,6 +377,7 @@ view: +advanced_supplier_matching {
 
   measure: cnt_ordered_items_on_time_in_full {
     label: "# OTIF strict (PO > DESADV)"
+    description: "Number of on time and in full order lines (PO > DESADV)"
     group_label: "PO >> DESADV | OTIF KPIs"
 
     type: count_distinct
@@ -390,6 +400,7 @@ view: +advanced_supplier_matching {
 
   measure: cnt_ordered_items_on_time_in_full_limited {
     label: "# OTIF strict lim. (PO > DESADV)"
+    description: "Number of on time and in full order lines (PO > DESADV), where an overdelivery counts as an in full delivery"
     group_label: "PO >> DESADV | OTIF KPIs"
 
     type: count_distinct
@@ -415,6 +426,7 @@ view: +advanced_supplier_matching {
   # ----------------     Not-Fulfilled or Unplanned    ----------------
   measure: cnt_ordered_items_po_not_fulfilled {
     label: "# Not fulfilled POs (PO > DESADV)"
+    description: "Number of not fulfilled order lines (PO > DESADV)"
     group_label: "PO >> DESADV | Unplanned or Not Fulfilled"
 
     type: count_distinct
@@ -485,7 +497,7 @@ view: +advanced_supplier_matching {
 
   measure: cnt_desadv_inbounded_items_on_time {
     label: "# On Time delivery (DESADV > Inbound)"
-    description: "Nu,ber of on time delivered DESADV lines (DESADV > Inbound)"
+    description: "Number of on time delivered DESADV lines (DESADV > Inbound)"
     group_label: "DESADV >> Inbound | On Time KPIs"
 
     type: count_distinct
@@ -639,7 +651,9 @@ view: +advanced_supplier_matching {
     group_label: "DESADV >> Inbound | In Full KPIs"
 
     type: sum
-    sql: if(${inbounded_quantity} > ${total_quantity_desadv},
+    sql:
+         -- limit the inbounded quantities to be at max as high as the related sellibg units on the DESADV
+        if(${inbounded_quantity} > ${total_quantity_desadv},
             ${total_quantity_desadv},
             ${inbounded_quantity}
           );;
@@ -751,7 +765,9 @@ view: +advanced_supplier_matching {
 
     type: sum
     sql: ${inbounded_quantity} ;;
-    filters: [is_desadv_row_exists: "yes", is_quality_issue: "no", is_matched_on_same_date: "yes"]
+    filters: [is_desadv_row_exists: "yes",
+              is_quality_issue: "no",
+              is_matched_on_same_date: "yes"]
     value_format_name: decimal_0
   }
 
@@ -772,7 +788,9 @@ view: +advanced_supplier_matching {
 
     type: count_distinct
     sql: ${desadv_order_lineitems} ;;
-    filters: [is_quality_issue: "no", is_matched_on_same_date: "yes", is_desadv_inbounded_in_full: "yes"]
+    filters: [is_quality_issue: "no",
+              is_matched_on_same_date: "yes",
+              is_desadv_inbounded_in_full: "yes"]
     value_format_name: decimal_0
   }
 
@@ -1039,7 +1057,9 @@ view: +advanced_supplier_matching {
     group_label: "PO >> Inbound | In Full KPIs"
 
     type: sum
-    sql: if(
+    sql:
+        -- limit the inbounded quantity to be at max as high as the selling units on the purchase order
+        if(
           ${inbounded_quantity} > ${total_quantity_purchase_order},
           ${total_quantity_purchase_order},
           ${inbounded_quantity}
@@ -1131,7 +1151,8 @@ view: +advanced_supplier_matching {
 
     type: sum
     sql: ${inbounded_quantity} ;;
-    filters: [is_purchase_order_row_exists: "yes", is_quality_issue: "no"]
+    filters: [is_purchase_order_row_exists: "yes",
+              is_quality_issue: "no"]
     value_format_name: decimal_0
   }
 
@@ -1152,7 +1173,9 @@ view: +advanced_supplier_matching {
 
     type: sum
     sql: ${inbounded_quantity} ;;
-    filters: [is_purchase_order_row_exists: "yes", is_quality_issue: "no", is_matched_on_same_date: "yes"]
+    filters: [is_purchase_order_row_exists: "yes",
+              is_quality_issue: "no",
+              is_matched_on_same_date: "yes"]
     value_format_name: decimal_0
   }
 
@@ -1173,7 +1196,9 @@ view: +advanced_supplier_matching {
 
     type: count_distinct
     sql: ${purchase_order_order_lineitems};;
-    filters: [is_quality_issue: "no", is_matched_on_same_date: "yes", is_purchase_order_inbounded_in_full: "yes"]
+    filters: [is_quality_issue: "no",
+               is_matched_on_same_date: "yes",
+              is_purchase_order_inbounded_in_full: "yes"]
     value_format_name: decimal_0
   }
 
@@ -1194,7 +1219,9 @@ view: +advanced_supplier_matching {
 
     type: count_distinct
     sql: ${purchase_order_order_lineitems} ;;
-    filters: [is_quality_issue: "no", is_matched_on_same_date: "yes", is_purchase_order_inbounded_in_full_limited: "yes"]
+    filters: [is_quality_issue: "no",
+              is_matched_on_same_date: "yes",
+              is_purchase_order_inbounded_in_full_limited: "yes"]
     value_format_name: decimal_0
   }
 
@@ -1236,8 +1263,9 @@ view: +advanced_supplier_matching {
     description: "Number of unplanned inbound lines (PO > Inbound)"
     group_label: "PO >> Inbound | Unplanned or Not Fulfilled"
 
-    type: number
-    sql: ${cnt_desadv_items_unplanned} ;;
+    type: count_distinct
+    sql: ${table_uuid} ;;
+    filters: [is_unplanned_inbound: "yes"]
     value_format_name: decimal_0
   }
 
@@ -1247,7 +1275,7 @@ view: +advanced_supplier_matching {
     group_label: "PO >> Inbound | Unplanned or Not Fulfilled"
 
     type: number
-    sql: ${pct_desadv_items_unplanned};;
+    sql: safe_divide(${cnt_po_items_unplanned}, ${cnt_items_inbounded});;
     value_format_name: percent_0
   }
 
@@ -1256,8 +1284,9 @@ view: +advanced_supplier_matching {
     description: "Total amount of unplanned inbounded quantities (PO > Inbound)"
     group_label: "PO >> Inbound | Unplanned or Not Fulfilled"
 
-    type: number
-    sql: ${sum_desadv_items_quantity_unplanned};;
+    type: sum
+    sql: ${inbounded_quantity};;
+    filters: [is_unplanned_inbound: "yes"]
     value_format_name: decimal_0
   }
 
@@ -1267,7 +1296,7 @@ view: +advanced_supplier_matching {
     group_label: "PO >> Inbound | Unplanned or Not Fulfilled"
 
     type: number
-    sql: ${pct_desadv_items_quantity_unplanned} ;;
+    sql: safe_divide(${sum_po_items_quantity_unplanned}/${sum_items_inbounded}) ;;
     value_format_name: percent_0
   }
 

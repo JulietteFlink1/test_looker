@@ -21,7 +21,7 @@ view: advanced_supplier_matching {
   dimension: parent_sku {
     type: string
     description: "The Parent SKU of a product. This groups several child SKUs that belongs to the same replenishment substitute group."
-    sql: ${TABLE}.parent_sku ;;
+    sql: ${TABLE}.parent_sku_combined ;;
   }
 
   dimension: product_name {
@@ -569,7 +569,7 @@ view: advanced_supplier_matching {
   dimension: total_quantity {
     type: number
     description: "This field shows the number of selling units of a product, that have been delivered/ordered"
-    sql: ${TABLE}.total_quantity ;;
+    sql: ${TABLE}.total_quantity_combined ;;
     hidden: yes
   }
 
