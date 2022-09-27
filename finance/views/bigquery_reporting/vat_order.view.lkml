@@ -476,6 +476,81 @@ view: vat_order {
     type: number
     sql: ${TABLE}.amt_vat_discount_products_total ;;
   }
+
+  ############### CART DISCOUNTS ###########
+
+  dimension: discount_cart_amount_net {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_discount_cart_net ;;
+  }
+
+  dimension: discount_cart_amount_gross {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_discount_cart_gross ;;
+  }
+
+  dimension: discount_cart_amount_reduced_net {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_discount_cart_reduced_net ;;
+  }
+
+  dimension: discount_cart_amount_reduced_gross {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_discount_cart_reduced_gross ;;
+  }
+
+  dimension: discount_cart_amount_special_net {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_discount_cart_special_net ;;
+  }
+
+  dimension: discount_cart_amount_special_gross {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_discount_cart_special_gross ;;
+  }
+
+  dimension: discount_cart_amount_standard_gross {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_discount_cart_standard_gross ;;
+  }
+
+  dimension: discount_cart_amount_standard_net {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_discount_cart_standard_net ;;
+  }
+
+  dimension: vat_discount_cart_amount_reduced {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_vat_discount_cart_reduced ;;
+  }
+
+  dimension: vat_discount_cart_amount_special {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_vat_discount_cart_special ;;
+  }
+
+  dimension: vat_discount_cart_amount_standard {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_vat_discount_cart_standard ;;
+  }
+
+  dimension: vat_discount_cart_amount_total {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_vat_discount_cart_total ;;
+  }
+
   ############### REFUNDS #############
 
   dimension: refund_amount_net {
@@ -1379,6 +1454,104 @@ view: vat_order {
     sql: ${vat_discount_products_amount_total} ;;
   }
 
+  #################### CART DISCOUNTS #######################
+
+  measure: sum_discount_cart_amount_net {
+    group_label: "> Cart Discounts"
+    label: "SUM Cart Discounts (Net)"
+    type: sum
+    value_format: "#,##0.00€"
+    sql: ${discount_cart_amount_net} ;;
+  }
+
+  measure: sum_discount_cart_amount_gross {
+    group_label: "> Cart Discounts"
+    label: "SUM Cart Discounts (Gross)"
+    type: sum
+    value_format: "#,##0.00€"
+    sql: ${discount_cart_amount_gross} ;;
+  }
+
+
+  measure: sum_discount_cart_amount_reduced_net {
+    group_label: "> Cart Discounts"
+    label: "SUM Cart Discounts Reduced (Net)"
+    type: sum
+    value_format: "#,##0.00€"
+    sql: ${discount_cart_amount_reduced_net} ;;
+  }
+
+  measure: sum_discount_cart_amount_standard_net {
+    group_label: "> Cart Discounts"
+    label: "SUM Cart Discounts Standard (Net)"
+    type: sum
+    value_format: "#,##0.00€"
+    sql: ${discount_cart_amount_standard_net} ;;
+  }
+
+  measure: sum_discount_cart_amount_special_net {
+    group_label: "> Cart Discounts"
+    label: "SUM Cart Discounts Special (Net)"
+    type: sum
+    value_format: "#,##0.00€"
+    sql: ${discount_cart_amount_special_net} ;;
+  }
+
+  measure: sum_discount_cart_amount_reduced_gross {
+    group_label: "> Cart Discounts"
+    label: "SUM Cart Discounts Reduced (Gross)"
+    type: sum
+    value_format: "#,##0.00€"
+    sql: ${discount_cart_amount_reduced_gross} ;;
+  }
+
+  measure: sum_discount_cart_amount_special_gross {
+    group_label: "> Cart Discounts"
+    label: "SUM Cart Discounts Special (Gross)"
+    type: sum
+    value_format: "#,##0.00€"
+    sql: ${discount_cart_amount_special_gross} ;;
+  }
+
+  measure: sum_discount_cart_amount_standard_gross {
+    group_label: "> Cart Discounts"
+    label: "SUM Cart Discounts Standard (Gross)"
+    type: sum
+    value_format: "#,##0.00€"
+    sql: ${discount_cart_amount_standard_gross} ;;
+  }
+
+  measure: sum_vat_discount_cart_amount_reduced {
+    group_label: "> Cart Discounts"
+    label: "SUM VAT Cart Discounts Reduced"
+    type: sum
+    value_format: "#,##0.00€"
+    sql: ${vat_discount_cart_amount_reduced} ;;
+  }
+
+  measure: sum_vat_discount_cart_amount_standard {
+    group_label: "> Cart Discounts"
+    label: "SUM VAT Cart Discounts Standard"
+    type: sum
+    value_format: "#,##0.00€"
+    sql: ${vat_discount_cart_amount_standard} ;;
+  }
+
+  measure: sum_vat_discount_cart_amount_special {
+    group_label: "> Cart Discounts"
+    label: "SUM VAT Cart Discounts Special"
+    type: sum
+    value_format: "#,##0.00€"
+    sql: ${vat_discount_cart_amount_special} ;;
+  }
+
+  measure: sum_vat_discount_cart_amount_total {
+    group_label: "> Cart Discounts"
+    label: "SUM VAT Cart Discounts Total"
+    type: sum
+    value_format: "#,##0.00€"
+    sql: ${vat_discount_cart_amount_total} ;;
+  }
 
   #####################  Refunds  ##########################
 
