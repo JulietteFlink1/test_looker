@@ -334,7 +334,7 @@ view: hubs_ct {
   dimension: geographic_data_dynamic {
     group_label: "> Geographic Data"
     label: "Geographic Granularity (Dynamic)"
-    label_from_parameter: date_granularity
+    label_from_parameter: geographic_data_granularity
     sql:
     {% if geographic_data_granularity._parameter_value == 'Hub' %}
       ${hub_code}
