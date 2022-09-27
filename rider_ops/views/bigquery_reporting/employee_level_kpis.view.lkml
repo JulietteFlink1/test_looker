@@ -672,6 +672,24 @@ view: employee_level_kpis {
     value_format_name: decimal_1
   }
 
+  measure: sum_evaluated_hours {
+    group_label: "* Shift related *"
+    type: number
+    label: "# Evaluated Hours"
+    description: "Worked Hours + Absence Hours"
+    sql: ${number_of_worked_hours} + ${number_of_absence_hours} ;;
+    value_format_name: decimal_1
+  }
+
+  measure: sum_recorded_hours {
+    group_label: "* Shift related *"
+    type: number
+    label: "# Recorded Hours"
+    description: "Worked Hours + Absence Hours + No Show Hours"
+    sql: ${number_of_worked_hours} + ${number_of_absence_hours} + ${number_of_no_show_hours} ;;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_early_punched_out_minutes {
     group_label: "* Shift related *"
     type: sum
