@@ -2,11 +2,42 @@ view: user_attributes_lifecycle_last28days {
   sql_table_name: `flink-data-prod.reporting.user_attributes_lifecycle_last28days`
     ;;
 
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+  # ~~~~~~~~~~~~~~~     Sets    ~~~~~~~~~~~~~~~ #
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+  set: user_attributes {
+    fields: [
+      first_country_iso,
+      first_order_date,
+      first_order_week,
+      first_order_month,
+      first_order_quarter,
+      first_order_year,
+      first_order_platform,
+      first_visit_date,
+      first_visit_granularity,
+      first_visit_month,
+      first_visit_week,
+      first_visit_quarter,
+      first_visit_year,
+      first_visit_platform,
+      is_xdevice_conversion,
+      number_of_days_to_first_order,
+      number_of_visits_to_first_order
+    ]
+  }
+
+  dimension: primary_key {
+    hidden: yes
+    primary_key: yes
+    sql: CONCAT(${customer_uuid}, ${execution_date}) ;;
+  }
+
   dimension: customer_uuid {
     type: string
     sql: ${TABLE}.customer_uuid ;;
   }
-
 
   #=========== Measures ===========#
 

@@ -2,11 +2,22 @@ view: user_attributes_lifecycle_first28days {
   sql_table_name: `flink-data-prod.reporting.user_attributes_lifecycle_first28days`
     ;;
 
+  dimension: customer_uuid {
+    primary_key: yes
+    type: string
+    sql: ${TABLE}.customer_uuid ;;
+  }
+
   # -------- measures --------- #
   measure: cnt_customers {
     label: "# Customers"
     type: count_distinct
     sql: ${customer_uuid} ;;
+  }
+
+  measure: count {
+    type: count
+    drill_fields: []
   }
 
   measure: total_gmv_min {
@@ -165,6 +176,7 @@ view: user_attributes_lifecycle_first28days {
   }
 
   dimension: plotby {
+    hidden: yes
     label: "Comparison Field (Dynamic)"
     label_from_parameter: comparison_selector
     description: "Date OR Full App Version Dynamic Dimension - select using Date or Version Dynamic Selector"
@@ -179,6 +191,53 @@ view: user_attributes_lifecycle_first28days {
     {% else %}
       ${first_visit_granularity}
     {% endif %};;
+  }
+
+
+#========= User Attributes =========#
+
+  dimension: first_country_iso {
+    group_label: "* User Attributes *"
+    type: string
+    sql: ${TABLE}.first_country_iso ;;
+  }
+
+  dimension_group: first_order {
+    group_label: "* User Attributes *"
+    type: time
+    timeframes: [
+      raw,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    convert_tz: no
+    datatype: date
+    sql: ${TABLE}.first_order_date ;;
+  }
+
+  dimension: first_order_platform {
+    group_label: "* User Attributes *"
+    type: string
+    sql: ${TABLE}.first_order_platform ;;
+  }
+
+  dimension_group: first_visit {
+    group_label: "* User Attributes *"
+    type: time
+    timeframes: [
+      raw,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    convert_tz: no
+    datatype: date
+    sql: ${TABLE}.first_visit_date ;;
   }
 
   dimension: first_visit_granularity {
@@ -206,151 +265,43 @@ view: user_attributes_lifecycle_first28days {
     default_value: "Year"
   }
 
-  #----------------------------
-
-
-  dimension: customer_uuid {
-    primary_key: yes
-    type: string
-    sql: ${TABLE}.customer_uuid ;;
-  }
-
-  dimension: amt_discount_gross {
-    type: number
-    sql: ${TABLE}.amt_discount_gross ;;
-  }
-
-  dimension: amt_discount_net {
-    type: number
-    sql: ${TABLE}.amt_discount_net ;;
-  }
-
-  dimension: amt_gmv_gross {
-    type: number
-    sql: ${TABLE}.amt_gmv_gross ;;
-  }
-
-  dimension: amt_gmv_net {
-    type: number
-    sql: ${TABLE}.amt_gmv_net ;;
-  }
-
-  dimension: amt_revenue_gross {
-    type: number
-    sql: ${TABLE}.amt_revenue_gross ;;
-  }
-
-  dimension: amt_revenue_net {
-    type: number
-    sql: ${TABLE}.amt_revenue_net ;;
-  }
-
-  dimension: avg_days_between_orders {
-    type: number
-    sql: ${TABLE}.avg_days_between_orders ;;
-  }
-
-  dimension: avg_days_between_visits {
-    type: number
-    sql: ${TABLE}.avg_days_between_visits ;;
-  }
-
-  dimension: avg_discount_gross {
-    type: number
-    sql: ${TABLE}.avg_discount_gross ;;
-  }
-
-  dimension: avg_discount_net {
-    type: number
-    sql: ${TABLE}.avg_discount_net ;;
-  }
-
-  dimension: avg_gmv_gross {
-    type: number
-    sql: ${TABLE}.avg_gmv_gross ;;
-  }
-
-  dimension: avg_gmv_net {
-    type: number
-    sql: ${TABLE}.avg_gmv_net ;;
-  }
-
-  dimension: avg_revenue_gross {
-    type: number
-    sql: ${TABLE}.avg_revenue_gross ;;
-  }
-
-  dimension: avg_revenue_net {
-    type: number
-    sql: ${TABLE}.avg_revenue_net ;;
-  }
-
-  dimension: first_country_iso {
-    type: string
-    sql: ${TABLE}.first_country_iso ;;
-  }
-
-  dimension_group: first_order {
-    type: time
-    timeframes: [
-      raw,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    convert_tz: no
-    datatype: date
-    sql: ${TABLE}.first_order_date ;;
-  }
-
-  dimension: first_order_platform {
-    type: string
-    sql: ${TABLE}.first_order_platform ;;
-  }
-
-  dimension_group: first_visit {
-    type: time
-    timeframes: [
-      raw,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    convert_tz: no
-    datatype: date
-    sql: ${TABLE}.first_visit_date ;;
-  }
-
   dimension: first_visit_platform {
+    group_label: "* User Attributes *"
     type: string
     sql: ${TABLE}.first_visit_platform ;;
   }
 
   dimension: is_xdevice_conversion {
+    group_label: "* User Attributes *"
     type: yesno
     sql: ${TABLE}.is_xdevice_conversion ;;
   }
 
-  dimension_group: last_order {
-    type: time
-    timeframes: [
-      raw,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    convert_tz: no
-    datatype: date
-    sql: ${TABLE}.last_order_date ;;
+  dimension: number_of_days_to_first_order {
+    group_label: "* User Attributes *"
+    type: number
+    sql: ${TABLE}.number_of_days_to_first_order ;;
+  }
+
+  dimension: number_of_visits_to_first_order {
+    group_label: "* User Attributes *"
+    type: number
+    sql: ${TABLE}.number_of_visits_to_first_order ;;
+  }
+
+  #----------------------------
+
+
+  #========= Visit Dimensions =========#
+
+  dimension: avg_days_between_visits {
+    group_label: "* Visit Dimensions *"
+    type: number
+    sql: ${TABLE}.avg_days_between_visits ;;
   }
 
   dimension_group: last_visit {
+    group_label: "* Visit Dimensions *"
     type: time
     timeframes: [
       raw,
@@ -365,38 +316,123 @@ view: user_attributes_lifecycle_first28days {
     sql: ${TABLE}.last_visit_date ;;
   }
 
-  dimension: number_of_days_ordering {
-    type: number
-    sql: ${TABLE}.number_of_days_ordering ;;
-  }
-
-  dimension: number_of_days_to_first_order {
-    type: number
-    sql: ${TABLE}.number_of_days_to_first_order ;;
-  }
-
   dimension: number_of_days_visited {
+    group_label: "* Visit Dimensions *"
     type: number
     sql: ${TABLE}.number_of_days_visited ;;
   }
 
+  #========= Order Dimensions =========#
+
+  dimension: amt_discount_gross {
+    group_label: "* Order Dimensions *"
+    type: number
+    sql: ${TABLE}.amt_discount_gross ;;
+  }
+
+  dimension: amt_discount_net {
+    group_label: "* Order Dimensions *"
+    type: number
+    sql: ${TABLE}.amt_discount_net ;;
+  }
+
+  dimension: amt_gmv_gross {
+    group_label: "* Order Dimensions *"
+    type: number
+    sql: ${TABLE}.amt_gmv_gross ;;
+  }
+
+  dimension: amt_gmv_net {
+    group_label: "* Order Dimensions *"
+    type: number
+    sql: ${TABLE}.amt_gmv_net ;;
+  }
+
+  dimension: amt_revenue_gross {
+    group_label: "* Order Dimensions *"
+    type: number
+    sql: ${TABLE}.amt_revenue_gross ;;
+  }
+
+  dimension: amt_revenue_net {
+    group_label: "* Order Dimensions *"
+    type: number
+    sql: ${TABLE}.amt_revenue_net ;;
+  }
+
+  dimension: avg_days_between_orders {
+    group_label: "* Order Dimensions *"
+    type: number
+    sql: ${TABLE}.avg_days_between_orders ;;
+  }
+
+  dimension: avg_discount_gross {
+    group_label: "* Order Dimensions *"
+    type: number
+    sql: ${TABLE}.avg_discount_gross ;;
+  }
+
+  dimension: avg_discount_net {
+    group_label: "* Order Dimensions *"
+    type: number
+    sql: ${TABLE}.avg_discount_net ;;
+  }
+
+  dimension: avg_gmv_gross {
+    group_label: "* Order Dimensions *"
+    type: number
+    sql: ${TABLE}.avg_gmv_gross ;;
+  }
+
+  dimension: avg_gmv_net {
+    group_label: "* Order Dimensions *"
+    type: number
+    sql: ${TABLE}.avg_gmv_net ;;
+  }
+
+  dimension: avg_revenue_gross {
+    group_label: "* Order Dimensions *"
+    type: number
+    sql: ${TABLE}.avg_revenue_gross ;;
+  }
+
+  dimension: avg_revenue_net {
+    group_label: "* Order Dimensions *"
+    type: number
+    sql: ${TABLE}.avg_revenue_net ;;
+  }
+
+  dimension_group: last_order {
+    group_label: "* Order Dimensions *"
+    type: time
+    timeframes: [
+      raw,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    convert_tz: no
+    datatype: date
+    sql: ${TABLE}.last_order_date ;;
+  }
+
+  dimension: number_of_days_ordering {
+    group_label: "* Order Dimensions *"
+    type: number
+    sql: ${TABLE}.number_of_days_ordering ;;
+  }
+
   dimension: number_of_discounted_orders {
+    group_label: "* Order Dimensions *"
     type: number
     sql: ${TABLE}.number_of_discounted_orders ;;
   }
 
   dimension: number_of_orders {
+    group_label: "* Order Dimensions *"
     type: number
     sql: ${TABLE}.number_of_orders ;;
-  }
-
-  dimension: number_of_visits_to_first_order {
-    type: number
-    sql: ${TABLE}.number_of_visits_to_first_order ;;
-  }
-
-  measure: count {
-    type: count
-    drill_fields: []
   }
 }

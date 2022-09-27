@@ -12,10 +12,10 @@
 # https://cloud.google.com/looker/docs/reference/param-field-filter
 # https://cloud.google.com/looker/docs/reference/param-explore-join-sql-on
 
-include: "/**/user_attributes_jobs_to_be_done.view"
-include: "/**/user_attributes_lifecycle_last28days.view"
-include: "/**/user_attributes_lifecycle_first28days.view"
-include: "/**/global_filters_and_parameters.view.lkml"
+include: "/**/user_attributes_jobs_to_be_done.view.lkml"
+include: "/**/user_attributes_lifecycle_last28days.view.lkml"
+include: "/**/user_attributes_lifecycle_first28days.view.lkml"
+# include: "/**/global_filters_and_parameters.view.lkml"
 # include: "/**/customers_metrics.view.lkml"
 
 explore: consumer_user_attributes {
@@ -27,9 +27,15 @@ explore: consumer_user_attributes {
   description: "Explore user attributes and related metrics"
   group_label: "Product - Consumer"
   fields: [
-    ALL_FIELDS*
+    ALL_FIELDS*,
+    -user_attributes_lifecycle_last28days.user_attributes*,
+    -user_attributes_lifecycle_last28days.comparison_selector,
+    -user_attributes_lifecycle_last28days.plotby,
+    -user_attributes_lifecycle_last28days.first_visit_granularity,
+    -user_attributes_lifecycle_last28days.customer_uuid
     ]
 
+# JTBD has a historical table where customers are duplicated per day, but the JTBD non-historical view only contains the customers' analysis from the previous day. Therefore unique on customer_uuid
   join: user_attributes_jobs_to_be_done {
     view_label: "* Customers JTBD *"
     sql_on: ${user_attributes_lifecycle_first28days.customer_uuid} = ${user_attributes_jobs_to_be_done.customer_uuid};;
@@ -37,10 +43,12 @@ explore: consumer_user_attributes {
     type: left_outer
   }
 
+# last28days is also run everyday and here we restrict to consider only data from the previous day as reference point, in order to simplify
+# don't use sql_where for execution_date filter because it will restrict the entire set (WHERE the entire selection) to where execution_date is available
   join: user_attributes_lifecycle_last28days {
     view_label: "* Customer Last 28 Days *"
-    sql_on: ${user_attributes_lifecycle_first28days.customer_uuid} = ${user_attributes_lifecycle_last28days.customer_uuid};;
-    sql_where: ${user_attributes_lifecycle_last28days.execution_date}=CURRENT_DATE() ;;
+    sql_on: ${user_attributes_lifecycle_first28days.customer_uuid} = ${user_attributes_lifecycle_last28days.customer_uuid}
+            and ${user_attributes_lifecycle_last28days.execution_date}=DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY);;
     relationship: one_to_one
     type: left_outer
   }
@@ -52,14 +60,7 @@ explore: consumer_user_attributes {
 
   always_filter: {
     filters: [
-      global_filters_and_parameters.datasource_filter: "last 1 days",
       user_attributes_lifecycle_first28days.first_visit_date: "56 days ago for 28 days"
     ]
-  }
-
-  join: global_filters_and_parameters {
-    sql_on: ${global_filters_and_parameters.generic_join_dim} = TRUE ;;
-    type: left_outer
-    relationship: many_to_one
   }
 }
