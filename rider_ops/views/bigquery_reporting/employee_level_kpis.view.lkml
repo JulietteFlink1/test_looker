@@ -854,6 +854,16 @@ view: employee_level_kpis {
     value_format: "0%"
   }
 
+  measure: pct_scheduled_hours_vs_contracted {
+    group_label: "* Shift related *"
+    type: number
+    hidden: no
+    label: "% Assigned Hours vs Contracted Hours"
+    description: "Assigned Hours / (Weekly Contracted Hours * # Shift Weeks)"
+    sql: ${number_of_assigned_hours}/nullif(${sum_weekly_contracted_hours},0) ;;
+    value_format: "0%"
+  }
+
   # ~~~~~~~~~~~~~~~     NPS     ~~~~~~~~~~~~~~~~~~~~~~~~~
 
   measure: cnt_responses {
