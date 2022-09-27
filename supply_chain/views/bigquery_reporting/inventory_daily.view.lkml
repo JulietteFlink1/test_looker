@@ -780,8 +780,8 @@ view: inventory_daily {
 
   measure: avg_inventory_end_of_day {
 
-    label: "AVG Inventory Level (Days Start)"
-    description: "The average stock level of the first known stock level per day, hub and SKU"
+    label: "AVG Inventory Level (Days End)"
+    description: "The average stock level of the last known stock level per day, hub and SKU"
     group_label: "Inventory Change"
 
     type: average
@@ -792,12 +792,12 @@ view: inventory_daily {
 
   measure: avg_inventory_start_of_day {
 
-    label: "AVG Inventory Level (Days End)"
-    description: "The average stock level of the last known stock level per day, hub and SKU"
+    label: "AVG Inventory Level (Days Start)"
+    description: "The average stock level of the first known stock level per day, hub and SKU"
     group_label: "Inventory Change"
 
     type: average
-    sql: ${quantity_to} ;;
+    sql: ${quantity_from} ;;
 
     value_format_name: decimal_1
   }
