@@ -4,8 +4,6 @@
 view: vehicle_uptime_metrics {
   sql_table_name: `flink-data-prod.reporting.vehicle_uptime_metrics` ;;
 
-  drill_fields: [vehicle_id]
-
   dimension: country_iso {
     group_label: "> Geography"
     label: "Country Iso"
@@ -122,7 +120,7 @@ view: vehicle_uptime_metrics {
                 Expected Uptime: # bikes * opening duration of hub on a certain day."
     type: number
     sql: 1 - (${sum_downtime_minutes} / NULLIF(${sum_expected_uptime_minutes},0)) ;;
-    value_format_name: percent_2
+    value_format_name: percent_1
   }
 
   ######### Parameters
