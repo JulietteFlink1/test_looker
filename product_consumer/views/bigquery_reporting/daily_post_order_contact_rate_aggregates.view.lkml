@@ -648,11 +648,11 @@ view: daily_post_order_contact_rate_aggregates {
     label_from_parameter: date_granularity
     sql:
     {% if date_granularity._parameter_value == 'Day' %}
-      ${order_placed_timestamp_date}
+      ${event_date_date}
     {% elsif date_granularity._parameter_value == 'Week' %}
-      ${order_placed_timestamp_week}
+      ${event_date_date}
     {% elsif date_granularity._parameter_value == 'Month' %}
-      ${order_placed_timestamp_month}
+      ${event_date_date}
     {% endif %};;
   }
 
