@@ -14,6 +14,7 @@ view: ndt_psp_transactions__order_aggregated {
         column: sum_gpv_gross { field: orders.sum_gpv_gross }
         column: sum_gross_credit_gc { field: psp_settlement_details.sum_gross_credit_gc }
         column: sum_gross_debit_gc {field: psp_settlement_details.sum_gross_debit_gc}
+        column: psp_settlement_booking_date {field: psp_settlement_details.booking_date}
 
         filters: {
           field: psp_settlement_details.is_full_refund_payment
@@ -54,6 +55,11 @@ view: ndt_psp_transactions__order_aggregated {
       description: "Amount submitted in the transaction request."
       hidden: yes
       type: number
+    }
+
+    dimension: psp_settlement_booking_date {
+      type: date
+      hidden: yes
     }
 
     dimension: sum_gross_credit_adjusted {

@@ -114,7 +114,7 @@ explore: psp_transactions {
   join: psp_settlement_details {
     view_label: "PSP Settlement"
     sql_on: ${psp_transactions.psp_reference}  = ${psp_settlement_details.psp_reference}
-        and {% condition psp_transactions.booking_date %} ${psp_settlement_details.booking_date} {% endcondition %}
+      --  and {% condition psp_transactions.booking_date %} ${psp_settlement_details.booking_date} {% endcondition %}
       ;;
 
     relationship: many_to_many
@@ -125,6 +125,7 @@ explore: psp_transactions {
   join: ndt_psp_transactions__order_aggregated {
     view_label: "PSP Transactions"
     sql_on: ${psp_transactions.order_uuid}  = ${ndt_psp_transactions__order_aggregated.order_uuid}
+  --  and {% condition psp_transactions.booking_date %}  timestamp(${ndt_psp_transactions__order_aggregated.psp_settlement_booking_date})  {% endcondition %}
       ;;
     relationship: many_to_one
     type: left_outer
