@@ -1361,12 +1361,13 @@ view: staffing {
 
 ###### Ops Associate
 
-  dimension: number_of_planned_employees_ops_associate {
+  measure: number_of_planned_employees_ops_associate {
     group_label: "> Ops Associate Measures"
     label: "# Planned Ops Associates"
-    type: number
+    type: sum
     sql: ${TABLE}.number_of_planned_employees_ops_associate;;
     value_format_name: decimal_1
+    hidden: yes
   }
 
   measure: number_of_planned_employees_internal_ops_associate {
@@ -1375,6 +1376,7 @@ view: staffing {
     type: sum
     sql: ${TABLE}.number_of_planned_employees_internal_ops_associate;;
     value_format_name: decimal_1
+    hidden: yes
   }
 
   measure: number_of_planned_employees_external_ops_associate {
@@ -1383,6 +1385,7 @@ view: staffing {
     type: sum
     sql: ${TABLE}.number_of_planned_employees_external_ops_associate;;
     value_format_name: decimal_1
+    hidden: yes
   }
 
   measure: number_of_worked_minutes_ops_associate {
@@ -1579,7 +1582,7 @@ view: staffing {
 
   measure: number_of_worked_hours_ops_associate {
     alias: [number_of_worked_hours_ops_staff]
-    group_label: "> WH Measures"
+    group_label: "> Ops Associate Measures"
     label: "# Punched Ops Associate Hours"
     type: number
     sql: ${number_of_worked_minutes_ops_associate}/60;;
@@ -2006,7 +2009,7 @@ view: staffing {
   measure: number_of_unassigned_hours_ops_associate {
     alias: [number_of_unassigned_hours_ops_staff]
     group_label: "> Ops Associate Measures"
-    label: "# Unassigned Ops Associate Hours"
+    label: "# Open Ops Associate Hours"
     type: number
     sql: (${number_of_unassigned_minutes_internal_ops_associate}+${number_of_unassigned_minutes_external_ops_associate})/60;;
     value_format_name: decimal_1
@@ -2087,7 +2090,7 @@ view: staffing {
   measure: number_of_planned_hours_ops_associate {
     alias: [number_of_planned_hours_ops_staff]
     group_label: "> Ops Associate Measures"
-    label: "# Planned (Filled) Ops Associate Hours"
+    label: "# Planned Ops Associate Hours"
     type: number
     sql: ${number_of_planned_minutes_ops_associate}/60 ;;
     value_format_name: decimal_1
