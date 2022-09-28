@@ -23,8 +23,8 @@ explore: psp_transactions {
 
   always_filter: {
     filters: [
-      orders.created_date: "last 30 days",
-      psp_transactions.booking_date: "last 30 days",
+      orders.created_date: "",
+      psp_transactions.booking_date: "",
       orders.is_successful_order: "",
       psp_transactions.merchant_account: "",
       psp_transactions.booking_date: "",
