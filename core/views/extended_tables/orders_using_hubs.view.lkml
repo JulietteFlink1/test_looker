@@ -18,8 +18,57 @@ view: orders_using_hubs {
     sql_end: ${order_date} ;;
   }
 
+  dimension: hub_to_customer_delivery_distance_m {
+    group_label: "* Operations / Logistics *"
+    label: "Delivery Distance M (Hub to Customer)"
+    type: distance
+    units: meters
+    start_location_field: hub_location
+    end_location_field: customer_location
+    description: "Distance between hub and customer dropoff in meters (most direct path / straight line)"
+  }
+
+  dimension: hub_to_customer_delivery_distance_km {
+    group_label: "* Operations / Logistics *"
+    label: "Delivery Distance Km (Hub to Customer)"
+    type: distance
+    units: kilometers
+    start_location_field: hub_location
+    end_location_field: customer_location
+    description: "Distance between hub and customer dropoff in kilometers (most direct path / straight line)"
+  }
+
+  dimension: hub_to_customer_delivery_distance_tier {
+    group_label: "* Operations / Logistics *"
+    label: "Delivery Distance Tier (Hub to Customer)"
+    type: tier
+    tiers: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 3.0, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9, 4.0]
+    style: interval
+    sql: ${hub_to_customer_delivery_distance_km} ;;
+  }
+
+  dimension: is_hub_to_customer_delivery_distance_over_10km {
+    group_label: "* Operations / Logistics *"
+    label: "Is Hub to Customer Delivery Distance Over 10km (Yes / No)"
+    type: yesno
+    sql: IF(${hub_to_customer_delivery_distance_km} > 10, TRUE, FALSE);;
+  }
+
+
+  measure: avg_hub_to_customer_delivery_distance_km {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Delivery Distance (km) (Hub to Customer)"
+    description: "Average distance between hub and customer dropoff in kilometers(most direct path / straight line)."
+    hidden:  no
+    type: average
+    sql: ${hub_to_customer_delivery_distance_km};;
+    value_format: "0.00"
+    filters: [is_hub_to_customer_delivery_distance_over_10km: "no"]
+  }
+
   dimension: delivery_distance_m {
     group_label: "* Operations / Logistics *"
+    label: "Delivery Distance M"
     type: number
     sql: ${TABLE}.delivery_distance_km/1000 ;;
     description: "Distance between hub and customer dropoff in meters (most direct path / straight line). For stacked orders, it is the distance from previous customer."
@@ -28,6 +77,7 @@ view: orders_using_hubs {
 
   dimension: delivery_distance_km {
     group_label: "* Operations / Logistics *"
+    label: "Delivery Distance Km"
     type: number
     sql: ${TABLE}.delivery_distance_km ;;
     description: "Distance between hub and customer dropoff in kilometers (most direct path / straight line). For stacked orders, it is the distance from previous customer."
@@ -35,6 +85,7 @@ view: orders_using_hubs {
 
   dimension: delivery_distance_tier {
     group_label: "* Operations / Logistics *"
+    label: "Delivery Distance Tier"
     type: tier
     tiers: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 3.0, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9, 4.0]
     style: interval
@@ -43,6 +94,7 @@ view: orders_using_hubs {
 
   dimension: is_delivery_distance_over_10km {
     group_label: "* Operations / Logistics *"
+    label: "Is Delivery Distance Over 10km (Yes / No)"
     type: yesno
     sql: IF(${delivery_distance_km} > 10, TRUE, FALSE);;
   }
