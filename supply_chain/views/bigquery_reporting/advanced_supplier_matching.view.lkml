@@ -373,14 +373,14 @@ view: advanced_supplier_matching {
 
   dimension: is_po_delivered_too_early {
     type: yesno
-    description: "This field indicates, that the actual delivery happend after the promised delivery date, that is stated on the purchase order document"
+    description: "This field indicates, that the actual delivery happend before the promised delivery date, that is stated on the purchase order document"
     group_label: "Boolean Fields"
     sql: ${TABLE}.is_po_delivered_too_early ;;
   }
 
   dimension: is_po_delivered_too_late {
     type: yesno
-    description: "This field indicates, that the actual delivery happend before the promised delivery date, that is stated on the purchase order document"
+    description: "This field indicates, that the actual delivery happend after the promised delivery date, that is stated on the purchase order document"
     group_label: "Boolean Fields"
     sql: ${TABLE}.is_po_delivered_too_late ;;
   }
