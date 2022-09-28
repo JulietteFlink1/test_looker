@@ -114,6 +114,7 @@ explore: psp_transactions {
   join: psp_settlement_details {
     view_label: "PSP Settlement"
     sql_on: ${psp_transactions.psp_reference}  = ${psp_settlement_details.psp_reference}
+    and coalesce(${orders.order_uuid},'') = coalesce(${psp_settlement_details.order_uuid},'')
       --  and {% condition psp_transactions.booking_date %} ${psp_settlement_details.booking_date} {% endcondition %}
       ;;
 
