@@ -12,7 +12,7 @@ view: hubs_ct {
     bypass_suggest_restrictions: yes
     type: string
     sql: ${TABLE}.hub_code ;;
-    drill_fields: [products.product_sku, products.category, products.subcategory]
+    drill_fields: [products.product_sku, products.category, products.subcategory, vehicle_uptime_metrics.supplier_name]
   }
 
   dimension: is_hub_opened_14d {
@@ -103,6 +103,7 @@ view: hubs_ct {
     bypass_suggest_restrictions: yes
     sql: ${TABLE}.city ;;
     group_label: "> Geographic Data"
+    drill_fields: [hub_code, vehicle_uptime_metrics.supplier_name]
   }
 
   dimension: city_tier {
@@ -117,6 +118,7 @@ view: hubs_ct {
     sql: ${TABLE}.country ;;
     group_label: "> Geographic Data"
     label: "Country"
+    drill_fields: [region, city, hub_code, vehicle_uptime_metrics.supplier_name]
   }
 
   dimension: country_iso {
@@ -125,6 +127,7 @@ view: hubs_ct {
     sql: ${TABLE}.country_iso ;;
     group_label: "> Geographic Data"
     label: "Country Iso"
+    drill_fields: [region, city, hub_code, vehicle_uptime_metrics.supplier_name]
   }
 
   dimension: latitude {
@@ -145,6 +148,7 @@ view: hubs_ct {
     type: string
     sql: ${TABLE}.region ;;
     group_label: "> Geographic Data"
+    drill_fields: [city, hub_code, vehicle_uptime_metrics.supplier_name]
   }
 
   dimension: region_iso {
@@ -323,6 +327,37 @@ view: hubs_ct {
       }
       else: "No"
     }
+  }
+  ######### Parameters
+
+  parameter: geographic_data_granularity {
+    group_label: "> Geographic Data"
+    label: "Geographic Granularity"
+    type: unquoted
+    allowed_value: { value: "Hub" }
+    allowed_value: { value: "City" }
+    allowed_value: { value: "Region" }
+    allowed_value: { value: "Country" }
+    default_value: "Country"
+  }
+
+  ######## Dynamic Dimensions
+
+  dimension: geographic_data_dynamic {
+    group_label: "> Geographic Data"
+    label: "Geographic Granularity (Dynamic)"
+    label_from_parameter: geographic_data_granularity
+    sql:
+    {% if geographic_data_granularity._parameter_value == 'Hub' %}
+      ${hub_code}
+    {% elsif geographic_data_granularity._parameter_value == 'City' %}
+      ${city}
+    {% elsif geographic_data_granularity._parameter_value == 'Region' %}
+      ${region}
+    {% elsif geographic_data_granularity._parameter_value == 'Country' %}
+      ${country_iso}
+    {% endif %};;
+    drill_fields: [vehicle_uptime_metrics.supplier_name]
   }
 
   measure: count {
