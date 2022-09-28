@@ -8,19 +8,24 @@
 
 view: ndt_psp_transactions__order_aggregated {
     derived_table: {
+     # datagroup_trigger: flink_default_datagroup
       explore_source: psp_transactions {
         column: order_uuid { field: orders.order_uuid }
         column: sum_gpv_gross { field: orders.sum_gpv_gross }
         column: sum_gross_credit_gc { field: psp_settlement_details.sum_gross_credit_gc }
-        column: sum_gross_debit_gc {field: ndt_psp_transactions__payment_id_aggregated.sum_gross_debit_gc}
+        column: sum_gross_debit_gc {field: psp_settlement_details.sum_gross_debit_gc}
+        column: psp_settlement_booking_date {field: psp_settlement_details.booking_date}
+
         filters: {
-          field: ndt_psp_transactions__payment_id_aggregated.is_full_refund_payment
+          field: psp_settlement_details.is_full_refund_payment
           value: "No"
         }
         filters: {
           field: psp_settlement_details.type
           value: "Settled"
         }
+
+       # bind_all_filters: yes
       }
     }
 
@@ -50,6 +55,11 @@ view: ndt_psp_transactions__order_aggregated {
       description: "Amount submitted in the transaction request."
       hidden: yes
       type: number
+    }
+
+    dimension: psp_settlement_booking_date {
+      type: date
+      hidden: yes
     }
 
     dimension: sum_gross_credit_adjusted {
@@ -86,6 +96,16 @@ view: ndt_psp_transactions__order_aggregated {
       type: yesno
       sql: ${sum_gross_credit_adjusted} <> ${sum_gpv_gross} ;;
     }
+
+    dimension: is_double_payment {
+      group_label: "> Transaction Properties"
+      label: "Is Double Payment Order"
+      description: "Flags if the amount paid by the customer is twice the GPV in CT."
+      type: yesno
+      sql: ${sum_gross_credit_adjusted} = 2 * ${sum_gpv_gross} ;;
+    }
+
+
 
     measure: sum_difference_ct_adyen {
       group_label: "> Adyen <> CT"

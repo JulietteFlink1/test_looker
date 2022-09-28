@@ -75,7 +75,7 @@ view: inventory_movement_id_times {
   # duplicate values
 
   measure: avg_cart_to_drop_list_seconds {
-    label: "Cart To Drop List seconds"
+    label: "Avg Cart To Drop List seconds"
     description: "Avg cart_to_drop_list time in seconds."
     type: average_distinct
     value_format: "0"
@@ -84,7 +84,7 @@ view: inventory_movement_id_times {
   }
 
   measure: avg_drop_list_created_to_finished_seconds {
-    label: "Drop List Created to Finished seconds"
+    label: "Avg Drop List Created to Finished seconds"
     description: "Avg drop_list_created_to_finished time in seconds."
     type: average_distinct
     value_format: "0"
@@ -93,9 +93,18 @@ view: inventory_movement_id_times {
   }
 
   measure: avg_cart_to_finished_seconds {
-    label: "Cart to Finished seconds"
+    label: "Avg Cart to Finished seconds"
     description: "Avg cart_to_finished time in seconds."
     type: average_distinct
+    value_format: "0.#"
+    sql_distinct_key: ${inventory_movement_id} ;;
+    sql: ${cart_to_finished_seconds} ;;
+  }
+
+  measure: sum_cart_to_finished_seconds {
+    label: "Sum Cart to Finished seconds"
+    description: "Sum cart_to_finished time in seconds."
+    type: sum_distinct
     value_format: "0.#"
     sql_distinct_key: ${inventory_movement_id} ;;
     sql: ${cart_to_finished_seconds} ;;
