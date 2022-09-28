@@ -65,7 +65,7 @@ explore: psp_transactions {
   join: orderline {
     view_label: "Order Lineitems"
     sql_on:  ${orderline.country_iso} = ${orders.country_iso} AND
-             ${orderline.order_uuid}    = ${orders.order_uuid} AND
+             ${orderline.order_uuid}    = ${orders.order_uuid}
         ;;
 
     relationship: one_to_many
