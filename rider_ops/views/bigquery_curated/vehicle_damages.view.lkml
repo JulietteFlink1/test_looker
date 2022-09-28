@@ -131,6 +131,15 @@ view: vehicle_damages {
     filters: [status: "reported"]
   }
 
+  measure: share_of_open_damages {
+    group_label: "> Damage Statistics"
+    label: " % Damages Reported "
+    description: "# of Damages that have status reported (not fixed yet) / # Damages with any status (fixed and not fixed)"
+    type: number
+    sql: safe_divide(${number_of_reported_damages},${number_of_damages}) ;;
+    value_format_name: percent_1
+  }
+
   measure: avg_number_of_days_with_damage {
     group_label: "> Damage Statistics"
     label: " AVG Damage Duration (Days)"

@@ -7,11 +7,8 @@ include: "/**/payment_transactions.view"
 include: "/**/psp_settlement_details.view"
 include: "/**/psp_reference_authorised_date.view"
 include: "/**/vat_order.view"
-include: "/**/global_filters_and_parameters.view"
 include: "/**/products.view"
 include: "/**/customer_address.view"
-include: "/**/ndt_psp_transactions__duplicated_psp_references.view"
-include: "/**/ndt_psp_transactions__payment_id_aggregated.view"
 include: "/**/ndt_psp_transactions__order_aggregated.view"
 
 explore: psp_transactions {
@@ -26,7 +23,8 @@ explore: psp_transactions {
 
   always_filter: {
     filters: [
-      orders.order_date: "",
+      orders.created_date: "last 30 days",
+      psp_transactions.booking_date: "last 30 days",
       orders.is_successful_order: "",
       psp_transactions.merchant_account: "",
       psp_transactions.booking_date: "",
@@ -34,16 +32,24 @@ explore: psp_transactions {
     ]
   }
 
-  join: global_filters_and_parameters {
-    sql_on: ${global_filters_and_parameters.generic_join_dim} = TRUE ;;
-    type: left_outer
-    relationship: many_to_one
-  }
+  # sql_always_where:
+  # -- filter the time for all big tables of this explore
+  # orders.created_date: "last 30 days"
+  # and  psp_transactions.booking_date: "last 30 days"
+  # ;;
+
+  # join: global_filters_and_parameters {
+  #   sql_on: ${global_filters_and_parameters.generic_join_dim} = TRUE ;;
+  #   view_label: "Global Filters"
+  #   type: left_outer
+  #   relationship: many_to_one
+  # }
 
   join: orders {
     view_label: "Orders"
     from: orders
-    sql_on: psp_transactions.order_uuid = orders.order_uuid ;;
+    sql_on: psp_transactions.order_uuid = orders.order_uuid
+    ;;
     type: left_outer
     relationship: many_to_one
   }
@@ -58,8 +64,10 @@ explore: psp_transactions {
 
   join: orderline {
     view_label: "Order Lineitems"
-    sql_on: ${orderline.country_iso} = ${orders.country_iso} AND
-      ${orderline.order_uuid}    = ${orders.order_uuid} ;;
+    sql_on:  ${orderline.country_iso} = ${orders.country_iso} AND
+             ${orderline.order_uuid}    = ${orders.order_uuid} AND
+        ;;
+
     relationship: one_to_many
     type: left_outer
   }
@@ -80,14 +88,15 @@ explore: psp_transactions {
 
   join: vat_order {
     view_label: "VAT on Order Level"
-    sql_on: ${orders.order_uuid} = ${vat_order.order_uuid} ;;
+    sql_on: ${orders.order_uuid} = ${vat_order.order_uuid}
+      ;;
     relationship: one_to_one
     type: left_outer
   }
 
   join: psp_reference_authorised_date {
     view_label: "PSP Transactions"
-    sql_on: ${psp_transactions.psp_reference} = ${psp_reference_authorised_date.psp_reference} ;;
+    sql_on: ${psp_transactions.psp_reference} = ${psp_reference_authorised_date.psp_reference};;
     relationship: many_to_one
     type: left_outer
     fields: [psp_reference_authorised_date.psp_reference_authorised_booking_date,psp_reference_authorised_date.psp_reference_authorised_booking_month]
@@ -104,29 +113,20 @@ explore: psp_transactions {
 
   join: psp_settlement_details {
     view_label: "PSP Settlement"
-    sql_on: ${psp_transactions.psp_reference}  = ${psp_settlement_details.psp_reference} ;;
+    sql_on: ${psp_transactions.psp_reference}  = ${psp_settlement_details.psp_reference}
+      --  and {% condition psp_transactions.booking_date %} ${psp_settlement_details.booking_date} {% endcondition %}
+      ;;
+
     relationship: many_to_many
     ## Full Outer Join to cover potential cases where psp_reference is missing in one or the other table.
     type: full_outer
   }
 
-  join: ndt_psp_transactions__duplicated_psp_references {
-    view_label: "PSP Transactions"
-    sql_on: ${psp_transactions.psp_reference}  = ${ndt_psp_transactions__duplicated_psp_references.psp_reference} ;;
-    relationship: many_to_one
-    type: left_outer
-  }
-
-  join: ndt_psp_transactions__payment_id_aggregated {
-    view_label: "PSP Transactions"
-    sql_on: ${psp_transactions.payment_id}  = ${ndt_psp_transactions__payment_id_aggregated.payment_id} ;;
-    relationship: many_to_one
-    type: left_outer
-  }
-
   join: ndt_psp_transactions__order_aggregated {
     view_label: "PSP Transactions"
-    sql_on: ${psp_transactions.order_uuid}  = ${ndt_psp_transactions__order_aggregated.order_uuid} ;;
+    sql_on: ${psp_transactions.order_uuid}  = ${ndt_psp_transactions__order_aggregated.order_uuid}
+  --  and {% condition psp_transactions.booking_date %}  timestamp(${ndt_psp_transactions__order_aggregated.psp_settlement_booking_date})  {% endcondition %}
+      ;;
     relationship: many_to_one
     type: left_outer
   }
