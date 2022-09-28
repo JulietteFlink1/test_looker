@@ -55,7 +55,7 @@ view: orders_using_hubs {
   }
 
 
-  measure: avg_hub_to_customer_delivery_distance_km {
+  measure: avg_hub_to_customer_distance_km {
     group_label: "* Operations / Logistics *"
     label: "AVG Hub to Customer Distance (km)"
     description: "Average distance between hub and customer dropoff in kilometers (most direct path / straight line)."
