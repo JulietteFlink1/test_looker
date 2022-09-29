@@ -1,6 +1,7 @@
 include: "/**/vehicle_suppliers.view"
 include: "/**/vehicle_damages.view"
 include: "/**/vehicle_uptime_metrics.view"
+include: "/**/vehicle_damages_daily.view"
 include: "/**/hubs_ct.view"
 
 explore: fleet_management {
@@ -36,6 +37,15 @@ explore: fleet_management {
     sql_on: ${fleet_management.supplier_id} = ${vehicle_uptime_metrics.supplier_id}
         and ${fleet_management.hub_code} = ${vehicle_uptime_metrics.hub_code}
         and ${fleet_management.vehicle_id} = ${vehicle_uptime_metrics.vehicle_id} ;;
+    type: left_outer
+    relationship: one_to_many
+  }
+
+  join: vehicle_damages_daily {
+    view_label: "Vehicle Uptime Metrics"
+    sql_on: ${vehicle_uptime_metrics.supplier_id} = ${vehicle_damages_daily.supplier_id}
+    and ${vehicle_uptime_metrics.vehicle_id} = ${vehicle_damages_daily.vehicle_id}
+    and ${vehicle_uptime_metrics.report_date} = ${vehicle_damages_daily.report_date};;
     type: left_outer
     relationship: one_to_many
   }

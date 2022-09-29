@@ -8,6 +8,11 @@ dimension: customer_date_primary_key {
   sql: CONCAT(${customer_uuid}, ${TABLE}.partition_date) ;;
 }
 
+filter: partition_date_filter {
+  type: date_time
+  sql: {% condition partition_date_filter %} ${partition_raw} {% endcondition %} ;;
+}
+
 dimension: country_iso {
   type: string
   sql: ${TABLE}.country_iso ;;
@@ -135,8 +140,8 @@ dimension_group: partition {
     year
   ]
   convert_tz: no
-  datatype: date
-  sql: ${TABLE}.partition_date ;;
+  datatype: timestamp
+  sql: TIMESTAMP(${TABLE}.partition_date) ;;
 }
 
 ### Booleans
