@@ -132,6 +132,49 @@ view: employee_level_kpis {
     sql: ${TABLE}.contract_end_date ;;
   }
 
+  dimension: employment_end_date {
+    label: "Employment End Date"
+    description: "Based on Quinyx 'To' field for inactive employees (Employed field unchecked) - 1 day. Defines 'is_active' field."
+    convert_tz: no
+    datatype: date
+    type: date
+    sql: ${TABLE}.employment_end_date ;;
+  }
+
+  dimension: last_planned_date {
+    label: "Last Planned Date"
+    description: "Date of the last shift defined as 'Planned' (type = Assigned)"
+    convert_tz: no
+    datatype: date
+    type: date
+    sql: ${TABLE}.last_planned_date ;;
+  }
+
+  dimension: last_worked_date_dimension {
+    label: "Last Worked Date"
+    description: "Date of the last shift defined as 'Worked' (type = Assigned and status = Done evaluation)"
+    convert_tz: no
+    datatype: date
+    type: date
+    sql: ${TABLE}.last_worked_date ;;
+  }
+
+  dimension: last_absence_date {
+    label: "Last Absence Date"
+    description: "Date of the last shift defined as 'Absence' (type = Absence and status != Denied)"
+    convert_tz: no
+    datatype: date
+    type: date
+    sql: ${TABLE}.last_absence_date ;;
+  }
+
+  dimension: is_active {
+    type: yesno
+    sql: ${TABLE}.is_active ;;
+    label: "Is Active"
+    description: "Shows if an employee is active (employed) or not. Based on employment end date which is defined in Quinyx ('To' Field for an employee - 1 day)"
+  }
+
   dimension: hub_code {
     type: string
     sql: ${TABLE}.hub_code ;;
@@ -212,6 +255,13 @@ view: employee_level_kpis {
     type: sum
     hidden: yes
     sql: ${TABLE}.number_of_orders_with_handling_time ;;
+  }
+
+  measure: number_of_orders_with_customer_address {
+    group_label: "* Logistics *"
+    type: sum
+    hidden: yes
+    sql: ${TABLE}.number_of_orders_with_customer_address ;;
   }
 
   measure: number_of_orders_with_riding_to_customer_time {
@@ -339,6 +389,14 @@ view: employee_level_kpis {
     value_format_name: decimal_1
   }
 
+  measure: sum_delivery_distance_km {
+    group_label: "* Logistics *"
+    type: sum
+    label: "Sum Delivery Distance (km)"
+    description: "Sum of delivery distance between hub and customer dropoff in kilometers (most direct path / straight line). For stacked orders, it is the sum of distance from previous customer."
+    sql: ${TABLE}.sum_delivery_distance_km ;;
+    value_format_name: decimal_1
+  }
 
   measure: sum_rider_idle_time_minutes {
     group_label: "* Performance *"
@@ -367,6 +425,15 @@ view: employee_level_kpis {
     label: "AVG Rider Handling Time (min)"
     description: "Average time needed for the rider to handle the order: Riding to customer + At customer + Riding to hub"
     sql: ${sum_rider_handling_time_minutes}/nullif(${number_of_orders_with_handling_time},0) ;;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_delivery_distance_km {
+    group_label: "* Logistics *"
+    type: number
+    label: "AVG Delivery Distance (km)"
+    description: "Average distance between hub and customer dropoff in kilometers(most direct path / straight line). For stacked orders, it is the average distance from previous customer."
+    sql: ${sum_delivery_distance_km}/nullif(${number_of_orders_with_customer_address},0) ;;
     value_format_name: decimal_1
   }
 
@@ -507,10 +574,12 @@ view: employee_level_kpis {
     sql: min(case when ${TABLE}.number_of_worked_minutes > 0 then ${TABLE}.shift_date end);;
   }
 
-  measure: number_of_scheduled_hours {
+  measure: number_of_assigned_hours {
     group_label: "* Shift related *"
+    alias: [number_of_scheduled_hours]
     type: sum
-    label: "# Scheduled Hours"
+    label: "# Assigned Hours"
+    description: "All shift hours that are assigned to an employee (before punching) including No show Hours"
     sql: ${TABLE}.number_of_planned_minutes/60 ;;
     value_format_name: decimal_1
   }
@@ -659,7 +728,7 @@ view: employee_level_kpis {
     type: number
     hidden: no
     label: "% No Show Hours "
-    sql: ${number_of_no_show_hours}/nullif(${number_of_scheduled_hours},0) ;;
+    sql: ${number_of_no_show_hours}/nullif(${number_of_assigned_hours},0) ;;
     value_format: "0%"
   }
 
@@ -669,7 +738,7 @@ view: employee_level_kpis {
     hidden: no
     label: "% Sickness Hours "
     description: "Sickness hours / (Sickness hours + Scheduled hours)"
-    sql: (${number_of_sick_hours})/nullif(${number_of_sick_hours}+${number_of_scheduled_hours},0) ;;
+    sql: (${number_of_sick_hours})/nullif(${number_of_sick_hours}+${number_of_assigned_hours},0) ;;
     value_format: "0%"
   }
 
@@ -705,7 +774,7 @@ view: employee_level_kpis {
     hidden: no
     label: "% Scheduled Hours vs Contracted Hours"
     description: "Scheduled Hours / (Weekly Contracted Hours * # Shift Weeks)"
-    sql: ${number_of_scheduled_hours}/nullif(${sum_weekly_contracted_hours},0) ;;
+    sql: ${number_of_assigned_hours}/nullif(${sum_weekly_contracted_hours},0) ;;
     value_format: "0%"
   }
 

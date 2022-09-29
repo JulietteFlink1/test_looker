@@ -15,6 +15,7 @@ include: "/**/daily_hub_staff_events.view.lkml"
 include: "/**/event_order_progressed.view.lkml"
 include: "/**/event_order_state_updated.view.lkml"
 include: "/**/picking_times.view.lkml"
+include: "/product_consumer/views/bigquery_reporting/daily_violations_aggregates.view.lkml"
 
 explore: daily_hub_staff_events {
   from:  daily_hub_staff_events
@@ -94,7 +95,7 @@ explore: daily_hub_staff_events {
   join: employee_level_kpis {
     view_label: "7 Employee Attributes"
     fields: [ employee_level_kpis.number_of_worked_hours
-            , employee_level_kpis.number_of_scheduled_hours
+            , employee_level_kpis.number_of_assigned_hours
             , employee_level_kpis.number_of_no_show_hours]
     sql_on: cast(${employee_level_kpis.staff_number} as string)=${daily_hub_staff_events.quinyx_badge_number}
       and ${employee_level_kpis.shift_date}=${daily_hub_staff_events.event_timestamp_date}
@@ -109,5 +110,17 @@ explore: daily_hub_staff_events {
     sql_on: ${event_order_progressed.order_id} = ${orders.id} ;;
     type: left_outer
     relationship: many_to_one
+  }
+
+  join: daily_violations_aggregates {
+    view_label: "9 Event: Violation Generated" ##to unhide change the label to: Event: Violation Generated
+    fields: [daily_violations_aggregates.violated_event_name , daily_violations_aggregates.number_of_violations]
+    sql_on: ${daily_hub_staff_events.event_text} = ${daily_violations_aggregates.violated_event_name}
+          and ${daily_hub_staff_events.event_date}=${daily_violations_aggregates.event_date}
+          and ${daily_violations_aggregates.domain}='hub staff'
+          and {% condition global_filters_and_parameters.datasource_filter %}
+            ${daily_violations_aggregates.event_date} {% endcondition %};;
+    type: left_outer
+    relationship: many_to_many
   }
 }

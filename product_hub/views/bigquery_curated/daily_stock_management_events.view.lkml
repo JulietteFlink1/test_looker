@@ -94,9 +94,19 @@ view: daily_stock_management_events {
       date,
       week,
       hour_of_day,
-      quarter
+      day_of_week,
+      quarter,
+      month_name
     ]
     sql: ${TABLE}.event_timestamp ;;
+  }
+
+  dimension: event_date_hour {
+    group_label: "Date / Timestamp"
+    label: "Event Date - Hour"
+    description: "Event date concatenated with Event hour_of_day"
+    type: string
+    sql: concat(${event_timestamp_date}, ${event_timestamp_hour_of_day}) ;;
   }
 
   # =========  Generic Dimensions   =========
@@ -200,7 +210,7 @@ view: daily_stock_management_events {
     label: "Quantity Stock Changed Inbounded"
     description: "Sum of quantity inbounded by old flow."
     type: sum
-    filters: [event_name: "stock_changed", direction: "inbounding"]
+    filters: [event_name: "stock_changed", direction: "inbound"]
     sql: ${quantity} ;;
   }
 

@@ -102,6 +102,7 @@ view: looker_usage_exports {
     type: time
     timeframes: [
       time,
+      day_of_week,
       date,
       week
     ]

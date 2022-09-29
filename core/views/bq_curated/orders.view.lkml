@@ -522,6 +522,14 @@ view: orders {
     sql: ${TABLE}.riding_to_customer_time_minutes ;;
   }
 
+  dimension: riding_hub_to_customer_time_minutes {
+    group_label: "* Operations / Logistics *"
+    description: "The time for a rider to cycle from the hub to the customer. No matter the stacking sequence, it captures the total time from hub to customer."
+    type: number
+    sql: ${TABLE}.riding_to_customer_time_minutes ;;
+  }
+
+
   dimension: riding_to_hub_time_minutes {
     label: "Riding To Hub Time (min)"
     description: "The time for a rider to cycle from the customer back to the hub. Set to NULL for not-final stacked orders."
@@ -618,16 +626,17 @@ view: orders {
     sql: ${TABLE}.targeted_fulfillment_time_minutes;;
   }
 
-  dimension: estimated_queuing_time_for_picker_minutes {
-    label: "Picker Queuing Time Estimate (min)"
-    description: "The internally predicted time in minutes for the picker queuing"
+  dimension: estimated_waiting_for_picker_time_minutes {
+    alias: [estimated_queuing_time_for_picker_minutes]
+    label: "Waiting For Picker Time Estimate (min)"
+    description: "The internally predicted time in minutes for the waiting for picker"
     group_label: "* Operations / Logistics *"
     type: number
-    sql: ${TABLE}.estimated_picker_queuing_time_minutes;;
+    sql: ${TABLE}.estimated_waiting_for_picker_time_minutes;;
   }
 
   dimension: queuing_time_for_picker_minutes {
-    label: "Picker Queuing Time (min)"
+    label: "Waiting For Picker Time (min)"
     description: "The actual time in minutes for the picker queuing"
     group_label: "* Operations / Logistics *"
     type: number
@@ -656,10 +665,10 @@ view: orders {
 
   dimension: pre_riding_time {
     label: "Pre Riding Time (min)"
-    description: "Picker Queuing Time + Picking Time + Rider Queuing Time"
+    description: "Withheld From Picking + Waiting For Picker Time + Picking Time + Rider Queuing Time"
     group_label: "* Operations / Logistics *"
     type: number
-    sql: ${picker_queuing_time} + ${rider_queuing_time} + ${picking_time_minutes};;
+    sql: ${waiting_for_picker_time} + ${rider_queuing_time} + ${picking_time_minutes} + ${withheld_from_picking_time_minutes};;
   }
 
   dimension: is_critical_delivery_time_estimate_underestimation {
@@ -731,14 +740,14 @@ view: orders {
     sql: ${rider_queuing_time} ;;
   }
 
-  dimension: picker_queuing_time_tier {
+  dimension: waiting_for_picker_time_tier {
     alias: [reaction_time_tier]
     group_label: "* Operations / Logistics *"
-    label: "Picker Queuing Time (tiered, 1min)"
+    label: "Waiting For Picker Time (tiered, 1min)"
     type: tier
     tiers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]
     style: interval
-    sql: ${picker_queuing_time} ;;
+    sql: ${waiting_for_picker_time} ;;
   }
 
   dimension: is_riding_to_customer_above_30_minute {
@@ -830,20 +839,20 @@ view: orders {
     sql: ${rider_queuing_time} > 30 ;;
   }
 
-  dimension: is_picker_queuing_less_than_0_minute {
-    alias: [is_reaction_less_than_0_minute]
+  dimension: is_waiting_for_picker_time_less_than_0_minute {
+    alias: [is_reaction_less_than_0_minute, is_picker_queuing_less_than_0_minute]
     hidden: yes
     group_label: "* Operations / Logistics *"
     type: yesno
-    sql: ${picker_queuing_time} < 0 ;;
+    sql: ${waiting_for_picker_time} < 0 ;;
   }
 
-  dimension: is_picker_queuing_more_than_30_minute {
-    alias: [is_reaction_more_than_30_minute]
+  dimension: is_waiting_for_picker_time_more_than_30_minute {
+    alias: [is_reaction_more_than_30_minute, is_picker_queuing_more_than_30_minute]
     hidden: yes
     group_label: "* Operations / Logistics *"
     type: yesno
-    sql: ${picker_queuing_time} > 30 ;;
+    sql: ${waiting_for_picker_time} > 30 ;;
   }
 
   dimension: is_picking_less_than_0_minute {
@@ -893,7 +902,7 @@ view: orders {
   dimension: order_was_withheld {
     group_label: "* Operations / Logistics *"
     label: "Was the order withheld (Yes/No)?"
-    description: "Checks if the order was withheld from hub back into dispatching queue at least once."
+    description: "Checks if the order was withheld from hub back into dispatching queue (withheld queue) at least once."
     type: yesno
     sql: ${TABLE}.order_was_withheld ;;
   }
@@ -1117,7 +1126,7 @@ view: orders {
   dimension: order_withheld_timestamp {
     group_label: "* Operations / Logistics *"
     label: "Order Withheld from Hub"
-    description: "Order withheld back into the dispatching queue (if any). Takes the last event if there are multiple *withheld* events"
+    description: "Order withheld back into the dispatching (withheld) queue (if any). Takes the last event if there are multiple *withheld* events"
     type: date_time
     sql: ${TABLE}.order_withheld_timestamp ;;
   }
@@ -1233,20 +1242,21 @@ view: orders {
     sql: ${TABLE}.picking_time_minutes ;;
   }
 
-  dimension: picker_queuing_time {
-    alias: [reaction_time]
+  dimension: waiting_for_picker_time {
+    alias: [reaction_time, picker_queuing_time]
     group_label: "* Operations / Logistics *"
-    label: "Picker Queuing Time Minutes"
+    label: "Waiting For Picker Time Minutes"
     type: number
-    sql: ${TABLE}.picker_queuing_time_minutes ;;
+    sql: ${TABLE}.waiting_for_picker_time_minutes ;;
   }
 
-  dimension: dispatching_queuing_time_minutes {
+  dimension: withheld_from_picking_time_minutes {
+    alias: [dispatching_queuing_time_minutes]
     group_label: "* Operations / Logistics *"
-    label: "Dispatching Queuing Time Minutes"
-    description: "Dispatch-related queuing time - from order created to order offered to hub for picking. Outliers excluded (<0min or >120min)"
+    label: "Withheld From Picking Time Minutes"
+    description: "Dispatch-related (withheld) queuing time - from order created to order offered to hub for picking. Outliers excluded (<0min or >120min)"
     type: number
-    sql: ${TABLE}.dispatching_queuing_time_minutes ;;
+    sql: ${TABLE}.withheld_from_picking_time_minutes ;;
   }
 
   dimension: at_customer_time_minutes {
@@ -1708,24 +1718,25 @@ view: orders {
     value_format: "hh:mm:ss"
   }
 
-  measure: avg_dispatching_queuing_time_minutes {
+  measure: avg_withheld_from_picking_time_minutes {
+    alias: [avg_dispatching_queuing_time_minutes]
     group_label: "* Operations / Logistics *"
-    label: "AVG Dispatching Queuing Time"
-    description: "Average dispatch-related queuing time - from order created to order offered to hub for picking. Outliers excluded (<0min or >120min)"
+    label: "AVG Withheld From Picking Time"
+    description: "Average dispatch-related (withheld) queuing time - from order created to order offered to hub for picking. Outliers excluded (<0min or >120min)"
     type: average
-    sql:${dispatching_queuing_time_minutes};;
+    sql:${withheld_from_picking_time_minutes};;
     value_format_name: decimal_1
   }
 
-  measure: avg_picker_queuing_time {
-    alias: [avg_reaction_time]
+  measure: avg_waiting_for_picker_time {
+    alias: [avg_reaction_time, avg_picker_queuing_time]
     group_label: "* Operations / Logistics *"
-    label: "AVG Picker Queuing Time"
+    label: "AVG Waiting For Picker Time"
     description:
       "Average picker acceptance-related queuing - from order offered to hub to order started being picked.
       Outliers excluded (>120min). If offered to hub time is not available (no dispatching event), takes the time from order created to picking started"
     type: average
-    sql:${picker_queuing_time};;
+    sql:${waiting_for_picker_time};;
     value_format_name: decimal_1
   }
 
@@ -1873,7 +1884,7 @@ view: orders {
     group_label: "* Operations / Logistics *"
     label: "AVG Estimated Queuing Time for Pickers"
     type: average
-    sql: ${estimated_queuing_time_for_picker_minutes};;
+    sql: ${estimated_waiting_for_picker_time_minutes};;
     value_format_name: decimal_1
   }
 
@@ -2153,17 +2164,17 @@ view: orders {
     description: "The mean absolute error between actual riding to customer time and estimated riding to customer time"
     hidden:  no
     type: average
-    sql:  abs(${riding_to_customer_time_minutes} - ${estimated_riding_time_minutes});;
+    sql:  abs(${riding_hub_to_customer_time_minutes} - ${estimated_riding_time_minutes});;
     value_format_name: decimal_1
   }
 
   measure: picker_queuing_time_estimate_mae {
     group_label: "* Operations / Logistics *"
-    label: "Mean Absolute Error Picker Queuing Time Estimate"
-    description: "The mean absolute error between actual picker queuing time and estimated picker queuing time"
+    label: "Mean Absolute Error Total Picking-related Queuing Time Estimate"
+    description: "The mean absolute error between actual waiting for picker + withheld from picking time and estimated total picking-related queuing time"
     hidden:  no
     type: average
-    sql: abs(${picker_queuing_time}+coalesce(${dispatching_queuing_time_minutes}, 0) - ${estimated_queuing_time_for_picker_minutes});;
+    sql: abs(${waiting_for_picker_time}+coalesce(${withheld_from_picking_time_minutes}, 0) - ${estimated_waiting_for_picker_time_minutes});;
     value_format_name: decimal_1
   }
 
@@ -2464,11 +2475,11 @@ view: orders {
   measure: sum_avg_queuing_time {
     alias: [sum_avg_acceptance_reaction_time]
     group_label: "* Operations / Logistics *"
-    label: "AVG Picker Queuing Time + Rider Queuing Time"
-    description: "Sum of the average of rider queuing time and the average of picker queuing time"
+    label: "AVG Waiting For Picker Time + Rider Queuing Time"
+    description: "Sum of the average of rider queuing time and the average of waiting for picker time"
     hidden:  no
     type: number
-    sql:${avg_rider_queuing_time} + ${avg_picker_queuing_time};;
+    sql:${avg_rider_queuing_time} + ${avg_waiting_for_picker_time};;
     value_format_name: decimal_1
   }
 
@@ -2577,6 +2588,17 @@ view: orders {
     value_format: "0"
   }
 
+  measure: cnt_internal_orders {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Internal Orders"
+    description: "Count of Internal Orders"
+    hidden:  no
+    type: count_distinct
+    sql: ${order_uuid} ;;
+    filters: [is_external_order: "no"]
+    value_format: "0"
+  }
+
   measure: cnt_successful_orders {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
     label: "# Successful Orders"
@@ -2606,8 +2628,8 @@ view: orders {
 
   measure: cnt_ubereats_orders {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
-    label: "# Click & Collect Orders"
-    description: "Count of Click & Collect Orders"
+    label: "# Ubereats Orders"
+    description: "Count of Ubereats Orders"
     hidden:  yes
     type: count_distinct
     sql: ${order_uuid} ;;
@@ -2616,6 +2638,20 @@ view: orders {
       external_provider: "ubereats",
       is_successful_order: "yes"
       ]
+  }
+
+  measure: cnt_external_orders {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# External Orders"
+    description: "Count of External Orders"
+    hidden:  yes
+    type: count_distinct
+    sql: ${order_uuid} ;;
+    value_format: "0"
+    filters: [
+      is_external_order: "yes",
+      is_successful_order: "yes"
+    ]
   }
 
   measure: cnt_orders_with_discount_cart {
