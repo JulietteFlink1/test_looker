@@ -1,13 +1,6 @@
 view: vat_order {
-  derived_table: {
-    sql:select * from `flink-data-prod.reporting.vat_order`
+  sql_table_name:`flink-data-prod.reporting.vat_order`
       ;;
-  }
-
-  measure: count {
-    type: count
-    drill_fields: [detail*]
-  }
 
   dimension: order_uuid {
     hidden: no
@@ -476,6 +469,81 @@ view: vat_order {
     type: number
     sql: ${TABLE}.amt_vat_discount_products_total ;;
   }
+
+  ############### CART DISCOUNTS ###########
+
+  dimension: discount_cart_amount_net {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_discount_cart_net ;;
+  }
+
+  dimension: discount_cart_amount_gross {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_discount_cart_gross ;;
+  }
+
+  dimension: discount_cart_amount_reduced_net {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_discount_cart_reduced_net ;;
+  }
+
+  dimension: discount_cart_amount_reduced_gross {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_discount_cart_reduced_gross ;;
+  }
+
+  dimension: discount_cart_amount_special_net {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_discount_cart_special_net ;;
+  }
+
+  dimension: discount_cart_amount_special_gross {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_discount_cart_special_gross ;;
+  }
+
+  dimension: discount_cart_amount_standard_gross {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_discount_cart_standard_gross ;;
+  }
+
+  dimension: discount_cart_amount_standard_net {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_discount_cart_standard_net ;;
+  }
+
+  dimension: vat_discount_cart_amount_reduced {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_vat_discount_cart_reduced ;;
+  }
+
+  dimension: vat_discount_cart_amount_special {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_vat_discount_cart_special ;;
+  }
+
+  dimension: vat_discount_cart_amount_standard {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_vat_discount_cart_standard ;;
+  }
+
+  dimension: vat_discount_cart_amount_total {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_vat_discount_cart_total ;;
+  }
+
   ############### REFUNDS #############
 
   dimension: refund_amount_net {
@@ -784,13 +852,15 @@ view: vat_order {
   dimension: total_net {
     hidden: yes
     type: number
-    sql: ${TABLE}.amt_revenue_net ;;
+    ## To avoid -0.00 values.
+    sql: round(${TABLE}.amt_revenue_net,4) ;;
   }
 
   dimension: total_gross {
     hidden: yes
     type: number
-    sql: ${TABLE}.amt_revenue_gross ;;
+     ## To avoid -0.00 values.
+    sql: round(${TABLE}.amt_revenue_gross,4) ;;
   }
 
   dimension: total_gross_bins {
@@ -828,60 +898,67 @@ view: vat_order {
     type:  number
     sql: ${TABLE}.amt_storage_fee_gross ;;
   }
+
   dimension: amt_storage_fee_net {
     hidden:  yes
     type:  number
     sql: ${TABLE}.amt_storage_fee_net ;;
   }
 
-
   dimension: amt_storage_fee_standard_gross {
     hidden:  yes
     type:  number
     sql: ${TABLE}.amt_storage_fee_standard_gross ;;
   }
+
   dimension: amt_storage_fee_standard_net {
     hidden:  yes
     type:  number
     sql: ${TABLE}.amt_storage_fee_standard_net ;;
   }
+
   dimension: amt_storage_fee_reduced_gross {
     hidden:  yes
     type:  number
     sql: ${TABLE}.amt_storage_fee_reduced_gross ;;
   }
+
   dimension: amt_storage_fee_reduced_net {
     hidden:  yes
     type:  number
     sql: ${TABLE}.amt_storage_fee_reduced_net ;;
   }
+
   dimension: amt_storage_fee_special_gross {
     hidden:  yes
     type:  number
     sql: ${TABLE}.amt_storage_fee_special_gross ;;
   }
+
   dimension: amt_storage_fee_special_net {
     hidden:  yes
     type:  number
     sql: ${TABLE}.amt_storage_fee_special_net ;;
   }
 
-
   dimension: amt_vat_storage_fee_standard {
     hidden:  yes
     type:  number
     sql: ${TABLE}.amt_vat_storage_fee_standard ;;
   }
+
   dimension: amt_vat_storage_fee_reduced {
     hidden:  yes
     type:  number
     sql: ${TABLE}.amt_vat_storage_fee_reduced ;;
   }
+
   dimension: amt_vat_storage_fee_special {
     hidden:  yes
     type:  number
     sql: ${TABLE}.amt_vat_storage_fee_special ;;
   }
+
   dimension: amt_vat_storage_fee_total {
     hidden:  yes
     type:  number
@@ -895,60 +972,67 @@ view: vat_order {
     type:  number
     sql: ${TABLE}.amt_refund_storage_fee_gross ;;
   }
+
   dimension: amt_refund_storage_fee_net {
     hidden:  yes
     type:  number
     sql: ${TABLE}.amt_refund_storage_fee_net ;;
   }
+
   dimension: amt_refund_storage_fee_standard_gross {
     hidden:  yes
     type:  number
     sql: ${TABLE}.amt_refund_storage_fee_standard_gross ;;
   }
 
-
   dimension: amt_refund_storage_fee_standard_net {
     hidden:  yes
     type:  number
     sql: ${TABLE}.amt_refund_storage_fee_standard_net ;;
   }
+
   dimension: amt_refund_storage_fee_reduced_gross {
     hidden:  yes
     type:  number
     sql: ${TABLE}.amt_refund_storage_fee_reduced_gross ;;
   }
+
   dimension: amt_refund_storage_fee_reduced_net {
     hidden:  yes
     type:  number
     sql: ${TABLE}.amt_refund_storage_fee_reduced_net ;;
   }
+
   dimension: amt_refund_storage_fee_special_gross {
     hidden:  yes
     type:  number
     sql: ${TABLE}.amt_refund_storage_fee_special_gross ;;
   }
+
   dimension: amt_refund_storage_fee_special_net {
     hidden:  yes
     type:  number
     sql: ${TABLE}.amt_refund_storage_fee_special_net ;;
   }
 
-
   dimension: amt_vat_refund_storage_fee_standard {
     hidden:  yes
     type:  number
     sql: ${TABLE}.amt_vat_refund_storage_fee_standard ;;
   }
+
   dimension: amt_vat_refund_storage_fee_reduced {
     hidden:  yes
     type:  number
     sql: ${TABLE}.amt_vat_refund_storage_fee_reduced ;;
   }
+
   dimension: amt_vat_refund_storage_fee_special {
     hidden:  yes
     type:  number
     sql: ${TABLE}.amt_vat_refund_storage_fee_special ;;
   }
+
   dimension: amt_vat_refund_storage_fee_total {
     hidden:  yes
     type:  number
@@ -1285,6 +1369,7 @@ view: vat_order {
   measure: sum_discount_products_amount_net {
     group_label: "> Product Discounts"
     label: "SUM Product Discounts (Net)"
+    description: "Only includes Commercial Discounts (Product Discounts)"
     type: sum
     value_format: "#,##0.00€"
     sql: ${discount_products_amount_net} ;;
@@ -1293,6 +1378,7 @@ view: vat_order {
   measure: sum_discount_products_amount_gross {
     group_label: "> Product Discounts"
     label: "SUM Product Discounts (Gross)"
+    description: "Only includes Commercial Discounts (Product Discounts)"
     type: sum
     value_format: "#,##0.00€"
     sql: ${discount_products_amount_gross} ;;
@@ -1302,6 +1388,7 @@ view: vat_order {
   measure: sum_discount_products_amount_reduced_net {
     group_label: "> Product Discounts"
     label: "SUM Product Discounts Reduced (Net)"
+    description: "Only includes Commercial Discounts (Product Discounts)"
     type: sum
     value_format: "#,##0.00€"
     sql: ${discount_products_amount_reduced_net} ;;
@@ -1310,6 +1397,7 @@ view: vat_order {
   measure: sum_discount_products_amount_standard_net {
     group_label: "> Product Discounts"
     label: "SUM Product Discounts Standard (Net)"
+    description: "Only includes Commercial Discounts (Product Discounts)"
     type: sum
     value_format: "#,##0.00€"
     sql: ${discount_products_amount_standard_net} ;;
@@ -1318,6 +1406,7 @@ view: vat_order {
   measure: sum_discount_products_amount_special_net {
     group_label: "> Product Discounts"
     label: "SUM Product Discounts Special (Net)"
+    description: "Only includes Commercial Discounts (Product Discounts)"
     type: sum
     value_format: "#,##0.00€"
     sql: ${discount_products_amount_special_net} ;;
@@ -1326,6 +1415,7 @@ view: vat_order {
   measure: sum_discount_products_amount_reduced_gross {
     group_label: "> Product Discounts"
     label: "SUM Product Discounts Reduced (Gross)"
+    description: "Only includes Commercial Discounts (Product Discounts)"
     type: sum
     value_format: "#,##0.00€"
     sql: ${discount_products_amount_reduced_gross} ;;
@@ -1334,6 +1424,7 @@ view: vat_order {
   measure: sum_discount_products_amount_special_gross {
     group_label: "> Product Discounts"
     label: "SUM Product Discounts Special (Gross)"
+    description: "Only includes Commercial Discounts (Product Discounts)"
     type: sum
     value_format: "#,##0.00€"
     sql: ${discount_products_amount_special_gross} ;;
@@ -1342,6 +1433,7 @@ view: vat_order {
   measure: sum_discount_products_amount_standard_gross {
     group_label: "> Product Discounts"
     label: "SUM Product Discounts Standard (Gross)"
+    description: "Only includes Commercial Discounts (Product Discounts)"
     type: sum
     value_format: "#,##0.00€"
     sql: ${discount_products_amount_standard_gross} ;;
@@ -1350,6 +1442,7 @@ view: vat_order {
   measure: sum_vat_discount_products_amount_reduced {
     group_label: "> Product Discounts"
     label: "SUM VAT Product Discounts Reduced"
+    description: "Only includes Commercial Discounts (Product Discounts)"
     type: sum
     value_format: "#,##0.00€"
     sql: ${vat_discount_products_amount_reduced} ;;
@@ -1358,6 +1451,7 @@ view: vat_order {
   measure: sum_vat_discount_products_amount_standard {
     group_label: "> Product Discounts"
     label: "SUM VAT Product Discounts Standard"
+    description: "Only includes Commercial Discounts (Product Discounts)"
     type: sum
     value_format: "#,##0.00€"
     sql: ${vat_discount_products_amount_standard} ;;
@@ -1366,6 +1460,7 @@ view: vat_order {
   measure: sum_vat_discount_products_amount_special {
     group_label: "> Product Discounts"
     label: "SUM VAT Product Discounts Special"
+    description: "Only includes Commercial Discounts (Product Discounts)"
     type: sum
     value_format: "#,##0.00€"
     sql: ${vat_discount_products_amount_special} ;;
@@ -1374,11 +1469,122 @@ view: vat_order {
   measure: sum_vat_discount_products_amount_total {
     group_label: "> Product Discounts"
     label: "SUM VAT Product Discounts Total"
+    description: "Only includes Commercial Discounts (Product Discounts)"
     type: sum
     value_format: "#,##0.00€"
     sql: ${vat_discount_products_amount_total} ;;
   }
 
+  #################### CART DISCOUNTS #######################
+
+  measure: sum_discount_cart_amount_net {
+    group_label: "> Cart Discounts"
+    label: "SUM Cart Discounts (Net)"
+    description: "Only includes Marketing Discounts (Cart Discounts)"
+    type: sum
+    value_format: "#,##0.00€"
+    sql: ${discount_cart_amount_net} ;;
+  }
+
+  measure: sum_discount_cart_amount_gross {
+    group_label: "> Cart Discounts"
+    label: "SUM Cart Discounts (Gross)"
+    description: "Only includes Marketing Discounts (Cart Discounts)"
+    type: sum
+    value_format: "#,##0.00€"
+    sql: ${discount_cart_amount_gross} ;;
+  }
+
+
+  measure: sum_discount_cart_amount_reduced_net {
+    group_label: "> Cart Discounts"
+    label: "SUM Cart Discounts Reduced (Net)"
+    description: "Only includes Marketing Discounts (Cart Discounts)"
+    type: sum
+    value_format: "#,##0.00€"
+    sql: ${discount_cart_amount_reduced_net} ;;
+  }
+
+  measure: sum_discount_cart_amount_standard_net {
+    group_label: "> Cart Discounts"
+    label: "SUM Cart Discounts Standard (Net)"
+    description: "Only includes Marketing Discounts (Cart Discounts)"
+    type: sum
+    value_format: "#,##0.00€"
+    sql: ${discount_cart_amount_standard_net} ;;
+  }
+
+  measure: sum_discount_cart_amount_special_net {
+    group_label: "> Cart Discounts"
+    label: "SUM Cart Discounts Special (Net)"
+    description: "Only includes Marketing Discounts (Cart Discounts)"
+    type: sum
+    value_format: "#,##0.00€"
+    sql: ${discount_cart_amount_special_net} ;;
+  }
+
+  measure: sum_discount_cart_amount_reduced_gross {
+    group_label: "> Cart Discounts"
+    label: "SUM Cart Discounts Reduced (Gross)"
+    description: "Only includes Marketing Discounts (Cart Discounts)"
+    type: sum
+    value_format: "#,##0.00€"
+    sql: ${discount_cart_amount_reduced_gross} ;;
+  }
+
+  measure: sum_discount_cart_amount_special_gross {
+    group_label: "> Cart Discounts"
+    label: "SUM Cart Discounts Special (Gross)"
+    description: "Only includes Marketing Discounts (Cart Discounts)"
+    type: sum
+    value_format: "#,##0.00€"
+    sql: ${discount_cart_amount_special_gross} ;;
+  }
+
+  measure: sum_discount_cart_amount_standard_gross {
+    group_label: "> Cart Discounts"
+    label: "SUM Cart Discounts Standard (Gross)"
+    description: "Only includes Marketing Discounts (Cart Discounts)"
+    type: sum
+    value_format: "#,##0.00€"
+    sql: ${discount_cart_amount_standard_gross} ;;
+  }
+
+  measure: sum_vat_discount_cart_amount_reduced {
+    group_label: "> Cart Discounts"
+    label: "SUM VAT Cart Discounts Reduced"
+    description: "Only includes Marketing Discounts (Cart Discounts)"
+    type: sum
+    value_format: "#,##0.00€"
+    sql: ${vat_discount_cart_amount_reduced} ;;
+  }
+
+  measure: sum_vat_discount_cart_amount_standard {
+    group_label: "> Cart Discounts"
+    label: "SUM VAT Cart Discounts Standard"
+    description: "Only includes Marketing Discounts (Cart Discounts)"
+    type: sum
+    value_format: "#,##0.00€"
+    sql: ${vat_discount_cart_amount_standard} ;;
+  }
+
+  measure: sum_vat_discount_cart_amount_special {
+    group_label: "> Cart Discounts"
+    label: "SUM VAT Cart Discounts Special"
+    description: "Only includes Marketing Discounts (Cart Discounts)"
+    type: sum
+    value_format: "#,##0.00€"
+    sql: ${vat_discount_cart_amount_special} ;;
+  }
+
+  measure: sum_vat_discount_cart_amount_total {
+    group_label: "> Cart Discounts"
+    label: "SUM VAT Cart Discounts Total"
+    description: "Only includes Marketing Discounts (Cart Discounts)"
+    type: sum
+    value_format: "#,##0.00€"
+    sql: ${vat_discount_cart_amount_total} ;;
+  }
 
   #####################  Refunds  ##########################
 
@@ -1959,6 +2165,7 @@ view: vat_order {
     type:  sum
     sql: ${amt_storage_fee_gross} ;;
   }
+
   measure: sum_amt_storage_fee_net {
     group_label: "> Storage Fees"
     label: "SUM Storage Fees (Net)"
@@ -1968,7 +2175,6 @@ view: vat_order {
     sql: ${amt_storage_fee_net} ;;
   }
 
-
   measure: sum_amt_storage_fee_standard_gross {
     group_label: "> Storage Fees"
     label: "SUM Storage Fees Standard (Gross)"
@@ -1976,6 +2182,7 @@ view: vat_order {
     type:  sum
     sql: ${amt_storage_fee_standard_gross} ;;
   }
+
   measure: sum_amt_storage_fee_standard_net {
     group_label: "> Storage Fees"
     label: "SUM Storage Fees Standard (Net)"
@@ -1983,6 +2190,7 @@ view: vat_order {
     type:  sum
     sql: ${amt_storage_fee_standard_net} ;;
   }
+
   measure: sum_amt_storage_fee_reduced_gross {
     group_label: "> Storage Fees"
     label: "SUM Storage Fees Reduced (Gross)"
@@ -1990,6 +2198,7 @@ view: vat_order {
     type:  sum
     sql: ${amt_storage_fee_reduced_gross} ;;
   }
+
   measure: sum_amt_storage_fee_reduced_net {
     group_label: "> Storage Fees"
     label: "SUM Storage Fees Reduced (Net)"
@@ -1997,6 +2206,7 @@ view: vat_order {
     type:  sum
     sql: ${amt_storage_fee_reduced_net} ;;
   }
+
   measure: sum_amt_storage_fee_special_gross {
     group_label: "> Storage Fees"
     label: "SUM Storage Fees Special (Gross)"
@@ -2004,6 +2214,7 @@ view: vat_order {
     type:  sum
     sql: ${amt_storage_fee_special_gross} ;;
   }
+
   measure: sum_amt_storage_fee_special_net {
     group_label: "> Storage Fees"
     label: "SUM Storage Fees Special (Net)"
@@ -2012,7 +2223,6 @@ view: vat_order {
     sql: ${amt_storage_fee_special_net} ;;
   }
 
-
   measure: sum_amt_vat_storage_fee_standard {
     group_label: "> Storage Fees"
     label: "SUM VAT Storage Fees Standard"
@@ -2020,6 +2230,7 @@ view: vat_order {
     type:  sum
     sql: ${amt_vat_storage_fee_standard} ;;
   }
+
   measure: sum_amt_vat_storage_fee_reduced {
     group_label: "> Storage Fees"
     label: "SUM VAT Storage Fees Reduced"
@@ -2027,6 +2238,7 @@ view: vat_order {
     type:  sum
     sql: ${amt_vat_storage_fee_reduced} ;;
   }
+
   measure: sum_amt_vat_storage_fee_special {
     group_label: "> Storage Fees"
     label: "SUM VAT Storage Fees Special"
@@ -2034,6 +2246,7 @@ view: vat_order {
     type:  sum
     sql: ${amt_vat_storage_fee_special} ;;
   }
+
   measure: sum_amt_vat_storage_fee_total {
     group_label: "> Storage Fees"
     label: "SUM VAT Storage Fees Total"
@@ -2051,6 +2264,7 @@ view: vat_order {
     type:  sum
     sql: ${amt_refund_storage_fee_gross} ;;
   }
+
   measure: sum_amt_refund_storage_fee_net {
     group_label: "> Refunds Storage Fees"
     label: "SUM Refunds Storage Fees (Net)"
@@ -2058,6 +2272,7 @@ view: vat_order {
     type:  sum
     sql: ${amt_refund_storage_fee_net} ;;
   }
+
   measure: sum_amt_refund_storage_fee_standard_gross {
     group_label: "> Refunds Storage Fees"
     label: "SUM Refunds Storage Fees Standard (Gross)"
@@ -2066,7 +2281,6 @@ view: vat_order {
     sql: ${amt_refund_storage_fee_standard_gross} ;;
   }
 
-
   measure: sum_amt_refund_storage_fee_standard_net {
     group_label: "> Refunds Storage Fees"
     label: "SUM Refunds Storage Fees Standard (Net)"
@@ -2074,6 +2288,7 @@ view: vat_order {
     type:  sum
     sql: ${amt_refund_storage_fee_standard_net} ;;
   }
+
   measure: sum_amt_refund_storage_fee_reduced_gross {
     group_label: "> Refunds Storage Fees"
     label: "SUM Refunds Storage Fees Reduced (Gross)"
@@ -2081,6 +2296,7 @@ view: vat_order {
     type:  sum
     sql: ${amt_refund_storage_fee_reduced_gross} ;;
   }
+
   measure: sum_amt_refund_storage_fee_reduced_net {
     group_label: "> Refunds Storage Fees"
     label: "SUM Refunds Storage Fees Reduced (Net)"
@@ -2088,6 +2304,7 @@ view: vat_order {
     type:  sum
     sql: ${amt_refund_storage_fee_reduced_net} ;;
   }
+
   measure: sum_amt_refund_storage_fee_special_gross {
     group_label: "> Refunds Storage Fees"
     label: "SUM Refunds Storage Fees Special (Gross)"
@@ -2095,6 +2312,7 @@ view: vat_order {
     type:  sum
     sql: ${amt_refund_storage_fee_special_gross} ;;
   }
+
   measure: sum_amt_refund_storage_fee_special_net {
     group_label: "> Refunds Storage Fees"
     label: "SUM Refunds Storage Fees Special (Net)"
@@ -2103,7 +2321,6 @@ view: vat_order {
     sql: ${amt_refund_storage_fee_special_net} ;;
   }
 
-
   measure: sum_amt_vat_refund_storage_fee_standard {
     group_label: "> Refunds Storage Fees"
     label: "SUM VAT Refunds Storage Fees Standard"
@@ -2111,6 +2328,7 @@ view: vat_order {
     type:  sum
     sql: ${amt_vat_refund_storage_fee_standard} ;;
   }
+
   measure: sum_amt_vat_refund_storage_fee_reduced {
     group_label: "> Refunds Storage Fees"
     label: "SUM VAT Refunds Storage Fees Reduced"
@@ -2118,6 +2336,7 @@ view: vat_order {
     type:  sum
     sql: ${amt_vat_refund_storage_fee_reduced} ;;
   }
+
   measure: sum_amt_vat_refund_storage_fee_special {
     group_label: "> Refunds Storage Fees"
     label: "SUM VAT Refunds Storage Fees Special"
@@ -2125,6 +2344,7 @@ view: vat_order {
     type:  sum
     sql: ${amt_vat_refund_storage_fee_special} ;;
   }
+
   measure: sum_amt_vat_refund_storage_fee_total {
     group_label: "> Refunds Storage Fees"
     label: "SUM VAT Refunds Storage Fees Total"
@@ -2133,13 +2353,4 @@ view: vat_order {
     sql: ${amt_vat_refund_storage_fee_total} ;;
   }
 
-
-
-
-
-
-  set: detail {
-    fields: [
-    ]
-  }
 }

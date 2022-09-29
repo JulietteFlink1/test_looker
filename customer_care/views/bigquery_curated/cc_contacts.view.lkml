@@ -928,12 +928,22 @@ view: cc_contacts {
 
   measure: avg_discount_cart_gross {
     group_label: "* Contact Compensation *"
-    label: "AVG CC Discount Value per Contact"
+    label: "AVG CC Discount Value per Discount Issued"
     description: "SUM of Discounts / Number of Compensation Discount codes"
     type: number
     value_format_name: euro_accounting_2_precision
     sql: safe_divide(
       ${sum_amt_discount_cart_gross}, ${number_of_compensation_discount_code}) ;;
+  }
+
+  measure: avg_discount_cart_gross_per_closed_contact {
+    group_label: "* Contact Compensation *"
+    label: "AVG CC Discount Value per Closed Contact"
+    description: "SUM of value of CC Discounts used / Number of Closed Contacts"
+    type: number
+    value_format_name: euro_accounting_2_precision
+    sql: safe_divide(
+      ${sum_amt_discount_cart_gross}, ${number_of_closed_contacts}) ;;
   }
 
   measure: share_of_compensation_discount_code_per_contact_closed {

@@ -200,6 +200,13 @@ view: psp_transactions {
     sql: ${TABLE}.user_name ;;
   }
 
+  dimension: is_duplicated_psp_reference {
+    group_label: "> Transaction Properties"
+    type: yesno
+    description: "Flags if the PSP reference appears in more than one CT order"
+    sql: ${TABLE}.is_duplicated_psp_reference ;;
+  }
+
 ##################    MEASURES  ###################
 
   measure: sum_main_amount {
