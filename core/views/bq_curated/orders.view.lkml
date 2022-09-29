@@ -571,7 +571,7 @@ view: orders {
 
   dimension: voucher_id {
     group_label: "* IDs *"
-    label: "Cart Discount ID"
+    label: "Discount Code ID"
     hidden: yes
     type: string
     sql: ${TABLE}.discount_id ;;
@@ -1803,7 +1803,7 @@ view: orders {
   measure: avg_discount_cart_gross {
     group_label: "* Monetary Values *"
     label: "AVG Cart Discount Value (Gross)"
-    description: "Average of Cart Discount Value Gross (Cart Discount applied at a checkout). Includes delivery discounts."
+    description: "Average of Cart Discount Value Gross (Discount Code applied at a checkout). Includes delivery discounts."
     hidden:  no
     type: average
     sql: ${amt_discount_cart_gross};;
@@ -1814,7 +1814,7 @@ view: orders {
   measure: avg_discount_cart_net {
     group_label: "* Monetary Values *"
     label: "AVG Cart Discount Value (Net)"
-    description: "Average of Cart Discount Value Net (Cart Discount applied at a checkout). Includes delivery discounts."
+    description: "Average of Cart Discount Value Net (Discount Code applied at a checkout). Includes delivery discounts."
     hidden:  no
     type: average
     sql: ${amt_discount_cart_net};;
@@ -2289,7 +2289,7 @@ view: orders {
   measure: sum_discount_cart_gross {
     group_label: "* Monetary Values *"
     label: "SUM Cart Discount Amount (Gross)"
-    description: "Sum of Cart Discounts Gross (Cart Discount applied at a checkout). Includes delivery discounts."
+    description: "Sum of Cart Discounts Gross (Discount Code applied at a checkout). Includes delivery discounts."
     hidden:  no
     type: sum
     sql: ${amt_discount_cart_gross};;
@@ -2299,7 +2299,7 @@ view: orders {
   measure: sum_discount_cart_net {
     group_label: "* Monetary Values *"
     label: "SUM Cart Discount Amount (Net)"
-    description: "Sum of Cart Discounts Net (Cart Discount applied at a checkout). Includes delivery discounts."
+    description: "Sum of Cart Discounts Net (Discount Code applied at a checkout). Includes delivery discounts."
     hidden:  no
     type: sum
     sql: ${amt_discount_cart_net};;
