@@ -2687,7 +2687,7 @@ view: orders {
 
   measure: cnt_orders_without_discount_cart {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
-    label: "# Orders without Discount"
+    label: "# Orders without Cart Discount"
     description: "Count of successful Orders with no Cart Discount applied"
     hidden:  no
     type: count
