@@ -97,6 +97,15 @@ view: ndt_psp_transactions__order_aggregated {
       sql: ${sum_gross_credit_adjusted} <> ${sum_gpv_gross} ;;
     }
 
+    dimension: is_double_payment {
+      group_label: "> Transaction Properties"
+      label: "Is Double Payment Order"
+      description: "Flags if the amount paid by the customer is twice the GPV in CT."
+      type: yesno
+      sql: ${sum_gross_credit_adjusted} = 2 * ${sum_gpv_gross} ;;
+    }
+
+
 
     measure: sum_difference_ct_adyen {
       group_label: "> Adyen <> CT"
