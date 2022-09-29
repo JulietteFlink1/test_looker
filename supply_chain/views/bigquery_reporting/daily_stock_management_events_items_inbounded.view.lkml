@@ -1,3 +1,15 @@
+# Owner:
+# Lautaro Ruiz
+#
+# Main Stakeholder:
+# - Supply Chain team
+# - Hub-Ops team
+#
+# Questions that can be answered
+# - All questions around stock management events (Inbounds)
+# - questions concerning how well Flink inbounds
+
+
 # The name of this view in Looker is "Daily Stock Management Events Items Inbounded"
 view: daily_stock_management_events_items_inbounded {
   # The sql_table_name parameter indicates the underlying database table
