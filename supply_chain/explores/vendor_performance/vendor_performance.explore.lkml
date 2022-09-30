@@ -171,7 +171,7 @@ join: daily_stock_management_events_items_inbounded {
 
   view_label: "* Inbounding KPIs *"
   type: left_outer
-  relationship: one_to_many
+  relationship: many_to_one
 
   sql_on:
             ${daily_stock_management_events_items_inbounded.event_date} = ${products_hub_assignment.report_date}

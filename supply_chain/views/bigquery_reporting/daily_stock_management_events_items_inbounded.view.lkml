@@ -14,7 +14,7 @@
 view: daily_stock_management_events_items_inbounded {
   # The sql_table_name parameter indicates the underlying database table
   # to be used for all fields in this view.
-  sql_table_name: `flink-data-prod.curated.daily_stock_management_events_items_inbounded`
+  sql_table_name: `flink-data-dev.dbt_lruiz.daily_stock_management_events_items_inbounded`
     ;;
   # No primary key is defined for this view. In order to join this view in an Explore,
   # define primary_key: yes on a dimension that has no repeated values.
@@ -30,7 +30,7 @@ view: daily_stock_management_events_items_inbounded {
     type: string
     description: "A generic identifier of a table in BigQuery that represent 1 unique row of this table."
     primary_key: yes
-    hidden: yes
+    hidden: no
     sql: ${TABLE}.table_uuid ;;
   }
 
@@ -167,30 +167,27 @@ view: daily_stock_management_events_items_inbounded {
     label: "# Hours Inbounding per day"
     group_label: "Inbound Speed Metrics"
     description: "Total of hours inbounding per day"
-    type: sum_distinct
+    type: sum
     sql: ${time_inbounding_in_hours} ;;
 
-    value_format_name: decimal_1
   }
 
   measure: sum_time_inbounding_in_minutes {
     label: "# Minutes Inbounding per day"
     group_label: "Inbound Speed Metrics"
     description: "Total of minutes inbounding per day"
-    type: sum_distinct
+    type: sum
     sql: ${time_inbounding_in_minutes} ;;
 
-    value_format_name: decimal_1
   }
 
   measure: sum_total_quantity_items_inbounded {
     label: "# Items Inbounded per day"
     group_label: "Inbound Speed Metrics"
     description: "Total amount of items inbounded per day"
-    type: sum_distinct
+    type: sum
     sql: ${total_quantity_items_inbounded} ;;
 
-    value_format_name: decimal_1
   }
 
   measure: total_items_inbounded_per_hour {
@@ -201,7 +198,7 @@ view: daily_stock_management_events_items_inbounded {
 
     sql: safe_divide(${sum_total_quantity_items_inbounded}, ${sum_time_inbounding_in_hours})  ;;
 
-    value_format_name: decimal_1
+    value_format_name: decimal_2
 
   }
 
@@ -213,7 +210,7 @@ view: daily_stock_management_events_items_inbounded {
 
     sql: safe_divide(${sum_total_quantity_items_inbounded}, ${sum_time_inbounding_in_minutes})  ;;
 
-    value_format_name: decimal_1
+    value_format_name: decimal_2
 
   }
 
