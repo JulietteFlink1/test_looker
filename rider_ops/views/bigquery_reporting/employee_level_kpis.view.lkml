@@ -27,7 +27,7 @@ view: employee_level_kpis {
   dimension: assigned_position_name {
     type: string
     label: "Assigned Position Name"
-    description: "Based on Quinyx Staff Category assinged to each employee profile"
+    description: "Based on Quinyx staff category assinged to each employee profile"
   }
 
   dimension: rider_id {
@@ -112,13 +112,13 @@ view: employee_level_kpis {
     ]
     convert_tz: no
     datatype: date
-    description: "Based on fountain hiring funnel (the date when an applicant transits to Creating Accounts or Approved stage)"
+    description: "Based on fountain hiring funnel (the date when an applicant transits to creating accounts or approved stage)"
     sql: ${TABLE}.hire_date ;;
   }
 
   dimension: contract_start_date {
     label: "Contract Start Date"
-    description: "Based on Quinyx Agreement field - Contract Start Date"
+    description: "Based on Quinyx Agreement field - contract start date"
     convert_tz: no
     datatype: date
     type: date
@@ -127,7 +127,7 @@ view: employee_level_kpis {
 
   dimension: contract_end_date {
     label: "Contract End Date"
-    description: "Based on Quinyx Agreement field - Contract End Date"
+    description: "Based on Quinyx agreement field - contract end date"
     convert_tz: no
     datatype: date
     type: date
@@ -181,7 +181,7 @@ view: employee_level_kpis {
 
   dimension: first_shift_date {
     label: "First Shift Date"
-    description: "Date of the First shift"
+    description: "Date of the first shift"
     convert_tz: no
     datatype: date
     type: date
@@ -190,7 +190,7 @@ view: employee_level_kpis {
 
   dimension: account_creation_date {
     label: "Account Creation Date"
-    description: "Date of Quinyx Account Creation"
+    description: "Date of Quinyx account creation"
     convert_tz: no
     datatype: date
     type: date
@@ -199,7 +199,7 @@ view: employee_level_kpis {
 
   dimension: employment_start_date {
     label: "Employment Start Date"
-    description: "Start Date of First Employement Contract (Agreement in Quinyx UI)"
+    description: "Start fate of first employement contract (Agreement in Quinyx UI)"
     convert_tz: no
     datatype: date
     type: date
@@ -223,6 +223,12 @@ view: employee_level_kpis {
     type: string
     hidden: yes
     sql: ${TABLE}.home_hub_code ;;
+  }
+
+  dimension: country_iso {
+    type: string
+    hidden: yes
+    sql: ${TABLE}.country_iso ;;
   }
 
   dimension: is_employed {
@@ -690,7 +696,7 @@ view: employee_level_kpis {
     group_label: "* Shift related *"
     type: sum
     label: "# Early Punched-Out (min)"
-    description: "Number of Early Punch-Out Minutes where employee punch-out early before a shift ends e.g. a shift is scheduled to end at 10 pm but an employee punches out at 09:45 will results in 15 minutes early punch-out"
+    description: "Number of early Punch-Out minutes where employee punch-out early before a shift ends e.g. a shift is scheduled to end at 10 pm but an employee punches out at 09:45 will results in 15 minutes early punch-out"
     sql: ${TABLE}.number_of_end_early_minutes ;;
     value_format_name: decimal_1
   }
@@ -699,7 +705,7 @@ view: employee_level_kpis {
     group_label: "* Shift related *"
     type: sum
     label: "# Late Punched-Out (min)"
-    description: "Number of Late Punch-Out Minutes where employee punch-out late after a shift ends e.g. a shift is scheduled to end at 10 pm but an employee punches out at 10:15 will results in 15 minutes late punch-out"
+    description: "Number of late Punch-Out minutes where employee punch-out late after a shift ends e.g. a shift is scheduled to end at 10 pm but an employee punches out at 10:15 will results in 15 minutes late punch-out"
     sql: ${TABLE}.number_of_end_late_minutes ;;
     value_format_name: decimal_1
   }
@@ -708,7 +714,7 @@ view: employee_level_kpis {
     group_label: "* Shift related *"
     type: sum
     label: "# Early Punched-In (min)"
-    description: "Number of Early Punch-In Minutes where employee punch-in early before a shift starts e.g. a shift is scheduled to start at 8 am but an employee punches in at 7:45 will results in 15 minutes early punch-in"
+    description: "Number of early Punch-In minutes where employee punch-in early before a shift starts e.g. a shift is scheduled to start at 8 am but an employee punches in at 7:45 will results in 15 minutes early punch-in"
     sql: ${TABLE}.number_of_start_early_minutes ;;
     value_format_name: decimal_1
   }
@@ -717,7 +723,7 @@ view: employee_level_kpis {
     group_label: "* Shift related *"
     type: sum
     label: "# Late Punched-In (min)"
-    description: "Number of Late Punch-In Minutes where employee punch-in late after a shift starts e.g. a shift is scheduled to start  at 8 am but an employee punches in at 8:15 will results in 15 minutes late punch-in"
+    description: "Number of late Punch-In minutes where employee punch-in late after a shift starts e.g. a shift is scheduled to start  at 8 am but an employee punches in at 8:15 will results in 15 minutes late punch-in"
     sql: ${TABLE}.number_of_start_late_minutes ;;
     value_format_name: decimal_1
   }
@@ -736,7 +742,7 @@ view: employee_level_kpis {
     group_label: "* Shift related *"
     type: average
     label: "AVG Late Punched-In (min)"
-    description: "AVG Employee Late Punch-In Minutes where employee punch-in late after a shift starts e.g. a shift is scheduled to start  at 8 am but an employee punchs in at 8:15 will results in 15 minutes late punch-in"
+    description: "AVG Employee late Punch-In minutes where employee punch-in late after a shift starts e.g. a shift is scheduled to start  at 8 am but an employee punchs in at 8:15 will results in 15 minutes late punch-in"
     sql: ${TABLE}.number_of_start_late_minutes ;;
     value_format_name: decimal_1
   }
@@ -821,7 +827,7 @@ view: employee_level_kpis {
     group_label: "* Contract related *"
     type: number
     sql: ${sum_weekly_contracted_hours_per_employee} * ${number_of_scheduled_weeks} ;;
-    description: "Sum of weekly contracted hours based on Quinyx Agreements (Field in Quinyx UI: Agreement full time working hours) - # Weekly Contracted Hours * # Weeks"
+    description: "Sum of weekly contracted hours based on Quinyx Agreements (Field in Quinyx UI: Agreement full time working hours) -  Weekly Contracted Hours * calender weeks"
   }
 
   measure: pct_contract_fulfillment {
@@ -829,7 +835,7 @@ view: employee_level_kpis {
     type: number
     hidden: no
     label: "% Contracted Hours Fulfillment"
-    description: "Worked hours / (Weekly Contracted Hours * # Shift Weeks)"
+    description: "Worked hours / (Weekly Contracted Hours * calender weeks)"
     sql: ${number_of_worked_hours}/nullif(${sum_weekly_contracted_hours},0) ;;
     value_format: "0%"
   }
@@ -839,7 +845,7 @@ view: employee_level_kpis {
     type: number
     hidden: no
     label: "% Evaluated Hours vs Contracted Hours"
-    description: "Evaluated Hours (Worked Hours + Absence Hours) / (Weekly Contracted Hours * # Shift Weeks)"
+    description: "Evaluated Hours (Worked Hours + Absence Hours) / (Weekly Contracted Hours * calender weeks)"
     sql: ${number_evaluated_hours}/nullif(${sum_weekly_contracted_hours},0) ;;
     value_format: "0%"
   }
@@ -849,7 +855,7 @@ view: employee_level_kpis {
     type: number
     hidden: no
     label: "% Recorded Hours vs Contracted Hours"
-    description: "Recorded Hours (Worked Hours + Absence Hours + No Show Hours) / (Weekly Contracted Hours * # Shift Weeks)"
+    description: "Recorded Hours (Worked Hours + Absence Hours + No Show Hours) / (Weekly Contracted Hours * calender weeks)"
     sql: ${number_recorded_hours}/nullif(${sum_weekly_contracted_hours},0) ;;
     value_format: "0%"
   }
@@ -859,7 +865,7 @@ view: employee_level_kpis {
     type: number
     hidden: no
     label: "% Assigned Hours vs Contracted Hours"
-    description: "Assigned Hours / (Weekly Contracted Hours * # Shift Weeks)"
+    description: "Assigned Hours / (Weekly Contracted Hours * calender weeks)"
     sql: ${number_of_assigned_hours}/nullif(${sum_weekly_contracted_hours},0) ;;
     value_format: "0%"
   }
