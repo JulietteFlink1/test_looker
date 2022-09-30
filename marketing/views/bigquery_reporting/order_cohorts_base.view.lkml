@@ -341,6 +341,7 @@ view: order_cohorts_base {
   dimension: is_voucher_order{
     group_label: "* Order Dimensions *"
     label: "Is Discounted Order"
+    description: "Does the order have any Product or Cart discount?"
     type: yesno
     sql: ${TABLE}.is_discounted_order ;;
   }
@@ -1180,8 +1181,8 @@ view: order_cohorts_base {
 
       measure: cnt_unique_customers_with_voucher {
         group_label: "* Basic Counts (Orders / Customers etc.) *"
-        label: "# Unique Customers (with Discount)"
-        description: "Count of Unique Customers identified via their Email (only considering orders with a Cart/Product Discount)"
+        label: "# Unique Customers (with Cart or Product Discount)"
+        description: "Count of Unique Customers identified via their Email (only considering orders with a Cart or Product Discount)"
         hidden:  no
         type: count_distinct
         sql: ${customer_id_mapped};;
@@ -1191,8 +1192,8 @@ view: order_cohorts_base {
 
       measure: cnt_unique_customers_without_voucher {
         group_label: "* Basic Counts (Orders / Customers etc.) *"
-        label: "# Unique Customers (without Cart/Product Discount)"
-        description: "Count of Unique Customers identified via their Email (not considering orders with a Cart/Product Discount)"
+        label: "# Unique Customers (without Cart or Product Discount)"
+        description: "Count of Unique Customers identified via their Email (not considering orders with a Cart or Product Discount)"
         hidden:  no
         type: count_distinct
         sql: ${customer_id_mapped};;

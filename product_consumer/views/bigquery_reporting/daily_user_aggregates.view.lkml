@@ -384,19 +384,19 @@ view: daily_user_aggregates {
   }
   dimension: is_voucher_redemption_attempted {
     group_label: "Flags | Event"
-    label: "Is Cart Discount Redemption Attempted"
+    label: "Is Discount Code Redemption Attempted"
     type: yesno
     sql: ${TABLE}.is_voucher_redemption_attempted ;;
   }
   dimension: is_voucher_applied_succeeded {
     group_label: "Flags | Event"
-    label: "Is Cart Discount Applied Succeeded"
+    label: "Is Discount Code Applied Succeeded"
     type: yesno
     sql: ${TABLE}.is_voucher_applied_succeeded ;;
   }
   dimension: is_voucher_applied_failed {
     group_label: "Flags | Event"
-    label: "Is Cart Discount Applied Failed"
+    label: "Is Discount Code Applied Failed"
     type: yesno
     sql: ${TABLE}.is_voucher_applied_failed ;;
   }
@@ -773,28 +773,28 @@ view: daily_user_aggregates {
   ## Voucher Event Metrics
   measure: number_of_voucher_redemption_attempted {
     group_label: "Event Metrics"
-    label: "# Cart Discount Redemption Attempted"
+    label: "# Discount Code Redemption Attempted"
     type: sum
     hidden: no
     sql: ${dim_number_of_voucher_redemption_attempted};;
   }
   measure: number_of_voucher_applied_succeeded {
     group_label: "Event Metrics"
-    label: "# Cart Discount Applied Succeeded"
+    label: "# Discount Code Applied Succeeded"
     type: sum
     hidden: no
     sql: ${dim_number_of_voucher_applied_succeeded};;
   }
   measure: number_of_voucher_applied_failed {
     group_label: "Event Metrics"
-    label: "# Cart Discount Applied Failed"
+    label: "# Discount Code Applied Failed"
     type: sum
     hidden: no
     sql: ${dim_number_of_voucher_applied_failed};;
   }
   measure: voucher_failure_rate {
     group_label: "Event Metrics"
-    label: "% Cart Discount Failure Rate"
+    label: "% Discount Code Failure Rate"
     type: number
     hidden: no
     sql: ${number_of_voucher_applied_failed}/${number_of_voucher_redemption_attempted};;
@@ -802,7 +802,7 @@ view: daily_user_aggregates {
   }
   measure: voucher_success_rate {
     group_label: "Event Metrics"
-    label: "% Cart Discount Success Rate"
+    label: "% Discount Code Success Rate"
     type: number
     hidden: no
     sql: ${number_of_voucher_applied_succeeded}/${number_of_voucher_redemption_attempted};;
@@ -810,7 +810,7 @@ view: daily_user_aggregates {
   }
   measure: voucher_attempt_rate {
     group_label: "Event Metrics"
-    label: "% Cart Discount Attempt Rate"
+    label: "% Discount Code Attempt Rate"
     type: number
     hidden: no
     sql: ${number_of_voucher_redemption_attempted}/${number_of_checkout_viewed};;

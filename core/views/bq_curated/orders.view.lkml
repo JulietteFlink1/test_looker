@@ -3238,7 +3238,7 @@ view: orders {
   measure: pct_discount_cart_order_share {
     group_label: "* Marketing *"
     label: "% Cart Discount Order Share"
-    description: "Share of Orders which had Cart Discount applied at a checkout. Includes delivery discounts."
+    description: "Share of Orders which had Discount Code applied at a checkout. Includes delivery discounts."
     hidden:  no
     type: number
     sql: ${cnt_orders_with_discount_cart} / NULLIF(${cnt_orders}, 0);;

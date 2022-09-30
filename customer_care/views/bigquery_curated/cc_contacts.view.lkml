@@ -893,7 +893,7 @@ view: cc_contacts {
 
   measure: cc_discount_usage_rate {
     group_label: "* Contact Compensation *"
-    label: "% CC Cart Discount Usage Rate"
+    label: "% CC Discount Code Usage Rate"
     description: "Share of CC discount used by users"
     type: number
     value_format: "0.0%"
