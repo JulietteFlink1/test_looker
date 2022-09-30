@@ -169,7 +169,7 @@ explore: vendor_performance {
 
 join: daily_stock_management_events_items_inbounded {
 
-  view_label: "* Stock Management Events *"
+  view_label: "* Inbounding KPIs *"
   type: left_outer
   relationship: one_to_many
 

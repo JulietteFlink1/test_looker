@@ -56,13 +56,9 @@ view: daily_stock_management_events_items_inbounded {
     type: time
     description: "Timestamp when cart is created, meaning the time when we start the inbounding process"
     timeframes: [
-      raw,
       time,
       date,
-      week,
-      month,
-      quarter,
-      year
+      week
     ]
     sql: ${TABLE}.cart_created_at ;;
     hidden: yes
@@ -72,13 +68,9 @@ view: daily_stock_management_events_items_inbounded {
     type: time
     description: "Timestamp when the dropping list is finished, meaning the time when we finish the inbounding process"
     timeframes: [
-      raw,
       time,
       date,
-      week,
-      month,
-      quarter,
-      year
+      week
     ]
     sql: ${TABLE}.dropping_list_finished_at ;;
     hidden: yes
@@ -89,12 +81,8 @@ view: daily_stock_management_events_items_inbounded {
     description: "Date when an event was triggered."
     label: "Report"
     timeframes: [
-      raw,
       date,
-      week,
-      month,
-      quarter,
-      year
+      week
     ]
     convert_tz: no
     datatype: date
@@ -115,6 +103,7 @@ view: daily_stock_management_events_items_inbounded {
     description: "Code of a hub identical to back-end source tables."
     sql: ${TABLE}.hub_code ;;
     group_label: "Geographic Data"
+    hidden: yes
   }
 
   dimension: country_iso {
@@ -122,6 +111,7 @@ view: daily_stock_management_events_items_inbounded {
     description: "Country ISO based on 'hub_code'."
     sql: ${TABLE}.country_iso ;;
     group_label: "Geographic Data"
+    hidden: yes
   }
 
   dimension: event_definition {
@@ -180,8 +170,6 @@ view: daily_stock_management_events_items_inbounded {
     type: sum_distinct
     sql: ${time_inbounding_in_hours} ;;
 
-    sql_distinct_key: ${table_uuid} ;;
-
     value_format_name: decimal_1
   }
 
@@ -192,19 +180,15 @@ view: daily_stock_management_events_items_inbounded {
     type: sum_distinct
     sql: ${time_inbounding_in_minutes} ;;
 
-    sql_distinct_key: ${table_uuid} ;;
-
     value_format_name: decimal_1
   }
 
   measure: sum_total_quantity_items_inbounded {
-    label: "# Total Items Inbounded per day"
+    label: "# Items Inbounded per day"
     group_label: "Inbound Speed Metrics"
     description: "Total amount of items inbounded per day"
     type: sum_distinct
     sql: ${total_quantity_items_inbounded} ;;
-
-    sql_distinct_key: ${table_uuid} ;;
 
     value_format_name: decimal_1
   }
