@@ -170,6 +170,8 @@ view: daily_stock_management_events_items_inbounded {
     type: sum
     sql: ${time_inbounding_in_hours} ;;
 
+    value_format_name: decimal_0
+
   }
 
   measure: sum_time_inbounding_in_minutes {
@@ -179,6 +181,8 @@ view: daily_stock_management_events_items_inbounded {
     type: sum
     sql: ${time_inbounding_in_minutes} ;;
 
+    value_format_name: decimal_0
+
   }
 
   measure: sum_total_quantity_items_inbounded {
@@ -187,6 +191,8 @@ view: daily_stock_management_events_items_inbounded {
     description: "Total amount of items inbounded per day"
     type: sum
     sql: ${total_quantity_items_inbounded} ;;
+
+    value_format_name: decimal_0
 
   }
 
