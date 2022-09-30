@@ -171,7 +171,7 @@ view: first_order_refund_analysis {
 
   measure: count_refunds_raf {
     group_label: "Measures"
-    label: "# of Refund orders with raf Cart Discount"
+    label: "# of Refund orders with raf Discount Code"
     type: count_distinct
     sql: ${order_uuid};;
     filters: [is_refund_order: "yes", is_raf_discount: "yes"]
@@ -179,7 +179,7 @@ view: first_order_refund_analysis {
 
   measure: count_orders_raf {
     group_label: "Measures"
-    label: "# of Orders with raf Cart Discount"
+    label: "# of Orders with raf Discount Code"
     type: count_distinct
     sql: ${order_uuid};;
     filters: [is_raf_discount: "yes"]

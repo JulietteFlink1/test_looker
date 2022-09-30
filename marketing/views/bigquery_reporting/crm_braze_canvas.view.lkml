@@ -269,8 +269,8 @@ view: crm_braze_canvas {
 
   measure: sum_total_orders_with_vouchers {
     group_label: "Absolute"
-    label: "# Total Orders with Cart Discounts"
-    description: "Number of orders with Cart Discounts that happened in the 12h window after the last email opening"
+    label: "# Total Orders with Discount Code"
+    description: "Number of orders with Discount Code that happened in the 12h window after the last email opening"
     type: sum
     sql: ${total_orders_with_vouchers} ;;
     # value_format_name: decimal_0
@@ -288,8 +288,8 @@ view: crm_braze_canvas {
 
   measure: sum_total_vouchers_sent {
     group_label: "Absolute"
-    label: "# Total Cart Discounts Sent"
-    description: "Number of Cart Discounts that sent in orders that happened in the 12h after the last email open"
+    label: "# Total Discount Code Sent"
+    description: "Number of Discount Code that sent in orders that happened in the 12h after the last email open"
     type: sum
     sql: ${total_vouchers_sent} ;;
     # value_format_name: decimal_0
@@ -419,8 +419,8 @@ view: crm_braze_canvas {
 
   measure: discount_order_share {
     group_label: "Relative"
-    label: "% Cart Discount Order Share"
-    description: "Percentage: number of orders with Cart Discounts divided by the total number of ordres made in the 12h after the last opening of the email"
+    label: "% Discount Code Order Share"
+    description: "Percentage: number of orders with Discount Code divided by the total number of ordres made in the 12h after the last opening of the email"
     type: number
     sql: ${sum_total_orders_with_vouchers} / NULLIF(${sum_total_orders}, 0);;
     value_format_name: percent_1
@@ -469,7 +469,7 @@ view: crm_braze_canvas {
     allowed_value: { value: "emails_clicked"                  label: "Emails Clicked"}
     allowed_value: { value: "emails_unsubscribed"             label: "Emails Unsubscribed"}
     allowed_value: { value: "orders"                          label: "Orders"}
-    allowed_value: { value: "orders_with_vouchers"            label: "Orders with Cart Discounts"}
+    allowed_value: { value: "orders_with_vouchers"            label: "Orders with Discount Code"}
     allowed_value: { value: "discount_amount"                 label: "Discount Amount"}
     allowed_value: { value: "gmv_gross"                       label: "GMV Gross"}
     allowed_value: { value: "average_order_value"             label: "Average Order Value"}
@@ -487,7 +487,7 @@ view: crm_braze_canvas {
     allowed_value: { value: "click_rate"                      label: "Click Rate"}
     allowed_value: { value: "unsubscribe_rate"                label: "Unsubscribe Rate"}
     allowed_value: { value: "order_rate"                      label: "Order Rate"}
-    allowed_value: { value: "order_rate_with_voucher"         label: "Order Rate with Cart Discount"}
+    allowed_value: { value: "order_rate_with_voucher"         label: "Order Rate with Discount Code"}
     allowed_value: { value: "discount_order_share"            label: "Discount Order Share"}
     allowed_value: { value: "discount_value_share"            label: "Discount Value Share"}
 
