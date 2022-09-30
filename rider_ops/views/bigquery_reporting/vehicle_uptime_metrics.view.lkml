@@ -93,8 +93,7 @@ view: vehicle_uptime_metrics {
     description: "Number of bikes that should be available"
     type: count_distinct
     filters: [expected_uptime_minutes: "not null"]
-    sql: ${vehicle_id}
-    ;;
+    sql: ${vehicle_id} ;;
   }
 
   measure: number_of_non_damaged_bikes {
