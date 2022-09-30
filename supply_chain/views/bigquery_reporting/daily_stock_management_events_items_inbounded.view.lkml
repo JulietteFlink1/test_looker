@@ -30,7 +30,7 @@ view: daily_stock_management_events_items_inbounded {
     type: string
     description: "A generic identifier of a table in BigQuery that represent 1 unique row of this table."
     primary_key: yes
-    hidden: no
+    hidden: yes
     sql: ${TABLE}.table_uuid ;;
   }
 
