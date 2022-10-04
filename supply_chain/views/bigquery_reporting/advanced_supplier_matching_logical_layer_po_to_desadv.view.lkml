@@ -740,7 +740,7 @@ view: +advanced_supplier_matching {
   measure: sum_desadv_items_inbounded_in_quality {
     label: "# Items Inbounded In Quality (DESADV > Inbound)"
     description: "Share of in quality delivered order lines (DESADV > Inbound)"
-    group_label: "DESADV >> Inbound | OTIFIQ"
+    group_label: "DESADV >> Inbound | IQ"
 
     type: sum
     sql: ${inbounded_quantity} ;;
@@ -751,7 +751,7 @@ view: +advanced_supplier_matching {
   measure:  pct_desadv_items_inbounded_in_quality {
     label: "% In Quality (DESADV > Inbound)"
     description: "Share of in quality delivered order lines (DESADV > Inbound) compared to all inbounded order lines "
-    group_label: "DESADV >> Inbound | OTIFIQ"
+    group_label: "DESADV >> Inbound | IQ"
 
     type: number
     sql: safe_divide(${sum_desadv_items_inbounded_in_quality}, ${sum_desadv_quantity_inbounded}) ;;
@@ -1147,7 +1147,7 @@ view: +advanced_supplier_matching {
   measure: sum_po_items_inbounded_in_quality {
     label: "# In Quality (PO > Inbound)"
     description: "Number of in quality delivered order lines (PO > Inbound)"
-    group_label: "PO >> Inbound | OTIFIQ"
+    group_label: "PO >> Inbound | IQ"
 
     type: sum
     sql: ${inbounded_quantity} ;;
@@ -1159,7 +1159,7 @@ view: +advanced_supplier_matching {
   measure:  pct_po_items_inbounded_in_quality {
     label: "% In Quality (PO > Inbound)"
     description: "Share of in quality delivered order lines (PO > Inbound) compared to all inbounded order lines"
-    group_label: "PO >> Inbound | OTIFIQ"
+    group_label: "PO >> Inbound | IQ"
 
     type: number
     sql: safe_divide(${sum_po_items_inbounded_in_quality}, ${sum_po_quantity_inbounded}) ;;
