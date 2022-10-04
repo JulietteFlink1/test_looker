@@ -961,7 +961,7 @@ view: +advanced_supplier_matching {
 
     type: count_distinct
     sql: ${purchase_order_order_lineitems} ;;
-    filters: [is_matched_on_too_early_date: "yes"]
+    filters: [is_matched_on_too_late_date: "yes"]
   value_format_name: decimal_0
   }
 
