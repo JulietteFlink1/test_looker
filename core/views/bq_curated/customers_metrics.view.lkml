@@ -171,6 +171,7 @@ view: customers_metrics {
   }
 
   dimension_group: last_order_with_voucher {
+    label: "Last Order With Cart Discount"
     group_label: "* Dates and Timestamps *"
     type: time
     timeframes: [
