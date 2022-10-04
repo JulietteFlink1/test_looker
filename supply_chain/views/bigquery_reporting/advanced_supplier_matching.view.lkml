@@ -591,7 +591,7 @@ view: advanced_supplier_matching {
     type: number
     description: "The field shows, how many handling units with products have been delivered to a hub. 1 handling unit contains N selling units. The N is defined in the field quantity_per_handling_unit"
     sql: ${TABLE}.handling_units_count ;;
-    hidden: yes
+    hidden: no
   }
 
   dimension: inbounded_quantity {
@@ -617,9 +617,10 @@ view: advanced_supplier_matching {
 
   dimension: quantity_per_handling_unit {
     type: number
+    label: "Pack Factor"
     description: "This field indicates, how many selling units are part of 1 handling unit"
     sql: ${TABLE}.quantity_per_handling_unit ;;
-    hidden: yes
+    hidden: no
   }
 
   dimension: replenishment_substitute_group_array {
