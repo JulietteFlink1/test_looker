@@ -330,6 +330,7 @@ view: forecasts {
     type: sum_distinct
     sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
     sql: ${TABLE}.number_of_forecasted_idleness_minutes_picker ;;
+    value_format_name: decimal_1
     hidden: yes
   }
 
@@ -339,6 +340,7 @@ view: forecasts {
     type: sum_distinct
     sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
     sql: ${TABLE}.number_of_forecasted_idleness_minutes_rider ;;
+    value_format_name: decimal_1
     hidden: yes
   }
 
@@ -961,6 +963,7 @@ view: forecasts {
   measure: idleness_assumption_by_position {
     label: "% Idleness Assumption"
     description: "% Time an employee is idle"
+    type: number
     value_format_name: percent_1
     group_label: "> Dynamic Measures"
     sql:
