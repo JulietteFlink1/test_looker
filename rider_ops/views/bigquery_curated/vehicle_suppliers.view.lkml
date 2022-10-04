@@ -193,7 +193,7 @@ view: vehicle_suppliers {
   measure: share_of_operational_vehicles {
     type: number
     group_label: "> Vehicle Status"
-    label: "% Operational Bikes (Status)"
+    label: "% Operational Bikes (Latest Status)"
     description: "Share of bikes that currently have status Operational out of all online bikes (excluding offline bikes)"
     sql: safe_divide(${number_of_operational_vehicles},${number_of_online_vehicles}) ;;
     value_format: "0.0%"

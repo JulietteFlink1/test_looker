@@ -852,13 +852,15 @@ view: vat_order {
   dimension: total_net {
     hidden: yes
     type: number
-    sql: ${TABLE}.amt_revenue_net ;;
+    ## To avoid -0.00 values.
+    sql: round(${TABLE}.amt_revenue_net,4) ;;
   }
 
   dimension: total_gross {
     hidden: yes
     type: number
-    sql: ${TABLE}.amt_revenue_gross ;;
+     ## To avoid -0.00 values.
+    sql: round(${TABLE}.amt_revenue_gross,4) ;;
   }
 
   dimension: total_gross_bins {
