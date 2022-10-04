@@ -149,7 +149,7 @@ view: vehicle_suppliers {
   measure: number_of_operational_vehicles {
     group_label: "> Vehicle Status"
     label: "# Operational Bikes"
-    description: "Number of bikes currently operational."
+    description: "Number of bikes currently operational. Excluding Archived Bikes."
     type: count_distinct
     sql: ${vehicle_id} ;;
     filters: [operational_status: "operational", is_archived_bike: "no"]
@@ -158,7 +158,7 @@ view: vehicle_suppliers {
   measure: number_of_in_maintenance_vehicles {
     group_label: "> Vehicle Status"
     label: "# In Maintenance Bikes"
-    description: "Number of bikes currently in maintenance."
+    description: "Number of bikes currently in maintenance. Excluding Archived Bikes."
     type: count_distinct
     sql: ${vehicle_id} ;;
     filters: [operational_status: "in_maintenance",is_archived_bike: "no"]
@@ -167,7 +167,7 @@ view: vehicle_suppliers {
   measure: number_of_maintenance_required_vehicles {
     group_label: "> Vehicle Status"
     label: "# Maintenance Required Bikes"
-    description: "Number of bikes for which maintenance is required."
+    description: "Number of bikes for which maintenance is required. Excluding Archived Bikes."
     type: count_distinct
     sql: ${vehicle_id} ;;
     filters: [operational_status: "maintenance_required",is_archived_bike: "no"]
@@ -176,7 +176,7 @@ view: vehicle_suppliers {
   measure: number_of_in_transfer_vehicles {
     group_label: "> Vehicle Status"
     label: "# In Transfer Bikes"
-    description: "Number of bikes in transfer."
+    description: "Number of bikes in transfer. Excluding Archived Bikes."
     type: count_distinct
     sql: ${vehicle_id} ;;
     filters: [operational_status: "in_transfer",is_archived_bike: "no"]
@@ -185,7 +185,7 @@ view: vehicle_suppliers {
   measure: number_of_at_supplier_vehicles {
     group_label: "> Vehicle Status"
     label: "# At Supplier Bikes"
-    description: "Number of bikes at supplier."
+    description: "Number of bikes at supplier. Excluding Archived Bikes."
     type: count_distinct
     sql: ${vehicle_id} ;;
     filters: [operational_status: "at_supplier",is_archived_bike: "no"]
@@ -194,7 +194,7 @@ view: vehicle_suppliers {
   measure: number_of_in_storage_vehicles {
     group_label: "> Vehicle Status"
     label: "# In Storage Bikes"
-    description: "Number of bikes in storage."
+    description: "Number of bikes in storage. Excluding Archived Bikes."
     type: count_distinct
     sql: ${vehicle_id} ;;
     filters: [operational_status: "in_storage",is_archived_bike: "no"]
@@ -203,7 +203,7 @@ view: vehicle_suppliers {
   measure: number_of_stolen_vehicles {
     group_label: "> Vehicle Status"
     label: "# Stolen Bikes"
-    description: "Number of bikes stolen."
+    description: "Number of bikes stolen. Excluding Archived Bikes."
     type: count_distinct
     sql: ${vehicle_id} ;;
     filters: [operational_status: "stolen",is_archived_bike: "no"]
@@ -212,7 +212,7 @@ view: vehicle_suppliers {
   measure: number_of_vehicles_excluding_stolen {
     group_label: "> Vehicle Status"
     label: "# Bikes"
-    description: "Number of bikes. (any operational status except stolen)"
+    description: "Number of bikes (any operational status except stolen). Excluding Archived Bikes."
     type: count_distinct
     sql: ${vehicle_id} ;;
     filters: [operational_status: "-stolen", is_archived_bike: "no"]
@@ -222,7 +222,7 @@ view: vehicle_suppliers {
     type: number
     group_label: "> Vehicle Status"
     label: "% Operational Bikes (Latest Status)"
-    description: "Share of bikes that currently have status Operational out of all bikes (excluding stolen bikes)"
+    description: "Share of bikes that currently have status Operational out of all bikes (excluding stolen and archived bikes)"
     sql: safe_divide(${number_of_operational_vehicles},${number_of_vehicles_excluding_stolen}) ;;
     value_format: "0.0%"
   }
@@ -231,7 +231,7 @@ view: vehicle_suppliers {
     type: number
     group_label: "> Vehicle Status"
     label: "% In Maintenance Bikes"
-    description: "Share of bikes that are currently in maintenance out of all bikes (excluding stolen bikes)"
+    description: "Share of bikes that are currently in maintenance out of all bikes (excluding stolen and archived bikes)"
     sql: safe_divide(${number_of_in_maintenance_vehicles},${number_of_vehicles_excluding_stolen}) ;;
     value_format: "0.0%"
   }
@@ -240,7 +240,7 @@ view: vehicle_suppliers {
     type: number
     group_label: "> Vehicle Status"
     label: "% Maintenance Required Bikes"
-    description: "Share of bikes with status 'maintenance_required' out of all bikes (excluding stolen bikes)"
+    description: "Share of bikes with status 'maintenance_required' out of all bikes (excluding stolen and archived bikes)"
     sql: safe_divide(${number_of_maintenance_required_vehicles},${number_of_vehicles_excluding_stolen}) ;;
     value_format: "0.0%"
   }
@@ -249,7 +249,7 @@ view: vehicle_suppliers {
     type: number
     group_label: "> Vehicle Status"
     label: "% At Supplier Bikes"
-    description: "Share of bikes with status 'at_supplier' out of all bikes (excluding stolen bikes)"
+    description: "Share of bikes with status 'at_supplier' out of all bikes (excluding stolen and archived bikes)"
     sql: safe_divide(${number_of_at_supplier_vehicles},${number_of_vehicles_excluding_stolen}) ;;
     value_format: "0.0%"
   }
@@ -258,7 +258,7 @@ view: vehicle_suppliers {
     type: number
     group_label: "> Vehicle Status"
     label: "% In Transfer Bikes"
-    description: "Share of bikes with status 'in_transfer' out of all bikes (excluding stolen bikes)"
+    description: "Share of bikes with status 'in_transfer' out of all bikes (excluding stolen and archived bikes)"
     sql: safe_divide(${number_of_in_transfer_vehicles},${number_of_vehicles_excluding_stolen}) ;;
     value_format: "0.0%"
   }
@@ -267,7 +267,7 @@ view: vehicle_suppliers {
     type: number
     group_label: "> Vehicle Status"
     label: "% In Storage Bikes"
-    description: "Share of bikes with status 'in_storage' out of all bikes (excluding stolen bikes)"
+    description: "Share of bikes with status 'in_storage' out of all bikes (excluding stolen and archived bikes)"
     sql: safe_divide(${number_of_in_storage_vehicles},${number_of_vehicles_excluding_stolen}) ;;
     value_format: "0.0%"
   }
