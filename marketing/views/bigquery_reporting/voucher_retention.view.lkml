@@ -9,6 +9,7 @@ view: voucher_retention {
 
   dimension: voucher_retention_uuid {
     type: string
+    label: "Discount Code Retention UUID"
     primary_key: yes
     hidden: yes
     sql: ${TABLE}.voucher_retention_uuid ;;
