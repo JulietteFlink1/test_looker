@@ -32,6 +32,11 @@ explore: event_trip_state_updated {
     ]
   }
 
+  access_filter: {
+    field: event_trip_state_updated.country_iso
+    user_attribute: country_iso
+  }
+
   join: global_filters_and_parameters {
     sql_on: ${global_filters_and_parameters.generic_join_dim} = TRUE ;;
     type: left_outer
