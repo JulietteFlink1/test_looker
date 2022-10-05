@@ -263,7 +263,7 @@ view: advanced_supplier_matching {
 
   dimension_group: promised_delivery_date_combined {
     type: time
-    label: "Promised Delivery"
+    label: "Promised Delivery (Combined with DESADV)"
     description: "The date when we expect to receive the delivery, either coming from DESADVs or PO."
     group_label: "Dates & Timestamps"
     timeframes: [
@@ -274,6 +274,22 @@ view: advanced_supplier_matching {
     convert_tz: no
     datatype: date
     sql: ${TABLE}.promised_delivery_date_combined ;;
+  }
+
+  dimension_group: promised_delivery_date_purchase_order {
+    label: "Purchase Order (PO)"
+    type: time
+    description: "The date when we expect to receive the delivery, originating from a purchase order."
+    group_label: "Dates & Timestamps"
+    timeframes: [
+      date,
+      week,
+      month
+    ]
+    convert_tz: no
+    datatype: date
+    sql: ${TABLE}.promised_delivery_date_purchase_order ;;
+    hidden: no
   }
 
   dimension_group: order_timestamp {
@@ -529,23 +545,6 @@ view: advanced_supplier_matching {
     type: number
     description: "This field shows the number delivery issues (delivery-damaged and delivery-expired) for items, that have an inbound"
     sql: ${TABLE}.number_of_quality_issues_delivery ;;
-    hidden: yes
-  }
-
-  dimension_group: promised_delivery_date_purchase_order {
-    type: time
-    description: "The date when we expect to receive the delivery, originating from a purchase order."
-    timeframes: [
-      raw,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    convert_tz: no
-    datatype: date
-    sql: ${TABLE}.promised_delivery_date_purchase_order ;;
     hidden: yes
   }
 
