@@ -277,7 +277,7 @@ view: advanced_supplier_matching {
   }
 
   dimension_group: promised_delivery_date_purchase_order {
-    label: "Purchase Order (PO)"
+    label: "Purchase Order (PO) Promised Delivery"
     type: time
     description: "The date when we expect to receive the delivery, originating from a purchase order."
     group_label: "Dates & Timestamps"
