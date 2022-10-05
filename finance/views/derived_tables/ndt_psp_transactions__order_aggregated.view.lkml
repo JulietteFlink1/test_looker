@@ -106,14 +106,14 @@ view: ndt_psp_transactions__order_aggregated {
     dimension: is_double_payment {
       group_label: "> Order Properties"
       label: "Is Double Payment Order"
-      description: "Flags if the amount paid by the customer is twice the GPV in CT."
+      description: "Flags if the amount paid by the customer is twice the GPV in CT. Excluding full refund payments."
       type: yesno
       sql: ${sum_gross_credit_adjusted} = 2 * ${sum_gpv_gross} ;;
     }
 
-    dimension: has_order_multiple_psp_references {
+    dimension: has_order_multiple_authorised_psp_references {
       group_label: "> Order Properties"
-      description: "Flags if the order has more than 1 Authorised PSP reference linked."
+      description: "Flags if the order has more than 1 Authorised PSP reference linked to it. Excluding full refund payments."
       type: yesno
       sql: ${number_of_authorised_psp_references} > 1 ;;
     }
@@ -121,7 +121,7 @@ view: ndt_psp_transactions__order_aggregated {
     measure: sum_difference_ct_adyen {
       group_label: "> Adyen <> CT"
       label: "SUM Difference Adyen Gross Settled Amount - CT GPV Gross"
-      description: "Difference between the amount actually paid by the customer and the expected Gross Payment Value in CT. Before deduction of Refunds due to returns."
+      description: "Difference between the amount actually paid by the customer and the expected Gross Payment Value in CT. Excluding full refund payments. Before deduction of Refunds due to returns."
       type: sum
       sql: ${sum_gross_credit_adjusted} - ${sum_gpv_gross} ;;
       value_format_name: eur
