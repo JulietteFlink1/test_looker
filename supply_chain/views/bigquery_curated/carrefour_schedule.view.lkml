@@ -5,7 +5,7 @@
 # - Supply Chain team / Commercial (FR Team)
 
 view: carrefour_schedule {
-  sql_table_name: `flink-data-dev.dbt_lruiz.carrefour_schedule`
+  sql_table_name: `flink-data-prod.curated.carrefour_schedule`
     ;;
 
 
