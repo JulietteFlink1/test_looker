@@ -16,8 +16,8 @@ explore: carrefour_schedule {
   group_label: "Supply Chain"
 
   from  :     carrefour_schedule
-  view_label: "Carrefour Schedule"
-  hidden: yes
+  view_label: "Carrefour Schedule (Raw)"
+  hidden: no
 
 ### FILTERS
 
