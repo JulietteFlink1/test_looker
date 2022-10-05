@@ -258,6 +258,12 @@ view: forecasts {
     hidden: yes
   }
 
+  measure: number_of_max_forecasted_rider {
+    type: max
+    label: "# Max Forecasted Rider"
+    sql: ${TABLE}.number_of_forecasted_minutes_rider_adjusted/30 ;;
+  }
+
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~      Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
