@@ -5,8 +5,8 @@
 # - FR Team (Supply Chain and Commercial)
 #
 #
-include: "/**/*.view"
 
+include: "/supply_chain/views/bigquery_curated/carrefour_schedule.view"
 
 
 explore: carrefour_schedule {
@@ -16,7 +16,6 @@ explore: carrefour_schedule {
   group_label: "Supply Chain"
 
   from  :     carrefour_schedule
-  view_name:  carrefour_schedule
   view_label: "Carrefour Schedule"
   hidden: yes
 
@@ -26,22 +25,9 @@ explore: carrefour_schedule {
 
   always_filter: {
     filters: [
-      carrefour_schedule.day_date: "last 7 days",
+      carrefour_schedule.schedule_emited_date: "last 7 days",
 
     ]
   }
-
-
-
-### JOINS
-  join: global_filters_and_parameters {
-    view_label: "* Global *"
-    sql_on: ${global_filters_and_parameters.generic_join_dim} = TRUE ;;
-    type: left_outer
-    relationship: one_to_one
-
-  }
-
-
 
 }
