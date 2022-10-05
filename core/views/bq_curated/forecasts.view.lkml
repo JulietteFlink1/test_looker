@@ -261,7 +261,7 @@ view: forecasts {
   measure: number_of_max_forecasted_rider {
     type: max
     label: "# Max Forecasted Rider"
-    description: "Max Forecasted Rider per 30 minutes block (based on adjusted forecast)"
+    description: "The number of maximum forecasted riders per 30 minutes block. (Incl. Airtable Adjustments)"
     sql: ${TABLE}.number_of_forecasted_minutes_rider_adjusted/30 ;;
   }
 
