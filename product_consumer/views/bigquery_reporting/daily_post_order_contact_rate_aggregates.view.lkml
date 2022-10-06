@@ -578,6 +578,14 @@ view: daily_post_order_contact_rate_aggregates {
     filters: [is_order_tracking_viewed_status_delivered: "yes"]
   }
 
+  measure: number_of_order_with_next_order{
+    type: count_distinct
+    label: "Number of Orders that Have Next Order"
+    hidden:  no
+    sql: ${order_uuid} ;;
+    filters: [has_next_order: "yes"]
+  }
+
 ######## * Percentages * ########
 
   measure: pct_orders_ccs_intent {
