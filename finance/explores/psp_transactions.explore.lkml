@@ -23,8 +23,8 @@ explore: psp_transactions {
 
   always_filter: {
     filters: [
-      orders.created_date: "last 30 days",
-      psp_transactions.booking_date: "last 30 days",
+      orders.created_date: "",
+      psp_transactions.booking_date: "",
       orders.is_successful_order: "",
       psp_transactions.merchant_account: "",
       psp_transactions.booking_date: "",
@@ -65,7 +65,7 @@ explore: psp_transactions {
   join: orderline {
     view_label: "Order Lineitems"
     sql_on:  ${orderline.country_iso} = ${orders.country_iso} AND
-             ${orderline.order_uuid}    = ${orders.order_uuid} AND
+             ${orderline.order_uuid}    = ${orders.order_uuid}
         ;;
 
     relationship: one_to_many
@@ -105,15 +105,17 @@ explore: psp_transactions {
   join: payment_transactions {
     view_label: "CT Payment Transactions"
     sql_on: ${payment_transactions.country_iso} = ${orders.country_iso} AND
-      ${payment_transactions.order_uuid}    = ${orders.order_uuid} ;;
+      ${payment_transactions.order_uuid}    = ${orders.order_uuid} AND
+      ${payment_transactions.interaction_id} = ${psp_transactions.psp_reference};;
     relationship: many_to_many
     type: left_outer
-    fields: [payment_transactions.interaction_id]
+    fields: [payment_transactions.interaction_id, payment_transactions.transaction_state]
   }
 
   join: psp_settlement_details {
     view_label: "PSP Settlement"
     sql_on: ${psp_transactions.psp_reference}  = ${psp_settlement_details.psp_reference}
+    and coalesce(${orders.order_uuid},'') = coalesce(${psp_settlement_details.order_uuid},'')
       --  and {% condition psp_transactions.booking_date %} ${psp_settlement_details.booking_date} {% endcondition %}
       ;;
 

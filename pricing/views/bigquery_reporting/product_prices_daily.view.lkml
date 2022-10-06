@@ -55,7 +55,7 @@ view: product_prices_daily {
   # todo - might need a chane to boolean in dbt level
   dimension: is_discount_live {
 
-    label:       "Is Discount Live"
+    label:       "Is Product Discount Live"
     description: "A yes-no flag, that indicates, if a given price was discounted"
 
     type: string
