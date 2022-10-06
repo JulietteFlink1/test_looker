@@ -142,6 +142,34 @@ view: competitive_intelligence_order_comparison {
         {% endif %} ;;
   }
 
+  ######## Dynamic Dimensions
+
+  dimension: order_date_dynamic {
+    group_label: "Order Date"
+    label: "Order Date (Dynamic)"
+    label_from_parameter: date_granularity
+    sql:
+    {% if date_granularity._parameter_value == 'Day' %}
+      ${order_date}
+    {% elsif date_granularity._parameter_value == 'Week' %}
+      ${order_week}
+    {% elsif date_granularity._parameter_value == 'Month' %}
+      ${order_month}
+    {% endif %};;
+  }
+
+  ######### Parameters
+
+  parameter: date_granularity {
+    group_label: "Order Date"
+    label: "Date Granularity"
+    type: unquoted
+    allowed_value: { value: "Day" }
+    allowed_value: { value: "Week" }
+    allowed_value: { value: "Month" }
+    default_value: "Day"
+  }
+
   parameter: order_type {
     label: "Order Type"
     type: unquoted
