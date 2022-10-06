@@ -469,7 +469,7 @@ view: cc_contacts {
 
   dimension: amt_discount_cart_gross {
     group_label: "* Contact Compensation *"
-    description: "Discount value (Gross)"
+    description: "Cart Discount value (Gross)"
     type: number
     hidden: yes
     sql: ${TABLE}.amt_discount_cart_gross ;;
@@ -893,7 +893,7 @@ view: cc_contacts {
 
   measure: cc_discount_usage_rate {
     group_label: "* Contact Compensation *"
-    label: "% CC Discount Usage Rate"
+    label: "% CC Discount Code Usage Rate"
     description: "Share of CC discount used by users"
     type: number
     value_format: "0.0%"

@@ -79,7 +79,7 @@ explore: daily_hub_staff_events {
 
   join: products {
     view_label: "5 Product Dimensions"
-    fields: [product_name, category]
+    fields: [product_name, category, subcategory, erp_category, erp_subcategory]
     sql_on: ${products.product_sku} = ${event_order_progressed.product_sku};;
     type: left_outer
     relationship: one_to_one

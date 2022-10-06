@@ -15,6 +15,7 @@ view: ndt_psp_transactions__order_aggregated {
         column: sum_gross_credit_gc { field: psp_settlement_details.sum_gross_credit_gc }
         column: sum_gross_debit_gc {field: psp_settlement_details.sum_gross_debit_gc}
         column: psp_settlement_booking_date {field: psp_settlement_details.booking_date}
+        column: number_of_authorised_psp_references {field:psp_transactions.cnt_authorised_transactions}
 
         filters: {
           field: psp_settlement_details.is_full_refund_payment
@@ -23,6 +24,13 @@ view: ndt_psp_transactions__order_aggregated {
         filters: {
           field: psp_settlement_details.type
           value: "Settled"
+        }
+        filters: {
+          ## Filtering for successful interaction IDs (i.e. PSP References) only.
+          ## Also keeping null values because some PSP Reference don't appear as interaction IDs and therefore
+          ## won't have any state specified.
+          field: payment_transactions.transaction_state
+          value: "success, null"
         }
 
        # bind_all_filters: yes
@@ -62,6 +70,11 @@ view: ndt_psp_transactions__order_aggregated {
       hidden: yes
     }
 
+    dimension: number_of_authorised_psp_references {
+      type: number
+      hidden: yes
+    }
+
     dimension: sum_gross_credit_adjusted {
       hidden: yes
       type: number
@@ -77,20 +90,20 @@ view: ndt_psp_transactions__order_aggregated {
 
     dimension: is_CT_above_adyen_amount {
       type: yesno
-      group_label: "> Transaction Properties"
+      group_label: "> Order Properties"
       description: "Flags if the gross GPV visible in CT is higher than the gross Settled amount paid via Adyen. We exclude full refund payments here."
       sql: ${sum_gross_credit_adjusted} < ${sum_gpv_gross};;
     }
 
     dimension: is_adyen_above_CT_amount {
-      group_label: "> Transaction Properties"
+      group_label: "> Order Properties"
       description: "Flags if the gross Adyen Settled amount is higher than the gross GPV in CT. We exclude full refund payments here."
       type: yesno
       sql: ${sum_gross_credit_adjusted} > ${sum_gpv_gross};;
     }
 
     dimension: is_adyen_different_CT_amount {
-      group_label: "> Transaction Properties"
+      group_label: "> Order Properties"
       label: "Is CT <> Adyen"
       description: "Flags if the gross Adyen Settled amount is different from the gross GPV in CT. We exclude full refund payments here."
       type: yesno
@@ -98,19 +111,24 @@ view: ndt_psp_transactions__order_aggregated {
     }
 
     dimension: is_double_payment {
-      group_label: "> Transaction Properties"
+      group_label: "> Order Properties"
       label: "Is Double Payment Order"
-      description: "Flags if the amount paid by the customer is twice the GPV in CT."
+      description: "Flags if the amount paid by the customer is twice the GPV in CT. Excluding full refund payments."
       type: yesno
       sql: ${sum_gross_credit_adjusted} = 2 * ${sum_gpv_gross} ;;
     }
 
-
+    dimension: has_order_multiple_authorised_psp_references {
+      group_label: "> Order Properties"
+      description: "Flags if the order has more than 1 Authorised PSP reference linked to it. Excluding full refund payments."
+      type: yesno
+      sql: ${number_of_authorised_psp_references} > 1 ;;
+    }
 
     measure: sum_difference_ct_adyen {
       group_label: "> Adyen <> CT"
       label: "SUM Difference Adyen Gross Settled Amount - CT GPV Gross"
-      description: "Difference between the amount actually paid by the customer and the expected Gross Payment Value in CT. Before deduction of Refunds due to returns."
+      description: "Difference between the amount actually paid by the customer and the expected Gross Payment Value in CT. Excluding full refund payments. Before deduction of Refunds due to returns."
       type: sum
       sql: ${sum_gross_credit_adjusted} - ${sum_gpv_gross} ;;
       value_format_name: eur

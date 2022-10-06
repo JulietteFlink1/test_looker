@@ -263,7 +263,7 @@ view: advanced_supplier_matching {
 
   dimension_group: promised_delivery_date_combined {
     type: time
-    label: "Promised Delivery"
+    label: "Promised Delivery (Combined with DESADV)"
     description: "The date when we expect to receive the delivery, either coming from DESADVs or PO."
     group_label: "Dates & Timestamps"
     timeframes: [
@@ -274,6 +274,22 @@ view: advanced_supplier_matching {
     convert_tz: no
     datatype: date
     sql: ${TABLE}.promised_delivery_date_combined ;;
+  }
+
+  dimension_group: promised_delivery_date_purchase_order {
+    label: "Purchase Order (PO) Promised Delivery"
+    type: time
+    description: "The date when we expect to receive the delivery, originating from a purchase order."
+    group_label: "Dates & Timestamps"
+    timeframes: [
+      date,
+      week,
+      month
+    ]
+    convert_tz: no
+    datatype: date
+    sql: ${TABLE}.promised_delivery_date_purchase_order ;;
+    hidden: no
   }
 
   dimension_group: order_timestamp {
@@ -532,23 +548,6 @@ view: advanced_supplier_matching {
     hidden: yes
   }
 
-  dimension_group: promised_delivery_date_purchase_order {
-    type: time
-    description: "The date when we expect to receive the delivery, originating from a purchase order."
-    timeframes: [
-      raw,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    convert_tz: no
-    datatype: date
-    sql: ${TABLE}.promised_delivery_date_purchase_order ;;
-    hidden: yes
-  }
-
   dimension_group: order {
     type: time
     description: "The date when we placed an order to our suppliers."
@@ -591,7 +590,7 @@ view: advanced_supplier_matching {
     type: number
     description: "The field shows, how many handling units with products have been delivered to a hub. 1 handling unit contains N selling units. The N is defined in the field quantity_per_handling_unit"
     sql: ${TABLE}.handling_units_count ;;
-    hidden: yes
+    hidden: no
   }
 
   dimension: inbounded_quantity {
@@ -617,9 +616,10 @@ view: advanced_supplier_matching {
 
   dimension: quantity_per_handling_unit {
     type: number
+    label: "Pack Factor"
     description: "This field indicates, how many selling units are part of 1 handling unit"
     sql: ${TABLE}.quantity_per_handling_unit ;;
-    hidden: yes
+    hidden: no
   }
 
   dimension: replenishment_substitute_group_array {

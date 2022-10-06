@@ -8,7 +8,7 @@
 # thus there is 1 version for DESADV, 1 version for Purchase Orders
 
 
-include: "vendor_performance.explore.lkml"
+include: "/supply_chain/explores/vendor_performance/vendor_performance.explore.lkml"
 
 view: vendor_performance_ndt_date_hub_sku_metrics_po {
   derived_table: {

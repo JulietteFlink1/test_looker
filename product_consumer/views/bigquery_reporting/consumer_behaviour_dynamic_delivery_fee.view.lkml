@@ -397,7 +397,7 @@ view: consumer_behaviour_dynamic_delivery_fee {
 
   measure: discount_value_avg {
     group_label: "Financial Metrics"
-    label: "AVG Discount Value "
+    label: "AVG Cart Discount Value "
     type: average
     value_format_name: eur
     sql: ${TABLE}.discount_value ;;

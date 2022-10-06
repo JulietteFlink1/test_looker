@@ -269,6 +269,13 @@ view: psp_settlement_details {
     description: "Flags if the payment ID is a full refund payment. Checks if the Authorised amount is equal to the Refunded Amount for the payment."
   }
 
+  dimension: is_orphaned_double_payment_transaction {
+    type: yesno
+    sql: ${TABLE}.is_orphaned_double_payment_transaction ;;
+    group_label: "> Transaction Properties"
+    description: "Flags if the Transaction has a cart ID in Adyen's Merchant Reference associated with an order in CT but doesn't appear in CT."
+  }
+
   ######### Measures
 
   measure: sum_gross_credit_gc {

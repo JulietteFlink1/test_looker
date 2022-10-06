@@ -29,7 +29,8 @@ view: nps_comments_labeled {
     type: string
     sql: case when ${TABLE}.label = 'item_quality_prediction' then 'Item Quality'
               when ${TABLE}.label = 'delivery_time_prediction' then 'Delivery Time'
-              when ${TABLE}.label = 'pricing_prediction' then 'Pricing'
+              when ${TABLE}.label = 'pricing_assortment_prediction' then 'Pricing Assortment'
+              when ${TABLE}.label = 'pricing_delivery_fee_prediction' then 'Pricing Delivery Fee'
               when ${TABLE}.label = 'picking_prediction' then 'Picking'
               when ${TABLE}.label = 'oos_prediction' then 'OOS'
               when ${TABLE}.label = 'all_good_prediction' then 'All Good'

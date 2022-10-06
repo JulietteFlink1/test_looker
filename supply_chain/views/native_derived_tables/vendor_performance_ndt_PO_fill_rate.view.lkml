@@ -1,5 +1,5 @@
 # If necessary, uncomment the line below to include explore_source.
-# include: "vendor_performance.explore.lkml"
+include: "/supply_chain/explores/vendor_performance/vendor_performance.explore.lkml"
 
 view: vendor_performance_ndt_po_fill_rate {
   derived_table: {

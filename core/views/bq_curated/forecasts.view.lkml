@@ -258,6 +258,13 @@ view: forecasts {
     hidden: yes
   }
 
+  measure: number_of_max_forecasted_rider {
+    type: max
+    label: "# Max Forecasted Rider"
+    description: "The number of maximum forecasted riders per 30 minutes block. (Incl. Airtable Adjustments)"
+    sql: ${TABLE}.number_of_forecasted_minutes_rider_adjusted/30 ;;
+  }
+
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~      Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -330,6 +337,7 @@ view: forecasts {
     type: sum_distinct
     sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
     sql: ${TABLE}.number_of_forecasted_idleness_minutes_picker ;;
+    value_format_name: decimal_1
     hidden: yes
   }
 
@@ -339,6 +347,7 @@ view: forecasts {
     type: sum_distinct
     sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
     sql: ${TABLE}.number_of_forecasted_idleness_minutes_rider ;;
+    value_format_name: decimal_1
     hidden: yes
   }
 
@@ -889,7 +898,7 @@ view: forecasts {
   measure: pct_no_show_by_position {
     type: number
     label: "% Forecasted No Show Hours"
-    description: "# Forecasted No Show Hours / # Forecasted Hours (Incl. Airtable Adjustments)"
+    description: "# Forecasted No Show Hours / # Forecasted Hours (Excl. Airtable Adjustments)"
     value_format_name: percent_1
     group_label: "> Dynamic Measures"
     sql:
@@ -961,6 +970,7 @@ view: forecasts {
   measure: idleness_assumption_by_position {
     label: "% Idleness Assumption"
     description: "% Time an employee is idle"
+    type: number
     value_format_name: percent_1
     group_label: "> Dynamic Measures"
     sql:

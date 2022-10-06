@@ -298,6 +298,7 @@ view: cs_conversations {
 
   dimension: voucher_code {
     type: string
+    label: "Discount Code"
     sql: ${TABLE}.voucher_code ;;
   }
 
