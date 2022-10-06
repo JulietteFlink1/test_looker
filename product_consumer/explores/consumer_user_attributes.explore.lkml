@@ -1,4 +1,4 @@
-# Owner: Product Analytics
+# Owner: Product Analytics, Zhou Fang, Peter Kell, Natalia Wierzbowska
 
 # Main Stakeholder:
 # - Consumer Product
@@ -6,16 +6,11 @@
 # - Marketing
 
 # Questions that can be answered
-# - What are the attributes of our users?
-
-# based on doc:
-# https://cloud.google.com/looker/docs/reference/param-field-filter
-# https://cloud.google.com/looker/docs/reference/param-explore-join-sql-on
+# - What are the attributes of our customers?
 
 include: "/**/user_attributes_jobs_to_be_done.view.lkml"
 include: "/**/user_attributes_lifecycle_last28days.view.lkml"
 include: "/**/user_attributes_lifecycle_first28days.view.lkml"
-# include: "/**/global_filters_and_parameters.view.lkml"
 # include: "/**/customers_metrics.view.lkml"
 
 explore: consumer_user_attributes {
@@ -24,7 +19,7 @@ explore: consumer_user_attributes {
   hidden: no
   label: "User Attributes"
   view_label: "* Customers First 28 Days *"
-  description: "Explore user attributes and related metrics"
+  description: "Explore user attributes and related metrics. See dbt docs for details on which data models are included and their fields: https://data-dbt-prod.pages.dev/#!/exposure/exposure.flink_data.looker_explore_user_attributes"
   group_label: "Product - Consumer"
   fields: [
     ALL_FIELDS*,

@@ -39,6 +39,7 @@ view: marketing_channel_mapping {
 
   dimension: voucher_use_case {
     type: string
+    label: "Cart Discount Use Case"
     sql: ${TABLE}.voucher_use_case ;;
   }
 

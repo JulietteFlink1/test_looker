@@ -24,7 +24,7 @@ view: daily_smart_inventory_checks {
   dimension: table_uuid {
     type: string
     primary_key: yes
-    hidden: yes
+    hidden: no
     label: "Table UUID"
     description: "Check id from smart_inventory.checks"
     sql: ${TABLE}.table_uuid ;;
@@ -279,7 +279,7 @@ view: daily_smart_inventory_checks {
     type: count_distinct
     group_label: "Total Metrics"
     label: "# of Items Corrected"
-    description: "Number of items corrected."
+    description: "Number of items corrected (count_distinct skus with corrections)."
     sql: ${sku} ;;
     filters: [is_correction: "yes"]
   }
@@ -332,4 +332,5 @@ view: daily_smart_inventory_checks {
     sql: ${number_of_completed_checks}/nullif((${number_of_completed_checks}+${number_of_open_checks}),0) ;;
   }
 
+  # =========  Rate Metrics  =========
 }

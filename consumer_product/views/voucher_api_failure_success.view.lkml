@@ -57,22 +57,22 @@ view: voucher_api_failure_success {
   }
 
   measure: cnt_success {
-    label: "Count of successful voucher application"
-    description: "Number of vouchers successfully applied"
+    label: "Count of successful Discount Code application"
+    description: "Number of Discount Code successfully applied"
     type: sum
     sql: if(${event_type}="Success",1,0) ;;
   }
 
   measure: cnt_fail {
-    label: "Count of failed voucher application"
-    description: "Number of failures to apply voucher"
+    label: "Count of failed Discount Code application"
+    description: "Number of failures to apply Discount Code"
     type: sum
     sql: if(${event_type}="Fail",1,0) ;;
   }
 
   measure: cnt_unique_anonymousid {
     label: "# Unique Users"
-    description: "Number of Unique Users identified via Anonymous ID from Segment attempted voucher application"
+    description: "Number of Unique Users identified via Anonymous ID from Segment attempted Discount Code application"
     hidden:  no
     type: count_distinct
     sql: ${anonymous_id};;
@@ -81,7 +81,7 @@ view: voucher_api_failure_success {
 
   measure: cnt_unique_anonymousid_success {
     label: "# Unique Users Success"
-    description: "Number of Unique Users identified via Anonymous ID from Segment with successful voucher application"
+    description: "Number of Unique Users identified via Anonymous ID from Segment with successful Discount Code application"
     hidden:  no
     type: count_distinct
     sql: ${anonymous_id};;
@@ -91,7 +91,7 @@ view: voucher_api_failure_success {
 
   measure: cnt_unique_anonymousid_fail{
     label: "# Unique Users Fail"
-    description: "Number of Unique Users identified via Anonymous ID from Segment with failed voucher application"
+    description: "Number of Unique Users identified via Anonymous ID from Segment with failed Discount Code application"
     hidden:  no
     type: count_distinct
     sql: ${anonymous_id};;
@@ -101,14 +101,14 @@ view: voucher_api_failure_success {
 
   measure: perc_unique_voucher_fail_to_attempt {
     type: number
-    description: "% Unique Users with failed voucher application compared to total"
+    description: "% Unique Users with failed Discount Code application compared to total"
     sql: ${cnt_unique_anonymousid_fail}/(${cnt_unique_anonymousid_fail}+${cnt_unique_anonymousid_success}) ;;
     value_format_name: percent_1
   }
 
   measure: perc_absolute_voucher_fail_to_attempt {
     type: number
-    description: "% absolute failed voucher applications compared to total"
+    description: "% absolute failed Discount Code applications compared to total"
     sql: ${cnt_fail}/(${cnt_fail}+${cnt_success}) ;;
     value_format_name: percent_1
   }
@@ -136,6 +136,7 @@ view: voucher_api_failure_success {
   }
 
   dimension: body_voucher_code {
+    label: "Body Discount Code"
     type: string
     sql: ${TABLE}.body_voucher_code ;;
   }
