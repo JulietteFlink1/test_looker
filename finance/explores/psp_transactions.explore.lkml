@@ -105,10 +105,11 @@ explore: psp_transactions {
   join: payment_transactions {
     view_label: "CT Payment Transactions"
     sql_on: ${payment_transactions.country_iso} = ${orders.country_iso} AND
-      ${payment_transactions.order_uuid}    = ${orders.order_uuid} ;;
+      ${payment_transactions.order_uuid}    = ${orders.order_uuid} AND
+      ${payment_transactions.interaction_id} = ${psp_transactions.psp_reference};;
     relationship: many_to_many
     type: left_outer
-    fields: [payment_transactions.interaction_id]
+    fields: [payment_transactions.interaction_id, payment_transactions.transaction_state]
   }
 
   join: psp_settlement_details {
