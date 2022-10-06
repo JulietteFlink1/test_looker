@@ -78,13 +78,11 @@ view: event_trip_state_updated {
     type: time
     description: "Timestamp when an event was triggered within the app / web."
     timeframes: [
-      raw,
       time,
       date,
       week,
       month,
-      quarter,
-      year
+      quarter
     ]
     sql: ${TABLE}.event_timestamp ;;
   }
@@ -94,13 +92,11 @@ view: event_trip_state_updated {
     type: time
     description: "Timestamp when an event was published"
     timeframes: [
-      raw,
       time,
       date,
       week,
       month,
-      quarter,
-      year
+      quarter
     ]
     sql: ${TABLE}.published_at_timestamp ;;
   }
