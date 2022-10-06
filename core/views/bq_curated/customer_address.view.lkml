@@ -40,10 +40,11 @@ view: customer_address {
     sql: ${TABLE}.city ;;
   }
 
-  dimension: country {
+  dimension: country_iso {
     type: string
+    alias: [country]
     map_layer_name: countries
-    sql: ${TABLE}.country ;;
+    sql: ${TABLE}.country_iso ;;
   }
 
   dimension: phone {
