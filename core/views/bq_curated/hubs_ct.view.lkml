@@ -210,6 +210,14 @@ view: hubs_ct {
     group_label: "> Admin Data"
   }
 
+  dimension: created_at {
+    label: "Created At"
+    type: date_time
+    sql: ${TABLE}.created_at ;;
+    group_label: "> Admin Data"
+    description: "The Timestamp for when the hub was initially created within CommerceTools"
+  }
+
   dimension: languages {
     type: string
     sql: ${TABLE}.languages ;;
