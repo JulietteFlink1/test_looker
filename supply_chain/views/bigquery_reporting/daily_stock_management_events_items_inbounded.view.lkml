@@ -165,59 +165,58 @@ view: daily_stock_management_events_items_inbounded {
 
   measure: sum_time_inbounding_in_hours {
     label: "# Hours Inbounding per day"
-    group_label: "Inbound Speed Metrics"
     description: "Total of hours inbounding per day"
     type: sum
     sql: ${time_inbounding_in_hours} ;;
 
     value_format_name: decimal_0
-
   }
 
   measure: sum_time_inbounding_in_minutes {
     label: "# Minutes Inbounding per day"
-    group_label: "Inbound Speed Metrics"
     description: "Total of minutes inbounding per day"
     type: sum
     sql: ${time_inbounding_in_minutes} ;;
 
     value_format_name: decimal_0
-
   }
 
   measure: sum_total_quantity_items_inbounded {
     label: "# Items Inbounded per day"
-    group_label: "Inbound Speed Metrics"
     description: "Total amount of items inbounded per day"
     type: sum
     sql: ${total_quantity_items_inbounded} ;;
 
     value_format_name: decimal_0
-
   }
 
   measure: total_items_inbounded_per_hour {
     label: "# Items Inbounded per Hour"
-    group_label: "Inbound Speed Metrics"
     description: "Total amount of items inbounded per hour"
     type: number
 
     sql: safe_divide(${sum_total_quantity_items_inbounded}, ${sum_time_inbounding_in_hours})  ;;
 
     value_format_name: decimal_2
-
   }
 
   measure: total_items_inbounded_per_minute {
     label: "# Items Inbounded per Minute"
-    group_label: "Inbound Speed Metrics"
     description: "Total amount of items inbounded per minute"
     type: number
 
     sql: safe_divide(${sum_total_quantity_items_inbounded}, ${sum_time_inbounding_in_minutes})  ;;
 
     value_format_name: decimal_2
+  }
 
+  measure: cnt_picker {
+    label: "# Unique Picker"
+    description: "The number of unique picker (based on unique employee-ID)"
+
+    type: count_distinct
+    sql: ${employee_id} ;;
+    value_format_name: decimal_0
   }
 
   measure: count {
