@@ -644,6 +644,26 @@ view: shyftplan_riders_pickers_hours_clean {
     value_format_name: percent_1
   }
 
+  measure: pct_unaasigned_rider_hours{
+    label:"% Unassigned Rider Hours"
+    type: number
+    description: "Unassigned Rider Hours / (Assigned Rider Hours + Unassigned Rider Hours)"
+    sql:(${number_of_unassigned_rider_hours})
+      /nullif(${number_of_unassigned_rider_hours}+${sum_assigned_rider_hours},0) ;;
+    group_label: "Unassigned Hours"
+    value_format_name: percent_1
+  }
+
+  measure: pct_aasigned_rider_hours{
+    label:"% Rider Assigned Hours"
+    type: number
+    description: "Assigned Rider Hours / (Assigned Rider Hours + Unassigned Rider Hours)"
+    sql:(${sum_assigned_rider_hours})
+      /nullif(${number_of_unassigned_rider_hours}+${sum_assigned_rider_hours},0) ;;
+    group_label: "Assigned Hours"
+    value_format_name: percent_1
+  }
+
   measure: pct_unaasigned_hours_ops_associate{
     label:"% Unassigned Shift Hours (Ops Associate)"
     type: number
