@@ -292,7 +292,7 @@ view: event_order_progressed {
 
   measure: sum_of_quantity {
     group_label: "Total Metrics"
-    label: "Total Quantity"
+    label: "Quantity Picked and Refunded"
     description: "Sum of quantity if item is picked or refunded."
     type: sum
     filters: [action: "item_picked, item_refunded"]
@@ -350,6 +350,15 @@ view: event_order_progressed {
     description: "Sum of quantity skipped."
     type: sum
     filters: [action: "item_skipped"]
+    sql: ${TABLE}.quantity ;;
+  }
+
+  measure: sum_quantity_reset {
+    group_label: "Total Metrics"
+    label: "Quantity Reset"
+    description: "Sum of quantity reset."
+    type: sum
+    filters: [action: "item_reset"]
     sql: ${TABLE}.quantity ;;
   }
 
