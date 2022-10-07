@@ -34,7 +34,8 @@ view: dispatch_notifications {
       is_double_parent_sku,
       is_supplier_oos,
       unit_gross_weight_value,
-      unit_gross_weight_unit
+      unit_gross_weight_unit,
+      item_error_description
     ]
   }
 
@@ -142,6 +143,14 @@ view: dispatch_notifications {
 
     type: yesno
     sql: ${TABLE}.is_double_parent_sku ;;
+  }
+
+  dimension: item_error_description {
+    label: "Item Error"
+    description: "A comment from the supplier, why certain products are not delivered as ordered."
+
+    type: string
+    sql: ${TABLE}.item_error_description ;;
   }
 
 

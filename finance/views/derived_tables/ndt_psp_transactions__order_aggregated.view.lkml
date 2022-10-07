@@ -25,6 +25,13 @@ view: ndt_psp_transactions__order_aggregated {
           field: psp_settlement_details.type
           value: "Settled"
         }
+        filters: {
+          ## Filtering for successful interaction IDs (i.e. PSP References) only.
+          ## Also keeping null values because some PSP Reference don't appear as interaction IDs and therefore
+          ## won't have any state specified.
+          field: payment_transactions.transaction_state
+          value: "success, null"
+        }
 
        # bind_all_filters: yes
       }

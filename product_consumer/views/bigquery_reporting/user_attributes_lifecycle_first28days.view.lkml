@@ -1,5 +1,6 @@
 view: user_attributes_lifecycle_first28days {
   derived_table: {
+    persist_for: "24 hours"
     sql:
       -- changing 0 to null because percentile_cont ignores nulls but not zeros. This gives the wrong values for amt_gmv_gross (if no order, =0) while correct for avg_gmv_gross (if no order, =null)
       with clean_tb as (
@@ -255,7 +256,7 @@ view: user_attributes_lifecycle_first28days {
         sql: ${avg_gmv_gross} >=${aov_75} ;;
         label: "AOV (Gross) 75-100th percentile"
       }
-      else: "Unavailable"
+      else: "No order within first 28 days"
     }
   }
 
@@ -307,7 +308,7 @@ view: user_attributes_lifecycle_first28days {
         sql: ${amt_gmv_gross} >=${gmv_75} ;;
         label: "Sum GMV 75-100th percentile"
       }
-      else: "Unavailable"
+      else: "No order within first 28 days"
     }
   }
 
@@ -356,7 +357,7 @@ view: user_attributes_lifecycle_first28days {
         sql: ${number_of_days_ordering} >= ${days_ordering_75} ;;
         label: "# Days Ordering 75-100th Percentile"
       }
-      else: "Unavailable"
+      else: "No order within first 28 days"
     }
   }
 
@@ -391,19 +392,19 @@ view: user_attributes_lifecycle_first28days {
     case: {
       when: {
         sql: ${number_of_days_visited} < ${days_visiting_25} ;;
-        label: "# Days Ordering 25th Percentile"
+        label: "# Days Visiting 25th Percentile"
       }
       when: {
         sql: ${number_of_days_visited} < ${days_visiting_50} ;;
-        label: "# Days Ordering 25-50th Percentile"
+        label: "# Days Visiting 25-50th Percentile"
       }
       when: {
         sql: ${number_of_days_visited} < ${days_visiting_75} ;;
-        label: "# Days Ordering 50-75th Percentile"
+        label: "# Days Visiting 50-75th Percentile"
       }
       when: {
         sql: ${number_of_days_visited} >= ${days_visiting_75} ;;
-        label: "# Days Ordering 75-100th Percentile"
+        label: "# Days Visiting 75-100th Percentile"
       }
       else: "Unavailable"
     }
