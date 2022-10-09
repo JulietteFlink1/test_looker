@@ -1185,7 +1185,7 @@ view: +advanced_supplier_matching {
     group_label: "PO >> Inbound | OTIFIQ"
 
     type: number
-    sql: safe_divide(${sum_po_otifiq_relaxed}, ${sum_po_quantity_inbounded});;
+    sql: safe_divide(${sum_po_otifiq_relaxed}, ${sum_ordered_items_quantity_po});;
     value_format_name: percent_0
   }
 

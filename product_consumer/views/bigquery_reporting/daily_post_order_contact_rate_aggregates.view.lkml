@@ -189,6 +189,22 @@ view: daily_post_order_contact_rate_aggregates {
     sql: ${TABLE}.is_first_order ;;
   }
 
+  dimension: next_7_days_order_uuid {
+    group_label: "Flags"
+    label: "Next Order UUID"
+    type: string
+    description: "The next order UUID during 7 day window "
+    sql: ${TABLE}.next_7_days_order_uuid ;;
+  }
+
+  dimension: has_next_order {
+    group_label: "Flags"
+    label: "Is the customer placed another order in next 7 days "
+    type: yesno
+    description: "Whether the customer has placed an order after the current order during 7 days "
+    sql: ${TABLE}.next_7_days_order_uuid is not null;;
+  }
+
   dimension: is_order_tracking_viewed {
     group_label: "Flags"
     label: "Is Order Tracking Viewed"
@@ -480,6 +496,7 @@ view: daily_post_order_contact_rate_aggregates {
     convert_tz: no
   }
 
+
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
   # ~~~~~~~~~~~~~~~     Measures    ~~~~~~~~~~~~~~~ #
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
@@ -559,6 +576,14 @@ view: daily_post_order_contact_rate_aggregates {
     hidden:  no
     sql: ${order_uuid} ;;
     filters: [is_order_tracking_viewed_status_delivered: "yes"]
+  }
+
+  measure: number_of_order_with_next_order{
+    type: count_distinct
+    label: "Number of Orders that Have Next Order"
+    hidden:  no
+    sql: ${order_uuid} ;;
+    filters: [has_next_order: "yes"]
   }
 
 ######## * Percentages * ########

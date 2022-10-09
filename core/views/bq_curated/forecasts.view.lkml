@@ -898,7 +898,7 @@ view: forecasts {
   measure: pct_no_show_by_position {
     type: number
     label: "% Forecasted No Show Hours"
-    description: "# Forecasted No Show Hours / # Forecasted Hours (Incl. Airtable Adjustments)"
+    description: "# Forecasted No Show Hours / # Forecasted Hours (Excl. Airtable Adjustments)"
     value_format_name: percent_1
     group_label: "> Dynamic Measures"
     sql:
