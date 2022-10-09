@@ -12,6 +12,12 @@ view: advanced_supplier_matching {
     sql: ${TABLE}.hub_code ;;
   }
 
+  dimension: country_iso {
+    type: string
+    description: "Country ISO based on 'hub_code'."
+    sql: ${TABLE}.country_iso ;;
+  }
+
   dimension: inbound_matched_on {
     type: string
     description: "Buckets, that define, which logic was applied to match Purchase Order/DESADV with Inbounds"
@@ -627,7 +633,25 @@ view: advanced_supplier_matching {
     sql: ${TABLE}.replenishment_substitute_group_array ;;
   }
 
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  #  - - - - - - - - - -    Monetary Dimension
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+  dimension: avg_amt_selling_price_gross {
+    type: number
+    description: "Average Selling Price"
+    group_label: "Monetary Dimensions"
+    sql: ${TABLE}.avg_amt_selling_price_gross ;;
+  }
+
+  dimension: buying_price {
+    type: number
+    description: "Buying Prices"
+    group_label: "Monetary Dimensions"
+    sql: ${TABLE}.buying_price ;;
+
+    required_access_grants: [can_view_buying_information]
+  }
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   #  - - - - - - - - - -    Special Use Case
@@ -660,6 +684,12 @@ view: advanced_supplier_matching {
     sql: ${TABLE}.warehouse_number ;;
   }
 
+  dimension: lead_time_in_days {
+    type: string
+    description: "This is the limit we can match a PO/DESADVs against Inbounds in the past/next days."
+    group_label: "Special Use Cases"
+    sql: ${TABLE}.lead_time_in_days ;;
+  }
 
 
 
