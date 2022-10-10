@@ -655,29 +655,6 @@ view: advanced_supplier_matching {
     required_access_grants: [can_view_buying_information]
   }
 
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  #  - - - - - - - - - -    Monetary Measures
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-  measure: avg_unit_selling_price_gross {
-    type:  average
-    label: "AVG Unit Selling Price"
-    description: "Average Unit Selling Price"
-    group_label: "Price related"
-
-    sql: ${avg_amt_selling_price_gross} ;;
-  }
-
-  measure: avg_unit_buying_price {
-    type:  average
-    label: "AVG Unit Buying Price"
-    description: "Average Unit Selling Buying Price"
-    group_label: "Price related"
-
-    sql: ${buying_price} ;;
-
-    required_access_grants: [can_view_buying_information]
-  }
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   #  - - - - - - - - - -    Special Use Case
@@ -719,7 +696,45 @@ view: advanced_supplier_matching {
   }
 
 
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  #  - - - - - - - - - -   Measures
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+  measure: avg_unit_selling_price_gross {
+    type:  average
+    label: "AVG Unit Selling Price"
+    description: "Average Unit Selling Price"
+    group_label: "Price related"
+
+    sql: ${avg_amt_selling_price_gross} ;;
+
+    value_format_name: eur
+
+  }
+
+  measure: avg_unit_buying_price {
+    type:  average
+    label: "AVG Unit Buying Price"
+    description: "Average Unit Selling Buying Price"
+    group_label: "Price related"
+
+    sql: ${buying_price} ;;
+
+    value_format_name: eur
+
+    required_access_grants: [can_view_buying_information]
+  }
+
+  measure: avg_lead_time_in_days {
+    type: average
+    label: "AVG Lead time in days"
+    description: "Average of days that an order could be open to be match against inbounds based on its lead time range"
+
+    sql: ${lead_time_in_days} ;;
+
+    value_format_name: decimal_1
+
+  }
 
 
   measure: count {
