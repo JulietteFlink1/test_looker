@@ -4,9 +4,14 @@ include: "/**/hubs_ct.view.lkml"
 
 explore: hub_closure {
   view_name: hub_closure_rate
-   hidden:  yes
+   hidden:  no
   label: "Hub Closure"
   view_label: "Hub Closure"
+
+  access_filter: {
+    field: hubs_ct.country_iso
+    user_attribute: country_iso
+  }
 
 join: hubs_ct {
   view_label: "Hubs"
