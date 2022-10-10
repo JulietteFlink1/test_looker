@@ -1,5 +1,5 @@
 view: advanced_supplier_matching {
-  sql_table_name: `flink-data-prod.reporting.advanced_supplier_matching`
+  sql_table_name: `flink-data-dev.dbt_lruiz.advanced_supplier_matching`
     ;;
 
 
@@ -14,7 +14,7 @@ view: advanced_supplier_matching {
 
   dimension: country_iso {
     type: string
-    description: "Country ISO based on 'hub_code'."
+    description: "2-letter country code."
     sql: ${TABLE}.country_iso ;;
   }
 
@@ -640,15 +640,41 @@ view: advanced_supplier_matching {
   dimension: avg_amt_selling_price_gross {
     type: number
     description: "Average Selling Price"
-    group_label: "Monetary Dimensions"
+    group_label: "Price related"
+    hidden: yes
     sql: ${TABLE}.avg_amt_selling_price_gross ;;
   }
 
   dimension: buying_price {
     type: number
     description: "Buying Prices"
-    group_label: "Monetary Dimensions"
+    group_label: "Price related"
+    hidden: yes
     sql: ${TABLE}.buying_price ;;
+
+    required_access_grants: [can_view_buying_information]
+  }
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  #  - - - - - - - - - -    Monetary Measures
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  measure: avg_unit_selling_price_gross {
+    type:  average
+    label: "AVG Unit Selling Price"
+    description: "Average Unit Selling Price"
+    group_label: "Price related"
+
+    sql: ${avg_amt_selling_price_gross} ;;
+  }
+
+  measure: avg_unit_buying_price {
+    type:  average
+    label: "AVG Unit Buying Price"
+    description: "Average Unit Selling Buying Price"
+    group_label: "Price related"
+
+    sql: ${buying_price} ;;
 
     required_access_grants: [can_view_buying_information]
   }
@@ -686,6 +712,7 @@ view: advanced_supplier_matching {
 
   dimension: lead_time_in_days {
     type: string
+    label: "Lead Time in Days"
     description: "This is the limit we can match a PO/DESADVs against Inbounds in the past/next days."
     group_label: "Special Use Cases"
     sql: ${TABLE}.lead_time_in_days ;;
@@ -697,6 +724,7 @@ view: advanced_supplier_matching {
 
   measure: count {
     type: count
+    hidden: yes
     drill_fields: [product_name, supplier_name]
   }
 }
