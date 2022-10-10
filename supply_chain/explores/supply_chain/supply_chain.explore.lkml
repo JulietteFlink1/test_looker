@@ -172,6 +172,13 @@ explore: supply_chain {
     sql_on: ${hubs_ct.hub_code} = ${products_hub_assignment.hub_code} ;;
   }
 
+  join: hub_demographics {
+    view_label: "Hubs"
+    sql_on: ${hubs_ct.hub_code} = ${hub_demographics.hub_code} ;;
+    relationship: one_to_one
+    type: left_outer
+  }
+
   join: inventory_changes_daily {
 
     view_label: "04 Inventory Changes Daily"
