@@ -655,7 +655,7 @@ view: shyftplan_riders_pickers_hours_clean {
   }
 
   measure: pct_aasigned_rider_hours{
-    label:"% Rider Assigned Hours"
+    label:"% Assigned Rider Hours"
     type: number
     description: "Assigned Rider Hours / (Assigned Rider Hours + Unassigned Rider Hours)"
     sql:(${sum_assigned_rider_hours})
@@ -675,7 +675,7 @@ view: shyftplan_riders_pickers_hours_clean {
   }
 
   measure: pct_aasigned_picker_hours{
-    label:"% Picker Assigned Hours"
+    label:"% Assigned Picker Hours"
     type: number
     description: "Assigned Picker Hours / (Assigned Picker Hours + Unassigned Picker Hours)"
     sql:(${sum_assigned_picker_hours})
