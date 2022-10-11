@@ -86,7 +86,7 @@ view: hub_demographics {
 
   dimension: age_0_to_14_years {
     label: "Age 0-14 years"
-    description: "The share of the population in the age range of 0 and 14"
+    description: "The share of residents in the age range of 0 and 14"
     group_label: "Age Distribution"
     type: number
     sql: ${TABLE}.age_0_to_14_years ;;
@@ -95,7 +95,7 @@ view: hub_demographics {
 
   dimension: age_15_to_29_years {
     label: "Age 15-29 years"
-    description: "The share of the population in the age range of 15 and 29"
+    description: "The share of residents in the age range of 15 and 29"
     group_label: "Age Distribution"
     type: number
     sql: ${TABLE}.age_15_to_29_years ;;
@@ -104,7 +104,7 @@ view: hub_demographics {
 
   dimension: age_30_to_44_years {
     label: "Age 30-44 years"
-    description: "The share of the population in the age range of 30 and 44"
+    description: "The share of residents in the age range of 30 and 44"
     group_label: "Age Distribution"
     type: number
     sql: ${TABLE}.age_30_to_44_years ;;
@@ -113,7 +113,7 @@ view: hub_demographics {
 
   dimension: age_45_to_59_years {
     label: "Age 45-59 years"
-    description: "The share of the population in the age range of 45 and 59"
+    description: "The share of residents in the age range of 45 and 59"
     group_label: "Age Distribution"
     type: number
     sql: ${TABLE}.age_45_to_59_years ;;
@@ -122,7 +122,7 @@ view: hub_demographics {
 
   dimension: age_60_plus_years {
     label: "Age 60+ years"
-    description: "The share of the population in the age range of 60+"
+    description: "The share of residents in the age range of 60+"
     group_label: "Age Distribution"
     type: number
     sql: ${TABLE}.age_60_plus_years ;;
@@ -350,7 +350,7 @@ view: hub_demographics {
 
   measure: sum_unemployed {
     label: "# Unemployed Residents"
-    description: "The total unemployed population"
+    description: "The total number of unemployed residents"
     group_label: "Population Based Metrics"
     type: sum
     sql: ${unemployed} ;;
@@ -359,7 +359,7 @@ view: hub_demographics {
 
   measure: avg_unemployed {
     label: "AVG # Unemployed Residents"
-    description: "The average unemployed population"
+    description: "The average number of unemployed residents"
     group_label: "Population Based Metrics"
     type: average
     sql: ${unemployed} ;;
@@ -368,7 +368,7 @@ view: hub_demographics {
 
   measure: pct_female_residents {
     label: "% Female Residents"
-    description: "The share of female residents compared to the total population"
+    description: "The share of female residents compared to the total number of residents"
     group_label: "Population Based Metrics"
     type: number
     sql: safe_divide(${sum_population_female}, ${sum_population}) ;;
@@ -377,7 +377,7 @@ view: hub_demographics {
 
   measure: pct_male_residents {
     label: "% Male Residents"
-    description: "The share of male residents compared to the total population"
+    description: "The share of male residents compared to the total number of residents"
     group_label: "Population Based Metrics"
     type: number
     sql: safe_divide(${sum_population_male}, ${sum_population}) ;;
@@ -386,7 +386,7 @@ view: hub_demographics {
 
   measure: pct_unemployed {
     label: "% Unemployed Residents"
-    description: "The share of unemployed residents compared to the total population"
+    description: "The share of unemployed residents compared to the total number of residents"
     group_label: "Population Based Metrics"
     type: number
     sql: safe_divide(if(${sum_unemployed} > 0, ${sum_unemployed}, null), ${sum_population});;
@@ -514,7 +514,7 @@ view: hub_demographics {
 
   measure: sum_spending_power {
     label: "Total Spending Power (€)"
-    description: "The total spending power within a hub turf. Approximates the number of population multiplied with the average inhabitant spending power"
+    description: "The total spending power within a hub turf. Approximates the number of residents multiplied with the average inhabitant spending power"
     group_label: "Income Based Metrics"
     type: sum
     sql: ${spending_power} ;;
@@ -523,7 +523,7 @@ view: hub_demographics {
 
   measure: avg_spending_power {
     label: "AVG Spending Power (€)"
-    description: "The average total spending power. Approximates the number of population multiplied with the average inhabitant spending power"
+    description: "The average total spending power. Approximates the number of residents multiplied with the average inhabitant spending power"
     group_label: "Income Based Metrics"
     type: average
     sql: ${spending_power} ;;
@@ -588,7 +588,7 @@ view: hub_demographics {
 
   measure: sum_age_0_to_14_years {
     label: "# Residents Age 0-14 years"
-    description: "The total population in the age range of 0 and 14"
+    description: "The total number of residents in the age range of 0 and 14"
     group_label: "Age Distribution Based Metrics"
     type: sum
     sql: ${age_0_to_14_years} ;;
@@ -597,7 +597,7 @@ view: hub_demographics {
 
   measure: sum_age_15_to_29_years {
     label: "# Residents Age 15-29 years"
-    description: "The total population in the age range of 15 and 29"
+    description: "The total number of residents in the age range of 15 and 29"
     group_label: "Age Distribution Based Metrics"
     type: sum
     sql: ${age_15_to_29_years} ;;
@@ -606,7 +606,7 @@ view: hub_demographics {
 
   measure: sum_age_30_to_44_years {
     label: "# Residents Age 30-44 years"
-    description: "The total population in the age range of 30 and 44"
+    description: "The total number of residents in the age range of 30 and 44"
     group_label: "Age Distribution Based Metrics"
     type: sum
     sql: ${age_30_to_44_years} ;;
@@ -615,7 +615,7 @@ view: hub_demographics {
 
   measure: sum_age_45_to_59_years {
     label: "# Residents Age 45-59 years"
-    description: "The total population in the age range of 45 and 59"
+    description: "The total number of residents in the age range of 45 and 59"
     group_label: "Age Distribution Based Metrics"
     type: sum
     sql: ${age_45_to_59_years} ;;
@@ -624,7 +624,7 @@ view: hub_demographics {
 
   measure: sum_age_60_plus_years {
     label: "# Residents Age 60+ years"
-    description: "The total population in the age range of 60+"
+    description: "The total number of residents in the age range of 60+"
     group_label: "Age Distribution Based Metrics"
     type: sum
     sql: ${age_60_plus_years} ;;
@@ -633,7 +633,7 @@ view: hub_demographics {
 
   measure: avg_age_0_to_14_years {
     label: "AVG # Residents Age 0-14 years"
-    description: "The average population in the age range of 0 and 14"
+    description: "The average number of residents in the age range of 0 and 14"
     group_label: "Age Distribution Based Metrics"
     type: average
     sql: ${age_0_to_14_years} ;;
@@ -642,7 +642,7 @@ view: hub_demographics {
 
   measure: avg_age_15_to_29_years {
     label: "AVG # Residents Age 15-29 years"
-    description: "The average population in the age range of 15 and 29"
+    description: "The average number of residents in the age range of 15 and 29"
     group_label: "Age Distribution Based Metrics"
     type: average
     sql: ${age_15_to_29_years} ;;
@@ -651,7 +651,7 @@ view: hub_demographics {
 
   measure: avg_age_30_to_44_years {
     label: "AVG # Residents Age 30-44 years"
-    description: "The average population in the age range of 30 and 44"
+    description: "The average number of residents in the age range of 30 and 44"
     group_label: "Age Distribution Based Metrics"
     type: average
     sql: ${age_30_to_44_years} ;;
@@ -660,7 +660,7 @@ view: hub_demographics {
 
   measure: avg_age_45_to_59_years {
     label: "AVG # Residents Age 45-59 years"
-    description: "The average population in the age range of 45 and 59"
+    description: "The average number of residents in the age range of 45 and 59"
     group_label: "Age Distribution Based Metrics"
     type: average
     sql: ${age_45_to_59_years} ;;
@@ -669,7 +669,7 @@ view: hub_demographics {
 
   measure: avg_age_60_plus_years {
     label: "AVG # Residents Age 60+ years"
-    description: "The average population in the age range of 60+"
+    description: "The average number of residents in the age range of 60+"
     group_label: "Age Distribution Based Metrics"
     type: average
     sql: ${age_60_plus_years} ;;
@@ -678,7 +678,7 @@ view: hub_demographics {
 
   measure: pct_age_0_to_14_years {
     label: "% Residents Age 0-14 years"
-    description: "The share of the population in the age range of 0 and 14"
+    description: "The share of residents in the age range of 0 and 14"
     group_label: "Age Distribution Based Metrics"
     type: number
     sql: safe_divide(${sum_age_0_to_14_years}, ${sum_population}) ;;
@@ -687,7 +687,7 @@ view: hub_demographics {
 
   measure: pct_age_15_to_29_years {
     label: "% Residents Age 15-29 years"
-    description: "The share of the population in the age range of 15 and 29"
+    description: "The share of residents in the age range of 15 and 29"
     group_label: "Age Distribution Based Metrics"
     type: number
     sql: safe_divide(${sum_age_15_to_29_years}, ${sum_population}) ;;
@@ -696,7 +696,7 @@ view: hub_demographics {
 
   measure: pct_age_30_to_44_years {
     label: "% Residents Age 30-44 years"
-    description: "The share of the population in the age range of 30 and 44"
+    description: "The share of residents in the age range of 30 and 44"
     group_label: "Age Distribution Based Metrics"
     type: number
     sql: safe_divide(${sum_age_30_to_44_years}, ${sum_population}) ;;
@@ -705,7 +705,7 @@ view: hub_demographics {
 
   measure: pct_age_45_to_59_years {
     label: "% Residents Age 45-59 years"
-    description: "The share of the population in the age range of 45 and 59"
+    description: "The share of residents in the age range of 45 and 59"
     group_label: "Age Distribution Based Metrics"
     type: number
     sql: safe_divide(${sum_age_45_to_59_years}, ${sum_population}) ;;
@@ -714,7 +714,7 @@ view: hub_demographics {
 
   measure: pct_age_60_plus_years {
     label: "% Residents Age 60+ years"
-    description: "The share of the population in the age range of 60+"
+    description: "The share of residents in the age range of 60+"
     group_label: "Age Distribution Based Metrics"
     type: number
     sql: safe_divide(${sum_age_60_plus_years}, ${sum_population}) ;;
