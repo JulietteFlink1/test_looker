@@ -131,27 +131,27 @@ view: hub_demographics {
 
   # ~~~~~~~~~~~~~~  Population  ~~~~~~~~~~~~~~
   dimension: population {
-    label: "Population"
+    label: "Residents"
     description: "The number of people living in the specified hub turf"
-    group_label: "Population Metrics"
+    group_label: "Population Based Metrics"
     type: number
     sql: ${TABLE}.population ;;
     hidden: yes
   }
 
   dimension: population_female {
-    label: "Population Female"
+    label: "Residents Female"
     description: "The number of female people living in the specified hub turf"
-    group_label: "Population Metrics"
+    group_label: "Population Based Metrics"
     type: number
     sql: ${TABLE}.population_female ;;
     hidden: yes
   }
 
   dimension: population_male {
-    label: "Population Male"
+    label: "Residents Male"
     description: "The number of male people living in the specified hub turf"
-    group_label: "Population Metrics"
+    group_label: "Population Based Metrics"
     type: number
     sql: ${TABLE}.population_male ;;
     hidden: yes
@@ -160,7 +160,7 @@ view: hub_demographics {
   dimension: total_households {
     label: "Total Households"
     description: "The number of households located in the specified hub turf"
-    group_label: "Population Metrics"
+    group_label: "Population Based Metrics"
     type: number
     sql: ${TABLE}.total_households ;;
     hidden: yes
@@ -171,7 +171,7 @@ view: hub_demographics {
   dimension: income_group_1 {
     label: "Income Group 1"
     description: "According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
-    group_label: "Income Metrics"
+    group_label: "Income Based Metrics"
     hidden: yes
     type: number
     sql: ${TABLE}.income_group_1 ;;
@@ -180,7 +180,7 @@ view: hub_demographics {
   dimension: income_group_2 {
     label: "Income Group 2"
     description: "According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
-    group_label: "Income Metrics"
+    group_label: "Income Based Metrics"
     hidden: yes
     type: number
     sql: ${TABLE}.income_group_2 ;;
@@ -189,7 +189,7 @@ view: hub_demographics {
   dimension: income_group_3 {
     label: "Income Group 3"
     description: "According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
-    group_label: "Income Metrics"
+    group_label: "Income Based Metrics"
     hidden: yes
     type: number
     sql: ${TABLE}.income_group_3 ;;
@@ -198,7 +198,7 @@ view: hub_demographics {
   dimension: income_group_4 {
     label: "Income Group 4"
     description: "According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
-    group_label: "Income Metrics"
+    group_label: "Income Based Metrics"
     hidden: yes
     type: number
     sql: ${TABLE}.income_group_4 ;;
@@ -207,7 +207,7 @@ view: hub_demographics {
   dimension: income_group_5 {
     label: "Income Group 5"
     description: "According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
-    group_label: "Income Metrics"
+    group_label: "Income Based Metrics"
     hidden: yes
     type: number
     sql: ${TABLE}.income_group_5 ;;
@@ -223,7 +223,7 @@ view: hub_demographics {
   measure: sum_supermarkets {
     label: "# Supermarkets"
     description: "The total amount of all supermarkets"
-    group_label: "Area Metrics"
+    group_label: "Area Based Metrics"
     type: sum
     sql: ${supermarket} ;;
     value_format_name: decimal_0
@@ -232,16 +232,16 @@ view: hub_demographics {
   measure: avg_supermarkets {
     label: "AVG # Supermarkets"
     description: "The average number of supermarkets"
-    group_label: "Area Metrics"
+    group_label: "Area Based Metrics"
     type: average
     sql: ${supermarket} ;;
-    value_format_name: decimal_1
+    value_format_name: decimal_0
   }
 
   measure: sum_food_and_beverages_stores {
     label: "# Food & Beverages Stores"
     description: "The total amount of all food & beverages stores"
-    group_label: "Area Metrics"
+    group_label: "Area Based Metrics"
     type: sum
     sql: ${food_and_beverages_stores} ;;
     value_format_name: decimal_0
@@ -250,16 +250,16 @@ view: hub_demographics {
   measure: avg_food_and_beverages_stores {
     label: "AVG # Food & Beverages Stores"
     description: "The average amount of all food & beverages stores"
-    group_label: "Area Metrics"
+    group_label: "Area Based Metrics"
     type: average
     sql: ${food_and_beverages_stores} ;;
-    value_format_name: decimal_1
+    value_format_name: decimal_0
   }
 
   measure: sum_area_sqkm {
     label: "Total Area (square km)"
     description: "The total area in square kilometers"
-    group_label: "Area Metrics"
+    group_label: "Area Based Metrics"
     type: sum
     sql: ${area_sqkm} ;;
     value_format_name: decimal_0
@@ -268,7 +268,7 @@ view: hub_demographics {
   measure: avg_area_sqkm {
     label: "AVG Area (square km)"
     description: "The average area in square kilometers across hub turfs"
-    group_label: "Area Metrics"
+    group_label: "Area Based Metrics"
     type: average
     sql: ${area_sqkm} ;;
     value_format_name: decimal_1
@@ -279,7 +279,7 @@ view: hub_demographics {
   measure: sum_population {
     label: "# Residents"
     description: "The number of people living in the specified hub turf"
-    group_label: "Population Metrics"
+    group_label: "Population Based Metrics"
     type: sum
     sql: ${population} ;;
     value_format_name: decimal_0
@@ -288,7 +288,7 @@ view: hub_demographics {
   measure: sum_population_female {
     label: "# Female Residents"
     description: "The number of female people living in the specified hub turf"
-    group_label: "Population Metrics"
+    group_label: "Population Based Metrics"
     type: sum
     sql: ${population_female} ;;
     value_format_name: decimal_0
@@ -297,7 +297,7 @@ view: hub_demographics {
   measure: sum_population_male {
     label: "# Male Residents"
     description: "The number of male people living in the specified hub turf"
-    group_label: "Population Metrics"
+    group_label: "Population Based Metrics"
     type: sum
     sql: ${population_male} ;;
     value_format_name: decimal_0
@@ -306,7 +306,7 @@ view: hub_demographics {
   measure: sum_total_households {
     label: "# Households"
     description: "The number of households located in the specified hub turf"
-    group_label: "Population Metrics"
+    group_label: "Population Based Metrics"
     type: sum
     sql: ${total_households} ;;
     value_format_name: decimal_0
@@ -315,7 +315,7 @@ view: hub_demographics {
   measure: avg_population {
     label: "AVG # Residents"
     description: "The average number of people living in the specified hub turf"
-    group_label: "Population Metrics"
+    group_label: "Population Based Metrics"
     type: average
     sql: ${population} ;;
     value_format_name: decimal_1
@@ -324,7 +324,7 @@ view: hub_demographics {
   measure: avg_population_female {
     label: "AVG # Female Residents"
     description: "The average number of female people living in the specified hub turf"
-    group_label: "Population Metrics"
+    group_label: "Population Based Metrics"
     type: average
     sql: ${population_female} ;;
     value_format_name: decimal_1
@@ -333,7 +333,7 @@ view: hub_demographics {
   measure: avg_population_male {
     label: "AVG # Male Residents"
     description: "The average number of male people living in the specified hub turf"
-    group_label: "Population Metrics"
+    group_label: "Population Based Metrics"
     type: average
     sql: ${population_male} ;;
     value_format_name: decimal_1
@@ -342,25 +342,25 @@ view: hub_demographics {
   measure: avg_total_households {
     label: "AVG # Households"
     description: "The average number of households located in the specified hub turf"
-    group_label: "Population Metrics"
+    group_label: "Population Based Metrics"
     type: average
     sql: ${total_households} ;;
     value_format_name: decimal_1
   }
 
   measure: sum_unemployed {
-    label: "# Unemployed Population"
+    label: "# Unemployed Residents"
     description: "The total unemployed population"
-    group_label: "Population Metrics"
+    group_label: "Population Based Metrics"
     type: sum
     sql: ${unemployed} ;;
     value_format_name: decimal_0
   }
 
   measure: avg_unemployed {
-    label: "AVG # Unemployed Population"
+    label: "AVG # Unemployed Residents"
     description: "The average unemployed population"
-    group_label: "Population Metrics"
+    group_label: "Population Based Metrics"
     type: average
     sql: ${unemployed} ;;
     value_format_name: decimal_1
@@ -369,7 +369,7 @@ view: hub_demographics {
   measure: pct_female_residents {
     label: "% Female Residents"
     description: "The share of female residents compared to the total population"
-    group_label: "Population Metrics"
+    group_label: "Population Based Metrics"
     type: number
     sql: safe_divide(${sum_population_female}, ${sum_population}) ;;
     value_format_name: percent_0
@@ -378,16 +378,16 @@ view: hub_demographics {
   measure: pct_male_residents {
     label: "% Male Residents"
     description: "The share of male residents compared to the total population"
-    group_label: "Population Metrics"
+    group_label: "Population Based Metrics"
     type: number
     sql: safe_divide(${sum_population_male}, ${sum_population}) ;;
     value_format_name: percent_0
   }
 
   measure: pct_unemployed {
-    label: "% Unemployed Population"
+    label: "% Unemployed Residents"
     description: "The share of unemployed residents compared to the total population"
-    group_label: "Population Metrics"
+    group_label: "Population Based Metrics"
     type: number
     sql: safe_divide(if(${sum_unemployed} > 0, ${sum_unemployed}, null), ${sum_population});;
     value_format_name: percent_0
@@ -396,7 +396,7 @@ view: hub_demographics {
   measure: share_residents_per_household{
     label: "# Residents per Household"
     description: "The average number of residents living in a household"
-    group_label: "Population Metrics"
+    group_label: "Population Based Metrics"
     type: number
     sql: safe_divide(${sum_population}, ${sum_total_households}) ;;
     value_format_name: decimal_1
@@ -407,7 +407,7 @@ view: hub_demographics {
   measure: sum_income_group_1 {
     label: "# Households Income Group 1"
     description: "Number of households in income group 1. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
-    group_label: "Income Metrics"
+    group_label: "Income Based Metrics"
     type: sum
     sql: ${income_group_1} ;;
     value_format_name: decimal_0
@@ -416,7 +416,7 @@ view: hub_demographics {
   measure: sum_income_group_2 {
     label: "# Households Income Group 2"
     description: "Number of households in income group 2. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
-    group_label: "Income Metrics"
+    group_label: "Income Based Metrics"
     type: sum
     sql: ${income_group_2} ;;
     value_format_name: decimal_0
@@ -425,7 +425,7 @@ view: hub_demographics {
   measure: sum_income_group_3 {
     label: "# Households Income Group 3"
     description: "Number of households in income group 3. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
-    group_label: "Income Metrics"
+    group_label: "Income Based Metrics"
     type: sum
     sql: ${income_group_3} ;;
     value_format_name: decimal_0
@@ -434,7 +434,7 @@ view: hub_demographics {
   measure: sum_income_group_4 {
     label: "# Households Income Group 4"
     description: "Number of households in income group 4. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
-    group_label: "Income Metrics"
+    group_label: "Income Based Metrics"
     type: sum
     sql: ${income_group_4} ;;
     value_format_name: decimal_0
@@ -443,7 +443,7 @@ view: hub_demographics {
   measure: sum_income_group_5 {
     label: "#  Households Income Group 5"
     description: "Number of households in income group 5. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
-    group_label: "Income Metrics"
+    group_label: "Income Based Metrics"
     type: sum
     sql: ${income_group_5} ;;
     value_format_name: decimal_0
@@ -452,7 +452,7 @@ view: hub_demographics {
   measure: avg_income_group_1 {
     label: "AVG # Households Income Group 1"
     description: "Average number of households in income group 1. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
-    group_label: "Income Metrics"
+    group_label: "Income Based Metrics"
     type: average
     sql: ${income_group_1} ;;
     value_format_name: decimal_1
@@ -461,7 +461,7 @@ view: hub_demographics {
   measure: avg_income_group_2 {
     label: "AVG # Households Income Group 2"
     description: "Average number of households in income group 2. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
-    group_label: "Income Metrics"
+    group_label: "Income Based Metrics"
     type: average
     sql: ${income_group_2} ;;
     value_format_name: decimal_1
@@ -470,7 +470,7 @@ view: hub_demographics {
   measure: avg_income_group_3 {
     label: "AVG # Households Income Group 3"
     description: "Average number of households in income group 3. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
-    group_label: "Income Metrics"
+    group_label: "Income Based Metrics"
     type: average
     sql: ${income_group_3} ;;
     value_format_name: decimal_1
@@ -479,7 +479,7 @@ view: hub_demographics {
   measure: avg_income_group_4 {
     label: "AVG # Households Income Group 4"
     description: "Average number of households in income group 4. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
-    group_label: "Income Metrics"
+    group_label: "Income Based Metrics"
     type: average
     sql: ${income_group_4} ;;
     value_format_name: decimal_1
@@ -488,7 +488,7 @@ view: hub_demographics {
   measure: avg_income_group_5 {
     label: "AVG # Households Income Group 5"
     description: "Average number of households in income group 5. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
-    group_label: "Income Metrics"
+    group_label: "Income Based Metrics"
     type: average
     sql: ${income_group_5} ;;
     value_format_name: decimal_1
@@ -497,7 +497,7 @@ view: hub_demographics {
   measure: avg_avg_household_spending_power {
     label: "AVG € Household Spending Power"
     description: "The average spending power per household of a given hub turf"
-    group_label: "Income Metrics"
+    group_label: "Income Based Metrics"
     type: average
     sql: ${avg_household_spending_power} ;;
     value_format_name: eur
@@ -506,7 +506,7 @@ view: hub_demographics {
   measure: avg_avg_inhabitant_spending_power {
     label: "AVG Household Inhabitant Spending Power (€)"
     description: "The average spending power per inhabitant of a given hub turf"
-    group_label: "Income Metrics"
+    group_label: "Income Based Metrics"
     type: average
     sql: ${avg_inhabitant_spending_power} ;;
     value_format_name: eur
@@ -515,7 +515,7 @@ view: hub_demographics {
   measure: sum_spending_power {
     label: "Total Spending Power (€)"
     description: "The total spending power within a hub turf. Approximates the number of population multiplied with the average inhabitant spending power"
-    group_label: "Income Metrics"
+    group_label: "Income Based Metrics"
     type: sum
     sql: ${spending_power} ;;
     value_format_name: eur
@@ -524,7 +524,7 @@ view: hub_demographics {
   measure: avg_spending_power {
     label: "AVG Spending Power (€)"
     description: "The average total spending power. Approximates the number of population multiplied with the average inhabitant spending power"
-    group_label: "Income Metrics"
+    group_label: "Income Based Metrics"
     type: average
     sql: ${spending_power} ;;
     value_format_name: eur
@@ -533,7 +533,7 @@ view: hub_demographics {
   measure: pct_income_group_1 {
     label: "% Households Income Group 1"
     description: "Share of households in income group 1. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
-    group_label: "Income Metrics"
+    group_label: "Income Based Metrics"
     type: number
     sql: safe_divide(${sum_income_group_1}, ${sum_total_households}) ;;
     value_format_name: percent_0
@@ -542,7 +542,7 @@ view: hub_demographics {
   measure: pct_income_group_2 {
     label: "% Households Income Group 2"
     description: "Share of households in income group 2. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
-    group_label: "Income Metrics"
+    group_label: "Income Based Metrics"
     type: number
     sql: safe_divide(${sum_income_group_2}, ${sum_total_households}) ;;
     value_format_name: percent_0
@@ -551,7 +551,7 @@ view: hub_demographics {
   measure: pct_income_group_3 {
     label: "% Households Income Group 3"
     description: "Share of households in income group 3. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
-    group_label: "Income Metrics"
+    group_label: "Income Based Metrics"
     type: number
     sql: safe_divide(${sum_income_group_3}, ${sum_total_households}) ;;
     value_format_name: percent_0
@@ -560,7 +560,7 @@ view: hub_demographics {
   measure: pct_income_group_4 {
     label: "% Households Income Group 4"
     description: "Share of households in income group 4. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
-    group_label: "Income Metrics"
+    group_label: "Income Based Metrics"
     type: number
     sql: safe_divide(${sum_income_group_4}, ${sum_total_households}) ;;
     value_format_name: percent_0
@@ -569,7 +569,7 @@ view: hub_demographics {
   measure: pct_income_group_5 {
     label: "%  Households Income Group 5"
     description: "Share of households in income group 5. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
-    group_label: "Income Metrics"
+    group_label: "Income Based Metrics"
     type: number
     sql: safe_divide(${sum_income_group_5}, ${sum_total_households}) ;;
     value_format_name: percent_0
@@ -578,7 +578,7 @@ view: hub_demographics {
   measure: pct_income_group_4_5 {
     label: "%  Households Income Group 4 & 5"
     description: "Share of households in income group 4 and 5. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
-    group_label: "Income Metrics"
+    group_label: "Income Based Metrics"
     type: number
     sql: safe_divide((${sum_income_group_5} + ${sum_income_group_4}), ${sum_total_households}) ;;
     value_format_name: percent_0
@@ -587,135 +587,135 @@ view: hub_demographics {
   # ~~~~~~~~~~~~~~  Age Distribution  ~~~~~~~~~~~~~~
 
   measure: sum_age_0_to_14_years {
-    label: "# Population Age 0-14 years"
+    label: "# Residents Age 0-14 years"
     description: "The total population in the age range of 0 and 14"
-    group_label: "Age Distribution Metrics"
+    group_label: "Age Distribution Based Metrics"
     type: sum
     sql: ${age_0_to_14_years} ;;
     value_format_name: decimal_0
   }
 
   measure: sum_age_15_to_29_years {
-    label: "# Population Age 15-29 years"
+    label: "# Residents Age 15-29 years"
     description: "The total population in the age range of 15 and 29"
-    group_label: "Age Distribution Metrics"
+    group_label: "Age Distribution Based Metrics"
     type: sum
     sql: ${age_15_to_29_years} ;;
     value_format_name: decimal_0
   }
 
   measure: sum_age_30_to_44_years {
-    label: "# Population Age 30-44 years"
+    label: "# Residents Age 30-44 years"
     description: "The total population in the age range of 30 and 44"
-    group_label: "Age Distribution Metrics"
+    group_label: "Age Distribution Based Metrics"
     type: sum
     sql: ${age_30_to_44_years} ;;
     value_format_name: decimal_0
   }
 
   measure: sum_age_45_to_59_years {
-    label: "# Population Age 45-59 years"
+    label: "# Residents Age 45-59 years"
     description: "The total population in the age range of 45 and 59"
-    group_label: "Age Distribution Metrics"
+    group_label: "Age Distribution Based Metrics"
     type: sum
     sql: ${age_45_to_59_years} ;;
     value_format_name: decimal_0
   }
 
   measure: sum_age_60_plus_years {
-    label: "# Population Age 60+ years"
+    label: "# Residents Age 60+ years"
     description: "The total population in the age range of 60+"
-    group_label: "Age Distribution Metrics"
+    group_label: "Age Distribution Based Metrics"
     type: sum
     sql: ${age_60_plus_years} ;;
     value_format_name: decimal_0
   }
 
   measure: avg_age_0_to_14_years {
-    label: "AVG # Population Age 0-14 years"
+    label: "AVG # Residents Age 0-14 years"
     description: "The average population in the age range of 0 and 14"
-    group_label: "Age Distribution Metrics"
+    group_label: "Age Distribution Based Metrics"
     type: average
     sql: ${age_0_to_14_years} ;;
     value_format_name: decimal_1
   }
 
   measure: avg_age_15_to_29_years {
-    label: "AVG # Population Age 15-29 years"
+    label: "AVG # Residents Age 15-29 years"
     description: "The average population in the age range of 15 and 29"
-    group_label: "Age Distribution Metrics"
+    group_label: "Age Distribution Based Metrics"
     type: average
     sql: ${age_15_to_29_years} ;;
     value_format_name: decimal_1
   }
 
   measure: avg_age_30_to_44_years {
-    label: "AVG # Population Age 30-44 years"
+    label: "AVG # Residents Age 30-44 years"
     description: "The average population in the age range of 30 and 44"
-    group_label: "Age Distribution Metrics"
+    group_label: "Age Distribution Based Metrics"
     type: average
     sql: ${age_30_to_44_years} ;;
     value_format_name: decimal_1
   }
 
   measure: avg_age_45_to_59_years {
-    label: "AVG # Population Age 45-59 years"
+    label: "AVG # Residents Age 45-59 years"
     description: "The average population in the age range of 45 and 59"
-    group_label: "Age Distribution Metrics"
+    group_label: "Age Distribution Based Metrics"
     type: average
     sql: ${age_45_to_59_years} ;;
     value_format_name: decimal_1
   }
 
   measure: avg_age_60_plus_years {
-    label: "AVG # Population Age 60+ years"
+    label: "AVG # Residents Age 60+ years"
     description: "The average population in the age range of 60+"
-    group_label: "Age Distribution Metrics"
+    group_label: "Age Distribution Based Metrics"
     type: average
     sql: ${age_60_plus_years} ;;
     value_format_name: decimal_1
   }
 
   measure: pct_age_0_to_14_years {
-    label: "% Population Age 0-14 years"
+    label: "% Residents Age 0-14 years"
     description: "The share of the population in the age range of 0 and 14"
-    group_label: "Age Distribution Metrics"
+    group_label: "Age Distribution Based Metrics"
     type: number
     sql: safe_divide(${sum_age_0_to_14_years}, ${sum_population}) ;;
     value_format_name: percent_0
   }
 
   measure: pct_age_15_to_29_years {
-    label: "% Population Age 15-29 years"
+    label: "% Residents Age 15-29 years"
     description: "The share of the population in the age range of 15 and 29"
-    group_label: "Age Distribution Metrics"
+    group_label: "Age Distribution Based Metrics"
     type: number
     sql: safe_divide(${sum_age_15_to_29_years}, ${sum_population}) ;;
     value_format_name: percent_0
   }
 
   measure: pct_age_30_to_44_years {
-    label: "% Population Age 30-44 years"
+    label: "% Residents Age 30-44 years"
     description: "The share of the population in the age range of 30 and 44"
-    group_label: "Age Distribution Metrics"
+    group_label: "Age Distribution Based Metrics"
     type: number
     sql: safe_divide(${sum_age_30_to_44_years}, ${sum_population}) ;;
     value_format_name: percent_0
   }
 
   measure: pct_age_45_to_59_years {
-    label: "% Population Age 45-59 years"
+    label: "% Residents Age 45-59 years"
     description: "The share of the population in the age range of 45 and 59"
-    group_label: "Age Distribution Metrics"
+    group_label: "Age Distribution Based Metrics"
     type: number
     sql: safe_divide(${sum_age_45_to_59_years}, ${sum_population}) ;;
     value_format_name: percent_0
   }
 
   measure: pct_age_60_plus_years {
-    label: "% Population Age 60+ years"
+    label: "% Residents Age 60+ years"
     description: "The share of the population in the age range of 60+"
-    group_label: "Age Distribution Metrics"
+    group_label: "Age Distribution Based Metrics"
     type: number
     sql: safe_divide(${sum_age_60_plus_years}, ${sum_population}) ;;
     value_format_name: percent_0
