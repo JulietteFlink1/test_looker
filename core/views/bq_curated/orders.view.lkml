@@ -1282,12 +1282,6 @@ view: orders {
     sql: ${TABLE}.rider_id ;;
   }
 
-  dimension: shipping_city {
-    group_label: "* Geographic Dimensions *"
-    type: string
-    sql: ${TABLE}.shipping_city ;;
-  }
-
   dimension: shipping_method_id {
     hidden: yes
     group_label: "* IDs *"
