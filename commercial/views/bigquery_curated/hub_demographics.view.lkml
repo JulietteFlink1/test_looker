@@ -366,6 +366,42 @@ view: hub_demographics {
     value_format_name: decimal_1
   }
 
+  measure: pct_female_residents {
+    label: "% Female Residents"
+    description: "The share of female residents compared to the total population"
+    group_label: "Population Metrics"
+    type: number
+    sql: safe_divide(${sum_population_female}, ${sum_population}) ;;
+    value_format_name: percent_0
+  }
+
+  measure: pct_male_residents {
+    label: "% Male Residents"
+    description: "The share of male residents compared to the total population"
+    group_label: "Population Metrics"
+    type: number
+    sql: safe_divide(${sum_population_male}, ${sum_population}) ;;
+    value_format_name: percent_0
+  }
+
+  measure: pct_unemployed {
+    label: "% Unemployed Population"
+    description: "The share of unemployed residents compared to the total population"
+    group_label: "Population Metrics"
+    type: number
+    sql: safe_divide(if(${sum_unemployed} > 0, ${sum_unemployed}, null), ${sum_population});;
+    value_format_name: percent_0
+  }
+
+  measure: share_residents_per_household{
+    label: "# Residents per Household"
+    description: "The average number of residents living in a household"
+    group_label: "Population Metrics"
+    type: number
+    sql: safe_divide(${sum_population}, ${sum_total_households}) ;;
+    value_format_name: decimal_1
+  }
+
   # ~~~~~~~~~~~~~~  Household Income  ~~~~~~~~~~~~~~
 
   measure: sum_income_group_1 {
@@ -379,7 +415,7 @@ view: hub_demographics {
 
   measure: sum_income_group_2 {
     label: "# Households Income Group 2"
-    description: "Number of households in income group 1. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
+    description: "Number of households in income group 2. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
     group_label: "Income Metrics"
     type: sum
     sql: ${income_group_2} ;;
@@ -388,7 +424,7 @@ view: hub_demographics {
 
   measure: sum_income_group_3 {
     label: "# Households Income Group 3"
-    description: "Number of households in income group 1. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
+    description: "Number of households in income group 3. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
     group_label: "Income Metrics"
     type: sum
     sql: ${income_group_3} ;;
@@ -397,7 +433,7 @@ view: hub_demographics {
 
   measure: sum_income_group_4 {
     label: "# Households Income Group 4"
-    description: "Number of households in income group 1. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
+    description: "Number of households in income group 4. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
     group_label: "Income Metrics"
     type: sum
     sql: ${income_group_4} ;;
@@ -406,7 +442,7 @@ view: hub_demographics {
 
   measure: sum_income_group_5 {
     label: "#  Households Income Group 5"
-    description: "Number of households in income group 1. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
+    description: "Number of households in income group 5. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
     group_label: "Income Metrics"
     type: sum
     sql: ${income_group_5} ;;
@@ -424,7 +460,7 @@ view: hub_demographics {
 
   measure: avg_income_group_2 {
     label: "AVG # Households Income Group 2"
-    description: "Average number of households in income group 1. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
+    description: "Average number of households in income group 2. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
     group_label: "Income Metrics"
     type: average
     sql: ${income_group_2} ;;
@@ -433,7 +469,7 @@ view: hub_demographics {
 
   measure: avg_income_group_3 {
     label: "AVG # Households Income Group 3"
-    description: "Average number of households in income group 1. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
+    description: "Average number of households in income group 3. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
     group_label: "Income Metrics"
     type: average
     sql: ${income_group_3} ;;
@@ -442,7 +478,7 @@ view: hub_demographics {
 
   measure: avg_income_group_4 {
     label: "AVG # Households Income Group 4"
-    description: "Average number of households in income group 1. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
+    description: "Average number of households in income group 4. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
     group_label: "Income Metrics"
     type: average
     sql: ${income_group_4} ;;
@@ -451,7 +487,7 @@ view: hub_demographics {
 
   measure: avg_income_group_5 {
     label: "AVG # Households Income Group 5"
-    description: "Average number of households in income group 1. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
+    description: "Average number of households in income group 5. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
     group_label: "Income Metrics"
     type: average
     sql: ${income_group_5} ;;
@@ -492,6 +528,60 @@ view: hub_demographics {
     type: average
     sql: ${spending_power} ;;
     value_format_name: eur
+  }
+
+  measure: pct_income_group_1 {
+    label: "% Households Income Group 1"
+    description: "Share of households in income group 1. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
+    group_label: "Income Metrics"
+    type: number
+    sql: safe_divide(${sum_income_group_1}, ${sum_total_households}) ;;
+    value_format_name: percent_0
+  }
+
+  measure: pct_income_group_2 {
+    label: "% Households Income Group 2"
+    description: "Share of households in income group 2. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
+    group_label: "Income Metrics"
+    type: number
+    sql: safe_divide(${sum_income_group_2}, ${sum_total_households}) ;;
+    value_format_name: percent_0
+  }
+
+  measure: pct_income_group_3 {
+    label: "% Households Income Group 3"
+    description: "Share of households in income group 3. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
+    group_label: "Income Metrics"
+    type: number
+    sql: safe_divide(${sum_income_group_3}, ${sum_total_households}) ;;
+    value_format_name: percent_0
+  }
+
+  measure: pct_income_group_4 {
+    label: "% Households Income Group 4"
+    description: "Share of households in income group 4. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
+    group_label: "Income Metrics"
+    type: number
+    sql: safe_divide(${sum_income_group_4}, ${sum_total_households}) ;;
+    value_format_name: percent_0
+  }
+
+  measure: pct_income_group_5 {
+    label: "%  Households Income Group 5"
+    description: "Share of households in income group 5. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
+    group_label: "Income Metrics"
+    type: number
+    sql: safe_divide(${sum_income_group_5}, ${sum_total_households}) ;;
+    value_format_name: percent_0
+  }
+
+  measure: pct_income_group_4_5 {
+    label: "%  Households Income Group 4 & 5"
+    description: "Share of households in income group 4 and 5. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
+    group_label: "Income Metrics"
+    type: number
+    sql: safe_divide((${sum_income_group_5} + ${sum_income_group_4}), ${sum_total_households}) ;;
+    value_format_name: percent_0
   }
 
   # ~~~~~~~~~~~~~~  Age Distribution  ~~~~~~~~~~~~~~
@@ -584,5 +674,50 @@ view: hub_demographics {
     type: average
     sql: ${age_60_plus_years} ;;
     value_format_name: decimal_1
+  }
+
+  measure: pct_age_0_to_14_years {
+    label: "% Population Age 0-14 years"
+    description: "The share of the population in the age range of 0 and 14"
+    group_label: "Age Distribution Metrics"
+    type: number
+    sql: safe_divide(${sum_age_0_to_14_years}, ${sum_population}) ;;
+    value_format_name: percent_0
+  }
+
+  measure: pct_age_15_to_29_years {
+    label: "% Population Age 15-29 years"
+    description: "The share of the population in the age range of 15 and 29"
+    group_label: "Age Distribution Metrics"
+    type: number
+    sql: safe_divide(${sum_age_15_to_29_years}, ${sum_population}) ;;
+    value_format_name: percent_0
+  }
+
+  measure: pct_age_30_to_44_years {
+    label: "% Population Age 30-44 years"
+    description: "The share of the population in the age range of 30 and 44"
+    group_label: "Age Distribution Metrics"
+    type: number
+    sql: safe_divide(${sum_age_30_to_44_years}, ${sum_population}) ;;
+    value_format_name: percent_0
+  }
+
+  measure: pct_age_45_to_59_years {
+    label: "% Population Age 45-59 years"
+    description: "The share of the population in the age range of 45 and 59"
+    group_label: "Age Distribution Metrics"
+    type: number
+    sql: safe_divide(${sum_age_45_to_59_years}, ${sum_population}) ;;
+    value_format_name: percent_0
+  }
+
+  measure: pct_age_60_plus_years {
+    label: "% Population Age 60+ years"
+    description: "The share of the population in the age range of 60+"
+    group_label: "Age Distribution Metrics"
+    type: number
+    sql: safe_divide(${sum_age_60_plus_years}, ${sum_population}) ;;
+    value_format_name: percent_0
   }
 }
