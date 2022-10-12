@@ -540,12 +540,21 @@ view: psp_transactions {
 
 
   ########### Orphaned Payments
+  ####### An orphaned transaction is characterized by:
+  ####### 1. either order uuid is missing (we simply couldn't find an order with this PSP reference in CT)
+  ####### 2. either we used the cart ID visible in the merchant reference in Adyen to link to the order ID. this is still an orphaned transaction
+  ####### as since doesn't appear anywhere in CT.
 
   measure: sum_empty_order_uuid_settled {
     group_label: "> Orphaned Payments"
     label: "Total # Empty Orders Settled"
     type: sum
-    sql: case when ${order_uuid} is null or ${is_orphaned_double_payment_transaction} is true then 1 ELSE 0 END;;
+    sql:
+      case
+        when ${order_uuid} is null or ${is_orphaned_double_payment_transaction} is true
+          then 1
+        else 0
+      end;;
     filters: [record_type: "Settled"]
   }
 
@@ -553,7 +562,12 @@ view: psp_transactions {
     group_label: "> Orphaned Payments"
     label: "Total # Empty Orders Authorised"
     type: sum
-    sql: case when ${order_uuid} is null or ${is_orphaned_double_payment_transaction} is true then 1 ELSE 0 END;;
+    sql:
+      case
+        when ${order_uuid} is null or ${is_orphaned_double_payment_transaction} is true
+          then 1
+        else 0
+      end;;
     filters: [record_type: "Authorised"]
   }
 
@@ -561,7 +575,12 @@ view: psp_transactions {
     group_label: "> Orphaned Payments"
     label: "Total # Empty Orders Refunded"
     type: sum
-    sql: case when ${order_uuid} is null or ${is_orphaned_double_payment_transaction} is true then 1 ELSE 0 END;;
+    sql:
+      case
+        when ${order_uuid} is null or ${is_orphaned_double_payment_transaction} is true
+          then 1
+        else 0
+      end;;
     filters: [record_type: "Refunded, RefundedExternally"]
   }
 
