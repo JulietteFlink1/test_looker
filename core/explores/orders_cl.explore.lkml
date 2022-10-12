@@ -6,6 +6,7 @@ include: "/**/hubs_ct.view"
 include: "/**/nps_after_order_cl.view"
 include: "/**/hub_monthly_orders.view"
 include: "/**/global_filters_and_parameters.view"
+include: "/commercial/views/bigquery_curated/hub_demographics.view"
 
 
 explore: orders_cl {
@@ -46,6 +47,13 @@ explore: orders_cl {
     view_label: "Hubs"
     sql_on: lower(${orders_cl.hub_code}) = ${hubs.hub_code} ;;
     relationship: many_to_one
+    type: left_outer
+  }
+
+  join: hub_demographics {
+    view_label: "Hubs"
+    sql_on: ${hubs.hub_code} = ${hub_demographics.hub_code} ;;
+    relationship: one_to_one
     type: left_outer
   }
 

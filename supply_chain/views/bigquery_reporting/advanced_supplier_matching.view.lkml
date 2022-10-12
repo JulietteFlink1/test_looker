@@ -12,6 +12,12 @@ view: advanced_supplier_matching {
     sql: ${TABLE}.hub_code ;;
   }
 
+  dimension: country_iso {
+    type: string
+    description: "2-letter country code."
+    sql: ${TABLE}.country_iso ;;
+  }
+
   dimension: inbound_matched_on {
     type: string
     description: "Buckets, that define, which logic was applied to match Purchase Order/DESADV with Inbounds"
@@ -627,6 +633,27 @@ view: advanced_supplier_matching {
     sql: ${TABLE}.replenishment_substitute_group_array ;;
   }
 
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  #  - - - - - - - - - -    Monetary Dimension
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  dimension: avg_amt_selling_price_gross {
+    type: number
+    description: "Average Selling Price"
+    group_label: "Price related"
+    hidden: yes
+    sql: ${TABLE}.avg_amt_selling_price_gross ;;
+  }
+
+  dimension: buying_price {
+    type: number
+    description: "Buying Prices"
+    group_label: "Price related"
+    hidden: yes
+    sql: ${TABLE}.buying_price ;;
+
+    required_access_grants: [can_view_buying_information]
+  }
 
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -660,13 +687,59 @@ view: advanced_supplier_matching {
     sql: ${TABLE}.warehouse_number ;;
   }
 
+  dimension: lead_time_in_days {
+    type: string
+    label: "Lead Time in Days"
+    description: "This is the limit we can match a PO/DESADVs against Inbounds in the past/next days."
+    group_label: "Special Use Cases"
+    sql: ${TABLE}.lead_time_in_days ;;
+  }
 
 
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  #  - - - - - - - - - -   Measures
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+  measure: avg_unit_selling_price_gross {
+    type:  average
+    label: "AVG Unit Selling Price"
+    description: "Average Unit Selling Price"
+    group_label: "Price related"
+
+    sql: ${avg_amt_selling_price_gross} ;;
+
+    value_format_name: eur
+
+  }
+
+  measure: avg_unit_buying_price {
+    type:  average
+    label: "AVG Unit Buying Price"
+    description: "Average Unit Selling Buying Price"
+    group_label: "Price related"
+
+    sql: ${buying_price} ;;
+
+    value_format_name: eur
+
+    required_access_grants: [can_view_buying_information]
+  }
+
+  measure: avg_lead_time_in_days {
+    type: average
+    label: "AVG Lead time in days"
+    description: "Average of days that an order could be open to be match against inbounds based on its lead time range"
+
+    sql: ${lead_time_in_days} ;;
+
+    value_format_name: decimal_1
+
+  }
 
 
   measure: count {
     type: count
+    hidden: yes
     drill_fields: [product_name, supplier_name]
   }
 }
