@@ -180,10 +180,10 @@ view: event_category_selected {
     description: "Name of the screen"
     type: string
     sql: case
-      when ${TABLE}.origin_screen in ('categoriesGridViewed','categoriesMainViewed','CategoryViewed') then 'category'
-      when ${TABLE}.origin_screen in ('HomeViewed','homeViewed') then 'home'
-      when ${TABLE}.origin_screen is null and ${platform} = 'web' then 'category'
-      else ${TABLE}.origin_screen
+      when ${TABLE}.screen_name in ('categoriesGridViewed','categoriesMainViewed','CategoryViewed') then 'category'
+      when ${TABLE}.screen_name in ('HomeViewed','homeViewed') then 'home'
+      when ${TABLE}.screen_name is null and ${platform} = 'web' then 'category'
+      else ${TABLE}.screen_name
       end ;;
   }
   dimension: component_position {
