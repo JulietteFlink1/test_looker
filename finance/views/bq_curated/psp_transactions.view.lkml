@@ -214,6 +214,13 @@ view: psp_transactions {
     sql: ${TABLE}.is_orphaned_double_payment_transaction ;;
   }
 
+  dimension: is_orphaned_transaction {
+    group_label: "> Transaction Properties"
+    type: yesno
+    description: "Flags if the Transaction doesn't appear in any CT order."
+    sql: ${TABLE}.is_orphaned_transaction ;;
+  }
+
 ##################    MEASURES  ###################
 
   measure: sum_main_amount {
@@ -551,7 +558,7 @@ view: psp_transactions {
     type: sum
     sql:
       case
-        when ${order_uuid} is null or ${is_orphaned_double_payment_transaction} is true
+        when ${is_orphaned_transaction}
           then 1
         else 0
       end;;
@@ -564,7 +571,7 @@ view: psp_transactions {
     type: sum
     sql:
       case
-        when ${order_uuid} is null or ${is_orphaned_double_payment_transaction} is true
+        when ${is_orphaned_transaction}
           then 1
         else 0
       end;;
@@ -577,7 +584,7 @@ view: psp_transactions {
     type: sum
     sql:
       case
-        when ${order_uuid} is null or ${is_orphaned_double_payment_transaction} is true
+        when ${is_orphaned_transaction}
           then 1
         else 0
       end;;
@@ -590,7 +597,7 @@ view: psp_transactions {
     type: sum
     sql:
       case
-        when ${order_uuid} is null or ${is_orphaned_double_payment_transaction} is true
+        when ${is_orphaned_transaction}
           then 1
         else 0
       end;;
@@ -604,9 +611,9 @@ view: psp_transactions {
     type: sum
     sql:
       case
-        when (${order_uuid} is null or ${is_orphaned_double_payment_transaction} is true) and ${payment_method} LIKE 'payp%'
+        when (${is_orphaned_transaction}) and ${payment_method} LIKE 'payp%'
           then ${processing_fee_fc}
-        when  ${order_uuid} is null or ${is_orphaned_double_payment_transaction} is true
+        when  ${is_orphaned_transaction}
           then (coalesce(${commission_sc},0) + coalesce(${processing_fee_fc},0)) end ;;
     filters: [record_type: "Refunded, RefundedExternally"]
     value_format_name: eur
@@ -619,9 +626,9 @@ view: psp_transactions {
     type: sum
     sql:
       case
-        when (${order_uuid} is null or ${is_orphaned_double_payment_transaction} is true) and ${payment_method} LIKE 'payp%'
+        when ${is_orphaned_transaction} and ${payment_method} LIKE 'payp%'
           then ${processing_fee_fc}
-        when  ${order_uuid} is null or ${is_orphaned_double_payment_transaction} is true
+        when  ${is_orphaned_transaction}
           then (coalesce(${commission_sc},0) + coalesce(${processing_fee_fc},0)) end ;;
     filters: [record_type: "Chargeback, ChargebackReversed"]
     value_format_name: eur
@@ -634,7 +641,7 @@ view: psp_transactions {
     type: sum
     sql:
       case
-        when ${order_uuid} is null or ${is_orphaned_double_payment_transaction} is true
+        when ${is_orphaned_transaction}
           then ${main_amount}
         else 0
       end;;
@@ -649,7 +656,7 @@ view: psp_transactions {
     type: sum
     sql:
       case
-        when ${order_uuid} is null or ${is_orphaned_double_payment_transaction} is true
+        when ${is_orphaned_transaction}
           then ${main_amount}
         else 0
       end;;
@@ -664,7 +671,7 @@ view: psp_transactions {
     type: sum
     sql:
       case
-        when ${order_uuid} is null or ${is_orphaned_double_payment_transaction} is true
+        when ${is_orphaned_transaction}
           then ${main_amount}
         else 0
       end;;
@@ -679,7 +686,7 @@ view: psp_transactions {
     type: sum
     sql:
       case
-        when ${order_uuid} is null or ${is_orphaned_double_payment_transaction} is true
+        when ${is_orphaned_transaction}
           then ${main_amount}
         else 0
       end;;
