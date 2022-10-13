@@ -772,7 +772,7 @@ view: advanced_supplier_matching {
   measure: sum_total_items_sold {
     type:  sum_distinct
     label: "# Units Sold"
-    description: "Sum Items units sold"
+    description: "Total quantity of items sold in units"
     group_label: "Price related"
 
     sql: ${number_of_items_sold} ;;
