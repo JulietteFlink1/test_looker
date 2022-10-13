@@ -234,6 +234,10 @@ view: psp_settlement_details {
     description: "Adyen's 16-character unique reference associated with the transaction. This is the pspReference from the response to the original payment request."
     type: string
     sql: ${TABLE}.psp_reference ;;
+    link: {
+      label: "See Payment in Adyen"
+      url: "https://ca-live.adyen.com/ca/ca/accounts/showTx.shtml?pspReference={{ psp_reference._value | url_encode }}&txType=Payment"
+    }
   }
 
   dimension: psp_settlement_detail_uuid {
