@@ -640,7 +640,7 @@ view: advanced_supplier_matching {
   dimension: avg_amt_selling_price_gross {
     type: number
     description: "Average Selling Price"
-    group_label: "Price related"
+    group_label: "Price Related Dimensions"
     hidden: yes
     sql: ${TABLE}.avg_amt_selling_price_gross ;;
   }
@@ -648,7 +648,7 @@ view: advanced_supplier_matching {
   dimension: avg_amt_buying_price_net {
     type: number
     description: "Buying Prices"
-    group_label: "Price related"
+    group_label: "Price Related Dimensions"
     hidden: yes
     sql: ${TABLE}.avg_amt_buying_price_net ;;
 
@@ -734,7 +734,7 @@ view: advanced_supplier_matching {
     type:  average
     label: "AVG Unit Buying Price Net"
     description: "Average Unit Selling Buying Price"
-    group_label: "Price related"
+    group_label: "Price Related Metrics"
 
     sql: ${avg_amt_buying_price_net} ;;
 
@@ -747,7 +747,7 @@ view: advanced_supplier_matching {
     type:  sum_distinct
     label: "€ Volume Ordered Net (PO)"
     description: "Total amount ordered calculated as total quantity ordered (PO) * buying prices net."
-    group_label: "Price related"
+    group_label: "Price Related Metrics"
 
     sql: ${amt_quantity_ordered_net} ;;
 
@@ -761,7 +761,7 @@ view: advanced_supplier_matching {
     type:  average
     label: "AVG Unit Selling Price Gross"
     description: "Average Unit Selling Price"
-    group_label: "Price related"
+    group_label: "Price Related Metrics"
 
     sql: ${avg_amt_selling_price_gross} ;;
 
@@ -773,9 +773,11 @@ view: advanced_supplier_matching {
     type:  sum_distinct
     label: "# Units Sold"
     description: "Total quantity of items sold in units"
-    group_label: "Price related"
+    group_label: "Price Related Metrics"
 
     sql: ${number_of_items_sold} ;;
+
+    value_format_name: decimal_1
 
   }
 
@@ -786,7 +788,7 @@ view: advanced_supplier_matching {
                     (Consider that it could happen that we assign sold units to a supplier
                      that is delivering today (promised delivery date)
                      but the units sold belong to another supplier, this although should be an edge case)."
-    group_label: "Price related"
+    group_label: "Price Related Metrics"
 
     sql: ${amt_total_gmv_gross} ;;
 
