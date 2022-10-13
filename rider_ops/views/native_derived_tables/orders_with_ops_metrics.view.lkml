@@ -65,6 +65,7 @@ view: orders_with_ops_metrics {
     description: "Count of Orders"
     value_format_name: decimal_0
     hidden: yes
+    type: number
   }
 
   measure: sum_orders {
