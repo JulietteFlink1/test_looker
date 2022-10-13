@@ -113,7 +113,7 @@ view: vehicle_uptime_metrics {
   }
 
   measure: share_of_operational_bike_minutes {
-    label: "% Operational Bike Time (Damages)"
+    label: "% Uptime"
     description: "Computed as 1 - (downtime / expected uptime). Based on damages.
                 Downtime = sum of duration of damages on a certain day.
                 Expected Uptime: # bikes * opening duration of hub on a certain day."
