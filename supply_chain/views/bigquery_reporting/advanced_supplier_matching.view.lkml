@@ -640,21 +640,51 @@ view: advanced_supplier_matching {
   dimension: avg_amt_selling_price_gross {
     type: number
     description: "Average Selling Price"
-    group_label: "Price related"
+    group_label: "Price Related Dimensions"
     hidden: yes
     sql: ${TABLE}.avg_amt_selling_price_gross ;;
   }
 
-  dimension: buying_price {
+  dimension: avg_amt_buying_price_net {
     type: number
     description: "Buying Prices"
-    group_label: "Price related"
+    group_label: "Price Related Dimensions"
     hidden: yes
-    sql: ${TABLE}.buying_price ;;
+    sql: ${TABLE}.avg_amt_buying_price_net ;;
 
     required_access_grants: [can_view_buying_information]
   }
 
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  #  - - - - - - - - - -    Special Use Case (Monetary)
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  dimension: number_of_items_sold {
+    type: number
+    label: "# Items Sold"
+    description: "Quantity of units sold."
+    group_label: "Special Use Cases - Price Related"
+    hidden: yes
+    sql: ${TABLE}.number_of_items_sold ;;
+  }
+
+  dimension: amt_total_gmv_gross {
+    type: number
+    label: "€ Items Sold Gross"
+    description: "Total amount sold in Euro."
+    group_label: "Special Use Cases - Price Related"
+    hidden: yes
+    sql: ${TABLE}.amt_total_gmv_gross ;;
+  }
+
+  dimension: amt_quantity_ordered_net {
+    type: number
+    label: "€ Total amount ordered"
+    description: "Total amount ordered calculated as total quantity ordered (PO) * buying prices net."
+    group_label: "Special Use Cases - Price Related"
+    hidden: yes
+    sql: ${TABLE}.amt_quantity_ordered_net ;;
+  }
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   #  - - - - - - - - - -    Special Use Case
@@ -700,11 +730,38 @@ view: advanced_supplier_matching {
   #  - - - - - - - - - -   Measures
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+  measure: avg_unit_buying_price {
+    type:  average
+    label: "AVG Unit Buying Price Net"
+    description: "Average Unit Selling Buying Price"
+    group_label: "Price Related Metrics"
+
+    sql: ${avg_amt_buying_price_net} ;;
+
+    value_format_name: eur
+
+    required_access_grants: [can_view_buying_information]
+  }
+
+  measure: amt_total_quantity_ordered_net {
+    type:  sum_distinct
+    label: "€ Volume Ordered Net (PO)"
+    description: "Total amount ordered calculated as total quantity ordered (PO) * buying prices net."
+    group_label: "Price Related Metrics"
+
+    sql: ${amt_quantity_ordered_net} ;;
+
+    value_format_name: eur
+
+    required_access_grants: [can_view_buying_information]
+
+  }
+
   measure: avg_unit_selling_price_gross {
     type:  average
-    label: "AVG Unit Selling Price"
+    label: "AVG Unit Selling Price Gross"
     description: "Average Unit Selling Price"
-    group_label: "Price related"
+    group_label: "Price Related Metrics"
 
     sql: ${avg_amt_selling_price_gross} ;;
 
@@ -712,17 +769,31 @@ view: advanced_supplier_matching {
 
   }
 
-  measure: avg_unit_buying_price {
-    type:  average
-    label: "AVG Unit Buying Price"
-    description: "Average Unit Selling Buying Price"
-    group_label: "Price related"
+  measure: sum_total_items_sold {
+    type:  sum_distinct
+    label: "# Units Sold"
+    description: "Total quantity of items sold in units"
+    group_label: "Price Related Metrics"
 
-    sql: ${buying_price} ;;
+    sql: ${number_of_items_sold} ;;
+
+    value_format_name: decimal_1
+
+  }
+
+  measure: amt_total_quantity_gmv_gross {
+    type:  sum_distinct
+    label: "€ GMV Gross"
+    description: "Total amount Sold in Euro - This will be considered as GMV per supplier depending on the aggregation
+                    (Consider that it could happen that we assign sold units to a supplier
+                     that is delivering today (promised delivery date)
+                     but the units sold belong to another supplier, this although should be an edge case)."
+    group_label: "Price Related Metrics"
+
+    sql: ${amt_total_gmv_gross} ;;
 
     value_format_name: eur
 
-    required_access_grants: [can_view_buying_information]
   }
 
   measure: avg_lead_time_in_days {
