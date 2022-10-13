@@ -166,6 +166,10 @@ view: psp_transactions {
     group_label: "> IDs and References"
     type: string
     sql: ${TABLE}.psp_reference ;;
+    link: {
+      label: "See Payment in Adyen"
+      url: "https://ca-live.adyen.com/ca/ca/accounts/showTx.shtml?pspReference={{ psp_reference._value | url_encode }}&txType=Payment"
+    }
   }
 
   dimension: received_pc {
