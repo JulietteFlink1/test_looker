@@ -77,10 +77,10 @@ explore: order_orderline_cl_retail_customized {
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   #  - - - - - - - - - -    Month + Country Level tables
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  join: orders_country_level_monthly {
+  join: ndt_order_orderline_cl__orders_country_level_monthly {
     view_label: "PoP"
-    sql_on: ${orders_country_level_monthly.country_iso} = ${orders_cl.country_iso}
-      and ${orders_country_level_monthly.date} = ${orders_cl.created_month};;
+    sql_on: ${ndt_order_orderline_cl__orders_country_level_monthly.country_iso} = ${orders_cl.country_iso}
+      and ${ndt_order_orderline_cl__orders_country_level_monthly.date} = ${orders_cl.created_month};;
     relationship: many_to_one
   }
 
