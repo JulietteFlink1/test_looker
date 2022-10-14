@@ -924,7 +924,187 @@ view: psp_transactions {
 
   ############## ALL Orphaned Payments
 
+  measure: sum_all_orphaned_payment_settled {
+    group_label: "> Orphaned Payments - All"
+    label: "# Total Orphaned Payments Settled"
+    description: "Number of Orphaned transactions of type Settled. Include both Empty Order Orphaned Transactions and Double Payment Orphaned Transactions."
+    type: sum
+    sql:
+      case
+        when ${is_orphaned_transaction}
+          then 1
+        else 0
+      end;;
+    filters: [record_type: "Settled"]
+  }
 
+  measure: sum_all_orphaned_payment_authorised {
+    group_label: "> Orphaned Payments - All"
+    label: "# Total Orphaned Payments Authorised"
+    description: "Number of Orphaned transactions of type Authorised. Include both Empty Order Orphaned Transactions and Double Payment Orphaned Transactions."
+    type: sum
+    sql:
+      case
+        when ${is_orphaned_transaction}
+          then 1
+        else 0
+      end;;
+    filters: [record_type: "Authorised"]
+  }
+
+  measure: sum_all_orphaned_payment_refunded {
+    group_label: "> Orphaned Payments - All"
+    label: "# Total Orphaned Payments Refunded"
+    description: "Number of Orphaned transactions of type Refunded or Refunded Externally. Include both Empty Order Orphaned Transactions and Double Payment Orphaned Transactions."
+    type: sum
+    sql:
+      case
+        when ${is_orphaned_transaction}
+          then 1
+        else 0
+      end;;
+    filters: [record_type: "Refunded, RefundedExternally"]
+  }
+
+  measure: sum_all_orphaned_payment_chargeback {
+    group_label: "> Orphaned Payments - All"
+    label: "# Total Orphaned Payments Chargeback"
+    description: "Number of Orphaned transactions of type Chargeback or ChargebackReversed. Include both Empty Order Orphaned Transactions and Double Payment Orphaned Transactions."
+    type: sum
+    sql:
+      case
+        when ${is_orphaned_transaction}
+          then 1
+        else 0
+      end;;
+    filters: [record_type: "Chargeback"]
+  }
+
+  measure: sum_all_orphaned_payment_trx_fees_refunds {
+    group_label: "> Orphaned Payments - All"
+    label: "€ Total Costs Orphaned Payments - Refunds"
+    description: "Total fees associated with Total Orphaned Transactions of type Refunded or RefundedExternally. Considering processing fees for paypal and sum of commission and processing fees for other payment methods.Include both Empty Order Orphaned Transactions and Double Payment Orphaned Transactions."
+    type: sum
+    sql:
+      case
+        when (${is_orphaned_transaction}) and ${payment_method} LIKE 'payp%'
+          then ${processing_fee_fc}
+        when  ${is_orphaned_transaction}
+          then (coalesce(${commission_sc},0) + coalesce(${processing_fee_fc},0)) end ;;
+    filters: [record_type: "Refunded, RefundedExternally"]
+    value_format_name: eur
+  }
+
+  measure: sum_all_orphaned_payment_trx_fees_chargebacks {
+    group_label: "> Orphaned Payments - All"
+    label: "€ Total Costs Orphaned Payments - Chargebacks"
+    description: "Total fees associated with Total Orphaned Transactions of type Chargeback or ChargebackReversed. Considering processing fees for paypal and sum of commision and processing fees for other payment methods. Include both Empty Order Orphaned Transactions and Double Payment Orphaned Transactions."
+    type: sum
+    sql:
+      case
+        when ${is_orphaned_transaction} and ${payment_method} LIKE 'payp%'
+          then ${processing_fee_fc}
+        when  ${is_orphaned_transaction}
+          then (coalesce(${commission_sc},0) + coalesce(${processing_fee_fc},0)) end ;;
+    filters: [record_type: "Chargeback, ChargebackReversed"]
+    value_format_name: eur
+  }
+
+  measure: sum_all_orphaned_payment_amount_authorised {
+    group_label: "> Orphaned Payments - All"
+    label: "€ Total Amount Orphaned Payments Authorised"
+    description: "Sum of the main amount coming from Total Orphaned Transactions of type Authorised. Include both Empty Order Orphaned Transactions and Double Payment Orphaned Transactions."
+    type: sum
+    sql:
+      case
+        when ${is_orphaned_transaction}
+          then ${main_amount}
+        else 0
+      end;;
+    filters: [record_type: "Authorised"]
+    value_format_name: eur
+  }
+
+  measure: sum_all_orphaned_payment_amount_settled {
+    group_label: "> Orphaned Payments - All"
+    label: "€ Total Amount Orphaned Payments Settled"
+    description: "Sum of the main amount coming from Total Orphaned Transactions of type Settled. Include both Empty Order Orphaned Transactions and Double Payment Orphaned Transactions."
+    type: sum
+    sql:
+      case
+        when ${is_orphaned_transaction}
+          then ${main_amount}
+        else 0
+      end;;
+    filters: [record_type: "Settled"]
+    value_format_name: eur
+  }
+
+  measure: sum_all_orphaned_payment_amount_refunded {
+    group_label: "> Orphaned Payments - All"
+    label: "€ Total Amount Orphaned Payments Refunded"
+    description: "Sum of the main amount coming from Total Orphaned Transactions of type Refunded or Refunded Externally. Include both Empty Order Orphaned Transactions and Double Payment Orphaned Transactions."
+    type: sum
+    sql:
+      case
+        when ${is_orphaned_transaction}
+          then ${main_amount}
+        else 0
+      end;;
+    filters: [record_type: "Refunded, RefundedExternally"]
+    value_format_name: eur
+  }
+
+  measure: sum_all_orphaned_payment_amount_chargeback {
+    group_label: "> Orphaned Payments - All"
+    label: "€ Total Amount Orphaned Payments Chargeback"
+    description: "Sum of the main amount coming from Total Orphaned Transactions of type Chargeback or ChargebackReversed. Include both Empty Order Orphaned Transactions and Double Payment Orphaned Transactions."
+    type: sum
+    sql:
+      case
+        when ${is_orphaned_transaction}
+          then ${main_amount}
+        else 0
+      end;;
+    filters: [record_type: "Chargeback, ChargebackReversed"]
+    value_format_name: eur
+  }
+
+  measure: percentage_trx_all_orphaned_payment_authorised {
+    group_label: "> Orphaned Payments - All"
+    label: "% Total Orphaned Payment Authorised Transactions"
+    description: "Number of Total Orphaned Payment Transactions of type Authorised divided by all Transactions of type Authorised. Include both Empty Order Orphaned Transactions and Double Payment Orphaned Transactions."
+    type: number
+    sql: NULLIF(${sum_all_orphaned_payment_authorised},0)/NULLIF(${cnt_authorised_transactions},0);;
+    value_format_name: percent_3
+  }
+
+  measure: percentage_trx_all_orphaned_payment_settled {
+    group_label: "> Orphaned Payments - All"
+    label: "%  Total Orphaned Payment Settled Transactions"
+    description: "Number of Total Orphaned Payment Transactions of type Settled divided by all Transactions of type Settled. Include both Empty Order Orphaned Transactions and Double Payment Orphaned Transactions."
+    type: number
+    sql: NULLIF(${sum_all_orphaned_payment_settled},0)/NULLIF(${cnt_settled_transactions},0);;
+    value_format_name: percent_3
+  }
+
+  measure: percentage_trx_all_orphaned_payment_refunded {
+    group_label: "> Orphaned Payments - All"
+    label: "%  Total Orphaned Payment Refunded Transactions"
+    description: "Number of Total Orphaned Payment Transactions of type Refunded or RefundedExternally divided by all Transactions of type Refunded or RefundedExternally. Include both Empty Order Orphaned Transactions and Double Payment Orphaned Transactions."
+    type: number
+    sql: NULLIF(${sum_all_orphaned_payment_refunded},0)/NULLIF(${cnt_refund_transactions},0);;
+    value_format_name: percent_2
+  }
+
+  measure: percentage_trx_all_orphaned_payment_chargeback {
+    group_label: "> Orphaned Payments - All"
+    label: "% Total Orphaned Payment Chargeback Transactions"
+    description: "Number of Orphaned Double Payment Transactions of type Chargeback or ChargebackReversed divided by all transactions of type Chargeback or ChargebackReversed. Include both Empty Order Orphaned Transactions and Double Payment Orphaned Transactions."
+    type: number
+    sql: NULLIF(${sum_all_orphaned_payment_chargeback},0)/NULLIF(${cnt_chargebacks_transactions},0);;
+    value_format_name: percent_2
+  }
 
 
   ############### Refunds & Fraud
