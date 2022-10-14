@@ -221,8 +221,15 @@ view: psp_transactions {
   dimension: is_orphaned_transaction {
     group_label: "> Transaction Properties"
     type: yesno
-    description: "Flags if the Transaction doesn't appear in any CT order."
+    description: "Flags if the Transaction is an Orphaned Double Payment Transaction or if the Transaction is an Empty Order Transaction."
     sql: ${TABLE}.is_orphaned_transaction ;;
+  }
+
+  dimension: is_empty_order_transaction {
+    group_label: "> Transaction Properties"
+    type: yesno
+    description: "Flags if the Transaction is not linked to any Order in CT."
+    sql: ${order_uuid} is null ;;
   }
 
 ##################    MEASURES  ###################
@@ -557,12 +564,12 @@ view: psp_transactions {
   ####### as since doesn't appear anywhere in CT.
 
   measure: sum_empty_order_uuid_settled {
-    group_label: "> Orphaned Payments"
-    label: "Total # Empty Orders Settled"
+    group_label: "> Orphaned Payments - Empty Orders"
+    label: "# Empty Orders Settled"
     type: sum
     sql:
       case
-        when ${is_orphaned_transaction}
+        when ${is_empty_order_transaction}
           then 1
         else 0
       end;;
@@ -570,12 +577,12 @@ view: psp_transactions {
   }
 
   measure: sum_empty_order_uuid_authorised {
-    group_label: "> Orphaned Payments"
-    label: "Total # Empty Orders Authorised"
+    group_label: "> Orphaned Payments - Empty Orders"
+    label: "# Empty Orders Authorised"
     type: sum
     sql:
       case
-        when ${is_orphaned_transaction}
+        when ${is_empty_order_transaction}
           then 1
         else 0
       end;;
@@ -583,12 +590,12 @@ view: psp_transactions {
   }
 
   measure: sum_empty_order_uuid_refunded {
-    group_label: "> Orphaned Payments"
-    label: "Total # Empty Orders Refunded"
+    group_label: "> Orphaned Payments - Empty Orders"
+    label: "# Empty Orders Refunded"
     type: sum
     sql:
       case
-        when ${is_orphaned_transaction}
+        when ${is_empty_order_transaction}
           then 1
         else 0
       end;;
@@ -596,12 +603,12 @@ view: psp_transactions {
   }
 
   measure: sum_empty_order_uuid_chargeback {
-    group_label: "> Orphaned Payments"
-    label: "Total # Empty Orders Chargeback"
+    group_label: "> Orphaned Payments - Empty Orders"
+    label: "# Empty Orders Chargeback"
     type: sum
     sql:
       case
-        when ${is_orphaned_transaction}
+        when ${is_empty_order_transaction}
           then 1
         else 0
       end;;
@@ -609,43 +616,43 @@ view: psp_transactions {
   }
 
   measure: sum_empty_order_trx_fees_refunds {
-    group_label: "> Orphaned Payments"
-    label: "Total Costs Empty Orders - Refunds"
-    description: "Total fees associated with orphaned transactions of type Refunded or RefundedExternally. Considering processing fees for paypal and sum of commision and processing fees for other payment methods. Orphaned Transactions are PSP references that don't appear in any CT order."
+    group_label: "> Orphaned Payments - Empty Orders"
+    label: "€ Total Costs Empty Orders - Refunds"
+    description: "Total fees associated with orphaned transactions of type Refunded or RefundedExternally. Considering processing fees for paypal and sum of commision and processing fees for other payment methods. Orphaned Transactions are PSP references that are not linked to any CT order."
     type: sum
     sql:
       case
-        when (${is_orphaned_transaction}) and ${payment_method} LIKE 'payp%'
+        when (${is_empty_order_transaction}) and ${payment_method} LIKE 'payp%'
           then ${processing_fee_fc}
-        when  ${is_orphaned_transaction}
+        when  ${is_empty_order_transaction}
           then (coalesce(${commission_sc},0) + coalesce(${processing_fee_fc},0)) end ;;
     filters: [record_type: "Refunded, RefundedExternally"]
     value_format_name: eur
   }
 
   measure: sum_empty_order_trx_fees_chargebacks {
-    group_label: "> Orphaned Payments"
-    label: "Total Costs Empty Orders - Chargebacks"
-    description: "Total fees associated with orphaned transactions of type Chargeback or ChargebackReversed. Considering processing fees for paypal and sum of commision and processing fees for other payment methods. Orphaned Transactions are PSP references that don't appear in any CT order."
+    group_label: "> Orphaned Payments - Empty Orders"
+    label: "€ Total Costs Empty Orders - Chargebacks"
+    description: "Total fees associated with orphaned transactions of type Chargeback or ChargebackReversed. Considering processing fees for paypal and sum of commision and processing fees for other payment methods. Orphaned Transactions are PSP references that are not linked to any CT order."
     type: sum
     sql:
       case
-        when ${is_orphaned_transaction} and ${payment_method} LIKE 'payp%'
+        when ${is_empty_order_transaction} and ${payment_method} LIKE 'payp%'
           then ${processing_fee_fc}
-        when  ${is_orphaned_transaction}
+        when  ${is_empty_order_transaction}
           then (coalesce(${commission_sc},0) + coalesce(${processing_fee_fc},0)) end ;;
     filters: [record_type: "Chargeback, ChargebackReversed"]
     value_format_name: eur
   }
 
   measure: sum_empty_order_amount_authorised {
-    group_label: "> Orphaned Payments"
-    label: "Total Amount Empty Orders Authorised"
-    description: "Sum of the main amount coming from orphaned transactions of type Authorised. Orphaned Transactions are PSP references that don't appear in any CT order."
+    group_label: "> Orphaned Payments - Empty Orders"
+    label: "€ Total Amount Empty Orders Authorised"
+    description: "Sum of the main amount coming from orphaned transactions of type Authorised. Orphaned Transactions are PSP references that are not linked to any CT order."
     type: sum
     sql:
       case
-        when ${is_orphaned_transaction}
+        when ${is_empty_order_transaction}
           then ${main_amount}
         else 0
       end;;
@@ -654,13 +661,13 @@ view: psp_transactions {
   }
 
   measure: sum_empty_order_amount_settled {
-    group_label: "> Orphaned Payments"
-    label: "Total Amount Empty Orders Settled"
-    description: "Sum of the main amount coming from orphaned transactions of type Settled. Orphaned Transactions are PSP references that don't appear in any CT order."
+    group_label: "> Orphaned Payments - Empty Orders"
+    label: "€ Total Amount Empty Orders Settled"
+    description: "Sum of the main amount coming from orphaned transactions of type Settled. Orphaned Transactions are PSP references that are not linked to any CT order."
     type: sum
     sql:
       case
-        when ${is_orphaned_transaction}
+        when ${is_empty_order_transaction}
           then ${main_amount}
         else 0
       end;;
@@ -669,13 +676,13 @@ view: psp_transactions {
   }
 
   measure: sum_empty_order_amount_refunded {
-    group_label: "> Orphaned Payments"
-    label: "Total Amount Empty Orders Refunded"
-    description: "Sum of the main amount coming from orphaned transactions of type Refunded or Refunded Externally. Orphaned Transactions are PSP references that don't appear in any CT order."
+    group_label: "> Orphaned Payments - Empty Orders"
+    label: "€ Total Amount Empty Orders Refunded"
+    description: "Sum of the main amount coming from orphaned transactions of type Refunded or Refunded Externally. Orphaned Transactions are PSP references that are not linked to any CT order."
     type: sum
     sql:
       case
-        when ${is_orphaned_transaction}
+        when ${is_empty_order_transaction}
           then ${main_amount}
         else 0
       end;;
@@ -684,13 +691,13 @@ view: psp_transactions {
   }
 
   measure: sum_empty_order_amount_chargeback {
-    group_label: "> Orphaned Payments"
-    label: "Total Amount Empty Orders Chargeback"
+    group_label: "> Orphaned Payments - Empty Orders"
+    label: "€ Total Amount Empty Orders Chargeback"
     description: "Sum of the main amount coming from orphaned transactions of type Chargeback or ChargebackReversed . Orphaned Transactions are PSP references that don't appear in any CT order."
     type: sum
     sql:
       case
-        when ${is_orphaned_transaction}
+        when ${is_empty_order_transaction}
           then ${main_amount}
         else 0
       end;;
@@ -699,7 +706,7 @@ view: psp_transactions {
   }
 
   measure: percentage_trx_without_orders_authorised {
-    group_label: "> Orphaned Payments"
+    group_label: "> Orphaned Payments - Empty Orders"
     label: "% Missing Orders Authorised"
     type: number
     sql: NULLIF(${sum_empty_order_uuid_authorised},0)/NULLIF(${cnt_authorised_transactions},0);;
@@ -707,7 +714,7 @@ view: psp_transactions {
   }
 
   measure: percentage_trx_without_orders_settled {
-    group_label: "> Orphaned Payments"
+    group_label: "> Orphaned Payments - Empty Orders"
     label: "% Missing Orders Settled"
     type: number
     sql: NULLIF(${sum_empty_order_uuid_settled},0)/NULLIF(${cnt_settled_transactions},0);;
@@ -715,7 +722,7 @@ view: psp_transactions {
   }
 
   measure: percentage_trx_without_orders_refunded {
-    group_label: "> Orphaned Payments"
+    group_label: "> Orphaned Payments - Empty Orders"
     label: "% Missing Orders Refunded"
     type: number
     sql: NULLIF(${sum_empty_order_uuid_refunded},0)/NULLIF(${cnt_refund_transactions},0);;
@@ -723,12 +730,204 @@ view: psp_transactions {
   }
 
   measure: percentage_trx_without_orders_chargeback {
-    group_label: "> Orphaned Payments"
+    group_label: "> Orphaned Payments - Empty Orders"
     label: "% Missing Orders Chargeback"
     type: number
     sql: NULLIF(${sum_empty_order_uuid_chargeback},0)/NULLIF(${cnt_chargebacks_transactions},0);;
     value_format_name: percent_2
   }
+
+  ############## Orphaned Double Payments
+
+  measure: sum_orphaned_double_payment_settled {
+    group_label: "> Orphaned Payments - Double Payments"
+    label: "# Orphaned Double Payments Settled"
+    description: "Number of transactions of type Settled associated with an order in CT but which were not recorded in CT. They were match to their corresponding CT order using Adyen’s merchant reference that contains CT cart id."
+    type: sum
+    sql:
+      case
+        when ${is_orphaned_double_payment_transaction}
+          then 1
+        else 0
+      end;;
+    filters: [record_type: "Settled"]
+  }
+
+  measure: sum_orphaned_double_payment_authorised {
+    group_label: "> Orphaned Payments - Double Payments"
+    label: "# Orphaned Double Payments Authorised"
+    description: "Number of transactions of type Authorised associated with an order in CT but which were not recorded in CT. They were match to their corresponding CT order using Adyen’s merchant reference that contains CT cart id."
+    type: sum
+    sql:
+      case
+        when ${is_orphaned_double_payment_transaction}
+          then 1
+        else 0
+      end;;
+    filters: [record_type: "Authorised"]
+  }
+
+  measure: sum_orphaned_double_payment_refunded {
+    group_label: "> Orphaned Payments - Double Payments"
+    label: "# Orphaned Double Payments Refunded"
+    description: "Number of transactions of type Refunded or Refunded Externally associated with an order in CT but which were not recorded in CT. They were match to their corresponding CT order using Adyen’s merchant reference that contains CT cart id."
+    type: sum
+    sql:
+      case
+        when ${is_orphaned_double_payment_transaction}
+          then 1
+        else 0
+      end;;
+    filters: [record_type: "Refunded, RefundedExternally"]
+  }
+
+  measure: sum_orphaned_double_payment_chargeback {
+    group_label: "> Orphaned Payments - Double Payments"
+    label: "# Orphaned Double PaymentsChargeback"
+    description: "Number of transactions of type Chargeback or ChargebackReversed associated with an order in CT but which were not recorded in CT. They were match to their corresponding CT order using Adyen’s merchant reference that contains CT cart id."
+    type: sum
+    sql:
+      case
+        when ${is_orphaned_double_payment_transaction}
+          then 1
+        else 0
+      end;;
+    filters: [record_type: "Chargeback"]
+  }
+
+  measure: sum_orphaned_double_payment_trx_fees_refunds {
+    group_label: "> Orphaned Payments - Double Payments"
+    label: "€ Total Costs Orphaned Double Payments - Refunds"
+    description: "Total fees associated with Orphaned Double Payment Transactionss of type Refunded or RefundedExternally. Considering processing fees for paypal and sum of commision and processing fees for other payment methods. Orphaned Double Payments Transactions are PSP references that were not recorded in CT. They were match to their corresponding CT order using Adyen’s merchant reference that contains CT cart id."
+    type: sum
+    sql:
+      case
+        when (${is_orphaned_double_payment_transaction}) and ${payment_method} LIKE 'payp%'
+          then ${processing_fee_fc}
+        when  ${is_orphaned_double_payment_transaction}
+          then (coalesce(${commission_sc},0) + coalesce(${processing_fee_fc},0)) end ;;
+    filters: [record_type: "Refunded, RefundedExternally"]
+    value_format_name: eur
+  }
+
+  measure: sum_orphaned_double_payment_trx_fees_chargebacks {
+    group_label: "> Orphaned Payments - Double Payments"
+    label: "€ Total Costs Orphaned Double Payments - Chargebacks"
+    description: "Total fees associated with Orphaned Double Payment Transactions of type Chargeback or ChargebackReversed. Considering processing fees for paypal and sum of commision and processing fees for other payment methods. Orphaned Double Payments Transactions are PSP references that were not recorded in CT. They were match to their corresponding CT order using Adyen’s merchant reference that contains CT cart id."
+    type: sum
+    sql:
+      case
+        when ${is_orphaned_double_payment_transaction} and ${payment_method} LIKE 'payp%'
+          then ${processing_fee_fc}
+        when  ${is_orphaned_double_payment_transaction}
+          then (coalesce(${commission_sc},0) + coalesce(${processing_fee_fc},0)) end ;;
+    filters: [record_type: "Chargeback, ChargebackReversed"]
+    value_format_name: eur
+  }
+
+  measure: sum_orphaned_double_payment_amount_authorised {
+    group_label: "> Orphaned Payments - Double Payments"
+    label: "€ Total Amount Orphaned Double Payments - Authorised"
+    description: "Sum of the main amount coming from Orphaned Double Payment Transactions of type Authorised. Orphaned Double Payments Transactions are PSP references that were not recorded in CT. They were match to their corresponding CT order using Adyen’s merchant reference that contains CT cart id."
+    type: sum
+    sql:
+      case
+        when ${is_orphaned_double_payment_transaction}
+          then ${main_amount}
+        else 0
+      end;;
+    filters: [record_type: "Authorised"]
+    value_format_name: eur
+  }
+
+  measure: sum_orphaned_double_payment_amount_settled {
+    group_label: "> Orphaned Payments - Double Payments"
+    label: "€ Total Amount Orphaned Double Payments Settled"
+    description: "Sum of the main amount coming from Orphaned Double Payment Transactions of type Settled. Orphaned Double Payments Transactions are PSP references that were not recorded in CT. They were match to their corresponding CT order using Adyen’s merchant reference that contains CT cart id."
+    type: sum
+    sql:
+      case
+        when ${is_orphaned_double_payment_transaction}
+          then ${main_amount}
+        else 0
+      end;;
+    filters: [record_type: "Settled"]
+    value_format_name: eur
+  }
+
+  measure: sum_orphaned_double_payment_amount_refunded {
+    group_label: "> Orphaned Payments - Double Payments"
+    label: "€ Total Amount Orphaned Double Payments - Refunded"
+    description: "Sum of the main amount coming from Orphaned Double Payment Transactions of type Refunded or Refunded Externally. Orphaned Double Payments Transactions are PSP references that were not recorded in CT. They were match to their corresponding CT order using Adyen’s merchant reference that contains CT cart id."
+    type: sum
+    sql:
+      case
+        when ${is_orphaned_double_payment_transaction}
+          then ${main_amount}
+        else 0
+      end;;
+    filters: [record_type: "Refunded, RefundedExternally"]
+    value_format_name: eur
+  }
+
+  measure: sum_orphaned_double_payment_amount_chargeback {
+    group_label: "> Orphaned Payments - Double Payments"
+    label: "€ Total Amount Orphaned Double Payments - Chargeback"
+    description: "Sum of the main amount coming from orphaned transactions of type Chargeback or ChargebackReversed .Orphaned Double Payments Transactions are PSP references that were not recorded in CT. They were match to their corresponding CT order using Adyen’s merchant reference that contains CT cart id."
+    type: sum
+    sql:
+      case
+        when ${is_orphaned_double_payment_transaction}
+          then ${main_amount}
+        else 0
+      end;;
+    filters: [record_type: "Chargeback, ChargebackReversed"]
+    value_format_name: eur
+  }
+
+  measure: percentage_trx_orphaned_double_payments_authorised {
+    group_label: "> Orphaned Payments - Double Payments"
+    label: "% Orphaned Double Payment Authorised Transactions"
+    description: "Number of Orphaned Double Payment Transactions of type Authorised divided by all transactions of type Authorised"
+    type: number
+    sql: NULLIF(${sum_orphaned_double_payment_authorised},0)/NULLIF(${cnt_authorised_transactions},0);;
+    value_format_name: percent_3
+  }
+
+  measure: percentage_trx_orphaned_double_payment_settled {
+    group_label: "> Orphaned Payments - Double Payments"
+    label: "%  Orphaned Double Payment Settled Transactions"
+    description: "Number of Orphaned Double Payment Transactions of type Settled divided by all transactions of type Settled"
+    type: number
+    sql: NULLIF(${sum_orphaned_double_payment_settled},0)/NULLIF(${cnt_settled_transactions},0);;
+    value_format_name: percent_3
+    }
+
+    measure: percentage_trx_orphaned_double_payment_refunded {
+    group_label: "> Orphaned Payments - Double Payments"
+    label: "%  Orphaned Double Payment Refunded Transactions"
+    description: "Number of Orphaned Double Payment Transactions of type Refunded or RefundedExternally divided by all transactions of type Refunded or RefundedExternally"
+    type: number
+    sql: NULLIF(${sum_orphaned_double_payment_refunded},0)/NULLIF(${cnt_refund_transactions},0);;
+    value_format_name: percent_2
+    }
+
+    measure: percentage_trx_orphaned_double_payment_chargeback {
+    group_label: "> Orphaned Payments - Double Payments"
+    label: "% Orphaned Double Payment Chargeback Transactions"
+    description: "Number of Orphaned Double Payment Transactions of type Chargeback or ChargebackReversed divided by all transactions of type Chargeback or ChargebackReversed"
+    type: number
+    sql: NULLIF(${sum_orphaned_double_payment_chargeback},0)/NULLIF(${cnt_chargebacks_transactions},0);;
+    value_format_name: percent_2
+  }
+
+
+  ############## ALL Orphaned Payments
+
+
+
+
+  ############### Refunds & Fraud
 
   measure: percentage_transactions_refunded_auth {
     group_label: "> Refunds & Fraud Metrics"
