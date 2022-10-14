@@ -2,7 +2,7 @@
 #include: "order_orderline_cl.explore.lkml"
 #include: "/views/bigquery_tables/curated_layer/orderline.view"
 
-view: orders_country_level_monthly {
+view: ndt_order_orderline_cl__orders_country_level_monthly {
 
   derived_table: {
 

@@ -33,7 +33,7 @@ view: cr__order_orderline_cl_retail_customized_cross_metrics {
     {% elsif orders_cl.date_granularity._parameter_value == 'Week' %}
       ${orders_country_level.sum_number_of_orders}
     {% elsif orders_cl.date_granularity._parameter_value == 'Month' %}
-      ${orders_country_level_monthly.sum_number_of_orders}
+      ${ndt_order_orderline_cl__orders_country_level_monthly.sum_number_of_orders}
     {% endif %};;
 
       type: number
@@ -52,7 +52,7 @@ view: cr__order_orderline_cl_retail_customized_cross_metrics {
         {% elsif orders_cl.date_granularity._parameter_value == 'Week' %}
         ${orders_country_level.sum_number_of_unique_customers}
         {% elsif orders_cl.date_granularity._parameter_value == 'Month' %}
-        ${orders_country_level_monthly.sum_number_of_unique_customers}
+        ${ndt_order_orderline_cl__orders_country_level_monthly.sum_number_of_unique_customers}
         {% endif %};;
 
       type: number
