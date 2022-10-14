@@ -99,7 +99,7 @@ view: +advanced_supplier_matching {
 
 
   measure: cnt_ordered_items_delivered_on_time {
-    label: "# Ordered Items Delivered On Time"
+    label: "# Ordered Items Delivered On Time (PO > DESADV)"
     description: "The number of SKUs, that have been ordered and have been delivered at the promised delivery date"
     group_label: "PO >> DESADV | On Time"
 
@@ -123,7 +123,7 @@ view: +advanced_supplier_matching {
 
   #### Too Early
   measure: cnt_ordered_items_delivered_too_early {
-    label: "# Ordered Items Delivered Too Early"
+    label: "# Ordered Items Delivered Too Early (PO > DESADV)"
     group_label: "PO >> DESADV | On Time"
 
     type: count_distinct
@@ -145,7 +145,7 @@ view: +advanced_supplier_matching {
   }
 
   measure: avg_days_po_desadv_delivery_too_early {
-    label: "AVG Days PO Delivered Too Early"
+    label: "AVG Days PO Delivered Too Early (PO > DESADV)"
     description: "Average number of days order lines have been delivered early (PO > DESADV) per early delivered ordered lines"
     group_label: "PO >> DESADV | On Time"
 
@@ -156,7 +156,7 @@ view: +advanced_supplier_matching {
 
   #### Too Late
   measure: cnt_ordered_items_delivered_too_late {
-    label: "# Ordered Items Delivered Too Late"
+    label: "# Ordered Items Delivered Too Late (PO > DESADV)"
     group_label: "PO >> DESADV | On Time"
 
     type: count_distinct
@@ -177,7 +177,7 @@ view: +advanced_supplier_matching {
   }
 
   measure: avg_days_po_desadv_delivery_too_late {
-    label: "AVG Days PO Delivered Too Late"
+    label: "AVG Days PO Delivered Too Late (PO > DESADV)"
     description: "Average number of days order lines have been delivered late (PO > DESADV) per late delivered ordered lines"
     group_label: "PO >> DESADV | On Time"
 
