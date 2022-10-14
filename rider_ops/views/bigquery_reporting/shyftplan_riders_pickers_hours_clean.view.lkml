@@ -287,6 +287,78 @@ view: shyftplan_riders_pickers_hours_clean {
     group_label: "Working Hours"
   }
 
+  measure: picker_hours_external_partnership {
+    label: "Sum of Picker External Partnership Hours"
+    type: sum
+    sql:${TABLE}.number_of_worked_minutes_external_partnership/60;;
+    filters: [position_name: "picker"]
+    value_format_name: decimal_1
+    group_label: "Working Hours"
+  }
+
+  measure: rider_hours_external_partnership {
+    label: "Sum of Rider External Partnership Hours"
+    type: sum
+    sql:${TABLE}.number_of_worked_minutes_external_partnership/60;;
+    filters: [position_name: "rider"]
+    value_format_name: decimal_1
+    group_label: "Working Hours"
+  }
+
+  measure: picker_hours_external_one_time {
+    label: "Sum of Picker External one-time Hours"
+    type: sum
+    sql:${TABLE}.number_of_worked_minutes_external_one_time/60;;
+    filters: [position_name: "picker"]
+    value_format_name: decimal_1
+    group_label: "Working Hours"
+  }
+
+  measure: rider_hours_external_one_time {
+    label: "Sum of Rider External one-time Hours"
+    type: sum
+    sql:${TABLE}.number_of_worked_minutes_external_one_time/60;;
+    filters: [position_name: "rider"]
+    value_format_name: decimal_1
+    group_label: "Working Hours"
+  }
+
+  measure: assigned_picker_hours_external_partnership {
+    label: "Sum of Assigned Picker External Partnership Hours"
+    type: sum
+    sql:${TABLE}.number_of_planned_minutes_external_partnership/60;;
+    filters: [position_name: "picker"]
+    value_format_name: decimal_1
+    group_label: "Assigned Hours"
+  }
+
+  measure: assigned_rider_hours_external_partnership {
+    label: "Sum of Assigned Rider External Partnership Hours"
+    type: sum
+    sql:${TABLE}.number_of_planned_minutes_external_partnership/60;;
+    filters: [position_name: "rider"]
+    value_format_name: decimal_1
+    group_label: "Assigned Hours"
+  }
+
+  measure: assigned_picker_hours_external_one_time {
+    label: "Sum of Assigned Picker External one-time Hours"
+    type: sum
+    sql:${TABLE}.number_of_planned_minutes_external_one_time/60;;
+    filters: [position_name: "picker"]
+    value_format_name: decimal_1
+    group_label: "Assigned Hours"
+  }
+
+  measure: assigned_rider_hours_external_one_time {
+    label: "Sum of Assigned Rider External one-time Hours"
+    type: sum
+    sql:${TABLE}.number_of_planned_minutes_external_one_time/60;;
+    filters: [position_name: "rider"]
+    value_format_name: decimal_1
+    group_label: "Assigned Hours"
+  }
+
   measure: pickers {
     label: "# Pickers"
     type: sum
