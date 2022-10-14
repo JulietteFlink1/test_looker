@@ -2128,11 +2128,75 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  measure: number_of_planned_minutes_availability_based_rider {
+    group_label: "> Rider Measures"
+    label: "# Filled (Planned) Rider Hours Based on Availability"
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_availability_based_rider/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_planned_minutes_availability_based_external_rider {
+    group_label: "> Rider Measures"
+    label: "# Filled (Planned) External Rider Hours Based on Availability"
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_availability_based_external_rider/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_planned_minutes_availability_based_internal_rider {
+    group_label: "> Rider Measures"
+    label: "# Filled (Planned) Internal Rider Hours Based on Availability"
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_availability_based_internal_rider/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_availability_minutes_rider {
+    group_label: "> Rider Measures"
+    label: "# Rider Availability Hours"
+    type: sum
+    sql: ${TABLE}.number_of_availability_minutes_rider/60;;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_planned_hours_picker {
     group_label: "> Picker Measures"
     label: "# Filled (Planned) Picker Hours"
     type: sum
     sql: ${number_of_planned_minutes_picker}/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_planned_minutes_availability_based_picker {
+    group_label: "> Picker Measures"
+    label: "# Filled (Planned) Picker Hours Based on Availability"
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_availability_based_picker/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_planned_minutes_availability_based_external_picker {
+    group_label: "> Picker Measures"
+    label: "# Filled (Planned) External Picker Hours Based on Availability"
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_availability_based_external_picker/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_planned_minutes_availability_based_internal_picker {
+    group_label: "> Picker Measures"
+    label: "# Filled (Planned) Internal Picker Hours Based on Availability"
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_availability_based_internal_picker/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_availability_minutes_picker {
+    group_label: "> Picker Measures"
+    label: "# Picker Availability Hours"
+    type: sum
+    sql: ${TABLE}.number_of_availability_minutes_picker/60;;
     value_format_name: decimal_1
   }
 
@@ -2143,6 +2207,39 @@ view: staffing {
     sql: ${number_of_planned_minutes_shift_lead}/60;;
     value_format_name: decimal_1
   }
+
+  measure: number_of_planned_minutes_availability_based_shift_lead {
+    group_label: "> Shift Lead Measures"
+    label: "# Filled (Planned) Shift Lead Hours Based on Availability"
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_availability_based_shift_lead/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_planned_minutes_availability_based_external_shift_lead {
+    group_label: "> Shift Lead Measures"
+    label: "# Filled (Planned) External Shift Lead Hours Based on Availability"
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_availability_based_external_shift_lead/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_planned_minutes_availability_based_internal_shift_lead {
+    group_label: "> Shift Lead Measures"
+    label: "# Filled (Planned) Internal Shift Lead Hours Based on Availability"
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_availability_based_internal_shift_lead/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_availability_minutes_shift_lead {
+    group_label: "> Shift Lead Measures"
+    label: "# Shift Lead Availability Hours"
+    type: sum
+    sql: ${TABLE}.number_of_availability_minutes_shift_lead/60;;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_planned_hours_rider_captain {
     group_label: "> Rider Captain Measures"
     label: "# Filled (Planned) Rider Captain Hours"
@@ -2150,6 +2247,39 @@ view: staffing {
     sql: ${number_of_planned_minutes_rider_captain}/60;;
     value_format_name: decimal_1
   }
+
+  measure: number_of_planned_minutes_availability_based_rider_captain {
+    group_label: "> Rider Captain Measures"
+    label: "# Filled (Planned) Rider Captain Hours Based on Availability"
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_availability_based_rider_captain/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_planned_minutes_availability_based_external_rider_captain {
+    group_label: "> Rider Captain Measures"
+    label: "# Filled (Planned) External Rider Captain Hours Based on Availability"
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_availability_based_external_rider_captain/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_planned_minutes_availability_based_internal_rider_captain {
+    group_label: "> Rider Captain Measures"
+    label: "# Filled (Planned) Internal Rider Captain Hours Based on Availability"
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_availability_based_internal_rider_captain/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_availability_minutes_rider_captain {
+    group_label: "> Rider Captain Measures"
+    label: "# Rider Captain Availability Hours"
+    type: sum
+    sql: ${TABLE}.number_of_availability_minutes_rider_captain/60;;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_planned_hours_co_ops {
     group_label: "> Co Ops Measures"
     label: "# Filled (Planned) Co Ops Hours"
@@ -2158,11 +2288,75 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  measure: number_of_planned_minutes_availability_based_co_ops {
+    group_label: "> Co Ops Measures"
+    label: "# Filled (Planned) Co Ops Hours Based on Availability"
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_availability_based_co_ops/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_planned_minutes_availability_based_external_co_ops {
+    group_label: "> Co Ops Measures"
+    label: "# Filled (Planned) External Co Ops Hours Based on Availability"
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_availability_based_external_co_ops/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_planned_minutes_availability_based_internal_co_ops {
+    group_label: "> Co Ops Measures"
+    label: "# Filled (Planned) Internal Co Ops Hours Based on Availability"
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_availability_based_internal_co_ops/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_availability_minutes_co_ops {
+    group_label: "> Co Ops Measures"
+    label: "# Co Ops Availability Hours"
+    type: sum
+    sql: ${TABLE}.number_of_availability_minutes_co_ops/60;;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_planned_hours_wh {
     group_label: "> WH Measures"
     label: "# Filled (Planned) WH Hours"
     type: sum
     sql: ${number_of_planned_minutes_wh}/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_planned_minutes_availability_based_wh {
+    group_label: "> WH Measures"
+    label: "# Filled (Planned) WH Hours Based on Availability"
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_availability_based_wh/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_planned_minutes_availability_based_external_wh {
+    group_label: "> WH Measures"
+    label: "# Filled (Planned) External WH Hours Based on Availability"
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_availability_based_external_wh/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_planned_minutes_availability_based_internal_wh {
+    group_label: "> WH Measures"
+    label: "# Filled (Planned) Internal WH Hours Based on Availability"
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_availability_based_internal_wh/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_availability_minutes_wh {
+    group_label: "> WH Measures"
+    label: "# WH Availability Hours"
+    type: sum
+    sql: ${TABLE}.number_of_availability_minutes_wh/60;;
     value_format_name: decimal_1
   }
 
@@ -2179,6 +2373,42 @@ view: staffing {
     description: "# Planned Hub Staff Hours (Picker, WH, Rider Captain, Ops Associate, Shift Lead)"
     type: number
     sql: ${number_of_planned_hours_ops_associate}+${number_of_planned_hours_shift_lead};;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_planned_minutes_availability_based_hub_staff {
+    group_label: "> Hub Staff Measures"
+    label: "# Filled (Planned) Hub Staff Hours Based on Availability"
+    type: sum
+    sql: (${TABLE}.number_of_planned_minutes_availability_based_ops_associate +
+    ${TABLE}.number_of_planned_minutes_availability_based_shift_lead)/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_planned_minutes_availability_based_external_hub_staff {
+    group_label: "> Hub Staff Measures"
+    label: "# Filled (Planned) External Hub Staff Hours Based on Availability"
+    type: sum
+    sql: (${TABLE}.number_of_planned_minutes_availability_based_external_ops_associate +
+    ${TABLE}.number_of_planned_minutes_availability_based_external_shift_lead)/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_planned_minutes_availability_based_internal_hub_staff {
+    group_label: "> Hub Staff Measures"
+    label: "# Filled (Planned) Internal Hub Staff Hours Based on Availability"
+    type: sum
+    sql: (${TABLE}.number_of_planned_minutes_availability_based_internal_ops_associate +
+    ${TABLE}.number_of_planned_minutes_availability_based_internal_shift_lead)/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_availability_minutes_hub_staff {
+    group_label: "> Hub Staff Measures"
+    label: "# Hub Staff Availability Hours"
+    type: sum
+    sql: (${TABLE}.number_of_availability_minutes_ops_associate +
+    ${TABLE}.number_of_availability_minutes_shift_lead)/60;;
     value_format_name: decimal_1
   }
 
