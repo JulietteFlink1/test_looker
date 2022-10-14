@@ -214,7 +214,7 @@ view: psp_transactions {
   dimension: is_orphaned_double_payment_transaction {
     group_label: "> Transaction Properties"
     type: yesno
-    description: "Flags if the Transaction has a cart ID in Adyen's Merchant Reference associated with an order in CT but doesn't appear in CT."
+    description: "Orphaned Double Payments Transactions are PSP references that were not recorded in CT because of a product bug. They were match to their corresponding CT order using Adyen’s merchant reference that contains CT cart id."
     sql: ${TABLE}.is_orphaned_double_payment_transaction ;;
   }
 
@@ -798,7 +798,7 @@ view: psp_transactions {
   measure: sum_orphaned_double_payment_trx_fees_refunds {
     group_label: "> Orphaned Payments - Double Payments"
     label: "€ Total Costs Orphaned Double Payments - Refunds"
-    description: "Total fees associated with Orphaned Double Payment Transactionss of type Refunded or RefundedExternally. Considering processing fees for paypal and sum of commision and processing fees for other payment methods. Orphaned Double Payments Transactions are PSP references that were not recorded in CT. They were match to their corresponding CT order using Adyen’s merchant reference that contains CT cart id."
+    description: "Total fees associated with Orphaned Double Payment Transactions of type Refunded or RefundedExternally. Considering processing fees for paypal and sum of commision and processing fees for other payment methods. Orphaned Double Payments Transactions are PSP references that were not recorded in CT. They were match to their corresponding CT order using Adyen’s merchant reference that contains CT cart id."
     type: sum
     sql:
       case
