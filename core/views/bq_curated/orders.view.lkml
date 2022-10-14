@@ -1080,6 +1080,10 @@ view: orders {
     hidden: no
     type: string
     sql: ${TABLE}.order_id ;;
+    link: {
+      label: "See Order in CT"
+      url: "https://mc.europe-west1.gcp.commercetools.com/flink-production/orders/{{ id._value | url_encode }}/general"
+    }
   }
 
   dimension: order_month {
@@ -1093,6 +1097,10 @@ view: orders {
     group_label: "* IDs *"
     type: string
     sql: ${TABLE}.order_number ;;
+    link: {
+      label: "See Order in CT"
+      url: "https://mc.europe-west1.gcp.commercetools.com/flink-production/orders/{{ id._value | url_encode }}/general"
+    }
   }
 
   dimension: order_on_route_timestamp {
@@ -1180,6 +1188,10 @@ view: orders {
     primary_key: yes
     hidden: no
     sql: ${TABLE}.order_uuid ;;
+    link: {
+      label: "See Order in CT"
+      url: "https://mc.europe-west1.gcp.commercetools.com/flink-production/orders/{{ id._value | url_encode }}/general"
+    }
   }
 
   dimension: customer_uuid {
@@ -1280,12 +1292,6 @@ view: orders {
     group_label: "* IDs *"
     type: string
     sql: ${TABLE}.rider_id ;;
-  }
-
-  dimension: shipping_city {
-    group_label: "* Geographic Dimensions *"
-    type: string
-    sql: ${TABLE}.shipping_city ;;
   }
 
   dimension: shipping_method_id {

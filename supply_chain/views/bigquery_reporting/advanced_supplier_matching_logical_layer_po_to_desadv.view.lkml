@@ -99,7 +99,7 @@ view: +advanced_supplier_matching {
 
 
   measure: cnt_ordered_items_delivered_on_time {
-    label: "# Ordered Items Delivered On Time"
+    label: "# Ordered Items Delivered On Time (PO > DESADV)"
     description: "The number of SKUs, that have been ordered and have been delivered at the promised delivery date"
     group_label: "PO >> DESADV | On Time"
 
@@ -123,7 +123,7 @@ view: +advanced_supplier_matching {
 
   #### Too Early
   measure: cnt_ordered_items_delivered_too_early {
-    label: "# Ordered Items Delivered Too Early"
+    label: "# Ordered Items Delivered Too Early (PO > DESADV)"
     group_label: "PO >> DESADV | On Time"
 
     type: count_distinct
@@ -145,7 +145,7 @@ view: +advanced_supplier_matching {
   }
 
   measure: avg_days_po_desadv_delivery_too_early {
-    label: "AVG Days PO Delivered Too Early"
+    label: "AVG Days PO Delivered Too Early (PO > DESADV)"
     description: "Average number of days order lines have been delivered early (PO > DESADV) per early delivered ordered lines"
     group_label: "PO >> DESADV | On Time"
 
@@ -156,7 +156,7 @@ view: +advanced_supplier_matching {
 
   #### Too Late
   measure: cnt_ordered_items_delivered_too_late {
-    label: "# Ordered Items Delivered Too Late"
+    label: "# Ordered Items Delivered Too Late (PO > DESADV)"
     group_label: "PO >> DESADV | On Time"
 
     type: count_distinct
@@ -177,7 +177,7 @@ view: +advanced_supplier_matching {
   }
 
   measure: avg_days_po_desadv_delivery_too_late {
-    label: "AVG Days PO Delivered Too Late"
+    label: "AVG Days PO Delivered Too Late (PO > DESADV)"
     description: "Average number of days order lines have been delivered late (PO > DESADV) per late delivered ordered lines"
     group_label: "PO >> DESADV | On Time"
 
@@ -372,6 +372,33 @@ view: +advanced_supplier_matching {
 
     type: number
     sql: safe_divide(${sum_ordered_items_quantity_desadv_on_time}, ${sum_ordered_items_quantity_po}) ;;
+    value_format_name: percent_0
+  }
+
+  measure: sum_ordered_items_quantity_desadv_on_time_limited {
+    label: "# OTIF relaxed quantity lim. (PO > DESADV)"
+    description: "Total amount of on time fulfilled quantities (PO > DESADV), where an overdelivered quantity is limited to the PO quantity"
+    group_label: "PO >> DESADV | OTIF"
+
+    type: sum
+    sql: if(
+              ${total_quantity_desadv} > ${total_quantity_purchase_order}
+            , ${total_quantity_purchase_order}
+            , ${total_quantity_desadv}
+            );;
+    filters: [is_purchase_order_row_exists: "yes",
+      is_po_delivered_on_promised_delivery_date: "yes"
+    ]
+    value_format_name: decimal_0
+  }
+
+  measure: pct_ordered_items_quantity_desadv_on_time_in_full_limited {
+    label: "% OTIF relaxed quantity lim. (PO > DESADV)"
+    description: "Relative amount of on time fulfilled quantities (PO > DESADV) compared to overall ordered quantities, where an overdelivered quantity is limited to the PO quantity"
+    group_label: "PO >> DESADV | OTIF"
+
+    type: number
+    sql: safe_divide(${sum_ordered_items_quantity_desadv_on_time_limited}, ${sum_ordered_items_quantity_po}) ;;
     value_format_name: percent_0
   }
 
@@ -781,6 +808,33 @@ view: +advanced_supplier_matching {
     value_format_name: percent_0
   }
 
+  measure: sum_desadv_otifiq_relaxed_limited {
+    label: "# OTIFIQ relaxed quantity lim. (DESADV > Inbound)"
+    description: "Total amount of on time and in quality fulfilled quantities (DESADV > Inbound), where an overdelivered quantity is limited to the DESADV quantity"
+    group_label: "DESADV >> Inbound | OTIFIQ"
+
+    type: sum
+    sql: if(
+              ${inbounded_quantity} > ${total_quantity_desadv}
+            , ${total_quantity_desadv}
+            , ${inbounded_quantity}
+            );;
+    filters: [is_desadv_row_exists: "yes",
+      is_quality_issue: "no",
+      is_matched_on_same_date: "yes"]
+    value_format_name: decimal_0
+  }
+
+  measure: pct_desadv_otifiq_relaxed_limited {
+    label: "% OTIFIQ relaxed quantity lim. (DESADV > Inbound)"
+    description: "Relative amount of on time and in quality fulfilled quantities (DESADV > Inbound) compared to overall DESADV quantities, where an overdelivered quantity is limited to the DESADV quantity"
+    group_label: "DESADV >> Inbound | OTIFIQ"
+
+    type: number
+    sql: safe_divide(${sum_desadv_otifiq_relaxed_limited}, ${sum_ordered_items_quantity_desadv}) ;;
+    value_format_name: percent_0
+  }
+
   measure: cnt_desadv_otifiq_stric {
     label: "# OTIFIQ strict (DESADV > Inbound)"
     description: "Number of on time, in full and in quality DESADV lines (DESADV > Inbound)"
@@ -1186,6 +1240,33 @@ view: +advanced_supplier_matching {
 
     type: number
     sql: safe_divide(${sum_po_otifiq_relaxed}, ${sum_ordered_items_quantity_po});;
+    value_format_name: percent_0
+  }
+
+  measure: sum_po_otifiq_relaxed_limited {
+    label: "# OTIFIQ relaxed quantity lim. (PO > Inbound)"
+    description: "Total amount of on time and in quality fulfilled quantities (PO > Inbound), where an overdelivered quantity is limited to the PO quantity"
+    group_label: "PO >> Inbound | OTIFIQ"
+
+    type: sum
+    sql: if(
+              ${inbounded_quantity} > ${total_quantity_purchase_order}
+            , ${total_quantity_purchase_order}
+            , ${inbounded_quantity}
+            );;
+    filters: [is_purchase_order_row_exists: "yes",
+      is_quality_issue: "no",
+      is_matched_on_same_date: "yes"]
+    value_format_name: decimal_0
+  }
+
+  measure: pct_po_otifiq_relaxed_limited {
+    label: "% OTIFIQ relaxed quantity lim. (PO > Inbound)"
+    description: "Relative amount of on time and in quality fulfilled quantities (PO > Inbound) compared to overall ordered quantities, where an overdelivered quantity is limited to the PO quantity"
+    group_label: "PO >> Inbound | OTIFIQ"
+
+    type: number
+    sql: safe_divide(${sum_po_otifiq_relaxed_limited}, ${sum_ordered_items_quantity_po});;
     value_format_name: percent_0
   }
 
