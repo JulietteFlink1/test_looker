@@ -634,7 +634,7 @@ view: shyftplan_riders_pickers_hours_clean {
     hidden: yes
   }
 
-  measure: pct_unaasigned_hours{
+  measure: pct_unassigned_hours{
     label:"% Unassigned Shift Hours (Riders & Pickers)"
     type: number
     description: "% Unassigned Shift Hours (Riders & Pickers)"
@@ -644,7 +644,7 @@ view: shyftplan_riders_pickers_hours_clean {
     value_format_name: percent_1
   }
 
-  measure: pct_unaasigned_rider_hours{
+  measure: pct_unassigned_rider_hours{
     label:"% Unassigned Rider Hours"
     type: number
     description: "Unassigned Rider Hours / (Assigned Rider Hours + Unassigned Rider Hours)"
@@ -654,7 +654,7 @@ view: shyftplan_riders_pickers_hours_clean {
     value_format_name: percent_1
   }
 
-  measure: pct_aasigned_rider_hours{
+  measure: pct_assigned_rider_hours{
     label:"% Assigned Rider Hours"
     type: number
     description: "Assigned Rider Hours / (Assigned Rider Hours + Unassigned Rider Hours)"
@@ -664,7 +664,7 @@ view: shyftplan_riders_pickers_hours_clean {
     value_format_name: percent_1
   }
 
-  measure: pct_unaasigned_picker_hours{
+  measure: pct_unassigned_picker_hours{
     label:"% Unassigned Picker Hours"
     type: number
     description: "Unassigned Picker Hours / (Assigned Picker Hours + Unassigned Picker Hours)"
