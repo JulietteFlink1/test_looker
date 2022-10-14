@@ -141,7 +141,7 @@ view: +advanced_supplier_matching {
 
 
   measure: cnt_ordered_items_delivered_on_time {
-    label: "# Ordered Items Delivered On Time (PO > DESADV)"
+    label: "# On Time Delivery (PO > DESADV)"
     description: "The number of SKUs, that have been ordered and have been delivered at the promised delivery date"
     group_label: "PO >> DESADV | On Time"
 
@@ -154,7 +154,7 @@ view: +advanced_supplier_matching {
 
   measure: pct_po_desadv_on_time_delivery {
 
-    label: "% Delivery On Time (PO > DESADV)"
+    label: "% On Time Delivery (PO > DESADV)"
     description: "Share of on time delivered order lines (PO > DESADV) compared to all order lines "
     group_label: "PO >> DESADV | On Time"
 
@@ -165,7 +165,7 @@ view: +advanced_supplier_matching {
 
   #### Too Early
   measure: cnt_ordered_items_delivered_too_early {
-    label: "# Ordered Items Delivered Too Early (PO > DESADV)"
+    label: "# Too Early Delivered (PO > DESADV)"
     group_label: "PO >> DESADV | On Time"
 
     type: count_distinct
@@ -177,7 +177,7 @@ view: +advanced_supplier_matching {
 
   measure: pct_po_desadv_delivery_too_early {
 
-    label: "% Delivery Too Early (PO > DESADV)"
+    label: "% Too Early Delivery (PO > DESADV)"
     description: "Share of too early delivered order lines (PO > DESADV) compared to all order lines "
     group_label: "PO >> DESADV | On Time"
 
@@ -187,7 +187,7 @@ view: +advanced_supplier_matching {
   }
 
   measure: avg_days_po_desadv_delivery_too_early {
-    label: "AVG Days PO Delivered Too Early (PO > DESADV)"
+    label: "AVG Days Too Early Delivered (PO > DESADV)"
     description: "Average number of days order lines have been delivered early (PO > DESADV) per early delivered ordered lines"
     group_label: "PO >> DESADV | On Time"
 
@@ -198,7 +198,7 @@ view: +advanced_supplier_matching {
 
   #### Too Late
   measure: cnt_ordered_items_delivered_too_late {
-    label: "# Ordered Items Delivered Too Late (PO > DESADV)"
+    label: "# Too Late Delivery (PO > DESADV)"
     group_label: "PO >> DESADV | On Time"
 
     type: count_distinct
@@ -209,7 +209,7 @@ view: +advanced_supplier_matching {
   }
 
   measure: pct_po_desadv_delivery_too_late {
-    label: "% Delivery Too Late (PO > DESADV)"
+    label: "% Too Late Delivery (PO > DESADV)"
     description: "Share of too late delivered order lines (PO > DESADV) compared to all order lines "
     group_label: "PO >> DESADV | On Time"
 
@@ -219,7 +219,7 @@ view: +advanced_supplier_matching {
   }
 
   measure: avg_days_po_desadv_delivery_too_late {
-    label: "AVG Days PO Delivered Too Late (PO > DESADV)"
+    label: "AVG Days Too Late Delivered (PO > DESADV)"
     description: "Average number of days order lines have been delivered late (PO > DESADV) per late delivered ordered lines"
     group_label: "PO >> DESADV | On Time"
 
@@ -586,7 +586,7 @@ view: +advanced_supplier_matching {
   }
 
   measure: cnt_desadv_inbounded_items_too_early {
-    label: "# Too early delivery (DESADV > Inbound)"
+    label: "# Too Early Delivery (DESADV > Inbound)"
     description: "Number of too early delivered DESADV lines (DESADV > Inbound)"
     group_label: "DESADV >> Inbound | On Time"
 
@@ -597,7 +597,7 @@ view: +advanced_supplier_matching {
   }
 
   measure: pct_desadv_inbounded_items_too_early {
-    label: "% Too early delivery (DESADV > Inbound)"
+    label: "% Too Early Delivery (DESADV > Inbound)"
     description: "Share of too early delivered DESADV lines (DESADV > Inbound) compared to all DESADV lines "
     group_label: "DESADV >> Inbound | On Time"
 
@@ -607,7 +607,7 @@ view: +advanced_supplier_matching {
   }
 
   measure: avg_days_desadv_inbounded_items_too_early {
-    label: "AVG days of early delivery (DESADV > Inbound)"
+    label: "AVG Days Too Early Delivery (DESADV > Inbound)"
     description: "Average number of days order lines have been delivered early (DESADV > Inbound) per early delivered ordered lines"
     group_label: "DESADV >> Inbound | On Time"
 
@@ -618,7 +618,7 @@ view: +advanced_supplier_matching {
 
 
   measure: cnt_desadv_inbounded_items_too_late {
-    label: "# Too late delivery (DESADV > Inbound)"
+    label: "# Too Late Delivery (DESADV > Inbound)"
     description: "Number of too late delivered DESADV lines (DESADV > Inbound)"
     group_label: "DESADV >> Inbound | On Time"
 
@@ -629,7 +629,7 @@ view: +advanced_supplier_matching {
   }
 
   measure: pct_desadv_inbounded_items_too_late {
-    label: "% Too late delivery (DESADV > Inbound)"
+    label: "% Too Late Delivery (DESADV > Inbound)"
     description: "Share of too late delivered DESADV lines (DESADV > Inbound) compared to all DESADV lines "
     group_label: "DESADV >> Inbound | On Time"
 
@@ -639,7 +639,7 @@ view: +advanced_supplier_matching {
   }
 
   measure: avg_days_desadv_inbounded_items_too_late {
-    label: "AVG days of late delivery (DESADV > Inbound)"
+    label: "AVG Days Too Late Delivery (DESADV > Inbound)"
     description: "Average number of days order lines have been delivered late (DESADV > Inbound) per late delivered ordered lines"
     group_label: "DESADV >> Inbound | On Time"
 
@@ -1020,7 +1020,7 @@ view: +advanced_supplier_matching {
   }
 
   measure: cnt_po_inbounded_items_too_early {
-    label: "# Too early delivery (PO > Inbound)"
+    label: "# Too Early Delivery (PO > Inbound)"
     description: "Number of too early delivered order lines (PO > Inbound)"
     group_label: "PO >> Inbound | On Time"
 
@@ -1031,7 +1031,7 @@ view: +advanced_supplier_matching {
   }
 
   measure: pct_po_inbounded_items_too_early {
-    label: "% Too early delivery (PO > Inbound)"
+    label: "% Too Early Delivery (PO > Inbound)"
     description: "Share of too early delivered order lines (PO > Inbound) compared to all order lines"
     group_label: "PO >> Inbound | On Time"
 
@@ -1041,7 +1041,7 @@ view: +advanced_supplier_matching {
   }
 
   measure: avg_days_po_inbounded_items_too_early {
-    label: "AVG days of early delivery (PO > Inbound)"
+    label: "AVG Days Too Early Delivery (PO > Inbound)"
     description: "Average number of days order lines have been delivered early (PO > Inbound) per early delivered ordered lines"
     group_label: "PO >> Inbound | On Time"
 
@@ -1051,7 +1051,7 @@ view: +advanced_supplier_matching {
   }
 
   measure: cnt_po_inbounded_items_too_late {
-    label: "# Too late delivery (PO > Inbound)"
+    label: "# Too Late Delivery (PO > Inbound)"
     description: "Number of too late delivered order lines (PO > Inbound)"
     group_label: "PO >> Inbound | On Time"
 
@@ -1062,7 +1062,7 @@ view: +advanced_supplier_matching {
   }
 
   measure: pct_po_inbounded_items_too_late {
-    label: "% Too late delivery (PO > Inbound)"
+    label: "% Too Late Delivery (PO > Inbound)"
     description: "Share of too late delivered order lines (PO > Inbound) compared to all order lines "
     group_label: "PO >> Inbound | On Time"
 
@@ -1072,7 +1072,7 @@ view: +advanced_supplier_matching {
   }
 
   measure: avg_days_po_inbounded_items_too_late {
-    label: "AVG days of late delivery (PO > Inbound)"
+    label: "AVG Days Too Late Delivery (PO > Inbound)"
     description: "Average number of days order lines have been delivered late (PO > Inbound) per late delivered ordered lines"
     group_label: "PO >> Inbound | On Time"
 
