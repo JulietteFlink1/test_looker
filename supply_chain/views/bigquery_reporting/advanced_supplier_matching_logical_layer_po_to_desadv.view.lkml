@@ -89,6 +89,47 @@ view: +advanced_supplier_matching {
     value_format_name: decimal_0
   }
 
+  dimension: is_matched_purchase_order_specifc {
+    # this is a logic requested to Marcel to compare the PO separately with inbounds in order for their on-time PO >> Inbound metrics (ONLY!)
+    type: string
+    sql:
+      case
+        when date_diff(${inbounded_date}, ${promised_delivery_date_purchase_order_date}, day) = 0
+        then 'same_day'
+        when date_diff(${inbounded_date}, ${promised_delivery_date_purchase_order_date}, day) > 0
+        then 'too_late'
+        when date_diff(${inbounded_date}, ${promised_delivery_date_purchase_order_date}, day) < 0
+        then 'too_early'
+      end
+    ;;
+    hidden: yes
+  }
+
+  dimension: number_of_days_inbounded_too_late_purchase_order {
+    # this is a logic requested to Marcel to compare the PO separately with inbounds in order for their on-time PO >> Inbound metrics (ONLY!)
+    type: number
+    sql:
+      if(
+            date_diff(${inbounded_date}, ${promised_delivery_date_purchase_order_date}, day) > 0,
+            date_diff(${inbounded_date}, ${promised_delivery_date_purchase_order_date}, day),
+            null
+            ) ;;
+    hidden: yes
+  }
+
+  dimension: number_of_days_inbounded_too_early_purchase_order {
+    # this is a logic requested to Marcel to compare the PO separately with inbounds in order for their on-time PO >> Inbound metrics (ONLY!)
+    type: number
+    sql:
+      if(
+            date_diff(${inbounded_date}, ${promised_delivery_date_purchase_order_date}, day) < 0,
+            date_diff(${inbounded_date}, ${promised_delivery_date_purchase_order_date}, day),
+            null
+            ) ;;
+    hidden: yes
+  }
+
+
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   #  - - - - - - - - - -    PO >> DESADV
@@ -963,7 +1004,7 @@ view: +advanced_supplier_matching {
 
     type: count_distinct
     sql: ${purchase_order_order_lineitems} ;;
-    filters: [is_matched_on_same_date: "yes"]
+    filters: [is_matched_purchase_order_specifc: "same_day"]
     value_format_name: decimal_0
   }
 
@@ -984,7 +1025,7 @@ view: +advanced_supplier_matching {
 
     type: count_distinct
     sql: ${purchase_order_order_lineitems} ;;
-    filters: [is_matched_on_too_early_date: "yes"]
+    filters: [is_matched_purchase_order_specifc: "too_early"]
     value_format_name: decimal_0
   }
 
@@ -1004,7 +1045,7 @@ view: +advanced_supplier_matching {
     group_label: "PO >> Inbound | On Time"
 
     type: average
-    sql: ${number_of_days_inbounded_too_early};;
+    sql: ${number_of_days_inbounded_too_early_purchase_order};;
     value_format_name: decimal_1
   }
 
@@ -1015,7 +1056,7 @@ view: +advanced_supplier_matching {
 
     type: count_distinct
     sql: ${purchase_order_order_lineitems} ;;
-    filters: [is_matched_on_too_late_date: "yes"]
+    filters: [is_matched_purchase_order_specifc: "too_late"]
   value_format_name: decimal_0
   }
 
@@ -1035,7 +1076,7 @@ view: +advanced_supplier_matching {
     group_label: "PO >> Inbound | On Time"
 
     type: average
-    sql: ${number_of_days_delivered_too_late};;
+    sql: ${number_of_days_inbounded_too_late_purchase_order};;
     value_format_name: decimal_1
   }
 
@@ -1229,7 +1270,7 @@ view: +advanced_supplier_matching {
     sql: ${inbounded_quantity} ;;
     filters: [is_purchase_order_row_exists: "yes",
               is_quality_issue: "no",
-              is_matched_on_same_date: "yes"]
+              is_matched_purchase_order_specifc: "same_day"]
     value_format_name: decimal_0
   }
 
@@ -1256,7 +1297,7 @@ view: +advanced_supplier_matching {
             );;
     filters: [is_purchase_order_row_exists: "yes",
       is_quality_issue: "no",
-      is_matched_on_same_date: "yes"]
+      is_matched_purchase_order_specifc: "same_day"]
     value_format_name: decimal_0
   }
 
@@ -1278,7 +1319,7 @@ view: +advanced_supplier_matching {
     type: count_distinct
     sql: ${purchase_order_order_lineitems};;
     filters: [is_quality_issue: "no",
-               is_matched_on_same_date: "yes",
+               is_matched_purchase_order_specifc: "same_day",
               is_purchase_order_inbounded_in_full: "yes"]
     value_format_name: decimal_0
   }
@@ -1301,7 +1342,7 @@ view: +advanced_supplier_matching {
     type: count_distinct
     sql: ${purchase_order_order_lineitems} ;;
     filters: [is_quality_issue: "no",
-              is_matched_on_same_date: "yes",
+              is_matched_purchase_order_specifc: "same_day",
               is_purchase_order_inbounded_in_full_limited: "yes"]
     value_format_name: decimal_0
   }
