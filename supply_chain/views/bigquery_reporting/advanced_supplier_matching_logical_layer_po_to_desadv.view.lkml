@@ -47,8 +47,9 @@ view: +advanced_supplier_matching {
   measure: sum_ordered_items_quantity_po {
     label: "# Total Quantity (PO)"
 
-    type: sum
-    sql: ${total_quantity_purchase_order} ;;
+    # using this approach to also show NULL values and surpress the default coalesce(metric, 0) behavior of Looker
+    type: number
+    sql: sum(${total_quantity_purchase_order}) ;;
     value_format_name: decimal_0
   }
 

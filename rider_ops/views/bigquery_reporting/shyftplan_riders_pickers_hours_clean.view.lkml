@@ -634,13 +634,54 @@ view: shyftplan_riders_pickers_hours_clean {
     hidden: yes
   }
 
-  measure: pct_unaasigned_hours{
+  measure: pct_unassigned_hours{
     label:"% Unassigned Shift Hours (Riders & Pickers)"
+    alias: [pct_unaasigned_hours]
     type: number
     description: "% Unassigned Shift Hours (Riders & Pickers)"
     sql:(${number_of_unassigned_hours_rider_picker})
       /nullif(${number_of_unassigned_hours_rider_picker}+${number_of_planned_hours_rider_picker},0) ;;
     group_label: "Unassigned Hours"
+    value_format_name: percent_1
+  }
+
+  measure: pct_unassigned_rider_hours{
+    label:"% Unassigned Rider Hours"
+    type: number
+    description: "Share of Unassigned rider hours from total Scheduled hours - Unassigned Rider Hours / (Assigned Rider Hours + Unassigned Rider Hours)"
+    sql:(${number_of_unassigned_rider_hours})
+      /nullif(${number_of_unassigned_rider_hours}+${sum_assigned_rider_hours},0) ;;
+    group_label: "Unassigned Hours"
+    value_format_name: percent_1
+  }
+
+  measure: pct_assigned_rider_hours{
+    label:"% Assigned Rider Hours"
+    type: number
+    description: "Share of Assigned rider hours from total Scheduled hours - Assigned Rider Hours / (Assigned Rider Hours + Unassigned Rider Hours)"
+    sql:(${sum_assigned_rider_hours})
+      /nullif(${number_of_unassigned_rider_hours}+${sum_assigned_rider_hours},0) ;;
+    group_label: "Assigned Hours"
+    value_format_name: percent_1
+  }
+
+  measure: pct_unassigned_picker_hours{
+    label:"% Unassigned Picker Hours"
+    type: number
+    description: "Share of Unassigned picker hours from total Scheduled hours - Unassigned Picker Hours / (Assigned Picker Hours + Unassigned Picker Hours)"
+    sql:(${number_of_unassigned_picker_hours})
+      /nullif(${number_of_unassigned_picker_hours}+${sum_assigned_picker_hours},0) ;;
+    group_label: "Unassigned Hours"
+    value_format_name: percent_1
+  }
+
+  measure: pct_assigned_picker_hours{
+    label:"% Assigned Picker Hours"
+    type: number
+    description: "Share of Assigned picker hours from total Scheduled hours - Assigned Picker Hours / (Assigned Picker Hours + Unassigned Picker Hours)"
+    sql:(${sum_assigned_picker_hours})
+      /nullif(${number_of_unassigned_picker_hours}+${sum_assigned_picker_hours},0) ;;
+    group_label: "Assigned Hours"
     value_format_name: percent_1
   }
 
