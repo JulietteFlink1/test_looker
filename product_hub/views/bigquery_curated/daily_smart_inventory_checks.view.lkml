@@ -5,7 +5,7 @@
 view: daily_smart_inventory_checks {
   sql_table_name: `flink-data-prod.curated.daily_smart_inventory_checks`
     ;;
-  view_label: "Daily Smart Inventory Checks"
+  view_label: "1 Daily Smart Inventory Checks"
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Sets          ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -172,7 +172,6 @@ view: daily_smart_inventory_checks {
       day_of_week
     ]
     convert_tz: no
-    datatype: datetime
     sql: ${TABLE}.started_at_timestamp ;;
   }
 
@@ -187,19 +186,17 @@ view: daily_smart_inventory_checks {
       date
     ]
     convert_tz: no
-    datatype: datetime
-
     sql: ${TABLE}.ended_at_timestamp ;;
   }
 
-  dimension: started_to_finished_seconds {
-    type: number
-    group_label: "5 Check Timestamps"
-    label: "Started to Finished seconds"
-    description: "Diferrence in seconds between Started Counting and Finished Counting timestamps."
-    value_format: "0"
-    sql: DATETIME_DIFF(${finished_at_timestamp_time}, ${started_at_timestamp_time}, SECOND) ;;
-  }
+  # dimension: dim_started_to_finished_seconds {
+  #   type: number
+  #   group_label: "5 Check Timestamps"
+  #   label: "Started to Finished seconds"
+  #   description: "Diferrence in seconds between Started Counting and Finished Counting timestamps."
+  #   value_format: "0"
+  #   sql: DATETIME_DIFF(${finished_at_timestamp_raw}, ${started_at_timestamp_raw}, SECOND) ;;
+  # }
 
   # =========  Correction Attributes  =========
 
@@ -332,5 +329,15 @@ view: daily_smart_inventory_checks {
     sql: ${number_of_completed_checks}/nullif((${number_of_completed_checks}+${number_of_open_checks}),0) ;;
   }
 
-  # =========  Rate Metrics  =========
+  # =========  Time Metrics  =========
+
+  measure: started_to_finished_seconds {
+    type: sum
+    group_label: "Time Metrics"
+    label: "Started to Finished seconds"
+    description: "Sum of the diferrence in seconds between Started Counting and Finished Counting timestamps for completed checks."
+    value_format: "0"
+    filters: [is_finished: "yes"]
+    sql: DATETIME_DIFF(${finished_at_timestamp_raw}, ${started_at_timestamp_raw}, SECOND) ;;
+  }
 }

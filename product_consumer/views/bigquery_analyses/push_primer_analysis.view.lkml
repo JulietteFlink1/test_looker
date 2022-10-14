@@ -39,6 +39,8 @@ select
 
  from `flink-data-prod.curated.daily_events`
  where
+  date(event_timestamp) >= '2022-01-01'
+and
   platform in ('ios','android')
   and (
     event_name = 'notification_request_viewed'

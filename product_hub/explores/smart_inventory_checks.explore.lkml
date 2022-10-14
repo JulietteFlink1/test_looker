@@ -13,6 +13,8 @@ include: "/**/daily_smart_inventory_checks.view"
 include: "/**/products.view"
 include: "/**/hubs_ct.view.lkml"
 include: "/**/global_filters_and_parameters.view.lkml"
+include: "/**/employee_level_kpis.view.lkml"
+
 
 explore: smart_inventory_checks {
   from:  daily_smart_inventory_checks
@@ -44,13 +46,27 @@ explore: smart_inventory_checks {
   }
 
   join: products {
+    view_label: "2 Product Dimensions"
     sql_on: ${smart_inventory_checks.sku} = ${products.product_sku} ;;
     type: left_outer
     relationship: many_to_one
   }
 
   join: hubs_ct {
+    view_label: "3 Hub Dimensions"
     sql_on: ${smart_inventory_checks.hub_code} = ${hubs_ct.hub_code} ;;
+    type: left_outer
+    relationship: many_to_one
+  }
+
+  join: employee_level_kpis {
+    view_label: "4 Employee Attributes"
+    fields: [ employee_level_kpis.number_of_worked_hours
+      , employee_level_kpis.number_of_assigned_hours
+      , employee_level_kpis.number_of_no_show_hours]
+    sql_on: cast(${employee_level_kpis.staff_number} as string)=${smart_inventory_checks.completed_by}
+      and ${employee_level_kpis.shift_date}=${smart_inventory_checks.scheduled_date}
+      and ${employee_level_kpis.hub_code}=${smart_inventory_checks.hub_code};;
     type: left_outer
     relationship: many_to_one
   }
