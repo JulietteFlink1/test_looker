@@ -636,6 +636,7 @@ view: shyftplan_riders_pickers_hours_clean {
 
   measure: pct_unassigned_hours{
     label:"% Unassigned Shift Hours (Riders & Pickers)"
+    alias: [pct_unaasigned_hours]
     type: number
     description: "% Unassigned Shift Hours (Riders & Pickers)"
     sql:(${number_of_unassigned_hours_rider_picker})
