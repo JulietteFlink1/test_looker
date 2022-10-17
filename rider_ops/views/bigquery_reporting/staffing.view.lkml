@@ -2128,7 +2128,7 @@ view: staffing {
     value_format_name: decimal_1
   }
 
-  measure: number_of_planned_minutes_availability_based_rider {
+  measure: number_of_planned_hours_availability_based_rider {
     group_label: "> Rider Measures"
     label: "# Filled (Planned) Rider Hours Based on Availability"
     type: sum
@@ -2136,7 +2136,7 @@ view: staffing {
     value_format_name: decimal_1
   }
 
-  measure: number_of_planned_minutes_availability_based_external_rider {
+  measure: number_of_planned_hours_availability_based_external_rider {
     group_label: "> Rider Measures"
     label: "# Filled (Planned) External Rider Hours Based on Availability"
     type: sum
@@ -2144,7 +2144,7 @@ view: staffing {
     value_format_name: decimal_1
   }
 
-  measure: number_of_planned_minutes_availability_based_internal_rider {
+  measure: number_of_planned_hours_availability_based_internal_rider {
     group_label: "> Rider Measures"
     label: "# Filled (Planned) Internal Rider Hours Based on Availability"
     type: sum
@@ -2152,11 +2152,12 @@ view: staffing {
     value_format_name: decimal_1
   }
 
-  measure: number_of_availability_minutes_rider {
+  measure: number_of_availability_hours_rider {
     group_label: "> Rider Measures"
     label: "# Rider Availability Hours"
     type: sum
     sql: ${TABLE}.number_of_availability_minutes_rider/60;;
+    description:"Number of hours that were provided as available by the employee (Rider)"
     value_format_name: decimal_1
   }
 
@@ -2168,7 +2169,7 @@ view: staffing {
     value_format_name: decimal_1
   }
 
-  measure: number_of_planned_minutes_availability_based_picker {
+  measure: number_of_planned_hours_availability_based_picker {
     group_label: "> Picker Measures"
     label: "# Filled (Planned) Picker Hours Based on Availability"
     type: sum
@@ -2176,7 +2177,7 @@ view: staffing {
     value_format_name: decimal_1
   }
 
-  measure: number_of_planned_minutes_availability_based_external_picker {
+  measure: number_of_planned_hours_availability_based_external_picker {
     group_label: "> Picker Measures"
     label: "# Filled (Planned) External Picker Hours Based on Availability"
     type: sum
@@ -2184,7 +2185,7 @@ view: staffing {
     value_format_name: decimal_1
   }
 
-  measure: number_of_planned_minutes_availability_based_internal_picker {
+  measure: number_of_planned_hours_availability_based_internal_picker {
     group_label: "> Picker Measures"
     label: "# Filled (Planned) Internal Picker Hours Based on Availability"
     type: sum
@@ -2192,11 +2193,12 @@ view: staffing {
     value_format_name: decimal_1
   }
 
-  measure: number_of_availability_minutes_picker {
+  measure: number_of_availability_hours_picker {
     group_label: "> Picker Measures"
     label: "# Picker Availability Hours"
     type: sum
     sql: ${TABLE}.number_of_availability_minutes_picker/60;;
+    description:"Number of hours that were provided as available by the employee (Picker)"
     value_format_name: decimal_1
   }
 
@@ -2208,7 +2210,7 @@ view: staffing {
     value_format_name: decimal_1
   }
 
-  measure: number_of_planned_minutes_availability_based_shift_lead {
+  measure: number_of_planned_hours_availability_based_shift_lead {
     group_label: "> Shift Lead Measures"
     label: "# Filled (Planned) Shift Lead Hours Based on Availability"
     type: sum
@@ -2216,7 +2218,7 @@ view: staffing {
     value_format_name: decimal_1
   }
 
-  measure: number_of_planned_minutes_availability_based_external_shift_lead {
+  measure: number_of_planned_hours_availability_based_external_shift_lead {
     group_label: "> Shift Lead Measures"
     label: "# Filled (Planned) External Shift Lead Hours Based on Availability"
     type: sum
@@ -2224,7 +2226,7 @@ view: staffing {
     value_format_name: decimal_1
   }
 
-  measure: number_of_planned_minutes_availability_based_internal_shift_lead {
+  measure: number_of_planned_hours_availability_based_internal_shift_lead {
     group_label: "> Shift Lead Measures"
     label: "# Filled (Planned) Internal Shift Lead Hours Based on Availability"
     type: sum
@@ -2232,11 +2234,12 @@ view: staffing {
     value_format_name: decimal_1
   }
 
-  measure: number_of_availability_minutes_shift_lead {
+  measure: number_of_availability_hours_shift_lead {
     group_label: "> Shift Lead Measures"
     label: "# Shift Lead Availability Hours"
     type: sum
     sql: ${TABLE}.number_of_availability_minutes_shift_lead/60;;
+    description:"Number of hours that were provided as available by the employee (Shift Lead)"
     value_format_name: decimal_1
   }
 
@@ -2248,7 +2251,7 @@ view: staffing {
     value_format_name: decimal_1
   }
 
-  measure: number_of_planned_minutes_availability_based_rider_captain {
+  measure: number_of_planned_hours_availability_based_rider_captain {
     group_label: "> Rider Captain Measures"
     label: "# Filled (Planned) Rider Captain Hours Based on Availability"
     type: sum
@@ -2256,7 +2259,7 @@ view: staffing {
     value_format_name: decimal_1
   }
 
-  measure: number_of_planned_minutes_availability_based_external_rider_captain {
+  measure: number_of_planned_hours_availability_based_external_rider_captain {
     group_label: "> Rider Captain Measures"
     label: "# Filled (Planned) External Rider Captain Hours Based on Availability"
     type: sum
@@ -2264,7 +2267,7 @@ view: staffing {
     value_format_name: decimal_1
   }
 
-  measure: number_of_planned_minutes_availability_based_internal_rider_captain {
+  measure: number_of_planned_hours_availability_based_internal_rider_captain {
     group_label: "> Rider Captain Measures"
     label: "# Filled (Planned) Internal Rider Captain Hours Based on Availability"
     type: sum
@@ -2272,11 +2275,13 @@ view: staffing {
     value_format_name: decimal_1
   }
 
-  measure: number_of_availability_minutes_rider_captain {
+  measure: number_of_availability_hours_rider_captain {
     group_label: "> Rider Captain Measures"
     label: "# Rider Captain Availability Hours"
     type: sum
     sql: ${TABLE}.number_of_availability_minutes_rider_captain/60;;
+    description:"Number of hours that were provided as available by the employee (Rider Captain)"
+
     value_format_name: decimal_1
   }
 
@@ -2288,7 +2293,7 @@ view: staffing {
     value_format_name: decimal_1
   }
 
-  measure: number_of_planned_minutes_availability_based_co_ops {
+  measure: number_of_planned_hours_availability_based_co_ops {
     group_label: "> Co Ops Measures"
     label: "# Filled (Planned) Co Ops Hours Based on Availability"
     type: sum
@@ -2296,7 +2301,7 @@ view: staffing {
     value_format_name: decimal_1
   }
 
-  measure: number_of_planned_minutes_availability_based_external_co_ops {
+  measure: number_of_planned_hours_availability_based_external_co_ops {
     group_label: "> Co Ops Measures"
     label: "# Filled (Planned) External Co Ops Hours Based on Availability"
     type: sum
@@ -2304,7 +2309,7 @@ view: staffing {
     value_format_name: decimal_1
   }
 
-  measure: number_of_planned_minutes_availability_based_internal_co_ops {
+  measure: number_of_planned_hours_availability_based_internal_co_ops {
     group_label: "> Co Ops Measures"
     label: "# Filled (Planned) Internal Co Ops Hours Based on Availability"
     type: sum
@@ -2312,11 +2317,12 @@ view: staffing {
     value_format_name: decimal_1
   }
 
-  measure: number_of_availability_minutes_co_ops {
+  measure: number_of_availability_hours_co_ops {
     group_label: "> Co Ops Measures"
     label: "# Co Ops Availability Hours"
     type: sum
     sql: ${TABLE}.number_of_availability_minutes_co_ops/60;;
+    description:"Number of hours that were provided as available by the employee (Co Ops)"
     value_format_name: decimal_1
   }
 
@@ -2328,7 +2334,7 @@ view: staffing {
     value_format_name: decimal_1
   }
 
-  measure: number_of_planned_minutes_availability_based_wh {
+  measure: number_of_planned_hours_availability_based_wh {
     group_label: "> WH Measures"
     label: "# Filled (Planned) WH Hours Based on Availability"
     type: sum
@@ -2336,7 +2342,7 @@ view: staffing {
     value_format_name: decimal_1
   }
 
-  measure: number_of_planned_minutes_availability_based_external_wh {
+  measure: number_of_planned_hours_availability_based_external_wh {
     group_label: "> WH Measures"
     label: "# Filled (Planned) External WH Hours Based on Availability"
     type: sum
@@ -2344,7 +2350,7 @@ view: staffing {
     value_format_name: decimal_1
   }
 
-  measure: number_of_planned_minutes_availability_based_internal_wh {
+  measure: number_of_planned_hours_availability_based_internal_wh {
     group_label: "> WH Measures"
     label: "# Filled (Planned) Internal WH Hours Based on Availability"
     type: sum
@@ -2352,11 +2358,12 @@ view: staffing {
     value_format_name: decimal_1
   }
 
-  measure: number_of_availability_minutes_wh {
+  measure: number_of_availability_hours_wh {
     group_label: "> WH Measures"
     label: "# WH Availability Hours"
     type: sum
     sql: ${TABLE}.number_of_availability_minutes_wh/60;;
+    description:"Number of hours that were provided as available by the employee (WH)"
     value_format_name: decimal_1
   }
 
@@ -2376,7 +2383,7 @@ view: staffing {
     value_format_name: decimal_1
   }
 
-  measure: number_of_planned_minutes_availability_based_hub_staff {
+  measure: number_of_planned_hours_availability_based_hub_staff {
     group_label: "> Hub Staff Measures"
     label: "# Filled (Planned) Hub Staff Hours Based on Availability"
     type: sum
@@ -2385,7 +2392,7 @@ view: staffing {
     value_format_name: decimal_1
   }
 
-  measure: number_of_planned_minutes_availability_based_external_hub_staff {
+  measure: number_of_planned_hours_availability_based_external_hub_staff {
     group_label: "> Hub Staff Measures"
     label: "# Filled (Planned) External Hub Staff Hours Based on Availability"
     type: sum
@@ -2394,7 +2401,7 @@ view: staffing {
     value_format_name: decimal_1
   }
 
-  measure: number_of_planned_minutes_availability_based_internal_hub_staff {
+  measure: number_of_planned_hours_availability_based_internal_hub_staff {
     group_label: "> Hub Staff Measures"
     label: "# Filled (Planned) Internal Hub Staff Hours Based on Availability"
     type: sum
@@ -2403,12 +2410,13 @@ view: staffing {
     value_format_name: decimal_1
   }
 
-  measure: number_of_availability_minutes_hub_staff {
+  measure: number_of_availability_hours_hub_staff {
     group_label: "> Hub Staff Measures"
     label: "# Hub Staff Availability Hours"
     type: sum
     sql: (${TABLE}.number_of_availability_minutes_ops_associate +
     ${TABLE}.number_of_availability_minutes_shift_lead)/60;;
+    description:"Number of hours that were provided as available by the employee (Hub Staff)"
     value_format_name: decimal_1
   }
 
