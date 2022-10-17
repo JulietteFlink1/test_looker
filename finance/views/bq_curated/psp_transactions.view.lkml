@@ -723,7 +723,7 @@ view: psp_transactions {
 
   measure: percentage_trx_without_orders_refunded {
     group_label: "> Orphaned Payments - Empty Orders"
-    label: "% Empty Orders Transactions - Refunded"
+    label: "% Empty Order Transactions - Refunded"
     type: number
     sql: NULLIF(${sum_empty_order_uuid_refunded},0)/NULLIF(${cnt_refund_transactions},0);;
     value_format_name: percent_2
@@ -887,7 +887,7 @@ view: psp_transactions {
 
   measure: percentage_trx_orphaned_double_payments_authorised {
     group_label: "> Orphaned Payments - Double Payments"
-    label: "% Orphaned Double Payments - Authorised Transactions"
+    label: "% Orphaned Double Payments - Authorised"
     description: "Number of Orphaned Double Payment Transactions of type Authorised divided by all transactions of type Authorised"
     type: number
     sql: NULLIF(${sum_orphaned_double_payment_authorised},0)/NULLIF(${cnt_authorised_transactions},0);;
@@ -896,7 +896,7 @@ view: psp_transactions {
 
   measure: percentage_trx_orphaned_double_payment_settled {
     group_label: "> Orphaned Payments - Double Payments"
-    label: "% Orphaned Double Payments - Settled Transactions"
+    label: "% Orphaned Double Payments - Settled"
     description: "Number of Orphaned Double Payment Transactions of type Settled divided by all transactions of type Settled"
     type: number
     sql: NULLIF(${sum_orphaned_double_payment_settled},0)/NULLIF(${cnt_settled_transactions},0);;
@@ -905,7 +905,7 @@ view: psp_transactions {
 
     measure: percentage_trx_orphaned_double_payment_refunded {
     group_label: "> Orphaned Payments - Double Payments"
-    label: "% Orphaned Double Payments - Refunded Transactions"
+    label: "% Orphaned Double Payments - Refunded"
     description: "Number of Orphaned Double Payment Transactions of type Refunded or RefundedExternally divided by all transactions of type Refunded or RefundedExternally"
     type: number
     sql: NULLIF(${sum_orphaned_double_payment_refunded},0)/NULLIF(${cnt_refund_transactions},0);;
@@ -914,7 +914,7 @@ view: psp_transactions {
 
     measure: percentage_trx_orphaned_double_payment_chargeback {
     group_label: "> Orphaned Payments - Double Payments"
-    label: "% Orphaned Double Payments - Chargeback Transactions"
+    label: "% Orphaned Double Payments - Chargeback"
     description: "Number of Orphaned Double Payment Transactions of type Chargeback or ChargebackReversed divided by all transactions of type Chargeback or ChargebackReversed"
     type: number
     sql: NULLIF(${sum_orphaned_double_payment_chargeback},0)/NULLIF(${cnt_chargebacks_transactions},0);;
@@ -1072,7 +1072,7 @@ view: psp_transactions {
 
   measure: percentage_trx_all_orphaned_payment_authorised {
     group_label: "> Orphaned Payments - All"
-    label: "% Total Orphaned Payments - Authorised Transactions"
+    label: "% Total Orphaned Payments - Authorised"
     description: "Number of Total Orphaned Payment Transactions of type Authorised divided by all Transactions of type Authorised. Include both Empty Order Orphaned Transactions and Double Payment Orphaned Transactions."
     type: number
     sql: NULLIF(${sum_all_orphaned_payment_authorised},0)/NULLIF(${cnt_authorised_transactions},0);;
@@ -1081,7 +1081,7 @@ view: psp_transactions {
 
   measure: percentage_trx_all_orphaned_payment_settled {
     group_label: "> Orphaned Payments - All"
-    label: "% Total Orphaned Payments - Settled Transactions"
+    label: "% Total Orphaned Payments - Settled"
     description: "Number of Total Orphaned Payment Transactions of type Settled divided by all Transactions of type Settled. Include both Empty Order Orphaned Transactions and Double Payment Orphaned Transactions."
     type: number
     sql: NULLIF(${sum_all_orphaned_payment_settled},0)/NULLIF(${cnt_settled_transactions},0);;
@@ -1090,7 +1090,7 @@ view: psp_transactions {
 
   measure: percentage_trx_all_orphaned_payment_refunded {
     group_label: "> Orphaned Payments - All"
-    label: "% Total Orphaned Payments - Refunded Transactions"
+    label: "% Total Orphaned Payments - Refunded"
     description: "Number of Total Orphaned Payment Transactions of type Refunded or RefundedExternally divided by all Transactions of type Refunded or RefundedExternally. Include both Empty Order Orphaned Transactions and Double Payment Orphaned Transactions."
     type: number
     sql: NULLIF(${sum_all_orphaned_payment_refunded},0)/NULLIF(${cnt_refund_transactions},0);;
@@ -1099,7 +1099,7 @@ view: psp_transactions {
 
   measure: percentage_trx_all_orphaned_payment_chargeback {
     group_label: "> Orphaned Payments - All"
-    label: "% Total Orphaned Payments - Chargeback Transactions"
+    label: "% Total Orphaned Payments - Chargeback"
     description: "Number of Orphaned Double Payment Transactions of type Chargeback or ChargebackReversed divided by all transactions of type Chargeback or ChargebackReversed. Include both Empty Order Orphaned Transactions and Double Payment Orphaned Transactions."
     type: number
     sql: NULLIF(${sum_all_orphaned_payment_chargeback},0)/NULLIF(${cnt_chargebacks_transactions},0);;
