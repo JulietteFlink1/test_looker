@@ -985,7 +985,9 @@ view: cc_contacts {
     group_label: "Contact Statistics"
     label: "% English contacts"
     description: "Share of contacts that require english support. Number of contacts with tag needs-english-support divided by number of all contacts"
+    type: number
     sql: safe_divide(${number_of_english_contacts}/${number_of_contacts}) ;;
+    value_format_name: percent_0
   }
 
 
