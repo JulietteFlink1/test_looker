@@ -787,7 +787,7 @@ view: forecasts {
     group_label: "> Dynamic Measures"
     sql:
         CASE
-          WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${number_of_forecasted_no_show_hours_rider_adjusted_dimension}_dimension}
+          WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${number_of_forecasted_no_show_hours_rider_adjusted_dimension}
       ELSE NULL
       END ;;
     hidden: yes
