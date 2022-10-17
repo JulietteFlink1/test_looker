@@ -2133,6 +2133,7 @@ view: staffing {
     label: "# Filled (Planned) Rider Hours Based on Availability"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_availability_based_rider/60;;
+    description:"Number of filled (planned) hours that are overlapping with provided availability (Rider)"
     value_format_name: decimal_1
   }
 
@@ -2141,6 +2142,7 @@ view: staffing {
     label: "# Filled (Planned) External Rider Hours Based on Availability"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_availability_based_external_rider/60;;
+    description:"Number of filled (planned) hours that are overlapping with provided availability (External Rider)"
     value_format_name: decimal_1
   }
 
@@ -2149,6 +2151,7 @@ view: staffing {
     label: "# Filled (Planned) Internal Rider Hours Based on Availability"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_availability_based_internal_rider/60;;
+    description:"Number of filled (planned) hours that are overlapping with provided availability (Internal Rider)"
     value_format_name: decimal_1
   }
 
@@ -2174,6 +2177,7 @@ view: staffing {
     label: "# Filled (Planned) Picker Hours Based on Availability"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_availability_based_picker/60;;
+    description:"Number of filled (planned) hours that are overlapping with provided availability (Picker)"
     value_format_name: decimal_1
   }
 
@@ -2182,6 +2186,7 @@ view: staffing {
     label: "# Filled (Planned) External Picker Hours Based on Availability"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_availability_based_external_picker/60;;
+    description:"Number of filled (planned) hours that are overlapping with provided availability (External Picker)"
     value_format_name: decimal_1
   }
 
@@ -2190,6 +2195,7 @@ view: staffing {
     label: "# Filled (Planned) Internal Picker Hours Based on Availability"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_availability_based_internal_picker/60;;
+    description:"Number of filled (planned) hours that are overlapping with provided availability (Internal Picker)"
     value_format_name: decimal_1
   }
 
@@ -2215,6 +2221,7 @@ view: staffing {
     label: "# Filled (Planned) Shift Lead Hours Based on Availability"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_availability_based_shift_lead/60;;
+    description:"Number of filled (planned) hours that are overlapping with provided availability (Shift Lead)"
     value_format_name: decimal_1
   }
 
@@ -2223,6 +2230,7 @@ view: staffing {
     label: "# Filled (Planned) External Shift Lead Hours Based on Availability"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_availability_based_external_shift_lead/60;;
+    description:"Number of filled (planned) hours that are overlapping with provided availability (External Shift Lead)"
     value_format_name: decimal_1
   }
 
@@ -2231,6 +2239,7 @@ view: staffing {
     label: "# Filled (Planned) Internal Shift Lead Hours Based on Availability"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_availability_based_internal_shift_lead/60;;
+    description:"Number of filled (planned) hours that are overlapping with provided availability (Internal Shift Lead)"
     value_format_name: decimal_1
   }
 
@@ -2256,6 +2265,7 @@ view: staffing {
     label: "# Filled (Planned) Rider Captain Hours Based on Availability"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_availability_based_rider_captain/60;;
+    description:"Number of filled (planned) hours that are overlapping with provided availability (Rider Captain)"
     value_format_name: decimal_1
   }
 
@@ -2264,6 +2274,7 @@ view: staffing {
     label: "# Filled (Planned) External Rider Captain Hours Based on Availability"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_availability_based_external_rider_captain/60;;
+    description:"Number of filled (planned) hours that are overlapping with provided availability (External Rider Captain)"
     value_format_name: decimal_1
   }
 
@@ -2272,6 +2283,7 @@ view: staffing {
     label: "# Filled (Planned) Internal Rider Captain Hours Based on Availability"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_availability_based_internal_rider_captain/60;;
+    description:"Number of filled (planned) hours that are overlapping with provided availability (Internal Rider Captain)"
     value_format_name: decimal_1
   }
 
@@ -2298,6 +2310,7 @@ view: staffing {
     label: "# Filled (Planned) Co Ops Hours Based on Availability"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_availability_based_co_ops/60;;
+    description:"Number of filled (planned) hours that are overlapping with provided availability (Co Ops)"
     value_format_name: decimal_1
   }
 
@@ -2306,6 +2319,7 @@ view: staffing {
     label: "# Filled (Planned) External Co Ops Hours Based on Availability"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_availability_based_external_co_ops/60;;
+    description:"Number of filled (planned) hours that are overlapping with provided availability (External Co Ops)"
     value_format_name: decimal_1
   }
 
@@ -2314,6 +2328,7 @@ view: staffing {
     label: "# Filled (Planned) Internal Co Ops Hours Based on Availability"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_availability_based_internal_co_ops/60;;
+    description:"Number of filled (planned) hours that are overlapping with provided availability (Internal Co Ops)"
     value_format_name: decimal_1
   }
 
@@ -2339,6 +2354,7 @@ view: staffing {
     label: "# Filled (Planned) WH Hours Based on Availability"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_availability_based_wh/60;;
+    description:"Number of filled (planned) hours that are overlapping with provided availability (WH)"
     value_format_name: decimal_1
   }
 
@@ -2347,6 +2363,7 @@ view: staffing {
     label: "# Filled (Planned) External WH Hours Based on Availability"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_availability_based_external_wh/60;;
+    description:"Number of filled (planned) hours that are overlapping with provided availability (External WH)"
     value_format_name: decimal_1
   }
 
@@ -2355,6 +2372,7 @@ view: staffing {
     label: "# Filled (Planned) Internal WH Hours Based on Availability"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_availability_based_internal_wh/60;;
+    description:"Number of filled (planned) hours that are overlapping with provided availability (Internal WH)"
     value_format_name: decimal_1
   }
 
@@ -2389,6 +2407,7 @@ view: staffing {
     type: sum
     sql: (${TABLE}.number_of_planned_minutes_availability_based_ops_associate +
     ${TABLE}.number_of_planned_minutes_availability_based_shift_lead)/60;;
+    description:"Number of filled (planned) hours that are overlapping with provided availability (Hub Staff)"
     value_format_name: decimal_1
   }
 
@@ -2398,6 +2417,7 @@ view: staffing {
     type: sum
     sql: (${TABLE}.number_of_planned_minutes_availability_based_external_ops_associate +
     ${TABLE}.number_of_planned_minutes_availability_based_external_shift_lead)/60;;
+    description:"Number of filled (planned) hours that are overlapping with provided availability (External Hub Staff)"
     value_format_name: decimal_1
   }
 
@@ -2407,6 +2427,7 @@ view: staffing {
     type: sum
     sql: (${TABLE}.number_of_planned_minutes_availability_based_internal_ops_associate +
     ${TABLE}.number_of_planned_minutes_availability_based_internal_shift_lead)/60;;
+    description:"Number of filled (planned) hours that are overlapping with provided availability (Internal Hub Staff)"
     value_format_name: decimal_1
   }
 
