@@ -617,7 +617,7 @@ view: psp_transactions {
 
   measure: sum_empty_order_trx_fees_refunds {
     group_label: "> Orphaned Payments - Empty Orders"
-    label: "€ Total Costs Empty Order Transactions - Refunds"
+    label: "€ Total Costs Empty Order Transactions - Refunded"
     description: "Total fees associated with orphaned transactions of type Refunded or RefundedExternally. Considering processing fees for paypal and sum of commision and processing fees for other payment methods. Orphaned Transactions are PSP references that are not linked to any CT order."
     type: sum
     sql:
@@ -632,7 +632,7 @@ view: psp_transactions {
 
   measure: sum_empty_order_trx_fees_chargebacks {
     group_label: "> Orphaned Payments - Empty Orders"
-    label: "€ Total Costs Empty Order Transactions - Chargebacks"
+    label: "€ Total Costs Empty Order Transactions - Chargeback"
     description: "Total fees associated with orphaned transactions of type Chargeback or ChargebackReversed. Considering processing fees for paypal and sum of commision and processing fees for other payment methods. Orphaned Transactions are PSP references that are not linked to any CT order."
     type: sum
     sql:
@@ -797,7 +797,7 @@ view: psp_transactions {
 
   measure: sum_orphaned_double_payment_trx_fees_refunds {
     group_label: "> Orphaned Payments - Double Payments"
-    label: "€ Total Costs Orphaned Double Payments - Refunds"
+    label: "€ Total Costs Orphaned Double Payments - Refunded"
     description: "Total fees associated with Orphaned Double Payment Transactions of type Refunded or RefundedExternally. Considering processing fees for paypal and sum of commision and processing fees for other payment methods. Orphaned Double Payments Transactions are PSP references that were not recorded in CT. They were match to their corresponding CT order using Adyen’s merchant reference that contains CT cart id."
     type: sum
     sql:
@@ -812,7 +812,7 @@ view: psp_transactions {
 
   measure: sum_orphaned_double_payment_trx_fees_chargebacks {
     group_label: "> Orphaned Payments - Double Payments"
-    label: "€ Total Costs Orphaned Double Payments - Chargebacks"
+    label: "€ Total Costs Orphaned Double Payments - Chargeback"
     description: "Total fees associated with Orphaned Double Payment Transactions of type Chargeback or ChargebackReversed. Considering processing fees for paypal and sum of commision and processing fees for other payment methods. Orphaned Double Payments Transactions are PSP references that were not recorded in CT. They were match to their corresponding CT order using Adyen’s merchant reference that contains CT cart id."
     type: sum
     sql:
@@ -982,7 +982,7 @@ view: psp_transactions {
 
   measure: sum_all_orphaned_payment_trx_fees_refunds {
     group_label: "> Orphaned Payments - All"
-    label: "€ Total Costs Orphaned Payments - Refunds"
+    label: "€ Total Costs Orphaned Payments - Refunded"
     description: "Total fees associated with Total Orphaned Transactions of type Refunded or RefundedExternally. Considering processing fees for paypal and sum of commission and processing fees for other payment methods.Include both Empty Order Orphaned Transactions and Double Payment Orphaned Transactions."
     type: sum
     sql:
@@ -997,7 +997,7 @@ view: psp_transactions {
 
   measure: sum_all_orphaned_payment_trx_fees_chargebacks {
     group_label: "> Orphaned Payments - All"
-    label: "€ Total Costs Orphaned Payments - Chargebacks"
+    label: "€ Total Costs Orphaned Payments - Chargeback"
     description: "Total fees associated with Total Orphaned Transactions of type Chargeback or ChargebackReversed. Considering processing fees for paypal and sum of commision and processing fees for other payment methods. Include both Empty Order Orphaned Transactions and Double Payment Orphaned Transactions."
     type: sum
     sql:
