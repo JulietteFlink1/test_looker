@@ -2137,6 +2137,15 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  measure: pct_of_planned_hours_availability_based_rider {
+    group_label: "> Rider Measures"
+    label: "% Filled (Planned) Rider Hours Based on Availability"
+    type: number
+    sql:${number_of_planned_hours_availability_based_rider}/${number_of_planned_hours_rider} ;;
+    description:"Share of Filled Hours based on Availability from total Filled Hours - (# Filled (Planned) Hours Based on Availability / # Filled (Planned) Hours)"
+    value_format_name: percent_1
+  }
+
   measure: number_of_planned_hours_availability_based_external_rider {
     group_label: "> Rider Measures"
     label: "# Filled (Planned) External Rider Hours Based on Availability"
@@ -2179,6 +2188,15 @@ view: staffing {
     sql: ${TABLE}.number_of_planned_minutes_availability_based_picker/60;;
     description:"Number of filled (planned) hours that are overlapping with provided availability (Picker)"
     value_format_name: decimal_1
+  }
+
+  measure: pct_of_planned_hours_availability_based_picker {
+    group_label: "> Picker Measures"
+    label: "% Filled (Planned) Picker Hours Based on Availability"
+    type: number
+    sql:${number_of_planned_hours_availability_based_picker}/${number_of_planned_hours_picker} ;;
+    description:"Share of Filled Hours based on Availability from total Filled Hours - (# Filled (Planned) Hours Based on Availability / # Filled (Planned) Hours)"
+    value_format_name: percent_1
   }
 
   measure: number_of_planned_hours_availability_based_external_picker {
@@ -2225,6 +2243,15 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  measure: pct_of_planned_hours_availability_based_shift_lead {
+    group_label: "> Shift Lead Measures"
+    label: "% Filled (Planned) Shift Lead Hours Based on Availability"
+    type: number
+    sql:${number_of_planned_hours_availability_based_shift_lead}/${number_of_planned_hours_shift_lead} ;;
+    description:"Share of Filled Hours based on Availability from total Filled Hours - (# Filled (Planned) Hours Based on Availability / # Filled (Planned) Hours)"
+    value_format_name: percent_1
+  }
+
   measure: number_of_planned_hours_availability_based_external_shift_lead {
     group_label: "> Shift Lead Measures"
     label: "# Filled (Planned) External Shift Lead Hours Based on Availability"
@@ -2267,6 +2294,15 @@ view: staffing {
     sql: ${TABLE}.number_of_planned_minutes_availability_based_rider_captain/60;;
     description:"Number of filled (planned) hours that are overlapping with provided availability (Rider Captain)"
     value_format_name: decimal_1
+  }
+
+  measure: pct_of_planned_hours_availability_based_rider_captain {
+    group_label: "> Rider Captain Measures"
+    label: "% Filled (Planned) Rider Captain Hours Based on Availability"
+    type: number
+    sql:${number_of_planned_hours_availability_based_rider_captain}/${number_of_planned_hours_rider_captain} ;;
+    description:"Share of Filled Hours based on Availability from total Filled Hours - (# Filled (Planned) Hours Based on Availability / # Filled (Planned) Hours)"
+    value_format_name: percent_1
   }
 
   measure: number_of_planned_hours_availability_based_external_rider_captain {
@@ -2314,6 +2350,15 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  measure: pct_of_planned_hours_availability_based_co_ops {
+    group_label: "> Co Ops Measures"
+    label: "% Filled (Planned) Co Ops Hours Based on Availability"
+    type: number
+    sql:${number_of_planned_hours_availability_based_co_ops}/${number_of_planned_hours_co_ops} ;;
+    description:"Share of Filled Hours based on Availability from total Filled Hours - (# Filled (Planned) Hours Based on Availability / # Filled (Planned) Hours)"
+    value_format_name: percent_1
+  }
+
   measure: number_of_planned_hours_availability_based_external_co_ops {
     group_label: "> Co Ops Measures"
     label: "# Filled (Planned) External Co Ops Hours Based on Availability"
@@ -2356,6 +2401,15 @@ view: staffing {
     sql: ${TABLE}.number_of_planned_minutes_availability_based_wh/60;;
     description:"Number of filled (planned) hours that are overlapping with provided availability (WH)"
     value_format_name: decimal_1
+  }
+
+  measure: pct_of_planned_hours_availability_based_wh {
+    group_label: "> WH Measures"
+    label: "% Filled (Planned) WH Hours Based on Availability"
+    type: number
+    sql:${number_of_planned_hours_availability_based_wh}/${number_of_planned_hours_wh} ;;
+    description:"Share of Filled Hours based on Availability from total Filled Hours - (# Filled (Planned) Hours Based on Availability / # Filled (Planned) Hours)"
+    value_format_name: percent_1
   }
 
   measure: number_of_planned_hours_availability_based_external_wh {
@@ -2409,6 +2463,15 @@ view: staffing {
     ${TABLE}.number_of_planned_minutes_availability_based_shift_lead)/60;;
     description:"Number of filled (planned) hours that are overlapping with provided availability (Hub Staff)"
     value_format_name: decimal_1
+  }
+
+  measure: pct_of_planned_hours_availability_based_hub_staff {
+    group_label: "> Hub Staff Measures"
+    label: "% Filled (Planned) Hub Staff Hours Based on Availability"
+    type: number
+    sql:${number_of_planned_hours_availability_based_hub_staff}/${number_of_planned_hours_hub_staff} ;;
+    description:"Share of Filled Hours based on Availability from total Filled Hours - (# Filled (Planned) Hours Based on Availability / # Filled (Planned) Hours)"
+    value_format_name: percent_1
   }
 
   measure: number_of_planned_hours_availability_based_external_hub_staff {
