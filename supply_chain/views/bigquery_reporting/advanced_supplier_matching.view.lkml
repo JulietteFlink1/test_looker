@@ -1,5 +1,5 @@
 view: advanced_supplier_matching {
-  sql_table_name: `flink-data-prod.reporting.advanced_supplier_matching`
+  sql_table_name: `flink-data-dev.dbt_lruiz_reporting.advanced_supplier_matching`
     ;;
 
 
@@ -825,7 +825,7 @@ view: advanced_supplier_matching {
   measure: amt_total_quantity_gmv_gross_per_supplier_weekly {
     type:  average
     label: "€ GMV Gross per Supplier (Weekly)"
-    description: "Total GMV Gross per Supplier on a weekly level independent of SKU and Hub"
+    description: "USE ON WEEKLY AND SUPPLIER LEVEL - Total GMV Gross per Supplier on a weekly level independent of SKU and Hub"
     group_label: "Price Related Metrics"
 
     sql: ${amt_total_gmv_gross_per_supplier_weekly} ;;
@@ -837,7 +837,7 @@ view: advanced_supplier_matching {
   measure: amt_total_quantity_gmv_gross_per_hub_weekly {
     type:  average
     label: "€ GMV Gross per Hub (Weekly)"
-    description: "Total GMV Gross per Hub on a weekly level independent of SKU"
+    description: "USE ON WEEKLY AND HUB LEVEL - Total GMV Gross per Hub on a weekly level independent of SKU"
     group_label: "Price Related Metrics"
 
     sql: ${amt_total_gmv_gross_per_hub_weekly} ;;
@@ -849,7 +849,7 @@ view: advanced_supplier_matching {
   measure: amt_total_quantity_gmv_gross_per_hub_and_parent_sku_weekly {
     type:  average
     label: "€ GMV Gross per SKU/Hub (Weekly)"
-    description: "Total GMV Gross per Hub/SKU on a weekly level regardless if we had a delivery/inbound on that day"
+    description: "USE ON WEEKLY, HUB AND SKU LEVEL - Total GMV Gross per Hub/SKU on a weekly level regardless if we had a delivery/inbound on that day"
     group_label: "Price Related Metrics"
 
     sql: ${amt_total_gmv_gross_per_hub_and_parent_sku_weekly} ;;
