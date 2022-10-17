@@ -686,6 +686,33 @@ view: advanced_supplier_matching {
     sql: ${TABLE}.amt_quantity_ordered_net ;;
   }
 
+  dimension: amt_total_gmv_gross_per_supplier_weekly {
+    type: number
+    label: "€ Total GMV Gross per Supplier Weekly"
+    description: "Total amount sold in Euro per Supplier per Week."
+    group_label: "Special Use Cases - Price Related"
+    hidden: yes
+    sql: ${TABLE}.amt_total_gmv_gross_per_supplier_weekly ;;
+  }
+
+  dimension: amt_total_gmv_gross_per_hub_weekly {
+    type: number
+    label: "€ Total GMV Gross per Hub Weekly"
+    description: "Total amount sold in Euro per Hub per Week."
+    group_label: "Special Use Cases - Price Related"
+    hidden: yes
+    sql: ${TABLE}.amt_total_gmv_gross_per_hub_weekly ;;
+  }
+
+  dimension: amt_total_gmv_gross_per_hub_and_parent_sku_weekly {
+    type: number
+    label: "€ Total GMV Gross per Parent SKU/Hub Weekly"
+    description: "Total amount sold in Euro per Parent SKU/Hub per Week."
+    group_label: "Special Use Cases - Price Related"
+    hidden: yes
+    sql: ${TABLE}.amt_total_gmv_gross_per_hub_and_parent_sku_weekly ;;
+  }
+
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   #  - - - - - - - - - -    Special Use Case
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -733,7 +760,7 @@ view: advanced_supplier_matching {
   measure: avg_unit_buying_price {
     type:  average
     label: "AVG Unit Buying Price Net"
-    description: "Average Unit Selling Buying Price"
+    description: "Average Unit Buying Price"
     group_label: "Price Related Metrics"
 
     sql: ${avg_amt_buying_price_net} ;;
@@ -771,8 +798,9 @@ view: advanced_supplier_matching {
 
   measure: sum_total_items_sold {
     type:  sum_distinct
-    label: "# Units Sold"
-    description: "Total quantity of items sold in units"
+    label: "# Units Sold - On Delivery Date"
+    description: "Total quantity of items sold in units per Hub and Parent SKU whenever we have deliveries of this sku in this hub -
+                  This will be 0 when we don't have deliveries on that day even though we have units sold."
     group_label: "Price Related Metrics"
 
     sql: ${number_of_items_sold} ;;
@@ -783,14 +811,48 @@ view: advanced_supplier_matching {
 
   measure: amt_total_quantity_gmv_gross {
     type:  sum_distinct
-    label: "€ GMV Gross"
-    description: "Total amount Sold in Euro - This will be considered as GMV per supplier depending on the aggregation
-                    (Consider that it could happen that we assign sold units to a supplier
-                     that is delivering today (promised delivery date)
-                     but the units sold belong to another supplier, this although should be an edge case)."
+    label: "€ GMV Gross (SKU/Hub) - On Delivery Date"
+    description: "Total amount Sold in Euro per Hub and Parent SKU whenever we have deliveries of this sku in this hub -
+                  This will be 0 when we don't have deliveries on that day even though we have units sold."
     group_label: "Price Related Metrics"
 
     sql: ${amt_total_gmv_gross} ;;
+
+    value_format_name: eur
+
+  }
+
+  measure: amt_total_quantity_gmv_gross_per_supplier_weekly {
+    type:  average
+    label: "€ GMV Gross per Supplier (Weekly)"
+    description: "USE ON WEEKLY AND SUPPLIER LEVEL - Total GMV Gross per Supplier on a weekly level independent of SKU and Hub"
+    group_label: "Price Related Metrics"
+
+    sql: ${amt_total_gmv_gross_per_supplier_weekly} ;;
+
+    value_format_name: eur
+
+  }
+
+  measure: amt_total_quantity_gmv_gross_per_hub_weekly {
+    type:  average
+    label: "€ GMV Gross per Hub (Weekly)"
+    description: "USE ON WEEKLY AND HUB LEVEL - Total GMV Gross per Hub on a weekly level independent of SKU"
+    group_label: "Price Related Metrics"
+
+    sql: ${amt_total_gmv_gross_per_hub_weekly} ;;
+
+    value_format_name: eur
+
+  }
+
+  measure: amt_total_quantity_gmv_gross_per_hub_and_parent_sku_weekly {
+    type:  average
+    label: "€ GMV Gross per SKU/Hub (Weekly)"
+    description: "USE ON WEEKLY, HUB AND SKU LEVEL - Total GMV Gross per Hub/SKU on a weekly level regardless if we had a delivery/inbound on that day"
+    group_label: "Price Related Metrics"
+
+    sql: ${amt_total_gmv_gross_per_hub_and_parent_sku_weekly} ;;
 
     value_format_name: eur
 
