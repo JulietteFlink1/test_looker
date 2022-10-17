@@ -342,7 +342,7 @@ view: shyftplan_riders_pickers_hours_clean {
   }
 
   measure: assigned_picker_hours_external_one_time {
-    label: "Sum of Assigned Picker External one-time Hours"
+    label: "Sum of Assigned Picker External One-time Hours"
     type: sum
     sql:${TABLE}.number_of_planned_minutes_external_one_time/60;;
     filters: [position_name: "picker"]
