@@ -475,6 +475,13 @@ view: cc_contacts {
     sql: ${TABLE}.amt_discount_cart_gross ;;
   }
 
+  dimension: is_english_contact {
+    group_label: "* Contact Attributes *"
+    description: "Flags if the contact requires english support. Filters for tag = needs-english-support"
+    type: yesno
+    sql: ${tag_names} like '%needs-english-support%' ;;
+  }
+
 
 
 ################## Parameter and Dynamic Dates
@@ -964,6 +971,21 @@ view: cc_contacts {
     description: "AVG of median response time per contact (Median is based on all admin replies after a user reply). Subtracts out of business hours."
     label: "AVG Median Response Time (Minutes)"
     sql:  ${median_time_to_reply_minutes}*60/86400.0 ;;
+  }
+
+  measure: number_of_english_contacts {
+    group_label: "Contact Statistics"
+    label: "# English Contacts"
+    type: count_distinct
+    sql: ${contact_uuid} ;;
+    filters: [is_english_contact: "yes"]
+  }
+
+  measure: share_of_english_contacts {
+    group_label: "Contact Statistics"
+    label: "% English contacts"
+    description: "Share of contacts that require english support. Number of contacts with tag needs-english-support divided by number of all contacts"
+    sql: safe_divide(${number_of_english_contacts}/${number_of_contacts}) ;;
   }
 
 
