@@ -61,13 +61,10 @@ view: event_trip_unstacked {
   dimension_group: event_timestamp {
     type: time
     timeframes: [
-      raw,
-      time,
       date,
       week,
       month,
-      quarter,
-      year
+      quarter
     ]
     sql: ${TABLE}.event_timestamp ;;
   }
@@ -86,19 +83,16 @@ view: event_trip_unstacked {
     sql: ${TABLE}.message_id ;;
   }
 
-  dimension_group: publish_time_timestamp {
+  dimension_group: published_at_timestamp {
     hidden:  yes
     type: time
     timeframes: [
-      raw,
-      time,
       date,
       week,
       month,
-      quarter,
-      year
+      quarter
     ]
-    sql: ${TABLE}.publish_time_timestamp ;;
+    sql: ${TABLE}.published_at_timestamp ;;
   }
 
   dimension: subscription_name {
