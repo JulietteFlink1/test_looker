@@ -461,7 +461,7 @@ view: hub_staffing {
 
   measure: number_of_unassigned_hours_external{
     type: sum
-    label:"# Open External Hours"
+    label: "# Open External Hours"
     description: "Number of Unassigned(Open) External Hours"
     sql:${number_of_unassigned_minutes_external}/60;;
     value_format_name: decimal_1
