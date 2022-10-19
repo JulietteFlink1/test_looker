@@ -508,7 +508,7 @@ view: hub_staffing {
   }
 
   measure: sum_no_show_hours_external{
-    label:"# No Show External Hours"
+    label: "# No Show External Hours"
     type: sum
     description: "Sum of No Show External Hours"
     sql:${number_of_no_show_minutes_external}/60;;
