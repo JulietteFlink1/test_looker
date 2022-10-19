@@ -1419,7 +1419,7 @@ view: +advanced_supplier_matching {
     group_label: "PO >> Inbound | Unplanned or Not Fulfilled"
 
     type: number
-    sql: safe_divide(${sum_po_items_quantity_unplanned}/${sum_items_inbounded}) ;;
+    sql: safe_divide(${sum_po_items_quantity_unplanned},${sum_items_inbounded}) ;;
     value_format_name: percent_0
   }
 
