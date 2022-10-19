@@ -350,7 +350,7 @@ view: hub_staffing {
     type: sum
     label: "# Filled External One-time Hours"
     description: "Number of Scheduled External One-time Hours"
-    sql:${TABLE}.number_of_planned_minutes_external_one_time/60;;
+    sql: ${TABLE}.number_of_planned_minutes_external_one_time/60;;
     value_format_name: decimal_1
   }
 
