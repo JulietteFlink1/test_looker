@@ -1,5 +1,5 @@
 view: hub_closure_rate {
-  sql_table_name: flink-data-prod.reporting.hub_closures ;;
+  sql_table_name: flink-data-prod.reporting.hub_closures;;
 
   measure: count {
     type: count
@@ -105,6 +105,12 @@ view: hub_closure_rate {
     sql: ${TABLE}.missed_orders_equipment ;;
   }
 
+  dimension: missed_orders_auto_closure {
+    type: number
+    hidden:  yes
+    sql: ${TABLE}.missed_orders_auto_closure ;;
+  }
+
 
   ### Dimensions for Lost GMV ###
 
@@ -150,6 +156,12 @@ view: hub_closure_rate {
     sql: ${TABLE}.lost_gmv_equipment ;;
   }
 
+  dimension: lost_gmv_auto_closure {
+    type: number
+    hidden:  yes
+    sql: ${TABLE}.lost_gmv_auto_closure ;;
+  }
+
 ### Dimension for Closure Hours ###
   dimension: total_closure_hours_understaffing {
     type: number
@@ -191,6 +203,12 @@ view: hub_closure_rate {
     type: number
     hidden:  yes
     sql: ${TABLE}.total_closure_hours_equipment ;;
+  }
+
+  dimension: total_closure_hours_auto_closure {
+    type: number
+    hidden:  yes
+    sql: ${TABLE}.total_closure_hours_auto_closure ;;
   }
 
   dimension: total_closure_hours {
@@ -237,6 +255,8 @@ view: hub_closure_rate {
                      value: "Property_issue" }
     allowed_value: { value: "Other" }
     allowed_value: { value: "Equipment" }
+    allowed_value: { label: "Auto-closure"
+                     value: "Auto_closure" }
     allowed_value: { value: "All" }
     default_value: "All"
   }
@@ -261,6 +281,8 @@ view: hub_closure_rate {
       ${sum_missed_orders_other}
       {% elsif closure_reason_parameter._parameter_value == 'Equipment' %}
       ${sum_missed_orders_equipment}
+      {% elsif closure_reason_parameter._parameter_value == 'Auto_closure' %}
+      ${sum_missed_orders_auto_closure}
       {% elsif closure_reason_parameter._parameter_value == 'All' %}
       ${sum_missed_orders}
       {% endif %};;
@@ -287,6 +309,8 @@ view: hub_closure_rate {
       ${sum_lost_gmv_other}
       {% elsif closure_reason_parameter._parameter_value == 'Equipment' %}
       ${sum_lost_gmv_equipment}
+      {% elsif closure_reason_parameter._parameter_value == 'Auto_closure' %}
+      ${sum_lost_gmv_auto_closure}
       {% elsif closure_reason_parameter._parameter_value == 'All' %}
       ${lost_gmv}
       {% endif %};;
@@ -313,6 +337,8 @@ view: hub_closure_rate {
       ${sum_closure_hours_other} / NULLIF(${sum_opened_hours},0)
       {% elsif closure_reason_parameter._parameter_value == 'Equipment' %}
       ${sum_closure_hours_equipment} / NULLIF(${sum_opened_hours},0)
+      {% elsif closure_reason_parameter._parameter_value == 'Auto_closure' %}
+      ${sum_closure_hours_auto_closure} / NULLIF(${sum_opened_hours},0)
       {% elsif closure_reason_parameter._parameter_value == 'All' %}
       ${sum_closed_hours} / NULLIF(${sum_opened_hours},0)
       {% endif %};;
@@ -321,7 +347,7 @@ view: hub_closure_rate {
 
   measure: understaffing_closure_rate {
     label: "% Hub Closure Understaffing"
-    hidden:  no
+    description: "# Hours the hubs were closed due to understaffing, divided by # hours the hubs were open. "
     type: number
     sql: ${sum_closure_hours_understaffing} / NULLIF(${sum_opened_hours},0);;
     value_format: "0.0%"
@@ -329,7 +355,7 @@ view: hub_closure_rate {
 
   measure: weather_closure_rate {
     label: "% Hub Closure Weather"
-    hidden:  no
+    description: "# Hours the hubs were closed due to the weather, divided by # hours the hubs were open. "
     type: number
     sql: ${sum_closure_hours_weather} / NULLIF(${sum_opened_hours},0);;
     value_format: "0.0%"
@@ -337,7 +363,7 @@ view: hub_closure_rate {
 
   measure: remodelling_closure_rate {
     label: "% Hub Closure Remodelling"
-    hidden:  no
+    description: "# Hours the hubs were closed due to remodelling, divided by # hours the hubs were open. "
     type: number
     sql: ${sum_closure_hours_remodelling} / NULLIF(${sum_opened_hours},0);;
     value_format: "0.0%"
@@ -345,7 +371,7 @@ view: hub_closure_rate {
 
   measure: external_factor_closure_rate {
     label: "% Hub Closure External Factor"
-    hidden:  no
+    description: "# Hours the hubs were closed due to external factor, divided by # hours the hubs were open. "
     type: number
     sql: ${sum_closure_hours_external_factor} / NULLIF(${sum_opened_hours},0);;
     value_format: "0.0%"
@@ -353,7 +379,7 @@ view: hub_closure_rate {
 
   measure: property_issue_closure_rate {
     label: "% Hub Closure Property Issue"
-    hidden:  no
+    description: "# Hours the hubs were closed due to property issue, divided by # hours the hubs were open. "
     type: number
     sql: ${sum_closure_hours_property_issue} /  NULLIF(${sum_opened_hours},0);;
     value_format: "0.0%"
@@ -361,7 +387,7 @@ view: hub_closure_rate {
 
   measure: other_closure_rate {
     label: "% Hub Closure Other"
-    hidden:  no
+    description: "# Hours the hubs were closed due to other reasons, divided by # hours the hubs were open. "
     type: number
     sql: ${sum_closure_hours_other} / NULLIF(${sum_opened_hours},0);;
     value_format: "0.0%"
@@ -369,15 +395,23 @@ view: hub_closure_rate {
 
   measure: equipment_closure_rate {
     label: "% Hub Closure Equipment"
-    hidden:  no
+    description: "# Hours the hubs were closed due to equipment issues, divided by # hours the hubs were open. "
     type: number
     sql: ${sum_closure_hours_equipment} / NULLIF(${sum_opened_hours},0);;
     value_format: "0.0%"
   }
 
+  measure: auto_closure_rate {
+    label: "% Hub Closure Auto"
+    description: "# Hours the hubs were closed by the auto-closure service, divided by # hours the hubs were open. "
+    type: number
+    sql: ${sum_closure_hours_auto_closure} / NULLIF(${sum_opened_hours},0);;
+    value_format: "0.0%"
+  }
+
   measure: all_closure_rate {
     label: "% Hub Closure All"
-    hidden:  no
+    description: "# Hours the hubs were closed, divided by # hours the hubs were open. "
     type: number
     sql: ${sum_closed_hours} / NULLIF(${sum_opened_hours},0);;
     value_format: "0.0%"
@@ -385,7 +419,6 @@ view: hub_closure_rate {
 
   measure: sum_opened_hours {
     label: "# Open Hours"
-    hidden:  no
     type: sum
     sql: ${open_hours};;
     value_format: "0.0"
@@ -393,7 +426,6 @@ view: hub_closure_rate {
 
   measure: sum_closed_hours {
     label: "# Closed Hours"
-    hidden:  no
     type: sum
     sql: ${total_closure_hours};;
     value_format: "0.0"
@@ -455,6 +487,14 @@ view: hub_closure_rate {
     value_format: "0.0"
   }
 
+  measure: sum_closure_hours_auto_closure {
+    label: "# Closed Hours Auto-closure"
+    hidden:  yes
+    type: sum
+    sql: ${total_closure_hours_auto_closure};;
+    value_format: "0.0"
+  }
+
 ### Measure for Missed Orders ###
 
   measure: sum_missed_orders_understaffing {
@@ -510,6 +550,14 @@ view: hub_closure_rate {
     hidden:  yes
     type: sum
     sql: ${missed_orders_equipment};;
+    value_format: "0.0"
+  }
+
+  measure: sum_missed_orders_auto_closure {
+    label: "# Missed Orders Auto-closure"
+    hidden:  yes
+    type: sum
+    sql: ${missed_orders_auto_closure};;
     value_format: "0.0"
   }
 
@@ -571,6 +619,14 @@ view: hub_closure_rate {
     value_format: "0.0"
   }
 
+  measure: sum_lost_gmv_auto_closure {
+    label: "Amount Lost GMV Auto-closure"
+    hidden:  yes
+    type: sum
+    sql: ${lost_gmv_auto_closure};;
+    value_format: "0.0"
+  }
+
   measure: sum_missed_orders {
     label: "# Missed Orders"
     hidden:  yes
@@ -589,7 +645,8 @@ view: hub_closure_rate {
         ${lost_gmv_external_factor} +
         ${lost_gmv_remodelling} +
         ${lost_gmv_weather} +
-        ${lost_gmv_understaffing} ;;
+        ${lost_gmv_understaffing} +
+        ${lost_gmv_auto_closure};;
     value_format_name: eur_0
   }
 
@@ -610,6 +667,7 @@ view: hub_closure_rate {
       total_closure_hours_property_issue,
       total_closure_hours_other,
       total_closure_hours_equipment,
+      total_closure_hours_auto_closure,
       total_closure_hours
     ]
   }
