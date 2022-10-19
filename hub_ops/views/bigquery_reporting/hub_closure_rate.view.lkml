@@ -105,7 +105,7 @@ view: hub_closure_rate {
     sql: ${TABLE}.missed_orders_equipment ;;
   }
 
-  dimension: missed_orders_auto_closure {
+  dimension:  number_of_missed_orders_auto_closure {
     type: number
     hidden:  yes
     sql: ${TABLE}.missed_orders_auto_closure ;;
@@ -557,7 +557,7 @@ view: hub_closure_rate {
     label: "# Missed Orders Auto-closure"
     hidden:  yes
     type: sum
-    sql: ${missed_orders_auto_closure};;
+    sql: ${number_of_missed_orders_auto_closure};;
     value_format: "0.0"
   }
 
