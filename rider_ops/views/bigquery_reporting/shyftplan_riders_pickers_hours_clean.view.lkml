@@ -296,6 +296,38 @@ view: shyftplan_riders_pickers_hours_clean {
     group_label: "Working Hours"
   }
 
+  measure: pct_picker_hours_external_partnership {
+    label: "% Picker External Partnership Hours"
+    type: number
+    sql:${picker_hours_external_partnership}/${picker_hours};;
+    value_format_name: percent_1
+    group_label: "Working Hours"
+  }
+
+  measure: pct_picker_hours_external_one_time {
+    label: "% Picker External One-time Hours"
+    type: number
+    sql:${picker_hours_external_one_time}/${picker_hours};;
+    value_format_name: percent_1
+    group_label: "Working Hours"
+  }
+
+  measure: pct_rider_hours_external_partnership {
+    label: "% Rider External Partnership Hours"
+    type: number
+    sql:${rider_hours_external_partnership}/${rider_hours};;
+    value_format_name: percent_1
+    group_label: "Working Hours"
+  }
+
+  measure: pct_rider_hours_external_one_time {
+    label: "% Rider External One-time Hours"
+    type: number
+    sql:${rider_hours_external_one_time}/${rider_hours};;
+    value_format_name: percent_1
+    group_label: "Working Hours"
+  }
+
   measure: rider_hours_external_partnership {
     label: "Sum of Rider External Partnership Hours"
     type: sum
@@ -356,6 +388,38 @@ view: shyftplan_riders_pickers_hours_clean {
     sql:${TABLE}.number_of_planned_minutes_external_one_time/60;;
     filters: [position_name: "rider"]
     value_format_name: decimal_1
+    group_label: "Assigned Hours"
+  }
+
+  measure: pct_assigned_picker_hours_external_partnership {
+    label: "% Assigned Picker External Partnership Hours"
+    type: number
+    sql:${assigned_picker_hours_external_partnership}/${sum_assigned_picker_hours};;
+    value_format_name: percent_1
+    group_label: "Assigned Hours"
+  }
+
+  measure: pct_assigned_picker_hours_external_one_time {
+    label: "% Assigned Picker External One-time Hours"
+    type: number
+    sql:${assigned_picker_hours_external_one_time}/${sum_assigned_picker_hours};;
+    value_format_name: percent_1
+    group_label: "Assigned Hours"
+  }
+
+  measure: pct_assigned_rider_hours_external_partnership {
+    label: "% Assigned Rider External Partnership Hours"
+    type: number
+    sql:${assigned_rider_hours_external_partnership}/${sum_assigned_rider_hours};;
+    value_format_name: percent_1
+    group_label: "Assigned Hours"
+  }
+
+  measure: pct_assigned_rider_hours_external_one_time {
+    label: "% Assigned Rider External One-time Hours"
+    type: number
+    sql:${assigned_rider_hours_external_one_time}/${sum_assigned_rider_hours};;
+    value_format_name: percent_1
     group_label: "Assigned Hours"
   }
 
