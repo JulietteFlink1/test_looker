@@ -263,7 +263,7 @@ view: hub_staffing {
   measure: sum_planned_employees_external{
     type: sum
     hidden: yes
-    label:"# Scheduled External Employees"
+    label: "# Scheduled External Employees"
     description: "Number of Scheduled External Employees"
     sql:${number_of_planned_employees_external};;
     value_format_name: decimal_1
