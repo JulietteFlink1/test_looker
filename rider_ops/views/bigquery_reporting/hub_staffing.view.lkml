@@ -324,7 +324,7 @@ view: hub_staffing {
 
   measure: sum_planned_hours_external{
     type: sum
-    label:"# Filled External Hours"
+    label: "# Filled External Hours"
     description: "Number of Scheduled External Hours"
     sql:${number_of_planned_minutes_external}/60;;
     value_format_name: decimal_1
