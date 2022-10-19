@@ -300,7 +300,7 @@ view: hub_staffing {
   measure: sum_unassigned_employees_external{
     type: sum
     hidden: yes
-    label:"# Unassigned External Employees"
+    label: "# Unassigned External Employees"
     description: "Number of Unassigned External Employees"
     sql:${number_of_unassigned_employees_external};;
     value_format_name: decimal_1
