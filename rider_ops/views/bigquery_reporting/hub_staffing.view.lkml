@@ -372,7 +372,7 @@ view: hub_staffing {
 
   measure: sum_worked_hours_external{
     type: sum
-    label:"# Punched External Hours"
+    label: "# Punched External Hours"
     description: "Number of Worked External Hours"
     sql:${number_of_worked_minutes_external}/60;;
     value_format_name: decimal_1
