@@ -200,26 +200,26 @@ view: rewe_products {
     sql: ${TABLE}.is_discounted ;;
   }
 
-  dimension: amt_discount_value {
+  dimension: amt_discount_price {
 
-    label: "Discount Amount"
+    label: "Discount Price"
     description: "€ amount discounted from the product price."
     group_label: "Discount Prices"
 
     type: number
     value_format_name: eur
-    sql: ${TABLE}.amt_discount_value ;;
+    sql: ${TABLE}.amt_product_discount_price_eur ;;
   }
 
-  dimension: pct_discount_value {
+  dimension: amt_discount_percent {
 
     label: "Discount %"
     description: "% amount discoutned from the product price."
     group_label: "Discount Prices"
 
     type: number
-    value_format: "0.00\%"
-    sql: ${TABLE}.pct_discount_value ;;
+    value_format: "0\%"
+    sql: ${TABLE}.amt_product_discount_percent ;;
   }
 
   dimension: amt_strikethrough_price {
@@ -230,7 +230,35 @@ view: rewe_products {
 
     type: number
     value_format_name: eur
-    sql: ${TABLE}.amt_strikethrough_price ;;
+    sql: ${TABLE}.amt_product_strikethrough_price_eur ;;
+  }
+
+  dimension_group: discount_valid_from {
+
+    description: "The start date for the given discount."
+    group_label: "Discount Prices"
+
+    type: time
+    timeframes: [
+      date,
+      week
+    ]
+    datatype: date
+    sql: ${TABLE}.discount_valid_from_date ;;
+  }
+
+  dimension_group: discount_valid_until {
+
+    description: "The stop date for the given discount."
+    group_label: "Discount Prices"
+
+    type: time
+    timeframes: [
+      date,
+      week
+    ]
+    datatype: date
+    sql: ${TABLE}.discount_valid_until_date ;;
   }
 
 # -----------------  Price Change Data  ------------------

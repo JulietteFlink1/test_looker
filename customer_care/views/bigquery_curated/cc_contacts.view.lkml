@@ -3,28 +3,28 @@ view: cc_contacts {
     ;;
 
   dimension: agent_email {
-    group_label: "* Agent & Team *"
+    group_label: "> Agent & Team"
     description: "Email of the last agent who took part in the chat"
     type: string
     sql: ${TABLE}.agent_email ;;
   }
 
   dimension: agent_id {
-    group_label: "* Agent & Team *"
+    group_label: "> Agent & Team"
     description: "ID of the last agent who took part in the chat"
     type: string
     sql: ${TABLE}.agent_id ;;
   }
 
   dimension: agent_name {
-    group_label: "* Agent & Team *"
+    group_label: "> Agent & Team"
     description: "Name of the last agent who took part in the chat"
     type: string
     sql: ${TABLE}.agent_name ;;
   }
 
   dimension_group: user_created {
-    group_label: "* User *"
+    group_label: "> User"
     type: time
     timeframes: [
       date,
@@ -33,7 +33,7 @@ view: cc_contacts {
   }
 
   dimension: user_phone_number {
-    group_label: "* User *"
+    group_label: "> User"
     type: string
     description: "Phone number of the user who created the contact"
     sql: ${TABLE}.user_phone_number ;;
@@ -41,7 +41,7 @@ view: cc_contacts {
   }
 
   dimension: user_email {
-    group_label: "* User *"
+    group_label: "> User"
     type: string
     description: "Email of the user who created the contact"
     sql: ${TABLE}.user_email ;;
@@ -49,14 +49,14 @@ view: cc_contacts {
   }
 
   dimension: intercom_user_id {
-    group_label: "* User *"
+    group_label: "> User"
     type: string
     description: "ID of the user who created the contact"
     sql: ${TABLE}.intercom_user_id ;;
   }
 
   dimension: user_name {
-    group_label: "* User *"
+    group_label: "> User"
     type: string
     description: "Name of the user who created the contact"
     sql: ${TABLE}.user_name ;;
@@ -64,7 +64,7 @@ view: cc_contacts {
   }
 
   dimension: cc_team {
-    group_label: "* Agent & Team *"
+    group_label: "> Agent & Team"
     label: "CC Team"
     hidden: yes
     type: string
@@ -73,14 +73,14 @@ view: cc_contacts {
 
   dimension: contact_reason_l3 {
     alias: [contact_reason]
-    group_label: "* Contact Attributes *"
+    group_label: "> Contact Attributes"
     type: string
     sql: ${TABLE}.contact_reason_l3 ;;
   }
 
   dimension_group: contact_date {
     type: time
-    group_label: "* Dates & Timestamps *"
+    group_label: "> Dates & Timestamps"
     timeframes: [
       raw,
       date,
@@ -97,7 +97,7 @@ view: cc_contacts {
 
   dimension_group: first_agent_reply {
     type: time
-    group_label: "* Dates & Timestamps *"
+    group_label: "> Dates & Timestamps"
     timeframes: [
       raw,
       date,
@@ -114,7 +114,7 @@ view: cc_contacts {
 
   dimension_group: contact_created {
     type: time
-    group_label: "* Dates & Timestamps *"
+    group_label: "> Dates & Timestamps"
     timeframes: [
       time,
       date,
@@ -141,13 +141,13 @@ view: cc_contacts {
 
   # dimension: contact_created_day_of_week {
   #   type: string
-  #   group_label: "* Dates & Timestamps *"
+  #   group_label: "> Dates & Timestamps"
   #   sql: ${TABLE}.contact_created_day_of_week ;;
   # }
 
   dimension: contact_created_day_of_week {
     type:  string
-    group_label: "* Dates & Timestamps *"
+    group_label: "> Dates & Timestamps"
     # label: "test day of week"
 
     sql: case when extract(dayofweek from ${contact_created_date}) = 1 then  'Sunday'
@@ -164,7 +164,7 @@ view: cc_contacts {
 
   dimension: contact_created_day_of_week_number {
     type: string
-    group_label: "* Dates & Timestamps *"
+    group_label: "> Dates & Timestamps"
     sql: case when ${contact_created_day_of_week} = 'Monday' then 1
               when ${contact_created_day_of_week} = 'Tuesday' then 2
               when ${contact_created_day_of_week} = 'Wednesday' then 3
@@ -177,14 +177,14 @@ view: cc_contacts {
 
   dimension: is_first_reply_the_same_day {
     type: yesno
-    group_label: "* Dates & Timestamps *"
+    group_label: "> Dates & Timestamps"
     sql: case when date(${contact_created_date}) = date(${first_agent_reply_date}) then true else false end ;;
   }
 
   dimension_group: first_close_timestamp {
     type: time
     hidden: yes
-    group_label: "* Dates & Timestamps *"
+    group_label: "> Dates & Timestamps"
     timeframes: [
       raw,
       time,
@@ -200,7 +200,7 @@ view: cc_contacts {
   dimension_group: first_user_reply {
     type: time
     hidden: yes
-    group_label: "* Dates & Timestamps *"
+    group_label: "> Dates & Timestamps"
     timeframes: [
       raw,
       time,
@@ -214,38 +214,38 @@ view: cc_contacts {
   }
 
   dimension: is_deflected_by_bot {
-    group_label: "* Contact Attributes *"
+    group_label: "> Contact Attributes"
     type: yesno
     sql: ${TABLE}.is_deflected_by_bot ;;
   }
 
   dimension: is_closed {
-    group_label: "* Contact Attributes *"
+    group_label: "> Contact Attributes"
     type: yesno
     sql: ${TABLE}.is_closed ;;
   }
 
   dimension: is_abandoned_by_user {
-    group_label: "* Contact Attributes *"
+    group_label: "> Contact Attributes"
     type: yesno
     sql: ${TABLE}.is_abandoned_by_user ;;
   }
 
   dimension: is_refunded {
-    group_label: "* Contact Attributes *"
+    group_label: "> Contact Attributes"
     type: yesno
     sql: ${TABLE}.is_refunded ;;
   }
 
   dimension: is_whatsapp_user {
-    group_label: "* User *"
+    group_label: "> User"
     type: yesno
     sql: ${TABLE}.is_whatsapp_user ;;
   }
 
   dimension_group: last_close {
     type: time
-    group_label: "* Dates & Timestamps *"
+    group_label: "> Dates & Timestamps"
     timeframes: [
       time,
       date,
@@ -258,7 +258,7 @@ view: cc_contacts {
 
   dimension_group: last_user_reply {
     type: time
-    group_label: "* Dates & Timestamps *"
+    group_label: "> Dates & Timestamps"
     timeframes: [
       time,
       date,
@@ -272,26 +272,26 @@ view: cc_contacts {
   dimension: median_time_to_reply_seconds {
     type: number
     hidden: yes
-    group_label: "* Contact Statistics *"
+    group_label: "> Contact Statistics"
     sql: ${TABLE}.median_time_to_reply_seconds ;;
   }
 
   dimension: median_time_to_reply_minutes {
     type: number
     hidden: yes
-    group_label: "* Contact Statistics *"
+    group_label: "> Contact Statistics"
     sql: ${TABLE}.median_time_to_reply_minutes ;;
   }
 
   dimension: contact_hour {
     type: number
-    group_label: "* Dates & Timestamps *"
+    group_label: "> Dates & Timestamps"
     sql: extract(hour from timestamp(${contact_created_time})) ;;
   }
 
   dimension: number_of_assignments {
     hidden: yes
-    group_label: "* Contact Statistics *"
+    group_label: "> Contact Statistics"
     type: number
     sql: ${TABLE}.number_of_assignments ;;
   }
@@ -299,25 +299,25 @@ view: cc_contacts {
   dimension: number_of_contact_parts {
     type: number
     hidden:yes
-    group_label: "* Contact Statistics *"
+    group_label: "> Contact Statistics"
     sql: ${TABLE}.number_of_contact_parts ;;
   }
 
   dimension: platform {
-    group_label: "* Contact Attributes *"
+    group_label: "> Contact Attributes"
     type: string
     sql: ${TABLE}.platform ;;
   }
 
   dimension: rating {
-    group_label: "* Contact Attributes *"
+    group_label: "> Contact Attributes"
     type: number
     sql: ${TABLE}.rating ;;
   }
 
   dimension_group: rating_created {
     type: time
-    group_label: "* Dates & Timestamps *"
+    group_label: "> Dates & Timestamps"
     timeframes: [
       date,
       week,
@@ -328,45 +328,45 @@ view: cc_contacts {
   }
 
   dimension: rating_remark {
-    group_label: "* Contact Attributes *"
+    group_label: "> Contact Attributes"
     type: string
     sql: ${TABLE}.rating_remark ;;
   }
 
   dimension: source_author_type {
-    group_label: "* Contact Attributes *"
+    group_label: "> Contact Attributes"
     type: string
     sql: ${TABLE}.source_author_type ;;
   }
 
   dimension: source_type {
-    group_label: "* Contact Attributes *"
+    group_label: "> Contact Attributes"
     type: string
     sql: ${TABLE}.source_type ;;
   }
 
   dimension: tag_names {
-    group_label: "* Contact Attributes *"
+    group_label: "> Contact Attributes"
     type: string
     sql: ${TABLE}.tag_names ;;
   }
 
   dimension: team_id {
-    group_label: "* Agent & Team *"
+    group_label: "> Agent & Team"
     description: "ID of the last team who took part in the chat"
     type: number
     sql: ${TABLE}.team_id ;;
   }
 
   dimension: team_name {
-    group_label: "* Agent & Team *"
+    group_label: "> Agent & Team"
     description: "Team of the last team who took part in the chat"
     type: string
     sql: ${TABLE}.team_name ;;
   }
 
   dimension: time_to_agent_reply_seconds {
-    group_label: "* Contact Statistics *"
+    group_label: "> Contact Statistics"
     hidden: yes
     type: number
     sql: ${TABLE}.time_to_agent_reply_seconds ;;
@@ -375,48 +375,48 @@ view: cc_contacts {
   dimension: time_to_agent_reply_minutes {
     hidden: no
     label: "Time to Agent Reply"
-    group_label: "* Contact Statistics *"
+    group_label: "> Contact Statistics"
     type: number
     sql: ${TABLE}.time_to_agent_reply_minutes ;;
   }
 
   dimension: time_to_assignement_seconds {
-    group_label: "* Contact Statistics *"
+    group_label: "> Contact Statistics"
     type: number
     hidden: yes
     sql: ${TABLE}.time_to_assignement_seconds ;;
   }
 
   dimension: time_to_first_close_seconds {
-    group_label: "* Contact Statistics *"
+    group_label: "> Contact Statistics"
     type: number
     hidden: yes
     sql: ${TABLE}.time_to_first_close_seconds ;;
   }
 
   dimension: time_to_last_close_seconds {
-    group_label: "* Contact Statistics *"
+    group_label: "> Contact Statistics"
     type: number
     hidden: yes
     sql: ${TABLE}.time_to_last_close_seconds ;;
   }
 
   dimension: time_to_first_close_minutes {
-    group_label: "* Contact Statistics *"
+    group_label: "> Contact Statistics"
     type: number
     hidden: yes
     sql: ${TABLE}.time_to_first_close_minutes ;;
   }
 
   dimension: time_to_last_close_minutes {
-    group_label: "* Contact Statistics *"
+    group_label: "> Contact Statistics"
     hidden: yes
     type: number
     sql: ${TABLE}.time_to_last_close_minutes ;;
   }
 
   dimension: number_of_reopens {
-    group_label: "* Contact Attributes *"
+    group_label: "> Contact Attributes"
     type: number
     hidden: yes
     sql: ${TABLE}.number_of_reopens ;;
@@ -429,50 +429,57 @@ view: cc_contacts {
 
 
   dimension: is_snoozed_contact {
-    group_label: "* Contact Attributes *"
+    group_label: "> Contact Attributes"
     type: yesno
     sql: ${TABLE}.is_snoozed_contact ;;
   }
 
   dimension: timezone {
-    group_label: "* Dates & Timestamps *"
+    group_label: "> Dates & Timestamps"
     type: string
     sql: ${TABLE}.timezone ;;
   }
 
   dimension: user_id {
-    group_label: "* User *"
+    group_label: "> User"
     type: string
     sql: ${TABLE}.user_id ;;
   }
 
   dimension: compensation_discount_code {
-    group_label: "* Contact Compensation *"
+    group_label: "> Contact Compensation"
     description: "Compensation discount code which was given to customer"
     type: string
     sql: ${TABLE}.compensation_discount_code ;;
   }
 
   dimension: compensation_reason {
-    group_label: "* Contact Compensation *"
+    group_label: "> Contact Compensation"
     description: "The reason for compensation"
     type: string
     sql: ${TABLE}.compensation_reason ;;
   }
 
   dimension: is_compensation_discount_used {
-    group_label: "* Contact Compensation *"
+    group_label: "> Contact Compensation"
     description: "Was compensation discount used by customer or not"
     type: yesno
     sql: ${TABLE}.is_compensation_discount_used ;;
   }
 
   dimension: amt_discount_cart_gross {
-    group_label: "* Contact Compensation *"
+    group_label: "> Contact Compensation"
     description: "Cart Discount value (Gross)"
     type: number
     hidden: yes
     sql: ${TABLE}.amt_discount_cart_gross ;;
+  }
+
+  dimension: is_english_contact {
+    group_label: "> Contact Attributes"
+    description: "Flags if the contact requires english support. Filters for tag = needs-english-support"
+    type: yesno
+    sql: ${tag_names} like '%needs-english-support%' ;;
   }
 
 
@@ -481,7 +488,7 @@ view: cc_contacts {
 
 
   parameter: date_granularity {
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     label: "Date Granularity"
     type: unquoted
     allowed_value: { value: "Hour" }
@@ -495,7 +502,7 @@ view: cc_contacts {
   ######## DYNAMIC DIMENSIONS
 
   dimension: date {
-    group_label: "* Dates & Timestamps *"
+    group_label: "> Dates & Timestamps"
     label: "Contact Date (Dynamic)"
     label_from_parameter: date_granularity
     sql:
@@ -509,7 +516,7 @@ view: cc_contacts {
   }
 
   dimension: date_granularity_pass_through {
-    group_label: "* Parameters *"
+    group_label: "> Parameters"
     description: "To use the parameter value in a table calculation (e.g WoW, % Growth) we need to materialize it into a dimension "
     type: string
     hidden: no # yes
@@ -526,7 +533,7 @@ view: cc_contacts {
 ################# Measures
 
   measure: contact_rate {
-    group_label: "* Contact Frequency *"
+    group_label: "> Contact Frequency"
     label: "AVG Contact per Time Period (Dynamic)"
     label_from_parameter: date_granularity
     sql:
@@ -547,7 +554,7 @@ view: cc_contacts {
 ######################################################################
 
   measure: number_of_contacts {
-    group_label: "* Basic Counts *"
+    group_label: "> Basic Counts"
     type: count_distinct
     sql: ${contact_uuid} ;;
     label: "# Contacts"
@@ -555,7 +562,7 @@ view: cc_contacts {
 
 
   measure: number_of_closed_contacts {
-    group_label: "* Basic Counts *"
+    group_label: "> Basic Counts"
     type: count_distinct
     sql: ${contact_uuid} ;;
     label: "# Closed Contacts"
@@ -563,7 +570,7 @@ view: cc_contacts {
   }
 
   measure: number_of_non_deflected_contacts {
-    group_label: "* Basic Counts *"
+    group_label: "> Basic Counts"
     type: count_distinct
     sql: ${contact_uuid} ;;
     label: "# Contacts (Non Deflected)"
@@ -571,28 +578,28 @@ view: cc_contacts {
   }
 
   measure: number_of_teams {
-    group_label: "* Basic Counts *"
+    group_label: "> Basic Counts"
     type: count_distinct
     sql: ${team_id} ;;
     label: "# Teams"
   }
 
   measure: number_of_agents {
-    group_label: "* Basic Counts *"
+    group_label: "> Basic Counts"
     type: count_distinct
     sql: ${agent_id} ;;
     label: "# Agents"
   }
 
   measure: number_of_users {
-    group_label: "* Basic Counts *"
+    group_label: "> Basic Counts"
     type: count_distinct
     sql: ${intercom_user_id} ;;
     label: "# Unique Users"
   }
 
   measure: number_of_contact_per_agent {
-    group_label: "* Basic Counts *"
+    group_label: "> Basic Counts"
     type: number
     value_format: "0.0"
     sql: safe_divide(${number_of_non_deflected_contacts},${number_of_agents}) ;;
@@ -600,7 +607,7 @@ view: cc_contacts {
   }
 
   measure: share_of_closed_contacts{
-    group_label: "* Basic Counts *"
+    group_label: "> Basic Counts"
     label: "% Closed Contacts"
     type: number
     sql: ${number_of_closed_contacts}/${number_of_contacts} ;;
@@ -637,14 +644,14 @@ view: cc_contacts {
   }
 
   measure: avg_number_of_contacts_hourly {
-    group_label: "* Contact Frequency *"
+    group_label: "> Contact Frequency"
     type: number
     value_format: "0.0"
     sql: ${number_of_contacts}/NULLIF(${number_of_unique_hours},0) ;;
     label: "AVG Contacts / Hour"
   }
   measure: avg_number_of_contacts_daily {
-    group_label: "* Contact Frequency *"
+    group_label: "> Contact Frequency"
     type: number
     value_format: "0.0"
     sql: ${number_of_contacts}/NULLIF(${number_of_unique_days},0) ;;
@@ -652,7 +659,7 @@ view: cc_contacts {
   }
 
   measure: avg_number_of_contacts_weekly {
-    group_label: "* Contact Frequency *"
+    group_label: "> Contact Frequency"
     type: number
     value_format: "0.0"
     sql: ${number_of_contacts}/NULLIF(${number_of_unique_weeks},0) ;;
@@ -660,7 +667,7 @@ view: cc_contacts {
   }
 
   measure: avg_number_of_contacts_monthly {
-    group_label: "* Contact Frequency *"
+    group_label: "> Contact Frequency"
     type: number
     value_format: "0.0"
     sql: ${number_of_contacts}/NULLIF(${number_of_unique_months},0) ;;
@@ -676,7 +683,7 @@ view: cc_contacts {
 
 
   measure: avg_rating {
-    group_label: "* Contact Statistics *"
+    group_label: "> Contact Statistics"
     type: average
     value_format: "0.0"
     sql: ${rating} ;;
@@ -684,7 +691,7 @@ view: cc_contacts {
   }
 
   measure: avg_csat {
-    group_label: "* Contact Statistics *"
+    group_label: "> Contact Statistics"
     type: average
     value_format: "0%"
     sql: ${rating}/5 ;;
@@ -692,7 +699,7 @@ view: cc_contacts {
   }
 
   measure: avg_time_first_close_minutes {
-    group_label: "* Contact Statistics *"
+    group_label: "> Contact Statistics"
     type: average
     # if > 1h then use format hh:mm:ss else use mm:ss
     value_format: "[>0.0416] hh:mm:ss ; mm:ss"
@@ -701,7 +708,7 @@ view: cc_contacts {
   }
 
   measure: avg_time_last_close_minutes {
-    group_label: "* Contact Statistics *"
+    group_label: "> Contact Statistics"
     type: average
     # if > 1h then use format hh:mm:ss else use mm:ss
     value_format: "[>0.0416] hh:mm:ss ; mm:ss"
@@ -711,7 +718,7 @@ view: cc_contacts {
   }
 
   measure: median_time_last_close_minutes {
-    group_label: "* Contact Statistics *"
+    group_label: "> Contact Statistics"
     type: median
     # if > 1h then use format hh:mm:ss else use mm:ss
     value_format: "[>0.0416] hh:mm:ss ; mm:ss"
@@ -721,7 +728,7 @@ view: cc_contacts {
   }
 
   measure: avg_time_to_agent_reply_seconds {
-    group_label: "* Contact Statistics *"
+    group_label: "> Contact Statistics"
     type: average
     hidden: yes
     value_format: "0"
@@ -730,7 +737,7 @@ view: cc_contacts {
   }
 
   measure: avg_time_to_agent_reply_minutes {
-    group_label: "* Contact Statistics *"
+    group_label: "> Contact Statistics"
     type: average
     value_format: "mm:ss"
     label: "AVG First Response Time (Minutes)"
@@ -739,7 +746,7 @@ view: cc_contacts {
   }
 
   measure: median_time_to_agent_reply_minutes {
-    group_label: "* Contact Statistics *"
+    group_label: "> Contact Statistics"
     type: median
 # if > 1h then use format hh:mm:ss else use mm:ss
     value_format: "[>0.0416] hh:mm:ss ; mm:ss"
@@ -749,7 +756,7 @@ view: cc_contacts {
   }
 
   measure: avg_median_time_to_agent_reply_seconds {
-    group_label: "* Contact Statistics *"
+    group_label: "> Contact Statistics"
     type: average
     hidden: yes
     label: "AVG Median Response Time (Seconds)"
@@ -757,7 +764,7 @@ view: cc_contacts {
   }
 
   measure: median_median_time_to_agent_reply_minutes {
-    group_label: "* Contact Statistics *"
+    group_label: "> Contact Statistics"
     type: median
     # if > 1h then use format hh:mm:ss else use mm:ss
     value_format: "[>0.0416] hh:mm:ss ; mm:ss"
@@ -767,7 +774,7 @@ view: cc_contacts {
   }
 
   measure: avg_number_of_reopens {
-    group_label: "* Contact Statistics *"
+    group_label: "> Contact Statistics"
     type: average
     value_format: "0.0"
     label: "AVG # Reopens"
@@ -775,7 +782,7 @@ view: cc_contacts {
   }
 
   measure: sum_number_of_reopens {
-    group_label: "* Contact Statistics *"
+    group_label: "> Contact Statistics"
     type: sum
     value_format: "0"
     label: "# Reopens"
@@ -783,7 +790,7 @@ view: cc_contacts {
   }
 
   measure: number_of_deflected_by_bot {
-    group_label: "* Basic Counts *"
+    group_label: "> Basic Counts"
     type: count_distinct
     value_format: "0.0"
     label: "# Contacts Deflected by Bot"
@@ -792,7 +799,7 @@ view: cc_contacts {
   }
 
   measure: number_of_abandoned_by_customer {
-    group_label: "* Basic Counts *"
+    group_label: "> Basic Counts"
     type: count_distinct
     value_format: "0.0"
     label: "# Contacts Abandoned by Customer"
@@ -801,7 +808,7 @@ view: cc_contacts {
   }
 
   measure: number_of_rated_contacts {
-    group_label: "* Basic Counts *"
+    group_label: "> Basic Counts"
     type: count_distinct
     value_format: "0"
     label: "# Contacts with CSAT"
@@ -811,7 +818,7 @@ view: cc_contacts {
 
 
   measure: number_of_contacts_with_refund {
-    group_label: "* Basic Counts *"
+    group_label: "> Basic Counts"
     type: count_distinct
     value_format: "0"
     label: "# Contacts with Refunds"
@@ -820,7 +827,7 @@ view: cc_contacts {
   }
 
   measure: number_of_reply_other_day {
-    group_label: "* Contact Statistics *"
+    group_label: "> Contact Statistics"
     type: count_distinct
     value_format: "0.0"
     sql:  contact_uuid ;;
@@ -828,7 +835,7 @@ view: cc_contacts {
   }
 
   measure: number_of_email_contacts {
-    group_label: "* Basic Counts *"
+    group_label: "> Basic Counts"
     type: count_distinct
     value_format: "0"
     label: "# Email Contacts"
@@ -837,7 +844,7 @@ view: cc_contacts {
   }
 
   measure: share_deflected_by_bot {
-    group_label: "* Contact Statistics *"
+    group_label: "> Contact Statistics"
     type: number
     value_format: "0.0%"
     label: "% Deflected Rate"
@@ -845,7 +852,7 @@ view: cc_contacts {
   }
 
   measure: share_rated_contacts {
-    group_label: "* Contact Statistics *"
+    group_label: "> Contact Statistics"
     type: number
     value_format: "0.0%"
     label: "% Contacts with CSAT"
@@ -853,7 +860,7 @@ view: cc_contacts {
   }
 
   measure: share_contacts_with_refunds {
-    group_label: "* Contact Statistics *"
+    group_label: "> Contact Statistics"
     type: number
     value_format: "0.0%"
     label: "% Contacts with Refunds"
@@ -861,7 +868,7 @@ view: cc_contacts {
   }
 
   measure: share_email_contacts {
-    group_label: "* Contact Statistics *"
+    group_label: "> Contact Statistics"
     type: number
     value_format: "0.0%"
     label: "% Emails"
@@ -869,7 +876,7 @@ view: cc_contacts {
   }
 
   measure: share_abandoned_contacts {
-    group_label: "* Contact Statistics *"
+    group_label: "> Contact Statistics"
     type: number
     value_format: "0.0%"
     label: "% Abandoned Contacts"
@@ -877,7 +884,7 @@ view: cc_contacts {
   }
 
   measure: share_reply_on_another_day {
-    group_label: "* Contact Statistics *"
+    group_label: "> Contact Statistics"
     type: number
     value_format: "0.0%"
     label: "% First Reply on Another Day"
@@ -892,7 +899,7 @@ view: cc_contacts {
 
 
   measure: cc_discount_usage_rate {
-    group_label: "* Contact Compensation *"
+    group_label: "> Contact Compensation"
     label: "% CC Discount Code Usage Rate"
     description: "Share of CC discount used by users"
     type: number
@@ -902,7 +909,7 @@ view: cc_contacts {
   }
 
   measure: number_of_compensation_discount_code {
-    group_label: "* Contact Compensation *"
+    group_label: "> Contact Compensation"
     label: "# CC Compensation Discount Codes"
     description: "Number CC Compensation Discount codes"
     type: count_distinct
@@ -910,7 +917,7 @@ view: cc_contacts {
   }
 
   measure: number_of_compensation_discount_code_used {
-    group_label: "* Contact Compensation *"
+    group_label: "> Contact Compensation"
     label: "# CC Compensation Discount Codes Used"
     description: "Number CC Compensation Discount codes used by customers"
     type: number
@@ -918,7 +925,7 @@ view: cc_contacts {
   }
 
   measure: sum_amt_discount_cart_gross {
-    group_label: "* Contact Compensation *"
+    group_label: "> Contact Compensation"
     label: "SUM Discount Cart (Gross)"
     description: "Sum of Discounts (Gross)"
     type: sum
@@ -927,7 +934,7 @@ view: cc_contacts {
   }
 
   measure: avg_discount_cart_gross {
-    group_label: "* Contact Compensation *"
+    group_label: "> Contact Compensation"
     label: "AVG CC Discount Value per Discount Issued"
     description: "SUM of Discounts / Number of Compensation Discount codes"
     type: number
@@ -937,7 +944,7 @@ view: cc_contacts {
   }
 
   measure: avg_discount_cart_gross_per_closed_contact {
-    group_label: "* Contact Compensation *"
+    group_label: "> Contact Compensation"
     label: "AVG CC Discount Value per Closed Contact"
     description: "SUM of value of CC Discounts used / Number of Closed Contacts"
     type: number
@@ -947,7 +954,7 @@ view: cc_contacts {
   }
 
   measure: share_of_compensation_discount_code_per_contact_closed {
-    group_label: "* Contact Compensation *"
+    group_label: "> Contact Compensation"
     label: "% CC Compensation Code per Closed Contact"
     description: "# CC Compensation Code / # Closed Contacts"
     type: number
@@ -957,13 +964,30 @@ view: cc_contacts {
   }
 
   measure: avg_median_time_to_agent_reply_minutes {
-    group_label: "* Contact Statistics *"
+    group_label: "> Contact Statistics"
     type: average
     # if > 1h then use format hh:mm:ss else use mm:ss
     value_format: "[>0.0416] hh:mm:ss ; mm:ss"
     description: "AVG of median response time per contact (Median is based on all admin replies after a user reply). Subtracts out of business hours."
     label: "AVG Median Response Time (Minutes)"
     sql:  ${median_time_to_reply_minutes}*60/86400.0 ;;
+  }
+
+  measure: number_of_english_contacts {
+    group_label: "> Basic Counts"
+    label: "# English Contacts"
+    type: count_distinct
+    sql: ${contact_uuid} ;;
+    filters: [is_english_contact: "yes"]
+  }
+
+  measure: share_of_english_contacts {
+    group_label: "> Contact Statistics"
+    label: "% English Contacts"
+    description: "Share of contacts that require english support. Number of contacts with tag needs-english-support divided by number of all contacts"
+    type: number
+    sql: safe_divide(${number_of_english_contacts},${number_of_contacts}) ;;
+    value_format_name: percent_0
   }
 
 
