@@ -330,6 +330,38 @@ view: hub_staffing {
     value_format_name: decimal_1
   }
 
+  measure: sum_planned_hours_external_partnership{
+    type: sum
+    label:"# Filled Ext Partnership Hours"
+    description: "Number of Scheduled Ext Partnership Hours"
+    sql:${TABLE}.number_of_planned_minutes_external_partnership/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: pct_assigned_hours_external_partnership {
+    label: "% Filled Ext Partnership Hours"
+    description: "Share of Ext Partnership Hours from total Filled Hours"
+    type: number
+    sql: ${sum_planned_hours_external_partnership}/${sum_planned_hours};;
+    value_format_name: percent_1
+  }
+
+  measure: sum_planned_hours_external_one_time{
+    type: sum
+    label:"# Filled Ext One-time Hours"
+    description: "Number of Scheduled Ext One-time Hours"
+    sql:${TABLE}.number_of_planned_minutes_external_one_time/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: pct_assigned_hours_external_one_time {
+    label: "% Filled Ext One-time Hours"
+    description: "Share of Ext One-time Hours from total Filled Hours"
+    type: number
+    sql: ${sum_planned_hours_external_one_time}/${sum_planned_hours};;
+    value_format_name: percent_1
+    }
+
   measure: sum_worked_hours{
     type: sum
     label:"# Punched Hours"
@@ -344,6 +376,38 @@ view: hub_staffing {
     description: "Number of Worked Ext Hours"
     sql:${number_of_worked_minutes_external}/60;;
     value_format_name: decimal_1
+  }
+
+  measure: sum_worked_hours_external_partnership{
+    type: sum
+    label:"# Punched Ext Partnership Hours"
+    description: "Number of Worked Ext Partnership Hours"
+    sql: ${TABLE}.number_of_worked_minutes_external_partnership/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: pct_worked_hours_external_partnership {
+    label: "% Punched Ext Partnership Hours"
+    description: "Share of Ext Partnership Hours from total Punched Hours"
+    type: number
+    sql: ${sum_worked_hours_external_partnership}/${sum_worked_hours};;
+    value_format_name: percent_1
+  }
+
+  measure: sum_worked_hours_external_one_time{
+    type: sum
+    label:"# Punched Ext One-time Hours"
+    description: "Number of Worked Ext Partnership Hours"
+    sql: ${TABLE}.number_of_worked_minutes_external_one_time/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: pct_worked_hours_external_one_time {
+    label: "% Punched Ext One-time Hours"
+    description: "Share of Ext One-time Hours from total Punched Hours"
+    type: number
+    sql: ${sum_worked_hours_external_one_time}/${sum_worked_hours};;
+    value_format_name: percent_1
   }
 
   measure: number_of_scheduled_hours {
