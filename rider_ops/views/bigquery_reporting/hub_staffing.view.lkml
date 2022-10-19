@@ -281,7 +281,7 @@ view: hub_staffing {
   measure: sum_worked_employees_external{
     type: sum
     hidden: yes
-    label:"# Worked External Employees"
+    label: "# Worked External Employees"
     description: "Number of Worked External Employees"
     sql:${number_of_worked_employees_external};;
     value_format_name: decimal_1
