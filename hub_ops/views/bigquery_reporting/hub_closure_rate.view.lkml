@@ -347,7 +347,7 @@ view: hub_closure_rate {
 
   measure: understaffing_closure_rate {
     label: "% Hub Closure Understaffing"
-    description: "# Closed hours due to understaffing / # Opened hours. "
+    description: "# Closed hours due to understaffing / # Opened hours"
     type: number
     sql: ${sum_closure_hours_understaffing} / NULLIF(${sum_opened_hours},0);;
     value_format: "0.0%"
@@ -355,7 +355,7 @@ view: hub_closure_rate {
 
   measure: weather_closure_rate {
     label: "% Hub Closure Weather"
-    description: "# Closed hours due to the weather / # Opened hours. "
+    description: "# Closed hours due to the weather / # Opened hours"
     type: number
     sql: ${sum_closure_hours_weather} / NULLIF(${sum_opened_hours},0);;
     value_format: "0.0%"
@@ -363,7 +363,7 @@ view: hub_closure_rate {
 
   measure: remodelling_closure_rate {
     label: "% Hub Closure Remodelling"
-    description: "# Closed hours due to remodelling / # Opened hours. "
+    description: "# Closed hours due to remodelling / # Opened hours"
     type: number
     sql: ${sum_closure_hours_remodelling} / NULLIF(${sum_opened_hours},0);;
     value_format: "0.0%"
@@ -371,7 +371,7 @@ view: hub_closure_rate {
 
   measure: external_factor_closure_rate {
     label: "% Hub Closure External Factor"
-    description: "# Closed hours due to external factors / # Opened hours. "
+    description: "# Closed hours due to external factors / # Opened hours"
     type: number
     sql: ${sum_closure_hours_external_factor} / NULLIF(${sum_opened_hours},0);;
     value_format: "0.0%"
@@ -379,7 +379,7 @@ view: hub_closure_rate {
 
   measure: property_issue_closure_rate {
     label: "% Hub Closure Property Issue"
-    description: "# Closed hours due to property issue / # Opened hours. "
+    description: "# Closed hours due to property issue / # Opened hours"
     type: number
     sql: ${sum_closure_hours_property_issue} /  NULLIF(${sum_opened_hours},0);;
     value_format: "0.0%"
@@ -387,7 +387,7 @@ view: hub_closure_rate {
 
   measure: other_closure_rate {
     label: "% Hub Closure Other"
-    description: "# Closed hours due to other reasons / # Opened hours. "
+    description: "# Closed hours due to other reasons / # Opened hours"
     type: number
     sql: ${sum_closure_hours_other} / NULLIF(${sum_opened_hours},0);;
     value_format: "0.0%"
@@ -395,7 +395,7 @@ view: hub_closure_rate {
 
   measure: equipment_closure_rate {
     label: "% Hub Closure Equipment"
-    description: "# Closed hours due to equipment issues / # Opened hours. "
+    description: "# Closed hours due to equipment issues / # Opened hours"
     type: number
     sql: ${sum_closure_hours_equipment} / NULLIF(${sum_opened_hours},0);;
     value_format: "0.0%"
@@ -403,7 +403,7 @@ view: hub_closure_rate {
 
   measure: auto_closure_rate {
     label: "% Hub Closure Auto"
-    description: "# Closed hours due to the auto-closure service / # Opened hours. "
+    description: "# Closed hours due to the auto-closure service / # Opened hours"
     type: number
     sql: ${sum_closure_hours_auto_closure} / NULLIF(${sum_opened_hours},0);;
     value_format: "0.0%"
@@ -411,7 +411,7 @@ view: hub_closure_rate {
 
   measure: all_closure_rate {
     label: "% Hub Closure All"
-    description: "# Closed hours / # Opened hours "
+    description: "# Closed hours / # Opened hours"
     type: number
     sql: ${sum_closed_hours} / NULLIF(${sum_opened_hours},0);;
     value_format: "0.0%"
