@@ -89,4 +89,12 @@ view: cc_headcount_forecast_performance {
     type: sum
     sql: ${TABLE}.number_of_contacts ;;
   }
+
+  measure: mae_predicted_contacts {
+    label: "MAE Predicted Contacts"
+    description: "The mean absolute error between the predicted number of contacts and the actual number of
+    contacts (Actual - Predicted)"
+    type: average
+    sql: abs(${TABLE}.number_of_contacts-${TABLE}.number_of_predicted_contacts) ;;
+  }
 }
