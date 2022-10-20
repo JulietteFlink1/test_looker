@@ -52,14 +52,21 @@ view: event_trip_state_updated {
     description: "Name of an event triggered."
     sql: ${TABLE}.event_name ;;
   }
+  dimension: is_force_action {
+    group_label: "Generic Dimension"
+    label: "Force Complete"
+    type: yesno
+    description: "Actor ID is not the same as the Rider ID"
+    sql: ${event_trip_state_updated.actor_id} != ${event_trip_state_updated.rider_id}  ;;
+  }
 
   # ======= Location Dimensions ======= #
 
   dimension: country_iso {
     group_label: "Location Dimension"
-    label: "Country ISO"
+    label: "Country Iso"
     type: string
-    description: "Country ISO based on 'hub_code'."
+    description: "Country Iso based on 'hub_code'."
     sql: ${TABLE}.country_iso ;;
   }
   dimension: hub_code {
@@ -120,31 +127,79 @@ view: event_trip_state_updated {
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
   measure: events {
-    group_label: "Measures"
+    group_label: "Count Measures"
     label: "# Events"
     description: "Number of events triggerd by dispatching service"
     type: count_distinct
     sql: ${TABLE}.event_uuid ;;
   }
   measure: number_distinct_trips {
-    group_label: "Measures"
+    group_label: "Count Measures"
     label: "# Trips"
     description: "Number of trips"
     type: count_distinct
     sql: ${TABLE}.trip_id ;;
   }
   measure: number_distinct_riders {
-    group_label: "Measures"
+    group_label: "Count Measures"
     label: "# Riders"
     description: "Number of distinct riders"
     type: count_distinct
     sql: ${TABLE}.rider_id ;;
   }
   measure: number_distinct_actors {
-    group_label: "Measures"
+    group_label: "Count Measures"
     label: "# Actors"
     description: "Number of distinct Actors"
     type: count_distinct
     sql: ${TABLE}.actor_id ;;
   }
+  measure: total_trip_completed_events {
+    group_label: "Count Measures"
+    label: "# Trip Completed Events"
+    description: "Number of Trip Completed Events"
+    type: count_distinct
+    sql: ${TABLE}.event_uuid ;;
+    filters: [event_name: "trip_completed"]
+  }
+  measure: number_of_force_complete_events {
+    group_label: "Forced Measures"
+    label: "# of Force Complete Events"
+    description: "Number of Force Complete events triggerd"
+    type: count_distinct
+    sql: ${TABLE}.event_uuid ;;
+    filters: [is_force_action: "yes", event_name: "trip_completed"]
+  }
+  measure: total_trip_rejected_events {
+    group_label: "Count Measures"
+    label: "# Trip Rejected Events"
+    description: "Number of Trip Rejected Events"
+    type: count_distinct
+    sql: ${TABLE}.event_uuid ;;
+    filters: [event_name: "trip_rejected"]
+    }
+  measure: number_of_force_unassignments_from_dashboard_events {
+    group_label: "Forced Measures"
+    label: "# of Rejections from Dashboard Events"
+    description: "Number of Force Unassigments performed from Hub Dashboard"
+    type: count_distinct
+    sql: ${TABLE}.event_uuid ;;
+    filters: [is_force_action: "yes", event_name: "trip_rejected"]
+  }
+  measure: total_trip_started_events {
+    group_label: "Count Measures"
+    label: "# Trip Started Events"
+    description: "Number of Trip Started Events"
+    type: count_distinct
+    sql: ${TABLE}.event_uuid ;;
+    filters: [event_name: "trip_started"]
+    }
+  measure: number_of_force_assignments_from_dashboard_events {
+    group_label: "Forced Measures"
+    label: "# of Trips Started from Dashboard"
+    description: "Number of Force Assignments From Hub Dashboard"
+    type: count_distinct
+    sql: ${TABLE}.event_uuid ;;
+    filters: [is_force_action: "yes", event_name: "trip_started"]
+      }
 }
