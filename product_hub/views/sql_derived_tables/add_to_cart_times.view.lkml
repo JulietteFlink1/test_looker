@@ -6,7 +6,7 @@ view: add_to_cart_times {
     sql: with timestamp_difference as
           (SELECT
             inventory_movement_id, sku, is_scanned_item, cast(quantity as int64) as quantity
-            , datetime_diff(event_timestamp,lag(event_timestamp) OVER (order by event_timestamp), MILLISECOND) as time_to_add_to_cart_millisec
+            , datetime_diff(event_timestamp,lag(event_timestamp) OVER (PARTITION BY inventory_movement_id order by event_timestamp), MILLISECOND) as time_to_add_to_cart_millisec
           FROM `flink-data-prod.curated.daily_stock_management_events`
           LEFT JOIN global_filters_and_parameters ON global_filters_and_parameters.generic_join_dim = TRUE
 
@@ -47,7 +47,6 @@ view: add_to_cart_times {
   }
   dimension: is_scanned_item {
     description: "boolean for when the item is added to cart by scanning or by searching."
-    type: number
   }
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
