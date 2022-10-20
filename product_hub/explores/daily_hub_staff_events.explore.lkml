@@ -68,9 +68,10 @@ explore: daily_hub_staff_events {
     relationship: one_to_one
   }
 
+#Coalesce in the join is to be able to see times and quantities processed at order_id and sku level
   join: picking_times {
     view_label: "4 Picking Times"
-    sql_on: ${picking_times.order_id} = ${event_order_state_updated.order_id}
+    sql_on: ${picking_times.order_id} = coalesce(${event_order_state_updated.order_id},${event_order_progressed.order_id})
       and {% condition global_filters_and_parameters.datasource_filter %}
         ${picking_times.event_timestamp_date} {% endcondition %};;
     type: left_outer
