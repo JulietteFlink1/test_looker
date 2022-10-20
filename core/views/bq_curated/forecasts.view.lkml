@@ -495,6 +495,25 @@ view: forecasts {
     value_format_name: percent_1
   }
 
+  measure: pct_forecasted_utr_deviation {
+    group_label: "> Dynamic Measures"
+    label: "% Forecasted UTR Deviation"
+    description: "The degree of how far Forecasted UTR (# Forecasted Orders / # Forecasted Hours) is from Actual UTR in the given period. Formula:  (Forecasted UTR / Actual UTR) - 1"
+    type: number
+    sql: (${ops.utr_by_position}/nullif(${final_utr_by_position},0)) - 1 ;;
+    value_format_name: percent_1
+  }
+
+  measure: pct_forecasted_utr_deviation_adjusted {
+    group_label: "> Dynamic Measures"
+    label: "% Adjusted Forecasted UTR Deviation"
+    description: "The degree of how far Adjusted Forecasted UTR (# Adjusted Forecasted Orders / # Adjusted Forecasted Hours) is from Actual UTR in the given period. Formula:  (Adjusted Forecasted UTR / Actual UTR) - 1"
+    type: number
+    sql: (${ops.utr_by_position}/nullif(${final_utr_by_position_adjusted},0)) - 1 ;;
+    value_format_name: percent_1
+  }
+
+
   measure: pct_actually_needed_hours_deviation_adjusted {
     group_label: "> Dynamic Measures"
     label: "% Adjusted Actually Needed Hours Deviation"
