@@ -90,16 +90,8 @@ view: supply_chain_master_report {
     type: string
     sql: ${TABLE}.product_name ;;
     label: "Product Name"
-    group_label: ""
+    group_label: "Product Data"
     description: "The name of the product, as specified in the backend."
-  }
-
-  dimension: category {
-    type: string
-    sql: ${TABLE}.category ;;
-    label: "Product Category"
-    group_label: ""
-    description: "The category of the product, as available in the backend tables."
   }
 
   dimension: max_shelf_life_days {
@@ -116,7 +108,56 @@ view: supply_chain_master_report {
     label: "Vendor Name"
     group_label: ""
     description: "The name of the supplier/vendor of a product (e.g. REWE or Carrefour)."
-}
+  }
+
+  dimension: erp_category {
+    type: string
+    sql: ${TABLE}.erp_category ;;
+    label: "Product Category (ERP)"
+    group_label: "Product Data"
+    description: "The category of the product, as available in the backend tables."
+  }
+
+  dimension: ct_category {
+    type: string
+    sql: ${TABLE}.ct_category ;;
+    label: "Product Category (CT)"
+    group_label: "Product Data"
+    description: "Name of the category to which product was assigned, (not ERP category)."
+  }
+
+  dimension: erp_subcategory {
+    type: string
+    sql: ${TABLE}.erp_subcategory ;;
+    label: "Product Sub-Category (ERP)"
+    group_label: "Product Data"
+    description: "The Subcategory of the product, as available in the backend tables."
+  }
+
+  dimension: ct_subcategory {
+    type: string
+    sql: ${TABLE}.ct_subcategory ;;
+    label: "Product Sub-Category (CT)"
+    group_label: "Product Data"
+    description: "Name of the subcategory to which product was assigned, (not ERP subcategory)."
+  }
+
+  dimension: product_brand {
+    type: string
+    sql: ${TABLE}.product_brand ;;
+    label: "Product Brand (CT)"
+    group_label: "Product Data"
+    description: "The brand a product belongs to."
+  }
+
+  dimension: product_erp_brand {
+    type: string
+    sql: ${TABLE}.product_erp_brand ;;
+    label: "Product Brand (ERP)"
+    group_label: "Product Data"
+    description: "The brand a product belongs to (ERP)."
+  }
+
 
 ############################################################
 ###################### Numeric Dimension ###################
