@@ -499,7 +499,7 @@ view: forecasts {
     label: "Are metrics available?"
     description: "This filter allows user to filter out hubs where there is no any scheduled hours or forecasted orders."
     sql: case
-          when (${ops.number_of_scheduled_hours_by_position}+${number_of_forecasted_orders}+${orders_with_ops_metrics.sum_orders})<>0 or (${ops.number_of_scheduled_hours_by_position}+${number_of_forecasted_orders}+${orders_with_ops_metrics.sum_orders}) is not null
+          when (${ops.number_of_scheduled_hours_by_position}+${number_of_forecasted_orders}+${orders_with_ops_metrics.sum_orders})<>0
             then true
           else false
           end;;
