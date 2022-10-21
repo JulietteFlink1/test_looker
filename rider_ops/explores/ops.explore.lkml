@@ -26,9 +26,15 @@ explore: ops {
       hubs.hub_name: "",
       time_grid.start_datetime_date: "yesterday",
       time_grid.start_datetime_hour_of_day: "[6,23]",
-      forecasts.job_date: "",
+      forecasts.dow_parameter: "Tuesday"
     ]
   }
+
+  # This filter takes the latest chosen day of the week and maps it to the job date
+  sql_always_where: (${forecasts.job_date}=${forecasts.job_date_2} OR ${forecasts.job_date} is null)
+          -- we also filter forecast/order data not to show all hubs
+          AND (${orders_with_ops_metrics.cnt_orders}>0 OR ${forecasts.number_of_forecasted_orders_dimension}>0
+          OR ${ops.number_of_scheduled_hours_by_position_dimension}>0) ;;
 
   access_filter: {
     field: hubs.country_iso

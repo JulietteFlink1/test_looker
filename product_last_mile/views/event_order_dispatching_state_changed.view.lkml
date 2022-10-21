@@ -68,35 +68,31 @@ view: event_order_dispatching_state_changed {
   # ======= Dates / Timestamps =======
 
   dimension_group: event_timestamp {
+    group_label: "Timestamps"
+    label: "Event Timestamp"
     type: time
     timeframes: [
-      raw,
-      time,
       date,
       week,
       month,
-      quarter,
-      year
+      quarter
     ]
     sql: ${TABLE}.event_timestamp ;;
   }
-
-  # ======= HIDDEN =======
-
-  dimension_group: publish_time_timestamp {
-    hidden: yes
+  dimension_group: published_at_timestamp {
+    group_label: "Timestamps"
+    label: "Published At Timestamp"
     type: time
     timeframes: [
-      raw,
-      time,
       date,
       week,
       month,
-      quarter,
-      year
+      quarter
     ]
-    sql: ${TABLE}.publish_time_timestamp ;;
+    sql: ${TABLE}.published_at_timestamp ;;
   }
+
+  # ======= HIDDEN =======
 
   dimension: attributes {
     hidden: yes
@@ -115,18 +111,21 @@ view: event_order_dispatching_state_changed {
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
   measure: events {
-    label: "# Events"
+    group_label: "Measures"
+    label: "# Distinct Events"
     description: "Number of events triggerd by dispatching service"
     type: count_distinct
     sql: ${TABLE}.event_uuid ;;
   }
   measure: orders {
+    group_label: "Measures"
     label: "# Distinct Orders"
     description: "Number of orders in picker queue"
     type: count_distinct
     sql: ${TABLE}.order_id ;;
   }
   measure: messages {
+    group_label: "Measures"
     label: "# Messages"
     description: "Number of messages from dispatching service"
     type: count_distinct

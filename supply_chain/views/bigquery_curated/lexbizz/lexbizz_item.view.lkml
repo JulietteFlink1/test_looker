@@ -187,7 +187,7 @@ view: lexbizz_item {
   }
 
   dimension: min_days_to_best_before_date {
-    type: string
+    type: number
     sql: ${TABLE}.min_days_to_best_before_date ;;
   }
 

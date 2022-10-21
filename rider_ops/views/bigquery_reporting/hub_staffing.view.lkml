@@ -263,8 +263,8 @@ view: hub_staffing {
   measure: sum_planned_employees_external{
     type: sum
     hidden: yes
-    label:"# Scheduled Ext Employees"
-    description: "Number of Scheduled Ext Employees"
+    label: "# Scheduled External Employees"
+    description: "Number of Scheduled External Employees"
     sql:${number_of_planned_employees_external};;
     value_format_name: decimal_1
   }
@@ -281,8 +281,8 @@ view: hub_staffing {
   measure: sum_worked_employees_external{
     type: sum
     hidden: yes
-    label:"# Worked Ext Employees"
-    description: "Number of Worked Ext Employees"
+    label: "# Worked External Employees"
+    description: "Number of Worked External Employees"
     sql:${number_of_worked_employees_external};;
     value_format_name: decimal_1
   }
@@ -300,8 +300,8 @@ view: hub_staffing {
   measure: sum_unassigned_employees_external{
     type: sum
     hidden: yes
-    label:"# Unassigned Ext Employees"
-    description: "Number of Unassigned Ext Employees"
+    label: "# Unassigned External Employees"
+    description: "Number of Unassigned External Employees"
     sql:${number_of_unassigned_employees_external};;
     value_format_name: decimal_1
   }
@@ -324,11 +324,43 @@ view: hub_staffing {
 
   measure: sum_planned_hours_external{
     type: sum
-    label:"# Filled Ext Hours"
-    description: "Number of Scheduled Ext Hours"
+    label: "# Filled External Hours"
+    description: "Number of Scheduled External Hours"
     sql:${number_of_planned_minutes_external}/60;;
     value_format_name: decimal_1
   }
+
+  measure: sum_planned_hours_external_partnership{
+    type: sum
+    label: "# Filled External Partnership Hours"
+    description: "Number of Scheduled External Partnership Hours"
+    sql:${TABLE}.number_of_planned_minutes_external_partnership/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: pct_assigned_hours_external_partnership {
+    label: "% Filled External Partnership Hours"
+    description: "Share of External Partnership Hours from total Filled Hours"
+    type: number
+    sql: ${sum_planned_hours_external_partnership}/${sum_planned_hours};;
+    value_format_name: percent_1
+  }
+
+  measure: sum_planned_hours_external_one_time{
+    type: sum
+    label: "# Filled External One-time Hours"
+    description: "Number of Scheduled External One-time Hours"
+    sql: ${TABLE}.number_of_planned_minutes_external_one_time/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: pct_assigned_hours_external_one_time {
+    label: "% Filled External One-time Hours"
+    description: "Share of External One-time Hours from total Filled Hours"
+    type: number
+    sql: ${sum_planned_hours_external_one_time}/${sum_planned_hours};;
+    value_format_name: percent_1
+    }
 
   measure: sum_worked_hours{
     type: sum
@@ -340,10 +372,42 @@ view: hub_staffing {
 
   measure: sum_worked_hours_external{
     type: sum
-    label:"# Punched Ext Hours"
-    description: "Number of Worked Ext Hours"
+    label: "# Punched External Hours"
+    description: "Number of Worked External Hours"
     sql:${number_of_worked_minutes_external}/60;;
     value_format_name: decimal_1
+  }
+
+  measure: sum_worked_hours_external_partnership{
+    type: sum
+    label: "# Punched External Partnership Hours"
+    description: "Number of Worked External Partnership Hours"
+    sql: ${TABLE}.number_of_worked_minutes_external_partnership/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: pct_worked_hours_external_partnership {
+    label: "% Punched External Partnership Hours"
+    description: "Share of External Partnership Hours from total Punched Hours"
+    type: number
+    sql: ${sum_worked_hours_external_partnership}/${sum_worked_hours};;
+    value_format_name: percent_1
+  }
+
+  measure: sum_worked_hours_external_one_time{
+    type: sum
+    label: "# Punched External One-time Hours"
+    description: "Number of Worked External Partnership Hours"
+    sql: ${TABLE}.number_of_worked_minutes_external_one_time/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: pct_worked_hours_external_one_time {
+    label: "% Punched External One-time Hours"
+    description: "Share of External One-time Hours from total Punched Hours"
+    type: number
+    sql: ${sum_worked_hours_external_one_time}/${sum_worked_hours};;
+    value_format_name: percent_1
   }
 
   measure: number_of_scheduled_hours {
@@ -355,8 +419,8 @@ view: hub_staffing {
   }
 
   measure: number_of_scheduled_hours_external {
-    label: "# Scheduled Ext Hours"
-    description: "# Scheduled Ext Hours (Post-Adjustments) (Assigned + Open)"
+    label: "# Scheduled External Hours"
+    description: "# Scheduled External Hours (Post-Adjustments) (Assigned + Open)"
     type: number
     sql: ${number_of_unassigned_hours_external}+${sum_planned_hours_external};;
     value_format_name: decimal_1
@@ -397,8 +461,8 @@ view: hub_staffing {
 
   measure: number_of_unassigned_hours_external{
     type: sum
-    label:"# Open Ext Hours"
-    description: "Number of Unassigned(Open) Ext Hours"
+    label: "# Open External Hours"
+    description: "Number of Unassigned(Open) External Hours"
     sql:${number_of_unassigned_minutes_external}/60;;
     value_format_name: decimal_1
   }
@@ -444,9 +508,9 @@ view: hub_staffing {
   }
 
   measure: sum_no_show_hours_external{
-    label:"# No Show Ext Hours"
+    label: "# No Show External Hours"
     type: sum
-    description: "Sum of No Show Ext Hours"
+    description: "Sum of No Show External Hours"
     sql:${number_of_no_show_minutes_external}/60;;
     value_format_name: decimal_1
   }
