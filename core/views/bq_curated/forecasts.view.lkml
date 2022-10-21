@@ -495,6 +495,17 @@ view: forecasts {
     value_format_name: percent_1
   }
 
+  measure: hub_filter {
+    label: "Are metrics available?"
+    description: "This filter allows user to filter out hubs where there is no any scheduled hours or forecasted orders."
+    sql: case
+          when (${ops.number_of_scheduled_hours_by_position}+${number_of_forecasted_orders}+${orders_with_ops_metrics.sum_orders})<>0 or (${ops.number_of_scheduled_hours_by_position}+${number_of_forecasted_orders}+${orders_with_ops_metrics.sum_orders}) is not null
+            then true
+          else false
+          end;;
+    type: yesno
+  }
+
   measure: pct_forecasted_utr_deviation {
     group_label: "> Dynamic Measures"
     label: "% Forecasted UTR Deviation"
