@@ -4,7 +4,11 @@
 # Main Stakeholder:
 # - Supply Chain team
 
-# Provides data related to the most important Supply Chain KPIs
+# Provides data related to the most important Supply Chain KPIs combined in one place:
+# Availability
+# Fill Rate
+# Waste
+# GMV
 
 view: supply_chain_master_report {
   sql_table_name: `flink-data-dev.dbt_lruiz_reporting.supply_chain_master_report`
