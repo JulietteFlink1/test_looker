@@ -4,6 +4,13 @@
 view: vehicle_uptime_metrics {
   sql_table_name: `flink-data-prod.reporting.vehicle_uptime_metrics` ;;
 
+  dimension: vehicle_uptime_uuid {
+    hidden: yes
+    type: string
+    primary_key: yes
+    sql: ${TABLE}.vehicle_uptime_uuid ;;
+  }
+
   dimension: country_iso {
     group_label: "> Geography"
     label: "Country Iso"

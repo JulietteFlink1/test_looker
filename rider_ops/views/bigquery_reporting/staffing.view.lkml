@@ -3334,6 +3334,15 @@ view: staffing {
     sql: ${number_of_planned_hours_by_position}/nullif(${number_of_scheduled_hours_by_position},0);;
   }
 
+  measure: pct_unassignment_rate {
+    type: number
+    label: "% Unassignment Rate"
+    description: "1 - Fill Rate"
+    value_format_name: percent_1
+    group_label: "> Dynamic Measures"
+    sql: 1 - ${pct_fill_rate};;
+  }
+
   measure: pct_unexcused_absence {
     type: number
     label: "% Unexcused Absence"

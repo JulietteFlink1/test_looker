@@ -374,7 +374,7 @@ view: forecasts {
   measure: number_of_target_orders_per_picker {
     group_label: "> Picker Measures"
     label: "Base UTR Picker"
-    description: "# Target Orders per Hour per Picker (Target UTR)"
+    description: "Calculated UTR based on formula - (power(60,2) * (1- idle_pct) / handling_duration) * stacking_multiplier"
     value_format_name: decimal_1
     type: average_distinct
     sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
@@ -384,7 +384,7 @@ view: forecasts {
   measure: number_of_target_orders_per_rider {
     group_label: "> Rider Measures"
     label: "Base UTR Rider"
-    description: "# Target Orders per Hour per Rider (Target UTR)"
+    description: "Calculated UTR based on formula - (power(60,2) * (1- idle_pct) / handling_duration) * stacking_multiplier"
     value_format_name: decimal_1
     type: average_distinct
     sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
@@ -394,7 +394,7 @@ view: forecasts {
   measure: number_of_target_orders_per_rider_adjusted {
     group_label: "> Rider Measures"
     label: "Adjusted Base UTR Rider"
-    description: "# Adjusted Target Orders per Hour per Rider (Target UTR)"
+    description: "Adjusted calculated UTR based on formula (Incl. Airtable Adjustments) - (power(60,2) * (1- idle_pct) / handling_duration) * stacking_multiplier"
     value_format_name: decimal_1
     type: average_distinct
     sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
@@ -494,6 +494,25 @@ view: forecasts {
     sql: (${ops.number_of_worked_hours_by_position}/nullif(${fixed_actual_needed_hours_by_position},0)) - 1 ;;
     value_format_name: percent_1
   }
+
+  measure: pct_forecasted_utr_deviation {
+    group_label: "> Dynamic Measures"
+    label: "% Forecasted UTR Deviation"
+    description: "The degree of how far Forecasted UTR (# Forecasted Orders / # Forecasted Hours) is from Actual UTR in the given period. Formula:  (Forecasted UTR / Actual UTR) - 1"
+    type: number
+    sql: (${ops.utr_by_position}/nullif(${final_utr_by_position},0)) - 1 ;;
+    value_format_name: percent_1
+  }
+
+  measure: pct_forecasted_utr_deviation_adjusted {
+    group_label: "> Dynamic Measures"
+    label: "% Adjusted Forecasted UTR Deviation"
+    description: "The degree of how far Adjusted Forecasted UTR (# Adjusted Forecasted Orders / # Adjusted Forecasted Hours) is from Actual UTR in the given period. Formula:  (Adjusted Forecasted UTR / Actual UTR) - 1"
+    type: number
+    sql: (${ops.utr_by_position}/nullif(${final_utr_by_position_adjusted},0)) - 1 ;;
+    value_format_name: percent_1
+  }
+
 
   measure: pct_actually_needed_hours_deviation_adjusted {
     group_label: "> Dynamic Measures"
@@ -943,7 +962,7 @@ view: forecasts {
   measure: number_of_target_orders_by_position {
     type: number
     label: "Base UTR"
-    description: "# Target Orders per Hour per Position"
+    description: "Calculated UTR based on formula - (power(60,2) * (1- idle_pct) / handling_duration) * stacking_multiplier"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
@@ -957,7 +976,7 @@ view: forecasts {
   measure: number_of_target_orders_by_position_adjusted {
     type: number
     label: "Adjusted Base UTR"
-    description: "# Target Orders per Hour per Position (Incl. Airtable Adjustments) (Only available for riders)"
+    description: "Adjusted Calculated UTR based on formula (Incl. Airtable Adjustments) - (power(60,2) * (1- idle_pct) / handling_duration) * stacking_multiplier"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
