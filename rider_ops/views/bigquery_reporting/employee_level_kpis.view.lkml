@@ -638,6 +638,42 @@ view: employee_level_kpis {
     value_format_name: decimal_1
   }
 
+  measure: number_of_planned_hours_availability_based {
+    group_label: "* Shift related *"
+    type: sum
+    label: "# Assigned Hours Based on Availability"
+    description:"Number of Assigned hours that are overlapping with provided availability"
+    sql: ${TABLE}.number_of_planned_minutes_availability_based/60 ;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_availability_hours {
+    group_label: "* Shift related *"
+    type: sum
+    label: "# Availability Hours"
+    description:"Number of hours that were provided as available by the employee"
+    sql: ${TABLE}.number_of_availability_minutes/60 ;;
+    value_format_name: decimal_1
+  }
+
+  measure: pct_of_assigned_hours_availability_based_rider {
+    group_label: "* Shift related *"
+    label: "% Assigned Hours Based on Availability"
+    type: number
+    sql:${number_of_planned_hours_availability_based}/${number_of_assigned_hours} ;;
+    description:"Share of Assigned Hours based on Availability from total Assigned Hours - (# Assigned Hours Based on Availability / # Assigned Hours)"
+    value_format_name: percent_1
+  }
+
+  measure: pct_of_planned_hours_availability_based_rider {
+    group_label: "* Shift related *"
+    label: "% Availability Hours vs Total Contracted Hours"
+    type: number
+    sql:${number_of_availability_hours}/${sum_weekly_contracted_hours} ;;
+    description:"# Availability Hours / Total Weekly Contracted Hours"
+    value_format_name: percent_1
+  }
+
   measure: number_of_sick_hours {
     group_label: "* Shift related *"
     type: sum
