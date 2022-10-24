@@ -271,6 +271,7 @@ view: +supply_chain_master_report {
   type: number
   sql: safe_divide(${sum_units_waste}, ${sum_items_sold}) ;;
   label: "% Waste Quote (Items)"
+  group_label: "Inventory Metrics"
   description: "Share of items outbounded as waste over the total of items sold"
   value_format_name: percent_1
   }
@@ -281,6 +282,7 @@ view: +supply_chain_master_report {
     type: number
     sql: safe_divide(${sum_amt_waste_selling_price_gross}, ${sum_amt_total_gmv_selling_price_gross}) ;;
     label: "% Waste Ratio (Item-Revenue) - Selling Price Valuation "
+    group_label: "Inventory Metrics"
     description: "Ratio of waste over the total GMV Gross - Selling Price Valuation "
     value_format_name: percent_1
   }
@@ -289,6 +291,7 @@ view: +supply_chain_master_report {
     type: number
     sql: safe_divide(${sum_amt_waste_buying_price_net}, ${sum_amt_total_gmv_buying_price_net}) ;;
     label: "% Waste Ratio (Item-Revenue) - Buying Price Valuation "
+    group_label: "Inventory Metrics"
     description: "Ratio of waste over the total GMV Gross - Buying Price Valuation "
     value_format_name: percent_1
   }

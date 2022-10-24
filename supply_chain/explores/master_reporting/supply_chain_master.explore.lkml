@@ -22,6 +22,8 @@ explore: supply_chain_master {
 
   hidden: no
 
+  persist_with: flink_daily_datagroup
+
   label: "Supply Chain Master Explore"
   group_label: "Supply Chain"
 
@@ -42,8 +44,5 @@ explore: supply_chain_master {
     sql_on: ${global_filters_and_parameters.generic_join_dim} = TRUE ;;
     type: left_outer
     relationship: one_to_one
-
   }
-
-
-  }
+}
