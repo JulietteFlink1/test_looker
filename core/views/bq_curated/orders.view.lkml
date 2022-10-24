@@ -340,6 +340,7 @@ view: orders {
     ]
     sql: current_timestamp;;
     datatype: timestamp
+    hidden: yes
   }
 
   dimension_group: created {
@@ -933,6 +934,7 @@ view: orders {
       year
     ]
     sql: ${TABLE}.last_modified_at ;;
+    hidden: yes
   }
 
   dimension: latitude {
@@ -1034,15 +1036,14 @@ view: orders {
   }
 
   dimension_group: delivery_timestamp {
-    group_label: "* Dates and Timestamps *"
-    label: "Rider Arrived At Customer Timestamp"
+    group_label: "* Operations / Logistics *"
+    label: "Rider Arrived At Customer"
     type: time
     timeframes: [
       raw,
-      minute15,
+      time,
       minute30,
       hour_of_day,
-      time,
       date,
       day_of_week,
       week,
@@ -1069,6 +1070,7 @@ view: orders {
   }
 
   dimension: hour {
+    hidden: yes
     group_label: "* Dates and Timestamps *"
     type: number
     sql: extract(hour from ${created_raw} AT TIME ZONE 'Europe/Berlin') ;;
