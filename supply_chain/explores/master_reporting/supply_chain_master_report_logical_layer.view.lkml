@@ -192,12 +192,21 @@ view: +supply_chain_master_report {
 ############################################################
 
 
-  measure: sum_amt_total_gmv_gross {
+  measure: sum_amt_total_gmv_selling_price_gross {
     type: sum
-    sql: ${amt_total_gmv_gross} ;;
-    label: "€ GMV Gross"
+    sql: ${amt_total_gmv_selling_price_gross} ;;
+    label: "€ GMV (Selling Price Gross Valuation)"
     group_label: "Monetary Metrics"
-    description: "Total GMV Gross translated as the total amount Sold in Euro per Hub and Parent SKU"
+    description: "Total GMV Gross translated as the total amount Sold in Euro per Hub and Parent SKU (Valuated on Selling Price Gross)"
+    value_format_name: eur
+  }
+
+  measure: sum_amt_total_gmv_buying_price_net {
+    type: sum
+    sql: ${amt_total_gmv_buying_price_net} ;;
+    label: "€ GMV (Buying Price Net Valuation)"
+    group_label: "Monetary Metrics"
+    description: "Total GMV Net translated as the total amount Sold in Euro per Hub and Parent SKU (Valuated on Buying Price Net)"
     value_format_name: eur
   }
 
@@ -270,11 +279,18 @@ view: +supply_chain_master_report {
 
   measure: waste_ratio  {
     type: number
-    sql: safe_divide(${sum_amt_waste_selling_price_gross}, ${sum_amt_total_gmv_gross}) ;;
-    label: "% Waste Ratio (Item-Revenue)"
-    description: "Ratio of waste over the total GMV Gross"
+    sql: safe_divide(${sum_amt_waste_selling_price_gross}, ${sum_amt_total_gmv_selling_price_gross}) ;;
+    label: "% Waste Ratio (Item-Revenue) - Selling Price Valuation "
+    description: "Ratio of waste over the total GMV Gross - Selling Price Valuation "
     value_format_name: percent_1
   }
 
+  measure: waste_ratio_buying_price  {
+    type: number
+    sql: safe_divide(${sum_amt_waste_buying_price_net}, ${sum_amt_total_gmv_buying_price_net}) ;;
+    label: "% Waste Ratio (Item-Revenue) - Buying Price Valuation "
+    description: "Ratio of waste over the total GMV Gross - Buying Price Valuation "
+    value_format_name: percent_1
+  }
 
 }

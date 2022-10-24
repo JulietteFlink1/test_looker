@@ -14,6 +14,15 @@ view: supply_chain_master_report {
   sql_table_name: `flink-data-dev.dbt_lruiz_reporting.supply_chain_master_report`
     ;;
 
+set: drill_fields_set {
+  fields: [country_iso,
+           hub_code,
+           product_name,
+           product_brand,
+           vendor_name,
+           parent_sku]
+}
+
 ############################################################
 ################### Date Dimension #########################
 ############################################################
@@ -60,6 +69,7 @@ view: supply_chain_master_report {
     label: "Country ISO"
     group_label: ""
     description: "2-letter country code."
+    drill_fields: [drill_fields_set*]
   }
 
   dimension: hub_code {
@@ -68,6 +78,7 @@ view: supply_chain_master_report {
     label: "Hub Code"
     group_label: ""
     description: "Code of a hub identical to back-end source tables."
+    drill_fields: [drill_fields_set*]
   }
 
   dimension: hub_name {
@@ -76,6 +87,7 @@ view: supply_chain_master_report {
     label: "Hub Name"
     group_label: ""
     description: "Name assigned to a hub based on the combination of country ISO code, city and district."
+    drill_fields: [drill_fields_set*]
   }
 
   dimension: parent_sku {
@@ -84,6 +96,7 @@ view: supply_chain_master_report {
     label: "Parent SKU"
     group_label: ""
     description: "The Parent SKU of a product. This groups several child SKUs that belongs to the same replenishment substitute group."
+    drill_fields: [drill_fields_set*]
   }
 
   dimension: product_name {
@@ -92,6 +105,7 @@ view: supply_chain_master_report {
     label: "Product Name"
     group_label: "Product Data"
     description: "The name of the product, as specified in the backend."
+    drill_fields: [drill_fields_set*]
   }
 
   dimension: max_shelf_life_days {
@@ -100,6 +114,7 @@ view: supply_chain_master_report {
     label: "Max Shelf Life (days)"
     group_label: ""
     description: "The sku's max amount of days on shelf."
+    drill_fields: [drill_fields_set*]
   }
 
   dimension: vendor_name {
@@ -108,6 +123,7 @@ view: supply_chain_master_report {
     label: "Vendor Name"
     group_label: ""
     description: "The name of the supplier/vendor of a product (e.g. REWE or Carrefour)."
+    drill_fields: [drill_fields_set*]
   }
 
   dimension: erp_category {
@@ -116,6 +132,7 @@ view: supply_chain_master_report {
     label: "Product Category (ERP)"
     group_label: "Product Data"
     description: "The category of the product, as available in the backend tables."
+    drill_fields: [drill_fields_set*]
   }
 
   dimension: ct_category {
@@ -124,6 +141,7 @@ view: supply_chain_master_report {
     label: "Product Category (CT)"
     group_label: "Product Data"
     description: "Name of the category to which product was assigned, (not ERP category)."
+    drill_fields: [drill_fields_set*]
   }
 
   dimension: erp_subcategory {
@@ -132,6 +150,7 @@ view: supply_chain_master_report {
     label: "Product Sub-Category (ERP)"
     group_label: "Product Data"
     description: "The Subcategory of the product, as available in the backend tables."
+    drill_fields: [drill_fields_set*]
   }
 
   dimension: ct_subcategory {
@@ -140,6 +159,7 @@ view: supply_chain_master_report {
     label: "Product Sub-Category (CT)"
     group_label: "Product Data"
     description: "Name of the subcategory to which product was assigned, (not ERP subcategory)."
+    drill_fields: [drill_fields_set*]
   }
 
   dimension: product_brand {
@@ -148,6 +168,7 @@ view: supply_chain_master_report {
     label: "Product Brand (CT)"
     group_label: "Product Data"
     description: "The brand a product belongs to."
+    drill_fields: [drill_fields_set*]
   }
 
   dimension: product_erp_brand {
@@ -156,6 +177,43 @@ view: supply_chain_master_report {
     label: "Product Brand (ERP)"
     group_label: "Product Data"
     description: "The brand a product belongs to (ERP)."
+    drill_fields: [drill_fields_set*]
+  }
+
+  dimension: ct_substitute_group {
+    type: string
+    sql: ${TABLE}.ct_substitute_group ;;
+    label: "Substitute Group (CT)"
+    group_label: "Product Data"
+    description: "The substitute group according to CommerceTools defining substitute products from the customer perspective."
+    drill_fields: [drill_fields_set*]
+  }
+
+  dimension: ct_replenishment_substitute_group {
+    type: string
+    sql: ${TABLE}.ct_replenishment_substitute_group ;;
+    label: "Replenishment Substitute Group (CT)"
+    group_label: "Product Data"
+    description: "The replenishment substitute group defined by the Supply Chain team to tag substitute products for replenishment."
+    drill_fields: [drill_fields_set*]
+  }
+
+  dimension: erp_substitute_group {
+    type: string
+    sql: ${TABLE}.erp_substitute_group ;;
+    label: "Substitute Group (ERP)"
+    group_label: "Product Data"
+    description: "The substitute group according to the ERP defining substitute products."
+    drill_fields: [drill_fields_set*]
+  }
+
+  dimension: erp_replenishment_substitute_group {
+    type: string
+    sql: ${TABLE}.erp_replenishment_substitute_group ;;
+    label: "Replenishment Substitute Group (ERP)"
+    group_label: "Product Data"
+    description: "The replenishment substitute group defined by the Supply Chain team to tag substitute products for replenishment."
+    drill_fields: [drill_fields_set*]
   }
 
 
@@ -266,12 +324,21 @@ view: supply_chain_master_report {
 ##############            HIDDEN            ################
 ############################################################
 
-  dimension: amt_total_gmv_gross {
+  dimension: amt_total_gmv_selling_price_gross {
     type: number
-    sql: ${TABLE}.amt_total_gmv_gross ;;
+    sql: ${TABLE}.amt_total_gmv_selling_price_gross ;;
     hidden: yes
-    label: "GMV Gross"
+    label: "GMV Selling Price Gross"
     group_label: "Monetary Metrics"
+  }
+
+  dimension: amt_total_gmv_buying_price_net {
+    type: number
+    sql: ${TABLE}.amt_total_gmv_buying_price_net ;;
+    hidden: yes
+    label: "GMV Buying Price Net"
+    group_label: "Monetary Metrics"
+    required_access_grants: [can_view_buying_information]
   }
 
   dimension: amt_waste_selling_price_gross {
