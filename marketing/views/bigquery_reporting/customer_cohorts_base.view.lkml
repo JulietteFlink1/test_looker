@@ -374,7 +374,6 @@ view: customer_cohorts_base {
     type: duration
     sql_start: ${first_order_raw} ;;
     sql_end: ${order_cohorts_base.created_raw} ;;
-
   }
 
   dimension: days_since_sign_up_tiered {
@@ -383,6 +382,13 @@ view: customer_cohorts_base {
     tiers: [0,1,30,60,90,120,150,180,210,240,270,300,330,360,390,420,450]
     style: interval
     sql: ${days_time_since_sign_up} ;;
+  }
+
+  dimension: calendar_months_since_sign_up {
+    group_label: "* User Dimensions *"
+    type: number
+    sql:  12  * ( extract(year FROM ${order_cohorts_base.created_raw} at time zone 'Europe/Berlin') - extract(year FROM ${first_order_raw} at time zone 'Europe/Berlin') )
+              + ( extract(month FROM ${order_cohorts_base.created_raw} at time zone 'Europe/Berlin') - extract(month FROM ${first_order_raw} at time zone 'Europe/Berlin') );;
   }
 
   measure: avg_lifetime_revenue {

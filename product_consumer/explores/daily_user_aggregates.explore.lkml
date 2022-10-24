@@ -51,7 +51,7 @@ explore: daily_user_aggregates {
       web_attribution.adgroup_id, web_attribution.creative_id,
       web_attribution.landing_page,web_attribution.is_homepage_visit,
       web_attribution.is_webshop_visit,web_attribution.is_recipe_lp_visit,
-      web_attribution.is_city_lp_visit,
+      web_attribution.is_city_lp_visit,web_attribution.page_referrer
     ]
     sql_on: ${web_attribution.event_date_date} = ${daily_user_aggregates.event_date_at_date}
       and ${web_attribution.anonymous_id} = ${daily_user_aggregates.user_uuid};;
