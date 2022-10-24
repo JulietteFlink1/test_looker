@@ -250,11 +250,11 @@ view: daily_stock_management_events {
     sql: concat(${inventory_movement_id},${sku}) ;;
   }
 
-  measure: number_o_item_added_to_cart {
+  measure: number_of_item_added_to_cart {
     group_label: "Total Metrics"
     label: "# Item Added To Cart"
     description: "Count distinct inventory_movement_id||sku for items added to cart."
-    type: sum
+    type: count_distinct
     filters: [event_name: "inventory_progress", action: "item_added_to_cart"]
     sql: concat(${inventory_movement_id},${sku})  ;;
   }
