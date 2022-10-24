@@ -3,6 +3,8 @@ include: "/**/customer_cohorts_base.view.lkml"
 include: "/**/hubs_ct.view.lkml"
 include: "/**/discounts.view"
 include: "/**/orders.view"
+include: "/**/global_filters_and_parameters.view"
+
 
 # # Select the views that should be a part of this model,
 # # and define the joins that connect them together.
@@ -15,6 +17,12 @@ explore: order_cohorts_base {
   hidden: yes
   always_filter: {
     filters: [is_external_order: "No"]
+  }
+
+  join: global_filters_and_parameters {
+    sql: ;;
+    # Use `sql` instead of `sql_on` and put some whitespace in it
+    relationship: one_to_one
   }
 
   join: customer_cohorts_base {
@@ -40,5 +48,7 @@ explore: order_cohorts_base {
     type: left_outer
     relationship: one_to_one
   }
+
+
 
 }

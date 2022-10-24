@@ -1,3 +1,5 @@
+include: "/**/global_filters_and_parameters.view"
+
 view: orders {
   sql_table_name: `flink-data-prod.curated.orders`
     ;;
@@ -1620,13 +1622,13 @@ view: orders {
     group_label: "* Monetary Values *"
     label: "AVG Item Value (Dynamic) (Gross)"
     description: "AIV represents the Average value of items (incl. VAT). Excludes fees (gross). before deducting Cart Discounts. To be used together with the Is After Product Discounts Deduction parameter."
-    label_from_parameter: is_after_product_discounts
+    label_from_parameter: global_filters_and_parameters.is_after_product_discounts
     value_format_name: eur
     type: number
     sql:
-    {% if is_after_product_discounts._parameter_value == 'true' %}
+    {% if global_filters_and_parameters.is_after_product_discounts._parameter_value == 'true' %}
     ${avg_item_value_after_product_discount_gross}
-    {% elsif is_after_product_discounts._parameter_value == 'false' %}
+    {% elsif global_filters_and_parameters.is_after_product_discounts._parameter_value == 'false' %}
     ${avg_item_value_gross}
     {% endif %}
     ;;
