@@ -45,6 +45,19 @@ view: forecasts {
     sql: date_diff(${start_timestamp_date}, ${job_date}, day) ;;
   }
 
+  dimension: is_forecast_hub {
+    label: "Is forecast hub?"
+    description: "If the hub has forecast for the given job date"
+    type: yesno
+    sql:
+      case
+        when ${number_of_forecasted_hours_by_position_adjusted_dimension} is null
+          or ${number_of_forecasted_orders_dimension} is null
+            then false
+        else true
+      end;;
+  }
+
   # =========  Dates   =========
 
   dimension_group: end_timestamp {
