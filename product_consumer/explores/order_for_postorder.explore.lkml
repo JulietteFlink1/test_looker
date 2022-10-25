@@ -19,6 +19,7 @@ explore: order_for_postorder{
     sql: ;;
     # Use `sql` instead of `sql_on` and put some whitespace in it
     relationship: one_to_one
+    fields: [global_filters_and_parameters.is_after_product_discounts]
   }
 
   join: order_client {
