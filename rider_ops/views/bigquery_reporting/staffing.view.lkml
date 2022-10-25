@@ -1542,6 +1542,24 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+
+  measure: number_of_idle_hours_rider {
+    group_label: "> Rider Measures"
+    label: "# Idle Rider Hours"
+    description: "Sum of idle time (min) - the difference between worked minutes and rider handling time minutes. Rider handling time outliers (suspicious timestamps) could be excluded if there is no viable geofencing data."
+    type: number
+    sql: ${number_of_worked_hours_rider}-${orders_with_ops_metrics.sum_rider_handling_time_hours};;
+    value_format_name: decimal_1
+  }
+
+  measure: pct_rider_idle_time {
+    group_label: "> Rider Measures"
+    type: number
+    label: "% Rider Worked Time Spent Idle"
+    description: "% of worked time (hours) not spent handling an order - compares the difference between worked time (hours) and rider handling time (hours) with total worked time (hours). Rider handling time outliers (suspicious timestamps) could be excluded if there is no viable geofencing data."
+    sql: ${number_of_idle_hours_rider} / nullif(${number_of_worked_hours_rider},0) ;;
+    value_format_name: percent_1
+  }
   measure: number_of_worked_hours_picker {
     group_label: "> Picker Measures"
     label: "# Punched Picker Hours"
