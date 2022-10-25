@@ -247,7 +247,8 @@ view: employee_level_kpis {
 
   parameter: avaiability_overlap_parameter {
     type: yesno
-    label: "Is Shift 100% overlapping with Availability ?"
+    label: "Is Assigned Shift 100% overlapping with Availability ?"
+    description: "If yes, will result in consider overlap between assinged shift and availability if 0% or 100%"
   }
 
   dimension: type_of_contract {
