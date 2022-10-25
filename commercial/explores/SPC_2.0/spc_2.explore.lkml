@@ -7,7 +7,7 @@ include: "/**/lexbizz_item_warehouse.view"
 include: "/**/lexbizz_warehouse.view"
 include: "/**/orderline.view"
 include: "/**/*.view"
-
+include: "/**/global_filters_and_parameters.view"
 
 
 explore: spc_2 {
@@ -18,6 +18,13 @@ explore: spc_2 {
   label: "SPC 2.0"
 
   hidden: yes
+
+  join: global_filters_and_parameters {
+    sql: ;;
+    # Use `sql` instead of `sql_on` and put some whitespace in it
+    relationship: one_to_one
+  }
+
 
   join: products {
     view_label: "Product Data"

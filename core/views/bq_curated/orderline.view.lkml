@@ -1096,13 +1096,13 @@ view: orderline {
     label: "SUM Items Price Sold Gross (Dynamic)"
     alias: [sum_item_price_fulfilled_gross_dynamic]
     description: "To be used together with the Is After Product Discounts Deduction parameter."
-    label_from_parameter: is_after_product_discounts
+    label_from_parameter: global_filters_and_parameters.is_after_product_discounts
     value_format_name: eur
     type: number
     sql:
-    {% if is_after_product_discounts._parameter_value == 'true' %}
+    {% if global_filters_and_parameters.is_after_product_discounts._parameter_value == 'true' %}
     ${sum_item_price_after_product_discount_gross}
-    {% elsif is_after_product_discounts._parameter_value == 'false' %}
+    {% elsif global_filters_and_parameters.is_after_product_discounts._parameter_value == 'false' %}
     ${sum_item_price_gross}
     {% endif %}
     ;;

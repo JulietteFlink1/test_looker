@@ -1,6 +1,7 @@
 # created : December 2021
 
 include: "/**/*.view"
+include: "/**/global_filters_and_parameters.view"
 
 
 explore: recurring_sku_purchases {
@@ -12,6 +13,12 @@ explore: recurring_sku_purchases {
         recurring_sku_purchases.select_skus_for_recurring_sku_tracking: "",
         filter_order_date: ""
       ]
+  }
+
+  join: global_filters_and_parameters {
+    sql: ;;
+    # Use `sql` instead of `sql_on` and put some whitespace in it
+    relationship: one_to_one
   }
 
   join: orderline {
