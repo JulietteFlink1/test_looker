@@ -51,7 +51,7 @@ view: forecasts {
     type: yesno
     sql:
       case
-        when ${number_of_forecasted_hours_by_position_adjusted_dimension} is null
+        when ${number_of_forecasted_hours_by_position_dimension} is null
           or ${number_of_forecasted_orders_dimension} is null
             then false
         else true
