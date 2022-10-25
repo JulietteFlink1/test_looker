@@ -1042,6 +1042,7 @@ view: orders {
     timeframes: [
       raw,
       time,
+      minute15,
       minute30,
       hour_of_day,
       date,
