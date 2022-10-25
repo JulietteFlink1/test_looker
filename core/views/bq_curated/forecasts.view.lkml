@@ -152,7 +152,7 @@ view: forecasts {
   dimension: number_of_actual_orders_dimension {
     label: "# Actual Orders - Dimension"
     type: number
-    sql: ${TABLE}.number_of_actual_orders;;
+    sql: ${TABLE}.number_of_actual_orders + ${TABLE}.number_of_missed_orders;;
     hidden: yes
   }
 
@@ -470,10 +470,10 @@ view: forecasts {
   measure: number_of_actual_orders {
     group_label: "> Order Measures"
     label: "# Actual Orders (Forecast-related)"
-    description: "# Actual Orders - Excl. Click&Collect and External Orders. Including Cancelled Orders"
+    description: "# Actual Orders - Excl. Click&Collect and External Orders. Including Cancelled and Missed Orders"
     type: sum_distinct
     sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
-    sql: ${TABLE}.number_of_actual_orders ;;
+    sql: ${TABLE}.number_of_actual_orders + ${TABLE}.number_of_missed_orders ;;
     value_format_name: decimal_0
   }
 
