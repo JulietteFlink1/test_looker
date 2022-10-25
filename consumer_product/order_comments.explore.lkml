@@ -1,5 +1,4 @@
 include: "/**/*.view"
-include: "/**/*.explore"
 
 explore: order_comments{
   hidden: yes

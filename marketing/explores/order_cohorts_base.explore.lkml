@@ -49,6 +49,4 @@ explore: order_cohorts_base {
     relationship: one_to_one
   }
 
-
-
 }

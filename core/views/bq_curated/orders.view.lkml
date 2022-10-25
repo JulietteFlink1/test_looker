@@ -1,5 +1,3 @@
-include: "/**/global_filters_and_parameters.view"
-
 view: orders {
   sql_table_name: `flink-data-prod.curated.orders`
     ;;
