@@ -215,7 +215,6 @@ view: weekly_hubmanager_sendouts {
           <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center">+{{ value }} %</p>
           {% elsif dimension._value == 'WoW' and value < 0 %}
            <p style="color: black; background-color: lightgrey; font-size:100%; text-align:center">{{ value }} %</p>
-          <p style="color: black; background-color: red; font-size:100%; text-align:center"># {{value | round}} / {{avg_number_total_hubs_in_country._value | round}}</p>
           {% elsif dimension._value == 'Last Week'  %}
           <p style="font-weight: bold">{{ rendered_value }}<p>
           {% elsif dimension._value == 'Previous Week' %}
