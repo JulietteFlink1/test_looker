@@ -337,12 +337,6 @@ view: erp_buying_prices {
   # ~~~~~~~~~~~~~~~     Parameters     ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  parameter: is_after_product_discounts {
-    group_label: "> Parameters"
-    type: yesno
-    label: "Is After Deduction of Product Discounts"
-    default_value: "No"
-  }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~     Dynamic Measures & Dimensions     ~~~~~~~~~~~~
@@ -351,13 +345,13 @@ view: erp_buying_prices {
   dimension: net_income_dynamic {
     label: "Net Unit Price (Dynamic)"
     description: "The incoming cash defined as net item price. To be used together with Is After Deduction of Product Discounts parameter"
-    label_from_parameter: is_after_product_discounts
+    label_from_parameter: global_filters_and_parameters.is_after_product_discounts
     value_format_name: eur
     type: number
     sql:
-    {% if is_after_product_discounts._parameter_value == "true" %}
+    {% if global_filters_and_parameters.is_after_product_discounts._parameter_value == "true" %}
     ${net_income_after_product_discount}
-    {% elsif is_after_product_discounts._parameter_value == "false" %}
+    {% elsif global_filters_and_parameters.is_after_product_discounts._parameter_value == "false" %}
     ${net_income}
     {% endif %}
     ;;
@@ -366,13 +360,13 @@ view: erp_buying_prices {
   dimension: margin_absolute_dynamic {
     label: "€ Unit Margin (Dynamic)"
     description: "The unit margin defined as Net Unit Price substracted by the Buying Price. To be used together with Is After Deduction of Product Discounts parameter"
-    label_from_parameter: is_after_product_discounts
+    label_from_parameter: global_filters_and_parameters.is_after_product_discounts
     value_format_name: eur
     type: number
     sql:
-    {% if is_after_product_discounts._parameter_value == "true" %}
+    {% if global_filters_and_parameters.is_after_product_discounts._parameter_value == "true" %}
     ${margin_absolute_after_product_discount}
-    {% elsif is_after_product_discounts._parameter_value == "false" %}
+    {% elsif global_filters_and_parameters.is_after_product_discounts._parameter_value == "false" %}
     ${margin_absolute}
     {% endif %}
     ;;
@@ -381,13 +375,13 @@ view: erp_buying_prices {
   measure: sum_total_net_income_dynamic {
     label: "€ Sum Item Prices Sold (Net) (Dynamic)"
     description: "The sum of all Net Unit Price multiplied by the sum of Item Quantity Sold. To be used together with Is After Deduction of Product Discounts parameter"
-    label_from_parameter: is_after_product_discounts
+    label_from_parameter: global_filters_and_parameters.is_after_product_discounts
     value_format_name: eur
     type: number
     sql:
-    {% if is_after_product_discounts._parameter_value == "true" %}
+    {% if global_filters_and_parameters.is_after_product_discounts._parameter_value == "true" %}
     ${sum_total_net_income_after_product_discount}
-    {% elsif is_after_product_discounts._parameter_value == "false" %}
+    {% elsif global_filters_and_parameters.is_after_product_discounts._parameter_value == "false" %}
     ${sum_total_net_income}
     {% endif %}
     ;;
@@ -396,13 +390,13 @@ view: erp_buying_prices {
   measure: sum_total_margin_abs_dynamic {
     label: "€ Sum Gross Profit (Dynamic)"
     description: "The sum of all Unit Margins defined as Net Unit Price minus Buying Price. To be used together with Is After Deduction of Product Discounts parameter"
-    label_from_parameter: is_after_product_discounts
+    label_from_parameter: global_filters_and_parameters.is_after_product_discounts
     value_format_name: eur
     type: number
     sql:
-    {% if is_after_product_discounts._parameter_value == "true" %}
+    {% if global_filters_and_parameters.is_after_product_discounts._parameter_value == "true" %}
     ${sum_total_margin_abs_after_product_discount}
-    {% elsif is_after_product_discounts._parameter_value == "false" %}
+    {% elsif global_filters_and_parameters.is_after_product_discounts._parameter_value == "false" %}
     ${sum_total_margin_abs}
     {% endif %}
     ;;
@@ -411,13 +405,13 @@ view: erp_buying_prices {
   measure: pct_total_margin_relative_dynamic {
     label: "% Blended Margin (Dynamic)"
     description: "The sum of Gross Profit divided by the sum of Item Prices Sold (Net). To be used together with Is After Deduction of Product Discounts parameter"
-    label_from_parameter: is_after_product_discounts
+    label_from_parameter: global_filters_and_parameters.is_after_product_discounts
     value_format_name: percent_1
     type: number
     sql:
-    {% if is_after_product_discounts._parameter_value == "true" %}
+    {% if global_filters_and_parameters.is_after_product_discounts._parameter_value == "true" %}
     ${pct_total_margin_relative_after_product_discount}
-    {% elsif is_after_product_discounts._parameter_value == "false" %}
+    {% elsif global_filters_and_parameters.is_after_product_discounts._parameter_value == "false" %}
     ${pct_total_margin_relative}
     {% endif %}
     ;;
@@ -426,13 +420,13 @@ view: erp_buying_prices {
   measure: sum_total_cost_dynamic {
     label: "€ Sum COGS (Dynamic)"
     description: "The sum of Item Prices Sold (Net) minus sum of Gross Profit. To be used together with Is After Deduction of Product Discounts parameter"
-    label_from_parameter: is_after_product_discounts
+    label_from_parameter: global_filters_and_parameters.is_after_product_discounts
     value_format_name: eur
     type: number
     sql:
-    {% if is_after_product_discounts._parameter_value == "true" %}
+    {% if global_filters_and_parameters.is_after_product_discounts._parameter_value == "true" %}
     ${sum_total_cost_after_product_discount}
-    {% elsif is_after_product_discounts._parameter_value == "false" %}
+    {% elsif global_filters_and_parameters.is_after_product_discounts._parameter_value == "false" %}
     ${sum_total_cost}
     {% endif %}
     ;;
