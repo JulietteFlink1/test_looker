@@ -1067,7 +1067,7 @@ view: orders {
     group_label: "* Dates and Timestamps *"
     type: number
     sql: ${TABLE}.order_hour ;;
-    hidden: no
+    hidden: yes
   }
 
   dimension: hour {
