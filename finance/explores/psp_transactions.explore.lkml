@@ -10,6 +10,8 @@ include: "/**/vat_order.view"
 include: "/**/products.view"
 include: "/**/customer_address.view"
 include: "/**/ndt_psp_transactions__order_aggregated.view"
+include: "/**/global_filters_and_parameters.view"
+
 
 explore: psp_transactions {
   from: psp_transactions
@@ -44,6 +46,13 @@ explore: psp_transactions {
   #   type: left_outer
   #   relationship: many_to_one
   # }
+
+  join: global_filters_and_parameters {
+    sql: ;;
+    # Use `sql` instead of `sql_on` and put some whitespace in it
+    relationship: one_to_one
+    fields: [global_filters_and_parameters.is_after_product_discounts]
+  }
 
   join: orders {
     view_label: "Orders"
