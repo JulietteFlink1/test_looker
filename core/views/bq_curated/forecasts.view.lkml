@@ -47,15 +47,9 @@ view: forecasts {
 
   dimension: is_forecast_hub {
     label: "Is forecast hub?"
-    description: "If the hub has forecast for the given job date"
     type: yesno
-    sql:
-      case
-        when ${number_of_forecasted_hours_by_position_dimension} is null
-          or ${number_of_forecasted_orders_dimension} is null
-            then false
-        else true
-      end;;
+    sql: ${TABLE}.is_forecast_hub;;
+    hidden: no
   }
 
   # =========  Dates   =========
