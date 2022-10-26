@@ -24,7 +24,7 @@ explore: daily_hub_staff_events {
   hidden: no
 
   label: "Daily Hub Staff Events"
-  description: "This explore provides an overview of all behavioural events generated on Hub One."
+  description: "This explore provides an overview of all behavioural events generated on Hub One. Picking times under 8 Order Dimensions are the ones informed to CT."
   group_label: "Product - Hub Tech"
 
 
@@ -108,7 +108,10 @@ explore: daily_hub_staff_events {
 
   join: orders {
     view_label: "8 Order Dimensions"
-    fields: [orders.is_external_order]
+    fields: [ is_external_order
+            , order_picker_accepted_timestamp
+            , order_packed_timestamp
+            , is_click_and_collect_order]
     sql_on: ${event_order_progressed.order_id} = ${orders.id} ;;
     type: left_outer
     relationship: many_to_one
