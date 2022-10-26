@@ -18,8 +18,12 @@ explore: product_placement_performance_excluding_impressions {
   hidden: no
 
   label: "Product Placement Performance"
-  description: "This explore provides an aggregated overview of product performance and its placement in the app & web. Please note the daily last-in first-out attribution logic. For ultimate truth on an order level, please refer to the Orders Explore.
-  Product impressions are not part of this report."
+  description: "This explore provides an aggregated overview of product performance and its placement in the app & web.
+                This explore is built on front-end data, and is subset to the limitations of front-end tracking. We can not, and do not, expect 100% accuracy compared to the Orders & Order Line Items explores.
+                We consider the Orders Explore to be the source of truth.
+                This report uses daily last-in first-out attribution logic - if a user has a cart that persists for more than one day the product placements will not be included in this report.
+                It excludes impressions data.
+                "
   group_label: "Product - Consumer"
 
   sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} ${product_placement_performance_excluding_impressions.event_date} {% endcondition %};;
