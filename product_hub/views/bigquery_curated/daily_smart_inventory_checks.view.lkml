@@ -138,6 +138,7 @@ view: daily_smart_inventory_checks {
       date,
       day_of_week
     ]
+    convert_tz: no
     datatype: date
     sql: ${TABLE}.scheduled_at ;;
   }
