@@ -73,6 +73,14 @@ view: daily_rider_app_events {
     type: string
     sql: ${TABLE}.component_variant ;;
   }
+  dimension: screen_name {
+    group_label: "Generic Dimensions"
+    label: "Screen Name"
+    description: "Screen Name the event was captured on"
+    type: string
+    sql: ${TABLE}.screen_name ;;
+  }
+
 
   # ======= Device Dimensions ======= #
 
@@ -175,6 +183,11 @@ view: daily_rider_app_events {
     type: yesno
     sql: ${TABLE}.is_network_wifi ;;
   }
+  dimension: event_text {
+    hidden: yes
+    type: string
+    sql: ${TABLE}.event_text ;;
+  }
 
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
@@ -182,18 +195,21 @@ view: daily_rider_app_events {
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
   measure: events {
+    group_label: "Measures"
     label: "# Events"
     description: "Number of events trigegred by users"
     type: count_distinct
     sql: ${TABLE}.event_uuid ;;
   }
   measure: logged_in_users {
+    group_label: "Measures"
     label: "# Logged in Users"
     description: "Number of users who logged-in during a day"
     type: count_distinct
     sql: ${TABLE}.auth_zero_id ;;
   }
   measure: logged_in_anonymous_users {
+    group_label: "Measures"
     label: "# All Users"
     description: "Number of all users regardless of their login status."
     type: count_distinct

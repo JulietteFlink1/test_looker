@@ -232,6 +232,13 @@ view: psp_transactions {
     sql: ${order_uuid} is null ;;
   }
 
+  dimension: is_test_order_transaction {
+    group_label: "> Transaction Properties"
+    type: yesno
+    description: "Flags if the Transaction is linked to a test Order in CT. In this case the Order UUID coming from the Orders view is null because test orders are excluded from the Orders view. The Order UUID coming from the PSP transactions view is populated"
+    sql: ${TABLE}.is_test_order_transaction ;;
+  }
+
 ##################    MEASURES  ###################
 
   measure: sum_main_amount {
