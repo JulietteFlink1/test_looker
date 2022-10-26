@@ -8,13 +8,13 @@
 # - Amount of checks performed by hubs
 # - Time spent on checks
 # - Amount of corrections
+# - Refunded items
 
 include: "/**/daily_smart_inventory_checks.view"
 include: "/**/products.view"
 include: "/**/hubs_ct.view.lkml"
 include: "/**/global_filters_and_parameters.view.lkml"
 include: "/**/employee_level_kpis.view.lkml"
-include: "/**/daily_refunded_items.view"
 
 explore: smart_inventory_checks {
   from:  daily_smart_inventory_checks
@@ -45,29 +45,23 @@ explore: smart_inventory_checks {
     relationship: many_to_one
   }
 
-  join: daily_refunded_items {
-    view_label: "2 Refunded Items"
-    sql_on: ${daily_refunded_items.primary_key}=concat(${smart_inventory_checks.scheduled_date},${smart_inventory_checks.hub_code}, ${smart_inventory_checks.sku});;
-    type: left_outer
-    relationship: one_to_many
-  }
 
   join: products {
-    view_label: "3 Product Dimensions"
+    view_label: "2 Product Dimensions"
     sql_on: ${smart_inventory_checks.sku} = ${products.product_sku} ;;
     type: left_outer
     relationship: many_to_one
   }
 
   join: hubs_ct {
-    view_label: "4 Hub Dimensions"
+    view_label: "3 Hub Dimensions"
     sql_on: ${smart_inventory_checks.hub_code} = ${hubs_ct.hub_code} ;;
     type: left_outer
     relationship: many_to_one
   }
 
   join: employee_level_kpis {
-    view_label: "5 Employee Attributes"
+    view_label: "4 Employee Attributes"
     fields: [ employee_level_kpis.number_of_worked_hours
       , employee_level_kpis.number_of_assigned_hours
       , employee_level_kpis.number_of_no_show_hours]

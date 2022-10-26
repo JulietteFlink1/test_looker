@@ -16,6 +16,7 @@ include: "/**/event_order_progressed.view.lkml"
 include: "/**/event_order_state_updated.view.lkml"
 include: "/**/picking_times.view.lkml"
 include: "/product_consumer/views/bigquery_reporting/daily_violations_aggregates.view.lkml"
+include: "/**/daily_smart_inventory_checks.view"
 
 explore: daily_hub_staff_events {
   from:  daily_hub_staff_events
@@ -121,6 +122,17 @@ explore: daily_hub_staff_events {
           and ${daily_violations_aggregates.domain}='hub staff'
           and {% condition global_filters_and_parameters.datasource_filter %}
             ${daily_violations_aggregates.event_date} {% endcondition %};;
+    type: left_outer
+    relationship: many_to_many
+  }
+
+  join: daily_smart_inventory_checks {
+    view_label: "91 Smart Inventory Checks"
+    sql_on: ${daily_smart_inventory_checks.scheduled_date} = ${daily_hub_staff_events.event_date}
+          and ${daily_smart_inventory_checks.hub_code}=${daily_hub_staff_events.hub_code}
+          and ${daily_smart_inventory_checks.sku}=${event_order_progressed.product_sku}
+          and {% condition global_filters_and_parameters.datasource_filter %}
+            ${daily_smart_inventory_checks.scheduled_date} {% endcondition %};;
     type: left_outer
     relationship: many_to_many
   }
