@@ -8,7 +8,6 @@
 # - Amount of checks performed by hubs
 # - Time spent on checks
 # - Amount of corrections
-# - Refunded items
 
 include: "/**/daily_smart_inventory_checks.view"
 include: "/**/products.view"
@@ -44,7 +43,6 @@ explore: smart_inventory_checks {
     type: left_outer
     relationship: many_to_one
   }
-
 
   join: products {
     view_label: "2 Product Dimensions"
