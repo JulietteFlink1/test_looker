@@ -98,22 +98,14 @@ view: product_placement_performance_excluding_impressions {
   dimension: category_name {
     group_label: "Product Dimensions"
     label: "Category Name"
-    description: "Name of a category where product was listed"
+    description: "For categories, the name of the category where the product was listed. For collections, the name of the collection. For other product placements, the highest level collection name (only where applicable)."
     type: string
-    sql: case when ${TABLE}.product_placement in ('category','pdp','collection')
-              then ${TABLE}.category_name
-         else null
-         end ;;
   }
   dimension: subcategory_name {
     group_label: "Product Dimensions"
     label: "Sub-Category Name"
-    description: "Name of a sub-category where product was listed"
+    description: "For categories, the name of the sub-category where the product was listed. For collections, the name of the sub-collection. For other product placements, the granular sub-grouping (only where applicable)."
     type: string
-    sql: case when ${TABLE}.product_placement in ('category','pdp','collection','recipes')
-              then ${TABLE}.subcategory_name
-         else null
-         end ;;
   }
   dimension: product_placement {
     group_label: "Product Dimensions"
@@ -294,8 +286,8 @@ view: product_placement_performance_excluding_impressions {
   }
   measure: orders { ## name should not be changed as charts would break
     group_label: "Product Metrics"
-    label: "# Ordered Products"
-    description: "Number of unique products placed"
+    label: "# Orders with the product added from the placement"
+    description: "Number of unique products placed - if the quantity ordered is higher than one, this metric will still only be one."
     type: count_distinct
     sql: ${product_placement_uuid} ;;
     filters: [is_order_placed: "yes"]
@@ -311,7 +303,8 @@ view: product_placement_performance_excluding_impressions {
     group_label: "Rates (%)"
     label: "Add-to-Cart to Order Rate"
     type: number
-    description: "# ordered products / # products with Add-to-Cart"
+    hidden: yes
+    description: "# orders / # products with Add-to-Cart"
     value_format_name: percent_2
     sql: ${orders} / nullif(${add_to_carts},0);;
   }

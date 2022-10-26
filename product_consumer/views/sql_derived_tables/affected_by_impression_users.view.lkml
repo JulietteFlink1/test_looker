@@ -30,7 +30,7 @@ view: affected_by_impression_users {
   dimension: is_exposed_to_impressions {
     label: "is exposed to impressions"
     type: yesno
-    description: "True is user is exposed to product_impression events"
+    description: "True if the user is exposed to product_impression events. This filter must be selected for metrics involving impressions to be accurate as we only collect impression data for a proportion of our users."
   }
 
 }
