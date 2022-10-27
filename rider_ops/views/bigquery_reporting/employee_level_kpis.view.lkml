@@ -660,7 +660,7 @@ view: employee_level_kpis {
     group_label: "* Shift related *"
     type: sum
     label: "# Assigned Hours Based on Availability"
-    description:"Number of Assigned hours that are overlapping with provided availability"
+    description: "Number of Assigned hours that are overlapping with provided availability"
     sql: ${number_of_planned_minutes_availability_based}/60 ;;
     value_format_name: decimal_1
   }
