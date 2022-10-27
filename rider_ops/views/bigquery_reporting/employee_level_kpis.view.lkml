@@ -660,7 +660,7 @@ view: employee_level_kpis {
     group_label: "* Shift related *"
     type: sum
     label: "# Assigned Hours Based on Availability"
-    description:"Number of Assigned hours that are overlapping with provided availability"
+    description: "Number of Assigned hours that are overlapping with provided availability"
     sql: ${number_of_planned_minutes_availability_based}/60 ;;
     value_format_name: decimal_1
   }
@@ -669,7 +669,7 @@ view: employee_level_kpis {
     group_label: "* Shift related *"
     type: sum
     label: "# Availability Hours"
-    description:"Number of hours that were provided as available by the employee"
+    description:" Number of hours that were provided as available by the employee"
     sql: ${TABLE}.number_of_availability_minutes/60 ;;
     value_format_name: decimal_1
   }
@@ -739,7 +739,7 @@ view: employee_level_kpis {
     group_label: "* Shift related *"
     label: "% Assigned Hours Based on Availability"
     type: number
-    sql:${number_of_planned_hours_availability_based}/nullif(${number_of_assigned_hours},0) ;;
+    sql: ${number_of_planned_hours_availability_based}/nullif(${number_of_assigned_hours},0) ;;
     description:"Share of Assigned Hours based on Availability from total Assigned Hours - (# Assigned Hours Based on Availability / # Assigned Hours)"
     value_format_name: percent_1
   }
