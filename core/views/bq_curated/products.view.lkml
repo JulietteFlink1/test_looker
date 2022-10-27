@@ -477,6 +477,14 @@ view: products {
     group_label: "> Price Data"
   }
 
+  dimension: storage_fee {
+    label: "Storage Fee"
+    description: "A fee charged to customers for certain products that require special treatment"
+    type: number
+    sql: ${TABLE}.storage_fee ;;
+    group_label: "> Price Data"
+  }
+
 
 
   # =========  IDs   =========
@@ -704,6 +712,15 @@ view: products {
     type: min
     value_format: "€0.00"
     sql: ${TABLE}.amt_product_price_gross ;;
+  }
+
+  measure: avg_storage_fee {
+    label: "AVG Storage Fee"
+    description: "A fee charged to customers for certain products that require special treatment"
+    group_label: "* Price Stats *"
+    type: average
+    sql: ${storage_fee} ;;
+    value_format_name: eur
   }
 
   measure: count {
