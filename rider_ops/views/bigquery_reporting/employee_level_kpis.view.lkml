@@ -719,7 +719,7 @@ view: employee_level_kpis {
     group_label: "* Shift related *"
     type: average
     label: "AVG No Show Hours within Availability"
-    description:"Average of No Show Hours that are overlapping with provided availability"
+    description: "Average No Show Hours that are overlapping with provided availability"
     sql: case when ${TABLE}.number_of_no_show_minutes > 0
                 then ${number_of_planned_minutes_availability_based}/60
          end ;;
@@ -740,7 +740,7 @@ view: employee_level_kpis {
     label: "% Assigned Hours Based on Availability"
     type: number
     sql: ${number_of_planned_hours_availability_based}/nullif(${number_of_assigned_hours},0) ;;
-    description:"Share of Assigned Hours based on Availability from total Assigned Hours - (# Assigned Hours Based on Availability / # Assigned Hours)"
+    description: "Share of Assigned Hours based on Availability from total Assigned Hours - (# Assigned Hours Based on Availability / # Assigned Hours)"
     value_format_name: percent_1
   }
 
