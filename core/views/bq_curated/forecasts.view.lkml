@@ -4,7 +4,7 @@
 # This view contains forecast data from multiple forecast tables on timeslot, hub, and job date level.
 
 view: forecasts {
-  sql_table_name: `flink-data-prod.curated.forecasts`;;
+  sql_table_name: `flink-data-dev.dbt_nazring_curated.forecasts`;;
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Dimensions     ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -47,8 +47,9 @@ view: forecasts {
 
   dimension: is_forecast_hub {
     label: "Is forecast hub?"
+    description: "Yes, if the hub has forecast for the given job date"
     type: yesno
-    sql: ${TABLE}.is_forecast_hub;;
+    sql: ${TABLE}.is_forecasted;;
     hidden: no
   }
 
