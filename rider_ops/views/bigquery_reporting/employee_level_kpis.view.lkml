@@ -739,7 +739,7 @@ view: employee_level_kpis {
     group_label: "* Shift related *"
     label: "% Assigned Hours Based on Availability"
     type: number
-    sql:${number_of_planned_hours_availability_based}/nullif(${number_of_assigned_hours},0) ;;
+    sql: ${number_of_planned_hours_availability_based}/nullif(${number_of_assigned_hours},0) ;;
     description:"Share of Assigned Hours based on Availability from total Assigned Hours - (# Assigned Hours Based on Availability / # Assigned Hours)"
     value_format_name: percent_1
   }
