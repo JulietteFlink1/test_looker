@@ -719,7 +719,7 @@ view: employee_level_kpis {
     group_label: "* Shift related *"
     type: average
     label: "AVG No Show Hours within Availability"
-    description:"Average of No Show Hours that are overlapping with provided availability"
+    description: "Average No Show Hours that are overlapping with provided availability"
     sql: case when ${TABLE}.number_of_no_show_minutes > 0
                 then ${number_of_planned_minutes_availability_based}/60
          end ;;
