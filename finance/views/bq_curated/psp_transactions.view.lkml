@@ -200,6 +200,7 @@ view: psp_transactions {
 
   dimension: user_name {
     group_label: "> Transaction Properties"
+    required_access_grants: [can_view_customer_data]
     type: string
     sql: ${TABLE}.user_name ;;
   }
@@ -304,11 +305,11 @@ view: psp_transactions {
     sql: ${TABLE}.raw_acquirer_response ;;
   }
 
-  dimension: risk_scoring {
+  dimension: amt_risk_scoring {
     group_label: "> Received Payments"
     type: number
     description: "Total risk scoring value of the payment."
-    sql: ${TABLE}.risk_scoring ;;
+    sql: ${TABLE}.amt_risk_scoring ;;
   }
 
   dimension: shopper_country {
@@ -335,6 +336,7 @@ view: psp_transactions {
 
   dimension: shopper_name {
     group_label: "> Received Payments"
+    required_access_grants: [can_view_customer_data]
     type: string
     description: "Name of the cardholder, as provided with the transaction, if available."
     sql: ${TABLE}.shopper_name ;;
@@ -1276,11 +1278,20 @@ view: psp_transactions {
     value_format_name: euro_accounting_2_precision
   }
 
-  measure: avg_risk_scoring {
-    group_label: "> Received Payments"
+  measure: avg_amt_risk_scoring {
+    group_label: "> Fraud"
     label: "AVG Risk Scoring"
     type: average
     description: "AVG total risk scoring value of the payment."
-    sql: safe_cast(${risk_scoring} as float64) ;;
+    sql: ${amt_risk_scoring} ;;
+    value_format_name: decimal_2
+  }
+
+  measure: count_transactions_with_fraud_risk {
+    group_label: "> Fraud"
+    label: "# Transactions with Fraud Risk"
+    type:count_distinct
+    sql: ${psp_reference} ;;
+    filters: [amt_risk_scoring: ">0"]
   }
 }
