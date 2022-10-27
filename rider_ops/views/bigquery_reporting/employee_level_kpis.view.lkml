@@ -669,7 +669,7 @@ view: employee_level_kpis {
     group_label: "* Shift related *"
     type: sum
     label: "# Availability Hours"
-    description:"Number of hours that were provided as available by the employee"
+    description:" Number of hours that were provided as available by the employee"
     sql: ${TABLE}.number_of_availability_minutes/60 ;;
     value_format_name: decimal_1
   }
