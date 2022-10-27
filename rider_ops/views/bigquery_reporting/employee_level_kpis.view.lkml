@@ -248,7 +248,7 @@ view: employee_level_kpis {
   parameter: avaiability_overlap_parameter {
     type: yesno
     label: "Is Assigned Shift 100% overlapping with Availability ?"
-    description: "If yes, will result in consider overlap between assinged shift and availability if 0% or 100%"
+    description: "Yes if the assigned shift fully overlaps (100%) with the availability provided by the employee."
   }
 
   dimension: type_of_contract {
@@ -687,7 +687,7 @@ view: employee_level_kpis {
     group_label: "* Shift related *"
     type: number
     label: "% Weekend Availability Hours"
-    description:"Share of Availability Hours between 3 p.m Friday - 12 a.m Sunday "
+    description:"Share of Availability Hours between 3 p.m Friday - 12 a.m Sunday over Total Availability Hours "
     sql: ${number_of_weekend_availability_hours} / nullif(${number_of_availability_hours},0) ;;
     value_format_name: percent_1
   }
@@ -744,7 +744,7 @@ view: employee_level_kpis {
     value_format_name: percent_1
   }
 
-  measure: pct_of_planned_hours_availability_based_rider {
+  measure: pct_of_planned_hours_availability_based_rider_vs_contracted_hours {
     group_label: "* Shift related *"
     label: "% Availability Hours vs Total Contracted Hours"
     type: number
