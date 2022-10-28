@@ -242,6 +242,7 @@ view: psp_transactions {
 
   dimension: a_3d_authentication_response {
     group_label: "> Received Payments"
+    label: "3D Authentication Response"
     type: string
     description: "For payments processed with 3D Secure (Secure Code/Verified by Visa), and directory response Y, this holds the authentication response.
     Values: Y, N, U, A E"
@@ -285,6 +286,7 @@ view: psp_transactions {
   }
 
   dimension: issuer_country {
+    label: "Issuing Bank Country"
     group_label: "> Received Payments"
     type: string
     description: "ISO country code of the issuer."
@@ -293,6 +295,7 @@ view: psp_transactions {
 
   dimension: issuer_name {
     group_label: "> Received Payments"
+    label: "Issuing Bank"
     type: string
     description: "Name of the issuing bank, if available."
     sql: ${TABLE}.issuer_name ;;
@@ -1287,7 +1290,7 @@ view: psp_transactions {
     value_format_name: decimal_2
   }
 
-  measure: count_transactions_with_fraud_risk {
+  measure: number_of_transactions_with_fraud_risk {
     group_label: "> Fraud"
     label: "# Transactions with Fraud Risk"
     type: count_distinct
