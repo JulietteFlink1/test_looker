@@ -762,12 +762,22 @@ view: employee_level_kpis {
     value_format_name: percent_1
   }
 
-  measure: pct_of_planned_hours_availability_based_rider_vs_contracted_hours {
+  measure: pct_of_availability_hours_vs_contracted_hours {
+    alias: [pct_of_planned_hours_availability_based_rider_vs_contracted_hours]
     group_label: "* Shift related *"
     label: "% Availability Hours vs Total Contracted Hours"
     type: number
     sql:${number_of_availability_hours}/nullif(${sum_weekly_contracted_hours},0) ;;
     description:"# Availability Hours / Total Weekly Contracted Hours"
+    value_format_name: percent_1
+  }
+
+  measure: pct_of_worked_hours_availability_based_rider_vs_contracted_hours {
+    group_label: "* Shift related *"
+    label: "% Availability Hours vs Worked Hours"
+    type: number
+    sql:${number_of_availability_hours}/nullif(${number_of_worked_hours},0) ;;
+    description:"# Availability Hours / # Worked Hours"
     value_format_name: percent_1
   }
 
