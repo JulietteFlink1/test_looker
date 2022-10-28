@@ -1290,7 +1290,7 @@ view: psp_transactions {
   measure: count_transactions_with_fraud_risk {
     group_label: "> Fraud"
     label: "# Transactions with Fraud Risk"
-    type:count_distinct
+    type: count_distinct
     sql: ${psp_reference} ;;
     filters: [amt_risk_scoring: ">0"]
   }
