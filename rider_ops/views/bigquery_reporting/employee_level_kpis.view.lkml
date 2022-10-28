@@ -772,7 +772,7 @@ view: employee_level_kpis {
     value_format_name: percent_1
   }
 
-  measure: pct_of_worked_hours_availability_based_rider_vs_contracted_hours {
+  measure: pct_of_availability_hours_vs_worked_hours {
     group_label: "* Shift related *"
     label: "% Availability Hours vs Worked Hours"
     type: number
