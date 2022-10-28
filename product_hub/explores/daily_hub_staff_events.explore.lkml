@@ -43,10 +43,8 @@ explore: daily_hub_staff_events {
   }
 
   join: global_filters_and_parameters {
-    view_label: "" # This is to hide this view on the explore
-    sql_on: ${global_filters_and_parameters.generic_join_dim} = TRUE ;;
-    type: left_outer
-    relationship: many_to_one
+    sql: ;;
+    relationship: one_to_one
   }
 
   join: event_order_progressed {
