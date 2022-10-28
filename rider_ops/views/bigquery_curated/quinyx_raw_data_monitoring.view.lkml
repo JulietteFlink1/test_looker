@@ -1,7 +1,7 @@
 # Owner:   Omar Alshobaki
 # Created: 2022-10-27
-# This view contains Daily Aggregation of number of row based on extaction timestamp and loading mothod,
-# this explore will be used in monitor Quinyx missing data over time,
+# Daily Aggregation of number of rows based on extraction timestamps and loading method.
+# This explore will be used to monitor Quinyx missing data over time.
 
 
 view: quinyx_raw_data_monitoring {
