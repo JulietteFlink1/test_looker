@@ -718,8 +718,8 @@ view: employee_level_kpis {
     type: number
     label: "% Employees with Availability provided"
     description:"Share of employees providing Availability in Quinyx"
-    sql: ${number_of_employees_with_availability_provided} / nullif(${number_of_employees}) ;;
-    value_format_name: decimal_1
+    sql: ${number_of_employees_with_availability_provided} / nullif(${number_of_employees},0) ;;
+    value_format_name: percent_1
   }
 
   measure: number_of_no_show_hours_with_availability {
