@@ -1,6 +1,8 @@
 # Owner:   Omar Alshobaki
 # Created: 2022-10-27
-# This view contains Daily Aggregation of number of row based on extaction timestamp and loading mothod, this explore will be used in monitor Quinyx missing data over time, which will allow us to better understand why we are missing data and how we can reduce it by exploring using different parameters if needed.
+# This view contains Daily Aggregation of number of row based on extaction timestamp and loading mothod,
+# this explore will be used in monitor Quinyx missing data over time,
+
 
 view: quinyx_raw_data_monitoring {
   sql_table_name: `flink-data-prod.sandbox.quinyx_raw_data_monitoring`
@@ -17,13 +19,13 @@ view: quinyx_raw_data_monitoring {
 
   dimension: endpoint {
     type: string
+    label: "Endpoint"
     sql: ${TABLE}.endpoint ;;
   }
 
   dimension_group: extraction {
     type: time
     timeframes: [
-      raw,
       date,
       week,
       month,
@@ -38,7 +40,6 @@ view: quinyx_raw_data_monitoring {
   dimension_group: last_modified {
     type: time
     timeframes: [
-      raw,
       date,
       week,
       month,
@@ -52,6 +53,7 @@ view: quinyx_raw_data_monitoring {
 
   dimension: load_method {
     type: string
+    label: "Load Method"
     sql: ${TABLE}.load_method ;;
   }
 
