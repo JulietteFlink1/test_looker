@@ -692,6 +692,15 @@ view: employee_level_kpis {
     value_format_name: percent_1
   }
 
+  measure: number_of_employees {
+    group_label: "* Shift related *"
+    type: number
+    label: "# Employees"
+    description:"Number of distinct employees"
+    sql: count(distinct ${employment_id}) ;;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_employees_with_availability_provided {
     group_label: "* Shift related *"
     type: number
@@ -702,6 +711,15 @@ view: employee_level_kpis {
                 then ${employment_id}
             end) ;;
     value_format_name: decimal_1
+  }
+
+  measure: pct_of_employees_with_availability_provided {
+    group_label: "* Shift related *"
+    type: number
+    label: "% Employees with Availability provided"
+    description:"Share of employees providing Availability in Quinyx"
+    sql: ${number_of_employees_with_availability_provided} / nullif(${number_of_employees},0) ;;
+    value_format_name: percent_1
   }
 
   measure: number_of_no_show_hours_with_availability {
