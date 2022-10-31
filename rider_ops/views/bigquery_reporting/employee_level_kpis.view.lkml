@@ -692,6 +692,15 @@ view: employee_level_kpis {
     value_format_name: percent_1
   }
 
+  measure: number_of_employees {
+    group_label: "* Shift related *"
+    type: number
+    label: "# Employees"
+    description:"Number of distinct employees"
+    sql: count(distinct ${employment_id}) ;;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_employees_with_availability_provided {
     group_label: "* Shift related *"
     type: number
@@ -702,6 +711,15 @@ view: employee_level_kpis {
                 then ${employment_id}
             end) ;;
     value_format_name: decimal_1
+  }
+
+  measure: pct_of_employees_with_availability_provided {
+    group_label: "* Shift related *"
+    type: number
+    label: "% Employees with Availability provided"
+    description:"Share of employees providing Availability in Quinyx"
+    sql: ${number_of_employees_with_availability_provided} / nullif(${number_of_employees},0) ;;
+    value_format_name: percent_1
   }
 
   measure: number_of_no_show_hours_with_availability {
@@ -744,12 +762,22 @@ view: employee_level_kpis {
     value_format_name: percent_1
   }
 
-  measure: pct_of_planned_hours_availability_based_rider_vs_contracted_hours {
+  measure: pct_of_availability_hours_vs_contracted_hours {
+    alias: [pct_of_planned_hours_availability_based_rider_vs_contracted_hours]
     group_label: "* Shift related *"
     label: "% Availability Hours vs Total Contracted Hours"
     type: number
     sql:${number_of_availability_hours}/nullif(${sum_weekly_contracted_hours},0) ;;
     description:"# Availability Hours / Total Weekly Contracted Hours"
+    value_format_name: percent_1
+  }
+
+  measure: pct_of_availability_hours_vs_worked_hours {
+    group_label: "* Shift related *"
+    label: "% Availability Hours vs Worked Hours"
+    type: number
+    sql:${number_of_availability_hours}/nullif(${number_of_worked_hours},0) ;;
+    description:"# Availability Hours / # Worked Hours"
     value_format_name: percent_1
   }
 
