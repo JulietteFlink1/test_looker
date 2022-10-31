@@ -56,13 +56,36 @@ view: quinyx_raw_data_monitoring {
   dimension: load_method {
     type: string
     label: "Load Method"
+    hidden: yes
     sql: ${TABLE}.load_method ;;
   }
 
-  measure: number_of_rows{
+  measure: number_of_rows_full{
     type: sum
-    label: "# Rows"
+    label: "# Rows Full Load"
+    filters:[load_method: "full"]
     sql: ${TABLE}.number_of_rows ;;
+  }
+
+  measure: number_of_rows_Incremental{
+    type: sum
+    label: "# Rows Incremental Load"
+    filters:[load_method: "incremental"]
+    sql: ${TABLE}.number_of_rows ;;
+  }
+
+  measure: pct_of_rows_full{
+    type: number
+    label: "% Rows Full Load"
+    sql: ${number_of_rows_full}/nullif(${number_of_rows_full}+${number_of_rows_Incremental},0) ;;
+    value_format: "0%"
+  }
+
+  measure: pct_of_rows_Incremental{
+    type: number
+    label: "% Rows Incremental Load"
+    sql: ${number_of_rows_Incremental}/nullif(${number_of_rows_full}+${number_of_rows_Incremental},0) ;;
+    value_format: "0%"
   }
 
 }
