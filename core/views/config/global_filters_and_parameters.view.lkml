@@ -1,7 +1,4 @@
 view: global_filters_and_parameters {
-  derived_table: {
-    sql: select TRUE as generic_join_dim;;
-  }
 
   view_label: "Generic"
 
@@ -55,14 +52,6 @@ view: global_filters_and_parameters {
     type: yesno
     label: "Is After Deduction of Product Discounts"
     default_value: "No"
-  }
-
-
-  dimension: generic_join_dim {
-    type: yesno
-    hidden: yes
-    primary_key: yes
-    sql: ${TABLE}.generic_join_dim ;;
   }
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
