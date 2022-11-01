@@ -22,7 +22,12 @@ explore: product_placement_performance {
   hidden: no
 
   label: "Impressions Product Placement Performance"
-  description: "This explore provides an aggregated overview of product performance and its placement in the app & web. Please note the daily last-in first-out attribution logic. For ultimate truth on an order level, please refer to the Orders Explore."
+  description: "This explore provides an aggregated overview of product performance and its placement in the app & web.
+                This explore is built on front-end data, and is subset to the limitations of front-end tracking. We can not, and do not, expect 100% accuracy compared to the Orders & Order Line Items explores.
+                We consider the Orders Explore to be the source of truth.
+                This report uses daily last-in first-out attribution logic - if a user has a cart that persists for more than one day the product placements will not be included in this report.
+                Impressions are only tracked for a proportion of our users - please ensure you filter for users exposed to impressions before looking at any metrics including impressions.
+                "
   group_label: "Product - Consumer"
 
   sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} ${product_placement_performance.event_date} {% endcondition %};;
@@ -38,7 +43,7 @@ explore: product_placement_performance {
     filters: [
       global_filters_and_parameters.datasource_filter: "last 7 days",
       affected_by_impression_users.is_exposed_to_impressions: "Yes",
-      product_placement_performance.product_placement: "category, search, last_bought, swimlane",
+      product_placement_performance.product_placement: "category, search, last_bought, swimlane, collection",
       hubs.country_iso: "",
       product_placement_performance.platform: ""
     ]
@@ -47,10 +52,8 @@ explore: product_placement_performance {
 #  always_join: [global_filters_and_parameters]
 
   join: global_filters_and_parameters {
-    fields: [global_filters_and_parameters.datasource_filter]
-    sql_on: ${global_filters_and_parameters.generic_join_dim} = TRUE ;;
-    type: left_outer
-    relationship: many_to_one
+    sql: ;;
+    relationship: one_to_one
   }
 
   join: affected_by_impression_users {

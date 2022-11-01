@@ -35,10 +35,9 @@ explore: order_placement_aggregates {
   }
 
 #  always_join: [global_filters_and_parameters]
-
   join: global_filters_and_parameters {
-    sql_on: ${global_filters_and_parameters.generic_join_dim} = TRUE ;;
-    type: left_outer
-    relationship: many_to_one
+    sql: ;;
+    relationship: one_to_one
   }
+
 }

@@ -340,6 +340,7 @@ view: orders {
     ]
     sql: current_timestamp;;
     datatype: timestamp
+    hidden: yes
   }
 
   dimension_group: created {
@@ -356,6 +357,7 @@ view: orders {
       time,
       date,
       day_of_week,
+      day_of_week_index,
       week,
       month,
       quarter,
@@ -933,6 +935,7 @@ view: orders {
       year
     ]
     sql: ${TABLE}.last_modified_at ;;
+    hidden: yes
   }
 
   dimension: latitude {
@@ -1034,15 +1037,15 @@ view: orders {
   }
 
   dimension_group: delivery_timestamp {
-    group_label: "* Dates and Timestamps *"
-    label: "Rider Arrived At Customer Timestamp"
+    group_label: "* Operations / Logistics *"
+    label: "Rider Arrived At Customer"
     type: time
     timeframes: [
       raw,
+      time,
       minute15,
       minute30,
       hour_of_day,
-      time,
       date,
       day_of_week,
       week,
@@ -1069,6 +1072,7 @@ view: orders {
   }
 
   dimension: hour {
+    hidden: yes
     group_label: "* Dates and Timestamps *"
     type: number
     sql: extract(hour from ${created_raw} AT TIME ZONE 'Europe/Berlin') ;;
@@ -1569,13 +1573,6 @@ view: orders {
     default_value: "Day"
   }
 
-
-  parameter: is_after_product_discounts {
-    type: yesno
-    label: "Is After Deduction of Product Discounts"
-    default_value: "No"
-  }
-
   parameter: is_after_crf_fees_deduction {
     type: yesno
     label: "Is after CRF Fees Deduction"
@@ -1620,13 +1617,13 @@ view: orders {
     group_label: "* Monetary Values *"
     label: "AVG Item Value (Dynamic) (Gross)"
     description: "AIV represents the Average value of items (incl. VAT). Excludes fees (gross). before deducting Cart Discounts. To be used together with the Is After Product Discounts Deduction parameter."
-    label_from_parameter: is_after_product_discounts
+    label_from_parameter: global_filters_and_parameters.is_after_product_discounts
     value_format_name: eur
     type: number
     sql:
-    {% if is_after_product_discounts._parameter_value == 'true' %}
+    {% if global_filters_and_parameters.is_after_product_discounts._parameter_value == 'true' %}
     ${avg_item_value_after_product_discount_gross}
-    {% elsif is_after_product_discounts._parameter_value == 'false' %}
+    {% elsif global_filters_and_parameters.is_after_product_discounts._parameter_value == 'false' %}
     ${avg_item_value_gross}
     {% endif %}
     ;;
@@ -1636,13 +1633,13 @@ view: orders {
     group_label: "* Monetary Values *"
     label: "AVG Item Value (Dynamic) (Net)"
     description: "AIV represents the Average value of items (excl. VAT). Excludes fees (net). before deducting Cart Discounts. To be used together with the Is After Product Discounts Deduction parameter."
-    label_from_parameter: is_after_product_discounts
+    label_from_parameter: global_filters_and_parameters.is_after_product_discounts
     value_format_name: eur
     type: number
     sql:
-    {% if is_after_product_discounts._parameter_value == 'true' %}
+    {% if global_filters_and_parameters.is_after_product_discounts._parameter_value == 'true' %}
     ${avg_item_value_after_product_discount_net}
-    {% elsif is_after_product_discounts._parameter_value == 'false' %}
+    {% elsif global_filters_and_parameters.is_after_product_discounts._parameter_value == 'false' %}
     ${avg_item_value_net}
     {% endif %}
     ;;

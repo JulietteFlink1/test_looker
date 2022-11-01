@@ -4,6 +4,8 @@ include: "/**/hubs_ct.view.lkml"
 include: "/**/orderline.view.lkml"
 include: "/**/customer_address.view.lkml"
 include: "/**/vat_order.view.lkml"
+include: "/**/global_filters_and_parameters.view"
+
 
 include: "/**/*.view"
 
@@ -27,6 +29,13 @@ explore: psp_settlement_details {
       psp_settlement_details.psp_reference: "",
       psp_settlement_details.type: "",
     ]
+  }
+
+  join: global_filters_and_parameters {
+    sql: ;;
+    # Use `sql` instead of `sql_on` and put some whitespace in it
+    relationship: one_to_one
+    fields: [global_filters_and_parameters.is_after_product_discounts]
   }
 
   join: orders {

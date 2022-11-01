@@ -45,6 +45,14 @@ view: forecasts {
     sql: date_diff(${start_timestamp_date}, ${job_date}, day) ;;
   }
 
+  dimension: is_forecast_hub {
+    label: "Is forecast hub?"
+    description: "Yes, if the hub has forecast for the given job date"
+    type: yesno
+    sql: ${TABLE}.is_forecasted;;
+    hidden: no
+  }
+
   # =========  Dates   =========
 
   dimension_group: end_timestamp {
@@ -337,7 +345,7 @@ view: forecasts {
     group_label: "> Picker Measures"
     label: "Base UTR Picker"
     description: "Calculated UTR based on formula - (power(60,2) * (1- idle_pct) / handling_duration) * stacking_multiplier"
-    value_format_name: decimal_1
+    value_format_name: decimal_2
     type: average_distinct
     sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
     sql: ${TABLE}.number_of_target_orders_per_picker ;;
@@ -347,7 +355,7 @@ view: forecasts {
     group_label: "> Rider Measures"
     label: "Base UTR Rider"
     description: "Calculated UTR based on formula - (power(60,2) * (1- idle_pct) / handling_duration) * stacking_multiplier"
-    value_format_name: decimal_1
+    value_format_name: decimal_2
     type: average_distinct
     sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
     sql: ${TABLE}.number_of_target_orders_per_rider ;;
@@ -357,7 +365,7 @@ view: forecasts {
     group_label: "> Rider Measures"
     label: "Adjusted Base UTR Rider"
     description: "Adjusted calculated UTR based on formula (Incl. Airtable Adjustments) - (power(60,2) * (1- idle_pct) / handling_duration) * stacking_multiplier"
-    value_format_name: decimal_1
+    value_format_name: decimal_2
     type: average_distinct
     sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
     sql: ${TABLE}.number_of_target_orders_per_rider_adjusted ;;
@@ -367,7 +375,7 @@ view: forecasts {
     group_label: "> Picker Measures"
     label: "Forecasted UTR Picker"
     description: "Forecasted Orders / Forecasted Picker Hours"
-    value_format_name: decimal_1
+    value_format_name: decimal_2
     sql: ${number_of_forecasted_orders}/nullif(${number_of_forecasted_hours_picker},0) ;;
   }
 
@@ -375,7 +383,7 @@ view: forecasts {
     group_label: "> Picker Measures"
     label: "Adjusted Forecasted UTR Picker"
     description: "Adjusted Forecasted Orders / Adjusted Forecasted Picker Hours"
-    value_format_name: decimal_1
+    value_format_name: decimal_2
     sql: ${number_of_forecasted_orders_adjusted}/nullif(${number_of_forecasted_hours_picker_adjusted},0) ;;
   }
 
@@ -383,7 +391,7 @@ view: forecasts {
     group_label: "> Rider Measures"
     label: "Forecasted UTR Rider"
     description: "Forecasted Orders / Forecasted Rider Hours"
-    value_format_name: decimal_1
+    value_format_name: decimal_2
     sql: ${number_of_forecasted_orders}/nullif(${number_of_forecasted_hours_rider},0) ;;
   }
 
@@ -391,7 +399,7 @@ view: forecasts {
     group_label: "> Rider Measures"
     label: "Adjusted Forecasted UTR Rider"
     description: "Adjusted Forecasted Orders / Adjusted Forecasted Rider Hours"
-    value_format_name: decimal_1
+    value_format_name: decimal_2
     sql: ${number_of_forecasted_orders_adjusted}/nullif(${number_of_forecasted_hours_rider_adjusted},0) ;;
   }
 
@@ -988,7 +996,7 @@ view: forecasts {
     type: number
     label: "Base UTR"
     description: "Calculated UTR based on formula - (power(60,2) * (1- idle_pct) / handling_duration) * stacking_multiplier"
-    value_format_name: decimal_1
+    value_format_name: decimal_2
     group_label: "> Dynamic Measures"
     sql:
         case
@@ -1004,7 +1012,7 @@ view: forecasts {
     type: number
     label: "Adjusted Base UTR"
     description: "Adjusted Calculated UTR based on formula (Incl. Airtable Adjustments) - (power(60,2) * (1- idle_pct) / handling_duration) * stacking_multiplier"
-    value_format_name: decimal_1
+    value_format_name: decimal_2
     group_label: "> Dynamic Measures"
     sql:
         case
@@ -1048,7 +1056,7 @@ view: forecasts {
     type: number
     label: "Forecasted UTR"
     description: "Forecasted Orders/Forecasted Hours"
-    value_format_name: decimal_1
+    value_format_name: decimal_2
     group_label: "> Dynamic Measures"
     sql: ${number_of_forecasted_orders}/nullif(${number_of_forecasted_hours_by_position},0);;
   }
@@ -1057,7 +1065,7 @@ view: forecasts {
     type: number
     label: "Adjusted Forecasted UTR"
     description: "Adjusted Forecasted Orders (Incl. Airtable Adjustments)/Adjusted Forecasted Hours (Incl. Airtable Adjustments)"
-    value_format_name: decimal_1
+    value_format_name: decimal_2
     group_label: "> Dynamic Measures"
     sql: ${number_of_forecasted_orders_adjusted}/nullif(${number_of_forecasted_hours_by_position_adjusted},0);;
   }

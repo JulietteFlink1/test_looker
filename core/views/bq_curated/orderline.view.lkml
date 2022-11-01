@@ -1081,13 +1081,6 @@ view: orderline {
 
   ########## Parameters
 
-  parameter: is_after_product_discounts {
-    group_label: "> Parameters"
-    type: yesno
-    label: "Is After Deduction of Product Discounts"
-    default_value: "No"
-  }
-
   #########  Dynamic measures
 
 
@@ -1096,13 +1089,13 @@ view: orderline {
     label: "SUM Items Price Sold Gross (Dynamic)"
     alias: [sum_item_price_fulfilled_gross_dynamic]
     description: "To be used together with the Is After Product Discounts Deduction parameter."
-    label_from_parameter: is_after_product_discounts
+    label_from_parameter: global_filters_and_parameters.is_after_product_discounts
     value_format_name: eur
     type: number
     sql:
-    {% if is_after_product_discounts._parameter_value == 'true' %}
+    {% if global_filters_and_parameters.is_after_product_discounts._parameter_value == 'true' %}
     ${sum_item_price_after_product_discount_gross}
-    {% elsif is_after_product_discounts._parameter_value == 'false' %}
+    {% elsif global_filters_and_parameters.is_after_product_discounts._parameter_value == 'false' %}
     ${sum_item_price_gross}
     {% endif %}
     ;;
@@ -1113,13 +1106,13 @@ view: orderline {
     label: "SUM Items Price Sold Net (Dynamic)"
     alias: [sum_item_price_fulfilled_net_dynamic]
     description: "To be used together with the Is After Product Discounts Deduction parameter."
-    label_from_parameter: is_after_product_discounts
+    label_from_parameter: global_filters_and_parameters.is_after_product_discounts
     value_format_name: eur
     type: number
     sql:
-    {% if is_after_product_discounts._parameter_value == 'true' %}
+    {% if global_filters_and_parameters.is_after_product_discounts._parameter_value == 'true' %}
     ${sum_item_price_after_product_discount_net}
-    {% elsif is_after_product_discounts._parameter_value == 'false' %}
+    {% elsif global_filters_and_parameters.is_after_product_discounts._parameter_value == 'false' %}
     ${sum_item_price_net}
     {% endif %}
     ;;
@@ -1129,13 +1122,13 @@ view: orderline {
     group_label: "> Dynamic Monetary Metrics"
     label: "AVG Item Value (Dynamic) (Gross)"
     description: "AIV represents the Average value of items (incl. VAT). Excludes fees (gross). before deducting Cart Discounts. To be used together with the Is After Product Discounts Deduction parameter."
-    label_from_parameter: is_after_product_discounts
+    label_from_parameter: global_filters_and_parameters.is_after_product_discounts
     value_format_name: eur
     type: number
     sql:
-    {% if is_after_product_discounts._parameter_value == 'true' %}
+    {% if global_filters_and_parameters.is_after_product_discounts._parameter_value == 'true' %}
     ${avg_item_value_after_product_discount_gross}
-    {% elsif is_after_product_discounts._parameter_value == 'false' %}
+    {% elsif global_filters_and_parameters.is_after_product_discounts._parameter_value == 'false' %}
     ${avg_item_value_gross}
     {% endif %}
     ;;
@@ -1145,13 +1138,13 @@ view: orderline {
     group_label: "> Dynamic Monetary Metrics"
     label: "AVG Item Value (Dynamic) (Net)"
     description: "AIV represents the Average value of items (incl. VAT). Excludes fees (gross). before deducting Cart Discounts. To be used together with the Is After Product Discounts Deduction parameter."
-    label_from_parameter: is_after_product_discounts
+    label_from_parameter: global_filters_and_parameters.is_after_product_discounts
     value_format_name: eur
     type: number
     sql:
-    {% if is_after_product_discounts._parameter_value == 'true' %}
+    {% if global_filters_and_parameters.is_after_product_discounts._parameter_value == 'true' %}
     ${avg_item_value_after_product_discount_net}
-    {% elsif is_after_product_discounts._parameter_value == 'false' %}
+    {% elsif global_filters_and_parameters.is_after_product_discounts._parameter_value == 'false' %}
     ${avg_item_value_net}
     {% endif %}
     ;;

@@ -42,11 +42,8 @@ fields: [ALL_FIELDS*,-purchase_orders.pct_order_inbounded,-purchase_orders.sum_p
 
 ### JOINS
   join: global_filters_and_parameters {
-    view_label: "* Global *"
-    sql_on: ${global_filters_and_parameters.generic_join_dim} = TRUE ;;
-    type: left_outer
+    sql: ;;
     relationship: one_to_one
-
   }
 
 

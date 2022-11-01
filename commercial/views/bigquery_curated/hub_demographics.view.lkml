@@ -170,7 +170,8 @@ view: hub_demographics {
 
   dimension: income_group_1 {
     label: "Income Group 1"
-    description: "According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
+    description: "According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group.
+    For DE, Targomo provided 6 income groups - hereby group 1 and 2 have been combined, resulting in the following income ranges: DE: 0-1500€ monthly, FR: 0-20976€ yearly, NL: 0-20726€ yearly, AT: 0-23821€ yearly"
     group_label: "Income Based Metrics"
     hidden: yes
     type: number
@@ -179,7 +180,8 @@ view: hub_demographics {
 
   dimension: income_group_2 {
     label: "Income Group 2"
-    description: "According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
+    description: "According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group
+    Group 2 has the following income ranges: DE: 1500-2500€ monthly, FR: 20976-31570€ yearly, NL: 20726-30548€ yearly, AT: 23821-36842€ yearly"
     group_label: "Income Based Metrics"
     hidden: yes
     type: number
@@ -188,7 +190,8 @@ view: hub_demographics {
 
   dimension: income_group_3 {
     label: "Income Group 3"
-    description: "According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
+    description: "According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group.
+    Group 3 has the following income ranges: DE: 2500-3500€ monthly, FR: 31570-44502€ yearly, NL: 30548-42958€ yearly, AT: 36842-51485€ yearly"
     group_label: "Income Based Metrics"
     hidden: yes
     type: number
@@ -197,7 +200,8 @@ view: hub_demographics {
 
   dimension: income_group_4 {
     label: "Income Group 4"
-    description: "According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
+    description: "According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group.
+    Group 4 has the following income ranges: DE: 3500-5000€ monthly, FR: 44502-63178€ yearly, NL: 42958-61041€ yearly, AT: 51485-72697€ yearly"
     group_label: "Income Based Metrics"
     hidden: yes
     type: number
@@ -206,7 +210,8 @@ view: hub_demographics {
 
   dimension: income_group_5 {
     label: "Income Group 5"
-    description: "According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
+    description: "According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group.
+    Group 5 has the following income ranges: DE: 5000+€ monthly, FR: 63178+€ yearly, NL: 61041+€ yearly, AT: 72697+€ yearly"
     group_label: "Income Based Metrics"
     hidden: yes
     type: number
@@ -406,7 +411,8 @@ view: hub_demographics {
 
   measure: sum_income_group_1 {
     label: "# Households Income Group 1"
-    description: "Number of households in income group 1. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
+    description: "Number of households in income group 1. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group.
+    For DE, Targomo provided 6 income groups - hereby group 1 and 2 have been combined, resulting in the following income ranges: DE: 0-1500€ monthly, FR: 0-20976€ yearly, NL: 0-20726€ yearly, AT: 0-23821€ yearly"
     group_label: "Income Based Metrics"
     type: sum
     sql: ${income_group_1} ;;
@@ -415,7 +421,8 @@ view: hub_demographics {
 
   measure: sum_income_group_2 {
     label: "# Households Income Group 2"
-    description: "Number of households in income group 2. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
+    description: "Number of households in income group 2. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group.
+    Group 2 has the following income ranges: DE: 1500-2500€ monthly, FR: 20976-31570€ yearly, NL: 20726-30548€ yearly, AT: 23821-36842€ yearly"
     group_label: "Income Based Metrics"
     type: sum
     sql: ${income_group_2} ;;
@@ -424,7 +431,8 @@ view: hub_demographics {
 
   measure: sum_income_group_3 {
     label: "# Households Income Group 3"
-    description: "Number of households in income group 3. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
+    description: "Number of households in income group 3. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group.
+    Group 3 has the following income ranges: DE: 2500-3500€ monthly, FR: 31570-44502€ yearly, NL: 30548-42958€ yearly, AT: 36842-51485€ yearly"
     group_label: "Income Based Metrics"
     type: sum
     sql: ${income_group_3} ;;
@@ -433,7 +441,8 @@ view: hub_demographics {
 
   measure: sum_income_group_4 {
     label: "# Households Income Group 4"
-    description: "Number of households in income group 4. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
+    description: "Number of households in income group 4. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group.
+    Group 4 has the following income ranges: DE: 3500-5000€ monthly, FR: 44502-63178€ yearly, NL: 42958-61041€ yearly, AT: 51485-72697€ yearly"
     group_label: "Income Based Metrics"
     type: sum
     sql: ${income_group_4} ;;
@@ -442,7 +451,8 @@ view: hub_demographics {
 
   measure: sum_income_group_5 {
     label: "#  Households Income Group 5"
-    description: "Number of households in income group 5. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
+    description: "Number of households in income group 5. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group.
+    Group 5 has the following income ranges: DE: 5000+€ monthly, FR: 63178+€ yearly, NL: 61041+€ yearly, AT: 72697+€ yearly"
     group_label: "Income Based Metrics"
     type: sum
     sql: ${income_group_5} ;;
@@ -451,7 +461,8 @@ view: hub_demographics {
 
   measure: avg_income_group_1 {
     label: "AVG # Households Income Group 1"
-    description: "Average number of households in income group 1. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
+    description: "Average number of households in income group 1. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group.
+    For DE, Targomo provided 6 income groups - hereby group 1 and 2 have been combined, resulting in the following income ranges: DE: 0-1500€ monthly, FR: 0-20976€ yearly, NL: 0-20726€ yearly, AT: 0-23821€ yearly"
     group_label: "Income Based Metrics"
     type: average
     sql: ${income_group_1} ;;
@@ -460,7 +471,8 @@ view: hub_demographics {
 
   measure: avg_income_group_2 {
     label: "AVG # Households Income Group 2"
-    description: "Average number of households in income group 2. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
+    description: "Average number of households in income group 2. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group.
+    Group 2 has the following income ranges: DE: 1500-2500€ monthly, FR: 20976-31570€ yearly, NL: 20726-30548€ yearly, AT: 23821-36842€ yearly"
     group_label: "Income Based Metrics"
     type: average
     sql: ${income_group_2} ;;
@@ -469,7 +481,8 @@ view: hub_demographics {
 
   measure: avg_income_group_3 {
     label: "AVG # Households Income Group 3"
-    description: "Average number of households in income group 3. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
+    description: "Average number of households in income group 3. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group.
+    Group 3 has the following income ranges: DE: 2500-3500€ monthly, FR: 31570-44502€ yearly, NL: 30548-42958€ yearly, AT: 36842-51485€ yearly"
     group_label: "Income Based Metrics"
     type: average
     sql: ${income_group_3} ;;
@@ -478,7 +491,8 @@ view: hub_demographics {
 
   measure: avg_income_group_4 {
     label: "AVG # Households Income Group 4"
-    description: "Average number of households in income group 4. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
+    description: "Average number of households in income group 4. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group.
+    Group 4 has the following income ranges: DE: 3500-5000€ monthly, FR: 44502-63178€ yearly, NL: 42958-61041€ yearly, AT: 51485-72697€ yearly"
     group_label: "Income Based Metrics"
     type: average
     sql: ${income_group_4} ;;
@@ -487,7 +501,8 @@ view: hub_demographics {
 
   measure: avg_income_group_5 {
     label: "AVG # Households Income Group 5"
-    description: "Average number of households in income group 5. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
+    description: "Average number of households in income group 5. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group.
+    Group 5 has the following income ranges: DE: 5000+€ monthly, FR: 63178+€ yearly, NL: 61041+€ yearly, AT: 72697+€ yearly"
     group_label: "Income Based Metrics"
     type: average
     sql: ${income_group_5} ;;
@@ -532,7 +547,8 @@ view: hub_demographics {
 
   measure: pct_income_group_1 {
     label: "% Households Income Group 1"
-    description: "Share of households in income group 1. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
+    description: "Share of households in income group 1. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group.
+    For DE, Targomo provided 6 income groups - hereby group 1 and 2 have been combined, resulting in the following income ranges: DE: 0-1500€ monthly, FR: 0-20976€ yearly, NL: 0-20726€ yearly, AT: 0-23821€ yearly"
     group_label: "Income Based Metrics"
     type: number
     sql: safe_divide(${sum_income_group_1}, ${sum_total_households}) ;;
@@ -541,7 +557,8 @@ view: hub_demographics {
 
   measure: pct_income_group_2 {
     label: "% Households Income Group 2"
-    description: "Share of households in income group 2. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
+    description: "Share of households in income group 2. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group.
+    Group 2 has the following income ranges: DE: 1500-2500€ monthly, FR: 20976-31570€ yearly, NL: 20726-30548€ yearly, AT: 23821-36842€ yearly"
     group_label: "Income Based Metrics"
     type: number
     sql: safe_divide(${sum_income_group_2}, ${sum_total_households}) ;;
@@ -550,7 +567,8 @@ view: hub_demographics {
 
   measure: pct_income_group_3 {
     label: "% Households Income Group 3"
-    description: "Share of households in income group 3. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
+    description: "Share of households in income group 3. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group.
+    Group 3 has the following income ranges: DE: 2500-3500€ monthly, FR: 31570-44502€ yearly, NL: 30548-42958€ yearly, AT: 36842-51485€ yearly"
     group_label: "Income Based Metrics"
     type: number
     sql: safe_divide(${sum_income_group_3}, ${sum_total_households}) ;;
@@ -559,7 +577,8 @@ view: hub_demographics {
 
   measure: pct_income_group_4 {
     label: "% Households Income Group 4"
-    description: "Share of households in income group 4. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
+    description: "Share of households in income group 4. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group.
+    Group 4 has the following income ranges: DE: 3500-5000€ monthly, FR: 44502-63178€ yearly, NL: 42958-61041€ yearly, AT: 51485-72697€ yearly"
     group_label: "Income Based Metrics"
     type: number
     sql: safe_divide(${sum_income_group_4}, ${sum_total_households}) ;;
@@ -568,7 +587,8 @@ view: hub_demographics {
 
   measure: pct_income_group_5 {
     label: "%  Households Income Group 5"
-    description: "Share of households in income group 5. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
+    description: "Share of households in income group 5. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group.
+    Group 5 has the following income ranges: DE: 5000+€ monthly, FR: 63178+€ yearly, NL: 61041+€ yearly, AT: 72697+€ yearly"
     group_label: "Income Based Metrics"
     type: number
     sql: safe_divide(${sum_income_group_5}, ${sum_total_households}) ;;
@@ -577,7 +597,8 @@ view: hub_demographics {
 
   measure: pct_income_group_4_5 {
     label: "%  Households Income Group 4 & 5"
-    description: "Share of households in income group 4 and 5. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group"
+    description: "Share of households in income group 4 and 5. According to the data we received from Targomo, there are several income groups that differ in range. For this data, all countries are assigned to an income group between 1-5, whereby 1 is the lowest and 5 is the highest income group.
+    The combined group 4 and 5 has the following income ranges: DE: 3500+€ monthly, FR: 44502+€ yearly, NL: 42958+€ yearly, AT: 51485+€ yearly"
     group_label: "Income Based Metrics"
     type: number
     sql: safe_divide((${sum_income_group_5} + ${sum_income_group_4}), ${sum_total_households}) ;;
