@@ -436,6 +436,36 @@ view: forecasts {
     value_format_name: decimal_0
   }
 
+  measure: number_of_missed_orders {
+    group_label: "> Order Measures"
+    label: "# Missed Orders"
+    description: "# Missed orders due to planned or forced closures."
+    type: sum_distinct
+    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
+    sql: ${TABLE}.number_of_missed_orders ;;
+    value_format_name: decimal_0
+  }
+
+  measure: number_of_missed_orders_forced_closure {
+    group_label: "> Order Measures"
+    label: "# Missed Orders - Forced Closure"
+    description: "# Missed orders due to forced closure."
+    type: sum_distinct
+    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
+    sql: ${TABLE}.number_of_missed_orders_forced_closure ;;
+    value_format_name: decimal_0
+  }
+
+  measure: number_of_missed_orders_planned_closure {
+    group_label: "> Order Measures"
+    label: "# Missed Orders - Planned Closure"
+    description: "# Missed orders due to planned closure."
+    type: sum_distinct
+    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
+    sql: ${TABLE}.number_of_missed_orders_planned_closure ;;
+    value_format_name: decimal_0
+  }
+
   measure: number_of_forecasted_orders_adjusted {
     alias: [number_of_adjusted_forecasted_orders]
     group_label: "> Order Measures"
@@ -449,10 +479,10 @@ view: forecasts {
   measure: number_of_actual_orders {
     group_label: "> Order Measures"
     label: "# Actual Orders (Forecast-related)"
-    description: "# Actual Orders - Excl. Click&Collect and External Orders. Including Cancelled Orders"
+    description: "# Actual Orders - Excl. Click&Collect and External Orders. Including Cancelled and Missed Orders (due to forced closures)."
     type: sum_distinct
     sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
-    sql: ${TABLE}.number_of_actual_orders ;;
+    sql: ${TABLE}.number_of_actual_orders;;
     value_format_name: decimal_0
   }
 

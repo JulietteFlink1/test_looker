@@ -3,7 +3,8 @@
 
 view: add_to_cart_times {
   derived_table: {
-    sql: with timestamp_difference as
+    sql: WITH global_filters_and_parameters AS (select TRUE as generic_join_dim)
+    , timestamp_difference as
           (SELECT
             inventory_movement_id, sku, is_scanned_item, cast(quantity as int64) as quantity
             , datetime_diff(event_timestamp,lag(event_timestamp) OVER (PARTITION BY inventory_movement_id order by event_timestamp), MILLISECOND) as time_to_add_to_cart_millisec
