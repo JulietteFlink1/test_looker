@@ -51,7 +51,7 @@ explore: daily_hub_staff_events {
 
   join: event_order_progressed {
     view_label: "2 Event: Order Progressed"
-    fields: [to_include_dimensions*, to_include_measures*]
+    fields: [to_include_set*]
     sql_on: ${event_order_progressed.event_uuid} = ${daily_hub_staff_events.event_uuid}
       and {% condition global_filters_and_parameters.datasource_filter %}
         ${event_order_progressed.event_timestamp_date} {% endcondition %};;
@@ -81,7 +81,7 @@ explore: daily_hub_staff_events {
 
   join: event_container_assigned {
     view_label: "3 Event: Container Assigned"
-    fields: [to_include_dimensions*, to_include_measures*]
+    fields: [to_include_set*]
     sql_on: ${event_container_assigned.event_uuid} = ${daily_hub_staff_events.event_uuid}
       and {% condition global_filters_and_parameters.datasource_filter %}
         ${event_container_assigned.event_timestamp_date} {% endcondition %};;
@@ -91,7 +91,7 @@ explore: daily_hub_staff_events {
 
   join: event_container_assignment_skipped {
     view_label: "3 Event: Container Assignment Skipped"
-    fields: [to_include_dimensions*, to_include_measures*]
+    fields: [to_include_set*]
     sql_on: ${event_container_assignment_skipped.event_uuid} = ${daily_hub_staff_events.event_uuid}
       and {% condition global_filters_and_parameters.datasource_filter %}
         ${event_container_assignment_skipped.event_timestamp_date} {% endcondition %};;
