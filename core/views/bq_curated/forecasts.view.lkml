@@ -160,7 +160,7 @@ view: forecasts {
   dimension: number_of_actual_orders_dimension {
     label: "# Actual Orders - Dimension"
     type: number
-    sql: ${TABLE}.number_of_actual_orders + ${TABLE}.number_of_missed_orders;;
+    sql: ${TABLE}.number_of_actual_orders;;
     hidden: yes
   }
 
@@ -439,6 +439,7 @@ view: forecasts {
   measure: number_of_missed_orders {
     group_label: "> Order Measures"
     label: "# Missed Orders"
+    description: "# Missed orders due to planned or forced closures."
     type: sum_distinct
     sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
     sql: ${TABLE}.number_of_missed_orders ;;
@@ -448,7 +449,7 @@ view: forecasts {
   measure: number_of_missed_orders_forced_closure {
     group_label: "> Order Measures"
     label: "# Missed Orders - Forced Closure"
-    description: "# Missed orders due to forced closure"
+    description: "# Missed orders due to forced closure."
     type: sum_distinct
     sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
     sql: ${TABLE}.number_of_missed_orders_forced_closure ;;
@@ -458,7 +459,7 @@ view: forecasts {
   measure: number_of_missed_orders_planned_closure {
     group_label: "> Order Measures"
     label: "# Missed Orders - Planned Closure"
-    description: "# Missed orders due to planned closure"
+    description: "# Missed orders due to planned closure."
     type: sum_distinct
     sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
     sql: ${TABLE}.number_of_missed_orders_planned_closure ;;
@@ -478,10 +479,10 @@ view: forecasts {
   measure: number_of_actual_orders {
     group_label: "> Order Measures"
     label: "# Actual Orders (Forecast-related)"
-    description: "# Actual Orders - Excl. Click&Collect and External Orders. Including Cancelled and Missed Orders"
+    description: "# Actual Orders - Excl. Click&Collect and External Orders. Including Cancelled and Missed Orders (due to forced closures)."
     type: sum_distinct
     sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
-    sql: ${TABLE}.number_of_actual_orders + ${TABLE}.number_of_missed_orders ;;
+    sql: ${TABLE}.number_of_actual_orders;;
     value_format_name: decimal_0
   }
 
