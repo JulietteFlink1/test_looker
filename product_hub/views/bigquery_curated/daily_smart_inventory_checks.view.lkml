@@ -340,4 +340,5 @@ view: daily_smart_inventory_checks {
     filters: [is_finished: "yes"]
     sql: DATETIME_DIFF(${finished_at_timestamp_raw}, ${started_at_timestamp_raw}, SECOND) ;;
   }
+
 }

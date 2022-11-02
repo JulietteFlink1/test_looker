@@ -245,6 +245,12 @@ view: employee_level_kpis {
     description: "Based on Quinyx assinged shift (null when an employee is not assgined any shift)"
   }
 
+  parameter: avaiability_overlap_parameter {
+    type: yesno
+    label: "Is Assigned Shift 100% overlapping with Availability ?"
+    description: "Yes if the assigned shift fully overlaps (100%) with the availability provided by the employee."
+  }
+
   dimension: type_of_contract {
     type: string
     description: "Based on fountain data: full-time, part-time, min/max, 15, 30, etc (null when no matching ID between Quinyx and Fountain)"
@@ -276,6 +282,18 @@ view: employee_level_kpis {
     sql_start: timestamp(${TABLE}.hire_date) ;;
     sql_end: current_timestamp ;;
     group_label: "Rider Tenure - time since hired "
+  }
+
+  dimension: number_of_planned_minutes_availability_based {
+    type: number
+    hidden: yes
+    sql: case
+          when {% parameter avaiability_overlap_parameter %} = true
+          and  ${TABLE}.number_of_planned_minutes_availability_based != ${TABLE}.number_of_planned_minutes
+            then 0
+          else ${TABLE}.number_of_planned_minutes_availability_based
+          end;;
+    value_format_name: decimal_1
   }
 
 
@@ -636,6 +654,131 @@ view: employee_level_kpis {
     description: "All shift hours that are assigned to an employee (before punching) including No show Hours"
     sql: ${TABLE}.number_of_planned_minutes/60 ;;
     value_format_name: decimal_1
+  }
+
+  measure: number_of_planned_hours_availability_based {
+    group_label: "* Shift related *"
+    type: sum
+    label: "# Assigned Hours Based on Availability"
+    description: "Number of Assigned hours that are overlapping with provided availability"
+    sql: ${number_of_planned_minutes_availability_based}/60 ;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_availability_hours {
+    group_label: "* Shift related *"
+    type: sum
+    label: "# Availability Hours"
+    description:" Number of hours that were provided as available by the employee"
+    sql: ${TABLE}.number_of_availability_minutes/60 ;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_weekend_availability_hours {
+    group_label: "* Shift related *"
+    type: sum
+    label: "# Weekend Availability Hours"
+    description:"Number of hours that were provided as available by the employee between 3 p.m Friday - 12 a.m Sunday "
+    sql: ${TABLE}.number_of_weekend_availability_minutes/60 ;;
+    value_format_name: decimal_1
+  }
+
+  measure: pct_of_weekend_availability_hours {
+    group_label: "* Shift related *"
+    type: number
+    label: "% Weekend Availability Hours"
+    description:"Share of Availability Hours between 3 p.m Friday - 12 a.m Sunday over Total Availability Hours "
+    sql: ${number_of_weekend_availability_hours} / nullif(${number_of_availability_hours},0) ;;
+    value_format_name: percent_1
+  }
+
+  measure: number_of_employees {
+    group_label: "* Shift related *"
+    type: number
+    label: "# Employees"
+    description:"Number of distinct employees"
+    sql: count(distinct ${employment_id}) ;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_employees_with_availability_provided {
+    group_label: "* Shift related *"
+    type: number
+    label: "# Employees with Availability provided"
+    description:"Number of distinct employees providing Availability in Quinyx"
+    sql: count(distinct
+           case when ${TABLE}.number_of_availability_minutes > 0
+                then ${employment_id}
+            end) ;;
+    value_format_name: decimal_1
+  }
+
+  measure: pct_of_employees_with_availability_provided {
+    group_label: "* Shift related *"
+    type: number
+    label: "% Employees with Availability provided"
+    description:"Share of employees providing Availability in Quinyx"
+    sql: ${number_of_employees_with_availability_provided} / nullif(${number_of_employees},0) ;;
+    value_format_name: percent_1
+  }
+
+  measure: number_of_no_show_hours_with_availability {
+    group_label: "* Shift related *"
+    type: sum
+    label: "# No Show Hours within Availability"
+    description:"Number of No Show Hours that are overlapping with provided availability"
+    sql: case when ${TABLE}.number_of_no_show_minutes > 0
+                then ${number_of_planned_minutes_availability_based}/60
+         end ;;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_of_no_show_hours_with_availability {
+    group_label: "* Shift related *"
+    type: average
+    label: "AVG No Show Hours within Availability"
+    description: "Average No Show Hours that are overlapping with provided availability"
+    sql: case when ${TABLE}.number_of_no_show_minutes > 0
+                then ${number_of_planned_minutes_availability_based}/60
+         end ;;
+    value_format_name: decimal_1
+  }
+
+  measure: pct_of_no_show_hours_with_availability {
+    group_label: "* Shift related *"
+    type: number
+    label: "% No Show Hours within Availability"
+    description:"Share of No Show hours that are overlapping with provided availability"
+    sql:${number_of_no_show_hours_with_availability}/nullif(${number_of_no_show_hours},0) ;;
+    value_format_name: percent_1
+  }
+
+  measure: pct_of_assigned_hours_availability_based_rider {
+    group_label: "* Shift related *"
+    label: "% Assigned Hours Based on Availability"
+    type: number
+    sql: ${number_of_planned_hours_availability_based}/nullif(${number_of_assigned_hours},0) ;;
+    description: "Share of Assigned Hours based on Availability from total Assigned Hours - (# Assigned Hours Based on Availability / # Assigned Hours)"
+    value_format_name: percent_1
+  }
+
+  measure: pct_of_availability_hours_vs_contracted_hours {
+    alias: [pct_of_planned_hours_availability_based_rider_vs_contracted_hours]
+    group_label: "* Shift related *"
+    label: "% Availability Hours vs Total Contracted Hours"
+    type: number
+    sql:${number_of_availability_hours}/nullif(${sum_weekly_contracted_hours},0) ;;
+    description:"# Availability Hours / Total Weekly Contracted Hours"
+    value_format_name: percent_1
+  }
+
+  measure: pct_of_availability_hours_vs_worked_hours {
+    group_label: "* Shift related *"
+    label: "% Availability Hours vs Worked Hours"
+    type: number
+    sql:${number_of_availability_hours}/nullif(${number_of_worked_hours},0) ;;
+    description:"# Availability Hours / # Worked Hours"
+    value_format_name: percent_1
   }
 
   measure: number_of_sick_hours {

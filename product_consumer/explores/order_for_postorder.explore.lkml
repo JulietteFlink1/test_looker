@@ -14,6 +14,14 @@ explore: order_for_postorder{
   description: "Post-order related events, order dimensions, comments and nps"
  #   fields: [ALL_FIELDS*, -order_for_postorder.cnt_orders_delayed_under_0_min,
  #     -order_for_postorder.cnt_orders_delayed_over_5_min, -order_for_postorder.cnt_orders_with_delivery_eta_available, -order_for_postorder.pct_orders_delivered_by_riders]
+
+  join: global_filters_and_parameters {
+    sql: ;;
+    # Use `sql` instead of `sql_on` and put some whitespace in it
+    relationship: one_to_one
+    fields: [global_filters_and_parameters.is_after_product_discounts]
+  }
+
   join: order_client {
     from: order_placed_events
     view_label: "Client Orders"

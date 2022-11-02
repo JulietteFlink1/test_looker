@@ -15,7 +15,6 @@ include: "/**/hubs_ct.view.lkml"
 include: "/**/global_filters_and_parameters.view.lkml"
 include: "/**/employee_level_kpis.view.lkml"
 
-
 explore: smart_inventory_checks {
   from:  daily_smart_inventory_checks
   view_name: smart_inventory_checks
@@ -40,9 +39,8 @@ explore: smart_inventory_checks {
   }
 
   join: global_filters_and_parameters {
-    sql_on: ${global_filters_and_parameters.generic_join_dim} = TRUE ;;
-    type: left_outer
-    relationship: many_to_one
+    sql: ;;
+    relationship: one_to_one
   }
 
   join: products {

@@ -58,11 +58,8 @@ explore: vendor_performance {
 
 
   join: global_filters_and_parameters {
-    view_label: "* Global *"
-    sql_on: ${global_filters_and_parameters.generic_join_dim} = TRUE ;;
-    type: left_outer
+    sql: ;;
     relationship: one_to_one
-
   }
 
 
