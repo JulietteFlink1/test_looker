@@ -14,6 +14,8 @@ include: "/**/orders.view.lkml"
 include: "/**/daily_hub_staff_events.view.lkml"
 include: "/**/event_order_progressed.view.lkml"
 include: "/**/event_order_state_updated.view.lkml"
+include: "/**/event_container_assigned.view.lkml"
+include: "/**/event_container_assignment_skipped.view.lkml"
 include: "/**/picking_times.view.lkml"
 include: "/product_consumer/views/bigquery_reporting/daily_violations_aggregates.view.lkml"
 include: "/**/daily_smart_inventory_checks.view"
@@ -73,6 +75,26 @@ explore: daily_hub_staff_events {
     sql_on: ${picking_times.order_id} = coalesce(${event_order_state_updated.order_id},${event_order_progressed.order_id})
       and {% condition global_filters_and_parameters.datasource_filter %}
         ${picking_times.event_timestamp_date} {% endcondition %};;
+    type: left_outer
+    relationship: one_to_one
+  }
+
+  join: event_container_assigned {
+    view_label: "3 Event: Container Assigned"
+    fields: [to_include_dimensions*, to_include_measures*]
+    sql_on: ${event_container_assigned.event_uuid} = ${daily_hub_staff_events.event_uuid}
+      and {% condition global_filters_and_parameters.datasource_filter %}
+        ${event_container_assigned.event_timestamp_date} {% endcondition %};;
+    type: left_outer
+    relationship: one_to_one
+  }
+
+  join: event_container_assignment_skipped {
+    view_label: "3 Event: Container Assignment Skipped"
+    fields: [to_include_dimensions*, to_include_measures*]
+    sql_on: ${event_container_assignment_skipped.event_uuid} = ${daily_hub_staff_events.event_uuid}
+      and {% condition global_filters_and_parameters.datasource_filter %}
+        ${event_container_assignment_skipped.event_timestamp_date} {% endcondition %};;
     type: left_outer
     relationship: one_to_one
   }
