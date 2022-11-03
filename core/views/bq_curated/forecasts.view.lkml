@@ -207,9 +207,16 @@ view: forecasts {
   }
 
   dimension: number_of_actual_orders_dimension {
-    label: "# Actual Orders - Dimension"
+    label: "# Actual Orders (forecast-related) - Dimension"
     type: number
     sql: ${TABLE}.number_of_actual_orders;;
+    hidden: yes
+  }
+
+  dimension: number_of_cancelled_orders_dimension {
+    label: "# Cancelled Orders - Dimension"
+    type: number
+    sql: ${TABLE}.number_of_cancelled_orders;;
     hidden: yes
   }
 
@@ -469,13 +476,33 @@ view: forecasts {
 
   measure: number_of_actual_orders {
     group_label: "> Order Measures"
-    label: "# Actual Orders (Forecast-related)"
-    description: "# Actual Orders - Excl. Click&Collect and External Orders. Including Cancelled Orders"
+    label: "# Actual Orders (Forecast-Related)"
+    description: "# Actual orders related to forecast: Excl. click & collect and external orders; Including cancelled orders with operations-related cancellation reasons."
     type: sum_distinct
     sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
     sql: ${TABLE}.number_of_actual_orders ;;
     value_format_name: decimal_0
   }
+
+  measure: number_of_cancelled_orders {
+    group_label: "> Order Measures"
+    label: "# Cancelled Orders (Forecast-Related)"
+    description: "# Cancelled orders that are relevant for the forecast: Excl. click & collect and external orders; Including only operations-related cancellation reasons."
+    type: sum_distinct
+    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
+    sql: ${TABLE}.number_of_cancelled_orders_dimension ;;
+    value_format_name: decimal_0
+  }
+
+  # measure: number_of_cancelled_and_missed_orders {
+  #   group_label: "> Order Measures"
+  #   label: "# Cancelled and Missed Orders (Forecast-Related)"
+  #   description: "# Cancelled orders that are relevant for the forecast: Excl. click & collect and external orders; Including only operations-related cancellation reasons."
+  #   type: sum_distinct
+  #   sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
+  #   sql: ${TABLE}.number_of_cancelled_orders_dimension ;;
+  #   value_format_name: decimal_0
+  # }
 
   measure: pct_actually_needed_hours_deviation {
     group_label: "> Dynamic Measures"
