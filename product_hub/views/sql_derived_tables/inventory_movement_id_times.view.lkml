@@ -3,7 +3,8 @@
 
 view: inventory_movement_id_times {
   derived_table: {
-    sql: SELECT
+    sql: WITH global_filters_and_parameters AS (select TRUE as generic_join_dim)
+    SELECT
             daily_stock_management_events.inventory_movement_id  AS inventory_movement_id
             , max(if(action in ('cart_created'), event_timestamp, null)) as cart_created_time
             , max(if(action in ('dropping_list_created'), event_timestamp, null)) as dropping_list_created_time
