@@ -33,10 +33,18 @@ view: forecasts {
     hidden: yes
   }
 
-  dimension: quinyx_pipeline_status {
-    label: "Quinyx Pipeline Status"
+  dimension: quinyx_pipeline_status_rider {
+    label: "Quinyx Pipeline Status - Rider"
+    description: "Status of the Quinyx pipeline for rider headcount (whether it is sent or not to Quinyx)."
     type: string
-    sql: coalesce(${TABLE}.quinyx_pipeline_status, "N/A") ;;
+    sql: coalesce(${TABLE}.quinyx_pipeline_status_rider, "n/a") ;;
+  }
+
+  dimension: quinyx_pipeline_status_picker {
+    label: "Quinyx Pipeline Status - Picker"
+    description: "Status of the Quinyx pipeline for picker headcount (whether it is sent or not to Quinyx)."
+    type: string
+    sql: coalesce(${TABLE}.quinyx_pipeline_status_picker, "n/a") ;;
   }
 
   dimension: forecast_horizon {
