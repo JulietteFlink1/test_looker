@@ -71,7 +71,7 @@ explore: daily_hub_staff_events {
 
 #Coalesce in the join is to be able to see times and quantities processed at order_id and sku level
   join: picking_times {
-    view_label: "4 Picking Times"
+    view_label: "3 Event: Order State Updated"
     sql_on: ${picking_times.order_id} = coalesce(${event_order_state_updated.order_id},${event_order_progressed.order_id})
       and {% condition global_filters_and_parameters.datasource_filter %}
         ${picking_times.event_timestamp_date} {% endcondition %};;
@@ -80,7 +80,7 @@ explore: daily_hub_staff_events {
   }
 
   join: event_container_assigned {
-    view_label: "3 Event: Container Assigned"
+    view_label: "4 Handover Process"
     fields: [to_include_set*]
     sql_on: ${event_container_assigned.event_uuid} = ${daily_hub_staff_events.event_uuid}
       and {% condition global_filters_and_parameters.datasource_filter %}
@@ -90,7 +90,7 @@ explore: daily_hub_staff_events {
   }
 
   join: event_container_assignment_skipped {
-    view_label: "3 Event: Container Assignment Skipped"
+    view_label: "4 Handover Process"
     fields: [to_include_set*]
     sql_on: ${event_container_assignment_skipped.event_uuid} = ${daily_hub_staff_events.event_uuid}
       and {% condition global_filters_and_parameters.datasource_filter %}
