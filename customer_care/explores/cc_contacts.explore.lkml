@@ -50,7 +50,7 @@ explore: cc_contacts {
   join: cc_headcount_forecast_performance {
     view_label: "Headcount Forecast"
     sql_on: ${cc_contacts.cc_team} = ${cc_headcount_forecast_performance.team}
-        and ${cc_contacts.contact_created_date} = ${cc_headcount_forecast_performance.forecasted_date}
+        and ${cc_contacts.last_close_date} = ${cc_headcount_forecast_performance.forecasted_date}
         and {% condition global_filters_and_parameters.datasource_filter %} ${cc_headcount_forecast_performance.forecasted_date} {% endcondition %};;
     relationship: many_to_one
     type: left_outer
@@ -59,9 +59,11 @@ explore: cc_contacts {
   join: cc_agent_staffing_daily {
     view_label: "Shifts"
     sql_on:${cc_agent_staffing_daily.shift_date} = ${cc_contacts.last_close_date}
-      and ${cc_agent_staffing_daily.agent_email} = ${cc_contacts.agent_email};;
+      and ${cc_agent_staffing_daily.agent_email} = ${cc_contacts.agent_email}
+      and {% condition global_filters_and_parameters.datasource_filter %} ${cc_agent_staffing_daily.shift_date} {% endcondition %};;
     relationship: many_to_many
     type: left_outer
+    fields: [cc_agent_staffing_daily.cc_contacts_fields*]
   }
 
 }

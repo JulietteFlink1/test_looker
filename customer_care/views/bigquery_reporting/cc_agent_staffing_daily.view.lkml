@@ -1,10 +1,38 @@
 view: cc_agent_staffing_daily {
-  sql_table_name: `flink-data-prod.reporting.cc_agent_staffing_daily`
+  sql_table_name: `flink-data-dev.dbt_vbreda_reporting.cc_agent_staffing_half_hourly`
     ;;
+
+    set: cc_contacts_fields {
+      fields: [
+        agent_email,
+        country_iso,
+        agent_name,
+        cc_agent_shift_uuid,
+        employment_id,
+        is_external_agent,
+        position_name,
+        shift_date,
+        shift_week,
+        shift_month,
+        shift_year,
+        staff_number,
+        sum_number_of_worked_hours,
+        sum_number_of_closed_contacts,
+        number_of_contact_per_hour,
+        number_of_agents_working,
+        date_granularity,
+        date,
+        date_granularity_pass_through,
+        number_of_worked_minutes,
+
+        ]
+    }
 
   dimension: agent_email {
     group_label: "> Agent Dimensions"
     type: string
+    description: "Quinyx email address of the customer care agent. If the email address starts with 'ext-', we remove that prefix.
+    This is done to be able to join on Intercom agents' email addresses, which sometimes do not have that prefix."
     sql: ${TABLE}.agent_email ;;
   }
 
@@ -16,6 +44,7 @@ view: cc_agent_staffing_daily {
 
   dimension: agent_name {
     group_label: "> Agent Dimensions"
+    description: "Name of the customer care agent."
     type: string
     sql: ${TABLE}.agent_name ;;
   }
@@ -35,15 +64,99 @@ view: cc_agent_staffing_daily {
 
   dimension: is_external_agent {
     group_label: "> Agent Dimensions"
-    description: "Flags if the agent is external based on the email (starts with ext-)"
+    description: "TRUE if the agent is external. Based on the Quinyx agent email (starts with ext- or ext.)"
     type: yesno
     sql: ${TABLE}.is_external_agent ;;
   }
 
-  dimension: number_of_assigned_hours {
+  dimension: cc_team {
+    group_label: "> Agent Dimensions"
+    label: "CC Team"
+    description: "Customer care team the agent is part of: german, dutch, french"
+    type: string
+    sql: ${TABLE}.cc_team ;;
+  }
+
+  dimension: leave_reason {
+    group_label: "> Shift Dimensions"
+    label: "Absence Reason"
+    description: "Reason associated with the creation of an absence in Quinyx"
+    type: string
+    sql: ${TABLE}.leave_reason ;;
+  }
+
+  dimension: is_deleted {
+    group_label: "> Shift Dimensions"
+    label: "Is Deleted"
+    description: "TRUE if the shift is deleted in Quinyx"
+    type: yesno
+    sql: ${TABLE}.is_deleted ;;
+  }
+
+  dimension: shift_id {
+    group_label: "> Shift Dimensions"
+    label: "Shift ID"
+    hidden:  yes
+    type: yesno
+    sql: ${TABLE}.shift_id ;;
+  }
+
+  dimension_group: block_starts {
+    group_label: "> Dates"
+    type: time
+    timeframes: [
+      time,
+      date,
+      week,
+      month
+    ]
+    convert_tz: yes
+    sql: ${TABLE}.block_starts_timestamp ;;
+  }
+
+  dimension_group: block_ends {
+    group_label: "> Dates"
+    type: time
+    timeframes: [
+      time,
+      date,
+      week,
+      month
+    ]
+    convert_tz: yes
+    sql: ${TABLE}.block_ends_timestamp ;;
+  }
+
+  dimension_group: shift_starts {
+    group_label: "> Dates"
+    type: time
+    timeframes: [
+      time
+    ]
+    convert_tz: yes
+    sql: ${TABLE}.shift_starts_timestamp ;;
+  }
+
+  dimension_group: shift_ends {
+    group_label: "> Dates"
+    type: time
+    timeframes: [
+      time
+    ]
+    convert_tz: yes
+    sql: ${TABLE}.shift_ends_timestamp ;;
+  }
+
+  dimension: number_of_planned_minutes {
     hidden: yes
     type: number
-    sql: ${TABLE}.number_of_assigned_hours ;;
+    sql: ${TABLE}.number_of_planned_minutes ;;
+  }
+
+  dimension: number_of_productive_minutes {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.number_of_productive_minutes ;;
   }
 
   dimension: number_of_closed_contacts {
@@ -52,16 +165,34 @@ view: cc_agent_staffing_daily {
     sql: ${TABLE}.number_of_closed_contacts ;;
   }
 
-  dimension: number_of_punched_hours {
+  dimension: number_of_punched_minutes {
     hidden: yes
     type: number
-    sql: ${TABLE}.number_of_punched_hours ;;
+    sql: ${TABLE}.number_of_punched_minutes ;;
   }
 
-  dimension: number_of_worked_hours {
+  dimension: number_of_worked_minutes {
     hidden: yes
     type: number
-    sql: ${TABLE}.number_of_worked_hours ;;
+    sql: ${TABLE}.number_of_worked_minutes ;;
+  }
+
+  dimension: number_of_absence_minutes {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.number_of_absence_minutes ;;
+  }
+
+  dimension: number_of_unplanned_absence_minutes {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.number_of_unplanned_absence_minutes ;;
+  }
+
+  dimension: number_of_planned_absence_minutes {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.number_of_planned_absence_minutes ;;
   }
 
   dimension: position_name {
@@ -102,33 +233,154 @@ view: cc_agent_staffing_daily {
   measure: sum_number_of_worked_hours {
     group_label: "> Agent Productivity"
     label: "# Worked Hours"
-    description: "Worked Hours as seen in Quinyx. For external agents we consider the planned hours, for internal agents the punched hours"
+    description: "# worked hours by a customer care agent.
+    We consider the punched duration when available, else we consider the planned duration. Excludes shifts that are overlapped by absences."
     type: sum
-    sql: ${number_of_worked_hours} ;;
+    sql: ${number_of_worked_minutes}/60 ;;
+    value_format_name: decimal_1
+  }
+
+  measure: sum_number_of_punched_hours {
+    group_label: "> Agent Productivity"
+    label: "# Punched Hours"
+    description: "# hours punched by a customer care agent, as seen in Quinyx."
+    type: sum
+    sql: ${number_of_punched_minutes}/60 ;;
+    value_format_name: decimal_1
+  }
+
+  measure: sum_number_of_planned_hours {
+    alias: [sum_number_of_assigned_hours]
+    group_label: "> Agent Productivity"
+    label: "# Planned Hours"
+    description: "# hours planned for a customer care agent. We consider the planned duration of the shift, including the break duration."
+    type: sum
+    sql: ${number_of_planned_minutes}/60 ;;
+    value_format_name: decimal_1
+  }
+
+  measure: sum_number_of_productive_hours {
+    group_label: "> Agent Productivity"
+    label: "# Productive Hours"
+    description: "# planned hours for a customer care agent,
+    excluding break duration and shift durations that are overlapped by absences."
+    type: sum
+    sql: ${number_of_productive_minutes}/60 ;;
+    value_format_name: decimal_1
+  }
+
+  measure: sum_number_of_absence_hours {
+    group_label: "> Agent Productivity"
+    label: "# Absence Hours"
+    description: "# hours a customer care agent was absent. We consider the duration of absences that overlap with shifts,
+    apart from absences with 'Unavailable' leave reason."
+    type: sum
+    sql: ${number_of_absence_minutes}/60 ;;
+    value_format_name: decimal_1
+  }
+
+  measure: sum_number_of_planned_absence_hours {
+    group_label: "> Agent Productivity"
+    label: "# Planned Absence Hours"
+    description: "# absence hours for a customer care agent, but considering all absences except the ones with
+    'Sick Day', 'Sick Leave Approved', 'No Show' and 'Unavailable' as leave reason."
+    type: sum
+    sql: ${number_of_planned_absence_minutes}/60 ;;
+    value_format_name: decimal_1
+  }
+
+  measure: sum_number_of_unplanned_absence_hours {
+    group_label: "> Agent Productivity"
+    label: "# Unplanned Absence Hours"
+    description: "# absence hours for a customer care agent, but considering only absences with
+    'Sick Day', 'Sick Leave Approved' and 'No Show' as leave reason."
+    type: sum
+    sql: ${number_of_unplanned_absence_minutes}/60 ;;
+    value_format_name: decimal_1
+  }
+
+  measure: share_of_absences_per_planned_hours {
+    group_label: "> Agent Productivity"
+    label: "% Absence Hours"
+    description: "# absence hours / # planned hours"
+    type: number
+    sql: safe_divide(${sum_number_of_absence_hours},${sum_number_of_planned_hours}) ;;
+    value_format_name: percent_1
+  }
+
+  measure: share_of_unplanned_absences_per_planned_hours {
+    group_label: "> Agent Productivity"
+    label: "% Unplanned Absence Hours"
+    description: "# unplanned absence hours / # planned hours"
+    type: number
+    sql: safe_divide(${sum_number_of_unplanned_absence_hours},${sum_number_of_planned_hours}) ;;
+    value_format_name: percent_1
+  }
+
+  measure: share_of_planned_absences_per_planned_hours {
+    group_label: "> Agent Productivity"
+    label: "% Planned Absence Hours"
+    description: "# planned absence hours / # planned hours"
+    type: number
+    sql: safe_divide(${sum_number_of_planned_absence_hours},${sum_number_of_planned_hours}) ;;
+    value_format_name: percent_1
   }
 
   measure: sum_number_of_closed_contacts {
     group_label: "> Agent Productivity"
     label: "# Closed Contacts"
-    description: "Number of contacts that were closed by the agent"
+    description: "# contacts that were closed by the agent"
     type: sum
     sql: ${number_of_closed_contacts} ;;
+    value_format_name: decimal_0
   }
 
   measure: number_of_contact_per_hour {
     group_label: "> Agent Productivity"
     label: "AVG # Closed Contacts / Hour"
-    description: "AVG Number of contacts closed by an agent in one worked hours."
+    description: "AVG Number of contacts closed by an agent in one productive hour."
     type: number
-    sql: safe_divide(${sum_number_of_closed_contacts},${sum_number_of_worked_hours}) ;;
+    sql: safe_divide(${sum_number_of_closed_contacts},${sum_number_of_productive_hours}) ;;
     value_format: "0.00"
   }
 
-  measure: number_of_agents {
+  measure: number_of_agents_working {
+    alias: [number_of_agents]
     group_label: "> Agent Productivity"
     label: "# Working Agents"
-    description: "Number of Agents who had a shift in Quinyx"
+    description: "# Agents who worked during the timeframe."
     type: count_distinct
+    filters: [number_of_worked_minutes: ">0"]
+    sql: ${agent_email} ;;
+    value_format: "0"
+  }
+
+  measure: number_of_agents_punched {
+    group_label: "> Agent Productivity"
+    label: "# Punched Agents"
+    description: "# Agents who punched during the timeframe."
+    type: count_distinct
+    filters: [number_of_punched_minutes: ">0"]
+    sql: ${agent_email} ;;
+    value_format: "0"
+  }
+
+  measure: number_of_agents_planned {
+    group_label: "> Agent Productivity"
+    label: "# Planned Agents"
+    description: "# Agents who had a shift planned during the timeframe."
+    type: count_distinct
+    filters: [number_of_planned_minutes: ">0"]
+    sql: ${agent_email} ;;
+    value_format: "0"
+  }
+
+  measure: number_of_agents_productive {
+    group_label: "> Agent Productivity"
+    label: "# Productive Agents"
+    description: "# Agents who were productive during the timeframe."
+    type: count_distinct
+    filters: [number_of_productive_minutes: ">0"]
     sql: ${agent_email} ;;
     value_format: "0"
   }
