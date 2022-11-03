@@ -23,6 +23,7 @@ explore: cc_staffing {
   join: global_filters_and_parameters {
     sql: ;;
   relationship: one_to_one
+  fields: [datasource_filter]
   }
 
   join: cc_agent_staffing_daily {

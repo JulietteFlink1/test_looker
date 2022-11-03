@@ -64,7 +64,7 @@ view: cc_agent_staffing_daily {
 
   dimension: is_external_agent {
     group_label: "> Agent Dimensions"
-    description: "TRUE if the agent is external. Based on the Quinyx agent email (starts with ext- or ext.)"
+    description: "Displays Yes if the agent is external. Based on the Quinyx agent email (starts with ext- or ext.)"
     type: yesno
     sql: ${TABLE}.is_external_agent ;;
   }
@@ -88,7 +88,7 @@ view: cc_agent_staffing_daily {
   dimension: is_deleted {
     group_label: "> Shift Dimensions"
     label: "Is Deleted"
-    description: "TRUE if the shift is deleted in Quinyx"
+    description: "Displays Yes if the shift is deleted in Quinyx"
     type: yesno
     sql: ${TABLE}.is_deleted ;;
   }
@@ -233,7 +233,7 @@ view: cc_agent_staffing_daily {
   measure: sum_number_of_worked_hours {
     group_label: "> Agent Productivity"
     label: "# Worked Hours"
-    description: "# worked hours by a customer care agent.
+    description: "Number of worked hours by a customer care agent.
     We consider the punched duration when available, else we consider the planned duration. Excludes shifts that are overlapped by absences."
     type: sum
     sql: ${number_of_worked_minutes}/60 ;;
@@ -243,7 +243,7 @@ view: cc_agent_staffing_daily {
   measure: sum_number_of_punched_hours {
     group_label: "> Agent Productivity"
     label: "# Punched Hours"
-    description: "# hours punched by a customer care agent, as seen in Quinyx."
+    description: "Number of hours punched by a customer care agent, as seen in Quinyx."
     type: sum
     sql: ${number_of_punched_minutes}/60 ;;
     value_format_name: decimal_1
@@ -253,7 +253,7 @@ view: cc_agent_staffing_daily {
     alias: [sum_number_of_assigned_hours]
     group_label: "> Agent Productivity"
     label: "# Planned Hours"
-    description: "# hours planned for a customer care agent. We consider the planned duration of the shift, including the break duration."
+    description: "Number of hours planned for a customer care agent. We consider the planned duration of the shift, including the break duration."
     type: sum
     sql: ${number_of_planned_minutes}/60 ;;
     value_format_name: decimal_1
@@ -262,7 +262,7 @@ view: cc_agent_staffing_daily {
   measure: sum_number_of_productive_hours {
     group_label: "> Agent Productivity"
     label: "# Productive Hours"
-    description: "# planned hours for a customer care agent,
+    description: "Number of planned hours for a customer care agent,
     excluding break duration and shift durations that are overlapped by absences."
     type: sum
     sql: ${number_of_productive_minutes}/60 ;;
@@ -272,7 +272,7 @@ view: cc_agent_staffing_daily {
   measure: sum_number_of_absence_hours {
     group_label: "> Agent Productivity"
     label: "# Absence Hours"
-    description: "# hours a customer care agent was absent. We consider the duration of absences that overlap with shifts,
+    description: "Number of hours a customer care agent was absent. We consider the duration of absences that overlap with shifts,
     apart from absences with 'Unavailable' leave reason."
     type: sum
     sql: ${number_of_absence_minutes}/60 ;;
@@ -282,7 +282,7 @@ view: cc_agent_staffing_daily {
   measure: sum_number_of_planned_absence_hours {
     group_label: "> Agent Productivity"
     label: "# Planned Absence Hours"
-    description: "# absence hours for a customer care agent, but considering all absences except the ones with
+    description: "Number of absence hours for a customer care agent, but considering all absences except the ones with
     'Sick Day', 'Sick Leave Approved', 'No Show' and 'Unavailable' as leave reason."
     type: sum
     sql: ${number_of_planned_absence_minutes}/60 ;;
@@ -292,7 +292,7 @@ view: cc_agent_staffing_daily {
   measure: sum_number_of_unplanned_absence_hours {
     group_label: "> Agent Productivity"
     label: "# Unplanned Absence Hours"
-    description: "# absence hours for a customer care agent, but considering only absences with
+    description: "Number of absence hours for a customer care agent, but considering only absences with
     'Sick Day', 'Sick Leave Approved' and 'No Show' as leave reason."
     type: sum
     sql: ${number_of_unplanned_absence_minutes}/60 ;;
@@ -302,7 +302,7 @@ view: cc_agent_staffing_daily {
   measure: share_of_absences_per_planned_hours {
     group_label: "> Agent Productivity"
     label: "% Absence Hours"
-    description: "# absence hours / # planned hours"
+    description: "Number of absence hours divided by the number of planned hours"
     type: number
     sql: safe_divide(${sum_number_of_absence_hours},${sum_number_of_planned_hours}) ;;
     value_format_name: percent_1
@@ -311,7 +311,7 @@ view: cc_agent_staffing_daily {
   measure: share_of_unplanned_absences_per_planned_hours {
     group_label: "> Agent Productivity"
     label: "% Unplanned Absence Hours"
-    description: "# unplanned absence hours / # planned hours"
+    description: "Number of unplanned absence hours divided by the number of planned hours"
     type: number
     sql: safe_divide(${sum_number_of_unplanned_absence_hours},${sum_number_of_planned_hours}) ;;
     value_format_name: percent_1
@@ -320,7 +320,7 @@ view: cc_agent_staffing_daily {
   measure: share_of_planned_absences_per_planned_hours {
     group_label: "> Agent Productivity"
     label: "% Planned Absence Hours"
-    description: "# planned absence hours / # planned hours"
+    description: "Number of planned absence hours divided by the number of planned hours"
     type: number
     sql: safe_divide(${sum_number_of_planned_absence_hours},${sum_number_of_planned_hours}) ;;
     value_format_name: percent_1
@@ -329,7 +329,7 @@ view: cc_agent_staffing_daily {
   measure: sum_number_of_closed_contacts {
     group_label: "> Agent Productivity"
     label: "# Closed Contacts"
-    description: "# contacts that were closed by the agent"
+    description: "Number of contacts that were closed by the agent"
     type: sum
     sql: ${number_of_closed_contacts} ;;
     value_format_name: decimal_0
@@ -338,7 +338,8 @@ view: cc_agent_staffing_daily {
   measure: number_of_contact_per_hour {
     group_label: "> Agent Productivity"
     label: "AVG # Closed Contacts / Hour"
-    description: "AVG Number of contacts closed by an agent in one productive hour."
+    description: "AVG Number of contacts closed by an agent in one productive hour. Productive hours correspond to the number
+    of planned hours for a customer care agent, excluding break duration and shift durations that are overlapped by absences."
     type: number
     sql: safe_divide(${sum_number_of_closed_contacts},${sum_number_of_productive_hours}) ;;
     value_format: "0.00"
@@ -348,41 +349,38 @@ view: cc_agent_staffing_daily {
     alias: [number_of_agents]
     group_label: "> Agent Productivity"
     label: "# Working Agents"
-    description: "# Agents who worked during the timeframe."
+    description: "Number of agents who worked during the timeframe."
     type: count_distinct
     filters: [number_of_worked_minutes: ">0"]
     sql: ${agent_email} ;;
-    value_format: "0"
   }
 
   measure: number_of_agents_punched {
     group_label: "> Agent Productivity"
     label: "# Punched Agents"
-    description: "# Agents who punched during the timeframe."
+    description: "Number of agents who punched during the timeframe."
     type: count_distinct
     filters: [number_of_punched_minutes: ">0"]
     sql: ${agent_email} ;;
-    value_format: "0"
   }
 
   measure: number_of_agents_planned {
     group_label: "> Agent Productivity"
     label: "# Planned Agents"
-    description: "# Agents who had a shift planned during the timeframe."
+    description: "Number of agents who had a shift planned during the timeframe."
     type: count_distinct
     filters: [number_of_planned_minutes: ">0"]
     sql: ${agent_email} ;;
-    value_format: "0"
   }
 
   measure: number_of_agents_productive {
     group_label: "> Agent Productivity"
     label: "# Productive Agents"
-    description: "# Agents who were productive during the timeframe."
+    description: "Number of agents who were productive during the timeframe. Productive hours correspond to the number
+    of planned hours for a customer care agent, excluding break duration and shift durations that are overlapped by absences."
     type: count_distinct
     filters: [number_of_productive_minutes: ">0"]
     sql: ${agent_email} ;;
-    value_format: "0"
   }
 
   ######### Parameters
