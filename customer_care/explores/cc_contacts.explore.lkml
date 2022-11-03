@@ -58,9 +58,11 @@ explore: cc_contacts {
   join: cc_agent_staffing_daily {
     view_label: "Shifts"
     sql_on:${cc_agent_staffing_daily.shift_date} = ${cc_contacts.last_close_date}
-      and ${cc_agent_staffing_daily.agent_email} = ${cc_contacts.agent_email};;
+      and ${cc_agent_staffing_daily.agent_email} = ${cc_contacts.agent_email}
+      and {% condition global_filters_and_parameters.datasource_filter %} ${cc_agent_staffing_daily.shift_date} {% endcondition %};;
     relationship: many_to_many
     type: left_outer
+    fields: [cc_agent_staffing_daily.cc_contacts_fields*]
   }
 
 }
