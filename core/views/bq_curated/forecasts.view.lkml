@@ -499,7 +499,7 @@ view: forecasts {
     description: "# Cancelled orders that are relevant for the forecast: Excl. click & collect and external orders; Including only operations-related cancellation reasons."
     type: sum_distinct
     sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
-    sql: ${TABLE}.number_of_cancelled_orders_dimension ;;
+    sql: ${number_of_cancelled_orders_dimension} ;;
     value_format_name: decimal_0
   }
 
