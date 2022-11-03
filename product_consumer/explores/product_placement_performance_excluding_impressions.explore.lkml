@@ -41,10 +41,8 @@ explore: product_placement_performance_excluding_impressions {
   }
 
   join: global_filters_and_parameters {
-    fields: [global_filters_and_parameters.datasource_filter]
-    sql_on: ${global_filters_and_parameters.generic_join_dim} = TRUE ;;
-    type: left_outer
-    relationship: many_to_one
+    sql: ;;
+    relationship: one_to_one
   }
 
   join: orders {
