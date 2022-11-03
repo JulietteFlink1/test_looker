@@ -1,4 +1,4 @@
-view: cc_agent_staffing_daily {
+view: cc_agent_staffing_half_hourly {
   sql_table_name: `flink-data-prod.reporting.cc_agent_staffing_half_hourly`
     ;;
 
