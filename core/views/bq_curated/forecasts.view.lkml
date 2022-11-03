@@ -158,7 +158,7 @@ view: forecasts {
   }
 
   dimension: number_of_actual_orders_dimension {
-    label: "# Actual Orders (forecast-related) - Dimension"
+    label: "# Actual Orders (Forecast-Related) - Dimension"
     type: number
     sql: ${TABLE}.number_of_actual_orders;;
     hidden: yes
@@ -508,7 +508,6 @@ view: forecasts {
     label: "# Cancelled and Missed Orders (Forecast-Related)"
     description: "# Cancelled and missed orders that are relevant for the forecast: Excl. click & collect and external orders; Including only operations-related cancellation reasons and orders missed due to forced closures."
     type: number
-    # sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
     sql: ${number_of_cancelled_orders} + ${number_of_missed_orders_forced_closure} ;;
     value_format_name: decimal_0
   }
