@@ -16,6 +16,7 @@ include: "/**/event_order_progressed.view.lkml"
 include: "/**/event_order_state_updated.view.lkml"
 include: "/**/picking_times.view.lkml"
 include: "/product_consumer/views/bigquery_reporting/daily_violations_aggregates.view.lkml"
+include: "/**/daily_smart_inventory_checks.view"
 
 explore: daily_hub_staff_events {
   from:  daily_hub_staff_events
@@ -23,7 +24,7 @@ explore: daily_hub_staff_events {
   hidden: no
 
   label: "Daily Hub Staff Events"
-  description: "This explore provides an overview of all behavioural events generated on Hub One."
+  description: "This explore provides an overview of all behavioural events generated on Hub One. Picking times under 8 Order Dimensions are the ones informed to CT."
   group_label: "Product - Hub Tech"
 
 
@@ -42,10 +43,8 @@ explore: daily_hub_staff_events {
   }
 
   join: global_filters_and_parameters {
-    view_label: "" # This is to hide this view on the explore
-    sql_on: ${global_filters_and_parameters.generic_join_dim} = TRUE ;;
-    type: left_outer
-    relationship: many_to_one
+    sql: ;;
+    relationship: one_to_one
   }
 
   join: event_order_progressed {
@@ -68,9 +67,10 @@ explore: daily_hub_staff_events {
     relationship: one_to_one
   }
 
+#Coalesce in the join is to be able to see times and quantities processed at order_id and sku level
   join: picking_times {
     view_label: "4 Picking Times"
-    sql_on: ${picking_times.order_id} = ${event_order_state_updated.order_id}
+    sql_on: ${picking_times.order_id} = coalesce(${event_order_state_updated.order_id},${event_order_progressed.order_id})
       and {% condition global_filters_and_parameters.datasource_filter %}
         ${picking_times.event_timestamp_date} {% endcondition %};;
     type: left_outer
@@ -79,7 +79,7 @@ explore: daily_hub_staff_events {
 
   join: products {
     view_label: "5 Product Dimensions"
-    fields: [product_name, category]
+    fields: [product_name, category, subcategory, erp_category, erp_subcategory]
     sql_on: ${products.product_sku} = ${event_order_progressed.product_sku};;
     type: left_outer
     relationship: one_to_one
@@ -106,7 +106,10 @@ explore: daily_hub_staff_events {
 
   join: orders {
     view_label: "8 Order Dimensions"
-    fields: [orders.is_external_order]
+    fields: [ is_external_order
+            , order_picker_accepted_timestamp
+            , order_packed_timestamp
+            , is_click_and_collect_order]
     sql_on: ${event_order_progressed.order_id} = ${orders.id} ;;
     type: left_outer
     relationship: many_to_one
@@ -120,6 +123,17 @@ explore: daily_hub_staff_events {
           and ${daily_violations_aggregates.domain}='hub staff'
           and {% condition global_filters_and_parameters.datasource_filter %}
             ${daily_violations_aggregates.event_date} {% endcondition %};;
+    type: left_outer
+    relationship: many_to_many
+  }
+
+  join: daily_smart_inventory_checks {
+    view_label: "91 Smart Inventory Checks"
+    sql_on: ${daily_smart_inventory_checks.scheduled_date} = ${daily_hub_staff_events.event_date}
+          and ${daily_smart_inventory_checks.hub_code}=${daily_hub_staff_events.hub_code}
+          and ${daily_smart_inventory_checks.sku}=${event_order_progressed.product_sku}
+          and {% condition global_filters_and_parameters.datasource_filter %}
+            ${daily_smart_inventory_checks.scheduled_date} {% endcondition %};;
     type: left_outer
     relationship: many_to_many
   }

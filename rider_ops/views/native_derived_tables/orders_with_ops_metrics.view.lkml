@@ -1,7 +1,6 @@
 include: "/**/orders_cl.explore.lkml"
 include: "/**/global_filters_and_parameters.view.lkml"
 
-
 view: orders_with_ops_metrics {
   derived_table: {
     explore_source: orders_cl {
@@ -44,11 +43,11 @@ view: orders_with_ops_metrics {
       column: cnt_click_and_collect_orders {}
       column: cnt_orders_fulfilled_over_30_min {}
       column: sum_rider_handling_time_minutes_saved_with_stacking {}
+      column: sum_rider_handling_time_minutes {}
       column: sum_potential_rider_handling_time_without_stacking_minutes {}
-
       filters: [
         orders_cl.is_successful_order : "yes",
-        global_filters_and_parameters.datasource_filter: "last 90 days"
+        global_filters_and_parameters.datasource_filter: "last 10 weeks"
       ]
     }
   }
@@ -65,6 +64,7 @@ view: orders_with_ops_metrics {
     description: "Count of Orders"
     value_format_name: decimal_0
     hidden: yes
+    type: number
   }
 
   measure: sum_orders {
@@ -403,6 +403,24 @@ view: orders_with_ops_metrics {
     value_format_name: decimal_1
     type: average
   }
+
+  measure: sum_rider_handling_time_minutes {
+    group_label: "> Operations / Logistics"
+    label: "SUM Rider Handling Times (Minutes)"
+    hidden:  no
+    type: sum
+    value_format_name: decimal_1
+  }
+
+  measure: sum_rider_handling_time_hours {
+    group_label: "> Operations / Logistics"
+    label: "SUM Rider Handling Times (Hours)"
+    hidden:  no
+    type: number
+    value_format_name: decimal_1
+    sql: ${sum_rider_handling_time_minutes}/60 ;;
+  }
+
 
   measure: avg_rider_handling_time_seconds {
     group_label: "> Operations / Logistics"

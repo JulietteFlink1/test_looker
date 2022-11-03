@@ -26,9 +26,12 @@ explore: ops {
       hubs.hub_name: "",
       time_grid.start_datetime_date: "yesterday",
       time_grid.start_datetime_hour_of_day: "[6,23]",
-      forecasts.job_date: "",
+      forecasts.dow_parameter: "Tuesday"
     ]
   }
+
+  # This filter takes the latest chosen day of the week and maps it to the job date
+  sql_always_where: ${forecasts.job_date}=${forecasts.job_date_2} OR ${forecasts.job_date} is null ;;
 
   access_filter: {
     field: hubs.country_iso

@@ -2,7 +2,7 @@ include: "/*/**/cc_contacts.view.lkml"
 include: "/*/**/cc_orders_hourly.view.lkml"
 include: "/*/**/cc_contact_agents.view.lkml"
 include: "/*/**/cc_headcount_forecast_performance.view.lkml"
-include: "/*/**/cc_agent_staffing_daily.view.lkml"
+include: "/*/**/cc_agent_staffing_half_hourly.view.lkml"
 include: "/**/global_filters_and_parameters.view.lkml"
 
 
@@ -42,9 +42,8 @@ explore: cc_contacts {
   }
 
   join: global_filters_and_parameters {
-    sql_on: ${global_filters_and_parameters.generic_join_dim} = TRUE ;;
-    type: left_outer
-    relationship: many_to_one
+    sql: ;;
+    relationship: one_to_one
   }
 
   join: cc_headcount_forecast_performance {
@@ -56,12 +55,14 @@ explore: cc_contacts {
     type: left_outer
   }
 
-  join: cc_agent_staffing_daily {
+  join: cc_agent_staffing_half_hourly {
     view_label: "Shifts"
-    sql_on:${cc_agent_staffing_daily.shift_date} = ${cc_contacts.last_close_date}
-      and ${cc_agent_staffing_daily.agent_email} = ${cc_contacts.agent_email};;
+    sql_on:${cc_agent_staffing_half_hourly.shift_date} = ${cc_contacts.last_close_date}
+      and ${cc_agent_staffing_half_hourly.agent_email} = ${cc_contacts.agent_email}
+      and {% condition global_filters_and_parameters.datasource_filter %} ${cc_agent_staffing_half_hourly.shift_date} {% endcondition %};;
     relationship: many_to_many
     type: left_outer
+    fields: [cc_agent_staffing_half_hourly.cc_contacts_fields*]
   }
 
 }

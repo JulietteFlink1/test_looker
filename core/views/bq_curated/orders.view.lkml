@@ -340,6 +340,7 @@ view: orders {
     ]
     sql: current_timestamp;;
     datatype: timestamp
+    hidden: yes
   }
 
   dimension_group: created {
@@ -356,6 +357,7 @@ view: orders {
       time,
       date,
       day_of_week,
+      day_of_week_index,
       week,
       month,
       quarter,
@@ -571,6 +573,7 @@ view: orders {
 
   dimension: voucher_id {
     group_label: "* IDs *"
+    label: "Discount Code ID"
     hidden: yes
     type: string
     sql: ${TABLE}.discount_id ;;
@@ -932,6 +935,7 @@ view: orders {
       year
     ]
     sql: ${TABLE}.last_modified_at ;;
+    hidden: yes
   }
 
   dimension: latitude {
@@ -1033,15 +1037,15 @@ view: orders {
   }
 
   dimension_group: delivery_timestamp {
-    group_label: "* Dates and Timestamps *"
-    label: "Rider Arrived At Customer Timestamp"
+    group_label: "* Operations / Logistics *"
+    label: "Rider Arrived At Customer"
     type: time
     timeframes: [
       raw,
+      time,
       minute15,
       minute30,
       hour_of_day,
-      time,
       date,
       day_of_week,
       week,
@@ -1064,10 +1068,11 @@ view: orders {
     group_label: "* Dates and Timestamps *"
     type: number
     sql: ${TABLE}.order_hour ;;
-    hidden: no
+    hidden: yes
   }
 
   dimension: hour {
+    hidden: yes
     group_label: "* Dates and Timestamps *"
     type: number
     sql: extract(hour from ${created_raw} AT TIME ZONE 'Europe/Berlin') ;;
@@ -1079,6 +1084,10 @@ view: orders {
     hidden: no
     type: string
     sql: ${TABLE}.order_id ;;
+    link: {
+      label: "See Order in CT"
+      url: "https://mc.europe-west1.gcp.commercetools.com/flink-production/orders/{{ id._value | url_encode }}/general"
+    }
   }
 
   dimension: order_month {
@@ -1092,6 +1101,10 @@ view: orders {
     group_label: "* IDs *"
     type: string
     sql: ${TABLE}.order_number ;;
+    link: {
+      label: "See Order in CT"
+      url: "https://mc.europe-west1.gcp.commercetools.com/flink-production/orders/{{ id._value | url_encode }}/general"
+    }
   }
 
   dimension: order_on_route_timestamp {
@@ -1179,6 +1192,10 @@ view: orders {
     primary_key: yes
     hidden: no
     sql: ${TABLE}.order_uuid ;;
+    link: {
+      label: "See Order in CT"
+      url: "https://mc.europe-west1.gcp.commercetools.com/flink-production/orders/{{ id._value | url_encode }}/general"
+    }
   }
 
   dimension: customer_uuid {
@@ -1279,12 +1296,6 @@ view: orders {
     group_label: "* IDs *"
     type: string
     sql: ${TABLE}.rider_id ;;
-  }
-
-  dimension: shipping_city {
-    group_label: "* Geographic Dimensions *"
-    type: string
-    sql: ${TABLE}.shipping_city ;;
   }
 
   dimension: shipping_method_id {
@@ -1562,13 +1573,6 @@ view: orders {
     default_value: "Day"
   }
 
-
-  parameter: is_after_product_discounts {
-    type: yesno
-    label: "Is After Deduction of Product Discounts"
-    default_value: "No"
-  }
-
   parameter: is_after_crf_fees_deduction {
     type: yesno
     label: "Is after CRF Fees Deduction"
@@ -1613,13 +1617,13 @@ view: orders {
     group_label: "* Monetary Values *"
     label: "AVG Item Value (Dynamic) (Gross)"
     description: "AIV represents the Average value of items (incl. VAT). Excludes fees (gross). before deducting Cart Discounts. To be used together with the Is After Product Discounts Deduction parameter."
-    label_from_parameter: is_after_product_discounts
+    label_from_parameter: global_filters_and_parameters.is_after_product_discounts
     value_format_name: eur
     type: number
     sql:
-    {% if is_after_product_discounts._parameter_value == 'true' %}
+    {% if global_filters_and_parameters.is_after_product_discounts._parameter_value == 'true' %}
     ${avg_item_value_after_product_discount_gross}
-    {% elsif is_after_product_discounts._parameter_value == 'false' %}
+    {% elsif global_filters_and_parameters.is_after_product_discounts._parameter_value == 'false' %}
     ${avg_item_value_gross}
     {% endif %}
     ;;
@@ -1629,13 +1633,13 @@ view: orders {
     group_label: "* Monetary Values *"
     label: "AVG Item Value (Dynamic) (Net)"
     description: "AIV represents the Average value of items (excl. VAT). Excludes fees (net). before deducting Cart Discounts. To be used together with the Is After Product Discounts Deduction parameter."
-    label_from_parameter: is_after_product_discounts
+    label_from_parameter: global_filters_and_parameters.is_after_product_discounts
     value_format_name: eur
     type: number
     sql:
-    {% if is_after_product_discounts._parameter_value == 'true' %}
+    {% if global_filters_and_parameters.is_after_product_discounts._parameter_value == 'true' %}
     ${avg_item_value_after_product_discount_net}
-    {% elsif is_after_product_discounts._parameter_value == 'false' %}
+    {% elsif global_filters_and_parameters.is_after_product_discounts._parameter_value == 'false' %}
     ${avg_item_value_net}
     {% endif %}
     ;;
@@ -1648,6 +1652,7 @@ view: orders {
 
   measure: count {
     type: count
+    hidden: yes
     drill_fields: [translated_discount_name, shipping_method_name, warehouse_name, discount_name]
   }
 
@@ -1802,7 +1807,7 @@ view: orders {
   measure: avg_discount_cart_gross {
     group_label: "* Monetary Values *"
     label: "AVG Cart Discount Value (Gross)"
-    description: "Average of Cart Discount Value Gross (voucher applied at a checkout). Includes delivery discounts."
+    description: "Average of Cart Discount Value Gross (Discount Code applied at a checkout). Includes delivery discounts."
     hidden:  no
     type: average
     sql: ${amt_discount_cart_gross};;
@@ -1813,7 +1818,7 @@ view: orders {
   measure: avg_discount_cart_net {
     group_label: "* Monetary Values *"
     label: "AVG Cart Discount Value (Net)"
-    description: "Average of Cart Discount Value Net (voucher applied at a checkout). Includes delivery discounts."
+    description: "Average of Cart Discount Value Net (Discount Code applied at a checkout). Includes delivery discounts."
     hidden:  no
     type: average
     sql: ${amt_discount_cart_net};;
@@ -2288,7 +2293,7 @@ view: orders {
   measure: sum_discount_cart_gross {
     group_label: "* Monetary Values *"
     label: "SUM Cart Discount Amount (Gross)"
-    description: "Sum of Cart Discounts Gross (voucher applied at a checkout). Includes delivery discounts."
+    description: "Sum of Cart Discounts Gross (Discount Code applied at a checkout). Includes delivery discounts."
     hidden:  no
     type: sum
     sql: ${amt_discount_cart_gross};;
@@ -2298,7 +2303,7 @@ view: orders {
   measure: sum_discount_cart_net {
     group_label: "* Monetary Values *"
     label: "SUM Cart Discount Amount (Net)"
-    description: "Sum of Cart Discounts Net (voucher applied at a checkout). Includes delivery discounts."
+    description: "Sum of Cart Discounts Net (Discount Code applied at a checkout). Includes delivery discounts."
     hidden:  no
     type: sum
     sql: ${amt_discount_cart_net};;
@@ -2686,7 +2691,7 @@ view: orders {
 
   measure: cnt_orders_without_discount_cart {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
-    label: "# Orders without Discount"
+    label: "# Orders without Cart Discount"
     description: "Count of successful Orders with no Cart Discount applied"
     hidden:  no
     type: count
@@ -3237,7 +3242,7 @@ view: orders {
   measure: pct_discount_cart_order_share {
     group_label: "* Marketing *"
     label: "% Cart Discount Order Share"
-    description: "Share of Orders which had voucher applied at a checkout. Includes delivery discounts."
+    description: "Share of Orders which had Discount Code applied at a checkout. Includes delivery discounts."
     hidden:  no
     type: number
     sql: ${cnt_orders_with_discount_cart} / NULLIF(${cnt_orders}, 0);;

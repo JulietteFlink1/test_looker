@@ -1,9 +1,11 @@
- view: global_filters_and_parameters {
-  derived_table: {
-    sql: select TRUE as generic_join_dim;;
-  }
+view: global_filters_and_parameters {
 
   view_label: "Generic"
+
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  #  - - - - - - - - - -    Generic Parameters
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   parameter: timeframe_picker {
 
@@ -45,13 +47,16 @@
     default_value: "no"
   }
 
-
-  dimension: generic_join_dim {
+  parameter: is_after_product_discounts {
+    group_label: "> Parameters"
     type: yesno
-    hidden: yes
-    primary_key: yes
-    sql: ${TABLE}.generic_join_dim ;;
+    label: "Is After Deduction of Product Discounts"
+    default_value: "No"
   }
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  #  - - - - - - - - - -    Generic Filters
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   filter: datasource_filter {
     type: date

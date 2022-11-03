@@ -19,9 +19,15 @@ view: employee_level_kpis {
 
   dimension: position_name {
     type: string
-    label: "Position Name"
+    label: "Scheduled Position Name"
     description: "Based on Quinyx assinged shift type (null when an employee is not assgined any shift)"
     sql: ${TABLE}.position_name ;;
+  }
+
+  dimension: assigned_position_name {
+    type: string
+    label: "Assigned Position Name"
+    description: "Based on Quinyx staff category assinged to each employee profile"
   }
 
   dimension: rider_id {
@@ -79,10 +85,6 @@ view: employee_level_kpis {
     sql: ${TABLE}.ats_id ;;
   }
 
-  dimension: country_iso {
-    type: string
-    sql: ${TABLE}.country_iso ;;
-  }
 
   dimension: external_agency_name {
     type: string
@@ -110,13 +112,13 @@ view: employee_level_kpis {
     ]
     convert_tz: no
     datatype: date
-    description: "Based on fountain hiring funnel (the date when an applicant transits to Creating Accounts or Approved stage)"
+    description: "Based on fountain hiring funnel (the date when an applicant transits to creating accounts or approved stage)"
     sql: ${TABLE}.hire_date ;;
   }
 
   dimension: contract_start_date {
     label: "Contract Start Date"
-    description: "Based on Quinyx Agreement field - Contract Start Date"
+    description: "Based on Quinyx Agreement field - contract start date"
     convert_tz: no
     datatype: date
     type: date
@@ -125,7 +127,7 @@ view: employee_level_kpis {
 
   dimension: contract_end_date {
     label: "Contract End Date"
-    description: "Based on Quinyx Agreement field - Contract End Date"
+    description: "Based on Quinyx agreement field - contract end date"
     convert_tz: no
     datatype: date
     type: date
@@ -168,6 +170,42 @@ view: employee_level_kpis {
     sql: ${TABLE}.last_absence_date ;;
   }
 
+  dimension: last_shift_date {
+    label: "Last Shift Date"
+    description: "Date of the last shift"
+    convert_tz: no
+    datatype: date
+    type: date
+    sql: ${TABLE}.last_shift_date ;;
+  }
+
+  dimension: first_shift_date {
+    label: "First Shift Date"
+    description: "Date of the first shift"
+    convert_tz: no
+    datatype: date
+    type: date
+    sql: ${TABLE}.first_shift_date ;;
+  }
+
+  dimension: account_creation_date {
+    label: "Account Creation Date"
+    description: "Date of Quinyx account creation"
+    convert_tz: no
+    datatype: date
+    type: date
+    sql: ${TABLE}.account_creation_date ;;
+  }
+
+  dimension: employment_start_date {
+    label: "Employment Start Date"
+    description: "Start fate of first employement contract (Agreement in Quinyx UI)"
+    convert_tz: no
+    datatype: date
+    type: date
+    sql: ${TABLE}.employment_start_date ;;
+  }
+
   dimension: is_active {
     type: yesno
     sql: ${TABLE}.is_active ;;
@@ -177,7 +215,27 @@ view: employee_level_kpis {
 
   dimension: hub_code {
     type: string
+    hidden: yes
     sql: ${TABLE}.hub_code ;;
+  }
+
+  dimension: home_hub_code {
+    type: string
+    hidden: yes
+    sql: ${TABLE}.home_hub_code ;;
+  }
+
+  dimension: country_iso {
+    type: string
+    hidden: yes
+    sql: ${TABLE}.country_iso ;;
+  }
+
+  dimension: is_employed {
+    type: yesno
+    sql: ${TABLE}.is_employed ;;
+    label: "Is Employed"
+    description: "Is shift date between employment start date and employment end date ?"
   }
 
   dimension: is_external {
@@ -185,6 +243,12 @@ view: employee_level_kpis {
     sql: ${TABLE}.is_external ;;
     label: "Is External Employee"
     description: "Based on Quinyx assinged shift (null when an employee is not assgined any shift)"
+  }
+
+  parameter: avaiability_overlap_parameter {
+    type: yesno
+    label: "Is Assigned Shift 100% overlapping with Availability ?"
+    description: "Yes if the assigned shift fully overlaps (100%) with the availability provided by the employee."
   }
 
   dimension: type_of_contract {
@@ -218,6 +282,18 @@ view: employee_level_kpis {
     sql_start: timestamp(${TABLE}.hire_date) ;;
     sql_end: current_timestamp ;;
     group_label: "Rider Tenure - time since hired "
+  }
+
+  dimension: number_of_planned_minutes_availability_based {
+    type: number
+    hidden: yes
+    sql: case
+          when {% parameter avaiability_overlap_parameter %} = true
+          and  ${TABLE}.number_of_planned_minutes_availability_based != ${TABLE}.number_of_planned_minutes
+            then 0
+          else ${TABLE}.number_of_planned_minutes_availability_based
+          end;;
+    value_format_name: decimal_1
   }
 
 
@@ -553,11 +629,7 @@ view: employee_level_kpis {
     group_label: "* Shift related *"
     type: number
     hidden: yes
-    sql:
-      CASE
-        WHEN date_DIFF( safe_cast(max(${shift_date}) as date),safe_cast(min(${shift_date}) as date), week) = 0 THEN 1
-        ELSE date_DIFF( safe_cast(max(${shift_date}) as date),safe_cast(min(${shift_date}) as date), week)
-      END ;;
+    sql:date_DIFF( safe_cast(max(${shift_date}) as date),safe_cast(min(${shift_date}) as date), week(monday)) + 1 ;;
   }
 
   measure: last_worked_date {
@@ -582,6 +654,131 @@ view: employee_level_kpis {
     description: "All shift hours that are assigned to an employee (before punching) including No show Hours"
     sql: ${TABLE}.number_of_planned_minutes/60 ;;
     value_format_name: decimal_1
+  }
+
+  measure: number_of_planned_hours_availability_based {
+    group_label: "* Shift related *"
+    type: sum
+    label: "# Assigned Hours Based on Availability"
+    description: "Number of Assigned hours that are overlapping with provided availability"
+    sql: ${number_of_planned_minutes_availability_based}/60 ;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_availability_hours {
+    group_label: "* Shift related *"
+    type: sum
+    label: "# Availability Hours"
+    description:" Number of hours that were provided as available by the employee"
+    sql: ${TABLE}.number_of_availability_minutes/60 ;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_weekend_availability_hours {
+    group_label: "* Shift related *"
+    type: sum
+    label: "# Weekend Availability Hours"
+    description:"Number of hours that were provided as available by the employee between 3 p.m Friday - 12 a.m Sunday "
+    sql: ${TABLE}.number_of_weekend_availability_minutes/60 ;;
+    value_format_name: decimal_1
+  }
+
+  measure: pct_of_weekend_availability_hours {
+    group_label: "* Shift related *"
+    type: number
+    label: "% Weekend Availability Hours"
+    description:"Share of Availability Hours between 3 p.m Friday - 12 a.m Sunday over Total Availability Hours "
+    sql: ${number_of_weekend_availability_hours} / nullif(${number_of_availability_hours},0) ;;
+    value_format_name: percent_1
+  }
+
+  measure: number_of_employees {
+    group_label: "* Shift related *"
+    type: number
+    label: "# Employees"
+    description:"Number of distinct employees"
+    sql: count(distinct ${employment_id}) ;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_employees_with_availability_provided {
+    group_label: "* Shift related *"
+    type: number
+    label: "# Employees with Availability provided"
+    description:"Number of distinct employees providing Availability in Quinyx"
+    sql: count(distinct
+           case when ${TABLE}.number_of_availability_minutes > 0
+                then ${employment_id}
+            end) ;;
+    value_format_name: decimal_1
+  }
+
+  measure: pct_of_employees_with_availability_provided {
+    group_label: "* Shift related *"
+    type: number
+    label: "% Employees with Availability provided"
+    description:"Share of employees providing Availability in Quinyx"
+    sql: ${number_of_employees_with_availability_provided} / nullif(${number_of_employees},0) ;;
+    value_format_name: percent_1
+  }
+
+  measure: number_of_no_show_hours_with_availability {
+    group_label: "* Shift related *"
+    type: sum
+    label: "# No Show Hours within Availability"
+    description:"Number of No Show Hours that are overlapping with provided availability"
+    sql: case when ${TABLE}.number_of_no_show_minutes > 0
+                then ${number_of_planned_minutes_availability_based}/60
+         end ;;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_of_no_show_hours_with_availability {
+    group_label: "* Shift related *"
+    type: average
+    label: "AVG No Show Hours within Availability"
+    description: "Average No Show Hours that are overlapping with provided availability"
+    sql: case when ${TABLE}.number_of_no_show_minutes > 0
+                then ${number_of_planned_minutes_availability_based}/60
+         end ;;
+    value_format_name: decimal_1
+  }
+
+  measure: pct_of_no_show_hours_with_availability {
+    group_label: "* Shift related *"
+    type: number
+    label: "% No Show Hours within Availability"
+    description:"Share of No Show hours that are overlapping with provided availability"
+    sql:${number_of_no_show_hours_with_availability}/nullif(${number_of_no_show_hours},0) ;;
+    value_format_name: percent_1
+  }
+
+  measure: pct_of_assigned_hours_availability_based_rider {
+    group_label: "* Shift related *"
+    label: "% Assigned Hours Based on Availability"
+    type: number
+    sql: ${number_of_planned_hours_availability_based}/nullif(${number_of_assigned_hours},0) ;;
+    description: "Share of Assigned Hours based on Availability from total Assigned Hours - (# Assigned Hours Based on Availability / # Assigned Hours)"
+    value_format_name: percent_1
+  }
+
+  measure: pct_of_availability_hours_vs_contracted_hours {
+    alias: [pct_of_planned_hours_availability_based_rider_vs_contracted_hours]
+    group_label: "* Shift related *"
+    label: "% Availability Hours vs Total Contracted Hours"
+    type: number
+    sql:${number_of_availability_hours}/nullif(${sum_weekly_contracted_hours},0) ;;
+    description:"# Availability Hours / Total Weekly Contracted Hours"
+    value_format_name: percent_1
+  }
+
+  measure: pct_of_availability_hours_vs_worked_hours {
+    group_label: "* Shift related *"
+    label: "% Availability Hours vs Worked Hours"
+    type: number
+    sql:${number_of_availability_hours}/nullif(${number_of_worked_hours},0) ;;
+    description:"# Availability Hours / # Worked Hours"
+    value_format_name: percent_1
   }
 
   measure: number_of_sick_hours {
@@ -620,11 +817,29 @@ view: employee_level_kpis {
     value_format_name: decimal_1
   }
 
+  measure: number_evaluated_hours {
+    group_label: "* Shift related *"
+    type: number
+    label: "# Evaluated Hours"
+    description: "Worked Hours + Absence Hours"
+    sql: ${number_of_worked_hours} + ${number_of_absence_hours} ;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_recorded_hours {
+    group_label: "* Shift related *"
+    type: number
+    label: "# Recorded Hours"
+    description: "Worked Hours + Absence Hours + No Show Hours"
+    sql: ${number_of_worked_hours} + ${number_of_absence_hours} + ${number_of_no_show_hours} ;;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_early_punched_out_minutes {
     group_label: "* Shift related *"
     type: sum
     label: "# Early Punched-Out (min)"
-    description: "Number of Early Punch-Out Minutes where employee punch-out early before a shift ends e.g. a shift is scheduled to end at 10 pm but an employee punches out at 09:45 will results in 15 minutes early punch-out"
+    description: "Number of early Punch-Out minutes where employee punch-out early before a shift ends e.g. a shift is scheduled to end at 10 pm but an employee punches out at 09:45 will results in 15 minutes early punch-out"
     sql: ${TABLE}.number_of_end_early_minutes ;;
     value_format_name: decimal_1
   }
@@ -633,7 +848,7 @@ view: employee_level_kpis {
     group_label: "* Shift related *"
     type: sum
     label: "# Late Punched-Out (min)"
-    description: "Number of Late Punch-Out Minutes where employee punch-out late after a shift ends e.g. a shift is scheduled to end at 10 pm but an employee punches out at 10:15 will results in 15 minutes late punch-out"
+    description: "Number of late Punch-Out minutes where employee punch-out late after a shift ends e.g. a shift is scheduled to end at 10 pm but an employee punches out at 10:15 will results in 15 minutes late punch-out"
     sql: ${TABLE}.number_of_end_late_minutes ;;
     value_format_name: decimal_1
   }
@@ -642,7 +857,7 @@ view: employee_level_kpis {
     group_label: "* Shift related *"
     type: sum
     label: "# Early Punched-In (min)"
-    description: "Number of Early Punch-In Minutes where employee punch-in early before a shift starts e.g. a shift is scheduled to start at 8 am but an employee punches in at 7:45 will results in 15 minutes early punch-in"
+    description: "Number of early Punch-In minutes where employee punch-in early before a shift starts e.g. a shift is scheduled to start at 8 am but an employee punches in at 7:45 will results in 15 minutes early punch-in"
     sql: ${TABLE}.number_of_start_early_minutes ;;
     value_format_name: decimal_1
   }
@@ -651,7 +866,7 @@ view: employee_level_kpis {
     group_label: "* Shift related *"
     type: sum
     label: "# Late Punched-In (min)"
-    description: "Number of Late Punch-In Minutes where employee punch-in late after a shift starts e.g. a shift is scheduled to start  at 8 am but an employee punches in at 8:15 will results in 15 minutes late punch-in"
+    description: "Number of late Punch-In minutes where employee punch-in late after a shift starts e.g. a shift is scheduled to start  at 8 am but an employee punches in at 8:15 will results in 15 minutes late punch-in"
     sql: ${TABLE}.number_of_start_late_minutes ;;
     value_format_name: decimal_1
   }
@@ -670,7 +885,7 @@ view: employee_level_kpis {
     group_label: "* Shift related *"
     type: average
     label: "AVG Late Punched-In (min)"
-    description: "AVG Employee Late Punch-In Minutes where employee punch-in late after a shift starts e.g. a shift is scheduled to start  at 8 am but an employee punchs in at 8:15 will results in 15 minutes late punch-in"
+    description: "AVG Employee late Punch-In minutes where employee punch-in late after a shift starts e.g. a shift is scheduled to start  at 8 am but an employee punchs in at 8:15 will results in 15 minutes late punch-in"
     sql: ${TABLE}.number_of_start_late_minutes ;;
     value_format_name: decimal_1
   }
@@ -755,7 +970,7 @@ view: employee_level_kpis {
     group_label: "* Contract related *"
     type: number
     sql: ${sum_weekly_contracted_hours_per_employee} * ${number_of_scheduled_weeks} ;;
-    description: "Sum of weekly contracted hours based on Quinyx Agreements (Field in Quinyx UI: Agreement full time working hours) - # Weekly Contracted Hours * # Scheduled Weeks"
+    description: "Sum of weekly contracted hours based on Quinyx Agreements (Field in Quinyx UI: Agreement full time working hours) -  Weekly Contracted Hours * calender weeks"
   }
 
   measure: pct_contract_fulfillment {
@@ -763,8 +978,28 @@ view: employee_level_kpis {
     type: number
     hidden: no
     label: "% Contracted Hours Fulfillment"
-    description: "Worked hours / (Weekly Contracted Hours * # Shift Weeks)"
+    description: "Worked hours / (Weekly Contracted Hours * calender weeks)"
     sql: ${number_of_worked_hours}/nullif(${sum_weekly_contracted_hours},0) ;;
+    value_format: "0%"
+  }
+
+  measure: pct_evaluated_vs_contracted {
+    group_label: "* Shift related *"
+    type: number
+    hidden: no
+    label: "% Evaluated Hours vs Contracted Hours"
+    description: "Evaluated Hours (Worked Hours + Absence Hours) / (Weekly Contracted Hours * calender weeks)"
+    sql: ${number_evaluated_hours}/nullif(${sum_weekly_contracted_hours},0) ;;
+    value_format: "0%"
+  }
+
+  measure: pct_recorded_vs_contracted {
+    group_label: "* Shift related *"
+    type: number
+    hidden: no
+    label: "% Recorded Hours vs Contracted Hours"
+    description: "Recorded Hours (Worked Hours + Absence Hours + No Show Hours) / (Weekly Contracted Hours * calender weeks)"
+    sql: ${number_recorded_hours}/nullif(${sum_weekly_contracted_hours},0) ;;
     value_format: "0%"
   }
 
@@ -772,8 +1007,8 @@ view: employee_level_kpis {
     group_label: "* Shift related *"
     type: number
     hidden: no
-    label: "% Scheduled Hours vs Contracted Hours"
-    description: "Scheduled Hours / (Weekly Contracted Hours * # Shift Weeks)"
+    label: "% Assigned Hours vs Contracted Hours"
+    description: "Assigned Hours / (Weekly Contracted Hours * calender weeks)"
     sql: ${number_of_assigned_hours}/nullif(${sum_weekly_contracted_hours},0) ;;
     value_format: "0%"
   }

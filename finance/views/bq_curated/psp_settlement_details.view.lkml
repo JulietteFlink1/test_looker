@@ -234,6 +234,10 @@ view: psp_settlement_details {
     description: "Adyen's 16-character unique reference associated with the transaction. This is the pspReference from the response to the original payment request."
     type: string
     sql: ${TABLE}.psp_reference ;;
+    link: {
+      label: "See Payment in Adyen"
+      url: "https://ca-live.adyen.com/ca/ca/accounts/showTx.shtml?pspReference={{ psp_reference._value | url_encode }}&txType=Payment"
+    }
   }
 
   dimension: psp_settlement_detail_uuid {
@@ -267,6 +271,13 @@ view: psp_settlement_details {
     sql: ${TABLE}.is_full_refund_payment ;;
     group_label: "> Transaction Properties"
     description: "Flags if the payment ID is a full refund payment. Checks if the Authorised amount is equal to the Refunded Amount for the payment."
+  }
+
+  dimension: is_orphaned_double_payment_transaction {
+    type: yesno
+    sql: ${TABLE}.is_orphaned_double_payment_transaction ;;
+    group_label: "> Transaction Properties"
+    description: "Flags if the Transaction has a cart ID in Adyen's Merchant Reference associated with an order in CT but doesn't appear in CT."
   }
 
   ######### Measures

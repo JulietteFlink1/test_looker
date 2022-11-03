@@ -28,13 +28,12 @@ explore: event_trip_unstacked {
 
   always_filter: {
     filters: [
-      event_trip_unstacked.publish_time_timestamp_date: "last 7 days"
+      event_trip_unstacked.published_at_timestamp_date: "last 7 days"
     ]
   }
 
   join: global_filters_and_parameters {
-    sql_on: ${global_filters_and_parameters.generic_join_dim} = TRUE ;;
-    type: left_outer
-    relationship: many_to_one
+    sql: ;;
+    relationship: one_to_one
   }
 }

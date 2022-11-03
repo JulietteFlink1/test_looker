@@ -198,7 +198,7 @@ view: event_product_added_to_cart {
   }
   dimension: is_discount_applied {
     group_label: "Product Dimensions"
-    label: "Is Discount Applied"
+    label: "Is Product Discount Applied"
     description: "Whether a discount was applied on a product."
     type: yesno
     sql: case
@@ -337,7 +337,7 @@ view: event_product_added_to_cart {
     hidden: yes
     group_label: "Monetary Measures"
     label: "Sum Product Discount"
-    description: "Sum of discounts applied on add-to-cart event (no voucher)"
+    description: "Sum of Product discounts applied on add-to-cart event (no Cart Discount)"
     type: number
     value_format_name: decimal_2
     sql: (${original_product_price} - ${actual_product_price}) * -1 ;;

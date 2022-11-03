@@ -80,11 +80,7 @@ explore: supply_chain {
 
 
   join: global_filters_and_parameters {
-
-    view_label: "Global Filters"
-
-    sql_on: ${global_filters_and_parameters.generic_join_dim} = TRUE ;;
-    type: left_outer
+    sql: ;;
     relationship: one_to_one
   }
 
@@ -170,6 +166,13 @@ explore: supply_chain {
     type: left_outer
     relationship: many_to_one
     sql_on: ${hubs_ct.hub_code} = ${products_hub_assignment.hub_code} ;;
+  }
+
+  join: hub_demographics {
+    view_label: "Hubs"
+    sql_on: ${hubs_ct.hub_code} = ${hub_demographics.hub_code} ;;
+    relationship: one_to_one
+    type: left_outer
   }
 
   join: inventory_changes_daily {

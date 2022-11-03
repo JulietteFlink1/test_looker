@@ -4,6 +4,13 @@
 view: vehicle_uptime_metrics {
   sql_table_name: `flink-data-prod.reporting.vehicle_uptime_metrics` ;;
 
+  dimension: vehicle_uptime_uuid {
+    hidden: yes
+    type: string
+    primary_key: yes
+    sql: ${TABLE}.vehicle_uptime_uuid ;;
+  }
+
   dimension: country_iso {
     group_label: "> Geography"
     label: "Country Iso"
@@ -93,8 +100,7 @@ view: vehicle_uptime_metrics {
     description: "Number of bikes that should be available"
     type: count_distinct
     filters: [expected_uptime_minutes: "not null"]
-    sql: ${vehicle_id}
-    ;;
+    sql: ${vehicle_id} ;;
   }
 
   measure: number_of_non_damaged_bikes {
@@ -114,7 +120,7 @@ view: vehicle_uptime_metrics {
   }
 
   measure: share_of_operational_bike_minutes {
-    label: "% Operational Bike Time (Damages)"
+    label: "% Uptime"
     description: "Computed as 1 - (downtime / expected uptime). Based on damages.
                 Downtime = sum of duration of damages on a certain day.
                 Expected Uptime: # bikes * opening duration of hub on a certain day."

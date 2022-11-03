@@ -12,6 +12,7 @@ include: "/**/products.view.lkml"
 include: "/**/hubs_ct.view.lkml"
 include: "/**/daily_stock_management_events.view.lkml"
 include: "/**/inventory_movement_id_times.view"
+include: "/**/add_to_cart_times.view"
 
 explore: daily_stock_management_events {
   from:  daily_stock_management_events
@@ -38,9 +39,8 @@ explore: daily_stock_management_events {
   }
 
   join: global_filters_and_parameters {
-    sql_on: ${global_filters_and_parameters.generic_join_dim} = TRUE ;;
-    type: left_outer
-    relationship: many_to_one
+    sql: ;;
+    relationship: one_to_one
   }
 
   join: inventory_movement_id_times {
@@ -62,6 +62,13 @@ explore: daily_stock_management_events {
     sql_on: ${daily_stock_management_events.hub_code} = ${hubs_ct.hub_code} ;;
     type: left_outer
     relationship: many_to_one
+  }
+
+  join: add_to_cart_times {
+    view_label: "Add to Cart Times"
+    sql_on: ${add_to_cart_times.primary_key}=concat(${daily_stock_management_events.inventory_movement_id},${daily_stock_management_events.sku}, ${daily_stock_management_events.is_scanned_item});;
+    type: left_outer
+    relationship: one_to_many
   }
 
   # join: employee_level_kpis {

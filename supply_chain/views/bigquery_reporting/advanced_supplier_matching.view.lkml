@@ -12,6 +12,12 @@ view: advanced_supplier_matching {
     sql: ${TABLE}.hub_code ;;
   }
 
+  dimension: country_iso {
+    type: string
+    description: "2-letter country code."
+    sql: ${TABLE}.country_iso ;;
+  }
+
   dimension: inbound_matched_on {
     type: string
     description: "Buckets, that define, which logic was applied to match Purchase Order/DESADV with Inbounds"
@@ -263,7 +269,7 @@ view: advanced_supplier_matching {
 
   dimension_group: promised_delivery_date_combined {
     type: time
-    label: "Promised Delivery"
+    label: "Promised Delivery (Combined with DESADV)"
     description: "The date when we expect to receive the delivery, either coming from DESADVs or PO."
     group_label: "Dates & Timestamps"
     timeframes: [
@@ -274,6 +280,22 @@ view: advanced_supplier_matching {
     convert_tz: no
     datatype: date
     sql: ${TABLE}.promised_delivery_date_combined ;;
+  }
+
+  dimension_group: promised_delivery_date_purchase_order {
+    label: "Purchase Order (PO) Promised Delivery"
+    type: time
+    description: "The date when we expect to receive the delivery, originating from a purchase order."
+    group_label: "Dates & Timestamps"
+    timeframes: [
+      date,
+      week,
+      month
+    ]
+    convert_tz: no
+    datatype: date
+    sql: ${TABLE}.promised_delivery_date_purchase_order ;;
+    hidden: no
   }
 
   dimension_group: order_timestamp {
@@ -532,23 +554,6 @@ view: advanced_supplier_matching {
     hidden: yes
   }
 
-  dimension_group: promised_delivery_date_purchase_order {
-    type: time
-    description: "The date when we expect to receive the delivery, originating from a purchase order."
-    timeframes: [
-      raw,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    convert_tz: no
-    datatype: date
-    sql: ${TABLE}.promised_delivery_date_purchase_order ;;
-    hidden: yes
-  }
-
   dimension_group: order {
     type: time
     description: "The date when we placed an order to our suppliers."
@@ -591,7 +596,7 @@ view: advanced_supplier_matching {
     type: number
     description: "The field shows, how many handling units with products have been delivered to a hub. 1 handling unit contains N selling units. The N is defined in the field quantity_per_handling_unit"
     sql: ${TABLE}.handling_units_count ;;
-    hidden: yes
+    hidden: no
   }
 
   dimension: inbounded_quantity {
@@ -617,9 +622,10 @@ view: advanced_supplier_matching {
 
   dimension: quantity_per_handling_unit {
     type: number
+    label: "Pack Factor"
     description: "This field indicates, how many selling units are part of 1 handling unit"
     sql: ${TABLE}.quantity_per_handling_unit ;;
-    hidden: yes
+    hidden: no
   }
 
   dimension: replenishment_substitute_group_array {
@@ -627,7 +633,85 @@ view: advanced_supplier_matching {
     sql: ${TABLE}.replenishment_substitute_group_array ;;
   }
 
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  #  - - - - - - - - - -    Monetary Dimension
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+  dimension: avg_amt_selling_price_gross {
+    type: number
+    description: "Average Selling Price"
+    group_label: "Price Related Dimensions"
+    hidden: yes
+    sql: ${TABLE}.avg_amt_selling_price_gross ;;
+  }
+
+  dimension: avg_amt_buying_price_net {
+    type: number
+    description: "Buying Prices"
+    group_label: "Price Related Dimensions"
+    hidden: yes
+    sql: ${TABLE}.avg_amt_buying_price_net ;;
+
+    required_access_grants: [can_view_buying_information]
+  }
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  #  - - - - - - - - - -    Special Use Case (Monetary)
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  dimension: number_of_items_sold {
+    type: number
+    label: "# Items Sold"
+    description: "Quantity of units sold."
+    group_label: "Special Use Cases - Price Related"
+    hidden: yes
+    sql: ${TABLE}.number_of_items_sold ;;
+  }
+
+  dimension: amt_total_gmv_gross {
+    type: number
+    label: "€ Items Sold Gross"
+    description: "Total amount sold in Euro."
+    group_label: "Special Use Cases - Price Related"
+    hidden: yes
+    sql: ${TABLE}.amt_total_gmv_gross ;;
+  }
+
+  dimension: amt_quantity_ordered_net {
+    type: number
+    label: "€ Total amount ordered"
+    description: "Total amount ordered calculated as total quantity ordered (PO) * buying prices net."
+    group_label: "Special Use Cases - Price Related"
+    hidden: yes
+    sql: ${TABLE}.amt_quantity_ordered_net ;;
+  }
+
+  dimension: amt_total_gmv_gross_per_supplier_weekly {
+    type: number
+    label: "€ Total GMV Gross per Supplier Weekly"
+    description: "Total amount sold in Euro per Supplier per Week."
+    group_label: "Special Use Cases - Price Related"
+    hidden: yes
+    sql: ${TABLE}.amt_total_gmv_gross_per_supplier_weekly ;;
+  }
+
+  dimension: amt_total_gmv_gross_per_hub_weekly {
+    type: number
+    label: "€ Total GMV Gross per Hub Weekly"
+    description: "Total amount sold in Euro per Hub per Week."
+    group_label: "Special Use Cases - Price Related"
+    hidden: yes
+    sql: ${TABLE}.amt_total_gmv_gross_per_hub_weekly ;;
+  }
+
+  dimension: amt_total_gmv_gross_per_hub_and_parent_sku_weekly {
+    type: number
+    label: "€ Total GMV Gross per Parent SKU/Hub Weekly"
+    description: "Total amount sold in Euro per Parent SKU/Hub per Week."
+    group_label: "Special Use Cases - Price Related"
+    hidden: yes
+    sql: ${TABLE}.amt_total_gmv_gross_per_hub_and_parent_sku_weekly ;;
+  }
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   #  - - - - - - - - - -    Special Use Case
@@ -660,13 +744,135 @@ view: advanced_supplier_matching {
     sql: ${TABLE}.warehouse_number ;;
   }
 
+  dimension: lead_time_in_days {
+    type: string
+    label: "Lead Time in Days"
+    description: "This is the limit we can match a PO/DESADVs against Inbounds in the past/next days."
+    group_label: "Special Use Cases"
+    sql: ${TABLE}.lead_time_in_days ;;
+  }
 
 
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  #  - - - - - - - - - -   Measures
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+  measure: avg_unit_buying_price {
+    type:  average
+    label: "AVG Unit Buying Price Net"
+    description: "Average Unit Buying Price"
+    group_label: "Price Related Metrics"
+
+    sql: ${avg_amt_buying_price_net} ;;
+
+    value_format_name: eur
+
+    required_access_grants: [can_view_buying_information]
+  }
+
+  measure: amt_total_quantity_ordered_net {
+    type:  sum_distinct
+    label: "€ Volume Ordered Net (PO)"
+    description: "Total amount ordered calculated as total quantity ordered (PO) * buying prices net."
+    group_label: "Price Related Metrics"
+
+    sql: ${amt_quantity_ordered_net} ;;
+
+    value_format_name: eur
+
+    required_access_grants: [can_view_buying_information]
+
+  }
+
+  measure: avg_unit_selling_price_gross {
+    type:  average
+    label: "AVG Unit Selling Price Gross"
+    description: "Average Unit Selling Price"
+    group_label: "Price Related Metrics"
+
+    sql: ${avg_amt_selling_price_gross} ;;
+
+    value_format_name: eur
+
+  }
+
+  measure: sum_total_items_sold {
+    type:  sum_distinct
+    label: "# Units Sold - On Delivery Date"
+    description: "Total quantity of items sold in units per Hub and Parent SKU whenever we have deliveries of this sku in this hub -
+                  This will be 0 when we don't have deliveries on that day even though we have units sold."
+    group_label: "Price Related Metrics"
+
+    sql: ${number_of_items_sold} ;;
+
+    value_format_name: decimal_1
+
+  }
+
+  measure: amt_total_quantity_gmv_gross {
+    type:  sum_distinct
+    label: "€ GMV Gross (SKU/Hub) - On Delivery Date"
+    description: "Total amount Sold in Euro per Hub and Parent SKU whenever we have deliveries of this sku in this hub -
+                  This will be 0 when we don't have deliveries on that day even though we have units sold."
+    group_label: "Price Related Metrics"
+
+    sql: ${amt_total_gmv_gross} ;;
+
+    value_format_name: eur
+
+  }
+
+  measure: amt_total_quantity_gmv_gross_per_supplier_weekly {
+    type:  average
+    label: "€ GMV Gross per Supplier (Weekly)"
+    description: "USE ON WEEKLY AND SUPPLIER LEVEL - Total GMV Gross per Supplier on a weekly level independent of SKU and Hub"
+    group_label: "Price Related Metrics"
+
+    sql: ${amt_total_gmv_gross_per_supplier_weekly} ;;
+
+    value_format_name: eur
+
+  }
+
+  measure: amt_total_quantity_gmv_gross_per_hub_weekly {
+    type:  average
+    label: "€ GMV Gross per Hub (Weekly)"
+    description: "USE ON WEEKLY AND HUB LEVEL - Total GMV Gross per Hub on a weekly level independent of SKU"
+    group_label: "Price Related Metrics"
+
+    sql: ${amt_total_gmv_gross_per_hub_weekly} ;;
+
+    value_format_name: eur
+
+  }
+
+  measure: amt_total_quantity_gmv_gross_per_hub_and_parent_sku_weekly {
+    type:  average
+    label: "€ GMV Gross per SKU/Hub (Weekly)"
+    description: "USE ON WEEKLY, HUB AND SKU LEVEL - Total GMV Gross per Hub/SKU on a weekly level regardless if we had a delivery/inbound on that day"
+    group_label: "Price Related Metrics"
+
+    sql: ${amt_total_gmv_gross_per_hub_and_parent_sku_weekly} ;;
+
+    value_format_name: eur
+
+  }
+
+  measure: avg_lead_time_in_days {
+    type: average
+    label: "AVG Lead time in days"
+    description: "Average of days that an order could be open to be match against inbounds based on its lead time range"
+
+    sql: ${lead_time_in_days} ;;
+
+    value_format_name: decimal_1
+
+  }
 
 
   measure: count {
     type: count
+    hidden: yes
     drill_fields: [product_name, supplier_name]
   }
 }

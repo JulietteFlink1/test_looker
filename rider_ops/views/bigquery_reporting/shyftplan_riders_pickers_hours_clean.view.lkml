@@ -209,6 +209,22 @@ view: shyftplan_riders_pickers_hours_clean {
     group_label: "Counts"
   }
 
+  measure: ops_associates {
+    label: "# Ops Associates"
+    type: sum
+    sql:${number_of_worked_employees};;
+    filters: [position_name: "ops associate"]
+    group_label: "Counts"
+  }
+
+  measure: ops_associates_external {
+    label: "# Ops Associates"
+    type: sum
+    sql:${number_of_worked_employees_external};;
+    filters: [position_name: "ops associate"]
+    group_label: "Counts"
+  }
+
   measure: riders_external {
     label: "# Ext Riders"
     type: sum
@@ -236,17 +252,19 @@ view: shyftplan_riders_pickers_hours_clean {
   }
 
   measure: hub_staff_hours {
-    label: "Sum of Hub Staff Hours (Inventory Associate, Picker, Rider Captains and shift Lead)"
+    label: "Sum of Hub Staff Hours (Inventory Associate, Picker, Rider Captains, Ops Associate and shift Lead)"
     type: number
-    sql:${picker_hours}+${wh_ops_hours}+${rider_captain_hours}+${shift_lead_hours};;
+    sql: ${ops_associate_hours}+${shift_lead_hours};;
     value_format_name: decimal_1
     group_label: "Working Hours"
   }
 
-  measure: ops_staff_hours {
-    label: "Sum of Ops Staff Hours (Inventory Associate, Picker and  Rider Captain)"
-    type: number
-    sql:${picker_hours}+${wh_ops_hours}+${rider_captain_hours};;
+  measure: ops_associate_hours {
+    alias: [ops_staff_hours]
+    label: "Sum of Ops Associate Hours (Inventory Associate, Picker, Ops Associate and  Rider Captain)"
+    type: sum
+    sql:${number_of_worked_minutes}/60;;
+    filters: [position_name: "ops associate"]
     value_format_name: decimal_1
     group_label: "Working Hours"
   }
@@ -267,6 +285,142 @@ view: shyftplan_riders_pickers_hours_clean {
     filters: [position_name: "rider"]
     value_format_name: decimal_1
     group_label: "Working Hours"
+  }
+
+  measure: picker_hours_external_partnership {
+    label: "Sum of Picker External Partnership Hours"
+    type: sum
+    sql: ${TABLE}.number_of_worked_minutes_external_partnership/60;;
+    filters: [position_name: "picker"]
+    value_format_name: decimal_1
+    group_label: "Working Hours"
+  }
+
+  measure: pct_picker_hours_external_partnership {
+    label: "% Picker External Partnership Hours"
+    type: number
+    sql: ${picker_hours_external_partnership}/${picker_hours};;
+    value_format_name: percent_1
+    group_label: "Working Hours"
+  }
+
+  measure: pct_picker_hours_external_one_time {
+    label: "% Picker External One-time Hours"
+    type: number
+    sql: ${picker_hours_external_one_time}/${picker_hours};;
+    value_format_name: percent_1
+    group_label: "Working Hours"
+  }
+
+  measure: pct_rider_hours_external_partnership {
+    label: "% Rider External Partnership Hours"
+    type: number
+    sql: ${rider_hours_external_partnership}/${rider_hours};;
+    value_format_name: percent_1
+    group_label: "Working Hours"
+  }
+
+  measure: pct_rider_hours_external_one_time {
+    label: "% Rider External One-time Hours"
+    type: number
+    sql: ${rider_hours_external_one_time}/${rider_hours};;
+    value_format_name: percent_1
+    group_label: "Working Hours"
+  }
+
+  measure: rider_hours_external_partnership {
+    label: "Sum of Rider External Partnership Hours"
+    type: sum
+    sql: ${TABLE}.number_of_worked_minutes_external_partnership/60;;
+    filters: [position_name: "rider"]
+    value_format_name: decimal_1
+    group_label: "Working Hours"
+  }
+
+  measure: picker_hours_external_one_time {
+    label: "Sum of Picker External One-time Hours"
+    type: sum
+    sql: ${TABLE}.number_of_worked_minutes_external_one_time/60;;
+    filters: [position_name: "picker"]
+    value_format_name: decimal_1
+    group_label: "Working Hours"
+  }
+
+  measure: rider_hours_external_one_time {
+    label: "Sum of Rider External One-time Hours"
+    type: sum
+    sql: ${TABLE}.number_of_worked_minutes_external_one_time/60;;
+    filters: [position_name: "rider"]
+    value_format_name: decimal_1
+    group_label: "Working Hours"
+  }
+
+  measure: assigned_picker_hours_external_partnership {
+    label: "Sum of Assigned Picker External Partnership Hours"
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_external_partnership/60;;
+    filters: [position_name: "picker"]
+    value_format_name: decimal_1
+    group_label: "Assigned Hours"
+  }
+
+  measure: assigned_rider_hours_external_partnership {
+    label: "Sum of Assigned Rider External Partnership Hours"
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_external_partnership/60;;
+    filters: [position_name: "rider"]
+    value_format_name: decimal_1
+    group_label: "Assigned Hours"
+  }
+
+  measure: assigned_picker_hours_external_one_time {
+    label: "Sum of Assigned Picker External One-time Hours"
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_external_one_time/60;;
+    filters: [position_name: "picker"]
+    value_format_name: decimal_1
+    group_label: "Assigned Hours"
+  }
+
+  measure: assigned_rider_hours_external_one_time {
+    label: "Sum of Assigned Rider External One-time Hours"
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_external_one_time/60;;
+    filters: [position_name: "rider"]
+    value_format_name: decimal_1
+    group_label: "Assigned Hours"
+  }
+
+  measure: pct_assigned_picker_hours_external_partnership {
+    label: "% Assigned Picker External Partnership Hours"
+    type: number
+    sql: ${assigned_picker_hours_external_partnership}/${sum_assigned_picker_hours};;
+    value_format_name: percent_1
+    group_label: "Assigned Hours"
+  }
+
+  measure: pct_assigned_picker_hours_external_one_time {
+    label: "% Assigned Picker External One-time Hours"
+    type: number
+    sql: ${assigned_picker_hours_external_one_time}/${sum_assigned_picker_hours};;
+    value_format_name: percent_1
+    group_label: "Assigned Hours"
+  }
+
+  measure: pct_assigned_rider_hours_external_partnership {
+    label: "% Assigned Rider External Partnership Hours"
+    type: number
+    sql: ${assigned_rider_hours_external_partnership}/${sum_assigned_rider_hours};;
+    value_format_name: percent_1
+    group_label: "Assigned Hours"
+  }
+
+  measure: pct_assigned_rider_hours_external_one_time {
+    label: "% Assigned Rider External One-time Hours"
+    type: number
+    sql: ${assigned_rider_hours_external_one_time}/${sum_assigned_rider_hours};;
+    value_format_name: percent_1
+    group_label: "Assigned Hours"
   }
 
   measure: pickers {
@@ -317,6 +471,16 @@ view: shyftplan_riders_pickers_hours_clean {
     group_label: "Unassigned Hours"
   }
 
+  measure: sum_unassigned_ops_associates{
+    type: sum
+    label:"# Unassigned Ops Associates"
+    description: "Number of Unassigned Ops Associates"
+    filters:[position_name: "ops associate"]
+    sql:${number_of_unassigned_employees_internal}+${number_of_unassigned_employees_external};;
+    value_format_name: decimal_1
+    group_label: "Unassigned Hours"
+  }
+
   measure: sum_unassigned_rider_external{
     type: sum
     label:"# Unassigned Ext Riders"
@@ -327,6 +491,15 @@ view: shyftplan_riders_pickers_hours_clean {
     group_label: "Counts"
   }
 
+  measure: sum_unassigned_ops_associates_external{
+    type: sum
+    label:"# Unassigned Ext Ops Associates"
+    description: "Number of Unassigned Ops Associates"
+    filters:[position_name: "ops associate"]
+    sql: ${number_of_unassigned_employees_external};;
+    value_format_name: decimal_1
+    group_label: "Counts"
+  }
 
   measure: sum_unassigned_pickers{
     type: sum
@@ -360,6 +533,16 @@ view: shyftplan_riders_pickers_hours_clean {
     group_label: "Unassigned Hours"
   }
 
+  measure: number_of_unassigned_ops_associate_hours{
+    type: sum
+    label:"# Unassigned Ops Associate Hours"
+    description: "Number of Unassigned(Open) Ops Associate Hours"
+    filters:[position_name: "ops associate"]
+    sql:(${number_of_unassigned_minutes_internal}+${number_of_unassigned_minutes_external})/60;;
+    value_format_name: decimal_1
+    group_label: "Unassigned Hours"
+  }
+
   measure: number_of_unassigned_hours_rider_external{
     type: sum
     hidden: yes
@@ -371,6 +554,27 @@ view: shyftplan_riders_pickers_hours_clean {
     group_label: "Unassigned Hours"
   }
 
+  measure: number_of_unassigned_hours_ops_associate_external{
+    type: sum
+    hidden: yes
+    label:"# Unassigned Ext Ops Associate Hours"
+    description: "Number of Unassigned(Open) Ops Associate Ext Hours"
+    filters:[position_name: "ops associate"]
+    sql:${number_of_unassigned_minutes_external}/60;;
+    value_format_name: decimal_1
+    group_label: "Unassigned Hours"
+  }
+
+  measure: number_of_unassigned_hours_ops_associate{
+    type: sum
+    hidden: yes
+    label:"# Unassigned Ops Associate Hours"
+    description: "Number of Unassigned(Open) Ops Associate Hours"
+    filters:[position_name: "ops associate"]
+    sql:(${number_of_unassigned_minutes_internal}+${number_of_unassigned_minutes_external})/60;;
+    value_format_name: decimal_1
+    group_label: "Unassigned Hours"
+  }
 
   measure: number_of_unassigned_picker_hours{
     type: sum
@@ -400,6 +604,16 @@ view: shyftplan_riders_pickers_hours_clean {
     description: "Number of Scheduled Rider Hours"
     sql:${number_of_planned_minutes}/60;;
     filters:[position_name: "rider"]
+    value_format_name: decimal_1
+    group_label: "Assigned Hours"
+  }
+
+  measure: sum_assigned_ops_associate_hours{
+    type: sum
+    label:"# Scheduled Ops Associate Hours"
+    description: "Number of Scheduled Ops Associate Hours"
+    sql:${number_of_planned_minutes}/60;;
+    filters:[position_name: "ops associate"]
     value_format_name: decimal_1
     group_label: "Assigned Hours"
   }
@@ -451,11 +665,12 @@ view: shyftplan_riders_pickers_hours_clean {
     group_label: "UTR"
   }
 
-  measure: ops_staff_utr {
-    label: "AVG Ops Staff UTR"
+  measure: ops_associate_utr {
+    alias: [ops_staff_utr]
+    label: "AVG Ops Associate UTR"
     type: number
-    description: "# Orders from opened hub / # Worked Ops Staff (Inventory Associate, Picker and Rider Captains) Hours"
-    sql: ${adjusted_orders_pickers} / NULLIF(${ops_staff_hours}, 0);;
+    description: "# Orders from opened hub / # Worked Ops Staff (Inventory Associate, Picker, Ops Associate and Rider Captains) Hours"
+    sql: ${adjusted_orders_pickers} / NULLIF(${ops_associate_hours}, 0);;
     value_format_name: decimal_2
     group_label: "UTR"
   }
@@ -517,10 +732,21 @@ view: shyftplan_riders_pickers_hours_clean {
 
   measure: number_of_planned_hours_hub_employees{
     type: sum
-    label: "# Scheduled Hours Rider+Picker+WH+Rider Captain"
-    description: "Number of Scheduled Hours Rider+Picker+WH+Rider Captain"
+    label: "# Scheduled Hours Rider + Picker + WH + Rider Captain + Ops Associate"
+    description: "Number of Scheduled Hours Rider + Picker + WH + Rider Captain + Ops Associate"
     sql: ${number_of_planned_minutes} / 60 ;;
-    filters: [position_name: "rider, picker,wh, rider captain"]
+    filters: [position_name: "rider, picker,wh, rider captain, 'ops associate"]
+    value_format_name: decimal_1
+    hidden: no
+    group_label: "Assigned Hours"
+  }
+
+  measure: number_of_planned_hours_ops_associate{
+    type: sum
+    label: "# Scheduled Hours Picker + WH + Rider Captain + Ops Associate"
+    description: "Number of Scheduled Hours Picker + WH + Rider Captain + Ops Associate"
+    sql: ${number_of_planned_minutes} / 60 ;;
+    filters: [position_name: "picker,wh, rider captain, 'ops associate"]
     value_format_name: decimal_1
     hidden: no
     group_label: "Assigned Hours"
@@ -529,8 +755,8 @@ view: shyftplan_riders_pickers_hours_clean {
   measure: all_staff_utr {
     label: "AVG All Staff UTR"
     type: number
-    description: "# Orders from opened hub / # Worked All Staff (incl. Rider,Picker,WH Ops, Rider Captain and Shift Lead) Hours"
-    sql: ${adjusted_orders_pickers} / NULLIF(${rider_hours}+${picker_hours}+${wh_ops_hours}+${shift_lead_hours}+${rider_captain_hours}, 0);;
+    description: "# Orders from opened hub / # Worked All Staff (incl. Rider,Picker,WH Ops, Rider Captain, Ops Associate and Shift Lead) Hours"
+    sql: ${adjusted_orders_pickers} / NULLIF(${rider_hours}+${picker_hours}+${wh_ops_hours}+${shift_lead_hours}+${rider_captain_hours}+${ops_associate_hours}, 0);;
     value_format_name: decimal_2
     group_label: "UTR"
   }
@@ -544,12 +770,63 @@ view: shyftplan_riders_pickers_hours_clean {
     hidden: yes
   }
 
-  measure: pct_unaasigned_hours{
-    label:"% Unassigned Shift Hours"
+  measure: pct_unassigned_hours{
+    label:"% Unassigned Shift Hours (Riders & Pickers)"
+    alias: [pct_unaasigned_hours]
     type: number
     description: "% Unassigned Shift Hours (Riders & Pickers)"
     sql:(${number_of_unassigned_hours_rider_picker})
       /nullif(${number_of_unassigned_hours_rider_picker}+${number_of_planned_hours_rider_picker},0) ;;
+    group_label: "Unassigned Hours"
+    value_format_name: percent_1
+  }
+
+  measure: pct_unassigned_rider_hours{
+    label:"% Unassigned Rider Hours"
+    type: number
+    description: "Share of Unassigned rider hours from total Scheduled hours - Unassigned Rider Hours / (Assigned Rider Hours + Unassigned Rider Hours)"
+    sql:(${number_of_unassigned_rider_hours})
+      /nullif(${number_of_unassigned_rider_hours}+${sum_assigned_rider_hours},0) ;;
+    group_label: "Unassigned Hours"
+    value_format_name: percent_1
+  }
+
+  measure: pct_assigned_rider_hours{
+    label:"% Assigned Rider Hours"
+    type: number
+    description: "Share of Assigned rider hours from total Scheduled hours - Assigned Rider Hours / (Assigned Rider Hours + Unassigned Rider Hours)"
+    sql:(${sum_assigned_rider_hours})
+      /nullif(${number_of_unassigned_rider_hours}+${sum_assigned_rider_hours},0) ;;
+    group_label: "Assigned Hours"
+    value_format_name: percent_1
+  }
+
+  measure: pct_unassigned_picker_hours{
+    label:"% Unassigned Picker Hours"
+    type: number
+    description: "Share of Unassigned picker hours from total Scheduled hours - Unassigned Picker Hours / (Assigned Picker Hours + Unassigned Picker Hours)"
+    sql:(${number_of_unassigned_picker_hours})
+      /nullif(${number_of_unassigned_picker_hours}+${sum_assigned_picker_hours},0) ;;
+    group_label: "Unassigned Hours"
+    value_format_name: percent_1
+  }
+
+  measure: pct_assigned_picker_hours{
+    label:"% Assigned Picker Hours"
+    type: number
+    description: "Share of Assigned picker hours from total Scheduled hours - Assigned Picker Hours / (Assigned Picker Hours + Unassigned Picker Hours)"
+    sql:(${sum_assigned_picker_hours})
+      /nullif(${number_of_unassigned_picker_hours}+${sum_assigned_picker_hours},0) ;;
+    group_label: "Assigned Hours"
+    value_format_name: percent_1
+  }
+
+  measure: pct_unaasigned_hours_ops_associate{
+    label:"% Unassigned Shift Hours (Ops Associate)"
+    type: number
+    description: "% Unassigned Shift Hours (Ops Associate)"
+    sql:(${number_of_unassigned_hours_ops_associate})
+      /nullif(${number_of_planned_hours_ops_associate},0) ;;
     group_label: "Unassigned Hours"
     value_format_name: percent_1
   }
@@ -576,15 +853,24 @@ view: shyftplan_riders_pickers_hours_clean {
 
 
   measure: number_of_no_show_hours_hub_employees{
-    label:"Sum Rider+Picker+WH+Rider Captain No Show Hours"
+    label:"Sum Rider + Picker + WH + Rider Captain + Ops Associate No Show Hours"
     type: sum
-    description: "Sum Rider+Picker+wh+rider_captain No Show Hours"
+    description: "Sum Rider + Picker + WH + Rider Captain + Ops Associate No Show Hours"
     sql:${number_of_no_show_minutes}/60;;
-    filters: [position_name: "rider, picker,wh, rider captain"]
+    filters: [position_name: "rider, picker,wh, rider captain, ops associate"]
     group_label: "No Show"
     value_format_name: decimal_1
   }
 
+  measure: number_of_no_show_hours_ops_associate{
+    label:"Sum Picker + WH + Rider Captain + Ops Associate No Show Hours"
+    type: sum
+    description: "Sum Picker + WH + Rider Captain + Ops Associate No Show Hours"
+    sql:${number_of_no_show_minutes}/60;;
+    filters: [position_name: "rider, picker,wh, rider captain, ops associate"]
+    group_label: "No Show"
+    value_format_name: decimal_1
+  }
 
   measure: pct_no_show_employees{
     label:"% Actual No Show Rider Hours"
@@ -605,10 +891,19 @@ view: shyftplan_riders_pickers_hours_clean {
   }
 
   measure: pct_no_show_hours_hub_employees{
-    label:"% Actual No Show Rider+Picker+WH +Rider Captain Hours"
+    label:"% Actual No Show Rider + Picker + WH +Rider Captain + Ops Associate Hours"
     type: number
-    description: "% Actual No Show Rider + Picker + WH + Rider Captain Hours"
+    description: "% Actual No Show Rider + Picker + WH +Rider Captain + Ops Associate Hours"
     sql:(${number_of_no_show_hours_hub_employees})/nullif(${number_of_planned_hours_hub_employees},0) ;;
+    group_label: "No Show"
+    value_format_name: percent_1
+  }
+
+  measure: pct_no_show_hours_ops_associate{
+    label:"% Actual No Show Picker + WH + Rider Captain + Ops Associate Hours"
+    type: number
+    description: "% Actual No Show Picker + WH +Rider Captain + Ops Associate Hours"
+    sql:(${number_of_no_show_hours_ops_associate})/nullif(${number_of_planned_hours_hub_employees},0) ;;
     group_label: "No Show"
     value_format_name: percent_1
   }
