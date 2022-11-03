@@ -2,6 +2,7 @@
 include: "/**/order_lineitems_using_inventory.view"
 include: "/**/price_test_tracking.view"
 include: "/**/*.view"
+include: "/**/shipping_methods_ct.view"
 
 include: "/**/global_filters_and_parameters.view.lkml"
 
@@ -121,6 +122,17 @@ explore: current_inventory {
        and ${key_value_items.kvi_date} >= current_date() - 6;;
     relationship: many_to_one
     type: left_outer
+  }
+
+  join: shipping_methods_ct {
+
+    view_label: "Shipping Methods"
+
+    type: left_outer
+    relationship: one_to_many
+    sql_on:
+          ${hubs.shipping_method_id} = ${shipping_methods_ct.shipping_method_id}
+      and ${hubs.country_iso}        = ${shipping_methods_ct.country_iso};;
   }
 
   # join: erp_product_hub_vendor_assignment {
