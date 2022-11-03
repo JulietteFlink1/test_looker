@@ -1652,6 +1652,7 @@ view: orders {
 
   measure: count {
     type: count
+    hidden: yes
     drill_fields: [translated_discount_name, shipping_method_name, warehouse_name, discount_name]
   }
 
