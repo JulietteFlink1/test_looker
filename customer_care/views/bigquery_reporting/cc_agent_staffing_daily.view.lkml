@@ -1,5 +1,5 @@
 view: cc_agent_staffing_daily {
-  sql_table_name: `flink-data-dev.dbt_vbreda_reporting.cc_agent_staffing_half_hourly`
+  sql_table_name: `flink-data-prod.reporting.cc_agent_staffing_half_hourly`
     ;;
 
     set: cc_contacts_fields {
