@@ -37,14 +37,14 @@ view: event_order_dispatching_state_changed {
     sql: ${TABLE}.order_id ;;
   }
 
-  # ======= Picker Queue State Dimensions ======= #
+  # ======= Generic Dimensions ======= #
 
-  dimension: picker_queue_state {
-    group_label: "Picker Queue State Dimension"
-    label: "Picker Queue State"
-    description: "State of the order in picker queue"
+  dimension: dispatching_state {
+    group_label: "Generic Dimension"
+    label: "Dispatching State"
+    description: "State of the order in picker or rider queue"
     type: string
-    sql: ${TABLE}.picker_queue_state ;;
+    sql: ${TABLE}.dispatching_state ;;
   }
 
   # ======= Location Dimensions ======= #
