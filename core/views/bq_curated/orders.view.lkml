@@ -2767,6 +2767,7 @@ view: orders {
     label: "# Cancelled Orders"
     hidden:  no
     type: count
+    description: "Number of all Cancelled Orders. Includes Orders cancelled by customers via self cancellation AND orders cancelled by CC agents via CT or Intercom."
     filters: [amt_cancelled_gross: ">0"]
     value_format: "0"
   }
@@ -2774,7 +2775,7 @@ view: orders {
   measure: cnt_agent_cancelled_orders {
     group_label: "* Cancelled Orders *"
     label: "# Agent Cancelled Orders"
-    description: "Agent cancelled orders, also includes CT cancelled orders"
+    description: "Number of Agent Cancelled orders, also includes CT cancelled orders."
     hidden:  no
     type: count
     filters: [amt_cancelled_gross: ">0",cancellation_category: "- Customer"]
@@ -2784,6 +2785,7 @@ view: orders {
   measure: cnt_self_cancelled_orders {
     group_label: "* Cancelled Orders *"
     label: "# Self Cancelled Orders"
+    description: "Number of Orders Cancelled by customers directly in the app via the cancel order feature."
     hidden:  no
     type: count
     filters: [amt_cancelled_gross: ">0",cancellation_category: "Customer"]
