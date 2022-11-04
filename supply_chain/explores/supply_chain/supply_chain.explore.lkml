@@ -16,7 +16,7 @@ include: "/**/products_hub_assignment_v2.view"
 include: "/**/replenishment_purchase_orders.view"
 include: "/**/bulk_items.view"
 include: "/**/bulk_inbounding_performance.view"
-
+include: "/**/shipping_methods_ct.view"
 
 
 
@@ -447,6 +447,17 @@ explore: supply_chain {
       and ${products_hub_assignment.sku}         = ${assortment_puzzle_pieces.sku}
       and {% condition global_filters_and_parameters.datasource_filter %} ${assortment_puzzle_pieces.ingestion_date} {% endcondition %}
     ;;
+  }
+
+  join: shipping_methods_ct {
+
+    view_label: "Shipping Methods (CT)"
+
+    type: left_outer
+    relationship: one_to_many
+    sql_on:
+          ${hubs_ct.shipping_method_id} = ${shipping_methods_ct.shipping_method_id}
+      and ${hubs_ct.country_iso}        = ${shipping_methods_ct.country_iso};;
   }
 
 }
