@@ -1224,7 +1224,7 @@ view: forecasts {
     type: number
     group_label: "> Dynamic Measures"
     label: "# Adjusted Actually Needed Hours"
-    description: "# Hours needed based on # Actual Orders (Forecast-related) / Base UTR. For pickers it is calculated based on # Actual Orders."
+    description: "# Hours needed based on # Actual Orders (Forecast-related) / Adjusted Base UTR. For pickers it is calculated based on # Actual Orders."
     value_format_name: decimal_1
     sql:
         case
