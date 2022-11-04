@@ -114,12 +114,13 @@ explore: orders_cl {
   }
 
   join: shipping_methods_ct {
-    view_label: "Shipping Methods"
+    view_label: "Orders"
     sql_on:
       ${orders_cl.shipping_method_id} = ${shipping_methods_ct.shipping_method_id} and
       ${orders_cl.country_iso} = ${shipping_methods_ct.country_iso} ;;
     relationship: many_to_many
     type: left_outer
+    fields: [shipping_methods_ct.orders_df_fields*]
   }
 
 }
