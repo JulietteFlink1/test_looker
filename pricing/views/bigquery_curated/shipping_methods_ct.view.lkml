@@ -26,7 +26,7 @@ view: shipping_methods_ct {
 
     label: "Shipping Method Created at"
     description: "Date and time (UTC) the Shipping Method was initially created within the project settings in CommerceTools."
-    group_label: "Delivery Fees & Thresholds"
+    group_label: "Dates & Timestamps"
 
     type: time
     timeframes: [
@@ -43,7 +43,7 @@ view: shipping_methods_ct {
 
     label: "Shipping Method Last Modified at"
     description: "Date and time (UTC) the Shipping Method was last updated within the project settings in CommerceTools."
-    group_label: "Delivery Fees & Thresholds"
+    group_label: "Dates & Timestamps"
 
     type: time
     timeframes: [
