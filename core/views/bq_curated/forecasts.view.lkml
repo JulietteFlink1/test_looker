@@ -223,6 +223,30 @@ view: forecasts {
     sql: ${TABLE}.number_of_forecasted_minutes_rider_adjusted/30 ;;
   }
 
+  # =========  Backlog bias   =========
+
+  dimension: backlog_bias_numerator {
+    group_label: "> Forecasting error"
+    label: "Backlog bias (orders) numerator"
+    sql: ${TABLE}.backlog_bias ;;
+    hidden: no
+  }
+
+  dimension: backlog_bias_denominator {
+    group_label: "> Forecasting error"
+    label: "Backlog bias (orders) denominator"
+    sql: ${TABLE}.backlog_bias_denominator ;;
+    hidden: no
+  }
+
+  dimension: pct_backlog_bias_dimension {
+    group_label: "> Forecasting error"
+    label: "% Backlog bias (orders) dimension"
+    sql: ${TABLE}.pct_backlog_bias ;;
+    hidden: no
+  }
+
+
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~      Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -852,6 +876,36 @@ view: forecasts {
     type: number
     hidden: no
     sql: ${summed_absolute_error_no_show_hours_adjusted}/nullif(${ops.number_of_no_show_hours_by_position},0);;
+    value_format_name: percent_2
+  }
+
+  # =========  Backlog bias   =========
+
+  measure: sum_backlog_bias_numerator {
+    type: sum_distinct
+    sql_distinct_key: ${forecast_uuid} ;;
+    hidden: yes
+    sql: ${backlog_bias_numerator};;
+  }
+
+  measure: sum_backlog_bias_denominator {
+    type: sum_distinct
+    sql_distinct_key: ${forecast_uuid} ;;
+    hidden: yes
+    sql: ${backlog_bias_denominator};;
+  }
+
+  measure: pct_backlog_bias {
+    group_label: "> Forecasting error"
+    label: "% Backlog Bias - Orders"
+    description: "Backlog bias metric calculated by Data Science. Reflects forecast accuracy."
+    link: {
+      label: "Documentation"
+      url: "https://goflink.atlassian.net/wiki/spaces/DATA/pages/406684088/DATA+RFC+020+Updating+Order+Forecast+Performance+Measurement#Solution-4%3A-Percent-Backlog-Bias"
+    }
+    type: number
+    hidden: no
+    sql: (${sum_backlog_bias_numerator})/nullif(${sum_backlog_bias_denominator},0);;
     value_format_name: percent_2
   }
 
