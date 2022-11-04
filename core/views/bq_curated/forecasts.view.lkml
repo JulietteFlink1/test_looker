@@ -229,14 +229,14 @@ view: forecasts {
     group_label: "> Forecasting error"
     label: "Order forecast bias indicator that takes into account the amount of under-forecasting that has accumulated since the beginning of the day."
     sql: ${TABLE}.backlog_bias ;;
-    hidden: no
+    hidden: yes
   }
 
   dimension: backlog_bias_denominator {
     group_label: "> Forecasting error"
     label: "Reflects the order forecast backlog bias multiplied by the actual number of orders."
     sql: ${TABLE}.backlog_bias_denominator ;;
-    hidden: no
+    hidden: yes
   }
 
   dimension: pct_backlog_bias_dimension {
@@ -882,16 +882,22 @@ view: forecasts {
   # =========  Backlog bias   =========
 
   measure: sum_backlog_bias_numerator {
+    group_label: "> Forecasting error"
+    label: "Backlog Bias Numerator - Orders"
+    description: "Order forecast bias indicator that takes into account the amount of under-forecasting that has accumulated since the beginning of the day."
     type: sum_distinct
     sql_distinct_key: ${forecast_uuid} ;;
-    hidden: yes
+    hidden: no
     sql: ${backlog_bias_numerator};;
   }
 
   measure: sum_backlog_bias_denominator {
+    group_label: "> Forecasting error"
+    label: "Backlog Bias Denominator - Orders"
+    description: "Reflects the order forecast backlog bias multiplied by the actual number of orders."
     type: sum_distinct
     sql_distinct_key: ${forecast_uuid} ;;
-    hidden: yes
+    hidden: no
     sql: ${backlog_bias_denominator};;
   }
 
