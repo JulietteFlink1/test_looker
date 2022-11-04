@@ -227,23 +227,23 @@ view: forecasts {
 
   dimension: backlog_bias_numerator {
     group_label: "> Forecasting error"
-    label: "Backlog bias (orders) numerator"
+    label: "Order forecast bias indicator that takes into account the amount of under-forecasting that has accumulated since the beginning of the day."
     sql: ${TABLE}.backlog_bias ;;
     hidden: no
   }
 
   dimension: backlog_bias_denominator {
     group_label: "> Forecasting error"
-    label: "Backlog bias (orders) denominator"
+    label: "Reflects the order forecast backlog bias multiplied by the actual number of orders."
     sql: ${TABLE}.backlog_bias_denominator ;;
     hidden: no
   }
 
   dimension: pct_backlog_bias_dimension {
     group_label: "> Forecasting error"
-    label: "% Backlog bias (orders) dimension"
+    label: "Percentage of backlog bias (orders) over backlog bias denominator."
     sql: ${TABLE}.pct_backlog_bias ;;
-    hidden: no
+    hidden: yes
   }
 
 
