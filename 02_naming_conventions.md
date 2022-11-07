@@ -58,7 +58,7 @@ sql: ${TABLE}.has_ordered ;;
 ```
 
 
-### [5] Use **\share_of_with_** for ratios, to ensure clear understanding
+### [5] Use **share_of_X_with_Y** for ratios, to ensure clear understanding
 
 ```yaml
 ✅measure: share_of_orders_with_missing_products  ✅✅✅
