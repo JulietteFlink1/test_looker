@@ -158,9 +158,16 @@ view: forecasts {
   }
 
   dimension: number_of_actual_orders_dimension {
-    label: "# Actual Orders - Dimension"
+    label: "# Actual Orders (Forecast-Related) - Dimension"
     type: number
     sql: ${TABLE}.number_of_actual_orders;;
+    hidden: yes
+  }
+
+  dimension: number_of_cancelled_orders_dimension {
+    label: "# Cancelled Orders - Dimension"
+    type: number
+    sql: ${TABLE}.number_of_cancelled_orders;;
     hidden: yes
   }
 
@@ -215,6 +222,30 @@ view: forecasts {
     description: "The number of maximum forecasted riders per 30 minutes block. (Incl. Airtable Adjustments)"
     sql: ${TABLE}.number_of_forecasted_minutes_rider_adjusted/30 ;;
   }
+
+  # =========  Backlog bias   =========
+
+  dimension: backlog_bias_numerator {
+    group_label: "> Forecasting error"
+    label: "Order forecast bias indicator that takes into account the amount of under-forecasting that has accumulated since the beginning of the day."
+    sql: ${TABLE}.backlog_bias ;;
+    hidden: yes
+  }
+
+  dimension: backlog_bias_denominator {
+    group_label: "> Forecasting error"
+    label: "Reflects the order forecast backlog bias multiplied by the actual number of orders."
+    sql: ${TABLE}.backlog_bias_denominator ;;
+    hidden: yes
+  }
+
+  dimension: pct_backlog_bias_dimension {
+    group_label: "> Forecasting error"
+    label: "Percentage of backlog bias (orders) over backlog bias denominator."
+    sql: ${TABLE}.pct_backlog_bias ;;
+    hidden: yes
+  }
+
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~      Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -478,11 +509,30 @@ view: forecasts {
 
   measure: number_of_actual_orders {
     group_label: "> Order Measures"
-    label: "# Actual Orders (Forecast-related)"
-    description: "# Actual Orders - Excl. Click&Collect and External Orders. Including Cancelled and Missed Orders (due to forced closures)."
+    label: "# Actual Orders (Forecast-Related)"
+    description: "# Actual orders related to forecast: Excl. click & collect and external orders; Including cancelled orders with operations-related cancellation reasons and missed orders (due to forced closures)."
     type: sum_distinct
     sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
     sql: ${TABLE}.number_of_actual_orders;;
+    value_format_name: decimal_0
+  }
+
+  measure: number_of_cancelled_orders {
+    group_label: "> Order Measures"
+    label: "# Cancelled Orders (Forecast-Related)"
+    description: "# Cancelled orders that are relevant for the forecast: Excl. click & collect and external orders; Including only operations-related cancellation reasons."
+    type: sum_distinct
+    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
+    sql: ${number_of_cancelled_orders_dimension} ;;
+    value_format_name: decimal_0
+  }
+
+  measure: number_of_cancelled_and_missed_orders {
+    group_label: "> Order Measures"
+    label: "# Cancelled and Missed Orders (Forecast-Related)"
+    description: "# Cancelled and missed orders that are relevant for the forecast: Excl. click & collect and external orders; Including only operations-related cancellation reasons and orders missed due to forced closures."
+    type: number
+    sql: ${number_of_cancelled_orders} + ${number_of_missed_orders_forced_closure} ;;
     value_format_name: decimal_0
   }
 
@@ -826,6 +876,42 @@ view: forecasts {
     type: number
     hidden: no
     sql: ${summed_absolute_error_no_show_hours_adjusted}/nullif(${ops.number_of_no_show_hours_by_position},0);;
+    value_format_name: percent_2
+  }
+
+  # =========  Backlog bias   =========
+
+  measure: sum_backlog_bias_numerator {
+    group_label: "> Forecasting error"
+    label: "Backlog Bias Numerator - Orders"
+    description: "Order forecast bias indicator that takes into account the amount of under-forecasting that has accumulated since the beginning of the day."
+    type: sum_distinct
+    sql_distinct_key: ${forecast_uuid} ;;
+    hidden: no
+    sql: ${backlog_bias_numerator};;
+  }
+
+  measure: sum_backlog_bias_denominator {
+    group_label: "> Forecasting error"
+    label: "Backlog Bias Denominator - Orders"
+    description: "Reflects the order forecast backlog bias multiplied by the actual number of orders."
+    type: sum_distinct
+    sql_distinct_key: ${forecast_uuid} ;;
+    hidden: no
+    sql: ${backlog_bias_denominator};;
+  }
+
+  measure: pct_backlog_bias {
+    group_label: "> Forecasting error"
+    label: "% Backlog Bias - Orders"
+    description: "Backlog bias metric calculated by Data Science. Reflects forecast accuracy."
+    link: {
+      label: "Documentation"
+      url: "https://goflink.atlassian.net/wiki/spaces/DATA/pages/406684088/DATA+RFC+020+Updating+Order+Forecast+Performance+Measurement#Solution-4%3A-Percent-Backlog-Bias"
+    }
+    type: number
+    hidden: no
+    sql: (${sum_backlog_bias_numerator})/nullif(${sum_backlog_bias_denominator},0);;
     value_format_name: percent_2
   }
 

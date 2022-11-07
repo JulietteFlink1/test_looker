@@ -161,6 +161,7 @@ view: hubs_ct {
     type: string
     sql: ${TABLE}.regional_cluster ;;
     group_label: "> Geographic Data"
+    drill_fields: [vehicle_uptime_metrics.supplier_name]
   }
 
   dimension: hub_location {
@@ -345,6 +346,8 @@ view: hubs_ct {
     allowed_value: { value: "Hub" }
     allowed_value: { value: "City" }
     allowed_value: { value: "Region" }
+    allowed_value: { value: "regional_cluster"
+      label: "Regional Cluster" }
     allowed_value: { value: "Country" }
     default_value: "Country"
   }
@@ -362,6 +365,8 @@ view: hubs_ct {
       ${city}
     {% elsif geographic_data_granularity._parameter_value == 'Region' %}
       ${region}
+    {% elsif geographic_data_granularity._parameter_value == 'regional_cluster' %}
+      ${regional_cluster}
     {% elsif geographic_data_granularity._parameter_value == 'Country' %}
       ${country_iso}
     {% endif %};;
