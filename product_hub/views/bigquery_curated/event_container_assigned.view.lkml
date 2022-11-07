@@ -1,5 +1,5 @@
 view: event_container_assigned {
-  sql_table_name: `flink-data-dev.curated.event_container_assigned`
+  sql_table_name: `flink-data-prod.curated.event_container_assigned`
     ;;
 
   view_label: "Event: Container Assigned"

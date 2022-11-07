@@ -1,5 +1,5 @@
 view: event_container_assignment_skipped {
-  sql_table_name: `flink-data-dev.curated.event_container_assignment_skipped`
+  sql_table_name: `flink-data-prod.curated.event_container_assignment_skipped`
     ;;
 
   view_label: "Event: Order Progressed"
