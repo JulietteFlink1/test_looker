@@ -3,6 +3,7 @@ include: "/**/products_hub_assignment_v2.view"
 include: "/**/replenishment_purchase_orders.view"
 include: "/**/bulk_items.view"
 include: "/**/bulk_inbounding_performance.view"
+include: "/**/shipping_methods_ct.view"
 
 explore: key_value_items {
   extends: [order_orderline_cl]
@@ -37,8 +38,16 @@ explore: key_value_items {
     ;;
     type: left_outer
     relationship: many_to_many
-    }
+  }
 
+  join: shipping_methods_ct {
+    view_label: "Shipping Methods"
+    sql_on:
+      ${orders_cl.shipping_method_id} = ${shipping_methods_ct.shipping_method_id} and
+      ${orders_cl.country_iso} = ${shipping_methods_ct.country_iso} ;;
+    relationship: many_to_many
+    type: left_outer
+  }
 
   #join: products_hub_assignment {
   #  sql_on:
