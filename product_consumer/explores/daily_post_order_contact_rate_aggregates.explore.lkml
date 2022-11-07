@@ -18,7 +18,7 @@ explore: daily_post_order_contact_rate_aggregates {
 
   label: "Daily Post Order Contact Rate Aggregates"
   description: "This explore provides an aggregated overview of Post Order metrics on order-level (both App & Web)"
-  group_label: "Consumer Product"
+  group_label: "Product - Consumer"
 
   sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} ${event_date_date} {% endcondition %};;
 

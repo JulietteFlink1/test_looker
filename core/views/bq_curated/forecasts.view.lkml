@@ -223,6 +223,30 @@ view: forecasts {
     sql: ${TABLE}.number_of_forecasted_minutes_rider_adjusted/30 ;;
   }
 
+  # =========  Backlog bias   =========
+
+  dimension: backlog_bias_numerator {
+    group_label: "> Forecasting error"
+    label: "Order forecast bias indicator that takes into account the amount of under-forecasting that has accumulated since the beginning of the day."
+    sql: ${TABLE}.backlog_bias ;;
+    hidden: yes
+  }
+
+  dimension: backlog_bias_denominator {
+    group_label: "> Forecasting error"
+    label: "Reflects the order forecast backlog bias multiplied by the actual number of orders."
+    sql: ${TABLE}.backlog_bias_denominator ;;
+    hidden: yes
+  }
+
+  dimension: pct_backlog_bias_dimension {
+    group_label: "> Forecasting error"
+    label: "Percentage of backlog bias (orders) over backlog bias denominator."
+    sql: ${TABLE}.pct_backlog_bias ;;
+    hidden: yes
+  }
+
+
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~      Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -852,6 +876,42 @@ view: forecasts {
     type: number
     hidden: no
     sql: ${summed_absolute_error_no_show_hours_adjusted}/nullif(${ops.number_of_no_show_hours_by_position},0);;
+    value_format_name: percent_2
+  }
+
+  # =========  Backlog bias   =========
+
+  measure: sum_backlog_bias_numerator {
+    group_label: "> Forecasting error"
+    label: "Backlog Bias Numerator - Orders"
+    description: "Order forecast bias indicator that takes into account the amount of under-forecasting that has accumulated since the beginning of the day."
+    type: sum_distinct
+    sql_distinct_key: ${forecast_uuid} ;;
+    hidden: no
+    sql: ${backlog_bias_numerator};;
+  }
+
+  measure: sum_backlog_bias_denominator {
+    group_label: "> Forecasting error"
+    label: "Backlog Bias Denominator - Orders"
+    description: "Reflects the order forecast backlog bias multiplied by the actual number of orders."
+    type: sum_distinct
+    sql_distinct_key: ${forecast_uuid} ;;
+    hidden: no
+    sql: ${backlog_bias_denominator};;
+  }
+
+  measure: pct_backlog_bias {
+    group_label: "> Forecasting error"
+    label: "% Backlog Bias - Orders"
+    description: "Backlog bias metric calculated by Data Science. Reflects forecast accuracy."
+    link: {
+      label: "Documentation"
+      url: "https://goflink.atlassian.net/wiki/spaces/DATA/pages/406684088/DATA+RFC+020+Updating+Order+Forecast+Performance+Measurement#Solution-4%3A-Percent-Backlog-Bias"
+    }
+    type: number
+    hidden: no
+    sql: (${sum_backlog_bias_numerator})/nullif(${sum_backlog_bias_denominator},0);;
     value_format_name: percent_2
   }
 

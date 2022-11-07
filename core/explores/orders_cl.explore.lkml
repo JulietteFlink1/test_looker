@@ -7,6 +7,7 @@ include: "/**/nps_after_order_cl.view"
 include: "/**/hub_monthly_orders.view"
 include: "/**/global_filters_and_parameters.view"
 include: "/commercial/views/bigquery_curated/hub_demographics.view"
+include: "/**/shipping_methods_ct.view"
 
 
 explore: orders_cl {
@@ -110,6 +111,16 @@ explore: orders_cl {
       date_trunc(${orders_cl.order_date},month) = ${hub_monthly_orders.created_month} ;;
     relationship: many_to_one
     type: left_outer
+  }
+
+  join: shipping_methods_ct {
+    view_label: "Orders"
+    sql_on:
+      ${orders_cl.shipping_method_id} = ${shipping_methods_ct.shipping_method_id} and
+      ${orders_cl.country_iso} = ${shipping_methods_ct.country_iso} ;;
+    relationship: many_to_many
+    type: left_outer
+    fields: [shipping_methods_ct.orders_df_fields*]
   }
 
 }

@@ -6,7 +6,7 @@ explore: reordering_from_order {
   view_name:  reordering_from_order
   label: "Reordering Timing"
   view_label: "Reordering Timing"
-  group_label: "Consumer Product"
+  group_label: "Product - Consumer"
   description: "Reordering Timing"
 
   sql_always_where: {% condition global_filters_and_parameters.datasource_filter %} ${reordering_from_order.order_timestamp_date} {% endcondition %} ;;
