@@ -135,8 +135,8 @@ view: user_attributes_jobs_to_be_done_last28days {
       year
     ]
     convert_tz: no
-    datatype: timestamp
-    sql: TIMESTAMP(${TABLE}.execution_date) ;;
+    datatype: date
+    sql: (${TABLE}.execution_date) ;;
   }
 
 ### Booleans
