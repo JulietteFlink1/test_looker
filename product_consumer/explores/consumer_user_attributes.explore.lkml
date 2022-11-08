@@ -34,7 +34,9 @@ explore: consumer_user_attributes {
 # JTBD has a historical table where customers are duplicated per day, but the JTBD non-historical view only contains the customers' analysis from the previous day. Therefore unique on customer_uuid
   join: user_attributes_jobs_to_be_done_last28days {
     view_label: "* Customers JTBD  Last 28 Days *"
-    sql_on: ${user_attributes_lifecycle_first28days.customer_uuid} = ${user_attributes_jobs_to_be_done_last28days.customer_uuid};;
+    sql_on: ${user_attributes_lifecycle_first28days.customer_uuid} = ${user_attributes_jobs_to_be_done_last28days.customer_uuid}
+            and {% condition user_attributes_jobs_to_be_done_last28days.execution_date %} user_attributes_jobs_to_be_done_last28days.execution_date {% endcondition %};;
+
     relationship: one_to_one
     type: left_outer
   }
