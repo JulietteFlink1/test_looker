@@ -61,6 +61,7 @@ view: picking_times {
     type: number
   }
   dimension: picked_to_picking_finished_seconds {
+    hidden: yes #hidden to avoid confusion
     group_label: "Picking Times"
     label: "Picked to Picking Finished Seconds"
     description: "Difference in seconds between picked and picking_finished timestamps."
@@ -144,6 +145,7 @@ view: picking_times {
   }
 
   measure: sum_of_picking_items_time_minutes {
+    hidden: yes #hidden to avoid confusion
     group_label: "Total Times"
     label: "Picking Items Time minutes"
     description: "Sum of picked_to_picking_finished time in minutes."
@@ -176,6 +178,7 @@ view: picking_times {
   }
 
   measure: avg_of_picking_items_time_minutes {
+    hidden: yes #hidden to avoid confusion
     group_label: "Avg Times"
     label: "Avg Picking Items Time minutes"
     description: "Avg of picked_to_picking_finished time in minutes."
