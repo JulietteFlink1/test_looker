@@ -79,7 +79,7 @@ view: event_container_assigned {
   dimension: locale {
     group_label: "Location Dimensions"
     label: "Locale"
-    description: "Language code | Coutnry, region code"
+    description: "Language code | Country, region code"
     type: string
     sql: ${TABLE}.locale ;;
   }
