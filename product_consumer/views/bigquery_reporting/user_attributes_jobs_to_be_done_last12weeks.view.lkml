@@ -1,16 +1,11 @@
-view: user_attributes_jobs_to_be_done {
-sql_table_name: `flink-data-prod.reporting.user_attributes_jobs_to_be_done`
+view: user_attributes_jobs_to_be_done_last12weeks {
+sql_table_name: `flink-data-prod.reporting.user_attributes_jobs_to_be_done_last12weeks`
   ;;
 
 dimension: customer_date_primary_key {
   primary_key: yes
   hidden: yes
   sql: CONCAT(${customer_uuid}, ${TABLE}.partition_date) ;;
-}
-
-filter: partition_date_filter {
-  type: date_time
-  sql: {% condition partition_date_filter %} ${partition_raw} {% endcondition %} ;;
 }
 
 dimension: country_iso {
@@ -210,11 +205,6 @@ dimension: has_local_orders {
 }
 
 ### Measures
-
-measure: count {
-  type: count
-  drill_fields: []
-}
 
 measure: users {
   group_label: "Counts (#) - Last 12 Weeks"

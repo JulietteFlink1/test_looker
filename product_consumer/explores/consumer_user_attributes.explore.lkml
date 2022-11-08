@@ -8,7 +8,7 @@
 # Questions that can be answered
 # - What are the attributes of our customers?
 
-include: "/**/user_attributes_jobs_to_be_done.view.lkml"
+include: "/**/user_attributes_jobs_to_be_done_last28days.view.lkml"
 include: "/**/user_attributes_lifecycle_last28days.view.lkml"
 include: "/**/user_attributes_lifecycle_first28days.view.lkml"
 # include: "/**/customers_metrics.view.lkml"
@@ -32,9 +32,9 @@ explore: consumer_user_attributes {
     ]
 
 # JTBD has a historical table where customers are duplicated per day, but the JTBD non-historical view only contains the customers' analysis from the previous day. Therefore unique on customer_uuid
-  join: user_attributes_jobs_to_be_done {
-    view_label: "* Customers JTBD *"
-    sql_on: ${user_attributes_lifecycle_first28days.customer_uuid} = ${user_attributes_jobs_to_be_done.customer_uuid};;
+  join: user_attributes_jobs_to_be_done_last28days {
+    view_label: "* Customers JTBD  Last 28 Days *"
+    sql_on: ${user_attributes_lifecycle_first28days.customer_uuid} = ${user_attributes_jobs_to_be_done_last28days.customer_uuid};;
     relationship: one_to_one
     type: left_outer
   }
@@ -57,7 +57,9 @@ explore: consumer_user_attributes {
   always_filter: {
     filters: [
       user_attributes_lifecycle_first28days.first_visit_date: "56 days ago for 28 days",
-      user_attributes_lifecycle_last28days.execution_date: "yesterday"
+      user_attributes_lifecycle_last28days.execution_date: "yesterday",
+      user_attributes_jobs_to_be_done_last28days.execution_date: "yesterday"
+
     ]
   }
 }
