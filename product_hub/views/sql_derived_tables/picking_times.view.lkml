@@ -8,6 +8,9 @@ view: picking_times {
       column: order_picked_time { field: event_order_state_updated.order_picked_time }
       column: order_packed_time { field: event_order_state_updated.order_packed_time }
       column: picked_to_packed_seconds { field: event_order_state_updated.picked_to_packed_seconds }
+      column: order_picking_finished_time { field: event_order_state_updated.order_picking_finished_time }
+      column: picking_finished_to_packed_seconds { field: event_order_state_updated.picking_finished_to_packed_seconds }
+      column: picked_to_picking_finished_seconds { field: event_order_state_updated.picked_to_picking_finished_seconds }
       column: event_timestamp_date {}
       bind_all_filters: yes
       # bind_filters: {
@@ -39,10 +42,28 @@ view: picking_times {
     description: "Timestamp for when the order changed to packed."
     type: number
   }
+  dimension: order_picking_finished_time {
+    group_label: "Picking Times"
+    label: "Order Picking Finished Time"
+    description: "Timestamp for when the order changed to picking_finished."
+    type: number
+  }
   dimension: picked_to_packed_seconds {
     group_label: "Picking Times"
     label: "Picked to Packed Seconds"
     description: "Difference in seconds between picked and packed timestamps."
+    type: number
+  }
+  dimension: picking_finished_to_packed_seconds {
+    group_label: "Picking Times"
+    label: "Picking Finished to Packed Seconds"
+    description: "Difference in seconds between picking_finished and packed timestamps."
+    type: number
+  }
+  dimension: picked_to_picking_finished_seconds {
+    group_label: "Picking Times"
+    label: "Picked to Picking Finished Seconds"
+    description: "Difference in seconds between picked and picking_finished timestamps."
     type: number
   }
   dimension: event_timestamp_date {
@@ -60,7 +81,10 @@ view: picking_times {
   # This is because this view is being joined to daily_events and if we use a normal sum it will be suming
   # duplicate values
 
+  # =========  Total Times   =========
+
   measure: sum_of_picking_time_seconds {
+    group_label: "Total Times"
     label: "Picking Time seconds"
     description: "Sum of picked_to_packed time in seconds."
     type: sum_distinct
@@ -70,6 +94,7 @@ view: picking_times {
   }
 
   measure: sum_of_picking_time_minutes {
+    group_label: "Total Times"
     label: "Picking Time minutes"
     description: "Sum of picked_to_packed time in minutes."
     type: sum_distinct
@@ -79,12 +104,85 @@ view: picking_times {
   }
 
   measure: sum_of_picking_time_hours {
+    group_label: "Total Times"
     label: "Picking Time hours"
     description: "Sum of picked_to_packed time in hours."
     type: sum_distinct
     value_format: "0.#"
     sql_distinct_key: ${order_id} ;;
     sql: ${picked_to_packed_seconds}/3600 ;;
+  }
+
+  measure: sum_of_handover_time_seconds {
+    group_label: "Total Times"
+    label: "Handover Time seconds"
+    description: "Sum of picking_finished_to_packed time in seconds."
+    type: sum_distinct
+    value_format: "0"
+    sql_distinct_key: ${order_id} ;;
+    sql: ${picking_finished_to_packed_seconds} ;;
+  }
+
+  measure: sum_of_handover_time_minutes {
+    group_label: "Total Times"
+    label: "Handover Time minutes"
+    description: "Sum of picking_finished_to_packed time in minutes."
+    type: sum_distinct
+    value_format: "0"
+    sql_distinct_key: ${order_id} ;;
+    sql: ${picking_finished_to_packed_seconds}/60 ;;
+  }
+
+  measure: sum_of_handover_time_hours {
+    group_label: "Total Times"
+    label: "Handover Time hours"
+    description: "Sum of picking_finished_to_packed time in hours."
+    type: sum_distinct
+    value_format: "0.#"
+    sql_distinct_key: ${order_id} ;;
+    sql: ${picking_finished_to_packed_seconds}/3600 ;;
+  }
+
+  measure: sum_of_picking_items_time_minutes {
+    group_label: "Total Times"
+    label: "Picking Items Time minutes"
+    description: "Sum of picked_to_picking_finished time in minutes."
+    type: sum_distinct
+    value_format: "0"
+    sql_distinct_key: ${order_id} ;;
+    sql: ${picked_to_picking_finished_seconds}/60 ;;
+  }
+
+  # =========  Average Times   =========
+
+  measure: avg_of_picking_time_minutes {
+    group_label: "Avg Times"
+    label: "Avg Picking Time minutes"
+    description: "Avg of picked_to_packed time in minutes."
+    type: average_distinct
+    value_format: "0.00"
+    sql_distinct_key: ${order_id} ;;
+    sql: ${picked_to_packed_seconds}/60 ;;
+  }
+
+  measure: avg_of_handover_time_minutes {
+    group_label: "Avg Times"
+    label: "Avg Handover Time minutes"
+    description: "Avg of picking_finished_to_packed time in minutes."
+    type: average_distinct
+    value_format: "0.00"
+    sql_distinct_key: ${order_id} ;;
+    sql: ${picking_finished_to_packed_seconds}/60 ;;
+  }
+
+  measure: avg_of_picking_items_time_minutes {
+    group_label: "Avg Times"
+    label: "Avg Picking Items Time minutes"
+    description: "Avg of picked_to_picking_finished time in minutes."
+    type: average_distinct
+    value_format: "0.00"
+    sql_distinct_key: ${order_id} ;;
+    sql: ${picked_to_picking_finished_seconds}/60 ;;
   }
 
 }

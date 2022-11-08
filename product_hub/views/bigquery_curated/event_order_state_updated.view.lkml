@@ -25,7 +25,10 @@ view: event_order_state_updated {
   set: to_include_measures {
     fields: [
       order_picked_time,
+      order_picking_finished_time,
       order_packed_time,
+      picked_to_picking_finished_seconds,
+      picking_finished_to_packed_seconds,
       picked_to_packed_seconds
     ]
   }
@@ -247,19 +250,46 @@ view: event_order_state_updated {
   # =========  Picking times Dimensions   =========
 
   measure: order_picked_time {
+    group_label: "Picking Times"
     label: "Order Picked Time"
     description: "Timestamp for when the order changed to picked."
     hidden: yes
     sql: MIN(IF(${state}='picked', ${TABLE}.event_timestamp,null)) ;;
   }
   measure: order_packed_time {
+    group_label: "Picking Times"
     label: "Order Packed Time"
     description: "Timestamp for when the order changed to packed."
     hidden: yes
     sql: MAX(IF(${state}='packed', ${TABLE}.event_timestamp,null)) ;;
   }
 
+  measure: order_picking_finished_time {
+    group_label: "Picking Times"
+    label: "Order Picking Finished Time"
+    description: "Timestamp for when the order changed to picking_finished."
+    hidden: yes
+    sql: MIN(IF(${state}='picking_finished', ${TABLE}.event_timestamp,null)) ;;
+  }
+
+  measure: picked_to_picking_finished_seconds {
+    group_label: "Picking Times"
+    label: "Picked to Picking Finisheds"
+    description: "Difference in seconds between picked and picking_finished timestamps."
+    hidden: yes
+    sql: DATETIME_DIFF(${order_picking_finished_time}, ${order_picked_time}, SECOND);;
+  }
+
+  measure: picking_finished_to_packed_seconds {
+    group_label: "Picking Times"
+    label: "Picking Finished to Packed Seconds"
+    description: "Difference in seconds between picking_finished and packed timestamps."
+    hidden: yes
+    sql: DATETIME_DIFF(${order_packed_time}, ${order_picking_finished_time}, SECOND);;
+  }
+
   measure: picked_to_packed_seconds {
+    group_label: "Picking Times"
     label: "Picked to Packed Seconds"
     description: "Difference in seconds between picked and packed timestamps."
     hidden: yes
