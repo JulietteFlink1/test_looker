@@ -26,7 +26,10 @@ explore: daily_hub_staff_events {
   hidden: no
 
   label: "Daily Hub Staff Events"
-  description: "This explore provides an overview of all behavioural events generated on Hub One. Picking times under 8 Order Dimensions are the ones informed to CT."
+  description: "This explore provides an overview of all behavioural events generated on Hub One.
+    This explore is built on front-end data, and is subset to the limitations of front-end tracking.
+    We can not, and do not, expect 100% accuracy compared to the Orders & Order Line Items explores.
+    We consider the Orders Explore to be the source of truth."
   group_label: "Product - Hub Tech"
 
 
