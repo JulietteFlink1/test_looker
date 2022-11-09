@@ -16,11 +16,30 @@ view: daily_stock_management_events_items_inbounded {
   # to be used for all fields in this view.
   sql_table_name: `flink-data-prod.reporting.daily_stock_management_events_items_inbounded`
     ;;
-  # No primary key is defined for this view. In order to join this view in an Explore,
-  # define primary_key: yes on a dimension that has no repeated values.
 
-  # Dates and timestamps can be represented in Looker using a dimension group of type: time.
-  # Looker converts dates and timestamps to the specified timeframes within the dimension group.
+  ####################################
+  ############# Sets #################
+  ####################################
+
+  set: to_include_product {
+    fields: [
+      employee_id
+    ]
+    }
+
+  set: to_include_vendor_performance {
+    fields: [
+      employee_id,
+      event_date,
+      sum_time_inbounding_in_hours,
+      sum_time_inbounding_in_minutes,
+      sum_total_quantity_items_inbounded,
+      total_items_inbounded_per_hour,
+      total_items_inbounded_per_minute,
+      cnt_picker
+    ]
+
+  }
 
   ####################################
   ############# IDs ##################
@@ -61,6 +80,18 @@ view: daily_stock_management_events_items_inbounded {
       week
     ]
     sql: ${TABLE}.cart_created_at ;;
+    hidden: yes
+  }
+
+  dimension_group: dropping_list_created {
+    type: time
+    description: "Timestamp when the dropping list is created, meaning the time when we start the dropping process."
+    timeframes: [
+      time,
+      date,
+      week
+    ]
+    sql: ${TABLE}.dropping_list_created_at ;;
     hidden: yes
   }
 
@@ -123,16 +154,44 @@ view: daily_stock_management_events_items_inbounded {
 
 #Inbounding times
 
+  dimension: time_populating_cart_in_hours {
+    type: number
+    description: "Time spent populating the cart during inbounding process in hours."
+    sql: ${TABLE}.time_populating_cart_in_hours ;;
+    hidden: yes
+  }
+
+  dimension: time_populating_cart_in_minutes {
+    type: number
+    description: "Time spent populating the cart during inbounding process in minutes."
+    sql: ${TABLE}.time_populating_cart_in_minutes ;;
+    hidden: yes
+  }
+
+  dimension: time_dropping_in_hours {
+    type: number
+    description: "Time spent dropping products on shelf during inbounding process in hours."
+    sql: ${TABLE}.time_dropping_in_hours ;;
+    hidden: yes
+  }
+
+  dimension: time_dropping_in_minutes {
+    type: number
+    description: "Time spent dropping products on shelf during inbounding process in minutes."
+    sql: ${TABLE}.time_dropping_in_minutes ;;
+    hidden: yes
+  }
+
   dimension: time_inbounding_in_hours {
     type: number
-    description: "Total duration of the inbounding process in hours"
+    description: "Total duration of the inbounding process in hours."
     sql: ${TABLE}.time_inbounding_in_hours ;;
     hidden: yes
   }
 
   dimension: time_inbounding_in_minutes {
     type: number
-    description: "Total duration of the inbounding process in minutes"
+    description: "Total duration of the inbounding process in minutes."
     sql: ${TABLE}.time_inbounding_in_minutes ;;
     hidden: yes
   }
@@ -166,7 +225,7 @@ view: daily_stock_management_events_items_inbounded {
   measure: sum_time_inbounding_in_hours {
     label: "# Hours Inbounding per day"
     description: "Total of hours inbounding per day"
-    type: sum
+    type: sum_distinct
     sql: ${time_inbounding_in_hours} ;;
 
     value_format_name: decimal_0
@@ -175,7 +234,7 @@ view: daily_stock_management_events_items_inbounded {
   measure: sum_time_inbounding_in_minutes {
     label: "# Minutes Inbounding per day"
     description: "Total of minutes inbounding per day"
-    type: sum
+    type: sum_distinct
     sql: ${time_inbounding_in_minutes} ;;
 
     value_format_name: decimal_0
@@ -184,7 +243,7 @@ view: daily_stock_management_events_items_inbounded {
   measure: sum_total_quantity_items_inbounded {
     label: "# Items Inbounded per day"
     description: "Total amount of items inbounded per day"
-    type: sum
+    type: sum_distinct
     sql: ${total_quantity_items_inbounded} ;;
 
     value_format_name: decimal_0
