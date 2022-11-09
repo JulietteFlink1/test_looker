@@ -87,7 +87,7 @@ view: picking_times {
   measure: sum_of_picking_time_seconds {
     group_label: "Total Times"
     label: "Picking Time seconds"
-    description: "Sum of picked_to_packed time in seconds."
+    description: "Sum of time spent picking an order from order picked to order ready for rider in seconds."
     type: sum_distinct
     value_format: "0"
     sql_distinct_key: ${order_id} ;;
@@ -97,7 +97,7 @@ view: picking_times {
   measure: sum_of_picking_time_minutes {
     group_label: "Total Times"
     label: "Picking Time minutes"
-    description: "Sum of picked_to_packed time in minutes."
+    description: "Sum of time spent picking an order from order picked to order ready for rider in minutes."
     type: sum_distinct
     value_format: "0"
     sql_distinct_key: ${order_id} ;;
@@ -107,37 +107,37 @@ view: picking_times {
   measure: sum_of_picking_time_hours {
     group_label: "Total Times"
     label: "Picking Time hours"
-    description: "Sum of picked_to_packed time in hours."
+    description: "Sum of time spent picking an order from order picked to order ready for rider in hours."
     type: sum_distinct
     value_format: "0.#"
     sql_distinct_key: ${order_id} ;;
     sql: ${picked_to_packed_seconds}/3600 ;;
   }
 
-  measure: sum_of_handover_time_seconds {
+  measure: sum_of_container_assignment_time_seconds {
     group_label: "Total Times"
-    label: "Handover Time seconds"
-    description: "Sum of picking_finished_to_packed time in seconds."
+    label: "Container Assignment Time seconds"
+    description: "Sum of time spent on assign containers and shelfs in seconds."
     type: sum_distinct
     value_format: "0"
     sql_distinct_key: ${order_id} ;;
     sql: ${picking_finished_to_packed_seconds} ;;
   }
 
-  measure: sum_of_handover_time_minutes {
+  measure: sum_of_container_assignment_time_minutes {
     group_label: "Total Times"
-    label: "Handover Time minutes"
-    description: "Sum of picking_finished_to_packed time in minutes."
+    label: "Container Assignment Time minutes"
+    description: "Sum of time spent on assign containers and shelfs in minutes."
     type: sum_distinct
     value_format: "0"
     sql_distinct_key: ${order_id} ;;
     sql: ${picking_finished_to_packed_seconds}/60 ;;
   }
 
-  measure: sum_of_handover_time_hours {
+  measure: sum_of_container_assignment_time_hours {
     group_label: "Total Times"
-    label: "Handover Time hours"
-    description: "Sum of picking_finished_to_packed time in hours."
+    label: "Container Assignment Time hours"
+    description: "Sum of time spent on assign containers and shelfs in hours."
     type: sum_distinct
     value_format: "0.#"
     sql_distinct_key: ${order_id} ;;
@@ -148,7 +148,7 @@ view: picking_times {
     hidden: yes #hidden to avoid confusion
     group_label: "Total Times"
     label: "Picking Items Time minutes"
-    description: "Sum of picked_to_picking_finished time in minutes."
+    description: "Sum of time spent picking items from order picked to container assignment in minutes."
     type: sum_distinct
     value_format: "0"
     sql_distinct_key: ${order_id} ;;
@@ -160,17 +160,17 @@ view: picking_times {
   measure: avg_of_picking_time_minutes {
     group_label: "Avg Times"
     label: "Avg Picking Time minutes"
-    description: "Avg of picked_to_packed time in minutes."
+    description: "Avg of time spent picking an order from order picked to order ready for rider in minutes."
     type: average_distinct
     value_format: "0.00"
     sql_distinct_key: ${order_id} ;;
     sql: ${picked_to_packed_seconds}/60 ;;
   }
 
-  measure: avg_of_handover_time_minutes {
+  measure: avg_of_container_assignment_time_minutes {
     group_label: "Avg Times"
-    label: "Avg Handover Time minutes"
-    description: "Avg of picking_finished_to_packed time in minutes."
+    label: "Avg Container Assignment Time minutes"
+    description: "Avg of time spent on assign containers and shelfs in minutes."
     type: average_distinct
     value_format: "0.00"
     sql_distinct_key: ${order_id} ;;
@@ -181,7 +181,7 @@ view: picking_times {
     hidden: yes #hidden to avoid confusion
     group_label: "Avg Times"
     label: "Avg Picking Items Time minutes"
-    description: "Avg of picked_to_picking_finished time in minutes."
+    description: "Avg of time spent picking items from order picked to container assignment in minutes."
     type: average_distinct
     value_format: "0.00"
     sql_distinct_key: ${order_id} ;;

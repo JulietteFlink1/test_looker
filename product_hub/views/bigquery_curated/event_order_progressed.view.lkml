@@ -268,7 +268,7 @@ view: event_order_progressed {
   measure: number_of_events {
     group_label: "Total Metrics"
     label: "# Events"
-    description: "Number of events trigegred"
+    description: "Number of events triggered"
     type: count_distinct
     sql: ${TABLE}.event_uuid ;;
   }
