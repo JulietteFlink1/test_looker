@@ -1,3 +1,12 @@
+# Owner: Product Analytics, Galina Larina, Zhou Fang
+
+# Main Stakeholder:
+# - Consumer Product (Addresses)
+
+# Questions that can be answered
+# - how many orders have delivery notes?
+
+
 include: "/**/*.view"
 
 explore: order_comments{
