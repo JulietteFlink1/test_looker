@@ -136,6 +136,7 @@ view: daily_smart_inventory_checks {
     timeframes: [
       raw,
       date,
+      week,
       day_of_week
     ]
     convert_tz: no
@@ -299,13 +300,22 @@ view: daily_smart_inventory_checks {
     filters: [status: "open"]
   }
 
-  measure: number_of_open_and_completed_checks {
+  measure: number_of_skipped_checks {
     type: count_distinct
     group_label: "Total Metrics"
-    label: "# of Open and Completed Checks"
+    label: "# of Skipped Checks"
+    description: "Number of skipped checks."
+    sql: ${table_uuid} ;;
+    filters: [status: "skipped"]
+  }
+
+  measure: number_of_open_completed_skipped_checks {
+    type: count_distinct
+    group_label: "Total Metrics"
+    label: "# of Open, Completed and Skipped Checks"
     description: "Number of open and completed checks."
     sql: ${table_uuid} ;;
-    filters: [status: "open, done"]
+    filters: [status: "open, done, skipped"]
   }
 
   # =========  Rate Metrics  =========
@@ -324,8 +334,8 @@ view: daily_smart_inventory_checks {
     value_format: "0%"
     group_label: "Rate Metrics"
     label: "% of Completion"
-    description: "# of Completed Checks/ (# of Completed Checks + # of Open Checks)"
-    sql: ${number_of_completed_checks}/nullif((${number_of_completed_checks}+${number_of_open_checks}),0) ;;
+    description: "# of Completed Checks/ (# of Completed Checks + # of Open Checks + # of Skipped Checks)"
+    sql: ${number_of_completed_checks}/nullif((${number_of_open_completed_skipped_checks}),0) ;;
   }
 
   # =========  Time Metrics  =========
