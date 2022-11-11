@@ -690,6 +690,7 @@ view: orderline {
 
   measure: sum_amt_refund_gross {
     label: "SUM Refund (Gross)"
+    description: "Refund amount on item level, incl. VAT. Does NOT include Deposit, Storage Fee, Delivery Fee refunds."
     sql: ${amt_refund_gross} ;;
     type: sum
     value_format_name: euro_accounting_2_precision
@@ -698,6 +699,7 @@ view: orderline {
 
   measure: sum_amt_refund_net {
     label: "SUM Refund (Net)"
+    description: "Refund amount on item level, excl. VAT. Does NOT include Deposit, Storage Fee, Delivery Fee refunds."
     sql: ${amt_refund_net} ;;
     type: sum
     value_format_name: euro_accounting_2_precision
