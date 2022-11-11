@@ -756,7 +756,7 @@ view: shyftplan_riders_pickers_hours_clean {
     label: "AVG All Staff UTR"
     type: number
     description: "# Orders from opened hub / # Worked All Staff (incl. Rider,Picker,WH Ops, Rider Captain, Ops Associate and Shift Lead) Hours"
-    sql: ${adjusted_orders_pickers} / NULLIF(${rider_hours}+${picker_hours}+${wh_ops_hours}+${shift_lead_hours}+${rider_captain_hours}+${ops_associate_hours}, 0);;
+    sql: ${adjusted_orders_pickers} / NULLIF(${rider_hours}+${shift_lead_hours}+${ops_associate_hours}, 0);;
     value_format_name: decimal_2
     group_label: "UTR"
   }

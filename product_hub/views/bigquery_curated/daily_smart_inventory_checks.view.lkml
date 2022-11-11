@@ -292,7 +292,6 @@ view: daily_smart_inventory_checks {
 
   measure: number_of_open_checks {
     type: count_distinct
-    hidden: yes
     group_label: "Total Metrics"
     label: "# of Open Checks"
     description: "Number of open checks."
