@@ -228,14 +228,14 @@ view: orderline {
   dimension: refund_amount_net {
     type: number
     hidden: yes
-    sql: ${TABLE}.refund_amount_net;;
+    sql: ${TABLE}.amt_refund_net;;
     group_label: "> Monetary Dimensions"
   }
 
   dimension: refund_amount_gross {
     type: number
     hidden: yes
-    sql: ${TABLE}.refund_amount_gross;;
+    sql: ${TABLE}.amt_refund_gross;;
     group_label: "> Monetary Dimensions"
   }
 
@@ -692,7 +692,6 @@ view: orderline {
     label: "SUM Refund (Gross)"
     sql: ${refund_amount_gross} ;;
     type: sum
-    hidden: yes
     value_format_name: euro_accounting_2_precision
     group_label: "> Monetary Metrics"
   }
@@ -701,7 +700,6 @@ view: orderline {
     label: "SUM Refund (Net)"
     sql: ${refund_amount_net} ;;
     type: sum
-    hidden: yes
     value_format_name: euro_accounting_2_precision
     group_label: "> Monetary Metrics"
   }
