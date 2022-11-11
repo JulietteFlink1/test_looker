@@ -136,6 +136,7 @@ view: daily_smart_inventory_checks {
     timeframes: [
       raw,
       date,
+      week,
       day_of_week
     ]
     convert_tz: no
