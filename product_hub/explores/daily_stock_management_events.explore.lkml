@@ -56,6 +56,7 @@ explore: daily_stock_management_events {
 
   join: daily_stock_management_events_items_inbounded {
     #view_label: "Inventory Movement Id Times"
+    fields: [daily_stock_management_events_items_inbounded.to_include_product*]
     sql_on: ${daily_stock_management_events_items_inbounded.inventory_movement_id}=${daily_stock_management_events.inventory_movement_id};;
     type: left_outer
     relationship: many_to_one
