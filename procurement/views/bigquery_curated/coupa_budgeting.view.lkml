@@ -9,16 +9,16 @@ view: coupa_budgeting {
     sql: ${TABLE}.coupa_budget_uuid ;;
   }
 
-  dimension: amount_budget {
+  dimension: amt_budget_gross_eur {
     type: number
     hidden: yes
-    sql: ${TABLE}.amount_budget ;;
+    sql: ${TABLE}.amt_budget_gross_eur ;;
   }
 
-  dimension: amount_remaining_budget {
+  dimension: amt_remaining_budget_gross_eur {
     type: number
     hidden: yes
-    sql: ${TABLE}.amount_remaining_budget ;;
+    sql: ${TABLE}.amt_remaining_budget_gross_eur ;;
   }
 
   dimension_group: period_end {
@@ -63,21 +63,21 @@ view: coupa_budgeting {
     sql: ${TABLE}.hub_code ;;
   }
 
-  measure: sum_amount_budget {
+  measure: sum_amt_budget_gross_eur {
     group_label: "Budget"
     label: "Amount Budget"
     description: "Amount of budget allocated, in euros."
     type: sum
-    sql: ${amount_budget} ;;
+    sql: ${amt_budget_gross_eur} ;;
     value_format_name: eur
   }
 
-  measure: sum_amount_remaining_budget {
+  measure: sum_amt_remaining_budget_gross_eur {
     group_label: "Budget"
     label: "Amount Remaining Budget"
     description: "Remaining amount of budget allocated, in euros."
     type: sum
-    sql: ${amount_remaining_budget} ;;
+    sql: ${amt_remaining_budget_gross_eur} ;;
     value_format_name: eur
   }
 
@@ -86,7 +86,7 @@ view: coupa_budgeting {
     label: "% Amount Remaining Budget"
     description: "Remaining amount of budget allocated, divided by the initially allocated budget."
     type: number
-    sql: safe_divide(${sum_amount_remaining_budget},${sum_amount_budget}) ;;
+    sql: safe_divide(${sum_amt_remaining_budget_gross_eur},${sum_amt_budget_gross_eur}) ;;
     value_format_name: percent_1
   }
 

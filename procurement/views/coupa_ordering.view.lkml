@@ -21,10 +21,11 @@ view: coupa_ordering {
     sql: ${TABLE}.order_created_at_timestamp ;;
   }
 
-  dimension: unit_price {
+  dimension: amt_unit_price_gross_eur {
     type: number
+    label: "AMT Unit Price"
     description: "Price of a single unit of the item that was purchased. In euros."
-    sql: ${TABLE}.unit_price ;;
+    sql: ${TABLE}.amt_unit_price_gross_eur ;;
   }
 
   dimension: item_description {
@@ -35,27 +36,28 @@ view: coupa_ordering {
 
   dimension: hub_code {
     type: string
+    hidden: yes
     description: "Code of a hub identical to back-end source tables."
     sql: ${TABLE}.hub_code ;;
   }
 
-  dimension: po_number {
+  dimension: purchase_order_number {
     type: string
     description: "Purchase Order number reported in Coupa."
-    sql: ${TABLE}.po_number ;;
+    sql: ${TABLE}.purchase_order_number ;;
   }
 
-  dimension: quantity {
+  dimension: number_of_ordered_units {
     type: number
     hidden: yes
     description: "Number of units of the item ordered."
-    sql: ${TABLE}.quantity ;;
+    sql: ${TABLE}.number_of_ordered_units ;;
   }
 
-  dimension: amount_ordered {
+  dimension: amt_ordered_gross_eur {
     type: number
     hidden: yes
-    sql: ${TABLE}.amount_ordered ;;
+    sql: ${TABLE}.amt_ordered_gross_eur ;;
   }
 
   dimension: requester_name {
@@ -70,20 +72,20 @@ view: coupa_ordering {
     sql: ${TABLE}.period_name ;;
   }
 
-  measure: sum_quantity{
+  measure: sum_number_of_ordered_units{
     group_label: "Orders"
-    label: "Quantity"
+    label: "# Order Units"
     description: "Number of units of the item ordered."
     type: sum
-    sql: ${quantity} ;;
+    sql: ${number_of_ordered_units} ;;
   }
 
-  measure: sum_amount_ordered {
+  measure: sum_amt_ordered_gross_eur {
     group_label: "Orders"
     label: "Amount Ordered"
     description: "Sum of the unit prices multiplied by the quantities ordered."
     type: sum
-    sql: ${amount_ordered} ;;
+    sql: ${amt_ordered_gross_eur} ;;
     value_format_name: decimal_2
   }
 
@@ -118,7 +120,7 @@ view: coupa_ordering {
   ######## Dynamic Dimensions
 
   dimension: order_created_date_dynamic {
-    group_label: "> Dates"
+    group_label: "Dates & Timestamp"
     label: "Order Created Date (Dynamic)"
     label_from_parameter: date_granularity
     sql:
