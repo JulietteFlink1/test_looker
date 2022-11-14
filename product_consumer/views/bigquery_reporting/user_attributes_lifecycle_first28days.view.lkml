@@ -236,9 +236,9 @@ view: user_attributes_lifecycle_first28days {
   }
 
   dimension: aov_category {
-    group_label: "* RFM Quartile Categories *"
-    label: "AOV (Gross) Per Customer Category"
-    description: "Dimension that splits customers into quartiles according to their AOV (Gross) value"
+    group_label: "* RFM Quartiles *"
+    label: "AOV (Gross) Quartiles"
+    description: "Dimension that splits customers into quartiles according to their Average Order Value (Gross) in the first 28 days"
     case: {
       when: {
         sql: ${avg_gmv_gross} < ${aov_25};;
@@ -288,9 +288,9 @@ view: user_attributes_lifecycle_first28days {
   }
 
   dimension: gmv_category {
-    group_label: "* RFM Quartile Categories *"
-    label: "Sum GMV (Gross) Per Customer Category"
-    description: "Dimension that splits customers into quartiles according to their total orders value"
+    group_label: "* RFM Quartiles *"
+    label: "Sum GMV (Gross) Quartiles"
+    description: "Dimension that splits customers into quartiles according to their total orders value in the first 28 days"
     case: {
       when: {
         sql: ${amt_gmv_gross} < ${gmv_25};;
@@ -337,8 +337,8 @@ view: user_attributes_lifecycle_first28days {
   }
 
   dimension: days_ordering_category {
-    group_label: "* RFM Quartile Categories *"
-    label: "# Days Ordering Category"
+    group_label: "* RFM Quartiles *"
+    label: "# Days Ordering Quartiles"
     description: "Dimension that splits customers into quartiles according to on how many days they've ordered in the first 28 days"
     case: {
       when: {
@@ -386,8 +386,8 @@ view: user_attributes_lifecycle_first28days {
   }
 
   dimension: days_visiting_category {
-    group_label: "* RFM Quartile Categories *"
-    label: "# Days Visiting Category"
+    group_label: "* RFM Quartiles *"
+    label: "# Days Visiting Quartiles"
     description: "Dimension that splits customers into quartiles according to on how many days they've visited in the first 28 days"
     case: {
       when: {
@@ -416,17 +416,48 @@ view: user_attributes_lifecycle_first28days {
 
   dimension: avg_gmv_gross_tier_2 {
     group_label: "* Monetary Values *"
-    label: "AOV Per Customer (tiered, 2 EUR)"
+    label: "Average Order Value (Gross) Per Customer (tiered, 2 EUR)"
+    description: "Average Order Value (Gross) Per Customer (tiered, 2 EUR) in the first 28 days"
     type: tier
     tiers: [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70]
     style: relational
     sql: ${avg_gmv_gross} ;;
   }
 
+  dimension: amt_gmv_gross_tier_2 {
+    group_label: "* Monetary Values *"
+    label: "Sum GMV (Gross) Per Customer (tiered, 2 EUR)"
+    description: "Sum GMV (Gross) Per Customer (tiered, 2 EUR) in the first 28 days"
+    type: tier
+    tiers: [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70]
+    style: relational
+    sql: ${amt_gmv_gross} ;;
+  }
+
+  dimension: avg_gmv_net_tier_2 {
+    group_label: "* Monetary Values *"
+    label: "Average Order Value (Net) Per Customer (tiered, 2 EUR)"
+    description: "Average Order Value (Net) Per Customer (tiered, 2 EUR) in the first 28 days"
+    type: tier
+    tiers: [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70]
+    style: relational
+    sql: ${avg_gmv_net} ;;
+  }
+
+  dimension: amt_gmv_net_tier_2 {
+    group_label: "* Monetary Values *"
+    label: "Sum GMV (Net) Per Customer (tiered, 2 EUR)"
+    description: "Sum GMV (Net) Per Customer (tiered, 2 EUR) in the first 28 days"
+    type: tier
+    tiers: [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70]
+    style: relational
+    sql: ${amt_gmv_net} ;;
+  }
+
   dimension: amt_gmv_gross {
     group_label: "* Monetary Values *"
     label: "GMV (Gross) Per Customer"
-    description: "Sum GMV (Gross) per customer"
+    description: "Sum GMV (Gross) per customer. Incl. fees and incl. VAT, before deduction of discounts"
     type: number
     sql: ${TABLE}.amt_gmv_gross ;;
   }
@@ -434,7 +465,7 @@ view: user_attributes_lifecycle_first28days {
   dimension: amt_gmv_net {
     group_label: "* Monetary Values *"
     label: "GMV (Net) Per Customer"
-    description: "GMV (Net) per customer"
+    description: "Sum GMV (Net) per customer. Incl. fees and excl. VAT, before deduction of discounts"
     type: number
     sql: ${TABLE}.amt_gmv_net ;;
   }
@@ -442,23 +473,24 @@ view: user_attributes_lifecycle_first28days {
   dimension: amt_revenue_gross {
     group_label: "* Monetary Values *"
     label: "Revenue (Gross) Per Customer"
-    description: "Revebye (Gross) per customer"
+    description: "Revenue (Gross) per customer"
     type: number
+    hidden: yes
     sql: ${TABLE}.amt_revenue_gross ;;
   }
 
   dimension: avg_gmv_gross {
     group_label: "* Monetary Values *"
-    label: "AOV (Gross) Per Customer"
-    description: "AOV (Gross) per customer"
+    label: "Average Order Value (Gross) Per Customer"
+    description: "Average Order Value (Gross) per customer"
     type: number
     sql: ${TABLE}.avg_gmv_gross ;;
   }
 
   dimension: avg_gmv_net {
     group_label: "* Monetary Values *"
-    label: "AOV (Net) Per Customer"
-    description: "AOV (Net) per customer"
+    label: "Average Order Value (Net) Per Customer"
+    description: "Average Order Value (Net) per customer"
     type: number
     sql: ${TABLE}.avg_gmv_net ;;
   }
@@ -468,6 +500,7 @@ view: user_attributes_lifecycle_first28days {
     label: "Average Revenue (Gross) Per Customer"
     description: "Average Revenue (Gross) per customer"
     type: number
+    hidden: yes
     sql: ${TABLE}.avg_revenue_gross ;;
   }
 
@@ -478,23 +511,23 @@ view: user_attributes_lifecycle_first28days {
   dimension: avg_days_between_orders {
     group_label: "* Frequency Values*"
     label: "AVG Days Between Orders"
-    description: "Average number of days between orders"
+    description: "Average number of days between orders in the first 28 days"
     type: number
-    sql: ${TABLE}.avg_days_between_orders ;;
+    sql: cast(${TABLE}.avg_days_between_orders as int64) ;;
   }
 
   dimension: avg_days_between_visits {
     group_label: "* Frequency Values*"
     label: "AVG Days Between Visits"
-    description: "Average number of days between visits"
+    description: "Average number of days between visits in the first 28 days"
     type: number
-    sql: ${TABLE}.avg_days_between_visits ;;
+    sql: cast(${TABLE}.avg_days_between_visits as int64) ;;
   }
 
   dimension: number_of_days_ordering {
     group_label: "* Frequency Values*"
     label: "# Days Ordering"
-    description: "Number of days the customer has ordered with us"
+    description: "Number of days the customer has ordered with us in the first 28 days"
     type: number
     sql: ${TABLE}.number_of_days_ordering ;;
   }
@@ -502,7 +535,7 @@ view: user_attributes_lifecycle_first28days {
   dimension: number_of_days_visited {
     group_label: "* Frequency Values*"
     label: "# Days Visited"
-    description: "Number of days the customer has visited us"
+    description: "Number of days the customer has visited us in the first 28 days"
     type: number
     sql: ${TABLE}.number_of_days_visited ;;
   }
@@ -510,7 +543,7 @@ view: user_attributes_lifecycle_first28days {
   dimension: number_of_orders {
     group_label: "* Frequency Values*"
     label: "# Orders"
-    description: "Number of orders"
+    description: "Number of orders in the first 28 days"
     type: number
     sql: ${TABLE}.number_of_orders ;;
   }
@@ -528,7 +561,7 @@ view: user_attributes_lifecycle_first28days {
   dimension: order_to_visit_ratio_tier3 {
     group_label: "* Frequency Values*"
     label: "Order To Visit Ratio (tiered, 0.33)"
-    description: "Tiers for ratio of how many orders occur per visit"
+    description: "Tiers for ratio of how many orders occur per visit in the first 28 days"
     type: tier
     tiers: [0, 0.33, 0.66, 1]
     style: relational
@@ -537,7 +570,7 @@ view: user_attributes_lifecycle_first28days {
 
   dimension: order_to_visit_ratio {
     group_label: "* Frequency Values*"
-    description: "Ratio of how many orders occur per visit"
+    description: "Ratio of how many orders occur per visit in the first 28 days"
     type: number
     sql: 1.0* ${number_of_days_ordering}/${number_of_days_visited} ;;
     value_format_name: decimal_2
@@ -549,6 +582,7 @@ view: user_attributes_lifecycle_first28days {
 
   dimension_group: last_visit {
     group_label: "* Recency Dates *"
+    description: "Last Visit Date in the first 28 days"
     type: time
     timeframes: [
       raw,
@@ -565,6 +599,7 @@ view: user_attributes_lifecycle_first28days {
 
   dimension_group: last_order {
     group_label: "* Recency Dates *"
+    description: "Last Order Date in the first 28 days"
     type: time
     timeframes: [
       raw,
@@ -583,32 +618,73 @@ view: user_attributes_lifecycle_first28days {
   #==================================== Discount Dimensions ====================================#
   #=============================================================================================#
 
+  dimension: amt_discount_gross_tier_1 {
+    group_label: "* Monetary Values *"
+    label: "Sum discount value (gross) per customer (tiered, 1 EUR)"
+    type: tier
+    tiers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50]
+    style: relational
+    sql: ${amt_discount_gross} ;;
+  }
+
+  dimension: amt_discount_net_tier_1 {
+    group_label: "* Monetary Values *"
+    label: "Sum discount value (net) per customer (tiered, 1 EUR)"
+    type: tier
+    tiers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50]
+    style: relational
+    sql: ${amt_discount_net} ;;
+  }
+
+  dimension: avg_discount_gross_tier_1 {
+    group_label: "* Monetary Values *"
+    label: "Average discount value (gross) per customer (tiered, 1 EUR)"
+    type: tier
+    tiers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50]
+    style: relational
+    sql: ${avg_discount_gross} ;;
+  }
+
+  dimension: avg_discount_net_tier_1 {
+    group_label: "* Monetary Values *"
+    label: "Average discount value (net) per customer (tiered, 1 EUR)"
+    type: tier
+    tiers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50]
+    style: relational
+    sql: ${avg_discount_net} ;;
+  }
+
   dimension: amt_discount_gross {
     group_label: "* Discount Dimensions *"
+    description: "Sum discount value (gross) that the customer applied in total. Note this field can be used for filters and custom measures. Use tiered dimensions for distributions."
     type: number
     sql: ${TABLE}.amt_discount_gross ;;
   }
 
   dimension: amt_discount_net {
     group_label: "* Discount Dimensions *"
+    description: "Sum discount value (net) that the customer applied in total. Note this field can be used for filters and custom measures. Use tiered dimensions for distributions."
     type: number
     sql: ${TABLE}.amt_discount_net ;;
   }
 
   dimension: avg_discount_gross {
     group_label: "* Discount Dimensions *"
+    description: "Average discount value (gross) that the customer applied per order. Note this field can be used for filters and custom measures. Use tiered dimensions for distributions."
     type: number
     sql: ${TABLE}.avg_discount_gross ;;
   }
 
   dimension: avg_discount_net {
     group_label: "* Discount Dimensions *"
+    description: "Average discount value (net) that the customer applied per order. Note this field can be used for filters and custom measures. Use tiered dimensions for distributions."
     type: number
     sql: ${TABLE}.avg_discount_net ;;
   }
 
   dimension: number_of_discounted_orders {
     group_label: "* Discount Dimensions *"
+    description: "Sum number of order with discounts per customer"
     type: number
     sql: ${TABLE}.number_of_discounted_orders ;;
   }
@@ -633,7 +709,7 @@ view: user_attributes_lifecycle_first28days {
     group_label: "* Sum GMV Per Customer *"
     group_item_label: "AVG"
     label: "Total GMV AVG"
-    description: "Average of the total GMV over customers"
+    description: "Average of the total GMV over customers in the first 28 days"
     type: average
     sql: ${amt_gmv_gross} ;;
   }
@@ -642,7 +718,7 @@ view: user_attributes_lifecycle_first28days {
     group_label: "* Sum GMV Per Customer *"
     group_item_label: "Sum"
     label: "Total GMV Sum"
-    description: "Sum of the total GMV over customers"
+    description: "Sum of the total GMV over customers in the first 28 days"
     type: sum
     sql: ${amt_gmv_gross} ;;
   }
@@ -724,7 +800,7 @@ view: user_attributes_lifecycle_first28days {
     group_label: "* # Days Visiting *"
     group_item_label: "AVG"
     label: "# Days Visiting AVG"
-    description: "Average number of days visited"
+    description: "Average number of days visited in the first 28 days"
     type: average
     sql: ${number_of_days_visited};;
     value_format_name: decimal_1
@@ -786,7 +862,7 @@ view: user_attributes_lifecycle_first28days {
     group_label: "* AOV Per Customer *"
     group_item_label: "AVG"
     label: "AOV (Gross) - AVG"
-    description: "The average AOV across customers"
+    description: "The average AOV across customers in the first 28 days"
     type: average
     sql: ${avg_gmv_gross} ;;
     value_format_name: eur
@@ -854,7 +930,7 @@ view: user_attributes_lifecycle_first28days {
     group_label: "* # Days Ordering *"
     label: "# Days Ordering AVG"
     group_item_label: "AVG"
-    description: "Average number of days ordered"
+    description: "Average number of days ordered in the first 28 days"
     type: average
     sql: ${number_of_days_ordering};;
     value_format_name: decimal_1
