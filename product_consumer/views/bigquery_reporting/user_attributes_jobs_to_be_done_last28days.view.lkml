@@ -125,7 +125,7 @@ view: user_attributes_jobs_to_be_done_last28days {
 
   dimension_group: execution {
     type: time
-    hidden:  yes
+    hidden:  no
     timeframes: [
       raw,
       date,

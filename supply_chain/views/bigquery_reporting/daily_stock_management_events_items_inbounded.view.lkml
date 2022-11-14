@@ -16,11 +16,39 @@ view: daily_stock_management_events_items_inbounded {
   # to be used for all fields in this view.
   sql_table_name: `flink-data-prod.reporting.daily_stock_management_events_items_inbounded`
     ;;
-  # No primary key is defined for this view. In order to join this view in an Explore,
-  # define primary_key: yes on a dimension that has no repeated values.
 
-  # Dates and timestamps can be represented in Looker using a dimension group of type: time.
-  # Looker converts dates and timestamps to the specified timeframes within the dimension group.
+  ####################################
+  ############# Sets #################
+  ####################################
+
+  set: to_include_product {
+    fields: [
+      inbounding_time_hours,
+      inbounding_time_minutes,
+      avg_inbounding_time_minutes,
+      dropping_time_hours,
+      dropping_time_minutes,
+      avg_dropping_time_minutes,
+      populating_cart_time_hours,
+      populating_cart_time_minutes,
+      avg_populating_cart_time_minutes
+    ]
+    }
+
+  set: to_include_vendor_performance {
+    fields: [
+      employee_id,
+      event_date,
+      event_week,
+      sum_time_inbounding_in_hours,
+      sum_time_inbounding_in_minutes,
+      sum_total_quantity_items_inbounded,
+      total_items_inbounded_per_hour,
+      total_items_inbounded_per_minute,
+      cnt_picker
+    ]
+
+  }
 
   ####################################
   ############# IDs ##################
@@ -61,6 +89,18 @@ view: daily_stock_management_events_items_inbounded {
       week
     ]
     sql: ${TABLE}.cart_created_at ;;
+    hidden: yes
+  }
+
+  dimension_group: dropping_list_created {
+    type: time
+    description: "Timestamp when the dropping list is created, meaning the time when we start the dropping process."
+    timeframes: [
+      time,
+      date,
+      week
+    ]
+    sql: ${TABLE}.dropping_list_created_at ;;
     hidden: yes
   }
 
@@ -123,16 +163,44 @@ view: daily_stock_management_events_items_inbounded {
 
 #Inbounding times
 
+  dimension: time_populating_cart_in_hours {
+    type: number
+    description: "Time spent populating the cart during inbounding process in hours."
+    sql: ${TABLE}.time_populating_cart_in_hours ;;
+    hidden: yes
+  }
+
+  dimension: time_populating_cart_in_minutes {
+    type: number
+    description: "Time spent populating the cart during inbounding process in minutes."
+    sql: ${TABLE}.time_populating_cart_in_minutes ;;
+    hidden: yes
+  }
+
+  dimension: time_dropping_in_hours {
+    type: number
+    description: "Time spent dropping products on shelf during inbounding process in hours."
+    sql: ${TABLE}.time_dropping_in_hours ;;
+    hidden: yes
+  }
+
+  dimension: time_dropping_in_minutes {
+    type: number
+    description: "Time spent dropping products on shelf during inbounding process in minutes."
+    sql: ${TABLE}.time_dropping_in_minutes ;;
+    hidden: yes
+  }
+
   dimension: time_inbounding_in_hours {
     type: number
-    description: "Total duration of the inbounding process in hours"
+    description: "Total duration of the inbounding process in hours."
     sql: ${TABLE}.time_inbounding_in_hours ;;
     hidden: yes
   }
 
   dimension: time_inbounding_in_minutes {
     type: number
-    description: "Total duration of the inbounding process in minutes"
+    description: "Total duration of the inbounding process in minutes."
     sql: ${TABLE}.time_inbounding_in_minutes ;;
     hidden: yes
   }
@@ -219,9 +287,89 @@ view: daily_stock_management_events_items_inbounded {
     value_format_name: decimal_0
   }
 
-  measure: count {
-    type: count
-    hidden: yes
-    drill_fields: []
+  ####################################
+  ####### Product Measures ###########
+  ####################################
+  #Everything will be unified when migrate to hubOne
+
+  measure: inbounding_time_hours {
+    label: "# Hours Inbounding"
+    description: "Total duration of the inbounding process in hours (from cart_created to dropping_list_finished)."
+    type: sum_distinct
+    sql: ${time_inbounding_in_hours} ;;
+
+    value_format_name: decimal_0
+  }
+
+  measure: inbounding_time_minutes {
+    label: "# Minutes Inbounding"
+    description: "Total duration of the inbounding process in hours (from cart_created to dropping_list_finished)."
+    type: sum_distinct
+    sql: ${time_inbounding_in_minutes} ;;
+
+    value_format_name: decimal_0
+  }
+
+  measure: avg_inbounding_time_minutes {
+    label: "Avg Minutes Inbounding"
+    description: "Avg duration of the inbounding process in hours (from cart_created to dropping_list_finished)."
+    type: average_distinct
+    sql: ${time_inbounding_in_minutes} ;;
+
+    value_format_name: decimal_2
+  }
+
+  measure: dropping_time_hours {
+    label: "# Hours Dropping"
+    description: "Total duration of the inbounding process in hours (from cart_created to dropping_list_finished)."
+    type: sum_distinct
+    sql: ${time_dropping_in_hours} ;;
+
+    value_format_name: decimal_0
+  }
+
+  measure: dropping_time_minutes {
+    label: "# Minutes Dropping"
+    description: "Total time spent dropping products on shelf during inbounding process in minutes (from dropping_list_started to dropping_list_finished)."
+    type: sum_distinct
+    sql: ${time_dropping_in_minutes} ;;
+
+    value_format_name: decimal_0
+  }
+
+  measure: avg_dropping_time_minutes {
+    label: "Avg Minutes Dropping"
+    description: "Avg time spent dropping products on shelf during inbounding process in minutes (from dropping_list_started to dropping_list_finished)."
+    type: average_distinct
+    sql: ${time_dropping_in_minutes} ;;
+
+    value_format_name: decimal_2
+  }
+
+  measure: populating_cart_time_hours {
+    label: "# Hours Populating Cart"
+    description: "Total time spent populating the cart during inbounding process in hours (from cart_created to dropping_list_started)."
+    type: sum_distinct
+    sql: ${time_populating_cart_in_hours} ;;
+
+    value_format_name: decimal_0
+  }
+
+  measure: populating_cart_time_minutes {
+    label: "# Minutes Populating Cart"
+    description: "Total time spent populating the cart during inbounding process in minutes (from cart_created to dropping_list_started)."
+    type: sum_distinct
+    sql: ${time_populating_cart_in_minutes} ;;
+
+    value_format_name: decimal_0
+  }
+
+  measure: avg_populating_cart_time_minutes {
+    label: "Avg Minutes Populating Cart"
+    description: "Avg time spent populating the cart during inbounding process in minutes (from cart_created to dropping_list_started)."
+    type: average_distinct
+    sql: ${time_populating_cart_in_minutes} ;;
+
+    value_format_name: decimal_2
   }
 }

@@ -3592,7 +3592,9 @@ view: orders {
 
   measure: avg_daily_orders_per_hub{
     group_label: "* Basic Counts (Orders / Customers etc.) *"
-    label: "AVG Daily Orders per hub"
+    label: "AVG # Daily Orders per hub"
+    description: "AVG number of daily orders.
+    Computed as the number of orders, divided by the number of hubs, divided by the number of open days, over the selected timeframe."
     type: number
     sql: (${cnt_orders}/NULLIF(${cnt_unique_hubs},0))/ NULLIF(${cnt_unique_date},0);;
 
