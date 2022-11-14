@@ -3421,7 +3421,7 @@ view: staffing {
     type: number
     label: "% External Scheduled Hours"
     description: "Sum External Scheduled Hours (Assigned + Unassigned) / Sum Scheduled Hours (Assigned + Unassigned)"
-    value_format_name: decimal_1
+    value_format_name: percent_1
     group_label: "> Dynamic Measures"
     sql:
         CASE
