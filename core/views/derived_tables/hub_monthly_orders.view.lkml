@@ -118,7 +118,7 @@ view: hub_monthly_orders {
   measure: avg_daily_orders_per_hub_agg {
     label: " AVG # Daily Orders - Monthly granulairty"
     description: "AVG number of daily orders on a Hub/Month level.
-    Computed as the number of orders that occured within the month, divided by the number of days the hub was open during the month."
+    Computed as the number of successful orders that occured within the month, divided by the number of days the hub was open during the month."
     type: number
     value_format_name: decimal_2
     sql: ${sum_number_of_orders_per_month}/NULLIF(${sum_number_of_days_opened}, 0) ;;
