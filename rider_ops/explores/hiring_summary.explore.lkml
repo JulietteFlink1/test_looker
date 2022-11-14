@@ -12,6 +12,10 @@ explore: hiring_summary {
   description: "Hiring summary breakdown by country, city, hub code, channel etc."
   hidden: yes
 
+  access_filter: {
+    field: hubs.country_iso
+    user_attribute: country_iso
+  }
 
   always_filter: {
     filters:  [
