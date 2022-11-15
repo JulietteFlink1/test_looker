@@ -23,7 +23,7 @@ explore: hiring_summary {
   always_filter: {
     filters:  [
       hiring_summary.last_transitioned_date: "last 7 days",
-      hubs.country: ""
+      hiring_summary.country_iso: ""
     ]
   }
 
