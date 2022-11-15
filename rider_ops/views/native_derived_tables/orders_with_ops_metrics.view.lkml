@@ -46,6 +46,7 @@ view: orders_with_ops_metrics {
       column: sum_rider_handling_time_minutes {}
       column: sum_potential_rider_handling_time_without_stacking_minutes {}
       column: avg_picking_time_per_item {}
+      column: cnt_internal_orders {}
       filters: [
         orders_cl.is_successful_order : "yes",
         global_filters_and_parameters.datasource_filter: "last 10 weeks"
