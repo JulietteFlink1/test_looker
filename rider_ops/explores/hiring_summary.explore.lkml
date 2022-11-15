@@ -11,9 +11,12 @@ explore: hiring_summary {
   label: "Hiring Summary"
   description: "Hiring summary breakdown by country, city, hub code, channel etc."
   hidden: yes
+  # It is possible in Hiring Summary table to have country/city but not hub code. Therefore, we do not need those fields from Hub Data
+  {fields: [ALL_FIELDS*, -hubs.hub_code, -hubs.city, -hubs.country_iso]}
+
 
   access_filter: {
-    field: hubs.country_iso
+    field: hiring_summary.country_iso
     user_attribute: country_iso
   }
 

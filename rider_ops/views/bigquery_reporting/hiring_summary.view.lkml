@@ -4,7 +4,7 @@
 # This view contains information about hiring summary breakdown by country, city, hub code, channel etc.
 
 view: hiring_summary {
-  sql_table_name: `flink-data-dev.dbt_nazring_reporting.hiring_summary`
+  sql_table_name: `flink-data-prod.reporting.hiring_summary`
     ;;
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -113,7 +113,6 @@ view: hiring_summary {
       ${last_transitioned_month}
     {% endif %};;
   }
-
 
   dimension: week_number {
     label: "Week Number"
