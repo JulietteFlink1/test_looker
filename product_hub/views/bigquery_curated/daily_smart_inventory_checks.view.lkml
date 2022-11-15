@@ -349,4 +349,24 @@ view: daily_smart_inventory_checks {
     sql: DATETIME_DIFF(${finished_at_timestamp_raw}, ${started_at_timestamp_raw}, SECOND) ;;
   }
 
+  measure: created_to_finished_seconds {
+    type: sum
+    group_label: "Time Metrics"
+    label: "Created to Finished seconds"
+    description: "Sum of the diferrence in seconds between Created At and Finished Counting timestamps for completed checks."
+    value_format: "0"
+    filters: [is_finished: "yes"]
+    sql: DATETIME_DIFF(${finished_at_timestamp_raw}, ${created_at_timestamp_raw}, SECOND) ;;
+  }
+
+  measure: created_to_started_seconds {
+    type: sum
+    group_label: "Time Metrics"
+    label: "Created to Started seconds"
+    description: "Sum of the diferrence in seconds between Created At and Started Counting timestamps for completed checks."
+    value_format: "0"
+    filters: [is_finished: "yes"]
+    sql: DATETIME_DIFF(${created_at_timestamp_raw}, ${started_at_timestamp_raw}, SECOND) ;;
+  }
+
 }
