@@ -146,7 +146,6 @@ view: daily_smart_inventory_checks {
 
   dimension_group: created_at_timestamp {
     type: time
-    hidden: yes
     group_label: "5 Check Timestamps"
     label: "Created At"
     description: "When the check has been uploaded in UTC."
