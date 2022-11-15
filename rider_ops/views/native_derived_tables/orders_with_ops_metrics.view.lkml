@@ -117,9 +117,9 @@ view: orders_with_ops_metrics {
   measure: cnt_rider_orders {
     group_label: "> Basic Counts"
     label: "# Orders (excl. Click & Collect and External)"
-    description: "Count of Orders that require no riders (e.g. Click and collect)"
+    description: "Count of Successful Orders that require no riders (e.g. Click and collect)"
     hidden:  yes
-    sql: ${sum_orders}-${cnt_external_orders} ;;
+    sql: ${sum_orders}-${cnt_external_orders}-${cnt_click_and_collect_orders} ;;
     value_format_name: decimal_0
     type: number
     }
