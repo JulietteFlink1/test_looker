@@ -3156,7 +3156,7 @@ view: staffing {
     label: "Rider UTR"
     type: number
     sql: ${orders_with_ops_metrics.cnt_rider_orders}/ NULLIF(${number_of_worked_hours_rider}, 0) ;;
-    value_format_name: decimal_1
+    value_format_name: decimal_2
   }
 
   measure: logistics_index {
@@ -3164,7 +3164,7 @@ view: staffing {
     description: "AVG Fulfillment Time / Rider UTR"
     type: number
     sql: ${orders_with_ops_metrics.avg_fulfillment_time}/nullif(${utr_rider},0) ;;
-    value_format_name: decimal_1
+    value_format_name: decimal_2
   }
 
   measure: utr_picker {
@@ -3172,7 +3172,7 @@ view: staffing {
     label: "Picker UTR"
     type: number
     sql: ${orders_with_ops_metrics.sum_orders}/ NULLIF(${number_of_worked_hours_picker}, 0) ;;
-    value_format_name: decimal_1
+    value_format_name: decimal_2
   }
 
   measure: utr_hub_staff {
@@ -3181,7 +3181,7 @@ view: staffing {
     description: "Hub Staff UTR (# Orders/Hub Staff Hours (Picker, WH, Rider Captain, Ops Associate, Shift Lead))"
     type: number
     sql: ${orders_with_ops_metrics.sum_orders}/ NULLIF(${number_of_worked_hours_hub_staff}, 0) ;;
-    value_format_name: decimal_1
+    value_format_name: decimal_2
   }
 
   measure: utr_ops_associate {
@@ -3191,7 +3191,7 @@ view: staffing {
     description: "Ops Associate UTR (# Orders/# Punched Ops Associate(Picker, WH, Rider Captain, Ops Associate) Hours)"
     type: number
     sql: ${orders_with_ops_metrics.sum_orders}/ NULLIF(${number_of_worked_hours_ops_associate}, 0) ;;
-    value_format_name: decimal_1
+    value_format_name: decimal_2
   }
 
   measure: hub_staff_utr_all_items {
