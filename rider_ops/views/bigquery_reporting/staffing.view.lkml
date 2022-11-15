@@ -2159,7 +2159,7 @@ view: staffing {
     group_label: "> Rider Measures"
     label: "% Filled (Planned) Rider Hours Based on Availability"
     type: number
-    sql:${number_of_planned_hours_availability_based_rider}/${number_of_planned_hours_rider} ;;
+    sql:${number_of_planned_hours_availability_based_rider}/nullif(${number_of_planned_hours_rider},0) ;;
     description:"Share of Filled Hours based on Availability from total Filled Hours - (# Filled (Planned) Hours Based on Availability / # Filled (Planned) Hours)"
     value_format_name: percent_1
   }
@@ -2212,7 +2212,7 @@ view: staffing {
     group_label: "> Picker Measures"
     label: "% Filled (Planned) Picker Hours Based on Availability"
     type: number
-    sql:${number_of_planned_hours_availability_based_picker}/${number_of_planned_hours_picker} ;;
+    sql:${number_of_planned_hours_availability_based_picker}/nullif(${number_of_planned_hours_picker},0) ;;
     description:"Share of Filled Hours based on Availability from total Filled Hours - (# Filled (Planned) Hours Based on Availability / # Filled (Planned) Hours)"
     value_format_name: percent_1
   }
@@ -2265,7 +2265,7 @@ view: staffing {
     group_label: "> Shift Lead Measures"
     label: "% Filled (Planned) Shift Lead Hours Based on Availability"
     type: number
-    sql:${number_of_planned_hours_availability_based_shift_lead}/${number_of_planned_hours_shift_lead} ;;
+    sql:${number_of_planned_hours_availability_based_shift_lead}/nullif(${number_of_planned_hours_shift_lead},0) ;;
     description:"Share of Filled Hours based on Availability from total Filled Hours - (# Filled (Planned) Hours Based on Availability / # Filled (Planned) Hours)"
     value_format_name: percent_1
   }
@@ -2318,7 +2318,7 @@ view: staffing {
     group_label: "> Rider Captain Measures"
     label: "% Filled (Planned) Rider Captain Hours Based on Availability"
     type: number
-    sql:${number_of_planned_hours_availability_based_rider_captain}/${number_of_planned_hours_rider_captain} ;;
+    sql:${number_of_planned_hours_availability_based_rider_captain}/nullif(${number_of_planned_hours_rider_captain},0) ;;
     description:"Share of Filled Hours based on Availability from total Filled Hours - (# Filled (Planned) Hours Based on Availability / # Filled (Planned) Hours)"
     value_format_name: percent_1
   }
@@ -2372,7 +2372,7 @@ view: staffing {
     group_label: "> Co Ops Measures"
     label: "% Filled (Planned) Co Ops Hours Based on Availability"
     type: number
-    sql:${number_of_planned_hours_availability_based_co_ops}/${number_of_planned_hours_co_ops} ;;
+    sql:${number_of_planned_hours_availability_based_co_ops}/nullif(${number_of_planned_hours_co_ops},0) ;;
     description:"Share of Filled Hours based on Availability from total Filled Hours - (# Filled (Planned) Hours Based on Availability / # Filled (Planned) Hours)"
     value_format_name: percent_1
   }
@@ -2425,7 +2425,7 @@ view: staffing {
     group_label: "> WH Measures"
     label: "% Filled (Planned) WH Hours Based on Availability"
     type: number
-    sql:${number_of_planned_hours_availability_based_wh}/${number_of_planned_hours_wh} ;;
+    sql:${number_of_planned_hours_availability_based_wh}/nullif(${number_of_planned_hours_wh},0) ;;
     description:"Share of Filled Hours based on Availability from total Filled Hours - (# Filled (Planned) Hours Based on Availability / # Filled (Planned) Hours)"
     value_format_name: percent_1
   }
@@ -2487,7 +2487,7 @@ view: staffing {
     group_label: "> Hub Staff Measures"
     label: "% Filled (Planned) Hub Staff Hours Based on Availability"
     type: number
-    sql:${number_of_planned_hours_availability_based_hub_staff}/${number_of_planned_hours_hub_staff} ;;
+    sql:${number_of_planned_hours_availability_based_hub_staff}/nullif(${number_of_planned_hours_hub_staff},0) ;;
     description:"Share of Filled Hours based on Availability from total Filled Hours - (# Filled (Planned) Hours Based on Availability / # Filled (Planned) Hours)"
     value_format_name: percent_1
   }
@@ -3156,15 +3156,15 @@ view: staffing {
     label: "Rider UTR"
     type: number
     sql: ${orders_with_ops_metrics.cnt_rider_orders}/ NULLIF(${number_of_worked_hours_rider}, 0) ;;
-    value_format_name: decimal_1
+    value_format_name: decimal_2
   }
 
   measure: logistics_index {
     label: "Logistics Index"
     description: "AVG Fulfillment Time / Rider UTR"
     type: number
-    sql: ${orders_with_ops_metrics.avg_fulfillment_time}/${utr_rider} ;;
-    value_format_name: decimal_1
+    sql: ${orders_with_ops_metrics.avg_fulfillment_time}/nullif(${utr_rider},0) ;;
+    value_format_name: decimal_2
   }
 
   measure: utr_picker {
@@ -3172,7 +3172,7 @@ view: staffing {
     label: "Picker UTR"
     type: number
     sql: ${orders_with_ops_metrics.sum_orders}/ NULLIF(${number_of_worked_hours_picker}, 0) ;;
-    value_format_name: decimal_1
+    value_format_name: decimal_2
   }
 
   measure: utr_hub_staff {
@@ -3181,7 +3181,7 @@ view: staffing {
     description: "Hub Staff UTR (# Orders/Hub Staff Hours (Picker, WH, Rider Captain, Ops Associate, Shift Lead))"
     type: number
     sql: ${orders_with_ops_metrics.sum_orders}/ NULLIF(${number_of_worked_hours_hub_staff}, 0) ;;
-    value_format_name: decimal_1
+    value_format_name: decimal_2
   }
 
   measure: utr_ops_associate {
@@ -3191,7 +3191,7 @@ view: staffing {
     description: "Ops Associate UTR (# Orders/# Punched Ops Associate(Picker, WH, Rider Captain, Ops Associate) Hours)"
     type: number
     sql: ${orders_with_ops_metrics.sum_orders}/ NULLIF(${number_of_worked_hours_ops_associate}, 0) ;;
-    value_format_name: decimal_1
+    value_format_name: decimal_2
   }
 
   measure: hub_staff_utr_all_items {
@@ -3421,7 +3421,7 @@ view: staffing {
     type: number
     label: "% External Scheduled Hours"
     description: "Sum External Scheduled Hours (Assigned + Unassigned) / Sum Scheduled Hours (Assigned + Unassigned)"
-    value_format_name: decimal_1
+    value_format_name: percent_1
     group_label: "> Dynamic Measures"
     sql:
         CASE
