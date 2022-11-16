@@ -14,6 +14,7 @@ include: "/**/daily_stock_management_events.view.lkml"
 include: "/**/daily_stock_management_events_items_inbounded.view"
 include: "/**/add_to_cart_times.view"
 
+
 explore: daily_stock_management_events {
   from:  daily_stock_management_events
   view_name: daily_stock_management_events
