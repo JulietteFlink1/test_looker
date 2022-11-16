@@ -11,7 +11,6 @@ include: "/**/employee_level_kpis.view.lkml"
 include: "/**/products.view.lkml"
 include: "/**/hubs_ct.view.lkml"
 include: "/**/daily_stock_management_events.view.lkml"
-include: "/**/inventory_movement_id_times.view"
 include: "/**/daily_stock_management_events_items_inbounded.view"
 include: "/**/add_to_cart_times.view"
 
@@ -47,15 +46,8 @@ explore: daily_stock_management_events {
     relationship: one_to_one
   }
 
-  join: inventory_movement_id_times {
-    view_label: "Inventory Movement Id Times"
-    sql_on: ${inventory_movement_id_times.inventory_movement_id}=${daily_stock_management_events.inventory_movement_id};;
-    type: left_outer
-    relationship: one_to_one
-  }
-
   join: daily_stock_management_events_items_inbounded {
-    #view_label: "Inventory Movement Id Times"
+    view_label: "Inventory Movement Id Times"
     fields: [daily_stock_management_events_items_inbounded.to_include_product*]
     sql_on: ${daily_stock_management_events_items_inbounded.inventory_movement_id}=${daily_stock_management_events.inventory_movement_id};;
     type: left_outer
