@@ -366,7 +366,7 @@ view: daily_smart_inventory_checks {
     description: "Sum of the diferrence in seconds between Created At and Started Counting timestamps for completed checks."
     value_format: "0"
     filters: [is_finished: "yes"]
-    sql: DATETIME_DIFF(${created_at_timestamp_raw}, ${started_at_timestamp_raw}, SECOND) ;;
+    sql: DATETIME_DIFF(${started_at_timestamp_raw}, ${created_at_timestamp_raw}, SECOND) ;;
   }
 
 }
