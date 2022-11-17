@@ -37,7 +37,7 @@ view: event_trip_state_updated {
   }
   dimension: trip_id {
     group_label: "IDs"
-    label: "Tip ID"
+    label: "Trip ID"
     description: "A unique identifier of each trip."
     type: string
     sql: ${TABLE}.trip_id ;;
