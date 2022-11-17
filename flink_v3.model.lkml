@@ -9,7 +9,6 @@ include: "/**/*.explore.lkml"
 
 
 
-
 week_start_day: monday
 case_sensitive: no
 
