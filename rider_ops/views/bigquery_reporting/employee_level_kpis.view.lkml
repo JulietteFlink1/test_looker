@@ -90,7 +90,24 @@ view: employee_level_kpis {
     type: string
     label: "External Agency Name"
     description: "Based on Quinyx field (External Agency)"
-    sql: ${TABLE}.external_agency_name ;;
+    sql:
+      case
+        when regexp_contains(lower(${TABLE}.external_agency_name), 'talent')
+          then 'Job & Talent'
+        when regexp_contains(lower(${TABLE}.external_agency_name), 'staff')
+          then 'Staffmatch'
+        when regexp_contains(lower(${TABLE}.external_agency_name), 'vlove|volve')
+          then 'Vlove'
+        when regexp_contains(lower(${TABLE}.external_agency_name), 'coursier')
+          then 'Coursierfr'
+        when regexp_contains(lower(${TABLE}.external_agency_name), 'lecastor')
+          then 'Lecastor'
+        when regexp_contains(lower(${TABLE}.external_agency_name), 'qapa')
+          then 'Qapa'
+        when regexp_contains(lower(${TABLE}.external_agency_name), 'zj')
+          then 'Zenjob'
+        else initcap(${TABLE}.external_agency_name)
+      end;;
   }
 
   dimension: fleet_type {
