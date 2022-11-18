@@ -24,8 +24,8 @@ view: favourites_analysis_part1 {
 
     dimension_group: first_visit_date {
       group_label: "Date"
-      label: "First Visit Date"
-      description: "Date of First Visit"
+      label: "First Visit"
+      description: "Date of first visit"
       type: time
       timeframes: [
         date,
@@ -41,7 +41,7 @@ view: favourites_analysis_part1 {
     dimension_group: first_order_date {
       group_label: "Date"
       label: "First Order"
-      description: "Date of First Order"
+      description: "Date of first order"
       type: time
       timeframes: [
         date,
@@ -55,8 +55,8 @@ view: favourites_analysis_part1 {
 
     dimension_group: first_discovery_date {
       group_label: "Date"
-      label: "First Interaction Date"
-      description: "Date of First Interaction with Favourites Feature"
+      label: "First Interaction"
+      description: "Date of first interaction with favourites feature"
       type: time
       timeframes: [
         date,
@@ -70,8 +70,8 @@ view: favourites_analysis_part1 {
 
     dimension_group: event_date {
       group_label: "Date"
-      label: "Favourites Interaction Date"
-      description: "Date of Interaction with Favourites"
+      label: "Event Date"
+      description: "Date of interaction with favourites"
       type: time
       timeframes: [
         date,
@@ -88,7 +88,7 @@ view: favourites_analysis_part1 {
     dimension: country_iso {
       group_label: "Location Dimension"
       label: "Country ISO"
-      description: "First visit ISO country"
+      description: "First visit country ISO"
       type: string
       sql: ${TABLE}.country_iso ;;
     }
@@ -106,30 +106,33 @@ view: favourites_analysis_part1 {
 # ======= Favourites ======= #
 
     dimension: flag_interacted_with_favourites{
-      group_label: "Favourites Dimension"
-      label: "Has interacted with favourites"
-      description: "Is customer has interacted with favourites at least once"
+      group_label: "Favourites"
+      label: "Has Interacted With Favourites"
+      description: "Has customer interacted with favourites at least once"
       type: yesno
       sql: ${TABLE}.flag_interacted_with_favourites;;
     }
 
     dimension: num_days_from_first_visit_to_first_interaction {
       group_label: "Favourites"
-      label: "# of days to first interaction (from first visit date)"
+      label: "#Days to 1st Interact (from Visit)"
+      description: "Number of days to first interact with favourites from date of first visit"
       type: number
       sql: ${TABLE}.num_days_from_first_visit_to_first_interaction;;
     }
 
     dimension: num_days_from_first_order_to_first_interaction {
       group_label: "Favourites"
-      label: "# of days to first interaction (from first order date)"
+      label: "#Days to 1st interact (from Order)"
+      description: "Number of days to first interact with favourites from date of first order"
       type: number
       sql: ${TABLE}.num_days_from_first_order_to_first_interaction;;
     }
 
   dimension: num_of_visits_to_first_interaction {
     group_label: "Favourites"
-    label: "# of visits to first interaction (from first visit date)"
+    label: "#Visits to 1st Interact"
+    description: "Number of visits required to first interact with favourites from first visit"
     type: number
     sql: ${TABLE}.num_of_visits_to_first_interaction;;
   }
@@ -137,7 +140,8 @@ view: favourites_analysis_part1 {
 
   dimension: weeks_since_first_interaction {
     group_label: "Favourites"
-    label: "# of weeks to interaction (from first interaction with favourites)"
+    label: "#Weeks to Interaction"
+    description: "Number of weeks since first interaction with favourites feature"
     type: number
     sql: ${TABLE}.weeks_since_first_interaction;;
   }
@@ -145,7 +149,8 @@ view: favourites_analysis_part1 {
 
   dimension: number_of_unique_events_per_day { #field name should be number_of_unique_interactions
     group_label: "Favourites"
-    label: "# of unique interactions with favourites"
+    label: "#Unique Interactions"
+    description: "Number of unique interactions per customer"
     type: number
     sql: ${TABLE}.weeks_since_first_interaction;;
   }
@@ -157,7 +162,7 @@ view: favourites_analysis_part1 {
     measure: count_users {
       group_label: "Measures"
       hidden: no
-      label: "# of Unique Users"
+      label: "#All Users"
       type: count_distinct
       sql: ${anonymous_id};;
     }
@@ -166,7 +171,7 @@ view: favourites_analysis_part1 {
     measure: count_users_favourites {
       group_label: "Measures"
       hidden: no
-      label: "# of Unique Users Who Interacted With Favourites"
+      label: "#Interacting Users"
       type: count_distinct
       sql: ${anonymous_id};;
       filters: [flag_interacted_with_favourites: "yes"]
