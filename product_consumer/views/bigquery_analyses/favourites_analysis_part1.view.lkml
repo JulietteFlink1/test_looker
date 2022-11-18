@@ -115,7 +115,7 @@ view: favourites_analysis_part1 {
 
     dimension: num_days_from_first_visit_to_first_interaction {
       group_label: "Favourites"
-      label: "#Days to 1st Interact (from Visit)"
+      label: "#Days To 1st Interact (From Visit)"
       description: "Number of days to first interact with favourites from date of first visit"
       type: number
       sql: ${TABLE}.num_days_from_first_visit_to_first_interaction;;
@@ -123,7 +123,7 @@ view: favourites_analysis_part1 {
 
     dimension: num_days_from_first_order_to_first_interaction {
       group_label: "Favourites"
-      label: "#Days to 1st interact (from Order)"
+      label: "#Days To 1st interact (From Order)"
       description: "Number of days to first interact with favourites from date of first order"
       type: number
       sql: ${TABLE}.num_days_from_first_order_to_first_interaction;;
@@ -131,7 +131,7 @@ view: favourites_analysis_part1 {
 
   dimension: num_of_visits_to_first_interaction {
     group_label: "Favourites"
-    label: "#Visits to 1st Interact"
+    label: "#Visits To 1st Interact"
     description: "Number of visits required to first interact with favourites from first visit"
     type: number
     sql: ${TABLE}.num_of_visits_to_first_interaction;;
@@ -140,7 +140,7 @@ view: favourites_analysis_part1 {
 
   dimension: weeks_since_first_interaction {
     group_label: "Favourites"
-    label: "#Weeks to Interaction"
+    label: "#Weeks To Interact"
     description: "Number of weeks since first interaction with favourites feature"
     type: number
     sql: ${TABLE}.weeks_since_first_interaction;;
