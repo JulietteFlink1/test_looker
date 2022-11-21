@@ -373,7 +373,7 @@ view: psp_transactions {
       year
     ]
     sql: ${TABLE}.referral_created_at_timestamp ;;
-    description: "Timestamp (UTC) of when the PSP reference / email / domain was added to the referral list."
+    description: "Timestamp of when the PSP reference / email / domain was added to the referral list."
   }
 
   dimension_group: referral_ended_at {
@@ -386,7 +386,7 @@ view: psp_transactions {
       year
     ]
     sql: ${TABLE}.referral_ended_at_timestamp ;;
-    description: "Timestamp (UTC) of when the PSP reference / email / domain was removed from the referral list."
+    description: "Timestamp of when the PSP reference / email / domain was removed from the referral list."
   }
 
   dimension: referral_reason_raw {
