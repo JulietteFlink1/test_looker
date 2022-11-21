@@ -345,6 +345,83 @@ view: psp_transactions {
     sql: ${TABLE}.shopper_name ;;
   }
 
+#### Referral List dimensions
+
+  dimension: referral_active_user_name {
+    group_label: "> Referral List"
+    label: "Referral Active User Name"
+    type: string
+    description: "Name of the Adyen user that created the referral. Null if it was automatically created."
+    sql: ${TABLE}.referral_active_user_name ;;
+  }
+
+  dimension: is_blocked_referral {
+    group_label: "> Referral List"
+    label: "Is Blocked (Referral)"
+    type: string
+    description: "Yes if the referral was blocked. No if the referral was unblocked."
+    sql: ${TABLE}.is_blocked_referral ;;
+  }
+
+  dimension_group: referral_created_at {
+    group_label: "> Referral List"
+    type: time
+    timeframes: [
+      date,
+      week,
+      month,
+      year
+    ]
+    sql: ${TABLE}.referral_created_at_timestamp ;;
+    description: "Timestamp (UTC) of when the PSP reference / email / domain was added to the referral list."
+  }
+
+  dimension_group: referral_ended_at {
+    group_label: "> Referral List"
+    type: time
+    timeframes: [
+      date,
+      week,
+      month,
+      year
+    ]
+    sql: ${TABLE}.referral_ended_at_timestamp ;;
+    description: "Timestamp (UTC) of when the PSP reference / email / domain was removed from the referral list."
+  }
+
+  dimension: referral_reason_raw {
+    group_label: "> Referral List"
+    label: "Referral Reason Raw"
+    description: "Reason for the referral as entered in Adyen. Contains the PSP Reference when available."
+    type: string
+    sql: ${TABLE}.referral_reason_raw ;;
+  }
+
+  dimension: referral_reason {
+    group_label: "> Referral List"
+    label: "Referral Reason"
+    type: string
+    description: "Clean referral reason based on mapping provided by Finance team. (e.g.: Scam, Known High-Risk Country)."
+    sql: ${TABLE}.referral_reason ;;
+  }
+
+  dimension: referral_type {
+    group_label: "> Referral List"
+    label: "Referral Type"
+    description: "Type of the referral. (e.g.: shopperEmail, phoneNumber)"
+    type: string
+    sql: ${TABLE}.referral_type ;;
+  }
+
+  dimension: referral_raw {
+    group_label: "> Referral List"
+    label: "Referral Raw Value"
+    type: string
+    description: "Raw value for the referral. It can be a name, a phone number, an email, a domain etc."
+    sql: ${TABLE}.referral_raw ;;
+  }
+
+
 ##################    MEASURES  ###################
 
   measure: sum_main_amount {
