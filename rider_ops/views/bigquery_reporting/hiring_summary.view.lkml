@@ -12,6 +12,8 @@ view: hiring_summary {
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   dimension: city {
+    label: "City"
+    group_label: "> Geographic Data"
     type: string
     description: "Applied city."
     sql: ${TABLE}.city ;;
@@ -26,6 +28,7 @@ view: hiring_summary {
 
   dimension: country_iso {
     label: "Country ISO"
+    group_label: "> Geographic Data"
     type: string
     description: "Applied country code."
     sql: ${TABLE}.country_iso ;;
@@ -33,6 +36,7 @@ view: hiring_summary {
 
   dimension: hub_code {
     label: "Hub Code"
+    group_label: "> Geographic Data"
     type: string
     description: "Applied hub code."
     sql: ${TABLE}.hub_code ;;
@@ -53,20 +57,23 @@ view: hiring_summary {
   }
 
   dimension: position_name {
+    label: "Position name"
     type: string
     description: "Applied position name."
     sql: ${TABLE}.position_name ;;
   }
 
   dimension: rejection_reason {
+    label: "Rejection reason"
     type: string
-    description: "Rejection reason for a job application in the Fountain platform."
+    description: "Rejection reason for a job application"
     sql: ${TABLE}.rejection_reason ;;
   }
 
   dimension: stage_title {
+    label: "Hiring Stage Title"
     type: string
-    description: "Hiring stage title in Fountain platform."
+    description: "Hiring stage title"
     sql: ${TABLE}.stage_title ;;
   }
 
@@ -79,6 +86,7 @@ view: hiring_summary {
   }
 
   dimension: utm_channel {
+    label: "UTM Channel"
     type: string
     description: "Used to identify a channel such as organic or job platform."
     sql: ${TABLE}.utm_channel ;;
@@ -86,8 +94,9 @@ view: hiring_summary {
 
   dimension_group: last_transitioned {
     label: "Last Transitioned"
+    group_label: "> Dates"
     type: time
-    description: "Last transition date from one hiring stage (from Fountain platform) into another in UTC timezone."
+    description: "Last transition date from one hiring stage into another in UTC timezone."
     timeframes: [
       raw,
       date,
@@ -104,7 +113,8 @@ view: hiring_summary {
   dimension: date_ {
   label: "Date (Dynamic)"
   label_from_parameter: date_granularity
-  sql:
+  group_label: "> Dates"
+    sql:
     {% if date_granularity._parameter_value == 'Day' %}
       ${last_transitioned_date}
     {% elsif date_granularity._parameter_value == 'Week' %}
@@ -116,9 +126,9 @@ view: hiring_summary {
 
   dimension: week_number {
     label: "Week Number"
+    group_label: "> Dates"
     type: number
     sql: extract(week from date_trunc(${TABLE}.last_transitioned_date, week(monday))) ;;
-    hidden: no
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -127,29 +137,33 @@ view: hiring_summary {
 
   measure: number_of_applicants {
     label: "# Applicants"
+    group_label: "> Applicants"
     type: sum
-    description: "Number of applicants from Fountain platform."
+    description: "Number of applicants"
     sql: ${TABLE}.number_of_applicants ;;
   }
 
   measure: number_of_rejected_applicants {
     label: "# Rejected Applicants"
+    group_label: "> Applicants"
     type: sum
-    description: "Number of rejected applicants from Fountain platform."
+    description: "Number of rejected applicants"
     filters: [stage_title: "Rejected"]
     sql: ${TABLE}.number_of_applicants ;;
   }
 
   measure: number_of_hired_applicants {
     label: "# Hired Applicants"
+    group_label: "> Hired Applicants"
     type: sum
-    description: "Number of hired applicants (Approved stage) from Fountain platform."
+    description: "Number of hired applicants (Approved stage)"
     filters: [stage_title: "Rejected"]
     sql: ${TABLE}.number_of_applicants ;;
   }
 
   measure: number_of_applicants_with_first_shift_completed {
     label: "# Applicants - First Shift Completed"
+    group_label: "> Hired Applicants"
     type: sum
     description: "Number of applicants worked their first scheduled shift."
     filters: [is_first_shift_completed: "Yes"]
@@ -158,6 +172,7 @@ view: hiring_summary {
 
   measure: number_of_applicants_with_first_shift_scheduled{
     label: "# Applicants - First Shift Scheduled"
+    group_label: "> Hired Applicants"
     type: sum
     description: "Number of applicants that has first shift assigned."
     filters: [is_first_shift_scheduled: "Yes"]
@@ -166,6 +181,7 @@ view: hiring_summary {
 
   measure: number_of_days_to_first_shift {
     label: "# Days to First Shift"
+    group_label: "> Processing time"
     type: sum
     description: "A total number of days between the application creation date from Fountain and first scheduled shift date."
     sql: ${TABLE}.number_of_days_to_first_shift ;;
@@ -173,29 +189,33 @@ view: hiring_summary {
 
   measure: number_of_days_to_hire {
     label: "# Days to Hire"
+    group_label: "> Processing time"
     type: sum
     description: "A total number of days between the application creation date from Fountain and hiring date."
     sql: ${TABLE}.number_of_days_to_hire ;;
   }
 
   measure: avg_number_of_days_to_hire {
-    label: "AVG Days to Hire"
+    label: "AVG # Days to Hire"
+    group_label: "> Processing time"
     type: number
     description: "Average number of days to hire an applicant."
-    sql: ${number_of_days_to_hire}/${number_of_applicants} ;;
+    sql: ${number_of_days_to_hire}/${number_of_hired_applicants} ;;
     value_format_name: decimal_1
   }
 
   measure: avg_number_of_days_to_first_shift {
     label: "AVG Days to First Shift"
+    group_label: "> Processing time"
     type: number
     description: "Average number of days to first scheduled shift."
-    sql: ${number_of_days_to_first_shift}/${number_of_applicants} ;;
+    sql: ${number_of_days_to_first_shift}/${number_of_applicants_with_first_shift_scheduled} ;;
     value_format_name: decimal_1
   }
 
   measure: share_of_hired_applicants {
-    label: "CVR"
+    label: "% Hired Applicants"
+    group_label: "> Hired Applicants"
     type: number
     description: "Share of Hired Applicants"
     sql: ${number_of_hired_applicants}/${number_of_applicants} ;;

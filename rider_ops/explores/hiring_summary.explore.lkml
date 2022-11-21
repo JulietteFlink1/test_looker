@@ -7,10 +7,8 @@ include: "/**/hubs_ct.view"
 
 explore: hiring_summary {
   group_label: "Rider Ops"
-  view_label: "Hiring Summary"
   label: "Hiring Summary"
   description: "Hiring summary breakdown by country, city, hub code, channel etc."
-  hidden: yes
   # It is possible in Hiring Summary table to have country/city but not hub code. Therefore, we do not need those fields from Hub Data
   {fields: [ALL_FIELDS*, -hubs.hub_code, -hubs.city, -hubs.country_iso]}
 
