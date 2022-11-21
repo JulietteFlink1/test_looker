@@ -61,7 +61,7 @@ view: staffing {
   ##### Riders
 
   dimension: number_of_deleted_unexcused_no_show_minutes_rider {
-    label: "# Deleted Unexcused Rider No Show Hours (included in No show metric)"
+    label: "# Deleted Unexcused Rider No Show Hours (Excl. in No Show metric)"
     type: number
     sql: ${TABLE}.number_of_deleted_unexcused_no_show_minutes_rider ;;
     hidden: yes
@@ -431,7 +431,7 @@ view: staffing {
   }
 
   dimension: number_of_deleted_unexcused_no_show_minutes_picker {
-    label: "# Deleted Unexcused Picker No Show Hours (included in No show metric)"
+    label: "# Deleted Unexcused Picker No Show Hours (Excl. in No Show metric)"
     type: number
     sql: ${TABLE}.number_of_deleted_unexcused_no_show_minutes_picker ;;
     hidden: yes
@@ -638,7 +638,7 @@ view: staffing {
   }
 
   dimension: number_of_deleted_unexcused_no_show_minutes_wh {
-    label: "# Deleted Unexcused WH No Show Hours (included in No show metric)"
+    label: "# Deleted Unexcused WH No Show Hours (Excl. in No Show metric)"
     type: number
     sql: ${TABLE}.number_of_deleted_unexcused_no_show_minutes_wh ;;
     hidden: yes
@@ -1137,7 +1137,7 @@ view: staffing {
   }
 
   dimension: number_of_deleted_unexcused_no_show_minutes_rider_captain {
-    label: "# Deleted Unexcused Rider Captain No Show Hours (included in No show metric)"
+    label: "# Deleted Unexcused Rider Captain No Show Hours (Excl. in No Show metric)"
     type: number
     sql: ${TABLE}.number_of_deleted_unexcused_no_show_minutes_rider_captain;;
     hidden: yes
@@ -1315,7 +1315,7 @@ view: staffing {
   }
 
   dimension: number_of_deleted_unexcused_no_show_minutes_shift_lead {
-    label: "# Deleted Unexcused Shift Lead No Show Hours (included in No show metric)"
+    label: "# Deleted Unexcused Shift Lead No Show Hours (Excl. in No Show metric)"
     type: number
     sql: ${TABLE}.number_of_deleted_unexcused_no_show_minutes_shift_lead ;;
     hidden: yes
@@ -1686,7 +1686,7 @@ view: staffing {
 
   measure: number_of_deleted_unexcused_no_show_hours_deputy_shift_lead {
     group_label: "> Deputy Shift Lead Measures"
-    label: "# Deleted Unexcused No Show Deputy Shift Lead Hours"
+    label: "# Deleted Unexcused No Show Deputy Shift Lead Hours (Excl. in No Show metric)"
     type: sum
     sql: ${TABLE}.number_of_deleted_unexcused_no_show_minutes_deputy_shift_lead/60;;
     value_format_name: decimal_1
@@ -3358,7 +3358,7 @@ view: staffing {
 
   measure: number_of_deleted_unexcused_no_show_hours_rider {
     group_label: "> Rider Measures"
-    label: "# Deleted Unexcused No Show Rider Hours"
+    label: "# Deleted Unexcused No Show Rider Hours (Excl. in No Show metric)"
     type: sum
     sql: ${number_of_deleted_unexcused_no_show_minutes_rider}/60;;
     value_format_name: decimal_1
@@ -3366,7 +3366,7 @@ view: staffing {
 
   measure: number_of_deleted_unexcused_no_show_hours_picker {
     group_label: "> Picker Measures"
-    label: "# Deleted Unexcused No Show Picker Hours"
+    label: "# Deleted Unexcused No Show Picker Hours (Excl. in No Show metric)"
     type: sum
     sql: ${number_of_deleted_unexcused_no_show_minutes_picker}/60;;
     value_format_name: decimal_1
@@ -3374,7 +3374,7 @@ view: staffing {
 
   measure: number_of_deleted_unexcused_no_show_hours_wh {
     group_label: "> WH Measures"
-    label: "# Deleted Unexcused No Show WH Hours"
+    label: "# Deleted Unexcused No Show WH Hours (Excl. in No Show metric)"
     type: sum
     sql: ${number_of_deleted_unexcused_no_show_minutes_wh}/60;;
     value_format_name: decimal_1
@@ -3382,7 +3382,7 @@ view: staffing {
 
   measure: number_of_deleted_unexcused_no_show_hours_rider_captain {
     group_label: "> Rider Captain Measures"
-    label: "# Deleted Unexcused No Show Rider Captain Hours"
+    label: "# Deleted Unexcused No Show Rider Captain Hours (Excl. in No Show metric)"
     type: sum
     sql: ${number_of_deleted_unexcused_no_show_minutes_rider_captain}/60;;
     value_format_name: decimal_1
@@ -3390,7 +3390,7 @@ view: staffing {
 
   measure: number_of_deleted_unexcused_no_show_hours_shift_lead {
     group_label: "> Shift Lead Measures"
-    label: "# Deleted Unexcused No Show Shift Lead Hours"
+    label: "# Deleted Unexcused No Show Shift Lead Hours (Excl. in No Show metric)"
     type: sum
     sql: ${number_of_deleted_unexcused_no_show_minutes_shift_lead}/60;;
     value_format_name: decimal_1
@@ -3399,7 +3399,7 @@ view: staffing {
   measure: number_of_deleted_unexcused_no_show_hours_ops_associate {
     alias: [number_of_deleted_unexcused_no_show_hours_ops_staff]
     group_label: "> Ops Associate Measures"
-    label: "# Deleted Unexcused No Show Ops Associate Hours"
+    label: "# Deleted Unexcused No Show Ops Associate Hours (Excl. in No Show metric)"
     description: "# Deleted Unexcused No Show Ops Associate Hours (Picker, WH, Rider Captain, Ops Associate)"
     type: number
     sql: ${number_of_deleted_unexcused_no_show_minutes_ops_associate}/60;;
@@ -3408,7 +3408,7 @@ view: staffing {
 
   measure: number_of_deleted_unexcused_no_show_hours_hub_staff {
     group_label: "> Hub Staff Measures"
-    label: "# Deleted Unexcused No Show Hub Staff Hours"
+    label: "# Deleted Unexcused No Show Hub Staff Hours (Excl. in No Show metric)"
     description: "# Deleted Unexcused No Show Hub Staff Hours (Picker, WH, Rider Captain, Ops Associate, Shift Lead, Deputy Shift Lead)"
     type: number
     sql: (${number_of_deleted_unexcused_no_show_minutes_ops_associate}/60) + ${number_of_deleted_unexcused_no_show_hours_shift_lead} + ${number_of_deleted_unexcused_no_show_hours_deputy_shift_lead};;
@@ -3667,7 +3667,7 @@ view: staffing {
 
   measure: number_of_deleted_unexcused_no_show_hours_by_position {
     type: number
-    label: "# Deleted Unexcused No Show Hours"
+    label: "# Deleted Unexcused No Show Hours (Excl. in No Show metric)"
     description: "Sum of deleted shift hours when an employee has a scheduled shift but does not show up to it without leave reason and shift deletion date is on/after shift date (shift date <= deletion date)"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
