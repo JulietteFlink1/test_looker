@@ -358,7 +358,7 @@ view: psp_transactions {
   dimension: is_blocked_referral {
     group_label: "> Referral List"
     label: "Is Blocked (Referral)"
-    type: string
+    type: yesno
     description: "Yes if the referral was blocked. No if the referral was unblocked."
     sql: ${TABLE}.is_blocked_referral ;;
   }
