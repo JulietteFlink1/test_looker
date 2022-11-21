@@ -47,6 +47,7 @@ view: orders_with_ops_metrics {
       column: sum_potential_rider_handling_time_without_stacking_minutes {}
       column: avg_picking_time_per_item {}
       column: cnt_internal_orders {}
+      column: avg_hub_to_customer_distance_km {}
       filters: [
         orders_cl.is_successful_order : "yes",
         global_filters_and_parameters.datasource_filter: "last 10 weeks"
@@ -67,6 +68,15 @@ view: orders_with_ops_metrics {
     value_format_name: decimal_0
     hidden: yes
     type: number
+  }
+
+  measure: avg_hub_to_customer_distance_km {
+    group_label: "> Operations / Logistics"
+    label: "AVG Hub to Customer Distance (km)"
+    description: "Average distance between hub and customer dropoff in kilometers (most direct path / straight line)."
+    hidden:  no
+    type: average
+    value_format_name: decimal_2
   }
 
   measure: sum_orders {
@@ -117,7 +127,7 @@ view: orders_with_ops_metrics {
   measure: cnt_rider_orders {
     group_label: "> Basic Counts"
     label: "# Orders (excl. Click & Collect and External)"
-    description: "Count of Successful Orders that require no riders (e.g. Click and collect)"
+    description: "Count of Successful Orders that require riders (e.g. Click and collect)"
     hidden:  yes
     sql: ${sum_orders}-${cnt_external_orders}-${cnt_click_and_collect_orders} ;;
     value_format_name: decimal_0
