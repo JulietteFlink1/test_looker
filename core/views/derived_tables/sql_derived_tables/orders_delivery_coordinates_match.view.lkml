@@ -13,6 +13,7 @@ view: orders_delivery_coordinates_match {
           hub_city,
           hub_slug,
           context_device_type AS platform_type,
+          context_app_version,
           ROW_NUMBER() OVER(PARTITION BY order_id ORDER BY timestamp) as row_number
           FROM `flink-data-prod.flink_android_production.order_tracking_viewed`
 
@@ -30,6 +31,7 @@ view: orders_delivery_coordinates_match {
           hub_city,
           hub_slug,
           context_device_type AS platform_type,
+          context_app_version,
           ROW_NUMBER() OVER(PARTITION BY order_id ORDER BY timestamp) as row_number
           FROM `flink-data-prod.flink_ios_production.order_tracking_viewed`
       ),
@@ -74,6 +76,7 @@ joined_tb AS (
       ft.hub_city,
       ft.hub_slug,
       ft.platform_type,
+      ft.context_app_version,
       ft.client_customer_location ,
       ST_DISTANCE(backend_customer_location , client_customer_location ) AS client_backend_location_distance,
       hda.hub_delivery_area,
@@ -352,6 +355,12 @@ WHERE is_current_hub_area IS TRUE
   dimension: platform_type {
     type: string
     sql: ${TABLE}.platform_type ;;
+    group_label: "> Client Data"
+  }
+
+  dimension: app_version {
+    type: string
+    sql: ${TABLE}.context_app_version ;;
     group_label: "> Client Data"
   }
 
