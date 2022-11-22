@@ -140,7 +140,7 @@ view: favourites_analysis_part1 {
 
   dimension: weeks_since_first_interaction {
     group_label: "Favourites"
-    label: "#Weeks To Interact"
+    label: "#Weeks Since First Interact"
     description: "Number of weeks since first interaction with favourites feature"
     type: number
     sql: ${TABLE}.weeks_since_first_interaction;;
