@@ -50,7 +50,7 @@ view: orders_with_ops_metrics {
       column: avg_hub_to_customer_distance_km {}
       filters: [
         orders_cl.is_successful_order : "yes",
-        global_filters_and_parameters.datasource_filter: "last 10 weeks"
+        global_filters_and_parameters.datasource_filter: "last 12 months"
       ]
     }
   }
