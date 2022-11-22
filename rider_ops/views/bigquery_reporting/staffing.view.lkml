@@ -2020,7 +2020,7 @@ view: staffing {
 
   measure: number_of_unassigned_minutes_external_ops_associate {
     group_label: "> Ops Associate Measures"
-    label: "# External Unassigned Ops Associate Minutes"
+    label: "# External Unassigned (Open) Ops Associate Minutes"
     type: sum
     sql: ${TABLE}.number_of_unassigned_minutes_external_ops_associate;;
     value_format_name: decimal_1
@@ -2671,7 +2671,7 @@ view: staffing {
   measure: number_of_scheduled_hours_external_hub_staff {
     group_label: "> Hub Staff Measures"
     label: "# External Scheduled Hub Staff Hours"
-    description: "# External Scheduled (Unassigned + Open) Hub Staff Hours (Picker, WH, Rider Captain, Ops Associate, Shift Lead)"
+    description: "# External Scheduled (Assigned + Open) Hub Staff Hours (Picker, WH, Rider Captain, Ops Associate, Shift Lead)"
     type: number
     sql: (${number_of_scheduled_hours_external_ops_associate}+${number_of_scheduled_hours_external_shift_lead})/60;;
     value_format_name: decimal_1
@@ -3346,7 +3346,7 @@ view: staffing {
   measure: pct_fill_rate {
     type: number
     label: "% Fill Rate"
-    description: "# Filled Hours (Assigned to an Employee) / # Scheduled Hours (Total Scheduled Shift Hours - Assigned + Open)"
+    description: "# Filled Hours (Assigned to an Employee) / # Scheduled Hours (Total Scheduled Shift Hours = Assigned Hours + Open Hours)"
     value_format_name: percent_1
     group_label: "> Dynamic Measures"
     sql: ${number_of_planned_hours_by_position}/nullif(${number_of_scheduled_hours_by_position},0);;
@@ -3401,7 +3401,7 @@ view: staffing {
   measure: number_of_scheduled_hours_by_position {
     type: number
     label: "# Scheduled Hours (Incl. Deleted Excused No Show)"
-    description: "Sum of Assigned and Unassigned Shift Hours (Incl. Deleted Excused No Show)"
+    description: "Sum of Assigned and Unassigned (Open) Shift Hours (Incl. Deleted Excused No Show)"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
@@ -3420,7 +3420,7 @@ view: staffing {
   measure: pct_scheduled_hours_by_position {
     type: number
     label: "% External Scheduled Hours"
-    description: "Sum External Scheduled Hours (Assigned + Unassigned) / Sum Scheduled Hours (Assigned + Unassigned)"
+    description: "Sum External Scheduled Hours (Assigned + Open) / Sum Scheduled Hours (Assigned + Open Hours)"
     value_format_name: percent_1
     group_label: "> Dynamic Measures"
     sql:
