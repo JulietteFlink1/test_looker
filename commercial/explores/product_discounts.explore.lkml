@@ -23,7 +23,8 @@ explore: current_product_discounts {
 
   join: double_listed_products {
     from: double_listed_products
-    sql_on: ${products.product_sku} = ${double_listed_products.sku} ;;
+    sql_on: ${products.product_sku} = ${double_listed_products.sku}
+    ;;
     type: left_outer
     relationship: one_to_many
   }
