@@ -364,7 +364,7 @@ view: psp_transactions {
   }
 
   dimension_group: referral_created_at {
-    group_label: "> Referral List"
+    group_label: "> Dates & Timestamps"
     type: time
     timeframes: [
       date,
@@ -377,7 +377,7 @@ view: psp_transactions {
   }
 
   dimension_group: referral_ended_at {
-    group_label: "> Referral List"
+    group_label: "> Dates & Timestamps"
     type: time
     timeframes: [
       date,
