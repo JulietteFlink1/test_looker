@@ -1,5 +1,5 @@
 include: "/*/**/coupa_budgeting.view.lkml"
-include: "/*/**/coupa_ordering.view.lkml"
+include: "/*/**/coupa_orders_and_invoices_merged.view.lkml"
 include: "/**/hubs_ct.view"
 include: "/**/global_filters_and_parameters.view.lkml"
 
@@ -35,13 +35,18 @@ explore: coupa {
     type: left_outer
   }
 
-  join: coupa_ordering {
+  join: coupa_orders_and_invoices_merged {
     view_label: "Orders"
-    sql_on: ${coupa_budgeting.hub_code} = ${coupa_ordering.hub_code}
-    and ${coupa_budgeting.period_name} = ${coupa_ordering.period_name}
-    and {% condition global_filters_and_parameters.datasource_filter %} ${coupa_ordering.order_created_date} {% endcondition %} ;;
-    relationship: many_to_many
-    type: full_outer
+    sql_on: ${coupa_budgeting.hub_code} = ${coupa_orders_and_invoices_merged.hub_code}
+    and ${coupa_budgeting.period_name} = ${coupa_orders_and_invoices_merged.period_name}
+    and ${coupa_budgeting.cost_center_id} = ${coupa_orders_and_invoices_merged.cost_center_id}
+    and case when ${coupa_budgeting.gl_account_id} is null
+                then 1 = 1
+              else ${coupa_budgeting.gl_account_id} = ${coupa_orders_and_invoices_merged.gl_account_id}
+        end
+    and {% condition global_filters_and_parameters.datasource_filter %} ${coupa_orders_and_invoices_merged.order_created_date} {% endcondition %} ;;
+    relationship: one_to_many
+    type: left_outer
   }
 
 }

@@ -1,5 +1,5 @@
 view: coupa_budgeting {
-  sql_table_name: `flink-data-dev.dbt_vbreda_curated.coupa_budgeting`
+  sql_table_name: `flink-data-dev.dbt_vbreda_curated_finance.coupa_budgeting`
     ;;
 
   dimension: coupa_budget_uuid {
@@ -7,6 +7,20 @@ view: coupa_budgeting {
     primary_key: yes
     hidden: yes
     sql: ${TABLE}.coupa_budget_uuid ;;
+  }
+
+  dimension: hub_code {
+    type: string
+    hidden: yes
+    description: "Code of a hub identical to back-end source tables."
+    sql: ${TABLE}.hub_code ;;
+  }
+
+  dimension: country_iso {
+    type: string
+    hidden: yes
+    description: "Country ISO based on 'hub_code'."
+    sql: ${TABLE}.country_iso ;;
   }
 
   dimension: amt_budget_gross_eur {
@@ -46,21 +60,31 @@ view: coupa_budgeting {
   }
 
   dimension: budget_description {
+    label: "Budget Decription"
     type: string
     description: "Description of the budget purpose."
     sql: ${TABLE}.budget_description ;;
   }
 
   dimension: period_name {
+    label: "Period Name"
     type: string
     description: "Name of the budgeted period. Contains information about the country and month. Eg. DE Budget 10/22."
     sql: ${TABLE}.period_name ;;
   }
 
-  dimension: hub_code {
+  dimension: cost_center_id {
+    label: "Cost Center ID"
     type: string
-    description: "Code of a hub identical to back-end source tables."
-    sql: ${TABLE}.hub_code ;;
+    description: "ID of the cost center linked to the budget."
+    sql: ${TABLE}.cost_center_id ;;
+  }
+
+  dimension: gl_account_id {
+    label: "GL Account ID"
+    type: string
+    description: "ID of the GL account linked to the budget."
+    sql: ${TABLE}.gl_account_id ;;
   }
 
   measure: sum_amt_budget_gross_eur {
