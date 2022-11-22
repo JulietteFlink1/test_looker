@@ -1766,7 +1766,7 @@ view: staffing {
   measure: number_of_planned_hours_deputy_shift_lead {
     group_label: "> Deputy Shift Lead Measures"
     label: "# Filled (Planned) Planned Deputy Shift Lead Hours"
-    type: number
+    type: sum
     sql: ${TABLE}.number_of_planned_minutes_deputy_shift_lead/60 ;;
     value_format_name: decimal_1
   }
