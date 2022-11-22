@@ -217,7 +217,7 @@ view: hiring_summary {
     label: "% Hired Applicants"
     group_label: "> Hired Applicants"
     type: number
-    description: "Share of Hired Applicants over all applicants in the given transition date."
+    description: "Share of applications that were last transitioned into a hiring stage in the given transition date"
     sql: ${number_of_hired_applicants}/${number_of_applicants} ;;
     value_format_name: percent_1
   }
