@@ -1,7 +1,7 @@
 # Owner:   Nazrin Guliyeva
 # Created: 2022-11-08
 
-# This view contains information about hiring summary breakdown by country, city, hub code, channel etc.
+# This view contains information about hiring summary breakdown by country, city, hub code, channel, first shift completion etc. on a daily level.
 
 view: hiring_summary {
   sql_table_name: `flink-data-prod.reporting.hiring_summary`
@@ -45,14 +45,14 @@ view: hiring_summary {
   dimension: is_first_shift_completed {
     label: "Is First Shift Completed"
     type: yesno
-    description: "Yes, if first assigned shift is worked."
+    description: "Yes if first assigned shift is worked."
     sql: ${TABLE}.is_first_shift_completed ;;
   }
 
   dimension: is_first_shift_scheduled {
     label: "Is First Shift Scheduled"
     type: yesno
-    description: "Yes, if first shift is assigned."
+    description: "Yes if first shift is assigned."
     sql: ${TABLE}.is_first_shift_scheduled ;;
   }
 
@@ -96,7 +96,7 @@ view: hiring_summary {
     label: "Last Transitioned"
     group_label: "> Dates"
     type: time
-    description: "Last transition date from one hiring stage into another in UTC timezone."
+    description: "Last transition date into the given hiring stage"
     timeframes: [
       raw,
       date,
@@ -157,7 +157,7 @@ view: hiring_summary {
     group_label: "> Hired Applicants"
     type: sum
     description: "Number of hired applicants (Approved stage)"
-    filters: [stage_title: "Rejected"]
+    filters: [stage_title: "Approved"]
     sql: ${TABLE}.number_of_applicants ;;
   }
 
@@ -183,7 +183,7 @@ view: hiring_summary {
     label: "# Days to First Shift"
     group_label: "> Processing time"
     type: sum
-    description: "A total number of days between the application creation date from Fountain and first scheduled shift date."
+    description: "Total number of days between the application creation date from Fountain and first scheduled shift date."
     sql: ${TABLE}.number_of_days_to_first_shift ;;
   }
 
@@ -191,7 +191,7 @@ view: hiring_summary {
     label: "# Days to Hire"
     group_label: "> Processing time"
     type: sum
-    description: "A total number of days between the application creation date from Fountain and hiring date."
+    description: "Total number of days between the application creation date from Fountain and hiring date."
     sql: ${TABLE}.number_of_days_to_hire ;;
   }
 
@@ -217,7 +217,7 @@ view: hiring_summary {
     label: "% Hired Applicants"
     group_label: "> Hired Applicants"
     type: number
-    description: "Share of Hired Applicants"
+    description: "Share of Hired Applicants over all applicants in the given transition date."
     sql: ${number_of_hired_applicants}/${number_of_applicants} ;;
     value_format_name: percent_1
   }
