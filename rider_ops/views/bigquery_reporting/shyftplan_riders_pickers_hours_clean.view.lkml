@@ -242,15 +242,6 @@ view: shyftplan_riders_pickers_hours_clean {
     group_label: "Working Hours"
   }
 
-  measure: deputy_shift_lead_hours {
-    label: "Sum of Deputy Shift Lead Hours"
-    type: sum
-    sql:${TABLE}.number_of_worked_minutes/60;;
-    filters: [position_name: "deputy shift lead"]
-    value_format_name: decimal_1
-    group_label: "Working Hours"
-  }
-
   measure: wh_ops_hours {
     label: "Sum of Inventory Associate Hours (Warehouse Ops)"
     type: sum
@@ -261,9 +252,9 @@ view: shyftplan_riders_pickers_hours_clean {
   }
 
   measure: hub_staff_hours {
-    label: "Sum of Hub Staff Hours (Inventory Associate, Picker, Rider Captains, Ops Associate, Shift Lead and Deputy Shift Lead)"
+    label: "Sum of Hub Staff Hours (Inventory Associate, Picker, Rider Captains, Ops Associate and shift Lead)"
     type: number
-    sql: ${ops_associate_hours}+${shift_lead_hours}+${deputy_shift_lead_hours};;
+    sql: ${ops_associate_hours}+${shift_lead_hours};;
     value_format_name: decimal_1
     group_label: "Working Hours"
   }
@@ -764,8 +755,8 @@ view: shyftplan_riders_pickers_hours_clean {
   measure: all_staff_utr {
     label: "AVG All Staff UTR"
     type: number
-    description: "# Orders from opened hub / # Worked All Staff (incl. Rider,Picker,WH Ops, Rider Captain, Ops Associate, Shift Lead and Deputy Shift Lead) Hours"
-    sql: ${adjusted_orders_pickers} / NULLIF(${rider_hours}+${shift_lead_hours}+${ops_associate_hours}+${deputy_shift_lead_hours}, 0);;
+    description: "# Orders from opened hub / # Worked All Staff (incl. Rider,Picker,WH Ops, Rider Captain, Ops Associate and Shift Lead) Hours"
+    sql: ${adjusted_orders_pickers} / NULLIF(${rider_hours}+${shift_lead_hours}+${ops_associate_hours}, 0);;
     value_format_name: decimal_2
     group_label: "UTR"
   }
