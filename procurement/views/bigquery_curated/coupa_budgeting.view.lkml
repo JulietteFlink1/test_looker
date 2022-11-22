@@ -2,6 +2,10 @@ view: coupa_budgeting {
   sql_table_name: `flink-data-dev.dbt_vbreda_curated_finance.coupa_budgeting`
     ;;
 
+# This view provides information about the budget of hubs.
+# Author: Victor Breda
+# Created: 2022-11-22
+
   dimension: coupa_budget_uuid {
     type: string
     primary_key: yes

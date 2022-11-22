@@ -3,7 +3,9 @@ include: "/*/**/coupa_orders_and_invoices_merged.view.lkml"
 include: "/**/hubs_ct.view"
 include: "/**/global_filters_and_parameters.view.lkml"
 
-
+# This explore provides information about the budget, orders and invoices of hubs.
+# Author: Victor Breda
+# Created: 2022-11-22
 
 explore: coupa {
   from: coupa_budgeting
@@ -25,6 +27,11 @@ explore: coupa {
     sql: ;;
   relationship: one_to_one
   fields: [datasource_filter]
+  }
+
+  access_filter: {
+    field: coupa_budgeting.country_iso
+    user_attribute: country_iso
   }
 
   join: hubs {
