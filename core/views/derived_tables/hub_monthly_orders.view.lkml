@@ -116,7 +116,8 @@ view: hub_monthly_orders {
   }
 
   measure: avg_daily_orders_per_hub_agg {
-    label: " AVG # Daily Orders - Monthly granulairty"
+    label: " AVG # Daily Orders - Monthly granularity"
+    hidden: yes
     description: "AVG number of daily orders on a Hub/Month level.
     Computed as the number of successful orders that occured within the month, divided by the number of days the hub was open during the month."
     type: number
