@@ -5,7 +5,6 @@ include: "/**/*.explore"
 explore: orders_customers {
   extends: [orders_cl]
   label: "Customer Metrics"
-  view_label: "* Customer Metrics *"
   #view_name: orders_customers
   group_label: "Customer Metrics"
   description: "General Business Performance - Orders, Revenue, etc."
@@ -44,7 +43,7 @@ explore: orders_customers {
   }
 
   join: pdt_customer_retention {
-    view_label: " Customer Retention vs PDT "
+    view_label: ""
     sql_on: ${customers_metrics.country_iso} = ${pdt_customer_retention.country_iso} AND
       ${customers_metrics.user_email}    = ${pdt_customer_retention.customer_email} ;;
     relationship: many_to_many
