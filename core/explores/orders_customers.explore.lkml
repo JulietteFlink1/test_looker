@@ -13,7 +13,6 @@ explore: orders_customers {
   #extension: required
 
   join: customers_metrics {
-    view_label: "* Customers *"
     sql_on: ${customers_metrics.country_iso} = ${orders_cl.country_iso} AND
       ${customers_metrics.user_email}    = ${orders_cl.user_email} ;;
     relationship: many_to_one
