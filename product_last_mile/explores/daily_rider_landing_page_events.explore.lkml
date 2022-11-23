@@ -26,6 +26,11 @@ explore: daily_rider_landing_page_events {
   sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} date(${event_timestamp_date}) {% endcondition %};;
 
 
+  access_filter: {
+    field: daily_rider_landing_page_events.country_iso
+    user_attribute: country_iso
+  }
+
   always_filter: {
     filters: [
       global_filters_and_parameters.datasource_filter: "last 7 days"
