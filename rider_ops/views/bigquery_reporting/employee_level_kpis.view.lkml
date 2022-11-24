@@ -415,8 +415,8 @@ view: employee_level_kpis {
   measure: number_of_products_with_damaged_products_issues_post {
     group_label: "* Logistics *"
     type: sum
-    label: "# Products Damaged (Post-delivery)"
-    description: "The number of products, that were damaged and were claimed through the Customer Service"
+    label: "# Items with Products Damaged Issues. (Post-delivery)"
+    description: "The number of products, that were damaged and were claimed through the Customer Service. Available for hub staff and rider positions"
     sql: ${TABLE}.number_of_orders_with_damaged_products ;;
   }
 
@@ -431,7 +431,7 @@ view: employee_level_kpis {
   measure: number_of_products_with_missing_products_issues{
     group_label: "* Logistics *"
     type: sum
-    label: "# Products Missing"
+    label: "# Items with Products Missing Issues"
     description: "The number of missing products. Available only for hub staff positions."
     sql: ${TABLE}.number_of_products_with_missing_products_issues ;;
   }
@@ -439,7 +439,7 @@ view: employee_level_kpis {
   measure: number_of_products_with_wrong_products_issues{
     group_label: "* Logistics *"
     type: sum
-    label: "# Products Wrong"
+    label: "# Items with Products Wrong Issues"
     description: "The number of wrong products. Available only for hub staff positions."
     sql: ${TABLE}.number_of_products_with_wrong_products_issues ;;
   }
@@ -447,7 +447,7 @@ view: employee_level_kpis {
   measure: number_of_products_with_perished_issues_post{
     group_label: "* Logistics *"
     type: sum
-    label: "# Products Perished"
+    label: "# Items with Products Perished Issues"
     description: "The number of perished products. Available only for hub staff positions."
     sql: ${TABLE}.number_of_products_with_perished_issues_post ;;
   }
@@ -506,7 +506,7 @@ view: employee_level_kpis {
     type: number
     label: "% Orders with Post Delivery Issues"
     description: "Share of Orders with a post-delivery issue (Missing Product, Wrong Product, Damaged Product or Perished Product) over all picked orders. Based on return info manually created in CT. Not available for external orders. Available only for hub staff positions."
-    sql: safe_divide(${number_of_orders_with_post_delivery_issues},${number_of_picked_orders}) ;;
+    sql: safe_divide(${number_of_orders_with_post_delivery_issues},${sum_number_of_picked_orders}) ;;
     value_format_name: percent_1
   }
 
@@ -515,7 +515,7 @@ view: employee_level_kpis {
     type: number
     label: "% Orders with Pre Delivery Issues"
     description: "Share of Orders with a pre-delivery issue (Missing Product, Wrong Product, Damaged Product or Perished Product) over all picked orders. Based on return info manually created in CT. Not available for external orders. Available only for hub staff positions."
-    sql: safe_divide(${number_of_orders_with_pre_delivery_issues},${number_of_picked_orders}) ;;
+    sql: safe_divide(${number_of_orders_with_pre_delivery_issues},${sum_number_of_picked_orders}) ;;
     value_format_name: percent_1
   }
 
@@ -643,7 +643,7 @@ view: employee_level_kpis {
     group_label: "* Logistics *"
     type: number
     label: "AVG Picking Time Per Order (min)"
-    description: "Average time needed for picking items per order"
+    description: "Average time needed for picking items per order. Based on Hub One data."
     sql: ${sum_picking_time_minutes}/nullif(${sum_number_of_picked_orders},0) ;;
     value_format_name: decimal_1
   }
@@ -652,7 +652,7 @@ view: employee_level_kpis {
     group_label: "* Logistics *"
     type: number
     label: "AVG Picking Time Per Item (min)"
-    description: "Average time needed for picking items"
+    description: "Average time needed for picking items. Based on Hub One data"
     sql: ${sum_picking_time_minutes}/nullif(${number_of_picked_items},0) ;;
     value_format_name: decimal_1
   }
