@@ -1,5 +1,5 @@
 view: coupa_orders_and_invoices_merged {
-  sql_table_name: `flink-data-dev.dbt_vbreda_curated_finance.coupa_orders_and_invoices_merged`
+  sql_table_name: `flink-data-prod.curated_finance.coupa_orders_and_invoices_merged`
     ;;
 
 # This view provides information about the orders and invoices that influence the budget of hubs.
@@ -53,7 +53,7 @@ view: coupa_orders_and_invoices_merged {
     type: string
     hidden: yes
     label: "GL Account ID"
-    description: "ID of the GL account linked to the purchase."
+    description: "ID of the General Ledger account linked to the purchase."
     sql: ${TABLE}.gl_account_id ;;
   }
 
@@ -117,15 +117,15 @@ view: coupa_orders_and_invoices_merged {
   dimension: amt_unit_price_gross_eur {
     group_label: "Orders"
     type: number
-    label: "Amount Unit Price"
-    description: "Price of a single unit of the item that was purchased. In euros."
+    label: "€ Amount Unit Price Gross"
+    description: "Price of a single unit of the item that was purchased. Incl. VAT, in euros."
     sql: ${TABLE}.amt_unit_price_gross_eur ;;
   }
 
   measure: sum_amt_ordered_gross_eur {
     group_label: "Orders"
-    label: "Amount ordered"
-    description: "Sum of the unit prices multiplied by the quantities ordered."
+    label: "€ Amount Ordered Gross"
+    description: "Sum of the unit prices multiplied by the quantities ordered. Incl. VAT, in euros"
     type: sum
     sql: ${amt_ordered_gross_eur} ;;
     value_format_name: decimal_2
@@ -137,7 +137,7 @@ view: coupa_orders_and_invoices_merged {
     description: "Number of units of the item ordered."
     type: sum
     sql: ${number_of_ordered_units} ;;
-    value_format_name: decimal_2
+    value_format_name: decimal_0
   }
 
   ######### Parameters

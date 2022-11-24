@@ -1,5 +1,5 @@
 view: coupa_budgeting {
-  sql_table_name: `flink-data-dev.dbt_vbreda_curated_finance.coupa_budgeting`
+  sql_table_name: `flink-data-prod.curated_finance.coupa_budgeting`
     ;;
 
 # This view provides information about the budget of hubs.
@@ -40,6 +40,7 @@ view: coupa_budgeting {
   }
 
   dimension_group: period_end {
+    description: "Timestamps at which the budgeting period ends."
     group_label: "Dates & Timestamp"
     type: time
     timeframes: [
@@ -53,6 +54,7 @@ view: coupa_budgeting {
 
   dimension_group: period_start {
     group_label: "Dates & Timestamp"
+    description: "Timestamps at which the budgeting period starts."
     type: time
     timeframes: [
       time,
@@ -87,14 +89,14 @@ view: coupa_budgeting {
   dimension: gl_account_id {
     label: "GL Account ID"
     type: string
-    description: "ID of the GL account linked to the budget."
+    description: "ID of the General Ledger account linked to the budget."
     sql: ${TABLE}.gl_account_id ;;
   }
 
   measure: sum_amt_budget_gross_eur {
     group_label: "Budget"
-    label: "Amount Budget"
-    description: "Amount of budget allocated, in euros."
+    label: "€ Amount Budget Gross"
+    description: "Amount of budget allocated, incl. VAT in euros."
     type: sum
     sql: ${amt_budget_gross_eur} ;;
     value_format_name: eur
@@ -102,8 +104,8 @@ view: coupa_budgeting {
 
   measure: sum_amt_remaining_budget_gross_eur {
     group_label: "Budget"
-    label: "Amount Remaining Budget"
-    description: "Remaining amount of budget allocated, in euros."
+    label: "€  Amount Remaining Budget Gross"
+    description: "Remaining amount of budget allocated, incl. VAT in euros."
     type: sum
     sql: ${amt_remaining_budget_gross_eur} ;;
     value_format_name: eur
