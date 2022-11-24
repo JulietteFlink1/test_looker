@@ -279,7 +279,7 @@ set: to_include_set {
     type: sum_distinct
     value_format: "0"
     sql_distinct_key: ${order_id} ;;
-    sql: ${time_picking_process_seconds} ;;
+    sql: ${time_picking_items_seconds} ;;
   }
 
   measure: sum_of_picking_items_time_minutes {
@@ -289,7 +289,7 @@ set: to_include_set {
     type: sum_distinct
     value_format: "0"
     sql_distinct_key: ${order_id} ;;
-    sql: ${time_picking_process_minutes} ;;
+    sql: ${time_picking_items_minutes} ;;
   }
 
   measure: sum_of_picking_items_time_hours {
@@ -299,7 +299,7 @@ set: to_include_set {
     type: sum_distinct
     value_format: "0"
     sql_distinct_key: ${order_id} ;;
-    sql: ${time_picking_process_minutes}/60 ;;
+    sql: ${time_picking_items_minutes}/60 ;;
   }
 
   # =========  Average Times   =========
@@ -351,7 +351,7 @@ set: to_include_set {
     type: average_distinct
     value_format: "0.00"
     sql_distinct_key: ${order_id} ;;
-    sql: ${time_picking_process_seconds} ;;
+    sql: ${time_picking_items_seconds} ;;
   }
 
   measure: avg_of_picking_items_time_minutes {
@@ -361,6 +361,6 @@ set: to_include_set {
     type: average_distinct
     value_format: "0.00"
     sql_distinct_key: ${order_id} ;;
-    sql: ${time_picking_process_minutes} ;;
+    sql: ${time_picking_items_minutes} ;;
   }
 }
