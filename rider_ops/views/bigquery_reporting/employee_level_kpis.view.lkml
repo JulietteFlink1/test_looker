@@ -30,6 +30,13 @@ view: employee_level_kpis {
     description: "Based on Quinyx staff category assinged to each employee profile"
   }
 
+  dimension: number_of_picking_time_minutes {
+    type: number
+    label: "Number of Picking Time Minutes"
+    description: "Number of minutes spent picking based on the Hub One app data."
+    sql: ${TABLE}.number_of_picking_time_minutes ;;
+  }
+
   dimension: rider_id {
     type: string
     label: "Rider ID (old ID)"
@@ -645,6 +652,15 @@ view: employee_level_kpis {
     label: "AVG Picking Time Per Order (min)"
     description: "Average time needed for picking items per order. Based on Hub One data."
     sql: ${sum_picking_time_minutes}/nullif(${sum_number_of_picked_orders},0) ;;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_picking_time_minutes {
+    group_label: "* Logistics *"
+    type: average
+    label: "AVG Time Spent Picking (min)"
+    description: "Average time spent doing picking activities based on the Hub One data."
+    sql: ${TABLE}.number_of_picking_time_minutes ;;
     value_format_name: decimal_1
   }
 
