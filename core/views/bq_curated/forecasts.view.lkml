@@ -1358,7 +1358,7 @@ view: forecasts {
     label: "Summed Understaffing Error"
     type: sum_distinct
     sql_distinct_key: ${forecast_uuid} ;;
-    description: "How much overstaffed we are compared to what was forecasted in cases of overstaffing. when Forecasted Hours < Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
+    description: "How much understaffed we are compared to what was forecasted in cases of understaffing. when Forecasted Hours > Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
     sql:
         case
           when ${number_of_forecasted_hours_by_position_dimension} > ${ops.number_of_scheduled_hours_by_position_dimension}
@@ -1371,10 +1371,10 @@ view: forecasts {
 
   measure: summed_understaffing_error_adjusted {
     group_label: "> Dynamic Measures"
-    label: "Adjusted Summed Overstaffing Error"
+    label: "Adjusted Summed Understaffing Error"
     type: sum_distinct
     sql_distinct_key: ${forecast_uuid} ;;
-    description: "How much overstaffed we are compared to what was forecasted (Incl. Airtable Adjustments) in cases of overstaffing. when Forecasted Hours < Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
+    description: "How much understaffed we are compared to what was forecasted (Incl. Airtable Adjustments) in cases of understaffing. when Forecasted Hours > Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
     sql:
         case
           when ${number_of_forecasted_hours_by_position_adjusted_dimension} > ${ops.number_of_scheduled_hours_by_position_dimension}
