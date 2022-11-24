@@ -548,7 +548,7 @@ view: employee_level_kpis {
     type: average
     label: "AVG Time Spent Picking (min)"
     description: "Average time spent doing picking activities based on the Hub One data."
-    sql: ${TABLE}.picking_time_minutes ;;
+    sql: ${TABLE}.number_of_picking_time_minutes ;;
     value_format_name: decimal_1
   }
 
