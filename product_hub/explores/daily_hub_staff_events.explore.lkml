@@ -64,7 +64,7 @@ explore: daily_hub_staff_events {
 
   join: event_order_state_updated {
     view_label: "3 Event: Order State Updated"
-    fields: [to_include_dimensions*, to_include_measures*]
+    fields: [to_include_set*]
     sql_on: ${event_order_state_updated.event_uuid} = ${daily_hub_staff_events.event_uuid}
       and {% condition global_filters_and_parameters.datasource_filter %}
         ${event_order_state_updated.event_timestamp_date} {% endcondition %};;
@@ -75,6 +75,7 @@ explore: daily_hub_staff_events {
 #Coalesce in the join is to be able to see times and quantities processed at order_id and sku level
   join: hub_one_picking_times {
     view_label: "3 Event: Order State Updated"
+    fields: [to_include_set*]
     sql_on: ${hub_one_picking_times.order_id} = coalesce(${event_order_state_updated.order_id},${event_order_progressed.order_id})
       and {% condition global_filters_and_parameters.datasource_filter %}
         ${hub_one_picking_times.event_date} {% endcondition %};;

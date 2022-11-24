@@ -13,6 +13,41 @@ view: hub_one_picking_times {
   # ~~~~~~~~~~~~~~~     Sets          ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+set: to_include_dimensions {
+fields: [
+  order_picked_time,
+  order_picking_finished_time,
+  order_packed_time,
+
+  picker_quinyx_badge_number
+  ]
+}
+
+set: to_include_measures {
+  fields: [
+    sum_of_picking_time_seconds,
+    sum_of_picking_time_minutes,
+    sum_of_picking_time_hours,
+    sum_of_container_assignment_time_seconds,
+    sum_of_container_assignment_time_minutes,
+    sum_of_container_assignment_time_hours,
+    sum_of_picking_items_time_seconds,
+    sum_of_picking_items_time_minutes,
+    sum_of_picking_items_time_hours,
+
+    avg_of_picking_time_seconds,
+    avg_of_picking_time_minutes,
+    avg_of_container_assignment_time_seconds,
+    avg_of_container_assignment_time_minutes,
+    avg_of_picking_items_time_seconds,
+    avg_of_picking_items_time_minutes
+  ]
+}
+
+set: to_include_set {
+  fields: [to_include_dimensions*, to_include_measures*]
+}
+
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Parameters     ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -56,6 +91,7 @@ view: hub_one_picking_times {
   # =========  Employee Attributes   =========
 
   dimension: picker_quinyx_badge_number {
+    group_label: "Event Properties"
     type: string
     description: "Quinyx Badge number of the employee who started the picking process first."
     sql: ${TABLE}.picker_quinyx_badge_number ;;
@@ -80,6 +116,8 @@ view: hub_one_picking_times {
   }
 
   dimension_group: order_picked {
+    group_label: "Picking Times"
+    label: "Order Picked Time"
     type: time
     description: "Timestamp for when the order is selected by the picker (state= picked)."
     timeframes: [
@@ -95,6 +133,8 @@ view: hub_one_picking_times {
   }
 
   dimension_group: order_picking_finished {
+    group_label: "Picking Times"
+    label: "Order Picking Finished Time"
     type: time
     description: "Timestamp for when the picker finished picking the items (state= picking_finished)."
     timeframes: [
@@ -110,6 +150,8 @@ view: hub_one_picking_times {
   }
 
   dimension_group: order_packed {
+    group_label: "Picking Times"
+    label: "Order Packed Time"
     type: time
     description: "Timestamp for when the order is ready for the rider (state= packed)."
     timeframes: [
@@ -262,6 +304,16 @@ view: hub_one_picking_times {
 
   # =========  Average Times   =========
 
+  measure: avg_of_picking_time_seconds {
+    group_label: "Avg Times"
+    label: "Avg Picking Time seconds"
+    description: "Avg of time spent picking an order from order picked to order ready for rider in seconds."
+    type: average_distinct
+    value_format: "0.00"
+    sql_distinct_key: ${order_id} ;;
+    sql: ${time_picking_process_seconds} ;;
+  }
+
   measure: avg_of_picking_time_minutes {
     group_label: "Avg Times"
     label: "Avg Picking Time minutes"
@@ -270,6 +322,16 @@ view: hub_one_picking_times {
     value_format: "0.00"
     sql_distinct_key: ${order_id} ;;
     sql: ${time_picking_process_minutes} ;;
+  }
+
+  measure: avg_of_container_assignment_time_seconds {
+    group_label: "Avg Times"
+    label: "Avg Container Assignment Time seconds"
+    description: "Avg of time spent on assign containers and shelfs in seconds."
+    type: average_distinct
+    value_format: "0.00"
+    sql_distinct_key: ${order_id} ;;
+    sql: ${time_assigning_containers_seconds} ;;
   }
 
   measure: avg_of_container_assignment_time_minutes {
@@ -282,8 +344,17 @@ view: hub_one_picking_times {
     sql: ${time_assigning_containers_minutes} ;;
   }
 
+  measure: avg_of_picking_items_time_seconds {
+    group_label: "Avg Times"
+    label: "Avg Picking Items Time seconds"
+    description: "Avg of time spent picking items from order picked to container assignment in seconds."
+    type: average_distinct
+    value_format: "0.00"
+    sql_distinct_key: ${order_id} ;;
+    sql: ${time_picking_process_seconds} ;;
+  }
+
   measure: avg_of_picking_items_time_minutes {
-    hidden: yes #hidden to avoid confusion
     group_label: "Avg Times"
     label: "Avg Picking Items Time minutes"
     description: "Avg of time spent picking items from order picked to container assignment in minutes."
