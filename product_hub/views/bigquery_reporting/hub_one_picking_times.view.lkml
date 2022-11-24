@@ -124,22 +124,16 @@ view: hub_one_picking_times {
     sql: ${TABLE}.order_packed_at ;;
   }
 
-  dimension: time_picking_items_minutes {
-    type: number
-    description: "Time spent picking items in minutes (difference between order_picked and order_picking_finished)."
-    sql: ${TABLE}.time_picking_items_minutes ;;
-  }
-
   dimension: time_picking_items_seconds {
     type: number
     description: "Time spent picking items in seconds (difference between order_picked and order_picking_finished)."
     sql: ${TABLE}.time_picking_items_seconds ;;
   }
 
-  dimension: time_assigning_containers_minutes {
+  dimension: time_picking_items_minutes {
     type: number
-    description: "Time spent assigning containers and shelfs in minutes (difference between order_picking_finished_at and order_packed_at)."
-    sql: ${TABLE}.time_assigning_containers_minutes ;;
+    description: "Time spent picking items in minutes (difference between order_picked and order_picking_finished)."
+    sql: ${TABLE}.time_picking_items_minutes ;;
   }
 
   dimension: time_assigning_containers_seconds {
@@ -148,10 +142,10 @@ view: hub_one_picking_times {
     sql: ${TABLE}.time_assigning_containers_seconds ;;
   }
 
-  dimension: time_picking_process_minutes {
+  dimension: time_assigning_containers_minutes {
     type: number
-    description: "Time spent picking an order from order picked to order ready for rider in minutes (difference between order_picked_at and order_packed_at)."
-    sql: ${TABLE}.time_picking_process_minutes ;;
+    description: "Time spent assigning containers and shelfs in minutes (difference between order_picking_finished_at and order_packed_at)."
+    sql: ${TABLE}.time_assigning_containers_minutes ;;
   }
 
   dimension: time_picking_process_seconds {
@@ -160,10 +154,142 @@ view: hub_one_picking_times {
     sql: ${TABLE}.time_picking_process_seconds ;;
   }
 
+  dimension: time_picking_process_minutes {
+    type: number
+    description: "Time spent picking an order from order picked to order ready for rider in minutes (difference between order_picked_at and order_packed_at)."
+    sql: ${TABLE}.time_picking_process_minutes ;;
+  }
+
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  # =========  Total Metrics  =========
+  # Note that for this measures to be accurate we need to use sum_distinct with sql_distinct_key = order_id
+  # This is because this view is being joined to daily_events and if we use a normal sum it will be suming
+  # duplicate values
 
+  # =========  Total Times   =========
+
+  measure: sum_of_picking_time_seconds {
+    group_label: "Total Times"
+    label: "Picking Time seconds"
+    description: "Sum of time spent picking an order from order picked to order ready for rider in seconds."
+    type: sum_distinct
+    value_format: "0"
+    sql_distinct_key: ${order_id} ;;
+    sql: ${time_picking_process_seconds} ;;
+  }
+
+  measure: sum_of_picking_time_minutes {
+    group_label: "Total Times"
+    label: "Picking Time minutes"
+    description: "Sum of time spent picking an order from order picked to order ready for rider in minutes."
+    type: sum_distinct
+    value_format: "0"
+    sql_distinct_key: ${order_id} ;;
+    sql: ${time_picking_process_minutes} ;;
+  }
+
+  measure: sum_of_picking_time_hours {
+    group_label: "Total Times"
+    label: "Picking Time hours"
+    description: "Sum of time spent picking an order from order picked to order ready for rider in hours."
+    type: sum_distinct
+    value_format: "0.#"
+    sql_distinct_key: ${order_id} ;;
+    sql: ${time_picking_process_minutes}/60 ;;
+  }
+
+  measure: sum_of_container_assignment_time_seconds {
+    group_label: "Total Times"
+    label: "Container Assignment Time seconds"
+    description: "Sum of time spent on assign containers and shelfs in seconds."
+    type: sum_distinct
+    value_format: "0"
+    sql_distinct_key: ${order_id} ;;
+    sql: ${time_assigning_containers_seconds} ;;
+  }
+
+  measure: sum_of_container_assignment_time_minutes {
+    group_label: "Total Times"
+    label: "Container Assignment Time minutes"
+    description: "Sum of time spent on assign containers and shelfs in minutes."
+    type: sum_distinct
+    value_format: "0"
+    sql_distinct_key: ${order_id} ;;
+    sql: ${time_assigning_containers_minutes} ;;
+  }
+
+  measure: sum_of_container_assignment_time_hours {
+    group_label: "Total Times"
+    label: "Container Assignment Time hours"
+    description: "Sum of time spent on assign containers and shelfs in hours."
+    type: sum_distinct
+    value_format: "0.#"
+    sql_distinct_key: ${order_id} ;;
+    sql: ${time_assigning_containers_minutes}/60 ;;
+  }
+
+  measure: sum_of_picking_items_time_seconds {
+    group_label: "Total Times"
+    label: "Picking Items Time seconds"
+    description: "Sum of time spent picking items from order picked to container assignment in seconds."
+    type: sum_distinct
+    value_format: "0"
+    sql_distinct_key: ${order_id} ;;
+    sql: ${time_picking_process_seconds} ;;
+  }
+
+  measure: sum_of_picking_items_time_minutes {
+    group_label: "Total Times"
+    label: "Picking Items Time minutes"
+    description: "Sum of time spent picking items from order picked to container assignment in minutes."
+    type: sum_distinct
+    value_format: "0"
+    sql_distinct_key: ${order_id} ;;
+    sql: ${time_picking_process_minutes} ;;
+  }
+
+  measure: sum_of_picking_items_time_hours {
+    group_label: "Total Times"
+    label: "Picking Items Time hours"
+    description: "Sum of time spent picking items from order picked to container assignment in hours."
+    type: sum_distinct
+    value_format: "0"
+    sql_distinct_key: ${order_id} ;;
+    sql: ${time_picking_process_minutes}/60 ;;
+  }
+
+  # =========  Average Times   =========
+
+  measure: avg_of_picking_time_minutes {
+    group_label: "Avg Times"
+    label: "Avg Picking Time minutes"
+    description: "Avg of time spent picking an order from order picked to order ready for rider in minutes."
+    type: average_distinct
+    value_format: "0.00"
+    sql_distinct_key: ${order_id} ;;
+    sql: ${time_picking_process_minutes} ;;
+  }
+
+  measure: avg_of_container_assignment_time_minutes {
+    group_label: "Avg Times"
+    label: "Avg Container Assignment Time minutes"
+    description: "Avg of time spent on assign containers and shelfs in minutes."
+    type: average_distinct
+    value_format: "0.00"
+    sql_distinct_key: ${order_id} ;;
+    sql: ${time_assigning_containers_minutes} ;;
+  }
+
+  measure: avg_of_picking_items_time_minutes {
+    hidden: yes #hidden to avoid confusion
+    group_label: "Avg Times"
+    label: "Avg Picking Items Time minutes"
+    description: "Avg of time spent picking items from order picked to container assignment in minutes."
+    type: average_distinct
+    value_format: "0.00"
+    sql_distinct_key: ${order_id} ;;
+    sql: ${time_picking_process_minutes} ;;
+  }
 }
