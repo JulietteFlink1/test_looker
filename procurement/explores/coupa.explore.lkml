@@ -8,11 +8,9 @@ include: "/**/global_filters_and_parameters.view.lkml"
 # Created: 2022-11-22
 
 explore: coupa {
-  from: coupa_budgeting
   view_name: coupa_budgeting
   group_label: "Procurement"
   view_label: "Budgeting"
-  label: "Coupa"
   description: "This explore provides information on Coupa data."
 
   sql_always_where: {% condition global_filters_and_parameters.datasource_filter %} ${coupa_budgeting.period_start_date} {% endcondition %} ;;
