@@ -72,6 +72,21 @@ set: drill_fields_set {
     drill_fields: [drill_fields_set*]
   }
 
+  dimension: country_name {
+    type: string
+    sql: case
+            when ${country_iso} = "DE" then "Germany"
+            when ${country_iso} = "NL" then "Netherlands"
+            when ${country_iso} = "FR" then "France"
+            when ${country_iso} = "AT" then "Austria"
+         end ;;
+    label: "Country Name"
+    group_label: ""
+    description: "Country Name."
+    map_layer_name: countries
+    drill_fields: [drill_fields_set*]
+  }
+
   dimension: hub_code {
     type: string
     sql: ${TABLE}.hub_code ;;

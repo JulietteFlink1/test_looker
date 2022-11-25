@@ -16,7 +16,7 @@ include: "/**/event_order_progressed.view.lkml"
 include: "/**/event_order_state_updated.view.lkml"
 include: "/**/event_container_assigned.view.lkml"
 include: "/**/event_container_assignment_skipped.view.lkml"
-include: "/**/picking_times.view.lkml"
+include: "/**/hub_one_picking_times.view.lkml"
 include: "/product_consumer/views/bigquery_reporting/daily_violations_aggregates.view.lkml"
 include: "/**/daily_smart_inventory_checks.view"
 
@@ -64,7 +64,7 @@ explore: daily_hub_staff_events {
 
   join: event_order_state_updated {
     view_label: "3 Event: Order State Updated"
-    fields: [to_include_dimensions*, to_include_measures*]
+    fields: [to_include_set*]
     sql_on: ${event_order_state_updated.event_uuid} = ${daily_hub_staff_events.event_uuid}
       and {% condition global_filters_and_parameters.datasource_filter %}
         ${event_order_state_updated.event_timestamp_date} {% endcondition %};;
@@ -73,11 +73,12 @@ explore: daily_hub_staff_events {
   }
 
 #Coalesce in the join is to be able to see times and quantities processed at order_id and sku level
-  join: picking_times {
+  join: hub_one_picking_times {
     view_label: "3 Event: Order State Updated"
-    sql_on: ${picking_times.order_id} = coalesce(${event_order_state_updated.order_id},${event_order_progressed.order_id})
+    fields: [to_include_set*]
+    sql_on: ${hub_one_picking_times.order_id} = coalesce(${event_order_state_updated.order_id},${event_order_progressed.order_id})
       and {% condition global_filters_and_parameters.datasource_filter %}
-        ${picking_times.event_timestamp_date} {% endcondition %};;
+        ${hub_one_picking_times.event_date} {% endcondition %};;
     type: left_outer
     relationship: one_to_one
   }

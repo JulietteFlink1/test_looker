@@ -35,7 +35,7 @@ datagroup: flink_daily_datagroup {
 }
 
 
-persist_with: flink_default_datagroup
+persist_with: flink_daily_datagroup
 # END ------------------------ defined persisting strategies ---------------------------------
 
 

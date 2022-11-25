@@ -16,7 +16,7 @@ view: daily_rider_app_events {
   dimension: anonymous_id {
     group_label: "IDs"
     label: "Anonymous ID"
-    description: "User ID set by Segment"
+    description: "User Identifier set by Segment"
     type: string
     sql: ${TABLE}.anonymous_id ;;
   }
@@ -125,7 +125,7 @@ view: daily_rider_app_events {
   dimension: locale {
     group_label: "Location Dimensions"
     label: "Locale"
-    description: "Language code | Coutnry, region code"
+    description: "Language code | Country, region code"
     type: string
     sql: ${TABLE}.locale ;;
   }
@@ -197,7 +197,7 @@ view: daily_rider_app_events {
   measure: events {
     group_label: "Measures"
     label: "# Events"
-    description: "Number of events trigegred by users"
+    description: "Number of events triggered by users"
     type: count_distinct
     sql: ${TABLE}.event_uuid ;;
   }

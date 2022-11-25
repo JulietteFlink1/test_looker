@@ -1358,7 +1358,7 @@ view: forecasts {
     label: "Summed Understaffing Error"
     type: sum_distinct
     sql_distinct_key: ${forecast_uuid} ;;
-    description: "How much overstaffed we are compared to what was forecasted in cases of overstaffing. when Forecasted Hours < Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
+    description: "How much understaffed we are compared to what was forecasted in cases of understaffing. when Forecasted Hours > Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
     sql:
         case
           when ${number_of_forecasted_hours_by_position_dimension} > ${ops.number_of_scheduled_hours_by_position_dimension}
@@ -1374,7 +1374,7 @@ view: forecasts {
     label: "Adjusted Summed Understaffing Error"
     type: sum_distinct
     sql_distinct_key: ${forecast_uuid} ;;
-    description: "How much overstaffed we are compared to what was forecasted (Incl. Airtable Adjustments) in cases of overstaffing. when Forecasted Hours < Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
+    description: "How much understaffed we are compared to what was forecasted (Incl. Airtable Adjustments) in cases of understaffing. when Forecasted Hours > Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
     sql:
         case
           when ${number_of_forecasted_hours_by_position_adjusted_dimension} > ${ops.number_of_scheduled_hours_by_position_dimension}
@@ -1400,7 +1400,7 @@ view: forecasts {
     group_label: "> Dynamic Measures"
     label: "% Adjusted Understaffing"
     description: "How much understaffed we are compared to what was forecasted (Incl. Airtable Adjustments) in cases of understaffing. when Adjusted Forecasted Hours > Scheduled Hours: (Adjusted Forecasted Hours - Scheduled Hours) / Adjusted Forecasted Hours"
-    sql:  ${summed_understaffing_error} / nullif(${number_of_forecasted_hours_by_position_adjusted},0) ;;
+    sql:  ${summed_understaffing_error_adjusted} / nullif(${number_of_forecasted_hours_by_position_adjusted},0) ;;
     value_format_name: percent_1
     hidden: no
   }
