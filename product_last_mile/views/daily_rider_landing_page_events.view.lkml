@@ -17,7 +17,7 @@ view: daily_rider_landing_page_events {
   dimension: anonymous_id {
     group_label: "IDs"
     label: "Anonymous ID"
-    description: "User ID set by Segment"
+    description: "User Identifier set by Segment"
     type: string
     sql: ${TABLE}.anonymous_id ;;
   }
