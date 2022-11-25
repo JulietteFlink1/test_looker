@@ -30,7 +30,10 @@ explore: current_product_discounts {
 
   join: product_discounts {
     from: product_discounts
-    sql_on: ${double_listed_products.sku} = ${product_discounts.product_sku} ;;
+    sql_on:
+        ${double_listed_products.sku} = ${product_discounts.product_sku} and
+        ${double_listed_products.country_iso} = ${product_discounts.country_iso}
+        ;;
     type: left_outer
     relationship: many_to_many
   }
