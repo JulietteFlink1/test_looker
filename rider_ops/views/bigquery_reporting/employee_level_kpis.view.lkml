@@ -3,7 +3,7 @@
 # This view contains daily aggregation of shift, Customer NPS and ops related kpis as well as employment info per distinct hub employee and position
 
 view: employee_level_kpis {
-  sql_table_name: `flink-data-prod.reporting.employee_level_kpis`
+  sql_table_name: `flink-data-dev.dbt_omar_reporting.employee_level_kpis`
     ;;
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -985,9 +985,9 @@ view: employee_level_kpis {
   measure: sum_weekly_contracted_hours {
     label: "Total Weekly Contracted Hours"
     group_label: "* Contract related *"
-    type: number
-    sql: ${sum_weekly_contracted_hours_per_employee} * ${number_of_scheduled_weeks} ;;
-    description: "Sum of weekly contracted hours based on Quinyx Agreements (Field in Quinyx UI: Agreement full time working hours) -  Weekly Contracted Hours * calender weeks"
+    type: sum
+    description: "Sum of weekly contracted hours based on Quinyx Agreements (Field in Quinyx UI: Agreement full time working hours) -  AVG Daily Contracted Hours  * number of days (exclud Sundays for AT and DE )"
+    sql: ${TABLE}.avg_daily_contracted_hours;;
   }
 
   measure: pct_contract_fulfillment {

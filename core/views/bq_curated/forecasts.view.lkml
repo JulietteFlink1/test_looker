@@ -1348,14 +1348,14 @@ view: forecasts {
     group_label: "> Dynamic Measures"
     label: "% Adjusted Overstaffing"
     description: "How much overstaffed we are compared to what was forecasted (Incl. Airtable Adjustments in cases of overstaffing. when Adjusted Forecasted Hours < Scheduled Hours: (Adjusted Forecasted Hours - Scheduled Hours) / Adjusted Forecasted Hours"
-    sql:  ${summed_overstaffing_error} / nullif(${number_of_forecasted_hours_by_position_adjusted},0) ;;
+    sql:  ${summed_overstaffing_error_adjusted} / nullif(${number_of_forecasted_hours_by_position_adjusted},0) ;;
     value_format_name: percent_1
     hidden: no
   }
 
   measure: summed_understaffing_error {
     group_label: "> Dynamic Measures"
-    label: "Summed Overstaffing Error"
+    label: "Summed Understaffing Error"
     type: sum_distinct
     sql_distinct_key: ${forecast_uuid} ;;
     description: "How much overstaffed we are compared to what was forecasted in cases of overstaffing. when Forecasted Hours < Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
@@ -1371,7 +1371,7 @@ view: forecasts {
 
   measure: summed_understaffing_error_adjusted {
     group_label: "> Dynamic Measures"
-    label: "Adjusted Summed Overstaffing Error"
+    label: "Adjusted Summed Understaffing Error"
     type: sum_distinct
     sql_distinct_key: ${forecast_uuid} ;;
     description: "How much overstaffed we are compared to what was forecasted (Incl. Airtable Adjustments) in cases of overstaffing. when Forecasted Hours < Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
