@@ -48,7 +48,7 @@ explore: order_cohorts_base {
        and ${order_cohorts_base.discount_code} = ${discounts.discount_code}
     ;;
     type: left_outer
-    relationship: one_to_one
+    relationship: many_to_one
   }
 
 }
