@@ -623,7 +623,7 @@ view: employee_level_kpis {
     group_label: "* Logistics *"
     type: sum
     label: "Sum Picking Time (min)"
-    description: "Sum time needed for picking items per order. Sums the difference between order_picker_accepted_timestamp and order_packed_timestamp timestamp for each order. Based on Hub One app tracking data."
+    description: "Sum of the time needed for picking items per order. Sums the difference between order_picker_accepted_timestamp and order_packed_timestamp timestamp for each order. Based on Hub One app tracking data."
     sql: ${TABLE}.number_of_picking_time_minutes ;;
     value_format_name: decimal_1
   }
