@@ -124,8 +124,8 @@ view: coupa_orders_and_invoices_merged {
 
   measure: sum_amt_ordered_gross_eur {
     group_label: "Orders"
-    label: "€ Amount Ordered Gross"
-    description: "Sum of the unit prices multiplied by the quantities ordered. Incl. VAT, in euros"
+    label: "€ Budget Spend Gross (Order based)"
+    description: "Retrieved directly from Coupa. It corresponds to the unit prices multiplied by the quantities ordered. Incl. VAT, in euros"
     type: sum
     sql: ${amt_ordered_gross_eur} ;;
     value_format_name: decimal_2
