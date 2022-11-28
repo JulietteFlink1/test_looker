@@ -99,7 +99,7 @@ view: product_placement_performance_aggregates {
   dimension: product_placement {
     group_label: "Product Dimensions"
     label: "Product Placement"
-    description: "Placement in the app where product was listed, e.i. search, pdp, category"
+    description: "Placement in the app where product was listed, i.e. search, pdp, category"
     type: string
     sql: case when ${TABLE}.product_placement in ('checkout','cart') then 'cart'
               else ${TABLE}.product_placement
@@ -133,7 +133,7 @@ view: product_placement_performance_aggregates {
   dimension: pdp_origin {
     group_label: "Product Dimensions"
     label: "PDP Origin"
-    description: "Product Placement where PDP came"
+    description: "Product placement where the user clicked through to the Product Details Page"
     type: string
     sql: ${TABLE}.pdp_origin ;;
   }
@@ -153,7 +153,7 @@ view: product_placement_performance_aggregates {
     group_label: "Flags"
     label: "Is Exposed To Impressions"
     type: yesno
-    description: "If a product sku was exposed to product impression"
+    description: "If a user was exposed to product impressions in this placement"
     sql: ${TABLE}.is_exposed_to_impressions ;;
   }
 
@@ -195,7 +195,7 @@ view: product_placement_performance_aggregates {
     group_label: "User Measures"
     label: "Count of users with PDP viewed."
     type: number
-    description: "Count of Distinct Users with PDP Viewed"
+    description: "Count of Distinct Users with Product Details Page Viewed"
     sql: ${TABLE}.count_of_distinct_users_with_pdp_viewed ;;
   }
 
@@ -239,7 +239,7 @@ view: product_placement_performance_aggregates {
     allowed_value: { value: "Month" }
     default_value: "Day"
   }
-######## DYNAMIC DIMENSIONS
+######## DYNAMIC DIMENSIONS ##########
 
   dimension: date {
     group_label: "* Dates & Timestamps *"
@@ -279,6 +279,7 @@ view: product_placement_performance_aggregates {
 
   measure: number_of_users_exposed_to_product{
     type: sum
+    group_label: "* Numbers *"
     label: "Number of Users Exposed to Product"
     hidden:  no
     sql: ${count_of_distinct_users_with_product_impression} ;;
@@ -287,6 +288,7 @@ view: product_placement_performance_aggregates {
 
   measure: number_of_users_with_product_added_to_cart{
     type: sum
+    group_label: "* Numbers *"
     label: "Number of Users Added Product to Cart"
     hidden:  no
     sql: ${count_of_distinct_users_with_product_added_to_cart} ;;
@@ -295,6 +297,7 @@ view: product_placement_performance_aggregates {
 
   measure: number_of_users_with_order_placed{
     type: sum
+    group_label: "* Numbers *"
     label: "Number of Users Placed an Order"
     hidden:  no
     sql: ${count_of_distinct_users_with_order_placed} ;;
