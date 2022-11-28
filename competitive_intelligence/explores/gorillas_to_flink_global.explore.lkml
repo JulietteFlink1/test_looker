@@ -16,7 +16,8 @@ explore:  gorillas_to_flink_global {
   join: gorillas_to_flink_global {
     from:  gorillas_to_flink_global
     view_label: "* Product Matches *"
-    sql_on: ${gorillas_inventory_stock_count.product_id} = ${gorillas_to_flink_global.gorillas_product_id};;
+    sql_on: ${gorillas_inventory_stock_count.product_id} = ${gorillas_to_flink_global.gorillas_product_id}
+      and ${gorillas_inventory_stock_count.country_iso} = ${gorillas_to_flink_global.country_iso};;
     relationship: one_to_many
     type:  left_outer
   }
@@ -24,7 +25,8 @@ explore:  gorillas_to_flink_global {
   join: products {
     from:  products
     view_label: "* Flink Product Data *"
-    sql_on: ${products.product_sku} = ${gorillas_to_flink_global.flink_product_sku};;
+    sql_on: ${products.product_sku} = ${gorillas_to_flink_global.flink_product_sku}
+      and ${products.country_iso} = ${gorillas_to_flink_global.country_iso};;
     relationship: one_to_many
     type: inner
   }
