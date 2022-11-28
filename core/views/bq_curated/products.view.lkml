@@ -74,6 +74,17 @@ view: products {
     group_label: "> Product Attributes"
   }
 
+  dimension: is_rezeptkarte {
+    type: yesno
+    label: "Is Rezeptkarte"
+    sql: case
+          when ${product_name} like '%Rezeptkarte%'
+            then true
+          else false
+         end    ;;
+    group_label: "> Product Attributes"
+  }
+
   dimension: product_sku {
     label: "SKU"
     type: string
