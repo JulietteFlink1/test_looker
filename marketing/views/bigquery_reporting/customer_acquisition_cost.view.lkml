@@ -100,7 +100,7 @@ view: customer_acquisition_cost {
 
   dimension: partner_name {
     group_label: "* Campaign Dimensions *"
-    label: "Partner Name"
+    label: "Channel Name"
     type: string
     sql: ${TABLE}.partner_name ;;
   }
