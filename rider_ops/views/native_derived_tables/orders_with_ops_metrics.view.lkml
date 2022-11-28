@@ -45,9 +45,12 @@ view: orders_with_ops_metrics {
       column: sum_rider_handling_time_minutes_saved_with_stacking {}
       column: sum_rider_handling_time_minutes {}
       column: sum_potential_rider_handling_time_without_stacking_minutes {}
+      column: avg_picking_time_per_item {}
+      column: cnt_internal_orders {}
+      column: avg_hub_to_customer_distance_km {}
       filters: [
         orders_cl.is_successful_order : "yes",
-        global_filters_and_parameters.datasource_filter: "last 10 weeks"
+        global_filters_and_parameters.datasource_filter: "last 12 months"
       ]
     }
   }
@@ -65,6 +68,15 @@ view: orders_with_ops_metrics {
     value_format_name: decimal_0
     hidden: yes
     type: number
+  }
+
+  measure: avg_hub_to_customer_distance_km {
+    group_label: "> Operations / Logistics"
+    label: "AVG Hub to Customer Distance (km)"
+    description: "Average distance between hub and customer dropoff in kilometers (most direct path / straight line)."
+    hidden:  no
+    type: average
+    value_format_name: decimal_2
   }
 
   measure: sum_orders {
@@ -85,6 +97,24 @@ view: orders_with_ops_metrics {
     value_format_name: decimal_0
     }
 
+  measure: cnt_internal_orders {
+    group_label: "> Basic Counts"
+    label: "# Internal Orders"
+    description: "Count of Internal Orders"
+    hidden:  no
+    type: sum
+    value_format_name: decimal_0
+  }
+
+  measure: cnt_external_orders {
+    group_label: "> Basic Counts"
+    label: "# External Orders"
+    description: "Count of External Orders"
+    hidden:  yes
+    type: sum
+    value_format_name: decimal_1
+  }
+
   measure: cnt_ubereats_orders {
     group_label: "> Basic Counts"
     label: "# Ubereats Orders"
@@ -96,10 +126,10 @@ view: orders_with_ops_metrics {
 
   measure: cnt_rider_orders {
     group_label: "> Basic Counts"
-    label: "# Orders (excl. Click & Collect and Ubereats)"
-    description: "Count of Orders that require no riders (e.g. Click and collect)"
-    hidden:  no
-    sql: ${sum_orders}-${cnt_click_and_collect_orders}-${cnt_ubereats_orders} ;;
+    label: "# Orders (excl. Click & Collect and External)"
+    description: "Count of Successful Orders that require riders (e.g. Click and collect)"
+    hidden:  yes
+    sql: ${sum_orders}-${cnt_external_orders}-${cnt_click_and_collect_orders} ;;
     value_format_name: decimal_0
     type: number
     }
@@ -108,6 +138,14 @@ view: orders_with_ops_metrics {
     group_label: "> Basic Counts"
     label: "AVG # Items"
     description: "Average number of items per order"
+    value_format_name: decimal_1
+    type: average
+  }
+
+  measure: avg_picking_time_per_item {
+    group_label: "> Operations / Logistics"
+    label: "AVG Picking Time Per Item (Seconds)"
+    description: "Computed as Picking Time / # Items Picked. Outliers excluded (<0min or >30min)"
     value_format_name: decimal_1
     type: average
   }
@@ -134,7 +172,7 @@ view: orders_with_ops_metrics {
     group_label: "> Basic Counts"
     label: "% Stacked Orders"
     description: "The % of orders, that were part of a stacked delivery"
-    sql: ${cnt_stacked_orders} / NULLIF(${sum_orders} ,0) ;;
+    sql: ${cnt_stacked_orders} / NULLIF(${cnt_internal_orders}-${cnt_click_and_collect_orders}, 0) ;;
     type: number
     value_format_name: percent_1
   }
@@ -437,14 +475,6 @@ view: orders_with_ops_metrics {
     type: sum
     value_format_name: decimal_0
     }
-
-  measure: cnt_external_orders {
-    group_label: "> Basic Counts"
-    label: "# External Orders"
-    description: "Count of External Orders"
-    type: sum
-    value_format_name: decimal_0
-  }
 
   measure: avg_estimated_queuing_time_by_position {
     group_label: "> Operations / Logistics"

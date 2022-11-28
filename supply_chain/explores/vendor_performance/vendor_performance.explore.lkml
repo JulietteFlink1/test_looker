@@ -44,7 +44,7 @@ explore: vendor_performance {
     erp_product_hub_vendor_assignment_v2*,
     hubs*,
     key_value_items*,
-    daily_stock_management_events_items_inbounded*
+    daily_stock_management_events_items_inbounded.to_include_vendor_performance*
   ]
 
   sql_always_where: {% condition global_filters_and_parameters.datasource_filter %} ${products_hub_assignment.report_date} {% endcondition %} ;;

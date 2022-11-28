@@ -225,17 +225,17 @@ view: orderline {
     group_label: "> Monetary Dimensions"
   }
 
-  dimension: refund_amount_net {
+  dimension: amt_refund_net {
     type: number
     hidden: yes
-    sql: ${TABLE}.refund_amount_net;;
+    sql: ${TABLE}.amt_refund_net;;
     group_label: "> Monetary Dimensions"
   }
 
-  dimension: refund_amount_gross {
+  dimension: amt_refund_gross {
     type: number
     hidden: yes
-    sql: ${TABLE}.refund_amount_gross;;
+    sql: ${TABLE}.amt_refund_gross;;
     group_label: "> Monetary Dimensions"
   }
 
@@ -688,20 +688,20 @@ view: orderline {
     group_label: "> Monetary Metrics"
   }
 
-  measure: sum_refund_gross {
+  measure: sum_amt_refund_gross {
     label: "SUM Refund (Gross)"
-    sql: ${refund_amount_gross} ;;
+    description: "Refund amount on item level, incl. VAT. Does NOT include Deposit, Storage Fee, Delivery Fee refunds."
+    sql: ${amt_refund_gross} ;;
     type: sum
-    hidden: yes
     value_format_name: euro_accounting_2_precision
     group_label: "> Monetary Metrics"
   }
 
-  measure: sum_refund_net {
+  measure: sum_amt_refund_net {
     label: "SUM Refund (Net)"
-    sql: ${refund_amount_net} ;;
+    description: "Refund amount on item level, excl. VAT. Does NOT include Deposit, Storage Fee, Delivery Fee refunds."
+    sql: ${amt_refund_net} ;;
     type: sum
-    hidden: yes
     value_format_name: euro_accounting_2_precision
     group_label: "> Monetary Metrics"
   }

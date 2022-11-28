@@ -30,6 +30,13 @@ view: employee_level_kpis {
     description: "Based on Quinyx staff category assinged to each employee profile"
   }
 
+  dimension: number_of_picking_time_minutes {
+    type: number
+    label: "Number of Picking Time Minutes"
+    description: "Number of minutes spent picking based on the Hub One app data."
+    sql: ${TABLE}.number_of_picking_time_minutes ;;
+  }
+
   dimension: rider_id {
     type: string
     label: "Rider ID (old ID)"
@@ -90,7 +97,24 @@ view: employee_level_kpis {
     type: string
     label: "External Agency Name"
     description: "Based on Quinyx field (External Agency)"
-    sql: ${TABLE}.external_agency_name ;;
+    sql:
+      case
+        when regexp_contains(lower(${TABLE}.external_agency_name), 'talent')
+          then 'Job & Talent'
+        when regexp_contains(lower(${TABLE}.external_agency_name), 'staff')
+          then 'Staffmatch'
+        when regexp_contains(lower(${TABLE}.external_agency_name), 'vlove|volve')
+          then 'Vlove'
+        when regexp_contains(lower(${TABLE}.external_agency_name), 'coursier')
+          then 'Coursierfr'
+        when regexp_contains(lower(${TABLE}.external_agency_name), 'lecastor')
+          then 'Lecastor'
+        when regexp_contains(lower(${TABLE}.external_agency_name), 'qapa')
+          then 'Qapa'
+        when regexp_contains(lower(${TABLE}.external_agency_name), 'zj')
+          then 'Zenjob'
+        else initcap(${TABLE}.external_agency_name)
+      end;;
   }
 
   dimension: fleet_type {
@@ -296,7 +320,6 @@ view: employee_level_kpis {
     value_format_name: decimal_1
   }
 
-
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -488,11 +511,9 @@ view: employee_level_kpis {
     group_label: "* Logistics *"
     type: sum
     label: "Sum Picking Time (min)"
-    description: "Sum time needed for picking items per order"
+    description: "Sum of the time spent doing picking activities based on the Hub One data."
     sql: ${TABLE}.number_of_picking_time_minutes ;;
     value_format_name: decimal_1
-    hidden: yes
-
   }
 
   measure: avg_rider_handling_time_minutes {
@@ -517,8 +538,17 @@ view: employee_level_kpis {
     group_label: "* Logistics *"
     type: number
     label: "AVG Picking Time Per Order (min)"
-    description: "Average time needed for picking items per order"
+    description: "Average time needed to pick items per order."
     sql: ${sum_picking_time_minutes}/nullif(${number_of_delivered_orders},0) ;;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_picking_time_minutes {
+    group_label: "* Logistics *"
+    type: average
+    label: "AVG Time Spent Picking (min)"
+    description: "Average time spent doing picking activities based on the Hub One data."
+    sql: ${TABLE}.number_of_picking_time_minutes ;;
     value_format_name: decimal_1
   }
 
@@ -526,7 +556,7 @@ view: employee_level_kpis {
     group_label: "* Logistics *"
     type: number
     label: "AVG Picking Time Per Item (min)"
-    description: "Average time needed for picking items"
+    description: "Average time needed for picking items."
     sql: ${sum_picking_time_minutes}/nullif(${number_of_picked_items},0) ;;
     value_format_name: decimal_1
   }

@@ -110,7 +110,7 @@ view: +orders {
     label: "% Stacked Orders"
     description: "The % of orders, that were part of a stacked delivery. (share of internal orders only)"
     group_label: "* Stacked Orders *"
-    sql: ${cnt_stacked_orders} / nullif(${cnt_internal_orders} ,0) ;;
+    sql: ${cnt_stacked_orders} / nullif(${cnt_internal_orders}-${cnt_click_and_collect_orders} ,0) ;;
     type: number
     value_format_name: percent_1
   }
