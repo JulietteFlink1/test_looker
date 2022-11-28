@@ -43,7 +43,8 @@ explore: order_cohorts_base {
   }
 
   join: discounts {
-    sql_on: ${order_cohorts_base.voucher_id} = ${discounts.discount_id}
+    # For T1 the discount id is null and we join only on the discount code.
+    sql_on: coalesce(${order_cohorts_base.voucher_id},'') = coalesce(${discounts.discount_id},'')
        and ${order_cohorts_base.discount_code} = ${discounts.discount_code}
     ;;
     type: left_outer
