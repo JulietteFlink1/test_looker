@@ -1508,6 +1508,20 @@ view: orders {
     sql: ${TABLE}.amt_storage_fee_net ;;
   }
 
+  ########### LATE NIGHT FEES ##########
+
+  dimension: amt_late_night_fee_gross {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.amt_late_night_fee_gross ;;
+  }
+
+  dimension: amt_late_night_fee_net {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.amt_late_night_fee_net ;;
+  }
+
   ########### CRF FEES DIMENSIONS ##########
 
   dimension: amt_gmv_excluding_crf_fees_gross {
@@ -2842,51 +2856,82 @@ view: orders {
     value_format_name: euro_accounting_2_precision
   }
 
-  ##### Total Fees #####
+############### LATE NIGHT FEES ################
+
+  measure: sum_amt_late_night_fee_gross {
+    group_label: "* Monetary Values *"
+    label: "SUM late_night Fees (Gross)"
+    description: "Gross amount of late night fees applied to orders placed after a given hour. Incl. VAT"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_late_night_fee_gross} ;;
+  }
+
+  measure: sum_amt_late_night_fee_net {
+    group_label: "* Monetary Values *"
+    label: "SUM Late Night Fees (Net)"
+    description: "Net amount of late night fees applied to orders placed after a given hour. Incl. VAT"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_late_night_fee_net} ;;
+  }
+
+  measure: avg_late_night_fee_gross {
+    group_label: "* Monetary Values *"
+    label: "AVG Late Night Fee (Gross)"
+    description: "Average value of Late Night Fees (Gross, incl. VAT) per order. Considering all orders."
+    type: average
+    sql: ${amt_late_night_fee_gross};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: avg_late_night_fee_net {
+    group_label: "* Monetary Values *"
+    label: "AVG Late Night Fee (Net)"
+    description: "Average value of Late Night Fees (Net, excl. VAT) per order. Considering all orders."
+    type: average
+    sql: ${amt_late_night_fee_net};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  ##### TOTAL FEES #####
 
   measure: sum_total_fees_gross {
-
     alias: [sum_total_fees]
-
     group_label: "* Monetary Values *"
     label: "SUM Total Fees (Gross)"
-    description: "Sum of Delivery Fees (Gross) and Storage Fees (Gross)"
-
+    description: "Sum of Delivery Fees (Gross), Storage Fees (Gross) and Late Night Fees (Gross)"
     type: number
-    sql: ${sum_delivery_fee_gross} + ${sum_amt_storage_fee_gross};;
+    sql: ${sum_delivery_fee_gross} + ${sum_amt_storage_fee_gross} + ${sum_amt_late_night_fee_gross};;
     value_format_name: euro_accounting_2_precision
   }
 
   measure: avg_total_fees_gross {
     group_label: "* Monetary Values *"
     label: "AVG Total Fees (Gross)"
-    description: "Average value of Delivery Fees (Gross) + Storage Fees (Gross)"
-
+    description: "Average value of Delivery Fees (Gross) + Storage Fees (Gross) + and Late Night Fees (Gross)"
     type: average
-    sql: (${shipping_price_gross_amount} + ${amt_storage_fee_gross}) ;;
+    sql: (${shipping_price_gross_amount} + ${amt_storage_fee_gross} + ${amt_late_night_fee_gross}) ;;
     value_format_name: euro_accounting_2_precision
   }
 
   measure: sum_total_fees_net {
     group_label: "* Monetary Values *"
     label: "SUM Total Fees (Net)"
-    description: "Sum of Delivery Fees (Net) and Storage Fees (Net)"
-
+    description: "Sum of Delivery Fees (Net), Storage Fees (Net) and Late Night Fees (Net)"
     type: number
-    sql: ${sum_delivery_fee_net} + ${sum_amt_storage_fee_net};;
+    sql: ${sum_delivery_fee_net} + ${sum_amt_storage_fee_net} + ${sum_amt_late_night_fee_net};;
     value_format_name: euro_accounting_2_precision
   }
 
   measure: avg_total_fees_net {
     group_label: "* Monetary Values *"
     label: "AVG Total Fees (Net)"
-    description: "Average value of Delivery Fees (Net) + Storage Fees (Net)"
-
+    description: "Average value of Delivery Fees (Net) + Storage Fees (Net) + Late Night Fees (Net)"
     type: average
-    sql: (${shipping_price_net_amount} + ${amt_storage_fee_net});;
+    sql: (${shipping_price_net_amount} + ${amt_storage_fee_net} + ${amt_late_night_fee_net});;
     value_format_name: euro_accounting_2_precision
   }
-
 
 ########### CRF FEES MEASURES ##########
 
