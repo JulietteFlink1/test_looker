@@ -5,7 +5,7 @@ include: "/competitive_intelligence/views/bigquery_reporting/gorillas_historical
 include: "/competitive_intelligence/views/bigquery_comp_intel/gorillas_to_flink_global.view"
 include: "/**/products.view"
 
-include: "/competitive_intelligence/views/bigquery_curated/getir_hubs.view.lkml"
+
 explore:  gorillas_prices {
   hidden: yes
   label: "Gorillas Prices"
