@@ -95,7 +95,7 @@ view: coupa_budgeting {
 
   measure: sum_amt_budget_gross_eur {
     group_label: "Budget"
-    label: "€ Amount Budget Gross"
+    label: "€ Budget Gross"
     description: "Amount of budget allocated, incl. VAT in euros."
     type: sum
     sql: ${amt_budget_gross_eur} ;;
@@ -104,16 +104,25 @@ view: coupa_budgeting {
 
   measure: sum_amt_remaining_budget_gross_eur {
     group_label: "Budget"
-    label: "€  Amount Remaining Budget Gross"
+    label: "€  Remaining Budget Gross"
     description: "Remaining amount of budget allocated, incl. VAT in euros."
     type: sum
     sql: ${amt_remaining_budget_gross_eur} ;;
     value_format_name: eur
   }
 
+  measure: sum_budget_spend_gross_eur {
+    group_label: "Budget"
+    label: "€ Budget Spend Gross"
+    description: "Budget spend, calculated as budget - remaining budget. Incl. VAT, in euros."
+    type: sum
+    sql: ${amt_budget_gross_eur} - ${amt_remaining_budget_gross_eur} ;;
+    value_format_name: eur
+  }
+
   measure: share_of_budget_remaining {
     group_label: "Budget"
-    label: "% Amount Remaining Budget"
+    label: "% Remaining Budget"
     description: "Remaining amount of budget allocated, divided by the initially allocated budget."
     type: number
     sql: safe_divide(${sum_amt_remaining_budget_gross_eur},${sum_amt_budget_gross_eur}) ;;

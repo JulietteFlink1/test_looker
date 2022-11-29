@@ -20,17 +20,12 @@ explore: customer_acquisition_cost {
 
   always_filter: {
     filters: [
-      global_filters_and_parameters.datasource_filter: "last 1 month",
+      customer_acquisition_cost.report_week: "last 4 weeks",
       customer_acquisition_cost.date_granularity: "Week",
       customer_acquisition_cost.campaign_country: "",
       customer_acquisition_cost.partner_name: ""
 
     ]
-  }
-
-  join: global_filters_and_parameters {
-    sql: ;;
-    relationship: one_to_one
   }
 
 }
