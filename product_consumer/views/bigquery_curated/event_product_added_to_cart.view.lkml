@@ -286,24 +286,28 @@ view: event_product_added_to_cart {
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
   measure: events {
+    group_label: "Bacis Counts"
     label: "# Total Products"
     description: "Number of events trigegred by users"
     type: count_distinct
     sql: ${TABLE}.event_uuid ;;
   }
   measure: logged_in_users {
+    group_label: "Bacis Counts"
     label: "# Registered Users"
     description: "Number of users who logged-in during a day"
     type: count_distinct
     sql: ${TABLE}.user_id ;;
   }
-  measure: logged_in_anonymous_users {
+  measure: anonymous_users {
+    group_label: "Bacis Counts"
     label: "# All Users"
     description: "Number of all users regardless of their login status."
     type: count_distinct
     sql: ${TABLE}.anonymous_id ;;
   }
   measure: products {
+    group_label: "Bacis Counts"
     label: "# Unique Products"
     description: "Number of unique products added to cart"
     type: count_distinct
@@ -343,9 +347,12 @@ view: event_product_added_to_cart {
     sql: (${original_product_price} - ${actual_product_price}) * -1 ;;
   }
 
-### events per product placement ###
+########################################
+##### events per product placement #####
+########################################
+
   measure: placement_cart {
-    group_label: "# Events / # Products per Placement"
+    group_label: "# Add-to-cart Events per Placement"
     label: "# Products - Cart"
     description: "Number of events trigegred by users from cart product placement"
     type: count_distinct
@@ -353,7 +360,7 @@ view: event_product_added_to_cart {
     filters: [product_placement: "cart"]
   }
   measure: placement_category {
-    group_label: "# Events / # Products per Placement"
+    group_label: "# Add-to-cart Events per Placement"
     label: "# Products - Category"
     description: "Number of events trigegred by users from category product placement"
     type: count_distinct
@@ -361,7 +368,7 @@ view: event_product_added_to_cart {
     filters: [product_placement: "category"]
   }
   measure: placement_search {
-    group_label: "# Events / # Products per Placement"
+    group_label: "# Add-to-cart Events per Placement"
     label: "# Products - Search"
     description: "Number of events trigegred by users from search product placement"
     type: count_distinct
@@ -369,7 +376,7 @@ view: event_product_added_to_cart {
     filters: [product_placement: "search"]
   }
   measure: placement_last_bought{
-    group_label: "# Events / # Products per Placement"
+    group_label: "# Add-to-cart Events per Placement"
     label: "# Products - Last bought"
     description: "Number of events trigegred by users from last_bought product placement"
     type: count_distinct
@@ -377,7 +384,7 @@ view: event_product_added_to_cart {
     filters: [product_placement: "last_bought"]
   }
   measure: placement_pdp {
-    group_label: "# Events / # Products per Placement"
+    group_label: "# Add-to-cart Events per Placement"
     label: "# Products - PDP"
     description: "Number of events trigegred by users"
     type: count_distinct
@@ -385,7 +392,7 @@ view: event_product_added_to_cart {
     filters: [product_placement: "pdp"]
   }
   measure: placement_swimlane {
-    group_label: "# Events / # Products per Placement"
+    group_label: "# Add-to-cart Events per Placement"
     label: "# Products - Swimlane"
     description: "Number of events trigegred by users from swimlane product placement"
     type: count_distinct
@@ -393,7 +400,7 @@ view: event_product_added_to_cart {
     filters: [product_placement: "swimlane"]
   }
   measure: placement_favourites {
-    group_label: "# Events / # Products per Placement"
+    group_label: "# Add-to-cart Events per Placement"
     label: "# Products - Favourites"
     description: "Number of events trigegred by users from favourites product placement"
     type: count_distinct
@@ -401,7 +408,7 @@ view: event_product_added_to_cart {
     filters: [product_placement: "favourites"]
   }
   measure: placement_recommendation {
-    group_label: "# Events / # Products per Placement"
+    group_label: "# Add-to-cart Events per Placement"
     label: "# Products - Recommendation"
     description: "Number of events trigegred by users from recommendation product placement"
     type: count_distinct
@@ -409,7 +416,7 @@ view: event_product_added_to_cart {
     filters: [product_placement: "recommendation"]
   }
   measure: placement_recipes {
-    group_label: "# Events / # Products per Placement"
+    group_label: "# Add-to-cart Events per Placement"
     label: "# Products - Recipes"
     description: "Number of events trigegred by users from recipes product placement"
     type: count_distinct
@@ -417,7 +424,7 @@ view: event_product_added_to_cart {
     filters: [product_placement: "recipes"]
   }
   measure: placement_collection {
-    group_label: "# Events / # Products per Placement"
+    group_label: "# Add-to-cart Events per Placement"
     label: "# Products - Collection"
     description: "Number of events trigegred by users from collection product placement"
     type: count_distinct
@@ -425,85 +432,173 @@ view: event_product_added_to_cart {
     filters: [product_placement: "collection"]
   }
 
-  ### ATC rates
+########################################
+##### Users  per product placement #####
+########################################
+
+  measure: placement_cart_users {
+    group_label: "# Users per Placement"
+    label: "# Users - Cart"
+    description: "Number of users who added to the cart from cart placement"
+    type: count_distinct
+    sql: ${TABLE}.anonymous_id ;;
+    filters: [product_placement: "cart"]
+  }
+  measure: placement_category_users {
+    group_label: "# Users per Placement"
+    label: "# Users - Category"
+    description: "Number of users who added to the cart from category placement"
+    type: count_distinct
+    sql: ${TABLE}.anonymous_id ;;
+    filters: [product_placement: "category"]
+  }
+  measure: placement_search_users {
+    group_label: "# Users per Placement"
+    label: "# Users - Search"
+    description: "Number of users who added to the cart from search placement"
+    type: count_distinct
+    sql: ${TABLE}.anonymous_id ;;
+    filters: [product_placement: "search"]
+  }
+  measure: placement_last_bought_users{
+    group_label: "# Users per Placement"
+    label: "# Users - Last bought"
+    description: "Number of users who added to the cart from last_bought placement"
+    type: count_distinct
+    sql: ${TABLE}.anonymous_id ;;
+    filters: [product_placement: "last_bought"]
+  }
+  measure: placement_pdp_users {
+    group_label: "# Users per Placement"
+    label: "# Users - PDP"
+    description: "Number of users who added to the cart from PDP placement"
+    type: count_distinct
+    sql: ${TABLE}.anonymous_id ;;
+    filters: [product_placement: "pdp"]
+  }
+  measure: placement_swimlane_users {
+    group_label: "# Users per Placement"
+    label: "# Users - Swimlane"
+    description: "Number of users who added to the cart from swimlane placement"
+    type: count_distinct
+    sql: ${TABLE}.anonymous_id ;;
+    filters: [product_placement: "swimlane"]
+  }
+  measure: placement_favourites_users {
+    group_label: "# Users per Placement"
+    label: "# Users - Favourites"
+    description: "Number of users who added to the cart from favourites placement"
+    type: count_distinct
+    sql: ${TABLE}.anonymous_id ;;
+    filters: [product_placement: "favourites"]
+  }
+  measure: placement_recommendation_users {
+    group_label: "# Users per Placement"
+    label: "# Users - Recommendation"
+    description: "Number of users who added to the cart from recommendation placement"
+    type: count_distinct
+    sql: ${TABLE}.anonymous_id ;;
+    filters: [product_placement: "recommendation"]
+  }
+  measure: placement_recipes_users {
+    group_label: "# Users per Placement"
+    label: "# Users - Recipes"
+    description: "Number of users who added to the cart from recipes placement"
+    type: count_distinct
+    sql: ${TABLE}.anonymous_id ;;
+    filters: [product_placement: "recipes"]
+  }
+  measure: placement_collection_users {
+    group_label: "# Users per Placement"
+    label: "# Users - Collection"
+    description: "Number of users who added to the cart from collection placement"
+    type: count_distinct
+    sql: ${TABLE}.anonymous_id ;;
+    filters: [product_placement: "collection"]
+  }
+
+ #########################################
+ ##### User level metrics - ATC rate #####
+ #########################################
 
   measure: atc_cart {
     group_label: "Add-to-cart Rates"
     label: "ATC rate - Cart"
-    description: "ATC (add-to-cart) Rate from product placem events from ent. #cart / # total events"
+    description: "Number of users with add-to-cart with Cart product placement / # total users"
     type: number
     value_format_name: percent_1
-    sql: ${placement_cart} / ${events};;
+    sql: ${placement_cart_users} / ${anonymous_users};;
   }
   measure: atc_category {
     group_label: "Add-to-cart Rates"
     label: "ATC rate - Category"
-    description: "ATC (add-to-cart) Rate from product placement. events from  #category / # total events"
+    description: "Number of users with add-to-cart with Category product placement / # total users"
     type: number
     value_format_name: percent_1
-    sql: ${placement_category} / ${events};;
+    sql: ${placement_category_users} / ${anonymous_users};;
   }
   measure: atc_search {
     group_label: "Add-to-cart Rates"
     label: "ATC rate - Search"
-    description: "ATC (add-to-cart) Rate from product placemen events from t. #search / # total events"
+    description: "Number of users with add-to-cart with Search product placement / # total users"
     type: number
     value_format_name: percent_1
-    sql: ${placement_search} / ${events};;
+    sql: ${placement_search_users} / ${anonymous_users};;
   }
   measure: atc_last_bought{
     group_label: "Add-to-cart Rates"
     label: "ATC rate - Last bought"
-    description: "ATC (add-to-cart) Rate from product placement. #l events from ast_bought / # total events"
+    description: "Number of users with add-to-cart with Last Bought product placement / # total users"
     type: number
     value_format_name: percent_1
-    sql: ${placement_last_bought} / ${events};;
+    sql: ${placement_last_bought_users} / ${anonymous_users};;
   }
   measure: atc_pdp {
     group_label: "Add-to-cart Rates"
     label: "ATC rate - PDP"
-    description: "ATC (add-to-cart) Rate from product place events from ment. #pdp / # total events"
+    description: "Number of users with add-to-cart with PDP product placement / # total users"
     type: number
     value_format_name: percent_1
-    sql: ${placement_pdp} / ${events};;
+    sql: ${placement_pdp_users} / ${anonymous_users};;
   }
   measure: atc_swimlane {
     group_label: "Add-to-cart Rates"
     label: "ATC rate - Swimlane"
-    description: "ATC (add-to-cart) Rate from product placement. events from  #swimlane / # total events"
+    description: "Number of users with add-to-cart with Swimlane product placement / # total users"
     type: number
     value_format_name: percent_1
-    sql: ${placement_swimlane} / ${events};;
+    sql: ${placement_swimlane_users} / ${anonymous_users};;
   }
   measure: atc_favourites {
     group_label: "Add-to-cart Rates"
     label: "ATC rate - Favourites"
-    description: "ATC (add-to-cart) Rate from product placement. # events from favourites / # total events"
+    description: "Number of users with add-to-cart with Favourites product placement / # total users"
     type: number
     value_format_name: percent_1
-    sql: ${placement_favourites} / ${events};;
+    sql: ${placement_favourites_users} / ${anonymous_users};;
   }
   measure: atc_recommendation {
     group_label: "Add-to-cart Rates"
     label: "ATC rate - Recommendation"
-    description: "ATC (add-to-cart) Rate from product placement. # events from recommendation / # total events"
+    description: "Number of users with add-to-cart with Recommendation product placement / # total users"
     type: number
     value_format_name: percent_1
-    sql: ${placement_recommendation} / ${events};;
+    sql: ${placement_recommendation_users} / ${anonymous_users};;
   }
   measure: atc_recipes {
     group_label: "Add-to-cart Rates"
     label: "ATC rate - Recipes"
-    description: "ATC (add-to-cart) Rate from product placement. # events from recipes / # total events"
+    description: "Number of users with add-to-cart with Recipes product placement / # total users"
     type: number
     value_format_name: percent_1
-    sql: ${placement_recipes} / ${events};;
+    sql: ${placement_recipes_users} / ${anonymous_users};;
   }
   measure: atc_collection {
     group_label: "Add-to-cart Rates"
-    description: "ATC (add-to-cart) Rate from product placement. # events from collection / # total events"
+    label: "ATC rate - Collection"
+    description: "Number of users with add-to-cart with Collection product placement / # total users"
     type: number
     value_format_name: percent_1
-    sql: ${placement_collection} / ${events};;
+    sql: ${placement_collection_users} / ${anonymous_users};;
   }
 }

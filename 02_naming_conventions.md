@@ -9,15 +9,15 @@
 ✅dimension_group: has_ordered { ✅✅✅
 🙅dimension_group: Has_Ordered { ❌❌❌
 type: yesno
-sql: ${TABLE}."HAS_ORDERED" ;;
+sql: ${TABLE}.has_ordered ;;
 }
 ```
 
 
-### [2] Use **total_[field]** for sum measures
+### [2] Use **sum_of_[field]** for sum measures
 
 ```yaml
-✅measure: total_order_value { ✅✅✅
+✅measure: sum_of_order_value { ✅✅✅
 🙅measure: order_value_sum { ❌❌❌
 🙅measure: order_value { ❌❌❌
   type: sum
@@ -36,6 +36,16 @@ sql: ${TABLE}."HAS_ORDERED" ;;
 }
 ```
 
+### [3] Use **number_of_unique_[field]** for count distinct measures
+
+```yaml
+✅measure: number_of_unique_customers  ✅✅✅
+🙅measure: customers_count_distinct { ❌❌❌
+🙅measure: customers { ❌❌❌
+  type: count_distinct
+}
+```
+
 
 ### [4] Use **avg_[field]** for average measures
 
@@ -48,13 +58,13 @@ sql: ${TABLE}."HAS_ORDERED" ;;
 ```
 
 
-### [5] Use **\_per\_** for ratios, to ensure clear understanding
+### [5] Use **share_of_X_with_Y** for ratios, to ensure clear understanding
 
 ```yaml
-✅measure: repeat_orders_per_all_orders { ✅✅✅
-🙅measure: pct_repeat_orders { ❌❌❌
+✅measure: share_of_orders_with_missing_products  ✅✅✅
+🙅measure: pct_missing_products { ❌❌❌
   type: number
-  sql: 1.0*${number_of_repeat_orders}/nullif(${number_of_orders},0) ;;
+  sql: 1.0*${number_of_orders_missing_products}/nullif(${number_of_orders},0) ;;
 }
 ```
 
@@ -65,7 +75,7 @@ sql: ${TABLE}."HAS_ORDERED" ;;
 ✅measure: is_first_customer_order { ✅✅✅
 🙅measure: first_customer_order { ❌❌❌
   type: yesno
-  sql:  ${TABLE}."IS_FIRST_CUSTOMER_ORDER" ;;
+  sql:  ${TABLE}.is_first_customer_order ;;
 }
 ```
 
@@ -82,6 +92,6 @@ sql: ${TABLE}."HAS_ORDERED" ;;
     month,
     year
   ]
-  sql: ${TABLE}."ORDERED_AT" ;;
+  sql: ${TABLE}.ordered_at_timestamp ;;
 }
 ```

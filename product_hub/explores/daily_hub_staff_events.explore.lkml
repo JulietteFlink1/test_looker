@@ -14,7 +14,9 @@ include: "/**/orders.view.lkml"
 include: "/**/daily_hub_staff_events.view.lkml"
 include: "/**/event_order_progressed.view.lkml"
 include: "/**/event_order_state_updated.view.lkml"
-include: "/**/picking_times.view.lkml"
+include: "/**/event_container_assigned.view.lkml"
+include: "/**/event_container_assignment_skipped.view.lkml"
+include: "/**/hub_one_picking_times.view.lkml"
 include: "/product_consumer/views/bigquery_reporting/daily_violations_aggregates.view.lkml"
 include: "/**/daily_smart_inventory_checks.view"
 
@@ -24,7 +26,10 @@ explore: daily_hub_staff_events {
   hidden: no
 
   label: "Daily Hub Staff Events"
-  description: "This explore provides an overview of all behavioural events generated on Hub One. Picking times under 8 Order Dimensions are the ones informed to CT."
+  description: "This explore provides an overview of all behavioural events generated on Hub One.
+    This explore is built on front-end data, and is subset to the limitations of front-end tracking.
+    We can not, and do not, expect 100% accuracy compared to the Orders & Order Line Items explores.
+    We consider the Orders Explore to be the source of truth."
   group_label: "Product - Hub Tech"
 
 
@@ -49,7 +54,7 @@ explore: daily_hub_staff_events {
 
   join: event_order_progressed {
     view_label: "2 Event: Order Progressed"
-    fields: [to_include_dimensions*, to_include_measures*]
+    fields: [to_include_set*]
     sql_on: ${event_order_progressed.event_uuid} = ${daily_hub_staff_events.event_uuid}
       and {% condition global_filters_and_parameters.datasource_filter %}
         ${event_order_progressed.event_timestamp_date} {% endcondition %};;
@@ -59,7 +64,7 @@ explore: daily_hub_staff_events {
 
   join: event_order_state_updated {
     view_label: "3 Event: Order State Updated"
-    fields: [to_include_dimensions*, to_include_measures*]
+    fields: [to_include_set*]
     sql_on: ${event_order_state_updated.event_uuid} = ${daily_hub_staff_events.event_uuid}
       and {% condition global_filters_and_parameters.datasource_filter %}
         ${event_order_state_updated.event_timestamp_date} {% endcondition %};;
@@ -68,11 +73,32 @@ explore: daily_hub_staff_events {
   }
 
 #Coalesce in the join is to be able to see times and quantities processed at order_id and sku level
-  join: picking_times {
-    view_label: "4 Picking Times"
-    sql_on: ${picking_times.order_id} = coalesce(${event_order_state_updated.order_id},${event_order_progressed.order_id})
+  join: hub_one_picking_times {
+    view_label: "3 Event: Order State Updated"
+    fields: [to_include_set*]
+    sql_on: ${hub_one_picking_times.order_id} = coalesce(${event_order_state_updated.order_id},${event_order_progressed.order_id})
       and {% condition global_filters_and_parameters.datasource_filter %}
-        ${picking_times.event_timestamp_date} {% endcondition %};;
+        ${hub_one_picking_times.event_date} {% endcondition %};;
+    type: left_outer
+    relationship: one_to_one
+  }
+
+  join: event_container_assigned {
+    view_label: "4 Handover Process"
+    fields: [to_include_set*]
+    sql_on: ${event_container_assigned.event_uuid} = ${daily_hub_staff_events.event_uuid}
+      and {% condition global_filters_and_parameters.datasource_filter %}
+        ${event_container_assigned.event_timestamp_date} {% endcondition %};;
+    type: left_outer
+    relationship: one_to_one
+  }
+
+  join: event_container_assignment_skipped {
+    view_label: "4 Handover Process"
+    fields: [to_include_set*]
+    sql_on: ${event_container_assignment_skipped.event_uuid} = ${daily_hub_staff_events.event_uuid}
+      and {% condition global_filters_and_parameters.datasource_filter %}
+        ${event_container_assignment_skipped.event_timestamp_date} {% endcondition %};;
     type: left_outer
     relationship: one_to_one
   }

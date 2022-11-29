@@ -5,7 +5,7 @@
 ### other campaign performance-related measures.
 
 view: customer_acquisition_cost {
-  sql_table_name: `flink-data-dev.sandbox_artem.customer_acquisition_cost`
+  sql_table_name: `flink-data-prod.reporting.customer_acquisition_cost`
     ;;
   view_label: "* Customer Acquisition Cost Data *"
 
@@ -100,7 +100,7 @@ view: customer_acquisition_cost {
 
   dimension: partner_name {
     group_label: "* Campaign Dimensions *"
-    label: "Partner Name"
+    label: "Channel Name"
     type: string
     sql: ${TABLE}.partner_name ;;
   }

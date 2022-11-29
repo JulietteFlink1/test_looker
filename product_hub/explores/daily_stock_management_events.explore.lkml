@@ -11,8 +11,9 @@ include: "/**/employee_level_kpis.view.lkml"
 include: "/**/products.view.lkml"
 include: "/**/hubs_ct.view.lkml"
 include: "/**/daily_stock_management_events.view.lkml"
-include: "/**/inventory_movement_id_times.view"
+include: "/**/daily_stock_management_events_items_inbounded.view"
 include: "/**/add_to_cart_times.view"
+
 
 explore: daily_stock_management_events {
   from:  daily_stock_management_events
@@ -20,7 +21,10 @@ explore: daily_stock_management_events {
   hidden: no
 
   label: "Daily Stock Management Events"
-  description: "This explore provides an overview of all behavioural events generated on Stock Management app."
+  description: "This explore provides an overview of all behavioural events generated on Stock Management app.
+    This explore is built on front-end data, and is subset to the limitations of front-end tracking.
+    We can not, and do not, expect 100% accuracy compared to the Orders & Order Line Items explores.
+    We consider the Orders Explore to be the source of truth."
   group_label: "Product - Hub Tech"
 
 
@@ -43,11 +47,12 @@ explore: daily_stock_management_events {
     relationship: one_to_one
   }
 
-  join: inventory_movement_id_times {
+  join: daily_stock_management_events_items_inbounded {
     view_label: "Inventory Movement Id Times"
-    sql_on: ${inventory_movement_id_times.inventory_movement_id}=${daily_stock_management_events.inventory_movement_id};;
+    fields: [daily_stock_management_events_items_inbounded.to_include_product*]
+    sql_on: ${daily_stock_management_events_items_inbounded.inventory_movement_id}=${daily_stock_management_events.inventory_movement_id};;
     type: left_outer
-    relationship: one_to_one
+    relationship: many_to_one
   }
 
   join: products {
