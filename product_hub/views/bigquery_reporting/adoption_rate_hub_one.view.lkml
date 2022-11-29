@@ -3,7 +3,7 @@
 # Last Modified: 2022-11-28
 
 view: adoption_rate_hub_one {
-  sql_table_name: `flink-data-dev.reporting.adoption_rate_hub_one`
+  sql_table_name: `flink-data-prod.reporting.adoption_rate_hub_one`
     ;;
 
   # This is a table from the reporting layer that calculates adoption rates for the flow migrated to hubOne
