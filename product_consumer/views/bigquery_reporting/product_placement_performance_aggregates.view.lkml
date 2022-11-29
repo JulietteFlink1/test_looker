@@ -232,10 +232,9 @@ view: product_placement_performance_aggregates {
   measure: number_of_users_exposed_to_product{
     type: sum
     group_label: "* Numbers *"
-    label: "Number of Users Exposed to Product"
+    label: "Number of Users with Product Impression"
     hidden:  no
     sql: ${count_of_distinct_users_with_product_impression} ;;
-    filters: [is_exposed_to_impressions: "yes"]
   }
 
   measure: number_of_users_with_product_added_to_cart{
@@ -244,7 +243,6 @@ view: product_placement_performance_aggregates {
     label: "Number of Users Added Product to Cart"
     hidden:  no
     sql: ${count_of_distinct_users_with_product_added_to_cart} ;;
-    filters: [is_exposed_to_impressions: "yes"]
   }
 
   measure: number_of_users_with_order_placed{
@@ -253,24 +251,32 @@ view: product_placement_performance_aggregates {
     label: "Number of Users Placed an Order"
     hidden:  no
     sql: ${count_of_distinct_users_with_order_placed} ;;
-    filters: [is_exposed_to_impressions: "yes"]
   }
 
   ######## * Percentages * ########
 
   measure: pct_users_added_product_to_cart {
     group_label: "* Percentages *"
-    label: "% Users Added Product to Cart"
-    description: "# Users added product to cart divided by the total # users."
+    label: "% Users Added Product to Cart from Impression"
+    description: "# Users added product to cart divided by the # of users exposed to the product."
     type: number
     sql: (1.0 * ${number_of_users_with_product_added_to_cart}) / NULLIF(${number_of_users_exposed_to_product}, 0) ;;
     value_format_name: percent_1
   }
 
-  measure: pct_users_placed_order {
+  measure: pct_users_placed_order_added_to_cart {
     group_label: "* Percentages *"
-    label: "% Users Placed an Order"
-    description: "# Users who placed an order divided by the total # users."
+    label: "% Users Who Added to Cart that Placed an Order "
+    description: "# Users who placed an order divided by the # users who added product to cart."
+    type: number
+    sql: (1.0 * ${number_of_users_with_order_placed}) / NULLIF(${number_of_users_with_product_added_to_cart}, 0) ;;
+    value_format_name: percent_1
+  }
+
+  measure: pct_users_placed_order_exposed_to_product {
+    group_label: "* Percentages *"
+    label: "% Users with Impression that Placed an Order"
+    description: "# Users who placed an order divided by the # of users exposed to the product."
     type: number
     sql: (1.0 * ${number_of_users_with_order_placed}) / NULLIF(${number_of_users_exposed_to_product}, 0) ;;
     value_format_name: percent_1
