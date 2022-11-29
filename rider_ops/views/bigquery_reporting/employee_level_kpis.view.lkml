@@ -416,6 +416,15 @@ view: employee_level_kpis {
     hidden: yes
   }
 
+  measure: sum_number_of_reported_items {
+    group_label: "* Picker Metrics *"
+    label: "# Reported Items (EAN Swapped)"
+    description: "Items that were not recognized during picking scanning process. Due to damaged or wrong code."
+    type: sum
+    sql: ${number_of_reported_items} ;;
+    hidden: yes
+  }
+
   measure: number_of_orders_with_handling_time {
     group_label: "* Logistics *"
     type: sum
@@ -653,6 +662,15 @@ view: employee_level_kpis {
     value_format_name: percent_1
   }
 
+  measure: share_of_reported_items_per_picked_items {
+    group_label: "* Picker Metrics *"
+    label: "% Reported Items (EAN Swapped)"
+    description: "Items that were not recognized during picking scanning process over all picked items. Due to damaged or wrong code."
+    type: number
+    sql: safe_divide(${sum_number_of_reported_items},${number_of_picked_items}) ;;
+    value_format_name: percent_1
+  }
+
   measure: sum_worked_time_minutes {
     group_label: "* Shift related *"
     type: sum
@@ -729,7 +747,7 @@ view: employee_level_kpis {
   }
 
   measure: avg_picking_time_order {
-    group_label: "* Logistics *"
+    group_label: "* Picker Metrics *"
     type: number
     label: "AVG Picking Time Per Order (min)"
     description: "Average time needed for picking items per order. Based on Hub One data."
@@ -738,7 +756,7 @@ view: employee_level_kpis {
   }
 
   measure: avg_picking_time_minutes {
-    group_label: "* Logistics *"
+    group_label: "* Picker Metrics *"
     type: average
     label: "AVG Time Spent Picking (min)"
     description: "Average time spent doing picking activities based on the Hub One data."
@@ -747,7 +765,7 @@ view: employee_level_kpis {
   }
 
   measure: avg_picking_time_item {
-    group_label: "* Logistics *"
+    group_label: "* Picker Metrics *"
     type: number
     label: "AVG Picking Time Per Item (min)"
     description: "Average time needed for picking items. Based on Hub One data"
