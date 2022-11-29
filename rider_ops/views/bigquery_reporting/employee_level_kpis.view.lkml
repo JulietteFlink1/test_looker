@@ -621,7 +621,7 @@ view: employee_level_kpis {
     type: number
     label: "% Items with Missing Product Issues"
     description: "Share of Items with a Missing Product post delivery issue over all ordered items. Based on return info manually created in CT. Not available for external orders. Available only for hub staff positions."
-    sql: safe_divide(${number_of_products_with_missing_products_issues},${number_of_ordered_items_excluding_external_orders}) ;;
+    sql: safe_divide(${number_of_products_with_missing_products_issues},${sum_number_of_ordered_items_excluding_external_orders}) ;;
     value_format_name: percent_1
   }
 
@@ -630,7 +630,7 @@ view: employee_level_kpis {
     type: number
     label: "% Items with Wrong Product Issues"
     description: "Share of Items with a Wrong Product post delivery issue over all ordered items. Based on return info manually created in CT. Not available for external orders. Available only for hub staff positions."
-    sql: safe_divide(${number_of_products_with_wrong_products_issues},${number_of_ordered_items_excluding_external_orders}) ;;
+    sql: safe_divide(${number_of_products_with_wrong_products_issues},${sum_number_of_ordered_items_excluding_external_orders}) ;;
     value_format_name: percent_1
   }
 
@@ -639,7 +639,7 @@ view: employee_level_kpis {
     type: number
     label: "% Items with Perished Product Issues"
     description: "Share of Items with a Perished Product post delivery issue over all ordered items. Based on return info manually created in CT. Not available for external orders. Available only for hub staff positions."
-    sql: safe_divide(${number_of_products_with_perished_issues_post},${number_of_ordered_items_excluding_external_orders}) ;;
+    sql: safe_divide(${number_of_products_with_perished_issues_post},${sum_number_of_ordered_items_excluding_external_orders}) ;;
     value_format_name: percent_1
   }
 
