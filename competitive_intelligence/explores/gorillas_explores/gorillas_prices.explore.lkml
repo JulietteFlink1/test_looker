@@ -47,7 +47,8 @@ explore:  gorillas_prices {
   join: products {
     from:  products
     view_label: "* Flink Product Data *"
-    sql_on: ${products.product_sku} = ${gorillas_to_flink_global.flink_product_sku};;
+    sql_on: ${products.product_sku} = ${gorillas_to_flink_global.flink_product_sku}
+        and ${products.country_iso} = ${gorillas_to_flink_global.country_iso};;
     relationship: one_to_many
     type: inner
   }
