@@ -553,7 +553,7 @@ view: employee_level_kpis {
     group_label: "* Logistics *"
     type: number
     label: "% Orders with Products Damaged Issues"
-    description: "% Delivered Orders, with products that were damaged and were claimed through the Customer Service. Divided by delivered orders for rider postion and by picked orders for hub staff positions."
+    description: "%  Orders with products that were damaged and were claimed through the Customer Service. Divided by delivered orders for rider position and by picked orders for hub staff positions."
     sql:
     -- Considering delivered orders for rider and picked orders for pickers and hub staff.
       safe_divide(
