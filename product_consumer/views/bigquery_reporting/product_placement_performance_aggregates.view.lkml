@@ -215,60 +215,12 @@ view: product_placement_performance_aggregates {
     label: "Event Date"
     type: time
     timeframes: [
-      date,
-      day_of_week,
-      week,
-      month,
-      month_name,
-      quarter,
-      year
+      date
     ]
     datatype: date
     sql: ${TABLE}.event_date ;;
   }
 
-################## Parameter and Dynamic Dates
-
-
-  parameter: date_granularity {
-    group_label: "* Dates and Timestamps *"
-    label: "Date Granularity"
-    type: unquoted
-    allowed_value: { value: "Day" }
-    allowed_value: { value: "Week" }
-    allowed_value: { value: "Month" }
-    default_value: "Day"
-  }
-######## DYNAMIC DIMENSIONS ##########
-
-  dimension: date {
-    group_label: "* Dates & Timestamps *"
-    label: "Event Date (Dynamic)"
-    label_from_parameter: date_granularity
-    sql:
-        {% if date_granularity._parameter_value == 'Day' %}
-          ${event_date_date}
-        {% elsif date_granularity._parameter_value == 'Week' %}
-          ${event_date_week}
-        {% elsif date_granularity._parameter_value == 'Month' %}
-          ${event_date_month}
-        {% endif %};;
-  }
-
-  dimension: date_granularity_pass_through {
-    group_label: "* Parameters *"
-    description: "To use the parameter value in a table calculation (e.g WoW, % Growth) we need to materialize it into a dimension "
-    type: string
-    hidden: no # yes
-    sql:
-          {% if date_granularity._parameter_value == 'Day' %}
-            "Day"
-          {% elsif date_granularity._parameter_value == 'Week' %}
-            "Week"
-          {% elsif date_granularity._parameter_value == 'Month' %}
-            "Month"
-          {% endif %};;
-  }
 
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
