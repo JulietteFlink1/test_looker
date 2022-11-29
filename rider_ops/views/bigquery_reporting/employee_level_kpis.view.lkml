@@ -730,7 +730,7 @@ view: employee_level_kpis {
   measure: sum_picking_time_minutes {
     group_label: "* Logistics *"
     type: sum
-    label: "Sum Picking Time (min)"
+    label: "SUM Picking Time (min)"
     description: "Sum of the time needed for picking items per order. Sums the difference between order_picker_accepted_timestamp and order_packed_timestamp timestamp for each order. Based on Hub One app tracking data."
     sql: ${TABLE}.number_of_picking_time_minutes ;;
     value_format_name: decimal_1
@@ -760,7 +760,7 @@ view: employee_level_kpis {
     label: "AVG Picking Time Per Order (min)"
     description: "Average time needed for picking items per order. Based on Hub One data."
     sql: ${sum_picking_time_minutes}/nullif(${sum_number_of_picked_orders},0) ;;
-    value_format_name: decimal_1
+    value_format_name: decimal_2
   }
 
   measure: avg_picking_time_minutes {
@@ -769,7 +769,7 @@ view: employee_level_kpis {
     label: "AVG Time Spent Picking (min)"
     description: "Average time spent doing picking activities based on the Hub One data."
     sql: ${TABLE}.number_of_picking_time_minutes ;;
-    value_format_name: decimal_1
+    value_format_name: decimal_2
   }
 
   measure: avg_picking_time_item {
@@ -778,7 +778,7 @@ view: employee_level_kpis {
     label: "AVG Picking Time Per Item (min)"
     description: "Average time needed for picking items. Based on Hub One data"
     sql: ${sum_picking_time_minutes}/nullif(${number_of_picked_items},0) ;;
-    value_format_name: decimal_1
+    value_format_name: decimal_2
   }
 
   measure: sum_riding_to_hub_minutes {
