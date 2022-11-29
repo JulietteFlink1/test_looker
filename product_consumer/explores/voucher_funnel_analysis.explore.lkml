@@ -17,6 +17,10 @@ explore: voucher_funnel_analysis {
 
   sql_always_where: {% condition global_filters_and_parameters.datasource_filter %} ${event_date_partition_date} {% endcondition %};;
 
+  access_filter: {
+    field: country_iso
+    user_attribute: country_iso
+  }
 
   always_filter: {
     filters: [
