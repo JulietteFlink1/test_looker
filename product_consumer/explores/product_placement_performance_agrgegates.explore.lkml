@@ -16,9 +16,12 @@ explore: product_placement_performance_aggregates {
   hidden: no
 
   label: "Product Placement Performance Aggregates"
-  description: "This explore provides an aggregated overview of the different placements used by Flink users add products to cart and order. Please note the following limitations:
-  - This explore uses front-end behavioural tracking, and may understate actual counts due to the standard limitations of front-end tracking. We only attribute orders placed in the same day as the product was added to cart. Please use the Orders or Line Items explores as the source of truth for SKU sales.
-  - Removing either the SKU or Placement dimension will lead to counts being overstated as users may be counted multiple times."
+  description: "This explore provides an aggregated overview of the different placements used by Flink users add products to cart and order.
+  Please note the following limitations:
+  1. This explore uses front-end behavioural tracking, and may understate actual counts due to the standard limitations of front-end tracking.
+  2. We only attribute orders placed in the same day as the product was added to cart.
+  Please use the Orders or Line Items explores as the source of truth for SKU sales.
+  3. Removing either the SKU or Placement dimension will lead to counts being overstated as users may be counted multiple times."
   group_label: "Product - Consumer"
 
   sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} ${event_date_date} {% endcondition %};;
@@ -32,7 +35,8 @@ explore: product_placement_performance_aggregates {
     filters: [
       global_filters_and_parameters.datasource_filter: "last 7 days",
       product_placement_performance_aggregates.country_iso: "",
-      product_placement_performance_aggregates.hub_code: ""
+      product_placement_performance_aggregates.hub_code: "",
+      product_placement_performance_aggregates.product_sku: ""
     ]
   }
 
