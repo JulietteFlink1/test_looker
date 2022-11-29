@@ -395,7 +395,7 @@ view: employee_level_kpis {
     group_label: "* Logistics *"
     type: sum
     description: "Number of picked items. Based on Hub One app tracking data."
-    label: "# Picked Items (Order items)"
+    label: "# Picked Items"
     sql: ${TABLE}.number_of_picked_items ;;
   }
 
@@ -410,7 +410,7 @@ view: employee_level_kpis {
   measure: sum_number_of_picked_orders_excluding_external_orders {
     group_label: "* Logistics *"
     label: "# Internal Picked Orders"
-    description: "Number of picked orders. Based on Hub One app tracking data."
+    description: "Number of picked internal orders. Based on Hub One app tracking data. Used to calculate post delivery issue rates."
     type: sum
     sql: ${number_of_picked_orders_excluding_external_orders} ;;
   }
@@ -419,15 +419,15 @@ view: employee_level_kpis {
     group_label: "* Logistics *"
     description: "Number of ordered items (sum of item quantity ordered). Based on CT order data. Excludes external orders. Will be used to calculate post delivery issue rate."
     type: sum
-    label: "# Items Orders (Internal Orders)"
-    sql: ${number_of_picked_orders} ;;
+    label: "# Ordered Items (Internal Orders)"
+    sql: ${number_of_ordered_items_excluding_external_orders} ;;
     hidden: yes
   }
 
   measure: sum_number_of_reported_items {
     group_label: "* Logistics *"
     label: "# Reported Items (EAN Swapped)"
-    description: "Items that were not recognized during picking scanning process. Due to damaged or wrong code."
+    description: "Items that were not recognized during picking scanning process. Due to damaged or wrong code. Based on Hub One data."
     type: sum
     sql: ${number_of_reported_items} ;;
     hidden: yes
