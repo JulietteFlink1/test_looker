@@ -235,6 +235,7 @@ view: product_placement_performance_aggregates {
     label: "Number of Users with Product Impression"
     hidden:  no
     sql: ${count_of_distinct_users_with_product_impression} ;;
+    filters: [is_exposed_to_impressions: "yes"]
   }
 
   measure: number_of_users_with_product_added_to_cart{
@@ -243,6 +244,7 @@ view: product_placement_performance_aggregates {
     label: "Number of Users Added Product to Cart"
     hidden:  no
     sql: ${count_of_distinct_users_with_product_added_to_cart} ;;
+    filters: [is_exposed_to_impressions: "yes"]
   }
 
   measure: number_of_users_with_order_placed{
