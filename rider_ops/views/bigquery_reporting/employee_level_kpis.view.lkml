@@ -417,7 +417,7 @@ view: employee_level_kpis {
   }
 
   measure: sum_number_of_reported_items {
-    group_label: "* Picker Metrics *"
+    group_label: "* Logistics *"
     label: "# Reported Items (EAN Swapped)"
     description: "Items that were not recognized during picking scanning process. Due to damaged or wrong code."
     type: sum
@@ -663,7 +663,7 @@ view: employee_level_kpis {
   }
 
   measure: share_of_reported_items_per_picked_items {
-    group_label: "* Picker Metrics *"
+    group_label: "* Logistics *"
     label: "% Reported Items (EAN Swapped)"
     description: "Items that were not recognized during picking scanning process over all picked items. Due to damaged or wrong code."
     type: number
@@ -747,7 +747,7 @@ view: employee_level_kpis {
   }
 
   measure: avg_picking_time_order {
-    group_label: "* Picker Metrics *"
+    group_label: "* Logistics *"
     type: number
     label: "AVG Picking Time Per Order (min)"
     description: "Average time needed for picking items per order. Based on Hub One data."
@@ -756,7 +756,7 @@ view: employee_level_kpis {
   }
 
   measure: avg_picking_time_minutes {
-    group_label: "* Picker Metrics *"
+    group_label: "* Logistics *"
     type: average
     label: "AVG Time Spent Picking (min)"
     description: "Average time spent doing picking activities based on the Hub One data."
@@ -765,7 +765,7 @@ view: employee_level_kpis {
   }
 
   measure: avg_picking_time_item {
-    group_label: "* Picker Metrics *"
+    group_label: "* Logistics *"
     type: number
     label: "AVG Picking Time Per Item (min)"
     description: "Average time needed for picking items. Based on Hub One data"
