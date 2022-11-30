@@ -30,7 +30,10 @@ explore: order_orderline_cl {
 
     view_label: "Product Data (CT)"
 
-    sql_on: ${products.product_sku} = ${orderline.product_sku} ;;
+    sql_on:
+        ${products.product_sku} = ${orderline.product_sku} and
+        ${products.country_iso} = ${orderline.country_iso}
+        ;;
     relationship: many_to_one
     type: left_outer
   }

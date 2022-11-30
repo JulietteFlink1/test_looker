@@ -32,6 +32,8 @@ explore: recurring_sku_purchases {
 
     type: left_outer
     relationship: many_to_one
-    sql_on:  ${products.product_sku} = ${orderline.product_sku};;
+    sql_on:  ${products.product_sku} = ${orderline.product_sku} and
+             ${products.country_iso} = ${orderline.country_iso}
+    ;;
   }
 }
