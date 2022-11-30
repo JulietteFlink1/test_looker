@@ -45,7 +45,10 @@ explore: smart_inventory_checks {
 
   join: products {
     view_label: "2 Product Dimensions"
-    sql_on: ${smart_inventory_checks.sku} = ${products.product_sku} ;;
+    sql_on:
+        ${smart_inventory_checks.sku} = ${products.product_sku} and
+        ${smart_inventory_checks.country_iso} = ${products.country_iso}
+        ;;
     type: left_outer
     relationship: many_to_one
   }
