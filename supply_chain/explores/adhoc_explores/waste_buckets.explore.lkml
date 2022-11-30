@@ -30,7 +30,10 @@ join: products {
 
   type: left_outer
   relationship: many_to_one
-  sql_on: ${products.product_sku} = ${waste_buckets.sku} ;;
+  sql_on:
+      ${products.product_sku} = ${waste_buckets.sku} and
+      ${products.country_iso} = ${waste_buckets.country_iso}
+      ;;
 
 }
 

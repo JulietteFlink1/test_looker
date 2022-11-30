@@ -26,7 +26,8 @@ view: item_quantity_per_order {
       sum (a.quantity) as sum_quantity
       FROM `flink-data-prod.curated.order_lineitems` a
         left join `flink-data-prod.curated.products` b
-             on a.sku = b.product_sku
+             on a.sku = b.product_sku and
+                a.country_iso = b.country_iso
         left join `flink-data-prod.curated.hubs` hub
              on a.hub_code = hub.hub_code
       WHERE DATE(a.order_timestamp) >= "2021-02-01"
