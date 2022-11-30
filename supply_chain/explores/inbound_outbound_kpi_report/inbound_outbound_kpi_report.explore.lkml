@@ -47,7 +47,10 @@ explore: inbound_outbound_kpi_report {
   join: products {
     type: left_outer
     relationship: many_to_one
-    sql_on: ${inventory_changes_daily.sku} = ${products.product_sku} ;;
+    sql_on:
+      ${inventory_changes_daily.sku} = ${products.product_sku} and
+      ${inventory_changes_daily.country_iso} = ${products.country_iso}
+    ;;
   }
 
   join: lexbizz_item {

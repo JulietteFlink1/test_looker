@@ -30,7 +30,8 @@ left join `flink-data-prod.curated.hubs`           as hubs_ct
 on i.hub_code = hubs_ct.hub_code
 
 left join `flink-data-prod.curated.products`           as p
-on i.sku = p.product_sku
+on i.sku = p.product_sku and
+   i.country_iso = p.country_iso
 
 where a.ct_final_decision_is_sku_assigned_to_hub is true
  -- and a.erp_final_decision_is_sku_assigned_to_hub

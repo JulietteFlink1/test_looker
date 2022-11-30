@@ -20,7 +20,8 @@ SELECT
       count (distinct a.order_uuid) as orders
       FROM `flink-data-prod.curated.order_lineitems` a
         left join `flink-data-prod.curated.products` prod
-             on a.sku = prod.product_sku
+             on a.sku = prod.product_sku and
+                a.country_iso = prod.country_iso
         left join `flink-data-prod.curated.orders` ord
              on a.order_uuid = ord.order_uuid
              and ord.is_successful_order = true
@@ -48,7 +49,8 @@ w_minus_1 as
       count (distinct a.order_uuid) as orders
       FROM `flink-data-prod.curated.order_lineitems` a
         left join `flink-data-prod.curated.products` prod
-             on a.sku = prod.product_sku
+             on a.sku = prod.product_sku and
+                a.country_iso = prod.country_iso
         left join `flink-data-prod.curated.orders` ord
              on a.order_uuid = ord.order_uuid
              and ord.is_successful_order = true
@@ -75,7 +77,8 @@ w_minus_2 as
       count (distinct a.order_uuid) as orders
       FROM `flink-data-prod.curated.order_lineitems` a
         left join `flink-data-prod.curated.products` prod
-             on a.sku = prod.product_sku
+             on a.sku = prod.product_sku and
+                a.country_iso = prod.country_iso
         left join `flink-data-prod.curated.orders` ord
              on a.order_uuid = ord.order_uuid
              and ord.is_successful_order = true
@@ -102,7 +105,8 @@ w_minus_3 as
       count (distinct a.order_uuid) as orders
       FROM `flink-data-prod.curated.order_lineitems` a
         left join `flink-data-prod.curated.products` prod
-             on a.sku = prod.product_sku
+             on a.sku = prod.product_sku and
+                a.country_iso = prod.country_iso
         left join `flink-data-prod.curated.orders` ord
              on a.order_uuid = ord.order_uuid
              and ord.is_successful_order = true
@@ -129,7 +133,8 @@ w_minus_4 as
       count (distinct a.order_uuid) as orders
       FROM `flink-data-prod.curated.order_lineitems` a
         left join `flink-data-prod.curated.products` prod
-             on a.sku = prod.product_sku
+             on a.sku = prod.product_sku and
+                a.country_iso = prod.country_iso
         left join `flink-data-prod.curated.orders` ord
              on a.order_uuid = ord.order_uuid
              and ord.is_successful_order = true

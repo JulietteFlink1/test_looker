@@ -151,7 +151,10 @@ explore: supply_chain {
 
     type: left_outer
     relationship: many_to_one
-    sql_on: ${products.product_sku} = ${products_hub_assignment.sku} ;;
+    sql_on:
+        ${products.product_sku} = ${products_hub_assignment.sku} and
+        ${products.country_iso} = ${products_hub_assignment.country_iso}
+        ;;
 
   }
 

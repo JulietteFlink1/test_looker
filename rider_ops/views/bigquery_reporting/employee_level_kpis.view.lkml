@@ -320,6 +320,55 @@ view: employee_level_kpis {
     value_format_name: decimal_1
   }
 
+  dimension: number_of_picked_orders {
+    type: number
+    sql: ${TABLE}.number_of_picked_orders ;;
+    hidden: yes
+  }
+
+  dimension: number_of_reported_items {
+    type: number
+    sql: ${TABLE}.number_of_reported_items ;;
+    hidden: yes
+  }
+
+  dimension: number_of_ordered_items {
+    type: number
+    sql: ${TABLE}.number_of_ordered_items ;;
+    hidden: yes
+  }
+
+  dimension: number_of_ordered_items_excluding_external_orders {
+    type: number
+    sql: ${TABLE}.number_of_ordered_items_excluding_external_orders ;;
+    hidden: yes
+  }
+
+  dimension: number_of_orders_with_perished_products {
+    type: number
+    sql: ${TABLE}.number_of_orders_with_perished_products ;;
+    hidden: yes
+  }
+
+  dimension: number_of_orders_with_wrong_products {
+    type: number
+    sql: ${TABLE}.number_of_orders_with_wrong_products ;;
+    hidden: yes
+  }
+
+  dimension: number_of_orders_with_missing_products {
+    type: number
+    sql: ${TABLE}.number_of_orders_with_missing_products ;;
+    hidden: yes
+  }
+
+  dimension: number_of_picked_orders_excluding_external_orders {
+    type: number
+    sql: ${TABLE}.number_of_picked_orders_excluding_external_orders ;;
+    hidden: yes
+  }
+
+
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -345,8 +394,42 @@ view: employee_level_kpis {
   measure: number_of_picked_items {
     group_label: "* Logistics *"
     type: sum
-    label: "# Picked Items (Order items)"
+    description: "Number of picked items. Based on Hub One app tracking data."
+    label: "# Picked Items"
     sql: ${TABLE}.number_of_picked_items ;;
+  }
+
+  measure: sum_number_of_picked_orders {
+    group_label: "* Logistics *"
+    description: "Number of picked orders. Based on Hub One app tracking data."
+    type: sum
+    label: "# Picked Orders"
+    sql: ${number_of_picked_orders} ;;
+  }
+
+  measure: sum_number_of_picked_orders_excluding_external_orders {
+    group_label: "* Logistics *"
+    label: "# Picked Orders (Internal)"
+    description: "Number of picked internal orders. Based on Hub One app tracking data. Used to calculate post delivery issue rates."
+    type: sum
+    sql: ${number_of_picked_orders_excluding_external_orders} ;;
+  }
+
+  measure: sum_number_of_ordered_items_excluding_external_orders {
+    group_label: "* Logistics *"
+    description: "Number of ordered items (sum of item quantity ordered). Based on CT order data. Excludes external orders. Will be used to calculate post delivery issue rate."
+    type: sum
+    label: "# Ordered Items (Internal Orders)"
+    sql: ${number_of_ordered_items_excluding_external_orders} ;;
+    hidden: yes
+  }
+
+  measure: sum_number_of_reported_items {
+    group_label: "* Logistics *"
+    label: "# EAN Swapped"
+    description: "Items that were not recognized during picking scanning process. Due to damaged or wrong code. Based on Hub One data."
+    type: sum
+    sql: ${number_of_reported_items} ;;
   }
 
   measure: number_of_orders_with_handling_time {
@@ -380,8 +463,8 @@ view: employee_level_kpis {
   measure: number_of_products_with_damaged_products_issues_post {
     group_label: "* Logistics *"
     type: sum
-    label: "# Products Damaged (Post-delivery)"
-    description: "The number of products, that were damaged and were claimed through the Customer Service"
+    label: "# Products with Damaged Issues. (Post-delivery)"
+    description: "The number of products, that were damaged and were claimed through the Customer Service. Available for hub staff and rider positions"
     sql: ${TABLE}.number_of_orders_with_damaged_products ;;
   }
 
@@ -389,31 +472,31 @@ view: employee_level_kpis {
     group_label: "* Logistics *"
     type: sum
     label: "# Orders with Products Damaged (Post Delivery)"
-    description: "The number of Orders, with products that were damaged and were claimed through the Customer Service"
+    description: "The number of Orders, with products that were damaged and were claimed through the Customer Service. Available for hub staff and rider positions."
     sql: ${TABLE}.number_of_orders_with_damaged_products ;;
   }
 
   measure: number_of_products_with_missing_products_issues{
     group_label: "* Logistics *"
     type: sum
-    label: "# Products Missing"
-    description: "The number of missing products"
+    label: "# Products with Missing Issues"
+    description: "The number of missing products. Available only for hub staff positions."
     sql: ${TABLE}.number_of_products_with_missing_products_issues ;;
   }
 
   measure: number_of_products_with_wrong_products_issues{
     group_label: "* Logistics *"
     type: sum
-    label: "# Products Wrong"
-    description: "The number of wrong products"
+    label: "# Products with Wrong Issues"
+    description: "The number of wrong products. Available only for hub staff positions."
     sql: ${TABLE}.number_of_products_with_wrong_products_issues ;;
   }
 
   measure: number_of_products_with_perished_issues_post{
     group_label: "* Logistics *"
     type: sum
-    label: "# Products Perished"
-    description: "The number of perished products"
+    label: "# Products with Perished Issues"
+    description: "The number of perished products. Available only for hub staff positions."
     sql: ${TABLE}.number_of_products_with_perished_issues_post ;;
   }
 
@@ -421,16 +504,15 @@ view: employee_level_kpis {
     group_label: "* Logistics *"
     type: sum
     label: "# Products with Pre-delivery Issues"
-    description: "The number of products having issues before delivery"
+    description: "The number of products having issues before delivery. Available only for hub staff positions."
     sql: ${TABLE}.number_of_products_with_pre_delivery_issues ;;
   }
-
 
   measure: number_of_products_with_post_delivery_issues{
     group_label: "* Logistics *"
     type: sum
     label: "# Products with Post-delivery Issues"
-    description: "The number of products having issues after delivery and were claiumed through Customer Service"
+    description: "The number of products having issues after delivery and were claiumed through Customer Service. Available only for hub staff positions."
     sql: ${TABLE}.number_of_products_with_post_delivery_issues ;;
   }
 
@@ -438,7 +520,7 @@ view: employee_level_kpis {
     group_label: "* Logistics *"
     type: sum
     label: "# Orders with Pre-delivery Issues"
-    description: "The number of Orders having issues before delivery"
+    description: "The number of Orders having issues before delivery. Available only for hub staff positions."
     sql: ${TABLE}.number_of_orders_with_pre_delivery_issues ;;
   }
 
@@ -446,16 +528,153 @@ view: employee_level_kpis {
     group_label: "* Logistics *"
     type: sum
     label: "# Orders with Post-delivery Issues"
-    description: "The number of Orders having issues after delivery and were claimed through the Customer Service"
+    description: "The number of Orders having issues after delivery and were claimed through the Customer Service. Available only for hub staff positions."
     sql: ${TABLE}.number_of_orders_with_post_delivery_issues ;;
+  }
+
+  measure: sum_number_of_orders_with_perished_products {
+    group_label: "* Logistics *"
+    type: sum
+    label: "# Orders with Perished Product Issues"
+    description: "Number of Orders with at least one perished product issue. Only available for hub staff positions."
+    sql: ${number_of_orders_with_perished_products} ;;
+  }
+
+  measure: sum_number_of_orders_with_wrong_products {
+    group_label: "* Logistics *"
+    type: sum
+    label: "# Orders with Wrong Product Issues"
+    description: "Number of Orders with at least one wrong product issue. Only available for hub staff positions."
+    sql: ${number_of_orders_with_wrong_products} ;;
+  }
+
+  measure: sum_number_of_orders_with_missing_products {
+    group_label: "* Logistics *"
+    type: sum
+    label: "# Orders with Missing Product Issues"
+    description: "Number of Orders with at least one missing product issue. Only available for hub staff positions."
+    sql: ${number_of_orders_with_missing_products} ;;
   }
 
   measure: pct_orders_with_damaged_products{
     group_label: "* Logistics *"
     type: number
-    label: "% Delivered Orders with Products Damaged "
-    description: "% Delivered Orders, with products that were damaged and were claimed through the Customer Service"
-    sql: sum(${TABLE}.number_of_orders_with_damaged_products)/nullif(sum(${TABLE}.number_of_delivered_orders),0) ;;
+    label: "% Orders with Products Damaged Issues"
+    description: "%  Orders with products that were damaged and were claimed through the Customer Service. Divided by delivered orders for rider position and by picked orders for hub staff positions."
+    sql:
+    -- Considering delivered orders for rider and picked orders for pickers and hub staff.
+      safe_divide(
+          sum(${TABLE}.number_of_orders_with_damaged_products)
+          ,
+          sum(
+              case
+                  when ${position_name} = 'rider'
+                      then ${TABLE}.number_of_delivered_orders
+                  else
+                      ${number_of_picked_orders}
+              end
+          )
+      )
+  ;;
+    value_format_name: percent_1
+  }
+
+  measure: pct_of_orders_with_post_delivery_issues {
+    group_label: "* Logistics *"
+    type: number
+    label: "% Orders with Post Delivery Issues"
+    description: "Share of Orders with a post-delivery issue (Missing Product, Wrong Product, Damaged Product or Perished Product) over all picked orders. Based on return info manually created in CT. Not available for external orders. Available only for hub staff positions."
+    sql: safe_divide(${number_of_orders_with_post_delivery_issues},${sum_number_of_picked_orders_excluding_external_orders}) ;;
+    value_format_name: percent_1
+  }
+
+  measure: pct_of_orders_with_pre_delivery_issues {
+    group_label: "* Logistics *"
+    type: number
+    label: "% Orders with Pre Delivery Issues"
+    description: "Share of Orders with a pre-delivery issue (Missing Product, Wrong Product, Damaged Product or Perished Product) over all picked orders. Based on return info manually created in CT. Available only for hub staff positions."
+    sql: safe_divide(${number_of_orders_with_pre_delivery_issues},${sum_number_of_picked_orders}) ;;
+    value_format_name: percent_1
+  }
+
+  measure: pct_of_items_with_post_delivery_issues {
+    group_label: "* Logistics *"
+    type: number
+    label: "% Items with Post Delivery Issues"
+    description: "Share of Items with a post-delivery issue (Missing Product, Wrong Product, Damaged Product or Perished Product) over all picked items. Based on return info manually created in CT. Not available for external orders. Available only for hub staff positions."
+    sql: safe_divide(${number_of_products_with_post_delivery_issues},${sum_number_of_ordered_items_excluding_external_orders}) ;;
+    value_format_name: percent_1
+  }
+
+  measure: pct_of_items_with_pre_delivery_issues {
+    group_label: "* Logistics *"
+    type: number
+    label: "% Items with Pre Delivery Issues"
+    description: "Share of Items with a post-delivery issue (Missing Product, Wrong Product, Damaged Product or Perished Product) over all picked items. Based on return info manually created in CT. Available only for hub staff positions."
+    sql: safe_divide(${number_of_products_with_pre_delivery_issues},${number_of_picked_items}) ;;
+    value_format_name: percent_1
+  }
+
+  measure: pct_of_items_with_missing_products {
+    group_label: "* Logistics *"
+    type: number
+    label: "% Items with Missing Product Issues"
+    description: "Share of Items with a Missing Product post delivery issue over all ordered items. Based on return info manually created in CT. Not available for external orders. Available only for hub staff positions."
+    sql: safe_divide(${number_of_products_with_missing_products_issues},${sum_number_of_ordered_items_excluding_external_orders}) ;;
+    value_format_name: percent_1
+  }
+
+  measure: pct_of_items_with_wrong_products {
+    group_label: "* Logistics *"
+    type: number
+    label: "% Items with Wrong Product Issues"
+    description: "Share of Items with a Wrong Product post delivery issue over all ordered items. Based on return info manually created in CT. Not available for external orders. Available only for hub staff positions."
+    sql: safe_divide(${number_of_products_with_wrong_products_issues},${sum_number_of_ordered_items_excluding_external_orders}) ;;
+    value_format_name: percent_1
+  }
+
+  measure: pct_of_items_with_perished_products {
+    group_label: "* Logistics *"
+    type: number
+    label: "% Items with Perished Product Issues"
+    description: "Share of Items with a Perished Product post delivery issue over all ordered items. Based on return info manually created in CT. Not available for external orders. Available only for hub staff positions."
+    sql: safe_divide(${number_of_products_with_perished_issues_post},${sum_number_of_ordered_items_excluding_external_orders}) ;;
+    value_format_name: percent_1
+  }
+
+  measure: pct_of_orders_with_missing_products {
+    group_label: "* Logistics *"
+    type: number
+    label: "% Orders with Missing Product Issues"
+    description: "Share of Orders with a Missing Product post delivery issue over all picked orders. Based on return info manually created in CT. Not available for external orders. Available only for hub staff positions."
+    sql: safe_divide(${sum_number_of_orders_with_missing_products},${sum_number_of_picked_orders_excluding_external_orders}) ;;
+    value_format_name: percent_1
+  }
+
+  measure: pct_of_orders_with_perished_products {
+    group_label: "* Logistics *"
+    type: number
+    label: "% Orders with Perished Product Issues"
+    description: "Share of Orders with a Perished Product post delivery issue over all picked orders. Based on return info manually created in CT. Not available for external orders. Available only for hub staff positions."
+    sql: safe_divide(${sum_number_of_orders_with_perished_products},${sum_number_of_picked_orders_excluding_external_orders}) ;;
+    value_format_name: percent_1
+  }
+
+  measure: pct_of_orders_with_wrong_products {
+    group_label: "* Logistics *"
+    type: number
+    label: "% Orders with Wrong Product Issues"
+    description: "Share of Orders with a Wrong Product post delivery issue over all picked orders. Based on return info manually created in CT. Not available for external orders. Available only for hub staff positions."
+    sql: safe_divide(${sum_number_of_orders_with_wrong_products},${sum_number_of_picked_orders_excluding_external_orders}) ;;
+    value_format_name: percent_1
+  }
+
+  measure: pct_of_reported_items_per_picked_items {
+    group_label: "* Logistics *"
+    label: "% EAN Swapped Products"
+    description: "Items that were not recognized during picking scanning process over all picked items. Due to damaged or wrong code."
+    type: number
+    sql: safe_divide(${sum_number_of_reported_items},${number_of_picked_items}) ;;
     value_format_name: percent_1
   }
 
@@ -491,7 +710,7 @@ view: employee_level_kpis {
   measure: sum_delivery_distance_km {
     group_label: "* Logistics *"
     type: sum
-    label: "Sum Delivery Distance (km)"
+    label: "SUM Delivery Distance (km)"
     description: "Sum of delivery distance between hub and customer dropoff in kilometers (most direct path / straight line). For stacked orders, it is the sum of distance from previous customer."
     sql: ${TABLE}.sum_delivery_distance_km ;;
     value_format_name: decimal_1
@@ -510,8 +729,8 @@ view: employee_level_kpis {
   measure: sum_picking_time_minutes {
     group_label: "* Logistics *"
     type: sum
-    label: "Sum Picking Time (min)"
-    description: "Sum of the time spent doing picking activities based on the Hub One data."
+    label: "SUM Picking Time (min)"
+    description: "Sum of the time needed for picking items per order. Sums the difference between order_picker_accepted_timestamp and order_packed_timestamp timestamp for each order. Based on Hub One app tracking data."
     sql: ${TABLE}.number_of_picking_time_minutes ;;
     value_format_name: decimal_1
   }
@@ -538,9 +757,9 @@ view: employee_level_kpis {
     group_label: "* Logistics *"
     type: number
     label: "AVG Picking Time Per Order (min)"
-    description: "Average time needed to pick items per order."
-    sql: ${sum_picking_time_minutes}/nullif(${number_of_delivered_orders},0) ;;
-    value_format_name: decimal_1
+    description: "Average time needed for picking items per order. Based on Hub One data."
+    sql: ${sum_picking_time_minutes}/nullif(${sum_number_of_picked_orders},0) ;;
+    value_format_name: decimal_2
   }
 
   measure: avg_picking_time_minutes {
@@ -549,22 +768,31 @@ view: employee_level_kpis {
     label: "AVG Time Spent Picking (min)"
     description: "Average time spent doing picking activities based on the Hub One data."
     sql: ${TABLE}.number_of_picking_time_minutes ;;
-    value_format_name: decimal_1
+    value_format_name: decimal_2
   }
 
   measure: avg_picking_time_item {
     group_label: "* Logistics *"
     type: number
     label: "AVG Picking Time Per Item (min)"
-    description: "Average time needed for picking items."
+    description: "Average time needed for picking items. Based on Hub One data"
     sql: ${sum_picking_time_minutes}/nullif(${number_of_picked_items},0) ;;
-    value_format_name: decimal_1
+    value_format_name: decimal_2
+  }
+
+  measure: avg_picked_items_per_worked_hour {
+    group_label: "* Performance *"
+    type: number
+    label: "AVG # Picked Items Per Worked Hour"
+    description: "Average number of items picked per worked hour. Based on Hub One data and shift data"
+    sql: safe_divide(${number_of_picked_items},${sum_worked_time_minutes}/60) ;;
+    value_format_name: decimal_2
   }
 
   measure: sum_riding_to_hub_minutes {
     group_label: "* Logistics *"
     type: sum
-    label: "Sum Riding to Hub time (min)"
+    label: "SUM Riding to Hub time (min)"
     description: "Sum Riding time from customer location back to the hub (<1min or >30min)."
     sql: ${TABLE}.number_of_return_to_hub_time_minutes ;;
     value_format_name: decimal_1
@@ -582,7 +810,7 @@ view: employee_level_kpis {
   measure: sum_riding_to_customer_time_minutes {
     group_label: "* Logistics *"
     type: sum
-    label: "Sum Riding To Customer Time (min)"
+    label: "SUM Riding To Customer Time (min)"
     description: "Sum riding to customer time considering delivery start to arrival at customer. Outliers excluded (<1min or >30min)"
     sql: ${TABLE}.number_of_riding_to_customer_time_minutes ;;
     value_format_name: decimal_1
@@ -600,7 +828,7 @@ view: employee_level_kpis {
   measure: sum_at_customer_time_minutes {
     group_label: "* Logistics *"
     type: sum
-    label: "Sum At Customer Time (min)"
+    label: "SUM At Customer Time (min)"
     description: "Sum Time the Rider spent at the customer between arrival and order completion confirmation"
     sql: ${TABLE}.number_of_at_customer_time_minutes ;;
     value_format_name: decimal_1
