@@ -170,17 +170,18 @@ view: advanced_supplier_matching {
   #  - - - - - - - - - -    Dates & Timestamps
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  dimension_group: report_date_combined {
+  dimension_group: report_combined {
     type: time
-    description: "Combined date between Promised Delivery Date Combined (DESADVs - PO) and Inbounded date,
-                  in case one of these 2 is missing."
+    description: "Combined date between Promised Delivery Date Combined (DESADVs - PO) and Inbounded date, so:
+                  In case there is DESADVs then DESADVs delivery date,
+                  else purchase orders promised delivery date (PO),
+                  else Inbounded date."
     group_label: "Dates & Timestamps"
     timeframes: [
       date,
       week,
-      month,
+      month
     ]
-    convert_tz: no
     datatype: date
     sql: ${TABLE}.report_date_combined ;;
   }
