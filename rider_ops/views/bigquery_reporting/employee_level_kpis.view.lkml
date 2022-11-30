@@ -409,7 +409,7 @@ view: employee_level_kpis {
 
   measure: sum_number_of_picked_orders_excluding_external_orders {
     group_label: "* Logistics *"
-    label: "# Internal Picked Orders"
+    label: "# Picked Orders (Internal)"
     description: "Number of picked internal orders. Based on Hub One app tracking data. Used to calculate post delivery issue rates."
     type: sum
     sql: ${number_of_picked_orders_excluding_external_orders} ;;
@@ -426,11 +426,10 @@ view: employee_level_kpis {
 
   measure: sum_number_of_reported_items {
     group_label: "* Logistics *"
-    label: "# Reported Items (EAN Swapped)"
+    label: "# EAN Swapped"
     description: "Items that were not recognized during picking scanning process. Due to damaged or wrong code. Based on Hub One data."
     type: sum
     sql: ${number_of_reported_items} ;;
-    hidden: yes
   }
 
   measure: number_of_orders_with_handling_time {
@@ -464,7 +463,7 @@ view: employee_level_kpis {
   measure: number_of_products_with_damaged_products_issues_post {
     group_label: "* Logistics *"
     type: sum
-    label: "# Items with Products Damaged Issues. (Post-delivery)"
+    label: "# Products with Damaged Issues. (Post-delivery)"
     description: "The number of products, that were damaged and were claimed through the Customer Service. Available for hub staff and rider positions"
     sql: ${TABLE}.number_of_orders_with_damaged_products ;;
   }
@@ -480,7 +479,7 @@ view: employee_level_kpis {
   measure: number_of_products_with_missing_products_issues{
     group_label: "* Logistics *"
     type: sum
-    label: "# Items with Products Missing Issues"
+    label: "# Products with Missing Issues"
     description: "The number of missing products. Available only for hub staff positions."
     sql: ${TABLE}.number_of_products_with_missing_products_issues ;;
   }
@@ -488,7 +487,7 @@ view: employee_level_kpis {
   measure: number_of_products_with_wrong_products_issues{
     group_label: "* Logistics *"
     type: sum
-    label: "# Items with Products Wrong Issues"
+    label: "# Products with Wrong Issues"
     description: "The number of wrong products. Available only for hub staff positions."
     sql: ${TABLE}.number_of_products_with_wrong_products_issues ;;
   }
@@ -496,7 +495,7 @@ view: employee_level_kpis {
   measure: number_of_products_with_perished_issues_post{
     group_label: "* Logistics *"
     type: sum
-    label: "# Items with Products Perished Issues"
+    label: "# Products with Perished Issues"
     description: "The number of perished products. Available only for hub staff positions."
     sql: ${TABLE}.number_of_products_with_perished_issues_post ;;
   }
@@ -521,7 +520,7 @@ view: employee_level_kpis {
     group_label: "* Logistics *"
     type: sum
     label: "# Orders with Pre-delivery Issues"
-    description: "The number of Orders having issues before delivery.  Available only for hub staff positions."
+    description: "The number of Orders having issues before delivery. Available only for hub staff positions."
     sql: ${TABLE}.number_of_orders_with_pre_delivery_issues ;;
   }
 
@@ -529,7 +528,7 @@ view: employee_level_kpis {
     group_label: "* Logistics *"
     type: sum
     label: "# Orders with Post-delivery Issues"
-    description: "The number of Orders having issues after delivery and were claimed through the Customer Service.  Available only for hub staff positions."
+    description: "The number of Orders having issues after delivery and were claimed through the Customer Service. Available only for hub staff positions."
     sql: ${TABLE}.number_of_orders_with_post_delivery_issues ;;
   }
 
@@ -580,7 +579,7 @@ view: employee_level_kpis {
     value_format_name: percent_1
   }
 
-  measure: share_of_orders_with_post_delivery_issues {
+  measure: pct_of_orders_with_post_delivery_issues {
     group_label: "* Logistics *"
     type: number
     label: "% Orders with Post Delivery Issues"
@@ -589,7 +588,7 @@ view: employee_level_kpis {
     value_format_name: percent_1
   }
 
-  measure: share_of_orders_with_pre_delivery_issues {
+  measure: pct_of_orders_with_pre_delivery_issues {
     group_label: "* Logistics *"
     type: number
     label: "% Orders with Pre Delivery Issues"
@@ -598,7 +597,7 @@ view: employee_level_kpis {
     value_format_name: percent_1
   }
 
-  measure: share_of_items_with_post_delivery_issues {
+  measure: pct_of_items_with_post_delivery_issues {
     group_label: "* Logistics *"
     type: number
     label: "% Items with Post Delivery Issues"
@@ -607,7 +606,7 @@ view: employee_level_kpis {
     value_format_name: percent_1
   }
 
-  measure: share_of_items_with_pre_delivery_issues {
+  measure: pct_of_items_with_pre_delivery_issues {
     group_label: "* Logistics *"
     type: number
     label: "% Items with Pre Delivery Issues"
@@ -616,7 +615,7 @@ view: employee_level_kpis {
     value_format_name: percent_1
   }
 
-  measure: share_of_items_with_missing_products {
+  measure: pct_of_items_with_missing_products {
     group_label: "* Logistics *"
     type: number
     label: "% Items with Missing Product Issues"
@@ -625,7 +624,7 @@ view: employee_level_kpis {
     value_format_name: percent_1
   }
 
-  measure: share_of_items_with_wrong_products {
+  measure: pct_of_items_with_wrong_products {
     group_label: "* Logistics *"
     type: number
     label: "% Items with Wrong Product Issues"
@@ -634,7 +633,7 @@ view: employee_level_kpis {
     value_format_name: percent_1
   }
 
-  measure: share_of_items_with_perished_products {
+  measure: pct_of_items_with_perished_products {
     group_label: "* Logistics *"
     type: number
     label: "% Items with Perished Product Issues"
@@ -643,7 +642,7 @@ view: employee_level_kpis {
     value_format_name: percent_1
   }
 
-  measure: share_of_orders_with_missing_products {
+  measure: pct_of_orders_with_missing_products {
     group_label: "* Logistics *"
     type: number
     label: "% Orders with Missing Product Issues"
@@ -652,7 +651,7 @@ view: employee_level_kpis {
     value_format_name: percent_1
   }
 
-  measure: share_of_orders_with_perished_products {
+  measure: pct_of_orders_with_perished_products {
     group_label: "* Logistics *"
     type: number
     label: "% Orders with Perished Product Issues"
@@ -661,7 +660,7 @@ view: employee_level_kpis {
     value_format_name: percent_1
   }
 
-  measure: share_of_orders_with_wrong_products {
+  measure: pct_of_orders_with_wrong_products {
     group_label: "* Logistics *"
     type: number
     label: "% Orders with Wrong Product Issues"
@@ -670,9 +669,9 @@ view: employee_level_kpis {
     value_format_name: percent_1
   }
 
-  measure: share_of_reported_items_per_picked_items {
+  measure: pct_of_reported_items_per_picked_items {
     group_label: "* Logistics *"
-    label: "% Reported Items (EAN Swapped)"
+    label: "% EAN Swapped Products"
     description: "Items that were not recognized during picking scanning process over all picked items. Due to damaged or wrong code."
     type: number
     sql: safe_divide(${sum_number_of_reported_items},${number_of_picked_items}) ;;
