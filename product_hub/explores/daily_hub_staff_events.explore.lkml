@@ -106,7 +106,7 @@ explore: daily_hub_staff_events {
   }
 
   join: event_login_completed {
-    view_label: "Login/Logout Completed"
+    view_label: "5 Login/Logout Completed"
     fields: [to_include_set*]
     sql_on: ${event_login_completed.event_uuid} = ${daily_hub_staff_events.event_uuid}
       and {% condition global_filters_and_parameters.datasource_filter %}
@@ -116,7 +116,7 @@ explore: daily_hub_staff_events {
   }
 
   join: event_logout_completed {
-    view_label: "Login/Logout Completed"
+    view_label: "5 Login/Logout Completed"
     fields: [to_include_set*]
     sql_on: ${event_logout_completed.event_uuid} = ${daily_hub_staff_events.event_uuid}
       and {% condition global_filters_and_parameters.datasource_filter %}
