@@ -710,7 +710,7 @@ view: employee_level_kpis {
   measure: sum_delivery_distance_km {
     group_label: "* Logistics *"
     type: sum
-    label: "Sum Delivery Distance (km)"
+    label: "SUM Delivery Distance (km)"
     description: "Sum of delivery distance between hub and customer dropoff in kilometers (most direct path / straight line). For stacked orders, it is the sum of distance from previous customer."
     sql: ${TABLE}.sum_delivery_distance_km ;;
     value_format_name: decimal_1
@@ -780,10 +780,19 @@ view: employee_level_kpis {
     value_format_name: decimal_2
   }
 
+  measure: avg_picked_items_per_worked_hour {
+    group_label: "* Performance *"
+    type: number
+    label: "AVG # Picked Items Per Worked Hour"
+    description: "Average number of items picked per worked hour. Based on Hub One data and shift data"
+    sql: safe_divide(${number_of_picked_items},${sum_worked_time_minutes}/60) ;;
+    value_format_name: decimal_2
+  }
+
   measure: sum_riding_to_hub_minutes {
     group_label: "* Logistics *"
     type: sum
-    label: "Sum Riding to Hub time (min)"
+    label: "SUM Riding to Hub time (min)"
     description: "Sum Riding time from customer location back to the hub (<1min or >30min)."
     sql: ${TABLE}.number_of_return_to_hub_time_minutes ;;
     value_format_name: decimal_1
@@ -801,7 +810,7 @@ view: employee_level_kpis {
   measure: sum_riding_to_customer_time_minutes {
     group_label: "* Logistics *"
     type: sum
-    label: "Sum Riding To Customer Time (min)"
+    label: "SUM Riding To Customer Time (min)"
     description: "Sum riding to customer time considering delivery start to arrival at customer. Outliers excluded (<1min or >30min)"
     sql: ${TABLE}.number_of_riding_to_customer_time_minutes ;;
     value_format_name: decimal_1
@@ -819,7 +828,7 @@ view: employee_level_kpis {
   measure: sum_at_customer_time_minutes {
     group_label: "* Logistics *"
     type: sum
-    label: "Sum At Customer Time (min)"
+    label: "SUM At Customer Time (min)"
     description: "Sum Time the Rider spent at the customer between arrival and order completion confirmation"
     sql: ${TABLE}.number_of_at_customer_time_minutes ;;
     value_format_name: decimal_1
