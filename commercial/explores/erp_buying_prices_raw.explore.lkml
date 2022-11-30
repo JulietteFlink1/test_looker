@@ -18,7 +18,10 @@ explore: erp_buying_prices_raw {
   }
 
   join: products {
-    sql_on: ${products.product_sku} = ${erp_buying_prices_raw.sku} ;;
+    sql_on:
+        ${products.product_sku} = ${erp_buying_prices_raw.sku} and
+        ${products.country_iso} = ${erp_buying_prices_raw.country_iso}
+        ;;
     relationship: many_to_one
     type: left_outer
   }

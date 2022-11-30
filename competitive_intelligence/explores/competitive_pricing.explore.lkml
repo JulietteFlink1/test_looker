@@ -59,6 +59,7 @@ explore: competitive_pricing {
     from: products_hub_assignment_v2
 
     sql_on: ${products_hub_assignment.sku} = ${products.product_sku}
+           and ${products_hub_assignment.country_iso} = ${products.country_iso}
            and ${products_hub_assignment.report_date} = current_date() ;;
     type: left_outer
     relationship: one_to_many

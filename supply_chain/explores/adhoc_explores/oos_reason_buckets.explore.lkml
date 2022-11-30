@@ -39,7 +39,10 @@ explore: oos_reason_buckets {
     view_label: "03 Products (CT) "
     type: left_outer
     relationship: many_to_many
-    sql_on: ${products.replenishment_substitute_group_parent_sku} = ${oos_reason_buckets.parent_sku} ;;
+    sql_on:
+        ${products.replenishment_substitute_group_parent_sku} = ${oos_reason_buckets.parent_sku} and
+        ${products.country_iso} = ${oos_reason_buckets.country_iso}
+        ;;
   }
 
   join: hubs_ct {

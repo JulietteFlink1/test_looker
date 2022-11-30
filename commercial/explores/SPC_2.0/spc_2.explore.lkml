@@ -31,7 +31,10 @@ explore: spc_2 {
     view_label: "Product Data"
     type: left_outer
     relationship: many_to_one
-    sql_on: ${products.product_sku} = ${sku_performance_base.joining_sku} ;;
+    sql_on:
+        ${products.product_sku} = ${sku_performance_base.joining_sku} and
+        ${products.country_iso} = ${sku_performance_base.country_iso}
+        ;;
   }
 
   join: lexbizz_item {

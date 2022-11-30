@@ -26,7 +26,8 @@ b.product_sku
 
 FROM `flink-data-prod.curated.order_lineitems` a
 left join `flink-data-prod.curated.products` b
-on a.sku = b.product_sku
+on a.sku = b.product_sku and
+   a.country_iso = b.country_iso
 left join `flink-data-prod.curated.orders` c
 on a.order_uuid = c.order_uuid
 
