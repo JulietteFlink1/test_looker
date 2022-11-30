@@ -20,7 +20,7 @@ explore: end_to_end_supplier_matching {
 
   always_filter: {
     filters: [
-      advanced_supplier_matching.report_combined_date: "last 7 days"
+      advanced_supplier_matching.report_date: "last 7 days"
     ]
   }
 

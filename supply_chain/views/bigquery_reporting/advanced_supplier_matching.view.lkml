@@ -170,7 +170,7 @@ view: advanced_supplier_matching {
   #  - - - - - - - - - -    Dates & Timestamps
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  dimension_group: report_combined {
+  dimension_group: report {
     type: time
     description: "Combined date between Promised Delivery Date Combined (DESADVs - PO) and Inbounded date, so:
                   In case there is DESADVs then DESADVs delivery date,
