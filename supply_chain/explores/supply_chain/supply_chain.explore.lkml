@@ -74,8 +74,12 @@ explore: supply_chain {
 
         and ${products_hub_assignment.hub_code} not in ('de_ham_alto')
         and ${hubs_ct.is_test_hub} is false
-        and ${hubs_ct.start_date} <= ${products_hub_assignment.report_date}
-        and (${hubs_ct.termination_date} > ${products_hub_assignment.report_date} or ${hubs_ct.termination_date} is null)
+
+        {% if supply_chain_config.filter_terminated_hubs._parameter_value == "active" %}
+          and ${hubs_ct.start_date} <= ${products_hub_assignment.report_date}
+          and (${hubs_ct.termination_date} > ${products_hub_assignment.report_date} or ${hubs_ct.termination_date} is null)
+        {% endif %}
+        -- Filter for terminated hubs is {% parameter supply_chain_config.filter_terminated_hubs %}
       ;;
 
 
@@ -84,6 +88,10 @@ explore: supply_chain {
     relationship: one_to_one
   }
 
+  join: supply_chain_config {
+    sql: ;;
+    relationship: one_to_one
+  }
 
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -35,16 +35,19 @@ explore: gorillas_flink_price_comparison {
 
   join: products {
     from:  products
-    sql_on: ${flink_to_gorillas_global.flink_product_sku} = ${products.product_sku} ;;
+    sql_on: ${flink_to_gorillas_global.flink_product_sku} = ${products.product_sku}
+        and ${flink_to_gorillas_global.country_iso} = ${products.country_iso} ;;
     relationship: one_to_one
     type: left_outer
 }
 
   join: products_hub_assignment {
     from: products_hub_assignment_v2
-    sql_on: ${products_hub_assignment.sku} = ${products.product_sku}
+    sql_on:
+          ${products_hub_assignment.sku}         = ${products.product_sku}
       and ${products_hub_assignment.country_iso} = ${products.country_iso}
       and ${products_hub_assignment.report_date} = current_date() ;;
+
     type: left_outer
     relationship: one_to_many
   }
@@ -66,14 +69,16 @@ explore: gorillas_flink_price_comparison {
 
   join: product_prices_daily {
     view_label: "* Flink Product Prices Daily *"
-    sql_on: ${product_prices_daily.sku} = ${products.product_sku} and
-      ${product_prices_daily.hub_code} = ${products_hub_assignment.hub_code} ;;
+    sql_on: ${product_prices_daily.sku} = ${products.product_sku}
+        and ${product_prices_daily.country_iso} = ${products.country_iso}
+        and ${product_prices_daily.hub_code} = ${products_hub_assignment.hub_code} ;;
     relationship: one_to_many
     type: left_outer
   }
 
   join: key_value_items {
-    sql_on: ${products.product_sku} = ${key_value_items.sku} ;;
+    sql_on: ${products.product_sku} = ${key_value_items.sku}
+        and ${products.country_iso} = ${key_value_items.country_iso};;
     relationship: many_to_one
     type: left_outer
   }
