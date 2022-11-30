@@ -83,7 +83,7 @@ view: products {
           else false
          end    ;;
     group_label: "> Product Attributes"
-    description: "Boolean flag that allows to exclude Rezeptkarte items"
+    description: "Boolean flag that shows if an item is Rezeptkarte or not"
   }
 
   dimension: product_sku {
