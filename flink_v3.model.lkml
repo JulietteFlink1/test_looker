@@ -19,23 +19,20 @@ case_sensitive: no
 datagroup: flink_default_datagroup {
   # every hour
   sql_trigger: SELECT EXTRACT(HOUR FROM CURRENT_TIMESTAMP()) ;;
-  max_cache_age: "24 hour"
 }
 
 datagroup: flink_hourly_datagroup {
   # every hour
   sql_trigger: SELECT EXTRACT(HOUR FROM CURRENT_TIMESTAMP());;
-  max_cache_age: "2 hour"
 }
 
 datagroup: flink_daily_datagroup {
-  # once per day at 5am
-  sql_trigger: SELECT FLOOR(((TIMESTAMP_DIFF(CURRENT_TIMESTAMP(),'1970-01-01 00:00:00',SECOND)) - 60*60*5)/(60*60*24));;
-  max_cache_age: "30 hour"
+  # once per day at 4am UTC
+  sql_trigger: SELECT FLOOR(((TIMESTAMP_DIFF(CURRENT_TIMESTAMP(),'1970-01-01 00:00:00',SECOND)) - 60*60*4)/(60*60*24));;
 }
 
 
-persist_with: flink_default_datagroup
+persist_with: flink_daily_datagroup
 # END ------------------------ defined persisting strategies ---------------------------------
 
 

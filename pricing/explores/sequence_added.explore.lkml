@@ -11,7 +11,8 @@ explore: sequence_added {
 
 
   join: products {
-    sql_on: ${sequence_added.sku}        = ${products.product_sku} ;;
+    sql_on: ${sequence_added.sku}           = ${products.product_sku}
+       and  ${sequence_added.country_iso}   = ${products.country_iso};;
     relationship: many_to_one
 
   }

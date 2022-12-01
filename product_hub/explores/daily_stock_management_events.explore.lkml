@@ -57,7 +57,10 @@ explore: daily_stock_management_events {
 
   join: products {
     view_label: "Product Dimensions"
-    sql_on: ${products.product_sku} = ${daily_stock_management_events.sku};;
+    sql_on:
+        ${products.product_sku} = ${daily_stock_management_events.sku} and
+        ${products.country_iso} = ${daily_stock_management_events.country_iso}
+        ;;
     type: left_outer
     relationship: one_to_one
   }
