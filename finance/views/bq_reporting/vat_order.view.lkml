@@ -2579,7 +2579,7 @@ view: vat_order {
 
   measure: sum_amt_vat_late_night_fee_reduced {
     group_label: "> Late Night Fees"
-    label: "SUM VAT late_night Fees Reduced"
+    label: "SUM VAT Late Night Fees Reduced"
     value_format_name: euro_accounting_2_precision
     type:  sum
     sql: ${amt_vat_late_night_fee_reduced} ;;
