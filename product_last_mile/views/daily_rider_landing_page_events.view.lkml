@@ -45,6 +45,20 @@ view: daily_rider_landing_page_events {
     description: "Name of the UI component shown or interacted with. This value should be consistent across all locations where the component is shown."
     sql: ${TABLE}.component_name ;;
   }
+  dimension: component_variant {
+    group_label: "Generic Dimensions"
+    label: "Component Variant"
+    type: string
+    description: "Name of the UI component variation"
+    sql: ${TABLE}.component_variant ;;
+  }
+  dimension: component_value {
+    group_label: "Generic Dimensions"
+    label: "Component Value"
+    type: string
+    description: "Name of the UI component Value."
+    sql: ${TABLE}.component_value ;;
+  }
   dimension: event_name {
     group_label: "Generic Dimensions"
     label: "Event Name"
