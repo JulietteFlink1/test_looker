@@ -237,15 +237,23 @@ view: employee_level_kpis {
     sql: ${TABLE}.first_shift_date ;;
   }
 
-  dimension: days_since_last_shift {
-    group_label: "* Shift related *"
-    label: "# Days since Last Worked Shift"
+  dimension: days_between_current_date_and_last_shift {
+    group_label: "> Dates & Timestamps"
+    label: "Days between last worked shift date and today"
     type: number
-    description: "Number of Days between shift date and last worked (punched) shift"
+    description: "Number of days between last worked (punched) shift and today"
     sql: case
           when ${shift_date} > ${last_worked_date_dimension}
           then date_diff(${shift_date}, ${last_worked_date_dimension}, day)
          end;;
+  }
+
+  dimension: days_between_shift_date_and_last_shift {
+    group_label: "> Dates & Timestamps"
+    label: "Days between last worked (punched) shift and shift date"
+    type: number
+    description: "Number of days between last worked (punched) shift date and shift date (NULL if  last worked date is after shift date)"
+    sql: date_diff(current_date(), ${last_worked_date_dimension}, day);;
   }
 
   dimension: account_creation_date {
@@ -1272,11 +1280,20 @@ view: employee_level_kpis {
     # TBD rename avg_daily_contracted_hours in dbt
     label: "Total Weekly Contracted Hours"
     group_label: "> Contract Related"
-    type: number
+    type: sum
+    sql: ${TABLE}.avg_daily_contracted_hours;;
+    description: "Sum of weekly contracted hours based on Quinyx Agreements (Field in Quinyx UI: Agreement full time working hours) -  Weekly Contracted Hours * calender weeks"
+  }
+
+  measure: sum_weekly_contracted_hoursv2 {
+    # TBD rename avg_daily_contracted_hours in dbt
+    label: "Total Weekly Contracted Hours v2"
+    group_label: "> Contract Related"
+    type: sum
     sql: case
             when ${hub_code} = ${home_hub_code}
                 then ${TABLE}.avg_daily_contracted_hours
-         end ;;
+        end ;;
     description: "Sum of weekly contracted hours based on Quinyx Agreements (Field in Quinyx UI: Agreement full time working hours) -  Weekly Contracted Hours * calender weeks"
   }
 
