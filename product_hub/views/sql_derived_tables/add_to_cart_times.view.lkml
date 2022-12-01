@@ -6,7 +6,7 @@ view: add_to_cart_times {
     sql: WITH global_filters_and_parameters AS (select TRUE as generic_join_dim)
     , timestamp_difference as
           (SELECT
-            inventory_movement_id, sku, is_scanned_item, cast(quantity as int64) as quantity
+            inventory_movement_id, country_iso, sku, is_scanned_item, cast(quantity as int64) as quantity
             , datetime_diff(event_timestamp,lag(event_timestamp) OVER (PARTITION BY inventory_movement_id order by event_timestamp), MILLISECOND) as time_to_add_to_cart_millisec
           FROM `flink-data-prod.curated.daily_stock_management_events`
           LEFT JOIN global_filters_and_parameters ON global_filters_and_parameters.generic_join_dim = TRUE
@@ -16,6 +16,7 @@ view: add_to_cart_times {
           )
           select
           inventory_movement_id
+              , country_iso
               , sku
               , is_scanned_item
               , sum(quantity) as quantity
@@ -23,7 +24,7 @@ view: add_to_cart_times {
 
           from timestamp_difference
 
-          group by 1,2,3 ;;
+          group by 1,2,3,4 ;;
   }
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -37,15 +38,22 @@ view: add_to_cart_times {
 
   dimension: primary_key {
     primary_key: yes
-    label: "concat(inventory_movement_id, sku, is_scanned_item)"
+    label: "concat(inventory_movement_id, country_iso, sku, is_scanned_item)"
     description: "concat(inventory_movement_id, sku, is_scanned_item)"
-    sql: concat(${inventory_movement_id}, ${sku}, ${is_scanned_item}) ;;
+    sql: concat(${inventory_movement_id}, ${country_iso}, ${sku}, ${is_scanned_item}) ;;
   }
 
   dimension: sku {
     description: "Product SKU."
     type: number
   }
+
+  dimension: country_iso {
+    description: "Country iso."
+    type: number
+  }
+
+
   dimension: is_scanned_item {
     description: "boolean for when the item is added to cart by scanning or by searching."
   }
