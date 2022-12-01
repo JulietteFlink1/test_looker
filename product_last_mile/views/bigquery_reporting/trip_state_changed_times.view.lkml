@@ -141,7 +141,7 @@ view: trip_state_changed_times {
     type: sum
     description: "Time a rider spent delivering an order in minutes (difference between trip on route and trip returning)."
     sql: ${TABLE}.rider_delivery_time_minutes ;;
-    value_format: "0.00"
+    value_format: "0.0"
   }
   measure: sum_rider_delivery_time_seconds {
     group_label: "Measures"
@@ -157,7 +157,7 @@ view: trip_state_changed_times {
     type: sum
     description: "Time a rider spent picking up the order in minutes (difference between trip started and trip on route)."
     sql: ${TABLE}.rider_pickup_time_minutes ;;
-    value_format: "0.00"
+    value_format: "0.0"
   }
   measure: sum_rider_pickup_time_seconds {
     group_label: "Measures"
@@ -172,7 +172,7 @@ view: trip_state_changed_times {
     label: "SUM Return Time (minutes)"
     type: sum
     sql: ${TABLE}.rider_return_time_minutes ;;
-    value_format: "0.00"
+    value_format: "0.0"
   }
   measure: sum_rider_return_time_seconds {
     group_label: "Measures"
@@ -188,7 +188,7 @@ view: trip_state_changed_times {
     type: average
     description: "Time a rider spent delivering an order in minutes (difference between trip on route and trip returning)."
     sql: ${TABLE}.rider_delivery_time_minutes ;;
-    value_format: "0.00"
+    value_format: "0.0"
   }
   measure: avg_rider_delivery_time_seconds {
     group_label: "Measures"
@@ -204,7 +204,7 @@ view: trip_state_changed_times {
     type: average
     description: "Time a rider spent picking up the order in minutes (difference between trip started and trip on route)."
     sql: ${TABLE}.rider_pickup_time_minutes ;;
-    value_format: "0.00"
+    value_format: "0.0"
   }
   measure: avg_rider_pickup_time_seconds {
     group_label: "Measures"
@@ -219,7 +219,7 @@ view: trip_state_changed_times {
     label: "AVG Return Time (minutes)"
     type: average
     sql: ${TABLE}.rider_return_time_minutes ;;
-    value_format: "0.00"
+    value_format: "0.0"
   }
   measure: avg_rider_return_time_seconds {
     group_label: "Measures"
@@ -235,6 +235,5 @@ view: trip_state_changed_times {
     type: count_distinct
     description: "Total count of distinct trips"
     sql: ${TABLE}.trip_id ;;
-    value_format: "0.00"
   }
 }
