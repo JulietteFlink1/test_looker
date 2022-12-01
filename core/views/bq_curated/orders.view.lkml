@@ -2860,7 +2860,7 @@ view: orders {
 
   measure: sum_amt_late_night_fee_gross {
     group_label: "* Monetary Values *"
-    label: "SUM late_night Fees (Gross)"
+    label: "SUM Late Night Fees (Gross)"
     description: "Gross amount of late night fees applied to orders placed after a given hour. Incl. VAT"
     value_format_name: euro_accounting_2_precision
     type:  sum
@@ -2892,6 +2892,15 @@ view: orders {
     type: average
     sql: ${amt_late_night_fee_net};;
     value_format_name: euro_accounting_2_precision
+  }
+
+  measure: number_of_orders_with_late_night_fee {
+    group_label:  "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Orders with Late Night Fee"
+    description: "Number of orders for which late night fee applied."
+    type: count_distinct
+    sql: ${order_uuid};;
+    filters: [amt_late_night_fee_gross: ">0"]
   }
 
   ##### TOTAL FEES #####
