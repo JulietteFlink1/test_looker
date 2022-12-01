@@ -659,7 +659,7 @@ view: shyftplan_riders_pickers_hours_clean {
   measure: picker_utr {
     label: "AVG Picker UTR"
     type: number
-    description: "# Orders (excl. Click & Collect and External Orders) / # Worked Picker Hours"
+    description: "# Orders (incl. Click & Collect and External Orders) / # Worked Picker Hours"
     sql: ${adjusted_orders_pickers} / NULLIF(${picker_hours}, 0);;
     value_format_name: decimal_2
     group_label: "UTR"
@@ -668,7 +668,7 @@ view: shyftplan_riders_pickers_hours_clean {
   measure: hub_staff_utr {
     label: "AVG Hub Staff UTR"
     type: number
-    description: "# Orders (excl. Click & Collect and External Orders)/ # Worked Hub (Inventory Associate, Picker, Rider Captains and shift Lead) Hours"
+    description: "# Orders (incl. Click & Collect and External Orders)/ # Worked Hub (Inventory Associate, Picker, Rider Captains and shift Lead) Hours"
     sql: ${adjusted_orders_pickers} / NULLIF(${hub_staff_hours}, 0);;
     value_format_name: decimal_2
     group_label: "UTR"
@@ -678,7 +678,7 @@ view: shyftplan_riders_pickers_hours_clean {
     alias: [ops_staff_utr]
     label: "AVG Ops Associate UTR"
     type: number
-    description: "# Orders (excl. Click & Collect and External Orders) / # Worked Ops Staff (Inventory Associate, Picker, Ops Associate and Rider Captains) Hours"
+    description: "# Orders (incl. Click & Collect and External Orders) / # Worked Ops Staff (Inventory Associate, Picker, Ops Associate and Rider Captains) Hours"
     sql: ${adjusted_orders_pickers} / NULLIF(${ops_associate_hours}, 0);;
     value_format_name: decimal_2
     group_label: "UTR"
@@ -687,7 +687,7 @@ view: shyftplan_riders_pickers_hours_clean {
   measure: wh_ops_utr {
     label: "AVG Inventory Associate UTR"
     type: number
-    description: "# Orders (excl. Click & Collect and External Orders)/ # Worked Warehouse Ops Hours"
+    description: "# Orders (incl. Click & Collect and External Orders)/ # Worked Warehouse Ops Hours"
     sql: ${adjusted_orders_pickers} / NULLIF(${wh_ops_hours}, 0);;
     value_format_name: decimal_2
     group_label: "UTR"
@@ -764,7 +764,7 @@ view: shyftplan_riders_pickers_hours_clean {
   measure: all_staff_utr {
     label: "AVG All Staff UTR"
     type: number
-    description: "# Orders (excl. Click & Collect and External Orders) / # Worked All Staff (incl. Rider,Picker,WH Ops, Rider Captain, Ops Associate, Shift Lead and Deputy Shift Lead) Hours"
+    description: "# Orders (incl. Click & Collect and External Orders) / # Worked All Staff (incl. Rider,Picker,WH Ops, Rider Captain, Ops Associate, Shift Lead and Deputy Shift Lead) Hours"
     sql: ${adjusted_orders_pickers} / NULLIF(${rider_hours}+${shift_lead_hours}+${ops_associate_hours}+${deputy_shift_lead_hours}, 0);;
     value_format_name: decimal_2
     group_label: "UTR"
