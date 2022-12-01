@@ -62,6 +62,8 @@ view: employee_level_kpis {
       date,
       week,
       month,
+      day_of_week,
+      day_of_week_index,
       quarter,
       year
     ]
@@ -116,6 +118,8 @@ view: employee_level_kpis {
         else initcap(${TABLE}.external_agency_name)
       end;;
   }
+
+
 
   dimension: fleet_type {
     type: string
@@ -210,6 +214,17 @@ view: employee_level_kpis {
     datatype: date
     type: date
     sql: ${TABLE}.first_shift_date ;;
+  }
+
+  dimension: days_since_last_shift {
+    group_label: "* Shift related *"
+    label: "# Days since Last Worked Shift"
+    type: number
+    description: "Number of Days between shift date and last worked (punched) shift"
+    sql: case
+          when ${shift_date} > ${last_worked_date_dimension}
+          then date_diff(${shift_date}, ${last_worked_date_dimension}, day)
+         end;;
   }
 
   dimension: account_creation_date {
@@ -884,14 +899,14 @@ view: employee_level_kpis {
   measure: last_worked_date {
     group_label: "* Shift related *"
     type: date
-    description: "Date of the last worked/punched shift"
+    description: "Date of the last worked/punched shift within the filtered period"
     sql: max(case when ${TABLE}.number_of_worked_minutes > 0 then ${TABLE}.shift_date end);;
   }
 
   measure: first_worked_date {
     group_label: "* Shift related *"
     type: date
-    description: "Date of the first worked/punched shift"
+    description: "Date of the first worked/punched shift within the filtered period"
     sql: min(case when ${TABLE}.number_of_worked_minutes > 0 then ${TABLE}.shift_date end);;
   }
 
@@ -1215,11 +1230,24 @@ view: employee_level_kpis {
   }
 
   measure: sum_weekly_contracted_hours {
+    # TBD rename avg_daily_contracted_hours in dbt
     label: "Total Weekly Contracted Hours"
     group_label: "* Contract related *"
     type: sum
     description: "Sum of weekly contracted hours based on Quinyx Agreements (Field in Quinyx UI: Agreement full time working hours) -  AVG Daily Contracted Hours  * number of days (exclud Sundays for AT and DE )"
     sql: ${TABLE}.avg_daily_contracted_hours;;
+  }
+
+  measure: sum_weekly_contracted_hours2 {
+    # TBD rename avg_daily_contracted_hours in dbt
+    label: "Total Weekly Contracted Hours v2"
+    group_label: "* Contract related *"
+    type: sum
+    description: "Sum of weekly contracted hours based on Quinyx Agreements (Field in Quinyx UI: Agreement full time working hours) -  AVG Daily Contracted Hours  * number of days (exclud Sundays for AT and DE )"
+    sql: case
+            when ${hub_code} = ${home_hub_code}
+                then ${TABLE}.avg_daily_contracted_hours
+         end ;;
   }
 
   measure: pct_contract_fulfillment {
