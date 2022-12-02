@@ -244,19 +244,19 @@ view: daily_stock_management_events {
   measure: number_of_item_dropped {
     group_label: "Total Metrics"
     label: "# Item Dropped"
-    description: "Count distinct inventory_movement_id||sku for items dropped."
+    description: "Count distinct inventory_movement_id||country_iso||sku for items dropped."
     type: count_distinct
     filters: [event_name: "inventory_progress", action: "item_dropped"]
-    sql: concat(${inventory_movement_id},${sku}) ;;
+    sql: concat(${inventory_movement_id}, ${country_iso}, ${sku}) ;;
   }
 
   measure: number_of_item_added_to_cart {
     group_label: "Total Metrics"
     label: "# Item Added To Cart"
-    description: "Count distinct inventory_movement_id||sku for items added to cart."
+    description: "Count distinct inventory_movement_id||country_iso||sku for items added to cart."
     type: count_distinct
     filters: [event_name: "inventory_progress", action: "item_added_to_cart"]
-    sql: concat(${inventory_movement_id},${sku})  ;;
+    sql: concat(${inventory_movement_id}, ${country_iso}, ${sku})  ;;
   }
 
   measure: item_added_to_cart_time {
