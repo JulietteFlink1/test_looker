@@ -19,9 +19,7 @@ explore: trip_state_changed_times {
   description: "This explore provides information around trip and the respective times in each state"
   group_label: "Product - Last Mile"
 
-  # implement both date filters:
-  # received_at is due cost reduction given a table is partitioned by this dimensions
-  # event_date filter will fitler for the desired time frame when events triggered
+# event_date filter will fitler for the desired time frame when events triggered
 
   sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} ${event_date_date} {% endcondition %};;
 
