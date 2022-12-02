@@ -658,12 +658,13 @@ view: orders {
     hidden: yes
   }
 
-  dimension: estimated_queuing_time_for_rider_minutes {
-    label: "Rider Queuing Time Estimate (min)"
-    description: "The internally predicted time in minutes for the rider queuing"
+  dimension: estimated_waiting_for_rider_time_minutes {
+    alias: [estimated_queuing_time_for_rider_minutes]
+    label: "Waiting for Rider Time Estimate (min)"
+    description: "The internally predicted time in minutes for the waiting for rider"
     group_label: "* Operations / Logistics *"
     type: number
-    sql: ${TABLE}.estimated_rider_queuing_time_minutes;;
+    sql: ${TABLE}.estimated_waiting_for_rider_time_minutes;;
   }
 
   dimension: pre_riding_time {
@@ -1933,11 +1934,12 @@ view: orders {
     value_format_name: decimal_1
   }
 
-  measure: avg_estimated_queuing_time_for_rider_minutes {
+  measure: avg_estimated_waiting_for_rider_time_minutes {
+    alias: [avg_estimated_queuing_time_for_rider_minutes]
     group_label: "* Operations / Logistics *"
-    label: "AVG Estimated Queuing Time for Riders"
+    label: "AVG Estimated Waiting for Rider Time"
     type: average
-    sql: ${estimated_queuing_time_for_rider_minutes};;
+    sql: ${estimated_waiting_for_rider_time_minutes};;
     value_format_name: decimal_1
   }
 
@@ -2203,7 +2205,7 @@ view: orders {
     description: "The mean absolute error between actual rider queuing time and estimated rider queuing time"
     hidden:  no
     type: average
-    sql: abs(${rider_queuing_time} - ${estimated_queuing_time_for_rider_minutes});;
+    sql: abs(${rider_queuing_time} - ${estimated_waiting_for_rider_time_minutes});;
     value_format_name: decimal_1
   }
 
