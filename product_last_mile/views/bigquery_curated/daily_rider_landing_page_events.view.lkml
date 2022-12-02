@@ -165,7 +165,7 @@ view: daily_rider_landing_page_events {
   }
   dimension: page_title {
     group_label: "Page Dimensions"
-    label: "Page Path"
+    label: "Page Title"
     type: string
     description: "SEO title used to describe the content and purpose of a webpage."
     sql: ${TABLE}.page_title ;;

@@ -1039,6 +1039,154 @@ view: vat_order {
     sql: ${TABLE}.amt_vat_refund_storage_fee_total ;;
   }
 
+  ############### LATE NIGHT FEES ################
+
+  dimension: amt_late_night_fee_gross {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.amt_late_night_fee_gross ;;
+  }
+
+  dimension: amt_late_night_fee_net {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.amt_late_night_fee_net ;;
+  }
+
+  dimension: amt_late_night_fee_standard_gross {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.amt_late_night_fee_standard_gross ;;
+  }
+
+  dimension: amt_late_night_fee_standard_net {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.amt_late_night_fee_standard_net ;;
+  }
+
+  dimension: amt_late_night_fee_reduced_gross {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.amt_late_night_fee_reduced_gross ;;
+  }
+
+  dimension: amt_late_night_fee_reduced_net {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.amt_late_night_fee_reduced_net ;;
+  }
+
+  dimension: amt_late_night_fee_special_gross {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.amt_late_night_fee_special_gross ;;
+  }
+
+  dimension: amt_late_night_fee_special_net {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.amt_late_night_fee_special_net ;;
+  }
+
+  dimension: amt_vat_late_night_fee_standard {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.amt_vat_late_night_fee_standard ;;
+  }
+
+  dimension: amt_vat_late_night_fee_reduced {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.amt_vat_late_night_fee_reduced ;;
+  }
+
+  dimension: amt_vat_late_night_fee_special {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.amt_vat_late_night_fee_special ;;
+  }
+
+  dimension: amt_vat_late_night_fee_total {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.amt_vat_late_night_fee_total ;;
+  }
+
+  ############### REFUND LATE NIGHT FEES ################
+
+  dimension: amt_refund_late_night_fee_gross {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.amt_refund_late_night_fee_gross ;;
+  }
+
+  dimension: amt_refund_late_night_fee_net {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.amt_refund_late_night_fee_net ;;
+  }
+
+  dimension: amt_refund_late_night_fee_standard_gross {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.amt_refund_late_night_fee_standard_gross ;;
+  }
+
+  dimension: amt_refund_late_night_fee_standard_net {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.amt_refund_late_night_fee_standard_net ;;
+  }
+
+  dimension: amt_refund_late_night_fee_reduced_gross {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.amt_refund_late_night_fee_reduced_gross ;;
+  }
+
+  dimension: amt_refund_late_night_fee_reduced_net {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.amt_refund_late_night_fee_reduced_net ;;
+  }
+
+  dimension: amt_refund_late_night_fee_special_gross {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.amt_refund_late_night_fee_special_gross ;;
+  }
+
+  dimension: amt_refund_late_night_fee_special_net {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.amt_refund_late_night_fee_special_net ;;
+  }
+
+  dimension: amt_vat_refund_late_night_fee_standard {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.amt_vat_refund_late_night_fee_standard ;;
+  }
+
+  dimension: amt_vat_refund_late_night_fee_reduced {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.amt_vat_refund_late_night_fee_reduced ;;
+  }
+
+  dimension: amt_vat_refund_late_night_fee_special {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.amt_vat_refund_late_night_fee_special ;;
+  }
+
+  dimension: amt_vat_refund_late_night_fee_total {
+    hidden:  yes
+    type:  number
+    sql: ${TABLE}.amt_vat_refund_late_night_fee_total ;;
+  }
+
 
   ############################  Measures   #######################
 
@@ -2351,6 +2499,204 @@ view: vat_order {
     value_format_name: euro_accounting_2_precision
     type:  sum
     sql: ${amt_vat_refund_storage_fee_total} ;;
+  }
+
+############### LATE NIGHT FEES ################
+
+  measure: sum_amt_late_night_fee_gross {
+    group_label: "> Late Night Fees"
+    label: "SUM Late Night Fees (Gross)"
+    description: "Sum of Late Night Fees Gross, applied when an order is placed after a certain hour. Incl. VAT."
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_late_night_fee_gross} ;;
+    }
+
+    measure: sum_amt_late_night_fee_net {
+    group_label: "> Late Night Fees"
+    label: "SUM Late Night Fees (Net)"
+    description: "Sum of Late Night Fees Net, applied when an order is placed after a certain hour. Excl. VAT"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_late_night_fee_net} ;;
+    }
+
+    measure: sum_amt_late_night_fee_standard_gross {
+    group_label: "> Late Night Fees"
+    label: "SUM Late Night Fees Standard (Gross)"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_late_night_fee_standard_gross} ;;
+  }
+
+  measure: sum_amt_late_night_fee_standard_net {
+    group_label: "> Late Night Fees"
+    label: "SUM Late Night Fees Standard (Net)"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_late_night_fee_standard_net} ;;
+  }
+
+  measure: sum_amt_late_night_fee_reduced_gross {
+    group_label: "> Late Night Fees"
+    label: "SUM Late Night Fees Reduced (Gross)"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_late_night_fee_reduced_gross} ;;
+  }
+
+  measure: sum_amt_late_night_fee_reduced_net {
+    group_label: "> Late Night Fees"
+    label: "SUM Late Night Fees Reduced (Net)"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_late_night_fee_reduced_net} ;;
+  }
+
+  measure: sum_amt_late_night_fee_special_gross {
+    group_label: "> Late Night Fees"
+    label: "SUM Late Night Fees Special (Gross)"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_late_night_fee_special_gross} ;;
+  }
+
+  measure: sum_amt_late_night_fee_special_net {
+    group_label: "> Late Night Fees"
+    label: "SUM Late Night Fees Special (Net)"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_late_night_fee_special_net} ;;
+  }
+
+  measure: sum_amt_vat_late_night_fee_standard {
+    group_label: "> Late Night Fees"
+    label: "SUM VAT Late Night Fees Standard"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_vat_late_night_fee_standard} ;;
+  }
+
+  measure: sum_amt_vat_late_night_fee_reduced {
+    group_label: "> Late Night Fees"
+    label: "SUM VAT Late Night Fees Reduced"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_vat_late_night_fee_reduced} ;;
+  }
+
+  measure: sum_amt_vat_late_night_fee_special {
+    group_label: "> Late Night Fees"
+    label: "SUM VAT Late Night Fees Special"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_vat_late_night_fee_special} ;;
+  }
+
+  measure: sum_amt_vat_late_night_fee_total {
+    group_label: "> Late Night Fees"
+    label: "SUM VAT Late Night Fees Total"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_vat_late_night_fee_total} ;;
+  }
+
+  ############### REFUND late_night FEES ################
+
+  measure: sum_amt_refund_late_night_fee_gross {
+    group_label: "> Refunds Late Night Fees"
+    label: "SUM Refunds Late Night Fees (Gross)"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_refund_late_night_fee_gross} ;;
+  }
+
+  measure: sum_amt_refund_late_night_fee_net {
+    group_label: "> Refunds Late Night Fees"
+    label: "SUM Refunds Late Night Fees (Net)"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_refund_late_night_fee_net} ;;
+  }
+
+  measure: sum_amt_refund_late_night_fee_standard_gross {
+    group_label: "> Refunds Late Night Fees"
+    label: "SUM Refunds Late Night Fees Standard (Gross)"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_refund_late_night_fee_standard_gross} ;;
+  }
+
+  measure: sum_amt_refund_late_night_fee_standard_net {
+    group_label: "> Refunds Late Night Fees"
+    label: "SUM Refunds Late Night Fees Standard (Net)"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_refund_late_night_fee_standard_net} ;;
+  }
+
+  measure: sum_amt_refund_late_night_fee_reduced_gross {
+    group_label: "> Refunds Late Night Fees"
+    label: "SUM Refunds Late Night Fees Reduced (Gross)"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_refund_late_night_fee_reduced_gross} ;;
+  }
+
+  measure: sum_amt_refund_late_night_fee_reduced_net {
+    group_label: "> Refunds Late Night Fees"
+    label: "SUM Refunds Late Night Fees Reduced (Net)"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_refund_late_night_fee_reduced_net} ;;
+  }
+
+  measure: sum_amt_refund_late_night_fee_special_gross {
+    group_label: "> Refunds Late Night Fees"
+    label: "SUM Refunds Late Night Fees Special (Gross)"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_refund_late_night_fee_special_gross} ;;
+  }
+
+  measure: sum_amt_refund_late_night_fee_special_net {
+    group_label: "> Refunds Late Night Fees"
+    label: "SUM Refunds Late Night Fees Special (Net)"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_refund_late_night_fee_special_net} ;;
+  }
+
+  measure: sum_amt_vat_refund_late_night_fee_standard {
+    group_label: "> Refunds Late Night Fees"
+    label: "SUM VAT Refunds Late Night Fees Standard"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_vat_refund_late_night_fee_standard} ;;
+  }
+
+  measure: sum_amt_vat_refund_late_night_fee_reduced {
+    group_label: "> Refunds Late Night Fees"
+    label: "SUM VAT Refunds Late Night Fees Reduced"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_vat_refund_late_night_fee_reduced} ;;
+  }
+
+  measure: sum_amt_vat_refund_late_night_fee_special {
+    group_label: "> Refunds Late Night Fees"
+    label: "SUM VAT Refunds Late Night Fees Special"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_vat_refund_late_night_fee_special} ;;
+  }
+
+  measure: sum_amt_vat_refund_late_night_fee_total {
+    group_label: "> Refunds Late Night Fees"
+    label: "SUM VAT Refunds Late Night Fees Total"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_vat_refund_late_night_fee_total} ;;
   }
 
 }
