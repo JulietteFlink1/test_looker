@@ -321,7 +321,7 @@ view: daily_stock_management_events_items_inbounded {
 
   measure: dropping_time_hours {
     label: "# Hours Dropping"
-    description: "Total duration of the inbounding process in hours (from cart_created to dropping_list_finished)."
+    description: "Total time spent dropping products on shelf during inbounding process in hours (from dropping_list_started to dropping_list_finished)."
     type: sum_distinct
     sql: ${time_dropping_in_hours} ;;
 
