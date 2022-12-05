@@ -1280,7 +1280,7 @@ view: orders {
   dimension: withheld_from_rider_time_minutes {
     group_label: "* Operations / Logistics *"
     label: "Withheld From Rider Time Minutes"
-    description: ""
+    description: "Time between picking completion and order offered to rider"
     type: number
     sql: ${TABLE}.withheld_from_rider_time_minutes ;;
   }
@@ -1759,7 +1759,7 @@ view: orders {
   measure: avg_withheld_from_rider_time_minutes {
     group_label: "* Operations / Logistics *"
     label: "AVG Withheld From Rider Time"
-    description: ""
+    description: "Average time between picking completion and order offered to rider. Outliers excluded (<0min or >120min)"
     type: average
     sql:${withheld_from_rider_time_minutes};;
     value_format_name: decimal_1
@@ -1808,7 +1808,7 @@ view: orders {
     alias: [avg_acceptance_time, avg_rider_queuing_time]
     group_label: "* Operations / Logistics *"
     label: "AVG Waiting for Rider Time"
-    description: ""
+    description: "Average time between order offered to rider and rider having claimed the order. Outliers excluded (<0min or >120min)"
     hidden:  no
     type: average
     sql:${waiting_for_rider_time_minutes};;
