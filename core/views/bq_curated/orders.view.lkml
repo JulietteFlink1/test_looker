@@ -658,13 +658,12 @@ view: orders {
     hidden: yes
   }
 
-  dimension: estimated_waiting_for_rider_time_minutes {
-    alias: [estimated_queuing_time_for_rider_minutes]
-    label: "Waiting for Rider Time Estimate (min)"
-    description: "The internally predicted time in minutes for the waiting for rider"
+  dimension: estimated_queuing_time_for_rider_minutes {
+    label: "Rider Queuing Time Estimate (min)"
+    description: "The internally predicted time in minutes for the rider queuing"
     group_label: "* Operations / Logistics *"
     type: number
-    sql: ${TABLE}.estimated_waiting_for_rider_time_minutes;;
+    sql: ${TABLE}.estimated_rider_queuing_time_minutes;;
   }
 
   dimension: pre_riding_time {
@@ -1917,10 +1916,9 @@ view: orders {
     value_format_name: decimal_1
   }
 
-  measure: avg_estimated_waiting_for_picker_time_minutes {
-    alias: [avg_estimated_queuing_time_for_picker_minutes]
+  measure: avg_estimated_queuing_time_for_picker_minutes {
     group_label: "* Operations / Logistics *"
-    label: "AVG Estimated Waiting for Picker Time"
+    label: "AVG Estimated Queuing Time for Pickers"
     type: average
     sql: ${estimated_waiting_for_picker_time_minutes};;
     value_format_name: decimal_1
@@ -1952,12 +1950,11 @@ view: orders {
     value_format_name: decimal_1
   }
 
-  measure: avg_estimated_waiting_for_rider_time_minutes {
-    alias: [avg_estimated_queuing_time_for_rider_minutes]
+  measure: avg_estimated_queuing_time_for_rider_minutes {
     group_label: "* Operations / Logistics *"
-    label: "AVG Estimated Waiting for Rider Time"
+    label: "AVG Estimated Queuing Time for Riders"
     type: average
-    sql: ${estimated_waiting_for_rider_time_minutes};;
+    sql: ${estimated_queuing_time_for_rider_minutes};;
     value_format_name: decimal_1
   }
 
@@ -2223,7 +2220,7 @@ view: orders {
     description: "The mean absolute error between actual rider queuing time and estimated rider queuing time"
     hidden:  no
     type: average
-    sql: abs(${waiting_for_rider_time_minutes}+coalesce(${withheld_from_rider_time_minutes}, 0) - ${estimated_waiting_for_rider_time_minutes});;
+    sql: abs(${waiting_for_rider_time_minutes}+coalesce(${withheld_from_rider_time_minutes}, 0) - ${estimated_queuing_time_for_rider_minutes});;
     value_format_name: decimal_1
   }
 
