@@ -22,6 +22,11 @@ view: unique_assortment {
     hidden: yes
   }
 
+  dimension: counrtry_iso {
+    type: string
+    sql: ${TABLE}.counrtry_iso ;;
+  }
+
   dimension: is_distinct_from_albert_heijn {
     type: yesno
     sql: ${TABLE}.is_distinct_from_albert_heijn ;;
