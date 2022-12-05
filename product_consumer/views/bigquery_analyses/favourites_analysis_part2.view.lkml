@@ -18,7 +18,6 @@ view: favourites_analysis_part2 {
     sql: ${TABLE}.anonymous_id ;;
   }
 
-
 # ======= Date ======= #
 
   dimension_group: first_visit_date {
@@ -114,6 +113,14 @@ view: favourites_analysis_part2 {
     sql: ${TABLE}.number_total_orders;;
   }
 
+  dimension: total_revenue{
+    group_label: "Favourites"
+    label: "Total Revenue"
+    description: "Total revenue"
+    type: number
+    sql: ${TABLE}.total_revenue;;
+  }
+
   dimension: number_orders_during_interaction{
     group_label: "Favourites"
     label: "# Orders During Interaction"
@@ -132,10 +139,18 @@ view: favourites_analysis_part2 {
 
   dimension: number_incremental_orders{
     group_label: "Favourites"
-    label: "Number of Incremental Orders"
+    label: "#Incremental Orders"
     description: "Number of incremental orders after first interaction with favourites"
     type: number
     sql: ${TABLE}.number_incremental_orders;;
+  }
+
+  dimension: revenue_incremental_orders{
+    group_label: "Favourites"
+    label: "Revenue from Incremental Orders"
+    description: "Revenue from incremental orders after first interaction with favourites"
+    type: number
+    sql: ${TABLE}.revenue_incremental_orders;;
   }
 
   dimension: aov_of_incremental_orders{
