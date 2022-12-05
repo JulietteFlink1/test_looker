@@ -164,38 +164,42 @@ view: event_stock_check_finished {
 
   dimension: check_id {
     type: string
-    group_label: "Stock Check Started Dimensions"
+    group_label: "Stock Check Finished Dimensions"
     description: "The id from the backend."
     sql: ${TABLE}.check_id ;;
   }
 
   dimension: product_sku {
     type: string
-    group_label: "Stock Check Started Dimensions"
+    group_label: "Stock Check Finished Dimensions"
     description: "SKU of the product, as available in the backend."
     sql: ${TABLE}.product_sku ;;
   }
 
   dimension: quantity_counted {
     type: number
+    group_label: "Stock Check Finished Dimensions"
     description: "Quantity counted by the operator."
     sql: ${TABLE}.quantity_counted ;;
   }
 
   dimension: quantity_damaged {
     type: number
+    group_label: "Stock Check Finished Dimensions"
     description: "Quantity reported as damaged."
     sql: ${TABLE}.quantity_damaged ;;
   }
 
   dimension: quantity_expected {
     type: number
+    group_label: "Stock Check Finished Dimensions"
     description: "Quantity expected when started the check."
     sql: ${TABLE}.quantity_expected ;;
   }
 
   dimension: quantity_expired {
     type: number
+    group_label: "Stock Check Finished Dimensions"
     description: "Quantity reported as expired."
     sql: ${TABLE}.quantity_expired ;;
   }
@@ -239,7 +243,7 @@ view: event_stock_check_finished {
   # =========  Total Metrics   =========
 
   measure: number_of_events {
-    label: "# Login Completed"
+    label: "# Stock Check Finished"
     description: "Number of events triggered"
     type: count_distinct
     sql: ${TABLE}.event_uuid ;;

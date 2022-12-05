@@ -219,7 +219,7 @@ view: event_stock_check_started {
   # =========  Total Metrics   =========
 
   measure: number_of_events {
-    label: "# Login Completed"
+    label: "# Stock Check Started"
     description: "Number of events triggered"
     type: count_distinct
     sql: ${TABLE}.event_uuid ;;
