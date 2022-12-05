@@ -6,7 +6,7 @@
 # Questions that can be answered
 # - Questions around manual unstacking trips
 
-include: "/product_last_mile/views/event_order_dispatching_state_changed.view.lkml"
+include: "/**/*/event_order_dispatching_state_changed.view.lkml"
 include: "/**/global_filters_and_parameters.view.lkml"
 
 
