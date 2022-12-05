@@ -7,7 +7,7 @@
 
 include: "/**/products.view"
 include: "/**/global_filters_and_parameters.view.lkml"
-include: "/**/products_hub_assignment_v2.view"
+include: "/**/products_hub_assignment.view"
 include: "/**/inventory.view"
 include: "/**/unique_assortment.view"
 include: "/**/hubs_ct.view"
@@ -56,7 +56,7 @@ explore: competitive_pricing {
 
   join: products_hub_assignment {
 
-    from: products_hub_assignment_v2
+    from: products_hub_assignment
 
     sql_on: ${products_hub_assignment.sku} = ${products.product_sku}
            and ${products_hub_assignment.country_iso} = ${products.country_iso}
