@@ -1917,9 +1917,10 @@ view: orders {
     value_format_name: decimal_1
   }
 
-  measure: avg_estimated_queuing_time_for_picker_minutes {
+  measure: avg_estimated_waiting_for_picker_time_minutes {
+    alias: [avg_estimated_queuing_time_for_picker_minutes]
     group_label: "* Operations / Logistics *"
-    label: "AVG Estimated Queuing Time for Pickers"
+    label: "AVG Estimated Waiting for Picker Time"
     type: average
     sql: ${estimated_waiting_for_picker_time_minutes};;
     value_format_name: decimal_1
@@ -2510,8 +2511,8 @@ view: orders {
   }
 
 
-  measure: sum_avg_queuing_time {
-    alias: [sum_avg_acceptance_reaction_time]
+  measure: sum_avg_waiting_time {
+    alias: [sum_avg_acceptance_reaction_time, sum_avg_queuing_time]
     group_label: "* Operations / Logistics *"
     label: "AVG Waiting For Picker Time + Waiting for Rider Time"
     description: "Sum of the average of rider queuing time and the average of waiting for picker time"

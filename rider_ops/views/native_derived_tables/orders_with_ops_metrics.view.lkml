@@ -12,7 +12,7 @@ view: orders_with_ops_metrics {
       column: avg_at_customer_time {}
       column: avg_delivery_distance_km {}
       column: avg_estimated_picking_time_minutes {}
-      column: avg_estimated_queuing_time_for_picker_minutes {}
+      column: avg_estimated_waiting_for_picker_time_minutes {}
       column: avg_estimated_waiting_for_rider_time_minutes {}
       column: avg_waiting_for_picker_time {}
       column: avg_waiting_for_rider_time {}
@@ -288,9 +288,10 @@ view: orders_with_ops_metrics {
     type: average
   }
 
-  measure: avg_estimated_queuing_time_for_picker_minutes {
+  measure: avg_estimated_waiting_for_picker_time_minutes {
+    alias: [avg_estimated_queuing_time_for_picker_minutes]
     group_label: "> Operations / Logistics"
-    label: "AVG Estimated Queuing Time for Pickers"
+    label: "AVG Estimated Waiting for Picker Time"
     description: ""
     value_format_name: decimal_1
     type: average
@@ -495,7 +496,7 @@ view: orders_with_ops_metrics {
     sql:
         CASE
           WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${avg_estimated_waiting_for_rider_time_minutes}
-          WHEN {% parameter ops.position_parameter %} = 'Picker' THEN ${avg_estimated_queuing_time_for_picker_minutes}
+          WHEN {% parameter ops.position_parameter %} = 'Picker' THEN ${avg_estimated_waiting_for_picker_time_minutes}
       ELSE NULL
       END ;;
   }
