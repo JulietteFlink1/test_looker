@@ -298,7 +298,7 @@ view: orders_with_ops_metrics {
 
   measure: avg_estimated_queuing_time_for_rider_minutes {
     group_label: "> Operations / Logistics"
-    label: "AVG Rider Queuing Time Estimate (min)"
+    label: "AVG Estimated Queuing Time for Riders"
     value_format_name: decimal_1
     type: average
     hidden: yes
