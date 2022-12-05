@@ -28,7 +28,8 @@ explore: flink_to_gorillas_global {
 
   join: inventory {
     view_label: "* Flink Products *"
-    sql_on: ${inventory.sku} = ${products.product_sku} ;;
+    sql_on: ${inventory.sku} = ${products.product_sku}
+       and  ${inventory.country_iso} = ${products.country_iso};;
     relationship: one_to_many
     type: left_outer
     sql_where: (${inventory.is_most_recent_record} = TRUE) ;;
