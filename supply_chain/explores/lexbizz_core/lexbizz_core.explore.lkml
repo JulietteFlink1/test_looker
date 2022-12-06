@@ -36,7 +36,10 @@ explore: lexbizz_core {
       join: products {
         type: full_outer
         relationship: many_to_one
-        sql_on:  ${products.product_sku} = ${stock_item.sku};;
+        sql_on:
+            ${products.product_sku} = ${stock_item.sku} and
+            ${products.country_iso} = ${stock_item.country_iso}
+            ;;
       }
 
       join: lexbizz_core_ndt_similar_rsg {

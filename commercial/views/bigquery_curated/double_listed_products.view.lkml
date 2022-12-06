@@ -25,6 +25,12 @@ view: double_listed_products {
     sql: ${TABLE}.sku ;;
   }
 
+  dimension: country_iso {
+    type: string
+    label: "Country ISO"
+    sql: ${TABLE}.country_iso ;;
+  }
+
   dimension: is_double_listed {
     type: string
     label: "Is Double listed"

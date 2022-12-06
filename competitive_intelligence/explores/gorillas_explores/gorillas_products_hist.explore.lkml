@@ -75,7 +75,8 @@ explore: gorillas_products_hist {
   join: products {
     from: products
     view_label: "Flink Product Data"
-    sql_on: ${flink_to_gorillas_global.flink_product_sku} = ${products.product_sku} ;;
+    sql_on: ${flink_to_gorillas_global.flink_product_sku} = ${products.product_sku}
+        and ${flink_to_gorillas_global.country_iso} = ${products.country_iso};;
     relationship: one_to_many
     type: left_outer
   }

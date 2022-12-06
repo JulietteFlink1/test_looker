@@ -83,7 +83,10 @@ explore: psp_transactions {
 
   join: products {
     view_label: ""
-    sql_on: ${products.product_sku} = ${orderline.product_sku} ;;
+    sql_on:
+      ${products.product_sku} = ${orderline.product_sku} and
+      ${products.country_iso} = ${orderline.country_iso}
+    ;;
     relationship: many_to_one
     type: left_outer
   }

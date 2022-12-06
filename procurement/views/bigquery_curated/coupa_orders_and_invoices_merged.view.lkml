@@ -14,6 +14,13 @@ view: coupa_orders_and_invoices_merged {
     sql: ${TABLE}.coupa_orders_merged_uuid ;;
   }
 
+  dimension: order_header_id {
+    type: string
+    hidden: yes
+    description: "ID of the Order Header. Used to link purchase order to Coupa URL."
+    sql: ${TABLE}.order_header_id ;;
+  }
+
   dimension: country_iso {
     type: string
     hidden: yes
@@ -84,6 +91,10 @@ view: coupa_orders_and_invoices_merged {
     type: string
     description: "Purchase Order number reported in Coupa."
     sql: ${TABLE}.purchase_order_number ;;
+    link: {
+      label: "See Order in Coupa"
+      url: "https://goflink.coupahost.com/order_headers/{{ order_header_id._value | url_encode }}"
+    }
   }
 
   dimension: requester_name {
@@ -120,15 +131,16 @@ view: coupa_orders_and_invoices_merged {
     label: "€ Amount Unit Price Gross"
     description: "Price of a single unit of the item that was purchased. Incl. VAT, in euros."
     sql: ${TABLE}.amt_unit_price_gross_eur ;;
+    value_format_name: eur
   }
 
   measure: sum_amt_ordered_gross_eur {
     group_label: "Orders"
-    label: "€ Amount Ordered Gross"
-    description: "Sum of the unit prices multiplied by the quantities ordered. Incl. VAT, in euros"
+    label: "€ Budget Spend Gross (Order based)"
+    description: "Retrieved directly from Coupa. It corresponds to the unit prices multiplied by the quantities ordered. Incl. VAT, in euros"
     type: sum
     sql: ${amt_ordered_gross_eur} ;;
-    value_format_name: decimal_2
+    value_format_name: eur
   }
 
   measure: sum_number_of_ordered_units {
