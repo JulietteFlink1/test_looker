@@ -317,7 +317,7 @@ view: orders_with_ops_metrics {
     alias: [avg_rider_queuing_time]
     group_label: "> Operations / Logistics"
     label: "AVG Waiting for Rider Time"
-    description: "Average time between order offered to rider and rider having claimed the order. Outliers excluded (<0min or >120min)"
+    description: "Average time between order offered to rider and rider having claimed the order. Outliers excluded (>120min)"
     value_format_name: decimal_1
     type: average
   }

@@ -1136,6 +1136,14 @@ view: orders {
     sql: ${TABLE}.order_offered_to_hub_timestamp ;;
   }
 
+  dimension: order_offered_to_rider_timestamp {
+    group_label: "* Operations / Logistics *"
+    label: "Order Offered to Rider Timestamp"
+    description: "Timestamp at which an order was offered to a rider."
+    type: date_time
+    sql: ${TABLE}.order_offered_to_rider_timestamp ;;
+  }
+
   dimension: order_withheld_timestamp {
     group_label: "* Operations / Logistics *"
     label: "Order Withheld from Hub"
@@ -1807,7 +1815,7 @@ view: orders {
     alias: [avg_acceptance_time, avg_rider_queuing_time]
     group_label: "* Operations / Logistics *"
     label: "AVG Waiting for Rider Time"
-    description: "Average time between order offered to rider and rider having claimed the order. Outliers excluded (<0min or >120min)"
+    description: "Average time between order offered to rider and rider having claimed the order. Outliers excluded (>120min)"
     hidden:  no
     type: average
     sql:${waiting_for_rider_time_minutes};;
