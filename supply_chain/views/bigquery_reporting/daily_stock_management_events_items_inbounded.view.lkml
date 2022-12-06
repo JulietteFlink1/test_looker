@@ -303,7 +303,7 @@ view: daily_stock_management_events_items_inbounded {
 
   measure: inbounding_time_minutes {
     label: "# Minutes Inbounding"
-    description: "Total duration of the inbounding process in hours (from cart_created to dropping_list_finished)."
+    description: "Total duration of the inbounding process in minutes (from cart_created to dropping_list_finished)."
     type: sum_distinct
     sql: ${time_inbounding_in_minutes} ;;
 
@@ -312,7 +312,7 @@ view: daily_stock_management_events_items_inbounded {
 
   measure: avg_inbounding_time_minutes {
     label: "Avg Minutes Inbounding"
-    description: "Avg duration of the inbounding process in hours (from cart_created to dropping_list_finished)."
+    description: "Avg duration of the inbounding process in minutes (from cart_created to dropping_list_finished)."
     type: average_distinct
     sql: ${time_inbounding_in_minutes} ;;
 
