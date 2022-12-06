@@ -25,7 +25,6 @@ explore: ops {
       hubs.country: "",
       hubs.hub_name: "",
       time_grid.start_datetime_date: "yesterday",
-      time_grid.start_datetime_hour_of_day: "[6,23]",
       forecasts.dow_parameter: "Tuesday"
     ]
   }
