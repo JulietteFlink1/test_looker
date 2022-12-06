@@ -127,8 +127,8 @@ view: order_backlog {
   }
 
   measure: backlog_orders_picking_not_started {
-    label: "# Backlog Orders Created (Last Mile) Not Started Being Picked"
-    description: "Cumulative # of orders (last mile) created but not started being picked during the day."
+    label: "# Backlog Orders Created Not Started Being Picked"
+    description: "Cumulative # of orders created but not started being picked during the day."
     type: sum
     sql: ${number_of_orders_picking_not_started} ;;
   }
