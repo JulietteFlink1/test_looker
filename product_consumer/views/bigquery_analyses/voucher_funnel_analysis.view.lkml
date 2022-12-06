@@ -347,7 +347,7 @@ view: voucher_funnel_analysis {
     label: "# DAU with Order"
     type: count_distinct
     sql: ${daily_user_uuid};;
-    filters: [is_order_placed_discounted: "yes"]
+    filters: [is_order_placed: "yes"]
   }
 
 
