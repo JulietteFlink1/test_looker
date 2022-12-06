@@ -631,8 +631,8 @@ view: orders {
 
   dimension: estimated_waiting_for_picker_time_minutes {
     alias: [estimated_queuing_time_for_picker_minutes]
-    label: "Waiting For Picker Time Estimate (min)"
-    description: "The internally predicted time in minutes for the waiting for picker"
+    label: "Picker Queuing Time Estimate (min)"
+    description: "The internally predicted time in minutes for the picker queuing"
     group_label: "* Operations / Logistics *"
     type: number
     sql: ${TABLE}.estimated_waiting_for_picker_time_minutes;;
