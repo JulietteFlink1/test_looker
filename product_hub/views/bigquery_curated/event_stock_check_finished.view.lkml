@@ -12,17 +12,17 @@ view: event_stock_check_finished {
   set: to_include_dimensions {
     fields: [
       check_id,
-      product_sku,
-      sum_qty_counted,
-      sum_qty_damaged,
-      sum_qty_expected,
-      sum_qty_expired
+      product_sku
     ]
   }
 
   set: to_include_measures {
     fields: [
-      number_of_events
+      number_of_events,
+      sum_qty_counted,
+      sum_qty_damaged,
+      sum_qty_expected,
+      sum_qty_expired
     ]
   }
 
