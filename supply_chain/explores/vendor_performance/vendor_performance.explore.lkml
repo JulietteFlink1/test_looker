@@ -251,6 +251,8 @@ join: daily_stock_management_events_items_inbounded {
 
     view_label: "* Global *"
 
+    from: erp_product_hub_vendor_assignment
+
     type: left_outer
     relationship: one_to_one
     sql_on:

@@ -84,6 +84,8 @@ explore: inbound_outbound_kpi_report {
 
   join: erp_product_hub_vendor_assignment_v2 {
 
+    from: erp_product_hub_vendor_assignment
+
     type: left_outer
     relationship: one_to_many
 
