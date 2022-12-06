@@ -74,7 +74,7 @@ explore: daily_stock_management_events {
 
   join: add_to_cart_times {
     view_label: "Add to Cart Times"
-    sql_on: ${add_to_cart_times.primary_key}=concat(${daily_stock_management_events.inventory_movement_id},${daily_stock_management_events.sku}, ${daily_stock_management_events.is_scanned_item});;
+    sql_on: ${add_to_cart_times.primary_key}=concat(${daily_stock_management_events.inventory_movement_id}, ${daily_stock_management_events.country_iso}, ${daily_stock_management_events.sku}, ${daily_stock_management_events.is_scanned_item});;
     type: left_outer
     relationship: one_to_many
   }

@@ -24,7 +24,8 @@ explore: product_placement_performance_aggregates {
   3. Removing either the SKU or Placement dimension will lead to counts being overstated as users may be counted multiple times."
   group_label: "Product - Consumer"
 
-  sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} ${event_date_date} {% endcondition %};;
+  sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} ${event_date_date} {% endcondition %}
+                    and ${country_iso} is not null;;
 
   access_filter: {
     field: country_iso
