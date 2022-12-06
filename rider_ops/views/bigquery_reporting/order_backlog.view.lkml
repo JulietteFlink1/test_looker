@@ -62,6 +62,12 @@ view: order_backlog {
     sql: ${TABLE}.number_of_orders_not_picked ;;
   }
 
+  dimension: number_of_orders_not_offered_for_picking {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_orders_not_offered_for_picking ;;
+  }
+
   dimension: number_of_orders_not_picked_last_mile {
     type: number
     hidden: yes
@@ -104,6 +110,14 @@ view: order_backlog {
     sql: ${TABLE}.number_of_rider_claimed_orders_last_mile ;;
   }
 
+  # Measures
+
+  measure: backlog_orders_created_not_offered_for_picking {
+    label: "# Backlog Orders Created Not Offered for Picking (Not Dispatched)"
+    description: "Cumulative # of orders created but not offered for picking (not dispatched) during the day."
+    type: sum
+    sql: ${number_of_orders_not_offered_for_picking} ;;
+  }
 
   measure: backlog_orders_created_rider_not_claimed_last_mile {
     label: "# Backlog Orders Created (Last Mile) Not Claimed By Riders"
@@ -132,4 +146,12 @@ view: order_backlog {
     type: sum
     sql: ${number_of_orders_picking_not_started} ;;
   }
+
+  measure: backlog_orders_offered_picking_not_started {
+    label: "# Backlog Orders Offered (Dispatched) Not Started Being Picked"
+    description: "Cumulative # of orders created but not started being picked during the day."
+    type: sum
+    sql: ${number_of_orders_picking_not_started}-${number_of_orders_not_offered_for_picking} ;;
+  }
+
 }
