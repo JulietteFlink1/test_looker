@@ -9,14 +9,23 @@ view: voucher_funnel_analysis {
 
 # ======= IDs ======= #
 
-    dimension: anonymous_id {
-      hidden: yes
-      group_label: "IDs"
-      label: "Anonymous ID"
-      description: "Anonymous ID"
-      type: string
-      sql: ${TABLE}.anonymous_id ;;
-    }
+  dimension: daily_user_uuid {
+    hidden: yes
+    group_label: "IDs"
+    label: "Daily UUID"
+    description: "Daily User UUID"
+    type: string
+    sql: ${TABLE}.daily_user_uuid ;;
+  }
+
+    # dimension: anonymous_id {
+    #   hidden: yes
+    #   group_label: "IDs"
+    #   label: "Anonymous ID"
+    #   description: "Anonymous ID"
+    #   type: string
+    #   sql: ${TABLE}.anonymous_id ;;
+    # }
 
   dimension: user_id {
     hidden: yes
@@ -167,12 +176,44 @@ view: voucher_funnel_analysis {
 
     # ======= Voucher Dimensions ======= #
 
+  dimension: campaign_name {
+    group_label: "Voucher Dimensions"
+    label: "Campaign Name"
+    description: "Campaign Name of the inAppMessage"
+    type: string
+    sql: ${TABLE}.campaign_name;;
+  }
+
   dimension: has_available_voucher {
     group_label: "Voucher Dimensions"
     label: "Has Available Voucher"
     description: "If user has an active voucher, from TalonOne"
     type: yesno
     sql: ${TABLE}.has_available_voucher;;
+  }
+
+  dimension: has_order_since_IAM {
+    group_label: "Voucher Dimensions"
+    label: "Placed Order after IAM"
+    description: "User has placed an order within 5 days since seeing a IAM"
+    type: yesno
+    sql: ${TABLE}.has_order_since_IAM;;
+  }
+
+  dimension: has_voucher_order_since_IAM {
+    group_label: "Voucher Dimensions"
+    label: "Placed Voucher Order after IAM"
+    description: "User has placed an order with a voucher within 5 days since seeing a IAM"
+    type: yesno
+    sql: ${TABLE}.has_voucher_order_since_IAM;;
+  }
+
+  dimension: days_to_order_after_IAM {
+    group_label: "Voucher Dimensions"
+    label: "# Days to Order after IAM"
+    description: "# of days between seeing discount IAM and placing an order"
+    type: number
+    sql: ${TABLE}.days_to_order_after_IAM;;
   }
 
     dimension: number_available_vouchers_talonone {
@@ -224,6 +265,92 @@ view: voucher_funnel_analysis {
       sql: ${TABLE}.number_of_days_to_expire_min;;
     }
 
+  # ======= Funnel Measures ======= #
+
+   # ======= DAU Measures ======= #
+
+  measure: count_daily_active_users {
+    group_label: "Measures"
+    hidden: no
+    label: "# of Daily Active Users"
+    description: "Uses daily_user_uuid for count"
+    type: count_distinct
+    sql: ${daily_user_uuid};;
+  }
+
+  measure: count_dau_discounted_orders {
+    group_label: "DAU Measures"
+    hidden: no
+    label: "# DAU with Discounted Order"
+    type: count_distinct
+    sql: ${daily_user_uuid};;
+    filters: [is_order_placed_discounted: "yes"]
+  }
+
+  measure: count_dau_home {
+    group_label: "DAU Measures"
+    hidden: yes
+    label: "# DAU on Home"
+    type: count_distinct
+    sql: ${daily_user_uuid};;
+    filters: [is_home_viewed: "yes"]
+  }
+
+  measure: count_dau_address_set {
+    group_label: "DAU Measures"
+    hidden: no
+    label: "# DAU with Address Set"
+    type: count_distinct
+    sql: ${daily_user_uuid};;
+    filters: [is_address_set: "yes"]
+  }
+
+  measure: count_dau_discount_message_viewed {
+    group_label: "DAU Measures"
+    hidden: no
+    label: "# DAU Discount Message Viewed"
+    type: count_distinct
+    sql: ${daily_user_uuid};;
+    filters: [is_discount_message_viewed: "yes"]
+  }
+
+  measure: count_dau_product_add_to_cart {
+    group_label: "DAU Measures"
+    hidden: no
+    label: "# DAU Product ATC"
+    type: count_distinct
+    sql: ${daily_user_uuid};;
+    filters: [is_product_added_to_cart: "yes"]
+  }
+
+  measure: count_dau_in_checkout {
+    group_label: "DAU Measures"
+    hidden: no
+    label: "# DAU in Checkout"
+    type: count_distinct
+    sql: ${daily_user_uuid};;
+    filters: [is_checkout_viewed: "yes"]
+  }
+
+  measure: count_dau_payment_started {
+    group_label: "DAU Measures"
+    hidden: no
+    label: "# DAU Payment Started"
+    type: count_distinct
+    sql: ${daily_user_uuid};;
+    filters: [is_payment_started: "yes"]
+  }
+
+  measure: count_dau_orders {
+    group_label: "DAU Measures"
+    hidden: no
+    label: "# DAU with Order"
+    type: count_distinct
+    sql: ${daily_user_uuid};;
+    filters: [is_order_placed: "yes"]
+  }
+
+
 
     # ======= Funnel Measures ======= #
 
@@ -231,16 +358,16 @@ view: voucher_funnel_analysis {
     group_label: "Measures"
     hidden: no
     label: "# of Unique Users"
+    description: "Uses user_id for count, used in all main measures"
     type: count_distinct
-    sql: ${anonymous_id};;
+    sql: ${user_id};;
   }
-
     measure: count_users_home {
       group_label: "Funnel Measures"
-      hidden: no
+      hidden: yes
       label: "# Users on Home"
       type: count_distinct
-      sql: ${anonymous_id};;
+      sql: ${user_id};;
       filters: [is_home_viewed: "yes"]
     }
 
@@ -249,7 +376,7 @@ view: voucher_funnel_analysis {
     hidden: no
     label: "# Users with Address Set"
     type: count_distinct
-    sql: ${anonymous_id};;
+    sql: ${user_id};;
     filters: [is_address_set: "yes"]
   }
 
@@ -258,7 +385,7 @@ view: voucher_funnel_analysis {
     hidden: no
     label: "# Users Discount Message Viewed"
     type: count_distinct
-    sql: ${anonymous_id};;
+    sql: ${user_id};;
     filters: [is_discount_message_viewed: "yes"]
   }
 
@@ -267,7 +394,7 @@ view: voucher_funnel_analysis {
     hidden: no
     label: "# Users Product ATC"
     type: count_distinct
-    sql: ${anonymous_id};;
+    sql: ${user_id};;
     filters: [is_product_added_to_cart: "yes"]
   }
 
@@ -276,7 +403,7 @@ view: voucher_funnel_analysis {
     hidden: no
     label: "# Users in Checkout"
     type: count_distinct
-    sql: ${anonymous_id};;
+    sql: ${user_id};;
     filters: [is_checkout_viewed: "yes"]
   }
 
@@ -285,7 +412,7 @@ view: voucher_funnel_analysis {
     hidden: no
     label: "# Users Payment Started"
     type: count_distinct
-    sql: ${anonymous_id};;
+    sql: ${user_id};;
     filters: [is_payment_started: "yes"]
   }
 
@@ -294,7 +421,7 @@ view: voucher_funnel_analysis {
     hidden: no
     label: "# Users with Order"
     type: count_distinct
-    sql: ${anonymous_id};;
+    sql: ${user_id};;
     filters: [is_order_placed: "yes"]
   }
 
@@ -307,7 +434,7 @@ view: voucher_funnel_analysis {
     hidden: no
     label: "# of Users in Checkout with Available Vouchers"
     type: count_distinct
-    sql: ${anonymous_id};;
+    sql: ${user_id};;
     filters: [is_checkout_viewed: "yes", has_available_voucher: "yes"]
   }
 
@@ -316,7 +443,7 @@ view: voucher_funnel_analysis {
     hidden: no
     label: "# of Users in Checkout with No Vouchers"
     type: count_distinct
-    sql: ${anonymous_id};;
+    sql: ${user_id};;
     filters: [is_checkout_viewed: "yes", has_available_voucher: "no"]
   }
 
@@ -325,7 +452,7 @@ view: voucher_funnel_analysis {
     hidden: no
     label: "# of Users in Voucher Wallet"
     type: count_distinct
-    sql: ${anonymous_id};;
+    sql: ${user_id};;
     filters: [is_checkout_viewed: "yes", is_voucher_wallet_visited: "yes"]
   }
 
@@ -334,7 +461,7 @@ view: voucher_funnel_analysis {
     hidden: no
     label: "# of Users in Checkout with Available Vouchers and Wallet Visit"
     type: count_distinct
-    sql: ${anonymous_id};;
+    sql: ${user_id};;
     filters: [is_checkout_viewed: "yes", has_available_voucher: "yes",is_voucher_wallet_visited: "yes"]
   }
 
@@ -343,7 +470,7 @@ view: voucher_funnel_analysis {
     hidden: no
     label: "# of Users in Checkout with Available Vouchersbut no Wallet Visit"
     type: count_distinct
-    sql: ${anonymous_id};;
+    sql: ${user_id};;
     filters: [is_checkout_viewed: "yes", has_available_voucher: "yes",is_voucher_wallet_visited: "no"]
   }
 
@@ -363,7 +490,7 @@ view: voucher_funnel_analysis {
     hidden: no
     label: "# of Users with Discounted Order"
     type: count_distinct
-    sql: ${anonymous_id};;
+    sql: ${user_id};;
     filters: [is_order_placed_discounted: "yes"]
   }
 
@@ -374,7 +501,7 @@ view: voucher_funnel_analysis {
     label: "# of Users Order w. available non-redeemed vouchers"
     description: "# of Users with Order that had available vouchers but didn't check voucher wallet and did not redeem it"
     type: count_distinct
-    sql: ${anonymous_id};;
+    sql: ${user_id};;
     filters: [is_order_placed: "yes", is_order_placed_discounted: "no", is_voucher_wallet_visited: "no", has_available_voucher: "yes"]
   }
 
@@ -384,7 +511,7 @@ view: voucher_funnel_analysis {
     label: "# of Users Order w. available and redeemed vouchers"
     description: "# of Users with Order that had available vouchers, checked voucher wallet and used it in order"
     type: count_distinct
-    sql: ${anonymous_id};;
+    sql: ${user_id};;
     filters: [is_order_placed: "yes", is_order_placed_discounted: "yes", is_voucher_wallet_visited: "yes", has_available_voucher: "yes"]
   }
 
