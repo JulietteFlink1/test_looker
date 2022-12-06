@@ -46,7 +46,10 @@ explore: smart_inventory_checks {
 
   join: event_stock_check_finished {
     view_label: "2 Stock Check Finished Event"
-    sql_on: ${smart_inventory_checks.table_uuid}=${event_stock_check_finished.check_id} ;;
+    fields: [to_include_set*]
+    sql_on: ${smart_inventory_checks.table_uuid}=${event_stock_check_finished.check_id}
+    and {% condition global_filters_and_parameters.datasource_filter %}
+            ${event_stock_check_finished.event_timestamp_date} {% endcondition %} ;;
     type: left_outer
     relationship: one_to_one
   }
