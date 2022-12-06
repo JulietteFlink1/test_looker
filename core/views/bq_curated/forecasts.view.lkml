@@ -388,6 +388,7 @@ view: forecasts {
     type: average_distinct
     sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
     sql: ${TABLE}.number_of_target_orders_per_picker ;;
+    hidden: yes
   }
 
   measure: number_of_target_orders_per_rider {
@@ -398,6 +399,7 @@ view: forecasts {
     type: average_distinct
     sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
     sql: ${TABLE}.number_of_target_orders_per_rider ;;
+    hidden: yes
   }
 
   measure: number_of_target_orders_per_rider_adjusted {
@@ -408,36 +410,37 @@ view: forecasts {
     type: average_distinct
     sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
     sql: ${TABLE}.number_of_target_orders_per_rider_adjusted ;;
+    hidden: yes
   }
 
   measure: final_utr_picker {
     group_label: "> Picker Measures"
-    label: "Forecasted UTR Picker"
-    description: "Forecasted Orders / Forecasted Picker Hours"
+    label: "Forecasted UTR Picker (Incl. No Show)"
+    description: "Forecasted Orders / Forecasted Picker Hours (Incl. No Show)"
     value_format_name: decimal_2
     sql: ${number_of_forecasted_orders}/nullif(${number_of_forecasted_hours_picker},0) ;;
   }
 
   measure: final_utr_picker_adjusted {
     group_label: "> Picker Measures"
-    label: "Adjusted Forecasted UTR Picker"
-    description: "Adjusted Forecasted Orders / Adjusted Forecasted Picker Hours"
+    label: "Adjusted Forecasted UTR Picker (Incl. No Show)"
+    description: "Adjusted Forecasted Orders / Adjusted Forecasted Picker Hours (Incl. No Show)"
     value_format_name: decimal_2
     sql: ${number_of_forecasted_orders_adjusted}/nullif(${number_of_forecasted_hours_picker_adjusted},0) ;;
   }
 
   measure: final_utr_rider {
     group_label: "> Rider Measures"
-    label: "Forecasted UTR Rider"
-    description: "Forecasted Orders / Forecasted Rider Hours"
+    label: "Forecasted UTR Rider (Incl. No Show)"
+    description: "Forecasted Orders / Forecasted Rider Hours (Incl. No Show)"
     value_format_name: decimal_2
     sql: ${number_of_forecasted_orders}/nullif(${number_of_forecasted_hours_rider},0) ;;
   }
 
   measure: final_utr_rider_adjusted {
     group_label: "> Rider Measures"
-    label: "Adjusted Forecasted UTR Rider"
-    description: "Adjusted Forecasted Orders / Adjusted Forecasted Rider Hours"
+    label: "Adjusted Forecasted UTR Rider (Incl. No Show)"
+    description: "Adjusted Forecasted Orders / Adjusted Forecasted Rider Hours (Incl. No Show)"
     value_format_name: decimal_2
     sql: ${number_of_forecasted_orders_adjusted}/nullif(${number_of_forecasted_hours_rider_adjusted},0) ;;
   }
@@ -568,7 +571,7 @@ view: forecasts {
   measure: pct_forecasted_utr_deviation {
     group_label: "> Dynamic Measures"
     label: "% Forecasted UTR Deviation"
-    description: "The degree of how far Forecasted UTR (# Forecasted Orders / # Forecasted Hours) is from Actual UTR in the given period. Formula:  (Forecasted UTR / Actual UTR) - 1"
+    description: "The degree of how far Forecasted UTR (# Forecasted Orders / # Forecasted Hours (Incl. No Show)) is from Actual UTR in the given period. Formula:  (Actual UTR / Forecasted UTR (Incl. No Show)) - 1"
     type: number
     sql: (${ops.utr_by_position}/nullif(${final_utr_by_position},0)) - 1 ;;
     value_format_name: percent_1
@@ -577,7 +580,7 @@ view: forecasts {
   measure: pct_forecasted_utr_deviation_adjusted {
     group_label: "> Dynamic Measures"
     label: "% Adjusted Forecasted UTR Deviation"
-    description: "The degree of how far Adjusted Forecasted UTR (# Adjusted Forecasted Orders / # Adjusted Forecasted Hours) is from Actual UTR in the given period. Formula:  (Adjusted Forecasted UTR / Actual UTR) - 1"
+    description: "The degree of how far Adjusted Forecasted UTR (# Adjusted Forecasted Orders / # Adjusted Forecasted Hours) is from Actual UTR in the given period. Formula:  (Actual UTR / Adjusted Forecasted UTR (Incl. No Show)) - 1"
     type: number
     sql: (${ops.utr_by_position}/nullif(${final_utr_by_position_adjusted},0)) - 1 ;;
     value_format_name: percent_1
@@ -1130,6 +1133,7 @@ view: forecasts {
             then ${number_of_target_orders_per_picker}
           else null
         end ;;
+    hidden: yes
   }
 
   measure: number_of_target_orders_by_position_adjusted {
@@ -1144,6 +1148,7 @@ view: forecasts {
             then ${number_of_target_orders_per_rider_adjusted}
           else null
         end ;;
+    hidden: yes
   }
 
   measure: idleness_assumption_by_position {
@@ -1178,8 +1183,8 @@ view: forecasts {
 
   measure: final_utr_by_position {
     type: number
-    label: "Forecasted UTR"
-    description: "Forecasted Orders/Forecasted Hours"
+    label: "Forecasted UTR (Incl. No Show)"
+    description: "Forecasted Orders/Forecasted Hours (Incl. No Show)"
     value_format_name: decimal_2
     group_label: "> Dynamic Measures"
     sql: ${number_of_forecasted_orders}/nullif(${number_of_forecasted_hours_by_position},0);;
@@ -1187,11 +1192,29 @@ view: forecasts {
 
   measure: final_utr_by_position_adjusted {
     type: number
-    label: "Adjusted Forecasted UTR"
-    description: "Adjusted Forecasted Orders (Incl. Airtable Adjustments)/Adjusted Forecasted Hours (Incl. Airtable Adjustments)"
+    label: "Adjusted Forecasted UTR (Incl. No Show)"
+    description: "Adjusted Forecasted Orders (Incl. Airtable Adjustments) / Adjusted Forecasted Hours (Incl. Airtable Adjustments)"
     value_format_name: decimal_2
     group_label: "> Dynamic Measures"
     sql: ${number_of_forecasted_orders_adjusted}/nullif(${number_of_forecasted_hours_by_position_adjusted},0);;
+  }
+
+  measure: forecasted_utr_excl_no_show_by_position {
+    type: number
+    label: "Target UTR (Excl. No Show)"
+    description: "Forecasted Orders / Forecasted Hours (Excl. No Show)"
+    value_format_name: decimal_2
+    group_label: "> Dynamic Measures"
+    sql: ${number_of_forecasted_orders}/nullif(${number_of_forecasted_hours_excl_no_show_by_position},0);;
+  }
+
+  measure: forecasted_utr_excl_no_show_by_position_adjusted {
+    type: number
+    label: "Adjusted Target UTR (Excl. No Show)"
+    description: "Adjusted Forecasted Orders (Incl. Airtable Adjustments)/Adjusted Forecasted Hours (Incl. Airtable Adjustments and Excl. No Show)"
+    value_format_name: decimal_2
+    group_label: "> Dynamic Measures"
+    sql: ${number_of_forecasted_orders_adjusted}/nullif(${number_of_forecasted_hours_excl_no_show_by_position_adjusted},0);;
   }
 
   parameter: dynamic_text_utr {

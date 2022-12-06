@@ -11,6 +11,7 @@ include: "/**/orders_with_ops_metrics.view"
 include: "/**/forecasts.view"
 include: "/**/inventory_changes_daily.view"
 include: "/**/hub_monthly_orders.view"
+include: "/**/order_backlog.view"
 
 explore: ops {
   from: staffing
@@ -97,6 +98,15 @@ explore: ops {
       ${hubs.hub_code} = ${hub_monthly_orders.hub_code} and
       date_trunc(${time_grid.start_datetime_date},month) = ${hub_monthly_orders.created_month};;
     relationship: many_to_one
+    type: left_outer
+  }
+
+  join: order_backlog {
+    view_label: "Order Backlog"
+    sql_on:
+      ${hubs.hub_code} = ${order_backlog.hub_code}
+      and ${time_grid.start_datetime_minute30}  = ${order_backlog.start_timestamp_minute30} ;;
+    relationship: one_to_one
     type: left_outer
   }
 
