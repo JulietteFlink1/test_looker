@@ -314,6 +314,15 @@ view: voucher_funnel_analysis {
     filters: [is_discount_message_viewed: "yes"]
   }
 
+  measure: count_dau_no_discount_message {
+    group_label: "DAU Measures"
+    hidden: no
+    label: "# DAU No IAM"
+    type: count_distinct
+    sql: ${daily_user_uuid};;
+    filters: [is_discount_message_viewed: "no"]
+  }
+
   measure: count_dau_product_add_to_cart {
     group_label: "DAU Measures"
     hidden: no
@@ -349,6 +358,46 @@ view: voucher_funnel_analysis {
     sql: ${daily_user_uuid};;
     filters: [is_order_placed: "yes"]
   }
+
+  measure: count_dau_orders_no_iam {
+    group_label: "DAU Measures"
+    hidden: no
+    label: "# DAU Order NO IAM"
+    type: count_distinct
+    sql: ${daily_user_uuid};;
+    filters: [is_order_placed: "yes", is_discount_message_viewed: "no"]
+  }
+
+  measure: count_dau_orders_iam {
+    group_label: "DAU Measures"
+    hidden: no
+    label: "# DAU Order IAM"
+    type: count_distinct
+    sql: ${daily_user_uuid};;
+    filters: [is_order_placed: "yes", is_discount_message_viewed: "yes"]
+  }
+
+
+  measure: count_dau_order_5d {
+    group_label: "DAU Measures"
+    hidden: no
+    label: "# DAU Order 5d IAM"
+    description: "# Daily Active Users placed order within 5days since IAM"
+    type: count_distinct
+    sql: ${daily_user_uuid};;
+    filters: [is_discount_message_viewed: "yes",has_order_since_IAM: "yes" ]
+  }
+
+  measure: count_dau_order_voucher_5d {
+    group_label: "DAU Measures"
+    hidden: no
+    label: "# DAU Order Voucher 5d IAM"
+    description: "# Daily Active Users placed order within 5days since IAM"
+    type: count_distinct
+    sql: ${daily_user_uuid};;
+    filters: [is_discount_message_viewed: "yes",has_voucher_order_since_IAM: "yes" ]
+  }
+
 
 
 
@@ -497,7 +546,7 @@ view: voucher_funnel_analysis {
 
   measure: count_users_orders_missed_vouchers {
     group_label: "Order Measures"
-    hidden: no
+    hidden: yes
     label: "# of Users Order w. available non-redeemed vouchers"
     description: "# of Users with Order that had available vouchers but didn't check voucher wallet and did not redeem it"
     type: count_distinct
@@ -507,7 +556,7 @@ view: voucher_funnel_analysis {
 
   measure: count_users_orders_no_missed_vouchers {
     group_label: "Order Measures"
-    hidden: no
+    hidden: yes
     label: "# of Users Order w. available and redeemed vouchers"
     description: "# of Users with Order that had available vouchers, checked voucher wallet and used it in order"
     type: count_distinct
