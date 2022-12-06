@@ -13,10 +13,10 @@ view: event_stock_check_finished {
     fields: [
       check_id,
       product_sku,
-      quantity_counted,
-      quantity_damaged,
-      quantity_expected,
-      quantity_expired
+      sum_qty_counted,
+      sum_qty_damaged,
+      sum_qty_expected,
+      sum_qty_expired
     ]
   }
 
@@ -249,4 +249,31 @@ view: event_stock_check_finished {
     sql: ${TABLE}.event_uuid ;;
   }
 
+  measure: sum_qty_counted {
+    label: "Quantity Counted"
+    description: "Quantity counted by the operator."
+    type: sum
+    sql: ${quantity_counted} ;;
+  }
+
+  measure: sum_qty_damaged {
+    label: "Quantity Damaged"
+    description: "Quantity reported as damaged."
+    type: sum
+    sql: ${quantity_damaged} ;;
+  }
+
+  measure: sum_qty_expected {
+    group_label: "Stock Check Finished Dimensions"
+    description: "Quantity expected when started the check."
+    type: sum
+    sql: ${quantity_expected} ;;
+  }
+
+  measure: sum_qty_expired {
+    group_label: "Stock Check Finished Dimensions"
+    description: "Quantity reported as expired."
+    type: sum
+    sql: ${quantity_expired} ;;
+  }
 }
