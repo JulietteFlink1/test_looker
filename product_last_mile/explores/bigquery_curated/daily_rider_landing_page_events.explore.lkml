@@ -6,7 +6,7 @@
 # Questions that can be answered
 # - User interaction with rider landing page
 
-include: "/product_last_mile/views/daily_rider_landing_page_events.view.lkml"
+include: "/**/*/daily_rider_landing_page_events.view.lkml"
 include: "/**/global_filters_and_parameters.view.lkml"
 
 

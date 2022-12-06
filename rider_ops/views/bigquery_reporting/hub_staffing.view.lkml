@@ -445,7 +445,7 @@ view: hub_staffing {
   measure: avg_employees_utr{
     label:"UTR"
     type: number
-    description: "Average Employees UTR"
+    description: "# Orders (Excl. Cancellations) (Excl. Click & Collect and External Orders for rider position) / # Punched Hours"
     sql:${sum_orders}/ NULLIF(${sum_worked_hours}, 0) ;;
     value_format_name: decimal_2
   }
