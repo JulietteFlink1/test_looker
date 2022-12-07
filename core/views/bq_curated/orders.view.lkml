@@ -358,6 +358,7 @@ view: orders {
       date,
       day_of_week,
       day_of_week_index,
+      week_of_year,
       week,
       month,
       quarter,
