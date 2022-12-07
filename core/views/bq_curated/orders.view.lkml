@@ -672,7 +672,7 @@ view: orders {
     description: "Withheld From Picking + Waiting For Picker Time + Picking Time + Withheld From Rider + Waiting For Rider Time"
     group_label: "* Operations / Logistics *"
     type: number
-    sql: ${waiting_for_picker_time} + ${waiting_for_rider_time_minutes} + ${picking_time_minutes} + ${withheld_from_picking_time_minutes} + ${withheld_from_rider_time_minutes};;
+    sql: ${waiting_for_picker_time} + ${waiting_for_rider_time_minutes} + ${picking_time_minutes} + coalesce(${withheld_from_picking_time_minutes},0) + coalesce(${withheld_from_rider_time_minutes},0);;
   }
 
   dimension: is_critical_delivery_time_estimate_underestimation {
