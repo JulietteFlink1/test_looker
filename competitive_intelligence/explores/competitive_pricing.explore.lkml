@@ -89,7 +89,8 @@ explore: competitive_pricing {
   }
 
   join: price_test_tracking {
-    sql_on:  ${products.product_sku} = ${price_test_tracking.product_sku};;
+    sql_on:  ${products.product_sku} = ${price_test_tracking.product_sku}
+         and ${products.country_iso} = ${price_test_tracking.country_iso};;
     relationship: many_to_one
     type:  left_outer
   }
@@ -101,7 +102,8 @@ explore: competitive_pricing {
   }
 
   join: key_value_items {
-    sql_on: ${products.product_sku} = ${key_value_items.sku} ;;
+    sql_on: ${products.product_sku} = ${key_value_items.sku}
+        and ${products.country_iso} = ${key_value_items.country_iso} ;;
     relationship: many_to_one
     type: left_outer
   }
@@ -109,7 +111,8 @@ explore: competitive_pricing {
   join: flink_to_gorillas_global {
     from: flink_to_gorillas_global
     view_label: "* Flink-Gorillas Match Data *"
-    sql_on: ${flink_to_gorillas_global.flink_product_sku} = ${products.product_sku};;
+    sql_on: ${flink_to_gorillas_global.flink_product_sku} = ${products.product_sku}
+        and ${flink_to_gorillas_global.country_iso} = ${products.country_iso};;
     relationship: one_to_one
     type: left_outer
   }
