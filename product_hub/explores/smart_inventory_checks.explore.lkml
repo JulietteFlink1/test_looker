@@ -14,6 +14,7 @@ include: "/**/products.view"
 include: "/**/hubs_ct.view.lkml"
 include: "/**/global_filters_and_parameters.view.lkml"
 include: "/**/event_stock_check_finished.view.lkml"
+include: "/**/event_stock_check_started.view.lkml"
 include: "/**/employee_level_kpis.view.lkml"
 
 explore: smart_inventory_checks {
@@ -45,7 +46,7 @@ explore: smart_inventory_checks {
   }
 
   join: event_stock_check_finished {
-    view_label: "2 Stock Check Finished Event"
+    view_label: "2 Stock Check Started/ Finished Event"
     fields: [to_include_set*]
     sql_on: ${smart_inventory_checks.table_uuid}=${event_stock_check_finished.check_id}
     and {% condition global_filters_and_parameters.datasource_filter %}
@@ -53,6 +54,16 @@ explore: smart_inventory_checks {
     type: left_outer
     relationship: one_to_one
   }
+
+  # join: event_stock_check_started {
+  #   view_label: "2 Stock Check Started/ Finished Event"
+  #   fields: [to_include_set*]
+  #   sql_on: ${smart_inventory_checks.table_uuid}=${event_stock_check_started.check_id}
+  #         and {% condition global_filters_and_parameters.datasource_filter %}
+  #                 ${event_stock_check_started.event_timestamp_date} {% endcondition %} ;;
+  #   type: left_outer
+  #   relationship: one_to_one
+  # }
 
   join: products {
     view_label: "3 Product Dimensions"
