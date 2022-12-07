@@ -219,6 +219,7 @@ view: event_stock_check_started {
   # =========  Total Metrics   =========
 
   measure: number_of_events {
+    group_label: "Stock Check Started Measures"
     label: "# Stock Check Started"
     description: "Number of events triggered"
     type: count_distinct

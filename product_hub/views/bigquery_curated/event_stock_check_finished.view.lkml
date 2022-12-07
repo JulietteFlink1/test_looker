@@ -243,6 +243,7 @@ view: event_stock_check_finished {
   # =========  Total Metrics   =========
 
   measure: number_of_events {
+    group_label: "Stock Check Finished Measures"
     label: "# Stock Check Finished"
     description: "Number of events triggered"
     type: count_distinct
@@ -250,6 +251,7 @@ view: event_stock_check_finished {
   }
 
   measure: sum_qty_counted {
+    group_label: "Stock Check Finished Measures"
     label: "Quantity Counted"
     description: "Quantity counted by the operator."
     type: sum
@@ -257,6 +259,7 @@ view: event_stock_check_finished {
   }
 
   measure: sum_qty_damaged {
+    group_label: "Stock Check Finished Measures"
     label: "Quantity Damaged"
     description: "Quantity reported as damaged."
     type: sum
@@ -264,14 +267,16 @@ view: event_stock_check_finished {
   }
 
   measure: sum_qty_expected {
-    group_label: "Stock Check Finished Dimensions"
+    group_label: "Stock Check Finished Measures"
+    label: "Quantity Expected"
     description: "Quantity expected when started the check."
     type: sum
     sql: ${quantity_expected} ;;
   }
 
   measure: sum_qty_expired {
-    group_label: "Stock Check Finished Dimensions"
+    group_label: "Stock Check Finished Measures"
+    label: "Quantity Expired"
     description: "Quantity reported as expired."
     type: sum
     sql: ${quantity_expired} ;;
