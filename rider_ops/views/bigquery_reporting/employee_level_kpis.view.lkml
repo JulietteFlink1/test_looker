@@ -1186,6 +1186,16 @@ view: employee_level_kpis {
     value_format_name: decimal_1
   }
 
+  measure: number_of_overpunched_hours {
+    group_label: "> Shift Related"
+    type: sum
+    label: "# Overpunched Hours"
+    sql: case when ${TABLE}.number_of_worked_minutes > ${TABLE}.number_of_planned_minutes
+          then (${TABLE}.number_of_worked_minutes - ${TABLE}.number_of_planned_minutes)/60
+          else 0 end;;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_no_show_hours {
     group_label: "> Shift Related"
     type: sum
