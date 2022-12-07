@@ -15,7 +15,8 @@ view: orders_with_ops_metrics {
       column: avg_estimated_queuing_time_for_picker_minutes {}
       column: avg_estimated_queuing_time_for_rider_minutes {}
       column: avg_waiting_for_picker_time {}
-      column: avg_rider_queuing_time {}
+      column: avg_waiting_for_rider_time {}
+      column: avg_withheld_from_rider_time_minutes {}
       column: avg_withheld_from_picking_time_minutes {}
       column: avg_fulfillment_time {}
       column: avg_estimated_riding_time_minutes {}
@@ -290,7 +291,6 @@ view: orders_with_ops_metrics {
   measure: avg_estimated_queuing_time_for_picker_minutes {
     group_label: "> Operations / Logistics"
     label: "AVG Estimated Queuing Time for Pickers"
-    description: ""
     value_format_name: decimal_1
     type: average
     hidden: yes
@@ -299,7 +299,6 @@ view: orders_with_ops_metrics {
   measure: avg_estimated_queuing_time_for_rider_minutes {
     group_label: "> Operations / Logistics"
     label: "AVG Estimated Queuing Time for Riders"
-    description: ""
     value_format_name: decimal_1
     type: average
     hidden: yes
@@ -314,12 +313,21 @@ view: orders_with_ops_metrics {
     type: average
   }
 
-  measure: avg_rider_queuing_time {
+  measure: avg_waiting_for_rider_time {
+    alias: [avg_rider_queuing_time]
     group_label: "> Operations / Logistics"
-    label: "AVG Rider Queuing Time"
-    description: "Average time between picking completion and rider having claimed the order."
+    label: "AVG Waiting for Rider Time"
+    description: "Average time between order offered to rider and rider having claimed the order. Outliers excluded (>120min)"
     value_format_name: decimal_1
     type: average
+  }
+
+  measure: avg_withheld_from_rider_time_minutes {
+    group_label: "> Operations / Logistics"
+    label: "AVG Withheld From Rider Time"
+    description: "Average time between picking completion and order offered to rider. Outliers excluded (<0min or >120min)"
+    type: average
+    value_format_name: decimal_1
   }
 
   measure: avg_withheld_from_picking_time_minutes {
@@ -488,14 +496,15 @@ view: orders_with_ops_metrics {
       END ;;
   }
 
-  measure: avg_queuing_time_by_position {
+  measure:  avg_waiting_time_by_position {
+    alias: [avg_queuing_time_by_position]
     group_label: "> Operations / Logistics"
-    label: "AVG Queuing Time (Minutes)"
+    label: "AVG Waiting Time (Minutes)"
     value_format_name: decimal_1
     sql:
         CASE
-          WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${avg_estimated_queuing_time_for_rider_minutes}
-          WHEN {% parameter ops.position_parameter %} = 'Picker' THEN ${avg_estimated_queuing_time_for_picker_minutes}
+          WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${avg_waiting_for_rider_time}
+          WHEN {% parameter ops.position_parameter %} = 'Picker' THEN ${avg_waiting_for_picker_time}
       ELSE NULL
       END ;;
   }
