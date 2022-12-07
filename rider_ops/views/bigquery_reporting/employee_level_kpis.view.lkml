@@ -1193,6 +1193,7 @@ view: employee_level_kpis {
     sql: case when ${TABLE}.number_of_worked_minutes > ${TABLE}.number_of_planned_minutes
           then (${TABLE}.number_of_worked_minutes - ${TABLE}.number_of_planned_minutes)/60
           else 0 end;;
+    description: "When # Worked Hours > # Assigned Hours then # Worked Hours - # Assigned Hours"
     value_format_name: decimal_1
   }
 
