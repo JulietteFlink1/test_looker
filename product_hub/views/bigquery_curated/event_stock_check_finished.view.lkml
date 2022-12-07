@@ -268,6 +268,7 @@ view: event_stock_check_finished {
 
   measure: sum_qty_expected {
     group_label: "Stock Check Finished Measures"
+    label: "Quantity Expected"
     description: "Quantity expected when started the check."
     type: sum
     sql: ${quantity_expected} ;;
@@ -275,6 +276,7 @@ view: event_stock_check_finished {
 
   measure: sum_qty_expired {
     group_label: "Stock Check Finished Measures"
+    label: "Quantity Expired"
     description: "Quantity reported as expired."
     type: sum
     sql: ${quantity_expired} ;;
