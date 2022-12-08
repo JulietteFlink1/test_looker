@@ -3677,10 +3677,17 @@ view: orders {
     Computed as the number of orders, divided by the number of hubs, divided by the number of open days, over the selected timeframe."
     type: number
     sql: (${cnt_orders}/NULLIF(${cnt_unique_hubs},0))/ NULLIF(${cnt_unique_date},0);;
-
     value_format_name:decimal_2
   }
 
+  measure: avg_daily_orders{
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "AVG # Daily Orders"
+    description: "AVG number of daily orders.
+    Computed as the number of orders divided by the number of open days, over the selected timeframe."
+    type: number
+    sql: (${cnt_orders})/ NULLIF(${cnt_unique_date},0);;
+  }
 
   measure: pct_delivery_time_estimate_critical_over_estimation {
     group_label: "* Operations / Logistics *"

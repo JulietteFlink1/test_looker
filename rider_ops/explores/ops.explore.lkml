@@ -12,6 +12,8 @@ include: "/**/forecasts.view"
 include: "/**/inventory_changes_daily.view"
 include: "/**/hub_monthly_orders.view"
 include: "/**/order_backlog.view"
+include: "/**/hub_attributes.view"
+
 
 explore: ops {
   from: staffing
@@ -57,6 +59,16 @@ explore: ops {
     view_label: "Hub Data"
     sql_on:
     lower(${ops.hub_code}) = lower(${hubs.hub_code}) ;;
+    relationship: many_to_one
+    type: left_outer
+  }
+
+  # Hub Attributes
+  join: hub_attributes {
+    from: hub_attributes
+    view_label: "Hub Data"
+    sql_on:
+    lower(${ops.hub_code}) = lower(${hub_attributes.hub_code}) ;;
     relationship: many_to_one
     type: left_outer
   }
