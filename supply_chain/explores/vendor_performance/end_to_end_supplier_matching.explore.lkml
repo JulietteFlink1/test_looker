@@ -20,7 +20,7 @@ explore: end_to_end_supplier_matching {
 
   always_filter: {
     filters: [
-      advanced_supplier_matching.promised_delivery_date_combined_date: "last 7 days"
+      advanced_supplier_matching.report_date: "last 7 days"
     ]
   }
 
@@ -32,7 +32,10 @@ explore: end_to_end_supplier_matching {
     view_label: "Products"
     type: left_outer
     relationship: many_to_one
-    sql_on: ${advanced_supplier_matching.parent_sku} = ${products.replenishment_substitute_group_parent_sku} ;;
+    sql_on:
+        ${advanced_supplier_matching.parent_sku} = ${products.replenishment_substitute_group_parent_sku} and
+        ${advanced_supplier_matching.country_iso} = ${products.country_iso}
+        ;;
     fields: [products.category, products.subcategory,
              products.replenishment_substitute_group,
              products.replenishment_substitute_group_parent_sku]

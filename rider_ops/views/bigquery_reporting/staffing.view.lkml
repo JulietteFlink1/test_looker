@@ -3491,6 +3491,7 @@ view: staffing {
   measure: utr_rider {
     group_label: "> Rider Measures"
     label: "Rider UTR"
+    description: "# Orders (excl. Click & Collect and External Orders) / # Punched Rider Hours"
     type: number
     sql: ${orders_with_ops_metrics.cnt_rider_orders}/ NULLIF(${number_of_worked_hours_rider}, 0) ;;
     value_format_name: decimal_2
@@ -3507,6 +3508,7 @@ view: staffing {
   measure: utr_picker {
     group_label: "> Picker Measures"
     label: "Picker UTR"
+    description: "# Orders (incl. Click & Collect and External Orders) / # Punched Picker Hours"
     type: number
     sql: ${orders_with_ops_metrics.sum_orders}/ NULLIF(${number_of_worked_hours_picker}, 0) ;;
     value_format_name: decimal_2
@@ -3515,7 +3517,7 @@ view: staffing {
   measure: utr_hub_staff {
     group_label: "> Hub Staff Measures"
     label: "Hub Staff UTR"
-    description: "Hub Staff UTR (# Orders/Hub Staff Hours (Picker, WH, Rider Captain, Ops Associate, Shift Lead))"
+    description: "Hub Staff UTR (# Orders (incl. Click & Collect and External Orders) /Hub Staff Hours (Picker, WH, Rider Captain, Ops Associate, Shift Lead))"
     type: number
     sql: ${orders_with_ops_metrics.sum_orders}/ NULLIF(${number_of_worked_hours_hub_staff}, 0) ;;
     value_format_name: decimal_2
@@ -3525,7 +3527,7 @@ view: staffing {
     alias: [utr_ops_staff]
     group_label: "> Ops Associate Measures"
     label: "Ops Associate UTR"
-    description: "Ops Associate UTR (# Orders/# Punched Ops Associate(Picker, WH, Rider Captain, Ops Associate) Hours)"
+    description: "Ops Associate UTR (# Orders (incl. Click & Collect and External Orders) /# Punched Ops Associate(Picker, WH, Rider Captain, Ops Associate) Hours)"
     type: number
     sql: ${orders_with_ops_metrics.sum_orders}/ NULLIF(${number_of_worked_hours_ops_associate}, 0) ;;
     value_format_name: decimal_2
@@ -3901,7 +3903,7 @@ view: staffing {
   measure: utr_by_position {
     type: number
     label: "UTR"
-    description: "# Orders (Excl. Cancellations) / # Punched Hours"
+    description: "# Orders (Excl. Cancellations) (Excl. Click & Collect and External Orders for rider position) / # Punched Hours"
     value_format_name: decimal_2
     group_label: "> Dynamic Measures"
     sql:

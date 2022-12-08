@@ -28,14 +28,16 @@ explore: flink_to_gorillas_global {
 
   join: inventory {
     view_label: "* Flink Products *"
-    sql_on: ${inventory.sku} = ${products.product_sku} ;;
+    sql_on: ${inventory.sku} = ${products.product_sku}
+       and  ${inventory.country_iso} = ${products.country_iso};;
     relationship: one_to_many
     type: left_outer
     sql_where: (${inventory.is_most_recent_record} = TRUE) ;;
   }
 
   join: unique_assortment {
-    sql_on: ${products.product_sku} = ${unique_assortment.product_sku} ;;
+    sql_on: ${products.product_sku} = ${unique_assortment.product_sku}
+        and ${products.country_iso} = ${unique_assortment.counrtry_iso};;
     relationship: many_to_one
     type: left_outer
   }
@@ -51,7 +53,8 @@ explore: flink_to_gorillas_global {
   join: flink_to_gorillas_global {
     from: flink_to_gorillas_global
     view_label: "* Flink-Gorillas Match Data *"
-    sql_on: ${flink_to_gorillas_global.flink_product_sku} = ${products.product_sku};;
+    sql_on: ${flink_to_gorillas_global.flink_product_sku} = ${products.product_sku}
+        and ${flink_to_gorillas_global.country_iso} = ${products.country_iso} ;;
     relationship: one_to_many
     type: left_outer
   }

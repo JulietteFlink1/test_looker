@@ -30,7 +30,8 @@ explore: product_placement_performance {
                 "
   group_label: "Product - Consumer"
 
-  sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} ${product_placement_performance.event_date} {% endcondition %};;
+  sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} ${product_placement_performance.event_date} {% endcondition %}
+                    and ${country_iso} is not null;;
 
   access_filter: {
     field: hubs.country_iso
