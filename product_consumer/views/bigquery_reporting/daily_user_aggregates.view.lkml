@@ -268,7 +268,7 @@ view: daily_user_aggregates {
     sql: ${TABLE}.is_order_placed ;;
   }
 
-  # Add-to-Cart even flags
+  # Add-to-Cart event flags
 
   dimension: is_category_placement {
     group_label: "Flags | Product Placement"
@@ -467,6 +467,18 @@ view: daily_user_aggregates {
     type: yesno
     sql: ${TABLE}.is_category_selected ;;
   }
+  dimension: is_hub_temporary_unavailable {
+    group_label: "Flags | Event"
+    type: yesno
+    sql: ${TABLE}.is_hub_temporary_unavailable ;;
+  }
+  dimension: is_hub_regular_unavailable {
+    group_label: "Flags | Event"
+    type: yesno
+    sql: ${TABLE}.is_hub_regular_unavailable ;;
+  }
+
+
 
   # ~~~~~~~~~~~ Hidden Dimensions ~~~~~~~~~~~~ #
 
@@ -605,7 +617,16 @@ view: daily_user_aggregates {
     hidden: yes
     sql: ${TABLE}.number_of_product_search_executed ;;
   }
-
+  dimension: dim_number_of_temporary_closed_hub_messages {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_temporary_closed_hub_messages ;;
+  }
+  dimension: dim_number_of_regular_closed_hub_messages {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_regular_closed_hub_messages ;;
+  }
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
   # ~~~~~~~~~~~~~~~      Measures     ~~~~~~~~~~~~~~~ #
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
@@ -983,6 +1004,22 @@ view: daily_user_aggregates {
     sql: ${user_uuid} ;;
     filters: [is_product_details_viewed: "yes"]
   }
+  measure: users_with_temporary_unavailable_hub {
+    group_label: "User Metrics"
+    label: "# Users with Temporary Unavailable Hub"
+    description: "Number of users who saw a message about hub temporal unavailability"
+    type: count_distinct
+    sql: ${user_uuid} ;;
+    filters: [is_hub_temporary_unavailable: "yes"]
+  }
+  measure: users_with_regular_unavailable_hub {
+    group_label: "User Metrics"
+    label: "# Users with Regularly Unavailable Hub"
+    description: "Number of users who saw a message about hub regular unavailability"
+    type: count_distinct
+    sql: ${user_uuid} ;;
+    filters: [is_hub_regular_unavailable: "yes"]
+  }
   #### Conversions ###
 
   measure: cvr {
@@ -1314,6 +1351,27 @@ view: daily_user_aggregates {
     description: "# users with Successfully Registered Account, compared to the total number of users viewing account registration page"
     value_format_name: percent_1
     sql: ${all_users_with_account_registration_success} / nullif(${all_users_with_account_registration_viewed},0);;
+  }
+
+
+  # ======= Hub Unavailability Metrics ======= #
+
+
+  measure: temporary_unavailable_hub_rate {
+    group_label: "Hub Unavailability Rates (%)"
+    label: "Hub Temporary Unavailable Rate"
+    type: number
+    description: "% users that saw a message about temporal hub unavailability"
+    value_format_name: percent_1
+    sql: ${users_with_temporary_unavailable_hub} / ${users_with_address};;
+  }
+  measure: regularly_unavailable_hub_rate {
+    group_label: "Hub Unavailability Rates (%)"
+    label: "Hub Regularly Unavailable Rate"
+    type: number
+    description: "% users that saw a message about regular hub unavailability"
+    value_format_name: percent_1
+    sql: ${users_with_regular_unavailable_hub} / ${users_with_address};;
   }
 
 
