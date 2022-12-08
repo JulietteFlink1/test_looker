@@ -1007,7 +1007,7 @@ view: daily_user_aggregates {
   measure: users_with_temporary_unavailable_hub {
     group_label: "User Metrics"
     label: "# Users with Temporary Unavailable Hub"
-    description: "Number of users who saw a message about hub temporal unavailability"
+    description: "Number of users who saw a message about hub temporary unavailability"
     type: count_distinct
     sql: ${user_uuid} ;;
     filters: [is_hub_temporary_unavailable: "yes"]
@@ -1361,7 +1361,7 @@ view: daily_user_aggregates {
     group_label: "Hub Unavailability Rates (%)"
     label: "Hub Temporary Unavailable Rate"
     type: number
-    description: "% users that saw a message about temporal hub unavailability"
+    description: "% users that saw a message about temporary hub unavailability"
     value_format_name: percent_1
     sql: ${users_with_temporary_unavailable_hub} / ${users_with_address};;
   }
