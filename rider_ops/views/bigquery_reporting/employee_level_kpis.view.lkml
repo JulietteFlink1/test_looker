@@ -1334,7 +1334,6 @@ view: employee_level_kpis {
   }
 
   measure: sum_weekly_contracted_hours {
-    # TBD rename avg_daily_contracted_hours in dbt
     label: "Total Weekly Contracted Hours"
     group_label: "> Contract Related"
     type: sum_distinct
@@ -1342,20 +1341,6 @@ view: employee_level_kpis {
     sql: ${TABLE}.avg_daily_contracted_hours;;
     value_format: "0.0"
     description: "Sum of weekly contracted hours based on Quinyx Agreements (Field in Quinyx UI: Agreement full time working hours) -  AVG daily contracted hours * number of days"
-  }
-
-  measure: sum_weekly_contracted_hoursv2 {
-    # TBD rename avg_daily_contracted_hours in dbt
-    label: "Total Weekly Contracted Hours v2"
-    group_label: "> Contract Related"
-    type: sum_distinct
-    sql_distinct_key: concat(${shift_date},${employment_id});;
-    sql: case
-            when ${hub_code} = ${home_hub_code}
-                then ${TABLE}.avg_daily_contracted_hours
-        end ;;
-    value_format: "0.0"
-    description: "Sum of weekly contracted hours based on Quinyx Agreements (Field in Quinyx UI: Agreement full time working hours) -  Weekly Contracted Hours * calender weeks"
   }
 
   measure: pct_contract_fulfillment {
