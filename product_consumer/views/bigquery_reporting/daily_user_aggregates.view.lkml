@@ -1363,7 +1363,7 @@ view: daily_user_aggregates {
     type: number
     description: "% users that saw a message about temporary hub unavailability"
     value_format_name: percent_1
-    sql: ${users_with_temporary_unavailable_hub} / ${users_with_address};;
+    sql: ${users_with_temporary_unavailable_hub} / ${active_users};;
   }
   measure: regularly_unavailable_hub_rate {
     group_label: "Hub Unavailability Rates (%)"
@@ -1371,7 +1371,7 @@ view: daily_user_aggregates {
     type: number
     description: "% users that saw a message about regular hub unavailability"
     value_format_name: percent_1
-    sql: ${users_with_regular_unavailable_hub} / ${users_with_address};;
+    sql: ${users_with_regular_unavailable_hub} / ${active_users};;
   }
 
 
