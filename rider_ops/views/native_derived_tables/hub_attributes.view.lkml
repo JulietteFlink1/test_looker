@@ -15,7 +15,7 @@ view: hub_attributes {
       column: avg_delivery_distance_km {}
       column: avg_riding_to_customer_time {}
       column: pct_stacked_orders {}
-
+      column: avg_waiting_for_rider_time {}
       filters: [
         orders_cl.is_successful_order: "yes",
         orders_cl.is_order_new_hub: "",
@@ -69,7 +69,7 @@ view: hub_attributes {
   dimension: avg_delivery_distance_km {
     group_label: "> Data"
     label: "AVG Delivery Distance (km)"
-    description: "Average distance between hub and customer dropoff in kilometers(most direct path / straight line) in the past 30 days. For stacked orders, it is the average distance from previous customer."
+    description: "Average distance between hub and customer dropoff in kilometers (most direct path / straight line) in the past 30 days. For stacked orders, it is the average distance from previous customer."
     type: number
     value_format_name: decimal_2
     hidden: yes
@@ -115,7 +115,7 @@ view: hub_attributes {
   dimension: pct_stacked_orders {
     group_label: "> Data"
     label: "% Stacked Orders"
-    description: "The % of orders, that were part of a stacked delivery in the past 30 days. (share of internal orders only)"
+    description: "The % of orders, that were part of a stacked delivery in the past 30 days (share of internal orders only)."
     type: number
     value_format_name: percent_2
     hidden: yes
@@ -132,19 +132,18 @@ view: hub_attributes {
     sql: ${pct_stacked_orders} ;;
   }
 
-  dimension: avg_rider_queuing_time {
+  dimension: avg_waiting_for_rider_time {
     group_label: "> Data"
-    label: "AVG Rider Queuing Time"
-    description: "Average time between picking completion and rider having claimed the order."
+    label: "AVG Waiting for Rider Time"
+    description: "Average time between order offered to rider and rider having claimed the order. Outliers excluded (>120min)"
+    value_format_name: decimal_1
     type: number
-    value_format_name: decimal_2
-    hidden: yes
   }
 
-  dimension: avg_rider_queuing_time_tier {
+  dimension: avg_waiting_for_rider_time_tier {
     group_label: "> Tiers"
-    label: "AVG Rider Queuing Time (tiered, 1 min)"
-    description: "Hubs based on tiered average rider queuing time in the past 30 days. The tiers are: [1, 2, 3, 4,...,45]"
+    label: "AVG Waiting for Rider Time (tiered, 1 min)"
+    description: "Hubs based on tiered average waiting for rider time in the past 30 days. The tiers are: [1, 2, 3, 4,...,45]"
     type: tier
     tiers: [1, 2, 3, 4, 5, 6, 7, 8, 9,
       10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
@@ -152,7 +151,7 @@ view: hub_attributes {
       30, 31, 32, 33, 34, 35, 36, 37, 38, 39,
       40, 41, 42, 43, 44, 45]
     style: relational
-    sql: ${avg_riding_to_customer_time} ;;
+    sql: ${avg_waiting_for_rider_time} ;;
   }
 
 }
