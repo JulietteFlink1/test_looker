@@ -27,7 +27,7 @@ view: +orders {
     label: "# Orders in Stack"
     description: "Indicates how many orders were part of one stack (one trip)."
     group_label: "* Stacked Orders *"
-    sql: ${TABLE}.number_of_stacked_orders ;;
+    sql: coalesce(${TABLE}.number_of_stacked_orders, 0) ;;
     type: number
   }
 
