@@ -92,7 +92,8 @@ view: hub_attributes {
   dimension: avg_riding_to_customer_time {
     group_label: "> Data"
     label: "AVG Riding To Customer Time"
-    description: "Average riding to customer time considering delivery start to arrival at customer in the past 30 days. Outliers excluded (<1min or >30min)"
+    description: "Average riding to customer time (order claimed by rider -> rider arrived at customer) in the past 30 days.
+      For stacked orders, it is the average riding time from previous customer. Outliers excluded (<1min or >30min)"
     type: number
     value_format_name: decimal_2
     hidden: yes
