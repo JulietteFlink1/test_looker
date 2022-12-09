@@ -46,7 +46,7 @@ view: +orders {
   measure: avg_riding_time_from_previous_customer_minutes {
     alias: [avg_delivery_time_from_prev_customer_minutes]
     label: "AVG Riding Time From Previous Customer (Min)"
-    description: "Indicates, how long it took for the rider to ride from the previous customer."
+    description: "Indicates how long it took for the rider to ride from the previous customer."
     group_label: "* Stacked Orders *"
     sql: ${TABLE}.delivery_time_from_prev_customer_minutes ;;
     type: average
