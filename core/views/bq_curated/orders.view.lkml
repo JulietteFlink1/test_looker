@@ -761,6 +761,14 @@ view: orders {
     sql: ${TABLE}.is_riding_to_customer_above_30_minute ;;
   }
 
+  dimension: turf_name {
+    group_label: "* Operations / Logistics *"
+    label: "Turf Name"
+    description: "This field reflects the Turf (aka Delivery Tier) which the order was assigned to (e.g. core, turf12, turf20 etc.). If a hub has multiple Turfs, this reflects the Turf which covers the customer location"
+    type: string
+    sql: ${TABLE}.turf_name ;;
+  }
+
   dimension: is_delivery_eta_available {
     group_label: "* Operations / Logistics *"
     type: yesno
