@@ -56,6 +56,7 @@ explore: current_inventory {
 
     sql_on:
             ${products.product_sku} = ${lexbizz_item.sku}
+        and ${products.country_iso} = ${lexbizz_item.country_iso}
         and ${lexbizz_item.ingestion_date} = current_date()
     ;;
   }
