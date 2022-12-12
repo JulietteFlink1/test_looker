@@ -12,7 +12,9 @@ explore: order_orderline_cl {
   hidden: no
 
   # take all fields except those in the pricing_fields_refined set in erp_product_hub_vendor_assignment_v2_buying_prices.view
-  fields: [ALL_FIELDS*, -erp_product_hub_vendor_assignment.pricing_fields_refined*]
+  fields: [ALL_FIELDS*,
+           -erp_product_hub_vendor_assignment.pricing_fields_refined*,
+           -erp_buying_prices.margin_metrics_customized*]
 
   join: orderline {
 

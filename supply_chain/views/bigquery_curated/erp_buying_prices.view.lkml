@@ -9,6 +9,22 @@ view: erp_buying_prices {
 
 
 
+
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~~~~~~~     Sets     ~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#Defined for those margin metrics that substract waste (inventory_changes_daily view) from calculation.
+  set: margin_metrics_customized {
+    fields: [
+      sum_total_margin_abs_after_waste,
+      sum_total_margin_abs_after_product_discount_and_waste,
+      pct_total_margin_relative_after_waste,
+      pct_total_margin_relative_after_product_discount_and_waste
+    ]
+  }
+
+
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Dimensions     ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -274,6 +290,14 @@ view: erp_buying_prices {
     sql_distinct_key: concat(${table_uuid}, ${orderline.order_lineitem_uuid}) ;;
   }
 
+  measure: sum_total_margin_abs_after_waste {
+    label: "€ Sum Gross Profit after Waste"
+    description: "The sum of all Unit Margins defined as Net Unit Price minus Buying Price after Waste (Net)"
+    type: number
+    sql: ${sum_total_margin_abs} - ${inventory_changes_daily.sum_outbound_waste_per_buying_price_net} ;;
+    value_format_name: eur
+  }
+
   measure: sum_total_margin_abs_after_product_discount {
     label: "€ Sum Gross Profit After Product Discount"
     description: "The sum of all Unit Margins defined as Net Unit Price after deduction of Product Discount minus Buying Price"
@@ -281,6 +305,14 @@ view: erp_buying_prices {
     sql: (${orderline.quantity} * ${margin_absolute_after_product_discount}) ;;
     value_format_name: eur
     sql_distinct_key: concat(${table_uuid}, ${orderline.order_lineitem_uuid}) ;;
+  }
+
+  measure: sum_total_margin_abs_after_product_discount_and_waste {
+    label: "€ Sum Gross Profit After Product Discount and Waste"
+    description: "The sum of all Unit Margins defined as Net Unit Price after deduction of Product Discount minus Buying Price and Waste (Net)"
+    type: number
+    sql: ${sum_total_margin_abs_after_product_discount} - ${inventory_changes_daily.sum_outbound_waste_per_buying_price_net} ;;
+    value_format_name: eur
   }
 
   measure: pct_total_margin_relative {
@@ -291,11 +323,27 @@ view: erp_buying_prices {
     value_format_name: percent_1
   }
 
+  measure: pct_total_margin_relative_after_waste {
+    label: "% Blended Margin after Waste"
+    description: "The sum of Gross Profit minus Waste (Net) divided by the sum of Item Prices Sold (Net)"
+    type: number
+    sql: (${sum_total_margin_abs} - ${inventory_changes_daily.sum_outbound_waste_per_buying_price_net})  / nullif( ${sum_total_net_income} ,0);;
+    value_format_name: percent_1
+  }
+
   measure: pct_total_margin_relative_after_product_discount {
     label: "% Blended Margin After Product Discount"
     description: "The sum of Gross Profit divided by the sum of Item Prices Sold after deduction of Product Discount (Net)"
     type: number
     sql: ${sum_total_margin_abs_after_product_discount} / nullif( ${sum_total_net_income_after_product_discount} ,0);;
+    value_format_name: percent_1
+  }
+
+  measure: pct_total_margin_relative_after_product_discount_and_waste{
+    label: "% Blended Margin After Product Discount and Waste"
+    description: "The sum of Gross Profit divided by the sum of Item Prices Sold after deduction of Product Discount (Net) and Waste (Net)"
+    type: number
+    sql: (${sum_total_margin_abs_after_product_discount} - ${inventory_changes_daily.sum_outbound_waste_per_buying_price_net}) / nullif( ${sum_total_net_income_after_product_discount} ,0);;
     value_format_name: percent_1
   }
 
