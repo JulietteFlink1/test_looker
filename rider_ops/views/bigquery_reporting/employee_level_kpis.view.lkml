@@ -267,7 +267,7 @@ view: employee_level_kpis {
     group_label: "> Dates & Timestamps"
     type: duration
     intervals: [day, week, year]
-    label: "duration between last worked shift date and shift date"
+    label: "Duration between last worked shift date and shift date"
     description: "Number of days between last worked (punched) shift and shift date (NULL if last worked date is after shift date)"
     sql_start:case
           when ${shift_date} > ${last_worked_date_dimension}
@@ -280,7 +280,7 @@ view: employee_level_kpis {
     group_label: "> Dates & Timestamps"
     type: duration
     intervals: [day, week, year]
-    label: "between last shift (Punched shift or Absence) and shift date"
+    label: "Duration between last shift (Punched shift or Absence) and shift date"
     description: "Number of days between last worked (punched) shift or absence and shift date (NULL if last shift date is after shift date)"
     sql_start:case
           when ${shift_date} > ${last_shift_worked_or_justified_shift_date}
@@ -294,7 +294,7 @@ view: employee_level_kpis {
     group_label: "> Dates & Timestamps"
     type: duration
     intervals: [day, week, year]
-    label: "between last worked shift and today"
+    label: "Duration between last worked shift and today"
     description: "Number of days between last worked (punched) shift date and today"
     sql_start:${last_worked_date_dimension};;
     sql_end: current_date ;;
@@ -401,7 +401,7 @@ view: employee_level_kpis {
   dimension_group: time_between_hire_date_and_today {
     type: duration
     intervals: [day, week, year]
-    label: "duration between hire date and today"
+    label: "Duration between hire date and today"
     sql_start: timestamp(${TABLE}.hire_date) ;;
     sql_end: current_timestamp ;;
     group_label: "> Dates & Timestamps"
