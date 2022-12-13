@@ -761,6 +761,14 @@ view: orders {
     sql: ${TABLE}.is_riding_to_customer_above_30_minute ;;
   }
 
+  dimension: turf_name {
+    group_label: "* Operations / Logistics *"
+    label: "Turf Name"
+    description: "This field reflects the Turf (aka Delivery Tier) which the order was assigned to (e.g. core, turf12, turf20 etc.). If a hub has multiple Turfs, this reflects the Turf which covers the customer location"
+    type: string
+    sql: ${TABLE}.turf_name ;;
+  }
+
   dimension: is_delivery_eta_available {
     group_label: "* Operations / Logistics *"
     type: yesno
@@ -3677,10 +3685,17 @@ view: orders {
     Computed as the number of orders, divided by the number of hubs, divided by the number of open days, over the selected timeframe."
     type: number
     sql: (${cnt_orders}/NULLIF(${cnt_unique_hubs},0))/ NULLIF(${cnt_unique_date},0);;
-
     value_format_name:decimal_2
   }
 
+  measure: avg_daily_orders{
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "AVG # Daily Orders"
+    description: "AVG number of daily orders.
+    Computed as the number of orders divided by the number of open days, over the selected timeframe."
+    type: number
+    sql: (${cnt_orders})/ NULLIF(${cnt_unique_date},0);;
+  }
 
   measure: pct_delivery_time_estimate_critical_over_estimation {
     group_label: "* Operations / Logistics *"
