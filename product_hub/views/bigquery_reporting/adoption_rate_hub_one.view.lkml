@@ -130,4 +130,37 @@ view: adoption_rate_hub_one {
     sql: ${hub_one_completed_checks}/if(${number_of_completed_checks}=0, null,${number_of_completed_checks})  ;;
   }
 
+  # =========  Inbounding Flow   =========
+
+  measure: legacy_quantity_manual {
+    type: sum
+    group_label: "Inbounding Flow"
+    label: "Quantity Inbounded Manual"
+    description: "Sum of quantity inbounded from manual inbounding."
+    sql: ${TABLE}.legacy_quantity_dropped ;;
+  }
+
+  measure: legacy_quantity_dropped {
+    type: sum
+    group_label: "Inbounding Flow"
+    label: "Quantity Dropped Legacy"
+    description: "Sum of quantity inbounded from legacy dropping list."
+    sql: ${TABLE}.legacy_quantity_dropped ;;
+  }
+
+  measure: hub_one_quantity_dropped {
+    type: sum
+    group_label: "Inbounding Flow"
+    label: "Quantity Dropped Hub One"
+    description: "Sum of quantity inbounded from hub one."
+    sql: ${TABLE}.hub_one_quantity_dropped ;;
+  }
+
+  measure: inbounding_adoption_rate {
+    type: number
+    group_label: "Inbounding Flow"
+    value_format: "0.00%"
+    description: "Percentage of HubOne Quantity Dropped over Total Quantity Inbounded (Quantity Inbounded Manual + Quantity Dropped Legacy + Quantity Dropped Hub One)."
+    sql: ${hub_one_quantity_dropped}/(${legacy_quantity_manual}+${legacy_quantity_dropped}+${hub_one_quantity_dropped})  ;;
+  }
 }
