@@ -1239,14 +1239,14 @@ view: forecasts {
     type: number
     group_label: "> Dynamic Measures"
     label: "# Actually Needed Hours"
-    description: "# Hours needed based on # Actual Orders (Forecast-related) / Base UTR. For pickers it is calculated based on # Actual Orders."
+    description: "# Hours needed based on # Actual Orders (Forecast-related) / Target UTR (Excl. No Show). For pickers it is calculated based on # Actual Orders."
     value_format_name: decimal_1
     sql:
         case
           when {% parameter ops.position_parameter %} = 'Rider'
-            then nullif(${number_of_actual_orders},0)/nullif(${number_of_target_orders_by_position},0)
+            then nullif(${number_of_actual_orders},0)/nullif(${forecasted_utr_excl_no_show_by_position},0)
           when {% parameter ops.position_parameter %} = 'Picker'
-            then nullif(${orders_with_ops_metrics.sum_orders},0)/nullif(${number_of_target_orders_by_position},0)
+            then nullif(${orders_with_ops_metrics.sum_orders},0)/nullif(${forecasted_utr_excl_no_show_by_position},0)
           else null
         end ;;
   }
@@ -1255,14 +1255,14 @@ view: forecasts {
     type: number
     group_label: "> Dynamic Measures"
     label: "# Adjusted Actually Needed Hours"
-    description: "# Hours needed based on # Actual Orders (Forecast-related) / Adjusted Base UTR. For pickers it is calculated based on # Actual Orders."
+    description: "# Hours needed based on # Actual Orders (Forecast-related) / Adjusted Target UTR (Excl. No Show). For pickers it is calculated based on # Actual Orders."
     value_format_name: decimal_1
     sql:
         case
           when {% parameter ops.position_parameter %} = 'Rider'
-            then nullif(${number_of_actual_orders},0)/nullif(${number_of_target_orders_by_position_adjusted},0)
+            then nullif(${number_of_actual_orders},0)/nullif(${forecasted_utr_excl_no_show_by_position_adjusted},0)
           when {% parameter ops.position_parameter %} = 'Picker'
-            then nullif(${orders_with_ops_metrics.sum_orders},0)/nullif(${number_of_target_orders_by_position_adjusted},0)
+            then nullif(${orders_with_ops_metrics.sum_orders},0)/nullif(${forecasted_utr_excl_no_show_by_position_adjusted},0)
           else null
         end ;;
   }
