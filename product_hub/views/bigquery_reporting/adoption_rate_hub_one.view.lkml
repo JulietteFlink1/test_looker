@@ -161,6 +161,6 @@ view: adoption_rate_hub_one {
     group_label: "Inbounding Flow"
     value_format: "0.00%"
     description: "Percentage of HubOne Quantity Dropped over Total Quantity Inbounded (Quantity Inbounded Manual + Quantity Dropped Legacy + Quantity Dropped Hub One)."
-    sql: ${hub_one_quantity_dropped}/(${legacy_quantity_manual}+${legacy_quantity_dropped}+${hub_one_quantity_dropped})  ;;
+    sql: SAFE_DIVIDE(${hub_one_quantity_dropped},${legacy_quantity_manual}+${legacy_quantity_dropped}+${hub_one_quantity_dropped})  ;;
   }
 }
