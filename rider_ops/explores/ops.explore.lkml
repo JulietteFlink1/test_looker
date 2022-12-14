@@ -11,6 +11,9 @@ include: "/**/orders_with_ops_metrics.view"
 include: "/**/forecasts.view"
 include: "/**/inventory_changes_daily.view"
 include: "/**/hub_monthly_orders.view"
+include: "/**/order_backlog.view"
+include: "/**/hub_attributes.view"
+
 
 explore: ops {
   from: staffing
@@ -25,7 +28,6 @@ explore: ops {
       hubs.country: "",
       hubs.hub_name: "",
       time_grid.start_datetime_date: "yesterday",
-      time_grid.start_datetime_hour_of_day: "[6,23]",
       forecasts.dow_parameter: "Tuesday"
     ]
   }
@@ -57,6 +59,16 @@ explore: ops {
     view_label: "Hub Data"
     sql_on:
     lower(${ops.hub_code}) = lower(${hubs.hub_code}) ;;
+    relationship: many_to_one
+    type: left_outer
+  }
+
+  # Hub Attributes
+  join: hub_attributes {
+    from: hub_attributes
+    view_label: "Hub Data"
+    sql_on:
+    lower(${ops.hub_code}) = lower(${hub_attributes.hub_code}) ;;
     relationship: many_to_one
     type: left_outer
   }
@@ -98,6 +110,15 @@ explore: ops {
       ${hubs.hub_code} = ${hub_monthly_orders.hub_code} and
       date_trunc(${time_grid.start_datetime_date},month) = ${hub_monthly_orders.created_month};;
     relationship: many_to_one
+    type: left_outer
+  }
+
+  join: order_backlog {
+    view_label: "Order Backlog"
+    sql_on:
+      ${hubs.hub_code} = ${order_backlog.hub_code}
+      and ${time_grid.start_datetime_minute30}  = ${order_backlog.start_timestamp_minute30} ;;
+    relationship: one_to_one
     type: left_outer
   }
 

@@ -12,7 +12,9 @@ explore: order_orderline_cl {
   hidden: no
 
   # take all fields except those in the pricing_fields_refined set in erp_product_hub_vendor_assignment_v2_buying_prices.view
-  fields: [ALL_FIELDS*, -erp_product_hub_vendor_assignment.pricing_fields_refined*]
+  fields: [ALL_FIELDS*,
+           -erp_product_hub_vendor_assignment.pricing_fields_refined*,
+           -erp_buying_prices.margin_metrics_customized*]
 
   join: orderline {
 
@@ -30,7 +32,10 @@ explore: order_orderline_cl {
 
     view_label: "Product Data (CT)"
 
-    sql_on: ${products.product_sku} = ${orderline.product_sku} ;;
+    sql_on:
+        ${products.product_sku} = ${orderline.product_sku} and
+        ${products.country_iso} = ${orderline.country_iso}
+        ;;
     relationship: many_to_one
     type: left_outer
   }
@@ -42,6 +47,7 @@ explore: order_orderline_cl {
     type: left_outer
     relationship: many_to_one
     sql_on: ${lexbizz_item.sku}            = ${orderline.product_sku}
+        and ${lexbizz_item.country_iso}    = ${orderline.country_iso}
         and ${lexbizz_item.ingestion_date} = current_date()
     ;;
   }

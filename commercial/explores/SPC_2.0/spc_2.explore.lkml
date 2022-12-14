@@ -31,7 +31,10 @@ explore: spc_2 {
     view_label: "Product Data"
     type: left_outer
     relationship: many_to_one
-    sql_on: ${products.product_sku} = ${sku_performance_base.joining_sku} ;;
+    sql_on:
+        ${products.product_sku} = ${sku_performance_base.joining_sku} and
+        ${products.country_iso} = ${sku_performance_base.country_iso}
+        ;;
   }
 
   join: lexbizz_item {
@@ -40,6 +43,7 @@ explore: spc_2 {
     relationship: many_to_one
 
     sql_on: ${lexbizz_item.sku} = ${sku_performance_base.joining_sku} and
+            ${lexbizz_item.country_iso} = ${sku_performance_base.country_iso} and
             ${lexbizz_item.ingestion_date} = current_date()
     ;;
   }

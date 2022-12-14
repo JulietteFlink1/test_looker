@@ -29,6 +29,7 @@ explore: lexbizz_core {
 
     sql_on:
         ${item_warehouse.ingestion_date} = ${stock_item.ingestion_date} and
+        ${item_warehouse.country_iso}    = ${stock_item.country_iso}
         ${item_warehouse.sku}            = ${stock_item.sku}
     ;;
 
@@ -36,7 +37,10 @@ explore: lexbizz_core {
       join: products {
         type: full_outer
         relationship: many_to_one
-        sql_on:  ${products.product_sku} = ${stock_item.sku};;
+        sql_on:
+            ${products.product_sku} = ${stock_item.sku} and
+            ${products.country_iso} = ${stock_item.country_iso}
+            ;;
       }
 
       join: lexbizz_core_ndt_similar_rsg {

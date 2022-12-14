@@ -40,6 +40,7 @@ explore: current_inventory {
     from: products_hub_assignment_v2
 
     sql_on: ${products_hub_assignment.sku} = ${products.product_sku}
+       and ${products_hub_assignment.country_iso} = ${products.country_iso}
        and ${products_hub_assignment.report_date} = current_date()
     ;;
     type: left_outer
@@ -55,6 +56,7 @@ explore: current_inventory {
 
     sql_on:
             ${products.product_sku} = ${lexbizz_item.sku}
+        and ${products.country_iso} = ${lexbizz_item.country_iso}
         and ${lexbizz_item.ingestion_date} = current_date()
     ;;
   }

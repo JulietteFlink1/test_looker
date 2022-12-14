@@ -222,7 +222,7 @@ view: event_container_assignment_skipped {
 
   measure: number_of_events {
     label: "# Container Assignment Skipped"
-    description: "Number of events trigegred"
+    description: "Number of events triggered"
     type: count_distinct
     sql: ${TABLE}.event_uuid ;;
   }

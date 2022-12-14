@@ -1879,6 +1879,33 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  measure: number_of_worked_hours_rider_ec_shift {
+    group_label: "> Rider Measures"
+    label: "# Punched EC Rider Hours"
+    description: "# Punched Rider Hours from shifts with project code = 'EC shift'"
+    type: sum
+    sql: ${TABLE}.number_of_worked_minutes_ec_shift_rider/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_worked_hours_rider_wfs_shift {
+    group_label: "> Rider Measures"
+    label: "# Punched WFS Rider Hours"
+    description: "# Punched Rider Hours from shifts with project code = 'WFS shift'"
+    type: sum
+    sql: ${TABLE}.number_of_worked_minutes_wfs_shift_rider/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_worked_hours_rider_ns_shift {
+    group_label: "> Rider Measures"
+    label: "# Punched NS+ Rider Hours"
+    description: "# Punched Rider Hours from shifts with project code = 'NS+ shift'"
+    type: sum
+    sql: ${TABLE}.number_of_worked_minutes_ns_shift_rider/60;;
+    value_format_name: decimal_1
+  }
+
 
   measure: number_of_idle_hours_rider {
     group_label: "> Rider Measures"
@@ -1942,6 +1969,33 @@ view: staffing {
     description: "# Punched Ops Associate Hours (Picker, WH, Rider Captain, Ops Associate)"
     type: number
     sql: ${number_of_worked_minutes_ops_associate}/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_worked_hours_ops_associate_ec_shift {
+    group_label: "> Ops Associate Measures"
+    label: "# Punched EC Ops Associate Hours"
+    description: "# Punched Ops Associate Hours from shifts with project code = 'EC shift'"
+    type: sum
+    sql: ${TABLE}.number_of_worked_minutes_ec_shift_ops_associate/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_worked_hours_ops_associate_wfs_shift {
+    group_label: "> Ops Associate Measures"
+    label: "# Punched WFS Ops Associate Hours"
+    description: "# Punched Ops Associate Hours from shifts with project code = 'WFS shift'"
+    type: sum
+    sql: ${TABLE}.number_of_worked_minutes_wfs_shift_ops_associate/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_worked_hours_ops_associate_ns_shift {
+    group_label: "> Ops Associate Measures"
+    label: "# Punched NS+ Ops Associate Hours"
+    description: "# Punched Ops Associate Hours from shifts with project code = 'NS+ shift'"
+    type: sum
+    sql: ${TABLE}.number_of_worked_minutes_ns_shift_ops_associate/60;;
     value_format_name: decimal_1
   }
 
@@ -2457,6 +2511,33 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  measure: number_of_planned_hours_ops_associate_ec_shift {
+    group_label: "> Ops Associate Measures"
+    label: "# Filled (Planned) EC Ops Associate Hours"
+    description: "# Filled Ops Associate Hours from shifts with project code = 'EC shift'"
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_ec_shift_ops_associate/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_planned_hours_ops_associate_wfs_shift {
+    group_label: "> Ops Associate Measures"
+    label: "# Filled (Planned) WFS Ops Associate Hours"
+    description: "# Filled Ops Associate Hours from shifts with project code = 'WFS shift'"
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_wfs_shift_ops_associate/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_planned_hours_ops_associate_ns_shift {
+    group_label: "> Ops Associate Measures"
+    label: "# Filled (Planned) NS+ Ops Associate Hours"
+    description: "# Filled Ops Associate Hours from shifts with project code = 'NS+ shift'"
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_ns_shift_ops_associate /60;;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_planned_minutes_internal_ops_associate {
     group_label: "> Ops Associate Measures"
     label: "# Filled (Planned) Internal Ops Associate Minutes"
@@ -2480,6 +2561,33 @@ view: staffing {
     label: "# Filled (Planned) Rider Hours"
     type: sum
     sql: ${number_of_planned_minutes_rider}/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_planned_hours_rider_ec_shift {
+    group_label: "> Rider Measures"
+    label: "# Filled (Planned) EC Rider Hours"
+    description: "# Filled Rider Hours from shifts with project code = 'EC shift'"
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_ec_shift_rider/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_planned_hours_rider_wfs_shift {
+    group_label: "> Rider Measures"
+    label: "# Filled (Planned) WFS Rider Hours"
+    description: "# Filled Rider Hours from shifts with project code = 'WFS shift'"
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_wfs_shift_rider/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_planned_hours_rider_ns_shift {
+    group_label: "> Rider Measures"
+    label: "# Filled (Planned) NS+ Rider Hours"
+    description: "# Filled Rider Hours from shifts with project code = 'NS+ shift'"
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_ns_shift_rider/60;;
     value_format_name: decimal_1
   }
 
@@ -3035,6 +3143,60 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  measure: number_of_no_show_hours_rider_ec_shift {
+    group_label: "> Rider Measures"
+    label: "# No Show EC Rider Hours"
+    description: "# No Show Rider Hours from shifts with project code = 'EC shift'"
+    type: sum
+    sql: ${TABLE}.number_of_no_show_minutes_ec_shift_rider/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_no_show_hours_rider_wfs_shift {
+    group_label: "> Rider Measures"
+    label: "# No Show WFS Rider Hours"
+    description: "# No Show Rider Hours from shifts with project code = 'WFS shift'"
+    type: sum
+    sql: ${TABLE}.number_of_no_show_minutes_wfs_shift_rider/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_no_show_hours_rider_ns_shift {
+    group_label: "> Rider Measures"
+    label: "# No Show NS Rider Hours"
+    description: "# No Show Rider Hours from shifts with project code = 'NS+ shift'"
+    type: sum
+    sql: ${TABLE}.number_of_no_show_minutes_ns_shift_rider/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_no_show_hours_ops_associate_ec_shift {
+    group_label: "> Ops Associate Measures"
+    label: "# No Show EC Ops Associate Hours"
+    description: "# No Show Ops Associate Hours from shifts with project code = 'EC shift'"
+    type: sum
+    sql: ${TABLE}.number_of_no_show_minutes_ec_shift_ops_associate/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_no_show_hours_ops_associate_wfs_shift {
+    group_label: "> Ops Associate Measures"
+    label: "# No Show WFS Ops Associate Hours"
+    description: "# No Show Ops Associate Hours from shifts with project code = 'WFS shift'"
+    type: sum
+    sql: ${TABLE}.number_of_no_show_minutes_wfs_shift_ops_associate/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_no_show_hours_ops_associate_ns_shift {
+    group_label: "> Ops Associate Measures"
+    label: "# No Show NS Ops Associate Hours"
+    description: "# No Show Ops Associate Hours from shifts with project code = 'NS+ shift'"
+    type: sum
+    sql: ${TABLE}.number_of_no_show_minutes_ns_shift_ops_associate/60;;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_no_show_hours_picker {
     group_label: "> Picker Measures"
     label: "# No Show Picker Hours"
@@ -3491,9 +3653,19 @@ view: staffing {
   measure: utr_rider {
     group_label: "> Rider Measures"
     label: "Rider UTR"
+    description: "# Orders (excl. Click & Collect and External Orders) / # Punched Rider Hours"
     type: number
     sql: ${orders_with_ops_metrics.cnt_rider_orders}/ NULLIF(${number_of_worked_hours_rider}, 0) ;;
     value_format_name: decimal_2
+  }
+
+  measure: all_staff_utr {
+    label: "All Staff UTR"
+    type: number
+    description: "# Orders (incl. Click & Collect and External Orders) / # Punched All Staff (incl. Rider,Picker,WH Ops, Rider Captain, Ops Associate, Shift Lead and Deputy Shift Lead) Hours"
+    sql: ${orders_with_ops_metrics.sum_orders} / NULLIF(${number_of_worked_hours_rider}+${number_of_worked_hours_shift_lead}+${number_of_worked_hours_ops_associate}+${number_of_worked_hours_deputy_shift_lead}, 0);;
+    value_format_name: decimal_2
+    group_label: "> All Staff Measures"
   }
 
   measure: logistics_index {
@@ -3507,6 +3679,7 @@ view: staffing {
   measure: utr_picker {
     group_label: "> Picker Measures"
     label: "Picker UTR"
+    description: "# Orders (incl. Click & Collect and External Orders) / # Punched Picker Hours"
     type: number
     sql: ${orders_with_ops_metrics.sum_orders}/ NULLIF(${number_of_worked_hours_picker}, 0) ;;
     value_format_name: decimal_2
@@ -3515,7 +3688,7 @@ view: staffing {
   measure: utr_hub_staff {
     group_label: "> Hub Staff Measures"
     label: "Hub Staff UTR"
-    description: "Hub Staff UTR (# Orders/Hub Staff Hours (Picker, WH, Rider Captain, Ops Associate, Shift Lead))"
+    description: "Hub Staff UTR (# Orders (incl. Click & Collect and External Orders) /Hub Staff Hours (Picker, WH, Rider Captain, Ops Associate, Shift Lead))"
     type: number
     sql: ${orders_with_ops_metrics.sum_orders}/ NULLIF(${number_of_worked_hours_hub_staff}, 0) ;;
     value_format_name: decimal_2
@@ -3525,7 +3698,7 @@ view: staffing {
     alias: [utr_ops_staff]
     group_label: "> Ops Associate Measures"
     label: "Ops Associate UTR"
-    description: "Ops Associate UTR (# Orders/# Punched Ops Associate(Picker, WH, Rider Captain, Ops Associate) Hours)"
+    description: "Ops Associate UTR (# Orders (incl. Click & Collect and External Orders) /# Punched Ops Associate(Picker, WH, Rider Captain, Ops Associate) Hours)"
     type: number
     sql: ${orders_with_ops_metrics.sum_orders}/ NULLIF(${number_of_worked_hours_ops_associate}, 0) ;;
     value_format_name: decimal_2
@@ -3901,7 +4074,7 @@ view: staffing {
   measure: utr_by_position {
     type: number
     label: "UTR"
-    description: "# Orders (Excl. Cancellations) / # Punched Hours"
+    description: "# Orders (Excl. Cancellations) (Excl. Click & Collect and External Orders for rider position) / # Punched Hours"
     value_format_name: decimal_2
     group_label: "> Dynamic Measures"
     sql:
