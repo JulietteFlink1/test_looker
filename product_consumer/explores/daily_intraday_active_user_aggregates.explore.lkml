@@ -8,6 +8,7 @@
 
 include: "/product_consumer/views/bigquery_reporting/daily_intraday_active_user_aggregates.view"
 include: "/**/global_filters_and_parameters.view.lkml"
+include: "/**/hubs_ct.view.lkml"
 
 
 explore: daily_intraday_active_user_aggregates {
@@ -39,5 +40,12 @@ explore: daily_intraday_active_user_aggregates {
   join: global_filters_and_parameters {
     sql: ;;
   relationship: one_to_one
-}
+  }
+
+  join: hubs_ct {
+    view_label: "8 Hub Dimensions"
+    sql_on: ${daily_intraday_active_user_aggregates.hub_code} = ${hubs_ct.hub_code} ;;
+    type: left_outer
+    relationship: many_to_one
+  }
 }
