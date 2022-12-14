@@ -201,7 +201,7 @@ view: daily_events {
     dimension: delivery_tier_id {
       group_label: "Location Dimensions"
       label: "Delivery Tier ID"
-      description: "Dilevery Tier ID"
+      description: "The delivery tier Id as stored in Hub Manager."
       type: string
       sql: ${TABLE}.delivery_tier_id ;;
     }

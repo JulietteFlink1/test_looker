@@ -183,6 +183,7 @@ view: daily_user_aggregates {
   }
   dimension: delivery_tier_id {
     group_label: "Location Dimensions"
+    description: "The delivery tier Id as stored in Hub Manager"
     type: string
     sql: ${TABLE}.delivery_tier_id ;;
   }
