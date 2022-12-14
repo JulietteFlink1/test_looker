@@ -3660,7 +3660,7 @@ view: staffing {
   }
 
   measure: all_staff_utr {
-    label: "AVG All Staff UTR"
+    label: "All Staff UTR"
     type: number
     description: "# Orders (incl. Click & Collect and External Orders) / # Punched All Staff (incl. Rider,Picker,WH Ops, Rider Captain, Ops Associate, Shift Lead and Deputy Shift Lead) Hours"
     sql: ${orders_with_ops_metrics.sum_orders} / NULLIF(${number_of_worked_hours_rider}+${number_of_worked_hours_shift_lead}+${number_of_worked_hours_ops_associate}+${number_of_worked_hours_deputy_shift_lead}, 0);;
