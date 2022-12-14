@@ -23,6 +23,7 @@ view: daily_user_aggregates {
   set: location_attributes {
     fields: [
       hub_code,
+      delivery_tier_id,
       city,
       country_iso,
       delivery_lat,
@@ -179,6 +180,12 @@ view: daily_user_aggregates {
     group_label: "Location Dimensions"
     type: string
     sql: ${TABLE}.hub_code ;;
+  }
+  dimension: delivery_tier_id {
+    group_label: "Location Dimensions"
+    description: "The delivery tier Id as stored in Hub Manager"
+    type: string
+    sql: ${TABLE}.delivery_tier_id ;;
   }
   dimension: city {
     group_label: "Location Dimensions"

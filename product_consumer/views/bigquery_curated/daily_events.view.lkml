@@ -198,6 +198,13 @@ view: daily_events {
       type: string
       sql: ${TABLE}.hub_code ;;
     }
+    dimension: delivery_tier_id {
+      group_label: "Location Dimensions"
+      label: "Delivery Tier ID"
+      description: "The delivery tier Id as stored in Hub Manager."
+      type: string
+      sql: ${TABLE}.delivery_tier_id ;;
+    }
     dimension: country_iso {
       group_label: "Location Dimensions"
       label: "Country ISO"
