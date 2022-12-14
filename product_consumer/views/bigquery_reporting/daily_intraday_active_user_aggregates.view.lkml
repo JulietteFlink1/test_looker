@@ -21,12 +21,6 @@ view: daily_intraday_active_user_aggregates {
     ]
   }
 
-  set: time_dimensions {
-    fields: [
-      event_hour
-    ]
-  }
-
   set: user_measures {
     fields: [
       hourly_active_users,
@@ -122,14 +116,26 @@ view: daily_intraday_active_user_aggregates {
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
 
-  ######## * Percentages * ########
+  measure: number_of_active_users{
+    type: sum
+    label: "Number of Active Users"
+    hidden:  no
+    sql: ${hourly_active_users} ;;
+  }
+
+  measure: number_of_active_users_with_order{
+    type: sum
+    label: "Number of Active Users With Order"
+    hidden:  no
+    sql: ${hourly_users_with_order} ;;
+  }
 
   measure: pct_active_users_with_order {
-    group_label: "* Percentages *"
     label: "% Active Users Ordering per Hour"
     description: "% Active Users who placed an order per hour."
     type: number
-    sql: {hourly_users_with_order} / NULLIF(${hourly_active_users}, 0) ;;
+    sql: (1.0 *${number_of_active_users_with_order}) / NULLIF(${number_of_active_users}, 0) ;;
     value_format_name: percent_1
+
   }
 }
