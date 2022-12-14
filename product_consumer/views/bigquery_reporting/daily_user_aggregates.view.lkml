@@ -182,7 +182,7 @@ view: daily_user_aggregates {
     sql: ${TABLE}.hub_code ;;
   }
   dimension: delivery_tier_id {
-    group_label: "Delivery Tier ID"
+    group_label: "Location Dimensions"
     type: string
     sql: ${TABLE}.delivery_tier_id ;;
   }
