@@ -3678,7 +3678,7 @@ view: staffing {
   measure: avg_fulfillment_time_slp_utr_ride{
     group_label: "> Rider Measures"
     label: "Rider SLP UTR"
-    # hidden: yes
+    hidden: yes
     type: number
     sql: case
           when ${orders_with_ops_metrics.avg_fulfillment_time} < 18
