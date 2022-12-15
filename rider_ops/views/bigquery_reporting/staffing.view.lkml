@@ -3664,7 +3664,6 @@ view: staffing {
     type: number
     description: "When 18m <= fulfillment_time < 45m then UTR - A * fulfillment_time"
     default_value: "0.01"
-    hidden: yes
   }
 
   parameter: slp_parameter_coefficient_b {
@@ -3672,7 +3671,6 @@ view: staffing {
     type: number
     description: "When 45m <= fulfillment_time < 60m then (UTR - B) * (60 - fulfillment_time)/15))"
     default_value: "0.27"
-    hidden: yes
   }
 
   measure: avg_fulfillment_time_slp_utr_ride{
