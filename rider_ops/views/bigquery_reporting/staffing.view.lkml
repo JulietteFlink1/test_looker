@@ -3659,6 +3659,40 @@ view: staffing {
     value_format_name: decimal_2
   }
 
+  parameter: slp_parameter_coefficient_a {
+    label: "SLP Parameter A"
+    type: number
+    description: "When 18m <= fulfillment_time < 45m then UTR - A * fulfillment_time"
+    default_value: "0.01"
+  }
+
+  parameter: slp_parameter_coefficient_b {
+    label: "SLP Parameter B"
+    type: number
+    description: "When 45m <= fulfillment_time < 60m then (UTR - B) * (60 - fulfillment_time)/15))"
+    default_value: "0.27"
+  }
+
+  measure: avg_fulfillment_time_slp_utr_ride{
+    group_label: "> Rider Measures"
+    label: "Rider SLP UTR"
+    hidden: yes
+    type: number
+    sql: case
+          when ${orders_with_ops_metrics.avg_fulfillment_time} < 18
+            then ${ops.utr_rider}
+          when ${orders_with_ops_metrics.avg_fulfillment_time} >= 18
+          and ${orders_with_ops_metrics.avg_fulfillment_time} < 45
+            then ${ops.utr_rider} - ({% parameter slp_parameter_coefficient_a %} * ${orders_with_ops_metrics.avg_fulfillment_time})
+          when ${orders_with_ops_metrics.avg_fulfillment_time} >= 45
+          and ${orders_with_ops_metrics.avg_fulfillment_time} < 60
+            then (${ops.utr_rider}- {% parameter slp_parameter_coefficient_b %}) * (60 - (${orders_with_ops_metrics.avg_fulfillment_time}))/15
+          when ${orders_with_ops_metrics.avg_fulfillment_time} >= 60
+            then 0
+          end;;
+    value_format_name: decimal_2
+  }
+
   measure: all_staff_utr {
     label: "All Staff UTR"
     type: number
