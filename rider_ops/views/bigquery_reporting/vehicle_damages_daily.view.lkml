@@ -8,6 +8,7 @@ view: vehicle_damages_daily {
   sql_table_name: `flink-data-prod.reporting.vehicle_damages_daily` ;;
 
   dimension_group: report {
+    hidden:  yes
     group_label: "> Dates"
     type: time
     timeframes: [

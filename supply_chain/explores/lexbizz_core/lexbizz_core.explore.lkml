@@ -29,7 +29,7 @@ explore: lexbizz_core {
 
     sql_on:
         ${item_warehouse.ingestion_date} = ${stock_item.ingestion_date} and
-        ${item_warehouse.country_iso}    = ${stock_item.country_iso}
+        ${item_warehouse.country_iso}    = ${stock_item.country_iso} and
         ${item_warehouse.sku}            = ${stock_item.sku}
     ;;
 
