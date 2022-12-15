@@ -2436,6 +2436,61 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  measure: number_of_unassigned_hours_rider_ec_shift {
+    group_label: "> Rider Measures"
+    label: "# Open EC Rider Hours"
+    description: "# Open Rider Hours from shifts with project code = 'EC shift'"
+    type: sum
+    sql: ${TABLE}.number_of_unassigned_minutes_ec_shift_rider/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_unassigned_hours_rider_wfs_shift {
+    group_label: "> Rider Measures"
+    label: "# Open WFS Rider Hours"
+    description: "# Open Rider Hours from shifts with project code = 'WFS shift'"
+    type: sum
+    sql: ${TABLE}.number_of_unassigned_minutes_wfs_shift_rider/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_unassigned_hours_rider_ns_shift {
+    group_label: "> Rider Measures"
+    label: "# Open NS+ Rider Hours"
+    description: "# Open Rider Hours from shifts with project code = 'NS+ shift'"
+    type: sum
+    sql: ${TABLE}.number_of_unassigned_minutes_ns_shift_rider/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_unassigned_hours_ops_associate_ec_shift {
+    group_label: "> Ops Associate Measures"
+    label: "# Open EC Ops Associate Hours"
+    description: "# Open Ops Associate Hours from shifts with project code = 'EC shift'"
+    type: sum
+    sql: ${TABLE}.number_of_unassigned_minutes_ec_shift_ops_associate/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_unassigned_hours_ops_associate_wfs_shift {
+    group_label: "> Ops Associate Measures"
+    label: "# Open WFS Ops Associate Hours"
+    description: "# Open Ops Associate Hours from shifts with project code = 'WFS shift'"
+    type: sum
+    sql: ${TABLE}.number_of_unassigned_minutes_wfs_shift_ops_associate/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_unassigned_hours_ops_associate_ns_shift {
+    group_label: "> Ops Associate Measures"
+    label: "# Open NS+ Ops Associate Hours"
+    description: "# Open Ops Associate Hours from shifts with project code = 'NS+ shift'"
+    type: sum
+    sql: ${TABLE}.number_of_unassigned_minutes_ns_shift_ops_associate/60;;
+    value_format_name: decimal_1
+  }
+
+
   measure: number_of_unassigned_hours_picker {
     group_label: "> Picker Measures"
     label: "# Open Picker Hours"
