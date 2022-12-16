@@ -1,3 +1,7 @@
+explore: dc_bucket {
+    hidden: yes
+}
+
 view: dc_bucket {
   view_label: "*DC Bucket Data*"
   sql_table_name: `flink-supplychain-prod.curated.dc_bucket`
