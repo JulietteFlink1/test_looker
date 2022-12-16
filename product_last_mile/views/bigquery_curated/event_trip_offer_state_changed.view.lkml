@@ -72,20 +72,6 @@ view: event_trip_offer_state_changed {
 
   # ======= Dates / Timestamps ======= #
 
-  dimension_group: event_timestamp {
-    group_label: "Timestamps"
-    label: "Event Timestamp"
-    type: time
-    description: "Timestamp when an event was triggered within the app / web."
-    timeframes: [
-      time,
-      date,
-      week,
-      month,
-      quarter
-    ]
-    sql: ${TABLE}.event_timestamp ;;
-  }
   dimension_group: published_at_timestamp {
     group_label: "Timestamps"
     label: "Published Timestamp"
@@ -118,6 +104,22 @@ view: event_trip_offer_state_changed {
     hidden: yes
     description: "Timestamp at which an trip offer expires."
     sql: ${TABLE}.expires_at_timestamp ;;
+  }
+
+  dimension_group: event_timestamp {
+    hidden:  yes
+    group_label: "Timestamps"
+    label: "Event Timestamp"
+    type: time
+    description: "Timestamp when an event was triggered"
+    timeframes: [
+      time,
+      date,
+      week,
+      month,
+      quarter
+    ]
+    sql: ${TABLE}.event_timestamp ;;
   }
 
 
@@ -175,7 +177,7 @@ view: event_trip_offer_state_changed {
     label: "% Offers Expired"
     description: "% of Offers Expired"
     type: number
-    sql: ${total_number_offers_expired}/${total_number_offers_created} ;;
+    sql:  ${total_number_offers_expired}/nullif(${total_number_offers_created},2) ;;
     value_format_name: percent_1
   }
   measure: declined_offers_rate {
@@ -183,7 +185,7 @@ view: event_trip_offer_state_changed {
     label: "% Offers Declined"
     description: "% of Offers Declined"
     type: number
-    sql: ${total_number_declined_events}/${total_number_offers_created} ;;
+    sql: ${total_number_declined_events}/nullif(${total_number_offers_created},2) ;;
     value_format_name: percent_1
   }
 }
