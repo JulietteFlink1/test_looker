@@ -100,7 +100,7 @@ view: staffing {
     sql: ${TABLE}.number_of_no_show_minutes_external_rider ;;
     hidden: yes
   }
-  dimension: number_of_leave_minutes_rider {
+  dimension: number_of_leave_minutes_rider_dimension {
     label: "# Leave Rider Minutes"
     type: number
     sql: ${TABLE}.number_of_leave_minutes_rider ;;
@@ -3012,6 +3012,26 @@ view: staffing {
     type: number
     sql: (${number_of_scheduled_hours_external_ops_associate}+${number_of_scheduled_hours_external_shift_lead})/60;;
     value_format_name: decimal_1
+  }
+
+  # ========  Leave Minutes  ==========
+
+  measure: number_of_leave_minutes_rider {
+    group_label: "> Rider Measures"
+    label: "# Leave Rider Minutes"
+    type: sum
+    sql: ${number_of_leave_minutes_rider_dimension};;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  measure: number_of_leave_hours_rider {
+    group_label: "> Rider Measures"
+    label: "# Leave Rider Hours"
+    type: sum
+    sql: ${number_of_leave_minutes_rider_dimension}/60;;
+    value_format_name: decimal_1
+    hidden: yes
   }
 
   # =========  No Show Hours   =========
