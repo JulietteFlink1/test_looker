@@ -28,9 +28,14 @@ view: forecasts {
 
   dimension: is_hub_open {
     label: "Is Hub Open"
-    type: number
-    sql: ${TABLE}.is_hub_open ;;
-    hidden: yes
+    description: "YES, if hub was open in the given 30 min interval."
+    type: yesno
+    sql:
+      case
+        when ${TABLE}.is_hub_open = 0 then false
+        else true
+      end;;
+    hidden: no
   }
 
   dimension: quinyx_pipeline_status_rider {

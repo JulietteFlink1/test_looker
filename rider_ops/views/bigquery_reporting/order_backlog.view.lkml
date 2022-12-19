@@ -1,3 +1,4 @@
+
 #
 # This is a view for reporting status of orders in each of the state over time (i.e. order backlogs)
 # Granularity:
@@ -9,6 +10,41 @@
 view: order_backlog {
   sql_table_name: `flink-data-prod.reporting.order_backlog`
     ;;
+
+
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~     Parameters     ~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  parameter: max_rank {
+    label: "Max rank"
+    description: "Give value to this field to add limit to rank the hubs."
+    type: number
+  }
+
+  parameter: metric_selector {
+    label: "Choose metric"
+    description: "Choose metric to sort Top/Bottom N Hubs based on selected metric. Could be used with the comination of rank function, rank limit dimension and Max rank parameter."
+    type: string
+    allowed_value: { value: "# Backlog Orders Created Not Offered for Picking (Not Dispatched)" }
+    allowed_value: { value: "# Backlog Orders Created (Last Mile) Not Claimed By Riders" }
+    allowed_value: { value: "# Backlog Orders Picked (Last Mile) Not Claimed By Riders" }
+    allowed_value: { value: "# Backlog Orders Created (Last Mile) Not Picked" }
+    allowed_value: { value: "# Backlog Orders Created Not Started Being Picked" }
+    allowed_value: { value: "# Backlog Orders Offered (Dispatched) Not Started Being Picked" }
+  }
+
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~     Dimensions     ~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  dimension: rank_limit {
+    label: "Rank limit"
+    description: "Value of the given rank by"
+    type: number
+    sql: {% parameter max_rank %} ;;
+  }
+
   dimension: table_uuid {
     hidden: yes
     primary_key: yes
@@ -110,7 +146,9 @@ view: order_backlog {
     sql: ${TABLE}.number_of_rider_claimed_orders_last_mile ;;
   }
 
-  # Measures
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~      Measures      ~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   measure: backlog_orders_created_not_offered_for_picking {
     label: "# Backlog Orders Created Not Offered for Picking (Not Dispatched)"
@@ -152,6 +190,27 @@ view: order_backlog {
     description: "Cumulative # of orders created but not started being picked during the day."
     type: sum
     sql: ${number_of_orders_picking_not_started}-${number_of_orders_not_offered_for_picking} ;;
+  }
+
+  measure: chosen_backlog_metric {
+    label_from_parameter: metric_selector
+    description: "Cumulative # of orders based on the chosen metric."
+    type: number
+    sql:
+      case
+        when {% parameter metric_selector %} = "# Backlog Orders Created Not Offered for Picking (Not Dispatched)"
+          then ${backlog_orders_created_not_offered_for_picking}
+        when {% parameter metric_selector %} = "# Backlog Orders Created (Last Mile) Not Claimed By Riders"
+          then ${backlog_orders_created_not_offered_for_picking}
+        when {% parameter metric_selector %} = "# Backlog Orders Picked (Last Mile) Not Claimed By Riders"
+          then ${backlog_orders_picked_rider_not_claimed_last_mile}
+        when {% parameter metric_selector %} = "# Backlog Orders Created (Last Mile) Not Picked"
+          then ${backlog_orders_created_not_picked_last_mile}
+        when {% parameter metric_selector %} = "# Backlog Orders Created Not Started Being Picked"
+          then ${backlog_orders_picking_not_started}
+        when {% parameter metric_selector %} = "# Backlog Orders Offered (Dispatched) Not Started Being Picked"
+          then ${backlog_orders_offered_picking_not_started}
+      end ;;
   }
 
 }
