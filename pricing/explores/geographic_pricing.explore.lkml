@@ -1,5 +1,5 @@
 include: "/**/*.view"
-include: "/**/products_hub_assignment_v2.view"
+include: "/**/products_hub_assignment.view"
 # include: "/**/products_hub_assignment.view"
 include: "/**/replenishment_purchase_orders.view"
 

@@ -220,7 +220,7 @@ oos_aux as (
     sg_number_of_hours_open as sg_open_hours_total,
     sg_number_of_hours_oos as sg_hours_oos,
 
-from      `flink-data-prod.curated.products_hub_assignment_v2` as a
+from      `flink-data-prod.curated.products_hub_assignment` as a
 
 left join `flink-data-prod.reporting.inventory_daily`           as i
 on

@@ -1,5 +1,5 @@
 include: "/**/lexbizz_*.view"
-include: "/**/products_hub_assignment_v2.view"
+include: "/**/products_hub_assignment.view"
 include: "/**/products.view"
 include: "/**/hubs_ct.view"
 include: "/**/lexbizz_core_ndt_9er_status.view"
@@ -161,7 +161,7 @@ explore: lexbizz_core {
   # -----------  assignment data  ------------------------------------------------------------------------------------------
   join: products_hub_assignment {
 
-    from: products_hub_assignment_v2
+    from: products_hub_assignment
 
     type: left_outer
     relationship: many_to_one
