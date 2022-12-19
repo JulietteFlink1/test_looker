@@ -68,6 +68,8 @@ view: employee_level_kpis {
       date,
       week,
       month,
+      day_of_week,
+      day_of_week_index,
       quarter,
       year
     ]
@@ -127,6 +129,8 @@ view: employee_level_kpis {
         else initcap(${TABLE}.external_agency_name)
       end;;
   }
+
+
 
   dimension: fleet_type {
     group_label: "> Contract"
@@ -233,6 +237,69 @@ view: employee_level_kpis {
     sql: ${TABLE}.first_shift_date ;;
   }
 
+  dimension: last_justified_absence_date {
+    group_label: "> Dates & Timestamps"
+    label: "Last Justified Absence Date"
+    description: "Date of the last absence with leave reason containing the word 'sick' or 'wait' or 'arrêt' or 'vacation'"
+    convert_tz: no
+    datatype: date
+    type: date
+    sql: ${TABLE}.last_justified_absence_date ;;
+  }
+
+  dimension: last_shift_worked_or_justified_shift_date {
+    group_label: "> Dates & Timestamps"
+    label: "Last shift (Punched shift or Absence)"
+    description: "Date of the last Punched shift or absence with leave reason containing the word 'sick' or 'wait' or 'arrêt' or 'vacation'"
+    convert_tz: no
+    datatype: date
+    type: date
+    sql: nullif(
+             greatest(
+              coalesce(${last_worked_date_dimension}, '1990-01-01'),
+              coalesce(${last_justified_absence_date}, '1990-01-01')
+            ),
+            '1990-01-01'
+         );;
+  }
+
+  dimension_group: duration_between_last_worked_shift_and_shift_date {
+    group_label: "> Dates & Timestamps"
+    type: duration
+    intervals: [day, week, year]
+    label: "Duration between last worked shift date and shift date"
+    description: "Number of days between last worked (punched) shift and shift date (NULL if last worked date is after shift date)"
+    sql_start:case
+          when ${shift_date} > ${last_worked_date_dimension}
+          then ${last_worked_date_dimension}
+          else ${shift_date} end;;
+    sql_end: ${shift_date};;
+  }
+
+  dimension_group: duration_between_last_shift_and_shift_date {
+    group_label: "> Dates & Timestamps"
+    type: duration
+    intervals: [day, week, year]
+    label: "Duration between last shift (Punched shift or Absence) and shift date"
+    description: "Number of days between last worked (punched) shift or absence and shift date (NULL if last shift date is after shift date)"
+    sql_start:case
+          when ${shift_date} > ${last_shift_worked_or_justified_shift_date}
+          then ${last_shift_worked_or_justified_shift_date}
+          else ${shift_date} end
+          ;;
+    sql_end:${shift_date};;
+  }
+
+  dimension_group: duration_between_last_worked_shift_and_today {
+    group_label: "> Dates & Timestamps"
+    type: duration
+    intervals: [day, week, year]
+    label: "Duration between last worked shift and today"
+    description: "Number of days between last worked (punched) shift date and today"
+    sql_start:${last_worked_date_dimension};;
+    sql_end: current_date ;;
+  }
+
   dimension: account_creation_date {
     group_label: "> Dates & Timestamps"
     label: "Account Creation Date"
@@ -246,7 +313,7 @@ view: employee_level_kpis {
   dimension: employment_start_date {
     group_label: "> Dates & Timestamps"
     label: "Employment Start Date"
-    description: "Start fate of first employement contract (Agreement in Quinyx UI)"
+    description: "Start date of first employment contract (Agreement in Quinyx UI)"
     convert_tz: no
     datatype: date
     type: date
@@ -333,6 +400,8 @@ view: employee_level_kpis {
 
   dimension_group: time_between_hire_date_and_today {
     type: duration
+    intervals: [day, week, year]
+    label: "Duration between hire date and today"
     sql_start: timestamp(${TABLE}.hire_date) ;;
     sql_end: current_timestamp ;;
     group_label: "> Dates & Timestamps"
@@ -923,14 +992,14 @@ view: employee_level_kpis {
   measure: last_worked_date {
     group_label: "> Shift Related"
     type: date
-    description: "Date of the last worked/punched shift"
+    description: "Date of the last worked/punched shift within the filtered period"
     sql: max(case when ${TABLE}.number_of_worked_minutes > 0 then ${TABLE}.shift_date end);;
   }
 
   measure: first_worked_date {
     group_label: "> Shift Related"
     type: date
-    description: "Date of the first worked/punched shift"
+    description: "Date of the first worked/punched shift within the filtered period"
     sql: min(case when ${TABLE}.number_of_worked_minutes > 0 then ${TABLE}.shift_date end);;
   }
 
@@ -1194,6 +1263,17 @@ view: employee_level_kpis {
     value_format_name: decimal_1
   }
 
+  measure: number_of_overpunched_hours {
+    group_label: "> Shift Related"
+    type: sum
+    label: "# Overpunched Hours"
+    sql: case when ${TABLE}.number_of_worked_minutes > ${TABLE}.number_of_planned_minutes
+          then (${TABLE}.number_of_worked_minutes - ${TABLE}.number_of_planned_minutes)/60
+          else 0 end;;
+    description: "When # Worked Hours > # Assigned Hours then # Worked Hours - # Assigned Hours"
+    value_format_name: decimal_1
+  }
+
   measure: number_of_no_show_hours {
     group_label: "> Shift Related"
     type: sum
@@ -1264,9 +1344,11 @@ view: employee_level_kpis {
   measure: sum_weekly_contracted_hours {
     label: "Total Weekly Contracted Hours"
     group_label: "> Contract Related"
-    type: number
-    sql: ${sum_weekly_contracted_hours_per_employee} * ${number_of_scheduled_weeks} ;;
-    description: "Sum of weekly contracted hours based on Quinyx Agreements (Field in Quinyx UI: Agreement full time working hours) -  Weekly Contracted Hours * calender weeks"
+    type: sum_distinct
+    sql_distinct_key: concat(${shift_date},${employment_id});;
+    sql: ${TABLE}.avg_daily_contracted_hours;;
+    value_format: "0.0"
+    description: "Sum of weekly contracted hours based on Quinyx Agreements (Field in Quinyx UI: Agreement full time working hours) =  AVG daily contracted hours * number of days"
   }
 
   measure: pct_contract_fulfillment {

@@ -12,7 +12,7 @@
 
 include: "/**/*.view"
 
-include: "/**/products_hub_assignment_v2.view"
+include: "/**/products_hub_assignment.view"
 include: "/**/replenishment_purchase_orders.view"
 include: "/**/bulk_items.view"
 include: "/**/bulk_inbounding_performance.view"
@@ -40,7 +40,7 @@ explore: supply_chain {
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   #  - - - - - - - - - -    BASE TABLE
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  from  :     products_hub_assignment_v2
+  from  :     products_hub_assignment
   view_name:  products_hub_assignment
   view_label: "01 Products Hub Assignment"
 
@@ -165,6 +165,7 @@ explore: supply_chain {
     type: left_outer
     relationship: many_to_one
     sql_on: ${lexbizz_item.sku}            = ${products_hub_assignment.sku}
+        and ${lexbizz_item.country_iso}    = ${products_hub_assignment.country_iso}
         and ${lexbizz_item.ingestion_date} = current_date()
     ;;
 
