@@ -146,6 +146,32 @@ view: order_backlog {
     sql: ${TABLE}.number_of_rider_claimed_orders_last_mile ;;
   }
 
+  dimension: number_of_on_route_orders_last_mile {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_on_route_orders_last_mile ;;
+  }
+
+  dimension: number_of_offered_to_riders_orders_last_mile {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_offered_to_riders_orders_last_mile ;;
+  }
+
+  dimension: number_of_orders_not_offered_to_riders_last_mile {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_orders_not_offered_to_riders_last_mile ;;
+  }
+
+  dimension: number_of_orders_not_on_route_last_mile {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_orders_not_on_route_last_mile ;;
+  }
+
+
+
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~      Measures      ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -190,6 +216,20 @@ view: order_backlog {
     description: "Cumulative # of orders created but not started being picked during the day."
     type: sum
     sql: ${number_of_orders_picking_not_started}-${number_of_orders_not_offered_for_picking} ;;
+  }
+
+  measure: backlog_orders_not_on_route_last_mile {
+    label: "# Backlog Orders (Last Mile) Not On Route"
+    description: "Cumulative # of orders created but not on route for delivery during the day."
+    type: sum
+    sql: ${number_of_orders_not_on_route_last_mile} ;;
+  }
+
+  measure: backlog_orders_not_offered_to_riders_last_mile {
+    label: "# Backlog Orders (Last Mile) Not Offered to Riders"
+    description: "Cumulative # of orders created but not offered to riders during the day."
+    type: sum
+    sql: ${number_of_orders_not_offered_to_riders_last_mile} ;;
   }
 
   measure: chosen_backlog_metric {
