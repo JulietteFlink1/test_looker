@@ -35,7 +35,7 @@ view: forecasts {
         when ${TABLE}.is_hub_open = 0 then false
         else true
       end;;
-    hidden: no
+    hidden: yes
   }
 
   dimension: quinyx_pipeline_status_rider {

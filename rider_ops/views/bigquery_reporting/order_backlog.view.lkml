@@ -239,7 +239,7 @@ view: order_backlog {
         when {% parameter metric_selector %} = "# Backlog Orders Offered (Dispatched) Not Started Being Picked"
           then ${backlog_orders_offered_picking_not_started}
         when {% parameter metric_selector %} = "# Backlog Orders (Last Mile) Not Offered to Riders"
-          then ${number_of_orders_not_offered_to_riders_last_mile}
+          then ${backlog_orders_not_offered_to_riders_last_mile}
       end ;;
   }
 
