@@ -174,6 +174,27 @@ view: customer_cohorts_base {
     sql: ${TABLE}.first_order_discount_code ;;
   }
 
+  dimension: first_order_discount_group {
+    group_label: "* User Dimensions *"
+    type: string
+    description: "Discount group associated with the discount code of the customer's first order. Only populated for discount acquisitions."
+    sql: ${TABLE}.first_order_discount_group ;;
+  }
+
+  dimension: first_order_discount_name {
+    group_label: "* User Dimensions *"
+    type: string
+    description: "Discount name associated with the discount code of the customer's first order. Only populated for discount acquisitions."
+    sql: ${TABLE}.first_order_discount_name ;;
+  }
+
+  dimension: first_order_discount_use_case {
+    group_label: "* User Dimensions *"
+    type: string
+    description: "Discount use case associated with the discount code of the customer's first order. Discount use case is derived from discount name and group. Only populated for discount acquisitions."
+    sql: ${TABLE}.first_order_discount_use_case ;;
+  }
+
   dimension_group: last_order_with_voucher {
     label: "Last Order With Cart Discount"
     group_label: "* Dates and Timestamps *"

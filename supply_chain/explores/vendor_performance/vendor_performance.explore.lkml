@@ -21,7 +21,7 @@ explore: vendor_performance {
   label: "Vendor Performance"
   group_label: "Supply Chain"
 
-  from: products_hub_assignment_v2
+  from: products_hub_assignment
   view_name: products_hub_assignment
   view_label: "* Global *"
 
