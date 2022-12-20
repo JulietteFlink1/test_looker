@@ -241,6 +241,7 @@ view: braze_lifecycle_cohorts {
     type: time
     group_label: "* Dates and Timestamps *"
     label: "Cohort Entry"
+    description: "Date when the cohort entered the canvas and started the journey"
     timeframes: [
       date,
       week,
@@ -257,6 +258,7 @@ view: braze_lifecycle_cohorts {
     type: time
     group_label: "* Dates and Timestamps *"
     label: "First Contact"
+    description: "Date of the first contact sent to customers within the cohort's canvas journey"
     timeframes: [
       date,
       week,
@@ -271,6 +273,7 @@ view: braze_lifecycle_cohorts {
     type: time
     group_label: "* Dates and Timestamps *"
     label: "Last Contact"
+    description: "Date of the last contact sent to customers within the cohort's canvas journey"
     timeframes: [
       date,
       week,
@@ -288,6 +291,7 @@ view: braze_lifecycle_cohorts {
   measure: number_of_users {
     group_label: "* Cohort Performance *"
     label: "# Contacted Users"
+    description: "Number of customers who entered the cohort's canvas"
     type: sum
     sql: ${users_count} ;;
   }
@@ -321,6 +325,7 @@ view: braze_lifecycle_cohorts {
   measure: number_of_sent_messages {
     group_label: "* Message Performance *"
     label: "# Sent Messages"
+    description: "Number of messages sent to variant group customers within the cohort's journey"
     type: sum
     sql: ${message_sent_count} ;;
   }
@@ -328,6 +333,7 @@ view: braze_lifecycle_cohorts {
   measure: number_of_engaged_messages {
     group_label: "* Message Performance *"
     label: "# Engaged Messages"
+    description: "Number of messages sent to variant users which were either tapped or clicked"
     type: sum
     sql: ${message_is_engaged_count} ;;
   }
@@ -335,6 +341,7 @@ view: braze_lifecycle_cohorts {
   measure: share_of_engaged_messages {
     group_label: "* Message Performance *"
     label: "% Engaged Messages"
+    description: "Share of either tapped or clicked messages among all messages sent to variant"
     type: number
     sql: safe_divide(${number_of_engaged_messages},${number_of_sent_messages}) ;;
     value_format_name: percent_2
@@ -343,6 +350,7 @@ view: braze_lifecycle_cohorts {
   measure: number_of_customers_ordered {
     group_label: "* Cohort Performance *"
     label: "# Customers with Orders"
+    description: "Number of customers who placed an order within the cohort's journey"
     type: sum
     sql: ${customers_ordered_count};;
   }
@@ -376,6 +384,7 @@ view: braze_lifecycle_cohorts {
   measure: share_of_customers_ordered {
     group_label: "* Cohort Performance *"
     label: "% Customers With Orders"
+    description: "Share of customers who placed an order among all customers within the cohort"
     type: number
     sql: safe_divide(${number_of_customers_ordered},${number_of_users}) ;;
     value_format_name: percent_2
@@ -384,6 +393,7 @@ view: braze_lifecycle_cohorts {
   measure: incrementality_of_share_of_customers_ordered {
     group_label: "* Cohort Performance *"
     label: "Incr. ppt % Customers With Orders"
+    description: "Ppt. positive difference in share of variant customers who placed an order compared to control group"
     type: number
     sql: (safe_divide(${number_of_variant_customers_ordered},${number_of_variant_users}) -
     safe_divide(${number_of_control_customers_ordered},${number_of_control_users})) * 100 ;;
@@ -393,6 +403,7 @@ view: braze_lifecycle_cohorts {
   measure: number_of_orders {
     group_label: "* Cohort Performance *"
     label: "# Orders"
+    description: "Number of orders placed by customers within the cohort"
     type: sum
     sql: ${orders_count} ;;
   }
@@ -400,6 +411,7 @@ view: braze_lifecycle_cohorts {
   measure: share_of_orders_per_users {
     group_label: "* Cohort Performance *"
     label: "Orders per Users Frequency"
+    description: "Number of orders placed by customers within the cohort divided by the number of all customers in the cohort"
     type: number
     sql: safe_divide(${number_of_orders},${number_of_users}) ;;
     value_format_name: decimal_2
@@ -408,6 +420,7 @@ view: braze_lifecycle_cohorts {
   measure: number_of_customers_visited {
     group_label: "* Cohort Performance *"
     label: "# Customers with Visits"
+    description: "Number of daily visits by customers within the cohort"
     type: sum
     sql: ${customers_visited_count} ;;
   }
@@ -441,6 +454,7 @@ view: braze_lifecycle_cohorts {
   measure: share_of_customers_visited {
     group_label: "* Cohort Performance *"
     label: "% Customers with Visits"
+    description: "Share of customers who had a daily visit among all customers within the cohort"
     type: number
     sql: safe_divide(${number_of_customers_visited},${number_of_users}) ;;
     value_format_name: percent_2
@@ -449,6 +463,7 @@ view: braze_lifecycle_cohorts {
   measure: incrementality_of_share_of_customers_visited {
     group_label: "* Cohort Performance *"
     label: "Incr. ppt % Customers with Visits"
+    description: "Ppt. positive difference in share of variant customers who had a daily visit compared to control group"
     type: number
     sql: (safe_divide(${number_of_variant_customers_visited},${number_of_variant_users}) -
     safe_divide(${number_of_control_customers_visited},${number_of_control_users})) * 100 ;;
@@ -458,6 +473,7 @@ view: braze_lifecycle_cohorts {
   measure: number_of_daily_visits {
     group_label: "* Cohort Performance *"
     label: "# Daily Customer Visits"
+    description: "Number of daily visits by customers within the cohort's journey"
     type: sum
     sql: ${daily_visits_count} ;;
   }
@@ -465,6 +481,7 @@ view: braze_lifecycle_cohorts {
   measure: share_of_daily_visits_per_users {
     group_label: "* Cohort Performance *"
     label: "Daily Visits per Users Frequency"
+    description: "Number of daily visits by customers within the cohort journey divided by the number of all customers in the cohort"
     type: number
     sql: safe_divide(${number_of_daily_visits},${number_of_users}) ;;
     value_format_name: decimal_2
@@ -473,6 +490,7 @@ view: braze_lifecycle_cohorts {
   measure: number_of_customers_discounted_ordered {
     group_label: "* Cohort Performance *"
     label: "# Customers with Discounted Orders"
+    description: "Number of customers who placed an order with a discount code within the cohort's journey"
     type: sum
     sql: ${customers_discounted_ordered_count} ;;
   }
@@ -480,6 +498,7 @@ view: braze_lifecycle_cohorts {
   measure: share_of_customers_discounted_ordered {
     group_label: "* Cohort Performance *"
     label: "% Customers With Discounted Orders"
+    description: "Share of customers who placed an order with a discount code within the cohort's journey among all customers who placed an order"
     type: number
     sql: safe_divide(${number_of_customers_discounted_ordered},${number_of_customers_ordered}) ;;
     value_format_name: percent_2
@@ -488,6 +507,7 @@ view: braze_lifecycle_cohorts {
   measure: number_of_discounted_orders {
     group_label: "* Cohort Performance *"
     label: "# Discounted Orders"
+    description: "Number of orders with discount codes placed by customers within the cohort"
     type: sum
     sql: ${discounted_orders_count} ;;
   }
@@ -495,6 +515,7 @@ view: braze_lifecycle_cohorts {
   measure: share_of_discounted_orders {
     group_label: "* Cohort Performance *"
     label: "% Discounted Orders"
+    description: "Share of orders with discount codes placed by customers within the cohort among all orders"
     type: number
     sql: safe_divide(${number_of_discounted_orders},${number_of_orders}) ;;
     value_format_name: percent_2
@@ -503,6 +524,7 @@ view: braze_lifecycle_cohorts {
   measure: share_of_discounted_orders_per_users {
     group_label: "* Cohort Performance *"
     label: "Discounted Orders per Users Frequency"
+    description: "Number of orders with discount codes placed by customers within the cohort divided by the number of all customers who placed an order"
     type: number
     sql: safe_divide(${number_of_discounted_orders},${number_of_customers_ordered}) ;;
     value_format_name: decimal_2
@@ -511,6 +533,7 @@ view: braze_lifecycle_cohorts {
   measure: number_of_sent_emails {
     group_label: "* Message Performance *"
     label: "# Sent Emails"
+    description: "Number of email contacts sent to variant group within the cohort's journey"
     type: sum
     sql: ${email_sent_count} ;;
   }
@@ -518,6 +541,7 @@ view: braze_lifecycle_cohorts {
   measure: share_of_sent_emails {
     group_label: "* Message Performance *"
     label: "% Sent Emails"
+    description: "Share of email contacts sent to variant group amongh all messages sent to variant group within the cohort's journey"
     type: number
     sql: safe_divide(${number_of_sent_emails},${number_of_sent_messages}) ;;
     value_format_name: percent_2
@@ -526,6 +550,7 @@ view: braze_lifecycle_cohorts {
   measure: number_of_delivered_emails {
     group_label: "* Message Performance *"
     label: "# Delivered Emails"
+    description: "Number of delivered email contacts"
     type: sum
     sql: ${email_is_delivered_count} ;;
   }
@@ -533,6 +558,7 @@ view: braze_lifecycle_cohorts {
   measure: share_of_delivered_emails {
     group_label: "* Message Performance *"
     label: "% Delivered Emails"
+    description: "Share of delivered email contacts among all sent email contacts"
     type: number
     sql: safe_divide(${number_of_delivered_emails},${number_of_sent_emails}) ;;
     value_format_name: percent_2
@@ -541,6 +567,7 @@ view: braze_lifecycle_cohorts {
   measure: number_of_bounced_emails {
     group_label: "* Message Performance *"
     label: "# Bounced Emails"
+    description: "Number of bounced email contacts"
     type: sum
     sql: ${email_is_bounced_count};;
   }
@@ -548,6 +575,7 @@ view: braze_lifecycle_cohorts {
   measure: share_of_bounced_emails {
     group_label: "* Message Performance *"
     label: "% Bounced Emails"
+    description: "Share of bounced email contacts among all sent email contacts"
     type: number
     sql: safe_divide(${number_of_bounced_emails},${number_of_sent_emails}) ;;
     value_format_name: percent_2
@@ -556,6 +584,7 @@ view: braze_lifecycle_cohorts {
   measure: number_of_soft_bounced_emails {
     group_label: "* Message Performance *"
     label: "# Soft Bounced Emails"
+    description: "Number of soft bounced email contacts"
     type: sum
     sql: ${email_is_soft_bounced_count} ;;
   }
@@ -563,6 +592,7 @@ view: braze_lifecycle_cohorts {
   measure: share_of_soft_bounced_emails {
     group_label: "* Message Performance *"
     label: "% Soft Bounced Emails"
+    description: "Share of soft bounced email contacts among all sent email contacts"
     type: number
     sql: safe_divide(${number_of_soft_bounced_emails},${number_of_sent_emails}) ;;
     value_format_name: percent_2
@@ -571,6 +601,7 @@ view: braze_lifecycle_cohorts {
   measure: number_of_clicked_emails {
     group_label: "* Message Performance *"
     label: "# Clicked Emails"
+    description: "Number of clicked email contacts"
     type: number
     sql: ${email_is_clicked_count} ;;
   }
@@ -578,6 +609,7 @@ view: braze_lifecycle_cohorts {
   measure: share_of_clicked_emails {
     group_label: "* Message Performance *"
     label: "% Clicked Emails"
+    description: "Share of clicked email contacts among all sent email contacts"
     type: number
     sql: safe_divide(${number_of_clicked_emails},${number_of_sent_emails}) ;;
     value_format_name: percent_2
@@ -586,6 +618,7 @@ view: braze_lifecycle_cohorts {
   measure: number_of_email_clicks {
     group_label: "* Message Performance *"
     label: "# Email Clicks"
+    description: "Number of clicks on email contacts"
     type: sum
     sql: ${email_clicked_count} ;;
   }
@@ -593,6 +626,7 @@ view: braze_lifecycle_cohorts {
   measure: number_of_general_opened_emails {
     group_label: "* Message Performance *"
     label: "# General Opened Emails"
+    description: "Number of email contacts that were opened"
     type: sum
     sql: ${email_is_general_opened_count} ;;
   }
@@ -600,6 +634,7 @@ view: braze_lifecycle_cohorts {
   measure: number_of_email_general_opens {
     group_label: "* Message Performance *"
     label: "# General Email Opens"
+    description: "Number of opens of email contacts"
     type: sum
     sql: ${email_general_opens_count} ;;
   }
@@ -607,6 +642,7 @@ view: braze_lifecycle_cohorts {
   measure: number_of_email_unique_opens {
     group_label: "* Message Performance *"
     label: "# Unique Email Opens"
+    description: "Number of uniquely opened email contacts"
     type: sum
     sql: ${email_unique_opens_count} ;;
   }
@@ -614,6 +650,7 @@ view: braze_lifecycle_cohorts {
   measure: number_of_unsubscribed_emails {
     group_label: "* Message Performance *"
     label: "# Unsubscribed Emails"
+    description: "Number of email contacts that were unsubscribed"
     type: sum
     sql: ${email_is_unsubscribed_count} ;;
   }
@@ -621,6 +658,7 @@ view: braze_lifecycle_cohorts {
   measure: share_of_unsubscribed_emails {
     group_label: "* Message Performance *"
     label: "% Unsubscribed Emails"
+    description: "Number of email contacts that were unsubscribed among all sent email contacts"
     type: number
     sql: safe_divide(${number_of_unsubscribed_emails},${number_of_sent_emails}) ;;
     value_format_name: percent_2
@@ -629,6 +667,7 @@ view: braze_lifecycle_cohorts {
   measure: number_of_sent_pushes {
     group_label: "* Message Performance *"
     label: "# Sent Pushes"
+    description: "Number of push contacts sent to variant group within the cohort's journey"
     type: sum
     sql: ${push_sent_count} ;;
   }
@@ -636,6 +675,7 @@ view: braze_lifecycle_cohorts {
   measure: share_of_sent_pushes {
     group_label: "* Message Performance *"
     label: "% Sent Pushes"
+    description: "Share of email push sent to variant group amongh all messages sent to variant group within the cohort's journey"
     type: number
     sql: safe_divide(${number_of_sent_pushes},${number_of_sent_messages}) ;;
     value_format_name: percent_2
@@ -644,6 +684,7 @@ view: braze_lifecycle_cohorts {
   measure: number_of_bounced_pushes {
     group_label: "* Message Performance *"
     label: "# Bounced Pushes"
+    description: "Number of push contacts that bounced"
     type: sum
     sql: ${push_is_bounced_count} ;;
   }
@@ -651,6 +692,7 @@ view: braze_lifecycle_cohorts {
   measure: share_of_bounced_pushes {
     group_label: "* Message Performance *"
     label: "% Bounced Pushes"
+    description: "Share of push contacts that bounced among all push contacts that were sent"
     type: number
     sql: safe_divide(${number_of_bounced_pushes},${number_of_sent_pushes}) ;;
     value_format_name: percent_2
@@ -659,6 +701,7 @@ view: braze_lifecycle_cohorts {
   measure: number_of_tapped_pushes {
     group_label: "* Message Performance *"
     label: "# Tapped Pushes"
+    description: "Number of push contacts that were tapped"
     type: sum
     sql: ${push_is_tapped_count} ;;
   }
@@ -666,6 +709,7 @@ view: braze_lifecycle_cohorts {
   measure: share_of_tapped_pushes {
     group_label: "* Message Performance *"
     label: "% Tapped Pushes"
+    description: "Share of push contacts that were tapped among all push contacts that were sent"
     type: number
     sql: safe_divide(${number_of_tapped_pushes},${share_of_sent_pushes}) ;;
     value_format_name: percent_2
