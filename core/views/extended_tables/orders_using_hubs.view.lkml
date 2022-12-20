@@ -144,11 +144,11 @@ view: orders_using_hubs {
   measure: avg_riding_to_customer_speed {
     group_label: "* Operations / Logistics *"
     label: "AVG Riding to Customer Speed (km/h)"
-    description: "Average of distance to customer (straight line) from the previous destination (hub for the 1st order in the stack and previous customer for the subsequent orders) divided by riding to customer time."
+    description: "Average of distance to customer (straight line) from the previous destination (hub for the 1st order in the stack and previous customer for the subsequent orders) divided by riding to customer time. Outliers excluded (>40 km/h)."
     type: average
     sql: ${riding_to_customer_speed_dimension};;
     value_format: "0.00"
-    filters: [is_delivery_distance_over_10km: "no"]
+    filters: [is_delivery_distance_over_10km: "no", riding_to_customer_speed_dimension: "<40" ]
   }
 
   ###### Sums
