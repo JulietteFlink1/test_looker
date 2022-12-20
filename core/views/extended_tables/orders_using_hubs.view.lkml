@@ -129,6 +129,28 @@ view: orders_using_hubs {
     sql: case when ${hubs.is_cell_split_hub} = true then true end;;
   }
 
+  dimension: riding_to_customer_speed_dimension {
+    group_label: "* Operations / Logistics *"
+    label: "Riding to Customer Speed (km/h)"
+    description: "Distance to customer (straight line) from the previous destination (hub for the 1st order in the stack and previous customer for the subsequent orders) divided by riding to customer time."
+    type: number
+    sql: ${delivery_distance_km}/(${riding_to_customer_time_minutes}/60) ;;
+  }
+
+  ###### Measures #####
+
+  ###### Average
+
+  measure: avg_riding_to_customer_speed {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Riding to Customer Speed (km/h)"
+    description: "Average of distance to customer (straight line) from the previous destination (hub for the 1st order in the stack and previous customer for the subsequent orders) divided by riding to customer time."
+    type: average
+    sql: ${riding_to_customer_speed_dimension};;
+    value_format: "0.00"
+    filters: [is_delivery_distance_over_10km: "no"]
+  }
+
   ###### Sums
 
   measure: sum_gmv_existing_hubs {
