@@ -16,9 +16,21 @@ view: braze_lifecycle_cohorts {
     hidden: yes
   }
 
+  dimension: control_customers_discounted_ordered_count {
+    type: number
+    sql: ${TABLE}.control_customers_discounted_ordered_count ;;
+    hidden: yes
+  }
+
   dimension: customers_ordered_count {
     type: number
     sql: ${TABLE}.customers_ordered_count ;;
+    hidden: yes
+  }
+
+  dimension: control_customers_ordered_count {
+    type: number
+    sql: ${TABLE}.control_customers_ordered_count ;;
     hidden: yes
   }
 
@@ -28,15 +40,33 @@ view: braze_lifecycle_cohorts {
     hidden: yes
   }
 
+  dimension: control_customers_visited_count {
+    type: number
+    sql: ${TABLE}.control_customers_visited_count ;;
+    hidden: yes
+  }
+
   dimension: daily_visits_count {
     type: number
     sql: ${TABLE}.daily_visits_count ;;
     hidden: yes
   }
 
+  dimension: control_daily_visits_count {
+    type: number
+    sql: ${TABLE}.control_daily_visits_count ;;
+    hidden: yes
+  }
+
   dimension: discounted_orders_count {
     type: number
     sql: ${TABLE}.discounted_orders_count ;;
+    hidden: yes
+  }
+
+  dimension: control_discounted_orders_count {
+    type: number
+    sql: ${TABLE}.control_discounted_orders_count ;;
     hidden: yes
   }
 
@@ -118,6 +148,12 @@ view: braze_lifecycle_cohorts {
     hidden: yes
   }
 
+  dimension: control_orders_count {
+    type: number
+    sql: ${TABLE}.control_orders_count ;;
+    hidden: yes
+  }
+
   dimension: push_is_bounced_count {
     type: number
     sql: ${TABLE}.push_is_bounced_count ;;
@@ -139,6 +175,12 @@ view: braze_lifecycle_cohorts {
   dimension: users_count {
     type: number
     sql: ${TABLE}.users_count ;;
+    hidden: yes
+  }
+
+  dimension: control_users_count {
+    type: number
+    sql: ${TABLE}.control_users_count ;;
     hidden: yes
   }
 
@@ -200,7 +242,6 @@ view: braze_lifecycle_cohorts {
     group_label: "* Dates and Timestamps *"
     label: "Cohort Entry"
     timeframes: [
-      raw,
       date,
       week,
       month,
@@ -217,12 +258,9 @@ view: braze_lifecycle_cohorts {
     group_label: "* Dates and Timestamps *"
     label: "First Contact"
     timeframes: [
-      raw,
       date,
       week,
       month,
-      quarter,
-      year
     ]
     convert_tz: no
     datatype: date
@@ -234,12 +272,9 @@ view: braze_lifecycle_cohorts {
     group_label: "* Dates and Timestamps *"
     label: "Last Contact"
     timeframes: [
-      raw,
       date,
       week,
       month,
-      quarter,
-      year
     ]
     convert_tz: no
     datatype: date
@@ -255,6 +290,32 @@ view: braze_lifecycle_cohorts {
     label: "# Contacted Users"
     type: sum
     sql: ${users_count} ;;
+  }
+
+  measure: number_of_variant_users {
+    hidden: yes
+    type: sum
+    sql: ${users_count} ;;
+    filters: {
+
+      field: in_control_group
+
+      value: "No"
+
+    }
+  }
+
+  measure: number_of_control_users {
+    hidden: yes
+    type: sum
+    sql: ${control_users_count} ;;
+    filters: {
+
+      field: in_control_group
+
+      value: "No"
+
+    }
   }
 
   measure: number_of_sent_messages {
@@ -286,12 +347,47 @@ view: braze_lifecycle_cohorts {
     sql: ${customers_ordered_count};;
   }
 
+  measure: number_of_variant_customers_ordered {
+    hidden: yes
+    type: sum
+    sql: ${customers_ordered_count};;
+    filters: {
+
+      field: in_control_group
+
+      value: "No"
+
+    }
+  }
+
+  measure: number_of_control_customers_ordered {
+    hidden: yes
+    type: sum
+    sql: ${control_customers_ordered_count};;
+    filters: {
+
+      field: in_control_group
+
+      value: "No"
+
+    }
+  }
+
   measure: share_of_customers_ordered {
     group_label: "* Cohort Performance *"
     label: "% Customers With Orders"
     type: number
     sql: safe_divide(${number_of_customers_ordered},${number_of_users}) ;;
     value_format_name: percent_2
+  }
+
+  measure: incrementality_of_share_of_customers_ordered {
+    group_label: "* Cohort Performance *"
+    label: "Incr. ppt % Customers With Orders"
+    type: number
+    sql: (safe_divide(${number_of_variant_customers_ordered},${number_of_variant_users}) -
+    safe_divide(${number_of_control_customers_ordered},${number_of_control_users})) * 100 ;;
+    value_format_name: decimal_2
   }
 
   measure: number_of_orders {
@@ -316,12 +412,47 @@ view: braze_lifecycle_cohorts {
     sql: ${customers_visited_count} ;;
   }
 
+  measure: number_of_variant_customers_visited {
+    hidden: yes
+    type: sum
+    sql: ${customers_visited_count} ;;
+    filters: {
+
+      field: in_control_group
+
+      value: "No"
+
+    }
+  }
+
+  measure: number_of_control_customers_visited {
+    hidden: yes
+    type: sum
+    sql: ${control_customers_visited_count} ;;
+    filters: {
+
+      field: in_control_group
+
+      value: "No"
+
+    }
+  }
+
   measure: share_of_customers_visited {
     group_label: "* Cohort Performance *"
     label: "% Customers with Visits"
     type: number
     sql: safe_divide(${number_of_customers_visited},${number_of_users}) ;;
     value_format_name: percent_2
+  }
+
+  measure: incrementality_of_share_of_customers_visited {
+    group_label: "* Cohort Performance *"
+    label: "Incr. ppt % Customers with Visits"
+    type: number
+    sql: (safe_divide(${number_of_variant_customers_visited},${number_of_variant_users}) -
+    safe_divide(${number_of_control_customers_visited},${number_of_control_users})) * 100 ;;
+    value_format_name: decimal_2
   }
 
   measure: number_of_daily_visits {
@@ -499,7 +630,7 @@ view: braze_lifecycle_cohorts {
     group_label: "* Message Performance *"
     label: "# Sent Pushes"
     type: sum
-    sql: ${TABLE}.push_sent_count ;;
+    sql: ${push_sent_count} ;;
   }
 
   measure: share_of_sent_pushes {
@@ -521,7 +652,7 @@ view: braze_lifecycle_cohorts {
     group_label: "* Message Performance *"
     label: "% Bounced Pushes"
     type: number
-    sql: safe_divide(${number_of_bounced_pushes},${share_of_sent_pushes}) ;;
+    sql: safe_divide(${number_of_bounced_pushes},${number_of_sent_pushes}) ;;
     value_format_name: percent_2
   }
 
