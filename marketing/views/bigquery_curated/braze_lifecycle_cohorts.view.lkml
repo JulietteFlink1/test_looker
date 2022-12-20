@@ -4,27 +4,15 @@
 ### This view represents data for reporting on CRM canvas lifecycles efficiency.
 
 view: braze_lifecycle_cohorts {
-  sql_table_name: `flink-data-dev.dbt_aavramenko_curated.braze_lifecycle_cohorts`
+  sql_table_name: `flink-data-dev.dbt_aavramenko_curated.braze_lifecycle_cohorts_v2`
     ;;
   view_label: "* CRM Canvas Lifecycle Cohorts *"
 
   # =========  hidden   =========
 
-  dimension: customers_android_visited_count {
-    type: number
-    sql: ${TABLE}.customers_android_visited_count ;;
-    hidden: yes
-  }
-
   dimension: customers_discounted_ordered_count {
     type: number
     sql: ${TABLE}.customers_discounted_ordered_count ;;
-    hidden: yes
-  }
-
-  dimension: customers_ios_visited_count {
-    type: number
-    sql: ${TABLE}.customers_ios_visited_count ;;
     hidden: yes
   }
 
@@ -40,33 +28,9 @@ view: braze_lifecycle_cohorts {
     hidden: yes
   }
 
-  dimension: customers_web_visited_count {
-    type: number
-    sql: ${TABLE}.customers_web_visited_count ;;
-    hidden: yes
-  }
-
-  dimension: daily_android_visits_count {
-    type: number
-    sql: ${TABLE}.daily_android_visits_count ;;
-    hidden: yes
-  }
-
-  dimension: daily_ios_visits_count {
-    type: number
-    sql: ${TABLE}.daily_ios_visits_count ;;
-    hidden: yes
-  }
-
   dimension: daily_visits_count {
     type: number
     sql: ${TABLE}.daily_visits_count ;;
-    hidden: yes
-  }
-
-  dimension: daily_web_visits_count {
-    type: number
-    sql: ${TABLE}.daily_web_visits_count ;;
     hidden: yes
   }
 
@@ -151,78 +115,6 @@ view: braze_lifecycle_cohorts {
   dimension: orders_count {
     type: number
     sql: ${TABLE}.orders_count ;;
-    hidden: yes
-  }
-
-  dimension: post_journey_28_days_customers_android_visited_count {
-    type: number
-    sql: ${TABLE}.post_journey_28_days_customers_android_visited_count ;;
-    hidden: yes
-  }
-
-  dimension: post_journey_28_days_customers_discounted_ordered_count {
-    type: number
-    sql: ${TABLE}.post_journey_28_days_customers_discounted_ordered_count ;;
-    hidden: yes
-  }
-
-  dimension: post_journey_28_days_customers_ios_visited_count {
-    type: number
-    sql: ${TABLE}.post_journey_28_days_customers_ios_visited_count ;;
-    hidden: yes
-  }
-
-  dimension: post_journey_28_days_customers_ordered_count {
-    type: number
-    sql: ${TABLE}.post_journey_28_days_customers_ordered_count ;;
-    hidden: yes
-  }
-
-  dimension: post_journey_28_days_customers_visited_count {
-    type: number
-    sql: ${TABLE}.post_journey_28_days_customers_visited_count ;;
-    hidden: yes
-  }
-
-  dimension: post_journey_28_days_customers_web_visited_count {
-    type: number
-    sql: ${TABLE}.post_journey_28_days_customers_web_visited_count ;;
-    hidden: yes
-  }
-
-  dimension: post_journey_28_days_daily_android_visits_count {
-    type: number
-    sql: ${TABLE}.post_journey_28_days_daily_android_visits_count ;;
-    hidden: yes
-  }
-
-  dimension: post_journey_28_days_daily_ios_visits_count {
-    type: number
-    sql: ${TABLE}.post_journey_28_days_daily_ios_visits_count ;;
-    hidden: yes
-  }
-
-  dimension: post_journey_28_days_daily_visits_count {
-    type: number
-    sql: ${TABLE}.post_journey_28_days_daily_visits_count ;;
-    hidden: yes
-  }
-
-  dimension: post_journey_28_days_daily_web_visits_count {
-    type: number
-    sql: ${TABLE}.post_journey_28_days_daily_web_visits_count ;;
-    hidden: yes
-  }
-
-  dimension: post_journey_28_days_discounted_orders_count {
-    type: number
-    sql: ${TABLE}.post_journey_28_days_discounted_orders_count ;;
-    hidden: yes
-  }
-
-  dimension: post_journey_28_days_orders_count {
-    type: number
-    sql: ${TABLE}.post_journey_28_days_orders_count ;;
     hidden: yes
   }
 
@@ -384,7 +276,7 @@ view: braze_lifecycle_cohorts {
     label: "% Engaged Messages"
     type: number
     sql: safe_divide(${number_of_engaged_messages},${number_of_sent_messages}) ;;
-    value_format_name: percent_3
+    value_format_name: percent_2
   }
 
   measure: number_of_customers_ordered {
@@ -411,10 +303,10 @@ view: braze_lifecycle_cohorts {
 
   measure: share_of_orders_per_users {
     group_label: "* Cohort Performance *"
-    label: "% Orders per Users"
+    label: "Orders per Users Frequency"
     type: number
     sql: safe_divide(${number_of_orders},${number_of_users}) ;;
-    value_format_name: percent_2
+    value_format_name: decimal_2
   }
 
   measure: number_of_customers_visited {
@@ -441,70 +333,10 @@ view: braze_lifecycle_cohorts {
 
   measure: share_of_daily_visits_per_users {
     group_label: "* Cohort Performance *"
-    label: "% Daily Visits per Users"
+    label: "Daily Visits per Users Frequency"
     type: number
     sql: safe_divide(${number_of_daily_visits},${number_of_users}) ;;
-    value_format_name: percent_2
-  }
-
-  measure: number_of_customers_ordered_post_28_days {
-    group_label: "* Cohort Performance post 28 days *"
-    label: "# Customers with Orders post 28 days"
-    type: sum
-    sql: ${post_journey_28_days_customers_ordered_count} ;;
-  }
-
-  measure: share_of_customers_ordered_post_28_days {
-    group_label: "* Cohort Performance post 28 days *"
-    label: "% Customers with Orders post 28 days"
-    type: number
-    sql: safe_divide(${number_of_customers_ordered_post_28_days},${number_of_users}) ;;
-    value_format_name: percent_2
-  }
-
-  measure: number_of_orders_post_28_days {
-    group_label: "* Cohort Performance post 28 days *"
-    label: "# Orders post 28 days"
-    type: sum
-    sql: ${post_journey_28_days_orders_count};;
-  }
-
-  measure: share_of_orders_per_users_post_28_days {
-    group_label: "* Cohort Performance post 28 days *"
-    label: "% Orders per Users post 28 days"
-    type: number
-    sql: safe_divide(${number_of_orders_post_28_days},${number_of_users}) ;;
-    value_format_name: percent_2
-  }
-
-  measure: number_of_customers_visited_post_28_days {
-    group_label: "* Cohort Performance post 28 days *"
-    label: "# Customers with Visits post 28 days"
-    type: sum
-    sql: ${post_journey_28_days_customers_visited_count} ;;
-  }
-
-  measure: share_of_customers_visited_post_28_days {
-    group_label: "* Cohort Performance post 28 days *"
-    label: "% Customers with Visits post 28 days"
-    type: number
-    sql: safe_divide(${number_of_customers_visited_post_28_days},${number_of_users}) ;;
-    value_format_name: percent_2
-  }
-
-  measure: number_of_daily_visits_post_28_days {
-    group_label: "* Cohort Performance post 28 days *"
-    label: "# Daily Customer Visits post 28 days"
-    type: number
-    sql: ${post_journey_28_days_daily_visits_count} ;;
-  }
-
-  measure: share_of_daily_visits_per_users_post_28_days {
-    group_label: "* Cohort Performance post 28 days *"
-    label: "% Daily Visits per Users post 28 days"
-    type: number
-    sql: safe_divide(${number_of_daily_visits_post_28_days},${number_of_users}) ;;
-    value_format_name: percent_2
+    value_format_name: decimal_2
   }
 
   measure: number_of_customers_discounted_ordered {
@@ -518,7 +350,7 @@ view: braze_lifecycle_cohorts {
     group_label: "* Cohort Performance *"
     label: "% Customers With Discounted Orders"
     type: number
-    sql: safe_divide(${number_of_customers_discounted_ordered},${number_of_users}) ;;
+    sql: safe_divide(${number_of_customers_discounted_ordered},${number_of_customers_ordered}) ;;
     value_format_name: percent_2
   }
 
@@ -529,42 +361,20 @@ view: braze_lifecycle_cohorts {
     sql: ${discounted_orders_count} ;;
   }
 
+  measure: share_of_discounted_orders {
+    group_label: "* Cohort Performance *"
+    label: "% Discounted Orders"
+    type: number
+    sql: safe_divide(${number_of_discounted_orders},${number_of_orders}) ;;
+    value_format_name: percent_2
+  }
+
   measure: share_of_discounted_orders_per_users {
     group_label: "* Cohort Performance *"
-    label: "% Discounted Orders per Users"
+    label: "Discounted Orders per Users Frequency"
     type: number
-    sql: safe_divide(${number_of_discounted_orders},${number_of_users}) ;;
-    value_format_name: percent_2
-  }
-
-  measure: number_of_customers_discounted_ordered_post_28_days {
-    group_label: "* Cohort Performance post 28 days *"
-    label: "# Customers with Discounted Orders post 28 days"
-    type: sum
-    sql: ${post_journey_28_days_customers_discounted_ordered_count} ;;
-  }
-
-  measure: share_of_customers_discounted_ordered_post_28_days {
-    group_label: "* Cohort Performance post 28 days *"
-    label: "% Customers With Discounted Orders post 28 days"
-    type: number
-    sql: safe_divide(${number_of_customers_discounted_ordered_post_28_days},${number_of_users}) ;;
-    value_format_name: percent_2
-  }
-
-  measure: number_of_discounted_orders_post_28_days {
-    group_label: "* Cohort Performance post 28 days *"
-    label: "# Discounted Orders post 28 days"
-    type: sum
-    sql: ${post_journey_28_days_discounted_orders_count} ;;
-  }
-
-  measure: share_of_discounted_orders_per_users_post_28_days {
-    group_label: "* Cohort Performance post 28 days *"
-    label: "% Discounted Orders per Users post 28 days"
-    type: number
-    sql: safe_divide(${number_of_discounted_orders_post_28_days},${number_of_users}) ;;
-    value_format_name: percent_2
+    sql: safe_divide(${number_of_discounted_orders},${number_of_customers_ordered}) ;;
+    value_format_name: decimal_2
   }
 
   measure: number_of_sent_emails {
@@ -702,7 +512,7 @@ view: braze_lifecycle_cohorts {
 
   measure: number_of_bounced_pushes {
     group_label: "* Message Performance *"
-    label: "# Sent Pushes"
+    label: "# Bounced Pushes"
     type: sum
     sql: ${push_is_bounced_count} ;;
   }
@@ -717,7 +527,7 @@ view: braze_lifecycle_cohorts {
 
   measure: number_of_tapped_pushes {
     group_label: "* Message Performance *"
-    label: "# Sent Pushes"
+    label: "# Tapped Pushes"
     type: sum
     sql: ${push_is_tapped_count} ;;
   }
@@ -729,78 +539,5 @@ view: braze_lifecycle_cohorts {
     sql: safe_divide(${number_of_tapped_pushes},${share_of_sent_pushes}) ;;
     value_format_name: percent_2
   }
-
-
-  # dimension: customers_android_visited_count {
-  #   type: number
-  #   sql: ${TABLE}.customers_android_visited_count ;;
-  #   hidden: yes
-  # }
-
-  # dimension: customers_ios_visited_count {
-  #   type: number
-  #   sql: ${TABLE}.customers_ios_visited_count ;;
-  #   hidden: yes
-  # }
-
-  # dimension: customers_web_visited_count {
-  #   type: number
-  #   sql: ${TABLE}.customers_web_visited_count ;;
-  #   hidden: yes
-  # }
-
-  # dimension: daily_android_visits_count {
-  #   type: number
-  #   sql: ${TABLE}.daily_android_visits_count ;;
-  #   hidden: yes
-  # }
-
-  # dimension: daily_ios_visits_count {
-  #   type: number
-  #   sql: ${TABLE}.daily_ios_visits_count ;;
-  #   hidden: yes
-  # }
-
-  # dimension: daily_web_visits_count {
-  #   type: number
-  #   sql: ${TABLE}.daily_web_visits_count ;;
-  #   hidden: yes
-  # }
-
-  # dimension: post_journey_28_days_customers_android_visited_count {
-  #   type: number
-  #   sql: ${TABLE}.post_journey_28_days_customers_android_visited_count ;;
-  #   hidden: yes
-  # }
-
-  # dimension: post_journey_28_days_customers_ios_visited_count {
-  #   type: number
-  #   sql: ${TABLE}.post_journey_28_days_customers_ios_visited_count ;;
-  #   hidden: yes
-  # }
-
-  # dimension: post_journey_28_days_customers_web_visited_count {
-  #   type: number
-  #   sql: ${TABLE}.post_journey_28_days_customers_web_visited_count ;;
-  #   hidden: yes
-  # }
-
-  # dimension: post_journey_28_days_daily_android_visits_count {
-  #   type: number
-  #   sql: ${TABLE}.post_journey_28_days_daily_android_visits_count ;;
-  #   hidden: yes
-  # }
-
-  # dimension: post_journey_28_days_daily_ios_visits_count {
-  #   type: number
-  #   sql: ${TABLE}.post_journey_28_days_daily_ios_visits_count ;;
-  #   hidden: yes
-  # }
-
-  # dimension: post_journey_28_days_daily_web_visits_count {
-  #   type: number
-  #   sql: ${TABLE}.post_journey_28_days_daily_web_visits_count ;;
-  #   hidden: yes
-  # }
 
 }
