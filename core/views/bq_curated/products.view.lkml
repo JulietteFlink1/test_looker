@@ -90,7 +90,6 @@ view: products {
     label: "SKU"
     type: string
     sql: ${TABLE}.product_sku ;;
-    group_label: "> Product Attributes"
   }
 
   dimension: product_sku_name {
@@ -427,8 +426,7 @@ view: products {
     type: string
     sql: ${TABLE}.country_iso ;;
     hidden: no
-    group_label: "> Product Attributes"
-    label: "Country"
+    label: "Country Iso"
   }
 
   dimension: units_per_hu {
