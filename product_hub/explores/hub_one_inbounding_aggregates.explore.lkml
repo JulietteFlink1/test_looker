@@ -44,7 +44,7 @@ explore: hub_one_inbounding_aggregates {
 
 
 join: hubs_ct {
-  view_label: "Hub Dimensions"
+  view_label: "2 Hub Dimensions"
   sql_on: ${hub_one_inbounding_aggregates.hub_code} = ${hubs_ct.hub_code} ;;
   type: left_outer
   relationship: many_to_one
