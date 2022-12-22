@@ -225,7 +225,7 @@ view: braze_lifecycle_cohorts {
 
   dimension: canvas_variation_name {
     group_label: "* Cohort Dimensions *"
-    label: "Canvas Variation Name"
+    label: "Canvas Variation"
     type: string
     sql: ${TABLE}.canvas_variation_name ;;
   }
@@ -302,7 +302,7 @@ view: braze_lifecycle_cohorts {
   measure: number_of_users {
     group_label: "* Cohort Performance *"
     label: "# Cohort Users"
-    description: "Number of Braze useres who entered the canvas’s cohort"
+    description: "Number of Braze users who entered the canvas’s cohort"
     type: sum
     sql: ${users_count} ;;
   }
@@ -411,6 +411,17 @@ view: braze_lifecycle_cohorts {
     value_format_name: decimal_2
   }
 
+  measure: incremental_lift_of_share_of_customers_ordered {
+    group_label: "* Cohort Performance *"
+    label: "Incremental lift - Δ % in Users Ordered"
+    description: "% increase in share of users who placed an order in variant group compared to the share of users who placed an order in control group"
+    type: number
+    sql: (safe_divide(${number_of_variant_customers_ordered},${number_of_variant_users}) -
+      safe_divide(${number_of_control_customers_ordered},${number_of_control_users})) /
+      safe_divide(${number_of_control_customers_ordered},${number_of_control_users}) ;;
+    value_format_name: percent_2
+  }
+
   measure: number_of_orders {
     group_label: "* Cohort Performance *"
     label: "# Orders"
@@ -421,7 +432,7 @@ view: braze_lifecycle_cohorts {
 
   measure: share_of_orders_per_users {
     group_label: "* Cohort Performance *"
-    label: "Orders Frequency"
+    label: "Order Frequency"
     description: "AVG number of orders among users within the cohort who placed at least one order"
     type: number
     sql: safe_divide(${number_of_orders},${number_of_customers_ordered}) ;;
@@ -481,17 +492,28 @@ view: braze_lifecycle_cohorts {
     value_format_name: decimal_2
   }
 
+  measure: incremental_lift_of_share_of_customers_visited {
+    group_label: "* Cohort Performance *"
+    label: "Incremental lift - Δ % in Users Visited"
+    description: "% increase in share of users who visited app or web in variant group compared to the share of users who visited app or web in control group"
+    type: number
+    sql: (safe_divide(${number_of_variant_customers_visited},${number_of_variant_users}) -
+      safe_divide(${number_of_control_customers_visited},${number_of_control_users})) /
+      safe_divide(${number_of_control_customers_visited},${number_of_control_users}) ;;
+    value_format_name: percent_2
+  }
+
   measure: number_of_daily_visits {
     group_label: "* Cohort Performance *"
-    label: "# Daily Customer Visits"
-    description: "Aggregated total number of days a each user was active within the cohort's journey. We can't calculate the abolute number of visits by each customer on a particular day, we calculate only one visit per day"
+    label: "# Customer Visits (Days)"
+    description: "Aggregated total number of days each user was active within the cohort's journey. We can't calculate the absolute number of visits by each customer on a particular day, we calculate only one visit per day"
     type: sum
     sql: ${daily_visits_count} ;;
   }
 
   measure: share_of_daily_visits_per_users {
     group_label: "* Cohort Performance *"
-    label: "Daily Visits Frequency"
+    label: "Visit Frequency (Days)"
     description: "AVG number of days with visits among users within the cohort who have at least one visit"
     type: number
     sql: safe_divide(${number_of_daily_visits},${number_of_customers_visited}) ;;
@@ -534,7 +556,7 @@ view: braze_lifecycle_cohorts {
 
   measure: share_of_discounted_orders_per_users {
     group_label: "* Cohort Performance *"
-    label: "Discounted Orders Frequency"
+    label: "Discounted Order Frequency"
     description: "AVG number of discounted orders among users within the cohort who placed at least one any order"
     type: number
     sql: safe_divide(${number_of_discounted_orders},${number_of_customers_ordered}) ;;

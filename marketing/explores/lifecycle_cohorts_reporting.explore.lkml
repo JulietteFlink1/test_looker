@@ -8,10 +8,10 @@ explore: lifecycle_cohorts_reporting {
 
   hidden: no
   view_name: braze_lifecycle_cohorts
-  label: "Canvas Lifecycle Cohorts"
+  label: "Lifecycle Canvases"
   view_label: "CRM"
   group_label: "Marketing"
-  description: "Cost of customer acquisition for online channels"
+  description: "Reporting on CRM Lifecycle Canvas Cohorts"
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   #  - - - - - - - - - -    FILTER & SETTINGS
