@@ -38,7 +38,9 @@ explore: end_to_end_supplier_matching {
         ;;
     fields: [products.category, products.subcategory,
              products.replenishment_substitute_group,
-             products.replenishment_substitute_group_parent_sku]
+             products.replenishment_substitute_group_parent_sku,
+             products.product_name
+            ]
   }
 
   join: hubs_ct {
