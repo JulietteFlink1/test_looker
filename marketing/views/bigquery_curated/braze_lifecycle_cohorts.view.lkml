@@ -416,9 +416,9 @@ view: braze_lifecycle_cohorts {
     label: "Incremental lift - Δ % in Users Ordered"
     description: "% increase in share of users who placed an order in variant group compared to the share of users who placed an order in control group"
     type: number
-    sql: (safe_divide(${number_of_variant_customers_ordered},${number_of_variant_users}) -
-      safe_divide(${number_of_control_customers_ordered},${number_of_control_users})) /
-      safe_divide(${number_of_control_customers_ordered},${number_of_control_users}) ;;
+    sql: safe_divide((safe_divide(${number_of_variant_customers_ordered},${number_of_variant_users}) -
+      safe_divide(${number_of_control_customers_ordered},${number_of_control_users})),
+      safe_divide(${number_of_control_customers_ordered},${number_of_control_users})) ;;
     value_format_name: percent_2
   }
 
@@ -497,9 +497,9 @@ view: braze_lifecycle_cohorts {
     label: "Incremental lift - Δ % in Users Visited"
     description: "% increase in share of users who visited app or web in variant group compared to the share of users who visited app or web in control group"
     type: number
-    sql: (safe_divide(${number_of_variant_customers_visited},${number_of_variant_users}) -
-      safe_divide(${number_of_control_customers_visited},${number_of_control_users})) /
-      safe_divide(${number_of_control_customers_visited},${number_of_control_users}) ;;
+    sql: safe_divide((safe_divide(${number_of_variant_customers_visited},${number_of_variant_users}) -
+      safe_divide(${number_of_control_customers_visited},${number_of_control_users})),
+      safe_divide(${number_of_control_customers_visited},${number_of_control_users})) ;;
     value_format_name: percent_2
   }
 
