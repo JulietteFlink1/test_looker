@@ -1,28 +1,160 @@
+# Owner: Product Analytics, Flavia Alvarez
+# Created: 2022-12-22
+
 view: event_inbound_progressed {
   sql_table_name: `flink-data-dev.curated.event_inbound_progressed`
     ;;
 
-  dimension: action {
+  view_label: "1 Event: Order Progressed"
+
+  # This is the curated table for Order Progressed event coming from Hub One
+
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~     Sets          ~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~     Parameters     ~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~     Dimensions     ~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  # =========  IDs   =========
+
+  dimension: event_uuid {
     type: string
-    description: "The action performed. It can be item_picked, item_skipped, item_refunded or item_reset."
-    sql: ${TABLE}.action ;;
+    group_label: "IDs"
+    label: "Event UUID"
+    description: "Unique identifier of an event"
+    primary_key: yes
+    hidden: yes
+    sql: ${TABLE}.event_uuid ;;
   }
 
   dimension: anonymous_id {
     type: string
-    description: "Unique ID for each user set by Segement."
+    group_label: "IDs"
+    label: "Anonymous ID"
+    description: "User ID set by Segment"
+    hidden: yes
     sql: ${TABLE}.anonymous_id ;;
   }
 
-  dimension: context_ip {
-    type: string
-    sql: ${TABLE}.context_ip ;;
-  }
+# =========  Location Attributes   =========
 
   dimension: country_iso {
     type: string
+    group_label: "Location Dimensions"
+    label: "Country ISO"
     description: "Country ISO based on 'hub_code'."
     sql: ${TABLE}.country_iso ;;
+  }
+
+  dimension: hub_code {
+    type: string
+    group_label: "Location Dimensions"
+    label: "Hub Code"
+    description: "Code of a hub identical to back-end source tables."
+    sql: ${TABLE}.hub_code ;;
+  }
+
+  dimension: locale {
+    group_label: "Location Dimensions"
+    label: "Locale"
+    description: "Language code | Coutnry, region code"
+    type: string
+    sql: ${TABLE}.locale ;;
+  }
+
+  # =========  Employee Attributes   =========
+
+  dimension: quinyx_badge_number {
+    type: string
+    group_label: "Employee Attributes"
+    label: "Quinyx Badge Number"
+    sql: ${TABLE}.quinyx_badge_number ;;
+  }
+
+  dimension: user_id {
+    type: string
+    group_label: "Employee Attributes"
+    label: "Auth0 id" #Not yet but it should be
+    hidden: yes
+    sql: ${TABLE}.user_id ;;
+  }
+
+  # =========  Dates and Timestamps   =========
+
+  dimension_group: received {
+    type: time
+    hidden: yes
+    sql: ${TABLE}.received_at ;;
+  }
+
+  dimension_group: event {
+    type: time
+    hidden: yes
+    convert_tz: no
+    datatype: date
+    sql: ${TABLE}.event_date ;;
+  }
+
+  dimension_group: event_timestamp {
+    group_label: "Date / Timestamp"
+    label: "Event"
+    description: "Timestamp of when an event happened"
+    type: time
+    timeframes: [
+      time,
+      date,
+      week,
+      hour_of_day,
+      quarter
+    ]
+    sql: ${TABLE}.event_timestamp ;;
+  }
+
+  # =========  Generic Dimensions   =========
+
+  dimension: event_name {
+    group_label: "Generic Dimensions"
+    label: "Event Name"
+    description: "Name of the event triggered"
+    type: string
+    sql: ${TABLE}.event_name ;;
+  }
+
+  dimension: event_text {
+    group_label: "Generic Dimensions"
+    label: "Event Text"
+    description: "event_name in camel case"
+    type: string
+    hidden: yes
+    sql: ${TABLE}.event_text ;;
+  }
+
+  dimension: screen_name {
+    group_label: "Generic Dimensions"
+    label: "Screen Name"
+    description: "Screen name where the event was triggered"
+    type: string
+    sql: ${TABLE}.screen_name ;;
+  }
+
+# =========  Event Dimensions   =========
+
+  dimension: action {
+    description: "The action performed."
+    type: string
+    sql: ${TABLE}.action ;;
+  }
+
+  dimension: method {
+    description: "The used method to add/modify a product during list preparation. It can be scanned, text_searched, advanced_searched or manual (only for updated)."
+    type: string
+    sql: ${TABLE}.method ;;
   }
 
   dimension: dropping_list_id {
@@ -31,53 +163,16 @@ view: event_inbound_progressed {
     sql: ${TABLE}.dropping_list_id ;;
   }
 
-  dimension_group: event {
-    type: time
-    description: "Date when an event was triggered."
-    timeframes: [
-      raw,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    convert_tz: no
-    datatype: date
-    sql: ${TABLE}.event_date ;;
-  }
-
-  dimension: event_name {
+  dimension: product_sku {
+    description: "The sku of the product, as available in the backend."
     type: string
-    description: "Name of an event triggered."
-    sql: ${TABLE}.event_name ;;
+    sql: ${TABLE}.product_sku ;;
   }
 
-  dimension_group: event_timestamp {
-    type: time
-    description: "Timestamp when an event was triggered within the app / web."
-    timeframes: [
-      raw,
-      time,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    sql: ${TABLE}.event_timestamp ;;
-  }
-
-  dimension: event_uuid {
-    type: string
-    description: "Unique ID for each event defined by Segment."
-    sql: ${TABLE}.event_uuid ;;
-  }
-
-  dimension: hub_code {
-    type: string
-    description: "Code of a hub identical to back-end source tables."
-    sql: ${TABLE}.hub_code ;;
+  dimension: quantity {
+    description: "The quantity affected. It is always in single units and can be negative when action = product_updated_quantity."
+    type: number
+    sql: ${TABLE}.quantity ;;
   }
 
   dimension: is_handling_unit {
@@ -86,100 +181,104 @@ view: event_inbound_progressed {
     sql: ${TABLE}.is_handling_unit ;;
   }
 
-  dimension: locale {
-    type: string
-    sql: ${TABLE}.locale ;;
-  }
+  # =========  Other Dimensions   =========
 
-  dimension: method {
+  dimension: context_ip {
     type: string
-    description: "The used method to add/modify a product during list preparation. It can be scanned, text_searched, advanced_searched or manual (only for updated)."
-    sql: ${TABLE}.method ;;
-  }
-
-  dimension_group: original_timestamp {
-    type: time
-    description: "Timestamp on the client device when call was invoked."
-    timeframes: [
-      raw,
-      time,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    sql: ${TABLE}.original_timestamp ;;
+    hidden: yes
+    sql: ${TABLE}.context_ip ;;
   }
 
   dimension: page_path {
     type: string
-    description: "Page path of users' page view. Page path does not contain domain information nor query parameters."
+    hidden: yes
     sql: ${TABLE}.page_path ;;
   }
 
   dimension: page_title {
     type: string
+    hidden: yes
     sql: ${TABLE}.page_title ;;
   }
 
   dimension: page_url {
     type: string
+    hidden: yes
     sql: ${TABLE}.page_url ;;
-  }
-
-  dimension: product_sku {
-    type: string
-    description: "SKU of the product, as available in the backend."
-    sql: ${TABLE}.product_sku ;;
-  }
-
-  dimension: quantity {
-    type: number
-    description: "The quantity affected. It is always in single units and can be negative when action = product_updated_quantity."
-    sql: ${TABLE}.quantity ;;
-  }
-
-  dimension: quinyx_badge_number {
-    type: string
-    description: "Employment ID that was initially generated by bambooHR. It is used to identify staff members from hub operations. To be able to map employees between different HR systems (after migrating to SAP), we still refered to it as quiniyx badge number. Quiniyx is used as our workforce management tool for rider ops."
-    sql: ${TABLE}.quinyx_badge_number ;;
-  }
-
-  dimension_group: received {
-    type: time
-    description: "Timestamp when an event was received on the server, used for data laod."
-    timeframes: [
-      raw,
-      time,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    sql: ${TABLE}.received_at ;;
-  }
-
-  dimension: screen_name {
-    type: string
-    description: "Name of the screen where the event occurs, in human readable form. This should be consistent for all events fired on the same screen."
-    sql: ${TABLE}.screen_name ;;
   }
 
   dimension: user_agent {
     type: string
+    hidden: yes
     sql: ${TABLE}.user_agent ;;
   }
 
-  dimension: user_id {
-    type: string
-    description: "Should be populated with Auth0Id, but as of now we are receiving null in this field and using quynix_badge_number to identify users/ employees in the hubs."
-    sql: ${TABLE}.user_id ;;
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+  # ~~~~~~~~~~~~~~~      Measures     ~~~~~~~~~~~~~~~ #
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+  # =========  Total Metrics   =========
+
+  measure: number_of_events {
+    group_label: "Total Metrics"
+    label: "# Events"
+    description: "Number of events triggered"
+    type: count_distinct
+    sql: ${TABLE}.event_uuid ;;
   }
 
-  measure: count {
-    type: count
-    drill_fields: [screen_name, event_name]
+  measure: number_of_dropping_lists {
+    group_label: "Total Metrics"
+    label: "# Dropping Lists"
+    description: "Number of Dropping Lists."
+    type: count_distinct
+    sql: ${dropping_list_id} ;;
   }
+
+  measure: number_of_products {
+    group_label: "Total Metrics"
+    label: "Number of products"
+    description: "Sum of quantity."
+    type: sum
+    sql: ${quantity} ;;
+  }
+
+  measure: number_of_products_added_to_list {
+    group_label: "Total Metrics"
+    label: "Number of Products Added To List"
+    description: "Sum of quantity of products added to list (action = product_added_to_list)."
+    type: sum
+    filters: [action: "product_added_to_list"]
+    sql: ${quantity} ;;
+  }
+
+  measure: number_of_products_removed_from_list {
+    group_label: "Total Metrics"
+    label: "Number of Products Removed From List"
+    description: "Sum of quantity of products removed from list (action = product_removed_from_list)."
+    type: sum
+    filters: [action: "product_removed_from_list"]
+    sql: ${quantity} ;;
+  }
+
+  measure: number_of_products_updated {
+    group_label: "Total Metrics"
+    label: "Number of Products Updated"
+    description: "Sum of quantity of products updated from list (action = product_updated_quantity)."
+    type: sum
+    filters: [action: "product_updated_quantity"]
+    sql: ${quantity} ;;
+  }
+
+  measure: number_of_products_dropped {
+    group_label: "Total Metrics"
+    label: "Number of Products Dropped"
+    description: "Sum of quantity of products dropped (action = product_dropped)."
+    type: sum
+    filters: [action: "product_dropped"]
+    sql: ${quantity} ;;
+  }
+
+  # =========  Rate Metrics   =========
+
 }
