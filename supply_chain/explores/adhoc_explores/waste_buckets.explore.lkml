@@ -43,7 +43,8 @@ join: lexbizz_item {
 
   type: left_outer
   relationship: many_to_one
-  sql_on: ${lexbizz_item.sku}            = ${waste_buckets.sku}
+  sql_on: ${lexbizz_item.sku}              = ${waste_buckets.sku}
+        and ${lexbizz_item.country_iso}    = ${waste_buckets.country_iso}
         and ${lexbizz_item.ingestion_date} = current_date()
     ;;
 }

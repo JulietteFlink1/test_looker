@@ -100,7 +100,7 @@ view: staffing {
     sql: ${TABLE}.number_of_no_show_minutes_external_rider ;;
     hidden: yes
   }
-  dimension: number_of_leave_minutes_rider {
+  dimension: number_of_leave_minutes_rider_dimension {
     label: "# Leave Rider Minutes"
     type: number
     sql: ${TABLE}.number_of_leave_minutes_rider ;;
@@ -2436,6 +2436,61 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  measure: number_of_unassigned_hours_rider_ec_shift {
+    group_label: "> Rider Measures"
+    label: "# Open EC Rider Hours"
+    description: "# Open Rider Hours from shifts with project code = 'EC shift'"
+    type: sum
+    sql: ${TABLE}.number_of_unassigned_minutes_ec_shift_rider/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_unassigned_hours_rider_wfs_shift {
+    group_label: "> Rider Measures"
+    label: "# Open WFS Rider Hours"
+    description: "# Open Rider Hours from shifts with project code = 'WFS shift'"
+    type: sum
+    sql: ${TABLE}.number_of_unassigned_minutes_wfs_shift_rider/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_unassigned_hours_rider_ns_shift {
+    group_label: "> Rider Measures"
+    label: "# Open NS+ Rider Hours"
+    description: "# Open Rider Hours from shifts with project code = 'NS+ shift'"
+    type: sum
+    sql: ${TABLE}.number_of_unassigned_minutes_ns_shift_rider/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_unassigned_hours_ops_associate_ec_shift {
+    group_label: "> Ops Associate Measures"
+    label: "# Open EC Ops Associate Hours"
+    description: "# Open Ops Associate Hours from shifts with project code = 'EC shift'"
+    type: sum
+    sql: ${TABLE}.number_of_unassigned_minutes_ec_shift_ops_associate/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_unassigned_hours_ops_associate_wfs_shift {
+    group_label: "> Ops Associate Measures"
+    label: "# Open WFS Ops Associate Hours"
+    description: "# Open Ops Associate Hours from shifts with project code = 'WFS shift'"
+    type: sum
+    sql: ${TABLE}.number_of_unassigned_minutes_wfs_shift_ops_associate/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_unassigned_hours_ops_associate_ns_shift {
+    group_label: "> Ops Associate Measures"
+    label: "# Open NS+ Ops Associate Hours"
+    description: "# Open Ops Associate Hours from shifts with project code = 'NS+ shift'"
+    type: sum
+    sql: ${TABLE}.number_of_unassigned_minutes_ns_shift_ops_associate/60;;
+    value_format_name: decimal_1
+  }
+
+
   measure: number_of_unassigned_hours_picker {
     group_label: "> Picker Measures"
     label: "# Open Picker Hours"
@@ -3122,6 +3177,26 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  # ========  Leave Minutes  ==========
+
+  measure: number_of_leave_minutes_rider {
+    group_label: "> Rider Measures"
+    label: "# Leave Rider Minutes"
+    type: sum
+    sql: ${number_of_leave_minutes_rider_dimension};;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  measure: number_of_leave_hours_rider {
+    group_label: "> Rider Measures"
+    label: "# Leave Rider Hours"
+    type: sum
+    sql: ${number_of_leave_minutes_rider_dimension}/60;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
   # =========  No Show Hours   =========
   ##### All
 
@@ -3657,6 +3732,49 @@ view: staffing {
     type: number
     sql: ${orders_with_ops_metrics.cnt_rider_orders}/ NULLIF(${number_of_worked_hours_rider}, 0) ;;
     value_format_name: decimal_2
+  }
+
+  parameter: slp_parameter_coefficient_a {
+    label: "SLP Parameter A"
+    type: number
+    description: "When 18m <= fulfillment_time < 45m then UTR - A * fulfillment_time"
+    default_value: "0.01"
+  }
+
+  parameter: slp_parameter_coefficient_b {
+    label: "SLP Parameter B"
+    type: number
+    description: "When 45m <= fulfillment_time < 60m then (UTR - B) * (60 - fulfillment_time)/15))"
+    default_value: "0.27"
+  }
+
+  measure: avg_fulfillment_time_slp_utr_ride{
+    group_label: "> Rider Measures"
+    label: "Rider SLP UTR"
+    hidden: yes
+    type: number
+    sql: case
+          when ${orders_with_ops_metrics.avg_fulfillment_time} < 18
+            then ${ops.utr_rider}
+          when ${orders_with_ops_metrics.avg_fulfillment_time} >= 18
+          and ${orders_with_ops_metrics.avg_fulfillment_time} < 45
+            then ${ops.utr_rider} - ({% parameter slp_parameter_coefficient_a %} * ${orders_with_ops_metrics.avg_fulfillment_time})
+          when ${orders_with_ops_metrics.avg_fulfillment_time} >= 45
+          and ${orders_with_ops_metrics.avg_fulfillment_time} < 60
+            then (${ops.utr_rider}- {% parameter slp_parameter_coefficient_b %}) * (60 - (${orders_with_ops_metrics.avg_fulfillment_time}))/15
+          when ${orders_with_ops_metrics.avg_fulfillment_time} >= 60
+            then 0
+          end;;
+    value_format_name: decimal_2
+  }
+
+  measure: all_staff_utr {
+    label: "All Staff UTR"
+    type: number
+    description: "# Orders (incl. Click & Collect and External Orders) / # Punched All Staff (incl. Rider,Picker,WH Ops, Rider Captain, Ops Associate, Shift Lead and Deputy Shift Lead) Hours"
+    sql: ${orders_with_ops_metrics.sum_orders} / NULLIF(${number_of_worked_hours_rider}+${number_of_worked_hours_shift_lead}+${number_of_worked_hours_ops_associate}+${number_of_worked_hours_deputy_shift_lead}, 0);;
+    value_format_name: decimal_2
+    group_label: "> All Staff Measures"
   }
 
   measure: logistics_index {

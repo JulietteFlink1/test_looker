@@ -18,7 +18,7 @@ case
                               "Fruits","Légumes") then sg_number_of_hours_oos
             else  number_of_hours_oos end as hours_oos
 
-from      `flink-data-prod.curated.products_hub_assignment_v2` as a
+from      `flink-data-prod.curated.products_hub_assignment` as a
 
 left join `flink-data-prod.reporting.inventory_daily`           as i
 on

@@ -23,6 +23,7 @@ view: daily_user_aggregates {
   set: location_attributes {
     fields: [
       hub_code,
+      delivery_tier_id,
       city,
       country_iso,
       delivery_lat,
@@ -179,6 +180,12 @@ view: daily_user_aggregates {
     group_label: "Location Dimensions"
     type: string
     sql: ${TABLE}.hub_code ;;
+  }
+  dimension: delivery_tier_id {
+    group_label: "Location Dimensions"
+    description: "The delivery tier Id as stored in Hub Manager"
+    type: string
+    sql: ${TABLE}.delivery_tier_id ;;
   }
   dimension: city {
     group_label: "Location Dimensions"
@@ -1004,6 +1011,18 @@ view: daily_user_aggregates {
     sql: ${user_uuid} ;;
     filters: [is_product_details_viewed: "yes"]
   }
+
+  measure: active_app_users {
+    group_label: "User Metrics"
+    label: "# Active Unique Users in Apps"
+    description: "Number of active unique users in apps"
+    type: count_distinct
+    hidden: yes
+    sql: ${user_uuid} ;;
+    filters: [is_active_user: "yes",
+        platform: "-web"]
+  }
+
   measure: users_with_temporary_unavailable_hub {
     group_label: "User Metrics"
     label: "# Users with Temporary Unavailable Hub"
@@ -1359,19 +1378,19 @@ view: daily_user_aggregates {
 
   measure: temporary_unavailable_hub_rate {
     group_label: "Hub Unavailability Rates (%)"
-    label: "Hub Temporary Unavailable Rate"
+    label: "Hub Temporary Unavailable Rate in App"
     type: number
-    description: "% users that saw a message about temporary hub unavailability"
+    description: "% users that saw a message about temporary hub unavailability in app"
     value_format_name: percent_1
-    sql: ${users_with_temporary_unavailable_hub} / ${active_users};;
+    sql: ${users_with_temporary_unavailable_hub} / ${active_app_users};;
   }
   measure: regularly_unavailable_hub_rate {
     group_label: "Hub Unavailability Rates (%)"
-    label: "Hub Regularly Unavailable Rate"
+    label: "Hub Regularly Unavailable Rate in App"
     type: number
-    description: "% users that saw a message about regular hub unavailability"
+    description: "% users that saw a message about regular hub unavailability in app"
     value_format_name: percent_1
-    sql: ${users_with_regular_unavailable_hub} / ${active_users};;
+    sql: ${users_with_regular_unavailable_hub} / ${active_app_users};;
   }
 
 

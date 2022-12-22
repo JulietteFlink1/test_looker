@@ -699,8 +699,8 @@ view: +advanced_supplier_matching {
     group_label: "DESADV >> Inbound | In Full"
 
     type: sum
-    sql: ${inbounded_quantity} ;;
-    filters: [is_desadv_row_exists: "yes"]
+    sql: if(${dispatch_notification_id} is not null,${inbounded_quantity},0) ;;
+    #filters: [is_desadv_row_exists: "yes"]
     value_format_name: decimal_0
   }
 
@@ -722,11 +722,14 @@ view: +advanced_supplier_matching {
     type: sum
     sql:
          -- limit the inbounded quantities to be at max as high as the related sellibg units on the DESADV
-        if(${inbounded_quantity} > ${total_quantity_desadv},
-            ${total_quantity_desadv},
-            ${inbounded_quantity}
-          );;
-    filters: [is_desadv_row_exists: "yes"]
+        case
+          when ${dispatch_notification_id} is null
+            then 0
+          when ${dispatch_notification_id} is not null and ${inbounded_quantity} > ${total_quantity_desadv}
+            then ${total_quantity_desadv}
+          else ${inbounded_quantity}
+        end ;;
+    #filters: [is_desadv_row_exists: "yes"]
     value_format_name: decimal_0
   }
 
