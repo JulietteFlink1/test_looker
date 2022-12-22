@@ -22,7 +22,7 @@ explore: event_inbound_progressed {
 
 
   sql_always_where:{% condition global_filters_and_parameters.datasource_filter %}
-    ${event_date} {% endcondition %};;
+    ${event_timestamp_date} {% endcondition %};;
 
   access_filter: {
     field: event_inbound_progressed.country_iso
