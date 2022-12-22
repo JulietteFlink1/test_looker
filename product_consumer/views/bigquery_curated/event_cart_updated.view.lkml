@@ -1,5 +1,5 @@
-view: event_cart_viewed {
-  sql_table_name: `flink-data-prod.curated.event_cart_viewed`
+view: event_cart_updated {
+  sql_table_name: `flink-data-prod.curated.event_cart_updated`
     ;;
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
@@ -159,13 +159,6 @@ view: event_cart_viewed {
     sql: ${TABLE}.message_displayed ;;
   }
 
-  dimension: products {
-    group_label: "DDF Dimensions"
-    type: string
-    description: "Products displayed in the cart to a user."
-    sql: ${TABLE}.products ;;
-  }
-
 # ======= Dates / Timestamps =======
 
   dimension_group: event {
@@ -230,11 +223,11 @@ view: event_cart_viewed {
 
 # ======= Measures ======= #
 
-  measure: avg_daily_cart_viewed_events {
+  measure: avg_daily_cart_updates_events {
     group_label: "Measure Dimensions"
     type: average
-    description: "AVG number of daily cart visits per user"
-    sql: ${TABLE}.rank_of_daily_cart_views ;;
+    description: "AVG number of daily cart updates per user"
+    sql: ${TABLE}.rank_of_daily_cart_updates ;;
   }
 
   measure: all_users {

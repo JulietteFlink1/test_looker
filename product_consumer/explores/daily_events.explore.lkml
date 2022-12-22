@@ -15,6 +15,8 @@ include: "/product_consumer/views/bigquery_curated/event_category_selected.view.
 include: "/product_consumer/views/bigquery_curated/event_address_confirmed.view.lkml"
 include: "/product_consumer/views/bigquery_curated/event_contact_customer_service_selected.view.lkml"
 include: "/product_consumer/views/bigquery_curated/event_cart_viewed.view.lkml"
+include: "/product_consumer/views/bigquery_curated/event_cart_updated.view.lkml"
+include: "/product_consumer/views/bigquery_curated/event_checkout_viewed.view.lkml"
 include: "/product_consumer/views/bigquery_curated/event_order_placed.view.lkml"
 include: "/product_consumer/views/bigquery_reporting/daily_violations_aggregates.view.lkml"
 include: "/product_consumer/views/bigquery_curated/event_sponsored_product_impressions.view.lkml"
@@ -99,14 +101,53 @@ explore: daily_events {
 
   join: event_cart_viewed {
     view_label: "Event: Cart Viewed"
-    fields: [event_cart_viewed.delivery_fee, event_cart_viewed.rank_of_daily_cart_views , event_cart_viewed.message_displayed,
-      event_cart_viewed.avg_daily_cart_events]
+    fields: [event_cart_viewed.delivery_fee,
+            event_cart_viewed.sub_total,
+            event_cart_viewed.rank_of_daily_cart_views ,
+            event_cart_viewed.message_displayed,
+            event_cart_viewed.avg_daily_cart_viewed_events,
+            event_cart_viewed.shipping_method_id,
+            event_cart_viewed.cart_id,
+            event_cart_viewed.screen_name,
+            event_cart_viewed.products]
     sql_on: ${event_cart_viewed.event_uuid} = ${daily_events.event_uuid}
             and {% condition global_filters_and_parameters.datasource_filter %} ${event_cart_viewed.event_date} {% endcondition %};;
     type: left_outer
     relationship: one_to_one
   }
 
+  join: event_cart_updated {
+    view_label: "Event: Cart Updated"
+    fields: [event_cart_updated.delivery_fee,
+            event_cart_updated.sub_total,
+            event_cart_updated.rank_of_daily_cart_views ,
+            event_cart_updated.message_displayed,
+            event_cart_updated.avg_daily_cart_updates_events,
+            event_cart_updated.shipping_method_id,
+            event_cart_updated.cart_id]
+    sql_on: ${event_cart_updated.event_uuid} = ${daily_events.event_uuid}
+      and {% condition global_filters_and_parameters.datasource_filter %} ${event_cart_updated.event_date} {% endcondition %};;
+    type: left_outer
+    relationship: one_to_one
+  }
+
+  join: event_checkout_viewed {
+    view_label: "Event: Checkout Viewed"
+    fields: [event_checkout_viewed.delivery_fee,
+            event_checkout_viewed.storage_fee,
+            event_checkout_viewed.late_night_fee,
+            event_checkout_viewed.deposit,
+            event_checkout_viewed.discount_value,
+            event_checkout_viewed.order_subtotal,
+            event_checkout_viewed.order_total,
+            event_checkout_viewed.products,
+            event_checkout_viewed.shipping_method_id,
+            event_checkout_viewed.cart_id]
+    sql_on: ${event_checkout_viewed.event_uuid} = ${daily_events.event_uuid}
+      and {% condition global_filters_and_parameters.datasource_filter %} ${event_checkout_viewed.event_timestamp_date} {% endcondition %};;
+    type: left_outer
+    relationship: one_to_one
+  }
   join: event_order_placed {
     view_label: "Event: Order Placed"
     fields: [event_order_placed.delivery_fee , event_order_placed.delivery_pdt, event_order_placed.discount_value,
