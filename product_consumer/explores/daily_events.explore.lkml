@@ -101,8 +101,8 @@ explore: daily_events {
 
   join: event_cart_viewed {
     view_label: "Event: Cart Viewed"
-    fields: [event_cart_viewed.delivery_fee,
-            event_cart_viewed.sub_total,
+    fields: [event_cart_viewed.amt_delivery_fee_eur,
+            event_cart_viewed.amt_sub_total_eur,
             event_cart_viewed.rank_of_daily_cart_views ,
             event_cart_viewed.message_displayed,
             event_cart_viewed.avg_daily_cart_viewed_events,
@@ -118,9 +118,9 @@ explore: daily_events {
 
   join: event_cart_updated {
     view_label: "Event: Cart Updated"
-    fields: [event_cart_updated.delivery_fee,
-            event_cart_updated.sub_total,
-            event_cart_updated.rank_of_daily_cart_views ,
+    fields: [event_cart_updated.amt_delivery_fee_eur,
+            event_cart_updated.amt_sub_total_eur,
+            event_cart_updated.rank_of_daily_cart_updates ,
             event_cart_updated.message_displayed,
             event_cart_updated.avg_daily_cart_updates_events,
             event_cart_updated.shipping_method_id,
@@ -133,13 +133,13 @@ explore: daily_events {
 
   join: event_checkout_viewed {
     view_label: "Event: Checkout Viewed"
-    fields: [event_checkout_viewed.delivery_fee,
-            event_checkout_viewed.storage_fee,
-            event_checkout_viewed.late_night_fee,
-            event_checkout_viewed.deposit,
-            event_checkout_viewed.discount_value,
-            event_checkout_viewed.order_subtotal,
-            event_checkout_viewed.order_total,
+    fields: [event_checkout_viewed.amt_delivery_fee_eur,
+            event_checkout_viewed.amt_storage_fee_eur,
+            event_checkout_viewed.amt_late_night_fee_eur,
+            event_checkout_viewed.amt_deposit_eur,
+            event_checkout_viewed.amt_discount_value_eur,
+            event_checkout_viewed.amt_order_subtotal_eur,
+            event_checkout_viewed.amt_order_total_eur,
             event_checkout_viewed.products,
             event_checkout_viewed.shipping_method_id,
             event_checkout_viewed.cart_id]
