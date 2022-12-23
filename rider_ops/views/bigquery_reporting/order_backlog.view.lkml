@@ -218,7 +218,7 @@ view: order_backlog {
     label: "# Backlog Orders Offered to Riders Not Claimed"
     description: "Cumulative # of orders offered to riders but not claimed during the day."
     type: sum
-    sql: ${number_of_orders_rider_not_claimed_last_mile}-${number_of_offered_to_riders_orders_last_mile} ;;
+    sql: ${number_of_orders_rider_not_claimed_last_mile}-${number_of_orders_not_offered_to_riders_last_mile} ;;
   }
 
   measure: backlog_orders_not_offered_to_riders_last_mile {
@@ -281,7 +281,7 @@ view: order_backlog {
     label: "MAX # Backlog Orders Offered to Riders Not Claimed"
     description: "Maximum # of cumulative orders offered to riders but not claimed during the day."
     type: max
-    sql: ${number_of_orders_rider_not_claimed_last_mile}-${number_of_offered_to_riders_orders_last_mile} ;;
+    sql: ${number_of_orders_rider_not_claimed_last_mile}-${number_of_orders_not_offered_to_riders_last_mile} ;;
   }
 
   measure: chosen_backlog_metric {
