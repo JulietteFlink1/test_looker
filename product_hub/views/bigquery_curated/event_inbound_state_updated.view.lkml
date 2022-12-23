@@ -1,42 +1,35 @@
 # Owner: Product Analytics, Flavia Alvarez
-# Created: 2022-12-22
+# Created: 2022-12-23
 
-view: event_inbound_progressed {
-  sql_table_name: `flink-data-dev.curated.event_inbound_progressed`
+view: event_inbound_state_updated {
+  sql_table_name: `flink-data-dev.curated.event_inbound_state_updated`
     ;;
 
-  view_label: "1 Event: Order Progressed"
+  view_label: "Event: Inbound State Updated"
 
-  # This is the curated table for Order Progressed event coming from Hub One
+  # This is the curated table for Inbound State Updated event coming from Hub One
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Sets          ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   set: to_include_dimensions {
     fields: [
-      action,
-      method,
       dropping_list_id,
-      product_sku,
-      is_handling_unit,
-      quantity
+      state
     ]
   }
 
   set: to_include_measures {
     fields: [
-      number_of_dropping_lists,
-      number_of_products,
-      number_of_products_added_to_list,
-      number_of_products_removed_from_list,
-      number_of_products_updated,
-      number_of_products_dropped
+      number_of_events
     ]
   }
 
   set: to_include_set {
     fields: [to_include_dimensions*, to_include_measures*]
   }
+
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Parameters     ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -140,6 +133,22 @@ view: event_inbound_progressed {
     sql: ${TABLE}.event_timestamp ;;
   }
 
+  dimension_group: original_timestamp {
+    type: time
+    hidden: yes
+    description: "Timestamp on the client device when call was invoked."
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: ${TABLE}.original_timestamp ;;
+  }
+
   # =========  Generic Dimensions   =========
 
   dimension: event_name {
@@ -167,19 +176,7 @@ view: event_inbound_progressed {
     sql: ${TABLE}.screen_name ;;
   }
 
-# =========  Event Dimensions   =========
-
-  dimension: action {
-    description: "The action performed."
-    type: string
-    sql: ${TABLE}.action ;;
-  }
-
-  dimension: method {
-    description: "The used method to add/modify a product during list preparation. It can be scanned, text_searched, advanced_searched or manual (only for updated)."
-    type: string
-    sql: ${TABLE}.method ;;
-  }
+# =========  Event Dimensions
 
   dimension: dropping_list_id {
     type: string
@@ -187,25 +184,13 @@ view: event_inbound_progressed {
     sql: ${TABLE}.dropping_list_id ;;
   }
 
-  dimension: product_sku {
-    description: "The sku of the product, as available in the backend."
+  dimension: state {
     type: string
-    sql: ${TABLE}.product_sku ;;
+    description: "State to which the inbound process has been updated. It can be list_preparation_started, dropping_list_started or dropping_list_finished."
+    sql: ${TABLE}.state ;;
   }
 
-  dimension: quantity {
-    description: "The quantity affected. It is always in single units and can be negative when action = product_updated_quantity."
-    type: number
-    sql: ${TABLE}.quantity ;;
-  }
-
-  dimension: is_handling_unit {
-    type: yesno
-    description: "True when the action was perform at handling unit."
-    sql: ${TABLE}.is_handling_unit ;;
-  }
-
-  # =========  Other Dimensions   =========
+# =========  Other Dimensions   =========
 
   dimension: context_ip {
     type: string
@@ -241,68 +226,12 @@ view: event_inbound_progressed {
   # ~~~~~~~~~~~~~~~      Measures     ~~~~~~~~~~~~~~~ #
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
-  # =========  Total Metrics   =========
-
   measure: number_of_events {
-    group_label: "Total Metrics"
     label: "# Events"
     description: "Number of events triggered"
     type: count_distinct
     sql: ${TABLE}.event_uuid ;;
   }
 
-  measure: number_of_dropping_lists {
-    group_label: "Total Metrics"
-    label: "# Dropping Lists"
-    description: "Number of Dropping Lists."
-    type: count_distinct
-    sql: ${dropping_list_id} ;;
-  }
-
-  measure: number_of_products {
-    group_label: "Total Metrics"
-    label: "Number of products"
-    description: "Sum of quantity."
-    type: sum
-    sql: ${quantity} ;;
-  }
-
-  measure: number_of_products_added_to_list {
-    group_label: "Total Metrics"
-    label: "Number of Products Added To List"
-    description: "Sum of quantity of products added to list (action = product_added_to_list)."
-    type: sum
-    filters: [action: "product_added_to_list"]
-    sql: ${quantity} ;;
-  }
-
-  measure: number_of_products_removed_from_list {
-    group_label: "Total Metrics"
-    label: "Number of Products Removed From List"
-    description: "Sum of quantity of products removed from list (action = product_removed_from_list)."
-    type: sum
-    filters: [action: "product_removed_from_list"]
-    sql: ${quantity} ;;
-  }
-
-  measure: number_of_products_updated {
-    group_label: "Total Metrics"
-    label: "Number of Products Updated"
-    description: "Sum of quantity of products updated from list (action = product_updated_quantity)."
-    type: sum
-    filters: [action: "product_updated_quantity"]
-    sql: ${quantity} ;;
-  }
-
-  measure: number_of_products_dropped {
-    group_label: "Total Metrics"
-    label: "Number of Products Dropped"
-    description: "Sum of quantity of products dropped (action = product_dropped)."
-    type: sum
-    filters: [action: "product_dropped"]
-    sql: ${quantity} ;;
-  }
-
-  # =========  Rate Metrics   =========
 
 }
