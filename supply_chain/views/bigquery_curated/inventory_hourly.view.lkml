@@ -15,6 +15,7 @@ view: inventory_hourly {
     timeframes: [
       raw,
       hour,
+      hour_of_day,
       time,
       date,
       week,
