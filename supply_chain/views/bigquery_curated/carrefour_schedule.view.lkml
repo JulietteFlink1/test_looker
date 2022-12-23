@@ -39,25 +39,27 @@ view: carrefour_schedule {
     sql: ${TABLE}.assortment_start_date ;;
   }
 
-  dimension_group: schedule_emited {
+  dimension_group: order {
+    alias: [schedule_emited]
     type: time
-    label: "Schedule Emited"
+    label: "Order"
     group_label: "> Date Dimensions"
-    description: "Date when this schedule was emited."
+    description: "Date at which the item can be ordered."
     timeframes: [
       date
     ]
     convert_tz: no
     datatype: date
-    sql: ${TABLE}.schedule_emited_date ;;
+    sql: ${TABLE}.order_date ;;
   }
 
-  dimension: schedule_emited_week {
-    label: "Schedule Emited Week"
+  dimension: order_week {
+    alias: [schedule_emited_week]
+    label: "Order Week"
     group_label: "> Date Dimensions"
     type: number
-    description: "Week number when this schedule was emited."
-    sql: ${TABLE}.schedule_emited_week ;;
+    description: "Week at which the item can be ordered."
+    sql: ${TABLE}.order_week ;;
   }
 
 ########################################################################################################
@@ -297,7 +299,73 @@ view: carrefour_schedule {
     sql: ${TABLE}.order_week_day_number ;;
   }
 
+  # https://goflink.atlassian.net/browse/DATA-4661
+  dimension: item_width {
+    label: "Item Width"
+    description: "The width of a product"
+    group_label: "> Product Dimensions"
 
+    type: number
+    sql:  ${TABLE}.item_width;;
+  }
+
+  dimension: item_length {
+    label: "Item Length"
+    description: "The length of a product"
+    group_label: "> Product Dimensions"
+
+    type: number
+    sql:  ${TABLE}.item_length;;
+  }
+
+  dimension: item_height {
+    label: "Item Height"
+    description: "The height of a product"
+    group_label: "> Product Dimensions"
+
+    type: number
+    sql:  ${TABLE}.item_height;;
+  }
+
+  dimension: ifls_width {
+    label: "Handling Unit Width"
+    description: "The width of a handling unit"
+    group_label: "> Product Dimensions"
+
+    type: number
+    sql:  ${TABLE}.ifls_width;;
+  }
+
+  dimension: ifls_height {
+    label: "Handling Unit Height"
+    description: "The height of a handling unit"
+    group_label: "> Product Dimensions"
+
+    type: number
+    sql:  ${TABLE}.ifls_height;;
+  }
+
+  dimension: ifls_length {
+    label: "Handling Unit Length"
+    description: "The length of a handling unit"
+    group_label: "> Product Dimensions"
+
+    type: number
+    sql:  ${TABLE}.ifls_length;;
+  }
+
+  dimension: purchase_price {
+
+    required_access_grants: [can_view_buying_information]
+
+    label: "Buying Price"
+    description: "The buying price of a product we sell to the suppliers - this information is hub-specific."
+    group_label: "> Numeric Dimensions"
+
+    type: number
+    sql: ${TABLE}.purchase_price ;;
+    value_format_name: decimal_4
+  }
 
 ########################################################################################################
 ########################################### Measures ###################################################
