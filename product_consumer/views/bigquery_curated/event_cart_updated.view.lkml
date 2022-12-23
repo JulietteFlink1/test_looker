@@ -1,5 +1,5 @@
-view: event_cart_viewed {
-  sql_table_name: `flink-data-prod.curated.event_cart_viewed`
+view: event_cart_updated {
+  sql_table_name: `flink-data-prod.curated.event_cart_updated`
     ;;
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
@@ -62,11 +62,11 @@ view: event_cart_viewed {
     sql: ${TABLE}.event_name ;;
   }
 
-  dimension: rank_of_daily_cart_views {
+  dimension: rank_of_daily_cart_updates {
     group_label: "Measure Dimensions"
     type: number
-    description: "Rank of cart viewed for the user in a day. Used to understand how cart values progress"
-    sql: ${TABLE}.rank_of_daily_cart_views ;;
+    description: "Rank of cart updates for the user in a day. Used to understand how cart values progress.s"
+    sql: ${TABLE}.rank_of_daily_cart_updates ;;
   }
 
 # ======= Location Dimension ======= #
@@ -142,7 +142,7 @@ view: event_cart_viewed {
   dimension: amt_delivery_fee_eur {
     group_label: "DDF Dimensions"
     type: number
-    description: "Dynamic Delivery fee displayed upon entering cart"
+    description: "Dynamic Delivery fee displayed upon firing the event"
     sql: ${TABLE}.delivery_fee ;;
   }
 
@@ -158,13 +158,6 @@ view: event_cart_viewed {
     type: string
     description: "The message shown in the toast banner - dependent on the cart value & fee."
     sql: ${TABLE}.message_displayed ;;
-  }
-
-  dimension: products {
-    group_label: "DDF Dimensions"
-    type: string
-    description: "The products in the users cart at the time the event was triggered."
-    sql: ${TABLE}.products ;;
   }
 
 # ======= Dates / Timestamps =======
@@ -231,11 +224,11 @@ view: event_cart_viewed {
 
 # ======= Measures ======= #
 
-  measure: avg_daily_cart_viewed_events {
+  measure: avg_daily_cart_updates_events {
     group_label: "Measure Dimensions"
     type: average
-    description: "AVG number of daily cart visits per user"
-    sql: ${TABLE}.rank_of_daily_cart_views ;;
+    description: "AVG number of daily cart updates per user"
+    sql: ${TABLE}.rank_of_daily_cart_updates ;;
   }
 
   measure: all_users {
