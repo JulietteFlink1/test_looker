@@ -31,7 +31,7 @@ view: forecasts {
     description: "1, if hub was open in the given 30 min interval."
     type: number
     sql: ${TABLE}.is_hub_open;;
-    hidden: yes
+    hidden: no
   }
 
   dimension: quinyx_pipeline_status_rider {
