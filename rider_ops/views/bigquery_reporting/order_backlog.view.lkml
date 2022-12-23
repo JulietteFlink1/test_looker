@@ -26,14 +26,14 @@ view: order_backlog {
     label: "Choose metric"
     description: "Choose metric to sort Top/Bottom N Hubs based on selected metric. Could be used with the comination of rank function, rank limit dimension and Max rank parameter."
     type: string
-    allowed_value: { value: "# Backlog Orders Created Not Offered for Picking (Not Dispatched)" }
-    allowed_value: { value: "# Backlog Orders Created (Last Mile) Not Claimed By Riders" }
-    allowed_value: { value: "# Backlog Orders Picked (Last Mile) Not Claimed By Riders" }
-    allowed_value: { value: "# Backlog Orders Created (Last Mile) Not Picked" }
-    allowed_value: { value: "# Backlog Orders Created Not Started Being Picked" }
-    allowed_value: { value: "# Backlog Orders Offered (Dispatched) Not Started Being Picked" }
-    allowed_value: { value: "# Backlog Orders (Last Mile) Not Offered to Riders" }
-    allowed_value: { value: "# Backlog Orders Offered to Riders Not Claimed" }
+    allowed_value: { value: "MAX # Backlog Orders Created Not Offered for Picking (Not Dispatched)" }
+    allowed_value: { value: "MAX # Backlog Orders Created (Last Mile) Not Claimed By Riders" }
+    allowed_value: { value: "MAX # Backlog Orders Picked (Last Mile) Not Claimed By Riders" }
+    allowed_value: { value: "MAX # Backlog Orders Created (Last Mile) Not Picked" }
+    allowed_value: { value: "MAX # Backlog Orders Created Not Started Being Picked" }
+    allowed_value: { value: "MAX # Backlog Orders Offered (Dispatched) Not Started Being Picked" }
+    allowed_value: { value: "MAX # Backlog Orders (Last Mile) Not Offered to Riders" }
+    allowed_value: { value: "MAX # Backlog Orders Offered to Riders Not Claimed" }
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -290,21 +290,21 @@ view: order_backlog {
     type: number
     sql:
       case
-        when {% parameter metric_selector %} = "# Backlog Orders Created Not Offered for Picking (Not Dispatched)"
+        when {% parameter metric_selector %} = "MAX # Backlog Orders Created Not Offered for Picking (Not Dispatched)"
           then ${max_backlog_orders_created_not_offered_for_picking}
-        when {% parameter metric_selector %} = "# Backlog Orders Created (Last Mile) Not Claimed By Riders"
+        when {% parameter metric_selector %} = "MAX # Backlog Orders Created (Last Mile) Not Claimed By Riders"
           then ${max_backlog_orders_created_not_offered_for_picking}
-        when {% parameter metric_selector %} = "# Backlog Orders Picked (Last Mile) Not Claimed By Riders"
+        when {% parameter metric_selector %} = "MAX # Backlog Orders Picked (Last Mile) Not Claimed By Riders"
           then ${max_backlog_orders_picked_rider_not_claimed_last_mile}
-        when {% parameter metric_selector %} = "# Backlog Orders Created (Last Mile) Not Picked"
+        when {% parameter metric_selector %} = "MAX # Backlog Orders Created (Last Mile) Not Picked"
           then ${max_backlog_orders_created_not_picked_last_mile}
-        when {% parameter metric_selector %} = "# Backlog Orders Created Not Started Being Picked"
+        when {% parameter metric_selector %} = "MAX # Backlog Orders Created Not Started Being Picked"
           then ${max_backlog_orders_picking_not_started}
-        when {% parameter metric_selector %} = "# Backlog Orders Offered (Dispatched) Not Started Being Picked"
+        when {% parameter metric_selector %} = "MAX # Backlog Orders Offered (Dispatched) Not Started Being Picked"
           then ${max_backlog_orders_offered_picking_not_started}
-        when {% parameter metric_selector %} = "# Backlog Orders (Last Mile) Not Offered to Riders"
+        when {% parameter metric_selector %} = "MAX # Backlog Orders (Last Mile) Not Offered to Riders"
           then ${max_backlog_orders_not_offered_to_riders_last_mile}
-        when {% parameter metric_selector %} = "# Backlog Orders Offered to Riders Not Claimed"
+        when {% parameter metric_selector %} = "MAX # Backlog Orders Offered to Riders Not Claimed"
           then ${max_backlog_orders_not_offered_to_riders_last_mile}
       end ;;
   }
