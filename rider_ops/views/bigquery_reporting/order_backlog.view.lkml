@@ -33,6 +33,7 @@ view: order_backlog {
     allowed_value: { value: "# Backlog Orders Created Not Started Being Picked" }
     allowed_value: { value: "# Backlog Orders Offered (Dispatched) Not Started Being Picked" }
     allowed_value: { value: "# Backlog Orders (Last Mile) Not Offered to Riders" }
+    allowed_value: { value: "# Backlog Orders Offered to Riders Not Claimed" }
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -213,6 +214,13 @@ view: order_backlog {
     sql: ${number_of_orders_picking_not_started}-${number_of_orders_not_offered_for_picking} ;;
   }
 
+  measure: backlog_orders_offered_to_riders_not_claimed {
+    label: "# Backlog Orders Offered to Riders Not Claimed"
+    description: "Cumulative # of orders offered to riders but not claimed during the day."
+    type: sum
+    sql: ${number_of_orders_rider_not_claimed_last_mile}-${number_of_offered_to_riders_orders_last_mile} ;;
+  }
+
   measure: backlog_orders_not_offered_to_riders_last_mile {
     label: "# Backlog Orders (Last Mile) Not Offered to Riders"
     description: "Cumulative # of orders created but not offered to riders during the day."
@@ -269,6 +277,13 @@ view: order_backlog {
     sql: ${number_of_orders_not_offered_to_riders_last_mile} ;;
   }
 
+  measure: max_backlog_orders_offered_to_riders_not_claimed {
+    label: "MAX # Backlog Orders Offered to Riders Not Claimed"
+    description: "Maximum # of cumulative orders offered to riders but not claimed during the day."
+    type: max
+    sql: ${number_of_orders_rider_not_claimed_last_mile}-${number_of_offered_to_riders_orders_last_mile} ;;
+  }
+
   measure: chosen_backlog_metric {
     label_from_parameter: metric_selector
     description: "Cumulative # of orders based on the chosen metric."
@@ -288,6 +303,8 @@ view: order_backlog {
         when {% parameter metric_selector %} = "# Backlog Orders Offered (Dispatched) Not Started Being Picked"
           then ${max_backlog_orders_offered_picking_not_started}
         when {% parameter metric_selector %} = "# Backlog Orders (Last Mile) Not Offered to Riders"
+          then ${max_backlog_orders_not_offered_to_riders_last_mile}
+        when {% parameter metric_selector %} = "# Backlog Orders Offered to Riders Not Claimed"
           then ${max_backlog_orders_not_offered_to_riders_last_mile}
       end ;;
   }
