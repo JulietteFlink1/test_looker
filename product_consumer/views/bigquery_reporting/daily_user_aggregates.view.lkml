@@ -23,7 +23,7 @@ view: daily_user_aggregates {
   set: location_attributes {
     fields: [
       hub_code,
-      delivery_tier_id,
+      turf_name,
       city,
       country_iso,
       delivery_lat,
@@ -181,9 +181,9 @@ view: daily_user_aggregates {
     type: string
     sql: ${TABLE}.hub_code ;;
   }
-  dimension: delivery_tier_id {
+  dimension: turf_name {
     group_label: "Location Dimensions"
-    description: "The delivery tier Id as stored in Hub Manager"
+    description: "Turf name. Identical to the delivery tier id that is stored in Hub Manager"
     type: string
     sql: ${TABLE}.delivery_tier_id ;;
   }
