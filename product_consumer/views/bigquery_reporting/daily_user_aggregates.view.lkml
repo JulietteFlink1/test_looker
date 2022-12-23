@@ -183,7 +183,7 @@ view: daily_user_aggregates {
   }
   dimension: turf_name {
     group_label: "Location Dimensions"
-    description: "Turf name. Identical to the delivery tier id that is stored in Hub Manager"
+    description: "Turf name. Identical to the delivery tier id that is stored in Hub Manager, populated by the Delivery Tier Context Trait."
     type: string
     sql: ${TABLE}.delivery_tier_id ;;
   }
