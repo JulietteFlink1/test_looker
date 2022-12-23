@@ -10,6 +10,7 @@ include: "/**/global_filters_and_parameters.view.lkml"
 include: "/**/products.view.lkml"
 include: "/**/hubs_ct.view.lkml"
 include: "/**/event_inbound_progressed.view.lkml"
+include: "/**/product_added_to_list_times.view.lkml"
 
 explore: event_inbound_progressed {
   from:  event_inbound_progressed
@@ -40,8 +41,15 @@ explore: event_inbound_progressed {
   relationship: one_to_one
 }
 
+join: product_added_to_list {
+  view_label: "2 Product Added To List Times"
+  sql_on: ${product_added_to_list.primary_key}= concat(${dropping_list_id}, ${country_iso},${product_sku}, ${method}) ;;
+  type: left_outer
+  relationship: one_to_many
+}
+
 join: products {
-  view_label: "2 Product Dimensions"
+  view_label: "3 Product Dimensions"
   fields: [product_name, category, subcategory, erp_category, erp_subcategory]
   sql_on: ${products.product_sku} = ${event_inbound_progressed.product_sku};;
   type: left_outer
@@ -49,7 +57,7 @@ join: products {
 }
 
 join: hubs_ct {
-  view_label: "3 Hub Dimensions"
+  view_label: "4 Hub Dimensions"
   sql_on: ${event_inbound_progressed.hub_code} = ${hubs_ct.hub_code} ;;
   type: left_outer
   relationship: many_to_one
