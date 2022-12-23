@@ -151,6 +151,7 @@ explore: daily_hub_staff_events {
 
   join: event_inbound_state_updated {
     view_label: "7 Event: Inbound State Updated"
+    fields: [to_include_dimensions*]
     sql_on: ${event_inbound_state_updated.event_uuid} = ${daily_hub_staff_events.event_uuid}
       and {% condition global_filters_and_parameters.datasource_filter %}
         ${event_inbound_state_updated.event_timestamp_date} {% endcondition %};;
@@ -160,6 +161,7 @@ explore: daily_hub_staff_events {
 
   join: event_inbound_progressed {
     view_label: "8 Event: Inbound Progressed"
+    fields: [to_include_set*]
     sql_on: ${event_inbound_progressed.event_uuid} = ${daily_hub_staff_events.event_uuid}
       and {% condition global_filters_and_parameters.datasource_filter %}
         ${event_inbound_progressed.event_timestamp_date} {% endcondition %};;

@@ -12,7 +12,31 @@ view: event_inbound_progressed {
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Sets          ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  set: to_include_dimensions {
+    fields: [
+      action,
+      method,
+      dropping_list_id,
+      product_sku,
+      is_handling_unit,
+      quantity
+    ]
+  }
 
+  set: to_include_measures {
+    fields: [
+      number_of_dropping_lists,
+      number_of_products,
+      number_of_products_added_to_list,
+      number_of_products_removed_from_list,
+      number_of_products_updated,
+      number_of_products_dropped
+    ]
+  }
+
+  set: to_include_set {
+    fields: [to_include_dimensions*, to_include_measures*]
+  }
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Parameters     ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
