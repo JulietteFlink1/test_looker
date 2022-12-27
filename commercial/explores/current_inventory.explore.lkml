@@ -37,7 +37,7 @@ explore: current_inventory {
 
   join: products_hub_assignment {
 
-    from: products_hub_assignment_v2
+    from: products_hub_assignment
 
     sql_on: ${products_hub_assignment.sku} = ${products.product_sku}
        and ${products_hub_assignment.country_iso} = ${products.country_iso}

@@ -1003,6 +1003,14 @@ view: employee_level_kpis {
     sql: min(case when ${TABLE}.number_of_worked_minutes > 0 then ${TABLE}.shift_date end);;
   }
 
+  measure: number_of_distinct_shift_dates {
+    group_label: "> Shift Related"
+    label: "# Distinct Shift Dates"
+    type: count_distinct
+    description: "Number of distinct shift dates based on the selection."
+    sql: ${shift_date};;
+  }
+
   measure: number_of_assigned_hours {
     group_label: "> Shift Related"
     alias: [number_of_scheduled_hours]

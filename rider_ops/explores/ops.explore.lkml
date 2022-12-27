@@ -122,4 +122,15 @@ explore: ops {
     type: left_outer
   }
 
+  join: hub_closure_rate {
+    view_label: "Order Backlog"
+    sql_on:
+      ${hubs.hub_code} = ${hub_closure_rate.hub_code}
+      and ${time_grid.start_datetime_minute30} = ${hub_closure_rate.created_minute30}
+      ;;
+    relationship: many_to_one
+    type: left_outer
+    fields: [hub_closure_rate.all_closure_rate]
+  }
+
 }

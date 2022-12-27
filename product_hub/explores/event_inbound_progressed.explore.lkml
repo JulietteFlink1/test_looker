@@ -1,0 +1,66 @@
+# Owner: Product Analytics, Flavia Alvarez
+
+# Main Stakeholder:
+# - Hub Tech
+
+# Questions that can be answered
+# - Questions around behavioural events coming from Hub One app
+
+include: "/**/global_filters_and_parameters.view.lkml"
+include: "/**/products.view.lkml"
+include: "/**/hubs_ct.view.lkml"
+include: "/**/event_inbound_progressed.view.lkml"
+include: "/**/product_added_to_list_times.view.lkml"
+
+explore: event_inbound_progressed {
+  from:  event_inbound_progressed
+  view_name: event_inbound_progressed
+  hidden: no
+
+  label: "Event Inbound Progressed"
+  description: "Event inbound_progressed from hub one"
+  group_label: "Product - Hub Tech"
+
+
+  sql_always_where:{% condition global_filters_and_parameters.datasource_filter %}
+    ${event_timestamp_date} {% endcondition %};;
+
+  access_filter: {
+    field: event_inbound_progressed.country_iso
+    user_attribute: country_iso
+  }
+
+  always_filter: {
+    filters: [
+      global_filters_and_parameters.datasource_filter: "last 7 days"
+    ]
+  }
+
+  join: global_filters_and_parameters {
+    sql: ;;
+  relationship: one_to_one
+}
+
+join: product_added_to_list {
+  view_label: "2 Product Added To List Times"
+  sql_on: ${product_added_to_list.primary_key}= concat(${dropping_list_id}, ${country_iso},${product_sku}, ${method}) ;;
+  type: left_outer
+  relationship: one_to_many
+}
+
+join: products {
+  view_label: "3 Product Dimensions"
+  fields: [product_name, category, subcategory, erp_category, erp_subcategory]
+  sql_on: ${products.product_sku} = ${event_inbound_progressed.product_sku};;
+  type: left_outer
+  relationship: one_to_one
+}
+
+join: hubs_ct {
+  view_label: "4 Hub Dimensions"
+  sql_on: ${event_inbound_progressed.hub_code} = ${hubs_ct.hub_code} ;;
+  type: left_outer
+  relationship: many_to_one
+}
+
+}
