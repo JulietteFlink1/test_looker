@@ -2,7 +2,7 @@
 # Created: 2022-12-29
 
 view: merge_hub_one_legacy_inbounding {
-  sql_table_name: `flink-data-dev.reporting.merge_hub_one_legacy_inbounding`
+  sql_table_name: `flink-data-prod.reporting.merge_hub_one_legacy_inbounding`
     ;;
 
   # view_label: "1 Inbouding Aggregates"
