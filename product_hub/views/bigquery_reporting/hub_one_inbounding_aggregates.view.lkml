@@ -123,9 +123,15 @@ view: hub_one_inbounding_aggregates {
   # ~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  # Note that for this measures to be accurate we need to use sum_distinct with sql_distinct_key = order_id
-  # This is because this view is being joined to daily_events and if we use a normal sum it will be suming
-  # duplicate values
+  # =========  Number of products   =========
+
+  measure: number_of_distinct_dropping_lists {
+    group_label: "Total Metrics"
+    label: "# Dropping Lists"
+    description: "Number of distinct Dropping Lists"
+    type: count_distinct
+    sql: ${dropping_list_id} ;;
+  }
 
   # =========  Number of products   =========
 
