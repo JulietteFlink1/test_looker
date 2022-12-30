@@ -1,3 +1,9 @@
+# Owner: Product Analytics, Zhou Fang
+# Created: 2022-12-30
+
+# This view contains event-level information per payment failure (user taps on pay button and for some reason cannot complete payment)
+
+
 view: event_payment_failed {
   sql_table_name: `flink-data-prod.curated.event_payment_failed`
     ;;
