@@ -16,10 +16,11 @@ explore: hub_one_inbounding_aggregates {
   hidden: no
 
   label: "Hub One Inbounding Aggregates"
-  description: "This explore provides an overview of behavioural events generated during the inbounding flow in Hub One.
+  description: "This explore provides an aggregated overview of behavioural events generated
+  during the inbounding flow in Hub One.
   This explore is built on front-end data, and is subset to the limitations of front-end tracking.
-  We can not, and do not, expect 100% accuracy compared to the Inventory explores.
-  We consider the Inventory explores to be the source of truth."
+  We can not, and do not, expect 100% accuracy compared to the back-end based explores.
+  We consider the back-end based explores to be the source of truth."
   group_label: "Product - Hub Tech"
 
 

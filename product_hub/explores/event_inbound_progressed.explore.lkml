@@ -18,7 +18,9 @@ explore: event_inbound_progressed {
   hidden: no
 
   label: "Event Inbound Progressed"
-  description: "Event inbound_progressed from hub one"
+  description: "This explore provides an overview of inbound_progressed event generated on Hub One.
+                This explore is built on front-end data, and is subset to the limitations
+                of front-end tracking."
   group_label: "Product - Hub Tech"
 
 
