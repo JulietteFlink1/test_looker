@@ -123,9 +123,14 @@ view: hub_one_inbounding_aggregates {
   # ~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  # Note that for this measures to be accurate we need to use sum_distinct with sql_distinct_key = order_id
-  # This is because this view is being joined to daily_events and if we use a normal sum it will be suming
-  # duplicate values
+  # =========  Number of products   =========
+
+  measure: number_of_distinct_dropping_lists {
+    group_label: "Total Metrics"
+    description: "Number of distinct Dropping Lists"
+    type: count_distinct
+    sql: ${dropping_list_id} ;;
+  }
 
   # =========  Number of products   =========
 
@@ -193,6 +198,7 @@ view: hub_one_inbounding_aggregates {
     type: sum
     group_label: "Total Times"
     description: "Total time spent populating the cart during inbounding process in the specified unit (from list_preparation_started to dropping_list_started)"
+    value_format: "0.00"
     sql: ${TABLE}.time_populating_list_hours ;;
   }
 
@@ -200,6 +206,7 @@ view: hub_one_inbounding_aggregates {
     type: sum
     group_label: "Total Times"
     description: "Total time spent populating the cart during inbounding process in the specified unit (from list_preparation_started to dropping_list_started)"
+    value_format: "0.00"
     sql: ${TABLE}.time_populating_list_minutes ;;
   }
 
@@ -207,6 +214,7 @@ view: hub_one_inbounding_aggregates {
     type: sum
     group_label: "Total Times"
     description: "Total time spent dropping products on shelf during inbounding process in the specified unit (from dropping_list_started to dropping_list_finished)."
+    value_format: "0.00"
     sql: ${TABLE}.time_dropping_products_hours ;;
   }
 
@@ -214,6 +222,7 @@ view: hub_one_inbounding_aggregates {
     type: sum
     group_label: "Total Times"
     description: "Total time spent dropping products on shelf during inbounding process in the specified unit (from dropping_list_started to dropping_list_finished)."
+    value_format: "0.00"
     sql: ${TABLE}.time_dropping_products_minutes ;;
   }
 
@@ -221,6 +230,7 @@ view: hub_one_inbounding_aggregates {
     type: sum
     group_label: "Total Times"
     description: "Total duration of the inbounding process in the specified unit (from list_preparation_started to dropping_list_finished)."
+    value_format: "0.00"
     sql: ${TABLE}.time_inbounding_hours ;;
   }
 
@@ -228,6 +238,7 @@ view: hub_one_inbounding_aggregates {
     type: sum
     group_label: "Total Times"
     description: "Total duration of the inbounding process in the specified unit (from list_preparation_started to dropping_list_finished)."
+    value_format: "0.00"
     sql: ${TABLE}.time_inbounding_minutes ;;
   }
 
@@ -237,6 +248,7 @@ view: hub_one_inbounding_aggregates {
     type: average
     group_label: "Avg Times"
     description: "Total time spent populating the cart during inbounding process in the specified unit (from list_preparation_started to dropping_list_started)"
+    value_format: "0.00"
     sql: ${TABLE}.time_populating_list_hours ;;
   }
 
@@ -244,6 +256,7 @@ view: hub_one_inbounding_aggregates {
     type: average
     group_label: "Avg Times"
     description: "Total time spent populating the cart during inbounding process in the specified unit (from list_preparation_started to dropping_list_started)"
+    value_format: "0.00"
     sql: ${TABLE}.time_populating_list_minutes ;;
   }
 
@@ -258,6 +271,7 @@ view: hub_one_inbounding_aggregates {
     type: average
     group_label: "Avg Times"
     description: "Total time spent dropping products on shelf during inbounding process in the specified unit (from dropping_list_started to dropping_list_finished)."
+    value_format: "0.00"
     sql: ${TABLE}.time_dropping_products_minutes ;;
   }
 
@@ -265,6 +279,7 @@ view: hub_one_inbounding_aggregates {
     type: average
     group_label: "Avg Times"
     description: "Total duration of the inbounding process in the specified unit (from list_preparation_started to dropping_list_finished)."
+    value_format: "0.00"
     sql: ${TABLE}.time_inbounding_hours ;;
   }
 
@@ -272,6 +287,7 @@ view: hub_one_inbounding_aggregates {
     type: average
     group_label: "Avg Times"
     description: "Total duration of the inbounding process in the specified unit (from list_preparation_started to dropping_list_finished)."
+    value_format: "0.00"
     sql: ${TABLE}.time_inbounding_minutes ;;
   }
 }
