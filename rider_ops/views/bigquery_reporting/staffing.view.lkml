@@ -1765,7 +1765,7 @@ view: staffing {
 
   measure: number_of_planned_hours_deputy_shift_lead {
     group_label: "> Deputy Shift Lead Measures"
-    label: "# Filled (Planned) Planned Deputy Shift Lead Hours"
+    label: "# Filled (Assigned) Planned Deputy Shift Lead Hours"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_deputy_shift_lead/60 ;;
     value_format_name: decimal_1
@@ -1800,37 +1800,37 @@ view: staffing {
 
   measure: number_of_planned_hours_availability_based_deputy_shift_lead {
     group_label: "> Deputy Shift Lead Measures"
-    label: "# Filled (Planned) Deputy Shift Lead Hours Based on Availability"
+    label: "# Filled (Assigned) Deputy Shift Lead Hours Based on Availability"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_availability_based_deputy_shift_lead/60;;
-    description:"Number of filled (planned) hours that are overlapping with provided availability (Deputy Shift Lead)"
+    description:"Number of filled (Assigned) hours that are overlapping with provided availability (Deputy Shift Lead)"
     value_format_name: decimal_1
   }
 
   measure: pct_of_planned_hours_availability_based_deputy_shift_lead {
     group_label: "> Deputy Shift Lead Measures"
-    label: "% Filled (Planned) Deputy Shift Lead Hours Based on Availability"
+    label: "% Filled (Assigned) Deputy Shift Lead Hours Based on Availability"
     type: number
     sql:${number_of_planned_hours_availability_based_deputy_shift_lead}/nullif(${number_of_planned_hours_deputy_shift_lead},0) ;;
-    description:"Share of Filled Hours based on Availability from total Filled Hours - (# Filled (Planned) Hours Based on Availability / # Filled (Planned) Hours)"
+    description:"Share of Filled Hours based on Availability from total Filled Hours - (# Filled (Assigned) Hours Based on Availability / # Filled (Assigned) Hours)"
     value_format_name: percent_1
   }
 
   measure: number_of_planned_hours_availability_based_external_deputy_shift_lead {
     group_label: "> Deputy Shift Lead Measures"
-    label: "# Filled (Planned) External Deputy Shift Lead Hours Based on Availability"
+    label: "# Filled (Assigned) External Deputy Shift Lead Hours Based on Availability"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_availability_based_external_deputy_shift_lead/60;;
-    description:"Number of filled (planned) hours that are overlapping with provided availability (External Deputy Shift Lead)"
+    description:"Number of filled (Assigned) hours that are overlapping with provided availability (External Deputy Shift Lead)"
     value_format_name: decimal_1
   }
 
   measure: number_of_planned_hours_availability_based_internal_deputy_shift_lead {
     group_label: "> Deputy Shift Lead Measures"
-    label: "# Filled (Planned) Internal Deputy Shift Lead Hours Based on Availability"
+    label: "# Filled (Assigned) Internal Deputy Shift Lead Hours Based on Availability"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_availability_based_internal_deputy_shift_lead/60;;
-    description:"Number of filled (planned) hours that are overlapping with provided availability (Internal Deputy Shift Lead)"
+    description:"Number of filled (Assigned) hours that are overlapping with provided availability (Internal Deputy Shift Lead)"
     value_format_name: decimal_1
   }
 
@@ -1846,6 +1846,7 @@ view: staffing {
   measure: number_of_scheduled_hours_deputy_shift_lead {
     group_label: "> Deputy Shift Lead Measures"
     label: "# Scheduled Deputy Shift Lead Hours"
+    description: "# Scheduled Deputy Shift Lead Hours (Post-Adjustments) (Assigned + Unassigned)"
     type: number
     sql: ${number_of_unassigned_hours_deputy_shift_lead}+${number_of_planned_hours_deputy_shift_lead};;
     value_format_name: decimal_1
@@ -1854,7 +1855,7 @@ view: staffing {
   measure: number_of_scheduled_hours_external_deputy_shift_lead {
     group_label: "> Deputy Shift Lead Measures"
     label: "# External Scheduled Deputy Shift Lead Hours"
-    description: "# External Scheduled Deputy Shift Lead Hours (Post-Adjustments) (Assigned + Open)"
+    description: "# External Scheduled Deputy Shift Lead Hours (Post-Adjustments) (Assigned + Unassigned)"
     type: number
     sql: (${number_of_unassigned_hours_external_deputy_shift_lead}+${number_of_planned_hours_external_deputy_shift_lead})/60;;
     value_format_name: decimal_1
@@ -2549,7 +2550,7 @@ view: staffing {
 
   measure: number_of_planned_minutes_ops_associate {
     group_label: "> Ops Associate Measures"
-    label: "# Filled (Planned) Ops Associate Minutes"
+    label: "# Filled (Assigned) Ops Associate Minutes"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_ops_associate ;;
     value_format_name: decimal_1
@@ -2559,7 +2560,7 @@ view: staffing {
   measure: number_of_planned_hours_ops_associate {
     alias: [number_of_planned_hours_ops_staff]
     group_label: "> Ops Associate Measures"
-    label: "# Filled (Planned) Ops Associate Hours"
+    label: "# Filled (Assigned) Ops Associate Hours"
     description: "# Planned Ops Associate Hours (Picker, WH, Rider Captain, Ops Associate)"
     type: number
     sql: ${number_of_planned_minutes_ops_associate}/60 ;;
@@ -2568,7 +2569,7 @@ view: staffing {
 
   measure: number_of_planned_hours_ops_associate_ec_shift {
     group_label: "> Ops Associate Measures"
-    label: "# Filled (Planned) EC Ops Associate Hours"
+    label: "# Filled (Assigned) EC Ops Associate Hours"
     description: "# Filled Ops Associate Hours from shifts with project code = 'EC shift'"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_ec_shift_ops_associate/60;;
@@ -2577,7 +2578,7 @@ view: staffing {
 
   measure: number_of_planned_hours_ops_associate_wfs_shift {
     group_label: "> Ops Associate Measures"
-    label: "# Filled (Planned) WFS Ops Associate Hours"
+    label: "# Filled (Assigned) WFS Ops Associate Hours"
     description: "# Filled Ops Associate Hours from shifts with project code = 'WFS shift'"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_wfs_shift_ops_associate/60;;
@@ -2586,7 +2587,7 @@ view: staffing {
 
   measure: number_of_planned_hours_ops_associate_ns_shift {
     group_label: "> Ops Associate Measures"
-    label: "# Filled (Planned) NS+ Ops Associate Hours"
+    label: "# Filled (Assigned) NS+ Ops Associate Hours"
     description: "# Filled Ops Associate Hours from shifts with project code = 'NS+ shift'"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_ns_shift_ops_associate /60;;
@@ -2595,7 +2596,7 @@ view: staffing {
 
   measure: number_of_planned_minutes_internal_ops_associate {
     group_label: "> Ops Associate Measures"
-    label: "# Filled (Planned) Internal Ops Associate Minutes"
+    label: "# Filled (Assigned) Internal Ops Associate Minutes"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_internal_ops_associate ;;
     value_format_name: decimal_1
@@ -2604,7 +2605,7 @@ view: staffing {
 
   measure: number_of_planned_minutes_external_ops_associate {
     group_label: "> Ops Associate Measures"
-    label: "# External Filled (Planned) Ops Associate Minutes"
+    label: "# External Filled (Assigned) Ops Associate Minutes"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_external_ops_associate ;;
     value_format_name: decimal_1
@@ -2613,7 +2614,7 @@ view: staffing {
 
   measure: number_of_planned_hours_rider {
     group_label: "> Rider Measures"
-    label: "# Filled (Planned) Rider Hours"
+    label: "# Filled (Assigned) Rider Hours"
     type: sum
     sql: ${number_of_planned_minutes_rider}/60;;
     value_format_name: decimal_1
@@ -2621,7 +2622,7 @@ view: staffing {
 
   measure: number_of_planned_hours_rider_ec_shift {
     group_label: "> Rider Measures"
-    label: "# Filled (Planned) EC Rider Hours"
+    label: "# Filled (Assigned) EC Rider Hours"
     description: "# Filled Rider Hours from shifts with project code = 'EC shift'"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_ec_shift_rider/60;;
@@ -2630,7 +2631,7 @@ view: staffing {
 
   measure: number_of_planned_hours_rider_wfs_shift {
     group_label: "> Rider Measures"
-    label: "# Filled (Planned) WFS Rider Hours"
+    label: "# Filled (Assigned) WFS Rider Hours"
     description: "# Filled Rider Hours from shifts with project code = 'WFS shift'"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_wfs_shift_rider/60;;
@@ -2639,7 +2640,7 @@ view: staffing {
 
   measure: number_of_planned_hours_rider_ns_shift {
     group_label: "> Rider Measures"
-    label: "# Filled (Planned) NS+ Rider Hours"
+    label: "# Filled (Assigned) NS+ Rider Hours"
     description: "# Filled Rider Hours from shifts with project code = 'NS+ shift'"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_ns_shift_rider/60;;
@@ -2648,37 +2649,37 @@ view: staffing {
 
   measure: number_of_planned_hours_availability_based_rider {
     group_label: "> Rider Measures"
-    label: "# Filled (Planned) Rider Hours Based on Availability"
+    label: "# Filled (Assigned) Rider Hours Based on Availability"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_availability_based_rider/60;;
-    description:"Number of filled (planned) hours that are overlapping with provided availability (Rider)"
+    description:"Number of filled (Assigned) hours that are overlapping with provided availability (Rider)"
     value_format_name: decimal_1
   }
 
   measure: pct_of_planned_hours_availability_based_rider {
     group_label: "> Rider Measures"
-    label: "% Filled (Planned) Rider Hours Based on Availability"
+    label: "% Filled (Assigned) Rider Hours Based on Availability"
     type: number
     sql:${number_of_planned_hours_availability_based_rider}/nullif(${number_of_planned_hours_rider},0) ;;
-    description:"Share of Filled Hours based on Availability from total Filled Hours - (# Filled (Planned) Hours Based on Availability / # Filled (Planned) Hours)"
+    description:"Share of Filled Hours based on Availability from total Filled Hours - (# Filled (Assigned) Hours Based on Availability / # Filled (Assigned) Hours)"
     value_format_name: percent_1
   }
 
   measure: number_of_planned_hours_availability_based_external_rider {
     group_label: "> Rider Measures"
-    label: "# Filled (Planned) External Rider Hours Based on Availability"
+    label: "# Filled (Assigned) External Rider Hours Based on Availability"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_availability_based_external_rider/60;;
-    description:"Number of filled (planned) hours that are overlapping with provided availability (External Rider)"
+    description:"Number of filled (Assigned) hours that are overlapping with provided availability (External Rider)"
     value_format_name: decimal_1
   }
 
   measure: number_of_planned_hours_availability_based_internal_rider {
     group_label: "> Rider Measures"
-    label: "# Filled (Planned) Internal Rider Hours Based on Availability"
+    label: "# Filled (Assigned) Internal Rider Hours Based on Availability"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_availability_based_internal_rider/60;;
-    description:"Number of filled (planned) hours that are overlapping with provided availability (Internal Rider)"
+    description:"Number of filled (Assigned) hours that are overlapping with provided availability (Internal Rider)"
     value_format_name: decimal_1
   }
 
@@ -2693,7 +2694,7 @@ view: staffing {
 
   measure: number_of_planned_hours_picker {
     group_label: "> Picker Measures"
-    label: "# Filled (Planned) Picker Hours"
+    label: "# Filled (Assigned) Picker Hours"
     type: sum
     sql: ${number_of_planned_minutes_picker}/60;;
     value_format_name: decimal_1
@@ -2701,37 +2702,37 @@ view: staffing {
 
   measure: number_of_planned_hours_availability_based_picker {
     group_label: "> Picker Measures"
-    label: "# Filled (Planned) Picker Hours Based on Availability"
+    label: "# Filled (Assigned) Picker Hours Based on Availability"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_availability_based_picker/60;;
-    description:"Number of filled (planned) hours that are overlapping with provided availability (Picker)"
+    description:"Number of filled (Assigned) hours that are overlapping with provided availability (Picker)"
     value_format_name: decimal_1
   }
 
   measure: pct_of_planned_hours_availability_based_picker {
     group_label: "> Picker Measures"
-    label: "% Filled (Planned) Picker Hours Based on Availability"
+    label: "% Filled (Assigned) Picker Hours Based on Availability"
     type: number
     sql:${number_of_planned_hours_availability_based_picker}/nullif(${number_of_planned_hours_picker},0) ;;
-    description:"Share of Filled Hours based on Availability from total Filled Hours - (# Filled (Planned) Hours Based on Availability / # Filled (Planned) Hours)"
+    description:"Share of Filled Hours based on Availability from total Filled Hours - (# Filled (Assigned) Hours Based on Availability / # Filled (Assigned) Hours)"
     value_format_name: percent_1
   }
 
   measure: number_of_planned_hours_availability_based_external_picker {
     group_label: "> Picker Measures"
-    label: "# Filled (Planned) External Picker Hours Based on Availability"
+    label: "# Filled (Assigned) External Picker Hours Based on Availability"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_availability_based_external_picker/60;;
-    description:"Number of filled (planned) hours that are overlapping with provided availability (External Picker)"
+    description:"Number of filled (Assigned) hours that are overlapping with provided availability (External Picker)"
     value_format_name: decimal_1
   }
 
   measure: number_of_planned_hours_availability_based_internal_picker {
     group_label: "> Picker Measures"
-    label: "# Filled (Planned) Internal Picker Hours Based on Availability"
+    label: "# Filled (Assigned) Internal Picker Hours Based on Availability"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_availability_based_internal_picker/60;;
-    description:"Number of filled (planned) hours that are overlapping with provided availability (Internal Picker)"
+    description:"Number of filled (Assigned) hours that are overlapping with provided availability (Internal Picker)"
     value_format_name: decimal_1
   }
 
@@ -2746,7 +2747,7 @@ view: staffing {
 
   measure: number_of_planned_hours_shift_lead {
     group_label: "> Shift Lead Measures"
-    label: "# Filled (Planned) Shift Lead Hours"
+    label: "# Filled (Assigned) Shift Lead Hours"
     type: sum
     sql: ${number_of_planned_minutes_shift_lead}/60;;
     value_format_name: decimal_1
@@ -2754,37 +2755,37 @@ view: staffing {
 
   measure: number_of_planned_hours_availability_based_shift_lead {
     group_label: "> Shift Lead Measures"
-    label: "# Filled (Planned) Shift Lead Hours Based on Availability"
+    label: "# Filled (Assigned) Shift Lead Hours Based on Availability"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_availability_based_shift_lead/60;;
-    description:"Number of filled (planned) hours that are overlapping with provided availability (Shift Lead)"
+    description:"Number of filled (Assigned) hours that are overlapping with provided availability (Shift Lead)"
     value_format_name: decimal_1
   }
 
   measure: pct_of_planned_hours_availability_based_shift_lead {
     group_label: "> Shift Lead Measures"
-    label: "% Filled (Planned) Shift Lead Hours Based on Availability"
+    label: "% Filled (Assigned) Shift Lead Hours Based on Availability"
     type: number
     sql:${number_of_planned_hours_availability_based_shift_lead}/nullif(${number_of_planned_hours_shift_lead},0) ;;
-    description:"Share of Filled Hours based on Availability from total Filled Hours - (# Filled (Planned) Hours Based on Availability / # Filled (Planned) Hours)"
+    description:"Share of Filled Hours based on Availability from total Filled Hours - (# Filled (Assigned) Hours Based on Availability / # Filled (Assigned) Hours)"
     value_format_name: percent_1
   }
 
   measure: number_of_planned_hours_availability_based_external_shift_lead {
     group_label: "> Shift Lead Measures"
-    label: "# Filled (Planned) External Shift Lead Hours Based on Availability"
+    label: "# Filled (Assigned) External Shift Lead Hours Based on Availability"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_availability_based_external_shift_lead/60;;
-    description:"Number of filled (planned) hours that are overlapping with provided availability (External Shift Lead)"
+    description:"Number of filled (Assigned) hours that are overlapping with provided availability (External Shift Lead)"
     value_format_name: decimal_1
   }
 
   measure: number_of_planned_hours_availability_based_internal_shift_lead {
     group_label: "> Shift Lead Measures"
-    label: "# Filled (Planned) Internal Shift Lead Hours Based on Availability"
+    label: "# Filled (Assigned) Internal Shift Lead Hours Based on Availability"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_availability_based_internal_shift_lead/60;;
-    description:"Number of filled (planned) hours that are overlapping with provided availability (Internal Shift Lead)"
+    description:"Number of filled (Assigned) hours that are overlapping with provided availability (Internal Shift Lead)"
     value_format_name: decimal_1
   }
 
@@ -2799,7 +2800,7 @@ view: staffing {
 
   measure: number_of_planned_hours_rider_captain {
     group_label: "> Rider Captain Measures"
-    label: "# Filled (Planned) Rider Captain Hours"
+    label: "# Filled (Assigned) Rider Captain Hours"
     type: sum
     sql: ${number_of_planned_minutes_rider_captain}/60;;
     value_format_name: decimal_1
@@ -2807,37 +2808,37 @@ view: staffing {
 
   measure: number_of_planned_hours_availability_based_rider_captain {
     group_label: "> Rider Captain Measures"
-    label: "# Filled (Planned) Rider Captain Hours Based on Availability"
+    label: "# Filled (Assigned) Rider Captain Hours Based on Availability"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_availability_based_rider_captain/60;;
-    description:"Number of filled (planned) hours that are overlapping with provided availability (Rider Captain)"
+    description:"Number of filled (Assigned) hours that are overlapping with provided availability (Rider Captain)"
     value_format_name: decimal_1
   }
 
   measure: pct_of_planned_hours_availability_based_rider_captain {
     group_label: "> Rider Captain Measures"
-    label: "% Filled (Planned) Rider Captain Hours Based on Availability"
+    label: "% Filled (Assigned) Rider Captain Hours Based on Availability"
     type: number
     sql:${number_of_planned_hours_availability_based_rider_captain}/nullif(${number_of_planned_hours_rider_captain},0) ;;
-    description:"Share of Filled Hours based on Availability from total Filled Hours - (# Filled (Planned) Hours Based on Availability / # Filled (Planned) Hours)"
+    description:"Share of Filled Hours based on Availability from total Filled Hours - (# Filled (Assigned) Hours Based on Availability / # Filled (Assigned) Hours)"
     value_format_name: percent_1
   }
 
   measure: number_of_planned_hours_availability_based_external_rider_captain {
     group_label: "> Rider Captain Measures"
-    label: "# Filled (Planned) External Rider Captain Hours Based on Availability"
+    label: "# Filled (Assigned) External Rider Captain Hours Based on Availability"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_availability_based_external_rider_captain/60;;
-    description:"Number of filled (planned) hours that are overlapping with provided availability (External Rider Captain)"
+    description:"Number of filled (Assigned) hours that are overlapping with provided availability (External Rider Captain)"
     value_format_name: decimal_1
   }
 
   measure: number_of_planned_hours_availability_based_internal_rider_captain {
     group_label: "> Rider Captain Measures"
-    label: "# Filled (Planned) Internal Rider Captain Hours Based on Availability"
+    label: "# Filled (Assigned) Internal Rider Captain Hours Based on Availability"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_availability_based_internal_rider_captain/60;;
-    description:"Number of filled (planned) hours that are overlapping with provided availability (Internal Rider Captain)"
+    description:"Number of filled (Assigned) hours that are overlapping with provided availability (Internal Rider Captain)"
     value_format_name: decimal_1
   }
 
@@ -2853,7 +2854,7 @@ view: staffing {
 
   measure: number_of_planned_hours_co_ops {
     group_label: "> Co Ops Measures"
-    label: "# Filled (Planned) Co Ops Hours"
+    label: "# Filled (Assigned) Co Ops Hours"
     type: sum
     sql: ${number_of_planned_minutes_co_ops}/60;;
     value_format_name: decimal_1
@@ -2861,37 +2862,37 @@ view: staffing {
 
   measure: number_of_planned_hours_availability_based_co_ops {
     group_label: "> Co Ops Measures"
-    label: "# Filled (Planned) Co Ops Hours Based on Availability"
+    label: "# Filled (Assigned) Co Ops Hours Based on Availability"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_availability_based_co_ops/60;;
-    description:"Number of filled (planned) hours that are overlapping with provided availability (Co Ops)"
+    description:"Number of filled (Assigned) hours that are overlapping with provided availability (Co Ops)"
     value_format_name: decimal_1
   }
 
   measure: pct_of_planned_hours_availability_based_co_ops {
     group_label: "> Co Ops Measures"
-    label: "% Filled (Planned) Co Ops Hours Based on Availability"
+    label: "% Filled (Assigned) Co Ops Hours Based on Availability"
     type: number
     sql:${number_of_planned_hours_availability_based_co_ops}/nullif(${number_of_planned_hours_co_ops},0) ;;
-    description:"Share of Filled Hours based on Availability from total Filled Hours - (# Filled (Planned) Hours Based on Availability / # Filled (Planned) Hours)"
+    description:"Share of Filled Hours based on Availability from total Filled Hours - (# Filled (Assigned) Hours Based on Availability / # Filled (Assigned) Hours)"
     value_format_name: percent_1
   }
 
   measure: number_of_planned_hours_availability_based_external_co_ops {
     group_label: "> Co Ops Measures"
-    label: "# Filled (Planned) External Co Ops Hours Based on Availability"
+    label: "# Filled (Assigned) External Co Ops Hours Based on Availability"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_availability_based_external_co_ops/60;;
-    description:"Number of filled (planned) hours that are overlapping with provided availability (External Co Ops)"
+    description:"Number of filled (Assigned) hours that are overlapping with provided availability (External Co Ops)"
     value_format_name: decimal_1
   }
 
   measure: number_of_planned_hours_availability_based_internal_co_ops {
     group_label: "> Co Ops Measures"
-    label: "# Filled (Planned) Internal Co Ops Hours Based on Availability"
+    label: "# Filled (Assigned) Internal Co Ops Hours Based on Availability"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_availability_based_internal_co_ops/60;;
-    description:"Number of filled (planned) hours that are overlapping with provided availability (Internal Co Ops)"
+    description:"Number of filled (Assigned) hours that are overlapping with provided availability (Internal Co Ops)"
     value_format_name: decimal_1
   }
 
@@ -2906,7 +2907,7 @@ view: staffing {
 
   measure: number_of_planned_hours_wh {
     group_label: "> WH Measures"
-    label: "# Filled (Planned) WH Hours"
+    label: "# Filled (Assigned) WH Hours"
     type: sum
     sql: ${number_of_planned_minutes_wh}/60;;
     value_format_name: decimal_1
@@ -2914,37 +2915,37 @@ view: staffing {
 
   measure: number_of_planned_hours_availability_based_wh {
     group_label: "> WH Measures"
-    label: "# Filled (Planned) WH Hours Based on Availability"
+    label: "# Filled (Assigned) WH Hours Based on Availability"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_availability_based_wh/60;;
-    description:"Number of filled (planned) hours that are overlapping with provided availability (WH)"
+    description:"Number of filled (Assigned) hours that are overlapping with provided availability (WH)"
     value_format_name: decimal_1
   }
 
   measure: pct_of_planned_hours_availability_based_wh {
     group_label: "> WH Measures"
-    label: "% Filled (Planned) WH Hours Based on Availability"
+    label: "% Filled (Assigned) WH Hours Based on Availability"
     type: number
     sql:${number_of_planned_hours_availability_based_wh}/nullif(${number_of_planned_hours_wh},0) ;;
-    description:"Share of Filled Hours based on Availability from total Filled Hours - (# Filled (Planned) Hours Based on Availability / # Filled (Planned) Hours)"
+    description:"Share of Filled Hours based on Availability from total Filled Hours - (# Filled (Assigned) Hours Based on Availability / # Filled (Assigned) Hours)"
     value_format_name: percent_1
   }
 
   measure: number_of_planned_hours_availability_based_external_wh {
     group_label: "> WH Measures"
-    label: "# Filled (Planned) External WH Hours Based on Availability"
+    label: "# Filled (Assigned) External WH Hours Based on Availability"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_availability_based_external_wh/60;;
-    description:"Number of filled (planned) hours that are overlapping with provided availability (External WH)"
+    description:"Number of filled (Assigned) hours that are overlapping with provided availability (External WH)"
     value_format_name: decimal_1
   }
 
   measure: number_of_planned_hours_availability_based_internal_wh {
     group_label: "> WH Measures"
-    label: "# Filled (Planned) Internal WH Hours Based on Availability"
+    label: "# Filled (Assigned) Internal WH Hours Based on Availability"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_availability_based_internal_wh/60;;
-    description:"Number of filled (planned) hours that are overlapping with provided availability (Internal WH)"
+    description:"Number of filled (Assigned) hours that are overlapping with provided availability (Internal WH)"
     value_format_name: decimal_1
   }
 
@@ -2959,14 +2960,14 @@ view: staffing {
 
   measure: number_of_planned_hours_cc_agent {
     group_label: "> CC Agent Measures"
-    label: "# Filled (Planned) CC Agent Hours"
+    label: "# Filled (Assigned) CC Agent Hours"
     type: sum
     sql: ${number_of_planned_minutes_wh}/60;;
     value_format_name: decimal_1
   }
   measure: number_of_planned_hours_hub_staff {
     group_label: "> Hub Staff Measures"
-    label: "# Filled (Planned) Hub Staff Hours"
+    label: "# Filled (Assigned) Hub Staff Hours"
     description: "# Planned Hub Staff Hours (Picker, WH, Rider Captain, Ops Associate, Shift Lead, Deputy Shift Lead)"
     type: number
     sql: ${number_of_planned_hours_ops_associate}+${number_of_planned_hours_shift_lead}+${number_of_planned_hours_deputy_shift_lead};;
@@ -2975,40 +2976,40 @@ view: staffing {
 
   measure: number_of_planned_hours_availability_based_hub_staff {
     group_label: "> Hub Staff Measures"
-    label: "# Filled (Planned) Hub Staff Hours Based on Availability"
+    label: "# Filled (Assigned) Hub Staff Hours Based on Availability"
     type: sum
     sql: (${TABLE}.number_of_planned_minutes_availability_based_ops_associate +
     ${TABLE}.number_of_planned_minutes_availability_based_shift_lead + ${TABLE}.number_of_planned_minutes_availability_based_deputy_shift_lead)/60;;
-    description:"Number of filled (planned) hours that are overlapping with provided availability (Hub Staff)"
+    description:"Number of filled (Assigned) hours that are overlapping with provided availability (Hub Staff)"
     value_format_name: decimal_1
   }
 
   measure: pct_of_planned_hours_availability_based_hub_staff {
     group_label: "> Hub Staff Measures"
-    label: "% Filled (Planned) Hub Staff Hours Based on Availability"
+    label: "% Filled (Assigned) Hub Staff Hours Based on Availability"
     type: number
     sql:${number_of_planned_hours_availability_based_hub_staff}/nullif(${number_of_planned_hours_hub_staff},0) ;;
-    description:"Share of Filled Hours based on Availability from total Filled Hours - (# Filled (Planned) Hours Based on Availability / # Filled (Planned) Hours)"
+    description:"Share of Filled Hours based on Availability from total Filled Hours - (# Filled (Assigned) Hours Based on Availability / # Filled (Assigned) Hours)"
     value_format_name: percent_1
   }
 
   measure: number_of_planned_hours_availability_based_external_hub_staff {
     group_label: "> Hub Staff Measures"
-    label: "# Filled (Planned) External Hub Staff Hours Based on Availability"
+    label: "# Filled (Assigned) External Hub Staff Hours Based on Availability"
     type: sum
     sql: (${TABLE}.number_of_planned_minutes_availability_based_external_ops_associate +
     ${TABLE}.number_of_planned_minutes_availability_based_external_shift_lead + ${TABLE}.number_of_planned_minutes_availability_based_external_deputy_shift_lead)/60;;
-    description:"Number of filled (planned) hours that are overlapping with provided availability (External Hub Staff)"
+    description:"Number of filled (Assigned) hours that are overlapping with provided availability (External Hub Staff)"
     value_format_name: decimal_1
   }
 
   measure: number_of_planned_hours_availability_based_internal_hub_staff {
     group_label: "> Hub Staff Measures"
-    label: "# Filled (Planned) Internal Hub Staff Hours Based on Availability"
+    label: "# Filled (Assigned) Internal Hub Staff Hours Based on Availability"
     type: sum
     sql: (${TABLE}.number_of_planned_minutes_availability_based_internal_ops_associate +
     ${TABLE}.number_of_planned_minutes_availability_based_internal_shift_lead + ${TABLE}.number_of_planned_minutes_availability_based_internal_deputy_shift_lead)/60;;
-    description:"Number of filled (planned) hours that are overlapping with provided availability (Internal Hub Staff)"
+    description:"Number of filled (Assigned) hours that are overlapping with provided availability (Internal Hub Staff)"
     value_format_name: decimal_1
   }
 
@@ -3027,6 +3028,7 @@ view: staffing {
   measure: number_of_scheduled_hours_rider {
     group_label: "> Rider Measures"
     label: "# Scheduled Rider Hours"
+    description: "# Scheduled Rider Hours (Post-Adjustments) (Assigned + Unassigned)"
     type: number
     sql: ${number_of_unassigned_hours_rider}+${number_of_planned_hours_rider};;
     value_format_name: decimal_1
@@ -3035,6 +3037,7 @@ view: staffing {
   measure: number_of_scheduled_hours_picker {
     group_label: "> Picker Measures"
     label: "# Scheduled Picker Hours"
+    description: "# Scheduled Picker Hours (Post-Adjustments) (Assigned + Unassigned)"
     type: number
     # sql_distinct_key: ${staffing_uuid} ;;
     sql: ${number_of_unassigned_hours_picker}+${number_of_planned_hours_picker};;
@@ -3044,6 +3047,7 @@ view: staffing {
   measure: number_of_scheduled_hours_shift_lead {
     group_label: "> Shift Lead Measures"
     label: "# Scheduled Shift Lead Hours"
+    description: "# Scheduled Shift Lead Hours (Post-Adjustments) (Assigned + Unassigned)"
     type: number
     sql: ${number_of_unassigned_hours_shift_lead}+${number_of_planned_hours_shift_lead};;
     value_format_name: decimal_1
@@ -3051,6 +3055,7 @@ view: staffing {
   measure: number_of_scheduled_hours_rider_captain {
     group_label: "> Rider Captain Measures"
     label: "# Scheduled Rider Captain Hours"
+    description: "# Scheduled Rider Captain Hours (Post-Adjustments) (Assigned + Unassigned)"
     type: number
     sql: ${number_of_unassigned_hours_rider_captain}+${number_of_planned_hours_rider_captain};;
     value_format_name: decimal_1
@@ -3058,6 +3063,7 @@ view: staffing {
   measure: number_of_scheduled_hours_co_ops {
     group_label: "> Co Ops Measures"
     label: "# Scheduled Co Ops Employee Hours"
+    description: "# Scheduled Co Opsn Hours (Post-Adjustments) (Assigned + Unassigned)"
     type: number
     sql: ${number_of_unassigned_hours_co_ops}+${number_of_planned_hours_co_ops};;
     value_format_name: decimal_1
@@ -3069,6 +3075,7 @@ view: staffing {
     type: number
     # sql_distinct_key: ${staffing_uuid} ;;
     sql: ${number_of_unassigned_hours_wh}+${number_of_planned_hours_wh};;
+    description: "# Scheduled WH Hours (Post-Adjustments) (Assigned + Unassigned)"
     value_format_name: decimal_1
   }
 
@@ -3082,7 +3089,7 @@ view: staffing {
   measure: number_of_scheduled_hours_hub_staff {
     group_label: "> Hub Staff Measures"
     label: "# Scheduled Hub Staff Hours"
-    description: "# Scheduled Hub Staff Hours (Picker, WH, Rider Captain, Ops Associate, Shift Lead)"
+    description: "# Scheduled Hub Staff Hours (Picker, WH, Rider Captain, Ops Associate, Shift Lead) (Assigned + Unassigned)"
     type: number
     sql: ${number_of_scheduled_hours_ops_associate}+${number_of_scheduled_hours_shift_lead}+${number_of_scheduled_hours_deputy_shift_lead};;
     value_format_name: decimal_1
@@ -3091,7 +3098,7 @@ view: staffing {
     alias: [number_of_scheduled_hours_ops_staff]
     group_label: "> Ops Associate Measures"
     label: "# Scheduled Ops Associate Hours"
-    description: "# Scheduled (Assigned + Open) Ops Associate Hours (Picker, WH, Rider Captain, Ops Associate)"
+    description: "# Scheduled Ops Associate Hours (Picker, WH, Rider Captain, Ops Associate) (Assigned + Unassigned)"
     type: number
     sql: ${number_of_unassigned_hours_ops_associate}+${number_of_planned_hours_ops_associate};;
     value_format_name: decimal_1
@@ -3101,7 +3108,7 @@ view: staffing {
   measure: number_of_scheduled_hours_external_rider {
     group_label: "> Rider Measures"
     label: "# External Scheduled Rider Hours"
-    description: "# External Scheduled Rider Hours (Post-Adjustments) (Assigned + Open)"
+    description: "# External Scheduled Rider Hours (Post-Adjustments) (Assigned + Unassigned)"
     type: sum
     sql: (${number_of_unassigned_minutes_external_rider}+${number_of_planned_minutes_external_rider})/60;;
     value_format_name: decimal_1
@@ -3111,7 +3118,7 @@ view: staffing {
     alias: [number_of_scheduled_hours_external_ops_staff]
     group_label: "> Ops Associate Measures"
     label: "# External Scheduled Ops Associate Hours"
-    description: "# External Scheduled Ops Associate Hours (Post-Adjustments) (Assigned + Open) (Picker, WH, Rider Captain, Ops Associate)"
+    description: "# External Scheduled Ops Associate Hours (Post-Adjustments) (Assigned + Unassigned) (Picker, WH, Rider Captain, Ops Associate)"
     type: number
     sql: (${number_of_unassigned_minutes_external_ops_associate}+${number_of_planned_minutes_external_ops_associate})/60;;
     value_format_name: decimal_1
@@ -3120,7 +3127,7 @@ view: staffing {
   measure: number_of_scheduled_hours_external_picker {
     group_label: "> Picker Measures"
     label: "# External Scheduled Picker Hours"
-    description: "# External Scheduled Picker Hours (Post-Adjustments) (Assigned + Open)"
+    description: "# External Scheduled Picker Hours (Post-Adjustments) (Assigned + Unassigned)"
     type: sum
     sql: (${number_of_unassigned_minutes_external_picker}+${number_of_planned_minutes_external_picker})/60;;
     value_format_name: decimal_1
@@ -3129,7 +3136,7 @@ view: staffing {
   measure: number_of_scheduled_hours_external_shift_lead {
     group_label: "> Shift Lead Measures"
     label: "# External Scheduled Shift Lead Hours"
-    description: "# External Scheduled Shift Lead Hours (Post-Adjustments) (Assigned + Open)"
+    description: "# External Scheduled Shift Lead Hours (Post-Adjustments) (Assigned + Unassigned)"
     type: sum
     sql: (${number_of_unassigned_minutes_external_shift_lead}+${number_of_planned_minutes_external_shift_lead})/60;;
     value_format_name: decimal_1
@@ -3137,7 +3144,7 @@ view: staffing {
   measure: number_of_scheduled_hours_external_rider_captain {
     group_label: "> Rider Captain Measures"
     label: "# External Scheduled Rider Captain Hours"
-    description: "# External Scheduled Rider Captain Hours (Post-Adjustments) (Assigned + Open)"
+    description: "# External Scheduled Rider Captain Hours (Post-Adjustments) (Assigned + Unassigned)"
     type: sum
     sql: (${number_of_unassigned_minutes_external_rider_captain}+${number_of_planned_minutes_external_rider_captain})/60;;
     value_format_name: decimal_1
@@ -3145,7 +3152,7 @@ view: staffing {
   measure: number_of_scheduled_hours_external_co_ops {
     group_label: "> Co Ops Measures"
     label: "# External Scheduled Co Ops Employee Hours"
-    description: "# External Scheduled Co Ops Employee Hours (Post-Adjustments) (Assigned + Open)"
+    description: "# External Scheduled Co Ops Employee Hours (Post-Adjustments) (Assigned + Unassigned)"
     type: sum
     sql: (${number_of_unassigned_minutes_external_co_ops}+${number_of_planned_minutes_external_co_ops})/60;;
     value_format_name: decimal_1
@@ -3154,7 +3161,7 @@ view: staffing {
   measure: number_of_scheduled_hours_external_wh {
     group_label: "> WH Measures"
     label: "# External Scheduled WH Employee Hours"
-    description: "# External Scheduled WH Employee Hours (Post-Adjustments) (Assigned + Open)"
+    description: "# External Scheduled WH Employee Hours (Post-Adjustments) (Assigned + Unassigned)"
     type: sum
     sql: (${number_of_unassigned_minutes_external_wh}+${number_of_planned_minutes_external_wh})/60;;
     value_format_name: decimal_1
@@ -3163,7 +3170,7 @@ view: staffing {
   measure: number_of_scheduled_hours_external_cc_agent {
     group_label: "> CC Agent Measures"
     label: "# External Scheduled CC Agent Hours"
-    description: "# External Scheduled CC Agent Hours (Post-Adjustments) (Assigned + Open)"
+    description: "# External Scheduled CC Agent Hours (Post-Adjustments) (Assigned + Unassigned)"
     type: sum
     sql: (${number_of_unassigned_minutes_external_cc_agent}+${number_of_planned_minutes_external_cc_agent})/60;;
     value_format_name: decimal_1
@@ -3171,7 +3178,7 @@ view: staffing {
   measure: number_of_scheduled_hours_external_hub_staff {
     group_label: "> Hub Staff Measures"
     label: "# External Scheduled Hub Staff Hours"
-    description: "# External Scheduled (Assigned + Open) Hub Staff Hours (Picker, WH, Rider Captain, Ops Associate, Shift Lead)"
+    description: "# External Scheduled Hub Staff Hours (Picker, WH, Rider Captain, Ops Associate, Shift Lead) (Assigned + Unassigned)"
     type: number
     sql: (${number_of_scheduled_hours_external_ops_associate}+${number_of_scheduled_hours_external_shift_lead})/60;;
     value_format_name: decimal_1
@@ -4046,7 +4053,7 @@ view: staffing {
   measure: pct_scheduled_hours_by_position {
     type: number
     label: "% External Scheduled Hours"
-    description: "Sum External Scheduled Hours (Assigned + Open) / Sum Scheduled Hours (Assigned + Open Hours)"
+    description: "Sum External Scheduled Hours (Assigned + Unassigned) / Sum Scheduled Hours (Assigned + Open Hours)"
     value_format_name: percent_1
     group_label: "> Dynamic Measures"
     sql:
