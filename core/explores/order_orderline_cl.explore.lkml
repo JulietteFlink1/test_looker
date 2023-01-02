@@ -45,9 +45,9 @@ explore: order_orderline_cl {
     view_label: "Product Data (CT)"
 
     sql_on:
-    ${products.product_sku} = ${products_ct_merged_skus.sku} and
-    ${products.country_iso} = ${products_ct_merged_skus.country_iso}
-    ;;
+        ${products.product_sku} = ${products_ct_merged_skus.sku} and
+        ${products.country_iso} = ${products_ct_merged_skus.country_iso}
+        ;;
     relationship: one_to_one
     type: left_outer
   }
