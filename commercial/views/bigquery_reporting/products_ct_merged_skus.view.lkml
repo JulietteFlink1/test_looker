@@ -4,7 +4,7 @@
 #   - provide a table to consistently report on merged SKUs in Looker
 
 view: products_ct_merged_skus {
-  sql_table_name: `flink-data-dev.dbt_astueber_reporting.products_ct_merged_skus`
+  sql_table_name: `flink-data-prod.reporting.products_ct_merged_skus`
     ;;
   view_label: "Product Attributes (Merged SKUs)"
 
