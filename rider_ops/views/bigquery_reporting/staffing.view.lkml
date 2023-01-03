@@ -2670,7 +2670,7 @@ view: staffing {
     label: "# Filled (Assigned) External Rider Hours Based on Availability"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_availability_based_external_rider/60;;
-    description:"Number of Dilled (Assigned) hours that are overlapping with provided availability (External Rider)"
+    description:"Number of filled (Assigned) hours that are overlapping with provided availability (External Rider)"
     value_format_name: decimal_1
   }
 
