@@ -2561,7 +2561,7 @@ view: staffing {
     alias: [number_of_planned_hours_ops_staff]
     group_label: "> Ops Associate Measures"
     label: "# Filled (Assigned) Ops Associate Hours"
-    description: "# Planned Ops Associate Hours (Picker, WH, Rider Captain, Ops Associate)"
+    description: "# Filled Ops Associate Hours (Picker, WH, Rider Captain, Ops Associate)"
     type: number
     sql: ${number_of_planned_minutes_ops_associate}/60 ;;
     value_format_name: decimal_1
@@ -2968,7 +2968,7 @@ view: staffing {
   measure: number_of_planned_hours_hub_staff {
     group_label: "> Hub Staff Measures"
     label: "# Filled (Assigned) Hub Staff Hours"
-    description: "# Planned Hub Staff Hours (Picker, WH, Rider Captain, Ops Associate, Shift Lead, Deputy Shift Lead)"
+    description: "# Filled Hub Staff Hours (Picker, WH, Rider Captain, Ops Associate, Shift Lead, Deputy Shift Lead)"
     type: number
     sql: ${number_of_planned_hours_ops_associate}+${number_of_planned_hours_shift_lead}+${number_of_planned_hours_deputy_shift_lead};;
     value_format_name: decimal_1
