@@ -77,7 +77,7 @@ explore: order_orderline_cl {
     # this will be deprecated in favour of the raw ERP data
     view_label: ""
 
-    from: erp_product_hub_vendor_assignment_v2
+    from: erp_product_hub_vendor_assignment
 
     sql_on:  ${erp_product_hub_vendor_assignment.sku}            = ${orderline.product_sku}
          and ${erp_product_hub_vendor_assignment.hub_code}       = ${orderline.hub_code}
