@@ -61,7 +61,7 @@ join: lexbizz_item {
 
   join: erp_master_data {
 
-    from: erp_product_hub_vendor_assignment_v2
+    from: erp_product_hub_vendor_assignment
     view_label: "05 Supplier (ERP)"
 
     type: left_outer
