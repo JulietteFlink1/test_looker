@@ -207,6 +207,38 @@ view: product_placement_performance_aggregates {
     sql: ${TABLE}.count_of_distinct_users_with_order_placed ;;
   }
 
+  # ======= Product Quantity Aggregates ======= #
+  dimension: number_of_product_impressions {
+    group_label: "Product Quantity Aggregates"
+    label: "Count of users placed an order"
+    type: number
+    description: "Count of distinct users who placed an order with the product_sku and from that product_placements."
+    sql: ${TABLE}.number_of_product_impressions ;;
+  }
+
+  dimension: number_of_product_add_to_carts {
+    group_label: "Product Quantity Aggregates"
+    label: "Total number of impressions triggered"
+    type: number
+    description: "Total number of product impressions triggered."
+    sql: ${TABLE}.number_of_product_add_to_carts ;;
+  }
+
+  dimension: number_of_product_removed_from_carts {
+    group_label: "Product Quantity Aggregates"
+    label: "Number of unique products removed from cart"
+    type: number
+    description: "Number of unique products removed from cart"
+    sql: ${TABLE}.number_of_product_removed_from_carts ;;
+  }
+
+  dimension: number_of_orders_with_product {
+    group_label: "Product Quantity Aggregates"
+    label: "Count of orders containing the product"
+    type: number
+    description: "Count of orders containing the product"
+    sql: ${TABLE}.number_of_orders_with_product ;;
+  }
 
   # =======  Date Timestamp ======= #
 
