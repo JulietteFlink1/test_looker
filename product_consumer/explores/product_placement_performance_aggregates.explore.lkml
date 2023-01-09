@@ -8,6 +8,7 @@
 
 include: "/product_consumer/views/bigquery_reporting/product_placement_performance_aggregates.view"
 include: "/**/global_filters_and_parameters.view.lkml"
+include: "/**/products.view.lkml"
 
 
 explore: product_placement_performance_aggregates {
@@ -45,4 +46,12 @@ explore: product_placement_performance_aggregates {
     sql: ;;
   relationship: one_to_one
 }
+
+  join: products {
+    view_label: "Product Data (CT)"
+    sql_on: ${products.product_sku} = ${product_placement_performance_aggregates.product_sku} ;;
+    relationship: many_to_one
+    type: left_outer
+    fields: [product_attributes*, product_brand]
+  }
 }
