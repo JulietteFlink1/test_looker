@@ -171,6 +171,7 @@ view: product_placement_performance_aggregates {
     group_label: "User Measures"
     label: "Count of users with product impression."
     type: number
+    hidden: yes
     description: "Count of Distinct Users with Product Impression"
     sql: ${TABLE}.count_of_distinct_users_with_product_impression ;;
   }
@@ -179,6 +180,7 @@ view: product_placement_performance_aggregates {
     group_label: "User Measures"
     label: "Count of users with product added to cart."
     type: number
+    hidden: yes
     description: "Count of Distinct Users with Product Added to Cart"
     sql: ${TABLE}.count_of_distinct_users_with_product_added_to_cart ;;
   }
@@ -187,6 +189,7 @@ view: product_placement_performance_aggregates {
     group_label: "User Measures"
     label: "Count of users with product removed from cart."
     type: number
+    hidden: yes
     description: "Count of Distinct Users with Product Removed from Cart"
     sql: ${TABLE}.count_of_distinct_users_with_product_removed_from_cart ;;
   }
@@ -195,6 +198,7 @@ view: product_placement_performance_aggregates {
     group_label: "User Measures"
     label: "Count of users with PDP viewed."
     type: number
+    hidden: yes
     description: "Count of Distinct Users with Product Details Page Viewed"
     sql: ${TABLE}.count_of_distinct_users_with_pdp_viewed ;;
   }
@@ -203,10 +207,43 @@ view: product_placement_performance_aggregates {
     group_label: "User Measures"
     label: "Count of users placed an order"
     type: number
+    hidden: yes
     description: "Count of distinct users who placed an order with the product_sku and from that product_placements."
     sql: ${TABLE}.count_of_distinct_users_with_order_placed ;;
   }
 
+  # ======= Product Quantity Aggregates ======= #
+  dimension: number_of_product_impressions {
+    group_label: "Product Quantity Aggregates"
+    label: "Count of impressions triggered"
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_product_impressions ;;
+  }
+
+  dimension: number_of_product_add_to_carts {
+    group_label: "Product Quantity Aggregates"
+    label: "Count of unique products added to cart"
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_product_add_to_carts ;;
+  }
+
+  dimension: number_of_product_removed_from_carts {
+    group_label: "Product Quantity Aggregates"
+    label: "Count of unique products removed from cart"
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_product_removed_from_carts ;;
+  }
+
+  dimension: number_of_orders_with_product {
+    group_label: "Product Quantity Aggregates"
+    label: "Count of orders containing the product"
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_orders_with_product ;;
+  }
 
   # =======  Date Timestamp ======= #
 
@@ -227,7 +264,7 @@ view: product_placement_performance_aggregates {
   # ~~~~~~~~~~~~~~~     Measures    ~~~~~~~~~~~~~~~~~ #
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
-  ######## * Numbers * ########
+  ######## * Numbers of users * ########
 
   measure: number_of_users_exposed_to_product{
     type: sum
@@ -278,6 +315,41 @@ view: product_placement_performance_aggregates {
     hidden:  yes
     sql: ${count_of_distinct_users_with_order_placed} ;;
     filters: [is_exposed_to_impressions: "yes"]
+  }
+
+  ######## * Numbers of products * ########
+
+  measure: numbers_of_product_impressions{
+    type: sum
+    group_label: "* Numbers *"
+    label: "Number of Exposed Products"
+    hidden:  no
+    sql: ${number_of_product_impressions} ;;
+  }
+
+  measure: numbers_of_product_added_to_carts{
+    type: sum
+    group_label: "* Numbers *"
+    label: "Number of Products Added to Cart"
+    hidden:  no
+    sql: ${number_of_product_add_to_carts} ;;
+  }
+
+  measure: numbers_of_products_removed_from_carts{
+    type: sum
+    group_label: "* Numbers *"
+    label: "Number of Products Removed from Cart"
+    hidden:  no
+    sql: ${number_of_product_removed_from_carts} ;;
+  }
+
+  measure: numbers_of_orders_with_product{
+    type: sum
+    group_label: "* Numbers *"
+    label: "Number of Orders with Product"
+    description: "This field should only be used at a SKU level and not a brand level. Please, always refer to the Orders explore for sales source of truth"
+    hidden:  no
+    sql: ${number_of_orders_with_product} ;;
   }
 
   ######## * Percentages * ########
