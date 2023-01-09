@@ -49,7 +49,8 @@ explore: product_placement_performance_aggregates {
 
   join: products {
     view_label: "Product Data (CT)"
-    sql_on: ${products.product_sku} = ${product_placement_performance_aggregates.product_sku} ;;
+    sql_on: ${products.product_sku} = ${product_placement_performance_aggregates.product_sku}
+       and ${products.country_iso} = ${product_placement_performance_aggregates.country_iso};;
     relationship: many_to_one
     type: left_outer
     fields: [product_attributes*, product_brand]
