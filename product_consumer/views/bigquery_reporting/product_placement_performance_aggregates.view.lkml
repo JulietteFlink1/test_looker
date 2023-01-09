@@ -347,6 +347,7 @@ view: product_placement_performance_aggregates {
     type: sum
     group_label: "* Numbers *"
     label: "Number of Orders with Product"
+    description: "This field should only be used at a SKU level and not a brand level. Please, always refer to the Orders explore for sales source of truth"
     hidden:  no
     sql: ${number_of_orders_with_product} ;;
   }
