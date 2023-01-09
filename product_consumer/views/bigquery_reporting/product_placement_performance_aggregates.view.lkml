@@ -268,24 +268,27 @@ view: product_placement_performance_aggregates {
 
   measure: number_of_users_exposed_to_product{
     type: sum
-    group_label: "* Numbers *"
+    group_label: "* SKU & Placement Numbers *"
     label: "Number of Users with Product Impression"
+    description: "This field should only be used at a SKU & Placement level and not at any higher aggregation."
     hidden:  no
     sql: ${count_of_distinct_users_with_product_impression} ;;
   }
 
   measure: number_of_users_with_product_added_to_cart{
     type: sum
-    group_label: "* Numbers *"
+    group_label: "* SKU & Placement Numbers *"
     label: "Number of Users who Added Product to Cart"
+    description: "This field should only be used at a SKU & Placement level and not at any higher aggregation."
     hidden:  no
     sql: ${count_of_distinct_users_with_product_added_to_cart} ;;
   }
 
   measure: number_of_users_with_order_placed{
     type: sum
-    group_label: "* Numbers *"
+    group_label: "* SKU & Placement Numbers *"
     label: "Number of Users who Placed an Order"
+    description: "This field should only be used at a SKU & Placement level and not at any higher aggregation."
     hidden:  no
     sql: ${count_of_distinct_users_with_order_placed} ;;
   }
@@ -348,7 +351,7 @@ view: product_placement_performance_aggregates {
 
   measure: numbers_of_orders_with_product{
     type: sum
-    group_label: "* Numbers *"
+    group_label: "* SKU & Placement Numbers *"
     label: "Number of Orders with Product - See Description"
     description: "This field should only be used at a SKU & Placement level and not at any higher aggregation. Please, always refer to the Orders explore for sales source of truth"
     hidden:  no
