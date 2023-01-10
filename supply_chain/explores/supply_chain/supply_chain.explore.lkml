@@ -173,6 +173,7 @@ explore: supply_chain {
   join: lexbizz_item {
 
     view_label: "Products (ERP)"
+    from: erp_item
 
     type: left_outer
     relationship: many_to_one

@@ -271,6 +271,7 @@ join: daily_stock_management_events_items_inbounded {
   join: lexbizz_vendor {
 
     view_label: "* Purchase Orders (PO) *"
+    from: erp_supplier
 
     type: left_outer
     relationship: many_to_one

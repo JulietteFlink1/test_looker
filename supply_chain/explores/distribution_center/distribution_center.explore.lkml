@@ -53,7 +53,8 @@ explore: distribution_center {
 
   join: lexbizz_item {
 
-    view_label: " 03 Products (ERP) "
+    view_label: " 03 Products (ERP)"
+    from: erp_item
 
     type: left_outer
     relationship: many_to_one
