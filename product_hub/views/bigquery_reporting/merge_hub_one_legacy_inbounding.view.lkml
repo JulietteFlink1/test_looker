@@ -134,6 +134,7 @@ view: merge_hub_one_legacy_inbounding {
 
   measure: number_of_products_dropped {
     group_label: "Total Metrics"
+    label: "# of Products Dropped"
     type: sum
     description: "Sum of quantity of products dropped (action = product_dropped)."
     sql: ${TABLE}.number_of_products_dropped ;;
@@ -158,6 +159,7 @@ view: merge_hub_one_legacy_inbounding {
   # =========  Other metrics   =========
 
   measure: number_of_products_inbounded_per_hour {
+    group_label: "Total Metrics"
     label: "# Products Inbounded per Hour"
     description: "Number of products inbounded per hour"
     type: number
@@ -168,6 +170,7 @@ view: merge_hub_one_legacy_inbounding {
   }
 
   measure: number_of_products_inbounded_per_minute {
+    group_label: "Total Metrics"
     label: "# Products Inbounded per Minute"
     description: "Number of products inbounded per minute"
     type: number
@@ -177,7 +180,8 @@ view: merge_hub_one_legacy_inbounding {
     value_format_name: decimal_2
   }
 
-  measure: numnber_of_distinct_employees {
+  measure: number_of_distinct_employees {
+    group_label: "Total Metrics"
     label: "# Employees Inbounding"
     description: "Number of distinct employees involved in the inbounding process (based on unique quynix_badge_number)"
 
