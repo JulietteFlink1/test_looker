@@ -613,6 +613,7 @@ view: orders_with_ops_metrics {
 
   measure: dynamic_kpi_1 {
     type: number
+    label: "Dynamic KPI 1"
     label_from_parameter: kpi_1
     description: "This field is based on the chosen KPI"
     value_format_name: decimal_2
@@ -633,6 +634,7 @@ view: orders_with_ops_metrics {
   measure: dynamic_kpi_2 {
     type: number
     label_from_parameter: kpi_2
+    label: "Dynamic KPI 2"
     description: "This field is based on the chosen KPI"
     value_format_name: decimal_2
     group_label: "> Dynamic Measures"
@@ -655,6 +657,7 @@ view: orders_with_ops_metrics {
 
   parameter: kpi_1 {
     type: string
+    label: "KPI 1"
     allowed_value: { value: "AVG Fulfillment Time" }
     allowed_value: { value: "Rider UTR" }
     allowed_value: { value: "% Stacked Orders" }
@@ -666,6 +669,7 @@ view: orders_with_ops_metrics {
 
   parameter: kpi_2 {
     type: string
+    label: "KPI 2"
     allowed_value: { value: "AVG Fulfillment Time" }
     allowed_value: { value: "Rider UTR" }
     allowed_value: { value: "% Stacked Orders" }

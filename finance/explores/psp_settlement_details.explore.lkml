@@ -18,6 +18,7 @@ explore: psp_settlement_details {
     field: hubs.country_iso
     user_attribute: country_iso
   }
+  hidden: yes
 
 
   always_filter: {

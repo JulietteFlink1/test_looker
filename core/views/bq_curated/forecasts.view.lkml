@@ -1459,6 +1459,7 @@ view: forecasts {
     type: unquoted
     allowed_value: { value: "Day" }
     allowed_value: { value: "Week" }
+    allowed_value: { value: "Month" }
     default_value: "Day"
   }
 
@@ -1481,6 +1482,8 @@ view: forecasts {
       ${start_timestamp_date}
     {% elsif date_granularity._parameter_value == 'Week' %}
       ${start_timestamp_week}
+     {% elsif date_granularity._parameter_value == 'Month' %}
+      ${start_timestamp_month}
     {% endif %};;
   }
 
@@ -1493,6 +1496,8 @@ view: forecasts {
               "Day"
             {% elsif date_granularity._parameter_value == 'Week' %}
               "Week"
+            {% elsif date_granularity._parameter_value == 'Month' %}
+              "Month"
             {% endif %};;
   }
 

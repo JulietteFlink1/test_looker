@@ -635,7 +635,7 @@ view: braze_lifecycle_cohorts {
     group_label: "* Message Performance *"
     label: "# Clicked Emails"
     description: "Number of emails that were clicked"
-    type: number
+    type: sum
     sql: ${email_is_clicked_count} ;;
   }
 
@@ -744,7 +744,7 @@ view: braze_lifecycle_cohorts {
     label: "% Tapped Pushes"
     description: "Share of push messages that were tapped among all push messages that were sent"
     type: number
-    sql: safe_divide(${number_of_tapped_pushes},${share_of_sent_pushes}) ;;
+    sql: safe_divide(${number_of_tapped_pushes},${number_of_sent_pushes}) ;;
     value_format_name: percent_2
   }
 

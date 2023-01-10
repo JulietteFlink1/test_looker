@@ -1,6 +1,6 @@
-include: "/**/erp_product_hub_vendor_assignment_v2.view"
+include: "/**/erp_product_hub_vendor_assignment.view"
 
-view: +erp_product_hub_vendor_assignment_v2 {
+view: +erp_product_hub_vendor_assignment {
 
   set: pricing_fields_refined {
     fields: [

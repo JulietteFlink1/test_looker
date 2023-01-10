@@ -251,6 +251,8 @@ join: merge_hub_one_legacy_inbounding {
 
     view_label: "* Global *"
 
+    from: erp_product_hub_vendor_assignment
+
     type: left_outer
     relationship: one_to_one
     sql_on:
