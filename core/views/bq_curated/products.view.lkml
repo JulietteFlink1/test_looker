@@ -37,6 +37,7 @@ view: products {
     type: string
     bypass_suggest_restrictions: yes
     label: "Parent Category (ERP)"
+    description: "The product parent category as defined in the ERP tool"
     group_label: "> Product Attributes"
     sql: ${TABLE}.erp_category ;;
   }
@@ -44,6 +45,7 @@ view: products {
   dimension: is_leading_product {
     type: yesno
     sql: ${TABLE}.is_leading_product ;;
+    description: "This boolean flag defines, whether a product that is part of a substitute group is shown with priority in the Flink consumer app"
     group_label: "> Product Attributes"
   }
 
@@ -57,6 +59,7 @@ view: products {
   dimension: country_of_origin {
     type: string
     sql: ${TABLE}.country_of_origin ;;
+    description: "The country, where a product was produced"
     group_label: "> Geographic Data"
   }
 
@@ -65,6 +68,7 @@ view: products {
     label: "Brand"
     type: string
     sql: ${TABLE}.product_brand ;;
+    description: "Brand a product belongs to."
     group_label: "> Product Attributes"
   }
 
@@ -120,12 +124,14 @@ view: products {
     label: "Sub-Category (ERP)"
     type: string
     sql: ${TABLE}.erp_subcategory ;;
+    description: "The product child-/sub-category as defined in the ERP tool"
     group_label: "> Product Attributes"
   }
 
   dimension: substitute_group {
     type: string
     sql: ${TABLE}.substitute_group ;;
+    description: "The substitute group according to CommerceTools defining substitute products from the customer perspective."
     group_label: "> Product Attributes"
   }
 
@@ -157,6 +163,7 @@ view: products {
 
   dimension: sku_hub_count {
     label: "Number of Distinct Assigned Hubs"
+    description: "The number of hubs, a product is sold"
     type: number
     sql: ${TABLE}.sku_hub_count ;;
     group_label: "> Product Attributes"
@@ -164,6 +171,7 @@ view: products {
 
   dimension: sku_city_count {
     label: "Number of Distinct Assigned Cities"
+    description: "The number of cities, a product is sold"
     type: number
     sql: ${TABLE}.sku_city_count ;;
     group_label: "> Product Attributes"
@@ -171,6 +179,7 @@ view: products {
 
   dimension: sku_country_count {
     label: "Number of Distinct Assigned Countries"
+    description: "The number of countries, a product is sold"
     type: number
     sql: ${TABLE}.sku_country_count ;;
     group_label: "> Product Attributes"
@@ -179,35 +188,42 @@ view: products {
   dimension: ingredients {
     type: string
     sql: ${TABLE}.ingredients ;;
+    description: "This field shows the list of ingredients of a product as shown also in the consumer app"
     group_label: "> Product Attributes"
   }
 
   dimension: producer {
     type: string
     sql: ${TABLE}.producer ;;
+    description: "The producing company of a product."
     group_label: "> Product Attributes"
   }
 
   dimension: nutrition {
     type: string
     sql: ${TABLE}.nutrition ;;
+    description: "Nutrition information of a product"
     group_label: "> Product Attributes"
   }
 
   dimension: preparation_and_storage {
     type: string
     sql: ${TABLE}.preparation_and_storage ;;
+    description: "This field refers to information on how to handle and store a product"
     group_label: "> Product Attributes"
   }
 
   dimension: allergens {
     type: string
     sql: ${TABLE}.allergens ;;
+    description: "This field shows a list of allergens, that a product contains"
     group_label: "> Product Attributes"
   }
 
   dimension: weight {
+    label: "Weight (KG)"
     group_label: "> Product Attributes"
+    description: "The weight of the product"
     hidden: no
     type: number
     sql: ${TABLE}.amt_weight_kg ;;
@@ -215,6 +231,7 @@ view: products {
 
   dimension: organic_control_number {
     group_label: "> Product Attributes"
+    description: "The organic control number is a legal requirement in AT that needs to be visible, when selling organic products"
     type: string
     sql: ${TABLE}.organic_control_number ;;
   }
@@ -398,6 +415,7 @@ view: products {
 
   dimension_group: created {
     label: "SKU Created"
+    description: "The creation date and time of a product"
     type: time
     timeframes: [
       raw,
@@ -415,6 +433,7 @@ view: products {
 
   dimension_group: last_modified {
     label: "SKU Last Modified"
+    description: "Timestamp representing when a product was updated the last time."
     type: time
     timeframes: [
       raw,
@@ -435,15 +454,19 @@ view: products {
     sql: ${TABLE}.country_iso ;;
     hidden: no
     label: "Country Iso"
+    description: "Country ISO based on 'hub_code'."
   }
 
   dimension: units_per_hu {
+    label: "Selling Units per Handling Unit"
+    description: "The number of selling units, that are delivered in one handling unit"
     type: number
-    sql: ${TABLE}.units_per_hu ;;
+    sql: ${TABLE}.units_per_handling_unit ;;
     hidden: yes
   }
 
   dimension: product_erp_brand {
+    description: "The brand of a product as defined in the ERP tool"
     type: string
     sql: ${TABLE}.product_erp_brand ;;
     hidden: yes
@@ -456,6 +479,7 @@ view: products {
     sql: ${TABLE}.amt_product_price_gross ;;
     group_label: "> Price Data"
     label: "Unit Price Gross Amount"
+    description: "Price of the product for which user bought an item."
   }
 
   dimension: currency {
@@ -463,23 +487,27 @@ view: products {
     sql: ${TABLE}.currency ;;
     group_label: "> Price Data"
     label: "Currency"
+    description: "Currency ISO code."
   }
 
   dimension: deposit_amount {
     type: number
     sql: ${TABLE}.amt_deposit_gross_eur ;;
+    description: "The deposit amount of a product"
     group_label: "> Price Data"
   }
 
   dimension: deposit_currency_code {
     type: string
     sql: ${TABLE}.deposit_currencyCode ;;
+    description: "Currency ISO code."
     group_label: "> Price Data"
   }
 
   dimension: deposit_type {
     type: string
     sql: ${TABLE}.deposit_type ;;
+    description: "The type of a product deposit"
     group_label: "> Price Data"
   }
 
@@ -509,12 +537,14 @@ view: products {
   dimension: ean {
     type: string
     sql: ${TABLE}.ean ;;
+    description: "The european article number (EAN) of a product"
     group_label: "> IDs"
   }
 
   dimension: ean_handling_unit {
     type: number
     sql: ${TABLE}.ean_handling_unit ;;
+    description: "The european article number of a handling unit of a product"
     group_label: "> IDs"
   }
 
@@ -537,6 +567,7 @@ view: products {
     sql: ${TABLE}.max_single_order_quantity ;;
     group_label: "> Special Purpose Data"
     label: "Max Quantity per Order"
+    description: "The maximum number of 1 product, that a customer can buy within 1 order "
   }
 
   dimension: meta_description {
@@ -544,6 +575,7 @@ view: products {
     sql: ${TABLE}.meta_description ;;
     group_label: "> Special Purpose Data"
     label: "Meta Description"
+    description: "The description of a product in CommerceTools "
   }
 
   dimension: description {
@@ -551,12 +583,14 @@ view: products {
     sql: ${TABLE}.description ;;
     group_label: "> Special Purpose Data"
     label: "Description"
+    description: "The description of a product in CommerceTools "
   }
 
   dimension: slug_de {
     type: string
     sql: ${TABLE}.slug ;;
     group_label: "> Special Purpose Data"
+    description: "Name of the product, as specified in the backend. "
   }
 
   dimension: synonyms {
@@ -564,6 +598,7 @@ view: products {
     sql: ${TABLE}.synonyms ;;
     group_label: "> Special Purpose Data"
     label: "Synonyms"
+    description: "This fields defines different search tearms, that are defined for a product in CommerceTools in order to improve searchability"
   }
 
   dimension: unit_of_measure {
@@ -571,6 +606,7 @@ view: products {
     sql: ${TABLE}.unit_of_measure ;;
     group_label: "> Special Purpose Data"
     label: "Unit of Measure"
+    description: "The unit of measure of a product"
   }
 
   dimension: product_unit {
@@ -578,6 +614,7 @@ view: products {
     sql: ${TABLE}.product_unit ;;
     group_label: "> Special Purpose Data"
     label: "Product Unit"
+    description: "The unit, in which a product is usually measured  "
   }
 
   dimension: base_unit {
@@ -585,6 +622,7 @@ view: products {
     sql: ${TABLE}.base_unit ;;
     group_label: "> Special Purpose Data"
     label: "Base Unit"
+    description: "The base unit of a product, that is used to compare with other similar products by the consumers  "
   }
 
   dimension: units_per_handling_unit {
@@ -592,6 +630,7 @@ view: products {
     sql: ${TABLE}.units_per_handling_unit ;;
     group_label: "> Special Purpose Data"
     label: "Units per Handlung Unit"
+    description: "The number of selling units, that are delivered in one handling unit  "
   }
 
   dimension: product_shelf_no {
@@ -599,6 +638,7 @@ view: products {
     sql: ${TABLE}.product_shelf_no ;;
     group_label: "> Special Purpose Data"
     label: "Shelf Number"
+    description: "Unique identifier of the shelf where the SKU is stored in the hub. Number of the shelf (from 0 to 86) followed by a letter which indicates the level within the shelf."
   }
 
   dimension: is_published {
@@ -607,6 +647,7 @@ view: products {
     hidden: no
     group_label: "> Special Purpose Data"
     label: "Is Published"
+    description: "This boolean flag indicates, whether a product is published (and thus orderable by consumers in the app) in CommerceTools"
   }
 
   dimension: tax_rate {
@@ -615,6 +656,7 @@ view: products {
     hidden: no
     group_label: "> Special Purpose Data"
     label: "Tax Rate"
+    description: "The specific tax rate of a product  "
   }
 
   dimension: tax_name {
@@ -623,6 +665,7 @@ view: products {
     hidden: no
     group_label: "> Special Purpose Data"
     label: "Tax Type"
+    description: "The name of the tax as defined in CommerceTools "
   }
 
   dimension: is_drug_item {
