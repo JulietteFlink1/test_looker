@@ -1,8 +1,11 @@
 # Owner: Lauti Ruiz
 
-# Description: This view shows the combination between erp sources:
-# Lexbizz : curated.lexbizz_vendor ->> Until 2023-01-12
-# Oracle : curated.oracle_supplier_daily ->> From 2023-01-12
+# Description: This view shows data about our suppliers according to our ERP Systems.
+#              Until 2023-01-20 this data comes from Lexbizz ERP,
+#              after that date, comes from Oracle.
+
+# Lexbizz : curated.lexbizz_vendor ->> Until 2023-01-20
+# Oracle : curated.oracle_supplier_daily ->> From 2023-01-20
 
 
 view: erp_supplier {
@@ -17,11 +20,11 @@ view: erp_supplier {
     type: time
     timeframes: [
       time,
-      date,
-      week
+      date
     ]
     sql: ${TABLE}.created_at_timestamp ;;
     description: "The creation date and time of a record"
+    group_label: "Date & Timestamps"
   }
 
   dimension_group: ingestion {
@@ -31,17 +34,20 @@ view: erp_supplier {
     ]
     datatype: date
     sql: ${TABLE}.ingestion_date ;;
+    description: "Date on which data was extracted from an external tool/api and stored into a BigQuery table."
+    group_label: "Date & Timestamps"
   }
 
   dimension_group: last_modified_timestamp {
     type: time
     timeframes: [
       time,
-      date,
-      week
+      date
     ]
     sql: ${TABLE}.last_modified_timestamp ;;
     description: "The timestamp, when a given record was modified. Timestamp when an supplier attribute (e.g. status) was modified."
+    group_label: "Date & Timestamps"
+    hidden: yes
   }
 
 #############################################
@@ -61,6 +67,7 @@ view: erp_supplier {
     type: string
     sql: ${TABLE}.vendor_id ;;
     description: "The supplier ID as defined in Oracle - which is a representation of a supplier and its related supplier-location"
+    group_label: "IDs"
   }
 
   dimension: supplier_parent_id {
@@ -68,6 +75,7 @@ view: erp_supplier {
     type: number
     sql: ${TABLE}.supplier_parent_id ;;
     description: "The Parent supplier ID as defined in Oracle - which is groups every Child Supplier ID and its related supplier-location"
+    group_label: "IDs"
   }
 
 #############################################
@@ -79,6 +87,7 @@ view: erp_supplier {
     type: string
     sql: ${TABLE}.city ;;
     description: "Supplier city of origin"
+    group_label: "Geographic Attributes"
   }
 
   dimension: country_iso {
@@ -86,6 +95,7 @@ view: erp_supplier {
     type: string
     sql: ${TABLE}.country_iso ;;
     description: "2-letter country code."
+    group_label: "Geographic Attributes"
   }
 
   dimension: country_vendor {
@@ -93,6 +103,7 @@ view: erp_supplier {
     type: string
     sql: ${TABLE}.country_vendor ;;
     description: "Supplier country of origin"
+    group_label: "Geographic Attributes"
   }
 
   dimension: currency {
@@ -100,13 +111,15 @@ view: erp_supplier {
     type: string
     sql: ${TABLE}.currency ;;
     description: "Currency ISO code."
+    group_label: "Geographic Attributes"
   }
 
   dimension: gln {
     label: "Supplier GLN"
     type: string
     sql: ${TABLE}.gln ;;
-    description: "The location identifier according to our ERP systems "
+    description: "The location identifier according to our ERP systems"
+    group_label: "Supplier Attributes"
   }
 
   dimension: postal_code {
@@ -114,6 +127,7 @@ view: erp_supplier {
     type: string
     sql: ${TABLE}.postal_code ;;
     description: "Zip Code of origin of a supplier."
+    group_label: "Geographic Attributes"
   }
 
   dimension: street {
@@ -121,6 +135,7 @@ view: erp_supplier {
     type: string
     sql: ${TABLE}.street ;;
     description: "Street where a supplier is located."
+    group_label: "Geographic Attributes"
   }
 
   dimension: tax_calculation_mode {
@@ -128,6 +143,7 @@ view: erp_supplier {
     type: string
     sql: ${TABLE}.tax_calculation_mode ;;
     description: "Tax calculation method applied for a particular supplier."
+    group_label: "Supplier Attributes"
   }
 
   dimension: tax_zone {
@@ -135,6 +151,7 @@ view: erp_supplier {
     type: string
     sql: ${TABLE}.tax_zone ;;
     description: "Tax calculation zone applied for a particular supplier."
+    group_label: "Supplier Attributes"
   }
 
   dimension: terms {
@@ -142,6 +159,7 @@ view: erp_supplier {
     type: string
     sql: ${TABLE}.terms ;;
     description: "The terms of a supplier."
+    group_label: "Supplier Attributes"
   }
 
   dimension: vendor_class {
@@ -149,7 +167,7 @@ view: erp_supplier {
     type: string
     sql: ${TABLE}.vendor_class ;;
     description: "Classification of a supplier according to the ERP."
-
+    group_label: "Supplier Attributes"
   }
 
   dimension: vendor_name {
@@ -157,6 +175,7 @@ view: erp_supplier {
     type: string
     sql: ${TABLE}.vendor_name ;;
     description: "Name of the supplier/vendor of a product (e.g. REWE or Carrefour)."
+    group_label: "Supplier Attributes"
   }
 
   dimension: vendor_status {
@@ -164,6 +183,7 @@ view: erp_supplier {
     type: string
     sql: ${TABLE}.vendor_status ;;
     description: "The activity status of a supplier as defined in our ERP system"
+    group_label: "Supplier Attributes"
   }
 
 
@@ -174,5 +194,6 @@ view: erp_supplier {
   measure: count {
     type: count
     drill_fields: [vendor_name]
+    hidden: yes
   }
 }

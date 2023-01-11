@@ -1,8 +1,11 @@
 # Owner: Lauti Ruiz
 
-# Description: This view shows the combination between erp sources:
-# Lexbizz : curated.lexbizz_item ->> Until 2023-01-12
-# Oracle : curated.oracle_item_daily ->> From 2023-01-12
+# Description: This view shows products (items) data according to our ERP Systems.
+#              Until 2023-01-20 this data comes from Lexbizz ERP,
+#              after that date, comes from Oracle.
+
+# Lexbizz : curated.lexbizz_item ->> Until 2023-01-20
+# Oracle : curated.oracle_item_daily ->> From 2023-01-20
 
 
 view: erp_item {
@@ -16,12 +19,12 @@ view: erp_item {
   dimension_group: ingestion {
     type: time
     timeframes: [
-      date,
-      week,
-      month
+      date
     ]
     datatype: date
+    description: "Date on which data was extracted from an external tool/api and stored into a BigQuery table."
     sql: ${TABLE}.ingestion_date ;;
+    group_label: "Dates & Timestamps"
   }
 
   dimension_group: introduction_timestamp {
@@ -29,22 +32,21 @@ view: erp_item {
     description: "The date, when a given product was listed initially."
     timeframes: [
       time,
-      date,
-      week
+      date
     ]
     sql: ${TABLE}.introduction_timestamp ;;
+    group_label: "Dates & Timestamps"
   }
 
   dimension_group: item_status_update {
     type: time
     description: " The date, when the item status changed the last time."
     timeframes: [
-      date,
-      week,
-      month
+      date
     ]
     datatype: date
     sql: ${TABLE}.item_status_update ;;
+    group_label: "Dates & Timestamps"
   }
 
   dimension_group: last_modified_timestamp {
@@ -53,10 +55,11 @@ view: erp_item {
                   when some record/row in the raw data was updated the last time."
     timeframes: [
       time,
-      date,
-      week
+      date
     ]
     sql: ${TABLE}.last_modified_timestamp ;;
+    group_label: "Dates & Timestamps"
+    hidden: yes
   }
 
   dimension_group: termination_timestamp {
@@ -64,10 +67,10 @@ view: erp_item {
     description: "The timestamp, when a given product was delisted."
     timeframes: [
       time,
-      date,
-      week
+      date
     ]
     sql: ${TABLE}.termination_timestamp ;;
+    group_label: "Dates & Timestamps"
   }
 
 #############################################
@@ -93,6 +96,7 @@ view: erp_item {
     sql: ${TABLE}.is_orderable ;;
     description: "This boolean field is an indicator,
                   whether an SKU is orderable by the Supply Chain department."
+    group_label: "Especial Use Cases (flags)"
   }
 
   dimension: is_perishable {
@@ -100,6 +104,7 @@ view: erp_item {
     type: yesno
     sql: ${TABLE}.is_perishable ;;
     description: "This boolean field is an indicator, whether an SKU can perish."
+    group_label: "Especial Use Cases (flags)"
   }
 
   dimension: is_sellable {
@@ -107,6 +112,7 @@ view: erp_item {
     type: yesno
     sql: ${TABLE}.is_sellable ;;
     description: "This boolean field is an indicator, whether an SKU is sellable."
+    group_label: "Especial Use Cases (flags)"
   }
 
 #############################################
@@ -118,6 +124,7 @@ view: erp_item {
     type: string
     sql: ${TABLE}.base_uom ;;
     description: "The base unit of measure of a product"
+    group_label: "Product Attributes"
   }
 
   dimension: country_iso {
@@ -125,6 +132,7 @@ view: erp_item {
     type: string
     sql: ${TABLE}.country_iso ;;
     description: "2-letter country code."
+    group_label: "Product Attributes"
   }
 
   dimension: description {
@@ -132,6 +140,7 @@ view: erp_item {
     type: string
     sql: ${TABLE}.description ;;
     description: "The description of a product in CommerceTools"
+    group_label: "Product Attributes"
   }
 
   dimension: ean {
@@ -139,6 +148,7 @@ view: erp_item {
     type: string
     sql: ${TABLE}.ean ;;
     description: "The european article number (EAN) of a product"
+    group_label: "Product IDs"
   }
 
   dimension: ean_hu {
@@ -146,6 +156,7 @@ view: erp_item {
     type: string
     sql: ${TABLE}.ean_hu ;;
     description: "The european article number of a handling unit of a product"
+    group_label: "Product IDs"
   }
 
   dimension: group_company {
@@ -153,6 +164,7 @@ view: erp_item {
     type: string
     sql: ${TABLE}.group_company ;;
     description: "The producing company of a product."
+    group_label: "Product Attributes"
   }
 
   dimension: handling_unit_height {
@@ -160,6 +172,7 @@ view: erp_item {
     type: number
     sql: ${TABLE}.handling_unit_height ;;
     description: "The height of a handling unit"
+    group_label: "Product Attributes"
   }
 
   dimension: handling_unit_length {
@@ -167,6 +180,7 @@ view: erp_item {
     type: number
     sql: ${TABLE}.handling_unit_length ;;
     description: "The length of a handling unit"
+    group_label: "Product Attributes"
   }
 
   dimension: handling_unit_width {
@@ -174,7 +188,7 @@ view: erp_item {
     type: number
     sql: ${TABLE}.handling_unit_width ;;
     description: "The width of a handling unit"
-
+    group_label: "Product Attributes"
   }
 
   dimension: hub_type {
@@ -184,6 +198,7 @@ view: erp_item {
     description: "The hub type indicates, to which kind of hubs a given product is usually assigned to.
                   Hereby, an assignment to an M-hub indicates,
                   that the product is usually offered in all M hubs or bigger (L hubs)"
+    group_label: "Product Attributes"
   }
 
   dimension: item_category {
@@ -191,6 +206,7 @@ view: erp_item {
     type: string
     sql: ${TABLE}.item_category ;;
     description: "The product parent category as defined in the ERP tool"
+    group_label: "Product Attributes"
   }
 
   dimension: item_class {
@@ -198,6 +214,7 @@ view: erp_item {
     type: string
     sql: ${TABLE}.item_class ;;
     description: "The product class as defined in the ERP tool"
+    group_label: "Product Attributes"
   }
 
   dimension: item_height {
@@ -205,6 +222,7 @@ view: erp_item {
     type: number
     sql: ${TABLE}.item_height ;;
     description: "The height of a product"
+    group_label: "Product Attributes"
   }
 
   dimension: item_length {
@@ -212,6 +230,7 @@ view: erp_item {
     type: number
     sql: ${TABLE}.item_length ;;
     description: "The length of a product"
+    group_label: "Product Attributes"
   }
 
   dimension: item_name {
@@ -219,6 +238,7 @@ view: erp_item {
     type: string
     sql: ${TABLE}.item_name ;;
     description: "The name of a product as defined in the ERP tool"
+    group_label: "Product Attributes"
   }
 
   dimension: item_replenishment_substitute_group {
@@ -227,6 +247,7 @@ view: erp_item {
     sql: ${TABLE}.item_replenishment_substitute_group ;;
     description: "The replenishment substitute group defined by the Supply Chain team
                   to tag substitute products for replenishment."
+    group_label: "Product IDs"
   }
 
   dimension: item_safety_stock {
@@ -234,6 +255,7 @@ view: erp_item {
     type: number
     sql: ${TABLE}.item_safety_stock ;;
     description: "Minimun stock to have of a product to be safe"
+    group_label: "Product Attributes"
   }
 
   dimension: item_status {
@@ -241,6 +263,7 @@ view: erp_item {
     type: string
     sql: ${TABLE}.item_status ;;
     description: "The activity/listing status of a product according to our ERP system"
+    group_label: "Product Attributes"
   }
 
   dimension: item_substitute_group {
@@ -248,6 +271,7 @@ view: erp_item {
     type: string
     sql: ${TABLE}.item_substitute_group ;;
     description: "The substitute group according to the ERP defining substitute products."
+    group_label: "Product IDs"
   }
 
   dimension: item_type {
@@ -255,6 +279,7 @@ view: erp_item {
     type: string
     sql: ${TABLE}.item_type ;;
     description: "The type of a product as defined in the ERP tool"
+    group_label: "Product Attributes"
   }
 
   dimension: item_volumne {
@@ -262,6 +287,7 @@ view: erp_item {
     type: number
     sql: ${TABLE}.item_volumne ;;
     description: "The volumne of a product"
+    group_label: "Product Attributes"
   }
 
   dimension: item_weight {
@@ -269,6 +295,7 @@ view: erp_item {
     type: number
     sql: ${TABLE}.item_weight ;;
     description: "The weight of a product"
+    group_label: "Product Attributes"
   }
 
   dimension: item_width {
@@ -276,6 +303,7 @@ view: erp_item {
     type: number
     sql: ${TABLE}.item_width ;;
     description: "The width of a product"
+    group_label: "Product Attributes"
   }
 
   dimension: max_shelf_life_days {
@@ -283,31 +311,39 @@ view: erp_item {
     type: number
     sql: ${TABLE}.max_shelf_life_days ;;
     description: "Products's max amount of days on shelf."
+    group_label: "Product Attributes"
   }
 
   dimension: min_days_to_best_before_date {
     label: "Min Days to best before date (BBD)"
     type: number
     sql: ${TABLE}.min_days_to_best_before_date ;;
-
+    description: "The minimum duration required between the sale of the product and the BBD (in days)."
+    group_label: "Product Attributes"
   }
 
+#Are we going to have this data?
   dimension: msrp {
     label: "MSRP"
     type: number
     sql: ${TABLE}.msrp ;;
+    hidden: yes
   }
 
+#Are we going to have this data?
   dimension: noos_item {
     label: "NOOS Item"
     type: yesno
     sql: ${TABLE}.noos_item ;;
+    hidden: yes
   }
 
+#Are we going to have this data?
   dimension: noos_leading_product {
     label: "NOOS Leading Product"
     type: yesno
     sql: ${TABLE}.noos_leading_product ;;
+    hidden: yes
   }
 
   dimension: purchase_unit {
@@ -316,6 +352,7 @@ view: erp_item {
     sql: ${TABLE}.purchase_unit ;;
     description: "The ERP defined puchase unit code of a product.
                   It defines, which aggregation was bought (examples: STÜCK, PK14, PK06)"
+    group_label: "Product Attributes"
   }
 
   dimension: purchase_uom {
@@ -323,6 +360,7 @@ view: erp_item {
     type: string
     sql: ${TABLE}.purchase_uom ;;
     description: "The base unit of measure of a product purchase"
+    group_label: "Product Attributes"
   }
 
   dimension: sales_uom {
@@ -330,12 +368,15 @@ view: erp_item {
     type: string
     sql: ${TABLE}.sales_uom ;;
     description: "The base unit of measure of a product sale"
+    group_label: "Product Attributes"
   }
 
   dimension: seasonality {
     label: "Seasonality"
     type: string
     sql: ${TABLE}.seasonality ;;
+    description: "Season where the product is available"
+    group_label: "Product Attributes"
   }
 
   dimension: shelf_type {
@@ -343,6 +384,7 @@ view: erp_item {
     type: string
     sql: ${TABLE}.shelf_type ;;
     description: "Type of shelf where the product is stored"
+    group_label: "Product Attributes"
   }
 
   dimension: sku {
@@ -350,6 +392,7 @@ view: erp_item {
     type: string
     sql: ${TABLE}.sku ;;
     description: "SKU of the product, as available in the backend."
+    group_label: "Product IDs"
   }
 
   dimension: tax_category {
@@ -357,6 +400,7 @@ view: erp_item {
     type: string
     sql: ${TABLE}.tax_category ;;
     description: "The specific tax category of a product"
+    group_label: "Product Attributes"
   }
 
   dimension: temperature_zone {
@@ -364,6 +408,7 @@ view: erp_item {
     type: string
     sql: ${TABLE}.temperature_zone ;;
     description: "Temperature a product needs to have while being delivered and stored in order to be consumable"
+    group_label: "Product Attributes"
   }
 
   dimension: valuation_method {
@@ -371,6 +416,7 @@ view: erp_item {
     type: string
     sql: ${TABLE}.valuation_method ;;
     description: "The method used to valuate the product"
+    group_label: "Product Attributes"
   }
 
 
@@ -382,6 +428,7 @@ view: erp_item {
     label: "Similar RSG"
     type: string
     sql: lower(left(${item_replenishment_substitute_group}, 10)) ;;
+    group_label: "Product IDs"
   }
 
   dimension: ean_length {
@@ -389,6 +436,7 @@ view: erp_item {
     type: string
     sql: length(${ean}) ;;
     description: "The length of the EAN (count of digits)"
+    group_label: "Product Attributes"
   }
 
   dimension: ean_matching_digits {
@@ -396,6 +444,7 @@ view: erp_item {
     type: yesno
     sql: (${ean_length} = 8 or ${ean_length} = 13) ;;
     description: "Boolean that indicates that the EAN is correct, if it follows the 8 and 13 digits long"
+    group_label: "Especial Use Cases (flags)"
   }
 
   dimension: is_leading_sku {
@@ -403,6 +452,7 @@ view: erp_item {
     type: yesno
     sql: left(${sku},1) = '9' ;;
     description: "Boolean that indicates if the product is a Parent SKU"
+    group_label: "Especial Use Cases (flags)"
   }
 
   dimension: erp_ct_sync_check {
@@ -420,7 +470,8 @@ view: erp_item {
 
       ;;
     description: "Boolean that indicates if what we have in the ERP matches what we have in CT"
-
+    label: "Is ERP/CT Sync"
+    group_label: "Especial Use Cases (flags)"
   }
 
 
@@ -430,19 +481,24 @@ view: erp_item {
 #############################################
 
   measure: cnt_leading_skus  {
-    label: "# Leagin SKUs"
+    label: "# Leading SKUs"
     type: count_distinct
     sql: ${sku} ;;
     filters: [is_leading_sku: "yes"]
+    description: "Total count of leading SKUs"
+    group_label: "Measures"
+
+    value_format_name: decimal_1
   }
 
   measure: cnt_skus {
-
     label: "# unique SKUs"
-
     type: count_distinct
     sql: ${sku} ;;
     description: "Total count of unique SKUs"
+    group_label: "Measures"
+
+    value_format_name: decimal_1
   }
 
   measure: count {

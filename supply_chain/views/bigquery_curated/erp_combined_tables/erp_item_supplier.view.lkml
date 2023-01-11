@@ -1,8 +1,12 @@
 # Owner: Lauti Ruiz
 
-# Description: This view shows the combination between erp sources:
-# Lexbizz : curated.lexbizz_item_vendor ->> Until 2023-01-12
-# Oracle : curated.oracle_item_supplier_daily ->> From 2023-01-12
+# Description: This view shows data about the item-supplier combination (from who we can order an item and if it's available)
+#              according to our ERP Systems.
+#              Until 2023-01-20 this data comes from Lexbizz ERP,
+#              after that date, comes from Oracle.
+
+# Lexbizz : curated.lexbizz_item_vendor ->> Until 2023-01-20
+# Oracle : curated.oracle_item_supplier_daily ->> From 2023-01-20
 
 
 view: erp_item_supplier {
@@ -20,6 +24,8 @@ view: erp_item_supplier {
     ]
     datatype: date
     sql: ${TABLE}.ingestion_date ;;
+    description: "Date on which data was extracted from an external tool/api and stored into a BigQuery table."
+    group_label: "Dates & Timestamps"
   }
 
 #############################################

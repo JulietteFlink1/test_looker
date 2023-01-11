@@ -1,8 +1,10 @@
 # Owner: Lauti Ruiz
 
-# Description: This view shows the combination between erp sources:
-# Lexbizz : curated.lexbizz_hub ->> Until 2023-01-12
-# Oracle : curated.oracle_hubs_daily ->> From 2023-01-12
+# Description: This view shows hubs data according to our ERP Systems. Until 2023-01-20 this data comes from Lexbizz ERP,
+# after that date, comes from Oracle.
+
+# Lexbizz : curated.lexbizz_hub ->> Until 2023-01-20
+# Oracle : curated.oracle_hubs_daily ->> From 2023-01-20
 
 
 view: erp_hubs {
@@ -17,13 +19,12 @@ view: erp_hubs {
   dimension_group: ingestion {
     type: time
     timeframes: [
-      date,
-      week,
-      month
+      date
     ]
     datatype: date
-    description: ""
+    description: "Date on which data was extracted from an external tool/api and stored into a BigQuery table."
     sql: ${TABLE}.ingestion_date ;;
+    group_label: "Dates & Timestamps"
   }
 
   dimension_group: launch {
@@ -35,6 +36,7 @@ view: erp_hubs {
     datatype: date
     description: "Date when the hub was launched"
     sql: ${TABLE}.launch_date ;;
+    group_label: "Dates & Timestamps"
   }
 
   dimension_group: termination {
@@ -46,6 +48,7 @@ view: erp_hubs {
     datatype: date
     description: "Upfront date set when the hub will be close"
     sql: ${TABLE}.termination_date ;;
+    group_label: "Dates & Timestamps"
   }
 
 #############################################
@@ -65,6 +68,7 @@ view: erp_hubs {
     label: "Buyer ID"
     type: string
     description: "Buyer ID of Flink as defined in ERP"
+    group_label: "IDs"
     sql: ${TABLE}.buyer_id ;;
   }
 
@@ -72,6 +76,7 @@ view: erp_hubs {
     label: "Company ID"
     type: string
     description: "Company ID as defined in ERP"
+    group_label: "IDs"
     sql: ${TABLE}.company_id ;;
   }
 
@@ -79,6 +84,7 @@ view: erp_hubs {
     label: "Hub ID"
     type: string
     description: "The alphabetical identifier of a hub"
+    group_label: "IDs"
     sql: ${TABLE}.hub_id ;;
   }
 
@@ -87,6 +93,7 @@ view: erp_hubs {
     type: number
     value_format_name: id
     description: "The numeric identifier of a hub, coming from Oracle"
+    group_label: "IDs"
     sql: ${TABLE}.hub_id_number ;;
   }
 
@@ -96,17 +103,19 @@ view: erp_hubs {
 #############################################
 
   dimension: city {
-    label: "Hub City"
+    label: "City"
     type: string
     sql: ${TABLE}.city ;;
     description: "City where a hub is located."
+    group_label: "Geographic Attributes"
   }
 
   dimension: country_hub {
-    label: "Hub Country"
+    label: "Country"
     type: string
     sql: ${TABLE}.country_hub ;;
     description: "Country where a hub is located."
+    group_label: "Geographic Attributes"
   }
 
   dimension: country_iso {
@@ -114,6 +123,7 @@ view: erp_hubs {
     type: string
     sql: ${TABLE}.country_iso ;;
     description: "2-letter country code."
+    group_label: "Geographic Attributes"
   }
 
   dimension: gln {
@@ -121,6 +131,7 @@ view: erp_hubs {
     type: string
     sql: ${TABLE}.gln ;;
     description: "The location identifier according to our ERP systems"
+    group_label: "Hub Attributes"
   }
 
   dimension: hub_code {
@@ -128,6 +139,7 @@ view: erp_hubs {
     type: string
     sql: ${TABLE}.hub_code ;;
     description: "Code of a hub identical to back-end source tables."
+    group_label: "Hub Attributes"
   }
 
   dimension: hub_name {
@@ -135,6 +147,7 @@ view: erp_hubs {
     type: string
     sql: ${TABLE}.hub_name ;;
     description: "Name assigned to a hub based on the combination of country ISO code, city and district."
+    group_label: "Hub Attributes"
   }
 
   dimension: hub_size {
@@ -142,6 +155,7 @@ view: erp_hubs {
     type: string
     sql: ${TABLE}.hub_size ;;
     description: "Physical size/space of a hub (measured as S, M or L)."
+    group_label: "Hub Attributes"
   }
 
   dimension: postal_code {
@@ -149,20 +163,23 @@ view: erp_hubs {
     type: string
     sql: ${TABLE}.postal_code ;;
     description: "Zip Code where a hub is located."
+    group_label: "Geographic Attributes"
   }
 
   dimension: state {
-    label: "Hub State"
+    label: "State"
     type: string
     sql: ${TABLE}.state ;;
     description: "State where a hub is located."
+    group_label: "Geographic Attributes"
   }
 
   dimension: street {
-    label: "Hub Street"
+    label: "Street"
     type: string
     sql: ${TABLE}.street ;;
     description: "Street where a hub is located."
+    group_label: "Geographic Attributes"
   }
 
 
@@ -175,6 +192,7 @@ view: erp_hubs {
     type: yesno
     sql: ${TABLE}.is_hub_active ;;
     description: "This boolean field indicates, whether of not a hub is active."
+    group_label: "Hub Attributes"
   }
 
 
