@@ -108,7 +108,6 @@ view: erp_item_location {
     type: string
     sql: ${TABLE}.country_iso ;;
     description: "2-letter country code."
-    group_label: "Geographic Attributes"
   }
 
   dimension: hub_code {
@@ -116,7 +115,6 @@ view: erp_item_location {
     type: string
     sql: ${TABLE}.hub_code ;;
     description: "Code of a hub identical to back-end source tables."
-    group_label: "Geographic Attributes"
   }
 
   dimension: item_at_warehouse_status {
@@ -124,7 +122,6 @@ view: erp_item_location {
     type: string
     sql: ${TABLE}.item_at_warehouse_status ;;
     description: "The assignment status of a given product to a given hub as defined in Oracle"
-    group_label: "Product Attribute"
   }
 
   dimension: item_status {
@@ -132,7 +129,6 @@ view: erp_item_location {
     type: string
     sql: ${TABLE}.item_status ;;
     description: "The activity/listing status of a product according to our ERP system"
-    group_label: "Product Attribute"
   }
 
   dimension: location_type {
@@ -165,7 +161,6 @@ view: erp_item_location {
     type: string
     sql: ${TABLE}.sku ;;
     description: "SKU of the product, as available in the backend."
-    group_label: "Product Attribute"
   }
 
 

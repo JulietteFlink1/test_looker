@@ -132,7 +132,6 @@ view: erp_item {
     type: string
     sql: ${TABLE}.country_iso ;;
     description: "2-letter country code."
-    group_label: "Product Attribute"
   }
 
   dimension: description {
@@ -238,7 +237,6 @@ view: erp_item {
     type: string
     sql: ${TABLE}.item_name ;;
     description: "The name of a product as defined in the ERP tool"
-    group_label: "Product Attribute"
   }
 
   dimension: item_replenishment_substitute_group {
@@ -247,7 +245,6 @@ view: erp_item {
     sql: ${TABLE}.item_replenishment_substitute_group ;;
     description: "The replenishment substitute group defined by the Supply Chain team
                   to tag substitute products for replenishment."
-    group_label: "Product Attribute"
   }
 
   dimension: item_safety_stock {
@@ -263,7 +260,6 @@ view: erp_item {
     type: string
     sql: ${TABLE}.item_status ;;
     description: "The activity/listing status of a product according to our ERP system"
-    group_label: "Product Attribute"
   }
 
   dimension: item_substitute_group {
@@ -271,7 +267,6 @@ view: erp_item {
     type: string
     sql: ${TABLE}.item_substitute_group ;;
     description: "The substitute group according to the ERP defining substitute products."
-    group_label: "Product Attribute"
   }
 
   dimension: item_type {
@@ -392,7 +387,6 @@ view: erp_item {
     type: string
     sql: ${TABLE}.sku ;;
     description: "SKU of the product, as available in the backend."
-    group_label: "Product Attribute"
   }
 
   dimension: tax_category {

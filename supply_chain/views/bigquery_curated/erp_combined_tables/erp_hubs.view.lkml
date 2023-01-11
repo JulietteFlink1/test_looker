@@ -123,7 +123,6 @@ view: erp_hubs {
     type: string
     sql: ${TABLE}.country_iso ;;
     description: "2-letter country code."
-    group_label: "Geographic Data"
   }
 
   dimension: gln {
@@ -139,7 +138,6 @@ view: erp_hubs {
     type: string
     sql: ${TABLE}.hub_code ;;
     description: "Code of a hub identical to back-end source tables."
-    group_label: "Hub Attribute"
   }
 
   dimension: hub_name {
@@ -192,7 +190,6 @@ view: erp_hubs {
     type: yesno
     sql: ${TABLE}.is_hub_active ;;
     description: "This boolean field indicates, whether of not a hub is active."
-    group_label: "Hub Attribute"
   }
 
 
