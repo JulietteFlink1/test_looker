@@ -186,6 +186,12 @@ view: hubs_ct {
     group_label: "> Admin Data"
   }
 
+  dimension: regional_manager {
+    type: string
+    sql: ${TABLE}.regional_manager ;;
+    group_label: "> Admin Data"
+  }
+
   dimension: hub_manager {
     type: string
     sql: ${TABLE}.hub_manager ;;
