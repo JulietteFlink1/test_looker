@@ -1,6 +1,6 @@
 view: products {
   view_label: "* Product Data *"
-  sql_table_name: `flink-data-dev.dbt_astueber_curated.products`
+  sql_table_name: `flink-data-prod.curated.products`
     ;;
 
   set: product_attributes {
