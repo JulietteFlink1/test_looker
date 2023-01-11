@@ -103,7 +103,7 @@ view: products {
   dimension: product_sku_name {
     label: "SKU + Name"
     type: string
-    sql: CONCAT(${TABLE}.product_sku, ' - ', ${TABLE}.product_name) ;;
+    sql: CONCAT(${TABLE}.global_sku, ' - ', ${TABLE}.product_name) ;;
   }
 
   dimension: subcategory {
