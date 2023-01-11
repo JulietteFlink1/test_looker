@@ -124,7 +124,7 @@ view: erp_item_location {
     type: string
     sql: ${TABLE}.item_at_warehouse_status ;;
     description: "The assignment status of a given product to a given hub as defined in Oracle"
-    group_label: "Product Attributes"
+    group_label: "Product Attribute"
   }
 
   dimension: item_status {
@@ -132,7 +132,7 @@ view: erp_item_location {
     type: string
     sql: ${TABLE}.item_status ;;
     description: "The activity/listing status of a product according to our ERP system"
-    group_label: "Product Attributes"
+    group_label: "Product Attribute"
   }
 
   dimension: location_type {
@@ -140,7 +140,7 @@ view: erp_item_location {
     type: string
     sql: ${TABLE}.location_type ;;
     description: "The location type refers to either hubs or warehouses (which are basically distribution centers)"
-    group_label: "Product Attributes"
+    group_label: "Product Attribute"
   }
 
   dimension: preferred_vendor_location {
@@ -157,7 +157,7 @@ view: erp_item_location {
     type: number
     sql: ${TABLE}.safety_stock ;;
     description: "Minimun stock to have of a product to be safe in a particular location"
-    group_label: "Product Attributes"
+    group_label: "Product Attribute"
   }
 
   dimension: sku {
@@ -165,7 +165,7 @@ view: erp_item_location {
     type: string
     sql: ${TABLE}.sku ;;
     description: "SKU of the product, as available in the backend."
-    group_label: "Product Attributes"
+    group_label: "Product Attribute"
   }
 
 

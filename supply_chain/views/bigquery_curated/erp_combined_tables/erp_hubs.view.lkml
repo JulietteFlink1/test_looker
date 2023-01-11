@@ -107,7 +107,7 @@ view: erp_hubs {
     type: string
     sql: ${TABLE}.city ;;
     description: "City where a hub is located."
-    group_label: "Geographic Attributes"
+    group_label: "Geographic Data"
   }
 
   dimension: country_hub {
@@ -115,7 +115,7 @@ view: erp_hubs {
     type: string
     sql: ${TABLE}.country_hub ;;
     description: "Country where a hub is located."
-    group_label: "Geographic Attributes"
+    group_label: "Geographic Data"
   }
 
   dimension: country_iso {
@@ -123,7 +123,7 @@ view: erp_hubs {
     type: string
     sql: ${TABLE}.country_iso ;;
     description: "2-letter country code."
-    group_label: "Geographic Attributes"
+    group_label: "Geographic Data"
   }
 
   dimension: gln {
@@ -131,7 +131,7 @@ view: erp_hubs {
     type: string
     sql: ${TABLE}.gln ;;
     description: "The location identifier according to our ERP systems"
-    group_label: "Hub Attributes"
+    group_label: "Hub Attribute"
   }
 
   dimension: hub_code {
@@ -139,7 +139,7 @@ view: erp_hubs {
     type: string
     sql: ${TABLE}.hub_code ;;
     description: "Code of a hub identical to back-end source tables."
-    group_label: "Hub Attributes"
+    group_label: "Hub Attribute"
   }
 
   dimension: hub_name {
@@ -147,7 +147,7 @@ view: erp_hubs {
     type: string
     sql: ${TABLE}.hub_name ;;
     description: "Name assigned to a hub based on the combination of country ISO code, city and district."
-    group_label: "Hub Attributes"
+    group_label: "Hub Attribute"
   }
 
   dimension: hub_size {
@@ -155,7 +155,7 @@ view: erp_hubs {
     type: string
     sql: ${TABLE}.hub_size ;;
     description: "Physical size/space of a hub (measured as S, M or L)."
-    group_label: "Hub Attributes"
+    group_label: "Hub Attribute"
   }
 
   dimension: postal_code {
@@ -163,7 +163,7 @@ view: erp_hubs {
     type: string
     sql: ${TABLE}.postal_code ;;
     description: "Zip Code where a hub is located."
-    group_label: "Geographic Attributes"
+    group_label: "Geographic Data"
   }
 
   dimension: state {
@@ -171,7 +171,7 @@ view: erp_hubs {
     type: string
     sql: ${TABLE}.state ;;
     description: "State where a hub is located."
-    group_label: "Geographic Attributes"
+    group_label: "Geographic Data"
   }
 
   dimension: street {
@@ -179,7 +179,7 @@ view: erp_hubs {
     type: string
     sql: ${TABLE}.street ;;
     description: "Street where a hub is located."
-    group_label: "Geographic Attributes"
+    group_label: "Geographic Data"
   }
 
 
@@ -192,7 +192,7 @@ view: erp_hubs {
     type: yesno
     sql: ${TABLE}.is_hub_active ;;
     description: "This boolean field indicates, whether of not a hub is active."
-    group_label: "Hub Attributes"
+    group_label: "Hub Attribute"
   }
 
 

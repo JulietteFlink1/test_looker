@@ -119,7 +119,7 @@ view: erp_supplier {
     type: string
     sql: ${TABLE}.gln ;;
     description: "The location identifier according to our ERP systems"
-    group_label: "Supplier Attributes"
+    group_label: "Supplier Attribute"
   }
 
   dimension: postal_code {
@@ -127,7 +127,7 @@ view: erp_supplier {
     type: string
     sql: ${TABLE}.postal_code ;;
     description: "Zip Code of origin of a supplier."
-    group_label: "Geographic Attributes"
+    group_label: "Geographic Attribute"
   }
 
   dimension: street {
@@ -135,7 +135,7 @@ view: erp_supplier {
     type: string
     sql: ${TABLE}.street ;;
     description: "Street where a supplier is located."
-    group_label: "Geographic Attributes"
+    group_label: "Geographic Attribute"
   }
 
   dimension: tax_calculation_mode {
@@ -143,7 +143,7 @@ view: erp_supplier {
     type: string
     sql: ${TABLE}.tax_calculation_mode ;;
     description: "Tax calculation method applied for a particular supplier."
-    group_label: "Supplier Attributes"
+    group_label: "Supplier Attribute"
   }
 
   dimension: tax_zone {
@@ -151,7 +151,7 @@ view: erp_supplier {
     type: string
     sql: ${TABLE}.tax_zone ;;
     description: "Tax calculation zone applied for a particular supplier."
-    group_label: "Supplier Attributes"
+    group_label: "Supplier Attribute"
   }
 
   dimension: terms {
@@ -159,7 +159,7 @@ view: erp_supplier {
     type: string
     sql: ${TABLE}.terms ;;
     description: "The terms of a supplier."
-    group_label: "Supplier Attributes"
+    group_label: "Supplier Attribute"
   }
 
   dimension: vendor_class {
@@ -167,7 +167,7 @@ view: erp_supplier {
     type: string
     sql: ${TABLE}.vendor_class ;;
     description: "Classification of a supplier according to the ERP."
-    group_label: "Supplier Attributes"
+    group_label: "Supplier Attribute"
   }
 
   dimension: vendor_name {
@@ -175,7 +175,7 @@ view: erp_supplier {
     type: string
     sql: ${TABLE}.vendor_name ;;
     description: "Name of the supplier/vendor of a product (e.g. REWE or Carrefour)."
-    group_label: "Supplier Attributes"
+    group_label: "Supplier Attribute"
   }
 
   dimension: vendor_status {
@@ -183,7 +183,7 @@ view: erp_supplier {
     type: string
     sql: ${TABLE}.vendor_status ;;
     description: "The activity status of a supplier as defined in our ERP system"
-    group_label: "Supplier Attributes"
+    group_label: "Supplier Attribute"
   }
 
 
