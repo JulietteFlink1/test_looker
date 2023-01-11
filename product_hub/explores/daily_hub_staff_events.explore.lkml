@@ -21,6 +21,8 @@ include: "/**/event_logout_completed.view.lkml"
 include: "/**/hub_one_picking_times.view.lkml"
 include: "/**/event_stock_check_started.view.lkml"
 include: "/**/event_stock_check_finished.view.lkml"
+include: "/**/event_inbound_state_updated.view.lkml"
+include: "/**/event_inbound_progressed.view.lkml"
 include: "/product_consumer/views/bigquery_reporting/daily_violations_aggregates.view.lkml"
 include: "/**/daily_smart_inventory_checks.view"
 
@@ -29,11 +31,12 @@ explore: daily_hub_staff_events {
   view_name: daily_hub_staff_events
   hidden: no
 
-  label: "Daily Hub Staff Events"
+  label: "Daily Hub One Events"
   description: "This explore provides an overview of all behavioural events generated on Hub One.
     This explore is built on front-end data, and is subset to the limitations of front-end tracking.
-    We can not, and do not, expect 100% accuracy compared to the Orders & Order Line Items explores.
-    We consider the Orders Explore to be the source of truth."
+    We can not, and do not, expect 100% accuracy compared to the back-end based explores such as Orders,
+    Orders & Lineitems or Inbound Outbound Kpi Report.
+    We consider the back-end based Explores to be the source of truth."
   group_label: "Product - Hub Tech"
 
 
@@ -147,8 +150,28 @@ explore: daily_hub_staff_events {
     relationship: one_to_one
   }
 
+  join: event_inbound_state_updated {
+    view_label: "7 Event: Inbound State Updated"
+    fields: [to_include_dimensions*]
+    sql_on: ${event_inbound_state_updated.event_uuid} = ${daily_hub_staff_events.event_uuid}
+      and {% condition global_filters_and_parameters.datasource_filter %}
+        ${event_inbound_state_updated.event_timestamp_date} {% endcondition %};;
+    type: left_outer
+    relationship: one_to_one
+  }
+
+  join: event_inbound_progressed {
+    view_label: "8 Event: Inbound Progressed"
+    fields: [to_include_set*]
+    sql_on: ${event_inbound_progressed.event_uuid} = ${daily_hub_staff_events.event_uuid}
+      and {% condition global_filters_and_parameters.datasource_filter %}
+        ${event_inbound_progressed.event_timestamp_date} {% endcondition %};;
+    type: left_outer
+    relationship: one_to_one
+  }
+
   join: products {
-    view_label: "7 Product Dimensions"
+    view_label: "9 Product Dimensions"
     fields: [product_name, category, subcategory, erp_category, erp_subcategory]
     sql_on: ${products.product_sku} = ${event_order_progressed.product_sku};;
     type: left_outer
@@ -156,7 +179,7 @@ explore: daily_hub_staff_events {
   }
 
   join: hubs_ct {
-      view_label: "8 Hub Dimensions"
+      view_label: "9 Hub Dimensions"
       sql_on: ${daily_hub_staff_events.hub_code} = ${hubs_ct.hub_code} ;;
       type: left_outer
       relationship: many_to_one
@@ -175,7 +198,7 @@ explore: daily_hub_staff_events {
   }
 
   join: orders {
-    view_label: "91 Order Dimensions"
+    view_label: "9 Order Dimensions"
     fields: [ is_external_order
             , order_picker_accepted_timestamp
             , order_packed_timestamp
@@ -186,7 +209,7 @@ explore: daily_hub_staff_events {
   }
 
   join: daily_violations_aggregates {
-    view_label: "92 Event: Violation Generated" ##to unhide change the label to: Event: Violation Generated
+    view_label: "91 Event: Violation Generated" ##to unhide change the label to: Event: Violation Generated
     fields: [daily_violations_aggregates.violated_event_name , daily_violations_aggregates.number_of_violations]
     sql_on: ${daily_hub_staff_events.event_text} = ${daily_violations_aggregates.violated_event_name}
           and ${daily_hub_staff_events.event_date}=${daily_violations_aggregates.event_date}
@@ -198,7 +221,7 @@ explore: daily_hub_staff_events {
   }
 
   join: daily_smart_inventory_checks {
-    view_label: "93 Smart Inventory Checks"
+    view_label: "92 Smart Inventory Checks"
     sql_on: ${daily_smart_inventory_checks.scheduled_date} = ${daily_hub_staff_events.event_date}
           and ${daily_smart_inventory_checks.hub_code}=${daily_hub_staff_events.hub_code}
           and ${daily_smart_inventory_checks.sku}=${event_order_progressed.product_sku}

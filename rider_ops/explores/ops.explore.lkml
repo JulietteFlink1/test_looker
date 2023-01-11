@@ -49,7 +49,7 @@ explore: ops {
     type: full_outer
     fields: [time_grid.start_datetime_date, time_grid.start_datetime_hour_of_day, time_grid.start_datetime_minute30,
       time_grid.start_datetime_month,time_grid.start_datetime_quarter,time_grid.start_datetime_raw,time_grid.start_datetime_time,
-      time_grid.start_datetime_time_of_day,time_grid.start_datetime_week, time_grid.start_datetime_year, time_grid.is_hour_before_now_hour,
+      time_grid.start_datetime_time_of_day,time_grid.start_datetime_week,time_grid.start_datetime_week_of_year, time_grid.start_datetime_year, time_grid.is_hour_before_now_hour,
       time_grid.is_date_before_today,time_grid.start_datetime_day_of_week]
   }
 
@@ -120,6 +120,17 @@ explore: ops {
       and ${time_grid.start_datetime_minute30}  = ${order_backlog.start_timestamp_minute30} ;;
     relationship: one_to_one
     type: left_outer
+  }
+
+  join: hub_closure_rate {
+    view_label: "Order Backlog"
+    sql_on:
+      ${hubs.hub_code} = ${hub_closure_rate.hub_code}
+      and ${time_grid.start_datetime_minute30} = ${hub_closure_rate.created_minute30}
+      ;;
+    relationship: many_to_one
+    type: left_outer
+    fields: [hub_closure_rate.all_closure_rate]
   }
 
 }

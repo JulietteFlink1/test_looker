@@ -1003,6 +1003,14 @@ view: employee_level_kpis {
     sql: min(case when ${TABLE}.number_of_worked_minutes > 0 then ${TABLE}.shift_date end);;
   }
 
+  measure: number_of_distinct_shift_dates {
+    group_label: "> Shift Related"
+    label: "# Distinct Shift Dates"
+    type: count_distinct
+    description: "Number of distinct shift dates based on the selection."
+    sql: ${shift_date};;
+  }
+
   measure: number_of_assigned_hours {
     group_label: "> Shift Related"
     alias: [number_of_scheduled_hours]
@@ -1125,7 +1133,7 @@ view: employee_level_kpis {
     label: "% Availability Hours vs Total Contracted Hours"
     type: number
     sql:${number_of_availability_hours}/nullif(${sum_weekly_contracted_hours},0) ;;
-    description:"# Availability Hours / Total Weekly Contracted Hours"
+    description:"# Availability Hours / Total Contracted Hours"
     value_format_name: percent_1
   }
 
@@ -1334,7 +1342,7 @@ view: employee_level_kpis {
   }
 
   measure: sum_weekly_contracted_hours {
-    label: "Total Weekly Contracted Hours"
+    label: "Total Contracted Hours"
     group_label: "> Contract Related"
     type: sum_distinct
     sql_distinct_key: concat(${shift_date},${employment_id});;
@@ -1348,7 +1356,7 @@ view: employee_level_kpis {
     type: number
     hidden: no
     label: "% Contracted Hours Fulfillment"
-    description: "Worked hours / (Weekly Contracted Hours * calender weeks)"
+    description: "Worked hours / (AVG daily contracted hours * number of days)"
     sql: ${number_of_worked_hours}/nullif(${sum_weekly_contracted_hours},0) ;;
     value_format: "0%"
   }
@@ -1358,7 +1366,7 @@ view: employee_level_kpis {
     type: number
     hidden: no
     label: "% Evaluated Hours vs Contracted Hours"
-    description: "Evaluated Hours (Worked Hours + Absence Hours) / (Weekly Contracted Hours * calender weeks)"
+    description: "Evaluated Hours (Worked Hours + Absence Hours) / (AVG daily contracted hours * number of days)"
     sql: ${number_evaluated_hours}/nullif(${sum_weekly_contracted_hours},0) ;;
     value_format: "0%"
   }
@@ -1368,7 +1376,7 @@ view: employee_level_kpis {
     type: number
     hidden: no
     label: "% Recorded Hours vs Contracted Hours"
-    description: "Recorded Hours (Worked Hours + Absence Hours + No Show Hours) / (Weekly Contracted Hours * calender weeks)"
+    description: "Recorded Hours (Worked Hours + Absence Hours + No Show Hours) / (AVG daily contracted hours * number of days)"
     sql: ${number_recorded_hours}/nullif(${sum_weekly_contracted_hours},0) ;;
     value_format: "0%"
   }
@@ -1378,7 +1386,7 @@ view: employee_level_kpis {
     type: number
     hidden: no
     label: "% Assigned Hours vs Contracted Hours"
-    description: "Assigned Hours / (Weekly Contracted Hours * calender weeks)"
+    description: "Assigned Hours / (AVG daily contracted hours * number of days)"
     sql: ${number_of_assigned_hours}/nullif(${sum_weekly_contracted_hours},0) ;;
     value_format: "0%"
   }

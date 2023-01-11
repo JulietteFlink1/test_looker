@@ -1,5 +1,5 @@
-view: event_cart_viewed {
-  sql_table_name: `flink-data-prod.curated.event_cart_viewed`
+view: event_checkout_viewed {
+  sql_table_name: `flink-data-prod.curated.event_checkout_viewed`
     ;;
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
@@ -62,12 +62,6 @@ view: event_cart_viewed {
     sql: ${TABLE}.event_name ;;
   }
 
-  dimension: rank_of_daily_cart_views {
-    group_label: "Measure Dimensions"
-    type: number
-    description: "Rank of cart viewed for the user in a day. Used to understand how cart values progress"
-    sql: ${TABLE}.rank_of_daily_cart_views ;;
-  }
 
 # ======= Location Dimension ======= #
 
@@ -142,30 +136,59 @@ view: event_cart_viewed {
   dimension: amt_delivery_fee_eur {
     group_label: "DDF Dimensions"
     type: number
-    description: "Dynamic Delivery fee displayed upon entering cart"
+    description: "Delivery fee applicable for the users order at the time the event was triggered"
     sql: ${TABLE}.delivery_fee ;;
   }
 
-  dimension: amt_sub_total_eur {
+  dimension: amt_storage_fee_eur {
     group_label: "DDF Dimensions"
     type: number
-    description: "the sub total value of the cart upon firing the event"
-    sql: ${TABLE}.sub_total ;;
+    description: "Storage fee applicable for the user at the time the event was triggered."
+    sql: ${TABLE}.storage_fee ;;
   }
 
-  dimension: message_displayed {
+  dimension: amt_late_night_fee_eur {
     group_label: "DDF Dimensions"
-    type: string
-    description: "The message shown in the toast banner - dependent on the cart value & fee."
-    sql: ${TABLE}.message_displayed ;;
+    type: number
+    description: "Late night fee applicable for the user at the time the event was triggered."
+    sql: ${TABLE}.late_night_fee ;;
+  }
+
+  dimension: amt_deposit_eur {
+    group_label: "DDF Dimensions"
+    type: number
+    description: "Total of deposit that is part of user's order."
+    sql: ${TABLE}.deposit ;;
+  }
+
+  dimension: amt_discount_value_eur {
+    group_label: "DDF Dimensions"
+    type: number
+    description: "Value of the discount applied."
+    sql: ${TABLE}.discount_value ;;
+  }
+
+  dimension: amt_order_subtotal_eur {
+    group_label: "DDF Dimensions"
+    type: number
+    description: "Total value of the items in the order, excluding fees, deposit, tax, cart discounts. Including item discounts."
+    sql: ${TABLE}.order_subtotal ;;
+  }
+
+  dimension: amt_order_total_eur {
+    group_label: "DDF Dimensions"
+    type: number
+    description: "Total value of the order including all fees, tax and discounts."
+    sql: ${TABLE}.order_total ;;
   }
 
   dimension: products {
     group_label: "DDF Dimensions"
     type: string
-    description: "The products in the users cart at the time the event was triggered."
+    description: "Products purchased by user."
     sql: ${TABLE}.products ;;
   }
+
 
 # ======= Dates / Timestamps =======
 
@@ -202,11 +225,6 @@ view: event_cart_viewed {
     sql: ${TABLE}.event_timestamp ;;
   }
 
-  dimension: page_path {
-    type: string
-    hidden: yes
-    sql: ${TABLE}.page_path ;;
-  }
 
   dimension_group: received {
     type: time
@@ -223,20 +241,9 @@ view: event_cart_viewed {
     sql: ${TABLE}.received_at ;;
   }
 
-  dimension: screen_name {
-    type: string
-    hidden: yes
-    sql: ${TABLE}.screen_name ;;
-  }
 
 # ======= Measures ======= #
 
-  measure: avg_daily_cart_viewed_events {
-    group_label: "Measure Dimensions"
-    type: average
-    description: "AVG number of daily cart visits per user"
-    sql: ${TABLE}.rank_of_daily_cart_views ;;
-  }
 
   measure: all_users {
     group_label: "Measure Dimensions"
@@ -245,9 +252,4 @@ view: event_cart_viewed {
     sql: ${TABLE}.anonymous_id ;;
   }
 
-  measure: count {
-    group_label: "Measure Dimensions"
-    type: count
-    drill_fields: [screen_name, event_name]
-  }
 }

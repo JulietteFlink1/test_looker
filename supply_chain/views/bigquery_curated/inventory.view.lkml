@@ -1,6 +1,6 @@
 view: inventory {
   view_label: "* Inventory Data *"
-  sql_table_name: `flink-data-prod.curated.inventory`
+  sql_table_name: `flink-data-prod.curated.inventory_ct_current_status`
     ;;
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -16,7 +16,7 @@ view: inventory {
   dimension: is_most_recent_record {
     description: "Indicates, that the inventory shown is either the most recent data (Yes) or shows historical inventory information (No)"
     type: yesno
-    sql: ${TABLE}.is_most_recent_record ;;
+    sql: True ;;
   }
 
   dimension: is_oos {

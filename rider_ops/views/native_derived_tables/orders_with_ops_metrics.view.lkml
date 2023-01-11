@@ -35,6 +35,8 @@ view: orders_with_ops_metrics {
       column: avg_rider_handling_time_minutes_saved_with_stacking {}
       column: avg_rider_handling_time {}
       column: cnt_stacked_orders {}
+      column: cnt_stacked_orders_double_stack {}
+      column: cnt_stacked_orders_triple_stack {}
       column: created_date {}
       column: created_minute30 {}
       column: cnt_orders_delayed_under_0_min {}
@@ -208,10 +210,37 @@ view: orders_with_ops_metrics {
     }
 
   measure: pct_stacked_orders {
-    group_label: "> Basic Counts"
+    group_label: "> Stacked Orders"
     label: "% Stacked Orders"
-    description: "The % of orders, that were part of a stacked delivery"
+    description: "The % of orders that were part of a stacked delivery. (Share of internal orders only)"
     sql: ${cnt_stacked_orders} / NULLIF(${cnt_internal_orders}-${cnt_click_and_collect_orders}, 0) ;;
+    type: number
+    value_format_name: percent_1
+  }
+
+  measure: pct_double_stacked_orders {
+    label: "% Double-Stacked Orders"
+    description: "The % of orders that were part of a 2-order stacked delivery. (Share of internal orders only)"
+    group_label: "> Stacked Orders"
+    sql: ${cnt_stacked_orders_double_stack} / nullif(${cnt_internal_orders}-${cnt_click_and_collect_orders} ,0) ;;
+    type: number
+    value_format_name: percent_1
+  }
+
+  measure: pct_triple_stacked_orders {
+    label: "% Triple-Stacked Orders"
+    description: "The % of orders that were part of a 3-order stacked delivery. (Share of internal orders only)"
+    group_label: "> Stacked Orders"
+    sql: ${cnt_stacked_orders_triple_stack} / nullif(${cnt_internal_orders}-${cnt_click_and_collect_orders} ,0) ;;
+    type: number
+    value_format_name: percent_1
+  }
+
+  measure: pct_stacked_orders_with_triple_stacks {
+    label: "% Stacked Orders With Triple-Stacking"
+    description: "The % of stacked orders that were part of 3-order stacks."
+    group_label: "> Stacked Orders"
+    sql: ${cnt_stacked_orders_triple_stack} / nullif(${cnt_stacked_orders} ,0) ;;
     type: number
     value_format_name: percent_1
   }
@@ -515,12 +544,28 @@ view: orders_with_ops_metrics {
   }
 
   measure: cnt_stacked_orders {
-    group_label: "> Basic Counts"
+    group_label: "> Stacked Orders"
     label: "# Orders - Stacked Order"
-    description: "Count of orders, that were part of a stacked delivery"
+    description: "Count of orders that were part of a stacked delivery."
     type: sum
     value_format_name: decimal_0
-    }
+  }
+
+  measure: cnt_stacked_orders_double_stack {
+    label: "# Double-Stacked Orders"
+    description: "The number of orders that were part of a 2-order stacked delivery."
+    group_label: "> Stacked Orders"
+    type: sum
+    value_format: "0"
+  }
+
+  measure: cnt_stacked_orders_triple_stack {
+    label: "# Triple-Stacked Orders"
+    description: "The number of orders that were part of a 3-order stacked delivery."
+    group_label: "> Stacked Orders"
+    type: sum
+    value_format: "0"
+  }
 
   measure: avg_estimated_queuing_time_by_position {
     group_label: "> Operations / Logistics"
@@ -568,6 +613,7 @@ view: orders_with_ops_metrics {
 
   measure: dynamic_kpi_1 {
     type: number
+    label: "Dynamic KPI 1"
     label_from_parameter: kpi_1
     description: "This field is based on the chosen KPI"
     value_format_name: decimal_2
@@ -588,6 +634,7 @@ view: orders_with_ops_metrics {
   measure: dynamic_kpi_2 {
     type: number
     label_from_parameter: kpi_2
+    label: "Dynamic KPI 2"
     description: "This field is based on the chosen KPI"
     value_format_name: decimal_2
     group_label: "> Dynamic Measures"
@@ -610,6 +657,7 @@ view: orders_with_ops_metrics {
 
   parameter: kpi_1 {
     type: string
+    label: "KPI 1"
     allowed_value: { value: "AVG Fulfillment Time" }
     allowed_value: { value: "Rider UTR" }
     allowed_value: { value: "% Stacked Orders" }
@@ -621,6 +669,7 @@ view: orders_with_ops_metrics {
 
   parameter: kpi_2 {
     type: string
+    label: "KPI 2"
     allowed_value: { value: "AVG Fulfillment Time" }
     allowed_value: { value: "Rider UTR" }
     allowed_value: { value: "% Stacked Orders" }

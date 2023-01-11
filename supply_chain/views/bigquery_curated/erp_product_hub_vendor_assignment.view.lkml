@@ -1,5 +1,5 @@
-view: erp_product_hub_vendor_assignment_v2 {
-  sql_table_name: `flink-data-prod.curated.erp_product_hub_vendor_assignment_v2`;;
+view: erp_product_hub_vendor_assignment {
+  sql_table_name: `flink-data-prod.curated.erp_product_hub_vendor_assignment`;;
   view_label: "* ERP/Lexbizz data *"
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

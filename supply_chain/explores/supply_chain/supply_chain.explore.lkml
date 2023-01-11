@@ -12,7 +12,7 @@
 
 include: "/**/*.view"
 
-include: "/**/products_hub_assignment_v2.view"
+include: "/**/products_hub_assignment.view"
 include: "/**/replenishment_purchase_orders.view"
 include: "/**/bulk_items.view"
 include: "/**/bulk_inbounding_performance.view"
@@ -40,7 +40,7 @@ explore: supply_chain {
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   #  - - - - - - - - - -    BASE TABLE
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  from  :     products_hub_assignment_v2
+  from  :     products_hub_assignment
   view_name:  products_hub_assignment
   view_label: "01 Products Hub Assignment"
 
@@ -156,6 +156,18 @@ explore: supply_chain {
         ${products.country_iso} = ${products_hub_assignment.country_iso}
         ;;
 
+  }
+
+  join: products_ct_merged_skus {
+
+    view_label: "Products (CT)"
+
+    sql_on:
+        ${products.product_sku} = ${products_ct_merged_skus.sku} and
+        ${products.country_iso} = ${products_ct_merged_skus.country_iso}
+        ;;
+    relationship: one_to_one
+    type: left_outer
   }
 
   join: lexbizz_item {
@@ -295,7 +307,7 @@ explore: supply_chain {
 
   join: erp_master_data {
 
-    from: erp_product_hub_vendor_assignment_v2
+    from: erp_product_hub_vendor_assignment
     view_label: "10 Lexbizz Master Data"
 
     type: left_outer

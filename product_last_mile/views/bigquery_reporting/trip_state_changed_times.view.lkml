@@ -83,7 +83,7 @@ view: trip_state_changed_times {
     ]
     convert_tz: no
     datatype: date
-    sql: ${TABLE}.event_date ;;
+    sql: ${TABLE}.trip_started_event_date ;;
   }
   dimension_group: trip_completed_at_timestamp {
     group_label: "Dates & Timestamps"

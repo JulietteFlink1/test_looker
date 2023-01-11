@@ -35,7 +35,7 @@ view: +orders {
     label: "Stacking Sequence"
     description: "The order in which the orders of the stack were delivered."
     group_label: "* Stacked Orders *"
-    sql: ${TABLE}.stacking_sequence ;;
+    sql: coalesce(${TABLE}.stacking_sequence, 1) ;;
     type: number
   }
 

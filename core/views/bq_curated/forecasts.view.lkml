@@ -28,9 +28,10 @@ view: forecasts {
 
   dimension: is_hub_open {
     label: "Is Hub Open"
+    description: "1, if hub was open in the given 30 min interval. Based on the regular opening hours."
     type: number
-    sql: ${TABLE}.is_hub_open ;;
-    hidden: yes
+    sql: ${TABLE}.is_hub_open;;
+    hidden: no
   }
 
   dimension: quinyx_pipeline_status_rider {
@@ -1458,6 +1459,7 @@ view: forecasts {
     type: unquoted
     allowed_value: { value: "Day" }
     allowed_value: { value: "Week" }
+    allowed_value: { value: "Month" }
     default_value: "Day"
   }
 
@@ -1480,6 +1482,8 @@ view: forecasts {
       ${start_timestamp_date}
     {% elsif date_granularity._parameter_value == 'Week' %}
       ${start_timestamp_week}
+     {% elsif date_granularity._parameter_value == 'Month' %}
+      ${start_timestamp_month}
     {% endif %};;
   }
 
@@ -1492,6 +1496,8 @@ view: forecasts {
               "Day"
             {% elsif date_granularity._parameter_value == 'Week' %}
               "Week"
+            {% elsif date_granularity._parameter_value == 'Month' %}
+              "Month"
             {% endif %};;
   }
 

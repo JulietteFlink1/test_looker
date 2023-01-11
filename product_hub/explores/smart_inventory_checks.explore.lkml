@@ -22,7 +22,7 @@ explore: smart_inventory_checks {
   view_name: smart_inventory_checks
 
   label: "Smart Inventory Checks"
-  description: "This explore provides an overview of the backend events related to inventory checks and corrections."
+  description: "This explore provides an overview of the backend events related to inventory checks and its corrections."
   group_label: "Product - Hub Tech"
 
   access_filter: {
