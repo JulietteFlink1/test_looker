@@ -514,12 +514,14 @@ view: products {
   dimension: base_unit_price {
     type: number
     sql: ${TABLE}.amt_unit_price_gross_eur ;;
+    description: "The price of 1 single product (incl. VAT)"
     group_label: "> Price Data"
   }
 
   dimension: base_unit_price_display {
     type: string
     sql: ${TABLE}.amt_unit_price_display_gross_eur ;;
+    description: "The price of 1 single product (incl. VAT) by its unit of measure"
     group_label: "> Price Data"
   }
 
