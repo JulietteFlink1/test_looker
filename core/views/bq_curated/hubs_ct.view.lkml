@@ -188,6 +188,8 @@ view: hubs_ct {
 
   dimension: regional_manager {
     type: string
+    label: "Regional Manager"
+    description: "The person in charge of the region where the hub is located"
     sql: ${TABLE}.regional_manager ;;
     group_label: "> Admin Data"
   }
