@@ -2972,7 +2972,7 @@ view: orders {
     label: "AVG Total Fees (Net)"
     description: "Average value of Delivery Fees (Net) + Storage Fees (Net) + Late Night Fees (Net)"
     type: average
-    sql: (${shipping_price_net_amount} + ${amt_storage_fee_net} + ${amt_late_night_fee_net});;
+    sql: ${shipping_price_net_amount} + ${amt_storage_fee_net} + coalesce(${amt_late_night_fee_net},0);;
     value_format_name: euro_accounting_2_precision
   }
 

@@ -29,11 +29,12 @@ explore: product_placement_performance {
                 We consider the Orders Explore to be the source of truth.
                 This report uses daily last-in first-out attribution logic - if a user has a cart that persists for more than one day the product placements will not be included in this report.
                 Impressions are only tracked for a proportion of our users - please ensure you filter for users exposed to impressions before looking at any metrics including impressions.
+                This explore is time limited, and will only return data for the last complete month, and the current month.
                 "
   group_label: "Product - Consumer"
 
   sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} ${product_placement_performance.event_date} {% endcondition %}
-                    and ${product_placement_performance.event_date} >= LAST_DAY(current_date() - 122)
+                    and ${product_placement_performance.event_date} > LAST_DAY(current_date() - 62)
                     and ${country_iso} is not null;;
 
   access_filter: {
@@ -45,7 +46,7 @@ explore: product_placement_performance {
 # product_placement in needed as an always_filter because those are the placements where we are sending the tracking for now
   always_filter: {
     filters: [
-      global_filters_and_parameters.datasource_filter: "last 7 days",
+      global_filters_and_parameters.datasource_filter: "last 1 days",
       affected_by_impression_users.is_exposed_to_impressions: "Yes",
       product_placement_performance.product_placement: "category, search, last_bought, swimlane, collection",
       hubs.country_iso: "",
@@ -62,7 +63,8 @@ explore: product_placement_performance {
 
   join: affected_by_impression_users {
     sql_on: ${product_placement_performance.anonymous_id} = ${affected_by_impression_users.anonymous_id}
-          and ${product_placement_performance.event_date} = ${affected_by_impression_users.event_date};;
+          and ${product_placement_performance.event_date} = ${affected_by_impression_users.event_date}
+          and {% condition global_filters_and_parameters.datasource_filter %} ${affected_by_impression_users.event_date} {% endcondition %};;
     type: left_outer
     relationship: many_to_one
   }

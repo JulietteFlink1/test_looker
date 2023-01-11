@@ -44,7 +44,7 @@ explore: vendor_performance {
     erp_product_hub_vendor_assignment_v2*,
     hubs*,
     key_value_items*,
-    daily_stock_management_events_items_inbounded.to_include_vendor_performance*
+    merge_hub_one_legacy_inbounding*
   ]
 
   sql_always_where: {% condition global_filters_and_parameters.datasource_filter %} ${products_hub_assignment.report_date} {% endcondition %} ;;
@@ -164,15 +164,15 @@ explore: vendor_performance {
     ;;
   }
 
-join: daily_stock_management_events_items_inbounded {
+join: merge_hub_one_legacy_inbounding {
 
   view_label: "* Inbounding KPIs *"
   type: left_outer
   relationship: many_to_one
 
   sql_on:
-            ${daily_stock_management_events_items_inbounded.event_date} = ${products_hub_assignment.report_date}
-        and ${daily_stock_management_events_items_inbounded.hub_code}    = ${products_hub_assignment.hub_code}  ;;
+            ${merge_hub_one_legacy_inbounding.event_date} = ${products_hub_assignment.report_date}
+        and ${merge_hub_one_legacy_inbounding.hub_code}    = ${products_hub_assignment.hub_code}  ;;
 
 }
 
@@ -250,6 +250,8 @@ join: daily_stock_management_events_items_inbounded {
   join: erp_product_hub_vendor_assignment_v2 {
 
     view_label: "* Global *"
+
+    from: erp_product_hub_vendor_assignment
 
     type: left_outer
     relationship: one_to_one
