@@ -271,6 +271,7 @@ join: merge_hub_one_legacy_inbounding {
   join: lexbizz_vendor {
 
     view_label: "* Purchase Orders (PO) *"
+    from: erp_supplier
 
     type: left_outer
     relationship: many_to_one

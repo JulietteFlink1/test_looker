@@ -50,6 +50,7 @@ explore: current_inventory {
   join: lexbizz_item {
 
     view_label: "* Product Information (ERP) *"
+    from: erp_item
 
     type: left_outer
     relationship: one_to_one
