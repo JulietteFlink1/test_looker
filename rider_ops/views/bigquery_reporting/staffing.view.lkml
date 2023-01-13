@@ -1907,6 +1907,15 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  measure: number_of_worked_hours_rider_extra {
+    group_label: "> Rider Measures"
+    label: "# Extra Punched Rider Hours (EC, NS+, WFS)"
+    description: "# Punched Rider Hours from shifts with project code NS+. WFS and EC shifts"
+    type: number
+    sql: ${number_of_worked_hours_rider_ns_shift} + ${number_of_worked_hours_rider_ec_shift} + ${number_of_worked_hours_rider_wfs_shift};;
+    value_format_name: decimal_1
+  }
+
 
   measure: number_of_idle_hours_rider {
     group_label: "> Rider Measures"
@@ -1997,6 +2006,15 @@ view: staffing {
     description: "# Punched Ops Associate Hours from shifts with project code = 'NS+ shift'"
     type: sum
     sql: ${TABLE}.number_of_worked_minutes_ns_shift_ops_associate/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_worked_hours_ops_associate_extra {
+    group_label: "> Ops Associate Measures"
+    label: "# Extra Punched Ops Associate Hours (EC, NS+, WFS)"
+    description: "# Punched Ops Associate Hours from shifts with project code NS+. WFS and EC shifts"
+    type: number
+    sql: ${number_of_worked_hours_ops_associate_ns_shift} + ${number_of_worked_hours_ops_associate_ec_shift} + ${number_of_worked_hours_ops_associate_wfs_shift};;
     value_format_name: decimal_1
   }
 
@@ -3025,12 +3043,23 @@ view: staffing {
 
   # =========  Scheduled Hours (Post-adjustments)   =========
   ##### All
+
   measure: number_of_scheduled_hours_rider {
     group_label: "> Rider Measures"
     label: "# Scheduled Rider Hours"
     description: "# Scheduled Rider Hours (Post-Adjustments) (Assigned + Unassigned)"
     type: number
     sql: ${number_of_unassigned_hours_rider}+${number_of_planned_hours_rider};;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_scheduled_hours_rider_extra {
+    group_label: "> Rider Measures"
+    label: "# Extra Scheduled Rider Hours (EC, NS, WFS)"
+    description: "# Extra Scheduled Rider Hours (Post-Adjustments) (Assigned + Unassigned EC, NS and WFS hours)"
+    type: number
+    sql: (${number_of_unassigned_hours_rider_ec_shift} + ${number_of_unassigned_hours_rider_ns_shift} + ${number_of_unassigned_hours_rider_wfs_shift})
+      + (${number_of_planned_hours_rider_ec_shift} + ${number_of_planned_hours_rider_ns_shift} + ${number_of_planned_hours_rider_wfs_shift});;
     value_format_name: decimal_1
   }
 
@@ -3103,6 +3132,17 @@ view: staffing {
     sql: ${number_of_unassigned_hours_ops_associate}+${number_of_planned_hours_ops_associate};;
     value_format_name: decimal_1
   }
+
+  measure: number_of_scheduled_hours_ops_associate_extra {
+    group_label: "> Ops Associate Measures"
+    label: "# Extra Scheduled Ops Associate Hours (EC, NS, WFS)"
+    description: "# Extra Scheduled Ops Associate Hours (Post-Adjustments) (Assigned + Unassigned EC, NS and WFS hours)"
+    type: number
+    sql: (${number_of_unassigned_hours_ops_associate_ec_shift} + ${number_of_unassigned_hours_ops_associate_ns_shift} + ${number_of_unassigned_hours_ops_associate_wfs_shift})
+      + (${number_of_planned_hours_ops_associate_ec_shift} + ${number_of_planned_hours_ops_associate_ns_shift} + ${number_of_planned_hours_ops_associate_wfs_shift});;
+    value_format_name: decimal_1
+  }
+
   ##### External
 
   measure: number_of_scheduled_hours_external_rider {
@@ -3668,6 +3708,22 @@ view: staffing {
     value_format_name: percent_1
   }
 
+  measure: pct_no_show_hours_rider_excl_ec_shift {
+    group_label: "> Rider Measures"
+    label: "% No Show Rider Hours (Excl. EC Shifts)"
+    type: number
+    sql:(${number_of_no_show_hours_rider}-${number_of_no_show_hours_rider_ec_shift})/nullif(${number_of_planned_hours_rider}-${number_of_planned_hours_rider_ec_shift},0) ;;
+    value_format_name: percent_1
+  }
+
+  measure: pct_no_show_hours_rider_ec_shift {
+    group_label: "> Rider Measures"
+    label: "% No Show EC Rider Hours"
+    type: number
+    sql:(${number_of_no_show_hours_rider_ec_shift})/nullif(${number_of_planned_hours_rider_ec_shift},0) ;;
+    value_format_name: percent_1
+  }
+
   measure: pct_no_show_hours_picker {
     group_label: "> Picker Measures"
     label: "% No Show Picker Hours"
@@ -3726,6 +3782,22 @@ view: staffing {
     description: "% No Show Ops Associate Hours (Picker, WH, Rider Captain, Ops Associate)"
     type: number
     sql:(${number_of_no_show_hours_ops_associate})/nullif(${number_of_planned_hours_ops_associate},0) ;;
+    value_format_name: percent_1
+  }
+
+  measure: pct_no_show_hours_ops_associate_ec_shift {
+    group_label: "> Ops Associate Measures"
+    label: "% No Show EC Ops Associate Hours"
+    type: number
+    sql:(${number_of_no_show_hours_ops_associate_ec_shift})/nullif(${number_of_planned_hours_ops_associate_ec_shift},0) ;;
+    value_format_name: percent_1
+  }
+
+  measure: pct_no_show_hours_ops_associate_excl_ec_shift {
+    group_label: "> Ops Associate Measures"
+    label: "% No Show Ops Associate Hours (Excl. EC Shifts)"
+    type: number
+    sql:(${number_of_no_show_hours_ops_associate}-${number_of_no_show_hours_ops_associate_ec_shift})/nullif(${number_of_planned_hours_ops_associate}-${number_of_planned_hours_ops_associate_ec_shift},0) ;;
     value_format_name: percent_1
   }
 
@@ -4050,6 +4122,53 @@ view: staffing {
       END ;;
   }
 
+  measure: number_of_scheduled_hours_by_position_extra {
+    type: number
+    label: "# Extra Scheduled Hours (EC, NS+. WFS Shifts) (Incl. Deleted Excused No Show)"
+    description: "Sum of Assigned and Unassigned (Open) EC, NS+ and WFS shift hours (Incl. Deleted Excused No Show)"
+    value_format_name: decimal_1
+    group_label: "> Dynamic Measures"
+    sql:
+        CASE
+          WHEN {% parameter position_parameter %} = 'Rider' THEN ${number_of_scheduled_hours_rider_extra}
+          WHEN {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_scheduled_hours_ops_associate_extra}
+          ELSE NULL
+      END ;;
+  }
+
+  measure: pct_extra_scheduled_hours_by_position {
+    type: number
+    label: "% Extra Scheduled Hours (EC, NS. WFS Shifts) (Incl. Deleted Excused No Show)"
+    description: "Share of Assigned and Unassigned (Open) EC, NS+ and WFS shift hours (Incl. Deleted Excused No Show) over all Assigned and Unassigned (Open) shift hours"
+    value_format_name: decimal_1
+    group_label: "> Dynamic Measures"
+    sql: ${number_of_scheduled_hours_by_position_extra}/${number_of_scheduled_hours_by_position} ;;
+  }
+
+  measure: number_of_worked_hours_by_position_extra {
+    type: number
+    label: "# Extra Punched Hours (EC, NS. WFS Shifts)"
+    description: "Sum of Worked Hours from shifts with project code NS+. WFS and EC shifts"
+    value_format_name: decimal_1
+    group_label: "> Dynamic Measures"
+    sql:
+        CASE
+          WHEN {% parameter position_parameter %} = 'Rider' THEN ${number_of_worked_hours_rider_extra}
+          WHEN {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_worked_hours_ops_associate_extra}
+          ELSE NULL
+      END ;;
+  }
+
+  measure: pct_extra_worked_hours_by_position {
+    type: number
+    label: "% Extra Punched Hours (EC, NS. WFS Shifts)"
+    description: "Share of Worked Hours from shifts with project code NS+. WFS and EC shifts over all Worked hours"
+    value_format_name: decimal_1
+    group_label: "> Dynamic Measures"
+    sql: ${number_of_worked_hours_by_position_extra}/${number_of_worked_hours_by_position} ;;
+
+  }
+
   measure: pct_scheduled_hours_by_position {
     type: number
     label: "% External Scheduled Hours"
@@ -4183,6 +4302,34 @@ view: staffing {
           WHEN {% parameter position_parameter %} = 'WH' THEN ${pct_no_show_hours_wh}
           WHEN {% parameter position_parameter %} = 'Hub Staff' THEN ${pct_no_show_hours_hub_staff}
           WHEN {% parameter position_parameter %} = 'Ops Associate' THEN ${pct_no_show_hours_ops_associate}
+      ELSE NULL
+      END ;;
+  }
+
+  measure: pct_no_show_hours_by_position_ec_shifts {
+    type: number
+    label: "% EC No Show Hours"
+    description: "% shift hours when an EC employee has a scheduled shift but does not show up to it without leave reason including deleted shift hours when deletion date is on or after shift date. includes (Excused No show Hours, Unexcused No show Hours, Excused Deleted No show Hours)"
+    value_format_name: percent_1
+    group_label: "> Dynamic Measures"
+    sql:
+        CASE
+          WHEN {% parameter position_parameter %} = 'Rider' THEN ${pct_no_show_hours_rider_ec_shift}
+          WHEN {% parameter position_parameter %} = 'Ops Associate' THEN ${pct_no_show_hours_ops_associate_ec_shift}
+      ELSE NULL
+      END ;;
+  }
+
+  measure: pct_no_show_hours_by_position_excl_ec_shifts {
+    type: number
+    label: "% No Show Hours (Excl. EC Shift)"
+    description: "% shift hours when an employee (Excl. EC Shifts) has a scheduled shift but does not show up to it without leave reason including deleted shift hours when deletion date is on or after shift date. includes (Excused No show Hours, Unexcused No show Hours, Excused Deleted No show Hours)"
+    value_format_name: percent_1
+    group_label: "> Dynamic Measures"
+    sql:
+        CASE
+          WHEN {% parameter position_parameter %} = 'Rider' THEN ${pct_no_show_hours_rider_excl_ec_shift}
+          WHEN {% parameter position_parameter %} = 'Ops Associate' THEN ${pct_no_show_hours_ops_associate_excl_ec_shift}
       ELSE NULL
       END ;;
   }
