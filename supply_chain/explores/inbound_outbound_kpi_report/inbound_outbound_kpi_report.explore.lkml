@@ -56,6 +56,7 @@ explore: inbound_outbound_kpi_report {
   join: lexbizz_item {
 
     view_label: "* Products (ERP)*"
+    from: erp_item
 
     type: left_outer
     relationship: many_to_one
@@ -84,6 +85,8 @@ explore: inbound_outbound_kpi_report {
   }
 
   join: erp_product_hub_vendor_assignment_v2 {
+
+    from: erp_product_hub_vendor_assignment
 
     type: left_outer
     relationship: one_to_many

@@ -40,21 +40,10 @@ explore: order_orderline_cl {
     type: left_outer
   }
 
-  join: products_ct_merged_skus {
-
-    view_label: "Product Data (CT)"
-
-    sql_on:
-        ${products.product_sku} = ${products_ct_merged_skus.sku} and
-        ${products.country_iso} = ${products_ct_merged_skus.country_iso}
-        ;;
-    relationship: one_to_one
-    type: left_outer
-  }
-
   join: lexbizz_item {
 
     view_label: "Product Data (ERP)"
+    from: erp_item
 
     type: left_outer
     relationship: many_to_one
@@ -77,7 +66,7 @@ explore: order_orderline_cl {
     # this will be deprecated in favour of the raw ERP data
     view_label: ""
 
-    from: erp_product_hub_vendor_assignment_v2
+    from: erp_product_hub_vendor_assignment
 
     sql_on:  ${erp_product_hub_vendor_assignment.sku}            = ${orderline.product_sku}
          and ${erp_product_hub_vendor_assignment.hub_code}       = ${orderline.hub_code}
@@ -118,6 +107,7 @@ explore: order_orderline_cl {
   join: lexbizz_item_warehouse {
 
     view_label: "Lexbizz Master Data"
+    from: erp_item_location
 
     type: left_outer
     relationship: many_to_one
@@ -143,6 +133,7 @@ explore: order_orderline_cl {
   join: lexbizz_vendor {
 
     view_label: "Lexbizz Master Data"
+    from: erp_supplier
 
     type: left_outer
     relationship: many_to_one
