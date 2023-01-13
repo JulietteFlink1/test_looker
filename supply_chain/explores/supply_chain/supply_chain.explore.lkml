@@ -277,16 +277,17 @@ explore: supply_chain {
   join: bulk_inbounding_performance {
 
     # keep hidden for now
-    view_label: "08 Dispatch Notifications"
+    view_label: ""
+    from: dispatch_notifications
 
     type: full_outer
     relationship: many_to_one
 
     sql_on:
         ${bulk_inbounding_performance.hub_code}                   = ${products_hub_assignment.hub_code}
-    and ${bulk_inbounding_performance.estimated_delivery_date}    = ${products_hub_assignment.report_date}
+    and ${bulk_inbounding_performance.delivery_date}              = ${products_hub_assignment.report_date}
     and ${bulk_inbounding_performance.sku}                        = ${products_hub_assignment.leading_sku_replenishment_substitute_group}
-    and {% condition global_filters_and_parameters.datasource_filter %} ${bulk_inbounding_performance.estimated_delivery_date} {% endcondition %}
+    and {% condition global_filters_and_parameters.datasource_filter %} ${bulk_inbounding_performance.delivery_date} {% endcondition %}
     ;;
 
   }
