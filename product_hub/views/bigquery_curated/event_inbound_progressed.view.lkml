@@ -2,7 +2,7 @@
 # Created: 2022-12-22
 
 view: event_inbound_progressed {
-  sql_table_name: `flink-data-dev.curated.event_inbound_progressed`
+  sql_table_name: `flink-data-prod.curated.event_inbound_progressed`
     ;;
 
   view_label: "1 Event: Order Progressed"
