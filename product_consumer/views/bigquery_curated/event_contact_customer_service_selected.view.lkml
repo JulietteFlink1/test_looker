@@ -1,5 +1,5 @@
 view: event_contact_customer_service_selected {
-  sql_table_name: `curated.event_contact_customer_service_selected`
+  sql_table_name: `flink-data-prod.curated.event_contact_customer_service_selected`
     ;;
   view_label:  "Contact Customer Service Selected"
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
