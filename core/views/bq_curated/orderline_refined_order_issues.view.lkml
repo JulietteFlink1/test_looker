@@ -53,7 +53,7 @@ view: +orderline {
     sql: ${order_uuid};;
     hidden: yes
     group_label: "> Delivery Issues"
-    filters: [external_provider: "null, -ubereats"]
+    filters: [external_provider: "null, -uber-eats-carrefour"]
   }
 
   measure: cnt_total_orders_crf {
@@ -61,7 +61,7 @@ view: +orderline {
     sql: ${order_uuid};;
     hidden: yes
     group_label: "> Delivery Issues CRF"
-    filters: [external_provider: "ubereats"]
+    filters: [external_provider: "uber-eats-carrefour"]
   }
 
   measure: count_order_lineitems {
@@ -84,7 +84,7 @@ view: +orderline {
     sql: ${order_lineitem_uuid} ;;
     hidden: yes
     group_label: "> Delivery Issues"
-    filters: [external_provider: "null, -ubereats"]
+    filters: [external_provider: "null, -uber-eats-carrefour"]
   }
 
   measure: cnt_total_picks_crf {
@@ -92,7 +92,7 @@ view: +orderline {
     sql: ${order_lineitem_uuid} ;;
     hidden: yes
     group_label: "> Delivery Issues CRF"
-    filters: [external_provider: "ubereats"]
+    filters: [external_provider: "uber-eats-carrefour"]
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -185,7 +185,7 @@ view: +orderline {
     type: count_distinct
     sql: ${order_uuid} ;;
     filters: [number_of_products_with_perished_light_issues_dim: ">0",
-      external_provider: "null, -ubereats"]
+      external_provider: "null, -uber-eats-carrefour"]
   }
 
   measure: count_goodwill {
@@ -196,7 +196,7 @@ view: +orderline {
     type: count_distinct
     sql: ${order_uuid} ;;
     filters: [number_of_products_with_goodwill_issues_dim: ">0",
-      external_provider: "null, -ubereats"]
+      external_provider: "null, -uber-eats-carrefour"]
   }
 
   measure: cnt_perished_products_post {
@@ -208,7 +208,7 @@ view: +orderline {
     type: count_distinct
     sql: ${order_uuid} ;;
     filters: [number_of_products_with_perished_issues_post_dim: ">0",
-      external_provider: "null, -ubereats"]
+      external_provider: "null, -uber-eats-carrefour"]
 
     value_format_name: decimal_0
 
@@ -223,7 +223,7 @@ view: +orderline {
     type: count_distinct
     sql: ${order_uuid} ;;
     filters: [number_of_products_with_perished_issues_pre_dim: ">0",
-      external_provider: "null, -ubereats"]
+      external_provider: "null, -uber-eats-carrefour"]
 
     value_format_name: decimal_0
   }
@@ -237,7 +237,7 @@ view: +orderline {
     type: count_distinct
     sql: ${order_uuid} ;;
     filters: [number_of_products_with_products_not_on_shelf_issues_post_dim: ">0",
-      external_provider: "null, -ubereats"]
+      external_provider: "null, -uber-eats-carrefour"]
 
     value_format_name: decimal_0
   }
@@ -251,7 +251,7 @@ view: +orderline {
     type: count_distinct
     sql: ${order_uuid} ;;
     filters: [number_of_products_with_products_not_on_shelf_issues_pre_dim: ">0",
-      external_provider: "null, -ubereats"]
+      external_provider: "null, -uber-eats-carrefour"]
 
     value_format_name: decimal_0
 
@@ -264,7 +264,7 @@ view: +orderline {
     type: count_distinct
     sql: ${order_uuid} ;;
     filters: [number_of_products_with_damaged_products_issues_post_dim: ">0",
-      external_provider: "null, -ubereats"]
+      external_provider: "null, -uber-eats-carrefour"]
 
     value_format_name: decimal_0
 
@@ -276,7 +276,7 @@ view: +orderline {
     type: count_distinct
     sql: ${order_uuid} ;;
     filters: [number_of_products_with_damaged_products_issues_pre_dim: ">0",
-      external_provider: "null, -ubereats"]
+      external_provider: "null, -uber-eats-carrefour"]
 
     value_format_name: decimal_0
 
@@ -295,7 +295,7 @@ view: +orderline {
     type: count_distinct
     sql: ${order_uuid} ;;
     filters: [number_of_products_with_missing_products_issues_dim: ">0",
-      external_provider: "null, -ubereats"]
+      external_provider: "null, -uber-eats-carrefour"]
 
     value_format_name: decimal_0
 
@@ -310,7 +310,7 @@ view: +orderline {
     type: count_distinct
     sql: ${order_uuid} ;;
     filters: [number_of_products_with_wrong_products_issues_dim: ">0",
-      external_provider: "null, -ubereats"]
+      external_provider: "null, -uber-eats-carrefour"]
 
     value_format_name: decimal_0
 
@@ -325,7 +325,7 @@ view: +orderline {
     type: count_distinct
     sql: ${order_uuid} ;;
     filters: [number_of_products_with_swapped_products_issues_dim: ">0",
-      external_provider: "null, -ubereats"]
+      external_provider: "null, -uber-eats-carrefour"]
 
     value_format_name: decimal_0
 
@@ -341,7 +341,7 @@ view: +orderline {
     type: count_distinct
     sql: ${order_uuid} ;;
     filters: [number_of_products_with_cancelled_products_issues_dim: ">0",
-      external_provider: "null, -ubereats"]
+      external_provider: "null, -uber-eats-carrefour"]
 
     value_format_name: decimal_0
 
@@ -356,7 +356,7 @@ view: +orderline {
     type: count_distinct
     sql: ${order_uuid} ;;
     filters: [number_of_products_with_item_description_issues_dim: ">0",
-      external_provider: "null, -ubereats"]
+      external_provider: "null, -uber-eats-carrefour"]
 
     value_format_name: decimal_0
 
@@ -371,7 +371,7 @@ view: +orderline {
     type: count_distinct
     sql: ${order_uuid} ;;
     filters: [number_of_products_with_item_quality_issues_dim: ">0",
-      external_provider: "null, -ubereats"]
+      external_provider: "null, -uber-eats-carrefour"]
 
     value_format_name: decimal_0
 
@@ -386,7 +386,7 @@ view: +orderline {
     type: count_distinct
     sql: ${order_uuid} ;;
     filters: [number_of_products_with_undefined_issues_dim: ">0",
-      external_provider: "null, -ubereats"]
+      external_provider: "null, -uber-eats-carrefour"]
 
     value_format_name: decimal_0
     hidden: no
@@ -406,7 +406,7 @@ view: +orderline {
     type: count_distinct
     sql: ${order_uuid} ;;
     filters: [number_of_products_with_products_not_on_shelf_issues_pre_dim: ">0" ,
-      external_provider: "ubereats"]
+      external_provider: "uber-eats-carrefour"]
 
     value_format_name: decimal_0
 
@@ -421,7 +421,7 @@ view: +orderline {
     type: count_distinct
     sql: ${order_uuid} ;;
     filters: [number_of_products_with_products_not_on_shelf_issues_post_dim: ">0" ,
-      external_provider: "ubereats"]
+      external_provider: "uber-eats-carrefour"]
 
     value_format_name: decimal_0
 
@@ -443,7 +443,7 @@ view: +orderline {
     type: count_distinct
     sql: ${order_uuid}  ;;
     filters: [is_not_on_shelf_issue_crf: "yes" ,
-      external_provider: "ubereats"]
+      external_provider: "uber-eats-carrefour"]
 
     value_format_name: decimal_0
 
@@ -458,7 +458,7 @@ view: +orderline {
     type: count_distinct
     sql: ${order_uuid} ;;
     filters: [number_of_products_with_perished_issues_pre_dim: ">0",
-      external_provider: "ubereats"]
+      external_provider: "uber-eats-carrefour"]
 
     value_format_name: decimal_0
   }
@@ -470,7 +470,7 @@ view: +orderline {
     type: count_distinct
     sql: ${order_uuid} ;;
     filters: [number_of_products_with_damaged_products_issues_pre_dim: ">0",
-      external_provider: "ubereats"]
+      external_provider: "uber-eats-carrefour"]
 
     value_format_name: decimal_0
 
@@ -484,7 +484,7 @@ view: +orderline {
     type: count_distinct
     sql: ${order_uuid} ;;
     filters: [number_of_products_with_undefined_issues_dim: ">0",
-      external_provider: "ubereats"]
+      external_provider: "uber-eats-carrefour"]
 
     value_format_name: decimal_0
     hidden: no
@@ -501,7 +501,7 @@ view: +orderline {
     type: count_distinct
     sql: ${order_uuid};;
     filters: [number_of_products_with_post_delivery_issues_dim: ">0",
-      external_provider: "ubereats"]
+      external_provider: "uber-eats-carrefour"]
   }
 
   #here include undefined issues as they must be pre order issue

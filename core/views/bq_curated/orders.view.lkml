@@ -2688,7 +2688,7 @@ view: orders {
     sql: ${order_uuid} ;;
     value_format: "0"
     filters: [
-      external_provider: "ubereats",
+      external_provider: "uber-eats, uber-eats-carrefour",
       is_successful_order: "yes"
       ]
   }
