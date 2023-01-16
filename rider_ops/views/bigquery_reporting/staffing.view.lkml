@@ -4204,6 +4204,25 @@ view: staffing {
     hidden: yes
   }
 
+  dimension: number_of_worked_hours_by_position_dimension {
+    type: number
+    label: "# Worked Hours - Dimension"
+
+    value_format_name: decimal_1
+    group_label: "> Dynamic Measures"
+    sql:
+        CASE
+          WHEN {% parameter position_parameter %} = 'Rider' THEN ${number_of_worked_minutes_rider}/60
+          WHEN {% parameter position_parameter %} = 'Picker' THEN ${number_of_worked_minutes_picker}/60
+          WHEN {% parameter position_parameter %} = 'Shift Lead' THEN ${number_of_worked_minutes_shift_lead}/60
+          WHEN {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_worked_minutes_rider_captain}/60
+          WHEN {% parameter position_parameter %} = 'WH' THEN ${number_of_worked_minutes_wh}/60
+          WHEN {% parameter position_parameter %} = 'Ops Associate' THEN ${TABLE}.number_of_worked_minutes_ops_associate/60
+      ELSE NULL
+      END ;;
+    hidden: yes
+  }
+
   measure: number_of_scheduled_hours_excluding_deleted_shifts_by_position {
     type: number
     label: "# Scheduled Hours (Excl. Deleted Excused No Show)"

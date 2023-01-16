@@ -1,5 +1,5 @@
 view: event_order_placed {
-  sql_table_name: `flink-data-dev.curated.event_order_placed`
+  sql_table_name: `flink-data-prod.curated.event_order_placed`
     ;;
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
