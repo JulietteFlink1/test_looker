@@ -2,7 +2,7 @@
 # Created: 2022-12-22
 
 view: event_inbound_progressed {
-  sql_table_name: `flink-data-dev.curated.event_inbound_progressed`
+  sql_table_name: `flink-data-prod.curated.event_inbound_progressed`
     ;;
 
   view_label: "1 Event: Order Progressed"
@@ -273,7 +273,9 @@ view: event_inbound_progressed {
     description: "Sum of quantity of products added to list (action = product_added_to_list)."
     type: sum
     filters: [action: "product_added_to_list"]
-    sql: ${quantity} ;;
+    # adding this if to solve a current tracking bug where we are undercounting hu products
+    # https://goflink.atlassian.net/browse/HTIN-1296
+    sql: if(${quantity}=1 and ${is_handling_unit},${quantity}*cast(${products.units_per_handling_unit} as int), ${quantity}) ;;
   }
 
   measure: number_of_products_removed_from_list {
@@ -282,7 +284,7 @@ view: event_inbound_progressed {
     description: "Sum of quantity of products removed from list (action = product_removed_from_list)."
     type: sum
     filters: [action: "product_removed_from_list"]
-    sql: ${quantity} ;;
+    sql: if(${quantity}=1 and ${is_handling_unit},${quantity}*cast(${products.units_per_handling_unit} as int), ${quantity}) ;;
   }
 
   measure: number_of_products_updated {
@@ -291,7 +293,7 @@ view: event_inbound_progressed {
     description: "Sum of quantity of products updated from list (action = product_updated_quantity)."
     type: sum
     filters: [action: "product_updated_quantity"]
-    sql: ${quantity} ;;
+    sql: if(${quantity}=1 and ${is_handling_unit},${quantity}*cast(${products.units_per_handling_unit} as int), ${quantity}) ;;
   }
 
   measure: number_of_products_dropped {
