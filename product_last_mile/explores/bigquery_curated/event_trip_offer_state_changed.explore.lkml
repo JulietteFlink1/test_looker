@@ -28,7 +28,7 @@ explore: event_trip_offer_state_changed {
 
   always_filter: {
     filters: [
-      event_trip_offer_state_changed.published_at_timestamp_date: "last 7 days"
+      event_trip_offer_state_changed.event_timestamp_date: "last 7 days"
     ]
   }
 

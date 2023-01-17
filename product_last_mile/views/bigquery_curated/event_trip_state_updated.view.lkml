@@ -83,29 +83,16 @@ view: event_trip_state_updated {
     group_label: "Timestamps"
     label: "Event Timestamp"
     type: time
-    description: "Timestamp when an event was triggered within the app / web."
+    description: "Timestamp when an event was triggered"
     timeframes: [
       time,
+      hour_of_day,
       date,
       week,
       month,
       quarter
     ]
     sql: ${TABLE}.event_timestamp ;;
-  }
-  dimension_group: published_at_timestamp {
-    group_label: "Timestamps"
-    label: "Published Timestamp"
-    type: time
-    description: "Timestamp when an event was published"
-    timeframes: [
-      time,
-      date,
-      week,
-      month,
-      quarter
-    ]
-    sql: ${TABLE}.published_at_timestamp ;;
   }
 
   # ======= HIDDEN Dimensions ======= #
@@ -119,6 +106,21 @@ view: event_trip_state_updated {
     hidden:  yes
     type: string
     sql: ${TABLE}.subscription_name ;;
+  }
+  dimension_group: published_at_timestamp {
+    group_label: "Timestamps"
+    label: "Published Timestamp"
+    hidden: yes
+    type: time
+    description: "Timestamp when an event was published"
+    timeframes: [
+      time,
+      date,
+      week,
+      month,
+      quarter
+    ]
+    sql: ${TABLE}.published_at_timestamp ;;
   }
 
 
