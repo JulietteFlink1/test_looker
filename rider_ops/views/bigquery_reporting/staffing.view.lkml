@@ -2464,6 +2464,15 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  measure: number_of_unassigned_hours_picker_ec_shift {
+    group_label: "> Picker Measures"
+    label: "# Open EC Picker Hours"
+    description: "# Open Picker Hours from shifts with project code = 'EC shift'"
+    type: sum
+    sql: ${TABLE}.number_of_unassigned_minutes_ec_shift_picker/60;;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_unassigned_hours_rider_wfs_shift {
     group_label: "> Rider Measures"
     label: "# Open WFS Rider Hours"
@@ -3117,10 +3126,19 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  measure: number_of_scheduled_hours_rider_ec_shift {
+    group_label: "> Rider Measures"
+    label: "# Scheduled EC Rider Hours"
+    description: "# Scheduled Rider Hours (Post-Adjustments) (Assigned + Unassigned EC shift hours)"
+    type: number
+    sql: ${number_of_unassigned_hours_rider_ec_shift}+${number_of_planned_hours_rider_ec_shift};;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_scheduled_hours_rider_extra {
     group_label: "> Rider Measures"
     label: "# Extra Scheduled Rider Hours (EC, NS, WFS)"
-    description: "# Extra Scheduled Rider Hours (Post-Adjustments) (Assigned + Unassigned EC, NS and WFS hours)"
+    description: "# Extra Scheduled Rider Hours (Post-Adjustments) (Assigned + Unassigned EC, NS and WFS shift hours)"
     type: number
     sql: (${number_of_unassigned_hours_rider_ec_shift} + ${number_of_unassigned_hours_rider_ns_shift} + ${number_of_unassigned_hours_rider_wfs_shift})
       + (${number_of_planned_hours_rider_ec_shift} + ${number_of_planned_hours_rider_ns_shift} + ${number_of_planned_hours_rider_wfs_shift});;
@@ -3134,6 +3152,16 @@ view: staffing {
     type: number
     # sql_distinct_key: ${staffing_uuid} ;;
     sql: ${number_of_unassigned_hours_picker}+${number_of_planned_hours_picker};;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_scheduled_hours_picker_ec_shift {
+    group_label: "> Picker Measures"
+    label: "# Scheduled EC Picker Hours"
+    description: "# Scheduled Picker Hours (Post-Adjustments) (Assigned + Unassigned EC shift hours)"
+    type: number
+    # sql_distinct_key: ${staffing_uuid} ;;
+    sql: ${number_of_unassigned_hours_picker_ec_shift}+${number_of_planned_hours_picker_ec_shift};;
     value_format_name: decimal_1
   }
 
@@ -3179,6 +3207,7 @@ view: staffing {
     sql: ${number_of_unassigned_hours_cc_agent}+${number_of_planned_hours_cc_agent};;
     value_format_name: decimal_1
   }
+
   measure: number_of_scheduled_hours_hub_staff {
     group_label: "> Hub Staff Measures"
     label: "# Scheduled Hub Staff Hours"
@@ -3187,6 +3216,7 @@ view: staffing {
     sql: ${number_of_scheduled_hours_ops_associate}+${number_of_scheduled_hours_shift_lead}+${number_of_scheduled_hours_deputy_shift_lead};;
     value_format_name: decimal_1
   }
+
   measure: number_of_scheduled_hours_ops_associate {
     alias: [number_of_scheduled_hours_ops_staff]
     group_label: "> Ops Associate Measures"
@@ -3194,6 +3224,15 @@ view: staffing {
     description: "# Scheduled Ops Associate Hours (Picker, WH, Rider Captain, Ops Associate) (Assigned + Unassigned)"
     type: number
     sql: ${number_of_unassigned_hours_ops_associate}+${number_of_planned_hours_ops_associate};;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_scheduled_hours_ops_associate_ec_shift {
+    group_label: "> Ops Associate Measures"
+    label: "# Scheduled EC Ops Associate Hours"
+    description: "# Scheduled Ops Associate Hours (Picker, WH, Rider Captain, Ops Associate) (Assigned + Unassigned EC Shift Hours)"
+    type: number
+    sql: ${number_of_unassigned_hours_ops_associate_ec_shift}+${number_of_planned_hours_ops_associate_ec_shift};;
     value_format_name: decimal_1
   }
 
@@ -4204,6 +4243,21 @@ view: staffing {
           when {% parameter position_parameter %} = 'WH' THEN ${number_of_scheduled_hours_wh}
           when {% parameter position_parameter %} = 'Hub Staff' THEN ${number_of_scheduled_hours_hub_staff}
           when {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_scheduled_hours_ops_associate}
+          else null
+        end ;;
+  }
+
+  measure: number_of_scheduled_hours_by_position_ec_shift {
+    type: number
+    label: "# EC Scheduled Hours (Incl. Deleted Excused No Show)"
+    description: "Sum of Assigned and Unassigned (Open) Shift Hours from EC shifts (Incl. Deleted Excused No Show)"
+    value_format_name: decimal_1
+    group_label: "> Dynamic Measures"
+    sql:
+        case
+          when {% parameter position_parameter %} = 'Rider' THEN ${number_of_scheduled_hours_rider_ec_shift}
+          when {% parameter position_parameter %} = 'Picker' THEN ${number_of_scheduled_hours_picker_ec_shift}
+          when {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_scheduled_hours_ops_associate_ec_shift}
           else null
         end ;;
   }
