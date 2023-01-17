@@ -2914,6 +2914,15 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  measure: number_of_planned_hours_co_ops_ec_shift {
+    group_label: "> Co Ops Measures"
+    label: "# Filled (Assigned) EC Co Ops Hours"
+    description: "# Filled Co Ops Hours from shifts with project code = 'EC shift'"
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_ec_shift_co_ops/60;;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_planned_hours_availability_based_co_ops {
     group_label: "> Co Ops Measures"
     label: "# Filled (Assigned) Co Ops Hours Based on Availability"
@@ -3042,7 +3051,8 @@ view: staffing {
     label: "# Filled (Assigned) EC Hub Staff Hours"
     description: "# Filled Hub Staff Hours from shifts with project code = 'EC shift'"
     type: number
-    sql: ${number_of_planned_hours_ops_associate_ec_shift}+${number_of_planned_hours_shift_lead_ec_shift}+${number_of_planned_hours_deputy_shift_lead_ec_shift};;
+    sql: ${number_of_planned_hours_ops_associate_ec_shift} + ${number_of_planned_hours_shift_lead_ec_shift}
+      + ${number_of_planned_hours_deputy_shift_lead_ec_shift};;
     value_format_name: decimal_1
   }
 
@@ -3800,15 +3810,6 @@ view: staffing {
     value_format_name: percent_1
   }
 
-  measure: number_of_planned_hours_co_ops_ec_shift {
-    group_label: "> Co Ops Measures"
-    label: "# Filled (Assigned) EC Co Ops Hours"
-    description: "# Filled Co Ops Hours from shifts with project code = 'EC shift'"
-    type: sum
-    sql: ${TABLE}.number_of_planned_minutes_ec_shift_co_ops/60;;
-    value_format_name: decimal_1
-  }
-
   measure: pct_no_show_hours_co_ops {
     group_label: "> Co Ops Measures"
     label: "% No Show Co Ops Hours"
@@ -3881,14 +3882,14 @@ view: staffing {
   parameter: slp_parameter_coefficient_a {
     label: "SLP Parameter A"
     type: number
-    description: "when 18m <= fulfillment_time < 45m then UTR - A * fulfillment_time"
+    description: "When 18m <= fulfillment_time < 45m then UTR - A * fulfillment_time"
     default_value: "0.01"
   }
 
   parameter: slp_parameter_coefficient_b {
     label: "SLP Parameter B"
     type: number
-    description: "when 45m <= fulfillment_time < 60m then (UTR - B) * (60 - fulfillment_time)/15))"
+    description: "When 45m <= fulfillment_time < 60m then (UTR - B) * (60 - fulfillment_time)/15))"
     default_value: "0.27"
   }
 
