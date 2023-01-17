@@ -1865,7 +1865,7 @@ view: staffing {
     group_label: "> Deputy Shift Lead Measures"
     label: "% No Show Shift Lead Hours"
     type: number
-    sql:(${number_of_no_show_hours_deputy_shift_lead})/nullif(${number_of_planned_hours_deputy_shift_lead},0) ;;
+    sql:(${number_of_no_show_hours_deputy_shift_lead})/nullif(${number_of_planned_hours_deputy_shift_lead}-${number_of_planned_hours_deputy_shift_lead_ec_shift},0) ;;
     value_format_name: percent_1
   }
 
@@ -2594,6 +2594,15 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  measure: number_of_planned_hours_deputy_shift_lead_ec_shift {
+    group_label: "> Deputy Shift Lead Measures"
+    label: "# Filled (Assigned) EC Deputy Shift Lead Hours"
+    description: "# Filled Deputy Shift Lead Hours from shifts with project code = 'EC shift'"
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_ec_shift_deputy_shift_lead/60;;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_planned_hours_ops_associate_wfs_shift {
     group_label: "> Ops Associate Measures"
     label: "# Filled (Assigned) WFS Ops Associate Hours"
@@ -2718,6 +2727,15 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  measure: number_of_planned_hours_picker_ec_shift {
+    group_label: "> Picker Measures"
+    label: "# Filled (Assigned) EC Picker Hours"
+    description: "# Filled Picker Hours from shifts with project code = 'EC shift'"
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_ec_shift_picker/60;;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_planned_hours_availability_based_picker {
     group_label: "> Picker Measures"
     label: "# Filled (Assigned) Picker Hours Based on Availability"
@@ -2771,6 +2789,15 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  measure: number_of_planned_hours_shift_lead_ec_shift {
+    group_label: "> Shift Lead Measures"
+    label: "# Filled (Assigned) EC Shift Lead Hours"
+    description: "# Filled Shift Lead Hours from shifts with project code = 'EC shift'"
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_ec_shift_shift_lead/60;;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_planned_hours_availability_based_shift_lead {
     group_label: "> Shift Lead Measures"
     label: "# Filled (Assigned) Shift Lead Hours Based on Availability"
@@ -2821,6 +2848,15 @@ view: staffing {
     label: "# Filled (Assigned) Rider Captain Hours"
     type: sum
     sql: ${number_of_planned_minutes_rider_captain}/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_planned_hours_rider_captain_ec_shift {
+    group_label: "> Rider Captain Measures"
+    label: "# Filled (Assigned) EC Rider Captain Hours"
+    description: "# Filled Rider Captain Hours from shifts with project code = 'EC shift'"
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_ec_shift_rider_captain/60;;
     value_format_name: decimal_1
   }
 
@@ -2931,6 +2967,15 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  measure: number_of_planned_hours_wh_ec_shift {
+    group_label: "> WH Measures"
+    label: "# Filled (Assigned) EC WH Hours"
+    description: "# Filled WH Hours from shifts with project code = 'EC shift'"
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_ec_shift_wh/60;;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_planned_hours_availability_based_wh {
     group_label: "> WH Measures"
     label: "# Filled (Assigned) WH Hours Based on Availability"
@@ -2989,6 +3034,15 @@ view: staffing {
     description: "# Filled Hub Staff Hours (Picker, WH, Rider Captain, Ops Associate, Shift Lead, Deputy Shift Lead)"
     type: number
     sql: ${number_of_planned_hours_ops_associate}+${number_of_planned_hours_shift_lead}+${number_of_planned_hours_deputy_shift_lead};;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_planned_hours_hub_staff_ec_shift {
+    group_label: "> Hub Staff Measures"
+    label: "# Filled (Assigned) EC Hub Staff Hours"
+    description: "# Filled Hub Staff Hours from shifts with project code = 'EC shift'"
+    type: number
+    sql: ${number_of_planned_hours_ops_associate_ec_shift}+${number_of_planned_hours_shift_lead_ec_shift}+${number_of_planned_hours_deputy_shift_lead_ec_shift};;
     value_format_name: decimal_1
   }
 
@@ -3704,15 +3758,15 @@ view: staffing {
     group_label: "> Rider Measures"
     label: "% No Show Rider Hours"
     type: number
-    sql:(${number_of_no_show_hours_rider})/nullif(${number_of_planned_hours_rider},0) ;;
+    sql:(${number_of_no_show_hours_rider})/nullif(${number_of_planned_hours_rider}-${number_of_planned_hours_rider_ec_shift},0) ;;
     value_format_name: percent_1
   }
 
-  measure: pct_no_show_hours_rider_excl_ec_shift {
+  measure: pct_no_show_hours_rider_incl_ec_shift {
     group_label: "> Rider Measures"
-    label: "% No Show Rider Hours (Excl. EC Shifts)"
+    label: "% No Show Rider Hours (Incl. EC Shifts)"
     type: number
-    sql:(${number_of_no_show_hours_rider}-${number_of_no_show_hours_rider_ec_shift})/nullif(${number_of_planned_hours_rider}-${number_of_planned_hours_rider_ec_shift},0) ;;
+    sql:(${number_of_no_show_hours_rider}+${number_of_no_show_hours_rider_ec_shift})/nullif(${number_of_planned_hours_rider},0) ;;
     value_format_name: percent_1
   }
 
@@ -3727,7 +3781,7 @@ view: staffing {
   measure: pct_no_show_hours_picker {
     group_label: "> Picker Measures"
     label: "% No Show Picker Hours"
-    sql:(${number_of_no_show_hours_picker})/nullif(${number_of_planned_hours_picker},0) ;;
+    sql:(${number_of_no_show_hours_picker})/nullif(${number_of_planned_hours_picker}-${number_of_planned_hours_picker_ec_shift},0) ;;
     value_format_name: percent_1
   }
 
@@ -3735,28 +3789,38 @@ view: staffing {
     group_label: "> Shift Lead Measures"
     label: "% No Show Shift Lead Hours"
     type: number
-    sql:(${number_of_no_show_hours_shift_lead})/nullif(${number_of_planned_hours_shift_lead},0) ;;
+    sql:(${number_of_no_show_hours_shift_lead})/nullif(${number_of_planned_hours_shift_lead}-${number_of_planned_hours_deputy_shift_lead_ec_shift},0) ;;
     value_format_name: percent_1
   }
   measure: pct_no_show_hours_rider_captain {
     group_label: "> Rider Captain Measures"
     label: "% No Show Rider Captain Hours"
     type: number
-    sql:(${number_of_no_show_hours_rider_captain})/nullif(${number_of_planned_hours_rider_captain},0) ;;
+    sql:(${number_of_no_show_hours_rider_captain})/nullif(${number_of_planned_hours_rider_captain}-${number_of_planned_hours_rider_captain_ec_shift},0) ;;
     value_format_name: percent_1
   }
+
+  measure: number_of_planned_hours_co_ops_ec_shift {
+    group_label: "> Co Ops Measures"
+    label: "# Filled (Assigned) EC Co Ops Hours"
+    description: "# Filled Co Ops Hours from shifts with project code = 'EC shift'"
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_ec_shift_co_ops/60;;
+    value_format_name: decimal_1
+  }
+
   measure: pct_no_show_hours_co_ops {
     group_label: "> Co Ops Measures"
     label: "% No Show Co Ops Hours"
     type: number
-    sql:(${number_of_no_show_hours_co_ops})/nullif(${number_of_planned_hours_co_ops},0) ;;
+    sql:(${number_of_no_show_hours_co_ops})/nullif(${number_of_planned_hours_co_ops}-${number_of_planned_hours_co_ops_ec_shift},0) ;;
     value_format_name: percent_1
   }
 
   measure: pct_no_show_hours_wh {
     group_label: "> WH Measures"
     label: "% No Show WH Hours"
-    sql:(${number_of_no_show_hours_wh})/nullif(${number_of_planned_hours_wh},0) ;;
+    sql:(${number_of_no_show_hours_wh})/nullif(${number_of_planned_hours_wh}-${number_of_planned_hours_wh_ec_shift},0) ;;
     value_format_name: percent_1
   }
 
@@ -3766,13 +3830,14 @@ view: staffing {
     type: number
     sql:(${number_of_no_show_hours_cc_agent})/nullif(${number_of_planned_hours_cc_agent},0) ;;
     value_format_name: percent_1
+    hidden: yes
   }
   measure: pct_no_show_hours_hub_staff {
     group_label: "> Hub Staff Measures"
     label: "% No Show Hub Staff Hours"
     description: "% No Show Hub Staff Hours (Picker, WH, Rider Captain, Ops Associate, Shift Lead, Deputy Shift Lead)"
     type: number
-    sql:(${number_of_no_show_hours_hub_staff})/nullif(${number_of_planned_hours_hub_staff},0) ;;
+    sql:(${number_of_no_show_hours_hub_staff})/nullif(${number_of_planned_hours_hub_staff}-${number_of_planned_hours_hub_staff_ec_shift},0) ;;
     value_format_name: percent_1
   }
   measure: pct_no_show_hours_ops_associate {
@@ -3781,7 +3846,7 @@ view: staffing {
     label: "% No Show Ops Associate Hours"
     description: "% No Show Ops Associate Hours (Picker, WH, Rider Captain, Ops Associate)"
     type: number
-    sql:(${number_of_no_show_hours_ops_associate})/nullif(${number_of_planned_hours_ops_associate},0) ;;
+    sql:(${number_of_no_show_hours_ops_associate})/nullif(${number_of_planned_hours_ops_associate}-${number_of_planned_hours_ops_associate_ec_shift},0) ;;
     value_format_name: percent_1
   }
 
@@ -3793,11 +3858,11 @@ view: staffing {
     value_format_name: percent_1
   }
 
-  measure: pct_no_show_hours_ops_associate_excl_ec_shift {
+  measure: pct_no_show_hours_ops_associate_incl_ec_shift {
     group_label: "> Ops Associate Measures"
-    label: "% No Show Ops Associate Hours (Excl. EC Shifts)"
+    label: "% No Show Ops Associate Hours (Incl. EC Shifts)"
     type: number
-    sql:(${number_of_no_show_hours_ops_associate}-${number_of_no_show_hours_ops_associate_ec_shift})/nullif(${number_of_planned_hours_ops_associate}-${number_of_planned_hours_ops_associate_ec_shift},0) ;;
+    sql:(${number_of_no_show_hours_ops_associate}+${number_of_no_show_hours_ops_associate_ec_shift})/nullif(${number_of_planned_hours_ops_associate},0) ;;
     value_format_name: percent_1
   }
 
@@ -3961,6 +4026,26 @@ view: staffing {
           WHEN {% parameter position_parameter %} = 'WH' THEN ${number_of_planned_hours_wh}
           WHEN {% parameter position_parameter %} = 'Hub Staff' THEN ${number_of_planned_hours_hub_staff}
           WHEN {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_planned_hours_ops_associate}
+          ELSE NULL
+        END ;;
+  }
+
+  measure: number_of_planned_hours_ec_shift_by_position {
+    type: number
+    label: "# EC Filled Hours"
+    description: "# Shift Hours Assigned to an Employee from shifts with project code: EC shifts"
+    value_format_name: decimal_1
+    group_label: "> Dynamic Measures"
+    sql:
+        CASE
+          WHEN {% parameter position_parameter %} = 'Rider' THEN ${number_of_planned_hours_rider_ec_shift}
+          WHEN {% parameter position_parameter %} = 'Picker' THEN ${number_of_planned_hours_picker_ec_shift}
+          WHEN {% parameter position_parameter %} = 'Shift Lead' THEN ${number_of_planned_hours_shift_lead_ec_shift}
+          WHEN {% parameter position_parameter %} = 'Deputy Shift Lead' THEN ${number_of_planned_hours_deputy_shift_lead_ec_shift}
+          WHEN {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_planned_hours_rider_captain_ec_shift}
+          WHEN {% parameter position_parameter %} = 'WH' THEN ${number_of_planned_hours_wh_ec_shift}
+          WHEN {% parameter position_parameter %} = 'Hub Staff' THEN ${number_of_planned_hours_hub_staff_ec_shift}
+          WHEN {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_planned_hours_ops_associate_ec_shift}
           ELSE NULL
         END ;;
   }
@@ -4339,16 +4424,16 @@ view: staffing {
       END ;;
   }
 
-  measure: pct_no_show_hours_by_position_excl_ec_shifts {
+  measure: pct_no_show_hours_by_position_incl_ec_shifts {
     type: number
-    label: "% No Show Hours (Excl. EC Shift)"
-    description: "% shift hours when an employee (Excl. EC Shifts) has a scheduled shift but does not show up to it without leave reason including deleted shift hours when deletion date is on or after shift date. includes (Excused No show Hours, Unexcused No show Hours, Excused Deleted No show Hours)"
+    label: "% No Show Hours (Incl. EC Shift)"
+    description: "% shift hours when an employee (Incl. EC Shifts) has a scheduled shift but does not show up to it without leave reason including deleted shift hours when deletion date is on or after shift date. includes (Excused No show Hours, Unexcused No show Hours, Excused Deleted No show Hours)"
     value_format_name: percent_1
     group_label: "> Dynamic Measures"
     sql:
         CASE
-          WHEN {% parameter position_parameter %} = 'Rider' THEN ${pct_no_show_hours_rider_excl_ec_shift}
-          WHEN {% parameter position_parameter %} = 'Ops Associate' THEN ${pct_no_show_hours_ops_associate_excl_ec_shift}
+          WHEN {% parameter position_parameter %} = 'Rider' THEN ${pct_no_show_hours_rider_incl_ec_shift}
+          WHEN {% parameter position_parameter %} = 'Ops Associate' THEN ${pct_no_show_hours_ops_associate_incl_ec_shift}
       ELSE NULL
       END ;;
   }
