@@ -72,19 +72,20 @@ view: event_trip_offer_state_changed {
 
   # ======= Dates / Timestamps ======= #
 
-  dimension_group: published_at_timestamp {
+  dimension_group: event_timestamp {
     group_label: "Timestamps"
-    label: "Published Timestamp"
+    label: "Event Timestamp"
     type: time
     description: "Timestamp when an event was published"
     timeframes: [
       time,
+      hour_of_day,
       date,
       week,
       month,
       quarter
     ]
-    sql: ${TABLE}.published_at_timestamp ;;
+    sql: ${TABLE}.event_timestamp ;;
   }
 
   # ======= HIDDEN Dimensions ======= #
@@ -106,20 +107,21 @@ view: event_trip_offer_state_changed {
     sql: ${TABLE}.expires_at_timestamp ;;
   }
 
-  dimension_group: event_timestamp {
-    hidden:  yes
+  dimension_group: published_at_timestamp  {
     group_label: "Timestamps"
     label: "Event Timestamp"
+    hidden: yes
     type: time
     description: "Timestamp when an event was triggered"
     timeframes: [
       time,
+      hour_of_day,
       date,
       week,
       month,
       quarter
     ]
-    sql: ${TABLE}.event_timestamp ;;
+    sql: ${TABLE}.published_at_timestamp ;;
   }
 
 
