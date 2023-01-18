@@ -72,24 +72,14 @@ view: event_order_dispatching_state_changed {
     label: "Event Timestamp"
     type: time
     timeframes: [
+      time,
+      hour_of_day,
       date,
       week,
       month,
       quarter
     ]
     sql: ${TABLE}.event_timestamp ;;
-  }
-  dimension_group: published_at_timestamp {
-    group_label: "Timestamps"
-    label: "Published At Timestamp"
-    type: time
-    timeframes: [
-      date,
-      week,
-      month,
-      quarter
-    ]
-    sql: ${TABLE}.published_at_timestamp ;;
   }
 
   # ======= HIDDEN =======
@@ -104,6 +94,19 @@ view: event_order_dispatching_state_changed {
     hidden: yes
     type: string
     sql: ${TABLE}.subscription_name ;;
+  }
+  dimension_group: published_at_timestamp {
+    group_label: "Timestamps"
+    hidden:  yes
+    label: "Published At Timestamp"
+    type: time
+    timeframes: [
+      date,
+      week,
+      month,
+      quarter
+    ]
+    sql: ${TABLE}.published_at_timestamp ;;
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #

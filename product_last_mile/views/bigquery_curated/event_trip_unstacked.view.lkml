@@ -62,6 +62,8 @@ view: event_trip_unstacked {
     type: time
     timeframes: [
       date,
+      time,
+      hour_of_day,
       week,
       month,
       quarter

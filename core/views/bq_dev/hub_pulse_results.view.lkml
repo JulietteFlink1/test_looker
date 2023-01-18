@@ -2,6 +2,7 @@ view: hub_pulse_results {
   sql_table_name: `flink-data-dev.enps.hub_pulse_results`
   ;;
 
+
   dimension: token {
     type: string
     primary_key: yes

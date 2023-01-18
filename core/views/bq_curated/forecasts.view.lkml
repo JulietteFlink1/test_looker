@@ -796,7 +796,7 @@ view: forecasts {
   measure: wmape_orders {
     group_label: "> Forecasting error"
     label: "wMAPE - Orders"
-    description: "Summed Absolute Difference of Orders per Hub in 30 min/ # Actual Orders"
+    description: "Summed Absolute Difference of Orders per Hub per 30 min timeslot/ # Actual Orders"
     type: number
     sql: ${summed_absolute_error}/nullif(${number_of_actual_orders},0);;
     value_format_name: percent_2
@@ -819,7 +819,7 @@ view: forecasts {
   measure: wmape_orders_adjusted {
     group_label: "> Forecasting error"
     label: "wMAPE - Adjusted Orders"
-    description: "Summed Absolute Difference of Orders per Hub in 30 min/ # Actual Orders"
+    description: "Summed Absolute Difference of Orders per Hub per 30 min timeslot/ # Actual Orders"
     type: number
     sql: ${summed_absolute_error_adjusted}/nullif(${number_of_actual_orders},0);;
     value_format_name: percent_2
@@ -828,7 +828,7 @@ view: forecasts {
   measure: wmape_hours {
     group_label: "> Forecasting error"
     label: "wMAPE - Scheduled Hours"
-    description: "Summed Absolute Difference of Scheduled Hours per Hub in 30 min (# Forecasted Hours - # Scheduled Hours)/ # Scheduled Hours"
+    description: "Summed Absolute Difference of Scheduled Hours per Hub per 30 min timeslot (# Forecasted Hours - # Scheduled Hours)/ # Scheduled Hours"
     type: number
     sql: ${summed_absolute_error_hours}/nullif(${ops.number_of_scheduled_hours_by_position},0);;
     value_format_name: percent_2
@@ -848,19 +848,36 @@ view: forecasts {
     sql: ABS(${number_of_forecasted_hours_by_position_adjusted_dimension} - ${ops.number_of_scheduled_hours_by_position_dimension});;
   }
 
+
   measure: wmape_hours_adjusted {
     group_label: "> Forecasting error"
     label: "wMAPE - Adjusted Scheduled Hours"
-    description: "Summed Absolute Difference of Scheduled Hours per Hub in 30 min (# Adjusted Forecasted Hours (Incl. Airtable Adjustments) - # Scheduled Hours)/ # Scheduled Hours"
+    description: "Summed Absolute Difference of Scheduled Hours per Hub per 30 min timeslot (# Adjusted Forecasted Hours (Incl. Airtable Adjustments) - # Scheduled Hours)/ # Scheduled Hours"
     type: number
     sql: ${summed_absolute_error_hours_adjusted}/nullif(${ops.number_of_scheduled_hours_by_position},0);;
+    value_format_name: percent_2
+  }
+
+  measure: summed_absolute_error_worked_hours_adjusted {
+    type: sum_distinct
+    sql_distinct_key: ${forecast_uuid} ;;
+    hidden: yes
+    sql: ABS(${number_of_forecasted_hours_by_position_adjusted_dimension} - ${ops.number_of_worked_hours_by_position_dimension});;
+  }
+
+  measure: wmape_worked_hours_adjusted {
+    group_label: "> Forecasting error"
+    label: "wMAPE - Worked (Punched) Hours"
+    description: "Summed Absolute Difference of Worked (Punched) Hours per Hub per 30 min timeslot (# Adjusted Forecasted Hours (Incl. Airtable Adjustments) - # Worked (Punched) Hours)/ # Worked (Punched) Hours"
+    type: number
+    sql: ${summed_absolute_error_worked_hours_adjusted}/nullif(${ops.number_of_worked_hours_by_position},0);;
     value_format_name: percent_2
   }
 
   measure: wmape_no_show_hours {
     group_label: "> Forecasting error"
     label: "wMAPE - No Show Hours"
-    description: "Summed Absolute Difference of Actual No Show Hours per Hub in 30 min (# Forecasted No Show Hours - # Actual No Show Hours)/ # Actual No Show Hours"
+    description: "Summed Absolute Difference of Actual No Show Hours per Hub per 30 min timeslot (# Forecasted No Show Hours - # Actual No Show Hours)/ # Actual No Show Hours"
     type: number
     hidden: no
     sql: ${summed_absolute_error_no_show_hours}/nullif(${ops.number_of_no_show_hours_by_position},0);;
@@ -884,7 +901,7 @@ view: forecasts {
   measure: wmape_no_show_hours_adjusted {
     group_label: "> Forecasting error"
     label: "wMAPE - Adjusted No Show Hours"
-    description: "Summed Absolute Difference of Actual No Show Hours per Hub in 30 min (# Adsjuted Forecasted No Show Hours (Incl. Airtable Adjustments) - # Actual No Show Hours)/ # Actual No Show Hours"
+    description: "Summed Absolute Difference of Actual No Show Hours per Hub per 30 min timeslot (# Adsjuted Forecasted No Show Hours (Incl. Airtable Adjustments) - # Actual No Show Hours)/ # Actual No Show Hours"
     type: number
     hidden: no
     sql: ${summed_absolute_error_no_show_hours_adjusted}/nullif(${ops.number_of_no_show_hours_by_position},0);;
@@ -1459,6 +1476,7 @@ view: forecasts {
     type: unquoted
     allowed_value: { value: "Day" }
     allowed_value: { value: "Week" }
+    allowed_value: { value: "Month" }
     default_value: "Day"
   }
 
@@ -1481,6 +1499,8 @@ view: forecasts {
       ${start_timestamp_date}
     {% elsif date_granularity._parameter_value == 'Week' %}
       ${start_timestamp_week}
+     {% elsif date_granularity._parameter_value == 'Month' %}
+      ${start_timestamp_month}
     {% endif %};;
   }
 
@@ -1493,6 +1513,8 @@ view: forecasts {
               "Day"
             {% elsif date_granularity._parameter_value == 'Week' %}
               "Week"
+            {% elsif date_granularity._parameter_value == 'Month' %}
+              "Month"
             {% endif %};;
   }
 

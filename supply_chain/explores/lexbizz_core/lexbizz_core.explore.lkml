@@ -4,12 +4,19 @@ include: "/**/products.view"
 include: "/**/hubs_ct.view"
 include: "/**/lexbizz_core_ndt_9er_status.view"
 
+include: "/**/erp_hubs.view"
+include: "/**/erp_item.view"
+include: "/**/erp_item_location.view"
+include: "/**/erp_item_supplier.view"
+include: "/**/erp_supplier.view"
+include: "/**/erp_buying_prices.view"
+
 explore: lexbizz_core {
 
   hidden: yes
+  label: "ERP Core (Lexbizz-Oracle)"
 
-
-  from: lexbizz_item_warehouse
+  from: erp_item_location
   view_name: "item_warehouse"
 
   access_filter: {
@@ -22,7 +29,7 @@ explore: lexbizz_core {
   # -----------  join stock_item  ------------------------------------------------------------------------------------------
   join: stock_item {
 
-    from: lexbizz_item
+    from: erp_item
 
     type: left_outer
     relationship: many_to_one
@@ -52,7 +59,7 @@ explore: lexbizz_core {
   # -----------  join item_vendor_status  ------------------------------------------------------------------------------------------
   join: item_vendor_status {
 
-    from: lexbizz_item_vendor
+    from: erp_item_supplier
 
     type: left_outer
     relationship: many_to_one
@@ -93,7 +100,7 @@ explore: lexbizz_core {
   join: hub {
     view_label: "Hubs ERP"
 
-    from: lexbizz_hub
+    from: erp_hubs
 
     type: left_outer
     relationship: many_to_one
@@ -114,7 +121,7 @@ explore: lexbizz_core {
   # -----------  join vendor  ------------------------------------------------------------------------------------------
   join: vendor {
 
-    from: lexbizz_vendor
+    from: erp_supplier
 
     type: left_outer
     relationship: many_to_one
@@ -127,35 +134,40 @@ explore: lexbizz_core {
   }
 
   # -----------  join vendor-location  ------------------------------------------------------------------------------------------
-  join: vendor_location {
 
-    from: lexbizz_vendor_location
+##### This information doesn't not exist anymore in Oracle since every supplier-location
+    # is represented by an unique code
 
-    type: left_outer
-    relationship: many_to_one
+# join: vendor_location {
+#
+#    from: lexbizz_vendor_location
+#
+#    type: left_outer
+#    relationship: many_to_one
+#
+#    sql_on:
+#        ${vendor_location.ingestion_date}  = ${item_warehouse.ingestion_date}             and
+#        ${vendor_location.vendor_location} = ${item_warehouse.preferred_vendor_location}
+#    ;;
 
-    sql_on:
-        ${vendor_location.ingestion_date}  = ${item_warehouse.ingestion_date}             and
-        ${vendor_location.vendor_location} = ${item_warehouse.preferred_vendor_location}
-    ;;
-
-  }
+#  }
 
   # -----------  join buying-prices  ------------------------------------------------------------------------------------------
-  join: buying_price {
 
-    from: lexbizz_buying_price
+#  join: buying_price {
+#
+#    from: lexbizz_buying_price
+#
+#    type: left_outer
+#    relationship: many_to_one
+#
+#    sql_on:
+#        ${buying_price.ingestion_date}  = ${item_warehouse.ingestion_date}      and
+#        ${buying_price.vendor_id}       = ${item_warehouse.preferred_vendor_id} and
+#        ${buying_price.sku}             = ${item_warehouse.sku}
+#    ;;
 
-    type: left_outer
-    relationship: many_to_one
-
-    sql_on:
-        ${buying_price.ingestion_date}  = ${item_warehouse.ingestion_date}      and
-        ${buying_price.vendor_id}       = ${item_warehouse.preferred_vendor_id} and
-        ${buying_price.sku}             = ${item_warehouse.sku}
-    ;;
-
-    }
+#    }
 
 
   # -----------  assignment data  ------------------------------------------------------------------------------------------
