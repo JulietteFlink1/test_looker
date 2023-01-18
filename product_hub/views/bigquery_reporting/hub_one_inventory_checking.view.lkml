@@ -1,0 +1,405 @@
+# Owner: Product Analytics, Flavia Alvarez
+# Created: 2023-01-18
+
+view: hub_one_inventory_checking {
+  sql_table_name: `flink-data-dev.reporting.hub_one_inventory_checking`
+    ;;
+
+  view_label: "1 Hub One Inventory Checking"
+
+  # This is a table from the reporting layer that combines fe and be data from hub tasks
+
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~     Sets          ~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~     Parameters     ~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~     Dimensions     ~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  # =========  IDs   =========
+
+  dimension: task_id {
+    group_label: "Task Attributes"
+    type: string
+    primary_key: yes
+    sql: ${TABLE}.task_id ;;
+  }
+
+  dimension: product_sku {
+    group_label: "Common Attributes"
+    type: string
+    sql: ${TABLE}.product_sku ;;
+  }
+
+  # =========  Location Dimensions   =========
+
+  dimension: country_iso {
+    type: string
+    group_label: "Location Dimensions"
+    label: "Country ISO"
+    description: "Country ISO based on 'hub_code'."
+    sql: ${TABLE}.country_iso ;;
+  }
+
+  dimension: hub_code {
+    type: string
+    group_label: "Location Dimensions"
+    label: "Hub Code"
+    description: "Code of a hub identical to back-end source tables."
+    sql: ${TABLE}.hub_code ;;
+  }
+
+  # =========  Employee Attributes   =========
+
+  dimension: finished_by {
+    group_label: "Employee Attributes"
+    type: string
+    sql: ${TABLE}.finished_by ;;
+  }
+
+  # =========  Task Dimensions   =========
+
+  dimension: fe_origin {
+    group_label: "Common Attributes"
+    type: string
+    sql: ${TABLE}.fe_origin ;;
+  }
+
+  dimension: is_automatic_check {
+    group_label: "Common Attributes"
+    type: yesno
+    sql: ${TABLE}.is_automatic_check ;;
+  }
+
+  dimension: is_correction {
+    group_label: "Task Attributes"
+    type: yesno
+    sql: ${TABLE}.is_correction ;;
+  }
+
+  dimension: shelf_number {
+    group_label: "Common Attributes"
+    type: string
+    sql: ${TABLE}.shelf_number ;;
+  }
+
+  dimension: task_priority {
+    group_label: "Task Attributes"
+    type: number
+    sql: ${TABLE}.task_priority ;;
+  }
+
+  dimension: task_reason {
+    group_label: "Task Attributes"
+    type: string
+    sql: ${TABLE}.task_reason ;;
+  }
+
+  dimension: task_status {
+    group_label: "Task Attributes"
+    type: string
+    sql: ${TABLE}.task_status ;;
+  }
+
+  dimension: task_type {
+    group_label: "Common Attributes"
+    type: string
+    sql: ${TABLE}.task_type ;;
+  }
+
+  dimension: is_correction_upwards {
+    type: yesno
+    group_label: "Common Attributes"
+    label: "Is Correction Upwards"
+    description: "Flag that identifies if the correction made after a inventory task was upwards."
+    sql: if(${quantity_after_correction}-${quantity_before_correction}>0, true, false) ;;
+  }
+
+  # =========  Backend Quantities   =========
+
+  dimension: expected_quantity {
+    hidden: yes
+    group_label: "Backend Quantities"
+    type: number
+    sql: ${TABLE}.expected_quantity ;;
+  }
+
+  dimension: quantity_before_correction {
+    hidden: yes
+    group_label: "Backend Quantities"
+    type: number
+    sql: ${TABLE}.quantity_before_correction ;;
+  }
+
+  dimension: quantity_after_correction {
+    hidden: yes
+    group_label: "Backend Quantities"
+    type: number
+    sql: ${TABLE}.quantity_after_correction ;;
+  }
+
+
+  # =========  Dates and Timestamps   =========
+  # Backend Timestamps
+
+  dimension_group: created_at_timestamp {
+    hidden: yes
+    type: time
+    timeframes: [
+      raw,
+      time,
+      date,
+      hour,
+      day_of_week
+    ]
+    sql: ${TABLE}.created_at_timestamp ;;
+  }
+
+  dimension_group: updated_at_timestamp {
+    hidden: yes
+    type: time
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: ${TABLE}.updated_at_timestamp ;;
+  }
+
+  dimension_group: started_at_timestamp {
+    type: time
+    hidden: yes
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: ${TABLE}.started_at_timestamp ;;
+  }
+
+  dimension_group: finished_at_timestamp {
+    type: time
+    hidden: yes
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: ${TABLE}.finished_at_timestamp ;;
+  }
+
+  dimension_group: correction_done_at_timestamp {
+    type: time
+    timeframes: [
+      raw,
+      time,
+      date,
+      hour,
+      day_of_week
+    ]
+    sql: ${TABLE}.correction_done_at_timestamp ;;
+  }
+
+  # Frontend Timestamps
+
+  dimension_group: fe_started_at_timestamp {
+    type: time
+    timeframes: [
+      raw,
+      time,
+      date,
+      hour,
+      day_of_week
+    ]
+    sql: ${TABLE}.fe_started_at_timestamp ;;
+  }
+
+  dimension_group: fe_finished_at_timestamp {
+    type: time
+    timeframes: [
+      raw,
+      time,
+      date,
+      hour,
+      day_of_week
+    ]
+    sql: ${TABLE}.fe_finished_at_timestamp ;;
+  }
+
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  # =========  Backend Quantities   =========
+
+  measure: sum_of_expected_quantity {
+    group_label: "Backend Quantities"
+    type: sum
+    sql: ${TABLE}.expected_quantity ;;
+  }
+
+  measure: sum_of_quantity_before_correction {
+    group_label: "Backend Quantities"
+    type: sum
+    sql: ${TABLE}.quantity_before_correction ;;
+  }
+
+  measure: sum_of_quantity_after_correction {
+    group_label: "Backend Quantities"
+    type: sum
+    sql: ${TABLE}.quantity_after_correction ;;
+  }
+
+  # =========  Frontend Quantities   =========
+
+  measure: fe_quantity_expected {
+    group_label: "Frontend Quantities"
+    type: sum
+    sql: ${TABLE}.fe_quantity_expected ;;
+  }
+
+  measure: fe_quantity_counted {
+    group_label: "Frontend Quantities"
+    type: sum
+    sql: ${TABLE}.fe_quantity_counted ;;
+  }
+
+  measure: fe_quantity_damaged {
+    group_label: "Frontend Quantities"
+    type: sum
+    sql: ${TABLE}.fe_quantity_damaged ;;
+  }
+
+  measure: fe_quantity_expired {
+    group_label: "Frontend Quantities"
+    type: sum
+    sql: ${TABLE}.fe_quantity_expired ;;
+  }
+
+  # =========  Total Metrics  =========
+
+  measure: number_of_checks {
+    type: count_distinct
+    group_label: "Total Metrics"
+    label: "# of Tasks"
+    description: "Number of Tasks, includes all status."
+    sql: ${task_id} ;;
+  }
+
+  measure: number_of_corrections {
+    type: count_distinct
+    group_label: "Total Metrics"
+    label: "# of Corrections"
+    description: "Number of corrections."
+    sql: ${task_id} ;;
+    filters: [is_correction: "yes"]
+  }
+
+  measure: number_of_items_corrected {
+    type: count_distinct
+    group_label: "Total Metrics"
+    label: "# of Items Corrected"
+    description: "Number of items corrected (count_distinct skus with corrections)."
+    sql: ${product_sku} ;;
+    filters: [is_correction: "yes"]
+  }
+
+  measure: number_of_completed_checks {
+    type: count_distinct
+    group_label: "Total Metrics"
+    label: "# of Completed Tasks"
+    description: "Number of completed tasks (task_status = done)."
+    sql: ${task_id} ;;
+    filters: [task_status: "done"]
+  }
+
+  measure: number_of_open_checks {
+    type: count_distinct
+    group_label: "Total Metrics"
+    label: "# of Open Tasks"
+    description: "Number of open tasks (task_status = open)."
+    sql: ${task_id} ;;
+    filters: [task_status: "open"]
+  }
+
+  measure: number_of_skipped_checks {
+    type: count_distinct
+    group_label: "Total Metrics"
+    label: "# of Skipped Tasks"
+    description: "Number of skipped tasks (task_status = skipped)."
+    sql: ${task_id} ;;
+    filters: [task_status: "skipped"]
+  }
+
+  measure: number_of_open_completed_skipped_checks {
+    type: count_distinct
+    group_label: "Total Metrics"
+    label: "# of Open, Completed and Skipped Tasks"
+    description: "Number of open and completed tasks (task_status = open, done, skipped)."
+    sql: ${task_id} ;;
+    filters: [task_status: "open, done, skipped"]
+  }
+
+  # =========  Rate Metrics    =========
+
+  measure: corrections_per_completed_checks {
+    type: number
+    value_format: "0%"
+    group_label: "Rate Metrics"
+    label: "% of Corrections"
+    description: "# of Corrections/ # of Completed Tasks."
+    sql: ${number_of_corrections}/nullif(${number_of_completed_checks},0) ;;
+  }
+
+  measure: pct_of_completion {
+    type: number
+    value_format: "0%"
+    group_label: "Rate Metrics"
+    label: "% of Completion"
+    description: "# of Completed Tasks/ (# of Completed Tasks + # of Open Tasks + # of Skipped Tasks)"
+    sql: ${number_of_completed_checks}/nullif((${number_of_open_completed_skipped_checks}),0) ;;
+  }
+
+  # =========  Time Measures   =========
+
+  measure: time_checking_minutes {
+    group_label: "Time Metrics"
+    type: sum
+    sql: ${TABLE}.time_checking_minutes ;;
+  }
+
+  measure: time_checking_seconds {
+    group_label: "Time Metrics"
+    type: sum
+    sql: ${TABLE}.time_checking_seconds ;;
+  }
+
+  measure: avg_time_checking_minutes {
+    group_label: "Time Metrics"
+    type: average
+    sql: ${TABLE}.time_checking_minutes ;;
+  }
+
+  measure: avg_time_checking_seconds {
+    group_label: "Time Metrics"
+    type: average
+    sql: ${TABLE}.time_checking_seconds ;;
+  }
+}
