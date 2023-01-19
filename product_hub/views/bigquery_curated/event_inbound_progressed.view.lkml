@@ -5,7 +5,7 @@ view: event_inbound_progressed {
   sql_table_name: `flink-data-prod.curated.event_inbound_progressed`
     ;;
 
-  view_label: "1 Event: Order Progressed"
+  view_label: "1 Event: Inbound Progressed"
 
   # This is the curated table for Order Progressed event coming from Hub One
 
