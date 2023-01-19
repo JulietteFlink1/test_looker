@@ -28,7 +28,7 @@ explore: event_trip_unstacked {
 
   always_filter: {
     filters: [
-      event_trip_unstacked.published_at_timestamp_date: "last 7 days"
+      event_trip_unstacked.event_timestamp_date: "last 7 days"
     ]
   }
 

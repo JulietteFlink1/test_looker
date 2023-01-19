@@ -1022,7 +1022,7 @@ view: forecasts {
     alias: [number_of_adjusted_forecasted_hours_by_position]
     type: number
     label: "# Adjusted Forecasted Hours (Incl. No Show)"
-    description: "# Adjusted Forecasted Hours (Incl. Airtable Adjustments) - No Show Forecasts included in Total Forecasted Hours and not added here explicitly"
+    description: "# Adjusted Forecasted Hours (Incl. Airtable Adjustments) - No Show Forecasts included in Total Forecasted Hours."
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
@@ -1038,7 +1038,7 @@ view: forecasts {
   dimension: number_of_forecasted_hours_by_position_dimension {
     type: number
     label: "# Forecasted Hours (Incl. No Show) - Dimension"
-    description: "# Forecasted Hours Needed - No Show Forecasts included in Total Forecasted Hours and not added here explicitly"
+    description: "# Forecasted Hours Needed - No Show Forecasts included in Total Forecasted Hours."
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
@@ -1057,7 +1057,7 @@ view: forecasts {
     alias: [number_of_adjusted_forecasted_hours_by_position_dimension]
     type: number
     label: "# Adjusted Forecasted Hours (Incl. No Show) - Dimension"
-    description: "# Forecasted Hours Needed (Incl. Airtable Adjustments) - No Show Forecasts included in Total Forecasted Hours and not added here explicitly"
+    description: "# Forecasted Hours Needed (Incl. Airtable Adjustments) - No Show Forecasts included in Total Forecasted Hours."
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:

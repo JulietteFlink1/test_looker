@@ -86,25 +86,13 @@ view: event_delivery_state_updated {
     description: "Timestamp when an event was triggered within the app / web."
     timeframes: [
       time,
+      hour_of_day,
       date,
       week,
       month,
       quarter
     ]
     sql: ${TABLE}.event_timestamp ;;
-  }
-  dimension_group: published_at_timestamp {
-    group_label: "Timestamps"
-    label: "Published At Timestamp"
-    type: time
-    timeframes: [
-      time,
-      date,
-      week,
-      month,
-      quarter
-    ]
-    sql: ${TABLE}.published_at_timestamp ;;
   }
 
   # ======= Hidden Dimension ======= #
@@ -117,6 +105,20 @@ view: event_delivery_state_updated {
   dimension: subscription_name {
     type: string
     sql: ${TABLE}.subscription_name ;;
+  }
+  dimension_group: published_at_timestamp {
+    group_label: "Timestamps"
+    hidden:  yes
+    label: "Published At Timestamp"
+    type: time
+    timeframes: [
+      time,
+      date,
+      week,
+      month,
+      quarter
+    ]
+    sql: ${TABLE}.published_at_timestamp ;;
   }
 
 
