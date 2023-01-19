@@ -1,14 +1,19 @@
+## Owner: Victor Breda
+## This explore provides closure information on hubs and turfs. It joins 2 main views that are on hub-turf-day-closure_reason
+## granularity (contains all historical data), and hub-turf-30min-closure_reason granularity (contains the last 30days of data)
+
 include: "/**/hub_turf_closures_30min.view.lkml"
 include: "/**/hub_turf_closures_daily.view.lkml"
 include: "/**/hubs_ct.view.lkml"
 include: "/**/global_filters_and_parameters.view"
 
 explore: hub_closures_reporting {
-  view_name: hub_turf_closures_daily
+  view_name: hub_turf_closures_30min
+  group_label: "Rider Ops"
   label: "Hub Closures"
-  view_label: "Hub Closures (Daily)"
+  view_label: "Hub Closures (30min)"
 
-  sql_always_where: {% condition global_filters_and_parameters.datasource_filter %} ${hub_turf_closures_daily.report_date} {% endcondition %} ;;
+  sql_always_where: {% condition global_filters_and_parameters.datasource_filter %} ${hub_turf_closures_30min.report_date} {% endcondition %} ;;
 
   always_filter: {
     filters:  [
@@ -28,16 +33,15 @@ explore: hub_closures_reporting {
   relationship: one_to_one
 }
 
-  join: hub_turf_closures_30min {
-    view_label: "Hub Closures (30min)"
+  join: hub_turf_closures_daily {
+    view_label: "Hub Closures (Daily)"
     sql_on: ${hub_turf_closures_30min.hub_code}=${hub_turf_closures_daily.hub_code}
         and coalesce(${hub_turf_closures_30min.turf_id},'') = coalesce(${hub_turf_closures_daily.turf_id},'')
-        and ${hub_turf_closures_30min.start_date}=${hub_turf_closures_daily.report_date}
-        and ${hub_turf_closures_30min.cleaned_comment}=${hub_turf_closures_daily.cleaned_comment}
-        and {% condition global_filters_and_parameters.datasource_filter %} ${hub_turf_closures_30min.start_date} {% endcondition %}
-;;
+        and ${hub_turf_closures_30min.report_date}=${hub_turf_closures_daily.report_date}
+        and ${hub_turf_closures_30min.closure_reason}=${hub_turf_closures_daily.closure_reason}
+        and {% condition global_filters_and_parameters.datasource_filter %} ${hub_turf_closures_daily.report_date} {% endcondition %};;
     type: left_outer
-    relationship: one_to_many
+    relationship: many_to_one
   }
 
   join: hubs_ct {

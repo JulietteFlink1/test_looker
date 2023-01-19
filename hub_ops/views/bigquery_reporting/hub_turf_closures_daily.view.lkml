@@ -36,13 +36,19 @@ view: hub_turf_closures_daily {
   }
 
   dimension: turf_name {
-    description: "Name of the turf."
+    description: "Name of the turf. A turf is a delivery area of a hub. Since 2022-12-08 and the introduction of
+    the hub-locator tool, hub can have multiple turfs.
+    turf_10 -> 10min ride time from hub.
+    turf_12 -> 12min ride time from hub.
+    turf_15 -> 15min ride time from hub.
+    turf_20 -> 20min ride time from hub."
     type: string
     sql: ${TABLE}.turf_name ;;
   }
 
   dimension_group: report {
     group_label: "Dates and Timestamps"
+    description: "Date/Time the closure metrics are computed on."
     label: "Report"
     type: time
     timeframes: [
@@ -61,7 +67,7 @@ view: hub_turf_closures_daily {
     sql: ${TABLE}.closure_source ;;
   }
 
-  dimension: cleaned_comment {
+  dimension: closure_reason {
     label: "Closure Reason"
     type: string
     sql: ${TABLE}.cleaned_comment ;;
@@ -109,7 +115,7 @@ view: hub_turf_closures_daily {
   # Dynamic Dimensions
   ############
 
-  dimension: date {
+  dimension: report_dynamic {
     group_label: "Dates and Timestamps"
     label: "Report Date (Dynamic)"
     label_from_parameter: date_granularity
@@ -129,7 +135,8 @@ view: hub_turf_closures_daily {
 
   measure: sum_number_of_missed_orders_forced_closure {
     label: "# Estimated Missed Orders (Daily)"
-    description: "Estimated number of missed orders due to the forced closures."
+    description: "Estimated number of missed orders due to the forced closures. Forced closures are unplanned closures of the hub/turf done
+    by Ops when the service levels go down due to a hub not being able to keep up with the orders."
     type: sum_distinct
     sql_distinct_key: ${hub_turf_daily_closure_uuid}  ;;
     sql: ${number_of_missed_orders_forced_closure} ;;

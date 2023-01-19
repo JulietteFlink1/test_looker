@@ -39,12 +39,18 @@ view: hub_turf_closures_30min {
 
   dimension: turf_name {
     hidden: yes
-    description: "Name of the turf."
+    description: "Name of the turf. A turf is a delivery area of a hub. Since 2022-12-08 and the introduction of
+    the hub-locator tool, hub can have multiple turfs.
+    turf_10 -> 10min ride time from hub.
+    turf_12 -> 12min ride time from hub.
+    turf_15 -> 15min ride time from hub.
+    turf_20 -> 20min ride time from hub."
     type: string
     sql: ${TABLE}.turf_name ;;
   }
 
-  dimension_group: start {
+  dimension_group: report {
+    description: "Date/Time the closure metrics are computed on."
     group_label: "Dates and Timestamps"
     label: "Report"
     type: time
@@ -65,7 +71,7 @@ view: hub_turf_closures_30min {
     sql: ${TABLE}.closure_source ;;
   }
 
-  dimension: cleaned_comment {
+  dimension: closure_reason {
     hidden:  yes
     label: "Closure Reason"
     type: string
@@ -102,7 +108,8 @@ view: hub_turf_closures_30min {
 
   measure: sum_number_of_missed_orders_forced_closure {
     label: "# Estimated Missed Orders (30min)"
-    description: "Estimated number of missed orders due to the forced closures."
+    description: "Estimated number of missed orders due to the forced closures. Forced closures are unplanned closures of the hub/turf done
+    by Ops when the service levels go down due to a hub not being able to keep up with the orders."
     type: sum_distinct
     sql_distinct_key: ${hub_turf_30min_closure_uuid} ;;
     sql: ${number_of_missed_orders_forced_closure} ;;
@@ -122,7 +129,7 @@ view: hub_turf_closures_30min {
     label: "# Open Hours (30min)"
     description: "Number of hours the hub/turf was open."
     type: sum_distinct
-    sql_distinct_key: concat(${start_raw}, ${hub_code}, coalesce(${turf_id}, ''));;
+    sql_distinct_key: concat(${report_raw}, ${hub_code}, coalesce(${turf_id}, ''));;
     sql: ${number_of_open_hours} ;;
     value_format_name: decimal_1
   }
