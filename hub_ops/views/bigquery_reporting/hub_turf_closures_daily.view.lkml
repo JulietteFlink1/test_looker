@@ -143,7 +143,7 @@ view: hub_turf_closures_daily {
   }
 
   measure: sum_amt_estimated_lost_gmv_eur {
-    label: "AMT Estimated Lost GMV (Daily)"
+    label: "€ Estimated Lost GMV (Daily)"
     description: "Estimated lost GMV. Computed as number of missed orders due to emergency closure multiplied by average order value."
     type: sum
     sql: ${amt_estimated_lost_gmv_eur} ;;

@@ -116,7 +116,7 @@ view: hub_turf_closures_30min {
   }
 
   measure: sum_amt_estimated_lost_gmv_eur {
-    label: "AMT Estimated Lost GMV (30min)"
+    label: "€ Estimated Lost GMV (30min)"
     description: "Estimated lost GMV. Computed as number of missed orders due to emergency closure multiplied by average order value."
     type: sum
     sql: ${amt_estimated_lost_gmv_eur} ;;
