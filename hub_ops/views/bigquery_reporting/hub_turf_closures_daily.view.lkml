@@ -137,8 +137,7 @@ view: hub_turf_closures_daily {
     label: "# Estimated Missed Orders (Daily)"
     description: "Estimated number of missed orders due to the forced closures. Forced closures are unplanned closures of the hub/turf done
     by Ops when the service levels go down due to a hub not being able to keep up with the orders."
-    type: sum_distinct
-    sql_distinct_key: ${hub_turf_daily_closure_uuid}  ;;
+    type: sum
     sql: ${number_of_missed_orders_forced_closure} ;;
     value_format_name: decimal_0
   }
@@ -146,8 +145,7 @@ view: hub_turf_closures_daily {
   measure: sum_amt_estimated_lost_gmv_eur {
     label: "AMT Estimated Lost GMV (Daily)"
     description: "Estimated lost GMV. Computed as number of missed orders due to emergency closure multiplied by average order value."
-    type: sum_distinct
-    sql_distinct_key: ${hub_turf_daily_closure_uuid} ;;
+    type: sum
     sql: ${amt_estimated_lost_gmv_eur} ;;
     value_format_name: eur
   }
@@ -164,8 +162,7 @@ view: hub_turf_closures_daily {
   measure: sum_number_of_closed_hours {
     label: "# Closed Hours (Daily)"
     description: "Number of hours the hub/turf was closed."
-    type: sum_distinct
-    sql_distinct_key: ${hub_turf_daily_closure_uuid} ;;
+    type: sum
     sql: ${number_of_closed_hours} ;;
     value_format_name: decimal_2
   }

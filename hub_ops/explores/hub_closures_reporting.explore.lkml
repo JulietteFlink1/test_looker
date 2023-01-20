@@ -41,7 +41,7 @@ explore: hub_closures_reporting {
         and ${hub_turf_closures_30min.closure_reason}=${hub_turf_closures_daily.closure_reason}
         and {% condition global_filters_and_parameters.datasource_filter %} ${hub_turf_closures_daily.report_date} {% endcondition %};;
     type: left_outer
-    relationship: many_to_one
+    relationship: many_to_many
   }
 
   join: hubs_ct {
