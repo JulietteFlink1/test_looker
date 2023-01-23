@@ -2,7 +2,7 @@
 # created date: 2023-01-23
 # description: this file defines some metrics specfic to the hub_closures_reporting Explore, that are cross-referencing different tables
 
-view: cr__hub_closure_reporting_cross_metrics {
+view: cr__hub_closure_orders {
 
   measure: share_missed_orders_per_non_external_orders_daily {
     label: "% Missed orders (Daily)"
