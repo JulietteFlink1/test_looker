@@ -4,6 +4,7 @@
 
 include: "/**/hub_turf_closures_30min.view.lkml"
 include: "/**/hub_turf_closures_daily.view.lkml"
+include: "/**/cr__hub_closure_reporting.view.lkml"
 include: "/**/orders.view.lkml"
 include: "/**/hubs_ct.view.lkml"
 include: "/**/global_filters_and_parameters.view"
@@ -63,4 +64,26 @@ explore: hub_closures_reporting {
     type: left_outer
     relationship: many_to_one
   }
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  #  - - - - - - - - - -    Cross-Referenced Metrics
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  join: cr__hub_closure_reporting_daily {
+    from: cr__hub_closure_reporting
+    view_label: "Hub Closures (Daily)"
+    relationship: one_to_one
+    type: left_outer
+    sql:  ;;
+    fields: [cr__hub_closure_reporting_daily.share_missed_orders_per_non_external_orders_daily]
+  }
+
+  join: cr__hub_closure_reporting_30min {
+    from: cr__hub_closure_reporting
+    view_label: "Hub Closures (30min)"
+    relationship: one_to_one
+    type: left_outer
+    sql:  ;;
+  fields: [cr__hub_closure_reporting_30min.share_missed_orders_per_non_external_orders_30min]
+  }
+
 }

@@ -148,13 +148,4 @@ view: hub_turf_closures_30min {
     value_format_name: percent_1
   }
 
-  measure: share_missed_orders_per_non_external_orders {
-    label: "% Missed orders"
-    description: "# Missed Orders / (# Missed Orders + # Succesful Non External Orders)"
-    type: number
-    sql: safe_divide(${sum_number_of_missed_orders_forced_closure},
-              (${orders.number_of_succesful_non_external_orders} + ${sum_number_of_missed_orders_forced_closure}));;
-    value_format_name: percent_1
-  }
-
 }
