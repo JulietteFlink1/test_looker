@@ -2,7 +2,7 @@
 # Created: 2023-01-18
 
 view: hub_one_inventory_checking {
-  sql_table_name: `flink-data-dev.reporting.hub_one_inventory_checking`
+  sql_table_name: `flink-data-prod.reporting.hub_one_inventory_checking`
     ;;
 
   view_label: "1 Hub One Inventory Checking"
