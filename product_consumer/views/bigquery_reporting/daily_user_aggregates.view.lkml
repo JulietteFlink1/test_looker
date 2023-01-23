@@ -389,6 +389,12 @@ view: daily_user_aggregates {
     type: yesno
     sql: ${TABLE}.is_first_order_placed ;;
   }
+  dimension: is_voucher_wallet_viewed {
+    group_label: "Flags | Event"
+    label: "Is Voucher Wallet Viewed"
+    type: yesno
+    sql: ${TABLE}.is_voucher_wallet_viewed ;;
+  }
   dimension: is_voucher_redemption_attempted {
     group_label: "Flags | Event"
     label: "Is Discount Code Redemption Attempted"
@@ -483,6 +489,11 @@ view: daily_user_aggregates {
     group_label: "Flags | Event"
     type: yesno
     sql: ${TABLE}.is_hub_regular_unavailable ;;
+  }
+  dimension: is_favourites_viewed {
+    group_label: "Flags | Event"
+    type: yesno
+    sql: ${TABLE}.is_favourites_viewed ;;
   }
 
 
@@ -633,6 +644,16 @@ view: daily_user_aggregates {
     type: number
     hidden: yes
     sql: ${TABLE}.number_of_regular_closed_hub_messages ;;
+  }
+  dimension: dim_number_of_voucher_wallet_viewed {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_voucher_wallet_viewed ;;
+  }
+  dimension: dim_number_of_favourties_viewed {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_favourites_viewed ;;
   }
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
   # ~~~~~~~~~~~~~~~      Measures     ~~~~~~~~~~~~~~~ #
@@ -799,6 +820,13 @@ view: daily_user_aggregates {
   }
 
   ## Voucher Event Metrics
+  measure: number_of_voucher_wallet_viewed {
+    group_label: "Event Metrics"
+    label: "# Voucher Wallet Viewed"
+    type: sum
+    hidden: no
+    sql: ${dim_number_of_voucher_wallet_viewed};;
+  }
   measure: number_of_voucher_redemption_attempted {
     group_label: "Event Metrics"
     label: "# Discount Code Redemption Attempted"
@@ -844,6 +872,14 @@ view: daily_user_aggregates {
     sql: ${number_of_voucher_redemption_attempted}/${number_of_checkout_viewed};;
     value_format_name: percent_1
   }
+  measure: voucher_wallet_view_rate {
+    group_label: "Event Metrics"
+    label: "% Voucher Wallet View Rate"
+    type: number
+    hidden: no
+    sql: ${number_of_voucher_wallet_viewed}/${number_of_checkout_viewed};;
+    value_format_name: percent_1
+  }
 
   # Other Event Metrics
   measure: number_of_account_login_succeeded {
@@ -880,6 +916,13 @@ view: daily_user_aggregates {
     type: sum
     hidden: no
     sql: ${dim_number_of_product_search_executed} ;;
+  }
+  measure: number_of_favourites_viewed {
+    group_label: "Event Metrics"
+    label: "# Favourites Viewed"
+    type: sum
+    hidden: no
+    sql: ${dim_number_of_favourties_viewed} ;;
   }
 
   # Basic counts
