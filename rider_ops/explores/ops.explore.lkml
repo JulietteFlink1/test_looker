@@ -13,6 +13,8 @@ include: "/**/inventory_changes_daily.view"
 include: "/**/hub_monthly_orders.view"
 include: "/**/order_backlog.view"
 include: "/**/hub_attributes.view"
+include: "/**/hub_turf_closures_30min.view"
+include: "/**/hub_turf_closures_daily.view"
 
 
 explore: ops {
@@ -122,15 +124,27 @@ explore: ops {
     type: left_outer
   }
 
-  join: hub_closure_rate {
-    view_label: "Order Backlog"
-    sql_on:
-      ${hubs.hub_code} = ${hub_closure_rate.hub_code}
-      and ${time_grid.start_datetime_minute30} = ${hub_closure_rate.created_minute30}
-      ;;
-    relationship: many_to_one
+  join: hub_turf_closures_30min {
+    view_label: "Closures"
+    sql_on: ${hub_turf_closures_30min.hub_code} =  ${hubs.hub_code}
+      and ${time_grid.start_datetime_minute30} = ${hub_turf_closures_30min.report_minute30};;
+    relationship: one_to_many
     type: left_outer
-    fields: [hub_closure_rate.all_closure_rate]
+    fields: [hub_turf_closures_30min.sum_number_of_closed_hours,
+      hub_turf_closures_30min.share_closed_hours_per_open_hours,
+      hub_turf_closures_30min.sum_number_of_missed_orders_forced_closure]
+  }
+
+  join: hub_turf_closures_daily {
+    view_label: "Closures"
+    sql_on: ${hub_turf_closures_30min.hub_code}=${hub_turf_closures_daily.hub_code}
+        and coalesce(${hub_turf_closures_30min.turf_id},'') = coalesce(${hub_turf_closures_daily.turf_id},'')
+        and ${hub_turf_closures_30min.report_date}=${hub_turf_closures_daily.report_date}
+        and ${hub_turf_closures_30min.closure_reason}=${hub_turf_closures_daily.closure_reason};;
+    type: left_outer
+    relationship: many_to_one
+    fields: [hub_turf_closures_daily.closure_reason,
+      hub_turf_closures_daily.turf_name]
   }
 
 }
