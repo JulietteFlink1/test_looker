@@ -28,19 +28,21 @@ view: event_order_tracking_viewed {
 
   dimension: delivery_lat {
     type: number
+    hidden: yes
     description: "Latitude of the address selected by the customer."
     sql: ${TABLE}.delivery_lat ;;
   }
 
   dimension: delivery_lng {
     type: number
+    hidden: yes
     description: "Longitude of the address selected by the customer."
     sql: ${TABLE}.delivery_lng ;;
   }
 
   dimension: delivery_pdt {
     type: number
-    description: "PDT (promised delivery time) - time estimation (in mintues) when users can expect their order to be delivered."
+    description: "PDT (promised delivery time) - time estimation (in minutes) when users can expect their order to be delivered."
     sql: ${TABLE}.delivery_pdt ;;
   }
 
@@ -105,12 +107,6 @@ view: event_order_tracking_viewed {
     sql: ${TABLE}.event_uuid ;;
   }
 
-  dimension: has_selected_address {
-    type: yesno
-    description: "TRUE if upon launch the user had a previously confirmed address."
-    sql: ${TABLE}.has_selected_address ;;
-  }
-
   dimension: hub_code {
     type: string
     description: "Code of a hub identical to back-end source tables."
@@ -137,7 +133,7 @@ view: event_order_tracking_viewed {
 
   dimension: order_status {
     type: string
-    description: "Status of the order. E.g. confirmed, packing, delivered"
+    description: "Status of the order. E.g. STATE_DELIVERED, STATE_CONFIRMED, STATE_ON_ROUTE"
     sql: ${TABLE}.order_status ;;
   }
 
