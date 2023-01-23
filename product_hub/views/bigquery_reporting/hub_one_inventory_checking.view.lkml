@@ -25,12 +25,14 @@ view: hub_one_inventory_checking {
 
   dimension: task_id {
     group_label: "Task Attributes"
+    description: "Unique identifier of each task (called check_id in the frontend app). Corresponds to the ID of the task in hub_task schema."
     type: string
     primary_key: yes
     sql: ${TABLE}.task_id ;;
   }
 
   dimension: product_sku {
+    description: "SKU of the product, as available in the backend."
     group_label: "Common Attributes"
     type: string
     sql: ${TABLE}.product_sku ;;
@@ -57,6 +59,7 @@ view: hub_one_inventory_checking {
   # =========  Employee Attributes   =========
 
   dimension: finished_by {
+    description: "  Quinyx_badge_number of the employee who finished the task. Corresponds to ended_by in hub_task schema."
     group_label: "Employee Attributes"
     type: string
     sql: ${TABLE}.finished_by ;;
@@ -65,48 +68,56 @@ view: hub_one_inventory_checking {
   # =========  Task Dimensions   =========
 
   dimension: fe_origin {
+    description: "Hub One screen from where the task_id has been started. Possible values are inventory/check-list, activities, inventory/eoy-inventory-check-list."
     group_label: "Common Attributes"
     type: string
     sql: ${TABLE}.fe_origin ;;
   }
 
   dimension: is_automatic_check {
+    description: "TRUE when the check was scheduled."
     group_label: "Common Attributes"
     type: yesno
     sql: ${TABLE}.is_automatic_check ;;
   }
 
   dimension: is_correction {
+    description: "TRUE when the task resulted in inventory correction. Calculated by retrieving the stock corrections from stock_changelog between started_at_timestamp and finished_at_timestamp."
     group_label: "Task Attributes"
     type: yesno
     sql: ${TABLE}.is_correction ;;
   }
 
   dimension: shelf_number {
+    description: "Unique identifier of the shelf where the SKU is stored in the hub. Number of the shelf (from 0 to 86) followed by a letter which indicates the level within the shelf."
     group_label: "Common Attributes"
     type: string
     sql: ${TABLE}.shelf_number ;;
   }
 
   dimension: task_priority {
+    description: "Define when the task needs to be performed during the day. Corresponds to priority in hub_task schema."
     group_label: "Task Attributes"
     type: number
     sql: ${TABLE}.task_priority ;;
   }
 
   dimension: task_reason {
+    description: "  Reason why we performed task. Corresponds to the reason in hub_task schema. Possible values are: MISSING, TOBACCO, EXPENSIVE, FRESHNESS, ROLLING_8_WEEKS, ROLLING_12_WEEKS, LOW_STOCK."
     group_label: "Task Attributes"
     type: string
     sql: ${TABLE}.task_reason ;;
   }
 
   dimension: task_status {
+    description: "  Status of the task. Corresponds to status in hub_task schema. Possible values are: OPEN, CANCELED, DONE, SKIPPED, IN_PROGRESS."
     group_label: "Task Attributes"
     type: string
     sql: ${TABLE}.task_status ;;
   }
 
   dimension: task_type {
+    description: "  Type of task. Corresponds to the type in hub_task schema. Possible values are: STOCK_CHECK, FRESHNESS_CHECK."
     group_label: "Common Attributes"
     type: string
     sql: ${TABLE}.task_type ;;
@@ -123,6 +134,7 @@ view: hub_one_inventory_checking {
   # =========  Backend Quantities   =========
 
   dimension: expected_quantity {
+    description: "Expected amount of units before the task. Corresponds to quantity_to in stock_changelog schema of the last change made for that sku before started_at_timestamp."
     hidden: yes
     group_label: "Backend Quantities"
     type: number
@@ -130,6 +142,7 @@ view: hub_one_inventory_checking {
   }
 
   dimension: quantity_before_correction {
+    description: "Amount of units before the inventory correction. Corresponds to quantity_from in stock_changelog schema of the inventory correction performed."
     hidden: yes
     group_label: "Backend Quantities"
     type: number
@@ -137,6 +150,7 @@ view: hub_one_inventory_checking {
   }
 
   dimension: quantity_after_correction {
+    description: "New amount of units after the inventory correction. Corresponds to quantity_to in stock_changelog schema of the inventory correction performed."
     hidden: yes
     group_label: "Backend Quantities"
     type: number
@@ -148,6 +162,7 @@ view: hub_one_inventory_checking {
   # Backend Timestamps
 
   dimension_group: created_at_timestamp {
+    description: "Timestamp for when the task has been created. Corresponds to created_at timestamp in hub_task schema."
     hidden: yes
     type: time
     timeframes: [
@@ -161,6 +176,7 @@ view: hub_one_inventory_checking {
   }
 
   dimension_group: updated_at_timestamp {
+    description: "Timestamp for when the task has been updated. Corresponds to updated_at timestamp in hub_task schema."
     hidden: yes
     type: time
     timeframes: [
@@ -176,6 +192,7 @@ view: hub_one_inventory_checking {
   }
 
   dimension_group: started_at_timestamp {
+    description: "Timestamp for when the task has been started. Corresponds to created_at timestamp in hub_task schema."
     type: time
     hidden: yes
     timeframes: [
@@ -191,6 +208,7 @@ view: hub_one_inventory_checking {
   }
 
   dimension_group: finished_at_timestamp {
+    description: "Timestamp for when the task has been finished. Corresponds to ended_at timestamp in hub_task schema."
     type: time
     hidden: yes
     timeframes: [
@@ -206,6 +224,7 @@ view: hub_one_inventory_checking {
   }
 
   dimension_group: correction_done_at_timestamp {
+    description: "  Timestamp for when the correction has been made, null when there wasn't a stock correction. Corresponds to created_at timestamp in stock_changelog schema."
     type: time
     timeframes: [
       raw,
@@ -220,6 +239,7 @@ view: hub_one_inventory_checking {
   # Frontend Timestamps
 
   dimension_group: fe_started_at_timestamp {
+    description: "  Timestamp for when the task has been started from Hub One app."
     type: time
     timeframes: [
       raw,
@@ -232,6 +252,7 @@ view: hub_one_inventory_checking {
   }
 
   dimension_group: fe_finished_at_timestamp {
+    description: "Timestamp for when the task has been finished from Hub One app."
     type: time
     timeframes: [
       raw,
@@ -247,47 +268,54 @@ view: hub_one_inventory_checking {
   # ~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  # =========  Backend Quantities   =========
+  # # =========  Backend Quantities   =========
 
-  measure: sum_of_expected_quantity {
-    group_label: "Backend Quantities"
-    type: sum
-    sql: ${TABLE}.expected_quantity ;;
-  }
+  # measure: sum_of_expected_quantity {
+  #   description: ""
+  #   group_label: "Backend Quantities"
+  #   type: sum
+  #   sql: ${TABLE}.expected_quantity ;;
+  # }
 
-  measure: sum_of_quantity_before_correction {
-    group_label: "Backend Quantities"
-    type: sum
-    sql: ${TABLE}.quantity_before_correction ;;
-  }
+  # measure: sum_of_quantity_before_correction {
+  #   description: ""
+  #   group_label: "Backend Quantities"
+  #   type: sum
+  #   sql: ${TABLE}.quantity_before_correction ;;
+  # }
 
-  measure: sum_of_quantity_after_correction {
-    group_label: "Backend Quantities"
-    type: sum
-    sql: ${TABLE}.quantity_after_correction ;;
-  }
+  # measure: sum_of_quantity_after_correction {
+  #   description: ""
+  #   group_label: "Backend Quantities"
+  #   type: sum
+  #   sql: ${TABLE}.quantity_after_correction ;;
+  # }
 
   # =========  Frontend Quantities   =========
 
   measure: fe_quantity_expected {
+    description: "Expected amount of units before the task. Value coming from Hub One."
     group_label: "Frontend Quantities"
     type: sum
     sql: ${TABLE}.fe_quantity_expected ;;
   }
 
   measure: fe_quantity_counted {
+    description: "Number of units counted by the employee while performing the task. Value coming from Hub One."
     group_label: "Frontend Quantities"
     type: sum
     sql: ${TABLE}.fe_quantity_counted ;;
   }
 
   measure: fe_quantity_damaged {
+    description: "Number of units reported as damaged by the employee while performing the task. Value coming from Hub One."
     group_label: "Frontend Quantities"
     type: sum
     sql: ${TABLE}.fe_quantity_damaged ;;
   }
 
   measure: fe_quantity_expired {
+    description: "Number of units reported as expired by the employee while performing the task. Value coming from Hub One."
     group_label: "Frontend Quantities"
     type: sum
     sql: ${TABLE}.fe_quantity_expired ;;
