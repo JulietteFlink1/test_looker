@@ -2945,7 +2945,7 @@ view: orders {
     filters: [amt_late_night_fee_gross: ">0"]
   }
 
-  measure: number_of_non_external_orders {
+  measure: number_of_succesful_non_external_orders {
     label: "# Non External Orders"
     description: "Number of succesful orders that do not come through an external provider."
     hidden: yes

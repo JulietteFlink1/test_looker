@@ -52,7 +52,7 @@ explore: hub_closures_reporting {
     and ${hub_turf_closures_30min.report_minute30} = ${orders.created_minute30};;
     type: left_outer
     relationship: many_to_many
-    fields: [orders.number_of_non_external_orders,
+    fields: [orders.number_of_succesful_non_external_orders,
       orders.is_external_order,
       orders.is_successful_order]
   }

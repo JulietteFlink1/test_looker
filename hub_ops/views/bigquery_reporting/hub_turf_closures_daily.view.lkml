@@ -180,7 +180,7 @@ view: hub_turf_closures_daily {
     description: "# Missed Orders / (# Missed Orders + # Succesful Non External Orders)"
     type: number
     sql: safe_divide(${sum_number_of_missed_orders_forced_closure},
-              (${orders.number_of_non_external_orders} + ${sum_number_of_missed_orders_forced_closure}));;
+              (${orders.number_of_succesful_non_external_orders} + ${sum_number_of_missed_orders_forced_closure}));;
     value_format_name: percent_1
   }
 
