@@ -4,6 +4,7 @@
 
 include: "/**/hub_turf_closures_30min.view.lkml"
 include: "/**/hub_turf_closures_daily.view.lkml"
+include: "/**/orders.view.lkml"
 include: "/**/hubs_ct.view.lkml"
 include: "/**/global_filters_and_parameters.view"
 
@@ -42,6 +43,18 @@ explore: hub_closures_reporting {
         and {% condition global_filters_and_parameters.datasource_filter %} ${hub_turf_closures_daily.report_date} {% endcondition %};;
     type: left_outer
     relationship: many_to_many
+  }
+
+  join: orders {
+    #This is done to hide the fields from the explore
+    view_label: ""
+    sql_on: ${hub_turf_closures_30min.hub_code} = ${orders.hub_code}
+    and ${hub_turf_closures_30min.report_minute30} = ${orders.created_minute30};;
+    type: left_outer
+    relationship: many_to_many
+    fields: [orders.number_of_non_external_orders,
+      orders.is_external_order,
+      orders.is_successful_order]
   }
 
   join: hubs_ct {
