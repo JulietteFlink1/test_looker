@@ -4663,17 +4663,17 @@ view: staffing {
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
-        CASE
-          WHEN {% parameter position_parameter %} = 'Rider' THEN ${number_of_overpunched_hours_rider}
-          WHEN {% parameter position_parameter %} = 'Picker' THEN ${number_of_overpunched_hours_picker}
-          WHEN {% parameter position_parameter %} = 'Shift Lead' THEN ${number_of_overpunched_hours_shift_lead}
-          WHEN {% parameter position_parameter %} = 'Deputy Shift Lead' THEN ${number_of_overpunched_hours_deputy_shift_lead}
-          WHEN {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_overpunched_hours_rider_captain}
-          WHEN {% parameter position_parameter %} = 'WH' THEN ${number_of_overpunched_hours_wh}
-          WHEN {% parameter position_parameter %} = 'Hub Staff' THEN ${number_of_overpunched_hours_hub_staff}
-          WHEN {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_overpunched_hours_ops_associate}
-      ELSE NULL
-      END ;;
+        case
+          when {% parameter position_parameter %} = 'Rider' THEN ${number_of_overpunched_hours_rider}
+          when {% parameter position_parameter %} = 'Picker' THEN ${number_of_overpunched_hours_picker}
+          when {% parameter position_parameter %} = 'Shift Lead' THEN ${number_of_overpunched_hours_shift_lead}
+          when {% parameter position_parameter %} = 'Deputy Shift Lead' THEN ${number_of_overpunched_hours_deputy_shift_lead}
+          when {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_overpunched_hours_rider_captain}
+          when {% parameter position_parameter %} = 'WH' THEN ${number_of_overpunched_hours_wh}
+          when {% parameter position_parameter %} = 'Hub Staff' THEN ${number_of_overpunched_hours_hub_staff}
+          when {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_overpunched_hours_ops_associate}
+          else null
+        end ;;
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
