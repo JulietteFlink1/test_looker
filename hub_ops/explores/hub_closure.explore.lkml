@@ -3,8 +3,8 @@ include: "/**/hubs_ct.view.lkml"
 
 
 explore: hub_closure {
+  hidden: yes
   view_name: hub_closure_rate
-   hidden:  no
   label: "Hub Closure"
   view_label: "Hub Closure"
 
