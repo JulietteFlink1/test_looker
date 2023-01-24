@@ -1307,6 +1307,35 @@ view: staffing {
     hidden: yes
   }
 
+  dimension: number_of_worked_minutes_deputy_shift_lead {
+    label: "# Worked Shift Lead Minutes"
+    type: number
+    sql: ${TABLE}.number_of_worked_minutes_deputy_shift_lead ;;
+    hidden: yes
+  }
+
+  dimension: number_of_planned_minutes_deputy_shift_lead {
+    label: "# Filled (Assigned) Shift Lead Minutes"
+    type: number
+    sql: ${TABLE}.number_of_planned_minutes_deputy_shift_lead ;;
+    hidden: yes
+  }
+
+  dimension: number_of_worked_minutes_ops_associate_dimension {
+    label: "# Punched Ops Associate Minutes"
+    type: number
+    sql: ${TABLE}.number_of_worked_minutes_ops_associate ;;
+    hidden: yes
+  }
+
+  dimension: number_of_planned_minutes_ops_associate_dimension {
+    label: "# Filled (Assigned) Ops Associate Minutes"
+    type: number
+    sql: ${TABLE}.number_of_planned_minutes_ops_associate ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
   dimension: number_of_deleted_excused_no_show_minutes_shift_lead {
     label: "# Deleted Excused Shift Lead No Show Hours (included in No show metric)"
     type: number
@@ -1372,15 +1401,33 @@ view: staffing {
     hidden: yes
   }
 
-  measure: count {
-    type: count
-    drill_fields: []
+  dimension: number_of_worked_minutes_hub_staff {
+    label: "# Punched Hub Staff Minutes"
+    description: "# Punched Ops Associate Hours (Picker, WH, Ops Associate, Rider Captain and Deputy Shift Lead) + # Planned Shift Lead hours"
+    type: number
+    sql: ${number_of_worked_minutes_ops_associate_dimension}+${number_of_worked_minutes_shift_lead}+${number_of_worked_minutes_deputy_shift_lead};;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  dimension: number_of_planned_minutes_hub_staff {
+    label: "# Filled (Assigned) Hub Staff Minutes"
+    description: "# Filled (Assigned) Ops Associate Hours (Picker, WH, Ops Associate, Rider Captain and Deputy Shift Lead) + # Planned Shift Lead hours"
+    type: number
+    sql: ${number_of_planned_minutes_ops_associate_dimension}+${number_of_planned_minutes_shift_lead}+${number_of_planned_minutes_deputy_shift_lead};;
+    value_format_name: decimal_1
     hidden: yes
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  measure: count {
+    type: count
+    drill_fields: []
+    hidden: yes
+  }
 
 ###### Ops Associate
 
@@ -1875,11 +1922,11 @@ view: staffing {
 
   measure: number_of_overpunched_hours_rider {
     group_label: "> Rider Measures"
-    type: number
+    type: sum
     label: "# Overpunched Rider Hours"
     sql: case
-          when ${number_of_worked_hours_rider} > ${number_of_planned_hours_rider}
-            then ${number_of_worked_hours_rider} - ${number_of_planned_hours_rider}
+          when ${number_of_worked_minutes_rider} > ${number_of_planned_minutes_rider}
+            then (${number_of_worked_minutes_rider} - ${number_of_planned_minutes_rider})/60
           else 0
         end;;
     description: "When # Worked Hours > # Assigned Hours then # Worked Hours - # Assigned Hours"
@@ -1888,91 +1935,91 @@ view: staffing {
 
   measure: number_of_overpunched_hours_picker {
     group_label: "> Picker Measures"
-    type: number
+    type: sum
     label: "# Overpunched Picker Hours"
     sql: case
-          when ${number_of_worked_hours_picker} > ${number_of_planned_hours_picker}
-            then ${number_of_worked_hours_picker} - ${number_of_planned_hours_picker}
-          else 0
-        end;;
+        when ${number_of_worked_minutes_picker} > ${number_of_planned_minutes_picker}
+          then (${number_of_worked_minutes_picker} - ${number_of_planned_minutes_picker})/60
+        else 0
+      end;;
     description: "When # Worked Hours > # Assigned Hours then # Worked Hours - # Assigned Hours"
     value_format_name: decimal_1
   }
 
   measure: number_of_overpunched_hours_shift_lead {
     group_label: "> Shift Lead Measures"
-    type: number
+    type: sum
     label: "# Overpunched Shift Lead Hours"
     sql: case
-          when ${number_of_worked_hours_shift_lead} > ${number_of_planned_hours_shift_lead}
-            then ${number_of_worked_hours_shift_lead} - ${number_of_planned_hours_shift_lead}
-          else 0
-        end;;
+        when ${number_of_worked_minutes_shift_lead} > ${number_of_planned_minutes_shift_lead}
+          then (${number_of_worked_minutes_shift_lead} - ${number_of_planned_minutes_shift_lead})/60
+        else 0
+      end;;
     description: "When # Worked Hours > # Assigned Hours then # Worked Hours - # Assigned Hours"
     value_format_name: decimal_1
   }
 
   measure: number_of_overpunched_hours_rider_captain {
     group_label: "> Rider Captain Measures"
-    type: number
+    type: sum
     label: "# Overpunched Rider Captain Hours"
     sql: case
-          when ${number_of_worked_hours_rider_captain} > ${number_of_planned_hours_rider_captain}
-            then ${number_of_worked_hours_rider_captain} - ${number_of_planned_hours_rider_captain}
-          else 0
-        end;;
+        when ${number_of_worked_minutes_rider_captain} > ${number_of_planned_minutes_rider_captain}
+          then (${number_of_worked_minutes_rider_captain} - ${number_of_planned_minutes_rider_captain})/60
+        else 0
+      end;;
     description: "When # Worked Hours > # Assigned Hours then # Worked Hours - # Assigned Hours"
     value_format_name: decimal_1
   }
 
   measure: number_of_overpunched_hours_co_ops {
     group_label: "> Co Ops Measures"
-    type: number
+    type: sum
     label: "# Overpunched Co Ops Hours"
     sql: case
-          when ${number_of_worked_hours_co_ops} > ${number_of_planned_hours_co_ops}
-            then ${number_of_worked_hours_co_ops} - ${number_of_planned_hours_co_ops}
-          else 0
-        end;;
+        when ${number_of_worked_minutes_co_ops} > ${number_of_planned_minutes_co_ops}
+          then (${number_of_worked_minutes_co_ops} - ${number_of_planned_minutes_co_ops})/60
+        else 0
+      end;;
     description: "When # Worked Hours > # Assigned Hours then # Worked Hours - # Assigned Hours"
     value_format_name: decimal_1
   }
 
   measure: number_of_overpunched_hours_wh {
     group_label: "> WH Measures"
-    type: number
+    type: sum
     label: "# Overpunched WH Hours"
     sql: case
-          when ${number_of_worked_hours_wh} > ${number_of_planned_hours_wh}
-            then ${number_of_worked_hours_wh} - ${number_of_planned_hours_wh}
-          else 0
-        end;;
+        when ${number_of_worked_minutes_wh} > ${number_of_planned_minutes_wh}
+          then (${number_of_worked_minutes_wh} - ${number_of_planned_minutes_wh})/60
+        else 0
+      end;;
     description: "When # Worked Hours > # Assigned Hours then # Worked Hours - # Assigned Hours"
     value_format_name: decimal_1
   }
 
   measure: number_of_overpunched_hours_ops_associate {
     group_label: "> Ops Associate Measures"
-    type: number
+    type: sum
     label: "# Overpunched Ops Associate Hours"
     sql: case
-          when ${number_of_worked_hours_ops_associate} > ${number_of_planned_hours_ops_associate}
-            then ${number_of_worked_hours_ops_associate} - ${number_of_planned_hours_ops_associate}
-          else 0
-        end;;
+        when ${number_of_worked_minutes_ops_associate} > ${number_of_planned_minutes_ops_associate}
+          then (${number_of_worked_minutes_ops_associate_dimension} - ${number_of_planned_minutes_ops_associate})/60
+        else 0
+      end;;
     description: "When # Worked Hours > # Assigned Hours then # Worked Hours - # Assigned Hours"
     value_format_name: decimal_1
   }
 
   measure: number_of_overpunched_hours_hub_staff {
     group_label: "> Hub Staff Measures"
-    type: number
+    type: sum
     label: "# Overpunched Hub Staff Hours"
     sql: case
-          when ${number_of_worked_hours_hub_staff} > ${number_of_planned_hours_hub_staff}
-            then ${number_of_worked_hours_hub_staff} - ${number_of_planned_hours_hub_staff}
-          else 0
-        end;;
+        when ${number_of_worked_minutes_hub_staff} > ${number_of_planned_minutes_hub_staff}
+          then (${number_of_worked_minutes_hub_staff} - ${number_of_planned_minutes_hub_staff})/60
+        else 0
+      end;;
     description: "When # Worked Hours > # Assigned Hours then # Worked Hours - # Assigned Hours"
     value_format_name: decimal_1
   }
@@ -1982,10 +2029,10 @@ view: staffing {
     type: sum
     label: "# Overpunched Deputy Shift Lead Hours"
     sql: case
-          when ${number_of_worked_hours_deputy_shift_lead} > ${number_of_planned_hours_deputy_shift_lead}
-            then ${number_of_worked_hours_deputy_shift_lead} - ${number_of_planned_hours_deputy_shift_lead}
-          else 0
-        end;;
+        when ${number_of_worked_minutes_deputy_shift_lead} > ${number_of_planned_minutes_deputy_shift_lead}
+          then (${number_of_worked_minutes_deputy_shift_lead} - ${number_of_planned_minutes_deputy_shift_lead})/60
+        else 0
+      end;;
     description: "When # Worked Hours > # Assigned Hours then # Worked Hours - # Assigned Hours"
     value_format_name: decimal_1
   }
