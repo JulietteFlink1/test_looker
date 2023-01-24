@@ -875,6 +875,7 @@ view: daily_user_aggregates {
   measure: voucher_wallet_view_rate {
     group_label: "Event Metrics"
     label: "% Voucher Wallet View Rate"
+    description: "% of voucher wallet viewed event out of checkout viewed"
     type: number
     hidden: no
     sql: ${number_of_voucher_wallet_viewed}/${number_of_checkout_viewed};;
