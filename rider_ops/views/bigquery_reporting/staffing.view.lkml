@@ -1923,7 +1923,7 @@ view: staffing {
     label: "% Rider Worked Time Spent Idle"
     description: "% of worked time (hours) not spent handling an order - compares the difference between worked time (hours) and rider handling time (hours) with total worked time (hours). Rider handling time outliers (suspicious timestamps) could be excluded if there is no viable geofencing data."
     sql: ${number_of_idle_hours_rider} / nullif(${number_of_worked_hours_rider},0) ;;
-    value_format_name: percent_1
+    value_format_name: percent_2
   }
   measure: number_of_worked_hours_picker {
     group_label: "> Picker Measures"
