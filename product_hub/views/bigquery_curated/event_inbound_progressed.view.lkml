@@ -267,14 +267,6 @@ view: event_inbound_progressed {
     sql: ${quantity} ;;
   }
 
-  measure: number_of_products_hu {
-    group_label: "Total Metrics"
-    label: "Number of products in handling units"
-    description: "Sum of quantity divided handling units (when there is no value for handling units it is divided by 1)."
-    type: sum
-    sql: SAFE_DIVIDE(${quantity}, calesce(${products.units_per_handling_unit})) ;;
-  }
-
   measure: number_of_products_added_to_list {
     group_label: "Total Metrics"
     label: "Number of Products Added To List"
@@ -311,6 +303,15 @@ view: event_inbound_progressed {
     type: sum
     filters: [action: "product_dropped"]
     sql: ${quantity} ;;
+  }
+
+  measure: number_of_products_dropped_hu {
+    group_label: "Total Metrics"
+    label: "Number of products dropped in handling units"
+    description: "Sum of quantity divided handling units (when there is no value for handling units it is divided by 1)."
+    type: sum
+    filters: [action: "product_dropped"]
+    sql: SAFE_DIVIDE(${quantity}, coalesce(${products.units_per_handling_unit})) ;;
   }
 
   # =========  Rate Metrics   =========
