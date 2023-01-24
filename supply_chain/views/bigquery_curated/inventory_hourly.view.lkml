@@ -70,6 +70,15 @@ view: inventory_hourly {
     hidden: yes
   }
 
+  dimension: filter_sku_cutoff_hour {
+    label: "Filter Cutoff Hours"
+    description: "This boolean field can be used to filter for valid SKU cutoff hours"
+    group_label: "OOS-Dimensions"
+
+    type: yesno
+    sql: ${TABLE}.filter_sku_cutoff_hour ;;
+  }
+
 
 
 
