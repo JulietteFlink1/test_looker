@@ -1871,6 +1871,125 @@ view: staffing {
 
   # =========  Hours   =========
 
+  ##### Overpunched Hours
+
+  measure: number_of_overpunched_hours_rider {
+    group_label: "> Rider Measures"
+    type: number
+    label: "# Overpunched Rider Hours"
+    sql: case
+          when ${number_of_worked_hours_rider} > ${number_of_planned_hours_rider}
+            then ${number_of_worked_hours_rider} - ${number_of_planned_hours_rider}
+          else 0
+        end;;
+    description: "When # Worked Hours > # Assigned Hours then # Worked Hours - # Assigned Hours"
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_overpunched_hours_picker {
+    group_label: "> Picker Measures"
+    type: number
+    label: "# Overpunched Picker Hours"
+    sql: case
+          when ${number_of_worked_hours_picker} > ${number_of_planned_hours_picker}
+            then ${number_of_worked_hours_picker} - ${number_of_planned_hours_picker}
+          else 0
+        end;;
+    description: "When # Worked Hours > # Assigned Hours then # Worked Hours - # Assigned Hours"
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_overpunched_hours_shift_lead {
+    group_label: "> Shift Lead Measures"
+    type: number
+    label: "# Overpunched Shift Lead Hours"
+    sql: case
+          when ${number_of_worked_hours_shift_lead} > ${number_of_planned_hours_shift_lead}
+            then ${number_of_worked_hours_shift_lead} - ${number_of_planned_hours_shift_lead}
+          else 0
+        end;;
+    description: "When # Worked Hours > # Assigned Hours then # Worked Hours - # Assigned Hours"
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_overpunched_hours_rider_captain {
+    group_label: "> Rider Captain Measures"
+    type: number
+    label: "# Overpunched Rider Captain Hours"
+    sql: case
+          when ${number_of_worked_hours_rider_captain} > ${number_of_planned_hours_rider_captain}
+            then ${number_of_worked_hours_rider_captain} - ${number_of_planned_hours_rider_captain}
+          else 0
+        end;;
+    description: "When # Worked Hours > # Assigned Hours then # Worked Hours - # Assigned Hours"
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_overpunched_hours_co_ops {
+    group_label: "> Co Ops Measures"
+    type: number
+    label: "# Overpunched Co Ops Hours"
+    sql: case
+          when ${number_of_worked_hours_co_ops} > ${number_of_planned_hours_co_ops}
+            then ${number_of_worked_hours_co_ops} - ${number_of_planned_hours_co_ops}
+          else 0
+        end;;
+    description: "When # Worked Hours > # Assigned Hours then # Worked Hours - # Assigned Hours"
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_overpunched_hours_wh {
+    group_label: "> WH Measures"
+    type: number
+    label: "# Overpunched WH Hours"
+    sql: case
+          when ${number_of_worked_hours_wh} > ${number_of_planned_hours_wh}
+            then ${number_of_worked_hours_wh} - ${number_of_planned_hours_wh}
+          else 0
+        end;;
+    description: "When # Worked Hours > # Assigned Hours then # Worked Hours - # Assigned Hours"
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_overpunched_hours_ops_associate {
+    group_label: "> Ops Associate Measures"
+    type: number
+    label: "# Overpunched Ops Associate Hours"
+    sql: case
+          when ${number_of_worked_hours_ops_associate} > ${number_of_planned_hours_ops_associate}
+            then ${number_of_worked_hours_ops_associate} - ${number_of_planned_hours_ops_associate}
+          else 0
+        end;;
+    description: "When # Worked Hours > # Assigned Hours then # Worked Hours - # Assigned Hours"
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_overpunched_hours_hub_staff {
+    group_label: "> Hub Staff Measures"
+    type: number
+    label: "# Overpunched Hub Staff Hours"
+    sql: case
+          when ${number_of_worked_hours_hub_staff} > ${number_of_planned_hours_hub_staff}
+            then ${number_of_worked_hours_hub_staff} - ${number_of_planned_hours_hub_staff}
+          else 0
+        end;;
+    description: "When # Worked Hours > # Assigned Hours then # Worked Hours - # Assigned Hours"
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_overpunched_hours_deputy_shift_lead {
+    group_label: "> Deputy Shift Lead Measures"
+    type: sum
+    label: "# Overpunched Deputy Shift Lead Hours"
+    sql: case
+          when ${number_of_worked_hours_deputy_shift_lead} > ${number_of_planned_hours_deputy_shift_lead}
+            then ${number_of_worked_hours_deputy_shift_lead} - ${number_of_planned_hours_deputy_shift_lead}
+          else 0
+        end;;
+    description: "When # Worked Hours > # Assigned Hours then # Worked Hours - # Assigned Hours"
+    value_format_name: decimal_1
+  }
+
   ##### All
   measure: number_of_worked_hours_rider {
     group_label: "> Rider Measures"
@@ -4535,6 +4654,26 @@ view: staffing {
           when {% parameter position_parameter %} = 'Hub Staff' THEN ${utr_hub_staff}
           else null
         end ;;
+  }
+
+  measure: number_of_overpunched_hours_by_position {
+    type: number
+    label: "# Overpunched Hours"
+    description: "When # Worked Hours > # Assigned Hours then # Worked Hours - # Assigned Hours"
+    value_format_name: decimal_1
+    group_label: "> Dynamic Measures"
+    sql:
+        CASE
+          WHEN {% parameter position_parameter %} = 'Rider' THEN ${number_of_overpunched_hours_rider}
+          WHEN {% parameter position_parameter %} = 'Picker' THEN ${number_of_overpunched_hours_picker}
+          WHEN {% parameter position_parameter %} = 'Shift Lead' THEN ${number_of_overpunched_hours_shift_lead}
+          WHEN {% parameter position_parameter %} = 'Deputy Shift Lead' THEN ${number_of_overpunched_hours_deputy_shift_lead}
+          WHEN {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_overpunched_hours_rider_captain}
+          WHEN {% parameter position_parameter %} = 'WH' THEN ${number_of_overpunched_hours_wh}
+          WHEN {% parameter position_parameter %} = 'Hub Staff' THEN ${number_of_overpunched_hours_hub_staff}
+          WHEN {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_overpunched_hours_ops_associate}
+      ELSE NULL
+      END ;;
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
