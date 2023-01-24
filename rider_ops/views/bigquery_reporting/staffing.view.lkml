@@ -2003,8 +2003,8 @@ view: staffing {
     type: sum
     label: "# Overpunched Ops Associate Hours"
     sql: case
-        when ${number_of_worked_minutes_ops_associate} > ${number_of_planned_minutes_ops_associate}
-          then (${number_of_worked_minutes_ops_associate_dimension} - ${number_of_planned_minutes_ops_associate})/60
+        when ${number_of_worked_minutes_ops_associate_dimension} > ${number_of_planned_minutes_ops_associate_dimension}
+          then (${number_of_worked_minutes_ops_associate_dimension} - ${number_of_planned_minutes_ops_associate_dimension})/60
         else 0
       end;;
     description: "When # Worked Hours > # Assigned Hours then # Worked Hours - # Assigned Hours"
