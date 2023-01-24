@@ -11,7 +11,7 @@
 # GMV
 
 view: supply_chain_master_report {
-  sql_table_name: `flink-data-prod.reporting.supply_chain_master_report`
+  sql_table_name: `flink-data-dev.dbt_lruiz_reporting.supply_chain_master_report`
     ;;
 
 set: drill_fields_set {
@@ -387,6 +387,202 @@ set: drill_fields_set {
     label: "Selling Price Gross"
     group_label: "Price Dimensions"
   }
+
+###################################################
+###### Advanced Supplier Matching Dimensions ######
+###############      HIDDEN.     ##################
+###################################################
+
+  dimension: ordered_items_desadvs {
+    type: number
+    sql: ${TABLE}.sum_ordered_items_desadvs ;;
+    label: "# Delivered Items (DESADVs)"
+    group_label: "DESADVs <> Inbounds"
+    description: "The number of SKUs, that have been delivered according to the dispatch notification (DESADV)"
+    hidden: yes
+  }
+
+  dimension: otifiq_stric_desadvs {
+    type: number
+    sql: ${TABLE}.sum_otifiq_stric_desadvs ;;
+    label: "# OTIFIQ Strict (DESADVs <> Inbounds)"
+    group_label: "DESADVs <> Inbounds"
+    description: "Number of on time, in full and in quality DESADV lines (DESADV > Inbound)"
+    hidden: yes
+  }
+
+  dimension: total_quantity_desadvs {
+    type: number
+    sql: ${TABLE}.sum_total_quantity_desadvs ;;
+    label: "# Total Quantity (DESADVs)"
+    group_label: "DESADVs <> Inbounds"
+    description: "The total number of units, that have been delivered according to the dispatch notification (DESADV)"
+    hidden: yes
+  }
+
+  dimension: quantity_otifiq_relax_lim_desadvs  {
+    type: number
+    sql: ${TABLE}.sum_quantity_otifiq_relax_lim_desadvs ;;
+    label: "# OTIFIQ Relaxed lim (DESADVs <> Inbounds)"
+    group_label: "DESADVs <> Inbounds"
+    description: "Total amount of on time and in quality fulfilled quantities (DESADV > Inbound), where an overdelivered quantity is limited to the DESADV quantity"
+    hidden: yes
+  }
+
+  dimension: inbounded_items_on_time_desadvs  {
+    type: number
+    sql: ${TABLE}.sum_inbounded_items_on_time_desadvs ;;
+    label: "# On time delivery (DESADVs <> Inbounds)"
+    group_label: "DESADVs <> Inbounds"
+    description: "Number of on time delivered DESADV lines (DESADV > Inbound)"
+    hidden: yes
+  }
+
+  dimension: inbounded_in_full_strict_desadvs {
+    type: number
+    sql: ${TABLE}.sum_inbounded_in_full_strict_desadvs ;;
+    label: "# In full delivery (DESADVs <> Inbounds)"
+    group_label: "DESADVs <> Inbounds"
+    description: "Number of in full delivered DESADV lines (DESADV > Inbound)"
+    hidden: yes
+  }
+
+  dimension: quantity_inbounded_desadv {
+    type: number
+    sql: ${TABLE}.sum_quantity_inbounded_desadv ;;
+    label: "# Inbounded Items (DESADVs <> Inbounds)"
+    group_label: "DESADVs <> Inbounds"
+    description: "Total amount of fullfilled quantities"
+    hidden: yes
+  }
+
+  dimension: quantity_inbounded_in_quality_desadv {
+    type: number
+    sql: ${TABLE}.sum_quantity_inbounded_in_quality_desadv ;;
+    label: "# Inbounded Items in Quality (DESADVs <> Inbounds)"
+    group_label: "DESADVs <> Inbounds"
+    description: "Share of in quality delivered order lines"
+    hidden: yes
+  }
+
+  dimension: ordered_item_purchase_order {
+    type: number
+    sql: ${TABLE}.sum_ordered_item_purchase_order ;;
+    label: "# Ordered Items (PO)"
+    group_label: "PO <> Inbounds"
+    description: "The number of SKUs, that have been ordered"
+    hidden: yes
+  }
+
+  dimension: otifiq_stric_purchase_order {
+    type: number
+    sql: ${TABLE}.sum_otifiq_stric_purchase_order ;;
+    label: "# OTIFIQ Strict (PO <> Inbounds)"
+    group_label: "PO <> Inbounds"
+    description: "Number of on time, in full and in quality order lines (PO > Inbound)"
+    hidden: yes
+  }
+
+  dimension: total_quantity_purchase_order {
+    type: number
+    sql: ${TABLE}.sum_total_quantity_purchase_order ;;
+    label: "# Total Quantity (PO)"
+    group_label: "PO <> Inbounds"
+    description: "The total number of units, that have been ordered (PO)"
+    hidden: yes
+  }
+
+  dimension: quantity_otifiq_relax_lim_purchase_order {
+    type: number
+    sql: ${TABLE}.sum_quantity_otifiq_relax_lim_purchase_order ;;
+    label: "# OTIFIQ Relaxed lim (PO <> Inbounds)"
+    group_label: "PO <> Inbounds"
+    description: "Total amount of on time and in quality fulfilled quantities (PO > Inbound), where an overdelivered quantity is limited to the PO quantity"
+    hidden: yes
+  }
+
+  dimension: inbounded_items_on_time_purchase_order {
+    type: number
+    sql: ${TABLE}.sum_inbounded_items_on_time_purchase_order ;;
+    label: "# On time delivery (PO <> Inbounds)"
+    group_label: "PO <> Inbounds"
+    description: "Number of on time delivered PO lines (PO > Inbound)"
+    hidden: yes
+  }
+
+  dimension: inbounded_in_full_strict_purchase_order {
+    type: number
+    sql: ${TABLE}.sum_inbounded_in_full_strict_purchase_order ;;
+    label: "# In full delivery (PO <> Inbounds)"
+    group_label: "PO <> Inbounds"
+    description: "Number of in full delivered PO lines (PO > Inbound)"
+    hidden: yes
+  }
+
+  dimension: quantity_inbounded_purchase_order {
+    type: number
+    sql: ${TABLE}.sum_quantity_inbounded_purchase_order ;;
+    label: "# Inbounded Items (PO <> Inbounds)"
+    group_label: "PO <> Inbounds"
+    description: "Total amount of fullfilled quantities (PO > Inbound)"
+    hidden: yes
+  }
+
+  dimension: quantity_inbounded_in_quality_purchase_order {
+    type: number
+    sql: ${TABLE}.sum_quantity_inbounded_in_quality_purchase_order ;;
+    label: "# Inbounded Items in Quality (PO <> Inbounds)"
+    group_label: "PO <> Inbounds"
+    description: "Share of in quality delivered order lines (PO > Inbound)"
+    hidden: yes
+  }
+
+  dimension: ordered_items_on_time_in_full {
+    type: number
+    sql: ${TABLE}.sum_ordered_items_on_time_in_full ;;
+    label: "# OTIF strict (PO > DESADV)"
+    group_label: "PO <> DESADVs"
+    description: "Number of on time and in full order lines (PO > DESADV)"
+    hidden: yes
+  }
+
+  dimension: ordered_items_quantity_desadv_on_time_limited {
+    type: number
+    sql: ${TABLE}.sum_ordered_items_quantity_desadv_on_time_limited ;;
+    label: "# OTIF relaxed quantity lim. (PO > DESADV)"
+    group_label: "PO <> DESADVs"
+    description: "Total amount of on time fulfilled quantities (PO > DESADV), where an overdelivered quantity is limited to the PO quantity"
+    hidden: yes
+  }
+
+  dimension: ordered_items_delivered_on_time {
+    type: number
+    sql: ${TABLE}.sum_ordered_items_delivered_on_time ;;
+    label: "# On Time Delivery (PO > DESADV)"
+    group_label: "PO <> DESADVs"
+    description: "The number of SKUs, that have been ordered and have been delivered at the promised delivery date - (PO > DESADV)"
+    hidden: yes
+  }
+
+  dimension: ordered_items_in_full{
+    type: number
+    sql: ${TABLE}.sum_ordered_items_in_full ;;
+    label: "# In Full delivery (PO > DESADV)"
+    group_label: "PO <> DESADVs"
+    description: "Number of in full delivered order lines (PO > DESADV)"
+    hidden: yes
+  }
+
+  dimension: ordered_items_quantity_desadv_with_po {
+    type: number
+    sql: ${TABLE}.sum_ordered_items_quantity_desadv_with_po ;;
+    label: "# Filled Quantities (PO > DESADV)"
+    group_label: "PO <> DESADVs"
+    description: "Sum of fullfilled quantities (PO > DESADV)"
+    hidden: yes
+  }
+
+
 
   measure: count {
     type: count
