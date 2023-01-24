@@ -163,7 +163,6 @@ view: hub_one_inventory_checking {
 
   dimension_group: created_at_timestamp {
     description: "Timestamp for when the task has been created. Corresponds to created_at timestamp in hub_task schema."
-    hidden: yes
     type: time
     timeframes: [
       raw,
