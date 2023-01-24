@@ -182,10 +182,8 @@ view: hub_one_inventory_checking {
       raw,
       time,
       date,
-      week,
-      month,
-      quarter,
-      year
+      hour,
+      day_of_week
     ]
     sql: ${TABLE}.updated_at_timestamp ;;
   }
@@ -198,10 +196,8 @@ view: hub_one_inventory_checking {
       raw,
       time,
       date,
-      week,
-      month,
-      quarter,
-      year
+      hour,
+      day_of_week
     ]
     sql: ${TABLE}.started_at_timestamp ;;
   }
@@ -214,10 +210,8 @@ view: hub_one_inventory_checking {
       raw,
       time,
       date,
-      week,
-      month,
-      quarter,
-      year
+      hour,
+      day_of_week
     ]
     sql: ${TABLE}.finished_at_timestamp ;;
   }
@@ -409,24 +403,28 @@ view: hub_one_inventory_checking {
   measure: time_checking_minutes {
     group_label: "Time Metrics"
     type: sum
+    value_format: "0.##"
     sql: ${TABLE}.time_checking_minutes ;;
   }
 
   measure: time_checking_seconds {
     group_label: "Time Metrics"
     type: sum
+    value_format: "0.##"
     sql: ${TABLE}.time_checking_seconds ;;
   }
 
   measure: avg_time_checking_minutes {
     group_label: "Time Metrics"
     type: average
+    value_format: "0.##"
     sql: ${TABLE}.time_checking_minutes ;;
   }
 
   measure: avg_time_checking_seconds {
     group_label: "Time Metrics"
     type: average
+    value_format: "0.##"
     sql: ${TABLE}.time_checking_seconds ;;
   }
 }
