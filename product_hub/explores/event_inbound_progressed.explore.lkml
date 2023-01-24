@@ -38,6 +38,8 @@ explore: event_inbound_progressed {
     ]
   }
 
+  always_join: [products]
+
   join: global_filters_and_parameters {
     sql: ;;
   relationship: one_to_one
