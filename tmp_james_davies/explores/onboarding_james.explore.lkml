@@ -1,3 +1,6 @@
+##Owner: James Davies
+##Description: This explore provides an analysis for the table built as part of the onboarding programme.
+
 include: "/**/james_onboarding_task.view.lkml"
 
 explore: james_onboarding_task {
@@ -8,13 +11,19 @@ explore: james_onboarding_task {
   # Riders, # Rider Hours Worked, Avg Fulfullment Time, Avg Items per Basket"
   hidden: no
 
-
- always_filter: {
+  always_filter: {
     filters: [
-     order_date: "last 30 days",
-     hub_code: "",
-     country_iso: ""
+      order_date: "last 30 days",
+      hub_code: "",
+      country_iso: ""
     ]
   }
+
+  access_filter: {
+    field: james_onboarding_task.country_iso
+    user_attribute: country_iso
+  }
+
+
 
 }

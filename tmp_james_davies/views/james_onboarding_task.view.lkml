@@ -8,7 +8,7 @@
 view: james_onboarding_task {
   sql_table_name: `flink-data-dev.dbt_jdavies_sandbox.james_onboarding_task`
     ;;
-  view_label: "* Order and Rider ouput last 30 days *"
+  view_label: "Order and Rider ouput last 30 days"
 
   dimension: country_iso {
     label: "Country ISO"
@@ -90,7 +90,7 @@ measure: number_of_rider_hours {
 
 measure: number_of_orders {
   label: "# Orders"
-  description: "Number of orders successfully delivered"
+  description: "# successful orders"
   type: sum
   sql: ${TABLE}.number_of_orders ;;
 
@@ -106,7 +106,7 @@ measure: number_of_orders_eligible_fulfillment_time {
 
 measure: total_fulfillment_time_minutes {
   label: "Total Fulfillment Time"
-  description: "The total duration of end to end fulfillment"
+  description: "Total Fulfillment Time considering order placement to delivery (rider at customer). Outliers excluded (<3min or >210min)."
   type: sum
   sql: ${TABLE}.total_fulfillment_time_minutes ;;
 
@@ -114,7 +114,7 @@ measure: total_fulfillment_time_minutes {
 
 measure: average_fulfillment_time_minutes {
   label: "AVG Fullfilment Time"
-  description: "The average duration of end to end fulfillment here in decimal format"
+  description: "Average Fulfillment Time considering order placement to delivery (rider at customer). Outliers excluded (<3min or >210min). Decimal format."
   type:  number
   sql:  ${total_fulfillment_time_minutes}/${number_of_orders_eligible_fulfillment_time};;
   value_format_name: decimal_2
@@ -123,7 +123,7 @@ measure: average_fulfillment_time_minutes {
 
   measure: avg_fulfillment_time_mm_ss {
     label: "AVG Fulfillment Time (HH:MM:SS)"
-    description: "The average duration of end to end fulfillment here in HH:MM:SS format"
+    description: "Average Fulfillment Time considering order placement to delivery (rider at customer). Outliers excluded (<3min or >210min). HH:MM:SS format."
     type: number
     sql: ${total_fulfillment_time_minutes}/${number_of_orders_eligible_fulfillment_time} * 60 / 86400.0;;
     value_format: "hh:mm:ss"
