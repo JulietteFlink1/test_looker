@@ -4,7 +4,7 @@
 ### This view represents data for reporting on CRM canvas lifecycles efficiency.
 
 view: braze_lifecycle_cohorts {
-  sql_table_name: `flink-data-dev.dbt_aavramenko_curated.braze_lifecycle_cohorts_v2`
+  sql_table_name: `flink-data-prod.curated.braze_lifecycle_cohorts`
     ;;
   view_label: "* CRM Lifecycle Canvases *"
 
@@ -212,6 +212,7 @@ view: braze_lifecycle_cohorts {
   dimension: canvas_name {
     group_label: "* Cohort Dimensions *"
     label: "Canvas Name"
+    description: "Name of the Braze canvas entity - marketing campaign with multiple messages and steps forming a cohesive journey"
     type: string
     sql: ${TABLE}.canvas_name ;;
   }
@@ -219,6 +220,7 @@ view: braze_lifecycle_cohorts {
   dimension: country_iso {
     group_label: "* Cohort Dimensions *"
     label: "Country ISO"
+    description: "Target country of the canvas"
     type: string
     sql: ${TABLE}.country_iso ;;
   }
@@ -226,6 +228,7 @@ view: braze_lifecycle_cohorts {
   dimension: canvas_variation_name {
     group_label: "* Cohort Dimensions *"
     label: "Canvas Variation"
+    description: "Name of the test/control variation within canvas"
     type: string
     sql: ${TABLE}.canvas_variation_name ;;
   }
@@ -233,15 +236,16 @@ view: braze_lifecycle_cohorts {
   dimension: in_control_group {
     group_label: "* Cohort Dimensions *"
     label: "Is Control Group"
+    description: "Flag stating if the variation is a control group. Only one variation per canvas can be a control group"
     type: yesno
     sql: ${TABLE}.in_control_group ;;
   }
 
   dimension_group: cohort {
-    type: time
     group_label: "* Dates and Timestamps *"
     label: "Cohort Entry"
     description: "Time when Braze users entered the canvas. Not always equal to first contact date, as the first step can be delayed from the canvas entry date"
+    type: time
     timeframes: [
       date,
       week,
@@ -255,10 +259,10 @@ view: braze_lifecycle_cohorts {
   }
 
   dimension_group: first_contact {
-    type: time
     group_label: "* Dates and Timestamps *"
     label: "First Contact"
     description: "Time of the first contact sent to users within the cohort's journey"
+    type: time
     timeframes: [
       date,
       week,
@@ -270,10 +274,10 @@ view: braze_lifecycle_cohorts {
   }
 
   dimension_group: last_contact {
-    type: time
     group_label: "* Dates and Timestamps *"
     label: "Last Contact"
     description: "Time of the last contact sent to users within the cohort's journey"
+    type: time
     timeframes: [
       date,
       week,
@@ -285,10 +289,10 @@ view: braze_lifecycle_cohorts {
   }
 
   dimension_group: canvas_journey_duration {
-    type: duration
     group_label: "* Dates and Timestamps *"
     label: "Canvas Duration"
     description: "Timeframe between first and last contact within the cohort's journey"
+    type: duration
     intervals: [day, week, month]
     convert_tz: no
     sql_start: ${TABLE}.first_contact_date ;;
@@ -312,11 +316,8 @@ view: braze_lifecycle_cohorts {
     type: sum
     sql: ${users_count} ;;
     filters: {
-
       field: in_control_group
-
       value: "No"
-
     }
   }
 
@@ -325,11 +326,8 @@ view: braze_lifecycle_cohorts {
     type: sum
     sql: ${control_users_count} ;;
     filters: {
-
       field: in_control_group
-
       value: "No"
-
     }
   }
 
@@ -371,11 +369,8 @@ view: braze_lifecycle_cohorts {
     type: sum
     sql: ${customers_ordered_count};;
     filters: {
-
       field: in_control_group
-
       value: "No"
-
     }
   }
 
@@ -384,12 +379,21 @@ view: braze_lifecycle_cohorts {
     type: sum
     sql: ${control_customers_ordered_count};;
     filters: {
-
       field: in_control_group
-
       value: "No"
-
     }
+  }
+
+  measure: share_of_variant_customers_ordered {
+    hidden: yes
+    type: number
+    sql: safe_divide(${number_of_variant_customers_ordered},${number_of_variant_users});;
+  }
+
+  measure: share_of_control_customers_ordered {
+    hidden: yes
+    type: number
+    sql: safe_divide(${number_of_control_customers_ordered},${number_of_control_users});;
   }
 
   measure: share_of_customers_ordered {
@@ -406,8 +410,7 @@ view: braze_lifecycle_cohorts {
     label: "Incrementality - Δ ppt. in Users Ordered"
     description: "Positive difference in share of users who placed an order in variant group compared to the share of users who placed an order in control group"
     type: number
-    sql: (safe_divide(${number_of_variant_customers_ordered},${number_of_variant_users}) -
-    safe_divide(${number_of_control_customers_ordered},${number_of_control_users})) * 100 ;;
+    sql: (${share_of_variant_customers_ordered} - ${share_of_control_customers_ordered}) * 100 ;;
     value_format_name: decimal_2
   }
 
@@ -416,9 +419,8 @@ view: braze_lifecycle_cohorts {
     label: "Incremental lift - Δ % in Users Ordered"
     description: "% increase in share of users who placed an order in variant group compared to the share of users who placed an order in control group"
     type: number
-    sql: safe_divide((safe_divide(${number_of_variant_customers_ordered},${number_of_variant_users}) -
-      safe_divide(${number_of_control_customers_ordered},${number_of_control_users})),
-      safe_divide(${number_of_control_customers_ordered},${number_of_control_users})) ;;
+    sql: safe_divide((${share_of_variant_customers_ordered} - ${share_of_control_customers_ordered}),
+    ${share_of_control_customers_ordered}) ;;
     value_format_name: percent_2
   }
 
@@ -452,11 +454,8 @@ view: braze_lifecycle_cohorts {
     type: sum
     sql: ${customers_visited_count} ;;
     filters: {
-
       field: in_control_group
-
       value: "No"
-
     }
   }
 
@@ -465,12 +464,21 @@ view: braze_lifecycle_cohorts {
     type: sum
     sql: ${control_customers_visited_count} ;;
     filters: {
-
       field: in_control_group
-
       value: "No"
-
     }
+  }
+
+  measure: share_of_variant_customers_visited {
+    hidden: yes
+    type: number
+    sql: safe_divide(${number_of_variant_customers_visited},${number_of_variant_users});;
+  }
+
+  measure: share_of_control_customers_visited {
+    hidden: yes
+    type: number
+    sql: safe_divide(${number_of_control_customers_visited},${number_of_control_users});;
   }
 
   measure: share_of_customers_visited {
@@ -487,8 +495,7 @@ view: braze_lifecycle_cohorts {
     label: "Incrementality - Δ ppt. in Users Visited"
     description: "Positive difference in share of users who visited app or web in variant group compared to the share of users who visited app or web in control group"
     type: number
-    sql: (safe_divide(${number_of_variant_customers_visited},${number_of_variant_users}) -
-    safe_divide(${number_of_control_customers_visited},${number_of_control_users})) * 100 ;;
+    sql: (${share_of_variant_customers_visited} - ${share_of_control_customers_visited}) * 100 ;;
     value_format_name: decimal_2
   }
 
@@ -497,9 +504,8 @@ view: braze_lifecycle_cohorts {
     label: "Incremental lift - Δ % in Users Visited"
     description: "% increase in share of users who visited app or web in variant group compared to the share of users who visited app or web in control group"
     type: number
-    sql: safe_divide((safe_divide(${number_of_variant_customers_visited},${number_of_variant_users}) -
-      safe_divide(${number_of_control_customers_visited},${number_of_control_users})),
-      safe_divide(${number_of_control_customers_visited},${number_of_control_users})) ;;
+    sql: safe_divide((${share_of_variant_customers_visited} - ${share_of_control_customers_visited}),
+    ${share_of_control_customers_visited}) ;;
     value_format_name: percent_2
   }
 

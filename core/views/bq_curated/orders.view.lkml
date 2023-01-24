@@ -1436,6 +1436,14 @@ view: orders {
     sql: ${TABLE}.is_external_order ;;
   }
 
+  dimension: is_last_mile_order {
+    group_label: "* Order Dimensions *"
+    type: yesno
+    sql: ${TABLE}.is_last_mile_order ;;
+    description: "TRUE if the order is delivered by flink's riders.
+    Not click and collect order, not created through an external provider (e.g. uber-eats and wolt). Doordash orders are included as they are delivered by Flink's riders."
+  }
+
   dimension: deposit {
     type: number
     hidden: yes
@@ -2688,7 +2696,7 @@ view: orders {
     sql: ${order_uuid} ;;
     value_format: "0"
     filters: [
-      external_provider: "ubereats",
+      external_provider: "uber-eats, uber-eats-carrefour",
       is_successful_order: "yes"
       ]
   }
@@ -2935,6 +2943,15 @@ view: orders {
     type: count_distinct
     sql: ${order_uuid};;
     filters: [amt_late_night_fee_gross: ">0"]
+  }
+
+  measure: number_of_succesful_non_external_orders {
+    label: "# Non External Orders"
+    description: "Number of succesful orders that do not come through an external provider."
+    hidden: yes
+    type: count_distinct
+    sql: ${order_uuid};;
+    filters: [is_external_order: "no", is_successful_order: "yes"]
   }
 
   ##### TOTAL FEES #####

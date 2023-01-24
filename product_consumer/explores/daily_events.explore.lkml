@@ -21,6 +21,7 @@ include: "/**/event_order_placed.view.lkml"
 include: "/**/daily_violations_aggregates.view.lkml"
 include: "/**/event_sponsored_product_impressions.view.lkml"
 include: "/**/event_payment_failed.view.lkml"
+include: "/**/event_order_tracking_viewed.view.lkml"
 
 explore: daily_events {
   from:  daily_events
@@ -167,6 +168,18 @@ explore: daily_events {
       event_payment_failed.error_details]
     sql_on: ${event_payment_failed.event_uuid} = ${daily_events.event_uuid}
       and {% condition global_filters_and_parameters.datasource_filter %} ${event_payment_failed.event_timestamp_date} {% endcondition %};;
+    type: left_outer
+    relationship: one_to_one
+  }
+
+  join: event_order_tracking_viewed {
+    view_label: "Event: Order Tracking Viewed"
+    fields: [event_order_tracking_viewed.order_id,
+      event_order_tracking_viewed.order_status,
+      event_order_tracking_viewed.delivery_eta,
+      event_order_tracking_viewed.delivery_pdt]
+    sql_on: ${event_order_tracking_viewed.event_uuid} = ${daily_events.event_uuid}
+      and {% condition global_filters_and_parameters.datasource_filter %} ${event_order_tracking_viewed.event_timestamp_date} {% endcondition %};;
     type: left_outer
     relationship: one_to_one
   }

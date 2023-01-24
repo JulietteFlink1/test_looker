@@ -454,7 +454,7 @@ view: shyftplan_riders_pickers_hours_clean {
     hidden: yes
   }
 
-  # Excluding Click & Collect and Ubereats orders
+  # last mile orders only
   measure: adjusted_orders_riders {
     type: sum
     sql:${number_of_orders};;
@@ -462,7 +462,7 @@ view: shyftplan_riders_pickers_hours_clean {
     hidden: yes
   }
 
-  # Including Click & Collect and Ubereats orders
+  # Including all orders
   measure: adjusted_orders_pickers {
     type: sum
     sql:${number_of_orders};;
@@ -933,7 +933,7 @@ view: shyftplan_riders_pickers_hours_clean {
     hidden:  no
     type: number
     sql: ${employee_level_kpis.pct_rider_idle_time};;
-    value_format: "0%"
+    value_format_name: percent_2
   }
 
   measure: rider_utr_cleaned {

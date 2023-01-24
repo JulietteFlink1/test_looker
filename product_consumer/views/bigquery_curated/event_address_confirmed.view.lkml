@@ -1,5 +1,5 @@
 view: event_address_confirmed {
-  sql_table_name: `curated.event_address_confirmed`
+  sql_table_name: `flink-data-prod.curated.event_address_confirmed`
     ;;
   view_label:  "Address Confirmed"
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #

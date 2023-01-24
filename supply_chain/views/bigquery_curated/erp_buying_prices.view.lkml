@@ -163,7 +163,7 @@ view: erp_buying_prices {
   dimension: vendor_price {
     label: "Buying Price"
     type: number
-    sql: ${TABLE}.vendor_price ;;
+    sql: ${TABLE}.amt_buying_price_net_eur ;;
     value_format_name: decimal_4
   }
 

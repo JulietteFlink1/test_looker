@@ -670,6 +670,15 @@ view: forecasts {
     value_format_name: percent_1
   }
 
+  measure: pct_forecast_deviation_hours_adjusted_excl_ec {
+    group_label: "> Dynamic Measures"
+    label: "% Adjusted Scheduled Hours Forecast Deviation (Excl. EC Shifts Hours)"
+    description: "The degree of how far # Forecasted Hours (Incl. Airtable Adjustments) is from # Scheduled Hours (Excl. EC shift hours ) in the given period. Formula: ((# Scheduled Hours - # Scheduled EC Shift Hours) / # Forecasted Hours) - 1"
+    type: number
+    sql: ((${ops.number_of_scheduled_hours_by_position}-${ops.number_of_scheduled_hours_by_position_ec_shift})/nullif(${number_of_forecasted_hours_by_position_adjusted},0)) - 1 ;;
+    value_format_name: percent_1
+  }
+
   measure: forecasted_avg_rider_handling_duration_seconds {
     alias: [forecasted_avg_order_handling_duration_seconds]
     group_label: "> Order Measures"
@@ -796,7 +805,7 @@ view: forecasts {
   measure: wmape_orders {
     group_label: "> Forecasting error"
     label: "wMAPE - Orders"
-    description: "Summed Absolute Difference of Orders per Hub in 30 min/ # Actual Orders"
+    description: "Summed Absolute Difference of Orders per Hub per 30 min timeslot/ # Actual Orders"
     type: number
     sql: ${summed_absolute_error}/nullif(${number_of_actual_orders},0);;
     value_format_name: percent_2
@@ -819,7 +828,7 @@ view: forecasts {
   measure: wmape_orders_adjusted {
     group_label: "> Forecasting error"
     label: "wMAPE - Adjusted Orders"
-    description: "Summed Absolute Difference of Orders per Hub in 30 min/ # Actual Orders"
+    description: "Summed Absolute Difference of Orders per Hub per 30 min timeslot/ # Actual Orders"
     type: number
     sql: ${summed_absolute_error_adjusted}/nullif(${number_of_actual_orders},0);;
     value_format_name: percent_2
@@ -828,7 +837,7 @@ view: forecasts {
   measure: wmape_hours {
     group_label: "> Forecasting error"
     label: "wMAPE - Scheduled Hours"
-    description: "Summed Absolute Difference of Scheduled Hours per Hub in 30 min (# Forecasted Hours - # Scheduled Hours)/ # Scheduled Hours"
+    description: "Summed Absolute Difference of Scheduled Hours per Hub per 30 min timeslot (# Forecasted Hours - # Scheduled Hours)/ # Scheduled Hours"
     type: number
     sql: ${summed_absolute_error_hours}/nullif(${ops.number_of_scheduled_hours_by_position},0);;
     value_format_name: percent_2
@@ -848,19 +857,36 @@ view: forecasts {
     sql: ABS(${number_of_forecasted_hours_by_position_adjusted_dimension} - ${ops.number_of_scheduled_hours_by_position_dimension});;
   }
 
+
   measure: wmape_hours_adjusted {
     group_label: "> Forecasting error"
     label: "wMAPE - Adjusted Scheduled Hours"
-    description: "Summed Absolute Difference of Scheduled Hours per Hub in 30 min (# Adjusted Forecasted Hours (Incl. Airtable Adjustments) - # Scheduled Hours)/ # Scheduled Hours"
+    description: "Summed Absolute Difference of Scheduled Hours per Hub per 30 min timeslot (# Adjusted Forecasted Hours (Incl. Airtable Adjustments) - # Scheduled Hours)/ # Scheduled Hours"
     type: number
     sql: ${summed_absolute_error_hours_adjusted}/nullif(${ops.number_of_scheduled_hours_by_position},0);;
+    value_format_name: percent_2
+  }
+
+  measure: summed_absolute_error_worked_hours_adjusted {
+    type: sum_distinct
+    sql_distinct_key: ${forecast_uuid} ;;
+    hidden: yes
+    sql: ABS(${number_of_forecasted_hours_by_position_adjusted_dimension} - ${ops.number_of_worked_hours_by_position_dimension});;
+  }
+
+  measure: wmape_worked_hours_adjusted {
+    group_label: "> Forecasting error"
+    label: "wMAPE - Worked (Punched) Hours"
+    description: "Summed Absolute Difference of Worked (Punched) Hours per Hub per 30 min timeslot (# Adjusted Forecasted Hours (Incl. Airtable Adjustments) - # Worked (Punched) Hours)/ # Worked (Punched) Hours"
+    type: number
+    sql: ${summed_absolute_error_worked_hours_adjusted}/nullif(${ops.number_of_worked_hours_by_position},0);;
     value_format_name: percent_2
   }
 
   measure: wmape_no_show_hours {
     group_label: "> Forecasting error"
     label: "wMAPE - No Show Hours"
-    description: "Summed Absolute Difference of Actual No Show Hours per Hub in 30 min (# Forecasted No Show Hours - # Actual No Show Hours)/ # Actual No Show Hours"
+    description: "Summed Absolute Difference of Actual No Show Hours per Hub per 30 min timeslot (# Forecasted No Show Hours - # Actual No Show Hours)/ # Actual No Show Hours"
     type: number
     hidden: no
     sql: ${summed_absolute_error_no_show_hours}/nullif(${ops.number_of_no_show_hours_by_position},0);;
@@ -884,7 +910,7 @@ view: forecasts {
   measure: wmape_no_show_hours_adjusted {
     group_label: "> Forecasting error"
     label: "wMAPE - Adjusted No Show Hours"
-    description: "Summed Absolute Difference of Actual No Show Hours per Hub in 30 min (# Adsjuted Forecasted No Show Hours (Incl. Airtable Adjustments) - # Actual No Show Hours)/ # Actual No Show Hours"
+    description: "Summed Absolute Difference of Actual No Show Hours per Hub per 30 min timeslot (# Adsjuted Forecasted No Show Hours (Incl. Airtable Adjustments) - # Actual No Show Hours)/ # Actual No Show Hours"
     type: number
     hidden: no
     sql: ${summed_absolute_error_no_show_hours_adjusted}/nullif(${ops.number_of_no_show_hours_by_position},0);;
@@ -996,7 +1022,7 @@ view: forecasts {
     alias: [number_of_adjusted_forecasted_hours_by_position]
     type: number
     label: "# Adjusted Forecasted Hours (Incl. No Show)"
-    description: "# Adjusted Forecasted Hours (Incl. Airtable Adjustments) - No Show Forecasts included in Total Forecasted Hours and not added here explicitly"
+    description: "# Adjusted Forecasted Hours (Incl. Airtable Adjustments) - No Show Forecasts included in Total Forecasted Hours."
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
@@ -1012,7 +1038,7 @@ view: forecasts {
   dimension: number_of_forecasted_hours_by_position_dimension {
     type: number
     label: "# Forecasted Hours (Incl. No Show) - Dimension"
-    description: "# Forecasted Hours Needed - No Show Forecasts included in Total Forecasted Hours and not added here explicitly"
+    description: "# Forecasted Hours Needed - No Show Forecasts included in Total Forecasted Hours."
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
@@ -1031,7 +1057,7 @@ view: forecasts {
     alias: [number_of_adjusted_forecasted_hours_by_position_dimension]
     type: number
     label: "# Adjusted Forecasted Hours (Incl. No Show) - Dimension"
-    description: "# Forecasted Hours Needed (Incl. Airtable Adjustments) - No Show Forecasts included in Total Forecasted Hours and not added here explicitly"
+    description: "# Forecasted Hours Needed (Incl. Airtable Adjustments) - No Show Forecasts included in Total Forecasted Hours."
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
