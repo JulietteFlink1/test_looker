@@ -976,7 +976,7 @@ view: employee_level_kpis {
     label: "% Worked Time Spent Idle (Riders)"
     description: "% of worked time (min) not spent handling an order - compares the difference between worked time (min) and rider handling time (min) with total worked time (min)"
     sql: ${sum_rider_idle_time_minutes} / nullif(${sum_worked_time_minutes_rider},0) ;;
-    value_format: "0%"
+    value_format_name: percent_2
   }
 
   # ~~~~~~~~~~~~~~~     Shift related     ~~~~~~~~~~~~~~~~~~~~~~~~~
