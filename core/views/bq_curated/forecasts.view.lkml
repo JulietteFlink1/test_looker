@@ -670,6 +670,15 @@ view: forecasts {
     value_format_name: percent_1
   }
 
+  measure: pct_forecast_deviation_hours_adjusted_excl_ec {
+    group_label: "> Dynamic Measures"
+    label: "% Adjusted Scheduled Hours Forecast Deviation (Excl. EC Shifts Hours)"
+    description: "The degree of how far # Forecasted Hours (Incl. Airtable Adjustments) is from # Scheduled Hours (Excl. EC shift hours ) in the given period. Formula: ((# Scheduled Hours - # Scheduled EC Shift Hours) / # Forecasted Hours) - 1"
+    type: number
+    sql: ((${ops.number_of_scheduled_hours_by_position}-${ops.number_of_scheduled_hours_by_position_ec_shift})/nullif(${number_of_forecasted_hours_by_position_adjusted},0)) - 1 ;;
+    value_format_name: percent_1
+  }
+
   measure: forecasted_avg_rider_handling_duration_seconds {
     alias: [forecasted_avg_order_handling_duration_seconds]
     group_label: "> Order Measures"
