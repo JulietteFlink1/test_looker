@@ -933,7 +933,7 @@ view: shyftplan_riders_pickers_hours_clean {
     hidden:  no
     type: number
     sql: ${employee_level_kpis.pct_rider_idle_time};;
-    value_format: "0%"
+    value_format_name: percent_2
   }
 
   measure: rider_utr_cleaned {
