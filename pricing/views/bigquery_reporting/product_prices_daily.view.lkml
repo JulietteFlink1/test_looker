@@ -121,72 +121,70 @@ view: product_prices_daily {
 
   dimension: amt_deposit_price {
     type: number
-    sql: ${TABLE}.amt_deposit_price ;;
+    sql: ${TABLE}.amt_deposit_price_gross_eur ;;
     hidden: yes
   }
 
   dimension: avg_amt_discount_price {
     type: number
-    sql: ${TABLE}.avg_amt_discount_price ;;
+    sql: ${TABLE}.avg_amt_discounted_price_gross_eur ;;
     hidden: yes
   }
 
   dimension: avg_amt_product_price_gross {
     type: number
-    sql: ${TABLE}.avg_amt_product_price_gross ;;
+    sql: ${TABLE}.avg_amt_product_price_gross_eur ;;
     hidden: yes
   }
 
   dimension: buying_price {
     type: number
-    sql: ${TABLE}.buying_price ;;
+    sql: ${TABLE}.amt_buying_price_net_eur ;;
     required_access_grants: [can_view_buying_information]
     hidden: yes
   }
 
   dimension: max_amt_discount_price {
     type: number
-    sql: ${TABLE}.max_amt_discount_price ;;
+    sql: ${TABLE}.max_amt_discounted_price_gross_eur ;;
     hidden: yes
   }
 
   dimension: max_amt_product_price_gross {
     type: number
-    sql: ${TABLE}.max_amt_product_price_gross ;;
+    sql: ${TABLE}.max_amt_product_price_gross_eur ;;
     hidden: yes
   }
 
   dimension: min_amt_discount_price {
     type: number
-    sql: ${TABLE}.min_amt_discount_price ;;
+    sql: ${TABLE}.min_amt_discounted_price_gross_eur ;;
     hidden: yes
   }
 
   dimension: min_amt_product_price_gross {
     type: number
-    sql: ${TABLE}.min_amt_product_price_gross ;;
+    sql: ${TABLE}.min_amt_product_price_gross_eur ;;
     hidden: yes
   }
 
-  # ------- calculated dimensions
   dimension: avg_amt_selling_price {
     type: number
-    sql: ${TABLE}.avg_amt_selling_price_gross ;;
+    sql: ${TABLE}.avg_amt_selling_price_gross_eur ;;
     hidden: yes
   }
 
   dimension: min_amt_selling_price {
     type: number
-    sql: ${TABLE}.min_amt_selling_price_gross ;;
+    sql: ${TABLE}.min_amt_selling_price_gross_eur ;;
     hidden: yes
   }
 
   dimension: max_amt_selling_price {
     type: number
-    sql: ${TABLE}.max_amt_selling_price_gross ;;
+    sql: ${TABLE}.max_amt_selling_price_gross_eur ;;
     hidden: yes
   }
-
 
   dimension: avg_amt_margin {
     type: number
