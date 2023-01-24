@@ -4,6 +4,8 @@
 
 include: "/**/hub_turf_closures_30min.view.lkml"
 include: "/**/hub_turf_closures_daily.view.lkml"
+include: "/**/cr__hub_closure_orders.view.lkml"
+include: "/**/orders.view.lkml"
 include: "/**/hubs_ct.view.lkml"
 include: "/**/global_filters_and_parameters.view"
 
@@ -44,10 +46,44 @@ explore: hub_closures_reporting {
     relationship: many_to_many
   }
 
+  join: orders {
+    #This is done to hide the fields from the explore
+    view_label: ""
+    sql_on: ${hub_turf_closures_30min.hub_code} = ${orders.hub_code}
+    and ${hub_turf_closures_30min.report_minute30} = ${orders.created_minute30};;
+    type: left_outer
+    relationship: many_to_many
+    fields: [orders.number_of_succesful_non_external_orders,
+      orders.is_external_order,
+      orders.is_successful_order]
+  }
+
   join: hubs_ct {
     view_label: "Hubs"
     sql_on: ${hubs_ct.hub_code}=${hub_turf_closures_daily.hub_code};;
     type: left_outer
     relationship: many_to_one
   }
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  #  - - - - - - - - - -    Cross-Referenced Metrics
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  join: cr__hub_closure_orders_daily {
+    from: cr__hub_closure_orders
+    view_label: "Hub Closures (Daily)"
+    relationship: one_to_one
+    type: left_outer
+    sql:  ;;
+    fields: [cr__hub_closure_orders_daily.share_missed_orders_per_non_external_orders_daily]
+  }
+
+  join: cr__hub_closure_orders_30min {
+    from: cr__hub_closure_orders
+    view_label: "Hub Closures (30min)"
+    relationship: one_to_one
+    type: left_outer
+    sql:  ;;
+  fields: [cr__hub_closure_orders_30min.share_missed_orders_per_non_external_orders_30min]
+  }
+
 }
