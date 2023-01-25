@@ -674,8 +674,4 @@ view: +supply_chain_master_report {
     description: "Sum of fullfilled quantities (PO > DESADV)"
   }
 
-
-
-
-
 }
