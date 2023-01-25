@@ -128,6 +128,14 @@ view: erp_buying_prices {
     hidden: no
   }
 
+  dimension: erp_vendor_site {
+    label: "Supplier Site"
+    type: string
+    sql: ${TABLE}.erp_vendor_name ;;
+    description: "Site of the supplier/vendor of a product (e.g. REWE or Carrefour)."
+    hidden: no
+  }
+
   dimension: erp_item_name {
     label: "Product Name (ERP)"
     type: string
