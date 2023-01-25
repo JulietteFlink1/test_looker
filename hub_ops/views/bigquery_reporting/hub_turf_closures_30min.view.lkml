@@ -140,7 +140,7 @@ view: hub_turf_closures_30min {
 
   measure: sum_number_of_successful_non_external_orders {
     label: "# Successful Non External Orders (30min)"
-    description: "Number of successful non external orders."
+    description: "Number of successful non external orders per hub."
     type: sum_distinct
     sql_distinct_key: concat(${report_time}, ${hub_code});;
     sql: ${number_of_successful_non_external_orders} ;;
@@ -149,7 +149,7 @@ view: hub_turf_closures_30min {
 
   measure: share_of_missed_orders_per_number_of_successful_non_external_orders {
     label: "% Missed orders (30min)"
-    description: "# Missed Orders / (# Missed Orders + # Succesful Non External Orders)"
+    description: "# Missed Orders / (# Missed Orders + # Succesful Non External Orders per hub)"
     type: number
     sql: safe_divide(${sum_number_of_missed_orders_forced_closure},
       (${sum_number_of_successful_non_external_orders} + ${sum_number_of_missed_orders_forced_closure}));;
