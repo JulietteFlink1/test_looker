@@ -178,7 +178,7 @@ view: erp_supplier {
     label: "Supplier Site"
     type: string
     sql: ${TABLE}.supplier_site ;;
-    description: "Site of the supplier/vendor of a product (e.g. REWE or Carrefour)."
+    description: "Site of the supplier/vendor of a product, defined as Supplier Name + Location."
   }
 
   dimension: vendor_status {
