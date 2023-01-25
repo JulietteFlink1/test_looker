@@ -34,7 +34,9 @@ explore: event_inbound_progressed {
 
   always_filter: {
     filters: [
-      global_filters_and_parameters.datasource_filter: "last 7 days"
+      global_filters_and_parameters.datasource_filter: "last 7 days",
+      event_inbound_progressed.country_iso: "",
+      event_inbound_progressed.hub_code: ""
     ]
   }
 
