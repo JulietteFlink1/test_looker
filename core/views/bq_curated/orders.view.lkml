@@ -2416,6 +2416,16 @@ view: orders {
     value_format_name: euro_accounting_2_precision
   }
 
+  measure: avg_refund_gross {
+    group_label: "* Monetary Values *"
+    label: "AVG Refund (Gross)"
+    description: "Average Refund value (Gross). Includes Items, Deposit, Total Fees (Delivery, Storage & Late Night) and Tips Refunds."
+    hidden:  no
+    type: average
+    sql: ${amt_refund_gross};;
+    value_format_name: euro_accounting_2_precision
+  }
+
   measure: sum_total_sales_gross {
     group_label: "* Monetary Values *"
     label: "SUM Total Sales (Gross)"
