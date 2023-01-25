@@ -492,6 +492,7 @@ view: daily_user_aggregates {
   }
   dimension: is_favourites_viewed {
     group_label: "Flags | Event"
+    label: "Is Favourites Viewed"
     type: yesno
     sql: ${TABLE}.is_favourites_viewed ;;
   }
