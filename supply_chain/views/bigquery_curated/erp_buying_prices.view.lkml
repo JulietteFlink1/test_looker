@@ -128,10 +128,10 @@ view: erp_buying_prices {
     hidden: no
   }
 
-  dimension: erp_vendor_site {
+  dimension: supplier_site {
     label: "Supplier Site"
     type: string
-    sql: ${TABLE}.erp_vendor_name ;;
+    sql: ${TABLE}.supplier_site ;;
     description: "Site of the supplier/vendor of a product, defined as Supplier Name + Location."
     hidden: no
   }
