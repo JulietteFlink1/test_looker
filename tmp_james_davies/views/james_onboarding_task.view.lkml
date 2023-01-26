@@ -80,8 +80,8 @@ view: james_onboarding_task {
 
 
 measure: number_of_rider_hours {
-  label: "# Rider Hours"
-  description: "The sum of all the hours worked by all the riders working"
+  label: "# Punched Hours"
+  description: "# Hours worked by an employee"
   type: sum
   sql: ${TABLE}.number_of_rider_hours ;;
   value_format_name: decimal_2
