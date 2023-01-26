@@ -38,6 +38,7 @@ view: product_added_to_list {
 
   dimension: primary_key {
     primary_key: yes
+    hidden: yes
     label: "concat(dropping_list_id, country_iso, product_sku, method)"
     description: "concat(dropping_list_id, country_iso, product_sku, method)"
     sql: concat(${dropping_list_id}, ${country_iso}, ${product_sku}, ${method}) ;;
