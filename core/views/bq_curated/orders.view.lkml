@@ -2416,6 +2416,16 @@ view: orders {
     value_format_name: euro_accounting_2_precision
   }
 
+  measure: avg_refund_gross {
+    group_label: "* Monetary Values *"
+    label: "AVG Refund (Gross)"
+    description: "Average Refund value (Gross). Includes Items, Deposit, Total Fees (Delivery, Storage & Late Night) and Tips Refunds."
+    hidden:  no
+    type: average
+    sql: ${amt_refund_gross};;
+    value_format_name: euro_accounting_2_precision
+  }
+
   measure: sum_total_sales_gross {
     group_label: "* Monetary Values *"
     label: "SUM Total Sales (Gross)"
@@ -2943,15 +2953,6 @@ view: orders {
     type: count_distinct
     sql: ${order_uuid};;
     filters: [amt_late_night_fee_gross: ">0"]
-  }
-
-  measure: number_of_succesful_non_external_orders {
-    label: "# Non External Orders"
-    description: "Number of succesful orders that do not come through an external provider."
-    hidden: yes
-    type: count_distinct
-    sql: ${order_uuid};;
-    filters: [is_external_order: "no", is_successful_order: "yes"]
   }
 
   ##### TOTAL FEES #####
