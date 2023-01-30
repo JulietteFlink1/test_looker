@@ -3526,6 +3526,15 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  measure: number_of_no_show_hours_ops_associate_incl_ec_shift {
+    group_label: "> Ops Associate Measures"
+    label: "# No Show Ops Associate Hours (Incl. EC Shift)"
+    description: "# No Show Rider Hours including EC shifts"
+    type: number
+    sql: ${number_of_no_show_hours_ops_associate}+${number_of_no_show_hours_ops_associate_ec_shift};;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_no_show_hours_rider {
     group_label: "> Rider Measures"
     label: "# No Show Rider Hours"
@@ -3540,6 +3549,15 @@ view: staffing {
     description: "# No Show Rider Hours from shifts with project code = 'EC shift'"
     type: sum
     sql: ${TABLE}.number_of_no_show_minutes_ec_shift_rider/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_no_show_hours_rider_incl_ec_shift {
+    group_label: "> Rider Measures"
+    label: "# No Show Rider Hours (Incl. EC Shift)"
+    description: "# No Show Rider Hours including EC shifts"
+    type: number
+    sql: ${number_of_no_show_hours_rider}+${number_of_no_show_hours_rider_ec_shift};;
     value_format_name: decimal_1
   }
 
@@ -4470,8 +4488,22 @@ view: staffing {
     group_label: "> Dynamic Measures"
     sql:
         case
-          when {% parameter position_parameter %} = 'Rider' THEN ${number_of_worked_hours_rider_extra}
-          when {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_worked_hours_ops_associate_extra}
+          when {% parameter position_parameter %} = 'Rider' then ${number_of_worked_hours_rider_extra}
+          when {% parameter position_parameter %} = 'Ops Associate' then ${number_of_worked_hours_ops_associate_extra}
+          else null
+        end ;;
+  }
+
+  measure: number_of_worked_hours_by_position_ec_shift {
+    type: number
+    label: "# EC Punched Hours"
+    description: "Sum of Worked Hours from shifts with project code EC"
+    value_format_name: decimal_1
+    group_label: "> Dynamic Measures"
+    sql:
+        case
+          when {% parameter position_parameter %} = 'Rider' then ${number_of_worked_hours_rider_ec_shift}
+          when {% parameter position_parameter %} = 'Ops Associate' then ${number_of_worked_hours_ops_associate_ec_shift}
           else null
         end ;;
   }
@@ -4612,6 +4644,20 @@ view: staffing {
         case
           when {% parameter position_parameter %} = 'Rider' THEN ${number_of_no_show_hours_rider_ec_shift}
           when {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_no_show_hours_ops_associate_ec_shift}
+          else null
+        end ;;
+  }
+
+  measure: number_of_no_show_hours_by_position_incl_ec_shift {
+    type: number
+    label: "# No Show Hours (Incl. EC Shift)"
+    description: "Sum of hours (Incl. EC Shifts) when an employee has a scheduled shift but does not show up to it without leave reason including deleted shift hours when deletion date is on or after shift date. includes (Excused No show Hours, Unexcused No show Hours, Excused Deleted No show Hours)"
+    value_format_name: decimal_1
+    group_label: "> Dynamic Measures"
+    sql:
+        case
+          when {% parameter position_parameter %} = 'Rider' THEN ${number_of_no_show_hours_rider_incl_ec_shift}
+          when {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_no_show_hours_ops_associate_incl_ec_shift}
           else null
         end ;;
   }

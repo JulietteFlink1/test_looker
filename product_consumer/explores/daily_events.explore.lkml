@@ -153,10 +153,16 @@ explore: daily_events {
 
   join: event_order_placed {
     view_label: "Event: Order Placed"
-    fields: [event_order_placed.delivery_fee , event_order_placed.delivery_pdt, event_order_placed.discount_value,
-      event_order_placed.number_of_products_ordered , event_order_placed.revenue , event_order_placed.rider_tip_value]
+    fields: [event_order_placed.amt_delivery_fee_eur,
+            event_order_placed.shipping_method_id,
+            event_order_placed.cart_id,
+            event_order_placed.delivery_pdt,
+            event_order_placed.discount_value,
+            event_order_placed.number_of_products_ordered,
+            event_order_placed.amt_revenue_eur,
+            event_order_placed.rider_tip_value]
     sql_on: ${event_order_placed.event_id} = ${daily_events.event_uuid}
-            and {% condition global_filters_and_parameters.datasource_filter %} ${event_order_placed.order_date} {% endcondition %};;
+            and {% condition global_filters_and_parameters.datasource_filter %} ${event_order_placed.event_timestamp_date} {% endcondition %};;
     type: left_outer
     relationship: one_to_one
   }
