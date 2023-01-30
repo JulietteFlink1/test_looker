@@ -1933,6 +1933,15 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  measure: pct_overpunched_hours_rider {
+    group_label: "> Rider Measures"
+    type: number
+    label: "% Overpunched Rider Hours"
+    description: "Share of Overpunched hours over Punched hours."
+    value_format_name: percent_2
+    sql: ${number_of_overpunched_hours_rider}/${number_of_worked_hours_rider} ;;
+  }
+
   measure: number_of_overpunched_hours_picker {
     group_label: "> Picker Measures"
     type: sum
@@ -1944,6 +1953,15 @@ view: staffing {
       end;;
     description: "When # Worked Hours > # Assigned Hours then # Worked Hours - # Assigned Hours"
     value_format_name: decimal_1
+  }
+
+  measure: pct_overpunched_hours_picker {
+    group_label: "> Picker Measures"
+    type: number
+    label: "% Overpunched Picker Hours"
+    description: "Share of Overpunched hours over Punched hours."
+    value_format_name: percent_2
+    sql: ${number_of_overpunched_hours_picker}/${number_of_worked_hours_picker} ;;
   }
 
   measure: number_of_overpunched_hours_shift_lead {
@@ -2009,6 +2027,15 @@ view: staffing {
       end;;
     description: "When # Worked Hours > # Assigned Hours then # Worked Hours - # Assigned Hours"
     value_format_name: decimal_1
+  }
+
+  measure: pct_overpunched_hours_ops_associate {
+    group_label: "> Ops Associate Measures"
+    type: number
+    label: "% Overpunched Ops Associate Hours"
+    description: "Share of Overpunched hours over Punched hours."
+    value_format_name: percent_2
+    sql: ${number_of_overpunched_hours_ops_associate}/${number_of_worked_hours_ops_associate} ;;
   }
 
   measure: number_of_overpunched_hours_hub_staff {
@@ -4338,7 +4365,7 @@ view: staffing {
 
   measure: number_of_planned_hours_by_position {
     type: number
-    label: "# Filled Hours"
+    label: "# Filled Hours (Incl. EC Shift)"
     description: "# Shift Hours Assigned to an Employee"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
@@ -4378,7 +4405,7 @@ view: staffing {
 
   measure: number_of_excused_no_show_hours_by_position {
     type: number
-    label: "# Excused No Show Hours"
+    label: "# Excused No Show Hours (Excl. EC Shift)"
     description: "Sum of shift hours when an employee has a scheduled shift but does not show up to it with leave reason"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
@@ -4398,7 +4425,7 @@ view: staffing {
 
   measure: number_of_unexcused_no_show_hours_by_position {
     type: number
-    label: "# Unexcused No Show Hours"
+    label: "# Unexcused No Show Hours (Excl. EC Shift)"
     description: "Sum of shift hours when an employee has a scheduled shift but does not show up to it without leave reason"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
@@ -4419,7 +4446,7 @@ view: staffing {
 
   measure: number_of_deleted_excused_no_show_hours_by_position {
     type: number
-    label: "# Deleted Excused No Show Hours"
+    label: "# Deleted Excused No Show Hours (Excl. EC Shift)"
     description: "Sum of deleted shift hours when an employee has a scheduled shift but does not show up to it with leave reason and shift deletion date is on/after shift date (shift date <= deletion date)"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
@@ -4439,7 +4466,7 @@ view: staffing {
 
   measure: number_of_deleted_unexcused_no_show_hours_by_position {
     type: number
-    label: "# Deleted Unexcused No Show Hours (Excl. in No Show metric)"
+    label: "# Deleted Unexcused No Show Hours (Excluded in No Show metric and Excl. EC Shift)"
     description: "Sum of deleted shift hours when an employee has a scheduled shift but does not show up to it without leave reason and shift deletion date is on/after shift date (shift date <= deletion date)"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
@@ -4459,7 +4486,7 @@ view: staffing {
 
   measure: pct_fill_rate {
     type: number
-    label: "% Fill Rate"
+    label: "% Fill Rate (Incl. EC Shift)"
     description: "# Filled Hours (Assigned to an Employee) / # Scheduled Hours (Total Scheduled Shift Hours = Assigned Hours + Open Hours)"
     value_format_name: percent_1
     group_label: "> Dynamic Measures"
@@ -4468,7 +4495,7 @@ view: staffing {
 
   measure: pct_unassignment_rate {
     type: number
-    label: "% Unassignment Rate"
+    label: "% Unassignment Rate (Incl. EC Shift)"
     description: "1 - Fill Rate"
     value_format_name: percent_1
     group_label: "> Dynamic Measures"
@@ -4477,25 +4504,25 @@ view: staffing {
 
   measure: pct_unexcused_absence {
     type: number
-    label: "% Unexcused Absence"
+    label: "% Unexcused Absence (Excl. EC Shift)"
     description: "# Unexcused No Show Hours / # Filled Hours (Assigned to an Employee)"
     value_format_name: percent_1
     group_label: "> Dynamic Measures"
-    sql: (${number_of_unexcused_no_show_hours_by_position})/nullif(${number_of_planned_hours_by_position},0);;
+    sql: (${number_of_unexcused_no_show_hours_by_position})/nullif(${number_of_planned_hours_by_position}-${number_of_planned_hours_ec_shift_by_position},0);;
   }
 
   measure: pct_excused_absence {
     type: number
-    label: "% Excused Absence"
+    label: "% Excused Absence (Excl. EC Shift)"
     description: "# Excused No Show Hours / # Filled Hours (Assigned to an Employee)"
     value_format_name: percent_1
     group_label: "> Dynamic Measures"
-    sql: (${number_of_deleted_excused_no_show_hours_by_position}+${number_of_excused_no_show_hours_by_position})/nullif(${number_of_planned_hours_by_position},0);;
+    sql: (${number_of_deleted_excused_no_show_hours_by_position}+${number_of_excused_no_show_hours_by_position})/nullif(${number_of_planned_hours_by_position}-${number_of_planned_hours_ec_shift_by_position},0);;
   }
 
   measure: number_of_unassigned_hours_by_position {
     type: number
-    label: "# Open Hours"
+    label: "# Open Hours (Incl. EC Shift)"
     description: "# Open Shift Hours (Not assigned to an Employee)"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
@@ -4515,7 +4542,7 @@ view: staffing {
 
   measure: number_of_scheduled_hours_by_position {
     type: number
-    label: "# Scheduled Hours (Incl. Deleted Excused No Show)"
+    label: "# Scheduled Hours (Incl. Deleted Excused No Show and EC Shift)"
     description: "Sum of Assigned and Unassigned (Open) Shift Hours (Incl. Deleted Excused No Show)"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
@@ -4641,7 +4668,7 @@ view: staffing {
 
   measure: pct_scheduled_hours_by_position {
     type: number
-    label: "% External Scheduled Hours"
+    label: "% External Scheduled Hours (Incl. EC Shift)"
     description: "Sum External Scheduled Hours (Assigned + Unassigned) / Sum Scheduled Hours (Assigned + Open Hours)"
     value_format_name: percent_1
     group_label: "> Dynamic Measures"
@@ -4695,7 +4722,7 @@ view: staffing {
 
   measure: number_of_scheduled_hours_excluding_deleted_shifts_by_position {
     type: number
-    label: "# Scheduled Hours (Excl. Deleted Excused No Show)"
+    label: "# Scheduled Hours (Excl. Deleted Excused No Show and Incl. EC Shift)"
     description: "Sum of Assigned and Unassigned Shift Hours (Excl. Deleted Excused No Show)"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
@@ -4717,7 +4744,7 @@ view: staffing {
 
   measure: number_of_worked_hours_by_position {
     type: number
-    label: "# Punched Hours"
+    label: "# Punched Hours (Incl. EC Shift)"
     description: "# Hours Worked by an Employee"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
@@ -4737,7 +4764,7 @@ view: staffing {
 
   measure: number_of_no_show_hours_by_position {
     type: number
-    label: "# No Show Hours"
+    label: "# No Show Hours (Excl. EC Shift)"
     description: "Sum of shift hours (Excl. EC Shifts) when an employee has a scheduled shift but does not show up to it without leave reason including deleted shift hours when deletion date is on or after shift date. includes (Excused No show Hours, Unexcused No show Hours, Excused Deleted No show Hours)"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
@@ -4785,7 +4812,7 @@ view: staffing {
 
   measure: pct_external_worked_hours_by_position {
     type: number
-    label: "% External Punched Hours"
+    label: "% External Punched Hours (Incl. EC Shift)"
     description: "Sum External Punched Hours / Sum Punched Hours"
     value_format_name: percent_1
     group_label: "> Dynamic Measures"
@@ -4805,7 +4832,7 @@ view: staffing {
 
   measure: pct_no_show_hours_by_position {
     type: number
-    label: "% No Show Hours"
+    label: "% No Show Hours (Excl. EC Shift)"
     description: "% shift hours (Excl. EC Shift) when an employee has a scheduled shift but does not show up to it without leave reason including deleted shift hours when deletion date is on or after shift date.
     It includes Excused No Show Hours, Unexcused No Show Hours, Excused Deleted No Show Hours. Formula: # No Show Hours / (# Planned Hours - # Planned EC Hours)"
     value_format_name: percent_1
@@ -4872,7 +4899,7 @@ view: staffing {
 
   measure: number_of_overpunched_hours_by_position {
     type: number
-    label: "# Overpunched Hours"
+    label: "# Overpunched Hours (Incl. EC Shift)"
     description: "When # Worked Hours > # Assigned Hours then # Worked Hours - # Assigned Hours"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
@@ -4888,6 +4915,15 @@ view: staffing {
           when {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_overpunched_hours_ops_associate}
           else null
         end ;;
+  }
+
+  measure: pct_overpunched_hours_by_position {
+    type: number
+    label: "% Overpunched Hours (Incl. EC Shift)"
+    description: "Share of Overpunched hours over Punched hours."
+    value_format_name: percent_2
+    group_label: "> Dynamic Measures"
+    sql: ${number_of_overpunched_hours_by_position}/${number_of_worked_hours_by_position} ;;
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
