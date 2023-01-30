@@ -761,6 +761,15 @@ view: forecasts {
     value_format_name: percent_1
   }
 
+  measure: pct_forecast_deviation_unknown_hours_adjusted {
+    group_label: "> Dynamic Measures"
+    label: "% Adjusted Scheduled Hours Forecast Deviation (Unknown Hours)"
+    description: "The degree of how far # Forecasted Hours (Incl. Airtable Adjustments) is from # Unknown Scheduled Hours (# Scheduled Hours - # Scheduled Extra Hours) in the given period. Formula: ((# Scheduled Hours - # Scheduled Extra Hours) / # Forecasted Hours) - 1"
+    type: number
+    sql: (${ops.number_of_scheduled_hours_by_position_unknown}/nullif(${number_of_forecasted_hours_by_position_adjusted},0)) - 1 ;;
+    value_format_name: percent_1
+  }
+
   measure: pct_forecast_deviation_hours_adjusted_excl_ec {
     group_label: "> Dynamic Measures"
     label: "% Adjusted Scheduled Hours Forecast Deviation (Excl. EC Shifts Hours)"

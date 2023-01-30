@@ -4619,7 +4619,7 @@ view: staffing {
         end ;;
   }
 
-  measure: number_of_scheduled_hours_by_position_unknow {
+  measure: number_of_scheduled_hours_by_position_unknown {
     type: number
     label: "# Unknown Scheduled Hours (Incl. Deleted Excused No Show)"
     description: "Difference between sum of Assigned and Unassigned (Open) hours and sum of Assigned and Unassigned (Open) EC, NS+ and WFS shift hours (Incl. Deleted Excused No Show)"
