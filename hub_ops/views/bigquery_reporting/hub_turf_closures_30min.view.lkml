@@ -57,6 +57,7 @@ view: hub_turf_closures_30min {
     timeframes: [
       raw,
       minute30,
+      hour,
       time,
       date
     ]
