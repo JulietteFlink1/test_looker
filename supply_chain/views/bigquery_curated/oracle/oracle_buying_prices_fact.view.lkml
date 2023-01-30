@@ -193,6 +193,8 @@ view: oracle_buying_prices_fact {
     type: string
     description: "Generic identifier of a table in BigQuery that represent 1 unique row of this table."
     sql: ${TABLE}.table_uuid ;;
+    hidden: yes
+    primary_key: yes
   }
 
   measure: count {
