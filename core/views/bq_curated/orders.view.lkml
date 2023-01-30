@@ -2725,6 +2725,19 @@ view: orders {
     ]
   }
 
+  measure: cnt_last_mile_orders {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Last Mile Orders"
+    description: "Count of Orders delivered by Flink Riders"
+    hidden:  yes
+    type: count_distinct
+    sql: ${order_uuid} ;;
+    value_format: "0"
+    filters: [
+      is_last_mile_order: "yes",
+    ]
+  }
+
   measure: cnt_orders_with_discount_cart {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
     label: "# Orders with Cart Discount"

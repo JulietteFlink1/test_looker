@@ -52,6 +52,7 @@ view: orders_with_ops_metrics {
       column: sum_potential_rider_handling_time_without_stacking_minutes {}
       column: avg_picking_time_per_item {}
       column: cnt_internal_orders {}
+      column: cnt_last_mile_orders {}
       column: avg_hub_to_customer_distance_km {}
       filters: [
         orders_cl.is_successful_order : "yes",
@@ -165,14 +166,14 @@ view: orders_with_ops_metrics {
     value_format_name: decimal_0
     }
 
-  measure: cnt_rider_orders {
+  measure: cnt_last_mile_orders {
+    alias: [cnt_rider_orders]
     group_label: "> Basic Counts"
     label: "# Last Mile Orders"
     description: "Count of Successful Orders (excl. Cancelled, Click & Collect and External Orders) that require riders"
     hidden:  no
-    sql: ${sum_orders}-${cnt_external_orders}-${cnt_click_and_collect_orders} ;;
     value_format_name: decimal_0
-    type: number
+    type: sum
     }
 
   measure: avg_number_items {
