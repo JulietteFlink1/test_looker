@@ -4322,8 +4322,22 @@ view: staffing {
     group_label: "> Dynamic Measures"
     sql:
         case
-          when {% parameter position_parameter %} = 'Rider' THEN ${number_of_worked_hours_rider_extra}
-          when {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_worked_hours_ops_associate_extra}
+          when {% parameter position_parameter %} = 'Rider' then ${number_of_worked_hours_rider_extra}
+          when {% parameter position_parameter %} = 'Ops Associate' then ${number_of_worked_hours_ops_associate_extra}
+          else null
+        end ;;
+  }
+
+  measure: number_of_worked_hours_by_position_ec_shift {
+    type: number
+    label: "# EC Punched Hours"
+    description: "Sum of Worked Hours from shifts with project code EC"
+    value_format_name: decimal_1
+    group_label: "> Dynamic Measures"
+    sql:
+        case
+          when {% parameter position_parameter %} = 'Rider' then ${number_of_worked_hours_rider_ec_shift}
+          when {% parameter position_parameter %} = 'Ops Associate' then ${number_of_worked_hours_ops_associate_ec_shift}
           else null
         end ;;
   }
