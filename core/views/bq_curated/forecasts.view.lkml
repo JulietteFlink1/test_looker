@@ -495,7 +495,7 @@ view: forecasts {
     description: "Share of Missed orders due to forced or planned closure over Last Mile Orders"
     type: number
     sql: ${number_of_missed_orders}/${orders_with_ops_metrics.cnt_last_mile_orders} ;;
-    value_format_name: decimal_0
+    value_format_name: percent_2
   }
 
   measure: number_of_missed_orders_forced_closure {
@@ -651,14 +651,15 @@ view: forecasts {
     value_format_name: percent_1
   }
 
-  measure: pct_forecast_deviation_orders {
+  measure: pct_forecast_deviation_successful_orders {
     group_label: "> Order Measures"
-    label: "% Successful Order Forecast Deviation"
-    description: "The degree of how far # Forecasted Orders is from # Successful Orders in the given period. Formula: (# Successful Orders / # Forecasted Orders) -1"
+    label: "% Order Forecast Deviation (Successful Last Mile Orders)"
+    description: "The degree of how far # Forecasted Orders is from # Successful Last Mile Orders in the given period. Formula: (# Successful Last mile Orders / # Forecasted Orders) -1"
     type: number
-    sql: (${orders_with_ops_metrics.sum_orders}/nullif(${number_of_forecasted_orders},0))-1 ;;
+    sql: (${orders_with_ops_metrics.cnt_last_mile_orders}/nullif(${number_of_forecasted_orders},0))-1 ;;
     value_format_name: percent_1
   }
+
   measure: pct_forecast_deviation_adjusted {
     alias: [pct_adjusted_forecast_deviation]
     group_label: "> Order Measures"
@@ -668,6 +669,16 @@ view: forecasts {
     sql: (${number_of_actual_orders}/nullif(${number_of_forecasted_orders_adjusted},0))-1 ;;
     value_format_name: percent_1
   }
+
+  measure: pct_forecast_deviation_adjusted_successful_orders {
+    group_label: "> Order Measures"
+    label: "% Adjusted Order Forecast Deviation (Successful Last Mile Orders)"
+    description: "The degree of how far # Forecasted Orders (Incl. Airtable Adjustments) is from # Successful Last MileOrders in the given period. Formula: (# Successful Last MileOrders / # Forecasted Orders (Incl. Adjustments)) -1"
+    type: number
+    sql: (${orders_with_ops_metrics.cnt_last_mile_orders}/nullif(${number_of_forecasted_orders_adjusted},0))-1 ;;
+    value_format_name: percent_1
+  }
+
 
   measure: pct_forecast_deviation_handling_duration {
     group_label: "> Order Measures"
