@@ -1178,7 +1178,7 @@ view: employee_level_kpis {
     group_label: "> Shift Related"
     type: sum
     label: "# Vacation Hours"
-    description: "Number of Absence hours with leave reason containing the word 'vacation' (excluding absences defined as no shows)"
+    description: "Number of Absence hours with leave reason containing the word 'vacation' or 'congé payé' or 'holiday paid' (excluding absences defined as no shows)"
     sql: ${TABLE}.number_of_vacation_minutes/60 ;;
     value_format_name: decimal_1
   }
