@@ -1933,6 +1933,15 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  measure: pct_overpunched_hours_rider {
+    group_label: "> Rider Measures"
+    type: number
+    label: "% Overpunched Rider Hours"
+    description: "Share of Overpunched hours over Punched hours."
+    value_format_name: percent_2
+    sql: ${number_of_overpunched_hours_rider}/${number_of_worked_hours_rider} ;;
+  }
+
   measure: number_of_overpunched_hours_picker {
     group_label: "> Picker Measures"
     type: sum
@@ -1944,6 +1953,15 @@ view: staffing {
       end;;
     description: "When # Worked Hours > # Assigned Hours then # Worked Hours - # Assigned Hours"
     value_format_name: decimal_1
+  }
+
+  measure: pct_overpunched_hours_picker {
+    group_label: "> Picker Measures"
+    type: number
+    label: "% Overpunched Picker Hours"
+    description: "Share of Overpunched hours over Punched hours."
+    value_format_name: percent_2
+    sql: ${number_of_overpunched_hours_picker}/${number_of_worked_hours_picker} ;;
   }
 
   measure: number_of_overpunched_hours_shift_lead {
@@ -2009,6 +2027,15 @@ view: staffing {
       end;;
     description: "When # Worked Hours > # Assigned Hours then # Worked Hours - # Assigned Hours"
     value_format_name: decimal_1
+  }
+
+  measure: pct_overpunched_hours_ops_associate {
+    group_label: "> Ops Associate Measures"
+    type: number
+    label: "% Overpunched Ops Associate Hours"
+    description: "Share of Overpunched hours over Punched hours."
+    value_format_name: percent_2
+    sql: ${number_of_overpunched_hours_ops_associate}/${number_of_worked_hours_ops_associate} ;;
   }
 
   measure: number_of_overpunched_hours_hub_staff {
@@ -4616,7 +4643,7 @@ view: staffing {
 
   measure: number_of_no_show_hours_by_position {
     type: number
-    label: "# No Show Hours"
+    label: "# No Show Hours (Excl. EC Shift)"
     description: "Sum of shift hours (Excl. EC Shifts) when an employee has a scheduled shift but does not show up to it without leave reason including deleted shift hours when deletion date is on or after shift date. includes (Excused No show Hours, Unexcused No show Hours, Excused Deleted No show Hours)"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
@@ -4684,7 +4711,7 @@ view: staffing {
 
   measure: pct_no_show_hours_by_position {
     type: number
-    label: "% No Show Hours"
+    label: "% No Show Hours (Excl. EC Shift)"
     description: "% shift hours (Excl. EC Shift) when an employee has a scheduled shift but does not show up to it without leave reason including deleted shift hours when deletion date is on or after shift date.
     It includes Excused No Show Hours, Unexcused No Show Hours, Excused Deleted No Show Hours. Formula: # No Show Hours / (# Planned Hours - # Planned EC Hours)"
     value_format_name: percent_1
@@ -4767,6 +4794,15 @@ view: staffing {
           when {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_overpunched_hours_ops_associate}
           else null
         end ;;
+  }
+
+  measure: pct_overpunched_hours_by_position {
+    type: number
+    label: "% Overpunched Hours"
+    description: "Share of Overpunched hours over Punched hours."
+    value_format_name: percent_2
+    group_label: "> Dynamic Measures"
+    sql: ${number_of_overpunched_hours_by_position}/${number_of_worked_hours_by_position} ;;
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
