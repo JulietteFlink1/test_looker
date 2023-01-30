@@ -4395,7 +4395,7 @@ view: staffing {
 
   measure: pct_fill_rate {
     type: number
-    label: "% Fill Rate"
+    label: "% Fill Rate (Incl. EC Shift)"
     description: "# Filled Hours (Assigned to an Employee) / # Scheduled Hours (Total Scheduled Shift Hours = Assigned Hours + Open Hours)"
     value_format_name: percent_1
     group_label: "> Dynamic Measures"
@@ -4404,7 +4404,7 @@ view: staffing {
 
   measure: pct_unassignment_rate {
     type: number
-    label: "% Unassignment Rate"
+    label: "% Unassignment Rate (Incl. EC Shift)"
     description: "1 - Fill Rate"
     value_format_name: percent_1
     group_label: "> Dynamic Measures"
@@ -4778,7 +4778,7 @@ view: staffing {
 
   measure: number_of_overpunched_hours_by_position {
     type: number
-    label: "# Overpunched Hours"
+    label: "# Overpunched Hours (Incl. EC Shift)"
     description: "When # Worked Hours > # Assigned Hours then # Worked Hours - # Assigned Hours"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
@@ -4798,7 +4798,7 @@ view: staffing {
 
   measure: pct_overpunched_hours_by_position {
     type: number
-    label: "% Overpunched Hours"
+    label: "% Overpunched Hours (Incl. EC Shift)"
     description: "Share of Overpunched hours over Punched hours."
     value_format_name: percent_2
     group_label: "> Dynamic Measures"
