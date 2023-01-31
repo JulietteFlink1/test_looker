@@ -489,6 +489,15 @@ view: forecasts {
     value_format_name: decimal_0
   }
 
+  measure: pct_cancelled_orders{
+    group_label: "> Order Measures"
+    label: "% Cancelled Orders"
+    description: "Share of cancelled orders (due to operational reasons) over Last Mile Orders"
+    type: number
+    sql: ${number_of_cancelled_orders}/${orders_with_ops_metrics.cnt_last_mile_orders} ;;
+    value_format_name: percent_2
+  }
+
   measure: pct_missed_orders{
     group_label: "> Order Measures"
     label: "% Missed Orders"
