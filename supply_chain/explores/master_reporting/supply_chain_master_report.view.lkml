@@ -40,6 +40,18 @@ set: drill_fields_set {
     sql: ${TABLE}.report_date ;;
   }
 
+  dimension: report_date_dynamic {
+    label: "Report Date (Dynamic)"
+    sql:
+    {% if global_filters_and_parameters.timeframe_picker._parameter_value == 'Date' %}
+      ${report_date}
+    {% elsif global_filters_and_parameters.timeframe_picker._parameter_value == 'Week' %}
+      ${report_week}
+    {% elsif global_filters_and_parameters.timeframe_picker._parameter_value == 'Month' %}
+      ${report_month}
+    {% endif %};;
+  }
+
 ############################################################
 ##################### ID Dimension #########################
 ############################################################

@@ -97,6 +97,12 @@ view: hub_turf_closures_daily {
     sql: ${TABLE}.amt_estimated_lost_gmv_eur ;;
   }
 
+  dimension: number_of_successful_non_external_orders  {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.number_of_successful_non_external_orders   ;;
+  }
+
   ############
   # Parameters
   ############
@@ -157,6 +163,24 @@ view: hub_turf_closures_daily {
     sql_distinct_key: concat(${report_date}, ${hub_code}, coalesce(${turf_id}, ''));;
     sql: ${number_of_open_hours} ;;
     value_format_name: decimal_1
+  }
+
+  measure: sum_number_of_successful_non_external_orders {
+    label: "# Successful Non External Orders (Daily)"
+    description: "Number of successful non external orders per hub."
+    type: sum_distinct
+    sql_distinct_key: concat(${report_date}, ${hub_code});;
+    sql: ${number_of_successful_non_external_orders} ;;
+    value_format_name: decimal_1
+  }
+
+  measure: share_of_missed_orders_per_number_of_successful_non_external_orders {
+    label: "% Missed orders (Daily)"
+    description: "# Missed Orders / (# Missed Orders + # Succesful Non External Orders per hub)"
+    type: number
+    sql: safe_divide(${sum_number_of_missed_orders_forced_closure},
+      (${sum_number_of_successful_non_external_orders} + ${sum_number_of_missed_orders_forced_closure}));;
+    value_format_name: percent_1
   }
 
   measure: sum_number_of_closed_hours {

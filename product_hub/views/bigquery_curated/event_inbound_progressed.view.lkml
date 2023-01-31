@@ -196,7 +196,7 @@ view: event_inbound_progressed {
   dimension: quantity {
     description: "The quantity affected. It is always in single units and can be negative when action = product_updated_quantity."
     type: number
-    sql: ${TABLE}.quantity ;;
+    sql: cast(${TABLE}.quantity as int64) ;;
   }
 
   dimension: is_handling_unit {
@@ -303,6 +303,16 @@ view: event_inbound_progressed {
     type: sum
     filters: [action: "product_dropped"]
     sql: ${quantity} ;;
+  }
+
+  measure: number_of_products_dropped_hu {
+    group_label: "Total Metrics"
+    label: "Number of products Dropped in Handling Units"
+    description: "Sum of quantity divided handling units (when there is no value for handling units it is divided by 1)."
+    type: sum
+    filters: [action: "product_dropped"]
+    value_format: "0.##"
+    sql: SAFE_DIVIDE(${quantity}, coalesce(cast(${products.units_per_handling_unit} as int64),1)) ;;
   }
 
   # =========  Rate Metrics   =========
