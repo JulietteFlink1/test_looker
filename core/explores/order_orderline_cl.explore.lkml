@@ -48,7 +48,6 @@ explore: order_orderline_cl {
     type: left_outer
     relationship: many_to_one
     sql_on: ${lexbizz_item.sku}            = ${orderline.product_sku}
-        and ${lexbizz_item.country_iso}    = ${orderline.country_iso}
         and ${lexbizz_item.ingestion_date} = current_date()
     ;;
   }

@@ -44,7 +44,6 @@ explore: spc_2 {
     relationship: many_to_one
 
     sql_on: ${lexbizz_item.sku} = ${sku_performance_base.joining_sku} and
-            ${lexbizz_item.country_iso} = ${sku_performance_base.country_iso} and
             ${lexbizz_item.ingestion_date} = current_date()
     ;;
   }
