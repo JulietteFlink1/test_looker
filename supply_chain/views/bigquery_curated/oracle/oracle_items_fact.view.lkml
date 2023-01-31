@@ -10,7 +10,7 @@
 # }
 
 view: oracle_items_fact {
-  sql_table_name: `flink-data-dev.curated.oracle_items_fact`
+  sql_table_name: `flink-data-prod.curated.oracle_items_fact`
     ;;
 
   dimension: class_name {
@@ -28,7 +28,7 @@ view: oracle_items_fact {
   }
 
   dimension: current_state__csn_number {
-    type: number
+    type: string
     description: "This is an Oracle standard field that refers to the commit number of an Oracle update or insert event. Every change to a table in Oracle is linked to a specific csn commit number"
     sql: ${TABLE}.current_state.csn_number ;;
     group_label: "Current State"

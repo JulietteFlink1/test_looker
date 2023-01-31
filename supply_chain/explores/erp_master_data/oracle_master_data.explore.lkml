@@ -66,7 +66,7 @@ explore: oracle_master_data {
   join: oracle_supplier_fact {
     relationship: many_to_one
     type: left_outer
-    sql_on: ${oracle_item_supplier_fact.supplier_id} =  ${oracle_item_location_fact.current_state__primary_supplier_id} ;;
+    sql_on: ${oracle_supplier_fact.supplier_id} =  ${oracle_item_location_fact.current_state__primary_supplier_id} ;;
   }
 
 }

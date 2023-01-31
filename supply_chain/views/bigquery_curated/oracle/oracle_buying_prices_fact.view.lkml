@@ -10,7 +10,7 @@
 # }
 
 view: oracle_buying_prices_fact {
-  sql_table_name: `flink-data-dev.curated.oracle_buying_prices_fact`
+  sql_table_name: `flink-data-prod.curated.oracle_buying_prices_fact`
     ;;
 
   required_access_grants: [can_view_buying_information]
@@ -39,7 +39,7 @@ view: oracle_buying_prices_fact {
   }
 
   dimension: current_state__csn_number {
-    type: number
+    type: string
     description: "This is an Oracle standard field that refers to the commit number of an Oracle update or insert event. Every change to a table in Oracle is linked to a specific csn commit number"
     sql: ${TABLE}.current_state.csn_number ;;
     group_label: "Current State"
@@ -101,7 +101,7 @@ view: oracle_buying_prices_fact {
   }
 
   dimension: current_state__primary_supplier_id {
-    type: number
+    type: string
     description: "ID of a supplier/vendor as define in our ERP system - This is the primary supplier for a given product and hub"
     sql: ${TABLE}.current_state.primary_supplier_id ;;
     group_label: "Current State"
@@ -166,7 +166,7 @@ view: oracle_buying_prices_fact {
   }
 
   dimension: location_id {
-    type: number
+    type: string
     description: "The identifier of a hub according to Oracle"
     sql: ${TABLE}.location_id ;;
   }

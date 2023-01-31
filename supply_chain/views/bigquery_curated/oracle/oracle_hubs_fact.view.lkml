@@ -10,7 +10,7 @@
 # }
 
 view: oracle_hubs_fact {
-  sql_table_name: `flink-data-dev.curated.oracle_hubs_fact`
+  sql_table_name: `flink-data-prod.curated.oracle_hubs_fact`
     ;;
 
   dimension: alphabetical_hub_id {
@@ -46,7 +46,7 @@ view: oracle_hubs_fact {
   }
 
   dimension: current_state__csn_number {
-    type: number
+    type: string
     description: "This is an Oracle standard field that refers to the commit number of an Oracle update or insert event. Every change to a table in Oracle is linked to a specific csn commit number"
     sql: ${TABLE}.current_state.csn_number ;;
     group_label: "Current State"
@@ -140,7 +140,7 @@ view: oracle_hubs_fact {
   }
 
   dimension: gln {
-    type: number
+    type: string
     description: "The location identifier according to our ERP systems of a hub"
     sql: ${TABLE}.gln ;;
   }
@@ -157,7 +157,7 @@ view: oracle_hubs_fact {
   }
 
   dimension: hub_id {
-    type: number
+    type: string
     description: "The identifier of a hub according to Oracle"
     sql: ${TABLE}.hub_id ;;
   }

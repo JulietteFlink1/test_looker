@@ -10,7 +10,7 @@
 # }
 
 view: oracle_supplier_fact {
-  sql_table_name: `flink-data-dev.curated.oracle_supplier_fact`
+  sql_table_name: `flink-data-prod.curated.oracle_supplier_fact`
     ;;
 
   dimension: city {
@@ -38,7 +38,7 @@ view: oracle_supplier_fact {
   }
 
   dimension: current_state__csn_number {
-    type: number
+    type: string
     description: "This is an Oracle standard field that refers to the commit number of an Oracle update or insert event. Every change to a table in Oracle is linked to a specific csn commit number"
     sql: ${TABLE}.current_state.csn_number ;;
     group_label: "Current State"
@@ -139,7 +139,7 @@ view: oracle_supplier_fact {
   }
 
   dimension: gln {
-    type: number
+    type: string
     description: "The location identifier according to our ERP systems"
     sql: ${TABLE}.gln ;;
   }
@@ -171,13 +171,13 @@ view: oracle_supplier_fact {
   }
 
   dimension: supplier_id {
-    type: number
+    type: string
     description: "The supplier ID as defined in Oracle - which is a representation of a supplier and its related supplier-location"
     sql: ${TABLE}.supplier_id ;;
   }
 
   dimension: supplier_parent_id {
-    type: number
+    type: string
     description: "ID of a supplier/vendor as define in our ERP system"
     sql: ${TABLE}.supplier_parent_id ;;
   }
