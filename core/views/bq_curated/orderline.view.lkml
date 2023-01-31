@@ -1,5 +1,5 @@
 view: orderline {
-  sql_table_name: `flink-data-prod.curated.order_lineitems`
+  sql_table_name: `flink-data-dev.dbt_vbreda_curated.order_lineitems`
     ;;
   view_label: "* Order Lineitems *"
   drill_fields: [id]
@@ -65,6 +65,14 @@ view: orderline {
     type: yesno
     label: "Is External Order"
     sql: ${TABLE}.is_external_order ;;
+  }
+
+  dimension: is_last_mile_order {
+    type: yesno
+    sql: ${TABLE}.is_last_mile_order ;;
+    description: "TRUE if the order is delivered by flink's riders.
+    Not click and collect order, not created through an external provider (e.g. uber-eats and wolt).
+    Doordash orders are included as they are delivered by Flink's riders."
   }
 
   # =========  hidden   =========
