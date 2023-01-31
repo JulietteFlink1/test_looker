@@ -479,6 +479,15 @@ view: forecasts {
     value_format_name: decimal_0
   }
 
+  measure: delta_forecast_vs_delivered{
+    group_label: "> Order Measures"
+    label: "Delta Forecasted vs Last Mile Orders"
+    description: "Different between Last Mile and Forecasted orders"
+    type: number
+    sql: ${orders_with_ops_metrics.cnt_last_mile_orders}-${number_of_forecasted_orders_adjusted} ;;
+    value_format_name: decimal_0
+  }
+
   measure: number_of_missed_orders {
     group_label: "> Order Measures"
     label: "# Missed Orders"
