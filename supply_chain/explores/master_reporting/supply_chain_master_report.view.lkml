@@ -410,7 +410,7 @@ set: drill_fields_set {
     sql: ${TABLE}.sum_of_items_ordered__desadv ;;
     label: "# Delivered Items (DESADVs)"
     group_label: "DESADVs <> Inbounds"
-    description: "The number of SKUs, that have been delivered according to the dispatch notification (DESADV)"
+    description: "Number of items, that have been delivered according to the dispatch notification (DESADV)"
     hidden: yes
   }
 
@@ -419,7 +419,7 @@ set: drill_fields_set {
     sql: ${TABLE}.sum_of_items_otifiq_stric__desadvs ;;
     label: "# OTIFIQ Strict (DESADVs <> Inbounds)"
     group_label: "DESADVs <> Inbounds"
-    description: "Number of on time, in full and in quality DESADV lines (DESADV > Inbound)"
+    description: "Number of items, that were delivered on time, in full and in quality (DESADV > Inbound)"
     hidden: yes
   }
 
@@ -428,7 +428,7 @@ set: drill_fields_set {
     sql: ${TABLE}.sum_of_items__desadv ;;
     label: "# Total Quantity (DESADVs)"
     group_label: "DESADVs <> Inbounds"
-    description: "The total number of units, that have been delivered according to the dispatch notification (DESADV)"
+    description: "Number of items, that have been delivered according to the dispatch notification (DESADV)"
     hidden: yes
   }
 
@@ -437,7 +437,8 @@ set: drill_fields_set {
     sql: ${TABLE}.sum_of_items_otifiq_relax_lim__desadv ;;
     label: "# OTIFIQ Relaxed lim (DESADVs <> Inbounds)"
     group_label: "DESADVs <> Inbounds"
-    description: "Total amount of on time and in quality fulfilled quantities (DESADV > Inbound), where an overdelivered quantity is limited to the DESADV quantity"
+    description: "Number of items delivered on time and in quality (DESADV > Inbound).
+                  An over-delivered quantity is limited to the item quantity stated on the DESADV"
     hidden: yes
   }
 
@@ -446,7 +447,7 @@ set: drill_fields_set {
     sql: ${TABLE}.sum_of_items_inbounded_on_time__desadv ;;
     label: "# On time delivery (DESADVs <> Inbounds)"
     group_label: "DESADVs <> Inbounds"
-    description: "Number of on time delivered DESADV lines (DESADV > Inbound)"
+    description: "Number of items delivered on time (DESADV > Inbound)"
     hidden: yes
   }
 
@@ -455,7 +456,7 @@ set: drill_fields_set {
     sql: ${TABLE}.sum_of_items_inbounded_in_full_strict__desadv ;;
     label: "# In full delivery (DESADVs <> Inbounds)"
     group_label: "DESADVs <> Inbounds"
-    description: "Number of in full delivered DESADV lines (DESADV > Inbound)"
+    description: "Number of items delivered in full (DESADV > Inbound)"
     hidden: yes
   }
 
@@ -464,7 +465,7 @@ set: drill_fields_set {
     sql: ${TABLE}.sum_of_items_inbounded__desadv ;;
     label: "# Inbounded Items (DESADVs <> Inbounds)"
     group_label: "DESADVs <> Inbounds"
-    description: "Total amount of fullfilled quantities"
+    description: "Total quantity fullfilled (DESADV > Inbound)"
     hidden: yes
   }
 
@@ -473,7 +474,7 @@ set: drill_fields_set {
     sql: ${TABLE}.sum_of_items_inbounded_in_quality__desadv ;;
     label: "# Inbounded Items in Quality (DESADVs <> Inbounds)"
     group_label: "DESADVs <> Inbounds"
-    description: "Share of in quality delivered order lines"
+    description: "Number of items delivered in quality (DESADV > Inbound)"
     hidden: yes
   }
 
@@ -482,7 +483,7 @@ set: drill_fields_set {
     sql: ${TABLE}.sum_of_items_ordered__po ;;
     label: "# Ordered Items (PO)"
     group_label: "PO <> Inbounds"
-    description: "The number of SKUs, that have been ordered"
+    description: "Number of items, that have been ordered"
     hidden: yes
   }
 
@@ -491,7 +492,7 @@ set: drill_fields_set {
     sql: ${TABLE}.sum_of_items_otifiq_stric__po ;;
     label: "# OTIFIQ Strict (PO <> Inbounds)"
     group_label: "PO <> Inbounds"
-    description: "Number of on time, in full and in quality order lines (PO > Inbound)"
+    description: "Number of items that were delivered on time, in full and in quality (PO > Inbound)"
     hidden: yes
   }
 
@@ -500,7 +501,7 @@ set: drill_fields_set {
     sql: ${TABLE}.sum_of_items__po ;;
     label: "# Total Quantity (PO)"
     group_label: "PO <> Inbounds"
-    description: "The total number of units, that have been ordered (PO)"
+    description: "Number of items, that have been ordered (PO)"
     hidden: yes
   }
 
@@ -509,7 +510,7 @@ set: drill_fields_set {
     sql: ${TABLE}.sum_of_items_otifiq_relax_lim__po ;;
     label: "# OTIFIQ Relaxed lim (PO <> Inbounds)"
     group_label: "PO <> Inbounds"
-    description: "Total amount of on time and in quality fulfilled quantities (PO > Inbound), where an overdelivered quantity is limited to the PO quantity"
+    description: "Number of items delivered on time and in quality (PO > Inbound). An over-delivered quantity is limited to the item quantity stated on the PO"
     hidden: yes
   }
 
@@ -518,7 +519,7 @@ set: drill_fields_set {
     sql: ${TABLE}.sum_of_items_inbounded_on_time__po ;;
     label: "# On time delivery (PO <> Inbounds)"
     group_label: "PO <> Inbounds"
-    description: "Number of on time delivered PO lines (PO > Inbound)"
+    description: "Number of items delivered on time (PO > Inbound)"
     hidden: yes
   }
 
@@ -527,7 +528,7 @@ set: drill_fields_set {
     sql: ${TABLE}.sum_of_items_inbounded_in_full_strict__po ;;
     label: "# In full delivery (PO <> Inbounds)"
     group_label: "PO <> Inbounds"
-    description: "Number of in full delivered PO lines (PO > Inbound)"
+    description: "Number of items delivered in full (PO > Inbound)"
     hidden: yes
   }
 
@@ -536,7 +537,7 @@ set: drill_fields_set {
     sql: ${TABLE}.sum_of_items_inbounded__po ;;
     label: "# Inbounded Items (PO <> Inbounds)"
     group_label: "PO <> Inbounds"
-    description: "Total amount of fullfilled quantities (PO > Inbound)"
+    description: "Total quantity fullfilled (PO > Inbound)"
     hidden: yes
   }
 
@@ -545,7 +546,7 @@ set: drill_fields_set {
     sql: ${TABLE}.sum_of_items_inbounded_in_quality__po ;;
     label: "# Inbounded Items in Quality (PO <> Inbounds)"
     group_label: "PO <> Inbounds"
-    description: "Share of in quality delivered order lines (PO > Inbound)"
+    description: "Number of items delivered in quality (PO > Inbound)"
     hidden: yes
   }
 
@@ -554,7 +555,7 @@ set: drill_fields_set {
     sql: ${TABLE}.sum_of_items_ordered_on_time_in_full__po_desadv ;;
     label: "# OTIF strict (PO > DESADV)"
     group_label: "PO <> DESADVs"
-    description: "Number of on time and in full order lines (PO > DESADV)"
+    description: "Number of items delivered on time and in full (PO > DESADV)"
     hidden: yes
   }
 
@@ -563,7 +564,7 @@ set: drill_fields_set {
     sql: ${TABLE}.sum_of_items_ordered_on_time_limited__po_desadv ;;
     label: "# OTIF relaxed quantity lim. (PO > DESADV)"
     group_label: "PO <> DESADVs"
-    description: "Total amount of on time fulfilled quantities (PO > DESADV), where an overdelivered quantity is limited to the PO quantity"
+    description: "Number of items fulfilled on time (PO > DESADV), An over-delivered quantity is limited to the item quantity stated on the PO"
     hidden: yes
   }
 
@@ -572,7 +573,7 @@ set: drill_fields_set {
     sql: ${TABLE}.sum_of_items_ordered_and_delivered_on_time__po_desadv ;;
     label: "# On Time Delivery (PO > DESADV)"
     group_label: "PO <> DESADVs"
-    description: "The number of SKUs, that have been ordered and have been delivered at the promised delivery date - (PO > DESADV)"
+    description: "Number of items, that have been ordered and have been delivered at the promised delivery date - (PO > DESADV)"
     hidden: yes
   }
 
@@ -581,7 +582,7 @@ set: drill_fields_set {
     sql: ${TABLE}.sum_of_items_ordered_in_full__po_desadv ;;
     label: "# In Full delivery (PO > DESADV)"
     group_label: "PO <> DESADVs"
-    description: "Number of in full delivered order lines (PO > DESADV)"
+    description: "Number of items delivered in full (PO > DESADV)"
     hidden: yes
   }
 
@@ -590,7 +591,7 @@ set: drill_fields_set {
     sql: ${TABLE}.sum_of_items_ordered_desadv_with_po__po_desadv ;;
     label: "# Filled Quantities (PO > DESADV)"
     group_label: "PO <> DESADVs"
-    description: "Sum of fullfilled quantities (PO > DESADV)"
+    description: "Total quantity fullfilled (PO > DESADV)"
     hidden: yes
   }
 
