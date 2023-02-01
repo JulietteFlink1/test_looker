@@ -126,7 +126,7 @@ view: +orderline {
 
   measure: number_of_orders_with_delivery_issues {
     alias: [cnt_delivery_issues]
-    label: "# Orders Delivery Issues (Post- + Pre-Delivery)"
+    label: "# Orders Delivery Issues (Post & Pre-Delivery)"
     description: "# Orders with delivery issues (Pre + Post), excludes External orders that do not qualify
     for post-delivery issues: Wolt, UE, Carrefour."
     group_label: "> Delivery Issues"
@@ -205,7 +205,7 @@ view: +orderline {
   measure: number_of_unique_orders_with_perished_light_issues_post {
     alias: [count_perished_light]
 
-    label: "# Orders Perished Light"
+    label: "# Orders Perished Light (Post Delivery Issues)"
     description: "The number of orders, that had issues with perished light products and were claimed through the Customer Service.
     Not counted in # Post Delivery Issues nor # Delivery Issues, excludes External orders that do not qualify
     for post-delivery issues: Wolt, UE, Carrefour."
@@ -219,7 +219,7 @@ view: +orderline {
   measure: number_of_unique_orders_with_goodwill_issues_post {
     alias: [count_goodwill]
 
-    label: "# Orders Goodwill"
+    label: "# Orders Goodwill (Post Delivery Issues)"
     description: "The number of orders, that had issues with products refunded out of goodwill.
     These occur when we refund a product that is still ok/that the hub confirmed they packed,
     because the request comes from a 'good' customer, and we do not have proof.
@@ -269,7 +269,7 @@ view: +orderline {
   measure: number_of_unique_orders_with_products_not_on_shelf_issue_post {
     alias: [cnt_products_not_on_shelf_post]
 
-    label:       "# Orders Products not on shelf (Post Delivery Issues)"
+    label:       "# Orders Products Not On Shelf (Post Delivery Issues)"
     description: "The number of orders, that had issues with products not being in stock and were claimed through the Customer Service.
     Excludes External orders that do not qualify for post-delivery issues: Wolt, UE, Carrefour."
     group_label: "> Delivery Issues"
@@ -285,7 +285,7 @@ view: +orderline {
   measure: number_of_unique_orders_with_product_not_on_shelf_issues_pre  {
     alias: [cnt_products_not_on_shelf_pre]
 
-    label:       "# Orders Products not on shelf (Pre Delivery Issues)"
+    label:       "# Orders Products Not On Shelf (Pre Delivery Issues)"
     description: "The number of orders, that had issues with products not being in stock and were identified in the picking process (Swipe).
     Excludes External orders that do not qualify for post-delivery issues: Wolt, UE, Carrefour."
     group_label: "> Delivery Issues"
@@ -593,7 +593,7 @@ view: +orderline {
   measure: pct_pre_order_issue_rate_per_total_orders_external {
     alias: [pct_pre_order_issue_rate_per_total_orders_crf]
 
-    label:       "% External Orders Partial Fulfillment (preoder)"
+    label:       "% External Orders Partial Fulfillment (Pre Delivery Issues)"
     group_label: "> Delivery Issues External"
     description: "The percentage of external orders, that had pre-delivery issues"
 
@@ -608,7 +608,7 @@ view: +orderline {
   measure: pct_pre_order_issue_rate_per_total_items_picked_external {
     alias: [pct_pre_order_issue_rate_per_total_items_picked_crf]
 
-    label:       "% External Orders Item Unfulfilled (preorder)"
+    label:       "% External Orders Item Unfulfilled (Pre Delivery Issues)"
     group_label: "> Delivery Issues External"
     description: "The percentage of unique SKUs per external order, that had pre-delivery issues."
 
@@ -623,7 +623,7 @@ view: +orderline {
   measure: pct_pre_order_fulfillment_rate_external {
     alias: [pct_pre_order_fulfillment_rate_crf]
 
-    label:       "% External Orders Pre-Order Fulfillment"
+    label:       "% External Orders Fulfillment (Pre Delivery Issues)"
     group_label: "> Delivery Issues External"
     description: "The percentage of external orders, that had no pre-delivery issues."
 
@@ -637,7 +637,7 @@ view: +orderline {
   measure: pct_not_on_shelf_issue_rate_external {
     alias: [pct_not_on_shelf_issue_rate_crf]
 
-    label:       "% External Orders Goods Not On Shelf Issue"
+    label:       "% External Orders Goods Not On Shelf Issue (Pre Delivery Issues)"
     group_label: "> Delivery Issues External"
     description: "% External orders with products not on shelf issues."
 
@@ -659,7 +659,7 @@ view: +orderline {
   # ~~~~~~~~~~~~  START Percentages   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   measure: pct_pre_order_issue_rate_per_total_orders {
 
-    label:       "% Orders Partial Fulfillment (preoder)"
+    label:       "% Orders Partial Fulfillment (Pre Delivery Issues)"
     group_label: "> Delivery Issues"
     description: "The percentage of orders, that had pre-delivery issues.
     Excludes External orders that do not qualify for post-delivery issues: Wolt, UE, Carrefour."
@@ -674,7 +674,7 @@ view: +orderline {
 
   measure: pct_post_order_issue_rate_per_total_orders {
 
-    label:       "% Orders Issue (post order)"
+    label:       "% Orders Issue (Post Delivery Issues)"
     group_label: "> Delivery Issues"
     description: "The percentage of orders, that had post-delivery issues.
     Excludes External orders that do not qualify for post-delivery issues: Wolt, UE, Carrefour."
@@ -689,7 +689,7 @@ view: +orderline {
 
   measure: pct_hub_related_post_order_issue_rate_per_total_orders {
 
-    label:       "% Orders Issue (post order hub related)"
+    label:       "% Orders Issue (Hub related - Pre Delivery Issues)"
     group_label: "> Delivery Issues"
     description: "The percentage of orders that had hub related post-delivery issues
     (Missing Product, Wrong Product, Damaged, Perished, Swapped).
@@ -709,7 +709,7 @@ view: +orderline {
 
   measure: pct_pre_order_issue_rate_per_total_items_picked {
 
-    label:       "% Orders Item Unfulfilled (preorder)"
+    label:       "% Orders Item Unfulfilled (Pre Delivery Issues)"
     description: "The percentage of unique SKUs per order, that had pre-delivery issues.
     Excludes External orders that do not qualify for post-delivery issues: Wolt, UE, Carrefour."
     group_label: "> Delivery Issues"
@@ -725,7 +725,7 @@ view: +orderline {
 
   measure: pct_pre_order_fulfillment_rate {
 
-    label:       "% Orders Pre-Order Fulfillment"
+    label:       "% Orders Fulfillment (Pre Delivery Issues)"
     description: "The percentage of orders, that had no pre-delivery issues.
     Excludes External orders that do not qualify for post-delivery issues: Wolt, UE, Carrefour."
     group_label: "> Delivery Issues"
@@ -742,7 +742,7 @@ view: +orderline {
 
   measure: pct_not_on_shelf_issue_rate {
 
-    label:       "% Orders Goods Not On Shelf Issue"
+    label:       "% Orders Goods Not On Shelf (Pre & Post Delivery Issues)"
     description: "The percentage of orders that had issues with Goods Not On Shelf, either Pre or Post delivery.
     Excludes External orders that do not qualify for post-delivery issues: Wolt, UE, Carrefour."
     group_label: "> Delivery Issues"
@@ -757,7 +757,7 @@ view: +orderline {
 
   measure: pct_missing_product_issue_rate {
 
-    label:       "% Orders Missing Product Issue"
+    label:       "% Orders Missing Product (Post Delivery Issues)"
     description: "The percentage of orders that had issues with Missing Products, Post Delivery.
     Excludes External orders that do not qualify for post-delivery issues: Wolt, UE, Carrefour."
     group_label: "> Delivery Issues"
@@ -772,7 +772,7 @@ view: +orderline {
 
   measure: pct_damaged_product_issue_rate {
 
-    label:       "% Orders Damaged Product Issue"
+    label:       "% Orders Damaged Product (Pre & Post Delivery Issues)"
     description: "The percentage of orders that had issues with Damaged Products, either Pre or Post delivery.
     Excludes External orders that do not qualify for post-delivery issues: Wolt, UE, Carrefour."
     group_label: "> Delivery Issues"
@@ -787,7 +787,7 @@ view: +orderline {
 
   measure: pct_cancelled_product_issue_rate {
 
-    label:       "% Orders Cancelled Product Issue"
+    label:       "% Orders Cancelled Product (Post Delivery Issues)"
     description: "The percentage of orders that had issues with Cancelled Products, Post delivery.
     Excludes External orders that do not qualify for post-delivery issues: Wolt, UE, Carrefour."
     group_label: "> Delivery Issues"
@@ -802,7 +802,7 @@ view: +orderline {
 
   measure: pct_perished_product_issue_rate {
 
-    label:       "% Orders Perished Product Issue"
+    label:       "% Orders Perished Product (Pre & Post Delivery Issues)"
     description: "The percentage of orders that had issues with Cancelled Products, either Pre or Post delivery.
     Excludes External orders that do not qualify for post-delivery issues: Wolt, UE, Carrefour."
     group_label: "> Delivery Issues"
@@ -817,7 +817,7 @@ view: +orderline {
 
   measure: pct_wrong_product_issue_rate {
 
-    label:       "% Orders Wrong Product Issue"
+    label:       "% Orders Wrong Product (Post Delivery Issues)"
     description: "The percentage of orders that had issues with Wrong Products, Post delivery.
     Excludes External orders that do not qualify for post-delivery issues: Wolt, UE, Carrefour."
     group_label: "> Delivery Issues"
@@ -832,7 +832,7 @@ view: +orderline {
 
   measure: pct_swapped_product_issue_rate {
 
-    label:       "% Orders Swapped Product Issue"
+    label:       "% Orders Swapped Product (Post Delivery Issues)"
     description: "The percentage of orders that had issues with Swapped Products, Post delivery.
     Excludes External orders that do not qualify for post-delivery issues: Wolt, UE, Carrefour."
     group_label: "> Delivery Issues"
@@ -847,7 +847,7 @@ view: +orderline {
 
   measure: pct_products_item_description_issues {
 
-    label:       "% Orders Item Description Issue"
+    label:       "% Orders Item Description (Post Delivery Issues)"
     description: "The percentage of orders that had issues with the Item Descriptions, Post delivery.
     Excludes External orders that do not qualify for post-delivery issues: Wolt, UE, Carrefour."
     group_label: "> Delivery Issues"
@@ -862,7 +862,7 @@ view: +orderline {
 
   measure: pct_products_bad_quality_issues {
 
-    label:       "% Orders Item Quality Issue"
+    label:       "% Orders Item Quality (Post Delivery Issues)"
     description: "The percentage of orders that had issues due to the Item Quality, Post delivery.
     Excludes External orders that do not qualify for post-delivery issues: Wolt, UE, Carrefour."
     group_label: "> Delivery Issues"
@@ -878,7 +878,7 @@ view: +orderline {
   # ~~~~~~~ Perished Light & Goodwill
   measure: pct_orders_perished_light {
 
-    label: "% Orders Perished Light Issue"
+    label: "% Orders Perished Light (Post Delivery Issues)"
     description: "The percentage of orders that had issues with Perished Light Products, Post delivery.
     Excludes External orders that do not qualify for post-delivery issues: Wolt, UE, Carrefour."
     group_label: "> Delivery Issues"
@@ -892,7 +892,7 @@ view: +orderline {
 
   measure: pct_orders_goodwill {
 
-    label: "% Orders Goodwill Issue"
+    label: "% Orders Goodwill (Post Delivery Issues)"
     description: "The percentage of orders that had issues with products refunded out of goodwill, Post delivery.
     Excludes External orders that do not qualify for post-delivery issues: Wolt, UE, Carrefour."
     group_label: "> Delivery Issues"
