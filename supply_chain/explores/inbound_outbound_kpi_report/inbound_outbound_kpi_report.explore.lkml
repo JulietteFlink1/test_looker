@@ -61,7 +61,6 @@ explore: inbound_outbound_kpi_report {
     type: left_outer
     relationship: many_to_one
     sql_on: ${inventory_changes_daily.sku} = ${lexbizz_item.sku}  and
-            ${inventory_changes_daily.country_iso} = ${lexbizz_item.country_iso}  and
             ${lexbizz_item.ingestion_date} = current_date()
     ;;
   }
