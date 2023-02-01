@@ -185,7 +185,7 @@ explore: order_orderline_cl {
   }
 
   join: sales_weighted_avg_buying_prices {
-    view_label: "ERP Supplier Prices"
+    view_label: ""
     required_access_grants: [can_view_buying_information]
 
     type: left_outer
