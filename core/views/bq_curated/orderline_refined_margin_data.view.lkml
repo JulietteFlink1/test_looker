@@ -2,14 +2,14 @@ include: "/**/*.view"
 
 view: +orderline {
 
-  dimension: amt_buying_price_net_eur {
+
+  dimension: is_buying_price_defined {
     required_access_grants: [can_view_buying_information]
-    label: "Buying Price (Net)"
+    label: "Is Buying Price defined"
+    description: "Indicator showing, how many sold items could be related to a buying price from our ERP system"
     group_label: "> Monetary Metrics (P&L)"
-    type: number
-    sql: ${TABLE}.amt_buying_price_weighted_rolling_average_net_eur ;;
-    value_format_name: decimal_4
-    hidden: yes
+    type: yesno
+    sql: ${amt_weighted_average_cost_net_eur} is not null ;;
   }
 
   dimension: amt_net_income_net_eur {
@@ -18,7 +18,7 @@ view: +orderline {
     description: "The net revenue trough product sales. This field is only calcualted for transactions, that also have a buying price associated."
     group_label: "> Monetary Metrics (P&L)"
     type: number
-    sql:  if(${amt_buying_price_net_eur} is not null,
+    sql:  if(${amt_weighted_average_cost_net_eur} is not null,
             coalesce(
               ${unit_price_gross_amount} / nullif((1 + ${tax_rate}) ,0),
               ${products.amt_product_price_gross}  / nullif((1 + ${products.tax_rate}), 0)
@@ -35,7 +35,7 @@ view: +orderline {
     description: "The incoming cash defined as net item price after deduction of Product Discount"
     group_label: "> Monetary Metrics (P&L)"
     type: number
-    sql:  if(${amt_buying_price_net_eur} is not null,
+    sql:  if(${amt_weighted_average_cost_net_eur} is not null,
             coalesce(
               ${unit_price_after_product_discount_gross} / nullif((1 + ${tax_rate}) ,0),
               ${products.amt_product_price_gross}  / nullif((1 + ${products.tax_rate}), 0)
@@ -52,7 +52,7 @@ view: +orderline {
     description: "The unit margin defined as Net Unit Price substracted by the Buying Price"
     group_label: "> Monetary Metrics (P&L)"
     type: number
-    sql: ${amt_net_income_net_eur} - ${amt_buying_price_net_eur} ;;
+    sql: ${amt_net_income_net_eur} - ${amt_weighted_average_cost_net_eur} ;;
     value_format_name: eur
     hidden: yes
   }
@@ -63,7 +63,7 @@ view: +orderline {
     description: "The unit margin defined as Net Unit Price after deduction of Product Discount  substracted by the Buying Price"
     group_label: "> Monetary Metrics (P&L)"
     type: number
-    sql: ${amt_net_income_after_product_discount_net_eur} - ${amt_buying_price_net_eur} ;;
+    sql: ${amt_net_income_after_product_discount_net_eur} - ${amt_weighted_average_cost_net_eur} ;;
     value_format_name: eur
     hidden: yes
   }
@@ -72,7 +72,7 @@ view: +orderline {
 
 
 
-  measure: avg_amt_buying_price_net_eur {
+  measure: avg_amt_weighted_average_cost_net_eur {
     required_access_grants: [can_view_buying_information]
     label: "AVG Buying Price (Net)"
     description: "The  sum of COGS divided by the sum of Item Quantity Sold"
