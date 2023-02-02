@@ -2073,6 +2073,15 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  measure: number_of_worked_hours_onboarding {
+    group_label: "> Rider Measures"
+    label: "# Punched Onboarding Hours"
+    description: "The sum of worked hours with position name Onboarding. Included in Rider UTR calculations."
+    type: sum
+    sql: ${TABLE}.number_of_worked_minutes_onboarding/60;;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_worked_hours_rider_ec_shift {
     group_label: "> Rider Measures"
     label: "# Punched EC Rider Hours"
@@ -4131,12 +4140,22 @@ view: staffing {
 
   # =========  UTR   =========
 
-  measure: utr_rider {
+  ## For a quick check only, needs to be deleted afterwards
+  measure: deprecated_utr_rider {
     group_label: "> Rider Measures"
-    label: "Rider UTR"
+    label: "[old] Rider UTR (does not include onboarding)"
     description: "# Orders (excl. Click & Collect and External Orders) / # Punched Rider Hours"
     type: number
     sql: ${orders_with_ops_metrics.cnt_rider_orders}/ nullif(${number_of_worked_hours_rider}, 0) ;;
+    value_format_name: decimal_2
+  }
+
+  measure: utr_rider {
+    group_label: "> Rider Measures"
+    label: "Rider UTR"
+    description: "# Orders (excl. Click & Collect and External Orders) / # Punched Rider Hours (incl. Onboarding)"
+    type: number
+    sql: ${orders_with_ops_metrics.cnt_rider_orders}/ nullif(${number_of_worked_hours_rider}+${number_of_worked_hours_onboarding}, 0) ;;
     value_format_name: decimal_2
   }
 
@@ -4177,8 +4196,8 @@ view: staffing {
   measure: all_staff_utr {
     label: "All Staff UTR"
     type: number
-    description: "# Orders (incl. Click & Collect and External Orders) / # Punched All Staff (incl. Rider,Picker,WH Ops, Rider Captain, Ops Associate, Shift Lead and Deputy Shift Lead) Hours"
-    sql: ${orders_with_ops_metrics.sum_orders} / nullif(${number_of_worked_hours_rider}+${number_of_worked_hours_shift_lead}+${number_of_worked_hours_ops_associate}+${number_of_worked_hours_deputy_shift_lead}, 0);;
+    description: "# Orders (incl. Click & Collect and External Orders) / # Punched All Staff (incl. Rider, Onboarding, Picker, WH Ops, Rider Captain, Ops Associate, Shift Lead, and Deputy Shift Lead) Hours"
+    sql: ${orders_with_ops_metrics.sum_orders} / nullif(${number_of_worked_hours_rider}+${number_of_worked_hours_shift_lead}+${number_of_worked_hours_ops_associate}+${number_of_worked_hours_deputy_shift_lead}+${number_of_worked_hours_onboarding}, 0);;
     value_format_name: decimal_2
     group_label: "> All Staff Measures"
   }
@@ -4629,14 +4648,14 @@ view: staffing {
     group_label: "> Dynamic Measures"
     sql:
         case
-          when {% parameter position_parameter %} = 'Rider' THEN ${number_of_worked_hours_rider}
-          when {% parameter position_parameter %} = 'Picker' THEN ${number_of_worked_hours_picker}
-          when {% parameter position_parameter %} = 'Shift Lead' THEN ${number_of_worked_hours_shift_lead}
-          when {% parameter position_parameter %} = 'Deputy Shift Lead' THEN ${number_of_worked_hours_deputy_shift_lead}
-          when {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_worked_hours_rider_captain}
-          when {% parameter position_parameter %} = 'WH' THEN ${number_of_worked_hours_wh}
-          when {% parameter position_parameter %} = 'Hub Staff' THEN ${number_of_worked_hours_hub_staff}
-          when {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_worked_hours_ops_associate}
+          when {% parameter position_parameter %} = 'Rider' then ${number_of_worked_hours_rider}
+          when {% parameter position_parameter %} = 'Picker' then ${number_of_worked_hours_picker}
+          when {% parameter position_parameter %} = 'Shift Lead' then ${number_of_worked_hours_shift_lead}
+          when {% parameter position_parameter %} = 'Deputy Shift Lead' then ${number_of_worked_hours_deputy_shift_lead}
+          when {% parameter position_parameter %} = 'Rider Captain' then ${number_of_worked_hours_rider_captain}
+          when {% parameter position_parameter %} = 'WH' then ${number_of_worked_hours_wh}
+          when {% parameter position_parameter %} = 'Hub Staff' then ${number_of_worked_hours_hub_staff}
+          when {% parameter position_parameter %} = 'Ops Associate' then ${number_of_worked_hours_ops_associate}
           else null
         end ;;
   }
