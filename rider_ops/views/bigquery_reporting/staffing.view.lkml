@@ -4598,7 +4598,6 @@ view: staffing {
     sql:
         case
           when {% parameter position_parameter %} = 'Rider' THEN ${number_of_worked_minutes_rider}/60
-          when {% parameter position_parameter %} = 'Onboarding' THEN ${number_of_worked_hours_onboarding}
           when {% parameter position_parameter %} = 'Picker' THEN ${number_of_worked_minutes_picker}/60
           when {% parameter position_parameter %} = 'Shift Lead' THEN ${number_of_worked_minutes_shift_lead}/60
           when {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_worked_minutes_rider_captain}/60
@@ -4640,7 +4639,6 @@ view: staffing {
     sql:
         case
           when {% parameter position_parameter %} = 'Rider' then ${number_of_worked_hours_rider}
-          when {% parameter position_parameter %} = 'Onboarding' then ${number_of_worked_hours_onboarding}
           when {% parameter position_parameter %} = 'Picker' then ${number_of_worked_hours_picker}
           when {% parameter position_parameter %} = 'Shift Lead' then ${number_of_worked_hours_shift_lead}
           when {% parameter position_parameter %} = 'Deputy Shift Lead' then ${number_of_worked_hours_deputy_shift_lead}
@@ -4830,6 +4828,5 @@ view: staffing {
     allowed_value: { value: "Rider Captain" }
     allowed_value: { value: "Ops Associate" }
     allowed_value: { value: "Hub Staff" }
-    allowed_value: { value: "Onboarding" }
   }
 }
