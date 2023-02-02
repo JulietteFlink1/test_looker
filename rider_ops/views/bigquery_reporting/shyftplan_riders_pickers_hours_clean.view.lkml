@@ -186,7 +186,7 @@ view: shyftplan_riders_pickers_hours_clean {
   measure: onboarding_hours {
     label: "Sum of Onboarding Hours"
     type: sum
-    sql:${number_of_worked_minutes}/60;;
+    sql: ${number_of_worked_minutes}/60;;
     filters: [position_name: "onboarding"]
     value_format_name: decimal_1
     group_label: "Working Hours"
