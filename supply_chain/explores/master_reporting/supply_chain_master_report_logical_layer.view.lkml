@@ -339,7 +339,6 @@ view: +supply_chain_master_report {
     label: "% OTIFIQ strict (DESADV > Inbound)"
     description: "Share of on time, in full and in quality DESADV lines (DESADV > Inbound) compared to all DESADV lines "
     group_label: "DESADV >> Inbound | OTIFIQ"
-
     type: number
     sql: safe_divide(${sum_of_items_otifiq_stric__desadvs}, ${sum_of_items_ordered__desadv}) ;;
     value_format_name: percent_0
@@ -400,7 +399,6 @@ view: +supply_chain_master_report {
     label: "% In Full strict (DESADV > Inbound)"
     description: "Share of in full delivered DESADV lines (DESADV > Inbound) compared to all DESADV lines "
     group_label: "DESADV >> Inbound | In Full"
-
     type: number
     sql: safe_divide(${sum_of_items_inbounded_in_full_strict__desadv}, ${sum_of_items_ordered__desadv}) ;;
     value_format_name: percent_0
@@ -419,7 +417,6 @@ view: +supply_chain_master_report {
     label: "% In Full relaxed (DESADV > Inbound)"
     description: "Relative amount of fullfilled quantities (DESADV > Inbound) compared to overall DESADV quantities "
     group_label: "DESADV >> Inbound | In Full"
-
     type: number
     sql: safe_divide(${sum_of_items_inbounded__desadv}, ${sum_of_items__desadv}) ;;
     value_format_name: percent_0
@@ -441,7 +438,6 @@ view: +supply_chain_master_report {
     label: "% In Quality (DESADV > Inbound)"
     description: "Share of in quality delivered order lines (DESADV > Inbound) compared to all inbounded order lines "
     group_label: "DESADV >> Inbound | In Quality"
-
     type: number
     sql: safe_divide(${sum_of_items_inbounded_in_quality__desadv}, ${sum_of_items_inbounded__desadv}) ;;
     value_format_name: percent_0
@@ -482,7 +478,6 @@ view: +supply_chain_master_report {
     label: "% OTIFIQ strict (PO > Inbound)"
     description: "Share of on time, in full and in quality order lines (PO > Inbound) compared to all order lines "
     group_label: "PO >> Inbound | OTIFIQ"
-
     type: number
     sql: safe_divide(${sum_of_items_otifiq_stric__po}, ${sum_of_items_ordered__po}) ;;
     value_format_name: percent_0
@@ -492,7 +487,6 @@ view: +supply_chain_master_report {
     label: "% OTIFIQ relaxed quantity lim. (PO > Inbound)"
     description: "Relative amount of on time and in quality fulfilled quantities (PO > Inbound) compared to overall ordered quantities, where an overdelivered quantity is limited to the PO quantity"
     group_label: "PO >> Inbound | OTIFIQ"
-
     type: number
     sql: safe_divide(${sum_of_items_otifiq_relax_lim__po}, ${sum_of_items__po});;
     value_format_name: percent_0
@@ -514,7 +508,6 @@ view: +supply_chain_master_report {
     label: "% On Time delivery (PO > Inbound)"
     description: "Share of on time delivered order lines (PO > Inbound) compared to all order lines "
     group_label: "PO >> Inbound | On Time"
-
     type: number
     sql: safe_divide(${sum_of_items_inbounded_on_time__po}, ${sum_of_items_ordered__po}) ;;
     value_format_name: percent_0
@@ -536,7 +529,6 @@ view: +supply_chain_master_report {
     label: "% In Full strict (PO > Inbound)"
     description: "Share of in full delivered order lines (PO > Inbound) compared to all order lines "
     group_label: "PO >> Inbound | In Full"
-
     type: number
     sql: safe_divide(${sum_of_items_inbounded_in_full_strict__po}, ${sum_of_items_ordered__po}) ;;
     value_format_name: percent_0
@@ -555,7 +547,6 @@ view: +supply_chain_master_report {
     label: "% In Full relaxed (PO > Inbound)"
     description: "Relative amount of fullfilled quantities (PO > Inbound) compared to overall ordered quantities "
     group_label: "PO >> Inbound | In Full"
-
     type: number
     sql: safe_divide(${sum_of_items_inbounded__po} , ${sum_of_items__po});;
     value_format_name: percent_0
@@ -576,7 +567,6 @@ view: +supply_chain_master_report {
     label: "% In Quality (PO > Inbound)"
     description: "Share of in quality delivered order lines (PO > Inbound) compared to all inbounded order lines"
     group_label: "PO >> Inbound | In Quality"
-
     type: number
     sql: safe_divide(${sum_of_items_inbounded_in_quality__po}, ${sum_of_items_inbounded__po}) ;;
     value_format_name: percent_0
@@ -599,7 +589,6 @@ view: +supply_chain_master_report {
     label: "% OTIF strict (PO > DESADV)"
     description: "Share of on time and in full order lines (PO > DESADV) compared to all order lines "
     group_label: "PO >> DESADV | OTIF"
-
     type: number
     sql: safe_divide(${sum_of_items_ordered_on_time_in_full__po_desadv}, ${sum_of_items_ordered__po}) ;;
     value_format_name: percent_0
@@ -618,7 +607,6 @@ view: +supply_chain_master_report {
     label: "% OTIF relaxed quantity lim. (PO > DESADV)"
     description: "Relative amount of on time fulfilled quantities (PO > DESADV) compared to overall ordered quantities, where an overdelivered quantity is limited to the PO quantity"
     group_label: "PO >> DESADV | OTIF"
-
     type: number
     sql: safe_divide(${sum_of_items_ordered_on_time_limited__po_desadv}, ${sum_of_items__po}) ;;
     value_format_name: percent_0
@@ -640,7 +628,6 @@ view: +supply_chain_master_report {
     label: "% On Time Delivery (PO > DESADV)"
     description: "Share of on time delivered order lines (PO > DESADV) compared to all order lines "
     group_label: "PO >> DESADV | On Time"
-
     type: number
     sql: safe_divide(${sum_of_items_ordered_and_delivered_on_time__po_desadv}, ${sum_of_items_ordered__po}) ;;
     value_format_name: percent_0
@@ -679,7 +666,6 @@ view: +supply_chain_master_report {
     label: "% In Full relaxed (PO > DESADV)"
     description: "Relative amount of fullfilled quantities (PO > DESADV) compared to overall ordered quantities "
     group_label: "PO >> DESADV | In Full"
-
     type: number
     sql: safe_divide(${sum_of_items_ordered_desadv_with_po__po_desadv}, ${sum_of_items__po}) ;;
     value_format_name: percent_0
