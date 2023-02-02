@@ -499,7 +499,6 @@ view: forecasts {
   }
 
   measure: share_of_cancelled_orders_over_flink_delivered_orders{
-    alias: [pct_cancelled_orders]
     group_label: "> Order Measures"
     label: "% Cancelled Orders"
     description: "Share of cancelled orders (due to operational reasons) over Last Mile Orders"
@@ -509,7 +508,6 @@ view: forecasts {
   }
 
   measure: share_of_missed_orders_over_flink_delivered_orders{
-    alias: [pct_missed_orders]
     group_label: "> Order Measures"
     label: "% Missed Orders"
     description: "Share of Missed orders due to forced or planned closure over Last Mile Orders"
@@ -529,7 +527,6 @@ view: forecasts {
   }
 
   measure: share_of_missed_orders_forced_closure_over_flink_delivered_orders{
-    alias: [pct_missed_orders_forced_closure]
     group_label: "> Order Measures"
     label: "% Missed Orders - Forced Closure"
     description: "Share of Missed orders due to forced closure over Last Mile Orders"
@@ -549,7 +546,6 @@ view: forecasts {
   }
 
   measure: share_of_missed_orders_planned_closure_over_flink_delivered_orders{
-    alias: [pct_missed_orders_planned_closure]
     group_label: "> Order Measures"
     label: "% Missed Orders - Planned Closure"
     description: "Share of Missed orders due to planned closure over Last Mile Orders"
@@ -597,8 +593,7 @@ view: forecasts {
     value_format_name: decimal_0
   }
 
-  measure: share_of_forecast_deviation_from_actually_needed_hours {
-    alias: [pct_actually_needed_hours_deviation]
+  measure: pct_actually_needed_hours_deviation {
     group_label: "> Dynamic Measures"
     label: "% Actually Needed Hours Deviation"
     description: "The degree of how far # Actually Needed Hours is from # Punched Hours in the given period. Formula:  (# Punched Hours / # Actually Needed Hours) - 1"
@@ -619,8 +614,7 @@ view: forecasts {
     type: yesno
   }
 
-  measure: share_of_forecasted_utr_deviation_from_actual_utr {
-    alias: [pct_forecasted_utr_deviation]
+  measure: pct_forecasted_utr_deviation {
     group_label: "> Dynamic Measures"
     label: "% Forecasted UTR Deviation"
     description: "The degree of how far Forecasted UTR (# Forecasted Orders / # Forecasted Hours (Incl. No Show)) is from Actual UTR in the given period. Formula:  (Actual UTR / Forecasted UTR (Incl. No Show)) - 1"
@@ -629,8 +623,7 @@ view: forecasts {
     value_format_name: percent_1
   }
 
-    measure: share_of_forecasted_utr_deviation_from_actual_utr_adjusted {
-    alias: [pct_forecasted_utr_deviation_adjusted]
+    measure: pct_forecasted_utr_deviation_adjusted {
     group_label: "> Dynamic Measures"
     label: "% Adjusted Forecasted UTR Deviation"
     description: "The degree of how far Adjusted Forecasted UTR (# Adjusted Forecasted Orders / # Adjusted Forecasted Hours) is from Actual UTR in the given period. Formula:  (Actual UTR / Adjusted Forecasted UTR (Incl. No Show)) - 1"
@@ -640,8 +633,7 @@ view: forecasts {
   }
 
 
-  measure: share_of_actually_needed_hours_deviation_from_worked_hours_adjusted {
-    alias: [pct_actually_needed_hours_deviation_adjusted]
+  measure: pct_actually_needed_hours_deviation_adjusted {
     group_label: "> Dynamic Measures"
     label: "% Adjusted Actually Needed Hours Deviation"
     description: "The degree of how far # Actually Needed Hours (Incl. Airtable Adjustments) is from # Punched Hours in the given period. Formula:  (# Punched Hours / # Actually Needed Hours) - 1"
@@ -650,8 +642,7 @@ view: forecasts {
     value_format_name: percent_1
   }
 
-  measure: share_of_forecasted_no_show_hours_deviation_from_actual_no_show {
-    alias: [pct_forecast_deviation_no_show]
+  measure: pct_forecast_deviation_no_show {
     group_label: "> Dynamic Measures"
     label: "% No Show Hours Deviation (Excl. EC Shift)"
     description: "The degree of how far # Forecasted No Show Hours is from # Actual No Show Hours in the given period. Formula:  (# Actual No Show Hours / # Forecasted No Show Hours) - 1"
@@ -660,8 +651,7 @@ view: forecasts {
     value_format_name: percent_1
   }
 
-  measure: share_of_forecasted_no_show_hours_deviation_from_actual_no_show_adjusted {
-    alias: [pct_forecast_deviation_no_show_adjusted]
+  measure: pct_forecast_deviation_no_show_adjusted {
     group_label: "> Dynamic Measures"
     label: "% Adjusted No Show Hours Deviation (Excl. EC Shift)"
     description: "The degree of how far # Adjusted Forecasted No Show Hours (Incl. Airtable Adjustments) is from # Actual No Show Hours in the given period. Formula:  (# Actual No Show Hours / # Forecasted No Show Hours) - 1"
@@ -670,8 +660,7 @@ view: forecasts {
     value_format_name: percent_1
   }
 
-  measure: share_of_order_forecast_deviation_from_actual_orders {
-    alias: [pct_forecast_deviation]
+  measure: pct_forecast_deviation {
     group_label: "> Order Measures"
     label: "% Order Forecast Deviation"
     description: "The degree of how far # Forecasted Orders is from # Actual Orders (Forecast-related) in the given period. Formula: (# Actual Orders (Forecast-related) / # Forecasted Orders) -1"
@@ -689,8 +678,8 @@ view: forecasts {
     value_format_name: percent_1
   }
 
-  measure: share_of_order_forecast_deviation_from_actual_orders_adjusted {
-    alias: [pct_adjusted_forecast_deviation, pct_forecast_deviation_adjusted]
+  measure: pct_forecast_deviation_adjusted {
+    alias: [pct_adjusted_forecast_deviation]
     group_label: "> Order Measures"
     label: "% Adjusted Order Forecast Deviation"
     description: "The degree of how far # Forecasted Orders (Incl. Airtable Adjustments) is from # Actual Orders in the given period. Formula: (# Actual Orders / # Forecasted Orders (Incl. Adjustments)) -1"
@@ -700,7 +689,6 @@ view: forecasts {
   }
 
   measure: share_of_order_forecast_deviation_from_actual_successful_flink_delivered_orders_adjusted {
-    alias: [pct_forecast_deviation_successful_orders_adjusted]
     group_label: "> Order Measures"
     label: "% Adjusted Order Forecast Deviation (Successful Last Mile Orders)"
     description: "The degree of how far # Forecasted Orders (Incl. Airtable Adjustments) is from # Successful Last MileOrders in the given period. Formula: (# Successful Last MileOrders / # Forecasted Orders (Incl. Adjustments)) -1"
@@ -710,8 +698,7 @@ view: forecasts {
   }
 
 
-  measure: share_of_forecasted_rider_handling_duration_from_actual_rider_handling_duration {
-    alias: [pct_forecast_deviation_handling_duration]
+  measure: pct_forecast_deviation_handling_duration {
     group_label: "> Order Measures"
     label: "% Rider Handling Duration Forecast Deviation"
     description: "The degree of how far AVG Forecasted Rider Handling Duration is from AVG Actual Rider Handling Duration in the given period. Formula: (AVG Rider Handling Duration (Minutes) / Forecasted AVG Rider Handling Duration) - 1"
@@ -720,8 +707,7 @@ view: forecasts {
     value_format_name: percent_1
   }
 
-  measure: share_of_forecasted_rider_handling_duration_from_actual_rider_handling_duration_adjusted {
-    alias: [pct_forecast_deviation_handling_duration_adjusted]
+  measure: pct_forecast_deviation_handling_duration_adjusted {
     group_label: "> Order Measures"
     label: "% Adjusted Rider Handling Duration Forecast Deviation"
     description: "The degree of how far Adjusted AVG Forecasted Rider Handling Duration is from AVG Actual Rider Handling Duration in the given period (Incl. Airtable Adjustments). Formula: (Adjusted AVG Rider Handling Duration (Minutes) / Adjusted Forecasted AVG Rider Handling Duration) - 1"
@@ -730,8 +716,7 @@ view: forecasts {
     value_format_name: percent_1
   }
 
-  measure: share_of_forecasted_hours_deviation_from_scheduled_hours {
-    alias: [pct_forecast_deviation_hours]
+  measure: pct_forecast_deviation_hours {
     group_label: "> Dynamic Measures"
     label: "% Scheduled Hours Forecast Deviation (Incl. EC Shift)"
     description: "The degree of how far # Forecasted Hours is from # Scheduled Hours in the given period. Formula: (# Scheduled Hours / # Forecasted Hours) - 1"
@@ -740,8 +725,7 @@ view: forecasts {
     value_format_name: percent_1
   }
 
-  measure: share_of_forecasted_hours_deviation_from_scheduled_hours_adjusted {
-    alias: [pct_forecast_deviation_hours_adjusted]
+  measure: pct_forecast_deviation_hours_adjusted {
     group_label: "> Dynamic Measures"
     label: "% Adjusted Scheduled Hours Forecast Deviation (Incl. EC Shift)"
     description: "The degree of how far # Forecasted Hours (Incl. Airtable Adjustments) is from # Scheduled Hours in the given period. Formula: (# Scheduled Hours / # Forecasted Hours) - 1"
@@ -804,8 +788,7 @@ view: forecasts {
     value_format_name: percent_1
   }
 
-  measure: share_of_forecasted_hours_deviation_from_unknown_scheduled_hours_excl_ec_adjusted {
-    alias: [pct_forecast_deviation_hours_adjusted_excl_ec]
+  measure: pct_forecast_deviation_hours_adjusted_excl_ec {
     group_label: "> Dynamic Measures"
     label: "% Adjusted Scheduled Hours Forecast Deviation (Excl. EC Shifts Hours)"
     description: "The degree of how far # Forecasted Hours (Incl. Airtable Adjustments) is from # Scheduled Hours (Excl. EC shift hours ) in the given period. Formula: ((# Scheduled Hours - # Scheduled EC Shift Hours) / # Forecasted Hours) - 1"
