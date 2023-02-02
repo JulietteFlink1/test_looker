@@ -4140,6 +4140,17 @@ view: staffing {
 
   # =========  UTR   =========
 
+  ## For a quick check only, needs to be deleted afterwards
+  measure: deprecated_utr_rider {
+    group_label: "> Rider Measures"
+    label: "[old] Rider UTR (does not include onboarding)"
+    description: "# Orders (excl. Click & Collect and External Orders) / # Punched Rider Hours"
+    type: number
+    hidden: yes
+    sql: ${orders_with_ops_metrics.cnt_rider_orders}/ nullif(${number_of_worked_hours_rider}}, 0) ;;
+    value_format_name: decimal_2
+  }
+
   measure: utr_rider {
     group_label: "> Rider Measures"
     label: "Rider UTR"
