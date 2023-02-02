@@ -4233,7 +4233,7 @@ view: staffing {
     description: "# Orders (excl. Click & Collect and External Orders) / # Punched Rider Hours"
     type: number
     hidden: yes
-    sql: ${orders_with_ops_metrics.cnt_rider_orders}/ nullif(${number_of_worked_hours_rider}}, 0) ;;
+    sql: ${orders_with_ops_metrics.number_of_unique_flink_delivered_orders}/ nullif(${number_of_worked_hours_rider}}, 0) ;;
     value_format_name: decimal_2
   }
 
