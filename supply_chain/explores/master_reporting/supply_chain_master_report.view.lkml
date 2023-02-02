@@ -11,7 +11,7 @@
 # GMV
 
 view: supply_chain_master_report {
-  sql_table_name: `flink-data-dev.dbt_lruiz_reporting.supply_chain_master_report`
+  sql_table_name: `flink-data-prod.reporting.supply_chain_master_report`
     ;;
 
 set: drill_fields_set {

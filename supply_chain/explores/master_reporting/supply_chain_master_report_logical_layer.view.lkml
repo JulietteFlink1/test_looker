@@ -310,6 +310,7 @@ view: +supply_chain_master_report {
     label: "# Delivered Items (DESADVs)"
     # group_label: ""
     description: "Sum of items, that have been delivered according to the dispatch notification (DESADV)"
+    value_format_name: decimal_0
   }
 
   measure: sum_of_items__desadv {
@@ -318,6 +319,7 @@ view: +supply_chain_master_report {
     label: "# Total Quantity (DESADV)"
     # group_label: ""
     description: "Sum of items, that have been delivered according to the dispatch notification (DESADV)"
+    value_format_name: decimal_0
   }
 
 
@@ -330,9 +332,10 @@ view: +supply_chain_master_report {
     label: "# OTIFIQ Strict (DESADVs <> Inbounds)"
     group_label: "DESADV >> Inbound | OTIFIQ"
     description: "Sum of items, that were delivered on time, in full and in quality (DESADV > Inbound)"
+    value_format_name: decimal_0
   }
 
-  measure: pct_desadv_otifiq_stric {
+  measure: share_of_items_otific_stric__desadv_with_sum_of_items_ordered__desadv {
     label: "% OTIFIQ strict (DESADV > Inbound)"
     description: "Share of on time, in full and in quality DESADV lines (DESADV > Inbound) compared to all DESADV lines "
     group_label: "DESADV >> Inbound | OTIFIQ"
@@ -349,13 +352,13 @@ view: +supply_chain_master_report {
     group_label: "DESADV >> Inbound | OTIFIQ"
     description: "Sum of items delivered on time and in quality (DESADV > Inbound).
                   An over-delivered quantity is limited to the item quantity stated on the DESADV"
+    value_format_name: decimal_0
   }
 
-  measure: pct_desadv_otifiq_relaxed_limited {
+  measure: share_of_items__otifiq_relax_lim__desadv_with_sum_of_items__desadv {
     label: "% OTIFIQ relaxed quantity lim. (DESADV > Inbound)"
     description: "Relative amount of on time and in quality fulfilled quantities (DESADV > Inbound) compared to overall DESADV quantities, where an overdelivered quantity is limited to the DESADV quantity"
     group_label: "DESADV >> Inbound | OTIFIQ"
-
     type: number
     sql: safe_divide(${sum_of_items_otifiq_relax_lim__desadv}, ${sum_of_items__desadv}) ;;
     value_format_name: percent_0
@@ -369,13 +372,13 @@ view: +supply_chain_master_report {
     label: "# On time delivery (DESADVs <> Inbounds)"
     group_label: "DESADV >> Inbound | On Time"
     description: "Sum of items delivered on time (DESADV > Inbound)"
+    value_format_name: decimal_0
   }
 
-  measure: pct_desadv_inbounded_items_on_time {
+  measure: share_of_items_inbounded_on_time__desadv_with_sum_of_items_ordered__desadv {
     label: "% On Time delivery (DESADV > Inbound)"
     description: "Share of on time delivered DESADV lines (DESADV > Inbound) compared to all DESADV lines "
     group_label: "DESADV >> Inbound | On Time"
-
     type: number
     sql: safe_divide(${sum_of_items_inbounded_on_time__desadv}, ${sum_of_items_ordered__desadv}) ;;
     value_format_name: percent_0
@@ -390,9 +393,10 @@ view: +supply_chain_master_report {
     label: "# In full delivery (DESADVs <> Inbounds)"
     group_label: "DESADV >> Inbound | In Full"
     description: "Sum of items delivered in full (DESADV > Inbound)"
+    value_format_name: decimal_0
   }
 
-  measure: pct_desadv_inbounded_in_full {
+  measure: share_of_items_inbounded_in_full_strict__desadv_with_sum_of_items_ordered__desadv {
     label: "% In Full strict (DESADV > Inbound)"
     description: "Share of in full delivered DESADV lines (DESADV > Inbound) compared to all DESADV lines "
     group_label: "DESADV >> Inbound | In Full"
@@ -408,9 +412,10 @@ view: +supply_chain_master_report {
     label: "# Inbounded Items (DESADVs <> Inbounds)"
     group_label: "DESADV >> Inbound | In Full"
     description: "Sum of fullfilled quantities (DESADV > Inbound)"
+    value_format_name: decimal_0
   }
 
-  measure: pct_desadv_fill_rate {
+  measure: share_of_items_inbounded__desadv_with_sum_of_items__desadv {
     label: "% In Full relaxed (DESADV > Inbound)"
     description: "Relative amount of fullfilled quantities (DESADV > Inbound) compared to overall DESADV quantities "
     group_label: "DESADV >> Inbound | In Full"
@@ -429,9 +434,10 @@ view: +supply_chain_master_report {
     label: "# Inbounded Items in Quality (DESADVs <> Inbounds)"
     group_label: "DESADV >> Inbound | In Quality"
     description: "Sum of items delivered in quality (DESADV > Inbound)"
+    value_format_name: decimal_0
   }
 
-  measure:  pct_desadv_items_inbounded_in_quality {
+  measure:  share_of_items_inbounded_in_quality__desadv_with_sum_of_items_inbounded__desadv {
     label: "% In Quality (DESADV > Inbound)"
     description: "Share of in quality delivered order lines (DESADV > Inbound) compared to all inbounded order lines "
     group_label: "DESADV >> Inbound | In Quality"
@@ -449,6 +455,7 @@ view: +supply_chain_master_report {
     label: "# Ordered Items (PO)"
     # group_label: ""
     description: "Sum of items, that have been ordered"
+    value_format_name: decimal_0
   }
 
   measure: sum_of_items__po {
@@ -457,6 +464,7 @@ view: +supply_chain_master_report {
     label: "# Total Quantity (PO)"
     # group_label: ""
     description: "Sum of items, that have been ordered (PO)"
+    value_format_name: decimal_0
   }
 
 # OTIFIQ
@@ -467,9 +475,10 @@ view: +supply_chain_master_report {
     label: "# OTIFIQ Strict (PO <> Inbounds)"
     group_label: "PO >> Inbound | OTIFIQ"
     description: "Sum of items that were delivered on time, in full and in quality (PO > Inbound) "
+    value_format_name: decimal_0
   }
 
-  measure: pct_po_otifiq_stric {
+  measure: share_of_items_otifiq_stric__po_with_sum_of_items_ordered__po {
     label: "% OTIFIQ strict (PO > Inbound)"
     description: "Share of on time, in full and in quality order lines (PO > Inbound) compared to all order lines "
     group_label: "PO >> Inbound | OTIFIQ"
@@ -479,7 +488,7 @@ view: +supply_chain_master_report {
     value_format_name: percent_0
   }
 
-  measure: pct_po_otifiq_relaxed_limited {
+  measure: share_of_items_otifiq_relax_lim__po_with_sum_of_items__po {
     label: "% OTIFIQ relaxed quantity lim. (PO > Inbound)"
     description: "Relative amount of on time and in quality fulfilled quantities (PO > Inbound) compared to overall ordered quantities, where an overdelivered quantity is limited to the PO quantity"
     group_label: "PO >> Inbound | OTIFIQ"
@@ -495,12 +504,13 @@ view: +supply_chain_master_report {
     label: "# OTIFIQ Relaxed lim (PO <> Inbounds)"
     group_label: "PO >> Inbound | OTIFIQ"
     description: "Sum of items delivered on time and in quality (PO > Inbound). An over-delivered quantity is limited to the item quantity stated on the PO"
+    value_format_name: decimal_0
   }
 
 
   # On Time
 
-  measure: pct_po_inbounded_items_on_time {
+  measure: share_of_items_inbounded_on_time__po_with_sum_of_items_ordered__po {
     label: "% On Time delivery (PO > Inbound)"
     description: "Share of on time delivered order lines (PO > Inbound) compared to all order lines "
     group_label: "PO >> Inbound | On Time"
@@ -516,12 +526,13 @@ view: +supply_chain_master_report {
     label: "# On time delivery (PO <> Inbounds)"
     group_label: "PO >> Inbound | On Time"
     description: "Sum of items delivered on time (PO > Inbound)"
+    value_format_name: decimal_0
   }
 
 
 # In Full
 
-  measure: pct_po_inbounded_in_full {
+  measure: share_of_items_inbounded_in_full_strict__po_with_sum_of_items_ordered__po {
     label: "% In Full strict (PO > Inbound)"
     description: "Share of in full delivered order lines (PO > Inbound) compared to all order lines "
     group_label: "PO >> Inbound | In Full"
@@ -537,9 +548,10 @@ view: +supply_chain_master_report {
     label: "# In full delivery (PO <> Inbounds)"
     group_label: "PO >> Inbound | In Full"
     description: "Sum of items delivered in full (PO > Inbound)"
+    value_format_name: decimal_0
   }
 
-  measure: pct_po_fill_rate {
+  measure: share_of_items_inbounded__po_with_sum_of_items__po {
     label: "% In Full relaxed (PO > Inbound)"
     description: "Relative amount of fullfilled quantities (PO > Inbound) compared to overall ordered quantities "
     group_label: "PO >> Inbound | In Full"
@@ -555,11 +567,12 @@ view: +supply_chain_master_report {
     label: "# Inbounded Items (PO <> Inbounds)"
     group_label: "PO >> Inbound | In Full"
     description: "Sum of fullfilled quantities (PO > Inbound)"
+    value_format_name: decimal_0
   }
 
 ## In Quality
 
-  measure:  pct_po_items_inbounded_in_quality {
+  measure:  share_of_items_inbounded_in_quality__po_with_sum_of_items_inbounded__po {
     label: "% In Quality (PO > Inbound)"
     description: "Share of in quality delivered order lines (PO > Inbound) compared to all inbounded order lines"
     group_label: "PO >> Inbound | In Quality"
@@ -575,13 +588,14 @@ view: +supply_chain_master_report {
     label: "# Inbounded Items in Quality (PO <> Inbounds)"
     group_label: "PO >> Inbound | In Quality"
     description: "Sum of items delivered in quality (PO > Inbound"
+    value_format_name: decimal_0
   }
 
 
 ## PO <> DESADVs
 ##OTIF
 
-  measure: pct_ordered_items_on_time_in_full {
+  measure: share_of_items_ordered_on_time_in_full__po_desadv_with_sum_of_items_ordered__po {
     label: "% OTIF strict (PO > DESADV)"
     description: "Share of on time and in full order lines (PO > DESADV) compared to all order lines "
     group_label: "PO >> DESADV | OTIF"
@@ -597,9 +611,10 @@ view: +supply_chain_master_report {
     label: "# OTIF strict (PO > DESADV)"
     group_label: "PO >> DESADV | OTIF"
     description: "Sum of items delivered on time and in full (PO > DESADV)"
+    value_format_name: decimal_0
   }
 
-  measure: pct_ordered_items_quantity_desadv_on_time_in_full_limited {
+  measure: share_of_items_ordered_on_time_limited__po_desadv_with_sum_of_items__po {
     label: "% OTIF relaxed quantity lim. (PO > DESADV)"
     description: "Relative amount of on time fulfilled quantities (PO > DESADV) compared to overall ordered quantities, where an overdelivered quantity is limited to the PO quantity"
     group_label: "PO >> DESADV | OTIF"
@@ -615,11 +630,12 @@ view: +supply_chain_master_report {
     label: "# OTIF relaxed quantity lim. (PO > DESADV)"
     group_label: "PO >> DESADV | OTIF"
     description: "Sum of items fulfilled on time (PO > DESADV), An over-delivered quantity is limited to the item quantity stated on the PO"
+    value_format_name: decimal_0
   }
 
 ## On Time
 
-  measure: pct_po_desadv_on_time_delivery {
+  measure: share_of_items_ordered_and_delivered_on_time__po_desadv_with_sum_of_items_ordered__po {
 
     label: "% On Time Delivery (PO > DESADV)"
     description: "Share of on time delivered order lines (PO > DESADV) compared to all order lines "
@@ -636,11 +652,12 @@ view: +supply_chain_master_report {
     label: "# On Time Delivery (PO > DESADV)"
     group_label: "PO >> DESADV | On Time"
     description: "Sum of items, that have been ordered and have been delivered at the promised delivery date - (PO > DESADV)"
+    value_format_name: decimal_0
   }
 
 ## In Full
 
-  measure: pct_ordered_items_in_full {
+  measure: share_of_items_ordered_in_full__po_desadv_with_sum_of_items_ordered__po {
     label: "% In Full strict (PO > DESADV)"
     description: "Share of in full delivered order lines (PO > DESADV) compared to all order lines "
     group_label: "PO >> DESADV | In Full"
@@ -655,9 +672,10 @@ view: +supply_chain_master_report {
     label: "# In Full delivery (PO > DESADV)"
     group_label: "PO >> DESADV | In Full"
     description: "Sum of items delivered in full (PO > DESADV)"
+    value_format_name: decimal_0
   }
 
-  measure: pct_ordered_items_quantity_po_desadv_fill_rate {
+  measure: share_of_items_ordered_desadv_with_po__po_desadv_with_sum_of_items__po {
     label: "% In Full relaxed (PO > DESADV)"
     description: "Relative amount of fullfilled quantities (PO > DESADV) compared to overall ordered quantities "
     group_label: "PO >> DESADV | In Full"
@@ -673,6 +691,7 @@ view: +supply_chain_master_report {
     label: "# Filled Quantities (PO > DESADV)"
     group_label: "PO >> DESADV | In Full"
     description: "Sum of fullfilled quantities (PO > DESADV)"
+    value_format_name: decimal_0
   }
 
 }
