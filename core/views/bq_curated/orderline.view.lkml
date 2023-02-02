@@ -1,5 +1,5 @@
 view: orderline {
-  sql_table_name: `flink-data-dev.dbt_vbreda_curated.order_lineitems`
+  sql_table_name: `flink-data-prod.curated.order_lineitems`
     ;;
   view_label: "* Order Lineitems *"
   drill_fields: [id]
