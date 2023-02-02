@@ -2725,16 +2725,17 @@ view: orders {
     ]
   }
 
-  measure: cnt_last_mile_orders {
+  measure: number_of_unique_flink_delivered_orders {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
-    label: "# Last Mile Orders"
-    description: "Count of Orders delivered by Flink Riders"
+    label: "# Flink Delivered Orders"
+    description: "Count of Orders delivered by Flink Riders (Excluding External and Click & Collect Orders)"
     hidden:  yes
     type: count_distinct
     sql: ${order_uuid} ;;
     value_format: "0"
     filters: [
       is_last_mile_order: "yes",
+      is_successful_order: "yes"
     ]
   }
 

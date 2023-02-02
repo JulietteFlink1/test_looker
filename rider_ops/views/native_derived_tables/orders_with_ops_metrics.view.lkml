@@ -52,7 +52,7 @@ view: orders_with_ops_metrics {
       column: sum_potential_rider_handling_time_without_stacking_minutes {}
       column: avg_picking_time_per_item {}
       column: cnt_internal_orders {}
-      column: cnt_last_mile_orders {}
+      column: number_of_unique_flink_delivered_orders {}
       column: avg_hub_to_customer_distance_km {}
       filters: [
         orders_cl.is_successful_order : "yes",
@@ -166,7 +166,7 @@ view: orders_with_ops_metrics {
     value_format_name: decimal_0
     }
 
-  measure: cnt_last_mile_orders {
+  measure: number_of_unique_flink_delivered_orders {
     alias: [cnt_rider_orders]
     group_label: "> Basic Counts"
     label: "# Last Mile Orders"

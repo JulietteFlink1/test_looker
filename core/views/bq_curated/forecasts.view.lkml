@@ -484,7 +484,7 @@ view: forecasts {
     label: "Delta Forecasted vs Last Mile Orders"
     description: "Different between Last Mile and Forecasted orders"
     type: number
-    sql: ${orders_with_ops_metrics.cnt_last_mile_orders}-${number_of_forecasted_orders_adjusted} ;;
+    sql: ${orders_with_ops_metrics.number_of_unique_flink_delivered_orders}-${number_of_forecasted_orders_adjusted} ;;
     value_format_name: decimal_0
   }
 
@@ -498,21 +498,23 @@ view: forecasts {
     value_format_name: decimal_0
   }
 
-  measure: pct_cancelled_orders{
+  measure: share_of_cancelled_orders_over_flink_delivered_orders{
+    alias: [pct_cancelled_orders]
     group_label: "> Order Measures"
     label: "% Cancelled Orders"
     description: "Share of cancelled orders (due to operational reasons) over Last Mile Orders"
     type: number
-    sql: ${number_of_cancelled_orders}/${orders_with_ops_metrics.cnt_last_mile_orders} ;;
+    sql: ${number_of_cancelled_orders}/${orders_with_ops_metrics.number_of_unique_flink_delivered_orders} ;;
     value_format_name: percent_2
   }
 
-  measure: pct_missed_orders{
+  measure: share_of_missed_orders_over_flink_delivered_orders{
+    alias: [pct_missed_orders]
     group_label: "> Order Measures"
     label: "% Missed Orders"
     description: "Share of Missed orders due to forced or planned closure over Last Mile Orders"
     type: number
-    sql: ${number_of_missed_orders}/${orders_with_ops_metrics.cnt_last_mile_orders} ;;
+    sql: ${number_of_missed_orders}/${orders_with_ops_metrics.number_of_unique_flink_delivered_orders} ;;
     value_format_name: percent_2
   }
 
@@ -526,12 +528,13 @@ view: forecasts {
     value_format_name: decimal_0
   }
 
-  measure: pct_missed_orders_forced_closure{
+  measure: share_of_missed_orders_forced_closure_over_flink_delivered_orders{
+    alias: [pct_missed_orders_forced_closure]
     group_label: "> Order Measures"
     label: "% Missed Orders - Forced Closure"
     description: "Share of Missed orders due to forced closure over Last Mile Orders"
     type: number
-    sql: ${number_of_missed_orders_forced_closure}/${orders_with_ops_metrics.cnt_last_mile_orders} ;;
+    sql: ${number_of_missed_orders_forced_closure}/${orders_with_ops_metrics.number_of_unique_flink_delivered_orders} ;;
     value_format_name: percent_2
   }
 
@@ -545,12 +548,13 @@ view: forecasts {
     value_format_name: decimal_0
   }
 
-  measure: pct_missed_orders_planned_closure{
+  measure: share_of_missed_orders_planned_closure_over_flink_delivered_orders{
+    alias: [pct_missed_orders_planned_closure]
     group_label: "> Order Measures"
     label: "% Missed Orders - Planned Closure"
     description: "Share of Missed orders due to planned closure over Last Mile Orders"
     type: number
-    sql: ${number_of_missed_orders_planned_closure}/${orders_with_ops_metrics.cnt_last_mile_orders} ;;
+    sql: ${number_of_missed_orders_planned_closure}/${orders_with_ops_metrics.number_of_unique_flink_delivered_orders} ;;
     value_format_name: percent_2
   }
 
@@ -671,10 +675,10 @@ view: forecasts {
 
   measure: pct_forecast_deviation_successful_orders {
     group_label: "> Order Measures"
-    label: "% Order Forecast Deviation (Successful Last Mile Orders)"
+    label: "% Successful Flink Delivered Order Deviation"
     description: "The degree of how far # Forecasted Orders is from # Successful Last Mile Orders in the given period. Formula: (# Successful Last mile Orders / # Forecasted Orders) -1"
     type: number
-    sql: (${orders_with_ops_metrics.cnt_last_mile_orders}/nullif(${number_of_forecasted_orders},0))-1 ;;
+    sql: (${orders_with_ops_metrics.number_of_unique_flink_delivered_orders}/nullif(${number_of_forecasted_orders},0))-1 ;;
     value_format_name: percent_1
   }
 
@@ -693,7 +697,7 @@ view: forecasts {
     label: "% Adjusted Order Forecast Deviation (Successful Last Mile Orders)"
     description: "The degree of how far # Forecasted Orders (Incl. Airtable Adjustments) is from # Successful Last MileOrders in the given period. Formula: (# Successful Last MileOrders / # Forecasted Orders (Incl. Adjustments)) -1"
     type: number
-    sql: (${orders_with_ops_metrics.cnt_last_mile_orders}/nullif(${number_of_forecasted_orders_adjusted},0))-1 ;;
+    sql: (${orders_with_ops_metrics.number_of_unique_flink_delivered_orders}/nullif(${number_of_forecasted_orders_adjusted},0))-1 ;;
     value_format_name: percent_1
   }
 
@@ -736,7 +740,7 @@ view: forecasts {
 
   measure: pct_forecast_deviation_punched_hours_adjusted {
     group_label: "> Dynamic Measures"
-    label: "% Adjusted Scheduled Hours Forecast Deviation (Punched Hours)"
+    label: "% Adjusted Punched Hours Deviation"
     description: "The degree of how far # Forecasted Hours (Incl. Airtable Adjustments) is from # Punched Hours in the given period. Formula: (# Punched Hours / # Forecasted Hours) - 1"
     type: number
     sql: (${ops.number_of_worked_hours_by_position}/nullif(${number_of_forecasted_hours_by_position_adjusted},0)) - 1 ;;
@@ -745,7 +749,7 @@ view: forecasts {
 
   measure: pct_forecast_deviation_ec_hours_adjusted {
     group_label: "> Dynamic Measures"
-    label: "% Adjusted Scheduled Hours Forecast Deviation (EC Shift)"
+    label: "% Adjusted EC Scheduled Hours Deviation"
     description: "The degree of how far # Forecasted Hours (Incl. Airtable Adjustments) is from # Scheduled EC Hours in the given period. Formula: (# Scheduled EC Hours / # Forecasted Hours) - 1"
     type: number
     sql: (${ops.number_of_scheduled_hours_by_position_ec_shift}/nullif(${number_of_forecasted_hours_by_position_adjusted},0)) - 1 ;;
@@ -754,7 +758,7 @@ view: forecasts {
 
   measure: pct_forecast_deviation_wfs_hours_adjusted {
     group_label: "> Dynamic Measures"
-    label: "% Adjusted Scheduled Hours Forecast Deviation (WFS)"
+    label: "% Adjusted WFS Scheduled Hours Deviation"
     description: "The degree of how far # Forecasted Hours (Incl. Airtable Adjustments) is from # Scheduled WFS Hours in the given period. Formula: (# Scheduled WFS Hours / # Forecasted Hours) - 1"
     type: number
     sql: (${ops.number_of_scheduled_hours_by_position_wfs_shift}/nullif(${number_of_forecasted_hours_by_position_adjusted},0)) - 1 ;;
@@ -763,7 +767,7 @@ view: forecasts {
 
   measure: pct_forecast_deviation_ns_hours_adjusted {
     group_label: "> Dynamic Measures"
-    label: "% Adjusted Scheduled Hours Forecast Deviation (NS+ Shift)"
+    label: "% Adjusted NS+ Scheduled Hours Deviation"
     description: "The degree of how far # Forecasted Hours (Incl. Airtable Adjustments) is from # Scheduled NS+ Hours in the given period. Formula: (# Scheduled NS+ Hours / # Forecasted Hours) - 1"
     type: number
     sql: (${ops.number_of_scheduled_hours_by_position_ns_shift}/nullif(${number_of_forecasted_hours_by_position_adjusted},0)) - 1 ;;
@@ -772,7 +776,7 @@ view: forecasts {
 
   measure: pct_forecast_deviation_extra_hours_adjusted {
     group_label: "> Dynamic Measures"
-    label: "% Adjusted Scheduled Hours Forecast Deviation (Extra Hours)"
+    label: "% Adjusted Extra Scheduled Hours Deviation"
     description: "The degree of how far # Forecasted Hours (Incl. Airtable Adjustments) is from # Scheduled Extra Hours (WFS, EC, NS+) in the given period. Formula: (# Scheduled Extra Hours / # Forecasted Hours) - 1"
     type: number
     sql: (${ops.number_of_scheduled_hours_by_position_extra}/nullif(${number_of_forecasted_hours_by_position_adjusted},0)) - 1 ;;
@@ -781,7 +785,7 @@ view: forecasts {
 
   measure: pct_forecast_deviation_unknown_hours_adjusted {
     group_label: "> Dynamic Measures"
-    label: "% Adjusted Scheduled Hours Forecast Deviation (Unknown Hours)"
+    label: "% Adjusted Unknown Scheduled Hours Deviation"
     description: "The degree of how far # Forecasted Hours (Incl. Airtable Adjustments) is from # Unknown Scheduled Hours (# Scheduled Hours - # Scheduled Extra Hours) in the given period. Formula: ((# Scheduled Hours - # Scheduled Extra Hours) / # Forecasted Hours) - 1"
     type: number
     sql: (${ops.number_of_scheduled_hours_by_position_unknown}/nullif(${number_of_forecasted_hours_by_position_adjusted},0)) - 1 ;;

@@ -3397,7 +3397,6 @@ view: staffing {
     label: "# Scheduled Picker Hours"
     description: "# Scheduled Picker Hours  (Assigned + Unassigned)"
     type: number
-    # sql_distinct_key: ${staffing_uuid} ;;
     sql: ${number_of_unassigned_hours_picker}+${number_of_planned_hours_picker};;
     value_format_name: decimal_1
   }
@@ -3407,7 +3406,6 @@ view: staffing {
     label: "# Scheduled EC Picker Hours"
     description: "# Scheduled Picker Hours  (Assigned + Unassigned EC shift hours)"
     type: number
-    # sql_distinct_key: ${staffing_uuid} ;;
     sql: ${number_of_unassigned_hours_picker_ec_shift}+${number_of_planned_hours_picker_ec_shift};;
     value_format_name: decimal_1
   }
@@ -3417,7 +3415,6 @@ view: staffing {
     label: "# Scheduled WFS Picker Hours"
     description: "# Scheduled Picker Hours  (Assigned + Unassigned WFS shift hours)"
     type: number
-    # sql_distinct_key: ${staffing_uuid} ;;
     sql: ${number_of_unassigned_hours_picker_wfs_shift}+${number_of_planned_hours_picker_wfs_shift};;
     value_format_name: decimal_1
   }
@@ -3427,7 +3424,6 @@ view: staffing {
     label: "# Scheduled NS+ Picker Hours"
     description: "# Scheduled Picker Hours  (Assigned + Unassigned NS+ shift hours)"
     type: number
-    # sql_distinct_key: ${staffing_uuid} ;;
     sql: ${number_of_unassigned_hours_picker_ns_shift}+${number_of_planned_hours_picker_ns_shift};;
     value_format_name: decimal_1
   }
@@ -3461,7 +3457,6 @@ view: staffing {
     group_label: "> WH Measures"
     label: "# Scheduled WH Employee Hours"
     type: number
-    # sql_distinct_key: ${staffing_uuid} ;;
     sql: ${number_of_unassigned_hours_wh}+${number_of_planned_hours_wh};;
     description: "# Scheduled WH Hours  (Assigned + Unassigned)"
     value_format_name: decimal_1
@@ -4227,7 +4222,7 @@ view: staffing {
     label: "Rider UTR"
     description: "# Orders (excl. Click & Collect and External Orders) / # Punched Rider Hours"
     type: number
-    sql: ${orders_with_ops_metrics.cnt_last_mile_orders}/ nullif(${number_of_worked_hours_rider}, 0) ;;
+    sql: ${orders_with_ops_metrics.number_of_unique_flink_delivered_orders}/ nullif(${number_of_worked_hours_rider}, 0) ;;
     value_format_name: decimal_2
   }
 
