@@ -46,8 +46,8 @@ view: +orderline {
   dimension: qualifies_for_post_delivery_issues {
     type: yesno
     hidden: yes
-    label: "Can Have Post Delivery Issues"
-    description: "True if an order can have post delivery issue. This includes all regular Flink orders,
+    label: "Qualifies for Post Delivery Issues"
+    description: "True if an order qualifies for post delivery issue. This includes all regular Flink orders,
     Click & Collect, and Doordash orders. Those that do not qualify for post-delivery issues are Wolt, UE
     and Carrefour orders."
     sql: (${is_external_order} and ${is_last_mile_order})
@@ -689,7 +689,7 @@ view: +orderline {
 
   measure: pct_hub_related_post_order_issue_rate_per_total_orders {
 
-    label:       "% Orders Issue (Hub related - Pre Delivery Issues)"
+    label:       "% Orders Issue (Hub related - Post Delivery Issues)"
     group_label: "> Delivery Issues"
     description: "The percentage of orders that had hub related post-delivery issues
     (Missing Product, Wrong Product, Damaged, Perished, Swapped).

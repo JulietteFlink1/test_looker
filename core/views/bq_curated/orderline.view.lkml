@@ -70,7 +70,7 @@ view: orderline {
   dimension: is_last_mile_order {
     type: yesno
     sql: ${TABLE}.is_last_mile_order ;;
-    description: "TRUE if the order is delivered by flink's riders.
+    description: "TRUE if the order is delivered by Flink's riders.
     Not click and collect order, not created through an external provider (e.g. uber-eats and wolt).
     Doordash orders are included as they are delivered by Flink's riders."
   }
