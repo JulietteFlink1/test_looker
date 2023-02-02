@@ -623,7 +623,7 @@ view: forecasts {
     value_format_name: percent_1
   }
 
-    measure: pct_forecasted_utr_deviation_adjusted {
+  measure: pct_forecasted_utr_deviation_adjusted {
     group_label: "> Dynamic Measures"
     label: "% Adjusted Forecasted UTR Deviation"
     description: "The degree of how far Adjusted Forecasted UTR (# Adjusted Forecasted Orders / # Adjusted Forecasted Hours) is from Actual UTR in the given period. Formula:  (Actual UTR / Adjusted Forecasted UTR (Incl. No Show)) - 1"
