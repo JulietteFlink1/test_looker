@@ -21,6 +21,8 @@ include: "/**/event_logout_completed.view.lkml"
 include: "/**/hub_one_picking_times.view.lkml"
 include: "/**/event_stock_check_started.view.lkml"
 include: "/**/event_stock_check_finished.view.lkml"
+include: "/**/event_stock_correction_started.view.lkml"
+include: "/**/event_stock_correction_finished.view.lkml"
 include: "/**/event_inbound_state_updated.view.lkml"
 include: "/**/event_inbound_progressed.view.lkml"
 include: "/product_consumer/views/bigquery_reporting/daily_violations_aggregates.view.lkml"
@@ -146,6 +148,26 @@ explore: daily_hub_staff_events {
     sql_on: ${event_stock_check_finished.event_uuid} = ${daily_hub_staff_events.event_uuid}
       and {% condition global_filters_and_parameters.datasource_filter %}
         ${event_stock_check_finished.event_timestamp_date} {% endcondition %};;
+    type: left_outer
+    relationship: one_to_one
+  }
+
+  join: event_stock_correction_started {
+    view_label: "6 Stock Correction Started/ Finished"
+    fields: [to_include_set*]
+    sql_on: ${event_stock_correction_started.event_uuid} = ${daily_hub_staff_events.event_uuid}
+      and {% condition global_filters_and_parameters.datasource_filter %}
+        ${event_stock_correction_started.event_timestamp_date} {% endcondition %};;
+    type: left_outer
+    relationship: one_to_one
+  }
+
+  join: event_stock_correction_finished {
+    view_label: "6 Stock Correction Started/ Finished"
+    fields: [to_include_set*]
+    sql_on: ${event_stock_correction_finished.event_uuid} = ${daily_hub_staff_events.event_uuid}
+      and {% condition global_filters_and_parameters.datasource_filter %}
+        ${event_stock_correction_finished.event_timestamp_date} {% endcondition %};;
     type: left_outer
     relationship: one_to_one
   }

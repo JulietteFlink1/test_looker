@@ -32,8 +32,8 @@ view: hub_one_inventory_checking {
   }
 
   dimension: product_sku {
-    description: "SKU of the product, as available in the backend."
-    group_label: "Common Attributes"
+    description: "Task of the product, as available in the backend."
+    group_label: "Task Attributes"
     type: string
     sql: ${TABLE}.product_sku ;;
   }
@@ -69,14 +69,14 @@ view: hub_one_inventory_checking {
 
   dimension: fe_origin {
     description: "Hub One screen from where the task_id has been started. Possible values are inventory/check-list, activities, inventory/eoy-inventory-check-list."
-    group_label: "Common Attributes"
+    group_label: "Task Attributes"
     type: string
     sql: ${TABLE}.fe_origin ;;
   }
 
   dimension: is_automatic_check {
     description: "TRUE when the check was scheduled."
-    group_label: "Common Attributes"
+    group_label: "Task Attributes"
     type: yesno
     sql: ${TABLE}.is_automatic_check ;;
   }
@@ -90,7 +90,7 @@ view: hub_one_inventory_checking {
 
   dimension: shelf_number {
     description: "Unique identifier of the shelf where the SKU is stored in the hub. Number of the shelf (from 0 to 86) followed by a letter which indicates the level within the shelf."
-    group_label: "Common Attributes"
+    group_label: "Task Attributes"
     type: string
     sql: ${TABLE}.shelf_number ;;
   }
@@ -118,14 +118,14 @@ view: hub_one_inventory_checking {
 
   dimension: task_type {
     description: "  Type of task. Corresponds to the type in hub_task schema. Possible values are: STOCK_CHECK, FRESHNESS_CHECK."
-    group_label: "Common Attributes"
+    group_label: "Task Attributes"
     type: string
     sql: ${TABLE}.task_type ;;
   }
 
   dimension: is_correction_upwards {
     type: yesno
-    group_label: "Common Attributes"
+    group_label: "Task Attributes"
     label: "Is Correction Upwards"
     description: "Flag that identifies if the correction made after a inventory task was upwards."
     sql: if(${quantity_after_correction}-${quantity_before_correction}>0, true, false) ;;
@@ -217,7 +217,7 @@ view: hub_one_inventory_checking {
   }
 
   dimension_group: correction_done_at_timestamp {
-    description: "  Timestamp for when the correction has been made, null when there wasn't a stock correction. Corresponds to created_at timestamp in stock_changelog schema."
+    description: "  Timestamp for when the correction has been made, null when there wasn't a stock correction (only checks). Corresponds to created_at timestamp in stock_changelog schema."
     type: time
     timeframes: [
       raw,
@@ -274,6 +274,7 @@ view: hub_one_inventory_checking {
   #   description: ""
   #   group_label: "Backend Quantities"
   #   type: sum
+  #   filters: [is_automatic_check: "Yes"]
   #   sql: ${TABLE}.quantity_before_correction ;;
   # }
 
@@ -281,37 +282,69 @@ view: hub_one_inventory_checking {
   #   description: ""
   #   group_label: "Backend Quantities"
   #   type: sum
+  #   filters: [is_automatic_check: "Yes"]
   #   sql: ${TABLE}.quantity_after_correction ;;
   # }
 
   # =========  Frontend Quantities   =========
 
   measure: fe_quantity_expected {
-    description: "Expected amount of units before the task. Value coming from Hub One."
+    description: "Expected amount of units before the task (only checks). Value coming from Hub One."
     group_label: "Frontend Quantities"
     type: sum
+    filters: []
     sql: ${TABLE}.fe_quantity_expected ;;
   }
 
   measure: fe_quantity_counted {
-    description: "Number of units counted by the employee while performing the task. Value coming from Hub One."
+    description: "Number of units counted by the employee while performing the task (only checks). Value coming from Hub One."
     group_label: "Frontend Quantities"
     type: sum
     sql: ${TABLE}.fe_quantity_counted ;;
   }
 
   measure: fe_quantity_damaged {
-    description: "Number of units reported as damaged by the employee while performing the task. Value coming from Hub One."
+    description: "Number of units reported as damaged by the employee while performing the task (checks and corrections). Value coming from Hub One."
     group_label: "Frontend Quantities"
     type: sum
     sql: ${TABLE}.fe_quantity_damaged ;;
   }
 
   measure: fe_quantity_expired {
-    description: "Number of units reported as expired by the employee while performing the task. Value coming from Hub One."
-    group_label: "Frontend Quantities"
+    description: "Number of units reported as expired by the employee while performing the task (checks and corrections). Value coming from Hub One."
+    group_label: "Quantities Metrics"
     type: sum
     sql: ${TABLE}.fe_quantity_expired ;;
+  }
+
+  measure: fe_quantity_corrected {
+    description: "Number of units reported as corrected by the employee while performing the task (only corrections). Value coming from Hub One."
+    group_label: "Quantities Metrics"
+    type: sum
+    sql: ${TABLE}.fe_quantity_corrected ;;
+  }
+
+  measure: fe_quantity_tgtg {
+    description: "Number of units reported as damaged by the employee while performing the task (checks and corrections). Value coming from Hub One."
+    group_label: "Quantities Metrics"
+    type: sum
+    sql: ${TABLE}.fe_quantity_tgtg ;;
+  }
+
+  measure: sum_of_quantity_before_correction {
+    description: "Amount of units before the inventory correction."
+    group_label: "Quantities Metrics"
+    type: sum
+    filters: [is_automatic_check: "No"]
+    sql: ${TABLE}.quantity_before_correction ;;
+  }
+
+  measure: sum_of_quantity_after_correction {
+    description: "New amount of units after the inventory correction."
+    group_label: "Quantities Metrics"
+    type: sum
+    filters: [is_automatic_check: "No"]
+    sql: ${TABLE}.quantity_after_correction ;;
   }
 
   # =========  Total Metrics  =========
@@ -383,7 +416,7 @@ view: hub_one_inventory_checking {
   measure: corrections_per_completed_checks {
     type: number
     value_format: "0%"
-    group_label: "Rate Metrics"
+    group_label: "Rate Metrics (only checks)"
     label: "% of Corrections"
     description: "# of Corrections/ # of Completed Tasks."
     sql: ${number_of_corrections}/nullif(${number_of_completed_checks},0) ;;
@@ -392,7 +425,7 @@ view: hub_one_inventory_checking {
   measure: pct_of_completion {
     type: number
     value_format: "0%"
-    group_label: "Rate Metrics"
+    group_label: "Rate Metrics (only checks)"
     label: "% of Completion"
     description: "# of Completed Tasks/ (# of Completed Tasks + # of Open Tasks + # of Skipped Tasks)"
     sql: ${number_of_completed_checks}/nullif((${number_of_open_completed_skipped_checks}),0) ;;
@@ -402,6 +435,7 @@ view: hub_one_inventory_checking {
 
   measure: time_checking_minutes {
     group_label: "Time Metrics"
+    description: "Time spent performing the task in minutes (calculated with as the time difference between fe_started_at_timestamp and fe_finished_at_timestamp)."
     type: sum
     value_format: "0.##"
     sql: ${TABLE}.time_checking_minutes ;;
@@ -409,6 +443,7 @@ view: hub_one_inventory_checking {
 
   measure: time_checking_seconds {
     group_label: "Time Metrics"
+    description: "Time spent performing the task in seconds (calculated with as the time difference between fe_started_at_timestamp and fe_finished_at_timestamp)."
     type: sum
     value_format: "0.##"
     sql: ${TABLE}.time_checking_seconds ;;
@@ -416,6 +451,7 @@ view: hub_one_inventory_checking {
 
   measure: avg_time_checking_minutes {
     group_label: "Time Metrics"
+    description: "Average time spent performing the task in minutes (calculated with as the time difference between fe_started_at_timestamp and fe_finished_at_timestamp)."
     type: average
     value_format: "0.##"
     sql: ${TABLE}.time_checking_minutes ;;
@@ -423,6 +459,7 @@ view: hub_one_inventory_checking {
 
   measure: avg_time_checking_seconds {
     group_label: "Time Metrics"
+    description: "Average time spent performing the task in seconds (calculated with as the time difference between fe_started_at_timestamp and fe_finished_at_timestamp)."
     type: average
     value_format: "0.##"
     sql: ${TABLE}.time_checking_seconds ;;
