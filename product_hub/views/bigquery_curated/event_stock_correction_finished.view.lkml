@@ -1,5 +1,5 @@
 view: event_stock_correction_finished {
-  sql_table_name: `flink-data-dev.curated.event_stock_correction_finished`
+  sql_table_name: `flink-data-prod.curated.event_stock_correction_finished`
     ;;
   view_label: "Stock Correction Started/ Finished"
 

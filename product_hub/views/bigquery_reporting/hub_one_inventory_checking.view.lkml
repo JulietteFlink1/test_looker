@@ -314,6 +314,20 @@ view: hub_one_inventory_checking {
     sql: ${TABLE}.fe_quantity_expired ;;
   }
 
+  measure: fe_quantity_corrected {
+    description: "Number of units reported as corrected by the employee while performing the task. Value coming from Hub One."
+    group_label: "Frontend Quantities"
+    type: sum
+    sql: ${TABLE}.fe_quantity_corrected ;;
+  }
+
+  measure: fe_quantity_tgtg {
+    description: "Number of units reported as damaged by the employee while performing the task. Value coming from Hub One."
+    group_label: "Frontend Quantities"
+    type: sum
+    sql: ${TABLE}.fe_quantity_tgtg ;;
+  }
+
   # =========  Total Metrics  =========
 
   measure: number_of_checks {
@@ -402,6 +416,7 @@ view: hub_one_inventory_checking {
 
   measure: time_checking_minutes {
     group_label: "Time Metrics"
+    description: "Time spent performing the task in minutes (calculated with as the time difference between fe_started_at_timestamp and fe_finished_at_timestamp)."
     type: sum
     value_format: "0.##"
     sql: ${TABLE}.time_checking_minutes ;;
@@ -409,6 +424,7 @@ view: hub_one_inventory_checking {
 
   measure: time_checking_seconds {
     group_label: "Time Metrics"
+    description: "Time spent performing the task in seconds (calculated with as the time difference between fe_started_at_timestamp and fe_finished_at_timestamp)."
     type: sum
     value_format: "0.##"
     sql: ${TABLE}.time_checking_seconds ;;
@@ -416,6 +432,7 @@ view: hub_one_inventory_checking {
 
   measure: avg_time_checking_minutes {
     group_label: "Time Metrics"
+    description: "Average time spent performing the task in minutes (calculated with as the time difference between fe_started_at_timestamp and fe_finished_at_timestamp)."
     type: average
     value_format: "0.##"
     sql: ${TABLE}.time_checking_minutes ;;
@@ -423,6 +440,7 @@ view: hub_one_inventory_checking {
 
   measure: avg_time_checking_seconds {
     group_label: "Time Metrics"
+    description: "Average time spent performing the task in seconds (calculated with as the time difference between fe_started_at_timestamp and fe_finished_at_timestamp)."
     type: average
     value_format: "0.##"
     sql: ${TABLE}.time_checking_seconds ;;
