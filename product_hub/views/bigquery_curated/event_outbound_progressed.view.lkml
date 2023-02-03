@@ -284,6 +284,7 @@ view: event_outbound_progressed {
     label: "# Dropping Lists"
     description: "Number of Dropping Lists with at least one product added to outbound."
     type: count_distinct
+    filters: [action: "product_added_to_outbound"]
     sql: ${dropping_list_id} ;;
   }
 
@@ -309,6 +310,7 @@ view: event_outbound_progressed {
     group_label: "Outbound Total Metrics"
     type: sum
     description: "Number of units reported as damaged by the employee while performing the task. Value coming from Hub One."
+    filters: [action: "product_outbounded"]
     sql: ${quantity_damaged} ;;
   }
 
@@ -316,6 +318,7 @@ view: event_outbound_progressed {
     group_label: "Outbound Total Metrics"
     type: sum
     description: "Number of units reported as expired by the employee while performing the task. Value coming from Hub One."
+    filters: [action: "product_outbounded"]
     sql: ${quantity_expired} ;;
   }
 
@@ -323,6 +326,7 @@ view: event_outbound_progressed {
     group_label: "Outbound Total Metrics"
     type: sum
     description: "Number of units reported as perished by the employee while performing the task. Value coming from Hub One."
+    filters: [action: "product_outbounded"]
     sql: ${quantity_perished} ;;
   }
 
@@ -330,6 +334,7 @@ view: event_outbound_progressed {
     group_label: "Outbound Total Metrics"
     type: sum
     description: "Number of units reported as damaged by the employee while performing the task. Value coming from Hub One."
+    filters: [action: "product_outbounded"]
     sql: ${quantity_received} ;;
   }
 
