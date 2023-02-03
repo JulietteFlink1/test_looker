@@ -2683,6 +2683,19 @@ view: orders {
     ]
   }
 
+  measure: cnt_external_orders {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# External Orders"
+    description: "Count of External orders (orders placed via marketplace integrations like Wolt, UberEats, etc.)"
+    type: count_distinct
+    sql: ${order_uuid} ;;
+    value_format: "0"
+    filters: [
+      is_external_order: "yes",
+      is_successful_order: "yes"
+    ]
+  }
+
   measure: cnt_click_and_collect_orders {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
     label: "# Click & Collect Orders"
@@ -2709,20 +2722,6 @@ view: orders {
       external_provider: "uber-eats, uber-eats-carrefour",
       is_successful_order: "yes"
       ]
-  }
-
-  measure: cnt_external_orders {
-    group_label: "* Basic Counts (Orders / Customers etc.) *"
-    label: "# External Orders"
-    description: "Count of External Orders"
-    hidden:  yes
-    type: count_distinct
-    sql: ${order_uuid} ;;
-    value_format: "0"
-    filters: [
-      is_external_order: "yes",
-      is_successful_order: "yes"
-    ]
   }
 
   measure: cnt_orders_with_discount_cart {
@@ -3336,6 +3335,16 @@ view: orders {
   ################
   ## PERCENTAGE ##
   ################
+
+  measure: pct_external_orders{
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "% External Orders"
+    description: "Number of External orders over total number of orders"
+    hidden:  no
+    type: number
+    sql: ${cnt_external_orders} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0.0%"
+  }
 
   measure: pct_acquisition_share {
     group_label: "* Marketing *"
