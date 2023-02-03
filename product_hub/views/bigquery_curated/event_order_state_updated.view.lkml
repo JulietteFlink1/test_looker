@@ -240,6 +240,14 @@ view: event_order_state_updated {
     sql: ${TABLE}.event_uuid ;;
   }
 
+  measure: number_of_orders {
+    group_label: "Total Metrics"
+    label: "# Orders"
+    description: "Number of Orders."
+    type: count_distinct
+    sql: ${TABLE}.order_id ;;
+  }
+
   measure: count_distinct_picking_hours {
     label: "Count distinct picking hours"
     description: "Count distint hour_of_day with an order_state_updated event."
