@@ -57,7 +57,6 @@ view: erp_buying_prices {
             ),
             null)
     ;;
-
     value_format_name: eur
   }
 
@@ -175,8 +174,6 @@ view: erp_buying_prices {
     value_format_name: decimal_4
   }
 
-
-
   # =========  hidden   =========
   dimension: currency {
     type: string
@@ -265,7 +262,7 @@ view: erp_buying_prices {
 
   measure: avg_vendor_price {
     label: "AVG Buying Price"
-    description: "The  sum of COGS divided by the sum of Item Quantity Sold"
+    description: "The simple average of buying prices"
     type: average
     sql: ${vendor_price} ;;
     value_format_name: decimal_4
