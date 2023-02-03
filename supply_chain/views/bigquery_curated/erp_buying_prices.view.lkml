@@ -170,7 +170,10 @@ view: erp_buying_prices {
   dimension: vendor_price {
     label: "Weighted Average Cost (WAC) Net"
     type: number
-    sql: ${TABLE}.amt_buying_price_weighted_rolling_average_net_eur ;;
+    sql: coalesce(
+            ${TABLE}.amt_buying_price_weighted_rolling_average_net_eur,
+            ${TABLE}.amt_buying_price_net_eur
+            );;
     value_format_name: decimal_4
   }
 
