@@ -3333,10 +3333,10 @@ view: orders {
   ## PERCENTAGE ##
   ################
 
-  measure: pct_external_orders{
+  measure: share_of_external_orders {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
     label: "% External Orders"
-    description: "Number of External orders over total number of orders"
+    description: "Share of External orders over total number of orders"
     hidden:  no
     type: number
     sql: ${cnt_external_orders} / NULLIF(${cnt_orders}, 0);;
