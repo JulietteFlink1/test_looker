@@ -32,7 +32,7 @@ view: hub_one_inventory_checking {
   }
 
   dimension: product_sku {
-    description: "SKU of the product, as available in the backend."
+    description: "Task of the product, as available in the backend."
     group_label: "Common Attributes"
     type: string
     sql: ${TABLE}.product_sku ;;
@@ -69,14 +69,14 @@ view: hub_one_inventory_checking {
 
   dimension: fe_origin {
     description: "Hub One screen from where the task_id has been started. Possible values are inventory/check-list, activities, inventory/eoy-inventory-check-list."
-    group_label: "Common Attributes"
+    group_label: "Task Attributes"
     type: string
     sql: ${TABLE}.fe_origin ;;
   }
 
   dimension: is_automatic_check {
     description: "TRUE when the check was scheduled."
-    group_label: "Common Attributes"
+    group_label: "Task Attributes"
     type: yesno
     sql: ${TABLE}.is_automatic_check ;;
   }
@@ -90,7 +90,7 @@ view: hub_one_inventory_checking {
 
   dimension: shelf_number {
     description: "Unique identifier of the shelf where the SKU is stored in the hub. Number of the shelf (from 0 to 86) followed by a letter which indicates the level within the shelf."
-    group_label: "Common Attributes"
+    group_label: "Task Attributes"
     type: string
     sql: ${TABLE}.shelf_number ;;
   }
@@ -118,14 +118,14 @@ view: hub_one_inventory_checking {
 
   dimension: task_type {
     description: "  Type of task. Corresponds to the type in hub_task schema. Possible values are: STOCK_CHECK, FRESHNESS_CHECK."
-    group_label: "Common Attributes"
+    group_label: "Task Attributes"
     type: string
     sql: ${TABLE}.task_type ;;
   }
 
   dimension: is_correction_upwards {
     type: yesno
-    group_label: "Common Attributes"
+    group_label: "Task Attributes"
     label: "Is Correction Upwards"
     description: "Flag that identifies if the correction made after a inventory task was upwards."
     sql: if(${quantity_after_correction}-${quantity_before_correction}>0, true, false) ;;
@@ -217,7 +217,7 @@ view: hub_one_inventory_checking {
   }
 
   dimension_group: correction_done_at_timestamp {
-    description: "  Timestamp for when the correction has been made, null when there wasn't a stock correction. Corresponds to created_at timestamp in stock_changelog schema."
+    description: "  Timestamp for when the correction has been made, null when there wasn't a stock correction (only checks). Corresponds to created_at timestamp in stock_changelog schema."
     type: time
     timeframes: [
       raw,
