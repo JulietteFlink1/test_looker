@@ -274,6 +274,7 @@ view: hub_one_inventory_checking {
   #   description: ""
   #   group_label: "Backend Quantities"
   #   type: sum
+  #   filters: [is_automatic_check: "Yes"]
   #   sql: ${TABLE}.quantity_before_correction ;;
   # }
 
@@ -281,51 +282,68 @@ view: hub_one_inventory_checking {
   #   description: ""
   #   group_label: "Backend Quantities"
   #   type: sum
+  #   filters: [is_automatic_check: "Yes"]
   #   sql: ${TABLE}.quantity_after_correction ;;
   # }
 
   # =========  Frontend Quantities   =========
 
   measure: fe_quantity_expected {
-    description: "Expected amount of units before the task. Value coming from Hub One."
+    description: "Expected amount of units before the task (only checks). Value coming from Hub One."
     group_label: "Frontend Quantities"
     type: sum
+    filters: []
     sql: ${TABLE}.fe_quantity_expected ;;
   }
 
   measure: fe_quantity_counted {
-    description: "Number of units counted by the employee while performing the task. Value coming from Hub One."
+    description: "Number of units counted by the employee while performing the task (only checks). Value coming from Hub One."
     group_label: "Frontend Quantities"
     type: sum
     sql: ${TABLE}.fe_quantity_counted ;;
   }
 
   measure: fe_quantity_damaged {
-    description: "Number of units reported as damaged by the employee while performing the task. Value coming from Hub One."
+    description: "Number of units reported as damaged by the employee while performing the task (checks and corrections). Value coming from Hub One."
     group_label: "Frontend Quantities"
     type: sum
     sql: ${TABLE}.fe_quantity_damaged ;;
   }
 
   measure: fe_quantity_expired {
-    description: "Number of units reported as expired by the employee while performing the task. Value coming from Hub One."
+    description: "Number of units reported as expired by the employee while performing the task (checks and corrections). Value coming from Hub One."
     group_label: "Frontend Quantities"
     type: sum
     sql: ${TABLE}.fe_quantity_expired ;;
   }
 
   measure: fe_quantity_corrected {
-    description: "Number of units reported as corrected by the employee while performing the task. Value coming from Hub One."
+    description: "Number of units reported as corrected by the employee while performing the task (only corrections). Value coming from Hub One."
     group_label: "Frontend Quantities"
     type: sum
     sql: ${TABLE}.fe_quantity_corrected ;;
   }
 
   measure: fe_quantity_tgtg {
-    description: "Number of units reported as damaged by the employee while performing the task. Value coming from Hub One."
+    description: "Number of units reported as damaged by the employee while performing the task (checks and corrections). Value coming from Hub One."
     group_label: "Frontend Quantities"
     type: sum
     sql: ${TABLE}.fe_quantity_tgtg ;;
+  }
+
+  measure: sum_of_quantity_before_correction {
+    description: "Amount of units before the inventory correction."
+    type: sum
+    filters: [is_automatic_check: "No"]
+    sql: ${TABLE}.quantity_before_correction ;;
+  }
+
+  measure: sum_of_quantity_after_correction {
+    description: "New amount of units after the inventory correction."
+    group_label: "Backend Quantities"
+    type: sum
+    filters: [is_automatic_check: "No"]
+    sql: ${TABLE}.quantity_after_correction ;;
   }
 
   # =========  Total Metrics  =========
