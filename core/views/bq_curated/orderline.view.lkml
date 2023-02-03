@@ -382,6 +382,23 @@ view: orderline {
     hidden: yes
   }
 
+  dimension: amt_buying_price_net_eur {
+    required_access_grants: [can_view_buying_information]
+    type: number
+    sql: ${TABLE}.amt_buying_price_net_eur;;
+    hidden: yes
+  }
+
+  dimension: amt_weighted_average_cost_net_eur {
+    required_access_grants: [can_view_buying_information]
+    label: "Buying Price (Net)"
+    group_label: "> Monetary Metrics (P&L)"
+    type: number
+    sql: ${TABLE}.amt_buying_price_weighted_rolling_average_net_eur ;;
+    value_format_name: decimal_4
+    hidden: yes
+  }
+
 
   # =========  Admin Dims   =========
   dimension: backend_source {
@@ -389,7 +406,6 @@ view: orderline {
     sql: ${TABLE}.backend_source ;;
     group_label: "> Admin Data"
   }
-
 
   # =========  Dates &  Timestamps   =========
   dimension_group: last_modified {
