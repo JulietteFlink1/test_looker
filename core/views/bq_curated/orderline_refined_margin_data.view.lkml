@@ -5,8 +5,8 @@ view: +orderline {
 
   dimension: is_buying_price_defined {
     required_access_grants: [can_view_buying_information]
-    label: "Is Buying Price Defined"
-    description: "Yes, if a sold items could be related to a buying price from our ERP system."
+    label: "Is Weighted Average Cost (WAC) Defined"
+    description: "Yes, if a sold items could be related to a weighted average cost price from our ERP system."
     group_label: "> Monetary Metrics (P&L)"
     type: yesno
     sql: ${amt_weighted_average_cost_net_eur} is not null ;;
@@ -15,7 +15,7 @@ view: +orderline {
   dimension: amt_net_income_net_eur {
     required_access_grants: [can_view_buying_information]
     label: "Net Unit Price (Net)"
-    description: "The net revenue through product sales. This field is only calculated for transactions, that also have a buying price associated."
+    description: "The net revenue through product sales. This field is only calculated for transactions, that also have a Weighted Average Cost (WAC) associated."
     group_label: "> Monetary Metrics (P&L)"
     type: number
     sql:  if(${amt_weighted_average_cost_net_eur} is not null,
@@ -49,7 +49,7 @@ view: +orderline {
   dimension: amt_margin_net_eur {
     required_access_grants: [can_view_buying_information]
     label: "Unit Margin (Net)"
-    description: "The unit margin defined as Net Unit Price substracted by the Buying Price"
+    description: "The unit margin defined as Net Unit Price substracted by the Weighted Average Cost (WAC)"
     group_label: "> Monetary Metrics (P&L)"
     type: number
     sql: ${amt_net_income_net_eur} - ${amt_weighted_average_cost_net_eur} ;;
@@ -60,7 +60,7 @@ view: +orderline {
   dimension: amt_margin_after_product_discount_net_eur {
     required_access_grants: [can_view_buying_information]
     label: "Unit Margin After Product Discount (Net)"
-    description: "The unit margin defined as Net Unit Price after deduction of Product Discount  substracted by the Buying Price"
+    description: "The unit margin defined as Net Unit Price after deduction of Product Discount  substracted by the Weighted Average Cost (WAC)"
     group_label: "> Monetary Metrics (P&L)"
     type: number
     sql: ${amt_net_income_after_product_discount_net_eur} - ${amt_weighted_average_cost_net_eur} ;;
@@ -74,7 +74,7 @@ view: +orderline {
 
   measure: avg_amt_weighted_average_cost_net_eur {
     required_access_grants: [can_view_buying_information]
-    label: "AVG Buying Price (Net)"
+    label: "AVG Weighted Average Cost (WAC) (Net)"
     description: "The  sum of COGS divided by the sum of Item Quantity Sold"
     group_label: "> Monetary Metrics (P&L)"
     type: number
@@ -105,7 +105,7 @@ view: +orderline {
   measure: sum_of_margin_net_eur {
     required_access_grants: [can_view_buying_information]
     label: "Sum Gross Profit (Net)"
-    description: "The sum of all Unit Margins defined as Net Unit Price minus Buying Price"
+    description: "The sum of all Unit Margins defined as Net Unit Price minus Weighted Average Cost (WAC)"
     group_label: "> Monetary Metrics (P&L)"
     type: sum
     sql: (${quantity} * ${amt_margin_net_eur}) ;;
@@ -115,7 +115,7 @@ view: +orderline {
   measure: sum_of_margin_after_product_discount_net_eur {
     required_access_grants: [can_view_buying_information]
     label: "Sum Gross Profit After Product Discount (Net)"
-    description: "The sum of all Unit Margins defined as Net Unit Price after deduction of Product Discount minus Buying Price"
+    description: "The sum of all Unit Margins defined as Net Unit Price after deduction of Product Discount minus Weighted Average Cost (WAC)"
     group_label: "> Monetary Metrics (P&L)"
     type: sum
     sql: (${quantity} * ${amt_margin_after_product_discount_net_eur}) ;;
@@ -125,7 +125,7 @@ view: +orderline {
   # measure: sum_total_margin_abs_after_product_discount_and_waste {
   #   required_access_grants: [can_view_buying_information]
   #   label: "Sum Gross Profit After Product Discount and Waste"
-  #   description: "The sum of all Unit Margins defined as Net Unit Price after deduction of Product Discount minus Buying Price and Waste (Net)"
+  #   description: "The sum of all Unit Margins defined as Net Unit Price after deduction of Product Discount minus Weighted Average Cost (WAC) and Waste (Net)"
   #   type: number
   #   sql: ${sum_total_margin_abs_after_product_discount} - ${inventory_changes_daily.sum_outbound_waste_per_buying_price_net} ;;
   #   value_format_name: eur
@@ -235,7 +235,7 @@ view: +orderline {
   dimension: amt_margin_absolute_dynamic_net_eur {
     required_access_grants: [can_view_buying_information]
     label: "Unit Margin (Dynamic - Net)"
-    description: "The unit margin defined as Net Unit Price substracted by the Buying Price. To be used together with Is After Deduction of Product Discounts parameter"
+    description: "The unit margin defined as Net Unit Price substracted by the Weighted Average Cost (WAC). To be used together with Is After Deduction of Product Discounts parameter"
     group_label: "> Monetary Metrics (P&L)"
     label_from_parameter: global_filters_and_parameters.is_after_product_discounts
     value_format_name: eur
@@ -270,7 +270,7 @@ view: +orderline {
   measure: sum_if_total_margin_abs_dynamic_net_eur {
     required_access_grants: [can_view_buying_information]
     label: "Sum Gross Profit (Dynamic - Net)"
-    description: "The sum of all Unit Margins defined as Net Unit Price minus Buying Price. To be used together with Is After Deduction of Product Discounts parameter"
+    description: "The sum of all Unit Margins defined as Net Unit Price minus Weighted Average Cost (WAC). To be used together with Is After Deduction of Product Discounts parameter"
     group_label: "> Monetary Metrics (P&L)"
     label_from_parameter: global_filters_and_parameters.is_after_product_discounts
     value_format_name: eur
