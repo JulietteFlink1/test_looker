@@ -62,7 +62,8 @@ view: customer_acquisition_cost {
       date,
       week,
       month,
-      quarter
+      quarter,
+      year
     ]
     convert_tz: no
     datatype: date
@@ -122,6 +123,7 @@ view: customer_acquisition_cost {
     allowed_value: { value: "Week" }
     allowed_value: { value: "Month" }
     allowed_value: { value: "Quarter" }
+    allowed_value: { value: "Year" }
     default_value: "Week"
   }
 
@@ -140,6 +142,8 @@ view: customer_acquisition_cost {
       ${report_month}
     {% elsif date_granularity._parameter_value == 'Quarter' %}
       ${report_quarter}
+    {% elsif date_granularity._parameter_value == 'Year' %}
+      ${report_year}
     {% endif %};;
   }
 
@@ -157,6 +161,8 @@ view: customer_acquisition_cost {
               "Month"
             {% elsif date_granularity._parameter_value == 'Quarter' %}
               "Quarter"
+            {% elsif date_granularity._parameter_value == 'Year' %}
+              "Year"
             {% endif %};;
   }
 
