@@ -376,7 +376,7 @@ view: orderline {
 
   dimension: amt_buying_price_net_eur {
     required_access_grants: [can_view_buying_information]
-    type: string
+    type: number
     sql: ${TABLE}.amt_buying_price_net_eur;;
     hidden: yes
   }

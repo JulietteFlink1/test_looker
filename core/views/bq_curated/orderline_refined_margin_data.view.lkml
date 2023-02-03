@@ -5,8 +5,8 @@ view: +orderline {
 
   dimension: is_buying_price_defined {
     required_access_grants: [can_view_buying_information]
-    label: "Is Buying Price defined"
-    description: "Indicator showing, how many sold items could be related to a buying price from our ERP system"
+    label: "Is Buying Price Defined"
+    description: "Yes, if a sold items could be related to a buying price from our ERP system."
     group_label: "> Monetary Metrics (P&L)"
     type: yesno
     sql: ${amt_weighted_average_cost_net_eur} is not null ;;
@@ -15,7 +15,7 @@ view: +orderline {
   dimension: amt_net_income_net_eur {
     required_access_grants: [can_view_buying_information]
     label: "Net Unit Price (Net)"
-    description: "The net revenue trough product sales. This field is only calcualted for transactions, that also have a buying price associated."
+    description: "The net revenue through product sales. This field is only calculated for transactions, that also have a buying price associated."
     group_label: "> Monetary Metrics (P&L)"
     type: number
     sql:  if(${amt_weighted_average_cost_net_eur} is not null,
@@ -205,7 +205,7 @@ view: +orderline {
     description: "The gross profit after product discounts (gross) for sold products"
     group_label: "> Monetary Metrics (P&L)"
     type: number
-    sql: ${sum_of_total_net_income_after_product_discount_net_eur} * ${sum_item_price_after_product_discount_gross} ;;
+    sql: ${sum_of_total_net_income_after_product_discount_net_eur} - ${sum_item_price_after_product_discount_gross} ;;
     value_format_name: eur
   }
 
