@@ -2726,6 +2726,7 @@ view: orders {
   }
 
   measure: number_of_unique_flink_delivered_orders {
+    alias: [cnt_rider_orders]
     group_label: "* Basic Counts (Orders / Customers etc.) *"
     label: "# Flink Delivered Orders"
     description: "Count of Orders delivered by Flink Riders (Excluding External and Click & Collect Orders)"

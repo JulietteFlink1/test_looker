@@ -169,7 +169,7 @@ view: orders_with_ops_metrics {
   measure: number_of_unique_flink_delivered_orders {
     alias: [cnt_rider_orders]
     group_label: "> Basic Counts"
-    label: "# Last Mile Orders"
+    label: "# Flink Delivered Orders"
     description: "Count of Successful Orders (excl. Cancelled, Click & Collect and External Orders) that require riders"
     hidden:  no
     value_format_name: decimal_0

@@ -482,7 +482,7 @@ view: forecasts {
   measure: delta_forecast_vs_delivered{
     group_label: "> Order Measures"
     label: "Delta Forecasted vs Last Mile Orders"
-    description: "Different between Last Mile and Forecasted orders"
+    description: "The difference between the number of Flink Delivered orders and Adjusted Forecasted orders"
     type: number
     sql: ${orders_with_ops_metrics.number_of_unique_flink_delivered_orders}-${number_of_forecasted_orders_adjusted} ;;
     value_format_name: decimal_0
@@ -501,7 +501,7 @@ view: forecasts {
   measure: share_of_cancelled_orders_over_flink_delivered_orders{
     group_label: "> Order Measures"
     label: "% Cancelled Orders"
-    description: "Share of cancelled orders (due to operational reasons) over Last Mile Orders"
+    description: "Cancelled orders (cancelled due to operational reasons only) divided by Flink Delivered orders, percentage."
     type: number
     sql: ${number_of_cancelled_orders}/${orders_with_ops_metrics.number_of_unique_flink_delivered_orders} ;;
     value_format_name: percent_2
@@ -510,7 +510,7 @@ view: forecasts {
   measure: share_of_missed_orders_over_flink_delivered_orders{
     group_label: "> Order Measures"
     label: "% Missed Orders"
-    description: "Share of Missed orders due to forced or planned closure over Last Mile Orders"
+    description: "Missed orders divided by Flink Delivered orders, percentage."
     type: number
     sql: ${number_of_missed_orders}/${orders_with_ops_metrics.number_of_unique_flink_delivered_orders} ;;
     value_format_name: percent_2
@@ -529,7 +529,7 @@ view: forecasts {
   measure: share_of_missed_orders_forced_closure_over_flink_delivered_orders{
     group_label: "> Order Measures"
     label: "% Missed Orders - Forced Closure"
-    description: "Share of Missed orders due to forced closure over Last Mile Orders"
+    description: "Missed orders (forced closure) divided by Flink Delivered orders, percentage. over Flink Delivered orders."
     type: number
     sql: ${number_of_missed_orders_forced_closure}/${orders_with_ops_metrics.number_of_unique_flink_delivered_orders} ;;
     value_format_name: percent_2
@@ -548,7 +548,7 @@ view: forecasts {
   measure: share_of_missed_orders_planned_closure_over_flink_delivered_orders{
     group_label: "> Order Measures"
     label: "% Missed Orders - Planned Closure"
-    description: "Share of Missed orders due to planned closure over Last Mile Orders"
+    description: "Missed orders (planned closure) divided by Flink Delivered orders, percentage."
     type: number
     sql: ${number_of_missed_orders_planned_closure}/${orders_with_ops_metrics.number_of_unique_flink_delivered_orders} ;;
     value_format_name: percent_2
@@ -567,7 +567,7 @@ view: forecasts {
   measure: number_of_actual_orders {
     group_label: "> Order Measures"
     label: "# Actual Orders (Forecast-Related)"
-    description: "# Actual orders related to forecast: Excl. click & collect and external orders; Including cancelled orders with operations-related cancellation reasons and missed orders (due to forced closures)."
+    description: "# Actual orders related to forecast: Excl. click & collect and external orders; Including Cancelled orders with operations-related cancellation reasons and Missed orders (due to forced closures)."
     type: sum_distinct
     sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
     sql: ${TABLE}.number_of_actual_orders;;
@@ -587,7 +587,7 @@ view: forecasts {
   measure: number_of_cancelled_and_missed_orders {
     group_label: "> Order Measures"
     label: "# Cancelled and Missed Orders (Forecast-Related)"
-    description: "# Cancelled and missed orders that are relevant for the forecast: Excl. click & collect and external orders; Including only operations-related cancellation reasons and orders missed due to forced closures."
+    description: "# Cancelled and Missed orders that are relevant for the forecast: Excl. click & collect and external orders; Including only operations-related cancellation reasons and orders missed due to forced closures."
     type: number
     sql: ${number_of_cancelled_orders} + ${number_of_missed_orders_forced_closure} ;;
     value_format_name: decimal_0
@@ -663,7 +663,7 @@ view: forecasts {
   measure: pct_forecast_deviation {
     group_label: "> Order Measures"
     label: "% Order Forecast Deviation"
-    description: "The degree of how far # Forecasted Orders is from # Actual Orders (Forecast-related) in the given period. Formula: (# Actual Orders (Forecast-related) / # Forecasted Orders) -1"
+    description: "The degree of how far # Forecasted orders is from # Actual orders (Forecast-related) in the given period. Formula: (# Actual Orders (Forecast-related) / # Forecasted Orders) -1"
     type: number
     sql: (${number_of_actual_orders}/nullif(${number_of_forecasted_orders},0))-1 ;;
     value_format_name: percent_1
@@ -672,7 +672,7 @@ view: forecasts {
   measure: share_of_order_forecast_deviation_from_actual_successful_flink_delivered_orders {
     group_label: "> Order Measures"
     label: "% Successful Flink Delivered Order Deviation"
-    description: "The degree of how far # Forecasted Orders is from # Successful Last Mile Orders in the given period. Formula: (# Successful Last mile Orders / # Forecasted Orders) -1"
+    description: "The degree of how far # Forecasted orders is from # Successful Flink Delivered orders in the given period. Formula: (# Successful Last mile Orders / # Forecasted Orders) -1"
     type: number
     sql: (${orders_with_ops_metrics.number_of_unique_flink_delivered_orders}/nullif(${number_of_forecasted_orders},0))-1 ;;
     value_format_name: percent_1
@@ -682,7 +682,7 @@ view: forecasts {
     alias: [pct_adjusted_forecast_deviation]
     group_label: "> Order Measures"
     label: "% Adjusted Order Forecast Deviation"
-    description: "The degree of how far # Forecasted Orders (Incl. Airtable Adjustments) is from # Actual Orders in the given period. Formula: (# Actual Orders / # Forecasted Orders (Incl. Adjustments)) -1"
+    description: "The degree of how far # Forecasted orders (Incl. Airtable Adjustments) is from # Actual Orders in the given period. Formula: (# Actual Orders / # Forecasted Orders (Incl. Adjustments)) -1"
     type: number
     sql: (${number_of_actual_orders}/nullif(${number_of_forecasted_orders_adjusted},0))-1 ;;
     value_format_name: percent_1
@@ -690,8 +690,8 @@ view: forecasts {
 
   measure: share_of_order_forecast_deviation_from_actual_successful_flink_delivered_orders_adjusted {
     group_label: "> Order Measures"
-    label: "% Adjusted Order Forecast Deviation (Successful Last Mile Orders)"
-    description: "The degree of how far # Forecasted Orders (Incl. Airtable Adjustments) is from # Successful Last MileOrders in the given period. Formula: (# Successful Last MileOrders / # Forecasted Orders (Incl. Adjustments)) -1"
+    label: "% Adjusted Order Forecast Deviation (Successful Flink Delivered Orders)"
+    description: "The degree of how far # Forecasted orders (Incl. Airtable Adjustments) is from # Successful Flink Delivered orders in the given period. Formula: (# Successful Last MileOrders / # Forecasted Orders (Incl. Adjustments)) - 1"
     type: number
     sql: (${orders_with_ops_metrics.number_of_unique_flink_delivered_orders}/nullif(${number_of_forecasted_orders_adjusted},0))-1 ;;
     value_format_name: percent_1
@@ -923,7 +923,7 @@ view: forecasts {
   measure: wmape_orders {
     group_label: "> Forecasting error"
     label: "wMAPE - Orders"
-    description: "Summed Absolute Difference of Orders per Hub per 30 min timeslot/ # Actual Orders"
+    description: "Summed Absolute Difference of orders per hub per 30 min timeslot/ # Actual Orders"
     type: number
     sql: ${summed_absolute_error}/nullif(${number_of_actual_orders},0);;
     value_format_name: percent_2
@@ -946,7 +946,7 @@ view: forecasts {
   measure: wmape_orders_adjusted {
     group_label: "> Forecasting error"
     label: "wMAPE - Adjusted Orders"
-    description: "Summed Absolute Difference of Orders per Hub per 30 min timeslot/ # Actual Orders"
+    description: "Summed Absolute Difference of orders per hub per 30 min timeslot/ # Actual Orders"
     type: number
     sql: ${summed_absolute_error_adjusted}/nullif(${number_of_actual_orders},0);;
     value_format_name: percent_2

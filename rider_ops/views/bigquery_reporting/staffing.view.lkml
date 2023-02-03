@@ -3422,7 +3422,7 @@ view: staffing {
   measure: number_of_scheduled_hours_picker_wfs_shift {
     group_label: "> Picker Measures"
     label: "# Scheduled WFS Picker Hours"
-    description: "# Scheduled Picker Hours  (Assigned + Unassigned WFS shift hours)"
+    description: "# Scheduled Picker Hours (Assigned + Unassigned WFS shift hours)"
     type: number
     sql: ${number_of_unassigned_hours_picker_wfs_shift}+${number_of_planned_hours_picker_wfs_shift};;
     value_format_name: decimal_1
