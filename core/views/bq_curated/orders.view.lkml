@@ -2690,10 +2690,7 @@ view: orders {
     type: count_distinct
     sql: ${order_uuid} ;;
     value_format: "0"
-    filters: [
-      is_external_order: "yes",
-      is_successful_order: "yes"
-    ]
+    filters: [is_external_order: "yes"]
   }
 
   measure: cnt_click_and_collect_orders {
