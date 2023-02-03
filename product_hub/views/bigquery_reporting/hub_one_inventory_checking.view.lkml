@@ -33,7 +33,7 @@ view: hub_one_inventory_checking {
 
   dimension: product_sku {
     description: "Task of the product, as available in the backend."
-    group_label: "Common Attributes"
+    group_label: "Task Attributes"
     type: string
     sql: ${TABLE}.product_sku ;;
   }
@@ -312,27 +312,28 @@ view: hub_one_inventory_checking {
 
   measure: fe_quantity_expired {
     description: "Number of units reported as expired by the employee while performing the task (checks and corrections). Value coming from Hub One."
-    group_label: "Frontend Quantities"
+    group_label: "Quantities Metrics"
     type: sum
     sql: ${TABLE}.fe_quantity_expired ;;
   }
 
   measure: fe_quantity_corrected {
     description: "Number of units reported as corrected by the employee while performing the task (only corrections). Value coming from Hub One."
-    group_label: "Frontend Quantities"
+    group_label: "Quantities Metrics"
     type: sum
     sql: ${TABLE}.fe_quantity_corrected ;;
   }
 
   measure: fe_quantity_tgtg {
     description: "Number of units reported as damaged by the employee while performing the task (checks and corrections). Value coming from Hub One."
-    group_label: "Frontend Quantities"
+    group_label: "Quantities Metrics"
     type: sum
     sql: ${TABLE}.fe_quantity_tgtg ;;
   }
 
   measure: sum_of_quantity_before_correction {
     description: "Amount of units before the inventory correction."
+    group_label: "Quantities Metrics"
     type: sum
     filters: [is_automatic_check: "No"]
     sql: ${TABLE}.quantity_before_correction ;;
@@ -340,7 +341,7 @@ view: hub_one_inventory_checking {
 
   measure: sum_of_quantity_after_correction {
     description: "New amount of units after the inventory correction."
-    group_label: "Backend Quantities"
+    group_label: "Quantities Metrics"
     type: sum
     filters: [is_automatic_check: "No"]
     sql: ${TABLE}.quantity_after_correction ;;
@@ -415,7 +416,7 @@ view: hub_one_inventory_checking {
   measure: corrections_per_completed_checks {
     type: number
     value_format: "0%"
-    group_label: "Rate Metrics"
+    group_label: "Rate Metrics (only checks)"
     label: "% of Corrections"
     description: "# of Corrections/ # of Completed Tasks."
     sql: ${number_of_corrections}/nullif(${number_of_completed_checks},0) ;;
@@ -424,7 +425,7 @@ view: hub_one_inventory_checking {
   measure: pct_of_completion {
     type: number
     value_format: "0%"
-    group_label: "Rate Metrics"
+    group_label: "Rate Metrics (only checks)"
     label: "% of Completion"
     description: "# of Completed Tasks/ (# of Completed Tasks + # of Open Tasks + # of Skipped Tasks)"
     sql: ${number_of_completed_checks}/nullif((${number_of_open_completed_skipped_checks}),0) ;;
