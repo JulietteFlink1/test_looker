@@ -292,7 +292,6 @@ view: hub_one_inventory_checking {
     description: "Expected amount of units before the task (only checks). Value coming from Hub One."
     group_label: "Frontend Quantities"
     type: sum
-    filters: []
     sql: ${TABLE}.fe_quantity_expected ;;
   }
 
