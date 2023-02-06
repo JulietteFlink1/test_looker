@@ -2,7 +2,7 @@ view: time_grid {
   sql_table_name: `flink-data-prod.curated.time_grid`
     ;;
 
-  dimension_group: block {
+  dimension_group: date {
     type: time
     timeframes: [
       raw,
