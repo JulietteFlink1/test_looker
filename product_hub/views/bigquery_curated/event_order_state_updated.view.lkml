@@ -29,7 +29,8 @@ view: event_order_state_updated {
       order_packed_time,
       picked_to_picking_finished_seconds,
       picking_finished_to_packed_seconds,
-      picked_to_packed_seconds
+      picked_to_packed_seconds,
+      number_of_orders
     ]
   }
 
