@@ -52,6 +52,7 @@ view: time_grid {
       day_of_week,
       minute30,
       week,
+      week_of_year,
       month,
       quarter,
       year

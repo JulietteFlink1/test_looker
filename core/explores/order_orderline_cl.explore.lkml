@@ -12,7 +12,9 @@ explore: order_orderline_cl {
   hidden: no
 
   # take all fields except those in the pricing_fields_refined set in erp_product_hub_vendor_assignment_v2_buying_prices.view
-  fields: [ALL_FIELDS*, -erp_product_hub_vendor_assignment.pricing_fields_refined*]
+  fields: [ALL_FIELDS*,
+           -erp_product_hub_vendor_assignment.pricing_fields_refined*,
+           -erp_buying_prices.margin_metrics_customized*]
 
   join: orderline {
 
@@ -30,7 +32,10 @@ explore: order_orderline_cl {
 
     view_label: "Product Data (CT)"
 
-    sql_on: ${products.product_sku} = ${orderline.product_sku} ;;
+    sql_on:
+        ${products.product_sku} = ${orderline.product_sku} and
+        ${products.country_iso} = ${orderline.country_iso}
+        ;;
     relationship: many_to_one
     type: left_outer
   }
@@ -38,6 +43,7 @@ explore: order_orderline_cl {
   join: lexbizz_item {
 
     view_label: "Product Data (ERP)"
+    from: erp_item
 
     type: left_outer
     relationship: many_to_one
@@ -59,7 +65,7 @@ explore: order_orderline_cl {
     # this will be deprecated in favour of the raw ERP data
     view_label: ""
 
-    from: erp_product_hub_vendor_assignment_v2
+    from: erp_product_hub_vendor_assignment
 
     sql_on:  ${erp_product_hub_vendor_assignment.sku}            = ${orderline.product_sku}
          and ${erp_product_hub_vendor_assignment.hub_code}       = ${orderline.hub_code}
@@ -100,6 +106,7 @@ explore: order_orderline_cl {
   join: lexbizz_item_warehouse {
 
     view_label: "Lexbizz Master Data"
+    from: erp_item_location
 
     type: left_outer
     relationship: many_to_one
@@ -125,6 +132,7 @@ explore: order_orderline_cl {
   join: lexbizz_vendor {
 
     view_label: "Lexbizz Master Data"
+    from: erp_supplier
 
     type: left_outer
     relationship: many_to_one
@@ -160,22 +168,24 @@ explore: order_orderline_cl {
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   join: erp_buying_prices {
-    view_label: "ERP Supplier Prices"
+    # hiding this table in favor of the monetary cost values directly in orderline.view
+    view_label: ""
     required_access_grants: [can_view_buying_information]
 
     type: left_outer
     # n orders have the same price
     relationship: many_to_one
     sql_on:
-        ${erp_buying_prices.hub_code}         =  ${orderline.hub_code}                                and
-        ${erp_buying_prices.sku}              =  ${orderline.product_sku}                             and
+        ${erp_buying_prices.hub_code}         =  ${orderline.hub_code}           and
+        ${erp_buying_prices.sku}              =  ${orderline.product_sku}        and
         -- a prive is valid in a certain time frame
-        ${orderline.created_date}             = ${erp_buying_prices.report_date}
+        ${orderline.created_date}             = ${erp_buying_prices.report_date} and
+        {% condition global_filters_and_parameters.datasource_filter %} ${erp_buying_prices.report_date} {% endcondition %}
     ;;
   }
 
   join: sales_weighted_avg_buying_prices {
-    view_label: "ERP Supplier Prices"
+    view_label: ""
     required_access_grants: [can_view_buying_information]
 
     type: left_outer

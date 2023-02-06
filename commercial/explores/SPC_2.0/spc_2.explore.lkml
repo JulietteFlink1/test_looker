@@ -1,9 +1,9 @@
 include: "/**/sku_performance_base.view"
 include: "/**/products.view"
-include: "/**/lexbizz_item.view"
+include: "/**/erp_item.view"
 include: "/**/hubs_ct.view"
 include: "/**/spc_2_ranks.view"
-include: "/**/lexbizz_item_warehouse.view"
+include: "/**/erp_item_location.view"
 include: "/**/lexbizz_warehouse.view"
 include: "/**/orderline.view"
 include: "/**/*.view"
@@ -31,12 +31,16 @@ explore: spc_2 {
     view_label: "Product Data"
     type: left_outer
     relationship: many_to_one
-    sql_on: ${products.product_sku} = ${sku_performance_base.joining_sku} ;;
+    sql_on:
+        ${products.product_sku} = ${sku_performance_base.joining_sku} and
+        ${products.country_iso} = ${sku_performance_base.country_iso}
+        ;;
   }
 
   join: lexbizz_item {
 
     type: left_outer
+    from: erp_item
     relationship: many_to_one
 
     sql_on: ${lexbizz_item.sku} = ${sku_performance_base.joining_sku} and
@@ -94,6 +98,7 @@ explore: spc_2 {
   join: lexbizz_item_warehouse {
 
     type: left_outer
+    from: erp_item_location
     relationship: many_to_one
 
     sql_on: ${lexbizz_item_warehouse.warehouse_id} = ${lexbizz_warehouse.warehouse_id} and

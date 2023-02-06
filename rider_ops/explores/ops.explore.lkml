@@ -11,6 +11,11 @@ include: "/**/orders_with_ops_metrics.view"
 include: "/**/forecasts.view"
 include: "/**/inventory_changes_daily.view"
 include: "/**/hub_monthly_orders.view"
+include: "/**/order_backlog.view"
+include: "/**/hub_attributes.view"
+include: "/**/hub_turf_closures_30min.view"
+include: "/**/hub_turf_closures_daily.view"
+
 
 explore: ops {
   from: staffing
@@ -25,7 +30,6 @@ explore: ops {
       hubs.country: "",
       hubs.hub_name: "",
       time_grid.start_datetime_date: "yesterday",
-      time_grid.start_datetime_hour_of_day: "[6,23]",
       forecasts.dow_parameter: "Tuesday"
     ]
   }
@@ -47,7 +51,7 @@ explore: ops {
     type: full_outer
     fields: [time_grid.start_datetime_date, time_grid.start_datetime_hour_of_day, time_grid.start_datetime_minute30,
       time_grid.start_datetime_month,time_grid.start_datetime_quarter,time_grid.start_datetime_raw,time_grid.start_datetime_time,
-      time_grid.start_datetime_time_of_day,time_grid.start_datetime_week, time_grid.start_datetime_year, time_grid.is_hour_before_now_hour,
+      time_grid.start_datetime_time_of_day,time_grid.start_datetime_week,time_grid.start_datetime_week_of_year, time_grid.start_datetime_year, time_grid.is_hour_before_now_hour,
       time_grid.is_date_before_today,time_grid.start_datetime_day_of_week]
   }
 
@@ -57,6 +61,16 @@ explore: ops {
     view_label: "Hub Data"
     sql_on:
     lower(${ops.hub_code}) = lower(${hubs.hub_code}) ;;
+    relationship: many_to_one
+    type: left_outer
+  }
+
+  # Hub Attributes
+  join: hub_attributes {
+    from: hub_attributes
+    view_label: "Hub Data"
+    sql_on:
+    lower(${ops.hub_code}) = lower(${hub_attributes.hub_code}) ;;
     relationship: many_to_one
     type: left_outer
   }
@@ -99,6 +113,39 @@ explore: ops {
       date_trunc(${time_grid.start_datetime_date},month) = ${hub_monthly_orders.created_month};;
     relationship: many_to_one
     type: left_outer
+  }
+
+  join: order_backlog {
+    view_label: "Order Backlog"
+    sql_on:
+      ${hubs.hub_code} = ${order_backlog.hub_code}
+      and ${time_grid.start_datetime_minute30}  = ${order_backlog.start_timestamp_minute30} ;;
+    relationship: one_to_one
+    type: left_outer
+  }
+
+  join: hub_turf_closures_30min {
+    view_label: "Closures"
+    sql_on: ${hub_turf_closures_30min.hub_code} =  ${hubs.hub_code}
+      and ${time_grid.start_datetime_minute30} = ${hub_turf_closures_30min.report_minute30};;
+    relationship: one_to_many
+    type: left_outer
+    fields: [hub_turf_closures_30min.sum_number_of_closed_hours,
+      hub_turf_closures_30min.share_closed_hours_per_open_hours,
+      hub_turf_closures_30min.sum_number_of_missed_orders_forced_closure,
+      hub_turf_closures_30min.share_of_missed_orders_per_number_of_successful_non_external_orders]
+  }
+
+  join: hub_turf_closures_daily {
+    view_label: "Closures"
+    sql_on: ${hub_turf_closures_30min.hub_code}=${hub_turf_closures_daily.hub_code}
+        and coalesce(${hub_turf_closures_30min.turf_id},'') = coalesce(${hub_turf_closures_daily.turf_id},'')
+        and ${hub_turf_closures_30min.report_date}=${hub_turf_closures_daily.report_date}
+        and ${hub_turf_closures_30min.closure_reason}=${hub_turf_closures_daily.closure_reason};;
+    type: left_outer
+    relationship: many_to_one
+    fields: [hub_turf_closures_daily.closure_reason,
+      hub_turf_closures_daily.turf_name]
   }
 
 }

@@ -37,9 +37,10 @@ explore: current_inventory {
 
   join: products_hub_assignment {
 
-    from: products_hub_assignment_v2
+    from: products_hub_assignment
 
     sql_on: ${products_hub_assignment.sku} = ${products.product_sku}
+       and ${products_hub_assignment.country_iso} = ${products.country_iso}
        and ${products_hub_assignment.report_date} = current_date()
     ;;
     type: left_outer
@@ -49,6 +50,7 @@ explore: current_inventory {
   join: lexbizz_item {
 
     view_label: "* Product Information (ERP) *"
+    from: erp_item
 
     type: left_outer
     relationship: one_to_one

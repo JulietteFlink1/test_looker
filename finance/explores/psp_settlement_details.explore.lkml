@@ -18,6 +18,7 @@ explore: psp_settlement_details {
     field: hubs.country_iso
     user_attribute: country_iso
   }
+  hidden: yes
 
 
   always_filter: {
@@ -64,7 +65,10 @@ explore: psp_settlement_details {
 
   join: products {
     view_label: ""
-    sql_on: ${products.product_sku} = ${orderline.product_sku} ;;
+    sql_on:
+        ${products.product_sku} = ${orderline.product_sku} and
+        ${products.country_iso} = ${orderline.country_iso}
+        ;;
     relationship: many_to_one
     type: left_outer
   }

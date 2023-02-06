@@ -7,6 +7,8 @@ view: orders_with_ops_metrics {
       column: hub_code {}
       column: order_uuid {}
       column: cnt_orders {}
+      column: avg_daily_orders {}
+      column: cnt_unique_date {}
       column: avg_number_items {}
       column: avg_ratio_customer_to_hub {}
       column: avg_at_customer_time {}
@@ -15,7 +17,8 @@ view: orders_with_ops_metrics {
       column: avg_estimated_queuing_time_for_picker_minutes {}
       column: avg_estimated_queuing_time_for_rider_minutes {}
       column: avg_waiting_for_picker_time {}
-      column: avg_rider_queuing_time {}
+      column: avg_waiting_for_rider_time {}
+      column: avg_withheld_from_rider_time_minutes {}
       column: avg_withheld_from_picking_time_minutes {}
       column: avg_fulfillment_time {}
       column: avg_estimated_riding_time_minutes {}
@@ -32,6 +35,8 @@ view: orders_with_ops_metrics {
       column: avg_rider_handling_time_minutes_saved_with_stacking {}
       column: avg_rider_handling_time {}
       column: cnt_stacked_orders {}
+      column: cnt_stacked_orders_double_stack {}
+      column: cnt_stacked_orders_triple_stack {}
       column: created_date {}
       column: created_minute30 {}
       column: cnt_orders_delayed_under_0_min {}
@@ -55,6 +60,10 @@ view: orders_with_ops_metrics {
     }
   }
 
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~     Dimensions     ~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   dimension: hub_code {
     label: "Hub Code"
     description: ""
@@ -70,6 +79,38 @@ view: orders_with_ops_metrics {
     type: number
   }
 
+  dimension: order_uuid {
+    label: "Order UUID"
+    description: ""
+    hidden: yes
+    primary_key: yes
+  }
+
+  dimension: created_time {
+    label: "Order Time"
+    description: "Order Placement Time/Date"
+    type: date_time
+    hidden: yes
+  }
+
+  dimension: created_date {
+    label: "Order Time"
+    description: "Order Placement Date"
+    type: date
+    hidden: yes
+  }
+
+  dimension: created_minute30 {
+    label: "Order Time"
+    description: "Order Placement Date"
+    type: date_minute30
+    hidden: yes
+  }
+
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~     Measures       ~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   measure: avg_hub_to_customer_distance_km {
     group_label: "> Operations / Logistics"
     label: "AVG Hub to Customer Distance (km)"
@@ -82,7 +123,7 @@ view: orders_with_ops_metrics {
   measure: sum_orders {
     group_label: "> Basic Counts"
     label: "# Orders"
-    description: "Count of Orders (Excl. Cancellations)"
+    description: "Count of Orders (Excl. Cancellations and Missed Orders, Incl. External and Click&Collect Orders)"
     type: sum
     value_format_name: decimal_0
     sql: ${cnt_orders} ;;
@@ -126,9 +167,9 @@ view: orders_with_ops_metrics {
 
   measure: cnt_rider_orders {
     group_label: "> Basic Counts"
-    label: "# Orders (excl. Click & Collect and External)"
-    description: "Count of Successful Orders that require riders (e.g. Click and collect)"
-    hidden:  yes
+    label: "# Last Mile Orders"
+    description: "Count of Successful Orders (excl. Cancelled, Click & Collect and External Orders) that require riders"
+    hidden:  no
     sql: ${sum_orders}-${cnt_external_orders}-${cnt_click_and_collect_orders} ;;
     value_format_name: decimal_0
     type: number
@@ -169,10 +210,37 @@ view: orders_with_ops_metrics {
     }
 
   measure: pct_stacked_orders {
-    group_label: "> Basic Counts"
+    group_label: "> Stacked Orders"
     label: "% Stacked Orders"
-    description: "The % of orders, that were part of a stacked delivery"
+    description: "The % of orders that were part of a stacked delivery. (Share of internal orders only)"
     sql: ${cnt_stacked_orders} / NULLIF(${cnt_internal_orders}-${cnt_click_and_collect_orders}, 0) ;;
+    type: number
+    value_format_name: percent_1
+  }
+
+  measure: pct_double_stacked_orders {
+    label: "% Double-Stacked Orders"
+    description: "The % of orders that were part of a 2-order stacked delivery. (Share of internal orders only)"
+    group_label: "> Stacked Orders"
+    sql: ${cnt_stacked_orders_double_stack} / nullif(${cnt_internal_orders}-${cnt_click_and_collect_orders} ,0) ;;
+    type: number
+    value_format_name: percent_1
+  }
+
+  measure: pct_triple_stacked_orders {
+    label: "% Triple-Stacked Orders"
+    description: "The % of orders that were part of a 3-order stacked delivery. (Share of internal orders only)"
+    group_label: "> Stacked Orders"
+    sql: ${cnt_stacked_orders_triple_stack} / nullif(${cnt_internal_orders}-${cnt_click_and_collect_orders} ,0) ;;
+    type: number
+    value_format_name: percent_1
+  }
+
+  measure: pct_stacked_orders_with_triple_stacks {
+    label: "% Stacked Orders With Triple-Stacking"
+    description: "The % of stacked orders that were part of 3-order stacks."
+    group_label: "> Stacked Orders"
+    sql: ${cnt_stacked_orders_triple_stack} / nullif(${cnt_stacked_orders} ,0) ;;
     type: number
     value_format_name: percent_1
   }
@@ -290,7 +358,6 @@ view: orders_with_ops_metrics {
   measure: avg_estimated_queuing_time_for_picker_minutes {
     group_label: "> Operations / Logistics"
     label: "AVG Estimated Queuing Time for Pickers"
-    description: ""
     value_format_name: decimal_1
     type: average
     hidden: yes
@@ -299,7 +366,6 @@ view: orders_with_ops_metrics {
   measure: avg_estimated_queuing_time_for_rider_minutes {
     group_label: "> Operations / Logistics"
     label: "AVG Estimated Queuing Time for Riders"
-    description: ""
     value_format_name: decimal_1
     type: average
     hidden: yes
@@ -314,12 +380,21 @@ view: orders_with_ops_metrics {
     type: average
   }
 
-  measure: avg_rider_queuing_time {
+  measure: avg_waiting_for_rider_time {
+    alias: [avg_rider_queuing_time]
     group_label: "> Operations / Logistics"
-    label: "AVG Rider Queuing Time"
-    description: "Average time between picking completion and rider having claimed the order."
+    label: "AVG Waiting for Rider Time"
+    description: "Average time between order offered to rider and rider having claimed the order. Outliers excluded (>120min)"
     value_format_name: decimal_1
     type: average
+  }
+
+  measure: avg_withheld_from_rider_time_minutes {
+    group_label: "> Operations / Logistics"
+    label: "AVG Withheld From Rider Time"
+    description: "Average time between picking completion and order offered to rider. Outliers excluded (<0min or >120min)"
+    type: average
+    value_format_name: decimal_1
   }
 
   measure: avg_withheld_from_picking_time_minutes {
@@ -469,63 +544,139 @@ view: orders_with_ops_metrics {
   }
 
   measure: cnt_stacked_orders {
-    group_label: "> Basic Counts"
+    group_label: "> Stacked Orders"
     label: "# Orders - Stacked Order"
-    description: "Count of orders, that were part of a stacked delivery"
+    description: "Count of orders that were part of a stacked delivery."
     type: sum
     value_format_name: decimal_0
-    }
+  }
+
+  measure: cnt_stacked_orders_double_stack {
+    label: "# Double-Stacked Orders"
+    description: "The number of orders that were part of a 2-order stacked delivery."
+    group_label: "> Stacked Orders"
+    type: sum
+    value_format: "0"
+  }
+
+  measure: cnt_stacked_orders_triple_stack {
+    label: "# Triple-Stacked Orders"
+    description: "The number of orders that were part of a 3-order stacked delivery."
+    group_label: "> Stacked Orders"
+    type: sum
+    value_format: "0"
+  }
 
   measure: avg_estimated_queuing_time_by_position {
     group_label: "> Operations / Logistics"
     label: "AVG Estimated Queuing Time (Minutes)"
     value_format_name: decimal_1
     sql:
-        CASE
-          WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${avg_estimated_queuing_time_for_rider_minutes}
-          WHEN {% parameter ops.position_parameter %} = 'Picker' THEN ${avg_estimated_queuing_time_for_picker_minutes}
-      ELSE NULL
-      END ;;
+      case
+        when {% parameter ops.position_parameter %} = 'Rider' THEN ${avg_estimated_queuing_time_for_rider_minutes}
+        when {% parameter ops.position_parameter %} = 'Picker' THEN ${avg_estimated_queuing_time_for_picker_minutes}
+        else null
+      end ;;
   }
 
-  measure: avg_queuing_time_by_position {
+  measure:  avg_waiting_time_by_position {
+    alias: [avg_queuing_time_by_position]
     group_label: "> Operations / Logistics"
-    label: "AVG Queuing Time (Minutes)"
+    label: "AVG Waiting Time (Minutes)"
     value_format_name: decimal_1
     sql:
-        CASE
-          WHEN {% parameter ops.position_parameter %} = 'Rider' THEN ${avg_estimated_queuing_time_for_rider_minutes}
-          WHEN {% parameter ops.position_parameter %} = 'Picker' THEN ${avg_estimated_queuing_time_for_picker_minutes}
-      ELSE NULL
-      END ;;
+      case
+        when {% parameter ops.position_parameter %} = 'Rider' THEN ${avg_waiting_for_rider_time}
+        when {% parameter ops.position_parameter %} = 'Picker' THEN ${avg_waiting_for_picker_time}
+        else null
+      end ;;
   }
 
-  dimension: order_uuid {
-    label: "Order UUID"
-    description: ""
-    hidden: yes
-    primary_key: yes
+  measure: avg_daily_orders{
+    group_label: "> Basic Counts"
+    label: "AVG # Daily Orders"
+    description: "AVG number of daily orders.
+    Computed as the number of orders divided by the number of open days, over the selected timeframe."
+    type: number
+    sql: (${sum_orders})/ NULLIF(${cnt_unique_date},0);;
+    value_format_name:decimal_2
   }
 
-  dimension: created_time {
-    label: "Order Time"
-    description: "Order Placement Time/Date"
-    type: date_time
-    hidden: yes
+  measure: cnt_unique_date {
+    group_label: "> Basic Counts"
+    label: "# Unique Date"
+    description: "Count of Unique Dates"
+    hidden:  no
+    type: count_distinct
+    value_format_name: decimal_0
   }
 
-  dimension: created_date {
-    label: "Order Time"
-    description: "Order Placement Date"
-    type: date
-    hidden: yes
+  measure: dynamic_kpi_1 {
+    type: number
+    label: "Dynamic KPI 1"
+    label_from_parameter: kpi_1
+    description: "This field is based on the chosen KPI"
+    value_format_name: decimal_2
+    group_label: "> Dynamic Measures"
+    sql:
+        case
+          when {% parameter kpi_1 %} = 'AVG Fulfillment Time' then ${avg_fulfillment_time}
+          when {% parameter kpi_1 %} = 'Rider UTR' then ${ops.utr_rider}
+          when {% parameter kpi_1 %} = '% Stacked Orders' then ${pct_stacked_orders}
+          when {% parameter kpi_1 %} = 'AVG Delivery Distance' then ${avg_delivery_distance_km}
+          when {% parameter kpi_1 %} = 'AVG Riding to Customer Time' then ${avg_riding_to_customer_time}
+          when {% parameter kpi_1 %} = 'AVG # Daily Orders' then ${avg_daily_orders}
+          when {% parameter kpi_1 %} = 'AVG Waiting for Rider Time' then ${avg_waiting_for_rider_time}
+          else null
+      end ;;
   }
 
-  dimension: created_minute30 {
-    label: "Order Time"
-    description: "Order Placement Date"
-    type: date_minute30
-    hidden: yes
+  measure: dynamic_kpi_2 {
+    type: number
+    label_from_parameter: kpi_2
+    label: "Dynamic KPI 2"
+    description: "This field is based on the chosen KPI"
+    value_format_name: decimal_2
+    group_label: "> Dynamic Measures"
+    sql:
+        case
+          when {% parameter kpi_2 %} = 'AVG Fulfillment Time' then ${avg_fulfillment_time}
+          when {% parameter kpi_2 %} = 'Rider UTR' then ${ops.utr_rider}
+          when {% parameter kpi_2 %} = '% Stacked Orders' then ${pct_stacked_orders}
+          when {% parameter kpi_2 %} = 'AVG Delivery Distance' then ${avg_delivery_distance_km}
+          when {% parameter kpi_2 %} = 'AVG Riding to Customer Time' then ${avg_riding_to_customer_time}
+          when {% parameter kpi_2 %} = 'AVG # Daily Orders' then ${avg_daily_orders}
+          when {% parameter kpi_2 %} = 'AVG Waiting for Rider Time' then ${avg_waiting_for_rider_time}
+          else null
+      end ;;
+  }
+
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~     Parameters     ~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  parameter: kpi_1 {
+    type: string
+    label: "KPI 1"
+    allowed_value: { value: "AVG Fulfillment Time" }
+    allowed_value: { value: "Rider UTR" }
+    allowed_value: { value: "% Stacked Orders" }
+    allowed_value: { value: "AVG Delivery Distance" }
+    allowed_value: { value: "AVG Riding to Customer Time" }
+    allowed_value: { value: "AVG # Daily Orders" }
+    allowed_value: { value: "AVG Waiting for Rider Time" }
+  }
+
+  parameter: kpi_2 {
+    type: string
+    label: "KPI 2"
+    allowed_value: { value: "AVG Fulfillment Time" }
+    allowed_value: { value: "Rider UTR" }
+    allowed_value: { value: "% Stacked Orders" }
+    allowed_value: { value: "AVG Delivery Distance" }
+    allowed_value: { value: "AVG Riding to Customer Time" }
+    allowed_value: { value: "AVG # Daily Orders" }
+    allowed_value: { value: "AVG Waiting for Rider Time" }
   }
 
 }

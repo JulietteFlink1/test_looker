@@ -30,17 +30,21 @@ join: products {
 
   type: left_outer
   relationship: many_to_one
-  sql_on: ${products.product_sku} = ${waste_buckets.sku} ;;
+  sql_on:
+      ${products.product_sku} = ${waste_buckets.sku} and
+      ${products.country_iso} = ${waste_buckets.country_iso}
+      ;;
 
 }
 
 join: lexbizz_item {
 
-  view_label: "04 Products (ERP) "
+  view_label: "04 Products (ERP)"
+  from: erp_item
 
   type: left_outer
   relationship: many_to_one
-  sql_on: ${lexbizz_item.sku}            = ${waste_buckets.sku}
+  sql_on: ${lexbizz_item.sku}              = ${waste_buckets.sku}
         and ${lexbizz_item.ingestion_date} = current_date()
     ;;
 }
@@ -57,7 +61,7 @@ join: lexbizz_item {
 
   join: erp_master_data {
 
-    from: erp_product_hub_vendor_assignment_v2
+    from: erp_product_hub_vendor_assignment
     view_label: "05 Supplier (ERP)"
 
     type: left_outer

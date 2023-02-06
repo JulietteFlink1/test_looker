@@ -12,7 +12,7 @@
 
 include: "/**/*.view"
 
-include: "/**/products_hub_assignment_v2.view"
+include: "/**/products_hub_assignment.view"
 include: "/**/replenishment_purchase_orders.view"
 include: "/**/bulk_items.view"
 include: "/**/bulk_inbounding_performance.view"
@@ -40,7 +40,7 @@ explore: supply_chain {
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   #  - - - - - - - - - -    BASE TABLE
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  from  :     products_hub_assignment_v2
+  from  :     products_hub_assignment
   view_name:  products_hub_assignment
   view_label: "01 Products Hub Assignment"
 
@@ -74,8 +74,12 @@ explore: supply_chain {
 
         and ${products_hub_assignment.hub_code} not in ('de_ham_alto')
         and ${hubs_ct.is_test_hub} is false
-        and ${hubs_ct.start_date} <= ${products_hub_assignment.report_date}
-        and (${hubs_ct.termination_date} > ${products_hub_assignment.report_date} or ${hubs_ct.termination_date} is null)
+
+        {% if supply_chain_config.filter_terminated_hubs._parameter_value == "active" %}
+          and ${hubs_ct.start_date} <= ${products_hub_assignment.report_date}
+          and (${hubs_ct.termination_date} > ${products_hub_assignment.report_date} or ${hubs_ct.termination_date} is null)
+        {% endif %}
+        -- Filter for terminated hubs is {% parameter supply_chain_config.filter_terminated_hubs %}
       ;;
 
 
@@ -84,6 +88,10 @@ explore: supply_chain {
     relationship: one_to_one
   }
 
+  join: supply_chain_config {
+    sql: ;;
+    relationship: one_to_one
+  }
 
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -143,13 +151,17 @@ explore: supply_chain {
 
     type: left_outer
     relationship: many_to_one
-    sql_on: ${products.product_sku} = ${products_hub_assignment.sku} ;;
+    sql_on:
+        ${products.product_sku} = ${products_hub_assignment.sku} and
+        ${products.country_iso} = ${products_hub_assignment.country_iso}
+        ;;
 
   }
 
   join: lexbizz_item {
 
     view_label: "Products (ERP)"
+    from: erp_item
 
     type: left_outer
     relationship: many_to_one
@@ -253,16 +265,17 @@ explore: supply_chain {
   join: bulk_inbounding_performance {
 
     # keep hidden for now
-    view_label: "08 Dispatch Notifications"
+    view_label: ""
+    from: dispatch_notifications
 
     type: full_outer
     relationship: many_to_one
 
     sql_on:
         ${bulk_inbounding_performance.hub_code}                   = ${products_hub_assignment.hub_code}
-    and ${bulk_inbounding_performance.estimated_delivery_date}    = ${products_hub_assignment.report_date}
+    and ${bulk_inbounding_performance.delivery_date}              = ${products_hub_assignment.report_date}
     and ${bulk_inbounding_performance.sku}                        = ${products_hub_assignment.leading_sku_replenishment_substitute_group}
-    and {% condition global_filters_and_parameters.datasource_filter %} ${bulk_inbounding_performance.estimated_delivery_date} {% endcondition %}
+    and {% condition global_filters_and_parameters.datasource_filter %} ${bulk_inbounding_performance.delivery_date} {% endcondition %}
     ;;
 
   }
@@ -283,7 +296,7 @@ explore: supply_chain {
 
   join: erp_master_data {
 
-    from: erp_product_hub_vendor_assignment_v2
+    from: erp_product_hub_vendor_assignment
     view_label: "10 Lexbizz Master Data"
 
     type: left_outer

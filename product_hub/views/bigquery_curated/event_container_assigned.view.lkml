@@ -236,7 +236,7 @@ view: event_container_assigned {
 
   measure: number_of_events {
     label: "# Container Assgined"
-    description: "Number of events trigegred"
+    description: "Number of events triggered"
     type: count_distinct
     sql: ${TABLE}.event_uuid ;;
   }

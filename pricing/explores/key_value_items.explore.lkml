@@ -1,5 +1,5 @@
 include: "/**/*.view"
-include: "/**/products_hub_assignment_v2.view"
+include: "/**/products_hub_assignment.view"
 include: "/**/replenishment_purchase_orders.view"
 include: "/**/bulk_items.view"
 include: "/**/bulk_inbounding_performance.view"
@@ -31,6 +31,7 @@ explore: key_value_items {
 
 
   join: products_hub_assignment_v2 {
+    from: products_hub_assignment
     sql_on:
             ${products_hub_assignment_v2.sku}           = ${orderline.product_sku} and
             ${products_hub_assignment_v2.hub_code}      = ${orderline.hub_code} and

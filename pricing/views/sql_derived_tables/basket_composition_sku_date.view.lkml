@@ -17,9 +17,11 @@ view: basket_composition_sku_date {
         left join `flink-data-prod.curated.order_lineitems` b
         on a.order_uuid = b.order_uuid
         left join `flink-data-prod.curated.products` prod_a
-        on a.sku = prod_a.product_sku
+        on a.sku = prod_a.product_sku and
+           a.country_iso = prod_a.country_iso
         left join `flink-data-prod.curated.products` prod_b
-        on b.sku = prod_b.product_sku
+        on b.sku = prod_b.product_sku and
+           b.country_iso = prod_b.country_iso
         left join `flink-data-prod.curated.hubs` hub
         on a.country_iso = hub.country_iso
         WHERE DATE(a.partition_timestamp) >= "2021-07-01"
@@ -41,7 +43,8 @@ view: basket_composition_sku_date {
 
         FROM `flink-data-prod.curated.order_lineitems` a
         LEFT JOIN `flink-data-prod.curated.products` b
-           on a.sku= b.product_sku
+           on a.sku= b.product_sku and
+              a.country_iso = b.country_iso
         WHERE DATE(a.partition_timestamp) >= "2021-07-01"
 
         group by 1,2,3

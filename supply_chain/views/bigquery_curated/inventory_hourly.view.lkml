@@ -14,6 +14,8 @@ view: inventory_hourly {
     type: time
     timeframes: [
       raw,
+      hour,
+      hour_of_day,
       time,
       date,
       week,
@@ -66,6 +68,15 @@ view: inventory_hourly {
     sql: ${TABLE}.share_of_hours_open ;;
 
     hidden: yes
+  }
+
+  dimension: filter_sku_cutoff_hour {
+    label: "Filter Cutoff Hours"
+    description: "This boolean field can be used to filter for valid SKU cutoff hours"
+    group_label: "OOS-Dimensions"
+
+    type: yesno
+    sql: ${TABLE}.filter_sku_cutoff_hour ;;
   }
 
 

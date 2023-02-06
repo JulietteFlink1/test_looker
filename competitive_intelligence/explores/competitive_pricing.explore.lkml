@@ -7,7 +7,7 @@
 
 include: "/**/products.view"
 include: "/**/global_filters_and_parameters.view.lkml"
-include: "/**/products_hub_assignment_v2.view"
+include: "/**/products_hub_assignment.view"
 include: "/**/inventory.view"
 include: "/**/unique_assortment.view"
 include: "/**/hubs_ct.view"
@@ -56,9 +56,10 @@ explore: competitive_pricing {
 
   join: products_hub_assignment {
 
-    from: products_hub_assignment_v2
+    from: products_hub_assignment
 
     sql_on: ${products_hub_assignment.sku} = ${products.product_sku}
+           and ${products_hub_assignment.country_iso} = ${products.country_iso}
            and ${products_hub_assignment.report_date} = current_date() ;;
     type: left_outer
     relationship: one_to_many
@@ -88,7 +89,8 @@ explore: competitive_pricing {
   }
 
   join: price_test_tracking {
-    sql_on:  ${products.product_sku} = ${price_test_tracking.product_sku};;
+    sql_on:  ${products.product_sku} = ${price_test_tracking.product_sku}
+         and ${products.country_iso} = ${price_test_tracking.country_iso};;
     relationship: many_to_one
     type:  left_outer
   }
@@ -100,7 +102,8 @@ explore: competitive_pricing {
   }
 
   join: key_value_items {
-    sql_on: ${products.product_sku} = ${key_value_items.sku} ;;
+    sql_on: ${products.product_sku} = ${key_value_items.sku}
+        and ${products.country_iso} = ${key_value_items.country_iso} ;;
     relationship: many_to_one
     type: left_outer
   }
@@ -108,7 +111,8 @@ explore: competitive_pricing {
   join: flink_to_gorillas_global {
     from: flink_to_gorillas_global
     view_label: "* Flink-Gorillas Match Data *"
-    sql_on: ${flink_to_gorillas_global.flink_product_sku} = ${products.product_sku};;
+    sql_on: ${flink_to_gorillas_global.flink_product_sku} = ${products.product_sku}
+        and ${flink_to_gorillas_global.country_iso} = ${products.country_iso};;
     relationship: one_to_one
     type: left_outer
   }

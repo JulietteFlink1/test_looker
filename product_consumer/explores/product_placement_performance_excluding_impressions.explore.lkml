@@ -6,6 +6,7 @@
 
 # Questions that can be answered
 # - user based conversions
+# this dashboard has a SQL always where clause to limit the volume of data queried.
 
 include: "/product_consumer/views/bigquery_reporting/product_placement_performance_excluding_impressions.view"
 include: "/**/global_filters_and_parameters.view.lkml"
@@ -23,10 +24,13 @@ explore: product_placement_performance_excluding_impressions {
                 We consider the Orders Explore to be the source of truth.
                 This report uses daily last-in first-out attribution logic - if a user has a cart that persists for more than one day the product placements will not be included in this report.
                 It excludes impressions data.
+                 This explore is time limited, and will only return data for the last complete month, and the current month.
                 "
   group_label: "Product - Consumer"
 
-  sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} ${product_placement_performance_excluding_impressions.event_date} {% endcondition %};;
+  sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} ${product_placement_performance_excluding_impressions.event_date} {% endcondition %}
+                    and ${product_placement_performance_excluding_impressions.event_date} > LAST_DAY(current_date() - 62)
+                    and ${country_iso} is not null;;
 
   access_filter: {
     field: country_iso
@@ -35,7 +39,7 @@ explore: product_placement_performance_excluding_impressions {
 
   always_filter: {
     filters: [
-      global_filters_and_parameters.datasource_filter: "last 7 days",
+      global_filters_and_parameters.datasource_filter: "last 1 days",
       product_placement_performance_excluding_impressions.country_iso: ""
     ]
   }

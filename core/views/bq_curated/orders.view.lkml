@@ -19,12 +19,12 @@ view: orders {
     ]
   }
 
-  dimension: rider_queuing_time {
-    alias: [acceptance_time]
+  dimension: waiting_for_rider_time_minutes {
+    alias: [acceptance_time, rider_queuing_time]
     type: number
     group_label: "* Operations / Logistics *"
     hidden: no
-    sql: ${TABLE}.rider_queuing_time_minutes ;;
+    sql: ${TABLE}.waiting_for_rider_time_minutes ;;
   }
 
   dimension: google_cycling_time_minutes {
@@ -358,6 +358,7 @@ view: orders {
       date,
       day_of_week,
       day_of_week_index,
+      week_of_year,
       week,
       month,
       quarter,
@@ -631,8 +632,8 @@ view: orders {
 
   dimension: estimated_waiting_for_picker_time_minutes {
     alias: [estimated_queuing_time_for_picker_minutes]
-    label: "Waiting For Picker Time Estimate (min)"
-    description: "The internally predicted time in minutes for the waiting for picker"
+    label: "Picker Queuing Time Estimate (min)"
+    description: "The internally predicted time in minutes for the picker queuing"
     group_label: "* Operations / Logistics *"
     type: number
     sql: ${TABLE}.estimated_waiting_for_picker_time_minutes;;
@@ -668,10 +669,10 @@ view: orders {
 
   dimension: pre_riding_time {
     label: "Pre Riding Time (min)"
-    description: "Withheld From Picking + Waiting For Picker Time + Picking Time + Rider Queuing Time"
+    description: "Withheld From Picking + Waiting For Picker Time + Picking Time + Withheld From Rider + Waiting For Rider Time"
     group_label: "* Operations / Logistics *"
     type: number
-    sql: ${waiting_for_picker_time} + ${rider_queuing_time} + ${picking_time_minutes} + ${withheld_from_picking_time_minutes};;
+    sql: ${waiting_for_picker_time} + ${waiting_for_rider_time_minutes} + ${picking_time_minutes} + coalesce(${withheld_from_picking_time_minutes},0) + coalesce(${withheld_from_rider_time_minutes},0);;
   }
 
   dimension: is_critical_delivery_time_estimate_underestimation {
@@ -733,14 +734,14 @@ view: orders {
     sql: ${fulfillment_time} ;;
   }
 
-  dimension: rider_queuing_time_tier {
-    alias: [acceptance_time_tier]
+  dimension: waiting_for_rider_time_tier{
+    alias: [acceptance_time_tier, rider_queuing_time_tier]
     group_label: "* Operations / Logistics *"
-    label: "Rider Queuing Time (tiered, 1min)"
+    label: "Waiting for Rider Time (tiered, 1min)"
     type: tier
     tiers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]
     style: interval
-    sql: ${rider_queuing_time} ;;
+    sql: ${waiting_for_rider_time_minutes} ;;
   }
 
   dimension: waiting_for_picker_time_tier {
@@ -758,6 +759,14 @@ view: orders {
     group_label: "* Operations / Logistics *"
     type: yesno
     sql: ${TABLE}.is_riding_to_customer_above_30_minute ;;
+  }
+
+  dimension: turf_name {
+    group_label: "* Operations / Logistics *"
+    label: "Turf Name"
+    description: "This field reflects the Turf (aka Delivery Tier) which the order was assigned to (e.g. core, turf12, turf20 etc.). If a hub has multiple Turfs, this reflects the Turf which covers the customer location"
+    type: string
+    sql: ${TABLE}.turf_name ;;
   }
 
   dimension: is_delivery_eta_available {
@@ -826,20 +835,20 @@ view: orders {
     sql: ${fulfillment_time} < 1 ;;
   }
 
-  dimension: is_rider_queuing_time_less_than_0_minute {
-    alias: [is_acceptance_less_than_0_minute]
+  dimension: is_waiting_for_rider_time_less_than_0_minute {
+    alias: [is_acceptance_less_than_0_minute, is_rider_queuing_time_less_than_0_minute]
     hidden: yes
     group_label: "* Operations / Logistics *"
     type: yesno
-    sql: ${rider_queuing_time} < 0 ;;
+    sql: ${waiting_for_rider_time_minutes} < 0 ;;
   }
 
-  dimension: is_rider_queuing_time_more_than_30_minute {
-    alias: [is_acceptance_more_than_30_minute]
+  dimension: is_waiting_for_rider_time_more_than_30_minute {
+    alias: [is_acceptance_more_than_30_minute, is_rider_queuing_time_more_than_30_minute]
     hidden: yes
     group_label: "* Operations / Logistics *"
     type: yesno
-    sql: ${rider_queuing_time} > 30 ;;
+    sql: ${waiting_for_rider_time_minutes} > 30 ;;
   }
 
   dimension: is_waiting_for_picker_time_less_than_0_minute {
@@ -1136,6 +1145,14 @@ view: orders {
     sql: ${TABLE}.order_offered_to_hub_timestamp ;;
   }
 
+  dimension: order_offered_to_rider_timestamp {
+    group_label: "* Operations / Logistics *"
+    label: "Order Offered to Rider Timestamp"
+    description: "Timestamp at which an order was offered to a rider."
+    type: date_time
+    sql: ${TABLE}.order_offered_to_rider_timestamp ;;
+  }
+
   dimension: order_withheld_timestamp {
     group_label: "* Operations / Logistics *"
     label: "Order Withheld from Hub"
@@ -1276,6 +1293,14 @@ view: orders {
     sql: ${TABLE}.withheld_from_picking_time_minutes ;;
   }
 
+  dimension: withheld_from_rider_time_minutes {
+    group_label: "* Operations / Logistics *"
+    label: "Withheld From Rider Time Minutes"
+    description: "Time between picking completion and order offered to rider"
+    type: number
+    sql: ${TABLE}.withheld_from_rider_time_minutes ;;
+  }
+
   dimension: at_customer_time_minutes {
     group_label: "* Operations / Logistics *"
     label: "At Customer Time Minutes"
@@ -1411,6 +1436,14 @@ view: orders {
     sql: ${TABLE}.is_external_order ;;
   }
 
+  dimension: is_last_mile_order {
+    group_label: "* Order Dimensions *"
+    type: yesno
+    sql: ${TABLE}.is_last_mile_order ;;
+    description: "TRUE if the order is delivered by flink's riders.
+    Not click and collect order, not created through an external provider (e.g. uber-eats and wolt). Doordash orders are included as they are delivered by Flink's riders."
+  }
+
   dimension: deposit {
     type: number
     hidden: yes
@@ -1506,6 +1539,20 @@ view: orders {
     hidden:  yes
     type: number
     sql: ${TABLE}.amt_storage_fee_net ;;
+  }
+
+  ########### LATE NIGHT FEES ##########
+
+  dimension: amt_late_night_fee_gross {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.amt_late_night_fee_gross ;;
+  }
+
+  dimension: amt_late_night_fee_net {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.amt_late_night_fee_net ;;
   }
 
   ########### CRF FEES DIMENSIONS ##########
@@ -1733,6 +1780,15 @@ view: orders {
     value_format_name: decimal_1
   }
 
+  measure: avg_withheld_from_rider_time_minutes {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Withheld From Rider Time"
+    description: "Average time between picking completion and order offered to rider. Outliers excluded (<0min or >120min)"
+    type: average
+    sql:${withheld_from_rider_time_minutes};;
+    value_format_name: decimal_1
+  }
+
   measure: avg_waiting_for_picker_time {
     alias: [avg_reaction_time, avg_picker_queuing_time]
     group_label: "* Operations / Logistics *"
@@ -1772,14 +1828,14 @@ view: orders {
     value_format_name: decimal_1
   }
 
-  measure: avg_rider_queuing_time {
-    alias: [avg_acceptance_time]
+  measure: avg_waiting_for_rider_time {
+    alias: [avg_acceptance_time, avg_rider_queuing_time]
     group_label: "* Operations / Logistics *"
-    label: "AVG Rider Queuing Time"
-    description: "Average time between picking completion and rider having claimed the order."
+    label: "AVG Waiting for Rider Time"
+    description: "Average time between order offered to rider and rider having claimed the order. Outliers excluded (>120min)"
     hidden:  no
     type: average
-    sql:${rider_queuing_time};;
+    sql:${waiting_for_rider_time_minutes};;
     value_format_name: decimal_1
   }
 
@@ -2189,7 +2245,7 @@ view: orders {
     description: "The mean absolute error between actual rider queuing time and estimated rider queuing time"
     hidden:  no
     type: average
-    sql: abs(${rider_queuing_time} - ${estimated_queuing_time_for_rider_minutes});;
+    sql: abs(${waiting_for_rider_time_minutes}+coalesce(${withheld_from_rider_time_minutes}, 0) - ${estimated_queuing_time_for_rider_minutes});;
     value_format_name: decimal_1
   }
 
@@ -2353,9 +2409,19 @@ view: orders {
   measure: sum_refund_gross {
     group_label: "* Monetary Values *"
     label: "SUM Refund (Gross)"
-    description: "Sum of Refunds (Gross). Includes Items, Deposit, Delivery & Storage Fees and Tips Refunds."
+    description: "Sum of Refunds (Gross). Includes Items, Deposit, Total Fees (Delivery, Storage & Late Night) and Tips Refunds."
     hidden:  no
     type: sum
+    sql: ${amt_refund_gross};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: avg_refund_gross {
+    group_label: "* Monetary Values *"
+    label: "AVG Refund (Gross)"
+    description: "Average Refund value (Gross). Includes Items, Deposit, Total Fees (Delivery, Storage & Late Night) and Tips Refunds."
+    hidden:  no
+    type: average
     sql: ${amt_refund_gross};;
     value_format_name: euro_accounting_2_precision
   }
@@ -2363,7 +2429,7 @@ view: orders {
   measure: sum_total_sales_gross {
     group_label: "* Monetary Values *"
     label: "SUM Total Sales (Gross)"
-    description: "Sum of Delivery & Storage Fees and Items Price and Deposit. Excl. Tips, Donations. Before Deduction of any Discount. Incl. VAT"
+    description: "Sum of Total Fees (Delivery, Storage & Late Night) and Items Price and Deposit. Excl. Tips, Donations. Before Deduction of any Discount. Incl. VAT"
     hidden:  no
     type: sum
     sql: ${amt_total_sales_gross};;
@@ -2373,7 +2439,7 @@ view: orders {
   measure: sum_total_sales_excluding_deposit_gross {
     group_label: "* Monetary Values *"
     label: "SUM Total Sales excl. Deposit (Gross)"
-    description: "Sum of Delivery & Storage Fees and Items Price. Excl. Deposit, Tips, Donations. Before Deduction of any Discount. Incl. VAT"
+    description: "Sum of Total Fees (Delivery, Storage & Late Night) and Items Price. Excl. Deposit, Tips, Donations. Before Deduction of any Discount. Incl. VAT"
     hidden:  no
     type: sum
     sql: ${amt_total_sales_excluding_deposit_gross};;
@@ -2383,7 +2449,7 @@ view: orders {
   measure: sum_total_sales_after_discounts_gross {
     group_label: "* Monetary Values *"
     label: "SUM Total Sales After Discount (Gross)"
-    description: "Sum of Delivery & Storage Fees and Items Price and Deposit. Excl. Tips, Donations. After Deduction of Cart and Product Discounts. Incl. VAT"
+    description: "Sum of Total Fees (Delivery, Storage & Late Night) and Items Price and Deposit. Excl. Tips, Donations. After Deduction of Cart and Product Discounts. Incl. VAT"
     hidden:  no
     type: sum
     sql: ${amt_total_sales_after_discount_gross};;
@@ -2393,7 +2459,7 @@ view: orders {
   measure: sum_total_sales_after_discount_and_refund_gross {
     group_label: "* Monetary Values *"
     label: "SUM Total Sales After Discounts & Refunds (Gross)"
-    description: "Sum of Delivery & Storage Fees and Items Price and Deposit. Excl. Tips, Donations. After Deduction of Cart and Product Discounts. After Refunds. Incl. VAT"
+    description: "Sum of Total Fees (Delivery, Storage & Late Night) and Items Price and Deposit. Excl. Tips, Donations. After Deduction of Cart and Product Discounts. After Refunds. Incl. VAT"
     hidden:  no
     type: sum
     sql: ${amt_total_sales_after_discount_and_refund_gross};;
@@ -2403,7 +2469,7 @@ view: orders {
   measure: sum_total_sales_after_discount_and_refund_excluding_deposit_gross {
     group_label: "* Monetary Values *"
     label: "SUM Total Sales After Discounts & Refunds excl. Deposit (Gross)"
-    description: "Sum of Delivery & Storage Fees and Items Price. Excl. Tips, Deposit, Donations. After Deduction of Cart and Product Discounts. After Refunds. Incl. VAT"
+    description: "Sum of Total Fees (Delivery, Storage & Late Night) and Items Price. Excl. Tips, Deposit, Donations. After Deduction of Cart and Product Discounts. After Refunds. Incl. VAT"
     hidden:  no
     type: sum
     sql: ${amt_total_sales_after_discount_and_refund_excluding_deposit_gross};;
@@ -2413,7 +2479,7 @@ view: orders {
   measure: sum_gpv_gross {
     group_label: "* Monetary Values *"
     label: "SUM GPV (Gross)"
-    description: "Actual amount paid by the customer in CT. Sum of Delivery & Storage Fees, Items Price, Tips, Deposit. Excl. Donations. After Deduction of Cart and Product Discounts. Incl. VAT"
+    description: "Actual amount paid by the customer in CT. Sum of Total Fees (Delivery, Storage & Late Night), Items Price, Tips, Deposit. Excl. Donations. After Deduction of Cart and Product Discounts. Incl. VAT"
     hidden:  no
     type: sum
     sql: ${amt_gpv_gross};;
@@ -2423,7 +2489,7 @@ view: orders {
   measure: sum_npv_gross {
     group_label: "* Monetary Values *"
     label: "SUM NPV (Gross)"
-    description: "Net Payment Value. Actual amount paid by the customer in CT after Refunds. Sum of Delivery & Storage Fees, Items Price, Tips, Deposit. Excl. Donations. After Deduction of Cart and Product Discounts. Incl. VAT"
+    description: "Net Payment Value. Actual amount paid by the customer in CT after Refunds. Sum of Total Fees (Delivery, Storage & Late Night), Items Price, Tips, Deposit. Excl. Donations. After Deduction of Cart and Product Discounts. Incl. VAT"
     hidden:  no
     type: sum
     sql: ${amt_npv_gross};;
@@ -2477,14 +2543,14 @@ view: orders {
   }
 
 
-  measure: sum_avg_queuing_time {
-    alias: [sum_avg_acceptance_reaction_time]
+  measure: sum_avg_waiting_time {
+    alias: [sum_avg_acceptance_reaction_time, sum_avg_queuing_time]
     group_label: "* Operations / Logistics *"
-    label: "AVG Waiting For Picker Time + Rider Queuing Time"
+    label: "AVG Waiting For Picker Time + Waiting for Rider Time"
     description: "Sum of the average of rider queuing time and the average of waiting for picker time"
     hidden:  no
     type: number
-    sql:${avg_rider_queuing_time} + ${avg_waiting_for_picker_time};;
+    sql:${avg_waiting_for_rider_time} + ${avg_waiting_for_picker_time};;
     value_format_name: decimal_1
   }
 
@@ -2617,6 +2683,16 @@ view: orders {
     ]
   }
 
+  measure: cnt_external_orders {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# External Orders"
+    description: "Count of External orders (orders placed via marketplace integrations like Wolt, UberEats, etc.)"
+    type: count_distinct
+    sql: ${order_uuid} ;;
+    value_format: "0"
+    filters: [is_external_order: "yes"]
+  }
+
   measure: cnt_click_and_collect_orders {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
     label: "# Click & Collect Orders"
@@ -2640,23 +2716,9 @@ view: orders {
     sql: ${order_uuid} ;;
     value_format: "0"
     filters: [
-      external_provider: "ubereats",
+      external_provider: "uber-eats, uber-eats-carrefour",
       is_successful_order: "yes"
       ]
-  }
-
-  measure: cnt_external_orders {
-    group_label: "* Basic Counts (Orders / Customers etc.) *"
-    label: "# External Orders"
-    description: "Count of External Orders"
-    hidden:  yes
-    type: count_distinct
-    sql: ${order_uuid} ;;
-    value_format: "0"
-    filters: [
-      is_external_order: "yes",
-      is_successful_order: "yes"
-    ]
   }
 
   measure: cnt_orders_with_discount_cart {
@@ -2842,51 +2904,91 @@ view: orders {
     value_format_name: euro_accounting_2_precision
   }
 
-  ##### Total Fees #####
+############### LATE NIGHT FEES ################
+
+  measure: sum_amt_late_night_fee_gross {
+    group_label: "* Monetary Values *"
+    label: "SUM Late Night Fees (Gross)"
+    description: "Gross amount of late night fees applied to orders placed after a given hour. Incl. VAT"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_late_night_fee_gross} ;;
+  }
+
+  measure: sum_amt_late_night_fee_net {
+    group_label: "* Monetary Values *"
+    label: "SUM Late Night Fees (Net)"
+    description: "Net amount of late night fees applied to orders placed after a given hour. Incl. VAT"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_late_night_fee_net} ;;
+  }
+
+  measure: avg_late_night_fee_gross {
+    group_label: "* Monetary Values *"
+    label: "AVG Late Night Fee (Gross)"
+    description: "Average value of Late Night Fees (Gross, incl. VAT) per order. Considering all orders."
+    type: average
+    sql: ${amt_late_night_fee_gross};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: avg_late_night_fee_net {
+    group_label: "* Monetary Values *"
+    label: "AVG Late Night Fee (Net)"
+    description: "Average value of Late Night Fees (Net, excl. VAT) per order. Considering all orders."
+    type: average
+    sql: ${amt_late_night_fee_net};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: number_of_orders_with_late_night_fee {
+    group_label:  "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Orders with Late Night Fee"
+    description: "Number of orders for which late night fee applied."
+    type: count_distinct
+    sql: ${order_uuid};;
+    filters: [amt_late_night_fee_gross: ">0"]
+  }
+
+  ##### TOTAL FEES #####
 
   measure: sum_total_fees_gross {
-
     alias: [sum_total_fees]
-
     group_label: "* Monetary Values *"
     label: "SUM Total Fees (Gross)"
-    description: "Sum of Delivery Fees (Gross) and Storage Fees (Gross)"
-
+    description: "Sum of Delivery Fees (Gross), Storage Fees (Gross) and Late Night Fees (Gross)"
     type: number
-    sql: ${sum_delivery_fee_gross} + ${sum_amt_storage_fee_gross};;
+    sql: ${sum_delivery_fee_gross} + ${sum_amt_storage_fee_gross} + ${sum_amt_late_night_fee_gross};;
     value_format_name: euro_accounting_2_precision
   }
 
   measure: avg_total_fees_gross {
     group_label: "* Monetary Values *"
     label: "AVG Total Fees (Gross)"
-    description: "Average value of Delivery Fees (Gross) + Storage Fees (Gross)"
-
+    description: "Average value of Delivery Fees (Gross) + Storage Fees (Gross) + and Late Night Fees (Gross)"
     type: average
-    sql: (${shipping_price_gross_amount} + ${amt_storage_fee_gross}) ;;
+    sql: (${shipping_price_gross_amount} + ${amt_storage_fee_gross} + ${amt_late_night_fee_gross}) ;;
     value_format_name: euro_accounting_2_precision
   }
 
   measure: sum_total_fees_net {
     group_label: "* Monetary Values *"
     label: "SUM Total Fees (Net)"
-    description: "Sum of Delivery Fees (Net) and Storage Fees (Net)"
-
+    description: "Sum of Delivery Fees (Net), Storage Fees (Net) and Late Night Fees (Net)"
     type: number
-    sql: ${sum_delivery_fee_net} + ${sum_amt_storage_fee_net};;
+    sql: ${sum_delivery_fee_net} + ${sum_amt_storage_fee_net} + ${sum_amt_late_night_fee_net};;
     value_format_name: euro_accounting_2_precision
   }
 
   measure: avg_total_fees_net {
     group_label: "* Monetary Values *"
     label: "AVG Total Fees (Net)"
-    description: "Average value of Delivery Fees (Net) + Storage Fees (Net)"
-
+    description: "Average value of Delivery Fees (Net) + Storage Fees (Net) + Late Night Fees (Net)"
     type: average
-    sql: (${shipping_price_net_amount} + ${amt_storage_fee_net});;
+    sql: ${shipping_price_net_amount} + ${amt_storage_fee_net} + coalesce(${amt_late_night_fee_net},0);;
     value_format_name: euro_accounting_2_precision
   }
-
 
 ########### CRF FEES MEASURES ##########
 
@@ -3230,6 +3332,16 @@ view: orders {
   ################
   ## PERCENTAGE ##
   ################
+
+  measure: share_of_external_orders {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "% External Orders"
+    description: "Share of External orders over total number of orders"
+    hidden:  no
+    type: number
+    sql: ${cnt_external_orders} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0.0%"
+  }
 
   measure: pct_acquisition_share {
     group_label: "* Marketing *"
@@ -3597,10 +3709,17 @@ view: orders {
     Computed as the number of orders, divided by the number of hubs, divided by the number of open days, over the selected timeframe."
     type: number
     sql: (${cnt_orders}/NULLIF(${cnt_unique_hubs},0))/ NULLIF(${cnt_unique_date},0);;
-
     value_format_name:decimal_2
   }
 
+  measure: avg_daily_orders{
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "AVG # Daily Orders"
+    description: "AVG number of daily orders.
+    Computed as the number of orders divided by the number of open days, over the selected timeframe."
+    type: number
+    sql: (${cnt_orders})/ NULLIF(${cnt_unique_date},0);;
+  }
 
   measure: pct_delivery_time_estimate_critical_over_estimation {
     group_label: "* Operations / Logistics *"

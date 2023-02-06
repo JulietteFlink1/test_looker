@@ -16,7 +16,16 @@ include: "/**/event_order_progressed.view.lkml"
 include: "/**/event_order_state_updated.view.lkml"
 include: "/**/event_container_assigned.view.lkml"
 include: "/**/event_container_assignment_skipped.view.lkml"
-include: "/**/picking_times.view.lkml"
+include: "/**/event_login_completed.view.lkml"
+include: "/**/event_logout_completed.view.lkml"
+include: "/**/hub_one_picking_times.view.lkml"
+include: "/**/event_stock_check_started.view.lkml"
+include: "/**/event_stock_check_finished.view.lkml"
+include: "/**/event_stock_correction_started.view.lkml"
+include: "/**/event_stock_correction_finished.view.lkml"
+include: "/**/event_inbound_state_updated.view.lkml"
+include: "/**/event_inbound_progressed.view.lkml"
+include: "/**/event_outbound_progressed.view.lkml"
 include: "/product_consumer/views/bigquery_reporting/daily_violations_aggregates.view.lkml"
 include: "/**/daily_smart_inventory_checks.view"
 
@@ -25,11 +34,12 @@ explore: daily_hub_staff_events {
   view_name: daily_hub_staff_events
   hidden: no
 
-  label: "Daily Hub Staff Events"
+  label: "Daily Hub One Events"
   description: "This explore provides an overview of all behavioural events generated on Hub One.
     This explore is built on front-end data, and is subset to the limitations of front-end tracking.
-    We can not, and do not, expect 100% accuracy compared to the Orders & Order Line Items explores.
-    We consider the Orders Explore to be the source of truth."
+    We can not, and do not, expect 100% accuracy compared to the back-end based explores such as Orders,
+    Orders & Lineitems or Inbound Outbound Kpi Report.
+    We consider the back-end based Explores to be the source of truth."
   group_label: "Product - Hub Tech"
 
 
@@ -64,7 +74,7 @@ explore: daily_hub_staff_events {
 
   join: event_order_state_updated {
     view_label: "3 Event: Order State Updated"
-    fields: [to_include_dimensions*, to_include_measures*]
+    fields: [to_include_set*]
     sql_on: ${event_order_state_updated.event_uuid} = ${daily_hub_staff_events.event_uuid}
       and {% condition global_filters_and_parameters.datasource_filter %}
         ${event_order_state_updated.event_timestamp_date} {% endcondition %};;
@@ -73,11 +83,12 @@ explore: daily_hub_staff_events {
   }
 
 #Coalesce in the join is to be able to see times and quantities processed at order_id and sku level
-  join: picking_times {
+  join: hub_one_picking_times {
     view_label: "3 Event: Order State Updated"
-    sql_on: ${picking_times.order_id} = coalesce(${event_order_state_updated.order_id},${event_order_progressed.order_id})
+    fields: [to_include_set*]
+    sql_on: ${hub_one_picking_times.order_id} = coalesce(${event_order_state_updated.order_id},${event_order_progressed.order_id})
       and {% condition global_filters_and_parameters.datasource_filter %}
-        ${picking_times.event_timestamp_date} {% endcondition %};;
+        ${hub_one_picking_times.event_date} {% endcondition %};;
     type: left_outer
     relationship: one_to_one
   }
@@ -102,8 +113,98 @@ explore: daily_hub_staff_events {
     relationship: one_to_one
   }
 
+  join: event_login_completed {
+    view_label: "5 Login/Logout Completed"
+    fields: [to_include_set*]
+    sql_on: ${event_login_completed.event_uuid} = ${daily_hub_staff_events.event_uuid}
+      and {% condition global_filters_and_parameters.datasource_filter %}
+        ${event_login_completed.event_timestamp_date} {% endcondition %};;
+    type: left_outer
+    relationship: one_to_one
+  }
+
+  join: event_logout_completed {
+    view_label: "5 Login/Logout Completed"
+    fields: [to_include_set*]
+    sql_on: ${event_logout_completed.event_uuid} = ${daily_hub_staff_events.event_uuid}
+      and {% condition global_filters_and_parameters.datasource_filter %}
+        ${event_logout_completed.event_timestamp_date} {% endcondition %};;
+    type: left_outer
+    relationship: one_to_one
+  }
+
+  join: event_stock_check_started {
+    view_label: "6 Stock Check Started/ Finished"
+    fields: [to_include_set*]
+    sql_on: ${event_stock_check_started.event_uuid} = ${daily_hub_staff_events.event_uuid}
+      and {% condition global_filters_and_parameters.datasource_filter %}
+        ${event_stock_check_started.event_timestamp_date} {% endcondition %};;
+    type: left_outer
+    relationship: one_to_one
+  }
+
+  join: event_stock_check_finished {
+    view_label: "6 Stock Check Started/ Finished"
+    fields: [to_include_set*]
+    sql_on: ${event_stock_check_finished.event_uuid} = ${daily_hub_staff_events.event_uuid}
+      and {% condition global_filters_and_parameters.datasource_filter %}
+        ${event_stock_check_finished.event_timestamp_date} {% endcondition %};;
+    type: left_outer
+    relationship: one_to_one
+  }
+
+  join: event_stock_correction_started {
+    view_label: "6 Stock Correction Started/ Finished"
+    fields: [to_include_set*]
+    sql_on: ${event_stock_correction_started.event_uuid} = ${daily_hub_staff_events.event_uuid}
+      and {% condition global_filters_and_parameters.datasource_filter %}
+        ${event_stock_correction_started.event_timestamp_date} {% endcondition %};;
+    type: left_outer
+    relationship: one_to_one
+  }
+
+  join: event_stock_correction_finished {
+    view_label: "6 Stock Correction Started/ Finished"
+    fields: [to_include_set*]
+    sql_on: ${event_stock_correction_finished.event_uuid} = ${daily_hub_staff_events.event_uuid}
+      and {% condition global_filters_and_parameters.datasource_filter %}
+        ${event_stock_correction_finished.event_timestamp_date} {% endcondition %};;
+    type: left_outer
+    relationship: one_to_one
+  }
+
+  join: event_inbound_state_updated {
+    view_label: "7 Event: Inbound State Updated"
+    fields: [to_include_dimensions*]
+    sql_on: ${event_inbound_state_updated.event_uuid} = ${daily_hub_staff_events.event_uuid}
+      and {% condition global_filters_and_parameters.datasource_filter %}
+        ${event_inbound_state_updated.event_timestamp_date} {% endcondition %};;
+    type: left_outer
+    relationship: one_to_one
+  }
+
+  join: event_inbound_progressed {
+    view_label: "8 Event: Inbound/ Outbound Progressed"
+    fields: [to_include_set*]
+    sql_on: ${event_inbound_progressed.event_uuid} = ${daily_hub_staff_events.event_uuid}
+      and {% condition global_filters_and_parameters.datasource_filter %}
+        ${event_inbound_progressed.event_timestamp_date} {% endcondition %};;
+    type: left_outer
+    relationship: one_to_one
+  }
+
+  join: event_outbound_progressed {
+    view_label: "8 Event: Inbound/ Outbound Progressed"
+    fields: [to_include_set*]
+    sql_on: ${event_outbound_progressed.event_uuid} = ${daily_hub_staff_events.event_uuid}
+      and {% condition global_filters_and_parameters.datasource_filter %}
+        ${event_outbound_progressed.event_timestamp_date} {% endcondition %};;
+    type: left_outer
+    relationship: one_to_one
+  }
+
   join: products {
-    view_label: "5 Product Dimensions"
+    view_label: "9 Product Dimensions"
     fields: [product_name, category, subcategory, erp_category, erp_subcategory]
     sql_on: ${products.product_sku} = ${event_order_progressed.product_sku};;
     type: left_outer
@@ -111,14 +212,14 @@ explore: daily_hub_staff_events {
   }
 
   join: hubs_ct {
-      view_label: "6 Hub Dimensions"
+      view_label: "9 Hub Dimensions"
       sql_on: ${daily_hub_staff_events.hub_code} = ${hubs_ct.hub_code} ;;
       type: left_outer
       relationship: many_to_one
     }
 
   join: employee_level_kpis {
-    view_label: "7 Employee Attributes"
+    view_label: "9 Employee Attributes"
     fields: [ employee_level_kpis.number_of_worked_hours
             , employee_level_kpis.number_of_assigned_hours
             , employee_level_kpis.number_of_no_show_hours]
@@ -130,7 +231,7 @@ explore: daily_hub_staff_events {
   }
 
   join: orders {
-    view_label: "8 Order Dimensions"
+    view_label: "9 Order Dimensions"
     fields: [ is_external_order
             , order_picker_accepted_timestamp
             , order_packed_timestamp
@@ -141,7 +242,7 @@ explore: daily_hub_staff_events {
   }
 
   join: daily_violations_aggregates {
-    view_label: "9 Event: Violation Generated" ##to unhide change the label to: Event: Violation Generated
+    view_label: "91 Event: Violation Generated" ##to unhide change the label to: Event: Violation Generated
     fields: [daily_violations_aggregates.violated_event_name , daily_violations_aggregates.number_of_violations]
     sql_on: ${daily_hub_staff_events.event_text} = ${daily_violations_aggregates.violated_event_name}
           and ${daily_hub_staff_events.event_date}=${daily_violations_aggregates.event_date}
@@ -153,10 +254,10 @@ explore: daily_hub_staff_events {
   }
 
   join: daily_smart_inventory_checks {
-    view_label: "91 Smart Inventory Checks"
+    view_label: "92 Smart Inventory Checks"
     sql_on: ${daily_smart_inventory_checks.scheduled_date} = ${daily_hub_staff_events.event_date}
           and ${daily_smart_inventory_checks.hub_code}=${daily_hub_staff_events.hub_code}
-          and ${daily_smart_inventory_checks.sku}=${event_order_progressed.product_sku}
+          and ${daily_smart_inventory_checks.table_uuid}=${event_stock_check_finished.check_id}
           and {% condition global_filters_and_parameters.datasource_filter %}
             ${daily_smart_inventory_checks.scheduled_date} {% endcondition %};;
     type: left_outer

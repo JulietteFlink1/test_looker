@@ -8,6 +8,7 @@ include: "/**/hub_monthly_orders.view"
 include: "/**/global_filters_and_parameters.view"
 include: "/commercial/views/bigquery_curated/hub_demographics.view"
 include: "/**/shipping_methods_ct.view"
+include: "/**/hub_attributes.view"
 
 
 explore: orders_cl {
@@ -46,6 +47,16 @@ explore: orders_cl {
     from: hubs_ct
     view_label: "Hubs"
     sql_on: lower(${orders_cl.hub_code}) = ${hubs.hub_code} ;;
+    relationship: many_to_one
+    type: left_outer
+  }
+
+  # Hub Attributes
+  join: hub_attributes {
+    from: hub_attributes
+    view_label: "Hubs"
+    sql_on:
+    lower(${orders_cl.hub_code}) = lower(${hub_attributes.hub_code}) ;;
     relationship: many_to_one
     type: left_outer
   }
@@ -122,5 +133,6 @@ explore: orders_cl {
     type: left_outer
     fields: [shipping_methods_ct.orders_df_fields*]
   }
+
 
 }
