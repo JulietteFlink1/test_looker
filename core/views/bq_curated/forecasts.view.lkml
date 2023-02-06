@@ -498,21 +498,21 @@ view: forecasts {
     value_format_name: decimal_0
   }
 
-  measure: share_of_cancelled_orders_over_flink_delivered_orders{
+  measure: pct_cancelled_orders{
     group_label: "> Order Measures"
     label: "% Cancelled Orders"
     description: "Cancelled orders (cancelled due to operational reasons only) divided by Flink Delivered orders, percentage."
     type: number
-    sql: ${number_of_cancelled_orders}/${orders_with_ops_metrics.number_of_unique_flink_delivered_orders} ;;
+    sql: ${number_of_cancelled_orders}/nullif(${orders_with_ops_metrics.number_of_unique_flink_delivered_orders},0) ;;
     value_format_name: percent_2
   }
 
-  measure: share_of_missed_orders_over_flink_delivered_orders{
+  measure: pct_missed_orders{
     group_label: "> Order Measures"
     label: "% Missed Orders"
     description: "Missed orders divided by Flink Delivered orders, percentage."
     type: number
-    sql: ${number_of_missed_orders}/${orders_with_ops_metrics.number_of_unique_flink_delivered_orders} ;;
+    sql: ${number_of_missed_orders}/nullif(${orders_with_ops_metrics.number_of_unique_flink_delivered_orders},0) ;;
     value_format_name: percent_2
   }
 
@@ -526,12 +526,12 @@ view: forecasts {
     value_format_name: decimal_0
   }
 
-  measure: share_of_missed_orders_forced_closure_over_flink_delivered_orders{
+  measure: pct_missed_orders_forced_closure{
     group_label: "> Order Measures"
     label: "% Missed Orders - Forced Closure"
     description: "Missed orders (forced closure) divided by Flink Delivered orders, percentage. over Flink Delivered orders."
     type: number
-    sql: ${number_of_missed_orders_forced_closure}/${orders_with_ops_metrics.number_of_unique_flink_delivered_orders} ;;
+    sql: ${number_of_missed_orders_forced_closure}/nullif(${orders_with_ops_metrics.number_of_unique_flink_delivered_orders},0) ;;
     value_format_name: percent_2
   }
 
@@ -545,12 +545,12 @@ view: forecasts {
     value_format_name: decimal_0
   }
 
-  measure: share_of_missed_orders_planned_closure_over_flink_delivered_orders{
+  measure: pct_missed_orders_planned_closure{
     group_label: "> Order Measures"
     label: "% Missed Orders - Planned Closure"
     description: "Missed orders (planned closure) divided by Flink Delivered orders, percentage."
     type: number
-    sql: ${number_of_missed_orders_planned_closure}/${orders_with_ops_metrics.number_of_unique_flink_delivered_orders} ;;
+    sql: ${number_of_missed_orders_planned_closure}/nullif(${orders_with_ops_metrics.number_of_unique_flink_delivered_orders},0) ;;
     value_format_name: percent_2
   }
 
@@ -669,7 +669,7 @@ view: forecasts {
     value_format_name: percent_1
   }
 
-  measure: share_of_order_forecast_deviation_from_actual_successful_flink_delivered_orders {
+  measure: pct_order_forecast_deviation_from_actual_successful_flink_delivered_orders {
     group_label: "> Order Measures"
     label: "% Successful Flink Delivered Order Deviation"
     description: "The degree of how far # Forecasted orders is from # Successful Flink Delivered orders in the given period. Formula: (# Successful Last mile Orders / # Forecasted Orders) -1"
@@ -688,7 +688,7 @@ view: forecasts {
     value_format_name: percent_1
   }
 
-  measure: share_of_order_forecast_deviation_from_actual_successful_flink_delivered_orders_adjusted {
+  measure: pct_order_forecast_deviation_from_actual_successful_flink_delivered_orders_adjusted {
     group_label: "> Order Measures"
     label: "% Adjusted Order Forecast Deviation (Successful Flink Delivered Orders)"
     description: "The degree of how far # Forecasted orders (Incl. Airtable Adjustments) is from # Successful Flink Delivered orders in the given period. Formula: (# Successful Last MileOrders / # Forecasted Orders (Incl. Adjustments)) - 1"
@@ -734,7 +734,7 @@ view: forecasts {
     value_format_name: percent_1
   }
 
-  measure: share_of_forecasted_hours_deviation_from_punched_hours_adjusted {
+  measure: pct_forecasted_hours_deviation_from_punched_hours_adjusted {
     group_label: "> Dynamic Measures"
     label: "% Adjusted Punched Hours Deviation"
     description: "The degree of how far # Forecasted Hours (Incl. Airtable Adjustments) is from # Punched Hours in the given period. Formula: (# Punched Hours / # Forecasted Hours) - 1"
@@ -743,7 +743,7 @@ view: forecasts {
     value_format_name: percent_1
   }
 
-  measure: share_of_forecasted_hours_deviation_from_ec_scheduled_hours_adjusted {
+  measure: pct_forecasted_hours_deviation_from_ec_scheduled_hours_adjusted {
     group_label: "> Dynamic Measures"
     label: "% Adjusted EC Scheduled Hours Deviation"
     description: "The degree of how far # Forecasted Hours (Incl. Airtable Adjustments) is from # Scheduled EC Hours in the given period. Formula: (# Scheduled EC Hours / # Forecasted Hours) - 1"
@@ -752,7 +752,7 @@ view: forecasts {
     value_format_name: percent_1
   }
 
-  measure: share_of_forecasted_hours_deviation_from_wfs_scheduled_hours_adjusted {
+  measure: pct_forecasted_hours_deviation_from_wfs_scheduled_hours_adjusted {
     group_label: "> Dynamic Measures"
     label: "% Adjusted WFS Scheduled Hours Deviation"
     description: "The degree of how far # Forecasted Hours (Incl. Airtable Adjustments) is from # Scheduled WFS Hours in the given period. Formula: (# Scheduled WFS Hours / # Forecasted Hours) - 1"
@@ -761,7 +761,7 @@ view: forecasts {
     value_format_name: percent_1
   }
 
-  measure: share_of_forecasted_hours_deviation_from_ns_scheduled_hours_adjusted {
+  measure: pct_forecasted_hours_deviation_from_ns_scheduled_hours_adjusted {
     group_label: "> Dynamic Measures"
     label: "% Adjusted NS+ Scheduled Hours Deviation"
     description: "The degree of how far # Forecasted Hours (Incl. Airtable Adjustments) is from # Scheduled NS+ Hours in the given period. Formula: (# Scheduled NS+ Hours / # Forecasted Hours) - 1"
@@ -770,7 +770,7 @@ view: forecasts {
     value_format_name: percent_1
   }
 
-  measure: share_of_forecasted_hours_deviation_from_extra_scheduled_hours_adjusted {
+  measure: pct_forecasted_hours_deviation_from_extra_scheduled_hours_adjusted {
     group_label: "> Dynamic Measures"
     label: "% Adjusted Extra Scheduled Hours Deviation"
     description: "The degree of how far # Forecasted Hours (Incl. Airtable Adjustments) is from # Scheduled Extra Hours (WFS, EC, NS+) in the given period. Formula: (# Scheduled Extra Hours / # Forecasted Hours) - 1"
@@ -779,7 +779,7 @@ view: forecasts {
     value_format_name: percent_1
   }
 
-  measure: share_of_forecasted_hours_deviation_from_unknown_scheduled_hours_adjusted {
+  measure: pct_forecasted_hours_deviation_from_unknown_scheduled_hours_adjusted {
     group_label: "> Dynamic Measures"
     label: "% Adjusted Unknown Scheduled Hours Deviation"
     description: "The degree of how far # Forecasted Hours (Incl. Airtable Adjustments) is from # Unknown Scheduled Hours (# Scheduled Hours - # Scheduled Extra Hours) in the given period. Formula: ((# Scheduled Hours - # Scheduled Extra Hours) / # Forecasted Hours) - 1"
