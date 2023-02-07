@@ -482,7 +482,7 @@ view: forecasts {
   measure: delta_forecast_vs_delivered{
     group_label: "> Order Measures"
     label: "Delta Forecasted vs Last Mile Orders"
-    description: "The difference between the number of Flink Delivered orders and Adjusted Forecasted orders"
+    description: "The difference between the number of Flink Delivered orders and Adjusted Forecasted orders."
     type: number
     sql: ${orders_with_ops_metrics.number_of_unique_flink_delivered_orders}-${number_of_forecasted_orders_adjusted} ;;
     value_format_name: decimal_0
@@ -529,7 +529,7 @@ view: forecasts {
   measure: pct_missed_orders_forced_closure{
     group_label: "> Order Measures"
     label: "% Missed Orders - Forced Closure"
-    description: "Missed orders (forced closure) divided by Flink Delivered orders, percentage"
+    description: "Missed orders (forced closure) divided by Flink Delivered orders, percentage."
     type: number
     sql: ${number_of_missed_orders_forced_closure}/nullif(${orders_with_ops_metrics.number_of_unique_flink_delivered_orders},0) ;;
     value_format_name: percent_2
@@ -663,7 +663,7 @@ view: forecasts {
   measure: pct_forecast_deviation {
     group_label: "> Order Measures"
     label: "% Order Forecast Deviation"
-    description: "The degree of how far # Forecasted orders is from # Actual orders (Forecast-related) in the given period. Formula: (# Actual Orders (Forecast-related) / # Forecasted Orders) -1"
+    description: "The degree of how far # Forecasted orders is from # Actual orders (Forecast-related) in the given period. Formula: (# Actual Orders (Forecast-related) / # Forecasted Orders) - 1"
     type: number
     sql: (${number_of_actual_orders}/nullif(${number_of_forecasted_orders},0))-1 ;;
     value_format_name: percent_1
@@ -672,7 +672,7 @@ view: forecasts {
   measure: pct_order_forecast_deviation_from_actual_successful_flink_delivered_orders {
     group_label: "> Order Measures"
     label: "% Successful Flink Delivered Order Deviation"
-    description: "The degree of how far # Forecasted orders is from # Successful Flink Delivered orders in the given period. Formula: (# Successful Last mile Orders / # Forecasted Orders) -1"
+    description: "The degree of how far # Forecasted orders is from # Successful Flink Delivered orders in the given period. Formula: (# Successful Last mile Orders / # Forecasted Orders) - 1"
     type: number
     sql: (${orders_with_ops_metrics.number_of_unique_flink_delivered_orders}/nullif(${number_of_forecasted_orders},0))-1 ;;
     value_format_name: percent_1
@@ -682,7 +682,7 @@ view: forecasts {
     alias: [pct_adjusted_forecast_deviation]
     group_label: "> Order Measures"
     label: "% Adjusted Order Forecast Deviation"
-    description: "The degree of how far # Forecasted orders (Incl. Airtable Adjustments) is from # Actual Orders in the given period. Formula: (# Actual Orders / # Forecasted Orders (Incl. Adjustments)) -1"
+    description: "The degree of how far # Forecasted orders (Incl. Airtable Adjustments) is from # Actual Orders in the given period. Formula: (# Actual Orders / # Forecasted Orders (Incl. Adjustments)) - 1"
     type: number
     sql: (${number_of_actual_orders}/nullif(${number_of_forecasted_orders_adjusted},0))-1 ;;
     value_format_name: percent_1
@@ -923,7 +923,7 @@ view: forecasts {
   measure: wmape_orders {
     group_label: "> Forecasting error"
     label: "wMAPE - Orders"
-    description: "Summed Absolute Difference of orders per hub per 30 min timeslot/ # Actual Orders"
+    description: "Summed Absolute Difference of orders per hub per 30 min timeslot/ # Actual Orders."
     type: number
     sql: ${summed_absolute_error}/nullif(${number_of_actual_orders},0);;
     value_format_name: percent_2
@@ -946,7 +946,7 @@ view: forecasts {
   measure: wmape_orders_adjusted {
     group_label: "> Forecasting error"
     label: "wMAPE - Adjusted Orders"
-    description: "Summed Absolute Difference of orders per hub per 30 min timeslot/ # Actual Orders"
+    description: "Summed Absolute Difference of orders per hub per 30 min timeslot/ # Actual Orders."
     type: number
     sql: ${summed_absolute_error_adjusted}/nullif(${number_of_actual_orders},0);;
     value_format_name: percent_2
