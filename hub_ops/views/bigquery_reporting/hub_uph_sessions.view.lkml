@@ -1,3 +1,8 @@
+## Owner: Justine Grammatikas
+## This model provides information on a session/employee granularity, and contains hubs productivity and time metrics.
+## Confluence doc: https://goflink.atlassian.net/wiki/spaces/DATA/pages/505643011/UPH+Metrics
+
+
 view: hub_uph_sessions {
   sql_table_name: `flink-data-dev.dbt_jgrammatikas_reporting.hub_uph_sessions`
     ;;
