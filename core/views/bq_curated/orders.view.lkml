@@ -2416,6 +2416,16 @@ view: orders {
     value_format_name: euro_accounting_2_precision
   }
 
+  measure: avg_refund_gross {
+    group_label: "* Monetary Values *"
+    label: "AVG Refund (Gross)"
+    description: "Average Refund value (Gross). Includes Items, Deposit, Total Fees (Delivery, Storage & Late Night) and Tips Refunds."
+    hidden:  no
+    type: average
+    sql: ${amt_refund_gross};;
+    value_format_name: euro_accounting_2_precision
+  }
+
   measure: sum_total_sales_gross {
     group_label: "* Monetary Values *"
     label: "SUM Total Sales (Gross)"
@@ -2673,6 +2683,16 @@ view: orders {
     ]
   }
 
+  measure: cnt_external_orders {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# External Orders"
+    description: "Count of External orders (orders placed via marketplace integrations like Wolt, UberEats, etc.)"
+    type: count_distinct
+    sql: ${order_uuid} ;;
+    value_format: "0"
+    filters: [is_external_order: "yes"]
+  }
+
   measure: cnt_click_and_collect_orders {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
     label: "# Click & Collect Orders"
@@ -2699,20 +2719,6 @@ view: orders {
       external_provider: "uber-eats, uber-eats-carrefour",
       is_successful_order: "yes"
       ]
-  }
-
-  measure: cnt_external_orders {
-    group_label: "* Basic Counts (Orders / Customers etc.) *"
-    label: "# External Orders"
-    description: "Count of External Orders"
-    hidden:  yes
-    type: count_distinct
-    sql: ${order_uuid} ;;
-    value_format: "0"
-    filters: [
-      is_external_order: "yes",
-      is_successful_order: "yes"
-    ]
   }
 
   measure: cnt_orders_with_discount_cart {
@@ -2943,15 +2949,6 @@ view: orders {
     type: count_distinct
     sql: ${order_uuid};;
     filters: [amt_late_night_fee_gross: ">0"]
-  }
-
-  measure: number_of_succesful_non_external_orders {
-    label: "# Non External Orders"
-    description: "Number of succesful orders that do not come through an external provider."
-    hidden: yes
-    type: count_distinct
-    sql: ${order_uuid};;
-    filters: [is_external_order: "no", is_successful_order: "yes"]
   }
 
   ##### TOTAL FEES #####
@@ -3335,6 +3332,16 @@ view: orders {
   ################
   ## PERCENTAGE ##
   ################
+
+  measure: share_of_external_orders {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "% External Orders"
+    description: "Share of External orders over total number of orders"
+    hidden:  no
+    type: number
+    sql: ${cnt_external_orders} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0.0%"
+  }
 
   measure: pct_acquisition_share {
     group_label: "* Marketing *"

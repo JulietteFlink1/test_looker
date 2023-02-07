@@ -599,7 +599,7 @@ view: forecasts {
 
   measure: pct_forecast_deviation_no_show {
     group_label: "> Dynamic Measures"
-    label: "% No Show Hours Deviation"
+    label: "% No Show Hours Deviation (Excl. EC Shift)"
     description: "The degree of how far # Forecasted No Show Hours is from # Actual No Show Hours in the given period. Formula:  (# Actual No Show Hours / # Forecasted No Show Hours) - 1"
     type: number
     sql: (${ops.number_of_no_show_hours_by_position}/nullif(${number_of_no_show_hours_by_position},0)) - 1 ;;
@@ -608,7 +608,7 @@ view: forecasts {
 
   measure: pct_forecast_deviation_no_show_adjusted {
     group_label: "> Dynamic Measures"
-    label: "% Adjusted No Show Hours Deviation"
+    label: "% Adjusted No Show Hours Deviation (Excl. EC Shift)"
     description: "The degree of how far # Adjusted Forecasted No Show Hours (Incl. Airtable Adjustments) is from # Actual No Show Hours in the given period. Formula:  (# Actual No Show Hours / # Forecasted No Show Hours) - 1"
     type: number
     sql: (${ops.number_of_no_show_hours_by_position}/nullif(${number_of_no_show_hours_by_position_adjusted},0)) - 1 ;;
@@ -654,7 +654,7 @@ view: forecasts {
 
   measure: pct_forecast_deviation_hours {
     group_label: "> Dynamic Measures"
-    label: "% Scheduled Hours Forecast Deviation"
+    label: "% Scheduled Hours Forecast Deviation (Incl. EC Shift)"
     description: "The degree of how far # Forecasted Hours is from # Scheduled Hours in the given period. Formula: (# Scheduled Hours / # Forecasted Hours) - 1"
     type: number
     sql: (${ops.number_of_scheduled_hours_by_position}/nullif(${number_of_forecasted_hours_by_position},0)) - 1 ;;
@@ -663,10 +663,19 @@ view: forecasts {
 
   measure: pct_forecast_deviation_hours_adjusted {
     group_label: "> Dynamic Measures"
-    label: "% Adjusted Scheduled Hours Forecast Deviation"
+    label: "% Adjusted Scheduled Hours Forecast Deviation (Incl. EC Shift)"
     description: "The degree of how far # Forecasted Hours (Incl. Airtable Adjustments) is from # Scheduled Hours in the given period. Formula: (# Scheduled Hours / # Forecasted Hours) - 1"
     type: number
     sql: (${ops.number_of_scheduled_hours_by_position}/nullif(${number_of_forecasted_hours_by_position_adjusted},0)) - 1 ;;
+    value_format_name: percent_1
+  }
+
+  measure: pct_forecast_deviation_hours_adjusted_excl_ec {
+    group_label: "> Dynamic Measures"
+    label: "% Adjusted Scheduled Hours Forecast Deviation (Excl. EC Shifts Hours)"
+    description: "The degree of how far # Forecasted Hours (Incl. Airtable Adjustments) is from # Scheduled Hours (Excl. EC shift hours ) in the given period. Formula: ((# Scheduled Hours - # Scheduled EC Shift Hours) / # Forecasted Hours) - 1"
+    type: number
+    sql: ((${ops.number_of_scheduled_hours_by_position}-${ops.number_of_scheduled_hours_by_position_ec_shift})/nullif(${number_of_forecasted_hours_by_position_adjusted},0)) - 1 ;;
     value_format_name: percent_1
   }
 

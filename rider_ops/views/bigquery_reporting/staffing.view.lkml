@@ -1307,6 +1307,35 @@ view: staffing {
     hidden: yes
   }
 
+  dimension: number_of_worked_minutes_deputy_shift_lead {
+    label: "# Worked Shift Lead Minutes"
+    type: number
+    sql: ${TABLE}.number_of_worked_minutes_deputy_shift_lead ;;
+    hidden: yes
+  }
+
+  dimension: number_of_planned_minutes_deputy_shift_lead {
+    label: "# Filled (Assigned) Shift Lead Minutes"
+    type: number
+    sql: ${TABLE}.number_of_planned_minutes_deputy_shift_lead ;;
+    hidden: yes
+  }
+
+  dimension: number_of_worked_minutes_ops_associate_dimension {
+    label: "# Punched Ops Associate Minutes"
+    type: number
+    sql: ${TABLE}.number_of_worked_minutes_ops_associate ;;
+    hidden: yes
+  }
+
+  dimension: number_of_planned_minutes_ops_associate_dimension {
+    label: "# Filled (Assigned) Ops Associate Minutes"
+    type: number
+    sql: ${TABLE}.number_of_planned_minutes_ops_associate ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
   dimension: number_of_deleted_excused_no_show_minutes_shift_lead {
     label: "# Deleted Excused Shift Lead No Show Hours (included in No show metric)"
     type: number
@@ -1372,15 +1401,33 @@ view: staffing {
     hidden: yes
   }
 
-  measure: count {
-    type: count
-    drill_fields: []
+  dimension: number_of_worked_minutes_hub_staff {
+    label: "# Punched Hub Staff Minutes"
+    description: "# Punched Ops Associate Hours (Picker, WH, Ops Associate, Rider Captain and Deputy Shift Lead) + # Planned Shift Lead hours"
+    type: number
+    sql: ${number_of_worked_minutes_ops_associate_dimension}+${number_of_worked_minutes_shift_lead}+${number_of_worked_minutes_deputy_shift_lead};;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  dimension: number_of_planned_minutes_hub_staff {
+    label: "# Filled (Assigned) Hub Staff Minutes"
+    description: "# Filled (Assigned) Ops Associate Hours (Picker, WH, Ops Associate, Rider Captain and Deputy Shift Lead) + # Planned Shift Lead hours"
+    type: number
+    sql: ${number_of_planned_minutes_ops_associate_dimension}+${number_of_planned_minutes_shift_lead}+${number_of_planned_minutes_deputy_shift_lead};;
+    value_format_name: decimal_1
     hidden: yes
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  measure: count {
+    type: count
+    drill_fields: []
+    hidden: yes
+  }
 
 ###### Ops Associate
 
@@ -1846,7 +1893,7 @@ view: staffing {
   measure: number_of_scheduled_hours_deputy_shift_lead {
     group_label: "> Deputy Shift Lead Measures"
     label: "# Scheduled Deputy Shift Lead Hours"
-    description: "# Scheduled Deputy Shift Lead Hours (Post-Adjustments) (Assigned + Unassigned)"
+    description: "# Scheduled Deputy Shift Lead Hours (Assigned + Unassigned)"
     type: number
     sql: ${number_of_unassigned_hours_deputy_shift_lead}+${number_of_planned_hours_deputy_shift_lead};;
     value_format_name: decimal_1
@@ -1855,7 +1902,7 @@ view: staffing {
   measure: number_of_scheduled_hours_external_deputy_shift_lead {
     group_label: "> Deputy Shift Lead Measures"
     label: "# External Scheduled Deputy Shift Lead Hours"
-    description: "# External Scheduled Deputy Shift Lead Hours (Post-Adjustments) (Assigned + Unassigned)"
+    description: "# External Scheduled Deputy Shift Lead Hours (Assigned + Unassigned)"
     type: number
     sql: (${number_of_unassigned_hours_external_deputy_shift_lead}+${number_of_planned_hours_external_deputy_shift_lead})/60;;
     value_format_name: decimal_1
@@ -1863,13 +1910,159 @@ view: staffing {
 
   measure: pct_no_show_hours_deputy_shift_lead {
     group_label: "> Deputy Shift Lead Measures"
-    label: "% No Show Shift Lead Hours"
+    label: "% No Show Shift Lead Hours (# No Show Hours / (# Planned Hours - # Planned EC Hours))"
     type: number
-    sql:(${number_of_no_show_hours_deputy_shift_lead})/nullif(${number_of_planned_hours_deputy_shift_lead},0) ;;
+    sql:(${number_of_no_show_hours_deputy_shift_lead})/nullif(${number_of_planned_hours_deputy_shift_lead}-${number_of_planned_hours_deputy_shift_lead_ec_shift},0) ;;
     value_format_name: percent_1
   }
 
   # =========  Hours   =========
+
+  ##### Overpunched Hours
+
+  measure: number_of_overpunched_hours_rider {
+    group_label: "> Rider Measures"
+    type: sum
+    label: "# Overpunched Rider Hours"
+    sql: case
+          when ${number_of_worked_minutes_rider} > ${number_of_planned_minutes_rider}
+            then (${number_of_worked_minutes_rider} - ${number_of_planned_minutes_rider})/60
+          else 0
+        end;;
+    description: "When # Worked Hours > # Assigned Hours then # Worked Hours - # Assigned Hours"
+    value_format_name: decimal_1
+  }
+
+  measure: pct_overpunched_hours_rider {
+    group_label: "> Rider Measures"
+    type: number
+    label: "% Overpunched Rider Hours"
+    description: "Share of Overpunched hours over Punched hours."
+    value_format_name: percent_2
+    sql: ${number_of_overpunched_hours_rider}/${number_of_worked_hours_rider} ;;
+  }
+
+  measure: number_of_overpunched_hours_picker {
+    group_label: "> Picker Measures"
+    type: sum
+    label: "# Overpunched Picker Hours"
+    sql: case
+        when ${number_of_worked_minutes_picker} > ${number_of_planned_minutes_picker}
+          then (${number_of_worked_minutes_picker} - ${number_of_planned_minutes_picker})/60
+        else 0
+      end;;
+    description: "When # Worked Hours > # Assigned Hours then # Worked Hours - # Assigned Hours"
+    value_format_name: decimal_1
+  }
+
+  measure: pct_overpunched_hours_picker {
+    group_label: "> Picker Measures"
+    type: number
+    label: "% Overpunched Picker Hours"
+    description: "Share of Overpunched hours over Punched hours."
+    value_format_name: percent_2
+    sql: ${number_of_overpunched_hours_picker}/${number_of_worked_hours_picker} ;;
+  }
+
+  measure: number_of_overpunched_hours_shift_lead {
+    group_label: "> Shift Lead Measures"
+    type: sum
+    label: "# Overpunched Shift Lead Hours"
+    sql: case
+        when ${number_of_worked_minutes_shift_lead} > ${number_of_planned_minutes_shift_lead}
+          then (${number_of_worked_minutes_shift_lead} - ${number_of_planned_minutes_shift_lead})/60
+        else 0
+      end;;
+    description: "When # Worked Hours > # Assigned Hours then # Worked Hours - # Assigned Hours"
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_overpunched_hours_rider_captain {
+    group_label: "> Rider Captain Measures"
+    type: sum
+    label: "# Overpunched Rider Captain Hours"
+    sql: case
+        when ${number_of_worked_minutes_rider_captain} > ${number_of_planned_minutes_rider_captain}
+          then (${number_of_worked_minutes_rider_captain} - ${number_of_planned_minutes_rider_captain})/60
+        else 0
+      end;;
+    description: "When # Worked Hours > # Assigned Hours then # Worked Hours - # Assigned Hours"
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_overpunched_hours_co_ops {
+    group_label: "> Co Ops Measures"
+    type: sum
+    label: "# Overpunched Co Ops Hours"
+    sql: case
+        when ${number_of_worked_minutes_co_ops} > ${number_of_planned_minutes_co_ops}
+          then (${number_of_worked_minutes_co_ops} - ${number_of_planned_minutes_co_ops})/60
+        else 0
+      end;;
+    description: "When # Worked Hours > # Assigned Hours then # Worked Hours - # Assigned Hours"
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_overpunched_hours_wh {
+    group_label: "> WH Measures"
+    type: sum
+    label: "# Overpunched WH Hours"
+    sql: case
+        when ${number_of_worked_minutes_wh} > ${number_of_planned_minutes_wh}
+          then (${number_of_worked_minutes_wh} - ${number_of_planned_minutes_wh})/60
+        else 0
+      end;;
+    description: "When # Worked Hours > # Assigned Hours then # Worked Hours - # Assigned Hours"
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_overpunched_hours_ops_associate {
+    group_label: "> Ops Associate Measures"
+    type: sum
+    label: "# Overpunched Ops Associate Hours"
+    sql: case
+        when ${number_of_worked_minutes_ops_associate_dimension} > ${number_of_planned_minutes_ops_associate_dimension}
+          then (${number_of_worked_minutes_ops_associate_dimension} - ${number_of_planned_minutes_ops_associate_dimension})/60
+        else 0
+      end;;
+    description: "When # Worked Hours > # Assigned Hours then # Worked Hours - # Assigned Hours"
+    value_format_name: decimal_1
+  }
+
+  measure: pct_overpunched_hours_ops_associate {
+    group_label: "> Ops Associate Measures"
+    type: number
+    label: "% Overpunched Ops Associate Hours"
+    description: "Share of Overpunched hours over Punched hours."
+    value_format_name: percent_2
+    sql: ${number_of_overpunched_hours_ops_associate}/${number_of_worked_hours_ops_associate} ;;
+  }
+
+  measure: number_of_overpunched_hours_hub_staff {
+    group_label: "> Hub Staff Measures"
+    type: sum
+    label: "# Overpunched Hub Staff Hours"
+    sql: case
+        when ${number_of_worked_minutes_hub_staff} > ${number_of_planned_minutes_hub_staff}
+          then (${number_of_worked_minutes_hub_staff} - ${number_of_planned_minutes_hub_staff})/60
+        else 0
+      end;;
+    description: "When # Worked Hours > # Assigned Hours then # Worked Hours - # Assigned Hours"
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_overpunched_hours_deputy_shift_lead {
+    group_label: "> Deputy Shift Lead Measures"
+    type: sum
+    label: "# Overpunched Deputy Shift Lead Hours"
+    sql: case
+        when ${number_of_worked_minutes_deputy_shift_lead} > ${number_of_planned_minutes_deputy_shift_lead}
+          then (${number_of_worked_minutes_deputy_shift_lead} - ${number_of_planned_minutes_deputy_shift_lead})/60
+        else 0
+      end;;
+    description: "When # Worked Hours > # Assigned Hours then # Worked Hours - # Assigned Hours"
+    value_format_name: decimal_1
+  }
 
   ##### All
   measure: number_of_worked_hours_rider {
@@ -1877,6 +2070,15 @@ view: staffing {
     label: "# Punched Rider Hours"
     type: sum
     sql: ${number_of_worked_minutes_rider}/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_worked_hours_onboarding {
+    group_label: "> Rider Measures"
+    label: "# Punched Onboarding Hours"
+    description: "The sum of worked hours with position name Onboarding. Included in Rider UTR calculations."
+    type: sum
+    sql: ${TABLE}.number_of_worked_minutes_onboarding/60;;
     value_format_name: decimal_1
   }
 
@@ -1904,6 +2106,15 @@ view: staffing {
     description: "# Punched Rider Hours from shifts with project code = 'NS+ shift'"
     type: sum
     sql: ${TABLE}.number_of_worked_minutes_ns_shift_rider/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_worked_hours_rider_extra {
+    group_label: "> Rider Measures"
+    label: "# Extra Punched Rider Hours (EC, NS+, WFS)"
+    description: "# Punched Rider Hours from shifts with project code NS+. WFS and EC shifts"
+    type: number
+    sql: ${number_of_worked_hours_rider_ns_shift} + ${number_of_worked_hours_rider_ec_shift} + ${number_of_worked_hours_rider_wfs_shift};;
     value_format_name: decimal_1
   }
 
@@ -1997,6 +2208,15 @@ view: staffing {
     description: "# Punched Ops Associate Hours from shifts with project code = 'NS+ shift'"
     type: sum
     sql: ${TABLE}.number_of_worked_minutes_ns_shift_ops_associate/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_worked_hours_ops_associate_extra {
+    group_label: "> Ops Associate Measures"
+    label: "# Extra Punched Ops Associate Hours (EC, NS+, WFS)"
+    description: "# Punched Ops Associate Hours from shifts with project code NS+. WFS and EC shifts"
+    type: number
+    sql: ${number_of_worked_hours_ops_associate_ns_shift} + ${number_of_worked_hours_ops_associate_ec_shift} + ${number_of_worked_hours_ops_associate_wfs_shift};;
     value_format_name: decimal_1
   }
 
@@ -2446,6 +2666,15 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  measure: number_of_unassigned_hours_picker_ec_shift {
+    group_label: "> Picker Measures"
+    label: "# Open EC Picker Hours"
+    description: "# Open Picker Hours from shifts with project code = 'EC shift'"
+    type: sum
+    sql: ${TABLE}.number_of_unassigned_minutes_ec_shift_picker/60;;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_unassigned_hours_rider_wfs_shift {
     group_label: "> Rider Measures"
     label: "# Open WFS Rider Hours"
@@ -2576,6 +2805,15 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  measure: number_of_planned_hours_deputy_shift_lead_ec_shift {
+    group_label: "> Deputy Shift Lead Measures"
+    label: "# Filled (Assigned) EC Deputy Shift Lead Hours"
+    description: "# Filled Deputy Shift Lead Hours from shifts with project code = 'EC shift'"
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_ec_shift_deputy_shift_lead/60;;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_planned_hours_ops_associate_wfs_shift {
     group_label: "> Ops Associate Measures"
     label: "# Filled (Assigned) WFS Ops Associate Hours"
@@ -2700,6 +2938,15 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  measure: number_of_planned_hours_picker_ec_shift {
+    group_label: "> Picker Measures"
+    label: "# Filled (Assigned) EC Picker Hours"
+    description: "# Filled Picker Hours from shifts with project code = 'EC shift'"
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_ec_shift_picker/60;;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_planned_hours_availability_based_picker {
     group_label: "> Picker Measures"
     label: "# Filled (Assigned) Picker Hours Based on Availability"
@@ -2753,6 +3000,15 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  measure: number_of_planned_hours_shift_lead_ec_shift {
+    group_label: "> Shift Lead Measures"
+    label: "# Filled (Assigned) EC Shift Lead Hours"
+    description: "# Filled Shift Lead Hours from shifts with project code = 'EC shift'"
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_ec_shift_shift_lead/60;;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_planned_hours_availability_based_shift_lead {
     group_label: "> Shift Lead Measures"
     label: "# Filled (Assigned) Shift Lead Hours Based on Availability"
@@ -2803,6 +3059,15 @@ view: staffing {
     label: "# Filled (Assigned) Rider Captain Hours"
     type: sum
     sql: ${number_of_planned_minutes_rider_captain}/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_planned_hours_rider_captain_ec_shift {
+    group_label: "> Rider Captain Measures"
+    label: "# Filled (Assigned) EC Rider Captain Hours"
+    description: "# Filled Rider Captain Hours from shifts with project code = 'EC shift'"
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_ec_shift_rider_captain/60;;
     value_format_name: decimal_1
   }
 
@@ -2860,6 +3125,15 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  measure: number_of_planned_hours_co_ops_ec_shift {
+    group_label: "> Co Ops Measures"
+    label: "# Filled (Assigned) EC Co Ops Hours"
+    description: "# Filled Co Ops Hours from shifts with project code = 'EC shift'"
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_ec_shift_co_ops/60;;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_planned_hours_availability_based_co_ops {
     group_label: "> Co Ops Measures"
     label: "# Filled (Assigned) Co Ops Hours Based on Availability"
@@ -2910,6 +3184,15 @@ view: staffing {
     label: "# Filled (Assigned) WH Hours"
     type: sum
     sql: ${number_of_planned_minutes_wh}/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_planned_hours_wh_ec_shift {
+    group_label: "> WH Measures"
+    label: "# Filled (Assigned) EC WH Hours"
+    description: "# Filled WH Hours from shifts with project code = 'EC shift'"
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_ec_shift_wh/60;;
     value_format_name: decimal_1
   }
 
@@ -2974,12 +3257,22 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  measure: number_of_planned_hours_hub_staff_ec_shift {
+    group_label: "> Hub Staff Measures"
+    label: "# Filled (Assigned) EC Hub Staff Hours"
+    description: "# Filled Hub Staff Hours from shifts with project code = 'EC shift'"
+    type: number
+    sql: ${number_of_planned_hours_ops_associate_ec_shift} + ${number_of_planned_hours_shift_lead_ec_shift}
+      + ${number_of_planned_hours_deputy_shift_lead_ec_shift};;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_planned_hours_availability_based_hub_staff {
     group_label: "> Hub Staff Measures"
     label: "# Filled (Assigned) Hub Staff Hours Based on Availability"
     type: sum
     sql: (${TABLE}.number_of_planned_minutes_availability_based_ops_associate +
-    ${TABLE}.number_of_planned_minutes_availability_based_shift_lead + ${TABLE}.number_of_planned_minutes_availability_based_deputy_shift_lead)/60;;
+      ${TABLE}.number_of_planned_minutes_availability_based_shift_lead + ${TABLE}.number_of_planned_minutes_availability_based_deputy_shift_lead)/60;;
     description:"Number of filled (Assigned) hours that are overlapping with provided availability (Hub Staff)"
     value_format_name: decimal_1
   }
@@ -2998,7 +3291,7 @@ view: staffing {
     label: "# Filled (Assigned) External Hub Staff Hours Based on Availability"
     type: sum
     sql: (${TABLE}.number_of_planned_minutes_availability_based_external_ops_associate +
-    ${TABLE}.number_of_planned_minutes_availability_based_external_shift_lead + ${TABLE}.number_of_planned_minutes_availability_based_external_deputy_shift_lead)/60;;
+      ${TABLE}.number_of_planned_minutes_availability_based_external_shift_lead + ${TABLE}.number_of_planned_minutes_availability_based_external_deputy_shift_lead)/60;;
     description:"Number of filled (Assigned) hours that are overlapping with provided availability (External Hub Staff)"
     value_format_name: decimal_1
   }
@@ -3008,7 +3301,7 @@ view: staffing {
     label: "# Filled (Assigned) Internal Hub Staff Hours Based on Availability"
     type: sum
     sql: (${TABLE}.number_of_planned_minutes_availability_based_internal_ops_associate +
-    ${TABLE}.number_of_planned_minutes_availability_based_internal_shift_lead + ${TABLE}.number_of_planned_minutes_availability_based_internal_deputy_shift_lead)/60;;
+      ${TABLE}.number_of_planned_minutes_availability_based_internal_shift_lead + ${TABLE}.number_of_planned_minutes_availability_based_internal_deputy_shift_lead)/60;;
     description:"Number of filled (Assigned) hours that are overlapping with provided availability (Internal Hub Staff)"
     value_format_name: decimal_1
   }
@@ -3018,36 +3311,66 @@ view: staffing {
     label: "# Hub Staff Availability Hours"
     type: sum
     sql: (${TABLE}.number_of_availability_minutes_ops_associate +
-    ${TABLE}.number_of_availability_minutes_shift_lead + ${TABLE}.number_of_availability_minutes_deputy_shift_lead)/60;;
+      ${TABLE}.number_of_availability_minutes_shift_lead + ${TABLE}.number_of_availability_minutes_deputy_shift_lead)/60;;
     description:"Number of hours that were provided as available by the employee (Hub Staff)"
     value_format_name: decimal_1
   }
 
   # =========  Scheduled Hours (Post-adjustments)   =========
   ##### All
+
   measure: number_of_scheduled_hours_rider {
     group_label: "> Rider Measures"
     label: "# Scheduled Rider Hours"
-    description: "# Scheduled Rider Hours (Post-Adjustments) (Assigned + Unassigned)"
+    description: "# Scheduled Rider Hours (Assigned + Unassigned)"
     type: number
     sql: ${number_of_unassigned_hours_rider}+${number_of_planned_hours_rider};;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_scheduled_hours_rider_ec_shift {
+    group_label: "> Rider Measures"
+    label: "# Scheduled EC Rider Hours"
+    description: "# Scheduled Rider Hours (Assigned + Unassigned EC shift hours)"
+    type: number
+    sql: ${number_of_unassigned_hours_rider_ec_shift}+${number_of_planned_hours_rider_ec_shift};;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_scheduled_hours_rider_extra {
+    group_label: "> Rider Measures"
+    label: "# Extra Scheduled Rider Hours (EC, NS, WFS)"
+    description: "# Extra Scheduled Rider Hours  (Assigned + Unassigned EC, NS+ and WFS shift hours)"
+    type: number
+    sql: (${number_of_unassigned_hours_rider_ec_shift} + ${number_of_unassigned_hours_rider_ns_shift} + ${number_of_unassigned_hours_rider_wfs_shift})
+      + (${number_of_planned_hours_rider_ec_shift} + ${number_of_planned_hours_rider_ns_shift} + ${number_of_planned_hours_rider_wfs_shift});;
     value_format_name: decimal_1
   }
 
   measure: number_of_scheduled_hours_picker {
     group_label: "> Picker Measures"
     label: "# Scheduled Picker Hours"
-    description: "# Scheduled Picker Hours (Post-Adjustments) (Assigned + Unassigned)"
+    description: "# Scheduled Picker Hours  (Assigned + Unassigned)"
     type: number
     # sql_distinct_key: ${staffing_uuid} ;;
     sql: ${number_of_unassigned_hours_picker}+${number_of_planned_hours_picker};;
     value_format_name: decimal_1
   }
 
+  measure: number_of_scheduled_hours_picker_ec_shift {
+    group_label: "> Picker Measures"
+    label: "# Scheduled EC Picker Hours"
+    description: "# Scheduled Picker Hours  (Assigned + Unassigned EC shift hours)"
+    type: number
+    # sql_distinct_key: ${staffing_uuid} ;;
+    sql: ${number_of_unassigned_hours_picker_ec_shift}+${number_of_planned_hours_picker_ec_shift};;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_scheduled_hours_shift_lead {
     group_label: "> Shift Lead Measures"
     label: "# Scheduled Shift Lead Hours"
-    description: "# Scheduled Shift Lead Hours (Post-Adjustments) (Assigned + Unassigned)"
+    description: "# Scheduled Shift Lead Hours  (Assigned + Unassigned)"
     type: number
     sql: ${number_of_unassigned_hours_shift_lead}+${number_of_planned_hours_shift_lead};;
     value_format_name: decimal_1
@@ -3055,7 +3378,7 @@ view: staffing {
   measure: number_of_scheduled_hours_rider_captain {
     group_label: "> Rider Captain Measures"
     label: "# Scheduled Rider Captain Hours"
-    description: "# Scheduled Rider Captain Hours (Post-Adjustments) (Assigned + Unassigned)"
+    description: "# Scheduled Rider Captain Hours  (Assigned + Unassigned)"
     type: number
     sql: ${number_of_unassigned_hours_rider_captain}+${number_of_planned_hours_rider_captain};;
     value_format_name: decimal_1
@@ -3063,7 +3386,7 @@ view: staffing {
   measure: number_of_scheduled_hours_co_ops {
     group_label: "> Co Ops Measures"
     label: "# Scheduled Co Ops Employee Hours"
-    description: "# Scheduled Co Opsn Hours (Post-Adjustments) (Assigned + Unassigned)"
+    description: "# Scheduled Co Opsn Hours  (Assigned + Unassigned)"
     type: number
     sql: ${number_of_unassigned_hours_co_ops}+${number_of_planned_hours_co_ops};;
     value_format_name: decimal_1
@@ -3075,7 +3398,7 @@ view: staffing {
     type: number
     # sql_distinct_key: ${staffing_uuid} ;;
     sql: ${number_of_unassigned_hours_wh}+${number_of_planned_hours_wh};;
-    description: "# Scheduled WH Hours (Post-Adjustments) (Assigned + Unassigned)"
+    description: "# Scheduled WH Hours  (Assigned + Unassigned)"
     value_format_name: decimal_1
   }
 
@@ -3086,6 +3409,7 @@ view: staffing {
     sql: ${number_of_unassigned_hours_cc_agent}+${number_of_planned_hours_cc_agent};;
     value_format_name: decimal_1
   }
+
   measure: number_of_scheduled_hours_hub_staff {
     group_label: "> Hub Staff Measures"
     label: "# Scheduled Hub Staff Hours"
@@ -3094,6 +3418,7 @@ view: staffing {
     sql: ${number_of_scheduled_hours_ops_associate}+${number_of_scheduled_hours_shift_lead}+${number_of_scheduled_hours_deputy_shift_lead};;
     value_format_name: decimal_1
   }
+
   measure: number_of_scheduled_hours_ops_associate {
     alias: [number_of_scheduled_hours_ops_staff]
     group_label: "> Ops Associate Measures"
@@ -3103,12 +3428,32 @@ view: staffing {
     sql: ${number_of_unassigned_hours_ops_associate}+${number_of_planned_hours_ops_associate};;
     value_format_name: decimal_1
   }
+
+  measure: number_of_scheduled_hours_ops_associate_ec_shift {
+    group_label: "> Ops Associate Measures"
+    label: "# Scheduled EC Ops Associate Hours"
+    description: "# Scheduled Ops Associate Hours (Picker, WH, Rider Captain, Ops Associate) (Assigned + Unassigned EC Shift Hours)"
+    type: number
+    sql: ${number_of_unassigned_hours_ops_associate_ec_shift}+${number_of_planned_hours_ops_associate_ec_shift};;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_scheduled_hours_ops_associate_extra {
+    group_label: "> Ops Associate Measures"
+    label: "# Extra Scheduled Ops Associate Hours (EC, NS, WFS)"
+    description: "# Extra Scheduled Ops Associate Hours  (Assigned + Unassigned EC, NS+ and WFS hours)"
+    type: number
+    sql: (${number_of_unassigned_hours_ops_associate_ec_shift} + ${number_of_unassigned_hours_ops_associate_ns_shift} + ${number_of_unassigned_hours_ops_associate_wfs_shift})
+      + (${number_of_planned_hours_ops_associate_ec_shift} + ${number_of_planned_hours_ops_associate_ns_shift} + ${number_of_planned_hours_ops_associate_wfs_shift});;
+    value_format_name: decimal_1
+  }
+
   ##### External
 
   measure: number_of_scheduled_hours_external_rider {
     group_label: "> Rider Measures"
     label: "# External Scheduled Rider Hours"
-    description: "# External Scheduled Rider Hours (Post-Adjustments) (Assigned + Unassigned)"
+    description: "# External Scheduled Rider Hours  (Assigned + Unassigned)"
     type: sum
     sql: (${number_of_unassigned_minutes_external_rider}+${number_of_planned_minutes_external_rider})/60;;
     value_format_name: decimal_1
@@ -3118,7 +3463,7 @@ view: staffing {
     alias: [number_of_scheduled_hours_external_ops_staff]
     group_label: "> Ops Associate Measures"
     label: "# External Scheduled Ops Associate Hours"
-    description: "# External Scheduled Ops Associate Hours (Post-Adjustments) (Assigned + Unassigned) (Picker, WH, Rider Captain, Ops Associate)"
+    description: "# External Scheduled Ops Associate Hours  (Assigned + Unassigned) (Picker, WH, Rider Captain, Ops Associate)"
     type: number
     sql: (${number_of_unassigned_minutes_external_ops_associate}+${number_of_planned_minutes_external_ops_associate})/60;;
     value_format_name: decimal_1
@@ -3127,7 +3472,7 @@ view: staffing {
   measure: number_of_scheduled_hours_external_picker {
     group_label: "> Picker Measures"
     label: "# External Scheduled Picker Hours"
-    description: "# External Scheduled Picker Hours (Post-Adjustments) (Assigned + Unassigned)"
+    description: "# External Scheduled Picker Hours  (Assigned + Unassigned)"
     type: sum
     sql: (${number_of_unassigned_minutes_external_picker}+${number_of_planned_minutes_external_picker})/60;;
     value_format_name: decimal_1
@@ -3136,7 +3481,7 @@ view: staffing {
   measure: number_of_scheduled_hours_external_shift_lead {
     group_label: "> Shift Lead Measures"
     label: "# External Scheduled Shift Lead Hours"
-    description: "# External Scheduled Shift Lead Hours (Post-Adjustments) (Assigned + Unassigned)"
+    description: "# External Scheduled Shift Lead Hours  (Assigned + Unassigned)"
     type: sum
     sql: (${number_of_unassigned_minutes_external_shift_lead}+${number_of_planned_minutes_external_shift_lead})/60;;
     value_format_name: decimal_1
@@ -3144,7 +3489,7 @@ view: staffing {
   measure: number_of_scheduled_hours_external_rider_captain {
     group_label: "> Rider Captain Measures"
     label: "# External Scheduled Rider Captain Hours"
-    description: "# External Scheduled Rider Captain Hours (Post-Adjustments) (Assigned + Unassigned)"
+    description: "# External Scheduled Rider Captain Hours  (Assigned + Unassigned)"
     type: sum
     sql: (${number_of_unassigned_minutes_external_rider_captain}+${number_of_planned_minutes_external_rider_captain})/60;;
     value_format_name: decimal_1
@@ -3152,7 +3497,7 @@ view: staffing {
   measure: number_of_scheduled_hours_external_co_ops {
     group_label: "> Co Ops Measures"
     label: "# External Scheduled Co Ops Employee Hours"
-    description: "# External Scheduled Co Ops Employee Hours (Post-Adjustments) (Assigned + Unassigned)"
+    description: "# External Scheduled Co Ops Employee Hours  (Assigned + Unassigned)"
     type: sum
     sql: (${number_of_unassigned_minutes_external_co_ops}+${number_of_planned_minutes_external_co_ops})/60;;
     value_format_name: decimal_1
@@ -3161,7 +3506,7 @@ view: staffing {
   measure: number_of_scheduled_hours_external_wh {
     group_label: "> WH Measures"
     label: "# External Scheduled WH Employee Hours"
-    description: "# External Scheduled WH Employee Hours (Post-Adjustments) (Assigned + Unassigned)"
+    description: "# External Scheduled WH Employee Hours  (Assigned + Unassigned)"
     type: sum
     sql: (${number_of_unassigned_minutes_external_wh}+${number_of_planned_minutes_external_wh})/60;;
     value_format_name: decimal_1
@@ -3170,7 +3515,7 @@ view: staffing {
   measure: number_of_scheduled_hours_external_cc_agent {
     group_label: "> CC Agent Measures"
     label: "# External Scheduled CC Agent Hours"
-    description: "# External Scheduled CC Agent Hours (Post-Adjustments) (Assigned + Unassigned)"
+    description: "# External Scheduled CC Agent Hours  (Assigned + Unassigned)"
     type: sum
     sql: (${number_of_unassigned_minutes_external_cc_agent}+${number_of_planned_minutes_external_cc_agent})/60;;
     value_format_name: decimal_1
@@ -3217,6 +3562,15 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  measure: number_of_no_show_hours_ops_associate_incl_ec_shift {
+    group_label: "> Ops Associate Measures"
+    label: "# No Show Ops Associate Hours (Incl. EC Shift)"
+    description: "# No Show Rider Hours including EC shifts"
+    type: number
+    sql: ${number_of_no_show_hours_ops_associate}+${number_of_no_show_hours_ops_associate_ec_shift};;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_no_show_hours_rider {
     group_label: "> Rider Measures"
     label: "# No Show Rider Hours"
@@ -3234,6 +3588,15 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  measure: number_of_no_show_hours_rider_incl_ec_shift {
+    group_label: "> Rider Measures"
+    label: "# No Show Rider Hours (Incl. EC Shift)"
+    description: "# No Show Rider Hours including EC shifts"
+    type: number
+    sql: ${number_of_no_show_hours_rider}+${number_of_no_show_hours_rider_ec_shift};;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_no_show_hours_rider_wfs_shift {
     group_label: "> Rider Measures"
     label: "# No Show WFS Rider Hours"
@@ -3245,7 +3608,7 @@ view: staffing {
 
   measure: number_of_no_show_hours_rider_ns_shift {
     group_label: "> Rider Measures"
-    label: "# No Show NS Rider Hours"
+    label: "# No Show NS+ Rider Hours"
     description: "# No Show Rider Hours from shifts with project code = 'NS+ shift'"
     type: sum
     sql: ${TABLE}.number_of_no_show_minutes_ns_shift_rider/60;;
@@ -3272,7 +3635,7 @@ view: staffing {
 
   measure: number_of_no_show_hours_ops_associate_ns_shift {
     group_label: "> Ops Associate Measures"
-    label: "# No Show NS Ops Associate Hours"
+    label: "# No Show NS+ Ops Associate Hours"
     description: "# No Show Ops Associate Hours from shifts with project code = 'NS+ shift'"
     type: sum
     sql: ${TABLE}.number_of_no_show_minutes_ns_shift_ops_associate/60;;
@@ -3663,81 +4026,136 @@ view: staffing {
   measure: pct_no_show_hours_rider {
     group_label: "> Rider Measures"
     label: "% No Show Rider Hours"
+    description: "# No Show Hours / (# Planned Hours - # Planned EC Hours)"
     type: number
-    sql:(${number_of_no_show_hours_rider})/nullif(${number_of_planned_hours_rider},0) ;;
+    sql:(${number_of_no_show_hours_rider})/nullif(${number_of_planned_hours_rider}-${number_of_planned_hours_rider_ec_shift},0) ;;
+    value_format_name: percent_1
+  }
+
+  measure: pct_no_show_hours_rider_incl_ec_shift {
+    group_label: "> Rider Measures"
+    label: "% No Show Rider Hours (Incl. EC Shifts)"
+    description: " (# No Show Hours + # EC No Show Hours) / # Planned Hours"
+    type: number
+    sql:(${number_of_no_show_hours_rider}+${number_of_no_show_hours_rider_ec_shift})/nullif(${number_of_planned_hours_rider},0) ;;
+    value_format_name: percent_1
+  }
+
+  measure: pct_no_show_hours_rider_ec_shift {
+    group_label: "> Rider Measures"
+    label: "% No Show EC Rider Hours"
+    description: "# EC No Show Hours / # Planned EC Hours"
+    type: number
+    sql:(${number_of_no_show_hours_rider_ec_shift})/nullif(${number_of_planned_hours_rider_ec_shift},0) ;;
     value_format_name: percent_1
   }
 
   measure: pct_no_show_hours_picker {
     group_label: "> Picker Measures"
     label: "% No Show Picker Hours"
-    sql:(${number_of_no_show_hours_picker})/nullif(${number_of_planned_hours_picker},0) ;;
+    description: "# No Show Hours / (# Planned Hours - # Planned EC Hours)"
+    sql:(${number_of_no_show_hours_picker})/nullif(${number_of_planned_hours_picker}-${number_of_planned_hours_picker_ec_shift},0) ;;
     value_format_name: percent_1
   }
 
   measure: pct_no_show_hours_shift_lead {
     group_label: "> Shift Lead Measures"
     label: "% No Show Shift Lead Hours"
+    description: "# No Show Hours / (# Planned Hours - # Planned EC Hours)"
     type: number
-    sql:(${number_of_no_show_hours_shift_lead})/nullif(${number_of_planned_hours_shift_lead},0) ;;
+    sql:(${number_of_no_show_hours_shift_lead})/nullif(${number_of_planned_hours_shift_lead}-${number_of_planned_hours_deputy_shift_lead_ec_shift},0) ;;
     value_format_name: percent_1
   }
   measure: pct_no_show_hours_rider_captain {
     group_label: "> Rider Captain Measures"
     label: "% No Show Rider Captain Hours"
+    description: "# No Show Hours / (# Planned Hours - # Planned EC Hours)"
     type: number
-    sql:(${number_of_no_show_hours_rider_captain})/nullif(${number_of_planned_hours_rider_captain},0) ;;
+    sql:(${number_of_no_show_hours_rider_captain})/nullif(${number_of_planned_hours_rider_captain}-${number_of_planned_hours_rider_captain_ec_shift},0) ;;
     value_format_name: percent_1
   }
+
   measure: pct_no_show_hours_co_ops {
     group_label: "> Co Ops Measures"
     label: "% No Show Co Ops Hours"
+    description: "# No Show Hours / (# Planned Hours - # Planned EC Hours)"
     type: number
-    sql:(${number_of_no_show_hours_co_ops})/nullif(${number_of_planned_hours_co_ops},0) ;;
+    sql:(${number_of_no_show_hours_co_ops})/nullif(${number_of_planned_hours_co_ops}-${number_of_planned_hours_co_ops_ec_shift},0) ;;
     value_format_name: percent_1
   }
 
   measure: pct_no_show_hours_wh {
     group_label: "> WH Measures"
     label: "% No Show WH Hours"
-    sql:(${number_of_no_show_hours_wh})/nullif(${number_of_planned_hours_wh},0) ;;
+    description: "# No Show Hours / (# Planned Hours - # Planned EC Hours)"
+    sql:(${number_of_no_show_hours_wh})/nullif(${number_of_planned_hours_wh}-${number_of_planned_hours_wh_ec_shift},0) ;;
     value_format_name: percent_1
   }
 
   measure: pct_no_show_hours_cc_agent {
     group_label: "> CC Agent Measures"
     label: "% No Show CC Agent Hours"
+    description: "# No Show Hours / (# Planned Hours - # Planned EC Hours)"
     type: number
     sql:(${number_of_no_show_hours_cc_agent})/nullif(${number_of_planned_hours_cc_agent},0) ;;
     value_format_name: percent_1
+    hidden: yes
   }
   measure: pct_no_show_hours_hub_staff {
     group_label: "> Hub Staff Measures"
     label: "% No Show Hub Staff Hours"
-    description: "% No Show Hub Staff Hours (Picker, WH, Rider Captain, Ops Associate, Shift Lead, Deputy Shift Lead)"
+    description: "% No Show Hub Staff Hours (Picker, WH, Rider Captain, Ops Associate, Shift Lead, Deputy Shift Lead) (# No Show Hours / (# Planned Hours - # Planned EC Hours)"
     type: number
-    sql:(${number_of_no_show_hours_hub_staff})/nullif(${number_of_planned_hours_hub_staff},0) ;;
+    sql:(${number_of_no_show_hours_hub_staff})/nullif(${number_of_planned_hours_hub_staff}-${number_of_planned_hours_hub_staff_ec_shift},0) ;;
     value_format_name: percent_1
   }
   measure: pct_no_show_hours_ops_associate {
     alias: [pct_no_show_hours_ops_staff]
     group_label: "> Ops Associate Measures"
     label: "% No Show Ops Associate Hours"
-    description: "% No Show Ops Associate Hours (Picker, WH, Rider Captain, Ops Associate)"
+    description: "% No Show Ops Associate Hours (Picker, WH, Rider Captain, Ops Associate) (# No Show Hours / (# Planned Hours - # Planned EC Hours) "
     type: number
-    sql:(${number_of_no_show_hours_ops_associate})/nullif(${number_of_planned_hours_ops_associate},0) ;;
+    sql:(${number_of_no_show_hours_ops_associate})/nullif(${number_of_planned_hours_ops_associate}-${number_of_planned_hours_ops_associate_ec_shift},0) ;;
+    value_format_name: percent_1
+  }
+
+  measure: pct_no_show_hours_ops_associate_ec_shift {
+    group_label: "> Ops Associate Measures"
+    label: "% No Show EC Ops Associate Hours"
+    description: "# EC No Show Hours / # Planned EC Hours"
+    type: number
+    sql:(${number_of_no_show_hours_ops_associate_ec_shift})/nullif(${number_of_planned_hours_ops_associate_ec_shift},0) ;;
+    value_format_name: percent_1
+  }
+
+  measure: pct_no_show_hours_ops_associate_incl_ec_shift {
+    group_label: "> Ops Associate Measures"
+    label: "% No Show Ops Associate Hours (Incl. EC Shifts)"
+    description: "(# No Show Hours + # EC No Show Hours) / # Planned Hours"
+    type: number
+    sql:(${number_of_no_show_hours_ops_associate}+${number_of_no_show_hours_ops_associate_ec_shift})/nullif(${number_of_planned_hours_ops_associate},0) ;;
     value_format_name: percent_1
   }
 
 
   # =========  UTR   =========
 
+  ## For a quick check only, needs to be deleted afterwards
+  measure: deprecated_utr_rider {
+    group_label: "> Rider Measures"
+    label: "[old] Rider UTR (does not include onboarding)"
+    description: "# Orders (excl. Click & Collect and External Orders) / # Punched Rider Hours"
+    type: number
+    sql: ${orders_with_ops_metrics.cnt_rider_orders}/ nullif(${number_of_worked_hours_rider}, 0) ;;
+    value_format_name: decimal_2
+  }
+
   measure: utr_rider {
     group_label: "> Rider Measures"
     label: "Rider UTR"
-    description: "# Orders (excl. Click & Collect and External Orders) / # Punched Rider Hours"
+    description: "# Orders (excl. Click & Collect and External Orders) / # Punched Rider Hours (incl. Onboarding)"
     type: number
-    sql: ${orders_with_ops_metrics.cnt_rider_orders}/ NULLIF(${number_of_worked_hours_rider}, 0) ;;
+    sql: ${orders_with_ops_metrics.cnt_rider_orders}/ nullif(${number_of_worked_hours_rider}+${number_of_worked_hours_onboarding}, 0) ;;
     value_format_name: decimal_2
   }
 
@@ -3764,11 +4182,11 @@ view: staffing {
           when ${orders_with_ops_metrics.avg_fulfillment_time} < 18
             then ${ops.utr_rider}
           when ${orders_with_ops_metrics.avg_fulfillment_time} >= 18
-          and ${orders_with_ops_metrics.avg_fulfillment_time} < 45
-            then ${ops.utr_rider} - ({% parameter slp_parameter_coefficient_a %} * ${orders_with_ops_metrics.avg_fulfillment_time})
+            and ${orders_with_ops_metrics.avg_fulfillment_time} < 45
+              then ${ops.utr_rider} - ({% parameter slp_parameter_coefficient_a %} * ${orders_with_ops_metrics.avg_fulfillment_time})
           when ${orders_with_ops_metrics.avg_fulfillment_time} >= 45
-          and ${orders_with_ops_metrics.avg_fulfillment_time} < 60
-            then (${ops.utr_rider}- {% parameter slp_parameter_coefficient_b %}) * (60 - (${orders_with_ops_metrics.avg_fulfillment_time}))/15
+            and ${orders_with_ops_metrics.avg_fulfillment_time} < 60
+              then (${ops.utr_rider}- {% parameter slp_parameter_coefficient_b %}) * (60 - (${orders_with_ops_metrics.avg_fulfillment_time}))/15
           when ${orders_with_ops_metrics.avg_fulfillment_time} >= 60
             then 0
           end;;
@@ -3778,8 +4196,8 @@ view: staffing {
   measure: all_staff_utr {
     label: "All Staff UTR"
     type: number
-    description: "# Orders (incl. Click & Collect and External Orders) / # Punched All Staff (incl. Rider,Picker,WH Ops, Rider Captain, Ops Associate, Shift Lead and Deputy Shift Lead) Hours"
-    sql: ${orders_with_ops_metrics.sum_orders} / NULLIF(${number_of_worked_hours_rider}+${number_of_worked_hours_shift_lead}+${number_of_worked_hours_ops_associate}+${number_of_worked_hours_deputy_shift_lead}, 0);;
+    description: "# Orders (incl. Click & Collect and External Orders) / # Punched All Staff (incl. Rider, Onboarding, Picker, WH Ops, Rider Captain, Ops Associate, Shift Lead, and Deputy Shift Lead) Hours"
+    sql: ${orders_with_ops_metrics.sum_orders} / nullif(${number_of_worked_hours_rider}+${number_of_worked_hours_shift_lead}+${number_of_worked_hours_ops_associate}+${number_of_worked_hours_deputy_shift_lead}+${number_of_worked_hours_onboarding}, 0);;
     value_format_name: decimal_2
     group_label: "> All Staff Measures"
   }
@@ -3797,7 +4215,7 @@ view: staffing {
     label: "Picker UTR"
     description: "# Orders (incl. Click & Collect and External Orders) / # Punched Picker Hours"
     type: number
-    sql: ${orders_with_ops_metrics.sum_orders}/ NULLIF(${number_of_worked_hours_picker}, 0) ;;
+    sql: ${orders_with_ops_metrics.sum_orders}/ nullif(${number_of_worked_hours_picker}, 0) ;;
     value_format_name: decimal_2
   }
 
@@ -3806,7 +4224,7 @@ view: staffing {
     label: "Hub Staff UTR"
     description: "Hub Staff UTR (# Orders (incl. Click & Collect and External Orders) /Hub Staff Hours (Picker, WH, Rider Captain, Ops Associate, Shift Lead))"
     type: number
-    sql: ${orders_with_ops_metrics.sum_orders}/ NULLIF(${number_of_worked_hours_hub_staff}, 0) ;;
+    sql: ${orders_with_ops_metrics.sum_orders}/ nullif(${number_of_worked_hours_hub_staff}, 0) ;;
     value_format_name: decimal_2
   }
 
@@ -3816,7 +4234,7 @@ view: staffing {
     label: "Ops Associate UTR"
     description: "Ops Associate UTR (# Orders (incl. Click & Collect and External Orders) /# Punched Ops Associate(Picker, WH, Rider Captain, Ops Associate) Hours)"
     type: number
-    sql: ${orders_with_ops_metrics.sum_orders}/ NULLIF(${number_of_worked_hours_ops_associate}, 0) ;;
+    sql: ${orders_with_ops_metrics.sum_orders}/ nullif(${number_of_worked_hours_ops_associate}, 0) ;;
     value_format_name: decimal_2
   }
 
@@ -3866,117 +4284,137 @@ view: staffing {
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
-        CASE
-          WHEN {% parameter position_parameter %} = 'Rider' THEN ${number_of_no_show_minutes_rider}/60
-      ELSE NULL
-      END ;;
+        case
+          when {% parameter position_parameter %} = 'Rider' THEN ${number_of_no_show_minutes_rider}/60
+          else null
+        end ;;
     hidden: yes
   }
 
   measure: number_of_planned_hours_by_position {
     type: number
-    label: "# Filled Hours"
+    label: "# Filled Hours (Incl. EC Shift)"
     description: "# Shift Hours Assigned to an Employee"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
-        CASE
-          WHEN {% parameter position_parameter %} = 'Rider' THEN ${number_of_planned_hours_rider}
-          WHEN {% parameter position_parameter %} = 'Picker' THEN ${number_of_planned_hours_picker}
-          WHEN {% parameter position_parameter %} = 'Shift Lead' THEN ${number_of_planned_hours_shift_lead}
-          WHEN {% parameter position_parameter %} = 'Deputy Shift Lead' THEN ${number_of_planned_hours_deputy_shift_lead}
-          WHEN {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_planned_hours_rider_captain}
-          WHEN {% parameter position_parameter %} = 'WH' THEN ${number_of_planned_hours_wh}
-          WHEN {% parameter position_parameter %} = 'Hub Staff' THEN ${number_of_planned_hours_hub_staff}
-          WHEN {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_planned_hours_ops_associate}
-          ELSE NULL
-        END ;;
+        case
+          when {% parameter position_parameter %} = 'Rider' THEN ${number_of_planned_hours_rider}
+          when {% parameter position_parameter %} = 'Picker' THEN ${number_of_planned_hours_picker}
+          when {% parameter position_parameter %} = 'Shift Lead' THEN ${number_of_planned_hours_shift_lead}
+          when {% parameter position_parameter %} = 'Deputy Shift Lead' THEN ${number_of_planned_hours_deputy_shift_lead}
+          when {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_planned_hours_rider_captain}
+          when {% parameter position_parameter %} = 'WH' THEN ${number_of_planned_hours_wh}
+          when {% parameter position_parameter %} = 'Hub Staff' THEN ${number_of_planned_hours_hub_staff}
+          when {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_planned_hours_ops_associate}
+          else null
+        end ;;
+  }
+
+  measure: number_of_planned_hours_ec_shift_by_position {
+    type: number
+    label: "# EC Filled Hours"
+    description: "# Shift Hours Assigned to an Employee from shifts with project code: EC shifts"
+    value_format_name: decimal_1
+    group_label: "> Dynamic Measures"
+    sql:
+        case
+          when {% parameter position_parameter %} = 'Rider' THEN ${number_of_planned_hours_rider_ec_shift}
+          when {% parameter position_parameter %} = 'Picker' THEN ${number_of_planned_hours_picker_ec_shift}
+          when {% parameter position_parameter %} = 'Shift Lead' THEN ${number_of_planned_hours_shift_lead_ec_shift}
+          when {% parameter position_parameter %} = 'Deputy Shift Lead' THEN ${number_of_planned_hours_deputy_shift_lead_ec_shift}
+          when {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_planned_hours_rider_captain_ec_shift}
+          when {% parameter position_parameter %} = 'WH' THEN ${number_of_planned_hours_wh_ec_shift}
+          when {% parameter position_parameter %} = 'Hub Staff' THEN ${number_of_planned_hours_hub_staff_ec_shift}
+          when {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_planned_hours_ops_associate_ec_shift}
+          else null
+        end ;;
   }
 
   measure: number_of_excused_no_show_hours_by_position {
     type: number
-    label: "# Excused No Show Hours"
+    label: "# Excused No Show Hours (Excl. EC Shift)"
     description: "Sum of shift hours when an employee has a scheduled shift but does not show up to it with leave reason"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
-        CASE
-          WHEN {% parameter position_parameter %} = 'Rider' THEN ${number_of_excused_no_show_hours_rider}
-          WHEN {% parameter position_parameter %} = 'Picker' THEN ${number_of_excused_no_show_hours_picker}
-          WHEN {% parameter position_parameter %} = 'Shift Lead' THEN ${number_of_excused_no_show_hours_shift_lead}
-          WHEN {% parameter position_parameter %} = 'Deputy Shift Lead' THEN ${number_of_excused_no_show_hours_deputy_shift_lead}
-          WHEN {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_excused_no_show_hours_rider_captain}
-          WHEN {% parameter position_parameter %} = 'WH' THEN ${number_of_excused_no_show_hours_wh}
-          WHEN {% parameter position_parameter %} = 'Hub Staff' THEN ${number_of_excused_no_show_hours_hub_staff}
-          WHEN {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_excused_no_show_hours_ops_associate}
-          ELSE NULL
-        END ;;
+        case
+          when {% parameter position_parameter %} = 'Rider' THEN ${number_of_excused_no_show_hours_rider}
+          when {% parameter position_parameter %} = 'Picker' THEN ${number_of_excused_no_show_hours_picker}
+          when {% parameter position_parameter %} = 'Shift Lead' THEN ${number_of_excused_no_show_hours_shift_lead}
+          when {% parameter position_parameter %} = 'Deputy Shift Lead' THEN ${number_of_excused_no_show_hours_deputy_shift_lead}
+          when {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_excused_no_show_hours_rider_captain}
+          when {% parameter position_parameter %} = 'WH' THEN ${number_of_excused_no_show_hours_wh}
+          when {% parameter position_parameter %} = 'Hub Staff' THEN ${number_of_excused_no_show_hours_hub_staff}
+          when {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_excused_no_show_hours_ops_associate}
+          else null
+        end ;;
   }
 
   measure: number_of_unexcused_no_show_hours_by_position {
     type: number
-    label: "# Unexcused No Show Hours"
+    label: "# Unexcused No Show Hours (Excl. EC Shift)"
     description: "Sum of shift hours when an employee has a scheduled shift but does not show up to it without leave reason"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
-        CASE
-          WHEN {% parameter position_parameter %} = 'Rider' THEN ${number_of_unexcused_no_show_hours_rider}
-          WHEN {% parameter position_parameter %} = 'Picker' THEN ${number_of_unexcused_no_show_hours_picker}
-          WHEN {% parameter position_parameter %} = 'Shift Lead' THEN ${number_of_unexcused_no_show_hours_shift_lead}
-          WHEN {% parameter position_parameter %} = 'Deputy Shift Lead' THEN ${number_of_unexcused_no_show_hours_deputy_shift_lead}
-          WHEN {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_unexcused_no_show_hours_rider_captain}
-          WHEN {% parameter position_parameter %} = 'WH' THEN ${number_of_unexcused_no_show_hours_wh}
-          WHEN {% parameter position_parameter %} = 'Hub Staff' THEN ${number_of_unexcused_no_show_hours_hub_staff}
-          WHEN {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_unexcused_no_show_hours_ops_associate}
-          ELSE NULL
-        END ;;
+        case
+          when {% parameter position_parameter %} = 'Rider' THEN ${number_of_unexcused_no_show_hours_rider}
+          when {% parameter position_parameter %} = 'Picker' THEN ${number_of_unexcused_no_show_hours_picker}
+          when {% parameter position_parameter %} = 'Shift Lead' THEN ${number_of_unexcused_no_show_hours_shift_lead}
+          when {% parameter position_parameter %} = 'Deputy Shift Lead' THEN ${number_of_unexcused_no_show_hours_deputy_shift_lead}
+          when {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_unexcused_no_show_hours_rider_captain}
+          when {% parameter position_parameter %} = 'WH' THEN ${number_of_unexcused_no_show_hours_wh}
+          when {% parameter position_parameter %} = 'Hub Staff' THEN ${number_of_unexcused_no_show_hours_hub_staff}
+          when {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_unexcused_no_show_hours_ops_associate}
+          else null
+        end ;;
   }
 
 
   measure: number_of_deleted_excused_no_show_hours_by_position {
     type: number
-    label: "# Deleted Excused No Show Hours"
+    label: "# Deleted Excused No Show Hours (Excl. EC Shift)"
     description: "Sum of deleted shift hours when an employee has a scheduled shift but does not show up to it with leave reason and shift deletion date is on/after shift date (shift date <= deletion date)"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
-        CASE
-          WHEN {% parameter position_parameter %} = 'Rider' THEN ${number_of_deleted_excused_no_show_hours_rider}
-          WHEN {% parameter position_parameter %} = 'Picker' THEN ${number_of_deleted_excused_no_show_hours_picker}
-          WHEN {% parameter position_parameter %} = 'Shift Lead' THEN ${number_of_deleted_excused_no_show_hours_shift_lead}
-          WHEN {% parameter position_parameter %} = 'Deputy Shift Lead' THEN ${number_of_deleted_excused_no_show_hours_deputy_shift_lead}
-          WHEN {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_deleted_excused_no_show_hours_rider_captain}
-          WHEN {% parameter position_parameter %} = 'WH' THEN ${number_of_deleted_excused_no_show_hours_wh}
-          WHEN {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_deleted_excused_no_show_hours_ops_associate}
-          WHEN {% parameter position_parameter %} = 'Hub Staff' THEN ${number_of_deleted_excused_no_show_hours_hub_staff}
-          ELSE NULL
-        END ;;
+        case
+          when {% parameter position_parameter %} = 'Rider' THEN ${number_of_deleted_excused_no_show_hours_rider}
+          when {% parameter position_parameter %} = 'Picker' THEN ${number_of_deleted_excused_no_show_hours_picker}
+          when {% parameter position_parameter %} = 'Shift Lead' THEN ${number_of_deleted_excused_no_show_hours_shift_lead}
+          when {% parameter position_parameter %} = 'Deputy Shift Lead' THEN ${number_of_deleted_excused_no_show_hours_deputy_shift_lead}
+          when {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_deleted_excused_no_show_hours_rider_captain}
+          when {% parameter position_parameter %} = 'WH' THEN ${number_of_deleted_excused_no_show_hours_wh}
+          when {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_deleted_excused_no_show_hours_ops_associate}
+          when {% parameter position_parameter %} = 'Hub Staff' THEN ${number_of_deleted_excused_no_show_hours_hub_staff}
+          else null
+        end ;;
   }
 
   measure: number_of_deleted_unexcused_no_show_hours_by_position {
     type: number
-    label: "# Deleted Unexcused No Show Hours (Excl. in No Show metric)"
+    label: "# Deleted Unexcused No Show Hours (Excluded in No Show metric and Excl. EC Shift)"
     description: "Sum of deleted shift hours when an employee has a scheduled shift but does not show up to it without leave reason and shift deletion date is on/after shift date (shift date <= deletion date)"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
-        CASE
-          WHEN {% parameter position_parameter %} = 'Rider' THEN ${number_of_deleted_unexcused_no_show_hours_rider}
-          WHEN {% parameter position_parameter %} = 'Picker' THEN ${number_of_deleted_unexcused_no_show_hours_picker}
-          WHEN {% parameter position_parameter %} = 'Shift Lead' THEN ${number_of_deleted_unexcused_no_show_hours_shift_lead}
-          WHEN {% parameter position_parameter %} = 'Deputy Shift Lead' THEN ${number_of_deleted_unexcused_no_show_hours_deputy_shift_lead}
-          WHEN {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_deleted_unexcused_no_show_hours_rider_captain}
-          WHEN {% parameter position_parameter %} = 'WH' THEN ${number_of_deleted_unexcused_no_show_hours_wh}
-          WHEN {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_deleted_unexcused_no_show_hours_ops_associate}
-          WHEN {% parameter position_parameter %} = 'Hub Staff' THEN ${number_of_deleted_unexcused_no_show_hours_hub_staff}
-          ELSE NULL
-        END ;;
+        case
+          when {% parameter position_parameter %} = 'Rider' THEN ${number_of_deleted_unexcused_no_show_hours_rider}
+          when {% parameter position_parameter %} = 'Picker' THEN ${number_of_deleted_unexcused_no_show_hours_picker}
+          when {% parameter position_parameter %} = 'Shift Lead' THEN ${number_of_deleted_unexcused_no_show_hours_shift_lead}
+          when {% parameter position_parameter %} = 'Deputy Shift Lead' THEN ${number_of_deleted_unexcused_no_show_hours_deputy_shift_lead}
+          when {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_deleted_unexcused_no_show_hours_rider_captain}
+          when {% parameter position_parameter %} = 'WH' THEN ${number_of_deleted_unexcused_no_show_hours_wh}
+          when {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_deleted_unexcused_no_show_hours_ops_associate}
+          when {% parameter position_parameter %} = 'Hub Staff' THEN ${number_of_deleted_unexcused_no_show_hours_hub_staff}
+          else null
+        end ;;
   }
 
   measure: pct_fill_rate {
     type: number
-    label: "% Fill Rate"
+    label: "% Fill Rate (Incl. EC Shift)"
     description: "# Filled Hours (Assigned to an Employee) / # Scheduled Hours (Total Scheduled Shift Hours = Assigned Hours + Open Hours)"
     value_format_name: percent_1
     group_label: "> Dynamic Measures"
@@ -3985,7 +4423,7 @@ view: staffing {
 
   measure: pct_unassignment_rate {
     type: number
-    label: "% Unassignment Rate"
+    label: "% Unassignment Rate (Incl. EC Shift)"
     description: "1 - Fill Rate"
     value_format_name: percent_1
     group_label: "> Dynamic Measures"
@@ -3994,80 +4432,156 @@ view: staffing {
 
   measure: pct_unexcused_absence {
     type: number
-    label: "% Unexcused Absence"
+    label: "% Unexcused Absence (Excl. EC Shift)"
     description: "# Unexcused No Show Hours / # Filled Hours (Assigned to an Employee)"
     value_format_name: percent_1
     group_label: "> Dynamic Measures"
-    sql: (${number_of_unexcused_no_show_hours_by_position})/nullif(${number_of_planned_hours_by_position},0);;
+    sql: (${number_of_unexcused_no_show_hours_by_position})/nullif(${number_of_planned_hours_by_position}-${number_of_planned_hours_ec_shift_by_position},0);;
   }
 
   measure: pct_excused_absence {
     type: number
-    label: "% Excused Absence"
+    label: "% Excused Absence (Excl. EC Shift)"
     description: "# Excused No Show Hours / # Filled Hours (Assigned to an Employee)"
     value_format_name: percent_1
     group_label: "> Dynamic Measures"
-    sql: (${number_of_deleted_excused_no_show_hours_by_position}+${number_of_excused_no_show_hours_by_position})/nullif(${number_of_planned_hours_by_position},0);;
+    sql: (${number_of_deleted_excused_no_show_hours_by_position}+${number_of_excused_no_show_hours_by_position})/nullif(${number_of_planned_hours_by_position}-${number_of_planned_hours_ec_shift_by_position},0);;
   }
 
   measure: number_of_unassigned_hours_by_position {
     type: number
-    label: "# Open Hours"
+    label: "# Open Hours (Incl. EC Shift)"
     description: "# Open Shift Hours (Not assigned to an Employee)"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
-        CASE
-          WHEN {% parameter position_parameter %} = 'Rider' THEN ${number_of_unassigned_hours_rider}
-          WHEN {% parameter position_parameter %} = 'Picker' THEN ${number_of_unassigned_hours_picker}
-          WHEN {% parameter position_parameter %} = 'Shift Lead' THEN ${number_of_unassigned_hours_shift_lead}
-          WHEN {% parameter position_parameter %} = 'Deputy Shift Lead' THEN ${number_of_unassigned_hours_deputy_shift_lead}
-          WHEN {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_unassigned_hours_rider_captain}
-          WHEN {% parameter position_parameter %} = 'WH' THEN ${number_of_unassigned_hours_wh}
-          WHEN {% parameter position_parameter %} = 'Hub Staff' THEN ${number_of_unassigned_hours_hub_staff}
-          WHEN {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_unassigned_hours_ops_associate}
-          ELSE NULL
-      END ;;
+        case
+          when {% parameter position_parameter %} = 'Rider' THEN ${number_of_unassigned_hours_rider}
+          when {% parameter position_parameter %} = 'Picker' THEN ${number_of_unassigned_hours_picker}
+          when {% parameter position_parameter %} = 'Shift Lead' THEN ${number_of_unassigned_hours_shift_lead}
+          when {% parameter position_parameter %} = 'Deputy Shift Lead' THEN ${number_of_unassigned_hours_deputy_shift_lead}
+          when {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_unassigned_hours_rider_captain}
+          when {% parameter position_parameter %} = 'WH' THEN ${number_of_unassigned_hours_wh}
+          when {% parameter position_parameter %} = 'Hub Staff' THEN ${number_of_unassigned_hours_hub_staff}
+          when {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_unassigned_hours_ops_associate}
+          else null
+      end ;;
   }
 
   measure: number_of_scheduled_hours_by_position {
     type: number
-    label: "# Scheduled Hours (Incl. Deleted Excused No Show)"
+    label: "# Scheduled Hours (Incl. Deleted Excused No Show and EC Shift)"
     description: "Sum of Assigned and Unassigned (Open) Shift Hours (Incl. Deleted Excused No Show)"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
-        CASE
-          WHEN {% parameter position_parameter %} = 'Rider' THEN ${number_of_scheduled_hours_rider}
-          WHEN {% parameter position_parameter %} = 'Picker' THEN ${number_of_scheduled_hours_picker}
-          WHEN {% parameter position_parameter %} = 'Shift Lead' THEN ${number_of_scheduled_hours_shift_lead}
-          WHEN {% parameter position_parameter %} = 'Deputy Shift Lead' THEN ${number_of_scheduled_hours_deputy_shift_lead}
-          WHEN {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_scheduled_hours_rider_captain}
-          WHEN {% parameter position_parameter %} = 'WH' THEN ${number_of_scheduled_hours_wh}
-          WHEN {% parameter position_parameter %} = 'Hub Staff' THEN ${number_of_scheduled_hours_hub_staff}
-          WHEN {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_scheduled_hours_ops_associate}
-          ELSE NULL
-      END ;;
+        case
+          when {% parameter position_parameter %} = 'Rider' THEN ${number_of_scheduled_hours_rider}
+          when {% parameter position_parameter %} = 'Picker' THEN ${number_of_scheduled_hours_picker}
+          when {% parameter position_parameter %} = 'Shift Lead' THEN ${number_of_scheduled_hours_shift_lead}
+          when {% parameter position_parameter %} = 'Deputy Shift Lead' THEN ${number_of_scheduled_hours_deputy_shift_lead}
+          when {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_scheduled_hours_rider_captain}
+          when {% parameter position_parameter %} = 'WH' THEN ${number_of_scheduled_hours_wh}
+          when {% parameter position_parameter %} = 'Hub Staff' THEN ${number_of_scheduled_hours_hub_staff}
+          when {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_scheduled_hours_ops_associate}
+          else null
+        end ;;
+  }
+
+  measure: number_of_scheduled_hours_by_position_ec_shift {
+    type: number
+    label: "# EC Scheduled Hours (Incl. Deleted Excused No Show)"
+    description: "Sum of Assigned and Unassigned (Open) Shift Hours from EC shifts (Incl. Deleted Excused No Show)"
+    value_format_name: decimal_1
+    group_label: "> Dynamic Measures"
+    sql:
+        case
+          when {% parameter position_parameter %} = 'Rider' THEN ${number_of_scheduled_hours_rider_ec_shift}
+          when {% parameter position_parameter %} = 'Picker' THEN ${number_of_scheduled_hours_picker_ec_shift}
+          when {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_scheduled_hours_ops_associate_ec_shift}
+          else null
+        end ;;
+  }
+
+  measure: number_of_scheduled_hours_by_position_extra {
+    type: number
+    label: "# Extra Scheduled Hours (EC, NS+. WFS Shifts) (Incl. Deleted Excused No Show)"
+    description: "Sum of Assigned and Unassigned (Open) EC, NS+ and WFS shift hours (Incl. Deleted Excused No Show)"
+    value_format_name: decimal_1
+    group_label: "> Dynamic Measures"
+    sql:
+        case
+          when {% parameter position_parameter %} = 'Rider' THEN ${number_of_scheduled_hours_rider_extra}
+          when {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_scheduled_hours_ops_associate_extra}
+          else null
+        end ;;
+  }
+
+  measure: pct_extra_scheduled_hours_by_position {
+    type: number
+    label: "% Extra Scheduled Hours (EC, NS+, WFS Shifts) (Incl. Deleted Excused No Show)"
+    description: "Share of Assigned and Unassigned (Open) EC, NS+ and WFS shift hours (Incl. Deleted Excused No Show) over all Assigned and Unassigned (Open) shift hours"
+    value_format_name: decimal_1
+    group_label: "> Dynamic Measures"
+    sql: ${number_of_scheduled_hours_by_position_extra}/${number_of_scheduled_hours_by_position} ;;
+  }
+
+  measure: number_of_worked_hours_by_position_extra {
+    type: number
+    label: "# Extra Punched Hours (EC, NS+, WFS Shifts)"
+    description: "Sum of Worked Hours from shifts with project code NS+. WFS and EC shifts"
+    value_format_name: decimal_1
+    group_label: "> Dynamic Measures"
+    sql:
+        case
+          when {% parameter position_parameter %} = 'Rider' then ${number_of_worked_hours_rider_extra}
+          when {% parameter position_parameter %} = 'Ops Associate' then ${number_of_worked_hours_ops_associate_extra}
+          else null
+        end ;;
+  }
+
+  measure: number_of_worked_hours_by_position_ec_shift {
+    type: number
+    label: "# EC Punched Hours"
+    description: "Sum of Worked Hours from shifts with project code EC"
+    value_format_name: decimal_1
+    group_label: "> Dynamic Measures"
+    sql:
+        case
+          when {% parameter position_parameter %} = 'Rider' then ${number_of_worked_hours_rider_ec_shift}
+          when {% parameter position_parameter %} = 'Ops Associate' then ${number_of_worked_hours_ops_associate_ec_shift}
+          else null
+        end ;;
+  }
+
+  measure: pct_extra_worked_hours_by_position {
+    type: number
+    label: "% Extra Punched Hours (EC, NS+, WFS Shifts)"
+    description: "Share of Worked Hours from shifts with project code NS+. WFS and EC shifts over all Worked hours"
+    value_format_name: decimal_1
+    group_label: "> Dynamic Measures"
+    sql: ${number_of_worked_hours_by_position_extra}/${number_of_worked_hours_by_position} ;;
+
   }
 
   measure: pct_scheduled_hours_by_position {
     type: number
-    label: "% External Scheduled Hours"
+    label: "% External Scheduled Hours (Incl. EC Shift)"
     description: "Sum External Scheduled Hours (Assigned + Unassigned) / Sum Scheduled Hours (Assigned + Open Hours)"
     value_format_name: percent_1
     group_label: "> Dynamic Measures"
     sql:
-        CASE
-          WHEN {% parameter position_parameter %} = 'Rider' THEN ${number_of_scheduled_hours_external_rider}/nullif(${number_of_scheduled_hours_rider},0)
-          WHEN {% parameter position_parameter %} = 'Picker' THEN ${number_of_scheduled_hours_external_picker}/nullif(${number_of_scheduled_hours_picker},0)
-          WHEN {% parameter position_parameter %} = 'Shift Lead' THEN ${number_of_scheduled_hours_external_shift_lead}/nullif(${number_of_scheduled_hours_shift_lead},0)
-          WHEN {% parameter position_parameter %} = 'Deputy Shift Lead' THEN ${number_of_scheduled_hours_external_deputy_shift_lead}/nullif(${number_of_scheduled_hours_deputy_shift_lead},0)
-          WHEN {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_scheduled_hours_external_rider_captain}/nullif(${number_of_scheduled_hours_rider_captain},0)
-          WHEN {% parameter position_parameter %} = 'WH' THEN ${number_of_scheduled_hours_external_wh}/nullif(${number_of_scheduled_hours_wh},0)
-          WHEN {% parameter position_parameter %} = 'Hub Staff' THEN ${number_of_scheduled_hours_external_hub_staff}/nullif(${number_of_scheduled_hours_hub_staff},0)
-          WHEN {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_scheduled_hours_external_ops_associate}/nullif(${number_of_scheduled_hours_ops_associate},0)
-          ELSE NULL
-      END ;;
+        case
+          when {% parameter position_parameter %} = 'Rider' THEN ${number_of_scheduled_hours_external_rider}/nullif(${number_of_scheduled_hours_rider},0)
+          when {% parameter position_parameter %} = 'Picker' THEN ${number_of_scheduled_hours_external_picker}/nullif(${number_of_scheduled_hours_picker},0)
+          when {% parameter position_parameter %} = 'Shift Lead' THEN ${number_of_scheduled_hours_external_shift_lead}/nullif(${number_of_scheduled_hours_shift_lead},0)
+          when {% parameter position_parameter %} = 'Deputy Shift Lead' THEN ${number_of_scheduled_hours_external_deputy_shift_lead}/nullif(${number_of_scheduled_hours_deputy_shift_lead},0)
+          when {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_scheduled_hours_external_rider_captain}/nullif(${number_of_scheduled_hours_rider_captain},0)
+          when {% parameter position_parameter %} = 'WH' THEN ${number_of_scheduled_hours_external_wh}/nullif(${number_of_scheduled_hours_wh},0)
+          when {% parameter position_parameter %} = 'Hub Staff' THEN ${number_of_scheduled_hours_external_hub_staff}/nullif(${number_of_scheduled_hours_hub_staff},0)
+          when {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_scheduled_hours_external_ops_associate}/nullif(${number_of_scheduled_hours_ops_associate},0)
+          else null
+        end ;;
   }
 
   dimension: number_of_scheduled_hours_by_position_dimension {
@@ -4077,11 +4591,11 @@ view: staffing {
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
-        CASE
-          WHEN {% parameter position_parameter %} = 'Rider' THEN ${number_of_scheduled_hours_rider_dimension}
-          WHEN {% parameter position_parameter %} = 'Picker' THEN ${number_of_scheduled_hours_picker_dimension}
-      ELSE NULL
-      END ;;
+        case
+          when {% parameter position_parameter %} = 'Rider' THEN ${number_of_scheduled_hours_rider_dimension}
+          when {% parameter position_parameter %} = 'Picker' THEN ${number_of_scheduled_hours_picker_dimension}
+          else null
+        end ;;
     hidden: yes
   }
 
@@ -4092,118 +4606,177 @@ view: staffing {
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
-        CASE
-          WHEN {% parameter position_parameter %} = 'Rider' THEN ${number_of_worked_minutes_rider}/60
-          WHEN {% parameter position_parameter %} = 'Picker' THEN ${number_of_worked_minutes_picker}/60
-          WHEN {% parameter position_parameter %} = 'Shift Lead' THEN ${number_of_worked_minutes_shift_lead}/60
-          WHEN {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_worked_minutes_rider_captain}/60
-          WHEN {% parameter position_parameter %} = 'WH' THEN ${number_of_worked_minutes_wh}/60
-          WHEN {% parameter position_parameter %} = 'Ops Associate' THEN ${TABLE}.number_of_worked_minutes_ops_associate/60
-      ELSE NULL
-      END ;;
+        case
+          when {% parameter position_parameter %} = 'Rider' THEN ${number_of_worked_minutes_rider}/60
+          when {% parameter position_parameter %} = 'Picker' THEN ${number_of_worked_minutes_picker}/60
+          when {% parameter position_parameter %} = 'Shift Lead' THEN ${number_of_worked_minutes_shift_lead}/60
+          when {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_worked_minutes_rider_captain}/60
+          when {% parameter position_parameter %} = 'WH' THEN ${number_of_worked_minutes_wh}/60
+          when {% parameter position_parameter %} = 'Ops Associate' THEN ${TABLE}.number_of_worked_minutes_ops_associate/60
+          else null
+        end ;;
     hidden: yes
   }
 
   measure: number_of_scheduled_hours_excluding_deleted_shifts_by_position {
     type: number
-    label: "# Scheduled Hours (Excl. Deleted Excused No Show)"
+    label: "# Scheduled Hours (Excl. Deleted Excused No Show and Incl. EC Shift)"
     description: "Sum of Assigned and Unassigned Shift Hours (Excl. Deleted Excused No Show)"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
-      CASE
-        WHEN {% parameter position_parameter %} = 'Rider' THEN ${number_of_scheduled_hours_rider} - ${number_of_deleted_excused_no_show_hours_rider}
-        WHEN {% parameter position_parameter %} = 'Picker' THEN ${number_of_scheduled_hours_picker} - ${number_of_deleted_excused_no_show_hours_picker}
-        WHEN {% parameter position_parameter %} = 'Shift Lead' THEN ${number_of_scheduled_hours_shift_lead} - ${number_of_deleted_excused_no_show_hours_shift_lead}
-        WHEN {% parameter position_parameter %} = 'Deputy Shift Lead' THEN ${number_of_scheduled_hours_deputy_shift_lead} - ${number_of_deleted_excused_no_show_hours_deputy_shift_lead}
-        WHEN {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_scheduled_hours_rider_captain} - ${number_of_deleted_excused_no_show_hours_rider_captain}
-        WHEN {% parameter position_parameter %} = 'WH' THEN ${number_of_scheduled_hours_wh} - ${number_of_deleted_excused_no_show_hours_wh}
-        WHEN {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_scheduled_hours_ops_associate} - ${number_of_deleted_excused_no_show_hours_ops_associate}
-        WHEN {% parameter position_parameter %} = 'Hub Staff' THEN ${number_of_scheduled_hours_hub_staff} - ${number_of_deleted_excused_no_show_hours_hub_staff}
-        ELSE NULL
-    END ;;
+      case
+        when {% parameter position_parameter %} = 'Rider' THEN ${number_of_scheduled_hours_rider} - ${number_of_deleted_excused_no_show_hours_rider}
+        when {% parameter position_parameter %} = 'Picker' THEN ${number_of_scheduled_hours_picker} - ${number_of_deleted_excused_no_show_hours_picker}
+        when {% parameter position_parameter %} = 'Shift Lead' THEN ${number_of_scheduled_hours_shift_lead} - ${number_of_deleted_excused_no_show_hours_shift_lead}
+        when {% parameter position_parameter %} = 'Deputy Shift Lead' THEN ${number_of_scheduled_hours_deputy_shift_lead} - ${number_of_deleted_excused_no_show_hours_deputy_shift_lead}
+        when {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_scheduled_hours_rider_captain} - ${number_of_deleted_excused_no_show_hours_rider_captain}
+        when {% parameter position_parameter %} = 'WH' THEN ${number_of_scheduled_hours_wh} - ${number_of_deleted_excused_no_show_hours_wh}
+        when {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_scheduled_hours_ops_associate} - ${number_of_deleted_excused_no_show_hours_ops_associate}
+        when {% parameter position_parameter %} = 'Hub Staff' THEN ${number_of_scheduled_hours_hub_staff} - ${number_of_deleted_excused_no_show_hours_hub_staff}
+        else null
+      end ;;
   }
 
 
 
   measure: number_of_worked_hours_by_position {
     type: number
-    label: "# Punched Hours"
+    label: "# Punched Hours (Incl. EC Shift)"
     description: "# Hours Worked by an Employee"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
-        CASE
-          WHEN {% parameter position_parameter %} = 'Rider' THEN ${number_of_worked_hours_rider}
-          WHEN {% parameter position_parameter %} = 'Picker' THEN ${number_of_worked_hours_picker}
-          WHEN {% parameter position_parameter %} = 'Shift Lead' THEN ${number_of_worked_hours_shift_lead}
-          WHEN {% parameter position_parameter %} = 'Deputy Shift Lead' THEN ${number_of_worked_hours_deputy_shift_lead}
-          WHEN {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_worked_hours_rider_captain}
-          WHEN {% parameter position_parameter %} = 'WH' THEN ${number_of_worked_hours_wh}
-          WHEN {% parameter position_parameter %} = 'Hub Staff' THEN ${number_of_worked_hours_hub_staff}
-          WHEN {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_worked_hours_ops_associate}
-      ELSE NULL
-      END ;;
+        case
+          when {% parameter position_parameter %} = 'Rider' then ${number_of_worked_hours_rider}
+          when {% parameter position_parameter %} = 'Picker' then ${number_of_worked_hours_picker}
+          when {% parameter position_parameter %} = 'Shift Lead' then ${number_of_worked_hours_shift_lead}
+          when {% parameter position_parameter %} = 'Deputy Shift Lead' then ${number_of_worked_hours_deputy_shift_lead}
+          when {% parameter position_parameter %} = 'Rider Captain' then ${number_of_worked_hours_rider_captain}
+          when {% parameter position_parameter %} = 'WH' then ${number_of_worked_hours_wh}
+          when {% parameter position_parameter %} = 'Hub Staff' then ${number_of_worked_hours_hub_staff}
+          when {% parameter position_parameter %} = 'Ops Associate' then ${number_of_worked_hours_ops_associate}
+          else null
+        end ;;
   }
 
   measure: number_of_no_show_hours_by_position {
     type: number
-    label: "# No Show Hours"
-    description: "Sum of shift hours when an employee has a scheduled shift but does not show up to it without leave reason including deleted shift hours when deletion date is on or after shift date. includes (Excused No show Hours, Unexcused No show Hours, Excused Deleted No show Hours)"
+    label: "# No Show Hours (Excl. EC Shift)"
+    description: "Sum of shift hours (Excl. EC Shifts) when an employee has a scheduled shift but does not show up to it without leave reason including deleted shift hours when deletion date is on or after shift date. includes (Excused No show Hours, Unexcused No show Hours, Excused Deleted No show Hours)"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
-        CASE
-          WHEN {% parameter position_parameter %} = 'Rider' THEN ${number_of_no_show_hours_rider}
-          WHEN {% parameter position_parameter %} = 'Picker' THEN ${number_of_no_show_hours_picker}
-          WHEN {% parameter position_parameter %} = 'Shift Lead' THEN ${number_of_no_show_hours_shift_lead}
-          WHEN {% parameter position_parameter %} = 'Deputy Shift Lead' THEN ${number_of_no_show_hours_deputy_shift_lead}
-          WHEN {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_no_show_hours_rider_captain}
-          WHEN {% parameter position_parameter %} = 'WH' THEN ${number_of_no_show_hours_wh}
-          WHEN {% parameter position_parameter %} = 'Hub Staff' THEN ${number_of_no_show_hours_hub_staff}
-          WHEN {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_no_show_hours_ops_associate}
-      ELSE NULL
-      END ;;
+        case
+          when {% parameter position_parameter %} = 'Rider' THEN ${number_of_no_show_hours_rider}
+          when {% parameter position_parameter %} = 'Picker' THEN ${number_of_no_show_hours_picker}
+          when {% parameter position_parameter %} = 'Shift Lead' THEN ${number_of_no_show_hours_shift_lead}
+          when {% parameter position_parameter %} = 'Deputy Shift Lead' THEN ${number_of_no_show_hours_deputy_shift_lead}
+          when {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_no_show_hours_rider_captain}
+          when {% parameter position_parameter %} = 'WH' THEN ${number_of_no_show_hours_wh}
+          when {% parameter position_parameter %} = 'Hub Staff' THEN ${number_of_no_show_hours_hub_staff}
+          when {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_no_show_hours_ops_associate}
+          else null
+        end ;;
+  }
+
+  measure: number_of_no_show_hours_by_position_ec_shift {
+    type: number
+    label: "# EC No Show Hours"
+    description: "Sum of EC Shift hours when an employee has a scheduled shift but does not show up to it without leave reason including deleted shift hours when deletion date is on or after shift date. includes (Excused No show Hours, Unexcused No show Hours, Excused Deleted No show Hours)"
+    value_format_name: decimal_1
+    group_label: "> Dynamic Measures"
+    sql:
+        case
+          when {% parameter position_parameter %} = 'Rider' THEN ${number_of_no_show_hours_rider_ec_shift}
+          when {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_no_show_hours_ops_associate_ec_shift}
+          else null
+        end ;;
+  }
+
+  measure: number_of_no_show_hours_by_position_incl_ec_shift {
+    type: number
+    label: "# No Show Hours (Incl. EC Shift)"
+    description: "Sum of hours (Incl. EC Shifts) when an employee has a scheduled shift but does not show up to it without leave reason including deleted shift hours when deletion date is on or after shift date. includes (Excused No show Hours, Unexcused No show Hours, Excused Deleted No show Hours)"
+    value_format_name: decimal_1
+    group_label: "> Dynamic Measures"
+    sql:
+        case
+          when {% parameter position_parameter %} = 'Rider' THEN ${number_of_no_show_hours_rider_incl_ec_shift}
+          when {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_no_show_hours_ops_associate_incl_ec_shift}
+          else null
+        end ;;
   }
 
   measure: pct_external_worked_hours_by_position {
     type: number
-    label: "% External Punched Hours"
+    label: "% External Punched Hours (Incl. EC Shift)"
     description: "Sum External Punched Hours / Sum Punched Hours"
     value_format_name: percent_1
     group_label: "> Dynamic Measures"
     sql:
-        CASE
-          WHEN {% parameter position_parameter %} = 'Rider' THEN ${number_of_worked_hours_external_rider}/nullif(${number_of_worked_hours_rider},0)
-          WHEN {% parameter position_parameter %} = 'Picker' THEN ${number_of_worked_hours_external_picker}/nullif(${number_of_worked_hours_picker},0)
-          WHEN {% parameter position_parameter %} = 'Shift Lead' THEN ${number_of_worked_hours_external_shift_lead}/nullif(${number_of_worked_hours_shift_lead},0)
-          WHEN {% parameter position_parameter %} = 'Deputy Shift Lead' THEN ${number_of_worked_hours_external_deputy_shift_lead}/nullif(${number_of_worked_hours_deputy_shift_lead},0)
-          WHEN {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_worked_hours_external_rider_captain}/nullif(${number_of_worked_hours_rider_captain},0)
-          WHEN {% parameter position_parameter %} = 'WH' THEN ${number_of_worked_hours_external_wh}/nullif(${number_of_worked_hours_wh},0)
-          WHEN {% parameter position_parameter %} = 'Hub Staff' THEN ${number_of_worked_hours_external_hub_staff}/nullif(${number_of_worked_hours_hub_staff},0)
-          WHEN {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_worked_hours_external_ops_associate}/nullif(${number_of_worked_hours_ops_associate},0)
-      ELSE NULL
-      END ;;
+        case
+          when {% parameter position_parameter %} = 'Rider' THEN ${number_of_worked_hours_external_rider}/nullif(${number_of_worked_hours_rider},0)
+          when {% parameter position_parameter %} = 'Picker' THEN ${number_of_worked_hours_external_picker}/nullif(${number_of_worked_hours_picker},0)
+          when {% parameter position_parameter %} = 'Shift Lead' THEN ${number_of_worked_hours_external_shift_lead}/nullif(${number_of_worked_hours_shift_lead},0)
+          when {% parameter position_parameter %} = 'Deputy Shift Lead' THEN ${number_of_worked_hours_external_deputy_shift_lead}/nullif(${number_of_worked_hours_deputy_shift_lead},0)
+          when {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_worked_hours_external_rider_captain}/nullif(${number_of_worked_hours_rider_captain},0)
+          when {% parameter position_parameter %} = 'WH' THEN ${number_of_worked_hours_external_wh}/nullif(${number_of_worked_hours_wh},0)
+          when {% parameter position_parameter %} = 'Hub Staff' THEN ${number_of_worked_hours_external_hub_staff}/nullif(${number_of_worked_hours_hub_staff},0)
+          when {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_worked_hours_external_ops_associate}/nullif(${number_of_worked_hours_ops_associate},0)
+          else null
+        end ;;
   }
 
   measure: pct_no_show_hours_by_position {
     type: number
-    label: "% No Show Hours"
-    description: "% shift hours when an employee has a scheduled shift but does not show up to it without leave reason including deleted shift hours when deletion date is on or after shift date. includes (Excused No show Hours, Unexcused No show Hours, Excused Deleted No show Hours)"
+    label: "% No Show Hours (Excl. EC Shift)"
+    description: "% shift hours (Excl. EC Shift) when an employee has a scheduled shift but does not show up to it without leave reason including deleted shift hours when deletion date is on or after shift date.
+    It includes Excused No Show Hours, Unexcused No Show Hours, Excused Deleted No Show Hours. Formula: # No Show Hours / (# Planned Hours - # Planned EC Hours)"
     value_format_name: percent_1
     group_label: "> Dynamic Measures"
     sql:
-        CASE
-          WHEN {% parameter position_parameter %} = 'Rider' THEN ${pct_no_show_hours_rider}
-          WHEN {% parameter position_parameter %} = 'Picker' THEN ${pct_no_show_hours_picker}
-          WHEN {% parameter position_parameter %} = 'Shift Lead' THEN ${pct_no_show_hours_shift_lead}
-          WHEN {% parameter position_parameter %} = 'Deputy Shift Lead' THEN ${pct_no_show_hours_deputy_shift_lead}
-          WHEN {% parameter position_parameter %} = 'Rider Captain' THEN ${pct_no_show_hours_rider_captain}
-          WHEN {% parameter position_parameter %} = 'WH' THEN ${pct_no_show_hours_wh}
-          WHEN {% parameter position_parameter %} = 'Hub Staff' THEN ${pct_no_show_hours_hub_staff}
-          WHEN {% parameter position_parameter %} = 'Ops Associate' THEN ${pct_no_show_hours_ops_associate}
-      ELSE NULL
-      END ;;
+        case
+          when {% parameter position_parameter %} = 'Rider' THEN ${pct_no_show_hours_rider}
+          when {% parameter position_parameter %} = 'Picker' THEN ${pct_no_show_hours_picker}
+          when {% parameter position_parameter %} = 'Shift Lead' THEN ${pct_no_show_hours_shift_lead}
+          when {% parameter position_parameter %} = 'Deputy Shift Lead' THEN ${pct_no_show_hours_deputy_shift_lead}
+          when {% parameter position_parameter %} = 'Rider Captain' THEN ${pct_no_show_hours_rider_captain}
+          when {% parameter position_parameter %} = 'WH' THEN ${pct_no_show_hours_wh}
+          when {% parameter position_parameter %} = 'Hub Staff' THEN ${pct_no_show_hours_hub_staff}
+          when {% parameter position_parameter %} = 'Ops Associate' THEN ${pct_no_show_hours_ops_associate}
+          else null
+        end ;;
+  }
+
+  measure: pct_no_show_hours_by_position_ec_shifts {
+    type: number
+    label: "% EC No Show Hours"
+    description: "% shift hours when an EC employee has a scheduled shift but does not show up to it without leave reason including deleted shift hours when deletion date is on or after shift date.
+    It includes Excused No Show Hours, Unexcused No Show Hours, Excused Deleted No Show Hours. Formula: # EC No Show Hours / # Planned EC Hours"
+    value_format_name: percent_1
+    group_label: "> Dynamic Measures"
+    sql:
+        case
+          when {% parameter position_parameter %} = 'Rider' THEN ${pct_no_show_hours_rider_ec_shift}
+          when {% parameter position_parameter %} = 'Ops Associate' THEN ${pct_no_show_hours_ops_associate_ec_shift}
+          else null
+        end ;;
+  }
+
+  measure: pct_no_show_hours_by_position_incl_ec_shifts {
+    type: number
+    label: "% No Show Hours (Incl. EC Shift)"
+    description: "% shift hours when an employee (Incl. EC Shifts) has a scheduled shift but does not show up to it without leave reason including deleted shift hours when deletion date is on or after shift date.
+    It includes Excused No Show Hours, Unexcused No Show Hours, Excused Deleted No Show Hours. Formula: (# No Show Hours + # EC No Show Hours) / # Planned Hours"
+    value_format_name: percent_1
+    group_label: "> Dynamic Measures"
+    sql:
+        case
+          when {% parameter position_parameter %} = 'Rider' THEN ${pct_no_show_hours_rider_incl_ec_shift}
+          when {% parameter position_parameter %} = 'Ops Associate' THEN ${pct_no_show_hours_ops_associate_incl_ec_shift}
+          else null
+        end ;;
   }
 
   measure: utr_by_position {
@@ -4213,13 +4786,42 @@ view: staffing {
     value_format_name: decimal_2
     group_label: "> Dynamic Measures"
     sql:
-        CASE
-          WHEN {% parameter position_parameter %} = 'Rider' THEN ${utr_rider}
-          WHEN {% parameter position_parameter %} = 'Picker' THEN ${utr_picker}
-          WHEN {% parameter position_parameter %} = 'Ops Associate' THEN ${utr_ops_associate}
-          WHEN {% parameter position_parameter %} = 'Hub Staff' THEN ${utr_hub_staff}
-      ELSE NULL
-      END ;;
+        case
+          when {% parameter position_parameter %} = 'Rider' THEN ${utr_rider}
+          when {% parameter position_parameter %} = 'Picker' THEN ${utr_picker}
+          when {% parameter position_parameter %} = 'Ops Associate' THEN ${utr_ops_associate}
+          when {% parameter position_parameter %} = 'Hub Staff' THEN ${utr_hub_staff}
+          else null
+        end ;;
+  }
+
+  measure: number_of_overpunched_hours_by_position {
+    type: number
+    label: "# Overpunched Hours (Incl. EC Shift)"
+    description: "When # Worked Hours > # Assigned Hours then # Worked Hours - # Assigned Hours"
+    value_format_name: decimal_1
+    group_label: "> Dynamic Measures"
+    sql:
+        case
+          when {% parameter position_parameter %} = 'Rider' THEN ${number_of_overpunched_hours_rider}
+          when {% parameter position_parameter %} = 'Picker' THEN ${number_of_overpunched_hours_picker}
+          when {% parameter position_parameter %} = 'Shift Lead' THEN ${number_of_overpunched_hours_shift_lead}
+          when {% parameter position_parameter %} = 'Deputy Shift Lead' THEN ${number_of_overpunched_hours_deputy_shift_lead}
+          when {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_overpunched_hours_rider_captain}
+          when {% parameter position_parameter %} = 'WH' THEN ${number_of_overpunched_hours_wh}
+          when {% parameter position_parameter %} = 'Hub Staff' THEN ${number_of_overpunched_hours_hub_staff}
+          when {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_overpunched_hours_ops_associate}
+          else null
+        end ;;
+  }
+
+  measure: pct_overpunched_hours_by_position {
+    type: number
+    label: "% Overpunched Hours (Incl. EC Shift)"
+    description: "Share of Overpunched hours over Punched hours."
+    value_format_name: percent_2
+    group_label: "> Dynamic Measures"
+    sql: ${number_of_overpunched_hours_by_position}/${number_of_worked_hours_by_position} ;;
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
