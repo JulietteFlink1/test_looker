@@ -475,7 +475,7 @@ view: shyftplan_riders_pickers_hours_clean {
   measure: adjusted_orders_pickers {
     type: sum
     sql:${number_of_orders};;
-    filters:[position_name: "picker"]
+    filters:[position_name: "ops associate"]
     hidden: yes
   }
 
