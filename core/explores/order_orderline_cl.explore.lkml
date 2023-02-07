@@ -168,22 +168,24 @@ explore: order_orderline_cl {
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   join: erp_buying_prices {
-    view_label: "ERP Supplier Prices"
+    # hiding this table in favor of the monetary cost values directly in orderline.view
+    view_label: ""
     required_access_grants: [can_view_buying_information]
 
     type: left_outer
     # n orders have the same price
     relationship: many_to_one
     sql_on:
-        ${erp_buying_prices.hub_code}         =  ${orderline.hub_code}                                and
-        ${erp_buying_prices.sku}              =  ${orderline.product_sku}                             and
+        ${erp_buying_prices.hub_code}         =  ${orderline.hub_code}           and
+        ${erp_buying_prices.sku}              =  ${orderline.product_sku}        and
         -- a prive is valid in a certain time frame
-        ${orderline.created_date}             = ${erp_buying_prices.report_date}
+        ${orderline.created_date}             = ${erp_buying_prices.report_date} and
+        {% condition global_filters_and_parameters.datasource_filter %} ${erp_buying_prices.report_date} {% endcondition %}
     ;;
   }
 
   join: sales_weighted_avg_buying_prices {
-    view_label: "ERP Supplier Prices"
+    view_label: ""
     required_access_grants: [can_view_buying_information]
 
     type: left_outer

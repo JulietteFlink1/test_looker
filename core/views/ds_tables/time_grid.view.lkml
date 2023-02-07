@@ -1,5 +1,5 @@
 view: time_grid {
-  sql_table_name: `flink-data-prod.order_forecast.time_grid`
+  sql_table_name: `flink-data-prod.curated.time_grid`
     ;;
 
   dimension_group: date {
@@ -18,7 +18,7 @@ view: time_grid {
     hidden: yes
     convert_tz: yes
     datatype: date
-    sql: ${TABLE}.date ;;
+    sql: ${TABLE}.block_date ;;
   }
 
   dimension_group: end_datetime {
@@ -37,7 +37,7 @@ view: time_grid {
     ]
     convert_tz: yes
     hidden: yes
-    sql: ${TABLE}.end_datetime ;;
+    sql: ${TABLE}.block_ends_at_timestamp ;;
   }
 
   dimension_group: start_datetime {
@@ -58,7 +58,7 @@ view: time_grid {
       year
     ]
     convert_tz: yes
-    sql: ${TABLE}.start_datetime ;;
+    sql: ${TABLE}.block_starts_at_timestamp ;;
     hidden: no
 
   }
