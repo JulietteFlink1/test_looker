@@ -4398,6 +4398,15 @@ view: staffing {
         end ;;
   }
 
+  measure: number_of_planned_hours_excl_no_show_by_position {
+    type: number
+    label: "# Filled Hours (Incl. EC Shift and Excl. No Show)"
+    description: "# Shift Hours Assigned to an Employee including EC Shifts and excluding No Show"
+    value_format_name: decimal_1
+    group_label: "> Dynamic Measures"
+    sql:  ${number_of_planned_hours_by_position}-${number_of_no_show_hours_by_position_incl_ec_shift};;
+  }
+
   measure: number_of_planned_hours_ec_shift_by_position {
     type: number
     label: "# EC Filled Hours"

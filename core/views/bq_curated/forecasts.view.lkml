@@ -529,7 +529,7 @@ view: forecasts {
   measure: pct_missed_orders_forced_closure{
     group_label: "> Order Measures"
     label: "% Missed Orders - Forced Closure"
-    description: "Missed orders (forced closure) divided by Flink Delivered orders, percentage. over Flink Delivered orders."
+    description: "Missed orders (forced closure) divided by Flink Delivered orders, percentage"
     type: number
     sql: ${number_of_missed_orders_forced_closure}/nullif(${orders_with_ops_metrics.number_of_unique_flink_delivered_orders},0) ;;
     value_format_name: percent_2
