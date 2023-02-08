@@ -209,6 +209,7 @@ view: daily_user_aggregates {
     group_label: "Location Dimensions"
     label: "Delivery Latitude"
     description: "Latitude of the delivery address"
+    hidden:  yes
     type: number
     sql: ${TABLE}.delivery_lat ;;
   }
@@ -216,6 +217,7 @@ view: daily_user_aggregates {
     group_label: "Location Dimensions"
     label: "Delivery Longitude"
     description: "Longitude of the delivery address"
+    hidden:  yes
     type: number
     sql: ${TABLE}.delivery_lng ;;
   }
@@ -238,7 +240,7 @@ view: daily_user_aggregates {
   }
   dimension: is_new_user {
     group_label: "Flags | User"
-    description: "Yes if the date of the event is same as the date of first visit of the user"
+    description: "Yes if the date of the event is same as the date of first visit of the anonymous_id"
     type: yesno
     sql: ${TABLE}.is_new_user ;;
   }
@@ -259,7 +261,7 @@ view: daily_user_aggregates {
   }
   dimension: is_address_set {
     group_label: "Flags | Conversion"
-    description: "Yes if user has set the address on the day of the event or previously"
+    description: "Yes if user has a valid hub set"
     type: yesno
     sql: ${TABLE}.is_address_set ;;
   }
@@ -379,7 +381,7 @@ view: daily_user_aggregates {
   }
   dimension: is_product_details_viewed {
     group_label: "Flags | Event"
-    description: "Yes if user has clicked on a product to see the product details"
+    description: "Yes if user has viewed at least one product details page"
     type: yesno
     sql: ${TABLE}.is_product_details_viewed ;;
   }
