@@ -25,6 +25,7 @@ include: "/**/event_stock_correction_started.view.lkml"
 include: "/**/event_stock_correction_finished.view.lkml"
 include: "/**/event_inbound_state_updated.view.lkml"
 include: "/**/event_inbound_progressed.view.lkml"
+include: "/**/event_outbound_progressed.view.lkml"
 include: "/product_consumer/views/bigquery_reporting/daily_violations_aggregates.view.lkml"
 include: "/**/daily_smart_inventory_checks.view"
 
@@ -183,11 +184,21 @@ explore: daily_hub_staff_events {
   }
 
   join: event_inbound_progressed {
-    view_label: "8 Event: Inbound Progressed"
+    view_label: "8 Event: Inbound/ Outbound Progressed"
     fields: [to_include_set*]
     sql_on: ${event_inbound_progressed.event_uuid} = ${daily_hub_staff_events.event_uuid}
       and {% condition global_filters_and_parameters.datasource_filter %}
         ${event_inbound_progressed.event_timestamp_date} {% endcondition %};;
+    type: left_outer
+    relationship: one_to_one
+  }
+
+  join: event_outbound_progressed {
+    view_label: "8 Event: Inbound/ Outbound Progressed"
+    fields: [to_include_set*]
+    sql_on: ${event_outbound_progressed.event_uuid} = ${daily_hub_staff_events.event_uuid}
+      and {% condition global_filters_and_parameters.datasource_filter %}
+        ${event_outbound_progressed.event_timestamp_date} {% endcondition %};;
     type: left_outer
     relationship: one_to_one
   }
