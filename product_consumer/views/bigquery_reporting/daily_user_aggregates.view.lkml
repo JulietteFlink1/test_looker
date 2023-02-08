@@ -148,21 +148,25 @@ view: daily_user_aggregates {
   }
   dimension: is_device_android {
     group_label: "Device Dimensions"
+    description: "Yes if device is Android"
     type: yesno
     sql: ${TABLE}.is_device_android ;;
   }
   dimension: is_device_ios {
     group_label: "Device Dimensions"
+    description: "Yes if device is iOS"
     type: yesno
     sql: ${TABLE}.is_device_ios ;;
   }
   dimension: is_device_windows {
     group_label: "Device Dimensions"
+    description: "Yes if device is web"
     type: yesno
     sql: ${TABLE}.is_device_windows ;;
   }
   dimension: is_device_macintosh {
     group_label: "Device Dimensions"
+    description: "Yes if device is Macintosh"
     type: yesno
     sql: ${TABLE}.is_device_macintosh ;;
   }
@@ -178,6 +182,7 @@ view: daily_user_aggregates {
 
   dimension: hub_code {
     group_label: "Location Dimensions"
+    description: "Unique identifier of the hubs"
     type: string
     sql: ${TABLE}.hub_code ;;
   }
@@ -189,24 +194,28 @@ view: daily_user_aggregates {
   }
   dimension: city {
     group_label: "Location Dimensions"
+    description: "City of the user"
     type: string
     sql: ${TABLE}.city ;;
   }
   dimension: country_iso {
     group_label: "Location Dimensions"
     label: "Country ISO"
+    description: "Country of the user"
     type: string
     sql: ${TABLE}.country_iso ;;
   }
   dimension: delivery_lat {
     group_label: "Location Dimensions"
     label: "Delivery Latitude"
+    description: "Latitude of the delivery address"
     type: number
     sql: ${TABLE}.delivery_lat ;;
   }
   dimension: delivery_lng {
     group_label: "Location Dimensions"
     label: "Delivery Longitude"
+    description: "Longitude of the delivery address"
     type: number
     sql: ${TABLE}.delivery_lng ;;
   }
@@ -223,17 +232,20 @@ view: daily_user_aggregates {
 
   dimension: is_active_user {
     group_label: "Flags | User"
+    description: "Yes if a user has triggered at least 2 different events in a day (excluding app/ web opened, app installed, experiment viewed and device_category)"
     type: yesno
     sql: ${TABLE}.is_active_user ;;
   }
   dimension: is_new_user {
     group_label: "Flags | User"
+    description: "Yes if the date of the event is same as the date of first visit of the user"
     type: yesno
     sql: ${TABLE}.is_new_user ;;
   }
 
   dimension: is_user_logged_in {
     group_label: "Flags | User"
+    description: "Yes if user logs in at any point during the day"
     type: yesno
     sql: ${TABLE}.is_user_logged_in ;;
   }
@@ -241,36 +253,43 @@ view: daily_user_aggregates {
   # Conversion Flags
   dimension: is_web_app_opened {
     group_label: "Flags | Conversion"
+    description: "Yes if user opened the app or web at least once during the day"
     type: yesno
     sql: ${TABLE}.is_web_app_opened ;;
   }
   dimension: is_address_set {
     group_label: "Flags | Conversion"
+    description: "Yes if user has set the address on the day of the event or previously"
     type: yesno
     sql: ${TABLE}.is_address_set ;;
   }
   dimension: is_product_added_to_cart {
     group_label: "Flags | Conversion"
+    description: "Yes if user has added at least one product to cart"
     type: yesno
     sql: ${TABLE}.is_product_added_to_cart ;;
   }
   dimension: is_cart_viewed {
     group_label: "Flags | Conversion"
+    description: "Yes if user has viewed cart at least once"
     type: yesno
     sql: ${TABLE}.is_cart_viewed ;;
   }
   dimension: is_checkout_viewed {
     group_label: "Flags | Conversion"
+    description: "Yes if user has viewed checkout at least once"
     type: yesno
     sql: ${TABLE}.is_checkout_viewed ;;
   }
   dimension: is_payment_started {
     group_label: "Flags | Conversion"
+    description: "Yes if user has started payment at least once"
     type: yesno
     sql: ${TABLE}.is_payment_started ;;
   }
   dimension: is_order_placed {
     group_label: "Flags | Conversion"
+    description: "Yes if user has placed any order"
     type: yesno
     sql: ${TABLE}.is_order_placed ;;
   }
@@ -348,26 +367,31 @@ view: daily_user_aggregates {
 
   dimension: is_product_removed_from_cart {
     group_label: "Flags | Event"
+    description: "Yes if any product has been removed from cart"
     type: yesno
     sql: ${TABLE}.is_product_removed_from_cart ;;
   }
   dimension: is_product_added_to_favourites {
     group_label: "Flags | Event"
+    description: "Yes if user has added any product to favourites"
     type: yesno
     sql: ${TABLE}.is_product_added_to_favourites ;;
   }
   dimension: is_product_details_viewed {
     group_label: "Flags | Event"
+    description: "Yes if user has clicked on a product to see the product details"
     type: yesno
     sql: ${TABLE}.is_product_details_viewed ;;
   }
   dimension: is_product_search_viewed {
     group_label: "Flags | Event"
+    description: "Yes if user has clicked on the product search bar"
     type: yesno
     sql: ${TABLE}.is_product_search_viewed ;;
   }
   dimension: is_product_search_executed {
     group_label: "Flags | Event"
+    description: "Yes if user has executed a search by typing a keyword in the search bar"
     type: yesno
     sql: ${TABLE}.is_product_search_executed ;;
   }
@@ -376,45 +400,53 @@ view: daily_user_aggregates {
 
   dimension: is_checkout_started {
     group_label: "Flags | Event"
+    description: "Yes if user has started check-out"
     type: yesno
     sql: ${TABLE}.is_checkout_started ;;
   }
   dimension: is_payment_failed {
     group_label: "Flags | Event"
+    description: "Yes if any payment has failed"
     type: yesno
     sql: ${TABLE}.is_payment_failed ;;
   }
   dimension: is_first_order_placed {
     group_label: "Flags | Event"
+    description: "Yes if a user has successfully placed the first order. This is device specific meaning a user can have more than one first orders if ordering from multiple devices"
     type: yesno
     sql: ${TABLE}.is_first_order_placed ;;
   }
   dimension: is_voucher_wallet_viewed {
     group_label: "Flags | Event"
+    description: "Yes if user has viewed the voucher wallet at least once"
     label: "Is Voucher Wallet Viewed"
     type: yesno
     sql: ${TABLE}.is_voucher_wallet_viewed ;;
   }
   dimension: is_voucher_redemption_attempted {
     group_label: "Flags | Event"
+    description: "Yes if user has attempted to apply a voucher"
     label: "Is Discount Code Redemption Attempted"
     type: yesno
     sql: ${TABLE}.is_voucher_redemption_attempted ;;
   }
   dimension: is_voucher_applied_succeeded {
     group_label: "Flags | Event"
+    description: "Yes if user has successfully added a voucher"
     label: "Is Discount Code Applied Succeeded"
     type: yesno
     sql: ${TABLE}.is_voucher_applied_succeeded ;;
   }
   dimension: is_voucher_applied_failed {
     group_label: "Flags | Event"
+    description: "Yes if voucher application has failed"
     label: "Is Discount Code Applied Failed"
     type: yesno
     sql: ${TABLE}.is_voucher_applied_failed ;;
   }
   dimension: is_rider_tip_selected {
     group_label: "Flags | Event"
+    description: "Yes if user has selected any value of rider tip on checkout"
     type: yesno
     sql: ${TABLE}.is_rider_tip_selected ;;
   }
@@ -422,76 +454,91 @@ view: daily_user_aggregates {
   # Generic Flags
   dimension: is_address_confirmed {
     group_label: "Flags | Event"
+    description: "Yes if user has confirmed address by clicking on the confirm address button "
     type: yesno
     sql: ${TABLE}.is_address_confirmed ;;
   }
   dimension: is_account_login_succeeded {
     group_label: "Flags | Event"
+    description: "Yes if the user has successfully logged in"
     type: yesno
     sql: ${TABLE}.is_account_login_succeeded ;;
   }
   dimension: is_account_logout_clicked {
     group_label: "Flags | Event"
+    description: "Yes if the user has clicked on the log out button from profile"
     type: yesno
     sql: ${TABLE}.is_account_logout_clicked ;;
   }
   dimension: is_account_registration_viewed {
     group_label: "Flags | Event"
+    description: "Yes if the user has viewed the account registration screen either from profile or cart"
     type: yesno
     sql: ${TABLE}.is_account_registration_viewed ;;
   }
   dimension: is_account_registration_succeeded {
     group_label: "Flags | Event"
+    description: "Yes if user has successfully created the account and moved to SMS verification"
     type: yesno
     sql: ${TABLE}.is_account_registration_succeeded ;;
   }
   dimension: is_sms_verification_request_viewed {
     group_label: "Flags | Event"
+    description: "Yes if user has viewed the screen asking for phone number to send SMS verification code"
     type: yesno
     sql: ${TABLE}.is_sms_verification_request_viewed ;;
   }
   dimension: is_sms_verification_send_code_clicked {
     group_label: "Flags | Event"
+    description: "Yes if user has agreed to receive the verification code by clicking on the send verification code "
     type: yesno
     sql: ${TABLE}.is_sms_verification_send_code_clicked ;;
   }
   dimension: is_sms_verification_viewed {
     group_label: "Flags | Event"
+    description: "Yes if user has viewed the SMS verification screen asking for verification code"
     type: yesno
     sql: ${TABLE}.is_sms_verification_viewed ;;
   }
   dimension: is_sms_verification_clicked {
     group_label: "Flags | Event"
+    description: "Yes if user has confirmed the verification code by clicking on 'Verify' button"
     type: yesno
     sql: ${TABLE}.is_sms_verification_clicked ;;
   }
   dimension: is_sms_verification_confirmed {
     group_label: "Flags | Event"
+    description: "Yes if user has received the in-app message for successful SMS verification"
     type: yesno
     sql: ${TABLE}.is_sms_verification_confirmed ;;
   }
   dimension: is_home_viewed {
     group_label: "Flags | Event"
+    description: "Yes if user has viewed the home screen"
     type: yesno
     sql: ${TABLE}.is_home_viewed ;;
   }
   dimension: is_category_selected {
     group_label: "Flags | Event"
+    description: "Yes if user has selected any category"
     type: yesno
     sql: ${TABLE}.is_category_selected ;;
   }
   dimension: is_hub_temporary_unavailable {
     group_label: "Flags | Event"
+    description: "Yes if a hub is temporarily closed at any point in a day"
     type: yesno
     sql: ${TABLE}.is_hub_temporary_unavailable ;;
   }
   dimension: is_hub_regular_unavailable {
     group_label: "Flags | Event"
+    description: "Yes if a hub is permanently closed"
     type: yesno
     sql: ${TABLE}.is_hub_regular_unavailable ;;
   }
   dimension: is_favourites_viewed {
     group_label: "Flags | Event"
+    description: "Yes if user has viewed 'My Favourites'"
     label: "Is Favourites Viewed"
     type: yesno
     sql: ${TABLE}.is_favourites_viewed ;;
@@ -719,6 +766,7 @@ view: daily_user_aggregates {
   measure: number_of_address_confirmed {
     group_label: "Event Metrics"
     label: "# Address Confirmed"
+    description: "Sum of number of times address has been confirmed"
     type: sum
     hidden: no
     sql: ${dim_number_of_address_confirmed} ;;
@@ -726,6 +774,7 @@ view: daily_user_aggregates {
   measure: number_of_product_added_to_cart {
     group_label: "Event Metrics"
     label: "# Product Added to Cart"
+    description: "Sum of number of times a product has been added to cart"
     type: sum
     hidden: no
     sql: ${dim_number_of_product_added_to_cart} ;;
@@ -733,6 +782,7 @@ view: daily_user_aggregates {
   measure: number_of_cart_viewed {
     group_label: "Event Metrics"
     label: "# Cart Viewed"
+    description: "Sum of number of times cart has been viewed"
     type: sum
     hidden: no
     sql: ${dim_number_of_cart_viewed} ;;
@@ -740,6 +790,7 @@ view: daily_user_aggregates {
   measure: number_of_checkout_viewed {
     group_label: "Event Metrics"
     label: "# Checkout Viewed"
+    description: "Sum of number of times checkout has been viewed"
     type: sum
     hidden: no
     sql: ${dim_number_of_checkout_viewed} ;;
@@ -747,6 +798,7 @@ view: daily_user_aggregates {
   measure: number_of_payment_started {
     group_label: "Event Metrics"
     label: "# Payment Atarted"
+    description: "Sum of number of times payment has been initiated"
     type: sum
     hidden: no
     sql: ${dim_number_of_payment_started};;
@@ -754,6 +806,7 @@ view: daily_user_aggregates {
   measure: number_of_order_placed {
     group_label: "Event Metrics"
     label: "# Order Placed"
+    description: "Sum of number of times an order has been placed successfully"
     type: sum
     hidden: no
     sql: ${dim_number_of_order_placed};;
@@ -763,6 +816,7 @@ view: daily_user_aggregates {
   measure: number_of_product_removed_from_cart {
     group_label: "Event Metrics"
     label: "# Product Removed from Cart"
+    description: "Sum of number of times a product has been removed from the cart"
     type: sum
     hidden: no
     sql: ${dim_number_of_product_removed_from_cart} ;;
@@ -770,6 +824,7 @@ view: daily_user_aggregates {
   measure: number_of_product_added_to_favourites {
     group_label: "Event Metrics"
     label: "# Product Added to Favourites"
+    description: "Sum of the number of times a product has been added to favourites"
     type: sum
     hidden: no
     sql: ${dim_number_of_product_added_to_favourites} ;;
@@ -777,6 +832,7 @@ view: daily_user_aggregates {
   measure: number_of_product_details_viewed {
     group_label: "Event Metrics"
     label: "# Product Details Viewed (PDP)"
+    description: "Sum of number of times product details has been viewed"
     type: sum
     hidden: no
     sql: ${dim_number_of_product_details_viewed} ;;
@@ -784,6 +840,7 @@ view: daily_user_aggregates {
   measure: number_of_product_search_viewed {
     group_label: "Event Metrics"
     label: "# Product Search Viewed"
+    description: "Sum of number of times users have clicked on the search bar"
     type: sum
     hidden: no
     sql: ${dim_number_of_product_search_viewed} ;;
@@ -793,6 +850,7 @@ view: daily_user_aggregates {
   measure: number_of_checkout_started {
     group_label: "Event Metrics"
     label: "# Checkout Started"
+    description: "Sum of number of times check-out has started"
     type: sum
     hidden: no
     sql: ${dim_number_of_checkout_started} ;;
@@ -801,6 +859,7 @@ view: daily_user_aggregates {
   measure: number_of_payment_failed {
     group_label: "Event Metrics"
     label: "# Payment Failed"
+    description: "Sum of number of times payment has failed"
     type: sum
     hidden: no
     sql: ${dim_number_of_payment_failed};;
@@ -808,6 +867,7 @@ view: daily_user_aggregates {
   measure: number_of_first_order_placed {
     group_label: "Event Metrics"
     label: "# First Order Placed"
+    description: "Sum of number of times first order has been placed (Note: First orders are device specific)"
     type: sum
     hidden: no
     sql: ${dim_number_of_first_order_placed};;
@@ -815,6 +875,7 @@ view: daily_user_aggregates {
   measure: number_of_rider_tip_selected {
     group_label: "Event Metrics"
     label: "# Rider Tip Selected"
+    description: "Sum of number of times a rider tip value has been selected from the tip options in checkout"
     type: sum
     hidden: no
     sql: ${dim_number_of_rider_tip_selected};;
@@ -824,6 +885,7 @@ view: daily_user_aggregates {
   measure: number_of_voucher_wallet_viewed {
     group_label: "Event Metrics"
     label: "# Voucher Wallet Viewed"
+    description: "Sum of number of times voucher wallet has been viewed"
     type: sum
     hidden: no
     sql: ${dim_number_of_voucher_wallet_viewed};;
@@ -831,6 +893,7 @@ view: daily_user_aggregates {
   measure: number_of_voucher_redemption_attempted {
     group_label: "Event Metrics"
     label: "# Discount Code Redemption Attempted"
+    description: "Sum of number of times voucher redemption has been attempted by clicking on the 'Apply' button"
     type: sum
     hidden: no
     sql: ${dim_number_of_voucher_redemption_attempted};;
@@ -838,6 +901,7 @@ view: daily_user_aggregates {
   measure: number_of_voucher_applied_succeeded {
     group_label: "Event Metrics"
     label: "# Discount Code Applied Succeeded"
+    description: "Sum of number of times voucher code application has been successful"
     type: sum
     hidden: no
     sql: ${dim_number_of_voucher_applied_succeeded};;
@@ -845,6 +909,7 @@ view: daily_user_aggregates {
   measure: number_of_voucher_applied_failed {
     group_label: "Event Metrics"
     label: "# Discount Code Applied Failed"
+    description: "Sum of number of times voucher code application has failed"
     type: sum
     hidden: no
     sql: ${dim_number_of_voucher_applied_failed};;
@@ -852,6 +917,7 @@ view: daily_user_aggregates {
   measure: voucher_failure_rate {
     group_label: "Event Metrics"
     label: "% Discount Code Failure Rate"
+    description: "% of voucher applied failed out of voucher redemption attempted"
     type: number
     hidden: no
     sql: ${number_of_voucher_applied_failed}/${number_of_voucher_redemption_attempted};;
@@ -860,6 +926,7 @@ view: daily_user_aggregates {
   measure: voucher_success_rate {
     group_label: "Event Metrics"
     label: "% Discount Code Success Rate"
+    description: "% of voucher applied succeeded out of voucher redemption attempted"
     type: number
     hidden: no
     sql: ${number_of_voucher_applied_succeeded}/${number_of_voucher_redemption_attempted};;
@@ -868,6 +935,7 @@ view: daily_user_aggregates {
   measure: voucher_attempt_rate {
     group_label: "Event Metrics"
     label: "% Discount Code Attempt Rate"
+    description: "% of voucher redemption attempted out of checkout viewed"
     type: number
     hidden: no
     sql: ${number_of_voucher_redemption_attempted}/${number_of_checkout_viewed};;
@@ -887,6 +955,7 @@ view: daily_user_aggregates {
   measure: number_of_account_login_succeeded {
     group_label: "Event Metrics"
     label: "# Accounts Logged-in"
+    description: "Sum of number of times account login succeeded"
     type: sum
     hidden: no
     sql: ${dim_number_of_account_login_succeeded};;
@@ -894,6 +963,7 @@ view: daily_user_aggregates {
   measure: number_of_account_logout_clicked {
     group_label: "Event Metrics"
     label:  "# Accounts Logged-out"
+    description: "Sum of number of times log out button has been clicked"
     type: sum
     hidden: no
     sql: ${dim_number_of_account_logout_clicked};;
@@ -901,6 +971,7 @@ view: daily_user_aggregates {
   measure: number_of_categories_selected {
     group_label: "Event Metrics"
     label: "# Category Selected"
+    description: "Sum of number of times a category has been selected"
     type: sum
     hidden: no
     sql: ${dim_number_of_categories_selected};;
@@ -908,6 +979,7 @@ view: daily_user_aggregates {
   measure: number_of_home_viewed {
     group_label: "Event Metrics"
     label: "# Home Viewed"
+    description: "Sum of number of times home screen has been viewed"
     type: sum
     hidden: no
     sql: ${dim_number_of_home_viewed} ;;
@@ -915,6 +987,7 @@ view: daily_user_aggregates {
   measure: number_of_search_executed {
     group_label: "Event Metrics"
     label: "# Product Search Executed"
+    description: "Sum of number of times product search has been executed by typing a keyword in search bar"
     type: sum
     hidden: no
     sql: ${dim_number_of_product_search_executed} ;;
@@ -922,6 +995,7 @@ view: daily_user_aggregates {
   measure: number_of_favourites_viewed {
     group_label: "Event Metrics"
     label: "# Favourites Viewed"
+    description: "Sum of number of times 'My Favourites' has been viewed"
     type: sum
     hidden: no
     sql: ${dim_number_of_favourties_viewed} ;;
@@ -929,7 +1003,9 @@ view: daily_user_aggregates {
 
   # Basic counts
   measure: daily_user_events {
-    label: "Count "
+    group_label: "User Metrics"
+    label: "# Daily Users"
+    description: "Number of unique daily users. When a user browses in two different days he/she is considered as two separate daily users"
     type: count_distinct
     sql: ${daily_user_uuid} ;;
   }
@@ -943,7 +1019,7 @@ view: daily_user_aggregates {
   measure: active_users {
     group_label: "User Metrics"
     label: "# Active Users (unique)"
-    description: "Number of Unique Active Users within selected timeframe (note: an active user is a user whogenerated at least 2 various events when browsing Flink app/web.)"
+    description: "Number of Unique Active Users within selected timeframe (note: an active user is a user who generated at least 2 various events when browsing Flink app/web.)"
     type: count_distinct
     sql: ${user_uuid} ;;
     filters: [is_active_user: "yes"]
@@ -1446,7 +1522,7 @@ view: daily_user_aggregates {
   measure: new_users_with_sms_verification_request_viewed {
     hidden: yes
     group_label: "User And Account Verification Metrics"
-    label: "# New Users with SMS Veri Request Viewed "
+    label: "# New Users with SMS Verification Request Viewed "
     type: count_distinct
     sql: ${user_uuid} ;;
     filters: [is_account_registration_succeeded: "yes" , is_sms_verification_request_viewed: "yes"]
