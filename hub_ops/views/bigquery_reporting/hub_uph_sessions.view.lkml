@@ -195,7 +195,7 @@ view: hub_uph_sessions {
     sql: case when ${session_type} like '%idle%' and  ${session_duration_hours}>2 then true else false end  ;;
   }
 
-  measure: number_of_sessions {
+  measure: number_of_unique_sessions {
     group_label: "> Quantities"
     label: "# Sessions"
     description: "Number of Sessions."
@@ -272,7 +272,7 @@ view: hub_uph_sessions {
   measure: sum_of_session_duration_hours {
     group_label: "> Durations"
     label: "SUM Session Duration Hours"
-    description: "Sum of all session durations. In hours,"
+    description: "Sum of all session durations. In hours."
     type: sum
     sql: ${session_duration_hours} ;;
     value_format_name: decimal_2
@@ -281,7 +281,7 @@ view: hub_uph_sessions {
   measure: sum_of_direct_session_order_preparation_duration_hours {
     group_label: "> Durations"
     label: "SUM Direct Hours - Order Preparation"
-    description: "Number of hours spent on the direct order preparation process. Filtered for flow order_preparation and sessio type direct"
+    description: "Number of hours spent on the direct order preparation process. Filtered for flow order_preparation and session type direct"
     type: sum
     sql: ${session_duration_hours} ;;
     filters: [flow: "order_preparation",session_type: "direct"]
@@ -291,7 +291,7 @@ view: hub_uph_sessions {
   measure: sum_of_direct_session_inbounding_duration_hours {
     group_label: "> Durations"
     label: "SUM Direct Hours - Inbounding"
-    description: "Number of hours spent on the direct inbounding process. Filtered for flow inbounding and sessio type direct"
+    description: "Number of hours spent on the direct inbounding process. Filtered for flow inbounding and session type direct"
     type: sum
     sql: ${session_duration_hours} ;;
     filters: [flow: "inbounding",session_type: "direct"]
@@ -301,7 +301,7 @@ view: hub_uph_sessions {
   measure: sum_of_direct_session_inventory_check_duration_hours {
     group_label: "> Durations"
     label: "SUM Direct Hours - Inventory Check"
-    description: "Number of hours spent on the direct inventory check process. Filtered for flow inventory check and sessio type direct"
+    description: "Number of hours spent on the direct inventory check process. Filtered for flow inventory check and session type direct"
     type: sum
     sql: ${session_duration_hours} ;;
     filters: [flow: "inventory_check",session_type: "direct"]
@@ -321,7 +321,7 @@ view: hub_uph_sessions {
   measure: sum_of_internal_idle_session_inbounding_duration_hours {
     group_label: "> Durations"
     label: "SUM Internal Idle Hours - Inbounding"
-    description: "Number of hours spent on the indirect idle inbounding process. Filtered for flow inbounding and sessio type indirect idle"
+    description: "Number of hours spent on the indirect idle inbounding process. Filtered for flow inbounding and session type indirect idle"
     type: sum
     sql: ${session_duration_hours} ;;
     filters: [flow: "inbounding",session_type: "internal_idle"]
