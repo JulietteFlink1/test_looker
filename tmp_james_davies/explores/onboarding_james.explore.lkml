@@ -9,7 +9,7 @@ explore: james_onboarding_task {
   label: "30 Day Order and Rider Ouput"
   description: "Order and Rider ouput from the last 30 days for successful orders. KPIs include # Orders,
   # Riders, # Rider Hours Worked, Avg Fulfullment Time, Avg Items per Basket"
-  hidden: no
+  hidden: yes
 
   always_filter: {
     filters: [
