@@ -1,6 +1,6 @@
 view: coupa_orders_and_invoices_merged {
-  sql_table_name: `flink-data-prod.curated_finance.coupa_orders_and_invoices_merged`
-    ;;
+  sql_table_name: `flink-data-dev.dbt_vbreda_curated_finance.coupa_orders_and_invoices_merged`
+    ;; # above line to be modified before merging
 
 # This view provides information about the orders and invoices that influence the budget of hubs.
 # Author: Victor Breda
@@ -69,6 +69,12 @@ view: coupa_orders_and_invoices_merged {
     hidden: yes
     description: "Name of the budgeted period. Contains information about the country and month. Eg. DE Budget 10/22."
     sql: ${TABLE}.period_name ;;
+  }
+
+  dimension: commodity_name {
+    type: string
+    description: "Name of the commodity group the order line/invoice line item is part of."
+    sql: ${TABLE}.commodity_name ;;
   }
 
   dimension: is_invoice {
