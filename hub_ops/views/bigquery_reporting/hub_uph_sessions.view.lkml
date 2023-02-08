@@ -99,6 +99,7 @@ view: hub_uph_sessions {
 
   dimension: session_duration_hours {
     group_label: "> Duration Dimensions"
+    label: "Session Duration (Hours)"
     description: "Difference between session ends at timestamp and session starts at timestamp. In hours."
     type: number
     sql: ${TABLE}.session_duration_hours ;;
@@ -106,6 +107,7 @@ view: hub_uph_sessions {
 
   dimension: session_duration_minutes {
     group_label: "> Duration Dimensions"
+    label: "Session Duration (Minutes)"
     description: "Difference between session ends at timestamp and session starts at timestamp. In minutes."
     type: number
     sql: ${TABLE}.session_duration_minutes ;;
@@ -113,6 +115,7 @@ view: hub_uph_sessions {
 
   dimension: session_duration_seconds {
     group_label: "> Duration Dimensions"
+    label: "Session Duration (Seconds)"
     description: "Difference between session ends at timestamp and session starts at timestamp. In seconds."
     type: number
     sql: ${TABLE}.session_duration_seconds ;;
@@ -129,7 +132,6 @@ view: hub_uph_sessions {
       week,
       month,
       minute30,
-      year,
       hour_of_day
     ]
     sql: ${TABLE}.session_ends_at_timestamp ;;
@@ -146,7 +148,6 @@ view: hub_uph_sessions {
       week,
       month,
       minute30,
-      year,
       hour_of_day
     ]
     sql: ${TABLE}.session_starts_at_timestamp ;;
