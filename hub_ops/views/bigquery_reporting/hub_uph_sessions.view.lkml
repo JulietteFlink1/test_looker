@@ -289,7 +289,7 @@ view: hub_uph_sessions {
   measure: sum_of_direct_session_order_preparation_duration_hours {
     group_label: "> Durations"
     label: "SUM Direct Hours - Order Preparation"
-    description: "Number of hours spent on the direct order preparation process. Filtered for flow order_preparation and sessio type direct"
+    description: "Number of hours spent on the direct order preparation process. Filtered for flow order_preparation and session type direct"
     type: sum
     sql: ${session_duration_hours} ;;
     filters: [flow: "order_preparation",session_type: "direct"]
