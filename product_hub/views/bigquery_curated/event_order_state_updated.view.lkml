@@ -29,7 +29,8 @@ view: event_order_state_updated {
       order_packed_time,
       picked_to_picking_finished_seconds,
       picking_finished_to_packed_seconds,
-      picked_to_packed_seconds
+      picked_to_packed_seconds,
+      number_of_orders
     ]
   }
 
@@ -238,6 +239,14 @@ view: event_order_state_updated {
     description: "Number of events triggered"
     type: count_distinct
     sql: ${TABLE}.event_uuid ;;
+  }
+
+  measure: number_of_orders {
+    group_label: "Total Metrics"
+    label: "# Orders"
+    description: "Number of Orders."
+    type: count_distinct
+    sql: ${TABLE}.order_id ;;
   }
 
   measure: count_distinct_picking_hours {

@@ -467,6 +467,25 @@ view: employee_level_kpis {
     hidden: yes
   }
 
+  # Adding a UTR-like dimension in order to build tiered graphs based on their performance. Might be different from the "Normal UTR", only needed for tiering.
+  dimension: number_of_delivered_orders_per_worked_hour {
+    type: number
+    sql: ${TABLE}.number_of_delivered_orders/(nullif(${TABLE}.number_of_worked_minutes,0)/60) ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  dimension: number_of_delivered_orders_per_worked_hour_tiered {
+    group_label: "> Logistics"
+    label: "Shift-based UTR, Tiered"
+    type: tier
+    tiers: [0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 2.2, 2.4, 2.6, 2.8, 3.0, 3.2, 3.4, 3.6, 3.8, 4.0, 4.2, 4.4, 4.6, 4.8, 5.0, 5.2, 5.4, 5.6, 5.8, 6.0, 7.0, 8.0]
+    sql: ${number_of_delivered_orders_per_worked_hour} ;;
+    value_format_name: decimal_1
+    style: interval
+  }
+
+
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -976,7 +995,7 @@ view: employee_level_kpis {
     label: "% Worked Time Spent Idle (Riders)"
     description: "% of worked time (min) not spent handling an order - compares the difference between worked time (min) and rider handling time (min) with total worked time (min)"
     sql: ${sum_rider_idle_time_minutes} / nullif(${sum_worked_time_minutes_rider},0) ;;
-    value_format: "0%"
+    value_format_name: percent_2
   }
 
   # ~~~~~~~~~~~~~~~     Shift related     ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1159,7 +1178,7 @@ view: employee_level_kpis {
     group_label: "> Shift Related"
     type: sum
     label: "# Vacation Hours"
-    description: "Number of Absence hours with leave reason containing the word 'vacation' (excluding absences defined as no shows)"
+    description: "Number of Absence hours with leave reason containing the word 'vacation' or 'congé payé' or 'holiday paid' (excluding absences defined as no shows)"
     sql: ${TABLE}.number_of_vacation_minutes/60 ;;
     value_format_name: decimal_1
   }

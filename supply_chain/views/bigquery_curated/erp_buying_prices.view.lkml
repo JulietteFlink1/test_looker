@@ -57,7 +57,6 @@ view: erp_buying_prices {
             ),
             null)
     ;;
-
     value_format_name: eur
   }
 
@@ -89,7 +88,7 @@ view: erp_buying_prices {
 
   dimension: margin_absolute {
     label: "€ Unit Margin"
-    description: "The unit margin defined as Net Unit Price substracted by the Buying Price"
+    description: "The unit margin defined as Net Unit Price substracted by the Weighted Average Cost (WAC). ℹ️ Before 27th. of Jan 2023, this field is using the simple unit cost."
     type: number
     sql: ${net_income} - ${vendor_price} ;;
     value_format_name: eur
@@ -97,7 +96,7 @@ view: erp_buying_prices {
 
   dimension: margin_absolute_after_product_discount {
     label: "€ Unit Margin After Product Discount"
-    description: "The unit margin defined as Net Unit Price after deduction of Product Discount  substracted by the Buying Price"
+    description: "The unit margin defined as Net Unit Price after deduction of Product Discount  substracted by the Weighted Average Cost (WAC). ℹ️ Before 27th. of Jan 2023, this field is using the simple unit cost."
     type: number
     sql: ${net_income_after_product_discount} - ${vendor_price} ;;
     value_format_name: eur
@@ -125,6 +124,14 @@ view: erp_buying_prices {
     sql: ${TABLE}.erp_vendor_name ;;
 
     # this field is not part of the refactored table anymore, but can be derived from e.g. erp_product_hub_vendor_assignment_v2
+    hidden: no
+  }
+
+  dimension: supplier_site {
+    label: "Supplier Site"
+    type: string
+    sql: ${TABLE}.supplier_site ;;
+    description: "Site of the supplier/vendor of a product, defined as Supplier Name + Location."
     hidden: no
   }
 
@@ -161,13 +168,33 @@ view: erp_buying_prices {
   }
 
   dimension: vendor_price {
-    label: "Buying Price"
+    label: "Weighted Average Cost (WAC) Net"
+    description: "Buying price, that can be used for product sales. It resembles the weighted buying price of the current stock. This is done (in Oracle) to ensure that we value the inventory at any given day with the average value of our current stock (and not with the most recent buying price to place a supplier order). ℹ️ Before 27th. of Jan 2023, this field is using the simple unit cost."
     type: number
-    sql: ${TABLE}.amt_buying_price_net_eur ;;
+    sql: coalesce(
+            ${TABLE}.amt_buying_price_weighted_rolling_average_net_eur,
+            ${TABLE}.amt_buying_price_net_eur
+            );;
     value_format_name: decimal_4
   }
 
+  dimension: amt_buying_price_net_eur {
+    required_access_grants: [can_view_buying_information]
+    type: number
+    sql: ${TABLE}.amt_buying_price_net_eur;;
+    hidden: yes
+  }
 
+  dimension: amt_weighted_average_cost_net_eur {
+    required_access_grants: [can_view_buying_information]
+    label: "Weighted Average Cost (WAC) (Net)."
+    description: "Buying price, that can be used for product sales. It resembles the weighted buying price of the current stock. This is done (in Oracle) to ensure that we value the inventory at any given day with the average value of our current stock (and not with the most recent buying price to place a supplier order). ℹ️ Before 27th. of Jan 2023, this field is using the simple unit cost."
+    group_label: "> Monetary Metrics (P&L)"
+    type: number
+    sql: ${TABLE}.amt_buying_price_weighted_rolling_average_net_eur ;;
+    value_format_name: decimal_4
+    hidden: yes
+  }
 
   # =========  hidden   =========
   dimension: currency {
@@ -256,8 +283,8 @@ view: erp_buying_prices {
 
 
   measure: avg_vendor_price {
-    label: "AVG Buying Price"
-    description: "The  sum of COGS divided by the sum of Item Quantity Sold"
+    label: "AVG Weighted Average Cost (WAC)"
+    description: "The simple average of Weighted Average Cost (WAC)s. ℹ️ Before 27th. of Jan 2023, this field is using the simple unit cost."
     type: average
     sql: ${vendor_price} ;;
     value_format_name: decimal_4
@@ -283,7 +310,7 @@ view: erp_buying_prices {
 
   measure: sum_total_margin_abs {
     label: "€ Sum Gross Profit"
-    description: "The sum of all Unit Margins defined as Net Unit Price minus Buying Price"
+    description: "The sum of all Unit Margins defined as Net Unit Price minus Weighted Average Cost (WAC). ℹ️ Before 27th. of Jan 2023, this field is using the simple unit cost."
     type: sum
     sql: (${orderline.quantity} * ${margin_absolute}) ;;
     value_format_name: eur
@@ -292,7 +319,7 @@ view: erp_buying_prices {
 
   measure: sum_total_margin_abs_after_waste {
     label: "€ Sum Gross Profit after Waste"
-    description: "The sum of all Unit Margins defined as Net Unit Price minus Buying Price after Waste (Net)"
+    description: "The sum of all Unit Margins defined as Net Unit Price minus Weighted Average Cost (WAC) after Waste (Net). ℹ️ Before 27th. of Jan 2023, this field is using the simple unit cost."
     type: number
     sql: ${sum_total_margin_abs} - ${inventory_changes_daily.sum_outbound_waste_per_buying_price_net} ;;
     value_format_name: eur
@@ -300,7 +327,7 @@ view: erp_buying_prices {
 
   measure: sum_total_margin_abs_after_product_discount {
     label: "€ Sum Gross Profit After Product Discount"
-    description: "The sum of all Unit Margins defined as Net Unit Price after deduction of Product Discount minus Buying Price"
+    description: "The sum of all Unit Margins defined as Net Unit Price after deduction of Product Discount minus Weighted Average Cost (WAC). ℹ️ Before 27th. of Jan 2023, this field is using the simple unit cost."
     type: sum
     sql: (${orderline.quantity} * ${margin_absolute_after_product_discount}) ;;
     value_format_name: eur
@@ -309,7 +336,7 @@ view: erp_buying_prices {
 
   measure: sum_total_margin_abs_after_product_discount_and_waste {
     label: "€ Sum Gross Profit After Product Discount and Waste"
-    description: "The sum of all Unit Margins defined as Net Unit Price after deduction of Product Discount minus Buying Price and Waste (Net)"
+    description: "The sum of all Unit Margins defined as Net Unit Price after deduction of Product Discount minus Weighted Average Cost (WAC) and Waste (Net). ℹ️ Before 27th. of Jan 2023, this field is using the simple unit cost."
     type: number
     sql: ${sum_total_margin_abs_after_product_discount} - ${inventory_changes_daily.sum_outbound_waste_per_buying_price_net} ;;
     value_format_name: eur
@@ -407,7 +434,7 @@ view: erp_buying_prices {
 
   dimension: margin_absolute_dynamic {
     label: "€ Unit Margin (Dynamic)"
-    description: "The unit margin defined as Net Unit Price substracted by the Buying Price. To be used together with Is After Deduction of Product Discounts parameter"
+    description: "The unit margin defined as Net Unit Price substracted by the Weighted Average Cost (WAC). To be used together with Is After Deduction of Product Discounts parameter. ℹ️ Before 27th. of Jan 2023, this field is using the simple unit cost."
     label_from_parameter: global_filters_and_parameters.is_after_product_discounts
     value_format_name: eur
     type: number
@@ -437,7 +464,7 @@ view: erp_buying_prices {
 
   measure: sum_total_margin_abs_dynamic {
     label: "€ Sum Gross Profit (Dynamic)"
-    description: "The sum of all Unit Margins defined as Net Unit Price minus Buying Price. To be used together with Is After Deduction of Product Discounts parameter"
+    description: "The sum of all Unit Margins defined as Net Unit Price minus Weighted Average Cost (WAC). To be used together with Is After Deduction of Product Discounts parameter. ℹ️ Before 27th. of Jan 2023, this field is using the simple unit cost."
     label_from_parameter: global_filters_and_parameters.is_after_product_discounts
     value_format_name: eur
     type: number

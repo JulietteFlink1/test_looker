@@ -127,16 +127,18 @@ explore: order_orderline_cl_retail_customized {
   join: erp_buying_prices {
     # this join overwrites the existing join of erp_buying_prices in: order_orderline_cl.explore
     # need to avoid this in the future
-    view_label: "ERP Supplier Prices"
+    view_label: ""
 
     type: left_outer
     relationship: many_to_one
 
     sql_on:
-        ${erp_buying_prices.hub_code}         =  ${orders_cl.hub_code}        and
-        ${erp_buying_prices.sku}              =  ${products.product_sku}             and
-        ${erp_buying_prices.report_date}      = ${orderline.created_date}
+        ${erp_buying_prices.hub_code}         =  ${orders_cl.hub_code}    and
+        ${erp_buying_prices.sku}              =  ${products.product_sku}  and
+        ${erp_buying_prices.report_date}      = ${orderline.created_date} and
+        {% condition global_filters_and_parameters.datasource_filter %} ${erp_buying_prices.report_date} {% endcondition %}
     ;;
+
     required_access_grants: [can_view_buying_information]
   }
 

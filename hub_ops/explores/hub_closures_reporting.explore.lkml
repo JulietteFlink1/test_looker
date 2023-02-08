@@ -50,4 +50,5 @@ explore: hub_closures_reporting {
     type: left_outer
     relationship: many_to_one
   }
+
 }

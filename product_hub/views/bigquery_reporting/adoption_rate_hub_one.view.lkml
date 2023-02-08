@@ -106,12 +106,43 @@ view: adoption_rate_hub_one {
     sql: ${TABLE}.number_of_checks ;;
   }
 
+  measure: number_of_checks_smart_inventory {
+    type: sum
+    group_label: "Inventory Checks Flow"
+    label: "# of Checks Smart Inventory"
+    description: "Count of check_id from the old service backend (smart_inventory)."
+    sql: ${TABLE}.number_of_checks_smart_inventory ;;
+  }
+
+  measure: number_of_checks_hub_task {
+    type: sum
+    group_label: "Inventory Checks Flow"
+    label: "# of Checks Hub Task"
+    description: "  Count of check_id from the new service backend (hub_task)."
+    sql: ${TABLE}.number_of_checks_hub_task ;;
+  }
   measure: number_of_completed_checks {
     type: sum
     group_label: "Inventory Checks Flow"
     label: "# of Completed Checks"
     description: "Count of checks from smart_inventory_checks table with status=done."
     sql: ${TABLE}.number_of_completed_checks ;;
+  }
+
+  measure: number_of_completed_checks_smart_inventory {
+    type: sum
+    group_label: "Inventory Checks Flow"
+    label: "# of Completed Checks Smart Inventory"
+    description: "Count of check_id with status = done from the old service backend (smart_inventory)."
+    sql: ${TABLE}.number_of_completed_checks_smart_inventory ;;
+  }
+
+  measure: number_of_completed_checks_hub_task {
+    type: sum
+    group_label: "Inventory Checks Flow"
+    label: "# of Completed Checks Hub Task"
+    description: "Count of check_id with status = done from the new service backend (hub_task)."
+    sql: ${TABLE}.number_of_completed_checks_hub_task ;;
   }
 
   measure: hub_one_completed_checks {
