@@ -203,7 +203,7 @@ view: hub_uph_sessions {
     sql: case when ${session_type} like '%idle%' and  ${session_duration_hours}>2 then true else false end  ;;
   }
 
-  measure: number_of_sessions {
+  measure: number_of_unique_sessions {
     group_label: "> Quantities"
     label: "# Sessions"
     description: "Number of Sessions."
