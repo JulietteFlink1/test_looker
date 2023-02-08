@@ -2721,6 +2721,19 @@ view: orders {
       ]
   }
 
+  measure: number_of_unique_flink_delivered_orders {
+    alias: [cnt_rider_orders]
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Flink Delivered Orders"
+    description: "Count of Orders delivered by Flink Riders (Excluding External and Click & Collect Orders)."
+    hidden:  yes
+    type: count_distinct
+    sql: ${order_uuid} ;;
+    value_format: "0"
+    filters: [
+      is_last_mile_order: "yes"
+    ]
+  }
   measure: cnt_orders_with_discount_cart {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
     label: "# Orders with Cart Discount"
