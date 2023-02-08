@@ -72,6 +72,7 @@ view: coupa_orders_and_invoices_merged {
   }
 
   dimension: commodity_name {
+    group_label: "Orders"
     type: string
     description: "Name of the commodity group the order line/invoice line item is part of."
     sql: ${TABLE}.commodity_name ;;
