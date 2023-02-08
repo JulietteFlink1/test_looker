@@ -280,7 +280,7 @@ view: hub_uph_sessions {
   measure: sum_of_session_duration_hours {
     group_label: "> Durations"
     label: "SUM Session Duration Hours"
-    description: "Sum of all session durations. In hours,"
+    description: "Sum of all session durations. In hours."
     type: sum
     sql: ${session_duration_hours} ;;
     value_format_name: decimal_2
