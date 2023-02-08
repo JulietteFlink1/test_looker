@@ -309,7 +309,7 @@ view: hub_uph_sessions {
   measure: sum_of_direct_session_inventory_check_duration_hours {
     group_label: "> Durations"
     label: "SUM Direct Hours - Inventory Check"
-    description: "Number of hours spent on the direct inventory check process. Filtered for flow inventory check and sessio type direct"
+    description: "Number of hours spent on the direct inventory check process. Filtered for flow inventory check and session type direct"
     type: sum
     sql: ${session_duration_hours} ;;
     filters: [flow: "inventory_check",session_type: "direct"]
