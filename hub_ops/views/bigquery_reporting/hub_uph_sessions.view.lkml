@@ -329,7 +329,7 @@ view: hub_uph_sessions {
   measure: sum_of_internal_idle_session_inbounding_duration_hours {
     group_label: "> Durations"
     label: "SUM Internal Idle Hours - Inbounding"
-    description: "Number of hours spent on the indirect idle inbounding process. Filtered for flow inbounding and sessio type indirect idle"
+    description: "Number of hours spent on the indirect idle inbounding process. Filtered for flow inbounding and session type indirect idle"
     type: sum
     sql: ${session_duration_hours} ;;
     filters: [flow: "inbounding",session_type: "internal_idle"]
