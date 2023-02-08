@@ -299,7 +299,7 @@ view: hub_uph_sessions {
   measure: sum_of_direct_session_inbounding_duration_hours {
     group_label: "> Durations"
     label: "SUM Direct Hours - Inbounding"
-    description: "Number of hours spent on the direct inbounding process. Filtered for flow inbounding and sessio type direct"
+    description: "Number of hours spent on the direct inbounding process. Filtered for flow inbounding and session type direct"
     type: sum
     sql: ${session_duration_hours} ;;
     filters: [flow: "inbounding",session_type: "direct"]
