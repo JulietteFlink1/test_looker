@@ -4,7 +4,7 @@
 
 
 view: hub_uph_sessions {
-  sql_table_name: `flink-data-dev.dbt_jgrammatikas_reporting.hub_uph_sessions`
+  sql_table_name: `flink-data-prod.reporting.hub_uph_sessions`
     ;;
 
   dimension: country_iso {
@@ -207,7 +207,7 @@ view: hub_uph_sessions {
     sql: ${session_uuid};;
   }
 
-  measure: sum_number_of_events {
+  measure: sum_of_number_of_events {
     group_label: "> Quantities"
     label: "# Events"
     description: "Total number of Events included in a given session. Based on Hub One data."
@@ -223,7 +223,7 @@ view: hub_uph_sessions {
     sql: ${number_of_events} ;;
   }
 
-  measure: sum_number_of_checks {
+  measure: sum_of_number_of_checks {
     group_label: "> Quantities"
     label: "# Checks"
     description: "Number of Checks finished. Based on Hub One data."
@@ -231,7 +231,7 @@ view: hub_uph_sessions {
     sql: ${number_of_checks} ;;
   }
 
-  measure: sum_number_of_picked_items {
+  measure: sum_of_number_of_picked_items {
     group_label: "> Quantities"
     label: "# Picked Items"
     description: "Number of Items scanned during the picking process. Action can be item picked, skipped, reset or refunded. Based on Hub One data."
@@ -239,7 +239,7 @@ view: hub_uph_sessions {
     sql: ${number_of_picked_items} ;;
   }
 
-  measure: sum_number_of_dropped_items {
+  measure: sum_of_number_of_dropped_items {
     group_label: "> Quantities"
     label: "# Dropped Items"
     description: "Number of dropped items during the inbounding process. Based on Hub One data."
@@ -247,7 +247,7 @@ view: hub_uph_sessions {
     sql: ${number_of_dropped_items} ;;
   }
 
-  measure: sum_number_of_picked_orders{
+  measure: sum_of_number_of_picked_orders{
     group_label: "> Quantities"
     label: "# Picked Orders"
     description: "Number of picked orders. Based on Hub One data."
@@ -255,7 +255,7 @@ view: hub_uph_sessions {
     sql: ${number_of_picked_orders} ;;
   }
 
-  measure: sum_session_duration_minutes {
+  measure: sum_of_session_duration_minutes {
     group_label: "> Durations"
     label: "SUM Session Duration Minutes"
     description: "SUM of all session durations. In minutes."
@@ -264,7 +264,7 @@ view: hub_uph_sessions {
     value_format_name: decimal_2
   }
 
-  measure: sum_session_duration_seconds {
+  measure: sum_of_session_duration_seconds {
     group_label: "> Durations"
     label: "SUM Session Duration Seconds"
     description: "SUM of all session durations. In seconds."
@@ -273,7 +273,7 @@ view: hub_uph_sessions {
     value_format_name: decimal_2
   }
 
-  measure: sum_session_duration_hours {
+  measure: sum_of_session_duration_hours {
     group_label: "> Durations"
     label: "SUM Session Duration Hours"
     description: "Sum of all session durations. In hours,"
@@ -282,7 +282,7 @@ view: hub_uph_sessions {
     value_format_name: decimal_2
   }
 
-  measure: sum_direct_session_order_preparation_duration_hours {
+  measure: sum_of_direct_session_order_preparation_duration_hours {
     group_label: "> Durations"
     label: "SUM Direct Hours - Order Preparation"
     description: "Number of hours spent on the direct order preparation process. Filtered for flow order_preparation and sessio type direct"
@@ -292,7 +292,7 @@ view: hub_uph_sessions {
     value_format_name: decimal_2
   }
 
-  measure: sum_direct_session_inbounding_duration_hours {
+  measure: sum_of_direct_session_inbounding_duration_hours {
     group_label: "> Durations"
     label: "SUM Direct Hours - Inbounding"
     description: "Number of hours spent on the direct inbounding process. Filtered for flow inbounding and sessio type direct"
@@ -302,7 +302,7 @@ view: hub_uph_sessions {
     value_format_name: decimal_2
   }
 
-  measure: sum_direct_session_inventory_check_duration_hours {
+  measure: sum_of_direct_session_inventory_check_duration_hours {
     group_label: "> Durations"
     label: "SUM Direct Hours - Inventory Check"
     description: "Number of hours spent on the direct inventory check process. Filtered for flow inventory check and sessio type direct"
@@ -312,7 +312,7 @@ view: hub_uph_sessions {
     value_format_name: decimal_2
   }
 
-  measure: sum_internal_idle_session_order_preparation_duration_hours {
+  measure: sum_of_internal_idle_session_order_preparation_duration_hours {
     group_label: "> Durations"
     label: "SUM Internal Idle Hours - Order Preparation"
     description: "Number of hours spent on the internal idle order preparation process. Filtered for flow order_preparation and session type internal idle"
@@ -322,7 +322,7 @@ view: hub_uph_sessions {
     value_format_name: decimal_2
   }
 
-  measure: sum_internal_idle_session_inbounding_duration_hours {
+  measure: sum_of_internal_idle_session_inbounding_duration_hours {
     group_label: "> Durations"
     label: "SUM Internal Idle Hours - Inbounding"
     description: "Number of hours spent on the indirect idle inbounding process. Filtered for flow inbounding and sessio type indirect idle"
@@ -332,7 +332,7 @@ view: hub_uph_sessions {
     value_format_name: decimal_2
   }
 
-  measure: sum_internal_idle_session_inventory_check_duration_hours {
+  measure: sum_of_internal_idle_session_inventory_check_duration_hours {
     group_label: "> Durations"
     label: "SUM Internal Idle Hours - Inventory Check"
     description: "Number of hours spent on the indirect idle inventory check process. Filtered for flow inventory check and sessio type indirect idle"
@@ -342,7 +342,7 @@ view: hub_uph_sessions {
     value_format_name: decimal_2
   }
 
-  measure: sum_direct_session_duration_hours {
+  measure: sum_of_direct_session_duration_hours {
     group_label: "> Durations"
     label: "SUM Direct Hours"
     description: "Number of hours spent on any direct process."
@@ -352,7 +352,7 @@ view: hub_uph_sessions {
     value_format_name: decimal_2
   }
 
-  measure: sum_internal_idle_session_duration_hours {
+  measure: sum_of_internal_idle_session_duration_hours {
     group_label: "> Durations"
     label: "SUM Internal Idle Hours"
     description: "Number of hours spent on internal idle. Including all flows"
@@ -362,7 +362,7 @@ view: hub_uph_sessions {
     value_format_name: decimal_2
   }
 
-  measure: sum_transition_idle_session_duration_hours {
+  measure: sum_of_transition_idle_session_duration_hours {
     group_label: "> Durations"
     label: "SUM Transition Idle Hours"
     description: "Number of hours spent on transition idle. Including all flows"
@@ -372,7 +372,7 @@ view: hub_uph_sessions {
     value_format_name: decimal_2
   }
 
-  measure: sum_limit_idle_session_duration_hours {
+  measure: sum_of_limit_idle_session_duration_hours {
     group_label: "> Durations"
     label: "SUM Limit Idle Hours"
     description: "Number of hours spent on limit idle. Including all flows"
@@ -412,39 +412,39 @@ view: hub_uph_sessions {
     value_format_name: decimal_2
   }
 
-  measure: share_direct_session_duration_hours {
+  measure: share_of_direct_session_duration_hours_over_all_hours {
     group_label: "> Durations"
     label: "% Direct Hours"
     description: "Number of hours spent on any direct process divided by all worked hours."
     type: number
-    sql: safe_divide(${sum_direct_session_duration_hours},${sum_session_duration_hours}) ;;
+    sql: safe_divide(${sum_of_direct_session_duration_hours},${sum_of_session_duration_hours}) ;;
     value_format_name: percent_1
   }
 
-  measure: share_internal_idle_session_duration_hours {
+  measure: share_of_internal_idle_session_duration_hours_over_all_hours {
     group_label: "> Durations"
     label: "% Internal Idle Hours"
     description: "Number of hours spent on internal idle divided by all worked hours."
     type: number
-    sql: safe_divide(${sum_internal_idle_session_duration_hours},${sum_session_duration_hours}) ;;
+    sql: safe_divide(${sum_of_internal_idle_session_duration_hours},${sum_of_session_duration_hours}) ;;
     value_format_name: percent_1
   }
 
-  measure: share_transition_idle_session_duration_hours {
+  measure: share_of_transition_idle_session_duration_hoursover_all_hours {
     group_label: "> Durations"
     label: "% Transition Idle Hours"
     description: "Number of hours spent on transition idle divided by all worked hours."
     type: number
-    sql: safe_divide(${sum_transition_idle_session_duration_hours},${sum_session_duration_hours}) ;;
+    sql: safe_divide(${sum_of_transition_idle_session_duration_hours},${sum_of_session_duration_hours}) ;;
     value_format_name: percent_1
   }
 
-  measure: share_limit_idle_session_duration_hours {
+  measure: share_of_limit_idle_session_duration_hours_over_all_hours {
     group_label: "> Durations"
     label: "% Limit Idle Hours"
     description: "Number of hours spent on limit idle divided by all worked hours."
     type: number
-    sql: safe_divide(${sum_limit_idle_session_duration_hours},${sum_session_duration_hours}) ;;
+    sql: safe_divide(${sum_of_limit_idle_session_duration_hours},${sum_of_session_duration_hours}) ;;
     value_format_name: percent_1
   }
 
@@ -493,7 +493,7 @@ view: hub_uph_sessions {
     value_format_name: decimal_2
   }
 
-  measure: sum_pure_idle_seconds {
+  measure: sum_of_pure_idle_seconds {
     group_label: "> Durations"
     label: "SUM Pure Idle Seconds"
     description: "Sum of the number of seconds between the last event of the current session and the first event of the next session. Total session duration for idle sessions."
@@ -502,7 +502,7 @@ view: hub_uph_sessions {
     value_format_name: decimal_0
   }
 
-  measure: sum_pure_idle_minutes {
+  measure: sum_of_pure_idle_minutes {
     group_label: "> Durations"
     label: "SUM Pure Idle Minutes"
     description: "Sum of the number of minutes between the last event of the current session and the first event of the next session. Total session duration for idle sessions."
@@ -517,7 +517,7 @@ view: hub_uph_sessions {
     label: "UPH Picking"
     description: "Units picked per Hour. Formula: # Picked Items / ( # Direct Order Preparation Hours + # Internal Order Preparation Hours )"
     value_format_name: decimal_0
-    sql: safe_divide(${sum_number_of_picked_items},(${sum_direct_session_order_preparation_duration_hours}+${sum_internal_idle_session_order_preparation_duration_hours})) ;;
+    sql: safe_divide(${sum_of_number_of_picked_items},(${sum_of_direct_session_order_preparation_duration_hours}+${sum_of_internal_idle_session_order_preparation_duration_hours})) ;;
   }
 
   measure: oph_picking {
@@ -526,7 +526,7 @@ view: hub_uph_sessions {
     description: "Orders picked per Hour. Formula: # Picked Orders / ( # Direct Order Preparation Hours + # Internal Order Preparation Hours )"
     label: "OPH Picking"
     value_format_name: decimal_1
-    sql: safe_divide(${sum_number_of_picked_orders},(${sum_direct_session_order_preparation_duration_hours}+${sum_internal_idle_session_order_preparation_duration_hours})) ;;
+    sql: safe_divide(${sum_of_number_of_picked_orders},(${sum_of_direct_session_order_preparation_duration_hours}+${sum_of_internal_idle_session_order_preparation_duration_hours})) ;;
   }
 
   measure: uph_inbounding {
@@ -535,7 +535,7 @@ view: hub_uph_sessions {
     label: "UPH Inbounding"
     description: "Units dropped per Hour. Formula:  # Dropped Items / ( # Direct Inbounding Hours + # Internal Inbounding Hours )"
     value_format_name: decimal_0
-    sql: safe_divide(${sum_number_of_dropped_items},(${sum_direct_session_inbounding_duration_hours}+${sum_internal_idle_session_inbounding_duration_hours})) ;;
+    sql: safe_divide(${sum_of_number_of_dropped_items},(${sum_of_direct_session_inbounding_duration_hours}+${sum_of_internal_idle_session_inbounding_duration_hours})) ;;
   }
 
   measure: uph_inventory_check {
@@ -544,10 +544,10 @@ view: hub_uph_sessions {
     description: "Checks per Hour. Formula: # Checks / ( # Direct Inventory Hours + # Internal Inventory Hours )"
     label: "UPH Inventory Check"
     value_format_name: decimal_0
-    sql: safe_divide(${sum_number_of_checks},(${sum_direct_session_inventory_check_duration_hours} +${sum_internal_idle_session_inventory_check_duration_hours}));;
+    sql: safe_divide(${sum_of_number_of_checks},(${sum_of_direct_session_inventory_check_duration_hours} +${sum_of_internal_idle_session_inventory_check_duration_hours}));;
   }
 
-  measure: sum_activity_switch {
+  measure: sum_of_activity_switch {
     type: count_distinct
     group_label: "> Quantities"
     label: "# Switchs"

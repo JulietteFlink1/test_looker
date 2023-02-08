@@ -8,6 +8,7 @@ explore: hub_uph_sessions {
   view_label: "Hub UPH Sessions"
   group_label: "Hub Ops"
   label: "Hub UPH Sessions"
+  description: "This Explore is on employee, shift and session level. It is based on Hub One events and Quinyx data. It contains hub productivity metrics (UPH) as well as the breakdown of hub worked hours between direct and idle."
   sql_always_where: {% condition global_filters_and_parameters.datasource_filter %} ${hub_uph_sessions.shift_date} {% endcondition %} ;;
 
   always_filter: {
