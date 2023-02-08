@@ -1,6 +1,6 @@
 view: coupa_orders_and_invoices_merged {
-  sql_table_name: `flink-data-dev.dbt_vbreda_curated_finance.coupa_orders_and_invoices_merged`
-    ;; # above line to be modified before merging
+  sql_table_name: `flink-data-prod.curated_finance.coupa_orders_and_invoices_merged`
+    ;;
 
 # This view provides information about the orders and invoices that influence the budget of hubs.
 # Author: Victor Breda
