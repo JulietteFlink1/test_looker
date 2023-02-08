@@ -518,7 +518,7 @@ view: hub_uph_sessions {
   measure: uph_picking {
     group_label: "> UPH"
     type: number
-    label: "UPH Picking"
+    label: "UPH Order Preparation"
     description: "Units picked per Hour. Formula: # Picked Items / ( # Direct Order Preparation Hours + # Internal Order Preparation Hours )"
     value_format_name: decimal_0
     sql: safe_divide(${sum_of_number_of_picked_items},(${sum_of_direct_session_order_preparation_duration_hours}+${sum_of_internal_idle_session_order_preparation_duration_hours})) ;;
@@ -528,7 +528,7 @@ view: hub_uph_sessions {
     group_label: "> UPH"
     type: number
     description: "Orders picked per Hour. Formula: # Picked Orders / ( # Direct Order Preparation Hours + # Internal Order Preparation Hours )"
-    label: "OPH Picking"
+    label: "OPH"
     value_format_name: decimal_1
     sql: safe_divide(${sum_of_number_of_picked_orders},(${sum_of_direct_session_order_preparation_duration_hours}+${sum_of_internal_idle_session_order_preparation_duration_hours})) ;;
   }
@@ -551,7 +551,7 @@ view: hub_uph_sessions {
     sql: safe_divide(${sum_of_number_of_checks},(${sum_of_direct_session_inventory_check_duration_hours} +${sum_of_internal_idle_session_inventory_check_duration_hours}));;
   }
 
-  measure: sum_of_activity_switch {
+  measure: number_of_unique_activity_switch {
     type: count_distinct
     group_label: "> Quantities"
     label: "# Switchs"
