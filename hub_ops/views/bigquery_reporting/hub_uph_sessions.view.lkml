@@ -335,7 +335,7 @@ view: hub_uph_sessions {
   measure: sum_of_internal_idle_session_inventory_check_duration_hours {
     group_label: "> Durations"
     label: "SUM Internal Idle Hours - Inventory Check"
-    description: "Number of hours spent on the indirect idle inventory check process. Filtered for flow inventory check and sessio type indirect idle"
+    description: "Number of hours spent on the indirect idle inventory check process. Filtered for flow inventory check and session type indirect idle"
     type: sum
     sql: ${session_duration_hours} ;;
     filters: [flow: "inventory_check",session_type: "internal_idle"]
