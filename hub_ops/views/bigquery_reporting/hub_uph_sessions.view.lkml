@@ -9,17 +9,20 @@ view: hub_uph_sessions {
 
   dimension: country_iso {
     type: string
+    hidden: yes
     group_label: "> Geographic Dimensions"
     sql: ${TABLE}.country_iso ;;
   }
 
   dimension: session_uuid {
     type: string
+    primary_key: yes
     hidden: yes
     sql: ${TABLE}.session_uuid ;;
   }
 
   dimension: hub_code {
+    hidden: yes
     group_label: "> Geographic Dimensions"
     type: string
     sql: ${TABLE}.hub_code ;;
