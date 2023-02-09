@@ -53,11 +53,49 @@ view: +advanced_supplier_matching {
     value_format_name: decimal_0
   }
 
+  measure: sum_of_ordered_items_quantity_po_hu_flex {
+    label: "# Total Quantity in HU flex. (PO)"
+    group_label: "Quantity in Handling Units"
+    description: "Total item quantity PO in Handling Units allowing decimals."
+    # using this approach to also show NULL values and surpress the default coalesce(metric, 0) behavior of Looker
+    type: sum
+    sql: ${total_quantity_purchase_order_hu} ;;
+    value_format_name: decimal_2
+  }
+
+  measure: sum_of_ordered_items_quantity_po_hu_strict {
+    label: "# Total Quantity in HU strict (PO)"
+    group_label: "Quantity in Handling Units"
+    description: "Total item quantity PO in Handling Units not allowing decimals."
+    # using this approach to also show NULL values and surpress the default coalesce(metric, 0) behavior of Looker
+    type: sum
+    sql: floor(${total_quantity_purchase_order_hu}) ;;
+    value_format_name: decimal_0
+  }
+
   measure: sum_ordered_items_quantity_desadv {
     label: "# Total Quantity (DESADV)"
 
     type: sum
     sql: ${total_quantity_desadv} ;;
+    value_format_name: decimal_0
+  }
+
+  measure: sum_of_ordered_items_quantity_desadv_hu_flex {
+    label: "# Total Quantity in HU flex. (DESADV)"
+    group_label: "Quantity in Handling Units"
+    description: "Total item quantity DESADVs in Handling Units allowing decimals."
+    type: sum
+    sql: ${total_quantity_desadv_hu} ;;
+    value_format_name: decimal_2
+  }
+
+  measure: sum_of_ordered_items_quantity_desadv_hu_strict {
+    label: "# Total Quantity in HU strict (DESADV)"
+    group_label: "Quantity in Handling Units"
+    description: "Total item quantity DESADVs in Handling Units not allowing decimals."
+    type: sum
+    sql: floor(${total_quantity_desadv_hu}) ;;
     value_format_name: decimal_0
   }
 
@@ -87,6 +125,24 @@ view: +advanced_supplier_matching {
 
     type: sum
     sql: ${inbounded_quantity} ;;
+    value_format_name: decimal_0
+  }
+
+  measure: sum_of_items_inbounded_hu_flex {
+    label: "# Total Quantity Inbounded in HU flex."
+    group_label: "Quantity in Handling Units"
+    description: "Total item quantity inbounded in Handling Units allowing decimals."
+    type: sum
+    sql: ${inbounded_quantity_hu} ;;
+    value_format_name: decimal_2
+  }
+
+  measure: sum_of_items_inbounded_hu_strict {
+    label: "# Total Quantity Inbounded in HU Strict"
+    group_label: "Quantity in Handling Units"
+    description: "Total item quantity inbounded in Handling Units not allowing decimals."
+    type: sum
+    sql: floor(${inbounded_quantity_hu}) ;;
     value_format_name: decimal_0
   }
 
