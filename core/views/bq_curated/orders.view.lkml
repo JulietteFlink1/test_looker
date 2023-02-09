@@ -945,7 +945,8 @@ view: orders {
       year
     ]
     sql: ${TABLE}.last_modified_at ;;
-    hidden: no
+    hidden: yes
+    convert_tz: yes
   }
 
   dimension: latitude {
