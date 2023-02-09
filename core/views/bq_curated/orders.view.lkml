@@ -937,6 +937,7 @@ view: orders {
     timeframes: [
       raw,
       time,
+      minute,
       date,
       week,
       month,
@@ -945,6 +946,7 @@ view: orders {
     ]
     sql: ${TABLE}.last_modified_at ;;
     hidden: yes
+    convert_tz: yes
   }
 
   dimension: latitude {
