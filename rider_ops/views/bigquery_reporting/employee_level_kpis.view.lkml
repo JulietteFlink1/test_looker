@@ -157,6 +157,18 @@ view: employee_level_kpis {
     sql: ${TABLE}.hire_date ;;
   }
 
+  dimension_group: last_update {
+    type: time
+    timeframes: [
+      time,
+      hour,
+      minute
+    ]
+    convert_tz: yes
+    datatype: datetime
+    sql: ${TABLE}.last_updated_timestamp ;;
+  }
+
   dimension: contract_start_date {
     group_label: "> Dates & Timestamps"
     label: "Contract Start Date"
