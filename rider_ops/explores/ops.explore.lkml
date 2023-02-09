@@ -16,7 +16,6 @@ include: "/**/hub_attributes.view"
 include: "/**/hub_turf_closures_30min.view"
 include: "/**/hub_turf_closures_daily.view"
 
-
 explore: ops {
   from: staffing
   group_label: "Rider Ops"
@@ -52,7 +51,7 @@ explore: ops {
     fields: [time_grid.start_datetime_date, time_grid.start_datetime_hour_of_day, time_grid.start_datetime_minute30,
       time_grid.start_datetime_month,time_grid.start_datetime_quarter,time_grid.start_datetime_raw,time_grid.start_datetime_time,
       time_grid.start_datetime_time_of_day,time_grid.start_datetime_week,time_grid.start_datetime_week_of_year, time_grid.start_datetime_year, time_grid.is_hour_before_now_hour,
-      time_grid.is_date_before_today,time_grid.start_datetime_day_of_week]
+      time_grid.is_date_before_today,time_grid.start_datetime_day_of_week, time_grid.date_granularity, time_grid.date_dynamic]
   }
 
   # Basic Hub data (e.g. name, city, creation date, etc. )

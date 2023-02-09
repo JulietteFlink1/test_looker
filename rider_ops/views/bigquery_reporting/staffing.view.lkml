@@ -4959,6 +4959,50 @@ view: staffing {
     sql: ${number_of_overpunched_hours_by_position}/${number_of_worked_hours_by_position} ;;
   }
 
+
+
+  measure: hub_ops_kpis {
+    group_label: "> Hub Priority KPIs"
+    label: "Hub KPI (Dynamic)"
+    label_from_parameter: hub_ops_kpis_parameter
+    sql:
+    {% if hub_ops_kpis_parameter._parameter_value == 'ops_associate_utr' %}
+      ${utr_ops_associate}
+    {% elsif hub_ops_kpis_parameter._parameter_value == 'hub_staff_utr' %}
+      ${utr_hub_staff}
+    {% elsif hub_ops_kpis_parameter._parameter_value == 'rider_utr' %}
+      ${utr_rider}
+    {% elsif hub_ops_kpis_parameter._parameter_value == 'rider_idle' %}
+      ${pct_rider_idle_time}
+    {% elsif hub_ops_kpis_parameter._parameter_value == 'no_show_rider' %}
+      ${pct_no_show_hours_rider}
+    {% elsif hub_ops_kpis_parameter._parameter_value == 'no_show_ops_associate' %}
+      ${pct_no_show_hours_ops_associate}
+    {% endif %};;
+
+    html:
+    {% if hub_ops_kpis_parameter._parameter_value ==  'ops_associate_utr' %}
+        {{utr_ops_associate._rendered_value }}
+    {% elsif hub_ops_kpis_parameter._parameter_value == 'hub_staff_utr' %}
+        {{utr_hub_staff._rendered_value }}
+    {% elsif hub_ops_kpis_parameter._parameter_value == 'rider_utr' %}
+        {{utr_rider._rendered_value }}
+    {% elsif hub_ops_kpis_parameter._parameter_value == 'rider_idle' %}
+        {{pct_rider_idle_time._rendered_value }}
+    {% elsif hub_ops_kpis_parameter._parameter_value == 'no_show_rider' %}
+        {{pct_no_show_hours_rider._rendered_value }}
+    {% elsif hub_ops_kpis_parameter._parameter_value == 'no_show_ops_associate' %}
+        {{pct_no_show_hours_ops_associate._rendered_value }}
+    {% endif %}
+    ;;
+  }
+
+  # {{rendered_value | round: 2 }} -- rounds value to whole number
+  #   {% elsif hub_ops_kpis_parameter._parameter_value == "'hub_staff_utr'" %}
+  #   {{ rendered_value | round: 2 }} -- rounds to that number of decimal places and appends a ‘%’ after the value
+  #   {% else %}
+  #   ${{ rendered_value }} -- takes the default value format defined above and adds a ‘$’
+
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Parameters     ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -4974,4 +5018,27 @@ view: staffing {
     allowed_value: { value: "Ops Associate" }
     allowed_value: { value: "Hub Staff" }
   }
+
+
+    parameter: hub_ops_kpis_parameter {
+    group_label: "> Hub Priority KPIs"
+    label: "Hub KPI"
+    type: unquoted
+    allowed_value: {label: "Ops Associate UTR" value: "ops_associate_utr" }
+    allowed_value: {label: "Hub Staff UTR" value: "hub_staff_utr" }
+    allowed_value: {label: "Rider UTR" value: "rider_utr" }
+    allowed_value: {label: "% Rider Worked Time Spent Idle" value: "rider_idle" }
+    allowed_value: {label: "% No Show Rider Hours" value: "no_show_rider" }
+    allowed_value: {label: "% No Show Ops Associate Hours" value: "no_show_ops_associate" }
+
+    default_value: "rider_utr"
+  }
+
+  # # missing
+  # # hub staff idle time, UPHx3
+  # # Fill rate
+  # # % Workforce no show (currently in orders on daily gran -> need to add to staffing -> rider + OA)
+
+
+
 }
