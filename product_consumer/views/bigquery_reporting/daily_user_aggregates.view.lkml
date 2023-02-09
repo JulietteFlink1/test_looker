@@ -240,14 +240,14 @@ view: daily_user_aggregates {
   }
   dimension: is_new_user {
     group_label: "Flags | User"
-    description: "Yes if the date of the event is same as the date of first visit of the anonymous_id"
+    description: "Yes if the date of the event is same as the date of first visit of the anonymous_id (Note: If the same user logs in on a new device, re-installs app or uses web in incognito mode, new anonymous_ids will be assigned and will be flaged as new user"
     type: yesno
     sql: ${TABLE}.is_new_user ;;
   }
 
   dimension: is_user_logged_in {
     group_label: "Flags | User"
-    description: "Yes if user logs in at any point during the day"
+    description: "Yes if user in logged in during the last event of the day"
     type: yesno
     sql: ${TABLE}.is_user_logged_in ;;
   }
@@ -291,7 +291,7 @@ view: daily_user_aggregates {
   }
   dimension: is_order_placed {
     group_label: "Flags | Conversion"
-    description: "Yes if user has placed any order"
+    description: "Yes if user has placed at least one order on the day"
     type: yesno
     sql: ${TABLE}.is_order_placed ;;
   }
@@ -768,7 +768,7 @@ view: daily_user_aggregates {
   measure: number_of_address_confirmed {
     group_label: "Event Metrics"
     label: "# Address Confirmed"
-    description: "Sum of number of times address has been confirmed"
+    description: "Number of times a user has confirmed address in a day"
     type: sum
     hidden: no
     sql: ${dim_number_of_address_confirmed} ;;
@@ -776,7 +776,7 @@ view: daily_user_aggregates {
   measure: number_of_product_added_to_cart {
     group_label: "Event Metrics"
     label: "# Product Added to Cart"
-    description: "Sum of number of times a product has been added to cart"
+    description: "Number of times a user has added a product to cart in a day"
     type: sum
     hidden: no
     sql: ${dim_number_of_product_added_to_cart} ;;
@@ -784,7 +784,7 @@ view: daily_user_aggregates {
   measure: number_of_cart_viewed {
     group_label: "Event Metrics"
     label: "# Cart Viewed"
-    description: "Sum of number of times cart has been viewed"
+    description: "Number of times a user has viewed cart in a day"
     type: sum
     hidden: no
     sql: ${dim_number_of_cart_viewed} ;;
@@ -792,7 +792,7 @@ view: daily_user_aggregates {
   measure: number_of_checkout_viewed {
     group_label: "Event Metrics"
     label: "# Checkout Viewed"
-    description: "Sum of number of times checkout has been viewed"
+    description: "Number of times a user has viewed checkout in a day"
     type: sum
     hidden: no
     sql: ${dim_number_of_checkout_viewed} ;;
@@ -800,7 +800,7 @@ view: daily_user_aggregates {
   measure: number_of_payment_started {
     group_label: "Event Metrics"
     label: "# Payment Atarted"
-    description: "Sum of number of times payment has been initiated"
+    description: "Number of times a user has initiated payment in a day"
     type: sum
     hidden: no
     sql: ${dim_number_of_payment_started};;
@@ -808,7 +808,7 @@ view: daily_user_aggregates {
   measure: number_of_order_placed {
     group_label: "Event Metrics"
     label: "# Order Placed"
-    description: "Sum of number of times an order has been placed successfully"
+    description: "Number of times a user has placed a successful order in a day"
     type: sum
     hidden: no
     sql: ${dim_number_of_order_placed};;
@@ -818,7 +818,7 @@ view: daily_user_aggregates {
   measure: number_of_product_removed_from_cart {
     group_label: "Event Metrics"
     label: "# Product Removed from Cart"
-    description: "Sum of number of times a product has been removed from the cart"
+    description: "Number of times a user has removed a product from cart in a day"
     type: sum
     hidden: no
     sql: ${dim_number_of_product_removed_from_cart} ;;
@@ -826,7 +826,7 @@ view: daily_user_aggregates {
   measure: number_of_product_added_to_favourites {
     group_label: "Event Metrics"
     label: "# Product Added to Favourites"
-    description: "Sum of the number of times a product has been added to favourites"
+    description: "Number of times a user has added a product to favourites in a day"
     type: sum
     hidden: no
     sql: ${dim_number_of_product_added_to_favourites} ;;
@@ -834,7 +834,7 @@ view: daily_user_aggregates {
   measure: number_of_product_details_viewed {
     group_label: "Event Metrics"
     label: "# Product Details Viewed (PDP)"
-    description: "Sum of number of times product details has been viewed"
+    description: "Number of times a user has viewed product details in a day"
     type: sum
     hidden: no
     sql: ${dim_number_of_product_details_viewed} ;;
@@ -842,7 +842,7 @@ view: daily_user_aggregates {
   measure: number_of_product_search_viewed {
     group_label: "Event Metrics"
     label: "# Product Search Viewed"
-    description: "Sum of number of times users have clicked on the search bar"
+    description: "Number of times a user has clicked on the search bar in a day"
     type: sum
     hidden: no
     sql: ${dim_number_of_product_search_viewed} ;;
@@ -852,7 +852,7 @@ view: daily_user_aggregates {
   measure: number_of_checkout_started {
     group_label: "Event Metrics"
     label: "# Checkout Started"
-    description: "Sum of number of times check-out has started"
+    description: "Number of times a user has started check-out in a day"
     type: sum
     hidden: no
     sql: ${dim_number_of_checkout_started} ;;
@@ -861,7 +861,7 @@ view: daily_user_aggregates {
   measure: number_of_payment_failed {
     group_label: "Event Metrics"
     label: "# Payment Failed"
-    description: "Sum of number of times payment has failed"
+    description: "Number of times a user's payment has failed in a day"
     type: sum
     hidden: no
     sql: ${dim_number_of_payment_failed};;
@@ -869,7 +869,7 @@ view: daily_user_aggregates {
   measure: number_of_first_order_placed {
     group_label: "Event Metrics"
     label: "# First Order Placed"
-    description: "Sum of number of times first order has been placed (Note: First orders are device specific)"
+    description: "Number of times a user has placed first order in a day (Note: First orders are device specific so can be multiple if user is using different device)"
     type: sum
     hidden: no
     sql: ${dim_number_of_first_order_placed};;
@@ -877,7 +877,7 @@ view: daily_user_aggregates {
   measure: number_of_rider_tip_selected {
     group_label: "Event Metrics"
     label: "# Rider Tip Selected"
-    description: "Sum of number of times a rider tip value has been selected from the tip options in checkout"
+    description: "Number of times a user has selected a rider tip value from the tip options in checkout in a day"
     type: sum
     hidden: no
     sql: ${dim_number_of_rider_tip_selected};;
@@ -887,7 +887,7 @@ view: daily_user_aggregates {
   measure: number_of_voucher_wallet_viewed {
     group_label: "Event Metrics"
     label: "# Voucher Wallet Viewed"
-    description: "Sum of number of times voucher wallet has been viewed"
+    description: "Number of times a user has viewed voucher wallet in a day"
     type: sum
     hidden: no
     sql: ${dim_number_of_voucher_wallet_viewed};;
@@ -895,7 +895,7 @@ view: daily_user_aggregates {
   measure: number_of_voucher_redemption_attempted {
     group_label: "Event Metrics"
     label: "# Discount Code Redemption Attempted"
-    description: "Sum of number of times voucher redemption has been attempted by clicking on the 'Apply' button"
+    description: "Number of times a user has attempted to redeem vouchers in a day by clicking on the 'Apply' button"
     type: sum
     hidden: no
     sql: ${dim_number_of_voucher_redemption_attempted};;
@@ -903,7 +903,7 @@ view: daily_user_aggregates {
   measure: number_of_voucher_applied_succeeded {
     group_label: "Event Metrics"
     label: "# Discount Code Applied Succeeded"
-    description: "Sum of number of times voucher code application has been successful"
+    description: "Number of times a user has successfully applied a voucher code in a day"
     type: sum
     hidden: no
     sql: ${dim_number_of_voucher_applied_succeeded};;
@@ -911,7 +911,7 @@ view: daily_user_aggregates {
   measure: number_of_voucher_applied_failed {
     group_label: "Event Metrics"
     label: "# Discount Code Applied Failed"
-    description: "Sum of number of times voucher code application has failed"
+    description: "Number of times a user's voucher code application has failed in a day"
     type: sum
     hidden: no
     sql: ${dim_number_of_voucher_applied_failed};;
@@ -957,7 +957,7 @@ view: daily_user_aggregates {
   measure: number_of_account_login_succeeded {
     group_label: "Event Metrics"
     label: "# Accounts Logged-in"
-    description: "Sum of number of times account login succeeded"
+    description: "Number of times a user has successfully logged-in in a day"
     type: sum
     hidden: no
     sql: ${dim_number_of_account_login_succeeded};;
@@ -965,7 +965,7 @@ view: daily_user_aggregates {
   measure: number_of_account_logout_clicked {
     group_label: "Event Metrics"
     label:  "# Accounts Logged-out"
-    description: "Sum of number of times log out button has been clicked"
+    description: "Number of times a user has clicked on the log out button in a day"
     type: sum
     hidden: no
     sql: ${dim_number_of_account_logout_clicked};;
@@ -973,7 +973,7 @@ view: daily_user_aggregates {
   measure: number_of_categories_selected {
     group_label: "Event Metrics"
     label: "# Category Selected"
-    description: "Sum of number of times a category has been selected"
+    description: "Number of times a user has selected a category in a day"
     type: sum
     hidden: no
     sql: ${dim_number_of_categories_selected};;
@@ -981,7 +981,7 @@ view: daily_user_aggregates {
   measure: number_of_home_viewed {
     group_label: "Event Metrics"
     label: "# Home Viewed"
-    description: "Sum of number of times home screen has been viewed"
+    description: "Number of times a user has viewed the home screen in a day"
     type: sum
     hidden: no
     sql: ${dim_number_of_home_viewed} ;;
@@ -989,7 +989,7 @@ view: daily_user_aggregates {
   measure: number_of_search_executed {
     group_label: "Event Metrics"
     label: "# Product Search Executed"
-    description: "Sum of number of times product search has been executed by typing a keyword in search bar"
+    description: "Number of times a user has executed a search in a day by typing a keyword in search bar"
     type: sum
     hidden: no
     sql: ${dim_number_of_product_search_executed} ;;
@@ -997,7 +997,7 @@ view: daily_user_aggregates {
   measure: number_of_favourites_viewed {
     group_label: "Event Metrics"
     label: "# Favourites Viewed"
-    description: "Sum of number of times 'My Favourites' has been viewed"
+    description: "Number of times a user has viewed 'My Favourites' in a day"
     type: sum
     hidden: no
     sql: ${dim_number_of_favourties_viewed} ;;
