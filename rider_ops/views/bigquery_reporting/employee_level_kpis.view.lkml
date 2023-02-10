@@ -1079,12 +1079,38 @@ view: employee_level_kpis {
     value_format_name: decimal_1
   }
 
+  measure: number_of_availability_hours_within_operational_hours {
+    group_label: "> Shift Related"
+    type: sum
+    label: "# Availability Hours Within Operational Hours"
+    description: "Number of hours that were provided as available by the employee within operational hours (country-specific, see metric link for more details)."
+    sql: ${TABLE}.number_of_availability_minutes_within_operational_hours/60 ;;
+    link: {
+      label: "Operational hours definition"
+      url: "https://data-dbt-prod.pages.dev/#!/macro/macro.flink_data.is_operational_hours"
+    }
+    value_format_name: decimal_1
+  }
+
   measure: pct_of_weekend_availability_hours {
     group_label: "> Shift Related"
     type: number
     label: "% Weekend Availability Hours"
     description:"Share of Availability Hours between 3 p.m Friday - 12 a.m Sunday over Total Availability Hours "
     sql: ${number_of_weekend_availability_hours} / nullif(${number_of_availability_hours},0) ;;
+    value_format_name: percent_1
+  }
+
+  measure: pct_availability_hours_within_operational_hours {
+    group_label: "> Shift Related"
+    type: number
+    label: "% Availability Hours Within Operational Hours"
+    description:"Share of Availability Hours provided within operational hours in Total Availability Hours "
+    sql: ${number_of_availability_hours_within_operational_hours} / nullif(${number_of_availability_hours},0) ;;
+    link: {
+      label: "Operational hours definition"
+      url: "https://data-dbt-prod.pages.dev/#!/macro/macro.flink_data.is_operational_hours"
+    }
     value_format_name: percent_1
   }
 
@@ -1168,12 +1194,30 @@ view: employee_level_kpis {
     value_format_name: percent_1
   }
 
+  measure: pct_of_availability_hours_within_oprational_hours_vs_contracted_hours {
+    group_label: "> Shift Related"
+    label: "% Availability Hours Within Operational Hours vs Total Contracted Hours"
+    type: number
+    sql:${number_of_availability_hours_within_operational_hours}/nullif(${sum_weekly_contracted_hours},0) ;;
+    description:"# Availability Hours Within Operational Hours / Total Contracted Hours"
+    value_format_name: percent_1
+  }
+
   measure: pct_of_availability_hours_vs_worked_hours {
     group_label: "> Shift Related"
     label: "% Availability Hours vs Worked Hours"
     type: number
     sql:${number_of_availability_hours}/nullif(${number_of_worked_hours},0) ;;
     description:"# Availability Hours / # Worked Hours"
+    value_format_name: percent_1
+  }
+
+  measure: pct_of_availability_hours_within_oprational_hours_vs_worked_hours {
+    group_label: "> Shift Related"
+    label: "% Availability Hours Within Operational Hours vs Worked Hours"
+    type: number
+    sql:${number_of_availability_hours_within_operational_hours}/nullif(${number_of_worked_hours},0) ;;
+    description:"# Availability Hours Within Operational Hours / # Worked Hours"
     value_format_name: percent_1
   }
 
