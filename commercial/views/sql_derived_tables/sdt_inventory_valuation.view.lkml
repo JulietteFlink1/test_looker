@@ -304,7 +304,7 @@ select * from aggregated_data
   }
 
   measure: sum_of_number_of_number_of_total_correction {
-    label: "# Corrections"
+    label: "# Corrected Items"
     description: "The sum of all inventory corrections in the defined timeframe"
     group_label: "> Absolute Metrics"
     type: sum
@@ -313,7 +313,7 @@ select * from aggregated_data
   }
 
   measure: sum_of_number_of_number_of_total_inbound {
-    label: "# Inbounds"
+    label: "# Inbounded Items"
     description: "The sum of all inventory inbounds in the defined timeframe"
     group_label: "> Absolute Metrics"
     type: sum
@@ -322,7 +322,7 @@ select * from aggregated_data
   }
 
   measure: sum_of_number_of_number_of_total_outbound {
-    label: "# Outbounds"
+    label: "# Outbounded Items"
     description: "The sum of all inventory outbounds (sales and too-good-to-go) in the defined timeframe"
     group_label: "> Absolute Metrics"
     type: sum
@@ -331,7 +331,7 @@ select * from aggregated_data
   }
 
   measure: sum_of_number_of_number_of_unspecified {
-    label: "# Unspecified Inventory Movements"
+    label: "# Items With Unspecified Inventory Movements"
     description: "The sum of all unspecified inventory in the defined timeframe"
     group_label: "> Absolute Metrics"
     type: sum
@@ -386,7 +386,7 @@ select * from aggregated_data
   }
 
   measure: sum_of_amt_number_of_number_of_total_correction {
-    label: "€ Corrections"
+    label: "€ Corrected Items"
     description: "The monetary value of all inventory corrections in the defined timeframe (valued by weighted average cost and substitute with the selling price, in case the cost does not exist)"
     group_label: "> Monetary Metrics"
     type: sum
@@ -395,7 +395,7 @@ select * from aggregated_data
   }
 
   measure: sum_of_amt_number_of_number_of_total_inbound {
-    label: "€ Inbounds"
+    label: "€ Inbounded Items"
     description: "The monetary value of all inventory inbounds in the defined timeframe (valued by weighted average cost and substitute with the selling price, in case the cost does not exist)"
     group_label: "> Monetary Metrics"
     type: sum
@@ -404,7 +404,7 @@ select * from aggregated_data
   }
 
   measure: sum_of_amt_number_of_number_of_total_outbound {
-    label: "€ Outbounds"
+    label: "€ Outbounded Items"
     description: "The monetary value of all inventory outbounds (sales and too-good-to-go) in the defined timeframe (valued by weighted average cost and substitute with the selling price, in case the cost does not exist)"
     group_label: "> Monetary Metrics"
     type: sum
@@ -413,7 +413,7 @@ select * from aggregated_data
   }
 
   measure: sum_of_amt_number_of_number_of_unspecified {
-    label: "€ Unspecified Inventory Movements"
+    label: "€ Items With Unspecified Inventory Movements"
     description: "The monetary value of all unspecified inventory in the defined timeframe (valued by weighted average cost and substitute with the selling price, in case the cost does not exist)"
     group_label: "> Monetary Metrics"
     type: sum
