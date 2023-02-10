@@ -1395,7 +1395,7 @@ view: forecasts {
     sql:
         case
           when {% parameter ops.position_parameter %} = 'Rider'
-            then ${number_of_forecasted_hours_excl_no_show_rider_adjusted}
+            then ${number_of_forecasted_hours_excl_no_show_rider_unrounded_adjusted}
           else null
         end ;;
     hidden: yes
@@ -1404,7 +1404,7 @@ view: forecasts {
   measure: number_of_forecasted_hours_unrounded_by_position{
     type: number
     label: "# Unrounded Forecasted Hours (Incl. No Show)"
-    description: "# Forecasted Hours Needed for Riders without rounding logic. It is the output from Data Science calculation."
+    description: "# Forecasted Hours Needed for Riders without applying rounding logic."
     value_format_name: decimal_2
     group_label: "> Dynamic Measures"
     sql:
@@ -1419,7 +1419,7 @@ view: forecasts {
   measure: number_of_forecasted_hours_unrounded_adjusted_by_position{
     type: number
     label: "# Unrounded Adjusted Forecasted Hours (Incl. No Show)"
-    description: "# Forecasted Hours Needed for Riders without rounding logic. It is the output from Data Science calculation."
+    description: "# Forecasted Hours Needed for Riders without applying rounding logic and including Airtable Adjustments."
     value_format_name: decimal_2
     group_label: "> Dynamic Measures"
     sql:
