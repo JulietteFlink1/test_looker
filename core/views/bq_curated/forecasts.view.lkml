@@ -937,7 +937,7 @@ view: forecasts {
   measure: number_of_forecasted_hours_rider_unrounded {
     group_label: "> Rider Measures"
     label: "# Unrounded Forecasted Rider Hours"
-    description: "# Forecasted Hours Needed for Riders without rounding logic."
+    description: "# Forecasted Hours Needed for Riders without applying rounding logic."
     type: number
     sql: ${number_of_forecasted_minutes_rider_unrounded}/60;;
     value_format_name: decimal_1
@@ -946,7 +946,7 @@ view: forecasts {
   measure: number_of_forecasted_hours_rider_unrounded_adjusted {
     group_label: "> Rider Measures"
     label: "# Unrounded Adjusted Forecasted Rider Hours"
-    description: "# Adjusted Forecasted Hours Needed for Riders without rounding logic."
+    description: "# Forecasted Hours Needed for Riders without applying rounding logic and including Airtable Adjustments."
     type: number
     sql: ${number_of_forecasted_minutes_rider_unrounded_adjusted}/60;;
     value_format_name: decimal_1
@@ -982,7 +982,7 @@ view: forecasts {
   measure: number_of_forecasted_hours_excl_no_show_rider_adjusted {
     group_label: "> Rider Measures"
     label: "# Adjusted Forecasted Rider Hours - Data Science (Excl. No Show)"
-    description: "# Forecasted Hours Needed for Riders excluding No Show (it is the output from Data Science calculation) including adjustments made by the Rider Ops team using Airtable."
+    description: "# Forecasted Hours Needed for Riders excluding No Show and including Airtable Adjustments. It is the output from Data Science calculation."
     type: number
     sql: ${number_of_forecasted_minutes_excl_no_show_rider_adjusted}/60;;
     value_format_name: decimal_1
@@ -1344,7 +1344,7 @@ view: forecasts {
   measure: number_of_forecasted_hours_excl_no_show_ds_by_position{
     type: number
     label: "# Forecasted Hours - Data Science (Excl. No Show)"
-    description: "# Forecasted Hours Needed for Riders excluding No Show. It is the output from Data Science calculation."
+    description: "# Forecasted Hours excluding No Show. It is the output from Data Science calculation."
     value_format_name: decimal_2
     group_label: "> Dynamic Measures"
     sql:
@@ -1359,7 +1359,7 @@ view: forecasts {
   measure: number_of_forecasted_hours_excl_no_show_adjusted_ds_by_position{
     type: number
     label: "# Adjusted Forecasted Hours - Data Science (Excl. No Show)"
-    description: "# Forecasted Hours Needed for Riders excluding No Show and including Airtable Adjustments. It is the output from Data Science calculation."
+    description: "# Forecasted Hours excluding No Show and including Airtable Adjustments. It is the output from Data Science calculation."
     value_format_name: decimal_2
     group_label: "> Dynamic Measures"
     sql:
@@ -1389,7 +1389,7 @@ view: forecasts {
   measure: number_of_forecasted_hours_excl_no_show_unrounded_adjusted_ds_by_position{
     type: number
     label: "# Unrounded Adjusted Forecasted Hours - Data Science (Excl. No Show)"
-    description: "# Forecasted Hours Needed for Riders excluding No Show without applying rounding logic and including Airtable Adjustments. It is the output from Data Science calculation."
+    description: "# Forecasted Hours excluding No Show without applying rounding logic and including Airtable Adjustments. It is the output from Data Science calculation."
     value_format_name: decimal_2
     group_label: "> Dynamic Measures"
     sql:
@@ -1404,7 +1404,7 @@ view: forecasts {
   measure: number_of_forecasted_hours_unrounded_by_position{
     type: number
     label: "# Unrounded Forecasted Hours (Incl. No Show)"
-    description: "# Forecasted Hours Needed for Riders without applying rounding logic."
+    description: "# Forecasted Hours without applying rounding logic."
     value_format_name: decimal_2
     group_label: "> Dynamic Measures"
     sql:
@@ -1419,7 +1419,7 @@ view: forecasts {
   measure: number_of_forecasted_hours_unrounded_adjusted_by_position{
     type: number
     label: "# Unrounded Adjusted Forecasted Hours (Incl. No Show)"
-    description: "# Forecasted Hours Needed for Riders without applying rounding logic and including Airtable Adjustments."
+    description: "# Forecasted Hours without applying rounding logic and including Airtable Adjustments."
     value_format_name: decimal_2
     group_label: "> Dynamic Measures"
     sql:
