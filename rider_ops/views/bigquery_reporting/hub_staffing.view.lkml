@@ -236,7 +236,9 @@ view: hub_staffing {
   dimension_group: last_update {
     type: time
     timeframes: [
-      time
+      time,
+      hour,
+      minute
     ]
     convert_tz: yes
     datatype: datetime
