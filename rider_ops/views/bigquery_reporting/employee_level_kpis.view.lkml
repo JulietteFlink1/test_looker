@@ -1083,7 +1083,7 @@ view: employee_level_kpis {
     group_label: "> Shift Related"
     type: sum
     label: "# Availability Hours Within Operational Hours"
-    description:"Number of hours that were provided as available by the employee within operational hours (country-specific, see metric link for more details)."
+    description: "Number of hours that were provided as available by the employee within operational hours (country-specific, see metric link for more details)."
     sql: ${TABLE}.number_of_availability_minutes_within_operational_hours/60 ;;
     link: {
       label: "Operational hours definition"
