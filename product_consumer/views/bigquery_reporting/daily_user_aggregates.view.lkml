@@ -247,7 +247,7 @@ view: daily_user_aggregates {
 
   dimension: is_user_logged_in {
     group_label: "Flags | User"
-    description: "Yes if user in logged in during the last event of the day"
+    description: "Yes if user is logged in at the end of the daily session"
     type: yesno
     sql: ${TABLE}.is_user_logged_in ;;
   }
