@@ -943,6 +943,17 @@ view: forecasts {
     value_format_name: decimal_1
   }
 
+  measure: number_of_hours_added_riders {
+    group_label: "> Rider Measures"
+    label: "# Forecasted Hours Added (Due to Rounding)"
+    description: "# Forecasted Hours added for Riders due to rounding logic."
+    type: number
+    sql: (${number_of_forecasted_minutes_rider}-${number_of_forecasted_minutes_rider_unrounded})/60;;
+    value_format_name: decimal_2
+  }
+
+
+
   measure: number_of_forecasted_hours_rider_unrounded_adjusted {
     group_label: "> Rider Measures"
     label: "# Unrounded Adjusted Forecasted Rider Hours"
@@ -1353,7 +1364,6 @@ view: forecasts {
             then ${number_of_forecasted_hours_excl_no_show_rider}
           else null
         end ;;
-    hidden: yes
   }
 
   measure: number_of_forecasted_hours_excl_no_show_adjusted_ds_by_position{
@@ -1368,7 +1378,6 @@ view: forecasts {
             then ${number_of_forecasted_hours_excl_no_show_rider_adjusted}
           else null
         end ;;
-    hidden: yes
   }
 
   measure: number_of_forecasted_hours_excl_no_show_unrounded_ds_by_position{
@@ -1383,7 +1392,6 @@ view: forecasts {
             then ${number_of_forecasted_hours_excl_no_show_rider_unrounded}
           else null
         end ;;
-    hidden: yes
   }
 
   measure: number_of_forecasted_hours_excl_no_show_unrounded_adjusted_ds_by_position{
@@ -1398,7 +1406,6 @@ view: forecasts {
             then ${number_of_forecasted_hours_excl_no_show_rider_unrounded_adjusted}
           else null
         end ;;
-    hidden: yes
   }
 
   measure: number_of_forecasted_hours_unrounded_by_position{
@@ -1413,7 +1420,6 @@ view: forecasts {
             then ${number_of_forecasted_hours_rider_unrounded}
           else null
         end ;;
-    hidden: yes
   }
 
   measure: number_of_forecasted_hours_unrounded_adjusted_by_position{
@@ -1428,7 +1434,6 @@ view: forecasts {
             then ${number_of_forecasted_hours_rider_unrounded_adjusted}
           else null
         end ;;
-    hidden: yes
   }
 
   measure: number_of_forecasted_hours_excl_no_show_by_position {
