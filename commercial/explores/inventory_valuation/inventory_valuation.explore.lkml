@@ -3,7 +3,7 @@ include: "/core/views/bq_curated/products.view"
 include: "/core/views/bq_curated/hubs_ct.view"
 
 
-explore: sdt_inventory_valuation {
+explore: inventory_valuation {
 
   label: "Inventory Valuation (Restricted)"
   group_label: "Finance"
@@ -17,6 +17,7 @@ explore: sdt_inventory_valuation {
   }
 
   from:  sdt_inventory_valuation
+  view_name: sdt_inventory_valuation
   view_label: "Inventory Valuation"
 
   always_filter: {
