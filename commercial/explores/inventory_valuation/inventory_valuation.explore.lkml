@@ -9,7 +9,7 @@ explore: inventory_valuation {
   group_label: "Finance"
   description: "This explore provides an overview over the inventory movements within a defined timeframe, both valued as quantities or valued in monetary value using the
   weighted average cost (WAC)"
-  hidden: yes
+  hidden: no
 
   access_filter: {
     field: hubs_ct.country_iso
