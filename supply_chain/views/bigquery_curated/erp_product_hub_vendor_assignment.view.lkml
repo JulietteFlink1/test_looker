@@ -276,7 +276,7 @@ view: erp_product_hub_vendor_assignment {
     alias: [erp_vendor_location_id]
 
     type: string
-    sql: ${TABLE}.supplier_location ;;
+    sql: ${TABLE}.supplier_site ;;
   }
 
   dimension: vendor_name {
