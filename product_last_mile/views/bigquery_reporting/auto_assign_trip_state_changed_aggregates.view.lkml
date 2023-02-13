@@ -43,14 +43,14 @@ view: auto_assign_trip_state_changed_aggregates {
     group_label: "Generic Dimension"
     label: "Trip Completed By"
     type: string
-    description: "This field indicates if a trip was completed by the rider or a by hub staff member from the dashboard"
+    description: "This field indicates if a trip was completed by the rider or a by hub staff member from the dashboard (can be null due not all offers were completed)"
     sql: ${TABLE}.trip_completed_by ;;
   }
   dimension: trip_started_by {
     group_label: "Generic Dimension"
     label: "Trip Started By"
     type: string
-    description: "This field indicates if a trip was started by the rider or by a hub staff member from the dashboard"
+    description: "This field indicates if a trip was started by the rider or by a hub staff member from the dashboard (can be null due not all offers were started)"
     sql: ${TABLE}.trip_started_by ;;
   }
 
