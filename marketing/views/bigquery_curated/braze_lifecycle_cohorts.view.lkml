@@ -429,7 +429,7 @@ view: braze_lifecycle_cohorts {
   measure: control_amt_commercial_profit {
     hidden: yes
     type: sum
-    sql: ${amt_control_commercial_profit_eur}};;
+    sql: ${amt_control_commercial_profit_eur};;
     filters: {
       field: in_control_group
       value: "No"
@@ -545,14 +545,15 @@ view: braze_lifecycle_cohorts {
     description: "Absolute margins + fees - cart discount amount"
     type: sum
     sql: ${amt_commercial_profit_eur} ;;
+    value_format_name: decimal_2
   }
 
   measure: avg_amt_commercial_profit_per_order_eur {
     group_label: "* Cohort Performance *"
     label: "AVG Commercial Profit (per Order)"
     description: "Total commercial profit divided by total number of orders"
-    type: sum
-    sql: safe_divide(${amt_commercial_profit_eur},${number_of_orders}) ;;
+    type: number
+    sql: safe_divide(${sum_amt_commercial_profit_eur},${number_of_orders}) ;;
     value_format_name: decimal_2
   }
 
@@ -560,8 +561,8 @@ view: braze_lifecycle_cohorts {
     group_label: "* Cohort Performance *"
     label: "AVG Commercial Profit (per Customer Ordered)"
     description: "Total commercial profit divided by total number of customers who placed orders"
-    type: sum
-    sql: safe_divide(${amt_commercial_profit_eur},${number_of_customers_ordered}) ;;
+    type: number
+    sql: safe_divide(${sum_amt_commercial_profit_eur},${number_of_customers_ordered}) ;;
     value_format_name: decimal_2
   }
 
@@ -569,8 +570,8 @@ view: braze_lifecycle_cohorts {
     group_label: "* Cohort Performance *"
     label: "AVG Commercial Profit (per Contacted User)"
     description: "Total commercial profit divided by total number of users in the canvas cohort"
-    type: sum
-    sql: safe_divide(${amt_commercial_profit_eur},${number_of_users}) ;;
+    type: number
+    sql: safe_divide(${sum_amt_commercial_profit_eur},${number_of_users}) ;;
     value_format_name: decimal_2
   }
 
@@ -586,10 +587,10 @@ view: braze_lifecycle_cohorts {
 
   measure: absolute_incrementality_of_avg_amt_commercial_profit_per_user_contacted {
     group_label: "* Cohort Performance *"
-    label: "Incrementality (Absolute, €) in AVG Commercial Profit (per Contacted User)"
+    label: "Incrementality (Absolute, €) in Commercial Profit"
     description: "Absolute amount of incremental commercial profit in variant group"
     type: number
-    sql: ${avg_amt_commercial_profit_per_variant_cohort_users} * safe_divide((${avg_amt_commercial_profit_per_variant_cohort_users} - ${avg_amt_commercial_profit_per_control_cohort_users}),
+    sql: ${variant_amt_commercial_profit} * safe_divide((${avg_amt_commercial_profit_per_variant_cohort_users} - ${avg_amt_commercial_profit_per_control_cohort_users}),
       ${avg_amt_commercial_profit_per_variant_cohort_users}) ;;
     value_format_name: decimal_2
   }
