@@ -4,7 +4,7 @@
 ### This view represents data for reporting on CRM canvas lifecycles efficiency.
 
 view: braze_lifecycle_cohorts {
-  sql_table_name: `flink-data-prod.curated.braze_lifecycle_cohorts`
+  sql_table_name: `flink-data-dev.dbt_aavramenko_curated.braze_lifecycle_cohorts`
     ;;
   view_label: "* CRM Lifecycle Canvases *"
 
@@ -12,175 +12,187 @@ view: braze_lifecycle_cohorts {
 
   dimension: customers_discounted_ordered_count {
     type: number
-    sql: ${TABLE}.customers_discounted_ordered_count ;;
+    sql: ${TABLE}.number_of_unique_customers_discounted_ordered ;;
     hidden: yes
   }
 
   dimension: control_customers_discounted_ordered_count {
     type: number
-    sql: ${TABLE}.control_customers_discounted_ordered_count ;;
+    sql: ${TABLE}.number_of_unique_control_customers_discounted_ordered ;;
     hidden: yes
   }
 
   dimension: customers_ordered_count {
     type: number
-    sql: ${TABLE}.customers_ordered_count ;;
+    sql: ${TABLE}.number_of_unique_customers_ordered ;;
     hidden: yes
   }
 
   dimension: control_customers_ordered_count {
     type: number
-    sql: ${TABLE}.control_customers_ordered_count ;;
+    sql: ${TABLE}.number_of_unique_control_customers_ordered ;;
     hidden: yes
   }
 
   dimension: customers_visited_count {
     type: number
-    sql: ${TABLE}.customers_visited_count ;;
+    sql: ${TABLE}.number_of_unique_customers_visited ;;
     hidden: yes
   }
 
   dimension: control_customers_visited_count {
     type: number
-    sql: ${TABLE}.control_customers_visited_count ;;
+    sql: ${TABLE}.number_of_unique_control_customers_visited ;;
     hidden: yes
   }
 
   dimension: daily_visits_count {
     type: number
-    sql: ${TABLE}.daily_visits_count ;;
+    sql: ${TABLE}.number_of_daily_visits ;;
     hidden: yes
   }
 
   dimension: control_daily_visits_count {
     type: number
-    sql: ${TABLE}.control_daily_visits_count ;;
+    sql: ${TABLE}.number_of_control_daily_visits ;;
     hidden: yes
   }
 
   dimension: discounted_orders_count {
     type: number
-    sql: ${TABLE}.discounted_orders_count ;;
+    sql: ${TABLE}.number_of_discounted_orders ;;
     hidden: yes
   }
 
   dimension: control_discounted_orders_count {
     type: number
-    sql: ${TABLE}.control_discounted_orders_count ;;
+    sql: ${TABLE}.number_of_control_discounted_orders ;;
     hidden: yes
   }
 
   dimension: email_clicked_count {
     type: number
-    sql: ${TABLE}.email_clicked_count ;;
+    sql: ${TABLE}.number_of_email_clicks ;;
     hidden: yes
   }
 
   dimension: email_general_opens_count {
     type: number
-    sql: ${TABLE}.email_general_opens_count ;;
+    sql: ${TABLE}.number_of_general_email_opens ;;
     hidden: yes
   }
 
   dimension: email_is_bounced_count {
     type: number
-    sql: ${TABLE}.email_is_bounced_count ;;
+    sql: ${TABLE}.number_of_unique_bounced_emails ;;
     hidden: yes
   }
 
   dimension: email_is_clicked_count {
     type: number
-    sql: ${TABLE}.email_is_clicked_count ;;
+    sql: ${TABLE}.number_of_unique_clicked_emails ;;
     hidden: yes
   }
 
   dimension: email_is_delivered_count {
     type: number
-    sql: ${TABLE}.email_is_delivered_count ;;
+    sql: ${TABLE}.number_of_unique_delivered_emails ;;
     hidden: yes
   }
 
   dimension: email_is_general_opened_count {
     type: number
-    sql: ${TABLE}.email_is_general_opened_count ;;
+    sql: ${TABLE}.number_of_unique_generally_opened_emails ;;
     hidden: yes
   }
 
   dimension: email_is_soft_bounced_count {
     type: number
-    sql: ${TABLE}.email_is_soft_bounced_count ;;
+    sql: ${TABLE}.number_of_unique_soft_bounced_emails ;;
     hidden: yes
   }
 
   dimension: email_is_unsubscribed_count {
     type: number
-    sql: ${TABLE}.email_is_unsubscribed_count ;;
+    sql: ${TABLE}.number_of_unique_unsubscribed_emails ;;
     hidden: yes
   }
 
   dimension: email_sent_count {
     type: number
-    sql: ${TABLE}.email_sent_count ;;
+    sql: ${TABLE}.number_of_sent_emails ;;
     hidden: yes
   }
 
   dimension: email_unique_opens_count {
     type: number
-    sql: ${TABLE}.email_unique_opens_count ;;
+    sql: ${TABLE}.number_of_unique_opened_emails ;;
     hidden: yes
   }
 
   dimension: message_is_engaged_count {
     type: number
-    sql: ${TABLE}.message_is_engaged_count ;;
+    sql: ${TABLE}.number_of_unique_engaged_messages ;;
     hidden: yes
   }
 
   dimension: message_sent_count {
     type: number
-    sql: ${TABLE}.message_sent_count ;;
+    sql: ${TABLE}.number_of_sent_messages ;;
     hidden: yes
   }
 
   dimension: orders_count {
     type: number
-    sql: ${TABLE}.orders_count ;;
+    sql: ${TABLE}.number_of_orders ;;
     hidden: yes
   }
 
   dimension: control_orders_count {
     type: number
-    sql: ${TABLE}.control_orders_count ;;
+    sql: ${TABLE}.number_of_control_orders ;;
     hidden: yes
   }
 
   dimension: push_is_bounced_count {
     type: number
-    sql: ${TABLE}.push_is_bounced_count ;;
+    sql: ${TABLE}.number_of_unique_bounced_pushes ;;
     hidden: yes
   }
 
   dimension: push_is_tapped_count {
     type: number
-    sql: ${TABLE}.push_is_tapped_count ;;
+    sql: ${TABLE}.number_of_unique_tapped_pushes ;;
     hidden: yes
   }
 
   dimension: push_sent_count {
     type: number
-    sql: ${TABLE}.push_sent_count ;;
+    sql: ${TABLE}.number_of_sent_pushes ;;
     hidden: yes
   }
 
   dimension: users_count {
     type: number
-    sql: ${TABLE}.users_count ;;
+    sql: ${TABLE}.number_of_unique_users ;;
     hidden: yes
   }
 
   dimension: control_users_count {
     type: number
-    sql: ${TABLE}.control_users_count ;;
+    sql: ${TABLE}.number_of_unique_control_users ;;
+    hidden: yes
+  }
+
+  dimension: amt_commercial_profit_eur {
+    type: number
+    sql: ${TABLE}.amt_commercial_profit_eur ;;
+    hidden: yes
+  }
+
+  dimension: amt_control_commercial_profit_eur {
+    type: number
+    sql: ${TABLE}.amt_control_commercial_profit_eur ;;
     hidden: yes
   }
 
@@ -238,7 +250,7 @@ view: braze_lifecycle_cohorts {
     label: "Is Control Group"
     description: "Flag stating if the variation is a control group. Only one variation per canvas can be a control group"
     type: yesno
-    sql: ${TABLE}.in_control_group ;;
+    sql: ${TABLE}.is_control_group ;;
   }
 
   dimension_group: cohort {
@@ -384,6 +396,46 @@ view: braze_lifecycle_cohorts {
     }
   }
 
+  measure: number_of_variant_orders {
+    hidden: yes
+    type: sum
+    sql: ${orders_count};;
+    filters: {
+      field: in_control_group
+      value: "No"
+    }
+  }
+
+  measure: number_of_control_orders {
+    hidden: yes
+    type: sum
+    sql: ${control_orders_count};;
+    filters: {
+      field: in_control_group
+      value: "No"
+    }
+  }
+
+  measure: variant_amt_commercial_profit {
+    hidden: yes
+    type: sum
+    sql: ${amt_commercial_profit_eur};;
+    filters: {
+      field: in_control_group
+      value: "No"
+    }
+  }
+
+  measure: control_amt_commercial_profit {
+    hidden: yes
+    type: sum
+    sql: ${amt_control_commercial_profit_eur}};;
+    filters: {
+      field: in_control_group
+      value: "No"
+    }
+  }
+
   measure: share_of_variant_customers_ordered {
     hidden: yes
     type: number
@@ -394,6 +446,30 @@ view: braze_lifecycle_cohorts {
     hidden: yes
     type: number
     sql: safe_divide(${number_of_control_customers_ordered},${number_of_control_users});;
+  }
+
+  measure: avg_number_of_orders_per_variant_cohort_users {
+    hidden: yes
+    type: number
+    sql: safe_divide(${number_of_variant_orders},${number_of_variant_users});;
+  }
+
+  measure: avg_number_of_orders_per_control_cohort_users {
+    hidden: yes
+    type: number
+    sql: safe_divide(${number_of_control_orders},${number_of_control_users});;
+  }
+
+  measure: avg_amt_commercial_profit_per_variant_cohort_users {
+    hidden: yes
+    type: number
+    sql: safe_divide(${variant_amt_commercial_profit},${number_of_variant_users});;
+  }
+
+  measure: avg_amt_commercial_profit_per_control_cohort_users {
+    hidden: yes
+    type: number
+    sql: safe_divide(${control_amt_commercial_profit},${number_of_control_users});;
   }
 
   measure: share_of_customers_ordered {
@@ -407,7 +483,7 @@ view: braze_lifecycle_cohorts {
 
   measure: incrementality_of_share_of_customers_ordered {
     group_label: "* Cohort Performance *"
-    label: "Incrementality - Δ ppt. in Users Ordered"
+    label: "Incrementality (Absolute, pp) in Users Ordered"
     description: "Positive difference in share of users who placed an order in variant group compared to the share of users who placed an order in control group"
     type: number
     sql: (${share_of_variant_customers_ordered} - ${share_of_control_customers_ordered}) * 100 ;;
@@ -416,13 +492,35 @@ view: braze_lifecycle_cohorts {
 
   measure: incremental_lift_of_share_of_customers_ordered {
     group_label: "* Cohort Performance *"
-    label: "Incremental lift - Δ % in Users Ordered"
+    label: "Incrementality (Relative, %) in Users Ordered"
     description: "% increase in share of users who placed an order in variant group compared to the share of users who placed an order in control group"
     type: number
     sql: safe_divide((${share_of_variant_customers_ordered} - ${share_of_control_customers_ordered}),
     ${share_of_control_customers_ordered}) ;;
     value_format_name: percent_2
   }
+
+  measure: relative_incrementality_of_avg_number_of_orders_per_contacted_user {
+    group_label: "* Cohort Performance *"
+    label: "Incrementality (Relative, %) in AVG # Orders (per Contacted User)"
+    description: "% increase in AVG number of orders per contacted user in variant group compared to the AVG number of orders in control group"
+    type: number
+    sql: safe_divide((${avg_number_of_orders_per_variant_cohort_users} - ${avg_number_of_orders_per_control_cohort_users}),
+      ${avg_number_of_orders_per_control_cohort_users}) ;;
+    value_format_name: percent_2
+  }
+
+  measure: absolute_incrementality_of_avg_number_of_orders_per_contacted_user {
+    group_label: "* Cohort Performance *"
+    label: "Incrementality (Absolute, #) in Orders"
+    description: "Positive difference in share of users who placed an order in variant group compared to the share of users who placed an order in control group"
+    type: number
+    sql: ${number_of_variant_orders} * safe_divide((${avg_number_of_orders_per_variant_cohort_users} - ${avg_number_of_orders_per_control_cohort_users}),
+      ${avg_number_of_orders_per_variant_cohort_users}) ;;
+    value_format_name: decimal_0
+  }
+
+
 
   measure: number_of_orders {
     group_label: "* Cohort Performance *"
@@ -438,6 +536,61 @@ view: braze_lifecycle_cohorts {
     description: "AVG number of orders among users within the cohort who placed at least one order"
     type: number
     sql: safe_divide(${number_of_orders},${number_of_customers_ordered}) ;;
+    value_format_name: decimal_2
+  }
+
+  measure: sum_amt_commercial_profit_eur {
+    group_label: "* Cohort Performance *"
+    label: "Commercial Profit Amount"
+    description: "Absolute margins + fees - cart discount amount"
+    type: sum
+    sql: ${amt_commercial_profit_eur} ;;
+  }
+
+  measure: avg_amt_commercial_profit_per_order_eur {
+    group_label: "* Cohort Performance *"
+    label: "AVG Commercial Profit (per Order)"
+    description: "Total commercial profit divided by total number of orders"
+    type: sum
+    sql: safe_divide(${amt_commercial_profit_eur},${number_of_orders}) ;;
+    value_format_name: decimal_2
+  }
+
+  measure: avg_amt_commercial_profit_per_customer_ordered_eur {
+    group_label: "* Cohort Performance *"
+    label: "AVG Commercial Profit (per Customer Ordered)"
+    description: "Total commercial profit divided by total number of customers who placed orders"
+    type: sum
+    sql: safe_divide(${amt_commercial_profit_eur},${number_of_customers_ordered}) ;;
+    value_format_name: decimal_2
+  }
+
+  measure: avg_amt_commercial_profit_per_user_contacted_eur {
+    group_label: "* Cohort Performance *"
+    label: "AVG Commercial Profit (per Contacted User)"
+    description: "Total commercial profit divided by total number of users in the canvas cohort"
+    type: sum
+    sql: safe_divide(${amt_commercial_profit_eur},${number_of_users}) ;;
+    value_format_name: decimal_2
+  }
+
+  measure: relative_incrementality_of_avg_amt_commercial_profit_per_user_contacted {
+    group_label: "* Cohort Performance *"
+    label: "Incrementality (Relative, %) in AVG Commercial Profit (per Contacted User)"
+    description: "% increase in AVG commercial profit per contacted user compared to AVG commercial profit per contacted user in control group"
+    type: number
+    sql: safe_divide((${avg_amt_commercial_profit_per_variant_cohort_users} - ${avg_amt_commercial_profit_per_control_cohort_users}),
+      ${avg_amt_commercial_profit_per_control_cohort_users}) ;;
+    value_format_name: percent_2
+  }
+
+  measure: absolute_incrementality_of_avg_amt_commercial_profit_per_user_contacted {
+    group_label: "* Cohort Performance *"
+    label: "Incrementality (Absolute, €) in AVG Commercial Profit (per Contacted User)"
+    description: "Absolute amount of incremental commercial profit in variant group"
+    type: number
+    sql: ${avg_amt_commercial_profit_per_variant_cohort_users} * safe_divide((${avg_amt_commercial_profit_per_variant_cohort_users} - ${avg_amt_commercial_profit_per_control_cohort_users}),
+      ${avg_amt_commercial_profit_per_variant_cohort_users}) ;;
     value_format_name: decimal_2
   }
 
@@ -492,7 +645,7 @@ view: braze_lifecycle_cohorts {
 
   measure: incrementality_of_share_of_customers_visited {
     group_label: "* Cohort Performance *"
-    label: "Incrementality - Δ ppt. in Users Visited"
+    label: "Incrementality (Absolute, pp) in Users Visited"
     description: "Positive difference in share of users who visited app or web in variant group compared to the share of users who visited app or web in control group"
     type: number
     sql: (${share_of_variant_customers_visited} - ${share_of_control_customers_visited}) * 100 ;;
@@ -501,7 +654,7 @@ view: braze_lifecycle_cohorts {
 
   measure: incremental_lift_of_share_of_customers_visited {
     group_label: "* Cohort Performance *"
-    label: "Incremental lift - Δ % in Users Visited"
+    label: "Incrementality (Relative, %) in Users Visited"
     description: "% increase in share of users who visited app or web in variant group compared to the share of users who visited app or web in control group"
     type: number
     sql: safe_divide((${share_of_variant_customers_visited} - ${share_of_control_customers_visited}),
@@ -684,6 +837,24 @@ view: braze_lifecycle_cohorts {
     description: "Number of uniquely opened emails - unque opens are caluclated according to Braze's approach for dealing with machine opens"
     type: sum
     sql: ${email_unique_opens_count} ;;
+  }
+
+  measure: share_of_clicked_emails_among_opened_emails {
+    group_label: "* Message Performance *"
+    label: "% Click-to-Open Rate"
+    description: "Share of clicked emails among all open emails"
+    type: number
+    sql: safe_divide(${number_of_clicked_emails},${number_of_email_unique_opens}) ;;
+    value_format_name: percent_2
+  }
+
+  measure: share_of_unique_opened_emails {
+    group_label: "* Message Performance *"
+    label: "% Unique Opened Emails"
+    description: "Share of unique opened emails among all sent emails"
+    type: number
+    sql: safe_divide(${number_of_email_unique_opens},${number_of_sent_emails}) ;;
+    value_format_name: percent_2
   }
 
   measure: number_of_unsubscribed_emails {

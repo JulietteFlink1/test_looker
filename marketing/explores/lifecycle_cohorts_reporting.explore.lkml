@@ -8,7 +8,7 @@ explore: lifecycle_cohorts_reporting {
 
   hidden: no
   view_name: braze_lifecycle_cohorts
-  label: "Lifecycle Canvases"
+  label: "Braze Canvas Analytics"
   view_label: "CRM"
   group_label: "Marketing"
   description: "Reporting on CRM Lifecycle Canvas Cohorts"
@@ -19,7 +19,7 @@ explore: lifecycle_cohorts_reporting {
 
   always_filter: {
     filters: [
-      braze_lifecycle_cohorts.cohort_date: "last 3 months",
+      braze_lifecycle_cohorts.cohort_date: "last 2 months",
       braze_lifecycle_cohorts.canvas_name: "",
       braze_lifecycle_cohorts.canvas_variation_name: "",
       braze_lifecycle_cohorts.in_control_group: ""
