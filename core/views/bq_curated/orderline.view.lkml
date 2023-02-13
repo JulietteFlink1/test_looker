@@ -382,6 +382,24 @@ view: orderline {
     hidden: yes
   }
 
+  dimension: amt_buying_price_net_eur {
+    required_access_grants: [can_view_buying_information]
+    type: number
+    sql: ${TABLE}.amt_buying_price_net_eur;;
+    hidden: yes
+  }
+
+  dimension: amt_weighted_average_cost_net_eur {
+    required_access_grants: [can_view_buying_information]
+    label: "Buying Price (Net)"
+    description: "Buying price, that can be used for product sales. It resembles the weighted buying price of the current stock. This is done (in Oracle) to ensure that we value the inventory at any given day with the average value of our current stock (and not with the most recent buying price to place a supplier order). ℹ️ Before 27th. of Jan 2023, this field is using the simple unit cost."
+    group_label: "> Monetary Metrics (P&L)"
+    type: number
+    sql: ${TABLE}.amt_buying_price_weighted_rolling_average_net_eur ;;
+    value_format_name: decimal_4
+    hidden: yes
+  }
+
 
   # =========  Admin Dims   =========
   dimension: backend_source {
@@ -389,7 +407,6 @@ view: orderline {
     sql: ${TABLE}.backend_source ;;
     group_label: "> Admin Data"
   }
-
 
   # =========  Dates &  Timestamps   =========
   dimension_group: last_modified {

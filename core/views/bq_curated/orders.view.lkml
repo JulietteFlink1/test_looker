@@ -937,6 +937,7 @@ view: orders {
     timeframes: [
       raw,
       time,
+      minute,
       date,
       week,
       month,
@@ -945,6 +946,7 @@ view: orders {
     ]
     sql: ${TABLE}.last_modified_at ;;
     hidden: yes
+    convert_tz: yes
   }
 
   dimension: latitude {
@@ -2683,6 +2685,16 @@ view: orders {
     ]
   }
 
+  measure: cnt_external_orders {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# External Orders"
+    description: "Count of External orders (orders placed via marketplace integrations like Wolt, UberEats, etc.)"
+    type: count_distinct
+    sql: ${order_uuid} ;;
+    value_format: "0"
+    filters: [is_external_order: "yes"]
+  }
+
   measure: cnt_click_and_collect_orders {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
     label: "# Click & Collect Orders"
@@ -2711,20 +2723,19 @@ view: orders {
       ]
   }
 
-  measure: cnt_external_orders {
+  measure: number_of_unique_flink_delivered_orders {
+    alias: [cnt_rider_orders]
     group_label: "* Basic Counts (Orders / Customers etc.) *"
-    label: "# External Orders"
-    description: "Count of External Orders"
+    label: "# Flink Delivered Orders"
+    description: "Count of Orders delivered by Flink Riders (Excluding External and Click & Collect Orders)."
     hidden:  yes
     type: count_distinct
     sql: ${order_uuid} ;;
     value_format: "0"
     filters: [
-      is_external_order: "yes",
-      is_successful_order: "yes"
+      is_last_mile_order: "yes"
     ]
   }
-
   measure: cnt_orders_with_discount_cart {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
     label: "# Orders with Cart Discount"
@@ -3336,6 +3347,16 @@ view: orders {
   ################
   ## PERCENTAGE ##
   ################
+
+  measure: share_of_external_orders {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "% External Orders"
+    description: "Share of External orders over total number of orders"
+    hidden:  no
+    type: number
+    sql: ${cnt_external_orders} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0.0%"
+  }
 
   measure: pct_acquisition_share {
     group_label: "* Marketing *"
