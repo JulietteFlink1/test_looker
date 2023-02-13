@@ -4118,6 +4118,17 @@ view: staffing {
     value_format_name: percent_1
   }
 
+  measure: pct_no_show_hours_rider_ops_associate {
+    group_label: "> All Staff Measures"
+    label: "% No Show Rider + Ops Associate"
+    description: "# No Show Hours / (# Planned Hours - # Planned EC Hours)"
+    type: number
+    sql:(${number_of_no_show_hours_rider}+${number_of_no_show_hours_ops_associate})
+            /nullif(${number_of_planned_hours_rider} + ${number_of_planned_hours_ops_associate}
+                    -${number_of_planned_hours_rider_ec_shift} - ${number_of_planned_hours_ops_associate_ec_shift},0) ;;
+    value_format_name: percent_1
+  }
+
   measure: pct_no_show_hours_rider_incl_ec_shift {
     group_label: "> Rider Measures"
     label: "% No Show Rider Hours (Incl. EC Shifts)"
@@ -4962,6 +4973,7 @@ view: staffing {
 
 
   measure: hub_ops_kpis {
+    type: number
     group_label: "> Hub Priority KPIs"
     label: "Hub KPI (Dynamic)"
     label_from_parameter: hub_ops_kpis_parameter
@@ -4978,9 +4990,11 @@ view: staffing {
       ${pct_no_show_hours_rider}
     {% elsif hub_ops_kpis_parameter._parameter_value == 'no_show_ops_associate' %}
       ${pct_no_show_hours_ops_associate}
+    {% elsif hub_ops_kpis_parameter._parameter_value == 'no_show_rider_ops_associate' %}
+      ${pct_no_show_hours_rider_ops_associate}
     {% endif %};;
 
-    html:
+  html:
     {% if hub_ops_kpis_parameter._parameter_value ==  'ops_associate_utr' %}
         {{utr_ops_associate._rendered_value }}
     {% elsif hub_ops_kpis_parameter._parameter_value == 'hub_staff_utr' %}
@@ -4993,15 +5007,11 @@ view: staffing {
         {{pct_no_show_hours_rider._rendered_value }}
     {% elsif hub_ops_kpis_parameter._parameter_value == 'no_show_ops_associate' %}
         {{pct_no_show_hours_ops_associate._rendered_value }}
+    {% elsif hub_ops_kpis_parameter._parameter_value == 'no_show_rider_ops_associate' %}
+        {{pct_no_show_hours_rider_ops_associate._rendered_value }}
     {% endif %}
     ;;
   }
-
-  # {{rendered_value | round: 2 }} -- rounds value to whole number
-  #   {% elsif hub_ops_kpis_parameter._parameter_value == "'hub_staff_utr'" %}
-  #   {{ rendered_value | round: 2 }} -- rounds to that number of decimal places and appends a ‘%’ after the value
-  #   {% else %}
-  #   ${{ rendered_value }} -- takes the default value format defined above and adds a ‘$’
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Parameters     ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -5020,7 +5030,7 @@ view: staffing {
   }
 
 
-    parameter: hub_ops_kpis_parameter {
+  parameter: hub_ops_kpis_parameter {
     group_label: "> Hub Priority KPIs"
     label: "Hub KPI"
     type: unquoted
@@ -5030,6 +5040,7 @@ view: staffing {
     allowed_value: {label: "% Rider Worked Time Spent Idle" value: "rider_idle" }
     allowed_value: {label: "% No Show Rider Hours" value: "no_show_rider" }
     allowed_value: {label: "% No Show Ops Associate Hours" value: "no_show_ops_associate" }
+    allowed_value: {label: "% No Show Rider + Ops Associate" value: "no_show_rider_ops_associate" }
 
     default_value: "rider_utr"
   }

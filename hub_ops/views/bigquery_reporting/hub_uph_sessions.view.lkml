@@ -552,4 +552,85 @@ view: hub_uph_sessions {
     filters: [is_activity_switch: "yes"]
   }
 
+  measure: share_of_idle_session_duration_hours_over_all_hours {
+    group_label: "> Durations"
+    label: "% Idle Hours"
+    description: "Number of hours spent idle divided by all worked hours."
+    type: number
+    sql: safe_divide( ${sum_of_internal_idle_session_duration_hours} +
+                      ${sum_of_limit_idle_session_duration_hours}   +
+                      ${sum_of_transition_idle_session_duration_hours},
+                          ${sum_of_session_duration_hours}) ;;
+    value_format_name: percent_1
+  }
+
+  ######## Dynamic Measures
+
+  measure: hub_ops_kpis {
+    type: number
+    group_label: "> Hub Priority KPIs"
+    label: "Hub KPI (Dynamic)"
+    label_from_parameter: hub_ops_kpis_parameter
+    sql:
+    {% if hub_ops_kpis_parameter._parameter_value == 'hub_staff_idle' %}
+      ${share_of_idle_session_duration_hours_over_all_hours}
+    {% elsif hub_ops_kpis_parameter._parameter_value == 'uph_picking' %}
+      ${uph_picking}
+    {% elsif hub_ops_kpis_parameter._parameter_value == 'uph_inbounding' %}
+      ${uph_inbounding}
+    {% elsif hub_ops_kpis_parameter._parameter_value == 'uph_inventory_check' %}
+      ${uph_inventory_check}
+    {% endif %};;
+
+      html:
+          {% if hub_ops_kpis_parameter._parameter_value ==  'hub_staff_idle' %}
+              {{share_of_idle_session_duration_hours_over_all_hours._rendered_value }}
+          {% elsif hub_ops_kpis_parameter._parameter_value == 'uph_picking' %}
+              {{uph_picking._rendered_value }}
+          {% elsif hub_ops_kpis_parameter._parameter_value == 'uph_inbounding' %}
+              {{uph_inbounding._rendered_value }}
+          {% elsif hub_ops_kpis_parameter._parameter_value == 'uph_inventory_check' %}
+              {{uph_inventory_check._rendered_value }}
+          {% endif %}
+          ;;
+  }
+
+  dimension: date_dynamic{
+    group_label: "> Dates & Timestamps"
+    label: "Date (Dynamic)"
+    label_from_parameter: date_granularity
+    sql:
+    {% if date_granularity._parameter_value == 'Day' %}
+      ${shift_date}
+    {% elsif date_granularity._parameter_value == 'Week' %}
+      ${shift_week}
+    {% elsif date_granularity._parameter_value == 'Month' %}
+      ${shift_month}
+    {% endif %};;
+  }
+
+  ######### Parameters
+
+  parameter: hub_ops_kpis_parameter {
+    group_label: "> Hub Priority KPIs"
+    label: "Hub KPI"
+    type: unquoted
+    allowed_value: {label: "% Idle Hours" value: "hub_staff_idle" }
+    allowed_value: {label: "UPH Order Preparation" value: "uph_picking" }
+    allowed_value: {label: "UPH Inbounding" value: "uph_inbounding" }
+    allowed_value: {label: "UPH Inventory Check" value: "uph_inventory_check" }
+
+    default_value: "hub_staff_idle"
+  }
+
+  parameter: date_granularity {
+    group_label: "> Dates & Timestamps"
+    label: "Date Granularity"
+    type: unquoted
+    allowed_value: { value: "Day" }
+    allowed_value: { value: "Week" }
+    allowed_value: { value: "Month" }
+    default_value: "Day"
+  }
+
 }
