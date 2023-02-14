@@ -73,7 +73,8 @@ view: hub_one_inbounding_aggregates {
       date,
       week,
       day_of_week,
-      month
+      month,
+      week_of_year
     ]
     convert_tz: no
     datatype: date
@@ -87,7 +88,8 @@ view: hub_one_inbounding_aggregates {
       time,
       date,
       hour_of_day,
-      day_of_week
+      day_of_week,
+      week_of_year
     ]
     sql: ${TABLE}.list_preparation_started_at ;;
   }
@@ -99,7 +101,8 @@ view: hub_one_inbounding_aggregates {
       time,
       date,
       hour_of_day,
-      day_of_week
+      day_of_week,
+      week_of_year
     ]
     sql: ${TABLE}.dropping_list_started_at ;;
   }
@@ -112,7 +115,8 @@ view: hub_one_inbounding_aggregates {
       time,
       date,
       hour_of_day,
-      day_of_week
+      day_of_week,
+      week_of_year
     ]
     sql: ${TABLE}.dropping_list_finished_at ;;
   }

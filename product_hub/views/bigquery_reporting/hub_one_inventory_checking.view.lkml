@@ -169,7 +169,9 @@ view: hub_one_inventory_checking {
       time,
       date,
       hour,
-      day_of_week
+      day_of_week,
+      week_of_year,
+      week
     ]
     sql: ${TABLE}.created_at_timestamp ;;
   }
@@ -183,7 +185,9 @@ view: hub_one_inventory_checking {
       time,
       date,
       hour,
-      day_of_week
+      day_of_week,
+      week_of_year,
+      week
     ]
     sql: ${TABLE}.updated_at_timestamp ;;
   }
@@ -197,7 +201,9 @@ view: hub_one_inventory_checking {
       time,
       date,
       hour,
-      day_of_week
+      day_of_week,
+      week_of_year,
+      week
     ]
     sql: ${TABLE}.started_at_timestamp ;;
   }
@@ -211,7 +217,9 @@ view: hub_one_inventory_checking {
       time,
       date,
       hour,
-      day_of_week
+      day_of_week,
+      week_of_year,
+      week
     ]
     sql: ${TABLE}.finished_at_timestamp ;;
   }
@@ -224,7 +232,9 @@ view: hub_one_inventory_checking {
       time,
       date,
       hour,
-      day_of_week
+      day_of_week,
+      week_of_year,
+      week
     ]
     sql: ${TABLE}.correction_done_at_timestamp ;;
   }
@@ -239,7 +249,9 @@ view: hub_one_inventory_checking {
       time,
       date,
       hour,
-      day_of_week
+      day_of_week,
+      week_of_year,
+      week
     ]
     sql: ${TABLE}.fe_started_at_timestamp ;;
   }
@@ -252,7 +264,9 @@ view: hub_one_inventory_checking {
       time,
       date,
       hour,
-      day_of_week
+      day_of_week,
+      week_of_year,
+      week
     ]
     sql: ${TABLE}.fe_finished_at_timestamp ;;
   }
