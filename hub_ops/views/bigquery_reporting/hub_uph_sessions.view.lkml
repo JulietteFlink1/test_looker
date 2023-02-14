@@ -576,14 +576,14 @@ view: hub_uph_sessions {
     default_value: "Day"
   }
 
-  parameter: hub_ops_kpis_parameter {
-    group_label: "> Hub Priority KPIs"
-    label: "Hub KPI"
+  parameter: dynamic_kpi_parameter {
+    group_label: "> Dynamic KPIs"
+    label: "Dynamic KPI"
     type: unquoted
-    allowed_value: {label: "% Idle Hours" value: "hub_staff_idle" }
-    allowed_value: {label: "UPH Order Preparation" value: "uph_picking" }
-    allowed_value: {label: "UPH Inbounding" value: "uph_inbounding" }
-    allowed_value: {label: "UPH Inventory Check" value: "uph_inventory_check" }
+    allowed_value: {label: "% Idle Hours"           value: "hub_staff_idle" }
+    allowed_value: {label: "UPH Order Preparation"  value: "uph_picking" }
+    allowed_value: {label: "UPH Inbounding"         value: "uph_inbounding" }
+    allowed_value: {label: "UPH Inventory Check"    value: "uph_inventory_check" }
 
     default_value: "hub_staff_idle"
   }
@@ -604,33 +604,34 @@ view: hub_uph_sessions {
     {% endif %};;
   }
 
-  measure: hub_ops_kpis {
+  measure: dynamic_kpi {
     type: number
-    group_label: "> Hub Priority KPIs"
-    label: "Hub KPI (Dynamic)"
-    label_from_parameter: hub_ops_kpis_parameter
+    group_label: "> Dynamic KPIs"
+    label: "Dynamic KPI"
+    label_from_parameter: dynamic_kpi_parameter
     sql:
-    {% if hub_ops_kpis_parameter._parameter_value == 'hub_staff_idle' %}
+    {% if dynamic_kpi_parameter._parameter_value == 'hub_staff_idle' %}
       ${share_of_idle_session_duration_hours_over_all_hours}
-    {% elsif hub_ops_kpis_parameter._parameter_value == 'uph_picking' %}
+    {% elsif dynamic_kpi_parameter._parameter_value == 'uph_picking' %}
       ${uph_picking}
-    {% elsif hub_ops_kpis_parameter._parameter_value == 'uph_inbounding' %}
+    {% elsif dynamic_kpi_parameter._parameter_value == 'uph_inbounding' %}
       ${uph_inbounding}
-    {% elsif hub_ops_kpis_parameter._parameter_value == 'uph_inventory_check' %}
+    {% elsif dynamic_kpi_parameter._parameter_value == 'uph_inventory_check' %}
       ${uph_inventory_check}
-    {% endif %};;
+    {% endif %}
+    ;;
 
     html:
-          {% if hub_ops_kpis_parameter._parameter_value ==  'hub_staff_idle' %}
-              {{share_of_idle_session_duration_hours_over_all_hours._rendered_value }}
-          {% elsif hub_ops_kpis_parameter._parameter_value == 'uph_picking' %}
-              {{uph_picking._rendered_value }}
-          {% elsif hub_ops_kpis_parameter._parameter_value == 'uph_inbounding' %}
-              {{uph_inbounding._rendered_value }}
-          {% elsif hub_ops_kpis_parameter._parameter_value == 'uph_inventory_check' %}
-              {{uph_inventory_check._rendered_value }}
-          {% endif %}
-          ;;
+    {% if dynamic_kpi_parameter._parameter_value ==  'hub_staff_idle' %}
+      {{share_of_idle_session_duration_hours_over_all_hours._rendered_value }}
+    {% elsif dynamic_kpi_parameter._parameter_value == 'uph_picking' %}
+      {{uph_picking._rendered_value }}
+    {% elsif dynamic_kpi_parameter._parameter_value == 'uph_inbounding' %}
+      {{uph_inbounding._rendered_value }}
+    {% elsif dynamic_kpi_parameter._parameter_value == 'uph_inventory_check' %}
+      {{uph_inventory_check._rendered_value }}
+    {% endif %}
+    ;;
   }
 
 }

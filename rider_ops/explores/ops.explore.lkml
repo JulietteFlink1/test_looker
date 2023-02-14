@@ -15,7 +15,7 @@ include: "/**/order_backlog.view"
 include: "/**/hub_attributes.view"
 include: "/**/hub_turf_closures_30min.view"
 include: "/**/hub_turf_closures_daily.view"
-include: "/**/cr_dynamic_hub_ops_metrics.view"
+include: "/**/cr_dynamic_ops_metrics.view"
 
 explore: ops {
   from: staffing
@@ -151,7 +151,7 @@ explore: ops {
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   #  - - - - - - - - - -    Cross-Referenced Metrics
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  join: cr_dynamic_hub_ops_metrics {
+  join: cr_dynamic_ops_metrics {
     view_label: "Orders"
     relationship: one_to_one
     type: left_outer

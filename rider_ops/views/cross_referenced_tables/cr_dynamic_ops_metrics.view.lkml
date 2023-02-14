@@ -1,54 +1,54 @@
-view: cr_dynamic_hub_ops_metrics {
+view: cr_dynamic_ops_metrics {
 
 
    measure: hub_ops_kpis {
     type: number
-    group_label: "> Hub Priority KPIs"
-    label: "Hub KPI (Dynamic)"
-    label_from_parameter: hub_ops_kpis_parameter
+    group_label: "> Dynamic KPIs"
+    label: "Dynamic KPI"
+    label_from_parameter: dynamic_kpi_parameter
     sql:
-    {% if hub_ops_kpis_parameter._parameter_value == 'ops_associate_utr' %}
+    {% if dynamic_kpi_parameter._parameter_value == 'ops_associate_utr' %}
       ${ops.utr_ops_associate}
-    {% elsif hub_ops_kpis_parameter._parameter_value == 'hub_staff_utr' %}
+    {% elsif dynamic_kpi_parameter._parameter_value == 'hub_staff_utr' %}
       ${ops.utr_hub_staff}
-    {% elsif hub_ops_kpis_parameter._parameter_value == 'rider_utr' %}
+    {% elsif dynamic_kpi_parameter._parameter_value == 'rider_utr' %}
       ${ops.utr_rider}
-    {% elsif hub_ops_kpis_parameter._parameter_value == 'rider_idle' %}
+    {% elsif dynamic_kpi_parameter._parameter_value == 'rider_idle' %}
       ${ops.pct_rider_idle_time}
-    {% elsif hub_ops_kpis_parameter._parameter_value == 'no_show_rider' %}
+    {% elsif dynamic_kpi_parameter._parameter_value == 'no_show_rider' %}
       ${ops.pct_no_show_hours_rider}
-    {% elsif hub_ops_kpis_parameter._parameter_value == 'no_show_ops_associate' %}
+    {% elsif dynamic_kpi_parameter._parameter_value == 'no_show_ops_associate' %}
       ${ops.pct_no_show_hours_ops_associate}
-    {% elsif hub_ops_kpis_parameter._parameter_value == 'no_show_rider_ops_associate' %}
+    {% elsif dynamic_kpi_parameter._parameter_value == 'no_show_rider_ops_associate' %}
       ${ops.pct_no_show_hours_rider_ops_associate}
-    {% elsif hub_ops_kpis_parameter._parameter_value == 'pct_forecast_deviation_hours_adjusted' %}
+    {% elsif dynamic_kpi_parameter._parameter_value == 'pct_forecast_deviation_hours_adjusted' %}
       ${forecasts.pct_forecast_deviation_hours_adjusted}
-    {% elsif hub_ops_kpis_parameter._parameter_value == 'pct_overpunched_hours_ops_associate' %}
+    {% elsif dynamic_kpi_parameter._parameter_value == 'pct_overpunched_hours_ops_associate' %}
       ${ops.pct_overpunched_hours_ops_associate}
-    {% elsif hub_ops_kpis_parameter._parameter_value == 'pct_overpunched_hours_rider' %}
+    {% elsif dynamic_kpi_parameter._parameter_value == 'pct_overpunched_hours_rider' %}
       ${ops.pct_overpunched_hours_rider}
     {% endif %};;
 
     html:
-    {% if hub_ops_kpis_parameter._parameter_value ==  'ops_associate_utr' %}
+    {% if dynamic_kpi_parameter._parameter_value ==  'ops_associate_utr' %}
         {{ops.utr_ops_associate._rendered_value }}
-    {% elsif hub_ops_kpis_parameter._parameter_value == 'hub_staff_utr' %}
+    {% elsif dynamic_kpi_parameter._parameter_value == 'hub_staff_utr' %}
         {{ops.utr_hub_staff._rendered_value }}
-    {% elsif hub_ops_kpis_parameter._parameter_value == 'rider_utr' %}
+    {% elsif dynamic_kpi_parameter._parameter_value == 'rider_utr' %}
         {{ops.utr_rider._rendered_value }}
-    {% elsif hub_ops_kpis_parameter._parameter_value == 'rider_idle' %}
+    {% elsif dynamic_kpi_parameter._parameter_value == 'rider_idle' %}
         {{ops.pct_rider_idle_time._rendered_value }}
-    {% elsif hub_ops_kpis_parameter._parameter_value == 'no_show_rider' %}
+    {% elsif dynamic_kpi_parameter._parameter_value == 'no_show_rider' %}
         {{ops.pct_no_show_hours_rider._rendered_value }}
-    {% elsif hub_ops_kpis_parameter._parameter_value == 'no_show_ops_associate' %}
+    {% elsif dynamic_kpi_parameter._parameter_value == 'no_show_ops_associate' %}
         {{ops.pct_no_show_hours_ops_associate._rendered_value }}
-    {% elsif hub_ops_kpis_parameter._parameter_value == 'no_show_rider_ops_associate' %}
+    {% elsif dynamic_kpi_parameter._parameter_value == 'no_show_rider_ops_associate' %}
         {{ops.pct_no_show_hours_rider_ops_associate._rendered_value }}
-    {% elsif hub_ops_kpis_parameter._parameter_value == 'pct_forecast_deviation_hours_adjusted' %}
+    {% elsif dynamic_kpi_parameter._parameter_value == 'pct_forecast_deviation_hours_adjusted' %}
         {{forecasts.pct_forecast_deviation_hours_adjusted._rendered_value }}
-    {% elsif hub_ops_kpis_parameter._parameter_value == 'pct_overpunched_hours_ops_associate' %}
+    {% elsif dynamic_kpi_parameter._parameter_value == 'pct_overpunched_hours_ops_associate' %}
         {{ops.pct_overpunched_hours_ops_associate._rendered_value }}
-    {% elsif hub_ops_kpis_parameter._parameter_value == 'pct_overpunched_hours_rider' %}
+    {% elsif dynamic_kpi_parameter._parameter_value == 'pct_overpunched_hours_rider' %}
         {{ops.pct_overpunched_hours_rider._rendered_value }}
     {% endif %}
     ;;
@@ -59,9 +59,9 @@ view: cr_dynamic_hub_ops_metrics {
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-  parameter: hub_ops_kpis_parameter {
-    group_label: "> Hub Priority KPIs"
-    label: "Hub KPI"
+  parameter: dynamic_kpi_parameter {
+    group_label: "> Dynamic KPIs"
+    label: "Dynamic KPI"
     type: unquoted
     allowed_value: {label: "Ops Associate UTR" value: "ops_associate_utr" }
     allowed_value: {label: "Hub Staff UTR" value: "hub_staff_utr" }
