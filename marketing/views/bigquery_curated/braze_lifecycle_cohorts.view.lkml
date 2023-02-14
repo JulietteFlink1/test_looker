@@ -434,6 +434,16 @@ view: braze_lifecycle_cohorts {
     value_format_name: percent_2
   }
 
+  measure: absolute_incrementality_of_share_of_customers_ordered {
+    group_label: "* Cohort Performance *"
+    label: "Incrementality (Absolute, #) in Users Ordered"
+    description: "Absolute number of customers who placed orders in variant group that were incrementally resulted by canvas efforts"
+    type: number
+    sql: ${sum_of_number_of_unique_variant_customers_ordered} * safe_divide((${share_of_variant_customers_ordered} - ${share_of_control_customers_ordered}),
+      ${share_of_variant_customers_ordered}) ;;
+    value_format_name: decimal_0
+  }
+
   # === Customers Discounted Ordered
 
   measure: sum_of_number_of_unique_customers_discounted_ordered {
@@ -473,6 +483,15 @@ view: braze_lifecycle_cohorts {
     description: "AVG number of orders among users within the cohort who placed at least one order"
     type: number
     sql: safe_divide(${sum_of_number_of_unique_orders},${sum_of_number_of_unique_customers_ordered}) ;;
+    value_format_name: decimal_2
+  }
+
+  measure: share_of_orders_per_contacted_users {
+    group_label: "* Cohort Performance *"
+    label: "AVG # Orders (per Contacted User)"
+    description: "AVG number of orders among all contacted users within the cohort"
+    type: number
+    sql: safe_divide(${sum_of_number_of_unique_orders},${sum_of_number_of_unique_users}) ;;
     value_format_name: decimal_2
   }
 
@@ -599,7 +618,7 @@ view: braze_lifecycle_cohorts {
   measure: relative_incrementality_of_avg_amt_commercial_profit_per_user_contacted {
     group_label: "* Cohort Performance *"
     label: "Incrementality (Relative, %) in AVG Commercial Profit (per Contacted User)"
-    description: "% increase in AVG commercial profit per contacted user compared to AVG commercial profit per contacted user in control group"
+    description: "% increase in AVG commercial profit per contacted user compared to AVG commercial profit in control group"
     type: number
     sql: safe_divide((${avg_amt_commercial_profit_per_variant_cohort_users} - ${avg_amt_commercial_profit_per_control_cohort_users}),
       ${avg_amt_commercial_profit_per_control_cohort_users}) ;;
@@ -697,6 +716,16 @@ view: braze_lifecycle_cohorts {
     sql: safe_divide((${share_of_variant_customers_visited} - ${share_of_control_customers_visited}),
       ${share_of_control_customers_visited}) ;;
     value_format_name: percent_2
+  }
+
+  measure: absolute_incrementality_of_share_of_customers_visited {
+    group_label: "* Cohort Performance *"
+    label: "Incrementality (Absolute, #) in Users Visited"
+    description: "Absolute number of customers who made a daily visit in variant group that were incrementally resulted by canvas efforts"
+    type: number
+    sql: ${sum_of_number_of_unique_variant_customers_visited} * safe_divide((${share_of_variant_customers_visited} - ${share_of_control_customers_visited}),
+      ${share_of_variant_customers_visited}) ;;
+    value_format_name: decimal_0
   }
 
 
@@ -811,6 +840,15 @@ view: braze_lifecycle_cohorts {
     description: "Number of emails that were opened"
     type: sum
     sql: ${number_of_unique_generally_opened_emails} ;;
+  }
+
+  measure: share_of_generally_opened_emails {
+    group_label: "* Message Performance *"
+    label: "% General Opened Emails"
+    description: "Share of generally opened emails among all sent emails"
+    type: number
+    sql: safe_divide(${sum_of_number_of_unique_generally_opened_emails},${sum_of_number_of_sent_emails}) ;;
+    value_format_name: percent_2
   }
 
   measure: sum_of_number_of_general_email_opens {
