@@ -765,6 +765,14 @@ view: products {
     hidden: no
   }
 
+  dimension: erp_demand_planning_master_category {
+    label: "Demand Planning Master Cateogry"
+    description: "The demand planning master category combining logic of the 5 item hierarchie fields. This logic is defined by the Supply Chain team."
+    group_label: "ERP fields"
+    type: string
+    sql: ${TABLE}.erp_demand_planning_master_category ;;
+  }
+
   dimension: erp_base_uom {
     label: "Base UOM (ERP)"
     description: "The base unit-of-measure of a product according to our ERP system"
@@ -844,6 +852,38 @@ view: products {
     group_label: "ERP fields"
     type: string
     sql: ${TABLE}.erp_max_shelf_life_days ;;
+  }
+
+  dimension: erp_shelf_life {
+    label: "Erp Shelf Life"
+    description: "None"
+    type: number
+    sql: ${TABLE}.erp_shelf_life ;;
+    hidden: no
+  }
+
+  dimension: erp_shelf_life_hub {
+    label: "Erp Shelf Life Hub"
+    description: "None"
+    type: number
+    sql: ${TABLE}.erp_shelf_life_hub ;;
+    hidden: no
+  }
+
+  dimension: erp_shelf_life_consumer {
+    label: "Erp Shelf Life Consumer"
+    description: "None"
+    type: number
+    sql: ${TABLE}.erp_shelf_life_consumer ;;
+    hidden: no
+  }
+
+  dimension: erp_shelf_life_dc {
+    label: "Erp Shelf Life Dc"
+    description: "None"
+    type: number
+    sql: ${TABLE}.erp_shelf_life_dc ;;
+    hidden: no
   }
 
   dimension: erp_min_days_to_best_before_date {
