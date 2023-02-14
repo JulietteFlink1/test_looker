@@ -143,6 +143,22 @@ view: erp_supplier {
     group_label: "Supplier Attribute"
   }
 
+  dimension: primary_contact_email {
+    label: "Primary Contact Email"
+    type: string
+    sql: ${TABLE}.primary_contact_email ;;
+    description: "The primary email of the supplier contact."
+    group_label: "Supplier Attribute"
+  }
+
+  dimension: additional_contact_email {
+    label: "Additional Contact Email"
+    type: string
+    sql: ${TABLE}.additional_contact_email ;;
+    description: "For some suppliers we have more than one conctact email assigned, for those cases we have this field."
+    group_label: "Supplier Attribute"
+  }
+
   dimension: tax_zone {
     label: "Tax Zone"
     type: string
