@@ -1,3 +1,11 @@
+# Owner
+#   > Andreas / Lauti
+#
+# Created: 2023-02-14
+#
+# Purpose:
+#   > Show unfiltered Oracle master data
+
 view: erp_product_hub_vendor_assignment_unfiltered {
   sql_table_name: `flink-data-prod.curated.erp_product_hub_vendor_assignment_unfiltered`
     ;;
