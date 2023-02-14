@@ -10,8 +10,6 @@ view: cr_dynamic_orders_cl_metrics {
       ${orderline_issue_rate_core_kpis.pct_pre_order_issue_rate_per_total_orders}
     {% elsif dynamic_kpi_parameter._parameter_value == 'post_issue' %}
       ${orderline_issue_rate_core_kpis.pct_post_order_issue_rate_per_total_orders}
-    {% elsif dynamic_kpi_parameter._parameter_value == 'delay_30min' %}
-      ${orders_cl.pct_delayed_over_30_min_internal_estimate}
     {% elsif dynamic_kpi_parameter._parameter_value == 'pct_fulfillment_over_30_min' %}
       ${orders_cl.pct_fulfillment_over_30_min}
     {% elsif dynamic_kpi_parameter._parameter_value == 'pct_delivery_in_time_time_estimate' %}
@@ -29,8 +27,6 @@ view: cr_dynamic_orders_cl_metrics {
       {{orderline_issue_rate_core_kpis.pct_pre_order_issue_rate_per_total_orders._rendered_value }}
     {% elsif dynamic_kpi_parameter._parameter_value == 'post_issue' %}
       {{orderline_issue_rate_core_kpis.pct_post_order_issue_rate_per_total_orders._rendered_value }}
-    {% elsif dynamic_kpi_parameter._parameter_value == 'delay_30min' %}
-      {{orders_cl.pct_delayed_over_30_min_internal_estimate._rendered_value }}
     {% elsif dynamic_kpi_parameter._parameter_value == 'pct_fulfillment_over_30_min' %}
       {{orders_cl.pct_fulfillment_over_30_min._rendered_value }}
     {% elsif dynamic_kpi_parameter._parameter_value == 'pct_delivery_in_time_time_estimate' %}
@@ -53,7 +49,6 @@ view: cr_dynamic_orders_cl_metrics {
     type: unquoted
     allowed_value: {label: "% Orders Partial Fulfillment (Pre Delivery Issues)" value: "partial_fulfillment_pre" }
     allowed_value: {label: "% Orders Issue (Post Delivery Issue)" value: "post_issue" }
-    allowed_value: {label: "% Orders Delayed >30min (Internal Estimate)" value: "delay_30min" }
     allowed_value: {label: "% Orders Fulfilled >30min" value: "pct_fulfillment_over_30_min" }
     allowed_value: {label: "% Orders Delivered in Time (targeted estimate)" value: "pct_delivery_in_time_time_estimate" }
     allowed_value: {label: "AVG Waiting For Picker Time + Waiting for Rider Time" value: "sum_avg_waiting_time" }
