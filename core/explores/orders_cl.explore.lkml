@@ -9,8 +9,7 @@ include: "/**/global_filters_and_parameters.view"
 include: "/commercial/views/bigquery_curated/hub_demographics.view"
 include: "/**/shipping_methods_ct.view"
 include: "/**/hub_attributes.view"
-include: "/**/ndt_dynamic_ops_kpis.view"
-
+include: "/**/cr_dynamic_orders_cl_metrics.view"
 
 explore: orders_cl {
   from: orders_using_hubs
@@ -138,12 +137,12 @@ explore: orders_cl {
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   #  - - - - - - - - - -    Cross-Referenced Metrics
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  join: ndt_dynamic_ops_kpis {
+
+  join: cr_dynamic_orders_cl_metrics {
     view_label: "Orders"
-    sql_on: ${ndt_dynamic_ops_kpis.order_uuid} = ${orders_cl.order_uuid} ;;
     relationship: one_to_one
     type: left_outer
+    sql:  ;;
   }
-
 
 }
