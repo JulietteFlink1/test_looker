@@ -10,9 +10,9 @@ view: cr__order_orderline_cl_retail_customized_cross_metrics {
     description: "Sum of sold Item prices (incl. VAT) before and after application of discounts (defined by the parameter 'Is After Deduction of Product Discounts')."
 
     sql:
-    {% if erp_buying_prices.is_after_product_discounts._parameter_value == "true" %}
+    {% if global_filters_and_parameters.is_after_product_discounts._parameter_value == "true" %}
     ${orderline.sum_item_price_after_product_discount_gross}
-    {% elsif erp_buying_prices.is_after_product_discounts._parameter_value == "false" %}
+    {% elsif global_filters_and_parameters.is_after_product_discounts._parameter_value == "false" %}
     ${orderline.sum_item_price_gross}
     {% endif %}
     ;;
