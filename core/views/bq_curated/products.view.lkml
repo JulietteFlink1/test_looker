@@ -82,9 +82,11 @@ view: products {
     type: yesno
     label: "Is Rezeptkarte"
     sql: case
-          when (lower(${product_name}) like '%rezeptkarte%'   or
-                lower(${product_name}) like '%receptenkaart%' or
-                lower(${product_name}) like '%fiche recette%')
+          when (lower(${product_name}) like lower('%rezeptkarte%')   or
+                lower(${product_name}) like lower('%receptenkaart%') or
+                lower(${product_name}) like lower('%fiche recette%') or
+                lower(${product_name}) like lower('%recette%')       or
+                lower(${product_name}) like lower('%recept%'))
             then true
           else false
          end    ;;
@@ -715,6 +717,56 @@ view: products {
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   #  - - - - - - - - - -    New fields from curated.erp_item
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  dimension: erp_item_division_name {
+    label: "Item Division Name"
+    description: "Level 1 of new item class hierarchie: indicates, if the product is food or non-food"
+    group_label: "ERP fields"
+    type: string
+    sql: ${TABLE}.erp_item_division_name ;;
+    hidden: no
+  }
+
+
+  dimension: erp_item_group_name {
+    label: "Item Group Name"
+    description: "Level 2 of new item class hierarchie: indicates, if the product is e.g. a fresh or dry product"
+    group_label: "ERP fields"
+    type: string
+    sql: ${TABLE}.erp_item_group_name ;;
+    hidden: no
+  }
+
+
+  dimension: erp_item_department_name {
+    label: "Item Department Name"
+    description: "Level 3 of new item class hierarchie: indicates a high level class of products (e.g. Milk Alternatives Dry or Chocolate & Confectionary)"
+    group_label: "ERP fields"
+    type: string
+    sql: ${TABLE}.erp_item_department_name ;;
+    hidden: no
+  }
+
+
+  dimension: erp_item_class_name {
+    label: "Item Class Name"
+    description: "Level 4 of new item class hierarchie: indicates a more specific class of products (e.g. Wine or Heat & Eat)"
+    group_label: "ERP fields"
+    type: string
+    sql: ${TABLE}.erp_item_class_name ;;
+    hidden: no
+  }
+
+
+  dimension: erp_item_subclass_name {
+    label: "Item Subclass Name"
+    description: "Level 5 of new item class hierarchie: indicates the subclass of a product (e.g. Pizza - Class - SC or Other Sweets)"
+    group_label: "ERP fields"
+    type: string
+    sql: ${TABLE}.erp_item_subclass_name ;;
+    hidden: no
+  }
+
   dimension: erp_base_uom {
     label: "Base UOM (ERP)"
     description: "The base unit-of-measure of a product according to our ERP system"
