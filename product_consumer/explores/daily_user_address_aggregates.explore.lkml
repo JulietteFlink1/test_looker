@@ -14,7 +14,8 @@ explore: daily_user_address_aggregates {
     from: daily_user_aggregates
     type: inner
     relationship: one_to_one
-    sql_on: ${daily_user_aggregates.daily_user_uuid}=${daily_user_address_aggregates.daily_user_uuid} ;;
+    sql_on:${daily_user_aggregates.daily_user_uuid}=${daily_user_address_aggregates.daily_user_uuid}
+    AND ${daily_user_aggregates.event_date_at_date}=${daily_user_address_aggregates.event_date_at_date} ;;
     fields: [
       device_attributes*
       , location_attributes*
