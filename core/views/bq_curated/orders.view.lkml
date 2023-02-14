@@ -3815,5 +3815,4 @@ view: orders {
     sql: stddev_pop(${fulfillment_time}) ;;
     value_format_name: decimal_1
   }
-
 }
