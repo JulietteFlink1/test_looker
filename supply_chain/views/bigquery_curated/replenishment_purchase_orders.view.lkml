@@ -1,6 +1,6 @@
 
 view: replenishment_purchase_orders {
-  sql_table_name: `flink-data-prod.curated.replenishment_purchase_orders`
+  sql_table_name: `flink-data-prod.curated.prep_replenishment_purchase_orders`
     ;;
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -175,7 +175,7 @@ view: replenishment_purchase_orders {
       date
     ]
     datatype: datetime
-    sql: ${TABLE}.purchase_order_timestamp ;;
+    sql: ${TABLE}.order_timestamp ;;
     hidden: no
   }
 
