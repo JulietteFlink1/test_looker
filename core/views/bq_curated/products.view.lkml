@@ -82,9 +82,11 @@ view: products {
     type: yesno
     label: "Is Rezeptkarte"
     sql: case
-          when (lower(${product_name}) like '%rezeptkarte%'   or
-                lower(${product_name}) like '%receptenkaart%' or
-                lower(${product_name}) like '%fiche recette%')
+          when (lower(${product_name}) like lower('%rezeptkarte%')   or
+                lower(${product_name}) like lower('%receptenkaart%') or
+                lower(${product_name}) like lower('%fiche recette%') or
+                lower(${product_name}) like lower('%recette%')       or
+                lower(${product_name}) like lower('%recept%'))
             then true
           else false
          end    ;;
