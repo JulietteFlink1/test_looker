@@ -22,7 +22,7 @@ explore: lifecycle_cohorts_reporting {
       braze_lifecycle_cohorts.cohort_date: "last 2 months",
       braze_lifecycle_cohorts.canvas_name: "",
       braze_lifecycle_cohorts.canvas_variation_name: "",
-      braze_lifecycle_cohorts.in_control_group: ""
+      braze_lifecycle_cohorts.is_control_group: ""
     ]
   }
 
