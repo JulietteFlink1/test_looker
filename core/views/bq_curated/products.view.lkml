@@ -859,6 +859,7 @@ view: products {
   dimension: erp_shelf_life {
     label: "Erp Shelf Life"
     description: "The overall shelf live in days of a product until its best before date (BBD)"
+    group_label: "ERP fields"
     type: number
     sql: ${TABLE}.erp_shelf_life ;;
     hidden: no
@@ -867,6 +868,7 @@ view: products {
   dimension: erp_shelf_life_hub {
     label: "Erp Shelf Life Hub"
     description: "The shelf live in days of a product defining how long a product can be stored in a hub until its best before date (BBD)"
+    group_label: "ERP fields"
     type: number
     sql: ${TABLE}.erp_shelf_life_hub ;;
     hidden: no
@@ -875,6 +877,7 @@ view: products {
   dimension: erp_shelf_life_consumer {
     label: "Erp Shelf Life Consumer"
     description: "The minimum days a product should be consumable for a customer befores its best before date (BBD)"
+    group_label: "ERP fields"
     type: number
     sql: ${TABLE}.erp_shelf_life_consumer ;;
     hidden: no
@@ -883,6 +886,7 @@ view: products {
   dimension: erp_shelf_life_dc {
     label: "Erp Shelf Life Dc"
     description: "The shelf live within a distribution center in days of a product until its best before date (BBD)"
+    group_label: "ERP fields"
     type: number
     sql: ${TABLE}.erp_shelf_life_dc ;;
     hidden: no
