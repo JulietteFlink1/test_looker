@@ -67,22 +67,22 @@ base_data as (
         erp_data.sku         = inv.sku
     where
         true
-        --and {% condition select_timeframe %} inv.report_date {% endcondition %}
-        --and {% condition select_timeframe %} price.reporting_date {% endcondition %}
-        --and {% condition select_timeframe %} erp_data.report_date {% endcondition %}
-         and inv.report_date between '2022-11-01' and '2022-11-05'
-         and price.reporting_date between '2022-11-01' and '2022-11-05'
-         and erp_data.report_date between '2022-11-01' and '2022-11-05'
+        and {% condition select_timeframe %} inv.report_date {% endcondition %}
+        and {% condition select_timeframe %} price.reporting_date {% endcondition %}
+        and {% condition select_timeframe %} erp_data.report_date {% endcondition %}
+         --and inv.report_date between '2022-11-01' and '2022-11-05'
+         --and price.reporting_date between '2022-11-01' and '2022-11-05'
+         --and erp_data.report_date between '2022-11-01' and '2022-11-05'
 
         -- filter hub_code
-        --and {% condition select_hub %} price.hub_code {% endcondition %}
-        --and {% condition select_hub %} inv.hub_code {% endcondition %}
-        --and {% condition select_hub %} erp_data.hub_code {% endcondition %}
+        and {% condition select_hub %} price.hub_code {% endcondition %}
+        and {% condition select_hub %} inv.hub_code {% endcondition %}
+        and {% condition select_hub %} erp_data.hub_code {% endcondition %}
 
         -- filter sku
-        --and {% condition select_sku %} price.sku {% endcondition %}
-        --and {% condition select_sku %} inv.sku {% endcondition %}
-        --and {% condition select_sku %} erp_data.sku {% endcondition %}
+        and {% condition select_sku %} price.sku {% endcondition %}
+        and {% condition select_sku %} inv.sku {% endcondition %}
+        and {% condition select_sku %} erp_data.sku {% endcondition %}
 
     window w as (
         partition by
