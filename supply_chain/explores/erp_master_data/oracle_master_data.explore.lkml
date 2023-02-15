@@ -11,6 +11,7 @@ explore: oracle_master_data {
 
   hidden: no
   label: "Oracle Master-Data"
+  view_label: "Oracle Master Data"
   description: "This Explore shows Oracle base data for the ERP team to check wrong/missing master-data"
   group_label: "Supply Chain"
 
