@@ -2878,7 +2878,7 @@ view: staffing {
 
   measure: number_of_planned_hours_external_ops_associate {
     group_label: "> Ops Associate Measures"
-    label: "# External Filled (Assigned) External Ops Associate Hours"
+    label: "# Filled (Assigned) External Ops Associate Hours"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_external_ops_associate/60 ;;
     value_format_name: decimal_1
