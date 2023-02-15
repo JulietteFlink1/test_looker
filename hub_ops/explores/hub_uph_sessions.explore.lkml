@@ -1,6 +1,7 @@
 include: "/**/hub_uph_sessions.view"
 include: "/**/hubs_ct.view"
 include: "/**/global_filters_and_parameters.view"
+include: "/**/hub_monthly_orders.view"
 
 
 explore: hub_uph_sessions {
@@ -35,6 +36,15 @@ explore: hub_uph_sessions {
   join: hubs_ct {
     view_label: "Hubs"
     sql_on: ${hubs_ct.hub_code} = ${hub_uph_sessions.hub_code};;
+    relationship: many_to_one
+    type: left_outer
+  }
+
+  join: hub_monthly_orders {
+    view_label: "Hubs"
+    sql_on:
+      ${hub_uph_sessions.hub_code} = ${hub_monthly_orders.hub_code} and
+      date_trunc(${hub_uph_sessions.shift_date},month) = ${hub_monthly_orders.created_month} ;;
     relationship: many_to_one
     type: left_outer
   }

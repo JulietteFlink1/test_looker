@@ -151,8 +151,7 @@ view: orders_with_ops_metrics {
   measure: cnt_external_orders {
     group_label: "> Basic Counts"
     label: "# External Orders"
-    description: "Count of External Orders"
-    hidden:  yes
+    description: "Count of External orders (orders placed via marketplace integrations like Wolt, UberEats, etc.)"
     type: sum
     value_format_name: decimal_1
   }
