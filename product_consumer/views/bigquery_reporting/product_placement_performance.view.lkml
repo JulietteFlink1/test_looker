@@ -1,5 +1,5 @@
 view: product_placement_performance {
-  sql_table_name: `flink-data-prod.reporting.product_placement_performance` ;;
+  sql_table_name: `flink-data-dev.reporting.product_placement_performance` ;;
   view_label: "Product Placement Performance"
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
@@ -196,6 +196,14 @@ view: product_placement_performance {
     sql: ${TABLE}.is_order_placed ;;
   }
 
+  dimension: is_context_available {
+    group_label: "Event Dimensions"
+    label: "Is Context Available"
+    description: "If the backend product context was available for a product impression event. The Out of Stock rate depends on this context"
+    type: yesno
+    sql: ${TABLE}.is_context_available;;
+  }
+
   # ======= HIDDEN Dimension ======= #
 
   dimension: product_placement_uuid {
@@ -275,6 +283,7 @@ view: product_placement_performance {
     sql: ${TABLE}.product_price ;;
     filters: [is_order_placed: "yes"]
   }
+
   # ======= Product Event Level Measures =======
 
   measure: impressions {
@@ -320,6 +329,17 @@ view: product_placement_performance {
     # sql: ${product_placement_uuid} ;;
     filters: [is_pdp_or_atc: "yes" ]
   }
+
+  measure: sum_of_time_on_screen_seconds{
+    group_label: "Product Metrics"
+    label: "Sum of Time on Screen in Seconds"
+    type: sum
+    hidden: yes
+    description: "Sum of seconds a product sku was exposed on the screen aggregated by anonymous_id and product placement"
+    filters: [is_product_impression: "yes" ]
+    sql: ${TABLE}.sum_of_time_on_screen_seconds ;;
+  }
+
   measure: click_through_rate {
     group_label: "Rates (%)"
     label: "Click-Through Rate (CTR)"

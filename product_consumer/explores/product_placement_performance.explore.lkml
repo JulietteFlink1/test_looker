@@ -34,7 +34,7 @@ explore: product_placement_performance {
   group_label: "Product - Consumer"
 
   sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} ${product_placement_performance.event_date} {% endcondition %}
-                    and ${product_placement_performance.event_date} > LAST_DAY(current_date() - 62)
+                    and ${product_placement_performance.event_date} > LAST_DAY(current_date() - 29)
                     and ${country_iso} is not null;;
 
   access_filter: {
