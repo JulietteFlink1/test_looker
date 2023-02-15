@@ -87,14 +87,14 @@ aggregated_data as (
         country_iso,
         hub_code,
         sku,
-        start_date,
-        start_stock_level,
-        start_stock_level
-            * amt_start_stock_level_buying_price_weighted_rolling_average_net_eur as amt_start_stock_level,
-        end_stock_level,
-        end_stock_level
-            * amt_end_stock_level_buying_price_weighted_rolling_average_net_eur   as amt_end_stock_level,
-        end_date,
+        avg(start_stock_level) as start_stock_level,
+        avg(start_stock_level
+            * amt_start_stock_level_buying_price_weighted_rolling_average_net_eur) as amt_start_stock_level,
+        avg(end_stock_level) as end_stock_level,
+        avg(end_stock_level
+            * amt_end_stock_level_buying_price_weighted_rolling_average_net_eur)   as amt_end_stock_level,
+        min(start_date)as start_date,
+        max(end_date) as end_date,
         # quantities
         sum(quantity_change)            as number_of_quantity_change,
         sum(number_of_total_inbound)
@@ -128,7 +128,7 @@ aggregated_data as (
     from base_data
 
     group by
-      1,2,3,4,5,6,7,8,9
+      1,2,3
 )
 select * from aggregated_data
 
