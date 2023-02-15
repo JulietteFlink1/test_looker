@@ -19,6 +19,8 @@ base_data as (
         inv.country_iso                       as country_iso,
         inv.hub_code                          as hub_code,
         inv.sku                               as sku,
+        erp_data.supplier_id                  as supplier_id,
+        erp_data.supplier_name                as supplier_name,
         inv.quantity_from                     as quantity_from,
         inv.quantity_to                       as quantity_to,
         inv.quantity_to - quantity_from       as quantity_change,
@@ -47,29 +49,40 @@ base_data as (
             )
         )    over w                           as amt_end_stock_level_buying_price_weighted_rolling_average_net_eur
 
-    from `flink-data-prod`.reporting.inventory_daily
+    from flink-data-prod.reporting.inventory_daily
     as inv
 
-    left join `flink-data-prod`.reporting.product_prices_daily
+    left join flink-data-prod.reporting.product_prices_daily
     as price
     on
         price.reporting_date = inv.report_date and
         price.hub_code       = inv.hub_code    and
         price.sku            = inv.sku
+
+    left join flink-data-prod.curated.erp_product_hub_vendor_assignment_unfiltered
+    as erp_data
+    on
+        erp_data.report_date = inv.report_date and
+        erp_data.hub_code    = inv.hub_code    and
+        erp_data.sku         = inv.sku
     where
         true
-        and {% condition select_timeframe %} inv.report_date {% endcondition %}
-        and {% condition select_timeframe %} price.reporting_date {% endcondition %}
-        -- and inv.report_date between '2022-11-01' and '2022-11-05'
-        -- and price.reporting_date between '2022-11-01' and '2022-11-05'
+        --and {% condition select_timeframe %} inv.report_date {% endcondition %}
+        --and {% condition select_timeframe %} price.reporting_date {% endcondition %}
+        --and {% condition select_timeframe %} erp_data.report_date {% endcondition %}
+         and inv.report_date between '2022-11-01' and '2022-11-05'
+         and price.reporting_date between '2022-11-01' and '2022-11-05'
+         and erp_data.report_date between '2022-11-01' and '2022-11-05'
 
         -- filter hub_code
-        and {% condition select_hub %} price.hub_code {% endcondition %}
-        and {% condition select_hub %} inv.hub_code {% endcondition %}
+        --and {% condition select_hub %} price.hub_code {% endcondition %}
+        --and {% condition select_hub %} inv.hub_code {% endcondition %}
+        --and {% condition select_hub %} erp_data.hub_code {% endcondition %}
 
         -- filter sku
-        and {% condition select_sku %} price.sku {% endcondition %}
-        and {% condition select_sku %} inv.sku {% endcondition %}
+        --and {% condition select_sku %} price.sku {% endcondition %}
+        --and {% condition select_sku %} inv.sku {% endcondition %}
+        --and {% condition select_sku %} erp_data.sku {% endcondition %}
 
     window w as (
         partition by
@@ -87,14 +100,16 @@ aggregated_data as (
         country_iso,
         hub_code,
         sku,
-        start_date,
-        start_stock_level,
-        start_stock_level
-            * amt_start_stock_level_buying_price_weighted_rolling_average_net_eur as amt_start_stock_level,
-        end_stock_level,
-        end_stock_level
-            * amt_end_stock_level_buying_price_weighted_rolling_average_net_eur   as amt_end_stock_level,
-        end_date,
+        supplier_id,
+        supplier_name,
+        avg(start_stock_level) as start_stock_level,
+        avg(start_stock_level
+            * amt_start_stock_level_buying_price_weighted_rolling_average_net_eur) as amt_start_stock_level,
+        avg(end_stock_level) as end_stock_level,
+        avg(end_stock_level
+            * amt_end_stock_level_buying_price_weighted_rolling_average_net_eur)   as amt_end_stock_level,
+        min(start_date)as start_date,
+        max(end_date) as end_date,
         # quantities
         sum(quantity_change)            as number_of_quantity_change,
         sum(number_of_total_inbound)
@@ -128,7 +143,7 @@ aggregated_data as (
     from base_data
 
     group by
-      1,2,3,4,5,6,7,8,9
+      1,2,3,4,5
 )
 select * from aggregated_data
 
@@ -177,6 +192,16 @@ select * from aggregated_data
     description: "The last date of the filtered timeframe"
     type: date
     datatype: date
+  }
+
+  dimension: supplier_id {
+    label: "Supplier ID"
+    type: string
+  }
+
+  dimension: supplier_name {
+    label: "Supplier Name"
+    type: string
   }
 
   dimension: is_change_reason_explain_change_quantity {
