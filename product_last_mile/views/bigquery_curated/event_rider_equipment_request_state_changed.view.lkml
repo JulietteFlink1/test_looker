@@ -1,10 +1,10 @@
 # Owner: Bastian Gerstner
 # Created: 2023-02-14
 
-# This view contains data about rider equipment and the respective state a request is in
+# This view contains data about requested rider equipment and the respective state of the request
 
 view: event_rider_equipment_request_state_changed {
-  sql_table_name: `flink-data-dev.curated.event_rider_equipment_request_state_changed`;;
+  sql_table_name: `flink-data-prod.curated.event_rider_equipment_request_state_changed`;;
   view_label: "1 Rider Equipment Request State Changed"
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #

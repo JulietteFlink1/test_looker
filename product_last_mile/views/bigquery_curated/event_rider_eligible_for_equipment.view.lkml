@@ -1,10 +1,10 @@
 # Owner: Bastian Gerstner
 # Created: 2023-02-14
 
-# This view contains data about rider equipment and the respective state a request is in
+# This view contains data about riders being eligble to request rider equipment
 
 view: event_rider_eligible_for_equipment {
-  sql_table_name: `flink-data-dev.curated.event_rider_eligible_for_equipment`;;
+  sql_table_name: `flink-data-prod.curated.event_rider_eligible_for_equipment`;;
   view_label: "Rider Eligible For Equipment"
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
