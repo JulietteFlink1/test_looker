@@ -52,6 +52,38 @@ set: drill_fields_set {
     {% endif %};;
   }
 
+  dimension: report_date_dynamic_hidden {
+    label: "Report Date (Dynamic)"
+    hidden: yes
+    sql:
+    {% if date_granularity._parameter_value == 'Day' %}
+      ${report_date}
+    {% elsif date_granularity._parameter_value == 'Week' %}
+      ${report_week}
+    {% elsif date_granularity._parameter_value == 'Month' %}
+      ${report_month}
+    {% endif %};;
+  }
+
+  parameter: date_granularity {
+    hidden: yes
+
+    label: "Date Granularity"
+    group_label: "Parameters"
+    type: unquoted
+    allowed_value: { value: "Day" }
+    allowed_value: { value: "Week" }
+    allowed_value: { value: "Month" }
+
+    default_value: "Day"
+  }
+
+
+############################################################
+###################### Parameter ###########################
+############################################################
+
+
 ############################################################
 ##################### ID Dimension #########################
 ############################################################

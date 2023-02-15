@@ -4,7 +4,7 @@ view: cr_dynamic_ops_metrics {
    measure: hub_ops_kpis {
     type: number
     group_label: "> Dynamic KPIs"
-    label: "Dynamic KPI"
+    label: "OKR Level 1 KPIs (Dynamic)"
     label_from_parameter: dynamic_kpi_parameter
     sql:
     {% if dynamic_kpi_parameter._parameter_value == 'ops_associate_utr' %}
@@ -61,7 +61,7 @@ view: cr_dynamic_ops_metrics {
 
   parameter: dynamic_kpi_parameter {
     group_label: "> Dynamic KPIs"
-    label: "Dynamic KPI"
+    label: "OKR Level 1 KPIs (Dynamic)"
     type: unquoted
     allowed_value: {label: "Ops Associate UTR" value: "ops_associate_utr" }
     allowed_value: {label: "Hub Staff UTR" value: "hub_staff_utr" }

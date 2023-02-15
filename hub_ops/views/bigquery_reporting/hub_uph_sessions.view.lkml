@@ -578,7 +578,7 @@ view: hub_uph_sessions {
 
   parameter: dynamic_kpi_parameter {
     group_label: "> Dynamic KPIs"
-    label: "Dynamic KPI"
+    label: "OKR Level 1 KPIs (Dynamic)"
     type: unquoted
     allowed_value: {label: "% Idle Hours"           value: "hub_staff_idle" }
     allowed_value: {label: "UPH Order Preparation"  value: "uph_picking" }
@@ -607,7 +607,7 @@ view: hub_uph_sessions {
   measure: dynamic_kpi {
     type: number
     group_label: "> Dynamic KPIs"
-    label: "Dynamic KPI"
+    label: "OKR Level 1 KPIs (Dynamic)"
     label_from_parameter: dynamic_kpi_parameter
     sql:
     {% if dynamic_kpi_parameter._parameter_value == 'hub_staff_idle' %}
