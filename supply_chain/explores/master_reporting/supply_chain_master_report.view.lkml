@@ -52,6 +52,10 @@ set: drill_fields_set {
     {% endif %};;
   }
 
+  # We have 2 sets of date granularity parameter values: [Date, Week, Month] and [Day, Week, Month]
+  # In order to only use one filter in a dashboard and filter dynamic date metrics that use the other set
+  # we create this hidden dimension + parameter
+
   dimension: report_date_dynamic_hidden {
     label: "Report Date (Dynamic)"
     hidden: yes
@@ -64,6 +68,8 @@ set: drill_fields_set {
       ${report_month}
     {% endif %};;
   }
+
+  ##### Parameters ######
 
   parameter: date_granularity {
     hidden: yes
