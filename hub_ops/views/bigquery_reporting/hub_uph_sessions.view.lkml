@@ -608,6 +608,7 @@ view: hub_uph_sessions {
     type: number
     group_label: "> Dynamic KPIs"
     label: "OKR Level 1 KPIs (Dynamic)"
+    description: "Make use of this dynamic KPI to switch between multiple measures that are considered to be OKR Level 1 by Ops."
     label_from_parameter: dynamic_kpi_parameter
     sql:
     {% if dynamic_kpi_parameter._parameter_value == 'hub_staff_idle' %}

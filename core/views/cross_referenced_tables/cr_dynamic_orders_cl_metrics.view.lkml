@@ -1,9 +1,14 @@
+# Author: Victor Breda
+# Created 2023-02-15
+# This cross referenced view allows to create measures that reference multiple views from the orders_cl explore
+
 view: cr_dynamic_orders_cl_metrics {
 
   measure: dynamic_kpi {
     type: number
     group_label: "> Dynamic KPIs"
     label: "OKR Level 1 KPIs (Dynamic)"
+    description: "Make use of this dynamic KPI to switch between multiple measures that are considered to be OKR Level 1 by Ops."
     label_from_parameter: dynamic_kpi_parameter
     sql:
     {% if dynamic_kpi_parameter._parameter_value == 'partial_fulfillment_pre' %}
