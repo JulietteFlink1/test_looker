@@ -1,4 +1,7 @@
 include: "/*/**/cc_contacts.view.lkml"
+include: "/*/**/orders.view.lkml"
+include: "/*/**/products.view.lkml"
+include: "/*/**/orderline.view.lkml"
 include: "/*/**/cc_orders_hourly.view.lkml"
 include: "/*/**/cc_contact_agents.view.lkml"
 include: "/*/**/cc_headcount_forecast_performance.view.lkml"
@@ -64,5 +67,33 @@ explore: cc_contacts {
     type: left_outer
     fields: [cc_agent_staffing_half_hourly.cc_contacts_fields*]
   }
+
+  join: orders {
+    view_label: "Orders"
+    sql_on: ${orders.order_number} = ${cc_contacts.order_number}
+        and {% condition global_filters_and_parameters.datasource_filter %} ${orders.created_date} {% endcondition %};;
+    relationship: many_to_one
+    type: left_outer
+  }
+
+  join: orderline {
+    view_label: "Order Lineitems"
+    sql_on: ${orderline.order_uuid}    = ${orders.order_uuid}
+            and {% condition global_filters_and_parameters.datasource_filter %} ${orderline.created_date} {% endcondition %}
+      ;;
+    relationship: one_to_many
+    type: left_outer
+  }
+
+  join: products {
+    view_label: "Product Data (CT)"
+    sql_on:
+        ${products.product_sku} = ${orderline.product_sku} and
+        ${products.country_iso} = ${orderline.country_iso}
+        ;;
+    relationship: many_to_one
+    type: left_outer
+  }
+
 
 }

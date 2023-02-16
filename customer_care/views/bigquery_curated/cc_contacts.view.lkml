@@ -1,5 +1,5 @@
 view: cc_contacts {
-  sql_table_name: `flink-data-prod.curated.cc_contacts`
+  sql_table_name: `flink-data-dev.dbt_jgrammatikas_curated.cc_contacts`
     ;;
 
   dimension: agent_email {
@@ -137,6 +137,11 @@ view: cc_contacts {
   dimension: country_iso {
     type: string
     sql: ${TABLE}.country_iso ;;
+  }
+
+  dimension: order_number {
+    type: string
+    sql: ${TABLE}.order_number ;;
   }
 
   # dimension: contact_created_day_of_week {
