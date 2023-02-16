@@ -945,14 +945,21 @@ view: forecasts {
 
   measure: number_of_hours_added_riders {
     group_label: "> Rider Measures"
-    label: "# Forecasted Hours Added (Due to Rounding)"
-    description: "# Forecasted Hours added for Riders due to rounding logic."
+    label: "# Forecasted Rider Hours Added (Due to Rounding)"
+    description: "# Forecasted Hours added for Riders due to rounding logic. Formula: # Forecasted Rider Hours - # Unrounded Forecasted Rider Hours"
     type: number
     sql: (${number_of_forecasted_minutes_rider}-${number_of_forecasted_minutes_rider_unrounded})/60;;
     value_format_name: decimal_2
   }
 
-
+  measure: number_of_hours_added_riders_adjusted {
+    group_label: "> Rider Measures"
+    label: "# Forecasted Rider Hours Added (Due to Rounding)"
+    description: "# Forecasted Hours added for Riders due to rounding logic including Airtable adjustments. Formula: # Adjusted Forecasted Rider Hours - # Unrounded Adjusted Forecasted Rider Hours"
+    type: number
+    sql: (${number_of_forecasted_minutes_rider_adjusted}-${number_of_forecasted_minutes_rider_unrounded_adjusted})/60;;
+    value_format_name: decimal_2
+  }
 
   measure: number_of_forecasted_hours_rider_unrounded_adjusted {
     group_label: "> Rider Measures"
@@ -1432,6 +1439,34 @@ view: forecasts {
         case
           when {% parameter ops.position_parameter %} = 'Rider'
             then ${number_of_forecasted_hours_rider_unrounded_adjusted}
+          else null
+        end ;;
+  }
+
+  measure: number_of_hours_added_by_position{
+    type: number
+    label: "# Forecasted Hours Added (Due to Rounding)"
+    description: "# Forecasted Hours added due to rounding logic. Formula: # Forecasted Rider Hours - # Unrounded Forecasted Rider Hours"
+    value_format_name: decimal_2
+    group_label: "> Dynamic Measures"
+    sql:
+        case
+          when {% parameter ops.position_parameter %} = 'Rider'
+            then ${number_of_hours_added_riders}
+          else null
+        end ;;
+  }
+
+  measure: number_of_hours_added_adjusted_by_position{
+    type: number
+    label: "# Adjsuted Forecasted Hours Added (Due to Rounding)"
+    description: "# Forecasted Hours added due to rounding logic including Airtable adjustments. Formula: # Adjusted Forecasted Rider Hours - # Unrounded Adjusted Forecasted Rider Hours"
+    value_format_name: decimal_2
+    group_label: "> Dynamic Measures"
+    sql:
+        case
+          when {% parameter ops.position_parameter %} = 'Rider'
+            then ${number_of_hours_added_riders_adjusted}
           else null
         end ;;
   }
