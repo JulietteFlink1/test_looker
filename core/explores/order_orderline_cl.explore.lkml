@@ -42,7 +42,7 @@ explore: order_orderline_cl {
 
   join: lexbizz_item {
 
-    view_label: "Product Data (ERP)"
+    view_label: ""
     from: erp_item
 
     type: left_outer
@@ -80,7 +80,7 @@ explore: order_orderline_cl {
 
   join: lexbizz_warehouse {
 
-    view_label: "Lexbizz Master Data"
+    view_label: ""
 
     type: left_outer
     relationship: many_to_one
@@ -105,7 +105,7 @@ explore: order_orderline_cl {
 
   join: lexbizz_item_warehouse {
 
-    view_label: "Lexbizz Master Data"
+    view_label: ""
     from: erp_item_location
 
     type: left_outer
@@ -131,7 +131,7 @@ explore: order_orderline_cl {
 
   join: lexbizz_vendor {
 
-    view_label: "Lexbizz Master Data"
+    view_label: ""
     from: erp_supplier
 
     type: left_outer
