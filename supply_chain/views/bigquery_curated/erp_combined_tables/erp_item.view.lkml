@@ -468,6 +468,14 @@ view: erp_item {
     group_label: "Special Uses Cases Data"
   }
 
+  dimension: erp_demand_planning_master_category {
+    label: "Demand Planning Master Cateogry"
+    description: "The demand planning master category combining logic of the 5 item hierarchie fields. This logic is defined by the Supply Chain team."
+    group_label: "ERP fields"
+    type: string
+    sql: ${TABLE}.erp_demand_planning_master_category ;;
+  }
+
 
 
 #############################################

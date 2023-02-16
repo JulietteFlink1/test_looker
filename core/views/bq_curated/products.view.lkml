@@ -767,6 +767,14 @@ view: products {
     hidden: no
   }
 
+  dimension: erp_demand_planning_master_category {
+    label: "Demand Planning Master Cateogry"
+    description: "The demand planning master category combining logic of the 5 item hierarchie fields. This logic is defined by the Supply Chain team."
+    group_label: "ERP fields"
+    type: string
+    sql: ${TABLE}.erp_demand_planning_master_category ;;
+  }
+
   dimension: erp_base_uom {
     label: "Base UOM (ERP)"
     description: "The base unit-of-measure of a product according to our ERP system"
@@ -823,21 +831,44 @@ view: products {
     sql: ${TABLE}.erp_termination_timestamp ;;
   }
 
-  dimension: erp_item_status {
-    label: "Item Status (ERP)"
-    description: "  The activity/listing status of a product according to our ERP system"
+  dimension: share_of_hubs_with_active_item_status {
+    label: "% Hubs With Item-Location Status Active"
+    description: "Share of hubs in a country with item-location status ACTIVE"
     group_label: "ERP fields"
-    type: string
-    sql: ${TABLE}.erp_item_status ;;
+    type: number
+    sql: ${TABLE}.share_of_hubs_with_active_item_status ;;
+    hidden: no
+    value_format_name: percent_0
   }
 
-  dimension: erp_item_status_update_date {
-    label: "Last Item Status (ERP) Update"
-    description: "The date, when the item status changed the last time."
+  dimension: share_of_hubs_with_discontinued_item_status {
+    label: "% Hubs With Item-Location Status Discontinued"
+    description: "Share of hubs in a country with item-location status DISCONTINUED"
     group_label: "ERP fields"
-    type: date
-    datatype: date
-    sql: ${TABLE}.erp_item_status_update ;;
+    type: number
+    sql: ${TABLE}.share_of_hubs_with_discontinued_item_status ;;
+    hidden: no
+    value_format_name: percent_0
+  }
+
+  dimension: share_of_hubs_with_inactive_item_status {
+    label: "% Hubs With Item-Location Status Inactive"
+    description: "Share of hubs in a country with item-location status INACTIVE"
+    group_label: "ERP fields"
+    type: number
+    sql: ${TABLE}.share_of_hubs_with_inactive_item_status ;;
+    hidden: no
+    value_format_name: percent_0
+  }
+
+  dimension: share_of_hubs_with_deleted_item_status {
+    label: "% Hubs With Item-Location Status Deleted"
+    description: "Share of hubs in a country with item-location status DELETED"
+    group_label: "ERP fields"
+    type: number
+    sql: ${TABLE}.share_of_hubs_with_deleted_item_status ;;
+    hidden: no
+    value_format_name: percent_0
   }
 
   dimension: erp_max_shelf_life_days {
@@ -846,6 +877,42 @@ view: products {
     group_label: "ERP fields"
     type: string
     sql: ${TABLE}.erp_max_shelf_life_days ;;
+  }
+
+  dimension: erp_shelf_life {
+    label: "Erp Shelf Life"
+    description: "The overall shelf live in days of a product until its best before date (BBD)"
+    group_label: "ERP fields"
+    type: number
+    sql: ${TABLE}.erp_shelf_life ;;
+    hidden: no
+  }
+
+  dimension: erp_shelf_life_hub {
+    label: "Erp Shelf Life Hub"
+    description: "The shelf live in days of a product defining how long a product can be stored in a hub until its best before date (BBD)"
+    group_label: "ERP fields"
+    type: number
+    sql: ${TABLE}.erp_shelf_life_hub ;;
+    hidden: no
+  }
+
+  dimension: erp_shelf_life_consumer {
+    label: "Erp Shelf Life Consumer"
+    description: "The minimum days a product should be consumable for a customer befores its best before date (BBD)"
+    group_label: "ERP fields"
+    type: number
+    sql: ${TABLE}.erp_shelf_life_consumer ;;
+    hidden: no
+  }
+
+  dimension: erp_shelf_life_dc {
+    label: "Erp Shelf Life Dc"
+    description: "The shelf live within a distribution center in days of a product until its best before date (BBD)"
+    group_label: "ERP fields"
+    type: number
+    sql: ${TABLE}.erp_shelf_life_dc ;;
+    hidden: no
   }
 
   dimension: erp_min_days_to_best_before_date {
