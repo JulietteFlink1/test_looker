@@ -3399,7 +3399,7 @@ view: staffing {
   measure: number_of_scheduled_hours_internal_rider {
     group_label: "> Rider Measures"
     label: "# Scheduled Internal Rider Hours"
-    description: "# Scheduled Rider Hours (Assigned + Unassigned)"
+    description: "# Scheduled Internal Rider Hours (Assigned + Unassigned)"
     type: number
     sql: ${number_of_unassigned_minutes_internal_rider}/60+${number_of_planned_minutes_internal_rider}/60;;
     value_format_name: decimal_1
