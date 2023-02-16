@@ -4624,7 +4624,7 @@ view: staffing {
   measure: pct_unassignment_rate_internal_ops_associate {
     type: number
     label: "% Unassignment Rate (Incl. EC Shift) Internal Ops Associate"
-    description: "1 - Fill Rate"
+    description: "1 - Fill Rate Internal Ops Associate"
     value_format_name: percent_1
     group_label: "> Ops Associate Measures"
     sql: 1 - ${pct_fill_rate_internal_ops_associate};;
