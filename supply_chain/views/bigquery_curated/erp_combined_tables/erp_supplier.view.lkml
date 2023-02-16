@@ -65,7 +65,7 @@ view: erp_supplier {
   dimension: vendor_id {
     label: "Supplier ID"
     type: string
-    sql: ${TABLE}.vendor_id ;;
+    sql: ${TABLE}.supplier_id ;;
     description: "The supplier ID as defined in Oracle - which is a representation of a supplier and its related supplier-location"
   }
 
@@ -98,7 +98,7 @@ view: erp_supplier {
   dimension: country_vendor {
     label: "Supplier Country"
     type: string
-    sql: ${TABLE}.country_vendor ;;
+    sql: ${TABLE}.supplier_country ;;
     description: "Supplier country of origin"
     group_label: "Geographic Attributes"
   }
@@ -178,7 +178,7 @@ view: erp_supplier {
   dimension: vendor_class {
     label: "Supplier Class"
     type: string
-    sql: ${TABLE}.vendor_class ;;
+    sql: ${TABLE}.supplier_class ;;
     description: "Classification of a supplier according to the ERP."
     group_label: "Supplier Attribute"
   }
@@ -186,7 +186,7 @@ view: erp_supplier {
   dimension: vendor_name {
     label: "Supplier Name"
     type: string
-    sql: ${TABLE}.vendor_name ;;
+    sql: ${TABLE}.supplier_name ;;
     description: "Name of the supplier/vendor of a product (e.g. REWE or Carrefour)."
   }
 
@@ -200,7 +200,7 @@ view: erp_supplier {
   dimension: vendor_status {
     label: "Supplier Status"
     type: string
-    sql: ${TABLE}.vendor_status ;;
+    sql: ${TABLE}.supplier_status ;;
     description: "The activity status of a supplier as defined in our ERP system"
   }
 
