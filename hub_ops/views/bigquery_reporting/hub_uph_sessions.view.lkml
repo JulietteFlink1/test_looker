@@ -565,7 +565,8 @@ view: hub_uph_sessions {
     group_label: "> Quantities"
     label: "AVG # Switchs per Shift"
     description: "Number of activity switchs divided by number of shifts."
-    sql: ${shift_id} ;;
+    sql: ${number_of_unique_activity_switch}/${number_of_unique_shifts}  ;;
+    value_format_name: decimal_0
   }
 
 
