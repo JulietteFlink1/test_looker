@@ -4606,7 +4606,7 @@ view: staffing {
   measure: pct_unassignment_rate_external_riders {
     type: number
     label: "% Unassignment Rate (Incl. EC Shift) External Rider"
-    description: "1 - Fill Rate"
+    description: "1 - Fill Rate External Rider"
     value_format_name: percent_1
     group_label: "> Rider Measures"
     sql: 1 - ${pct_fill_rate_external_rider};;
