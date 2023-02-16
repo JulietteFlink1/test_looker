@@ -4596,7 +4596,7 @@ view: staffing {
 
   measure: pct_fill_rate_external_rider {
     type: number
-    label: "% Fill Rate (Incl. EC Shift) Internal Rider"
+    label: "% Fill Rate (Incl. EC Shift) External Rider"
     description: "# Filled Hours (Assigned to an Employee) External Rider / # Scheduled Hours (Total Scheduled Shift Hours = Assigned Hours + Open Hours) External Rider"
     value_format_name: percent_1
     group_label: "> Rider Measures"
