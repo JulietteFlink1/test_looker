@@ -1,5 +1,5 @@
 view: product_placement_performance {
-  sql_table_name: `flink-data-dev.reporting.product_placement_performance` ;;
+  sql_table_name: `flink-data-prod.reporting.product_placement_performance` ;;
   view_label: "Product Placement Performance"
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
@@ -197,7 +197,7 @@ view: product_placement_performance {
   }
 
   dimension: is_context_available {
-    group_label: "Event Dimensions"
+    group_label: "Event Flags"
     label: "Is Context Available"
     description: "If the backend product context was available for a product impression event. The Out of Stock rate depends on this context"
     type: yesno
@@ -334,7 +334,6 @@ view: product_placement_performance {
     group_label: "Product Metrics"
     label: "Sum of Time on Screen in Seconds"
     type: sum
-    hidden: yes
     description: "Sum of seconds a product sku was exposed on the screen aggregated by anonymous_id and product placement"
     filters: [is_product_impression: "yes" ]
     sql: ${TABLE}.sum_of_time_on_screen_seconds ;;
