@@ -4632,7 +4632,7 @@ view: staffing {
 
   measure: pct_fill_rate_external_ops_associate {
     type: number
-    label: "% Fill Rate (Incl. EC Shift) Internal Ops Associate"
+    label: "% Fill Rate (Incl. EC Shift) External Ops Associate"
     description: "# Filled Hours (Assigned to an Employee) External Ops Associate / # Scheduled Hours (Total Scheduled Shift Hours = Assigned Hours + Open Hours) External Ops Associate"
     value_format_name: percent_1
     group_label: "> Ops Associate Measures"
