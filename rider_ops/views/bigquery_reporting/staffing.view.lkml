@@ -3401,7 +3401,7 @@ view: staffing {
     label: "# Scheduled Internal Rider Hours"
     description: "# Scheduled Rider Hours (Assigned + Unassigned)"
     type: number
-    sql: ${number_of_unassigned_minutes_internal_rider}/60+${number_of_planned_minutes_internal_rider}/60;;
+    sql: sum(${number_of_unassigned_minutes_internal_rider}/60)+${number_of_planned_minutes_internal_rider}/60;;
     value_format_name: decimal_1
   }
 
