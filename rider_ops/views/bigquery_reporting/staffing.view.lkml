@@ -3399,7 +3399,7 @@ view: staffing {
   measure: number_of_scheduled_hours_internal_rider {
     group_label: "> Rider Measures"
     label: "# Scheduled Internal Rider Hours"
-    description: "# Scheduled Rider Hours (Assigned + Unassigned)"
+    description: "# Scheduled Internal Rider Hours (Assigned + Unassigned)"
     type: number
     sql: sum(${number_of_unassigned_minutes_internal_rider}/60)+${number_of_planned_minutes_internal_rider}/60;;
     value_format_name: decimal_1
@@ -4588,7 +4588,7 @@ view: staffing {
   measure: pct_unassignment_rate_internal_riders {
     type: number
     label: "% Unassignment Rate (Incl. EC Shift) Internal Rider"
-    description: "1 - Fill Rate"
+    description: "1 - Fill Rate Internal Rider"
     value_format_name: percent_1
     group_label: "> Rider Measures"
     sql: 1 - ${pct_fill_rate_internal_rider};;
@@ -4596,7 +4596,7 @@ view: staffing {
 
   measure: pct_fill_rate_external_rider {
     type: number
-    label: "% Fill Rate (Incl. EC Shift) Internal Rider"
+    label: "% Fill Rate (Incl. EC Shift) External Rider"
     description: "# Filled Hours (Assigned to an Employee) External Rider / # Scheduled Hours (Total Scheduled Shift Hours = Assigned Hours + Open Hours) External Rider"
     value_format_name: percent_1
     group_label: "> Rider Measures"
@@ -4606,7 +4606,7 @@ view: staffing {
   measure: pct_unassignment_rate_external_riders {
     type: number
     label: "% Unassignment Rate (Incl. EC Shift) External Rider"
-    description: "1 - Fill Rate"
+    description: "1 - Fill Rate External Rider"
     value_format_name: percent_1
     group_label: "> Rider Measures"
     sql: 1 - ${pct_fill_rate_external_rider};;
@@ -4624,7 +4624,7 @@ view: staffing {
   measure: pct_unassignment_rate_internal_ops_associate {
     type: number
     label: "% Unassignment Rate (Incl. EC Shift) Internal Ops Associate"
-    description: "1 - Fill Rate"
+    description: "1 - Fill Rate Internal Ops Associate"
     value_format_name: percent_1
     group_label: "> Ops Associate Measures"
     sql: 1 - ${pct_fill_rate_internal_ops_associate};;
@@ -4632,7 +4632,7 @@ view: staffing {
 
   measure: pct_fill_rate_external_ops_associate {
     type: number
-    label: "% Fill Rate (Incl. EC Shift) Internal Ops Associate"
+    label: "% Fill Rate (Incl. EC Shift) External Ops Associate"
     description: "# Filled Hours (Assigned to an Employee) External Ops Associate / # Scheduled Hours (Total Scheduled Shift Hours = Assigned Hours + Open Hours) External Ops Associate"
     value_format_name: percent_1
     group_label: "> Ops Associate Measures"
@@ -4642,7 +4642,7 @@ view: staffing {
   measure: pct_unassignment_rate_external_ops_associate {
     type: number
     label: "% Unassignment Rate (Incl. EC Shift) External Ops Associate"
-    description: "1 - Fill Rate"
+    description: "1 - Fill Rate External Ops Associate"
     value_format_name: percent_1
     group_label: "> Ops Associate Measures"
     sql: 1 - ${pct_fill_rate_external_ops_associate};;
