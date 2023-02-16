@@ -552,6 +552,23 @@ view: hub_uph_sessions {
     filters: [is_activity_switch: "yes"]
   }
 
+  measure: number_of_unique_shifts {
+    type: count_distinct
+    group_label: "> Quantities"
+    label: "# Shifts"
+    description: "Number of unique shifts."
+    sql: ${shift_id} ;;
+  }
+
+  measure: avg_number_of_activity_switch_per_shift {
+    type: number
+    group_label: "> Quantities"
+    label: "AVG # Switchs per Shift"
+    description: "Number of activity switchs divided by number of shifts."
+    sql: ${shift_id} ;;
+  }
+
+
 
   ######## PARAMETERS
 
