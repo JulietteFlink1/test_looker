@@ -166,7 +166,7 @@ view: staffing {
     hidden: yes
   }
 
-  dimension: number_of_unassigned_minutes_internal_rider {
+  dimension: number_of_unassigned_minutes_internal_rider_dimension {
     label: "# Unassigned Internal Rider Minutes"
     type: number
     sql: ${TABLE}.number_of_unassigned_minutes_internal_rider ;;
@@ -2653,7 +2653,15 @@ view: staffing {
     group_label: "> Rider Measures"
     label: "# Open Rider Hours"
     type: sum
-    sql: (${number_of_unassigned_minutes_external_rider}+${number_of_unassigned_minutes_internal_rider})/60;;
+    sql: (${number_of_unassigned_minutes_external_rider}+${number_of_unassigned_minutes_internal_rider_dimension})/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_unassigned_hours_internal_rider {
+    group_label: "> Rider Measures"
+    label: "# Open Internal Rider Hours"
+    type: sum
+    sql: (${number_of_unassigned_minutes_internal_rider_dimension})/60;;
     value_format_name: decimal_1
   }
 
@@ -3401,7 +3409,7 @@ view: staffing {
     label: "# Scheduled Internal Rider Hours"
     description: "# Scheduled Internal Rider Hours (Assigned + Unassigned)"
     type: number
-    sql: sum(${number_of_unassigned_minutes_internal_rider}/60)+${number_of_planned_minutes_internal_rider}/60;;
+    sql: ${number_of_unassigned_hours_internal_rider}+${number_of_planned_hours_internal_rider};;
     value_format_name: decimal_1
   }
 
