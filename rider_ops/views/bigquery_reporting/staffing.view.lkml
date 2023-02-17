@@ -4176,6 +4176,17 @@ view: staffing {
     value_format_name: percent_1
   }
 
+  measure: pct_no_show_hours_rider_ops_associate {
+    group_label: "> All Staff Measures"
+    label: "% No Show Rider + Ops Associate"
+    description: "# No Show Hours / (# Planned Hours - # Planned EC Hours)"
+    type: number
+    sql:(${number_of_no_show_hours_rider}+${number_of_no_show_hours_ops_associate})
+            /nullif(${number_of_planned_hours_rider} + ${number_of_planned_hours_ops_associate}
+                    -${number_of_planned_hours_rider_ec_shift} - ${number_of_planned_hours_ops_associate_ec_shift},0) ;;
+    value_format_name: percent_1
+  }
+
   measure: pct_no_show_hours_rider_incl_ec_shift {
     group_label: "> Rider Measures"
     label: "% No Show Rider Hours (Incl. EC Shifts)"
