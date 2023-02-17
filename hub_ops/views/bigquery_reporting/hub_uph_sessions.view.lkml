@@ -555,7 +555,7 @@ view: hub_uph_sessions {
   measure: share_of_idle_session_duration_hours_over_all_hours {
     group_label: "> Durations"
     label: "% Idle Hours"
-    description: "Number of hours spent idle divided by all worked hours."
+    description: "Number of hours spent on any idle (internal, transition, limit) divided by all worked hours."
     type: number
     sql: safe_divide( ${sum_of_internal_idle_session_duration_hours} +
                       ${sum_of_limit_idle_session_duration_hours}   +
