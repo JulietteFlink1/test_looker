@@ -831,21 +831,44 @@ view: products {
     sql: ${TABLE}.erp_termination_timestamp ;;
   }
 
-  dimension: erp_item_status {
-    label: "Item Status (ERP)"
-    description: "  The activity/listing status of a product according to our ERP system"
+  dimension: share_of_hubs_with_active_item_status {
+    label: "% Hubs With Item-Location Status Active"
+    description: "Share of hubs in a country with item-location status ACTIVE"
     group_label: "ERP fields"
-    type: string
-    sql: ${TABLE}.erp_item_status ;;
+    type: number
+    sql: ${TABLE}.share_of_hubs_with_active_item_status ;;
+    hidden: no
+    value_format_name: percent_0
   }
 
-  dimension: erp_item_status_update_date {
-    label: "Last Item Status (ERP) Update"
-    description: "The date, when the item status changed the last time."
+  dimension: share_of_hubs_with_discontinued_item_status {
+    label: "% Hubs With Item-Location Status Discontinued"
+    description: "Share of hubs in a country with item-location status DISCONTINUED"
     group_label: "ERP fields"
-    type: date
-    datatype: date
-    sql: ${TABLE}.erp_item_status_update ;;
+    type: number
+    sql: ${TABLE}.share_of_hubs_with_discontinued_item_status ;;
+    hidden: no
+    value_format_name: percent_0
+  }
+
+  dimension: share_of_hubs_with_inactive_item_status {
+    label: "% Hubs With Item-Location Status Inactive"
+    description: "Share of hubs in a country with item-location status INACTIVE"
+    group_label: "ERP fields"
+    type: number
+    sql: ${TABLE}.share_of_hubs_with_inactive_item_status ;;
+    hidden: no
+    value_format_name: percent_0
+  }
+
+  dimension: share_of_hubs_with_deleted_item_status {
+    label: "% Hubs With Item-Location Status Deleted"
+    description: "Share of hubs in a country with item-location status DELETED"
+    group_label: "ERP fields"
+    type: number
+    sql: ${TABLE}.share_of_hubs_with_deleted_item_status ;;
+    hidden: no
+    value_format_name: percent_0
   }
 
   dimension: erp_max_shelf_life_days {
