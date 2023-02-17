@@ -52,7 +52,11 @@ explore: supply_chain_backery_checks {
     -- only last 75d
     and ${products_hub_assignment.report_date} >= current_date() - 75
     -- only selected list of FR bakeries
-    and ${products_hub_assignment.erp_vendor_name} in ('Fournil des Capucins', 'Maison Papillon', 'Boulangerie Lafayette', 'La Bonoise', 'Pont Juvénal', 'Boulangerie Élégance', 'Le Boulanger Feydeau', 'Les Frères Chapelier', 'Chez Meunier')
+    and (
+        ${products_hub_assignment.erp_vendor_name} in ('Fournil des Capucins', 'Maison Papillon', 'Boulangerie Lafayette', 'La Bonoise', 'Pont Juvénal', 'Boulangerie Élégance', 'Le Boulanger Feydeau', 'Les Frères Chapelier', 'Chez Meunier')
+        or
+        ${products_hub_assignment.supplier_parent_id} in (5154, 5163, 5168, 5153, 5172, 5105, 5157, 5155, 5160)
+        )
     -- only FR:
     and ${products_hub_assignment.country_iso} = 'FR'
 

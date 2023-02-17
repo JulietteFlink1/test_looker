@@ -243,6 +243,108 @@ set: drill_fields_set {
     drill_fields: [drill_fields_set*]
   }
 
+  dimension: item_division_name {
+    label: "Item Division Name"
+    description: "Level 1 of new item class hierarchie: indicates, if the product is food or non-food"
+    group_label: "Product Data"
+    type: string
+    sql: ${TABLE}.item_division_name ;;
+    hidden: no
+    drill_fields: [drill_fields_set*]
+  }
+
+  dimension: item_group_name {
+    label: "Item Group Name"
+    description: "Level 2 of new item class hierarchie: indicates, if the product is e.g. a fresh or dry product"
+    group_label: "Product Data"
+    type: string
+    sql: ${TABLE}.item_group_name ;;
+    hidden: no
+    drill_fields: [drill_fields_set*]
+  }
+
+  dimension: item_department_name {
+    label: "Item Department Name"
+    description: "Level 3 of new item class hierarchie: indicates a high level class of products (e.g. Milk Alternatives Dry or Chocolate & Confectionary)"
+    group_label: "Product Data"
+    type: string
+    sql: ${TABLE}.item_department_name ;;
+    hidden: no
+    drill_fields: [drill_fields_set*]
+  }
+
+  dimension: item_class_name {
+    label: "Item Class Name"
+    description: "Level 4 of new item class hierarchie: indicates a more specific class of products (e.g. Wine or Heat & Eat)"
+    group_label: "Product Data"
+    type: string
+    sql: ${TABLE}.item_class_name ;;
+    hidden: no
+    drill_fields: [drill_fields_set*]
+  }
+
+  dimension: item_subclass_name {
+    label: "Item Subclass Name"
+    description: "Level 5 of new item class hierarchie: indicates the subclass of a product (e.g. Pizza - Class - SC or Other Sweets)"
+    group_label: "Product Data"
+    type: string
+    sql: ${TABLE}.item_subclass_name ;;
+    hidden: no
+    drill_fields: [drill_fields_set*]
+  }
+
+  dimension: demand_planning_master_category {
+    label: "Demand Planning Master Category"
+    description: "The demand planning master category combining logic of the 5 item hierarchie fields. This logic is defined by the Supply Chain team"
+    group_label: "Product Data"
+    type: string
+    sql: ${TABLE}.demand_planning_master_category ;;
+    hidden: no
+    drill_fields: [drill_fields_set*]
+  }
+
+  dimension: shelf_life {
+    label: "Shelf Life"
+    description: "The overall shelf live in days of a product until its best before date (BBD)"
+    group_label: "Product Data"
+    type: number
+    sql: ${TABLE}.shelf_life ;;
+    hidden: no
+    drill_fields: [drill_fields_set*]
+  }
+
+  dimension: shelf_life_hub {
+    label: "Shelf Life Hub"
+    description: "The shelf live in days of a product defining how long a product can be stored in a hub until its best before date (BBD)"
+    group_label: "Product Data"
+    type: number
+    sql: ${TABLE}.shelf_life_hub ;;
+    hidden: no
+    drill_fields: [drill_fields_set*]
+  }
+
+  dimension: shelf_life_consumer {
+    label: "Shelf Life Consumer"
+    description: "The minimum days a product should be consumable for a customer befores its best before date (BBD)"
+    group_label: "Product Data"
+    type: number
+    sql: ${TABLE}.shelf_life_consumer ;;
+    hidden: no
+    drill_fields: [drill_fields_set*]
+  }
+
+  dimension: shelf_life_dc {
+    label: "Shelf Life Dc"
+    description: "The overall shelf live in days of a product until its best before date (BBD)"
+    group_label: "Product Data"
+    type: number
+    sql: ${TABLE}.shelf_life_dc ;;
+    hidden: no
+    drill_fields: [drill_fields_set*]
+  }
+
+
+
 
 ############################################################
 ###################### Numeric Dimension ###################
@@ -594,6 +696,8 @@ set: drill_fields_set {
     description: "Total quantity fullfilled (PO > DESADV)"
     hidden: yes
   }
+
+
 
 
 
