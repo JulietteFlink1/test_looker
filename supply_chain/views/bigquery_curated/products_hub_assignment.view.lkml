@@ -370,6 +370,35 @@ view: products_hub_assignment {
   }
 
 
+  dimension: supplier_parent_name {
+    label: "Supplier Parent Name"
+    description: "The name of the parent supplier entity in Oracle."
+    type: string
+    sql: ${TABLE}.supplier_parent_name ;;
+    hidden: no
+  }
+
+
+  dimension: supplier_parent_id {
+    label: "Supplier Parent Id"
+    description: "Parent supplier ID as defined in Oracle - which is groups every Child Supplier ID and its related supplier-location"
+    type: number
+    sql: ${TABLE}.supplier_parent_id ;;
+    hidden: no
+  }
+
+
+  dimension: supplier_site {
+    label: "Supplier Site"
+    description: "Site of the supplier/vendor of a product, defined as Supplier Name + Location."
+    type: string
+    sql: ${TABLE}.supplier_site ;;
+    hidden: no
+  }
+
+
+
+
 
 
 
