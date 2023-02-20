@@ -1,42 +1,53 @@
-### Author: Artem Avramenko
+### Author: Artem Avramenko & James Davies
 ### Created: 2022-09-17
 
 ### This view represents spend and acquistions data for online marketing channels as well as
 ### other campaign performance-related measures.
 
 view: customer_acquisition_cost {
-  sql_table_name: `flink-data-prod.reporting.customer_acquisition_cost`
+  sql_table_name: `flink-data-dev.sandbox_reporting.customer_acquisition_cost`
     ;;
   view_label: "* Customer Acquisition Cost Data *"
 
   # =========  hidden   =========
-  dimension: acquisitions {
+  dimension: number_of_acquisitions {
+    alias: [acquisitions]
     type: number
-    sql: ${TABLE}.acquisitions ;;
+    sql: ${TABLE}.number_of_acquisitions ;;
     hidden: yes
   }
 
-  dimension: amt_spend {
+  dimension: amt_spend_eur {
+    alias: [amt_spend]
     type: number
-    sql: ${TABLE}.amt_spend ;;
+    sql: ${TABLE}.amt_spend_eur ;;
     hidden: yes
   }
 
-  dimension: installs {
+  dimension: number_of_installs {
+    alias: [installs]
     type: number
-    sql: ${TABLE}.installs ;;
+    sql: ${TABLE}.number_of_installs ;;
     hidden: yes
   }
 
-  dimension: impressions {
+  dimension: number_of_impressions {
+    alias: [impressions]
     type: number
-    sql: ${TABLE}.impressions ;;
+    sql: ${TABLE}.number_of_impressions ;;
     hidden: yes
   }
 
-  dimension: clicks {
+  dimension: number_of_clicks {
+    alias: [clicks]
     type: number
-    sql: ${TABLE}.clicks ;;
+    sql: ${TABLE}.number_of_clicks ;;
+    hidden: yes
+  }
+
+  dimension: number_of_orders {
+    type: number
+    sql: ${TABLE}.number_of_orders ;;
     hidden: yes
   }
 
@@ -170,14 +181,15 @@ view: customer_acquisition_cost {
   # ~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  measure: total_amt_spend {
+  measure: total_amt_spend_eur {
 
+    alias: [total_amt_spend]
     label: "SUM Spend"
     description: "Total of online marketing spend"
     group_label: "* CAC Measures *"
 
     type: sum
-    sql: ${amt_spend} ;;
+    sql: ${amt_spend_eur} ;;
 
     value_format_name: euro_accounting_2_precision
   }
@@ -189,7 +201,7 @@ view: customer_acquisition_cost {
     group_label: "* CAC Measures *"
 
     type: sum
-    sql: ${installs} ;;
+    sql: ${number_of_installs} ;;
 
     value_format_name: decimal_0
   }
@@ -201,7 +213,7 @@ view: customer_acquisition_cost {
     group_label: "* CAC Measures *"
 
     type: sum
-    sql: ${acquisitions} ;;
+    sql: ${number_of_acquisitions} ;;
 
     value_format_name: decimal_0
   }
@@ -213,7 +225,7 @@ view: customer_acquisition_cost {
     group_label: "* CAC Measures *"
 
     type: sum
-    sql: ${impressions} ;;
+    sql: ${number_of_impressions} ;;
 
     value_format_name: decimal_0
   }
@@ -225,7 +237,19 @@ view: customer_acquisition_cost {
     group_label: "* CAC Measures *"
 
     type: sum
-    sql: ${clicks} ;;
+    sql: ${number_of_clicks} ;;
+
+    value_format_name: decimal_0
+  }
+
+  measure: total_orders {
+
+    label: "# Orders"
+    description: "Number of Orders"
+    group_label: "* CAC Measures *"
+
+    type: sum
+    sql: ${number_of_orders} ;;
 
     value_format_name: decimal_0
   }
@@ -235,7 +259,7 @@ view: customer_acquisition_cost {
     label: "CAC"
     description: "Customer Acquisition Cost: how much does it cost marketing to get a conversion"
     group_label: "* CAC Measures *"
-    sql: ${total_amt_spend} / NULLIF(${total_acquisitions}, 0);;
+    sql: ${total_amt_spend_eur} / NULLIF(${total_acquisitions}, 0);;
     value_format_name: euro_accounting_2_precision
   }
 
@@ -244,7 +268,7 @@ view: customer_acquisition_cost {
     label: "CPI"
     description: "Cost Per Install: how much does it cost marketing to get an install"
     group_label: "* CAC Measures *"
-    sql: ${total_amt_spend} / NULLIF(${total_installs}, 0);;
+    sql: ${total_amt_spend_eur} / NULLIF(${total_installs}, 0);;
     value_format_name: euro_accounting_2_precision
   }
 
@@ -253,7 +277,7 @@ view: customer_acquisition_cost {
     label: "CPM"
     description: "Cost Per 1k Impressions: how much does it cost marketing to get 1000 impressions"
     group_label: "* CAC Measures *"
-    sql: ${total_amt_spend} / NULLIF(${total_impressions}, 0) * 1000;;
+    sql: ${total_amt_spend_eur} / NULLIF(${total_impressions}, 0) * 1000;;
     value_format_name: euro_accounting_2_precision
   }
 
@@ -262,7 +286,7 @@ view: customer_acquisition_cost {
     label: "CPC"
     description: "Cost Per Click: how much does it cost marketing to get a click"
     group_label: "* CAC Measures *"
-    sql: ${total_amt_spend} / NULLIF(${total_clicks}, 0);;
+    sql: ${total_amt_spend_eur} / NULLIF(${total_clicks}, 0);;
     value_format_name: euro_accounting_2_precision
   }
 
