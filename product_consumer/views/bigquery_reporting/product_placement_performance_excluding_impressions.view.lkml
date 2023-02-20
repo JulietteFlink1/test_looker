@@ -170,6 +170,14 @@ view: product_placement_performance_excluding_impressions {
     sql: ${TABLE}.is_product_added_to_favourites ;;
   }
 
+  dimension: is_context_available {
+    group_label: "Product Flags"
+    label: "Is Context Available"
+    description: "If the backend product context was available for a product impression event. The Out of Stock rate depends on this context"
+    type: yesno
+    sql: ${TABLE}.is_context_available;;
+  }
+
   # ======= Dates / Timestamps =======
 
   dimension_group: event {
@@ -307,5 +315,12 @@ view: product_placement_performance_excluding_impressions {
     description: "# orders / # products with Add-to-Cart"
     value_format_name: percent_2
     sql: ${orders} / nullif(${add_to_carts},0);;
+  }
+  measure: sum_of_time_on_screen_seconds{
+    group_label: "Product Metrics"
+    label: "Sum of Time on Screen in Seconds"
+    type: sum
+    description: "Sum of seconds a product sku was exposed on the screen aggregated by anonymous_id and product placement"
+    sql: ${TABLE}.sum_of_time_on_screen_seconds ;;
   }
 }
