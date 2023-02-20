@@ -293,6 +293,14 @@ view: product_placement_performance {
     type: sum
     sql: ${TABLE}.number_of_product_impressions ;;
   }
+  measure: impressions_for_oos {
+    group_label: "Product Metrics"
+    label: "# Impressions with Context"
+    description: "Number of unique impressions per product if context is available"
+    type: sum
+    sql: ${TABLE}.number_of_product_impressions;;
+    filters: [is_context_available: "yes"]
+  }
   measure: add_to_carts {
     group_label: "Product Metrics"
     label: "# Products Added to Cart"
@@ -373,11 +381,11 @@ view: product_placement_performance {
   }
   measure: out_of_stock_rate{
     group_label: "Rates (%)"
-    label: "Out-ot-Stock Rate (OoS)"
+    label: "Out-of-Stock Rate (OoS)"
     type: number
     description: "# OoS products / # total products impressions"
     value_format_name: percent_2
-    sql: ${out_of_stock_products_total} / nullif(${impressions},0);;
+    sql: ${out_of_stock_products_total} / nullif(${impressions_for_oos},0);;
   }
 
   # ======= User Level Measures =======
