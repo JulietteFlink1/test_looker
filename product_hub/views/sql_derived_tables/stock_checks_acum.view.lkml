@@ -18,7 +18,7 @@ completed_checks as (
   from `flink-data-prod.reporting.prep_event_stock_check` as prep_event_stock_check
   left join `flink-data-prod.curated.daily_hub_tasks` as daily_hub_tasks
     on daily_hub_tasks.task_id = prep_event_stock_check.check_id
-    and {% condition global_filters_and_parameters.datasource_filter %} date(created_at_timestamp) {% endcondition %}
+    and date(created_at_timestamp) >= '2023-01-01'
 
 
   where
@@ -27,12 +27,53 @@ completed_checks as (
   group by 1,2,3,4,5,6
 )
 
+, raw_hub_tasks as (
+          select
+    date(created_at_timestamp) as created_at
+  , hub_code
+  , country_iso
+  , task_type
+  , task_reason
+  , task_status
+  , finished_by
+  , date(updated_at_timestamp) as updated_at
+  , task_id
+  from `flink-data-prod.curated.daily_hub_tasks`
+        where date(created_at_timestamp) >= '2023-01-01'
+
+  union all
+
+  select
+   created_at
+   , hub_code
+   , country_iso
+   , task_type
+   , task_reason
+   , null task_status
+   , null as finished_by
+   , null as updated_at
+   , null as task_id
+  from
+    (select
+      date(created_at_timestamp) as created_at
+    , hub_code
+    , country_iso
+    from `flink-data-prod.curated.daily_hub_tasks`
+    where
+      {% condition global_filters_and_parameters.datasource_filter %} date(created_at_timestamp) {% endcondition %}
+
+    group by 1,2,3)
+    cross join
+    (select distinct task_type, task_reason
+    from `flink-data-prod.curated.daily_hub_tasks`
+          where date(created_at_timestamp) >= '2023-01-01')
+)
+
 , available_checks as (
   select
     created_at
   , hub_code
   , country_iso
-  , task_status
   , task_type
   , task_reason
   , finished_by
@@ -41,27 +82,25 @@ completed_checks as (
   from
     (
       select
-        date(created_at_timestamp) as created_at
+        created_at
       , hub_code
       , country_iso
-      , task_status
       , task_type
       , task_reason
       , finished_by
       -- adding a partition by clause to number_of_created_checks to be able to run the count of acum_checks in the same CTE
       -- to do so I need to avoid using group by
       , count(if((task_status not in ('CANCELED'))
-          or (task_status in ('CANCELED') and date(updated_at_timestamp)>date(created_at_timestamp)), task_id, null))
-          over (partition by date(created_at_timestamp), hub_code, task_status, task_type, task_reason, finished_by) as number_of_created_checks
+          or (task_status in ('CANCELED') and updated_at>created_at), task_id, null))
+          over (partition by created_at, hub_code, task_type, task_reason, finished_by) as number_of_created_checks
       , count(if(task_status in ('OPEN', 'SKIPPED', 'IN_PROGRESS')
-             -- or (task_status in ('DONE', 'CANCELED') and date(updated_at_timestamp)>date(created_at_timestamp))
+              or (task_status in ('DONE', 'CANCELED') and updated_at>created_at)
               , task_id, null))
-          over (partition by hub_code, task_status, task_type, task_reason, finished_by order by UNIX_DATE(date(created_at_timestamp))
-      RANGE BETWEEN 30 PRECEDING AND current row) AS number_of_remaining_checks
-      from `flink-data-prod.curated.daily_hub_tasks`
-      where date(created_at_timestamp) >= '2023-01-01'
+          over (partition by hub_code, task_type, task_reason, finished_by order by UNIX_DATE(created_at)
+      RANGE BETWEEN 30 PRECEDING AND 1 preceding) AS number_of_remaining_checks
+      from raw_hub_tasks
     )
-  group by 1,2,3,4,5,6,7,8,9
+  group by 1,2,3,4,5,6,7,8
 )
 
 select
