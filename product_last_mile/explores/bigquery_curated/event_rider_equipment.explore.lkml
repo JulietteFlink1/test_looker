@@ -9,6 +9,7 @@
 include: "/**/*/event_rider_equipment_request_state_changed.view.lkml"
 include: "/**/global_filters_and_parameters.view.lkml"
 include: "/**/event_rider_eligible_for_equipment.view.lkml"
+include: "/**/hubs_ct.view.lkml"
 
 
 explore: event_rider_equipment_request_state_changed {
@@ -49,5 +50,11 @@ explore: event_rider_equipment_request_state_changed {
     sql_on: ${event_rider_equipment_request_state_changed.hub_code} = ${event_rider_eligible_for_equipment.hub_code} ;;
     type: left_outer
     relationship: one_to_one
+  }
+  join: hubs_ct {
+    view_label: "3 Hub Dimensions"
+    sql_on: ${event_rider_equipment_request_state_changed.hub_code} = ${hubs_ct.hub_code} ;;
+    type: left_outer
+    relationship: many_to_one
   }
 }
