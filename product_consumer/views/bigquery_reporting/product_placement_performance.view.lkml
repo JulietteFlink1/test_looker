@@ -298,6 +298,7 @@ view: product_placement_performance {
     label: "# Impressions with Context"
     description: "Number of unique impressions per product if context is available"
     type: sum
+    hidden: yes
     sql: ${TABLE}.number_of_product_impressions;;
     filters: [is_context_available: "yes"]
   }
@@ -383,7 +384,7 @@ view: product_placement_performance {
     group_label: "Rates (%)"
     label: "Out-of-Stock Rate (OoS)"
     type: number
-    description: "# OoS products / # total products impressions"
+    description: "# OoS products / # total products impressions with available context"
     value_format_name: percent_2
     sql: ${out_of_stock_products_total} / nullif(${impressions_for_oos},0);;
   }
