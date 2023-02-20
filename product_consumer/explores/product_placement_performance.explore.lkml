@@ -49,7 +49,7 @@ explore: product_placement_performance {
       global_filters_and_parameters.datasource_filter: "last 1 days",
       affected_by_impression_users.is_exposed_to_impressions: "Yes",
       product_placement_performance.product_placement: "category, search, last_bought, swimlane, collection",
-      hubs.country_iso: "",
+      product_placement_performance.country_iso: "",
       product_placement_performance.platform: ""
     ]
   }
