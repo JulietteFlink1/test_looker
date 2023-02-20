@@ -289,18 +289,21 @@ view: products_hub_assignment {
   # =========  ERP Data   =========
 
   dimension: erp_is_hub_active {
+    label: "Is Hub Active"
     group_label: "ERP Fields"
     type: yesno
     sql: ${TABLE}.erp_is_hub_active ;;
   }
 
   dimension: erp_is_warehouse_active {
+    label: "Is Warehouse Active (Lexbizz)"
     group_label: "ERP Fields"
     type: yesno
     sql: ${TABLE}.erp_is_warehouse_active ;;
   }
 
   dimension: erp_item_at_warehouse_status {
+    label: "Item At Location Status"
     group_label: "ERP Fields"
     type: string
     sql: ${TABLE}.erp_item_at_warehouse_status ;;
@@ -310,6 +313,7 @@ view: products_hub_assignment {
     group_label: "ERP Fields"
     type: string
     sql: ${TABLE}.erp_item_status ;;
+    hidden: yes
   }
 
   dimension: erp_vendor_id {
@@ -373,6 +377,7 @@ view: products_hub_assignment {
   dimension: supplier_parent_name {
     label: "Supplier Parent Name"
     description: "The name of the parent supplier entity in Oracle."
+    group_label: "ERP Fields"
     type: string
     sql: ${TABLE}.supplier_parent_name ;;
     hidden: no
@@ -382,6 +387,7 @@ view: products_hub_assignment {
   dimension: supplier_parent_id {
     label: "Supplier Parent Id"
     description: "Parent supplier ID as defined in Oracle - which is groups every Child Supplier ID and its related supplier-location"
+    group_label: "ERP Fields"
     type: number
     sql: ${TABLE}.supplier_parent_id ;;
     hidden: no
@@ -391,6 +397,7 @@ view: products_hub_assignment {
   dimension: supplier_site {
     label: "Supplier Site"
     description: "Site of the supplier/vendor of a product, defined as Supplier Name + Location."
+    group_label: "ERP Fields"
     type: string
     sql: ${TABLE}.supplier_site ;;
     hidden: no
