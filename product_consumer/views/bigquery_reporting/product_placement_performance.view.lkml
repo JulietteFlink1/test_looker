@@ -249,14 +249,14 @@ view: product_placement_performance {
     description: "Unique number of products which were out of stock when saw by users (on an impression level)"
     type: count_distinct
     sql: ${TABLE}.product_sku ;;
-    filters: [is_product_out_of_stock: "yes"]
+    filters: [is_product_out_of_stock: "yes", is_context_available: "yes"]
   }
   measure: out_of_stock_products_total {
     group_label: "Product Metrics"
     label: "# OoS Products (Total)"
     description: "Total number of products which were out of stock when saw by users (on an impression level)"
     type: count
-    filters: [is_product_out_of_stock: "yes"]
+    filters: [is_product_out_of_stock: "yes", is_context_available: "yes"]
   }
   measure: orders {
     group_label: "Product Metrics"

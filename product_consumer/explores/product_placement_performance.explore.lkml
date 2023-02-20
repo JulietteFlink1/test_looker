@@ -29,12 +29,12 @@ explore: product_placement_performance {
                 We consider the Orders Explore to be the source of truth.
                 This report uses daily last-in first-out attribution logic - if a user has a cart that persists for more than one day the product placements will not be included in this report.
                 Impressions are only tracked for a proportion of our users - please ensure you filter for users exposed to impressions before looking at any metrics including impressions.
-                This explore is time limited, and will only return data for the last complete month, and the current month.
+                This explore is time limited, and will only return data for the last complete 28 days.
                 "
   group_label: "Product - Consumer"
 
   sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} ${product_placement_performance.event_date} {% endcondition %}
-                    and ${product_placement_performance.event_date} > LAST_DAY(current_date() - 29)
+                    and ${product_placement_performance.event_date} > current_date() - 29
                     and ${country_iso} is not null;;
 
   access_filter: {
