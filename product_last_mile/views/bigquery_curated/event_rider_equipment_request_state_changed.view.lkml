@@ -157,4 +157,76 @@ view: event_rider_equipment_request_state_changed {
     type: count_distinct
     sql: ${TABLE}.rider_id ;;
   }
+  measure: total_number_requested_events {
+    group_label: "Measures"
+    label: "# Requested Events"
+    description: "Total number of equipment requested events"
+    type: count_distinct
+    sql: ${TABLE}.event_uuid ;;
+    filters: [rider_equipment_state: "requested"]
+  }
+  measure: total_number_delivered_events {
+    group_label: "Measures"
+    label: "# Delivered Events"
+    description: "Total number of equipment delivered events"
+    type: count_distinct
+    sql: ${TABLE}.event_uuid ;;
+    filters: [rider_equipment_state: "delivered"]
+  }
+  measure: total_number_claimed_events {
+    group_label: "Measures"
+    label: "# Claimed Events"
+    description: "Total number of equipment claimed events"
+    type: count_distinct
+    sql: ${TABLE}.event_uuid ;;
+    filters: [rider_equipment_state: "claimed"]
+  }
+  measure: total_number_rejected_events {
+    group_label: "Measures"
+    label: "# Rejected Events"
+    description: "Total number of equipment rejected events"
+    type: count_distinct
+    sql: ${TABLE}.event_uuid ;;
+    filters: [rider_equipment_state: "rejected"]
+  }
+  measure: total_number_confirmed_events {
+    group_label: "Measures"
+    label: "# Confirmed Events"
+    description: "Total number of equipment confirmed events"
+    type: count_distinct
+    sql: ${TABLE}.event_uuid ;;
+    filters: [rider_equipment_state: "confirmed"]
+  }
+  measure: total_number_unclaimed_events {
+    group_label: "Measures"
+    label: "# Unclaimed Events"
+    description: "Total number of equipment unclaimed events"
+    type: count_distinct
+    sql: ${TABLE}.event_uuid ;;
+    filters: [rider_equipment_state: "unclaimed"]
+  }
+  measure: claimed_equipment_rate {
+    group_label: "% Rate Measures"
+    label: "% Equipment Claimed"
+    description: "% of Equipment Claimed"
+    type: number
+    sql:  ${total_number_claimed_events}/nullif(${total_number_requested_events},0) ;;
+    value_format_name: percent_1
+  }
+  measure: rejected_equipment_rate {
+    group_label: "% Rate Measures"
+    label: "% Equipment Requests Rejected"
+    description: "% of Equipment Requests Rejected"
+    type: number
+    sql:  ${total_number_rejected_events}/nullif(${total_number_requested_events},0) ;;
+    value_format_name: percent_1
+  }
+  measure: delivered_equipment_rate {
+    group_label: "% Rate Measures"
+    label: "% Equipment Requests Delivered"
+    description: "% of Equipment Requests Delivered"
+    type: number
+    sql:  ${total_number_delivered_events}/nullif(${total_number_requested_events},0) ;;
+    value_format_name: percent_1
+  }
 }
