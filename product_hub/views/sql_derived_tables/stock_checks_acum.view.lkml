@@ -54,7 +54,7 @@ completed_checks as (
           or (task_status in ('CANCELED') and date(updated_at_timestamp)>date(created_at_timestamp)), task_id, null))
           over (partition by date(created_at_timestamp), hub_code, task_status, task_type, task_reason, finished_by) as number_of_created_checks
       , count(if(task_status in ('OPEN', 'SKIPPED', 'IN_PROGRESS')
-              or (task_status in ('DONE', 'CANCELED') and date(updated_at_timestamp)>date(created_at_timestamp))
+             -- or (task_status in ('DONE', 'CANCELED') and date(updated_at_timestamp)>date(created_at_timestamp))
               , task_id, null))
           over (partition by hub_code, task_status, task_type, task_reason, finished_by order by UNIX_DATE(date(created_at_timestamp))
       RANGE BETWEEN 30 PRECEDING AND current row) AS number_of_remaining_checks
