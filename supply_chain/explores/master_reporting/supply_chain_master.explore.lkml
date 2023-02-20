@@ -15,6 +15,7 @@
 
 include: "/supply_chain/explores/master_reporting/supply_chain_master_report.view"
 include: "/core/views/config/global_filters_and_parameters.view"
+include: "/**/hubs_ct.view"
 
 
 
@@ -42,5 +43,13 @@ explore: supply_chain_master {
   join: global_filters_and_parameters {
     sql: ;;
     relationship: one_to_one
+  }
+
+  join: hubs {
+    from: hubs_ct
+    view_label: "Hubs"
+    sql_on: lower(${supply_chain_master.hub_code}) = ${hubs.hub_code} ;;
+    relationship: many_to_one
+    type: left_outer
   }
 }
