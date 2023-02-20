@@ -1939,7 +1939,7 @@ view: staffing {
     label: "% Overpunched Rider Hours"
     description: "Share of Overpunched hours over Punched hours."
     value_format_name: percent_2
-    sql: ${number_of_overpunched_hours_rider}/${number_of_worked_hours_rider} ;;
+    sql: ${number_of_overpunched_hours_rider}/nullif(${number_of_worked_hours_rider},0) ;;
   }
 
   measure: number_of_overpunched_hours_picker {
@@ -2035,7 +2035,7 @@ view: staffing {
     label: "% Overpunched Ops Associate Hours"
     description: "Share of Overpunched hours over Punched hours."
     value_format_name: percent_2
-    sql: ${number_of_overpunched_hours_ops_associate}/${number_of_worked_hours_ops_associate} ;;
+    sql: ${number_of_overpunched_hours_ops_associate}/nullif(${number_of_worked_hours_ops_associate},0) ;;
   }
 
   measure: number_of_overpunched_hours_hub_staff {
