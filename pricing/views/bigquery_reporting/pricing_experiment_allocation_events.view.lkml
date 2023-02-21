@@ -1,3 +1,8 @@
+# Owner:   Kristina Voloshina
+# Created: 2023-02-21
+
+# This views contains pricing experiment data joined with orders, placed on event (experiment_viewed) date.
+
 view: pricing_experiment_allocation_events {
   sql_table_name: `flink-data-prod.reporting.pricing_experiment_allocation_events`;;
 
