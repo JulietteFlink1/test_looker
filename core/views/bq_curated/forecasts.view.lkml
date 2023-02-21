@@ -1139,22 +1139,6 @@ view: forecasts {
     sql: ABS(${number_of_no_show_hours_by_position_adjusted_dimension} - ${ops.number_of_no_show_hours_by_position_dimension});;
   }
 
-  measure: summed_absolute_error_no_show_hours_new {
-    type: sum
-    hidden: yes
-    sql: ABS(${number_of_no_show_hours_by_position_dimension} - ${ops.number_of_no_show_hours_by_position_dimension});;
-  }
-
-  measure: wmape_no_show_hours_new {
-    group_label: "> Forecasting error"
-    label: "NEW wMAPE - No Show Hours"
-    description: "Summed Absolute Difference of Actual No Show Hours per Hub per 30 min timeslot (# Forecasted No Show Hours - # Actual No Show Hours)/ # Actual No Show Hours"
-    type: number
-    hidden: no
-    sql: (${summed_absolute_error_no_show_hours})/nullif(${ops.number_of_scheduled_hours_by_position},0);;
-    value_format_name: percent_2
-  }
-
   measure: wmape_no_show_hours_adjusted {
     group_label: "> Forecasting error"
     label: "wMAPE - Adjusted No Show Hours"
