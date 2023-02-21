@@ -82,7 +82,7 @@ view: erp_product_hub_vendor_assignment {
     alias: [erp_item_replenishment_substitute_group]
 
     type: string
-    sql: ${TABLE}.item_replenishment_substitute_group ;;
+    sql: ${TABLE}.replenishment_substitute_group ;;
 
   }
 
@@ -116,7 +116,7 @@ view: erp_product_hub_vendor_assignment {
     group_label: "> Item Level ERP Data"
 
     type: string
-    sql: ${TABLE}.item_substitute_group ;;
+    sql: ${TABLE}.substitute_group ;;
   }
 
   dimension: noos_item {
@@ -236,7 +236,7 @@ view: erp_product_hub_vendor_assignment {
     group_label: "> Warehouse Level ERP Data"
 
     type: string
-    sql: ${TABLE}.item_at_warehouse_status ;;
+    sql: ${TABLE}.item_at_location_status ;;
   }
   # - - - - - - - - - - - - -   END: Warehouse-Level Data - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -252,6 +252,7 @@ view: erp_product_hub_vendor_assignment {
 
     type: string
     sql: ${TABLE}.vendor_class ;;
+    hidden: yes
   }
 
   dimension: vendor_id {
@@ -263,7 +264,7 @@ view: erp_product_hub_vendor_assignment {
     alias: [erp_vendor_id]
 
     type: string
-    sql: ${TABLE}.vendor_id ;;
+    sql: ${TABLE}.supplier_id ;;
   }
 
   dimension: vendor_location {
@@ -275,7 +276,7 @@ view: erp_product_hub_vendor_assignment {
     alias: [erp_vendor_location_id]
 
     type: string
-    sql: ${TABLE}.vendor_location ;;
+    sql: ${TABLE}.supplier_site ;;
   }
 
   dimension: vendor_name {
@@ -287,7 +288,7 @@ view: erp_product_hub_vendor_assignment {
     alias: [erp_vendor_name]
 
     type: string
-    sql: ${TABLE}.vendor_name ;;
+    sql: ${TABLE}.supplier_name ;;
   }
 
   dimension: vendor_status {
@@ -299,7 +300,7 @@ view: erp_product_hub_vendor_assignment {
     alias: [erp_vendor_status]
 
     type: string
-    sql: ${TABLE}.vendor_status ;;
+    sql: ${TABLE}.supplier_status ;;
   }
   # - - - - - - - - - - - - -   END: Vendor-Level Data - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

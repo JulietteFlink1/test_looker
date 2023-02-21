@@ -141,6 +141,7 @@ view: advanced_supplier_matching {
     description: "This is the identifier of a purchase order. A purchase order is a document, that is sent to a supplier and indicates, which products Flink wants to buy."
     group_label: "IDs"
     sql: ${TABLE}.order_number ;;
+    value_format: "0"
   }
 
   dimension: purchase_order_uuid {
@@ -612,13 +613,37 @@ view: advanced_supplier_matching {
     type: number
     description: "The field shows, how many handling units with products have been delivered to a hub. 1 handling unit contains N selling units. The N is defined in the field quantity_per_handling_unit"
     sql: ${TABLE}.handling_units_count ;;
-    hidden: no
+    hidden: yes
+  }
+
+  dimension: total_quantity_purchase_order_hu  {
+    type: number
+    label: "Total Quantity Purchase Orders (HU)"
+    description: "This field shows the number of Handling units of a product, that have been delivered/ordered (Purchase Order)"
+    sql: ${TABLE}.total_quantity_purchase_order_hu ;;
+    hidden: yes
+  }
+
+  dimension: total_quantity_desadv_hu {
+    type: number
+    label: "Total Quantity DESADVs (HU)"
+    description: "This field shows the number of Handling units of a product, that have been delivered/ordered (DESADV)"
+    sql: ${TABLE}.total_quantity_desadv_hu ;;
+    hidden: yes
   }
 
   dimension: inbounded_quantity {
     type: number
     description: "Quantity actually inbounded based on the matching logic."
     sql: ${TABLE}.inbounded_quantity ;;
+    hidden: yes
+  }
+
+  dimension: inbounded_quantity_hu {
+    type: number
+    label: "Total Quantity Inbounded (HU)"
+    description: "Quantity actually inbounded based on the matching logic in Handling Units."
+    sql: ${TABLE}.inbounded_quantity_hu ;;
     hidden: yes
   }
 
@@ -767,6 +792,72 @@ view: advanced_supplier_matching {
     group_label: "Special Use Cases"
     sql: ${TABLE}.lead_time_in_days ;;
   }
+
+  dimension: erp_hub_type  {
+    type: string
+    label: "Hub Type (ERP)"
+    description: "The hub type indicates, to which kind of hubs a given product is usually assigned to.
+                  Hereby, an assignment to an M-hub indicates, that the product is usually offered in all M hubs or bigger (L hubs)."
+    group_label: "Special Use Cases"
+    sql: ${TABLE}.erp_hub_type ;;
+  }
+
+  dimension: max_shelf_life_days {
+    type: string
+    label: "Max Shelf Life"
+    description: " The shelf live in days of a product defining how long a product can be stored in a hub until its best before date (BBD)."
+    group_label: "Special Use Cases"
+    sql: ${TABLE}.max_shelf_life_days ;;
+  }
+
+  dimension: erp_temperature_zone {
+    type: string
+    label: "Temperature Zone (ERP)"
+    description: "This field refers to the temperature a product needs to have while being delivered and stored in order to be consumable (ERP)."
+    group_label: "Special Use Cases"
+    sql: ${TABLE}.erp_temperature_zone ;;
+  }
+
+  dimension: ean  {
+    type: string
+    label: "EAN"
+    description: " The 13 or 8 digits long EAN (European Article Number) code to identify a product."
+    group_label: "Special Use Cases"
+    sql: ${TABLE}.ean ;;
+  }
+
+  dimension: ean_hu {
+    type: string
+    label: "EAN HU"
+    description: "The manually entered code in Oracle, to identify a product - this is a customer field, necessary for some internal SC processes."
+    group_label: "Special Use Cases"
+    sql: ${TABLE}.ean_hu ;;
+  }
+
+  dimension: introduction_date  {
+    type: string
+    label: "Introduction Date"
+    description: "The date, when a given product was listed initially."
+    group_label: "Special Use Cases"
+    sql: ${TABLE}.introduction_date ;;
+  }
+
+  dimension: termination_date {
+    type: string
+    label: "Termination Date"
+    description: "The date, when a given product was delisted."
+    group_label: "Special Use Cases"
+    sql: ${TABLE}.termination_date ;;
+  }
+
+  dimension: item_at_location_status {
+    type: string
+    label: "Item at Location Status"
+    description: "The assignment status of a given product to a given hub as defined in ERP."
+    group_label: "Special Use Cases"
+    sql: ${TABLE}.item_at_location_status ;;
+  }
+
 
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

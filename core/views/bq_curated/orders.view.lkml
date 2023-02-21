@@ -202,6 +202,16 @@ view: orders {
     sql: ${item_value_gross} ;;
   }
 
+  dimension: item_value_gross_tier_minus_discounts{
+    group_label: "* Monetary Values *"
+    description: "Tiers for item value minus cart and product discount"
+    label: "Item Value minus discounts (tiered)"
+    type: tier
+    tiers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 32, 34, 36, 38, 40, 45, 50, 55, 60, 65, 70, 75, 80, 90, 100, 110, 120, 130]
+    style: relational
+    sql: ${TABLE}.amt_total_price_after_product_discount_gross -  ${TABLE}.amt_discount_cart_gross;;
+  }
+
   dimension: rider_tip {
     group_label: "* Monetary Values *"
     type: number
@@ -937,6 +947,7 @@ view: orders {
     timeframes: [
       raw,
       time,
+      minute,
       date,
       week,
       month,
@@ -945,6 +956,7 @@ view: orders {
     ]
     sql: ${TABLE}.last_modified_at ;;
     hidden: yes
+    convert_tz: yes
   }
 
   dimension: latitude {
@@ -2721,6 +2733,19 @@ view: orders {
       ]
   }
 
+  measure: number_of_unique_flink_delivered_orders {
+    alias: [cnt_rider_orders]
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Flink Delivered Orders"
+    description: "Count of Orders delivered by Flink Riders (Excluding External and Click & Collect Orders)."
+    hidden:  yes
+    type: count_distinct
+    sql: ${order_uuid} ;;
+    value_format: "0"
+    filters: [
+      is_last_mile_order: "yes"
+    ]
+  }
   measure: cnt_orders_with_discount_cart {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
     label: "# Orders with Cart Discount"

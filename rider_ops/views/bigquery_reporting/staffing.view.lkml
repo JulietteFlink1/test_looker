@@ -166,7 +166,7 @@ view: staffing {
     hidden: yes
   }
 
-  dimension: number_of_unassigned_minutes_internal_rider {
+  dimension: number_of_unassigned_minutes_internal_rider_dimension {
     label: "# Unassigned Internal Rider Minutes"
     type: number
     sql: ${TABLE}.number_of_unassigned_minutes_internal_rider ;;
@@ -1939,7 +1939,7 @@ view: staffing {
     label: "% Overpunched Rider Hours"
     description: "Share of Overpunched hours over Punched hours."
     value_format_name: percent_2
-    sql: ${number_of_overpunched_hours_rider}/${number_of_worked_hours_rider} ;;
+    sql: ${number_of_overpunched_hours_rider}/nullif(${number_of_worked_hours_rider},0) ;;
   }
 
   measure: number_of_overpunched_hours_picker {
@@ -2035,7 +2035,7 @@ view: staffing {
     label: "% Overpunched Ops Associate Hours"
     description: "Share of Overpunched hours over Punched hours."
     value_format_name: percent_2
-    sql: ${number_of_overpunched_hours_ops_associate}/${number_of_worked_hours_ops_associate} ;;
+    sql: ${number_of_overpunched_hours_ops_associate}/nullif(${number_of_worked_hours_ops_associate},0) ;;
   }
 
   measure: number_of_overpunched_hours_hub_staff {
@@ -2653,7 +2653,15 @@ view: staffing {
     group_label: "> Rider Measures"
     label: "# Open Rider Hours"
     type: sum
-    sql: (${number_of_unassigned_minutes_external_rider}+${number_of_unassigned_minutes_internal_rider})/60;;
+    sql: (${number_of_unassigned_minutes_external_rider}+${number_of_unassigned_minutes_internal_rider_dimension})/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_unassigned_hours_internal_rider {
+    group_label: "> Rider Measures"
+    label: "# Open Internal Rider Hours"
+    type: sum
+    sql: (${number_of_unassigned_minutes_internal_rider_dimension})/60;;
     value_format_name: decimal_1
   }
 
@@ -2672,6 +2680,24 @@ view: staffing {
     description: "# Open Picker Hours from shifts with project code = 'EC shift'"
     type: sum
     sql: ${TABLE}.number_of_unassigned_minutes_ec_shift_picker/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_unassigned_hours_picker_wfs_shift {
+    group_label: "> Picker Measures"
+    label: "# Open WFS Picker Hours"
+    description: "# Open Picker Hours from shifts with project code = 'WFS shift'"
+    type: sum
+    sql: ${TABLE}.number_of_unassigned_minutes_wfs_shift_picker/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_unassigned_hours_picker_ns_shift {
+    group_label: "> Picker Measures"
+    label: "# Open NS+ Picker Hours"
+    description: "# Open Picker Hours from shifts with project code = 'NS+ shift'"
+    type: sum
+    sql: ${TABLE}.number_of_unassigned_minutes_ns_shift_picker/60;;
     value_format_name: decimal_1
   }
 
@@ -2843,11 +2869,27 @@ view: staffing {
 
   measure: number_of_planned_minutes_external_ops_associate {
     group_label: "> Ops Associate Measures"
-    label: "# External Filled (Assigned) Ops Associate Minutes"
+    label: "# Filled (Assigned) External Ops Associate Minutes"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_external_ops_associate ;;
     value_format_name: decimal_1
     hidden: yes
+  }
+
+  measure: number_of_planned_hours_internal_ops_associate {
+    group_label: "> Ops Associate Measures"
+    label: "# Filled (Assigned) Internal Ops Associate Hours"
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_internal_ops_associate/60 ;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_planned_hours_external_ops_associate {
+    group_label: "> Ops Associate Measures"
+    label: "# Filled (Assigned) External Ops Associate Hours"
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_external_ops_associate/60 ;;
+    value_format_name: decimal_1
   }
 
   measure: number_of_planned_hours_rider {
@@ -2855,6 +2897,22 @@ view: staffing {
     label: "# Filled (Assigned) Rider Hours"
     type: sum
     sql: ${number_of_planned_minutes_rider}/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_planned_hours_internal_rider {
+    group_label: "> Rider Measures"
+    label: "# Filled (Assigned) Internal Rider Hours"
+    type: sum
+    sql: ${number_of_planned_minutes_internal_rider}/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_planned_hours_external_rider {
+    group_label: "> Rider Measures"
+    label: "# Filled (Assigned) External Rider Hours"
+    type: sum
+    sql: ${number_of_planned_minutes_external_rider}/60;;
     value_format_name: decimal_1
   }
 
@@ -2944,6 +3002,24 @@ view: staffing {
     description: "# Filled Picker Hours from shifts with project code = 'EC shift'"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_ec_shift_picker/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_planned_hours_picker_wfs_shift {
+    group_label: "> Picker Measures"
+    label: "# Filled (Assigned) WFS Picker Hours"
+    description: "# Filled Picker Hours from shifts with project code = 'WFS shift'"
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_wfs_shift_picker/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_planned_hours_picker_ns_shift {
+    group_label: "> Picker Measures"
+    label: "# Filled (Assigned) NS+ Picker Hours"
+    description: "# Filled Picker Hours from shifts with project code = 'NS+ shift'"
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_ns_shift_picker/60;;
     value_format_name: decimal_1
   }
 
@@ -3328,12 +3404,39 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  measure: number_of_scheduled_hours_internal_rider {
+    group_label: "> Rider Measures"
+    label: "# Scheduled Internal Rider Hours"
+    description: "# Scheduled Internal Rider Hours (Assigned + Unassigned)"
+    type: number
+    sql: ${number_of_unassigned_hours_internal_rider}+${number_of_planned_hours_internal_rider};;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_scheduled_hours_rider_ec_shift {
     group_label: "> Rider Measures"
     label: "# Scheduled EC Rider Hours"
     description: "# Scheduled Rider Hours (Assigned + Unassigned EC shift hours)"
     type: number
     sql: ${number_of_unassigned_hours_rider_ec_shift}+${number_of_planned_hours_rider_ec_shift};;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_scheduled_hours_rider_wfs_shift {
+    group_label: "> Rider Measures"
+    label: "# Scheduled WFS Rider Hours"
+    description: "# Scheduled Rider Hours (Assigned + Unassigned WFS shift hours)"
+    type: number
+    sql: ${number_of_unassigned_hours_rider_wfs_shift}+${number_of_planned_hours_rider_wfs_shift};;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_scheduled_hours_rider_ns_shift {
+    group_label: "> Rider Measures"
+    label: "# Scheduled NS+ Rider Hours"
+    description: "# Scheduled Rider Hours (Assigned + Unassigned NS+ shift hours)"
+    type: number
+    sql: ${number_of_unassigned_hours_rider_ns_shift}+${number_of_planned_hours_rider_ns_shift};;
     value_format_name: decimal_1
   }
 
@@ -3352,7 +3455,6 @@ view: staffing {
     label: "# Scheduled Picker Hours"
     description: "# Scheduled Picker Hours  (Assigned + Unassigned)"
     type: number
-    # sql_distinct_key: ${staffing_uuid} ;;
     sql: ${number_of_unassigned_hours_picker}+${number_of_planned_hours_picker};;
     value_format_name: decimal_1
   }
@@ -3362,8 +3464,25 @@ view: staffing {
     label: "# Scheduled EC Picker Hours"
     description: "# Scheduled Picker Hours  (Assigned + Unassigned EC shift hours)"
     type: number
-    # sql_distinct_key: ${staffing_uuid} ;;
     sql: ${number_of_unassigned_hours_picker_ec_shift}+${number_of_planned_hours_picker_ec_shift};;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_scheduled_hours_picker_wfs_shift {
+    group_label: "> Picker Measures"
+    label: "# Scheduled WFS Picker Hours"
+    description: "# Scheduled Picker Hours (Assigned + Unassigned WFS shift hours)"
+    type: number
+    sql: ${number_of_unassigned_hours_picker_wfs_shift}+${number_of_planned_hours_picker_wfs_shift};;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_scheduled_hours_picker_ns_shift {
+    group_label: "> Picker Measures"
+    label: "# Scheduled NS+ Picker Hours"
+    description: "# Scheduled Picker Hours  (Assigned + Unassigned NS+ shift hours)"
+    type: number
+    sql: ${number_of_unassigned_hours_picker_ns_shift}+${number_of_planned_hours_picker_ns_shift};;
     value_format_name: decimal_1
   }
 
@@ -3396,7 +3515,6 @@ view: staffing {
     group_label: "> WH Measures"
     label: "# Scheduled WH Employee Hours"
     type: number
-    # sql_distinct_key: ${staffing_uuid} ;;
     sql: ${number_of_unassigned_hours_wh}+${number_of_planned_hours_wh};;
     description: "# Scheduled WH Hours  (Assigned + Unassigned)"
     value_format_name: decimal_1
@@ -3429,6 +3547,15 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  measure: number_of_scheduled_hours_internal_ops_associate {
+    group_label: "> Ops Associate Measures"
+    label: "# Scheduled Internal Ops Associate Hours"
+    description: "# Scheduled Internal Ops Associate Hours (Picker, WH, Rider Captain, Ops Associate) (Assigned + Unassigned)"
+    type: number
+    sql: ${number_of_unassigned_minutes_internal_ops_associate}/60+${number_of_planned_hours_internal_ops_associate};;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_scheduled_hours_ops_associate_ec_shift {
     group_label: "> Ops Associate Measures"
     label: "# Scheduled EC Ops Associate Hours"
@@ -3438,13 +3565,30 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  measure: number_of_scheduled_hours_ops_associate_wfs_shift {
+    group_label: "> Ops Associate Measures"
+    label: "# Scheduled WFS Ops Associate Hours"
+    description: "# Scheduled Ops Associate Hours (Picker, WH, Rider Captain, Ops Associate) (Assigned + Unassigned WFS Shift Hours)"
+    type: number
+    sql: ${number_of_unassigned_hours_ops_associate_wfs_shift}+${number_of_planned_hours_ops_associate_wfs_shift};;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_scheduled_hours_ops_associate_ns_shift {
+    group_label: "> Ops Associate Measures"
+    label: "# Scheduled NS+ Ops Associate Hours"
+    description: "# Scheduled Ops Associate Hours (Picker, WH, Rider Captain, Ops Associate) (Assigned + Unassigned NS+ Shift Hours)"
+    type: number
+    sql: ${number_of_unassigned_hours_ops_associate_ns_shift}+${number_of_planned_hours_ops_associate_ns_shift};;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_scheduled_hours_ops_associate_extra {
     group_label: "> Ops Associate Measures"
-    label: "# Extra Scheduled Ops Associate Hours (EC, NS, WFS)"
+    label: "# Extra Scheduled Ops Associate Hours (EC, NS+, WFS)"
     description: "# Extra Scheduled Ops Associate Hours  (Assigned + Unassigned EC, NS+ and WFS hours)"
     type: number
-    sql: (${number_of_unassigned_hours_ops_associate_ec_shift} + ${number_of_unassigned_hours_ops_associate_ns_shift} + ${number_of_unassigned_hours_ops_associate_wfs_shift})
-      + (${number_of_planned_hours_ops_associate_ec_shift} + ${number_of_planned_hours_ops_associate_ns_shift} + ${number_of_planned_hours_ops_associate_wfs_shift});;
+    sql: ${number_of_scheduled_hours_ops_associate_ec_shift} + ${number_of_scheduled_hours_ops_associate_wfs_shift} + ${number_of_scheduled_hours_ops_associate_ns_shift};;
     value_format_name: decimal_1
   }
 
@@ -4032,6 +4176,17 @@ view: staffing {
     value_format_name: percent_1
   }
 
+  measure: pct_no_show_hours_rider_ops_associate {
+    group_label: "> All Staff Measures"
+    label: "% No Show Rider + Ops Associate"
+    description: "# No Show Hours / (# Planned Hours - # Planned EC Hours)"
+    type: number
+    sql:(${number_of_no_show_hours_rider}+${number_of_no_show_hours_ops_associate})
+            /nullif(${number_of_planned_hours_rider} + ${number_of_planned_hours_ops_associate}
+                    -${number_of_planned_hours_rider_ec_shift} - ${number_of_planned_hours_ops_associate_ec_shift},0) ;;
+    value_format_name: percent_1
+  }
+
   measure: pct_no_show_hours_rider_incl_ec_shift {
     group_label: "> Rider Measures"
     label: "% No Show Rider Hours (Incl. EC Shifts)"
@@ -4146,7 +4301,8 @@ view: staffing {
     label: "[old] Rider UTR (does not include onboarding)"
     description: "# Orders (excl. Click & Collect and External Orders) / # Punched Rider Hours"
     type: number
-    sql: ${orders_with_ops_metrics.cnt_rider_orders}/ nullif(${number_of_worked_hours_rider}, 0) ;;
+    hidden: yes
+    sql: ${orders_with_ops_metrics.number_of_unique_flink_delivered_orders}/ nullif(${number_of_worked_hours_rider}}, 0) ;;
     value_format_name: decimal_2
   }
 
@@ -4155,7 +4311,7 @@ view: staffing {
     label: "Rider UTR"
     description: "# Orders (excl. Click & Collect and External Orders) / # Punched Rider Hours (incl. Onboarding)"
     type: number
-    sql: ${orders_with_ops_metrics.cnt_rider_orders}/ nullif(${number_of_worked_hours_rider}+${number_of_worked_hours_onboarding}, 0) ;;
+    sql: ${orders_with_ops_metrics.number_of_unique_flink_delivered_orders}/ nullif(${number_of_worked_hours_rider}+${number_of_worked_hours_onboarding}, 0) ;;
     value_format_name: decimal_2
   }
 
@@ -4311,6 +4467,15 @@ view: staffing {
         end ;;
   }
 
+  measure: number_of_planned_hours_excl_no_show_by_position {
+    type: number
+    label: "# Filled Hours (Incl. EC Shift and Excl. No Show)"
+    description: "# Shift Hours Assigned to an Employee including EC Shifts and excluding No Show"
+    value_format_name: decimal_1
+    group_label: "> Dynamic Measures"
+    sql:  ${number_of_planned_hours_by_position}-${number_of_no_show_hours_by_position_incl_ec_shift};;
+  }
+
   measure: number_of_planned_hours_ec_shift_by_position {
     type: number
     label: "# EC Filled Hours"
@@ -4416,7 +4581,7 @@ view: staffing {
     type: number
     label: "% Fill Rate (Incl. EC Shift)"
     description: "# Filled Hours (Assigned to an Employee) / # Scheduled Hours (Total Scheduled Shift Hours = Assigned Hours + Open Hours)"
-    value_format_name: percent_1
+    value_format_name: percent_2
     group_label: "> Dynamic Measures"
     sql: ${number_of_planned_hours_by_position}/nullif(${number_of_scheduled_hours_by_position},0);;
   }
@@ -4425,16 +4590,88 @@ view: staffing {
     type: number
     label: "% Unassignment Rate (Incl. EC Shift)"
     description: "1 - Fill Rate"
-    value_format_name: percent_1
+    value_format_name: percent_2
     group_label: "> Dynamic Measures"
     sql: 1 - ${pct_fill_rate};;
+  }
+
+  measure: pct_fill_rate_internal_rider {
+    type: number
+    label: "% Fill Rate (Incl. EC Shift) Internal Rider"
+    description: "# Filled Hours (Assigned to an Employee) Internal Rider / # Scheduled Hours (Total Scheduled Shift Hours = Assigned Hours + Open Hours) Internal Rider"
+    value_format_name: percent_2
+    group_label: "> Rider Measures"
+    sql: ${number_of_planned_hours_internal_rider}/nullif(${number_of_scheduled_hours_internal_rider},0);;
+  }
+
+  measure: pct_unassignment_rate_internal_riders {
+    type: number
+    label: "% Unassignment Rate (Incl. EC Shift) Internal Rider"
+    description: "1 - Fill Rate Internal Rider"
+    value_format_name: percent_2
+    group_label: "> Rider Measures"
+    sql: 1 - ${pct_fill_rate_internal_rider};;
+  }
+
+  measure: pct_fill_rate_external_rider {
+    type: number
+    label: "% Fill Rate (Incl. EC Shift) External Rider"
+    description: "# Filled Hours (Assigned to an Employee) External Rider / # Scheduled Hours (Total Scheduled Shift Hours = Assigned Hours + Open Hours) External Rider"
+    value_format_name: percent_2
+    group_label: "> Rider Measures"
+    sql: ${number_of_planned_hours_external_rider}/nullif(${number_of_scheduled_hours_external_rider},0);;
+  }
+
+  measure: pct_unassignment_rate_external_riders {
+    type: number
+    label: "% Unassignment Rate (Incl. EC Shift) External Rider"
+    description: "1 - Fill Rate External Rider"
+    value_format_name: percent_2
+    group_label: "> Rider Measures"
+    sql: 1 - ${pct_fill_rate_external_rider};;
+  }
+
+  measure: pct_fill_rate_internal_ops_associate {
+    type: number
+    label: "% Fill Rate (Incl. EC Shift) Internal Ops Associate"
+    description: "# Filled Hours (Assigned to an Employee) Internal Ops Associate / # Scheduled Hours (Total Scheduled Shift Hours = Assigned Hours + Open Hours) Internal Ops Associate"
+    value_format_name: percent_2
+    group_label: "> Ops Associate Measures"
+    sql: ${number_of_planned_hours_internal_ops_associate}/nullif(${number_of_scheduled_hours_internal_ops_associate},0);;
+  }
+
+  measure: pct_unassignment_rate_internal_ops_associate {
+    type: number
+    label: "% Unassignment Rate (Incl. EC Shift) Internal Ops Associate"
+    description: "1 - Fill Rate Internal Ops Associate"
+    value_format_name: percent_2
+    group_label: "> Ops Associate Measures"
+    sql: 1 - ${pct_fill_rate_internal_ops_associate};;
+  }
+
+  measure: pct_fill_rate_external_ops_associate {
+    type: number
+    label: "% Fill Rate (Incl. EC Shift) External Ops Associate"
+    description: "# Filled Hours (Assigned to an Employee) External Ops Associate / # Scheduled Hours (Total Scheduled Shift Hours = Assigned Hours + Open Hours) External Ops Associate"
+    value_format_name: percent_2
+    group_label: "> Ops Associate Measures"
+    sql: ${number_of_planned_hours_external_ops_associate}/nullif(${number_of_scheduled_hours_external_ops_associate},0);;
+  }
+
+  measure: pct_unassignment_rate_external_ops_associate {
+    type: number
+    label: "% Unassignment Rate (Incl. EC Shift) External Ops Associate"
+    description: "1 - Fill Rate External Ops Associate"
+    value_format_name: percent_2
+    group_label: "> Ops Associate Measures"
+    sql: 1 - ${pct_fill_rate_external_ops_associate};;
   }
 
   measure: pct_unexcused_absence {
     type: number
     label: "% Unexcused Absence (Excl. EC Shift)"
     description: "# Unexcused No Show Hours / # Filled Hours (Assigned to an Employee)"
-    value_format_name: percent_1
+    value_format_name: percent_2
     group_label: "> Dynamic Measures"
     sql: (${number_of_unexcused_no_show_hours_by_position})/nullif(${number_of_planned_hours_by_position}-${number_of_planned_hours_ec_shift_by_position},0);;
   }
@@ -4443,7 +4680,7 @@ view: staffing {
     type: number
     label: "% Excused Absence (Excl. EC Shift)"
     description: "# Excused No Show Hours / # Filled Hours (Assigned to an Employee)"
-    value_format_name: percent_1
+    value_format_name: percent_2
     group_label: "> Dynamic Measures"
     sql: (${number_of_deleted_excused_no_show_hours_by_position}+${number_of_excused_no_show_hours_by_position})/nullif(${number_of_planned_hours_by_position}-${number_of_planned_hours_ec_shift_by_position},0);;
   }
@@ -4503,6 +4740,36 @@ view: staffing {
         end ;;
   }
 
+  measure: number_of_scheduled_hours_by_position_wfs_shift {
+    type: number
+    label: "# WFS Scheduled Hours (Incl. Deleted Excused No Show)"
+    description: "Sum of Assigned and Unassigned (Open) Shift Hours from WFS shifts (Incl. Deleted Excused No Show)"
+    value_format_name: decimal_1
+    group_label: "> Dynamic Measures"
+    sql:
+        case
+          when {% parameter position_parameter %} = 'Rider' THEN ${number_of_scheduled_hours_rider_wfs_shift}
+          when {% parameter position_parameter %} = 'Picker' THEN ${number_of_scheduled_hours_picker_wfs_shift}
+          when {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_scheduled_hours_ops_associate_wfs_shift}
+          else null
+        end ;;
+  }
+
+  measure: number_of_scheduled_hours_by_position_ns_shift {
+    type: number
+    label: "# NS+ Scheduled Hours (Incl. Deleted Excused No Show)"
+    description: "Sum of Assigned and Unassigned (Open) Shift Hours from NS+ shifts (Incl. Deleted Excused No Show)"
+    value_format_name: decimal_1
+    group_label: "> Dynamic Measures"
+    sql:
+        case
+          when {% parameter position_parameter %} = 'Rider' THEN ${number_of_scheduled_hours_rider_ns_shift}
+          when {% parameter position_parameter %} = 'Picker' THEN ${number_of_scheduled_hours_picker_ns_shift}
+          when {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_scheduled_hours_ops_associate_ns_shift}
+          else null
+        end ;;
+  }
+
   measure: number_of_scheduled_hours_by_position_extra {
     type: number
     label: "# Extra Scheduled Hours (EC, NS+. WFS Shifts) (Incl. Deleted Excused No Show)"
@@ -4515,6 +4782,15 @@ view: staffing {
           when {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_scheduled_hours_ops_associate_extra}
           else null
         end ;;
+  }
+
+  measure: number_of_scheduled_hours_by_position_unknown {
+    type: number
+    label: "# Unknown Scheduled Hours (Incl. Deleted Excused No Show)"
+    description: "Difference between sum of Assigned and Unassigned (Open) hours and sum of Assigned and Unassigned (Open) EC, NS+ and WFS shift hours (Incl. Deleted Excused No Show)"
+    value_format_name: decimal_1
+    group_label: "> Dynamic Measures"
+    sql: ${number_of_scheduled_hours_by_position}-${number_of_scheduled_hours_by_position_extra} ;;
   }
 
   measure: pct_extra_scheduled_hours_by_position {

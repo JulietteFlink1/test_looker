@@ -131,11 +131,19 @@ view: hub_turf_closures_30min {
   }
 
   measure: sum_number_of_open_hours {
-    label: "# Open Hours (30min)"
-    description: "Number of hours the hub/turf was open."
+    label: "# Planned Open Hours (30min)"
+    description: "Number of hours the hub/turf was supposed to be open."
     type: sum_distinct
     sql_distinct_key: concat(${report_raw}, ${hub_code}, coalesce(${turf_id}, ''));;
     sql: ${number_of_open_hours} ;;
+    value_format_name: decimal_1
+  }
+
+  measure: sum_number_of_open_hours_including_closures {
+    label: "# Open Hours (30min)"
+    description: "Number of hours the hub/turf was open. It corresponds to # Planned Open Hours - # Closed Hours."
+    type: number
+    sql: ${sum_number_of_open_hours} - ${sum_number_of_closed_hours} ;;
     value_format_name: decimal_1
   }
 

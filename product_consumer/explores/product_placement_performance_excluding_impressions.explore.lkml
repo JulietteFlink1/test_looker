@@ -29,7 +29,7 @@ explore: product_placement_performance_excluding_impressions {
   group_label: "Product - Consumer"
 
   sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} ${product_placement_performance_excluding_impressions.event_date} {% endcondition %}
-                    and ${product_placement_performance_excluding_impressions.event_date} > LAST_DAY(current_date() - 62)
+                    and ${product_placement_performance_excluding_impressions.event_date} > LAST_DAY(current_date() - 29)
                     and ${country_iso} is not null;;
 
   access_filter: {
@@ -59,7 +59,8 @@ explore: product_placement_performance_excluding_impressions {
 
   join: products {
     view_label: "Product Data (CT)"
-    sql_on: ${products.product_sku} = ${product_placement_performance_excluding_impressions.product_sku} ;;
+    sql_on: ${products.product_sku} = ${product_placement_performance_excluding_impressions.product_sku}
+            and and ${products.country_iso} = ${product_placement_performance_excluding_impressions.country_iso} ;;
     relationship: many_to_one
     type: left_outer
     fields: [product_attributes*]

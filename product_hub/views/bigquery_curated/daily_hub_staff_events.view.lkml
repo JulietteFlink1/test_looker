@@ -112,7 +112,8 @@ view: daily_hub_staff_events {
       week,
       hour_of_day,
       day_of_week,
-      quarter
+      quarter,
+      week_of_year
     ]
     sql: ${TABLE}.event_timestamp ;;
   }
@@ -158,6 +159,14 @@ view: daily_hub_staff_events {
     description: "Component value where the event was triggered"
     type: string
     sql: ${TABLE}.component_value ;;
+  }
+
+  dimension: component_content {
+    group_label: "Generic Dimensions"
+    label: "Component Content"
+    description: "Component content where the event was triggered"
+    type: string
+    sql: ${TABLE}.component_content ;;
   }
 
   # =========  Other Dimensions   =========
