@@ -80,7 +80,8 @@ explore: product_placement_performance {
 
   join: products {
         view_label: "Product Data (CT)"
-        sql_on: ${products.product_sku} = ${product_placement_performance.product_sku} ;;
+        sql_on: ${products.product_sku} = ${product_placement_performance.product_sku}
+                  and ${products.country_iso} = ${product_placement_performance.country_iso};;
     relationship: many_to_one
     type: left_outer
   }
