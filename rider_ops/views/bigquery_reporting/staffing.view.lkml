@@ -4765,15 +4765,6 @@ view: staffing {
         end ;;
   }
 
-  measure: number_of_scheduled_hours_by_position_unknown {
-    type: number
-    label: "# Unknown Scheduled Hours (Incl. Deleted Excused No Show)"
-    description: "Difference between sum of Assigned and Unassigned (Open) hours and sum of Assigned and Unassigned (Open) EC, NS+ and WFS shift hours (Incl. Deleted Excused No Show)"
-    value_format_name: decimal_1
-    group_label: "> Dynamic Measures"
-    sql: ${number_of_scheduled_hours_by_position}-${number_of_scheduled_hours_by_position_extra} ;;
-  }
-
   measure: pct_extra_scheduled_hours_by_position {
     type: number
     label: "% Extra Scheduled Hours (EC, NS+, WFS Shifts) (Incl. Deleted Excused No Show)"

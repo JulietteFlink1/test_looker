@@ -784,7 +784,7 @@ view: forecasts {
     label: "% Adjusted Unknown Scheduled Hours Deviation"
     description: "The degree of how far # Forecasted Hours (Incl. Airtable Adjustments) is from # Unknown Scheduled Hours (# Scheduled Hours - # Scheduled Extra Hours) in the given period. Formula: ((# Scheduled Hours - # Scheduled Extra Hours) / # Forecasted Hours) - 1"
     type: number
-    sql: (${ops.number_of_scheduled_hours_by_position_unknown}/nullif(${number_of_forecasted_hours_by_position_adjusted},0)) - 1 ;;
+    sql: (${number_of_scheduled_hours_by_position_unknown}/nullif(${number_of_forecasted_hours_by_position_adjusted},0)) - 1 ;;
     value_format_name: percent_1
   }
 
@@ -1139,6 +1139,22 @@ view: forecasts {
     sql: ABS(${number_of_no_show_hours_by_position_adjusted_dimension} - ${ops.number_of_no_show_hours_by_position_dimension});;
   }
 
+  measure: summed_absolute_error_no_show_hours_new {
+    type: sum
+    hidden: yes
+    sql: ABS(${number_of_no_show_hours_by_position_dimension} - ${ops.number_of_no_show_hours_by_position_dimension});;
+  }
+
+  measure: wmape_no_show_hours_new {
+    group_label: "> Forecasting error"
+    label: "NEW wMAPE - No Show Hours"
+    description: "Summed Absolute Difference of Actual No Show Hours per Hub per 30 min timeslot (# Forecasted No Show Hours - # Actual No Show Hours)/ # Actual No Show Hours"
+    type: number
+    hidden: no
+    sql: (${summed_absolute_error_no_show_hours})/nullif(${ops.number_of_scheduled_hours_by_position},0);;
+    value_format_name: percent_2
+  }
+
   measure: wmape_no_show_hours_adjusted {
     group_label: "> Forecasting error"
     label: "wMAPE - Adjusted No Show Hours"
@@ -1186,6 +1202,15 @@ view: forecasts {
   }
 
   # =========  Dynamic values   =========
+
+  measure: number_of_scheduled_hours_by_position_unknown {
+    type: number
+    label: "# Unknown Scheduled Hours (Incl. Deleted Excused No Show)"
+    description: "# Total Scheduled Hours - # Extra Scheduled Hours (NS+, WFS, EC) - # Adjusted Forecasted Hours"
+    value_format_name: decimal_1
+    group_label: "> Dynamic Measures"
+    sql: ${ops.number_of_scheduled_hours_by_position}-${ops.number_of_scheduled_hours_by_position_extra}-${number_of_forecasted_hours_by_position_adjusted} ;;
+  }
 
   dimension: number_of_no_show_hours_by_position_dimension {
     type: number
