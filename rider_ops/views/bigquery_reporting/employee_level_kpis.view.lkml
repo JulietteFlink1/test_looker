@@ -1334,7 +1334,7 @@ view: employee_level_kpis {
     group_label: "> Shift Related"
     type: sum
     label: "# Worked Hours"
-    sql: round(${TABLE}.number_of_worked_minutes/60,2) ;;
+    sql: ${TABLE}.number_of_worked_minutes/60 ;;
     value_format_name: decimal_1
   }
 
@@ -1342,7 +1342,7 @@ view: employee_level_kpis {
     group_label: "> Shift Related"
     type: sum
     label: "# Online Rider Hours"
-    sql: round(${TABLE}.number_of_online_rider_minutes/60,2) ;;
+    sql:${TABLE}.number_of_online_rider_minutes/60;;
     description: "Number of minutes rider spent online in Workforce app (Rider app). "
     value_format_name: decimal_1
   }
