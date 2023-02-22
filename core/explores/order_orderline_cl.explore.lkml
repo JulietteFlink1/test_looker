@@ -52,6 +52,17 @@ explore: order_orderline_cl {
     ;;
   }
 
+  join: oracle_item_location_fact {
+    view_label: "Product-Hub Data (as of today)"
+    type: left_outer
+    relationship: many_to_one
+    sql_on:
+        ${oracle_item_location_fact.hub_code} = ${orderline.hub_code}
+    and ${oracle_item_location_fact.sku}      = ${orderline.product_sku}
+    ;;
+    fields: [oracle_item_location_fact.current_state__item_at_location_status]
+  }
+
   join: customer_address {
     # can only be seen by people with related permissions
     sql_on: ${orders_cl.order_uuid} = ${customer_address.order_uuid} ;;
