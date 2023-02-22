@@ -60,7 +60,7 @@ explore: product_placement_performance_excluding_impressions {
   join: products {
     view_label: "Product Data (CT)"
     sql_on: ${products.product_sku} = ${product_placement_performance_excluding_impressions.product_sku}
-            and and ${products.country_iso} = ${product_placement_performance_excluding_impressions.country_iso} ;;
+            and ${products.country_iso} = ${product_placement_performance_excluding_impressions.country_iso} ;;
     relationship: many_to_one
     type: left_outer
     fields: [product_attributes*]
