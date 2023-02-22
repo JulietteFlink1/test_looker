@@ -42,7 +42,7 @@ explore: order_orderline_cl {
 
   join: lexbizz_item {
 
-    view_label: "Product Data (ERP)"
+    view_label: ""
     from: erp_item
 
     type: left_outer
@@ -50,6 +50,17 @@ explore: order_orderline_cl {
     sql_on: ${lexbizz_item.sku}            = ${orderline.product_sku}
         and ${lexbizz_item.ingestion_date} = current_date()
     ;;
+  }
+
+  join: oracle_item_location_fact {
+    view_label: "Product-Hub Data (as of today)"
+    type: left_outer
+    relationship: many_to_one
+    sql_on:
+        ${oracle_item_location_fact.hub_code} = ${orderline.hub_code}
+    and ${oracle_item_location_fact.sku}      = ${orderline.product_sku}
+    ;;
+    fields: [oracle_item_location_fact.current_state__item_at_location_status]
   }
 
   join: customer_address {
@@ -80,7 +91,7 @@ explore: order_orderline_cl {
 
   join: lexbizz_warehouse {
 
-    view_label: "Lexbizz Master Data"
+    view_label: ""
 
     type: left_outer
     relationship: many_to_one
@@ -105,7 +116,7 @@ explore: order_orderline_cl {
 
   join: lexbizz_item_warehouse {
 
-    view_label: "Lexbizz Master Data"
+    view_label: ""
     from: erp_item_location
 
     type: left_outer
@@ -131,7 +142,7 @@ explore: order_orderline_cl {
 
   join: lexbizz_vendor {
 
-    view_label: "Lexbizz Master Data"
+    view_label: ""
     from: erp_supplier
 
     type: left_outer
