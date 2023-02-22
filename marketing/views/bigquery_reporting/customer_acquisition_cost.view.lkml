@@ -5,7 +5,7 @@
 ### other campaign performance-related measures.
 
 view: customer_acquisition_cost {
-  sql_table_name: `flink-data-dev.sandbox_reporting.customer_acquisition_cost`
+  sql_table_name: `flink-data-prod.reporting.customer_acquisition_cost`
     ;;
   view_label: "* Customer Acquisition Cost Data *"
 
