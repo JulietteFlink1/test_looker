@@ -188,7 +188,7 @@ view: shyftplan_riders_pickers_hours_clean {
     type: sum
     sql:${TABLE}.number_of_online_rider_minutes/60;;
     filters: [position_name: "rider"]
-    description: "Number of minutes rider spent online in Workforce app (Rider app). "
+    description: "Number of hours rider spent online in Workforce app (Rider app)."
     value_format_name: decimal_1
     group_label: "Working Hours"
   }

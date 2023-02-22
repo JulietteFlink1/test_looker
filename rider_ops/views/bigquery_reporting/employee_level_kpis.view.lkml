@@ -1343,7 +1343,7 @@ view: employee_level_kpis {
     type: sum
     label: "# Online Rider Hours"
     sql:${TABLE}.number_of_online_rider_minutes/60;;
-    description: "Number of minutes rider spent online in Workforce app (Rider app). "
+    description: "Number of hours rider spent online in Workforce app (Rider app)."
     value_format_name: decimal_1
   }
 
