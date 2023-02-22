@@ -46,7 +46,6 @@ view: oracle_item_location_fact {
     type: string
     description: "The assignment status of a given product to a given hub as defined in Oracle. This field shows the status as of today and NOT the history of status changes"
     sql: ${TABLE}.current_state.item_at_location_status ;;
-    group_label: "Current State"
   }
 
   dimension: current_state__item_status {
