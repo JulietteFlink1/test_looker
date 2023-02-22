@@ -110,6 +110,8 @@ view: customer_acquisition_cost {
     sql: ${TABLE}.campaign_platform ;;
   }
 
+###Unsolved bug here when adding extra partners to the CAC dashboard. Workaround would be to write in the names manually
+###as part of a tag list.
   dimension: partner_name {
     group_label: "* Campaign Dimensions *"
     label: "Channel Name"
