@@ -7,10 +7,10 @@ view: pricing_experiment_allocation_events {
   sql_table_name: `flink-data-prod.reporting.pricing_experiment_allocation_events`;;
 
 
-  dimension_group: created {
+  dimension_group: event {
     group_label: "* Dates and Timestamps *"
     label: "Allocation"
-    description: "Allocation Time/Date"
+    description: "Timestamp of when an event (allocation to experiment) happened"
     type: time
     timeframes: [
       raw,
@@ -71,7 +71,7 @@ view: pricing_experiment_allocation_events {
   dimension: variation_name {
     label: "Variation name"
     type: string
-    description: "Name of the variant defined in Optimizely Interface.."
+    description: "Name of the variant defined in Optimizely Interface."
     sql: ${TABLE}.variation_name ;;
   }
 
