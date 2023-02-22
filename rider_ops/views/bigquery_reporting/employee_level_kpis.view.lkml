@@ -1334,9 +1334,19 @@ view: employee_level_kpis {
     group_label: "> Shift Related"
     type: sum
     label: "# Worked Hours"
-    sql: ${TABLE}.number_of_worked_minutes/60 ;;
+    sql: round(${TABLE}.number_of_worked_minutes/60,2) ;;
     value_format_name: decimal_1
   }
+
+  measure: number_of_online_hours {
+    group_label: "> Shift Related"
+    type: sum
+    label: "# Online Rider Hours"
+    sql: round(${TABLE}.number_of_online_rider_minutes/60,2) ;;
+    description: "Number of minutes rider spent online in Workforce app (Rider app). "
+    value_format_name: decimal_1
+  }
+
 
   measure: number_of_overpunched_hours {
     group_label: "> Shift Related"
@@ -1386,6 +1396,15 @@ view: employee_level_kpis {
     type: number
     label: "AVG Rider UTR"
     sql: ${number_of_delivered_orders}/nullif(${number_of_worked_hours},0) ;;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_rider_utr_using_online_hours {
+    group_label: "> Logistics"
+    type: number
+    label: "AVG Rider UTR (using Online Hours)"
+    description: "# Orders delivered / # Hours spent online"
+    sql: ${number_of_delivered_orders}/nullif(${number_of_online_hours},0) ;;
     value_format_name: decimal_1
   }
 
