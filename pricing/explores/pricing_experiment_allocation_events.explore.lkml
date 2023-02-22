@@ -17,7 +17,7 @@ explore: pricing_experiment_allocation_events {
 
   join: pricing_experiment_allocation_events {
     sql_on: ${pricing_experiment_allocation_events.order_uuid} = ${orders_cl.order_uuid} ;;
-    type: left_outer
+    type: full_outer ##we need all data from pricing_experiment_allocation_events, not only for users who placed orders
     relationship: one_to_one
   }
 
