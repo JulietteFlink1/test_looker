@@ -196,10 +196,22 @@ view: customer_acquisition_cost {
 
   measure: total_amt_spend_eur_no_sem {
 
-    label: "SUM Spend"
-    description: "Total of online marketing spend"
+    label: "SUM Spend Excl. SEM"
+    description: "Total of online marketing spend, excluding Google SEM campaigns"
     group_label: "* CAC Measures *"
     filters: [partner_name: "-Google Ads - SEM (Web only), -Google Ads - SEM (App only)"  ]
+    type: sum
+    sql: ${amt_spend_net_eur} ;;
+
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: total_amt_spend_eur_sem_web {
+
+    label: "SUM Spend Web Only"
+    description: "Total of online marketing spend for Google SEM campaigns only"
+    group_label: "* CAC Measures *"
+    filters: [partner_name: "Google Ads - SEM (Web only)"  ]
     type: sum
     sql: ${amt_spend_net_eur} ;;
 
@@ -221,8 +233,8 @@ view: customer_acquisition_cost {
 
   measure: total_installs_no_sem {
 
-    label: "# Installs"
-    description: "Total of installs"
+    label: "# Installs excl. SEM"
+    description: "Total of installs, , excluding Google SEM campaigns"
     group_label: "* CAC Measures *"
     filters: [partner_name: "-Google Ads - SEM (Web only), -Google Ads - SEM (App only)"  ]
     type: sum
@@ -245,8 +257,8 @@ view: customer_acquisition_cost {
 
   measure: total_acquisitions_no_sem{
 
-    label: "# Acquisitions"
-    description: "Total of acquisitions"
+    label: "# Acquisitions excl. SEM"
+    description: "Total of acquisitions, excluding Google SEM campaigns"
     group_label: "* CAC Measures *"
     filters: [partner_name: "-Google Ads - SEM (Web only), -Google Ads - SEM (App only)"  ]
     type: sum
@@ -281,8 +293,8 @@ view: customer_acquisition_cost {
 
   measure: total_clicks_no_sem {
 
-    label: "# Clicks"
-    description: "Total of clicks"
+    label: "# Clicks excl. SEM"
+    description: "Total of clicks, excluding Google SEM campaigns"
     group_label: "* CAC Measures *"
     filters: [partner_name: "-Google Ads - SEM (Web only), -Google Ads - SEM (App only)"  ]
     type: sum
@@ -294,8 +306,9 @@ view: customer_acquisition_cost {
   measure: total_orders {
 
     label: "# Orders"
-    description: "Number of Orders"
+    description: "Number of Orders from web interface"
     group_label: "* CAC Measures *"
+    filters: [partner_name: "Google Ads - SEM (Web only)" ]
 
     type: sum
     sql: ${number_of_orders} ;;
@@ -320,6 +333,16 @@ view: customer_acquisition_cost {
     sql: ${total_amt_spend_eur_no_sem} / NULLIF(${total_installs_no_sem}, 0);;
     value_format_name: euro_accounting_2_precision
   }
+
+  measure: cpo {
+    type: number
+    label: "CPO"
+    description: "Cost Per Order: how much does it cost marketing to get a web order"
+    group_label: "* CAC Measures *"
+    sql: ${total_amt_spend_eur_sem_web} / NULLIF(${total_orders}, 0);;
+    value_format_name: euro_accounting_2_precision
+  }
+
 
   measure: cost_per_mile {
     type: number
