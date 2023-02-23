@@ -1188,6 +1188,157 @@ view: vat_order {
   }
 
 
+  ############################  MARKETPLACE INTEGRATIONS   #######################
+
+  ########### UberEats #############
+
+  dimension: amt_uber_eats_commission_fee_net {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_uber_eats_commission_fee_net ;;
+  }
+
+  dimension: amt_uber_eats_commission_fee_gross {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_uber_eats_commission_fee_gross ;;
+  }
+
+  dimension: amt_vat_uber_eats_commission_fee_total {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_vat_uber_eats_commission_fee_total ;;
+  }
+
+  dimension: amt_uber_eats_commission_fee_standard_net {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_uber_eats_commission_fee_standard_net ;;
+  }
+
+  dimension: amt_uber_eats_commission_fee_standard_gross {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_uber_eats_commission_fee_standard_gross ;;
+  }
+
+  dimension: amt_vat_uber_eats_commission_fee_standard {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_vat_uber_eats_commission_fee_standard ;;
+  }
+
+  dimension: amt_uber_eats_commission_fee_reduced_net {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_uber_eats_commission_fee_reduced_net ;;
+  }
+
+  dimension: amt_uber_eats_commission_fee_reduced_gross {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_uber_eats_commission_fee_reduced_gross ;;
+  }
+
+  dimension: amt_vat_uber_eats_commission_fee_reduced {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_vat_uber_eats_commission_fee_reduced ;;
+  }
+
+  dimension: amt_uber_eats_commission_fee_special_net {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_uber_eats_commission_fee_special_net ;;
+  }
+
+  dimension: amt_uber_eats_commission_fee_special_gross {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_uber_eats_commission_fee_special_gross ;;
+  }
+
+  dimension: amt_vat_uber_eats_commission_fee_special {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_vat_uber_eats_commission_fee_special ;;
+  }
+
+  ########### WOLT #############
+
+  dimension: amt_wolt_commission_fee_net {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_wolt_commission_fee_net ;;
+  }
+
+  dimension: amt_wolt_commission_fee_gross {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_wolt_commission_fee_gross ;;
+  }
+
+  dimension: amt_vat_wolt_commission_fee_total {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_vat_wolt_commission_fee_total ;;
+  }
+
+  dimension: amt_wolt_commission_fee_standard_net {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_wolt_commission_fee_standard_net ;;
+  }
+
+  dimension: amt_wolt_commission_fee_standard_gross {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_wolt_commission_fee_standard_gross ;;
+  }
+
+  dimension: amt_vat_wolt_commission_fee_standard {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_vat_wolt_commission_fee_standard ;;
+  }
+
+  dimension: amt_wolt_commission_fee_reduced_net {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_wolt_commission_fee_reduced_net ;;
+  }
+
+  dimension: amt_wolt_commission_fee_reduced_gross {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_wolt_commission_fee_reduced_gross ;;
+  }
+
+  dimension: amt_vat_wolt_commission_fee_reduced {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_vat_wolt_commission_fee_reduced ;;
+  }
+
+  dimension: amt_wolt_commission_fee_special_net {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_wolt_commission_fee_special_net ;;
+  }
+
+  dimension: amt_wolt_commission_fee_special_gross {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_wolt_commission_fee_special_gross ;;
+  }
+
+  dimension: amt_vat_wolt_commission_fee_special {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_vat_wolt_commission_fee_special ;;
+  }
+
+
   ############################  Measures   #######################
 
   ############################  Items.     #######################
@@ -2698,5 +2849,208 @@ view: vat_order {
     type:  sum
     sql: ${amt_vat_refund_late_night_fee_total} ;;
   }
+
+############################  MARKETPLACE INTEGRATIONS   #######################
+
+  ############## UberEats ###############
+
+  measure: sum_amt_uber_eats_commission_fee_net {
+    group_label: "> Marketplace Fees"
+    label: "SUM UberEats Commission Fee Net"
+    description: "Net amount of commission fee paid by Flink on UberEats orders."
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_uber_eats_commission_fee_net} ;;
+  }
+
+  measure: sum_amt_uber_eats_commission_fee_gross {
+    group_label: "> Marketplace Fees"
+    label: "SUM UberEats Commission Fee Gross"
+    description: "Gross amount of commission fee paid by Flink on UberEats orders."
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_uber_eats_commission_fee_gross} ;;
+  }
+
+  measure: sum_amt_vat_uber_eats_commission_fee_total {
+    group_label: "> Marketplace Fees"
+    label: "SUM VAT UberEats Commission Fee"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_vat_uber_eats_commission_fee_total} ;;
+  }
+
+  measure: sum_amt_uber_eats_commission_fee_standard_net {
+    group_label: "> Marketplace Fees"
+    label: "SUM UberEats Commission Fee Standard Net"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_uber_eats_commission_fee_standard_net} ;;
+  }
+
+  measure: sum_amt_uber_eats_commission_fee_standard_gross {
+    group_label: "> Marketplace Fees"
+    label: "SUM UberEats Commission Fee Standard Gross"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_uber_eats_commission_fee_standard_gross} ;;
+  }
+
+  measure: sum_amt_vat_uber_eats_commission_fee_standard {
+    group_label: "> Marketplace Fees"
+    label: "SUM VAT UberEats Commission Fee Standard"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_vat_uber_eats_commission_fee_standard} ;;
+  }
+
+  measure: sum_amt_uber_eats_commission_fee_reduced_net {
+    group_label: "> Marketplace Fees"
+    label: "SUM UberEats Commission Fee Reduced Net"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_uber_eats_commission_fee_reduced_net} ;;
+  }
+
+  measure: sum_amt_uber_eats_commission_fee_reduced_gross {
+    group_label: "> Marketplace Fees"
+    label: "SUM UberEats Commission Fee Reduced Gross"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_uber_eats_commission_fee_reduced_gross} ;;
+  }
+
+  measure: sum_amt_vat_uber_eats_commission_fee_reduced {
+    group_label: "> Marketplace Fees"
+    label: "SUM VAT UberEats Commission Fee Reduced"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_vat_uber_eats_commission_fee_reduced} ;;
+  }
+
+  measure: sum_amt_uber_eats_commission_fee_special_net {
+    group_label: "> Marketplace Fees"
+    label: "SUM UberEats Commission Fee Special Net"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_uber_eats_commission_fee_special_net} ;;
+  }
+
+  measure: sum_amt_uber_eats_commission_fee_special_gross {
+    group_label: "> Marketplace Fees"
+    label: "SUM UberEats Commission Fee Special Gross"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_uber_eats_commission_fee_special_gross} ;;
+  }
+
+  measure: sum_amt_vat_uber_eats_commission_fee_special {
+    group_label: "> Marketplace Fees"
+    label: "SUM VAT UberEats Commission Fee Special"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_vat_uber_eats_commission_fee_special} ;;
+  }
+
+############## Wolt ###############
+
+  measure: sum_amt_wolt_commission_fee_net {
+    group_label: "> Marketplace Fees"
+    label: "SUM Wolt Commission Fee Net"
+    description: "Net amount of commission fee paid by Flink on Wolt orders."
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_wolt_commission_fee_net} ;;
+  }
+
+  measure: sum_amt_wolt_commission_fee_gross {
+    group_label: "> Marketplace Fees"
+    label: "SUM Wolt Commission Fee Gross"
+    description: "Gross amount of commission fee paid by Flink on Wolt orders."
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_wolt_commission_fee_gross} ;;
+  }
+
+  measure: sum_amt_vat_wolt_commission_fee_total {
+    group_label: "> Marketplace Fees"
+    label: "SUM VAT Wolt Commission Fee"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_vat_wolt_commission_fee_total} ;;
+  }
+
+  measure: sum_amt_wolt_commission_fee_standard_net {
+    group_label: "> Marketplace Fees"
+    label: "SUM Wolt Commission Fee Standard Net"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_wolt_commission_fee_standard_net} ;;
+  }
+
+  measure: sum_amt_wolt_commission_fee_standard_gross {
+    group_label: "> Marketplace Fees"
+    label: "SUM Wolt Commission Fee Standard Gross"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_wolt_commission_fee_standard_gross} ;;
+  }
+
+  measure: sum_amt_vat_wolt_commission_fee_standard {
+    group_label: "> Marketplace Fees"
+    label: "SUM VAT Wolt Commission Fee Standard"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_vat_wolt_commission_fee_standard} ;;
+  }
+
+  measure: sum_amt_wolt_commission_fee_reduced_net {
+    group_label: "> Marketplace Fees"
+    label: "SUM Wolt Commission Fee Reduced Net"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_wolt_commission_fee_reduced_net} ;;
+  }
+
+  measure: sum_amt_wolt_commission_fee_reduced_gross {
+    group_label: "> Marketplace Fees"
+    label: "SUM Wolt Commission Fee Reduced Gross"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_wolt_commission_fee_reduced_gross} ;;
+  }
+
+  measure: sum_amt_vat_wolt_commission_fee_reduced {
+    group_label: "> Marketplace Fees"
+    label: "SUM VAT Wolt Commission Fee Reduced"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_vat_wolt_commission_fee_reduced} ;;
+  }
+
+  measure: sum_amt_wolt_commission_fee_special_net {
+    group_label: "> Marketplace Fees"
+    label: "SUM Wolt Commission Fee Special Net"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_wolt_commission_fee_special_net} ;;
+  }
+
+  measure: sum_amt_wolt_commission_fee_special_gross {
+    group_label: "> Marketplace Fees"
+    label: "SUM Wolt Commission Fee Special Gross"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_wolt_commission_fee_special_gross} ;;
+  }
+
+  measure: sum_amt_vat_wolt_commission_fee_special {
+    group_label: "> Marketplace Fees"
+    label: "SUM VAT Wolt Commission Fee Special"
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_vat_wolt_commission_fee_special} ;;
+  }
+
 
 }
