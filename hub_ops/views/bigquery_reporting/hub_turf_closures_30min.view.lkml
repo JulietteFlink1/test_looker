@@ -58,6 +58,7 @@ view: hub_turf_closures_30min {
       raw,
       minute30,
       hour,
+      hour_of_day,
       time,
       date
     ]
