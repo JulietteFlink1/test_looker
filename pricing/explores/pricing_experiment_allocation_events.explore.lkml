@@ -5,6 +5,7 @@
 
 include: "/**/orders_cl.explore"
 include: "/**/product_consumer/views/bigquery_reporting/daily_user_aggregates.view"
+include: "/**/global_filters_and_parameters.view.lkml"
 
 explore: pricing_experiment_allocation_events {
 
@@ -27,7 +28,8 @@ explore: pricing_experiment_allocation_events {
              daily_user_aggregates.is_cart_viewed,
              daily_user_aggregates.is_checkout_viewed]
     sql_on: ${pricing_experiment_allocation_events.event_date} = ${daily_user_aggregates.event_date_at_date}
-      and ${pricing_experiment_allocation_events.anonymous_id} = ${daily_user_aggregates.user_uuid};;
+      and ${pricing_experiment_allocation_events.anonymous_id} = ${daily_user_aggregates.user_uuid}
+      and {% condition global_filters_and_parameters.datasource_filter %} ${daily_user_aggregates.event_date_at_date} {% endcondition %};;
     type: left_outer
     relationship: many_to_one  ##in pricing_experiment_allocation_events for one event date we can have several rows if customer placed more than one order
   }
