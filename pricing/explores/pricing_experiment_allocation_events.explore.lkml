@@ -15,12 +15,19 @@ explore: pricing_experiment_allocation_events {
   label: "Pricing Experiments"
   hidden: no
 
+  sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} ${daily_user_aggregates.event_date_at_date} {% endcondition %};;
+
   always_filter: {
     filters: [
       global_filters_and_parameters.datasource_filter: "last 7 days",
       pricing_experiment_allocation_events.country_iso: ""
     ]
   }
+
+  join: global_filters_and_parameters {
+    sql: ;;
+  relationship: one_to_one
+ }
 
   join: pricing_experiment_allocation_events {
     sql_on: ${pricing_experiment_allocation_events.order_uuid} = ${orders_cl.order_uuid} ;;
