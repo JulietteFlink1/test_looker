@@ -187,6 +187,17 @@ explore: supply_chain {
     type: left_outer
   }
 
+  join: oracle_item_location_fact {
+    view_label: "01 Products Hub Assignment"
+    type: left_outer
+    relationship: many_to_one
+    sql_on:
+        ${oracle_item_location_fact.hub_code} = ${products_hub_assignment.hub_code}
+    and ${oracle_item_location_fact.sku}      = ${products_hub_assignment.sku}
+    ;;
+    fields: [oracle_item_location_fact.current_state__item_at_location_status]
+  }
+
   join: inventory_changes_daily {
 
     view_label: "04 Inventory Changes Daily"
