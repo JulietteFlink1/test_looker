@@ -196,10 +196,10 @@ view: customer_acquisition_cost {
     value_format_name: euro_accounting_2_precision
   }
 
-  measure: total_amt_spend_eur_no_sem {
+  measure: total_amt_spend_eur_app {
 
-    label: "SUM Spend Excl. SEM"
-    description: "Total of online marketing spend, excluding Google SEM campaigns"
+    label: "SUM Spend App only"
+    description: "Total of online marketing spend on app campaigns only"
     group_label: "* CAC Measures *"
     filters: [partner_name: "-Google Ads - SEM (Web only), -Google Ads - SEM (App only)"  ]
     type: sum
@@ -211,7 +211,7 @@ view: customer_acquisition_cost {
   measure: total_amt_spend_eur_sem_web {
 
     label: "SUM Spend Web Only"
-    description: "Total of online marketing spend for Google SEM campaigns only"
+    description: "Total of online marketing spend for Web campaigns only"
     group_label: "* CAC Measures *"
     filters: [partner_name: "Google Ads - SEM (Web only)"  ]
     type: sum
@@ -233,10 +233,10 @@ view: customer_acquisition_cost {
     value_format_name: decimal_0
   }
 
-  measure: total_installs_no_sem {
+  measure: total_installs_app {
 
-    label: "# Installs excl. SEM"
-    description: "Total of installs, , excluding Google SEM campaigns"
+    label: "# Installs App campaigns only"
+    description: "Total of installs from App campaigns only"
     group_label: "* CAC Measures *"
     filters: [partner_name: "-Google Ads - SEM (Web only), -Google Ads - SEM (App only)"  ]
     type: sum
@@ -257,10 +257,10 @@ view: customer_acquisition_cost {
     value_format_name: decimal_0
   }
 
-  measure: total_acquisitions_no_sem{
+  measure: total_acquisitions_app{
 
-    label: "# Acquisitions excl. SEM"
-    description: "Total of acquisitions, excluding Google SEM campaigns"
+    label: "# Acquisitions, App campaigns only"
+    description: "Total of acquisitions from App campaigns only"
     group_label: "* CAC Measures *"
     filters: [partner_name: "-Google Ads - SEM (Web only), -Google Ads - SEM (App only)"  ]
     type: sum
@@ -293,10 +293,10 @@ view: customer_acquisition_cost {
     value_format_name: decimal_0
   }
 
-  measure: total_clicks_no_sem {
+  measure: total_clicks_app {
 
-    label: "# Clicks excl. SEM"
-    description: "Total of clicks, excluding Google SEM campaigns"
+    label: "# Clicks, App only"
+    description: "Total of clicks from App campaigns only"
     group_label: "* CAC Measures *"
     filters: [partner_name: "-Google Ads - SEM (Web only), -Google Ads - SEM (App only)"  ]
     type: sum
@@ -307,7 +307,7 @@ view: customer_acquisition_cost {
 
   measure: total_orders {
 
-    label: "# Orders"
+    label: "# Orders, Web Only"
     description: "Number of Orders from web interface"
     group_label: "* CAC Measures *"
     filters: [partner_name: "Google Ads - SEM (Web only)" ]
@@ -332,7 +332,7 @@ view: customer_acquisition_cost {
     label: "CPI"
     description: "Cost Per Install: how much does it cost marketing to get an install"
     group_label: "* CAC Measures *"
-    sql: ${total_amt_spend_eur_no_sem} / NULLIF(${total_installs_no_sem}, 0);;
+    sql: ${total_amt_spend_eur_app} / NULLIF(${total_installs_app}, 0);;
     value_format_name: euro_accounting_2_precision
   }
 
@@ -378,7 +378,7 @@ view: customer_acquisition_cost {
     label: "% Install-to-First Order CVR"
     description: "Install Conversion Rate: what % of installs result in first orders"
     group_label: "* CAC Measures *"
-    sql: NULLIF(${total_acquisitions_no_sem}, 0) / NULLIF(${total_installs_no_sem}, 0);;
+    sql: NULLIF(${total_acquisitions_app}, 0) / NULLIF(${total_installs_app}, 0);;
     value_format_name: percent_2
   }
 
@@ -387,7 +387,7 @@ view: customer_acquisition_cost {
     label: "% Click-to-Install CVR"
     description: "Click Conversion Rate: what % of clicks result in installs"
     group_label: "* CAC Measures *"
-    sql: NULLIF(${total_installs_no_sem}, 0) / NULLIF(${total_clicks_no_sem}, 0);;
+    sql: NULLIF(${total_installs_app}, 0) / NULLIF(${total_clicks_app}, 0);;
     value_format_name: percent_2
   }
 
