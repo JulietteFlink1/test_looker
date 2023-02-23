@@ -31,6 +31,7 @@ explore: hub_closures_reporting {
   join: global_filters_and_parameters {
     sql: ;;
   relationship: one_to_one
+  fields: [datasource_filter]
 }
 
   join: hub_turf_closures_daily {
