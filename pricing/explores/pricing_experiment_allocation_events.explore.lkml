@@ -17,6 +17,11 @@ explore: pricing_experiment_allocation_events {
 
   sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} ${daily_user_aggregates.event_date_at_date} {% endcondition %};;
 
+  access_filter: {
+    field: pricing_experiment_allocation_events.country_iso
+    user_attribute: country_iso
+  }
+
   always_filter: {
     filters: [
       global_filters_and_parameters.datasource_filter: "last 7 days",
