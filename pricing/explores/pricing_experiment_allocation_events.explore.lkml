@@ -11,10 +11,16 @@ explore: pricing_experiment_allocation_events {
 
   extends: [orders_cl]
 
-
   group_label: "Pricing"
   label: "Pricing Experiments"
   hidden: no
+
+  always_filter: {
+    filters: [
+      global_filters_and_parameters.datasource_filter: "last 7 days",
+      pricing_experiment_allocation_events.country_iso: ""
+    ]
+  }
 
   join: pricing_experiment_allocation_events {
     sql_on: ${pricing_experiment_allocation_events.order_uuid} = ${orders_cl.order_uuid} ;;
