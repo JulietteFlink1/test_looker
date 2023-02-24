@@ -56,7 +56,8 @@ join: product_added_to_list {
 
 join: products {
   view_label: "3 Product Dimensions"
-  fields: [product_name, category, subcategory, erp_category, erp_subcategory, units_per_handling_unit]
+  fields: [product_name, category, subcategory, erp_category, erp_subcategory, units_per_handling_unit,
+           erp_item_division_name, erp_item_group_name, erp_item_department_name, erp_item_class_name, erp_item_subclass_name]
   sql_on: ${products.product_sku} = ${event_inbound_progressed.product_sku};;
   type: left_outer
   relationship: one_to_one
