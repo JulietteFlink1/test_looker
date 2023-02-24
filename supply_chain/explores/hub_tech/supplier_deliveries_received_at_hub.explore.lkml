@@ -2,16 +2,16 @@ include: "/supply_chain/views/bigquery_curated/supplier_deliveries_received_at_h
 
 # Owner: Andreas Stueber
 # Created At: 2023-02-23
-# Purpoae: Give the Hub-Tech team an overview over the events they create
+# Purpose: Give the Hub-Tech team an overview over the events they create
 
 explore: supplier_deliveries_received_at_hub {
 
   label: "Supplier Deliveries Received @Hub events"
-  description: "This Explore provides information on the events, that track incoming supplier deliveries at our hubs. The related events are generated through the hub-staff and the HubOne app - the service was buidl by the Hub-Tech team."
+  description: "This Explore provides information on the events, that track incoming supplier deliveries at our hubs. The related events are generated through the hub-staff and the HubOne app - the service was built by the Hub-Tech team."
   group_label: "Supply Chain"
 
   view_label: "Supplier Deliveries Received @Hub events"
-  hidden: yes
+  hidden: no
 
   # ensure country-level protection of data
   access_filter: {
@@ -21,7 +21,7 @@ explore: supplier_deliveries_received_at_hub {
 
   always_filter: {
     filters: [
-      supplier_deliveries_received_at_hub.delivery_timestamp_date: "last 7 days",
+      supplier_deliveries_received_at_hub.delivery_date: "last 7 days",
     ]
   }
 

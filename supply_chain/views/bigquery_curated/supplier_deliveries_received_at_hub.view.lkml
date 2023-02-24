@@ -29,7 +29,7 @@ view: supplier_deliveries_received_at_hub {
 
   dimension: supplier_parent_id {
     label: "Supplier ID"
-    description: "Parent supplier ID as defined in Oracle - which is groups every Child Supplier ID and its related supplier-location"
+    description: "Parent supplier ID as defined in Oracle - which groups every Child Supplier ID and its related supplier-location"
     type: string
     sql: ${TABLE}.supplier_parent_id ;;
   }
@@ -41,7 +41,7 @@ view: supplier_deliveries_received_at_hub {
     sql: ${TABLE}.supplier_parent_name ;;
   }
 
-  dimension_group: delivery_timestamp {
+  dimension_group: delivery {
     label: "Delivery"
     description: "Timestamp at which a supply delivery was made to a hub. This field is populated through the Hub-One app, when hub staff inputs that the delivery was made."
     type: time
@@ -56,7 +56,7 @@ view: supplier_deliveries_received_at_hub {
 
   dimension: dispatch_notification_id {
     label: "Dispatch Notification ID"
-    description: "Unique identifier of a dispatch notification (DESADV) as parsed from the EDI file provide by the supplier"
+    description: "Unique identifier of a dispatch notification (DESADV) as parsed from the EDI file provided by the supplier"
     type: string
     sql: ${TABLE}.dispatch_notification_id ;;
   }
