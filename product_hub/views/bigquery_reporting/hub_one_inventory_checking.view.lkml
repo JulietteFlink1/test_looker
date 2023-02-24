@@ -27,6 +27,13 @@ view: hub_one_inventory_checking {
     group_label: "Task Attributes"
     description: "Unique identifier of each task (called check_id in the frontend app). Corresponds to the ID of the task in hub_task schema."
     type: string
+    sql: ${TABLE}.task_id ;;
+  }
+
+  dimension: table_uuid {
+    group_label: "Task Attributes"
+    type: string
+    hidden: yes
     primary_key: yes
     sql: ${TABLE}.task_id ;;
   }
@@ -160,6 +167,18 @@ view: hub_one_inventory_checking {
 
   # =========  Dates and Timestamps   =========
   # Backend Timestamps
+
+  dimension: scheduled_at_date {
+    description: "Date for when the task it's scheduled."
+    datatype: date
+    sql: ${TABLE}.scheduled_at_date ;;
+  }
+
+  dimension: scheduled_at_week {
+    description: "Date for when the task it's scheduled."
+    datatype: date
+    sql: extract(week from ${scheduled_at_date}) ;;
+  }
 
   dimension_group: created_at_timestamp {
     description: "Timestamp for when the task has been created. Corresponds to created_at timestamp in hub_task schema."
@@ -424,6 +443,14 @@ view: hub_one_inventory_checking {
     filters: [task_status: "open, done, skipped"]
   }
 
+  measure: number_of_not_canceled_checks {
+    type: count_distinct
+    group_label: "Total Metrics"
+    description: "Number of tasks excluding canceled."
+    sql: ${task_id} ;;
+    filters: [task_status: "-canceled"]
+  }
+
   # =========  Rate Metrics    =========
 
   measure: corrections_per_completed_checks {
@@ -441,7 +468,7 @@ view: hub_one_inventory_checking {
     group_label: "Rate Metrics (only checks)"
     label: "% of Completion"
     description: "# of Completed Tasks/ (# of Completed Tasks + # of Open Tasks + # of Skipped Tasks)"
-    sql: ${number_of_completed_checks}/nullif((${number_of_open_completed_skipped_checks}),0) ;;
+    sql: ${number_of_completed_checks}/nullif((${number_of_not_canceled_checks}),0) ;;
   }
 
   # =========  Time Measures   =========
