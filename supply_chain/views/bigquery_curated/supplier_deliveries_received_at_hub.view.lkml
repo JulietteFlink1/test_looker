@@ -104,9 +104,7 @@ view: supplier_deliveries_received_at_hub {
       time,
       date,
       week,
-      month,
-      quarter,
-      year
+      month
     ]
     sql: ${TABLE}.event_published_timestamp ;;
   }
