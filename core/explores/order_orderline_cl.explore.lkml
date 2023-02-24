@@ -70,6 +70,25 @@ explore: order_orderline_cl {
     relationship: one_to_one
   }
 
+  join: erp_product_hub_vendor_assignment_unfiltered {
+    view_label: "Product-Hub Data (historized)"
+    sql_on:
+        ${erp_product_hub_vendor_assignment_unfiltered.sku}            = ${orderline.product_sku}
+    and ${erp_product_hub_vendor_assignment_unfiltered.hub_code}       = ${orderline.hub_code}
+    and ${erp_product_hub_vendor_assignment_unfiltered.report_date}    = ${orderline.created_date}
+    ;;
+    type: left_outer
+    relationship: one_to_many
+    fields: [erp_product_hub_vendor_assignment_unfiltered.edi,
+             erp_product_hub_vendor_assignment_unfiltered.item_at_location_status,
+             erp_product_hub_vendor_assignment_unfiltered.supplier_site,
+             erp_product_hub_vendor_assignment_unfiltered.supplier_parent_name,
+             erp_product_hub_vendor_assignment_unfiltered.supplier_parent_id,
+             erp_product_hub_vendor_assignment_unfiltered.supplier_name,
+             erp_product_hub_vendor_assignment_unfiltered.supplier_id
+            ]
+  }
+
   join: erp_product_hub_vendor_assignment {
 
     # hiding this table, as it is filtered already by assigned SKUs, which also excludes information on No-Purchase items (we sell them, but do not replenish)
