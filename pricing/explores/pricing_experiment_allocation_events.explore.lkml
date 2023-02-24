@@ -39,7 +39,7 @@ explore: pricing_experiment_allocation_events {
     sql_on:${pricing_experiment_allocation_events.event_date} = ${daily_user_aggregates.event_date_at_date}
       and ${pricing_experiment_allocation_events.anonymous_id} = ${daily_user_aggregates.user_uuid}
        and {% condition global_filters_and_parameters.datasource_filter %} ${daily_user_aggregates.event_date_at_date} {% endcondition %};;
-    type: full_outer
+    type: left_outer
     relationship:  one_to_many  ##in pricing_experiment_allocation_events for one event date we can have several rows if customer placed more than one order
   }
 
