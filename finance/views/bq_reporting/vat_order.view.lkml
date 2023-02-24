@@ -2875,6 +2875,7 @@ view: vat_order {
   measure: sum_amt_vat_uber_eats_commission_fee_total {
     group_label: "> Marketplace Fees"
     label: "SUM VAT UberEats Commission Fee"
+    description: "Total VAT on Commission Fees paid by Flink on UberEats orders."
     value_format_name: euro_accounting_2_precision
     type:  sum
     sql: ${amt_vat_uber_eats_commission_fee_total} ;;
@@ -2883,6 +2884,7 @@ view: vat_order {
   measure: sum_amt_uber_eats_commission_fee_standard_net {
     group_label: "> Marketplace Fees"
     label: "SUM UberEats Commission Fee Standard Net"
+    description: "Standard Net amount of commission fee paid by Flink on UberEats orders."
     value_format_name: euro_accounting_2_precision
     type:  sum
     sql: ${amt_uber_eats_commission_fee_standard_net} ;;
@@ -2891,6 +2893,7 @@ view: vat_order {
   measure: sum_amt_uber_eats_commission_fee_standard_gross {
     group_label: "> Marketplace Fees"
     label: "SUM UberEats Commission Fee Standard Gross"
+    description: "Standard Gross amount of commission fee paid by Flink on UberEats orders."
     value_format_name: euro_accounting_2_precision
     type:  sum
     sql: ${amt_uber_eats_commission_fee_standard_gross} ;;
@@ -2899,6 +2902,7 @@ view: vat_order {
   measure: sum_amt_vat_uber_eats_commission_fee_standard {
     group_label: "> Marketplace Fees"
     label: "SUM VAT UberEats Commission Fee Standard"
+    description: "Standard VAT on Commission Fees paid by Flink on UberEats orders."
     value_format_name: euro_accounting_2_precision
     type:  sum
     sql: ${amt_vat_uber_eats_commission_fee_standard} ;;
@@ -2907,6 +2911,7 @@ view: vat_order {
   measure: sum_amt_uber_eats_commission_fee_reduced_net {
     group_label: "> Marketplace Fees"
     label: "SUM UberEats Commission Fee Reduced Net"
+    description: "Reduced Net amount of commission fee paid by Flink on UberEats orders."
     value_format_name: euro_accounting_2_precision
     type:  sum
     sql: ${amt_uber_eats_commission_fee_reduced_net} ;;
@@ -2915,6 +2920,7 @@ view: vat_order {
   measure: sum_amt_uber_eats_commission_fee_reduced_gross {
     group_label: "> Marketplace Fees"
     label: "SUM UberEats Commission Fee Reduced Gross"
+    description: "Reduced Gross amount of commission fee paid by Flink on UberEats orders."
     value_format_name: euro_accounting_2_precision
     type:  sum
     sql: ${amt_uber_eats_commission_fee_reduced_gross} ;;
@@ -2923,6 +2929,7 @@ view: vat_order {
   measure: sum_amt_vat_uber_eats_commission_fee_reduced {
     group_label: "> Marketplace Fees"
     label: "SUM VAT UberEats Commission Fee Reduced"
+    description: "Reduced VAT on Commission Fees paid by Flink on UberEats orders."
     value_format_name: euro_accounting_2_precision
     type:  sum
     sql: ${amt_vat_uber_eats_commission_fee_reduced} ;;
@@ -2931,6 +2938,7 @@ view: vat_order {
   measure: sum_amt_uber_eats_commission_fee_special_net {
     group_label: "> Marketplace Fees"
     label: "SUM UberEats Commission Fee Special Net"
+    description: "Special Net amount of commission fee paid by Flink on UberEats orders."
     value_format_name: euro_accounting_2_precision
     type:  sum
     sql: ${amt_uber_eats_commission_fee_special_net} ;;
@@ -2939,6 +2947,7 @@ view: vat_order {
   measure: sum_amt_uber_eats_commission_fee_special_gross {
     group_label: "> Marketplace Fees"
     label: "SUM UberEats Commission Fee Special Gross"
+    description: "Special Gross amount of commission fee paid by Flink on UberEats orders."
     value_format_name: euro_accounting_2_precision
     type:  sum
     sql: ${amt_uber_eats_commission_fee_special_gross} ;;
@@ -2947,6 +2956,7 @@ view: vat_order {
   measure: sum_amt_vat_uber_eats_commission_fee_special {
     group_label: "> Marketplace Fees"
     label: "SUM VAT UberEats Commission Fee Special"
+    description: "Special VAT on Commission Fees paid by Flink on UberEats orders."
     value_format_name: euro_accounting_2_precision
     type:  sum
     sql: ${amt_vat_uber_eats_commission_fee_special} ;;
@@ -2975,6 +2985,7 @@ view: vat_order {
   measure: sum_amt_vat_wolt_commission_fee_total {
     group_label: "> Marketplace Fees"
     label: "SUM VAT Wolt Commission Fee"
+    description: "Total VAT on Commission Fees paid by Flink on Wolt orders."
     value_format_name: euro_accounting_2_precision
     type:  sum
     sql: ${amt_vat_wolt_commission_fee_total} ;;
@@ -2983,6 +2994,7 @@ view: vat_order {
   measure: sum_amt_wolt_commission_fee_standard_net {
     group_label: "> Marketplace Fees"
     label: "SUM Wolt Commission Fee Standard Net"
+    description: "Standard Net amount of commission fee paid by Flink on Wolt orders."
     value_format_name: euro_accounting_2_precision
     type:  sum
     sql: ${amt_wolt_commission_fee_standard_net} ;;
@@ -2991,6 +3003,7 @@ view: vat_order {
   measure: sum_amt_wolt_commission_fee_standard_gross {
     group_label: "> Marketplace Fees"
     label: "SUM Wolt Commission Fee Standard Gross"
+    description: "Standard Gross amount of commission fee paid by Flink on Wolt orders."
     value_format_name: euro_accounting_2_precision
     type:  sum
     sql: ${amt_wolt_commission_fee_standard_gross} ;;
@@ -2999,6 +3012,7 @@ view: vat_order {
   measure: sum_amt_vat_wolt_commission_fee_standard {
     group_label: "> Marketplace Fees"
     label: "SUM VAT Wolt Commission Fee Standard"
+    description: "Standard VAT on Commission Fees paid by Flink on Wolt orders."
     value_format_name: euro_accounting_2_precision
     type:  sum
     sql: ${amt_vat_wolt_commission_fee_standard} ;;
@@ -3007,6 +3021,7 @@ view: vat_order {
   measure: sum_amt_wolt_commission_fee_reduced_net {
     group_label: "> Marketplace Fees"
     label: "SUM Wolt Commission Fee Reduced Net"
+    description: "Reduced Net amount of commission fee paid by Flink on Wolt orders."
     value_format_name: euro_accounting_2_precision
     type:  sum
     sql: ${amt_wolt_commission_fee_reduced_net} ;;
@@ -3015,6 +3030,7 @@ view: vat_order {
   measure: sum_amt_wolt_commission_fee_reduced_gross {
     group_label: "> Marketplace Fees"
     label: "SUM Wolt Commission Fee Reduced Gross"
+    description: "Reduced Gross amount of commission fee paid by Flink on Wolt orders."
     value_format_name: euro_accounting_2_precision
     type:  sum
     sql: ${amt_wolt_commission_fee_reduced_gross} ;;
@@ -3023,6 +3039,7 @@ view: vat_order {
   measure: sum_amt_vat_wolt_commission_fee_reduced {
     group_label: "> Marketplace Fees"
     label: "SUM VAT Wolt Commission Fee Reduced"
+    description: "Reduced VAT on Commission Fees paid by Flink on Wolt orders."
     value_format_name: euro_accounting_2_precision
     type:  sum
     sql: ${amt_vat_wolt_commission_fee_reduced} ;;
@@ -3031,6 +3048,7 @@ view: vat_order {
   measure: sum_amt_wolt_commission_fee_special_net {
     group_label: "> Marketplace Fees"
     label: "SUM Wolt Commission Fee Special Net"
+    description: "Special Net amount of commission fee paid by Flink on Wolt orders."
     value_format_name: euro_accounting_2_precision
     type:  sum
     sql: ${amt_wolt_commission_fee_special_net} ;;
@@ -3039,6 +3057,7 @@ view: vat_order {
   measure: sum_amt_wolt_commission_fee_special_gross {
     group_label: "> Marketplace Fees"
     label: "SUM Wolt Commission Fee Special Gross"
+    description: "Special Gross amount of commission fee paid by Flink on Wolt orders."
     value_format_name: euro_accounting_2_precision
     type:  sum
     sql: ${amt_wolt_commission_fee_special_gross} ;;
@@ -3047,6 +3066,7 @@ view: vat_order {
   measure: sum_amt_vat_wolt_commission_fee_special {
     group_label: "> Marketplace Fees"
     label: "SUM VAT Wolt Commission Fee Special"
+    description: "Special VAT on Commission Fees paid by Flink on Wolt orders."
     value_format_name: euro_accounting_2_precision
     type:  sum
     sql: ${amt_vat_wolt_commission_fee_special} ;;
