@@ -116,11 +116,24 @@ view: hub_one_inventory_checking {
     sql: ${TABLE}.task_reason ;;
   }
 
+  dimension: raw_task_status {
+    description: "  Status of the task. Corresponds to status in hub_task schema. Possible values are: OPEN, CANCELED, DONE, SKIPPED, IN_PROGRESS."
+    group_label: "Task Attributes"
+    hidden: yes
+    type: string
+    sql: ${TABLE}.task_status ;;
+  }
+
   dimension: task_status {
     description: "  Status of the task. Corresponds to status in hub_task schema. Possible values are: OPEN, CANCELED, DONE, SKIPPED, IN_PROGRESS."
     group_label: "Task Attributes"
     type: string
-    sql: ${TABLE}.task_status ;;
+    sql: case when ${task_type} = 'STOCK_CORRECTION' or ${TABLE}.task_status in ('OPEN', 'IN_PROGRESS') then ${TABLE}.task_status
+              when ${TABLE}.task_status in ('CANCELED', 'DONE') and ${updated_at_timestamp_date} > ${scheduled_at_date} then 'OPEN'
+              when ${TABLE}.task_status in ('CANCELED', 'DONE') and ${updated_at_timestamp_date} = ${scheduled_at_date} then ${TABLE}.task_status
+              when ${TABLE}.task_status in ('SKIPPED') and ${updated_at_timestamp_date} <= ${scheduled_at_date} then ${TABLE}.task_status
+              when ${TABLE}.task_status in ('SKIPPED') and ${updated_at_timestamp_date} > ${scheduled_at_date} then 'OPEN'
+              else 'NO STATUS' end;;
   }
 
   dimension: task_type {
@@ -168,21 +181,31 @@ view: hub_one_inventory_checking {
   # =========  Dates and Timestamps   =========
   # Backend Timestamps
 
-  dimension: scheduled_at_date {
+  dimension_group: scheduled_at {
     description: "Date for when the task it's scheduled."
+    type: time
     datatype: date
+    timeframes: [
+      raw,
+      date,
+      month,
+      day_of_week,
+      week_of_year,
+      week
+    ]
     sql: ${TABLE}.scheduled_at_date ;;
   }
 
-  dimension: scheduled_at_week {
-    description: "Date for when the task it's scheduled."
-    datatype: date
-    sql: extract(week from ${scheduled_at_date}) ;;
-  }
+  # dimension: scheduled_at_week {
+  #   description: "Date for when the task it's scheduled."
+  #   datatype: date
+  #   sql: extract(week from ${scheduled_at_date}) ;;
+  # }
 
   dimension_group: created_at_timestamp {
     description: "Timestamp for when the task has been created. Corresponds to created_at timestamp in hub_task schema."
     type: time
+    convert_tz: no
     timeframes: [
       raw,
       time,
@@ -197,7 +220,7 @@ view: hub_one_inventory_checking {
 
   dimension_group: updated_at_timestamp {
     description: "Timestamp for when the task has been updated. Corresponds to updated_at timestamp in hub_task schema."
-    hidden: yes
+    convert_tz: no
     type: time
     timeframes: [
       raw,
@@ -214,6 +237,7 @@ view: hub_one_inventory_checking {
   dimension_group: started_at_timestamp {
     description: "Timestamp for when the task has been started. Corresponds to created_at timestamp in hub_task schema."
     type: time
+    convert_tz: no
     hidden: yes
     timeframes: [
       raw,
@@ -230,6 +254,7 @@ view: hub_one_inventory_checking {
   dimension_group: finished_at_timestamp {
     description: "Timestamp for when the task has been finished. Corresponds to ended_at timestamp in hub_task schema."
     type: time
+    convert_tz: no
     hidden: yes
     timeframes: [
       raw,
@@ -246,6 +271,7 @@ view: hub_one_inventory_checking {
   dimension_group: correction_done_at_timestamp {
     description: "  Timestamp for when the correction has been made, null when there wasn't a stock correction (only checks). Corresponds to created_at timestamp in stock_changelog schema."
     type: time
+    convert_tz: no
     timeframes: [
       raw,
       time,
@@ -263,6 +289,7 @@ view: hub_one_inventory_checking {
   dimension_group: fe_started_at_timestamp {
     description: "  Timestamp for when the task has been started from Hub One app."
     type: time
+    convert_tz: no
     timeframes: [
       raw,
       time,
@@ -278,6 +305,7 @@ view: hub_one_inventory_checking {
   dimension_group: fe_finished_at_timestamp {
     description: "Timestamp for when the task has been finished from Hub One app."
     type: time
+    convert_tz: no
     timeframes: [
       raw,
       time,
@@ -321,10 +349,13 @@ view: hub_one_inventory_checking {
 
   # =========  Frontend Quantities   =========
 
+  # We only count the fe_quantity measures when the check is done in the same day as scheduled to avoid duplicates)
+
   measure: fe_quantity_expected {
     description: "Expected amount of units before the task (only checks). Value coming from Hub One."
     group_label: "Frontend Quantities"
     type: sum
+    filters: [task_status: "done"]
     sql: ${TABLE}.fe_quantity_expected ;;
   }
 
@@ -332,6 +363,8 @@ view: hub_one_inventory_checking {
     description: "Number of units counted by the employee while performing the task (only checks). Value coming from Hub One."
     group_label: "Frontend Quantities"
     type: sum
+    filters: [task_status: "done"]
+
     sql: ${TABLE}.fe_quantity_counted ;;
   }
 
@@ -339,6 +372,7 @@ view: hub_one_inventory_checking {
     description: "Number of units reported as damaged by the employee while performing the task (checks and corrections). Value coming from Hub One."
     group_label: "Frontend Quantities"
     type: sum
+    filters: [task_status: "done"]
     sql: ${TABLE}.fe_quantity_damaged ;;
   }
 
@@ -346,6 +380,7 @@ view: hub_one_inventory_checking {
     description: "Number of units reported as expired by the employee while performing the task (checks and corrections). Value coming from Hub One."
     group_label: "Quantities Metrics"
     type: sum
+    filters: [task_status: "done"]
     sql: ${TABLE}.fe_quantity_expired ;;
   }
 
@@ -353,6 +388,7 @@ view: hub_one_inventory_checking {
     description: "Number of units reported as corrected by the employee while performing the task (only corrections). Value coming from Hub One."
     group_label: "Quantities Metrics"
     type: sum
+    filters: [task_status: "done"]
     sql: ${TABLE}.fe_quantity_corrected ;;
   }
 
@@ -360,8 +396,11 @@ view: hub_one_inventory_checking {
     description: "Number of units reported as damaged by the employee while performing the task (checks and corrections). Value coming from Hub One."
     group_label: "Quantities Metrics"
     type: sum
+    filters: [task_status: "done"]
     sql: ${TABLE}.fe_quantity_tgtg ;;
   }
+
+ # For the following two we dont need the filter cause the measures are only valid for stock_corrections and no for checks
 
   measure: sum_of_quantity_before_correction {
     description: "Amount of units before the inventory correction."
@@ -386,16 +425,19 @@ view: hub_one_inventory_checking {
     group_label: "Total Metrics"
     label: "# of Tasks"
     description: "Number of Tasks, includes all status."
-    sql: ${task_id} ;;
+    sql: ${table_uuid} ;;
   }
+
+  # For the following is the same as above, we need to only count corrections when the check has been done in the scheduled_date to avoid duplicates
 
   measure: number_of_corrections {
     type: count_distinct
     group_label: "Total Metrics"
     label: "# of Corrections"
     description: "Number of corrections."
-    sql: ${task_id} ;;
+    filters: [task_status: "done"]
     filters: [is_correction: "yes"]
+    sql: ${table_uuid} ;;
   }
 
   measure: number_of_items_corrected {
@@ -403,8 +445,9 @@ view: hub_one_inventory_checking {
     group_label: "Total Metrics"
     label: "# of Items Corrected"
     description: "Number of items corrected (count_distinct skus with corrections)."
-    sql: ${product_sku} ;;
+    filters: [task_status: "done"]
     filters: [is_correction: "yes"]
+    sql: ${product_sku} ;;
   }
 
   measure: number_of_completed_checks {
@@ -412,17 +455,18 @@ view: hub_one_inventory_checking {
     group_label: "Total Metrics"
     label: "# of Completed Tasks"
     description: "Number of completed tasks (task_status = done)."
-    sql: ${task_id} ;;
     filters: [task_status: "done"]
+    sql: ${table_uuid} ;;
   }
 
+  # In the case of open checks we need to count all the open ones + the remaining from previous days
   measure: number_of_open_checks {
     type: count_distinct
     group_label: "Total Metrics"
     label: "# of Open Tasks"
     description: "Number of open tasks (task_status = open)."
-    sql: ${task_id} ;;
     filters: [task_status: "open"]
+    sql: ${table_uuid} ;;
   }
 
   measure: number_of_skipped_checks {
@@ -430,8 +474,8 @@ view: hub_one_inventory_checking {
     group_label: "Total Metrics"
     label: "# of Skipped Tasks"
     description: "Number of skipped tasks (task_status = skipped)."
-    sql: ${task_id} ;;
     filters: [task_status: "skipped"]
+    sql: ${table_uuid} ;;
   }
 
   measure: number_of_open_completed_skipped_checks {
@@ -439,16 +483,16 @@ view: hub_one_inventory_checking {
     group_label: "Total Metrics"
     label: "# of Open, Completed and Skipped Tasks"
     description: "Number of open and completed tasks (task_status = open, done, skipped)."
-    sql: ${task_id} ;;
-    filters: [task_status: "open, done, skipped"]
+    filters: [task_status: "open, done, skipped, in_progress"]
+    sql: ${table_uuid} ;;
   }
 
   measure: number_of_not_canceled_checks {
     type: count_distinct
     group_label: "Total Metrics"
     description: "Number of tasks excluding canceled."
-    sql: ${task_id} ;;
     filters: [task_status: "-canceled"]
+    sql: ${table_uuid} ;;
   }
 
   # =========  Rate Metrics    =========
@@ -468,7 +512,7 @@ view: hub_one_inventory_checking {
     group_label: "Rate Metrics (only checks)"
     label: "% of Completion"
     description: "# of Completed Tasks/ (# of Completed Tasks + # of Open Tasks + # of Skipped Tasks)"
-    sql: ${number_of_completed_checks}/nullif((${number_of_not_canceled_checks}),0) ;;
+    sql: ${number_of_completed_checks}/nullif((${number_of_open_completed_skipped_checks}),0) ;;
   }
 
   # =========  Time Measures   =========
@@ -478,6 +522,7 @@ view: hub_one_inventory_checking {
     description: "Time spent performing the task in minutes (calculated with as the time difference between fe_started_at_timestamp and fe_finished_at_timestamp)."
     type: sum
     value_format: "0.##"
+    filters: [task_status: "done"]
     sql: ${TABLE}.time_checking_minutes ;;
   }
 
@@ -486,6 +531,7 @@ view: hub_one_inventory_checking {
     description: "Time spent performing the task in seconds (calculated with as the time difference between fe_started_at_timestamp and fe_finished_at_timestamp)."
     type: sum
     value_format: "0.##"
+    filters: [task_status: "done"]
     sql: ${TABLE}.time_checking_seconds ;;
   }
 
@@ -494,6 +540,7 @@ view: hub_one_inventory_checking {
     description: "Average time spent performing the task in minutes (calculated with as the time difference between fe_started_at_timestamp and fe_finished_at_timestamp)."
     type: average
     value_format: "0.##"
+    filters: [task_status: "done"]
     sql: ${TABLE}.time_checking_minutes ;;
   }
 
@@ -502,6 +549,7 @@ view: hub_one_inventory_checking {
     description: "Average time spent performing the task in seconds (calculated with as the time difference between fe_started_at_timestamp and fe_finished_at_timestamp)."
     type: average
     value_format: "0.##"
+    filters: [task_status: "done"]
     sql: ${TABLE}.time_checking_seconds ;;
   }
 }
