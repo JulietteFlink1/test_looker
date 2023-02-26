@@ -92,7 +92,7 @@ view: hub_one_inventory_checking {
     description: "TRUE when the task resulted in inventory correction. Calculated by retrieving the stock corrections from stock_changelog between started_at_timestamp and finished_at_timestamp."
     group_label: "Task Attributes"
     type: yesno
-    sql: ${TABLE}.is_correction ;;
+    sql: if(${task_status} = 'DONE', ${TABLE}.is_correction, false) ;;
   }
 
   dimension: shelf_number {
@@ -148,7 +148,7 @@ view: hub_one_inventory_checking {
     group_label: "Task Attributes"
     label: "Is Correction Upwards"
     description: "Flag that identifies if the correction made after a inventory task was upwards."
-    sql: if(${quantity_after_correction}-${quantity_before_correction}>0, true, false) ;;
+    sql: if(${quantity_after_correction}-${quantity_before_correction}>0 and ${task_status}='DONE', true, false) ;;
   }
 
   # =========  Backend Quantities   =========
