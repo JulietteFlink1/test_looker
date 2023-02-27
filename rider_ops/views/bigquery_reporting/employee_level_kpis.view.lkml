@@ -1347,6 +1347,15 @@ view: employee_level_kpis {
     value_format_name: decimal_1
   }
 
+  measure: pct_number_of_online_hours_vs_number_of_worked_hours {
+    group_label: "> Shift Related"
+    type: number
+    label: "% Online Rider Hours vs Worked Hours"
+    sql: ${number_of_online_hours}/nullif(${number_of_worked_hours},0);;
+    description: "hours rider spent online in Workforce app (Rider app)/ Punched Rider Hours (from Quinyx)"
+    value_format_name: percent_1
+  }
+
 
   measure: number_of_overpunched_hours {
     group_label: "> Shift Related"
