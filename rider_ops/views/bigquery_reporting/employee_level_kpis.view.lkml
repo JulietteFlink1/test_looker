@@ -1391,7 +1391,7 @@ view: employee_level_kpis {
     type: number
     label: "% Justified Overpunched Hours"
     sql: ${number_of_justified_overpunched_hours}/${number_of_overpunched_hours};;
-    description: "# Justified Overpunched Hours / # Overpunched Hours"
+    description: "Share of overtime rider spent working during overtime. Formula: # Justified Overpunched Hours / # Overpunched Hours"
     value_format_name: percent_2
   }
 
