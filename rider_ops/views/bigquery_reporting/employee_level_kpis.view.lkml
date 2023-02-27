@@ -1352,12 +1352,49 @@ view: employee_level_kpis {
     group_label: "> Shift Related"
     type: sum
     label: "# Overpunched Hours"
-    sql: case when ${TABLE}.number_of_worked_minutes > ${TABLE}.number_of_planned_minutes
-          then (${TABLE}.number_of_worked_minutes - ${TABLE}.number_of_planned_minutes)/60
-          else 0 end;;
+    sql: ${TABLE}.number_of_overtime_minutes/60;;
     description: "When # Worked Hours > # Assigned Hours then # Worked Hours - # Assigned Hours"
     value_format_name: decimal_1
   }
+
+  measure: number_of_justified_start_early_hours {
+    group_label: "> Shift Related"
+    type: sum
+    label: "# Justified Early Overpunched Hours"
+    sql: ${TABLE}.number_of_justified_start_early_minutes/60;;
+    description: "Number of minutes when a rider claimed an order before shift start date.
+    This early punch-in is justified as rider was busy. Calculated as a difference between first rider claimed timestamp and shift starts timestamp."
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_justified_end_early_hours {
+    group_label: "> Shift Related"
+    type: sum
+    label: "# Justified Late Overpunched Hours"
+    sql: ${TABLE}.number_of_justified_end_late_minutes/60;;
+    description: "Number of minutes when a rider arrived at hub (after delivering an order) after shift end date.
+    This late punch-out is justified as rider was busy. Calculated as a difference between last rider arrived at hub timestamp and shift ends timestamp."
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_justified_overpunched_hours {
+    group_label: "> Shift Related"
+    type: sum
+    label: "# Justified Overpunched Hours"
+    sql: (${TABLE}.number_of_justified_end_late_minutes + ${TABLE}.number_of_justified_start_early_minutes) /60;;
+    description: "Sum of # Justified Early Overpunched Hours and # Justified Late Overpunched Hours"
+    value_format_name: decimal_1
+  }
+
+  measure: share_of_justified_overpunched_hours {
+    group_label: "> Shift Related"
+    type: number
+    label: "% Justified Overpunched Hours"
+    sql: ${number_of_justified_overpunched_hours}/${number_of_overpunched_hours};;
+    description: "# Justified Overpunched Hours / # Overpunched Hours"
+    value_format_name: percent_2
+  }
+
 
   measure: number_of_no_show_hours {
     group_label: "> Shift Related"
