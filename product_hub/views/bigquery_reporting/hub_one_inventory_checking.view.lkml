@@ -478,17 +478,19 @@ view: hub_one_inventory_checking {
     sql: ${table_uuid} ;;
   }
 
+# Too many dependencies to adapt the name of the measure
   measure: number_of_open_completed_skipped_checks {
     type: count_distinct
     group_label: "Total Metrics"
-    label: "# of Open, Completed and Skipped Tasks"
-    description: "Number of open and completed tasks (task_status = open, done, skipped)."
-    filters: [task_status: "open, done, skipped, in_progress"]
+    label: "# of Open and Completed Tasks"
+    description: "Number of open and completed tasks (task_status = open, done, in_progress)."
+    filters: [task_status: "open, done, in_progress"]
     sql: ${table_uuid} ;;
   }
 
   measure: number_of_not_canceled_checks {
     type: count_distinct
+    hidden: yes
     group_label: "Total Metrics"
     description: "Number of tasks excluding canceled."
     filters: [task_status: "-canceled"]
