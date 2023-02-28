@@ -161,6 +161,14 @@ view: daily_hub_staff_events {
     sql: ${TABLE}.component_value ;;
   }
 
+  dimension: component_content {
+    group_label: "Generic Dimensions"
+    label: "Component Content"
+    description: "Component content where the event was triggered"
+    type: string
+    sql: ${TABLE}.component_content ;;
+  }
+
   # =========  Other Dimensions   =========
 
   dimension: context_ip {

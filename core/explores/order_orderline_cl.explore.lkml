@@ -52,11 +52,41 @@ explore: order_orderline_cl {
     ;;
   }
 
+  join: oracle_item_location_fact {
+    view_label: "Product-Hub Data (as of today)"
+    type: left_outer
+    relationship: many_to_one
+    sql_on:
+        ${oracle_item_location_fact.hub_code} = ${orderline.hub_code}
+    and ${oracle_item_location_fact.sku}      = ${orderline.product_sku}
+    ;;
+    fields: [oracle_item_location_fact.current_state__item_at_location_status]
+  }
+
   join: customer_address {
     # can only be seen by people with related permissions
     sql_on: ${orders_cl.order_uuid} = ${customer_address.order_uuid} ;;
     type: left_outer
     relationship: one_to_one
+  }
+
+  join: erp_product_hub_vendor_assignment_unfiltered {
+    view_label: "Product-Hub Data (historized)"
+    sql_on:
+        ${erp_product_hub_vendor_assignment_unfiltered.sku}            = ${orderline.product_sku}
+    and ${erp_product_hub_vendor_assignment_unfiltered.hub_code}       = ${orderline.hub_code}
+    and ${erp_product_hub_vendor_assignment_unfiltered.report_date}    = ${orderline.created_date}
+    ;;
+    type: left_outer
+    relationship: one_to_many
+    fields: [erp_product_hub_vendor_assignment_unfiltered.edi,
+             erp_product_hub_vendor_assignment_unfiltered.item_at_location_status,
+             erp_product_hub_vendor_assignment_unfiltered.supplier_site,
+             erp_product_hub_vendor_assignment_unfiltered.supplier_parent_name,
+             erp_product_hub_vendor_assignment_unfiltered.supplier_parent_id,
+             erp_product_hub_vendor_assignment_unfiltered.supplier_name,
+             erp_product_hub_vendor_assignment_unfiltered.supplier_id
+            ]
   }
 
   join: erp_product_hub_vendor_assignment {

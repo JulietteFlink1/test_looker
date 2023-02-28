@@ -1939,7 +1939,7 @@ view: staffing {
     label: "% Overpunched Rider Hours"
     description: "Share of Overpunched hours over Punched hours."
     value_format_name: percent_2
-    sql: ${number_of_overpunched_hours_rider}/${number_of_worked_hours_rider} ;;
+    sql: ${number_of_overpunched_hours_rider}/nullif(${number_of_worked_hours_rider},0) ;;
   }
 
   measure: number_of_overpunched_hours_picker {
@@ -2035,7 +2035,7 @@ view: staffing {
     label: "% Overpunched Ops Associate Hours"
     description: "Share of Overpunched hours over Punched hours."
     value_format_name: percent_2
-    sql: ${number_of_overpunched_hours_ops_associate}/${number_of_worked_hours_ops_associate} ;;
+    sql: ${number_of_overpunched_hours_ops_associate}/nullif(${number_of_worked_hours_ops_associate},0) ;;
   }
 
   measure: number_of_overpunched_hours_hub_staff {
@@ -4176,6 +4176,17 @@ view: staffing {
     value_format_name: percent_1
   }
 
+  measure: pct_no_show_hours_rider_ops_associate {
+    group_label: "> All Staff Measures"
+    label: "% No Show Rider + Ops Associate"
+    description: "# No Show Hours / (# Planned Hours - # Planned EC Hours)"
+    type: number
+    sql:(${number_of_no_show_hours_rider}+${number_of_no_show_hours_ops_associate})
+            /nullif(${number_of_planned_hours_rider} + ${number_of_planned_hours_ops_associate}
+                    -${number_of_planned_hours_rider_ec_shift} - ${number_of_planned_hours_ops_associate_ec_shift},0) ;;
+    value_format_name: percent_1
+  }
+
   measure: pct_no_show_hours_rider_incl_ec_shift {
     group_label: "> Rider Measures"
     label: "% No Show Rider Hours (Incl. EC Shifts)"
@@ -4771,15 +4782,6 @@ view: staffing {
           when {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_scheduled_hours_ops_associate_extra}
           else null
         end ;;
-  }
-
-  measure: number_of_scheduled_hours_by_position_unknown {
-    type: number
-    label: "# Unknown Scheduled Hours (Incl. Deleted Excused No Show)"
-    description: "Difference between sum of Assigned and Unassigned (Open) hours and sum of Assigned and Unassigned (Open) EC, NS+ and WFS shift hours (Incl. Deleted Excused No Show)"
-    value_format_name: decimal_1
-    group_label: "> Dynamic Measures"
-    sql: ${number_of_scheduled_hours_by_position}-${number_of_scheduled_hours_by_position_extra} ;;
   }
 
   measure: pct_extra_scheduled_hours_by_position {

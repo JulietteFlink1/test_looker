@@ -36,7 +36,7 @@ explore: current_inventory {
   }
 
   join: products_hub_assignment {
-
+    view_label: "Products Hub Assignment (as of today)"
     from: products_hub_assignment
 
     sql_on: ${products_hub_assignment.sku} = ${products.product_sku}

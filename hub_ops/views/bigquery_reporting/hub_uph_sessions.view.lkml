@@ -127,6 +127,7 @@ view: hub_uph_sessions {
       raw,
       date,
       week,
+      day_of_week,
       month,
       minute30,
       hour_of_day
@@ -143,6 +144,7 @@ view: hub_uph_sessions {
       raw,
       date,
       week,
+      day_of_week,
       month,
       minute30,
       hour_of_day
@@ -168,6 +170,7 @@ view: hub_uph_sessions {
     type: time
     timeframes: [
       date,
+      day_of_week,
       week,
       month,
       year
@@ -570,6 +573,17 @@ view: hub_uph_sessions {
   }
 
 
+  measure: share_of_idle_session_duration_hours_over_all_hours {
+    group_label: "> Durations"
+    label: "% Idle Hours"
+    description: "Number of hours spent on any idle (internal, transition, limit) divided by all worked hours."
+    type: number
+    sql: safe_divide( ${sum_of_internal_idle_session_duration_hours} +
+                      ${sum_of_limit_idle_session_duration_hours}   +
+                      ${sum_of_transition_idle_session_duration_hours},
+                          ${sum_of_session_duration_hours}) ;;
+    value_format_name: percent_1
+  }
 
   ######## PARAMETERS
 
@@ -581,6 +595,18 @@ view: hub_uph_sessions {
     allowed_value: { value: "Week" }
     allowed_value: { value: "Month" }
     default_value: "Day"
+  }
+
+  parameter: dynamic_kpi_parameter {
+    group_label: "> Dynamic KPIs"
+    label: "OKR Level 1 KPIs (Dynamic)"
+    type: unquoted
+    allowed_value: {label: "% Idle Hours"           value: "hub_staff_idle" }
+    allowed_value: {label: "UPH Order Preparation"  value: "uph_picking" }
+    allowed_value: {label: "UPH Inbounding"         value: "uph_inbounding" }
+    allowed_value: {label: "UPH Inventory Check"    value: "uph_inventory_check" }
+
+    default_value: "hub_staff_idle"
   }
 
   ######## DYNAMIC DIMENSIONS
@@ -597,6 +623,37 @@ view: hub_uph_sessions {
     {% elsif date_granularity._parameter_value == 'Month' %}
       ${shift_month}
     {% endif %};;
+  }
+
+  measure: dynamic_kpi {
+    type: number
+    group_label: "> Dynamic KPIs"
+    label: "OKR Level 1 KPIs (Dynamic)"
+    description: "Make use of this dynamic KPI to switch between multiple measures that are considered to be OKR Level 1 by Ops."
+    label_from_parameter: dynamic_kpi_parameter
+    sql:
+    {% if dynamic_kpi_parameter._parameter_value == 'hub_staff_idle' %}
+      ${share_of_idle_session_duration_hours_over_all_hours}
+    {% elsif dynamic_kpi_parameter._parameter_value == 'uph_picking' %}
+      ${uph_picking}
+    {% elsif dynamic_kpi_parameter._parameter_value == 'uph_inbounding' %}
+      ${uph_inbounding}
+    {% elsif dynamic_kpi_parameter._parameter_value == 'uph_inventory_check' %}
+      ${uph_inventory_check}
+    {% endif %}
+    ;;
+
+    html:
+    {% if dynamic_kpi_parameter._parameter_value ==  'hub_staff_idle' %}
+      {{share_of_idle_session_duration_hours_over_all_hours._rendered_value }}
+    {% elsif dynamic_kpi_parameter._parameter_value == 'uph_picking' %}
+      {{uph_picking._rendered_value }}
+    {% elsif dynamic_kpi_parameter._parameter_value == 'uph_inbounding' %}
+      {{uph_inbounding._rendered_value }}
+    {% elsif dynamic_kpi_parameter._parameter_value == 'uph_inventory_check' %}
+      {{uph_inventory_check._rendered_value }}
+    {% endif %}
+    ;;
   }
 
 }
