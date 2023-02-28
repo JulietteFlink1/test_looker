@@ -732,8 +732,8 @@ view: orderline {
   }
 
   measure: sum_total_deposit {
-    label: "SUM Total Deposit (paid by customer)"
-    description: "SUM of the Total Deposit paid by customer. Before Flink was always paying the deposit"
+    label: "SUM Gross Deposit (paid by customer)"
+    description: "SUM of the Total Gross Deposit paid by customer. Before Flink was always paying the deposit"
     sql: ${amt_total_deposit} ;;
     type: sum
     value_format_name: euro_accounting_2_precision

@@ -1120,7 +1120,7 @@ view: daily_user_aggregates {
   }
   measure: users_with_product_search_viewed {
     group_label: "User Metrics"
-    label: "# Users with Viewing Search"
+    label: "# Users with Search Viewed"
     description: "Number of users with started the payment process at least once"
     type: count_distinct
     sql: ${user_uuid} ;;
@@ -1128,8 +1128,8 @@ view: daily_user_aggregates {
   }
   measure: users_with_product_details_viewed {
     group_label: "User Metrics"
-    label: "# Users with PDP"
-    description: "Number of users who viwed (PDP) a product at least once"
+    label: "# Users with Product Details Viewed"
+    description: "Number of users who viewed (PDP) a product at least once"
     type: count_distinct
     sql: ${user_uuid} ;;
     filters: [is_product_details_viewed: "yes"]
@@ -1515,6 +1515,27 @@ view: daily_user_aggregates {
     value_format_name: percent_1
     sql: ${users_with_regular_unavailable_hub} / ${active_app_users};;
   }
+
+
+  # ======= Re-Visit and Re-Order Rates ======= #
+
+  measure: re_visit_rate {
+    group_label: "Re-Visit and Re-Order Rate"
+    label: "Re-Visit Rate"
+    type: number
+    description: "Average number of daily visits per user"
+    value_format_name: decimal_1
+    sql: ${daily_user_events} / ${unique_users} ;;
+  }
+
+  measure: re_order_rate {
+    group_label: "Re-Visit and Re-Order Rate"
+    label: "Re-Order Rate"
+    type: number
+    description: "Average number of orders per customer"
+    value_format_name: decimal_1
+    sql: ${number_of_order_placed} / ${users_with_order} ;;
+}
 
 
   # ========= HIDDEN ========== #
