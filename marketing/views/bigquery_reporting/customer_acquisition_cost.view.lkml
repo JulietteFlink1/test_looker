@@ -204,6 +204,7 @@ view: customer_acquisition_cost {
     filters: [partner_name: "-Google Ads - SEM (Web only), -Google Ads - SEM (App only)"  ]
     type: sum
     sql: ${amt_spend_net_eur} ;;
+    hidden: yes
 
     value_format_name: euro_accounting_2_precision
   }
@@ -216,6 +217,7 @@ view: customer_acquisition_cost {
     filters: [partner_name: "Google Ads - SEM (Web only)"  ]
     type: sum
     sql: ${amt_spend_net_eur} ;;
+    hidden: yes
 
     value_format_name: euro_accounting_2_precision
   }
@@ -241,6 +243,7 @@ view: customer_acquisition_cost {
     filters: [partner_name: "-Google Ads - SEM (Web only), -Google Ads - SEM (App only)"  ]
     type: sum
     sql: ${number_of_installs} ;;
+    hidden: yes
 
     value_format_name: decimal_0
   }
@@ -265,6 +268,7 @@ view: customer_acquisition_cost {
     filters: [partner_name: "-Google Ads - SEM (Web only), -Google Ads - SEM (App only)"  ]
     type: sum
     sql: ${number_of_acquisitions} ;;
+    hidden: yes
 
     value_format_name: decimal_0
   }
@@ -301,6 +305,7 @@ view: customer_acquisition_cost {
     filters: [partner_name: "-Google Ads - SEM (Web only), -Google Ads - SEM (App only)"  ]
     type: sum
     sql: ${number_of_clicks} ;;
+    hidden: yes
 
     value_format_name: decimal_0
   }
@@ -330,7 +335,7 @@ view: customer_acquisition_cost {
   measure: cpi {
     type: number
     label: "CPI"
-    description: "Cost Per Install: how much does it cost marketing to get an install"
+    description: "Cost Per Install: how much do marketing spend on app campaigns to get an install? "
     group_label: "* CAC Measures *"
     sql: ${total_amt_spend_eur_app} / NULLIF(${total_installs_app}, 0);;
     value_format_name: euro_accounting_2_precision
@@ -339,7 +344,7 @@ view: customer_acquisition_cost {
   measure: cpo {
     type: number
     label: "CPO"
-    description: "Cost Per Order: how much does it cost marketing to get a web order"
+    description: "Cost Per Order: how much do marketing spend on web campaigns to get a web order?"
     group_label: "* CAC Measures *"
     sql: ${total_amt_spend_eur_sem_web} / NULLIF(${total_orders}, 0);;
     value_format_name: euro_accounting_2_precision
@@ -358,7 +363,7 @@ view: customer_acquisition_cost {
   measure: cost_per_click {
     type: number
     label: "CPC"
-    description: "Cost Per Click: how much does it cost marketing to get a click"
+    description: "Cost Per Click: how much does it cost marketing to get a click."
     group_label: "* CAC Measures *"
     sql: ${total_amt_spend_eur} / NULLIF(${total_clicks}, 0);;
     value_format_name: euro_accounting_2_precision
@@ -367,7 +372,7 @@ view: customer_acquisition_cost {
   measure: click_through_rate {
     type: number
     label: "% CTR"
-    description: "Click Through Rate: what % of impressions result in clicks"
+    description: "Click Through Rate: what % of impressions result in clicks."
     group_label: "* CAC Measures *"
     sql: NULLIF(${total_clicks}, 0) / NULLIF(${total_impressions}, 0);;
     value_format_name: percent_2
@@ -376,7 +381,7 @@ view: customer_acquisition_cost {
   measure: install_conversion_rate {
     type: number
     label: "% Install-to-First Order CVR"
-    description: "Install Conversion Rate: what % of installs result in first orders"
+    description: "Install Conversion Rate: what % of installs result in first orders for app campaigns only."
     group_label: "* CAC Measures *"
     sql: NULLIF(${total_acquisitions_app}, 0) / NULLIF(${total_installs_app}, 0);;
     value_format_name: percent_2
@@ -385,7 +390,7 @@ view: customer_acquisition_cost {
   measure: click_conversion_rate {
     type: number
     label: "% Click-to-Install CVR"
-    description: "Click Conversion Rate: what % of clicks result in installs"
+    description: "Click Conversion Rate: what % of clicks result in installs for app campaigns only."
     group_label: "* CAC Measures *"
     sql: NULLIF(${total_installs_app}, 0) / NULLIF(${total_clicks_app}, 0);;
     value_format_name: percent_2
