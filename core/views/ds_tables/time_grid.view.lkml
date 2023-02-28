@@ -90,4 +90,32 @@ view: time_grid {
     hidden: yes
   }
 
+  ######## PARAMETERS
+
+  parameter: date_granularity {
+    group_label: "* Dates and Timestamps *"
+    label: "Date Granularity"
+    type: unquoted
+    allowed_value: { value: "Day" }
+    allowed_value: { value: "Week" }
+    allowed_value: { value: "Month" }
+    default_value: "Day"
+  }
+
+  ######## DYNAMIC DIMENSIONS
+
+  dimension: date_dynamic{
+    group_label: "* Dates and Timestamps *"
+    label: "Date (Dynamic)"
+    label_from_parameter: date_granularity
+    sql:
+    {% if date_granularity._parameter_value == 'Day' %}
+      ${start_datetime_date}
+    {% elsif date_granularity._parameter_value == 'Week' %}
+      ${start_datetime_week}
+    {% elsif date_granularity._parameter_value == 'Month' %}
+      ${start_datetime_month}
+    {% endif %};;
+  }
+
 }

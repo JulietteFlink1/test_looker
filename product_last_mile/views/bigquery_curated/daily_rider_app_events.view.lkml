@@ -73,6 +73,13 @@ view: daily_rider_app_events {
     type: string
     sql: ${TABLE}.component_variant ;;
   }
+  dimension: component_value {
+    group_label: "Generic Dimensions"
+    label: "Component Value"
+    description: "Value of the component"
+    type: number
+    sql: ${TABLE}.component_value ;;
+  }
   dimension: screen_name {
     group_label: "Generic Dimensions"
     label: "Screen Name"
@@ -214,5 +221,13 @@ view: daily_rider_app_events {
     description: "Number of all users regardless of their login status."
     type: count_distinct
     sql: ${TABLE}.anonymous_id ;;
+  }
+  measure: mes_component_value {
+    group_label: "AVG Measures"
+    label: "AVG Component Value"
+    description: "AVG Value of the component"
+    type: average
+    sql: ${TABLE}.component_value ;;
+    value_format: "0.00"
   }
 }

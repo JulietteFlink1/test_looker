@@ -43,7 +43,7 @@ view: erp_item_supplier {
   dimension: vendor_id {
     label: "Supplier ID"
     type: string
-    sql: ${TABLE}.vendor_id ;;
+    sql: ${TABLE}.supplier_id ;;
     description: "The supplier ID as defined in Oracle -
                   which is a representation of a supplier and its related supplier-location"
   }
@@ -109,14 +109,14 @@ view: erp_item_supplier {
   dimension: vendor_location {
     label: "Supplier Location"
     type: string
-    sql: ${TABLE}.vendor_location ;;
+    sql: ${TABLE}.supplier_location ;;
     description: "Location from where the Supplier is doing the distribution."
   }
 
   dimension: vendor_name {
     label: "Supplier Name"
     type: string
-    sql: ${TABLE}.vendor_name ;;
+    sql: ${TABLE}.supplier_name ;;
     description: "Name of the supplier/vendor of a product (e.g. REWE or Carrefour)."
   }
 
