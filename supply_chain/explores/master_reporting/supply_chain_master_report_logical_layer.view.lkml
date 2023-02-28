@@ -422,6 +422,24 @@ view: +supply_chain_master_report {
     value_format_name: percent_0
   }
 
+  measure: sum_of_items_inbounded_limited__desadv {
+    type: sum
+    sql: ${items_inbounded_limited__desadv} ;;
+    label: "# Inbounded Items lim. (DESADVs <> Inbounds)"
+    group_label: "DESADV >> Inbound | In Full"
+    description: "Sum of fullfilled quantities limited (DESADV > Inbound)"
+    value_format_name: decimal_0
+  }
+
+  measure: share_of_items_inbounded_limited__desadv_with_sum_of_items__desadv {
+    label: "% In Full relaxed lim. (DESADV > Inbound)"
+    description: "Relative amount of fullfilled quantities (DESADV > Inbound) compared to overall DESADV quantities - limited."
+    group_label: "DESADV >> Inbound | In Full"
+    type: number
+    sql: safe_divide(${sum_of_items_inbounded_limited__desadv}, ${sum_of_items__desadv}) ;;
+    value_format_name: percent_0
+  }
+
 # In Quality
 
 

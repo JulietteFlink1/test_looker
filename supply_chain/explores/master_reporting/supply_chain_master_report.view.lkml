@@ -469,6 +469,15 @@ set: drill_fields_set {
     hidden: yes
   }
 
+  dimension: items_inbounded_limited__desadv {
+    type: number
+    sql: ${TABLE}.sum_of_items_inbounded_limited__desadv ;;
+    label: "# Inbounded Items lim (DESADVs <> Inbounds)"
+    group_label: "DESADVs <> Inbounds"
+    description: "Total quantity fullfilled limited (DESADV > Inbound)"
+    hidden: yes
+  }
+
   dimension: items_inbounded_in_quality__desadv {
     type: number
     sql: ${TABLE}.sum_of_items_inbounded_in_quality__desadv ;;
