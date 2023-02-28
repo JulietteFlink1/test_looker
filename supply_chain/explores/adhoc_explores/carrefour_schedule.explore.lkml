@@ -25,7 +25,7 @@ explore: carrefour_schedule {
 
   always_filter: {
     filters: [
-      carrefour_schedule.order_date: "last 7 days",
+      carrefour_schedule.ingestion_date: "last 1 days",
 
     ]
   }
