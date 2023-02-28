@@ -196,6 +196,14 @@ view: product_placement_performance {
     sql: ${TABLE}.is_order_placed ;;
   }
 
+  dimension: is_context_available {
+    group_label: "Event Flags"
+    label: "Is Context Available"
+    description: "If the backend product context was available for a product impression event. The Out of Stock rate depends on this context"
+    type: yesno
+    sql: ${TABLE}.is_context_available;;
+  }
+
   # ======= HIDDEN Dimension ======= #
 
   dimension: product_placement_uuid {
@@ -241,14 +249,14 @@ view: product_placement_performance {
     description: "Unique number of products which were out of stock when saw by users (on an impression level)"
     type: count_distinct
     sql: ${TABLE}.product_sku ;;
-    filters: [is_product_out_of_stock: "yes"]
+    filters: [is_product_out_of_stock: "yes", is_context_available: "yes"]
   }
   measure: out_of_stock_products_total {
     group_label: "Product Metrics"
     label: "# OoS Products (Total)"
     description: "Total number of products which were out of stock when saw by users (on an impression level)"
     type: count
-    filters: [is_product_out_of_stock: "yes"]
+    filters: [is_product_out_of_stock: "yes", is_context_available: "yes"]
   }
   measure: orders {
     group_label: "Product Metrics"
@@ -275,6 +283,7 @@ view: product_placement_performance {
     sql: ${TABLE}.product_price ;;
     filters: [is_order_placed: "yes"]
   }
+
   # ======= Product Event Level Measures =======
 
   measure: impressions {
@@ -283,6 +292,15 @@ view: product_placement_performance {
     description: "Number of unique impressions per product"
     type: sum
     sql: ${TABLE}.number_of_product_impressions ;;
+  }
+  measure: impressions_for_oos {
+    group_label: "Product Metrics"
+    label: "# Impressions with Context"
+    description: "Number of unique impressions per product if context is available"
+    type: sum
+    hidden: yes
+    sql: ${TABLE}.number_of_product_impressions;;
+    filters: [is_context_available: "yes"]
   }
   measure: add_to_carts {
     group_label: "Product Metrics"
@@ -320,6 +338,16 @@ view: product_placement_performance {
     # sql: ${product_placement_uuid} ;;
     filters: [is_pdp_or_atc: "yes" ]
   }
+
+  measure: sum_of_time_on_screen_seconds{
+    group_label: "Product Metrics"
+    label: "Sum of Time on Screen in Seconds"
+    type: sum
+    description: "Sum of seconds a product sku was exposed on the screen aggregated by anonymous_id and product placement"
+    filters: [is_product_impression: "yes" ]
+    sql: ${TABLE}.sum_of_time_on_screen_seconds ;;
+  }
+
   measure: click_through_rate {
     group_label: "Rates (%)"
     label: "Click-Through Rate (CTR)"
@@ -354,11 +382,11 @@ view: product_placement_performance {
   }
   measure: out_of_stock_rate{
     group_label: "Rates (%)"
-    label: "Out-ot-Stock Rate (OoS)"
+    label: "Out-of-Stock Rate (OoS)"
     type: number
-    description: "# OoS products / # total products impressions"
+    description: "# OoS products / # total products impressions with available context"
     value_format_name: percent_2
-    sql: ${out_of_stock_products_total} / nullif(${impressions},0);;
+    sql: ${out_of_stock_products_total} / nullif(${impressions_for_oos},0);;
   }
 
   # ======= User Level Measures =======

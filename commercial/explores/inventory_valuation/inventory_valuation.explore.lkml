@@ -24,7 +24,8 @@ explore: inventory_valuation {
     filters: [
       sdt_inventory_valuation.select_timeframe: "last 3 days",
       sdt_inventory_valuation.select_hub: "",
-      sdt_inventory_valuation.select_sku: ""
+      sdt_inventory_valuation.select_sku: "",
+      sdt_inventory_valuation.is_filter_too_high_stock_level: "yes"
     ]
   }
 
