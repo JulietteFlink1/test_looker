@@ -579,6 +579,25 @@ view: +supply_chain_master_report {
     value_format_name: decimal_0
   }
 
+  measure: share_of_items_inbounded_limited__po_with_sum_of_items__po {
+    label: "% In Full relaxed lim. (PO > Inbound)"
+    description: "Relative amount of fullfilled quantities (PO > Inbound) compared to overall ordered quantities limited"
+    group_label: "PO >> Inbound | In Full"
+    type: number
+    sql: safe_divide(${sum_of_items_inbounded_limited__po} , ${sum_of_items__po});;
+    value_format_name: percent_0
+  }
+
+  measure: sum_of_items_inbounded_limited__po {
+    type: sum
+    sql: ${items_inbounded_limited__po} ;;
+    label: "# Inbounded Items lim (PO <> Inbounds)"
+    group_label: "PO >> Inbound | In Full"
+    description: "Sum of fullfilled quantities limited (PO > Inbound)"
+    value_format_name: decimal_0
+  }
+
+
 ## In Quality
 
   measure:  share_of_items_inbounded_in_quality__po_with_sum_of_items_inbounded__po {
@@ -695,6 +714,24 @@ view: +supply_chain_master_report {
     label: "# Filled Quantities (PO > DESADV)"
     group_label: "PO >> DESADV | In Full"
     description: "Sum of fullfilled quantities (PO > DESADV)"
+    value_format_name: decimal_0
+  }
+
+  measure: share_of_items_ordered_desadv_with_po_limited__po_desadv_with_sum_of_items__po {
+    label: "% In Full relaxed lim (PO > DESADV)"
+    description: "Relative amount of fullfilled quantities (PO > DESADV) compared to overall ordered quantities limited"
+    group_label: "PO >> DESADV | In Full"
+    type: number
+    sql: safe_divide(${sum_of_items_ordered_desadv_with_po_limited__po_desadv}, ${sum_of_items__po}) ;;
+    value_format_name: percent_0
+  }
+
+  measure: sum_of_items_ordered_desadv_with_po_limited__po_desadv {
+    type: sum
+    sql: ${items_ordered_desadv_with_po_limited__po_desadv} ;;
+    label: "# Filled Quantities lim. (PO > DESADV)"
+    group_label: "PO >> DESADV | In Full"
+    description: "Sum of fullfilled quantities limited (PO > DESADV)"
     value_format_name: decimal_0
   }
 

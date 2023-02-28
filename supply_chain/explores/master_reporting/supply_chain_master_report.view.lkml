@@ -685,6 +685,15 @@ set: drill_fields_set {
     hidden: yes
   }
 
+  dimension: items_inbounded_limited__po {
+    type: number
+    sql: ${TABLE}.sum_of_items_inbounded_limited__po ;;
+    label: "# Inbounded Items lim. (PO <> Inbounds)"
+    group_label: "PO <> Inbounds"
+    description: "Total quantity fullfilled Limited (PO > Inbound)"
+    hidden: yes
+  }
+
   dimension: items_inbounded_in_quality__po {
     type: number
     sql: ${TABLE}.sum_of_items_inbounded_in_quality__po ;;
@@ -739,6 +748,14 @@ set: drill_fields_set {
     hidden: yes
   }
 
+  dimension: items_ordered_desadv_with_po_limited__po_desadv {
+    type: number
+    sql: ${TABLE}.sum_of_items_ordered_desadv_with_po_limited__po_desadv ;;
+    label: "# Filled Quantities lim. (PO > DESADV)"
+    group_label: "PO <> DESADVs"
+    description: "Total quantity fullfilled limited (PO > DESADV)"
+    hidden: yes
+  }
 
 
 
