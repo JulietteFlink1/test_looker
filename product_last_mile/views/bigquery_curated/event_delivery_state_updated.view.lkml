@@ -6,7 +6,7 @@
 
 view: event_delivery_state_updated {
   sql_table_name: `flink-data-prod.curated.event_delivery_state_updated`;;
-  view_label: "Event Delivery State Updated"
+  view_label: "1 Event Delivery State Updated"
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
   # ~~~~~~~~~~~~~~~     Dimensions    ~~~~~~~~~~~~~~~ #
