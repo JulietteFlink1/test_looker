@@ -38,7 +38,7 @@ view: supplier_deliveries_received_at_hub {
     label: "Supplier Name"
     description: "The name of the parent supplier entity in Oracle."
     type: string
-    sql: ${TABLE}.supplier_parent_name ;;
+    sql: coalesce(${TABLE}.supplier_parent_name, 'Other Supplier') ;;
   }
 
   dimension_group: delivery {

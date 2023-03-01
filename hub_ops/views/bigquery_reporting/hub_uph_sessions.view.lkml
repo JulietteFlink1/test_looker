@@ -127,6 +127,7 @@ view: hub_uph_sessions {
       raw,
       date,
       week,
+      day_of_week,
       month,
       minute30,
       hour_of_day
@@ -143,6 +144,7 @@ view: hub_uph_sessions {
       raw,
       date,
       week,
+      day_of_week,
       month,
       minute30,
       hour_of_day
@@ -168,6 +170,7 @@ view: hub_uph_sessions {
     type: time
     timeframes: [
       date,
+      day_of_week,
       week,
       month,
       year

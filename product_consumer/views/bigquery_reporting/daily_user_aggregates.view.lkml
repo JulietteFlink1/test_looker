@@ -1517,6 +1517,27 @@ view: daily_user_aggregates {
   }
 
 
+  # ======= Re-Visit and Re-Order Rates ======= #
+
+  measure: re_visit_rate {
+    group_label: "Re-Visit and Re-Order Rate"
+    label: "Re-Visit Rate"
+    type: number
+    description: "Average number of daily visits per user"
+    value_format_name: decimal_1
+    sql: ${daily_user_events} / ${unique_users} ;;
+  }
+
+  measure: re_order_rate {
+    group_label: "Re-Visit and Re-Order Rate"
+    label: "Re-Order Rate"
+    type: number
+    description: "Average number of orders per customer"
+    value_format_name: decimal_1
+    sql: ${number_of_order_placed} / ${users_with_order} ;;
+}
+
+
   # ========= HIDDEN ========== #
 
   ### Hidden supporting metrics: SMS Verification Flow ###
