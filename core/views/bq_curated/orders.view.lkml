@@ -1620,6 +1620,36 @@ view: orders {
     sql: ${TABLE}.amt_crf_fulfillment_fee_net ;;
   }
 
+  ############################  MARKETPLACE INTEGRATIONS   #######################
+
+  ########### UberEats #############
+
+  dimension: amt_uber_eats_commission_fee_net {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_uber_eats_commission_fee_net ;;
+  }
+
+  dimension: amt_uber_eats_commission_fee_gross {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_uber_eats_commission_fee_gross ;;
+  }
+
+########### WOLT #############
+
+  dimension: amt_wolt_commission_fee_net {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_wolt_commission_fee_net ;;
+  }
+
+  dimension: amt_wolt_commission_fee_gross {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_wolt_commission_fee_gross ;;
+  }
+
   ######## PARAMETERS
 
   parameter: date_granularity {
@@ -3098,6 +3128,52 @@ view: orders {
     sql: ${amt_crf_fulfillment_fee_net} ;;
   }
 
+########### MARKETPLACE INTEGRATIONS ##########
+
+  measure: sum_amt_uber_eats_commission_fee_net {
+    group_label: "* Monetary Values *"
+    label: "SUM UberEats Commission Fee Net"
+    description: "Net amount of commission fee paid by Flink on UberEats orders: 23% of gross item value in the Netherlands, and 20% in France."
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_uber_eats_commission_fee_net} ;;
+  }
+
+  measure: sum_amt_uber_eats_commission_fee_gross {
+    group_label: "* Monetary Values *"
+    label: "SUM UberEats Commission Fee Gross"
+    description: "Gross amount of commission fee paid by Flink on UberEats orders."
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_uber_eats_commission_fee_gross} ;;
+  }
+
+  measure: sum_amt_wolt_commission_fee_net {
+    group_label: "* Monetary Values *"
+    label: "SUM Wolt Commission Fee Net"
+    description: "Net amount of commission fee paid by Flink on Wolt orders: 24% of gross item value in Germany."
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_wolt_commission_fee_net} ;;
+  }
+
+  measure: sum_amt_wolt_commission_fee_gross {
+    group_label: "* Monetary Values *"
+    label: "SUM Wolt Commission Fee Gross"
+    description: "Gross amount of commission fee paid by Flink on Wolt orders."
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_wolt_commission_fee_gross} ;;
+  }
+
+  measure: avg_amt_marketplace_commission_fee_gross {
+    group_label: "* Monetary Values *"
+    label: "AVG Marketplace Commission Fee Gross"
+    description: "Average gross amount of commission fee paid by Flink on UberEats/Wolt orders."
+    value_format_name: euro_accounting_2_precision
+    type:  average
+    sql: ${amt_uber_eats_commission_fee_gross} + ${amt_wolt_commission_fee_gross} ;;
+  }
 
   ############### Delays compared to delivery time internal estimate ###########
 
