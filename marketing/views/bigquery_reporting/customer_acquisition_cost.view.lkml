@@ -198,8 +198,8 @@ view: customer_acquisition_cost {
 
   measure: total_amt_spend_eur_app {
 
-    label: "SUM Spend App only"
-    description: "Total of online marketing spend on app campaigns only"
+    label: "SUM Spend, App only"
+    description: "Total of online marketing spend, app campaigns only"
     group_label: "* CAC Measures *"
     filters: [partner_name: "-Google Ads - SEM (Web only), -Google Ads - SEM (App only)"  ]
     type: sum
@@ -211,8 +211,8 @@ view: customer_acquisition_cost {
 
   measure: total_amt_spend_eur_sem_web {
 
-    label: "SUM Spend Web Only"
-    description: "Total of online marketing spend for Web campaigns only"
+    label: "SUM Spend, Web Only"
+    description: "Total of online marketing spend, web campaigns only"
     group_label: "* CAC Measures *"
     filters: [partner_name: "Google Ads - SEM (Web only)"  ]
     type: sum
@@ -237,8 +237,8 @@ view: customer_acquisition_cost {
 
   measure: total_installs_app {
 
-    label: "# Installs App campaigns only"
-    description: "Total of installs from App campaigns only"
+    label: "# Installs, App only"
+    description: "Total of installs, app campaigns only"
     group_label: "* CAC Measures *"
     filters: [partner_name: "-Google Ads - SEM (Web only), -Google Ads - SEM (App only)"  ]
     type: sum
@@ -262,8 +262,8 @@ view: customer_acquisition_cost {
 
   measure: total_acquisitions_app{
 
-    label: "# Acquisitions, App campaigns only"
-    description: "Total of acquisitions from App campaigns only"
+    label: "# Acquisitions, App only"
+    description: "Total of acquisitions, app campaigns only"
     group_label: "* CAC Measures *"
     filters: [partner_name: "-Google Ads - SEM (Web only), -Google Ads - SEM (App only)"  ]
     type: sum
@@ -300,7 +300,7 @@ view: customer_acquisition_cost {
   measure: total_clicks_app {
 
     label: "# Clicks, App only"
-    description: "Total of clicks from App campaigns only"
+    description: "Total of clicks, app campaigns only"
     group_label: "* CAC Measures *"
     filters: [partner_name: "-Google Ads - SEM (Web only), -Google Ads - SEM (App only)"  ]
     type: sum
@@ -313,7 +313,7 @@ view: customer_acquisition_cost {
   measure: total_orders {
 
     label: "# Orders, Web Only"
-    description: "Number of Orders from web interface"
+    description: "Number of Orders, web campaigns only"
     group_label: "* CAC Measures *"
     filters: [partner_name: "Google Ads - SEM (Web only)" ]
 
