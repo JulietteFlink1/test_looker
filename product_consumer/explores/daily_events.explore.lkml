@@ -144,7 +144,8 @@ explore: daily_events {
             event_checkout_viewed.amt_order_total_eur,
             event_checkout_viewed.products,
             event_checkout_viewed.shipping_method_id,
-            event_checkout_viewed.cart_id]
+            event_checkout_viewed.cart_id,
+            event_checkout_viewed.delivery_pdt]
     sql_on: ${event_checkout_viewed.event_uuid} = ${daily_events.event_uuid}
       and {% condition global_filters_and_parameters.datasource_filter %} ${event_checkout_viewed.event_timestamp_date} {% endcondition %};;
     type: left_outer

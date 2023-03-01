@@ -21,7 +21,7 @@ view: event_checkout_viewed {
 
   dimension: cart_id {
     type: string
-    description: "A unique identifier for the cart."
+    description: "A unique identifier for the cart. Not available on Android"
     sql: ${TABLE}.cart_id ;;
   }
 
@@ -188,6 +188,13 @@ view: event_checkout_viewed {
     description: "Products purchased by user."
     sql: ${TABLE}.products ;;
   }
+
+  dimension: delivery_pdt {
+    type: number
+    description: "Delivery PDT a user saw on Checkout Screen. Available only on mobile platforms"
+    sql:  ${TABLE}.delivery_pdt ;;
+  }
+
 
 
 # ======= Dates / Timestamps =======
