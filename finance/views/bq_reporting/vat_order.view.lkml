@@ -2857,7 +2857,7 @@ view: vat_order {
   measure: sum_amt_uber_eats_commission_fee_net {
     group_label: "> Marketplace Fees"
     label: "SUM UberEats Commission Fee Net"
-    description: "Net amount of commission fee paid by Flink on UberEats orders."
+    description: "Net amount of commission fee paid by Flink on UberEats orders: 23% of gross item value in the Netherlands, and 20% in France."
     value_format_name: euro_accounting_2_precision
     type:  sum
     sql: ${amt_uber_eats_commission_fee_net} ;;
@@ -2967,7 +2967,7 @@ view: vat_order {
   measure: sum_amt_wolt_commission_fee_net {
     group_label: "> Marketplace Fees"
     label: "SUM Wolt Commission Fee Net"
-    description: "Net amount of commission fee paid by Flink on Wolt orders."
+    description: "Net amount of commission fee paid by Flink on Wolt orders: 24% of gross item value in Germany."
     value_format_name: euro_accounting_2_precision
     type:  sum
     sql: ${amt_wolt_commission_fee_net} ;;
