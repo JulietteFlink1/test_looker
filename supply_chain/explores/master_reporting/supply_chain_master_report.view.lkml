@@ -33,7 +33,8 @@ set: drill_fields_set {
     timeframes: [
       date,
       week,
-      month
+      month,
+      day_of_week
     ]
     convert_tz: no
     datatype: date
