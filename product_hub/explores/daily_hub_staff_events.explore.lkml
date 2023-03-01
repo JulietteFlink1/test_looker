@@ -205,8 +205,9 @@ explore: daily_hub_staff_events {
 
   join: products {
     view_label: "9 Product Dimensions"
-    fields: [product_name, category, subcategory, erp_category, erp_subcategory]
-    sql_on: ${products.product_sku} = ${event_order_progressed.product_sku};;
+    fields: [product_name, category, subcategory, erp_category, erp_subcategory, units_per_handling_unit,
+           erp_item_division_name, erp_item_group_name, erp_item_department_name, erp_item_class_name, erp_item_subclass_name]
+    sql_on: ${products.product_sku} = coalesce(${event_order_progressed.product_sku}, ${event_outbound_progressed.product_sku});;
     type: left_outer
     relationship: one_to_one
   }
@@ -236,7 +237,7 @@ explore: daily_hub_staff_events {
             , order_picker_accepted_timestamp
             , order_packed_timestamp
             , is_click_and_collect_order]
-    sql_on: ${event_order_progressed.order_id} = ${orders.id} ;;
+    sql_on: ${orders.id} = coalesce(${event_order_state_updated.order_id},${event_order_progressed.order_id}) ;;
     type: left_outer
     relationship: many_to_one
   }
