@@ -135,7 +135,9 @@ view: event_inbound_progressed {
       date,
       week,
       hour_of_day,
-      quarter
+      quarter,
+      minute15,
+      minute30
     ]
     sql: ${TABLE}.event_timestamp ;;
   }
