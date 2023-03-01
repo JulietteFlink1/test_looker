@@ -34,7 +34,8 @@ view: user_attributes_order_classification {
 
   dimension: order_classification {
     type: string
-    label: "Order JTBD"
+    group_label: "* Order Dimensions *"
+    label: "Order Classification - Job to be Done"
     description: "Order classification based upon customer use cases of Flink (Breakfast, Part time, etc.). Currently, classification is based on a set of rules"
     sql: ${TABLE}.order_classification ;;
   }
