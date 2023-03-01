@@ -1347,7 +1347,7 @@ view: employee_level_kpis {
     value_format_name: decimal_1
   }
 
-  measure: pct_number_of_online_hours_vs_number_of_worked_hours {
+  measure: pct_online_hours_vs_worked_hours {
     group_label: "> Shift Related"
     type: number
     label: "% Online Rider Hours vs Worked Hours"
