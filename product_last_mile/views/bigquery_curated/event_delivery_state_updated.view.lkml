@@ -49,6 +49,13 @@ view: event_delivery_state_updated {
     description: "A unique identifier of each rider."
     sql: ${TABLE}.rider_id ;;
   }
+  dimension: trip_id {
+    group_label: "IDs"
+    label: "Trip ID"
+    type: string
+    description: "A unique identifier of each trip."
+    sql: ${TABLE}.trip_id ;;
+  }
 
   # ======= Generic Dimension ======= #
 
@@ -58,6 +65,27 @@ view: event_delivery_state_updated {
     type: string
     description: "Name of an event triggered."
     sql: ${TABLE}.event_name ;;
+  }
+  dimension: generic_value {
+    group_label: "Generic Dimension"
+    label: "Generic Value"
+    type: string
+    description: "Generic value specify a int value corresponding with the generic context."
+    sql: ${TABLE}.generic_value ;;
+  }
+  dimension: generic_context {
+    group_label: "Generic Dimension"
+    label: "Generic Context"
+    type: string
+    description: "Generic field specifiying a passed value e.g. entered geofence area."
+    sql: ${TABLE}.generic_context ;;
+  }
+  dimension: trip_sequence {
+    group_label: "Generic Dimension"
+    label: "Trip Sequence"
+    type: string
+    description: "Indicating the sequence (1st, 2nd, N) of a stacked order in case stacking applied."
+    sql: ${TABLE}.trip_sequence ;;
   }
 
   # ======= Location Dimension ======= #
