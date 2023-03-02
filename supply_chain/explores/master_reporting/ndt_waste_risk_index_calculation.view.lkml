@@ -60,6 +60,7 @@ view: ndt_waste_risk_index_calculation {
     description: "Average (Mean) calculated over GMV Gross translated as the total amount Sold in Euro per Hub and Parent SKU (Valuated on Selling Price Gross)"
     type: average
     sql: ${sum_amt_total_gmv_selling_price_gross} ;;
+    value_format_name: decimal_1
   }
 
 
@@ -70,6 +71,7 @@ view: ndt_waste_risk_index_calculation {
     type: number
     # sql_distinct_key: ${created_date} ;;
     sql: coalesce(round(stddev(${sum_amt_total_gmv_selling_price_gross}), 2),0) ;;
+    value_format_name: decimal_1
   }
 
 
@@ -79,6 +81,7 @@ view: ndt_waste_risk_index_calculation {
     description: "Shows the risk index of SKU-Location calculated as the divition between Mean Sales and Standard Deviation. The higher the value, the better. The lower, the riskier/volatile the SKU becomes."
     type: number
     sql: coalesce(round(${mean_gmv_price_gross} / nullif(${std_gmv_price_gross}, 0), 2),0) ;;
+    value_format_name: decimal_1
   }
 
 
