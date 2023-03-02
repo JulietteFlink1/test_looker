@@ -157,6 +157,18 @@ view: employee_level_kpis {
     sql: ${TABLE}.hire_date ;;
   }
 
+  dimension_group: last_update {
+    type: time
+    timeframes: [
+      time,
+      hour,
+      minute
+    ]
+    convert_tz: yes
+    datatype: datetime
+    sql: ${TABLE}.last_updated_timestamp ;;
+  }
+
   dimension: contract_start_date {
     group_label: "> Dates & Timestamps"
     label: "Contract Start Date"
@@ -466,6 +478,25 @@ view: employee_level_kpis {
     sql: ${TABLE}.number_of_picked_orders_excluding_external_orders ;;
     hidden: yes
   }
+
+  # Adding a UTR-like dimension in order to build tiered graphs based on their performance. Might be different from the "Normal UTR", only needed for tiering.
+  dimension: number_of_delivered_orders_per_worked_hour {
+    type: number
+    sql: ${TABLE}.number_of_delivered_orders/(nullif(${TABLE}.number_of_worked_minutes,0)/60) ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  dimension: number_of_delivered_orders_per_worked_hour_tiered {
+    group_label: "> Logistics"
+    label: "Shift-based UTR, Tiered"
+    type: tier
+    tiers: [0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 2.2, 2.4, 2.6, 2.8, 3.0, 3.2, 3.4, 3.6, 3.8, 4.0, 4.2, 4.4, 4.6, 4.8, 5.0, 5.2, 5.4, 5.6, 5.8, 6.0, 7.0, 8.0]
+    sql: ${number_of_delivered_orders_per_worked_hour} ;;
+    value_format_name: decimal_1
+    style: interval
+  }
+
 
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -976,7 +1007,7 @@ view: employee_level_kpis {
     label: "% Worked Time Spent Idle (Riders)"
     description: "% of worked time (min) not spent handling an order - compares the difference between worked time (min) and rider handling time (min) with total worked time (min)"
     sql: ${sum_rider_idle_time_minutes} / nullif(${sum_worked_time_minutes_rider},0) ;;
-    value_format: "0%"
+    value_format_name: percent_2
   }
 
   # ~~~~~~~~~~~~~~~     Shift related     ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1048,12 +1079,38 @@ view: employee_level_kpis {
     value_format_name: decimal_1
   }
 
+  measure: number_of_availability_hours_within_operational_hours {
+    group_label: "> Shift Related"
+    type: sum
+    label: "# Availability Hours Within Operational Hours"
+    description: "Number of hours that were provided as available by the employee within operational hours (country-specific, see metric link for more details)."
+    sql: ${TABLE}.number_of_availability_minutes_within_operational_hours/60 ;;
+    link: {
+      label: "Operational hours definition"
+      url: "https://data-dbt-prod.pages.dev/#!/macro/macro.flink_data.is_operational_hours"
+    }
+    value_format_name: decimal_1
+  }
+
   measure: pct_of_weekend_availability_hours {
     group_label: "> Shift Related"
     type: number
     label: "% Weekend Availability Hours"
     description:"Share of Availability Hours between 3 p.m Friday - 12 a.m Sunday over Total Availability Hours "
     sql: ${number_of_weekend_availability_hours} / nullif(${number_of_availability_hours},0) ;;
+    value_format_name: percent_1
+  }
+
+  measure: pct_availability_hours_within_operational_hours {
+    group_label: "> Shift Related"
+    type: number
+    label: "% Availability Hours Within Operational Hours"
+    description:"Share of Availability Hours provided within operational hours in Total Availability Hours "
+    sql: ${number_of_availability_hours_within_operational_hours} / nullif(${number_of_availability_hours},0) ;;
+    link: {
+      label: "Operational hours definition"
+      url: "https://data-dbt-prod.pages.dev/#!/macro/macro.flink_data.is_operational_hours"
+    }
     value_format_name: percent_1
   }
 
@@ -1137,12 +1194,30 @@ view: employee_level_kpis {
     value_format_name: percent_1
   }
 
+  measure: pct_of_availability_hours_within_oprational_hours_vs_contracted_hours {
+    group_label: "> Shift Related"
+    label: "% Availability Hours Within Operational Hours vs Total Contracted Hours"
+    type: number
+    sql:${number_of_availability_hours_within_operational_hours}/nullif(${sum_weekly_contracted_hours},0) ;;
+    description:"# Availability Hours Within Operational Hours / Total Contracted Hours"
+    value_format_name: percent_1
+  }
+
   measure: pct_of_availability_hours_vs_worked_hours {
     group_label: "> Shift Related"
     label: "% Availability Hours vs Worked Hours"
     type: number
     sql:${number_of_availability_hours}/nullif(${number_of_worked_hours},0) ;;
     description:"# Availability Hours / # Worked Hours"
+    value_format_name: percent_1
+  }
+
+  measure: pct_of_availability_hours_within_oprational_hours_vs_worked_hours {
+    group_label: "> Shift Related"
+    label: "% Availability Hours Within Operational Hours vs Worked Hours"
+    type: number
+    sql:${number_of_availability_hours_within_operational_hours}/nullif(${number_of_worked_hours},0) ;;
+    description:"# Availability Hours Within Operational Hours / # Worked Hours"
     value_format_name: percent_1
   }
 
@@ -1159,7 +1234,7 @@ view: employee_level_kpis {
     group_label: "> Shift Related"
     type: sum
     label: "# Vacation Hours"
-    description: "Number of Absence hours with leave reason containing the word 'vacation' (excluding absences defined as no shows)"
+    description: "Number of Absence hours with leave reason containing the word 'vacation' or 'congé payé' or 'holiday paid' (excluding absences defined as no shows)"
     sql: ${TABLE}.number_of_vacation_minutes/60 ;;
     value_format_name: decimal_1
   }
@@ -1263,6 +1338,25 @@ view: employee_level_kpis {
     value_format_name: decimal_1
   }
 
+  measure: number_of_online_hours {
+    group_label: "> Shift Related"
+    type: sum
+    label: "# Online Rider Hours"
+    sql: ${TABLE}.number_of_online_rider_minutes/60;;
+    description: "Number of hours rider spent online in Workforce app (Rider app)."
+    value_format_name: decimal_1
+  }
+
+  measure: pct_online_hours_vs_worked_hours {
+    group_label: "> Shift Related"
+    type: number
+    label: "% Online Rider Hours vs Worked Hours"
+    sql: ${number_of_online_hours}/nullif(${number_of_worked_hours},0);;
+    description: "hours rider spent online in Workforce app (Rider app)/ Punched Rider Hours (from Quinyx)"
+    value_format_name: percent_1
+  }
+
+
   measure: number_of_overpunched_hours {
     group_label: "> Shift Related"
     type: sum
@@ -1311,6 +1405,15 @@ view: employee_level_kpis {
     type: number
     label: "AVG Rider UTR"
     sql: ${number_of_delivered_orders}/nullif(${number_of_worked_hours},0) ;;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_rider_utr_using_online_hours {
+    group_label: "> Logistics"
+    type: number
+    label: "AVG Rider UTR (using Online Hours)"
+    description: "# Orders delivered / # Hours spent online"
+    sql: ${number_of_delivered_orders}/nullif(${number_of_online_hours},0) ;;
     value_format_name: decimal_1
   }
 

@@ -29,12 +29,12 @@ explore: product_placement_performance {
                 We consider the Orders Explore to be the source of truth.
                 This report uses daily last-in first-out attribution logic - if a user has a cart that persists for more than one day the product placements will not be included in this report.
                 Impressions are only tracked for a proportion of our users - please ensure you filter for users exposed to impressions before looking at any metrics including impressions.
-                This explore is time limited, and will only return data for the last complete month, and the current month.
+                This explore is time limited, and will only return data for the last complete 28 days.
                 "
   group_label: "Product - Consumer"
 
   sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} ${product_placement_performance.event_date} {% endcondition %}
-                    and ${product_placement_performance.event_date} > LAST_DAY(current_date() - 62)
+                    and ${product_placement_performance.event_date} > current_date() - 29
                     and ${country_iso} is not null;;
 
   access_filter: {
@@ -49,7 +49,7 @@ explore: product_placement_performance {
       global_filters_and_parameters.datasource_filter: "last 1 days",
       affected_by_impression_users.is_exposed_to_impressions: "Yes",
       product_placement_performance.product_placement: "category, search, last_bought, swimlane, collection",
-      hubs.country_iso: "",
+      product_placement_performance.country_iso: "",
       product_placement_performance.platform: ""
     ]
   }
@@ -80,7 +80,8 @@ explore: product_placement_performance {
 
   join: products {
         view_label: "Product Data (CT)"
-        sql_on: ${products.product_sku} = ${product_placement_performance.product_sku} ;;
+        sql_on: ${products.product_sku} = ${product_placement_performance.product_sku}
+                  and ${products.country_iso} = ${product_placement_performance.country_iso};;
     relationship: many_to_one
     type: left_outer
   }

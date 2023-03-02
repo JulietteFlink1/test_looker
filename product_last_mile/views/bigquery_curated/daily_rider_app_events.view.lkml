@@ -5,7 +5,7 @@
 
 view: daily_rider_app_events {
   sql_table_name: `flink-data-prod.curated.daily_rider_app_events`;;
-  view_label: "Daily Rider App Events "
+  view_label: "1 Daily Rider App Events "
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
   # ~~~~~~~~~~~~~~~     Dimensions    ~~~~~~~~~~~~~~~ #
@@ -73,6 +73,13 @@ view: daily_rider_app_events {
     type: string
     sql: ${TABLE}.component_variant ;;
   }
+  dimension: component_value {
+    group_label: "Generic Dimensions"
+    label: "Component Value"
+    description: "Value of the component"
+    type: number
+    sql: ${TABLE}.component_value ;;
+  }
   dimension: screen_name {
     group_label: "Generic Dimensions"
     label: "Screen Name"
@@ -129,7 +136,20 @@ view: daily_rider_app_events {
     type: string
     sql: ${TABLE}.locale ;;
   }
-
+  dimension: country_iso {
+    group_label: "Location Dimension"
+    label: "Country Iso"
+    type: string
+    description: "Country ISO."
+    sql: ${TABLE}.country_iso ;;
+  }
+  dimension: hub_code {
+    group_label: "Location Dimension"
+    label: "Hub Code"
+    type: string
+    description: "Code of a hub."
+    sql: ${TABLE}.hub_code ;;
+  }
 
   # ======= Dates / Timestamps =======
 
@@ -214,5 +234,13 @@ view: daily_rider_app_events {
     description: "Number of all users regardless of their login status."
     type: count_distinct
     sql: ${TABLE}.anonymous_id ;;
+  }
+  measure: mes_component_value {
+    group_label: "AVG Measures"
+    label: "AVG Component Value"
+    description: "AVG Value of the component"
+    type: average
+    sql: ${TABLE}.component_value ;;
+    value_format: "0.00"
   }
 }

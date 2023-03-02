@@ -13,7 +13,9 @@ include: "/**/inventory_changes_daily.view"
 include: "/**/hub_monthly_orders.view"
 include: "/**/order_backlog.view"
 include: "/**/hub_attributes.view"
-
+include: "/**/hub_turf_closures_30min.view"
+include: "/**/hub_turf_closures_daily.view"
+include: "/**/cr_dynamic_ops_metrics.view"
 
 explore: ops {
   from: staffing
@@ -50,7 +52,7 @@ explore: ops {
     fields: [time_grid.start_datetime_date, time_grid.start_datetime_hour_of_day, time_grid.start_datetime_minute30,
       time_grid.start_datetime_month,time_grid.start_datetime_quarter,time_grid.start_datetime_raw,time_grid.start_datetime_time,
       time_grid.start_datetime_time_of_day,time_grid.start_datetime_week,time_grid.start_datetime_week_of_year, time_grid.start_datetime_year, time_grid.is_hour_before_now_hour,
-      time_grid.is_date_before_today,time_grid.start_datetime_day_of_week]
+      time_grid.is_date_before_today,time_grid.start_datetime_day_of_week, time_grid.date_granularity, time_grid.date_dynamic]
   }
 
   # Basic Hub data (e.g. name, city, creation date, etc. )
@@ -122,15 +124,38 @@ explore: ops {
     type: left_outer
   }
 
-  join: hub_closure_rate {
-    view_label: "Order Backlog"
-    sql_on:
-      ${hubs.hub_code} = ${hub_closure_rate.hub_code}
-      and ${time_grid.start_datetime_minute30} = ${hub_closure_rate.created_minute30}
-      ;;
-    relationship: many_to_one
+  join: hub_turf_closures_30min {
+    view_label: "Closures"
+    sql_on: ${hub_turf_closures_30min.hub_code} =  ${hubs.hub_code}
+      and ${time_grid.start_datetime_minute30} = ${hub_turf_closures_30min.report_minute30};;
+    relationship: one_to_many
     type: left_outer
-    fields: [hub_closure_rate.all_closure_rate]
+    fields: [hub_turf_closures_30min.sum_number_of_closed_hours,
+      hub_turf_closures_30min.share_closed_hours_per_open_hours,
+      hub_turf_closures_30min.sum_number_of_missed_orders_forced_closure,
+      hub_turf_closures_30min.share_of_missed_orders_per_number_of_successful_non_external_orders]
   }
+
+  join: hub_turf_closures_daily {
+    view_label: "Closures"
+    sql_on: ${hub_turf_closures_30min.hub_code}=${hub_turf_closures_daily.hub_code}
+        and coalesce(${hub_turf_closures_30min.turf_id},'') = coalesce(${hub_turf_closures_daily.turf_id},'')
+        and ${hub_turf_closures_30min.report_date}=${hub_turf_closures_daily.report_date}
+        and ${hub_turf_closures_30min.closure_reason}=${hub_turf_closures_daily.closure_reason};;
+    type: left_outer
+    relationship: many_to_one
+    fields: [hub_turf_closures_daily.closure_reason,
+      hub_turf_closures_daily.turf_name]
+  }
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  #  - - - - - - - - - -    Cross-Referenced Metrics
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  join: cr_dynamic_ops_metrics {
+    view_label: "Orders"
+    relationship: one_to_one
+    type: left_outer
+    sql:  ;;
+}
 
 }

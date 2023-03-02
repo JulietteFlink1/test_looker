@@ -202,6 +202,16 @@ view: orders {
     sql: ${item_value_gross} ;;
   }
 
+  dimension: item_value_gross_tier_minus_discounts{
+    group_label: "* Monetary Values *"
+    description: "Tiers for item value minus cart and product discount"
+    label: "Item Value minus discounts (tiered)"
+    type: tier
+    tiers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 32, 34, 36, 38, 40, 45, 50, 55, 60, 65, 70, 75, 80, 90, 100, 110, 120, 130]
+    style: relational
+    sql: ${TABLE}.amt_total_price_after_product_discount_gross -  ${TABLE}.amt_discount_cart_gross;;
+  }
+
   dimension: rider_tip {
     group_label: "* Monetary Values *"
     type: number
@@ -937,6 +947,7 @@ view: orders {
     timeframes: [
       raw,
       time,
+      minute,
       date,
       week,
       month,
@@ -945,6 +956,7 @@ view: orders {
     ]
     sql: ${TABLE}.last_modified_at ;;
     hidden: yes
+    convert_tz: yes
   }
 
   dimension: latitude {
@@ -1436,6 +1448,14 @@ view: orders {
     sql: ${TABLE}.is_external_order ;;
   }
 
+  dimension: is_last_mile_order {
+    group_label: "* Order Dimensions *"
+    type: yesno
+    sql: ${TABLE}.is_last_mile_order ;;
+    description: "TRUE if the order is delivered by flink's riders.
+    Not click and collect order, not created through an external provider (e.g. uber-eats and wolt). Doordash orders are included as they are delivered by Flink's riders."
+  }
+
   dimension: deposit {
     type: number
     hidden: yes
@@ -1598,6 +1618,36 @@ view: orders {
     hidden:  yes
     type: number
     sql: ${TABLE}.amt_crf_fulfillment_fee_net ;;
+  }
+
+  ############################  MARKETPLACE INTEGRATIONS   #######################
+
+  ########### UberEats #############
+
+  dimension: amt_uber_eats_commission_fee_net {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_uber_eats_commission_fee_net ;;
+  }
+
+  dimension: amt_uber_eats_commission_fee_gross {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_uber_eats_commission_fee_gross ;;
+  }
+
+########### WOLT #############
+
+  dimension: amt_wolt_commission_fee_net {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_wolt_commission_fee_net ;;
+  }
+
+  dimension: amt_wolt_commission_fee_gross {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.amt_wolt_commission_fee_gross ;;
   }
 
   ######## PARAMETERS
@@ -2408,6 +2458,16 @@ view: orders {
     value_format_name: euro_accounting_2_precision
   }
 
+  measure: avg_refund_gross {
+    group_label: "* Monetary Values *"
+    label: "AVG Refund (Gross)"
+    description: "Average Refund value (Gross). Includes Items, Deposit, Total Fees (Delivery, Storage & Late Night) and Tips Refunds."
+    hidden:  no
+    type: average
+    sql: ${amt_refund_gross};;
+    value_format_name: euro_accounting_2_precision
+  }
+
   measure: sum_total_sales_gross {
     group_label: "* Monetary Values *"
     label: "SUM Total Sales (Gross)"
@@ -2665,6 +2725,16 @@ view: orders {
     ]
   }
 
+  measure: cnt_external_orders {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# External Orders"
+    description: "Count of External orders (orders placed via marketplace integrations like Wolt, UberEats, etc.)"
+    type: count_distinct
+    sql: ${order_uuid} ;;
+    value_format: "0"
+    filters: [is_external_order: "yes"]
+  }
+
   measure: cnt_click_and_collect_orders {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
     label: "# Click & Collect Orders"
@@ -2688,25 +2758,24 @@ view: orders {
     sql: ${order_uuid} ;;
     value_format: "0"
     filters: [
-      external_provider: "ubereats",
+      external_provider: "uber-eats, uber-eats-carrefour",
       is_successful_order: "yes"
       ]
   }
 
-  measure: cnt_external_orders {
+  measure: number_of_unique_flink_delivered_orders {
+    alias: [cnt_rider_orders]
     group_label: "* Basic Counts (Orders / Customers etc.) *"
-    label: "# External Orders"
-    description: "Count of External Orders"
+    label: "# Flink Delivered Orders"
+    description: "Count of Orders delivered by Flink Riders (Excluding External and Click & Collect Orders)."
     hidden:  yes
     type: count_distinct
     sql: ${order_uuid} ;;
     value_format: "0"
     filters: [
-      is_external_order: "yes",
-      is_successful_order: "yes"
+      is_last_mile_order: "yes"
     ]
   }
-
   measure: cnt_orders_with_discount_cart {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
     label: "# Orders with Cart Discount"
@@ -3059,6 +3128,52 @@ view: orders {
     sql: ${amt_crf_fulfillment_fee_net} ;;
   }
 
+########### MARKETPLACE INTEGRATIONS ##########
+
+  measure: sum_amt_uber_eats_commission_fee_net {
+    group_label: "* Monetary Values *"
+    label: "SUM UberEats Commission Fee Net"
+    description: "Net amount of commission fee paid by Flink on UberEats orders: 23% of gross item value in the Netherlands, and 20% in France."
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_uber_eats_commission_fee_net} ;;
+  }
+
+  measure: sum_amt_uber_eats_commission_fee_gross {
+    group_label: "* Monetary Values *"
+    label: "SUM UberEats Commission Fee Gross"
+    description: "Gross amount of commission fee paid by Flink on UberEats orders."
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_uber_eats_commission_fee_gross} ;;
+  }
+
+  measure: sum_amt_wolt_commission_fee_net {
+    group_label: "* Monetary Values *"
+    label: "SUM Wolt Commission Fee Net"
+    description: "Net amount of commission fee paid by Flink on Wolt orders: 24% of gross item value in Germany."
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_wolt_commission_fee_net} ;;
+  }
+
+  measure: sum_amt_wolt_commission_fee_gross {
+    group_label: "* Monetary Values *"
+    label: "SUM Wolt Commission Fee Gross"
+    description: "Gross amount of commission fee paid by Flink on Wolt orders."
+    value_format_name: euro_accounting_2_precision
+    type:  sum
+    sql: ${amt_wolt_commission_fee_gross} ;;
+  }
+
+  measure: avg_amt_marketplace_commission_fee_gross {
+    group_label: "* Monetary Values *"
+    label: "AVG Marketplace Commission Fee Gross"
+    description: "Average gross amount of commission fee paid by Flink on UberEats/Wolt orders."
+    value_format_name: euro_accounting_2_precision
+    type:  average
+    sql: ${amt_uber_eats_commission_fee_gross} + ${amt_wolt_commission_fee_gross} ;;
+  }
 
   ############### Delays compared to delivery time internal estimate ###########
 
@@ -3318,6 +3433,16 @@ view: orders {
   ################
   ## PERCENTAGE ##
   ################
+
+  measure: share_of_external_orders {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "% External Orders"
+    description: "Share of External orders over total number of orders"
+    hidden:  no
+    type: number
+    sql: ${cnt_external_orders} / NULLIF(${cnt_orders}, 0);;
+    value_format: "0.0%"
+  }
 
   measure: pct_acquisition_share {
     group_label: "* Marketing *"

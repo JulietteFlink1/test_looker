@@ -7,6 +7,27 @@ view: event_order_dispatching_state_changed {
   sql_table_name: `flink-data-prod.curated.event_order_dispatching_state_changed`;;
   view_label: "Event Order Dispatching State Change"
 
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~     Sets          ~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  set: to_include_dimensions {
+    fields: [
+      order_id,
+      dispatching_state
+    ]
+  }
+
+  set: to_include_measures {
+    fields: [
+      orders,
+      events
+    ]
+  }
+
+  set: to_include_set {
+    fields: [to_include_dimensions*, to_include_measures*]
+    }
+
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
   # ~~~~~~~~~~~~~~~     Dimensions    ~~~~~~~~~~~~~~~ #
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
@@ -72,24 +93,14 @@ view: event_order_dispatching_state_changed {
     label: "Event Timestamp"
     type: time
     timeframes: [
+      time,
+      hour_of_day,
       date,
       week,
       month,
       quarter
     ]
     sql: ${TABLE}.event_timestamp ;;
-  }
-  dimension_group: published_at_timestamp {
-    group_label: "Timestamps"
-    label: "Published At Timestamp"
-    type: time
-    timeframes: [
-      date,
-      week,
-      month,
-      quarter
-    ]
-    sql: ${TABLE}.published_at_timestamp ;;
   }
 
   # ======= HIDDEN =======
@@ -104,6 +115,19 @@ view: event_order_dispatching_state_changed {
     hidden: yes
     type: string
     sql: ${TABLE}.subscription_name ;;
+  }
+  dimension_group: published_at_timestamp {
+    group_label: "Timestamps"
+    hidden:  yes
+    label: "Published At Timestamp"
+    type: time
+    timeframes: [
+      date,
+      week,
+      month,
+      quarter
+    ]
+    sql: ${TABLE}.published_at_timestamp ;;
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #

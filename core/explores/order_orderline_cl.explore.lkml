@@ -40,28 +40,27 @@ explore: order_orderline_cl {
     type: left_outer
   }
 
-  join: products_ct_merged_skus {
-
-    view_label: "Product Data (CT)"
-
-    sql_on:
-        ${products.product_sku} = ${products_ct_merged_skus.sku} and
-        ${products.country_iso} = ${products_ct_merged_skus.country_iso}
-        ;;
-    relationship: one_to_one
-    type: left_outer
-  }
-
   join: lexbizz_item {
 
-    view_label: "Product Data (ERP)"
+    view_label: ""
+    from: erp_item
 
     type: left_outer
     relationship: many_to_one
     sql_on: ${lexbizz_item.sku}            = ${orderline.product_sku}
-        and ${lexbizz_item.country_iso}    = ${orderline.country_iso}
         and ${lexbizz_item.ingestion_date} = current_date()
     ;;
+  }
+
+  join: oracle_item_location_fact {
+    view_label: "Product-Hub Data (as of today)"
+    type: left_outer
+    relationship: many_to_one
+    sql_on:
+        ${oracle_item_location_fact.hub_code} = ${orderline.hub_code}
+    and ${oracle_item_location_fact.sku}      = ${orderline.product_sku}
+    ;;
+    fields: [oracle_item_location_fact.current_state__item_at_location_status]
   }
 
   join: customer_address {
@@ -69,6 +68,25 @@ explore: order_orderline_cl {
     sql_on: ${orders_cl.order_uuid} = ${customer_address.order_uuid} ;;
     type: left_outer
     relationship: one_to_one
+  }
+
+  join: erp_product_hub_vendor_assignment_unfiltered {
+    view_label: "Product-Hub Data (historized)"
+    sql_on:
+        ${erp_product_hub_vendor_assignment_unfiltered.sku}            = ${orderline.product_sku}
+    and ${erp_product_hub_vendor_assignment_unfiltered.hub_code}       = ${orderline.hub_code}
+    and ${erp_product_hub_vendor_assignment_unfiltered.report_date}    = ${orderline.created_date}
+    ;;
+    type: left_outer
+    relationship: one_to_many
+    fields: [erp_product_hub_vendor_assignment_unfiltered.edi,
+             erp_product_hub_vendor_assignment_unfiltered.item_at_location_status,
+             erp_product_hub_vendor_assignment_unfiltered.supplier_site,
+             erp_product_hub_vendor_assignment_unfiltered.supplier_parent_name,
+             erp_product_hub_vendor_assignment_unfiltered.supplier_parent_id,
+             erp_product_hub_vendor_assignment_unfiltered.supplier_name,
+             erp_product_hub_vendor_assignment_unfiltered.supplier_id
+            ]
   }
 
   join: erp_product_hub_vendor_assignment {
@@ -92,7 +110,7 @@ explore: order_orderline_cl {
 
   join: lexbizz_warehouse {
 
-    view_label: "Lexbizz Master Data"
+    view_label: ""
 
     type: left_outer
     relationship: many_to_one
@@ -117,7 +135,8 @@ explore: order_orderline_cl {
 
   join: lexbizz_item_warehouse {
 
-    view_label: "Lexbizz Master Data"
+    view_label: ""
+    from: erp_item_location
 
     type: left_outer
     relationship: many_to_one
@@ -142,7 +161,8 @@ explore: order_orderline_cl {
 
   join: lexbizz_vendor {
 
-    view_label: "Lexbizz Master Data"
+    view_label: ""
+    from: erp_supplier
 
     type: left_outer
     relationship: many_to_one
@@ -178,22 +198,24 @@ explore: order_orderline_cl {
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   join: erp_buying_prices {
-    view_label: "ERP Supplier Prices"
+    # hiding this table in favor of the monetary cost values directly in orderline.view
+    view_label: ""
     required_access_grants: [can_view_buying_information]
 
     type: left_outer
     # n orders have the same price
     relationship: many_to_one
     sql_on:
-        ${erp_buying_prices.hub_code}         =  ${orderline.hub_code}                                and
-        ${erp_buying_prices.sku}              =  ${orderline.product_sku}                             and
+        ${erp_buying_prices.hub_code}         =  ${orderline.hub_code}           and
+        ${erp_buying_prices.sku}              =  ${orderline.product_sku}        and
         -- a prive is valid in a certain time frame
-        ${orderline.created_date}             = ${erp_buying_prices.report_date}
+        ${orderline.created_date}             = ${erp_buying_prices.report_date} and
+        {% condition global_filters_and_parameters.datasource_filter %} ${erp_buying_prices.report_date} {% endcondition %}
     ;;
   }
 
   join: sales_weighted_avg_buying_prices {
-    view_label: "ERP Supplier Prices"
+    view_label: ""
     required_access_grants: [can_view_buying_information]
 
     type: left_outer

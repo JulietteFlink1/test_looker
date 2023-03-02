@@ -1,4 +1,4 @@
-# Owner: Product Analytics, Patricia Mitterova
+# Owner: Product Analytics
 
 # Main Stakeholder:
 # - Consumer Product
@@ -21,6 +21,7 @@ include: "/**/event_order_placed.view.lkml"
 include: "/**/daily_violations_aggregates.view.lkml"
 include: "/**/event_sponsored_product_impressions.view.lkml"
 include: "/**/event_payment_failed.view.lkml"
+include: "/**/event_order_tracking_viewed.view.lkml"
 
 explore: daily_events {
   from:  daily_events
@@ -143,7 +144,8 @@ explore: daily_events {
             event_checkout_viewed.amt_order_total_eur,
             event_checkout_viewed.products,
             event_checkout_viewed.shipping_method_id,
-            event_checkout_viewed.cart_id]
+            event_checkout_viewed.cart_id,
+            event_checkout_viewed.delivery_pdt]
     sql_on: ${event_checkout_viewed.event_uuid} = ${daily_events.event_uuid}
       and {% condition global_filters_and_parameters.datasource_filter %} ${event_checkout_viewed.event_timestamp_date} {% endcondition %};;
     type: left_outer
@@ -152,10 +154,16 @@ explore: daily_events {
 
   join: event_order_placed {
     view_label: "Event: Order Placed"
-    fields: [event_order_placed.delivery_fee , event_order_placed.delivery_pdt, event_order_placed.discount_value,
-      event_order_placed.number_of_products_ordered , event_order_placed.revenue , event_order_placed.rider_tip_value]
+    fields: [event_order_placed.amt_delivery_fee_eur,
+            event_order_placed.shipping_method_id,
+            event_order_placed.cart_id,
+            event_order_placed.delivery_pdt,
+            event_order_placed.discount_value,
+            event_order_placed.number_of_products_ordered,
+            event_order_placed.amt_revenue_eur,
+            event_order_placed.rider_tip_value]
     sql_on: ${event_order_placed.event_id} = ${daily_events.event_uuid}
-            and {% condition global_filters_and_parameters.datasource_filter %} ${event_order_placed.order_date} {% endcondition %};;
+            and {% condition global_filters_and_parameters.datasource_filter %} ${event_order_placed.event_timestamp_date} {% endcondition %};;
     type: left_outer
     relationship: one_to_one
   }
@@ -167,6 +175,18 @@ explore: daily_events {
       event_payment_failed.error_details]
     sql_on: ${event_payment_failed.event_uuid} = ${daily_events.event_uuid}
       and {% condition global_filters_and_parameters.datasource_filter %} ${event_payment_failed.event_timestamp_date} {% endcondition %};;
+    type: left_outer
+    relationship: one_to_one
+  }
+
+  join: event_order_tracking_viewed {
+    view_label: "Event: Order Tracking Viewed"
+    fields: [event_order_tracking_viewed.order_id,
+      event_order_tracking_viewed.order_status,
+      event_order_tracking_viewed.delivery_eta,
+      event_order_tracking_viewed.delivery_pdt]
+    sql_on: ${event_order_tracking_viewed.event_uuid} = ${daily_events.event_uuid}
+      and {% condition global_filters_and_parameters.datasource_filter %} ${event_order_tracking_viewed.event_timestamp_date} {% endcondition %};;
     type: left_outer
     relationship: one_to_one
   }
@@ -206,9 +226,15 @@ join: daily_violations_aggregates {
     fields: [daily_user_aggregates.is_address_confirmed, daily_user_aggregates.is_address_set,
              daily_user_aggregates.is_checkout_started, daily_user_aggregates.is_checkout_viewed,
              daily_user_aggregates.is_order_placed,
-             daily_user_aggregates.is_cart_viewed, daily_user_aggregates.is_product_added_to_cart,
+             daily_user_aggregates.is_cart_viewed,
+             daily_user_aggregates.is_product_search_viewed,
+             daily_user_aggregates.is_product_search_executed,
+             daily_user_aggregates.is_product_added_to_cart,
              daily_user_aggregates.is_payment_started,
+             daily_user_aggregates.is_product_details_viewed,
              daily_user_aggregates.is_account_registration_viewed, is_home_viewed, is_new_user,
+             users_with_product_details_viewed, daily_user_aggregates.users_with_product_search_viewed,
+             daily_user_aggregates.users_with_cart_viewed, daily_user_aggregates.users_with_home_viewed
     ]
     sql_on: ${daily_user_aggregates.user_uuid} = ${daily_events.anonymous_id}
       and ${daily_user_aggregates.event_date_at_date} = ${daily_events.event_date}

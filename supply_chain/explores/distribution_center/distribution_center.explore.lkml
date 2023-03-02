@@ -53,12 +53,12 @@ explore: distribution_center {
 
   join: lexbizz_item {
 
-    view_label: " 03 Products (ERP) "
+    view_label: " 03 Products (ERP)"
+    from: erp_item
 
     type: left_outer
     relationship: many_to_one
     sql_on: ${lexbizz_item.sku}            = ${replenishment_dc_batchbalance.sku}
-        and ${lexbizz_item.country_iso}    = ${replenishment_dc_batchbalance.country_iso}
         and ${lexbizz_item.ingestion_date} = current_date()
     ;;
 

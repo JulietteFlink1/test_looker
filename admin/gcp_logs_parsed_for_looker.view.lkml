@@ -258,6 +258,14 @@ view: gcp_logs_parsed_for_looker {
     value_format_name: decimal_1
   }
 
+  measure: avg_cost_per_query {
+    label: "AVG Cost per Qeury"
+    description: "The average cost per qeury (€ Total Query Cost / # Queries)"
+    type: number
+    sql: ${total_query_costs}/nullif(${sum_query_count},0) ;;
+    value_format_name: eur
+  }
+
 
 
   measure: count {

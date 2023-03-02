@@ -21,8 +21,11 @@ include: "/**/event_logout_completed.view.lkml"
 include: "/**/hub_one_picking_times.view.lkml"
 include: "/**/event_stock_check_started.view.lkml"
 include: "/**/event_stock_check_finished.view.lkml"
+include: "/**/event_stock_correction_started.view.lkml"
+include: "/**/event_stock_correction_finished.view.lkml"
 include: "/**/event_inbound_state_updated.view.lkml"
 include: "/**/event_inbound_progressed.view.lkml"
+include: "/**/event_outbound_progressed.view.lkml"
 include: "/product_consumer/views/bigquery_reporting/daily_violations_aggregates.view.lkml"
 include: "/**/daily_smart_inventory_checks.view"
 
@@ -150,6 +153,26 @@ explore: daily_hub_staff_events {
     relationship: one_to_one
   }
 
+  join: event_stock_correction_started {
+    view_label: "6 Stock Correction Started/ Finished"
+    fields: [to_include_set*]
+    sql_on: ${event_stock_correction_started.event_uuid} = ${daily_hub_staff_events.event_uuid}
+      and {% condition global_filters_and_parameters.datasource_filter %}
+        ${event_stock_correction_started.event_timestamp_date} {% endcondition %};;
+    type: left_outer
+    relationship: one_to_one
+  }
+
+  join: event_stock_correction_finished {
+    view_label: "6 Stock Correction Started/ Finished"
+    fields: [to_include_set*]
+    sql_on: ${event_stock_correction_finished.event_uuid} = ${daily_hub_staff_events.event_uuid}
+      and {% condition global_filters_and_parameters.datasource_filter %}
+        ${event_stock_correction_finished.event_timestamp_date} {% endcondition %};;
+    type: left_outer
+    relationship: one_to_one
+  }
+
   join: event_inbound_state_updated {
     view_label: "7 Event: Inbound State Updated"
     fields: [to_include_dimensions*]
@@ -161,7 +184,7 @@ explore: daily_hub_staff_events {
   }
 
   join: event_inbound_progressed {
-    view_label: "8 Event: Inbound Progressed"
+    view_label: "8 Event: Inbound/ Outbound Progressed"
     fields: [to_include_set*]
     sql_on: ${event_inbound_progressed.event_uuid} = ${daily_hub_staff_events.event_uuid}
       and {% condition global_filters_and_parameters.datasource_filter %}
@@ -170,10 +193,21 @@ explore: daily_hub_staff_events {
     relationship: one_to_one
   }
 
+  join: event_outbound_progressed {
+    view_label: "8 Event: Inbound/ Outbound Progressed"
+    fields: [to_include_set*]
+    sql_on: ${event_outbound_progressed.event_uuid} = ${daily_hub_staff_events.event_uuid}
+      and {% condition global_filters_and_parameters.datasource_filter %}
+        ${event_outbound_progressed.event_timestamp_date} {% endcondition %};;
+    type: left_outer
+    relationship: one_to_one
+  }
+
   join: products {
     view_label: "9 Product Dimensions"
-    fields: [product_name, category, subcategory, erp_category, erp_subcategory]
-    sql_on: ${products.product_sku} = ${event_order_progressed.product_sku};;
+    fields: [product_name, category, subcategory, erp_category, erp_subcategory, units_per_handling_unit,
+           erp_item_division_name, erp_item_group_name, erp_item_department_name, erp_item_class_name, erp_item_subclass_name]
+    sql_on: ${products.product_sku} = coalesce(${event_order_progressed.product_sku}, ${event_outbound_progressed.product_sku});;
     type: left_outer
     relationship: one_to_one
   }
@@ -203,7 +237,7 @@ explore: daily_hub_staff_events {
             , order_picker_accepted_timestamp
             , order_packed_timestamp
             , is_click_and_collect_order]
-    sql_on: ${event_order_progressed.order_id} = ${orders.id} ;;
+    sql_on: ${orders.id} = coalesce(${event_order_state_updated.order_id},${event_order_progressed.order_id}) ;;
     type: left_outer
     relationship: many_to_one
   }
@@ -224,7 +258,7 @@ explore: daily_hub_staff_events {
     view_label: "92 Smart Inventory Checks"
     sql_on: ${daily_smart_inventory_checks.scheduled_date} = ${daily_hub_staff_events.event_date}
           and ${daily_smart_inventory_checks.hub_code}=${daily_hub_staff_events.hub_code}
-          and ${daily_smart_inventory_checks.sku}=${event_order_progressed.product_sku}
+          and ${daily_smart_inventory_checks.table_uuid}=${event_stock_check_finished.check_id}
           and {% condition global_filters_and_parameters.datasource_filter %}
             ${daily_smart_inventory_checks.scheduled_date} {% endcondition %};;
     type: left_outer

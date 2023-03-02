@@ -35,20 +35,8 @@ explore: current_inventory {
     relationship: one_to_one
   }
 
-  join: products_ct_merged_skus {
-
-    view_label: "* Product Information (CT) *"
-
-    sql_on:
-        ${products.product_sku} = ${products_ct_merged_skus.sku} and
-        ${products.country_iso} = ${products_ct_merged_skus.country_iso}
-        ;;
-    relationship: one_to_one
-    type: left_outer
-  }
-
   join: products_hub_assignment {
-
+    view_label: "Products Hub Assignment (as of today)"
     from: products_hub_assignment
 
     sql_on: ${products_hub_assignment.sku} = ${products.product_sku}
@@ -62,13 +50,13 @@ explore: current_inventory {
   join: lexbizz_item {
 
     view_label: "* Product Information (ERP) *"
+    from: erp_item
 
     type: left_outer
     relationship: one_to_one
 
     sql_on:
             ${products.product_sku} = ${lexbizz_item.sku}
-        and ${products.country_iso} = ${lexbizz_item.country_iso}
         and ${lexbizz_item.ingestion_date} = current_date()
     ;;
   }

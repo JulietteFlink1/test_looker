@@ -183,6 +183,34 @@ view: shyftplan_riders_pickers_hours_clean {
     group_label: "Working Hours"
   }
 
+  measure: rider_online_hours {
+    label: "Sum of Online Rider Hours"
+    type: sum
+    sql: ${TABLE}.number_of_online_rider_minutes/60;;
+    filters: [position_name: "rider"]
+    description: "Number of hours rider spent online in Workforce app (Rider app)."
+    value_format_name: decimal_1
+    group_label: "Working Hours"
+  }
+
+  measure: pct_rider_hours_vs_rider_online_hours {
+    group_label: "> Shift Related"
+    type: number
+    label: "% Online Rider Hours vs Worked Rider Hours"
+    sql: ${rider_online_hours}/nullif(${rider_hours},0);;
+    description: "hours rider spent online in Workforce app (Rider app)/ Punched Rider Hours (from Quinyx)"
+    value_format_name: percent_1
+  }
+
+  measure: onboarding_hours {
+    label: "Sum of Onboarding Hours"
+    type: sum
+    sql: ${number_of_worked_minutes}/60;;
+    filters: [position_name: "onboarding"]
+    value_format_name: decimal_1
+    group_label: "Working Hours"
+  }
+
   measure: rider_captain {
     label: "# Rider Captain"
     type: sum
@@ -454,7 +482,7 @@ view: shyftplan_riders_pickers_hours_clean {
     hidden: yes
   }
 
-  # Excluding Click & Collect and Ubereats orders
+  # last mile orders only
   measure: adjusted_orders_riders {
     type: sum
     sql:${number_of_orders};;
@@ -462,11 +490,11 @@ view: shyftplan_riders_pickers_hours_clean {
     hidden: yes
   }
 
-  # Including Click & Collect and Ubereats orders
+  # Including all orders
   measure: adjusted_orders_pickers {
     type: sum
     sql:${number_of_orders};;
-    filters:[position_name: "picker"]
+    filters:[position_name: "ops associate"]
     hidden: yes
   }
 
@@ -639,19 +667,28 @@ view: shyftplan_riders_pickers_hours_clean {
 
 
   measure: rider_utr {
-    label: "AVG Rider UTR"
+    label: "AVG Rider UTR (incl. Onboarding Shifts)"
     type: number
     description: "# Orders (excl. Click & Collect and External Orders) / # Worked Rider Hours"
-    sql: ${adjusted_orders_riders} / NULLIF(${rider_hours}, 0);;
+    sql: ${adjusted_orders_riders} / NULLIF(${rider_hours}+${onboarding_hours}, 0);;
     value_format_name: decimal_2
     group_label: "UTR"
   }
 
   measure: rider_rider_cap_utr {
-    label: "AVG Rider UTR (incl. Rider Captains)"
+    label: "AVG Rider UTR (incl. Rider Captains and Onboarding Shifts)"
     type: number
-    description: "# Orders (excl. Click & Collect and External Orders) / # Worked Rider Hours (incl. Rider Captains)"
-    sql: ${adjusted_orders_riders} / NULLIF(${rider_hours}+${rider_captain_hours}, 0);;
+    description: "# Orders (excl. Click & Collect and External Orders) / # Worked Rider Hours (incl. Rider Captains and Onboarding Shifts)"
+    sql: ${adjusted_orders_riders} / NULLIF(${rider_hours}+${rider_captain_hours}+${onboarding_hours}, 0);;
+    value_format_name: decimal_2
+    group_label: "UTR"
+  }
+
+  measure: rider_online_utr {
+    label: "AVG Rider UTR (using Online Hours)"
+    type: number
+    description: "# Orders (excl. Click & Collect and External Orders) / # Rider hours spent online (from Rider App)"
+    sql: ${adjusted_orders_riders} / NULLIF(${rider_online_hours}, 0);;
     value_format_name: decimal_2
     group_label: "UTR"
   }
@@ -765,7 +802,7 @@ view: shyftplan_riders_pickers_hours_clean {
     label: "AVG All Staff UTR"
     type: number
     description: "# Orders (incl. Click & Collect and External Orders) / # Worked All Staff (incl. Rider,Picker,WH Ops, Rider Captain, Ops Associate, Shift Lead and Deputy Shift Lead) Hours"
-    sql: ${adjusted_orders_pickers} / NULLIF(${rider_hours}+${shift_lead_hours}+${ops_associate_hours}+${deputy_shift_lead_hours}, 0);;
+    sql: ${adjusted_orders_pickers} / NULLIF(${rider_hours}+${shift_lead_hours}+${ops_associate_hours}+${deputy_shift_lead_hours}+${onboarding_hours}, 0);;
     value_format_name: decimal_2
     group_label: "UTR"
   }
@@ -933,7 +970,7 @@ view: shyftplan_riders_pickers_hours_clean {
     hidden:  no
     type: number
     sql: ${employee_level_kpis.pct_rider_idle_time};;
-    value_format: "0%"
+    value_format_name: percent_2
   }
 
   measure: rider_utr_cleaned {

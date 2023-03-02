@@ -158,26 +158,14 @@ explore: supply_chain {
 
   }
 
-  join: products_ct_merged_skus {
-
-    view_label: "Products (CT)"
-
-    sql_on:
-        ${products.product_sku} = ${products_ct_merged_skus.sku} and
-        ${products.country_iso} = ${products_ct_merged_skus.country_iso}
-        ;;
-    relationship: one_to_one
-    type: left_outer
-  }
-
   join: lexbizz_item {
 
     view_label: "Products (ERP)"
+    from: erp_item
 
     type: left_outer
     relationship: many_to_one
     sql_on: ${lexbizz_item.sku}            = ${products_hub_assignment.sku}
-        and ${lexbizz_item.country_iso}    = ${products_hub_assignment.country_iso}
         and ${lexbizz_item.ingestion_date} = current_date()
     ;;
 
@@ -197,6 +185,17 @@ explore: supply_chain {
     sql_on: ${hubs_ct.hub_code} = ${hub_demographics.hub_code} ;;
     relationship: one_to_one
     type: left_outer
+  }
+
+  join: oracle_item_location_fact {
+    view_label: "01 Products Hub Assignment"
+    type: left_outer
+    relationship: many_to_one
+    sql_on:
+        ${oracle_item_location_fact.hub_code} = ${products_hub_assignment.hub_code}
+    and ${oracle_item_location_fact.sku}      = ${products_hub_assignment.sku}
+    ;;
+    fields: [oracle_item_location_fact.current_state__item_at_location_status]
   }
 
   join: inventory_changes_daily {
@@ -277,16 +276,17 @@ explore: supply_chain {
   join: bulk_inbounding_performance {
 
     # keep hidden for now
-    view_label: "08 Dispatch Notifications"
+    view_label: ""
+    from: dispatch_notifications
 
     type: full_outer
     relationship: many_to_one
 
     sql_on:
         ${bulk_inbounding_performance.hub_code}                   = ${products_hub_assignment.hub_code}
-    and ${bulk_inbounding_performance.estimated_delivery_date}    = ${products_hub_assignment.report_date}
+    and ${bulk_inbounding_performance.delivery_date}              = ${products_hub_assignment.report_date}
     and ${bulk_inbounding_performance.sku}                        = ${products_hub_assignment.leading_sku_replenishment_substitute_group}
-    and {% condition global_filters_and_parameters.datasource_filter %} ${bulk_inbounding_performance.estimated_delivery_date} {% endcondition %}
+    and {% condition global_filters_and_parameters.datasource_filter %} ${bulk_inbounding_performance.delivery_date} {% endcondition %}
     ;;
 
   }
@@ -365,37 +365,37 @@ explore: supply_chain {
   }
 
 
-  join: mean_and_std {
-    view_label: "07 Order Lineitems"
-    type: left_outer
-    relationship: many_to_one
-    sql_on:  ${mean_and_std.hub_code}     = ${products_hub_assignment.hub_code}
-        and  ${mean_and_std.product_sku}  = ${products_hub_assignment.sku};;
-  }
+  #join: mean_and_std {
+  #  view_label: "07 Order Lineitems"
+  #  type: left_outer
+  #  relationship: many_to_one
+  #  sql_on:  ${mean_and_std.hub_code}     = ${products_hub_assignment.hub_code}
+  #      and  ${mean_and_std.product_sku}  = ${products_hub_assignment.sku};;
+  #}
 
 
-  join: waste_index {
-    view_label: "07 Order Lineitems"
-    type: left_outer
-    relationship: many_to_one
-    sql_on: ${waste_index.hub_code} = ${products_hub_assignment.hub_code}
-    and ${waste_index.product_sku} = ${products_hub_assignment.sku} ;;
-}
+  #join: waste_index {
+  #  view_label: "07 Order Lineitems"
+  #  type: left_outer
+  #  relationship: many_to_one
+  #  sql_on: ${waste_index.hub_code} = ${products_hub_assignment.hub_code}
+  #  and ${waste_index.product_sku} = ${products_hub_assignment.sku} ;;
+#}
 
-  join: avg_waste_index_per_hub {
-    view_label: "07 Order Lineitems"
-    type: left_outer
-    relationship: many_to_one
-    sql_on: ${avg_waste_index_per_hub.hub_code} = ${products_hub_assignment.hub_code}
-      and ${avg_waste_index_per_hub.product_sku} = ${products_hub_assignment.sku} ;;
-  }
+  #join: avg_waste_index_per_hub {
+  #  view_label: "07 Order Lineitems"
+  #  type: left_outer
+  #  relationship: many_to_one
+  #  sql_on: ${avg_waste_index_per_hub.hub_code} = ${products_hub_assignment.hub_code}
+  #    and ${avg_waste_index_per_hub.product_sku} = ${products_hub_assignment.sku} ;;
+  #}
 
-  join: v2_avg_waste_index_per_hub {
-    view_label: "07 Order Lineitems"
-    type: left_outer
-    relationship: many_to_one
-    sql_on: ${v2_avg_waste_index_per_hub.hub_code} = ${products_hub_assignment.hub_code} ;;
-  }
+  #join: v2_avg_waste_index_per_hub {
+  #  view_label: "07 Order Lineitems"
+  #  type: left_outer
+  #  relationship: many_to_one
+  #  sql_on: ${v2_avg_waste_index_per_hub.hub_code} = ${products_hub_assignment.hub_code} ;;
+  #}
 
 
   join: key_value_items {

@@ -2,7 +2,7 @@
 # Created: 2022-12-23
 
 view: event_inbound_state_updated {
-  sql_table_name: `flink-data-dev.curated.event_inbound_state_updated`
+  sql_table_name: `flink-data-prod.curated.event_inbound_state_updated`
     ;;
 
   view_label: "Event: Inbound State Updated"

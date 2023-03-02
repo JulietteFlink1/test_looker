@@ -14,7 +14,9 @@
 
 
 include: "/supply_chain/explores/master_reporting/supply_chain_master_report.view"
+include: "/supply_chain/explores/master_reporting/ndt_waste_risk_index_calculation.view"
 include: "/core/views/config/global_filters_and_parameters.view"
+include: "/**/hubs_ct.view"
 
 
 
@@ -42,5 +44,23 @@ explore: supply_chain_master {
   join: global_filters_and_parameters {
     sql: ;;
     relationship: one_to_one
+  }
+
+  join: hubs {
+    from: hubs_ct
+    view_label: "Hubs"
+    sql_on: lower(${supply_chain_master.hub_code}) = ${hubs.hub_code} ;;
+    relationship: many_to_one
+    type: left_outer
+  }
+
+  join: ndt_waste_risk_index_calculation {
+    view_label: "Supply Chain Master"
+    sql_on: ${supply_chain_master.hub_code}     = ${ndt_waste_risk_index_calculation.hub_code} and
+            ${supply_chain_master.parent_sku}   = ${ndt_waste_risk_index_calculation.parent_sku} and
+            ${supply_chain_master.report_date}  = ${ndt_waste_risk_index_calculation.report_date};;
+    relationship: many_to_one
+    type: left_outer
+
   }
 }
